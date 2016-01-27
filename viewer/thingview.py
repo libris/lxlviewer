@@ -5,7 +5,7 @@ import json
 from urlparse import urlparse, urljoin
 from os import makedirs, path as P
 
-from flask import request, Response, render_template, redirect, abort, url_for, send_file
+from flask import g, request, Response, render_template, redirect, abort, url_for, send_file
 from flask import Blueprint, current_app
 from flask.helpers import NotFound
 from werkzeug.urls import url_quote
@@ -62,6 +62,8 @@ def view_url(uri):
         #if '?' in uri: # implies other views, see data_url below
         #    raise NotImplementedError
         #return url_for('thingview.thingview', path=uri[1:], suffix='html')
+    # TODO: get env from current, get equiv for given
+    # - e.g.: at id-stg, having a libris uri, get libris-stg
     url_base = _get_base_uri(uri)
     if url_base == _get_base_uri(request.url):
         return urlparse(uri).path
@@ -79,6 +81,7 @@ def canonical_uri(thing):
             if same_id and same_id.startswith(base):
                 return same_id
     return thing_id
+
 
 ui_defs = {
     REVERSE: {'label': "Saker som länkar hit"},
@@ -158,11 +161,18 @@ def setup_app(setup_state):
         'ui': ui_defs,
         'lang': vocab.lang,
         'page_limit': 50,
+        'LIBRIS': LIBRIS,
+        'IDKBSE': IDKBSE,
         'canonical_uri': canonical_uri,
         'view_url': view_url,
         'url_quote': url_quote,
     }
     app.context_processor(lambda: view_context)
+
+
+@app.before_request
+def determine_base():
+    g.current_base = _get_base_uri()
 
 
 @app.route('/context.jsonld')
