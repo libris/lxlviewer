@@ -58,7 +58,7 @@
 <div class="jumbotron">
   <div class="container">
     <div class="col-md-6 col-md-offset-3">
-      <h1>ID.KB.SE</h1>
+      <h1>${site_title|upper}</h1>
       </div>
       </form>
     </div>
@@ -73,6 +73,7 @@
   <div class="panel panel-default intro-text">
     <div class="panel-body container-fluid">
       <div class="row">
+        % if g.current_base == IDKBSE
         <div class="col-md-6">
           <p>
             <b>id.kb.se</b> är en tjänst som tillgängliggör de grundstenar Kungl.
@@ -98,13 +99,20 @@
             % endif
           % endfor
         </ul>
+        % else
+        <div class="col-md-6">
+          <p>Data på <b>libris.kb.se</b>.</p>
+        </div>
+        % endif
       </div>
     </div>
   </div>
 
-  % for scheme in thing.statistics.aggregations['inScheme.@id'].buckets
-    ${viewscheme(scheme)}
-  % endfor
+  % if g.current_base == IDKBSE
+    % for scheme in thing.statistics.aggregations['inScheme.@id'].buckets
+      ${viewscheme(scheme)}
+    % endfor
+  % endif
 
 % endblock
 
