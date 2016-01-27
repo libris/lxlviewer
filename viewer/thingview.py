@@ -33,14 +33,11 @@ SCHEMA = Namespace("http://schema.org/")
 IDKBSE = "https://id.kb.se/"
 LIBRIS = "https://libris.kb.se/"
 DOMAIN_BASE_MAP = {
-    'localhost': IDKBSE,
-    '127.0.0.1': LIBRIS,
-    'id.local.dev': IDKBSE,
-    'libris.local.dev': LIBRIS,
-    'id-dev.kb.se':  IDKBSE,
-    'id-stg.kb.se':  IDKBSE,
-    'id.kb.se':  IDKBSE,
-    'libris.kb.se': LIBRIS,
+    'localhost': IDKBSE, '127.0.0.1': LIBRIS,
+    'id.local.dev': IDKBSE, 'libris.local.dev': LIBRIS,
+    'id-dev.kb.se':  IDKBSE, 'libris-dev.kb.se': LIBRIS,
+    'id-stg.kb.se':  IDKBSE, 'libris-stg.kb.se': LIBRIS,
+    'id.kb.se':  IDKBSE, 'libris.kb.se': LIBRIS,
 }
 
 def _get_base_uri(url=None):
