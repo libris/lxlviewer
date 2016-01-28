@@ -10,7 +10,11 @@
     <meta charset="utf-8" />
     <title>${site_title}{% block title %}{% endblock %}</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="/build/app.css" />
+    {% if site_title == 'id.kb.se' %}
+      <link rel="stylesheet" href="/build/id.css" />
+    {% elif site_title == 'libris.kb.se' %}
+      <link rel="stylesheet" href="/build/libris.css" />
+    {% endif %}
     {% block stylesheets %}{% endblock %}
   </head>
   <body {% block bodyattrs %}{% endblock %}>

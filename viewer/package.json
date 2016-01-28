@@ -17,11 +17,13 @@
     "vendor:fetch": "bower-installer",
     "vendor:js": "uglifyjs static/vendor/{jquery,lodash,bootstrap,d3}/js/*.js -o static/build/vendor.min.js --source-map static/build/vendor.min.js.map --source-map-url ./vendor.min.js.map --source-map-root /",
     "vendor:css": "cleancss static/vendor/*/css/*.css -o static/build/vendor.min.css #--source-map",
-    "app": "parallelshell 'npm run app:js' 'npm run app:less'",
+    "app": "parallelshell 'npm run app:js' 'npm run app:id:less' 'npm run app:libris:less'",
     "app:js": "uglifyjs static/js/*.js -o static/build/app.min.js --source-map static/build/app.min.js.map --source-map-url ./app.min.js.map --source-map-root /",
-    "app:less": "lessc static/less/main.less static/build/app.css --source-map=static/build/app.css.map",
-    "watch": "parallelshell 'npm run watch:js' 'npm run watch:less'",
+    "watch": "parallelshell 'npm run watch:js' 'npm run watch:libris:less' 'npm run watch:id:less'",
     "watch:js": "watch 'npm run app:js' static/js/",
-    "watch:less": "watch 'npm run app:less' static/less/"
+    "watch:id:less": "watch 'npm run app:id:less' static/less/",
+    "watch:libris:less": "watch 'npm run app:libris:less' static/less/",
+    "app:id:less": "lessc static/less/main_id.less static/build/id.css --source-map=static/build/id.css.map",
+    "app:libris:less": "lessc static/less/main_libris.less static/build/libris.css --source-map=static/build/libris.css.map"
   }
 }
