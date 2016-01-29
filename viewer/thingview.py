@@ -39,10 +39,17 @@ DOMAIN_BASE_MAP = {
     'id-stg.kb.se':  IDKBSE, 'libris-stg.kb.se': LIBRIS,
     'id.kb.se':  IDKBSE, 'libris.kb.se': LIBRIS,
 }
+LEGACY_BASE = "http://libris.kb.se/"
+LEGACY_PATHS = ('/resource/auth', '/auth',
+        '/resource/bib', '/bib',
+        '/resource/hold', '/hold')
 
 def _get_base_uri(url=None):
     url = url or request.url
-    domain = urlparse(url).netloc.split(':', 1)[0]
+    parsedurl = urlparse(url)
+    if parsedurl.path.startswith(LEGACY_PATHS):
+        return LEGACY_BASE
+    domain = parsedurl.netloc.split(':', 1)[0]
     return DOMAIN_BASE_MAP.get(domain)
 
 def _get_served_uri(url, path):
