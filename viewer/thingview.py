@@ -129,19 +129,23 @@ def setup_app(setup_state):
     def load_vocab_graph():
         global jsonld_context_data
 
-        jsonld_context_data = storage.get_record(vocab_uri + 'context').data[GRAPH][0]
+        try:
+            jsonld_context_data = storage.get_record(
+                    vocab_uri + 'context').data[GRAPH][0]
 
-        #vocabgraph = graphcache.load(config['VOCAB_SOURCE'])
-        vocab_items = sum((record.data[GRAPH] for record in
-                       storage.find_by_quotation(vocab_uri, limit=4096)),
-                       storage.get_record(vocab_uri).data[GRAPH])
-        vocabdata = json.dumps(vocab_items, indent=2)
-        vocabgraph = Graph().parse(
-                data=vocabdata,
-                context=jsonld_context_data,
-                format='json-ld')
-        #vocabgraph.namespace_manager = ns_mgr
-        vocabgraph.namespace_manager.bind("", vocab_uri)
+            #vocabgraph = graphcache.load(config['VOCAB_SOURCE'])
+            vocab_items = sum((record.data[GRAPH] for record in
+                        storage.find_by_quotation(vocab_uri, limit=4096)),
+                        storage.get_record(vocab_uri).data[GRAPH])
+            vocabdata = json.dumps(vocab_items, indent=2)
+            vocabgraph = Graph().parse(
+                    data=vocabdata,
+                    context=jsonld_context_data,
+                    format='json-ld')
+            #vocabgraph.namespace_manager = ns_mgr
+            vocabgraph.namespace_manager.bind("", vocab_uri)
+        finally:
+            storage.disconnect()
 
         # TODO: load base vocabularies for labels, inheritance here,
         # or in vocab build step?
@@ -173,6 +177,10 @@ def setup_app(setup_state):
 @app.before_request
 def determine_base():
     g.current_base = _get_base_uri()
+
+@app.teardown_request
+def disconnect_db(exception):
+    ldview.storage.disconnect()
 
 
 @app.route('/context.jsonld')
