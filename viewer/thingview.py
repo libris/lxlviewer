@@ -40,9 +40,9 @@ DOMAIN_BASE_MAP = {
     'id.kb.se':  IDKBSE, 'libris.kb.se': LIBRIS,
 }
 LEGACY_BASE = "http://libris.kb.se/"
-LEGACY_PATHS = ('/resource/auth', '/auth',
-        '/resource/bib', '/bib',
-        '/resource/hold', '/hold')
+LEGACY_PATHS = ('/resource/auth/', '/auth/',
+        '/resource/bib/', '/bib/',
+        '/resource/hold/', '/hold/')
 
 def _get_base_uri(url=None):
     url = url or request.url
