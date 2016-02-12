@@ -25,6 +25,7 @@
       "selenium_host"  : "localhost",
       "test_runner" : "mocha",
       "silent": true,
+      "end_session_on_fail": false,
       "screenshots" : {
         "enabled" : false,
         "path" : ""
