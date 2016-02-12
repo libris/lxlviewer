@@ -101,7 +101,7 @@ describe('LXL viewer', function() {
         client
 
           .click('.main-item dl dt a', function() {
-            client.expect.element('#embedvocab').to.be.visible.before(5000)
+            client.expect.element('#embedvocab').to.be.visible.before(10000)
           })
       });
 
@@ -259,7 +259,7 @@ describe('LXL viewer', function() {
         client
 
           .click('.main-item dl dt a', function() {
-            client.expect.element('#embedvocab').to.be.visible.before(5000)
+            client.expect.element('#embedvocab').to.be.visible.before(10000)
           })
       });
 
