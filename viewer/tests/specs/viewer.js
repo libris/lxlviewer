@@ -7,6 +7,7 @@ describe('LXL viewer', () => {
       it('Should load', (client) => {
         client
           .url('http://localhost:5000/')
+          .waitForElementPresent('main', 5000)
       })
 
       it('Should show 3 scheme links in the intro panel', (client) => {
@@ -28,7 +29,7 @@ describe('LXL viewer', () => {
       it('Should load', (client) => {
         client
           .url('http://localhost:5000/find?q=*&limit=50&inScheme.@id=https://id.kb.se/term/sao&@type=TopicalTerm')
-          .waitForElementPresent('body', 10000)
+          .waitForElementPresent('main', 10000)
           .expect.element('.no-results').to.not.be.present
       })
 
@@ -48,7 +49,7 @@ describe('LXL viewer', () => {
 
         client
           .url('http://localhost:5000/find?q=*&limit=50&inScheme.@id=https://id.kb.se/term/sao&@type=TopicalTerm')
-          .waitForElementPresent('body', 10000)
+          .waitForElementPresent('main', 5000)
 
         client
           .expect.element('.hit-item').to.be.present
@@ -59,7 +60,7 @@ describe('LXL viewer', () => {
 
         client
           .url('http://localhost:5000/find?q=*&limit=10&inScheme.@id=https://id.kb.se/term/sao&@type=TopicalTerm')
-          .waitForElementPresent('body', 10000)
+          .waitForElementPresent('main', 5000)
 
         client.elements('css selector','.hit-item', (client) => {
           client.assert.equal(result.value.length, 10)
@@ -70,7 +71,7 @@ describe('LXL viewer', () => {
       it('Should show message if no results were found', (client) => {
         client
           .url('http://localhost:5000/find?limit=50&p=prefLabel&q=invalidquery')
-          .waitForElementPresent('body', 10000)
+          .waitForElementPresent('main', 5000)
 
           client.expect.element('.no-results').to.be.present
       })
@@ -82,7 +83,7 @@ describe('LXL viewer', () => {
       it('Should load', (client) => {
         client
           .url('http://localhost:5000/term/sao/Deckare')
-          .waitForElementPresent('body', 10000)
+          .waitForElementPresent('main', 5000)
       })
 
       it('Should show a thing', (client) => {
@@ -116,7 +117,7 @@ describe('LXL viewer', () => {
       it('Should load', (client) => {
         client
           .url('http://localhost:5000/marcframeview/')
-          .waitForElementPresent('body', 10000)
+          .waitForElementPresent('main', 5000)
       })
 
       it('Sidenav Should show a menu of categories', (client) => {
@@ -145,7 +146,7 @@ describe('LXL viewer', () => {
       it('Should load', (client) => {
         client
           .url('http://localhost:5000/def/terms.html')
-          .waitForElementPresent('body', 10000)
+          .waitForElementPresent('main', 5000)
       })
 
       it('Sidenav should show classes', (client) => {
@@ -165,7 +166,8 @@ describe('LXL viewer', () => {
     describe('Index', () => {
 
       it('Should load', (client) => {
-        client.url('http://127.0.0.1:5000/')
+        client.url('http://127.0.0.1:5000')
+        .waitForElementPresent('main', 5000)
       })
 
     })
@@ -175,7 +177,7 @@ describe('LXL viewer', () => {
       it('Should load', (client) => {
         client
           .url('http://127.0.0.1:5000/find?limit=50&q=Lord+of+the+rings')
-          .waitForElementPresent('body', 10000)
+          .waitForElementPresent('main', 5000)
           .expect.element('.no-results').to.not.be.present
       })
 
@@ -194,7 +196,7 @@ describe('LXL viewer', () => {
       it('Should limit search results per page', (client) => {
         client
           .url('http://127.0.0.1:5000/find?limit=50&q=Lord+of+the+rings')
-          .waitForElementPresent('body', 10000)
+          .waitForElementPresent('main', 5000)
 
         client.expect.element('.hit-item').to.be.present
 
@@ -204,7 +206,7 @@ describe('LXL viewer', () => {
 
         client
           .url('http://127.0.0.1:5000/find?limit=10&q=Lord+of+the+rings')
-          .waitForElementPresent('body', 10000)
+          .waitForElementPresent('main', 5000)
 
         client.elements('css selector','.hit-item', (result) => {
           client.assert.equal(result.value.length, 10)
@@ -214,7 +216,7 @@ describe('LXL viewer', () => {
       it('Should show message if no results were found', (client) => {
         client
           .url('http://127.0.0.1:5000/find?limit=50&p=prefLabel&q=invalidquery')
-          .waitForElementPresent('body', 10000)
+          .waitForElementPresent('main', 5000)
 
         client.expect.element('.no-results').to.be.present
       })
@@ -226,7 +228,7 @@ describe('LXL viewer', () => {
       it('Should load', (client) => {
         client
           .url('http://127.0.0.1:5000/auth/143787')
-          .waitForElementPresent('body', 10000)
+          .waitForElementPresent('main', 5000)
       })
 
       it('Should show a thing', (client) => {
