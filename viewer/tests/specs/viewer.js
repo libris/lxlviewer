@@ -159,6 +159,12 @@ describe('LXL viewer', () => {
 
     })
 
+    after((client, done) => {
+      client.end(() => {
+        done()
+      })
+    })
+
   })
 
   describe('libris.kb.se', () => {
@@ -257,12 +263,12 @@ describe('LXL viewer', () => {
 
     })
 
-  })
-
-  after((client, done) => {
-    client.end(() => {
-      done()
+    after((client, done) => {
+      client.end(() => {
+        done()
+      })
     })
+
   })
 
 })
