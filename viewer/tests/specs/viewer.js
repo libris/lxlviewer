@@ -87,7 +87,7 @@ describe('LXL viewer', function() {
 
       it('Should load', function(client) {
         client
-          .url('http://localhost:5000/term/sao/Kvinnor%C3%B6relsen')
+          .url('http://localhost:5000/term/sao/Deckare')
           .waitForElementPresent('body', 10000)
       })
 
@@ -245,7 +245,7 @@ describe('LXL viewer', function() {
 
       it('Should load', function(client) {
         client
-          .url('http://127.0.0.1:5000/term/sao/Kvinnor%C3%B6relsen')
+          .url('http://127.0.0.1:5000/auth/143787')
           .waitForElementPresent('body', 10000)
       })
 
