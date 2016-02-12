@@ -1,25 +1,7 @@
 describe('LXL viewer', function() {
 
   describe('id.kb.se', function() {
-    
-    before(function(client, done) {
-      done();
-    });
-    
-    after(function(client, done) {
-      client.end(function() {
-        done();
-      });
-    });
-    
-    afterEach(function(client, done) {
-      done();
-    });
-    
-    beforeEach(function(client, done) {
-      done();
-    });
-    
+
     describe('Index', function() {
 
       it('Should load', function(client) {
@@ -191,25 +173,7 @@ describe('LXL viewer', function() {
   });
 
   describe('libris.kb.se', function() {
-    
-    before(function(client, done) {
-      done();
-    });
-    
-    after(function(client, done) {
-      client.end(function() {
-        done();
-      });
-    });
-    
-    afterEach(function(client, done) {
-      done();
-    });
-    
-    beforeEach(function(client, done) {
-      done();
-    });
-    
+
     describe('Index', function() {
 
       it('Should load', function(client) {
@@ -315,7 +279,13 @@ describe('LXL viewer', function() {
       });
 
     })
-    
+
+  });
+
+  after(function(client, done) {
+    client.end(function() {
+      done();
+    });
   });
 
 });
