@@ -28,7 +28,7 @@ describe('LXL viewer', () => {
 
       it('Should load', (client) => {
         client
-          .url('http://localhost:5000/find?q=*&limit=50&inScheme.@id=https://id.kb.se/term/sao&@type=TopicalTerm')
+          .url('http://localhost:5000/find?q=*')
           .waitForElementPresent('main', 10000)
           .expect.element('.no-results').to.not.be.present
       })
@@ -48,7 +48,7 @@ describe('LXL viewer', () => {
       it('Should limit search results per page', (client) => {
 
         client
-          .url('http://localhost:5000/find?q=*&limit=50&inScheme.@id=https://id.kb.se/term/sao&@type=TopicalTerm')
+          .url('http://localhost:5000/find?q=*&limit=50')
           .waitForElementPresent('main', 5000)
 
         client
@@ -59,7 +59,7 @@ describe('LXL viewer', () => {
         })
 
         client
-          .url('http://localhost:5000/find?q=*&limit=10&inScheme.@id=https://id.kb.se/term/sao&@type=TopicalTerm')
+          .url('http://localhost:5000/find?q=*&limit=10')
           .waitForElementPresent('main', 5000)
 
         client.elements('css selector','.hit-item', (client) => {
