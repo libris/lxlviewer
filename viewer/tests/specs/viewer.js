@@ -145,7 +145,7 @@ describe('LXL viewer', () => {
 
       it('Should load', (client) => {
         client
-          .url('http://localhost:5000/def/terms.html')
+          .url('http://localhost:5000/vocab')
           .waitForElementPresent('main', 5000)
       })
 
