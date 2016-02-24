@@ -3,7 +3,6 @@
 {% block title %} - ${ui.SEARCH_RESULTS.label}{% endblock %}
 
 % macro search_controls(details)
-  <div class="alert alert-warning"><i class="fa fa-exclamation-circle"></i> Observera att den nuvarande sökfunktionen saknar relevanssortering.</div>
   <div class="col-md-12 panel panel-default search-controls">
     % if details == 'true'
     <div class="search-details">
@@ -50,6 +49,7 @@
 
 % block content
   % set items = thing.pop('items')
+  <div class="alert alert-warning"><i class="fa fa-exclamation-circle"></i> Observera att den nuvarande sökfunktionen saknar relevanssortering.</div>
   <h1>${self.title()}</h1>
   
   ${ search_controls('true') }
