@@ -5,24 +5,24 @@
 @import '../vendor/kungbib-styles/less/kb-styles.less';
 
 // ----------- IMPORT COMPONENTS ----
-@import 'index.less';
-@import 'vocab.less';
-@import 'graph.less';
-@import 'list.less';
-@import 'thing.less';
-@import 'items.less';
-@import 'marcframe.less';
-@import 'website.less';
+@import 'shared/index.less';
+@import 'shared/vocab.less';
+@import 'shared/graph.less';
+@import 'shared/thing.less';
+@import 'shared/items.less';
+@import 'shared/marcframe.less';
+@import 'shared/website.less';
 
 // ----------- VARIABLES ------------
 @bg-site: #F5F5F5;
 @bg-content: @white;
-@bg-navbar: #F5F5F5;
+@bg-navbar: #FFFFFF;
 @bg-sidebars: darken(@white, 5%);
 @border-navbar: fadeout(#fff, 100%);
 @bg-footer: fadeout(lighten(@pastel-muted-blue,25%),70%);
-@brand-primary: @pastel-muted-blue;
+@brand-primary: #1A8F72;
 @bg-jumbotron: darken(@brand-primary,15%);
+@bg-jumbotron-image: url('/assets/white_tiles.png'); /* Background pattern from subtlepatterns.com */
 @border-footer: @grey-light;
 @color-class: @happy-blue;
 @color-prop: @happy-magenta;
@@ -50,6 +50,7 @@ html {
 body {
   position: relative;
   background-color: @bg-site;
+  background-image: url('/assets/bg_libris.png')
 }
 
 body.loading * {

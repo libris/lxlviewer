@@ -2,10 +2,10 @@
 from __future__ import unicode_literals
 import re
 import json
-from urlparse import urlparse, urljoin
+from urlparse import urlparse, urljoin, parse_qs
 from os import makedirs, path as P
 
-from flask import request, Response, render_template, redirect, abort, url_for, send_file
+from flask import g, request, Response, render_template, redirect, abort, url_for, send_file
 from flask import Blueprint, current_app
 from flask.helpers import NotFound
 from werkzeug.urls import url_quote
@@ -33,19 +33,23 @@ SCHEMA = Namespace("http://schema.org/")
 IDKBSE = "https://id.kb.se/"
 LIBRIS = "https://libris.kb.se/"
 DOMAIN_BASE_MAP = {
-    'localhost': IDKBSE,
-    '127.0.0.1': LIBRIS,
-    'id.local.dev': IDKBSE,
-    'libris.local.dev': LIBRIS,
-    'id-dev.kb.se':  IDKBSE,
-    'id-stg.kb.se':  IDKBSE,
-    'id.kb.se':  IDKBSE,
-    'libris.kb.se': LIBRIS,
+    'localhost': IDKBSE, '127.0.0.1': LIBRIS,
+    'id.local.dev': IDKBSE, 'libris.local.dev': LIBRIS,
+    'id-dev.kb.se':  IDKBSE, 'libris-dev.kb.se': LIBRIS,
+    'id-stg.kb.se':  IDKBSE, 'libris-stg.kb.se': LIBRIS,
+    'id.kb.se':  IDKBSE, 'libris.kb.se': LIBRIS,
 }
+LEGACY_BASE = "http://libris.kb.se/"
+LEGACY_PATHS = ('/resource/auth/', '/auth/',
+        '/resource/bib/', '/bib/',
+        '/resource/hold/', '/hold/')
 
 def _get_base_uri(url=None):
     url = url or request.url
-    domain = urlparse(url).netloc.split(':', 1)[0]
+    parsedurl = urlparse(url)
+    if parsedurl.path.startswith(LEGACY_PATHS):
+        return LEGACY_BASE
+    domain = parsedurl.netloc.split(':', 1)[0]
     return DOMAIN_BASE_MAP.get(domain)
 
 def _get_served_uri(url, path):
@@ -65,6 +69,8 @@ def view_url(uri):
         #if '?' in uri: # implies other views, see data_url below
         #    raise NotImplementedError
         #return url_for('thingview.thingview', path=uri[1:], suffix='html')
+    # TODO: get env from current, get equiv for given
+    # - e.g.: at id-stg, having a libris uri, get libris-stg
     url_base = _get_base_uri(uri)
     if url_base == _get_base_uri(request.url):
         return urlparse(uri).path
@@ -82,6 +88,7 @@ def canonical_uri(thing):
             if same_id and same_id.startswith(base):
                 return same_id
     return thing_id
+
 
 ui_defs = {
     REVERSE: {'label': "Saker som länkar hit"},
@@ -129,19 +136,23 @@ def setup_app(setup_state):
     def load_vocab_graph():
         global jsonld_context_data
 
-        jsonld_context_data = storage.get_record(vocab_uri + 'context').data[GRAPH][0]
+        try:
+            jsonld_context_data = storage.get_record(
+                    vocab_uri + 'context').data[GRAPH][0]
 
-        #vocabgraph = graphcache.load(config['VOCAB_SOURCE'])
-        vocab_items = sum((record.data[GRAPH] for record in
-                       storage.find_by_quotation(vocab_uri, limit=4096)),
-                       storage.get_record(vocab_uri).data[GRAPH])
-        vocabdata = json.dumps(vocab_items, indent=2)
-        vocabgraph = Graph().parse(
-                data=vocabdata,
-                context=jsonld_context_data,
-                format='json-ld')
-        #vocabgraph.namespace_manager = ns_mgr
-        vocabgraph.namespace_manager.bind("", vocab_uri)
+            #vocabgraph = graphcache.load(config['VOCAB_SOURCE'])
+            vocab_items = sum((record.data[GRAPH] for record in
+                        storage.find_by_quotation(vocab_uri, limit=4096)),
+                        storage.get_record(vocab_uri).data[GRAPH])
+            vocabdata = json.dumps(vocab_items, indent=2)
+            vocabgraph = Graph().parse(
+                    data=vocabdata,
+                    context=jsonld_context_data,
+                    format='json-ld')
+            #vocabgraph.namespace_manager = ns_mgr
+            vocabgraph.namespace_manager.bind("", vocab_uri)
+        finally:
+            storage.disconnect()
 
         # TODO: load base vocabularies for labels, inheritance here,
         # or in vocab build step?
@@ -161,11 +172,23 @@ def setup_app(setup_state):
         'ui': ui_defs,
         'lang': vocab.lang,
         'page_limit': 50,
+        'LIBRIS': LIBRIS,
+        'IDKBSE': IDKBSE,
         'canonical_uri': canonical_uri,
         'view_url': view_url,
         'url_quote': url_quote,
+        'parse_qs': parse_qs
     }
     app.context_processor(lambda: view_context)
+
+
+@app.before_request
+def determine_base():
+    g.current_base = _get_base_uri()
+
+@app.teardown_request
+def disconnect_db(exception):
+    ldview.storage.disconnect()
 
 
 @app.route('/context.jsonld')

@@ -29,6 +29,7 @@ body#thing {
       background-color: #fff;
       .panel-title a {
         color: @color-headers;
+        word-break: break-all;
       }
       .chip-prop {
           
@@ -97,14 +98,16 @@ body#thing {
     opacity: 0;
     margin-top: 0px;
     overflow-x: visible;
+    box-shadow: 0px 3px 0px 0px rgba(0, 0, 0, 0.3);
     &:hover {
       z-index: 985;
     }
     &.active {
       transition: 0.25s ease;
-      transition-property: opacity;
+      transition-property: opacity, box-shadow;
       min-width: 260px;
       opacity: 1;
+      box-shadow: 0px 3px 5px 0px rgba(0, 0, 0, 0.3);
       .panel-heading {
         overflow-x: visible;
         .panel-heading-meta {
@@ -213,54 +216,10 @@ body#thing {
       padding: 15px 15px;
     }
   }
-  
-  .chip-expanded {
-    background-color: white;
-    position: absolute;
-    z-index: 500;
-    margin-left: -1px;
-    margin-top: -1px;
-    min-width: 400px;
-    border: 1px solid #cccccc;
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    border-radius: 6px;
-    -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-    display: none;
-    > .panel-heading {
-      padding: 5px;
-      margin-bottom: 5px;
-    }
-    &.active {
-      display: block;
-    }
-    &.to-be-active {
-      display: none;
-    }
-    .label-class {
-      margin-bottom: 8px;
-    }
-    .thing-label {
-      display: block;
-      font-size: 16px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-    .thing-id {
-      float: right;
-      display: block;
-      max-width: 175px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      color: @color-id;
-    }
-  }
 
   .side-view {
-    .chip-expanded {
-      min-width: 100%;
+    .link-item-copy {
+      width: 262px;
     }
     dt {
       font-size: 12px;

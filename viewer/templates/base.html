@@ -1,11 +1,20 @@
 <!DOCTYPE html>
 <html lang="${lang}">
+  % if g.current_base == IDKBSE
+    % set site_title = 'id.kb.se'
+  % else
+    % set site_title = 'libris.kb.se'
+  % endif
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="utf-8" />
-    <title>id.kb.se{% block title %}{% endblock %}</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="/build/app.css" />
+    <title>${site_title}{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="/vendor/font-awesome/css/font-awesome.min.css">
+    {% if site_title == 'id.kb.se' %}
+      <link rel="stylesheet" href="/build/id.css" />
+    {% elif site_title == 'libris.kb.se' %}
+      <link rel="stylesheet" href="/build/libris.css" />
+    {% endif %}
     {% block stylesheets %}{% endblock %}
   </head>
   <body {% block bodyattrs %}{% endblock %}>
@@ -16,7 +25,7 @@
           <div class="navbar-brand navbar-logo">
                 <a href="/"><img src="/assets/kb_logo_black.svg" alt="Kungliga Bibliotekets logotyp"></a>
           </div>
-          <a class="navbar-brand" href="/" title="Version ${ config.VERSION }">id.kb.se
+          <a class="navbar-brand" href="/" title="Version ${ config.VERSION }">${site_title}
             <span class="environment-label">
               {% if config.ENVIRONMENT == 'prod' %}
               {% elif config.ENVIRONMENT %}
@@ -31,12 +40,18 @@
           <li class="search">
           <form action="/find" method="GET" class="form-inline">
             <div class="form-group">
-              <input name="limit" value="50" type="hidden" />
               <label id="searchlabel" for="q">
                 Sök term
               </label>
+              % for param, values in parse_qs(request.query_string).items()
+                  % if param != 'q'
+                      % for value in values
+                          <input type="hidden" name="${param}" value="${value}" />
+                      % endfor
+                  % endif
+              % endfor
               <div class="input-group">
-                <input aria-labelledby="searchlabel" class="form-control" name="q" id="q" value="" />
+                <input aria-labelledby="searchlabel" class="form-control" name="q" id="q" value="${thing.query}" />
                 <span class="input-group-btn">
                   <button class="btn btn-primary"><i class="fa fa-search"></i></button>
                 </span>

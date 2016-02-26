@@ -60,3 +60,15 @@ Updating vendor dependencies:
 
     $ npm run vendor
 
+## Tests
+
+Requires installing tests prerequsites see [tests documentation](/test)
+
+
+Run nightwatch e2e tests with default browser (Firefox)
+
+    $ npm run test
+
+Run nightwatch e2e tests with Chrome
+
+    $ npm run test:chrome
