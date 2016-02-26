@@ -40,10 +40,16 @@
           <li class="search">
           <form action="/find" method="GET" class="form-inline">
             <div class="form-group">
-              <input name="limit" value="50" type="hidden" />
               <label id="searchlabel" for="q">
                 Sök term
               </label>
+              % for param, values in parse_qs(request.query_string).items()
+                  % if param != 'q'
+                      % for value in values
+                          <input type="hidden" name="${param}" value="${value}" />
+                      % endfor
+                  % endif
+              % endfor
               <div class="input-group">
                 <input aria-labelledby="searchlabel" class="form-control" name="q" id="q" value="" />
                 <span class="input-group-btn">
