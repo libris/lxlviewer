@@ -69,50 +69,62 @@
 {% block navcontainerclass %} container {% endblock %}
 
 % block content
-
-  <div class="panel panel-default intro-text">
-    <div class="panel-body container-fluid">
-      <div class="row">
-        % if g.current_base == IDKBSE
-        <div class="col-md-6">
-          <p>
-            <b>id.kb.se</b> är en tjänst som tillgängliggör de grundstenar Kungl.
-            biblioteket använder för att publicera strukturerad,
-            <a href="https://sv.wikipedia.org/wiki/L%C3%A4nkad_data">länkad data</a>.
-            Här finns en samling gemensamma definitioner och begrepp som hjälper
-            till att samordna beskrivningar av vårt material. I grunden finns bl.a.
-            ett basvokabulär med gemensamma egenskaper och typer. I möjligaste mån
-            länkar alla definitioner till internationella, välkända motsvarigheter.
-          </p>
-          <p>
-            Här tillgängliggörs bl.a. Svenska ämnesord, barnämnesord och
-            genre/formtermer, vilka utgör viktiga byggstenar för denna samordning.
-          </p>
+<div class="row">
+  <div class="col-md-9 col-md-push-3">
+  <div class="panel panel-default search-controls col-md-9 col-md-push-3">
+    <form action="/find" method="GET">
+      <div class="form-group">
+        <input name="limit" value="50" type="hidden" />
+        <label id="searchlabel" for="q">
+          Sök term
+        </label>
+        <div class="input-group">
+          <input aria-labelledby="searchlabel" class="form-control" name="q" id="q" value="" />
+          <span class="input-group-btn">
+            <button class="btn btn-primary"><i class="fa fa-search"></i></button>
+          </span>
         </div>
-        <ul class="col-md-6 main-nav">
-          % for scheme in thing.statistics.aggregations['inScheme.@id'].buckets
-            % if scheme.resource is not none and 'titleByLang' in scheme.resource and 'descriptionByLang' in scheme.resource
-            <a class="list-group-item"
-                href="#${scheme.resource.notation[0].replace('/','-')}">
-                ${scheme.resource.titleByLang[lang]}
-            </a>
-            % endif
-          % endfor
-        </ul>
-        % else
-        <div class="col-md-6">
-          <p>Data på <b>libris.kb.se</b>.</p>
-        </div>
-        % endif
       </div>
+    </form>
+  </div>
+  </div>
+  
+  <div class="col-md-3 col-md-pull-9">
+    <div class="panel panel-default facet-controls">
+      Mock<br>
+      Mock<br>
+      Mock<br>
+      Mock<br>
+      Mock<br>
+      Mock<br>
+      Mock<br>
+      Mock<br>
+      Mock<br>
     </div>
   </div>
 
-  % if g.current_base == IDKBSE
+  % if g.current_base == IDKBSE  
+  <div class="col-md-9">
+    <div class="panel panel-default scheme-item">
+      <ul class="col-md-12 main-nav">
+      % for scheme in thing.statistics.aggregations['inScheme.@id'].buckets
+        % if scheme.resource is not none and 'titleByLang' in scheme.resource and 'descriptionByLang' in scheme.resource
+        <a class="list-group-item"
+          href="#${scheme.resource.notation[0].replace('/','-')}">
+          ${scheme.resource.titleByLang[lang]}
+        </a>
+        % endif
+      % endfor
+      </ul>
+    </div>
+  </div>
+  
     % for scheme in thing.statistics.aggregations['inScheme.@id'].buckets
       ${viewscheme(scheme)}
     % endfor
   % endif
+  
+</div>
 
 % endblock
 
