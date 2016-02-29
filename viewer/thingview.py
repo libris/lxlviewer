@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 import re
 import json
-from urlparse import urlparse, urljoin
+from urlparse import urlparse, urljoin, parse_qs
 from os import makedirs, path as P
 
 from flask import g, request, Response, render_template, redirect, abort, url_for, send_file
@@ -177,6 +177,7 @@ def setup_app(setup_state):
         'canonical_uri': canonical_uri,
         'view_url': view_url,
         'url_quote': url_quote,
+        'parse_qs': parse_qs
     }
     app.context_processor(lambda: view_context)
 
