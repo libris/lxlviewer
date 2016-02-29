@@ -73,23 +73,14 @@
           Välj typ
         </label>
         <div class="btn-group type-buttons" data-toggle="buttons" role="group" aria-label="Välj typ">
-          <!-- % if types -->
-          <!-- % for type in types -->
-          <label class="btn btn-default">
-            <input name="type" id="option1" value="" type="radio">Alla
+          <label class="btn btn-default no-choice">
+            <input name="type" value="" type="radio">Alla
           </label>
+        % for type in types
           <label class="btn btn-default">
-            <input name="type" id="option2" value="placeholder" type="radio">Placeholder
+            <input name="type" value="${type}" type="radio">${type}
           </label>
-          <label class="btn btn-default">
-            <input name="type" id="option3" value="test" type="radio">Test
-          </label>
-          <label class="btn btn-default">
-            <input name="type" id="option4" value="lorem" type="radio">Lorem
-          </label>
-
-          <!-- % endfor -->
-          <!-- % else -->
+        % endfor
         </div>
         
         <div class="form-inline">
