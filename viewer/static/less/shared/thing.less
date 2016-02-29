@@ -27,10 +27,15 @@ body#thing {
     }
     .panel-heading {
       background-color: #fff;
-      .panel-title a {
+      .panel-title {
+        a {
         color: @color-headers;
         word-break: break-all;
-      }
+        }
+        .expand-button {
+          display: none;
+        }
+      } 
       .chip-prop {
           
       }
@@ -240,7 +245,7 @@ body#thing {
 
 
   .hit-item {
-    margin: 0px 0px 15px 0px;
+    margin: 0px;
     padding: 0px;
     transition: 0.3s linear all;
     hr {
@@ -279,6 +284,18 @@ body#thing {
         }
       }
     }
+    .panel-heading {
+      .expand-button {
+        float: right;
+        display: inline-block;
+        cursor: pointer;
+        position: relative;
+        top: -25px;
+        &:hover {
+          color: @brand-primary;
+        }
+      }
+    }
     .panel-body {
       padding-top: 10px;
       padding-bottom: 10px;
@@ -293,6 +310,15 @@ body#thing {
     > .panel-heading .thing-label {
       font-size: 2em;
       color: @color-headers;
+    }
+    .panel-body {
+      display: none;
+    }
+    &.expanded {
+      margin: 15px 0px;
+      .panel-body {
+        display: block;
+      }
     }
   }
 }
