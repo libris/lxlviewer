@@ -1,29 +1,30 @@
 % extends "base.html"
 
 % macro viewscheme(scheme)
-  % if scheme.resource is not none and 'titleByLang' in scheme.resource and 'descriptionByLang' in scheme.resource
-  <div id="${scheme.resource.notation[0].replace('/','-')}" class="panel panel-default scheme-item">
+  % if scheme.object is not none and 'titleByLang' in scheme.object and 'descriptionByLang' in scheme.object
+  <div class="col-md-4">
+  <div id="${scheme.object.notation[0].replace('/','-')}" class="panel panel-default scheme-item">
     <header class="panel-heading">
       <h1 class="panel-title">
-        <a href="${view_url(scheme.resource[ID])}">
-          ${scheme.resource.titleByLang[lang]}
+        <a href="${ scheme.view['@id'] }">
+          ${scheme.object.titleByLang[lang]}
         </a>
       </h1>
     </header>
     <div class="panel-body container-fluid">
-      <div class="row">
-        <p class="description collapsed col-md-6">
-          ${ scheme.resource.descriptionByLang[lang].strip().replace('\n','<br/>') | safe }
+        <p class="description collapsed">
+          ${ scheme.object.descriptionByLang[lang].strip().replace('\n','<br/>') | safe }
         </p>
-        <ul class="col-md-6">
-          % for bucket in scheme['@type'].buckets
+        % if scheme.sliceByDimension
+        <ul>
+            % for item in scheme.sliceByDimension['inCollection.@id'].observation
             <a class="list-group-item"
-                href="/find?q=*&limit=50&inScheme.@id=${
-                        url_quote(scheme.key)}&@type=${url_quote(bucket.key)}">
-                ${bucket.resource.label}
-                <span class="badge">${format_number(bucket.doc_count)} st.</span>
+                href="${item.view['@id']}">
+                ${item.object.titleByLang[lang]}
+                <span class="badge">${format_number(item.totalItems)} st.</span>
             </a>
-          % endfor
+            % endfor
+
           {#
           % for subkey in ['@type', 'inCollection.@id']
             % if scheme[subkey].buckets
@@ -33,8 +34,8 @@
               <a class="list-group-item"
                  href="/find?q=*&limit=50&inScheme.@id=${
                           url_quote(scheme.key)}&${subkey}=${url_quote(bucket.key)}">
-                  % if bucket.resource
-                    ${bucket.resource.label or bucket.resource.titleByLang.sv}
+                  % if bucket.object
+                    ${bucket.object.label or bucket.object.titleByLang.sv}
                   % else
                     ${bucket.key}
                   % endif
@@ -44,9 +45,10 @@
           % endfor
           #}
         </ul>
-      </div>
-    </div>
+        % endif
   </div>
+</div>
+</div>
   % endif
 % endmacro
 
@@ -87,48 +89,16 @@
 
 % block content
 <div class="row">
-  <div class="col-md-9 col-md-push-3">
-  <div class="panel panel-default search-controls col-md-9 col-md-push-3">
-    <form action="/find" method="GET">
-      <div class="form-group">
-        <input name="limit" value="50" type="hidden" />
-        <label id="searchlabel" for="q">
-          Sök term
-        </label>
-        <div class="input-group">
-          <input aria-labelledby="searchlabel" class="form-control" name="q" id="q" value="" />
-          <span class="input-group-btn">
-            <button class="btn btn-primary"><i class="fa fa-search"></i></button>
-          </span>
-        </div>
-      </div>
-    </form>
-  </div>
-  </div>
-  
-  <div class="col-md-3 col-md-pull-9">
-    <div class="panel panel-default facet-controls">
-      Mock<br>
-      Mock<br>
-      Mock<br>
-      Mock<br>
-      Mock<br>
-      Mock<br>
-      Mock<br>
-      Mock<br>
-      Mock<br>
-    </div>
-  </div>
 
   % if g.current_base == IDKBSE  
-  <div class="col-md-9">
+  <div class="col-md-12">
     <div class="panel panel-default scheme-item">
       <ul class="col-md-12 main-nav">
-      % for scheme in thing.statistics.aggregations['inScheme.@id'].buckets
-        % if scheme.resource is not none and 'titleByLang' in scheme.resource and 'descriptionByLang' in scheme.resource
+      % for scheme in thing.statistics.sliceByDimension['inScheme.@id'].observation
+        % if scheme.object is not none and 'titleByLang' in scheme.object and 'descriptionByLang' in scheme.object
         <a class="list-group-item"
-          href="#${scheme.resource.notation[0].replace('/','-')}">
-          ${scheme.resource.titleByLang[lang]}
+          href="#${scheme.object.notation[0].replace('/','-')}">
+          ${scheme.object.titleByLang[lang]}
         </a>
         % endif
       % endfor
@@ -136,9 +106,31 @@
     </div>
   </div>
   
-    % for scheme in thing.statistics.aggregations['inScheme.@id'].buckets
+    % for scheme in thing.statistics.sliceByDimension['inScheme.@id'].observation
       ${viewscheme(scheme)}
     % endfor
+  
+  % elif g.current_base == LIBRIS
+  
+  <!-- <div class="col-md-4">
+    <div class="panel panel-default scheme-item">
+      <ul class="main-nav">
+      % for scheme in thing.statistics.sliceByDimension['inScheme.@id'].observation
+        % if scheme.object is not none and 'titleByLang' in scheme.object and 'descriptionByLang' in scheme.object
+        <a class="list-group-item"
+          href="#${scheme.object.notation[0].replace('/','-')}">
+          ${scheme.object.titleByLang[lang]}
+        </a>
+        % endif
+      % endfor
+      </ul>
+    </div>
+  </div> -->
+  
+    % for scheme in thing.statistics.sliceByDimension['inScheme.@id'].observation
+      ${viewscheme(scheme)}
+    % endfor
+  
   % endif
   
 </div>
