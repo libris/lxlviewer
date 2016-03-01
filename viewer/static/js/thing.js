@@ -121,10 +121,11 @@ $(function () {
         collapse($(this));
       });
       
-      initTypeButtons();
-      initHitlistExpands();
       
     }, 10);
+    
+    initTypeButtons();
+    initHitlistExpands();
     
     // Remove empty fields
     $('form').submit(function(e){
