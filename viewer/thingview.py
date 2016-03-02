@@ -240,9 +240,12 @@ def some(suffix=None):
     return rendered_response('/some', suffix, ambiguity)
 
 @app.route('/')
+@app.route('/data')
 @app.route('/data.<suffix>')
-def datasetview(suffix=None):
-    results = ldview.get_index_aggregate(_get_base_uri(request.url))
+def dataindexview(suffix=None):
+    slicerepr = request.args.get('slice')
+    slicetree = json.loads(slicerepr) if slicerepr else None
+    results = ldview.get_index_stats(_get_base_uri(request.url), slicetree=slicetree)
     return rendered_response('/', suffix, results)
 
 #@app.route('/vocab/<term>')
@@ -284,7 +287,10 @@ def rendered_response(path, suffix, thing):
     return resp
 
 
-TYPE_TEMPLATES = {'website', 'pagedcollection'}
+TYPE_TEMPLATES = {
+    'DataCatalog': 'website.html',
+    'PartialCollectionView': 'pagedcollection.html'
+}
 
 negotiator = Negotiator()
 
@@ -341,7 +347,7 @@ def _to_graph(data, base=None):
 
 def _get_template_for(data):
     for rtype in as_iterable(data.get(TYPE)):
-        template_key = rtype.lower()
-        if template_key in TYPE_TEMPLATES:
-            return '%s.html' % template_key
+        template = TYPE_TEMPLATES.get(rtype)
+        if template:
+            return template
     return 'thing.html'

@@ -4,7 +4,7 @@
 
 % macro search_controls(details)
   <div class="col-md-12 panel panel-default search-controls">
-    % if details == 'true'
+    % if details
     <div class="search-details">
       <span class="search-keyword">
           
@@ -20,25 +20,25 @@
       <span class="search-items-per-page pull-right">
         % if thing.totalItems
         Visar resultat
-          ${thing.itemOffset + 1}-${min(thing.totalItems, thing.itemOffset + thing.itemsPerPage)}.
+          ${thing.itemOffset + 1}-${min(thing.totalItems, thing.itemOffset + len(thing['items']))}.
         % endif
       </span>
     </div>
     % endif
     
     <div class="search-buttons">
-      % if thing.firstPage and thing.previousPage
-      <a class="btn btn-primary pagination-firstpage" href="${thing.firstPage[ID]}">Första</a>
+      % if thing.first and thing.previous
+      <a class="btn btn-primary pagination-firstpage" href="${thing.first[ID]}">Första</a>
       % else
       <a class="btn btn-primary pagination-firstpage" disabled>Första</a>
       % endif
-      % if thing.previousPage
-      <a class="btn btn-primary pagination-back" href="${thing.previousPage[ID]}">Föregående</a>
+      % if thing.previous
+      <a class="btn btn-primary pagination-back" href="${thing.previous[ID]}">Föregående</a>
       % else
       <a class="btn btn-primary pagination-back" disabled>Föregående</a>
       % endif
-      % if thing.nextPage
-      <a class="btn btn-primary pagination-next" href="${thing.nextPage[ID]}">Nästa</a>
+      % if thing.next
+      <a class="btn btn-primary pagination-next" href="${thing.next[ID]}">Nästa</a>
       % else
       <a class="btn btn-primary pagination-next" disabled>Nästa</a>
       % endif
@@ -48,11 +48,11 @@
 % endmacro
 
 % block content
-  % set items = thing.pop('items')
+  % set items = thing['items']
   <div class="alert alert-warning"><i class="fa fa-exclamation-circle"></i> Observera att den nuvarande sökfunktionen saknar relevanssortering.</div>
   <h1>${self.title()}</h1>
   
-  ${ search_controls('true') }
+  ${ search_controls(True) }
   % if items
     % for item in items
     <!-- <ul class="panel panel-default"> -->
@@ -66,5 +66,5 @@
       </div>
     </div>
   % endif
-  ${ search_controls('false') }
+  ${ search_controls(False) }
 % endblock
