@@ -46,7 +46,7 @@
           <label class="search-label" id="searchlabel" for="q">
             Sök term
           </label>
-          <input aria-labelledby="searchlabel" class="form-control search-input" name="q" id="q" value="${thing.query}" />
+          <input aria-labelledby="searchlabel" class="form-control search-input" name="q" id="q" value="${thing.textQuery}" />
           <button class="search-button btn btn-primary"><i class="fa fa-search"></i> Sök</button>
         </div>
       </div>
@@ -79,7 +79,7 @@
         % elif thing.value
           Sökning ${thing.value}
         % else
-          Sökning på: <i>"${thing.textQuery}"</i> gav inga träffar.
+          Sökning på <i>"${thing.textQuery}"</i> gav inga träffar.
         % endif
       </span>
       <span class="search-items-per-page pull-right">
@@ -117,9 +117,7 @@
   
   ${ search_controls() }
   
-  <div class="col-md-9">
-    <h1>${self.title()}</h1>
-    
+  <div class="col-md-9">    
     ${ result_controls(True) }
     % if items
     % for item in items
