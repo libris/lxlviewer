@@ -52,9 +52,7 @@ $(function () {
     // Hit list expand functionality
     
     $('.hit-item').each(function() {
-      $(this).find('.panel-title').eq(0).prepend(
-        "<i class='expand-button fa fa-plus-circle'></i>"
-      );
+      $("<i class='expand-button fa fa-plus-circle'></i>").insertBefore($(this).find('.panel-title').eq(0));
     })
     
     $('.hit-item .expand-button').click(function() {
