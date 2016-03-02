@@ -1,6 +1,6 @@
 % extends "thing.html"
 
-{% block title %} - ${ui.SEARCH_RESULTS.label}{% endblock %}
+{% block title %}${ui.SEARCH_RESULTS.label}{% endblock %}
 
 % macro search_controls()
 
@@ -71,16 +71,15 @@
     % if details
     <div class="search-details">
       <span class="search-keyword">
-          
-        % if thing.query and thing.totalItems > 0
-          Sökning på: <i>"${thing.query}"</i>
-          % if thing.totalItems
-            gav ${thing.totalItems} träffar.
+        % if thing.textQuery and len(thing['items']) > 0
+          Sökning på <i>"${thing.textQuery}"</i>
+          % if len(thing['items'])
+            gav ${len(thing['items'])} träffar.
           % endif
         % elif thing.value
-          Sökning: ${thing.value}
+          Sökning ${thing.value}
         % else
-          Sökning på: <i>"${thing.query}"</i> gav inga träffar.
+          Sökning på: <i>"${thing.textQuery}"</i> gav inga träffar.
         % endif
       </span>
       <span class="search-items-per-page pull-right">
@@ -109,7 +108,6 @@
       <a class="btn btn-primary pagination-next" disabled>Nästa</a>
       % endif
     </div>
-    <!-- ${viewthing(thing, element='article', classes='')} -->
   </div>
 % endmacro
 
