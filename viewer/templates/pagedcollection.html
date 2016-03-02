@@ -71,10 +71,10 @@
     % if details
     <div class="search-details">
       <span class="search-keyword">
-        % if thing.textQuery and len(thing['items']) > 0
+        % if thing.textQuery and thing.totalItems > 0
           Sökning på <i>"${thing.textQuery}"</i>
-          % if len(thing['items'])
-            gav ${len(thing['items'])} träffar.
+          % if thing.totalItems
+            gav ${thing.totalItems} träffar.
           % endif
         % elif thing.value
           Sökning ${thing.value}
@@ -92,21 +92,47 @@
     % endif
     
     <div class="search-buttons">
+      <nav>
+      <ul class="pagination">
       % if thing.first and thing.previous
-      <a class="btn btn-primary pagination-firstpage" href="${thing.firstPage[ID]}">Första</a>
+      <li>
+        <a href="${thing.first['@id']}">Första</a>
+      </li>
       % else
-      <a class="btn btn-primary pagination-firstpage" disabled>Första</a>
+      <li class="disabled">
+        <a href="#">Första</a>
+      </li>
       % endif
       % if thing.previous
-      <a class="btn btn-primary pagination-back" href="${thing.previousPage[ID]}">Föregående</a>
+      <li>
+        <a href="${thing.previous['@id']}">Föregående</a>
+      </li>
       % else
-      <a class="btn btn-primary pagination-back" disabled>Föregående</a>
-      % endif
+      <li class="disabled">
+        <a href="#">Föregående</a>
+      </li>
+      % endif      
       % if thing.next
-      <a class="btn btn-primary pagination-next" href="${thing.nextPage[ID]}">Nästa</a>
+      <li>
+        <a href="${thing.next['@id']}">Nästa</a>
+      </li>
       % else
-      <a class="btn btn-primary pagination-next" disabled>Nästa</a>
+      <li class="disabled">
+        <a href="#">Nästa</a>
+      </li>
       % endif
+      % if thing.last
+      <li>
+        <a href="${thing.next['@id']}">Sista</a>
+      </li>
+      % else
+      <li class="disabled">
+        <a href="#">Sista</a>
+      </li>
+      % endif
+      </ul>
+    </nav>
+      
     </div>
   </div>
 % endmacro
