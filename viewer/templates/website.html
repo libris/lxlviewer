@@ -1,30 +1,46 @@
 % extends "base.html"
 
 % macro viewscheme(scheme)
-  % if scheme.object is not none and 'titleByLang' in scheme.object and 'descriptionByLang' in scheme.object
+  % if scheme.object is not none
   <div class="col-md-4">
-  <div id="${scheme.object.notation[0].replace('/','-')}" class="panel panel-default scheme-item">
-    <header class="panel-heading">
-      <h1 class="panel-title">
-        <a href="${ scheme.view['@id'] }">
-          ${scheme.object.titleByLang[lang]}
-        </a>
-      </h1>
-    </header>
-    <div class="panel-body container-fluid">
+    % if scheme.object.notation
+    <div id="${scheme.object.notation[0].replace('/','-')}" class="panel panel-default scheme-item">
+    % else
+    <div class="panel panel-default scheme-item">
+    % endif
+      <header class="panel-heading">
+        <h1 class="panel-title">
+          <a href="${ scheme.view['@id'] }">
+            % if 'titleByLang' in scheme.object
+            ${scheme.object.titleByLang[lang]}
+            % elif 'label' in scheme.object
+            ${scheme.object.label}
+            % endif
+          </a>
+        </h1>
+      </header>
+      <div class="panel-body container-fluid">
         <p class="description collapsed">
+          % if 'descriptionByLang' in scheme.object
           ${ scheme.object.descriptionByLang[lang].strip().replace('\n','<br/>') | safe }
+          % endif
         </p>
         % if scheme.sliceByDimension
         <ul>
-          % for item in scheme.sliceByDimension['inCollection.@id'].observation
+        % for dimension in scheme.sliceByDimension
+          % for item in scheme.sliceByDimension[dimension].observation
             <a class="list-group-item"
                 href="${item.view['@id']}">
-                ${item.object.titleByLang[lang]}
+                % if item.object.titleByLang
+                  ${item.object.titleByLang[lang]}
+                % elif item.object.label
+                  ${item.object.label}
+                % endif
                 <span class="badge">${format_number(item.totalItems)} st.</span>
             </a>
           % endfor
-        % for subkey in ['@type', 'inCollection.@id']
+        % endfor
+        % for subkey in scheme.slideByDimension
           % if scheme.sliceByDimension and scheme.sliceByDimension[subkey]
             % if scheme.sliceByDimension[subkey].observation
               <h4>Uppdelning: ${subkey}</h4>
@@ -44,8 +60,8 @@
           % endfor
         </ul>
         % endif
+      </div>
   </div>
-</div>
 </div>
   % endif
 % endmacro
@@ -94,42 +110,26 @@
       <ul class="col-md-12 main-nav">
       % for scheme in thing.statistics.sliceByDimension['inScheme.@id'].observation
         % if scheme.object is not none and 'titleByLang' in scheme.object and 'descriptionByLang' in scheme.object
-        <a class="list-group-item"
-          href="#${scheme.object.notation[0].replace('/','-')}">
+        % if scheme.object.notation
+        <a class="list-group-item" href="#${scheme.object.notation[0].replace('/','-')}">
           ${scheme.object.titleByLang[lang]}
         </a>
+        % endif
         % endif
       % endfor
       </ul>
     </div>
   </div>
   
-    % for scheme in thing.statistics.sliceByDimension['inScheme.@id'].observation
-      ${viewscheme(scheme)}
-    % endfor
-  
   % elif g.current_base == LIBRIS
   
-  <!-- <div class="col-md-4">
-    <div class="panel panel-default scheme-item">
-      <ul class="main-nav">
-      % for scheme in thing.statistics.sliceByDimension['inScheme.@id'].observation
-        % if scheme.object is not none and 'titleByLang' in scheme.object and 'descriptionByLang' in scheme.object
-        <a class="list-group-item"
-          href="#${scheme.object.notation[0].replace('/','-')}">
-          ${scheme.object.titleByLang[lang]}
-        </a>
-        % endif
-      % endfor
-      </ul>
-    </div>
-  </div> -->
+  % endif
   
-    % for scheme in thing.statistics.sliceByDimension['inScheme.@id'].observation
+  % for value in thing.statistics.sliceByDimension.values()
+    % for scheme in value.observation
       ${viewscheme(scheme)}
     % endfor
-  
-  % endif
+  % endfor
   
 </div>
 
