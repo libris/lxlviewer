@@ -240,9 +240,12 @@ def some(suffix=None):
     return rendered_response('/some', suffix, ambiguity)
 
 @app.route('/')
+@app.route('/data')
 @app.route('/data.<suffix>')
-def datasetview(suffix=None):
-    results = ldview.get_index_aggregate(_get_base_uri(request.url))
+def dataindexview(suffix=None):
+    slicerepr = request.args.get('slice')
+    slicetree = json.loads(slicerepr) if slicerepr else None
+    results = ldview.get_index_stats(_get_base_uri(request.url), slicetree=slicetree)
     return rendered_response('/', suffix, results)
 
 #@app.route('/vocab/<term>')
