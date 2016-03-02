@@ -32,9 +32,6 @@ body#thing {
         color: @color-headers;
         word-break: break-all;
         }
-        .expand-button {
-          display: none;
-        }
       } 
       .chip-prop {
           
@@ -287,14 +284,17 @@ body#thing {
     }
     .panel-heading {
       .expand-button {
-        float: right;
         display: inline-block;
         cursor: pointer;
         position: relative;
-        top: -25px;
+        top: -0.3em;
+        margin-right: 0.3em;
         &:hover {
           color: @brand-primary;
         }
+      }
+      .panel-title {
+        display: inline-block;
       }
     }
     .panel-body {
