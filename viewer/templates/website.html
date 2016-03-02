@@ -17,33 +17,31 @@
         </p>
         % if scheme.sliceByDimension
         <ul>
-            % for item in scheme.sliceByDimension['inCollection.@id'].observation
+          % for item in scheme.sliceByDimension['inCollection.@id'].observation
             <a class="list-group-item"
                 href="${item.view['@id']}">
                 ${item.object.titleByLang[lang]}
                 <span class="badge">${format_number(item.totalItems)} st.</span>
             </a>
-            % endfor
-
-          {#
-          % for subkey in ['@type', 'inCollection.@id']
-            % if scheme[subkey].buckets
+          % endfor
+        % for subkey in ['@type', 'inCollection.@id']
+          % if scheme.sliceByDimension and scheme.sliceByDimension[subkey]
+            % if scheme.sliceByDimension[subkey].observation
               <h4>Uppdelning: ${subkey}</h4>
             % endif
-            % for bucket in scheme[subkey].buckets
-              <a class="list-group-item"
-                 href="/find?q=*&limit=50&inScheme.@id=${
-                          url_quote(scheme.key)}&${subkey}=${url_quote(bucket.key)}">
-                  % if bucket.object
-                    ${bucket.object.label or bucket.object.titleByLang.sv}
-                  % else
-                    ${bucket.key}
-                  % endif
-                  <span class="badge">${format_number(bucket.doc_count)} st.</span>
-              </a>
-            % endfor
+              % for observation in scheme.sliceByDimension[subkey].observation
+                <a class="list-group-item"
+                  href="${observation.view[ID]}">
+                    % if observation.object
+                      ${observation.object.label or observation.object.titleByLang.sv}
+                    % else
+                      ${observation.view[ID]}
+                    % endif
+                    <span class="badge">${format_number(observation.totalItems)} st.</span>
+                </a>
+              % endfor
+            % endif
           % endfor
-          #}
         </ul>
         % endif
   </div>

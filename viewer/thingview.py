@@ -284,7 +284,10 @@ def rendered_response(path, suffix, thing):
     return resp
 
 
-TYPE_TEMPLATES = {'website', 'pagedcollection'}
+TYPE_TEMPLATES = {
+    'DataCatalog': 'website.html',
+    'PartialCollectionView': 'pagedcollection.html'
+}
 
 negotiator = Negotiator()
 
@@ -341,7 +344,7 @@ def _to_graph(data, base=None):
 
 def _get_template_for(data):
     for rtype in as_iterable(data.get(TYPE)):
-        template_key = rtype.lower()
-        if template_key in TYPE_TEMPLATES:
-            return '%s.html' % template_key
+        template = TYPE_TEMPLATES.get(rtype)
+        if template:
+            return template
     return 'thing.html'

@@ -2,9 +2,73 @@
 
 {% block title %} - ${ui.SEARCH_RESULTS.label}{% endblock %}
 
+% macro search_controls()
+
+<div class="col-md-3 hidden-xs hidden-sm">
+  <ul class="list-group facet-controls">
+    <li class="list-group-item">Facet</li>
+    <li class="list-group-item">Facet</li>
+    <li class="list-group-item">Facet</li>
+    <li class="list-group-item">Facet</li>
+    <li class="list-group-item">Facet</li>
+    <li class="list-group-item">Facet</li>
+    <li class="list-group-item">Facet</li>
+  </ul>
+</div>
+
+<div class="col-md-9">
+  <div class="panel panel-default search-controls">
+    
+    <form action="/find" method="GET">
+      <label class="type-label">
+        Välj typ
+      </label>
+      <div class="btn-group type-buttons" data-toggle="buttons" role="group" aria-label="Välj typ">
+        <label class="btn btn-default no-choice">
+          <input name="type" value="" type="radio">Alla
+        </label>
+      % for type in types
+        <label class="btn btn-default">
+          <input name="type" value="${type}" type="radio">${type}
+        </label>
+      % endfor
+      </div>
+      
+      <div class="form-inline">
+        <div class="form-group search-input">
+          % for param, values in parse_qs(request.query_string).items()
+              % if param != 'q'
+                  % for value in values
+                      <input type="hidden" name="${param}" value="${value}" />
+                  % endfor
+              % endif
+          % endfor
+          <label class="search-label" id="searchlabel" for="q">
+            Sök term
+          </label>
+          <input aria-labelledby="searchlabel" class="form-control search-input" name="q" id="q" value="${thing.query}" />
+          <button class="search-button btn btn-primary"><i class="fa fa-search"></i> Sök</button>
+        </div>
+      </div>
+    </form>
+</div>
+</div>
+<div class="col-md-12 hidden-md hidden-lg">
+  <ul class="list-group facet-controls">
+    <li class="list-group-item">Facet</li>
+    <li class="list-group-item">Facet</li>
+    <li class="list-group-item">Facet</li>
+    <li class="list-group-item">Facet</li>
+    <li class="list-group-item">Facet</li>
+    <li class="list-group-item">Facet</li>
+    <li class="list-group-item">Facet</li>
+  </ul>
+</div>
+% endmacro
+
 % macro result_controls(details)
   <div class="panel panel-default result-controls">
-    % if details == 'true'
+    % if details
     <div class="search-details">
       <span class="search-keyword">
           
@@ -22,24 +86,24 @@
       <span class="search-items-per-page pull-right">
         % if thing.totalItems
         Visar resultat
-          ${thing.itemOffset + 1}-${min(thing.totalItems, thing.itemOffset + thing.itemsPerPage)}.
+          ${thing.itemOffset + 1}-${min(thing.totalItems, thing.itemOffset + len(thing['items']))}.
         % endif
       </span>
     </div>
     % endif
     
     <div class="search-buttons">
-      % if thing.firstPage and thing.previousPage
+      % if thing.first and thing.previous
       <a class="btn btn-primary pagination-firstpage" href="${thing.firstPage[ID]}">Första</a>
       % else
       <a class="btn btn-primary pagination-firstpage" disabled>Första</a>
       % endif
-      % if thing.previousPage
+      % if thing.previous
       <a class="btn btn-primary pagination-back" href="${thing.previousPage[ID]}">Föregående</a>
       % else
       <a class="btn btn-primary pagination-back" disabled>Föregående</a>
       % endif
-      % if thing.nextPage
+      % if thing.next
       <a class="btn btn-primary pagination-next" href="${thing.nextPage[ID]}">Nästa</a>
       % else
       <a class="btn btn-primary pagination-next" disabled>Nästa</a>
@@ -50,78 +114,21 @@
 % endmacro
 
 % block content
-  % set items = thing.pop('items')
+  % set items = thing['items']
 <div class="alert alert-warning"><i class="fa fa-exclamation-circle"></i> Observera att den nuvarande sökfunktionen saknar relevanssortering.</div>
 <div class="row">
-  <div class="col-md-3 hidden-xs hidden-sm">
-    <ul class="list-group facet-controls">
-      <li class="list-group-item">Facet</li>
-      <li class="list-group-item">Facet</li>
-      <li class="list-group-item">Facet</li>
-      <li class="list-group-item">Facet</li>
-      <li class="list-group-item">Facet</li>
-      <li class="list-group-item">Facet</li>
-      <li class="list-group-item">Facet</li>
-    </ul>
-  </div>
   
-  <div class="col-md-9">
-    <div class="panel panel-default search-controls">
-      
-      <form action="/find" method="GET">
-        <label class="type-label">
-          Välj typ
-        </label>
-        <div class="btn-group type-buttons" data-toggle="buttons" role="group" aria-label="Välj typ">
-          <label class="btn btn-default no-choice">
-            <input name="type" value="" type="radio">Alla
-          </label>
-        % for type in types
-          <label class="btn btn-default">
-            <input name="type" value="${type}" type="radio">${type}
-          </label>
-        % endfor
-        </div>
-        
-        <div class="form-inline">
-          <div class="form-group search-input">
-            % for param, values in parse_qs(request.query_string).items()
-                % if param != 'q'
-                    % for value in values
-                        <input type="hidden" name="${param}" value="${value}" />
-                    % endfor
-                % endif
-            % endfor
-            <label class="search-label" id="searchlabel" for="q">
-              Sök term
-            </label>
-            <input aria-labelledby="searchlabel" class="form-control search-input" name="q" id="q" value="${thing.query}" />
-            <button class="search-button btn btn-primary"><i class="fa fa-search"></i> Sök</button>
-          </div>
-        </div>
-      </form>
-  </div>
-  </div>
-  <div class="col-md-12 hidden-md hidden-lg">
-    <ul class="list-group facet-controls">
-      <li class="list-group-item">Facet</li>
-      <li class="list-group-item">Facet</li>
-      <li class="list-group-item">Facet</li>
-      <li class="list-group-item">Facet</li>
-      <li class="list-group-item">Facet</li>
-      <li class="list-group-item">Facet</li>
-      <li class="list-group-item">Facet</li>
-    </ul>
-  </div>
+  ${ search_controls() }
+  
   <div class="col-md-9">
     <h1>${self.title()}</h1>
     
-    ${ result_controls('true') }
+    ${ result_controls(True) }
     % if items
     % for item in items
       ${viewthing(item, classes='panel panel-default hit-item', rel='items')}
     % endfor
-      ${ result_controls('false') }
+      ${ result_controls(False) }
     % else
 
     % endif
