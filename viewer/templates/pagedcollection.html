@@ -143,16 +143,17 @@
   
   ${ search_controls() }
   
-  <div class="col-md-9">    
+  <div class="col-md-9">
     ${ result_controls(True) }
     % if items
+    <div class="result-list">
     % for item in items
       ${viewthing(item, classes='panel panel-default hit-item', rel='items')}
     % endfor
-      ${ result_controls(False) }
-    % else
-
+    </div>
     % endif
+    ${ result_controls(False) }
+  </div>    
   </div>
 </div>
 % endblock
