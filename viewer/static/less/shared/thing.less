@@ -242,6 +242,7 @@ body#thing {
 
 
   .hit-item {
+    border-width: 1px 0px 0px 0px;
     border-radius: 0px;
     margin: 0px;
     padding: 0px;
@@ -282,7 +283,8 @@ body#thing {
         }
       }
     }
-    .panel-heading {
+    >.panel-heading {
+      border-width: 1px 0px 0px 0px;
       .expand-button {
         display: inline-block;
         cursor: pointer;
@@ -290,8 +292,8 @@ body#thing {
         height: 24px;
         width: 24px;
         text-align: center;
-        top: -0.3em;
-        margin-right: 0.5em;
+        top: -0.8em;
+        margin-right: 0.2em;
         i {
         }
         &:hover {
@@ -300,6 +302,14 @@ body#thing {
       }
       .panel-title {
         display: inline-block;
+        width: 90%;
+        a {
+          height: 1.2em;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          overflow: hidden;
+          width: 100%;
+        }
       }
     }
     .panel-body {
@@ -319,11 +329,13 @@ body#thing {
     }
     .panel-body {
       display: none;
+      opacity: 0;
+      transition: opacity 0.6s ease;
     }
     &.expanded {
-      margin: 0px 0px 1px 0px;
       .panel-body {
         display: block;
+        opacity: 1;
       }
     }
   }
