@@ -256,9 +256,8 @@ body#thing {
       display: inline-table;
     }
     dd {
-      max-width: 900px;
+      max-width: 670px;
       ul {
-        max-width: 670px;
         padding: 0;
         list-style: none;
       }
@@ -315,6 +314,38 @@ body#thing {
     .panel-body {
       padding-top: 10px;
       padding-bottom: 10px;
+      display: none;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+    }
+    > .panel-body {
+      > dl {
+        > dd {
+          >ul {
+            width: 645px;
+            li > .panel {
+              width: 100%;
+            }
+          }
+          > .panel {
+            width: 645px;
+            > .panel-body {
+              > dl > dd {
+                width: 440px;
+                > ul {
+                  max-width: 440px;
+                }
+              }
+            }
+          }
+        }
+        >ul {
+          width: 645px;
+          li > .panel {
+            width: 100%;
+          }
+        }
+      }
     }
     .thing-label {
       display: inline-block;
@@ -326,11 +357,6 @@ body#thing {
     > .panel-heading .thing-label {
       font-size: 2em;
       color: @color-headers;
-    }
-    .panel-body {
-      display: none;
-      opacity: 0;
-      transition: opacity 0.6s ease;
     }
     &.expanded {
       .panel-body {
