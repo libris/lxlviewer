@@ -1,18 +1,41 @@
 $(function () {
 
-  var createDuplicates = function () {
-    // Copies every chip so that we can use absolute positioning on
-    // the expanded chips without breaking the layout.
-    $('.link-item').each(function() {
-      var $subject = $(this);
-      var $copy = $subject.clone();
-      $subject.addClass('link-item-original');
-      $copy.addClass('link-item-copy').appendTo($subject.parent());
-      $copy.css('top', $subject.position().top).css('left', $subject.position().left);
-      if ($subject.width() > 260) {
-        $copy.css('min-width', $subject.width());
-      }
-    });
+  var createDuplicates = function ($panelElement) {
+    if ($panelElement.length < 1)
+      return;
+      
+    setTimeout(function() {
+      // Copies every chip in the panel so that we can use absolute positioning on
+      // the expanded chips without breaking the layout.
+      $panelElement.find('.link-item').each(function() {
+        var $subject = $(this);
+        var $copy = $subject.clone();
+        $subject.addClass('link-item-original');
+        $copy.addClass('link-item-copy').appendTo($subject.parent());
+        $copy.css('top', $subject.position().top).css('left', $subject.position().left);
+        if ($subject.width() > 260) {
+          $copy.css('min-width', $subject.width());
+        }
+      });
+      
+      // Initialize hover functionality
+      $panelElement.find('.link-item-copy').hover(function() {
+        expand($(this));
+      }, function() {
+        collapse($(this));
+      }).focusin(function() {
+        expand($(this));
+      }).focusout(function() {
+        collapse($(this));
+      });
+    
+    }, 500);
+  }
+  
+  var destroyDuplicates = function($panelElement) {
+    $panelElement.find('.link-item-copy').each(function() {
+      $(this).remove();
+    })
   }
 
   var expand = function (elem) {
@@ -58,11 +81,11 @@ $(function () {
     $('.hit-item .expand-button').click(function() {
       $subject = $(this).closest('.hit-item');
       if ($subject.hasClass('expanded')) {
-        $subject.find('.panel-body').slideUp();
+        $subject.find('.panel-body').slideUp(null, destroyDuplicates($subject));
         $(this).find('i').removeClass('rotate-90');
         $subject.removeClass('expanded');
       } else {
-        $subject.find('.panel-body').slideDown();
+        $subject.find('.panel-body').slideDown(null, createDuplicates($subject));
         $(this).find('i').addClass('rotate-90');
         $subject.addClass('expanded');
       }
@@ -102,24 +125,8 @@ $(function () {
   }
 
   $(document).ready(function () {
-    setTimeout(function() {
-      // Small delay to let the chips stack correctly in their lists
-      // before we copy every position.
-      createDuplicates();
-      
-      $('.link-item-copy').hover(function() {
-        expand($(this));
-      }, function() {
-        collapse($(this));
-      }).focusin(function() {
-        expand($(this));
-      }).focusout(function() {
-        collapse($(this));
-      });
-      
-      
-    }, 10);
     
+    createDuplicates($('.main-item'));
     initTypeButtons();
     initHitlistExpands();
     
