@@ -52,20 +52,20 @@ $(function () {
     // Hit list expand functionality
     
     $('.hit-item').each(function() {
-      $("<i class='expand-button fa fa-plus-circle'></i>").insertBefore($(this).find('.panel-title').eq(0));
+      $("<div class='expand-button'><i class='fa fa-plus-circle'></i></div>").insertBefore($(this).find('.panel-title').eq(0));
     })
     
     $('.hit-item .expand-button').click(function() {
       $subject = $(this).closest('.hit-item');
       if ($subject.hasClass('expanded')) {
         $subject.find('.panel-body').slideUp();
-        $(this).removeClass('fa-minus-circle');
-        $(this).addClass('fa-plus-circle');
+        $(this).find('i').removeClass('fa-minus-circle');
+        $(this).find('i').addClass('fa-plus-circle');
         $subject.removeClass('expanded');
       } else {
         $subject.find('.panel-body').slideDown();
-        $(this).removeClass('fa-add-circle');
-        $(this).addClass('fa-minus-circle');
+        $(this).find('i').removeClass('fa-add-circle');
+        $(this).find('i').addClass('fa-minus-circle');
         $subject.addClass('expanded');
       }
     });
