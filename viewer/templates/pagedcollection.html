@@ -111,7 +111,7 @@
       <li class="disabled">
         <a href="#">Föregående</a>
       </li>
-      % endif      
+      % endif
       % if thing.next
       <li>
         <a href="${thing.next['@id']}">Nästa</a>
@@ -123,7 +123,7 @@
       % endif
       % if thing.last
       <li>
-        <a href="${thing.next['@id']}">Sista</a>
+        <a href="${thing.last['@id']}">Sista</a>
       </li>
       % else
       <li class="disabled">
