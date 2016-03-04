@@ -112,6 +112,20 @@
         <a href="#">Föregående</a>
       </li>
       % endif
+      
+      {% set limit = int(parse_qs(request.query_string).get('limit')[0]) %}
+      {% set offset = int(parse_qs(request.query_string).get('offset')[0]) if parse_qs(request.query_string).get('offset') else 0 %}
+      {% set pages = int(thing.totalItems / limit) + 1 %}
+      % for num in range(pages)
+      % if offset == limit * num
+      <li class="active">
+      % else
+      <li>
+      % endif
+        <a href="${thing.first['@id'] + '&offset=' + str(limit * num) }">${num +1}</a>
+      </li>
+      % endfor
+            
       % if thing.next
       <li>
         <a href="${thing.next['@id']}">Nästa</a>
