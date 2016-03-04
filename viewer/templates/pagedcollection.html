@@ -125,7 +125,6 @@
         <a href="${thing.first['@id'] + '&offset=' + str(limit * num) }">${num +1}</a>
       </li>
       % endfor
-            
       % if thing.next
       <li>
         <a href="${thing.next['@id']}">Nästa</a>
@@ -135,7 +134,7 @@
         <a href="#">Nästa</a>
       </li>
       % endif
-      % if thing.last
+      % if thing.last and offset != limit * (pages - 1)
       <li>
         <a href="${thing.last['@id']}">Sista</a>
       </li>
