@@ -119,12 +119,15 @@
       % for num in range(pages)
       % if offset == limit * num
       <li class="active">
+        <a href="#">${num +1}</a>
+      </li>
       % else
       <li>
-      % endif
         <a href="${thing.first['@id'] + '&offset=' + str(limit * num) }">${num +1}</a>
       </li>
+      % endif
       % endfor
+      
       % if thing.next
       <li>
         <a href="${thing.next['@id']}">Nästa</a>
