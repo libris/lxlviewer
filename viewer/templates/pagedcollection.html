@@ -5,15 +5,7 @@
 % macro search_controls()
 
 <div class="col-md-3 hidden-xs hidden-sm">
-  <ul class="list-group facet-controls">
-    <li class="list-group-item">Facet</li>
-    <li class="list-group-item">Facet</li>
-    <li class="list-group-item">Facet</li>
-    <li class="list-group-item">Facet</li>
-    <li class="list-group-item">Facet</li>
-    <li class="list-group-item">Facet</li>
-    <li class="list-group-item">Facet</li>
-  </ul>
+  ${ facet_controls() }
 </div>
 
 <div class="col-md-9">
@@ -54,16 +46,26 @@
 </div>
 </div>
 <div class="col-md-12 hidden-md hidden-lg">
-  <ul class="list-group facet-controls">
-    <li class="list-group-item">Facet</li>
-    <li class="list-group-item">Facet</li>
-    <li class="list-group-item">Facet</li>
-    <li class="list-group-item">Facet</li>
-    <li class="list-group-item">Facet</li>
-    <li class="list-group-item">Facet</li>
-    <li class="list-group-item">Facet</li>
-  </ul>
+  ${ facet_controls() }
 </div>
+% endmacro
+
+% macro facet_controls()
+
+<ul class="list-group facet-controls">
+% for num in range(7)
+  <li class="list-group-item">[] Facet ${num}
+  % if num == 3
+    <ul>
+      % for subnum in range(4)
+        <li>[] Subfacet ${subnum}</li>
+      % endfor
+    </ul>
+  % endif
+  </li>
+% endfor
+</ul>
+
 % endmacro
 
 % macro result_controls(details)
