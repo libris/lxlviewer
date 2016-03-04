@@ -1,6 +1,6 @@
 $(function () {
 
-  var createDuplicates = function ($panelElement) {
+  var createChips = function ($panelElement) {
     if ($panelElement.length < 1)
       return;
       
@@ -32,7 +32,7 @@ $(function () {
     }, 500);
   }
   
-  var destroyDuplicates = function($panelElement) {
+  var destroyChips = function($panelElement) {
     $panelElement.find('.link-item-copy').each(function() {
       $(this).remove();
     })
@@ -81,11 +81,11 @@ $(function () {
     $('.hit-item .expand-button').click(function() {
       $subject = $(this).closest('.hit-item');
       if ($subject.hasClass('expanded')) {
-        $subject.find('.panel-body').slideUp(null, destroyDuplicates($subject));
+        $subject.find('.panel-body').slideUp(null, destroyChips($subject));
         $(this).find('i').removeClass('rotate-90');
         $subject.removeClass('expanded');
       } else {
-        $subject.find('.panel-body').slideDown(null, createDuplicates($subject));
+        $subject.find('.panel-body').slideDown(null, createChips($subject));
         $(this).find('i').addClass('rotate-90');
         $subject.addClass('expanded');
       }
@@ -126,7 +126,7 @@ $(function () {
 
   $(document).ready(function () {
     
-    createDuplicates($('.main-item'));
+    createChips($('.main-item'));
     initTypeButtons();
     initHitlistExpands();
     
