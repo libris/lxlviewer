@@ -102,7 +102,7 @@
       </li>
       % else
       <li class="disabled">
-        <a href="#">Första</a>
+        <a>Första</a>
       </li>
       % endif
       % if thing.previous
@@ -111,7 +111,7 @@
       </li>
       % else
       <li class="disabled">
-        <a href="#">Föregående</a>
+        <a>Föregående</a>
       </li>
       % endif
       
@@ -121,7 +121,7 @@
       % for num in range(pages)
       % if offset == limit * num
       <li class="active">
-        <a href="#">${num +1}</a>
+        <a>${num +1}</a>
       </li>
       % else
       <li>
@@ -136,7 +136,7 @@
       </li>
       % else
       <li class="disabled">
-        <a href="#">Nästa</a>
+        <a>Nästa</a>
       </li>
       % endif
       % if thing.last and offset != limit * (pages - 1)
@@ -145,7 +145,7 @@
       </li>
       % else
       <li class="disabled">
-        <a href="#">Sista</a>
+        <a>Sista</a>
       </li>
       % endif
       </ul>
