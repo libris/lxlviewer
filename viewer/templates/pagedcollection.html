@@ -4,12 +4,9 @@
 
 % macro search_controls()
 
-<div class="col-md-3 hidden-xs hidden-sm">
-  ${ facet_controls() }
-</div>
+% set stats = thing['stats']
 
-<div class="col-md-9">
-  <div class="panel panel-default search-controls">
+<div class="panel panel-default search-controls">
     
     <form action="/find" method="GET">
       <label class="type-label">
@@ -19,6 +16,11 @@
         <label class="btn btn-default no-choice">
           <input name="type" value="" type="radio">Alla
         </label>
+        % for observation in stats.sliceByDimension['@type'].observation
+        <label class="btn btn-default">
+          <input name="type" value="${observation.object.curie}" type="radio">${observation.object.label}
+        </label>
+        % endfor
       % for type in types
         <label class="btn btn-default">
           <input name="type" value="${type}" type="radio">${type}
@@ -44,24 +46,17 @@
       </div>
     </form>
 </div>
-</div>
-<div class="col-md-12 hidden-md hidden-lg">
+<div class="panel panel-default hidden-md hidden-lg">
   ${ facet_controls() }
 </div>
 % endmacro
 
 % macro facet_controls()
-
+% set stats = thing['stats']
 <ul class="list-group facet-controls">
-% for num in range(7)
-  <li class="list-group-item">[] Facet ${num}
-  % if num == 3
-    <ul>
-      % for subnum in range(4)
-        <li>[] Subfacet ${subnum}</li>
-      % endfor
-    </ul>
-  % endif
+% for observation in stats.sliceByDimension['@type'].observation
+  <li class="list-group-item">
+    ${observation.object.label}
   </li>
 % endfor
 </ul>
@@ -158,10 +153,13 @@
 % block content
   % set items = thing['items']
 <div class="row">
-  
-  ${ search_controls() }
-  
+  <div class="col-md-3 hidden-xs hidden-sm">
+    ${ facet_controls() }
+  </div>
   <div class="col-md-9">
+  
+    ${ search_controls() }
+  
     ${ result_controls(True) }
     % if items
     <div class="result-list">
@@ -172,6 +170,5 @@
     % endif
     ${ result_controls(False) }
   </div>    
-  </div>
 </div>
 % endblock
