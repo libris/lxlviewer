@@ -22,15 +22,10 @@
         % if len(stats) > 0
         % for observation in stats.sliceByDimension['@type'].observation
         <label class="btn btn-default">
-          <input name="type" value="${observation.object.curie}" type="radio">${observation.object.label}
+          <input name="@type" value="${observation.object.curie}" type="radio">${observation.object.label}
         </label>
         % endfor
         % endif
-      % for type in types
-        <label class="btn btn-default">
-          <input name="type" value="${type}" type="radio">${type}
-        </label>
-      % endfor
       </div>
       
       <div class="form-inline">
