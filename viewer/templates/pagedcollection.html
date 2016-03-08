@@ -4,8 +4,11 @@
 
 % macro search_controls()
 
+% if thing['stats']
 % set stats = thing['stats']
-
+% else
+% set stats = []
+% endif
 <div class="panel panel-default search-controls">
     
     <form action="/find" method="GET">
@@ -16,11 +19,13 @@
         <label class="btn btn-default no-choice">
           <input name="type" value="" type="radio">Alla
         </label>
+        % if len(stats) > 0
         % for observation in stats.sliceByDimension['@type'].observation
         <label class="btn btn-default">
           <input name="type" value="${observation.object.curie}" type="radio">${observation.object.label}
         </label>
         % endfor
+        % endif
       % for type in types
         <label class="btn btn-default">
           <input name="type" value="${type}" type="radio">${type}
@@ -52,6 +57,7 @@
 % endmacro
 
 % macro facet_controls()
+% if thing['stats']
 % set stats = thing['stats']
 <ul class="list-group facet-controls">
 % for observation in stats.sliceByDimension['@type'].observation
@@ -60,6 +66,11 @@
   </li>
 % endfor
 </ul>
+% else
+<div class="panel-body">
+  Inga facetter...
+</div>
+% endif
 
 % endmacro
 
@@ -110,7 +121,11 @@
       </li>
       % endif
       
-      {% set limit = int(parse_qs(request.query_string).get('limit')[0]) %}
+        % if parse_qs(request.query_string).get('limit')
+          % set limit = int(parse_qs(request.query_string).get('limit')[0])
+        % else
+          % set limit = 50
+        % endif
       {% set offset = int(parse_qs(request.query_string).get('offset')[0]) if parse_qs(request.query_string).get('offset') else 0 %}
       {% set pages = int(thing.totalItems / limit) + 1 %}
       % for num in range(pages)
@@ -154,7 +169,9 @@
   % set items = thing['items']
 <div class="row">
   <div class="col-md-3 hidden-xs hidden-sm">
-    ${ facet_controls() }
+    <div class="panel panel-default">
+      ${ facet_controls() }
+    </div>
   </div>
   <div class="col-md-9">
   
