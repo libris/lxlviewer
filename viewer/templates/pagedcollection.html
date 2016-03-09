@@ -12,7 +12,7 @@
 <div class="panel panel-default search-controls">
     
     <form action="/find" method="GET">
-      <label class="type-label">
+      <!-- <label class="type-label">
         Välj typ
       </label>
       <div class="btn-group type-buttons" data-toggle="buttons" role="group" aria-label="Välj typ">
@@ -26,7 +26,7 @@
         </label>
         % endfor
         % endif
-      </div>
+      </div> -->
       
       <div class="form-inline">
         <div class="form-group search-input">
@@ -52,20 +52,24 @@
 % endmacro
 
 % macro facet_controls()
+
+<div class="panel-body">
 % if thing['stats']
 % set stats = thing['stats']
-<ul class="list-group facet-controls">
+<label>
+  Filtrera
+</label>
+<ul class="facet-controls">
 % for observation in stats.sliceByDimension['@type'].observation
-  <li class="list-group-item">
-    ${observation.object.label}
+  <li>
+    <a href="${observation.view['@id']}">${observation.object.label}</a>
   </li>
 % endfor
 </ul>
 % else
-<div class="panel-body">
   Inga facetter...
-</div>
 % endif
+</div>
 
 % endmacro
 
