@@ -23,4 +23,4 @@ VOCAB_IRI = "https://id.kb.se/vocab/"
 LANG = "sv"
 
 # TODO: read this from live XL system instead (as soon as that is possible)
-MARCFRAME_SOURCE = "https://raw.githubusercontent.com/libris/librisxl/develop/converters/src/main/resources/ext/marcframe.json"
+MARCFRAME_SOURCE = "https://raw.githubusercontent.com/libris/whelk-core/develop/src/main/resources/ext/marcframe.json"
