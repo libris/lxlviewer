@@ -185,6 +185,8 @@ def setup_app(setup_state):
 @app.before_request
 def determine_base():
     g.current_base = _get_base_uri()
+    # TODO:
+    #g.site_info = ldview.get_record_data(g.current_base)
 
 @app.teardown_request
 def disconnect_db(exception):
@@ -289,7 +291,8 @@ def rendered_response(path, suffix, thing):
 
 TYPE_TEMPLATES = {
     'DataCatalog': 'website.html',
-    'PartialCollectionView': 'pagedcollection.html'
+    'PartialCollectionView': 'pagedcollection.html',
+    'Article': 'article.html'
 }
 
 negotiator = Negotiator()
