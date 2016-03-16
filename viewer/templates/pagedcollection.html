@@ -120,13 +120,20 @@
       </li>
       % endif
       
-        % if parse_qs(request.query_string).get('limit')
-          % set limit = int(parse_qs(request.query_string).get('limit')[0])
-        % else
-          % set limit = 50
-        % endif
-      {% set offset = int(parse_qs(request.query_string).get('offset')[0]) if parse_qs(request.query_string).get('offset') else 0 %}
-      {% set pages = int(thing.totalItems / limit) + 1 %}
+      % if parse_qs(request.query_string).get('limit')
+        % set limit = int(parse_qs(request.query_string).get('limit')[0])
+      % else
+        % set limit = int(50)
+      % endif
+        
+      % set offset = int(parse_qs(request.query_string).get('offset')[0]) if parse_qs(request.query_string).get('offset') else 0
+      
+      % if thing.totalItems
+        % set pages = int(thing.totalItems / limit) + 1
+      % else
+        % set pages = 1
+      % endif
+      
       % for num in range(pages)
       % if offset == limit * num
       <li class="active">
