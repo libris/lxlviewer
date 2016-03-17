@@ -3,7 +3,7 @@ body#thing {
   height: 100%;
   
   main {
-    margin-top: 100px;
+    margin-top: 30px;
     margin-bottom: 100px;
   }
   .side-view {
@@ -27,10 +27,12 @@ body#thing {
     }
     .panel-heading {
       background-color: #fff;
-      .panel-title a {
+      .panel-title {
+        a {
         color: @color-headers;
         word-break: break-all;
-      }
+        }
+      } 
       .chip-prop {
           
       }
@@ -237,23 +239,16 @@ body#thing {
     }
   }
   
-  // PAGED COLLECTION
-  .search-controls {
-    padding: 20px;
-    .search-details {
-      margin-bottom: 1em;
-    }
-  }
-  .no-hits {
-    padding: 20px;
-  }
+
 
   .hit-item {
-    margin: 0px 0px 15px 0px;
+    border-width: 1px 0px 0px 0px;
+    border-radius: 0px;
+    margin: 0px;
     padding: 0px;
     transition: 0.3s linear all;
     hr {
-      margin: 5px 0px;
+      margin: 0px 0px 5px 0px;
     }
     dl {
       width: 100%;
@@ -261,9 +256,8 @@ body#thing {
       display: inline-table;
     }
     dd {
-      max-width: 900px;
+      max-width: 670px;
       ul {
-        max-width: 670px;
         padding: 0;
         list-style: none;
       }
@@ -288,9 +282,70 @@ body#thing {
         }
       }
     }
+    >.panel-heading {
+      border-width: 1px 0px 0px 0px;
+      .expand-button {
+        display: inline-block;
+        cursor: pointer;
+        position: relative;
+        height: 24px;
+        width: 24px;
+        text-align: center;
+        top: -0.8em;
+        margin-right: 0.2em;
+        i {
+        }
+        &:hover {
+          color: @brand-primary;
+        }
+      }
+      .panel-title {
+        display: inline-block;
+        width: 90%;
+        a {
+          height: 1.2em;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          overflow: hidden;
+          width: 100%;
+        }
+      }
+    }
     .panel-body {
       padding-top: 10px;
       padding-bottom: 10px;
+      display: none;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+    }
+    > .panel-body {
+      > dl {
+        > dd {
+          >ul {
+            width: 645px;
+            li > .panel:not(.link-item) {
+              width: 100%;
+            }
+          }
+          > .panel {
+            width: 645px;
+            > .panel-body {
+              > dl > dd {
+                width: 440px;
+                > ul {
+                  max-width: 440px;
+                }
+              }
+            }
+          }
+        }
+        >ul {
+          width: 645px;
+          li > .panel {
+            width: 100%;
+          }
+        }
+      }
     }
     .thing-label {
       display: inline-block;
@@ -302,6 +357,12 @@ body#thing {
     > .panel-heading .thing-label {
       font-size: 2em;
       color: @color-headers;
+    }
+    &.expanded {
+      .panel-body {
+        display: block;
+        opacity: 1;
+      }
     }
   }
 }

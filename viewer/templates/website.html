@@ -1,26 +1,50 @@
 % extends "base.html"
 
 % macro viewscheme(scheme)
-  % if scheme.object is not none and 'titleByLang' in scheme.object and 'descriptionByLang' in scheme.object
-  <div id="${scheme.object.notation[0].replace('/','-')}" class="panel panel-default scheme-item">
-    <header class="panel-heading">
-      <h1 class="panel-title">
-        <a href="${view_url(scheme.object[ID])}">
-          ${scheme.object.titleByLang[lang]}
-        </a>
-      </h1>
-    </header>
-    <div class="panel-body container-fluid">
-      <div class="row">
-        <p class="description collapsed col-md-6">
+  % if scheme.object is not none
+  <div class="col-md-4">
+    % if scheme.object.notation
+    <div id="${scheme.object.notation[0].replace('/','-')}" class="panel panel-default scheme-item">
+    % else
+    <div class="panel panel-default scheme-item">
+    % endif
+      <header class="panel-heading">
+        <h1 class="panel-title">
+          <a href="${ scheme.view['@id'] }">
+            % if 'titleByLang' in scheme.object
+            ${scheme.object.titleByLang[lang]}
+            % elif 'label' in scheme.object
+            ${scheme.object.label}
+            % endif
+          </a>
+        </h1>
+      </header>
+      <div class="panel-body container-fluid">
+        <p class="description collapsed">
+          % if 'descriptionByLang' in scheme.object
           ${ scheme.object.descriptionByLang[lang].strip().replace('\n','<br/>') | safe }
+          % endif
         </p>
-        <ul class="col-md-6">
-          % for subkey in ['@type', 'inCollection.@id']
-            % if scheme.sliceByDimension and scheme.sliceByDimension[subkey]
-              % if scheme.sliceByDimension[subkey].observation
-                <h4>Uppdelning: ${subkey}</h4>
-              % endif
+        % if scheme.sliceByDimension
+        <ul>
+        % for dimension in scheme.sliceByDimension
+          % for item in scheme.sliceByDimension[dimension].observation
+            <a class="list-group-item"
+                href="${item.view['@id']}">
+                % if item.object.titleByLang
+                  ${item.object.titleByLang[lang]}
+                % elif item.object.label
+                  ${item.object.label}
+                % endif
+                <span class="badge">${format_number(item.totalItems)} st.</span>
+            </a>
+          % endfor
+        % endfor
+        % for subkey in scheme.slideByDimension
+          % if scheme.sliceByDimension and scheme.sliceByDimension[subkey]
+            % if scheme.sliceByDimension[subkey].observation
+              <h4>Uppdelning: ${subkey}</h4>
+            % endif
               % for observation in scheme.sliceByDimension[subkey].observation
                 <a class="list-group-item"
                   href="${observation.view[ID]}">
@@ -35,9 +59,10 @@
             % endif
           % endfor
         </ul>
+        % endif
       </div>
-    </div>
   </div>
+</div>
   % endif
 % endmacro
 
@@ -48,10 +73,27 @@
 % block jumbotron
 <div class="jumbotron">
   <div class="container">
-    <div class="col-md-6 col-md-offset-3">
-      <h1>${site_title|upper}</h1>
+    <div class="col-md-12">
+      <div class="intro-text">
+      % if g.current_base == IDKBSE
+        <p>
+          <b>id.kb.se</b>
+          är en tjänst som tillgängliggör de grundstenar Kungl.
+          biblioteket använder för att publicera strukturerad,
+          <a href="https://sv.wikipedia.org/wiki/L%C3%A4nkad_data">länkad data</a>.
+          Här finns en samling gemensamma definitioner och begrepp som hjälper
+          till att samordna beskrivningar av vårt material. I grunden finns bl.a.
+          ett basvokabulär med gemensamma egenskaper och typer. I möjligaste mån
+          länkar alla definitioner till internationella, välkända motsvarigheter.
+        </p>
+        <p>
+          Här tillgängliggörs bl.a. Svenska ämnesord, barnämnesord och
+          genre/formtermer, vilka utgör viktiga byggstenar för denna samordning.
+        </p>
+      % else
+        <p>Data på <b>libris.kb.se</b>.</p>
+      % endif
       </div>
-      </form>
     </div>
   </div>
 </div>
@@ -60,50 +102,36 @@
 {% block navcontainerclass %} container {% endblock %}
 
 % block content
+<div class="row">
 
-  <div class="panel panel-default intro-text">
-    <div class="panel-body container-fluid">
-      <div class="row">
-        % if g.current_base == IDKBSE
-        <div class="col-md-6">
-          <p>
-            <b>id.kb.se</b> är en tjänst som tillgängliggör de grundstenar Kungl.
-            biblioteket använder för att publicera strukturerad,
-            <a href="https://sv.wikipedia.org/wiki/L%C3%A4nkad_data">länkad data</a>.
-            Här finns en samling gemensamma definitioner och begrepp som hjälper
-            till att samordna beskrivningar av vårt material. I grunden finns bl.a.
-            ett basvokabulär med gemensamma egenskaper och typer. I möjligaste mån
-            länkar alla definitioner till internationella, välkända motsvarigheter.
-          </p>
-          <p>
-            Här tillgängliggörs bl.a. Svenska ämnesord, barnämnesord och
-            genre/formtermer, vilka utgör viktiga byggstenar för denna samordning.
-          </p>
-        </div>
-        <ul class="col-md-6 main-nav">
-          % for scheme in thing.statistics.sliceByDimension['inScheme.@id'].observation
-            % if scheme.object is not none and 'titleByLang' in scheme.object and 'descriptionByLang' in scheme.object
-            <a class="list-group-item"
-                href="#${scheme.object.notation[0].replace('/','-')}">
-                ${scheme.object.titleByLang[lang]}
-            </a>
-            % endif
-          % endfor
-        </ul>
-        % else
-        <div class="col-md-6">
-          <p>Data på <b>libris.kb.se</b>.</p>
-        </div>
+  % if g.current_base == IDKBSE  
+  <div class="col-md-12">
+    <div class="panel panel-default scheme-item">
+      <ul class="col-md-12 main-nav">
+      % for scheme in thing.statistics.sliceByDimension['inScheme.@id'].observation
+        % if scheme.object is not none and 'titleByLang' in scheme.object and 'descriptionByLang' in scheme.object
+        % if scheme.object.notation
+        <a class="list-group-item" href="#${scheme.object.notation[0].replace('/','-')}">
+          ${scheme.object.titleByLang[lang]}
+        </a>
         % endif
-      </div>
+        % endif
+      % endfor
+      </ul>
     </div>
   </div>
-
-  % if g.current_base == IDKBSE
-    % for scheme in thing.statistics.sliceByDimension['inScheme.@id'].observation
+  
+  % elif g.current_base == LIBRIS
+  
+  % endif
+  
+  % for value in thing.statistics.sliceByDimension.values()
+    % for scheme in value.observation
       ${viewscheme(scheme)}
     % endfor
-  % endif
+  % endfor
+  
+</div>
 
 % endblock
 

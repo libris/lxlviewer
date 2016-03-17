@@ -5,6 +5,7 @@
 @import '../vendor/kungbib-styles/less/kb-styles.less';
 
 // ----------- IMPORT COMPONENTS ----
+@import 'shared/utils.less';
 @import 'shared/index.less';
 @import 'shared/vocab.less';
 @import 'shared/graph.less';
@@ -12,6 +13,7 @@
 @import 'shared/items.less';
 @import 'shared/marcframe.less';
 @import 'shared/website.less';
+@import 'shared/search.less';
 
 // ----------- VARIABLES ------------
 @bg-site: #F5F5F5;
@@ -57,9 +59,6 @@ body.loading * {
 }
 
 body > .navbar {
-  position: fixed;
-  top: 0px;
-  left: 0px;
   width: 100%;
   z-index: 999;
   border: solid @border-navbar;
@@ -157,7 +156,7 @@ footer {
   }
 }
 
-.intro-text, .hit-item, .main-item, .scheme-item  {
+.hit-item, .main-item, .scheme-item  {
   box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.1);
   border: none;
 }

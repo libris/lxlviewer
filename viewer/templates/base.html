@@ -36,28 +36,6 @@
             </span>
           </a>
         </div>
-        <ol class="nav navbar-nav navbar-right" role="navigation">
-          <li class="search">
-          <form action="/find" method="GET" class="form-inline">
-            <div class="form-group">
-              <label id="searchlabel" for="q">
-                Sök term
-              </label>
-              % for param, value in request.args.items(multi=True)
-                % if param != 'q'
-                  <input type="hidden" name="${param}" value="${value}" />
-                % endif
-              % endfor
-              <div class="input-group">
-                <input aria-labelledby="searchlabel" class="form-control" name="q" id="q" value="${thing and thing.query}" />
-                <span class="input-group-btn">
-                  <button class="btn btn-primary"><i class="fa fa-search"></i></button>
-                </span>
-              </div>
-            </div>
-          </form>
-          </li>
-        </ol>
       </div>
     </nav>
     {% endblock %}
