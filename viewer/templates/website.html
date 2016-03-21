@@ -1,51 +1,51 @@
 % extends "base.html"
 
-% macro viewscheme(scheme)
-  % if scheme.object is not none
+% macro view_observation(obs)
+  % if obs.object is not none
   <div class="col-md-4">
-    % if scheme.object.notation
-    <div id="${scheme.object.notation[0].replace('/','-')}" class="panel panel-default scheme-item">
+    % if obs.object.notation
+    <div id="${obs.object.notation[0].replace('/','-')}" class="panel panel-default scheme-item">
     % else
     <div class="panel panel-default scheme-item">
     % endif
       <header class="panel-heading">
         <h1 class="panel-title">
-          <a href="${ scheme.view['@id'] }">
-            % if 'titleByLang' in scheme.object
-            ${scheme.object.titleByLang[lang]}
-            % elif 'label' in scheme.object
-            ${scheme.object.label}
+          <a href="${ obs.view['@id'] }">
+            % if 'titleByLang' in obs.object
+              ${obs.object.titleByLang[lang]}
+            % elif 'label' in obs.object
+              ${obs.object.label}
             % endif
           </a>
+          <span class="badge">${format_number(obs.totalItems)} st.</span>
         </h1>
       </header>
       <div class="panel-body container-fluid">
         <p class="description collapsed">
-          % if 'descriptionByLang' in scheme.object
-          ${ scheme.object.descriptionByLang[lang].strip().replace('\n','<br/>') | safe }
+          % if 'descriptionByLang' in obs.object
+          ${ obs.object.descriptionByLang[lang].strip().replace('\n','<br/>') | safe }
           % endif
         </p>
-        % if scheme.sliceByDimension
-        <ul>
-        % for dimension in scheme.sliceByDimension
-          % for item in scheme.sliceByDimension[dimension].observation
-            <a class="list-group-item"
-                href="${item.view['@id']}">
-                % if item.object.titleByLang
-                  ${item.object.titleByLang[lang]}
-                % elif item.object.label
-                  ${item.object.label}
-                % endif
-                <span class="badge">${format_number(item.totalItems)} st.</span>
-            </a>
-          % endfor
-        % endfor
-        % for subkey in scheme.slideByDimension
-          % if scheme.sliceByDimension and scheme.sliceByDimension[subkey]
-            % if scheme.sliceByDimension[subkey].observation
-              <h4>Uppdelning: ${subkey}</h4>
-            % endif
-              % for observation in scheme.sliceByDimension[subkey].observation
+        % if obs.sliceByDimension
+          <div>
+            % for dimension in obs.sliceByDimension
+              % for item in obs.sliceByDimension[dimension].observation
+                <a class="list-group-item"
+                    href="${item.view['@id']}">
+                    % if item.object.titleByLang
+                      ${item.object.titleByLang[lang]}
+                    % elif item.object.label
+                      ${item.object.label}
+                    % endif
+                    <span class="badge">${format_number(item.totalItems)} st.</span>
+                </a>
+              % endfor
+            % endfor
+            % for subkey in obs.slideByDimension
+              % if obs.sliceByDimension[subkey].observation
+                <h4>Uppdelning: ${subkey}</h4>
+              % endif
+              % for observation in obs.sliceByDimension[subkey].observation
                 <a class="list-group-item"
                   href="${observation.view[ID]}">
                     % if observation.object
@@ -56,9 +56,8 @@
                     <span class="badge">${format_number(observation.totalItems)} st.</span>
                 </a>
               % endfor
-            % endif
-          % endfor
-        </ul>
+            % endfor
+          </div>
         % endif
       </div>
   </div>
@@ -75,24 +74,7 @@
   <div class="container">
     <div class="col-md-12">
       <div class="intro-text">
-      % if g.current_base == IDKBSE
-        <p>
-          <b>id.kb.se</b>
-          är en tjänst som tillgängliggör de grundstenar Kungl.
-          biblioteket använder för att publicera strukturerad,
-          <a href="https://sv.wikipedia.org/wiki/L%C3%A4nkad_data">länkad data</a>.
-          Här finns en samling gemensamma definitioner och begrepp som hjälper
-          till att samordna beskrivningar av vårt material. I grunden finns bl.a.
-          ett basvokabulär med gemensamma egenskaper och typer. I möjligaste mån
-          länkar alla definitioner till internationella, välkända motsvarigheter.
-        </p>
-        <p>
-          Här tillgängliggörs bl.a. Svenska ämnesord, barnämnesord och
-          genre/formtermer, vilka utgör viktiga byggstenar för denna samordning.
-        </p>
-      % else
-        <p>Data på <b>libris.kb.se</b>.</p>
-      % endif
+        ${g.site.description|safe}
       </div>
     </div>
   </div>
@@ -103,34 +85,37 @@
 
 % block content
 <div class="row">
-
-  % if g.current_base == IDKBSE  
   <div class="col-md-12">
     <div class="panel panel-default scheme-item">
-      <ul class="col-md-12 main-nav">
-      % for scheme in thing.statistics.sliceByDimension['inScheme.@id'].observation
-        % if scheme.object is not none and 'titleByLang' in scheme.object and 'descriptionByLang' in scheme.object
-        % if scheme.object.notation
-        <a class="list-group-item" href="#${scheme.object.notation[0].replace('/','-')}">
-          ${scheme.object.titleByLang[lang]}
-        </a>
-        % endif
-        % endif
-      % endfor
-      </ul>
+
+      <div class="col-md-12 main-nav">
+        <div class="list-group">
+          % for value in thing.statistics.sliceByDimension.values()
+            % for obs in value.observation
+              % if obs.object and 'titleByLang' in obs.object and 'descriptionByLang' in obs.object
+                % if obs.object.notation
+                  % set ref = obs.object.notation[0].replace('/','-')
+                % else
+                  % set ref = obs.object.label
+                % endif
+                <a class="list-group-item" href="#${ref}">
+                  ${obs.object.label or obs.object.titleByLang[lang]}
+                </a>
+              % endif
+            % endfor
+          % endfor
+        </div>
+      </div>
+
+      </div>
     </div>
-  </div>
-  
-  % elif g.current_base == LIBRIS
-  
-  % endif
-  
+
   % for value in thing.statistics.sliceByDimension.values()
-    % for scheme in value.observation
-      ${viewscheme(scheme)}
+    % for obs in value.observation
+      ${view_observation(obs)}
     % endfor
   % endfor
-  
+
 </div>
 
 % endblock
@@ -142,15 +127,21 @@
           <div class="col-md-3 col-md-offset-3 col-md-push-2">
             <h1>Kontakt</h1>
             <ul class="list-unstyled">
-              <li class=""><a href="mailto:libris@kb.se?Subject=id.kb.se"><i class="fa fa-fw fa-envelope"></i> libris@kb.se</a></li>
+              <li class=""><a
+                  href="mailto:libris@kb.se?Subject=${thing.title or thing[ID]}"><i
+                  class="fa fa-fw fa-envelope"></i> libris@kb.se</a></li>
             </ul>
           </div>
           <div class="col-md-3 col-md-push-2">
-            <h1>Resurser</h1>
-            <ul class="list-unstyled">
-              <li class=""><a href="${url_for('marcframeview.marcframeview')}"><i class="fa fa-fw fa-exchange"></i> Marc-mappningar</a></li>
-              <li class=""><a href="${url_for('thingview.vocabview')}"><i class="fa fa-fw fa-book"></i> Basvokabulär</a></li>
-            </ul>
+            % if g.site.itemList
+              <h1>Resurser</h1>
+              <ul class="list-unstyled">
+                % for item in g.site.itemList
+                  <li class=""><a href="${item[ID]}"><i
+                      class="fa fa-fw fa-${item.icon}"></i> ${item.title}</a></li>
+                % endfor
+              </ul>
+            % endif
           </div>
           <div class="text-center col-md-3 col-md-pull-8">
             <div class="">
