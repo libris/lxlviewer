@@ -1,70 +1,5 @@
 % extends "base.html"
 
-% macro view_observation(obs)
-  % if obs.object is not none
-  <div class="col-md-4">
-    % if obs.object.notation
-    <div id="${obs.object.notation[0].replace('/','-')}" class="panel panel-default scheme-item">
-    % else
-    <div class="panel panel-default scheme-item">
-    % endif
-      <header class="panel-heading">
-        <h1 class="panel-title">
-          <a href="${ obs.view['@id'] }">
-            % if 'titleByLang' in obs.object
-              ${obs.object.titleByLang[lang]}
-            % elif 'label' in obs.object
-              ${obs.object.label}
-            % endif
-          </a>
-          <span class="badge">${format_number(obs.totalItems)} st.</span>
-        </h1>
-      </header>
-      <div class="panel-body container-fluid">
-        <p class="description collapsed">
-          % if 'descriptionByLang' in obs.object
-          ${ obs.object.descriptionByLang[lang].strip().replace('\n','<br/>') | safe }
-          % endif
-        </p>
-        % if obs.sliceByDimension
-          <div>
-            % for dimension in obs.sliceByDimension
-              % for item in obs.sliceByDimension[dimension].observation
-                <a class="list-group-item"
-                    href="${item.view['@id']}">
-                    % if item.object.titleByLang
-                      ${item.object.titleByLang[lang]}
-                    % elif item.object.label
-                      ${item.object.label}
-                    % endif
-                    <span class="badge">${format_number(item.totalItems)} st.</span>
-                </a>
-              % endfor
-            % endfor
-            % for subkey in obs.slideByDimension
-              % if obs.sliceByDimension[subkey].observation
-                <h4>Uppdelning: ${subkey}</h4>
-              % endif
-              % for observation in obs.sliceByDimension[subkey].observation
-                <a class="list-group-item"
-                  href="${observation.view[ID]}">
-                    % if observation.object
-                      ${observation.object.label or observation.object.titleByLang.sv}
-                    % else
-                      ${observation.view[ID]}
-                    % endif
-                    <span class="badge">${format_number(observation.totalItems)} st.</span>
-                </a>
-              % endfor
-            % endfor
-          </div>
-        % endif
-      </div>
-  </div>
-</div>
-  % endif
-% endmacro
-
 {% block title %}{% endblock %}
 
 {% block bodyattrs %}id="website"{% endblock %}
@@ -160,7 +95,71 @@
 
 % endblock
 
-
 % block scripts
     <script src="/js/website.js"></script>
 % endblock
+
+% macro view_observation(obs)
+  % if obs.object is not none
+  <div class="col-md-4">
+    % if obs.object.notation
+    <div id="${obs.object.notation[0].replace('/','-')}" class="panel panel-default scheme-item">
+    % else
+    <div class="panel panel-default scheme-item">
+    % endif
+      <header class="panel-heading">
+        <h1 class="panel-title">
+          <a href="${ obs.view['@id'] }">
+            % if 'titleByLang' in obs.object
+              ${obs.object.titleByLang[lang]}
+            % elif 'label' in obs.object
+              ${obs.object.label}
+            % endif
+          </a>
+          <span class="badge">${format_number(obs.totalItems)} st.</span>
+        </h1>
+      </header>
+      <div class="panel-body container-fluid">
+        <p class="description collapsed">
+          % if 'descriptionByLang' in obs.object
+          ${ obs.object.descriptionByLang[lang].strip().replace('\n','<br/>') | safe }
+          % endif
+        </p>
+        % if obs.sliceByDimension
+          <div>
+            % for dimension in obs.sliceByDimension
+              % for item in obs.sliceByDimension[dimension].observation
+                <a class="list-group-item"
+                    href="${item.view['@id']}">
+                    % if item.object.titleByLang
+                      ${item.object.titleByLang[lang]}
+                    % elif item.object.label
+                      ${item.object.label}
+                    % endif
+                    <span class="badge">${format_number(item.totalItems)} st.</span>
+                </a>
+              % endfor
+            % endfor
+            % for subkey in obs.slideByDimension
+              % if obs.sliceByDimension[subkey].observation
+                <h4>Uppdelning: ${subkey}</h4>
+              % endif
+              % for observation in obs.sliceByDimension[subkey].observation
+                <a class="list-group-item"
+                  href="${observation.view[ID]}">
+                    % if observation.object
+                      ${observation.object.label or observation.object.titleByLang.sv}
+                    % else
+                      ${observation.view[ID]}
+                    % endif
+                    <span class="badge">${format_number(observation.totalItems)} st.</span>
+                </a>
+              % endfor
+            % endfor
+          </div>
+        % endif
+      </div>
+  </div>
+</div>
+  % endif
+% endmacro
