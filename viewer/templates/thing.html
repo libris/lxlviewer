@@ -80,7 +80,7 @@
         <dl class="{% if not rel %}dl-horizontal{% endif %}">
           % for k in vocab.sortedkeys(thing)
             % set v = thing[k]
-            % if (k in vocab.index or k != REVERSE) and not isinstance(v, dict) or len(v) > 3
+            % if (k in vocab.index or k != REVERSE)
               % set p = vocab.index[k] or {'curie': k}
               {% if loop.index > 1 %}<hr/>{% endif %}
               <dt>
@@ -89,7 +89,7 @@
               <dd>
                 % if k == ID and v[0] != '_'
                   <a href="${view_url(v)}">&lt;${v}&gt;</a>
-                % elif isinstance(v, dict) and len(v) > 2
+                % elif isinstance(v, dict) and len(v) > 1
                   ${viewthing(v, rel=k)}
                 % elif isinstance(v, list)
                   <ul>
