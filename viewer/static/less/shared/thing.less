@@ -38,6 +38,7 @@
   >.panel-heading-meta {
     .label-class {
       color: darken(@neutral-color, 25%);
+      text-shadow: none;
     }
     .thing-id {
       color: @gray-darker;
@@ -71,6 +72,7 @@
       overflow-y: hidden;
       >.label-class {
         font-size: 12px;
+        text-shadow: 0px 1px 1px rgba(0,0,0,0.4);
         text-transform: uppercase;
         display: inline-block;
         cursor: help;
@@ -108,9 +110,7 @@
 /*********/
 
 .dl-mixin {
-  &, dl {
-    margin-bottom: 0px;
-  }
+  margin-bottom: 0px;
   display: inline-block;
   width: 100%;
   background-color: @dl-gray;
@@ -121,13 +121,26 @@
   }
   >dd {
     width: 645px;
+    >.panel {
+      >.panel-heading {
+        .header-colored();
+      }
+      >.panel-body>dl {
+        margin-bottom: 0px;
+      }
+    }
+    >.panel.link-item {
+      >.panel-heading {
+        .header-uncolored();
+      }
+    }
     >ul {
       width: 645px;
       li > .panel:not(.link-item) {
-        width: 645px;
         >.panel-body {
           >dl {
             background-color: @dl-gray;
+            margin-bottom: 0px;
             >dd {
               width: 440px;
               >ul {
@@ -200,7 +213,7 @@ body#thing {
   
   .main-item {
     >.panel-body {
-      dl {
+      >dl {
         .dl-mixin();
       }
     }
@@ -227,7 +240,6 @@ body#thing {
     > .panel-heading {
       background-color: @neutral-color;
       border-radius: 3px;
-      // .header-colored();
       overflow-x: hidden;
       padding: 2px;
       > .panel-title {
@@ -270,11 +282,14 @@ body#thing {
   }
   .link-item-copy {
     margin: 0px;
+    padding: 3px;
+    background-color: @accent-color;
     overflow-x: visible;
-    border: 1px solid fadeout(darken(@accent-color,15%),30%);
+    border: solid fadeout(darken(@accent-color,15%),30%);
+    border-width: 0px 1px 1px 1px;
     text-shadow: 0px 1px 1px rgba(0,0,0,0.4);
     &.active {
-      box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, 0.4);
+      box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, 0.5);
       .panel-heading {
         overflow-x: visible;
         .panel-heading-meta {
@@ -322,9 +337,14 @@ body#thing {
     margin: 0px 0px -2px 0px;
     
     >.panel-heading {
-      >.panel-heading-meta>.thing-id {
-       opacity: 0;
-       transition: 0.5s ease opacity;
+      >.panel-heading-meta {
+        >.thing-id {
+          opacity: 0;
+          transition: 0.5s ease opacity;
+        }
+        >.label-class {
+          
+        }
       }
       .header-uncolored();
       .panel-title {
