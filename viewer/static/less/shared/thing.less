@@ -1,3 +1,189 @@
+/********/
+/* Mixins for headers
+/********/
+
+@accent-color: @brand-primary;
+@neutral-color: #fff;
+@dl-gray: #f5f5f5;
+
+.header-colored {
+  transition: background-color ease 0.2s;
+  background-color: @accent-color;
+  >.panel-title {
+    a {
+    transition: color ease 0.2s;
+    color: #fff;
+    }
+  }
+  >.panel-heading-meta {
+    .label-class {
+      color: desaturate(lighten(@accent-color, 50%),40%);
+    }
+    .thing-id {
+      color: @gray-darker;
+      code {
+        background-color: fadeout(lighten(@accent-color, 15%), 40%);
+        color: @gray-darker;
+      }
+    }
+  }
+}
+.header-uncolored {
+  background-color: #fff;
+  >.panel-title {
+    a {
+    color: @gray-darker;
+    }
+  }
+  >.panel-heading-meta {
+    .label-class {
+      color: darken(@neutral-color, 25%);
+    }
+    .thing-id {
+      color: @gray-darker;
+      code {
+        background-color: @dl-gray;
+        color: @gray-darker;
+      }
+    }
+  }
+}
+
+/*********/
+/* General panel rules
+/*********/
+
+.main-item, .hit-item {
+  .panel-body {
+    padding: 5px;
+  }
+  .panel-heading {
+    border: none;
+    .panel-title {
+      display: inline-block;
+      .thing-label {
+        font-weight: 400;
+      }
+    }
+    .panel-heading-meta {
+      display: block;
+      overflow-x: hidden;
+      overflow-y: hidden;
+      >.label-class {
+        font-size: 12px;
+        text-transform: uppercase;
+        display: inline-block;
+        cursor: help;
+        line-height: 12px;
+        border-bottom: 1px dashed transparent;
+        text-decoration: none;
+        width: auto;
+        float: left;
+        &:hover {
+          border-bottom: 1px dashed;
+        }
+      }
+      >.thing-id {
+        height: 22px;
+        float: right;
+        line-height: 16px;
+        margin-left: 1em;
+        display: inline-block;
+        text-decoration: none;
+        code {
+          &:hover {
+            text-decoration: none;
+          }
+        }
+      }
+    }
+  }
+  
+}
+
+
+
+/*********/
+/* Mixin for tables
+/*********/
+
+.dl-mixin {
+  &, dl {
+    margin-bottom: 0px;
+  }
+  display: inline-block;
+  width: 100%;
+  background-color: @dl-gray;
+  padding: 5px;
+  hr {
+    border-style: dotted;
+    margin: 0px 0px 0px 0px;
+  }
+  >dd {
+    width: 645px;
+    >ul {
+      width: 645px;
+      li > .panel:not(.link-item) {
+        width: 645px;
+        >.panel-body {
+          >dl {
+            background-color: @dl-gray;
+            >dd {
+              width: 440px;
+              >ul {
+                max-width: 440px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  dd, dt {
+    padding: 3px 0px 0px 0px;
+  }
+  dt {
+    display: inline-block;
+    vertical-align: top;
+    margin-bottom: 5px;
+    font-size: 12px;
+    width: 160px;
+    text-align: right;
+    margin-right: 1em;
+    a {
+      cursor: help;
+      color: @color-prop-list;
+      line-height: 12px;
+      font-weight: normal;
+      border-bottom: dashed #fff 1px;
+      display: inline-block;
+      &:hover, &:focus {
+        text-decoration: none;
+        border-bottom: dashed @color-prop-list 1px;
+      }
+    }
+  }
+  dd {
+    display: inline-block;
+    vertical-align: top;
+    font-size: 14px;
+    margin: 0px;
+    &:last-of-type {
+      margin-bottom: 0px;
+    }
+    ul {
+      list-style: none;
+      padding: 0px;
+    }
+    .panel {
+      margin-top: 0px;
+      margin-bottom: 6px;
+    }
+  }
+}
+
+/*********/
+
 body#thing {
   
   height: 100%;
@@ -6,115 +192,94 @@ body#thing {
     margin-top: 30px;
     margin-bottom: 100px;
   }
-  .side-view {
-    .link-item {
-      width: 100%;
-    }
-  }
   
+  /********/
+  /* Main-item
+  /* An item shown on its own page
+  /********/
   
-  .panel {
-    margin-bottom: 0.5em;
-    .panel-body {
+  .main-item {
+    >.panel-body {
       dl {
-        dt {
-          font-size: 12px;
-        }
-        dd {
-          font-size: 14px;
-        }
+        .dl-mixin();
       }
     }
-    .panel-heading {
-      background-color: #fff;
-      .panel-title {
-        a {
-        color: @color-headers;
-        word-break: break-all;
-        }
-      } 
-      .chip-prop {
-          
-      }
-      .panel-heading-meta {
-        display: block;
-        height: 22px;
-        overflow-x: hidden;
-        overflow-y: hidden;
-        .label-class {
-          // height: 22px;
-          font-size: 12px;
-          color: @color-class;
-          font-weight: bold;
-          text-transform: uppercase;
-          display: inline-block;
-          cursor: help;
-          line-height: 18px;
-          border-bottom: 1px dashed #fff;
-          text-decoration: none;
-          width: auto;
-          float: left;
-          &:hover {
-            border-bottom: 1px dashed @color-class;
-          }
-        }
-        .thing-id {
-          height: 22px;
-          float: left;
-          line-height: 12px;
-          margin-left: 1em;
-          display: inline-block;
-          text-decoration: none;
-          color: @color-id;
-          code {
-            border: 1px solid #fff;
-            &:hover {
-              text-decoration: none;
-              border: 1px solid @color-id;
-            }
-          }
-        }
+    >.panel-heading {
+      .header-colored();
+      
+      .thing-label {
+        font-size: 2em;
+        line-height: 0.5;
       }
     }
   }
+  
+  /********/
+  /* Link-item
+  /* aka "chips"
+  /********/
+  
   .link-item {
     display: inline-block;
     float: left;
     margin: 5px;
+    border: 1px solid @accent-color;
     > .panel-heading {
-      padding: 5px;
+      background-color: @neutral-color;
+      border-radius: 3px;
+      // .header-colored();
+      overflow-x: hidden;
+      padding: 2px;
+      > .panel-title {
+        font-size: 14px;
+        padding: 0 3px;
+      }
       > .panel-heading-meta {
         display: none;
-        width: 260px;
       }
     }
-    .thing-id {
-      display: none;
+  }
+  
+  // Link-item-copy
+  // The item that is shown on hover
+  .copy-holder {
+    position: absolute;
+    opacity: 0;
+    display: none;
+    padding: 7px 0px 0px 0px;
+    transition: 0.25s ease;
+    transition-property: opacity;
+    &.active {
+      display: block;
+      opacity: 1;
+      .arrow {
+        top: 2px;
+        opacity: 1;
+      }
     }
-    > .panel-heading {
-      overflow-x: hidden;
+    .arrow {
+	    position: absolute;
+      opacity: 0;
+	    top: 6px;
+	    border-left: 7px solid transparent;
+	    border-right: 7px solid transparent;
+	    border-bottom: 7px solid @accent-color;
+      width: 0;
+      height: 0;
     }
   }
   .link-item-copy {
-    position: absolute;
-    opacity: 0;
-    margin-top: 0px;
+    margin: 0px;
     overflow-x: visible;
-    box-shadow: 0px 3px 0px 0px rgba(0, 0, 0, 0.3);
-    &:hover {
-      z-index: 985;
-    }
+    border: 1px solid fadeout(darken(@accent-color,15%),30%);
+    text-shadow: 0px 1px 1px rgba(0,0,0,0.4);
     &.active {
-      transition: 0.25s ease;
-      transition-property: opacity, box-shadow;
-      min-width: 260px;
-      opacity: 1;
-      box-shadow: 0px 3px 5px 0px rgba(0, 0, 0, 0.3);
+      box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, 0.4);
       .panel-heading {
         overflow-x: visible;
         .panel-heading-meta {
+          padding-top: 2px;
           display: block;
-          margin-bottom: 4px;
           .thing-id {
             max-width: 100px;
             &:hover {
@@ -124,23 +289,22 @@ body#thing {
           }
         }
       }
-      > .panel-heading > .label-class {
-        display: inline-block;
-        margin-right: 1em;
-        margin-bottom: 3px;
+      >.panel-heading {
+        .header-colored();
+        >.panel-heading-meta {
+          padding: 3px 5px 0px 3px;
+        }
+        >.label-class {
+          display: inline-block;
+          margin-right: 1em;
+          margin-bottom: 0px;
+        }
+        >.panel-title {
+          font-size: 16px;
+        }
       }
       .thing-id {
-        display: inline-block;
-        float: right;
-        max-width: 175px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        &:hover {
-          overflow: visible;
-          text-overflow: none;
-          z-index: 986;
-        }
+        display: none;
       }
       .panel-title {
         width: 100%;
@@ -148,68 +312,73 @@ body#thing {
     }
   }
   
-  .main-item {
-    > header .thing-label {
-      font-weight: bold;
-      font-size: 2em;
-    }
-    .thing-id {
-      position: absolute;
-      right: 25px;
-    }
-    .panel-title {
-    }
-    .panel-body {
-      padding: 4px 4px;
-    }
-    dl {
-      margin-bottom: 0px;
-      display: inline-block;
-      width: 100%;
-      hr {
-        border-style: dotted;
-        margin: 0px 0px 0px 0px;
+  /********/
+  /* Hit-item
+  /* an item shown in search-results
+  /********/
+  
+  .hit-item {
+    
+    margin: 0px 0px -2px 0px;
+    
+    >.panel-heading {
+      >.panel-heading-meta>.thing-id {
+       opacity: 0;
+       transition: 0.5s ease opacity;
       }
-      dd, dt {
-        padding: 3px 0px 0px 0px;
+      .header-uncolored();
+      .panel-title {
+        font-size: 24px;
       }
-      dt {
-        width: 160px;
-        text-align: right;
-        margin-right: 1em;
-        a {
-          cursor: help;
-          color: @color-prop-list;
-          line-height: 12px;
-          font-weight: normal;
-          border-bottom: dashed #fff 1px;
-          display: inline-block;
-          &:hover, &:focus {
-            text-decoration: none;
-            border-bottom: dashed @color-prop-list 1px;
+      .expand-button {
+        display: inline-block;
+        cursor: pointer;
+        height: 24px;
+        width: 24px;
+        text-align: center;
+        margin-right: 0.2em;
+        i {
+        }
+        &:hover {
+          color: @brand-primary;
+        }
+      }
+    }
+    >.panel-body {
+      display: none;
+      transition: 0.3s linear opacity;
+      opacity: 0;
+      >dl {
+        .dl-mixin();
+        >dd {
+          width: 645px;
+          >ul > li > .panel:not(.link-item) {
+            >.panel-heading {
+              .header-colored();
+            }
+          }
+          >.panel:not(.link-item) {
+            >.panel-heading {
+              .header-colored();
+            }
           }
         }
       }
-      dd {    
-        &:last-of-type {
-          margin-bottom: 0px;
-        }
-        ul {
-          list-style: none;
-          padding: 0px;
-        }
-        .panel {
-          margin-top: 0px;
-          margin-bottom: 6px;
-        }
+    }
+    &.expanded {
+      >.panel-heading >.panel-heading-meta > .thing-id {
+        opacity: 1;
       }
-      dt {
-        display: table-cell;
-        margin-bottom: 5px;
+      >.panel-body {
+        display: block;
+        opacity: 1;
       }
     }
   }
   
+  /********/
+  /* Footer
+  /********/
   footer {
     position: fixed;
     bottom: 0px;
@@ -218,151 +387,8 @@ body#thing {
       padding: 15px 15px;
     }
   }
-
-  .side-view {
-    .link-item-copy {
-      width: 262px;
-    }
-    dt {
-      font-size: 12px;
-      a {
-        font-weight: normal;
-        cursor: help;
-        color: @gray;
-        border-bottom: dashed @bg-site 1px;
-        display: inline-block;
-        &:hover, &:focus {
-          text-decoration: none;
-          border-bottom: dashed @color-prop-list 1px;
-        }
-      }
-    }
-  }
   
-
-
-  .hit-item {
-    border-width: 1px 0px 0px 0px;
-    border-radius: 0px;
-    margin: 0px;
-    padding: 0px;
-    transition: 0.3s linear all;
-    hr {
-      margin: 0px 0px 5px 0px;
-    }
-    dl {
-      width: 100%;
-      margin-bottom: 0px;
-      display: inline-table;
-    }
-    dd {
-      max-width: 670px;
-      ul {
-        padding: 0;
-        list-style: none;
-      }
-    }
-    dd, dt {
-      display: inline-block;
-      vertical-align: top;
-    }
-    dt {
-      width: 160px;
-      text-align: right;
-      margin-right: 1em;
-      a {
-        cursor: help;
-        color: @color-prop-list;
-        font-weight: normal;
-        border-bottom: dashed #fff 1px;
-        display: inline-block;
-        &:hover, &:focus {
-          text-decoration: none;
-          border-bottom: dashed @color-prop-list 1px;
-        }
-      }
-    }
-    >.panel-heading {
-      border-width: 1px 0px 0px 0px;
-      .expand-button {
-        display: inline-block;
-        cursor: pointer;
-        position: relative;
-        height: 24px;
-        width: 24px;
-        text-align: center;
-        top: -0.8em;
-        margin-right: 0.2em;
-        i {
-        }
-        &:hover {
-          color: @brand-primary;
-        }
-      }
-      .panel-title {
-        display: inline-block;
-        width: 90%;
-        a {
-          height: 1.2em;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          overflow: hidden;
-          width: 100%;
-        }
-      }
-    }
-    .panel-body {
-      padding-top: 10px;
-      padding-bottom: 10px;
-      display: none;
-      opacity: 0;
-      transition: opacity 0.6s ease;
-    }
-    > .panel-body {
-      > dl {
-        > dd {
-          >ul {
-            width: 645px;
-            li > .panel:not(.link-item) {
-              width: 100%;
-            }
-          }
-          > .panel {
-            width: 645px;
-            > .panel-body {
-              > dl > dd {
-                width: 440px;
-                > ul {
-                  max-width: 440px;
-                }
-              }
-            }
-          }
-        }
-        >ul {
-          width: 645px;
-          li > .panel {
-            width: 100%;
-          }
-        }
-      }
-    }
-    .thing-label {
-      display: inline-block;
-    }
-    .thing-id {
-      position: absolute;
-      right: 25px;
-    }
-    > .panel-heading .thing-label {
-      font-size: 2em;
-      color: @color-headers;
-    }
-    &.expanded {
-      .panel-body {
-        display: block;
-        opacity: 1;
-      }
-    }
-  }
+  
+  
+/* Body block end */
 }
