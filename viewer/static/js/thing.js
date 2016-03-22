@@ -1,6 +1,6 @@
 $(function () {
 
-  var createChips = function ($panelElement) {
+  var createChips = function ($panelElement) {    
     if ($panelElement.length < 1)
       return;
       
@@ -10,30 +10,33 @@ $(function () {
       $panelElement.find('.link-item').each(function() {
         var $subject = $(this);
         var $copy = $subject.clone();
+        var $holder = $('<div class="copy-holder">');
+        var $arrow = $('<div class="arrow">').appendTo($holder);
+        $arrow.css('left', ($subject.width()*0.25)-3);
         $subject.addClass('link-item-original');
-        $copy.addClass('link-item-copy').appendTo($subject.parent());
-        $copy.css('top', $subject.position().top).css('left', $subject.position().left);
+        $copy.addClass('link-item-copy').appendTo($holder);
+        $holder.appendTo($subject);
         if ($subject.width() > 260) {
           $copy.css('min-width', $subject.width());
         }
       });
       
       // Initialize hover functionality
-      $panelElement.find('.link-item-copy').hover(function() {
-        expand($(this));
+      $panelElement.find('.link-item').hover(function() {
+        expand($(this).parent().find('.copy-holder'));
       }, function() {
-        collapse($(this));
+        collapse($(this).parent().find('.copy-holder'));
       }).focusin(function() {
-        expand($(this));
+        expand($(this).parent().find('.copy-holder'));
       }).focusout(function() {
-        collapse($(this));
+        collapse($(this).parent().find('.copy-holder'));
       });
     
-    }, 500);
+    }, 250);
   }
   
   var destroyChips = function($panelElement) {
-    $panelElement.find('.link-item-copy').each(function() {
+    $panelElement.find('.copy-holder').each(function() {
       $(this).remove();
     })
   }
@@ -44,18 +47,7 @@ $(function () {
     setTimeout(function() {
       if(elem.hasClass('to-be-active')) {
         elem.addClass('active');
-        if(!elem.hasClass('adjusted-top')) {
-          // Adjust position so that the chip "grows" around the prefLabel
-          var $parent = elem.closest('li');
-          if ($parent.length == 0) {
-            $parent = elem.closest('dd');
-          }
-          var $rootHeading = $parent.find('.link-item-original[resource="'+resource+'"] .panel-title');
-          var $elemHeading = $parent.find('.link-item-copy[resource="'+resource+'"] .panel-title');
-          var diffY = $elemHeading.offset().top - $rootHeading.offset().top;
-          elem.css('margin-top', -diffY);
-          elem.addClass('adjusted-top');
-        }
+        elem.find('.link-item-copy').addClass('active');
       }
     }, 500);
     
@@ -63,6 +55,7 @@ $(function () {
   var collapse = function (elem) {
     elem.removeClass('to-be-active');
     elem.removeClass('active');
+    elem.find('.link-item-copy').removeClass('active');
     
     // Removing these so that the chip isn't activated when hovering on the ghost of it...
     elem.css('margin-top', '');
