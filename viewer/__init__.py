@@ -316,6 +316,9 @@ rdfns = {
 
 app.context_processor(lambda: rdfns)
 
+RDF_MIMETYPES = {'text/turtle', 'application/ld+json', 'application/rdf+xml', 'text/xml'}
+MIMETYPE_FORMATS = ['text/html', 'application/xhtml+xml'] + list(RDF_MIMETYPES)
+
 @app.route('/vocab/')
 def vocabview():
     voc = things.get_vocab_util()
@@ -327,6 +330,11 @@ def vocabview():
 
     def listclass(o):
         return 'ext' if ':' in o.qname() else 'loc'
+
+    mimetype = request.accept_mimetypes.best_match(MIMETYPE_FORMATS)
+    if mimetype in RDF_MIMETYPES:
+        return voc.graph.serialize(format=
+                'json-ld' if mimetype == 'application/ld+json' else mimetype)
 
     return render_template('vocab.html',
             URIRef=URIRef, **vars())
