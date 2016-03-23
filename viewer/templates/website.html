@@ -1,4 +1,5 @@
 % extends "base.html"
+% import 'search.html' as search
 
 {% block title %}{% endblock %}
 
@@ -7,10 +8,8 @@
 % block jumbotron
 <div class="jumbotron">
   <div class="container">
-    <div class="col-md-12">
-      <div class="intro-text">
-        ${g.site.description|safe}
-      </div>
+    <div class="col-md-push-2 col-md-8 text-black">
+      ${search.search_controls(thing) }
     </div>
   </div>
 </div>
@@ -22,7 +21,6 @@
 <div class="row">
   <div class="col-md-12">
     <div class="panel panel-default scheme-item">
-
       <div class="col-md-12 main-nav">
         <div class="list-group">
           % for value in thing.statistics.sliceByDimension.values()
@@ -41,9 +39,8 @@
           % endfor
         </div>
       </div>
-
-      </div>
     </div>
+  </div>
 
   % for value in thing.statistics.sliceByDimension.values()
     % for obs in value.observation

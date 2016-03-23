@@ -4,7 +4,7 @@
     
     <form action="/find" method="GET">      
       <div class="form-inline">
-        <div class="form-group search-input">
+        <div class="form-group">
           % for param, value in request.args.items(multi=True)
             % if param != 'q'
               <input type="hidden" name="${param}" value="${value}" />
