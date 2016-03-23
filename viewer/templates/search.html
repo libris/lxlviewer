@@ -1,0 +1,137 @@
+% macro search_controls(result)
+
+<div class="panel panel-default search-controls">
+    
+    <form action="/find" method="GET">      
+      <div class="form-inline">
+        <div class="form-group search-input">
+          % for param, value in request.args.items(multi=True)
+            % if param != 'q'
+              <input type="hidden" name="${param}" value="${value}" />
+            % endif
+          % endfor
+          <label class="search-label" id="searchlabel" for="q">
+            Sök term
+          </label>
+          <input aria-labelledby="searchlabel" class="form-control search-input" name="q" id="q" value="${result.textQuery}" />
+          <button class="search-button btn btn-primary"><i class="fa fa-search"></i> Sök</button>
+        </div>
+      </div>
+    </form>
+</div>
+% endmacro
+
+% macro result_controls(result, details)
+  <div class="panel panel-default result-controls">
+    % if details
+    <div class="search-details">
+      <span class="search-keyword">
+        % if result.textQuery and result.totalItems > 0
+          Sökning på <i>"${result.textQuery}"</i>
+          % if result.totalItems
+            gav ${result.totalItems} träffar.
+          % endif
+        % elif result.value
+          Sökning ${result.value}
+        % else
+          Sökning på <i>"${result.textQuery}"</i> gav inga träffar.
+        % endif
+      </span>
+      <span class="search-items-per-page pull-right">
+        % if result.totalItems
+        Visar resultat
+          ${result.itemOffset + 1}-${min(result.totalItems, result.itemOffset + len(result['items']))}.
+        % endif
+      </span>
+    </div>
+    % endif
+    
+    <div class="search-buttons">
+      <nav>
+      <ul class="pagination">
+      % if result.first and result.previous
+      <li>
+        <a href="${result.first['@id']}">Första</a>
+      </li>
+      % else
+      <li class="disabled">
+        <a>Första</a>
+      </li>
+      % endif
+      % if result.previous
+      <li>
+        <a href="${result.previous['@id']}">Föregående</a>
+      </li>
+      % else
+      <li class="disabled">
+        <a>Föregående</a>
+      </li>
+      % endif
+      
+      % set limit = int(request.args.get('limit')) if request.args.get('limit') else int(50)
+      % set offset = int(request.args.get('offset')) if request.args.get('offset') else int(0)
+      
+      % if result.totalItems
+        % set pages = int(result.totalItems / limit) + 1
+      % else
+        % set pages = 1
+      % endif
+      
+      % for num in range(pages)
+      % if offset == limit * num
+      <li class="active">
+        <a>${num +1}</a>
+      </li>
+      % else
+      <li>
+        <a href="${result.first['@id'] + '&offset=' + str(limit * num) }">${num +1}</a>
+      </li>
+      % endif
+      % endfor
+      
+      % if result.next
+      <li>
+        <a href="${result.next['@id']}">Nästa</a>
+      </li>
+      % else
+      <li class="disabled">
+        <a>Nästa</a>
+      </li>
+      % endif
+      % if result.last and result.next
+      <li>
+        <a href="${result.last['@id']}">Sista</a>
+      </li>
+      % else
+      <li class="disabled">
+        <a>Sista</a>
+      </li>
+      % endif
+      </ul>
+    </nav>
+      
+    </div>
+  </div>
+% endmacro
+
+% macro facet_controls(result)
+
+<div class="panel-body">
+% if result['stats']
+% set stats = result['stats']
+<label>
+  Filtrera
+</label>
+<ul class="facet-controls">
+% for observation in stats.sliceByDimension['@type'].observation
+  <li>
+    <a href="${observation.view['@id']}">${observation.object.label}</a>
+  </li>
+% endfor
+</ul>
+% else
+  Inga facetter...
+% endif
+</div>
+
+% endmacro
