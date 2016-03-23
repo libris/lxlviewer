@@ -5,6 +5,7 @@
 @import '../vendor/kungbib-styles/less/kb-styles.less';
 
 // ----------- IMPORT COMPONENTS ----
+@import 'shared/utils.less';
 @import 'shared/index.less';
 @import 'shared/vocab.less';
 @import 'shared/graph.less';
@@ -12,6 +13,7 @@
 @import 'shared/items.less';
 @import 'shared/marcframe.less';
 @import 'shared/website.less';
+@import 'shared/search.less';
 
 // ----------- VARIABLES ------------
 @bg-site: #F5F5F5;
@@ -20,11 +22,11 @@
 @bg-sidebars: darken(@white, 5%);
 @border-navbar: fadeout(#fff, 100%);
 @bg-footer: fadeout(lighten(@pastel-muted-blue,25%),70%);
-@brand-primary: #1A8F72;
+@brand-primary: #009788;
 @bg-jumbotron: darken(@brand-primary,15%);
 @bg-jumbotron-image: url('/assets/white_tiles.png'); /* Background pattern from subtlepatterns.com */
 @border-footer: @grey-light;
-@color-class: @happy-blue;
+@color-class: @gray;
 @color-prop: @happy-magenta;
 @color-prop-list: @grey;
 @color-ext: #d51;
@@ -32,7 +34,8 @@
 @link-color: @brand-primary;
 @link-hover-color: darken(@link-color,15%);
 
-@color-headers: #555;
+@color-headers: @brand-primary;
+@color-headers-text: #fff;
 
 // ----------- FONTS ----------------
 @font-face {
@@ -58,24 +61,12 @@ body.loading * {
 }
 
 body > .navbar {
-  position: fixed;
-  top: 0px;
-  left: 0px;
   width: 100%;
   z-index: 999;
   border: solid @border-navbar;
   background-color: @bg-navbar;
   border-width: 0px 0px 1px 0px;
   box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.1);
-  .search {
-    margin-top: 7px;
-    label {
-      color: @gray-dark;
-      font-weight: normal;
-      margin-right: 0.5em;
-      vertical-align: bottom;
-    }
-  }
   @media screen and (max-width: @screen-sm-min) {
     padding: 0 20px;
   }
@@ -122,7 +113,7 @@ footer {
   background-color: @bg-footer;
   border: solid @border-footer;
   border-width: 1px 0px 0px 0px;
-  
+  z-index: 999;
 }
 
 .popover.state-active {
@@ -158,9 +149,12 @@ footer {
   }
 }
 
-.intro-text, .hit-item, .main-item, .scheme-item  {
+.search-controls,
+.result-controls,
+.hit-item,
+.main-item,
+.scheme-item  {
   box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.1);
-  border: none;
 }
 
 a {

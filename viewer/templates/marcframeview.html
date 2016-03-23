@@ -19,7 +19,7 @@
   <div class="col-sm-3 col-md-3 col-lg-2 hidden-xs menu-col">
     
     <ul class="nav nav-tabs" role="tablist">
-    % for cat, catdfn in marc_categories()
+    % for cat, catdfn in mf.marc_categories()
       {% if cat == 'bib' %}
         <li role="presentation" class="active">
       {% else %}
@@ -30,14 +30,14 @@
     % endfor
     </ul>
     <div class="tab-content">
-    % for cat, catdfn in marc_categories()
+    % for cat, catdfn in mf.marc_categories()
       {% if cat == 'bib' %}
         <div role="tabpanel" class="tab-pane active" id="tab-${cat}">
       {% else %}
         <div role="tabpanel" class="tab-pane" id="tab-${cat}">
       {% endif %}
         <ul>
-          % for tag, kind, dfn in fields(catdfn)
+          % for tag, kind, dfn in mf.fields(catdfn)
           <li>
             <a href="#${cat}-${tag}">${tag}</a>
           </li>
@@ -54,12 +54,12 @@
   <section>
     <h1>MARCFrame</h1>
     <p>KB/LIBRIS mappings of MARC to RDF vocabulary terms.</p>
-    % for cat, catdfn in marc_categories()
+    % for cat, catdfn in mf.marc_categories()
       <div class="cat" id="${cat}">
         <h3>${cat}</h3>
         <p>thingLink: ${catdfn.thingLink}</p>
         <table class="table table-bordered marcframetable">
-          % for tag, kind, dfn in fields(catdfn)
+          % for tag, kind, dfn in mf.fields(catdfn)
             <tr>
               <th><div id="${cat}-${tag}">${tag}</div></th>
               <td>
@@ -74,7 +74,7 @@
                   % endif
                 % endfor
                 % if kind == 'field'
-                  ${show_dfn(cat, tag, codes(dfn))}
+                  ${show_dfn(cat, tag, mf.codes(dfn))}
                 % elif kind == 'fixed'
                   <table class="">
                     % for key, subdfn in sorted(dfn.items())
@@ -133,7 +133,7 @@
   {#
   <section>
     <h2>Token Maps</h2>
-    % for tkey, token_map in sorted(marcframe.tokenMaps.items())
+    % for tkey, token_map in sorted(mf.data.tokenMaps.items())
       <div class="tokenmap" id="map-${tkey}">
         <h3>${tkey}</h3>
         % if isinstance(token_map, unicode)

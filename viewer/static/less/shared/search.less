@@ -1,0 +1,77 @@
+body#thing {
+  .search-controls {
+    .search-button {
+      min-width: 20%;
+    }
+    .search-input {
+      min-width: 75%;
+    }
+  }
+}
+
+body#website {
+  .search-controls {
+    .search-button {
+      width: 24%;
+    }
+    .search-input {
+      width: 75%;
+    }
+  }
+}
+
+.search-controls {
+  padding: 20px;
+  .form-group {
+    width: 100%;
+  }
+  .search-label {
+    display: block;
+  }
+
+  .type-label {
+    display: block;
+  }
+  .type-buttons {
+    .btn.active {
+      position: relative;
+      top: 1px;
+    }
+  }
+}
+
+// PAGED COLLECTION
+.result-controls {
+  padding: 20px;
+  margin: 10px 0px;
+  .search-details {
+    margin-bottom: 1em;
+  }
+  .pagination {
+    margin: 0px;
+    li {
+      a {
+        border-radius: 0px !important;
+      }
+    }
+  }
+}
+.result-list {
+  >div:first-of-type {
+    border-radius: 4px 4px 0px 0px !important;
+  }
+  >div:last-of-type {
+    border-radius: 0px 0px 4px 4px !important;
+  }
+}
+.no-hits {
+  padding: 20px;
+}
+
+.facet-controls {
+  list-style: none;
+  padding: 0px;
+  li {
+    padding: 5px 15px;
+  }
+}
