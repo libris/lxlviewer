@@ -67,20 +67,21 @@ $(function () {
   var initHitlistExpands = function() {
     // Hit list expand functionality
     
+    
     $('.hit-item').each(function() {
       $("<div class='expand-button'><i class='fa rotate fa-chevron-right'></i></div>").insertBefore($(this).find('.panel-title').eq(0));
     })
-    
+  
     $('.hit-item .expand-button').click(function() {
       $subject = $(this).closest('.hit-item');
       if ($subject.hasClass('expanded')) {
-        $subject.find('.panel-body').slideUp(null, destroyChips($subject));
         $(this).find('i').removeClass('rotate-90');
         $subject.removeClass('expanded');
+        destroyChips($subject);
       } else {
-        $subject.find('.panel-body').slideDown(null, createChips($subject));
         $(this).find('i').addClass('rotate-90');
         $subject.addClass('expanded');
+        createChips($subject);
       }
     });
   };

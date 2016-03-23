@@ -369,9 +369,10 @@ body#thing {
       }
     }
     >.panel-body {
-      display: none;
-      transition: 0.3s linear opacity;
+      max-height: 0px;
+      transition: 0s linear opacity;
       opacity: 0;
+      overflow-y: hidden;
       >dl {
         .dl-mixin();
         >dd {
@@ -394,7 +395,8 @@ body#thing {
         opacity: 1;
       }
       >.panel-body {
-        display: block;
+        max-height: none;
+        transition: 0.3s linear opacity;
         opacity: 1;
       }
     }
