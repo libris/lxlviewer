@@ -74,6 +74,7 @@ DOMAIN_BASE_MAP = {
     'id.local.dev': IDKBSE, 'libris.local.dev': LIBRIS,
     'id-dev.kb.se':  IDKBSE, 'libris-dev.kb.se': LIBRIS,
     'id-stg.kb.se':  IDKBSE, 'libris-stg.kb.se': LIBRIS,
+    'id-qa.kb.se': IDKBSE, 'libris-qa.kb.se': LIBRIS,
     'id.kb.se':  IDKBSE, 'libris.kb.se': LIBRIS,
 }
 LEGACY_BASE = "http://libris.kb.se/"
