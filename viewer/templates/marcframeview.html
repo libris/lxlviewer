@@ -156,7 +156,7 @@
   % if (not isinstance(value, basestring) or not value.startswith(('@', '_'))
       ) and not isinstance(value, bool) and key in (
         'aboutType', 'link', 'addLink', 'property', 'addProperty', 'resourceType')
-    <a href="/vocabview/#${value}" class="${key}">${value}</a>
+    <a href="/vocab/#${value}" class="${key}">${value}</a>
   % elif key == 'tokenMap'
     <a href="#map-${value}">${value}</a>
   % elif key == 'inherit' and value.isdigit()
