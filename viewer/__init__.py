@@ -15,8 +15,8 @@ from lxltools.util import as_iterable
 from lxltools.ld.keys import CONTEXT, ID, TYPE, REVERSE
 
 from .thingview import Things, IDKBSE, LIBRIS
+from .marcframeview import MarcFrameView, pretty_json
 from . import conneg
-from . import marcframeview
 
 
 ##
@@ -347,11 +347,11 @@ def vocabview():
 ##
 # Setup marcframe view
 
-mfview = marcframeview.MarcFrameView(
+mfview = MarcFrameView(
         app.config['MARCFRAME_SOURCE'], app.config['CACHE_DIR'])
 
 @app.route('/marcframe/')
 def marcframeview():
     return render_template('marcframeview.html',
             mf=mfview,
-            pretty_json=marcframeview.pretty_json)
+            pretty_json=pretty_json)
