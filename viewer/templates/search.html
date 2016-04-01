@@ -1,8 +1,8 @@
 % macro search_controls(result)
 
 <div class="panel panel-default search-controls">
+    <form action="/find" method="GET">  
     
-    <form action="/find" method="GET">      
       <div class="form-inline">
         <div class="form-group">
           % for param, value in request.args.items(multi=True)
@@ -17,6 +17,26 @@
           <button class="search-button btn btn-primary"><i class="fa fa-search"></i> Sök</button>
         </div>
       </div>
+      
+<div class="btn-group type-buttons" data-toggle="buttons" role="group" aria-label="Välj typ">
+  <label class="btn btn-default no-choice">
+    <input name="type" value="" type="radio">Alla
+  </label>
+  % if len(result.statistics) > 0
+  % for value in result.statistics.sliceByDimension.values()
+    % for obs in value.observation
+  <label class="btn btn-default">
+    <input name="@type" value="${obs.object.curie}" type="radio">
+    % if obs.object.titleByLang
+      ${obs.object.titleByLang['sv']}
+    % elif obs.object.label
+      ${obs.object.label}
+    % endif
+  </label>
+    % endfor
+  % endfor
+  % endif
+</div>
     </form>
 </div>
 % endmacro
