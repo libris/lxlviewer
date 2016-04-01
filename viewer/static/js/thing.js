@@ -121,6 +121,7 @@ $(function () {
   $(document).ready(function () {
     
     createChips($('.main-item'));
+    createChips($('.side-view'));
     initTypeButtons();
     initHitlistExpands();
     
