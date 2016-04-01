@@ -19,12 +19,11 @@
 
 % block content
 <div class="row">
-  <div class="col-md-3">
+  <div class="col-md-4">
     ${thing.description|safe}
   </div>
-  <div class="col-md-9">
-    ${search.search_controls(thing) }
-  </div>
+  <div class="col-md-8">
+    ${search.search_controls(thing, true) }
   
   <!-- <div class="col-md-12">
     <div class="panel panel-default scheme-item">
@@ -54,7 +53,7 @@
       ${view_observation(obs)}
     % endfor
   % endfor
-
+  </div>
 </div>
 
 % endblock
@@ -105,7 +104,6 @@
 
 % macro view_observation(obs)
   % if obs.object is not none
-  <div class="col-md-4">
     % if obs.object.notation
     <div id="${obs.object.notation[0].replace('/','-')}" class="panel panel-default scheme-item">
     % else
@@ -164,6 +162,5 @@
         % endif
       </div>
   </div>
-</div>
   % endif
 % endmacro
