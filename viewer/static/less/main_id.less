@@ -19,6 +19,7 @@
 @bg-site: #F5F5F5;
 @bg-content: @white;
 @bg-navbar: @brand-primary;
+@text-navbar: @white;
 @bg-sidebars: darken(@white, 5%);
 @border-navbar: fadeout(#fff, 100%);
 @bg-footer: fadeout(lighten(@pastel-muted-blue,25%),70%);
@@ -63,17 +64,8 @@ body > .navbar {
   z-index: 999;
   border: solid @border-navbar;
   background-color: @bg-navbar;
-  border-width: 0px 0px 1px 0px;
+  border-width: 0px;
   box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.1);
-  .search {
-    margin-top: 7px;
-    label {
-      color: @gray-dark;
-      font-weight: normal;
-      margin-right: 0.5em;
-      vertical-align: bottom;
-    }
-  }
   @media screen and (max-width: @screen-sm-min) {
     padding: 0 20px;
   }
@@ -85,12 +77,12 @@ body > .navbar {
 .navbar-header {
   margin-left: 1em;
   .navbar-brand {
-    color: @black;
+    color: @text-navbar;
   }
   .environment-label {
     text-transform: uppercase;
     font-size: 0.5em;
-    color: @gray;
+    color: @text-navbar;
     font-weight: bold;
     display: block;
     margin: -0.5em 0px 0px 0.5em;
