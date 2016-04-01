@@ -1,4 +1,4 @@
-% macro search_controls(result)
+% macro search_controls(result, typecontrols)
 
 <div class="panel panel-default search-controls">
     <form action="/find" method="GET">  
@@ -17,7 +17,8 @@
           <button class="search-button btn btn-primary"><i class="fa fa-search"></i> Sök</button>
         </div>
       </div>
-      
+
+% if typecontrols
 <div class="btn-group type-buttons" data-toggle="buttons" role="group" aria-label="Välj typ">
   <label class="btn btn-default no-choice">
     <input name="type" value="" type="radio">Alla
@@ -37,6 +38,7 @@
   % endfor
   % endif
 </div>
+% endif
     </form>
 </div>
 % endmacro
@@ -145,7 +147,13 @@
 <ul class="facet-controls">
 % for observation in stats.sliceByDimension['@type'].observation
   <li>
-    <a href="${observation.view['@id']}">${observation.object.label}</a>
+    <a href="${observation.view['@id']}">
+      % if observation.object.label
+        ${observation.object.label}
+      % else
+        label not found
+      % endif
+    </a>
   </li>
 % endfor
 </ul>
