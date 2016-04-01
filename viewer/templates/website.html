@@ -7,11 +7,11 @@
 
 % block jumbotron
 <div class="jumbotron">
-  <div class="container">
+  <!-- <div class="container">
     <div class="col-md-push-2 col-md-8 text-black">
-      ${search.search_controls(thing) }
+      
     </div>
-  </div>
+  </div> -->
 </div>
 % endblock
 
@@ -19,7 +19,14 @@
 
 % block content
 <div class="row">
-  <div class="col-md-12">
+  <div class="col-md-3">
+    ${thing.description|safe}
+  </div>
+  <div class="col-md-9">
+    ${search.search_controls(thing) }
+  </div>
+  
+  <!-- <div class="col-md-12">
     <div class="panel panel-default scheme-item">
       <div class="col-md-12 main-nav">
         <div class="list-group">
@@ -40,7 +47,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
 
   % for value in thing.statistics.sliceByDimension.values()
     % for obs in value.observation
@@ -56,7 +63,7 @@
 
     <div class="footer-container">
       <div class="container">
-          <div class="col-md-3 col-md-offset-3 col-md-push-2">
+          <div class="col-md-3 col-md-offset-3 col-md-push-3">
             <h1>Kontakt</h1>
             <ul class="list-unstyled">
               <li class=""><a
@@ -117,11 +124,11 @@
         </h1>
       </header>
       <div class="panel-body container-fluid">
-        <p class="description collapsed">
+        <!-- <p class="description collapsed">
           % if 'descriptionByLang' in obs.object
           ${ obs.object.descriptionByLang[lang].strip().replace('\n','<br/>') | safe }
           % endif
-        </p>
+        </p> -->
         % if obs.sliceByDimension
           <div>
             % for dimension in obs.sliceByDimension
