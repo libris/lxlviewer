@@ -246,14 +246,27 @@ body#thing {
     > .panel-heading {
       background-color: @neutral-color;
       border-radius: 3px;
+      border-width: 0px;
       overflow-x: hidden;
       padding: 2px;
       > .panel-title {
+        font-weight: normal;
         font-size: 14px;
-        padding: 0 3px;
       }
       > .panel-heading-meta {
         display: none;
+        > .label-class {
+          font-size: 12px;
+          text-transform: uppercase;
+        }
+      }
+    }
+  }
+  
+  .link-item-original {
+    > .panel-heading {
+      > .panel-title {
+        padding: 3px;
       }
     }
   }
@@ -294,42 +307,40 @@ body#thing {
     border: solid fadeout(darken(@accent-color,15%),30%);
     border-width: 0px 1px 1px 1px;
     text-shadow: 0px 1px 1px rgba(0,0,0,0.4);
-    &.active {
-      box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, 0.4);
-      .panel-heading {
-        overflow-x: visible;
-        .panel-heading-meta {
-          padding-top: 2px;
-          display: block;
-          .thing-id {
-            max-width: 100px;
-            &:hover {
-              overflow: visible;
-              position: absolute;
-            }
+    box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, 0.4);
+    .panel-heading {
+      overflow-x: visible;
+      .panel-heading-meta {
+        padding-top: 2px;
+        display: block;
+        .thing-id {
+          max-width: 100px;
+          &:hover {
+            overflow: visible;
+            position: absolute;
           }
         }
       }
-      >.panel-heading {
-        .header-colored();
-        >.panel-heading-meta {
-          padding: 3px 5px 0px 3px;
-        }
-        >.label-class {
-          display: inline-block;
-          margin-right: 1em;
-          margin-bottom: 0px;
-        }
-        >.panel-title {
-          font-size: 16px;
-        }
+    }
+    >.panel-heading {
+      .header-colored();
+      >.panel-heading-meta {
+        padding: 3px 5px 0px 0px;
       }
-      .thing-id {
-        display: none;
+      >.label-class {
+        display: inline-block;
+        margin-right: 1em;
+        margin-bottom: 0px;
       }
-      .panel-title {
-        width: 100%;
+      >.panel-title {
+        font-size: 16px;
       }
+    }
+    .thing-id {
+      display: none;
+    }
+    .panel-title {
+      width: 100%;
     }
   }
   

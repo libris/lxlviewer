@@ -47,7 +47,6 @@ $(function () {
     setTimeout(function() {
       if(elem.hasClass('to-be-active')) {
         elem.addClass('active');
-        elem.find('.link-item-copy').addClass('active');
       }
     }, 500);
     
