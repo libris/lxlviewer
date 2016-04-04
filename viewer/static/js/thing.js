@@ -22,14 +22,14 @@ $(function () {
       });
       
       // Initialize hover functionality
-      $panelElement.find('.link-item').hover(function() {
-        expand($(this).parent().find('.copy-holder'));
+      $panelElement.find('.link-item-original').hover(function() {
+        expand($(this).find('.copy-holder'));
       }, function() {
-        collapse($(this).parent().find('.copy-holder'));
+        collapse($(this).find('.copy-holder'));
       }).focusin(function() {
-        expand($(this).parent().find('.copy-holder'));
+        expand($(this).find('.copy-holder'));
       }).focusout(function() {
-        collapse($(this).parent().find('.copy-holder'));
+        collapse($(this).find('.copy-holder'));
       });
     
     }, 250);
