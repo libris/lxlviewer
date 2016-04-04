@@ -88,38 +88,6 @@ $(function () {
       }
     });
   };
-  
-  var getParameters = function () {
-    var params = [];
-    $('input[type=hidden]').each(function() {
-      params.push({ key: $(this).attr('name'), value: $(this).val() });
-      $(this).remove();
-    });
-    return params;
-  };
-  
-  var getParameter = function (name) {
-    var parameters = getParameters();
-    for (var i = 0; i < parameters.length; i++){
-      if (name == parameters[i].key) {
-        return parameters[i];
-      }
-    }
-  }
-  
-  var initTypeButtons = function() {
-    var type = getParameter('type');
-    if (typeof type !== 'undefined') {
-      $('.type-buttons input').each(function() {
-        if ($(this).val() == type.value) {
-          $(this).closest('label').addClass('active');
-          $(this).attr('checked', '');
-        }
-      });
-    } else {
-      $('.type-buttons .no-choice').addClass('active');
-    }
-  }
 
   $(document).ready(function () {
     
