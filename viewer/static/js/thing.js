@@ -88,13 +88,14 @@ $(function () {
       }
     });
   };
+  
+  initHitlistExpands();
 
   $(document).ready(function () {
     
+    initTypeButtons();
     createChips($('.main-item'));
     createChips($('.side-view'));
-    initTypeButtons();
-    initHitlistExpands();
     
     // Remove empty fields
     $('form').submit(function(e){
