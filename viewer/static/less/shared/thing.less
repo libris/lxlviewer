@@ -17,6 +17,7 @@
     }
   }
   >.panel-heading-meta {
+    height: 16px;
     .label-class {
       color: desaturate(lighten(@accent-color, 50%),40%);
     }
@@ -53,6 +54,22 @@
 }
 
 /*********/
+/* General rules
+/*********/
+.label-class {
+  text-transform: uppercase;
+  border-bottom: 1px dashed transparent;
+  cursor: help;
+  font-size: 12px;
+  line-height: 12px;
+  float: left;
+  &:hover {
+    text-decoration: none;
+    border-bottom: 1px dashed;
+  }
+}
+
+/*********/
 /* General panel rules
 /*********/
 
@@ -73,22 +90,11 @@
       overflow-x: hidden;
       overflow-y: hidden;
       >.label-class {
-        font-size: 12px;
         text-shadow: 0px 1px 1px rgba(0,0,0,0.4);
-        text-transform: uppercase;
         display: inline-block;
-        cursor: help;
-        line-height: 12px;
-        border-bottom: 1px dashed transparent;
-        text-decoration: none;
         width: auto;
-        float: left;
-        &:hover {
-          border-bottom: 1px dashed;
-        }
       }
       >.thing-id {
-        height: 22px;
         float: right;
         line-height: 16px;
         margin-left: 1em;
@@ -225,10 +231,8 @@ body#thing {
     }
     >.panel-heading {
       .header-colored();
-      
       .thing-label {
         font-size: 2em;
-        line-height: 0.5;
       }
     }
   }
@@ -252,21 +256,10 @@ body#thing {
       > .panel-title {
         font-weight: normal;
         font-size: 14px;
+        padding: 3px;
       }
       > .panel-heading-meta {
         display: none;
-        > .label-class {
-          font-size: 12px;
-          text-transform: uppercase;
-        }
-      }
-    }
-  }
-  
-  .link-item-original {
-    > .panel-heading {
-      > .panel-title {
-        padding: 3px;
       }
     }
   }
@@ -333,6 +326,7 @@ body#thing {
         margin-bottom: 0px;
       }
       >.panel-title {
+        padding: 3px 0px 0px 0px;
         font-size: 16px;
       }
     }
@@ -358,9 +352,6 @@ body#thing {
         >.thing-id {
           opacity: 0;
           transition: 0.5s ease opacity;
-        }
-        >.label-class {
-          
         }
       }
       .header-uncolored();
