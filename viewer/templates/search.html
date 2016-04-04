@@ -19,14 +19,14 @@
       </div>
 
 % if typecontrols
-<div class="btn-group type-buttons" data-toggle="buttons" role="group" aria-label="Välj typ">
-  <label class="btn btn-default no-choice">
-    <input name="type" value="" type="radio">Alla
+<div class="type-buttons" aria-label="Välj typ">
+  <label class="no-choice">
+    <input name="@type" value="" type="radio"> Alla
   </label>
   % if len(result.statistics) > 0
   % for value in result.statistics.sliceByDimension.values()
     % for obs in value.observation
-  <label class="btn btn-default">
+  <label class="">
     <input name="@type" value="${obs.object.curie}" type="radio">
     % if obs.object.titleByLang
       ${obs.object.titleByLang['sv']}
