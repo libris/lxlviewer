@@ -68,17 +68,21 @@ $(function () {
     
     
     $('.hit-item').each(function() {
-      $("<div class='expand-button'><i class='fa rotate fa-chevron-right'></i></div>").insertBefore($(this).find('.panel-title').eq(0));
+      $("<div class='expand-button'><i class='fa rotate fa-plus-circle'></i></div>").prependTo($(this).find('.panel-title').eq(0));
     })
   
     $('.hit-item .expand-button').click(function() {
       $subject = $(this).closest('.hit-item');
       if ($subject.hasClass('expanded')) {
-        $(this).find('i').removeClass('rotate-90');
+        $(this).find('i').removeClass('rotate-180');
+        $(this).find('i').addClass('fa-plus-circle');
+        $(this).find('i').removeClass('fa-minus-circle');
         $subject.removeClass('expanded');
         destroyChips($subject);
       } else {
-        $(this).find('i').addClass('rotate-90');
+        $(this).find('i').addClass('rotate-180');
+        $(this).find('i').addClass('fa-minus-circle');
+        $(this).find('i').removeClass('fa-plus-circle');
         $subject.addClass('expanded');
         createChips($subject);
       }
