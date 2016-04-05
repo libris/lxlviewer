@@ -20,7 +20,9 @@
 % block content
 <div class="row">
   <div class="col-md-4">
-    ${thing.description|safe}
+    <div class="panel panel-default intro-text">
+      ${thing.description|safe}
+    </div>
   </div>
   <div class="col-md-8">
     ${search.search_controls(thing, true) }
@@ -83,9 +85,9 @@
           </div>
           <div class="text-center col-md-3 col-md-pull-8">
             <div class="">
-              <img src="/assets/kb_logo_black.svg" class="logo-medium" alt="" />
+              <img src="/assets/kb_logo_white.svg" class="logo-medium" alt="" />
             </div>
-            <div class="text-black">
+            <div>
               <p><br/>
                 <strong><a href="http://www.kb.se" alt="Länk till Kungl. bibliotekets webbplats">
                   KUNGL. BIBLIOTEKET
