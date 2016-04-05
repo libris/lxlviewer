@@ -137,29 +137,26 @@
 % endmacro
 
 % macro facet_controls(result)
-
-<div class="panel-body facet-controls">
   <div>
-% if result['stats']
-% set stats = result['stats']
-<label>
-  Filtrera
-</label>
-<ul>
-% for observation in stats.sliceByDimension['@type'].observation
-  % if observation.object.label
-  <li>
-    <a href="${observation.view['@id']}">
-      <i class="fa fa-square-o"></i>${observation.object.label | truncate(20, true) } <span class="quantity">(${observation.totalItems})</span>
-    </a>
-  </li>
+  % if result['stats']
+  % set stats = result['stats']
+  <label>
+    Filtrera
+  </label>
+  <ul>
+    % for observation in stats.sliceByDimension['@type'].observation
+    % if observation.object.label
+    <li>
+      <a href="${observation.view['@id']}" title="${observation.object.label}">
+        <i class="fa fa-square-o"></i>${observation.object.label | truncate(20, true) }
+      </a>
+      <span class="quantity">(${observation.totalItems})</span>
+    </li>
+    % endif
+    % endfor
+  </ul>
+  % else
+    Inga facetter...
   % endif
-% endfor
-</ul>
-% else
-  Inga facetter...
-% endif
-</div>
-</div>
-
+  </div>
 % endmacro
