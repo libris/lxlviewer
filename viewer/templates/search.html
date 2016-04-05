@@ -150,7 +150,7 @@
   % if observation.object.label
   <li>
     <a href="${observation.view['@id']}">
-      <i class="fa fa-square-o"></i>${observation.object.label}
+      <i class="fa fa-square-o"></i>${observation.object.label | truncate(20, true) } <span class="quantity">(${observation.totalItems})</span>
     </a>
   </li>
   % endif
