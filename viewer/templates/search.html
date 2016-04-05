@@ -146,15 +146,13 @@
 </label>
 <ul class="facet-controls">
 % for observation in stats.sliceByDimension['@type'].observation
+  % if observation.object.label
   <li>
     <a href="${observation.view['@id']}">
-      % if observation.object.label
-        ${observation.object.label}
-      % else
-        label not found
-      % endif
+      ${observation.object.label}
     </a>
   </li>
+  % endif
 % endfor
 </ul>
 % else
