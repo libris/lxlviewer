@@ -22,11 +22,18 @@ body#website {
 
 .search-controls {
   padding: 20px;
+  .search-input {
+    height: 44px;
+  }
+  .search-button {
+    height: 42px;
+  }
   .form-group {
     width: 100%;
   }
   .search-label {
     display: block;
+    text-transform: uppercase;
   }
 
   .type-label {
@@ -34,10 +41,12 @@ body#website {
   }
   .type-buttons {
     label {
-      background-color: @dl-gray;
       padding: 3px 10px;
-      border: 1px solid #ccc;
-      border-radius: 3px;
+      font-weight: normal;
+      font-size: 12px;
+      input {
+        margin-right: 0.2em;
+      }
     }
     margin-top: 1em;
   }

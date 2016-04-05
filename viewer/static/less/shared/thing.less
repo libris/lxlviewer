@@ -2,7 +2,7 @@
 /* Mixins for headers
 /********/
 
-@accent-color: @brand-primary;
+@accent-color: @thing-header-bg;
 @neutral-color: #fff;
 @dl-gray: #fafafa;
 
@@ -12,14 +12,14 @@
   >.panel-title {
     a {
     transition: color ease 0.2s;
-    color: #fff;
+    color: @thing-header-text;
     text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.4);
     }
   }
   >.panel-heading-meta {
     height: 16px;
     .label-class {
-      color: desaturate(lighten(@accent-color, 50%),40%);
+      color: @thing-header-text;
     }
     .thing-id {
       color: @gray-darker;

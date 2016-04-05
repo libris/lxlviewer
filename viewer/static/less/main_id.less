@@ -15,15 +15,21 @@
 @import 'shared/website.less';
 @import 'shared/search.less';
 @import 'shared/article.less';
+@import 'shared/panel.less';
+@import 'shared/navbar.less';
 
 // ----------- VARIABLES ------------
 @bg-site: #F5F5F5;
 @bg-content: @white;
-@bg-navbar: @brand-primary;
+@bg-content-alt: @happy-muted-light-blue;
+@bg-navbar: @happy-muted-denim;
 @text-navbar: @white;
+@text-alt-navbar: @happy-muted-light-blue;
 @bg-sidebars: darken(@white, 5%);
 @border-navbar: fadeout(#fff, 100%);
-@bg-footer: fadeout(lighten(@pastel-muted-blue,25%),70%);
+@bg-footer: @bg-navbar;
+@text-footer: @text-navbar;
+@text-alt-footer: @text-alt-navbar;
 @brand-primary: @happy-magenta;
 @bg-jumbotron: transparent;
 @bg-jumbotron-image: none;
@@ -33,10 +39,14 @@
 @color-prop-list: @grey;
 @color-ext: #d51;
 @color-id: #c7254e;
-@link-color: @brand-primary;
+@link-color: #288DC1;
 @link-hover-color: darken(@link-color,15%);
+@panel-border-radius: 0px;
+@thing-header-bg: lighten(@bg-navbar,15%);
+@thing-header-text: @white;
 
 @color-headers: #555;
+@color-headers-text: #fff;
 
 // ----------- FONTS ----------------
 @font-face {
@@ -61,21 +71,6 @@ body.loading * {
   cursor: progress;
 }
 
-body > .navbar {
-  width: 100%;
-  z-index: 999;
-  border: solid @border-navbar;
-  background-color: @bg-navbar;
-  border-width: 0px;
-  box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.1);
-  @media screen and (max-width: @screen-sm-min) {
-    padding: 0 20px;
-  }
-  .container-fluid {
-    padding: 0 30px 0 15px;
-  }
-}
-
 .navbar-header {
   margin-left: 1em;
   .navbar-brand {
@@ -84,7 +79,7 @@ body > .navbar {
   .environment-label {
     text-transform: uppercase;
     font-size: 0.5em;
-    color: @text-navbar;
+    color: @text-alt-navbar;
     font-weight: bold;
     display: block;
     margin: -0.5em 0px 0px 0.5em;
@@ -115,6 +110,15 @@ footer {
   border: solid @border-footer;
   border-width: 1px 0px 0px 0px;
   z-index: 999;
+  color: @text-footer;
+  text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.2);
+  text-transform: uppercase;
+  a {
+    color: @text-footer;
+  }
+  i {
+    color: @text-alt-footer;
+  }
 }
 
 .popover.state-active {
@@ -138,7 +142,6 @@ footer {
   width: 100%;
   max-width: 800px;
   .loc {
-    // margin-bottom: 10px;
     .chip-prop {
       display: inline;
       line-height: 1.7;
@@ -154,7 +157,7 @@ footer {
 .result-controls,
 .hit-item,
 .main-item,
-.scheme-item  {
+.scheme-item {
   box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.1);
 }
 
