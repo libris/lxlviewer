@@ -138,18 +138,19 @@
 
 % macro facet_controls(result)
 
-<div class="panel-body">
+<div class="panel-body facet-controls">
+  <div>
 % if result['stats']
 % set stats = result['stats']
 <label>
   Filtrera
 </label>
-<ul class="facet-controls">
+<ul>
 % for observation in stats.sliceByDimension['@type'].observation
   % if observation.object.label
   <li>
     <a href="${observation.view['@id']}">
-      ${observation.object.label}
+      <i class="fa fa-square-o"></i>${observation.object.label}
     </a>
   </li>
   % endif
@@ -158,6 +159,7 @@
 % else
   Inga facetter...
 % endif
+</div>
 </div>
 
 % endmacro
