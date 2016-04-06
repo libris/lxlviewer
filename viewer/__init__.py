@@ -27,7 +27,7 @@ class MyFlask(Flask):
             variable_start_string='${', variable_end_string='}',
             line_statement_prefix='%')
 
-app = MyFlask(__name__, static_url_path='/media', static_folder='static',
+app = MyFlask(__name__, static_url_path='/assets', static_folder='static',
         instance_relative_config=True)
 
 app.config.from_object('viewer.configdefaults')
