@@ -34,14 +34,18 @@ $(function () {
 
   $(document).ready(function () {
     
-    document.getElementById('searchForm').onsubmit = function(e) {
-      if (document.getElementById('searchQ').value == '') {
-        e.preventDefault();
-      } else if (document.getElementById('noneType') && document.getElementById('noneType').checked) {
-      // This removes the "all types" value from the query...
-        document.getElementById('noneType').checked = false;
-      }
-    };
+    let searchForm = document.getElementById('searchForm');
+    if(searchForm && typeof searchForm !== 'undefined') {
+      console.log("found");
+      document.getElementById('searchForm').onsubmit = function(e) {
+        if (document.getElementById('searchQ').value == '') {
+          e.preventDefault();
+        } else if (document.getElementById('noneType') && document.getElementById('noneType').checked) {
+        // This removes the "all types" value from the query...
+          document.getElementById('noneType').checked = false;
+        }
+      };
+    }
     
   });
 
