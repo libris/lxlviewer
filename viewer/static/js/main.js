@@ -34,9 +34,11 @@ $(function () {
 
   $(document).ready(function () {
     
-    // This removes the "all types" value from the query...
-    document.getElementById('searchForm').onsubmit = function() {
-      if (document.getElementById('noneType') && document.getElementById('noneType').checked) {
+    document.getElementById('searchForm').onsubmit = function(e) {
+      if (document.getElementById('searchQ').value == '') {
+        e.preventDefault();
+      } else if (document.getElementById('noneType') && document.getElementById('noneType').checked) {
+      // This removes the "all types" value from the query...
         document.getElementById('noneType').checked = false;
       }
     };
