@@ -1,7 +1,7 @@
 % macro search_controls(result, typecontrols)
 
 <div class="panel panel-default search-controls">
-    <form action="/find" method="GET">  
+    <form action="/find" method="GET" id="searchForm">
     
       <div class="form-inline">
         <div class="form-group">
@@ -13,15 +13,15 @@
           <label class="search-label" id="searchlabel" for="q">
             Sök term
           </label>
-          <input aria-labelledby="searchlabel" class="form-control search-input" name="q" id="q" value="${result.textQuery}" />
-          <button class="search-button btn btn-primary"><i class="fa fa-search"></i> Sök</button>
+          <input aria-labelledby="searchlabel" class="form-control search-input" name="q" id="searchQ" value="${result.textQuery}" />
+          <button id="searchSubmit" class="search-button btn btn-primary"><i class="fa fa-search"></i> Sök</button>
         </div>
       </div>
 
 % if typecontrols
 <div class="type-buttons" aria-label="Välj typ">
   <label class="no-choice">
-    <input name="inScheme.@id" value="*" type="radio"> Alla
+    <input name="inScheme.@id" id="noneType" value="" type="radio"> Alla
   </label>
   % if len(result.statistics) > 0
   % for value in result.statistics.sliceByDimension.values()
@@ -41,7 +41,8 @@
   % endif
 </div>
 % endif
-    </form>
+
+  </form>
 </div>
 % endmacro
 

@@ -29,3 +29,18 @@ function getParameter(name) {
     }
   }
 }
+
+$(function () {
+
+  $(document).ready(function () {
+    
+    // This removes the "all types" value from the query...
+    document.getElementById('searchForm').onsubmit = function() {
+      if (document.getElementById('noneType') && document.getElementById('noneType').checked) {
+        document.getElementById('noneType').checked = false;
+      }
+    };
+    
+  });
+
+});
