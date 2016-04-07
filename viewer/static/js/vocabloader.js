@@ -41,17 +41,19 @@ $(function () {
       }
       
       // Constrain popover location to within page
-      var popoverY = linkPos.Y - ($('.state-active').height()*0.5) + 8;
+      var popoverH = $('.state-active').height();
+      var popoverY = linkPos.Y - (popoverH*0.5) + 8;
       $('.state-active .arrow').css('top', '50%');
       if (popoverY < 50) {
-        popoverY = linkPos.Y - ($('.state-active').height()*0.25) + 8;
+        popoverY = linkPos.Y - (popoverH*0.25) + 8;
         $('.state-active .arrow').css('top', '25%');
       }
-      if (popoverY + $('.state-active').height() > $(document).height()) {
-        popoverY -= $('.state-active').height()*0.25;
+      if (popoverY + popoverH > $(document).height() - popoverH *0.25) {
+        popoverY -= popoverH*0.25;
       }
-      if (popoverY < 55)
+      if (popoverY < 55) {
         popoverY = 55;
+      }
       
       if(flipOrientation) {
         $('.state-active')
