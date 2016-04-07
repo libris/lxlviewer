@@ -18,7 +18,7 @@
       <div class="{% block navcontainerclass %}container{% endblock %}">
         <div class="navbar-header" role="banner">
           <div class="navbar-brand navbar-logo">
-                <a href="/"><img src="/assets/kb_logo_white.svg" alt="Kungliga Bibliotekets logotyp"></a>
+                <a href="/"><img src="/assets/img/kb_logo_white.svg" alt="Kungliga Bibliotekets logotyp"></a>
           </div>
           <a class="navbar-brand" href="/" title="Version ${ config.VERSION }">${g.site.title}
             <span class="environment-label">
@@ -47,9 +47,9 @@
     <footer>
       {% block footer %}{% endblock %}
     </footer>
-    <script src="/vendor/jquery/js/jquery.js"></script>
-    <script src="/vendor/bootstrap/js/bootstrap.js"></script>
-    <script src="/js/main.js"></script>
+    <script src="/assets/vendor/jquery/js/jquery.js"></script>
+    <script src="/assets/vendor/bootstrap/js/bootstrap.js"></script>
+    <script src="/assets/js/main.js"></script>
     {% block scripts %}{% endblock %}
     <!-- Piwik -->
     {% if config.PIWIK_ID %}

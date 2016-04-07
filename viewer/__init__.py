@@ -27,7 +27,7 @@ class MyFlask(Flask):
             variable_start_string='${', variable_end_string='}',
             line_statement_prefix='%')
 
-app = MyFlask(__name__, static_url_path='/media', static_folder='static',
+app = MyFlask(__name__, static_url_path='/assets', static_folder='static',
         instance_relative_config=True)
 
 app.config.from_object('viewer.configdefaults')
@@ -62,6 +62,8 @@ def favicon():
 
 ##
 # Setup viewer state
+
+CONTEXT_PATH = '/context.jsonld'
 
 TYPE_TEMPLATES = {
     'DataCatalog': 'website.html',
@@ -160,7 +162,7 @@ def disconnect_db(exception):
     ldview.storage.disconnect()
 
 
-@app.route('/context.jsonld')
+@app.route(CONTEXT_PATH)
 def jsonld_context():
     return Response(json.dumps(things.jsonld_context_data),
             mimetype='application/ld+json; charset=UTF-8')
@@ -231,7 +233,7 @@ def rendered_response(path, suffix, thing):
     resp = Response(result, mimetype=mimetype +'; '+ charset) if isinstance(
             result, bytes) else result
     if mimetype == 'application/json':
-        context_link = '</context.jsonld>; rel="http://www.w3.org/ns/json-ld#context"'
+        context_link = '<%s>; rel="http://www.w3.org/ns/json-ld#context"' % CONTEXT_PATH
         resp.headers['Link'] = context_link
     return resp
 
@@ -262,7 +264,7 @@ def render_json(path, data):
 
 @negotiator.add('application/ld+json', 'jsonld')
 def render_jsonld(path, data):
-    data[CONTEXT] = '/context.jsonld'
+    data[CONTEXT] = CONTEXT_PATH
     return _to_json(data)
 
 @negotiator.add('text/turtle', 'ttl')
@@ -334,7 +336,9 @@ def vocabview():
     mimetype = request.accept_mimetypes.best_match(MIMETYPE_FORMATS)
     if mimetype in RDF_MIMETYPES:
         return voc.graph.serialize(format=
-                'json-ld' if mimetype == 'application/ld+json' else mimetype)
+                'json-ld' if mimetype == 'application/ld+json' else mimetype,
+                #context_id=CONTEXT_PATH,
+                context=things.jsonld_context_data[CONTEXT])
 
     return render_template('vocab.html',
             URIRef=URIRef, **vars())
