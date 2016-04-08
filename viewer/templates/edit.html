@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<meta charset="utf-8" />
+<h1></h1>
+<textarea id="editor" cols="80" rows="40"></textarea>
+<script id="data" type="application/json">${data|safe}</script>
+<script id="model" type="application/json">${model|safe}</script>
+<script>
+  var data = document.getElementById('data').innerText
+  document.getElementById('editor').value = data
+  var graph = JSON.parse(data)
+  document.querySelector('h1').innerHTML = graph['@graph'][0]['@id']
+</script>

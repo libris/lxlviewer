@@ -202,6 +202,17 @@ def thingview(path, suffix=None):
 def _to_data_path(path, suffix):
     return '%s/data.%s' % (path, suffix) if suffix else path
 
+@app.route('/<path:path>/edit')
+def thingedit(path):
+    item_id = _get_served_uri(request.url, path)
+    thing = ldview.get_record_data(item_id)
+    if not thing:
+        return abort(404)
+    model = {}
+    return render_template('edit.html',
+            data=json.dumps(thing, ensure_ascii=False),
+            model=json.dumps(model, ensure_ascii=False))
+
 @app.route('/find')
 @app.route('/find.<suffix>')
 def find(suffix=None):
