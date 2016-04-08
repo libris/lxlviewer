@@ -129,6 +129,11 @@ def canonical_uri(thing):
                 return same_id
     return thing_id
 
+def make_find_url(**kws):
+    if 'q' not in kws:
+        kws = dict(q='*', **kws)
+    return url_for('find', **kws)
+
 
 ##
 # Setup data-access
@@ -201,7 +206,6 @@ def _to_data_path(path, suffix):
 @app.route('/find')
 @app.route('/find.<suffix>')
 def find(suffix=None):
-    make_find_url = lambda **kws: url_for('find', **kws)
     results = ldview.get_search_results(request.args, make_find_url,
             _get_base_uri(request.url))
     return rendered_response('/find', suffix, results)
@@ -220,7 +224,8 @@ def some(suffix=None):
 def dataindexview(suffix=None):
     slicerepr = request.args.get('slice')
     slicetree = json.loads(slicerepr) if slicerepr else g.site['slices']
-    results = ldview.get_index_stats(_get_base_uri(request.url), slicetree=slicetree)
+    results = ldview.get_index_stats(slicetree, make_find_url,
+            _get_base_uri(request.url))
     results.update(g.site)
     return rendered_response('/', suffix, results)
 
