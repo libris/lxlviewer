@@ -1,5 +1,7 @@
 % extends "thing.html"
 
+{% block bodyattrs %}vocab="${config.VOCAB_IRI}" id="article"{% endblock %}
+
 {% block title %} - ${thing.title}{% endblock %}
 
 % block content
