@@ -4,7 +4,7 @@ export default class Vocab extends View {
   
   constructor() {
     super();
-  }
+  },
   
   initialize() {
     super.initialize();
@@ -53,7 +53,7 @@ export default class Vocab extends View {
     }
     
     this.initClicks();
-  }
+  },
   
   initClicks() {
     $('body#vocab .menu-col a').click(function (e) {
@@ -72,7 +72,7 @@ export default class Vocab extends View {
       var layoutRef = $('body').attr('id');
       if (typeof(_paq) !== 'undefined') _paq.push(['trackEvent', layoutRef, 'Card click', ref]);
     });
-  }
+  },
   
   setActive(item) {
     
@@ -86,5 +86,5 @@ export default class Vocab extends View {
     $('.active-item').removeClass('active-item');
     $('body').scrollTop($(item).offset().top - 100);
     $(item).addClass('active-item');
-  };
+  }
 }
