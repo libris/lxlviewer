@@ -5,8 +5,8 @@ var loadHandler = new Loader();
 loadHandler.loadViews(['Thing']);
 
 $(document).ready(function () {
-  setTimeout( function () {
+  setTimeout(() => {
+    loadHandler.initCommon();
     loadHandler.initPage();
-    
-  }, 1000);
+  }, 100);
 });

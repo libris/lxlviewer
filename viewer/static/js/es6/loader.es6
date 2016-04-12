@@ -1,4 +1,5 @@
 import Thing from './views/thing';
+import * as VocabLoader from './utils/vocabloader';
 
 export default class Loader {
   
@@ -12,7 +13,7 @@ export default class Loader {
   }
     
   initCommon() {
-    console.log("Do something common");
+    VocabLoader.initVocabClicks();
   }
   
   initPage() {
