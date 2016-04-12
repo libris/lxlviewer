@@ -16,8 +16,8 @@ export default class Loader {
     VocabLoader.initVocabClicks();
   }
   
-  initPage() {
-    let bodyId = document.body.id;
+  initPage(id) {
+    let bodyId = id;
         
     for(var i = 0; i < this.views.length; i++) {
       if (this.views[i].constructor.name.toLowerCase() == bodyId.toLowerCase()) {
