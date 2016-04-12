@@ -1,6 +1,6 @@
-$(function () {
 
-  var createChips = function ($panelElement) {    
+
+export function createChips($panelElement) {
     if ($panelElement.length < 1)
       return;
       
@@ -33,46 +33,43 @@ $(function () {
       });
     
     }, 250);
-  }
-  
-  var destroyChips = function($panelElement) {
+}
+
+export function destroyChips($panelElement) {
     $panelElement.find('.copy-holder').each(function() {
       $(this).remove();
-    })
-  }
+    })  
+}
 
-  var expand = function (elem) {
-    elem.addClass('to-be-active');
-    var resource = elem.attr('resource');
+export function expand($elem) {
+    $elem.addClass('to-be-active');
+    var resource = $elem.attr('resource');
     setTimeout(function() {
-      if(elem.hasClass('to-be-active')) {
-        elem.addClass('active');
+      if($elem.hasClass('to-be-active')) {
+        $elem.addClass('active');
       }
-    }, 500);
-    
-  };
-  var collapse = function (elem) {
-    elem.removeClass('to-be-active');
-    elem.removeClass('active');
-    elem.find('.link-item-copy').removeClass('active');
+    }, 500);  
+};
+export function collapse($elem) {
+    $elem.removeClass('to-be-active');
+    $elem.removeClass('active');
+    $elem.find('.link-item-copy').removeClass('active');
     
     // Removing these so that the chip isn't activated when hovering on the ghost of it...
-    elem.css('margin-top', '');
-    elem.removeClass('adjusted-top');
+    $elem.css('margin-top', '');
+    $elem.removeClass('adjusted-top');
     
-    elem.css('width', '').css('height', '');
-  };
-  
-  var initHitlistExpands = function() {
-    // Hit list expand functionality
-    
-    
-    $('.hit-item').each(function() {
+    $elem.css('width', '').css('height', '');
+};
+
+export function initHitlistExpands($hitlist) {
+  // Hit list expand functionality
+    $($hitlist).find('.hit-item').each(function() {
       $("<div class='expand-button'><i class='fa rotate fa-plus-circle'></i></div>").prependTo($(this).find('.panel-title').eq(0));
     })
-  
-    $('.hit-item .expand-button').click(function() {
-      $subject = $(this).closest('.hit-item');
+
+    $($hitlist).find('.hit-item .expand-button').click(function() {
+      let $subject = $(this).closest('.hit-item');
       if ($subject.hasClass('expanded')) {
         $(this).find('i').removeClass('rotate-180');
         $(this).find('i').addClass('fa-plus-circle');
@@ -87,23 +84,4 @@ $(function () {
         createChips($subject);
       }
     });
-  };
-  
-  initHitlistExpands();
-
-  $(document).ready(function () {
-    
-    initTypeButtons();
-    createChips($('.main-item'));
-    createChips($('.side-view'));
-    
-    // Remove empty fields
-    $('form').submit(function(e){
-        var emptyinputs = $(this).find('input').filter(function(){
-            return !$.trim(this.value).length;
-        }).prop('disabled',true);
-    });
-    
-  });
-
-});
+};
