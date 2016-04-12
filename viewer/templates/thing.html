@@ -1,6 +1,6 @@
 % extends "base.html"
 
-{% block title %} - ${vocab.labelgetter(thing)}{% endblock %}
+{% block title %}${vocab.labelgetter(thing)}{% endblock %}
 
 {% block bodyattrs %}vocab="${config.VOCAB_IRI}" id="thing"{% endblock %}
 {% block navcontainerclass %} container {% endblock %}
