@@ -1,5 +1,15 @@
 % macro search_controls(result, typecontrols)
 
+% if result.search
+
+  % set q
+    ${ result.search.mapping | selectattr("variable", "equalto", "q") | map(attribute='value') | first }
+  % endset
+  
+  % set mapping = result.search.mapping
+
+% endif
+
 <div class="panel panel-default search-controls">
     <form action="/find" method="GET" id="searchForm">
     
@@ -13,7 +23,7 @@
           <label class="search-label" id="searchlabel" for="q">
             Sök term
           </label>
-          <input aria-labelledby="searchlabel" class="form-control search-input" name="q" id="searchQ" value="${result.textQuery}" />
+          <input aria-labelledby="searchlabel" class="form-control search-input" name="q" id="searchQ" value="${q | trim }" />
           <button id="searchSubmit" class="search-button btn btn-primary"><i class="fa fa-search"></i> Sök</button>
         </div>
       </div>
@@ -42,30 +52,58 @@
 </div>
 % endif
 
+% if len(mapping) > 1
+<div class="activated-facets">
+  <label>
+    Aktiv filtrering
+  </label>
+  <ul>
+  % for item in mapping
+    % if item.variable != 'q'
+    <li>
+      <a href="${item.up['@id']}" title="${item.object['@id']}">
+        ${item.object['@id']}<i class="fa fa-remove"></i>
+      </a>
+    </li>
+    % endif
+  % endfor
+  </ul>
+</div>
+% endif
+
   </form>
 </div>
 % endmacro
 
 % macro result_controls(result, details)
-  <div class="panel panel-default result-controls">
+  
+  % set items = result['items']
+  % set search = result['search']
+  % set mapping = search.mapping
+  
+  % set q
+    ${ mapping | selectattr("variable", "equalto", "q") | map(attribute='value') | first }
+  % endset
+    
+  <div class="panel panel-default result-controls">    
     % if details
     <div class="search-details">
       <span class="search-keyword">
-        % if result.textQuery and result.totalItems > 0
-          Sökning på <i>"${result.textQuery}"</i>
+        % if q and result.totalItems > 0
+          Sökning på <i>"${q | trim}"</i>
           % if result.totalItems
             gav ${result.totalItems} träffar.
           % endif
         % elif result.value
           Sökning ${result.value}
         % else
-          Sökning på <i>"${result.textQuery}"</i> gav inga träffar.
+          Sökning på <i>"${q | trim}"</i> gav inga träffar.
         % endif
       </span>
       <span class="search-items-per-page pull-right">
         % if result.totalItems
         Visar resultat
-          ${result.itemOffset + 1}-${min(result.totalItems, result.itemOffset + len(result['items']))}.
+          ${result.itemOffset + 1}-${min(result.totalItems, result.itemOffset + len(items))}.
         % endif
       </span>
     </div>
@@ -94,7 +132,7 @@
       % endif
       
       % set limit = int(request.args.get('limit')) if request.args.get('limit') else int(50)
-      % set offset = int(request.args.get('offset')) if request.args.get('offset') else int(0)
+      % set offset = result.itemOffset
       
       % if result.totalItems
         % set pages = int(result.totalItems / limit) + 1
@@ -143,6 +181,7 @@
   <div>
   % if result['stats']
   % set stats = result['stats']
+  % set mapping = result.search['mapping']
   <label>
     Filtrera
   </label>
@@ -151,7 +190,7 @@
     % if observation.object.label
     <li>
       <a href="${observation.view['@id']}" title="${observation.object.label}">
-        <i class="fa fa-square-o"></i>${observation.object.label | truncate(20, true) }
+        ${observation.object.label | truncate(20, true) }
       </a>
       <span class="quantity">(${observation.totalItems})</span>
     </li>

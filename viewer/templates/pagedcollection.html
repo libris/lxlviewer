@@ -21,7 +21,7 @@
       ${ search.facet_controls(thing) }
       </div>
     </div>
-    ${ search.result_controls(items, True) }
+    ${ search.result_controls(thing, True) }
     % if items
     <div class="result-list">
     % for item in items
@@ -29,7 +29,7 @@
     % endfor
     </div>
     % endif
-    ${ search.result_controls(items, False) }
+    ${ search.result_controls(thing, False) }
   </div>    
 </div>
 % endblock
