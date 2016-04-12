@@ -1,5 +1,6 @@
 import Thing from './views/thing';
-import * as VocabLoader from './utils/vocabloader';
+import Editor from './views/editor';
+import Vocab from './views/vocab';
 
 export default class Loader {
   
@@ -7,13 +8,26 @@ export default class Loader {
     this.views = [];
   }
 
-  loadViews(views) {
-    // Accepts list of class names.
-    this.views.push(new Thing('Thing'));
+  loadViews() {
+    this.views.push(new Thing());
+    this.views.push(new Editor());
+    this.views.push(new Vocab());
   }
     
   initCommon() {
-    VocabLoader.initVocabClicks();
+    
+    // Prevent empty search and handle searches without type set..
+    let searchForm = document.getElementById('searchForm');
+    if(searchForm && typeof searchForm !== 'undefined') {
+      document.getElementById('searchForm').onsubmit = function(e) {
+        if (document.getElementById('searchQ').value == '') {
+          e.preventDefault();
+        } else if (document.getElementById('noneType') && document.getElementById('noneType').checked) {
+          document.getElementById('noneType').checked = false;
+        }
+      };
+    }
+    
   }
   
   initPage(id) {

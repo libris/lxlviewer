@@ -1,7 +1,7 @@
 export default class View {
   
-  constructor(name) {
-    this.name = name;
+  constructor() {
+    this.name = this.constructor.name;
   }
   
   initialize() {
