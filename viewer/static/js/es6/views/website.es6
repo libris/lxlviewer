@@ -1,5 +1,5 @@
-import View from './view'
-import * as searchutil from '../utils/search'
+import View from './view';
+import * as searchutil from '../utils/search';
 
 export default class Website extends View {
 
