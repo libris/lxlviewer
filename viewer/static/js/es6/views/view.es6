@@ -5,6 +5,18 @@ export default class View {
   }
   
   initialize() {
+    
+    if (window.location.hash) {
+      shiftWindow();
+    }
+    
     console.log("View '" + this.name + "' was initialized.");
+  }
+  
+  shiftWindow() {
+    var navbarHeight = $('.navbar').height();
+    if (navbarHeight) {
+      scrollBy(0, -navbarHeight);
+    }
   }
 }
