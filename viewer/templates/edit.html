@@ -2,7 +2,6 @@
 
 % block scripts
 <script src="/assets/vendor/vue/js/vue.js"></script>
-<script src="/assets/js/edit.js"></script>
 % endblock
 
 {% block bodyattrs %}vocab="${config.VOCAB_IRI}" id="editor"{% endblock %}
@@ -15,91 +14,7 @@
 
 <!-- <textarea id="editor" cols="80" rows="40"></textarea> -->
 
-<div id="editor" class="{{ld.lang? '' : 'raw'}}">
-  <form v-cloak>
-    <label><input type="radio" v-model="ld.lang" name="lang" value="en"> en</label>
-    <label><input type="radio" v-model="ld.lang" name="lang" value="sv"> sv</label>
-    <label><input type="radio" v-model="ld.lang" name="lang" value=""> raw</label>
-    <select name="item" v-model="editId" options="thingOptGroups()"
-            v-on="change: edit(editId)"></select>
-    <!-- <button v-on="click: save()">Save</button> -->
-  </form>
-  <edit-node v-if="state.term" type="term" item="{{state.term}}"></edit-node>
-  <edit-node v-if="item" type="main" item="{{item}}"></edit-node>
+<div id="editorApp">
+  {{message}}
 </div>
-
-<template id="edit-node">
-  <article class="card {{ type || 'embedded' }}">
-    <header>
-      <a class="id" v-if="item[ID]" href="{{item[ID]}}">{{item[ID]}}</a>
-      <partial name="show-type"></partial>
-    </header>
-    <partial name="edit-contents"></partial>
-  </article>
-</template>
-
-<template id="edit-ref">
-  <a class="ref" href="{{ld.expand(item[ID])}}" v-on="click: show($event)"
-    >{{ld.label(ld.deref(item))}}</a></p>
-</template>
-
-<template id="edit-bnode">
-  <div class="card">
-    <header>
-      <partial name="show-type"></partial>
-    </header>
-    <partial name="edit-contents"></partial>
-  </div>
-</template>
-
-<template id="edit-literal">
-  <!-- <span>{{item[key]}}</span> -->
-  <input v-model="item[key]" size="{{ 1 + item[key].length }}">
-</template>
-
-<template id="edit-contents">
-  <template v-repeat="part : ld.parts(item)" track-by="key">
-    <p v-if="part.literal">
-      <partial name="show-term"></partial>
-      <edit-literal item="{{item}}" key="{{part.key}}"></edit-literal>
-    </p>
-    <div v-if="part.array">
-      <partial name="show-term"></partial>
-      <ul v-if="part.array">
-        <li v-repeat="li : part.value">
-          <span v-if="li.literal">{{li.value}}</span>
-          <edit-ref v-if="li.ref" item="{{li.value}}"
-                    container="{{item[part.key]}}" key="{{$index}}"></edit-ref>
-          <component v-if="li.node"
-            is="edit-{{li.bnode? 'bnode' : 'node'}}" item="{{li.value}}"></component>
-        </li>
-      </ul>
-    </div>
-    <p v-if="part.ref">
-      <partial name="show-term"></partial>
-      <edit-ref item="{{part.value}}"></edit-ref>
-    </p>
-    <div v-if="part.node">
-      <partial name="show-term"></partial>
-      <component is="edit-{{part.bnode? 'bnode' : 'node'}}" item="{{part.value}}"></component>
-    </div>
-  </template>
-</template>
-
-<template id="show-term">
-  <b v-on="click: state.termInfo(part.key)" title="{{part.term.definitionByLang[ld.lang]}}">{{ld.label(part.term, part.key)}}</b>
-</template>
-
-<template id="show-type">
-  <b v-on="click: state.termInfo(item[TYPE])" v-if="item[TYPE]"
-    >{{ld.label(ld.model[item[TYPE]], item[TYPE])}}</b>
-</template>
-
-
-<script id="data" type="application/json">${data|safe}</script>
-<script id="model" type="application/json">${model|safe}</script>
-<script>
-  var data = document.getElementById('data').innerText
-  var graph = JSON.parse(data)
-</script>
 % endblock
