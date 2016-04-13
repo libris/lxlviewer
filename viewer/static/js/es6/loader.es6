@@ -1,6 +1,7 @@
 import Thing from './views/thing';
 import Editor from './views/editor';
 import Vocab from './views/vocab';
+import Website from './views/website';
 
 export default class Loader {
   
@@ -12,6 +13,7 @@ export default class Loader {
     this.views.push(new Thing());
     this.views.push(new Editor());
     this.views.push(new Vocab());
+    this.views.push(new Website());
   }
     
   initCommon() {
