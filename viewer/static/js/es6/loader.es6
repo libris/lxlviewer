@@ -8,28 +8,22 @@ export default class Loader {
   constructor() {
     this.views = [];
   }
-
-  loadViews() {
-    this.views.push(new Thing());
-    this.views.push(new Editor());
-    this.views.push(new Vocab());
-    this.views.push(new Website());
+  
+  addView(view) {
+    let index = this.views.length;
+    this.views.push(view);
+    return index;
   }
-    
-  initCommon() {
-    
-    // Prevent empty search and handle searches without type set..
-    let searchForm = document.getElementById('searchForm');
-    if(searchForm && typeof searchForm !== 'undefined') {
-      document.getElementById('searchForm').onsubmit = function(e) {
-        if (document.getElementById('searchQ').value == '') {
-          e.preventDefault();
-        } else if (document.getElementById('noneType') && document.getElementById('noneType').checked) {
-          document.getElementById('noneType').checked = false;
-        }
-      };
-    }
-    
+  
+  getView(index) {
+    return this.views[index];
+  }
+  
+  createViews() {
+    new Thing();
+    new Editor();
+    new Vocab();
+    new Website();
   }
   
   initPage(id) {
