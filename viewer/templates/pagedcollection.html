@@ -7,20 +7,24 @@
   % set items = thing['items']
 <div class="row">
   <div class="col-md-3 hidden-xs hidden-sm">
+    % if not request.args.get('@type')
     <div class="panel panel-default">
       <div class="panel-body facet-controls">
       ${ search.facet_controls(thing) }
       </div>
     </div>
+    % endif
   </div>
   <div class="col-md-9">
   
     ${ search.search_controls(thing, false) }
+    % if not request.args.get('@type')
     <div class="panel panel-default hidden-md hidden-lg">
       <div class="panel-body facet-controls">
       ${ search.facet_controls(thing) }
       </div>
     </div>
+    % endif
     ${ search.result_controls(thing, True) }
     % if items
     <div class="result-list">
