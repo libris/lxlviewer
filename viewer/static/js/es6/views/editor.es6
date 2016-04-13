@@ -4,6 +4,16 @@ export default class Editor extends Thing {
 
   initialize() {
     super.initialize();
-    window.alert("Välkommen till editorn");
+    
+    createVue();
   }
+}
+
+function createVue() {
+  new Vue({
+    el: '#editorApp',
+    data: {
+      message: 'Välkommen till editorn!'
+    }
+  });
 }
