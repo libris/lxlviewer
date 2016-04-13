@@ -1,11 +1,7 @@
 import View from './view'
 
 export default class Vocab extends View {
-  
-  constructor() {
-    super();
-  }
-  
+
   initialize() {
     super.initialize();
     

@@ -4,11 +4,7 @@ import * as searchutil from '../utils/search'
 import * as VocabLoader from '../utils/vocabloader';
 
 export default class Thing extends View {
-  
-  constructor() {
-    super();
-  }
-  
+
   initialize() {
     super.initialize();
 
