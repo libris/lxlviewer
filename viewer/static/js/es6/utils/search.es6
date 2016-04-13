@@ -29,3 +29,13 @@ export function getParameter(name) {
     }
   }
 }
+
+export function initializeRemovalEmptyFields() {
+  // Remove empty fields
+  $('form').submit(function(e){
+      var emptyinputs = $(this).find('input').filter(function(){
+      return !$.trim(this.value).length;
+    }).prop('disabled',true);
+  });
+  
+}
