@@ -4,10 +4,10 @@ export default class Vocab extends View {
 
   initialize() {
     super.initialize();
-    
-    function accept(id) { return id.indexOf(':') == -1 }
 
-    var nodes = Array.prototype.map.call(document.querySelectorAll(".rdf-class"), function (el) {
+    function accept(id) { return id.indexOf(':') === -1; }
+
+    let nodes = Array.prototype.map.call(document.querySelectorAll(".rdf-class"), function (el) {
       return accept(el.id)? {
         name: el.id,
         children: Array.prototype.map.call(el.querySelectorAll(".rdf-subclasses a"), function (el) {
