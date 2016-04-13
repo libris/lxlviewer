@@ -11,13 +11,13 @@ export default class Thing extends View {
   
   initialize() {
     super.initialize();
-    
+
     VocabLoader.initVocabClicks();
     searchutil.initTypeButtons();
     thingutil.createChips($('.main-item'));
     thingutil.createChips($('.side-view'));
     thingutil.initHitlistExpands('.result-list');
-    searchutil.initializeRemovalEmptyFields();
+    searchutil.initializeSearch();
     
   }
 }

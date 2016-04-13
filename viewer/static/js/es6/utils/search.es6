@@ -30,9 +30,14 @@ export function getParameter(name) {
   }
 }
 
-export function initializeRemovalEmptyFields() {
+export function initializeSearch() {
+  
   // Remove empty fields
   $('form').submit(function(e){
+      if ($('#searchQ').val() === '') {
+        e.preventDefault();
+        return;
+      }
       var emptyinputs = $(this).find('input').filter(function(){
       return !$.trim(this.value).length;
     }).prop('disabled',true);

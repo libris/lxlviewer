@@ -9,9 +9,8 @@ export default class Website extends View {
   
   initialize() {
     super.initialize();
-    
+
     searchutil.initTypeButtons();
-    searchutil.initializeRemovalEmptyFields();
-    
+    searchutil.initializeSearch();
   }
 }
