@@ -1,4 +1,4 @@
-import View from './view'
+import View from './view';
 
 export default class Vocab extends View {
 
@@ -40,21 +40,21 @@ export default class Vocab extends View {
     toggle.addEventListener('click', function () {
       document.body.classList.toggle('graph')
     })
-    
+
     // Target Navigation
     if(window.location.hash.length > 0) {
       setTimeout(function () {
-        this.setActive(window.location.hash);
+        setActive(window.location.hash);
       }, 250);
     }
     
     this.initClicks();
   }
-  
+
   initClicks() {
     $('body#vocab .menu-col a').click(function (e) {
       e.preventDefault();
-      this.setActive($(this).attr('href'));
+      setActive($(this).attr('href'));
       // Log
       var ref = $(this).attr('href').split('#')[1];
       var layoutRef = $('body').attr('id');
@@ -62,16 +62,17 @@ export default class Vocab extends View {
     });
     $('body#vocab .loc a').click(function (e) {
       e.preventDefault();
-      this.setActive($(this).attr('href'));
+      setActive($(this).attr('href'));
       // Log
       var ref = $(this).attr('href').split('#')[1];
       var layoutRef = $('body').attr('id');
       if (typeof(_paq) !== 'undefined') _paq.push(['trackEvent', layoutRef, 'Card click', ref]);
     });
   }
-  
-  setActive(item) {
-    
+
+}
+
+function setActive(item) {
     var itemOrg = item;
     if(item.indexOf(':') != -1) {
       var parts = item.split(':');
@@ -83,4 +84,3 @@ export default class Vocab extends View {
     $('body').scrollTop($(item).offset().top - 100);
     $(item).addClass('active-item');
   }
-}
