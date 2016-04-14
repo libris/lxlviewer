@@ -12,7 +12,6 @@
 % endblock
 
 % block content
-
   <div class="row">
     <div class="col-md-9">
       ${viewthing(thing, element='article', classes='panel panel-default main-item')}
@@ -33,7 +32,7 @@
                 <dt>Med relation: ${termref(p)}</dt>
                 <dd>
                   % for v in vs
-                    ${viewthing(v, rev=p.curie)}
+                      ${viewthing(v, rev=p.curie)}
                     % endfor
                   </dd>
                   % endfor
@@ -75,7 +74,14 @@
         </div>
         <h1 class="panel-title">
           <a href="${thing_url}" class="thing-label">
-            ${ldview.getlabel(thing)}
+            % set label = ldview.getlabel(thing)
+            % if isinstance(label, basestring)
+              ${label}
+            % else
+              % for key, value in label.items() 
+                ${key}: ${value}
+              % endfor
+            % endif
           </a>
         </h1>
       </header>
@@ -121,6 +127,14 @@
     % endif
 
   </${element}>
+% endmacro
+
+% macro labelToThing(label)
+  ${label}
+  <hr>
+  ${label['@id']}
+  <hr>
+  ${ldview.getlabel(label).identifierValue}
 % endmacro
 
 % macro termref(term, classes='', labeltype='')
