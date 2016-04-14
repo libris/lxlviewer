@@ -9,7 +9,7 @@
 % block content
 <!DOCTYPE html>
 <meta charset="utf-8" />
-<h1></h1>
+<h1>Editing: </h1>
 
 
 <!-- <textarea id="editor" cols="80" rows="40"></textarea> -->
@@ -17,4 +17,7 @@
 <div id="editorApp">
   {{message}}
 </div>
+
+<script id="data" type="application/json">${data|safe}</script>
+<script id="model" type="application/json">${model|safe}</script>
 % endblock
