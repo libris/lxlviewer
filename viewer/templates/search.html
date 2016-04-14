@@ -29,27 +29,25 @@
       </div>
 
 % if typecontrols
-<div class="type-buttons" aria-label="Välj typ">
-  <label class="no-choice">
-    <input name="inScheme.@id" id="noneType" value="" type="radio"> Alla
-  </label>
-  % if len(result.statistics) > 0
-  % for value in result.statistics.sliceByDimension.values()
-    % for obs in value.observation
-    % if obs.object.titleByLang
-  <label class="">
-    <input name="inScheme.@id" value="${obs.object['@id']}" type="radio">
-    % if obs.object.titleByLang
-      ${obs.object.titleByLang['sv']}
-    % elif obs.object.label
-      ${obs.object.label}
+  <div class="type-buttons" aria-label="Välj typ">
+    <label class="no-choice">
+      <input name="inScheme.@id" id="noneType" value="" type="radio"> Alla
+    </label>
+    % if len(result.statistics) > 0
+      % for value in result.statistics.sliceByDimension.values()
+        % for obs in value.observation
+          <label class="">
+            <input name="inScheme.@id" value="${obs.object['@id']}" type="radio">
+            % if obs.object.titleByLang
+              ${obs.object.titleByLang['sv']}
+            % elif obs.object.label
+              ${obs.object.label}
+            % endif
+          </label>
+        % endfor
+      % endfor
     % endif
-  </label>
-    % endif
-    % endfor
-  % endfor
-  % endif
-</div>
+  </div>
 % endif
 
 % if len(mapping) > 1
