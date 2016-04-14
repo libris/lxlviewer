@@ -9,21 +9,15 @@ export default class Loader {
     this.views = [];
   }
   
-  addView(view) {
-    let index = this.views.length;
-    this.views.push(view);
-    return index;
-  }
-  
-  getView(index) {
-    return this.views[index];
-  }
-  
   createViews() {
-    new Thing();
-    new Editor();
-    new Vocab();
-    new Website();
+    this.createView(new Thing());
+    this.createView(new Editor());
+    this.createView(new Vocab());
+    this.createView(new Website());
+  }
+  
+  createView(view) {
+    this.views.push(view);
   }
   
   initPage(id) {
@@ -35,7 +29,7 @@ export default class Loader {
         return true;
       }
     }
-    console.log(bodyId + " not found in list of views.");
+    console.warn("View with id '"+ bodyId + "' not found.");
     return false;
   }
 }
