@@ -76,6 +76,9 @@
             ${ldview.getlabel(thing)}
           </a>
         </h1>
+        % if element == 'article'
+          <a class="edit-button" href="${thing_url}/edit"><i class="fa fa-pencil"></i>Redigera</a>
+        % endif
       </header>
     % endif
 
