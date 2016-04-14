@@ -129,7 +129,7 @@
       </li>
       % endif
       
-      % set limit = int(request.args.get('limit')) if request.args.get('limit') else int(50)
+      % set limit = int(request.args.get('limit')) if request.args.get('limit') else int(200)
       % set offset = result.itemOffset
       
       % if result.totalItems
