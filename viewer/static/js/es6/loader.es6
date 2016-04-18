@@ -5,11 +5,17 @@ import Website from './views/website';
 
 export default class Loader {
 
+  /*
+    This class loads the corresponding JS files for the current bodyId.
+  */
+
   constructor() {
     this.views = [];
   }
 
   createViews() {
+    // Creates instances of our different classes.
+    // TODO: Should probably be done on demand.
     this.createView(new Thing());
     this.createView(new Editor());
     this.createView(new Vocab());
@@ -21,6 +27,7 @@ export default class Loader {
   }
 
   initPage(id) {
+    // This method should be called on page load.
     const bodyId = id;
 
     for (let i = 0; i < this.views.length; i++) {
@@ -29,7 +36,7 @@ export default class Loader {
         return true;
       }
     }
-    console.warn('View with id "' + bodyId + '" not found.');
+    console.warn('No scripts for "' + bodyId + '" found.');
     return false;
   }
 }
