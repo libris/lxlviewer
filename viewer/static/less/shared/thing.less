@@ -1,4 +1,10 @@
 /********/
+/* Widths for definition lists */
+@width-step-1: 645px;
+@width-step-2: 440px;
+/********/
+
+/********/
 /* Mixins for headers
 /********/
 
@@ -129,7 +135,7 @@
     margin: 0px 0px 0px 0px;
   }
   >dd {
-    width: 645px;
+    width: @width-step-1;
     >.panel {
       >.panel-heading {
         .header-colored();
@@ -138,7 +144,7 @@
         margin-bottom: 0px;
         background-color: @dl-gray;
         > dd {
-          width: 450px;
+          width: @width-step-2;
         }
       }
     }
@@ -148,16 +154,16 @@
       }
     }
     >ul {
-      width: 645px;
+      width: @width-step-1;
       li > .panel:not(.link-item) {
         >.panel-body {
           >dl {
             background-color: @dl-gray;
             margin-bottom: 0px;
             >dd {
-              width: 440px;
+              width: @width-step-2;
               >ul {
-                max-width: 440px;
+                max-width: @width-step-2;
               }
             }
           }
@@ -396,7 +402,7 @@ body#thing {
       >dl {
         .dl-mixin();
         >dd {
-          width: 645px;
+          width: @width-step-1;
           >ul > li > .panel:not(.link-item) {
             >.panel-heading {
               .header-colored();
