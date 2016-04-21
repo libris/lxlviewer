@@ -42,6 +42,8 @@
               ${obs.object.titleByLang['sv']}
             % elif obs.object.label
               ${obs.object.label}
+            % elif obs.object.notation
+              ${obs.object.notation|join(', ')}
             % endif
           </label>
         % endfor
