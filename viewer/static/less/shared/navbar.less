@@ -1,0 +1,44 @@
+body > .navbar {
+  width: 100%;
+  z-index: 999;
+  border: solid @border-navbar;
+  background-color: @bg-navbar;
+  border-width: 0px;
+  box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.1);
+  text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.2);
+  @media screen and (max-width: @screen-sm-min) {
+    padding: 0 20px;
+  }
+  .container-fluid {
+    padding: 0 30px 0 15px;
+  }
+  .navbar-nav {
+    a {
+      &:hover, &:focus {
+        background-color: darken(@bg-navbar,10%);
+      }
+    }
+    i {
+      color: @text-alt-navbar;
+    }
+    text-transform: uppercase;
+    font-weight: 600;
+    font-size: 14px;
+  }
+}
+
+.navbar-header {
+  margin-left: 1em;
+  .navbar-brand {
+    color: @text-navbar;
+  }
+  .environment-label {
+    text-transform: uppercase;
+    font-size: 0.5em;
+    color: @text-alt-navbar;
+    font-weight: bold;
+    display: block;
+    margin: -0.5em 0px 0px 0.5em;
+    float: right;
+  }
+}

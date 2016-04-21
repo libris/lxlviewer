@@ -1,0 +1,143 @@
+body#thing {
+  .search-controls {
+    .search-button {
+      min-width: 20%;
+    }
+    .search-input {
+      min-width: 75%;
+    }
+  }
+}
+
+body#website {
+  .search-controls {
+    .search-button {
+      width: 24%;
+    }
+    .search-input {
+      width: 75%;
+    }
+  }
+}
+
+.search-controls {
+  padding: 20px;
+  .search-input {
+    height: 44px;
+  }
+  .search-button {
+    height: 42px;
+  }
+  .form-group {
+    width: 100%;
+  }
+  .search-label {
+    display: block;
+    text-transform: uppercase;
+  }
+
+  .type-label {
+    display: block;
+  }
+  .type-buttons {
+    label {
+      padding: 3px 10px;
+      font-weight: normal;
+      font-size: 12px;
+      input {
+        margin-right: 0.2em;
+      }
+    }
+    margin-top: 1em;
+  }
+}
+
+// PAGED COLLECTION
+.result-controls {
+  padding: 20px;
+  margin: 10px 0px;
+  .search-details {
+    margin-bottom: 1em;
+  }
+  .pagination {
+    margin: 0px;
+    li {
+      a {
+        border-radius: 0px !important;
+      }
+    }
+  }
+}
+.result-list {
+  >div:first-of-type {
+    border-radius: 4px 4px 0px 0px !important;
+  }
+  >div:last-of-type {
+    border-radius: 0px 0px 4px 4px !important;
+  }
+  >div>header {
+    padding: 10px 15px 0px 15px;
+  }
+}
+.no-hits {
+  padding: 20px;
+}
+
+.facet-controls {
+  padding: 15px 5px 15px 15px;
+  label {
+    text-transform: uppercase;
+  }
+  div {
+    padding: 5px;
+  }
+  ul {
+    list-style: none;
+    padding: 0px;
+    li {
+      padding: 2px 0px;
+      a {
+        color: @gray-darker;
+      }
+      i {
+        
+        margin-right: 0.4em;
+      }
+      .quantity {
+        color: @gray;
+        font-size: 0.8em;
+      }
+    }
+  }
+}
+
+.activated-facets {
+  margin-top: 0.5em;
+  label {
+    text-transform: uppercase;
+  }
+  ul {
+    list-style: none;
+    padding: 0px;
+    li {
+      background-color: @gray-lighter;
+      border-radius: 3px;
+      display: inline-block;
+      padding: 2px 8px;
+      margin-right: 1em;
+      a {
+        color: @gray-darker;
+      }
+      i {
+        font-size: 70%;
+        margin-left: 0.4em;
+        position: relative;
+        top: -2px;
+      }
+      .quantity {
+        color: @gray;
+        font-size: 0.8em;
+      }
+    }
+  }
+}

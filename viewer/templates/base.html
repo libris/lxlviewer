@@ -1,31 +1,26 @@
 <!DOCTYPE html>
 <html lang="${lang}">
-  % if g.current_base == IDKBSE
-    % set site_title = 'id.kb.se'
-  % else
-    % set site_title = 'libris.kb.se'
-  % endif
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="utf-8" />
-    <title>${site_title}{% block title %}{% endblock %}</title>
+    <title>${g.site.title} - {% block title %}{% endblock %}</title>
     <link rel="stylesheet" href="/vendor/font-awesome/css/font-awesome.min.css">
-    {% if site_title == 'id.kb.se' %}
+    % if g.site[ID] == IDKBSE
       <link rel="stylesheet" href="/build/id.css" />
-    {% elif site_title == 'libris.kb.se' %}
+    % else
       <link rel="stylesheet" href="/build/libris.css" />
-    {% endif %}
+    % endif
     {% block stylesheets %}{% endblock %}
   </head>
   <body {% block bodyattrs %}{% endblock %}>
     {% block navigation %}
-    <nav class="navbar navbar-default">
+    <nav class="navbar navbar-inverse">
       <div class="{% block navcontainerclass %}container{% endblock %}">
         <div class="navbar-header" role="banner">
           <div class="navbar-brand navbar-logo">
-                <a href="/"><img src="/assets/kb_logo_black.svg" alt="Kungliga Bibliotekets logotyp"></a>
+                <a href="/"><img src="/assets/img/kb_logo_white.svg" alt="Kungliga Bibliotekets logotyp"></a>
           </div>
-          <a class="navbar-brand" href="/" title="Version ${ config.VERSION }">${site_title}
+          <a class="navbar-brand" href="/" title="Version ${ config.VERSION }">${g.site.title}
             <span class="environment-label">
               {% if config.ENVIRONMENT == 'prod' %}
               {% elif config.ENVIRONMENT %}
@@ -36,28 +31,12 @@
             </span>
           </a>
         </div>
-        <ol class="nav navbar-nav navbar-right" role="navigation">
-          <li class="search">
-          <form action="/find" method="GET" class="form-inline">
-            <div class="form-group">
-              <label id="searchlabel" for="q">
-                Sök term
-              </label>
-              % for param, value in request.args.items(multi=True)
-                % if param != 'q'
-                  <input type="hidden" name="${param}" value="${value}" />
-                % endif
-              % endfor
-              <div class="input-group">
-                <input aria-labelledby="searchlabel" class="form-control" name="q" id="q" value="${thing and thing.query}" />
-                <span class="input-group-btn">
-                  <button class="btn btn-primary"><i class="fa fa-search"></i></button>
-                </span>
-              </div>
-            </div>
-          </form>
-          </li>
-        </ol>
+        <ul class="nav navbar-nav pull-right">
+        % for item in g.site.itemList
+          <li class=""><a href="${item[ID]}"><i
+              class="fa fa-fw fa-${item.icon}"></i> ${item.title}</a></li>
+        % endfor
+        </ul>
       </div>
     </nav>
     {% endblock %}
@@ -68,8 +47,9 @@
     <footer>
       {% block footer %}{% endblock %}
     </footer>
-    <script src="/vendor/jquery/js/jquery.js"></script>
-    <script src="/vendor/bootstrap/js/bootstrap.js"></script>
+    <script src="/assets/vendor/jquery/js/jquery.js"></script>
+    <script src="/assets/vendor/bootstrap/js/bootstrap.js"></script>
+    <script src="/assets/js/main.js"></script>
     {% block scripts %}{% endblock %}
     <!-- Piwik -->
     {% if config.PIWIK_ID %}

@@ -6,18 +6,15 @@ main {
   min-height: 100vh;
   padding-bottom: 100px;
 }
-  
+
 .jumbotron {
-  margin-top: 50px;
-  @media screen and (max-width: @screen-sm-min) {
-    margin-top: 150px;
-  }
+  background-color: @bg-jumbotron;
+  font-size: 14px;
+  padding: 15px;
+  text-align: left;
   background-color: @bg-jumbotron;
   display: block;
   position: relative;
-  h1 {
-    font-size: 56px;
-  }
   &::before {
     content: "";
     background: @bg-jumbotron-image;
@@ -29,6 +26,16 @@ main {
     position: absolute;
     z-index: 0;
   }
+}
+
+.intro-text {
+  background-color: @bg-content-alt;
+  padding: 20px 15px;
+  font-size: 16px;
+}
+
+.search-controls {
+  margin-bottom: 2em;
 }
 
 .scheme-item {
@@ -43,10 +50,12 @@ main {
       // max-height: 50px;
     }
   }
+  ul {
+    padding: 0px;
+  }
 }
 
 .panel {
-  margin-bottom: 0.5em;
   .panel-body {
     dl {
       dt {
@@ -70,7 +79,7 @@ main {
       display: inline-block;
       cursor: help;
       line-height: 12px;
-      border-bottom: 1px dashed #fff;
+      border-bottom: 1px dashed transparent;
       text-decoration: none;
       &:hover {
         border-bottom: 1px dashed @color-class;
@@ -94,22 +103,14 @@ main {
     }
   }
 }
-.intro-text {
-  margin-bottom: 3em;
-}
+
 footer {
+  width: 100%;
   .footer-container {
     margin-top: 0px;
   }
-  width: 100%;
   h1 {
     font-size: 16px;
-  }
-  h1, ul, li {
-    color: @black;
-  }
-  a {
-    color: @link-hover-color;
   }
 }
   

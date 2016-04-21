@@ -10,5 +10,11 @@ $(function () {
     shiftWindow();
   }
   window.addEventListener("hashchange", shiftWindow);
+  
+  $(document).ready(function () {
+    initTypeButtons();
+  });
+  
+
 
 });
