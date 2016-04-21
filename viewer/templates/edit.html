@@ -9,14 +9,44 @@
 % block content
 <!DOCTYPE html>
 <meta charset="utf-8" />
-<h1>Editing: </h1>
 
-
-<!-- <textarea id="editor" cols="80" rows="40"></textarea> -->
 
 <div id="editorApp">
-  {{message}}
+  <h1>Editing: </h1>
+  <ul v-for="node in data['@graph']">
+    <data-node v-for="(k, v) in node" :key="k" :value="v"></data-node>
+  </ul>
 </div>
+
+<template id="data-node">
+  <li class="data-node">
+  <span class="label" v-if="key !== '@graph'">{{key}}</span>
+  <span v-if="value['@id']">
+    <ul class="linked">
+      <data-node v-for="(k, v) in value" :key="k" :value="v"></data-node>
+    </ul>
+  </span>
+  <span v-if="value['@graph']">
+    graf:
+    <ul>
+      <data-node v-for="(k, v) in value" :key="k" :value="v"></data-node>
+    </ul>
+  </span>
+  <span v-if="!value['@id'] && !value['@graph']">
+    <!-- <ul v-if=""> -->
+      <!-- <data-node v-for="v in value" :value="v"></data-node> -->
+    <!-- </ul> -->
+    <span v-if="key === '@id'">
+      <a href="{{value}}">{{value}}</a>
+    </span>
+    <span v-else>
+      <input type="text" value="{{value}}" size="70">
+        <!-- {{value | json }} -->
+      </input>
+    </span>
+  </span>
+  </li>
+</template>
 
 <script id="data" type="application/json">${data|safe}</script>
 <script id="model" type="application/json">${model|safe}</script>
