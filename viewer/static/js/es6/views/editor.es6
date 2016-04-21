@@ -1,24 +1,36 @@
 import Thing from './thing'
+import * as _ from 'lodash'
 
 export default class Editor extends Thing {
 
   initialize() {
     super.initialize();
     
-    this.createVue();
+    this.loadItem();
   }
   
-  createVue() {
+  loadItem() {
+    this.data = JSON.parse(document.getElementById('data').innerText);
+    this.initVue(this.data);
+  }
+  
+  initVue(data) {
+    console.log(JSON.stringify(data));
     
-    let data = document.getElementById('data').innerText
-    let graph = JSON.parse(data)
-    document.getElementById('editor').value = data
-    document.querySelector('h1').innerHTML += graph['@graph'][0]['@id']
-
     new Vue({
       el: '#editorApp',
       data: {
-        message: data
+        data: data,
+        title: "something"
+      },
+      methods: {
+      },
+      components: {
+        'data-node': {
+          template: '#data-node',
+          name: 'data-node',
+          props: ['key', 'value']
+        }
       }
     });
   }
