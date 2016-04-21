@@ -1,5 +1,9 @@
 export default class View {
   
+  /*
+    Base class for the "views".
+  */
+  
   constructor() {
     this.name = this.constructor.name;
   }
