@@ -29,7 +29,15 @@ export default class Editor extends Thing {
         'data-node': {
           template: '#data-node',
           name: 'data-node',
-          props: ['key', 'value']
+          props: ['key', 'value'],
+          methods: {
+            isArray(o) {
+              return _.isArray(o);
+            },
+            isPlainObject(o) {
+              return _.isPlainObject(o);
+            }
+          }
         }
       }
     });

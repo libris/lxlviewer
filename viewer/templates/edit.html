@@ -33,16 +33,23 @@
     </ul>
   </span>
   <span v-if="!value['@id'] && !value['@graph']">
-    <!-- <ul v-if=""> -->
-      <!-- <data-node v-for="v in value" :value="v"></data-node> -->
-    <!-- </ul> -->
     <span v-if="key === '@id'">
       <a href="{{value}}">{{value}}</a>
     </span>
-    <span v-else>
-      <input type="text" value="{{value}}" size="70">
-        <!-- {{value | json }} -->
-      </input>
+    <span v-if="isArray(value)">
+      <ul>
+        <data-node v-for="v in value" :value="v"></data-node>
+      </ul>
+    </span>
+    <span v-if="isPlainObject(value)">
+      <ul>
+        <li v-for="v in value">
+          <code>{{ v | json }}</code>
+        </li>
+      </ul>
+    </span>
+    <span v-if="!isArray(value) && !isPlainObject(value) && key !== '@id'">
+      <input type="text" value="{{value}}" size="70"></input>
     </span>
   </span>
   </li>

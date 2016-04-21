@@ -1,13 +1,15 @@
 #editorApp {
   ul {
     padding: 0px;
+    li {
+      list-style: none;
+    }
   }
   .data-node {
     // border: 1px solid @gray-darker;
-    border-radius: 3px;
-    padding: 0px;
+    padding: 5px 0px;
     list-style: none;
-    margin: 10px 0px;
+    margin: 0px 0px;
     .label {
       color: @gray-darker;
     }
@@ -29,6 +31,11 @@
         display: inline-block;
         width: 200px;
         text-align: right;
+        vertical-align: top;
+        line-height: 2.5;
+      }
+      >span>span>ul {
+        display: inline-block;
       }
     }
   }
