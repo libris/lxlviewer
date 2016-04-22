@@ -46,6 +46,7 @@ sites = {
               genre/formtermer, vilka utgör viktiga byggstenar för denna samordning.
             </p>
         """,
+        "stylesheet": {"name": "id.css"},
         "slices": {'inScheme.@id':{'inCollection.@id':['@type'], '@type':[]}},
         "itemList": [
             {ID: "/doc/about", "title": "Om id.kb.se", "icon": "info-circle"},
