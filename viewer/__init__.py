@@ -111,12 +111,12 @@ def view_url(uri):
     # TODO: get env from current, get equiv for given
     # - e.g.: at id-stg, having a libris uri, get libris-stg
     site_base_uri = _get_site_base_uri(uri)
-    if site_base_uri == _get_site_base_uri(request.url):
-        return urlparse(uri).path
-    elif site_base_uri:
-        return urljoin(site_base_uri, urlparse(uri).path)
-    else:
+    if not site_base_uri:
         return uri
+    elif site_base_uri == _get_site_base_uri(request.url):
+        return urlparse(uri).path
+    else:
+        return urljoin(site_base_uri, urlparse(uri).path)
 
 def canonical_uri(thing):
     site_base_uri = _get_site_base_uri()
