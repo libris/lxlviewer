@@ -72,12 +72,11 @@ TYPE_TEMPLATES = {
 }
 
 DOMAIN_BASE_MAP = {
-    'localhost': IDKBSE, '127.0.0.1': LIBRIS,
-    'id.local.dev': IDKBSE, 'libris.local.dev': LIBRIS,
-    'id-dev.kb.se':  IDKBSE, 'libris-dev.kb.se': LIBRIS,
-    'id-stg.kb.se':  IDKBSE, 'libris-stg.kb.se': LIBRIS,
-    'id-qa.kb.se': IDKBSE, 'libris-qa.kb.se': LIBRIS,
-    'id.kb.se':  IDKBSE, 'libris.kb.se': LIBRIS,
+    'localhost': IDKBSE,
+    'id-dev.kb.se':  IDKBSE,
+    'id-stg.kb.se':  IDKBSE,
+    'id-qa.kb.se': IDKBSE,
+    'id.kb.se':  IDKBSE,
 }
 LEGACY_BASE = "http://libris.kb.se/"
 LEGACY_PATHS = ('/resource/auth/', '/auth/',
@@ -101,7 +100,7 @@ def _get_served_uri(url, path):
     if mapped_site_base_uri:
         return urljoin(mapped_site_base_uri, path)
     else:
-        return url
+        return None
 
 def view_url(uri):
     if uri.startswith('/'):
@@ -122,7 +121,7 @@ def view_url(uri):
 def canonical_uri(thing):
     site_base_uri = _get_site_base_uri()
     thing_id = thing.get(ID) or ""
-    if not thing_id.startswith(site_base_uri):
+    if site_base_uri and not thing_id.startswith(site_base_uri):
         for same in thing.get('sameAs', []):
             same_id = same.get(ID)
             if same_id and same_id.startswith(site_base_uri):
@@ -159,7 +158,7 @@ def core_context():
 
 @app.before_request
 def handle_base():
-    g.site = things.get_site(_get_site_base_uri())
+    g.site = things.get_site(_get_site_base_uri() or LIBRIS)
 
 @app.teardown_request
 def disconnect_db(exception):
@@ -184,7 +183,7 @@ def thingview(path, suffix=None):
     except (NotFound, UnicodeEncodeError) as e:
         pass
 
-    item_id = _get_served_uri(request.url, path)
+    item_id = _get_served_uri(request.url, path) or urljoin(request.url_root, path)
 
     thing = ldview.get_record_data(item_id)
     if thing:
@@ -224,7 +223,7 @@ def dataindexview(suffix=None):
     slicerepr = request.args.get('slice')
     slicetree = json.loads(slicerepr) if slicerepr else g.site['slices']
     results = ldview.get_index_stats(slicetree, make_find_url,
-            _get_site_base_uri(request.url))
+            _get_site_base_uri(request.url) or request.url_root)
     results.update(g.site)
     return rendered_response('/', suffix, results)
 
