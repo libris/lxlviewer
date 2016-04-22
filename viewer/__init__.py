@@ -205,7 +205,7 @@ def _to_data_path(path, suffix):
 @app.route('/find.<suffix>')
 def find(suffix=None):
     results = ldview.get_search_results(request.args, make_find_url,
-            _get_site_base_uri(request.url))
+            _get_site_base_uri(request.url) or request.url_root)
     return rendered_response('/find', suffix, results)
 
 @app.route('/some')
