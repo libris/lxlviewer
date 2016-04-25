@@ -71,55 +71,41 @@ TYPE_TEMPLATES = {
     'Article': 'article.html'
 }
 
-DOMAIN_BASE_MAP = {
-    'localhost': IDKBSE,
-    'id-dev.kb.se':  IDKBSE,
-    'id-stg.kb.se':  IDKBSE,
-    'id-qa.kb.se': IDKBSE,
-    'id.kb.se':  IDKBSE,
-}
 LEGACY_BASE = "http://libris.kb.se/"
 LEGACY_PATHS = ('/resource/auth/', '/auth/',
         '/resource/bib/', '/bib/',
         '/resource/hold/', '/hold/')
 
 
-def _get_site_base_uri(url=None):
-    url = url or request.url
+base_uri_alias = app.config.get('BASE_URI_ALIAS')
+alias_uri_map = {v: k for k, v in base_uri_alias.items()}
+
+def to_canonical_uri(url):
     parsedurl = urlparse(url)
     if parsedurl.path.startswith(LEGACY_PATHS):
         return LEGACY_BASE
-    domain = parsedurl.netloc.split(':', 1)[0]
-    return DOMAIN_BASE_MAP.get(domain)
 
-def _get_served_uri(url, path):
-    # TODO: why is Flask unquoting url and path values?
-    url = url_quote(url)
-    path = url_quote(path)
-    mapped_site_base_uri = _get_site_base_uri(url)
-    if mapped_site_base_uri:
-        return urljoin(mapped_site_base_uri, path)
-    else:
-        return None
+    uri_base = parsedurl._replace(path="/").geturl()
+    canonical_base = alias_uri_map.get(uri_base) or uri_base
+    return urljoin(canonical_base, parsedurl.path)
 
-def view_url(uri):
+def to_view_url(url_root, uri):
     if uri.startswith('/'):
         return uri
-        #if '?' in uri: # implies other views, see data_url below
-        #    raise NotImplementedError
-        #return url_for('thingview.thingview', path=uri[1:], suffix='html')
-    # TODO: get env from current, get equiv for given
-    # - e.g.: at id-stg, having a libris uri, get libris-stg
-    site_base_uri = _get_site_base_uri(uri)
-    if not site_base_uri:
-        return uri
-    elif site_base_uri == _get_site_base_uri(request.url):
-        return urlparse(uri).path
-    else:
-        return urljoin(site_base_uri, urlparse(uri).path)
 
-def canonical_uri(thing):
-    site_base_uri = _get_site_base_uri()
+    url = urlparse(uri)
+    uri_base = url._replace(path="/").geturl()
+    uri_path = url.path
+
+    if uri_base in base_uri_alias:
+        return urljoin(base_uri_alias[uri_base], uri_path)
+    elif uri_base == to_canonical_uri(url_root):
+        return uri_path
+    else:
+        return uri
+
+def find_canonical_uri(url_root, thing):
+    site_base_uri = to_canonical_uri(url_root)
     thing_id = thing.get(ID) or ""
     if site_base_uri and not thing_id.startswith(site_base_uri):
         for same in thing.get('sameAs', []):
@@ -132,6 +118,13 @@ def make_find_url(**kws):
     if 'q' not in kws:
         kws = dict(q='*', **kws)
     return url_for('find', **kws)
+
+def _get_served_uri(url, path):
+    # TODO: why is Flask unquoting url and path values?
+    url_base = url_quote(url)
+    path = url_quote(path)
+    mapped_base = to_canonical_uri(url_base)
+    return urljoin(mapped_base, path)
 
 
 ##
@@ -150,15 +143,16 @@ def core_context():
         'ui': things.ui_defs,
         'lang': ldview.vocab.lang,
         'page_limit': 50,
-        'LIBRIS': LIBRIS,
-        'IDKBSE': IDKBSE,
-        'canonical_uri': canonical_uri,
-        'view_url': view_url
+        'canonical_uri': lambda uri: find_canonical_uri(request.url_root, uri),
+        'view_url': lambda uri: to_view_url(request.url_root, uri)
     }
 
 @app.before_request
 def handle_base():
-    g.site = things.get_site(_get_site_base_uri() or LIBRIS)
+    canonical_site_id = to_canonical_uri(request.url_root)
+    if canonical_site_id == request.url_root:
+        canonical_site_id = LIBRIS
+    g.site = things.get_site(canonical_site_id)
 
 @app.teardown_request
 def disconnect_db(exception):
@@ -183,7 +177,7 @@ def thingview(path, suffix=None):
     except (NotFound, UnicodeEncodeError) as e:
         pass
 
-    item_id = _get_served_uri(request.url, path) or urljoin(request.url_root, path)
+    item_id = _get_served_uri(request.url_root, path)
 
     thing = ldview.get_record_data(item_id)
     if thing:
@@ -205,7 +199,7 @@ def _to_data_path(path, suffix):
 @app.route('/find.<suffix>')
 def find(suffix=None):
     results = ldview.get_search_results(request.args, make_find_url,
-            _get_site_base_uri(request.url) or request.url_root)
+            to_canonical_uri(request.url_root))
     return rendered_response('/find', suffix, results)
 
 @app.route('/some')
@@ -223,7 +217,7 @@ def dataindexview(suffix=None):
     slicerepr = request.args.get('slice')
     slicetree = json.loads(slicerepr) if slicerepr else g.site['slices']
     results = ldview.get_index_stats(slicetree, make_find_url,
-            _get_site_base_uri(request.url) or request.url_root)
+            to_canonical_uri(request.url_root))
     results.update(g.site)
     return rendered_response('/', suffix, results)
 
