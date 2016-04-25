@@ -1,8 +1,8 @@
 # -*- coding: UTF-8 -*-
 from __future__ import absolute_import, unicode_literals, print_function
 import operator
-from urlparse import urlparse, urljoin
 import json
+from urlparse import urljoin
 
 from rdflib import ConjunctiveGraph
 
@@ -14,7 +14,7 @@ from werkzeug.urls import url_quote
 from lxltools.util import as_iterable
 from lxltools.ld.keys import CONTEXT, ID, TYPE, REVERSE
 
-from .thingview import Things, IDKBSE, LIBRIS
+from .thingview import Things, Uris, IDKBSE, LIBRIS
 from .marcframeview import MarcFrameView, pretty_json
 from . import conneg
 
@@ -71,49 +71,6 @@ TYPE_TEMPLATES = {
     'Article': 'article.html'
 }
 
-LEGACY_BASE = "http://libris.kb.se/"
-LEGACY_PATHS = ('/resource/auth/', '/auth/',
-        '/resource/bib/', '/bib/',
-        '/resource/hold/', '/hold/')
-
-
-base_uri_alias = app.config.get('BASE_URI_ALIAS')
-alias_uri_map = {v: k for k, v in base_uri_alias.items()}
-
-def to_canonical_uri(url):
-    parsedurl = urlparse(url)
-    if parsedurl.path.startswith(LEGACY_PATHS):
-        return LEGACY_BASE
-
-    uri_base = parsedurl._replace(path="/").geturl()
-    canonical_base = alias_uri_map.get(uri_base) or uri_base
-    return urljoin(canonical_base, parsedurl.path)
-
-def to_view_url(url_root, uri):
-    if uri.startswith('/'):
-        return uri
-
-    url = urlparse(uri)
-    uri_base = url._replace(path="/").geturl()
-    uri_path = url.path
-
-    if uri_base in base_uri_alias:
-        return urljoin(base_uri_alias[uri_base], uri_path)
-    elif uri_base == to_canonical_uri(url_root):
-        return uri_path
-    else:
-        return uri
-
-def find_canonical_uri(url_root, thing):
-    site_base_uri = to_canonical_uri(url_root)
-    thing_id = thing.get(ID) or ""
-    if site_base_uri and not thing_id.startswith(site_base_uri):
-        for same in thing.get('sameAs', []):
-            same_id = same.get(ID)
-            if same_id and same_id.startswith(site_base_uri):
-                return same_id
-    return thing_id
-
 def make_find_url(**kws):
     if 'q' not in kws:
         kws = dict(q='*', **kws)
@@ -123,7 +80,7 @@ def _get_served_uri(url, path):
     # TODO: why is Flask unquoting url and path values?
     url_base = url_quote(url)
     path = url_quote(path)
-    mapped_base = to_canonical_uri(url_base)
+    mapped_base = uris.to_canonical_uri(url_base)
     return urljoin(mapped_base, path)
 
 
@@ -131,32 +88,32 @@ def _get_served_uri(url, path):
 # Setup data-access
 
 things = Things(app.config)
-ldview = things.ldview
+uris = Uris(app.config)
 
 
 @app.context_processor
 def core_context():
     return {
         'ID': ID,'TYPE': TYPE, 'REVERSE': REVERSE,
-        'vocab': ldview.vocab,
-        'ldview': ldview,
+        'vocab': things.ldview.vocab,
+        'ldview': things.ldview,
         'ui': things.ui_defs,
-        'lang': ldview.vocab.lang,
+        'lang': things.ldview.vocab.lang,
         'page_limit': 50,
-        'canonical_uri': lambda uri: find_canonical_uri(request.url_root, uri),
-        'view_url': lambda uri: to_view_url(request.url_root, uri)
+        'canonical_uri': lambda uri: uris.find_canonical_uri(request.url_root, uri),
+        'view_url': lambda uri: uris.to_view_url(request.url_root, uri)
     }
 
 @app.before_request
 def handle_base():
-    canonical_site_id = to_canonical_uri(request.url_root)
+    canonical_site_id = uris.to_canonical_uri(request.url_root)
     if canonical_site_id == request.url_root:
         canonical_site_id = LIBRIS
     g.site = things.get_site(canonical_site_id)
 
 @app.teardown_request
 def disconnect_db(exception):
-    ldview.storage.disconnect()
+    things.ldview.storage.disconnect()
 
 
 @app.route(CONTEXT_PATH)
@@ -179,14 +136,14 @@ def thingview(path, suffix=None):
 
     item_id = _get_served_uri(request.url_root, path)
 
-    thing = ldview.get_record_data(item_id)
+    thing = things.ldview.get_record_data(item_id)
     if thing:
         #canonical = thing[ID]
         #if canonocal != item_id:
         #    return redirect(_to_data_path(see_path, suffix), 302)
         return rendered_response(path, suffix, thing)
     else:
-        record_ids = ldview.find_record_ids(item_id)
+        record_ids = things.ldview.find_record_ids(item_id)
         if record_ids: #and len(record_ids) == 1:
             return redirect(_to_data_path(record_ids[0], suffix), 303)
         #else:
@@ -198,14 +155,14 @@ def _to_data_path(path, suffix):
 @app.route('/find')
 @app.route('/find.<suffix>')
 def find(suffix=None):
-    results = ldview.get_search_results(request.args, make_find_url,
-            to_canonical_uri(request.url_root))
+    results = things.ldview.get_search_results(request.args, make_find_url,
+            uris.to_canonical_uri(request.url_root))
     return rendered_response('/find', suffix, results)
 
 @app.route('/some')
 @app.route('/some.<suffix>')
 def some(suffix=None):
-    ambiguity = ldview.find_ambiguity(request)
+    ambiguity = things.ldview.find_ambiguity(request)
     if not ambiguity:
         return abort(404)
     return rendered_response('/some', suffix, ambiguity)
@@ -216,8 +173,8 @@ def some(suffix=None):
 def dataindexview(suffix=None):
     slicerepr = request.args.get('slice')
     slicetree = json.loads(slicerepr) if slicerepr else g.site['slices']
-    results = ldview.get_index_stats(slicetree, make_find_url,
-            to_canonical_uri(request.url_root))
+    results = things.ldview.get_index_stats(slicetree, make_find_url,
+            uris.to_canonical_uri(request.url_root))
     results.update(g.site)
     return rendered_response('/', suffix, results)
 
@@ -240,7 +197,7 @@ negotiator = conneg.Negotiator()
 @negotiator.add('text/html', 'html')
 @negotiator.add('application/xhtml+xml', 'xhtml')
 def render_html(path, data):
-    data = ldview.get_decorated_data(data, True)
+    data = things.ldview.get_decorated_data(data, True)
 
     def data_url(suffix):
         if path == '/find':
@@ -256,7 +213,7 @@ def render_html(path, data):
 @negotiator.add('application/json', 'json')
 @negotiator.add('text/json')
 def render_json(path, data):
-    data = ldview.get_decorated_data(data, True)
+    data = things.ldview.get_decorated_data(data, True)
     return _to_json(data)
 
 @negotiator.add('application/ld+json', 'jsonld')

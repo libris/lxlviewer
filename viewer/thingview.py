@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 import re
 import json
-from os import makedirs, path as P
+from urlparse import urlparse, urljoin
 
 from rdflib import Graph
 
@@ -121,3 +121,50 @@ class Things(object):
 
     def get_vocab_util(self):
         return VocabUtil(self.load_vocab_graph(), self.lang)
+
+
+LEGACY_BASE = "http://libris.kb.se/"
+LEGACY_PATHS = ('/resource/auth/', '/auth/',
+        '/resource/bib/', '/bib/',
+        '/resource/hold/', '/hold/')
+
+
+class Uris(object):
+
+    def __init__(self, config):
+        self.base_uri_alias = config.get('BASE_URI_ALIAS') or {}
+        self.alias_uri_map = {v: k for k, v in self.base_uri_alias.items()}
+
+    def to_canonical_uri(self, url):
+        parsedurl = urlparse(url)
+        if parsedurl.path.startswith(LEGACY_PATHS):
+            return LEGACY_BASE
+
+        uri_base = parsedurl._replace(path="/").geturl()
+        canonical_base = self.alias_uri_map.get(uri_base) or uri_base
+        return urljoin(canonical_base, parsedurl.path)
+
+    def to_view_url(self, url_root, uri):
+        if uri.startswith('/'):
+            return uri
+
+        url = urlparse(uri)
+        uri_base = url._replace(path="/").geturl()
+        uri_path = url.path
+
+        if uri_base in self.base_uri_alias:
+            return urljoin(self.base_uri_alias[uri_base], uri_path)
+        elif uri_base == self.to_canonical_uri(url_root):
+            return uri_path
+        else:
+            return uri
+
+    def find_canonical_uri(self, url_root, thing):
+        site_base_uri = self.to_canonical_uri(url_root)
+        thing_id = thing.get(ID) or ""
+        if site_base_uri and not thing_id.startswith(site_base_uri):
+            for same in thing.get('sameAs', []):
+                same_id = same.get(ID)
+                if same_id and same_id.startswith(site_base_uri):
+                    return same_id
+        return thing_id
