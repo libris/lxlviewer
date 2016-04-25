@@ -12,48 +12,50 @@
 
 
 <div id="editorApp">
-  <h1>Editing: </h1>
-  <ul v-for="node in data['@graph']">
-    <data-node v-for="(k, v) in node" :key="k" :value="v"></data-node>
+  <h1><small>Redigererar:</small><br>{{thing.prefLabel || thing['@id']}}</h1>
+  <hr>
+  <ul>
+    <template v-for="(k, v) in thing">
+      <li>
+        <span class="label">{{ k }}</span>
+        <span class="value">
+          <data-node :key="k" :value="v" :index="linked"></data-node>
+        </span>
+        <button v-if="isArray(v)" v-on:click="addItem(k)">+</button>
+      </li>
+    </template>
   </ul>
+  <div id="result">
+    <hr>
+    <h2>JSON</h2>
+    <hr>
+    <code>
+    {{thing |json}}
+    </code>
+  </div>
 </div>
 
 <template id="data-node">
-  <li class="data-node">
-  <span class="label" v-if="key !== '@graph'">{{key}}</span>
-  <span v-if="value['@id']">
-    <ul class="linked">
-      <data-node v-for="(k, v) in value" :key="k" :value="v"></data-node>
-    </ul>
-  </span>
-  <span v-if="value['@graph']">
-    graf:
-    <ul>
-      <data-node v-for="(k, v) in value" :key="k" :value="v"></data-node>
-    </ul>
-  </span>
-  <span v-if="!value['@id'] && !value['@graph']">
-    <span v-if="key === '@id'">
-      <a href="{{value}}">{{value}}</a>
-    </span>
-    <span v-if="isArray(value)">
+  <template v-if="isArray(value)">
+    <li>
       <ul>
-        <data-node v-for="v in value" :value="v"></data-node>
+        <data-node v-for="v in value" :value="v" :index="index"></data-node><br>
       </ul>
-    </span>
-    <span v-if="isPlainObject(value)">
-      <ul>
-        <li v-for="v in value">
-          <code>{{ v | json }}</code>
-        </li>
-      </ul>
-    </span>
-    <span v-if="!isArray(value) && !isPlainObject(value) && key !== '@id'">
-      <input type="text" value="{{value}}" size="70"></input>
-    </span>
-  </span>
-  </li>
+    </li>
+  </template>
+  <template v-if="!isArray(value) && !isPlainObject(value)">
+    <li>
+      <input value="{{value | json}}"></input>
+    </li>
+  </template>
+  <template v-if="!isArray(value) && isPlainObject(value)">
+    <li class="linked">
+      <a href="{{value['@id']}}">{{getLinked(value['@id']).prefLabel || value['@id']}}</a> <i class="fa fa-close" v-on:click="removeItem($parent.key, value['@id'])"></i>
+    </li>
+  </template>
 </template>
+
+
 
 <script id="data" type="application/json">${data|safe}</script>
 <script id="model" type="application/json">${model|safe}</script>

@@ -10,32 +10,84 @@ export default class Editor extends Thing {
   }
   
   loadItem() {
-    this.data = JSON.parse(document.getElementById('data').innerText);
-    this.initVue(this.data);
+    this.data = JSON.parse(document.getElementById('data').innerText)['@graph'];
+    this.thing = this.data[0];
+    this.data.splice(0, 1);
+
+    this.linked = [];
+    
+    for (let i = 0; i < this.data.length; i++) {
+      if (this.data[i].hasOwnProperty('@graph')) {
+        this.linked.push(this.data[i]['@graph']);
+      } else {
+        this.linked.push(this.data[i]);
+      }
+    }
+    
+    this.initVue(this.thing, this.linked);
   }
   
-  initVue(data) {
-    console.log(JSON.stringify(data));
+  removeLink(key, value) {
+    console.log(this.thing);
+  }
+  
+  initVue(thing, linked) {
+    console.log(JSON.stringify(thing), JSON.stringify(linked));
     
     new Vue({
       el: '#editorApp',
       data: {
-        data: data,
+        thing: thing,
+        linked: linked,
         title: "something"
       },
       methods: {
+        removeItem: function(key, value) {
+          for(let i = 0; i < thing[key].length; i++) {
+            if (thing[key][i]['@id'] == value){
+              thing[key].splice(i, 1);
+            }
+          }
+        },
+        addItem: function(key) {
+          if (thing[key]) {
+            let newItem = { '@id': thing[key].length + 21233, prefLabel : 'Test' };
+            thing[key].push(newItem);
+          }
+        },
+        isArray(o) {
+          return _.isArray(o);
+        },
+        isPlainObject(o) {
+          return _.isPlainObject(o);
+        }
       },
       components: {
         'data-node': {
           template: '#data-node',
           name: 'data-node',
-          props: ['key', 'value'],
+          props: ['key', 'value', 'index'],
           methods: {
+            getLinked: function(id) {
+              let index = this.index;
+              if (typeof index === 'undefined') {
+                return {};
+              }
+              for (var i = 0; i < index.length; i ++) {
+                if (index[i]['@id'] == id) {
+                  return index[i];
+                }
+              }
+              return {};
+            },
             isArray(o) {
               return _.isArray(o);
             },
             isPlainObject(o) {
               return _.isPlainObject(o);
+            },
+            removeItem: function(key, value) {
+              return this.$parent.removeItem(key, value);
             }
           }
         }
