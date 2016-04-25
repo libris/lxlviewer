@@ -61,8 +61,13 @@
   % for item in mapping
     % if item.variable != 'q'
     <li>
-      <a href="${item.up['@id']}" title="${item.object['@id']}">
-        ${item.object['@id']}<i class="fa fa-remove"></i>
+      % if item.object
+        % set label = item.object['@id']
+      % else
+        % set label = item.value
+      % endif
+      <a href="${item.up['@id']}">
+        ${label}<i class="fa fa-remove"></i>
       </a>
     </li>
     % endif
