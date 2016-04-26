@@ -36,22 +36,27 @@
 </div>
 
 <template id="data-node">
-  <template v-if="isArray(value)">
-    <li>
-      <ul>
-        <data-node v-for="v in value" :value="v" :index="index"></data-node><br>
-      </ul>
-    </li>
+  <template v-if="!isMarc(key)">
+    <template v-if="isArray(value)">
+      <li>
+        <ul>
+          <data-node v-for="v in value" :value="v" :index="index"></data-node><br>
+        </ul>
+      </li>
+    </template>
+    <template v-if="!isArray(value) && !isPlainObject(value)">
+      <li>
+        <input value="{{value | json}}"></input>
+      </li>
+    </template>
+    <template v-if="!isArray(value) && isPlainObject(value)">
+      <li class="linked">
+        <a href="{{value['@id']}}">{{getLinked(value['@id']).prefLabel || value['@id']}}</a> <i class="fa fa-close" v-on:click="removeItem($parent.key, value)"></i>
+      </li>
+    </template>
   </template>
-  <template v-if="!isArray(value) && !isPlainObject(value)">
-    <li>
-      <input value="{{value | json}}"></input>
-    </li>
-  </template>
-  <template v-if="!isArray(value) && isPlainObject(value)">
-    <li class="linked">
-      <a href="{{value['@id']}}">{{getLinked(value['@id']).prefLabel || value['@id']}}</a> <i class="fa fa-close" v-on:click="removeItem($parent.key, value)"></i>
-    </li>
+  <template v-else>
+    <code>{{value | json}}</code>
   </template>
 </template>
 

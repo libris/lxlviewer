@@ -72,6 +72,14 @@ export default class Editor extends Thing {
               }
               return {};
             },
+            isMarc(key) {
+              if (typeof key === 'undefined') {
+                return false;
+              }
+              return (
+                !!~key.indexOf('marc:') || !!~key.indexOf('_marc')
+              );
+            },
             isArray(o) {
               return _.isArray(o);
             },
