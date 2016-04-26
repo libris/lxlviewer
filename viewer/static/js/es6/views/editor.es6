@@ -27,10 +27,6 @@ export default class Editor extends Thing {
     this.initVue(this.thing, this.linked);
   }
   
-  removeLink(key, value) {
-    console.log(this.thing);
-  }
-  
   initVue(thing, linked) {
     console.log(JSON.stringify(thing), JSON.stringify(linked));
     
