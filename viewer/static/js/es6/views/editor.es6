@@ -42,12 +42,8 @@ export default class Editor extends Thing {
         title: "something"
       },
       methods: {
-        removeItem: function(key, value) {
-          for(let i = 0; i < thing[key].length; i++) {
-            if (thing[key][i]['@id'] == value){
-              thing[key].splice(i, 1);
-            }
-          }
+        removeItem: function(key, item) {
+          this.thing[key].$remove(item);
         },
         addItem: function(key) {
           if (thing[key]) {

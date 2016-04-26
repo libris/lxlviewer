@@ -50,7 +50,7 @@
   </template>
   <template v-if="!isArray(value) && isPlainObject(value)">
     <li class="linked">
-      <a href="{{value['@id']}}">{{getLinked(value['@id']).prefLabel || value['@id']}}</a> <i class="fa fa-close" v-on:click="removeItem($parent.key, value['@id'])"></i>
+      <a href="{{value['@id']}}">{{getLinked(value['@id']).prefLabel || value['@id']}}</a> <i class="fa fa-close" v-on:click="removeItem($parent.key, value)"></i>
     </li>
   </template>
 </template>
