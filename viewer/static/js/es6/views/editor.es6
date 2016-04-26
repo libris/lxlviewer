@@ -1,7 +1,7 @@
-import Thing from './thing'
-import * as _ from 'lodash'
+import View from './view';
+import * as _ from 'lodash';
 
-export default class Editor extends Thing {
+export default class Editor extends View {
 
   initialize() {
     super.initialize();
@@ -28,7 +28,7 @@ export default class Editor extends Thing {
   }
   
   initVue(thing, linked) {
-    console.log(JSON.stringify(thing), JSON.stringify(linked));
+    // console.log(JSON.stringify(thing), JSON.stringify(linked));
     
     new Vue({
       el: '#editorApp',
@@ -39,13 +39,12 @@ export default class Editor extends Thing {
       },
       methods: {
         removeItem: function(key, item) {
-          this.thing[key].$remove(item);
+          thing[key].$remove(item);
         },
         addItem: function(key) {
-          if (thing[key]) {
-            let newItem = { '@id': thing[key].length + 21233, prefLabel : 'Test' };
-            thing[key].push(newItem);
-          }
+          let tempInput = prompt("Give id plix", "");
+          let newItem = { '@id': tempInput, 'prefLabel' : tempInput };
+          thing[key].push(newItem);
         },
         isArray(o) {
           return _.isArray(o);
@@ -71,6 +70,9 @@ export default class Editor extends Thing {
                 }
               }
               return {};
+            },
+            updateValue(key, value) {
+              
             },
             isMarc(key) {
               if (typeof key === 'undefined') {
