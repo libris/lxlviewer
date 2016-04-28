@@ -24,12 +24,12 @@
       "woff": "{name}/fonts",
       "woff2": "{name}/fonts"
     },
-    "sources" : {
-      "kungbib-styles" : [
+    "sources": {
+      "kungbib-styles": [
         "bower_components/kungbib-styles/dist/css/**",
         "bower_components/kungbib-styles/dist/less/**"
       ],
-      "bootstrap" : [
+      "bootstrap": [
         "bower_components/bootstrap/dist/css/bootstrap.css",
         "bower_components/bootstrap/dist/js/bootstrap.js",
         "bower_components/bootstrap/dist/fonts/**",
