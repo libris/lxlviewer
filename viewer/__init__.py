@@ -19,6 +19,10 @@ from .marcframeview import MarcFrameView, pretty_json
 from . import conneg
 
 
+JSONLD_MIMETYPE = 'application/ld+json'
+RDF_MIMETYPES = {'text/turtle', JSONLD_MIMETYPE, 'application/rdf+xml', 'text/xml'}
+MIMETYPE_FORMATS = ['text/html', 'application/xhtml+xml'] + list(RDF_MIMETYPES)
+
 ##
 # Application and template settings
 
@@ -125,9 +129,12 @@ def jsonld_context():
 ##
 # Setup data-driven views
 
-@app.route('/<path:path>/data')
-@app.route('/<path:path>/data.<suffix>')
-@app.route('/<path:path>')
+RESOURCE_METHODS = ['GET', 'PUT', 'DELETE']
+
+
+@app.route('/<path:path>/data', methods=RESOURCE_METHODS)
+@app.route('/<path:path>/data.<suffix>', methods=RESOURCE_METHODS)
+@app.route('/<path:path>', methods=RESOURCE_METHODS)
 def thingview(path, suffix=None):
     try:
         return app.send_static_file(path)
@@ -135,8 +142,12 @@ def thingview(path, suffix=None):
         pass
 
     item_id = _get_served_uri(request.url_root, path)
-
     thing = things.ldview.get_record_data(item_id)
+
+    mod_response = _handle_modification(request, thing)
+    if mod_response:
+        return mod_response
+
     if thing:
         #canonical = thing[ID]
         #if canonocal != item_id:
@@ -151,6 +162,29 @@ def thingview(path, suffix=None):
 
 def _to_data_path(path, suffix):
     return '%s/data.%s' % (path, suffix) if suffix else path
+
+@app.route('/create', methods=['POST'])
+def create():
+    return _write_data(request)
+
+def _handle_modification(request, item):
+    # TODO: mock handling for now; should forward to backend API
+    if item is None:
+        return abort(404)
+    if request.method == 'PUT':
+        return _write_data(request, item)
+    elif request.method == 'DELETE':
+        return Response(status=204)
+
+def _write_data(request, item=None):
+    if JSONLD_MIMETYPE in request.headers.get('Content-Type'):
+        if request.get_json(force=True) is None:
+            return Response(status=400)
+        else:
+            return Response(status=204)
+    else:
+        return Response(status=415)
+
 
 @app.route('/find')
 @app.route('/find.<suffix>')
@@ -272,8 +306,6 @@ rdfns = {
 
 app.context_processor(lambda: rdfns)
 
-RDF_MIMETYPES = {'text/turtle', 'application/ld+json', 'application/rdf+xml', 'text/xml'}
-MIMETYPE_FORMATS = ['text/html', 'application/xhtml+xml'] + list(RDF_MIMETYPES)
 
 @app.route('/vocab/')
 def vocabview():
@@ -290,7 +322,7 @@ def vocabview():
     mimetype = request.accept_mimetypes.best_match(MIMETYPE_FORMATS)
     if mimetype in RDF_MIMETYPES:
         return voc.graph.serialize(format=
-                'json-ld' if mimetype == 'application/ld+json' else mimetype,
+                'json-ld' if mimetype == JSONLD_MIMETYPE else mimetype,
                 #context_id=CONTEXT_PATH,
                 context=things.jsonld_context_data[CONTEXT])
 
