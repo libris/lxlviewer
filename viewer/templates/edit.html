@@ -13,7 +13,6 @@
 
 <div id="editorApp">
   <h1><small>Redigererar:</small><br>{{thing.prefLabel || thing['@id']}}</h1>
-  <hr>
   <ul>
     <template v-for="(k, v) in thing">
       <li>
@@ -26,13 +25,9 @@
     </template>
   </ul>
   <div id="result">
-    <hr>
     <h2>JSON</h2>
-    <hr>
-    <textarea rows="10" cols="100">
-      {{thing |json}}
+    <textarea v-model="thing | json">
     </textarea>
-    <hr>
   </div>
 </div>
 
@@ -60,8 +55,6 @@
     <code>{{value | json}}</code>
   </template>
 </template>
-
-
 
 <script id="data" type="application/json">${data|safe}</script>
 <script id="model" type="application/json">${model|safe}</script>
