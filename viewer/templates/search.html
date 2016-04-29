@@ -1,5 +1,15 @@
 % macro search_controls(result, typecontrols)
 
+% if result.search
+
+  % set q
+    ${ result.search.mapping | selectattr("variable", "equalto", "q") | map(attribute='value') | first }
+  % endset
+  
+  % set mapping = result.search.mapping
+
+% endif
+
 <div class="panel panel-default search-controls">
     <form action="/find" method="GET" id="searchForm">
     
@@ -13,32 +23,56 @@
           <label class="search-label" id="searchlabel" for="q">
             Sök term
           </label>
-          <input aria-labelledby="searchlabel" class="form-control search-input" name="q" id="searchQ" value="${result.textQuery}" />
+          <input aria-labelledby="searchlabel" class="form-control search-input" name="q" id="searchQ" value="${q | safe | trim }" />
           <button id="searchSubmit" class="search-button btn btn-primary"><i class="fa fa-search"></i> Sök</button>
         </div>
       </div>
 
 % if typecontrols
-<div class="type-buttons" aria-label="Välj typ">
-  <label class="no-choice">
-    <input name="inScheme.@id" id="noneType" value="" type="radio"> Alla
-  </label>
-  % if len(result.statistics) > 0
-  % for value in result.statistics.sliceByDimension.values()
-    % for obs in value.observation
-    % if obs.object.titleByLang
-  <label class="">
-    <input name="inScheme.@id" value="${obs.object['@id']}" type="radio">
-    % if obs.object.titleByLang
-      ${obs.object.titleByLang['sv']}
-    % elif obs.object.label
-      ${obs.object.label}
+  <div class="type-buttons" aria-label="Välj typ">
+    <label class="no-choice">
+      <input name="inScheme.@id" id="noneType" value="" type="radio"> Alla
+    </label>
+    % if len(result.statistics) > 0
+      % for value in result.statistics.sliceByDimension.values()
+        % for obs in value.observation
+          <label class="">
+            <input name="inScheme.@id" value="${obs.object['@id']}" type="radio">
+            % if obs.object.titleByLang
+              ${obs.object.titleByLang['sv']}
+            % elif obs.object.label
+              ${obs.object.label}
+            % elif obs.object.notation
+              ${obs.object.notation|join(', ')}
+            % endif
+          </label>
+        % endfor
+      % endfor
     % endif
+  </div>
+% endif
+
+% if len(mapping) > 1
+<div class="activated-facets">
+  <label>
+    Aktiv filtrering
   </label>
+  <ul>
+  % for item in mapping
+    % if item.variable != 'q'
+    <li>
+      % if item.object
+        % set label = item.object['@id']
+      % else
+        % set label = item.value
+      % endif
+      <a href="${item.up['@id']}">
+        ${label}<i class="fa fa-remove"></i>
+      </a>
+    </li>
     % endif
-    % endfor
   % endfor
-  % endif
+  </ul>
 </div>
 % endif
 
@@ -47,25 +81,34 @@
 % endmacro
 
 % macro result_controls(result, details)
-  <div class="panel panel-default result-controls">
+  
+  % set items = result['items']
+  % set search = result['search']
+  % set mapping = search.mapping
+  
+  % set q
+    ${ mapping | selectattr("variable", "equalto", "q") | map(attribute='value') | first }
+  % endset
+    
+  <div class="panel panel-default result-controls">    
     % if details
     <div class="search-details">
       <span class="search-keyword">
-        % if result.textQuery and result.totalItems > 0
-          Sökning på <i>"${result.textQuery}"</i>
+        % if q and result.totalItems > 0
+          Sökning på <i>"${q | safe | trim}"</i>
           % if result.totalItems
             gav ${result.totalItems} träffar.
           % endif
         % elif result.value
           Sökning ${result.value}
         % else
-          Sökning på <i>"${result.textQuery}"</i> gav inga träffar.
+          Sökning på <i>"${q | safe | trim}"</i> gav inga träffar.
         % endif
       </span>
       <span class="search-items-per-page pull-right">
         % if result.totalItems
         Visar resultat
-          ${result.itemOffset + 1}-${min(result.totalItems, result.itemOffset + len(result['items']))}.
+          ${result.itemOffset + 1}-${min(result.totalItems, result.itemOffset + len(items))}.
         % endif
       </span>
     </div>
@@ -93,8 +136,8 @@
       </li>
       % endif
       
-      % set limit = int(request.args.get('limit')) if request.args.get('limit') else int(50)
-      % set offset = int(request.args.get('offset')) if request.args.get('offset') else int(0)
+      % set limit = int(request.args.get('limit')) if request.args.get('limit') else int(200)
+      % set offset = result.itemOffset
       
       % if result.totalItems
         % set pages = int(result.totalItems / limit) + 1
@@ -143,6 +186,7 @@
   <div>
   % if result['stats']
   % set stats = result['stats']
+  % set mapping = result.search['mapping']
   <label>
     Filtrera
   </label>
@@ -151,7 +195,7 @@
     % if observation.object.label
     <li>
       <a href="${observation.view['@id']}" title="${observation.object.label}">
-        <i class="fa fa-square-o"></i>${observation.object.label | truncate(20, true) }
+        ${observation.object.label | truncate(20, true) }
       </a>
       <span class="quantity">(${observation.totalItems})</span>
     </li>

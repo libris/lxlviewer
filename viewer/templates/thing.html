@@ -1,6 +1,6 @@
 % extends "base.html"
 
-{% block title %} - ${vocab.labelgetter(thing)}{% endblock %}
+{% block title %}${vocab.labelgetter(thing)}{% endblock %}
 
 {% block bodyattrs %}vocab="${config.VOCAB_IRI}" id="thing"{% endblock %}
 {% block navcontainerclass %} container {% endblock %}
@@ -10,7 +10,6 @@
 % endblock
 
 % block content
-
   <div class="row">
     <div class="col-md-9">
       ${viewthing(thing, element='article', classes='panel panel-default main-item')}
@@ -31,7 +30,7 @@
                 <dt>Med relation: ${termref(p)}</dt>
                 <dd>
                   % for v in vs
-                    ${viewthing(v, rev=p.curie)}
+                      ${viewthing(v, rev=p.curie)}
                     % endfor
                   </dd>
                   % endfor
@@ -57,7 +56,7 @@
 
       {% if rel %} property="${rel}"{% endif %}
       {% if rev %} rev="${rev}"{% endif %}
-      {% if ID in thing %} resource="${thing_id}"{% endif %}
+      {% if ID in thing %} resource="${canonical_id}"{% endif %}
       {% if t.curie %} typeof="${t.curie}"{% endif %}>
 
     % if ID in thing
@@ -71,12 +70,18 @@
           <a class="edit-button" href="${thing_url}/edit"><i class="fa fa-pencil"></i>Redigera</a>
         % endif
         <a href="${thing_url}" class="thing-id">
-          <small><code>&lt;${thing_id}&gt;</code></small>
+          <small><code>&lt;${canonical_id}&gt;</code></small>
         </a>
         </div>
         <h1 class="panel-title">
           <a href="${thing_url}" class="thing-label">
-            ${ldview.getlabel(thing)}
+            % set label = ldview.getlabel(thing)
+            % if isinstance(label, basestring)
+              ${label}
+            % else
+              {# label is sometimes an object, resolve this in a propper way when data content is known #}
+              ${jsonToList(label)}
+            % endif
           </a>
         </h1>
       </header>
@@ -137,6 +142,37 @@
   % else
     <code>${term.curie}</code>
   % endif
+% endmacro
+
+{# Macro to render random json to a html list #}
+% macro jsonToList(json)
+  % if isinstance(value, basestring)
+    ${json}
+  % else
+    % for key, value in json.items()
+      <dl class="raw-json-list">
+      % if isinstance(value, dict)
+        <dt>
+          ${key}
+        </dt>
+        <dd>
+          ${jsonToList(value)}
+        </dd>
+      % elif isinstance(value, list)
+        <dt>
+          ${key}
+        </dt>
+        <dd>
+          % for sub in value
+            ${sub}
+          % endfor
+        </dd>
+      % else
+        <dt>${key}</dt><dd>${value}</dd>
+      % endif
+      </dl>
+    % endfor
+  %endif
 % endmacro
 
 % block footer

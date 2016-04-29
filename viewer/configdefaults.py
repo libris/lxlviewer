@@ -22,5 +22,7 @@ CACHE_DIR = P.join(P.dirname(__file__), "..", "cache")
 VOCAB_IRI = "https://id.kb.se/vocab/"
 LANG = "sv"
 
+BASE_URI_ALIAS = {}
+
 # TODO: read this from live XL system instead (as soon as that is possible)
 MARCFRAME_SOURCE = "https://raw.githubusercontent.com/libris/whelk-core/develop/src/main/resources/ext/marcframe.json"

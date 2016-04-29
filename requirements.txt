@@ -1,5 +1,5 @@
 Flask==0.10.1
--e git+https://github.com/libris/lxltools.git@b4637e3d0bb52047ba697b89f0dcfe6dea9158d6#egg=lxltools
+-e git+https://github.com/libris/lxltools.git@0.4.0#egg=lxltools
 rdflib==4.2.0
 rdflib-jsonld==0.3
 requests==2.5.1

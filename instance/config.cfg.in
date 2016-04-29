@@ -5,5 +5,7 @@ DBPASSWORD='%(dbpassword)s'
 ESHOST=%(eshosts)r
 ES_INDEX = 'libris'
 ENVIRONMENT = '%(serverenv)s'
+if ENVIRONMENT != 'prod':
+    BASE_URI_ALIAS = {'https://id.kb.se/': 'https://id-{}.kb.se/'.format(ENVIRONMENT)}
 VERSION = '%(releasetag)s'
 PIWIK_ID = '%(piwikid)s'

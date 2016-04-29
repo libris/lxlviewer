@@ -3,12 +3,12 @@
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="utf-8" />
-    <title>${g.site.title}{% block title %}{% endblock %}</title>
-    <link rel="stylesheet" href="/vendor/font-awesome/css/font-awesome.min.css">
-    % if g.site[ID] == IDKBSE
-      <link rel="stylesheet" href="/build/id.css" />
+    <title>${g.site.title} - {% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="/assets/vendor/font-awesome/css/font-awesome.min.css">
+    % if g.site.stylesheet
+      <link rel="stylesheet" href="/assets/build/${g.site.stylesheet.name}" />
     % else
-      <link rel="stylesheet" href="/build/libris.css" />
+      <link rel="stylesheet" href="/assets/build/libris.css" />
     % endif
     {% block stylesheets %}{% endblock %}
   </head>
