@@ -29,6 +29,16 @@
     <textarea v-model="thing | json">
     </textarea>
   </div>
+  <hr>
+  <button id="saveButton" v-on:click="saveItem()" v-bind:class="{ 'fail' : saved.status == 'fail', 'success' : saved.status == 'success' }">
+    <i class="fa fa-fw fa-cog fa-spin" v-show="saved.loading"></i>
+    <i class="fa fa-fw fa-close" v-show="saved.status == 'fail'"></i>
+    <i class="fa fa-fw fa-check" v-show="saved.status == 'success'"></i>
+    <i class="fa fa-fw fa-save" v-show="!saved.loading && saved.status == 'normal'"></i>
+    Spara
+  </button>
+     - Senast uppdaterad: {{ thing.modified }}
+  <hr>
 </div>
 
 <template id="data-node">

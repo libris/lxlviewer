@@ -1,5 +1,6 @@
 import View from './view';
 import * as _ from 'lodash';
+import * as httpUtil from '../utils/http';
 
 export default class Editor extends View {
 
@@ -28,14 +29,16 @@ export default class Editor extends View {
   }
   
   initVue(thing, linked) {
-    // console.log(JSON.stringify(thing), JSON.stringify(linked));
     
     new Vue({
       el: '#editorApp',
       data: {
         thing: thing,
         linked: linked,
-        title: "something"
+        saved: {
+          loading: false,
+          status: 'normal'
+        }
       },
       methods: {
         removeItem: function(key, item) {
@@ -51,6 +54,29 @@ export default class Editor extends View {
         },
         isPlainObject(o) {
           return _.isPlainObject(o);
+        },
+        saveItem() {
+          this.saved.loading = true;
+          this.saved.status = "normal";
+          
+          let obj = JSON.stringify(this.thing);
+          let url = "/create";
+          let self = this;
+          
+          httpUtil.post(obj, url).then(function (response) {
+            self.saved.loading = false;
+            self.saved.status = "success";
+            setTimeout(() => {
+              self.saved.status = "normal";
+            },750);
+          }, function (error) {
+            self.saved.loading = false;
+            self.saved.status = "fail";
+            setTimeout(() => {
+              self.saved.status = "normal";
+            },750);
+          });
+          
         }
       },
       components: {
