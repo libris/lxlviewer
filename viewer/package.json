@@ -4,12 +4,13 @@
   "version": "0.0.0",
   "repository": ".",
   "devDependencies": {
-    "uglify-js": "~2.4.16",
+    "bower-installer": "~1.2.0",
+    "browserify": "^13.0.0",
     "clean-css": "~3.0.7",
     "less": "~2.3.1",
-    "watch": "~0.13.0",
     "parallelshell": "~1.0.4",
-    "bower-installer": "~1.2.0"
+    "uglify-js": "~2.4.16",
+    "watch": "~0.13.0"
   },
   "scripts": {
     "postinstall": "mkdir -p static/build && npm run vendor && npm run app",
