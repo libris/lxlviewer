@@ -44,6 +44,9 @@ export default class Editor extends View {
     
     let self = this;
     
+    $('#loadingText').hide();
+    $('#editorApp').show();
+    
     Vue.filter('labelByLang', function (label) {
       // Filter for fetching labels from vocab
       let preferredVocab = 'kbv';
