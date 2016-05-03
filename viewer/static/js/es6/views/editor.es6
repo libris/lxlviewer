@@ -49,7 +49,7 @@ export default class Editor extends View {
     Vue.filter('labelByLang', (label) => {
       // Filter for fetching labels from vocab
       const preferredVocab = 'kbv';
-      const item = _.find(vocab.descriptions, { '@id': preferredVocab + ':' + label });
+      const item = _.find(vocab.descriptions, { '@id': `${preferredVocab}:${label}` });
       let labelByLang = '';
       if (typeof item !== 'undefined' && item.labelByLang) {
         labelByLang = item.labelByLang[self.language];
