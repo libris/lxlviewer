@@ -8,6 +8,10 @@ export default class Editor extends View {
     super.initialize();
     
     this.loadItem();
+    let self = this;
+    this.loadVocab().then(function(vocab) {
+      self.initVue(self.thing, self.linked, vocab);
+    });
   }
   
   loadItem() {
@@ -24,11 +28,36 @@ export default class Editor extends View {
         this.linked.push(this.data[i]);
       }
     }
-    
-    this.initVue(this.thing, this.linked);
   }
   
-  initVue(thing, linked) {
+  loadVocab() {
+    return new Promise(function(resolve, reject) {
+      httpUtil.getContent('/vocab/', 'application/ld+json').then(function(response) {
+        resolve(JSON.parse(response));
+      }, function(error) {
+        reject("Error loading vocabulary...");
+      });
+    });
+  }
+  
+  initVue(thing, linked, vocab) {
+    
+    let self = this;
+    
+    Vue.filter('labelByLang', function (label) {
+      // Filter for fetching labels from vocab
+      let preferredVocab = 'kbv';
+      let item = _.find(vocab['descriptions'], {'@id': preferredVocab + ':' + label });
+      if (typeof item !== 'undefined' && item.labelByLang) {
+        let labelByLang = item.labelByLang[self.language];
+      }
+      // Check if we have something of value
+      if (typeof labelByLang !== 'undefined' && labelByLang.length > 0) {
+        return labelByLang;
+      } else {
+        return label;
+      }
+    })
     
     new Vue({
       el: '#editorApp',

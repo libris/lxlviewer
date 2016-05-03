@@ -16,7 +16,7 @@
   <ul>
     <template v-for="(k, v) in thing">
       <li>
-        <span class="label">{{ k }}</span>
+        <span class="label">{{ k | labelByLang | capitalize }}</span>
         <span class="value">
           <data-node :key="k" :value="v" :index="linked"></data-node>
         </span>
@@ -46,7 +46,7 @@
     <template v-if="isArray(value)">
       <li>
         <ul>
-          <data-node v-for="v in value" :value="v" :index="index"></data-node><br>
+          <data-node v-for="v in value" :value="v" :key="key" :index="index"></data-node>
         </ul>
       </li>
     </template>

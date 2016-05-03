@@ -28,3 +28,28 @@ export function post(obj, url) {
     
   });
 }
+
+export function getContent(url, type) {
+  return new Promise(function(resolve, reject) {
+    let req = new XMLHttpRequest();
+    req.open('GET', url);
+    
+    if (type) {
+      req.setRequestHeader('Accept', type);
+    }
+    
+    req.onload = function() {
+      if (req.status == 200) {
+        resolve(req.response);
+      }
+      else {
+        reject(Error(req.statusText));
+      }
+    };
+    req.onerror = function() {
+      reject(Error("Network Error"));
+    };
+    req.send();
+    
+  });
+}
