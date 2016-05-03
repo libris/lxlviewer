@@ -99,7 +99,7 @@ export default class Editor extends View {
             self.saved.status = 'success';
             setTimeout(() => {
               self.saved.status = 'normal';
-            },750);
+            }, 750);
           }, (error) => {
             self.saved.loading = false;
             self.saved.status = 'fail';
