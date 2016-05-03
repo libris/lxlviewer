@@ -9,18 +9,15 @@ export default class View {
   }
 
   initialize() {
-
     if (window.location.hash) {
       this.shiftWindow();
     }
-
     this.language = $('html').attr('lang');
-
-    console.log("Initialized view", this);
+    console.log('Initialized view', this);
   }
 
   shiftWindow() {
-    var navbarHeight = $('.navbar').height();
+    const navbarHeight = $('.navbar').height();
     if (navbarHeight) {
       scrollBy(0, -navbarHeight);
     }
