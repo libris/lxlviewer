@@ -60,6 +60,10 @@ sites = {
         "description": "<p>Data på <b>LIBRIS.KB.SE</b>.</p>",
         "slices": {"@type":{}},
         #"slices": {"@type":{"meta.bibliography.@id":{"publication.providerDate":[]}}}
+        "itemList": [
+        #    {ID: "/doc/about#", "title": "Om libris.kb.se", "icon": "info-circle"},
+            {ID: "#", "title": "Logga in", "icon": "sign-in"},
+        ]
     }
 }
 
