@@ -60,6 +60,12 @@ Updating vendor dependencies:
 
     $ npm run vendor
 
+## Linting
+
+    $ npm run app:eslint
+
+  Read more about the eslint-config at [airbnb/javascript](https://github.com/airbnb/javascript).
+
 ## Tests
 
 Requires installing tests prerequsites see [tests documentation](/test)
