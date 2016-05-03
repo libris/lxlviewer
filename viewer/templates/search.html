@@ -5,14 +5,14 @@
   % set q
     ${ result.search.mapping | selectattr("variable", "equalto", "q") | map(attribute='value') | first }
   % endset
-  
+
   % set mapping = result.search.mapping
 
 % endif
 
 <div class="panel panel-default search-controls">
     <form action="/find" method="GET" id="searchForm">
-    
+
       <div class="form-inline">
         <div class="form-group">
           % for param, value in request.args.items(multi=True)
@@ -81,16 +81,16 @@
 % endmacro
 
 % macro result_controls(result, details)
-  
+
   % set items = result['items']
   % set search = result['search']
   % set mapping = search.mapping
-  
+
   % set q
     ${ mapping | selectattr("variable", "equalto", "q") | map(attribute='value') | first }
   % endset
-    
-  <div class="panel panel-default result-controls">    
+
+  <div class="panel panel-default result-controls">
     % if details
     <div class="search-details">
       <span class="search-keyword">
@@ -113,7 +113,7 @@
       </span>
     </div>
     % endif
-    
+
     <div class="search-buttons">
       <nav>
       <ul class="pagination">
@@ -135,16 +135,16 @@
         <a>Föregående</a>
       </li>
       % endif
-      
+
       % set limit = int(request.args.get('limit')) if request.args.get('limit') else int(200)
       % set offset = result.itemOffset
-      
+
       % if result.totalItems
         % set pages = int(result.totalItems / limit) + 1
       % else
         % set pages = 1
       % endif
-      
+
       % for num in range(pages)
       % if offset == limit * num
       <li class="active">
@@ -156,7 +156,7 @@
       </li>
       % endif
       % endfor
-      
+
       % if result.next
       <li>
         <a href="${result.next['@id']}">Nästa</a>
@@ -177,7 +177,7 @@
       % endif
       </ul>
     </nav>
-      
+
     </div>
   </div>
 % endmacro
@@ -195,7 +195,7 @@
     % if observation.object.label
     <li>
       <a href="${observation.view['@id']}" title="${observation.object.label}">
-        ${observation.object.label | truncate(20, true) }
+        ${observation.object.label | truncate(30, true) }
       </a>
       <span class="quantity">(${observation.totalItems})</span>
     </li>
@@ -203,7 +203,7 @@
     % endfor
   </ul>
   % else
-    Inga facetter...
+    Inga facetter tillgängliga.
   % endif
   </div>
 % endmacro
