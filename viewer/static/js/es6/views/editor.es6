@@ -8,8 +8,8 @@ export default class Editor extends View {
     super.initialize();
 
     this.loadItem();
-    let self = this;
-    this.loadVocab().then(function(vocab) {
+    const self = this;
+    this.loadVocab().then((vocab) => {
       self.initVue(self.thing, self.linked, vocab);
     });
   }
@@ -31,26 +31,25 @@ export default class Editor extends View {
   }
 
   loadVocab() {
-    return new Promise(function(resolve, reject) {
-      httpUtil.getContent('/vocab/', 'application/ld+json').then(function(response) {
+    return new Promise((resolve, reject) => {
+      httpUtil.getContent('/vocab/', 'application/ld+json').then((response) => {
         resolve(JSON.parse(response));
-      }, function(error) {
-        reject("Error loading vocabulary...");
+      }, (error) => {
+        reject('Error loading vocabulary...', error);
       });
     });
   }
 
   initVue(thing, linked, vocab) {
-
-    let self = this;
+    const self = this;
 
     $('#loadingText').hide();
     $('#editorApp').show();
 
-    Vue.filter('labelByLang', function (label) {
+    Vue.filter('labelByLang', (label) => {
       // Filter for fetching labels from vocab
-      let preferredVocab = 'kbv';
-      let item = _.find(vocab['descriptions'], {'@id': preferredVocab + ':' + label });
+      const preferredVocab = 'kbv';
+      const item = _.find(vocab.descriptions, { '@id': preferredVocab + ':' + label });
       let labelByLang = '';
       if (typeof item !== 'undefined' && item.labelByLang) {
         labelByLang = item.labelByLang[self.language];
@@ -58,28 +57,28 @@ export default class Editor extends View {
       // Check if we have something of value
       if (labelByLang.length > 0) {
         return labelByLang;
-      } else {
-        return label;
       }
-    })
+      return label;
+    });
 
     new Vue({
       el: '#editorApp',
       data: {
-        thing: thing,
-        linked: linked,
+        thing,
+        linked,
         saved: {
           loading: false,
-          status: 'normal'
-        }
+          status: 'normal',
+        },
       },
       methods: {
-        removeItem: function(key, item) {
+        removeItem(key, item) {
           thing[key].$remove(item);
         },
-        addItem: function(key) {
-          let tempInput = prompt("Give id plix", "");
-          let newItem = { '@id': tempInput, 'prefLabel' : tempInput };
+        addItem(key) {
+           // TODO: Show to UX people and watch their reaction
+          const tempInput = prompt('Give id plix', '');
+          const newItem = { '@id': tempInput, prefLabel: tempInput };
           thing[key].push(newItem);
         },
         isArray(o) {
@@ -90,27 +89,25 @@ export default class Editor extends View {
         },
         saveItem() {
           this.saved.loading = true;
-          this.saved.status = "normal";
+          this.saved.status = 'normal';
 
-          let obj = JSON.stringify(this.thing);
-          let url = "/create";
-          let self = this;
+          const obj = JSON.stringify(this.thing);
+          const url = '/create';
 
-          httpUtil.post(obj, url).then(function (response) {
+          httpUtil.post(obj, url).then((response) => {
             self.saved.loading = false;
-            self.saved.status = "success";
+            self.saved.status = 'success';
             setTimeout(() => {
-              self.saved.status = "normal";
+              self.saved.status = 'normal';
             },750);
-          }, function (error) {
+          }, (error) => {
             self.saved.loading = false;
-            self.saved.status = "fail";
+            self.saved.status = 'fail';
             setTimeout(() => {
-              self.saved.status = "normal";
-            },750);
+              self.saved.status = 'normal';
+            }, 750);
           });
-
-        }
+        },
       },
       components: {
         'data-node': {
@@ -118,20 +115,17 @@ export default class Editor extends View {
           name: 'data-node',
           props: ['key', 'value', 'index'],
           methods: {
-            getLinked: function(id) {
-              let index = this.index;
+            getLinked(id) {
+              const index = this.index;
               if (typeof index === 'undefined') {
                 return {};
               }
-              for (var i = 0; i < index.length; i ++) {
-                if (index[i]['@id'] == id) {
+              for (let i = 0; i < index.length; i ++) {
+                if (index[i]['@id'] === id) {
                   return index[i];
                 }
               }
               return {};
-            },
-            updateValue(key, value) {
-
             },
             isMarc(key) {
               if (typeof key === 'undefined') {
@@ -147,12 +141,12 @@ export default class Editor extends View {
             isPlainObject(o) {
               return _.isPlainObject(o);
             },
-            removeItem: function(key, value) {
+            removeItem(key, value) {
               return this.$parent.removeItem(key, value);
-            }
-          }
-        }
-      }
+            },
+          },
+        },
+      },
     });
   }
 }
