@@ -48,11 +48,12 @@ export default class Editor extends View {
       // Filter for fetching labels from vocab
       let preferredVocab = 'kbv';
       let item = _.find(vocab['descriptions'], {'@id': preferredVocab + ':' + label });
+      let labelByLang = '';
       if (typeof item !== 'undefined' && item.labelByLang) {
-        let labelByLang = item.labelByLang[self.language];
+        labelByLang = item.labelByLang[self.language];
       }
       // Check if we have something of value
-      if (typeof labelByLang !== 'undefined' && labelByLang.length > 0) {
+      if (labelByLang.length > 0) {
         return labelByLang;
       } else {
         return label;
