@@ -31,7 +31,7 @@ export function getParameter(name) {
 }
 
 export function initializeSearch() {
-  
+
   // Remove empty fields
   $('form').submit(function(e){
       if ($('#searchQ').val() === '') {
@@ -42,5 +42,5 @@ export function initializeSearch() {
       return !$.trim(this.value).length;
     }).prop('disabled',true);
   });
-  
+
 }

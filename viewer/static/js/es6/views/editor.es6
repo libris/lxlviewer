@@ -6,21 +6,21 @@ export default class Editor extends View {
 
   initialize() {
     super.initialize();
-    
+
     this.loadItem();
     let self = this;
     this.loadVocab().then(function(vocab) {
       self.initVue(self.thing, self.linked, vocab);
     });
   }
-  
+
   loadItem() {
     this.data = JSON.parse(document.getElementById('data').innerText)['@graph'];
     this.thing = this.data[0];
     this.data.splice(0, 1);
 
     this.linked = [];
-    
+
     for (let i = 0; i < this.data.length; i++) {
       if (this.data[i].hasOwnProperty('@graph')) {
         this.linked.push(this.data[i]['@graph']);
@@ -29,7 +29,7 @@ export default class Editor extends View {
       }
     }
   }
-  
+
   loadVocab() {
     return new Promise(function(resolve, reject) {
       httpUtil.getContent('/vocab/', 'application/ld+json').then(function(response) {
@@ -39,14 +39,14 @@ export default class Editor extends View {
       });
     });
   }
-  
+
   initVue(thing, linked, vocab) {
-    
+
     let self = this;
-    
+
     $('#loadingText').hide();
     $('#editorApp').show();
-    
+
     Vue.filter('labelByLang', function (label) {
       // Filter for fetching labels from vocab
       let preferredVocab = 'kbv';
@@ -62,7 +62,7 @@ export default class Editor extends View {
         return label;
       }
     })
-    
+
     new Vue({
       el: '#editorApp',
       data: {
@@ -91,11 +91,11 @@ export default class Editor extends View {
         saveItem() {
           this.saved.loading = true;
           this.saved.status = "normal";
-          
+
           let obj = JSON.stringify(this.thing);
           let url = "/create";
           let self = this;
-          
+
           httpUtil.post(obj, url).then(function (response) {
             self.saved.loading = false;
             self.saved.status = "success";
@@ -109,7 +109,7 @@ export default class Editor extends View {
               self.saved.status = "normal";
             },750);
           });
-          
+
         }
       },
       components: {
@@ -131,7 +131,7 @@ export default class Editor extends View {
               return {};
             },
             updateValue(key, value) {
-              
+
             },
             isMarc(key) {
               if (typeof key === 'undefined') {

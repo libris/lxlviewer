@@ -3,7 +3,7 @@
 export function createChips($panelElement) {
     if ($panelElement.length < 1)
       return;
-      
+
     setTimeout(function() {
       // Copies every chip in the panel so that we can use absolute positioning on
       // the expanded chips without breaking the layout.
@@ -20,7 +20,7 @@ export function createChips($panelElement) {
           $copy.css('min-width', $subject.width());
         }
       });
-      
+
       // Initialize hover functionality
       $panelElement.find('.link-item-original').hover(function() {
         expand($(this).find('.copy-holder'));
@@ -31,14 +31,14 @@ export function createChips($panelElement) {
       }).focusout(function() {
         collapse($(this).find('.copy-holder'));
       });
-    
+
     }, 250);
 }
 
 export function destroyChips($panelElement) {
     $panelElement.find('.copy-holder').each(function() {
       $(this).remove();
-    })  
+    })
 }
 
 export function expand($elem) {
@@ -48,17 +48,17 @@ export function expand($elem) {
       if($elem.hasClass('to-be-active')) {
         $elem.addClass('active');
       }
-    }, 500);  
+    }, 500);
 };
 export function collapse($elem) {
     $elem.removeClass('to-be-active');
     $elem.removeClass('active');
     $elem.find('.link-item-copy').removeClass('active');
-    
+
     // Removing these so that the chip isn't activated when hovering on the ghost of it...
     $elem.css('margin-top', '');
     $elem.removeClass('adjusted-top');
-    
+
     $elem.css('width', '').css('height', '');
 };
 

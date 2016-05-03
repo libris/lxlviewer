@@ -14,6 +14,6 @@ export default class Thing extends View {
     thingutil.createChips($('.side-view'));
     thingutil.initHitlistExpands('.result-list');
     searchutil.initializeSearch();
-    
+
   }
 }
