@@ -1,11 +1,13 @@
 import View from './view';
-import * as _ from 'lodash';
 import * as httpUtil from '../utils/http';
+import * as _ from 'lodash';
+import * as VocabLoader from '../utils/vocabloader';
 
 export default class Editor extends View {
 
   initialize() {
     super.initialize();
+    VocabLoader.initVocabClicks();
 
     this.loadItem();
     const self = this;

@@ -18,7 +18,9 @@
   <ul>
     <template v-for="(k, v) in thing">
       <li>
-        <span class="label">{{ k | labelByLang | capitalize }}</span>
+        <span class="label">
+          <a href="/vocab/#{{k}}">{{ k | labelByLang | capitalize }}</a>
+        </span>
         <span class="value">
           <data-node :key="k" :value="v" :index="linked"></data-node>
         </span>
