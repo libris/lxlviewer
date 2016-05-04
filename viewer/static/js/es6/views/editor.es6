@@ -17,12 +17,13 @@ export default class Editor extends View {
   }
 
   loadItem() {
+    // Retrieves the data and splits it into a thing obj and array with links
+
     this.data = JSON.parse(document.getElementById('data').innerText)['@graph'];
     this.thing = this.data[0];
     this.data.splice(0, 1);
 
     this.linked = [];
-
     for (let i = 0; i < this.data.length; i++) {
       if (this.data[i].hasOwnProperty('@graph')) {
         this.linked.push(this.data[i]['@graph']);
@@ -63,14 +64,17 @@ export default class Editor extends View {
       return label;
     });
 
-    new Vue({
+    const vm = new Vue({
       el: '#editorApp',
       data: {
         thing,
         linked,
         saved: {
           loading: false,
-          status: 'normal',
+          status: {
+            error: false,
+            info: '',
+          },
         },
       },
       methods: {
@@ -91,24 +95,16 @@ export default class Editor extends View {
         },
         saveItem() {
           this.saved.loading = true;
-          this.saved.status = 'normal';
 
-          const vueSelf = this;
-          const obj = JSON.stringify(this.thing);
-          const url = '/create';
+          const obj = this.thing;
+          const url = thing['@id'];
 
-          httpUtil.post(obj, url).then((response) => {
-            vueSelf.saved.loading = false;
-            vueSelf.saved.status = 'success';
-            setTimeout(() => {
-              vueSelf.saved.status = 'normal';
-            }, 750);
+          httpUtil.put(obj, url).then(() => {
+            vm.saved.loading = false;
+            vm.saved.status = { error: false, info: 'Everything went alright.' };
           }, (error) => {
-            vueSelf.saved.loading = false;
-            vueSelf.saved.status = 'fail';
-            setTimeout(() => {
-              vueSelf.saved.status = 'normal';
-            }, 750);
+            vm.saved.loading = false;
+            vm.saved.status = { error: true, info: error };
           });
         },
       },

@@ -1,14 +1,8 @@
-export function post(obj, url) {
+export function put(obj, url) {
   return new Promise((resolve, reject) => {
     const req = new XMLHttpRequest();
-    req.open('POST', url);
-
-    // Faking malformed request
-    if (Math.random() > 0.7) {
-      req.setRequestHeader('Content-Type', 'application/WOWTHISISNOTCORRECTATALL');
-    } else {
-      req.setRequestHeader('Content-Type', 'application/ld+json');
-    }
+    req.open('PUT', url);
+    req.setRequestHeader('Content-Type', 'application/ld+json');
 
     req.onload = () => {
       if (req.status === 200 || req.status === 204) {
@@ -21,10 +15,7 @@ export function post(obj, url) {
       reject(Error('Network error'));
     };
 
-    // LETS FAKE LAG YO
-    setTimeout(() => {
-      req.send(obj);
-    }, 1000);
+    req.send(JSON.stringify(obj));
   });
 }
 

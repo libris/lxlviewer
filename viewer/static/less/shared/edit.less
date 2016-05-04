@@ -78,11 +78,13 @@
   border-width: 1px 1px 0px 1px;
   background-color: @gray-lighter;
   box-shadow: 0px 1px 0px 0px darken(@brand-primary,25%);
+}
 
-  &.fail {
-    background-color: red;
-  }
+.status-text {
   &.success {
-    background-color: green;
+    color: #00A700;
+  }
+  &.error {
+    color: #dd0000;
   }
 }

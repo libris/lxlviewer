@@ -34,14 +34,14 @@
     </textarea>
   </div>
   <hr>
-  <button id="saveButton" v-on:click="saveItem()" v-bind:class="{ 'fail' : saved.status == 'fail', 'success' : saved.status == 'success' }">
+  <button id="saveButton" v-on:click="saveItem()">
     <i class="fa fa-fw fa-cog fa-spin" v-show="saved.loading"></i>
-    <i class="fa fa-fw fa-close" v-show="saved.status == 'fail'"></i>
-    <i class="fa fa-fw fa-check" v-show="saved.status == 'success'"></i>
-    <i class="fa fa-fw fa-save" v-show="!saved.loading && saved.status == 'normal'"></i>
+    <i class="fa fa-fw fa-save" v-show="!saved.loading"></i>
     Spara
   </button>
-     - Senast uppdaterad: {{ thing.modified }}
+  <span class="status-text small" v-bind:class="{'error' : saved.status.error, 'success' : !saved.status.error }" v-show="!saved.loading && saved.status.info">{{ saved.status.info }}</span>
+  <hr>
+    Senast uppdaterad: {{ thing.modified }}
   <hr>
 </div>
 
