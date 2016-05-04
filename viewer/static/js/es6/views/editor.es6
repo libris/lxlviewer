@@ -91,20 +91,21 @@ export default class Editor extends View {
           this.saved.loading = true;
           this.saved.status = 'normal';
 
+          const vueSelf = this;
           const obj = JSON.stringify(this.thing);
           const url = '/create';
 
           httpUtil.post(obj, url).then((response) => {
-            self.saved.loading = false;
-            self.saved.status = 'success';
+            vueSelf.saved.loading = false;
+            vueSelf.saved.status = 'success';
             setTimeout(() => {
-              self.saved.status = 'normal';
+              vueSelf.saved.status = 'normal';
             }, 750);
           }, (error) => {
-            self.saved.loading = false;
-            self.saved.status = 'fail';
+            vueSelf.saved.loading = false;
+            vueSelf.saved.status = 'fail';
             setTimeout(() => {
-              self.saved.status = 'normal';
+              vueSelf.saved.status = 'normal';
             }, 750);
           });
         },
