@@ -9,3 +9,11 @@ if ENVIRONMENT != 'prod':
     BASE_URI_ALIAS = {'https://id.kb.se/': 'https://id-{}.kb.se/'.format(ENVIRONMENT)}
 VERSION = '%(releasetag)s'
 PIWIK_ID = '%(piwikid)s'
+OAUTH_AUTHORIZATION_URL='%(oauth_authorization_base_url)s'
+OAUTH_TOKEN_URL='%(oauth_token_url)s'
+OAUTH_VERIFY_URL='%(oauth_verify_url)s'
+OAUTH_REDIRECT_URI='%(oauth_redirect_uri)s'
+OAUTH_CLIENT_ID='%(oauth_client_id)s'
+OAUTH_CLIENT_SECRET='%(oauth_client_secret)s'
+OAUTHLIB_INSECURE_TRANSPORT='False'
+
