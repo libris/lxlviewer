@@ -26,9 +26,10 @@
     height: 16px;
     .label-class {
       color: @thing-header-text;
+
     }
     .thing-id {
-      color: @gray-darker;
+      color: @thing-header-text;
       code {
         background-color: fadeout(lighten(@accent-color, 15%), 40%);
         color: @gray-darker;
@@ -101,8 +102,11 @@
         display: inline-block;
         width: auto;
       }
-      >.thing-id {
+      >.toolbar {
         float: right;
+      }
+      >.thing-id {
+        // float: right;
         line-height: 16px;
         margin-left: 1em;
         display: inline-block;
@@ -115,7 +119,7 @@
       }
     }
   }
-  
+
 }
 
 
@@ -217,19 +221,19 @@
 /*********/
 
 body#thing {
-  
+
   height: 100%;
-  
+
   main {
     margin-top: 30px;
     margin-bottom: 100px;
   }
-  
+
   /********/
   /* Main-item
   /* An item shown on its own page
   /********/
-  
+
   .main-item {
     >.panel-body {
       >dl {
@@ -241,7 +245,7 @@ body#thing {
       .thing-label {
         font-size: 2em;
       }
-      .edit-button {
+      .toolbar-button {
         font-size: 12px;
         line-height: 12px;
         float: left;
@@ -254,12 +258,12 @@ body#thing {
       }
     }
   }
-  
+
   /********/
   /* Link-item
   /* aka "chips"
   /********/
-  
+
   .link-item {
     display: inline-block;
     float: left;
@@ -281,7 +285,7 @@ body#thing {
       }
     }
   }
-  
+
   // Link-item-copy
   // The item that is shown on hover
   .copy-holder {
@@ -356,16 +360,16 @@ body#thing {
       width: 100%;
     }
   }
-  
+
   /********/
   /* Hit-item
   /* an item shown in search-results
   /********/
-  
+
   .hit-item {
-    
+
     margin: 0px 0px -2px 0px;
-    
+
     >.panel-heading {
       >.panel-heading-meta {
         >.thing-id {
@@ -427,11 +431,11 @@ body#thing {
       }
     }
   }
-  
+
   /********/
   /* Side view, related items
   /********/
-  
+
   .side-view {
     >.panel {
       >.panel-heading {
@@ -448,7 +452,7 @@ body#thing {
       }
     }
   }
-  
+
   /********/
   /* Footer
   /********/
@@ -460,9 +464,9 @@ body#thing {
       padding: 15px 15px;
     }
   }
-  
-  
-  
+
+
+
 /* Body block end */
 }
 
