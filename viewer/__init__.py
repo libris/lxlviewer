@@ -412,6 +412,11 @@ def _handle_unauthorized():
     else:
         return redirect('/login')
 
+@app.route("/login")
+def login():
+    return _render_login()
+
+
 @app.route('/login/authorize')
 def login_authorize():
     try:
