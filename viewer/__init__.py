@@ -378,9 +378,9 @@ def _token_updater(token):
 
 def _get_requests_oauth():
     # Create new oAuth 2 session
-    requests_oauth = OAuth2Session(app.config['OAUTH_CLIENT_ID'], 
+    requests_oauth = OAuth2Session(app.config['OAUTH_CLIENT_ID'],
                redirect_uri=app.config['OAUTH_REDIRECT_URI'],
-               auto_refresh_kwargs={ 'client_id': app.config['OAUTH_CLIENT_ID'], 'client_secret': app.config['OAUTH_CLIENT_SECRET'] }, 
+               auto_refresh_kwargs={ 'client_id': app.config['OAUTH_CLIENT_ID'], 'client_secret': app.config['OAUTH_CLIENT_SECRET'] },
                auto_refresh_url=app.config['OAUTH_TOKEN_URL'],
                token = _get_token(),
                token_updater=_token_updater
