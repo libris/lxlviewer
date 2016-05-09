@@ -351,12 +351,12 @@ def marcframeview():
             mf=mfview,
             pretty_json=pretty_json)
 
-# login routes start
+##
+# Login start
 # ----------------------------
 #
 
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = app.config['OAUTHLIB_INSECURE_TRANSPORT']
-
 app.secret_key = app.config.get('SESSION_SECRET_KEY')
 app.remember_cookie_duration = timedelta(days=app.config.get('SESSION_COOKIE_LIFETIME') or 31)
 app.permanent_session_lifetime = timedelta(days=app.config.get('SESSION_COOKIE_LIFETIME') or 31)
@@ -413,11 +413,12 @@ def _handle_unauthorized():
     else:
         return redirect('/login')
 
+# Login page
 @app.route("/login")
 def login():
     return _render_login()
 
-
+# Route to redirect to oauth endpiont
 @app.route('/login/authorize')
 def login_authorize():
     try:
@@ -430,10 +431,10 @@ def login_authorize():
         app.logger.error('Failed to create authorization url,  %s ', str(e))
         return _render_login(str(e))
 
+# Route called on oauth callback
 @app.route('/login/authorized')
 def authorized():
     app.logger.debug('Got authorized redirect')
-
     try:
         # Get access token
         try:
@@ -473,6 +474,8 @@ def authorized():
         app.logger.error(msg)
         return _render_login(msg)
 
+# Logout user and session
+# !TODO inform user or signout user in oauth endpoint
 @app.route('/logout')
 def logout():
     app.logger.info('[%s] Trying to sign out.', request.remote_addr)
@@ -481,5 +484,5 @@ def logout():
     session.pop('oauth_token', None)
     return redirect('/')
 
-# login routes end
+# Login end
 # ----------------------------
