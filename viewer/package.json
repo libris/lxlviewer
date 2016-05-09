@@ -35,5 +35,8 @@
     "app:libris:less": "lessc static/less/main_libris.less static/build/libris.css --source-map=static/build/libris.css.map",
     "test": "cd tests && nightwatch --test specs/viewer.js",
     "test:chrome": "cd tests && nightwatch --test specs/viewer.js -e chrome"
+  },
+  "dependencies": {
+    "vue-clickaway": "^1.1.1"
   }
 }

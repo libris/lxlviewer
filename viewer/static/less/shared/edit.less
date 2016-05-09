@@ -43,6 +43,21 @@
         > ul > li > {
           display: inline-block;
         }
+        .link-adder {
+          display: inline-block;
+          width: 200px;
+          margin-bottom: 0.5em;
+          .add {
+            cursor: pointer;
+            &:hover {
+              color: @brand-primary;
+            }
+          }
+          input {
+            padding: 0px;
+            width: 100%;
+          }
+        }
         .linked {
           display: inline-block;
           border: solid @brand-primary;
@@ -60,9 +75,6 @@
         }
       }
     }
-  }
-  input[type=text] {
-    padding: 5px;
   }
 }
 
@@ -86,5 +98,41 @@
   }
   &.error {
     color: #dd0000;
+  }
+}
+
+.result {
+  display: none;
+  &.active {
+    display: block;
+  }
+  position: absolute;
+  overflow-y: auto;
+  background-color: @gray-lighter;
+  width: 400px;
+  max-height: 350px;
+  border: 1px solid rgba(89, 93, 97, 0.5);
+  box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.3);
+  li {
+    padding: 5px 10px 0px 5px;
+    border: solid @gray;
+    border-width: 0px 0px 1px 0px;
+    &:hover {
+      // background-color: @gray-light;
+    }
+    .prefLabel {
+      display: block;
+      line-height: 1;
+    }
+    .id {
+      font-size: 85%;
+    }
+    .add {
+      float: right;
+      cursor: pointer;
+    }
+    .details {
+      float: right;
+    }
   }
 }

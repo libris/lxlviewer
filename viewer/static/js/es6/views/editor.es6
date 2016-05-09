@@ -2,6 +2,7 @@ import View from './view';
 import * as httpUtil from '../utils/http';
 import * as _ from 'lodash';
 import * as VocabLoader from '../utils/vocabloader';
+import LinkSearch from '../components/linksearch';
 
 export default class Editor extends View {
 
@@ -69,6 +70,7 @@ export default class Editor extends View {
       data: {
         thing,
         linked,
+        vocab,
         saved: {
           loading: false,
           status: {
@@ -81,10 +83,9 @@ export default class Editor extends View {
         removeItem(key, item) {
           thing[key].$remove(item);
         },
-        addItem(key) {
-           // TODO: Show to UX people and watch their reaction
-          const tempInput = prompt('Give id plix', '');
-          const newItem = { '@id': tempInput, prefLabel: tempInput };
+        addItem(key, item) {
+          this.linked.push(item);
+          const newItem = { '@id': item['@id'] }
           thing[key].push(newItem);
         },
         isArray(o) {
@@ -109,6 +110,7 @@ export default class Editor extends View {
         },
       },
       components: {
+        'link-search': LinkSearch,
         'data-node': {
           template: '#data-node',
           name: 'data-node',
