@@ -206,6 +206,7 @@ def some(suffix=None):
 @app.route('/')
 @app.route('/data')
 @app.route('/data.<suffix>')
+@login_required
 def dataindexview(suffix=None):
     slicerepr = request.args.get('slice')
     slicetree = json.loads(slicerepr) if slicerepr else g.site['slices']
@@ -354,7 +355,7 @@ def marcframeview():
 import os
 from datetime import datetime, timedelta
 from .user import User
-os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = app.config['OAUTHLIB_INSECURE_TRANSPORT']
+os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = app.config['OAUTHLIB_INSECURE_TRANSPORT']
 
 app.secret_key = app.config.get('SESSION_SECRET_KEY')
 app.remember_cookie_duration = timedelta(days=31)
@@ -364,7 +365,7 @@ login_manager = LoginManager()
 login_manager.setup_app(app)
 
 def _render_login(msg = None):
-    return render_template("login.html", msg = msg)
+    return render_template('login.html', msg = msg)
 
 def _get_token():
     if 'oauth_token' in session:
@@ -373,7 +374,7 @@ def _get_token():
 
 # Run on access token refreshed
 def _token_updater(token):
-    app.logger.info("Token expired updated to be %s ", json.dumps(token))
+    app.logger.info('Token expired updated to be %s ', json.dumps(token))
     session['oauth_token'] = token
 
 def _get_requests_oauth():
@@ -407,40 +408,38 @@ def _load_user(uid):
 
 @login_manager.unauthorized_handler
 def _handle_unauthorized():
-    # Redirect to "/login" removed. Since IE finds itself in an infinit loop
-    # trying to decide between /login and /#!/login 
     if _fake_login():
         return redirect('/')
-    return _render_login()
+    else 
+        return redirect('/login')
 
-@app.route("/login/authorize")
+@app.route('/login/authorize')
 def login_authorize():
     try:
         requests_oauth = _get_requests_oauth()
-        authorization_url, state =  requests_oauth.authorization_url(app.config['OAUTH_AUTHORIZATION_URL'], approval_prompt="auto")
-        app.logger.info("[%s] Trying to authorize user, redirecting to %s ", request.remote_addr, authorization_url)
+        authorization_url, state =  requests_oauth.authorization_url(app.config['OAUTH_AUTHORIZATION_URL'], approval_prompt='auto')
+        app.logger.info('[%s] Trying to authorize user, redirecting to %s ', request.remote_addr, authorization_url)
         # Redirect to oauth authorization
         return redirect(authorization_url)
     except Exception, e:
-        app.logger.error("Failed to create authorization url,  %s ", str(e))
+        app.logger.error('Failed to create authorization url,  %s ', str(e))
         return _render_login(str(e))
 
-@app.route("/login/authorized")
+@app.route('/login/authorized')
 def authorized():
-    app.logger.debug("Got authorized redirect")
+    app.logger.debug('Got authorized redirect')
 
     try:
         # Get access token
         try:
             token_url = app.config['OAUTH_TOKEN_URL']
-            app.logger.info("[%s] Trying to get access token from %s", request.remote_addr, token_url)
+            app.logger.info('[%s] Trying to get access token from %s', request.remote_addr, token_url)
             requests_oauth = _get_requests_oauth()
             # On authorized fetch token
             session['oauth_token'] = requests_oauth.fetch_token(token_url, client_secret=app.config['OAUTH_CLIENT_SECRET'], authorization_response=request.url)
-            if app.debug:
-                app.logger.info("OAuth token received %s ", json.dumps(session['oauth_token']))
+            app.logger.debug('OAuth token received %s ', json.dumps(session['oauth_token']))
         except Exception, e:
-            raise Exception("Failed to get token, %s response: %s " % (token_url, str(e)))
+            raise Exception('Failed to get token, %s response: %s ' % (token_url, str(e)))
 
         # Get user from verify
         try:    
@@ -449,7 +448,7 @@ def authorized():
             verify_user = verify_response['user']
             authorization = verify_user['authorization']
             username = verify_user['username']
-            app.logger.info("[%s] User received from verify %s, %s", request.remote_addr, username, json.dumps(verify_user))
+            app.logger.info('[%s] User received from verify %s, %s', request.remote_addr, username, json.dumps(verify_user))
 
             # Create Flask User and login
             if(app.config.get('ALWAYS_ALLOW_XLREG') == 'True'):
@@ -462,7 +461,7 @@ def authorized():
             return redirect('/')
 
         except Exception, e:
-            raise Exception("Failed to verify user. %s response: %s " % (varify_url, str(e)))
+            raise Exception('Failed to verify user. %s response: %s ' % (varify_url, str(e)))
             
     except Exception, e:
         msg = str(e)
@@ -470,13 +469,13 @@ def authorized():
         return _render_login(msg)
 
     
-@app.route("/logout")
+@app.route('/logout')
 def logout():
-    app.logger.info("[%s] Trying to sign out.", request.remote_addr)
+    app.logger.info('[%s] Trying to sign out.', request.remote_addr)
     logout_user()
     session.pop('authorization', None)
     session.pop('oauth_token', None)
-    return redirect("/")
+    return redirect('/')
 
 # login routes end
 # ----------------------------
