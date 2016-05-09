@@ -20,7 +20,6 @@ from .thingview import Things, Uris, IDKBSE, LIBRIS
 from .marcframeview import MarcFrameView, pretty_json
 from . import conneg
 
-
 JSONLD_MIMETYPE = 'application/ld+json'
 RDF_MIMETYPES = {'text/turtle', JSONLD_MIMETYPE, 'application/rdf+xml', 'text/xml'}
 MIMETYPE_FORMATS = ['text/html', 'application/xhtml+xml'] + list(RDF_MIMETYPES)
@@ -442,7 +441,7 @@ def authorized():
             raise Exception('Failed to get token, %s response: %s ' % (token_url, str(e)))
 
         # Get user from verify
-        try:    
+        try:
             varify_url = app.config['OAUTH_VERIFY_URL']
             verify_response = requests_oauth.get(varify_url).json()
             verify_user = verify_response['user']
@@ -462,13 +461,12 @@ def authorized():
 
         except Exception, e:
             raise Exception('Failed to verify user. %s response: %s ' % (varify_url, str(e)))
-            
+
     except Exception, e:
         msg = str(e)
         app.logger.error(msg)
         return _render_login(msg)
 
-    
 @app.route('/logout')
 def logout():
     app.logger.info('[%s] Trying to sign out.', request.remote_addr)
