@@ -357,8 +357,8 @@ from .user import User
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = app.config['OAUTHLIB_INSECURE_TRANSPORT']
 
 app.secret_key = app.config.get('SESSION_SECRET_KEY')
-app.remember_cookie_duration = timedelta(days=31)
-app.permanent_session_lifetime = timedelta(days=31)
+app.remember_cookie_duration = timedelta(days=app.config.get('SESSION_COOKIE_LIFETIME') or 31)
+app.permanent_session_lifetime = timedelta(days=app.config.get('SESSION_COOKIE_LIFETIME') or 31)
 
 login_manager = LoginManager()
 login_manager.setup_app(app)
