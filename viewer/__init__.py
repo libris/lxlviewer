@@ -409,7 +409,7 @@ def _load_user(uid):
 def _handle_unauthorized():
     if _fake_login():
         return redirect('/')
-    else 
+    else:
         return redirect('/login')
 
 @app.route('/login/authorize')
