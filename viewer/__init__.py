@@ -1,8 +1,10 @@
 # -*- coding: UTF-8 -*-
 from __future__ import absolute_import, unicode_literals, print_function
+import os
 import operator
 import json
 from urlparse import urljoin
+from datetime import datetime, timedelta
 
 from rdflib import ConjunctiveGraph
 
@@ -18,6 +20,7 @@ from lxltools.ld.keys import CONTEXT, ID, TYPE, REVERSE
 
 from .thingview import Things, Uris, IDKBSE, LIBRIS
 from .marcframeview import MarcFrameView, pretty_json
+from .user import User
 from . import conneg
 
 JSONLD_MIMETYPE = 'application/ld+json'
@@ -350,10 +353,8 @@ def marcframeview():
 
 # login routes start
 # ----------------------------
-# 
-import os
-from datetime import datetime, timedelta
-from .user import User
+#
+
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = app.config['OAUTHLIB_INSECURE_TRANSPORT']
 
 app.secret_key = app.config.get('SESSION_SECRET_KEY')
