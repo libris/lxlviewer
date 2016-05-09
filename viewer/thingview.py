@@ -62,7 +62,8 @@ sites = {
         #"slices": {"@type":{"meta.bibliography.@id":{"publication.providerDate":[]}}}
         "itemList": [
         #    {ID: "/doc/about#", "title": "Om libris.kb.se", "icon": "info-circle"},
-            {ID: "#", "title": "Logga in", "icon": "sign-in"},
+            {ID: "login",  "title": "Logga in", "icon": "sign-in"},
+            {ID: "logout", "title": "Logga ut", "icon": "sign-out"}
         ]
     }
 }

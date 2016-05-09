@@ -366,20 +366,6 @@ login_manager.setup_app(app)
 def _render_login(msg = None):
     return render_template("login.html", msg = msg)
 
-@login_manager.user_loader
-def _load_user(uid):
-    if not 'authorization' in session:
-        return None
-    return User(uid, authorization=session.get('authorization'))
-
-@login_manager.unauthorized_handler
-def _handle_unauthorized():
-    # Redirect to "/login" removed. Since IE finds itself in an infinit loop
-    # trying to decide between /login and /#!/login 
-    if _fake_login():
-        return redirect('/')
-    return _render_login()
-
 def _get_token():
     if 'oauth_token' in session:
         return session['oauth_token']
@@ -403,15 +389,26 @@ def _get_requests_oauth():
 
 
 def _fake_login():
-    if hasattr(app, 'fakelogin') and app.fakelogin:
-        user = User('Fake banana', authorization=[{ 'sigel': 'NONE', 'xlreg': True, 'kat': True, 'reg': True }])
+    fake_user_login = app.config.get('FAKE_LOGIN')
+    if app.config.get('FAKE_LOGIN'):
+        user = User(fake_user_login.get('name'), authorization=fake_user_login.get('authorization'))
         app.logger.debug("Faking login %s %s", user.get_id(), json.dumps(user.get_authorization()))
         login_user(user, True)
         session['authorization'] = user.authorization
         return True
+    else:
+        return False
 
-@app.route("/login")
-def login():
+@login_manager.user_loader
+def _load_user(uid):
+    if not 'authorization' in session:
+        return None
+    return User(uid, authorization=session.get('authorization'))
+
+@login_manager.unauthorized_handler
+def _handle_unauthorized():
+    # Redirect to "/login" removed. Since IE finds itself in an infinit loop
+    # trying to decide between /login and /#!/login 
     if _fake_login():
         return redirect('/')
     return _render_login()
@@ -473,14 +470,13 @@ def authorized():
         return _render_login(msg)
 
     
-@app.route("/signout")
-#@login_required
+@app.route("/logout")
 def logout():
     app.logger.info("[%s] Trying to sign out.", request.remote_addr)
     logout_user()
     session.pop('authorization', None)
     session.pop('oauth_token', None)
-    return redirect("/login")
+    return redirect("/")
 
 # login routes end
 # ----------------------------
