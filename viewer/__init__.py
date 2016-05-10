@@ -223,6 +223,9 @@ def rendered_response(path, suffix, thing):
     if mimetype == 'application/json':
         context_link = '<%s>; rel="http://www.w3.org/ns/json-ld#context"' % CONTEXT_PATH
         resp.headers['Link'] = context_link
+    if isinstance(resp, Response):
+        resp.headers['Access-Control-Allow-Origin'] = "*"
+        resp.headers['Access-Control-Allow-Methods'] = "GET"
     return resp
 
 
