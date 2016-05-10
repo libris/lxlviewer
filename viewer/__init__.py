@@ -208,7 +208,6 @@ def some(suffix=None):
 @app.route('/')
 @app.route('/data')
 @app.route('/data.<suffix>')
-@login_required
 def dataindexview(suffix=None):
     slicerepr = request.args.get('slice')
     slicetree = json.loads(slicerepr) if slicerepr else g.site['slices']
