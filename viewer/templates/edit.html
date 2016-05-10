@@ -23,8 +23,8 @@
         </span>
         <span class="value">
           <data-node :key="k" :value="v" :index="linked"></data-node>
+          <link-search v-if="isArray(v)" :key="k" :vocab="vocab"></link-search>
         </span>
-        <button v-if="isArray(v)" v-on:click="addItem(k)">+</button>
       </li>
     </template>
   </ul>
