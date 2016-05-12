@@ -2,7 +2,7 @@ import View from './view';
 import * as httpUtil from '../utils/http';
 import * as _ from 'lodash';
 import * as VocabLoader from '../utils/vocabloader';
-import LinkSearch from '../components/linksearch';
+import LdTable from '../components/ldtable';
 
 export default class Editor extends View {
 
@@ -13,16 +13,16 @@ export default class Editor extends View {
     this.loadItem();
     const self = this;
     this.loadVocab().then((vocab) => {
-      self.initVue(self.thing, self.linked, vocab);
+      self.initVue(self.thing, self.meta, self.linked, vocab);
     });
   }
 
   loadItem() {
     // Retrieves the data and splits it into a thing obj and array with links
-
     this.data = JSON.parse(document.getElementById('data').innerText)['@graph'];
-    this.thing = this.data[0];
-    this.data.splice(0, 1);
+    this.meta = this.data[0];
+    this.thing = this.data[1];
+    this.data.splice(0, 2);
 
     this.linked = [];
     for (let i = 0; i < this.data.length; i++) {
@@ -44,7 +44,7 @@ export default class Editor extends View {
     });
   }
 
-  initVue(thing, linked, vocab) {
+  initVue(thing, meta, linked, vocab) {
     const self = this;
 
     $('#loadingText').hide();
@@ -69,6 +69,7 @@ export default class Editor extends View {
       el: '#editorApp',
       data: {
         thing,
+        meta,
         linked,
         vocab,
         saved: {
@@ -110,43 +111,7 @@ export default class Editor extends View {
         },
       },
       components: {
-        'link-search': LinkSearch,
-        'data-node': {
-          template: '#data-node',
-          name: 'data-node',
-          props: ['key', 'value', 'index'],
-          methods: {
-            getLinked(id) {
-              const index = this.index;
-              if (typeof index === 'undefined') {
-                return {};
-              }
-              for (let i = 0; i < index.length; i ++) {
-                if (index[i]['@id'] === id) {
-                  return index[i];
-                }
-              }
-              return {};
-            },
-            isMarc(key) {
-              if (typeof key === 'undefined') {
-                return false;
-              }
-              return (
-                !!~key.indexOf('marc:') || !!~key.indexOf('_marc')
-              );
-            },
-            isArray(o) {
-              return _.isArray(o);
-            },
-            isPlainObject(o) {
-              return _.isPlainObject(o);
-            },
-            removeItem(key, value) {
-              return this.$parent.removeItem(key, value);
-            },
-          },
-        },
+        'ld-table': LdTable,
       },
     });
   }

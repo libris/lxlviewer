@@ -14,23 +14,16 @@
   <h1><i class="fa fa-cog fa-spin"></i> Laddar...</h1>
 </div>
 <div id="editorApp">
-  <h1><small>Redigerar:</small><br>{{thing.prefLabel || thing['@id']}}</h1>
-  <ul>
-    <template v-for="(k, v) in thing">
-      <li>
-        <span class="label">
-          <a href="/vocab/#{{k}}">{{ k | labelByLang | capitalize }}</a>
-        </span>
-        <span class="value">
-          <data-node :key="k" :value="v" :index="linked"></data-node>
-          <link-search v-if="isArray(v)" :key="k" :vocab="vocab"></link-search>
-        </span>
-      </li>
-    </template>
-  </ul>
+  <h1><small>Redigerar:</small><br>{{meta.prefLabel || meta['@id']}}</h1>
+  <ld-table class="meta" :item="meta" :vocab="vocab" :linked="linked"></ld-table>
+  <ld-table class="thing" :item="thing" :vocab="vocab" :linked="linked"></ld-table>
+
   <div id="result">
     <h2>JSON</h2>
     <textarea v-model="thing | json">
+    </textarea>
+    <h2>Linked</h2>
+    <textarea v-model="linked | json">
     </textarea>
   </div>
   <hr>
@@ -41,9 +34,21 @@
   </button>
   <span class="status-text small" v-bind:class="{'error' : saved.status.error, 'success' : !saved.status.error }" v-show="!saved.loading && saved.status.info">{{ saved.status.info }}</span>
   <hr>
-    Senast uppdaterad: {{ thing.modified }}
-  <hr>
 </div>
+
+<template id="ld-table">
+  <ul>
+    <li v-for="(k, v) in item">
+      <span class="label">
+        <a href="/vocab/#{{k}}">{{ k | labelByLang | capitalize }}</a>
+      </span>
+      <span class="value">
+        <data-node :key="k" :value="v" :index="linked"></data-node>
+        <link-search v-if="isArray(v)" :key="k" :vocab="vocab"></link-search>
+      </span>
+    </li>
+  </ul>
+</template>
 
 <template id="link-adder">
 <div>
@@ -64,6 +69,7 @@
   </div>
 </div>
 </template>
+
 <template id="data-node">
   <template v-if="!isMarc(key)">
     <template v-if="isArray(value)">
@@ -79,9 +85,23 @@
       </li>
     </template>
     <template v-if="!isArray(value) && isPlainObject(value)">
-      <li class="linked">
-        <a href="{{value['@id']}}">{{getLinked(value['@id']).prefLabel || value['@id']}}</a> <i class="fa fa-close" v-on:click="removeItem($parent.key, value)"></i>
-      </li>
+      <template v-if="value.hasOwnProperty('@id')">
+        <li>
+          <div class="linked">
+            <a href="{{value['@id']}}">
+              <processed-label :item="getLinked(value['@id'])"></processed-label>
+            </a> <i class="fa fa-close" v-on:click="removeItem($parent.key, value)"></i>
+          </div>
+        </li>
+      </template>
+      <template v-else>
+        <li class="structured">
+          <ul>
+            <span v-if="label">{{key}}</span>
+            <data-node v-for="v in value" :label="true" :value="v" :key="key" :index="index"></data-node>
+          </ul>
+        </li>
+      </template>
     </template>
   </template>
   <template v-else>

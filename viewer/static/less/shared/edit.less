@@ -4,6 +4,13 @@
   background-color: fadeout(@neutral-color,25%);
   padding: 20px;
 
+  ul.meta {
+    background-color: #F1F1F1;
+  }
+  ul.thing {
+
+  }
+
   ul {
     padding-left: 0px;
     li {
@@ -72,6 +79,12 @@
           margin: 0px 6px 6px 0px;
           a {
             color: inherit;
+          }
+        }
+        .structured {
+          border: 1px solid black;
+          > ul > li {
+            display: inline-block;
           }
         }
       }
