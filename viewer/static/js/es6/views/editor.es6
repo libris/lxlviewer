@@ -86,7 +86,7 @@ export default class Editor extends View {
         },
         addItem(key, item) {
           this.linked.push(item);
-          const newItem = { '@id': item['@id'] }
+          const newItem = { '@id': item['@id'] };
           thing[key].push(newItem);
         },
         isArray(o) {
