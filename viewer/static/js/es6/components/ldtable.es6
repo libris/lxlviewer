@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import LinkSearch from './linksearch';
+import LinkAdder from './linkadder';
 import ProcessedLabel from './processedlabel';
 
 export default {
@@ -24,7 +24,7 @@ export default {
     },
   },
   components: {
-    'link-search': LinkSearch,
+    'link-adder': LinkAdder,
     'data-node': {
       template: '#data-node',
       name: 'data-node',

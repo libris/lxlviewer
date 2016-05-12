@@ -44,7 +44,7 @@
       </span>
       <span class="value">
         <data-node :key="k" :value="v" :index="linked"></data-node>
-        <link-search v-if="isArray(v)" :key="k" :vocab="vocab"></link-search>
+        <link-adder v-if="isArray(v)" :key="k" :vocab="vocab"></link-adder>
       </span>
     </li>
   </ul>
