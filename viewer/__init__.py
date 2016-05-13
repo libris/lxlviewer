@@ -1,23 +1,29 @@
 # -*- coding: UTF-8 -*-
 from __future__ import absolute_import, unicode_literals, print_function
+import os
 import operator
 import json
+import random
+import string
 from urlparse import urljoin
+from datetime import datetime, timedelta
 
 from rdflib import ConjunctiveGraph
 
 from flask import (Flask, Response, g, request, render_template, redirect,
-        abort, url_for, send_file)
+        abort, session, url_for, send_file)
+from flask_login import LoginManager, login_required, login_user, flash, current_user, logout_user
 from flask.helpers import NotFound
 from werkzeug.urls import url_quote
+from requests_oauthlib import OAuth2Session, TokenUpdated
 
 from lxltools.util import as_iterable
 from lxltools.ld.keys import CONTEXT, ID, TYPE, REVERSE
 
 from .thingview import Things, Uris, IDKBSE, LIBRIS
 from .marcframeview import MarcFrameView, pretty_json
+from .user import User
 from . import conneg
-
 
 JSONLD_MIMETYPE = 'application/ld+json'
 RDF_MIMETYPES = {'text/turtle', JSONLD_MIMETYPE, 'application/rdf+xml', 'text/xml'}
@@ -359,3 +365,139 @@ def marcframeview():
     return render_template('marcframeview.html',
             mf=mfview,
             pretty_json=pretty_json)
+
+##
+# Login start
+# ----------------------------
+#
+
+os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = app.config.get('OAUTHLIB_INSECURE_TRANSPORT') or '0'
+app.secret_key = app.config.get('SESSION_SECRET_KEY') or ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(10))
+app.remember_cookie_duration = timedelta(days=app.config.get('SESSION_COOKIE_LIFETIME') or 31)
+app.permanent_session_lifetime = timedelta(days=app.config.get('SESSION_COOKIE_LIFETIME') or 31)
+
+login_manager = LoginManager()
+login_manager.setup_app(app)
+
+def _render_login(msg = None):
+    return render_template('login.html', msg = msg)
+
+def _get_token():
+    if 'oauth_token' in session:
+        return session['oauth_token']
+    return None
+
+# Run on access token refreshed
+def _token_updater(token):
+    app.logger.info('Token expired updated to be %s ', json.dumps(token))
+    session['oauth_token'] = token
+
+def _get_requests_oauth():
+    # Create new oAuth 2 session
+    requests_oauth = OAuth2Session(app.config['OAUTH_CLIENT_ID'],
+               redirect_uri=app.config['OAUTH_REDIRECT_URI'],
+               auto_refresh_kwargs={ 'client_id': app.config['OAUTH_CLIENT_ID'], 'client_secret': app.config['OAUTH_CLIENT_SECRET'] },
+               auto_refresh_url=app.config['OAUTH_TOKEN_URL'],
+               token = _get_token(),
+               token_updater=_token_updater
+               )
+    return requests_oauth
+
+
+def _fake_login():
+    fake_user_login = app.config.get('FAKE_LOGIN')
+    if app.config.get('FAKE_LOGIN'):
+        user = User(fake_user_login.get('name'), authorization=fake_user_login.get('authorization'))
+        app.logger.debug("Faking login %s %s", user.get_id(), json.dumps(user.get_authorization()))
+        login_user(user, True)
+        session['authorization'] = user.authorization
+        return True
+    else:
+        return False
+
+@login_manager.user_loader
+def _load_user(uid):
+    if not 'authorization' in session:
+        return None
+    return User(uid, authorization=session.get('authorization'))
+
+@login_manager.unauthorized_handler
+def _handle_unauthorized():
+    if _fake_login():
+        return redirect('/')
+    else:
+        return redirect('/login')
+
+# Login page
+@app.route("/login")
+def login():
+    return _render_login()
+
+# Route to redirect to oauth endpiont
+@app.route('/login/authorize')
+def login_authorize():
+    try:
+        requests_oauth = _get_requests_oauth()
+        authorization_url, state =  requests_oauth.authorization_url(app.config['OAUTH_AUTHORIZATION_URL'], approval_prompt='auto')
+        app.logger.info('[%s] Trying to authorize user, redirecting to %s ', request.remote_addr, authorization_url)
+        # Redirect to oauth authorization
+        return redirect(authorization_url)
+    except Exception, e:
+        app.logger.error('Failed to create authorization url,  %s ', str(e))
+        return _render_login(str(e))
+
+# Route called on oauth callback
+@app.route('/login/authorized')
+def authorized():
+    app.logger.debug('Got authorized redirect')
+    try:
+        # Get access token
+        try:
+            token_url = app.config['OAUTH_TOKEN_URL']
+            app.logger.info('[%s] Trying to get access token from %s', request.remote_addr, token_url)
+            requests_oauth = _get_requests_oauth()
+            # On authorized fetch token
+            session['oauth_token'] = requests_oauth.fetch_token(token_url, client_secret=app.config['OAUTH_CLIENT_SECRET'], authorization_response=request.url)
+            app.logger.debug('OAuth token received %s ', json.dumps(session['oauth_token']))
+        except Exception, e:
+            raise Exception('Failed to get token, %s response: %s ' % (token_url, str(e)))
+
+        # Get user from verify
+        try:
+            varify_url = app.config['OAUTH_VERIFY_URL']
+            verify_response = requests_oauth.get(varify_url).json()
+            verify_user = verify_response['user']
+            authorization = verify_user['authorization']
+            username = verify_user['username']
+            app.logger.info('[%s] User received from verify %s, %s', request.remote_addr, username, json.dumps(verify_user))
+
+            # Create Flask User and login
+            if(app.config.get('ALWAYS_ALLOW_XLREG') == 'True'):
+                for auth in authorization:
+                    auth['xlreg'] = True;
+            user = User(username, authorization=authorization, token=session['oauth_token'])
+            session['authorization'] = authorization
+            login_user(user, True)
+
+            return redirect('/')
+
+        except Exception, e:
+            raise Exception('Failed to verify user. %s response: %s ' % (varify_url, str(e)))
+
+    except Exception, e:
+        msg = str(e)
+        app.logger.error(msg)
+        return _render_login(msg)
+
+# Logout user and session
+# !TODO inform user or signout user in oauth endpoint
+@app.route('/logout')
+def logout():
+    app.logger.info('[%s] Trying to sign out.', request.remote_addr)
+    logout_user()
+    session.pop('authorization', None)
+    session.pop('oauth_token', None)
+    return redirect('/')
+
+# Login end
+# ----------------------------
