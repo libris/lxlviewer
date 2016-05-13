@@ -33,17 +33,22 @@ sites = {
         "description": """
             <p>
               <b>id.kb.se</b>
-              är en tjänst som tillgängliggör de grundstenar Kungl.
-              biblioteket använder för att publicera strukturerad,
+              är en tjänst under utveckling som tillgängliggör
+              de grundstenar Kungliga biblioteket använder för att
+              publicera strukturerad,
               <a href="https://sv.wikipedia.org/wiki/L%C3%A4nkad_data">länkad data</a>.
-              Här finns en samling gemensamma definitioner och begrepp som hjälper
-              till att samordna beskrivningar av vårt material. I grunden finns bl.a.
-              ett basvokabulär med gemensamma egenskaper och typer. I möjligaste mån
-              länkar alla definitioner till internationella, välkända motsvarigheter.
+              Tjänsten innehåller en samling gemensamma definitioner
+              och begrepp som hjälper till att samordna beskrivningar
+              av vårt material.
             </p>
             <p>
-              Här tillgängliggörs bl.a. Svenska ämnesord, barnämnesord och
-              genre/formtermer, vilka utgör viktiga byggstenar för denna samordning.
+              I första versionen av id.kb.se har vi lagt ut Svenska ämnesord,
+              barnämnesord och genre/formtermer, som utgör viktiga byggstenar
+              för denna samordning.<br/>
+              I grunden finns ett basvokabulär med gemensamma egenskaper och
+              typer.<br/>
+              I möjligaste mån länkar alla definitioner till internationella,
+              välkända motsvarigheter.
             </p>
         """,
         "slices": {'inScheme.@id':{'inCollection.@id':['@type'], '@type':[]}},
