@@ -3,6 +3,8 @@ from __future__ import absolute_import, unicode_literals, print_function
 import os
 import operator
 import json
+import random
+import string
 from urlparse import urljoin
 from datetime import datetime, timedelta
 
@@ -355,8 +357,8 @@ def marcframeview():
 # ----------------------------
 #
 
-os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = app.config['OAUTHLIB_INSECURE_TRANSPORT']
-app.secret_key = app.config.get('SESSION_SECRET_KEY')
+os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = app.config.get('OAUTHLIB_INSECURE_TRANSPORT') or '0'
+app.secret_key = app.config.get('SESSION_SECRET_KEY') or ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(10))
 app.remember_cookie_duration = timedelta(days=app.config.get('SESSION_COOKIE_LIFETIME') or 31)
 app.permanent_session_lifetime = timedelta(days=app.config.get('SESSION_COOKIE_LIFETIME') or 31)
 
