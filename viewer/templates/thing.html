@@ -80,6 +80,9 @@
 
         </div>
         <h1 class="panel-title">
+          % if rel == 'items'
+          <div class='expand-button'><i class='fa rotate fa-plus-circle'></i></div>
+          % endif
           <a href="${thing_url}" class="thing-label">
             % set label = ldview.getlabel(thing)
             % if isinstance(label, basestring)

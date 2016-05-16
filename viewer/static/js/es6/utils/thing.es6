@@ -64,9 +64,6 @@ export function collapse($elem) {
 
 export function initHitlistExpands($hitlist) {
   // Hit list expand functionality
-    $($hitlist).find('.hit-item').each(function() {
-      $("<div class='expand-button'><i class='fa rotate fa-plus-circle'></i></div>").prependTo($(this).find('.panel-title').eq(0));
-    })
 
     $($hitlist).find('.hit-item .expand-button').click(function() {
       let $subject = $(this).closest('.hit-item');
