@@ -7,7 +7,26 @@
     <div class="panel-body container-fluid">
       <div class="row">
         <div class="col-md-8 col-md-offset-2">
-          <h1><i class="fa fa-cog" aria-hidden="true"></i> Inställningar</h1>
+            <h1>Inställningar</h1>
+          <div class="dash orange">
+
+            <span class="circle"><i class="icon fa fa-cogs" aria-hidden="true"></i></span>
+
+          </div>
+          <form>
+            <div class="form-group">
+            <label for="switchLocation">Ändra aktivt sigel</label>
+            <select multiple class="form-control" id=switchLocation>
+              <option>SEK - Kungliga biblioteket</option>
+              <option>S  - Kungliga biblioteket</option>
+              <option>NB - Kungliga biblioteket</option>
+              <option>DIGI - Kungliga biblioteket</option>
+              <option>MIMER - Kungliga biblioteket</option>
+              <option>ETC...</option>
+            </select>
+            </div>
+          <button type="submit" class="btn btn-default">Växla sigel</button>
+        </form>
         </div>
       </div>
     </div>
