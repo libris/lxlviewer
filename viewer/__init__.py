@@ -497,7 +497,7 @@ def logout():
     logout_user()
     session.pop('authorization', None)
     session.pop('oauth_token', None)
-    return redirect('/')
+    return render_template('logout.html')
 
 # Login end
 # ----------------------------
