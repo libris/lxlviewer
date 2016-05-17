@@ -1,0 +1,45 @@
+body#login {
+  main {
+    margin-top: 30px;
+    margin-bottom: 100px;
+  }
+
+  .dash.orange {
+    border-top-color: @orange;
+  }
+  .dash.orange .circle {
+    background-color: @orange;
+  }
+
+  ul {
+    padding: 30px;
+    margin-top: 30px;
+    list-style-type: none;
+
+  }
+  li:before {
+    content: "■";
+    color: red;
+    margin-right: 10px;
+  }
+
+  .btn-login {
+    background-color: @orange;
+    color: @white;
+    font-size: 18px;
+    padding: 12px;
+  }
+
+  .btn-login:hover,
+  .btn-login:focus,
+  .btn-login:active {
+    background-color: #A87E3D;
+    color: @white;
+  }
+
+  #oauth-login-buttons {
+    width: 100%;
+    text-align: center;
+    padding: 2em 0em;
+  }
+}

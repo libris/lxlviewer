@@ -1,13 +1,12 @@
 {% extends "base.html" %}
-
+{% block bodyattrs %}id="login"{% endblock %}
 {% block content %}
+<div class="panel panel-default article-text">
+  <div class="panel-body container-fluid">
 
-<div class="content index">
-  <header></header>
-  <div class="cols">
-    <div class="login-box">
-      <section class="dash orange">
-        <span class="circle"><i class="icon fa fa-key"></i></span>
+    <div class="row">
+      <div class="col-md-8 col-md-offset-2">
+
         <div id="oauth-login-buttons">
             {% if msg %}
               <div class=" control-group alert alert-error">
@@ -15,15 +14,20 @@
               </div>
             {% endif %}
 
-            <a href="login/authorize" target="_self" class="btn btn-bibdb">Logga in med Biblioteksdatabasen</a>
+            <a href="login/authorize" href="_target" class="btn btn-login">Logga in med Biblioteksdatabasen</a>
         </div>
         <div>
-          <p>För att använda LIBRIS Katalogisering behöver du logga in med LIBRIS Biblioteksdatabas.</p>
-          <p>I steg 1 av utrullningen av det nya katalogiseringsverktyget släpper vi på rättigheter till Beståndsregistreringen efter anmält intresse. Kontakta LIBRIS kundservice för att få rättigheter till beståndsregistreringen.</p>
-          <p>Om det är första gången du använder LIBRIS Katalogisering behöver du godkänna kopplingen till Biblioteksdatabasen när du loggar in.</p>
-          <p>När kopplingen är genomförd blir du skickad tillbaka till LIBRIS Katalogisering.</p>
+
+          <p>För att använda Libris Katalogisering loggar du in via Libris Biblioteksdatabas.</p>
+          <ul class="dash orange">
+        <span class="circle"><i class="icon fa fa-key"></i></span>
+            <li>Godkänn auktoriseringen till Biblioteksdatabasen när du loggar in.</li>
+            <li>När kopplingen är genomförd skickas du tillbaka till Libris Katalogisering.</li>
+            <li>När du loggar ut loggas du även ut från Libris biblioteksdatabas????</li>
+            <li>Om du saknar inloggningsrättigheter kontakta LIBRIS kundservice</li>
+          </ul>
         </div>
-      </section>
+      </div>
     </div>
   </div>
 </div>
