@@ -505,3 +505,8 @@ def logout():
 
 # Login end
 # ----------------------------
+
+# User settings
+@app.route("/usersettings")
+def usersettings():
+    return render_template('usersettings.html')
