@@ -60,10 +60,6 @@
     {% endblock %}
     {% block jumbotron %}{% endblock %}
     <main class="{% block containerclass %}container{% endblock %}">
-      <!-- !TODO remove -->
-      {% if current_user.is_authenticated %}
-        <div><code>${current_user.get().authorization|tojson|safe}</code></div>
-      {% endif %}
       {% block content %}{% endblock %}
     </main>
     <footer>
