@@ -3,19 +3,20 @@
 {% block bodyattrs %}id="usersettings"{% endblock %}
 
 {% block content %}
-  <div class="panel panel-default">
-    <div class="panel-body container-fluid">
+  <div class="">
+    <div class="container-fluid">
       <div class="row">
         <div class=col-md-4>
-          <p>Information om användarnamn e-post etc. ändrar du i biblioteksdatabasen.</p>
-          <p>Vid frågor om rättigheter för sigel kontakta Libris Kundservice.<p>
+          <p>Information om användarnamn, e-post etc. ändrar du i biblioteksdatabasen.</p>
+          <p>Vid frågor om rättigheter för sigel kontakta <a href="mailto:libris@kb.se">libris@kb.se</a>.<p>
         </div>
-        <div class="col-md-8">
-
+        <div class="col-md-8 panel panel-default">
+          {% if current_user.is_authenticated %}
+            <div><code>${current_user.get().authorization|tojson|safe}</code></div>
+          {% endif %}
           <h1>Mina inställningar</h1>
-
           <form>
-            <div class="form-group dash orange">
+            <div class="panel-body form-group dash orange">
               <span class="circle"><i class="icon fa fa-cogs" aria-hidden="true"></i></span>
 
               <label for="username" class="label">Användarnamn</label>
