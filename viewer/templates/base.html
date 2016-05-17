@@ -36,6 +36,19 @@
           <li class=""><a href="${item[ID]}"><i
               class="fa fa-fw fa-${item.icon}"></i> ${item.title}</a></li>
         % endfor
+        % if current_user.is_authenticated
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+              <i class="fa fa-user"></i> ${current_user.get().username}
+            </a>
+            <ul class="dropdown-menu">
+              <li><a href="#">Växla sigel</a></li>
+              <li role="separator" class="divider"></li>
+              <li><a href="/logout">Logga ut</a></li>
+            </ul>
+          </li>
+
+        % endif
         </ul>
       </div>
     </nav>
@@ -44,7 +57,7 @@
     <main class="{% block containerclass %}container{% endblock %}">
       <!-- !TODO remove -->
       {% if current_user.is_authenticated %}
-        <div>DEV INFO... Current user is: <code>${current_user.get()|tojson|safe}</code></div>
+        <div><code>${current_user.get().authorization|tojson|safe}</code></div>
       {% endif %}
       {% block content %}{% endblock %}
     </main>

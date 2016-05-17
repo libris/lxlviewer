@@ -170,6 +170,7 @@ def _to_data_path(path, suffix):
     return '%s/data.%s' % (path, suffix) if suffix else path
 
 @app.route('/<path:path>/edit')
+@login_required
 def thingedit(path):
     item_id = _get_served_uri(request.url_root, path)
     thing = things.ldview.get_record_data(item_id)
