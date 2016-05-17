@@ -67,9 +67,9 @@
             ${termref(t, classes='', labeltype='label-class')}
           % endif
         <div class="toolbar">
-          <a class="toolbar-button"href="${thing_url}">
-            <i class="fa fa-clipboard" aria-hidden="true"></i>${canonical_id}
-          </a>
+          <span class="toolbar-button id-label">
+            <i class="fa fa-chain" aria-hidden="true"></i>${canonical_id}
+          </span>
         % if element == 'article'
           <a class="toolbar-button" href="${thing_url}/edit"><i class="fa fa-pencil"></i>Redigera</a>
         % if t.curie == 'Record'
