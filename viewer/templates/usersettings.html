@@ -1,24 +1,29 @@
-% extends "base.html"
+{% extends "base.html" %}
 
 {% block bodyattrs %}id="usersettings"{% endblock %}
 
 {% block content %}
-  <div class="panel panel-default article-text">
+  <div class="panel panel-default">
     <div class="panel-body container-fluid">
       <div class="row">
-        <div class="col-md-8 col-md-offset-2">
-            <h1>Inställningar</h1>
-          <div class="dash orange">
+        <div class=col-md-4>
+          <p>Information om användarnamn e-post etc. ändrar du i biblioteksdatabasen.</p>
+          <p>Vid frågor om rättigheter för sigel kontakta Libris Kundservice.<p>
+        </div>
+        <div class="col-md-8">
 
-            <span class="circle"><i class="icon fa fa-cogs" aria-hidden="true"></i></span>
+          <h1>Mina inställningar</h1>
 
-          </div>
           <form>
-            <div class="form-group">
-            <label for="switchLocation">Ändra aktivt sigel</label>
+            <div class="form-group dash orange">
+              <span class="circle"><i class="icon fa fa-cogs" aria-hidden="true"></i></span>
+
+              <label for="username" class="label">Användarnamn</label>
+              <p>${current_user.get().username}</p></li>
+            <label for="switchLocation" class="label">Ändra aktivt sigel</label>
             <select multiple class="form-control" id=switchLocation>
               <option>SEK - Kungliga biblioteket</option>
-              <option>S  - Kungliga biblioteket</option>
+              <option>S - Kungliga biblioteket</option>
               <option>NB - Kungliga biblioteket</option>
               <option>DIGI - Kungliga biblioteket</option>
               <option>MIMER - Kungliga biblioteket</option>

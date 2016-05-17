@@ -1,27 +1,22 @@
 {% extends "base.html" %}
 {% block bodyattrs %}id="login"{% endblock %}
 {% block content %}
-<div class="panel panel-default article-text">
+<div class="panel panel-default">
   <div class="panel-body container-fluid">
-
     <div class="row">
       <div class="col-md-8 col-md-offset-2">
-
         <div id="oauth-login-buttons">
             {% if msg %}
               <div class=" control-group alert alert-error">
               ${ msg }
               </div>
             {% endif %}
-
             <a href="login/authorize" href="_target" class="btn btn-login">Logga in med Biblioteksdatabasen</a>
         </div>
-        <div>
-
-          <p>För att använda redigeringen loggar du in via Libris Biblioteksdatabas.</p>
-          <ul class="dash orange">
-        <span class="circle"><i class="icon fa fa-key" aria-hidden="true"></i></span>
-            <li>Godkänn auktoriseringen till Biblioteksdatabasen när du loggar in.</li>
+        <div class="panel panel-default dash orange">
+          <span class="circle"><i class="icon fa fa-key" aria-hidden="true"></i></span>
+          <ul class="">
+            <li>Godkänn autentiseringen till Biblioteksdatabasen när du loggar in.</li>
             <li>När kopplingen är genomförd skickas du tillbaka till tjänsten.</li>
             <li>Om du saknar inloggningsrättigheter kan du kontakta <a href="mailto:libris@kb.se">LIBRIS kundservice</a>.</li>
           </ul>

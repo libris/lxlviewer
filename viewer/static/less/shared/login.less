@@ -1,14 +1,15 @@
-body#login, body#logout {
+body#login,
+body#logout,
+body#usersettings {
   main {
     margin-top: 30px;
     margin-bottom: 100px;
 
     ul {
-      padding: 30px;
-      margin-top: 30px;
       list-style-type: none;
-
+      padding: 30px;
     }
+
     li:before {
       content: "■";
       color: @happy-muted-magenta;
@@ -22,6 +23,21 @@ body#login, body#logout {
       padding: 12px;
     }
 
+// User settings
+    h1 {
+    font-weight: 600;
+    font-size: 18px;
+    text-transform: uppercase;
+    }
+    .label {
+      color:@gray;
+      font-weight:normal;
+      font-size: 12px;
+      padding: 0;
+      display: inline-block;
+    }
+
+// end user settings
     .btn-login:hover,
     .btn-login:focus,
     .btn-login:active {
@@ -29,6 +45,9 @@ body#login, body#logout {
       color: @white;
     }
 
+    .logout-message {
+      padding-top: 30px;
+    }
     #oauth-login-buttons {
       width: 100%;
       text-align: center;
