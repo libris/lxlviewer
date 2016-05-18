@@ -28,3 +28,9 @@ class User(UserMixin):
 
     def get_token(self):
         return self.token
+
+    def get_access_token(self):
+        if 'access_token' in self.token:
+            return self.token['access_token']
+        else:
+            return None
