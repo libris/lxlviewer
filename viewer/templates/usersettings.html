@@ -3,6 +3,7 @@
 {% block bodyattrs %}id="usersettings"{% endblock %}
 
 {% block content %}
+{% if current_user.is_authenticated %}
   <div class="">
     <div class="container-fluid">
       <div class="row">
@@ -11,26 +12,32 @@
           <p>Vid frågor om rättigheter för sigel kontakta <a href="mailto:libris@kb.se">libris@kb.se</a>.<p>
         </div>
         <div class="col-md-8 panel panel-default">
-          {% if current_user.is_authenticated %}
-            <div><code>${current_user.get().authorization|tojson|safe}</code></div>
-          {% endif %}
+
           <h1>Mina inställningar</h1>
           <form>
             <div class="panel-body form-group dash orange">
               <span class="circle"><i class="icon fa fa-cogs" aria-hidden="true"></i></span>
               <label for="username" class="label">Användarnamn</label>
-              <p>${current_user.get().username}</p></li>
-            <label for="switchLocation" class="label">Ändra aktivt sigel</label>
-            <select multiple class="form-control" id=switchLocation>
-              {% for auth in current_user.get().authorization %}
-              <option>${auth.sigel}</option>
-              {% endfor %}
-            </select>
+              <p>${current_user.get().username}</p>
+              <label for="location" class="label">Sigel</label>
+              <p>Här vill jag se aktivt sigel...</p>
+              {% if current_user.get().authorization|length > 1 %}
+                <label for="switchLocation" class="label">Ändra aktivt sigel</label>
+                <select multiple class="form-control" id=switchLocation>
+                  {% for auth in current_user.get().authorization %}
+                  <option>${auth.sigel}</option>
+                  {% endfor %}
+                </select>
+                <button type="submit" class="btn btn-default">Växla sigel</button>
+              {% endif %}
             </div>
-          <button type="submit" class="btn btn-default">Växla sigel</button>
         </form>
         </div>
       </div>
     </div>
   </div>
+  {% else %}
+  Du måste logga in</a>.
+  {% endif %}
+
 {% endblock content %}
