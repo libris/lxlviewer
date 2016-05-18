@@ -2,6 +2,7 @@ import Thing from './views/thing';
 import Editor from './views/editor';
 import Vocab from './views/vocab';
 import Website from './views/website';
+import UserSettings from './views/usersettings';
 
 export default class Loader {
 
@@ -20,6 +21,7 @@ export default class Loader {
     this.createView(new Editor());
     this.createView(new Vocab());
     this.createView(new Website());
+    this.createView(new UserSettings());
   }
 
   createView(view) {
