@@ -423,7 +423,7 @@ def _fake_login():
 def _load_user(uid):
     if not 'authorization' in session:
         return None
-    return User(uid, authorization=session.get('authorization'))
+    return User(uid, authorization=session.get('authorization'), token=_get_token())
 
 @login_manager.unauthorized_handler
 def _handle_unauthorized():
@@ -462,7 +462,7 @@ def authorized():
             requests_oauth = _get_requests_oauth()
             # On authorized fetch token
             session['oauth_token'] = requests_oauth.fetch_token(token_url, client_secret=app.config['OAUTH_CLIENT_SECRET'], authorization_response=request.url)
-            app.logger.debug('OAuth token received %s ', json.dumps(session['oauth_token']))
+            app.logger.debug('OAuth token received %s ', json.dumps(_get_token()))
         except Exception, e:
             raise Exception('Failed to get token, %s response: %s ' % (token_url, str(e)))
 
@@ -479,7 +479,7 @@ def authorized():
             if(app.config.get('ALWAYS_ALLOW_XLREG') == 'True'):
                 for auth in authorization:
                     auth['xlreg'] = True;
-            user = User(username, authorization=authorization, token=session['oauth_token'])
+            user = User(username, authorization=authorization, token=_get_token())
             session['authorization'] = authorization
             login_user(user, True)
 
