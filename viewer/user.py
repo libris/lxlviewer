@@ -26,6 +26,9 @@ class User(UserMixin):
     def get_authorization(self):
         return self.authorization
 
+    def get_authorization_json(self):
+        return json.dumps(self.authorization)
+
     def is_active(self):
         return self.active
 

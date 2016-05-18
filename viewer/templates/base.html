@@ -74,7 +74,7 @@
     % if g.site.title == 'libris.kb.se'
       % if current_user.is_authenticated
       <script type="text/javascript">
-        window.sigelList = ${current_user.get().authorization | tojson | safe};
+        window.sigelList = ${current_user.get_authorization_json()};
       </script>
       % endif
     % endif
