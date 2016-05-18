@@ -1,8 +1,10 @@
-export function put(obj, url) {
+export function put(obj, url, token) {
   return new Promise((resolve, reject) => {
     const req = new XMLHttpRequest();
+
     req.open('PUT', url);
     req.setRequestHeader('Content-Type', 'application/ld+json');
+    req.setRequestHeader('Authorization', `Bearer ${token}`);
 
     req.onload = () => {
       if (req.status === 200 || req.status === 204) {
