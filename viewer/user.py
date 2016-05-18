@@ -17,8 +17,11 @@ class User(UserMixin):
     def get(self):
         return { "username": self.username, "authorization": self.authorization }
 
-    def get_username(self):
+    def get_id(self):
         return self.username
+
+    def get_username(self):
+        return self.get_id()
 
     def get_authorization(self):
         return self.authorization
