@@ -1,3 +1,5 @@
+import * as UserUtil from '../utils/user';
+
 export default class View {
 
   /*
@@ -13,6 +15,7 @@ export default class View {
       this.shiftWindow();
     }
     this.language = $('html').attr('lang');
+    this.loadUser();
     console.log('Initialized view', this);
   }
 
@@ -21,5 +24,13 @@ export default class View {
     if (navbarHeight) {
       scrollBy(0, -navbarHeight);
     }
+  }
+
+  loadUser() {
+    if(typeof window.usertoken !== 'undefined' && window.usertoken !== 'None') {
+      this.usertoken = window.usertoken;
+    }
+    const sigel = UserUtil.get('sigel');
+    $('.sigelLabel').text(`(${sigel})`);
   }
 }

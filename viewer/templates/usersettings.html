@@ -19,16 +19,14 @@
               <span class="circle"><i class="icon fa fa-cogs" aria-hidden="true"></i></span>
               <label for="username" class="label">Användarnamn</label>
               <p>${current_user.get().username}</p>
-              <label for="location" class="label">Sigel</label>
-              <p>Här vill jag se aktivt sigel...</p>
-              {% if current_user.get().authorization|length > 1 %}
-                <label for="switchLocation" class="label">Ändra aktivt sigel</label>
-                <select multiple class="form-control" id=switchLocation>
+              {% if current_user.get().authorization %}
+                <label for="switchLocation" class="label">Aktivt sigel</label>
+                <select class="form-control" id=switchLocation>
                   {% for auth in current_user.get().authorization %}
                   <option>${auth.sigel}</option>
                   {% endfor %}
                 </select>
-                <button type="submit" class="btn btn-default">Växla sigel</button>
+                <button type="button" id="sigelSubmit" class="btn btn-default">Växla sigel</button>
               {% endif %}
             </div>
         </form>
