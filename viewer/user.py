@@ -20,8 +20,14 @@ class User(UserMixin):
     def get_id(self):
         return self.username
 
+    def get_username(self):
+        return self.get_id()
+
     def get_authorization(self):
         return self.authorization
+
+    def get_authorization_json(self):
+        return json.dumps(self.authorization)
 
     def is_active(self):
         return self.active
