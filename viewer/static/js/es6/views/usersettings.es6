@@ -6,7 +6,7 @@ export default class UserSettings extends View {
   initialize() {
     super.initialize();
 
-    $("#switchLocation").val(this.getSigel());
+    $('#switchLocation').val(this.getSigel());
 
     $('#sigelSubmit').click((e) => {
       e.preventDefault();
