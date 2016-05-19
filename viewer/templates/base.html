@@ -67,17 +67,18 @@
     </footer>
     <script src="/assets/vendor/jquery/js/jquery.js"></script>
     <script src="/assets/vendor/bootstrap/js/bootstrap.js"></script>
+    % if g.site.title == 'libris.kb.se'
+      % if current_user.is_authenticated
+      <script type="text/javascript">
+        window.userInfo = ${current_user.get() | tojson | safe};
+        window.userInfo.token = "${current_user.get_access_token()}";
+      </script>
+      % endif
+    % endif
     <script src="/build/app.js"></script>
     {% block scripts %}{% endblock %}
 
 
-    % if g.site.title == 'libris.kb.se'
-      % if current_user.is_authenticated
-      <script type="text/javascript">
-        window.sigelList = ${current_user.get_authorization_json()};
-      </script>
-      % endif
-    % endif
 
     <!-- Piwik -->
     {% if config.PIWIK_ID %}
