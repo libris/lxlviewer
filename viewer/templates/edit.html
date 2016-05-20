@@ -48,10 +48,10 @@
       </span>
     </li>
   </ul>
-  <div>
-    <h2>Allowed props:</h2>
+  <div class="fieldAdder">
+    <h3>Lägg till fält:</h3>
     <ul>
-      <li v-for="prop in allowedProperties">{{prop}}</li>
+      <li v-for="prop in allowedProperties"><span class="fieldLabel" title="{{prop | labelByLang | capitalize }}">{{prop | labelByLang | capitalize }}</span><a v-on:click="addField(prop)">Lägg till <i class="fa fa-plus-circle"></i></a></li>
     </ul>
   </div>
 </template>

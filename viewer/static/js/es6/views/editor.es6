@@ -89,6 +89,11 @@ export default class Editor extends View {
           const newItem = { '@id': item['@id'] };
           thing[key].push(newItem);
         },
+        addField(key) {
+          const newItem = {};
+          newItem[key] = '';
+          this.thing = Object.assign({}, this.thing, newItem);
+        },
         isArray(o) {
           return _.isArray(o);
         },

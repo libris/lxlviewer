@@ -80,6 +80,9 @@ export default {
     addItem(key, item) {
       this.$parent.addItem(key, item);
     },
+    addField(key) {
+      this.$parent.addField(key);
+    },
     removeItem(key, item) {
       this.$parent.removeItem(key, item);
     },
