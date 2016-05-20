@@ -55,13 +55,12 @@ export default {
       for (let i = 0; i < classes.length; i++) {
         classNames.push(classes[i]['@id']);
       }
-      console.log(classNames);
       // Get the properties
       for (let i = 0; i < vocabItems.length; i++) {
         if (vocabItems[i].hasOwnProperty('domainIncludes')) {
           for (let t = 0; t < vocabItems[i].domainIncludes.length; t++) {
             const type = vocabItems[i].domainIncludes[t]['@id'];
-            const prop = vocabItems[i]['@id'];
+            const prop = vocabItems[i]['@id'].replace(`${preferredVocab}:`, '');
             if (classNames.indexOf(type) !== -1 && props.indexOf(prop) < 0) {
               props.push(prop);
             }
