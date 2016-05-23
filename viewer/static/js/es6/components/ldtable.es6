@@ -13,7 +13,7 @@ export default {
     allowedProperties() {
       const props = [];
       const vocabItems = this.vocab.descriptions;
-      const preferredVocab = 'kbv';
+      const preferredVocab = 'kbv:';
 
       function getClassFromVocab(classname) {
         return _.find(vocabItems, { '@id': classname });
@@ -25,7 +25,7 @@ export default {
           for (let i = 0; i < classObj.subClassOf.length; i++) {
             const baseClassId = classObj.subClassOf[i]['@id'];
             const baseClass = getClassFromVocab(baseClassId);
-            if (baseClass && baseClass.isDefinedBy['@id'] === `${preferredVocab}:`) {
+            if (baseClass && baseClass.isDefinedBy['@id'] === preferredVocab) {
               items = items.concat(getBaseClasses(baseClass));
               items.push(baseClass);
             }
@@ -39,7 +39,7 @@ export default {
 
       let classes = [];
       for (let t = 0; t < types.length; t++) {
-        classes = classes.concat(getBaseClasses(getClassFromVocab(`kbv:${types[t]}`)));
+        classes = classes.concat(getBaseClasses(getClassFromVocab(preferredVocab + types[t])));
       }
       const classNames = [];
       for (let i = 0; i < types.length; i++) {
@@ -53,7 +53,7 @@ export default {
         if (vocabItems[i].hasOwnProperty('domainIncludes')) {
           for (let t = 0; t < vocabItems[i].domainIncludes.length; t++) {
             const type = vocabItems[i].domainIncludes[t]['@id'];
-            const prop = vocabItems[i]['@id'].replace(`${preferredVocab}:`, '');
+            const prop = vocabItems[i]['@id'].replace(preferredVocab, '');
             if (classNames.indexOf(type) !== -1 && props.indexOf(prop) < 0) {
               props.push(prop);
             }
