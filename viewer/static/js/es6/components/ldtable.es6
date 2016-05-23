@@ -23,11 +23,11 @@ export default {
         let items = [];
         if (classObj.hasOwnProperty('subClassOf')) {
           for (let i = 0; i < classObj.subClassOf.length; i++) {
-            const subItemId = classObj.subClassOf[i]['@id'];
-            if (subItemId.indexOf(preferredVocab) !== -1) {
-              const subItem = getClassFromVocab(subItemId);
-              items = items.concat(getBaseClasses(subItem));
-              items.push(subItem);
+            const baseClassId = classObj.subClassOf[i]['@id'];
+            const baseClass = getClassFromVocab(baseClassId);
+            if (baseClass && baseClass.isDefinedBy['@id'] === `${preferredVocab}:`) {
+              items = items.concat(getBaseClasses(baseClass));
+              items.push(baseClass);
             }
           }
         }
