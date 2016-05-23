@@ -35,14 +35,7 @@ export default {
       }
 
       // Types defined on the item
-      let types = [];
-      if (_.isArray(this.item['@type'])) {
-        for (let i = 0; i < this.item['@type'].length; i++) {
-          types.push(this.item['@type'][i]);
-        }
-      } else {
-        types = [this.item['@type']];
-      }
+      const types = [].concat(this.item['@type']);
 
       let classes = [];
       for (let t = 0; t < types.length; t++) {
