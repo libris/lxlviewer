@@ -38,7 +38,7 @@ export default {
       const item = _.find(this.vocab.descriptions, { '@id': `${preferredVocab}:${this.key}` });
       const range = [];
       if (typeof item === 'undefined' || !item.hasOwnProperty('rangeIncludes')) {
-        return [this.$parent.thing['@type']];
+        return [this.$parent.item['@type']];
       }
       for (let i = 0; i < item.rangeIncludes.length; i++) {
         range.push(item.rangeIncludes[i]['@id'].replace(`${preferredVocab}:`, ''));
