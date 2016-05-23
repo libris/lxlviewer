@@ -13,7 +13,7 @@ export default class Editor extends View {
     this.loadItem();
     const self = this;
     this.loadVocab().then((vocab) => {
-      self.initVue(self.thing, self.meta, self.linked, vocab);
+      self.initVue(self.thing, self.meta, self.linked, vocab, self.vocabPfx);
     });
   }
 
@@ -23,6 +23,7 @@ export default class Editor extends View {
     this.meta = this.data[0];
     this.thing = this.data[1];
     this.data.splice(0, 2);
+    this.vocabPfx = 'kbv:';
 
     this.linked = [];
     for (let i = 0; i < this.data.length; i++) {
@@ -44,7 +45,7 @@ export default class Editor extends View {
     });
   }
 
-  initVue(thing, meta, linked, vocab) {
+  initVue(thing, meta, linked, vocab, vocabPfx) {
     const self = this;
 
     $('#loadingText').hide();
@@ -52,8 +53,11 @@ export default class Editor extends View {
 
     Vue.filter('labelByLang', (label) => {
       // Filter for fetching labels from vocab
-      const preferredVocab = 'kbv';
-      const item = _.find(vocab.descriptions, { '@id': `${preferredVocab}:${label}` });
+      let lbl = label;
+      if (lbl.indexOf(vocabPfx) !== -1) {
+        lbl = lbl.replace(vocabPfx, '');
+      }
+      const item = _.find(vocab.descriptions, { '@id': `${vocabPfx}${lbl}` });
       let labelByLang = '';
       if (typeof item !== 'undefined' && item.labelByLang) {
         labelByLang = item.labelByLang[self.language];
@@ -62,7 +66,7 @@ export default class Editor extends View {
       if (labelByLang.length > 0) {
         return labelByLang;
       }
-      return label;
+      return lbl;
     });
 
     const vm = new Vue({
@@ -72,6 +76,7 @@ export default class Editor extends View {
         meta,
         linked,
         vocab,
+        vocabPfx,
         saved: {
           loading: false,
           status: {
@@ -88,11 +93,6 @@ export default class Editor extends View {
           this.linked.push(item);
           const newItem = { '@id': item['@id'] };
           thing[key].push(newItem);
-        },
-        addField(key) {
-          const newItem = {};
-          newItem[key] = '';
-          this.thing = Object.assign({}, this.thing, newItem);
         },
         isArray(o) {
           return _.isArray(o);
