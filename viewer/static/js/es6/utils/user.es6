@@ -5,11 +5,13 @@ function saveUserInfo(userObj) {
 
 function fetchUserInfo() {
   const fetchedObj = JSON.parse(localStorage.getItem('user'));
-  if (fetchedObj && fetchedObj.username === window.userInfo.username) {
+  if (fetchedObj && window.userInfo && fetchedObj.username === window.userInfo.username) {
     return fetchedObj;
   }
-  const userObj = window.userInfo;
-  saveUserInfo(userObj);
+  const userObj = window.userInfo || {};
+  if(userObj) {
+    saveUserInfo(userObj);
+  }
   return userObj;
 }
 
@@ -24,7 +26,7 @@ export function get(key) {
   if (user.hasOwnProperty(key)) {
     return user[key];
   }
-  if (key === 'sigel') {
+  if (key === 'sigel' && user.authorization && user.authorization.length > 0) {
     return user.authorization[0].sigel;
   }
   return null;
