@@ -446,7 +446,7 @@ def _login_user(verified_user):
         user = User(username, authorization=authorization, token=_get_token())
         session['authorization'] = authorization
         return login_user(user, True)
-    return None
+    return False
 
 
 @login_manager.user_loader
@@ -509,7 +509,7 @@ def authorized():
         if _login_user(verified_user):
             return redirect('/')
         else:
-            raise Exception('Failed to login')
+            raise Exception('Failed to login.')
 
     except Exception, e:
         msg = str(e)
