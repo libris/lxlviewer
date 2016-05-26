@@ -15,7 +15,10 @@ class User(UserMixin):
         return '<User %r>' % (self.username)
 
     def get(self):
-        return { "username": self.username, "authorization": self.authorization }
+        return { "username": self.username, "authorization": self.authorization, "access_token": self.get_access_token() }
+
+    def get_as_json(self):
+        return json.dumps(self.get())
 
     def get_id(self):
         return self.username
@@ -26,9 +29,6 @@ class User(UserMixin):
     def get_authorization(self):
         return self.authorization
 
-    def get_authorization_json(self):
-        return json.dumps(self.authorization)
-
     def is_active(self):
         return self.active
 
@@ -36,7 +36,7 @@ class User(UserMixin):
         return self.token
 
     def get_access_token(self):
-        if 'access_token' in self.token:
+        if self.token and 'access_token' in self.token:
             return self.token['access_token']
         else:
             return None

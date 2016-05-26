@@ -27,9 +27,7 @@ export default class View {
   }
 
   loadUser() {
-    if(typeof window.usertoken !== 'undefined' && window.usertoken !== 'None') {
-      this.usertoken = window.usertoken;
-    }
+    this.access_token = UserUtil.get('access_token');;
     const sigel = UserUtil.get('sigel');
     $('.sigelLabel').text(`(${sigel})`);
   }

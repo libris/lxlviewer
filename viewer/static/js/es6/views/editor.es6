@@ -106,7 +106,7 @@ export default class Editor extends View {
           const obj = this.thing;
           const url = thing['@id'];
 
-          httpUtil.put(obj, url, self.token).then(() => {
+          httpUtil.put(obj, url, self.access_token).then(() => {
             vm.saved.loading = false;
             vm.saved.status = { error: false, info: 'Everything went alright.' };
           }, (error) => {
