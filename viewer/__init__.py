@@ -448,6 +448,10 @@ def _login_user(verified_user):
         return login_user(user, True)
     return False
 
+def _next_route():
+    next = session['next']
+    session.pop('next')
+    return next or '/'
 
 @login_manager.user_loader
 def _load_user(uid):
@@ -458,13 +462,14 @@ def _load_user(uid):
 @login_manager.unauthorized_handler
 def _handle_unauthorized():
     if _fake_login():
-        return redirect('/')
+        return redirect(_next_route())
     else:
-        return redirect('/login')
+        return redirect('/login?next=' + request.path)
 
 # Login page
 @app.route("/login")
 def login():
+    session['next'] = request.args.get('next');
     return _render_login()
 
 # Route to redirect to oauth endpiont
@@ -507,7 +512,7 @@ def authorized():
             raise Exception('Failed to verify user. %s response: %s ' % (varify_url, str(e)))
 
         if _login_user(verified_user):
-            return redirect('/')
+            return redirect(_next_route())
         else:
             raise Exception('Failed to login.')
 
