@@ -419,6 +419,36 @@ def _fake_login():
     else:
         return False
 
+def _filter_authorization(authorization, authorization_roles):
+    if not authorization or not authorization_roles:
+        return []
+    def f(auth):
+        # filter out auth without specified roles
+        return filter(lambda role: auth.get(role), authorization_roles)
+
+    return list(filter(f, authorization))
+
+def _login_user(verified_user):
+    authorization = verified_user.get('authorization')
+    username = verified_user.get('username')
+    if authorization and username:
+        # For debugging, allow force xlreg rights
+        if(app.config.get('ALWAYS_ALLOW_XLREG')):
+            for auth in authorization:
+                auth['xlreg'] = True;
+
+        # Filter authorization to make sure user got correct role rights
+        authorization = _filter_authorization(authorization, app.config.get('AUTHORIZED_ROLES'))
+        if not authorization:
+            raise Exception('You insufficient rights to access this service. Contact support to gain access.')
+
+        # Create Flask user
+        user = User(username, authorization=authorization, token=_get_token())
+        session['authorization'] = authorization
+        return login_user(user, True)
+    return None
+
+
 @login_manager.user_loader
 def _load_user(uid):
     if not 'authorization' in session:
@@ -464,29 +494,22 @@ def authorized():
             session['oauth_token'] = requests_oauth.fetch_token(token_url, client_secret=app.config['OAUTH_CLIENT_SECRET'], authorization_response=request.url)
             app.logger.debug('OAuth token received %s ', json.dumps(_get_token()))
         except Exception, e:
-            raise Exception('Failed to get token, %s response: %s ' % (token_url, str(e)))
+            raise Exception('Failed to get token, %s response: %s. Try login again' % (token_url, str(e)))
 
         # Get user from verify
         try:
             varify_url = app.config['OAUTH_VERIFY_URL']
             verify_response = requests_oauth.get(varify_url).json()
-            verify_user = verify_response['user']
-            authorization = verify_user['authorization']
-            username = verify_user['username']
-            app.logger.info('[%s] User received from verify %s, %s', request.remote_addr, username, json.dumps(verify_user))
-
-            # Create Flask User and login
-            if(app.config.get('ALWAYS_ALLOW_XLREG') == 'True'):
-                for auth in authorization:
-                    auth['xlreg'] = True;
-            user = User(username, authorization=authorization, token=_get_token())
-            session['authorization'] = authorization
-            login_user(user, True)
-
-            return redirect('/')
+            verified_user = verify_response.get('user')
+            app.logger.info('[%s] User received from verify %s, %s', request.remote_addr, verified_user.get('username'), json.dumps(verified_user))
 
         except Exception, e:
             raise Exception('Failed to verify user. %s response: %s ' % (varify_url, str(e)))
+
+        if _login_user(verified_user):
+            return redirect('/')
+        else:
+            raise Exception('Failed to login')
 
     except Exception, e:
         msg = str(e)
