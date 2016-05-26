@@ -7,9 +7,7 @@
       <div class="col-md-8 col-md-offset-2">
         <div id="oauth-login-buttons">
             {% if msg %}
-              <div class=" control-group alert alert-error">
-              ${ msg }
-              </div>
+              <div class="well status-text error"><i class="icon fa fa-lg fa-warning" aria-hidden="true"></i> ${ msg }</div>
             {% endif %}
             <a href="login/authorize" href="_target" class="btn btn-login">Logga in med Biblioteksdatabasen</a>
         </div>
