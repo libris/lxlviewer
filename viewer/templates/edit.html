@@ -15,8 +15,8 @@
 </div>
 <div id="editorApp">
   <h1><small>Redigerar:</small><br>{{meta.prefLabel || meta['@id']}}</h1>
-  <ld-table class="meta" :item="meta" :vocab="vocab" :linked="linked" :vocab-pfx="vocabPfx"></ld-table>
-  <ld-table class="thing" :item="thing" :vocab="vocab" :linked="linked" :vocab-pfx="vocabPfx"></ld-table>
+  <ld-table :item="meta" :vocab="vocab" :linked="linked" :vocab-pfx="vocabPfx"></ld-table>
+  <ld-table :item="thing" :vocab="vocab" :linked="linked" :vocab-pfx="vocabPfx"></ld-table>
 
   <div id="result">
     <h2>JSON</h2>
@@ -51,14 +51,14 @@
   <div class="fieldAdder">
     <h3>Lägg till fält:</h3>
     <ul>
-      <li v-if="allowedProperties.length > 0" v-for="prop in allowedProperties">
+      <li v-for="prop in allowedProperties">
         <span class="fieldLabel" title="{{prop['@id'] | labelByLang | capitalize }}">
           {{prop['@id'] | labelByLang | capitalize }}
         </span>
         <span class="typeLabel" title="{{prop['@type']}}">{{prop['@type']}}</span>
         <a v-on:click="addField(prop['@id'])">Lägg till <i class="fa fa-plus-circle"></i></a>
       </li>
-      <li v-else>Hittade inga möjliga fält att lägga till.</li>
+      <li v-if="allowedProperties.length === 0">Hittade inga möjliga fält att lägga till.</li>
     </ul>
   </div>
 </template>
