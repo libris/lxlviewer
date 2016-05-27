@@ -94,6 +94,9 @@ export default class Editor extends View {
           const newItem = { '@id': item['@id'] };
           thing[key].push(newItem);
         },
+        addAnonymous(key, item) {
+          thing[key].push(item);
+        },
         isArray(o) {
           return _.isArray(o);
         },

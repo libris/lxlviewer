@@ -82,9 +82,17 @@ export default {
     addItem(key, item) {
       this.$parent.addItem(key, item);
     },
-    addField(key) {
+    addAnonymous(key, item) {
+      this.$parent.addAnonymous(key, item);
+    },
+    addField(prop) {
       const newItem = {};
-      newItem[key.replace(this.vocabPfx, '')] = '';
+      const key = prop['@id'].replace(this.vocabPfx, '');
+      if (prop['@type'].indexOf('ObjectProperty') !== -1) {
+        newItem[key] = [];
+      } else {
+        newItem[key] = '';
+      }
       this.$parent.thing = Object.assign({}, this.item, newItem);
     },
     removeItem(key, item) {

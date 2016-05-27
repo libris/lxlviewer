@@ -20,6 +20,8 @@
 
   <div id="result">
     <h2>JSON</h2>
+    <textarea v-model="meta | json">
+    </textarea>
     <textarea v-model="thing | json">
     </textarea>
     <h2>Linked</h2>
@@ -44,7 +46,7 @@
       </span>
       <span class="value">
         <data-node :key="k" :value="v" :index="linked"></data-node>
-        <link-adder v-if="isArray(v)" :key="k" :vocab="vocab"></link-adder>
+        <link-adder v-if="isArray(v)" :key="k" :vocab="vocab" :vocab-pfx="vocabPfx"></link-adder>
       </span>
     </li>
   </ul>
@@ -56,7 +58,7 @@
           {{prop['@id'] | labelByLang | capitalize }}
         </span>
         <span class="typeLabel" title="{{prop['@type']}}">{{prop['@type']}}</span>
-        <a v-on:click="addField(prop['@id'])">Lägg till <i class="fa fa-plus-circle"></i></a>
+        <a v-on:click="addField(prop)">Lägg till <i class="fa fa-plus-circle"></i></a>
       </li>
       <li v-if="allowedProperties.length === 0">Hittade inga möjliga fält att lägga till.</li>
     </ul>
@@ -67,7 +69,7 @@
 <div>
   <div class="link-adder" v-on:click="show" v-on-clickaway="hide">
     <span class="add" v-show="!active">
-      <i class="fa fa-plus-circle"></i> Lägg till
+      <i class="fa fa-plus-circle"></i> Lägg till länkad
     </span>
     <input v-show="active" type="text" v-model="keyword" debounce="500"></input>
     <br>
@@ -79,6 +81,12 @@
         <span class="add"><a v-on:click="add(item)">Lägg till <i class="fa fa-plus-circle"></i></a></span>
       </li>
     </ul>
+  </div>
+
+  <div class="link-adder">
+    <span class="add" v-for="type in range" v-show="!active" v-on:click="addAnonymous(type)">
+      <i class="fa fa-plus-circle"></i> Lägg till {{type | labelByLang | lowercase}}
+    </span>
   </div>
 </div>
 </template>

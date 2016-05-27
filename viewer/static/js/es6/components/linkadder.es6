@@ -18,6 +18,7 @@ export default {
     key: '',
     keyword: '',
     vocab: {},
+    vocabPfx: '',
   },
   components: {
     'processed-label': ProcessedLabel,
@@ -35,13 +36,13 @@ export default {
   computed: {
     range() {
       const preferredVocab = 'kbv';
-      const item = _.find(this.vocab.descriptions, { '@id': `${preferredVocab}:${this.key}` });
+      const item = _.find(this.vocab.descriptions, { '@id': this.vocabPfx + this.key });
       const range = [];
       if (typeof item === 'undefined' || !item.hasOwnProperty('rangeIncludes')) {
         return [this.$parent.item['@type']];
       }
       for (let i = 0; i < item.rangeIncludes.length; i++) {
-        range.push(item.rangeIncludes[i]['@id'].replace(`${preferredVocab}:`, ''));
+        range.push(item.rangeIncludes[i]['@id'].replace(this.vocabPfx, ''));
       }
       return range;
     },
@@ -49,6 +50,14 @@ export default {
   methods: {
     add(item) {
       this.$parent.addItem(this.key, item);
+    },
+    addAnonymous(type) {
+      // TODO:  Sync with format and find out what kind of properties should be
+      //        available on this level.
+
+      // const typeObj = _.find(this.vocab.descriptions, { '@id': this.vocabPfx + type });
+      const obj = { '@type': type, label: '' };
+      this.$parent.addAnonymous(this.key, obj);
     },
     search(searchkey) {
       const self = this;
