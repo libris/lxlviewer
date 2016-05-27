@@ -330,9 +330,9 @@ rdfns = {
 
 app.context_processor(lambda: rdfns)
 
-
 @app.route('/vocab/')
-def vocabview():
+@app.route('/vocab/data.<suffix>')
+def vocabview(suffix=None):
     voc = things.get_vocab_util()
 
     def link(obj):
@@ -343,12 +343,15 @@ def vocabview():
     def listclass(o):
         return 'ext' if ':' in o.qname() else 'loc'
 
-    mimetype = request.accept_mimetypes.best_match(MIMETYPE_FORMATS)
+    if suffix:
+        mimetype, render = negotiator.negotiate(request, suffix)
+    else:
+        mimetype = request.accept_mimetypes.best_match(MIMETYPE_FORMATS)
     if mimetype in RDF_MIMETYPES:
-        return voc.graph.serialize(format=
+        return Response(voc.graph.serialize(format=
                 'json-ld' if mimetype == JSONLD_MIMETYPE else mimetype,
                 #context_id=CONTEXT_PATH,
-                context=things.jsonld_context_data[CONTEXT])
+                context=things.jsonld_context_data[CONTEXT]), content_type='%s; charset=UTF-8' % mimetype)
 
     return render_template('vocab.html',
             URIRef=URIRef, **vars())
