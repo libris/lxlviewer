@@ -7,6 +7,7 @@ import random
 import string
 from urlparse import urljoin
 from datetime import datetime, timedelta
+import requests
 
 from rdflib import ConjunctiveGraph
 
@@ -197,12 +198,37 @@ def _handle_modification(request, item):
     elif request.method == 'DELETE':
         return Response(status=204)
 
+# Map from Requests response to Flask response
+def _map_response(response):
+    def _map_headers(headers):
+        _headers = {}
+        for head in ['etag', 'location']:
+            if head in headers:
+                _headers[head] = headers[head];
+        return _headers
+
+    return Response(response.text,
+                    status=response.status_code,
+                    mimetype=response.headers.get('content-type'),
+                    headers=_map_headers(response.headers))
+
 def _write_data(request, item=None):
     if JSONLD_MIMETYPE in request.headers.get('Content-Type'):
-        if request.get_json(force=True) is None:
+        json_data = request.get_json(force=True)
+        if json_data is None:
             return Response(status=400)
         else:
-            return Response(status=204)
+            url = '%s%s' % (app.config.get('WHELK_REST_API_URL'), request.path)
+            json_data = json.dumps(json_data)
+            app.logger.debug('Sending proxy PUT request to : %s with:\n %s' % (url, json_data))
+            # Proxy the request to rest api
+            proxy_resp = _map_response(requests.put(url, data=json_data, headers=request.headers))
+            # If the save operation goes well location is returned, then get the item to return to client
+            if proxy_resp.status_code == 204 and 'location' in proxy_resp.headers:
+                item_id = _get_served_uri(proxy_resp.headers.get('location'), '')
+                thing = things.ldview.get_record_data(item_id)
+                proxy_resp = Response(json.dumps(thing), status=200, headers={'etag': proxy_resp.headers.get('etag'), 'Content-Type': JSONLD_MIMETYPE})
+            return proxy_resp
     else:
         return Response(status=415)
 
