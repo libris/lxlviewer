@@ -51,7 +51,14 @@
   <div class="fieldAdder">
     <h3>Lägg till fält:</h3>
     <ul>
-      <li v-for="prop in allowedProperties"><span class="fieldLabel" title="{{prop['@id'] | labelByLang | capitalize }}">{{prop['@id'] | labelByLang | capitalize }}</span><a v-on:click="addField(prop['@id'])">Lägg till <i class="fa fa-plus-circle"></i></a></li>
+      <li v-if="allowedProperties.length > 0" v-for="prop in allowedProperties">
+        <span class="fieldLabel" title="{{prop['@id'] | labelByLang | capitalize }}">
+          {{prop['@id'] | labelByLang | capitalize }}
+        </span>
+        <span class="typeLabel" title="{{prop['@type']}}">{{prop['@type']}}</span>
+        <a v-on:click="addField(prop['@id'])">Lägg till <i class="fa fa-plus-circle"></i></a>
+      </li>
+      <li v-else>Hittade inga möjliga fält att lägga till.</li>
     </ul>
   </div>
 </template>
