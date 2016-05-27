@@ -15,8 +15,8 @@
 </div>
 <div id="editorApp">
   <h1><small>Redigerar:</small><br>{{meta.prefLabel || meta['@id']}}</h1>
-  <ld-table class="meta" :item="meta" :vocab="vocab" :linked="linked" :vocab-pfx="vocabPfx"></ld-table>
-  <ld-table class="thing" :item="thing" :vocab="vocab" :linked="linked" :vocab-pfx="vocabPfx"></ld-table>
+  <ld-table :item="meta" :vocab="vocab" :linked="linked" :vocab-pfx="vocabPfx"></ld-table>
+  <ld-table :item="thing" :vocab="vocab" :linked="linked" :vocab-pfx="vocabPfx"></ld-table>
 
   <div id="result">
     <h2>JSON</h2>
