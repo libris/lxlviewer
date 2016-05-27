@@ -201,7 +201,6 @@ def _handle_modification(request, item):
 # Map from Requests response to Flask response
 def _map_response(response):
     def _map_headers(headers):
-        app.logger.info(headers)
         _headers = {}
         for head in ['etag', 'location']:
             if head in headers:
@@ -219,7 +218,7 @@ def _write_data(request, item=None):
         if json_data is None:
             return Response(status=400)
         else:
-            url = '%s%s' % (app.config.get('REST_API_URL'), request.path)
+            url = '%s%s' % (app.config.get('WHELK_REST_API_URL'), request.path)
             json_data = json.dumps(json_data)
             app.logger.debug('Sending proxy PUT request to : %s with:\n %s' % (url, json_data))
             # Proxy the request to rest api
