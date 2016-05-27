@@ -26,7 +26,11 @@ export default {
           for (let i = 0; i < classObj.subClassOf.length; i++) {
             const baseClassId = classObj.subClassOf[i]['@id'];
             const baseClass = getClassFromVocab(baseClassId);
-            if (baseClass && baseClass.isDefinedBy['@id'] === self.vocabPfx) {
+            if (
+              baseClass &&
+              baseClass.isDefinedBy &&
+              baseClass.isDefinedBy['@id'] === self.vocabPfx
+            ) {
               items = items.concat(getBaseClasses(baseClass));
               items.push(baseClass);
             }
