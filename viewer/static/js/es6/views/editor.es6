@@ -86,17 +86,6 @@ export default class Editor extends View {
         },
       },
       methods: {
-        removeItem(key, item) {
-          thing[key].$remove(item);
-        },
-        addItem(key, item) {
-          this.linked.push(item);
-          const newItem = { '@id': item['@id'] };
-          thing[key].push(newItem);
-        },
-        addAnonymous(key, item) {
-          thing[key].push(item);
-        },
         isArray(o) {
           return _.isArray(o);
         },

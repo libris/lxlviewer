@@ -5,7 +5,7 @@ import ProcessedLabel from './processedlabel';
 export default {
   template: '#ld-table',
   props: {
-    item: {},
+    focus: {},
     vocab: {},
     linked: {},
     vocabPfx: {},
@@ -40,7 +40,7 @@ export default {
       }
 
       // Types defined on the item
-      const types = [].concat(this.item['@type']);
+      const types = [].concat(this.focus['@type']);
 
       // Find their base classes
       let classes = [];
@@ -79,11 +79,23 @@ export default {
     isPlainObject(o) {
       return _.isPlainObject(o);
     },
+    removeItem(key, item) {
+      const keyWithout = _.reject(this.focus[key], (o) => o === item);
+      const modified = this.focus;
+      modified[key] = keyWithout;
+      this.focus = Object.assign({}, this.focus, modified);
+    },
     addItem(key, item) {
-      this.$parent.addItem(key, item);
+      this.linked.push(item);
+      const modified = this.focus;
+      const newItem = { '@id': item['@id'] };
+      modified[key].push(newItem);
+      this.focus = Object.assign({}, this.focus, modified);
     },
     addAnonymous(key, item) {
-      this.$parent.addAnonymous(key, item);
+      const modified = this.focus;
+      modified[key].push(item);
+      this.focus = Object.assign(this.focus, modified);
     },
     addField(prop) {
       const newItem = {};
@@ -93,14 +105,11 @@ export default {
       } else {
         newItem[key] = '';
       }
-      this.$parent.thing = Object.assign({}, this.item, newItem);
-    },
-    removeItem(key, item) {
-      this.$parent.removeItem(key, item);
+      this.focus = Object.assign({}, this.focus, newItem);
     },
     updateValue(key, value) {
-      this.item[key] = value;
-      console.log("Updated", key, this.item[key]);
+      this.focus[key] = value;
+      console.log("Updated", key, this.focus[key]);
     },
   },
   components: {
