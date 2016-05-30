@@ -4,6 +4,7 @@ export default {
   template: '{{label}}',
   props: {
     item: {},
+    language: '',
   },
   computed: {
     label() {
@@ -21,6 +22,8 @@ export default {
           return item.label;
         case 'ProviderEvent':
           return item.providerName;
+        case 'Language':
+          return item.prefLabelByLang[this.language];
         case 'ConceptScheme':
         case 'Concept':
           return item.notation;
