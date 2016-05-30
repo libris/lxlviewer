@@ -1,6 +1,7 @@
 import * as _ from 'lodash';
 import LinkAdder from './linkadder';
 import ProcessedLabel from './processedlabel';
+import AnonymousValue from './anonymousvalue';
 
 export default {
   template: '#ld-table',
@@ -120,6 +121,7 @@ export default {
       props: ['key', 'value', 'index', 'label'],
       components: {
         'processed-label': ProcessedLabel,
+        'anonymous-value': AnonymousValue,
       },
       methods: {
         getLinked(id) {

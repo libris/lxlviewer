@@ -74,7 +74,6 @@
         }
       }
       >.value {
-        width: 800px;
         display: inline-block;
         > ul > li > {
           display: inline-block;
@@ -112,9 +111,28 @@
             color: inherit;
           }
         }
-        .structured {
-          border: 1px solid black;
+        .anonymous-value {
+          .class {
+            padding: 4px;
+            font-size: 85%;
+            font-weight: bold;
+            text-transform: uppercase;
+          }
+          .fa-close {
+            float: right;
+            margin-right: 4px;
+            opacity: 0;
+          }
+          &:hover {
+            .fa-close {
+              opacity: 1;
+            }
+          }
+          margin-bottom: 0.5em;
+          border-radius: 3px;
+          background-color: @gray-lighter;
           > ul > li {
+            margin: 0 5px 5px;
             display: inline-block;
           }
         }
