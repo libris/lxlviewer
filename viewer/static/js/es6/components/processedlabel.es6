@@ -24,8 +24,19 @@ export default {
         case 'ConceptScheme':
         case 'Concept':
           return item.notation;
+        case 'Aggregate':
+          return item.title;
+        case 'PublicationVolume':
+          return item.uniformTitle;
         case 'Person':
-          tlabel = `${item.givenName} ${item.familyName}`;
+          if (item.givenName) {
+            tlabel = `${item.givenName} ${item.familyName}`;
+          } else {
+            tlabel = `${item.name}`;
+          }
+          if (item.numeration) {
+            tlabel += ` ${item.numeration}`
+          }
           if (item.birthYear && item.deathYear) {
             tlabel += ` (${item.birthYear}-${item.deathYear})`;
           } else if (item.birthYear) {
@@ -33,6 +44,9 @@ export default {
           }
           return tlabel;
         default:
+          if (item['@id'].length > 40) {
+            return `${item['@id'].substr(0, 37)}...`;
+          }
           return item['@id'];
       }
     },
