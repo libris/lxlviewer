@@ -47,7 +47,7 @@ export default {
           }
           return tlabel;
         default:
-          if (item['@id'].length > 40) {
+          if (item['@id'] && item['@id'].length > 40) {
             return `${item['@id'].substr(0, 37)}...`;
           }
           return item['@id'];
