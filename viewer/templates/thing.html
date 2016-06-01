@@ -61,15 +61,16 @@
 
     % if ID in thing
           % set thing_url = view_url(canonical_id)
-      % if current_user.is_authenticated and t.curie == 'Record'
-          % if element == 'article'
+      % if current_user.is_authenticated and element == 'article'
+
           <div class="toolbar">
-              <a class="toolbar-button" href="${thing_url}/hld"><i class="fa fa-plus"></i>Lägg på Bestånd</a>
+          % if t.curie == 'Record'
+              <a class="toolbar-button" href="${thing_url}/hld"><i class="fa fa-plus"></i>Lägg till Bestånd</a>
+              % endif
               <span class="toolbar-button"><i class="fa fa-remove" aria-hidden="true"></i>Ta bort post</span>
               <span class="toolbar-button"><i class="fa fa-list-alt" aria-hidden="true"></i>Förhandsgranska Marc</span>
               <a class="toolbar-button" href="${thing_url}/edit"><i class="fa fa-pencil"></i>Redigera</a>
           </div>
-          % endif
       % endif
       <header class="panel-heading">
         <div class="panel-heading-meta">
