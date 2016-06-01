@@ -58,6 +58,7 @@
           {{prop['@id'] | labelByLang | capitalize }}
         </span>
         <span class="typeLabel" title="{{prop['@type']}}">{{prop['@type']}}</span>
+        <span class="typeLabel" title="{{prop.note}}">{{prop.note}}</span>
         <a v-on:click="addField(prop)">Lägg till <i class="fa fa-plus-circle"></i></a>
       </li>
       <li v-if="allowedProperties.length === 0">Hittade inga möjliga fält att lägga till.</li>
