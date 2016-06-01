@@ -68,10 +68,58 @@
               <a class="toolbar-button" href="${thing_url}/hld"><i class="fa fa-plus"></i>Lägg till Bestånd</a>
               % endif
               <span class="toolbar-button"><i class="fa fa-remove" aria-hidden="true"></i>Ta bort post</span>
-              <span class="toolbar-button"><i class="fa fa-list-alt" aria-hidden="true"></i>Förhandsgranska Marc</span>
+              <!-- Button trigger modal -->
+              <a href="" class="toolbar-button" role="button" data-toggle="modal" data-target="#myModal"><i class="fa fa-list-alt" aria-hidden="true"></i>Förhandsgranska Marc</a>
               <a class="toolbar-button" href="${thing_url}/edit"><i class="fa fa-pencil"></i>Redigera</a>
           </div>
       % endif
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">MARC Vy</h4>
+      </div>
+      <div class="modal-body">
+        <section class="marc-code">
+          <table>
+            <tr>
+              <td data-ng-if="record.leader">
+                <code>000</code>
+              </td>
+              <td></td>
+              <td></td>
+              <td colspan="3">
+                <span>{{record.leader}}</span>
+              </td>
+            </tr>
+            <tr data-ng-repeat="field in record.fields" ng-init="pair = lodash.pairs(field)[0]; key = pair[0]; value = pair[1]">
+              <td>
+                <code>{{key}}</code>
+              </td>
+              <td class="ind">
+                {{value.ind1}}
+              </td>
+              <td class="ind">
+                {{value.ind2}}
+              </td>
+              <td>
+                <span ng-if="typeOf(value) === 'string'">{{value}}</span>
+                <span data-ng-init="object = value.subfields" data-ng-include="'/snippets/marc-object'"></span>
+              </td>
+            </tr>
+          </table>
+        </section>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- end modal -->
+
       <header class="panel-heading">
         <div class="panel-heading-meta">
           % if t
