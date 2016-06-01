@@ -60,23 +60,22 @@
       {% if t.curie %} typeof="${t.curie}"{% endif %}>
 
     % if ID in thing
-    % set thing_url = view_url(canonical_id)
-    % if t
-      ${termref(t, classes='', labeltype='label-class')}
-    % endif
+          % set thing_url = view_url(canonical_id)
       % if current_user.is_authenticated and t.curie == 'Record'
-      <div class="toolbar">
-          <a class="toolbar-button" href="${thing_url}/hld"><i class="fa fa-plus"></i>Lägg på Bestånd</a>
-          <span class="toolbar-button"><i class="fa fa-remove" aria-hidden="true"></i>Ta bort post</span>
           % if element == 'article'
-          <span class="toolbar-button"><i class="fa fa-list-alt" aria-hidden="true"></i>Förhandsgranska Marc</span>
-          <a class="toolbar-button" href="${thing_url}/edit"><i class="fa fa-pencil"></i>Redigera</a>
+          <div class="toolbar">
+              <a class="toolbar-button" href="${thing_url}/hld"><i class="fa fa-plus"></i>Lägg på Bestånd</a>
+              <span class="toolbar-button"><i class="fa fa-remove" aria-hidden="true"></i>Ta bort post</span>
+              <span class="toolbar-button"><i class="fa fa-list-alt" aria-hidden="true"></i>Förhandsgranska Marc</span>
+              <a class="toolbar-button" href="${thing_url}/edit"><i class="fa fa-pencil"></i>Redigera</a>
+          </div>
           % endif
-      </div>
       % endif
       <header class="panel-heading">
         <div class="panel-heading-meta">
-
+          % if t
+            ${termref(t, classes='', labeltype='label-class')}
+          % endif
           <a href="" class="toolbar-button id-label">
             <i class="fa fa-share" aria-hidden="true"></i> ${canonical_id}
           </a>
