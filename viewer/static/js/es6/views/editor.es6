@@ -18,12 +18,23 @@ export default class Editor extends View {
   }
 
   loadItem() {
+    this.vocabPfx = 'kbv:';
     // Retrieves the data and splits it into a thing obj and array with links
     this.data = JSON.parse(document.getElementById('data').innerText)['@graph'];
+
+    // TODO: Relying on order here... tsk tsk tsk.
     this.meta = this.data[0];
-    this.thing = this.data[1];
-    this.data.splice(0, 2);
-    this.vocabPfx = 'kbv:';
+    this.data.splice(0, 1);
+
+    // TODO: Do something else!
+    console.warn('Finding focused item node by @id.indexOf("#it"). This approach is not reliable.');
+    for (let i = 0; i < this.data.length; i++) {
+      if (this.data[i]['@id'].indexOf('#it') !== -1) {
+        this.thing = this.data[i];
+        this.data.splice(i, 1);
+        break;
+      }
+    }
 
     this.linked = [];
     for (let i = 0; i < this.data.length; i++) {
@@ -92,11 +103,31 @@ export default class Editor extends View {
         isPlainObject(o) {
           return _.isPlainObject(o);
         },
+        getMergedItems() {
+          const obj = { '@graph': [] };
+          obj['@graph'].push(this.meta);
+          obj['@graph'].push(this.thing);
+          for (let i = 0; i < this.linked.length; i++) {
+            obj['@graph'].push({ '@graph': this.linked[i] });
+          }
+          return obj;
+        },
         saveItem() {
+          const obj = this.getMergedItems();
+          this.doSave(obj);
+        },
+        doSave(obj) {
           this.saved.loading = true;
 
-          const obj = this.thing;
-          const url = thing['@id'];
+          // TODO: Relying on order here... tsk tsk tsk.
+          const url = obj['@graph'][0]['@id'];
+
+          const inputData = JSON.parse(document.getElementById('data').innerText);
+          if (JSON.stringify(obj) === JSON.stringify(inputData)) {
+            console.log("Save called WITHOUT changes.");
+          } else {
+            console.log("Save called WITH changes.");
+          }
 
           httpUtil.put(obj, url, self.access_token).then(() => {
             vm.saved.loading = false;
