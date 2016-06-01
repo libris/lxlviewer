@@ -235,6 +235,7 @@ def _write_data(request, item=None):
         else:
             return Response(status=415)
     except Exception, e:
+        app.logger.error(e)
         return Response(e, status=502)
 
 @app.route('/find')
