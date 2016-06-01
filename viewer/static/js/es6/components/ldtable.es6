@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 import LinkAdder from './linkadder';
-import ProcessedLabel from './processedlabel';
-import AnonymousValue from './anonymousvalue';
+import DataNode from './datanode';
+import LinkedItem from './linkeditem';
 
 export default {
   template: '#ld-table',
@@ -95,8 +95,15 @@ export default {
     },
     addAnonymous(key, item) {
       const modified = this.focus;
-      modified[key].push(item);
+      if (_.isArray(modified[key])) {
+        modified[key].push(item);
+      } else {
+        modified[key] = item;
+      }
       this.focus = Object.assign(this.focus, modified);
+    },
+    isEmpty(value) {
+      return Object.keys(value).length === 0;
     },
     addField(prop) {
       const newItem = {};
@@ -109,65 +116,13 @@ export default {
       this.focus = Object.assign({}, this.focus, newItem);
     },
     updateValue(key, value) {
+      console.log("Updating", key, value);
       this.focus[key] = value;
-      console.log("Updated", key, this.focus[key]);
     },
   },
   components: {
     'link-adder': LinkAdder,
-    'data-node': {
-      template: '#data-node',
-      name: 'data-node',
-      props: ['key', 'value', 'index', 'label'],
-      components: {
-        'processed-label': ProcessedLabel,
-        'anonymous-value': AnonymousValue,
-      },
-      methods: {
-        getLinked(id) {
-          const index = this.index;
-          if (typeof index === 'undefined') {
-            return {};
-          }
-          for (let i = 0; i < index.length; i ++) {
-            if (index[i]['@id'] === id) {
-              return index[i];1
-            }
-          }
-          return id;
-        },
-        isMarc(key) {
-          if (typeof key === 'undefined') {
-            return false;
-          }
-          return (
-            !!~key.indexOf('marc:') || !!~key.indexOf('_marc')
-          );
-        },
-        updateValue(key, value) {
-          this.$parent.updateValue(key, value);
-        },
-        isEditable(key) {
-          const tempNotEditable = [
-            '@id',
-            '@type',
-            'controlNumber',
-            'systemNumber',
-            'created',
-            'modified',
-          ];
-          return !~tempNotEditable.indexOf(key);
-        },
-        isArray(o) {
-          return _.isArray(o);
-        },
-        isPlainObject(o) {
-          return _.isPlainObject(o);
-        },
-        removeItem(key, value) {
-          return this.$parent.removeItem(key, value);
-        },
-      },
-    },
+    'data-node': DataNode,
+    'linked-item': LinkedItem,
   },
 };

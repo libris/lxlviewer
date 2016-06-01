@@ -54,7 +54,7 @@ export default class Editor extends View {
     Vue.filter('labelByLang', (label) => {
       // Filter for fetching labels from vocab
       let lbl = label;
-      if (lbl.indexOf(vocabPfx) !== -1) {
+      if (lbl && lbl.indexOf(vocabPfx) !== -1) {
         lbl = lbl.replace(vocabPfx, '');
       }
       const item = _.find(vocab.descriptions, { '@id': `${vocabPfx}${lbl}` });
