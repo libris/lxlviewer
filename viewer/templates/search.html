@@ -23,7 +23,7 @@
           <label class="search-label" id="searchlabel" for="q">
             Sök term
           </label>
-          <input aria-labelledby="searchlabel" class="form-control search-input" name="q" id="searchQ" value="${q | trim }" />
+          <input aria-labelledby="searchlabel" class="form-control search-input" name="q" id="searchQ" value="${q | safe | trim }" />
           <button id="searchSubmit" class="search-button btn btn-primary"><i class="fa fa-search"></i> Sök</button>
         </div>
       </div>
@@ -61,8 +61,13 @@
   % for item in mapping
     % if item.variable != 'q'
     <li>
-      <a href="${item.up['@id']}" title="${item.object['@id']}">
-        ${item.object['@id']}<i class="fa fa-remove"></i>
+      % if item.object
+        % set label = item.object['@id']
+      % else
+        % set label = item.value
+      % endif
+      <a href="${item.up['@id']}">
+        ${label}<i class="fa fa-remove"></i>
       </a>
     </li>
     % endif
@@ -90,14 +95,14 @@
     <div class="search-details">
       <span class="search-keyword">
         % if q and result.totalItems > 0
-          Sökning på <i>"${q | trim}"</i>
+          Sökning på <i>"${q | safe | trim}"</i>
           % if result.totalItems
             gav ${result.totalItems} träffar.
           % endif
         % elif result.value
           Sökning ${result.value}
         % else
-          Sökning på <i>"${q | trim}"</i> gav inga träffar.
+          Sökning på <i>"${q | safe | trim}"</i> gav inga träffar.
         % endif
       </span>
       <span class="search-items-per-page pull-right">

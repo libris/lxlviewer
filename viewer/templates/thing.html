@@ -58,7 +58,7 @@
 
       {% if rel %} property="${rel}"{% endif %}
       {% if rev %} rev="${rev}"{% endif %}
-      {% if ID in thing %} resource="${thing_id}"{% endif %}
+      {% if ID in thing %} resource="${canonical_id}"{% endif %}
       {% if t.curie %} typeof="${t.curie}"{% endif %}>
 
     % if ID in thing
@@ -69,7 +69,7 @@
             ${termref(t, classes='', labeltype='label-class')}
           % endif
         <a href="${thing_url}" class="thing-id">
-          <small><code>&lt;${thing_id}&gt;</code></small>
+          <small><code>&lt;${canonical_id}&gt;</code></small>
         </a>
         </div>
         <h1 class="panel-title">

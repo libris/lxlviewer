@@ -5,8 +5,8 @@
     <meta charset="utf-8" />
     <title>${g.site.title} - {% block title %}{% endblock %}</title>
     <link rel="stylesheet" href="/assets/vendor/font-awesome/css/font-awesome.min.css">
-    % if g.site[ID] == IDKBSE
-      <link rel="stylesheet" href="/assets/build/id.css" />
+    % if g.site.stylesheet
+      <link rel="stylesheet" href="/assets/build/${g.site.stylesheet.name}" />
     % else
       <link rel="stylesheet" href="/assets/build/libris.css" />
     % endif

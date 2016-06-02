@@ -1,8 +1,8 @@
 # -*- coding: UTF-8 -*-
 from __future__ import absolute_import, unicode_literals, print_function
 import operator
-from urlparse import urlparse, urljoin
 import json
+from urlparse import urljoin
 
 from rdflib import ConjunctiveGraph
 
@@ -14,7 +14,7 @@ from werkzeug.urls import url_quote
 from lxltools.util import as_iterable
 from lxltools.ld.keys import CONTEXT, ID, TYPE, REVERSE
 
-from .thingview import Things, IDKBSE, LIBRIS
+from .thingview import Things, Uris, IDKBSE, LIBRIS
 from .marcframeview import MarcFrameView, pretty_json
 from . import conneg
 
@@ -71,99 +71,49 @@ TYPE_TEMPLATES = {
     'Article': 'article.html'
 }
 
-DOMAIN_BASE_MAP = {
-    'localhost': IDKBSE, '127.0.0.1': LIBRIS,
-    'id.local.dev': IDKBSE, 'libris.local.dev': LIBRIS,
-    'id-dev.kb.se':  IDKBSE, 'libris-dev.kb.se': LIBRIS,
-    'id-stg.kb.se':  IDKBSE, 'libris-stg.kb.se': LIBRIS,
-    'id-qa.kb.se': IDKBSE, 'libris-qa.kb.se': LIBRIS,
-    'id.kb.se':  IDKBSE, 'libris.kb.se': LIBRIS,
-}
-LEGACY_BASE = "http://libris.kb.se/"
-LEGACY_PATHS = ('/resource/auth/', '/auth/',
-        '/resource/bib/', '/bib/',
-        '/resource/hold/', '/hold/')
-
-
-def _get_site_base_uri(url=None):
-    url = url or request.url
-    parsedurl = urlparse(url)
-    if parsedurl.path.startswith(LEGACY_PATHS):
-        return LEGACY_BASE
-    domain = parsedurl.netloc.split(':', 1)[0]
-    return DOMAIN_BASE_MAP.get(domain)
-
-def _get_served_uri(url, path):
-    # TODO: why is Flask unquoting url and path values?
-    url = url_quote(url)
-    path = url_quote(path)
-    mapped_site_base_uri = _get_site_base_uri(url)
-    if mapped_site_base_uri:
-        return urljoin(mapped_site_base_uri, path)
-    else:
-        return url
-
-def view_url(uri):
-    if uri.startswith('/'):
-        return uri
-        #if '?' in uri: # implies other views, see data_url below
-        #    raise NotImplementedError
-        #return url_for('thingview.thingview', path=uri[1:], suffix='html')
-    # TODO: get env from current, get equiv for given
-    # - e.g.: at id-stg, having a libris uri, get libris-stg
-    site_base_uri = _get_site_base_uri(uri)
-    if site_base_uri == _get_site_base_uri(request.url):
-        return urlparse(uri).path
-    elif site_base_uri:
-        return urljoin(site_base_uri, urlparse(uri).path)
-    else:
-        return uri
-
-def canonical_uri(thing):
-    site_base_uri = _get_site_base_uri()
-    thing_id = thing.get(ID) or ""
-    if not thing_id.startswith(site_base_uri):
-        for same in thing.get('sameAs', []):
-            same_id = same.get(ID)
-            if same_id and same_id.startswith(site_base_uri):
-                return same_id
-    return thing_id
-
 def make_find_url(**kws):
     if 'q' not in kws:
         kws = dict(q='*', **kws)
     return url_for('find', **kws)
+
+def _get_served_uri(url, path):
+    # TODO: why is Flask unquoting url and path values?
+    url_base = url_quote(url)
+    path = url_quote(path)
+    mapped_base = uris.to_canonical_uri(url_base)
+    return urljoin(mapped_base, path)
 
 
 ##
 # Setup data-access
 
 things = Things(app.config)
-ldview = things.ldview
+uris = Uris(app.config)
 
 
 @app.context_processor
 def core_context():
     return {
         'ID': ID,'TYPE': TYPE, 'REVERSE': REVERSE,
-        'vocab': ldview.vocab,
-        'ldview': ldview,
+        'vocab': things.ldview.vocab,
+        'ldview': things.ldview,
         'ui': things.ui_defs,
-        'lang': ldview.vocab.lang,
+        'lang': things.ldview.vocab.lang,
         'page_limit': 50,
-        'LIBRIS': LIBRIS,
-        'IDKBSE': IDKBSE,
-        'canonical_uri': canonical_uri,
-        'view_url': view_url
+        'canonical_uri': lambda uri: uris.find_canonical_uri(request.url_root, uri),
+        'view_url': lambda uri: uris.to_view_url(request.url_root, uri)
     }
 
 @app.before_request
 def handle_base():
-    g.site = things.get_site(_get_site_base_uri())
+    canonical_site_id = uris.to_canonical_uri(request.url_root)
+    if canonical_site_id == request.url_root:
+        canonical_site_id = LIBRIS
+    g.site = things.get_site(canonical_site_id)
 
 @app.teardown_request
 def disconnect_db(exception):
-    ldview.storage.disconnect()
+    things.ldview.storage.disconnect()
 
 
 @app.route(CONTEXT_PATH)
@@ -184,16 +134,16 @@ def thingview(path, suffix=None):
     except (NotFound, UnicodeEncodeError) as e:
         pass
 
-    item_id = _get_served_uri(request.url, path)
+    item_id = _get_served_uri(request.url_root, path)
 
-    thing = ldview.get_record_data(item_id)
+    thing = things.ldview.get_record_data(item_id)
     if thing:
         #canonical = thing[ID]
         #if canonocal != item_id:
         #    return redirect(_to_data_path(see_path, suffix), 302)
         return rendered_response(path, suffix, thing)
     else:
-        record_ids = ldview.find_record_ids(item_id)
+        record_ids = things.ldview.find_record_ids(item_id)
         if record_ids: #and len(record_ids) == 1:
             return redirect(_to_data_path(record_ids[0], suffix), 303)
         #else:
@@ -205,14 +155,14 @@ def _to_data_path(path, suffix):
 @app.route('/find')
 @app.route('/find.<suffix>')
 def find(suffix=None):
-    results = ldview.get_search_results(request.args, make_find_url,
-            _get_site_base_uri(request.url))
+    results = things.ldview.get_search_results(request.args, make_find_url,
+            uris.to_canonical_uri(request.url_root))
     return rendered_response('/find', suffix, results)
 
 @app.route('/some')
 @app.route('/some.<suffix>')
 def some(suffix=None):
-    ambiguity = ldview.find_ambiguity(request)
+    ambiguity = things.ldview.find_ambiguity(request)
     if not ambiguity:
         return abort(404)
     return rendered_response('/some', suffix, ambiguity)
@@ -223,8 +173,8 @@ def some(suffix=None):
 def dataindexview(suffix=None):
     slicerepr = request.args.get('slice')
     slicetree = json.loads(slicerepr) if slicerepr else g.site['slices']
-    results = ldview.get_index_stats(slicetree, make_find_url,
-            _get_site_base_uri(request.url))
+    results = things.ldview.get_index_stats(slicetree, make_find_url,
+            uris.to_canonical_uri(request.url_root))
     results.update(g.site)
     return rendered_response('/', suffix, results)
 
@@ -247,7 +197,7 @@ negotiator = conneg.Negotiator()
 @negotiator.add('text/html', 'html')
 @negotiator.add('application/xhtml+xml', 'xhtml')
 def render_html(path, data):
-    data = ldview.get_decorated_data(data, True)
+    data = things.ldview.get_decorated_data(data, True)
 
     def data_url(suffix):
         if path == '/find':
@@ -263,7 +213,7 @@ def render_html(path, data):
 @negotiator.add('application/json', 'json')
 @negotiator.add('text/json')
 def render_json(path, data):
-    data = ldview.get_decorated_data(data, True)
+    data = things.ldview.get_decorated_data(data, True)
     return _to_json(data)
 
 @negotiator.add('application/ld+json', 'jsonld')
