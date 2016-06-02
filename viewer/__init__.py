@@ -572,3 +572,8 @@ def logout():
 @app.route("/usersettings")
 def usersettings():
     return render_template('usersettings.html')
+
+# Create post
+@app.route("/createpost")
+def createpost():
+    return render_template('createpost.html')

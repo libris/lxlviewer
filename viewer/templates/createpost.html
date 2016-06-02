@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block bodyattrs %}id="createpost"{% endblock %}
+
+{% block content %}
+{% if current_user.is_authenticated %}
+  <div class="">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-8 col-md-push-2 panel panel-default">
+
+          <h1>Skapa ny post</h1>
+          <form>
+            <div class="panel-body form-group dash green">
+              <span class="circle"><i class="icon fa fa-file-text" aria-hidden="true"></i></span>
+              <label for="username" class="label">Användarnamn</label>
+              <p>${current_user.get().username}</p>
+            </div>
+        </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% else %}
+  Du måste logga in</a>.
+  {% endif %}
+
+{% endblock content %}
