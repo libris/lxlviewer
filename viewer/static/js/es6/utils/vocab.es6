@@ -17,7 +17,11 @@ export function getVocab() {
 
   return new Promise((resolve, reject) => {
     const vocab = JSON.parse(localStorage.getItem('vocab'));
-    const isFresh = (new Date().getTime() - vocab.cacheTime < cacheTTL);
+
+    let isFresh = false;
+    if (vocab) {
+      isFresh = (new Date().getTime() - vocab.cacheTime < cacheTTL);
+    }
 
     if (vocab && isFresh) {
       resolve(vocab);
