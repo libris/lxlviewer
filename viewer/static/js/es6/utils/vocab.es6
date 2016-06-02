@@ -11,17 +11,22 @@ function fetchVocab() {
 }
 
 export function getVocab() {
-  // TODO: Some condition
-  const isFresh = true;
+
+  // 8 hours
+  const cacheTTL = 28800000;
 
   return new Promise((resolve, reject) => {
     const vocab = JSON.parse(localStorage.getItem('vocab'));
+    const isFresh = (new Date().getTime() - vocab.cacheTime < cacheTTL);
 
-    if (vocab && isFresh) resolve(vocab);
-
-    fetchVocab().then((vocab) => {
-      localStorage.setItem('vocab', JSON.stringify(vocab));
+    if (vocab && isFresh) {
       resolve(vocab);
-    });
+    } else {
+      fetchVocab().then((vocab) => {
+        vocab.cacheTime = new Date().getTime();
+        localStorage.setItem('vocab', JSON.stringify(vocab));
+        resolve(vocab);
+      });
+    }
   })
 }
