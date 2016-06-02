@@ -572,3 +572,8 @@ def logout():
 @app.route("/usersettings")
 def usersettings():
     return render_template('usersettings.html')
+
+# Create new
+@app.route("/createnew")
+def createnew():
+    return render_template('createnew.html')
