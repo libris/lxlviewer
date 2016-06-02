@@ -574,6 +574,6 @@ def usersettings():
     return render_template('usersettings.html')
 
 # Create post
-@app.route("/createpost")
+@app.route("/createnew")
 def createpost():
-    return render_template('createpost.html')
+    return render_template('createnew.html')
