@@ -2,6 +2,7 @@ import View from './view';
 import * as httpUtil from '../utils/http';
 import * as _ from 'lodash';
 import * as VocabLoader from '../utils/vocabloader';
+import * as VocabUtil from '../utils/vocab';
 import LdTable from '../components/ldtable';
 
 export default class Editor extends View {
@@ -12,7 +13,7 @@ export default class Editor extends View {
 
     this.loadItem();
     const self = this;
-    this.loadVocab().then((vocab) => {
+    VocabUtil.getVocab().then((vocab) => {
       self.initVue(self.thing, self.meta, self.linked, vocab, self.vocabPfx);
     });
   }
@@ -44,16 +45,6 @@ export default class Editor extends View {
         this.linked.push(this.data[i]);
       }
     }
-  }
-
-  loadVocab() {
-    return new Promise((resolve, reject) => {
-      httpUtil.getContent('/vocab/', 'application/ld+json').then((response) => {
-        resolve(JSON.parse(response));
-      }, (error) => {
-        reject('Error loading vocabulary...', error);
-      });
-    });
   }
 
   initVue(thing, meta, linked, vocab, vocabPfx) {
