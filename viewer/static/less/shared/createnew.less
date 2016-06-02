@@ -1,10 +1,24 @@
 body#createnew {
 
+  .choice-container {
+    padding: 0 15px;
+  }
+
   .form-container {
     display: none;
   }
   // create new thing
   .choice {
+    color: inherit;
+    > div {
+      padding: 15px;
+    }
+    &:hover {
+      color: inherit;
+      > div {
+        background-color: lighten(@gray-lighter, 5%);
+      }
+    }
     cursor: pointer;
     text-align: center;
     i {
