@@ -3,14 +3,29 @@
 {% block bodyattrs %}id="createnew"{% endblock %}
 
 % block content
-  <div class="panel panel-default createnew">
+  <div class="panel panel-default">
     <div class="panel-body container-fluid">
       <div class="row">
-        <div class="col-md-8 col-md-offset-2">
-        <h2><i class="fa fa-download" aria-hidden="true"></i> Importera<h2>
-        <h2><i class="fa fa-files-o" aria-hidden="true"></i> Kopiera<h2>
-        <h2><i class="fa fa-list" aria-hidden="true"></i> Lista materialtyper</h2>
+        <div class="col-lg-4 createnew">
+          <span class="circle"><i class="icon fa fa-download" aria-hidden="true"></i></span>
+        <h2>Importera</h2>
+          <p>Välj extern databas och importera en post som du kan använda som underlag för ny bibliografisk entitet.</p>
         </div>
+        <div class="col-lg-4 createnew">
+          <i class="fa fa-files-o" aria-hidden="true"></i>
+        <h2> Kopiera</h2>
+          <p>Ange URI för bibliografisk post som du vill ta med dig information om till en ny bibliografisk entitet.</p>
+        </div>
+        <div class="col-lg-4 createnew">
+          <i class="fa fa-list" aria-hidden="true"></i>
+          <h2>Lista materialtyper</h2>
+          <p>Välj från en lista av materialtyper och egenskaper för att skapa en ny bibliografisk entitet.</p>
+
+        </div>
+
+
+
+
       </div>
     </div>
   </div>
