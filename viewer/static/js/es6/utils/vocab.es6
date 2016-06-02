@@ -11,22 +11,26 @@ function fetchVocab() {
 }
 
 export function getVocab() {
-
   // 8 hours
   const cacheTTL = 28800000;
 
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     const vocab = JSON.parse(localStorage.getItem('vocab'));
-    const isFresh = (new Date().getTime() - vocab.cacheTime < cacheTTL);
+
+    let isFresh = false;
+    if (vocab) {
+      isFresh = (new Date().getTime() - vocab.cacheTime < cacheTTL);
+    }
 
     if (vocab && isFresh) {
       resolve(vocab);
     } else {
-      fetchVocab().then((vocab) => {
-        vocab.cacheTime = new Date().getTime();
-        localStorage.setItem('vocab', JSON.stringify(vocab));
-        resolve(vocab);
+      fetchVocab().then((result) => {
+        const fetchedVocab = result;
+        fetchedVocab.cacheTime = new Date().getTime();
+        localStorage.setItem('vocab', JSON.stringify(fetchedVocab));
+        resolve(fetchedVocab);
       });
     }
-  })
+  });
 }
