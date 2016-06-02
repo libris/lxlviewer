@@ -117,9 +117,7 @@ def core_context():
 @app.before_request
 def handle_base():
     canonical_site_id = uris.to_canonical_uri(request.url_root)
-    if canonical_site_id == request.url_root:
-        canonical_site_id = LIBRIS
-    g.site = things.get_site(canonical_site_id)
+    g.site = things.get_site(canonical_site_id) or things.get_site(LIBRIS)
 
 @app.teardown_request
 def disconnect_db(exception):
