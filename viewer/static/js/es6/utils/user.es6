@@ -5,7 +5,12 @@ function saveUserInfo(userObj) {
 
 function fetchUserInfo() {
   const fetchedObj = JSON.parse(localStorage.getItem('user'));
-  if (fetchedObj && window.userInfo && fetchedObj.username === window.userInfo.username) {
+  if (
+    fetchedObj &&
+    window.userInfo &&
+    fetchedObj.username === window.userInfo.username &&
+    fetchedObj.access_token === window.userInfo.access_token
+  ) {
     return fetchedObj;
   }
   const userObj = window.userInfo || {};
