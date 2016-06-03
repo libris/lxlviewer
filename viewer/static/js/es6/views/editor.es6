@@ -29,11 +29,15 @@ export default class Editor extends View {
     // TODO: Do something else!
     console.warn('Finding focused item node by @id.indexOf("#it"). This approach is not reliable.');
     for (let i = 0; i < this.data.length; i++) {
-      if (this.data[i]['@id'].indexOf('#it') !== -1) {
+      if (this.data[i]['@id'] && this.data[i]['@id'].indexOf('#it') !== -1) {
         this.thing = this.data[i];
         this.data.splice(i, 1);
         break;
       }
+    }
+    if(!this.thing && this.data.length >= 0) {
+      this.thing = this.data[0];
+      this.data.splice(0, 1);
     }
 
     this.linked = [];

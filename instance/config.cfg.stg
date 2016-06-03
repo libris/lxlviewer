@@ -1,0 +1,10 @@
+DBHOST='pgsql01-stg.libris.kb.se'
+DBNAME='whelk'
+DBUSER='whelk'
+DBPASSWORD='hyperWhelk18/'
+ESHOST=['lxes01-stg.libris.kb.se','lxes02-stg.libris.kb.se','lxes02-stg.libris.kb.se']
+ES_INDEX = 'libris'
+ENVIRONMENT = 'STG'
+VERSION = '0'
+PIWIK_ID = '0'
+DEBUG=True
