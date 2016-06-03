@@ -217,12 +217,13 @@ def create():
 
 def _handle_modification(request, item):
     # TODO: mock handling for now; should forward to backend API
+    app.logger.debug('MODIFICATION %s %s', request.method, json.dumps(item))
     if item is None:
         return abort(404)
     if request.method == 'PUT':
         return _write_data(request, item)
     elif request.method == 'DELETE':
-        return Response(status=204)
+        return _whelk_request(request)
 
 # Map from Requests response to Flask response
 def _map_response(response):
@@ -237,6 +238,21 @@ def _map_response(response):
                     mimetype=response.headers.get('content-type'),
                     headers=_map_headers(response.headers))
 
+def _whelk_request(request, json_data):
+    url = '%s%s' % (app.config.get('WHELK_REST_API_URL'), request.path)
+    json_data = json.dumps(json_data)
+    # Proxy the request to rest api
+    app.logger.debug('Sending proxy %s request to : %s with:\n %s' % (request.method, url, json_data))
+    r = requests.request(request.method, url, data=json_data, headers=request.headers)
+    # If the save operation goes well location is returned, then get the item to return to client
+    if r.status_code == 204 and 'location' in r.headers:
+        proxy_resp = _map_response(r)
+        item_id = _get_served_uri(proxy_resp.headers.get('location'), '')
+        thing = things.ldview.get_record_data(item_id)
+        return Response(json.dumps(thing), status=200, headers={'etag': proxy_resp.headers.get('etag'), 'Content-Type': JSONLD_MIMETYPE})
+    else:
+        return r.raise_for_status()
+
 def _write_data(request, item=None):
     try:
         if JSONLD_MIMETYPE in request.headers.get('Content-Type'):
@@ -244,20 +260,7 @@ def _write_data(request, item=None):
             if json_data is None:
                 return Response(status=400)
             else:
-                url = '%s%s' % (app.config.get('WHELK_REST_API_URL'), request.path)
-                json_data = json.dumps(json_data)
-                app.logger.debug('Sending proxy PUT request to : %s with:\n %s' % (url, json_data))
-                # Proxy the request to rest api
-                r = requests.put(url, data=json_data, headers=request.headers)
-                # If the save operation goes well location is returned, then get the item to return to client
-                if r.status_code == 204 and 'location' in r.headers:
-                    proxy_resp = _map_response(r)
-                    item_id = _get_served_uri(proxy_resp.headers.get('location'), '')
-                    thing = things.ldview.get_record_data(item_id)
-                    proxy_resp = Response(json.dumps(thing), status=200, headers={'etag': proxy_resp.headers.get('etag'), 'Content-Type': JSONLD_MIMETYPE})
-                else:
-                    r.raise_for_status()
-                return proxy_resp
+                return _whelk_request(request, json_data)
         else:
             return Response(status=415)
     except Exception, e:
