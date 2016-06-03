@@ -173,6 +173,22 @@ def thingview(path, suffix=None):
 def _to_data_path(path, suffix):
     return '%s/data.%s' % (path, suffix) if suffix else path
 
+# Mocking edit/create new record with passed types
+@app.route('/new')
+@login_required
+def thingnew():
+    at_type = request.args.get('@type')
+    if not at_type:
+        return Response('Missing @type parameter', status=422)
+    else:
+        return render_template('edit.html',
+                data=json.dumps({
+                        '@graph': [{
+                            '@type': json.loads(at_type)
+                        }]
+                    }))
+
+
 @app.route('/<path:path>/edit')
 @login_required
 def thingedit(path):
