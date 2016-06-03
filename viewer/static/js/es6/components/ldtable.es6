@@ -2,6 +2,7 @@ import * as _ from 'lodash';
 import LinkAdder from './linkadder';
 import DataNode from './datanode';
 import LinkedItem from './linkeditem';
+import * as VocabUtil from '../utils/vocab'
 
 export default {
   template: '#ld-table',
@@ -17,16 +18,12 @@ export default {
       const vocabItems = this.vocab.descriptions;
       const self = this;
 
-      function getClassFromVocab(classname) {
-        return _.find(vocabItems, { '@id': classname });
-      }
-
       function getBaseClasses(classObj) {
         let items = [];
         if (classObj && classObj.hasOwnProperty('subClassOf')) {
           for (let i = 0; i < classObj.subClassOf.length; i++) {
             const baseClassId = classObj.subClassOf[i]['@id'];
-            const baseClass = getClassFromVocab(baseClassId);
+            const baseClass = VocabUtil.getClass(baseClassId, self.vocab);
             if (
               baseClass &&
               baseClass.isDefinedBy &&
@@ -46,7 +43,8 @@ export default {
       // Find their base classes
       let classes = [];
       for (let t = 0; t < types.length; t++) {
-        classes = classes.concat(getBaseClasses(getClassFromVocab(this.vocabPfx + types[t])));
+        const c = VocabUtil.getClass(this.vocabPfx + types[t], self.vocab);
+        classes = classes.concat(getBaseClasses(c));
       }
       const classNames = [];
       for (let i = 0; i < types.length; i++) {

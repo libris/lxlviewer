@@ -19,7 +19,6 @@ export default class Editor extends View {
   }
 
   loadItem() {
-    this.vocabPfx = 'kbv:';
     // Retrieves the data and splits it into a thing obj and array with links
     this.data = JSON.parse(document.getElementById('data').innerText)['@graph'];
 

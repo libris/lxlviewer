@@ -1,4 +1,5 @@
 import * as httpUtil from './http';
+import * as _ from 'lodash';
 
 function fetchVocab() {
   return new Promise((resolve, reject) => {
@@ -31,6 +32,20 @@ export function getVocab() {
         localStorage.setItem('vocab', JSON.stringify(fetchedVocab));
         resolve(fetchedVocab);
       });
+    }
+  });
+}
+
+export function getClass(classname, vocab) {
+  return _.find(vocab.descriptions, { '@id': classname });
+}
+
+export function getSubClasses(classname, vocab) {
+  return _.filter(vocab.descriptions, (o) => {
+    if (o.subClassOf) {
+      for (let i = 0; i < o.subClassOf.length; i++) {
+        if (o.subClassOf[i]['@id'] === classname) return true;
+      }
     }
   });
 }
