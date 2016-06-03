@@ -47,6 +47,8 @@ export default class CreateNew extends View {
 
       self.chosenTypes = [];
 
+
+
       let html = '';
       html = '<h2>Typ</h2>';
       for (let i = 0; i < CreativeWorkClasses.length; i++) {
@@ -74,7 +76,7 @@ export default class CreateNew extends View {
       $('#create_new_post button[type=submit]').click((e) => {
         e.preventDefault();
         const params = '@type=' + JSON.stringify(self.chosenTypes);
-        window.location.href = '/new?' + params;
+        window.location.href = '/new/record?' + params;
       });
 
     });
