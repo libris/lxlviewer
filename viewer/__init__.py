@@ -179,18 +179,24 @@ def createpost():
     return render_template('createnew.html')
 
 # Mocking edit/create new record with passed types
-@app.route('/new')
+@app.route('/new/<item_type>')
 @login_required
-def thingnew():
+def thingnew(item_type):
+    ITEM_TYPES = {'record': 'Record'}
+    item_type = ITEM_TYPES.get(item_type) or ITEM_TYPES.get('record')
     at_type = request.args.get('@type')
     if not at_type:
         return Response('Missing @type parameter', status=422)
     else:
         return render_template('edit.html',
                 data=json.dumps({
-                        '@graph': [{
-                            '@type': json.loads(at_type)
-                        }]
+                        '@graph': [
+                            {
+                                '@type': item_type
+                            },{
+                                '@type': json.loads(at_type)
+                            }
+                        ]
                     }))
 
 @app.route('/<path:path>/edit')
