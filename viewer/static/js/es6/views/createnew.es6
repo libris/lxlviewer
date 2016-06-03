@@ -41,8 +41,6 @@ export default class CreateNew extends View {
     const self = this;
     VocabUtil.getVocab().then((result) => {
       self.vocab = result;
-      const CreativeWork = VocabUtil.getClass(self.vocabPfx+'CreativeWork', result);
-      const Aggregate = VocabUtil.getClass(self.vocabPfx+'Aggregate', result);
 
       const CreativeWorkClasses = VocabUtil.getSubClasses(self.vocabPfx+'CreativeWork', result);
       const AggregateClasses = VocabUtil.getSubClasses(self.vocabPfx+'Aggregate', result);
