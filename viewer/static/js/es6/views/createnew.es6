@@ -47,8 +47,6 @@ export default class CreateNew extends View {
 
       self.chosenTypes = [];
 
-
-
       let html = '';
       html = '<h2>Typ</h2>';
       for (let i = 0; i < CreativeWorkClasses.length; i++) {
