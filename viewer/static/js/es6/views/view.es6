@@ -8,6 +8,7 @@ export default class View {
 
   constructor() {
     this.name = this.constructor.name;
+    this.vocabPfx = 'kbv:';
   }
 
   initialize() {
