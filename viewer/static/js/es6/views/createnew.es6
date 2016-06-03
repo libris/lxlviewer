@@ -70,17 +70,14 @@ export default class CreateNew extends View {
 
       $('#create_new_post .creativeworkclasses input').click(function() {
         self.chosenTypes[0] = $(this).val();
-          console.log(self.chosenTypes);
       });
       $('#create_new_post .aggregateclasses input').click(function() {
         self.chosenTypes[1] = $(this).val();
-          console.log(self.chosenTypes);
       })
 
       $('#create_new_post button[type=submit]').click((e) => {
         e.preventDefault();
         const params = '@type=' + JSON.stringify(self.chosenTypes);
-        console.log(params);
         window.location.href = '/new?' + params;
       });
 
