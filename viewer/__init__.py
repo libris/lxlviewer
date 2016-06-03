@@ -249,9 +249,9 @@ def _whelk_request(request, json_data):
         proxy_resp = _map_response(r)
         item_id = _get_served_uri(proxy_resp.headers.get('location'), '')
         thing = things.ldview.get_record_data(item_id)
-        proxy_resp = Response(json.dumps(thing), status=200, headers={'etag': proxy_resp.headers.get('etag'), 'Content-Type': JSONLD_MIMETYPE})
+        return Response(json.dumps(thing), status=200, headers={'etag': proxy_resp.headers.get('etag'), 'Content-Type': JSONLD_MIMETYPE})
     else:
-        r.raise_for_status()
+        return r.raise_for_status()
 
 def _write_data(request, item=None):
     try:
