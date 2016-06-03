@@ -173,6 +173,11 @@ def thingview(path, suffix=None):
 def _to_data_path(path, suffix):
     return '%s/data.%s' % (path, suffix) if suffix else path
 
+# Create post
+@app.route("/createnew")
+def createpost():
+    return render_template('createnew.html')
+
 # Mocking edit/create new record with passed types
 @app.route('/new')
 @login_required
@@ -187,7 +192,6 @@ def thingnew():
                             '@type': json.loads(at_type)
                         }]
                     }))
-
 
 @app.route('/<path:path>/edit')
 @login_required
@@ -589,7 +593,3 @@ def logout():
 def usersettings():
     return render_template('usersettings.html')
 
-# Create post
-@app.route("/createnew")
-def createpost():
-    return render_template('createnew.html')
