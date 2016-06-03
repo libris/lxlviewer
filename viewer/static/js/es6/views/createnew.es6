@@ -54,7 +54,6 @@ export default class CreateNew extends View {
       for (let i = 0; i < CreativeWorkClasses.length; i++) {
         const id = CreativeWorkClasses[i]['@id'].replace(self.vocabPfx, '');
         const label = CreativeWorkClasses[i].labelByLang ? CreativeWorkClasses[i].labelByLang[self.language] : CreativeWorkClasses[i]['@id'];
-        console.log(CreativeWorkClasses[i].labelByLang);
         html += `<div class="radio"><label><input name="creativeworkRadio" type="radio" value="${id}">${label}</input></label></div>`;
       }
       $('#create_new_post .creativeworkclasses').html(html);
@@ -63,7 +62,6 @@ export default class CreateNew extends View {
       for (let i = 0; i < AggregateClasses.length; i++) {
         const id = AggregateClasses[i]['@id'].replace(self.vocabPfx, '');
         const label = AggregateClasses[i].labelByLang ? AggregateClasses[i].labelByLang[self.language] : AggregateClasses[i]['@id'];
-        console.log(AggregateClasses[i].labelByLang);
         html += `<div class="radio"><label><input name="aggregateRadio" type="radio" value="${id.replace(self.vocabPfx, '')}">${label}</input></label></div>`;
       }
       $('#create_new_post .aggregateclasses').html(html);
