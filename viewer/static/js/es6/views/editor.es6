@@ -107,30 +107,37 @@ export default class Editor extends View {
           return obj;
         },
         saveItem() {
-          const obj = this.getMergedItems();
-          this.doSave(obj);
-        },
-        doSave(obj) {
-          this.saved.loading = true;
-
-          // TODO: Relying on order here... tsk tsk tsk.
-          const url = obj['@graph'][0]['@id'];
-
           const inputData = JSON.parse(document.getElementById('data').innerText);
-          if (JSON.stringify(obj) === JSON.stringify(inputData)) {
-            console.log("Save called WITHOUT changes.");
-          } else {
-            console.log("Save called WITH changes.");
-          }
-
-          httpUtil.put(obj, url, self.access_token).then(() => {
+          const obj = this.getMergedItems();
+         // if (JSON.stringify(obj) === JSON.stringify(inputData)) {
+            console.warn("No changes done, skipping to save. Time to tell the user?");
+         // } else {
+            const atId = this.thing['@id'];
+            if(atId) {
+              console.log("Save called WITH changes.");
+              this.doSave(atId, obj);
+            } else {
+              console.log("Crete called WITH changes.");
+              this.doCreate(obj);
+            }
+          //}
+        },
+        doSave(url, obj) {
+          this.doRequest(httpUtil.put, obj, url);
+        },
+        doCreate(obj) {
+          this.doRequest(httpUtil.post, obj, '/create');
+        },
+        doRequest(requestMethod, obj, url) {
+          this.saved.loading = true;
+          requestMethod(url, self.access_token, obj).then(() => {
             vm.saved.loading = false;
             vm.saved.status = { error: false, info: 'Everything went alright.' };
           }, (error) => {
             vm.saved.loading = false;
             vm.saved.status = { error: true, info: error };
           });
-        },
+        }
       },
       components: {
         'ld-table': LdTable,

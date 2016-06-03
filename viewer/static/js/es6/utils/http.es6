@@ -1,8 +1,9 @@
-export function put(obj, url, token) {
+
+function request(url, token, obj, method) {
   return new Promise((resolve, reject) => {
     const req = new XMLHttpRequest();
 
-    req.open('PUT', url);
+    req.open(method ? method : 'GET', url);
     req.setRequestHeader('Content-Type', 'application/ld+json');
     req.setRequestHeader('Authorization', `Bearer ${token}`);
 
@@ -19,6 +20,22 @@ export function put(obj, url, token) {
 
     req.send(JSON.stringify(obj));
   });
+}
+
+export function get(url, token) {
+  return request(url, token);
+}
+
+export function put(url, token, obj) {
+  return request(url, token, obj, 'PUT');
+}
+
+export function post(url, token, obj) {
+  return request(url, token, obj, 'POST');
+}
+
+export function _delete(url, token) {
+  return request(url, token, obj, 'DELETE');
 }
 
 export function getContent(url, type) {
