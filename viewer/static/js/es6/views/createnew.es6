@@ -78,7 +78,10 @@ export default class CreateNew extends View {
           if (this.chosenMaterials.length == 0) {
             return;
           }
-          const params = '@type=' + JSON.stringify(this.chosenMaterials);
+          const m = _.filter(this.chosenMaterials, (o) => {
+            return o && o.length > 0;
+          });
+          const params = '@type=' + JSON.stringify(m);
           window.location.href = '/new/record?' + params;
         },
         setMaterial(index, material) {
