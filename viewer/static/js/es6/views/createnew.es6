@@ -1,3 +1,4 @@
+import * as _ from 'lodash';
 import View from './view';
 import * as UserUtil from '../utils/user';
 import * as VocabUtil from '../utils/vocab';
@@ -7,76 +8,83 @@ export default class CreateNew extends View {
   initialize() {
     super.initialize();
 
+    const self = this;
     this.activeForm = '';
     this.transition = false;
-    this.initMenu();
-    this.initMaterials();
-  }
 
-  initMenu() {
-    self = this;
+    const choices = [
+      { trigger: 'import', title: 'Importera', icon: 'download', text: 'Välj extern databas och importera en post som du kan använda som underlag för en ny bibliografisk instans.' },
+      { trigger: 'copy', title: 'Kopiera', icon: 'files-o', text: 'Ange Libris URI för en befintlig bibliografisk entitet som du vill ta med dig information om till en ny bibliografisk instans.' },
+      { trigger: 'from_material', title: 'Från materialtyper', icon: 'list', text: 'Välj från en lista av materialtyper och egenskaper för att skapa en ny bibliografisk instans.' },
+    ];
+    const baseMaterials = [
+      'CreativeWork',
+      'Aggregate',
+    ];
 
-    function show(id) {
-      self.activeForm = id;
-      $('#'+id).fadeIn('fast', function() {
-        self.transition = false;
-      });
-    }
-
-    $('.choice').click(function() {
-      const id = $(this).attr('data-toggle');
-      if (self.activeForm === id || self.transition) return;
-      self.transition = true;
-      if (self.activeForm) {
-        $('#'+self.activeForm).fadeOut('fast', function() {
-          show(id);
-        });
-      } else {
-        show(id);
-      }
+    VocabUtil.getVocab().then((vocab) => {
+      self.initVue(vocab, self.vocabPfx, choices, baseMaterials);
     });
   }
 
-  initMaterials() {
+  getMaterials(baseMaterials, vocab) {
     const self = this;
-    VocabUtil.getVocab().then((result) => {
-      self.vocab = result;
+    const materialLists = [];
+    for (let i = 0; i < baseMaterials.length; i++) {
+      const materialList = {
+        id: baseMaterials[i],
+        list: VocabUtil.getSubClasses(self.vocabPfx + baseMaterials[i], vocab),
+      };
+      materialLists[i] = materialList;
+    }
+    return materialLists;
+  }
 
-      const CreativeWorkClasses = VocabUtil.getSubClasses(self.vocabPfx+'CreativeWork', result);
-      const AggregateClasses = VocabUtil.getSubClasses(self.vocabPfx+'Aggregate', result);
+  initVue(vocab, vocabPfx, choices, baseMaterials) {
+    const self = this;
+    const materialLists = self.getMaterials(baseMaterials, vocab);
 
-      self.chosenTypes = [];
-
-      let html = '';
-      html = '<h2>Typ</h2>';
-      for (let i = 0; i < CreativeWorkClasses.length; i++) {
-        const id = CreativeWorkClasses[i]['@id'].replace(self.vocabPfx, '');
-        const label = CreativeWorkClasses[i].labelByLang ? CreativeWorkClasses[i].labelByLang[self.language] : CreativeWorkClasses[i]['@id'];
-        html += `<div class="radio"><label><input name="creativeworkRadio" type="radio" value="${id}">${label}</input></label></div>`;
+    Vue.filter('labelByLang', (label) => {
+      // Filter for fetching labels from vocab
+      let lbl = label;
+      if (lbl && lbl.indexOf(vocabPfx) !== -1) {
+        lbl = lbl.replace(vocabPfx, '');
       }
-      $('#create_new_post .creativeworkclasses').html(html);
-
-      html = '<h2>Bibliografisk nivå</h2>';
-      for (let i = 0; i < AggregateClasses.length; i++) {
-        const id = AggregateClasses[i]['@id'].replace(self.vocabPfx, '');
-        const label = AggregateClasses[i].labelByLang ? AggregateClasses[i].labelByLang[self.language] : AggregateClasses[i]['@id'];
-        html += `<div class="radio"><label><input name="aggregateRadio" type="radio" value="${id.replace(self.vocabPfx, '')}">${label}</input></label></div>`;
+      const item = _.find(vocab.descriptions, { '@id': `${vocabPfx}${lbl}` });
+      let labelByLang = '';
+      if (typeof item !== 'undefined' && item.labelByLang) {
+        labelByLang = item.labelByLang[self.language];
       }
-      $('#create_new_post .aggregateclasses').html(html);
+      // Check if we have something of value
+      if (labelByLang.length > 0) {
+        return labelByLang;
+      }
+      return lbl;
+    });
 
-      $('#create_new_post .creativeworkclasses input').click(function() {
-        self.chosenTypes[0] = $(this).val();
-      });
-      $('#create_new_post .aggregateclasses input').click(function() {
-        self.chosenTypes[1] = $(this).val();
-      })
-
-      $('#create_new_post button[type=submit]').click((e) => {
-        e.preventDefault();
-        const params = '@type=' + JSON.stringify(self.chosenTypes);
-        window.location.href = '/new/record?' + params;
-      });
-
+    const vm = new Vue({
+      el: '#app',
+      data: {
+        choices,
+        materialLists,
+        selectedChoice: 'from_material',
+        chosenMaterials: [],
+        vocabPfx: 'kbv:',
+        language: self.language,
+        vocab,
+      },
+      methods: {
+        createNew() {
+          if (this.chosenMaterials.length == 0) {
+            return;
+          }
+          const params = '@type=' + JSON.stringify(this.chosenMaterials);
+          window.location.href = '/new/record?' + params;
+        },
+      },
+      components: {
+      },
     });
   }
+
 }
