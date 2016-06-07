@@ -81,6 +81,15 @@ export default class CreateNew extends View {
           const params = '@type=' + JSON.stringify(this.chosenMaterials);
           window.location.href = '/new/record?' + params;
         },
+        setMaterial(index, material) {
+          const m = material.replace(vocabPfx, '');
+          this.chosenMaterials.$set(index, m);
+        },
+      },
+      computed: {
+        hasChosenMaterials() {
+          return (this.chosenMaterials.length !== 0);
+        },
       },
       components: {
       },

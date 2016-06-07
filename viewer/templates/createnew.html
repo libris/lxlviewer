@@ -12,7 +12,7 @@
   <div id="app">
   <h1>Skapa ny</h1>
   <div class="panel panel-default">
-    <div class="panel-body container-fluid choice-container">
+    <div class="panel-body container-fluid choice-container dash green">
       <div class="row">
         <a v-for="choice in choices" class="choice" v-on:click="selectedChoice = choice.trigger">
           <div class="col-lg-4">
@@ -57,13 +57,13 @@
             <div class="col-md-4" v-for="(index, materialList) in materialLists" track-by="$index">
               <h2>{{materialList.id | labelByLang}}</h2>
               <div class="radio" v-for="material in materialList.list">
-                <label v-on:click="chosenMaterials[index] = material['@id'].replace(vocabPfx,'')">
+                <label v-on:click="setMaterial(index, material['@id'])">
                   <input name="{{materialList.id}}" type="radio" value="{{material['@id']}}">{{material['@id'] | labelByLang}}</input>
                 </label>
               </div>
             </div>
             <div class="col-md-4 submitter">
-              <button @click.prevent="createNew()">Vidare</button>
+              <button v-bind:disabled="!hasChosenMaterials" @click.prevent="createNew()">Skapa post</button>
             </div>
           </form>
         </div>
