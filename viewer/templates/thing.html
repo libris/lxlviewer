@@ -65,12 +65,12 @@
 
           <div class="toolbar">
           % if t.curie == 'Record'
-              <a class="toolbar-button" href="${thing_url}/hld"><i class="fa fa-plus"></i>Lägg till Bestånd</a>
+              <a class="toolbar-button js-toolbar-add-holding" href="${thing_url}/hld"><i class="fa fa-plus"></i>Lägg till Bestånd</a>
               % endif
-              <span class="toolbar-button"><i class="fa fa-trash" aria-hidden="true"></i>Ta bort post</span>
+              <a href="" class="toolbar-button js-toolbar-remove" data-record-id="${thing_url}"><i class="fa fa-trash" aria-hidden="true"></i>Ta bort post</a>
               <!-- Button trigger modal -->
-              <a href="" class="toolbar-button" role="button" data-toggle="modal" data-target="#myModal"><i class="fa fa-list-alt" aria-hidden="true"></i>Förhandsgranska Marc</a>
-              <a class="toolbar-button" href="${thing_url}/edit"><i class="fa fa-pencil"></i>Redigera</a>
+              <a href="" class="toolbar-button js-toolbar-marc" role="button" data-toggle="modal" data-target="#myModal"><i class="fa fa-list-alt" aria-hidden="true"></i>Förhandsgranska Marc</a>
+              <a class="toolbar-button js-toolbar-edit" href="${thing_url}/edit"><i class="fa fa-pencil"></i>Redigera</a>
           </div>
       % endif
 <!-- Modal -->

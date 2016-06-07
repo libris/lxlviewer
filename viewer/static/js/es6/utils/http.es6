@@ -18,7 +18,11 @@ function request(url, token, obj, method) {
       reject(Error('Network error'));
     };
 
-    req.send(JSON.stringify(obj));
+    if (method === 'DELETE') {
+      req.send();
+    } else {
+      req.send(JSON.stringify(obj));
+    }
   });
 }
 
@@ -35,7 +39,7 @@ export function post(url, token, obj) {
 }
 
 export function _delete(url, token) {
-  return request(url, token, obj, 'DELETE');
+  return request(url, token, null, 'DELETE');
 }
 
 export function getContent(url, type) {

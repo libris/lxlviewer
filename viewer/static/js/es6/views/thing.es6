@@ -2,6 +2,8 @@ import View from './view';
 import * as thingutil from '../utils/thing';
 import * as searchutil from '../utils/search';
 import * as VocabLoader from '../utils/vocabloader';
+import * as httpUtil from '../utils/http';
+import * as modalUtil from '../utils/modals';
 
 export default class Thing extends View {
 
@@ -14,5 +16,26 @@ export default class Thing extends View {
     thingutil.createChips($('.side-view'));
     thingutil.initHitlistExpands('.result-list');
     searchutil.initializeSearch();
+    this.initToolbar();
+  }
+
+  initToolbar() {
+    const self = this;
+
+    // TOOLBAR-REMOVE
+    $('.js-toolbar-remove').click(function(e) {
+      e.preventDefault();
+      const url = $(this).attr('data-record-id').replace('/', );
+      modalUtil.confirmDialog('Ta bort?', 'this is permanent').then(() => {
+        httpUtil._delete(url, self.access_token).then((result) => {
+          console.log("post WAS deleted...");
+        }, (result) => {
+          console.log("post was NOT deleted...");
+        });
+      }, () => {
+        // rejected by user
+      });
+    });
+
   }
 }
