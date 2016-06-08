@@ -41,5 +41,42 @@ export default class Thing extends View {
         // rejected by user
       });
     });
+
+    $('.js-toolbar-marc').click(function(e) {
+      e.preventDefault();
+      const url = $(this).attr('data-record-id').replace('/', '');
+      modalUtil.modal({
+        sTitle: 'MARC Vy',
+        sContent: `<section class="marc-code">
+                    <table>
+                      <tr>
+                        <td data-ng-if="record.leader">
+                          <code>000</code>
+                        </td>
+                        <td></td>
+                        <td></td>
+                        <td colspan="3">
+                          <span>{{record.leader}}</span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <code>{{key}}</code>
+                        </td>
+                        <td class="ind">
+                          {{value.ind1}}
+                        </td>
+                        <td class="ind">
+                          {{value.ind2}}
+                        </td>
+                        <td>
+                          <span>{{value}}</span>
+                          <span>{{value.subfields}}</span>
+                        </td>
+                      </tr>
+                    </table>
+                  </section>`
+      }).then(() => {}, () => {});;
+    });
   }
 }
