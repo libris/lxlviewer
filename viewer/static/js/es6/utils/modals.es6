@@ -23,8 +23,8 @@ export function confirmDialog(sTitle, sContent, sAccept, sReject, sAcceptStyle) 
                 ${sContent}
               </div>
               <div class="modal-footer">
-              <button type="button" class="btn btn-default" data-dismiss="modal">${sReject}</button>
-              <button type="button" class="btn ${sAcceptClass}" data-dismiss="modal">${sAccept}</button>
+              <button type="button" class="btn js-button-dialog-reject btn-default" data-dismiss="modal">${sReject}</button>
+              <button type="button" class="btn js-button-dialog-accept ${sAcceptClass}" data-dismiss="modal">${sAccept}</button>
               </div>
             </div>
           </div>
@@ -38,10 +38,10 @@ export function confirmDialog(sTitle, sContent, sAccept, sReject, sAcceptStyle) 
     $('#confirmModal').modal('show');
 
     return new Promise((resolve, reject) => {
-      $('#confirmModal .btn-primary').click(() => {
+      $('#confirmModal .js-button-dialog-accept').click(() => {
         resolve();
       });
-      $('#confirmModal .btn-default').click(() => {
+      $('#confirmModal .js-button-dialog-reject').click(() => {
         reject();
       });
     });
