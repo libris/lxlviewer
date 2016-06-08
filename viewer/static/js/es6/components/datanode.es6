@@ -44,7 +44,7 @@ export default {
           return linked[i];
         }
       }
-      return id;
+      return {'@id': id };
     },
     isEditable(key) {
       const tempNotEditable = [
