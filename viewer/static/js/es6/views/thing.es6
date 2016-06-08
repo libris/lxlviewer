@@ -25,7 +25,7 @@ export default class Thing extends View {
     // TOOLBAR-REMOVE
     $('.js-toolbar-remove').click(function(e) {
       e.preventDefault();
-      const url = $(this).attr('data-record-id').replace('/', );
+      const url = $(this).attr('data-record-id').replace('/', '');
       modalUtil.confirmDialog('Ta bort?', 'this is permanent').then(() => {
         httpUtil._delete(url, self.access_token).then((result) => {
           console.log("post WAS deleted...");
