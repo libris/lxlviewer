@@ -238,7 +238,7 @@ def _map_response(response):
                     mimetype=response.headers.get('content-type'),
                     headers=_map_headers(response.headers))
 
-def _whelk_request(request, json_data):
+def _whelk_request(request, json_data=None):
     url = '%s%s' % (app.config.get('WHELK_REST_API_URL'), request.path)
     json_data = json.dumps(json_data)
     # Proxy the request to rest api
