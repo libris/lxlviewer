@@ -1,6 +1,15 @@
-export function confirmDialog(sTitle, sContent, sAccept, sReject) {
+export function confirmDialog(sTitle, sContent, sAccept, sReject, sAcceptStyle) {
+  /*
+    Creates a confirm dialog and returns a promise.
+      Params:
+      sTitle          - Title (string)
+      sContent        - Content (string)
+      sAccept         - Accept button text (string)
+      sReject         - Reject button text (string)
+      [sAcceptStyle]  - Optional accept style (string) - 'danger', 'warning'
+  */
 
-  function createModal(sTitle, sContent, sAccept, sReject) {
+  function createModal(sTitle, sContent, sAccept, sReject, sAcceptClass) {
     const template = `<div class="modal fade" id="confirmModal"
               tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel">
           <div class="modal-dialog" role="document">
@@ -15,7 +24,7 @@ export function confirmDialog(sTitle, sContent, sAccept, sReject) {
               </div>
               <div class="modal-footer">
               <button type="button" class="btn btn-default" data-dismiss="modal">${sReject}</button>
-              <button type="button" class="btn btn-primary" data-dismiss="modal">${sAccept}</button>
+              <button type="button" class="btn ${sAcceptClass}" data-dismiss="modal">${sAccept}</button>
               </div>
             </div>
           </div>
@@ -38,8 +47,20 @@ export function confirmDialog(sTitle, sContent, sAccept, sReject) {
     });
   }
 
+  let sAcceptClass = '';
+  switch (sAcceptStyle) {
+    case 'danger':
+      sAcceptClass = 'btn-danger';
+      break;
+    case 'warning':
+      sAcceptClass = 'btn-warning';
+      break;
+    default:
+      sAcceptClass = 'btn-primary';
+  }
+
   return new Promise((resolve, reject) => {
-    createModal(sTitle, sContent, sAccept, sReject).then(() => {
+    createModal(sTitle, sContent, sAccept, sReject, sAcceptClass).then(() => {
       resolve();
     }, () => {
       reject();

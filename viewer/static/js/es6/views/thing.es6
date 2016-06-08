@@ -25,7 +25,7 @@ export default class Thing extends View {
     $('.js-toolbar-remove').click(function(e) {
       e.preventDefault();
       const url = $(this).attr('data-record-id').replace('/', '');
-      modalUtil.confirmDialog('Ta bort?', 'Du kan inte ångra detta val.', 'OK', 'Avbryt').then(() => {
+      modalUtil.confirmDialog('Ta bort?', 'Du kan inte ångra detta val.', 'OK', 'Avbryt', 'danger').then(() => {
         httpUtil._delete(url, self.access_token).then((result) => {
           console.log("post WAS deleted...", result);
         }, (result) => {
