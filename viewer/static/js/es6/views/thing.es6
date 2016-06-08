@@ -21,21 +21,19 @@ export default class Thing extends View {
 
   initToolbar() {
     const self = this;
-
     // TOOLBAR-REMOVE
     $('.js-toolbar-remove').click(function(e) {
       e.preventDefault();
       const url = $(this).attr('data-record-id').replace('/', '');
-      modalUtil.confirmDialog('Ta bort?', 'this is permanent').then(() => {
+      modalUtil.confirmDialog('Ta bort?', 'Du kan inte ångra detta val.', 'OK', 'Avbryt').then(() => {
         httpUtil._delete(url, self.access_token).then((result) => {
-          console.log("post WAS deleted...");
+          console.log("post WAS deleted...", result);
         }, (result) => {
-          console.log("post was NOT deleted...");
+          console.log("post was NOT deleted...", result);
         });
       }, () => {
         // rejected by user
       });
     });
-
   }
 }
