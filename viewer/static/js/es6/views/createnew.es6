@@ -43,6 +43,7 @@ export default class CreateNew extends View {
   initVue(vocab, vocabPfx, choices, baseMaterials) {
     const self = this;
     const materialLists = self.getMaterials(baseMaterials, vocab);
+    $('#app').show();
 
     Vue.filter('labelByLang', (label) => {
       // Filter for fetching labels from vocab

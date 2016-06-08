@@ -10,8 +10,10 @@
 <!DOCTYPE html>
 <meta charset="utf-8" />
 
+<div id="appContainer">
 <div id="loadingText">
-  <h1><i class="fa fa-cog fa-spin"></i> Laddar...</h1>
+  <h1><i class="fa fa-cog fa-spin"></i></h1>
+  Laddar redigeringsverktyget
 </div>
 <div id="editorApp">
   <h1><small>Redigerar:</small><br>{{meta.prefLabel || meta['@id'] || 'Namnlös'}}</h1>
@@ -36,6 +38,7 @@
   </button>
   <span class="status-text small" v-bind:class="{'error' : saved.status.error, 'success' : !saved.status.error }" v-show="!saved.loading && saved.status.info">{{ saved.status.info }}</span>
   <hr>
+</div>
 </div>
 
 <template id="ld-table">
