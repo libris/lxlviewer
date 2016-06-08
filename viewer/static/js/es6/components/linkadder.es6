@@ -35,8 +35,11 @@ export default {
   },
   computed: {
     range() {
-      const preferredVocab = 'kbv';
-      const item = _.find(this.vocab.descriptions, { '@id': this.vocabPfx + this.key });
+      const itemId = this.vocabPfx + this.key;
+      const item = _.find(this.vocab.descriptions, (d) => { return d['@id'] === itemId });
+      if(!item && this.key !== '@type') {
+        console.warn('item', itemId,'not found in vocab');
+      }
       const range = [];
       if (typeof item === 'undefined' || !item.hasOwnProperty('rangeIncludes')) {
         return [this.$parent.focus['@type']];

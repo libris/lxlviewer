@@ -47,7 +47,7 @@ export default class Vocab extends View {
         setActive(window.location.hash);
       }, 250);
     }
-    
+
     this.initClicks();
   }
 

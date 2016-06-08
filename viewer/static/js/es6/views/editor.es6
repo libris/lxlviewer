@@ -62,7 +62,7 @@ export default class Editor extends View {
       if (lbl && lbl.indexOf(vocabPfx) !== -1) {
         lbl = lbl.replace(vocabPfx, '');
       }
-      const item = _.find(vocab.descriptions, { '@id': `${vocabPfx}${lbl}` });
+      const item = _.find(vocab.descriptions, (d) => { return d['@id'] === `${vocabPfx}${lbl}`; });
       let labelByLang = '';
       if (typeof item !== 'undefined' && item.labelByLang) {
         labelByLang = item.labelByLang[self.language];

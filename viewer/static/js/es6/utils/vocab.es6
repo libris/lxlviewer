@@ -37,15 +37,23 @@ export function getVocab() {
 }
 
 export function getClass(classname, vocab) {
-  return _.find(vocab.descriptions, { '@id': classname });
+  const _class = _.find(vocab.descriptions, (d) => { return d['@id'] === classname; });
+  if(!_class) {
+    console.warn('class', classname, 'not found in vocab');
+  }
+  return _class;
 }
 
 export function getSubClasses(classname, vocab) {
-  return _.filter(vocab.descriptions, (o) => {
+  const subClasses = _.filter(vocab.descriptions, (o) => {
     if (o.subClassOf) {
       for (let i = 0; i < o.subClassOf.length; i++) {
         if (o.subClassOf[i]['@id'] === classname) return true;
       }
     }
   });
+  if(!subClasses && subclasses.length === 0) {
+    console.warn('subclasses', classname, 'not found in vocab');
+  }
+  return subClasses;
 }
