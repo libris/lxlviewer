@@ -52,9 +52,9 @@ export default class Editor extends View {
 
   initVue(thing, meta, linked, vocab, vocabPfx) {
     const self = this;
-
-    $('#loadingText').hide();
-    $('#editorApp').show();
+    $('#loadingText').fadeOut('slow', function() {
+      $('#editorApp').fadeIn('slow');
+    });
 
     Vue.filter('labelByLang', (label) => {
       // Filter for fetching labels from vocab
