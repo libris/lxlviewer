@@ -34,6 +34,18 @@ export default {
     emptyValue() {
       this.$parent.updateValue(this.key, {});
     },
+    getLinked(id) {
+      const linked = this.linked;
+      if (typeof linked === 'undefined') {
+        return {};
+      }
+      for (let i = 0; i < linked.length; i ++) {
+        if (linked[i]['@id'] === id) {
+          return linked[i];
+        }
+      }
+      return id;
+    },
     isEditable(key) {
       const tempNotEditable = [
         '@id',

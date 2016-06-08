@@ -101,7 +101,7 @@
         <small>{{k | labelByLang | capitalize}}</small><br>
         <input v-if="!isPlainObject(v)" v-model="v" debounce="250"></input>
         <!-- <data-node :value="v" :key="k" :index="index"></data-node> -->
-        <linked-item v-else :value="v" :vocab="vocab" :linked="linked"></linked-item>
+        <linked-item v-else :item="getLinked(v['@id'])"></linked-item>
       </li>
     </ul>
   </li>
@@ -109,8 +109,8 @@
 
 <template id="linked-item">
   <div class="linked">
-    <a href="{{value['@id']}}">
-      <processed-label :item="getLinked(value['@id'])" language="${lang}"></processed-label>
+    <a href="{{item['@id']}}">
+      <processed-label :item="item" language="${lang}"></processed-label>
     </a> <i class="fa fa-close" v-on:click="removeItem($parent.key, value)"></i>
   </div>
 </template>
@@ -120,7 +120,7 @@
     <ul>
       <li v-for="v in value">
         <div v-if="isPlainObject(v) && v['@id']">
-          <linked-item :value="v" :vocab="vocab" :linked="linked"></linked-item>
+          <linked-item :item="getLinked(v['@id'])"></linked-item>
         </div>
         <div v-if="isPlainObject(v) && !v['@id']">
           <anonymous-value :value="v" :key="key" :vocab="vocab" :linked="linked"></anonymous-value>
@@ -132,7 +132,7 @@
     </ul>
   </div>
   <div v-if="isPlainObject(value) && value['@id']">
-    <linked-item :value="value" :vocab="vocab" :linked="linked"></linked-item>
+    <linked-item :item="getLinked(value['@id'])"></linked-item>
   </div>
   <div v-if="isPlainObject(value) && !value['@id']">
     <anonymous-value :value="value" :linked="linked"></anonymous-value>
