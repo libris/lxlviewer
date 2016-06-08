@@ -36,7 +36,10 @@ export function getVocab() {
   });
 }
 
-export function getClass(classname, vocab) {
+export function getClass(classname, vocab, vocabPfx) {
+  // Only try to get class for classes in this vocab
+  if(vocabPfx && classname.indexOf(vocabPfx) !== -1) return;
+
   const _class = _.find(vocab.descriptions, (d) => { return d['@id'] === classname; });
   if(!_class) {
     console.warn('class', classname, 'not found in vocab');
@@ -44,7 +47,10 @@ export function getClass(classname, vocab) {
   return _class;
 }
 
-export function getSubClasses(classname, vocab) {
+export function getSubClasses(classname, vocab, vocabPfx) {
+  // Only try to get subclass for classes in this vocab
+  if(vocabPfx && classname.indexOf(vocabPfx) !== -1) return;
+
   const subClasses = _.filter(vocab.descriptions, (o) => {
     if (o.subClassOf) {
       for (let i = 0; i < o.subClassOf.length; i++) {
@@ -52,8 +58,8 @@ export function getSubClasses(classname, vocab) {
       }
     }
   });
-  if(!subClasses && subclasses.length === 0) {
-    console.warn('subclasses', classname, 'not found in vocab');
+  if(!subClasses && subClasses.length === 0) {
+    console.warn('subclasses for', classname, 'not found in vocab');
   }
   return subClasses;
 }

@@ -23,7 +23,7 @@ export default {
         if (classObj && classObj.hasOwnProperty('subClassOf')) {
           for (let i = 0; i < classObj.subClassOf.length; i++) {
             const baseClassId = classObj.subClassOf[i]['@id'];
-            const baseClass = VocabUtil.getClass(baseClassId, self.vocab);
+            const baseClass = VocabUtil.getClass(baseClassId, self.vocab, self.vocabPfx);
             if (
               baseClass &&
               baseClass.isDefinedBy &&
@@ -43,7 +43,7 @@ export default {
       // Find their base classes
       let classes = [];
       for (let t = 0; t < types.length; t++) {
-        const c = VocabUtil.getClass(this.vocabPfx + types[t], self.vocab);
+        const c = VocabUtil.getClass(this.vocabPfx + types[t], self.vocab, self.vocabPfx);
         classes = classes.concat(getBaseClasses(c));
       }
       const classNames = [];
