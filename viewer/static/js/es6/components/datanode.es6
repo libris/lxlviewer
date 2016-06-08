@@ -2,6 +2,7 @@ import * as _ from 'lodash';
 import ProcessedLabel from './processedlabel';
 import AnonymousValue from './anonymousvalue';
 import LinkedItem from './linkeditem';
+import * as editUtil from '../utils/edit';
 
 export default {
   template: '#data-node',
@@ -35,16 +36,7 @@ export default {
       this.$parent.updateValue(this.key, {});
     },
     getLinked(id) {
-      const linked = this.linked;
-      if (typeof linked === 'undefined') {
-        return {};
-      }
-      for (let i = 0; i < linked.length; i ++) {
-        if (linked[i]['@id'] === id) {
-          return linked[i];
-        }
-      }
-      return {'@id': id };
+      return editUtil.getLinked(id, this.linked);
     },
     isEditable(key) {
       const tempNotEditable = [

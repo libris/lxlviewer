@@ -1,6 +1,7 @@
 import * as _ from 'lodash';
 import DataNode from './datanode';
 import LinkedItem from './linkeditem';
+import * as editUtil from '../utils/edit';
 
 export default {
   template: '#anonymous-value',
@@ -22,6 +23,9 @@ export default {
       } else {
         this.$parent.emptyValue();
       }
+    },
+    getLinked(id) {
+      return editUtil.getLinked(id, this.linked);
     },
   },
   components: {
