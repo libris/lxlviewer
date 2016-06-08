@@ -61,7 +61,8 @@ export default {
             const prop = vocabItems[i];
             if (
               classNames.indexOf(type) !== -1 &&
-              props.filter((p) => p['@id'] === prop['@id']).length === 0
+              props.filter((p) => p['@id'] === prop['@id']).length === 0 &&
+              !_.has(this.focus, prop['@id'].replace(this.vocabPfx, ''))
             ) {
               props.push(prop);
             }
