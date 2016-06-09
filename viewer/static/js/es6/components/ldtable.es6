@@ -115,7 +115,6 @@ export default {
       this.focus = Object.assign({}, this.focus, newItem);
     },
     updateValue(key, value) {
-      console.log("Updating", key, value);
       this.focus[key] = value;
     },
   },

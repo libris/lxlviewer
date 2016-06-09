@@ -114,7 +114,7 @@
   <div class="linked">
     <a href="{{item['@id']}}">
       <processed-label :item="item" language="${lang}"></processed-label>
-    </a> <i class="fa fa-close" v-on:click="removeItem($parent.key, value)"></i>
+    </a> <i class="fa fa-close" v-on:click="removeThis()"></i>
   </div>
 </template>
 
@@ -123,7 +123,7 @@
     <ul>
       <li v-for="v in value">
         <div v-if="isPlainObject(v) && v['@id']">
-          <linked-item :item="getLinked(v['@id'])"></linked-item>
+          <linked-item :item="getLinked(v['@id'])" :index="$index"></linked-item>
         </div>
         <div v-if="isPlainObject(v) && !v['@id']">
           <anonymous-value :value="v" :key="key" :vocab="vocab" :linked="linked"></anonymous-value>

@@ -49,6 +49,11 @@ export default {
       ];
       return !~tempNotEditable.indexOf(key);
     },
+    removeByIndex(index) {
+      const modified = this.value;
+      modified.splice(index, 1);
+      this.value = modified;
+    },
     isArray(o) {
       return _.isArray(o);
     },
