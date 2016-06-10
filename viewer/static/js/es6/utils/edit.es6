@@ -8,3 +8,13 @@ export function getLinked(id, linked) {
   }
   return { '@id': id };
 }
+
+export function getMergedItems(meta, thing, linked) {
+  const obj = { '@graph': [] };
+  obj['@graph'].push(meta);
+  obj['@graph'].push(thing);
+  for (let i = 0; i < linked.length; i++) {
+    obj['@graph'].push({ '@graph': linked[i] });
+  }
+  return obj;
+}
