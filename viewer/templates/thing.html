@@ -1,4 +1,5 @@
 % extends "base.html"
+{% from 'toolbar.html' import toolbar %}
 
 {% block title %}${vocab.labelgetter(thing)}{% endblock %}
 
@@ -60,18 +61,9 @@
       {% if t.curie %} typeof="${t.curie}"{% endif %}>
 
     % if ID in thing
-          % set thing_url = view_url(canonical_id)
-      % if current_user.is_authenticated and element == 'article'
+      % set thing_url = view_url(canonical_id)
 
-          <div class="toolbar">
-          % if t.curie == 'Record'
-            <a class="toolbar-button js-toolbar-add-holding" href="${thing_url}/hld"><i class="fa fa-plus"></i>Lägg till Bestånd</a>
-          % endif
-            <a href="" class="toolbar-button js-toolbar-remove" data-record-id="${thing_url}"><i class="fa fa-trash" aria-hidden="true"></i>Ta bort post</a>
-            <a href="" class="toolbar-button js-toolbar-marc" data-record-id="${thing_url}"><i class="fa fa-list-alt" aria-hidden="true"></i>Förhandsgranska Marc</a>
-            <a class="toolbar-button js-toolbar-edit" href="${thing_url}/edit"><i class="fa fa-pencil"></i>Redigera</a>
-          </div>
-      % endif
+      ${toolbar(thing_url, current_user.is_authenticated, typename, element)}
 
       <header class="panel-heading">
         <div class="panel-heading-meta">
