@@ -37,8 +37,9 @@
     "watch:libris:less": "watch 'npm run app:libris:less' static/less/",
     "app:id:less": "lessc static/less/main_id.less static/build/id.css --source-map=static/build/id.css.map",
     "app:libris:less": "lessc static/less/main_libris.less static/build/libris.css --source-map=static/build/libris.css.map",
-    "test": "cd tests && nightwatch --test specs/viewer.js",
-    "test:chrome": "cd tests && nightwatch --test specs/viewer.js -e chrome"
+    "test:e2e": "cd test && cd e2e && nightwatch --test specs/viewer.js",
+    "test:e2e:chrome": "cd test && cd e2e && nightwatch --test specs/viewer.js -e chrome",
+    "test:unit": "mocha --compilers js:babel-core/register test/index.js"
   },
   "dependencies": {
     "vue-clickaway": "^1.1.1"
