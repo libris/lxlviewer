@@ -215,6 +215,11 @@ def thingedit(path):
 def create():
     return _write_data(request)
 
+@app.route('/_convert', methods=['POST'])
+def convert():
+    return _write_data(request)
+
+
 def _handle_modification(request, item):
     # TODO: mock handling for now; should forward to backend API
     app.logger.debug('MODIFICATION %s %s', request.method, json.dumps(item))
