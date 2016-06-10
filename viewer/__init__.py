@@ -208,8 +208,8 @@ def thingedit(path):
         return abort(404)
     model = {}
     return render_template('edit.html',
-            data=json.dumps(thing, ensure_ascii=False),
-            model=json.dumps(model, ensure_ascii=False))
+            thing=thing,
+            model=model)
 
 @app.route('/create', methods=['POST'])
 def create():
