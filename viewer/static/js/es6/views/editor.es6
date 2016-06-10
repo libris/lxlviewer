@@ -98,14 +98,6 @@ export default class Editor extends View {
         isPlainObject(o) {
           return _.isPlainObject(o);
         },
-        getMergedItems() {
-          const obj = { '@graph': [] };
-          obj['@graph'].push(this.meta);
-          obj['@graph'].push(this.thing);
-          for (let i = 0; i < this.linked.length; i++) {
-            obj['@graph'].push({ '@graph': this.linked[i] });
-          }
-          return obj;
         },
         saveItem() {
           const inputData = JSON.parse(document.getElementById('data').innerText);
