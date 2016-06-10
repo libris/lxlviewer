@@ -189,7 +189,7 @@ def thingnew(item_type):
         return Response('Missing @type parameter', status=422)
     else:
         return render_template('edit.html',
-                data=json.dumps({
+                thing={
                         '@graph': [
                             {
                                 '@type': item_type
@@ -197,7 +197,8 @@ def thingnew(item_type):
                                 '@type': json.loads(at_type)
                             }
                         ]
-                    }))
+                    },
+                model={})
 
 @app.route('/<path:path>/edit')
 @login_required
