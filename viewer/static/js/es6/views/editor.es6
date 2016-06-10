@@ -1,6 +1,7 @@
 import View from './view';
 import * as editUtil from '../utils/edit';
 import * as httpUtil from '../utils/http';
+import * as toolbarUtil from '../utils/toolbar';
 import * as _ from 'lodash';
 import * as VocabLoader from '../utils/vocabloader';
 import * as VocabUtil from '../utils/vocab';
@@ -11,6 +12,7 @@ export default class Editor extends View {
   initialize() {
     super.initialize();
     VocabLoader.initVocabClicks();
+    toolbarUtil.initToolbar(this);
 
     this.loadItem();
     const self = this;
@@ -98,6 +100,10 @@ export default class Editor extends View {
         isPlainObject(o) {
           return _.isPlainObject(o);
         },
+        convertItemToMarc() {
+          return httpUtil.post('/_convert',
+                                this.access_token,
+                                editUtil.getMergedItems(this.meta, this.thing, this.linked));
         },
         saveItem() {
           const inputData = JSON.parse(document.getElementById('data').innerText);
