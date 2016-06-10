@@ -28,6 +28,25 @@ body {
   position: relative;
   background-color: @bg-site;
   background-image: @bg-img;
+
+   /********/
+  /* Main-item
+  /* An item shown on its own page
+  /********/
+
+  .main-item {
+    >.panel-body {
+      >dl {
+        .dl-mixin();
+      }
+    }
+    >.panel-heading {
+      .header-colored();
+      .thing-label {
+        font-size: 2em;
+      }
+    }
+  }
 }
 
 body.loading * {
