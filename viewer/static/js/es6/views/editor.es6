@@ -75,7 +75,7 @@ export default class Editor extends View {
       return lbl;
     });
 
-    const vm = new Vue({
+    self.vm = new Vue({
       el: '#editorApp',
       data: {
         thing,
