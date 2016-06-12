@@ -47,12 +47,19 @@ describe('vocabUtil', function () {
     expect(vocabUtil).not.to.be.null;
   });
   describe('getClass', function() {
-      // pending test below
-      it('should return a class');
+    let fetchedClass = {};
 
-      it('should return the correct class given the input', function() {
-        const fetchedClass = vocabUtil.getClass('text', vocab, 'kbv:');
-        expect(fetchedClass).to.deep.equal(exampleClass);
-      });
+    before(function() {
+      // runs before all tests in this block
+      fetchedClass = vocabUtil.getClass('text', vocab, 'kbv:');
     });
+
+    it('should return a vocab class as an object', function() {
+      expect(fetchedClass).to.be.an('object');
+    });
+
+    it('should return the correct vocab class', function() {
+      expect(fetchedClass).to.deep.equal(exampleClass);
+    });
+  });
 });
