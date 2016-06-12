@@ -40,7 +40,7 @@ export function getClass(classname, vocab, vocabPfx) {
   // Only try to get class for classes in this vocab
   if(vocabPfx && classname.indexOf(vocabPfx) !== -1) return;
 
-  const _class = _.find(vocab.descriptions, (d) => { return d['@id'] === classname; });
+  const _class = _.find(vocab.descriptions, (d) => { return d['@id'] === vocabPfx + classname; });
   if(!_class) {
     console.warn('class', classname, 'not found in vocab');
   }
