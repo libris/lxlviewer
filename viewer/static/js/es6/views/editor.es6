@@ -1,5 +1,7 @@
 import View from './view';
+import * as editUtil from '../utils/edit';
 import * as httpUtil from '../utils/http';
+import * as toolbarUtil from '../utils/toolbar';
 import * as _ from 'lodash';
 import * as VocabLoader from '../utils/vocabloader';
 import * as VocabUtil from '../utils/vocab';
@@ -10,6 +12,7 @@ export default class Editor extends View {
   initialize() {
     super.initialize();
     VocabLoader.initVocabClicks();
+    toolbarUtil.initToolbar(this);
 
     this.loadItem();
     const self = this;
@@ -74,7 +77,7 @@ export default class Editor extends View {
       return lbl;
     });
 
-    const vm = new Vue({
+    self.vm = new Vue({
       el: '#editorApp',
       data: {
         thing,
@@ -97,18 +100,14 @@ export default class Editor extends View {
         isPlainObject(o) {
           return _.isPlainObject(o);
         },
-        getMergedItems() {
-          const obj = { '@graph': [] };
-          obj['@graph'].push(this.meta);
-          obj['@graph'].push(this.thing);
-          for (let i = 0; i < this.linked.length; i++) {
-            obj['@graph'].push({ '@graph': this.linked[i] });
-          }
-          return obj;
+        convertItemToMarc() {
+          return httpUtil.post('/_convert',
+                                this.access_token,
+                                editUtil.getMergedItems(this.meta, this.thing, this.linked));
         },
         saveItem() {
           const inputData = JSON.parse(document.getElementById('data').innerText);
-          const obj = this.getMergedItems();
+          const obj = editUtil.getMergedItems(this.meta, this.thing, this.linked);
          // if (JSON.stringify(obj) === JSON.stringify(inputData)) {
             console.warn("No changes done, skipping to save. Time to tell the user?");
          // } else {

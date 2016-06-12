@@ -189,7 +189,7 @@ def thingnew(item_type):
         return Response('Missing @type parameter', status=422)
     else:
         return render_template('edit.html',
-                data=json.dumps({
+                thing={
                         '@graph': [
                             {
                                 '@type': item_type
@@ -197,7 +197,8 @@ def thingnew(item_type):
                                 '@type': json.loads(at_type)
                             }
                         ]
-                    }))
+                    },
+                model={})
 
 @app.route('/<path:path>/edit')
 @login_required
@@ -208,12 +209,17 @@ def thingedit(path):
         return abort(404)
     model = {}
     return render_template('edit.html',
-            data=json.dumps(thing, ensure_ascii=False),
-            model=json.dumps(model, ensure_ascii=False))
+            thing=thing,
+            model=model)
 
 @app.route('/create', methods=['POST'])
 def create():
     return _write_data(request)
+
+@app.route('/_convert', methods=['POST'])
+def convert():
+    return _write_data(request)
+
 
 def _handle_modification(request, item):
     # TODO: mock handling for now; should forward to backend API
