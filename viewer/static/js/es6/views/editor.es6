@@ -1,4 +1,5 @@
 import View from './view';
+import Vue from 'vue';
 import * as editUtil from '../utils/edit';
 import * as httpUtil from '../utils/http';
 import * as toolbarUtil from '../utils/toolbar';

@@ -1,10 +1,6 @@
 % extends "base.html"
 {% from 'toolbar.html' import toolbar %}
 
-% block scripts
-<script src="/assets/vendor/vue/js/vue.js"></script>
-% endblock
-
 {% block bodyattrs %}vocab="${config.VOCAB_IRI}" id="editor"{% endblock %}
 
 % block content

@@ -1,5 +1,6 @@
 import * as _ from 'lodash';
 import View from './view';
+import Vue from 'vue';
 import * as UserUtil from '../utils/user';
 import * as VocabUtil from '../utils/vocab';
 
