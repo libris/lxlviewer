@@ -102,7 +102,7 @@ export default class Editor extends View {
         },
         convertItemToMarc() {
           return httpUtil.post('/_convert',
-                                this.access_token,
+                                self.access_token,
                                 editUtil.getMergedItems(this.meta, this.thing, this.linked));
         },
         saveItem() {
