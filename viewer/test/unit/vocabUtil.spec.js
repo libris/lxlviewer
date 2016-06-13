@@ -7,7 +7,7 @@ import * as vocabUtil from '../../static/js/es6/utils/vocab';
 import * as vocab from './vocab.json';
 
 // Suite
-describe('vocabUtil', function () {
+describe('Utility: vocab', function () {
 
   let textClass = {
     "@id": "kbv:text",

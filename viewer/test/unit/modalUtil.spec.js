@@ -6,7 +6,7 @@
 import * as modalUtil from '../../static/js/es6/utils/modals';
 
 // Suite
-describe('modalUtil', function () {
+describe('Utility: modal', function () {
 
   // Test
   it('is available', function () {

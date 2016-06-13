@@ -6,7 +6,7 @@
 import * as editUtil from '../../static/js/es6/utils/edit';
 
 // Suite
-describe('editUtil', function () {
+describe('Utility: edit', function () {
 
   let linked = [];
   let bibObj = {};
