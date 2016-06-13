@@ -33,7 +33,7 @@ export default class CreateNew extends View {
     for (let i = 0; i < baseMaterials.length; i++) {
       const materialList = {
         id: baseMaterials[i],
-        list: VocabUtil.getSubClasses(self.vocabPfx + baseMaterials[i], vocab),
+        list: VocabUtil.getSubClasses(baseMaterials[i], vocab, self.vocabPfx),
       };
       materialLists[i] = materialList;
     }

@@ -48,18 +48,15 @@ export function getClass(classname, vocab, vocabPfx) {
 }
 
 export function getSubClasses(classname, vocab, vocabPfx) {
-  // Only try to get subclass for classes in this vocab
-  if(vocabPfx && classname.indexOf(vocabPfx) !== -1) return;
-
   const subClasses = _.filter(vocab.descriptions, (o) => {
     if (o.subClassOf) {
       for (let i = 0; i < o.subClassOf.length; i++) {
-        if (o.subClassOf[i]['@id'] === classname) return true;
+        if (o.subClassOf[i]['@id'] === vocabPfx + classname) return true;
       }
     }
   });
   if(!subClasses && subClasses.length === 0) {
-    console.warn('subclasses for', classname, 'not found in vocab');
+    console.warn('subclasses for', vocabPfx + classname, 'not found in vocab');
   }
   return subClasses;
 }
