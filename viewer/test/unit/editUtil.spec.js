@@ -50,7 +50,7 @@ describe('editUtil', function () {
   it('is available', function () {
     expect(editUtil).not.to.be.null;
   });
-  describe('getLinked', function () {
+  describe('getLinked()', function () {
     it('returns the correct object on match', function () {
       expect(editUtil.getLinked('tdrErwdfEWsd', linked)).to.deep.equal(linked[1]);
     });
@@ -59,7 +59,7 @@ describe('editUtil', function () {
     });
   });
 
-  describe('getMergedItems', function () {
+  describe('getMergedItems()', function () {
     it('returns an object matching the same structure as input data', function () {
       expect(editUtil.getMergedItems(metaObj, bibObj, linked)).to.deep.equal(mergedObj);
     });

@@ -114,7 +114,7 @@ describe('vocabUtil', function () {
   it('is available', function () {
     expect(vocabUtil).not.to.be.null;
   });
-  describe('getClass', function() {
+  describe('getClass()', function() {
     let fetchedClass = {};
 
     before(function() {
@@ -131,7 +131,7 @@ describe('vocabUtil', function () {
     });
   });
 
-  describe('getSubClasses', function() {
+  describe('getSubClasses()', function() {
     let fetchedClasses = {};
     let expectedSubclasses = [];
 
