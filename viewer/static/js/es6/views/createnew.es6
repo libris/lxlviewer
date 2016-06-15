@@ -108,7 +108,7 @@ export default class CreateNew extends View {
           const vself = this;
           vself.databases.state = 'loading';
           self.fetchDatabases().then(function(response) {
-            const dbs = response;
+            const dbs = JSON.parse(response);
             vself.databases.list = dbs;
             vself.databases.state = 'complete';
           }, function(error) {
