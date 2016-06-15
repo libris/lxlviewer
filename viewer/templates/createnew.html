@@ -29,11 +29,10 @@
           <div class="col-md-6">
             <div class="form-group">
               <label for="source">KÄLLA</label>
-              <select class="form-control" id="source">
-                <option>Worldcat</option>
-                <option>Library of Congress</option>
-                <option>LIBRIS</option>
+              <select v-if="databases.length !== 0" class="form-control" id="source">
+                <option v-for="db in databases" track-by="$index">{{db}}</option>
               </select>
+              <p v-else><i class="fa fa-cog fa-spin"></i> Laddar externa databaser...</p>
             </div>
           </div>
             <div class="col-md-6">

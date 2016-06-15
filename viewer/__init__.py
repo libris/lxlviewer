@@ -220,6 +220,9 @@ def create():
 def convert():
     return _write_data(request)
 
+@app.route('/_remotelist')
+def remotelist():
+    return 'LISTA PÅ DATABASER'
 
 def _handle_modification(request, item):
     # TODO: mock handling for now; should forward to backend API

@@ -3,6 +3,7 @@ import View from './view';
 import Vue from 'vue';
 import * as UserUtil from '../utils/user';
 import * as VocabUtil from '../utils/vocab';
+import * as httpUtil from '../utils/http';
 
 export default class CreateNew extends View {
 
@@ -25,6 +26,17 @@ export default class CreateNew extends View {
 
     VocabUtil.getVocab().then((vocab) => {
       self.initVue(vocab, self.vocabPfx, choices, baseMaterials);
+    });
+  }
+
+  fetchDatabases() {
+    return new Promise((resolve, reject) => {
+      // TODO: fix url
+      httpUtil.getContent('/_remotelist').then((response) => {
+        resolve(response);
+      }, (error) => {
+        reject('Error loading databases...', error);
+      });
     });
   }
 
@@ -75,6 +87,7 @@ export default class CreateNew extends View {
         vocabPfx: 'kbv:',
         language: self.language,
         vocab,
+        databases: [],
       },
       methods: {
         createNew() {
@@ -91,6 +104,18 @@ export default class CreateNew extends View {
           const m = material.replace(vocabPfx, '');
           this.chosenMaterials.$set(index, m);
         },
+        loadRemoteDatabases() {
+          const vself = this;
+          self.fetchDatabases().then(function(response) {
+            const dbs = response;
+            vself.databases = dbs;
+          }, function(error) {
+            vself.databases = [];
+          });
+        },
+      },
+      ready: function() {
+        this.loadRemoteDatabases();
       },
       computed: {
         hasChosenMaterials() {
