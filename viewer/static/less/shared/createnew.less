@@ -3,6 +3,12 @@ body#createnew {
   #app {
     display: none;
   }
+  
+  h1 {
+    font-weight: 600;
+    font-size: 16px;
+    text-transform: uppercase;
+  }
 
   .choice-container {
     padding: 0 15px;
@@ -25,6 +31,46 @@ body#createnew {
     text-align: center;
   }
   .submitter {
+  }
+
+  #import_post {
+    .remoteDatabases {
+      padding: 0px;
+      border: 1px solid @gray-light;
+      height: 400px;
+      overflow-y: scroll;
+      list-style: none;
+      li.databaseItem {
+        &:nth-child(odd) {
+          background-color: darken(@neutral-color ,5%);
+        }
+        padding: 3px 10px;
+        span {
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          width: 450px;
+        }
+        .dbCountry {
+          margin: 0px;
+        }
+        .dbAddr {
+          font-size: 85%;
+          margin: 0px;
+        }
+        .dbLabel {
+          font-weight: bold;
+          display: block;
+          width: 450px;
+          display: block;
+        }
+        .dbCheckbox {
+          float: right;
+          margin-right: 1em;
+          margin-top: 1em;
+        }
+      }
+    }
   }
 
 }

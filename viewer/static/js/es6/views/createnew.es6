@@ -109,7 +109,11 @@ export default class CreateNew extends View {
           vself.databases.state = 'loading';
           self.fetchDatabases().then(function(response) {
             const dbs = JSON.parse(response);
-            vself.databases.list = dbs;
+            const newDbList = [];
+            for (let i = 0; i < dbs.length; i++) {
+              newDbList.push({ item: dbs[i], active: false });
+            }
+            vself.databases.list = newDbList;
             vself.databases.state = 'complete';
           }, function(error) {
             vself.databases.state = 'error';

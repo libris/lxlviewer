@@ -28,10 +28,14 @@
           <form>
           <div class="col-md-6">
             <div class="form-group">
-              <label for="source">KÄLLA</label>
-              <select v-show="databases.state == 'complete'" class="form-control" id="source">
-                <option v-for="db in databases.list" track-by="$index">{{db.name}} ({{db.country}})</option>
-              </select>
+              <label for="source">KÄLLOR</label>
+              <ul v-show="databases.state == 'complete'" class="remoteDatabases">
+                <li class="databaseItem" v-for="db in databases.list" track-by="$index">
+                  <input class="dbCheckbox" type="checkbox" name="database" v-model="db.active" />
+                  <span class="dbLabel">{{db.item.database}} <i v-show="db.item.database !== db.item.name">- {{db.item.name}}</i></span>
+                  <span class="dbAddr" v-show="db.item.address"><a href="{{ db.item.address }}" target="_blank"><i class="fa fa-external-link-square"></i> Webbplats</a></span>
+                </li>
+              </ul>
               <p v-show="databases.state == 'loading'"><i class="fa fa-cog fa-spin"></i> Laddar externa databaser...</p>
               <p v-show="databases.state == 'error'"><i class="fa fa-close"></i> Kunde inte hämta externa databaser. <a href="" v-on:click.prevent="loadRemoteDatabases()">Försök igen</a></p>
             </div>
