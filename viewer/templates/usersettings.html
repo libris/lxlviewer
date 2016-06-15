@@ -4,21 +4,23 @@
 
 {% block content %}
 {% if current_user.is_authenticated %}
-  <div class="">
-    <div class="container-fluid">
-      <div class="row">
-        <div class=col-md-4>
-          <p>Information om användarnamn, e-post etc. ändrar du i biblioteksdatabasen.</p>
-          <p>Vid frågor om rättigheter för sigel kontakta <a href="mailto:libris@kb.se">libris@kb.se</a>.<p>
-        </div>
-        <div class="col-md-8 panel panel-default dash orange">
+<h1>Inställningar</h1>
+    <div class="row">
+      <div class="panel panel-default">
+        <div class="panel-body container-fluid settings-container dash orange">
+          <div class="col-lg-4 info-box">
+            <span class="circle"><i class="icon fa fa-info" aria-hidden="true"></i></span>
+            <h2>Information om</h2>
+            <p>Användarnamn, e-post etc. ändrar du i <a href="https://biblioteksdatabasen.libris.kb.se">biblioteksdatabasen</a>
+            </p>
+            <p>Vid frågor om rättigheter för sigel kontakta <a href="mailto:libris@kb.se">libris@kb.se</a>.
+            </p>
+          </div>
+        <div class="col-lg-7 col-lg-offset-1">
           <span class="circle"><i class="icon fa fa-cogs" aria-hidden="true"></i></span>
-
-          <h1>Mina inställningar</h1>
+          <h2>${current_user.get().username}</h2>
           <form>
-            <div class="panel-body form-group">
-              <label for="username" class="label">Användarnamn</label>
-              <p>${current_user.get().username}</p>
+            <div class="form-group">
               {% if current_user.get().authorization %}
                 <label for="switchLocation" class="label">Aktivt sigel</label>
                 <select class="form-control" id=switchLocation>
@@ -31,11 +33,11 @@
             </div>
         </form>
         </div>
-      </div>
     </div>
   </div>
+</div>
   {% else %}
-  Du måste logga in</a>.
+  <p>Du måste logga in.</p>
   {% endif %}
 
 {% endblock content %}
