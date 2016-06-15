@@ -87,7 +87,7 @@ export default class CreateNew extends View {
         vocabPfx: 'kbv:',
         language: self.language,
         vocab,
-        databases: [],
+        databases: { state: '', list: [] },
       },
       methods: {
         createNew() {
@@ -106,11 +106,13 @@ export default class CreateNew extends View {
         },
         loadRemoteDatabases() {
           const vself = this;
+          vself.databases.state = 'loading';
           self.fetchDatabases().then(function(response) {
             const dbs = response;
-            vself.databases = dbs;
+            vself.databases.list = dbs;
+            vself.databases.state = 'complete';
           }, function(error) {
-            vself.databases = [];
+            vself.databases.state = 'error';
           });
         },
       },
