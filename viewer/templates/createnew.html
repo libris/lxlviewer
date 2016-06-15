@@ -29,11 +29,11 @@
           <div class="col-md-6">
             <div class="form-group">
               <label for="source">KÄLLA</label>
-              <select v-if="databases.state == 'complete'" class="form-control" id="source">
+              <select v-show="databases.state == 'complete'" class="form-control" id="source">
                 <option v-for="db in databases.list" track-by="$index">{{db.name}} ({{db.country}})</option>
               </select>
-              <p v-if="databases.state == 'loading'"><i class="fa fa-cog fa-spin"></i> Laddar externa databaser...</p>
-              <p v-if="databases.state == 'error'"><i class="fa fa-close"></i> Kunde inte hämta externa databaser. <a href="" v-on:click.prevent="loadRemoteDatabases()">Försök igen</a></p>
+              <p v-show="databases.state == 'loading'"><i class="fa fa-cog fa-spin"></i> Laddar externa databaser...</p>
+              <p v-show="databases.state == 'error'"><i class="fa fa-close"></i> Kunde inte hämta externa databaser. <a href="" v-on:click.prevent="loadRemoteDatabases()">Försök igen</a></p>
             </div>
           </div>
             <div class="col-md-6">
