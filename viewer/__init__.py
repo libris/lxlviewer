@@ -220,9 +220,10 @@ def create():
 def convert():
     return _write_data(request)
 
-@app.route('/_remotelist')
+@app.route('/_remotelist', methods=['GET'])
 def remotelist():
-    return 'LISTA PÅ DATABASER'
+    url = '%s%s' % (app.config.get('WHELK_REST_API_URL'), '/_remotesearch?databases=list')
+    return requests.get(url).content
 
 def _handle_modification(request, item):
     # TODO: mock handling for now; should forward to backend API
@@ -610,4 +611,3 @@ def logout():
 @app.route("/usersettings")
 def usersettings():
     return render_template('usersettings.html')
-
