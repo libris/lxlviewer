@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 import * as httpUtil from '../utils/http';
-import { mixin as clickaway } from 'vue-clickaway';
 import ProcessedLabel from './processedlabel';
+import { mixin as clickaway } from 'vue-clickaway';
 
 
 export default {
