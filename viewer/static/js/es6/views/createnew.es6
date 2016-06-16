@@ -127,6 +127,11 @@ export default class CreateNew extends View {
         hasChosenMaterials() {
           return (this.chosenMaterials.length !== 0);
         },
+        selectedDatabases() {
+          return _.filter(this.databases.list, function (o) {
+            return o.active;
+          });
+        },
       },
       components: {
       },

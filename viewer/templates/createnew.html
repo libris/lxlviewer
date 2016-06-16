@@ -45,7 +45,14 @@
                 <label for="search">SÖK</label>
                 <input type="text" class="form-control" placeholder="Titel, författare, isbn..." id="search">
               </div>
-              <button id="searchSubmit" class="search-button btn btn-primary"><i class="fa fa-search"></i> Sök</button>
+              <p class="small" v-if="selectedDatabases.length > 0">
+                Söker i:
+                <span v-for="db in selectedDatabases" v-show="db.active">{{db.item.database}}{{ $index === (selectedDatabases.length-1) ? '' : ', ' }}</span>
+              </p>
+              <p class="small" v-if="selectedDatabases.length == 0">
+                <span>Ingen databas vald...</span>
+              </p>
+              <button v-if="selectedDatabases.length > 0" id="searchSubmit" class="search-button btn btn-primary"><i class="fa fa-search"></i> Sök</button>
             </div>
           </form>
         </div>
