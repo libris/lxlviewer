@@ -218,17 +218,11 @@ def create():
 
 @app.route('/_convert', methods=['POST'])
 def convert():
-    return _write_data(request)
-
-@app.route('/_remotelist')
-def remotelist():
-    url = '%s%s' % (app.config.get('WHELK_REST_API_URL'), '/_remotesearch?databases=list')
-    return requests.get(url).content
+    return _write_data(request, query_params=['to'])
 
 @app.route('/_remotesearch')
 def remotesearch():
-    url = '%s/_remotesearch?q=%s&databases=%s' % (app.config.get('WHELK_REST_API_URL'), request.args.get('q'), request.args.get('databases'))
-    return requests.get(url).content
+    return _whelk_request(request, query_params=['q','databases'])
 
 def _handle_modification(request, item):
     # TODO: mock handling for now; should forward to backend API
@@ -253,18 +247,17 @@ def _map_response(response):
                     mimetype=response.headers.get('content-type'),
                     headers=_map_headers(response.headers))
 
-def _whelk_request(request, json_data=None):
+def _whelk_request(request, json_data=None, query_params=[]):
+    params = {}
     url = '%s%s' % (app.config.get('WHELK_REST_API_URL'), request.path)
     json_data = json.dumps(json_data)
+    for param in query_params:
+        params[param] = request.args.get(param)
     # Proxy the request to rest api
     app.logger.debug('Sending proxy %s request to : %s with:\n %s' % (request.method, url, json_data))
-    r = requests.request(request.method, url, data=json_data, headers=request.headers)
-    # If the save operation goes well location is returned, then get the item to return to client
-    if r.status_code == 204 and 'location' in r.headers:
-        proxy_resp = _map_response(r)
-        item_id = _get_served_uri(proxy_resp.headers.get('location'), '')
-        thing = things.ldview.get_record_data(item_id)
-        return Response(json.dumps(thing), status=200, headers={'etag': proxy_resp.headers.get('etag'), 'Content-Type': JSONLD_MIMETYPE})
+    r = requests.request(request.method, url, data=json_data, headers=request.headers, params=params)
+    if r.status_code < 400:
+        return _map_response(r)
     else:
         return r.raise_for_status()
 
@@ -275,7 +268,14 @@ def _write_data(request, item=None):
             if json_data is None:
                 return Response(status=400)
             else:
-                return _whelk_request(request, json_data)
+                proxy_resp = _whelk_request(request, json_data)
+                # If the save operation goes well location is returned, then get the item to return to client
+                if proxy_resp.status_code == 204 and 'location' in proxy_resp.headers:
+                    item_id = _get_served_uri(proxy_resp.headers.get('location'), '')
+                    thing = things.ldview.get_record_data(item_id)
+                    return Response(json.dumps(thing), status=200, headers={'etag': proxy_resp.headers.get('etag'), 'Content-Type': JSONLD_MIMETYPE})
+                else:
+                    return proxy_resp
         else:
             return Response(status=415)
     except Exception, e:
