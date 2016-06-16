@@ -40,6 +40,17 @@ export default class CreateNew extends View {
     });
   }
 
+  remoteSearch(q, databases) {
+    return new Promise((resolve, reject) => {
+      const url = `/_remotesearch?q=${q}&databases=${databases}`;
+      httpUtil.getContent(url).then((response) => {
+        resolve(response);
+      }, (error) => {
+        reject('Error loading databases...', error);
+      });
+    });
+  }
+
   getMaterials(baseMaterials, vocab) {
     const self = this;
     const materialLists = [];
@@ -87,7 +98,10 @@ export default class CreateNew extends View {
         vocabPfx: 'kbv:',
         language: self.language,
         vocab,
+        // remote
         databases: { state: '', list: [] },
+        remoteQuery: '',
+        remoteResult: { state: '', totalResults: {}, items: [] },
       },
       methods: {
         createNew() {
@@ -106,7 +120,7 @@ export default class CreateNew extends View {
         },
         loadRemoteDatabases() {
           const vself = this;
-          vself.databases.state = 'loading';
+          vself.databases['state'] = 'loading';
           self.fetchDatabases().then(function(response) {
             const dbs = JSON.parse(response);
             const newDbList = [];
@@ -119,6 +133,18 @@ export default class CreateNew extends View {
             vself.databases.state = 'error';
           });
         },
+        searchRemote() {
+          const vself = this;
+          const q = this.remoteQuery;
+          const databases = this.selectedDatabases.join();
+          vself.remoteResult['state'] = 'loading';
+          self.remoteSearch(q, databases).then(function(response) {
+            vself.remoteResult = JSON.parse(response);
+            vself.remoteResult['state'] = 'complete';
+          }, function(error) {
+            vself.remoteResult['state'] = 'error';
+          });
+        }
       },
       ready: function() {
         this.loadRemoteDatabases();
@@ -128,9 +154,14 @@ export default class CreateNew extends View {
           return (this.chosenMaterials.length !== 0);
         },
         selectedDatabases() {
-          return _.filter(this.databases.list, function (o) {
+          const selected = [];
+          const dbs =  _.filter(this.databases.list, function (o) {
             return o.active;
           });
+          for (let i = 0; i < dbs.length; i++) {
+            selected.push(dbs[i].item.database);
+          }
+          return selected;
         },
       },
       components: {
