@@ -105,9 +105,7 @@ export default class CreateNew extends View {
       },
       methods: {
         createNew() {
-          if (this.chosenMaterials.length == 0) {
-            return;
-          }
+          if (this.chosenMaterials.length === 0) return;
           const m = _.filter(this.chosenMaterials, (o) => {
             return o && o.length > 0;
           });
@@ -134,9 +132,11 @@ export default class CreateNew extends View {
           });
         },
         searchRemote() {
+          if (this.selectedDatabases.length === 0) return;
           const vself = this;
           const q = this.remoteQuery;
           const databases = this.selectedDatabases.join();
+          vself.remoteResult = {};
           vself.remoteResult['state'] = 'loading';
           self.remoteSearch(q, databases).then(function(response) {
             vself.remoteResult = JSON.parse(response);

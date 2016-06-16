@@ -25,7 +25,7 @@
     <div v-show="selectedChoice == 'import'" class="panel panel-default form-container" id="import_post">
       <div class="panel-body container-fluid">
       <div class="row">
-          <form>
+          <form v-on:submit.prevent="searchRemote()">
           <div class="col-md-6">
             <div class="form-group">
               <label for="source">KÄLLOR</label>
