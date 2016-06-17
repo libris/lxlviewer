@@ -261,14 +261,14 @@ def _whelk_request(request, json_data=None, query_params=[]):
     else:
         return r.raise_for_status()
 
-def _write_data(request, item=None):
+def _write_data(request, item=None, query_params=[]):
     try:
         if JSONLD_MIMETYPE in request.headers.get('Content-Type'):
             json_data = request.get_json(force=True)
             if json_data is None:
                 return Response(status=400)
             else:
-                proxy_resp = _whelk_request(request, json_data)
+                proxy_resp = _whelk_request(request, json_data, query_params)
                 # If the save operation goes well location is returned, then get the item to return to client
                 if proxy_resp.status_code == 204 and 'location' in proxy_resp.headers:
                     item_id = _get_served_uri(proxy_resp.headers.get('location'), '')
