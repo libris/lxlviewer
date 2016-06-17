@@ -131,11 +131,11 @@ export default class Editor extends View {
         doRequest(requestMethod, obj, url) {
           this.saved.loading = true;
           requestMethod(url, self.access_token, obj).then(() => {
-            vm.saved.loading = false;
-            vm.saved.status = { error: false, info: 'Everything went alright.' };
+            self.vm.saved.loading = false;
+            self.vm.saved.status = { error: false, info: 'Everything went alright.' };
           }, (error) => {
-            vm.saved.loading = false;
-            vm.saved.status = { error: true, info: error };
+            self.vm.saved.loading = false;
+            self.vm.saved.status = { error: true, info: error };
           });
         }
       },
