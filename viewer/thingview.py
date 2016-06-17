@@ -108,7 +108,7 @@ class Things(object):
             if context is None:
                 raise Exception('Failed to get context from storage ', context_uri, context)
 
-            self.jsonld_context_data = context.data[GRAPH][0]
+            self.jsonld_context_data = context.data
 
             #vocabgraph = graphcache.load(config['VOCAB_SOURCE'])
             vocab_items = sum((record.data[GRAPH] for record in
