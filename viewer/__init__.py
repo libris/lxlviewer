@@ -200,6 +200,13 @@ def thingnew(item_type):
                     },
                 model={})
 
+# !TODO this is stupid and should be solved a less dangerous way
+# So rethink the flow for new records
+@app.route('/edit', methods=['POST'])
+@login_required
+def thingnewp(item_type):
+    return render_template('edit.html', thing=json.loads(request.data), model={})
+
 @app.route('/<path:path>/edit')
 @login_required
 def thingedit(path):
