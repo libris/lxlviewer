@@ -32,7 +32,7 @@ export default class CreateNew extends View {
   fetchDatabases() {
     return new Promise((resolve, reject) => {
       // TODO: fix url
-      httpUtil.getContent('/_remotelist').then((response) => {
+      httpUtil.getContent('/_remotesearch?databases=list').then((response) => {
         resolve(response);
       }, (error) => {
         reject('Error loading databases...', error);
