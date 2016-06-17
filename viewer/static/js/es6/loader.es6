@@ -40,7 +40,11 @@ export default class Loader {
         return true;
       }
     }
-    console.warn('No scripts for "' + bodyId + '" found.');
+    if (typeof bodyId === 'undefined' || bodyId.length === 0) {
+      console.warn('No view script loaded: No ID on body');
+    } else {
+      console.warn('No view script loaded: None found for "#' + bodyId + '"');
+    }
     return false;
   }
 }
