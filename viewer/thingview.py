@@ -103,8 +103,12 @@ class Things(object):
 
     def load_vocab_graph(self):
         try:
-            self.jsonld_context_data = self._storage.get_record(
-                    self.vocab_uri + 'context').data[GRAPH][0]
+            context_uri = self.vocab_uri + 'context'
+            context = self._storage.get_record(context_uri)
+            if context is None:
+                raise Exception('Failed to get context from storage ', context_uri, context)
+
+            self.jsonld_context_data = context.data[GRAPH][0]
 
             #vocabgraph = graphcache.load(config['VOCAB_SOURCE'])
             vocab_items = sum((record.data[GRAPH] for record in
