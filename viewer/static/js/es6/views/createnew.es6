@@ -132,7 +132,7 @@ export default class CreateNew extends View {
           });
         },
         searchRemote() {
-          if (this.selectedDatabases.length === 0) return;
+          if (this.selectedDatabases.length === 0 || this.remoteQuery === '') return;
           const vself = this;
           const q = this.remoteQuery;
           const databases = this.selectedDatabases.join();
