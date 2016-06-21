@@ -127,29 +127,31 @@ export default {
 </script>
 
 <template>
-  <ul>
-    <li v-for="(k, v) in focus">
-      <span class="label">
-        <a href="/vocab/#{{k}}">{{ k | labelByLang | capitalize }}</a>
-      </span>
-      <span class="value">
-        <data-node v-if="!isEmpty(v)" :key="k" :value="v" :linked="linked"></data-node>
-        <link-adder v-if="isArray(v) || isEmpty(v)" :key="k" :vocab="vocab" :vocab-pfx="vocabPfx"></link-adder>
-      </span>
-    </li>
-  </ul>
-  <div class="fieldAdder">
-    <h3>Lägg till fält:</h3>
+  <div>
     <ul>
-      <li v-for="prop in allowedProperties">
-        <span class="fieldLabel" title="{{prop['@id'] | labelByLang | capitalize }}">
-          {{prop['@id'] | labelByLang | capitalize }}
+      <li v-for="(k, v) in focus">
+        <span class="label">
+          <a href="/vocab/#{{k}}">{{ k | labelByLang | capitalize }}</a>
         </span>
-        <span class="typeLabel" title="{{prop['@type']}}">{{prop['@type']}}</span>
-        <span class="typeLabel" title="{{prop.note}}">{{prop.note}}</span>
-        <a v-on:click="addField(prop)">Lägg till <i class="fa fa-plus-circle"></i></a>
+        <span class="value">
+          <data-node v-if="!isEmpty(v)" :key="k" :value="v" :linked="linked"></data-node>
+          <link-adder v-if="isArray(v) || isEmpty(v)" :key="k" :vocab="vocab" :vocab-pfx="vocabPfx"></link-adder>
+        </span>
       </li>
-      <li v-if="allowedProperties.length === 0">Hittade inga möjliga fält att lägga till.</li>
     </ul>
+    <div class="fieldAdder">
+      <h3>Lägg till fält:</h3>
+      <ul>
+        <li v-for="prop in allowedProperties">
+          <span class="fieldLabel" title="{{prop['@id'] | labelByLang | capitalize }}">
+            {{prop['@id'] | labelByLang | capitalize }}
+          </span>
+          <span class="typeLabel" title="{{prop['@type']}}">{{prop['@type']}}</span>
+          <span class="typeLabel" title="{{prop.note}}">{{prop.note}}</span>
+          <a v-on:click="addField(prop)">Lägg till <i class="fa fa-plus-circle"></i></a>
+        </li>
+        <li v-if="allowedProperties.length === 0">Hittade inga möjliga fält att lägga till.</li>
+      </ul>
+    </div>
   </div>
 </template>
