@@ -3,13 +3,13 @@ import View from './view';
 import Vue from 'vue';
 import * as UserUtil from '../utils/user';
 import * as VocabUtil from '../utils/vocab';
-import * as httpUtil from '../utils/http';
+import remoteSearch from '../components/remoteSearch';
+import testComponent from '../components/testComponent';
 
 export default class CreateNew extends View {
 
   initialize() {
     super.initialize();
-
     const self = this;
     this.activeForm = '';
     this.transition = false;
@@ -26,28 +26,6 @@ export default class CreateNew extends View {
 
     VocabUtil.getVocab().then((vocab) => {
       self.initVue(vocab, self.vocabPfx, choices, baseMaterials);
-    });
-  }
-
-  fetchDatabases() {
-    return new Promise((resolve, reject) => {
-      // TODO: fix url
-      httpUtil.getContent('/_remotesearch?databases=list').then((response) => {
-        resolve(response);
-      }, (error) => {
-        reject('Error loading databases...', error);
-      });
-    });
-  }
-
-  remoteSearch(q, databases) {
-    return new Promise((resolve, reject) => {
-      const url = `/_remotesearch?q=${q}&databases=${databases}`;
-      httpUtil.getContent(url).then((response) => {
-        resolve(response);
-      }, (error) => {
-        reject('Error loading databases...', error);
-      });
     });
   }
 
@@ -98,10 +76,6 @@ export default class CreateNew extends View {
         vocabPfx: 'kbv:',
         language: self.language,
         vocab,
-        // remote
-        databases: { state: '', list: [] },
-        remoteQuery: '',
-        remoteResult: { state: '', totalResults: {}, items: [] },
       },
       methods: {
         createNew() {
@@ -116,55 +90,15 @@ export default class CreateNew extends View {
           const m = material.replace(vocabPfx, '');
           this.chosenMaterials.$set(index, m);
         },
-        loadRemoteDatabases() {
-          const vself = this;
-          vself.databases['state'] = 'loading';
-          self.fetchDatabases().then(function(response) {
-            const dbs = JSON.parse(response);
-            const newDbList = [];
-            for (let i = 0; i < dbs.length; i++) {
-              newDbList.push({ item: dbs[i], active: false });
-            }
-            vself.databases.list = newDbList;
-            vself.databases.state = 'complete';
-          }, function(error) {
-            vself.databases.state = 'error';
-          });
-        },
-        searchRemote() {
-          if (this.selectedDatabases.length === 0 || this.remoteQuery === '') return;
-          const vself = this;
-          const q = this.remoteQuery;
-          const databases = this.selectedDatabases.join();
-          vself.remoteResult = {};
-          vself.remoteResult['state'] = 'loading';
-          self.remoteSearch(q, databases).then(function(response) {
-            vself.remoteResult = JSON.parse(response);
-            vself.remoteResult['state'] = 'complete';
-          }, function(error) {
-            vself.remoteResult['state'] = 'error';
-          });
-        }
-      },
-      ready: function() {
-        this.loadRemoteDatabases();
       },
       computed: {
         hasChosenMaterials() {
           return (this.chosenMaterials.length !== 0);
         },
-        selectedDatabases() {
-          const selected = [];
-          const dbs =  _.filter(this.databases.list, function (o) {
-            return o.active;
-          });
-          for (let i = 0; i < dbs.length; i++) {
-            selected.push(dbs[i].item.database);
-          }
-          return selected;
-        },
       },
       components: {
+        'remote-search': remoteSearch,
+        'test-component': testComponent,
       },
     });
   }

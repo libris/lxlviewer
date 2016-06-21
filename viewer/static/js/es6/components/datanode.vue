@@ -1,3 +1,4 @@
+<script>
 import * as _ from 'lodash';
 import ProcessedLabel from './processedlabel';
 import AnonymousValue from './anonymousvalue';
@@ -5,7 +6,6 @@ import LinkedItem from './linkeditem';
 import * as editUtil from '../utils/edit';
 
 export default {
-  template: '#data-node',
   name: 'data-node',
   props: ['key', 'value', 'vocab', 'label', 'linked'],
   components: {
@@ -65,3 +65,31 @@ export default {
     },
   },
 };
+</script>
+
+<template>
+  <div v-if="isArray(value)">
+    <ul>
+      <li v-for="v in value">
+        <div v-if="isPlainObject(v) && v['@id']">
+          <linked-item :item="getLinked(v['@id'])" :index="$index"></linked-item>
+        </div>
+        <div v-if="isPlainObject(v) && !v['@id']">
+          <anonymous-value :value="v" :key="key" :vocab="vocab" :linked="linked"></anonymous-value>
+        </div>
+        <div v-if="!isPlainObject(v)">
+          <input v-el:input v-model="v" v-on:keyup="updateArray($index, v)"></input>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div v-if="isPlainObject(value) && value['@id']">
+    <linked-item :item="getLinked(value['@id'])"></linked-item>
+  </div>
+  <div v-if="isPlainObject(value) && !value['@id']">
+    <anonymous-value :value="value" :linked="linked"></anonymous-value>
+  </div>
+  <div v-if="!isArray(value) && !isPlainObject(value)">
+    <input v-model="value" v-on:keyup="updateValue(value)"></input>
+  </div>
+</template>

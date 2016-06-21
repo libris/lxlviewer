@@ -1,3 +1,4 @@
+<script>
 import * as _ from 'lodash';
 import * as httpUtil from '../utils/http';
 import ProcessedLabel from './processedlabel';
@@ -6,7 +7,6 @@ import { mixin as clickaway } from 'vue-clickaway';
 
 export default {
   mixins: [clickaway],
-  template: '#link-adder',
   data() {
     return {
       result: [],
@@ -102,3 +102,30 @@ export default {
     },
   },
 };
+</script>
+
+<template>
+<div>
+  <div class="link-adder" v-on:click="show" v-on-clickaway="hide">
+    <span class="add" v-show="!active">
+      <i class="fa fa-plus-circle"></i> Lägg till länkad
+    </span>
+    <input v-show="active" type="text" v-model="keyword" debounce="500"></input>
+    <br>
+    <ul class="result" v-bind:class="{ 'active' : this.hitlistOpened }">
+      <li v-if="result.length === 0">Inga resultat...</li>
+      <li v-if="result.length > 0" v-for="item in result" track-by="$index">
+        <span class="plabel"><processed-label :item="item" language="${lang}"></processed-label></span>
+        <span class="id"><a href="{{ item['@id'] }}" target="_blank">{{ item["@id"] }}</a></span>
+        <span class="add"><a v-on:click="add(item)">Lägg till <i class="fa fa-plus-circle"></i></a></span>
+      </li>
+    </ul>
+  </div>
+
+  <div class="link-adder">
+    <span class="add" v-for="type in range" v-show="!active" v-on:click="addAnonymous(type)">
+      <i class="fa fa-plus-circle"></i> Lägg till {{type | labelByLang | lowercase}}
+    </span>
+  </div>
+</div>
+</template>

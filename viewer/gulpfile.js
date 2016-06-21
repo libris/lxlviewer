@@ -5,22 +5,19 @@ var buffer = require('vinyl-buffer');
 var browserify = require('browserify');
 var watchify = require('watchify');
 var babelify = require('babelify');
+var vueify = require('vueify');
 
 function compile(watch) {
-  var extensions = ['.es6', '.js', '.json'];
+  var extensions = ['.es6', '.js', '.json', '.vue'];
   var presets = ['es2015'];
+  var plugins = ['transform-runtime'];
 
   var bundler = watchify(browserify('static/js/es6/app.es6', {
-      debug: true,
-      extensions: extensions,
-      cache: {},
-      packageCache: {}
-    }).transform(babelify.configure({
-      extensions: extensions,
-      presets: presets
-    })
-  )
-  );
+    debug: true,
+    extensions,
+    cache: {},
+    packageCache: {},
+  }));
 
   function rebundle() {
     bundler.bundle()

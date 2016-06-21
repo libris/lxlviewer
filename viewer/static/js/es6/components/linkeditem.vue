@@ -1,8 +1,8 @@
+<script>
 import * as _ from 'lodash';
 import ProcessedLabel from './processedlabel';
 
 export default {
-  template: '#linked-item',
   name: 'linked-item',
   props: {
     item: {},
@@ -24,3 +24,12 @@ export default {
     'processed-label': ProcessedLabel,
   },
 };
+</script>
+
+<template id="linked-item">
+  <div class="linked">
+    <a href="{{item['@id']}}">
+      <processed-label :item="item" language="${lang}"></processed-label>
+    </a> <i class="fa fa-close" v-on:click="removeThis()"></i>
+  </div>
+</template>
