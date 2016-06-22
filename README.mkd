@@ -80,3 +80,7 @@ Run nightwatch e2e tests with default browser (Firefox)
 Run nightwatch e2e tests with Chrome
 
     $ npm run test:chrome
+
+Run unit tests
+
+    $ npm run test:unit
