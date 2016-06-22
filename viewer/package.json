@@ -5,6 +5,7 @@
   "repository": ".",
   "devDependencies": {
     "babel-cli": "6.7.5",
+    "babel-core": "^6.10.4",
     "babel-plugin-transform-runtime": "^6.9.0",
     "babel-preset-es2015": "^6.9.0",
     "babel-runtime": "^6.9.2",
@@ -53,7 +54,7 @@
     "app": "parallelshell 'npm run app:js' 'npm run app:id:less' 'npm run app:libris:less'",
     "app:eslint": "eslint 'static/js/**/*.es6' || true",
     "app:js": "parallelshell 'npm run app:transpile'",
-    "app:transpile": "browserify static/js/es6/app.es6 -t babelify -o static/build/app.js --extension=.js --extension=.json --extension=.es6",
+    "app:transpile": "browserify static/js/es6/app.es6 -t babelify -o static/build/app.js --extension=.js --extension=.json --extension=.es6 --extension=.vue",
     "watch": "parallelshell 'npm run watch:js' 'npm run watch:libris:less' 'npm run watch:id:less'",
     "watch:js": "parallelshell gulp",
     "watch:id:less": "watch 'npm run app:id:less' static/less/",
