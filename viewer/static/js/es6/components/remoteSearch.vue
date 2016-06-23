@@ -135,6 +135,10 @@ export default {
             <p v-if="!graph['@graph']" v-for="graph in item.data['@graph']">
               {{ graph | json }}
             </p>
+            <form method="POST" action="/edit">
+              <textarea name="item" class="hidden">{{ item.data | json }}</textarea>
+              <button type="submit" class="btn">Importera</button>
+            </form>
           </li>
         </ul>
       </div>

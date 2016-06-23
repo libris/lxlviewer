@@ -64,7 +64,11 @@ def format_number(n):
 
 @app.errorhandler(404)
 def page_not_found(e):
-    return render_template('404.html'), 404
+    return render_template('4XX.html', status_code=404), 404
+
+@app.errorhandler(410)
+def page_not_found(e):
+    return render_template('4XX.html', status_code=410), 410
 
 ##
 # Setup basic views
@@ -153,8 +157,12 @@ def thingview(path, suffix=None):
 
     item_id = _get_served_uri(request.url_root, path)
     thing = things.ldview.get_record_data(item_id)
-
     mod_response = _handle_modification(request, thing)
+
+    # Record deleted
+    if thing.get(TYPE) == 'Tombstone':
+        return abort(410)
+
     if mod_response:
         return mod_response
 
@@ -202,10 +210,12 @@ def thingnew(item_type):
 
 # !TODO this is stupid and should be solved a less dangerous way
 # So rethink the flow for new records
+# or maybe its not that stupid after all?
 @app.route('/edit', methods=['POST'])
 @login_required
-def thingnewp(item_type):
-    return render_template('edit.html', thing=json.loads(request.data), model={})
+def thingnewp():
+    thing = json.loads(request.form['item'])
+    return render_template('edit.html', thing=thing, model={})
 
 @app.route('/<path:path>/edit')
 @login_required
