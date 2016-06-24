@@ -1,6 +1,7 @@
 <script>
 import * as _ from 'lodash';
 import LinkAdder from './linkadder';
+import FieldAdder from './fieldadder';
 import DataNode from './datanode';
 import LinkedItem from './linkeditem';
 import * as VocabUtil from '../utils/vocab'
@@ -122,6 +123,7 @@ export default {
     'link-adder': LinkAdder,
     'data-node': DataNode,
     'linked-item': LinkedItem,
+    'field-adder': FieldAdder,
   },
 };
 </script>
@@ -139,19 +141,7 @@ export default {
         </span>
       </li>
     </ul>
-    <div class="fieldAdder">
-      <h3>Lägg till fält:</h3>
-      <ul>
-        <li v-for="prop in allowedProperties">
-          <span class="fieldLabel" title="{{prop['@id'] | labelByLang | capitalize }}">
-            {{prop['@id'] | labelByLang | capitalize }}
-          </span>
-          <span class="typeLabel" title="{{prop['@type']}}">{{prop['@type']}}</span>
-          <span class="typeLabel" title="{{prop.note}}">{{prop.note}}</span>
-          <a v-on:click="addField(prop)">Lägg till <i class="fa fa-plus-circle"></i></a>
-        </li>
-        <li v-if="allowedProperties.length === 0">Hittade inga möjliga fält att lägga till.</li>
-      </ul>
-    </div>
+    <field-adder :allowed="allowedProperties"></field-adder>
+
   </div>
 </template>
