@@ -12,6 +12,7 @@ export default {
     vocab: {},
     linked: {},
     vocabPfx: {},
+    lang: '',
   },
   computed: {
     allowedProperties() {
@@ -141,7 +142,7 @@ export default {
         </span>
       </li>
     </ul>
-    <field-adder :allowed="allowedProperties"></field-adder>
+    <field-adder :allowed="allowedProperties" :lang="lang"></field-adder>
 
   </div>
 </template>

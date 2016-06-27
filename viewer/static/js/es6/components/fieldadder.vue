@@ -1,5 +1,6 @@
 <script>
 import { mixin as clickaway } from 'vue-clickaway';
+import * as _ from 'lodash';
 
 export default {
   mixins: [clickaway],
@@ -8,7 +9,7 @@ export default {
     allowed: {},
     active: false,
     filterKey: '',
-    lang: 'sv',
+    lang: '',
   },
   computed: {
     filteredResults() {
@@ -18,13 +19,20 @@ export default {
       }
       const fKey = this.filterKey.toLowerCase();
       for (let i = 0; i < this.allowed.length; i++) {
-        if (
-          this.allowed[i]['@id'].indexOf(fKey) !== -1 ||
-          this.allowed[i]['note'].indexOf(fKey) !== -1
-        ) {
+        const pId = this.allowed[i]['@id'].toString().toLowerCase();
+        const pNote = this.allowed[i]['note'].toString().toLowerCase();
+        let pLabel = '';
+        if (typeof this.allowed[i].labelByLang !== 'undefined' && typeof this.allowed[i].labelByLang[this.lang] !== 'undefined') {
+          if (_.isArray(this.allowed[i].labelByLang[this.lang])) {
+            pLabel = this.allowed[i].labelByLang[this.lang][0];
+          } else {
+            pLabel = this.allowed[i].labelByLang[this.lang];
+          }
+        }
+        pLabel = pLabel.toLowerCase();
+        if (pId.indexOf(fKey) !== -1 || pNote.indexOf(fKey) !== -1 || pLabel.indexOf(fKey) !== -1) {
           filtered.push(this.allowed[i]);
         }
-
       }
       return filtered;
     },
@@ -50,7 +58,7 @@ export default {
   <a v-on:click="show"><i class="fa fa-plus-circle"></i> Lägg till fält</a>
   <div class="window" v-show="active">
     <div class="filter">
-      Filtrera: <input class="filterInput" type="text" v-model="filterKey"></input> <span class="small">(visar {{ filteredResults.length }} av totalt {{allowed.length}})</span>
+      Filtrera: <input class="filterInput" type="text" v-model="filterKey" debounce="250"></input> <span class="small">(visar {{ filteredResults.length }} av totalt {{allowed.length}})</span>
     </div>
   <ul>
     <li v-for="prop in filteredResults">

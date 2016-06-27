@@ -86,6 +86,7 @@ export default class Editor extends View {
         linked,
         vocab,
         vocabPfx,
+        lang: self.language,
         saved: {
           loading: false,
           status: {
