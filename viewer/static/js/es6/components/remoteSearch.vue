@@ -1,6 +1,7 @@
 <script>
 import * as _ from 'lodash';
 import * as httpUtil from '../utils/http';
+import ResultItem from './resultitem';
 
 export default {
   name: 'remote-search',
@@ -10,6 +11,9 @@ export default {
       remoteQuery: '',
       remoteResult: { state: '', totalResults: {}, items: [] },
     }
+  },
+  components: {
+    'result-item': ResultItem,
   },
   methods: {
     isPlainObject(o) {
@@ -126,20 +130,12 @@ export default {
       </form>
     </div>
     <div class="row">
-      <div class="col-md-12" v-if="remoteResult.state == 'complete'">
+      <div class="col-md-12 " v-if="remoteResult.state == 'complete'">
         <label for="results">RESULTAT</label>
         <p v-for="(db, results) in remoteResult.totalResults">{{ results }} resultat från {{ db }}</p>
         <hr>
         <ul>
-          <li v-for="item in remoteResult.items">
-            <p v-if="!graph['@graph']" v-for="graph in item.data['@graph']">
-              {{ graph | json }}
-            </p>
-            <form method="POST" action="/edit">
-              <textarea name="item" class="hidden">{{ item.data | json }}</textarea>
-              <button type="submit" class="btn">Importera</button>
-            </form>
-          </li>
+          <result-item :item="item" v-for="item in remoteResult.items"></result-item>
         </ul>
       </div>
     </div>
