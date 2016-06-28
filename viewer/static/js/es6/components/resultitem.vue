@@ -13,6 +13,20 @@ export default {
       } else {
         return this.item.hasTitle;
       }
+    },
+    identifier() {
+      if (_.isArray(this.item.identifiedBy)) {
+        return this.item.identifiedBy[0];
+      } else {
+        return this.item.identifiedBy;
+      }
+    },
+    publication() {
+      if (_.isArray(this.item.publication)) {
+        return this.item.publication[0];
+      } else {
+        return this.item.publication;
+      }
     }
   },
   methods: {
@@ -26,7 +40,7 @@ export default {
 
 <template>
   <li class="resultItem">
-    <h2>{{ title.mainTitle }}</h2>
-    {{ title.titleRemainder }}
+    <a href="#"><span class="title">{{ title.mainTitle }}</span> {{ title.titleRemainder }} / {{ item.responsibilityStatement }} ({{ publication.date }})
+    <span class="identifier">{{ identifier.value }}</span></a>
   </li>
 </template>

@@ -3,7 +3,7 @@ body#createnew {
   #app {
     display: none;
   }
-  
+
   h1 {
     font-weight: 600;
     font-size: 16px;
@@ -36,6 +36,21 @@ body#createnew {
   #import_post {
     .hidden {
       display: none;
+    }
+    .remote-list {
+      font-size: 14px;
+      list-style: none;
+      padding-left: 0;
+      li:nth-child(odd) {background: #efefef;}
+      li {
+        padding:3px;     
+        .identifier {
+          font-style: italic;
+        }
+        .title {
+          font-weight:bold;
+        }
+      }
     }
     .remoteDatabases {
       padding: 0px;

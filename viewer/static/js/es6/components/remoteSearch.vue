@@ -134,7 +134,7 @@ export default {
         <label for="results">RESULTAT</label>
         <p v-for="(db, results) in remoteResult.totalResults">{{ results }} resultat från {{ db }}</p>
         <hr>
-        <ul>
+        <ul class="remote-list">
           <result-item :item="item.data['@graph'][1]" v-for="item in remoteResult.items"></result-item>
         </ul>
       </div>
