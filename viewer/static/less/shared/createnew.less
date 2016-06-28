@@ -41,9 +41,18 @@ body#createnew {
       font-size: 14px;
       list-style: none;
       padding-left: 0;
-      li:nth-child(odd) {background: #efefef;}
       li {
-        padding:3px;     
+        &:nth-child(odd) {
+          background-color: darken(@neutral-color, 5%);
+        }
+        .info {
+          width: 1000px;
+          display: inline-block;
+        }
+        .controls {
+          display: inline-block;
+        }
+        padding:3px;
         .identifier {
           font-style: italic;
         }
@@ -60,7 +69,7 @@ body#createnew {
       list-style: none;
       li.databaseItem {
         &:nth-child(odd) {
-          background-color: darken(@neutral-color ,5%);
+          background-color: darken(@neutral-color, 5%);
         }
         padding: 3px 10px;
         span {

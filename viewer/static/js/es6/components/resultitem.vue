@@ -8,26 +8,29 @@ export default {
   },
   computed: {
     title() {
-      if (_.isArray(this.item.hasTitle)) {
-        return this.item.hasTitle[0];
+      if (_.isArray(this.focus.hasTitle)) {
+        return this.focus.hasTitle[0];
       } else {
-        return this.item.hasTitle;
+        return this.focus.hasTitle;
       }
     },
     identifier() {
-      if (_.isArray(this.item.identifiedBy)) {
-        return this.item.identifiedBy[0];
+      if (_.isArray(this.focus.identifiedBy)) {
+        return this.focus.identifiedBy[0];
       } else {
-        return this.item.identifiedBy;
+        return this.focus.identifiedBy;
       }
     },
     publication() {
-      if (_.isArray(this.item.publication)) {
-        return this.item.publication[0];
+      if (_.isArray(this.focus.publication)) {
+        return this.focus.publication[0];
       } else {
-        return this.item.publication;
+        return this.focus.publication;
       }
-    }
+    },
+    focus() {
+      return this.item.data['@graph'][1];
+    },
   },
   methods: {
 
@@ -40,7 +43,16 @@ export default {
 
 <template>
   <li class="resultItem">
-    <a href="#"><span class="title">{{ title.mainTitle }}</span> {{ title.titleRemainder }} / {{ item.responsibilityStatement }} ({{ publication.date }})
-    <span class="identifier">{{ identifier.value }}</span></a>
+    <form method="POST" action="/edit">
+    <div class="info">
+      <span class="title">{{ title.mainTitle }}</span>
+      {{ title.titleRemainder }} / {{ focus.responsibilityStatement }} ({{ publication.date }})
+      <span class="identifier">{{ identifier.value }}</span>
+    </div>
+    <div class="controls">
+      <button type="submit" class="btn btn-xs">Använd</button>
+    </div>
+    <textarea name="item" class="hidden">{{ item.data | json }}</textarea>
+    </form>
   </li>
 </template>
