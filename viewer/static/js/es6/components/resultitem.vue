@@ -46,7 +46,9 @@ export default {
     <form method="POST" action="/edit">
     <div class="info">
       <span class="title">{{ title.mainTitle }}</span>
-      {{ title.titleRemainder }} / {{ focus.responsibilityStatement }} ({{ publication.date }})
+      <span v-if="title.titleRemainder">: {{ title.titleRemainder }}</span>
+      <span v-if="focus.responsibilityStatement">/ {{ focus.responsibilityStatement }}</span>
+      <span v-if="publication.date">({{ publication.date }})</span>
       <span v-if="identifier" class="identifier">{{ identifier['@type'] }} {{ identifier.value }}</span>
     </div>
     <div class="controls">
