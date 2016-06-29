@@ -8,3 +8,27 @@ export function getMarc(json) {
 
   });
 }
+
+export function getEmptyHolding(holdingFor, sigel) {
+  const meta = {
+    '@type': 'Record',
+  };
+  const thing = {
+    '@type': 'Item',
+    holdingFor,
+    heldBy: [
+      {
+        '@type': 'Organization',
+        '@id': '',
+        notation: sigel,
+      }
+    ],
+  };
+  const obj = {
+    '@graph': [
+      meta,
+      thing,
+    ],
+  };
+  return obj;
+}

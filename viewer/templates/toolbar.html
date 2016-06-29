@@ -4,7 +4,10 @@
   % if is_authenticated and element == 'article'
     <div class="toolbar">
     % if thing_type == 'Record'
-      <a href="${thing_url}/hld" class="toolbar-button js-toolbar-add-holding"><i class="fa fa-plus"></i>Lägg till Bestånd</a>
+      <form method="POST" action="/edit">
+        <textarea id="holdingItem" name="item" class="hidden"></textarea>
+        <button type="submit" class="toolbar-button js-toolbar-add-holding"><i class="fa fa-plus"></i>Lägg till Bestånd</button>
+      </form>
     % endif
       <a href="" class="toolbar-button js-toolbar-remove" data-record-id="${thing_url}"><i class="fa fa-trash" aria-hidden="true"></i>Ta bort post</a>
     % if view != 'thing'

@@ -6,6 +6,8 @@ import * as toolbarUtil from '../utils/toolbar';
 import * as _ from 'lodash';
 import * as VocabLoader from '../utils/vocabloader';
 import * as VocabUtil from '../utils/vocab';
+import * as RecordUtil from '../utils/record';
+import * as UserUtil from '../utils/user';
 import LdTable from '../components/ldtable';
 
 export default class Editor extends View {
@@ -20,6 +22,11 @@ export default class Editor extends View {
     VocabUtil.getVocab().then((vocab) => {
       self.initVue(self.thing, self.meta, self.linked, vocab, self.vocabPfx);
     });
+  }
+
+  populateHolding(meta, thing) {
+    const emptyHolding = JSON.stringify(RecordUtil.getEmptyHolding(thing['@id'], UserUtil.get('sigel')));
+    $('#holdingItem').text(emptyHolding);
   }
 
   loadItem() {
@@ -52,6 +59,8 @@ export default class Editor extends View {
         this.linked.push(this.data[i]);
       }
     }
+
+    this.populateHolding(this.meta, this.thing);
   }
 
   initVue(thing, meta, linked, vocab, vocabPfx) {
@@ -94,6 +103,8 @@ export default class Editor extends View {
             info: '',
           },
         },
+      },
+      ready() {
       },
       methods: {
         isArray(o) {
