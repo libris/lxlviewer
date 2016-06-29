@@ -1,0 +1,103 @@
+body#createnew, body#import {
+
+  #app {
+    display: none;
+  }
+
+  h1 {
+    font-weight: 600;
+    font-size: 16px;
+    text-transform: uppercase;
+  }
+
+  .choice-container {
+    padding: 0 15px;
+    margin: 0px;
+  }
+
+  // create new thing
+  .choice {
+    color: inherit;
+    > div {
+      padding: 15px;
+    }
+    &:hover {
+      color: inherit;
+      > div {
+        background-color: lighten(@gray-lighter, 5%);
+      }
+    }
+    cursor: pointer;
+    text-align: center;
+  }
+  .submitter {
+  }
+
+  #import_post {
+    .hidden {
+      display: none;
+    }
+    .remote-list {
+      font-size: 14px;
+      list-style: none;
+      padding-left: 0;
+      li {
+        &:nth-child(odd) {
+          background-color: darken(@neutral-color, 5%);
+        }
+        .info {
+          width: 1000px;
+          display: inline-block;
+        }
+        .controls {
+          display: inline-block;
+        }
+        padding:3px;
+        .identifier {
+          font-style: italic;
+        }
+        .title {
+          font-weight:bold;
+        }
+      }
+    }
+    .remoteDatabases {
+      padding: 0px;
+      border: 1px solid @gray-light;
+      height: 400px;
+      overflow-y: scroll;
+      list-style: none;
+      li.databaseItem {
+        &:nth-child(odd) {
+          background-color: darken(@neutral-color, 5%);
+        }
+        padding: 3px 10px;
+        span {
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          width: 450px;
+        }
+        .dbCountry {
+          margin: 0px;
+        }
+        .dbAddr {
+          font-size: 85%;
+          margin: 0px;
+        }
+        .dbLabel {
+          font-weight: bold;
+          display: block;
+          width: 450px;
+          display: block;
+        }
+        .dbCheckbox {
+          float: right;
+          margin-right: 1em;
+          margin-top: 1em;
+        }
+      }
+    }
+  }
+
+}

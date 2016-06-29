@@ -4,23 +4,25 @@
 // Import KB styles
 @import '../vendor/kungbib-styles/less/kb-styles.less';
 
-// ----------- IMPORT COMPONENTS ----
+// ----------- IMPORT SHARED COMPONENTS ----
 @import 'shared/main.less';
+// ----------- IMPORT ID COMPONENTS ----
+@import 'id/id.less';
 
 // ----------- VARIABLES ------------
+@brand-primary: @happy-muted-denim;
 @bg-site: #F5F5F5;
 @bg-img: url('/assets/img/brushed.png');
 @bg-content: @white;
 @bg-content-alt: @happy-muted-light-blue;
 @bg-navbar: @happy-muted-denim;
 @text-navbar: @white;
-@text-alt-navbar: @happy-muted-light-blue;
+@text-alt-navbar: fade(@white, 55%);
 @bg-sidebars: darken(@white, 5%);
 @border-navbar: fadeout(#fff, 100%);
 @bg-footer: @bg-navbar;
 @text-footer: @text-navbar;
 @text-alt-footer: @text-alt-navbar;
-@brand-primary: @happy-magenta;
 @bg-jumbotron: transparent;
 @bg-jumbotron-image: none;
 @border-footer: @grey-light;

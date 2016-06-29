@@ -1,0 +1,35 @@
+<script>
+import * as _ from 'lodash';
+import ProcessedLabel from './processedlabel';
+
+export default {
+  name: 'linked-item',
+  props: {
+    item: {},
+    index: Number,
+  },
+  computed: {
+  },
+  methods: {
+    removeThis() {
+      const holder = this.$parent.value;
+      if (_.isArray(holder)) {
+        this.$parent.removeByIndex(this.index);
+      } else {
+        this.$parent.emptyValue();
+      }
+    },
+  },
+  components: {
+    'processed-label': ProcessedLabel,
+  },
+};
+</script>
+
+<template id="linked-item">
+  <div class="linked">
+    <a href="{{item['@id']}}">
+      <processed-label :item="item" language="${lang}"></processed-label>
+    </a> <i class="fa fa-close" v-on:click="removeThis()"></i>
+  </div>
+</template>

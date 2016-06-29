@@ -60,6 +60,14 @@ Updating vendor dependencies:
 
     $ npm run vendor
 
+## Linting
+
+    $ npm run app:eslint
+
+  Or just lint with your plugin of choice, as long as it uses the config defined in ``.eslintrc``.
+
+  Read more about the eslint-config at [airbnb/javascript](https://github.com/airbnb/javascript).
+
 ## Tests
 
 Requires installing tests prerequsites see [tests documentation](/test)
@@ -72,3 +80,7 @@ Run nightwatch e2e tests with default browser (Firefox)
 Run nightwatch e2e tests with Chrome
 
     $ npm run test:chrome
+
+Run unit tests
+
+    $ npm run test:unit

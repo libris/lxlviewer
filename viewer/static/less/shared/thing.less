@@ -1,4 +1,10 @@
 /********/
+/* Widths for definition lists */
+@width-step-1: 645px;
+@width-step-2: 440px;
+/********/
+
+/********/
 /* Mixins for headers
 /********/
 
@@ -10,19 +16,18 @@
   transition: background-color ease 0.2s;
   background-color: @accent-color;
   >.panel-title {
-    a {
     transition: color ease 0.2s;
     color: @thing-header-text;
     text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.4);
-    }
   }
   >.panel-heading-meta {
     height: 16px;
     .label-class {
       color: @thing-header-text;
+
     }
     .thing-id {
-      color: @gray-darker;
+      color: @thing-header-text;
       code {
         background-color: fadeout(lighten(@accent-color, 15%), 40%);
         color: @gray-darker;
@@ -82,6 +87,7 @@
   }
   .panel-heading {
     border: none;
+    border-radius: 0;
     .panel-title {
       display: inline-block;
       .thing-label {
@@ -89,14 +95,18 @@
       }
     }
     .panel-heading-meta {
+      color: @neutral-color;
       display: block;
       >.label-class {
         text-shadow: 0px 1px 1px rgba(0,0,0,0.4);
         display: inline-block;
         width: auto;
       }
-      >.thing-id {
+      >.toolbar {
         float: right;
+      }
+      >.thing-id {
+        // float: right;
         line-height: 16px;
         margin-left: 1em;
         display: inline-block;
@@ -109,7 +119,7 @@
       }
     }
   }
-  
+
 }
 
 
@@ -129,7 +139,7 @@
     margin: 0px 0px 0px 0px;
   }
   >dd {
-    width: 645px;
+    width: @width-step-1;
     >.panel {
       >.panel-heading {
         .header-colored();
@@ -138,7 +148,7 @@
         margin-bottom: 0px;
         background-color: @dl-gray;
         > dd {
-          width: 450px;
+          width: @width-step-2;
         }
       }
     }
@@ -148,16 +158,16 @@
       }
     }
     >ul {
-      width: 645px;
+      width: @width-step-1;
       li > .panel:not(.link-item) {
         >.panel-body {
           >dl {
             background-color: @dl-gray;
             margin-bottom: 0px;
             >dd {
-              width: 440px;
+              width: @width-step-2;
               >ul {
-                max-width: 440px;
+                max-width: @width-step-2;
               }
             }
           }
@@ -211,38 +221,19 @@
 /*********/
 
 body#thing {
-  
+
   height: 100%;
-  
+
   main {
     margin-top: 30px;
     margin-bottom: 100px;
   }
-  
-  /********/
-  /* Main-item
-  /* An item shown on its own page
-  /********/
-  
-  .main-item {
-    >.panel-body {
-      >dl {
-        .dl-mixin();
-      }
-    }
-    >.panel-heading {
-      .header-colored();
-      .thing-label {
-        font-size: 2em;
-      }
-    }
-  }
-  
+
   /********/
   /* Link-item
   /* aka "chips"
   /********/
-  
+
   .link-item {
     display: inline-block;
     float: left;
@@ -264,7 +255,7 @@ body#thing {
       }
     }
   }
-  
+
   // Link-item-copy
   // The item that is shown on hover
   .copy-holder {
@@ -303,6 +294,9 @@ body#thing {
     border-width: 0px 1px 1px 1px;
     text-shadow: 0px 1px 1px rgba(0,0,0,0.4);
     box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, 0.4);
+    .toolbar {
+      display: none;
+    }
     .panel-heading {
       overflow-x: visible;
       .panel-heading-meta {
@@ -339,18 +333,22 @@ body#thing {
       width: 100%;
     }
   }
-  
+
   /********/
   /* Hit-item
   /* an item shown in search-results
   /********/
-  
+
   .hit-item {
-    
+
     margin: 0px 0px -2px 0px;
-    
+
     >.panel-heading {
       >.panel-heading-meta {
+        color: @gray-darker;
+        >.toolbar {
+          opacity: 0;
+        }
         >.thing-id {
           opacity: 0;
           transition: 0.25s ease opacity;
@@ -361,6 +359,7 @@ body#thing {
         font-size: 24px;
       }
       .expand-button {
+        color: @happy-muted-magenta;
         display: inline-block;
         cursor: pointer;
         height: 12px;
@@ -385,7 +384,7 @@ body#thing {
       >dl {
         .dl-mixin();
         >dd {
-          width: 645px;
+          width: @width-step-1;
           >ul > li > .panel:not(.link-item) {
             >.panel-heading {
               .header-colored();
@@ -400,8 +399,13 @@ body#thing {
       }
     }
     &.expanded {
-      >.panel-heading >.panel-heading-meta > .thing-id {
-        opacity: 1;
+      >.panel-heading >.panel-heading-meta {
+        >.toolbar {
+          opacity: 1;
+        }
+        >.thing-id {
+          opacity: 1;
+        }
       }
       >.panel-body {
         max-height: none;
@@ -410,11 +414,11 @@ body#thing {
       }
     }
   }
-  
+
   /********/
   /* Side view, related items
   /********/
-  
+
   .side-view {
     >.panel {
       >.panel-heading {
@@ -431,7 +435,7 @@ body#thing {
       }
     }
   }
-  
+
   /********/
   /* Footer
   /********/
@@ -443,9 +447,9 @@ body#thing {
       padding: 15px 15px;
     }
   }
-  
-  
-  
+
+
+
 /* Body block end */
 }
 
@@ -459,4 +463,64 @@ dl.raw-json-list {
     clear: left;
     float: left;
   }
+}
+
+.toolbar {
+  background-color: darken(@bg-navbar,10%);
+  padding: 3px;
+  height:1.5em;
+  text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.4);
+  a {
+    color: @white;
+    &:hover, &:focus {
+      transition: background-color 0.8s ease;
+      color: @white;
+      background-color: @bg-navbar;
+      border-radius: 2px;
+      text-decoration: none;
+    }
+  }
+}
+.toolbar-button {
+  font-size: 12px;
+  line-height: 12px;
+  float: right;
+  margin-left: 1em;
+  margin-right: 1em;
+  padding: 3px 6px 3px 6px;
+  opacity: 0.75;
+  &:hover {
+    opacity: 1;
+  }
+  i {
+    margin-right: 0.5em;
+  }
+}
+
+// Marc modal
+
+.marc-code {
+  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+  code {
+    font-size: 100%;
+    color: @grey-very-dark;
+    background-color: transparent;
+    font-weight: bold;
+    &.code {
+      color: @grey-dark;
+    }
+  }
+
+  .ind {
+    font-style: italic;
+  }
+
+  td {
+    vertical-align: top;
+    padding: 0 3px;
+  }
+}
+
+.marc-info-box {
+   width: 70%;
 }

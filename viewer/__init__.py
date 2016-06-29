@@ -7,6 +7,7 @@ import random
 import string
 from urlparse import urljoin
 from datetime import datetime, timedelta
+import requests
 
 from rdflib import ConjunctiveGraph
 
@@ -61,6 +62,13 @@ def union(*args):
 def format_number(n):
     return '{:,}'.format(n).replace(',', ' ')
 
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('4XX.html', status_code=404), 404
+
+@app.errorhandler(410)
+def page_not_found(e):
+    return render_template('4XX.html', status_code=410), 410
 
 ##
 # Setup basic views
@@ -149,8 +157,12 @@ def thingview(path, suffix=None):
 
     item_id = _get_served_uri(request.url_root, path)
     thing = things.ldview.get_record_data(item_id)
-
     mod_response = _handle_modification(request, thing)
+
+    # Record deleted
+    if thing.get(TYPE) == 'Tombstone':
+        return abort(410)
+
     if mod_response:
         return mod_response
 
@@ -169,28 +181,128 @@ def thingview(path, suffix=None):
 def _to_data_path(path, suffix):
     return '%s/data.%s' % (path, suffix) if suffix else path
 
+# Create post
+@app.route("/createnew")
+def createpost():
+    return render_template('createnew.html')
+
+# Remote search
+@app.route("/import")
+def import_post():
+    return render_template('import.html')
+
+# Mocking edit/create new record with passed types
+@app.route('/new/<item_type>')
+@login_required
+def thingnew(item_type):
+    ITEM_TYPES = {'record': 'Record'}
+    item_type = ITEM_TYPES.get(item_type) or ITEM_TYPES.get('record')
+    at_type = request.args.get('@type')
+    if not at_type:
+        return Response('Missing @type parameter', status=422)
+    else:
+        return render_template('edit.html',
+                thing={
+                        '@graph': [
+                            {
+                                '@type': item_type
+                            },{
+                                '@type': json.loads(at_type)
+                            }
+                        ]
+                    },
+                model={})
+
+# !TODO this is stupid and should be solved a less dangerous way
+# So rethink the flow for new records
+# or maybe its not that stupid after all?
+@app.route('/edit', methods=['POST'])
+@login_required
+def thingnewp():
+    thing = json.loads(request.form['item'])
+    return render_template('edit.html', thing=thing, model={})
+
+@app.route('/<path:path>/edit')
+@login_required
+def thingedit(path):
+    item_id = _get_served_uri(request.url_root, path)
+    thing = things.ldview.get_record_data(item_id)
+    if not thing:
+        return abort(404)
+    model = {}
+    return render_template('edit.html',
+            thing=thing,
+            model=model)
+
 @app.route('/create', methods=['POST'])
 def create():
     return _write_data(request)
 
+@app.route('/_convert', methods=['POST'])
+def convert():
+    return _write_data(request, query_params=['to'])
+
+@app.route('/_remotesearch')
+def _remotesearch():
+    return _whelk_request(request, query_params=['q','databases'])
+
 def _handle_modification(request, item):
     # TODO: mock handling for now; should forward to backend API
+    app.logger.debug('MODIFICATION %s %s', request.method, json.dumps(item))
     if item is None:
         return abort(404)
     if request.method == 'PUT':
         return _write_data(request, item)
     elif request.method == 'DELETE':
-        return Response(status=204)
+        return _whelk_request(request)
 
-def _write_data(request, item=None):
-    if JSONLD_MIMETYPE in request.headers.get('Content-Type'):
-        if request.get_json(force=True) is None:
-            return Response(status=400)
-        else:
-            return Response(status=204)
+# Map from Requests response to Flask response
+def _map_response(response):
+    def _map_headers(headers):
+        _headers = {}
+        for head in ['etag', 'location']:
+            if head in headers:
+                _headers[head] = headers[head];
+        return _headers
+    return Response(response.text,
+                    status=response.status_code,
+                    mimetype=response.headers.get('content-type'),
+                    headers=_map_headers(response.headers))
+
+def _whelk_request(request, json_data=None, query_params=[]):
+    params = {}
+    url = '%s%s' % (app.config.get('WHELK_REST_API_URL'), request.path)
+    json_data = json.dumps(json_data)
+    for param in query_params:
+        params[param] = request.args.get(param)
+    # Proxy the request to rest api
+    app.logger.debug('Sending proxy %s request to : %s with:\n %s' % (request.method, url, json_data))
+    r = requests.request(request.method, url, data=json_data, headers=request.headers, params=params)
+    if r.status_code < 400:
+        return _map_response(r)
     else:
-        return Response(status=415)
+        return r.raise_for_status()
 
+def _write_data(request, item=None, query_params=[]):
+    try:
+        if JSONLD_MIMETYPE in request.headers.get('Content-Type'):
+            json_data = request.get_json(force=True)
+            if json_data is None:
+                return Response(status=400)
+            else:
+                proxy_resp = _whelk_request(request, json_data, query_params)
+                # If the save operation goes well location is returned, then get the item to return to client
+                if proxy_resp.status_code == 204 and 'location' in proxy_resp.headers:
+                    item_id = _get_served_uri(proxy_resp.headers.get('location'), '')
+                    thing = things.ldview.get_record_data(item_id)
+                    return Response(json.dumps(thing), status=200, headers={'etag': proxy_resp.headers.get('etag'), 'Content-Type': JSONLD_MIMETYPE})
+                else:
+                    return proxy_resp
+        else:
+            return Response(status=415)
+    except Exception, e:
+        app.logger.error(e)
+        return Response(e, status=502)
 
 @app.route('/find')
 @app.route('/find.<suffix>')
@@ -315,9 +427,9 @@ rdfns = {
 
 app.context_processor(lambda: rdfns)
 
-
 @app.route('/vocab/')
-def vocabview():
+@app.route('/vocab/data.<suffix>')
+def vocabview(suffix=None):
     voc = things.get_vocab_util()
 
     def link(obj):
@@ -328,12 +440,15 @@ def vocabview():
     def listclass(o):
         return 'ext' if ':' in o.qname() else 'loc'
 
-    mimetype = request.accept_mimetypes.best_match(MIMETYPE_FORMATS)
+    if suffix:
+        mimetype, render = negotiator.negotiate(request, suffix)
+    else:
+        mimetype = request.accept_mimetypes.best_match(MIMETYPE_FORMATS)
     if mimetype in RDF_MIMETYPES:
-        return voc.graph.serialize(format=
+        return Response(voc.graph.serialize(format=
                 'json-ld' if mimetype == JSONLD_MIMETYPE else mimetype,
                 #context_id=CONTEXT_PATH,
-                context=things.jsonld_context_data[CONTEXT])
+                context=things.jsonld_context_data[CONTEXT]), content_type='%s; charset=UTF-8' % mimetype)
 
     return render_template('vocab.html',
             URIRef=URIRef, **vars())
@@ -404,22 +519,57 @@ def _fake_login():
     else:
         return False
 
+def _filter_authorization(authorization, authorization_roles):
+    if not authorization or not authorization_roles:
+        return []
+    def f(auth):
+        # filter out auth without specified roles
+        return filter(lambda role: auth.get(role), authorization_roles)
+
+    return list(filter(f, authorization))
+
+def _login_user(verified_user):
+    authorization = verified_user.get('authorization')
+    username = verified_user.get('username')
+    if authorization and username:
+        # For debugging, allow force xlreg rights
+        if(app.config.get('ALWAYS_ALLOW_XLREG')):
+            for auth in authorization:
+                auth['xlreg'] = True;
+
+        # Filter authorization to make sure user got correct role rights
+        authorization = _filter_authorization(authorization, app.config.get('AUTHORIZED_ROLES'))
+        if not authorization:
+            raise Exception('You insufficient rights to access this service. Contact support to gain access.')
+
+        # Create Flask user
+        user = User(username, authorization=authorization, token=_get_token())
+        session['authorization'] = authorization
+        return login_user(user, True)
+    return False
+
+def _next_route():
+    next = session['next']
+    session.pop('next')
+    return next or '/'
+
 @login_manager.user_loader
 def _load_user(uid):
     if not 'authorization' in session:
         return None
-    return User(uid, authorization=session.get('authorization'))
+    return User(uid, authorization=session.get('authorization'), token=_get_token())
 
 @login_manager.unauthorized_handler
 def _handle_unauthorized():
     if _fake_login():
-        return redirect('/')
+        return redirect(_next_route())
     else:
-        return redirect('/login')
+        return redirect('/login?next=' + request.path)
 
 # Login page
 @app.route("/login")
 def login():
+    session['next'] = request.args.get('next');
     return _render_login()
 
 # Route to redirect to oauth endpiont
@@ -447,31 +597,24 @@ def authorized():
             requests_oauth = _get_requests_oauth()
             # On authorized fetch token
             session['oauth_token'] = requests_oauth.fetch_token(token_url, client_secret=app.config['OAUTH_CLIENT_SECRET'], authorization_response=request.url)
-            app.logger.debug('OAuth token received %s ', json.dumps(session['oauth_token']))
+            app.logger.debug('OAuth token received %s ', json.dumps(_get_token()))
         except Exception, e:
-            raise Exception('Failed to get token, %s response: %s ' % (token_url, str(e)))
+            raise Exception('Failed to get token, %s response: %s. Try login again' % (token_url, str(e)))
 
         # Get user from verify
         try:
             varify_url = app.config['OAUTH_VERIFY_URL']
             verify_response = requests_oauth.get(varify_url).json()
-            verify_user = verify_response['user']
-            authorization = verify_user['authorization']
-            username = verify_user['username']
-            app.logger.info('[%s] User received from verify %s, %s', request.remote_addr, username, json.dumps(verify_user))
-
-            # Create Flask User and login
-            if(app.config.get('ALWAYS_ALLOW_XLREG') == 'True'):
-                for auth in authorization:
-                    auth['xlreg'] = True;
-            user = User(username, authorization=authorization, token=session['oauth_token'])
-            session['authorization'] = authorization
-            login_user(user, True)
-
-            return redirect('/')
+            verified_user = verify_response.get('user')
+            app.logger.info('[%s] User received from verify %s, %s', request.remote_addr, verified_user.get('username'), json.dumps(verified_user))
 
         except Exception, e:
             raise Exception('Failed to verify user. %s response: %s ' % (varify_url, str(e)))
+
+        if _login_user(verified_user):
+            return redirect(_next_route())
+        else:
+            raise Exception('Failed to login.')
 
     except Exception, e:
         msg = str(e)
@@ -486,7 +629,12 @@ def logout():
     logout_user()
     session.pop('authorization', None)
     session.pop('oauth_token', None)
-    return redirect('/')
+    return render_template('logout.html')
 
 # Login end
 # ----------------------------
+
+# User settings
+@app.route("/usersettings")
+def usersettings():
+    return render_template('usersettings.html')

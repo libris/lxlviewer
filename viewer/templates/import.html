@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block bodyattrs %}id="import"{% endblock %}
+
+
+% block scripts
+  <script type="text/javascript">
+    window.urlArgs = {
+      db: '${ request.args.get('db') }',
+      {% if request.args.get('q') is not none %}
+      q: '${ request.args.get('q') }',
+      {% else %}
+      q: '',
+      {% endif %}
+    };
+  </script>
+% endblock
+
+% block content
+{% if current_user.is_authenticated %}
+  <div id="app">
+    <h1>Importera post</h1>
+    <div class="panel panel-default">
+      <!-- Import form -->
+    <div class="panel panel-default form-container" id="import_post">
+      <remote-search :db="params.db" :q="params.q"></remote-search>
+    </div>
+  </div>
+</div>
+  {% else %}
+  <p>Du måste logga in.</p>
+  {% endif %}
+% endblock

@@ -1,4 +1,5 @@
 % extends "base.html"
+{% from 'toolbar.html' import toolbar %}
 
 {% block title %}${vocab.labelgetter(thing)}{% endblock %}
 
@@ -6,9 +7,7 @@
 {% block navcontainerclass %} container {% endblock %}
 
 % block scripts
-  <script src="/vendor/jquery/js/jquery.js"></script>
-  <script src="/js/vocabloader.js"></script>
-  <script src="/js/thing.js"></script>
+
 % endblock
 
 % block content
@@ -62,17 +61,24 @@
       {% if t.curie %} typeof="${t.curie}"{% endif %}>
 
     % if ID in thing
+      % set thing_url = view_url(canonical_id)
+
+      ${toolbar(thing_url, current_user.is_authenticated, typename, element)}
+
       <header class="panel-heading">
         <div class="panel-heading-meta">
-          % set thing_url = view_url(canonical_id)
           % if t
             ${termref(t, classes='', labeltype='label-class')}
           % endif
-        <a href="${thing_url}" class="thing-id">
-          <small><code>&lt;${canonical_id}&gt;</code></small>
-        </a>
+          <a href="" class="toolbar-button id-label">
+            <i class="fa fa-share" aria-hidden="true"></i> ${canonical_id}
+          </a>
+
         </div>
         <h1 class="panel-title">
+          % if rel == 'items'
+          <div class='expand-button'><i class='fa rotate fa-plus-circle'></i></div>
+          % endif
           <a href="${thing_url}" class="thing-label">
             % set label = ldview.getlabel(thing)
             % if isinstance(label, basestring)

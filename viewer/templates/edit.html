@@ -1,0 +1,58 @@
+% extends "base.html"
+{% from 'toolbar.html' import toolbar %}
+
+{% block bodyattrs %}vocab="${config.VOCAB_IRI}" id="editor"{% endblock %}
+
+% block content
+<!DOCTYPE html>
+<meta charset="utf-8" />
+
+<div id="appContainer">
+<div id="loadingText">
+  <h1><i class="fa fa-cog fa-spin"></i></h1>
+  Laddar redigeringsverktyget
+</div>
+<div id="editorApp">
+
+  % set the_thing = thing['@graph'][0]
+  % set canonical_id = canonical_uri(thing)
+  % set typename = the_thing[TYPE]
+  % set thing_url = view_url(canonical_id)
+
+  ${toolbar(thing_url, current_user.is_authenticated, typename, view='edit')}
+
+  <div class="panel panel-default main-item">
+    <header class="panel-heading panel-title">
+      <div class="panel-heading-meta">Redigerar:</div>
+      <div class="panel-title">
+        <div class="thing-label">{{meta.prefLabel || meta['@id'] || 'Namnlös'}}</div>
+      </div>
+    </header>
+  </div>
+  <ld-table :focus="meta" :vocab="vocab" :linked="linked" :vocab-pfx="vocabPfx" :lang="lang"></ld-table>
+  <ld-table :focus="thing" :vocab="vocab" :linked="linked" :vocab-pfx="vocabPfx" :lang="lang"></ld-table>
+
+  <div id="result">
+    <h2>JSON</h2>
+    <textarea v-model="meta | json">
+    </textarea>
+    <textarea v-model="thing | json">
+    </textarea>
+    <!-- <h2>Linked</h2>
+    <textarea v-model="linked | json">
+    </textarea> -->
+  </div>
+  <hr>
+  <button id="saveButton" v-on:click="saveItem()">
+    <i class="fa fa-fw fa-cog fa-spin" v-show="saved.loading"></i>
+    <i class="fa fa-fw fa-save" v-show="!saved.loading"></i>
+    Spara
+  </button>
+  <span class="status-text small" v-bind:class="{'error' : saved.status.error, 'success' : !saved.status.error }" v-show="!saved.loading && saved.status.info">{{ saved.status.info }}</span>
+  <hr>
+</div>
+</div>
+
+<script id="data" type="application/json">${thing|tojson|safe}</script>
+<script id="model" type="application/json">${model|tojson|safe}</script>
+% endblock
