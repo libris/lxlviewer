@@ -3,7 +3,7 @@ import Vue from 'vue';
 import * as VocabUtil from '../utils/vocab';
 import remoteSearch from '../components/remoteSearch';
 
-export default class RemoteSearch extends View {
+export default class Import extends View {
 
   initialize() {
     super.initialize();

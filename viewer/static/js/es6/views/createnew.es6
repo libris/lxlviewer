@@ -13,7 +13,7 @@ export default class CreateNew extends View {
     this.transition = false;
 
     const choices = [
-      { trigger: 'import', title: 'Importera', url: 'remotesearch', icon: 'download', text: 'Välj extern databas och importera en post som du kan använda som underlag för en ny bibliografisk instans.' },
+      { trigger: 'import', title: 'Importera', url: 'import', icon: 'download', text: 'Välj extern databas och importera en post som du kan använda som underlag för en ny bibliografisk instans.' },
       { trigger: 'copy', title: 'Kopiera', icon: 'files-o', text: 'Ange Libris URI för en befintlig bibliografisk entitet som du vill ta med dig information om till en ny bibliografisk instans.' },
       { trigger: 'from_material', title: 'Från materialtyper', icon: 'list', text: 'Välj från en lista av materialtyper och egenskaper för att skapa en ny bibliografisk instans.' },
     ];

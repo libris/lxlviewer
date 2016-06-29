@@ -187,9 +187,9 @@ def createpost():
     return render_template('createnew.html')
 
 # Remote search
-@app.route("/remotesearch")
-def remotesearch():
-    return render_template('remotesearch.html')
+@app.route("/import")
+def import_post():
+    return render_template('import.html')
 
 # Mocking edit/create new record with passed types
 @app.route('/new/<item_type>')

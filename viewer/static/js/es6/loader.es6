@@ -4,7 +4,7 @@ import Vocab from './views/vocab';
 import Website from './views/website';
 import UserSettings from './views/usersettings';
 import CreateNew from './views/createnew';
-import RemoteSearch from './views/remotesearch';
+import Import from './views/import';
 
 export default class Loader {
 
@@ -25,7 +25,7 @@ export default class Loader {
     this.createView(new Website());
     this.createView(new UserSettings());
     this.createView(new CreateNew());
-    this.createView(new RemoteSearch());
+    this.createView(new Import());
   }
 
   createView(view) {
