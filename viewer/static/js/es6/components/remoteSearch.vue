@@ -5,6 +5,10 @@ import ResultItem from './resultitem';
 
 export default {
   name: 'remote-search',
+  props: {
+    db: [],
+    q: '',
+  },
   data() {
     return {
       databases: { state: '', list: [] },
@@ -21,23 +25,31 @@ export default {
     },
     loadRemoteDatabases() {
       const vself = this;
+
+      const urlDbs = vself.db.toUpperCase().split(',');
       this.databases['state'] = 'loading';
       this.databases['debug'] = '';
       this.fetchDatabases().then(function(response) {
         const dbs = JSON.parse(response);
         const newDbList = [];
         for (let i = 0; i < dbs.length; i++) {
-          newDbList.push({ item: dbs[i], active: false });
+          const obj = { item: dbs[i], active: false };
+          if (urlDbs.indexOf(obj.item.database) !== -1) {
+            obj.active = true;
+          }
+          newDbList.push(obj);
         }
         vself.databases.list = newDbList;
         vself.databases.state = 'complete';
+        if (vself.q.length > 0) {
+          vself.searchRemote();
+        }
       }, function(error) {
         vself.databases.state = 'error';
       });
     },
     fetchDatabases() {
       return new Promise((resolve, reject) => {
-        // TODO: fix url
         httpUtil.getContent('/_remotesearch?databases=list').then((response) => {
           resolve(response);
         }, (error) => {
@@ -71,6 +83,7 @@ export default {
     },
   },
   ready: function() {
+    this.remoteQuery = this.q;
     this.loadRemoteDatabases();
   },
   computed: {

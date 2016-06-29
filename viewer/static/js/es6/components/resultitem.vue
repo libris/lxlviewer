@@ -47,10 +47,10 @@ export default {
     <div class="info">
       <span class="title">{{ title.mainTitle }}</span>
       {{ title.titleRemainder }} / {{ focus.responsibilityStatement }} ({{ publication.date }})
-      <span class="identifier">{{ identifier.value }}</span>
+      <span v-if="identifier" class="identifier">{{ identifier['@type'] }} {{ identifier.value }}</span>
     </div>
     <div class="controls">
-      <button type="submit" class="btn btn-xs">Använd</button>
+      <button type="submit" class="btn btn-xs btn-primary">Använd</button>
     </div>
     <textarea name="item" class="hidden">{{ item.data | json }}</textarea>
     </form>

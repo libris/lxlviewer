@@ -186,6 +186,11 @@ def _to_data_path(path, suffix):
 def createpost():
     return render_template('createnew.html')
 
+# Remote search
+@app.route("/remotesearch")
+def remotesearch():
+    return render_template('remotesearch.html')
+
 # Mocking edit/create new record with passed types
 @app.route('/new/<item_type>')
 @login_required
@@ -238,7 +243,7 @@ def convert():
     return _write_data(request, query_params=['to'])
 
 @app.route('/_remotesearch')
-def remotesearch():
+def _remotesearch():
     return _whelk_request(request, query_params=['q','databases'])
 
 def _handle_modification(request, item):
