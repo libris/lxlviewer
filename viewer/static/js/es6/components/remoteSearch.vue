@@ -119,7 +119,7 @@ export default {
           <p v-show="databases.state == 'error'"><i class="fa fa-close"></i> Kunde inte hämta externa databaser. <a href="" v-on:click.prevent="loadRemoteDatabases()">Försök igen</a></p>
         </div>
       </div>
-        <div class="col-md-6">
+        <div class="col-md-6" v-show="databases.state == 'complete'">
           <div class="form-group">
             <label for="search">SÖK</label>
             <input type="text" class="form-control" placeholder="Titel, författare, isbn..." id="search" v-model="remoteQuery">
