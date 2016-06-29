@@ -49,8 +49,14 @@ body#createnew, body#import {
           width: 1000px;
           display: inline-block;
         }
+        :hover .controls {
+          opacity:1;
+          transition: opacity .5s ease-in-out;
+        }
         .controls {
           display: inline-block;
+          opacity:0;
+          padding:5px;
         }
         padding:3px;
         .identifier {
