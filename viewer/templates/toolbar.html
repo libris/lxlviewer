@@ -3,7 +3,7 @@
 {% macro toolbar(thing_url, is_authenticated, thing_type, element='article', view='thing') %}
   % if is_authenticated and element == 'article'
     <div class="toolbar">
-    % if thing_type == 'Record'
+    % if thing_type == 'Record' and view == 'edit'
       <form method="POST" action="/edit">
         <textarea id="holdingItem" name="item" class="hidden"></textarea>
         <button type="submit" class="toolbar-button js-toolbar-add-holding"><i class="fa fa-plus"></i>Lägg till Bestånd</button>
