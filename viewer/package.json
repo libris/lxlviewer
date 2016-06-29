@@ -3,7 +3,7 @@
   "description": "viewer",
   "version": "0.0.0",
   "repository": ".",
-  "devDependencies": {
+  "dependencies": {
     "babel-cli": "6.7.5",
     "babel-core": "^6.10.4",
     "babel-plugin-transform-runtime": "^6.9.0",
@@ -14,12 +14,21 @@
     "browserify": "13.0.0",
     "browserify-hmr": "^0.3.1",
     "browserify-shim": "^3.8.0",
+    "vue-clickaway": "^1.1.1",
+    "gulp": "^3.9.1",
+    "gulp-sourcemaps": "^1.6.0",
+    "less": "~2.3.1",
+    "parallelshell": "~1.0.4",
+    "uglify-js": "~2.4.16",
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-source-stream": "^1.1.0",
+    "vueify": "^8.5.4"
+  },
+  "devDependencies": {
     "chai": "^3.5.0",
     "clean-css": "~3.0.7",
     "eslint": "^2.7.0",
     "eslint-config-airbnb": "^7.0.0",
-    "gulp": "^3.9.1",
-    "gulp-sourcemaps": "^1.6.0",
     "karma": "^0.13.22",
     "karma-browserify": "^5.0.5",
     "karma-chai": "^0.1.0",
@@ -27,15 +36,9 @@
     "karma-mocha-reporter": "^2.0.4",
     "karma-phantomjs-launcher": "^1.0.0",
     "karma-simple-browserify-preprocessor": "0.0.2",
-    "less": "~2.3.1",
     "mocha": "^2.5.3",
-    "parallelshell": "~1.0.4",
     "phantomjs-prebuilt": "^2.1.7",
     "proxyquireify": "^3.2.0",
-    "uglify-js": "~2.4.16",
-    "vinyl-buffer": "^1.0.0",
-    "vinyl-source-stream": "^1.1.0",
-    "vueify": "^8.5.4",
     "watch": "~0.13.0",
     "watchify": "^3.7.0"
   },
@@ -64,8 +67,5 @@
     "test:e2e": "cd test && cd e2e && nightwatch --test specs/viewer.js",
     "test:e2e:chrome": "cd test && cd e2e && nightwatch --test specs/viewer.js -e chrome",
     "test:unit": "./node_modules/karma/bin/karma start karma.conf.js --single-run --browsers PhantomJS"
-  },
-  "dependencies": {
-    "vue-clickaway": "^1.1.1"
   }
 }
