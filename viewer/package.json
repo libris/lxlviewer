@@ -22,7 +22,9 @@
     "uglify-js": "~2.4.16",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0",
-    "vueify": "^8.5.4"
+    "vueify": "^8.5.4",
+    "vue": "^1.0.21",
+    "lodash": "~4.13.1"
   },
   "devDependencies": {
     "chai": "^3.5.0",

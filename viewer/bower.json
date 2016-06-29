@@ -6,9 +6,7 @@
     "font-awesome": "~4.4.0",
     "d3": "~3.5.6",
     "jquery": "~2.1.4",
-    "kungbib-styles": "kungbib/frontend-guide#1.0.0",
-    "lodash": "~4.13.1",
-    "vue": "^1.0.21"
+    "kungbib-styles": "kungbib/frontend-guide#1.0.0"
   },
   "install": {
     "base": "static/vendor",
