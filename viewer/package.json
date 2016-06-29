@@ -26,7 +26,6 @@
   },
   "devDependencies": {
     "chai": "^3.5.0",
-    "clean-css": "~3.0.7",
     "eslint": "^2.7.0",
     "eslint-config-airbnb": "^7.0.0",
     "karma": "^0.13.22",
@@ -50,10 +49,9 @@
   },
   "scripts": {
     "postinstall": "mkdir -p static/build && npm run vendor && npm run app",
-    "vendor": "npm run vendor:fetch && parallelshell 'npm run vendor:js' 'npm run vendor:css'",
+    "vendor": "npm run vendor:fetch && parallelshell 'npm run vendor:js'",
     "vendor:fetch": "bower-installer",
     "vendor:js": "uglifyjs static/vendor/{jquery,lodash,bootstrap,d3}/js/*.js -o static/build/vendor.min.js --source-map static/build/vendor.min.js.map --source-map-url ./vendor.min.js.map --source-map-root /",
-    "vendor:css": "cleancss static/vendor/*/css/*.css -o static/build/vendor.min.css #--source-map",
     "app": "parallelshell 'npm run app:js' 'npm run app:id:less' 'npm run app:libris:less'",
     "app:eslint": "eslint 'static/js/**/*.es6' || true",
     "app:js": "parallelshell 'npm run app:transpile'",
