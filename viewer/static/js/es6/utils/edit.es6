@@ -18,3 +18,16 @@ export function getMergedItems(meta, thing, linked) {
   }
   return obj;
 }
+
+export function clean(obj) {
+  // Strips away all null value keys
+  const cleanObj = {};
+  for (const key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      if (obj[key] !== null) {
+        cleanObj[key] = obj[key];
+      }
+    }
+  }
+  return cleanObj;
+}

@@ -78,9 +78,21 @@
 
   div>ul {
     >li {
+      &:hover {
+        >.delete {
+          opacity: 1;
+        }
+      }
       border: solid @gray-lighter;
       border-width: 0px 0px 1px 0px;
       margin: 0.5em 0;
+      >.delete {
+        transition: opacity ease 0.2s;
+        cursor: pointer;
+        opacity: 0;
+        float: right;
+        margin-right: 25px;
+      }
       >.label {
         display: inline-block;
         width: 200px;

@@ -63,8 +63,7 @@ export default {
             const prop = vocabItems[i];
             if (
               classNames.indexOf(type) !== -1 &&
-              props.filter((p) => p['@id'] === prop['@id']).length === 0 &&
-              !_.has(this.focus, prop['@id'].replace(this.vocabPfx, ''))
+              props.filter((p) => p['@id'] === prop['@id']).length === 0
             ) {
               props.push(prop);
             }
@@ -116,6 +115,9 @@ export default {
       }
       this.focus = Object.assign({}, this.focus, newItem);
     },
+    removeField(prop) {
+      this.updateValue(prop, null);
+    },
     updateValue(key, value) {
       this.focus[key] = value;
     },
@@ -132,7 +134,7 @@ export default {
 <template>
   <div>
     <ul>
-      <li v-for="(k, v) in focus">
+      <li v-for="(k, v) in focus" v-if="v !== null">
         <span class="label">
           <a href="/vocab/#{{k}}">{{ k | labelByLang | capitalize }}</a>
         </span>
@@ -140,6 +142,7 @@ export default {
           <data-node v-if="!isEmpty(v)" :key="k" :value="v" :linked="linked"></data-node>
           <link-adder v-if="isArray(v) || isEmpty(v)" :key="k" :vocab="vocab" :vocab-pfx="vocabPfx"></link-adder>
         </span>
+        <span class="delete" v-on:click="removeField(k)"><i class="fa fa-close"></i></span>
       </li>
     </ul>
     <field-adder :allowed="allowedProperties" :lang="lang"></field-adder>

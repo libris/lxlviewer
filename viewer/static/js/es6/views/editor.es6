@@ -120,7 +120,12 @@ export default class Editor extends View {
         },
         saveItem() {
           const inputData = JSON.parse(document.getElementById('data').innerText);
-          const obj = editUtil.getMergedItems(this.meta, this.thing, this.linked);
+          const obj = editUtil.getMergedItems(
+            editUtil.clean(this.meta),
+            editUtil.clean(this.thing),
+            this.linked
+          );
+
          // if (JSON.stringify(obj) === JSON.stringify(inputData)) {
             console.warn("No changes done, skipping to save. Time to tell the user?");
          // } else {
