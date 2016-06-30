@@ -27,10 +27,10 @@
         <div class="row">
           <div class="col-md-12">
           <label>HÄMTA</label>
-          <input v-model="copyId" debouce="500"></input><br>
-          <span v-if="copy.state === 'error'">Hittade ingen post med id <b>{{copyId}}</b></span>
-          <span v-if="copy.state === 'complete'">Post funnen</span>
           <hr>
+          ID: <input v-model="copyId" debouce="1000"></input><br>
+          <span v-if="copy.state === 'error'">Hittade ingen post med id <b>{{copyId}}</b></span>
+          <span v-if="copy.state === 'complete'">Post funnen</span><br>
           <form method="POST" action="/edit">
             <textarea name="item" class="hidden">{{ copy.item | json }}</textarea>
             <button type="submit" class="btn btn-primary" v-show="copy.state === 'complete'">Skapa kopia</button>
