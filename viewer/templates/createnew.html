@@ -20,14 +20,21 @@
       </div>
     </div>
   </div>
-  
+
       <!-- Copy form -->
     <div v-show="selectedChoice == 'copy'" class="panel panel-default form-container" id="copy_post">
       <div class="panel-body container-fluid">
         <div class="row">
           <div class="col-md-12">
           <label>HÄMTA</label>
-            <input value="@id"></input>
+          <input v-model="copyId" debouce="500"></input><br>
+          <span v-if="copy.state === 'error'">Hittade ingen post med id <b>{{copyId}}</b></span>
+          <span v-if="copy.state === 'complete'">Post funnen</span>
+          <hr>
+          <form method="POST" action="/edit">
+            <textarea name="item" class="hidden">{{ copy.item | json }}</textarea>
+            <button type="submit" class="btn btn-primary" v-show="copy.state === 'complete'">Skapa kopia</button>
+          </form>
           </div>
         </div>
       </div>

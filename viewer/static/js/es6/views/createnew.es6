@@ -3,6 +3,7 @@ import View from './view';
 import Vue from 'vue';
 import * as UserUtil from '../utils/user';
 import * as VocabUtil from '../utils/vocab';
+import * as httpUtil from '../utils/http';
 
 export default class CreateNew extends View {
 
@@ -74,6 +75,19 @@ export default class CreateNew extends View {
         vocabPfx: 'kbv:',
         language: self.language,
         vocab,
+        copyId: '',
+        copy: { state: '', item: {} },
+      },
+      watch: {
+        copyId(value, oldval) {
+          console.log(value);
+          if (value.length === 0 && oldval && oldval.length > 0) {
+            copyItem = {};
+          }
+          if (/\S/.test(value)) {
+            this.getCopyItem(value);
+          }
+        },
       },
       methods: {
         createNew() {
@@ -87,6 +101,17 @@ export default class CreateNew extends View {
         setMaterial(index, material) {
           const m = material.replace(vocabPfx, '');
           this.chosenMaterials.$set(index, m);
+        },
+        getCopyItem(id) {
+          this.copy.state = '';
+          const itemUrl = `/${id}/data.jsonld`;
+          httpUtil.getContent(itemUrl, 'application/ld+json').then((response) => {
+            this.copy.item = response;
+            this.copy.state = 'complete';
+          }, (error) => {
+            this.copy.item = {};
+            this.copy.state = 'error';
+          });
         },
       },
       computed: {
