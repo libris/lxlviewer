@@ -4,6 +4,7 @@ import Vue from 'vue';
 import * as UserUtil from '../utils/user';
 import * as VocabUtil from '../utils/vocab';
 import * as httpUtil from '../utils/http';
+import * as RecordUtil from '../utils/record';
 
 export default class CreateNew extends View {
 
@@ -106,7 +107,11 @@ export default class CreateNew extends View {
           this.copy.state = '';
           const itemUrl = `/${id}/data.jsonld`;
           httpUtil.getContent(itemUrl, 'application/ld+json').then((response) => {
-            this.copy.item = response;
+            const responseObject = JSON.parse(response);
+            // TODO: Relying on order. How can we do this in a safer way?
+            responseObject['@graph'][0] = RecordUtil.stripId(responseObject['@graph'][0]);
+            responseObject['@graph'][1] = RecordUtil.stripId(responseObject['@graph'][1]);
+            this.copy.item = JSON.stringify(responseObject);
             this.copy.state = 'complete';
           }, (error) => {
             this.copy.item = {};

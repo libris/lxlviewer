@@ -64,4 +64,10 @@ describe('Utility: edit', function () {
       expect(editUtil.getMergedItems(metaObj, bibObj, linked)).to.deep.equal(mergedObj);
     });
   });
+
+  describe('clean()', function () {
+    it('should return the same object without @id field', function () {
+      expect(editUtil.clean(bibObj)['@id']).to.be.empty;
+    });
+  });
 });
