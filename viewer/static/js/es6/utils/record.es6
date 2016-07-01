@@ -32,3 +32,11 @@ export function getEmptyHolding(holdingFor, sigel) {
   };
   return obj;
 }
+
+export function stripId(obj) {
+  const newObj = obj;
+  if (newObj.hasOwnProperty('@id')) {
+    newObj['@id'] = '';
+  }
+  return newObj;
+}
