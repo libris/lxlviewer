@@ -80,9 +80,8 @@ export default class CreateNew extends View {
       },
       watch: {
         copyId(value, oldval) {
-          console.log(value);
           if (value.length === 0 && oldval && oldval.length > 0) {
-            copyItem = {};
+            this.copy.state = '';
           }
           if (/\S/.test(value)) {
             this.getCopyItem(value);
