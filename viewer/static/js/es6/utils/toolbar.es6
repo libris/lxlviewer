@@ -1,5 +1,6 @@
  import * as httpUtil from '../utils/http';
  import * as modalUtil from '../utils/modals';
+ import {marcJsonToHtml} from '../utils/edit';
 
  export function initToolbar(_context) {
     const context = _context;
@@ -33,37 +34,11 @@
           content = `Failed to convert to MARC: ${result}`
         } else {
           content = `<section class="marc-code">
-                      <table>
-                        <tr>
-                          <td data-ng-if="record.leader">
-                            <code>000</code>
-                          </td>
-                          <td></td>
-                          <td></td>
-                          <td colspan="3">
-                            <span>{{record.leader}}</span>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <code>{{key}}</code>
-                          </td>
-                          <td class="ind">
-                            {{value.ind1}}
-                          </td>
-                          <td class="ind">
-                            {{value.ind2}}
-                          </td>
-                          <td>
-                            <span>{{value}}</span>
-                            <span>{{value.subfields}}</span>
-                          </td>
-                        </tr>
-                      </table>
+                      ${marcJsonToHtml(result)}
                     </section>`;
         }
         modalUtil.modal({
-          sTitle: 'MARC Vy',
+          sTitle: 'MARC förhandsgranskning',
           sContent: content
         }).then(() => {}, () => {});;
       }
