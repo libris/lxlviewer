@@ -29,7 +29,8 @@
           <label>HÄMTA</label>
           <hr>
           ID: <input v-model="copyId" debouce="1000"></input><br>
-          <span v-if="copy.state === 'error'">Hittade ingen post med id <b>{{copyId}}</b></span>
+          <span v-if="copy.state === 'noresult'">Hittade ingen post med id <b>{{copyId}}</b></span>
+          <span v-if="copy.state === 'invalid'">Otillåtna tecken</span>
           <span v-if="copy.state === 'complete'">Post funnen</span><br>
           <form method="POST" action="/edit">
             <textarea name="item" class="hidden">{{ copy.item | json }}</textarea>

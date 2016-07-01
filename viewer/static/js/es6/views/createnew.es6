@@ -82,9 +82,10 @@ export default class CreateNew extends View {
         copyId(value, oldval) {
           if (value.length === 0 && oldval && oldval.length > 0) {
             this.copy.state = '';
-          }
-          if (/\S/.test(value)) {
+          } else if (!/[^a-z0-9]/gi.test(value)) {
             this.getCopyItem(value);
+          } else {
+            this.copy.state = 'invalid';
           }
         },
       },
@@ -109,7 +110,7 @@ export default class CreateNew extends View {
             this.copy.state = 'complete';
           }, (error) => {
             this.copy.item = {};
-            this.copy.state = 'error';
+            this.copy.state = 'noresult';
           });
         },
       },
