@@ -9,7 +9,15 @@ function request(url, token, obj, method) {
 
     req.onload = () => {
       if (req.status === 200 || req.status === 204) {
-        resolve(req.response);
+        let resp = req.response;
+        if(req.getResponseHeader('Content-Type').indexOf('json') !== -1) {
+          try {
+            resp = JSON.parse(resp);
+          } catch(e) {
+            console.error('Failed to parse response said to be JSON', e, resp);
+          }
+        }
+        resolve(resp, req);
       } else {
         reject(Error(req.statusText));
       }
