@@ -53,7 +53,7 @@
     "postinstall": "mkdir -p static/build && npm run vendor && npm run app",
     "vendor": "npm run vendor:fetch && parallelshell 'npm run vendor:js'",
     "vendor:fetch": "bower-installer",
-    "vendor:js": "uglifyjs static/vendor/{jquery,lodash,bootstrap,d3}/js/*.js -o static/build/vendor.min.js --source-map static/build/vendor.min.js.map --source-map-url ./vendor.min.js.map --source-map-root /",
+    "vendor:js": "uglifyjs static/vendor/{jquery,bootstrap,d3}/js/*.js -o static/build/vendor.min.js --source-map static/build/vendor.min.js.map --source-map-url ./vendor.min.js.map --source-map-root /",
     "app": "parallelshell 'npm run app:js' 'npm run app:id:less' 'npm run app:libris:less'",
     "app:eslint": "eslint 'static/js/**/*.es6' || true",
     "app:js": "parallelshell 'npm run app:transpile'",
