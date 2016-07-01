@@ -106,8 +106,7 @@ export default class CreateNew extends View {
         getCopyItem(id) {
           this.copy.state = '';
           const itemUrl = `/${id}/data.jsonld`;
-          httpUtil.getContent(itemUrl, 'application/ld+json').then((response) => {
-            const responseObject = JSON.parse(response);
+          httpUtil.get({ url: itemUrl, accept: 'application/ld+json' }).then((responseObject) => {
             // TODO: Relying on order. How can we do this in a safer way?
             responseObject['@graph'][0] = RecordUtil.stripId(responseObject['@graph'][0]);
             responseObject['@graph'][1] = RecordUtil.stripId(responseObject['@graph'][1]);

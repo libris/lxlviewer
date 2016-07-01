@@ -1,11 +1,20 @@
 
-function request(url, token, obj, method) {
+function request(options, data) {
+  // method, url, token, accept
+
+  options.method = options.method || 'GET';
+
   return new Promise((resolve, reject) => {
     const req = new XMLHttpRequest();
 
-    req.open(method ? method : 'GET', url);
+    req.open(options.method, options.url);
     req.setRequestHeader('Content-Type', 'application/ld+json');
-    req.setRequestHeader('Authorization', `Bearer ${token}`);
+    if (options.token) {
+      req.setRequestHeader('Authorization', `Bearer ${options.token}`);
+    }
+    if (options.accept) {
+      req.setRequestHeader('Accept', options.accept);
+    }
 
     req.onload = () => {
       if (req.status === 200 || req.status === 204) {
@@ -26,49 +35,29 @@ function request(url, token, obj, method) {
       reject(Error('Network error'));
     };
 
-    if (method === 'DELETE') {
+    if (options.method === 'DELETE' || options.method === 'GET') {
       req.send();
     } else {
-      req.send(JSON.stringify(obj));
+      req.send(JSON.stringify(data));
     }
   });
 }
 
-export function get(url, token) {
-  return request(url, token);
+export function get(options) {
+  return request(options);
 }
 
-export function put(url, token, obj) {
-  return request(url, token, obj, 'PUT');
+export function put(options, data) {
+  options.method = 'PUT';
+  return request(options, data);
 }
 
-export function post(url, token, obj) {
-  return request(url, token, obj, 'POST');
+export function post(options, data) {
+  options.method = 'POST';
+  return request(options, data);
 }
 
-export function _delete(url, token) {
-  return request(url, token, null, 'DELETE');
-}
-
-export function getContent(url, type) {
-  return new Promise((resolve, reject) => {
-    const req = new XMLHttpRequest();
-    req.open('GET', url);
-
-    if (type) {
-      req.setRequestHeader('Accept', type);
-    }
-
-    req.onload = () => {
-      if (req.status === 200) {
-        resolve(req.response);
-      } else {
-        reject(Error(req.statusText));
-      }
-    };
-    req.onerror = () => {
-      reject(Error('Network Error'));
-    };
-    req.send();
-  });
+export function _delete(options) {
+  options.method = 'DELETE';
+  return request(options);
 }

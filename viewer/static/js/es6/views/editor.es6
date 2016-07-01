@@ -114,9 +114,13 @@ export default class Editor extends View {
           return _.isPlainObject(o);
         },
         convertItemToMarc() {
-          return httpUtil.post('/_convert',
-                                self.access_token,
-                                editUtil.getMergedItems(this.meta, this.thing, this.linked));
+          return httpUtil.post({
+              url: '/_convert',
+              token: self.access_token
+            },
+            // Use clean method on args
+            editUtil.getMergedItems(this.meta, this.thing, this.linked)
+          );
         },
         saveItem() {
           const inputData = JSON.parse(document.getElementById('data').innerText);
@@ -147,7 +151,7 @@ export default class Editor extends View {
         },
         doRequest(requestMethod, obj, url) {
           this.saved.loading = true;
-          requestMethod(url, self.access_token, obj).then(() => {
+          requestMethod({ url, token: self.access_token }, obj).then(() => {
             self.vm.saved.loading = false;
             self.vm.saved.status = { error: false, info: 'Everything went alright.' };
           }, (error) => {

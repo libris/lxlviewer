@@ -93,8 +93,8 @@ export default {
       const searchUrl = `http://${domain}:5000/find.json?q=${searchkey}&@type=${this.range[0]}&limit=10`;
       console.log(searchUrl);
       return new Promise((resolve, reject) => {
-        httpUtil.getContent(searchUrl, 'application/ld+json').then((response) => {
-          resolve(JSON.parse(response).items);
+        httpUtil.get({url:searchUrl, accept:'application/ld+json'}).then((response) => {
+          resolve(response.items);
         }, (error) => {
           reject('Error searching...', error);
         });

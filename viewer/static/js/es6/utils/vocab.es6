@@ -3,8 +3,8 @@ import * as _ from 'lodash';
 
 function fetchVocab() {
   return new Promise((resolve, reject) => {
-    httpUtil.getContent('/vocab/', 'application/ld+json').then((response) => {
-      resolve(JSON.parse(response));
+    httpUtil.get({ url: '/vocab/', accept: 'application/ld+json' }).then((response) => {
+      resolve(response);
     }, (error) => {
       reject('Error loading vocabulary...', error);
     });

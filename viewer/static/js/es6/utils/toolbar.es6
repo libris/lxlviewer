@@ -15,7 +15,7 @@
         sReject: 'Avbryt',
         sType: 'danger' }).then(() => {
           // accepted by user
-          httpUtil._delete(url, context.access_token).then((result) => {
+          httpUtil._delete({ url, token: context.access_token }).then((result) => {
             console.log("post WAS deleted...", result);
           }, (result) => {
             console.log("post was NOT deleted...", result);
