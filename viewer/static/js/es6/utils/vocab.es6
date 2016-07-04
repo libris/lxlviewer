@@ -37,12 +37,11 @@ export function getVocab() {
 }
 
 export function getClass(classname, vocab, vocabPfx) {
-  // Only try to get class for classes in this vocab
-  if(vocabPfx && classname.indexOf(vocabPfx) !== -1) return;
-
-  const _class = _.find(vocab.descriptions, (d) => { return d['@id'] === vocabPfx + classname; });
-  if(!_class) {
-    console.warn('class', classname, 'not found in vocab');
+  // Returns a class object
+  const cn = classname.replace(vocabPfx, '');
+  const _class = _.find(vocab.descriptions, (d) => { return d['@id'] === vocabPfx + cn; });
+  if (!_class) {
+    console.warn('class', cn, 'not found in vocab');
   }
   return _class;
 }
@@ -59,4 +58,26 @@ export function getSubClasses(classname, vocab, vocabPfx) {
     console.warn('subclasses for', vocabPfx + classname, 'not found in vocab');
   }
   return subClasses;
+}
+
+export function getBaseClasses(classObj, vocab, vocabPfx) {
+  // Traverses up subClassOf properties and returns a list of all class objects found
+  let items = [];
+  if (classObj && classObj.hasOwnProperty('subClassOf')) {
+    for (let i = 0; i < classObj.subClassOf.length; i++) {
+      const baseClassId = classObj.subClassOf[i]['@id'];
+      const baseClass = getClass(baseClassId, vocab, vocabPfx);
+      if (
+        baseClass &&
+        baseClass.isDefinedBy &&
+        baseClass.isDefinedBy['@id'] === vocabPfx
+      ) {
+        items = items.concat(getBaseClasses(baseClass, vocab, vocabPfx));
+        items.push(baseClass);
+      } else {
+        // console.log("Stopped at", baseClassId);
+      }
+    }
+  }
+  return items;
 }

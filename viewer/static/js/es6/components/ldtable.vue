@@ -17,50 +17,28 @@ export default {
   computed: {
     allowedProperties() {
       const props = [];
-      const vocabItems = this.vocab.descriptions;
       const self = this;
 
-      function getBaseClasses(classObj) {
-        let items = [];
-        if (classObj && classObj.hasOwnProperty('subClassOf')) {
-          for (let i = 0; i < classObj.subClassOf.length; i++) {
-            const baseClassId = classObj.subClassOf[i]['@id'];
-            const baseClass = VocabUtil.getClass(baseClassId, self.vocab, self.vocabPfx);
-            if (
-              baseClass &&
-              baseClass.isDefinedBy &&
-              baseClass.isDefinedBy['@id'] === self.vocabPfx
-            ) {
-              items = items.concat(getBaseClasses(baseClass));
-              items.push(baseClass);
-            }
-          }
-        }
-        return items;
-      }
-
+      const vocabItems = this.vocab.descriptions;
       // Types defined on the item
-      const types = [].concat(this.focus['@type']);
-
+      const types = [].concat(self.focus['@type']);
       // Find their base classes
       let classes = [];
       for (let t = 0; t < types.length; t++) {
-        const c = VocabUtil.getClass(this.vocabPfx + types[t], self.vocab, self.vocabPfx);
-        classes = classes.concat(getBaseClasses(c));
+        const c = VocabUtil.getClass(types[t], self.vocab, self.vocabPfx);
+        classes.push(c);
+        classes = classes.concat(VocabUtil.getBaseClasses(c, self.vocab, self.vocabPfx));
       }
       const classNames = [];
-      for (let i = 0; i < types.length; i++) {
-        classNames.push(`${this.vocabPfx}${types[i]}`);
-      }
       for (let i = 0; i < classes.length; i++) {
         classNames.push(classes[i]['@id']);
       }
       // Get the properties
       for (let i = 0; i < vocabItems.length; i++) {
-        if (vocabItems[i] && vocabItems[i].hasOwnProperty('domainIncludes')) {
+        if (vocabItems[i].hasOwnProperty('domainIncludes')) {
           for (let t = 0; t < vocabItems[i].domainIncludes.length; t++) {
-            const type = vocabItems[i].domainIncludes[t]['@id'];
             const prop = vocabItems[i];
+            const type = vocabItems[i].domainIncludes[t]['@id'];
             if (
               classNames.indexOf(type) !== -1 &&
               props.filter((p) => p['@id'] === prop['@id']).length === 0
