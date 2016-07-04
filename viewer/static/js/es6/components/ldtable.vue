@@ -140,7 +140,7 @@ export default {
         </span>
         <span class="value">
           <data-node v-if="!isEmptyObject(v)" :key="k" :value="v" :linked="linked"></data-node>
-          <link-adder v-if="isArray(v) || isEmpty(v)" :key="k" :vocab="vocab" :vocab-pfx="vocabPfx"></link-adder>
+          <link-adder v-if="isArray(v) || isEmptyObject(v)" :key="k" :vocab="vocab" :vocab-pfx="vocabPfx"></link-adder>
         </span>
         <span class="delete" v-on:click="removeField(k)"><i class="fa fa-close"></i></span>
       </li>
