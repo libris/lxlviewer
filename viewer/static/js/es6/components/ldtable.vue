@@ -102,8 +102,8 @@ export default {
       }
       this.focus = Object.assign(this.focus, modified);
     },
-    isEmpty(value) {
-      return Object.keys(value).length === 0;
+    isEmptyObject(value) {
+      return (Object.keys(value).length === 0 && value !== '');
     },
     addField(prop) {
       const newItem = {};
@@ -139,7 +139,7 @@ export default {
           <a href="/vocab/#{{k}}">{{ k | labelByLang | capitalize }}</a>
         </span>
         <span class="value">
-          <data-node v-if="!isEmpty(v)" :key="k" :value="v" :linked="linked"></data-node>
+          <data-node v-if="!isEmptyObject(v)" :key="k" :value="v" :linked="linked"></data-node>
           <link-adder v-if="isArray(v) || isEmpty(v)" :key="k" :vocab="vocab" :vocab-pfx="vocabPfx"></link-adder>
         </span>
         <span class="delete" v-on:click="removeField(k)"><i class="fa fa-close"></i></span>
