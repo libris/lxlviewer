@@ -42,6 +42,7 @@ export default {
       return this.$parent.addField(prop);
     },
     show() {
+      this.filterKey = '';
       this.active = true;
     },
     hide() {
@@ -58,7 +59,7 @@ export default {
   <a v-on:click="show"><i class="fa fa-plus-circle"></i> Lägg till fält</a>
   <div class="window" v-show="active">
     <div class="filter">
-      Filtrera: <input class="filterInput" type="text" v-model="filterKey" debounce="150"></input> <span class="small">(visar {{ filteredResults.length }} av totalt {{allowed.length}})</span>
+      Filtrera <input class="filterInput" type="text" v-model="filterKey" debounce="150"></input> <span class="filterInfo">Visar {{ filteredResults.length }} av totalt {{allowed.length}}</span>
     </div>
   <ul>
     <li v-for="prop in filteredResults">
