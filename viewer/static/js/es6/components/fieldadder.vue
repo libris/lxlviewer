@@ -58,14 +58,14 @@ export default {
   <a v-on:click="show"><i class="fa fa-plus-circle"></i> Lägg till fält</a>
   <div class="window" v-show="active">
     <div class="filter">
-      Filtrera: <input class="filterInput" type="text" v-model="filterKey" debounce="250"></input> <span class="small">(visar {{ filteredResults.length }} av totalt {{allowed.length}})</span>
+      Filtrera: <input class="filterInput" type="text" v-model="filterKey" debounce="150"></input> <span class="small">(visar {{ filteredResults.length }} av totalt {{allowed.length}})</span>
     </div>
   <ul>
     <li v-for="prop in filteredResults">
       <span class="fieldLabel" title="{{prop['@id'] | labelByLang | capitalize }}">
         {{prop['@id'] | labelByLang | capitalize }}
       </span>
-      <span class="typeLabel">({{ prop['@id'] }})</span>
+      <span class="typeLabel">{{ prop['@id'] }}</span>
       <a v-on:click="addField(prop)"><i class="fa fa-plus-circle"></i></a>
     </li>
     <li v-if="filteredResults.length === 0">Hittade inga fler fält</li>

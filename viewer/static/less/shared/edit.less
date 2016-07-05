@@ -15,6 +15,7 @@
   display: none;
 
   .fieldAdder {
+    display: inline-block; // So that the clickaway plugin triggers nicely
     >a {
       cursor: pointer;
     }
@@ -23,16 +24,22 @@
       position: absolute;
       width: 500px;
       max-height: 400px;
-      border: 1px solid @gray-darker;
+      border: 1px solid @gray;
+      border-radius: 3px;
       background-color: @neutral-color;
       .filter {
+        background-color: @black;
+        color: @neutral-color;
         padding: 3px;
         .filterInput {
+          border-radius: 3px;
+          border: 0px;
+          color: @black;
           display: inline-block;
         }
       }
       ul {
-        border: solid @gray-darker;
+        border: solid @gray;
         border-width: 1px 0px 0px 0px;
         width: 100%;
         max-height: 300px;
@@ -60,6 +67,7 @@
             overflow: hidden;
             text-overflow: ellipsis;
             font-size: 85%;
+            font-family: monospace;
           }
           a {
             float: right;
