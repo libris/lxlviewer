@@ -21,7 +21,6 @@ export default {
   },
   computed: {
     properties() {
-      console.log("properties called");
       const props = this.allowedProperties;
       for (let i = 0; i < props.length; i++) {
         const pId = props[i].item['@id'].replace(this.vocabPfx, '');
