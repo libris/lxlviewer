@@ -103,6 +103,7 @@ export default class Editor extends View {
             info: '',
           },
         },
+        showJSON: false,
       },
       ready() {
       },
