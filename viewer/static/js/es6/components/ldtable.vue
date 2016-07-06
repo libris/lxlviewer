@@ -14,39 +14,18 @@ export default {
     vocabPfx: {},
     lang: '',
   },
+  data() {
+    return {
+      allowedProperties: VocabUtil.getInheritedProperties(this.focus['@type'], this.vocab, this.vocabPfx),
+    }
+  },
   computed: {
-    allowedProperties() {
-      const props = [];
-      const self = this;
-
-      const vocabItems = this.vocab.descriptions;
-      // Types defined on the item
-      const types = [].concat(self.focus['@type']);
-      // Find their base classes
-      let classes = [];
-      for (let t = 0; t < types.length; t++) {
-        const c = VocabUtil.getClass(types[t], self.vocab, self.vocabPfx);
-        classes.push(c);
-        classes = classes.concat(VocabUtil.getBaseClasses(c, self.vocab, self.vocabPfx));
-      }
-      const classNames = [];
-      for (let i = 0; i < classes.length; i++) {
-        classNames.push(classes[i]['@id']);
-      }
-      // Get the properties
-      for (let i = 0; i < vocabItems.length; i++) {
-        if (vocabItems[i].hasOwnProperty('domainIncludes')) {
-          for (let t = 0; t < vocabItems[i].domainIncludes.length; t++) {
-            const prop = vocabItems[i];
-            const type = vocabItems[i].domainIncludes[t]['@id'];
-            if (
-              classNames.indexOf(type) !== -1 &&
-              props.filter((p) => p['@id'] === prop['@id']).length === 0
-            ) {
-              props.push(prop);
-            }
-          }
-        }
+    properties() {
+      console.log("properties called");
+      const props = this.allowedProperties;
+      for (let i = 0; i < props.length; i++) {
+        const pId = props[i].item['@id'].replace(this.vocabPfx, '');
+        props[i].isAdded = (this.focus.hasOwnProperty(pId) && this.focus[pId] !== null);
       }
       return props;
     },
@@ -86,7 +65,7 @@ export default {
     addField(prop) {
       const newItem = {};
       const key = prop['@id'].replace(this.vocabPfx, '');
-      if (prop['@type'].indexOf('ObjectProperty') !== -1) {
+      if (prop['@type'] && prop['@type'].indexOf('ObjectProperty') !== -1) {
         newItem[key] = [];
       } else {
         newItem[key] = '';
@@ -123,7 +102,7 @@ export default {
         <span class="delete" v-on:click="removeField(k)"><i class="fa fa-close"></i></span>
       </li>
     </ul>
-    <field-adder :allowed="allowedProperties" :lang="lang"></field-adder>
+    <field-adder :allowed="properties" :lang="lang"></field-adder>
 
   </div>
 </template>

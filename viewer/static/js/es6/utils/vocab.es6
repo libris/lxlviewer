@@ -81,3 +81,51 @@ export function getBaseClasses(classObj, vocab, vocabPfx) {
   }
   return items;
 }
+
+export function getProperties(className, vocab) {
+  // Get all properties which has the domain of the className
+  const vocabItems = vocab.descriptions;
+  const props = [];
+  for (let i = 0; i < vocabItems.length; i++) {
+    if (vocabItems[i].hasOwnProperty('domainIncludes')) {
+      for (let t = 0; t < vocabItems[i].domainIncludes.length; t++) {
+        const prop = vocabItems[i];
+        const type = vocabItems[i].domainIncludes[t]['@id'];
+        if (className === type) {
+          props.push(prop);
+        }
+      }
+    }
+  }
+  return props;
+}
+
+export function getInheritedProperties(typeArray, vocab, vocabPfx) {
+  let props = [];
+  // Types defined on the item
+  const types = [].concat(typeArray);
+
+  // Find their base classes and make a list of their IDs
+  let classes = [];
+  for (let t = 0; t < types.length; t++) {
+    const c = getClass(types[t], vocab, vocabPfx);
+    classes.push(c);
+    classes = classes.concat(getBaseClasses(c, vocab, vocabPfx));
+  }
+  const classNames = [];
+  for (let i = 0; i < classes.length; i++) {
+    classNames.push(classes[i]['@id']);
+  }
+
+  for (let i = 0; i < classNames.length; i++) {
+    const properties = getProperties(classNames[i], vocab);
+    for (let x = 0; x < properties.length; x++) {
+      const p = {
+        item: properties[x],
+      };
+      props.push(p);
+    }
+  }
+  props = _.uniq(props);
+  return props;
+}
