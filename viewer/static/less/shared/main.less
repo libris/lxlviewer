@@ -20,6 +20,9 @@
 @green: #009788;
 @grey-very-dark: #191913; // font-color
 
+@modal-z: 950;
+@backdrop-z: 900;
+
 html {
   height: 100%;
 }
@@ -52,8 +55,21 @@ body {
 body.loading * {
   cursor: progress;
 }
+#body-blocker {
+  display: none;
+}
 body.scroll-lock {
   overflow: hidden;
+  #body-blocker {
+    display: block;
+    z-index: @backdrop-z;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.1);
+  }
 }
 
 .dropdown-menu.list-inline {

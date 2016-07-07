@@ -13,6 +13,7 @@
     {% block stylesheets %}{% endblock %}
   </head>
   <body {% block bodyattrs %}{% endblock %}>
+    <div id="body-blocker"></div>
     {% block navigation %}
     <nav class="navbar navbar-inverse">
       <div class="{% block navcontainerclass %}container{% endblock %}">
