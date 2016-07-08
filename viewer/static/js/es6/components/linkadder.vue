@@ -52,7 +52,7 @@ export default {
   },
   methods: {
     add(item) {
-      this.$parent.addItem(this.key, item);
+      this.$dispatch('add-item', this.key, item);
     },
     addAnonymous(type) {
       // TODO:  Sync with format and find out what kind of properties should be
@@ -60,7 +60,8 @@ export default {
 
       // const typeObj = _.find(this.vocab.descriptions, { '@id': this.vocabPfx + type });
       const obj = { '@type': type, label: '' };
-      this.$parent.addAnonymous(this.key, obj);
+
+      this.$dispatch('add-anonymous', this.key, obj);
     },
     search(searchkey) {
       const self = this;
@@ -86,9 +87,9 @@ export default {
       // TODO: Support asking for more items
 
       let domain = 'localhost';
-      if(this.range.indexOf('Record') === '-1') {
-        domain = '127.0.0.1';
-      }
+      // if(this.range.indexOf('Record') === '-1') {
+        // domain = '127.0.0.1';
+      // }
 
       const searchUrl = `http://${domain}:5000/find.json?q=${searchkey}&@type=${this.range[0]}&limit=10`;
       console.log(searchUrl);

@@ -107,6 +107,17 @@ export default class Editor extends View {
       },
       ready() {
       },
+      events: {
+        'focus-update': function(value, oldValue) {
+          if (oldValue === this.meta) {
+            this.$set('meta', value);
+          } else if (oldValue === this.thing) {
+            this.$set('thing', value);
+          } else {
+            console.warn('Something went wrong trying to update a focused object.');
+          }
+        },
+      },
       methods: {
         isArray(o) {
           return _.isArray(o);
@@ -116,9 +127,9 @@ export default class Editor extends View {
         },
         convertItemToMarc() {
           return httpUtil.post({
-              url: '/_convert',
-              token: self.access_token
-            },
+            url: '/_convert',
+            token: self.access_token
+          },
             // Use clean method on args
             editUtil.getMergedItems(this.meta, this.thing, this.linked)
           );

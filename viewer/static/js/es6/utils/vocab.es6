@@ -100,10 +100,10 @@ export function getProperties(className, vocab) {
   return props;
 }
 
-export function getInheritedProperties(typeArray, vocab, vocabPfx) {
+export function getInheritedProperties(classArray, vocab, vocabPfx) {
   let props = [];
   // Types defined on the item
-  const types = [].concat(typeArray);
+  const types = [].concat(classArray);
 
   // Find their base classes and make a list of their IDs
   let classes = [];

@@ -11,12 +11,19 @@ export default {
     active: false,
     filterKey: '',
     lang: '',
+    item: {},
+    vocabPfx: '',
   },
   computed: {
     filteredResults() {
+      if (!this.allowed || this.allowed.length === 0) {
+        return [];
+      }
       const filtered = [];
       if (!this.filterKey || this.filterKey.length < 1) {
-        return this.allowed;
+        if (this.allowed) {
+          return this.allowed;
+        }
       }
       const fKey = this.filterKey.toLowerCase();
       for (let i = 0; i < this.allowed.length; i++) {
@@ -39,20 +46,21 @@ export default {
     },
   },
   methods: {
+    isAdded(prop) {
+      const pId = prop['@id'].replace(this.vocabPfx, '');
+      const result = (this.item.hasOwnProperty(pId) && this.item[pId] !== null);
+      return result;
+    },
     addField(prop) {
-      return this.$parent.addField(prop);
+      this.$dispatch('add-field', prop);
     },
     show() {
       LayoutUtil.scrollLock(true);
       const self = this;
-      setTimeout(() => {
-        self.active = true;
-      }, 50);
-
+      self.active = true;
     },
     hide() {
       if (!this.active) return;
-
       this.active = false;
       LayoutUtil.scrollLock(false);
       this.filterKey = '';
@@ -65,28 +73,32 @@ export default {
 
 <template>
   <div class="fieldAdder">
-    <a v-on:click.prevent="show"><i class="fa fa-plus-circle"></i> Lägg till fält</a>
-    <div class="window" v-show="active" v-on-clickaway="hide">
+    <a v-on:click="show"><i class="fa fa-plus-circle"></i> Lägg till fält</a>
+    <div class="window" v-show="active">
       <div class="header">
         <span class="title">
           Lägg till fält
         </span>
+        <span class="windowControl">
+          <i v-on:click="hide" class="fa fa-close"></i>
+        </span>
         <span class="filter">
-          Filtrera <input class="filterInput" type="text" v-model="filterKey" debounce="150"></input> <span class="filterInfo">Visar {{ filteredResults.length }} av totalt {{allowed.length}}</span>
+          Filtrera <input class="filterInput" type="text" v-model="filterKey"></input>
+          <span class="filterInfo">Visar {{ filteredResults.length }} av totalt {{allowed ? allowed.length : '0'}}</span>
         </span>
       </div>
       <ul v-if="active">
-        <li v-bind:class="{ 'added': prop.isAdded }" v-for="prop in filteredResults">
+        <li v-bind:class="{ 'added': isAdded(prop.item) }" v-for="prop in filteredResults">
           <span class="fieldLabel" title="{{prop.item['@id'] | labelByLang | capitalize }}">
             {{prop.item['@id'] | labelByLang | capitalize }}
           </span>
           <span class="typeLabel">{{ prop.item['@id'] }}</span>
           <span class="addControl">
-            <a v-on:click="addField(prop.item)"><i class="fa fa-plus-circle"></i></a>
+            <a v-on:click.prevent="addField(prop.item)"><i class="fa fa-plus-circle"></i></a>
             <span><i class="fa fa-check"></i></span>
           </span>
         </li>
-        <li v-if="filteredResults.length === 0">Hittade inga fler fält</li>
+        <li v-if="filteredResults.length === 0"><i>Hittade inga fält...</i></li>
       </ul>
     </div>
   </div>

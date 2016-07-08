@@ -14,19 +14,53 @@ export default {
     vocabPfx: {},
     lang: '',
   },
-  data() {
-    return {
-      allowedProperties: VocabUtil.getInheritedProperties(this.focus['@type'], this.vocab, this.vocabPfx),
-    }
-  },
   computed: {
-    properties() {
-      const props = this.allowedProperties;
-      for (let i = 0; i < props.length; i++) {
-        const pId = props[i].item['@id'].replace(this.vocabPfx, '');
-        props[i].isAdded = (this.focus.hasOwnProperty(pId) && this.focus[pId] !== null);
+    allowedProperties() {
+      return VocabUtil.getInheritedProperties(this.focus['@type'], this.vocab, this.vocabPfx);
+    },
+  },
+  watch: {
+    'focus': function(val, oldval) {
+      this.$dispatch('focus-update', val, oldval);
+    },
+  },
+  events: {
+    'add-field': function (prop) {
+      const newItem = {};
+      const key = prop['@id'].replace(this.vocabPfx, '');
+      if (prop['@type'] && prop['@type'].indexOf('ObjectProperty') !== -1) {
+        newItem[key] = [];
+      } else {
+        newItem[key] = '';
       }
-      return props;
+      this.focus = Object.assign({}, this.focus, newItem);
+      console.log(JSON.stringify(this.focus));
+    },
+    'add-item': function (key, item) {
+      this.linked.push(item);
+      const modified = this.focus;
+      const newItem = { '@id': item['@id'] };
+      modified[key].push(newItem);
+      this.focus = Object.assign({}, this.focus, modified);
+    },
+    'remove-item': function (key, item) {
+      const keyWithout = _.reject(this.focus[key], (o) => o === item);
+      const modified = this.focus;
+      modified[key] = keyWithout;
+      this.focus = Object.assign({}, this.focus, modified);
+    },
+    'update-value': function (key, value) {
+      console.log("Trying to update", key, value);
+      this.focus[key] = value;
+    },
+    'add-anonymous': function (key, item) {
+      const modified = this.focus;
+      if (_.isArray(modified[key])) {
+        modified[key].push(item);
+      } else {
+        modified[key] = item;
+      }
+      this.focus = Object.assign(this.focus, modified);
     },
   },
   methods: {
@@ -36,46 +70,11 @@ export default {
     isPlainObject(o) {
       return _.isPlainObject(o);
     },
-    removeItem(key, item) {
-      const keyWithout = _.reject(this.focus[key], (o) => o === item);
-      const modified = this.focus;
-      modified[key] = keyWithout;
-      this.focus = Object.assign({}, this.focus, modified);
-    },
-    addItem(key, item) {
-      this.linked.push(item);
-      const modified = this.focus;
-      const newItem = { '@id': item['@id'] };
-      modified[key].push(newItem);
-      this.focus = Object.assign({}, this.focus, modified);
-    },
-    addAnonymous(key, item) {
-      const modified = this.focus;
-      if (_.isArray(modified[key])) {
-        modified[key].push(item);
-      } else {
-        modified[key] = item;
-      }
-      this.focus = Object.assign(this.focus, modified);
-    },
     isEmptyObject(value) {
       return (Object.keys(value).length === 0 && value !== '');
     },
-    addField(prop) {
-      const newItem = {};
-      const key = prop['@id'].replace(this.vocabPfx, '');
-      if (prop['@type'] && prop['@type'].indexOf('ObjectProperty') !== -1) {
-        newItem[key] = [];
-      } else {
-        newItem[key] = '';
-      }
-      this.focus = Object.assign({}, this.focus, newItem);
-    },
     removeField(prop) {
-      this.updateValue(prop, null);
-    },
-    updateValue(key, value) {
-      this.focus[key] = value;
+      this.$dispatch('update-value', prop, null);
     },
   },
   components: {
@@ -101,7 +100,6 @@ export default {
         <span class="delete" v-on:click="removeField(k)"><i class="fa fa-close"></i></span>
       </li>
     </ul>
-    <field-adder :allowed="properties" :lang="lang"></field-adder>
-
+    <field-adder :allowed="allowedProperties" :item="focus" :vocab-pfx="vocabPfx" :lang="lang"></field-adder>
   </div>
 </template>

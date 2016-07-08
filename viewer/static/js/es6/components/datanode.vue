@@ -23,7 +23,7 @@ export default {
       );
     },
     updateValue(value) {
-      this.$parent.focus[this.key] = value;
+      this.$dispatch('update-value', this.key, value);
     },
     updateArray(index, value) {
       const object = this.$el;
@@ -33,7 +33,7 @@ export default {
       });
     },
     emptyValue() {
-      this.$parent.updateValue(this.key, {});
+      this.$dispatch('update-value', this.key, {});
     },
     getLinked(id) {
       return editUtil.getLinked(id, this.linked);
@@ -61,7 +61,7 @@ export default {
       return _.isPlainObject(o);
     },
     removeItem(key, value) {
-      return this.$parent.removeItem(key, value);
+      this.$dispatch('remove-item', key, value);
     },
   },
 };
