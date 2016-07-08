@@ -34,7 +34,6 @@ export default {
         newItem[key] = '';
       }
       this.focus = Object.assign({}, this.focus, newItem);
-      console.log(JSON.stringify(this.focus));
     },
     'add-item': function (key, item) {
       this.linked.push(item);
@@ -50,7 +49,6 @@ export default {
       this.focus = Object.assign({}, this.focus, modified);
     },
     'update-value': function (key, value) {
-      console.log("Trying to update", key, value);
       this.focus[key] = value;
     },
     'add-anonymous': function (key, item) {
