@@ -8,7 +8,7 @@ import * as VocabLoader from '../utils/vocabloader';
 import * as VocabUtil from '../utils/vocab';
 import * as RecordUtil from '../utils/record';
 import * as UserUtil from '../utils/user';
-import LdTable from '../components/ldtable';
+import FormComponent from '../components/formcomponent';
 
 export default class Editor extends View {
 
@@ -173,7 +173,7 @@ export default class Editor extends View {
         }
       },
       components: {
-        'ld-table': LdTable,
+        'form-component': FormComponent,
       },
     });
   }

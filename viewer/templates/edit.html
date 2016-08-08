@@ -29,8 +29,8 @@
       </div>
     </header>
   </div>
-  <ld-table :focus="meta" :vocab="vocab" :linked="linked" :vocab-pfx="vocabPfx" :lang="lang"></ld-table>
-  <ld-table :focus="thing" :vocab="vocab" :linked="linked" :vocab-pfx="vocabPfx" :lang="lang"></ld-table>
+  <form-component :focus="meta" :vocab="vocab" :linked="linked" :vocab-pfx="vocabPfx" :lang="lang"></form-component>
+  <form-component :focus="thing" :vocab="vocab" :linked="linked" :vocab-pfx="vocabPfx" :lang="lang"></form-component>
 
   <div id="result">
     <h2 v-on:click="showJSON = !showJSON">JSON
