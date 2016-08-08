@@ -1,4 +1,10 @@
 <script>
+/*
+  This component is responsible for the actual changes to the formdata.
+  It recieves modification events from other components through $dispatch calls
+  and makes changes to the bound 'focus' object accordingly.
+*/
+
 import * as _ from 'lodash';
 import LinkAdder from './linkadder';
 import FieldAdder from './fieldadder';
