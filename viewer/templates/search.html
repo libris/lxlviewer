@@ -145,17 +145,41 @@
         % set pages = 1
       % endif
 
-      % for num in range(pages)
-      % if offset == limit * num
-      <li class="active">
-        <a>${num +1}</a>
-      </li>
-      % else
+      % set currentpage = int(offset / limit)
+      % set paddedpages = 4
+
+      % if currentpage < paddedpages
+        % set paddedpages = paddedpages + (paddedpages - currentpage - 1)
+      % elif currentpage + paddedpages > pages
+        % set paddedpages = paddedpages + (currentpage + paddedpages - pages)
+      % endif
+
+      % if currentpage - paddedpages > -1
       <li>
-        <a href="${result.first['@id'] + '&offset=' + str(limit * num) }">${num +1}</a>
+        <a>..</a>
       </li>
       % endif
+
+      % for num in range(pages)
+        % if (num == currentpage) or (num == pages) or (num < currentpage and (num - currentpage) > -paddedpages) or (num > currentpage and (num - currentpage) < paddedpages)
+
+          % if currentpage == num
+            <li class="active">
+              <a>${num +1}</a>
+            </li>
+          % else
+          <li>
+            <a href="${result.first['@id'] + '&offset=' + str(limit * num) }">${num +1}</a>
+          </li>
+          % endif
+        % endif
       % endfor
+
+      % if currentpage + paddedpages < (pages)
+      <li>
+        <a>..</a>
+      </li>
+      % endif
 
       % if result.next
       <li>
