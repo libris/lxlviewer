@@ -28,53 +28,53 @@
         </div>
       </div>
 
-% if typecontrols
-  <div class="type-buttons" aria-label="Välj typ">
-    <label class="no-choice">
-      <input name="inScheme.@id" id="noneType" value="" type="radio"> Alla
-    </label>
-    % if len(result.statistics) > 0
-      % for value in result.statistics.sliceByDimension.values()
-        % for obs in value.observation
-          <label class="">
-            <input name="inScheme.@id" value="${obs.object['@id']}" type="radio">
-            % if obs.object.titleByLang
-              ${obs.object.titleByLang['sv']}
-            % elif obs.object.label
-              ${obs.object.label}
-            % elif obs.object.notation
-              ${obs.object.notation|join(', ')}
-            % endif
-          </label>
-        % endfor
-      % endfor
+    % if typecontrols
+      <div class="type-buttons" aria-label="Välj typ">
+        <label class="no-choice">
+          <input name="inScheme.@id" id="noneType" value="" type="radio"> Alla
+        </label>
+        % if len(result.statistics) > 0
+          % for value in result.statistics.sliceByDimension.values()
+            % for obs in value.observation
+              <label class="">
+                <input name="inScheme.@id" value="${obs.object['@id']}" type="radio">
+                % if obs.object.titleByLang
+                  ${obs.object.titleByLang['sv']}
+                % elif obs.object.label
+                  ${obs.object.label}
+                % elif obs.object.notation
+                  ${obs.object.notation|join(', ')}
+                % endif
+              </label>
+            % endfor
+          % endfor
+        % endif
+      </div>
     % endif
-  </div>
-% endif
 
-% if len(mapping) > 1
-<div class="activated-facets">
-  <label>
-    Aktiv filtrering
-  </label>
-  <ul>
-  % for item in mapping
-    % if item.variable != 'q'
-    <li>
-      % if item.object
-        % set label = item.object['@id']
-      % else
-        % set label = item.value
-      % endif
-      <a href="${item.up['@id']}">
-        ${label}<i class="fa fa-remove"></i>
-      </a>
-    </li>
+    % if len(mapping) > 1
+      <div class="activated-facets">
+        <label>
+          Aktiv filtrering
+        </label>
+        <ul>
+        % for item in mapping
+          % if item.variable != 'q'
+          <li>
+            % if item.object
+              % set label = item.object['@id']
+            % else
+              % set label = item.value
+            % endif
+            <a href="${item.up['@id']}">
+              ${label}<i class="fa fa-remove"></i>
+            </a>
+          </li>
+          % endif
+        % endfor
+        </ul>
+      </div>
     % endif
-  % endfor
-  </ul>
-</div>
-% endif
 
   </form>
 </div>
