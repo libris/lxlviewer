@@ -123,12 +123,6 @@ export default {
             <label for="search">SÖK</label>
             <input type="text" class="form-control" placeholder="Titel, författare, isbn..." id="search" v-model="remoteQuery">
           </div>
-          <p v-if="remoteResult.state === 'loading'">
-            <i class="fa fa-cog fa-spin"></i> Söker...
-          </p>
-          <p v-if="remoteResult.state === 'error'">
-            <i class="fa fa-close"></i> Något gick fel.
-          </p>
           <p class="small" v-if="selectedDatabases.length > 0">
             <span v-if="selectedDatabases.length == 1">Vald databas:</span>
             <span v-if="selectedDatabases.length > 1">Valda databaser:</span>
@@ -136,6 +130,12 @@ export default {
           </p>
           <p class="small" v-if="selectedDatabases.length == 0">
             <span>Ingen databas vald...</span>
+          </p>
+          <p v-if="remoteResult.state === 'error'">
+            <i class="fa fa-close"></i> Något gick fel.
+          </p>
+          <p v-if="remoteResult.state === 'loading'">
+            <i class="fa fa-cog fa-spin"></i> Söker...
           </p>
           <button v-if="selectedDatabases.length > 0 && remoteResult.state !== 'loading'" v-on:click.prevent="searchRemote()" id="searchSubmit" class="search-button btn btn-primary"><i class="fa fa-search"></i> Sök</button>
         </div>
