@@ -53,6 +53,8 @@ export function initToolbar(_context) {
 
 function getCopyItem() {
   const itemUrl = $('#itemId').text().replace('/', '');
+  if (!itemUrl) return;
+
   const copyUrl = `/${itemUrl}/data.jsonld`;
   httpUtil.get({ url: copyUrl, accept: 'application/ld+json' }).then((responseObject) => {
     // TODO: Relying on order. How can we do this in a safer way?
