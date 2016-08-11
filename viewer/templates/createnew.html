@@ -7,47 +7,14 @@
 
   <div id="app">
   <h1>Skapa ny</h1>
-  <div class="panel panel-default">
-    <div class="panel-body container-fluid choice-container dash green">
-      <div class="row">
-        <a v-for="choice in choices" href="{{choice.url}}" class="choice" v-on:click="selectedChoice = choice.trigger">
-          <div class="col-lg-4">
-            <span class="circle"><i class="icon fa fa-{{choice.icon}}" aria-hidden="true"></i></span>
-            <h2>{{choice.title}}</h2>
-            <p>{{choice.text}}</p>
-          </div>
-        </a>
-      </div>
-    </div>
-  </div>
 
-      <!-- Copy form -->
-    <div v-show="selectedChoice == 'copy'" class="panel panel-default form-container" id="copy_post">
-      <div class="panel-body container-fluid">
-        <div class="row">
-          <div class="col-md-12">
-          <label>HÄMTA</label>
-          <hr>
-          ID: <input v-model="copyId" debouce="1000"></input><br>
-          <span v-if="copy.state === 'noresult'">Hittade ingen post med id <b>{{copyId}}</b></span>
-          <span v-if="copy.state === 'invalid'">Otillåtna tecken</span>
-          <span v-if="copy.state === 'complete'">Post funnen</span><br>
-          <form method="POST" action="/edit">
-            <textarea name="item" class="hidden">{{ copy.item | json }}</textarea>
-            <button type="submit" class="btn btn-primary" v-show="copy.state === 'complete'">Skapa kopia</button>
-          </form>
-          </div>
-        </div>
-      </div>
-    </div>
-
-      <!-- Create new form -->
-    <div v-show="selectedChoice == 'from_material'" class="panel panel-default form-container" id="create_new_post">
+    <!-- Create new form -->
+    <div class="panel panel-default form-container" id="create_new_post">
       <div class="panel-body container-fluid">
         <div class="row">
           <form>
             <div class="col-md-4" v-for="(index, materialList) in materialLists" track-by="$index">
-              <h2>{{materialList.id | labelByLang}}</h2>
+              <h1>{{materialList.id | labelByLang}}</h1>
               <div class="radio" v-for="material in materialList.list">
                 <label v-on:click="setMaterial(index, material['@id'])">
                   <input name="{{materialList.id}}" type="radio" value="{{material['@id']}}">{{material['@id'] | labelByLang}}</input>

@@ -14,18 +14,13 @@ export default class CreateNew extends View {
     this.activeForm = '';
     this.transition = false;
 
-    const choices = [
-      { trigger: 'import', title: 'Importera', url: 'import', icon: 'download', text: 'Välj extern databas och importera en post som du kan använda som underlag för en ny bibliografisk instans.' },
-      { trigger: 'copy', title: 'Kopiera', icon: 'files-o', text: 'Ange Libris URI för en befintlig bibliografisk entitet som du vill ta med dig information om till en ny bibliografisk instans.' },
-      { trigger: 'from_material', title: 'Från materialtyper', icon: 'list', text: 'Välj från en lista av materialtyper och egenskaper för att skapa en ny bibliografisk instans.' },
-    ];
     const baseMaterials = [
       'CreativeWork',
       'Aggregate',
     ];
 
     VocabUtil.getVocab().then((vocab) => {
-      self.initVue(vocab, self.vocabPfx, choices, baseMaterials);
+      self.initVue(vocab, self.vocabPfx, baseMaterials);
     });
   }
 
@@ -42,7 +37,7 @@ export default class CreateNew extends View {
     return materialLists;
   }
 
-  initVue(vocab, vocabPfx, choices, baseMaterials) {
+  initVue(vocab, vocabPfx, baseMaterials) {
     const self = this;
     const materialLists = self.getMaterials(baseMaterials, vocab);
     $('#app').show();
@@ -69,26 +64,13 @@ export default class CreateNew extends View {
     const vm = new Vue({
       el: '#app',
       data: {
-        choices,
         materialLists,
-        selectedChoice: '',
         chosenMaterials: [],
         vocabPfx: 'kbv:',
         language: self.language,
         vocab,
-        copyId: '',
-        copy: { state: '', item: {} },
       },
       watch: {
-        copyId(value, oldval) {
-          if (value.length === 0 && oldval && oldval.length > 0) {
-            this.copy.state = '';
-          } else if (!/[^a-z0-9]/gi.test(value)) {
-            this.getCopyItem(value);
-          } else {
-            this.copy.state = 'invalid';
-          }
-        },
       },
       methods: {
         createNew() {
@@ -102,20 +84,6 @@ export default class CreateNew extends View {
         setMaterial(index, material) {
           const m = material.replace(vocabPfx, '');
           this.chosenMaterials.$set(index, m);
-        },
-        getCopyItem(id) {
-          this.copy.state = '';
-          const itemUrl = `/${id}/data.jsonld`;
-          httpUtil.get({ url: itemUrl, accept: 'application/ld+json' }).then((responseObject) => {
-            // TODO: Relying on order. How can we do this in a safer way?
-            responseObject['@graph'][0] = RecordUtil.stripId(responseObject['@graph'][0]);
-            responseObject['@graph'][1] = RecordUtil.stripId(responseObject['@graph'][1]);
-            this.copy.item = JSON.stringify(responseObject);
-            this.copy.state = 'complete';
-          }, (error) => {
-            this.copy.item = {};
-            this.copy.state = 'noresult';
-          });
         },
       },
       computed: {

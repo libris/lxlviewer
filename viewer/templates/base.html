@@ -40,8 +40,12 @@
         % if g.site.title == 'libris.kb.se'
           % if current_user.is_authenticated
             <li class="">
+              <a href="/import">
+                <i class="fa fa-download" aria-hidden="true"></i> Importera</a>
+            </li>
+            <li class="">
               <a href="/createnew">
-                <i class="fa fa-file-text-o" aria-hidden="true"></i> Skapa ny</a>
+                <i class="fa fa-file-text" aria-hidden="true"></i> Skapa ny</a>
             </li>
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
