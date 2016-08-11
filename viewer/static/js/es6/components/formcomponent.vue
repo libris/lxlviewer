@@ -91,7 +91,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div class="form-component">
     <ul>
       <li v-for="(k, v) in focus" v-if="v !== null">
         <span class="label">

@@ -1,6 +1,7 @@
 #appContainer {
+  margin-top: 30px;
+  margin-bottom: 60px;
   background-color: fadeout(@neutral-color,25%);
-  padding: 20px;
 
   #loadingText {
     margin: 150px 0;
@@ -11,8 +12,12 @@
 }
 
 #editorApp {
-
+  width: 100%;
   display: none;
+
+  .form-component {
+    padding: 20px;
+  }
 
   .fieldAdder {
     display: inline-block; // So that the clickaway plugin triggers nicely
@@ -249,6 +254,7 @@
 }
 
 #result {
+  padding: 20px;
   h2 {
     display: inline-block;
     cursor: pointer;
@@ -258,15 +264,30 @@
     height: 500px;
   }
 }
-
-
-#saveButton {
-
-  border: solid @brand-primary;
-  border-width: 1px 1px 0px 1px;
-  background-color: @gray-lighter;
-  box-shadow: 0px 1px 0px 0px darken(@brand-primary,25%);
+.editor-controls {
+  .row {
+    margin: 0px;
+  }
+  position: fixed;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  .controls-container {
+    padding: 15px;
+    border: solid @grey-light;
+    border-width: 1px 0px 0px 0px;
+    background-color: @grey-lighter;
+  }
+  #saveButton {
+    float: right;
+    border: solid @brand-primary;
+    border-width: 1px 1px 0px 1px;
+    background-color: @gray-lighter;
+    box-shadow: 0px 1px 0px 0px darken(@brand-primary,25%);
+  }
 }
+
+
 
 .status-text {
   &.success {

@@ -9,6 +9,7 @@ import * as VocabUtil from '../utils/vocab';
 import * as RecordUtil from '../utils/record';
 import * as UserUtil from '../utils/user';
 import FormComponent from '../components/formcomponent';
+import EditorControls from '../components/editorcontrols';
 
 export default class Editor extends View {
 
@@ -96,11 +97,13 @@ export default class Editor extends View {
         vocab,
         vocabPfx,
         lang: self.language,
-        saved: {
-          loading: false,
-          status: {
-            error: false,
-            info: '',
+        status: {
+          saved: {
+            loading: false,
+            status: {
+              error: false,
+              info: '',
+            },
           },
         },
         showJSON: false,
@@ -116,6 +119,10 @@ export default class Editor extends View {
           } else {
             console.warn('Something went wrong trying to update a focused object.');
           }
+        },
+        'save-item': function() {
+          this.status.saved.loading = true;
+          this.saveItem();
         },
       },
       methods: {
@@ -162,18 +169,21 @@ export default class Editor extends View {
           this.doRequest(httpUtil.post, obj, '/create');
         },
         doRequest(requestMethod, obj, url) {
-          this.saved.loading = true;
+          this.status.saved.loading = true;
           requestMethod({ url, token: self.access_token }, obj).then(() => {
-            self.vm.saved.loading = false;
-            self.vm.saved.status = { error: false, info: 'Everything went alright.' };
+            self.vm.status.saved.loading = false;
+            self.vm.status.saved.status = { error: false, info: '' };
+            ModalUtil.modal({ sTitle: 'Success', sContent: 'Posten blev sparad!' });
           }, (error) => {
-            self.vm.saved.loading = false;
-            self.vm.saved.status = { error: true, info: error };
+            self.vm.status.saved.loading = false;
+            self.vm.status.saved.status = { error: true, info: error };
+            ModalUtil.modal({ sTitle: 'Failure', sContent: 'Något gick fel och posten blev inte sparad.<br/>Error:' + error });
           });
         }
       },
       components: {
         'form-component': FormComponent,
+        'editor-controls': EditorControls,
       },
     });
   }
