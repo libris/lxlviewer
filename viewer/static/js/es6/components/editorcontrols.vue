@@ -19,7 +19,11 @@ export default {
   <div class="editor-controls container">
     <div class="row">
       <div class="col-md-12 controls-container">
-        <button id="saveButton" v-on:click="save()">
+        <div class="change-info pull-left">
+          <span>Skapad: {{status.created}}</span>
+          <span>Ändrad: {{status.modified}}</span>
+        </div>
+        <button id="saveButton" :disabled="!status.dirty" v-on:click="save()">
           <i class="fa fa-fw fa-cog fa-spin" v-show="status.saved.loading"></i>
           <i class="fa fa-fw fa-save" v-show="!status.saved.loading"></i>
           Spara

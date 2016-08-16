@@ -98,6 +98,9 @@ export default class Editor extends View {
         vocabPfx,
         lang: self.language,
         status: {
+          dirty: false,
+          created: meta.created,
+          modified: meta.modified,
           saved: {
             loading: false,
             status: {
