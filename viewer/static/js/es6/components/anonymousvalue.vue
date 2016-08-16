@@ -2,6 +2,7 @@
 import * as _ from 'lodash';
 import DataNode from './datanode';
 import LinkedItem from './linkeditem';
+import LinkAdder from './linkadder';
 import * as editUtil from '../utils/edit';
 
 export default {
@@ -23,6 +24,9 @@ export default {
         this.$parent.emptyValue();
       }
     },
+    removeKey(key) {
+      this.value[key] = null;
+    },
     getLinked(id) {
       return editUtil.getLinked(id, this.linked);
     },
@@ -30,6 +34,7 @@ export default {
   components: {
     'data-node': DataNode,
     'linked-item': LinkedItem,
+    'link-adder': LinkAdder,
   },
 };
 </script>
@@ -40,10 +45,10 @@ export default {
     <i class="fa fa-close" v-on:click="removeThis()"></i>
     <ul>
       <li v-for="(k, v) in value" v-if="k !== '@type'">
-        <small>{{k | labelByLang | capitalize}}</small><br>
-        <input v-if="!isPlainObject(v)" v-model="v" debounce="250"></input>
-        <!-- <data-node :value="v" :key="k" :index="index"></data-node> -->
-        <linked-item v-else :item="getLinked(v['@id'])"></linked-item>
+        <span class="label-horizontal">{{k | labelByLang | capitalize}}</span>
+        <input v-if="v !== null && !isPlainObject(v)" v-model="v" debounce="250"></input>
+        <linked-item v-if="v !== null && isPlainObject(v)" :key="k" :item="getLinked(v['@id'])"></linked-item>
+        <link-adder v-if="v === null" :key="k" :vocab="vocab" vocab-pfx=":kbv" :allow-anon="false"></link-adder>
       </li>
     </ul>
   </li>

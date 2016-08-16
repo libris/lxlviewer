@@ -6,6 +6,7 @@ export default {
   name: 'linked-item',
   props: {
     item: {},
+    key: '',
     index: Number,
   },
   computed: {
@@ -15,6 +16,8 @@ export default {
       const holder = this.$parent.value;
       if (_.isArray(holder)) {
         this.$parent.removeByIndex(this.index);
+      } else if (_.isPlainObject(holder)) {
+        this.$parent.removeKey(this.key);
       } else {
         this.$parent.emptyValue();
       }

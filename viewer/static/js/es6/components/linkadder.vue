@@ -19,6 +19,7 @@ export default {
     keyword: '',
     vocab: {},
     vocabPfx: '',
+    allowAnon: true,
   },
   components: {
     'processed-label': ProcessedLabel,
@@ -122,7 +123,7 @@ export default {
     </ul>
   </div>
 
-  <div class="link-adder">
+  <div class="link-adder" v-if="allowAnon">
     <span class="add" v-for="type in range" v-show="!active" v-on:click="addAnonymous(type)">
       <i class="fa fa-plus-circle"></i> Lägg till {{type | labelByLang | lowercase}}
     </span>

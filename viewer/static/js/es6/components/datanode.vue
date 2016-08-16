@@ -28,12 +28,12 @@ export default {
     updateArray(index, value) {
       const object = this.$el;
       this.value.$set(index, value);
-      Vue.nextTick(() => {
-        object.focus();
-      });
     },
     emptyValue() {
       this.$dispatch('update-value', this.key, {});
+    },
+    removeKey(key) {
+      this.emptyValue();
     },
     getLinked(id) {
       return editUtil.getLinked(id, this.linked);
