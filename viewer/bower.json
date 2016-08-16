@@ -2,10 +2,10 @@
   "name": "viewer",
   "version": "0.0.0",
   "dependencies": {
-    "bootstrap": "~3.1.1",
+    "bootstrap": "~3.3.7",
     "font-awesome": "~4.4.0",
     "d3": "~3.5.6",
-    "jquery": "~2.1.4",
+    "jquery": "~3.1.0",
     "kungbib-styles": "kungbib/frontend-guide#1.0.0"
   },
   "install": {
@@ -40,6 +40,7 @@
     }
   },
   "resolutions": {
-    "bootstrap": "~3.3.4"
+    "bootstrap": "~3.3.4",
+    "jquery": "~3.1.0"
   }
 }
