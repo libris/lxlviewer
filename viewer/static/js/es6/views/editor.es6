@@ -70,6 +70,10 @@ export default class Editor extends View {
       $('#editorApp').fadeIn('slow');
     });
 
+    document.getElementById('body-blocker').addEventListener('click', function () {
+      self.vm.$broadcast('close-modals');
+    }, false);
+
     Vue.filter('labelByLang', (label) => {
       // Filter for fetching labels from vocab
       let lbl = label;

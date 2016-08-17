@@ -45,6 +45,11 @@ export default {
       return filtered;
     },
   },
+  events: {
+    'close-modals': function() {
+      this.hide();
+    },
+  },
   methods: {
     isAdded(prop) {
       const pId = prop['@id'].replace(this.vocabPfx, '');
