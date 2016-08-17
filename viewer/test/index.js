@@ -12,7 +12,7 @@ require('./unit/editUtil.spec.js');
 require('./unit/vocabUtil.spec.js');
 
 // Components
-require('./unit/ldtableComponent.spec.js');
+require('./unit/formComponent.spec.js');
 
 // Views
 // require('');

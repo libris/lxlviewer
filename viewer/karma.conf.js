@@ -35,7 +35,7 @@ module.exports = function (config) {
     browserify: {
       debug: true,
       transform: ['babelify'],
-      extensions: ['.es6', '.js', '.json'],
+      extensions: ['.es6', '.js', '.json', '.vue'],
     },
 
     // test results reporter to use
