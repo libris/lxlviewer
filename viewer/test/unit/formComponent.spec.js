@@ -10,58 +10,88 @@ import * as vocab from './vocab.json';
 // Suite
 describe('Component: formcomponent', function () {
 
+  let focusObj;
+
+  function attachProps(formObj) {
+    const obj = formObj;
+    obj.focus = focusObj;
+    obj.vocab = vocab;
+    obj.linked = [];
+    obj.vocabPfx = 'kbv:';
+    return obj;
+  }
+
+  beforeEach(function() {
+    focusObj = {
+      '@type': 'Text',
+      extent: [],
+      relation: {},
+    };
+  });
+
   // Test
   it('is available', function () {
     expect(formComponent).not.to.be.null;
   });
 
-  describe('removeItem()', function() {
-    it('should remove the item from the focused object');
-  });
-  describe('addItem()', function() {
-    it('should add the item to the focused object', function () {
-      const focusObj = {
-        '@type': 'Text',
-        someKey: [],
-      };
-      const testItem = { '@id': 'gobbledygook', 'unrelatedKey': 'blahh' };
-      const testItemStripped = { '@id': 'gobbledygook' };
-      const testFocus = {
-        '@type': 'Text',
-        someKey: [testItemStripped],
-      };
+  describe('Events', function() {
+    describe('addItem()', function() {
+      it('should add the item to the focused object', function () {
+        const testItem = { '@id': 'gobbledygook', 'dimension': 'blahh' };
+        const testItemStripped = { '@id': testItem['@id'] };
+        const testFocus = {
+          '@type': 'Text',
+          extent: [testItemStripped],
+          relation: {},
+        };
 
-      const vm = new Vue({
+        const vm = new Vue({
           template: '<div><test v-ref:test-component></test></div>',
           components: {
-              'test': formComponent,
+            'test': formComponent,
           }
-      }).$mount();
+        }).$mount();
 
-      const form = vm.$refs.testComponent;
-      form.focus = focusObj;
-      form.vocab = vocab;
-      form.linked = [];
-      form.vocabPfx = 'kbv:';
+        const form = attachProps(vm.$refs.testComponent);
 
-      // Do manipulation
-      vm.$broadcast('add-item', 'someKey', testItem);
-      // Tests
-      expect(form.focus).to.deep.equal(testFocus);
-      expect(form.linked).to.include(testItem);
+        // Do manipulation
+        vm.$broadcast('add-item', 'extent', testItem);
+        // Tests
+        expect(form.focus).to.deep.equal(testFocus);
+        expect(form.linked).to.include(testItem);
+      });
+    });
+    describe('addAnonymous()', function() {
+      it('should add the item if key is array and set key to item if it is an object', function() {
+        const testItem = { '@id': 'gobbledygook', 'dimension': 'blahh' };
+
+        const vm = new Vue({
+          template: '<div><test v-ref:test-component></test></div>',
+          components: {
+            'test': formComponent,
+          }
+        }).$mount();
+        const form = attachProps(vm.$refs.testComponent);
+
+        // Do manipulation
+        vm.$broadcast('add-anonymous', 'extent', testItem);
+        vm.$broadcast('add-anonymous', 'relation', testItem);
+        // Tests
+        expect(form.focus.extent[0]).to.deep.equal(testItem);
+        expect(form.focus.relation).to.deep.equal(testItem);
+      });
     });
   });
-  describe('addAnonymous()', function() {
-    it('should add an anonymous value to the focused object');
-  });
-  describe('isEmpty()', function() {
-    it('should return true if node is empty');
-  });
-  describe('addField()', function() {
-    it('should add an empty field to the focused object');
-  });
-  describe('updateValue()', function() {
-    it('should update the value of a node');
+  describe('Methods', function() {
+    describe('isEmpty()', function() {
+      it('should return true if node is empty');
+    });
+    describe('addField()', function() {
+      it('should add an empty field to the focused object');
+    });
+    describe('updateValue()', function() {
+      it('should update the value of a node');
+    });
   });
 
 });
