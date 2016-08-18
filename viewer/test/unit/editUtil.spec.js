@@ -20,12 +20,12 @@ describe('Utility: edit', function () {
       { '@id': 'oPdedsEFvMsw' },
     ];
 
-    bibObj = { '@id': 'defmfnwEdesS', 'dimensions': null, 'extent': null };
+    bibObj = { '@id': 'defmfnwEdesS', dimensions: null, extent: null };
     metaObj = { '@id': 'mnfwSwdSsdcD' };
     mergedObj = {
       '@graph': [
         { '@id': 'mnfwSwdSsdcD' },
-        { '@id': 'defmfnwEdesS' },
+        { '@id': 'defmfnwEdesS', dimensions: null, extent: null },
         {
           '@graph': {
             '@id': 'sdflkjDFsemn',
@@ -61,7 +61,8 @@ describe('Utility: edit', function () {
 
   describe('getMergedItems()', function () {
     it('returns an object matching the same structure as input data', function () {
-      expect(editUtil.getMergedItems(metaObj, bibObj, linked)).to.deep.equal(mergedObj);
+      let result = editUtil.getMergedItems(metaObj, bibObj, linked);
+      expect(result).to.deep.equal(mergedObj);
     });
   });
 
