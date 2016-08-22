@@ -87,7 +87,7 @@ export default {
     <linked-item :item="getLinked(value['@id'])"></linked-item>
   </div>
   <div v-if="isPlainObject(value) && !value['@id']">
-    <anonymous-value :value="value" :linked="linked"></anonymous-value>
+    <anonymous-value :value="value" :linked="linked" :vocab="vocab"></anonymous-value>
   </div>
   <div v-if="!isArray(value) && !isPlainObject(value)">
     <input v-model="value" v-on:keyup="updateValue(value)"></input>
