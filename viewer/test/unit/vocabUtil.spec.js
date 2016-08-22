@@ -9,6 +9,8 @@ import * as vocab from './vocab.json';
 // Suite
 describe('Utility: vocab', function () {
 
+  const vocabPfx = 'kbv:';
+
   let textClass = {
     "@id": "kbv:text",
     "@type": [
@@ -112,14 +114,14 @@ describe('Utility: vocab', function () {
 
   // Test
   it('is available', function () {
-    expect(vocabUtil).not.to.be.null;
+    expect(VocabUtil).not.to.be.null;
   });
   describe('getClass()', function() {
     let fetchedClass = {};
 
     before(function() {
       // runs before all tests in this block
-      fetchedClass = vocabUtil.getClass('text', vocab, 'kbv:');
+      fetchedClass = VocabUtil.getClass('text', vocab, vocabPfx);
     });
 
     it('should return a vocab class as an object', function() {
@@ -137,7 +139,7 @@ describe('Utility: vocab', function () {
 
     before(function() {
       // runs before all tests in this block
-      fetchedClasses = vocabUtil.getSubClasses('CreativeWork', vocab, 'kbv:');
+      fetchedClasses = VocabUtil.getSubClasses('CreativeWork', vocab, vocabPfx);
     });
 
     it('should return a list vocab classes as an object array', function() {
