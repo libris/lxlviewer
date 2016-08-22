@@ -3,7 +3,7 @@
  */
 
 // Module
-import * as vocabUtil from '../../static/js/es6/utils/vocab';
+import * as VocabUtil from '../../static/js/es6/utils/vocab';
 import * as vocab from './vocab.json';
 
 // Suite
@@ -153,4 +153,37 @@ describe('Utility: vocab', function () {
       expect(fetchedClasses[15]).to.deep.equal(audioClass);
     });
   });
+
+  describe('getBaseClasses()', function() {
+    let baseClasses = {};
+
+    before(function() {
+      // runs before all tests in this block
+      baseClasses = VocabUtil.getBaseClasses(audioClass, vocab);
+    });
+
+    it('should return a list of class objects', function() {
+      expect(baseClasses).to.be.an('array');
+      expect(baseClasses[0]).to.be.an('object');
+    });
+
+    it('should return the correct things', function() {
+      expect(baseClasses[0]).to.equal();
+    });
+  });
+
+  describe('getRange()', function() {
+    it('should return a list of class IDs which is in range of the property provided', function() {
+      let propertyId = 'place';
+      let range = VocabUtil.getRange(propertyId, vocab, vocabPfx).sort();
+      let expectedResult = ['Place'].sort();
+      expect(range).to.eql(expectedResult);
+
+      propertyId = 'replaces';
+      range = VocabUtil.getRange(propertyId, vocab, vocabPfx).sort();
+      expectedResult = ['Concept', 'Serial'].sort();
+      expect(range).to.eql(expectedResult);
+    });
+  });
+
 });

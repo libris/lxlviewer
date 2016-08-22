@@ -46,6 +46,18 @@ export function getClass(classname, vocab, vocabPfx) {
   return _class;
 }
 
+export function getRange(propertyId, vocab, vocabPfx) {
+  const property = getClass(propertyId, vocab, vocabPfx);
+  const range = [];
+  if (!property || !property.rangeIncludes) {
+    return range;
+  }
+  for (let i = 0; i < property.rangeIncludes.length; i++) {
+    range.push(property.rangeIncludes[i]['@id'].replace(vocabPfx, ''));
+  }
+  return range;
+}
+
 export function getSubClasses(classname, vocab, vocabPfx) {
   const subClasses = _.filter(vocab.descriptions, (o) => {
     if (o.subClassOf) {

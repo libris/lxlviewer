@@ -1,6 +1,7 @@
 <script>
 import * as _ from 'lodash';
 import * as httpUtil from '../utils/http';
+import * as VocabUtil from '../utils/vocab';
 import ProcessedLabel from './processedlabel';
 import { mixin as clickaway } from 'vue-clickaway';
 
@@ -36,18 +37,8 @@ export default {
   },
   computed: {
     range() {
-      const itemId = this.vocabPfx + this.key;
-      const item = _.find(this.vocab.descriptions, (d) => { return d['@id'] === itemId });
-      if(!item && this.key !== '@type') {
-        console.warn('item', itemId,'not found in vocab');
-      }
-      const range = [];
-      if (typeof item === 'undefined' || !item.hasOwnProperty('rangeIncludes')) {
-        return [this.$parent.focus['@type']];
-      }
-      for (let i = 0; i < item.rangeIncludes.length; i++) {
-        range.push(item.rangeIncludes[i]['@id'].replace(this.vocabPfx, ''));
-      }
+      const propertyId = this.key;
+      const range = VocabUtil.getRange(propertyId, this.vocab, this.vocabPfx);
       return range;
     },
   },
