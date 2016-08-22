@@ -183,6 +183,16 @@ describe('Utility: vocab', function () {
       range = VocabUtil.getRange(propertyId, vocab, vocabPfx).sort();
       expectedResult = ['Concept', 'Serial'].sort();
       expect(range).to.eql(expectedResult);
+
+      propertyId = 'manufacture';
+      range = VocabUtil.getRange(propertyId, vocab, vocabPfx).sort();
+      expectedResult = ['Manufacture', 'ProviderEvent'].sort();
+      expect(range).to.eql(expectedResult);
+
+      propertyId = 'gobbledygook'; // Invalid
+      range = VocabUtil.getRange(propertyId, vocab, vocabPfx).sort();
+      expectedResult = [];
+      expect(range).to.eql(expectedResult);
     });
   });
 
