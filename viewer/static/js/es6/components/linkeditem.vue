@@ -34,5 +34,12 @@ export default {
     <a href="{{item['@id']}}">
       <processed-label :item="item" language="${lang}"></processed-label>
     </a> <i class="fa fa-close" v-on:click="removeThis()"></i>
+    <div class="linked-popup">
+      <div class="arrow"></div>
+      <p class="pull-left">{{item.label }}</p>
+      <p class="pull-right">{{ item['@type'] }}</p>
+      <br><hr>
+      <p>{{ item['@id'] }}</p>
+    </div>
   </div>
 </template>

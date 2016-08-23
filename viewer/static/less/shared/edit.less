@@ -223,6 +223,38 @@
           a {
             color: inherit;
           }
+          .linked-popup {
+            display: none;
+            position: absolute;
+            border: 1px solid;
+            border-color: #bdbdbd;
+            border-bottom-color: #6d6d6d;
+            background-color: #efefef;
+            border-radius: 3px;
+            color: #5a5a5a;
+            overflow-x: hidden;
+            word-wrap: break-word;
+            max-height: 130px;
+            width: 400px;
+            padding: 3px;
+            margin: 10px 0px 0px -8px;
+            .arrow {
+              position: absolute;
+              opacity: 1;
+              top: -7px;
+              left: 10px;
+              border-left: 7px solid transparent;
+              border-right: 7px solid transparent;
+              border-bottom: 7px solid #6d6d6d;
+              width: 0;
+              height: 0;
+            }
+          }
+          &:hover {
+            .linked-popup {
+              display: block;
+            }
+          }
         }
         .anonymous-value {
           > ul > li > {
