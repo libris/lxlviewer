@@ -151,8 +151,8 @@ export default class Editor extends View {
         saveItem() {
           const inputData = JSON.parse(document.getElementById('data').innerText);
           const obj = editUtil.getMergedItems(
-            editUtil.clean(this.meta),
-            editUtil.clean(this.thing),
+            editUtil.removeNullValues(this.meta),
+            editUtil.removeNullValues(this.thing),
             this.linked
           );
 
