@@ -41,9 +41,24 @@ export function getClass(classname, vocab, vocabPfx) {
   const cn = classname.replace(vocabPfx, '');
   const _class = _.find(vocab.descriptions, (d) => { return d['@id'] === vocabPfx + cn; });
   if (!_class) {
-    console.warn('class', cn, 'not found in vocab');
+    console.warn('Class not found in vocab:', cn);
   }
   return _class;
+}
+
+export function getPropertyTypes(propertyId, vocab, vocabPfx) {
+  const property = getClass(propertyId, vocab, vocabPfx);
+  if (property) {
+    const typeAttr = property['@type'].toString();
+    let types = [];
+    if (typeAttr.indexOf(',')) {
+      types = typeAttr.split(',');
+    } else {
+      types = [typeAttr];
+    }
+    return types;
+  }
+  return [];
 }
 
 export function getRange(propertyId, vocab, vocabPfx) {

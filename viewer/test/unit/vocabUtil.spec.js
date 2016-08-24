@@ -196,4 +196,18 @@ describe('Utility: vocab', function () {
     });
   });
 
+  describe('getPropertyTypes()', function() {
+    it('Should return an array of property types', function() {
+      let propertyId = 'place';
+      let types = VocabUtil.getPropertyTypes(propertyId, vocab, vocabPfx).sort();
+      let expectedResult = ['FunctionalProperty', 'ObjectProperty'].sort();
+      expect(types).to.eql(expectedResult);
+
+      propertyId = 'sameAs';
+      types = VocabUtil.getPropertyTypes(propertyId, vocab, vocabPfx).sort();
+      expectedResult = ['ObjectProperty'];
+      expect(types).to.eql(expectedResult);
+    });
+  });
+
 });
