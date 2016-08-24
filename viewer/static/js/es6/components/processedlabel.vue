@@ -20,6 +20,7 @@ export default {
         case 'Product':
           return item.edition;
         case 'Place':
+        case 'Agent':
           return item.label;
         case 'ProviderEvent':
           return item.providerName;
