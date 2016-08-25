@@ -23,6 +23,7 @@
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0",
     "vueify": "^8.5.4",
+    "moment": "^2.14.1",
     "vue": "^1.0.21",
     "lodash": "~4.13.1"
   },
@@ -38,7 +39,6 @@
     "karma-phantomjs-launcher": "^1.0.0",
     "karma-simple-browserify-preprocessor": "0.0.2",
     "mocha": "^2.5.3",
-    "moment": "^2.14.1",
     "phantomjs-prebuilt": "^2.1.7",
     "proxyquireify": "^3.2.0",
     "watch": "~0.13.0",
