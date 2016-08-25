@@ -38,7 +38,7 @@ export default {
       <div class="col-md-12 controls-container">
         <div class="change-info pull-left">
           <span class="node">Skapad {{created.date}} <span class="time-ago">({{created.timeAgo}})</span></span>
-          <span class="node">Ändrad {{modified.date}} <span class="time-ago">({{modified.timeAgo}})</span></span>
+          <span v-if="status.modified" class="node">Ändrad {{modified.date}} <span class="time-ago">({{modified.timeAgo}})</span></span>
         </div>
         <button id="saveButton" :disabled="!status.dirty" v-on:click="save()">
           <i class="fa fa-fw fa-cog fa-spin" v-show="status.saved.loading"></i>
