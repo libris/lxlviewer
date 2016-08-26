@@ -140,6 +140,89 @@
     }
   }
 
+  .field-controls {
+    height: 60px;
+    .link-adder {
+      display: inline-block;
+      float: left;
+      width: 200px;
+      .add {
+        display: block;
+        font-size: 0.8em;
+        cursor: pointer;
+        &:hover {
+          color: @brand-primary;
+        }
+      }
+    }
+  }
+  .link-container {
+    .linked {
+      display: inline-block;
+      border: solid @brand-primary;
+      border-width: 1px 1px 0px 1px;
+      background-color: darken(@brand-primary,15%);
+      box-shadow: 0px 1px 0px 0px darken(@brand-primary,25%);
+      color: @white;
+      font-size: 85%;
+      border-radius: 3px;
+      padding: 3px 6px;
+      margin: 0px;
+      a {
+        color: inherit;
+      }
+    }
+    .linked-popup {
+      display: none;
+      position: absolute;
+      border: 1px solid;
+      border-color: #bdbdbd;
+      border-bottom-color: #6d6d6d;
+      background-color: #efefef;
+      border-radius: 3px;
+      color: #5a5a5a;
+      word-wrap: break-word;
+      max-height: 130px;
+      width: 400px;
+      padding: 3px;
+      margin: 4px 0px 0px 0px;
+    }
+    .arrow {
+      opacity: 0;
+      border-left: 7px solid transparent;
+      border-right: 7px solid transparent;
+      border-bottom: 7px solid #6d6d6d;
+      margin: 0px 0px -10px 5px;
+      width: 0;
+      height: 0;
+    }
+    &:hover {
+      .arrow {
+        opacity: 1;
+      }
+      .linked-popup {
+        display: block;
+        .header {
+          border: solid @gray;
+          border-width: 0px 0px 1px 0px;
+          span {
+            display: inline-block;
+          }
+          .item-label {
+            width: 69%;
+          }
+          .item-type {
+            width: 29%;
+            font-size: 85%;
+          }
+        }
+        .body {
+
+        }
+      }
+    }
+  }
+
   ul {
     padding-left: 0px;
     li {
@@ -208,53 +291,6 @@
         input {
           padding: 0px;
           width: 100%;
-        }
-        .linked {
-          display: inline-block;
-          border: solid @brand-primary;
-          border-width: 1px 1px 0px 1px;
-          background-color: darken(@brand-primary,15%);
-          box-shadow: 0px 1px 0px 0px darken(@brand-primary,25%);
-          color: @white;
-          font-size: 85%;
-          border-radius: 3px;
-          padding: 3px 6px;
-          margin: 0px 6px 6px 0px;
-          a {
-            color: inherit;
-          }
-          .linked-popup {
-            display: none;
-            position: absolute;
-            border: 1px solid;
-            border-color: #bdbdbd;
-            border-bottom-color: #6d6d6d;
-            background-color: #efefef;
-            border-radius: 3px;
-            color: #5a5a5a;
-            overflow-x: hidden;
-            word-wrap: break-word;
-            max-height: 130px;
-            width: 400px;
-            padding: 3px;
-            margin: 10px 0px 0px -8px;
-            .arrow {
-              position: absolute;
-              opacity: 1;
-              top: -7px;
-              left: 10px;
-              border-left: 7px solid transparent;
-              border-right: 7px solid transparent;
-              border-bottom: 7px solid #6d6d6d;
-              width: 0;
-              height: 0;
-            }
-          }
-          &:hover {
-            .linked-popup {
-              display: block;
-            }
-          }
         }
         .anonymous-value {
           > ul > li > {

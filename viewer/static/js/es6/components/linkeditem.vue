@@ -30,16 +30,21 @@ export default {
 </script>
 
 <template id="linked-item">
-  <div class="linked">
-    <a href="{{item['@id']}}">
-      <processed-label :item="item" language="${lang}"></processed-label>
-    </a> <i class="fa fa-close" v-on:click="removeThis()"></i>
+  <div class="link-container">
+    <div class="linked">
+      <a href="{{item['@id']}}">
+        <processed-label :item="item" language="${lang}"></processed-label>
+      </a> <i class="fa fa-close" v-on:click="removeThis()"></i>
+    </div>
+    <div class="arrow"></div>
     <div class="linked-popup">
-      <div class="arrow"></div>
-      <p class="pull-left">{{item.label }}</p>
-      <p class="pull-right">{{ item['@type'] }}</p>
-      <br><hr>
-      <p>{{ item['@id'] }}</p>
+      <div class="header">
+        <span class="item-label"><a href="{{ item['@id'] }}">{{item.label }}</a></span>
+        <span class="item-type text-right">{{ item['@type'] | labelByLang }}</span>
+      </div>
+      <div class="body">
+        <p>En länkad pryl...</p>
+      </div>
     </div>
   </div>
 </template>
