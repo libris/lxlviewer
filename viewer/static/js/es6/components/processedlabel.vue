@@ -28,6 +28,7 @@ export default {
           return item.prefLabelByLang[this.language];
         case 'ConceptScheme':
         case 'Concept':
+        case 'Organization':
           return item.notation;
         case 'Aggregate':
           return item.title;
