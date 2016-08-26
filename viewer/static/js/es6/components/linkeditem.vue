@@ -39,11 +39,11 @@ export default {
     <div class="arrow"></div>
     <div class="linked-popup">
       <div class="header">
-        <span class="item-label"><a href="{{ item['@id'] }}">{{item.label }}</a></span>
+        <span class="item-label"><a href="{{ item['@id'] }}">{{item.label || item['@id'] }}</a></span>
         <span class="item-type text-right">{{ item['@type'] | labelByLang }}</span>
       </div>
       <div class="body">
-        <p>En länkad pryl...</p>
+        <p>{{ item | json }}</p>
       </div>
     </div>
   </div>
