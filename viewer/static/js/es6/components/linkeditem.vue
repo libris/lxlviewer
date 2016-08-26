@@ -36,7 +36,6 @@ export default {
         <processed-label :item="item" language="${lang}"></processed-label>
       </a> <i class="fa fa-close" v-on:click="removeThis()"></i>
     </div>
-    <div class="arrow"></div>
     <div class="linked-popup">
       <div class="header">
         <span class="item-label"><a href="{{ item['@id'] }}"><processed-label :item="item" language="${lang}"></processed-label></a></span>

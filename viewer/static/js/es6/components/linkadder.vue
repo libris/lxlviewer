@@ -97,7 +97,7 @@ export default {
 </script>
 
 <template>
-<div>
+<div class="field-controls">
   <div class="link-adder" v-on:click="show" v-on-clickaway="hide">
     <span class="add" v-show="!active">
       <i class="fa fa-plus-circle"></i> Lägg till länkad
