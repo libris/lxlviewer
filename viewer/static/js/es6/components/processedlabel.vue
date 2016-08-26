@@ -28,8 +28,15 @@ export default {
           return item.prefLabelByLang[this.language];
         case 'ConceptScheme':
         case 'Concept':
-        case 'Organization':
           return item.notation;
+        case 'Organization':
+          if (item.name) {
+            return item.name;
+          } else if (item.notation) {
+            return item.notation
+          } else {
+            return item['@id'];
+          }
         case 'Aggregate':
           return item.title;
         case 'PublicationVolume':
