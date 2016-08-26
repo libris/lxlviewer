@@ -10,12 +10,12 @@ export default {
     allowed: [],
     active: false,
     filterKey: '',
-    lang: '',
     item: {},
     vocabPfx: '',
   },
   computed: {
     filteredResults() {
+      const lang = this.$root.lang;
       if (!this.allowed || this.allowed.length === 0) {
         return [];
       }
@@ -30,11 +30,11 @@ export default {
         const pId = this.allowed[i].item['@id'].toString().toLowerCase();
         const pNote = this.allowed[i].item['note'].toString().toLowerCase();
         let pLabel = '';
-        if (typeof this.allowed[i].item.labelByLang !== 'undefined' && typeof this.allowed[i].item.labelByLang[this.lang] !== 'undefined') {
-          if (_.isArray(this.allowed[i].item.labelByLang[this.lang])) {
-            pLabel = this.allowed[i].item.labelByLang[this.lang][0];
+        if (typeof this.allowed[i].item.labelByLang !== 'undefined' && typeof this.allowed[i].item.labelByLang[lang] !== 'undefined') {
+          if (_.isArray(this.allowed[i].item.labelByLang[lang])) {
+            pLabel = this.allowed[i].item.labelByLang[lang][0];
           } else {
-            pLabel = this.allowed[i].item.labelByLang[this.lang];
+            pLabel = this.allowed[i].item.labelByLang[lang];
           }
         }
         pLabel = pLabel.toLowerCase();

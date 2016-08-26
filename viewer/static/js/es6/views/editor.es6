@@ -21,7 +21,7 @@ export default class Editor extends View {
     this.loadItem();
     const self = this;
     VocabUtil.getVocab().then((vocab) => {
-      self.initVue(self.thing, self.meta, self.linked, vocab, self.vocabPfx);
+      self.initVue(self.thing, self.meta, self.linked, vocab, self.vocabPfx, self.language);
     });
   }
 
@@ -64,7 +64,7 @@ export default class Editor extends View {
     this.populateHolding(this.meta, this.thing);
   }
 
-  initVue(thing, meta, linked, vocab, vocabPfx) {
+  initVue(thing, meta, linked, vocab, vocabPfx, lang) {
     const self = this;
     $('#loadingText').fadeOut('slow', function() {
       $('#editorApp').fadeIn('slow');
@@ -100,7 +100,7 @@ export default class Editor extends View {
         linked,
         vocab,
         vocabPfx,
-        lang: self.language,
+        lang,
         status: {
           dirty: false,
           created: meta.created,

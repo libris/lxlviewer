@@ -5,10 +5,10 @@ export default {
   template: '{{label}}',
   props: {
     item: {},
-    language: '',
   },
   computed: {
     label() {
+      const lang = this.$root.lang;
       const item = this.item;
       if (!_.isPlainObject(item)) {
         return item;
@@ -16,31 +16,33 @@ export default {
       let tlabel = '';
       switch (item['@type']) {
         case 'TopicalTerm':
-          return item.prefLabel;
+          tlabel = item.prefLabel;
         case 'Product':
-          return item.edition;
+          tlabel = item.edition;
         case 'Place':
         case 'Agent':
-          return item.label;
+          tlabel = item.label;
         case 'ProviderEvent':
-          return item.providerName;
+          tlabel = item.providerName;
         case 'Language':
-          return item.prefLabelByLang[this.language];
+          if (item.prefLabelByLang) {
+            tlabel = item.prefLabelByLang[lang] || '';
+          }
         case 'ConceptScheme':
         case 'Concept':
-          return item.notation;
+          tlabel = item.notation;
         case 'Organization':
           if (item.name) {
-            return item.name;
+            tlabel = item.name;
           } else if (item.notation) {
-            return item.notation
+            tlabel = item.notation
           } else {
-            return item['@id'];
+            tlabel = item['@id'];
           }
         case 'Aggregate':
-          return item.title;
+          tlabel = item.title;
         case 'PublicationVolume':
-          return item.uniformTitle;
+          tlabel = item.uniformTitle;
         case 'Person':
           if (item.givenName) {
             tlabel = `${item.givenName} ${item.familyName}`;
@@ -55,13 +57,19 @@ export default {
           } else if (item.birthYear) {
             tlabel += ` (${item.birthYear}-)`;
           }
-          return tlabel;
         default:
-          if (item['@id'] && item['@id'].length > 40) {
-            return `${item['@id'].substr(0, 37)}...`;
-          }
-          return item['@id'];
+          tlabel = item['@id'];
       }
+      if (!tlabel || tlabel.length === 0) {
+        tlabel = item['@id'];
+      }
+      if (tlabel.indexOf('//') > 0) {
+        tlabel = tlabel.split('//')[1];
+        const labelArr = tlabel.split('/');
+        labelArr.splice(0,1);
+        tlabel = labelArr.join('/');
+      }
+      return tlabel;
     },
   },
 };

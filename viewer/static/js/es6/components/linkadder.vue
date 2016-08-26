@@ -107,7 +107,7 @@ export default {
     <ul class="result" v-bind:class="{ 'active' : this.hitlistOpened }">
       <li v-if="result.length === 0">Inga resultat...</li>
       <li v-if="result.length > 0" v-for="item in result" track-by="$index">
-        <span class="plabel"><processed-label :item="item" language="${lang}"></processed-label></span>
+        <span class="plabel"><processed-label :item="item"></processed-label></span>
         <span class="id"><a href="{{ item['@id'] }}" target="_blank">{{ item["@id"] }}</a></span>
         <span class="add"><a v-on:click="add(item)">Lägg till <i class="fa fa-plus-circle"></i></a></span>
       </li>

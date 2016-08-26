@@ -18,7 +18,6 @@ export default {
     vocab: {},
     linked: {},
     vocabPfx: {},
-    lang: '',
   },
   computed: {
     allowedProperties() {
@@ -104,6 +103,6 @@ export default {
         <span class="delete" v-on:click="removeField(k)"><i class="fa fa-close"></i></span>
       </li>
     </ul>
-    <field-adder :allowed="allowedProperties" :item="focus" :vocab-pfx="vocabPfx" :lang="lang"></field-adder>
+    <field-adder :allowed="allowedProperties" :item="focus" :vocab-pfx="vocabPfx"></field-adder>
   </div>
 </template>
