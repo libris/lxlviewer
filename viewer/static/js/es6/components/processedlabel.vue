@@ -6,68 +6,82 @@ export default {
   props: {
     item: {},
   },
+  methods: {
+    formatId: function(id) {
+      // Strip domain and protocol from label
+      let label = id;
+      if (label.indexOf('http://') > -1 || label.indexOf('https://') > -1) {
+        label = label.split('//')[1];
+        const labelArr = label.split('/');
+        labelArr.splice(0,1);
+        label = labelArr.join('/');
+      }
+      return label;
+    },
+  },
   computed: {
     label() {
       const lang = this.$root.lang;
       const item = this.item;
-      if (!_.isPlainObject(item)) {
-        return item;
+      let tlabel;
+      if (item['@type']) {
+        switch (item['@type']) {
+          case 'TopicalTerm':
+            tlabel = item.prefLabel;
+            break;
+          case 'Product':
+            tlabel = item.edition;
+            break;
+          case 'Place':
+          case 'Agent':
+            tlabel = item.label;
+            break;
+          case 'ProviderEvent':
+            tlabel = item.providerName;
+            break;
+          case 'Language':
+            if (item.prefLabelByLang) {
+              tlabel = item.prefLabelByLang[lang] || '';
+            }
+            break;
+          case 'ConceptScheme':
+          case 'Concept':
+            tlabel = item.notation;
+            break;
+          case 'Organization':
+            if (item.name) {
+              tlabel = item.name;
+            } else if (item.notation) {
+              tlabel = item.notation
+            } else {
+              tlabel = item['@id'];
+            }
+            break;
+          case 'Aggregate':
+            tlabel = item.title;
+            break;
+          case 'PublicationVolume':
+            tlabel = item.uniformTitle;
+            break;
+          case 'Person':
+            if (item.givenName) {
+              tlabel = `${item.givenName} ${item.familyName}`;
+            } else {
+              tlabel = `${item.name}`;
+            }
+            if (item.numeration) {
+              tlabel += ` ${item.numeration}`
+            }
+            if (item.birthYear && item.deathYear) {
+              tlabel += ` (${item.birthYear}-${item.deathYear})`;
+            } else if (item.birthYear) {
+              tlabel += ` (${item.birthYear}-)`;
+            }
+            break;
+        }
       }
-      let tlabel = '';
-      switch (item['@type']) {
-        case 'TopicalTerm':
-          tlabel = item.prefLabel;
-        case 'Product':
-          tlabel = item.edition;
-        case 'Place':
-        case 'Agent':
-          tlabel = item.label;
-        case 'ProviderEvent':
-          tlabel = item.providerName;
-        case 'Language':
-          if (item.prefLabelByLang) {
-            tlabel = item.prefLabelByLang[lang] || '';
-          }
-        case 'ConceptScheme':
-        case 'Concept':
-          tlabel = item.notation;
-        case 'Organization':
-          if (item.name) {
-            tlabel = item.name;
-          } else if (item.notation) {
-            tlabel = item.notation
-          } else {
-            tlabel = item['@id'];
-          }
-        case 'Aggregate':
-          tlabel = item.title;
-        case 'PublicationVolume':
-          tlabel = item.uniformTitle;
-        case 'Person':
-          if (item.givenName) {
-            tlabel = `${item.givenName} ${item.familyName}`;
-          } else {
-            tlabel = `${item.name}`;
-          }
-          if (item.numeration) {
-            tlabel += ` ${item.numeration}`
-          }
-          if (item.birthYear && item.deathYear) {
-            tlabel += ` (${item.birthYear}-${item.deathYear})`;
-          } else if (item.birthYear) {
-            tlabel += ` (${item.birthYear}-)`;
-          }
-        default:
-          tlabel = item['@id'];
-      }
-      if (!tlabel || tlabel.length === 0) {
-        tlabel = item['@id'];
-      }
-      if (tlabel.indexOf('//') > 0) {
-        tlabel = tlabel.split('//')[1];
-        const labelArr = tlabel.split('/');
-        labelArr.splice(0,1);
-        tlabel = labelArr.join('/');
+      if (typeof tlabel === 'undefined' || tlabel.length === 0) {
+        tlabel = this.formatId(item['@id']);
       }
       return tlabel;
     },
