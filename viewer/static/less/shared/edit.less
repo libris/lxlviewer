@@ -195,12 +195,12 @@
       border-color: #bdbdbd;
       border-bottom-color: #6d6d6d;
       background-color: #efefef;
-      border-radius: 0px 3px 3px 3px;
+      border-radius: 3px;
       box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.3);
-      overflow: hidden;
+      overflow: scroll;
       color: #5a5a5a;
       word-wrap: break-word;
-      max-height: 130px;
+      // max-height: 130px;
       width: 400px;
       padding: 3px;
       margin: 0px;
@@ -222,10 +222,16 @@
           text-transform: uppercase;
           width: 29%;
           font-size: 75%;
+          &.unknown {
+            color: red;
+          }
         }
       }
       .body {
-
+        min-height: 2em;
+        p {
+          margin: 0px;
+        }
       }
     }
     &:hover {

@@ -39,10 +39,11 @@ export default {
     <div class="linked-popup">
       <div class="header">
         <span class="item-label"><a href="{{ item['@id'] }}"><processed-label :item="item"></processed-label></a></span>
-        <span class="item-type text-right">{{ item['@type'] | labelByLang }}</span>
+        <span class="item-type text-right" v-if="item['@type']">{{ item['@type'] | labelByLang }}</span>
+        <span class="item-type text-right unknown" v-if="!item['@type']">OKÄND TYP</span>
       </div>
       <div class="body">
-        <p>{{ item | json }}</p>
+        <p v-for="(k, v) in item" v-if="k !== '@id' && k !== '@type'"><b>{{ k }}:</b> {{ v | json }}</p>
       </div>
     </div>
   </div>
