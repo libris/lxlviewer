@@ -289,8 +289,7 @@
       >.value {
         display: inline-block;
         > div {
-          width: 700px;
-          > ul > li > {
+          > ul > li {
             display: inline-block;
           }
         }
@@ -299,7 +298,7 @@
           width: 100%;
         }
         .anonymous-value {
-          > ul > li > {
+          > ul > li {
             vertical-align: top;
           }
           .label-horizontal {
@@ -324,19 +323,32 @@
               opacity: 1;
             }
           }
-          min-width: 400px;
-          max-width: 840px;
+          width: 100%;
           margin-bottom: 0.5em;
           border-radius: 3px;
           border: 1px solid rgba(0, 0, 0, 0.1);
           background-color: fadeout(@gray-lighter, 60%);
           > ul > li {
-            margin: 0 5px 5px;
+            margin: 0 0px 5px;
             display: inline-block;
+            width: 100%;
+            padding: 0px 10px;
           }
         }
       }
     }
+  }
+}
+.form-component {
+  .node-input {
+    width: 400px;
+  }
+  .node-linked {
+
+  }
+  .node-anonymous {
+    width: 420px;
+    clear: left;
   }
 }
 

@@ -71,25 +71,25 @@ export default {
   <div v-if="isArray(value)">
     <ul>
       <li v-for="v in value">
-        <div v-if="isPlainObject(v) && v['@id']">
+        <div v-if="isPlainObject(v) && v['@id']" class="node-linked">
           <linked-item :item="getLinked(v['@id'])" :index="$index"></linked-item>
         </div>
-        <div v-if="isPlainObject(v) && !v['@id']">
+        <div v-if="isPlainObject(v) && !v['@id']" class="node-anonymous">
           <anonymous-value :value="v" :key="key" :vocab="vocab" :linked="linked"></anonymous-value>
         </div>
-        <div v-if="!isPlainObject(v)">
+        <div v-if="!isPlainObject(v)" class="node-input">
           <input v-el:input v-model="v" v-on:keyup="updateArray($index, v)"></input>
         </div>
       </li>
     </ul>
   </div>
-  <div v-if="isPlainObject(value) && value['@id']">
+  <div v-if="isPlainObject(value) && value['@id']" class="node-linked">
     <linked-item :item="getLinked(value['@id'])"></linked-item>
   </div>
-  <div v-if="isPlainObject(value) && !value['@id']">
+  <div v-if="isPlainObject(value) && !value['@id']" class="node-anonymous">
     <anonymous-value :value="value" :linked="linked" :vocab="vocab"></anonymous-value>
   </div>
-  <div v-if="!isArray(value) && !isPlainObject(value)">
+  <div v-if="!isArray(value) && !isPlainObject(value)" class="node-input">
     <input v-model="value" v-on:keyup="updateValue(value)"></input>
   </div>
 </template>
