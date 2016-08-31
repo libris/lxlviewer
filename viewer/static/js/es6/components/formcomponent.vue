@@ -60,7 +60,7 @@ export default {
       const modified = this.focus;
       if (_.isArray(modified[key])) {
         modified[key].push(item);
-      } else if (modified[key] !== 'undefined') {
+      } else if (!this.isEmptyObject(modified[key])) {
         modified[key] = [modified[key], item];
       } else {
         modified[key] = item;
