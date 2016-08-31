@@ -17,7 +17,7 @@ function request(options, data) {
     }
 
     req.onload = () => {
-      if (req.status === 200 || req.status === 204) {
+      if (req.status === 200 || req.status === 204 || req.status === 201) {
         let resp = req.response;
         if(req.getResponseHeader('Content-Type').indexOf('json') !== -1) {
           try {
