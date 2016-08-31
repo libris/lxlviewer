@@ -234,7 +234,7 @@ def thingedit(path):
 
 @app.route('/create', methods=['POST'])
 def create():
-    return _write_data(request)
+    return _write_data(request, query_params={'collection': 'xl'})
 
 @app.route('/_convert', methods=['POST'])
 def convert():
@@ -269,10 +269,11 @@ def _map_response(response):
 
 def _whelk_request(request, json_data=None, query_params=[]):
     params = {}
+    defaults = query_params if isinstance(query_params, dict) else {}
     url = '%s%s' % (app.config.get('WHELK_REST_API_URL'), request.path)
     json_data = json.dumps(json_data)
     for param in query_params:
-        params[param] = request.args.get(param)
+        params[param] = request.args.get(param) or defaults.get(param)
     # Proxy the request to rest api
     app.logger.debug('Sending proxy %s request to : %s with:\n %s' % (request.method, url, json_data))
     r = requests.request(request.method, url, data=json_data, headers=request.headers, params=params)
