@@ -8,6 +8,9 @@ export default {
   },
   methods: {
     formatId: function(id) {
+      if (typeof id === 'undefined') {
+        return '[no id]';
+      }
       // Strip domain and protocol from label
       let label = id;
       if (label.indexOf('http://') > -1 || label.indexOf('https://') > -1) {
