@@ -250,7 +250,7 @@ def _handle_modification(request, item):
     if item is None:
         return abort(404)
     if request.method == 'PUT':
-        return _write_data(request, item)
+        return _write_data(request, item, query_params={'collection': 'xl'})
     elif request.method == 'DELETE':
         return _whelk_request(request)
 
