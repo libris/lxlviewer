@@ -40,8 +40,11 @@ export default {
 <template>
   <div class="notifications" v-show="messages.length > 0">
     <ul>
-      <li v-for="msg in messages" track-by="$index" v-bind:class="{'success': msg.type == 'success', 'error': msg.type == 'error'}">
-        [{{ formattedDate(msg.time) }}] <b>{{msg.title}}</b>: {{msg.msg}} <a class="pull-right" v-on:click="remove($index)"><i class="fa fa-times"></i></a>
+      <li v-for="msg in messages" v-on:click="remove($index)" track-by="$index" v-bind:class="{ 'success': msg.type == 'success', 'error': msg.type == 'error'}">
+        <i class="msg-type fa fa-check" v-show="msg.type == 'success'"></i>
+        <i class="msg-type fa fa-times" v-show="msg.type == 'error'"></i>
+        <b>{{msg.title}}</b><span class="pull-right">[{{ formattedDate(msg.time) }}] </span>
+        <p>{{msg.msg}}</p>
       </li>
     </ul>
   </div>

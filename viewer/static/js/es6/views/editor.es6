@@ -10,7 +10,6 @@ import * as RecordUtil from '../utils/record';
 import * as UserUtil from '../utils/user';
 import FormComponent from '../components/formcomponent';
 import EditorControls from '../components/editorcontrols';
-import Notifications from '../components/notifications';
 
 export default class Editor extends View {
 
@@ -136,11 +135,9 @@ export default class Editor extends View {
         'show-message': function(messageObj) {
           const message = messageObj;
           message.time = new Date();
-
-          if (this.messages.length > 3) {
+          if (this.messages.length > 2) {
             this.messages.splice(0, 1);
           }
-          console.log(JSON.stringify(message));
           this.messages.push(message);
         },
         'remove-message': function(index) {
@@ -196,7 +193,7 @@ export default class Editor extends View {
             self.vm.status.saved.loading = false;
             self.vm.status.saved.status = { error: false, info: '' };
             this.$dispatch('show-message', {
-              title: 'Success',
+              title: 'OK!',
               msg: 'Posten blev sparad...',
               type: 'success',
             });
@@ -204,17 +201,18 @@ export default class Editor extends View {
             self.vm.status.saved.loading = false;
             self.vm.status.saved.status = { error: true, info: error };
             this.$dispatch('show-message', {
-              title: 'Error',
+              title: 'Något gick fel!',
               msg: error,
               type: 'error',
             });
           });
-        }
+        },
+      },
+      ready() {
       },
       components: {
         'form-component': FormComponent,
         'editor-controls': EditorControls,
-        'notifications': Notifications,
       },
     });
   }
