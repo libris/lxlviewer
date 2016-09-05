@@ -10,6 +10,7 @@ import * as RecordUtil from '../utils/record';
 import * as UserUtil from '../utils/user';
 import FormComponent from '../components/formcomponent';
 import EditorControls from '../components/editorcontrols';
+import Notifications from '../components/notifications';
 
 export default class Editor extends View {
 
@@ -101,6 +102,7 @@ export default class Editor extends View {
         vocab,
         vocabPfx,
         lang,
+        messages: [],
         status: {
           dirty: true,
           created: meta.created,
@@ -130,6 +132,19 @@ export default class Editor extends View {
         'save-item': function() {
           this.status.saved.loading = true;
           this.saveItem();
+        },
+        'show-message': function(messageObj) {
+          const message = messageObj;
+          message.time = new Date();
+
+          if (this.messages.length > 3) {
+            this.messages.splice(0, 1);
+          }
+          console.log(JSON.stringify(message));
+          this.messages.push(message);
+        },
+        'remove-message': function(index) {
+          this.messages.splice(index, 1);
         },
       },
       methods: {
@@ -180,17 +195,26 @@ export default class Editor extends View {
           requestMethod({ url, token: self.access_token }, obj).then(() => {
             self.vm.status.saved.loading = false;
             self.vm.status.saved.status = { error: false, info: '' };
-            ModalUtil.modal({ sTitle: 'Success', sContent: 'Posten blev sparad!' });
+            this.$dispatch('show-message', {
+              title: 'Success',
+              msg: 'Posten blev sparad...',
+              type: 'success',
+            });
           }, (error) => {
             self.vm.status.saved.loading = false;
             self.vm.status.saved.status = { error: true, info: error };
-            ModalUtil.modal({ sTitle: 'Failure', sContent: 'Något gick fel och posten blev inte sparad.<br/>Error:' + error });
+            this.$dispatch('show-message', {
+              title: 'Error',
+              msg: error,
+              type: 'error',
+            });
           });
         }
       },
       components: {
         'form-component': FormComponent,
         'editor-controls': EditorControls,
+        'notifications': Notifications,
       },
     });
   }

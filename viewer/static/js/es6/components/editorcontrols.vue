@@ -45,7 +45,6 @@ export default {
           <i class="fa fa-fw fa-save" v-show="!status.saved.loading"></i>
           Spara
         </button>
-        <span class="status-text small" v-bind:class="{'error' : status.saved.status.error, 'success' : !status.saved.status.error }" v-show="!status.saved.loading && status.saved.status.info">{{ status.saved.status.info }}</span>
       </div>
     </div>
   </div>

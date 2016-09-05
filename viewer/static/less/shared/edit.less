@@ -437,3 +437,33 @@
     }
   }
 }
+
+.notifications {
+  position: fixed;
+  left: 25%;
+  bottom: 80px;
+  width: 50%;
+  ul {
+    li {
+      border: 1px solid @brand-primary;
+      background-color: @neutral-color;
+      margin: 10px 0px;
+      padding: 7px;
+      border-radius: 4px;
+      box-shadow: 0px 5px 9px 0px rgba(0,0,0,0.2);
+      a {
+        cursor: pointer;
+        font-weight: bold;
+        color: inherit;
+      }
+      &.success {
+        background-color: @brand-success;
+        border-color: darken(@brand-success,25%);
+      }
+      &.error {
+        background-color: @brand-danger;
+        border-color: darken(@brand-danger,25%);
+      }
+    }
+  }
+}
