@@ -9,6 +9,13 @@ export default {
     key: '',
     index: Number,
   },
+  data() {
+    return {
+      popup: {
+        active: false,
+      }
+    }
+  },
   computed: {
   },
   methods: {
@@ -30,13 +37,13 @@ export default {
 </script>
 
 <template id="linked-item">
-  <div class="link-container">
+  <div class="link-container" v-on:mouseover="popup.active = true" v-on:mouseout="popup.active = false">
     <div class="linked">
       <a href="{{item['@id']}}">
         <processed-label :item="item"></processed-label>
       </a> <i class="delete fa fa-close" v-on:click="removeThis()"></i>
     </div>
-    <div class="linked-popup">
+    <div class="linked-popup" v-show="popup.active" transition="fade">
       <div class="header">
         <span class="item-label"><a href="{{ item['@id'] }}"><processed-label :item="item"></processed-label></a></span>
         <span class="item-type text-right" v-if="item['@type']">{{ item['@type'] | labelByLang }}</span>

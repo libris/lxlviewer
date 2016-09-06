@@ -193,7 +193,6 @@
       }
     }
     .linked-popup {
-      display: none;
       position: absolute;
       border: 1px solid;
       border-color: #bdbdbd;
@@ -204,7 +203,6 @@
       overflow: scroll;
       color: #5a5a5a;
       word-wrap: break-word;
-      // max-height: 130px;
       width: 400px;
       padding: 3px;
       margin: 0px;
@@ -233,11 +231,6 @@
         p {
           margin: 0px;
         }
-      }
-    }
-    &:hover {
-      .linked-popup {
-        display: block;
       }
     }
   }
@@ -449,7 +442,6 @@
       padding: 7px 15px;
       font-size: 14px;
       transition: 1s ease opacity;
-      opacity: 1;
       a {
         cursor: pointer;
         font-weight: bold;
@@ -470,4 +462,19 @@
       }
     }
   }
+}
+
+/* TRANSITION THINGS BELOW */
+
+/* always present */
+.fade-transition {
+  transition: all 0.1s ease;
+  transition-delay: 0.3s;
+  background-color: #eee;
+  overflow: hidden;
+}
+/* .fade-enter defines the starting state for entering */
+/* .fade-leave defines the ending state for leaving */
+.fade-enter, .fade-leave {
+  opacity: 0;
 }
