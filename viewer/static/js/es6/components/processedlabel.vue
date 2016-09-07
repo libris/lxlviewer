@@ -61,6 +61,7 @@ export default {
             }
             break;
           case 'Aggregate':
+          case 'UniformWork':
             tlabel = item.title;
             break;
           case 'PublicationVolume':
