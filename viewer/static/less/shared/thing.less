@@ -18,7 +18,7 @@
   >.panel-title {
     transition: color ease 0.2s;
     color: @thing-header-text;
-    text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.4);
+    //text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.4);
   }
   >.panel-heading-meta {
     height: 16px;
@@ -73,6 +73,7 @@
   float: left;
   &:hover {
     text-decoration: none;
+    text-shadow: none;
     border-bottom: 1px dashed;
   }
 }
@@ -238,9 +239,9 @@ body#thing {
     display: inline-block;
     float: left;
     margin: 5px;
-    border: 1px solid @accent-color;
+    //border: 1px solid @accent-color;
     > .panel-heading {
-      background-color: @neutral-color;
+      background-color: @gray-lighter;
       border-radius: 3px;
       border-width: 0px;
       overflow-x: hidden;
@@ -348,6 +349,7 @@ body#thing {
         color: @gray-darker;
         >.toolbar {
           opacity: 0;
+
         }
         >.thing-id {
           opacity: 0;
