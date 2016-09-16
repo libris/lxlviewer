@@ -239,9 +239,15 @@ body#thing {
     display: inline-block;
     float: left;
     margin: 5px;
+    &:first-child {
+      margin-left: 0 !important;
+      }
     //border: 1px solid @accent-color;
     > .panel-heading {
       background-color: @gray-lighter;
+      &:hover {
+        background-color: darken(@gray-lighter, 5%);
+      }
       border-radius: 3px;
       border-width: 0px;
       overflow-x: hidden;
@@ -427,7 +433,12 @@ body#thing {
         background-color: @neutral-color;
         h4 {
           margin: 0;
+          font-size: 14px;
+          text-transform: uppercase;
         }
+      }
+      .panel-title {
+        word-break:break-all;
       }
       >.panel-body {
         background-color: @dl-gray;
