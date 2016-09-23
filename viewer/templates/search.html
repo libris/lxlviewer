@@ -95,14 +95,14 @@
     <div class="search-details">
       <span class="search-keyword">
         % if q and result.totalItems > 0
-          Sökning på <i>"${q | safe | trim}"</i>
+          Sökning på <span class="query">${q | safe | trim}</span>
           % if result.totalItems
             gav ${result.totalItems} träffar.
           % endif
         % elif result.value
           Sökning ${result.value}
         % else
-          Sökning på <i>"${q | safe | trim}"</i> gav inga träffar.
+          Sökning på <span class="query">${q | safe | trim}</span> gav inga träffar.
         % endif
       </span>
       <span class="search-items-per-page pull-right">
@@ -119,20 +119,20 @@
       <ul class="pagination">
       % if result.first and result.previous
       <li>
-        <a href="${result.first['@id']}">Första</a>
+        <a href="${result.first['@id']}"><i class="fa fa-fast-backward" aria-hidden="true"></i> Första</a>
       </li>
       % else
       <li class="disabled">
-        <a>Första</a>
+        <a><i class="fa fa-fast-backward" aria-hidden="true"></i> Första</a>
       </li>
       % endif
       % if result.previous
       <li>
-        <a href="${result.previous['@id']}">Föregående</a>
+        <a href="${result.previous['@id']}"><i class="fa fa-backward" aria-hidden="true"></i> Föregående</a>
       </li>
       % else
       <li class="disabled">
-        <a>Föregående</a>
+        <a><i class="fa fa-backward" aria-hidden="true"></i> Föregående</a>
       </li>
       % endif
 
@@ -183,20 +183,20 @@
 
       % if result.next
       <li>
-        <a href="${result.next['@id']}">Nästa</a>
+        <a href="${result.next['@id']}">Nästa <i class="fa fa-forward" aria-hidden="true"></i></a>
       </li>
       % else
       <li class="disabled">
-        <a>Nästa</a>
+        <a>Nästa <i class="fa fa-forward" aria-hidden="true"></i></a>
       </li>
       % endif
       % if result.last and result.next
       <li>
-        <a href="${result.last['@id']}">Sista</a>
+        <a href="${result.last['@id']}">Sista <i class="fa fa-fast-forward" aria-hidden="true"></i></a>
       </li>
       % else
       <li class="disabled">
-        <a>Sista</a>
+        <a>Sista <i class="fa fa-fast-forward" aria-hidden="true"></i></a>
       </li>
       % endif
       </ul>
