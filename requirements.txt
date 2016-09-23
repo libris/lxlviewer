@@ -6,4 +6,4 @@ rdflib-jsonld==0.3
 requests==2.5.1
 requests_oauthlib==0.6.1
 psycopg2==2.6
-elasticsearch==2.2.0
+elasticsearch==2.4.0
