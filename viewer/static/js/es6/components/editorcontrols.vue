@@ -40,7 +40,7 @@ export default {
   <div class="editor-controls container">
     <div class="row">
       <div class="col-md-4 col-md-offset-8">
-        <notifications :messages="messages"></notifications>
+        <!-- <notifications :messages="messages"></notifications> -->
       </div>
       <div class="col-md-12 controls-container">
         <div class="change-info pull-left">
