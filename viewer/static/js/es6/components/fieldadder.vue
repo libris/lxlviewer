@@ -58,6 +58,11 @@ export default {
     },
     addField(prop) {
       this.$dispatch('add-field', prop);
+      this.$dispatch('show-message', {
+        title: 'Test',
+        msg: 'Added field',
+        type: 'success',
+      });
     },
     show() {
       LayoutUtil.scrollLock(true);

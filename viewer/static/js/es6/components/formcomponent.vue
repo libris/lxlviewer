@@ -10,23 +10,32 @@ import LinkAdder from './linkadder';
 import FieldAdder from './fieldadder';
 import DataNode from './datanode';
 import LinkedItem from './linkeditem';
-import * as VocabUtil from '../utils/vocab'
+import * as VocabUtil from '../utils/vocab';
+import { syncPost } from '../vuex/actions';
+import { getVocabulary, getSettings } from '../vuex/getters';
 
 export default {
+  vuex: {
+    actions: {
+      sync: syncPost,
+    },
+    getters: {
+      vocab: getVocabulary,
+      settings: getSettings,
+    }
+  },
   props: {
     focus: {},
-    vocab: {},
     linked: {},
-    vocabPfx: {},
   },
   computed: {
     allowedProperties() {
-      return VocabUtil.getInheritedProperties(this.focus['@type'], this.vocab, this.vocabPfx);
+      return VocabUtil.getInheritedProperties(this.focus['@type'], this.vocab, this.settings.vocabPfx);
     },
   },
   watch: {
     'focus': function(val, oldval) {
-      this.$dispatch('focus-update', val, oldval);
+      // this.$dispatch('focus-update', val, oldval);
     },
   },
   events: {
@@ -39,6 +48,7 @@ export default {
         newItem[key] = '';
       }
       this.focus = Object.assign({}, this.focus, newItem);
+      this.$dispatch('check-changes');
     },
     'add-item': function (key, item) {
       this.linked.push(item);
@@ -46,15 +56,18 @@ export default {
       const newItem = { '@id': item['@id'] };
       modified[key].push(newItem);
       this.focus = Object.assign({}, this.focus, modified);
+      this.$dispatch('check-changes');
     },
     'remove-item': function (key, item) {
       const keyWithout = _.reject(this.focus[key], (o) => o === item);
       const modified = this.focus;
       modified[key] = keyWithout;
       this.focus = Object.assign({}, this.focus, modified);
+      this.$dispatch('check-changes');
     },
     'update-value': function (key, value) {
       this.focus[key] = value;
+      this.$dispatch('check-changes');
     },
     'add-anonymous': function (key, item) {
       const modified = this.focus;
@@ -66,6 +79,7 @@ export default {
         modified[key] = item;
       }
       this.focus = Object.assign(this.focus, modified);
+      this.$dispatch('check-changes');
     },
   },
   methods: {
@@ -80,6 +94,10 @@ export default {
     },
     removeField(prop) {
       this.$dispatch('update-value', prop, null);
+    },
+    isRepeatable(property) {
+      const types = VocabUtil.getPropertyTypes(property, this.vocab, this.settings.vocabPfx);
+      return types.indexOf('FunctionalProperty') < 0;
     },
   },
   components: {
@@ -99,8 +117,8 @@ export default {
           <a href="/vocab/#{{k}}">{{ k | labelByLang | capitalize }}</a>
         </span>
         <span class="value">
-          <data-node v-if="!isEmptyObject(v)" :key="k" :value="v" :linked="linked" :vocab="vocab"></data-node>
-          <link-adder v-if="isArray(v) || isEmptyObject(v)" :key="k" :vocab="vocab" :vocab-pfx="vocabPfx" :allow-anon="true"></link-adder>
+          <data-node v-if="!isEmptyObject(v)" :key="k" :value="v" :linked="linked" :vocab="vocab" :vocab-pfx="vocabPfx"></data-node>
+          <link-adder v-if="isRepeatable(k) || isEmptyObject(v)" :key="k" :vocab="vocab" :vocab-pfx="vocabPfx" :allow-anon="true"></link-adder>
         </span>
         <span class="delete" v-on:click="removeField(k)"><i class="fa fa-close"></i></span>
       </li>

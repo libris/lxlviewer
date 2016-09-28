@@ -1,5 +1,7 @@
 import View from './view';
 import Vue from 'vue';
+import Vuex from 'vuex';
+import store from '../vuex/store';
 import * as editUtil from '../utils/edit';
 import * as httpUtil from '../utils/http';
 import * as toolbarUtil from '../utils/toolbar';
@@ -10,6 +12,8 @@ import * as RecordUtil from '../utils/record';
 import * as UserUtil from '../utils/user';
 import FormComponent from '../components/formcomponent';
 import EditorControls from '../components/editorcontrols';
+import { getSettings, getVocabulary, getEditorData } from '../vuex/getters';
+import { changeSettings, loadVocab, syncData } from '../vuex/actions';
 
 export default class Editor extends View {
 
@@ -17,11 +21,17 @@ export default class Editor extends View {
     super.initialize();
     VocabLoader.initVocabClicks();
     toolbarUtil.initToolbar(this);
-
     this.loadItem();
     const self = this;
+
+    self.settings = {
+      lang: 'sv',
+      vocabPfx: 'kbv:',
+    };
+
     VocabUtil.getVocab().then((vocab) => {
-      self.initVue(self.thing, self.meta, self.linked, vocab, self.vocabPfx, self.language);
+      self.vocab = vocab;
+      self.initVue();
     });
   }
 
@@ -31,40 +41,44 @@ export default class Editor extends View {
   }
 
   loadItem() {
+    let dataObj = {};
     // Retrieves the data and splits it into a thing obj and array with links
-    this.data = JSON.parse(document.getElementById('data').innerText)['@graph'];
+    this.originalData = JSON.parse(document.getElementById('data').innerText)['@graph'];
 
     // TODO: Relying on order here... tsk tsk tsk.
-    this.meta = this.data[0];
-    this.data.splice(0, 1);
+    dataObj.meta = this.originalData[0];
+    this.originalData.splice(0, 1);
 
     // TODO: Do something else!
     console.warn('Finding focused item node by @id.indexOf("#it"). This approach is not reliable.');
-    for (let i = 0; i < this.data.length; i++) {
-      if (this.data[i]['@id'] && this.data[i]['@id'].indexOf('#it') !== -1) {
-        this.thing = this.data[i];
-        this.data.splice(i, 1);
+    for (let i = 0; i < this.originalData.length; i++) {
+      if (this.originalData[i]['@id'] && this.originalData[i]['@id'].indexOf('#it') !== -1) {
+        dataObj.thing = this.originalData[i];
+        this.originalData.splice(i, 1);
         break;
       }
     }
-    if(!this.thing && this.data.length >= 0) {
-      this.thing = this.data[0];
-      this.data.splice(0, 1);
+    if(!dataObj.thing && this.originalData.length >= 0) {
+      dataObj.thing = this.originalData[0];
+      this.originalData.splice(0, 1);
     }
 
-    this.linked = [];
-    for (let i = 0; i < this.data.length; i++) {
-      if (this.data[i].hasOwnProperty('@graph')) {
-        this.linked.push(this.data[i]['@graph']);
+    dataObj.linked = [];
+    for (let i = 0; i < this.originalData.length; i++) {
+      if (this.originalData[i].hasOwnProperty('@graph')) {
+        dataObj.linked.push(this.originalData[i]['@graph']);
       } else {
-        this.linked.push(this.data[i]);
+        dataObj.linked.push(this.originalData[i]);
       }
     }
 
-    this.populateHolding(this.meta, this.thing);
+    // HOLDING FORM
+    // this.populateHolding(this.meta, this.thing);
+
+    this.dataIn = dataObj;
   }
 
-  initVue(thing, meta, linked, vocab, vocabPfx, lang) {
+  initVue() {
     const self = this;
     $('#loadingText').fadeOut('slow', function() {
       $('#editorApp').fadeIn('slow');
@@ -75,15 +89,17 @@ export default class Editor extends View {
     }, false);
 
     Vue.filter('labelByLang', (label) => {
+      const pfx = self.settings.vocabPfx;
+      const lang = self.settings.lang;
       // Filter for fetching labels from vocab
       let lbl = label;
-      if (lbl && lbl.indexOf(vocabPfx) !== -1) {
-        lbl = lbl.replace(vocabPfx, '');
+      if (lbl && lbl.indexOf(pfx) !== -1) {
+        lbl = lbl.replace(pfx, '');
       }
-      const item = _.find(vocab.descriptions, (d) => { return d['@id'] === `${vocabPfx}${lbl}`; });
+      const item = _.find(self.vocab.descriptions, (d) => { return d['@id'] === `${pfx}${lbl}`; });
       let labelByLang = '';
       if (typeof item !== 'undefined' && item.labelByLang) {
-        labelByLang = item.labelByLang[self.language];
+        labelByLang = item.labelByLang[lang];
       }
       // Check if we have something of value
       if (labelByLang.length > 0) {
@@ -92,20 +108,26 @@ export default class Editor extends View {
       return lbl;
     });
 
+    Vue.use(Vuex);
+
     self.vm = new Vue({
       el: '#editorApp',
+      vuex: {
+        actions: {
+          syncData,
+          loadVocab,
+          changeSettings,
+        },
+        getters: {
+          settings: getSettings,
+          editorData: getEditorData,
+          vocab: getVocabulary,
+        },
+      },
       data: {
-        thing,
-        meta,
-        linked,
-        vocab,
-        vocabPfx,
-        lang,
-        messages: [],
+        initialized: false,
         status: {
           dirty: true,
-          created: meta.created,
-          modified: meta.modified,
           saved: {
             loading: false,
             status: {
@@ -116,32 +138,51 @@ export default class Editor extends View {
         },
         showJSON: false,
       },
-      ready() {
-      },
       events: {
         'focus-update': function(value, oldValue) {
-          if (oldValue === this.meta) {
-            this.$set('meta', value);
-          } else if (oldValue === this.thing) {
-            this.$set('thing', value);
+          const newData = this.editorData;
+          console.log("Update");
+          if (oldValue === this.editorData.meta) {
+            newData.meta = value;
+            // this.$set('meta', value);
+          } else if (oldValue === this.editorData.thing) {
+            newData.thing = value;
+            // this.$set('thing', value);
           } else {
             console.warn('Something went wrong trying to update a focused object.');
           }
+          this.syncData(newData);
         },
         'save-item': function() {
           this.status.saved.loading = true;
           this.saveItem();
         },
-        'show-message': function(messageObj) {
-          const message = messageObj;
-          message.time = new Date();
-          if (this.messages.length > 2) {
-            this.messages.splice(0, 1);
+        'check-changes': function() {
+          const inputData = JSON.parse(document.getElementById('data').innerText);
+          const obj = editUtil.getMergedItems(
+            editUtil.removeNullValues(this.editorData.meta),
+            editUtil.removeNullValues(this.editorData.thing),
+            this.editorData.linked
+          );
+          if (JSON.stringify(obj) === JSON.stringify(inputData)) {
+            this.status.dirty = false;
+          } else {
+            this.status.dirty = true;
           }
-          this.messages.push(message);
         },
-        'remove-message': function(index) {
-          this.messages.splice(index, 1);
+        'show-message': function(messageObj) {
+          console.log("Should show notification", JSON.stringify(messageObj));
+        },
+      },
+      watch: {
+        copyId(value, oldval) {
+          if (value.length === 0 && oldval && oldval.length > 0) {
+            this.copy.state = '';
+          } else if (!/[^a-z0-9]/gi.test(value)) {
+            this.getCopyItem(value);
+          } else {
+            this.copy.state = 'invalid';
+          }
         },
       },
       methods: {
@@ -157,29 +198,32 @@ export default class Editor extends View {
             token: self.access_token
           },
             // Use clean method on args
-            editUtil.getMergedItems(this.meta, this.thing, this.linked)
+            editUtil.getMergedItems(this.editorData.meta, this.editorData.thing, this.editorData.linked)
           );
         },
         saveItem() {
           const inputData = JSON.parse(document.getElementById('data').innerText);
           const obj = editUtil.getMergedItems(
-            editUtil.removeNullValues(this.meta),
-            editUtil.removeNullValues(this.thing),
-            this.linked
+            editUtil.removeNullValues(this.editorData.meta),
+            editUtil.removeNullValues(this.editorData.thing),
+            this.editorData.linked
           );
+          console.log(JSON.stringify(inputData));
+          console.log(JSON.stringify(obj));
 
-         // if (JSON.stringify(obj) === JSON.stringify(inputData)) {
-            console.warn("No changes done, skipping to save. Time to tell the user?");
-         // } else {
-            const atId = this.thing['@id'];
+          // if (JSON.stringify(obj) === JSON.stringify(inputData)) {
+          //   console.warn("No changes done, skipping to save. Time to tell the user?");
+          // } else {
+            const atId = this.editorData.meta['@id'];
+            console.log(atId);
             if(atId) {
               console.log("Save called WITH changes.");
               this.doSave(atId, obj);
             } else {
-              console.log("Crete called WITH changes.");
+              console.log("Create called WITH changes.");
               this.doCreate(obj);
             }
-          //}
+          // }
         },
         doSave(url, obj) {
           this.doRequest(httpUtil.put, obj, url);
@@ -209,11 +253,16 @@ export default class Editor extends View {
         },
       },
       ready() {
+        this.changeSettings(self.settings);
+        this.loadVocab(self.vocab);
+        this.syncData(self.dataIn);
+        this.initialized = true;
       },
       components: {
         'form-component': FormComponent,
         'editor-controls': EditorControls,
       },
+      store,
     });
   }
 }

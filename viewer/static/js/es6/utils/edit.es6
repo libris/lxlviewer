@@ -6,6 +6,7 @@ export function getLinked(id, linked) {
       }
     }
   }
+  console.warn(`Linked item not found:`, id);
   return { '@id': id };
 }
 
@@ -24,7 +25,7 @@ export function removeNullValues(obj) {
   const cleanObj = {};
   for (const key in obj) {
     if (obj.hasOwnProperty(key)) {
-      if (obj[key] !== null) {
+      if (obj[key] !== null && obj[key] !== '') {
         cleanObj[key] = obj[key];
       }
     }

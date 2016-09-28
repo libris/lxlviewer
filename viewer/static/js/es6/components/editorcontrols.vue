@@ -9,6 +9,7 @@ export default {
   props: [
     'status',
     'messages',
+    'editor-data',
   ],
   methods: {
     save() {
@@ -18,14 +19,14 @@ export default {
   computed: {
     modified: function() {
       return {
-        date: moment(this.status.modified).format('lll'),
-        timeAgo: moment(this.status.modified).fromNow(),
+        date: moment(this.editorData.meta.modified).format('lll'),
+        timeAgo: moment(this.editorData.meta.modified).fromNow(),
       };
     },
     created: function() {
       return {
-        date: moment(this.status.created).format('lll'),
-        timeAgo: moment(this.status.created).fromNow(),
+        date: moment(this.editorData.meta.created).format('lll'),
+        timeAgo: moment(this.editorData.meta.created).fromNow(),
       };
     },
   },
@@ -43,8 +44,8 @@ export default {
       </div>
       <div class="col-md-12 controls-container">
         <div class="change-info pull-left">
-          <span v-if="status.created" class="node">Skapad {{created.date}} <span class="time-ago">({{created.timeAgo}})</span></span>
-          <span v-if="status.modified" class="node">Ändrad {{modified.date}} <span class="time-ago">({{modified.timeAgo}})</span></span>
+          <span v-if="editorData.meta.created" class="node">Skapad {{created.date}} <span class="time-ago">({{created.timeAgo}})</span></span>
+          <span v-if="editorData.meta.modified" class="node">Ändrad {{modified.date}} <span class="time-ago">({{modified.timeAgo}})</span></span>
         </div>
         <button id="saveButton" v-on:click="save()">
           <i class="fa fa-fw fa-cog fa-spin" v-show="status.saved.loading"></i>

@@ -4,14 +4,20 @@ import ProcessedLabel from './processedlabel';
 import AnonymousValue from './anonymousvalue';
 import LinkedItem from './linkeditem';
 import * as editUtil from '../utils/edit';
+import * as VocabUtil from '../utils/vocab';
 
 export default {
   name: 'data-node',
-  props: ['key', 'value', 'vocab', 'label', 'linked'],
+  props: ['key', 'value', 'vocab', 'vocab-pfx', 'label', 'linked'],
   components: {
     'processed-label': ProcessedLabel,
     'anonymous-value': AnonymousValue,
     'linked-item': LinkedItem,
+  },
+  computed: {
+    propertyTypes: function () {
+      return VocabUtil.getPropertyTypes(this.key, this.vocab, this.vocabPfx);
+    }
   },
   methods: {
     isMarc(key) {

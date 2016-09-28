@@ -144,7 +144,9 @@ export function getInheritedProperties(classArray, vocab, vocabPfx) {
   let classes = [];
   for (let t = 0; t < types.length; t++) {
     const c = getClass(types[t], vocab, vocabPfx);
-    classes.push(c);
+    if (typeof c !== 'undefined') {
+      classes.push(c);
+    }
     classes = classes.concat(getBaseClasses(c, vocab, vocabPfx));
   }
   const classNames = [];

@@ -25,12 +25,12 @@
     <header class="panel-heading panel-title">
       <div class="panel-heading-meta">Redigerar:</div>
       <div class="panel-title">
-        <div class="thing-label">{{meta.prefLabel || meta['@id'] || 'Namnlös'}}</div>
+        <div class="thing-label" v-if="initialized == true">{{ editorData.meta.prefLabel || editorData.meta['@id'] || 'Namnlös'}}</div>
       </div>
     </header>
   </div>
-  <form-component :focus="meta" :vocab="vocab" :linked="linked" :vocab-pfx="vocabPfx" :lang="lang"></form-component>
-  <form-component :focus="thing" :vocab="vocab" :linked="linked" :vocab-pfx="vocabPfx" :lang="lang"></form-component>
+  <form-component :focus="editorData.meta" :linked="editorData.linked" v-if="initialized == true"></form-component>
+  <form-component :focus="editorData.thing" :linked="editorData.linked"  v-if="initialized == true"></form-component>
 
   <div id="result">
     <h2 v-on:click="showJSON = !showJSON">JSON
@@ -38,17 +38,17 @@
     <i class="fa" v-bind:class="{'fa-chevron-right': !showJSON, 'fa-chevron-down': showJSON}"></i>
     <div v-show="showJSON">
       <h3>Systemdata</h3>
-    <textarea v-model="meta | json">
+    <textarea v-model="editorData.meta | json">
     </textarea>
       <h3>Metadata</h3>
-    <textarea v-model="thing | json">
+    <textarea v-model="editorData.thing | json">
     </textarea>
     </div>
     <!-- <h2>Linked</h2>
     <textarea v-model="linked | json">
     </textarea> -->
   </div>
-  <editor-controls :status="status" :messages="messages"></editor-controls>
+  <editor-controls :status="status" :editor-data="editorData" :messages="messages" v-if="initialized == true"></editor-controls>
 </div>
 </div>
 

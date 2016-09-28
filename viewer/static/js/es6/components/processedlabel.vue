@@ -6,6 +6,13 @@ export default {
   props: {
     item: {},
   },
+  vuex: {
+    getters: {
+      lang: function (state) {
+        return state.settings.lang;
+      },
+    },
+  },
   methods: {
     formatId: function(id) {
       if (typeof id === 'undefined') {
@@ -24,7 +31,7 @@ export default {
   },
   computed: {
     label() {
-      const lang = this.$root.lang;
+      const lang = this.lang;
       const item = this.item;
       let tlabel;
       if (item['@type']) {
