@@ -9,7 +9,7 @@
 <div class="jumbotron">
   <!-- <div class="container">
     <div class="col-md-push-2 col-md-8 text-black">
-      
+
     </div>
   </div> -->
 </div>
@@ -26,7 +26,8 @@
   </div>
   <div class="col-md-8">
     ${search.search_controls(thing, true) }
-  
+
+  % if thing.statistics.sliceByDimension
   <!-- <div class="col-md-12">
     <div class="panel panel-default scheme-item">
       <div class="col-md-12 main-nav">
@@ -50,11 +51,12 @@
     </div>
   </div> -->
 
-  % for value in thing.statistics.sliceByDimension.values()
-    % for obs in value.observation
-      ${view_observation(obs)}
+    % for value in thing.statistics.sliceByDimension.values()
+      % for obs in value.observation
+        ${view_observation(obs)}
+      % endfor
     % endfor
-  % endfor
+  % endif
   </div>
 </div>
 
