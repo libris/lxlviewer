@@ -194,6 +194,9 @@
     }
     .linked-popup {
       position: absolute;
+      opacity: 0;
+      left: -9999px;
+      transition: opacity 0.3s ease;
       border: 1px solid;
       border-color: #bdbdbd;
       border-bottom-color: #6d6d6d;
@@ -213,7 +216,7 @@
           display: inline-block;
         }
         .item-label {
-          width: 69%;
+          width: 59%;
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
@@ -222,7 +225,7 @@
         .item-type {
           font-weight: bold;
           text-transform: uppercase;
-          width: 29%;
+          width: 39%;
           font-size: 75%;
         }
       }
@@ -231,6 +234,14 @@
         p {
           margin: 0px;
         }
+      }
+    }
+    &:hover {
+      .linked-popup {
+        transition-delay: 0.5s;
+        display: block;
+        opacity: 1;
+        left: auto;
       }
     }
   }
