@@ -21,7 +21,7 @@ export default class Editor extends View {
     super.initialize();
     VocabLoader.initVocabClicks();
     toolbarUtil.initToolbar(this);
-    this.loadItem();
+    this.dataIn = this.loadItem(JSON.parse(document.getElementById('data').innerText)['@graph']);
     const self = this;
 
     self.settings = {
@@ -40,10 +40,10 @@ export default class Editor extends View {
     $('#holdingItem').text(emptyHolding);
   }
 
-  loadItem() {
+  loadItem(data) {
     let dataObj = {};
     // Retrieves the data and splits it into a thing obj and array with links
-    this.originalData = JSON.parse(document.getElementById('data').innerText)['@graph'];
+    this.originalData = data;
 
     // TODO: Relying on order here... tsk tsk tsk.
     dataObj.meta = this.originalData[0];
@@ -75,7 +75,7 @@ export default class Editor extends View {
     // HOLDING FORM
     // this.populateHolding(this.meta, this.thing);
 
-    this.dataIn = dataObj;
+    return dataObj;
   }
 
   initVue() {
@@ -208,8 +208,6 @@ export default class Editor extends View {
             editUtil.removeNullValues(this.editorData.thing),
             this.editorData.linked
           );
-          console.log(JSON.stringify(inputData));
-          console.log(JSON.stringify(obj));
 
           // if (JSON.stringify(obj) === JSON.stringify(inputData)) {
           //   console.warn("No changes done, skipping to save. Time to tell the user?");
@@ -233,7 +231,9 @@ export default class Editor extends View {
         },
         doRequest(requestMethod, obj, url) {
           this.status.saved.loading = true;
-          requestMethod({ url, token: self.access_token }, obj).then(() => {
+          requestMethod({ url, token: self.access_token }, obj).then((result) => {
+            console.log('Success was had');
+            self.vm.syncData(self.loadItem(result['@graph']));
             self.vm.status.saved.loading = false;
             self.vm.status.saved.status = { error: false, info: '' };
             this.$dispatch('show-message', {
