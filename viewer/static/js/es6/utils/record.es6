@@ -9,6 +9,39 @@ export function getMarc(json) {
   });
 }
 
+export function splitJson(json) {
+  let orginal = json['@graph'];
+  let dataObj = {};
+
+  // TODO: Relying on order here... tsk tsk tsk.
+  dataObj.meta = orginal[0];
+  orginal.splice(0, 1);
+
+  // TODO: Do something else!
+  console.warn('Finding focused item node by @id.indexOf("#it"). This approach is not reliable.');
+  for (let i = 0; i < orginal.length; i++) {
+    if (orginal[i]['@id'] && orginal[i]['@id'].indexOf('#it') !== -1) {
+      dataObj.thing = orginal[i];
+      orginal.splice(i, 1);
+      break;
+    }
+  }
+  if(!dataObj.thing && orginal.length >= 0) {
+    dataObj.thing = orginal[0];
+    orginal.splice(0, 1);
+  }
+
+  dataObj.linked = [];
+  for (let i = 0; i < orginal.length; i++) {
+    if (orginal[i].hasOwnProperty('@graph')) {
+      dataObj.linked.push(orginal[i]['@graph']);
+    } else {
+      dataObj.linked.push(orginal[i]);
+    }
+  }
+  return dataObj;
+}
+
 export function getEmptyHolding(holdingFor, sigel) {
   const meta = {
     '@type': 'Record',

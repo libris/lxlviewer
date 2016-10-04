@@ -21,7 +21,7 @@ export default class Editor extends View {
     super.initialize();
     VocabLoader.initVocabClicks();
     toolbarUtil.initToolbar(this);
-    this.dataIn = this.loadItem(JSON.parse(document.getElementById('data').innerText)['@graph']);
+    this.dataIn = RecordUtil.splitJson(JSON.parse(document.getElementById('data').innerText));
     const self = this;
 
     self.settings = {
@@ -41,36 +41,8 @@ export default class Editor extends View {
   }
 
   loadItem(data) {
-    let dataObj = {};
     // Retrieves the data and splits it into a thing obj and array with links
-    this.originalData = data;
-
-    // TODO: Relying on order here... tsk tsk tsk.
-    dataObj.meta = this.originalData[0];
-    this.originalData.splice(0, 1);
-
-    // TODO: Do something else!
-    console.warn('Finding focused item node by @id.indexOf("#it"). This approach is not reliable.');
-    for (let i = 0; i < this.originalData.length; i++) {
-      if (this.originalData[i]['@id'] && this.originalData[i]['@id'].indexOf('#it') !== -1) {
-        dataObj.thing = this.originalData[i];
-        this.originalData.splice(i, 1);
-        break;
-      }
-    }
-    if(!dataObj.thing && this.originalData.length >= 0) {
-      dataObj.thing = this.originalData[0];
-      this.originalData.splice(0, 1);
-    }
-
-    dataObj.linked = [];
-    for (let i = 0; i < this.originalData.length; i++) {
-      if (this.originalData[i].hasOwnProperty('@graph')) {
-        dataObj.linked.push(this.originalData[i]['@graph']);
-      } else {
-        dataObj.linked.push(this.originalData[i]);
-      }
-    }
+    let dataObj = RecordUtil.splitJson(data);
 
     // HOLDING FORM
     // this.populateHolding(this.meta, this.thing);
@@ -158,16 +130,9 @@ export default class Editor extends View {
           this.saveItem();
         },
         'check-changes': function() {
-          const inputData = JSON.parse(document.getElementById('data').innerText);
-          const obj = editUtil.getMergedItems(
-            editUtil.removeNullValues(this.editorData.meta),
-            editUtil.removeNullValues(this.editorData.thing),
-            this.editorData.linked
-          );
-          if (JSON.stringify(obj) === JSON.stringify(inputData)) {
-            this.status.dirty = false;
-          } else {
+          // TODO: Some logic plz...
             this.status.dirty = true;
+            console.log('Form is dirty?', this.status.dirty);
           }
         },
         'show-message': function(messageObj) {
@@ -233,7 +198,7 @@ export default class Editor extends View {
           this.status.saved.loading = true;
           requestMethod({ url, token: self.access_token }, obj).then((result) => {
             console.log('Success was had');
-            self.vm.syncData(self.loadItem(result['@graph']));
+            self.vm.syncData(RecordUtil.splitJson(result));
             self.vm.status.saved.loading = false;
             self.vm.status.saved.status = { error: false, info: '' };
             this.$dispatch('show-message', {
