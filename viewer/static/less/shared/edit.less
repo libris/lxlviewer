@@ -1,3 +1,6 @@
+@chipColor: #dedede;
+@chipTextColor: #545454;
+
 #appContainer {
   margin-top: 30px;
   margin-bottom: 60px;
@@ -170,14 +173,11 @@
     }
     .linked {
       display: inline-block;
-      border: solid @brand-primary;
-      border-width: 1px 1px 0px 1px;
-      background-color: darken(@brand-primary,15%);
-      box-shadow: 0px 1px 0px 0px darken(@brand-primary,25%);
-      color: @white;
+      background-color: @chipColor;
+      color: @chipTextColor;
       font-size: 85%;
-      border-radius: 3px;
-      padding: 3px 6px;
+      border-radius: 1em;
+      padding: 3px 8px 3px 12px;
       margin: 0px;
       max-width: 300px;
       white-space: nowrap;
@@ -190,10 +190,13 @@
       .delete {
         margin-left: 0.2em;
         cursor: pointer;
-        color: fadeout(@white, 50%);
+        color: fadeout(@chipTextColor, 60%);
         &:hover {
-          color: @white;
+          color: fadeout(@chipTextColor, 25%);
         }
+      }
+      &:hover {
+        background-color: darken(@chipColor, 5%);
       }
     }
     .linked-popup {
@@ -225,6 +228,9 @@
           overflow: hidden;
           text-overflow: ellipsis;
           float: left;
+          a {
+            color: inherit;
+          }
         }
         .item-type {
           font-weight: bold;
