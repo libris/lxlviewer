@@ -133,7 +133,6 @@ export default class Editor extends View {
           // TODO: Some logic plz...
             this.status.dirty = true;
             console.log('Form is dirty?', this.status.dirty);
-          }
         },
         'show-message': function(messageObj) {
           console.log("Should show notification", JSON.stringify(messageObj));
