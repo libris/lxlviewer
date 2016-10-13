@@ -5,10 +5,17 @@ import AnonymousValue from './anonymousvalue';
 import LinkedItem from './linkeditem';
 import * as editUtil from '../utils/edit';
 import * as VocabUtil from '../utils/vocab';
+import { getVocabulary, getSettings } from '../vuex/getters';
 
 export default {
   name: 'data-node',
-  props: ['key', 'value', 'vocab', 'vocab-pfx', 'label', 'linked'],
+  props: ['key', 'value', 'label', 'linked'],
+  vuex: {
+    getters: {
+      vocab: getVocabulary,
+      settings: getSettings,
+    }
+  },
   components: {
     'processed-label': ProcessedLabel,
     'anonymous-value': AnonymousValue,
@@ -16,7 +23,7 @@ export default {
   },
   computed: {
     propertyTypes: function () {
-      return VocabUtil.getPropertyTypes(this.key, this.vocab, this.vocabPfx);
+      return VocabUtil.getPropertyTypes(this.key, this.vocab, this.settings.vocabPfx);
     }
   },
   methods: {
@@ -81,7 +88,7 @@ export default {
           <linked-item :item="getLinked(v['@id'])" :key="key" :index="$index"></linked-item>
         </div>
         <div v-if="isPlainObject(v) && !v['@id']" class="node-anonymous">
-          <anonymous-value :value="v" :key="key" :vocab="vocab" :linked="linked"></anonymous-value>
+          <anonymous-value :value="v" :key="key" :linked="linked"></anonymous-value>
         </div>
         <div v-if="!isPlainObject(v)" class="node-input">
           <input v-el:input v-model="v" v-on:keyup="updateArray($index, v)"></input>
@@ -93,7 +100,7 @@ export default {
     <linked-item :item="getLinked(value['@id'])"></linked-item>
   </div>
   <div v-if="isPlainObject(value) && !value['@id']" class="node-anonymous">
-    <anonymous-value :value="value" :linked="linked" :vocab="vocab"></anonymous-value>
+    <anonymous-value :value="value" :linked="linked"></anonymous-value>
   </div>
   <div v-if="!isArray(value) && !isPlainObject(value)" class="node-input">
     <input v-model="value" v-on:keyup="updateValue(value)"></input>

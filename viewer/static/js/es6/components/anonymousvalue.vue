@@ -4,13 +4,19 @@ import DataNode from './datanode';
 import LinkedItem from './linkeditem';
 import LinkAdder from './linkadder';
 import * as editUtil from '../utils/edit';
+import { getVocabulary, getSettings } from '../vuex/getters';
 
 export default {
   props: {
     key: {},
     value: {},
-    vocab: {},
     linked: {},
+  },
+  vuex: {
+    getters: {
+      vocab: getVocabulary,
+      settings: getSettings,
+    }
   },
   methods: {
     isPlainObject(o) {
@@ -49,7 +55,7 @@ export default {
         <span class="label-horizontal">{{k | labelByLang | capitalize}}</span>
         <input v-if="v !== null && !isPlainObject(v)" v-model="v" debounce="250"></input>
         <linked-item v-if="v !== null && isPlainObject(v)" :key="k" :item="getLinked(v['@id'])"></linked-item>
-        <link-adder v-if="v === null" :key="k" :vocab="vocab" vocab-pfx="kbv:" :allow-anon="false"></link-adder>
+        <link-adder v-if="v === null" :key="k" :allow-anon="false"></link-adder>
       </li>
     </ul>
   </li>

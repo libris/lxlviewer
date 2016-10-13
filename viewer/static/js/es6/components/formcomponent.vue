@@ -117,8 +117,8 @@ export default {
           <a href="/vocab/#{{k}}">{{ k | labelByLang | capitalize }}</a>
         </span>
         <span class="value">
-          <data-node v-if="!isEmptyObject(v)" :key="k" :value="v" :linked="linked" :vocab="vocab" :vocab-pfx="vocabPfx"></data-node>
-          <link-adder v-if="isRepeatable(k) || isEmptyObject(v)" :key="k" :vocab="vocab" :vocab-pfx="vocabPfx" :allow-anon="true"></link-adder>
+          <data-node v-if="!isEmptyObject(v)" :key="k" :value="v" :linked="linked"></data-node>
+          <link-adder v-if="isRepeatable(k) || isEmptyObject(v)" :key="k" :allow-anon="true"></link-adder>
         </span>
         <span class="delete" v-on:click="removeField(k)"><i class="fa fa-close"></i></span>
       </li>

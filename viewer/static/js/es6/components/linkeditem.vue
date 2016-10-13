@@ -9,13 +9,6 @@ export default {
     key: '',
     index: Number,
   },
-  data() {
-    return {
-      popup: {
-        active: false,
-      }
-    }
-  },
   computed: {
   },
   methods: {
