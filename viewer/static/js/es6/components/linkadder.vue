@@ -4,6 +4,7 @@ import * as httpUtil from '../utils/http';
 import * as VocabUtil from '../utils/vocab';
 import ProcessedLabel from './processedlabel';
 import { mixin as clickaway } from 'vue-clickaway';
+import { getVocabulary, getSettings } from '../vuex/getters';
 
 
 export default {
@@ -15,11 +16,15 @@ export default {
       active: false,
     };
   },
+  vuex: {
+    getters: {
+      vocab: getVocabulary,
+      settings: getSettings,
+    }
+  },
   props: {
     key: '',
     keyword: '',
-    vocab: {},
-    vocabPfx: '',
     allowAnon: true,
   },
   components: {
@@ -38,7 +43,7 @@ export default {
   computed: {
     range() {
       const propertyId = this.key;
-      const range = VocabUtil.getRange(propertyId, this.vocab, this.vocabPfx);
+      const range = VocabUtil.getRange(propertyId, this.vocab, this.settings.vocabPfx);
       return range;
     },
   },
@@ -50,7 +55,7 @@ export default {
       // TODO:  Sync with format and find out what kind of properties should be
       //        available on this level.
 
-      // const typeObj = _.find(this.vocab.descriptions, { '@id': this.vocabPfx + type });
+      // const typeObj = _.find(this.vocab.descriptions, { '@id': this.settings.vocabPfx + type });
       const obj = { '@type': type, label: '' };
 
       this.$dispatch('add-anonymous', this.key, obj);

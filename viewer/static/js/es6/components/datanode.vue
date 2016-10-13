@@ -78,7 +78,7 @@ export default {
     <ul>
       <li v-for="v in value">
         <div v-if="isPlainObject(v) && v['@id']" class="node-linked">
-          <linked-item :item="getLinked(v['@id'])" :index="$index"></linked-item>
+          <linked-item :item="getLinked(v['@id'])" :key="key" :index="$index"></linked-item>
         </div>
         <div v-if="isPlainObject(v) && !v['@id']" class="node-anonymous">
           <anonymous-value :value="v" :key="key" :vocab="vocab" :linked="linked"></anonymous-value>
