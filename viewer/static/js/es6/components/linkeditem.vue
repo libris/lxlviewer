@@ -16,7 +16,7 @@ export default {
     removeThis() {
       const holder = this.$parent.value;
       if (_.isArray(holder)) {
-        this.$parent.removeByIndex(this.index);
+        this.$parent.removeById(this.item['@id']);
       } else if (_.isPlainObject(holder)) {
         this.$parent.removeKey(this.key);
       } else {

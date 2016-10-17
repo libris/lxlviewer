@@ -67,6 +67,13 @@ export default {
       modified.splice(index, 1);
       this.value = modified;
     },
+    removeById(id) {
+      let modified = this.value;
+      modified = _.filter(this.value, function(n) {
+        return n['@id'] !== id;
+      });
+      this.value = modified;
+    },
     isArray(o) {
       return _.isArray(o);
     },
