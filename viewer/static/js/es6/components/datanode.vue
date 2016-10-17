@@ -9,7 +9,7 @@ import { getVocabulary, getSettings } from '../vuex/getters';
 
 export default {
   name: 'data-node',
-  props: ['key', 'value', 'label', 'linked'],
+  props: ['key', 'value', 'label', 'linked', 'isLocked'],
   vuex: {
     getters: {
       vocab: getVocabulary,
@@ -85,24 +85,26 @@ export default {
     <ul>
       <li v-for="v in value">
         <div v-if="isPlainObject(v) && v['@id']" class="node-linked">
-          <linked-item :item="getLinked(v['@id'])" :key="key" :index="$index"></linked-item>
+          <linked-item :is-locked="isLocked" :item="getLinked(v['@id'])" :key="key" :index="$index"></linked-item>
         </div>
         <div v-if="isPlainObject(v) && !v['@id']" class="node-anonymous">
-          <anonymous-value :value="v" :key="key" :linked="linked"></anonymous-value>
+          <anonymous-value :is-locked="isLocked" :value="v" :key="key" :linked="linked"></anonymous-value>
         </div>
         <div v-if="!isPlainObject(v)" class="node-input">
-          <input v-el:input v-model="v" v-on:keyup="updateArray($index, v)"></input>
+          <input v-if="!isLocked" v-el:input v-model="v" v-on:keyup="updateArray($index, v)"></input>
+          <span v-if="isLocked">{{v}}</span>
         </div>
       </li>
     </ul>
   </div>
   <div v-if="isPlainObject(value) && value['@id']" class="node-linked">
-    <linked-item :item="getLinked(value['@id'])"></linked-item>
+    <linked-item :is-locked="isLocked" :item="getLinked(value['@id'])"></linked-item>
   </div>
   <div v-if="isPlainObject(value) && !value['@id']" class="node-anonymous">
-    <anonymous-value :value="value" :linked="linked"></anonymous-value>
+    <anonymous-value :is-locked="isLocked" :value="value" :linked="linked"></anonymous-value>
   </div>
   <div v-if="!isArray(value) && !isPlainObject(value)" class="node-input">
-    <input v-model="value" v-on:keyup="updateValue(value)"></input>
+    <input v-if="!isLocked" v-model="value" v-on:keyup="updateValue(value)"></input>
+    <span v-if="isLocked">{{value}}</span>
   </div>
 </template>

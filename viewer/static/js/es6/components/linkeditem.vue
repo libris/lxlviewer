@@ -8,6 +8,7 @@ export default {
     item: {},
     key: '',
     index: Number,
+    isLocked: false,
   },
   computed: {
   },
@@ -34,7 +35,7 @@ export default {
     <div class="linked">
       <a href="{{item['@id']}}">
         <processed-label :item="item"></processed-label>
-      </a> <i class="delete fa fa-close" v-on:click="removeThis()"></i>
+      </a> <i class="delete fa fa-close" v-on:click="removeThis()" v-if="!isLocked"></i>
     </div>
     <div class="linked-popup">
       <div class="header">

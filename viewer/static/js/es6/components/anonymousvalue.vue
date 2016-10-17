@@ -11,6 +11,7 @@ export default {
     key: {},
     value: {},
     linked: {},
+    isLocked: false,
   },
   vuex: {
     getters: {
@@ -53,9 +54,10 @@ export default {
     <ul>
       <li v-for="(k, v) in value" v-if="k !== '@type'">
         <span class="label-horizontal">{{k | labelByLang | capitalize}}</span>
-        <input v-if="v !== null && !isPlainObject(v)" v-model="v" debounce="250"></input>
-        <linked-item v-if="v !== null && isPlainObject(v)" :key="k" :item="getLinked(v['@id'])"></linked-item>
-        <link-adder v-if="v === null" :key="k" :allow-anon="false"></link-adder>
+        <input v-if="!isLocked && v !== null && !isPlainObject(v)" v-model="v" debounce="250"></input>
+        <span v-if="isLocked"></span>
+        <linked-item v-if="v !== null && isPlainObject(v)" :is-locked="isLocked" :key="k" :item="getLinked(v['@id'])"></linked-item>
+        <link-adder v-if="v === null && !isLocked" :key="k" :allow-anon="false"></link-adder>
       </li>
     </ul>
   </li>

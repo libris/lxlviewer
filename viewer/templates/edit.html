@@ -29,7 +29,7 @@
       </div>
     </header>
   </div>
-  <form-component :locked="true" :focus="editorData.meta" :linked="editorData.linked" v-if="initialized == true"></form-component>
+  <form-component :is-locked="true" :focus="editorData.meta" :linked="editorData.linked" v-if="initialized == true"></form-component>
   <form-component :focus="editorData.thing" :linked="editorData.linked"  v-if="initialized == true"></form-component>
 
   <div id="result">
