@@ -27,6 +27,7 @@ export default {
   props: {
     focus: {},
     linked: {},
+    locked: false,
   },
   computed: {
     allowedProperties() {
@@ -112,17 +113,20 @@ export default {
 <template>
   <div class="form-component">
     <ul>
-      <li v-for="(k, v) in focus" v-if="v !== null">
+      <li v-for="(k, v) in focus" v-if="v !== null" v-bind:class="{ 'locked': locked }">
         <span class="label">
           <a href="/vocab/#{{k}}">{{ k | labelByLang | capitalize }}</a>
         </span>
-        <span class="value">
+        <span class="value" v-if="!locked">
           <data-node v-if="!isEmptyObject(v)" :key="k" :value="v" :linked="linked"></data-node>
           <link-adder v-if="isRepeatable(k) || isEmptyObject(v)" :key="k" :allow-anon="true"></link-adder>
         </span>
-        <span class="delete" v-on:click="removeField(k)"><i class="fa fa-close"></i></span>
+        <span class="value" v-if="locked">
+          {{ v | json}}
+        </span>
+        <span v-if="!locked" class="delete" v-on:click="removeField(k)"><i class="fa fa-close"></i></span>
       </li>
     </ul>
-    <field-adder :allowed="allowedProperties" :item="focus" :vocab-pfx="vocabPfx"></field-adder>
+    <field-adder v-if="!locked" :allowed="allowedProperties" :item="focus" :vocab-pfx="vocabPfx"></field-adder>
   </div>
 </template>
