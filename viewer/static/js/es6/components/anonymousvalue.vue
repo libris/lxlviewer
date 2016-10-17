@@ -50,7 +50,7 @@ export default {
   <li class="anonymous-value">
     <span class="class" v-if="value['@type']">{{value['@type'] | labelByLang }}</span>
     <span class="class unknown" v-if="!value['@type']">OKÄND TYP</span>
-    <i class="fa fa-close" v-on:click="removeThis()"></i>
+    <i v-if="!isLocked" class="fa fa-close" v-on:click="removeThis()"></i>
     <ul>
       <li v-for="(k, v) in value" v-if="k !== '@type'">
         <span class="label-horizontal">{{k | labelByLang | capitalize}}</span>
