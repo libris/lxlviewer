@@ -65,14 +65,14 @@ export default {
     removeByIndex(index) {
       const modified = this.value;
       modified.splice(index, 1);
-      this.value = modified;
+      this.updateValue(modified);
     },
     removeById(id) {
       let modified = this.value;
       modified = _.filter(this.value, function(n) {
         return n['@id'] !== id;
       });
-      this.value = modified;
+      this.updateValue(modified);
     },
     isArray(o) {
       return _.isArray(o);
