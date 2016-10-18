@@ -2,6 +2,7 @@
 import { mixin as clickaway } from 'vue-clickaway';
 import * as _ from 'lodash';
 import * as LayoutUtil from '../utils/layout';
+import { getSettings } from '../vuex/getters';
 
 export default {
   mixins: [clickaway],
@@ -11,15 +12,18 @@ export default {
     active: false,
     filterKey: '',
     item: {},
-    vocabPfx: '',
+  },
+  vuex: {
+    getters: {
+      settings: getSettings,
+    }
   },
   computed: {
     filteredResults() {
-      const lang = this.$root.lang;
+      const lang = this.settings.lang;
       if (!this.allowed || this.allowed.length === 0) {
         return [];
       }
-      const filtered = [];
       if (!this.filterKey || this.filterKey.length < 1) {
         if (this.allowed) {
           return this.allowed;
@@ -52,7 +56,7 @@ export default {
   },
   methods: {
     isAdded(prop) {
-      const pId = prop['@id'].replace(this.vocabPfx, '');
+      const pId = prop['@id'].replace(this.settings.vocabPfx, '');
       const result = (this.item.hasOwnProperty(pId) && this.item[pId] !== null);
       return result;
     },

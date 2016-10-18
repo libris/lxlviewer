@@ -124,6 +124,6 @@ export default {
         <span v-if="!isLocked" class="delete" v-on:click="removeField(k)"><i class="fa fa-close"></i></span>
       </li>
     </ul>
-    <field-adder v-if="!isLocked" :allowed="allowedProperties" :item="focus" :vocab-pfx="vocabPfx"></field-adder>
+    <field-adder v-if="!isLocked" :allowed="allowedProperties" :item="focus"></field-adder>
   </div>
 </template>
