@@ -74,7 +74,7 @@ export default class Editor extends View {
         labelByLang = item.labelByLang[lang];
       }
       // Check if we have something of value
-      if (labelByLang.length > 0) {
+      if (labelByLang && labelByLang.length > 0) {
         return labelByLang;
       }
       return lbl;
