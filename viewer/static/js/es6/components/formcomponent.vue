@@ -31,7 +31,17 @@ export default {
   },
   computed: {
     allowedProperties() {
-      return VocabUtil.getInheritedProperties(this.focus['@type'], this.vocab, this.settings.vocabPfx);
+      const settings = this.settings;
+      const formObj = this.focus;
+      let allowed = VocabUtil.getInheritedProperties(this.focus['@type'], this.vocab, this.settings.vocabPfx);
+
+      // Add the "added" property
+      allowed = _.forEach(allowed, function(o) {
+        const oId = o.item['@id'].replace(settings.vocabPfx, '');
+        o.added = (formObj.hasOwnProperty(oId) && formObj[oId] !== null);
+      });
+
+      return allowed;
     },
   },
   watch: {
@@ -42,7 +52,7 @@ export default {
   events: {
     'add-field': function (prop) {
       const newItem = {};
-      const key = prop['@id'].replace(this.vocabPfx, '');
+      const key = prop['@id'].replace(this.settings.vocabPfx, '');
       if (prop['@type'] && prop['@type'].indexOf('ObjectProperty') !== -1) {
         newItem[key] = [];
       } else {

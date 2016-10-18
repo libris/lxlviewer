@@ -53,11 +53,6 @@ export default {
     },
   },
   methods: {
-    isAdded(prop) {
-      const pId = prop['@id'].replace(this.settings.vocabPfx, '');
-      const result = (this.item.hasOwnProperty(pId) && this.item[pId] !== null);
-      return result;
-    },
     addField(prop) {
       this.$dispatch('add-field', prop);
       this.$dispatch('show-message', {
@@ -100,7 +95,7 @@ export default {
         </span>
       </div>
       <ul v-if="active">
-        <li v-bind:class="{ 'added': isAdded(prop.item) }" v-for="prop in filteredResults">
+        <li v-bind:class="{ 'added': prop.added }" v-for="prop in filteredResults">
           <span class="fieldLabel" title="{{prop.item['@id'] | labelByLang | capitalize }}">
             {{prop.item['@id'] | labelByLang | capitalize }}
           </span>
