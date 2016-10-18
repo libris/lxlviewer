@@ -30,22 +30,20 @@ export default {
         }
       }
       const fKey = this.filterKey.toLowerCase();
-      for (let i = 0; i < this.allowed.length; i++) {
-        const pId = this.allowed[i].item['@id'].toString().toLowerCase();
-        const pNote = this.allowed[i].item['note'].toString().toLowerCase();
-        let pLabel = '';
-        if (typeof this.allowed[i].item.labelByLang !== 'undefined' && typeof this.allowed[i].item.labelByLang[lang] !== 'undefined') {
-          if (_.isArray(this.allowed[i].item.labelByLang[lang])) {
-            pLabel = this.allowed[i].item.labelByLang[lang][0];
-          } else {
-            pLabel = this.allowed[i].item.labelByLang[lang];
+      const filtered = _.filter(this.allowed, function(o) {
+          let labelByLang = '';
+          if (typeof o.item.labelByLang !== 'undefined' && typeof o.item.labelByLang[lang] !== 'undefined') {
+            if (_.isArray(o.item.labelByLang[lang])) {
+              labelByLang = o.item.labelByLang[lang][0];
+            } else {
+              labelByLang = o.item.labelByLang[lang];
+            }
           }
-        }
-        pLabel = pLabel.toLowerCase();
-        if (pId.indexOf(fKey) !== -1 || pNote.indexOf(fKey) !== -1 || pLabel.indexOf(fKey) !== -1) {
-          filtered.push(this.allowed[i]);
-        }
-      }
+          const pId = o.item['@id'].toString().toLowerCase(); // @id
+          const pNote = o.item['note'].toString().toLowerCase(); // note
+          const pLabel = labelByLang.toLowerCase() || ''; // label by lang
+        return (pId.indexOf(fKey) !== -1 || pNote.indexOf(fKey) !== -1 || pLabel.indexOf(fKey) !== -1);
+      });
       return filtered;
     },
   },
