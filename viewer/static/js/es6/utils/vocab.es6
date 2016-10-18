@@ -163,6 +163,6 @@ export function getInheritedProperties(classArray, vocab, vocabPfx) {
       props.push(p);
     }
   }
-  props = _.uniq(props);
+  props = _.uniqBy(props, 'item.@id');
   return props;
 }
