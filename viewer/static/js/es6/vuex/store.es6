@@ -13,17 +13,16 @@ const state = {
 
 const mutations = {
   SYNCPOST (state, data) {
-    // console.log('Before', JSON.stringify(state.editor.data));
     state.editor.data = data;
-    // console.log('After', JSON.stringify(state.editor.data));
+  },
+  UPDATE_FORM (state, form, data) {
+    state.editor.data[form] = data;
   },
   LOADVOCAB (state, data) {
     state.vocab = data;
-    console.log('vocab loaded:', state.vocab);
   },
   CHANGESETTINGS (state, data) {
     state.settings = data;
-    // console.log('settings changed:', JSON.stringify(state.settings));
   },
 };
 

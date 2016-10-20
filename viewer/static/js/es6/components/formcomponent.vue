@@ -11,29 +11,30 @@ import FieldAdder from './fieldadder';
 import DataNode from './datanode';
 import LinkedItem from './linkeditem';
 import * as VocabUtil from '../utils/vocab';
-import { syncPost } from '../vuex/actions';
-import { getVocabulary, getSettings } from '../vuex/getters';
+import { updateForm } from '../vuex/actions';
+import { getVocabulary, getSettings, getEditorData } from '../vuex/getters';
 
 export default {
   vuex: {
     actions: {
-      sync: syncPost,
+      updateForm,
     },
     getters: {
       vocab: getVocabulary,
       settings: getSettings,
+      editorData: getEditorData,
     }
   },
   props: {
-    focus: {},
+    focus: '',
     linked: {},
     isLocked: false,
   },
   computed: {
     allowedProperties() {
       const settings = this.settings;
-      const formObj = this.focus;
-      let allowed = VocabUtil.getInheritedProperties(this.focus['@type'], this.vocab, this.settings.vocabPfx);
+      const formObj = this.formData;
+      let allowed = VocabUtil.getInheritedProperties(formObj['@type'], this.vocab, this.settings.vocabPfx);
 
       // Add the "added" property
       allowed = _.forEach(allowed, function(o) {
@@ -43,10 +44,8 @@ export default {
 
       return allowed;
     },
-  },
-  watch: {
-    'focus': function(val, oldval) {
-      // this.$dispatch('focus-update', val, oldval);
+    formData() {
+      return this.editorData[this.focus];
     },
   },
   events: {
@@ -58,30 +57,32 @@ export default {
       } else {
         newItem[key] = '';
       }
-      this.focus = Object.assign({}, this.focus, newItem);
-      this.$dispatch('check-changes');
+      const merged = Object.assign({}, this.formData, newItem);
+      this.updateForm(this.focus, merged);
     },
     'add-item': function (key, item) {
       this.linked.push(item);
-      const modified = this.focus;
+      const modified = this.formData;
       const newItem = { '@id': item['@id'] };
       modified[key].push(newItem);
-      this.focus = Object.assign({}, this.focus, modified);
-      this.$dispatch('check-changes');
+      const merged = Object.assign({}, this.formData, modified);
+      this.updateForm(this.focus, merged);
     },
     'remove-item': function (key, item) {
-      const keyWithout = _.reject(this.focus[key], (o) => o === item);
-      const modified = this.focus;
+      const keyWithout = _.reject(this.formData[key], (o) => o === item);
+      const modified = this.formData;
       modified[key] = keyWithout;
-      this.focus = Object.assign({}, this.focus, modified);
-      this.$dispatch('check-changes');
+      const merged = Object.assign({}, this.formData, modified);
+      this.updateForm(this.focus, merged);
     },
     'update-value': function (key, value) {
-      this.focus[key] = value;
-      this.$dispatch('check-changes');
+      const modified = this.formData;
+      modified[key] = value;
+      const merged = Object.assign({}, this.formData, modified);
+      this.updateForm(this.focus, merged);
     },
     'add-anonymous': function (key, item) {
-      const modified = this.focus;
+      const modified = this.formData;
       if (_.isArray(modified[key])) {
         modified[key].push(item);
       } else if (!this.isEmptyObject(modified[key])) {
@@ -89,8 +90,8 @@ export default {
       } else {
         modified[key] = item;
       }
-      this.focus = Object.assign(this.focus, modified);
-      this.$dispatch('check-changes');
+      const merged = Object.assign({}, this.formData, modified);
+      this.updateForm(this.focus, merged);
     },
   },
   methods: {
@@ -123,7 +124,7 @@ export default {
 <template>
   <div class="form-component">
     <ul>
-      <li v-for="(k, v) in focus" v-if="v !== null" v-bind:class="{ 'locked': isLocked }">
+      <li v-for="(k, v) in formData" v-if="v !== null" v-bind:class="{ 'locked': isLocked }">
         <span class="label">
           <a href="/vocab/#{{k}}">{{ k | labelByLang | capitalize }}</a>
         </span>

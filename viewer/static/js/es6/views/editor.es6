@@ -40,16 +40,6 @@ export default class Editor extends View {
     $('#holdingItem').text(emptyHolding);
   }
 
-  loadItem(data) {
-    // Retrieves the data and splits it into a thing obj and array with links
-    let dataObj = RecordUtil.splitJson(data);
-
-    // HOLDING FORM
-    // this.populateHolding(this.meta, this.thing);
-
-    return dataObj;
-  }
-
   initVue() {
     const self = this;
     $('#loadingText').fadeOut('slow', function() {
