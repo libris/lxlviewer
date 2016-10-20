@@ -30,6 +30,11 @@ export default {
     linked: {},
     isLocked: false,
   },
+  data() {
+    return {
+      showJson: false,
+    }
+  },
   computed: {
     allowedProperties() {
       const settings = this.settings;
@@ -111,6 +116,9 @@ export default {
       const types = VocabUtil.getPropertyTypes(property, this.vocab, this.settings.vocabPfx);
       return types.indexOf('FunctionalProperty') < 0;
     },
+    updateFromTextarea(e) {
+      this.updateForm(this.focus, JSON.parse(e.target.value));
+    },
   },
   components: {
     'link-adder': LinkAdder,
@@ -136,5 +144,15 @@ export default {
       </li>
     </ul>
     <field-adder v-if="!isLocked" :allowed="allowedProperties" :item="focus"></field-adder>
+    <div id="result">
+      <h2 v-on:click="showJson = !showJson">JSON
+      </h2>
+      <i class="fa" v-bind:class="{'fa-chevron-right': !showJson, 'fa-chevron-down': showJson}"></i>
+      <div v-show="showJson">
+      <h3>Record</h3>
+      <textarea :value="formData | json" @input="updateFromTextarea">
+      </textarea>
+      </div>
+    </div>
   </div>
 </template>

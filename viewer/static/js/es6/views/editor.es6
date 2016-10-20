@@ -98,7 +98,6 @@ export default class Editor extends View {
             },
           },
         },
-        showJSON: false,
       },
       events: {
         'focus-update': function(value, oldValue) {
