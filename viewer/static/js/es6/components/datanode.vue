@@ -24,7 +24,11 @@ export default {
   computed: {
     propertyTypes: function () {
       return VocabUtil.getPropertyTypes(this.key, this.vocab, this.settings.vocabPfx);
-    }
+    },
+    valueByIdPresence: function () {
+      const list = _.sortBy(this.value, [function(o) { return o['@id']; }]);
+      return list;
+    },
   },
   methods: {
     isMarc(key) {
@@ -90,7 +94,7 @@ export default {
 <template>
   <div v-if="isArray(value)">
     <ul>
-      <li v-for="v in value">
+      <li v-for="v in valueByIdPresence">
         <div v-if="isPlainObject(v) && v['@id']" class="node-linked">
           <linked-item :is-locked="isLocked" :item="getLinked(v['@id'])" :key="key" :index="$index"></linked-item>
         </div>
