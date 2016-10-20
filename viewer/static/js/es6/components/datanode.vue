@@ -94,7 +94,7 @@ export default {
 <template>
   <div v-if="isArray(value)">
     <ul>
-      <li v-for="v in valueByIdPresence">
+      <li v-for="v in valueByIdPresence" v-bind:class="{'display-block': !v['@id'] }">
         <div v-if="isPlainObject(v) && v['@id']" class="node-linked">
           <linked-item :is-locked="isLocked" :item="getLinked(v['@id'])" :key="key" :index="$index"></linked-item>
         </div>
