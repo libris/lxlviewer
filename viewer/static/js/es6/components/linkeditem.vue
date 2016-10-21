@@ -33,9 +33,8 @@ export default {
 <template id="linked-item">
   <div class="link-container">
     <div class="linked">
-      <a href="{{item['@id']}}">
-        <processed-label :item="item"></processed-label>
-      </a> <i class="delete fa fa-close" v-on:click="removeThis()" v-if="!isLocked"></i>
+      <processed-label :item="item"></processed-label>
+      <i class="delete fa fa-close" v-on:click="removeThis()" v-if="!isLocked"></i>
     </div>
     <div class="linked-popup">
       <div class="header">
