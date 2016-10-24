@@ -10,6 +10,11 @@ export default {
     index: Number,
     isLocked: false,
   },
+  data: function() {
+    return {
+      focused: false,
+    }
+  },
   computed: {
   },
   methods: {
@@ -23,6 +28,12 @@ export default {
         this.$parent.emptyValue();
       }
     },
+    addFocus() {
+      this.focused = true;
+    },
+    removeFocus() {
+      this.focused = false;
+    },
   },
   components: {
     'processed-label': ProcessedLabel,
@@ -31,14 +42,14 @@ export default {
 </script>
 
 <template id="linked-item">
-  <div class="link-container">
+  <div class="link-container" v-bind:class="{'focused': focused}">
     <div class="linked">
       <processed-label :item="item"></processed-label>
       <i class="delete fa fa-close" v-on:click="removeThis()" v-if="!isLocked"></i>
     </div>
     <div class="linked-popup">
       <div class="header">
-        <span class="item-label"><a href="{{ item['@id'] }}"><processed-label :item="item"></processed-label></a></span>
+        <span class="item-label"><a v-on:focus="addFocus" v-on:blur="removeFocus" href="{{ item['@id'] }}"><processed-label :item="item"></processed-label></a></span>
         <span class="item-type text-right" v-if="item['@type']">{{ item['@type'] | labelByLang }}</span>
         <span class="item-type text-right unknown" v-if="!item['@type']">OKÄND TYP</span>
       </div>
