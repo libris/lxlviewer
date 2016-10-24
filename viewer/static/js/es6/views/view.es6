@@ -17,7 +17,7 @@ export default class View {
     }
     this.language = $('html').attr('lang');
     this.loadUser();
-    console.log('Initialized view', this);
+    // console.log('Initialized view', this);
   }
 
   shiftWindow() {
