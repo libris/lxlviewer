@@ -40,7 +40,6 @@
     }
   },
   "resolutions": {
-    "bootstrap": "~3.3.4",
     "jquery": "~3.1.0"
   }
 }
