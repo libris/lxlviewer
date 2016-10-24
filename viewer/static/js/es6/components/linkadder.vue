@@ -83,12 +83,8 @@ export default {
     getItems(searchkey) {
       // TODO: Support asking for more items
 
-      let domain = 'localhost';
-      // if(this.range.indexOf('Record') === '-1') {
-        // domain = '127.0.0.1';
-      // }
-
-      const searchUrl = `http://${domain}:5000/find.json?q=${searchkey}&@type=${this.range[0]}&limit=10`;
+      const searchUrl = `/find.json?q=${searchkey}&@type=${this.range[0]}&limit=10`;
+      // console.log(searchUrl);
       return new Promise((resolve, reject) => {
         httpUtil.get({url:searchUrl, accept:'application/ld+json'}).then((response) => {
           resolve(response.items);
