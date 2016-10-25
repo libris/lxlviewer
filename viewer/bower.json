@@ -6,7 +6,7 @@
     "font-awesome": "~4.4.0",
     "d3": "~3.5.6",
     "jquery": "~3.1.0",
-    "kungbib-styles": "kungbib/frontend-guide#1.0.0"
+    "kungbib-styles": "kungbib/frontend-guide#1.1.6"
   },
   "install": {
     "base": "static/vendor",
