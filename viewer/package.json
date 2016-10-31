@@ -1,7 +1,7 @@
 {
   "name": "viewer",
   "description": "viewer",
-  "version": "0.0.0",
+  "version": "0.3.0",
   "repository": ".",
   "dependencies": {
     "babel-cli": "6.7.5",
