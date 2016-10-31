@@ -20,10 +20,25 @@ body > .navbar {
     }
     i {
       color: @text-alt-navbar;
+      margin-right: 0.3em;
     }
     text-transform: uppercase;
     font-weight: 600;
     font-size: 14px;
+    .dropdown {
+      text-shadow: none;
+      .dropdown-menu {
+        i {
+          color:@green;
+        }
+        font-size: 12px;
+      }
+      li:hover {
+        a {
+          color: @neutral-color;
+        }
+      }
+    }
   }
 }
 

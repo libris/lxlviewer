@@ -2,25 +2,29 @@
 // Import standard bootstrap
 @import '../vendor/bootstrap/less/bootstrap.less';
 // Import KB styles
-@import '../vendor/kungbib-styles/less/kb-styles.less';
+@import '../vendor/kungbib-styles/less/kb-style.less';
 
-// ----------- IMPORT COMPONENTS ----
+// ----------- IMPORT SHARED COMPONENTS ----
 @import 'shared/main.less';
+// ----------- IMPORT LIBRIS COMPONENTS ----
+@import 'libris/libris.less';
 
 // ----------- VARIABLES ------------
-@bg-site: #F5F5F5;
-@bg-img: url('/assets/img/bg_libris.png');
+@brand-primary: #009788;
+@bg-site: #F9F9F9;
+@bg-img: none;
+//@bg-img: url('/assets/img/bg_libris.png');
 @bg-content: @white;
 @bg-content-alt: @white;
 @bg-navbar: @brand-primary;
 @text-navbar: @white;
-@text-alt-navbar: @white;
+@text-alt-navbar: fade(@white, 55%);
+@text-toolbar: fade(@white, 55%);
 @bg-sidebars: darken(@white, 5%);
 @border-navbar: fadeout(#fff, 100%);
 @bg-footer: @bg-navbar;
 @text-footer: @text-navbar;
 @text-alt-footer: @text-alt-navbar;
-@brand-primary: #009788;
 @bg-jumbotron: transparent;
 @bg-jumbotron-image: none;
 @border-footer: @grey-light;

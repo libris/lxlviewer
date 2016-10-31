@@ -2,12 +2,11 @@
   "name": "viewer",
   "version": "0.0.0",
   "dependencies": {
-    "bootstrap": "~3.1.1",
+    "bootstrap": "~3.3.7",
     "font-awesome": "~4.4.0",
     "d3": "~3.5.6",
-    "jquery": "~2.1.4",
-    "kungbib-styles": "kungbib/frontend-guide#1.0.0",
-    "lodash": "~2.1.0"
+    "jquery": "~3.1.0",
+    "kungbib-styles": "kungbib/frontend-guide#1.1.6"
   },
   "install": {
     "base": "static/vendor",
@@ -23,12 +22,12 @@
       "woff": "{name}/fonts",
       "woff2": "{name}/fonts"
     },
-    "sources" : {
-      "kungbib-styles" : [
+    "sources": {
+      "kungbib-styles": [
         "bower_components/kungbib-styles/dist/css/**",
         "bower_components/kungbib-styles/dist/less/**"
       ],
-      "bootstrap" : [
+      "bootstrap": [
         "bower_components/bootstrap/dist/css/bootstrap.css",
         "bower_components/bootstrap/dist/js/bootstrap.js",
         "bower_components/bootstrap/dist/fonts/**",
@@ -41,6 +40,6 @@
     }
   },
   "resolutions": {
-    "bootstrap": "~3.3.4"
+    "jquery": "~3.1.0"
   }
 }

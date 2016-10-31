@@ -5,14 +5,14 @@
   % set q
     ${ result.search.mapping | selectattr("variable", "equalto", "q") | map(attribute='value') | first }
   % endset
-  
+
   % set mapping = result.search.mapping
 
 % endif
 
 <div class="panel panel-default search-controls">
     <form action="/find" method="GET" id="searchForm">
-    
+
       <div class="form-inline">
         <div class="form-group">
           % for param, value in request.args.items(multi=True)
@@ -21,83 +21,88 @@
             % endif
           % endfor
           <label class="search-label" id="searchlabel" for="q">
-            Sök term
+            Sök
           </label>
-          <input aria-labelledby="searchlabel" class="form-control search-input" name="q" id="searchQ" value="${q | trim }" />
+          <input aria-labelledby="searchlabel" class="form-control search-input" name="q" id="searchQ" value="${q | safe | trim }" />
           <button id="searchSubmit" class="search-button btn btn-primary"><i class="fa fa-search"></i> Sök</button>
         </div>
       </div>
 
-% if typecontrols
-  <div class="type-buttons" aria-label="Välj typ">
-    <label class="no-choice">
-      <input name="inScheme.@id" id="noneType" value="" type="radio"> Alla
-    </label>
-    % if len(result.statistics) > 0
-      % for value in result.statistics.sliceByDimension.values()
-        % for obs in value.observation
-          <label class="">
-            <input name="inScheme.@id" value="${obs.object['@id']}" type="radio">
-            % if obs.object.titleByLang
-              ${obs.object.titleByLang['sv']}
-            % elif obs.object.label
-              ${obs.object.label}
-            % elif obs.object.notation
-              ${obs.object.notation|join(', ')}
-            % endif
-          </label>
-        % endfor
-      % endfor
+    % if typecontrols
+      <div class="type-buttons" aria-label="Välj typ">
+        <label class="no-choice">
+          <input name="inScheme.@id" id="noneType" value="" type="radio"> Alla
+        </label>
+        % if len(result.statistics) > 0
+          % for value in result.statistics.sliceByDimension.values()
+            % for obs in value.observation
+              <label class="">
+                <input name="inScheme.@id" value="${obs.object['@id']}" type="radio">
+                % if obs.object.titleByLang
+                  ${obs.object.titleByLang['sv']}
+                % elif obs.object.label
+                  ${obs.object.label}
+                % elif obs.object.notation
+                  ${obs.object.notation|join(', ')}
+                % endif
+              </label>
+            % endfor
+          % endfor
+        % endif
+      </div>
     % endif
-  </div>
-% endif
 
-% if len(mapping) > 1
-<div class="activated-facets">
-  <label>
-    Aktiv filtrering
-  </label>
-  <ul>
-  % for item in mapping
-    % if item.variable != 'q'
-    <li>
-      <a href="${item.up['@id']}" title="${item.object['@id']}">
-        ${item.object['@id']}<i class="fa fa-remove"></i>
-      </a>
-    </li>
+    % if len(mapping) > 1
+      <div class="activated-facets">
+        <label>
+          Aktiv filtrering
+        </label>
+        <ul>
+        % for item in mapping
+          % if item.variable != 'q'
+          <li>
+            % if item.object
+              % set label = item.object['@id']
+            % else
+              % set label = item.value
+            % endif
+            <a href="${item.up['@id']}">
+              ${label}<i class="fa fa-remove"></i>
+            </a>
+          </li>
+          % endif
+        % endfor
+        </ul>
+      </div>
     % endif
-  % endfor
-  </ul>
-</div>
-% endif
 
   </form>
 </div>
 % endmacro
 
 % macro result_controls(result, details)
-  
+
   % set items = result['items']
   % set search = result['search']
   % set mapping = search.mapping
-  
+
   % set q
     ${ mapping | selectattr("variable", "equalto", "q") | map(attribute='value') | first }
   % endset
-    
-  <div class="panel panel-default result-controls">    
+
+  <div class="panel panel-default result-controls">
     % if details
     <div class="search-details">
       <span class="search-keyword">
         % if q and result.totalItems > 0
-          Sökning på <i>"${q | trim}"</i>
+          Sökning på <span class="query">${q | safe | trim}</span>
           % if result.totalItems
             gav ${result.totalItems} träffar.
           % endif
         % elif result.value
           Sökning ${result.value}
         % else
-          Sökning på <i>"${q | trim}"</i> gav inga träffar.
+          Sökning på <span class="query">${q | safe | trim}</span> gav inga träffar.
         % endif
       </span>
       <span class="search-items-per-page pull-right">
@@ -108,71 +113,95 @@
       </span>
     </div>
     % endif
-    
+
     <div class="search-buttons">
       <nav>
       <ul class="pagination">
       % if result.first and result.previous
       <li>
-        <a href="${result.first['@id']}">Första</a>
+        <a href="${result.first['@id']}"><i class="fa fa-fast-backward" aria-hidden="true"></i> Första</a>
       </li>
       % else
       <li class="disabled">
-        <a>Första</a>
+        <a><i class="fa fa-fast-backward" aria-hidden="true"></i> Första</a>
       </li>
       % endif
       % if result.previous
       <li>
-        <a href="${result.previous['@id']}">Föregående</a>
+        <a href="${result.previous['@id']}"><i class="fa fa-backward" aria-hidden="true"></i> Föregående</a>
       </li>
       % else
       <li class="disabled">
-        <a>Föregående</a>
+        <a><i class="fa fa-backward" aria-hidden="true"></i> Föregående</a>
       </li>
       % endif
-      
+
       % set limit = int(request.args.get('limit')) if request.args.get('limit') else int(200)
       % set offset = result.itemOffset
-      
+
       % if result.totalItems
         % set pages = int(result.totalItems / limit) + 1
       % else
         % set pages = 1
       % endif
-      
-      % for num in range(pages)
-      % if offset == limit * num
-      <li class="active">
-        <a>${num +1}</a>
-      </li>
-      % else
+
+      % set currentpage = int(offset / limit)
+      % set paddedpages = 4
+
+      % if currentpage < paddedpages
+        % set paddedpages = paddedpages + (paddedpages - currentpage - 1)
+      % elif currentpage + paddedpages > pages
+        % set paddedpages = paddedpages + (currentpage + paddedpages - pages)
+      % endif
+
+      % if currentpage - paddedpages > -1
       <li>
-        <a href="${result.first['@id'] + '&offset=' + str(limit * num) }">${num +1}</a>
+        <a>..</a>
       </li>
       % endif
+
+      % for num in range(pages)
+        % if (num == currentpage) or (num == pages) or (num < currentpage and (num - currentpage) > -paddedpages) or (num > currentpage and (num - currentpage) < paddedpages)
+
+          % if currentpage == num
+            <li class="active">
+              <a>${num +1}</a>
+            </li>
+          % else
+          <li>
+            <a href="${result.first['@id'] + '&offset=' + str(limit * num) }">${num +1}</a>
+          </li>
+          % endif
+        % endif
       % endfor
-      
+
+      % if currentpage + paddedpages < (pages)
+      <li>
+        <a>..</a>
+      </li>
+      % endif
+
       % if result.next
       <li>
-        <a href="${result.next['@id']}">Nästa</a>
+        <a href="${result.next['@id']}">Nästa <i class="fa fa-forward" aria-hidden="true"></i></a>
       </li>
       % else
       <li class="disabled">
-        <a>Nästa</a>
+        <a>Nästa <i class="fa fa-forward" aria-hidden="true"></i></a>
       </li>
       % endif
       % if result.last and result.next
       <li>
-        <a href="${result.last['@id']}">Sista</a>
+        <a href="${result.last['@id']}">Sista <i class="fa fa-fast-forward" aria-hidden="true"></i></a>
       </li>
       % else
       <li class="disabled">
-        <a>Sista</a>
+        <a>Sista <i class="fa fa-fast-forward" aria-hidden="true"></i></a>
       </li>
       % endif
       </ul>
     </nav>
-      
+
     </div>
   </div>
 % endmacro
@@ -190,7 +219,7 @@
     % if observation.object.label
     <li>
       <a href="${observation.view['@id']}" title="${observation.object.label}">
-        ${observation.object.label | truncate(20, true) }
+        ${observation.object.label | truncate(30, true) }
       </a>
       <span class="quantity">(${observation.totalItems})</span>
     </li>
@@ -198,7 +227,7 @@
     % endfor
   </ul>
   % else
-    Inga facetter...
+    Inga facetter tillgängliga.
   % endif
   </div>
 % endmacro

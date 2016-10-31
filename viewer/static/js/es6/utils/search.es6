@@ -1,4 +1,4 @@
-function initTypeButtons() {
+export function initTypeButtons() {
   var type = getParameter('type');
   if (typeof type !== 'undefined') {
     $('.type-buttons input').each(function() {
@@ -12,7 +12,7 @@ function initTypeButtons() {
   }
 }
 
-function getParameters() {
+export function getParameters() {
   var params = [];
   $('input[type=hidden]').each(function() {
     params.push({ key: $(this).attr('name'), value: $(this).val() });
@@ -21,7 +21,7 @@ function getParameters() {
   return params;
 };
 
-function getParameter(name) {
+export function getParameter(name) {
   var parameters = getParameters();
   for (var i = 0; i < parameters.length; i++){
     if (name == parameters[i].key) {
@@ -30,22 +30,17 @@ function getParameter(name) {
   }
 }
 
-$(function () {
+export function initializeSearch() {
 
-  $(document).ready(function () {
-    
-    var searchForm = document.getElementById('searchForm');
-    if(searchForm && typeof searchForm !== 'undefined') {
-      document.getElementById('searchForm').onsubmit = function(e) {
-        if (document.getElementById('searchQ').value == '') {
-          e.preventDefault();
-        } else if (document.getElementById('noneType') && document.getElementById('noneType').checked) {
-        // This removes the "all types" value from the query...
-          document.getElementById('noneType').checked = false;
-        }
-      };
-    }
-    
+  // Remove empty fields
+  $('form').submit(function(e){
+      if ($('#searchQ').val() === '') {
+        e.preventDefault();
+        return;
+      }
+      var emptyinputs = $(this).find('input').filter(function(){
+      return !$.trim(this.value).length;
+    }).prop('disabled',true);
   });
 
-});
+}

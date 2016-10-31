@@ -1,0 +1,40 @@
+% extends "base.html"
+{% from 'toolbar.html' import toolbar %}
+
+{% block bodyattrs %}vocab="${config.VOCAB_IRI}" id="editor"{% endblock %}
+
+% block content
+<!DOCTYPE html>
+<meta charset="utf-8" />
+
+<div id="appContainer">
+<div id="loadingText">
+  <h1><i class="fa fa-cog fa-spin"></i></h1>
+  Laddar redigeringsverktyget
+</div>
+<div id="editorApp">
+
+  % set the_thing = thing['@graph'][0]
+  % set canonical_id = canonical_uri(thing)
+  % set typename = the_thing[TYPE]
+  % set thing_url = view_url(canonical_id)
+
+  ${toolbar(thing_url, current_user.is_authenticated, typename, view='edit')}
+
+  <div class="panel panel-default main-item">
+    <header class="panel-heading panel-title">
+      <div class="panel-heading-meta">Redigerar:</div>
+      <div class="panel-title">
+        <div class="thing-label" v-if="initialized == true">{{ editorData.meta.prefLabel || editorData.meta['@id'] || 'Namnlös'}}</div>
+      </div>
+    </header>
+  </div>
+  <form-component :is-locked="true" focus="meta" :linked="editorData.linked" v-if="initialized == true"></form-component>
+  <form-component focus="thing" :linked="editorData.linked"  v-if="initialized == true"></form-component>
+  <editor-controls :status="status" :editor-data="editorData" :messages="messages" v-if="initialized == true"></editor-controls>
+</div>
+</div>
+
+<script id="data" type="application/json">${thing|tojson|safe}</script>
+<script id="model" type="application/json">${model|tojson|safe}</script>
+% endblock

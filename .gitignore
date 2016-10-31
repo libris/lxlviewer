@@ -6,7 +6,7 @@
 # Generated Files
 /build
 /viewer/static/build
-/viewer/tests/bin
+/viewer/test/e2e/bin
 /viewer/static/vendor
 
 # Local App Config

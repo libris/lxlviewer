@@ -16,7 +16,7 @@
     % endif
   </div>
   <div class="col-md-9">
-  
+
     ${ search.search_controls(thing, false) }
     % if not request.args.get('@type')
     <div class="panel panel-default hidden-md hidden-lg">
@@ -34,6 +34,6 @@
     </div>
     % endif
     ${ search.result_controls(thing, False) }
-  </div>    
+  </div>
 </div>
 % endblock
