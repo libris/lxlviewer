@@ -13,12 +13,10 @@
   Laddar redigeringsverktyget
 </div>
 <div id="editorApp">
-
-  % set the_thing = thing['@graph'][0]
-  % set canonical_id = canonical_uri(thing)
-  % set typename = the_thing[TYPE]
+  % set record = thing['@graph'][0]
+  % set canonical_id = canonical_uri(record)
+  % set typename = record[TYPE]
   % set thing_url = view_url(canonical_id)
-
   ${toolbar(thing_url, current_user.is_authenticated, typename, view='edit')}
 
   <div class="panel panel-default main-item">

@@ -8,7 +8,10 @@ export function initToolbar(_context) {
   // TOOLBAR-REMOVE
   $('.js-toolbar-remove').click(function(e) {
     e.preventDefault();
-    const url = $(this).attr('data-record-id').replace('/', '');
+    let url = $(this).attr('data-record-id');
+    if (url[0] !== '/') {
+      url = `/${url}`;
+    }
     modalUtil.confirmDialog({
       sTitle: 'Ta bort?',
       sContent: 'Du kan inte ångra detta val.',
@@ -31,8 +34,8 @@ export function initToolbar(_context) {
     function showModal(result) {
       let content = '';
       // !TODO add general error message display for all xhr-requests
-      if(result.name === 'Error') {
-        content = `Failed to convert to MARC: ${result}`
+      if (result.name === 'Error') {
+        content = `Failed to convert to MARC: ${result}`;
       } else {
         content = `<section class="marc-code">
                     ${marcJsonToHtml(result)}
@@ -40,8 +43,8 @@ export function initToolbar(_context) {
       }
       modalUtil.modal({
         sTitle: 'MARC förhandsgranskning',
-        sContent: content
-      }).then(() => {}, () => {});;
+        sContent: content,
+      }).then(() => {}, () => {});
     }
     context.vm.convertItemToMarc().then(showModal, showModal);
   });

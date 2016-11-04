@@ -148,10 +148,14 @@ export default class Editor extends View {
         convertItemToMarc() {
           return httpUtil.post({
             url: '/_convert',
-            token: self.access_token
+            token: self.access_token,
           },
             // Use clean method on args
-            editUtil.getMergedItems(this.editorData.meta, this.editorData.thing, this.editorData.linked)
+            editUtil.getMergedItems(
+              this.editorData.meta,
+              this.editorData.thing,
+              this.editorData.linked
+            )
           );
         },
         saveItem() {
@@ -165,15 +169,12 @@ export default class Editor extends View {
           // if (JSON.stringify(obj) === JSON.stringify(inputData)) {
           //   console.warn("No changes done, skipping to save. Time to tell the user?");
           // } else {
-            const atId = this.editorData.meta['@id'];
-            console.log(atId);
-            if(atId) {
-              console.log("Save called WITH changes.");
-              this.doSave(atId, obj);
-            } else {
-              console.log("Create called WITH changes.");
-              this.doCreate(obj);
-            }
+          const atId = this.editorData.meta['@id'];
+          if (atId) {
+            this.doSave(atId, obj);
+          } else {
+            this.doCreate(obj);
+          }
           // }
         },
         doSave(url, obj) {
