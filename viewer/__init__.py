@@ -19,7 +19,7 @@ from werkzeug.urls import url_quote
 from requests_oauthlib import OAuth2Session, TokenUpdated
 
 from lxltools.util import as_iterable
-from lxltools.ld.keys import CONTEXT, ID, TYPE, REVERSE
+from lxltools.ld.keys import CONTEXT, GRAPH, ID, TYPE, REVERSE
 
 from .thingview import Things, Uris, IDKBSE, LIBRIS
 from .marcframeview import MarcFrameView, pretty_json
@@ -158,15 +158,16 @@ def thingview(path, suffix=None):
     mod_response = _handle_modification(request, data)
 
     # Record deleted
-    if data.get(TYPE) == 'Tombstone':
+    items = data.get(GRAPH)
+    record = items[0]
+    if record.get(TYPE) == 'Tombstone':
         return abort(410)
 
     if mod_response:
         return mod_response
 
     if data:
-        #canonical = thing[ID]
-        #if canonocal != item_id:
+        #if record[ID] != item_id:
         #    return redirect(_to_data_path(see_path, suffix), 302)
         return rendered_response(path, suffix, data)
     else:
@@ -195,18 +196,15 @@ def import_post():
 def thingnew(item_type):
     ITEM_TYPES = {'record': 'Record'}
     item_type = ITEM_TYPES.get(item_type) or ITEM_TYPES.get('record')
-    at_type = request.args.get('@type')
+    at_type = request.args.get(TYPE)
     if not at_type:
         return Response('Missing @type parameter', status=422)
     else:
         return render_template('edit.html',
                 thing={
-                        '@graph': [
-                            {
-                                '@type': item_type
-                            },{
-                                '@type': json.loads(at_type)
-                            }
+                        GRAPH: [
+                            {TYPE: item_type},
+                            {TYPE: json.loads(at_type)}
                         ]
                     },
                 model={})
