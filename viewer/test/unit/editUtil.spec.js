@@ -66,10 +66,10 @@ describe('Utility: edit', function () {
     });
   });
 
-  describe('clean()', function () {
+  describe('removeNullValues()', function () {
     it('should return the same object without any null fields', function () {
-      expect(editUtil.clean(bibObj)).to.not.have.ownProperty('dimensions');
-      expect(editUtil.clean(bibObj)).to.not.have.ownProperty('extent');
+      expect(editUtil.removeNullValues(bibObj)).to.not.have.ownProperty('dimensions');
+      expect(editUtil.removeNullValues(bibObj)).to.not.have.ownProperty('extent');
     });
   });
 });
