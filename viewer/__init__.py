@@ -154,21 +154,21 @@ def thingview(path, suffix=None):
         pass
 
     item_id = _get_served_uri(request.url_root, path)
-    thing = things.ldview.get_record_data(item_id)
-    mod_response = _handle_modification(request, thing)
+    data = things.ldview.get_record_data(item_id)
+    mod_response = _handle_modification(request, data)
 
     # Record deleted
-    if thing.get(TYPE) == 'Tombstone':
+    if data.get(TYPE) == 'Tombstone':
         return abort(410)
 
     if mod_response:
         return mod_response
 
-    if thing:
+    if data:
         #canonical = thing[ID]
         #if canonocal != item_id:
         #    return redirect(_to_data_path(see_path, suffix), 302)
-        return rendered_response(path, suffix, thing)
+        return rendered_response(path, suffix, data)
     else:
         record_ids = things.ldview.find_record_ids(item_id)
         if record_ids: #and len(record_ids) == 1:
@@ -293,8 +293,8 @@ def _write_data(request, item=None, query_params=[]):
                 # If the save operation goes well location is returned, then get the item to return to client
                 if proxy_resp.status_code == 204 and 'location' in proxy_resp.headers:
                     item_id = _get_served_uri(proxy_resp.headers.get('location'), '')
-                    thing = things.ldview.get_record_data(item_id)
-                    return Response(json.dumps(thing), status=200, headers={'etag': proxy_resp.headers.get('etag'), 'Content-Type': JSONLD_MIMETYPE})
+                    data = things.ldview.get_record_data(item_id)
+                    return Response(json.dumps(data), status=200, headers={'etag': proxy_resp.headers.get('etag'), 'Content-Type': JSONLD_MIMETYPE})
                 else:
                     return proxy_resp
         else:
@@ -329,11 +329,11 @@ def dataindexview(suffix=None):
     results.update(g.site)
     return rendered_response('/', suffix, results)
 
-def rendered_response(path, suffix, thing):
+def rendered_response(path, suffix, data):
     mimetype, render = negotiator.negotiate(request, suffix)
     if not render:
         return abort(406)
-    result = render(path, thing)
+    result = render(path, data)
     charset = 'charset=UTF-8' # technically redundant, but for e.g. JSONView
     resp = Response(result, mimetype=mimetype +'; '+ charset) if isinstance(
             result, bytes) else result
@@ -351,7 +351,7 @@ negotiator = conneg.Negotiator()
 @negotiator.add('text/html', 'html')
 @negotiator.add('application/xhtml+xml', 'xhtml')
 def render_html(path, data):
-    data = things.ldview.get_decorated_data(data, True)
+    thing = things.ldview.get_decorated_data(data, True)
 
     def data_url(suffix):
         if path == '/find':
@@ -361,8 +361,8 @@ def render_html(path, data):
         else:
             return url_for('thingview', path=path, suffix=suffix)
 
-    return render_template(_get_template_for(data),
-            path=path, thing=data, data_url=data_url)
+    return render_template(_get_template_for(thing),
+            path=path, thing=thing, data_url=data_url)
 
 @negotiator.add('application/json', 'json')
 @negotiator.add('text/json')
