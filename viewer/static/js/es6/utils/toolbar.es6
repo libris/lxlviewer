@@ -66,6 +66,6 @@ function getCopyItem() {
     $('#copyItem').text(JSON.stringify(responseObject));
     $('.js-toolbar-copy').removeClass('hidden');
   }, (error) => {
-    console.warn("Couldn't fetch json");
+    console.warn("Couldn't prepare item copy (error when fetching data)");
   });
 }
