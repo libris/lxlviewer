@@ -66,6 +66,6 @@ function getCopyItem() {
     $('#copyItem').text(JSON.stringify(responseObject));
     $('.js-toolbar-copy').removeClass('hidden');
   }, (error) => {
-    console.warn("Couldn't prepare item copy (error when fetching data)");
+    console.warn("Couldn't prepare item copy (error when fetching data). This error only affects copy-functionality.");
   });
 }
