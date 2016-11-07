@@ -36,9 +36,9 @@ export function getVocab() {
   });
 }
 
-export function getClass(classname, vocab, vocabPfx) {
+export function getClass(classId, vocab, vocabPfx) {
   // Returns a class object
-  const cn = classname.replace(vocabPfx, '');
+  const cn = classId.replace(vocabPfx, '');
   const _class = _.find(vocab.descriptions, (d) => { return d['@id'] === vocabPfx + cn; });
   if (!_class) {
     console.warn('Class not found in vocab:', cn);
@@ -95,10 +95,11 @@ export function getSubClasses(classname, vocab, vocabPfx) {
   return subClasses;
 }
 
-export function getBaseClasses(classObj, vocab, vocabPfx) {
-  // Traverses up subClassOf properties and returns a list of all class objects found
-  let items = [];
-  if (classObj && classObj.hasOwnProperty('subClassOf')) {
+export function getBaseClasses(classId, vocab, vocabPfx) {
+  // Traverses up subClassOf properties and returns a list of all classes found
+  let classList = [];
+  const classObj = getClass(classId, vocab, vocabPfx);
+  if (classId && classObj.hasOwnProperty('subClassOf')) {
     for (let i = 0; i < classObj.subClassOf.length; i++) {
       const baseClassId = classObj.subClassOf[i]['@id'];
       const baseClass = getClass(baseClassId, vocab, vocabPfx);
@@ -107,55 +108,74 @@ export function getBaseClasses(classObj, vocab, vocabPfx) {
         baseClass.isDefinedBy &&
         baseClass.isDefinedBy['@id'] === vocabPfx
       ) {
-        items = items.concat(getBaseClasses(baseClass, vocab, vocabPfx));
-        items.push(baseClass);
+        classList = classList.concat(getBaseClasses(baseClassId, vocab, vocabPfx));
+        classList.push(baseClassId);
       } else {
-        // console.log("Stopped at", baseClassId);
+        //
       }
     }
   }
-  return items;
+  // console.log("getBaseClasses(" + JSON.stringify(classId) + ")", JSON.stringify(classList));
+  return classList;
 }
 
-export function getProperties(className, vocab) {
+export function getProperties(className, vocab, vocabPfx) {
   // Get all properties which has the domain of the className
   const vocabItems = vocab.descriptions;
   const props = [];
+  const cn = className.replace(vocabPfx, '');
   for (let i = 0; i < vocabItems.length; i++) {
-    if (vocabItems[i].hasOwnProperty('domainIncludes')) {
-      for (let t = 0; t < vocabItems[i].domainIncludes.length; t++) {
-        const prop = vocabItems[i];
-        const type = vocabItems[i].domainIncludes[t]['@id'];
-        if (className === type) {
-          props.push(prop);
+    const prop = vocabItems[i];
+
+    if (
+      prop['@type'] !== 'Class' &&
+      (prop.hasOwnProperty('domainIncludes') || prop.hasOwnProperty('domain'))
+    ) {
+      if (prop.hasOwnProperty('domainIncludes')) {
+        for (let t = 0; t < prop.domainIncludes.length; t++) {
+          const type = prop.domainIncludes[t]['@id'].replace(vocabPfx, '');
+          if (cn === type) {
+            props.push(prop);
+          }
+        }
+      }
+      if (prop.hasOwnProperty('domain')) {
+        for (let t = 0; t < prop.domain.length; t++) {
+          const type = prop.domain[t]['@id'].replace(vocabPfx, '');
+          if (cn === type) {
+            props.push(prop);
+          }
         }
       }
     }
   }
+  // console.log("getProperties("+JSON.stringify(className)+") ->", props.length, "properties found");
   return props;
 }
 
-export function getInheritedProperties(classArray, vocab, vocabPfx) {
-  let props = [];
-  // Types defined on the item
-  const types = [].concat(classArray);
+export function getBaseClassesFromArray(typeArray, vocab, vocabPfx) {
+  // Find the base classes from the types in typeArray and return a list of IDs.
+  const types = [].concat(typeArray);
 
-  // Find their base classes and make a list of their IDs
   let classes = [];
   for (let t = 0; t < types.length; t++) {
     const c = getClass(types[t], vocab, vocabPfx);
     if (typeof c !== 'undefined') {
-      classes.push(c);
+      classes.push(c['@id']);
     }
-    classes = classes.concat(getBaseClasses(c, vocab, vocabPfx));
+    classes = classes.concat(getBaseClasses(c['@id'], vocab, vocabPfx));
   }
-  const classNames = [];
-  for (let i = 0; i < classes.length; i++) {
-    classNames.push(classes[i]['@id']);
-  }
+  classes = _.uniq(classes);
+  // console.log("getBaseClassesFromArray("+JSON.stringify(typeArray)+") ->", JSON.stringify(classes));
+  return classes;
+}
+
+export function getPropertiesFromArray(typeArray, vocab, vocabPfx) {
+  let props = [];
+  const classNames = getBaseClassesFromArray(typeArray, vocab, vocabPfx);
 
   for (let i = 0; i < classNames.length; i++) {
-    const properties = getProperties(classNames[i], vocab);
+    const properties = getProperties(classNames[i], vocab, vocabPfx);
     for (let x = 0; x < properties.length; x++) {
       const p = {
         item: properties[x],

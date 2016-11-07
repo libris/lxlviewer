@@ -171,22 +171,46 @@ describe('Utility: vocab', function () {
   });
 
   describe('getBaseClasses()', function() {
-    let baseClasses = {};
+    let baseClasses;
 
     before(function() {
       // runs before all tests in this block
-      baseClasses = VocabUtil.getBaseClasses(audioClass, vocab);
+      baseClasses = VocabUtil.getBaseClasses(audioClass['@id'], vocab, vocabPfx);
     });
 
-    it('should return a list of class objects', function() {
+    it('should return an array', function() {
       expect(baseClasses).to.be.an('array');
-      expect(baseClasses[0]).to.be.an('object');
+    });
+    it('should contain strings of IDs', function() {
+      expect(baseClasses[0]).to.be.a('string');
     });
 
     it('should return the correct things', function() {
-      expect(baseClasses[0]).to.equal();
+      expect(baseClasses[0]).to.equal('kbv:CreativeWork');
     });
   });
+
+  describe('getBaseClassesFromArray()', function() {
+    let baseClasses;
+    let classList = ['kbv:Audio', 'kbv:Image'];
+
+    before(function() {
+      // runs before all tests in this block
+      baseClasses = VocabUtil.getBaseClassesFromArray(classList, vocab, vocabPfx);
+    });
+
+    it('should return an array', function() {
+      expect(baseClasses).to.be.an('array');
+    });
+    it('should contain strings of IDs', function() {
+      expect(baseClasses[0]).to.be.a('string');
+    });
+
+    it('should return the correct things', function() {
+      expect(baseClasses.length).to.equal(6);
+    });
+  });
+
 
   describe('getRange()', function() {
     it('should return a list of class IDs which is in range of the property provided', function() {

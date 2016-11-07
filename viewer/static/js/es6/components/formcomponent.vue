@@ -39,7 +39,7 @@ export default {
     allowedProperties() {
       const settings = this.settings;
       const formObj = this.formData;
-      let allowed = VocabUtil.getInheritedProperties(formObj['@type'], this.vocab, this.settings.vocabPfx);
+      let allowed = VocabUtil.getPropertiesFromArray(formObj['@type'], this.vocab, this.settings.vocabPfx);
 
       // Add the "added" property
       allowed = _.forEach(allowed, function(o) {
