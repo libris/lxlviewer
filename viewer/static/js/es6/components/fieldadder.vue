@@ -40,7 +40,7 @@ export default {
             }
           }
           const pId = o.item['@id'].toString().toLowerCase(); // @id
-          const pNote = o.item['note'].toString().toLowerCase(); // note
+          const pNote = o.item.hasOwnProperty('note') ? o.item['note'].toString().toLowerCase() : ''; // note
           const pLabel = labelByLang.toLowerCase() || ''; // label by lang
         return (pId.indexOf(fKey) !== -1 || pNote.indexOf(fKey) !== -1 || pLabel.indexOf(fKey) !== -1);
       });
