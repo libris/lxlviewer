@@ -51,11 +51,10 @@ export function initToolbar(_context) {
 
   // Copy button
   getCopyItem();
-
 }
 
 function getCopyItem() {
-  const itemUrl = $('#itemId').text().replace('/', '');
+  const itemUrl = $('#itemId').text();
   if (!itemUrl) return;
 
   const copyUrl = `/${itemUrl}/data.jsonld`;
