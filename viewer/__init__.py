@@ -238,7 +238,7 @@ def create():
 
 @app.route('/_convert', methods=['POST'])
 def convert():
-    return _write_data(request, query_params=['to'])
+    return _write_data(request, query_params={'to': 'application/x-marc-json'})
 
 @app.route('/_remotesearch')
 def _remotesearch():
