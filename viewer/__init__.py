@@ -208,7 +208,7 @@ def dataindexview(suffix=None):
     slicerepr = request.args.get('slice')
     slicetree = json.loads(slicerepr) if slicerepr else g.site['slices']
     results = things.ldview.get_index_stats(slicetree, make_find_url,
-                                            WHELK_REST_API_URL)
+            uris.to_canonical_uri(request.url_root))
     results.update(g.site)
     return rendered_response('/', suffix, results)
 
