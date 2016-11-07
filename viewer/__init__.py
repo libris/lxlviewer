@@ -352,6 +352,7 @@ def thingedit(path):
 
 @app.route('/create', methods=['POST'])
 def create():
+    request.path = '/'
     return _write_data(request, query_params={'collection': 'xl'})
 
 @app.route('/_convert', methods=['POST'])
