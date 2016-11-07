@@ -142,8 +142,12 @@ def jsonld_context():
 ##
 # Setup data-driven views
 
-RESOURCE_METHODS = ['GET', 'PUT', 'DELETE']
+RESOURCE_METHODS = ['GET', 'PUT']
 
+@app.route('/<path:path>', methods=['DELETE'])
+def handle_delete(path):
+    response = _whelk_request(request)
+    return response
 
 @app.route('/<path:path>/data', methods=RESOURCE_METHODS)
 @app.route('/<path:path>/data.<suffix>', methods=RESOURCE_METHODS)
