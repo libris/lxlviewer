@@ -64,6 +64,8 @@ def format_number(n):
 ##
 # Setup basic views
 
+WHELK_REST_API_URL = app.config.get('WHELK_REST_API_URL')
+
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('4XX.html', status_code=404), 404
@@ -118,7 +120,7 @@ def core_context():
         'lang': things.ldview.vocab.lang,
         'page_limit': 50,
         'canonical_uri': lambda uri: uris.find_canonical_uri(request.url_root, uri),
-        'view_url': lambda uri: uris.to_view_url(request.url_root, uri)
+        'view_url': lambda uri: uris.to_view_url(WHELK_REST_API_URL, uri)
     }
 
 @app.before_request
@@ -152,7 +154,7 @@ def thingview(path, suffix=None):
     except (NotFound, UnicodeEncodeError) as e:
         pass
 
-    item_id = _get_served_uri(request.url_root, path)
+    item_id = _get_served_uri(WHELK_REST_API_URL, path)
     data = things.ldview.get_record_data(item_id)
     mod_response = _handle_modification(request, data)
 
@@ -184,7 +186,7 @@ def _to_data_path(path, suffix):
 @app.route('/find.<suffix>')
 def find(suffix=None):
     results = things.ldview.get_search_results(request.args, make_find_url,
-            uris.to_canonical_uri(request.url_root))
+                                               WHELK_REST_API_URL)
     return rendered_response('/find', suffix, results)
 
 
@@ -341,7 +343,7 @@ def thingnewp():
 @app.route('/<path:path>/edit')
 @admin.login_required
 def thingedit(path):
-    item_id = _get_served_uri(request.url_root, path)
+    item_id = _get_served_uri(WHELK_REST_API_URL, path)
     thing = things.ldview.get_record_data(item_id)
     if not thing:
         return abort(404)
@@ -389,7 +391,7 @@ def _map_response(response):
 def _whelk_request(request, json_data=None, query_params=[]):
     params = {}
     defaults = query_params if isinstance(query_params, dict) else {}
-    url = '%s%s' % (app.config.get('WHELK_REST_API_URL'), request.path)
+    url = '%s%s' % (WHELK_REST_API_URL, request.path)
     json_data = json.dumps(json_data)
     for param in query_params:
         params[param] = request.args.get(param) or defaults.get(param)
