@@ -21,6 +21,9 @@ export function initToolbar(_context) {
         // accepted by user
         httpUtil._delete({ url, token: context.access_token }).then((result) => {
           console.log("post WAS deleted...", result);
+
+          // Force reload
+          window.location.reload();
         }, (result) => {
           console.log("post was NOT deleted...", result);
         });
