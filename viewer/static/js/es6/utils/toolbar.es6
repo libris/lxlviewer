@@ -53,11 +53,13 @@ export function initToolbar(_context) {
   });
 
   // Copy button
-  const itemUrl = $('#itemId').text();
-  RecordUtil.getNewCopy(itemUrl).then((response) => {
-    $('#copyItem').text(JSON.stringify(response));
-    $('.js-toolbar-copy').removeClass('hidden');
-  }, (error) => {
-    console.warn("Couldn't prepare item copy, hiding copy button.", error);
-  });
+  const itemId = $('#itemId').text();
+  if (itemId.length > 0) {
+    RecordUtil.getNewCopy(itemId).then((response) => {
+      $('#copyItem').text(JSON.stringify(response));
+      $('.js-toolbar-copy').removeClass('hidden');
+    }, (error) => {
+      console.warn("Couldn't prepare item copy, hiding copy button.", error);
+    });
+  }
 }
