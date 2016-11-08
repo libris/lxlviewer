@@ -126,9 +126,10 @@ export default {
     box-shadow: 0px 5px 15px 0px rgba(0,0,0,0.4);
     position: fixed;
     z-index: @modal-z;
-    top: 100px;
-    left: 25%;
     width: 50%;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     min-width: 600px;
     height: 400px;
     border: 1px solid @black;
