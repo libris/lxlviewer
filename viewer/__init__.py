@@ -161,9 +161,7 @@ def thingview(path, suffix=None):
     mod_response = _handle_modification(request, data)
 
     # Record deleted
-    items = data.get(GRAPH)
-    record = items[0]
-    if record.get(TYPE) == 'Tombstone':
+    if _is_tombstone(data):
         return abort(410)
 
     if mod_response:
@@ -349,6 +347,9 @@ def thingedit(path):
     thing = things.ldview.get_record_data(item_id)
     if not thing:
         return abort(404)
+    if _is_tombstone(thing):
+        return abort(410)
+
     model = {}
     return render_template('edit.html',
             thing=thing,
@@ -366,6 +367,14 @@ def convert():
 @app.route('/_remotesearch')
 def _remotesearch():
     return _whelk_request(request, query_params=['q','databases'])
+
+def _is_tombstone(data):
+    items = data.get(GRAPH)
+    record = items[0]
+    if record.get(TYPE) == 'Tombstone':
+        return True
+    else:
+        return False
 
 def _handle_modification(request, item):
     # TODO: mock handling for now; should forward to backend API

@@ -76,6 +76,7 @@ class Things(object):
     def __init__(self, config):
         self.lang = config['LANG']
         self.vocab_uri = config['VOCAB_IRI']
+        self.context_uri = config['CONTEXT_IRI']
         self.ui_defs = ui_defs
 
         self._storage = Storage('lddb',
@@ -103,10 +104,9 @@ class Things(object):
 
     def load_vocab_graph(self):
         try:
-            context_uri = self.vocab_uri + 'context'
-            context = self._storage.get_record(context_uri)
+            context = self._storage.get_record(self.context_uri)
             if context is None:
-                raise Exception('Failed to get context from storage ', context_uri, context)
+                raise Exception('Failed to get context from storage ', self.context_uri)
 
             self.jsonld_context_data = context.data
 

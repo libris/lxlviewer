@@ -20,6 +20,7 @@ CACHE_DIR = P.join(P.dirname(__file__), "..", "cache")
 #GRAPH_CACHE = P.join(CACHE_DIR, "graph-cache")
 
 VOCAB_IRI = "https://id.kb.se/vocab/"
+CONTEXT_IRI = "https://id.kb.se/vocab/context"
 LANG = "sv"
 
 BASE_URI_ALIAS = {}
