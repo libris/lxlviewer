@@ -1,3 +1,5 @@
+import * as httpUtil from '../utils/http';
+
 export function getMarc(json) {
   return new Promise((resolve, reject) => {
 
@@ -72,4 +74,23 @@ export function stripId(obj) {
     newObj['@id'] = '';
   }
   return newObj;
+}
+
+export function getNewCopy(id) {
+  let copyUrl = `${id}/data.jsonld`;
+  if (copyUrl[0] !== '/') {
+    copyUrl = `/${copyUrl}`;
+  }
+
+  return new Promise((resolve, reject) => {
+    httpUtil.get({ url: copyUrl, accept: 'application/ld+json' }).then((response) => {
+      // TODO: Relying on order. How can we do this in a safer way?
+      const responseObject = response;
+      responseObject['@graph'][0] = stripId(responseObject['@graph'][0]);
+      responseObject['@graph'][1] = stripId(responseObject['@graph'][1]);
+      resolve(responseObject);
+    }, (error) => {
+      reject('Error when getting record from', copyUrl, error);
+    });
+  });
 }

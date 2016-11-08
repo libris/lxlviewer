@@ -53,21 +53,11 @@ export function initToolbar(_context) {
   });
 
   // Copy button
-  getCopyItem();
-}
-
-function getCopyItem() {
   const itemUrl = $('#itemId').text();
-  if (!itemUrl) return;
-
-  const copyUrl = `/${itemUrl}/data.jsonld`;
-  httpUtil.get({ url: copyUrl, accept: 'application/ld+json' }).then((responseObject) => {
-    // TODO: Relying on order. How can we do this in a safer way?
-    responseObject['@graph'][0] = RecordUtil.stripId(responseObject['@graph'][0]);
-    responseObject['@graph'][1] = RecordUtil.stripId(responseObject['@graph'][1]);
-    $('#copyItem').text(JSON.stringify(responseObject));
+  RecordUtil.getNewCopy(itemUrl).then((response) => {
+    $('#copyItem').text(JSON.stringify(response));
     $('.js-toolbar-copy').removeClass('hidden');
   }, (error) => {
-    console.warn("Couldn't prepare item copy (error when fetching data). This error only affects copy-functionality.");
+    console.warn("Couldn't prepare item copy, hiding copy button.", error);
   });
 }
