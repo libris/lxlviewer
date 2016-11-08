@@ -92,7 +92,7 @@ export default {
 </script>
 
 <template>
-  <div v-if="isArray(value)">
+  <div v-if="isArray(value)" class="node-list">
     <ul>
       <li v-for="v in valueByIdPresence" v-bind:class="{'display-block': !v['@id'] }">
         <div v-if="isPlainObject(v) && v['@id']" class="node-linked">
