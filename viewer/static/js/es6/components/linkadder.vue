@@ -122,3 +122,48 @@ export default {
   </div>
 </div>
 </template>
+
+<style lang="less">
+@active-component-z: 99;
+@gray: #949a9e;
+@gray-light: #c4c7ca;
+@gray-lighter: #e0e6e9;
+
+.result {
+  display: none;
+  &.active {
+    display: block;
+  }
+  position: absolute;
+  overflow-y: auto;
+  z-index: @active-component-z;
+  background-color: @gray-lighter;
+  width: 400px;
+  max-height: 350px;
+  border: 1px solid rgba(89, 93, 97, 0.5);
+  box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.3);
+  li {
+    padding: 5px 10px 0px 5px;
+    border: solid @gray;
+    border-width: 0px 0px 1px 0px;
+    &:hover {
+      // background-color: @gray-light;
+    }
+    .plabel {
+      display: block;
+      line-height: 1;
+    }
+    .id {
+      font-size: 85%;
+    }
+    .add {
+      float: right;
+      cursor: pointer;
+    }
+    .details {
+      float: right;
+    }
+  }
+}
+
+</style>

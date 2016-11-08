@@ -56,3 +56,34 @@ export default {
     </div>
   </div>
 </template>
+
+<style lang="less">
+
+.editor-controls {
+  .row {
+    margin: 0px;
+  }
+  position: fixed;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  .controls-container {
+    .change-info {
+      .node {
+        font-size: 0.8em;
+        display: block;
+        .time-ago {
+          color: #CCC;
+        }
+      }
+    }
+    padding: 15px;
+    background-color: white;
+    box-shadow: 0px -7px 10px -4px rgba(0, 0, 0, 0.1);
+  }
+  #saveButton {
+    float: right;
+  }
+}
+
+</style>

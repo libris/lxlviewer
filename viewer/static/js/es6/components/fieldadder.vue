@@ -79,7 +79,7 @@ export default {
 </script>
 
 <template>
-  <div class="fieldAdder">
+  <div class="field-adder">
     <a v-on:click="show"><i class="fa fa-plus-circle"></i> Lägg till fält</a>
     <div class="window" v-show="active">
       <div class="header">
@@ -110,3 +110,127 @@ export default {
     </div>
   </div>
 </template>
+
+<style lang="less">
+@modal-z: 950;
+@black: #000000;
+@neutral-color: #ffffff;
+@gray: #949a9e;
+
+.field-adder {
+  display: inline-block; // So that the clickaway plugin triggers nicely
+  >a {
+    cursor: pointer;
+  }
+  .window {
+    box-shadow: 0px 5px 15px 0px rgba(0,0,0,0.4);
+    position: fixed;
+    z-index: @modal-z;
+    top: 100px;
+    left: 25%;
+    width: 50%;
+    min-width: 600px;
+    height: 400px;
+    border: 1px solid @black;
+    border-radius: 3px;
+    background-color: @neutral-color;
+    .header {
+      background-color: @black;
+      color: @neutral-color;
+      height: 32px;
+      padding-top: 2px;
+      .title {
+        display: inline-block;
+        margin: 2px 0px 0px 5px;
+        text-transform: uppercase;
+      }
+      .windowControl {
+        float: right;
+        padding: 1px 8px 0px 30px;
+        display: inline-block;
+        i:hover {
+          cursor: pointer;
+          color: darken(@neutral-color, 25%);
+        }
+      }
+      .filter {
+        font-size: 85%;
+        float: right;
+        .filterInput {
+          border-radius: 3px;
+          border: 0px;
+          padding: 3px 5px;
+          margin: 0px 10px 0px 10px;
+          color: @black;
+          display: inline-block;
+        }
+        .filterInfo {
+          display: inline-block;
+          width: 170px;
+          text-align: right;
+          padding: 3px 10px 3px 3px;
+        }
+      }
+    }
+    ul {
+      border: solid @gray;
+      border-width: 1px 0px 0px 0px;
+      border-radius: 0px 0px 3px 3px;
+      width: 100%;
+      max-height: 366px;
+      overflow-y: auto;
+      margin: 0px;
+      li {
+        &:nth-child(odd) {
+          background-color: darken(@neutral-color, 5%);
+        }
+        margin: 0px;
+        padding: 3px;
+        line-height: 1.3;
+        .fieldLabel {
+          display: inline-block;
+          width: 45%;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        .typeLabel {
+          display: inline-block;
+          width: 40%;
+          margin-left: 1em;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          font-size: 85%;
+          font-family: monospace;
+        }
+        .addControl {
+          float: right;
+          margin-left: 1em;
+          margin-right: 1em;
+          a {
+            cursor: pointer;
+          }
+          span {
+            display: none;
+          }
+        }
+        &.added {
+          span {
+            opacity: 0.6;
+          }
+          .addControl {
+            a {
+              display: none;
+            }
+            span {
+              display: block;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+</style>

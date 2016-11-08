@@ -156,3 +156,119 @@ export default {
     </div>
   </div>
 </template>
+
+<style lang="less">
+@gray-lighter: #e0e6e9;
+@gray-darker: #595d61;
+
+.form-component {
+  padding: 20px;
+  > ul > li.locked {
+    background-color: #efefef;
+    margin: 0px;
+  }
+  >ul {
+    >li {
+      &:hover {
+        >.delete {
+          opacity: 1;
+        }
+      }
+      border: solid @gray-lighter;
+      border-width: 0px 0px 1px 0px;
+      >.delete {
+        transition: opacity ease 0.2s;
+        cursor: pointer;
+        opacity: 0;
+        float: right;
+        margin-right: 25px;
+      }
+      >.label {
+        display: inline-block;
+        width: 200px;
+        text-align: right;
+        vertical-align: top;
+        line-height: 2.5;
+        color: @gray-darker;
+        a {
+          cursor: help;
+          text-decoration: none;
+          color: #949a9e;
+          line-height: 12px;
+          font-weight: normal;
+          border-bottom: dashed transparent 1px;
+          display: inline-block;
+          &:hover {
+            text-decoration: none;
+            border-bottom: 1px dashed;
+          }
+        }
+      }
+      >.value {
+        max-width: 820px;
+        display: inline-block;
+        padding: 5px 0px 0px 0px;
+        > div {
+          > ul > li {
+            display: inline-block;
+          }
+        }
+        input {
+          padding: 0px;
+          width: 100%;
+        }
+        .anonymous-value {
+          > ul > li {
+            vertical-align: top;
+          }
+          .label-horizontal {
+            display: block;
+            font-size: 0.8em;
+          }
+          .class {
+            padding: 4px;
+            font-size: 85%;
+            font-weight: bold;
+            text-transform: uppercase;
+          }
+          >.fa-close {
+            cursor: pointer;
+            float: right;
+            margin-right: 4px;
+            opacity: 0;
+            transition: opacity ease 0.2s;
+          }
+          &:hover {
+            >.fa-close {
+              opacity: 1;
+            }
+          }
+          width: 100%;
+          margin-bottom: 0.5em;
+          padding: 0px 0px 5px 0px;
+          border-radius: 3px;
+          border: 1px solid rgba(0, 0, 0, 0.1);
+          background-color: fadeout(@gray-lighter, 60%);
+          > ul > li {
+            margin: 0px;
+            display: inline-block;
+            width: 100%;
+            padding: 0px 5px 0px 5px;
+          }
+        }
+      }
+    }
+  }
+  .node-input {
+    width: 420px;
+  }
+  .node-linked {
+    margin: 0px 5px 0px 0px;
+  }
+  .node-anonymous {
+    width: 420px;
+    clear: left;
+  }
+}
+
+</style>

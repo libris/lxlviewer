@@ -59,3 +59,104 @@ export default {
     </div>
   </div>
 </template>
+
+<style lang="less">
+// Variables
+@chipColor: #e4e4e4;
+@chipTextColor: rgba(0,0,0,0.6);
+
+.link-container {
+  margin: 0px 0px 0px 0px;
+  display: inline-block;
+  line-height: 0;
+  cursor: default;
+  * {
+    line-height: 1.6;
+  }
+  .linked {
+    display: inline-block;
+    background-color: @chipColor;
+    color: @chipTextColor;
+    font-size: 85%;
+    border-radius: 1em;
+    padding: 2px 10px;
+    margin: 0px 0px 3px 0px;
+    .delete {
+      cursor: pointer;
+      color: fadeout(@chipTextColor, 25%);
+      &:hover {
+        color: @chipTextColor;
+      }
+    }
+    &:hover {
+      transition: background-color ease 0.25s;
+      background-color: darken(@chipColor, 5%);
+    }
+  }
+  .linked-popup {
+    position: absolute;
+    opacity: 0;
+    overflow: hidden;
+    transition: 0.3s ease;
+    transition-property: opacity, width, height;
+    border: 1px solid;
+    border-color: #bdbdbd;
+    border-bottom-color: #6d6d6d;
+    background-color: #efefef;
+    border-radius: 3px;
+    box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.3);
+    color: #5a5a5a;
+    word-wrap: break-word;
+    width: 0px;
+    height: 0px;
+    padding: 0px;
+    margin: 0px;
+    .header {
+      border: solid #bdbdbd;
+      border-width: 0px 0px 1px 0px;
+      padding: 3px;
+      span {
+        display: inline-block;
+      }
+      .item-label {
+        width: 59%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        float: left;
+        a {
+          color: inherit;
+        }
+      }
+      .item-type {
+        font-weight: bold;
+        text-transform: uppercase;
+        width: 39%;
+        font-size: 75%;
+      }
+    }
+    .body {
+      padding: 3px;
+      height: 90px;
+      width: 398px;
+      overflow-y: scroll;
+      p {
+        margin: 0px;
+      }
+    }
+  }
+  &:hover, &.focused {
+    .linked-popup {
+      width: 400px;
+      height: 120px;
+      opacity: 1;
+    }
+  }
+  &:hover {
+    .linked-popup {
+      transition-delay: 0.5s;
+    }
+  }
+}
+
+</style>

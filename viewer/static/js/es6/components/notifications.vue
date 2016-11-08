@@ -49,3 +49,42 @@ export default {
     </ul>
   </div>
 </template>
+
+<style lang="less">
+@neutral-color: #ffffff;
+
+.notifications {
+  transition: 0.5s ease;
+  transition-property: height;
+  ul {
+    li {
+      background-color: rgba(0, 0, 0, 0.7);
+      color: @neutral-color;
+      margin: 10px 0px;
+      padding: 7px 15px;
+      font-size: 14px;
+      transition: 1s ease opacity;
+      a {
+        cursor: pointer;
+        font-weight: bold;
+        color: inherit;
+      }
+      &.inactive {
+        opacity: 0;
+      }
+      &.success {
+        .msg-type {
+          color: #00c300;
+        }
+      }
+      &.error {
+        .msg-type {
+          color: #e60000;
+        }
+      }
+    }
+  }
+}
+
+
+</style>
