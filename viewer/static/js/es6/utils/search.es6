@@ -1,7 +1,27 @@
+export function getParameters() {
+  const params = [];
+  $('input[type=hidden]').each(function() {
+    params.push({ key: $(this).attr('name'), value: $(this).val() });
+    $(this).remove();
+  });
+  return params;
+}
+
+export function getParameter(name) {
+  const parameters = getParameters();
+  for (let i = 0; i < parameters.length; i++) {
+    if (name === parameters[i].key) {
+      return parameters[i];
+    }
+  }
+  return false;
+}
+
 export function initTypeButtons() {
-  var type = getParameter('type');
-  if (typeof type !== 'undefined') {
-    $('.type-buttons input').each(function() {
+  const type = getParameter('type');
+  const inputs = $('.type-buttons input');
+  if (typeof type !== 'undefined' && inputs.length > 0) {
+    inputs.each(function() {
       if ($(this).val() == type.value) {
         $(this).closest('label').addClass('active');
         $(this).attr('checked', true);
@@ -12,35 +32,16 @@ export function initTypeButtons() {
   }
 }
 
-export function getParameters() {
-  var params = [];
-  $('input[type=hidden]').each(function() {
-    params.push({ key: $(this).attr('name'), value: $(this).val() });
-    $(this).remove();
-  });
-  return params;
-};
-
-export function getParameter(name) {
-  var parameters = getParameters();
-  for (var i = 0; i < parameters.length; i++){
-    if (name == parameters[i].key) {
-      return parameters[i];
-    }
-  }
-}
-
 export function initializeSearch() {
-
   // Remove empty fields
   $('form').submit(function(e){
-      if ($('#searchQ').val() === '') {
-        e.preventDefault();
-        return;
-      }
-      var emptyinputs = $(this).find('input').filter(function(){
+    if ($('#searchQ').val() === '') {
+      e.preventDefault();
+      return;
+    }
+    // Empty inputs
+    $(this).find('input').filter(function(){
       return !$.trim(this.value).length;
-    }).prop('disabled',true);
+    }).prop('disabled', true);
   });
-
 }
