@@ -130,7 +130,7 @@ export default {
 </script>
 
 <template>
-  <div class="form-component">
+  <div class="form-component" v-bind:class="{ 'locked': isLocked }">
     <ul>
       <li v-for="(k, v) in formData" v-if="v !== null" v-bind:class="{ 'locked': isLocked }">
         <span class="label">
@@ -160,15 +160,23 @@ export default {
 <style lang="less">
 @gray-lighter: #e0e6e9;
 @gray-darker: #595d61;
+@neutral-color: #ffffff;
 
 .form-component {
   padding: 20px;
-  > ul > li.locked {
-    background-color: #efefef;
-    margin: 0px;
+  &.locked {
+    border: dashed 1px;
+    > ul > li {
+      background-color: #efefef;
+      margin: 0px;
+    }
   }
   >ul {
     >li {
+      background-color: @neutral-color;
+      &:nth-child(odd) {
+        background-color: darken(@neutral-color, 2%);
+      }
       &:hover {
         >.delete {
           opacity: 1;
