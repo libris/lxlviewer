@@ -161,21 +161,21 @@ export default {
 @gray-lighter: #e0e6e9;
 @gray-darker: #595d61;
 @neutral-color: #ffffff;
+@node-bg: #fafafa;
 
 .form-component {
   padding: 20px;
   &.locked {
-    border: dashed 1px;
+    background-color: darken(@neutral-color, 10%);
     > ul > li {
-      background-color: #efefef;
       margin: 0px;
     }
   }
   >ul {
     >li {
-      background-color: @neutral-color;
+      background-color: @node-bg;
       &:nth-child(odd) {
-        background-color: darken(@neutral-color, 2%);
+        background-color: darken(@node-bg, 2%);
       }
       &:hover {
         >.delete {
