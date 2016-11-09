@@ -153,8 +153,9 @@ export default class Editor extends View {
           },
             // Use clean method on args
             editUtil.getMergedItems(
-              this.editorData.meta,
-              this.editorData.thing,
+              this.editorData.record,
+              this.editorData.it,
+              this.editorData.work,
               this.editorData.linked
             )
           );
@@ -162,15 +163,16 @@ export default class Editor extends View {
         saveItem() {
           const inputData = JSON.parse(document.getElementById('data').innerText);
           const obj = editUtil.getMergedItems(
-            editUtil.removeNullValues(this.editorData.meta),
-            editUtil.removeNullValues(this.editorData.thing),
+            editUtil.removeNullValues(this.editorData.record),
+            editUtil.removeNullValues(this.editorData.it),
+            editUtil.removeNullValues(this.editorData.work),
             this.editorData.linked
           );
 
           // if (JSON.stringify(obj) === JSON.stringify(inputData)) {
           //   console.warn("No changes done, skipping to save. Time to tell the user?");
           // } else {
-          const atId = this.editorData.meta['@id'];
+          const atId = this.editorData.record['@id'];
           if (atId) {
             this.doSave(atId, obj);
           } else {

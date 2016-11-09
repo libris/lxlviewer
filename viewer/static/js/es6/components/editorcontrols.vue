@@ -19,14 +19,14 @@ export default {
   computed: {
     modified: function() {
       return {
-        date: moment(this.editorData.meta.modified).format('lll'),
-        timeAgo: moment(this.editorData.meta.modified).fromNow(),
+        date: moment(this.editorData.record.modified).format('lll'),
+        timeAgo: moment(this.editorData.record.modified).fromNow(),
       };
     },
     created: function() {
       return {
-        date: moment(this.editorData.meta.created).format('lll'),
-        timeAgo: moment(this.editorData.meta.created).fromNow(),
+        date: moment(this.editorData.record.created).format('lll'),
+        timeAgo: moment(this.editorData.record.created).fromNow(),
       };
     },
   },
@@ -44,8 +44,8 @@ export default {
       </div>
       <div class="col-md-12 controls-container">
         <div class="change-info pull-left">
-          <span v-if="editorData.meta.created" class="node">Skapad {{created.date}} <span class="time-ago">({{created.timeAgo}})</span></span>
-          <span v-if="editorData.meta.modified" class="node">Ändrad {{modified.date}} <span class="time-ago">({{modified.timeAgo}})</span></span>
+          <span v-if="editorData.record.created" class="node">Skapad {{created.date}} <span class="time-ago">({{created.timeAgo}})</span></span>
+          <span v-if="editorData.record.modified" class="node">Ändrad {{modified.date}} <span class="time-ago">({{modified.timeAgo}})</span></span>
         </div>
         <button id="saveButton" v-on:click="save()">
           <i class="fa fa-fw fa-cog fa-spin" v-show="status.saved.loading"></i>
