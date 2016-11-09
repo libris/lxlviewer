@@ -12,6 +12,7 @@ import * as RecordUtil from '../utils/record';
 import * as UserUtil from '../utils/user';
 import FormComponent from '../components/formcomponent';
 import EditorControls from '../components/editorcontrols';
+import HeaderComponent from '../components/headercomponent';
 import { getSettings, getVocabulary, getEditorData } from '../vuex/getters';
 import { changeSettings, loadVocab, syncData } from '../vuex/actions';
 
@@ -215,6 +216,7 @@ export default class Editor extends View {
       components: {
         'form-component': FormComponent,
         'editor-controls': EditorControls,
+        'header-component': HeaderComponent,
       },
       store,
     });
