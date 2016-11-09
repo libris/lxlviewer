@@ -10,10 +10,11 @@ export function getLinked(id, linked) {
   return { '@id': id };
 }
 
-export function getMergedItems(meta, thing, linked) {
+export function getMergedItems(record, it, work, linked) {
   const obj = { '@graph': [] };
-  obj['@graph'].push(meta);
-  obj['@graph'].push(thing);
+  obj['@graph'].push(record);
+  obj['@graph'].push(it);
+  obj['@graph'].push(work);
   for (let i = 0; i < linked.length; i++) {
     obj['@graph'].push({ '@graph': linked[i] });
   }
