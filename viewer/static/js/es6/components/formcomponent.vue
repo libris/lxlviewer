@@ -205,6 +205,7 @@ export default {
         width: @col-action;
         transition: opacity ease 0.2s;
         opacity: 0;
+        padding-left: 10px;
         margin-right: 25px;
       }
       >.label {
