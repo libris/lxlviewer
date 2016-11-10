@@ -150,10 +150,11 @@ export default {
   .entity-chip {
     height: 1.7em;
     padding: 0px 0.2em 0px 0.5em;
-    border: 0px solid;
     border-radius: 1em;
     color: @chipTextColor;
     background-color: @chipColor;
+    border: 0px;
+    box-shadow: inset 0px -2px darken(@chipColor, 5%);
     &.locked {
       padding-right: 0.5em;
     }
@@ -176,6 +177,7 @@ export default {
     }
     &.linked {
       background-color: @chipColorLinked;
+      box-shadow: inset 0px -2px darken(@chipColorLinked, 5%);
     }
   }
   .entity-form {

@@ -182,7 +182,8 @@ export default {
   >ul {
     padding-left: 0px;
     >li {
-      display: inline-block;
+      display: flex;
+      padding: 5px 0px;
       list-style: none;
       width: 100%;
       background-color: @node-bg;
@@ -194,8 +195,10 @@ export default {
           opacity: 1;
         }
       }
-      border: solid @gray-lighter;
-      border-width: 0px 0px 1px 0px;
+      border: solid;
+      border-width: 1px 0px 1px 0px;
+      border-top-color: white;
+      border-bottom-color: @gray-lighter;
       >.action {
         display: inline-block;
         float: left;
