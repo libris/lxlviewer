@@ -181,6 +181,8 @@ export default {
       max-height: 366px;
       overflow-y: auto;
       margin: 0px;
+      list-style-type: none;
+      padding: 0px;
       li {
         &:nth-child(odd) {
           background-color: darken(@neutral-color, 5%);

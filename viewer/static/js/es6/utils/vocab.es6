@@ -99,7 +99,7 @@ export function getBaseClasses(classId, vocab, vocabPfx) {
   // Traverses up subClassOf properties and returns a list of all classes found
   let classList = [];
   const classObj = getClass(classId, vocab, vocabPfx);
-  if (classId && classObj.hasOwnProperty('subClassOf')) {
+  if (classObj && classObj.hasOwnProperty('subClassOf')) {
     for (let i = 0; i < classObj.subClassOf.length; i++) {
       const baseClassId = classObj.subClassOf[i]['@id'];
       const baseClass = getClass(baseClassId, vocab, vocabPfx);
