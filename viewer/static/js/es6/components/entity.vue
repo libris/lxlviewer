@@ -113,7 +113,7 @@ export default {
 
 <template>
   <div class="entity-container" v-bind:class="{ 'expanded' : expanded || (!isLinked && !isTyped) }">
-    <div class="entity-chip" v-if="!isStructured" v-bind:class="{ 'linked': isLinked }">
+    <div class="entity-chip" v-if="!isStructured" v-bind:class="{ 'linked': isLinked, 'locked': isLocked }">
       <span class="chip-label"><processed-label :item="item"></processed-label></span>
       <i class="chip-action fa fa-pencil" v-on:click="expand" v-if="!isLocked && !isLinked"></i>
       <i class="chip-action fa fa-times" v-on:click="removeThis" v-if="!isLocked && isLinked"></i>
@@ -154,6 +154,9 @@ export default {
     border-radius: 1em;
     color: @chipTextColor;
     background-color: @chipColor;
+    &.locked {
+      padding-right: 0.5em;
+    }
     .chip-label {
       float: left;
       display: inline-block;
