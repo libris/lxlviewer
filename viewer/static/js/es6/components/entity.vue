@@ -29,6 +29,7 @@ export default {
       return JSON.stringify(this.item);
     },
     isLinked() {
+      // Is @id present?
       if (typeof this.item !== 'undefined' && this.item['@id']) {
         return true;
       } else {
@@ -36,25 +37,40 @@ export default {
       }
     },
     isTyped() {
+      // Is @type present?
       if (typeof this.item !== 'undefined' && this.item['@type']) {
         return true;
       } else {
         return false;
       }
     },
-    isEmpty() {
-
+    isStructured() {
+      // Is the type of the item derived from StructuredValue?
+      if (!this.isTyped) {
+        return false;
+      }
+      const type = vocabUtil.getBaseClasses(this.item['@type'], this.vocab, this.settings.vocabPfx);
+      if (type.indexOf(`${this.settings.vocabPfx}StructuredValue`) > -1) {
+        return true;
+      }
+      return false;
     },
-    availableTypes() {
+    isEmpty() {
+      // TODO: Is the item empty?
+      return false;
+    },
+    getRange() {
       const types = vocabUtil.getRange(this.key, this.vocab, this.settings.vocabPfx);
       return types;
     },
   },
   methods: {
     expand() {
+      // Show form
       this.expanded = true;
     },
     collapse() {
+      // Hide form
       this.expanded = false;
     },
     removeThis() {
@@ -68,6 +84,8 @@ export default {
       }
     },
     setType(type) {
+      // Sets the focused object (this.item) to an object of the type specified.
+      // Also adds all available properties.
       const newObj = this.item;
       const pfx = this.settings.vocabPfx;
       newObj['@type'] = type;
@@ -95,22 +113,27 @@ export default {
 
 <template>
   <div class="entity-container" v-bind:class="{ 'expanded' : expanded || (!isLinked && !isTyped) }">
-    <div class="entity-chip" v-bind:class="{ 'linked': isLinked }">
+    <div class="entity-chip" v-if="!isStructured" v-bind:class="{ 'linked': isLinked }">
       <span class="chip-label"><processed-label :item="item"></processed-label></span>
-      <i class="chip-action fa fa-pencil" v-on:click="expand" v-if="!isLinked"></i>
-      <i class="chip-action fa fa-times" v-on:click="removeThis" v-if="isLinked"></i>
+      <i class="chip-action fa fa-pencil" v-on:click="expand" v-if="!isLocked && !isLinked"></i>
+      <i class="chip-action fa fa-times" v-on:click="removeThis" v-if="!isLocked && isLinked"></i>
     </div>
-    <div class="entity-form" v-if="!this.isTyped && !this.isLinked">
-      <button v-for="type in availableTypes" v-on:click="setType(type)">{{type}}</button>
+    <div class="entity-form" v-if="!isTyped && !isLinked && !isStructured">
+      <button v-for="type in getRange" v-on:click="setType(type)">{{type}}</button>
     </div>
-    <div class="entity-form" v-if="this.isTyped && !this.isLinked">
+    <div class="entity-form" v-if="isTyped && !isLinked && !isStructured">
       <strong>{{item['@type'] | labelByLang | capitalize}}</strong>
       <div class="entity-form-row" v-for="(k,v) in item" v-if="k.indexOf('@') == -1">
         <span class="entity-form-label">{{k | labelByLang | capitalize}}</span>
         <input v-model="v"></input>
       </div>
-      <button v-on:click="removeThis"><i class="chip-action fa fa-trash-o"></i> Ta bort</button>
-      <button v-on:click="collapse"><i class="chip-action fa fa-floppy-o" v-on:click="collapse"></i> Klar</button>
+      <button v-on:click="removeThis"><i class="chip-action fa fa-trash"></i> Ta bort</button>
+      <button v-on:click="collapse" v-bind:disabled="isEmpty"><i class="chip-action fa fa-check"></i> Klar</button>
+    </div>
+    <div class="entity-structured" v-if="isStructured">
+      <ul>
+        <li v-for="(k,v) in item">{{k}}: {{v}}</li>
+      </ul>
     </div>
   </div>
 </template>
@@ -155,18 +178,16 @@ export default {
   .entity-form {
     border: 0px solid;
     background-color: darken(@chipColor, 5%);
-    display: none;
     border-radius: 1em;
-    width: 100%;
     padding: 5px;
+    display: none;
+    overflow: hidden;
     .entity-form-label {
       color: #000;
     }
   }
   &.expanded {
-    display: block;
     width: 100%;
-    height: auto;
     .entity-chip {
       display: none;
     }
