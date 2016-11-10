@@ -7,6 +7,7 @@
 
 import * as _ from 'lodash';
 import LinkAdder from './linkadder';
+import EntityAdder from './entityadder';
 import FieldAdder from './fieldadder';
 import DataNode from './datanode';
 import LinkedItem from './linkeditem';
@@ -124,6 +125,7 @@ export default {
     'link-adder': LinkAdder,
     'data-node': DataNode,
     'linked-item': LinkedItem,
+    'entity-adder': EntityAdder,
     'field-adder': FieldAdder,
   },
 };
@@ -138,9 +140,10 @@ export default {
         </span>
         <span class="value">
           <data-node v-if="!isEmptyObject(v)" :is-locked="isLocked" :key="k" :value="v" :linked="linked"></data-node>
-          <link-adder v-if="!isLocked && (isRepeatable(k) || isEmptyObject(v))" :key="k" :allow-anon="true"></link-adder>
         </span>
-        <span v-if="!isLocked" class="delete" v-on:click="removeField(k)"><i class="fa fa-close"></i></span>
+        <span class="action">
+          <entity-adder v-if="!isLocked && (isRepeatable(k) || isEmptyObject(v))" :key="k"></entity-adder>
+        </span>
       </li>
     </ul>
     <field-adder v-if="!isLocked" :allowed="allowedProperties" :item="focus"></field-adder>
@@ -163,6 +166,11 @@ export default {
 @neutral-color: #ffffff;
 @node-bg: #fafafa;
 
+// Column widths
+@col-label: 200px;
+@col-value: 670px;
+@col-action: 200px;
+
 .form-component {
   padding: 20px;
   &.locked {
@@ -172,28 +180,34 @@ export default {
     }
   }
   >ul {
+    padding-left: 0px;
     >li {
+      display: inline-block;
+      list-style: none;
+      width: 100%;
       background-color: @node-bg;
       &:nth-child(odd) {
         background-color: darken(@node-bg, 2%);
       }
       &:hover {
-        >.delete {
+        >.action {
           opacity: 1;
         }
       }
       border: solid @gray-lighter;
       border-width: 0px 0px 1px 0px;
-      >.delete {
+      >.action {
+        display: inline-block;
+        float: left;
+        width: @col-action;
         transition: opacity ease 0.2s;
-        cursor: pointer;
         opacity: 0;
-        float: right;
         margin-right: 25px;
       }
       >.label {
+        float: left;
         display: inline-block;
-        width: 200px;
+        width: @col-label;
         text-align: right;
         vertical-align: top;
         line-height: 2.5;
@@ -213,9 +227,10 @@ export default {
         }
       }
       >.value {
-        max-width: 820px;
+        float: left;
+        width: @col-value;
         display: inline-block;
-        padding: 5px 0px 0px 0px;
+        padding: 5px 15px 0px 0px;
         > div {
           > ul > li {
             display: inline-block;
@@ -225,45 +240,6 @@ export default {
           padding: 0px;
           width: 100%;
         }
-        .anonymous-value {
-          > ul > li {
-            vertical-align: top;
-          }
-          .label-horizontal {
-            display: block;
-            font-size: 0.8em;
-          }
-          .class {
-            padding: 4px;
-            font-size: 85%;
-            font-weight: bold;
-            text-transform: uppercase;
-          }
-          >.fa-close {
-            cursor: pointer;
-            float: right;
-            margin-right: 4px;
-            opacity: 0;
-            transition: opacity ease 0.2s;
-          }
-          &:hover {
-            >.fa-close {
-              opacity: 1;
-            }
-          }
-          width: 100%;
-          margin-bottom: 0.5em;
-          padding: 0px 0px 5px 0px;
-          border-radius: 3px;
-          border: 1px solid rgba(0, 0, 0, 0.1);
-          background-color: fadeout(@gray-lighter, 60%);
-          > ul > li {
-            margin: 0px;
-            display: inline-block;
-            width: 100%;
-            padding: 0px 5px 0px 5px;
-          }
-        }
       }
     }
   }
@@ -271,7 +247,10 @@ export default {
     width: 420px;
   }
   .node-linked {
-    margin: 0px 5px 0px 0px;
+    margin: 0px 15px 0px 0px;
+    > div.expanded {
+      width: @col-value;
+    }
   }
   .node-anonymous {
     width: 420px;
