@@ -44,14 +44,17 @@ export default {
         return false;
       }
     },
-    isStructured() {
+    isEmbedded() {
       // Is the type of the item derived from StructuredValue?
       if (!this.isTyped) {
         return false;
       }
+      const embeddedTypes = ['StructuredValue', 'ProvisionActivity', 'Contribution'];
       const type = vocabUtil.getBaseClasses(this.item['@type'], this.vocab, this.settings.vocabPfx);
-      if (type.indexOf(`${this.settings.vocabPfx}StructuredValue`) > -1) {
-        return true;
+      for (let i = 0; i < embeddedTypes.length; i++) {
+        if (~type.indexOf(`${this.settings.vocabPfx}${embeddedTypes[i]}`)) {
+          return true;
+        }
       }
       return false;
     },
@@ -113,15 +116,15 @@ export default {
 
 <template>
   <div class="entity-container" v-bind:class="{ 'expanded' : expanded || (!isLinked && !isTyped) }">
-    <div class="entity-chip" v-if="!isStructured" v-bind:class="{ 'linked': isLinked, 'locked': isLocked }">
+    <div class="entity-chip" v-if="!isEmbedded" v-bind:class="{ 'linked': isLinked, 'locked': isLocked }">
       <span class="chip-label"><processed-label :item="item"></processed-label></span>
       <i class="chip-action fa fa-pencil" v-on:click="expand" v-if="!isLocked && !isLinked"></i>
       <i class="chip-action fa fa-times" v-on:click="removeThis" v-if="!isLocked && isLinked"></i>
     </div>
-    <div class="entity-form" v-if="!isTyped && !isLinked && !isStructured">
+    <div class="entity-form" v-if="!isTyped && !isLinked && !isEmbedded">
       <button v-for="type in getRange" v-on:click="setType(type)">{{type}}</button>
     </div>
-    <div class="entity-form" v-if="isTyped && !isLinked && !isStructured">
+    <div class="entity-form" v-if="isTyped && !isLinked && !isEmbedded">
       <strong>{{item['@type'] | labelByLang | capitalize}}</strong>
       <div class="entity-form-row" v-for="(k,v) in item" v-if="k.indexOf('@') == -1">
         <span class="entity-form-label">{{k | labelByLang | capitalize}}</span>
@@ -130,7 +133,7 @@ export default {
       <button v-on:click="removeThis"><i class="chip-action fa fa-trash"></i> Ta bort</button>
       <button v-on:click="collapse" v-bind:disabled="isEmpty"><i class="chip-action fa fa-check"></i> Klar</button>
     </div>
-    <div class="entity-structured" v-if="isStructured">
+    <div class="entity-structured" v-if="isEmbedded">
       <ul>
         <li v-for="(k,v) in item">{{k}}: {{v}}</li>
       </ul>
