@@ -17,7 +17,7 @@
   % set canonical_id = canonical_uri(record)
   % set typename = record[TYPE]
   % set thing_url = view_url(canonical_id)
-  <header-component></header-component>
+  <header-component v-if="initialized == true"></header-component>
   <form-component :is-locked="true" focus="record" :linked="editorData.linked" v-if="initialized == true"></form-component>
   <form-component focus="work" :linked="editorData.linked"  v-if="initialized == true"></form-component>
   <form-component focus="it" :linked="editorData.linked"  v-if="initialized == true"></form-component>
