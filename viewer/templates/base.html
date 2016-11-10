@@ -15,11 +15,21 @@
   <body {% block bodyattrs %}{% endblock %}>
     <div id="body-blocker"></div>
     {% block navigation %}
-    <nav class="navbar navbar-inverse">
+    % if g.site.stylesheet
+      <nav class="navbar navbar-inverse">
+    % else
+      <nav class="navbar">
+    % endif
       <div class="{% block navcontainerclass %}container{% endblock %}">
         <div class="navbar-header" role="banner">
           <div class="navbar-brand navbar-logo">
-                <a href="/"><img src="/assets/img/kb_logo_white.svg" alt="Kungliga Bibliotekets logotyp"></a>
+                <a href="/">
+                  % if g.site.stylesheet
+                    <img src="/assets/img/kb_logo_white.svg" alt="Kungliga Bibliotekets logotyp">
+                  % else
+                    <img src="/assets/img/kb_logo_black.svg" alt="Kungliga Bibliotekets logotyp">
+                  % endif
+                </a>
           </div>
           <a class="navbar-brand" href="/" title="Version ${ config.VERSION }">${g.site.title}
             <span class="environment-label">
