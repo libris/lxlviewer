@@ -144,7 +144,7 @@ export default {
 <style lang="less">
 // Variables
 @chipColor: #e4e4e4;
-@chipColorLinked: #009788;
+@chipColorLinked: #71b1aa;
 @chipTextColor: rgba(0,0,0,0.6);
 
 .entity-container {
@@ -157,7 +157,7 @@ export default {
     color: @chipTextColor;
     background-color: @chipColor;
     border: 0px;
-    box-shadow: inset 0px -2px darken(@chipColor, 5%);
+    box-shadow: inset 0px -2px darken(@chipColor, 10%);
     &.locked {
       padding-right: 0.5em;
     }
@@ -180,7 +180,7 @@ export default {
     }
     &.linked {
       background-color: @chipColorLinked;
-      box-shadow: inset 0px -2px darken(@chipColorLinked, 5%);
+      box-shadow: inset 0px -2px darken(@chipColorLinked, 10%);
     }
   }
   .entity-form {
