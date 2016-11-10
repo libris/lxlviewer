@@ -3,6 +3,7 @@ import * as _ from 'lodash';
 import ProcessedLabel from './processedlabel';
 import AnonymousValue from './anonymousvalue';
 import LinkedItem from './linkeditem';
+import Entity from './entity';
 import * as editUtil from '../utils/edit';
 import * as VocabUtil from '../utils/vocab';
 import { getVocabulary, getSettings } from '../vuex/getters';
@@ -20,6 +21,7 @@ export default {
     'processed-label': ProcessedLabel,
     'anonymous-value': AnonymousValue,
     'linked-item': LinkedItem,
+    'entity': Entity,
   },
   computed: {
     propertyTypes: function () {
@@ -94,12 +96,9 @@ export default {
 <template>
   <div v-if="isArray(value)" class="node-list">
     <ul>
-      <li v-for="v in valueByIdPresence" v-bind:class="{'display-block': !v['@id'] }">
-        <div v-if="isPlainObject(v) && v['@id']" class="node-linked">
-          <linked-item :is-locked="isLocked" :item="getLinked(v['@id'])" :key="key" :index="$index"></linked-item>
-        </div>
-        <div v-if="isPlainObject(v) && !v['@id']" class="node-anonymous">
-          <anonymous-value :is-locked="isLocked" :value="v" :key="key" :linked="linked"></anonymous-value>
+      <li v-for="(k,v) in valueByIdPresence">
+        <div v-if="isPlainObject(v)" class="node-linked">
+          <entity :item="v" :key="key"></entity>
         </div>
         <div v-if="!isPlainObject(v)" class="node-input">
           <input v-if="!isLocked" v-el:input v-model="v" v-on:keyup="updateArray($index, v)"></input>
@@ -108,14 +107,24 @@ export default {
       </li>
     </ul>
   </div>
-  <div v-if="isPlainObject(value) && value['@id']" class="node-linked">
-    <linked-item :is-locked="isLocked" :item="getLinked(value['@id'])"></linked-item>
-  </div>
-  <div v-if="isPlainObject(value) && !value['@id']" class="node-anonymous">
-    <anonymous-value :is-locked="isLocked" :value="value" :linked="linked"></anonymous-value>
+  <div v-if="isPlainObject(value)" class="node-linked">
+    <entity :item="value" :key="key"></entity>
   </div>
   <div v-if="!isArray(value) && !isPlainObject(value)" class="node-input">
     <input v-if="!isLocked" v-model="value" v-on:keyup="updateValue(value)"></input>
     <span v-if="isLocked">{{value}}</span>
   </div>
 </template>
+
+<style lang="less">
+
+.node-list {
+  >ul {
+    padding-left: 0;
+    >li {
+
+    }
+  }
+}
+
+</style>
