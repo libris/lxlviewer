@@ -11,6 +11,7 @@ import EntityAdder from './entityadder';
 import FieldAdder from './fieldadder';
 import DataNode from './datanode';
 import LinkedItem from './linkeditem';
+import * as ModalUtil from '../utils/modals';
 import * as VocabUtil from '../utils/vocab';
 import { updateForm } from '../vuex/actions';
 import { getVocabulary, getSettings, getEditorData } from '../vuex/getters';
@@ -111,7 +112,20 @@ export default {
       return (Object.keys(value).length === 0 && value !== '');
     },
     removeField(prop) {
-      this.$dispatch('update-value', prop, null);
+      ModalUtil.confirmDialog(
+        {
+          sTitle: `Ta bort fältet "${prop}"?`,
+          sContent: 'Du kan inte ångra detta val.',
+          sAccept: 'Ta bort',
+          sReject: 'Avbryt',
+          sType: 'danger'
+        }
+      ).then(() => {
+          // accepted by user
+          this.$dispatch('update-value', prop, null);
+        }, () => {
+          // declined
+        });
     },
     isRepeatable(property) {
       const types = VocabUtil.getPropertyTypes(property, this.vocab, this.settings.vocabPfx);
@@ -141,8 +155,9 @@ export default {
         <span class="value">
           <data-node v-if="!isEmptyObject(v)" :is-locked="isLocked" :key="k" :value="v" :linked="linked"></data-node>
         </span>
-        <span class="action">
-          <entity-adder v-if="!isLocked && (isRepeatable(k) || isEmptyObject(v))" :key="k"></entity-adder>
+        <span class="actions">
+          <entity-adder class="action" v-if="!isLocked && (isRepeatable(k) || isEmptyObject(v))" :key="k"></entity-adder>
+          <span class="action" v-if="!isLocked" class="delete" v-on:click="removeField(k)"><i class="fa fa-trash"></i> Ta bort fält</span>
         </span>
       </li>
     </ul>
@@ -168,8 +183,8 @@ export default {
 
 // Column widths
 @col-label: 200px;
-@col-value: 670px;
-@col-action: 200px;
+@col-value: 620px;
+@col-action: 250px;
 
 .form-component {
   padding: 20px;
@@ -191,7 +206,7 @@ export default {
         background-color: darken(@node-bg, 2%);
       }
       &:hover {
-        >.action {
+        >.actions {
           opacity: 1;
         }
       }
@@ -199,7 +214,8 @@ export default {
       border-width: 1px 0px 1px 0px;
       border-top-color: white;
       border-bottom-color: @gray-lighter;
-      >.action {
+      >.actions {
+        text-align: right;
         display: inline-block;
         float: left;
         width: @col-action;
@@ -207,6 +223,11 @@ export default {
         opacity: 0;
         padding-left: 10px;
         margin-right: 25px;
+        .action {
+          display: inline-block;
+          cursor: pointer;
+          margin-left: 1em;
+        }
       }
       >.label {
         float: left;

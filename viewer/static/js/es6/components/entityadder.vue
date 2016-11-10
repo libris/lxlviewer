@@ -90,9 +90,7 @@ export default {
 @gray-lighter: #e0e6e9;
 
 .entity-adder {
-  .add {
-    cursor: pointer;
-  }
+
 }
 
 </style>
