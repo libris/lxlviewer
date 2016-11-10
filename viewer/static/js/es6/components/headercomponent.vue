@@ -15,6 +15,7 @@ export default {
   },
   data: function() {
     return {
+      expandedHeader: false
     }
   },
   computed: {
@@ -106,12 +107,41 @@ export default {
         </ul>
       </div>
     </div>
+    <div class="header-row-expandable" v-if="expandedHeader" transition="expand-down">
+      <div class="admin-data">
+        <ul>
+          <li>
+            Cool admin data: yes
+          </li>
+          <li>
+            Admin: Kalle Anka
+          </li>
+          <li>
+            Marc id: 896978adwawd7896
+          </li>
+        </ul>
+      </div>
+      <div class="admin-data">
+        <ul>
+          <li>
+            Look: there is data
+          </li>
+          <li>
+            Session: Yep
+          </li>
+          <li>
+            A cool ID: 89awfaw55aw09
+          </li>
+        </ul>
+      </div>
+    </div>
     <div class="header-row-bottom">
       <div class="admin-data">
         {{"Created: " + record.creationDate}}
       </div>
-      <div class="expand-icon">
-        <i class="fa fa-chevron-down" aria-hidden="true"></i>
+      <div @click="expandedHeader = !expandedHeader" class="expand-icon">
+        <i v-if="!expandedHeader" class="fa fa-chevron-down" aria-hidden="true"></i>
+        <i v-if="expandedHeader" class="fa fa-chevron-up" aria-hidden="true"></i>
       </div>
       <div class="admin-data">
         {{"Edited: " + record.changeDate}}
@@ -122,13 +152,29 @@ export default {
 
 <style lang="less">
 
+
+
 .header-component {
   padding: 20px;
   -webkit-box-shadow: 0px 10px 5px 0px rgba(187,187,187,0.5);
   -moz-box-shadow: 0px 10px 5px 0px rgba(187,187,187,0.5);
   box-shadow: 0px 10px 5px 0px rgba(187,187,187,0.5);
   border-radius: 0px 0px 15px 15px;
-  margin-bottom: 400px;
+  margin-bottom: 50px;
+
+  .expand-down {
+    transition: opacity 2s;
+  }
+
+  .expand-down-enter, .expand-down-leave {
+    opacity: 0;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
 
   .header-row-top {
     flex-direction: row;
@@ -141,6 +187,15 @@ export default {
     display: flex;
     padding-top: 20px;
     border-top: 1px solid #EEEEEE;
+  }
+
+  .header-row-expandable {
+    flex-direction: row;
+    display: flex;
+
+    li {
+      padding: 10px 0px 10px 0px;
+    }
   }
 
   .large-title {
