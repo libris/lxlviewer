@@ -112,10 +112,11 @@ export default {
       return (Object.keys(value).length === 0 && value !== '');
     },
     removeField(prop) {
+      const pLabel = VocabUtil.getLabelByLang(prop, this.settings.lang, this.vocab, this.settings.vocabPfx);
       ModalUtil.confirmDialog(
         {
-          sTitle: `Ta bort fältet "${prop}"?`,
-          sContent: 'Du kan inte ångra detta val.',
+          sTitle: `Ta bort fältet "${pLabel}"?`,
+          sContent: `Detta tar bort fältet "${pLabel}" och allt dess innehåll.`,
           sAccept: 'Ta bort',
           sReject: 'Avbryt',
           sType: 'danger'
