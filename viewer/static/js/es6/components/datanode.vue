@@ -98,7 +98,7 @@ export default {
     <ul>
       <li v-for="(k,v) in valueByIdPresence">
         <div v-if="isPlainObject(v)" class="node-linked">
-          <entity :item="v" :key="key"></entity>
+          <entity :item="v" :key="key" :is-locked="isLocked"></entity>
         </div>
         <div v-if="!isPlainObject(v)" class="node-input">
           <input v-if="!isLocked" v-el:input v-model="v" v-on:keyup="updateArray($index, v)"></input>
@@ -108,7 +108,7 @@ export default {
     </ul>
   </div>
   <div v-if="isPlainObject(value)" class="node-linked">
-    <entity :item="value" :key="key"></entity>
+    <entity :item="value" :key="key" :is-locked="isLocked"></entity>
   </div>
   <div v-if="!isArray(value) && !isPlainObject(value)" class="node-input">
     <input v-if="!isLocked" v-model="value" v-on:keyup="updateValue(value)"></input>
