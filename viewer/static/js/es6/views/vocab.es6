@@ -22,20 +22,20 @@ export default class Vocab extends View {
 
     function accept(id) { return id.indexOf(':') === -1; }
 
-    const nodes = Array.prototype.map.call(document.querySelectorAll(".rdf-class"), function (el) {
+    const nodes = Array.prototype.map.call(document.querySelectorAll('.rdf-class'), function (el) {
       return accept(el.id) ? {
         name: el.id,
         children: Array.prototype.map.call(el.querySelectorAll('.rdf-subclasses a'), function (el) {
-          const ref = el.getAttribute('href')
-          return ref[0] === '#' && accept(ref) ? ref.substring(1) : null
+          const ref = el.getAttribute('href');
+          return ref[0] === '#' && accept(ref) ? ref.substring(1) : null;
         }).filter(function (it) { return it; }),
-      } : null
+      } : null;
     }).filter(function (it) { return it; });
 
     let graphView = null;
     let loaded = false;
 
-    const classNav = document.querySelector('nav > section > b')
+    const classNav = document.querySelector('nav > section > b');
     classNav.addEventListener('click', function () {
       document.body.classList.toggle('graph')
       if (loaded) {
@@ -48,7 +48,7 @@ export default class Vocab extends View {
         }
       });
       loaded = true;
-    })
+    });
     const toggle = document.createElement('div');
     toggle.classList.add('toggle');
     toggle.innerHTML = '&otimes;';
