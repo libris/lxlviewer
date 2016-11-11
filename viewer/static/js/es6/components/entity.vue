@@ -135,7 +135,7 @@ export default {
     </div>
     <div class="entity-structured" v-if="isEmbedded">
       <ul>
-        <li v-for="(k,v) in item">{{k}}: {{v}}</li>
+        <li v-for="(k,v) in item" v-if="k.indexOf('@') == -1">{{k}}: {{v}}</li>
       </ul>
     </div>
   </div>
