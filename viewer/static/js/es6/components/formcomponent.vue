@@ -168,7 +168,6 @@ export default {
       </h2>
       <i class="fa" v-bind:class="{'fa-chevron-right': !showJson, 'fa-chevron-down': showJson}"></i>
       <div v-show="showJson">
-      <h3>Record</h3>
       <textarea :value="formData | json" @input="updateFromTextarea">
       </textarea>
       </div>

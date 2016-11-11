@@ -6,7 +6,7 @@ export function getLinked(id, linked) {
       }
     }
   }
-  console.warn(`Linked item not found:`, id);
+  console.warn('Linked item not found:', id);
   return { '@id': id };
 }
 
@@ -48,16 +48,16 @@ export function marcJsonToHtml(marcJson) {
       return subfieldStr;
     }).join(' ');
   }
-  if(marcJson.leader) {
+  if (marcJson.leader) {
     htmlStr += toTableRow('000', '', '', marcJson.leader);
   }
-  if(marcJson.fields) {
-    let fields = marcJson.fields;
+  if (marcJson.fields) {
+    const fields = marcJson.fields;
     fields.forEach((field) => {
-      let fieldKeys = Object.keys(field);
+      const fieldKeys = Object.keys(field);
       fieldKeys.forEach((key) => {
-        let value = field[key];
-        if(value.subfields) {
+        const value = field[key];
+        if (value.subfields) {
           htmlStr += toTableRow(key, value.ind1, value.ind2, parseSubfields(value.subfields));
         } else {
           htmlStr += toTableRow(key, '', '', value);
