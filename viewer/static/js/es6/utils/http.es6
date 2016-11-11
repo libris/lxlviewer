@@ -4,6 +4,13 @@ function request(options, data) {
 
   options.method = options.method || 'GET';
 
+  // Fix baseUri
+  const baseUriJson = document.getElementById('baseUriAlias').innerHTML;
+  const baseUriAlias = JSON.parse(baseUriJson);
+  for (const key in baseUriAlias) {
+    options.url = options.url.replace(key, baseUriAlias[key]);
+  }
+
   return new Promise((resolve, reject) => {
     const req = new XMLHttpRequest();
 
@@ -19,10 +26,10 @@ function request(options, data) {
     req.onload = () => {
       if (req.status === 200 || req.status === 204 || req.status === 201) {
         let resp = req.response;
-        if(req.getResponseHeader('Content-Type').indexOf('json') !== -1) {
+        if (req.getResponseHeader('Content-Type').indexOf('json') !== -1) {
           try {
             resp = JSON.parse(resp);
-          } catch(e) {
+          } catch (e) {
             console.error('Failed to parse response said to be JSON', e, resp);
           }
         }
