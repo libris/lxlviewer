@@ -63,7 +63,7 @@ export default {
             <div>
               Some information regarding provision activity
               <!-- {{editUtil.getLinked((publication.agent['@id']), linked)+editUtil.getLinked((publicationCountry['@id']), linked)+editUtil.getLinked((publication.place['@id']), linked)+(publication.date)}} -->
-              
+
             </div>
           </li>
           <li class="small-text">

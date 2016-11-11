@@ -11,6 +11,16 @@ function fetchVocab() {
   });
 }
 
+function fetchDisplayDefinitions() {
+  return new Promise((resolve, reject) => {
+    httpUtil.get({ url: '/vocab/display', accept: 'application/ld+json' }).then((response) => {
+      resolve(response);
+    }, (error) => {
+      reject('Error loading display definitions...', error);
+    });
+  });
+}
+
 export function getVocab() {
   // 8 hours
   const cacheTTL = 28800000;
@@ -31,6 +41,33 @@ export function getVocab() {
         fetchedVocab.cacheTime = new Date().getTime();
         localStorage.setItem('vocab', JSON.stringify(fetchedVocab));
         resolve(fetchedVocab);
+      });
+    }
+  });
+}
+
+export function getDisplayDefinitions() {
+  // 8 hours
+  const cacheTTL = 28800000;
+
+  return new Promise((resolve, reject) => {
+    const displayDefs = JSON.parse(localStorage.getItem('display'));
+
+    let isFresh = false;
+    if (displayDefs) {
+      isFresh = (new Date().getTime() - displayDefs.cacheTime < cacheTTL);
+    }
+
+    if (displayDefs && isFresh) {
+      resolve(displayDefs);
+    } else {
+      fetchDisplayDefinitions().then((result) => {
+        const fetchedDisplayDefs = result;
+        fetchedDisplayDefs.cacheTime = new Date().getTime();
+        localStorage.setItem('vocab', JSON.stringify(fetchedDisplayDefs));
+        resolve(fetchedDisplayDefs);
+      }, (error) => {
+        reject(error);
       });
     }
   });

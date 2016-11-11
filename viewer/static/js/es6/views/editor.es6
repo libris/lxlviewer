@@ -13,8 +13,8 @@ import * as UserUtil from '../utils/user';
 import FormComponent from '../components/formcomponent';
 import EditorControls from '../components/editorcontrols';
 import HeaderComponent from '../components/headercomponent';
-import { getSettings, getVocabulary, getEditorData } from '../vuex/getters';
-import { changeSettings, loadVocab, syncData } from '../vuex/actions';
+import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData } from '../vuex/getters';
+import { changeSettings, loadVocab, loadDisplayDefs, syncData } from '../vuex/actions';
 
 export default class Editor extends View {
 
@@ -29,10 +29,17 @@ export default class Editor extends View {
       lang: 'sv',
       vocabPfx: 'kbv:',
     };
-
+    $('#loadingText .status').text('Laddar vokabulärsdata');
     VocabUtil.getVocab().then((vocab) => {
       self.vocab = vocab;
-      self.initVue();
+      $('#loadingText .status').text('Laddar visningsdefinitioner');
+      VocabUtil.getDisplayDefinitions().then((display) => {
+        self.display = display;
+        self.initVue();
+      }, (error) => {
+        $('#loadingText i').removeClass('fa-cog').removeClass('fa-spin').addClass('fa-warning');
+        $('#loadingText .status').text('').append('Något gick fel...', error);
+      });
     });
   }
 
@@ -79,12 +86,14 @@ export default class Editor extends View {
         actions: {
           syncData,
           loadVocab,
+          loadDisplayDefs,
           changeSettings,
         },
         getters: {
           settings: getSettings,
           editorData: getEditorData,
           vocab: getVocabulary,
+          display: getDisplayDefinitions,
         },
       },
       data: {

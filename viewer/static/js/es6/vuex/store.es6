@@ -21,6 +21,9 @@ const mutations = {
   LOADVOCAB (state, data) {
     state.vocab = data;
   },
+  LOADDISPLAYDEFS (state, data) {
+    state.display = data;
+  },
   CHANGESETTINGS (state, data) {
     state.settings = data;
   },
