@@ -18,9 +18,11 @@ import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData } from
 import { changeSettings, loadVocab, loadDisplayDefs, syncData } from '../vuex/actions';
 
 function showError(error) {
-  $('#loadingText i').removeClass('fa-cog').removeClass('fa-spin').addClass('fa-warning');
-  $('#loadingText .status').text('').append('Något gick fel...');
-  $('#loadingText .error').text('').append(error).removeClass('hidden');
+  $('#loadingText .fa-cog').fadeOut('fast', () => {
+    $('#loadingText .fa-warning').removeClass('hidden').fadeIn('fast');
+    $('#loadingText .status').text('').append('Något gick fel...');
+    $('#loadingText .error').text('').append(error).removeClass('hidden').fadeIn('slow');
+  });
 }
 
 export default class Editor extends View {
@@ -36,6 +38,7 @@ export default class Editor extends View {
       lang: 'sv',
       vocabPfx: 'kbv:',
     };
+    $('#loadingText .fa-warning').hide();
     $('#loadingText .status').text('Hämtar vokabulärsdata');
     VocabUtil.getVocab().then((vocab) => {
       self.vocab = vocab;
