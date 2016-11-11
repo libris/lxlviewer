@@ -17,6 +17,12 @@ import HeaderComponent from '../components/headercomponent';
 import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData } from '../vuex/getters';
 import { changeSettings, loadVocab, loadDisplayDefs, syncData } from '../vuex/actions';
 
+function showError(error) {
+  $('#loadingText i').removeClass('fa-cog').removeClass('fa-spin').addClass('fa-warning');
+  $('#loadingText .status').text('').append('Något gick fel...');
+  $('#loadingText .error').text('').append(error).removeClass('hidden');
+}
+
 export default class Editor extends View {
 
   initialize() {
@@ -38,10 +44,10 @@ export default class Editor extends View {
         self.display = display;
         self.initVue();
       }, (error) => {
-        $('#loadingText i').removeClass('fa-cog').removeClass('fa-spin').addClass('fa-warning');
-        $('#loadingText .status').text('').append('Något gick fel...');
-        $('#loadingText .error').text('').append(error);
+        showError(error);
       });
+    }, (error) => {
+      showError(error);
     });
   }
 
