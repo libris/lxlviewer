@@ -37,52 +37,91 @@ export default {
 </script>
 
 <template>
-  <div class="editor-controls container">
-    <div class="row">
-      <div class="col-md-4 col-md-offset-8">
-        <!-- <notifications :messages="messages"></notifications> -->
+  <div class="editor-controls container-fluid">
+    <div class="admin-info">
+      <div class="info-icon">
+        <i class="fa fa-info-circle" aria-hidden="true"></i>
       </div>
-      <div class="col-md-12 controls-container">
-        <div class="change-info pull-left">
-          <span v-if="editorData.record.created" class="node">Skapad {{created.date}} <span class="time-ago">({{created.timeAgo}})</span></span>
-          <span v-if="editorData.record.modified" class="node">Ändrad {{modified.date}} <span class="time-ago">({{modified.timeAgo}})</span></span>
-        </div>
-        <button id="saveButton" v-on:click="save()">
-          <i class="fa fa-fw fa-cog fa-spin" v-show="status.saved.loading"></i>
-          <i class="fa fa-fw fa-save" v-show="!status.saved.loading"></i>
-          Spara
-        </button>
+      <div class="admin-node">
+        <span v-if="editorData.record.created" class="node">Skapad {{created.date}} <span class="time-ago">({{created.timeAgo}})</span></span>
       </div>
+      <a id="add-button" v-on:click="">
+        <i class="fa fa-plus plus-icon" aria-hidden="true"></i>
+        Nytt fält
+      </a>
+      <div class="admin-node">
+        <span v-if="editorData.record.modified" class="node">Ändrad {{modified.date}} <span class="time-ago">({{modified.timeAgo}})</span></span>
+      </div>
+      <button id="saveButton" v-on:click="save()">
+        <i class="fa fa-fw fa-cog fa-spin" v-show="status.saved.loading"></i>
+        <i class="fa fa-fw fa-save" v-show="!status.saved.loading"></i>
+        Spara
+      </button>
     </div>
+        
+        
   </div>
 </template>
 
 <style lang="less">
 
 .editor-controls {
-  .row {
-    margin: 0px;
-  }
   position: fixed;
   bottom: 0px;
   left: 0px;
   right: 0px;
-  .controls-container {
-    .change-info {
+  padding: 0px;
+  .admin-info {
+    flex-direction: row;
+    display: flex;
+    position: relative;
+    padding: 15px;
+    background-color: white;
+    box-shadow: 0px -7px 10px -4px rgba(0, 0, 0, 0.1);
+    .admin-node {
+      flex-grow: 5;
+      text-align: center;
       .node {
         font-size: 0.8em;
-        display: block;
+        vertical-align: middle;
         .time-ago {
           color: #CCC;
         }
       }
     }
-    padding: 15px;
-    background-color: white;
-    box-shadow: 0px -7px 10px -4px rgba(0, 0, 0, 0.1);
-  }
-  #saveButton {
-    float: right;
+    #saveButton {
+      flex-grow: 1;
+    }
+    #add-button {
+      background-color:#009788;
+      -moz-border-radius:28px;
+      -webkit-border-radius:28px;
+      border-radius:28px;
+      border:1px solid #009788;
+      display:inline-block;
+      cursor:pointer;
+      color:#ffffff;
+      font-family:Arial;
+      font-size:17px;
+      padding-right: 10px;
+      padding-left: 10px;
+      text-decoration:none;
+      text-shadow:0px 1px 0px #2f6627;
+        .plus-icon {
+          vertical-align: middle;
+        }
+        &:hover {
+          background-color:#00ad9c;
+        }
+        &:active {
+          position:relative;
+          top:1px;
+        }
+    }
+    
+    .info-icon {
+      flex-grow: 4;
+    }
   }
 }
 
