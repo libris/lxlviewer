@@ -13,6 +13,7 @@ from rdflib import ConjunctiveGraph
 
 from flask import Flask, Response, g, request, render_template, redirect, abort, url_for
 from flask.helpers import NotFound
+from flask_cors import CORS
 from werkzeug.urls import url_quote
 
 from lxltools.util import as_iterable
@@ -24,9 +25,21 @@ from . import admin
 from . import conneg
 
 
+R_METHODS = ['GET', 'HEAD', 'OPTIONS']
+RW_METHODS = R_METHODS + ['PUT']
+
 JSONLD_MIMETYPE = 'application/ld+json'
 RDF_MIMETYPES = {'text/turtle', JSONLD_MIMETYPE, 'application/rdf+xml', 'text/xml'}
 MIMETYPE_FORMATS = ['text/html', 'application/xhtml+xml'] + list(RDF_MIMETYPES)
+
+CONTEXT_PATH = '/context.jsonld'
+
+TYPE_TEMPLATES = {
+    'DataCatalog': 'website.html',
+    'PartialCollectionView': 'pagedcollection.html',
+    'Article': 'article.html'
+}
+
 
 ##
 # Application and template settings
@@ -42,6 +55,8 @@ app = MyFlask(__name__, static_url_path='/assets', static_folder='static',
 app.config.from_object('viewer.configdefaults')
 app.config.from_envvar('DEFVIEW_SETTINGS', silent=True)
 app.config.from_pyfile('config.cfg', silent=True)
+
+CORS(app, methods=R_METHODS)
 
 
 import __builtin__
@@ -79,14 +94,6 @@ def favicon():
 
 ##
 # Setup viewer state
-
-CONTEXT_PATH = '/context.jsonld'
-
-TYPE_TEMPLATES = {
-    'DataCatalog': 'website.html',
-    'PartialCollectionView': 'pagedcollection.html',
-    'Article': 'article.html'
-}
 
 def make_find_url(**kws):
     if 'q' not in kws:
@@ -140,16 +147,14 @@ def jsonld_context():
 ##
 # Setup data-driven views
 
-RESOURCE_METHODS = ['GET', 'PUT']
-
 @app.route('/<path:path>', methods=['DELETE'])
 def handle_delete(path):
     response = _whelk_request(request)
     return response
 
-@app.route('/<path:path>/data', methods=RESOURCE_METHODS)
-@app.route('/<path:path>/data.<suffix>', methods=RESOURCE_METHODS)
-@app.route('/<path:path>', methods=RESOURCE_METHODS)
+@app.route('/<path:path>/data', methods=RW_METHODS)
+@app.route('/<path:path>/data.<suffix>', methods=RW_METHODS)
+@app.route('/<path:path>', methods=RW_METHODS)
 def thingview(path, suffix=None):
     try:
         return app.send_static_file(path)
@@ -182,16 +187,16 @@ def _to_data_path(path, suffix):
     return '%s/data.%s' % (path, suffix) if suffix else path
 
 
-@app.route('/find')
-@app.route('/find.<suffix>')
+@app.route('/find', methods=R_METHODS)
+@app.route('/find.<suffix>', methods=R_METHODS)
 def find(suffix=None):
     results = things.ldview.get_search_results(request.args, make_find_url,
             uris.to_canonical_uri(request.url_root))
     return rendered_response('/find', suffix, results)
 
 
-@app.route('/some')
-@app.route('/some.<suffix>')
+@app.route('/some', methods=R_METHODS)
+@app.route('/some.<suffix>', methods=R_METHODS)
 def some(suffix=None):
     ambiguity = things.ldview.find_ambiguity(request)
     if not ambiguity:
@@ -199,9 +204,9 @@ def some(suffix=None):
     return rendered_response('/some', suffix, ambiguity)
 
 
-@app.route('/')
-@app.route('/data')
-@app.route('/data.<suffix>')
+@app.route('/', methods=R_METHODS)
+@app.route('/data', methods=R_METHODS)
+@app.route('/data.<suffix>', methods=R_METHODS)
 def dataindexview(suffix=None):
     slicerepr = request.args.get('slice')
     slicetree = json.loads(slicerepr) if slicerepr else g.site['slices']
@@ -222,9 +227,6 @@ def rendered_response(path, suffix, data):
     if mimetype == 'application/json':
         context_link = '<%s>; rel="http://www.w3.org/ns/json-ld#context"' % CONTEXT_PATH
         resp.headers['Link'] = context_link
-    if isinstance(resp, Response):
-        resp.headers['Access-Control-Allow-Origin'] = "*"
-        resp.headers['Access-Control-Allow-Methods'] = "GET"
     return resp
 
 
@@ -457,8 +459,8 @@ rdfns = {
 
 app.context_processor(lambda: rdfns)
 
-@app.route('/vocab/')
-@app.route('/vocab/data.<suffix>')
+@app.route('/vocab/', methods=R_METHODS)
+@app.route('/vocab/data.<suffix>', methods=R_METHODS)
 def vocabview(suffix=None):
     voc = things.get_vocab_util()
 
