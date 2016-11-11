@@ -8,6 +8,7 @@ const state = {
     data: {},
   },
   vocab: {},
+  display: {},
   settings: {},
 };
 

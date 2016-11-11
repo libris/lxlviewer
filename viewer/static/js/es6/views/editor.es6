@@ -232,6 +232,7 @@ export default class Editor extends View {
       ready() {
         this.changeSettings(self.settings);
         this.loadVocab(self.vocab);
+        this.loadDisplayDefs(self.display);
         this.syncData(self.dataIn);
         this.initialized = true;
       },

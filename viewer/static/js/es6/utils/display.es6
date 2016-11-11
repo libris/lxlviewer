@@ -40,7 +40,7 @@ export function getDisplayDefinitions() {
 export function getProperties(type, level, displayDefs) {
   const lenses = displayDefs.lensGroups[level].lenses;
   let props = [];
-  if (lenses[type] !== 'undefined') {
+  if (typeof lenses[type] !== 'undefined') {
     props = lenses[type].showProperties;
   }
   return props;

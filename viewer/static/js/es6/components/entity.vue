@@ -1,8 +1,10 @@
 <script>
 import * as _ from 'lodash';
 import * as vocabUtil from '../utils/vocab';
+import * as DisplayUtil from '../utils/display';
+import * as EditUtil from '../utils/edit';
 import ProcessedLabel from './processedlabel';
-import { getVocabulary, getSettings } from '../vuex/getters';
+import { getVocabulary, getDisplayDefinitions, getSettings, getEditorData } from '../vuex/getters';
 
 export default {
   name: 'entity',
@@ -15,7 +17,9 @@ export default {
   },
   vuex: {
     getters: {
+      editorData: getEditorData,
       vocab: getVocabulary,
+      display: getDisplayDefinitions,
       settings: getSettings,
     }
   },
