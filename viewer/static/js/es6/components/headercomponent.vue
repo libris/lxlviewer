@@ -47,127 +47,87 @@ export default {
 
 <template>
   <div class="header-component">
-    <div class="header-row-top">
-      <div class="instance-info">
-        <ul>
-          <!-- <li v-for="instanceInfoItem in instanceInfo">
-            <div>{instanceInfoItem}</div>
-          </li> -->
-          <li class="large-title">
-            <div>{{instance.hasTitle[0].mainTitle}}</div>
-          </li>
-          <li class="medium-text">
-            <div>{{instance.responsibilityStatement}}</div>
-          </li>
-          <li class="medium-text">
-            <div>
-              Some information regarding provision activity
-              <!-- {{editUtil.getLinked((publication.agent['@id']), linked)+editUtil.getLinked((publicationCountry['@id']), linked)+editUtil.getLinked((publication.place['@id']), linked)+(publication.date)}} -->
-              
-            </div>
-          </li>
-          <li class="small-text">
-            {{instance.identifiedBy[0]['@type']+': '+instance.identifiedBy[0].value}}
-          </li>
-          <li class="small-text">
-            {{instance.extent || "No information on physical details"}}
-          </li>
-        </ul>
-      </div>
-      <div class="work-info">
-        <ul>
-          <li>
-            <div class="work-title">
-              Verkinformation
-            </div>
-          </li>
-          <li>
-            <div class="medium-text">
-              {{editUtil.getLinked(work.expressionOf['@id'], linked) || "No worktitle"}}
-            </div>
-          </li>
-          <li>
-            <div class="medium-text">
-              Other information
-            </div>
-          </li>
-          <li>
-            <div class="medium-text">
-              Relevant stuff
-            </div>
-          </li>
-          <li>
-            <div class="medium-text">
-              More info is great
-            </div>
-          </li>
-          <!-- <li v-for="workInfoItem in workInfo">
-            <div>{workInfoItem}</div>
-          </li> -->
-        </ul>
-      </div>
+    <div class="instance-info">
+      <ul>
+        <!-- <li v-for="instanceInfoItem in instanceInfo">
+          <div>{instanceInfoItem}</div>
+        </li> -->
+        <li class="large-title">
+          <div>{{instance.hasTitle[0].mainTitle}}</div>
+        </li>
+        <li class="medium-text">
+          <div>{{instance.responsibilityStatement}}</div>
+        </li>
+        <li class="medium-text">
+          <div>
+            Some information regarding provision activity
+            <!-- {{editUtil.getLinked((publication.agent['@id']), linked)+editUtil.getLinked((publicationCountry['@id']), linked)+editUtil.getLinked((publication.place['@id']), linked)+(publication.date)}} -->
+            
+          </div>
+        </li>
+        <li class="small-text">
+          {{instance.identifiedBy[0]['@type']+': '+instance.identifiedBy[0].value}}
+        </li>
+        <li class="small-text">
+          {{instance.extent || "No information on physical details"}}
+        </li>
+      </ul>
     </div>
-    <div class="header-row-expandable" v-if="expandedHeader" transition="expand-down">
-      <div class="admin-data">
-        <ul>
-          <li>
-            Cool admin data: yes
-          </li>
-          <li>
-            Admin: Kalle Anka
-          </li>
-          <li>
-            Marc id: 896978adwawd7896
-          </li>
-        </ul>
-      </div>
-      <div class="admin-data">
-        <ul>
-          <li>
-            Look: there is data
-          </li>
-          <li>
-            Session: Yep
-          </li>
-          <li>
-            A cool ID: 89awfaw55aw09
-          </li>
-        </ul>
-      </div>
-    </div>
-    <div class="header-row-bottom">
-      <div class="admin-data">
-        {{"Created: " + record.creationDate}}
-      </div>
-      <div @click="expandedHeader = !expandedHeader" class="expand-icon">
-        <i v-if="!expandedHeader" class="fa fa-chevron-down" aria-hidden="true"></i>
-        <i v-if="expandedHeader" class="fa fa-chevron-up" aria-hidden="true"></i>
-      </div>
-      <div class="admin-data">
-        {{"Edited: " + record.changeDate}}
-      </div>
+    <div class="work-info">
+      <ul>
+        <li>
+          <div class="work-title">
+            Verkinformation
+          </div>
+        </li>
+        <li>
+          <div class="medium-text">
+            {{editUtil.getLinked(work.expressionOf['@id'], linked) || "No worktitle"}}
+          </div>
+        </li>
+        <li>
+          <div class="medium-text">
+            Other information
+          </div>
+        </li>
+        <li>
+          <div class="medium-text">
+            Relevant stuff
+          </div>
+        </li>
+        <li>
+          <div class="medium-text">
+            More info is great
+          </div>
+        </li>
+        <!-- <li v-for="workInfoItem in workInfo">
+          <div>{workInfoItem}</div>
+        </li> -->
+      </ul>
     </div>
   </div>
 </template>
 
 <style lang="less">
 
-
-
 .header-component {
   padding: 20px;
-  -webkit-box-shadow: 0px 10px 5px 0px rgba(187,187,187,0.5);
-  -moz-box-shadow: 0px 10px 5px 0px rgba(187,187,187,0.5);
-  box-shadow: 0px 10px 5px 0px rgba(187,187,187,0.5);
-  border-radius: 0px 0px 15px 15px;
-  margin-bottom: 50px;
+  flex-direction: row;
+  display: flex;
+  margin-bottom: 10px;
 
-  .expand-down {
-    transition: opacity 2s;
+  .work-info {
+    flex-grow: 2;
+    color: white;
+    background-color: #009788;
+    padding: 10px;
+    text-align: center;
+    border-radius: 2px;
   }
 
-  .expand-down-enter, .expand-down-leave {
-    opacity: 0;
+  .instance-info {
+    flex-grow: 6;
+    padding-right: 40px;
   }
 
   ul {
@@ -176,27 +136,6 @@ export default {
     margin: 0;
   }
 
-  .header-row-top {
-    flex-direction: row;
-    display: flex;
-    margin-bottom: 20px;
-  }
-
-  .header-row-bottom {
-    flex-direction: row;
-    display: flex;
-    padding-top: 20px;
-    border-top: 1px solid #EEEEEE;
-  }
-
-  .header-row-expandable {
-    flex-direction: row;
-    display: flex;
-
-    li {
-      padding: 10px 0px 10px 0px;
-    }
-  }
 
   .large-title {
     font-size: 26px;
@@ -215,31 +154,6 @@ export default {
   .small-text {
     font-size: 13px;
   }
-
-  .admin-data {
-    font-size: 10px;
-    flex-grow: 1;
-    text-align: center;
-  }
-
-  .expand-icon {
-    cursor: pointer;
-  }
-
-  .work-info {
-    color: white;
-    background-color: #009788;
-    padding: 10px;
-    text-align: center;
-    border-radius: 2px;
-  }
-
-  .instance-info {
-    flex-grow: 6;
-    padding-right: 40px;
-  }
 }
-
-
 
 </style>
