@@ -5,10 +5,24 @@
   margin-bottom: 60px;
 
   #loadingText {
-    margin: 150px 0;
+    background-color: fadeout(@neutral-color,25%);
+    // margin: 120px 0;
+    padding: 20px 0px;
     width: 100%;
+    min-height: 50vh;
     vertical-align: middle;
     text-align: center;
+    .status {
+      display: block;
+    }
+    .error {
+      display: inline-block;
+      border: 1px solid maroon;
+      margin-top: 5px;
+      padding: 5px;
+      max-width: 50%;
+      color: maroon;
+    }
   }
 }
 

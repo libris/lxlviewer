@@ -8,6 +8,7 @@ import * as toolbarUtil from '../utils/toolbar';
 import * as _ from 'lodash';
 import * as VocabLoader from '../utils/vocabloader';
 import * as VocabUtil from '../utils/vocab';
+import * as DisplayUtil from '../utils/display';
 import * as RecordUtil from '../utils/record';
 import * as UserUtil from '../utils/user';
 import FormComponent from '../components/formcomponent';
@@ -29,16 +30,17 @@ export default class Editor extends View {
       lang: 'sv',
       vocabPfx: 'kbv:',
     };
-    $('#loadingText .status').text('Laddar vokabulärsdata');
+    $('#loadingText .status').text('Hämtar vokabulärsdata');
     VocabUtil.getVocab().then((vocab) => {
       self.vocab = vocab;
-      $('#loadingText .status').text('Laddar visningsdefinitioner');
-      VocabUtil.getDisplayDefinitions().then((display) => {
+      $('#loadingText .status').text('Hämtar visningsdefinitioner');
+      DisplayUtil.getDisplayDefinitions().then((display) => {
         self.display = display;
         self.initVue();
       }, (error) => {
         $('#loadingText i').removeClass('fa-cog').removeClass('fa-spin').addClass('fa-warning');
-        $('#loadingText .status').text('').append('Något gick fel...', error);
+        $('#loadingText .status').text('').append('Något gick fel...');
+        $('#loadingText .error').text('').append(error);
       });
     });
   }
