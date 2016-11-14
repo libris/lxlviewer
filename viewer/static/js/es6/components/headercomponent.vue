@@ -1,6 +1,8 @@
 <script>
-import * as editUtil from '../utils/edit'
-import { getVocabulary, getSettings, getEditorData } from '../vuex/getters';
+import * as _ from 'lodash';
+import * as editUtil from '../utils/edit';
+import * as DisplayUtil from '../utils/display';
+import { getVocabulary, getSettings, getEditorData, getDisplayDefinitions } from '../vuex/getters';
 
 export default {
   name: 'header-component',
@@ -9,6 +11,7 @@ export default {
       vocab: getVocabulary,
       settings: getSettings,
       editorData: getEditorData,
+      display: getDisplayDefinitions,
     }
   },
   props: {
@@ -18,7 +21,21 @@ export default {
       expandedHeader: false
     }
   },
+  methods: {
+    isArray(o) {
+      return _.isArray(o);
+    },
+    isTitle(key) {
+      let k = key.toLowerCase();
+      return ~k.indexOf('title');
+    },
+  },
   computed: {
+    getCard() {
+      const card = DisplayUtil.getCard(this.editorData.it, this.display, this.editorData.linked, this.vocab, this.settings.vocabPfx);
+      console.log(JSON.stringify(card));
+      return card;
+    },
     instance() {
       return this.editorData.it;
     },
@@ -38,8 +55,6 @@ export default {
       return this.editorData.linked;
     },
   },
-  methods: {
-  },
   components: {
   },
 };
@@ -49,30 +64,19 @@ export default {
   <div class="header-component">
     <div class="instance-info">
       <ul>
-        <!-- <li v-for="instanceInfoItem in instanceInfo">
-          <div>{instanceInfoItem}</div>
-        </li> -->
-        <li class="large-title">
-          <div>{{instance.hasTitle[0].mainTitle}}</div>
-        </li>
-        <li class="medium-text">
-          <div>{{instance.responsibilityStatement}}</div>
-        </li>
-        <li class="medium-text">
-          <div>
-            Some information regarding provision activity
-            <!-- {{editUtil.getLinked((publication.agent['@id']), linked)+editUtil.getLinked((publicationCountry['@id']), linked)+editUtil.getLinked((publication.place['@id']), linked)+(publication.date)}} -->
-            
-          </div>
-        </li>
-        <li class="small-text">
-          {{instance.identifiedBy[0]['@type']+': '+instance.identifiedBy[0].value}}
-        </li>
-        <li class="small-text">
-          {{instance.extent || "No information on physical details"}}
+        <li v-for="(k,v) in getCard">
+          <span v-if="isArray(v)" v-for="item in v" track-by="$index">
+            <span v-for="(x,y) in item">
+              <span v-bind:class="{'large-title': isTitle(x), 'medium-text': !isTitle(x) }">
+                {{y}}<span v-if="x === '@type'">:</span>
+              </span>
+            </span>
+          </span>
+          <span v-if="!isArray(v)">{{v}}</span>
         </li>
       </ul>
     </div>
+
     <div class="work-info">
       <ul>
         <li>
