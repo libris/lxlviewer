@@ -1,4 +1,7 @@
+import * as _ from 'lodash';
 import * as httpUtil from './http';
+import * as EditUtil from './edit';
+import * as VocabUtil from './vocab';
 
 function fetchDisplayDefinitions() {
   return new Promise((resolve, reject) => {
@@ -44,4 +47,52 @@ export function getProperties(type, level, displayDefs) {
     props = lenses[type].showProperties;
   }
   return props;
+}
+
+export function getDisplayObject(item, level, displayDefs, linked, vocab, vocabPfx) {
+  let trueItem = item;
+  let displayObject = {};
+  if (trueItem.hasOwnProperty('@id') && !trueItem.hasOwnProperty('@type')) {
+    trueItem = EditUtil.getLinked(trueItem['@id'], linked);
+  }
+  let properties = getProperties(trueItem['@type'], level, displayDefs);
+  let baseClassUsed = trueItem['@type'];
+  if (properties.length === 0) {
+    const baseClasses = VocabUtil.getBaseClasses(trueItem['@type'], vocab, vocabPfx);
+    for (let i = 0; i < baseClasses.length; i++) {
+      properties = getProperties(baseClasses[i].replace(vocabPfx, ''), level, displayDefs);
+      if (properties.length > 0) {
+        baseClassUsed = baseClasses[i].replace(vocabPfx, '') + ' (through ' + trueItem['@type'] + ')';
+        break;
+      }
+    }
+  }
+  for (let i = 0; i < properties.length; i++) {
+    if (typeof trueItem[properties[i]] !== 'undefined') {
+      displayObject[properties[i]] = trueItem[properties[i]];
+    }
+  }
+
+  for (const key in displayObject) {
+    if (_.isArray(displayObject[key])) {
+      for (let i = 0; i < displayObject[key].length; i++) {
+        displayObject[key][i] = getChip(displayObject[key][i], displayDefs, linked, vocab, vocabPfx);
+      }
+    } else if (_.isEmpty(displayObject[key]) || _.isObject(displayObject[key])) {
+      displayObject[key] = getChip(trueItem[key], displayDefs, linked, vocab, vocabPfx);
+    }
+  }
+  if (_.isEmpty(displayObject)) {
+    displayObject = 'CHIP(type is ' + baseClassUsed + ',' + JSON.stringify(properties) + ')';
+  }
+  return displayObject;
+}
+
+export function getChip(item, displayDefs, linked, vocab, vocabPfx) {
+  let obj = getDisplayObject(item, 'chips', displayDefs, linked, vocab, vocabPfx);
+  return obj;
+}
+
+export function getCard(item, displayDefs, linked, vocab, vocabPfx) {
+  return getDisplayObject(item, 'cards', displayDefs, linked, vocab, vocabPfx);
 }
