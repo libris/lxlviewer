@@ -41,6 +41,7 @@ export default {
 
 <template>
   <div class="editor-controls container-fluid">
+    <div class="container">
     <div class="admin-info">
       <div class="info-icon">
         <i class="fa fa-info-circle" aria-hidden="true"></i>
@@ -62,9 +63,8 @@ export default {
         Spara
       </button>
     </div>
-
-
   </div>
+</div>
 </template>
 
 <style lang="less">
@@ -75,14 +75,14 @@ export default {
   left: 0px;
   right: 0px;
   padding: 0px;
+  background-color: white;
+  box-shadow: 0px -7px 10px -4px rgba(0, 0, 0, 0.1);
   .admin-info {
     flex-direction: row;
     display: flex;
     align-items: center;
     position: relative;
     padding: 15px;
-    background-color: white;
-    box-shadow: 0px -7px 10px -4px rgba(0, 0, 0, 0.1);
     .admin-node {
       flex-grow: 5;
       text-align: center;
