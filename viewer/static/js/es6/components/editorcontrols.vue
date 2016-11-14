@@ -15,6 +15,9 @@ export default {
     save() {
       this.$dispatch('save-item');
     },
+    toggleDev() {
+      this.$dispatch('toggle-dev');
+    },
   },
   computed: {
     modified: function() {
@@ -41,6 +44,7 @@ export default {
     <div class="admin-info">
       <div class="info-icon">
         <i class="fa fa-info-circle" aria-hidden="true"></i>
+        <i class="fa fa-wrench" aria-hidden="true" v-on:click="toggleDev()"></i>
       </div>
       <div class="admin-node">
         <span v-if="editorData.record.created" class="node">Skapad {{created.date}} <span class="time-ago">({{created.timeAgo}})</span></span>
@@ -58,8 +62,8 @@ export default {
         Spara
       </button>
     </div>
-        
-        
+
+
   </div>
 </template>
 
@@ -119,7 +123,7 @@ export default {
           top:1px;
         }
     }
-    
+
     .info-icon {
       flex-grow: 4;
     }

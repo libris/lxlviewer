@@ -31,6 +31,7 @@ export default {
     focus: '',
     linked: {},
     isLocked: false,
+    showDev: 'show-dev',
   },
   data() {
     return {
@@ -164,14 +165,9 @@ export default {
       </li>
     </ul>
     <field-adder v-if="!isLocked" :allowed="allowedProperties" :item="focus"></field-adder>
-    <div id="result" v-if="!isLocked">
-      <h2 v-on:click="showJson = !showJson">JSON
-      </h2>
-      <i class="fa" v-bind:class="{'fa-chevron-right': !showJson, 'fa-chevron-down': showJson}"></i>
-      <div v-show="showJson">
+    <div id="result" v-if="showDev">
       <textarea :value="formData | json" @input="updateFromTextarea">
       </textarea>
-      </div>
     </div>
   </div>
 </template>

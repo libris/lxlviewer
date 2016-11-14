@@ -109,6 +109,7 @@ export default class Editor extends View {
       },
       data: {
         initialized: false,
+        isDev: false,
         status: {
           dirty: true,
           saved: {
@@ -121,6 +122,10 @@ export default class Editor extends View {
         },
       },
       events: {
+        'toggle-dev': function() {
+          console.log("dev", JSON.stringify(this.isDev));
+          this.isDev = !this.isDev;
+        },
         'focus-update': function(value, oldValue) {
           const newData = this.editorData;
           console.log("Update");
