@@ -117,8 +117,7 @@ export default {
 .header-component {
   padding: 20px;
   flex-direction: row;
-  display: flex;
-  margin-bottom: 10px;
+  display: flex; 
 
   .work-info {
     flex-grow: 2;

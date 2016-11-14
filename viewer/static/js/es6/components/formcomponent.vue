@@ -210,10 +210,6 @@ export default {
           opacity: 1;
         }
       }
-      border: solid;
-      border-width: 1px 0px 1px 0px;
-      border-top-color: white;
-      border-bottom-color: @gray-lighter;
       >.actions {
         text-align: right;
         display: inline-block;
