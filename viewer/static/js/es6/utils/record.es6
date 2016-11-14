@@ -14,6 +14,7 @@ export function getMarc(json) {
 export function splitJson(json) {
   let orginal = json['@graph'];
   let dataObj = {};
+  dataObj.linked = [];
 
   // TODO: Relying on order here... tsk tsk tsk.
   dataObj.record = orginal[0];
@@ -31,12 +32,15 @@ export function splitJson(json) {
   for (let i = 0; i < orginal.length; i++) {
     if (orginal[i]['@id'] && orginal[i]['@id'].indexOf('#work') !== -1) {
       dataObj.work = orginal[i];
+      // pushing work to linked list so that references to it will work for now.
+      // TODO: do something else
+      dataObj.linked.push(orginal[i]);
+
       orginal.splice(i, 1);
       break;
     }
   }
 
-  dataObj.linked = [];
   for (let i = 0; i < orginal.length; i++) {
     if (orginal[i].hasOwnProperty('@graph')) {
       dataObj.linked.push(orginal[i]['@graph']);
