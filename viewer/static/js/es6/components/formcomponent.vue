@@ -148,6 +148,7 @@ export default {
 
 <template>
   <div class="form-component" v-bind:class="{ 'locked': isLocked }">
+    <div class="form-header">- {{ focus }} -</div>
     <ul>
       <li v-for="(k, v) in formData" v-if="v !== null" v-bind:class="{ 'locked': isLocked }">
         <span class="label">
@@ -180,6 +181,7 @@ export default {
 @gray-darker: #595d61;
 @neutral-color: #ffffff;
 @node-bg: #fafafa;
+@libris-green: #009788;
 
 // Column widths
 @col-label: 200px;
@@ -187,7 +189,14 @@ export default {
 @col-action: 250px;
 
 .form-component {
-  padding: 20px;
+  border: 1px solid @libris-green;
+  .form-header {
+    background-color: @libris-green;
+    font-weight: bold;
+    color: @neutral-color;
+    text-align: center;
+  }
+  margin: 20px;
   &.locked {
     background-color: darken(@neutral-color, 10%);
     > ul > li {
