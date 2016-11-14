@@ -80,7 +80,10 @@ export default {
 
 <template>
   <div class="field-adder">
-    <a v-on:click="show"><i class="fa fa-plus-circle"></i> Lägg till fält</a>
+    <a id="add-button" v-on:click="show">
+      <i class="fa fa-plus plus-icon" aria-hidden="true"></i>
+      Nytt fält
+    </a>
     <div class="window" v-show="active">
       <div class="header">
         <span class="title">
@@ -118,7 +121,34 @@ export default {
 @gray: #949a9e;
 
 .field-adder {
-  display: inline-block; // So that the clickaway plugin triggers nicely
+  text-align: center;
+  display: block; // So that the clickaway plugin triggers nicely
+  #add-button {
+    background-color:#009788;
+    -moz-border-radius:28px;
+    -webkit-border-radius:28px;
+    border-radius:28px;
+    border:1px solid #009788;
+    display:inline-block;
+    cursor:pointer;
+    color:#ffffff;
+    font-family:Arial;
+    font-size:17px;
+    padding-right: 10px;
+    padding-left: 10px;
+    text-decoration:none;
+    text-shadow:0px 1px 0px #2f6627;
+      .plus-icon {
+        vertical-align: middle;
+      }
+      &:hover {
+        background-color:#00ad9c;
+      }
+      &:active {
+        position:relative;
+        top:1px;
+      }
+  }
   >a {
     cursor: pointer;
   }

@@ -58,7 +58,7 @@ export function getDisplayObject(item, level, displayDefs, linked, vocab, vocabP
   let properties = getProperties(trueItem['@type'], level, displayDefs);
   let baseClassUsed = trueItem['@type'];
   if (properties.length === 0) {
-    const baseClasses = VocabUtil.getBaseClasses(trueItem['@type'], vocab, vocabPfx);
+    const baseClasses = VocabUtil.getBaseClassesFromArray(trueItem['@type'], vocab, vocabPfx);
     for (let i = 0; i < baseClasses.length; i++) {
       properties = getProperties(baseClasses[i].replace(vocabPfx, ''), level, displayDefs);
       if (properties.length > 0) {

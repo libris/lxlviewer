@@ -45,10 +45,10 @@ export default {
       <div class="admin-node">
         <span v-if="editorData.record.created" class="node">Skapad {{created.date}} <span class="time-ago">({{created.timeAgo}})</span></span>
       </div>
-      <a id="add-button" v-on:click="">
+      <!-- <a id="add-button" v-on:click="">
         <i class="fa fa-plus plus-icon" aria-hidden="true"></i>
         Nytt fält
-      </a>
+      </a> -->
       <div class="admin-node">
         <span v-if="editorData.record.modified" class="node">Ändrad {{modified.date}} <span class="time-ago">({{modified.timeAgo}})</span></span>
       </div>
@@ -74,6 +74,7 @@ export default {
   .admin-info {
     flex-direction: row;
     display: flex;
+    align-items: center;
     position: relative;
     padding: 15px;
     background-color: white;
