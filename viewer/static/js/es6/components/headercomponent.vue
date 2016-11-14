@@ -67,7 +67,7 @@ export default {
         <li v-for="(k,v) in getCard">
           <span v-if="isArray(v)" v-for="item in v" track-by="$index">
             <span v-for="(x,y) in item">
-              <span v-bind:class="{'large-title': isTitle(x), 'medium-text': !isTitle(x) }">
+              <span v-bind:class="{'large-title': isTitle(k), 'medium-text': !isTitle(k) }">
                 {{y}}<span v-if="x === '@type'">:</span>
               </span>
             </span>

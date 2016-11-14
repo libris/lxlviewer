@@ -76,7 +76,9 @@ export function getDisplayObject(item, level, displayDefs, linked, vocab, vocabP
   for (const key in displayObject) {
     if (_.isArray(displayObject[key])) {
       for (let i = 0; i < displayObject[key].length; i++) {
-        displayObject[key][i] = getChip(displayObject[key][i], displayDefs, linked, vocab, vocabPfx);
+        if (_.isObject(displayObject[key][i])) {
+          displayObject[key][i] = getChip(displayObject[key][i], displayDefs, linked, vocab, vocabPfx);
+        }
       }
     } else if (_.isEmpty(displayObject[key]) || _.isObject(displayObject[key])) {
       displayObject[key] = getChip(trueItem[key], displayDefs, linked, vocab, vocabPfx);
