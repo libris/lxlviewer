@@ -186,6 +186,7 @@ export default {
 
 .form-component {
   border: 1px solid @libris-green;
+  padding-bottom: 10px;
   .form-header {
     background-color: @libris-green;
     font-weight: bold;
