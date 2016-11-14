@@ -162,6 +162,7 @@ export default {
     transform: translate(-50%, -50%);
     min-width: 600px;
     height: 400px;
+    text-align: left;
     border: 1px solid @black;
     border-radius: 3px;
     background-color: @neutral-color;
