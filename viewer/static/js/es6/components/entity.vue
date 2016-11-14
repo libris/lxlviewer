@@ -32,6 +32,13 @@ export default {
     json() {
       return JSON.stringify(this.item);
     },
+    getChip() {
+      const chip = DisplayUtil.getChip(this.item, this.display, this.editorData.linked, this.vocab, this.settings.vocabPfx);
+      return chip;
+    },
+    getCard() {
+      return DisplayUtil.getCard(this.item, this.display, this.editorData.linked, this.vocab, this.settings.vocabPfx);
+    },
     isLinked() {
       // Is @id present?
       if (typeof this.item !== 'undefined' && this.item['@id']) {
@@ -62,10 +69,6 @@ export default {
       }
       return false;
     },
-    isEmpty() {
-      // TODO: Is the item empty?
-      return false;
-    },
     getRange() {
       const types = vocabUtil.getRange(this.key, this.vocab, this.settings.vocabPfx);
       return types;
@@ -79,6 +82,13 @@ export default {
     collapse() {
       // Hide form
       this.expanded = false;
+    },
+    isEmpty() {
+      // TODO: Is the item empty?
+      return false;
+    },
+    isObject(obj) {
+      return _.isObject(obj);
     },
     removeThis() {
       const holder = this.$parent.value;
@@ -121,7 +131,16 @@ export default {
 <template>
   <div class="entity-container" v-bind:class="{ 'expanded' : expanded || (!isLinked && !isTyped) }">
     <div class="entity-chip" v-if="!isEmbedded" v-bind:class="{ 'linked': isLinked, 'locked': isLocked }">
-      <span class="chip-label"><processed-label :item="item"></processed-label></span>
+      <span class="chip-label">
+        <span v-if="isObject(getChip)">
+          <span v-for="(k,v) in getChip" v-if="!isObject(v)" track-by="$index">
+            {{v}}
+          </span>
+        </span>
+        <span v-if="!isObject(getChip)">
+          {{getChip}}
+        </span>
+      </span>
       <i class="chip-action fa fa-pencil" v-on:click="expand" v-if="!isLocked && !isLinked"></i>
       <i class="chip-action fa fa-times" v-on:click="removeThis" v-if="!isLocked && isLinked"></i>
     </div>

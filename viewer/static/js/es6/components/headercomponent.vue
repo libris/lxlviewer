@@ -33,7 +33,6 @@ export default {
   computed: {
     getCard() {
       const card = DisplayUtil.getCard(this.editorData.it, this.display, this.editorData.linked, this.vocab, this.settings.vocabPfx);
-      console.log(JSON.stringify(card));
       return card;
     },
     instance() {

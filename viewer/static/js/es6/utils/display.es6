@@ -72,8 +72,11 @@ export function getDisplayObject(item, level, displayDefs, linked, vocab, vocabP
       displayObject[properties[i]] = trueItem[properties[i]];
     }
   }
-
   for (const key in displayObject) {
+    if (key === 'language') {
+      // TODO: Fix language bug
+      break;
+    }
     if (_.isArray(displayObject[key])) {
       for (let i = 0; i < displayObject[key].length; i++) {
         if (_.isObject(displayObject[key][i])) {
