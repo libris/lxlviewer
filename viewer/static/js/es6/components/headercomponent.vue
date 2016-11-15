@@ -15,6 +15,7 @@ export default {
     }
   },
   props: {
+    status,
   },
   data: function() {
     return {
@@ -112,16 +113,17 @@ export default {
 </template>
 
 <style lang="less">
+@libris-green: #009788;
 
 .header-component {
   padding: 20px;
   flex-direction: row;
-  display: flex; 
+  display: flex;
 
   .work-info {
     flex-grow: 2;
     color: white;
-    background-color: #009788;
+    background-color: @libris-green;
     padding: 10px;
     text-align: center;
     border-radius: 2px;
