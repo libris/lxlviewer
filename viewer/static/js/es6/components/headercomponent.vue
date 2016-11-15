@@ -80,7 +80,7 @@ export default {
 </template>
 
 <style lang="less">
-@libris-green: #009788;
+@import '../../../less/main_libris.less';
 
 .header-component {
   padding: 20px;
@@ -90,7 +90,7 @@ export default {
   .work-info {
     flex-grow: 2;
     color: white;
-    background-color: @libris-green;
+    background-color: @brand-primary;
     padding: 10px;
     text-align: center;
     border-radius: 2px;

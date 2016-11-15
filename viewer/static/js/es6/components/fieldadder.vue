@@ -115,10 +115,7 @@ export default {
 </template>
 
 <style lang="less">
-@modal-z: 950;
-@black: #000000;
-@neutral-color: #ffffff;
-@gray: #949a9e;
+@import '../../../less/main_libris.less';
 
 .field-adder {
   text-align: center;

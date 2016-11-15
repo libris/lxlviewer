@@ -72,7 +72,7 @@ export default {
 </template>
 
 <style lang="less">
-@libris-green: #009788;
+@import '../../../less/main_libris.less';
 
 .editor-controls {
   position: fixed;
@@ -135,7 +135,7 @@ export default {
         cursor: pointer;
         &.active {
           i {
-            color: @libris-green;
+            color: @brand-primary;
           }
         }
       }
