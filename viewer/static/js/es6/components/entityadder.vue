@@ -89,11 +89,11 @@ export default {
 
 .entity-adder {
   .add-entity-button {
-    background-color:@libris-green-darker;
+    background-color:@brand-primary;
     -moz-border-radius:28px;
     -webkit-border-radius:28px;
     border-radius:28px;
-    border:1px solid @libris-green-darker;
+    border:1px solid @brand-primary;
     display:inline-block;
     cursor:pointer;
     color:#ffffff;

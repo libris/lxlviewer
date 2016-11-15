@@ -180,7 +180,7 @@ export default {
 // Column widths
 @col-label: 200px;
 @col-value: 620px;
-@col-action: 250px;
+@col-action: 250px; 
 
 .form-component {
   border: 1px solid @brand-primary;

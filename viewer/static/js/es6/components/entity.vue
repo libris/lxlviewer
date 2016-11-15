@@ -167,7 +167,7 @@ export default {
 <style lang="less">
 @import '../../../less/main_libris.less';
 // Variables
-@chipColor: #bacad4;
+@chipColor: @happy-desert;
 @chipColorLinked: #ebe5ba;
 @chipTextColor: rgba(0,0,0,0.6);
 
