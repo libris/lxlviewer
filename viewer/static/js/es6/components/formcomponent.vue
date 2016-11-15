@@ -152,16 +152,17 @@ export default {
     <div class="form-header">- {{ focus }} -</div>
     <ul>
       <li v-for="(k, v) in formData" v-if="v !== null" v-bind:class="{ 'locked': isLocked }">
-        <span class="label">
+        <div class="label">
           <a href="/vocab/#{{k}}">{{ k | labelByLang | capitalize }}</a>
-        </span>
-        <span class="value">
+        </div>
+        <div class="value">
           <data-node v-if="!isEmptyObject(v)" :is-locked="isLocked" :key="k" :value="v" :linked="linked"></data-node>
-        </span>
-        <span class="actions">
+        </div>
+        <div class="actions">
+          <div class="action" v-if="!isLocked" class="delete" v-on:click="removeField(k)"><i class="fa fa-trash fa-2x"></i></div>
           <entity-adder class="action" v-if="!isLocked && (isRepeatable(k) || isEmptyObject(v))" :key="k"></entity-adder>
-          <span class="action" v-if="!isLocked" class="delete" v-on:click="removeField(k)"><i class="fa fa-trash"></i> Ta bort fält</span>
-        </span>
+          
+        </div>
       </li>
     </ul>
     <field-adder v-if="!isLocked" :allowed="allowedProperties" :item="focus"></field-adder>
@@ -178,6 +179,7 @@ export default {
 @neutral-color: #ffffff;
 @node-bg: #fafafa;
 @libris-green: #009788;
+@libris-green-darker: #71b1aa;
 
 // Column widths
 @col-label: 200px;
@@ -185,10 +187,10 @@ export default {
 @col-action: 250px;
 
 .form-component {
-  border: 1px solid @libris-green;
+  border: 1px solid @libris-green-darker;
   padding-bottom: 10px;
   .form-header {
-    background-color: @libris-green;
+    background-color: @libris-green-darker;
     font-weight: bold;
     color: @neutral-color;
     text-align: center;
@@ -204,6 +206,8 @@ export default {
     padding-left: 0px;
     >li {
       display: flex;
+      flex-direction: row;
+      align-items: center;
       padding: 5px 0px;
       list-style: none;
       width: 100%;
@@ -217,26 +221,21 @@ export default {
         }
       }
       >.actions {
-        text-align: right;
-        display: inline-block;
-        float: left;
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: space-between;
         width: @col-action;
         transition: opacity ease 0.2s;
         opacity: 0;
-        padding-left: 10px;
-        margin-right: 25px;
+        margin-right: 6px;
+        margin-left: 10px;
         .action {
-          display: inline-block;
           cursor: pointer;
-          margin-left: 1em;
         }
       }
       >.label {
-        float: left;
-        display: inline-block;
         width: @col-label;
         text-align: right;
-        vertical-align: top;
         line-height: 2.5;
         color: @gray-darker;
         a {
@@ -246,7 +245,7 @@ export default {
           line-height: 12px;
           font-weight: normal;
           border-bottom: dashed transparent 1px;
-          display: inline-block;
+          vertical-align: middle;
           &:hover {
             text-decoration: none;
             border-bottom: 1px dashed;
@@ -256,8 +255,6 @@ export default {
       >.value {
         float: left;
         width: @col-value;
-        display: inline-block;
-        padding: 5px 15px 0px 0px;
         > div {
           > ul > li {
             display: inline-block;
@@ -271,10 +268,9 @@ export default {
     }
   }
   .node-input {
-    width: 420px;
+    width: 100%;
   }
   .node-linked {
-    margin: 0px 15px 0px 0px;
     > div.expanded {
       width: @col-value;
     }

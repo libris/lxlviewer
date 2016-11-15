@@ -119,16 +119,17 @@ export default {
 @black: #000000;
 @neutral-color: #ffffff;
 @gray: #949a9e;
+@libris-green-darker:#71b1aa;
 
 .field-adder {
   text-align: center;
   display: block; // So that the clickaway plugin triggers nicely
   #add-button {
-    background-color:#009788;
+    background-color:@libris-green-darker;
     -moz-border-radius:28px;
     -webkit-border-radius:28px;
     border-radius:28px;
-    border:1px solid #009788;
+    border:1px solid @libris-green-darker;
     display:inline-block;
     cursor:pointer;
     color:#ffffff;

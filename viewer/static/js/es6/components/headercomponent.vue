@@ -18,7 +18,7 @@ export default {
   },
   data: function() {
     return {
-      expandedHeader: false
+      
     }
   },
   methods: {
@@ -29,11 +29,18 @@ export default {
       let k = key.toLowerCase();
       return ~k.indexOf('title');
     },
+    isObject(obj) {
+      return _.isObject(obj);
+    },
   },
   computed: {
-    getCard() {
-      const card = DisplayUtil.getCard(this.editorData.it, this.display, this.editorData.linked, this.vocab, this.settings.vocabPfx);
-      return card;
+    getItCard() {
+      const itCard = DisplayUtil.getCard(this.editorData.it, this.display, this.editorData.linked, this.vocab, this.settings.vocabPfx);
+      return itCard;
+    },
+    getWorkCard() {
+      const workCard = DisplayUtil.getCard(this.editorData.work, this.display, this.editorData.linked, this.vocab, this.settings.vocabPfx);
+      return workCard;
     },
     instance() {
       return this.editorData.it;
@@ -63,7 +70,7 @@ export default {
   <div class="header-component">
     <div class="instance-info">
       <ul>
-        <li v-for="(k,v) in getCard">
+        <li v-for="(k,v) in getItCard">
           <span v-if="isArray(v)" v-for="item in v" track-by="$index">
             <span v-for="(x,y) in item">
               <span v-bind:class="{'large-title': isTitle(k), 'medium-text': !isTitle(k) }">
@@ -74,6 +81,25 @@ export default {
           <span v-if="!isArray(v)">{{v}}</span>
         </li>
       </ul>
+<hr>
+      <ul>
+      <li v-if="!isObject(getWorkCard)">
+        {{getWorkCard}}
+      </li>
+        <li v-for="(k,v) in getWorkCard" track-by="$index" v-if="isObject(getWorkCard)">
+        {{k}}: {{v}}
+          <!-- <span v-if="isArray(v)" v-for="item in v" track-by="$index">
+            <span v-for="(x,y) in item">
+              <span v-bind:class="{'large-title': isTitle(k), 'medium-text': !isTitle(k) }">
+                {{y}}<span v-if="x === '@type'">:</span>
+              </span>
+            </span>
+          </span>
+          <span v-if="!isArray(v)">{{v}}</span> -->
+        </li>
+      </ul>
+
+
     </div>
 
     <div class="work-info">
@@ -112,6 +138,7 @@ export default {
 </template>
 
 <style lang="less">
+@libris-green-darker: #71b1aa;
 
 .header-component {
   padding: 20px;
@@ -121,7 +148,7 @@ export default {
   .work-info {
     flex-grow: 2;
     color: white;
-    background-color: #009788;
+    background-color: @libris-green-darker;
     padding: 10px;
     text-align: center;
     border-radius: 2px;

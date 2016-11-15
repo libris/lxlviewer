@@ -76,11 +76,12 @@ export default {
 </script>
 
 <template>
-<div class="entity-adder">
-    <span class="add" v-on:click="addEmptyEntity(key)">
-      <i class="fa fa-plus-circle"></i> Lägg till
-    </span>
-</div>
+<span class="entity-adder">
+    <a class="add-entity-button" v-on:click="addEmptyEntity(key)">
+      <i class="fa fa-plus plus-icon" aria-hidden="true"></i>
+      Ny Entitet
+    </a>
+</span>
 </template>
 
 <style lang="less">
@@ -88,9 +89,35 @@ export default {
 @gray: #949a9e;
 @gray-light: #c4c7ca;
 @gray-lighter: #e0e6e9;
+@libris-green-darker: #71b1aa;
 
 .entity-adder {
-
+  .add-entity-button {
+    background-color:@libris-green-darker;
+    -moz-border-radius:28px;
+    -webkit-border-radius:28px;
+    border-radius:28px;
+    border:1px solid @libris-green-darker;
+    display:inline-block;
+    cursor:pointer;
+    color:#ffffff;
+    font-family:Arial;
+    font-size:10px;
+    padding-right: 5px;
+    padding-left: 5px;
+    text-decoration:none;
+    text-shadow:0px 1px 0px #2f6627;
+      .plus-icon {
+        vertical-align: middle;
+      }
+      &:hover {
+        background-color:#00ad9c;
+      }
+      &:active {
+        position:relative;
+        top:1px;
+      }
+  }
 }
 
 </style>

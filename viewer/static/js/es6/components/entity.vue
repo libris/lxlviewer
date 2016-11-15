@@ -166,8 +166,8 @@ export default {
 
 <style lang="less">
 // Variables
-@chipColor: #e4e4e4;
-@chipColorLinked: #71b1aa;
+@chipColor: #bacad4;
+@chipColorLinked: #ebe5ba;
 @chipTextColor: rgba(0,0,0,0.6);
 
 .entity-container {
