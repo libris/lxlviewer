@@ -15,6 +15,7 @@ export default {
     }
   },
   props: {
+    status,
   },
   data: function() {
     return {
@@ -78,7 +79,7 @@ export default {
               </span>
             </span>
           </span>
-          <span v-if="!isArray(v)">{{v}}</span>
+          <span v-if="!isArray(v)">{{v | json}}</span>
         </li>
       </ul>
 <hr>
@@ -101,54 +102,40 @@ export default {
 
 
     </div>
-
     <div class="work-info">
       <ul>
-        <li>
-          <div class="work-title">
-            Verkinformation
-          </div>
+        <li v-if="!isObject(getWorkCard)">
+          {{getWorkCard}}
         </li>
-        <li>
-          <div class="medium-text">
-            {{editUtil.getLinked(work.expressionOf['@id'], linked) || "No worktitle"}}
-          </div>
+        <li v-for="(k,v) in getWorkCard" track-by="$index" v-if="isObject(getWorkCard)">
+          {{v | json}}
         </li>
-        <li>
-          <div class="medium-text">
-            Other information
-          </div>
-        </li>
-        <li>
-          <div class="medium-text">
-            Relevant stuff
-          </div>
-        </li>
-        <li>
-          <div class="medium-text">
-            More info is great
-          </div>
-        </li>
-        <!-- <li v-for="workInfoItem in workInfo">
-          <div>{workInfoItem}</div>
-        </li> -->
       </ul>
+
     </div>
   </div>
 </template>
 
 <style lang="less">
+<<<<<<< HEAD
 @libris-green-darker: #71b1aa;
+=======
+@libris-green: #009788;
+>>>>>>> 5e3c18a10d877ab396ea5635c9c7185329b39db8
 
 .header-component {
   padding: 20px;
   flex-direction: row;
-  display: flex; 
+  display: flex;
 
   .work-info {
     flex-grow: 2;
     color: white;
+<<<<<<< HEAD
     background-color: @libris-green-darker;
+=======
+    background-color: @libris-green;
+>>>>>>> 5e3c18a10d877ab396ea5635c9c7185329b39db8
     padding: 10px;
     text-align: center;
     border-radius: 2px;

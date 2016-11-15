@@ -43,9 +43,13 @@ export default {
   <div class="editor-controls container-fluid">
     <div class="container">
     <div class="admin-info">
-      <div class="info-icon">
-        <i class="fa fa-info-circle" aria-hidden="true"></i>
-        <i class="fa fa-wrench" aria-hidden="true" v-on:click="toggleDev()"></i>
+      <div class="actions">
+        <div class="action">
+          <i class="fa fa-info-circle" aria-hidden="true"></i>
+        </div>
+        <div class="action" v-on:click="toggleDev()" v-bind:class="{'active': status.isDev}">
+          <i class="fa fa-wrench" aria-hidden="true"></i>
+        </div>
       </div>
       <div class="admin-node">
         <span v-if="editorData.record.created" class="node">Skapad {{created.date}} <span class="time-ago">({{created.timeAgo}})</span></span>
@@ -68,6 +72,7 @@ export default {
 </template>
 
 <style lang="less">
+@libris-green: #009788;
 
 .editor-controls {
   position: fixed;
@@ -124,8 +129,16 @@ export default {
         }
     }
 
-    .info-icon {
-      flex-grow: 4;
+    .actions {
+      .action {
+        display: inline-block;
+        cursor: pointer;
+        &.active {
+          i {
+            color: @libris-green;
+          }
+        }
+      }
     }
   }
 }

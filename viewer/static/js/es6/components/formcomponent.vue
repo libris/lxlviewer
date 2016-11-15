@@ -31,7 +31,7 @@ export default {
     focus: '',
     linked: {},
     isLocked: false,
-    showDev: 'show-dev',
+    status: {},
   },
   data() {
     return {
@@ -166,7 +166,7 @@ export default {
       </li>
     </ul>
     <field-adder v-if="!isLocked" :allowed="allowedProperties" :item="focus"></field-adder>
-    <div id="result" v-if="showDev">
+    <div id="result" v-if="status.isDev">
       <textarea :value="formData | json" @input="updateFromTextarea">
       </textarea>
     </div>
