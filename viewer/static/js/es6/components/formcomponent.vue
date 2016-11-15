@@ -174,12 +174,8 @@ export default {
 </template>
 
 <style lang="less">
-@gray-lighter: #e0e6e9;
-@gray-darker: #595d61;
-@neutral-color: #ffffff;
+@import '../../../less/main_libris.less';
 @node-bg: #fafafa;
-@libris-green: #009788;
-@libris-green-darker: #71b1aa;
 
 // Column widths
 @col-label: 200px;
@@ -187,10 +183,10 @@ export default {
 @col-action: 250px;
 
 .form-component {
-  border: 1px solid @libris-green-darker;
+  border: 1px solid @brand-primary;
   padding-bottom: 10px;
   .form-header {
-    background-color: @libris-green-darker;
+    background-color: @brand-primary;
     font-weight: bold;
     color: @neutral-color;
     text-align: center;

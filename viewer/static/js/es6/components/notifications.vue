@@ -51,7 +51,7 @@ export default {
 </template>
 
 <style lang="less">
-@neutral-color: #ffffff;
+@import '../../../less/main_libris.less';
 
 .notifications {
   transition: 0.5s ease;

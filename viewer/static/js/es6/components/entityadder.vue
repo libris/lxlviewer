@@ -85,11 +85,7 @@ export default {
 </template>
 
 <style lang="less">
-@active-component-z: 99;
-@gray: #949a9e;
-@gray-light: #c4c7ca;
-@gray-lighter: #e0e6e9;
-@libris-green-darker: #71b1aa;
+@import '../../../less/main_libris.less';
 
 .entity-adder {
   .add-entity-button {

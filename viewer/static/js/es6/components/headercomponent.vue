@@ -43,24 +43,6 @@ export default {
       const workCard = DisplayUtil.getCard(this.editorData.work, this.display, this.editorData.linked, this.vocab, this.settings.vocabPfx);
       return workCard;
     },
-    instance() {
-      return this.editorData.it;
-    },
-    work() {
-      return this.editorData.work;
-    },
-    record() {
-      return this.editorData.record;
-    },
-    publication() {
-      return this.editorData.it.publication[0];
-    },
-    publicationCountry() {
-      return this.editorData.it.publicationCountry[0];
-    },
-    linked() {
-      return this.editorData.linked;
-    },
   },
   components: {
   },
@@ -117,11 +99,7 @@ export default {
 </template>
 
 <style lang="less">
-<<<<<<< HEAD
-@libris-green-darker: #71b1aa;
-=======
-@libris-green: #009788;
->>>>>>> 5e3c18a10d877ab396ea5635c9c7185329b39db8
+@import '../../../less/main_libris.less';
 
 .header-component {
   padding: 20px;
@@ -131,11 +109,7 @@ export default {
   .work-info {
     flex-grow: 2;
     color: white;
-<<<<<<< HEAD
-    background-color: @libris-green-darker;
-=======
-    background-color: @libris-green;
->>>>>>> 5e3c18a10d877ab396ea5635c9c7185329b39db8
+    background-color: @brand-primary;
     padding: 10px;
     text-align: center;
     border-radius: 2px;
