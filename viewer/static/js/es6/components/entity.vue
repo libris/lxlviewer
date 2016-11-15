@@ -167,13 +167,14 @@ export default {
 <style lang="less">
 @import '../../../less/main_libris.less';
 // Variables
-@chipColor: @happy-desert;
-@chipColorLinked: #ebe5ba;
-@chipTextColor: rgba(0,0,0,0.6);
+@chipColor: @gray-dark;
+@chipColorLinked: @gray-lighter;
+@chipTextColor: lighten(@chipColor, 80%);
+@chipTextColorLinked: darken(@chipColorLinked, 60%);
 
 .entity-container {
+  vertical-align: middle;
   display: inline-block;
-  margin: 0px 2px 2px 0px;
   .entity-chip {
     height: 1.7em;
     padding: 0px 0.2em 0px 0.5em;
@@ -205,6 +206,10 @@ export default {
     &.linked {
       background-color: @chipColorLinked;
       box-shadow: inset 0px -2px darken(@chipColorLinked, 10%);
+      color: @chipTextColorLinked;
+      i {
+        color:@chipTextColorLinked;;
+      }
     }
   }
   .entity-form {

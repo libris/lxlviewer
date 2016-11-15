@@ -82,7 +82,7 @@ export default {
   <div class="field-adder">
     <a id="add-button" v-on:click="show">
       <i class="fa fa-plus plus-icon" aria-hidden="true"></i>
-      Nytt fält
+      NYTT FÄLT
     </a>
     <div class="window" v-show="active">
       <div class="header">
@@ -122,17 +122,17 @@ export default {
   display: block; // So that the clickaway plugin triggers nicely
   #add-button {
     background-color:@brand-primary;
-    -moz-border-radius:28px;
-    -webkit-border-radius:28px;
-    border-radius:28px;
+    -moz-border-radius:2px;
+    -webkit-border-radius:2px;
+    border-radius:2px;
     border:1px solid @brand-primary;
     display:inline-block;
     cursor:pointer;
     color:#ffffff;
     font-family:Arial;
-    font-size:17px;
-    padding-right: 10px;
-    padding-left: 10px;
+    font-size:16px;
+    font-weight: bold;
+    padding:5px 20px 5px 20px;
     text-decoration:none;
     text-shadow:0px 1px 0px #2f6627;
       .plus-icon {
@@ -183,7 +183,7 @@ export default {
         }
       }
       .filter {
-        font-size: 85%;
+        font-size: 85%; 
         float: right;
         .filterInput {
           border-radius: 3px;

@@ -227,6 +227,9 @@ export default {
         margin-left: 10px;
         .action {
           cursor: pointer;
+          &:hover {
+            
+          }
         }
       }
       >.label {

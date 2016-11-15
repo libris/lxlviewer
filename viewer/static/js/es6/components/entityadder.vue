@@ -79,7 +79,6 @@ export default {
 <span class="entity-adder">
     <a class="add-entity-button" v-on:click="addEmptyEntity(key)">
       <i class="fa fa-plus plus-icon" aria-hidden="true"></i>
-      Ny Entitet
     </a>
 </span>
 </template>
