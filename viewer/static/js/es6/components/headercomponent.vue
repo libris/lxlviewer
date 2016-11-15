@@ -30,11 +30,18 @@ export default {
       let k = key.toLowerCase();
       return ~k.indexOf('title');
     },
+    isObject(obj) {
+      return _.isObject(obj);
+    },
   },
   computed: {
-    getCard() {
-      const card = DisplayUtil.getCard(this.editorData.it, this.display, this.editorData.linked, this.vocab, this.settings.vocabPfx);
-      return card;
+    getItCard() {
+      const itCard = DisplayUtil.getCard(this.editorData.it, this.display, this.editorData.linked, this.vocab, this.settings.vocabPfx);
+      return itCard;
+    },
+    getWorkCard() {
+      const workCard = DisplayUtil.getCard(this.editorData.work, this.display, this.editorData.linked, this.vocab, this.settings.vocabPfx);
+      return workCard;
     },
     instance() {
       return this.editorData.it;
@@ -64,7 +71,7 @@ export default {
   <div class="header-component">
     <div class="instance-info">
       <ul>
-        <li v-for="(k,v) in getCard">
+        <li v-for="(k,v) in getItCard">
           <span v-if="isArray(v)" v-for="item in v" track-by="$index">
             <span v-for="(x,y) in item">
               <span v-bind:class="{'large-title': isTitle(k), 'medium-text': !isTitle(k) }">
@@ -72,42 +79,20 @@ export default {
               </span>
             </span>
           </span>
-          <span v-if="!isArray(v)">{{v}}</span>
+          <span v-if="!isArray(v)">{{v | json}}</span>
         </li>
       </ul>
     </div>
-
     <div class="work-info">
       <ul>
-        <li>
-          <div class="work-title">
-            Verkinformation
-          </div>
+        <li v-if="!isObject(getWorkCard)">
+          {{getWorkCard}}
         </li>
-        <li>
-          <div class="medium-text">
-            {{editUtil.getLinked(work.expressionOf['@id'], linked) || "No worktitle"}}
-          </div>
+        <li v-for="(k,v) in getWorkCard" track-by="$index" v-if="isObject(getWorkCard)">
+          {{v | json}}
         </li>
-        <li>
-          <div class="medium-text">
-            Other information
-          </div>
-        </li>
-        <li>
-          <div class="medium-text">
-            Relevant stuff
-          </div>
-        </li>
-        <li>
-          <div class="medium-text">
-            More info is great
-          </div>
-        </li>
-        <!-- <li v-for="workInfoItem in workInfo">
-          <div>{workInfoItem}</div>
-        </li> -->
       </ul>
+
     </div>
   </div>
 </template>
