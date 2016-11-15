@@ -43,24 +43,6 @@ export default {
       const workCard = DisplayUtil.getCard(this.editorData.work, this.display, this.editorData.linked, this.vocab, this.settings.vocabPfx);
       return workCard;
     },
-    instance() {
-      return this.editorData.it;
-    },
-    work() {
-      return this.editorData.work;
-    },
-    record() {
-      return this.editorData.record;
-    },
-    publication() {
-      return this.editorData.it.publication[0];
-    },
-    publicationCountry() {
-      return this.editorData.it.publicationCountry[0];
-    },
-    linked() {
-      return this.editorData.linked;
-    },
   },
   components: {
   },
