@@ -13,8 +13,9 @@ import DataNode from './datanode';
 import LinkedItem from './linkeditem';
 import * as ModalUtil from '../utils/modals';
 import * as VocabUtil from '../utils/vocab';
+import * as DisplayUtil from '../utils/display';
 import { updateForm } from '../vuex/actions';
-import { getVocabulary, getSettings, getEditorData } from '../vuex/getters';
+import { getVocabulary, getSettings, getEditorData, getDisplayDefinitions } from '../vuex/getters';
 
 export default {
   vuex: {
@@ -25,6 +26,7 @@ export default {
       vocab: getVocabulary,
       settings: getSettings,
       editorData: getEditorData,
+      display: getDisplayDefinitions,
     }
   },
   props: {
@@ -54,6 +56,23 @@ export default {
     },
     formData() {
       return this.editorData[this.focus];
+    },
+    typeProperties() {
+      const formObj = this.formData;
+      let propertyList = DisplayUtil.getProperties(formObj['@type'], 'cards', this.display);
+      
+      
+      // console.log(this.formData['dimensions']);
+      _.each(formObj, function(v, k) {
+        if(!propertyList.includes(k)){
+          propertyList.push(k);
+        }
+      });
+      _.remove(propertyList, function(x) {
+        return _.isObject(x);
+      });
+      console.log(propertyList);
+      return propertyList;
     },
   },
   events: {
@@ -151,16 +170,16 @@ export default {
   <div class="form-component" v-bind:class="{ 'locked': isLocked }">
     <div class="form-header">- {{ focus }} -</div>
     <ul>
-      <li v-for="(k, v) in formData" v-if="v !== null" v-bind:class="{ 'locked': isLocked }">
+      <li v-for="property in typeProperties" v-if="formData[property] !== null" v-bind:class="{ 'locked': isLocked }">
         <div class="label">
-          <a href="/vocab/#{{k}}">{{ k | labelByLang | capitalize }}</a>
+          <a href="/vocab/#{{property}}">{{ property | labelByLang | capitalize }}</a>
         </div>
         <div class="value">
-          <data-node v-if="!isEmptyObject(v)" :is-locked="isLocked" :key="k" :value="v" :linked="linked"></data-node>
+          <data-node v-if="formData[property] && !isEmptyObject(formData[property])" :is-locked="isLocked" :key="property" :value="formData[property]" :linked="linked"></data-node>
         </div>
         <div class="actions">
-          <div class="action" v-if="!isLocked" class="delete" v-on:click="removeField(k)"><i class="fa fa-trash fa-2x"></i></div>
-          <entity-adder class="action" v-if="!isLocked && (isRepeatable(k) || isEmptyObject(v))" :key="k"></entity-adder>
+          <div class="action" v-if="!isLocked" class="delete" v-on:click="removeField(property)"><i class="fa fa-trash fa-2x"></i></div>
+          <entity-adder class="action" v-if="!isLocked && (isRepeatable(property) || isEmptyObject(formData[property]))" :key="property"></entity-adder>
           
         </div>
       </li>
@@ -228,7 +247,7 @@ export default {
         .action {
           cursor: pointer;
           &:hover {
-            
+
           }
         }
       }

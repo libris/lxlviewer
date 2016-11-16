@@ -3,6 +3,7 @@ import * as _ from 'lodash';
 import Notifications from '../components/notifications';
 import moment from 'moment';
 import locale_sv from 'moment/locale/sv';
+import * as EditUtil from '../utils/edit';
 moment.locale('sv');
 
 export default {
@@ -24,12 +25,14 @@ export default {
       return {
         date: moment(this.editorData.record.modified).format('lll'),
         timeAgo: moment(this.editorData.record.modified).fromNow(),
+        by: EditUtil.getLinked(this.editorData.record.descriptionModifier['@id'], this.editorData.linked).name,
       };
     },
     created: function() {
       return {
         date: moment(this.editorData.record.created).format('lll'),
         timeAgo: moment(this.editorData.record.created).fromNow(),
+        by: EditUtil.getLinked(this.editorData.record.assigner['@id'], this.editorData.linked).name,
       };
     },
   },
@@ -52,14 +55,14 @@ export default {
         </div>
       </div>
       <div class="admin-node">
-        <span v-if="editorData.record.created" class="node">Skapad {{created.date}} <span class="time-ago">({{created.timeAgo}})</span></span>
+        <span v-if="editorData.record.created" class="node">Skapad {{created.date}} <span class="time-ago"> av {{created.by}}</span></span>
       </div>
       <!-- <a id="add-button" v-on:click="">
         <i class="fa fa-plus plus-icon" aria-hidden="true"></i>
         Nytt fält
       </a> -->
       <div class="admin-node">
-        <span v-if="editorData.record.modified" class="node">Ändrad {{modified.date}} <span class="time-ago">({{modified.timeAgo}})</span></span>
+        <span v-if="editorData.record.modified" class="node">Ändrad {{modified.date}} <span class="time-ago">({{modified.by}})</span></span>
       </div>
       <button id="saveButton" v-on:click="save()">
         <i class="fa fa-fw fa-cog fa-spin" v-show="status.saved.loading"></i>
