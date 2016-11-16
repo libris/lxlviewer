@@ -1,5 +1,6 @@
 <script>
 import * as _ from 'lodash';
+import * as httpUtil from '../utils/http';
 import * as vocabUtil from '../utils/vocab';
 import * as DisplayUtil from '../utils/display';
 import * as EditUtil from '../utils/edit';
@@ -12,7 +13,6 @@ export default {
     item: {},
     key: '',
     index: Number,
-    expanded: false,
     isLocked: false,
   },
   vuex: {
@@ -25,7 +25,9 @@ export default {
   },
   data: function() {
     return {
-
+      inEdit: false,
+      searchResult: {},
+      searchDelay: 2,
     }
   },
   computed: {
@@ -55,42 +57,93 @@ export default {
         return false;
       }
     },
-    isEmbedded() {
-      // Is the type of the item derived from StructuredValue?
-      if (!this.isTyped) {
-        return false;
-      }
-      const embeddedTypes = ['StructuredValue', 'ProvisionActivity', 'Contribution'];
-      const type = vocabUtil.getBaseClasses(this.item['@type'], this.vocab, this.settings.vocabPfx);
-      for (let i = 0; i < embeddedTypes.length; i++) {
-        if (~type.indexOf(`${this.settings.vocabPfx}${embeddedTypes[i]}`)) {
-          return true;
-        }
-      }
-      return false;
+    embedded() {
+      return this.isEmbedded(this.item['@type']);
     },
     getRange() {
       const types = vocabUtil.getRange(this.key, this.vocab, this.settings.vocabPfx);
       return types;
     },
   },
+  ready: function() {
+    this.$nextTick(function() {
+      // If range of field is only 1, set it automatically
+      if (!this.item['@type'] && !this.item['@id']) {
+        const range = this.getRange;
+        if (range.length === 1) {
+          this.setNewObject(range[0]);
+        }
+      }
+    });
+  },
   methods: {
+    setLinkedItem(item) {
+      const newItem = {};
+      newItem['@id'] = item['@id'];
+      this.inEdit = false;
+      this.$dispatch('add-linked', item);
+      this.$dispatch('update-entity', this.index, newItem);
+    },
+    search(keyword) {
+      console.log(keyword);
+      const self = this;
+      self.loading = true;
+      this.getItems(keyword).then((result) => {
+        self.searchResult = result;
+      });
+    },
+    getItems(searchkey) {
+      // TODO: Support asking for more items
+
+      const searchUrl = `/find.json?q=${searchkey}&@type=${this.item['@type']}&limit=10`;
+      // console.log(searchUrl);
+      return new Promise((resolve, reject) => {
+        httpUtil.get({url:searchUrl, accept:'application/ld+json'}).then((response) => {
+          resolve(response.items);
+        }, (error) => {
+          reject('Error searching...', error);
+        });
+      });
+    },
     expand() {
       // Show form
-      this.expanded = true;
+      this.inEdit = true;
     },
     collapse() {
       // Hide form
-      this.expanded = false;
+
+      this.inEdit = false;
+      this.save();
+    },
+    save() {
+      this.$dispatch('update-entity', this.index, this.item);
     },
     isEmpty() {
       // TODO: Is the item empty?
+      return false;
+    },
+    isEmbedded(type) {
+      if (typeof type === 'undefined') {
+        return false;
+      }
+
+      // Is the type of the item derived from StructuredValue?
+      const embeddedTypes = ['StructuredValue', 'ProvisionActivity', 'Contribution'];
+      const typeChain = vocabUtil.getBaseClasses(type, this.vocab, this.settings.vocabPfx);
+      if (typeChain.length > 0) {
+        for (let i = 0; i < embeddedTypes.length; i++) {
+          if (~typeChain.indexOf(`${this.settings.vocabPfx}${embeddedTypes[i]}`)) {
+            return true;
+          }
+        }
+      }
       return false;
     },
     isObject(obj) {
       return _.isObject(obj);
     },
     removeThis() {
+      console.log("Removethis called");
       const holder = this.$parent.value;
       if (_.isArray(holder)) {
         this.$parent.removeById(this.item['@id']);
@@ -100,18 +153,27 @@ export default {
         this.$parent.emptyValue();
       }
     },
-    setType(type) {
+    setNewObject(type) {
       // Sets the focused object (this.item) to an object of the type specified.
       // Also adds all available properties.
       const newObj = this.item;
+      this.inEdit = true;
       const pfx = this.settings.vocabPfx;
       newObj['@type'] = type;
 
-      const properties = vocabUtil.getPropertiesFromArray(type, this.vocab, this.settings.vocabPfx);
-      for (let i = 0; i < properties.length; i++) {
-        newObj[properties[i].item['@id'].replace(pfx, '')] = '';
+      let properties = [];
+      if (this.isEmbedded(type)) {
+        properties = vocabUtil.getProperties(type, this.vocab, this.settings.vocabPfx);
+      } else {
+        properties = DisplayUtil.getProperties(type, 'cards', this.display);
+      }
+      if (properties.length === 0) {
+        properties.push('search');
       }
 
+      for (let i = 0; i < properties.length; i++) {
+        newObj[properties[i]] = '';
+      }
       this.item = Object.assign({}, this.item, newObj);
       this.expand();
     },
@@ -129,8 +191,8 @@ export default {
 </script>
 
 <template>
-  <div class="entity-container" v-bind:class="{ 'expanded' : expanded || (!isLinked && !isTyped) }">
-    <div class="entity-chip" v-if="!isEmbedded" v-bind:class="{ 'linked': isLinked, 'locked': isLocked }">
+  <div class="entity-container" v-bind:class="{'block': inEdit}">
+    <div class="entity-chip" v-if="(!embedded && isTyped && !inEdit) || isLinked" v-bind:class="{ 'linked': isLinked, 'locked': isLocked }">
       <span class="chip-label">
         <span v-if="isObject(getChip)">
           <span v-for="(k,v) in getChip" v-if="!isObject(v)" track-by="$index">
@@ -144,19 +206,29 @@ export default {
       <i class="chip-action fa fa-pencil" v-on:click="expand" v-if="!isLocked && !isLinked"></i>
       <i class="chip-action fa fa-times" v-on:click="removeThis" v-if="!isLocked && isLinked"></i>
     </div>
-    <div class="entity-form" v-if="!isTyped && !isLinked && !isEmbedded">
-      <button v-for="type in getRange" v-on:click="setType(type)">{{type}}</button>
+    <div class="entity-form" v-if="!isTyped && !isLinked">
+      <button v-for="type in getRange" v-on:click="setNewObject(type)">{{type}}</button>
     </div>
-    <div class="entity-form" v-if="isTyped && !isLinked && !isEmbedded">
+
+    <div class="entity-form" v-show="inEdit">
       <strong>{{item['@type'] | labelByLang | capitalize}}</strong>
-      <div class="entity-form-row" v-for="(k,v) in item" v-if="k.indexOf('@') == -1">
+      <div class="entity-form-row" v-for="(k,v) in item">
         <span class="entity-form-label">{{k | labelByLang | capitalize}}</span>
-        <input v-model="v"></input>
+        <input v-model="v" v-on:change="search(v)"></input>
+      </div>
+      <div class="match-indicator" v-if="searchResult.length > 0">
+        Det finns {{ searchResult.length }} entiteter som matchar denna.
+      </div>
+      <div class="search-result" v-if="searchResult.length > 0">
+        <div class="search-result-item" v-for="item in searchResult" track-by="$index" v-on:click="setLinkedItem(item)">
+          {{ item.prefLabelByLang[settings.lang] }}
+        </div>
       </div>
       <button v-on:click="removeThis"><i class="chip-action fa fa-trash"></i> Ta bort</button>
-      <button v-on:click="collapse" v-bind:disabled="isEmpty"><i class="chip-action fa fa-check"></i> Klar</button>
+      <button v-on:click="collapse"><i class="chip-action fa fa-check"></i> Klar</button>
     </div>
-    <div class="entity-structured" v-if="isEmbedded">
+
+    <div class="entity-structured" v-if="embedded && !inEdit">
       <ul>
         <li v-for="(k,v) in item" v-if="k.indexOf('@') == -1">{{k}}: {{v}}</li>
       </ul>
@@ -167,17 +239,21 @@ export default {
 <style lang="less">
 @import '../../../less/main_libris.less';
 // Variables
-@chipColor: @gray-dark;
-@chipColorLinked: @gray-lighter;
-@chipTextColor: lighten(@chipColor, 80%);
-@chipTextColorLinked: darken(@chipColorLinked, 60%);
+@chipColor: @gray-lighter;
+@chipColorLinked: @gray-dark;
+@chipTextColor: darken(@chipColorLinked, 60%);
+@chipTextColorLinked: lighten(@chipColor, 80%);
 
 .entity-container {
   vertical-align: middle;
   display: inline-block;
+  &.block {
+    display: block;
+  }
   .entity-chip {
     height: 1.7em;
     padding: 0px 0.2em 0px 0.5em;
+    margin: 0px 0.5em 0.5em 0px;
     border-radius: 1em;
     color: @chipTextColor;
     background-color: @chipColor;
@@ -217,19 +293,34 @@ export default {
     background-color: darken(@chipColor, 5%);
     border-radius: 1em;
     padding: 5px;
-    display: none;
     overflow: hidden;
     .entity-form-label {
       color: #000;
+    }
+    .search-result {
+      background-color: @white;
+      border: 1px solid @black;
+      margin: 5px;
+      padding: 3px;
+      .search-result-item {
+        border: 1px solid @black;
+        min-height: 20px;
+        &:hover {
+          background-color: darken(@white, 5%);
+        }
+      }
+    }
+    .match-indicator {
+      background-color: @white;
+      border: 1px dashed @black;
+      margin: 5px;
     }
   }
   &.expanded {
     width: 100%;
     .entity-chip {
-      display: none;
     }
     .entity-form {
-      display: block;
     }
   }
 }

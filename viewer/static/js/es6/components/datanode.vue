@@ -32,6 +32,15 @@ export default {
       return list;
     },
   },
+  events: {
+    'update-entity': function (index, obj) {
+      if (typeof index !== 'undefined') {
+        this.value.$set(index, obj);
+      } else {
+        this.value.$set(obj);
+      }
+    },
+  },
   methods: {
     isMarc(key) {
       if (typeof key === 'undefined') {
@@ -96,9 +105,9 @@ export default {
 <template>
   <div v-if="isArray(value)" class="node-list">
     <ul>
-      <li v-for="(k,v) in valueByIdPresence">
+      <li v-for="(k,v) in valueByIdPresence" track-by="$index">
         <div v-if="isPlainObject(v)" class="node-linked">
-          <entity :item="v" :key="key" :is-locked="isLocked"></entity>
+          <entity :index="$index" :item="v" :key="key" :is-locked="isLocked"></entity>
         </div>
         <div v-if="!isPlainObject(v)" class="node-input">
           <input v-if="!isLocked" v-el:input v-model="v" v-on:keyup="updateArray($index, v)"></input>
