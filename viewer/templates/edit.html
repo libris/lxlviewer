@@ -20,6 +20,16 @@
   % set typename = record[TYPE]
   % set thing_url = view_url(canonical_id)
   <header-component :status="status" v-if="initialized == true"></header-component>
+  <div v-if="status.isDev">
+    <h3>Länkade saker</h3>
+    <ul class="linked-items">
+      <li v-for="item in editorData.linked">
+        <ul>
+          <li v-for="(k,v) in item"><strong>{{k}}:</strong> {{v}}</li>
+        </ul>
+      </li>
+    </ul>
+  </div>
   <form-component :status="status" focus="work" :linked="editorData.linked"  v-if="initialized == true"></form-component>
   <form-component :status="status" focus="it" :linked="editorData.linked"  v-if="initialized == true"></form-component>
   <editor-controls :status="status" :editor-data="editorData" :messages="messages" v-if="initialized == true"></editor-controls>
