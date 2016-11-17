@@ -182,7 +182,7 @@ export default {
   <div class="form-component" v-bind:class="{ 'locked': isLocked }">
     <div class="form-header">- {{ focus }} -</div>
     <ul>
-      <li v-for="property in sortedProperties" v-if="formData[property] !== null" v-bind:class="{ 'locked': isLocked }">
+      <li v-for="property in sortedProperties" v-if="formData[property]" v-bind:class="{ 'locked': isLocked }">
         <div class="label">
           <a href="/vocab/#{{property}}">{{ property | labelByLang | capitalize }}</a>
         </div>
