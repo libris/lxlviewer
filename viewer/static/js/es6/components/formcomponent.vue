@@ -184,7 +184,8 @@ export default {
     <ul>
       <li v-for="property in sortedProperties" v-if="formData[property]" v-bind:class="{ 'locked': isLocked }">
         <div class="label">
-          <a href="/vocab/#{{property}}">{{ property | labelByLang | capitalize }}</a>
+          <!-- <a href="/vocab/#{{property}}">{{ property | labelByLang | capitalize }}</a> -->
+          {{ property | labelByLang | capitalize }}
         </div>
         <div class="value">
           <data-node v-if="formData[property] && !isEmptyObject(formData[property])" :is-locked="isLocked" :key="property" :value="formData[property]" :linked="linked"></data-node>
@@ -268,11 +269,13 @@ export default {
         width: @col-label;
         text-align: right;
         line-height: 2.5;
-        color: @gray-darker;
+        color: @gray-dark;
+        font-weight: normal;
+        line-height: 12px;
         a {
           cursor: help;
           text-decoration: none;
-          color: #949a9e;
+          color: @gray-dark;
           line-height: 12px;
           font-weight: normal;
           border-bottom: dashed transparent 1px;
