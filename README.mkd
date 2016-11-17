@@ -21,6 +21,12 @@ external module `lxltools.lddb`. To run that locally, you'll need:
 
 * [PostgreSQL 9.4+](http://www.postgresql.org/) (you need the JSON support of 9.4 or greater)
 
+## Building
+
+Initially and whenever the repo is updated, build the web assets:
+
+    $ (cd viewer && npm install)
+
 ## Running
 
 Just call:
