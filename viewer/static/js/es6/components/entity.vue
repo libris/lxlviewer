@@ -26,11 +26,13 @@ export default {
   data: function() {
     return {
       inEdit: false,
+      showCardInfo: false,
       searchResult: {},
       searchDelay: 2,
     }
   },
   computed: {
+    // TODO: Refactor computed
     json() {
       return JSON.stringify(this.item);
     },
@@ -39,7 +41,8 @@ export default {
       return chip;
     },
     getCard() {
-      return DisplayUtil.getCard(this.item, this.display, this.editorData.linked, this.vocab, this.settings.vocabPfx);
+      const card = DisplayUtil.getCard(this.item, this.display, this.editorData.linked, this.vocab, this.settings.vocabPfx);
+      return card;
     },
     isLinked() {
       // Is @id present?
@@ -63,6 +66,24 @@ export default {
     getRange() {
       const types = vocabUtil.getRange(this.key, this.vocab, this.settings.vocabPfx);
       return types;
+    },
+    cardInfoList() {
+      const cardInfo = DisplayUtil.getCard(this.item, this.display, this.editorData.linked, this.vocab, this.settings.vocabPfx);
+      let result = [];
+      if (_.isString(cardInfo)) {
+        result.push(cardInfo);
+      } else {
+        _.each(cardInfo, function(content) {
+          if (_.isObject(content)) {
+            _.each(content, function(content){
+              result.push(content);
+            })
+          } else {
+            result.push(content);
+          }
+        })
+      }
+      return result;
     },
   },
   ready: function() {
@@ -193,7 +214,7 @@ export default {
 <template>
   <div class="entity-container" v-bind:class="{'block': inEdit}">
     <div class="entity-chip" v-if="(!embedded && isTyped && !inEdit) || isLinked" v-bind:class="{ 'linked': isLinked, 'locked': isLocked }">
-      <span class="chip-label">
+      <span class="chip-label" @mouseenter="showCardInfo=true" @mouseleave="showCardInfo=false">
         <span v-if="isObject(getChip)">
           <span v-for="(k,v) in getChip" v-if="!isObject(v)" track-by="$index">
             {{v}}
@@ -205,6 +226,15 @@ export default {
       </span>
       <i class="chip-action fa fa-pencil" v-on:click="expand" v-if="!isLocked && !isLinked"></i>
       <i class="chip-action fa fa-times" v-on:click="removeThis" v-if="!isLocked && isLinked"></i>
+    </div>
+    <div class="card-info-container" v-if="showCardInfo">
+      <div class="card-info" v-bind:class="{ 'linked': isLinked}">
+        <ul>
+          <li v-for="i in cardInfoList">
+            {{i}}
+          </li>
+        </ul>
+      </div>
     </div>
     <div class="entity-form" v-if="!isTyped && !isLinked">
       <button v-for="type in getRange" v-on:click="setNewObject(type)">{{type}}</button>
@@ -245,6 +275,31 @@ export default {
 @chipTextColorLinked: lighten(@chipColor, 80%);
 
 .entity-container {
+
+  .card-info-container {
+    position: absolute;
+    .card-info {
+      background-color: @chipColor;
+      color: chipTextColor;
+      box-shadow: inset -2px -2px darken(@chipColor, 10%);
+      border-bottom-left-radius: 10px;
+      border-bottom-right-radius: 10px;
+      border-top-right-radius: 10px;
+      position: relative;
+      left: 5%;
+      top: -8px;
+      padding: 10px;
+      &.linked {
+        background-color: @chipColorLinked;
+        color: @chipTextColorLinked;
+        box-shadow: inset -2px -2px darken(@chipColorLinked, 10%);
+      }
+      ul {
+        list-style: none;
+        padding: 0px;
+      }
+    }
+  }
   vertical-align: middle;
   display: inline-block;
   &.block {
