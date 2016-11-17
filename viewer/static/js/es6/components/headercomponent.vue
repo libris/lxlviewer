@@ -81,19 +81,6 @@ export default {
           <span v-if="!isArray(v)">{{v}}</span> -->
         </li>
       </ul>
-
-
-    </div>
-    <div class="work-info">
-      <ul>
-        <li v-if="!isObject(getWorkCard)">
-          {{getWorkCard}}
-        </li>
-        <li v-for="(k,v) in getWorkCard" track-by="$index" v-if="isObject(getWorkCard)">
-          {{v | json}}
-        </li>
-      </ul>
-
     </div>
   </div>
 </template>

@@ -192,14 +192,15 @@ export default {
         <div class="actions">
           <div class="action" v-if="!isLocked" class="delete" v-on:click="removeField(property)"><i class="fa fa-trash fa-2x"></i></div>
           <entity-adder class="action" v-if="!isLocked && (isRepeatable(property) || isEmptyObject(formData[property]))" :key="property"></entity-adder>
-          
+
         </div>
       </li>
     </ul>
     <field-adder v-if="!isLocked" :allowed="allowedProperties" :item="focus"></field-adder>
     <div id="result" v-if="status.isDev">
-      <textarea :value="formData | json" @input="updateFromTextarea">
-      </textarea>
+      <pre>
+        {{formData | json}}
+      </pre>
     </div>
   </div>
 </template>
@@ -211,7 +212,7 @@ export default {
 // Column widths
 @col-label: 200px;
 @col-value: 620px;
-@col-action: 250px; 
+@col-action: 250px;
 
 .form-component {
   border: 1px solid @brand-primary;
