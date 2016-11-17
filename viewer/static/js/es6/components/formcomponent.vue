@@ -57,12 +57,25 @@ export default {
     formData() {
       return this.editorData[this.focus];
     },
-    typeProperties() {
+    sortedProperties() {
       const formObj = this.formData;
+
+      // Try to get properties from type of object
+      // If none found, try baseClasses
       let propertyList = DisplayUtil.getProperties(formObj['@type'], 'cards', this.display);
-      
-      
-      // console.log(this.formData['dimensions']);
+      if (propertyList.length === 0) { // If none were found, traverse up inheritance tree
+        const baseClasses = VocabUtil.getBaseClassesFromArray(formObj['@type'], this.vocab, this.settings.vocabPfx);
+        for (let i = 0; i < baseClasses.length; i++) {
+          propertyList = DisplayUtil.getProperties(baseClasses[i].replace(this.settings.vocabPfx, ''), 'cards', this.display);
+          if (propertyList.length > 0) {
+            break;
+          }
+        }
+        if (propertyList.length === 0) {
+          propertyList = getProperties('Resource', 'chips', displayDefs);
+        }
+      }
+
       _.each(formObj, function(v, k) {
         if(!propertyList.includes(k)){
           propertyList.push(k);
@@ -71,7 +84,6 @@ export default {
       _.remove(propertyList, function(x) {
         return _.isObject(x);
       });
-      console.log(propertyList);
       return propertyList;
     },
   },
@@ -170,7 +182,7 @@ export default {
   <div class="form-component" v-bind:class="{ 'locked': isLocked }">
     <div class="form-header">- {{ focus }} -</div>
     <ul>
-      <li v-for="property in typeProperties" v-if="formData[property] !== null" v-bind:class="{ 'locked': isLocked }">
+      <li v-for="property in sortedProperties" v-if="formData[property] !== null" v-bind:class="{ 'locked': isLocked }">
         <div class="label">
           <a href="/vocab/#{{property}}">{{ property | labelByLang | capitalize }}</a>
         </div>
