@@ -134,6 +134,26 @@ class Things(object):
     def get_vocab_util(self):
         return VocabUtil(self.load_vocab_graph(), self.lang)
 
+    def embellish(self, thing):
+        graph = thing[GRAPH]
+        quoted = set(node[GRAPH][ID] for node in graph if GRAPH in node)
+        has_chip = set()
+        for node in graph:
+            if GRAPH in node:
+                continue
+            for link in self.find_links(node):
+                if link not in quoted:
+                    data = self._storage.get_record(link)
+                    data_id = data[ID]
+                    if data_id in has_chip:
+                        continue
+                    chip = self.ldview.to_chip(data)
+                    graph.append({ID: data_id, GRAPH: chip})
+                    has_chip.add(data_id)
+
+    def find_links(self, node):
+        []
+
 
 LEGACY_BASE = "http://libris.kb.se/"
 LEGACY_PATHS = ('/resource/auth/', '/auth/',
