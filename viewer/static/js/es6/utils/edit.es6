@@ -1,4 +1,7 @@
 export function getLinked(id, linked) {
+  if (typeof id === 'undefined') {
+    throw new Error('getLinked was called with an undefined Id.');
+  }
   if (typeof linked !== 'undefined') {
     for (let i = 0; i < linked.length; i ++) {
       if (linked[i]['@id'] === id) {

@@ -38,6 +38,11 @@ export function getVocab() {
 
 export function getClass(classId, vocab, vocabPfx) {
   // Returns a class object
+
+  if (typeof classId === 'undefined') {
+    throw new Error('getClass was called with an undefined Id.');
+  }
+
   const cn = classId.replace(vocabPfx, '');
   const _class = _.find(vocab.descriptions, (d) => { return d['@id'] === vocabPfx + cn; });
   if (!_class) {
