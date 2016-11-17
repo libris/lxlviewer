@@ -277,6 +277,9 @@ export default {
 @chipTextColorLinked: lighten(@chipColor, 80%);
 
 .entity-container {
+  .chip-action {
+    cursor: pointer;
+  }
 
   .card-info-container {
     position: absolute;
@@ -330,7 +333,6 @@ export default {
     .chip-action {
       float: left;
       padding: 0.25em;
-      cursor: pointer;
       color: fadeout(@chipTextColor,20%);
       &:hover {
         color: @chipTextColor;
