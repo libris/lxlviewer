@@ -13,6 +13,7 @@ from lxltools.graphcache import GraphCache, vocab_source_map
 from lxltools.vocabview import VocabView, VocabUtil
 from lxltools.dataview import DataView
 from lxltools.ld.keys import CONTEXT, GRAPH, ID, TYPE, REVERSE
+from lxltools.util import as_iterable
 
 
 IDKBSE = "https://id.kb.se/"
@@ -151,8 +152,22 @@ class Things(object):
                     graph.append({ID: data_id, GRAPH: chip})
                     has_chip.add(data_id)
 
+
     def find_links(self, node):
-        []
+        if not isinstance(node, dict):
+            return
+        if ID in node:
+            yield node[ID]
+        for vs in node.values():
+            for v in as_iterable(vs):
+                if not isinstance(v, dict):
+                    continue
+                for k, sub_vs in v.items():
+                    if k == ID:
+                        yield sub_vs
+                    for sub_v in as_iterable(sub_vs):
+                        for link in find_links(sub_v):
+                            yield link
 
 
 LEGACY_BASE = "http://libris.kb.se/"
@@ -200,3 +215,4 @@ class Uris(object):
                 if same_id and same_id.startswith(site_base_uri):
                     return same_id
         return thing_id
+
