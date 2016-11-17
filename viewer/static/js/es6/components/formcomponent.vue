@@ -60,9 +60,6 @@ export default {
     typeProperties() {
       const formObj = this.formData;
       let propertyList = DisplayUtil.getProperties(formObj['@type'], 'cards', this.display);
-      
-      
-      // console.log(this.formData['dimensions']);
       _.each(formObj, function(v, k) {
         if(!propertyList.includes(k)){
           propertyList.push(k);
@@ -71,7 +68,6 @@ export default {
       _.remove(propertyList, function(x) {
         return _.isObject(x);
       });
-      console.log(propertyList);
       return propertyList;
     },
   },
