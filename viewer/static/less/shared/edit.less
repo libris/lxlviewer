@@ -37,6 +37,18 @@
   display: none;
   background-color: fadeout(@neutral-color,25%);
 
+  .linked-items {
+    >li {
+      max-width: 700px;
+      border: 1px solid #ccc;
+      margin-bottom: 10px;
+      ul {
+        list-style-type: none;
+        padding: 5px;
+      }
+    }
+  }
+
   .unknown {
     color: #bd2323;
   }
