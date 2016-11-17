@@ -259,9 +259,11 @@ export default {
     </div>
 
     <div class="entity-structured" v-if="embedded && !inEdit">
+     <i class="chip-action fa fa-times" v-on:click="removeThis"></i>
       <ul>
-        <li v-for="(k,v) in item" v-if="k.indexOf('@') == -1">{{k}}: {{v}}</li>
+        <li v-for="(k,v) in item" v-if="k.indexOf('@') == -1">{{k}}: {{v}} </li>
       </ul>
+
     </div>
   </div>
 </template>
@@ -376,6 +378,19 @@ export default {
     .entity-chip {
     }
     .entity-form {
+    }
+  }
+
+  .entity-structured {
+    ul {
+      padding: 0px;
+      list-style: none;
+    }
+    margin: 5px;
+    padding: 10px;
+    border: 1px dashed @gray;
+    .chip-action {
+      float: right;
     }
   }
 }
