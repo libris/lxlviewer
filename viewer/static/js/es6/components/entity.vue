@@ -227,7 +227,7 @@ export default {
       <i class="chip-action fa fa-pencil" v-on:click="expand" v-if="!isLocked && !isLinked"></i>
       <i class="chip-action fa fa-times" v-on:click="removeThis" v-if="!isLocked && isLinked"></i>
     </div>
-    <div class="card-info-container" v-if="showCardInfo">
+    <div class="card-info-container" v-show="showCardInfo">
       <div class="card-info" v-bind:class="{ 'linked': isLinked}">
         <ul>
           <li v-for="i in cardInfoList">
