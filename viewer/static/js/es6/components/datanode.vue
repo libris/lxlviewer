@@ -130,6 +130,9 @@ export default {
     padding-left: 0;
     li {
       list-style: none;
+      &.linked {
+        //TODO: Check if linked => display:inline-block
+      }
     }
   }
 }
