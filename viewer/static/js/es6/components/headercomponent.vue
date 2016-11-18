@@ -2,6 +2,7 @@
 import * as _ from 'lodash';
 import * as editUtil from '../utils/edit';
 import * as DisplayUtil from '../utils/display';
+import * as VocabUtil from '../utils/vocab';
 import { getVocabulary, getSettings, getEditorData, getDisplayDefinitions } from '../vuex/getters';
 
 export default {
@@ -36,8 +37,28 @@ export default {
   },
   computed: {
     getItCard() {
-      const itCard = DisplayUtil.getCard(this.editorData.it, this.display, this.editorData.linked, this.vocab, this.settings.vocabPfx);
-      return itCard;
+      const displayObj = {};
+      const item = this.editorData.it;
+
+      let propertyList = DisplayUtil.getProperties(item, 'cards', this.display);
+      if (propertyList.length === 0) {
+        const baseClasses = VocabUtil.getBaseClassesFromArray(item['@type'], this.vocab, this.settings.vocabPfx);
+        for (let i = 0; i < baseClasses.length; i++) {
+          propertyList = DisplayUtil.getProperties(baseClasses[i].replace(this.settings.vocabPfx, ''), 'cards', this.display);
+          if (propertyList.length > 0) {
+            break;
+          }
+        }
+      }
+      propertyList = ['@type'].concat(propertyList);
+      for (let i = 0; i < propertyList.length; i++) {
+        if (item[propertyList[i]]) {
+          displayObj[propertyList[i]] = item[propertyList[i]];
+        }
+      }
+      console.log('props', JSON.stringify(propertyList));
+      console.log("returning", JSON.stringify(displayObj));
+      return displayObj;
     },
     getWorkCard() {
       const workCard = DisplayUtil.getCard(this.editorData.work, this.display, this.editorData.linked, this.vocab, this.settings.vocabPfx);
@@ -54,14 +75,18 @@ export default {
     <div class="instance-info">
       <ul>
         <li v-for="(k,v) in getItCard">
+
           <span v-if="isArray(v)" v-for="item in v" track-by="$index">
             <span v-for="(x,y) in item">
+
               <span v-bind:class="{'large-title': isTitle(k), 'medium-text': !isTitle(k) }">
-                {{y}}<span v-if="x === '@type'">:</span>
+                <span>{{y}}</span><span v-if="x === '@type'">:</span>
               </span>
+
             </span>
           </span>
-          <span v-if="!isArray(v)">{{v | json}}</span>
+          <span v-if="!isArray(v)">{{v}}</span>
+
         </li>
       </ul>
     </div>
