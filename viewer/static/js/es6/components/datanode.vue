@@ -130,9 +130,6 @@ export default {
     padding-left: 0;
     li {
       list-style: none;
-      &.linked {
-        
-      }
     }
   }
 }
