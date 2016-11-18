@@ -182,18 +182,17 @@ export default {
   <div class="form-component" v-bind:class="{ 'locked': isLocked }">
     <div class="form-header">- {{ focus }} -</div>
     <ul>
-      <li v-for="property in sortedProperties" v-if="formData[property]" v-bind:class="{ 'locked': isLocked }">
+      <li v-for="(k, v) in formData" v-if="v !== null" v-bind:class="{ 'locked': isLocked }">
         <div class="label">
           <!-- <a href="/vocab/#{{property}}">{{ property | labelByLang | capitalize }}</a> -->
-          {{ property | labelByLang | capitalize }}
+          {{ k | labelByLang | capitalize }}
         </div>
         <div class="value">
-          <data-node v-if="formData[property] && !isEmptyObject(formData[property])" :is-locked="isLocked" :key="property" :value="formData[property]" :linked="linked"></data-node>
+          <data-node v-if="!isEmptyObject(v)" :is-locked="isLocked" :key="k" :value="v" :linked="linked"></data-node>
         </div>
         <div class="actions">
-          <div class="action" v-if="!isLocked" class="delete" v-on:click="removeField(property)"><i class="fa fa-trash fa-2x"></i></div>
-          <entity-adder class="action" v-if="!isLocked && (isRepeatable(property) || isEmptyObject(formData[property]))" :key="property"></entity-adder>
-
+          <div class="action" v-if="!isLocked" class="delete" v-on:click="removeField(k)"><i class="fa fa-trash fa-2x"></i></div>
+          <entity-adder class="action" v-if="!isLocked && (isRepeatable(k) || isEmptyObject(v))" :key="k"></entity-adder>
         </div>
       </li>
     </ul>
