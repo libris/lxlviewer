@@ -51,13 +51,19 @@ export function getProperties(type, level, displayDefs) {
 
 export function getDisplayObject(item, level, displayDefs, linked, vocab, vocabPfx) {
   let displayObject = {};
-
+  //
   // If item is a link reference, get the true item
   let trueItem = item;
   if (trueItem.hasOwnProperty('@id') && !trueItem.hasOwnProperty('@type')) {
     trueItem = EditUtil.getLinked(trueItem['@id'], linked);
   }
-  console.log("Generating displayObject for:", JSON.stringify(trueItem));
+  if (!trueItem.hasOwnProperty('@type') && trueItem.hasOwnProperty('@id')) {
+    console.warn('Tried to get linked but failed', 'id was', trueItem['@id']);
+    return trueItem;
+  }
+  // displayObject = trueItem;
+  // console.log("-------------------------------------------------");
+  // console.log("Generating displayObject for:", JSON.stringify(trueItem));
 
   // Get the list of properties we want to show
   let properties = getProperties(trueItem['@type'], level, displayDefs);
@@ -65,55 +71,64 @@ export function getDisplayObject(item, level, displayDefs, linked, vocab, vocabP
   if (properties.length === 0) { // If none were found, traverse up inheritance tree
     const baseClasses = VocabUtil.getBaseClassesFromArray(trueItem['@type'], vocab, vocabPfx);
     for (let i = 0; i < baseClasses.length; i++) {
-      properties = getProperties(baseClasses[i].replace(vocabPfx, ''), level, displayDefs);
-      if (properties.length > 0) {
-        console.log('Used card definition for', JSON.stringify(baseClasses[i]));
-        baseClassUsed = `${baseClasses[i].replace(vocabPfx, '')} (through ${trueItem['@type']})`;
-        break;
+      if (typeof baseClasses[i] !== 'undefined') {
+        properties = getProperties(baseClasses[i].replace(vocabPfx, ''), level, displayDefs);
+        if (properties.length > 0) {
+          // console.log('Used card definition for', JSON.stringify(baseClasses[i]));
+          baseClassUsed = `${baseClasses[i].replace(vocabPfx, '')} (through ${trueItem['@type']})`;
+          break;
+        }
       }
     }
     if (properties.length === 0) {
-      console.log('Used card definition for', "Resource", "(Fallback)");
+      // console.log('Used card definition for', "Resource", "(Fallback)");
       properties = getProperties('Resource', 'chips', displayDefs);
-      console.log(JSON.stringify(properties));
     }
   } else {
-    console.log('Used card definition for', JSON.stringify(baseClassUsed));
+    // console.log('Used card definition for', JSON.stringify(baseClassUsed));
   }
+  // console.log(JSON.stringify(properties));
 
   // For each property, get the value from original item
-  console.log("Checking if present on item:");
+  // console.log("Checking if present on item:");
+  if (level === 'cards') {
+    properties = ['@type'].concat(properties);
+  }
+
   for (let i = 0; i < properties.length; i++) {
-    if (typeof trueItem[properties[i]] !== 'undefined') {
-      console.log("✔ ", properties[i]);
-      displayObject[properties[i]] = trueItem[properties[i]];
-    } else {
-      console.log("x ", properties[i]);
-    }
-  }
+    if (!_.isObject(properties[i])) {
+      if (typeof trueItem[properties[i]] !== 'undefined') {
 
-
-  for (const key in displayObject) {
-    if (level === 'chips') {
-      // TODO: Fix language bug
-      break;
-    }
-    if (_.isArray(displayObject[key])) {
-      for (let i = 0; i < displayObject[key].length; i++) {
-        if (_.isObject(displayObject[key][i])) {
-          console.log("in", displayObject[key][i]);
-          displayObject[key][i] = getChip(displayObject[key][i], displayDefs, linked, vocab, vocabPfx);
+        // console.log("✔ ", properties[i], trueItem[properties[i]]);
+        let value = trueItem[properties[i]];
+        if (_.isObject(value) && !_.isArray(value)) {
+          // console.log("Encountered object in value", JSON.stringify(value));
+          value = getDisplayObject(value, 'chips', displayDefs, linked, vocab, vocabPfx);
         }
+        if (_.isArray(value)) {
+          // console.log("Encountered array in value", JSON.stringify(value));
+          let arrString = '';
+          for (let x = 0; x < value.length; x++) {
+            if (_.isObject(value[x])) {
+              arrString += JSON.stringify(value[x]);
+            } else {
+              arrString += value[x];
+            }
+          }
+          value = arrString;
+        }
+        displayObject[properties[i]] = value;
+
+      } else {
+        // console.log("x ", properties[i]);
       }
-    } else if (_.isEmpty(displayObject[key]) || _.isObject(displayObject[key])) {
-      displayObject[key] = getChip(trueItem[key], displayDefs, linked, vocab, vocabPfx);
     }
   }
-
+  // console.log('displayObj is now', JSON.stringify(displayObject));
   if (_.isEmpty(displayObject)) {
-    displayObject = 'CHIP(type is ' + baseClassUsed + ',' + JSON.stringify(properties) + ')';
+    displayObject = item;
   }
-  console.log("getDisplayObject is returning:", JSON.stringify(displayObject));
+  // console.log("getDisplayObject is returning:", JSON.stringify(displayObject));
   return displayObject;
 }
 

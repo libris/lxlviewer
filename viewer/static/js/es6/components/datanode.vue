@@ -63,9 +63,6 @@ export default {
     removeKey(key) {
       this.emptyValue();
     },
-    getLinked(id) {
-      return editUtil.getLinked(id, this.linked);
-    },
     isEditable(key) {
       const tempNotEditable = [
         '@id',

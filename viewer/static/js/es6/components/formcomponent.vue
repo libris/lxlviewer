@@ -57,6 +57,16 @@ export default {
     formData() {
       return this.editorData[this.focus];
     },
+    sortedFormData() {
+      const sortedForm = {};
+      for (let i = 0; i < this.sortedProperties.length; i++) {
+        const k = this.sortedProperties[i];
+        if (this.formData[k]) {
+          sortedForm[k] = this.formData[k];
+        }
+      }
+      return sortedForm;
+    },
     sortedProperties() {
       const formObj = this.formData;
 
@@ -77,7 +87,7 @@ export default {
       }
 
       _.each(formObj, function(v, k) {
-        if(!propertyList.includes(k)){
+        if(!propertyList.includes(k)) {
           propertyList.push(k);
         }
       });
@@ -182,26 +192,34 @@ export default {
   <div class="form-component" v-bind:class="{ 'locked': isLocked }">
     <div class="form-header">- {{ focus }} -</div>
     <ul>
-      <li v-for="property in sortedProperties" v-if="formData[property]" v-bind:class="{ 'locked': isLocked }">
+      <li v-for="(k,v) in sortedFormData" v-if="v" v-bind:class="{ 'locked': isLocked }">
         <div class="label">
           <!-- <a href="/vocab/#{{property}}">{{ property | labelByLang | capitalize }}</a> -->
-          {{ property | labelByLang | capitalize }}
+          {{ k | labelByLang | capitalize }}
         </div>
         <div class="value">
-          <data-node v-if="formData[property] && !isEmptyObject(formData[property])" :is-locked="isLocked" :key="property" :value="formData[property]" :linked="linked"></data-node>
+          <data-node v-if="!isEmptyObject(v)" :is-locked="isLocked" :key="k" :value="v" :linked="linked"></data-node>
         </div>
         <div class="actions">
-          <div class="action" v-if="!isLocked" class="delete" v-on:click="removeField(property)"><i class="fa fa-trash fa-2x"></i></div>
-          <entity-adder class="action" v-if="!isLocked && (isRepeatable(property) || isEmptyObject(formData[property]))" :key="property"></entity-adder>
-
+          <div class="action" v-if="!isLocked" class="delete" v-on:click="removeField(k)"><i class="fa fa-trash fa-2x"></i></div>
+          <entity-adder class="action" v-if="!isLocked && (isRepeatable(k) || isEmptyObject(v))" :key="k"></entity-adder>
         </div>
       </li>
     </ul>
     <field-adder v-if="!isLocked" :allowed="allowedProperties" :item="focus"></field-adder>
     <div id="result" v-if="status.isDev">
-      <pre>
+      <div class="row">
+      <pre class="col-md-6">
+        SORTED
+
+        {{sortedFormData | json}}
+      </pre>
+      <pre class="col-md-6">
+        ORIGINAL
+
         {{formData | json}}
       </pre>
+      </div
     </div>
   </div>
 </template>
