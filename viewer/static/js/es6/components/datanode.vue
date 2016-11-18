@@ -131,7 +131,7 @@ export default {
     li {
       list-style: none;
       &.linked {
-        
+        //TODO: Check if linked => display:inline-block
       }
     }
   }

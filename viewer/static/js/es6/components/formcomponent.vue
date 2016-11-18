@@ -219,7 +219,7 @@ export default {
 
         {{formData | json}}
       </pre>
-      </div
+      </div>
     </div>
   </div>
 </template>
