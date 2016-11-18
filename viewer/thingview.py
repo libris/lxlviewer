@@ -181,6 +181,19 @@ class Things(object):
 
 
 def find_links(node):
+    """ Look up links in a graph
+
+    Examples::
+
+
+    >>> node = {'foo': [{'bar': [1, {'banan': {'@id': 'banana-id'}}, {'apple': {'@id': 'another-id'}}]},
+    ...         {'@id': 'dddddd'}], 'apple' : {'@id': 'iiiid'}}
+
+    >>> sorted(list(find_links(node)))
+    [u'another-id', u'banana-id', u'dddddd', u'iiiid']
+    """
+
+
     if not isinstance(node, dict):
         return
     if is_reference(node):
