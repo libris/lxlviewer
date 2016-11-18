@@ -19,7 +19,7 @@ export default {
   },
   data: function() {
     return {
-      
+
     }
   },
   methods: {
@@ -62,23 +62,6 @@ export default {
             </span>
           </span>
           <span v-if="!isArray(v)">{{v | json}}</span>
-        </li>
-      </ul>
-<hr>
-      <ul>
-      <li v-if="!isObject(getWorkCard)">
-        {{getWorkCard}}
-      </li>
-        <li v-for="(k,v) in getWorkCard" track-by="$index" v-if="isObject(getWorkCard)">
-        {{k}}: {{v}}
-          <!-- <span v-if="isArray(v)" v-for="item in v" track-by="$index">
-            <span v-for="(x,y) in item">
-              <span v-bind:class="{'large-title': isTitle(k), 'medium-text': !isTitle(k) }">
-                {{y}}<span v-if="x === '@type'">:</span>
-              </span>
-            </span>
-          </span>
-          <span v-if="!isArray(v)">{{v}}</span> -->
         </li>
       </ul>
     </div>

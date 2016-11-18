@@ -354,7 +354,7 @@ def thingedit(path):
 
     model = {}
     return render_template('edit.html',
-            thing=thing,
+            thing=things.embellish(thing),
             model=model)
 
 @app.route('/create', methods=['POST'])

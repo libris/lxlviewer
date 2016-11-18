@@ -13,6 +13,7 @@ from lxltools.graphcache import GraphCache, vocab_source_map
 from lxltools.vocabview import VocabView, VocabUtil
 from lxltools.dataview import DataView
 from lxltools.ld.keys import CONTEXT, GRAPH, ID, TYPE, REVERSE
+from lxltools.util import as_iterable
 
 
 IDKBSE = "https://id.kb.se/"
@@ -134,6 +135,89 @@ class Things(object):
     def get_vocab_util(self):
         return VocabUtil(self.load_vocab_graph(), self.lang)
 
+    def embellish(self, thing):
+        graph = thing[GRAPH]
+        described = self._get_described(graph)
+
+        has_chip = set()
+        for node in graph:
+            if GRAPH in node:
+                continue
+            for link in find_links(node):
+                if link not in described:
+                    data = self._read_link(link)
+                    if not data:
+                        continue
+                    data_id = data[GRAPH][0][ID]
+                    if data_id in has_chip:
+                        continue
+
+                    for item in data[GRAPH]:
+                        if item[ID] == data_id:
+                            chip = self.ldview.to_chip(item)
+                            break
+
+                    if chip:
+                        graph.append({ID: data_id, GRAPH: chip})
+                        has_chip.add(data_id)
+
+        return {GRAPH: graph}
+
+    def _get_described(self, graph):
+        described = set()
+        for node in graph:
+            if GRAPH in node:
+                described.add(node[GRAPH][ID])
+            else:
+                described.add(node[ID])
+        return described
+
+    def _read_link(self, link):
+        if link.startswith("marc:"):
+            expanded_link = link.replace("marc:", "https://id.kb.se/marc/")
+            return self.ldview.get_record_data(expanded_link)
+        else:
+            return self.ldview.get_record_data(link)
+
+
+def find_links(node):
+    """ Look up links in a graph
+
+    Examples::
+
+
+    >>> node = {'foo': [{'bar': [1, {'banan': {'@id': 'banana-id'}}, {'apple': {'@id': 'another-id'}}]},
+    ...         {'@id': 'dddddd'}], 'apple' : {'@id': 'iiiid'}}
+
+    >>> sorted(list(find_links(node)))
+    [u'another-id', u'banana-id', u'dddddd', u'iiiid']
+    """
+
+
+    if not isinstance(node, dict):
+        return
+    if is_reference(node):
+        yield node[ID]
+    else:
+        for vs in node.values():
+            for v in as_iterable(vs):
+                if not isinstance(v, dict):
+                    continue
+                if is_reference(v):
+                    yield v[ID]
+                else:
+                    for sub_vs in v.values():
+                        for sub_v in as_iterable(sub_vs):
+                            for link in find_links(sub_v):
+                                yield link
+
+
+def is_reference(node):
+    if ID in node and len(node) == 1:
+        return True
+    else:
+        return False
+
 
 LEGACY_BASE = "http://libris.kb.se/"
 LEGACY_PATHS = ('/resource/auth/', '/auth/',
@@ -180,3 +264,4 @@ class Uris(object):
                 if same_id and same_id.startswith(site_base_uri):
                     return same_id
         return thing_id
+

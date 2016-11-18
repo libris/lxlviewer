@@ -38,6 +38,11 @@ export function getVocab() {
 
 export function getClass(classId, vocab, vocabPfx) {
   // Returns a class object
+
+  if (typeof classId === 'undefined') {
+    throw new Error('getClass was called with an undefined Id.');
+  }
+
   const cn = classId.replace(vocabPfx, '');
   const _class = _.find(vocab.descriptions, (d) => { return d['@id'] === vocabPfx + cn; });
   if (!_class) {
@@ -155,15 +160,20 @@ export function getProperties(className, vocab, vocabPfx) {
 
 export function getBaseClassesFromArray(typeArray, vocab, vocabPfx) {
   // Find the base classes from the types in typeArray and return a list of IDs.
+  if (!typeArray || typeArray.length === 0) {
+    throw new Error('getBaseClassesFromArray was called without types');
+  }
   const types = [].concat(typeArray);
 
   let classes = [];
   for (let t = 0; t < types.length; t++) {
-    const c = getClass(types[t], vocab, vocabPfx);
-    if (typeof c !== 'undefined') {
-      classes.push(c['@id']);
+    if (types[t].indexOf('marc:') === -1) {
+      const c = getClass(types[t], vocab, vocabPfx);
+      if (typeof c !== 'undefined') {
+        classes.push(c['@id']);
+      }
+      classes = classes.concat(getBaseClasses(c['@id'], vocab, vocabPfx));
     }
-    classes = classes.concat(getBaseClasses(c['@id'], vocab, vocabPfx));
   }
   classes = _.uniq(classes);
   // console.log("getBaseClassesFromArray("+JSON.stringify(typeArray)+") ->", JSON.stringify(classes));

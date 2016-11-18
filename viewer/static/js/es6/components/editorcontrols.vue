@@ -25,7 +25,7 @@ export default {
       return {
         date: moment(this.editorData.record.modified).format('lll'),
         timeAgo: moment(this.editorData.record.modified).fromNow(),
-        by: EditUtil.getLinked(this.editorData.record.descriptionModifier['@id'], this.editorData.linked).name,
+        by: '-', // Referencing property like below will not work. TODO: Handle array
       };
     },
     created: function() {
