@@ -102,7 +102,7 @@ export default {
 <template>
   <div v-if="isArray(value)" class="node-list">
     <ul>
-      <li v-for="(k,v) in valueByIdPresence" track-by="$index" :class="'structured': isPlainObject(v)">
+      <li v-for="(k,v) in valueByIdPresence" track-by="$index" :class="{'structured': this.isPlainObject(v)}">
         <div v-if="isPlainObject(v)" class="node-linked">
           <entity :index="$index" :item="v" :key="key" :is-locked="isLocked"></entity>
         </div>

@@ -29,6 +29,7 @@ export default {
       showCardInfo: false,
       searchResult: {},
       searchDelay: 2,
+      formObj: {},
     }
   },
   computed: {
@@ -80,9 +81,35 @@ export default {
       } else {
         this.inEdit = false;
       }
+      this.formObj = this.getForm(this.item);
     });
   },
   methods: {
+    getForm(item) {
+      const formObj = {};
+      if (!item['@type']) {
+        return formObj;
+      }
+      let inputKeys = DisplayUtil.getProperties(item['@type'], 'cards', this.display);
+      if (inputKeys.length === 0) {
+        const baseClasses = vocabUtil.getBaseClassesFromArray(item['@type'], this.vocab, this.settings.vocabPfx);
+        for (let i = 0; i < baseClasses.length; i++) {
+          inputKeys = DisplayUtil.getProperties(baseClasses[i].replace(this.settings.vocabPfx, ''), 'cards', this.display);
+          if (inputKeys.length > 0) {
+            break;
+          }
+        }
+      }
+      inputKeys = ['@type'].concat(inputKeys);
+      for (let i = 0; i < inputKeys.length; i++) {
+        if (item[inputKeys[i]]) {
+          formObj[inputKeys[i]] = item[inputKeys[i]];
+        } else {
+          formObj[inputKeys[i]] = '';
+        }
+      }
+      return formObj;
+    },
     setLinkedItem(item) {
       const newItem = {};
       newItem['@id'] = item['@id'];
@@ -117,12 +144,11 @@ export default {
     },
     collapse() {
       // Hide form
-
       this.inEdit = false;
       this.save();
     },
     save() {
-      this.$dispatch('update-entity', this.index, this.item);
+      this.$dispatch('update-entity', this.index, this.formObj);
     },
     isEmpty() {
       // TODO: Is the item empty?
@@ -220,12 +246,14 @@ export default {
     <div class="entity-form" v-if="!isTyped && !isLinked">
       <button v-for="type in getRange" v-on:click="setNewObject(type)">{{type}}</button>
     </div>
-<!--
+
     <div class="entity-form" v-show="inEdit">
-      <strong>{{item['@type'] | labelByLang | capitalize}}</strong>
-      <div class="entity-form-row" v-for="(k,v) in item">
+      <div class="entity-form-row" v-for="(k,v) in formObj">
+        <div v-if="k === '@type'">{{v | labelByLang | capitalize}}</div>
+        <div v-if="k !== '@type'">
         <span class="entity-form-label">{{k | labelByLang | capitalize}}</span>
-        <input v-model="v" v-on:change="search(v)"></input>
+        <input v-model="v"></input>
+        </div>
       </div>
       <div class="match-indicator" v-if="searchResult.length > 0">
         Det finns {{ searchResult.length }} entiteter som matchar denna.
@@ -237,7 +265,7 @@ export default {
       </div>
       <button v-on:click="removeThis"><i class="chip-action fa fa-trash"></i> Ta bort</button>
       <button v-on:click="collapse"><i class="chip-action fa fa-check"></i> Klar</button>
-    </div> -->
+    </div>
 
     <div class="entity-structured" v-if="embedded && !inEdit">
      <i class="chip-action fa fa-times" v-on:click="removeThis"></i>
