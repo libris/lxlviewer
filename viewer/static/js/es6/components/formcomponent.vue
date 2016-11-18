@@ -57,6 +57,16 @@ export default {
     formData() {
       return this.editorData[this.focus];
     },
+    sortedFormData() {
+      const sortedForm = {};
+      for (let i = 0; i < this.sortedProperties.length; i++) {
+        const k = this.sortedProperties[i];
+        if (this.formData[k]) {
+          sortedForm[k] = this.formData[k];
+        }
+      }
+      return sortedForm;
+    },
     sortedProperties() {
       const formObj = this.formData;
 
@@ -77,7 +87,7 @@ export default {
       }
 
       _.each(formObj, function(v, k) {
-        if(!propertyList.includes(k)){
+        if(!propertyList.includes(k)) {
           propertyList.push(k);
         }
       });
@@ -182,7 +192,7 @@ export default {
   <div class="form-component" v-bind:class="{ 'locked': isLocked }">
     <div class="form-header">- {{ focus }} -</div>
     <ul>
-      <li v-for="(k, v) in formData" v-if="v !== null" v-bind:class="{ 'locked': isLocked }">
+      <li v-for="(k,v) in sortedFormData" v-if="v" v-bind:class="{ 'locked': isLocked }">
         <div class="label">
           <!-- <a href="/vocab/#{{property}}">{{ property | labelByLang | capitalize }}</a> -->
           {{ k | labelByLang | capitalize }}
@@ -198,9 +208,18 @@ export default {
     </ul>
     <field-adder v-if="!isLocked" :allowed="allowedProperties" :item="focus"></field-adder>
     <div id="result" v-if="status.isDev">
-      <pre>
+      <div class="row">
+      <pre class="col-md-6">
+        SORTED
+
+        {{sortedFormData | json}}
+      </pre>
+      <pre class="col-md-6">
+        ORIGINAL
+
         {{formData | json}}
       </pre>
+      </div
     </div>
   </div>
 </template>
