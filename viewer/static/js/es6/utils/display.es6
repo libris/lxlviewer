@@ -57,7 +57,7 @@ export function getDisplayObject(item, level, displayDefs, linked, vocab, vocabP
   if (trueItem.hasOwnProperty('@id') && !trueItem.hasOwnProperty('@type')) {
     trueItem = EditUtil.getLinked(trueItem['@id'], linked);
   }
-  console.log("Generating displayObject for:", JSON.stringify(trueItem));
+  // console.log("Generating displayObject for:", JSON.stringify(trueItem));
 
   // Get the list of properties we want to show
   let properties = getProperties(trueItem['@type'], level, displayDefs);
@@ -67,28 +67,28 @@ export function getDisplayObject(item, level, displayDefs, linked, vocab, vocabP
     for (let i = 0; i < baseClasses.length; i++) {
       properties = getProperties(baseClasses[i].replace(vocabPfx, ''), level, displayDefs);
       if (properties.length > 0) {
-        console.log('Used card definition for', JSON.stringify(baseClasses[i]));
+        // console.log('Used card definition for', JSON.stringify(baseClasses[i]));
         baseClassUsed = `${baseClasses[i].replace(vocabPfx, '')} (through ${trueItem['@type']})`;
         break;
       }
     }
     if (properties.length === 0) {
-      console.log('Used card definition for', "Resource", "(Fallback)");
+      // console.log('Used card definition for', "Resource", "(Fallback)");
       properties = getProperties('Resource', 'chips', displayDefs);
-      console.log(JSON.stringify(properties));
+      // console.log(JSON.stringify(properties));
     }
   } else {
-    console.log('Used card definition for', JSON.stringify(baseClassUsed));
+    // console.log('Used card definition for', JSON.stringify(baseClassUsed));
   }
 
   // For each property, get the value from original item
-  console.log("Checking if present on item:");
+  // console.log("Checking if present on item:");
   for (let i = 0; i < properties.length; i++) {
     if (typeof trueItem[properties[i]] !== 'undefined') {
-      console.log("✔ ", properties[i]);
+      // console.log("✔ ", properties[i]);
       displayObject[properties[i]] = trueItem[properties[i]];
     } else {
-      console.log("x ", properties[i]);
+      // console.log("x ", properties[i]);
     }
   }
 
@@ -101,7 +101,7 @@ export function getDisplayObject(item, level, displayDefs, linked, vocab, vocabP
     if (_.isArray(displayObject[key])) {
       for (let i = 0; i < displayObject[key].length; i++) {
         if (_.isObject(displayObject[key][i])) {
-          console.log("in", displayObject[key][i]);
+          // console.log("in", displayObject[key][i]);
           displayObject[key][i] = getChip(displayObject[key][i], displayDefs, linked, vocab, vocabPfx);
         }
       }
@@ -113,7 +113,7 @@ export function getDisplayObject(item, level, displayDefs, linked, vocab, vocabP
   if (_.isEmpty(displayObject)) {
     displayObject = 'CHIP(type is ' + baseClassUsed + ',' + JSON.stringify(properties) + ')';
   }
-  console.log("getDisplayObject is returning:", JSON.stringify(displayObject));
+  // console.log("getDisplayObject is returning:", JSON.stringify(displayObject));
   return displayObject;
 }
 
