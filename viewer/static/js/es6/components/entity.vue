@@ -67,24 +67,6 @@ export default {
       const types = vocabUtil.getRange(this.key, this.vocab, this.settings.vocabPfx);
       return types;
     },
-    cardInfoList() {
-      const cardInfo = DisplayUtil.getCard(this.item, this.display, this.editorData.linked, this.vocab, this.settings.vocabPfx);
-      let result = [];
-      if (_.isString(cardInfo)) {
-        result.push(cardInfo);
-      } else {
-        _.each(cardInfo, function(content) {
-          if (_.isObject(content)) {
-            _.each(content, function(content){
-              result.push(content);
-            })
-          } else {
-            result.push(content);
-          }
-        })
-      }
-      return result;
-    },
   },
   ready: function() {
     this.$nextTick(function() {
@@ -94,6 +76,9 @@ export default {
         if (range.length === 1) {
           this.setNewObject(range[0]);
         }
+        this.inEdit = true;
+      } else {
+        this.inEdit = false;
       }
     });
   },
@@ -215,13 +200,8 @@ export default {
   <div class="entity-container" v-bind:class="{'block': inEdit}">
     <div class="entity-chip" v-if="(!embedded && isTyped && !inEdit) || isLinked" v-bind:class="{ 'linked': isLinked, 'locked': isLocked }">
       <span class="chip-label" @mouseenter="showCardInfo=true" @mouseleave="showCardInfo=false">
-        <span v-if="isObject(getChip)">
-          <span v-for="(k,v) in getChip" v-if="!isObject(v)" track-by="$index">
-            {{v}}
-          </span>
-        </span>
-        <span v-if="!isObject(getChip)">
-          {{getChip}}
+        <span v-for="(k,v) in getChip">
+        {{ v | json}}
         </span>
       </span>
       <i class="chip-action fa fa-pencil" v-on:click="expand" v-if="!isLocked && !isLinked"></i>
@@ -230,8 +210,9 @@ export default {
     <div class="card-info-container" v-show="showCardInfo">
       <div class="card-info" v-bind:class="{ 'linked': isLinked}">
         <ul>
-          <li v-for="i in cardInfoList">
-            {{i}}
+          <li v-for="(k,v) in getCard">
+            <span v-if="k === '@type'"><strong>{{v | labelByLang | capitalize }}</strong></span>
+            <span v-if="k !== '@type'">{{ k | labelByLang | capitalize }}: {{v}}</span>
           </li>
         </ul>
       </div>
@@ -239,7 +220,7 @@ export default {
     <div class="entity-form" v-if="!isTyped && !isLinked">
       <button v-for="type in getRange" v-on:click="setNewObject(type)">{{type}}</button>
     </div>
-
+<!--
     <div class="entity-form" v-show="inEdit">
       <strong>{{item['@type'] | labelByLang | capitalize}}</strong>
       <div class="entity-form-row" v-for="(k,v) in item">
@@ -256,7 +237,7 @@ export default {
       </div>
       <button v-on:click="removeThis"><i class="chip-action fa fa-trash"></i> Ta bort</button>
       <button v-on:click="collapse"><i class="chip-action fa fa-check"></i> Klar</button>
-    </div>
+    </div> -->
 
     <div class="entity-structured" v-if="embedded && !inEdit">
      <i class="chip-action fa fa-times" v-on:click="removeThis"></i>
