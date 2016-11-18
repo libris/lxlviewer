@@ -175,7 +175,7 @@ def thingview(path, suffix=None):
     if data:
         #if record[ID] != item_id:
         #    return redirect(_to_data_path(see_path, suffix), 302)
-        return rendered_response(path, suffix, data)
+        return rendered_response(path, suffix, things.embellish(data))
     else:
         record_ids = things.ldview.find_record_ids(item_id)
         if record_ids: #and len(record_ids) == 1:
