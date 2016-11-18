@@ -62,7 +62,7 @@ export default {
         Nytt fält
       </a> -->
       <div class="admin-node">
-        <span v-if="editorData.record.modified" class="node">Ändrad {{modified.date}} <span class="time-ago"> av {{modified.by}}</span></span>
+        <span v-if="editorData.record.modified" class="node"> {{'Ändrad '+modified.date}} <span class="time-ago"> av {{modified.by || 'OKÄND'}}</span></span>
       </div>
       <button id="saveButton" v-on:click="save()">
         <i class="fa fa-fw fa-cog fa-spin" v-show="status.saved.loading"></i>

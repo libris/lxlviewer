@@ -348,7 +348,7 @@ export default {
   .entity-form {
     border: 0px solid;
     background-color: darken(@chipColor, 5%);
-    border-radius: 1em;
+    border-radius: 2px;
     padding: 5px;
     overflow: hidden;
     .entity-form-label {
