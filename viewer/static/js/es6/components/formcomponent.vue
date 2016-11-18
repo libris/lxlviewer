@@ -307,20 +307,12 @@ export default {
       >.value {
         float: left;
         width: @col-value;
-        > div {
-          > ul > li {
-            display: inline-block;
-          }
-        }
         input {
           padding: 0px;
           width: 100%;
         }
       }
     }
-  }
-  .node-input {
-    width: 100%;
   }
   .node-linked {
     > div.expanded {

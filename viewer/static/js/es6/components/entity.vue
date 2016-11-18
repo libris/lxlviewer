@@ -223,7 +223,7 @@ export default {
 </script>
 
 <template>
-  <div class="entity-container" v-bind:class="{'block': inEdit}">
+  <div class="entity-container" v-bind:class="{'block': inEdit, 'structured': embedded}">
     <div class="entity-chip" v-if="(!embedded && isTyped && !inEdit) || isLinked" v-bind:class="{ 'linked': isLinked, 'locked': isLocked }">
       <span class="chip-label" @mouseenter="showCardInfo=true" @mouseleave="showCardInfo=false">
         <span v-for="(k,v) in getChip">
@@ -319,6 +319,9 @@ export default {
   &.block {
     display: block;
   }
+  &.structured {
+    width: 100%;
+  }
   .entity-chip {
     height: 1.7em;
     padding: 0px 0.2em 0px 0.5em;
@@ -362,6 +365,7 @@ export default {
     border-radius: 2px;
     padding: 5px;
     overflow: hidden;
+    width: 100%;
     .entity-form-label {
       color: #000;
     }
@@ -383,6 +387,9 @@ export default {
       border: 1px dashed @black;
       margin: 5px;
     }
+    .entity-form-row {
+      margin-bottom: 5px;
+    }
   }
   &.expanded {
     width: 100%;
@@ -397,7 +404,7 @@ export default {
       padding: 0px;
       list-style: none;
     }
-    margin: 5px;
+    width: 100%;
     padding: 10px;
     border: 1px dashed @gray;
     .chip-action {
