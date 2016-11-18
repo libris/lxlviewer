@@ -64,7 +64,7 @@ sites = {
         ID: LIBRIS,
         "title": "libris.kb.se",
         "description": "<p>Data på <b>LIBRIS.KB.SE</b>.</p>",
-        "slices": {"@type":{}},
+        "slices": {'wasDerivedFrom.@id':['@type']},
         #"slices": {"@type":{"meta.bibliography.@id":{"publication.providerDate":[]}}}
         "itemList": [
         #    {ID: "/doc/about#", "title": "Om libris.kb.se", "icon": "info-circle"},
@@ -136,6 +136,9 @@ class Things(object):
         return VocabUtil(self.load_vocab_graph(), self.lang)
 
     def embellish(self, thing):
+        if GRAPH not in thing:
+            return thing
+
         graph = thing[GRAPH]
         described = self._get_described(graph)
 
@@ -161,7 +164,7 @@ class Things(object):
                         graph.append({ID: data_id, GRAPH: chip})
                         has_chip.add(data_id)
 
-        return {GRAPH: graph}
+        return dict(thing, **{GRAPH: graph})
 
     def _get_described(self, graph):
         described = set()
