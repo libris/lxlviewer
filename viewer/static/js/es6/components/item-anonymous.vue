@@ -123,7 +123,16 @@ export default {
 @chipTextColor: darken(@chipColorLinked, 60%);
 @chipTextColorLinked: lighten(@chipColor, 80%);
 
-.entity-container {
+.item-anonymous {
+  background-color: @gray-lighter;
+  border-radius: 5px;
+  padding: 3px;
+  margin: 0px 0px 3px 3px;
+
+  strong {
+    display: block;
+  }
+
   .chip-action {
     cursor: pointer;
   }
