@@ -2,15 +2,18 @@ export function getLinked(id, linked) {
   if (typeof id === 'undefined') {
     throw new Error('getLinked was called with an undefined Id.');
   }
+  let obj = { '@id': id };
   if (typeof linked !== 'undefined') {
     for (let i = 0; i < linked.length; i ++) {
       if (linked[i]['@id'] === id) {
-        return linked[i];
+        obj = Object.assign({}, linked[i]);
       }
     }
   }
-  console.warn('Linked item not found:', id);
-  return { '@id': id };
+  if (!obj.hasOwnProperty('@type')) {
+    console.warn('Linked item not found:', id);
+  }
+  return obj;
 }
 
 export function getMergedItems(record, it, work, linked) {

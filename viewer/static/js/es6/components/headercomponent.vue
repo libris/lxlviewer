@@ -56,8 +56,6 @@ export default {
           displayObj[propertyList[i]] = item[propertyList[i]];
         }
       }
-      console.log('props', JSON.stringify(propertyList));
-      console.log("returning", JSON.stringify(displayObj));
       return displayObj;
     },
     getWorkCard() {
@@ -74,10 +72,10 @@ export default {
   <div class="header-component">
     <div class="instance-info">
       <ul>
-        <li v-for="(k,v) in getItCard">
+        <li v-for="(k,v) in getItCard" track-by="$index">
 
           <span v-if="isArray(v)" v-for="item in v" track-by="$index">
-            <span v-for="(x,y) in item">
+            <span v-for="(x,y) in item" track-by="$index">
 
               <span v-bind:class="{'large-title': isTitle(k), 'medium-text': !isTitle(k) }">
                 <span>{{y}}</span><span v-if="x === '@type'">:</span>

@@ -3,7 +3,10 @@ import * as _ from 'lodash';
 import ProcessedLabel from './processedlabel';
 import AnonymousValue from './anonymousvalue';
 import LinkedItem from './linkeditem';
-import Entity from './entity';
+import ItemEntity from './item-entity';
+import ItemEmbedded from './item-embedded';
+import ItemValue from './item-value';
+import ItemAnonymous from './item-anonymous';
 import * as editUtil from '../utils/edit';
 import * as VocabUtil from '../utils/vocab';
 import { getVocabulary, getSettings } from '../vuex/getters';
@@ -21,7 +24,10 @@ export default {
     'processed-label': ProcessedLabel,
     'anonymous-value': AnonymousValue,
     'linked-item': LinkedItem,
-    'entity': Entity,
+    'item-entity': ItemEntity,
+    'item-value': ItemValue,
+    'item-embedded': ItemEmbedded,
+    'item-anonymous': ItemAnonymous,
   },
   computed: {
     propertyTypes: function () {
@@ -33,7 +39,7 @@ export default {
     },
   },
   events: {
-    'update-entity': function (index, obj) {
+    'update-entity': function (key, index, obj) {
       if (typeof index !== 'undefined') {
         this.value.$set(index, obj);
       } else {
@@ -63,17 +69,6 @@ export default {
     removeKey(key) {
       this.emptyValue();
     },
-    isEditable(key) {
-      const tempNotEditable = [
-        '@id',
-        '@type',
-        'controlNumber',
-        'systemNumber',
-        'created',
-        'modified',
-      ];
-      return !~tempNotEditable.indexOf(key);
-    },
     removeByIndex(index) {
       const modified = this.value;
       modified.splice(index, 1);
@@ -92,6 +87,26 @@ export default {
     isPlainObject(o) {
       return _.isPlainObject(o);
     },
+    isLinked(o) {
+      return (o.hasOwnProperty('@id') && !o.hasOwnProperty('@type'));
+    },
+    isEmbedded(o) {
+      const type = o['@type'];
+      if (typeof type === 'undefined') {
+        return false;
+      }
+      // Is the type of the item derived from StructuredValue?
+      const embeddedTypes = ['StructuredValue', 'ProvisionActivity', 'Contribution'];
+      const typeChain = VocabUtil.getBaseClasses(type, this.vocab, this.settings.vocabPfx);
+      if (typeChain.length > 0) {
+        for (let i = 0; i < embeddedTypes.length; i++) {
+          if (~typeChain.indexOf(`${this.settings.vocabPfx}${embeddedTypes[i]}`)) {
+            return true;
+          }
+        }
+      }
+      return false;
+    },
     removeItem(key, value) {
       this.$dispatch('remove-item', key, value);
     },
@@ -102,23 +117,19 @@ export default {
 <template>
   <div v-if="isArray(value)" class="node-list">
     <ul>
-      <li v-for="(k,v) in valueByIdPresence" track-by="$index" :class="{'structured': this.isPlainObject(v)}">
-        <div v-if="isPlainObject(v)" class="node-linked">
-          <entity :index="$index" :item="v" :key="key" :is-locked="isLocked"></entity>
-        </div>
-        <div v-if="!isPlainObject(v)" class="node-input">
-          <input v-if="!isLocked" v-el:input v-model="v" v-on:keyup="updateArray($index, v)"></input>
-          <span v-if="isLocked">{{v}}</span>
-        </div>
+      <li v-for="item in value" track-by="$index">
+        <div v-if="isPlainObject(item) && isLinked(item)"><item-entity :item="item" :key="key" :index="$index"></item-entity></div>
+        <div v-if="isPlainObject(item) && !isLinked(item) && !isEmbedded(item)"><item-anonymous :item="item" :key="key" :index="$index"></item-anonymous></div>
+        <div v-if="isPlainObject(item) && !isLinked(item) && isEmbedded(item)"><item-embedded :item="item" :key="key" :index="$index"></item-embedded></div>
+        <div v-if="!isPlainObject(item) && !isLinked(item)"><item-value :value="item" :key="key" :index="$index"></item-value></div>
       </li>
     </ul>
   </div>
-  <div v-if="isPlainObject(value)" class="node-linked">
-    <entity :item="value" :key="key" :is-locked="isLocked"></entity>
-  </div>
-  <div v-if="!isArray(value) && !isPlainObject(value)" class="node-input">
-    <input v-if="!isLocked" v-model="value" v-on:keyup="updateValue(value)"></input>
-    <span v-if="isLocked">{{value}}</span>
+  <div v-if="!isArray(value)" class="node-object">
+    <div v-if="isPlainObject(value) && isLinked(value)"><item-entity :item="value" :key="key"></item-entity></div>
+    <div v-if="isPlainObject(value) && !isLinked(value) && !isEmbedded(value)"><item-anonymous :item="value" :key="key" :index="$index"></item-anonymous></div>
+    <div v-if="isPlainObject(value) && !isLinked(value) && isEmbedded(value)"><item-embedded :item="value" :key="key"></item-embedded></div>
+    <div v-if="!isPlainObject(value) && !isLinked(value)"><item-value :value="value" :key="key"></item-value></div>
   </div>
 </template>
 

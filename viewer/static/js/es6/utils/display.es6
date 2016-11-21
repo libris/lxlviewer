@@ -103,7 +103,11 @@ export function getDisplayObject(item, level, displayDefs, linked, vocab, vocabP
         let value = trueItem[properties[i]];
         if (_.isObject(value) && !_.isArray(value)) {
           // console.log("Encountered object in value", JSON.stringify(value));
-          value = getDisplayObject(value, 'chips', displayDefs, linked, vocab, vocabPfx);
+          if (level === 'cards') {
+            value = getDisplayObject(value, 'chips', displayDefs, linked, vocab, vocabPfx);
+          } else {
+            value = value;
+          }
         }
         if (_.isArray(value)) {
           // console.log("Encountered array in value", JSON.stringify(value));
