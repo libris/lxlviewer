@@ -107,7 +107,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div class="item-anonymous">
     <strong>{{ item['@type'] }}</strong>
     <span v-for="(k,v) in getForm" v-if="k !== '@type'">
     {{k}} <input v-model="v"></input>
