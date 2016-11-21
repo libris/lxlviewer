@@ -38,8 +38,7 @@ export default {
       return JSON.stringify(this.item);
     },
     linkedItem() {
-      const obj = EditUtil.getLinked(this.item['@id'], this.editorData.linked);
-      return obj;
+      return EditUtil.getLinked(this.item['@id'], this.editorData.linked);
     },
     getChip() {
       const chip = DisplayUtil.getChip(this.linkedItem, this.display, this.editorData.linked, this.vocab, this.settings.vocabPfx);
@@ -99,6 +98,7 @@ export default {
         {{ v | json}}
         </span>
       </span>
+      <i class="chip-action fa fa-times" v-on:click="removeThis" v-if="!isLocked"></i>
     </div>
     <div class="card-info-container" v-show="showCardInfo">
       <div class="card-info" v-bind:class="{ 'linked': isLinked}">

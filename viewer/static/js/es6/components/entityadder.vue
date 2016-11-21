@@ -14,6 +14,9 @@ export default {
       result: [],
       hitlistOpened: false,
       active: false,
+      searchOpen: false,
+      searchResult: {},
+      keyword: '',
     };
   },
   vuex: {
@@ -24,7 +27,6 @@ export default {
   },
   props: {
     key: '',
-    keyword: '',
     allowAnon: true,
   },
   components: {
@@ -32,19 +34,45 @@ export default {
   },
   watch: {
     keyword(value, oldval) {
-      if (value.length === 0 && oldval && oldval.length > 0) {
-        this.hideHitlist();
-      }
-      if (/\S/.test(value)) {
-        this.search(value);
-      }
+      this.search(value);
     },
   },
   computed: {
+    getRange() {
+      return VocabUtil.getRange(this.key, this.vocab, this.settings.vocabPfx);
+    },
+    isResource() {
+      if (this.getRange.length === 1) {
+        const baseClasses = VocabUtil.getBaseClassesFromArray(this.getRange, this.vocab, this.settings.vocabPfx);
+        console.log(baseClasses);
+        return true;
+      } else {
+        return false;
+      }
+    },
+  },
+  ready() {
+    this.searchOpen = false;
   },
   methods: {
-    add(item) {
+    add() {
+      if (this.isResource) {
+        this.openSearch();
+      } else {
+        this.$dispatch('add-item', this.key, item);
+      }
+    },
+    addLinked(item) {
       this.$dispatch('add-item', this.key, item);
+      this.closeSearch();
+    },
+    openSearch() {
+      this.keyword = '';
+      this.searchOpen = true;
+    },
+    closeSearch() {
+      this.searchOpen = false;
+      this.keyword = '';
     },
     addEmptyEntity() {
       this.$dispatch('add-item', this.key, {});
@@ -58,10 +86,17 @@ export default {
 
       this.$dispatch('add-anonymous', this.key, obj);
     },
+    search(keyword) {
+      const self = this;
+      self.loading = true;
+      this.getItems(keyword).then((result) => {
+        self.searchResult = result;
+      });
+    },
     getItems(searchkey) {
       // TODO: Support asking for more items
 
-      const searchUrl = `/find.json?q=${searchkey}&@type=${this.range[0]}&limit=10`;
+      const searchUrl = `/find.json?q=${searchkey}&@type=${this.getRange[0]}&limit=10`;
       // console.log(searchUrl);
       return new Promise((resolve, reject) => {
         httpUtil.get({url:searchUrl, accept:'application/ld+json'}).then((response) => {
@@ -77,9 +112,19 @@ export default {
 
 <template>
 <span class="entity-adder">
-    <a class="add-entity-button" v-on:click="addEmptyEntity(key)">
+    <a class="add-entity-button" v-on:click="add()">
       <i class="fa fa-plus plus-icon" aria-hidden="true"></i>
     </a>
+    <div class="search-box" v-show="searchOpen">
+      Sök:
+      <input v-model="keyword"></input>
+      <hr>
+      <ul class="search-result" v-show="searchResult.length > 0">
+        <li v-for="item in searchResult" class="search-result-item" v-on:click="addLinked(item)">
+          {{ item['@id'] }}
+        </li>
+      </ul>
+    </div>
 </span>
 </template>
 
@@ -112,6 +157,23 @@ export default {
         position:relative;
         top:1px;
       }
+  }
+  .search-box {
+    width: 200px;
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 4px;
+    .search-result {
+      list-style-type: none;
+      padding: 0px;
+      .search-result-item {
+        border: solid #ccc;
+        border-width: 1px 0px 0px 0px;
+        &:hover {
+          background-color: darken(white, 5%);
+        }
+      }
+    }
   }
 }
 
