@@ -111,7 +111,7 @@ export default {
 </script>
 
 <template>
-<span class="entity-adder">
+<span class="entity-adder" v-on-clickaway="closeSearch">
     <a class="add-entity-button" v-on:click="add()">
       <i class="fa fa-plus plus-icon" aria-hidden="true"></i>
     </a>
