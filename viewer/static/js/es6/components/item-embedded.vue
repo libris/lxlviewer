@@ -79,7 +79,7 @@ export default {
     <i class="fa fa-times chip-action" v-on:click="removeThis"></i>
     <strong>{{ item['@type'] | labelByLang | capitalize }}</strong>
     <ul>
-      <li v-for="(k,v) in item" v-if="k !== '@type'">{{k}}: <input v-model="v"></input></li>
+      <li v-for="(k,v) in item" v-if="k !== '@type'">{{k | labelByLang | capitalize }}: <input v-model="v"></input></li>
     </ul>
   </div>
 </template>
