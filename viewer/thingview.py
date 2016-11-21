@@ -53,7 +53,10 @@ sites = {
             </p>
         """,
         "stylesheet": {"name": "id.css"},
-        "slices": {'inScheme.@id':{'inCollection.@id':['@type'], '@type':[]}},
+        "slices": {
+            'inScheme.@id':{'inCollection.@id':['@type'], '@type':[]},
+            #'wasDerivedFrom.@id': ['@type']
+            },
         "itemList": [
             {ID: "/doc/about", "title": "Om id.kb.se", "icon": "info-circle"},
             {ID: "/marcframe", "title": "MARC-mappningar", "icon": "exchange"},
@@ -64,7 +67,9 @@ sites = {
         ID: LIBRIS,
         "title": "libris.kb.se",
         "description": "<p>Data på <b>LIBRIS.KB.SE</b>.</p>",
-        "slices": {'wasDerivedFrom.@id':['@type']},
+        "slices": {
+            'instanceOf.@type': {'@type': []}
+        },
         #"slices": {"@type":{"meta.bibliography.@id":{"publication.providerDate":[]}}}
         "itemList": [
         #    {ID: "/doc/about#", "title": "Om libris.kb.se", "icon": "info-circle"},
@@ -74,6 +79,7 @@ sites = {
 
 
 class Things(object):
+
     def __init__(self, config):
         self.lang = config['LANG']
         self.vocab_uri = config['VOCAB_IRI']
