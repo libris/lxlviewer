@@ -142,6 +142,8 @@
                       ${item.object.titleByLang[lang]}
                     % elif item.object.label
                       ${item.object.label}
+                    % else
+                      <code>${item.object[ID]}</code>
                     % endif
                     <span class="badge">${format_number(item.totalItems)} st.</span>
                 </a>
@@ -152,20 +154,27 @@
                 <h4>Uppdelning: ${subkey}</h4>
               % endif
               % for observation in obs.sliceByDimension[subkey].observation
-                <a class="list-group-item"
-                  href="${observation.view[ID]}">
-                    % if observation.object
-                      ${observation.object.label or observation.object.titleByLang.sv}
-                    % else
-                      ${observation.view[ID]}
-                    % endif
-                    <span class="badge">${format_number(observation.totalItems)} st.</span>
-                </a>
+                ${view_observation_item(observation)}
               % endfor
             % endfor
           </div>
+        % else
+          ${view_observation_item(obs)}
         % endif
       </div>
   </div>
   % endif
+% endmacro
+
+% macro view_observation_item(item)
+  <a class="list-group-item"
+    href="${item.view[ID]}">
+      % set o = item.object
+      % if o
+        ${o.label or (o.titleByLang and o.titleByLang.sv) or o.prefLabelByLang and o.prefLabelByLang.sv}
+      % else
+        <code>${item.view[ID]}</code>
+      % endif
+      <span class="badge">${format_number(item.totalItems)} st.</span>
+  </a>
 % endmacro
