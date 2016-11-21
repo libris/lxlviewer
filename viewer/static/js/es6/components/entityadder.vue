@@ -2,10 +2,10 @@
 import * as _ from 'lodash';
 import * as httpUtil from '../utils/http';
 import * as VocabUtil from '../utils/vocab';
+import * as DisplayUtil from '../utils/display';
 import ProcessedLabel from './processedlabel';
 import { mixin as clickaway } from 'vue-clickaway';
-import { getVocabulary, getSettings } from '../vuex/getters';
-
+import { getVocabulary, getSettings, getDisplayDefinitions, getEditorData } from '../vuex/getters';
 
 export default {
   mixins: [clickaway],
@@ -17,12 +17,15 @@ export default {
       searchOpen: false,
       searchResult: {},
       keyword: '',
+      chooseAnonymousType: false,
     };
   },
   vuex: {
     getters: {
       vocab: getVocabulary,
+      display: getDisplayDefinitions,
       settings: getSettings,
+      editorData: getEditorData,
     }
   },
   props: {
@@ -39,16 +42,21 @@ export default {
   },
   computed: {
     getRange() {
-      return VocabUtil.getRange(this.key, this.vocab, this.settings.vocabPfx);
+      const range = VocabUtil.getRange(this.key, this.vocab, this.settings.vocabPfx);
+      return range;
     },
-    isResource() {
-      if (this.getRange.length === 1) {
-        const baseClasses = VocabUtil.getBaseClassesFromArray(this.getRange, this.vocab, this.settings.vocabPfx);
-        console.log(baseClasses);
-        return true;
-      } else {
-        return false;
+    isEmbedded() {
+      // Is the type of the item derived from StructuredValue?
+      const embeddedTypes = ['StructuredValue', 'ProvisionActivity', 'Contribution'];
+      const typeChain = VocabUtil.getBaseClassesFromArray(this.getRange, this.vocab, this.settings.vocabPfx);
+      if (typeChain.length > 0) {
+        for (let i = 0; i < embeddedTypes.length; i++) {
+          if (~typeChain.indexOf(`${this.settings.vocabPfx}${embeddedTypes[i]}`)) {
+            return true;
+          }
+        }
       }
+      return false;
     },
   },
   ready() {
@@ -56,15 +64,19 @@ export default {
   },
   methods: {
     add() {
-      if (this.isResource) {
-        this.openSearch();
-      } else {
-        this.$dispatch('add-item', this.key, item);
-      }
+      this.openSearch();
     },
     addLinked(item) {
       this.$dispatch('add-item', this.key, item);
       this.closeSearch();
+    },
+    goAnonymous() {
+      const range = this.getRange;
+      if (range.length > 1) {
+        this.chooseAnonymousType = true;
+      } else {
+        this.addEmpty(range[0]);
+      }
     },
     openSearch() {
       this.keyword = '';
@@ -73,17 +85,11 @@ export default {
     closeSearch() {
       this.searchOpen = false;
       this.keyword = '';
+      this.chooseAnonymousType = false;
     },
-    addEmptyEntity() {
-      this.$dispatch('add-item', this.key, {});
-    },
-    addAnonymous(type) {
-      // TODO:  Sync with format and find out what kind of properties should be
-      //        available on this level.
-
-      // const typeObj = _.find(this.vocab.descriptions, { '@id': this.settings.vocabPfx + type });
-      const obj = { '@type': type, label: '' };
-
+    addEmpty(type) {
+      this.closeSearch();
+      const obj = this.getEmptyForm(type);
       this.$dispatch('add-anonymous', this.key, obj);
     },
     search(keyword) {
@@ -92,6 +98,38 @@ export default {
       this.getItems(keyword).then((result) => {
         self.searchResult = result;
       });
+    },
+    getItemAsChip(item) {
+      return DisplayUtil.getChip(item, this.display, this.editorData.linked, this.vocab, this.settings.vocabPfx);
+    },
+    getEmptyForm(type) {
+      console.log("Type", type);
+      const formObj = {'@type': type };
+      let inputKeys = DisplayUtil.getProperties(type, 'cards', this.display);
+      if (inputKeys.length === 0) {
+        const baseClasses = VocabUtil.getBaseClassesFromArray(type, this.vocab, this.settings.vocabPfx);
+        console.log('baseClasses for', type, 'is', JSON.stringify(baseClasses));
+        for (let i = 0; i < baseClasses.length; i++) {
+          inputKeys = DisplayUtil.getProperties(baseClasses[i].replace(this.settings.vocabPfx, ''), 'cards', this.display);
+          if (inputKeys.length > 0) {
+            break;
+          }
+        }
+        if (inputKeys.length === 0) {
+          inputKeys = DisplayUtil.getProperties('Resource', 'cards', this.display);
+        }
+        console.log(inputKeys);
+      }
+      inputKeys = ['@type'].concat(inputKeys);
+      for (let i = 0; i < inputKeys.length; i++) {
+        if (inputKeys[i] === '@type') {
+          formObj[inputKeys[i]] = type;
+        } else {
+          formObj[inputKeys[i]] = '';
+        }
+      }
+      console.log("Form obj", JSON.stringify(formObj));
+      return formObj;
     },
     getItems(searchkey) {
       // TODO: Support asking for more items
@@ -116,14 +154,23 @@ export default {
       <i class="fa fa-plus plus-icon" aria-hidden="true"></i>
     </a>
     <div class="search-box" v-show="searchOpen">
-      Sök:
-      <input v-model="keyword"></input>
-      <hr>
-      <ul class="search-result" v-show="searchResult.length > 0">
-        <li v-for="item in searchResult" class="search-result-item" v-on:click="addLinked(item)">
-          {{ item['@id'] }}
-        </li>
-      </ul>
+      <div class="stage-0" v-show="!chooseAnonymousType">
+        <button v-on:click="goAnonymous">Lägg till oauktoriserad</button>
+        eller
+        Sök:
+        <input v-model="keyword"></input>
+        <hr>
+        <ul class="search-result" v-show="searchResult.length > 0">
+          <li v-for="item in searchResult" class="search-result-item" v-on:click="addLinked(item)">
+            <span v-for="value in getItemAsChip(item)">
+              {{value}}
+            </span>
+          </li>
+        </ul>
+      </div>
+      <div class="stage-1" v-show="chooseAnonymousType">
+        <button v-on:click="addEmpty(type)" v-for="type in getRange">{{ type }}</button>
+      </div>
     </div>
 </span>
 </template>
@@ -163,6 +210,9 @@ export default {
     background-color: white;
     border: 1px solid #ccc;
     padding: 4px;
+    button {
+      font-size: 12px;
+    }
     .search-result {
       list-style-type: none;
       padding: 0px;

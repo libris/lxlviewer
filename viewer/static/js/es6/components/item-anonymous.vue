@@ -108,8 +108,9 @@ export default {
 
 <template>
   <div class="item-anonymous">
-    <strong>{{ item['@type'] }}</strong>
-    <span v-for="(k,v) in getForm" v-if="k !== '@type'">
+    <i class="fa fa-times chip-action" v-on:click="removeThis"></i>
+    <strong>{{ item['@type'] | labelByLang | capitalize }}</strong>
+    <span v-for="(k,v) in item" v-if="k !== '@type'">
     {{k}} <input v-model="v"></input>
     </span>
   </div>
@@ -135,6 +136,7 @@ export default {
 
   .chip-action {
     cursor: pointer;
+    float: right;
   }
 
   .card-info-container {
@@ -190,7 +192,7 @@ export default {
       text-overflow: ellipsis;
     }
     .chip-action {
-      float: left;
+      float: right;
       padding: 0.25em;
       color: fadeout(@chipTextColor,20%);
       &:hover {
