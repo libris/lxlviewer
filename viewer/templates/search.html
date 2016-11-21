@@ -1,4 +1,4 @@
-% macro search_controls(result, typecontrols)
+% macro search_controls(result, filter_param=None)
 
 % if result.search
 
@@ -28,16 +28,16 @@
         </div>
       </div>
 
-    % if typecontrols
+    % if filter_param
       <div class="type-buttons" aria-label="Välj typ">
         <label class="no-choice">
-          <input name="inScheme.@id" id="noneType" value="" type="radio"> Alla
+          <input name="${filter_param}" id="noneType" value="" type="radio"> Alla
         </label>
         % if len(result.statistics) > 0
           % for value in result.statistics.sliceByDimension.values()
             % for obs in value.observation
               <label class="">
-                <input name="inScheme.@id" value="${obs.object['@id']}" type="radio">
+                <input name="${filter_param}" value="${obs.object['curie'] or obs.object['@id']}" type="radio">
                 % if obs.object.titleByLang
                   ${obs.object.titleByLang['sv']}
                 % elif obs.object.label
