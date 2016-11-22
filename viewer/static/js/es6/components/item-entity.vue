@@ -66,6 +66,9 @@ export default {
     isObject(obj) {
       return _.isObject(obj);
     },
+    size(obj) {
+      return _.size(obj);
+    },
     removeThis() {
       console.log("Removethis called");
       const holder = this.$parent.value;
@@ -94,8 +97,8 @@ export default {
   <div class="entity-container">
     <div class="entity-chip">
       <span class="chip-label" @mouseenter="showCardInfo=true" @mouseleave="showCardInfo=false">
-        <span v-for="(k,v) in getChip">
-        {{ v | json}}
+        <span v-for="(k,v) in getChip" v-show="k !== '@id' || size(getChip) === 1">
+        {{ v }}
         </span>
       </span>
       <i class="chip-action fa fa-times" v-on:click="removeThis" v-if="!isLocked"></i>
