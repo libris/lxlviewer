@@ -49,6 +49,10 @@ export function getProperties(type, level, displayDefs) {
   if (typeof lenses[type] !== 'undefined') {
     props = lenses[type].showProperties;
   }
+  props = [].concat(props);
+  _.remove(props, function(x) {
+    return _.isObject(x);
+  });
   return props;
 }
 
