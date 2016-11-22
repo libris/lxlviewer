@@ -82,17 +82,13 @@ export default {
           }
         }
         if (propertyList.length === 0) {
-          propertyList = getProperties('Resource', 'chips', displayDefs);
+          propertyList = getProperties('Resource', 'chips', this.display);
         }
       }
-
       _.each(formObj, function(v, k) {
         if(!propertyList.includes(k)) {
           propertyList.push(k);
         }
-      });
-      _.remove(propertyList, function(x) {
-        return _.isObject(x);
       });
       return propertyList;
     },
