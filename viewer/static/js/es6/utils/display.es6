@@ -41,6 +41,9 @@ export function getDisplayDefinitions() {
 }
 
 export function getProperties(type, level, displayDefs) {
+  if (_.isObject(type)) {
+    throw new Error('getProperties was called with an object as type parameter (should be a string).');
+  }
   const lenses = displayDefs.lensGroups[level].lenses;
   let props = [];
   if (typeof lenses[type] !== 'undefined') {
