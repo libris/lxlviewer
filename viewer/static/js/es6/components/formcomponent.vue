@@ -150,7 +150,7 @@ export default {
       return _.isPlainObject(o);
     },
     isEmptyObject(value) {
-      return (Object.keys(value).length === 0 && value !== '');
+      return (Object.keys(value).length === 0);
     },
     removeField(prop) {
       const pLabel = VocabUtil.getLabelByLang(prop, this.settings.lang, this.vocab, this.settings.vocabPfx);

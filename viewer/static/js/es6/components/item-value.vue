@@ -38,10 +38,7 @@ export default {
   },
   methods: {
     valueChanged() {
-      // TODO: Handle rerendering when this.value is empty or has unaccepted value.
-      if (this.value) {
-        this.$dispatch('update-item-value', this.value);
-      }
+      this.$dispatch('update-item-value', this.value);
     },
     isEmpty() {
       // TODO: Is the item empty?
