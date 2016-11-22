@@ -40,7 +40,7 @@ export default {
       const displayObj = {};
       const item = this.editorData.it;
 
-      let propertyList = DisplayUtil.getProperties(item, 'cards', this.display);
+      let propertyList = DisplayUtil.getProperties(item['@type'], 'cards', this.display);
       if (propertyList.length === 0) {
         const baseClasses = VocabUtil.getBaseClassesFromArray(item['@type'], this.vocab, this.settings.vocabPfx);
         for (let i = 0; i < baseClasses.length; i++) {
