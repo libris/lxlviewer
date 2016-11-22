@@ -100,6 +100,7 @@ export default {
   width: 100%;
   padding: 10px;
   border: 1px dashed @gray;
+  margin: 0px 0px 1em 0px;
   .chip-action {
     float: right;
   }
