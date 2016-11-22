@@ -37,6 +37,12 @@ export default {
   ready: function() {
   },
   methods: {
+    valueChanged() {
+      // TODO: Handle rerendering when this.value is empty or has unaccepted value.
+      if (this.value) {
+        this.$dispatch('update-item-value', this.value);
+      }
+    },
     isEmpty() {
       // TODO: Is the item empty?
       return false;
@@ -45,6 +51,7 @@ export default {
       return _.isObject(obj);
     },
     removeThis() {
+      //TODO: Refactor data-binding so child component does not use parent-methods directly
       console.log("Removethis called");
       const holder = this.$parent.value;
       if (_.isArray(holder)) {
@@ -70,7 +77,8 @@ export default {
 
 <template>
   <div class="item-value">
-    <input v-model="value"></input>
+  <!-- TODO: @input or @change? -->
+    <input v-model="value" @change="valueChanged()"></input>
   </div>
 </template>
 
