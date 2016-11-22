@@ -45,6 +45,16 @@ export default {
       const range = VocabUtil.getRange(this.key, this.vocab, this.settings.vocabPfx);
       return range;
     },
+    isLiteral() {
+      if (this.getRange.length > 0) {
+        for (let i = 0; i < this.getRange.length; i++) {
+          if (this.getRange[i].indexOf('Literal') > -1) {
+            return true;
+          }
+        }
+      }
+      return false;
+    },
     isEmbedded() {
       // Is the type of the item derived from StructuredValue?
       const embeddedTypes = ['StructuredValue', 'ProvisionActivity', 'Contribution'];
