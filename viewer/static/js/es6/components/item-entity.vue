@@ -69,6 +69,9 @@ export default {
     size(obj) {
       return _.size(obj);
     },
+    isPretty(key, value) {
+      return (isObject(v) || k === '@id');
+    },
     removeThis() {
       console.log("Removethis called");
       const holder = this.$parent.value;
@@ -97,8 +100,9 @@ export default {
   <div class="entity-container">
     <div class="entity-chip">
       <span class="chip-label" @mouseenter="showCardInfo=true" @mouseleave="showCardInfo=false">
-        <span v-for="(k,v) in getChip" v-show="k !== '@id' || size(getChip) === 1">
-        {{ v }}
+        <span v-for="(k,v) in getChip">
+          <span v-if="!isObject(v) && k !== '@id'">{{ v }}</span>
+          <span v-if="!(!isObject(v) && k !== '@id') && size(getChip) === 1">{{ v | json }}</span>
         </span>
       </span>
       <i class="chip-action fa fa-times" v-on:click="removeThis" v-if="!isLocked"></i>
@@ -108,7 +112,10 @@ export default {
         <ul>
           <li v-for="(k,v) in getCard">
             <span v-if="k === '@type'"><strong>{{v | labelByLang | capitalize }}</strong></span>
-            <span v-if="k !== '@type'">{{ k | labelByLang | capitalize }}: {{v}}</span>
+            <span v-if="k !== '@type' && !isObject(v)">{{ k | labelByLang | capitalize }}: {{v}}</span>
+            <span v-if="k !== '@type' && isObject(v)">{{ k | labelByLang | capitalize }}:
+              <span v-for="(x,y) in v">{{y}}, </span>
+            </span>
           </li>
         </ul>
       </div>
@@ -135,6 +142,7 @@ export default {
     .card-info {
       background-color: @chipColor;
       color: chipTextColor;
+      max-width: 500px;
       box-shadow: inset -2px -2px darken(@chipColor, 10%);
       border-bottom-left-radius: 10px;
       border-bottom-right-radius: 10px;
@@ -151,6 +159,11 @@ export default {
       ul {
         list-style: none;
         padding: 0px;
+        li {
+          span {
+            word-break: break-word;
+          }
+        }
       }
     }
   }
