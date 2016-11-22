@@ -5,6 +5,7 @@ import * as VocabUtil from '../utils/vocab';
 import * as DisplayUtil from '../utils/display';
 import * as EditUtil from '../utils/edit';
 import ProcessedLabel from './processedlabel';
+import ItemEntity from './item-entity';
 import { getVocabulary, getDisplayDefinitions, getSettings, getEditorData } from '../vuex/getters';
 
 export default {
@@ -67,9 +68,13 @@ export default {
         this.$parent.emptyValue();
       }
     },
+    isObject(value) {
+      return _.isObject(value);
+    },
   },
   components: {
     'processed-label': ProcessedLabel,
+    'item-entity': ItemEntity,
   },
 };
 </script>
@@ -79,7 +84,11 @@ export default {
     <i class="fa fa-times chip-action" v-on:click="removeThis"></i>
     <strong>{{ item['@type'] | labelByLang | capitalize }}</strong>
     <ul>
-      <li v-for="(k,v) in item" v-if="k !== '@type'">{{k | labelByLang | capitalize }}: <input v-model="v"></input></li>
+      <li v-for="(k,v) in item" v-if="k !== '@type'">
+        <span class="item-label">{{k | labelByLang | capitalize }}:</span>
+        <input v-model="v" v-if="!isObject(v)"></input>
+        <item-entity :key="k" :item="v"  v-if="isObject(v)"></item-entity>
+      </li>
     </ul>
   </div>
 </template>
@@ -103,6 +112,9 @@ export default {
   margin: 0px 0px 1em 0px;
   .chip-action {
     float: right;
+  }
+  .item-label {
+    display: block;
   }
 }
 
