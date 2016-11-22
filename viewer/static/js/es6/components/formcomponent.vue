@@ -61,7 +61,7 @@ export default {
       const sortedForm = {};
       for (let i = 0; i < this.sortedProperties.length; i++) {
         const k = this.sortedProperties[i];
-        if (this.formData[k]) {
+        if (this.formData[k] !== null || this.formData[k] !== 'undefined') {
           sortedForm[k] = this.formData[k];
         }
       }
@@ -150,7 +150,14 @@ export default {
       return _.isPlainObject(o);
     },
     isEmptyObject(value) {
-      return (Object.keys(value).length === 0);
+      if (typeof value === 'undefined') {
+        return true;
+      }
+      if (!_.isObject(value)) {
+        return false;
+      }
+      const bEmpty = (Object.keys(value).length === 0);
+      return bEmpty;
     },
     removeField(prop) {
       const pLabel = VocabUtil.getLabelByLang(prop, this.settings.lang, this.vocab, this.settings.vocabPfx);
@@ -191,13 +198,13 @@ export default {
   <div class="form-component" v-bind:class="{ 'locked': locked }">
     <div class="form-header">- {{ focus }} -</div>
     <ul>
-      <li v-for="(k,v) in sortedFormData" v-if="v" v-bind:class="{ 'locked': locked }">
+      <li v-for="(k,v) in sortedFormData" v-if="!isEmptyObject(v)" v-bind:class="{ 'locked': locked }">
         <div class="label">
           <!-- <a href="/vocab/#{{property}}">{{ property | labelByLang | capitalize }}</a> -->
           {{ k | labelByLang | capitalize }}
         </div>
         <div class="value">
-          <data-node v-if="!isEmptyObject(v)" :is-locked="keyIsLocked(k)" :key="k" :value="v" :linked="linked"></data-node>
+          <data-node :is-locked="keyIsLocked(k)" :key="k" :value="v" :linked="linked"></data-node>
         </div>
         <div class="actions">
           <div class="action" v-if="!keyIsLocked(k)" class="delete" v-on:click="removeField(k)"><i class="fa fa-trash fa-2x"></i></div>
