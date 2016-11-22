@@ -196,7 +196,7 @@ export default {
 
 <template>
   <div class="form-component" v-bind:class="{ 'locked': locked }">
-    <div class="form-header">- {{ focus }} -</div>
+    <div class="form-header">- {{ sortedFormData['@type'] | labelByLang | capitalize }} -</div>
     <ul>
       <li v-for="(k,v) in sortedFormData" v-if="!isEmptyObject(v)" v-bind:class="{ 'locked': locked }">
         <div class="label">
