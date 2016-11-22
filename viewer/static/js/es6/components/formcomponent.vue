@@ -32,7 +32,7 @@ export default {
   props: {
     focus: '',
     linked: {},
-    isLocked: false,
+    locked: false,
     status: {},
   },
   data() {
@@ -147,6 +147,9 @@ export default {
     isArray(o) {
       return _.isArray(o);
     },
+    keyIsLocked: function (key) {
+      return (this.locked || key === '@id' || key === '@type');
+    },
     isPlainObject(o) {
       return _.isPlainObject(o);
     },
@@ -189,24 +192,24 @@ export default {
 </script>
 
 <template>
-  <div class="form-component" v-bind:class="{ 'locked': isLocked }">
+  <div class="form-component" v-bind:class="{ 'locked': locked }">
     <div class="form-header">- {{ focus }} -</div>
     <ul>
-      <li v-for="(k,v) in sortedFormData" v-if="v" v-bind:class="{ 'locked': isLocked }">
+      <li v-for="(k,v) in sortedFormData" v-if="v" v-bind:class="{ 'locked': locked }">
         <div class="label">
           <!-- <a href="/vocab/#{{property}}">{{ property | labelByLang | capitalize }}</a> -->
           {{ k | labelByLang | capitalize }}
         </div>
         <div class="value">
-          <data-node v-if="!isEmptyObject(v)" :is-locked="isLocked" :key="k" :value="v" :linked="linked"></data-node>
+          <data-node v-if="!isEmptyObject(v)" :is-locked="keyIsLocked(k)" :key="k" :value="v" :linked="linked"></data-node>
         </div>
         <div class="actions">
-          <div class="action" v-if="!isLocked" class="delete" v-on:click="removeField(k)"><i class="fa fa-trash fa-2x"></i></div>
-          <entity-adder class="action" v-if="!isLocked && (isRepeatable(k) || isEmptyObject(v))" :key="k"></entity-adder>
+          <div class="action" v-if="!keyIsLocked(k)" class="delete" v-on:click="removeField(k)"><i class="fa fa-trash fa-2x"></i></div>
+          <entity-adder class="action" v-if="!keyIsLocked(k) && (isRepeatable(k) || isEmptyObject(v))" :key="k"></entity-adder>
         </div>
       </li>
     </ul>
-    <field-adder v-if="!isLocked" :allowed="allowedProperties" :item="focus"></field-adder>
+    <field-adder v-if="!locked" :allowed="allowedProperties" :item="focus"></field-adder>
     <div id="result" v-if="status.isDev">
       <div class="row">
       <pre class="col-md-6">

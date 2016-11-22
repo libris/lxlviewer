@@ -78,7 +78,8 @@ export default {
 <template>
   <div class="item-value">
   <!-- TODO: @input or @change? -->
-    <input v-model="value" @change="valueChanged()"></input>
+    <input v-model="value" @change="valueChanged()" v-show="!isLocked"></input>
+    <span v-show="isLocked">{{value}}</span>
   </div>
 </template>
 

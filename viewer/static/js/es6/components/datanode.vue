@@ -121,18 +121,18 @@ export default {
   <div v-if="isArray(value)" class="node-list">
     <ul>
       <li v-for="item in value" track-by="$index">
-      <item-entity  v-if="isPlainObject(item) && isLinked(item)" :item="item" :key="key" :index="$index"></item-entity>
-      <item-anonymous v-if="isPlainObject(item) && !isLinked(item) && !isEmbedded(item)" :item="item" :key="key" :index="$index"></item-anonymous>
-      <item-embedded v-if="isPlainObject(item) && !isLinked(item) && isEmbedded(item)" :item="item" :key="key" :index="$index"></item-embedded>
-      <item-value v-if="!isPlainObject(item) && !isLinked(item)" :value="item" :key="key" :index="$index"></item-value></div>
+        <item-entity v-if="isPlainObject(item) && isLinked(item)" :is-locked="isLocked" :item="item" :key="key" :index="$index"></item-entity>
+        <item-anonymous v-if="isPlainObject(item) && !isLinked(item) && !isEmbedded(item)" :is-locked="isLocked" :item="item" :key="key" :index="$index"></item-anonymous>
+        <item-embedded v-if="isPlainObject(item) && !isLinked(item) && isEmbedded(item)" :is-locked="isLocked" :item="item" :key="key" :index="$index"></item-embedded>
+        <item-value v-if="!isPlainObject(item) && !isLinked(item)" :is-locked="isLocked" :value="item" :key="key" :index="$index"></item-value>
       </li>
     </ul>
   </div>
   <div v-if="!isArray(value)" class="node-object">
-    <item-entity v-if="isPlainObject(value) && isLinked(value)" :item="value" :key="key"></item-entity>
-    <item-anonymous v-if="isPlainObject(value) && !isLinked(value) && !isEmbedded(value)" :item="value" :key="key" :index="$index"></item-anonymous>
-    <item-embedded v-if="isPlainObject(value) && !isLinked(value) && isEmbedded(value)" :item="value" :key="key"></item-embedded>
-    <item-value v-if="!isPlainObject(value) && !isLinked(value)" :value="value" :key="key"></item-value>
+    <item-entity v-if="isPlainObject(value) && isLinked(value)" :is-locked="isLocked" :item="value" :key="key"></item-entity>
+    <item-anonymous v-if="isPlainObject(value) && !isLinked(value) && !isEmbedded(value)" :is-locked="isLocked" :item="value" :key="key" :index="$index"></item-anonymous>
+    <item-embedded v-if="isPlainObject(value) && !isLinked(value) && isEmbedded(value)" :is-locked="isLocked" :item="value" :key="key"></item-embedded>
+    <item-value v-if="!isPlainObject(value) && !isLinked(value)" :is-locked="isLocked" :value="value" :key="key"></item-value>
   </div>
 </template>
 
