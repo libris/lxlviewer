@@ -61,7 +61,7 @@ export default {
       const sortedForm = {};
       for (let i = 0; i < this.sortedProperties.length; i++) {
         const k = this.sortedProperties[i];
-        if (this.formData[k] !== null || this.formData[k] !== 'undefined') {
+        if (this.formData[k] || this.formData[k] === '') {
           sortedForm[k] = this.formData[k];
         }
       }
@@ -104,6 +104,11 @@ export default {
       }
       const merged = Object.assign({}, this.formData, newItem);
       this.updateForm(this.focus, merged);
+    },
+    'remove-field': function (prop) {
+      const modifiedData = Object.assign({}, this.formData);
+      delete modifiedData[prop];
+      this.updateForm(this.focus, modifiedData);
     },
     'add-item': function (key, item) {
       this.linked.push(item);
@@ -171,7 +176,7 @@ export default {
         }
       ).then(() => {
           // accepted by user
-          this.$dispatch('update-value', prop, null);
+          this.$dispatch('remove-field', prop);
         }, () => {
           // declined
         });
@@ -198,7 +203,7 @@ export default {
   <div class="form-component" v-bind:class="{ 'locked': locked }">
     <div class="form-header">- {{ sortedFormData['@type'] | labelByLang | capitalize }} -</div>
     <ul>
-      <li v-for="(k,v) in sortedFormData" v-if="!isEmptyObject(v)" v-bind:class="{ 'locked': locked }">
+      <li v-for="(k,v) in sortedFormData" v-bind:class="{ 'locked': locked }">
         <div class="label">
           <!-- <a href="/vocab/#{{property}}">{{ property | labelByLang | capitalize }}</a> -->
           {{ k | labelByLang | capitalize }}
