@@ -27,7 +27,7 @@ export default {
       settings: getSettings,
       editorData: getEditorData,
       display: getDisplayDefinitions,
-    }
+    },
   },
   props: {
     focus: '',
@@ -38,16 +38,20 @@ export default {
   data() {
     return {
       showJson: false,
-    }
+    };
   },
   computed: {
     allowedProperties() {
       const settings = this.settings;
       const formObj = this.formData;
-      let allowed = VocabUtil.getPropertiesFromArray(formObj['@type'], this.vocab, this.settings.vocabPfx);
+      let allowed = VocabUtil.getPropertiesFromArray(
+        formObj['@type'],
+        this.vocab,
+        this.settings.vocabPfx
+      );
 
       // Add the "added" property
-      allowed = _.forEach(allowed, function(o) {
+      allowed = _.forEach(allowed, function (o) {
         const oId = o.item['@id'].replace(settings.vocabPfx, '');
         o.added = (formObj.hasOwnProperty(oId) && formObj[oId] !== null);
       });
