@@ -102,7 +102,7 @@ export default {
       <span class="chip-label" @mouseenter="showCardInfo=true" @mouseleave="showCardInfo=false">
         <span v-for="(k,v) in getChip">
           <span v-if="!isObject(v) && k !== '@id'">{{ v }}</span>
-          <span v-if="!(!isObject(v) && k !== '@id') && size(getChip) === 1">{{ v | json }}</span>
+          <span v-if="!(!isObject(v) && k !== '@id') && size(getChip) === 1">{{ v | json | removeDomain }}</span>
         </span>
       </span>
       <i class="chip-action fa fa-times" v-on:click="removeThis" v-if="!isLocked"></i>

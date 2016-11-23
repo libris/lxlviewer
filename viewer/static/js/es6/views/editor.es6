@@ -88,6 +88,17 @@ export default class Editor extends View {
       }
       return lbl;
     });
+    Vue.filter('removeDomain', (value) => {
+      const removable = [
+        'http://libris.kb.se/',
+        'https://libris.kb.se/',
+      ];
+      let newValue = value;
+      for (let i = 0; i < removable.length; i++) {
+        newValue = newValue.replace(removable[i], '');
+      }
+      return newValue;
+    });
 
     Vue.use(Vuex);
 
