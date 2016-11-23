@@ -44,16 +44,31 @@ export default {
       const chip = DisplayUtil.getChip(this.formObj, this.display, this.editorData.linked, this.vocab, this.settings.vocabPfx);
       return chip;
     },
-    embedded() {
-      return this.isEmbedded(this.item['@type']);
-    },
     getRange() {
       const types = VocabUtil.getRange(this.key, this.vocab, this.settings.vocabPfx);
       return types;
     },
+    isEmpty() {
+      const self = this;
+      let bEmpty = true;
+      Object.keys(self.item).forEach(function (key) {
+        console.log("Checking", key, self.item[key]);
+        if (key !== '@type') {
+          if (self.item[key] && self.item[key] !== '') {
+            console.log("had value");
+            bEmpty = false;
+          }
+        }
+      });
+      return bEmpty;
+    },
   },
   ready: function() {
-
+    this.$nextTick(function () {
+      if (this.isEmpty) {
+        this.openForm();
+      }
+    });
   },
   methods: {
     getForm(item) {
@@ -86,10 +101,6 @@ export default {
     },
     closeForm() {
       this.inEdit = false;
-    },
-    isEmpty() {
-      // TODO: Is the item empty?
-      return false;
     },
     isObject(obj) {
       return _.isObject(obj);
@@ -139,7 +150,7 @@ export default {
         <item-entity :key="k" :item="v" v-if="isObject(v)"></item-entity>
       </span>
       <div class="actions">
-        <button v-on:click="closeForm">Klar</button>
+        <button v-on:click="closeForm" v-bind:disabled="isEmpty">Klar</button>
       </div>
     </div>
     <div class="card-info-container" v-show="showCardInfo">
