@@ -16,7 +16,7 @@ export default {
   vuex: {
     getters: {
       settings: getSettings,
-    }
+    },
   },
   computed: {
     filteredResults() {
@@ -30,25 +30,33 @@ export default {
         }
       }
       const fKey = this.filterKey.toLowerCase();
-      const filtered = _.filter(this.allowed, function(o) {
-          let labelByLang = '';
-          if (typeof o.item.labelByLang !== 'undefined' && typeof o.item.labelByLang[lang] !== 'undefined') {
-            if (_.isArray(o.item.labelByLang[lang])) {
-              labelByLang = o.item.labelByLang[lang][0];
-            } else {
-              labelByLang = o.item.labelByLang[lang];
-            }
+      const filtered = _.filter(this.allowed, function (o) {
+        let labelByLang = '';
+        if (
+          typeof o.item.labelByLang !== 'undefined' &&
+          typeof o.item.labelByLang[lang] !== 'undefined'
+        ) {
+          if (_.isArray(o.item.labelByLang[lang])) {
+            labelByLang = o.item.labelByLang[lang][0];
+          } else {
+            labelByLang = o.item.labelByLang[lang];
           }
-          const pId = o.item['@id'].toString().toLowerCase(); // @id
-          const pNote = o.item.hasOwnProperty('note') ? o.item['note'].toString().toLowerCase() : ''; // note
-          const pLabel = labelByLang.toLowerCase() || ''; // label by lang
-        return (pId.indexOf(fKey) !== -1 || pNote.indexOf(fKey) !== -1 || pLabel.indexOf(fKey) !== -1);
+        }
+        // @id
+        const pId = o.item['@id'].toString().toLowerCase();
+        // note
+        const pNote = o.item.hasOwnProperty('note') ? o.item.note.toString().toLowerCase() : '';
+        // label by lang
+        const pLabel = labelByLang.toLowerCase() || '';
+        return (
+          pId.indexOf(fKey) !== -1 || pNote.indexOf(fKey) !== -1 || pLabel.indexOf(fKey) !== -1
+        );
       });
       return filtered;
     },
   },
   events: {
-    'close-modals': function() {
+    'close-modals': function () {
       this.hide();
     },
   },
@@ -183,7 +191,7 @@ export default {
         }
       }
       .filter {
-        font-size: 85%; 
+        font-size: 85%;
         float: right;
         .filterInput {
           border-radius: 3px;
