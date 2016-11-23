@@ -50,7 +50,6 @@ export default {
           }
         }
       }
-      propertyList = ['@type'].concat(propertyList);
       for (let i = 0; i < propertyList.length; i++) {
         if (item[propertyList[i]]) {
           displayObj[propertyList[i]] = item[propertyList[i]];
