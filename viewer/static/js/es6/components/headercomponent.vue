@@ -34,6 +34,10 @@ export default {
     isObject(obj) {
       return _.isObject(obj);
     },
+    showType(type) {
+      const typeList = ['ISBN'];
+      return ~typeList.indexOf(type);
+    }
   },
   computed: {
     getItCard() {
@@ -72,18 +76,14 @@ export default {
     <div class="instance-info">
       <ul>
         <li v-for="(k,v) in getItCard" track-by="$index">
-
-          <span v-if="isArray(v)" v-for="item in v" track-by="$index">
-            <span v-for="(x,y) in item" track-by="$index">
-
-              <span v-bind:class="{'large-title': isTitle(k), 'medium-text': !isTitle(k) }">
-                <span>{{y}}</span><span v-if="x === '@type'">:</span>
-              </span>
-
+          <div v-if="isArray(v)" v-for="item in v" track-by="$index">
+            <span v-if="showType(item['@type'])">{{item['@type']}}: {{item.value}}</span>
+            <span v-for="(x,y) in item" track-by="$index" v-if="isTitle(x)" v-bind:class="{'large-title': isTitle(x), 'medium-text': !isTitle(x)}">
+              {{y}}
             </span>
-          </span>
+            <span v-if="isTitle(item['@type'])"> ({{item['@type']}})</span>
+          </div>
           <span v-if="!isArray(v)">{{v}}</span>
-
         </li>
       </ul>
     </div>
