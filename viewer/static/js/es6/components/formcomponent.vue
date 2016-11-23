@@ -265,10 +265,15 @@ export default {
       list-style: none;
       width: 100%;
       background-color: @node-bg;
+      border: solid @node-bg;
+      border-width: 1px 0px;
+      transition: border-color 0.25s ease;
+      transition-delay: 0.2s;
       &:nth-child(odd) {
         background-color: darken(@node-bg, 2%);
       }
       &:hover {
+        border-color: #c5c3c3;
         >.actions {
           opacity: 1;
         }
@@ -279,6 +284,7 @@ export default {
         justify-content: space-between;
         width: @col-action;
         transition: opacity ease 0.2s;
+        transition-delay: 0.2s;
         opacity: 0;
         margin-right: 6px;
         margin-left: 10px;
