@@ -3,7 +3,6 @@ import * as _ from 'lodash';
 import * as httpUtil from '../utils/http';
 import * as VocabUtil from '../utils/vocab';
 import * as DisplayUtil from '../utils/display';
-import * as EditUtil from '../utils/edit';
 import ProcessedLabel from './processedlabel';
 import ItemEntity from './item-entity';
 import { getVocabulary, getDisplayDefinitions, getSettings, getEditorData } from '../vuex/getters';
@@ -22,15 +21,15 @@ export default {
       display: getDisplayDefinitions,
       settings: getSettings,
       editorData: getEditorData,
-    }
+    },
   },
-  data: function() {
+  data() {
     return {
       inEdit: false,
       showCardInfo: false,
       searchResult: {},
       searchDelay: 2,
-    }
+    };
   },
   computed: {
     // TODO: Refactor computed
@@ -41,7 +40,13 @@ export default {
       return this.getForm(this.item);
     },
     getChip() {
-      const chip = DisplayUtil.getChip(this.formObj, this.display, this.editorData.linked, this.vocab, this.settings.vocabPfx);
+      const chip = DisplayUtil.getChip(
+        this.formObj,
+        this.display,
+        this.editorData.linked,
+        this.vocab,
+        this.settings.vocabPfx
+      );
       return chip;
     },
     getRange() {
@@ -51,11 +56,10 @@ export default {
     isEmpty() {
       const self = this;
       let bEmpty = true;
-      Object.keys(self.item).forEach(function (key) {
-        console.log("Checking", key, self.item[key]);
+      // Check if item has any keys besides @type. If not, we'll consider it empty.
+      Object.keys(self.item).forEach((key) => {
         if (key !== '@type') {
           if (self.item[key] && self.item[key] !== '') {
-            console.log("had value");
             bEmpty = false;
           }
         }
@@ -63,10 +67,11 @@ export default {
       return bEmpty;
     },
   },
-  ready: function() {
-    this.$nextTick(function () {
-      if (this.isEmpty) {
-        this.openForm();
+  ready() {
+    const self = this;
+    this.$nextTick(() => {
+      if (self.isEmpty) {
+        self.openForm();
       }
     });
   },
@@ -78,9 +83,17 @@ export default {
       }
       let inputKeys = DisplayUtil.getProperties(item['@type'], 'cards', this.display);
       if (inputKeys.length === 0) {
-        const baseClasses = VocabUtil.getBaseClassesFromArray(item['@type'], this.vocab, this.settings.vocabPfx);
+        const baseClasses = VocabUtil.getBaseClassesFromArray(
+          item['@type'],
+          this.vocab,
+          this.settings.vocabPfx
+        );
         for (let i = 0; i < baseClasses.length; i++) {
-          inputKeys = DisplayUtil.getProperties(baseClasses[i].replace(this.settings.vocabPfx, ''), 'cards', this.display);
+          inputKeys = DisplayUtil.getProperties(
+            baseClasses[i].replace(this.settings.vocabPfx, ''),
+            'cards',
+            this.display
+          );
           if (inputKeys.length > 0) {
             break;
           }
@@ -106,7 +119,6 @@ export default {
       return _.isObject(obj);
     },
     removeThis() {
-      console.log("Removethis called");
       const holder = this.$parent.value;
       if (_.isArray(holder)) {
         this.$parent.removeById(this.item['@id']);
