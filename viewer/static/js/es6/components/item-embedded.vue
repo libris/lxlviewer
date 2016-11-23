@@ -95,11 +95,6 @@ export default {
 
 <style lang="less">
 @import '../../../less/main_libris.less';
-// Variables
-@chipColor: @gray-lighter;
-@chipColorLinked: @gray-dark;
-@chipTextColor: darken(@chipColorLinked, 60%);
-@chipTextColorLinked: lighten(@chipColor, 80%);
 
 .item-embedded {
   ul {

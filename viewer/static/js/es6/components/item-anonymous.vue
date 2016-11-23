@@ -5,6 +5,7 @@ import * as VocabUtil from '../utils/vocab';
 import * as DisplayUtil from '../utils/display';
 import * as EditUtil from '../utils/edit';
 import ProcessedLabel from './processedlabel';
+import ItemEntity from './item-entity';
 import { getVocabulary, getDisplayDefinitions, getSettings, getEditorData } from '../vuex/getters';
 
 export default {
@@ -37,7 +38,11 @@ export default {
       return JSON.stringify(this.item);
     },
     formObj() {
-      return getForm(this.item);
+      return this.getForm(this.item);
+    },
+    getChip() {
+      const chip = DisplayUtil.getChip(this.formObj, this.display, this.editorData.linked, this.vocab, this.settings.vocabPfx);
+      return chip;
     },
     embedded() {
       return this.isEmbedded(this.item['@type']);
@@ -48,6 +53,7 @@ export default {
     },
   },
   ready: function() {
+
   },
   methods: {
     getForm(item) {
@@ -57,7 +63,7 @@ export default {
       }
       let inputKeys = DisplayUtil.getProperties(item['@type'], 'cards', this.display);
       if (inputKeys.length === 0) {
-        const baseClasses = vocabUtil.getBaseClassesFromArray(item['@type'], this.vocab, this.settings.vocabPfx);
+        const baseClasses = VocabUtil.getBaseClassesFromArray(item['@type'], this.vocab, this.settings.vocabPfx);
         for (let i = 0; i < baseClasses.length; i++) {
           inputKeys = DisplayUtil.getProperties(baseClasses[i].replace(this.settings.vocabPfx, ''), 'cards', this.display);
           if (inputKeys.length > 0) {
@@ -74,6 +80,12 @@ export default {
         }
       }
       return formObj;
+    },
+    openForm() {
+      this.inEdit = true;
+    },
+    closeForm() {
+      this.inEdit = false;
     },
     isEmpty() {
       // TODO: Is the item empty?
@@ -102,33 +114,94 @@ export default {
   },
   components: {
     'processed-label': ProcessedLabel,
+    'item-entity': ItemEntity,
   },
 };
 </script>
 
 <template>
-  <div class="item-anonymous">
-    <i class="fa fa-times chip-action" v-on:click="removeThis"></i>
-    <strong>{{ item['@type'] | labelByLang | capitalize }}</strong>
-    <span v-for="(k,v) in item" v-if="k !== '@type'">
-    {{k}} <input v-model="v"></input>
-    </span>
+  <div class="item-anonymous" v-bind:class="{'expanded': inEdit, 'collapsed': !inEdit }">
+    <div v-show="!inEdit">
+      <span class="chip-label" @mouseenter="showCardInfo=true" @mouseleave="showCardInfo=false">
+        <span v-for="(k,v) in getChip">
+          <span v-if="!isObject(v) && k !== '@id'">{{ v }}</span>
+          <span v-if="!(!isObject(v) && k !== '@id') && size(getChip) === 1">{{ v | json | removeDomain }}</span>
+        </span>
+      </span>
+      <i class="chip-action fa fa-pencil" v-on:click="openForm" v-if="!isLocked"></i>
+    </div>
+    <div v-show="inEdit">
+      <i class="fa fa-times chip-action" v-on:click="removeThis"></i>
+      <strong>{{ item['@type'] | labelByLang | capitalize }}</strong>
+      <span v-for="(k,v) in item" v-if="k !== '@type'">
+        <span class="item-label">{{k | labelByLang | capitalize }}:</span>
+        <input v-model="v" v-if="!isObject(v)"></input>
+        <item-entity :key="k" :item="v" v-if="isObject(v)"></item-entity>
+      </span>
+      <div class="actions">
+        <button v-on:click="closeForm">Klar</button>
+      </div>
+    </div>
+    <div class="card-info-container" v-show="showCardInfo">
+      <div class="card-info" v-bind:class="{ 'linked': isLinked}">
+        <ul>
+          <li v-for="(k,v) in getCard">
+            <span v-if="k === '@type'"><strong>{{v | labelByLang | capitalize }}</strong></span>
+            <span v-if="k !== '@type' && !isObject(v)">{{ k | labelByLang | capitalize }}: {{v}}</span>
+            <span v-if="k !== '@type' && isObject(v)">{{ k | labelByLang | capitalize }}:
+              <span v-for="(x,y) in v">{{y}}, </span>
+            </span>
+          </li>
+        </ul>
+      </div>
+    </div>
   </div>
 </template>
 
 <style lang="less">
 @import '../../../less/main_libris.less';
-// Variables
-@chipColor: @gray-lighter;
-@chipColorLinked: @gray-dark;
-@chipTextColor: darken(@chipColorLinked, 60%);
-@chipTextColorLinked: lighten(@chipColor, 80%);
 
 .item-anonymous {
   background-color: @gray-lighter;
-  border-radius: 5px;
-  padding: 3px;
   margin: 0px 0px 3px 3px;
+  transition: 1s ease;
+  transition-property: width, box-shadow;
+  box-shadow: 0px 2px 3px 1px rgba(0, 0, 0, 0);
+  .item-label {
+    display: block;
+  }
+  &.collapsed {
+    height: 1.7em;
+    padding: 0px 0.2em 0px 0.5em;
+    margin: 0px 0.5em 0.5em 0px;
+    border-radius: 1em;
+    color: @chipTextColor;
+    background-color: @chipColor;
+    border: 0px;
+    box-shadow: inset 0px -2px darken(@chipColor, 10%);
+    .chip-action {
+      float: right;
+      padding: 0.25em;
+      color: fadeout(@chipTextColor,20%);
+      &:hover {
+        color: @chipTextColor;
+      }
+    }
+  }
+  &.expanded {
+    width: 100%;
+    margin: 0px 0px 1em 0px;
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: 0px 2px 3px 1px rgba(0, 0, 0, 0.2);
+    .actions {
+      text-align: right;
+    }
+    .entity-chip {
+    }
+    .entity-form {
+    }
+  }
 
   strong {
     display: block;
@@ -171,7 +244,7 @@ export default {
   &.structured {
     width: 100%;
   }
-  .entity-chip {
+  >.entity-chip {
     height: 1.7em;
     padding: 0px 0.2em 0px 0.5em;
     margin: 0px 0.5em 0.5em 0px;
@@ -238,13 +311,6 @@ export default {
     }
     .entity-form-row {
       margin-bottom: 5px;
-    }
-  }
-  &.expanded {
-    width: 100%;
-    .entity-chip {
-    }
-    .entity-form {
     }
   }
 

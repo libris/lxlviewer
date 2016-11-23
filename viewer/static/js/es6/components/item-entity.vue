@@ -126,11 +126,7 @@ export default {
 
 <style lang="less">
 @import '../../../less/main_libris.less';
-// Variables
-@chipColor: @gray-lighter;
-@chipColorLinked: @gray-dark;
-@chipTextColor: darken(@chipColorLinked, 60%);
-@chipTextColorLinked: lighten(@chipColor, 80%);
+
 
 .entity-container {
   .chip-action {
@@ -180,10 +176,10 @@ export default {
     padding: 0px 0.2em 0px 0.5em;
     margin: 0px 0.5em 0.5em 0px;
     border-radius: 1em;
-    color: @chipTextColor;
-    background-color: @chipColor;
+    color: @chipTextColorLinked;
+    background-color: @chipColorLinked;
     border: 0px;
-    box-shadow: inset 0px -2px darken(@chipColor, 10%);
+    box-shadow: inset 0px -2px darken(@chipColorLinked, 10%);
     &.locked {
       padding-right: 0.5em;
     }
@@ -198,17 +194,9 @@ export default {
     .chip-action {
       float: left;
       padding: 0.25em;
-      color: fadeout(@chipTextColor,20%);
+      color: fadeout(@chipTextColorLinked,20%);
       &:hover {
-        color: @chipTextColor;
-      }
-    }
-    &.linked {
-      background-color: @chipColorLinked;
-      box-shadow: inset 0px -2px darken(@chipColorLinked, 10%);
-      color: @chipTextColorLinked;
-      i {
-        color:@chipTextColorLinked;;
+        color: @chipTextColorLinked;
       }
     }
   }
