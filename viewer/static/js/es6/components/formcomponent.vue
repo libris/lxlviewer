@@ -212,7 +212,7 @@ export default {
           <data-node :is-locked="keyIsLocked(k)" :key="k" :value="v" :linked="linked"></data-node>
         </div>
         <div class="actions">
-          <div class="action" v-if="!keyIsLocked(k)" class="delete" v-on:click="removeField(k)"><i class="fa fa-trash fa-2x"></i></div>
+          <div class="action action-remove" v-if="!keyIsLocked(k)" class="delete" v-on:click="removeField(k)"><i class="fa fa-trash"></i></div>
           <entity-adder class="action" v-if="!keyIsLocked(k) && (isRepeatable(k) || isEmptyObject(v))" :key="k"></entity-adder>
         </div>
       </li>
@@ -297,6 +297,15 @@ export default {
           cursor: pointer;
           &:hover {
 
+          }
+        }
+        .action-remove {
+          padding-right: 5px;
+          padding-left: 5px;
+          border-radius: 28px;
+          background-color: @brand-danger;
+          &:hover {
+            background-color: lighten(@brand-danger, 5%);
           }
         }
       }
