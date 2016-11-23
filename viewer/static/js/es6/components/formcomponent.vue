@@ -306,10 +306,12 @@ export default {
         .action-remove {
           padding-right: 5px;
           padding-left: 5px;
+          border: 1px solid;
+          border-color: transparent;
           border-radius: 28px;
-          background-color: @brand-danger;
+          transition: border-color 0.25s ease;
           &:hover {
-            background-color: lighten(@brand-danger, 5%);
+            border-color: @brand-danger;
           }
         }
       }
