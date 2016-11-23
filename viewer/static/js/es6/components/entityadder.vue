@@ -37,7 +37,9 @@ export default {
   },
   watch: {
     keyword(value, oldval) {
-      this.search(value);
+      if (value) {
+        this.search(value);
+      }
     },
   },
   computed: {
@@ -95,6 +97,7 @@ export default {
     closeSearch() {
       this.searchOpen = false;
       this.keyword = '';
+      this.searchResult = {};
       this.chooseAnonymousType = false;
     },
     addEmpty(type) {
@@ -141,10 +144,11 @@ export default {
       console.log("Form obj", JSON.stringify(formObj));
       return formObj;
     },
-    getItems(searchkey) {
+    getItems(keyword) {
       // TODO: Support asking for more items
+      const searchKey = `${keyword}*`;
 
-      const searchUrl = `/find.json?q=${searchkey}&@type=${this.getRange[0]}&limit=10`;
+      const searchUrl = `/find.json?q=${searchKey}&@type=${this.getRange[0]}&limit=10`;
       // console.log(searchUrl);
       return new Promise((resolve, reject) => {
         httpUtil.get({url:searchUrl, accept:'application/ld+json'}).then((response) => {
