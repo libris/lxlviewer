@@ -13,31 +13,32 @@ export default {
       settings: getSettings,
       editorData: getEditorData,
       display: getDisplayDefinitions,
-    }
+    },
   },
   props: {
     status,
   },
-  data: function() {
+  data() {
     return {
 
-    }
+    };
   },
   methods: {
     isArray(o) {
       return _.isArray(o);
     },
     isTitle(key) {
-      let k = key.toLowerCase();
+      const k = key.toLowerCase();
       return ~k.indexOf('title');
     },
     isObject(obj) {
       return _.isObject(obj);
     },
     showType(type) {
+      // TODO: Look into different solution on typeList
       const typeList = ['ISBN'];
       return ~typeList.indexOf(type);
-    }
+    },
   },
   computed: {
     getItCard() {
@@ -46,9 +47,17 @@ export default {
 
       let propertyList = DisplayUtil.getProperties(item['@type'], 'cards', this.display);
       if (propertyList.length === 0) {
-        const baseClasses = VocabUtil.getBaseClassesFromArray(item['@type'], this.vocab, this.settings.vocabPfx);
+        const baseClasses = VocabUtil.getBaseClassesFromArray(
+          item['@type'],
+          this.vocab,
+          this.settings.vocabPfx
+        );
         for (let i = 0; i < baseClasses.length; i++) {
-          propertyList = DisplayUtil.getProperties(baseClasses[i].replace(this.settings.vocabPfx, ''), 'cards', this.display);
+          propertyList = DisplayUtil.getProperties(
+            baseClasses[i].replace(this.settings.vocabPfx, ''),
+            'cards',
+            this.display
+          );
           if (propertyList.length > 0) {
             break;
           }
@@ -62,7 +71,13 @@ export default {
       return displayObj;
     },
     getWorkCard() {
-      const workCard = DisplayUtil.getCard(this.editorData.work, this.display, this.editorData.linked, this.vocab, this.settings.vocabPfx);
+      const workCard = DisplayUtil.getCard(
+        this.editorData.work,
+        this.display,
+        this.editorData.linked,
+        this.vocab,
+        this.settings.vocabPfx
+      );
       return workCard;
     },
   },

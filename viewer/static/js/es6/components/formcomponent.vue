@@ -6,11 +6,9 @@
 */
 
 import * as _ from 'lodash';
-import LinkAdder from './linkadder';
 import EntityAdder from './entityadder';
 import FieldAdder from './fieldadder';
 import DataNode from './datanode';
-import LinkedItem from './linkeditem';
 import * as ModalUtil from '../utils/modals';
 import * as VocabUtil from '../utils/vocab';
 import * as DisplayUtil from '../utils/display';
@@ -76,21 +74,37 @@ export default {
 
       // Try to get properties from type of object
       // If none found, try baseClasses
-      let propertyList = DisplayUtil.getProperties(formObj['@type'], 'cards', this.display);
+      let propertyList = DisplayUtil.getProperties(
+        formObj['@type'],
+        'cards',
+        this.display
+      );
       if (propertyList.length === 0) { // If none were found, traverse up inheritance tree
-        const baseClasses = VocabUtil.getBaseClassesFromArray(formObj['@type'], this.vocab, this.settings.vocabPfx);
+        const baseClasses = VocabUtil.getBaseClassesFromArray(
+          formObj['@type'],
+          this.vocab,
+          this.settings.vocabPfx
+        );
         for (let i = 0; i < baseClasses.length; i++) {
-          propertyList = DisplayUtil.getProperties(baseClasses[i].replace(this.settings.vocabPfx, ''), 'cards', this.display);
+          propertyList = DisplayUtil.getProperties(
+            baseClasses[i].replace(this.settings.vocabPfx, ''),
+            'cards',
+            this.display
+          );
           if (propertyList.length > 0) {
             break;
           }
         }
         if (propertyList.length === 0) {
-          propertyList = getProperties('Resource', 'chips', this.display);
+          propertyList = DisplayUtil.getProperties(
+            'Resource',
+            'chips',
+            this.display
+          );
         }
       }
-      _.each(formObj, function(v, k) {
-        if(!propertyList.includes(k)) {
+      _.each(formObj, (v, k) => {
+        if (!propertyList.includes(k)) {
           propertyList.push(k);
         }
       });
@@ -98,7 +112,7 @@ export default {
     },
   },
   events: {
-    'add-field': function (prop) {
+    'add-field'(prop) {
       const newItem = {};
       const key = prop['@id'].replace(this.settings.vocabPfx, '');
       if (prop['@type'] && prop['@type'].indexOf('ObjectProperty') !== -1) {
@@ -109,12 +123,12 @@ export default {
       const merged = Object.assign({}, this.formData, newItem);
       this.updateForm(this.focus, merged);
     },
-    'remove-field': function (prop) {
+    'remove-field'(prop) {
       const modifiedData = Object.assign({}, this.formData);
       delete modifiedData[prop];
       this.updateForm(this.focus, modifiedData);
     },
-    'add-item': function (key, item) {
+    'add-item'(key, item) {
       this.linked.push(item);
       const modified = this.formData;
       const newItem = { '@id': item['@id'] };
@@ -122,20 +136,20 @@ export default {
       const merged = Object.assign({}, this.formData, modified);
       this.updateForm(this.focus, merged);
     },
-    'remove-item': function (key, item) {
+    'remove-item'(key, item) {
       const keyWithout = _.reject(this.formData[key], (o) => o === item);
       const modified = this.formData;
       modified[key] = keyWithout;
       const merged = Object.assign({}, this.formData, modified);
       this.updateForm(this.focus, merged);
     },
-    'update-value': function (key, value) {
+    'update-value'(key, value) {
       const modified = this.formData;
       modified[key] = value;
       const merged = Object.assign({}, this.formData, modified);
       this.updateForm(this.focus, merged);
     },
-    'add-anonymous': function (key, item) {
+    'add-anonymous'(key, item) {
       const modified = this.formData;
       if (_.isArray(modified[key])) {
         modified[key].push(item);
@@ -152,7 +166,7 @@ export default {
     isArray(o) {
       return _.isArray(o);
     },
-    keyIsLocked: function (key) {
+    keyIsLocked(key) {
       return (this.locked || key === '@id' || key === '@type');
     },
     isPlainObject(o) {
@@ -169,24 +183,33 @@ export default {
       return bEmpty;
     },
     removeField(prop) {
-      const pLabel = VocabUtil.getLabelByLang(prop, this.settings.lang, this.vocab, this.settings.vocabPfx);
+      const pLabel = VocabUtil.getLabelByLang(
+        prop,
+        this.settings.lang,
+        this.vocab,
+        this.settings.vocabPfx
+      );
       ModalUtil.confirmDialog(
         {
           sTitle: `Ta bort fältet "${pLabel}"?`,
           sContent: `Detta tar bort fältet "${pLabel}" och allt dess innehåll.`,
           sAccept: 'Ta bort',
           sReject: 'Avbryt',
-          sType: 'danger'
+          sType: 'danger',
         }
       ).then(() => {
-          // accepted by user
-          this.$dispatch('remove-field', prop);
-        }, () => {
+        // accepted by user
+        this.$dispatch('remove-field', prop);
+      }, () => {
           // declined
-        });
+      });
     },
     isRepeatable(property) {
-      const types = VocabUtil.getPropertyTypes(property, this.vocab, this.settings.vocabPfx);
+      const types = VocabUtil.getPropertyTypes(
+        property,
+        this.vocab,
+        this.settings.vocabPfx
+      );
       return types.indexOf('FunctionalProperty') < 0;
     },
     updateFromTextarea(e) {
@@ -194,9 +217,7 @@ export default {
     },
   },
   components: {
-    'link-adder': LinkAdder,
     'data-node': DataNode,
-    'linked-item': LinkedItem,
     'entity-adder': EntityAdder,
     'field-adder': FieldAdder,
   },

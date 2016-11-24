@@ -28,7 +28,7 @@ export default {
     remove(index) {
       this.$dispatch('remove-message', index);
     },
-    formattedDate: function(date) {
+    formattedDate(date) {
       return moment(date).format('LTS');
     },
   },

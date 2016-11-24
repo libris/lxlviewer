@@ -22,12 +22,12 @@ export default {
       display: getDisplayDefinitions,
       settings: getSettings,
       editorData: getEditorData,
-    }
+    },
   },
-  data: function() {
+  data() {
     return {
       formObj: {},
-    }
+    };
   },
   computed: {
     // TODO: Refactor computed
@@ -35,30 +35,48 @@ export default {
       return JSON.stringify(this.item);
     },
     linkedItem() {
-      const obj = EditUtil.getLinked(this.item['@id'], this.editorData.linked);
+      const obj = EditUtil.getLinked(
+        this.item['@id'],
+        this.editorData.linked
+      );
       return obj;
     },
     getChip() {
-      const chip = DisplayUtil.getChip(this.linkedItem, this.display, this.editorData.linked, this.vocab, this.settings.vocabPfx);
+      const chip = DisplayUtil.getChip(
+        this.linkedItem,
+        this.display,
+        this.editorData.linked,
+        this.vocab, this.settings.vocabPfx
+      );
       return chip;
     },
     getCard() {
-      const card = DisplayUtil.getCard(this.linkedItem, this.display, this.editorData.linked, this.vocab, this.settings.vocabPfx);
+      const card = DisplayUtil.getCard(
+        this.linkedItem,
+        this.display,
+        this.editorData.linked,
+        this.vocab,
+        this.settings.vocabPfx
+      );
       return card;
     },
     embedded() {
       return this.isEmbedded(this.item['@type']);
     },
     getRange() {
-      const types = VocabUtil.getRange(this.key, this.vocab, this.settings.vocabPfx);
+      const types = VocabUtil.getRange(
+        this.key,
+        this.vocab,
+        this.settings.vocabPfx
+      );
       return types;
     },
   },
-  ready: function() {
+  ready() {
   },
   methods: {
     removeThis() {
-      console.log("Removethis called");
+      console.log('Removethis called');
       const holder = this.$parent.value;
       if (_.isArray(holder)) {
         this.$parent.removeById(this.item['@id']);
