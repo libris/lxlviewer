@@ -26,7 +26,7 @@ export default {
       display: getDisplayDefinitions,
       settings: getSettings,
       editorData: getEditorData,
-    }
+    },
   },
   props: {
     key: '',
@@ -36,7 +36,7 @@ export default {
     'processed-label': ProcessedLabel,
   },
   watch: {
-    keyword(value, oldval) {
+    keyword(value) {
       if (value) {
         this.search(value);
       }
@@ -60,7 +60,11 @@ export default {
     isEmbedded() {
       // Is the type of the item derived from StructuredValue?
       const embeddedTypes = ['StructuredValue', 'ProvisionActivity', 'Contribution'];
-      const typeChain = VocabUtil.getBaseClassesFromArray(this.getRange, this.vocab, this.settings.vocabPfx);
+      const typeChain = VocabUtil.getBaseClassesFromArray(
+        this.getRange,
+        this.vocab,
+        this.settings.vocabPfx
+      );
       if (typeChain.length > 0) {
         for (let i = 0; i < embeddedTypes.length; i++) {
           if (~typeChain.indexOf(`${this.settings.vocabPfx}${embeddedTypes[i]}`)) {
@@ -113,17 +117,31 @@ export default {
       });
     },
     getItemAsChip(item) {
-      return DisplayUtil.getChip(item, this.display, this.editorData.linked, this.vocab, this.settings.vocabPfx);
+      return DisplayUtil.getChip(
+        item,
+        this.display,
+        this.editorData.linked,
+        this.vocab,
+        this.settings.vocabPfx
+      );
     },
     getEmptyForm(type) {
-      console.log("Type", type);
-      const formObj = {'@type': type };
+      console.log('Type', type);
+      const formObj = { '@type': type };
       let inputKeys = DisplayUtil.getProperties(type, 'cards', this.display);
       if (inputKeys.length === 0) {
-        const baseClasses = VocabUtil.getBaseClassesFromArray(type, this.vocab, this.settings.vocabPfx);
+        const baseClasses = VocabUtil.getBaseClassesFromArray(
+          type,
+          this.vocab,
+          this.settings.vocabPfx
+        );
         console.log('baseClasses for', type, 'is', JSON.stringify(baseClasses));
         for (let i = 0; i < baseClasses.length; i++) {
-          inputKeys = DisplayUtil.getProperties(baseClasses[i].replace(this.settings.vocabPfx, ''), 'cards', this.display);
+          inputKeys = DisplayUtil.getProperties(
+            baseClasses[i].replace(this.settings.vocabPfx, ''),
+            'cards',
+            this.display
+          );
           if (inputKeys.length > 0) {
             break;
           }
@@ -141,7 +159,7 @@ export default {
           formObj[inputKeys[i]] = '';
         }
       }
-      console.log("Form obj", JSON.stringify(formObj));
+      console.log('Form obj', JSON.stringify(formObj));
       return formObj;
     },
     getItems(keyword) {
@@ -151,7 +169,7 @@ export default {
       const searchUrl = `/find.json?q=${searchKey}&@type=${this.getRange[0]}&limit=10`;
       // console.log(searchUrl);
       return new Promise((resolve, reject) => {
-        httpUtil.get({url:searchUrl, accept:'application/ld+json'}).then((response) => {
+        httpUtil.get({ url: searchUrl, accept: 'application/ld+json' }).then((response) => {
           resolve(response.items);
         }, (error) => {
           reject('Error searching...', error);
@@ -193,6 +211,7 @@ export default {
 @import '../../../less/main_libris.less';
 
 .entity-adder {
+  opacity: 1;
   .add-entity-button {
     background-color:@brand-primary;
     -moz-border-radius:28px;

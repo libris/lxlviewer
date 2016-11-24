@@ -50,16 +50,19 @@ export default {
       return chip;
     },
     getRange() {
-      const types = VocabUtil.getRange(this.key, this.vocab, this.settings.vocabPfx);
+      const types = VocabUtil.getRange(
+        this.key,
+        this.vocab,
+        this.settings.vocabPfx
+      );
       return types;
     },
     isEmpty() {
-      const self = this;
       let bEmpty = true;
       // Check if item has any keys besides @type. If not, we'll consider it empty.
-      Object.keys(self.item).forEach((key) => {
+      Object.keys(this.item).forEach((key) => {
         if (key !== '@type') {
-          if (self.item[key] && self.item[key] !== '') {
+          if (this.item[key] && this.item[key] !== '') {
             bEmpty = false;
           }
         }
@@ -68,10 +71,9 @@ export default {
     },
   },
   ready() {
-    const self = this;
     this.$nextTick(() => {
-      if (self.isEmpty) {
-        self.openForm();
+      if (this.isEmpty) {
+        this.openForm();
       }
     });
   },
@@ -81,7 +83,11 @@ export default {
       if (!item['@type']) {
         return formObj;
       }
-      let inputKeys = DisplayUtil.getProperties(item['@type'], 'cards', this.display);
+      let inputKeys = DisplayUtil.getProperties(
+        item['@type'],
+        'cards',
+        this.display
+      );
       if (inputKeys.length === 0) {
         const baseClasses = VocabUtil.getBaseClassesFromArray(
           item['@type'],

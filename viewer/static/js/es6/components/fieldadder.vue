@@ -30,7 +30,7 @@ export default {
         }
       }
       const fKey = this.filterKey.toLowerCase();
-      const filtered = _.filter(this.allowed, function (o) {
+      const filtered = _.filter(this.allowed, (o) => {
         let labelByLang = '';
         if (
           typeof o.item.labelByLang !== 'undefined' &&
@@ -56,7 +56,7 @@ export default {
     },
   },
   events: {
-    'close-modals': function () {
+    'close-modals'() {
       this.hide();
     },
   },

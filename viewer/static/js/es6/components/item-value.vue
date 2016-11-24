@@ -21,12 +21,12 @@ export default {
       display: getDisplayDefinitions,
       settings: getSettings,
       editorData: getEditorData,
-    }
+    },
   },
-  data: function() {
+  data() {
     return {
       inEdit: false,
-    }
+    };
   },
   computed: {
     // TODO: Refactor computed
@@ -34,7 +34,7 @@ export default {
       return JSON.stringify(this.item);
     },
   },
-  ready: function() {
+  ready() {
   },
   methods: {
     valueChanged() {
@@ -48,8 +48,8 @@ export default {
       return _.isObject(obj);
     },
     removeThis() {
-      //TODO: Refactor data-binding so child component does not use parent-methods directly
-      console.log("Removethis called");
+      // TODO: Refactor data-binding so child component does not use parent-methods directly
+      console.log('Removethis called');
       const holder = this.$parent.value;
       if (_.isArray(holder)) {
         this.$parent.removeById(this.item['@id']);

@@ -2,7 +2,6 @@
 import * as _ from 'lodash';
 import Notifications from '../components/notifications';
 import moment from 'moment';
-import locale_sv from 'moment/locale/sv';
 import * as EditUtil from '../utils/edit';
 moment.locale('sv');
 
@@ -21,14 +20,14 @@ export default {
     },
   },
   computed: {
-    modified: function() {
+    modified() {
       return {
         date: moment(this.editorData.record.modified).format('lll'),
         timeAgo: moment(this.editorData.record.modified).fromNow(),
         by: '-', // Referencing property like below will not work. TODO: Handle array
       };
     },
-    created: function() {
+    created() {
       return {
         date: moment(this.editorData.record.created).format('lll'),
         timeAgo: moment(this.editorData.record.created).fromNow(),
@@ -37,7 +36,7 @@ export default {
     },
   },
   components: {
-    'notifications': Notifications,
+    notifications: Notifications,
   },
 };
 </script>

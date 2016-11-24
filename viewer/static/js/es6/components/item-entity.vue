@@ -21,16 +21,16 @@ export default {
       display: getDisplayDefinitions,
       settings: getSettings,
       editorData: getEditorData,
-    }
+    },
   },
-  data: function() {
+  data() {
     return {
       inEdit: false,
       showCardInfo: false,
       searchResult: {},
       searchDelay: 2,
       formObj: {},
-    }
+    };
   },
   computed: {
     // TODO: Refactor computed
@@ -38,25 +38,44 @@ export default {
       return JSON.stringify(this.item);
     },
     linkedItem() {
-      return EditUtil.getLinked(this.item['@id'], this.editorData.linked);
+      return EditUtil.getLinked(
+        this.item['@id'],
+        this.editorData.linked
+      );
     },
     getChip() {
-      const chip = DisplayUtil.getChip(this.linkedItem, this.display, this.editorData.linked, this.vocab, this.settings.vocabPfx);
+      const chip = DisplayUtil.getChip(
+        this.linkedItem,
+        this.display,
+        this.editorData.linked,
+        this.vocab,
+        this.settings.vocabPfx
+      );
       return chip;
     },
     getCard() {
-      const card = DisplayUtil.getCard(this.linkedItem, this.display, this.editorData.linked, this.vocab, this.settings.vocabPfx);
+      const card = DisplayUtil.getCard(
+        this.linkedItem,
+        this.display,
+        this.editorData.linked,
+        this.vocab,
+        this.settings.vocabPfx
+      );
       return card;
     },
     embedded() {
       return this.isEmbedded(this.item['@type']);
     },
     getRange() {
-      const types = VocabUtil.getRange(this.key, this.vocab, this.settings.vocabPfx);
+      const types = VocabUtil.getRange(
+        this.key,
+        this.vocab,
+        this.settings.vocabPfx
+      );
       return types;
     },
   },
-  ready: function() {
+  ready() {
   },
   methods: {
     isEmpty() {
@@ -70,10 +89,10 @@ export default {
       return _.size(obj);
     },
     isPretty(key, value) {
-      return (isObject(v) || k === '@id');
+      return (this.isObject(value) || key === '@id');
     },
     removeThis() {
-      console.log("Removethis called");
+      console.log('Removethis called');
       const holder = this.$parent.value;
       if (_.isArray(holder)) {
         this.$parent.removeById(this.item['@id']);

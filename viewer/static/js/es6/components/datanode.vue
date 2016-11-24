@@ -1,13 +1,10 @@
 <script>
 import * as _ from 'lodash';
 import ProcessedLabel from './processedlabel';
-import AnonymousValue from './anonymousvalue';
-import LinkedItem from './linkeditem';
 import ItemEntity from './item-entity';
 import ItemEmbedded from './item-embedded';
 import ItemValue from './item-value';
 import ItemAnonymous from './item-anonymous';
-import * as editUtil from '../utils/edit';
 import * as VocabUtil from '../utils/vocab';
 import { getVocabulary, getSettings } from '../vuex/getters';
 
@@ -18,37 +15,39 @@ export default {
     getters: {
       vocab: getVocabulary,
       settings: getSettings,
-    }
+    },
   },
   components: {
     'processed-label': ProcessedLabel,
-    'anonymous-value': AnonymousValue,
-    'linked-item': LinkedItem,
     'item-entity': ItemEntity,
     'item-value': ItemValue,
     'item-embedded': ItemEmbedded,
     'item-anonymous': ItemAnonymous,
   },
   computed: {
-    propertyTypes: function () {
-      return VocabUtil.getPropertyTypes(this.key, this.vocab, this.settings.vocabPfx);
+    propertyTypes() {
+      VocabUtil.getPropertyTypes(
+        this.key,
+        this.vocab,
+        this.settings.vocabPfx
+      );
     },
-    valueByIdPresence: function () {
-      const list = _.sortBy(this.value, [function(o) { return o['@id']; }]);
+    valueByIdPresence() {
+      const list = _.sortBy(this.value, [(o) => (o['@id'])]);
       return list;
     },
   },
   events: {
-    'update-entity': function (key, index, obj) {
+    'update-entity'(key, index, obj) {
       if (typeof index !== 'undefined') {
         this.value.$set(index, obj);
       } else {
         this.value.$set(obj);
       }
     },
-    'update-item-value': function (value){
+    'update-item-value'(value) {
       this.updateValue(value);
-    }
+    },
   },
   methods: {
     isMarc(key) {
@@ -63,13 +62,12 @@ export default {
       this.$dispatch('update-value', this.key, value);
     },
     updateArray(index, value) {
-      const object = this.$el;
       this.value.$set(index, value);
     },
     emptyValue() {
       this.$dispatch('update-value', this.key, {});
     },
-    removeKey(key) {
+    removeKey() {
       this.emptyValue();
     },
     removeByIndex(index) {
@@ -79,9 +77,7 @@ export default {
     },
     removeById(id) {
       let modified = this.value;
-      modified = _.filter(this.value, function(n) {
-        return n['@id'] !== id;
-      });
+      modified = _.filter(this.value, (n) => (n['@id'] !== id));
       this.updateValue(modified);
     },
     isArray(o) {
