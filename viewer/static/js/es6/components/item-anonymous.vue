@@ -60,9 +60,9 @@ export default {
     isEmpty() {
       let bEmpty = true;
       // Check if item has any keys besides @type. If not, we'll consider it empty.
-      Object.keys(this.item).forEach((key) => {
+      _.each(this.item, (value, key) => {
         if (key !== '@type') {
-          if (this.item[key] && this.item[key] !== '') {
+          if (value && value !== '') {
             bEmpty = false;
           }
         }
@@ -94,9 +94,9 @@ export default {
           this.vocab,
           this.settings.vocabPfx
         );
-        for (let i = 0; i < baseClasses.length; i++) {
+        for (const className of baseClasses) {
           inputKeys = DisplayUtil.getProperties(
-            baseClasses[i].replace(this.settings.vocabPfx, ''),
+            className.replace(this.settings.vocabPfx, ''),
             'cards',
             this.display
           );
@@ -106,11 +106,11 @@ export default {
         }
       }
       inputKeys = ['@type'].concat(inputKeys);
-      for (let i = 0; i < inputKeys.length; i++) {
-        if (item[inputKeys[i]]) {
-          formObj[inputKeys[i]] = item[inputKeys[i]];
+      for (const key of inputKeys) {
+        if (item[key]) {
+          formObj[key] = item[key];
         } else {
-          formObj[inputKeys[i]] = '';
+          formObj[key] = '';
         }
       }
       return formObj;
