@@ -4,7 +4,7 @@ export default {
   props: {
     title: 'test',
   },
-  data: function() {
+  data() {
     return {
       keyword: '',
     }
@@ -17,7 +17,7 @@ export default {
   },
   watch: {
     keyword(value, oldval) {
-
+      console.log("keyword changed", value, oldval);
     },
   },
   ready() { // Ready method is deprecated in 2.0, switch to "mounted"
