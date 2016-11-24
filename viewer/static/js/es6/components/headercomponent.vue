@@ -1,6 +1,5 @@
 <script>
 import * as _ from 'lodash';
-import * as editUtil from '../utils/edit';
 import * as DisplayUtil from '../utils/display';
 import * as VocabUtil from '../utils/vocab';
 import { getVocabulary, getSettings, getEditorData, getDisplayDefinitions } from '../vuex/getters';
@@ -52,9 +51,9 @@ export default {
           this.vocab,
           this.settings.vocabPfx
         );
-        for (let i = 0; i < baseClasses.length; i++) {
+        for (const baseClass of baseClasses) {
           propertyList = DisplayUtil.getProperties(
-            baseClasses[i].replace(this.settings.vocabPfx, ''),
+            baseClass.replace(this.settings.vocabPfx, ''),
             'cards',
             this.display
           );
@@ -63,9 +62,9 @@ export default {
           }
         }
       }
-      for (let i = 0; i < propertyList.length; i++) {
-        if (item[propertyList[i]]) {
-          displayObj[propertyList[i]] = item[propertyList[i]];
+      for (const property of propertyList) {
+        if (item[property]) {
+          displayObj[property] = item[property];
         }
       }
       return displayObj;

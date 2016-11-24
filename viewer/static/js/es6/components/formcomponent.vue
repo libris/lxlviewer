@@ -42,17 +42,17 @@ export default {
     allowedProperties() {
       const settings = this.settings;
       const formObj = this.formData;
-      let allowed = VocabUtil.getPropertiesFromArray(
+      const allowed = VocabUtil.getPropertiesFromArray(
         formObj['@type'],
         this.vocab,
         this.settings.vocabPfx
       );
 
       // Add the "added" property
-      allowed = _.forEach(allowed, function (o) {
-        const oId = o.item['@id'].replace(settings.vocabPfx, '');
-        o.added = (formObj.hasOwnProperty(oId) && formObj[oId] !== null);
-      });
+      for (const element of allowed) {
+        const oId = element.item['@id'].replace(settings.vocabPfx, '');
+        element.added = (formObj.hasOwnProperty(oId) && formObj[oId] !== null);
+      }
 
       return allowed;
     },
@@ -61,8 +61,8 @@ export default {
     },
     sortedFormData() {
       const sortedForm = {};
-      for (let i = 0; i < this.sortedProperties.length; i++) {
-        const k = this.sortedProperties[i];
+      for (const property of this.sortedProperties) {
+        const k = property;
         if (this.formData[k] || this.formData[k] === '') {
           sortedForm[k] = this.formData[k];
         }
@@ -85,9 +85,9 @@ export default {
           this.vocab,
           this.settings.vocabPfx
         );
-        for (let i = 0; i < baseClasses.length; i++) {
+        for (const baseClass of baseClasses) {
           propertyList = DisplayUtil.getProperties(
-            baseClasses[i].replace(this.settings.vocabPfx, ''),
+            baseClass.replace(this.settings.vocabPfx, ''),
             'cards',
             this.display
           );
