@@ -44,13 +44,12 @@ export default {
   },
   computed: {
     getRange() {
-      const range = VocabUtil.getRange(this.key, this.vocab, this.settings.vocabPfx);
-      return range;
+      return VocabUtil.getRange(this.key, this.vocab, this.settings.vocabPfx);
     },
     isLiteral() {
       if (this.getRange.length > 0) {
-        for (let i = 0; i < this.getRange.length; i++) {
-          if (this.getRange[i].indexOf('Literal') > -1) {
+        for (const rangeElement of this.getRange) {
+          if (rangeElement.indexOf('Literal') > -1) {
             return true;
           }
         }
@@ -66,8 +65,8 @@ export default {
         this.settings.vocabPfx
       );
       if (typeChain.length > 0) {
-        for (let i = 0; i < embeddedTypes.length; i++) {
-          if (~typeChain.indexOf(`${this.settings.vocabPfx}${embeddedTypes[i]}`)) {
+        for (const typeElement of embeddedTypes) {
+          if (~typeChain.indexOf(`${this.settings.vocabPfx}${typeElement}`)) {
             return true;
           }
         }
@@ -136,9 +135,9 @@ export default {
           this.settings.vocabPfx
         );
         console.log('baseClasses for', type, 'is', JSON.stringify(baseClasses));
-        for (let i = 0; i < baseClasses.length; i++) {
+        for (const baseClass of baseClasses) {
           inputKeys = DisplayUtil.getProperties(
-            baseClasses[i].replace(this.settings.vocabPfx, ''),
+            baseClass.replace(this.settings.vocabPfx, ''),
             'cards',
             this.display
           );
@@ -152,11 +151,11 @@ export default {
         console.log(inputKeys);
       }
       inputKeys = ['@type'].concat(inputKeys);
-      for (let i = 0; i < inputKeys.length; i++) {
-        if (inputKeys[i] === '@type') {
-          formObj[inputKeys[i]] = type;
+      for (const inputKey of inputKeys) {
+        if (inputKey === '@type') {
+          formObj[inputKey] = type;
         } else {
-          formObj[inputKeys[i]] = '';
+          formObj[inputKey] = '';
         }
       }
       console.log('Form obj', JSON.stringify(formObj));

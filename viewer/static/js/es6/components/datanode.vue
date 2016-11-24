@@ -98,8 +98,8 @@ export default {
       const embeddedTypes = ['StructuredValue', 'ProvisionActivity', 'Contribution'];
       const typeChain = VocabUtil.getBaseClasses(type, this.vocab, this.settings.vocabPfx);
       if (typeChain.length > 0) {
-        for (let i = 0; i < embeddedTypes.length; i++) {
-          if (~typeChain.indexOf(`${this.settings.vocabPfx}${embeddedTypes[i]}`)) {
+        for (const typeElement of embeddedTypes) {
+          if (~typeChain.indexOf(`${this.settings.vocabPfx}${typeElement}`)) {
             return true;
           }
         }
