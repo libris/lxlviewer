@@ -33,10 +33,9 @@ export default {
     isObject(obj) {
       return _.isObject(obj);
     },
-    showType(type) {
-      // TODO: Look into different solution on typeList
-      const typeList = ['ISBN'];
-      return ~typeList.indexOf(type);
+    showKey(k) {
+      const listOfKeys = ['ISBN']; // TODO: Fix list of keys to show.
+      return _.indexOf(listOfKeys, k) > -1;
     },
   },
   computed: {
@@ -79,6 +78,40 @@ export default {
       );
       return workCard;
     },
+    getHeaderInfo() { // TODO: Make acceptList a parameter
+      const acceptList = ['value'];
+      const result = {};
+      const card = this.getItCard;
+      _.each(card, (cardValue, cardKey) => {
+        if (_.isArray(cardValue)) {
+          _.each(cardValue, (deepValue) => {
+            _.each(deepValue, (deepestValue, deepestKey) => {
+              if (deepestKey === '@type') {
+                result[deepestValue] = '';
+              }
+            });
+            _.each(deepValue, (deepestValue, deepestKey) => {
+              if (_.indexOf(acceptList, deepestKey) > -1 || this.isTitle(deepestKey)) {
+                result[deepValue['@type']] += deepestValue;
+              }
+            });
+          });
+        } else {
+          result[cardKey] = cardValue;
+        }
+      });
+      return result;
+    },
+      // <li v-for="(k,v) in getItCard" track-by="$index">
+      //     <div v-if="isArray(v)" v-for="item in v" track-by="$index">
+      //       <span v-if="showType(item['@type'])">{{item['@type']}}: {{item.value}}</span>
+      //       <span v-for="(x,y) in item" track-by="$index" v-if="isTitle(x)" v-bind:class="{'large-title': isTitle(x), 'medium-text': !isTitle(x)}">
+      //         {{y}}
+      //       </span>
+      //       <span v-if="isTitle(item['@type'])"> ({{item['@type']}})</span>
+      //     </div>
+      //     <span v-if="!isArray(v)">{{v}}</span>
+      //   </li>
   },
   components: {
   },
@@ -89,15 +122,15 @@ export default {
   <div class="header-component">
     <div class="instance-info">
       <ul>
-        <li v-for="(k,v) in getItCard" track-by="$index">
-          <div v-if="isArray(v)" v-for="item in v" track-by="$index">
-            <span v-if="showType(item['@type'])">{{item['@type']}}: {{item.value}}</span>
-            <span v-for="(x,y) in item" track-by="$index" v-if="isTitle(x)" v-bind:class="{'large-title': isTitle(x), 'medium-text': !isTitle(x)}">
-              {{y}}
-            </span>
-            <span v-if="isTitle(item['@type'])"> ({{item['@type']}})</span>
+        <li v-for="(k, v) in getHeaderInfo">
+          <div v-if="isTitle(k)">
+            <span class="large-title">{{v}}</span>
+            <span class="medium-text"> ({{k}})</span>
           </div>
-          <span v-if="!isArray(v)">{{v}}</span>
+          <div v-if="!isTitle(k)">
+            <span v-if="showKey(k)">{{k}}: {{v}}</span>
+            <span v-if="!showKey(k)">{{v}}</span>
+          </div>
         </li>
       </ul>
     </div>
