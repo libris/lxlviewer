@@ -104,8 +104,8 @@ export default {
     <ul>
       <li v-for="(k,v) in item" v-if="k !== '@type'">
         <span class="item-label">{{k | labelByLang | capitalize }}:</span>
-        <input v-model="v" v-show="!isObject(v)"></input>
-        <item-entity :key="k" :item="v"  v-show="isObject(v)"></item-entity>
+        <input v-model="v" v-if="!isObject(v)"></input>
+        <item-entity :key="k" :item="v" v-if="isObject(v)"></item-entity>
       </li>
     </ul>
   </div>
