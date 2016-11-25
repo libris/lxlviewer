@@ -42,7 +42,9 @@ export function getDisplayDefinitions() {
 
 export function getProperties(type, level, displayDefs) {
   if (_.isObject(type)) {
-    throw new Error('getProperties was called with an object as type parameter (should be a string).');
+    throw new Error(
+      'getProperties was called with an object as type parameter (should be a string).'
+    );
   }
   const lenses = displayDefs.lensGroups[level].lenses;
   let props = [];
@@ -50,9 +52,7 @@ export function getProperties(type, level, displayDefs) {
     props = lenses[type].showProperties;
   }
   props = [].concat(props);
-  _.remove(props, function(x) {
-    return _.isObject(x);
-  });
+  _.remove(props, (x) => _.isObject(x));
   return props;
 }
 
@@ -105,15 +105,12 @@ export function getDisplayObject(item, level, displayDefs, linked, vocab, vocabP
   for (let i = 0; i < properties.length; i++) {
     if (!_.isObject(properties[i])) {
       if (typeof trueItem[properties[i]] !== 'undefined') {
-
         // console.log("✔ ", properties[i], trueItem[properties[i]]);
         let value = trueItem[properties[i]];
         if (_.isObject(value) && !_.isArray(value)) {
           // console.log("Encountered object in value", JSON.stringify(value));
           if (level === 'cards') {
             value = getDisplayObject(value, 'chips', displayDefs, linked, vocab, vocabPfx);
-          } else {
-            value = value;
           }
         }
         if (_.isArray(value)) {
@@ -129,9 +126,6 @@ export function getDisplayObject(item, level, displayDefs, linked, vocab, vocabP
           value = arrString;
         }
         displayObject[properties[i]] = value;
-
-      } else {
-        // console.log("x ", properties[i]);
       }
     }
   }
