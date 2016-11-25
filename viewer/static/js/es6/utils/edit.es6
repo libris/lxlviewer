@@ -1,12 +1,14 @@
+import * as _ from 'lodash';
+
 export function getLinked(id, linked) {
   if (typeof id === 'undefined') {
     throw new Error('getLinked was called with an undefined Id.');
   }
   let obj = { '@id': id };
   if (typeof linked !== 'undefined') {
-    for (let i = 0; i < linked.length; i ++) {
-      if (linked[i]['@id'] === id) {
-        obj = Object.assign({}, linked[i]);
+    for (const entity of linked) {
+      if (entity['@id'] === id) {
+        obj = Object.assign({}, entity);
       }
     }
   }
@@ -21,8 +23,8 @@ export function getMergedItems(record, it, work, linked) {
   obj['@graph'].push(record);
   obj['@graph'].push(it);
   obj['@graph'].push(work);
-  for (let i = 0; i < linked.length; i++) {
-    obj['@graph'].push({ '@graph': linked[i] });
+  for (const entity of linked) {
+    obj['@graph'].push({ '@graph': entity });
   }
   return obj;
 }
@@ -30,13 +32,11 @@ export function getMergedItems(record, it, work, linked) {
 export function removeNullValues(obj) {
   // Strips away all null value keys
   const cleanObj = {};
-  for (const key in obj) {
-    if (obj.hasOwnProperty(key)) {
-      if (obj[key] !== null && obj[key] !== '') {
-        cleanObj[key] = obj[key];
-      }
+  _.each(obj, (value, key) => {
+    if (value !== null && value !== '') {
+      cleanObj[key] = value;
     }
-  }
+  });
   return cleanObj;
 }
 
