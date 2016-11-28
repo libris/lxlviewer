@@ -18,8 +18,19 @@ export default {
     toggleDev() {
       this.$dispatch('toggle-dev');
     },
+    toggleAdminData() {
+      this.showAdminInfo = !this.showAdminInfo;
+    },
+  },
+  data() {
+    return {
+      showAdminInfo: false,
+    };
   },
   computed: {
+    getAdminData() {
+      return this.editorData.record;
+    },
     modified() {
       return {
         date: moment(this.editorData.record.modified).format('lll'),
@@ -42,12 +53,20 @@ export default {
 </script>
 
 <template>
-  <div class="editor-controls container-fluid">
-    <div class="container">
+  <div class="editor-controls">
     <div class="admin-info">
       <div class="actions">
         <div class="action">
-          <i class="fa fa-info-circle" aria-hidden="true"></i>
+          <i class="fa fa-info-circle" aria-hidden="true" @click="toggleAdminData()"></i>
+          <div class="card-info-container" v-show="showAdminInfo">
+            <div class="card-info" v-bind:class="{ 'linked': isLinked}">
+              <ul>
+                <li v-for="(k, v) in getAdminData">
+                  {{k}}: {{v}}
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
         <div class="action" v-on:click="toggleDev()" v-bind:class="{'active': status.isDev}">
           <i class="fa fa-wrench" aria-hidden="true"></i>
@@ -70,38 +89,32 @@ export default {
       </button>
     </div>
   </div>
-</div>
 </template>
 
 <style lang="less">
 @import '../../../less/main_libris.less';
 
+@background: #547e91;
+
 .editor-controls {
-  position: fixed;
-  bottom: 0px;
-  left: 0px;
-  right: 0px;
-  padding: 0px;
-  background-color: white;
-  box-shadow: 0px -7px 10px -4px rgba(0, 0, 0, 0.1);
+  background-color: @background;
   .admin-info {
     flex-direction: row;
     display: flex;
     align-items: center;
-    position: relative;
-    padding: 15px;
+    position: relative; 
+    padding: 5px 15px;
     .admin-node {
       flex-grow: 5;
       text-align: center;
       .node {
         font-size: 0.8em;
         vertical-align: middle;
-        .time-ago {
-          color: #CCC;
-        }
+        color: lighten(@background, 40%)
       }
     }
     #saveButton {
+      padding: 0px;
       flex-grow: 1;
     }
     #add-button {
@@ -135,11 +148,39 @@ export default {
       .action {
         display: inline-block;
         cursor: pointer;
+        .card-info-container {
+          position: absolute;
+          .card-info {
+            cursor: auto;
+            background-color: @background;
+            max-width: 500px;
+            border: 1px solid #999;
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+            border-top-right-radius: 10px;
+            position: relative;
+            left: 3%;
+            top: -8px;
+            padding: 10px;
+            ul {
+              list-style: none;
+              padding: 0px;
+              li {
+                span {
+                  word-break: break-word;
+                }
+              }
+            }
+          }
+        }
         &.active {
           i {
             color: @brand-primary;
           }
         }
+      }
+      i {
+        color: lighten(@background, 40%);
       }
     }
   }
