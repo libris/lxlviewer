@@ -39,6 +39,12 @@ export default {
     };
   },
   computed: {
+    isLocked() {
+      if (this.locked || this.status.state !== this.focus) {
+        return true;
+      }
+      return false;
+    },
     allowedProperties() {
       const settings = this.settings;
       const formObj = this.formData;
@@ -167,7 +173,7 @@ export default {
       return _.isArray(o);
     },
     keyIsLocked(key) {
-      return (this.locked || key === '@id' || key === '@type');
+      return (this.isLocked || key === '@id' || key === '@type');
     },
     isPlainObject(o) {
       return _.isPlainObject(o);
@@ -228,7 +234,7 @@ export default {
   <div class="form-component" v-bind:class="{ 'locked': locked }">
     <div class="form-header">- {{ sortedFormData['@type'] | labelByLang | capitalize }} -</div>
     <ul>
-      <li v-for="(k,v) in sortedFormData" v-bind:class="{ 'locked': locked }">
+      <li v-for="(k,v) in sortedFormData" v-bind:class="{ 'locked': isLocked }">
         <div class="label">
           <!-- <a href="/vocab/#{{property}}">{{ property | labelByLang | capitalize }}</a> -->
           {{ k | labelByLang | capitalize }}
@@ -242,7 +248,7 @@ export default {
         </div>
       </li>
     </ul>
-    <field-adder v-if="!locked" :allowed="allowedProperties" :item="focus"></field-adder>
+    <field-adder v-if="!isLocked" :allowed="allowedProperties" :item="focus"></field-adder>
     <div id="result" v-if="status.isDev">
       <div class="row">
       <pre class="col-md-6">
