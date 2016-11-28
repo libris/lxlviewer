@@ -41,6 +41,9 @@ export function getDisplayDefinitions() {
 }
 
 export function getProperties(type, level, displayDefs) {
+  if (!type || typeof type === 'undefined') {
+    throw new Error('getProperties was called with an undefined type.');
+  }
   if (_.isObject(type)) {
     throw new Error(
       'getProperties was called with an object as type parameter (should be a string).'
@@ -58,6 +61,10 @@ export function getProperties(type, level, displayDefs) {
 
 export function getDisplayObject(item, level, displayDefs, linked, vocab, vocabPfx) {
   let displayObject = {};
+
+  if (!item || typeof item === 'undefined') {
+    throw new Error('getDisplayObject was called with an undefined object.');
+  }
 
   // If item is a link reference, get the true item
   let trueItem = item;

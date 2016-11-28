@@ -112,7 +112,7 @@ export default {
 </template>
 
 <style lang="less" scoped>
-@import '../../../less/main_libris.less';
+@import './variables.less';
 
 .item-embedded {
   ul {

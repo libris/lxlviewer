@@ -92,7 +92,7 @@ export default {
 </template>
 
 <style lang="less">
-@import '../../../less/main_libris.less';
+@import './variables.less';
 
 @background: #547e91;
 

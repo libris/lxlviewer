@@ -2,18 +2,16 @@ import * as httpUtil from '../utils/http';
 
 export function getMarc(json) {
   return new Promise((resolve, reject) => {
-
     const req = new XMLHttpRequest();
     const url = '/_format?to=application/x-marc-json';
 
     req.open('POST', url);
-
   });
 }
 
 export function splitJson(json) {
-  let orginal = json['@graph'];
-  let dataObj = {};
+  const orginal = json['@graph'];
+  const dataObj = {};
   dataObj.linked = [];
 
   // TODO: Relying on order here... tsk tsk tsk.
