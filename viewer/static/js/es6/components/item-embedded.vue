@@ -99,7 +99,7 @@ export default {
 
 <template>
   <div class="item-embedded">
-    <i class="fa fa-times chip-action" v-on:click="removeThis"></i>
+    <i v-if="!isLocked" class="fa fa-times chip-action" v-on:click="removeThis"></i>
     <strong>{{ item['@type'] | labelByLang | capitalize }}</strong>
     <ul>
       <li v-for="(k,v) in item" v-if="k !== '@type'">
