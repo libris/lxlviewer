@@ -123,7 +123,7 @@ export default {
 </template>
 
 <style lang="less">
-@import '../../../less/main_libris.less';
+@import './variables.less';
 
 .field-adder {
   text-align: center;

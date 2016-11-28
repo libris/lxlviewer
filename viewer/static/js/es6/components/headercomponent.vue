@@ -138,7 +138,7 @@ export default {
 </template>
 
 <style lang="less">
-@import '../../../less/main_libris.less';
+@import './variables.less';
 
 .header-component {
   padding: 20px;

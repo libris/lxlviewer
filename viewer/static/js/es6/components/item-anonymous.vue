@@ -188,7 +188,7 @@ export default {
 </template>
 
 <style lang="less">
-@import '../../../less/main_libris.less';
+@import './variables.less';
 
 .item-anonymous {
   background-color: @gray-lighter;
