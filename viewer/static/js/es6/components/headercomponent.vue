@@ -102,16 +102,6 @@ export default {
       });
       return result;
     },
-      // <li v-for="(k,v) in getItCard" track-by="$index">
-      //     <div v-if="isArray(v)" v-for="item in v" track-by="$index">
-      //       <span v-if="showType(item['@type'])">{{item['@type']}}: {{item.value}}</span>
-      //       <span v-for="(x,y) in item" track-by="$index" v-if="isTitle(x)" v-bind:class="{'large-title': isTitle(x), 'medium-text': !isTitle(x)}">
-      //         {{y}}
-      //       </span>
-      //       <span v-if="isTitle(item['@type'])"> ({{item['@type']}})</span>
-      //     </div>
-      //     <span v-if="!isArray(v)">{{v}}</span>
-      //   </li>
   },
   components: {
   },
