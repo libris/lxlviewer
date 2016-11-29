@@ -120,6 +120,12 @@ export default {
       }
       return 'Unknown';
     },
+    getHeaderCard() {
+      return this.getHeaderInfo('cards');
+    },
+    getHeaderChip() {
+      return this.getHeaderInfo('chips');
+    },
   },
   components: {
   },
@@ -130,7 +136,7 @@ export default {
   <div class="header-component">
     <div class="instance-card-info" id="card-header">
       <ul>
-        <li v-for="(k, v) in getHeaderInfo('cards')">
+        <li v-for="(k, v) in getHeaderCard">
           <div v-if="isTitle(k)">
             <span class="large-title">{{v}}</span>
             <span class="medium-text"> ({{k}})</span>
@@ -147,7 +153,7 @@ export default {
         <span class="small-title">
           {{state}}
         </span>
-        <span v-for="(k, v) in getHeaderInfo('chips')">
+        <span v-for="(k, v) in getHeaderChip">
           <span v-if="isTitle(k)">
             <span class="small-title">{{v}}</span>
             <span class="small-text"> ({{k}})</span>
