@@ -121,6 +121,7 @@ export default class Editor extends View {
       data: {
         initialized: false,
         status: {
+          state: 'it',
           dirty: true,
           isDev: false,
           saved: {

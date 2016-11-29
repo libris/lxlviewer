@@ -125,6 +125,7 @@ export default {
   margin: 0px 0px 1em 0px;
   .chip-action {
     float: right;
+    cursor: pointer;
   }
   .item-label {
     display: block;
