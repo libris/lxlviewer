@@ -187,7 +187,7 @@ export default {
   }
   .entity-chip {
     height: 1.7em;
-    padding: 0px 0.2em 0px 0.5em;
+    padding: 0px 0.5em 0px 0.5em;
     margin: 0px 0.5em 0.5em 0px;
     border-radius: 1em;
     color: @chipTextColorLinked;
@@ -208,7 +208,8 @@ export default {
     .chip-action {
       float: left;
       padding: 0.25em;
-      color: fadeout(@chipTextColorLinked,20%);
+      margin-right: -0.3em;
+      color: fadeout(@chipTextColorLinked,50%);
       &:hover {
         color: @chipTextColorLinked;
       }
