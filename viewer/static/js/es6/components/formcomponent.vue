@@ -151,8 +151,13 @@ export default {
     },
     'update-value'(key, value) {
       const modified = this.formData;
-      modified[key] = value;
-      const merged = Object.assign({}, this.formData, modified);
+      const path = key;
+      _.update(modified, path, () => {
+        return (_.isArray(value) ? value : []).concat(value);
+      });
+      const basekey = key.split('.')[0];
+      console.log(basekey, 'changed to', _.get(modified, basekey));
+      const merged = Object.assign({}, modified);
       this.updateForm(this.focus, merged);
     },
     'add-anonymous'(key, item) {

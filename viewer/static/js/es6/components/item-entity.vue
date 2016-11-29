@@ -95,15 +95,7 @@ export default {
       return (this.isObject(value) || key === '@id');
     },
     removeThis() {
-      console.log('Removethis called');
-      const holder = this.$parent.value;
-      if (_.isArray(holder)) {
-        this.$parent.removeById(this.item['@id']);
-      } else if (_.isPlainObject(holder)) {
-        this.$parent.removeKey(this.key);
-      } else {
-        this.$parent.emptyValue();
-      }
+      this.$dispatch('remove-item', this.item);
     },
     addFocus() {
       this.focused = true;

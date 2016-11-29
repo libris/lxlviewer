@@ -4,7 +4,9 @@ import * as httpUtil from '../utils/http';
 import * as VocabUtil from '../utils/vocab';
 import * as DisplayUtil from '../utils/display';
 import * as EditUtil from '../utils/edit';
+import Vue from 'vue';
 import ProcessedLabel from './processedlabel';
+import DataNode from './datanode';
 import ItemEntity from './item-entity';
 import { getVocabulary, getDisplayDefinitions, getSettings, getEditorData } from '../vuex/getters';
 
@@ -72,19 +74,14 @@ export default {
       return types;
     },
   },
+  created() {
+    this.$options.components['data-node'] = Vue.extend(DataNode);
+  },
   ready() {
   },
   methods: {
     removeThis() {
-      console.log('Removethis called');
-      const holder = this.$parent.value;
-      if (_.isArray(holder)) {
-        this.$parent.removeById(this.item['@id']);
-      } else if (_.isPlainObject(holder)) {
-        this.$parent.removeKey(this.key);
-      } else {
-        this.$parent.emptyValue();
-      }
+      this.$dispatch('remove-item', this.item);
     },
     isObject(value) {
       return _.isObject(value);
@@ -104,8 +101,7 @@ export default {
     <ul>
       <li v-for="(k,v) in item" v-if="k !== '@type'">
         <span class="item-label">{{k | labelByLang | capitalize }}:</span>
-        <input v-model="v" v-if="!isObject(v)"></input>
-        <item-entity :key="k" :item="v" v-if="isObject(v)"></item-entity>
+        <data-node :is-locked="isLocked" :pkey="key" :pindex="index" :key="k" :value="v" :linked="editorData.linked"></data-node>
       </li>
     </ul>
   </div>

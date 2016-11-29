@@ -10,7 +10,7 @@ import { getVocabulary, getSettings } from '../vuex/getters';
 
 export default {
   name: 'data-node',
-  props: ['key', 'value', 'label', 'linked', 'isLocked'],
+  props: ['pkey', 'pindex', 'key', 'value', 'label', 'linked', 'isLocked'],
   vuex: {
     getters: {
       vocab: getVocabulary,
@@ -48,6 +48,22 @@ export default {
     'update-item-value'(value) {
       this.updateValue(value);
     },
+    'remove-item'(value) {
+      console.log("dn:remove-item was called", value);
+      const modified = Object.assign({}, this.value);
+      if (_.isArray(modified)) {
+        // Find item in the array and splice it..
+        _.remove(modified, (item) => {
+          if (_.isEqual(value, item)) {
+            return true;
+          }
+          return false;
+        });
+        this.updateValue(modified);
+      } else {
+        this.updateValue([]);
+      }
+    },
   },
   methods: {
     isMarc(key) {
@@ -59,7 +75,15 @@ export default {
       );
     },
     updateValue(value) {
-      this.$dispatch('update-value', this.key, value);
+      if (this.pkey && this.pindex !== '') {
+        const path = this.pkey + '[' + this.pindex + ']' + '.' + this.key;
+        this.$dispatch('update-value', path, value);
+      } else if (this.pkey) {
+        const path = this.pkey + '.' + this.key;
+        this.$dispatch('update-value', path, value);
+      } else {
+        this.$dispatch('update-value', this.key, value);
+      }
     },
     updateArray(index, value) {
       this.value.$set(index, value);
