@@ -38,6 +38,9 @@ export default {
       return JSON.stringify(this.item);
     },
     linkedItem() {
+      if (_.isArray(this.item) || !_.isObject(this.item)) {
+        throw new Error('Item is not an object.');
+      }
       return EditUtil.getLinked(
         this.item['@id'],
         this.editorData.linked
