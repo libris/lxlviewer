@@ -254,7 +254,7 @@ export default {
       </li>
     </ul>
     <field-adder v-if="!isLocked" :allowed="allowedProperties" :item="focus"></field-adder>
-    <div id="result" v-if="status.isDev">
+    <div id="result" v-if="status.isDev && !isLocked">
       <div class="row">
       <pre class="col-md-6">
         SORTED
