@@ -123,6 +123,7 @@ export default class Editor extends View {
         status: {
           dirty: true,
           isDev: false,
+          state: 'it',
           saved: {
             loading: false,
             status: {

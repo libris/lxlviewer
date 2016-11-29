@@ -19,8 +19,22 @@ export default {
   },
   data() {
     return {
-
+      showChipHeader: false,
     };
+  },
+  ready() { // Ready method is deprecated in 2.0, switch to "mounted"
+    this.$nextTick(() => {
+      window.onscroll = (e) => {
+        const cardHeader = document.getElementById('card-header');
+        const chipHeaderThreshold = cardHeader.offsetTop + (cardHeader.offsetHeight / 2);
+        const scrollPosition = e.target.body.scrollTop;
+        if (chipHeaderThreshold < scrollPosition) {
+          this.showChipHeader = true;
+        } else {
+          this.showChipHeader = false;
+        }
+      };
+    });
   },
   methods: {
     isArray(o) {
@@ -37,52 +51,11 @@ export default {
       const listOfKeys = ['ISBN']; // TODO: Fix list of keys to show.
       return _.indexOf(listOfKeys, k) > -1;
     },
-  },
-  computed: {
-    getItCard() {
-      const displayObj = {};
-      const item = this.editorData.it;
-
-      let propertyList = DisplayUtil.getProperties(item['@type'], 'cards', this.display);
-      if (propertyList.length === 0) {
-        const baseClasses = VocabUtil.getBaseClassesFromArray(
-          item['@type'],
-          this.vocab,
-          this.settings.vocabPfx
-        );
-        for (const baseClass of baseClasses) {
-          propertyList = DisplayUtil.getProperties(
-            baseClass.replace(this.settings.vocabPfx, ''),
-            'cards',
-            this.display
-          );
-          if (propertyList.length > 0) {
-            break;
-          }
-        }
-      }
-      for (const property of propertyList) {
-        if (item[property]) {
-          displayObj[property] = item[property];
-        }
-      }
-      return displayObj;
-    },
-    getWorkCard() {
-      const workCard = DisplayUtil.getCard(
-        this.editorData.work,
-        this.display,
-        this.editorData.linked,
-        this.vocab,
-        this.settings.vocabPfx
-      );
-      return workCard;
-    },
-    getHeaderInfo() { // TODO: Make acceptList a parameter
+    getHeaderInfo(level) { // TODO: Make acceptList a parameter
       const acceptList = ['value'];
       const result = {};
-      const card = this.getItCard;
-      _.each(card, (cardValue, cardKey) => {
+      const levelInfo = this.getDisplay(level, this.status.state);
+      _.each(levelInfo, (cardValue, cardKey) => {
         if (_.isArray(cardValue)) {
           _.each(cardValue, (deepValue) => {
             _.each(deepValue, (deepestValue, deepestKey) => {
@@ -102,6 +75,51 @@ export default {
       });
       return result;
     },
+    getDisplay(lens, level) {
+      const displayObj = {};
+      let item = '';
+      if (level === 'it') {
+        item = this.editorData.it;
+      } else if (level === 'work') {
+        item = this.editorData.work;
+      }
+
+      let propertyList = DisplayUtil.getProperties(item['@type'], lens, this.display);
+      if (propertyList.length === 0) {
+        const baseClasses = VocabUtil.getBaseClassesFromArray(
+          item['@type'],
+          this.vocab,
+          this.settings.vocabPfx
+        );
+        for (const baseClass of baseClasses) {
+          propertyList = DisplayUtil.getProperties(
+            baseClass.replace(this.settings.vocabPfx, ''),
+            lens,
+            this.display
+          );
+          if (propertyList.length > 0) {
+            break;
+          }
+        }
+      }
+      for (const property of propertyList) {
+        if (item[property]) {
+          displayObj[property] = item[property];
+        }
+      }
+      return displayObj;
+    },
+  },
+  computed: {
+    state() {
+      const state = this.status.state;
+      if (state === 'it') {
+        return 'Instance';
+      } else if (state === 'work') {
+        return 'Work';
+      }
+      return 'Unknown';
+    },
   },
   components: {
   },
@@ -110,9 +128,9 @@ export default {
 
 <template>
   <div class="header-component">
-    <div class="instance-info">
+    <div class="instance-card-info" id="card-header">
       <ul>
-        <li v-for="(k, v) in getHeaderInfo">
+        <li v-for="(k, v) in getHeaderInfo('cards')">
           <div v-if="isTitle(k)">
             <span class="large-title">{{v}}</span>
             <span class="medium-text"> ({{k}})</span>
@@ -124,6 +142,23 @@ export default {
         </li>
       </ul>
     </div>
+    <div class="container">
+      <div class="instance-chip-info" v-show="showChipHeader">
+        <span class="small-title">
+          {{state}}
+        </span>
+        <span v-for="(k, v) in getHeaderInfo('chips')">
+          <span v-if="isTitle(k)">
+            <span class="small-title">{{v}}</span>
+            <span class="small-text"> ({{k}})</span>
+          </span>
+          <span v-if="!isTitle(k)" class="minimum-text">
+            <span v-if="showKey(k)">{{k}}: {{v}}</span>
+            <span v-if="!showKey(k)">{{v}}</span>
+          </span>
+        </span>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -131,22 +166,23 @@ export default {
 @import './variables.less';
 
 .header-component {
-  padding: 20px;
-  flex-direction: row;
-  display: flex;
+  padding: 0px;
 
-  .work-info {
-    flex-grow: 2;
-    color: white;
-    background-color: @brand-primary;
-    padding: 10px;
-    text-align: center;
-    border-radius: 2px;
+  .container {
+    padding: 0px;
+    .instance-chip-info {
+      text-align: center;
+      padding: 5px;
+      top: 35px;
+      width: inherit;
+      position: fixed;
+      background-color: white;
+      box-shadow: 0px 6px 10px -6px rgba(0, 0, 0, 0.6);
+    }
   }
 
-  .instance-info {
-    flex-grow: 6;
-    padding-right: 40px;
+  .instance-card-info {
+    padding: 20px;
   }
 
   ul {
@@ -166,12 +202,22 @@ export default {
     border-bottom: 1px solid white;
   }
 
+  .small-title {
+    font-size: 16px;
+    font-weight: bold;
+  }
+
   .medium-text {
     font-size: 16px;
   }
 
   .small-text {
     font-size: 13px;
+  }
+
+  .minimum-text {
+    font-size: 10px;
+    font-style: italic;
   }
 }
 
