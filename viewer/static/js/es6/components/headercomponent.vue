@@ -2,6 +2,7 @@
 import * as _ from 'lodash';
 import * as DisplayUtil from '../utils/display';
 import * as VocabUtil from '../utils/vocab';
+import * as EditUtil from '../utils/edit';
 import { getVocabulary, getSettings, getEditorData, getDisplayDefinitions } from '../vuex/getters';
 
 export default {
@@ -51,10 +52,20 @@ export default {
       const listOfKeys = ['ISBN']; // TODO: Fix list of keys to show.
       return _.indexOf(listOfKeys, k) > -1;
     },
+    getValue(value) {
+      if (this.isObject(value)) {
+        if (typeof value['@id'] !== 'undefined') {
+          // return EditUtil.getLinked(value['@id'], this.editorData.linked);
+          return value['@id'];
+        }
+      }
+      return value;
+    },
     getHeaderInfo(level) { // TODO: Make acceptList a parameter
       const acceptList = ['value'];
       const result = {};
       const levelInfo = this.getDisplay(level, this.status.state);
+      console.log(levelInfo);
       _.each(levelInfo, (cardValue, cardKey) => {
         if (_.isArray(cardValue)) {
           _.each(cardValue, (deepValue) => {
@@ -64,13 +75,14 @@ export default {
               }
             });
             _.each(deepValue, (deepestValue, deepestKey) => {
-              if (_.indexOf(acceptList, deepestKey) > -1 || this.isTitle(deepestKey)) {
-                result[deepValue['@type']] += deepestValue;
+              // if (_.indexOf(acceptList, deepestKey) > -1 || this.isTitle(deepestKey)) {
+              if (deepestKey !== '@type') {
+                result[deepValue['@type']] += `${this.getValue(deepestValue)} `;
               }
             });
           });
         } else {
-          result[cardKey] = cardValue;
+          result[cardKey] = this.getValue(cardValue);
         }
       });
       return result;
@@ -135,6 +147,9 @@ export default {
 <template>
   <div class="header-component">
     <div class="instance-card-info" id="card-header">
+    <div class="large-title">
+      {{state}}
+    </div>
       <ul>
         <li v-for="(k, v) in getHeaderCard">
           <div v-if="isTitle(k)">
