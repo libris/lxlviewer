@@ -14,6 +14,7 @@ export default {
     key: '',
     index: Number,
     isLocked: false,
+    focus: '',
   },
   vuex: {
     getters: {
@@ -77,6 +78,12 @@ export default {
       );
       return types;
     },
+    isWork() {
+      return this.focus === 'work';
+    },
+    isInstance() {
+      return this.focus === 'it';
+    },
   },
   ready() {
   },
@@ -112,7 +119,7 @@ export default {
 
 <template>
   <div class="entity-container">
-    <div class="entity-chip">
+    <div class="entity-chip" :class="{ 'locked': isLocked, 'work-state': isWork, 'instance-state': isInstance}">
       <span class="chip-label" @mouseenter="showCardInfo=true" @mouseleave="showCardInfo=false">
         <span v-for="(k,v) in getChip">
           <span v-if="!isObject(v) && k !== '@id'">{{ v }}</span>
@@ -122,7 +129,7 @@ export default {
       <i class="chip-action fa fa-times" v-on:click="removeThis" v-if="!isLocked"></i>
     </div>
     <div class="card-info-container" v-show="showCardInfo">
-      <div class="card-info" v-bind:class="{ 'linked': isLinked}">
+      <div class="card-info" :class="{ 'locked': isLocked, 'work-state': isWork, 'instance-state': isInstance }">
         <ul>
           <li v-for="(k,v) in getCard">
             <span v-if="k === '@type'"><strong>{{v | labelByLang | capitalize }}</strong></span>
@@ -143,6 +150,7 @@ export default {
 
 
 .entity-container {
+  
   .chip-action {
     cursor: pointer;
   }
@@ -150,10 +158,15 @@ export default {
   .card-info-container {
     position: absolute;
     .card-info {
-      background-color: @chipColor;
-      color: chipTextColor;
+      &.instance-state {
+        background-color: @instance-chip-background;
+        color: @instance-chip-text;
+      }
+      &.work-state {
+        background-color: @work-chip-background;
+        color: @work-chip-text;
+      }
       max-width: 500px;
-      box-shadow: inset -2px -2px darken(@chipColor, 10%);
       border-bottom-left-radius: 10px;
       border-bottom-right-radius: 10px;
       border-top-right-radius: 10px;
@@ -161,11 +174,6 @@ export default {
       left: 5%;
       top: -8px;
       padding: 10px;
-      &.linked {
-        background-color: @chipColorLinked;
-        color: @chipTextColorLinked;
-        box-shadow: inset -2px -2px darken(@chipColorLinked, 10%);
-      }
       ul {
         list-style: none;
         padding: 0px;
@@ -190,12 +198,17 @@ export default {
     padding: 0px 0.5em 0px 0.5em;
     margin: 0px 0.5em 0.5em 0px;
     border-radius: 1em;
-    color: @chipTextColorLinked;
-    background-color: @chipColorLinked;
     border: 0px;
-    box-shadow: inset 0px -2px darken(@chipColorLinked, 10%);
+    &.instance-state {
+      color: @instance-chip-text;
+      background-color: @instance-chip-background;
+    }
+    &.work-state {
+      color: @work-chip-text;
+      background-color: @work-chip-background;
+    }
     &.locked {
-      padding-right: 0.5em;
+      padding-right: 1em;
     }
     .chip-label {
       float: left;
@@ -209,9 +222,8 @@ export default {
       float: left;
       padding: 0.25em;
       margin-right: -0.3em;
-      color: fadeout(@chipTextColorLinked,50%);
       &:hover {
-        color: @chipTextColorLinked;
+        color: darken(@instance-chip-background, 50%);
       }
     }
   }

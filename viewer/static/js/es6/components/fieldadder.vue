@@ -11,7 +11,7 @@ export default {
     allowed: [],
     active: false,
     filterKey: '',
-    item: {},
+    focus: '',
   },
   vuex: {
     getters: {
@@ -19,6 +19,12 @@ export default {
     },
   },
   computed: {
+    isWork() {
+      return this.focus === 'work';
+    },
+    isInstance() {
+      return this.focus === 'it';
+    },
     filteredResults() {
       const lang = this.settings.lang;
       if (!this.allowed || this.allowed.length === 0) {
@@ -88,7 +94,7 @@ export default {
 
 <template>
   <div class="field-adder">
-    <a id="add-button" v-on:click="show">
+    <a id="add-button" v-on:click="show" :class="{ 'work-state': isWork, 'instance-state': isInstance }">
       <i class="fa fa-plus plus-icon" aria-hidden="true"></i>
       NYTT FÄLT
     </a>
@@ -126,33 +132,40 @@ export default {
 @import './variables.less';
 
 .field-adder {
+  padding-top: 10px;
+  background-color: #fff;
   text-align: center;
   display: block; // So that the clickaway plugin triggers nicely
   #add-button {
-    background-color:@brand-primary;
-    -moz-border-radius:2px;
-    -webkit-border-radius:2px;
+    &.instance-state {
+      background-color: @instance-background;
+      color: @instance-text;
+    }
+    &.work-state {
+      background-color: @work-background;
+      color: @work-text;
+    }
     border-radius:2px;
-    border:1px solid @brand-primary;
     display:inline-block;
     cursor:pointer;
-    color:#ffffff;
-    font-family:Arial;
     font-size:16px;
     font-weight: bold;
-    padding:5px 20px 5px 20px;
-    text-decoration:none;
-    text-shadow:0px 1px 0px #2f6627;
-      .plus-icon {
-        vertical-align: middle;
+    padding:5px 20px;
+    .plus-icon {
+      vertical-align: middle;
+    }
+    &:hover {
+      &.instance-state {
+        background-color: @instance-hover;
       }
-      &:hover {
-        background-color:#00ad9c;
+      &.work-state {
+        background-color: @work-hover;
       }
-      &:active {
-        position:relative;
-        top:1px;
-      }
+    }
+    &:active {
+      position:relative;
+      top:1px;
+    }
   }
   >a {
     cursor: pointer;

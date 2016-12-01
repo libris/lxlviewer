@@ -39,6 +39,12 @@ export default {
     };
   },
   computed: {
+    isWork() {
+      return this.focus === 'work';
+    },
+    isInstance() {
+      return this.focus === 'it';
+    },
     isLocked() {
       if (this.locked || this.status.state !== this.focus) {
         return true;
@@ -226,6 +232,9 @@ export default {
     updateFromTextarea(e) {
       this.updateForm(this.focus, JSON.parse(e.target.value));
     },
+    changeState() {
+      this.$dispatch('change-state', this.focus);
+    },
   },
   components: {
     'data-node': DataNode,
@@ -236,24 +245,27 @@ export default {
 </script>
 
 <template>
-  <div class="form-component" v-bind:class="{ 'locked': locked }">
-    <div class="form-header">- {{ sortedFormData['@type'] | labelByLang | capitalize }} -</div>
+  <div class="form-component" :class="{ 'locked': isLocked, 'work-state': isWork, 'instance-state': isInstance }">
+    <div class="form-header" v-if="isLocked">
+      <span>{{ sortedFormData['@type'] | labelByLang | capitalize }}</span>
+      <span class="edit-locked" @click="changeState()">Redigera<i class="fa fa-pencil-square-o" aria-hidden="true"></i></span>
+    </div>
     <ul>
       <li v-for="(k,v) in sortedFormData" v-bind:class="{ 'locked': isLocked }">
-        <div class="label">
+        <div class="label" v-bind:class="{ 'locked': isLocked }"> 
           <!-- <a href="/vocab/#{{property}}">{{ property | labelByLang | capitalize }}</a> -->
           {{ k | labelByLang | capitalize }}
         </div>
         <div class="value">
-          <data-node :is-locked="keyIsLocked(k)" :key="k" :value="v" :linked="linked"></data-node>
+          <data-node :is-locked="keyIsLocked(k)" :key="k" :value="v" :linked="linked" :focus="focus"></data-node>
         </div>
-        <div class="actions">
+        <div class="actions" v-if="!isLocked">
           <div class="action action-remove" v-if="!keyIsLocked(k)" class="delete" v-on:click="removeField(k)"><i class="fa fa-trash"></i></div>
-          <entity-adder class="action" v-if="!keyIsLocked(k) && (isRepeatable(k) || isEmptyObject(v))" :key="k"></entity-adder>
+          <entity-adder class="action" v-if="!keyIsLocked(k) && (isRepeatable(k) || isEmptyObject(v))" :key="k" :focus="focus"></entity-adder>
         </div>
       </li>
     </ul>
-    <field-adder v-if="!isLocked" :allowed="allowedProperties" :item="focus"></field-adder>
+    <field-adder v-if="!isLocked" :allowed="allowedProperties" :focus="focus"></field-adder>
     <div id="result" v-if="status.isDev && !isLocked">
       <div class="row">
       <pre class="col-md-6">
@@ -281,39 +293,79 @@ export default {
 @col-action: 250px;
 
 .form-component {
-  border: 1px solid @brand-primary;
-  padding-bottom: 10px;
+
+
   .form-header {
-    background-color: @brand-primary;
+    .edit-locked {
+      font-size: 15px;
+      float: right;
+      cursor: pointer;
+      margin-right: 10px;
+      padding: 1px 4px;
+      border-radius: 2px;
+      &.instance-state {
+        background-color: @instance-background-dark;
+      }
+      &.work-state {
+        background-color: @work-background-dark;
+      }
+      &:hover {
+        &.instance-state {
+          background-color: @instance-hover;
+        }
+        &.work-state {
+          background-color: @work-hover;
+        }
+      }
+      i {
+        margin-left: 2px;
+      }
+    }
     font-weight: bold;
-    color: @neutral-color;
+    font-size: 18px;
     text-align: center;
+    padding: 10px 0px;
   }
   margin: 20px;
+
   &.locked {
-    background-color: darken(@neutral-color, 10%);
+    color: white;
+    border-radius: 10px;
     > ul > li {
       margin: 0px;
     }
   }
+
+  &.instance-state {
+    background-color: @instance-background;
+  }
+  &.work-state {
+    background-color: @work-background;
+  }
   >ul {
     padding-left: 0px;
+    margin: 0px;
     >li {
+      &:not(.locked) {
+        border-top: 1px;
+        background-color: @node-bg;
+        border: solid @node-bg;
+        border-width: 1px 0px;
+        transition: border-color 0.25s ease;
+        transition-delay: 0.2s;
+      }
+      border-top: 1px solid white;
       display: flex;
       flex-direction: row;
       align-items: center;
       padding: 5px 0px;
       list-style: none;
       width: 100%;
-      background-color: @node-bg;
-      border: solid @node-bg;
-      border-width: 1px 0px;
-      transition: border-color 0.25s ease;
-      transition-delay: 0.2s;
-      &:nth-child(odd) {
+      
+      &:nth-child(odd):not(.locked) {
         background-color: darken(@node-bg, 2%);
       }
-      &:hover {
+      &:hover:not(.locked) {
         border-color: #c5c3c3;
         >.actions {
           opacity: 1;
@@ -351,13 +403,14 @@ export default {
         width: @col-label;
         text-align: right;
         line-height: 2.5;
-        color: @gray-dark;
+        &:not(.locked) {
+          color: @gray-dark;
+        }
         font-weight: normal;
         line-height: 12px;
         a {
           cursor: help;
           text-decoration: none;
-          color: @gray-dark;
           line-height: 12px;
           font-weight: normal;
           border-bottom: dashed transparent 1px;

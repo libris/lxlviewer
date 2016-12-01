@@ -14,6 +14,7 @@ export default {
     key: '',
     index: Number,
     isLocked: false,
+    focus: '',
   },
   vuex: {
     getters: {
@@ -68,6 +69,12 @@ export default {
         }
       });
       return bEmpty;
+    },
+    isWork() {
+      return this.focus === 'work';
+    },
+    isInstance() {
+      return this.focus === 'it';
     },
   },
   ready() {
@@ -149,7 +156,7 @@ export default {
 </script>
 
 <template>
-  <div class="item-anonymous" v-bind:class="{'expanded': inEdit, 'collapsed': !inEdit }">
+  <div class="item-anonymous" v-bind:class="{'expanded': inEdit, 'collapsed': !inEdit, 'locked': isLocked, 'work-state': isWork, 'instance-state': isInstance }">
     <div v-show="!inEdit">
       <span class="chip-label" @mouseenter="showCardInfo=true" @mouseleave="showCardInfo=false">
         <span v-for="(k,v) in getChip">
@@ -165,14 +172,14 @@ export default {
       <span v-for="(k,v) in item" v-if="k !== '@type'">
         <span class="item-label">{{k | labelByLang | capitalize }}:</span>
         <input v-model="v" v-if="!isObject(v)"></input>
-        <item-entity :key="k" :item="v" v-if="isObject(v)"></item-entity>
+        <item-entity :focus="focus" :key="k" :item="v" v-if="isObject(v)"></item-entity>
       </span>
       <div class="actions">
         <button v-on:click="closeForm" v-bind:disabled="isEmpty">Klar</button>
       </div>
     </div>
     <div class="card-info-container" v-show="showCardInfo">
-      <div class="card-info" v-bind:class="{ 'linked': isLinked}">
+      <div class="card-info" :class="{ 'locked': isLocked, 'work-state': isWork, 'instance-state': isInstance }">
         <ul>
           <li v-for="(k,v) in getCard">
             <span v-if="k === '@type'"><strong>{{v | labelByLang | capitalize }}</strong></span>
@@ -195,7 +202,16 @@ export default {
   margin: 0px 0px 3px 3px;
   transition: 1s ease;
   transition-property: width, box-shadow;
-  box-shadow: 0px 2px 3px 1px rgba(0, 0, 0, 0);
+  &.instance-state {
+    background-color: @instance-chip-background;
+    color: @instance-chip-text;
+    box-shadow: inset -2px -2px darken(@instance-chip-background, 10%);
+  }
+  &.work-state {
+    background-color: @work-chip-background;
+    color: @work-chip-text;
+    box-shadow: inset -2px -2px darken(@work-chip-background, 10%);
+  }
   .item-label {
     display: block;
   }
@@ -204,16 +220,16 @@ export default {
     padding: 0px 0.2em 0px 0.5em;
     margin: 0px 0.5em 0.5em 0px;
     border-radius: 1em;
-    color: @chipTextColor;
-    background-color: @chipColor;
+    &.locked {
+      padding-right: 1em;
+    }
     border: 0px;
-    box-shadow: inset 0px -2px darken(@chipColor, 10%);
     .chip-action {
       float: right;
       padding: 0.25em;
-      color: fadeout(@chipTextColor,20%);
+      color: fadeout(@instance-chip-text,20%);
       &:hover {
-        color: @chipTextColor;
+        color: @instance-chip-text;
       }
     }
   }
@@ -244,9 +260,15 @@ export default {
   .card-info-container {
     position: absolute;
     .card-info {
-      background-color: @chipColor;
-      color: chipTextColor;
-      box-shadow: inset -2px -2px darken(@chipColor, 10%);
+      &.instance-state {
+        background-color: @instance-chip-background;
+        color: @instance-chip-text;
+      }
+      &.work-state {
+        background-color: @work-chip-background;
+        color: @work-chip-text;
+      }
+      max-width: 500px;
       border-bottom-left-radius: 10px;
       border-bottom-right-radius: 10px;
       border-top-right-radius: 10px;
@@ -254,14 +276,14 @@ export default {
       left: 5%;
       top: -8px;
       padding: 10px;
-      &.linked {
-        background-color: @chipColorLinked;
-        color: @chipTextColorLinked;
-        box-shadow: inset -2px -2px darken(@chipColorLinked, 10%);
-      }
       ul {
         list-style: none;
         padding: 0px;
+        li {
+          span {
+            word-break: break-word;
+          }
+        }
       }
     }
   }
@@ -278,10 +300,10 @@ export default {
     padding: 0px 0.2em 0px 0.5em;
     margin: 0px 0.5em 0.5em 0px;
     border-radius: 1em;
-    color: @chipTextColor;
-    background-color: @chipColor;
+    color: @instance-chip-text;
+    background-color: @instance-chip-background;
     border: 0px;
-    box-shadow: inset 0px -2px darken(@chipColor, 10%);
+    box-shadow: inset 0px -2px darken(@instance-chip-background, 10%);
     &.locked {
       padding-right: 0.5em;
     }
@@ -296,23 +318,15 @@ export default {
     .chip-action {
       float: right;
       padding: 0.25em;
-      color: fadeout(@chipTextColor,20%);
+      color: fadeout(@instance-chip-text,20%);
       &:hover {
-        color: @chipTextColor;
-      }
-    }
-    &.linked {
-      background-color: @chipColorLinked;
-      box-shadow: inset 0px -2px darken(@chipColorLinked, 10%);
-      color: @chipTextColorLinked;
-      i {
-        color:@chipTextColorLinked;;
+        color: @instance-chip-text;
       }
     }
   }
   .entity-form {
     border: 0px solid;
-    background-color: darken(@chipColor, 5%);
+    background-color: darken(@instance-chip-background, 5%);
     border-radius: 2px;
     padding: 5px;
     overflow: hidden;

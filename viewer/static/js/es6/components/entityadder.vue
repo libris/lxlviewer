@@ -30,6 +30,7 @@ export default {
   },
   props: {
     key: '',
+    focus: '',
     allowAnon: true,
   },
   components: {
@@ -43,6 +44,12 @@ export default {
     },
   },
   computed: {
+    isWork() {
+      return this.focus === 'work';
+    },
+    isInstance() {
+      return this.focus === 'it';
+    },
     getRange() {
       return VocabUtil.getRange(this.key, this.vocab, this.settings.vocabPfx);
     },
@@ -181,7 +188,7 @@ export default {
 
 <template>
 <span class="entity-adder" v-on-clickaway="closeSearch">
-    <a class="add-entity-button" v-on:click="add()">
+    <a class="add-entity-button" v-on:click="add()" :class="{ 'work-state': isWork, 'instance-state': isInstance }">
       <i class="fa fa-plus plus-icon" aria-hidden="true"></i>
     </a>
     <div class="search-box" v-show="searchOpen">
@@ -212,30 +219,37 @@ export default {
 .entity-adder {
   opacity: 1;
   .add-entity-button {
-    background-color:@brand-primary;
-    -moz-border-radius:28px;
-    -webkit-border-radius:28px;
+    &.instance-state {
+      color: @instance-text;
+      background-color: @instance-background;
+    }
+    &.work-state {
+      color: @work-text;
+      background-color: @work-background;
+    }
     border-radius:28px;
-    border:1px solid @brand-primary;
     display:inline-block;
     cursor:pointer;
-    color:#ffffff;
     font-family:Arial;
     font-size:10px;
     padding-right: 5px;
     padding-left: 5px;
     text-decoration:none;
-    text-shadow:0px 1px 0px #2f6627;
-      .plus-icon {
-        vertical-align: middle;
+    .plus-icon {
+      vertical-align: middle;
+    }
+    &:hover {
+      &.instance-state {
+        background-color: @instance-hover;
       }
-      &:hover {
-        background-color:#00ad9c;
+      &.work-state {
+        background-color: @work-hover;
       }
-      &:active {
-        position:relative;
-        top:1px;
-      }
+    }
+    &:active {
+      position:relative;
+      top:1px;
+    }
   }
   .search-box {
     width: 200px;

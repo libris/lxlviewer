@@ -194,7 +194,7 @@ export default {
     .instance-chip-info {
       text-align: center;
       padding: 5px;
-      top: 35px;
+      top: 32px;
       width: inherit;
       position: fixed;
       background-color: white;
@@ -214,7 +214,7 @@ export default {
 
 
   .large-title {
-    font-size: 26px;
+    font-size: 20px;
     font-weight: bold;
   }
 
@@ -229,11 +229,11 @@ export default {
   }
 
   .medium-text {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .small-text {
-    font-size: 13px;
+    font-size: 12px;
   }
 
   .minimum-text {

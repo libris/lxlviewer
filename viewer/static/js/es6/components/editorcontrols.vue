@@ -45,6 +45,12 @@ export default {
         by: EditUtil.getLinked(this.editorData.record.assigner['@id'], this.editorData.linked).name,
       };
     },
+    isWork() {
+      return this.status.state === 'work';
+    },
+    isInstance() {
+      return this.status.state === 'it';
+    },
   },
   components: {
     notifications: Notifications,
@@ -54,13 +60,13 @@ export default {
 
 <template>
   <div class="container editor-container">
-    <div class="editor-controls" data-spy="affix" data-offset-top="80">
+    <div class="editor-controls" :class="{ 'work-state': isWork, 'instance-state': isInstance }" data-spy="affix" data-offset-top="80">
       <div class="admin-info">
         <div class="actions">
           <div class="action">
             <i class="fa fa-info-circle" aria-hidden="true" @click="toggleAdminData()"></i>
             <div class="card-info-container" v-show="showAdminInfo">
-              <div class="card-info" v-bind:class="{ 'linked': isLinked}">
+              <div class="card-info" v-bind:class="{ 'linked': isLinked, 'work-state': isWork, 'instance-state': isInstance }">
                 <ul>
                   <li v-for="(k, v) in getAdminData">
                     {{k}}: {{v}}
@@ -96,10 +102,6 @@ export default {
 <style lang="less">
 @import './variables.less';
 
-@background: #547e91;
-
-
-
   .container {
     padding: 0px;
 
@@ -108,7 +110,14 @@ export default {
           top: 0;
           width: inherit;
       }
-      background-color: @background;
+      &.instance-state {
+        background-color: @instance-background;
+        color: @instance-text;
+      }
+      &.work-state {
+        background-color: @work-background;
+        color: @work-text;
+      }
       .admin-info {
         flex-direction: row;
         display: flex;
@@ -121,38 +130,11 @@ export default {
           .node {
             font-size: 0.8em;
             vertical-align: middle;
-            color: lighten(@background, 40%)
           }
         }
         #saveButton {
           padding: 0px;
           flex-grow: 1;
-        }
-        #add-button {
-          background-color:#009788;
-          -moz-border-radius:28px;
-          -webkit-border-radius:28px;
-          border-radius:28px;
-          border:1px solid #009788;
-          display:inline-block;
-          cursor:pointer;
-          color:#ffffff;
-          font-family:Arial;
-          font-size:17px;
-          padding-right: 10px;
-          padding-left: 10px;
-          text-decoration:none;
-          text-shadow:0px 1px 0px #2f6627;
-            .plus-icon {
-              vertical-align: middle;
-            }
-            &:hover {
-              background-color:#00ad9c;
-            }
-            &:active {
-              position:relative;
-              top:1px;
-            }
         }
 
         .actions {
@@ -162,8 +144,15 @@ export default {
             .card-info-container {
               position: absolute;
               .card-info {
+                &.instance-state {
+                  background-color: @instance-background;
+                  color: @instance-text;
+                }
+                &.work-state {
+                  background-color: @work-background;
+                  color: @work-text;
+                }
                 cursor: auto;
-                background-color: @background;
                 max-width: 500px;
                 border: 1px solid #999;
                 border-bottom-left-radius: 10px;
@@ -189,9 +178,6 @@ export default {
                 color: @brand-primary;
               }
             }
-          }
-          i {
-            color: lighten(@background, 40%);
           }
         }
       }

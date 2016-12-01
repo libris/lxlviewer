@@ -17,6 +17,7 @@ export default {
     key: '',
     index: Number,
     isLocked: false,
+    focus: '',
   },
   vuex: {
     getters: {
@@ -96,12 +97,12 @@ export default {
 
 <template>
   <div class="item-embedded">
-    <i v-if="!isLocked" class="fa fa-times chip-action" v-on:click="removeThis"></i>
+    <i v-if="!isLocked" class="fa fa-trash chip-action" v-on:click="removeThis"></i>
     <strong>{{ item['@type'] | labelByLang | capitalize }}</strong>
     <ul>
       <li v-for="(k,v) in item" v-if="k !== '@type'">
         <span class="item-label">{{k | labelByLang | capitalize }}:</span>
-        <data-node :is-locked="isLocked" :pkey="key" :pindex="index" :key="k" :value="v" :linked="editorData.linked"></data-node>
+        <data-node :is-locked="isLocked" :pkey="key" :pindex="index" :key="k" :value="v" :focus="focus" :linked="editorData.linked"></data-node>
       </li>
     </ul>
   </div>

@@ -169,6 +169,9 @@ export default class Editor extends View {
         'show-message': function(messageObj) {
           console.log("Should show notification", JSON.stringify(messageObj));
         },
+        'change-state': function(newState) {
+          this.status.state = newState;
+        },
       },
       watch: {
         copyId(value, oldval) {
