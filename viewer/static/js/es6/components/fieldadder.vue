@@ -33,7 +33,6 @@ export default {
           this.buttonPos = document.getElementById('add-button').offsetTop;
         }
         const scrollPosition = this.buttonPos + e.target.body.scrollTop;
-        console.log(buttonThreshold, this.buttonPos, scrollPosition);
         if (buttonThreshold > scrollPosition) {
           this.buttonFixed = true;
         } else {
@@ -91,13 +90,16 @@ export default {
     },
   },
   methods: {
-    addField(prop) {
+    addField(prop, close) {
       this.$dispatch('add-field', prop);
       this.$dispatch('show-message', {
         title: 'Test',
         msg: 'Added field',
         type: 'success',
       });
+      if (close) {
+        this.hide();
+      }
     },
     show() {
       LayoutUtil.scrollLock(true);
@@ -140,13 +142,13 @@ export default {
         </span>
       </div>
       <ul v-if="active">
-        <li v-bind:class="{ 'added': prop.added }" v-for="prop in filteredResults">
+        <li v-bind:class="{ 'added': prop.added }" v-for="prop in filteredResults" @click="addField(prop.item, true)">
           <span class="fieldLabel" title="{{prop.item['@id'] | labelByLang | capitalize }}">
             {{prop.item['@id'] | labelByLang | capitalize }}
           </span>
           <span class="typeLabel">{{ prop.item['@id'] }}</span>
           <span class="addControl">
-            <a v-on:click.prevent="addField(prop.item)"><i class="fa fa-plus-circle"></i></a>
+            <a v-on:click.prevent="addField(prop.item, false)"><i class="fa fa-plus-circle"></i></a>
             <span><i class="fa fa-check"></i></span>
           </span>
         </li>
@@ -280,6 +282,7 @@ export default {
         margin: 0px;
         padding: 3px;
         line-height: 1.3;
+        cursor: pointer;
         .fieldLabel {
           display: inline-block;
           width: 45%;
