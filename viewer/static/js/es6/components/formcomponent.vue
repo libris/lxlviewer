@@ -248,10 +248,10 @@ export default {
   <div class="form-component" :class="{ 'locked': isLocked, 'work-state': isWork, 'instance-state': isInstance }">
     <div class="form-header" v-if="isLocked">
       <span>{{ sortedFormData['@type'] | labelByLang | capitalize }}</span>
-      <span class="edit-locked" @click="changeState()">Redigera<i class="fa fa-pencil-square-o" aria-hidden="true"></i></span>
+      <span class="edit-locked" :class="{ 'work-state': isWork, 'instance-state': isInstance }" @click="changeState()">Redigera<i class="fa fa-pencil-square-o" aria-hidden="true"></i></span>
     </div>
     <ul>
-      <li v-for="(k,v) in sortedFormData" v-bind:class="{ 'locked': isLocked }">
+      <li v-for="(k,v) in sortedFormData" v-bind:class="{ 'locked': isLocked, 'work-state': isWork, 'instance-state': isInstance }">
         <div class="label" v-bind:class="{ 'locked': isLocked }"> 
           <!-- <a href="/vocab/#{{property}}">{{ property | labelByLang | capitalize }}</a> -->
           {{ k | labelByLang | capitalize }}
@@ -329,6 +329,12 @@ export default {
   margin: 20px;
 
   &.locked {
+    &.instance-state {
+      background-color: @instance-background;
+    }
+    &.work-state {
+      background-color: @work-background;
+    }
     color: white;
     border-radius: 10px;
     > ul > li {
@@ -336,37 +342,41 @@ export default {
     }
   }
 
-  &.instance-state {
-    background-color: @instance-background;
-  }
-  &.work-state {
-    background-color: @work-background;
-  }
+  
   >ul {
     padding-left: 0px;
     margin: 0px;
     >li {
       &:not(.locked) {
-        border-top: 1px;
-        background-color: @node-bg;
-        border: solid @node-bg;
-        border-width: 1px 0px;
-        transition: border-color 0.25s ease;
-        transition-delay: 0.2s;
+        &.instance-state {
+          background-color: rgba(84, 126, 145, 0.11);
+        }
+        &.work-state {
+          background-color: rgba(14, 138, 3, 0.16);
+        }
       }
-      border-top: 1px solid white;
+      &.locked {
+        border-top: 1px solid white;
+      }
       display: flex;
       flex-direction: row;
       align-items: center;
       padding: 5px 0px;
       list-style: none;
       width: 100%;
+      box-shadow: none;
+      transition: box-shadow ease-out 0.2s;
       
       &:nth-child(odd):not(.locked) {
-        background-color: darken(@node-bg, 2%);
+        &.instance-state {
+          background-color: rgba(84, 126, 145, 0.34);
+        }
+        &.work-state {
+          background-color: rgba(36, 129, 28, 0.3);
+        }
       }
       &:hover:not(.locked) {
-        border-color: #c5c3c3;
+        box-shadow: 0px 0px 8px 2px #aaa;
         >.actions {
           opacity: 1;
         }
@@ -376,8 +386,7 @@ export default {
         flex-direction: row-reverse;
         justify-content: space-between;
         width: @col-action;
-        transition: opacity ease 0.2s;
-        transition-delay: 0.2s;
+        transition: opacity ease-out 0.2s;
         opacity: 0;
         margin-right: 6px;
         margin-left: 10px;

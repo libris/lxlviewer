@@ -121,6 +121,7 @@ export default {
   <div class="entity-container">
     <div class="entity-chip" :class="{ 'locked': isLocked, 'work-state': isWork, 'instance-state': isInstance}">
       <span class="chip-label" @mouseenter="showCardInfo=true" @mouseleave="showCardInfo=false">
+      <i class="fa fa-link" aria-hidden="true"></i>
         <span v-for="(k,v) in getChip">
           <span v-if="!isObject(v) && k !== '@id'">{{ v }}</span>
           <span v-if="!(!isObject(v) && k !== '@id') && size(getChip) === 1">{{ v | json | removeDomain }}</span>
@@ -196,7 +197,7 @@ export default {
   .entity-chip {
     height: 1.7em;
     padding: 0px 0.5em 0px 0.5em;
-    margin: 0px 0.5em 0.5em 0px;
+    margin: 0.25em;
     border-radius: 1em;
     border: 0px;
     &.instance-state {
