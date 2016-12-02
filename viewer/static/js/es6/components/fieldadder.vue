@@ -18,6 +18,30 @@ export default {
       settings: getSettings,
     },
   },
+  data() {
+    return {
+      buttonFixed: true,
+      buttonPos: -1,
+    };
+  },
+  ready() { // Ready method is deprecated in 2.0, switch to "mounted"
+    this.$nextTick(() => { // TODO: Fix proper scroll tracking. This is just an ugly solution using document.onscroll here and window.scroll in editorcontrols.vue
+      document.onscroll = (e) => {
+        const topFormComponent = document.getElementsByClassName('form-component')[0];
+        const buttonThreshold = topFormComponent.offsetTop + topFormComponent.offsetHeight - document.getElementById('add-button').offsetHeight;
+        if (this.buttonPos === -1) {
+          this.buttonPos = document.getElementById('add-button').offsetTop;
+        }
+        const scrollPosition = this.buttonPos + e.target.body.scrollTop;
+        console.log(buttonThreshold, this.buttonPos, scrollPosition);
+        if (buttonThreshold > scrollPosition) {
+          this.buttonFixed = true;
+        } else {
+          this.buttonFixed = false;
+        }
+      };
+    });
+  },
   computed: {
     isWork() {
       return this.focus === 'work';
@@ -94,7 +118,11 @@ export default {
 
 <template>
   <div class="field-adder">
-    <a id="add-button" v-on:click="show" :class="{ 'work-state': isWork, 'instance-state': isInstance }">
+    <a id="add-button" v-on:click="show" :class="{ 'work-state': isWork, 'instance-state': isInstance, 'is-fixed': buttonFixed }">
+      <i class="fa fa-plus plus-icon" aria-hidden="true"></i>
+      NYTT FÄLT
+    </a>
+    <a id="mock-button" v-show="buttonFixed">
       <i class="fa fa-plus plus-icon" aria-hidden="true"></i>
       NYTT FÄLT
     </a>
@@ -145,12 +173,23 @@ export default {
       background-color: @work-background;
       color: @work-text;
     }
+    &.is-fixed {
+      position: fixed;
+      bottom: 3%;
+      right: 0;
+      left: 0;
+    }
+    position: relative;
+    width: 141px;
+    margin-right: auto;
+    margin-left: auto;
     border-radius:2px;
-    display:inline-block;
+    box-shadow: 0px 7px 10px 0px rgba(0,0,0,0.7);
     cursor:pointer;
     font-size:16px;
     font-weight: bold;
     padding:5px 20px;
+    text-decoration: none;
     .plus-icon {
       vertical-align: middle;
     }
@@ -163,9 +202,11 @@ export default {
       }
     }
     &:active {
-      position:relative;
-      top:1px;
+      bottom: 2.5%;
     }
+  }
+  #mock-button {
+    visibility: hidden;
   }
   >a {
     cursor: pointer;

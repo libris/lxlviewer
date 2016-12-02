@@ -109,6 +109,7 @@ export default {
       &.affix {
           top: 0;
           width: inherit;
+          z-index: 99999;
       }
       &.instance-state {
         background-color: @instance-background;

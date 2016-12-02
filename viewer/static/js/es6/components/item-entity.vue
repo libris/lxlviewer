@@ -203,10 +203,12 @@ export default {
     &.instance-state {
       color: @instance-chip-text;
       background-color: @instance-chip-background;
+      box-shadow: inset -2px -2px darken(@instance-chip-background, 10%);
     }
     &.work-state {
       color: @work-chip-text;
       background-color: @work-chip-background;
+      box-shadow: inset -2px -2px darken(@work-chip-background, 10%);
     }
     &.locked {
       padding-right: 1em;
