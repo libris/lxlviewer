@@ -215,7 +215,7 @@ export default {
   &.collapsed {
     height: 1.7em;
     padding: 0px 0.2em 0px 0.5em;
-    margin: 0px 0.5em 0.5em 0px;
+    margin: 0.25em;
     border-radius: 1em;
     &.locked {
       padding-right: 1em;
