@@ -245,14 +245,14 @@ export default {
 </script>
 
 <template>
-  <div class="form-component" :class="{ 'locked': isLocked, 'work-state': isWork, 'instance-state': isInstance }">
+  <div class="form-component" :class="{ 'locked': isLocked, 'work-state': isWork, 'instance-state': isInstance, 'focused-form-component': status.state === this.focus }">
     <div class="form-header" v-if="isLocked">
       <span>{{ sortedFormData['@type'] | labelByLang | capitalize }}</span>
       <span class="edit-locked" :class="{ 'work-state': isWork, 'instance-state': isInstance }" @click="changeState()">Redigera<i class="fa fa-pencil-square-o" aria-hidden="true"></i></span>
     </div>
     <ul>
       <li v-for="(k,v) in sortedFormData" v-bind:class="{ 'locked': isLocked, 'work-state': isWork, 'instance-state': isInstance }">
-        <div class="label" v-bind:class="{ 'locked': isLocked }"> 
+        <div class="label" v-bind:class="{ 'locked': isLocked }">
           <!-- <a href="/vocab/#{{property}}">{{ property | labelByLang | capitalize }}</a> -->
           {{ k | labelByLang | capitalize }}
         </div>
