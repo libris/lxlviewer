@@ -70,6 +70,9 @@ export default class Editor extends View {
     }, false);
 
     Vue.filter('labelByLang', (label) => {
+      if (!label) {
+        return '[FAILED LABEL]';
+      }
       const pfx = self.settings.vocabPfx;
       const lang = self.settings.lang;
       // Filter for fetching labels from vocab

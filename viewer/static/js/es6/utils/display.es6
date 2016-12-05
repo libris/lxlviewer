@@ -74,7 +74,7 @@ export function getDisplayObject(item, level, displayDefs, linked, vocab, vocabP
   }
   if (!trueItem.hasOwnProperty('@type') && trueItem.hasOwnProperty('@id')) {
     console.warn('Tried to get linked but failed', 'id was', trueItem['@id']);
-    return { 'label': 'N/A' };
+    return { 'label': 'Not found' };
   }
 
   // Get the list of properties we want to show
@@ -121,7 +121,7 @@ export function getDisplayObject(item, level, displayDefs, linked, vocab, vocabP
     }
   }
   if (_.isEmpty(result)) {
-    result = { 'label': 'N/A' };
+    result = { 'label': 'Unknown' };
   }
   if (Object.keys(result).length === 1) {
     result = {

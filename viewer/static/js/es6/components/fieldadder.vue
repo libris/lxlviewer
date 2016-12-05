@@ -151,7 +151,7 @@ export default {
         </span>
       </div>
       <ul v-if="active">
-        <li v-bind:class="{ 'added': prop.added }" v-for="prop in filteredResults" @click="addField(prop.item, true)">
+        <li v-bind:class="{ 'added': prop.added, 'available': !prop.added }" v-for="prop in filteredResults" @click="addField(prop.item, true)">
           <span class="fieldLabel" title="{{prop.item['@id'] | labelByLang | capitalize }}">
             {{prop.item['@id'] | labelByLang | capitalize }}
           </span>
@@ -288,10 +288,15 @@ export default {
         &:nth-child(odd) {
           background-color: darken(@neutral-color, 5%);
         }
+        &.available {
+          &:hover {
+            box-shadow: inset 0px 0px 0px 1em rgba(0, 0, 0, 0.1);
+          }
+          cursor: pointer;
+        }
         margin: 0px;
         padding: 3px;
         line-height: 1.3;
-        cursor: pointer;
         .fieldLabel {
           display: inline-block;
           width: 45%;
