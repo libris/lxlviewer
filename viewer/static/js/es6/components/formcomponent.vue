@@ -349,10 +349,10 @@ export default {
     >li {
       &:not(.locked) {
         &.instance-state {
-          background-color: rgba(84, 126, 145, 0.11);
+          background-color: @instance-field;
         }
         &.work-state {
-          background-color: rgba(14, 138, 3, 0.16);
+          background-color: @work-field;
         }
       }
       &.locked {
@@ -369,14 +369,13 @@ export default {
 
       &:nth-child(odd):not(.locked) {
         &.instance-state {
-          background-color: rgba(84, 126, 145, 0.34);
+          background-color: darken(@instance-field, 5%);
         }
         &.work-state {
-          background-color: rgba(36, 129, 28, 0.3);
+          background-color: darken(@work-field, 5%);
         }
       }
       &:hover:not(.locked) {
-        box-shadow: 0px 0px 8px 2px #aaa;
         >.actions {
           opacity: 1;
         }
