@@ -60,32 +60,31 @@ export function getProperties(type, level, displayDefs) {
 }
 
 export function getDisplayObject(item, level, displayDefs, linked, vocab, vocabPfx) {
-  let displayObject = {};
-
   if (!item || typeof item === 'undefined') {
     throw new Error('getDisplayObject was called with an undefined object.');
   }
+  if (!_.isObject(item)) {
+    throw new Error('getDisplayObject was called with a non-object.');
+  }
+  let result = {};
+  let trueItem = Object.assign({}, item);
 
-  // If item is a link reference, get the true item
-  let trueItem = item;
   if (trueItem.hasOwnProperty('@id') && !trueItem.hasOwnProperty('@type')) {
     trueItem = EditUtil.getLinked(trueItem['@id'], linked);
   }
   if (!trueItem.hasOwnProperty('@type') && trueItem.hasOwnProperty('@id')) {
     console.warn('Tried to get linked but failed', 'id was', trueItem['@id']);
-    return trueItem;
+    return { 'label': 'N/A' };
   }
 
   // Get the list of properties we want to show
   let properties = getProperties(trueItem['@type'], level, displayDefs);
-  let baseClassUsed = trueItem['@type'];
   if (properties.length === 0) { // If none were found, traverse up inheritance tree
     const baseClasses = VocabUtil.getBaseClassesFromArray(trueItem['@type'], vocab, vocabPfx);
     for (let i = 0; i < baseClasses.length; i++) {
       if (typeof baseClasses[i] !== 'undefined') {
         properties = getProperties(baseClasses[i].replace(vocabPfx, ''), level, displayDefs);
         if (properties.length > 0) {
-          baseClassUsed = `${baseClasses[i].replace(vocabPfx, '')} (through ${trueItem['@type']})`;
           break;
         }
       }
@@ -95,7 +94,6 @@ export function getDisplayObject(item, level, displayDefs, linked, vocab, vocabP
     }
   }
 
-  // For each property, get the value from original item
   if (level === 'cards') {
     properties = ['@type'].concat(properties);
   }
@@ -105,33 +103,51 @@ export function getDisplayObject(item, level, displayDefs, linked, vocab, vocabP
       if (typeof trueItem[properties[i]] !== 'undefined') {
         let value = trueItem[properties[i]];
         if (_.isObject(value) && !_.isArray(value)) {
-          if (level === 'cards') {
-            value = getDisplayObject(value, 'chips', displayDefs, linked, vocab, vocabPfx);
-          }
-        }
-        if (_.isArray(value)) {
-          let arrString = '';
-          for (let x = 0; x < value.length; x++) {
-            if (_.isObject(value[x])) {
-              arrString += JSON.stringify(value[x]);
+          value = getChip(value, displayDefs, linked, vocab, vocabPfx);
+          // value = getDisplayObject(value, 'chips', displayDefs, linked, vocab, vocabPfx);
+        } else if (_.isArray(value)) {
+          const newArray = [];
+          for (const arrayItem of value) {
+            if (_.isObject(arrayItem)) {
+              newArray.push(getChip(arrayItem, displayDefs, linked, vocab, vocabPfx));
             } else {
-              arrString += value[x];
+              newArray.push(arrayItem);
             }
           }
-          value = arrString;
+          value = newArray;
         }
-        displayObject[properties[i]] = value;
+        result[properties[i]] = value;
       }
     }
   }
-  if (_.isEmpty(displayObject)) {
-    displayObject = item;
+  if (_.isEmpty(result)) {
+    result = { 'label': 'N/A' };
   }
-  return displayObject;
+  if (Object.keys(result).length === 1) {
+    result = {
+      'label' : result[Object.keys(result)[0]]
+    }
+  }
+  return result;
+}
+
+function extractStrings(obj) {
+  let label = '';
+  _.each(obj, (value, key) => {
+    if (!_.isObject(value)) {
+      label += value;
+    } else {
+      label += extractStrings(value);
+    }
+    label += ' ';
+  });
+  return label;
 }
 
 export function getChip(item, displayDefs, linked, vocab, vocabPfx) {
-  return getDisplayObject(item, 'chips', displayDefs, linked, vocab, vocabPfx);
+  const displayObject = getDisplayObject(item, 'chips', displayDefs, linked, vocab, vocabPfx);
+  const rendered = extractStrings(displayObject);
+  return rendered;
 }
 
 export function getCard(item, displayDefs, linked, vocab, vocabPfx) {
