@@ -83,6 +83,15 @@ export default {
       });
       return filtered;
     },
+    state() {
+      const focus = this.focus;
+      if (focus === 'it') {
+        return 'instans';
+      } else if (focus === 'work') {
+        return 'verks';
+      }
+      return 'Unknown';
+    },
   },
   events: {
     'close-modals'() {
@@ -122,7 +131,7 @@ export default {
   <div class="field-adder">
     <a id="add-button" v-on:click="show" :class="{ 'work-state': isWork, 'instance-state': isInstance, 'is-fixed': buttonFixed }">
       <i class="fa fa-plus plus-icon" aria-hidden="true"></i>
-      NYTT FÄLT
+      Nytt {{state}}fält
     </a>
     <a id="mock-button" v-show="buttonFixed">
       <i class="fa fa-plus plus-icon" aria-hidden="true"></i>
@@ -182,7 +191,7 @@ export default {
       left: 0;
     }
     position: relative;
-    width: 141px;
+    width: 184px;
     margin-right: auto;
     margin-left: auto;
     border-radius:2px;
