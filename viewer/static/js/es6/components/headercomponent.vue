@@ -204,6 +204,7 @@ export default {
     top: 32px;
     position: fixed;
     padding: 0px;
+    z-index: @header-z;
     .row {
       margin: 0px;
     }
@@ -213,7 +214,6 @@ export default {
       width: inherit;
       background-color: white;
       box-shadow: 0px 6px 10px -6px rgba(0, 0, 0, 0.6);
-      z-index: 99999;
     }
   }
 
