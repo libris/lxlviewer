@@ -73,7 +73,7 @@ export default class Editor extends View {
       const pfx = self.settings.vocabPfx;
       const lang = self.settings.lang;
       // Filter for fetching labels from vocab
-      let lbl = label;
+      let lbl = label.toString();
       if (lbl && lbl.indexOf(pfx) !== -1) {
         lbl = lbl.replace(pfx, '');
       }
