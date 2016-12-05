@@ -109,7 +109,7 @@ export default {
       &.affix {
           top: 0;
           width: inherit;
-          z-index: 99999;
+          z-index: @header-z;
       }
       &.instance-state {
         background-color: @instance-background;
@@ -123,7 +123,7 @@ export default {
         flex-direction: row;
         display: flex;
         align-items: center;
-        position: relative; 
+        position: relative;
         padding: 5px 15px;
         .admin-node {
           flex-grow: 5;
