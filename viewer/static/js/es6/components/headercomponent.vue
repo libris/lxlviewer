@@ -65,7 +65,7 @@ export default {
       const acceptList = ['value'];
       const result = {};
       const levelInfo = this.getDisplay(level, this.status.state);
-      console.log(levelInfo);
+      // console.log(levelInfo);
       _.each(levelInfo, (cardValue, cardKey) => {
         if (_.isArray(cardValue)) {
           _.each(cardValue, (deepValue) => {
@@ -132,6 +132,15 @@ export default {
       }
       return 'Unknown';
     },
+    getCard() {
+      return DisplayUtil.getCard(
+        this.editorData[this.status.state],
+        this.display,
+        this.editorData.linked,
+        this.vocab,
+        this.settings.vocabPfx
+      );
+    },
     getHeaderCard() {
       return this.getHeaderInfo('cards');
     },
@@ -146,7 +155,11 @@ export default {
 
 <template>
   <div class="header-component">
-    <div class="instance-card-info" id="card-header">
+    <div class="main-header" id="card-header">
+      <ul>
+        <li v-for="(k, v) in getCard" v-bind:class="{'large-title': isTitle(k)}">{{v}}</li>
+      </ul>
+<!--
     <div class="large-title">
       {{state}}
     </div>
@@ -162,16 +175,13 @@ export default {
           </div>
         </li>
       </ul>
-    </div>
+    </div> -->
     <div class="container">
-      <div class="instance-chip-info" v-show="showChipHeader">
-        <span class="small-title">
-          {{state}}
-        </span>
-        <span v-for="(k, v) in getHeaderChip">
+      <div class="row">
+      <div class="fixed-header" v-show="showChipHeader">
+        <span v-for="(k, v) in getCard">
           <span v-if="isTitle(k)">
             <span class="small-title">{{v}}</span>
-            <span class="small-text"> ({{k}})</span>
           </span>
           <span v-if="!isTitle(k)" class="minimum-text">
             <span v-if="showKey(k)">{{k}}: {{v}}</span>
@@ -179,6 +189,7 @@ export default {
           </span>
         </span>
       </div>
+    </div>
     </div>
   </div>
 </template>
@@ -190,21 +201,26 @@ export default {
   padding: 0px;
 
   .container {
+    top: 32px;
+    position: fixed;
     padding: 0px;
-    .instance-chip-info {
+    .row {
+      margin: 0px;
+    }
+    .fixed-header {
       text-align: center;
       padding: 5px;
-      top: 32px;
       width: inherit;
-      position: fixed;
       background-color: white;
       box-shadow: 0px 6px 10px -6px rgba(0, 0, 0, 0.6);
       z-index: 99999;
     }
   }
 
-  .instance-card-info {
-    padding: 20px;
+  .main-header {
+    ul {
+      padding: 20px;
+    }
   }
 
   ul {

@@ -122,21 +122,20 @@ export default {
     <div class="entity-chip" :class="{ 'locked': isLocked, 'work-state': isWork, 'instance-state': isInstance}">
       <span class="chip-label" @mouseenter="showCardInfo=true" @mouseleave="showCardInfo=false">
       <i class="fa fa-link" aria-hidden="true"></i>
-        <span v-for="(k,v) in getChip">
-          <span v-if="!isObject(v) && k !== '@id'">{{ v }}</span>
-          <span v-if="!(!isObject(v) && k !== '@id') && size(getChip) === 1">{{ v | json | removeDomain }}</span>
-        </span>
+        {{getChip}}
       </span>
       <i class="chip-action fa fa-times" v-on:click="removeThis" v-if="!isLocked"></i>
     </div>
     <div class="card-info-container" v-show="showCardInfo">
       <div class="card-info" :class="{ 'locked': isLocked, 'work-state': isWork, 'instance-state': isInstance }">
         <ul>
-          <li v-for="(k,v) in getCard">
+          <li v-for="(k,v) in getCard" track-by="$index">
             <span v-if="k === '@type'"><strong>{{v | labelByLang | capitalize }}</strong></span>
-            <span v-if="k !== '@type' && !isObject(v)">{{ k | labelByLang | capitalize }}: {{v}}</span>
+            <span v-if="k !== '@type' && !isObject(v)">{{ k | labelByLang | capitalize }}: {{v | json}}</span>
             <span v-if="k !== '@type' && isObject(v)">{{ k | labelByLang | capitalize }}:
-              <span v-for="(x,y) in v">{{y}}, </span>
+              <span v-for="(x,y) in v" track-by="$index">
+                {{y}}
+              </span>
             </span>
           </li>
         </ul>
@@ -151,7 +150,7 @@ export default {
 
 
 .entity-container {
-  
+
   .chip-action {
     cursor: pointer;
   }

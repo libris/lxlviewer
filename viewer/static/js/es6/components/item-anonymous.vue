@@ -159,10 +159,7 @@ export default {
   <div class="item-anonymous" v-bind:class="{'expanded': inEdit, 'collapsed': !inEdit, 'locked': isLocked, 'work-state': isWork, 'instance-state': isInstance }">
     <div v-show="!inEdit">
       <span class="chip-label" @mouseenter="showCardInfo=true" @mouseleave="showCardInfo=false">
-        <span v-for="(k,v) in getChip">
-          <span v-if="!isObject(v) && k !== '@id'">{{ v }}</span>
-          <span v-if="!(!isObject(v) && k !== '@id') && size(getChip) === 1">{{ v | json | removeDomain }}</span>
-        </span>
+        {{getChip}}
       </span>
       <i class="chip-action fa fa-pencil" v-on:click="openForm" v-if="!isLocked"></i>
     </div>
