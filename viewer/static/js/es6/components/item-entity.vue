@@ -178,6 +178,7 @@ export default {
         list-style: none;
         padding: 0px;
         li {
+          display: inline-block;
           span {
             word-break: break-word;
           }

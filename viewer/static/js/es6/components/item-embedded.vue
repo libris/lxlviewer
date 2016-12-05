@@ -115,6 +115,9 @@ export default {
   ul {
     padding: 0px;
     list-style: none;
+    li {
+      display: block;
+    }
   }
   width: 100%;
   padding: 10px;
