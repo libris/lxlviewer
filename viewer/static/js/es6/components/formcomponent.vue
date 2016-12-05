@@ -248,7 +248,7 @@ export default {
   <div class="form-component" :class="{ 'locked': isLocked, 'work-state': isWork, 'instance-state': isInstance, 'focused-form-component': status.state === this.focus }">
     <div class="form-header" :class="{ 'work-state': isWork, 'instance-state': isInstance }">
       <span>{{ sortedFormData['@type'] | labelByLang | capitalize }}fält</span>
-      <span v-if="isLocked" class="edit-locked" :class="{ 'work-state': isWork, 'instance-state': isInstance }" @click="changeState()">Gå till verk<i class="fa fa-pencil-square-o" aria-hidden="true"></i></span>
+      <span v-if="isLocked" class="edit-locked" :class="{ 'work-state': isWork, 'instance-state': isInstance }" @click="changeState()"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Gå till verk</span>
     </div>
     <ul>
       <li v-for="(k,v) in sortedFormData" v-bind:class="{ 'locked': isLocked, 'work-state': isWork, 'instance-state': isInstance }">
