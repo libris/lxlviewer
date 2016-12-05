@@ -342,7 +342,7 @@ export default {
     }
   }
 
-  
+
   >ul {
     padding-left: 0px;
     margin: 0px;
@@ -366,7 +366,7 @@ export default {
       width: 100%;
       box-shadow: none;
       transition: box-shadow ease-out 0.2s;
-      
+
       &:nth-child(odd):not(.locked) {
         &.instance-state {
           background-color: rgba(84, 126, 145, 0.34);
@@ -412,6 +412,7 @@ export default {
         width: @col-label;
         text-align: right;
         line-height: 2.5;
+        font-size: 0.9em;
         &:not(.locked) {
           color: @gray-dark;
         }
