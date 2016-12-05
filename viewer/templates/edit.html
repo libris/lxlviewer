@@ -33,9 +33,9 @@
       </li>
     </ul>
   </div>
-  <form-component :status="status" focus="it" :linked="editorData.linked" v-if="initialized == true && status.state === 'it'"></form-component>
   <form-component :status="status" focus="work" :linked="editorData.linked" v-if="initialized == true"></form-component>
-  
+  <form-component :status="status" focus="it" :linked="editorData.linked" v-if="initialized == true && status.state === 'it'"></form-component>
+
 </div>
 </div>
 
