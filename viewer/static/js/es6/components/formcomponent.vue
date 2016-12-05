@@ -246,9 +246,9 @@ export default {
 
 <template>
   <div class="form-component" :class="{ 'locked': isLocked, 'work-state': isWork, 'instance-state': isInstance, 'focused-form-component': status.state === this.focus }">
-    <div class="form-header" v-if="isLocked">
-      <span>{{ sortedFormData['@type'] | labelByLang | capitalize }}</span>
-      <span class="edit-locked" :class="{ 'work-state': isWork, 'instance-state': isInstance }" @click="changeState()"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Redigera</span>
+    <div class="form-header" :class="{ 'work-state': isWork, 'instance-state': isInstance }">
+      <span>{{ sortedFormData['@type'] | labelByLang | capitalize }}fält</span>
+      <span v-if="isLocked" class="edit-locked" :class="{ 'work-state': isWork, 'instance-state': isInstance }" @click="changeState()">Gå till verk<i class="fa fa-pencil-square-o" aria-hidden="true"></i></span>
     </div>
     <ul>
       <li v-for="(k,v) in sortedFormData" v-bind:class="{ 'locked': isLocked, 'work-state': isWork, 'instance-state': isInstance }">
@@ -296,6 +296,12 @@ export default {
 
 
   .form-header {
+    &.instance-state {
+      background-color: @instance-background;
+    }
+    &.work-state {
+      background-color: @work-background;
+    }
     .edit-locked {
       font-size: 15px;
       float: right;
@@ -303,19 +309,9 @@ export default {
       margin-right: 10px;
       padding: 1px 4px;
       border-radius: 2px;
-      &.instance-state {
-        background-color: @instance-background-dark;
-      }
-      &.work-state {
-        background-color: @work-background-dark;
-      }
+      transition: all ease 0.1s;
       &:hover {
-        &.instance-state {
-          background-color: @instance-hover;
-        }
-        &.work-state {
-          background-color: @work-hover;
-        }
+        transform: scale(0.98);
       }
       i {
         margin-left: 2px;
@@ -325,17 +321,18 @@ export default {
     font-size: 18px;
     text-align: center;
     padding: 10px 0px;
+    color: white;
   }
-  margin: 20px;
+  margin: 40px 20px;
 
   &.locked {
-    &.instance-state {
-      background-color: @instance-background;
-    }
-    &.work-state {
-      background-color: @work-background;
-    }
-    color: white;
+    // &.instance-state {
+    //   background-color: @instance-background;
+    // }
+    // &.work-state {
+    //   background-color: @work-background;
+    // }
+    // color: white;
     border-radius: 10px;
     > ul > li {
       margin: 0px;
@@ -347,17 +344,15 @@ export default {
     padding-left: 0px;
     margin: 0px;
     >li {
-      &:not(.locked) {
+      // &:not(.locked) {
         &.instance-state {
           background-color: @instance-field;
         }
         &.work-state {
           background-color: @work-field;
         }
-      }
-      &.locked {
-        border-top: 1px solid white;
-      }
+      // }
+      color: black;
       display: flex;
       flex-direction: row;
       align-items: center;
@@ -367,7 +362,7 @@ export default {
       box-shadow: none;
       transition: box-shadow ease-out 0.2s;
 
-      &:nth-child(odd):not(.locked) {
+      &:nth-child(odd) {
         &.instance-state {
           background-color: darken(@instance-field, 5%);
         }
@@ -412,9 +407,7 @@ export default {
         text-align: right;
         line-height: 2.5;
         font-size: 0.9em;
-        &:not(.locked) {
-          color: @gray-dark;
-        }
+        color: black;
         font-weight: normal;
         line-height: 12px;
         a {

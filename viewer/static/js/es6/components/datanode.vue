@@ -164,6 +164,7 @@ export default {
     padding-left: 0;
     li {
       list-style: none;
+      display: inline;
       &.linked {
         //TODO: Check if linked => display:inline-block
       }
