@@ -133,9 +133,7 @@ export default {
             <span v-if="k === '@type'"><strong>{{v | labelByLang | capitalize }}</strong></span>
             <span v-if="k !== '@type' && !isObject(v)">{{ k | labelByLang | capitalize }}: {{v | json}}</span>
             <span v-if="k !== '@type' && isObject(v)">{{ k | labelByLang | capitalize }}:
-              <span v-for="(x,y) in v" track-by="$index">
-                {{y}}
-              </span>
+              <span v-for="(x,y) in v" track-by="$index"> {{y}} </span>
             </span>
           </li>
         </ul>
@@ -178,7 +176,7 @@ export default {
         list-style: none;
         padding: 0px;
         li {
-          display: inline-block;
+          display: block;
           span {
             word-break: break-word;
           }

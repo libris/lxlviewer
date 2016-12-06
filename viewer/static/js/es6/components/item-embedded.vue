@@ -33,6 +33,11 @@ export default {
     };
   },
   computed: {
+    filteredItem() {
+      const filteredItem = Object.assign({}, this.item);
+      delete filteredItem['@type'];
+      return filteredItem;
+    },
     // TODO: Refactor computed
     json() {
       return JSON.stringify(this.item);
@@ -100,7 +105,7 @@ export default {
     <i v-if="!isLocked" class="fa fa-trash chip-action" v-on:click="removeThis"></i>
     <strong>{{ item['@type'] | labelByLang | capitalize }}</strong>
     <ul>
-      <li v-for="(k,v) in item" v-if="k !== '@type'">
+      <li v-for="(k,v) in filteredItem">
         <span class="item-label">{{k | labelByLang | capitalize }}:</span>
         <data-node :is-locked="isLocked" :pkey="key" :pindex="index" :key="k" :value="v" :focus="focus" :linked="editorData.linked"></data-node>
       </li>
