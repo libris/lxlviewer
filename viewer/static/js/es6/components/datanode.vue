@@ -115,8 +115,8 @@ export default {
       if (typeof type === 'undefined') {
         return false;
       }
-      // Is the type of the item derived from StructuredValue?
-      const embeddedTypes = ['StructuredValue', 'ProvisionActivity', 'Contribution'];
+      // Is the type of the item derived from an "embedded" type?
+      const embeddedTypes = this.settings.embeddedTypes;
       const typeChain = VocabUtil.getBaseClasses(type, this.vocab, this.settings.vocabPfx);
       if (typeChain.length > 0) {
         for (const typeElement of embeddedTypes) {

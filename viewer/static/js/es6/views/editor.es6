@@ -37,6 +37,7 @@ export default class Editor extends View {
     self.settings = {
       lang: 'sv',
       vocabPfx: 'kbv:',
+      embeddedTypes: ['StructuredValue', 'ProvisionActivity', 'Contribution'],
     };
     $('#loadingText .fa-warning').hide();
     $('#loadingText .status').text('Hämtar vokabulärsdata');
