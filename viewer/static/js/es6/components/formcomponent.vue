@@ -251,7 +251,7 @@ export default {
       <span v-if="isLocked" class="edit-locked" :class="{ 'work-state': isWork, 'instance-state': isInstance }" @click="changeState()"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Gå till verk</span>
     </div>
     <ul>
-      <li v-for="(k,v) in sortedFormData" v-bind:class="{ 'locked': isLocked, 'work-state': isWork, 'instance-state': isInstance }">
+      <li v-for="(k,v) in sortedFormData" v-bind:class="{ 'locked': isLocked }">
         <div class="label" v-bind:class="{ 'locked': isLocked }">
           <!-- <a href="/vocab/#{{property}}">{{ property | labelByLang | capitalize }}</a> -->
           {{ k | labelByLang | capitalize }}
@@ -293,7 +293,22 @@ export default {
 @col-action: 250px;
 
 .form-component {
-
+  &.instance-state {
+    > ul > li {
+      background-color: @instance-field;
+      &:nth-child(odd) {
+        background-color: darken(@instance-field, 5%);
+      }
+    }
+  }
+  &.work-state {
+    > ul > li {
+      background-color: @work-field;
+      &:nth-child(odd) {
+        background-color: darken(@work-field, 5%);
+      }
+    }
+  }
 
   .form-header {
     &.instance-state {
@@ -344,14 +359,6 @@ export default {
     padding-left: 0px;
     margin: 0px;
     >li {
-      // &:not(.locked) {
-        &.instance-state {
-          background-color: @instance-field;
-        }
-        &.work-state {
-          background-color: @work-field;
-        }
-      // }
       color: black;
       display: flex;
       flex-direction: row;
@@ -362,14 +369,6 @@ export default {
       box-shadow: none;
       transition: box-shadow ease-out 0.2s;
 
-      &:nth-child(odd) {
-        &.instance-state {
-          background-color: darken(@instance-field, 5%);
-        }
-        &.work-state {
-          background-color: darken(@work-field, 5%);
-        }
-      }
       &:hover:not(.locked) {
         >.actions {
           opacity: 1;
