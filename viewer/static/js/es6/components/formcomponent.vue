@@ -257,7 +257,7 @@ export default {
           {{ k | labelByLang | capitalize }}
         </div>
         <div class="value">
-          <data-node :is-locked="keyIsLocked(k)" :key="k" :value="v" :linked="linked" :focus="focus"></data-node>
+          <data-node :is-locked="keyIsLocked(k)" :key="k" :value="v" :linked="linked" :focus="focus" :status="status"></data-node>
         </div>
         <div class="actions" v-if="!isLocked">
           <div class="action action-remove" v-if="!keyIsLocked(k)" class="delete" v-on:click="removeField(k)"><i class="fa fa-trash"></i></div>

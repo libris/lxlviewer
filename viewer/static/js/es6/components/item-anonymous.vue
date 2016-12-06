@@ -15,6 +15,7 @@ export default {
     index: Number,
     isLocked: false,
     focus: '',
+    status: {},
   },
   vuex: {
     getters: {

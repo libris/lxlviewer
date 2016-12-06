@@ -10,7 +10,7 @@ import { getVocabulary, getSettings } from '../vuex/getters';
 
 export default {
   name: 'data-node',
-  props: ['pkey', 'pindex', 'key', 'value', 'label', 'linked', 'isLocked', 'focus'],
+  props: ['pkey', 'pindex', 'key', 'value', 'label', 'linked', 'isLocked', 'focus', 'status'],
   vuex: {
     getters: {
       vocab: getVocabulary,
@@ -25,6 +25,14 @@ export default {
     'item-anonymous': ItemAnonymous,
   },
   computed: {
+    getPath() {
+      if (typeof this.pkey !== 'undefined' && typeof this.pindex !== 'undefined') {
+        return `${this.pkey}[${this.pindex}].${this.key}`;
+      } else if (typeof this.pkey !== 'undefined') {
+        return `${this.pkey}.${this.key}`;
+      }
+      return `${this.key}`;
+    },
     propertyTypes() {
       VocabUtil.getPropertyTypes(
         this.key,
@@ -128,20 +136,22 @@ export default {
 
 <template>
   <div v-if="isArray(value)" class="node-list">
+    <pre v-show="status.isDev">{{getPath}}</pre>
     <ul>
       <li v-for="item in value" track-by="$index">
-        <item-entity v-if="isPlainObject(item) && isLinked(item)" :is-locked="isLocked" :focus="focus" :item="item" :key="key" :index="$index"></item-entity>
-        <item-anonymous v-if="isPlainObject(item) && !isLinked(item) && !isEmbedded(item)" :is-locked="isLocked" :focus="focus" :item="item" :key="key" :index="$index"></item-anonymous>
-        <item-embedded v-if="isPlainObject(item) && !isLinked(item) && isEmbedded(item)" :is-locked="isLocked" :focus="focus" :item="item" :key="key" :index="$index"></item-embedded>
-        <item-value v-if="!isPlainObject(item) && !isLinked(item)" :is-locked="isLocked" :focus="focus" :value="item" :key="key" :index="$index"></item-value>
+        <item-entity v-if="isPlainObject(item) && isLinked(item)" :is-locked="isLocked" :status="status" :focus="focus" :item="item" :key="key" :index="$index"></item-entity>
+        <item-anonymous v-if="isPlainObject(item) && !isLinked(item) && !isEmbedded(item)" :is-locked="isLocked" :status="status" :focus="focus" :item="item" :key="key" :index="$index"></item-anonymous>
+        <item-embedded v-if="isPlainObject(item) && !isLinked(item) && isEmbedded(item)" :is-locked="isLocked" :status="status" :focus="focus" :item="item" :key="key" :index="$index"></item-embedded>
+        <item-value v-if="!isPlainObject(item) && !isLinked(item)" :is-locked="isLocked" :status="status" :focus="focus" :value="item" :key="key" :index="$index"></item-value>
       </li>
     </ul>
   </div>
   <div v-if="!isArray(value)" class="node-object">
-    <item-entity v-if="isPlainObject(value) && isLinked(value)" :is-locked="isLocked" :focus="focus" :item="value" :key="key"></item-entity>
-    <item-anonymous v-if="isPlainObject(value) && !isLinked(value) && !isEmbedded(value)" :is-locked="isLocked" :focus="focus" :item="value" :key="key" :index="$index"></item-anonymous>
-    <item-embedded v-if="isPlainObject(value) && !isLinked(value) && isEmbedded(value)" :is-locked="isLocked" :focus="focus" :item="value" :key="key"></item-embedded>
-    <item-value v-if="!isPlainObject(value) && !isLinked(value)" :is-locked="isLocked" :focus="focus" :value="value" :key="key"></item-value>
+    <pre v-show="status.isDev">{{getPath}}</pre>
+    <item-entity v-if="isPlainObject(value) && isLinked(value)" :is-locked="isLocked" :status="status" :focus="focus" :item="value" :key="key"></item-entity>
+    <item-anonymous v-if="isPlainObject(value) && !isLinked(value) && !isEmbedded(value)" :is-locked="isLocked" :status="status" :focus="focus" :item="value" :key="key" :index="$index"></item-anonymous>
+    <item-embedded v-if="isPlainObject(value) && !isLinked(value) && isEmbedded(value)" :is-locked="isLocked" :status="status" :focus="focus" :item="value" :key="key"></item-embedded>
+    <item-value v-if="!isPlainObject(value) && !isLinked(value)" :is-locked="isLocked" :status="status" :focus="focus" :value="value" :key="key"></item-value>
   </div>
 </template>
 

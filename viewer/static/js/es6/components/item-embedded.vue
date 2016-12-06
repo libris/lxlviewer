@@ -18,6 +18,7 @@ export default {
     index: Number,
     isLocked: false,
     focus: '',
+    status: {},
   },
   vuex: {
     getters: {
@@ -102,7 +103,7 @@ export default {
     <ul>
       <li v-for="(k,v) in item" v-if="k !== '@type'">
         <span class="item-label">{{k | labelByLang | capitalize }}:</span>
-        <data-node :is-locked="isLocked" :pkey="key" :pindex="index" :key="k" :value="v" :focus="focus" :linked="editorData.linked"></data-node>
+        <data-node :is-locked="isLocked" :pkey="key" :pindex="index" :key="k" :value="v" :focus="focus" :linked="editorData.linked" :status="status"></data-node>
       </li>
     </ul>
   </div>

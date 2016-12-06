@@ -14,6 +14,7 @@ export default {
     key: '',
     index: Number,
     isLocked: false,
+    status: {},
   },
   vuex: {
     getters: {
