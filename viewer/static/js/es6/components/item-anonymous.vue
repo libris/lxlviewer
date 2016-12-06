@@ -34,6 +34,11 @@ export default {
     };
   },
   computed: {
+    filteredItem() {
+      const filteredItem = Object.assign({}, this.item);
+      delete filteredItem['@type'];
+      return filteredItem;
+    },
     // TODO: Refactor computed
     json() {
       return JSON.stringify(this.item);
@@ -167,7 +172,7 @@ export default {
     <div v-show="inEdit">
       <i class="fa fa-times chip-action" v-on:click="removeThis"></i>
       <strong>{{ item['@type'] | labelByLang | capitalize }}</strong>
-      <span v-for="(k,v) in item" v-if="k !== '@type'">
+      <span v-for="(k,v) in filteredItem">
         <span class="item-label">{{k | labelByLang | capitalize }}:</span>
         <input v-model="v" v-if="!isObject(v)"></input>
         <item-entity :focus="focus" :key="k" :item="v" v-if="isObject(v)"></item-entity>
