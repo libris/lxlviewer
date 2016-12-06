@@ -85,9 +85,6 @@ export default {
         this.$dispatch('update-value', this.key, value);
       }
     },
-    updateArray(index, value) {
-      this.value.$set(index, value);
-    },
     emptyValue() {
       this.$dispatch('update-value', this.key, {});
     },
