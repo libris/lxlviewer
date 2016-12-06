@@ -66,14 +66,6 @@ export default {
     },
   },
   methods: {
-    isMarc(key) {
-      if (typeof key === 'undefined') {
-        return false;
-      }
-      return (
-        !!~key.indexOf('marc:') || !!~key.indexOf('_marc')
-      );
-    },
     updateValue(value) {
       if (this.pkey && this.pindex !== '') {
         const path = this.pkey + '[' + this.pindex + ']' + '.' + this.key;
