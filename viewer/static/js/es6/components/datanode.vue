@@ -67,21 +67,15 @@ export default {
     'update-item-value'(value) {
       this.updateValue(value);
     },
-    'remove-item'(value) {
-      console.log("dn:remove-item was called", value);
-      const modified = Object.assign({}, this.value);
-      if (_.isArray(modified)) {
-        // Find item in the array and splice it..
-        _.remove(modified, (item) => {
-          if (_.isEqual(value, item)) {
-            return true;
-          }
-          return false;
-        });
-        this.updateValue(modified);
+    'remove-item'(index) {
+      let modified = _.cloneDeep(this.value);
+      if (typeof index !== 'undefined' && index !== '') {
+        modified.splice(index, 1);
       } else {
-        this.updateValue([]);
+        modified = [];
       }
+      this.updateValue(modified);
+    },
     },
   },
   ready() {

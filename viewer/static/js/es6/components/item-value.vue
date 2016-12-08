@@ -49,16 +49,7 @@ export default {
       return _.isObject(obj);
     },
     removeThis() {
-      // TODO: Refactor data-binding so child component does not use parent-methods directly
-      console.log('Removethis called');
-      const holder = this.$parent.value;
-      if (_.isArray(holder)) {
-        this.$parent.removeById(this.item['@id']);
-      } else if (_.isPlainObject(holder)) {
-        this.$parent.removeKey(this.key);
-      } else {
-        this.$parent.emptyValue();
-      }
+      this.$dispatch('remove-item', this.index);
     },
     addFocus() {
       this.focused = true;
