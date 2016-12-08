@@ -172,25 +172,6 @@ export default {
 </script>
 
 <template>
-  <div>
-    <div v-if="isArray(value)" class="node-list">
-      <pre v-show="status.isDev">{{getPath}}</pre>
-      <ul>
-        <li v-for="item in value" track-by="$index">
-          <item-entity v-if="isPlainObject(item) && isLinked(item)" :is-locked="isLocked" :status="status" :focus="focus" :item="item" :key="key" :index="$index"></item-entity>
-          <item-anonymous v-if="isPlainObject(item) && !isLinked(item) && !isEmbedded(item)" :is-locked="isLocked" :status="status" :focus="focus" :item="item" :key="key" :index="$index"></item-anonymous>
-          <item-embedded v-if="isPlainObject(item) && !isLinked(item) && isEmbedded(item)" :is-locked="isLocked" :status="status" :focus="focus" :item="item" :key="key" :index="$index"></item-embedded>
-          <item-value v-if="!isPlainObject(item) && !isLinked(item)" :is-locked="isLocked" :status="status" :focus="focus" :value="item" :key="key" :index="$index"></item-value>
-        </li>
-      </ul>
-    </div>
-    <div v-if="!isArray(value)" class="node-object">
-      <pre v-show="status.isDev">{{getPath}}</pre>
-      <item-entity v-if="isPlainObject(value) && isLinked(value)" :is-locked="isLocked" :status="status" :focus="focus" :item="value" :key="key"></item-entity>
-      <item-anonymous v-if="isPlainObject(value) && !isLinked(value) && !isEmbedded(value)" :is-locked="isLocked" :status="status" :focus="focus" :item="value" :key="key" :index="$index"></item-anonymous>
-      <item-embedded v-if="isPlainObject(value) && !isLinked(value) && isEmbedded(value)" :is-locked="isLocked" :status="status" :focus="focus" :item="value" :key="key"></item-embedded>
-      <item-value v-if="!isPlainObject(value) && !isLinked(value)" :is-locked="isLocked" :status="status" :focus="focus" :value="value" :key="key"></item-value>
-    </div>
 <div class="data-node" v-bind:class="{'column': embedded, 'rows': !embedded, 'highlight': isLastAdded }">
   <div class="label" v-bind:class="{ 'locked': isLocked }">
     <!-- <a href="/vocab/#{{property}}">{{ property | labelByLang | capitalize }}</a> -->
@@ -224,17 +205,83 @@ export default {
 <style lang="less">
 @import './variables.less';
 
-.node-list {
-  >ul {
-    padding-left: 0;
-    li {
-      list-style: none;
-      display: inline;
-      &.linked {
-        //TODO: Check if linked => display:inline-block
+.data-node {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  outline: 2px solid transparent;
+  transition: outline 3s ease;
+  &.highlight {
+    outline: 2px solid @highlight-color;
+  }
+  .label {
+    font-size: 1.2rem;
+    color: @black;
+    font-weight: normal;
+  }
+  .value {
+  }
+  &:hover {
+    >.actions {
+      opacity: 1;
+    }
+  }
+  >.actions {
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    transition-delay: 0.2s;
+  }
+  &.rows {
+    >.label {
+      order: 1;
+      flex-basis: @col-label;
+      display: flex;
+      text-align: right;
+      align-items: center;
+      justify-content: flex-end;
+    }
+    >.value {
+      order: 2;
+      flex-basis: @col-value;
+      padding: 5px;
+      > * {
+        display: inline-block;
+      }
+      > ul {
+        width: 100%;
+        list-style: none;
+        padding: 0px;
+      }
+    }
+    >.actions {
+      order: 3;
+      flex-basis: @col-action;
+      > * {
+        display: inline;
       }
     }
   }
+  &.column {
+    flex-wrap: wrap;
+    >.label {
+      flex: 0 1 100%;
+      text-align: left;
+      padding: 5px 0px;
+    }
+    >.value {
+      display: inline-block;
+      flex: 1 0 85%;
+      flex-grow: 1;
+    }
+    >.actions {
+      display: inline-block;
+      flex: 1 0 15%;
+      > * {
+        display: inline-block;
+      }
+    }
+  }
+  align-content: stretch;
 }
 
 </style>

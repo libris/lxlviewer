@@ -269,16 +269,10 @@ export default {
 
 <style lang="less">
 @import './variables.less';
-@node-bg: #fafafa;
-
-// Column widths
-@col-label: 200px;
-@col-value: 620px;
-@col-action: 250px;
 
 .form-component {
   &.instance-state {
-    > ul > li {
+    >.data-node {
       background-color: @instance-field;
       &:nth-child(odd) {
         background-color: darken(@instance-field, 5%);
@@ -286,7 +280,7 @@ export default {
     }
   }
   &.work-state {
-    > ul > li {
+    >.data-node {
       background-color: @work-field;
       &:nth-child(odd) {
         background-color: darken(@work-field, 5%);
@@ -325,19 +319,11 @@ export default {
   margin: 40px 20px;
 
   &.locked {
-    // &.instance-state {
-    //   background-color: @instance-background;
-    // }
-    // &.work-state {
-    //   background-color: @work-background;
-    // }
-    // color: white;
     border-radius: 10px;
     > ul > li {
       margin: 0px;
     }
   }
-
 
   >ul {
     padding-left: 0px;
@@ -358,62 +344,7 @@ export default {
           opacity: 1;
         }
       }
-      >.actions {
-        display: flex;
-        flex-direction: row-reverse;
-        justify-content: space-between;
-        width: @col-action;
-        transition: opacity ease-out 0.2s;
-        opacity: 0;
-        margin-right: 6px;
-        margin-left: 10px;
-        .action {
-          cursor: pointer;
-          &:hover {
 
-          }
-        }
-        .action-remove {
-          padding-right: 5px;
-          padding-left: 5px;
-          border: 1px solid;
-          border-color: transparent;
-          border-radius: 28px;
-          transition: border-color 0.25s ease;
-          &:hover {
-            border-color: @brand-danger;
-          }
-        }
-      }
-      >.label {
-        width: @col-label;
-        text-align: right;
-        line-height: 2.5;
-        font-size: 0.9em;
-        color: black;
-        font-weight: normal;
-        line-height: 12px;
-        a {
-          cursor: help;
-          text-decoration: none;
-          line-height: 12px;
-          font-weight: normal;
-          border-bottom: dashed transparent 1px;
-          vertical-align: middle;
-          &:hover {
-            text-decoration: none;
-            border-bottom: 1px dashed;
-          }
-        }
-      }
-      >.value {
-        float: left;
-        width: @col-value;
-        input {
-          padding: 0px;
-          width: 100%;
-        }
-      }
     }
   }
   .node-linked {
