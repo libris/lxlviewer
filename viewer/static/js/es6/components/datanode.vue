@@ -212,7 +212,7 @@ export default {
     <item-value v-if="!isPlainObject(value) && !isLinked(value)" :is-locked="isLocked" :status="status" :focus="focus" :value="value" :key="key"></item-value>
   </div>
   <div class="actions" v-if="!isLocked">
-    <entity-adder class="action" v-if="!isLocked && (isRepeatable || isEmptyObject)" :key="key" :focus="focus"></entity-adder>
+    <entity-adder class="action" v-if="!isLocked && (isRepeatable || isEmptyObject)" :key="key" :focus="focus" :property-types="propertyTypes"></entity-adder>
     <div class="action action-remove" v-if="!isLocked" class="delete" v-on:click="removeField(k)"><i class="fa fa-trash"></i></div>
   </div>
 </div>

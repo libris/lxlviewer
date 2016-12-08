@@ -32,6 +32,7 @@ export default {
     key: '',
     focus: '',
     allowAnon: true,
+    propertyTypes: [],
   },
   components: {
     'processed-label': ProcessedLabel,
@@ -86,7 +87,11 @@ export default {
   },
   methods: {
     add() {
-      this.openSearch();
+      if (this.propertyTypes.indexOf('DatatypeProperty') !== -1) {
+        this.$dispatch('add-item', '');
+      } else {
+        this.openSearch();
+      }
     },
     addLinked(item) {
       this.$dispatch('add-item', this.key, item);
