@@ -11,7 +11,8 @@ import requests
 
 from rdflib import ConjunctiveGraph
 
-from flask import Flask, Response, g, request, render_template, redirect, abort, url_for
+from flask import Flask, Response, g, request, render_template, redirect
+from flask import abort, url_for, session
 from flask.helpers import NotFound
 from flask_cors import CORS
 from werkzeug.urls import url_quote
@@ -430,6 +431,10 @@ def _whelk_request(request, json_data=None, query_params=[], accept_header=None)
     if accept_header:
         headers['Accept'] = accept_header
 
+    auth_token = _get_authorization_token()
+    if auth_token:
+        headers['Authorization'] = auth_token
+
     # Proxy the request to rest api
     app.logger.debug('Sending proxy %s request to : %s with:\n %s' % (request.method, url, json_data))
     r = requests.request(request.method, url, data=json_data, headers=headers, params=params)
@@ -437,6 +442,19 @@ def _whelk_request(request, json_data=None, query_params=[], accept_header=None)
         return _map_response(r)
     else:
         return r.raise_for_status()
+
+
+def _get_authorization_token():
+    oauth_token = session['oauth_token']
+    if oauth_token:
+        token = oauth_token['access_token']
+        token_type = oauth_token['token_type']
+        # FIXME handle different tokens (or verify that we only
+        # ever see Bearer)
+        return "{0} {1}".format(token_type, token)
+    else:
+        return None
+
 
 def _write_data(request, item=None, query_params=[]):
     try:
