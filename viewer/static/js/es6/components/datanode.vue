@@ -1,4 +1,8 @@
 <script>
+/*
+  The datanode component is responsible for a specific key value pair.
+  It's responsible for its own data, and dispatches all changes to the form component.
+*/
 import * as _ from 'lodash';
 import ProcessedLabel from './processedlabel';
 import EntityAdder from './entityadder';
@@ -76,15 +80,14 @@ export default {
     },
   },
   events: {
-    'update-entity'(key, index, obj) {
-      if (typeof index !== 'undefined') {
-        this.value.$set(index, obj);
+    'update-item'(index, value) {
+      let modified = _.cloneDeep(this.value);
+      if (typeof index !== 'undefined' && index !== '') {
+        modified[index] = value;
       } else {
-        this.value.$set(obj);
+        modified = value;
       }
-    },
-    'update-item-value'(value) {
-      this.updateValue(value);
+      this.updateValue(modified);
     },
     'remove-item'(index) {
       let modified = _.cloneDeep(this.value);
@@ -95,6 +98,11 @@ export default {
       }
       this.updateValue(modified);
     },
+    'add-item'(value) {
+      console.log("DataNode:"+ this.getPath +" - Adding", JSON.stringify(value));
+      const modified = _.cloneDeep(this.value);
+      modified.push(value);
+      this.updateValue(modified);
     },
   },
   ready() {
@@ -138,22 +146,6 @@ export default {
         this.$dispatch('update-value', this.key, value);
       }
     },
-    emptyValue() {
-      this.$dispatch('update-value', this.key, {});
-    },
-    removeKey() {
-      this.emptyValue();
-    },
-    removeByIndex(index) {
-      const modified = this.value;
-      modified.splice(index, 1);
-      this.updateValue(modified);
-    },
-    removeById(id) {
-      let modified = this.value;
-      modified = _.filter(this.value, (n) => (n['@id'] !== id));
-      this.updateValue(modified);
-    },
     isArray(o) {
       return _.isArray(o);
     },
@@ -179,9 +171,6 @@ export default {
         }
       }
       return false;
-    },
-    removeItem(key, value) {
-      this.$dispatch('remove-item', key, value);
     },
   },
 };
