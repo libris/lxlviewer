@@ -120,7 +120,7 @@ export default {
       display: block;
     }
   }
-  width: 100%;
+  width: @col-value;
   padding: 10px;
   border: 2px dotted fadeout(@gray, 50%);
   border-radius: 5px;

@@ -211,6 +211,9 @@ export default {
   flex-direction: row;
   outline: 2px solid transparent;
   transition: outline 3s ease;
+  > .node-list > ul > li {
+    display: inline-block;
+  }
   &.highlight {
     outline: 2px solid @highlight-color;
   }
