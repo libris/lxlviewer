@@ -3,6 +3,8 @@ import * as _ from 'lodash';
 import Notifications from '../components/notifications';
 import moment from 'moment';
 import * as EditUtil from '../utils/edit';
+import * as DisplayUtil from '../utils/display';
+import { getVocabulary, getDisplayDefinitions, getSettings, getEditorData } from '../vuex/getters';
 moment.locale('sv');
 
 export default {
@@ -11,6 +13,14 @@ export default {
     'messages',
     'editor-data',
   ],
+  vuex: {
+    getters: {
+      vocab: getVocabulary,
+      display: getDisplayDefinitions,
+      settings: getSettings,
+      editorData: getEditorData,
+    },
+  },
   methods: {
     save() {
       this.$dispatch('save-item');
@@ -28,8 +38,16 @@ export default {
     };
   },
   computed: {
-    getAdminData() {
-      return this.editorData.record;
+    // TODO: Get all admin data, not only card info
+    getCard() {
+      const card = DisplayUtil.getCard(
+        this.editorData.record,
+        this.display,
+        this.editorData.linked,
+        this.vocab,
+        this.settings.vocabPfx
+      );
+      return card;
     },
     modified() {
       return {
@@ -65,15 +83,6 @@ export default {
         <div class="actions">
           <div class="action">
             <i class="fa fa-info-circle" aria-hidden="true" @click="toggleAdminData()"></i>
-            <div class="card-info-container" v-show="showAdminInfo">
-              <div class="card-info" v-bind:class="{ 'linked': isLinked, 'work-state': isWork, 'instance-state': isInstance }">
-                <ul>
-                  <li v-for="(k, v) in getAdminData">
-                    {{k}}: {{v}}
-                  </li>
-                </ul>
-              </div>
-            </div>
           </div>
           <div class="action" v-on:click="toggleDev()" v-bind:class="{'active': status.isDev}">
             <i class="fa fa-wrench" aria-hidden="true"></i>
@@ -94,6 +103,20 @@ export default {
           <i class="fa fa-fw fa-save" v-show="!status.saved.loading"></i>
           Spara
         </button>
+      </div>
+    </div>
+    <div>
+      <div class="admin-info-container" :class="{ 'show-admin-info': showAdminInfo }">
+        <div class="admin-info" v-bind:class="{ 'linked': isLinked, 'work-state': isWork, 'instance-state': isInstance }">
+          <div v-for="(k, v) in getCard">
+            <div class="admin-key">
+              {{ k | labelByLang | capitalize }}: 
+            </div>
+            <div>
+              {{v}}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -142,38 +165,6 @@ export default {
           .action {
             display: inline-block;
             cursor: pointer;
-            .card-info-container {
-              position: absolute;
-              .card-info {
-                &.instance-state {
-                  background-color: @instance-background;
-                  color: @instance-text;
-                }
-                &.work-state {
-                  background-color: @work-background;
-                  color: @work-text;
-                }
-                cursor: auto;
-                max-width: 500px;
-                border: 1px solid #999;
-                border-bottom-left-radius: 10px;
-                border-bottom-right-radius: 10px;
-                border-top-right-radius: 10px;
-                position: relative;
-                left: 3%;
-                top: -8px;
-                padding: 10px;
-                ul {
-                  list-style: none;
-                  padding: 0px;
-                  li {
-                    span {
-                      word-break: break-word;
-                    }
-                  }
-                }
-              }
-            }
             &.active {
               i {
                 color: @brand-primary;
@@ -183,8 +174,39 @@ export default {
         }
       }
     }
+    .admin-info-container {
+      overflow: hidden;
+      padding: 0px;
+      max-height: 0px;
+      transition: all ease 1s;
+      &.show-admin-info {
+        max-height: 120px;
+      }
+      .admin-info {
+        &.instance-state {
+          background-color: @instance-background;
+          color: @instance-text;
+        }
+        &.work-state {
+          background-color: @work-background;
+          color: @work-text;
+        }
+        > div > div{
+          display: inline-block;
+          &.admin-key {
+            width: 50%;
+            text-align: right;
+            font-style: italic;
+          } 
+        }
+        cursor: auto;
+        font-size: 0.8em;
+        padding: 5px 0px;
+        columns: 2;
+        column-fill: balance;
+        overflow: hidden;
+      }
+    }
+    
   }
-
-
-
 </style>
