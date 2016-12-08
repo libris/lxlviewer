@@ -19,6 +19,7 @@ export default {
     isLocked: false,
     focus: '',
     status: {},
+    embedded: false,
   },
   vuex: {
     getters: {
@@ -105,7 +106,7 @@ export default {
   <div class="item-embedded">
     <i v-if="!isLocked" class="fa fa-trash chip-action" v-on:click="removeThis"></i>
     <strong>{{ item['@type'] | labelByLang | capitalize }}</strong>
-    <data-node v-for="(k,v) in filteredItem" :is-locked="isLocked" :pkey="key" :embedded="true" :pindex="index" :key="k" :value="v" :focus="focus" :linked="editorData.linked" :status="status"></data-node>
+    <data-node v-for="(k,v) in filteredItem" :is-locked="isLocked" :is-removable="false" :embedded="true" :pkey="key" :pindex="index" :key="k" :value="v" :focus="focus" :linked="editorData.linked" :status="status"></data-node>
   </div>
 </template>
 
@@ -113,13 +114,6 @@ export default {
 @import './variables.less';
 
 .item-embedded {
-  ul {
-    padding: 0px;
-    list-style: none;
-    li {
-      display: block;
-    }
-  }
   width: @col-value;
   padding: 10px;
   border: 2px dotted fadeout(@gray, 50%);
