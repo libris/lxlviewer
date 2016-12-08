@@ -54,6 +54,9 @@ export default {
     getRange() {
       return VocabUtil.getRange(this.key, this.vocab, this.settings.vocabPfx);
     },
+    canRecieveObjects() {
+      return (this.propertyTypes.indexOf('DatatypeProperty') === -1);
+    },
     isLiteral() {
       if (this.getRange.length > 0) {
         for (const rangeElement of this.getRange) {
@@ -70,10 +73,10 @@ export default {
   },
   methods: {
     add() {
-      if (this.propertyTypes.indexOf('DatatypeProperty') !== -1) {
-        this.$dispatch('add-item', '');
-      } else {
+      if (this.canRecieveObjects) {
         this.openSearch();
+      } else {
+        this.$dispatch('add-item', '');
       }
     },
     addLinked(item) {
@@ -101,7 +104,7 @@ export default {
     addEmpty(type) {
       this.closeSearch();
       const obj = this.getEmptyForm(type);
-      this.$dispatch('add-anonymous', this.key, obj);
+      this.$dispatch('add-item', obj);
     },
     search(keyword) {
       const self = this;
