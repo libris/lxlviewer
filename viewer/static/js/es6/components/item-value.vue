@@ -15,6 +15,7 @@ export default {
     index: Number,
     isLocked: false,
     status: {},
+    isRemovable: false,
   },
   vuex: {
     getters: {
@@ -69,6 +70,7 @@ export default {
   <!-- TODO: @input or @change? -->
     <input v-model="value" @change="valueChanged()" v-show="!isLocked"></input>
     <span v-show="isLocked">{{value}}</span>
+    <div class="remover" v-show="!isLocked && isRemovable" v-on:click="removeThis()"><i class="fa fa-trash"></i></div>
   </div>
 </template>
 
@@ -78,11 +80,24 @@ export default {
 .item-value {
   width: 95%;
   input {
+    color: @black;
     padding: 2px 5px;
-    width: 100%;
+    width: 90%;
     border-radius: 5px;
     border: none;
     box-shadow: inset 0px 0px 5px 0px rgba(0, 0, 0, 0.45);
+  }
+  .remover {
+    margin-left: 1em;
+    display: inline-block;
+    opacity: 0;
+    cursor: pointer;
+    transition: opacity 0.5s ease;
+  }
+  &:hover {
+    .remover {
+      opacity: 1;
+    }
   }
 }
 
