@@ -3,6 +3,8 @@ import * as _ from 'lodash';
 import Notifications from '../components/notifications';
 import moment from 'moment';
 import * as EditUtil from '../utils/edit';
+import * as DisplayUtil from '../utils/display';
+import { getVocabulary, getDisplayDefinitions, getSettings, getEditorData } from '../vuex/getters';
 moment.locale('sv');
 
 export default {
@@ -11,6 +13,14 @@ export default {
     'messages',
     'editor-data',
   ],
+  vuex: {
+    getters: {
+      vocab: getVocabulary,
+      display: getDisplayDefinitions,
+      settings: getSettings,
+      editorData: getEditorData,
+    },
+  },
   methods: {
     save() {
       this.$dispatch('save-item');
@@ -28,8 +38,16 @@ export default {
     };
   },
   computed: {
-    getAdminData() {
-      return this.editorData.record;
+    // TODO: Get all admin data, not only card info
+    getCard() {
+      const card = DisplayUtil.getCard(
+        this.editorData.record,
+        this.display,
+        this.editorData.linked,
+        this.vocab,
+        this.settings.vocabPfx
+      );
+      return card;
     },
     modified() {
       return {
@@ -88,9 +106,16 @@ export default {
       </div>
     </div>
     <div>
-      <div class="card-info" v-bind:class="{ 'linked': isLinked, 'work-state': isWork, 'instance-state': isInstance, 'show-admin-info': showAdminInfo }">
-        <div v-for="(k, v) in getAdminData">
-          {{k}}: {{v}}
+      <div class="admin-info-container" :class="{ 'show-admin-info': showAdminInfo }">
+        <div class="admin-info" v-bind:class="{ 'linked': isLinked, 'work-state': isWork, 'instance-state': isInstance }">
+          <div v-for="(k, v) in getCard">
+            <div class="admin-key">
+              {{ k | labelByLang | capitalize }}: 
+            </div>
+            <div>
+              {{v}}
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -149,28 +174,39 @@ export default {
         }
       }
     }
-    .card-info {
-      &.instance-state {
-        background-color: @instance-background;
-      }
-      &.work-state {
-        background-color: @work-background;
-      }
-      cursor: auto;
-      font-size: 0.8em;
-      text-align: center;
+    .admin-info-container {
+      overflow: hidden;
+      padding: 0px;
       max-height: 0px;
       transition: all ease 1s;
-      padding: 0px;
-      columns: 2;
-      column-fill: balance;
-      overflow: hidden;
-      color: rgba(255, 255, 255, 0.0);
       &.show-admin-info {
         max-height: 120px;
+      }
+      .admin-info {
+        &.instance-state {
+          background-color: @instance-background;
+          color: @instance-text;
+        }
+        &.work-state {
+          background-color: @work-background;
+          color: @work-text;
+        }
+        > div > div{
+          display: inline-block;
+          &.admin-key {
+            width: 50%;
+            text-align: right;
+            font-style: italic;
+          } 
+        }
+        cursor: auto;
+        font-size: 0.8em;
         padding: 5px 0px;
-        color: rgba(255, 255, 255, 1.0);
+        columns: 2;
+        column-fill: balance;
+        overflow: hidden;
       }
     }
+    
   }
 </style>
