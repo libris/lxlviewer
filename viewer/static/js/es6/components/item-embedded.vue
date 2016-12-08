@@ -105,12 +105,7 @@ export default {
   <div class="item-embedded">
     <i v-if="!isLocked" class="fa fa-trash chip-action" v-on:click="removeThis"></i>
     <strong>{{ item['@type'] | labelByLang | capitalize }}</strong>
-    <ul>
-      <li v-for="(k,v) in filteredItem">
-        <span class="item-label">{{k | labelByLang | capitalize }}:</span>
-        <data-node :is-locked="isLocked" :pkey="key" :pindex="index" :key="k" :value="v" :focus="focus" :linked="editorData.linked" :status="status"></data-node>
-      </li>
-    </ul>
+    <data-node v-for="(k,v) in filteredItem" :is-locked="isLocked" :pkey="key" :embedded="true" :pindex="index" :key="k" :value="v" :focus="focus" :linked="editorData.linked" :status="status"></data-node>
   </div>
 </template>
 

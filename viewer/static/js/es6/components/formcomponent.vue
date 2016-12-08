@@ -6,7 +6,6 @@
 */
 
 import * as _ from 'lodash';
-import EntityAdder from './entityadder';
 import FieldAdder from './fieldadder';
 import DataNode from './datanode';
 import * as ModalUtil from '../utils/modals';
@@ -238,7 +237,6 @@ export default {
   },
   components: {
     'data-node': DataNode,
-    'entity-adder': EntityAdder,
     'field-adder': FieldAdder,
   },
 };
@@ -250,22 +248,8 @@ export default {
       <span>{{ sortedFormData['@type'] | labelByLang | capitalize }}fält</span>
       <span v-if="isLocked" class="edit-locked" :class="{ 'work-state': isWork, 'instance-state': isInstance }" @click="changeState()"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Gå till verk</span>
     </div>
-    <ul>
-      <li v-for="(k,v) in sortedFormData" v-bind:class="{ 'locked': isLocked }">
-        <div class="label" v-bind:class="{ 'locked': isLocked }">
-          <!-- <a href="/vocab/#{{property}}">{{ property | labelByLang | capitalize }}</a> -->
-          {{ k | labelByLang | capitalize }}
-        </div>
-        <div class="value">
-          <data-node :is-locked="keyIsLocked(k)" :key="k" :value="v" :linked="linked" :focus="focus" :status="status"></data-node>
-        </div>
-        <div class="actions" v-if="!isLocked">
-          <div class="action action-remove" v-if="!keyIsLocked(k)" class="delete" v-on:click="removeField(k)"><i class="fa fa-trash"></i></div>
-          <entity-adder class="action" v-if="!keyIsLocked(k) && (isRepeatable(k) || isEmptyObject(v))" :key="k" :focus="focus"></entity-adder>
-        </div>
-      </li>
-    </ul>
-    <field-adder v-if="!isLocked" :allowed="allowedProperties" :focus="focus" :status="status"></field-adder>
+    <data-node v-for="(k,v) in sortedFormData" v-bind:class="{ 'locked': isLocked }" :is-locked="keyIsLocked(k)" :key="k" :value="v" :linked="linked" :focus="focus" :status="status"></data-node>
+    <field-adder v-if="!isLocked" :allowed="allowedProperties" :focus="focus"></field-adder>
     <div id="result" v-if="status.isDev && !isLocked">
       <div class="row">
       <pre class="col-md-6">
