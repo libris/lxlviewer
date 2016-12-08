@@ -15,7 +15,20 @@ import { getVocabulary, getSettings } from '../vuex/getters';
 
 export default {
   name: 'data-node',
-  props: ['pkey', 'pindex', 'key', 'value', 'label', 'linked', 'isLocked', 'focus', 'status', 'embedded'],
+  props: [
+    'pkey',
+    'pindex',
+    'key',
+    'value',
+    'label',
+    'linked',
+    'isLocked',
+    'focus',
+    'status',
+    'allow-anon',
+    'embedded',
+    'is-removable',
+  ],
   vuex: {
     getters: {
       vocab: getVocabulary,
@@ -45,6 +58,13 @@ export default {
         this.vocab,
         this.settings.vocabPfx
       );
+    },
+    hasSingleValue() {
+      if (!_.isArray(this.value) || this.value.length === 1) {
+        return true;
+      } else {
+        return false;
+      }
     },
     stackable() {
       return (this.propertyTypes.indexOf('DatatypeProperty') === -1);
@@ -100,7 +120,7 @@ export default {
     },
     'add-item'(value) {
       console.log("DataNode:"+ this.getPath +" - Adding", JSON.stringify(value));
-      const modified = _.cloneDeep(this.value);
+      const modified = [].concat(_.cloneDeep(this.value));
       modified.push(value);
       this.updateValue(modified);
     },
@@ -189,7 +209,7 @@ export default {
         <item-entity v-if="isPlainObject(item) && isLinked(item)" :is-locked="isLocked" :status="status" :focus="focus" :item="item" :key="key" :index="$index"></item-entity>
         <item-anonymous v-if="isPlainObject(item) && !isLinked(item) && !isEmbedded(item)" :is-locked="isLocked" :status="status" :focus="focus" :item="item" :key="key" :index="$index"></item-anonymous>
         <item-embedded v-if="isPlainObject(item) && !isLinked(item) && isEmbedded(item)" :is-locked="isLocked" :status="status" :focus="focus" :item="item" :key="key" :index="$index"></item-embedded>
-        <item-value v-if="!isPlainObject(item) && !isLinked(item)" :is-locked="isLocked" :status="status" :focus="focus" :value="item" :key="key" :index="$index"></item-value>
+        <item-value v-if="!isPlainObject(item) && !isLinked(item)" :is-removable="!hasSingleValue" :is-locked="isLocked" :status="status" :focus="focus" :value="item" :key="key" :index="$index"></item-value>
       </li>
     </ul>
   </div>
@@ -198,11 +218,11 @@ export default {
     <item-entity v-if="isPlainObject(value) && isLinked(value)" :is-locked="isLocked" :status="status" :focus="focus" :item="value" :key="key"></item-entity>
     <item-anonymous v-if="isPlainObject(value) && !isLinked(value) && !isEmbedded(value)" :is-locked="isLocked" :status="status" :focus="focus" :item="value" :key="key" :index="$index"></item-anonymous>
     <item-embedded v-if="isPlainObject(value) && !isLinked(value) && isEmbedded(value)" :is-locked="isLocked" :status="status" :focus="focus" :item="value" :key="key"></item-embedded>
-    <item-value v-if="!isPlainObject(value) && !isLinked(value)" :is-locked="isLocked" :status="status" :focus="focus" :value="value" :key="key"></item-value>
+    <item-value v-if="!isPlainObject(value) && !isLinked(value)" :is-locked="isLocked" :is-removable="!hasSingleValue" :status="status" :focus="focus" :value="value" :key="key"></item-value>
   </div>
   <div class="actions" v-if="!isLocked">
-    <entity-adder class="action" v-if="!isLocked && (isRepeatable || isEmptyObject)" :key="key" :focus="focus" :property-types="propertyTypes"></entity-adder>
-    <div class="action action-remove" v-if="!isLocked" class="delete" v-on:click="removeField(k)"><i class="fa fa-trash"></i></div>
+    <entity-adder class="action" v-if="!isLocked && (isRepeatable || isEmptyObject)" :key="key" :focus="focus" :property-types="propertyTypes" :allow-anon="allowAnon"></entity-adder>
+    <div class="action action-remove" v-if="!isLocked && isRemovable" class="delete" v-on:click="removeField(k)"><i class="fa fa-trash"></i></div>
   </div>
 </div>
 </template>
@@ -219,6 +239,7 @@ export default {
   .node-list {
     > ul {
       margin-bottom: 0px;
+      padding: 0px;
       > li {
         display: block;
         margin-bottom: 2px;
@@ -279,13 +300,20 @@ export default {
     >.actions {
       order: 3;
       flex-basis: @col-action;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
       > * {
         display: inline;
+        margin: 0px 5px;
       }
     }
   }
   &.column {
     flex-wrap: wrap;
+    border: dashed @gray-light;
+    border-width: 0px 0px 1px 0px;
+    padding-bottom: 4px;
     >.label {
       flex: 0 1 100%;
       text-align: left;
