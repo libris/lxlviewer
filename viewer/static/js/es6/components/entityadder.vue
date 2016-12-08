@@ -64,23 +64,6 @@ export default {
       }
       return false;
     },
-    isEmbedded() {
-      // Is the type of the item derived from StructuredValue?
-      const embeddedTypes = ['StructuredValue', 'ProvisionActivity', 'Contribution'];
-      const typeChain = VocabUtil.getBaseClassesFromArray(
-        this.getRange,
-        this.vocab,
-        this.settings.vocabPfx
-      );
-      if (typeChain.length > 0) {
-        for (const typeElement of embeddedTypes) {
-          if (~typeChain.indexOf(`${this.settings.vocabPfx}${typeElement}`)) {
-            return true;
-          }
-        }
-      }
-      return false;
-    },
   },
   ready() {
     this.searchOpen = false;
