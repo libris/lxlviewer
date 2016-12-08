@@ -184,8 +184,9 @@ export default {
     </a>
     <div class="search-box" v-show="searchOpen">
       <div class="stage-0" v-show="!chooseAnonymousType">
-        <button v-on:click="goAnonymous">Lägg till oauktoriserad</button>
-        eller
+        <div v-show="allowAnon">
+          <button v-on:click="goAnonymous">Lägg till oauktoriserad</button>
+        </div>
         Sök:
         <input v-model="keyword"></input>
         <hr>
