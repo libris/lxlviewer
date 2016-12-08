@@ -11,7 +11,7 @@ import { getVocabulary, getSettings } from '../vuex/getters';
 
 export default {
   name: 'data-node',
-  props: ['pkey', 'pindex', 'key', 'value', 'label', 'linked', 'isLocked', 'focus', 'status'],
+  props: ['pkey', 'pindex', 'key', 'value', 'label', 'linked', 'isLocked', 'focus', 'status', 'embedded'],
   vuex: {
     getters: {
       vocab: getVocabulary,
@@ -41,6 +41,9 @@ export default {
         this.vocab,
         this.settings.vocabPfx
       );
+    },
+    stackable() {
+      return (this.propertyTypes.indexOf('DatatypeProperty') === -1);
     },
     valueByIdPresence() {
       const list = _.sortBy(this.value, [(o) => (o['@id'])]);
@@ -177,7 +180,7 @@ export default {
     <!-- <a href="/vocab/#{{property}}">{{ property | labelByLang | capitalize }}</a> -->
     {{ key | labelByLang | capitalize }}
   </div>
-  <div v-if="isArray(value)" class="value node-list">
+  <div v-if="isArray(value)" class="value node-list" v-bind:class="{'stackable': stackable}">
     <pre v-show="status.isDev">{{getPath}}</pre>
     <ul>
       <li v-for="item in value" track-by="$index">
@@ -211,8 +214,23 @@ export default {
   flex-direction: row;
   outline: 2px solid transparent;
   transition: outline 3s ease;
-  > .node-list > ul > li {
-    display: inline-block;
+  .node-list {
+    > ul {
+      margin-bottom: 0px;
+      > li {
+        display: block;
+        margin-bottom: 2px;
+        &:last-of-type {
+          margin-bottom: auto;
+        }
+      }
+    }
+    &.stackable {
+      > ul > li {
+        display: inline-block;
+        margin-bottom: auto;
+      }
+    }
   }
   &.highlight {
     outline: 2px solid @highlight-color;
