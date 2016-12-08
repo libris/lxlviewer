@@ -85,7 +85,10 @@ export default {
 @import './variables.less';
 
 .item-value {
-
+  width: 95%;
+  input {
+    width: 100%;
+  }
 }
 
 </style>
