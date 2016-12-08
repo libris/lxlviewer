@@ -36,7 +36,7 @@ export default {
       return `${this.key}`;
     },
     propertyTypes() {
-      VocabUtil.getPropertyTypes(
+      return VocabUtil.getPropertyTypes(
         this.key,
         this.vocab,
         this.settings.vocabPfx
