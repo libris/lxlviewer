@@ -49,6 +49,25 @@ export default {
       const list = _.sortBy(this.value, [(o) => (o['@id'])]);
       return list;
     },
+    isRepeatable() {
+      const types = VocabUtil.getPropertyTypes(
+        this.key,
+        this.vocab,
+        this.settings.vocabPfx
+      );
+      return types.indexOf('FunctionalProperty') < 0;
+    },
+    isEmptyObject() {
+      const value = this.value;
+      if (typeof value === 'undefined') {
+        return true;
+      }
+      if (!_.isObject(value)) {
+        return false;
+      }
+      const bEmpty = (Object.keys(value).length === 0);
+      return bEmpty;
+    },
     isLastAdded() {
       if (this.status.lastAdded === this.getPath) {
         return true;
