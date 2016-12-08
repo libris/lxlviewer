@@ -44,6 +44,12 @@ export default {
       const list = _.sortBy(this.value, [(o) => (o['@id'])]);
       return list;
     },
+    isLastAdded() {
+      if (this.status.lastAdded === this.getPath) {
+        return true;
+      }
+      return false;
+    },
   },
   events: {
     'update-entity'(key, index, obj) {
@@ -73,7 +79,36 @@ export default {
       }
     },
   },
+  ready() {
+    this.$nextTick(() => {
+      setTimeout(() => {
+        if (this.isLastAdded) {
+          const position = this.$el.offsetTop - (0.75 * window.innerHeight);
+          this.scrollTo(document.scrollingElement, position, 600, 600, () => {
+            this.$dispatch('update-last-added', '');
+          });
+        }
+      }, 300);
+    });
+  },
   methods: {
+    scrollTo(element, to, timeLeft, duration, callback) {
+      let durationThreshold = 10;
+      if (timeLeft <= 1) {
+        callback();
+        return;
+      } else if (timeLeft < (duration / 2)) {
+        durationThreshold = timeLeft / (duration / 20);
+      }
+
+      const difference = to - element.scrollTop;
+      const perTick = difference / timeLeft * durationThreshold;
+      setTimeout(() => {
+        element.scrollTop = element.scrollTop + perTick;
+        if (element.scrollTop === to) return;
+        this.scrollTo(element, to, timeLeft - durationThreshold, duration, callback);
+      }, durationThreshold);
+    },
     updateValue(value) {
       if (this.pkey && this.pindex !== '') {
         const path = this.pkey + '[' + this.pindex + ']' + '.' + this.key;
@@ -135,23 +170,25 @@ export default {
 </script>
 
 <template>
-  <div v-if="isArray(value)" class="node-list">
-    <pre v-show="status.isDev">{{getPath}}</pre>
-    <ul>
-      <li v-for="item in value" track-by="$index">
-        <item-entity v-if="isPlainObject(item) && isLinked(item)" :is-locked="isLocked" :status="status" :focus="focus" :item="item" :key="key" :index="$index"></item-entity>
-        <item-anonymous v-if="isPlainObject(item) && !isLinked(item) && !isEmbedded(item)" :is-locked="isLocked" :status="status" :focus="focus" :item="item" :key="key" :index="$index"></item-anonymous>
-        <item-embedded v-if="isPlainObject(item) && !isLinked(item) && isEmbedded(item)" :is-locked="isLocked" :status="status" :focus="focus" :item="item" :key="key" :index="$index"></item-embedded>
-        <item-value v-if="!isPlainObject(item) && !isLinked(item)" :is-locked="isLocked" :status="status" :focus="focus" :value="item" :key="key" :index="$index"></item-value>
-      </li>
-    </ul>
-  </div>
-  <div v-if="!isArray(value)" class="node-object">
-    <pre v-show="status.isDev">{{getPath}}</pre>
-    <item-entity v-if="isPlainObject(value) && isLinked(value)" :is-locked="isLocked" :status="status" :focus="focus" :item="value" :key="key"></item-entity>
-    <item-anonymous v-if="isPlainObject(value) && !isLinked(value) && !isEmbedded(value)" :is-locked="isLocked" :status="status" :focus="focus" :item="value" :key="key" :index="$index"></item-anonymous>
-    <item-embedded v-if="isPlainObject(value) && !isLinked(value) && isEmbedded(value)" :is-locked="isLocked" :status="status" :focus="focus" :item="value" :key="key"></item-embedded>
-    <item-value v-if="!isPlainObject(value) && !isLinked(value)" :is-locked="isLocked" :status="status" :focus="focus" :value="value" :key="key"></item-value>
+  <div>
+    <div v-if="isArray(value)" class="node-list">
+      <pre v-show="status.isDev">{{getPath}}</pre>
+      <ul>
+        <li v-for="item in value" track-by="$index">
+          <item-entity v-if="isPlainObject(item) && isLinked(item)" :is-locked="isLocked" :status="status" :focus="focus" :item="item" :key="key" :index="$index"></item-entity>
+          <item-anonymous v-if="isPlainObject(item) && !isLinked(item) && !isEmbedded(item)" :is-locked="isLocked" :status="status" :focus="focus" :item="item" :key="key" :index="$index"></item-anonymous>
+          <item-embedded v-if="isPlainObject(item) && !isLinked(item) && isEmbedded(item)" :is-locked="isLocked" :status="status" :focus="focus" :item="item" :key="key" :index="$index"></item-embedded>
+          <item-value v-if="!isPlainObject(item) && !isLinked(item)" :is-locked="isLocked" :status="status" :focus="focus" :value="item" :key="key" :index="$index"></item-value>
+        </li>
+      </ul>
+    </div>
+    <div v-if="!isArray(value)" class="node-object">
+      <pre v-show="status.isDev">{{getPath}}</pre>
+      <item-entity v-if="isPlainObject(value) && isLinked(value)" :is-locked="isLocked" :status="status" :focus="focus" :item="value" :key="key"></item-entity>
+      <item-anonymous v-if="isPlainObject(value) && !isLinked(value) && !isEmbedded(value)" :is-locked="isLocked" :status="status" :focus="focus" :item="value" :key="key" :index="$index"></item-anonymous>
+      <item-embedded v-if="isPlainObject(value) && !isLinked(value) && isEmbedded(value)" :is-locked="isLocked" :status="status" :focus="focus" :item="value" :key="key"></item-embedded>
+      <item-value v-if="!isPlainObject(value) && !isLinked(value)" :is-locked="isLocked" :status="status" :focus="focus" :value="value" :key="key"></item-value>
+    </div>
   </div>
 </template>
 

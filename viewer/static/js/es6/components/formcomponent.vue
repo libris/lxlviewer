@@ -265,7 +265,7 @@ export default {
         </div>
       </li>
     </ul>
-    <field-adder v-if="!isLocked" :allowed="allowedProperties" :focus="focus"></field-adder>
+    <field-adder v-if="!isLocked" :allowed="allowedProperties" :focus="focus" :status="status"></field-adder>
     <div id="result" v-if="status.isDev && !isLocked">
       <div class="row">
       <pre class="col-md-6">

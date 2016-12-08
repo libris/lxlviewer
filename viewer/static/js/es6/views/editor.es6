@@ -124,6 +124,7 @@ export default class Editor extends View {
       data: {
         initialized: false,
         status: {
+          lastAdded: '',
           state: 'it',
           dirty: true,
           isDev: false,
@@ -174,6 +175,9 @@ export default class Editor extends View {
         },
         'change-state': function(newState) {
           this.status.state = newState;
+        },
+        'update-last-added': function(fieldName) {
+          this.status.lastAdded = fieldName;
         },
       },
       watch: {

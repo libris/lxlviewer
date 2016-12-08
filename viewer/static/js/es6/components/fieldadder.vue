@@ -12,6 +12,7 @@ export default {
     active: false,
     filterKey: '',
     focus: '',
+    status: {},
   },
   vuex: {
     getters: {
@@ -108,6 +109,8 @@ export default {
       });
       if (close) {
         this.hide();
+        const fieldName = prop['@id'].split(':')[1];
+        this.$dispatch('update-last-added', fieldName);
       }
     },
     show() {
