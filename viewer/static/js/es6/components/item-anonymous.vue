@@ -3,8 +3,10 @@ import * as _ from 'lodash';
 import * as httpUtil from '../utils/http';
 import * as VocabUtil from '../utils/vocab';
 import * as DisplayUtil from '../utils/display';
+import Vue from 'vue';
 import ProcessedLabel from './processedlabel';
 import ItemEntity from './item-entity';
+import DataNode from './datanode';
 import { getVocabulary, getDisplayDefinitions, getSettings, getEditorData } from '../vuex/getters';
 
 export default {
@@ -82,6 +84,9 @@ export default {
     isInstance() {
       return this.focus === 'it';
     },
+  },
+  created() {
+    this.$options.components['data-node'] = Vue.extend(DataNode);
   },
   ready() {
     this.$nextTick(() => {
@@ -165,11 +170,7 @@ export default {
     <div v-show="inEdit">
       <i class="fa fa-times chip-action" v-on:click="removeThis"></i>
       <strong>{{ item['@type'] | labelByLang | capitalize }}</strong>
-      <span v-for="(k,v) in filteredItem">
-        <span class="item-label">{{k | labelByLang | capitalize }}:</span>
-        <input v-model="v" v-if="!isObject(v)"></input>
-        <item-entity :focus="focus" :key="k" :item="v" v-if="isObject(v)"></item-entity>
-      </span>
+      <data-node v-for="(k,v) in filteredItem" :is-locked="isLocked" :pkey="key" :embedded="true" :is-removable="false" :pindex="index" :key="k" :value="v" :focus="focus" :linked="editorData.linked" :status="status" :allow-anon="false"></data-node>
       <div class="actions">
         <button v-on:click="closeForm" v-bind:disabled="isEmpty">Klar</button>
       </div>
