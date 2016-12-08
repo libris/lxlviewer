@@ -88,7 +88,7 @@ export default {
   },
   methods: {
     removeThis() {
-      this.$dispatch('remove-item', this.item);
+      this.$dispatch('remove-item', this.index);
     },
     isObject(value) {
       return _.isObject(value);
