@@ -1,4 +1,8 @@
 <script>
+/*
+  The datanode component is responsible for a specific key value pair.
+  It's responsible for its own data, and dispatches all changes to the form component.
+*/
 import * as _ from 'lodash';
 import ProcessedLabel from './processedlabel';
 import EntityAdder from './entityadder';
@@ -11,7 +15,7 @@ import { getVocabulary, getSettings } from '../vuex/getters';
 
 export default {
   name: 'data-node',
-  props: ['pkey', 'pindex', 'key', 'value', 'label', 'linked', 'isLocked', 'focus', 'status'],
+  props: ['pkey', 'pindex', 'key', 'value', 'label', 'linked', 'isLocked', 'focus', 'status', 'embedded'],
   vuex: {
     getters: {
       vocab: getVocabulary,
@@ -36,15 +40,37 @@ export default {
       return `${this.key}`;
     },
     propertyTypes() {
-      VocabUtil.getPropertyTypes(
+      return VocabUtil.getPropertyTypes(
         this.key,
         this.vocab,
         this.settings.vocabPfx
       );
     },
+    stackable() {
+      return (this.propertyTypes.indexOf('DatatypeProperty') === -1);
+    },
     valueByIdPresence() {
       const list = _.sortBy(this.value, [(o) => (o['@id'])]);
       return list;
+    },
+    isRepeatable() {
+      const types = VocabUtil.getPropertyTypes(
+        this.key,
+        this.vocab,
+        this.settings.vocabPfx
+      );
+      return types.indexOf('FunctionalProperty') < 0;
+    },
+    isEmptyObject() {
+      const value = this.value;
+      if (typeof value === 'undefined') {
+        return true;
+      }
+      if (!_.isObject(value)) {
+        return false;
+      }
+      const bEmpty = (Object.keys(value).length === 0);
+      return bEmpty;
     },
     isLastAdded() {
       if (this.status.lastAdded === this.getPath) {
@@ -54,31 +80,29 @@ export default {
     },
   },
   events: {
-    'update-entity'(key, index, obj) {
-      if (typeof index !== 'undefined') {
-        this.value.$set(index, obj);
+    'update-item'(index, value) {
+      let modified = _.cloneDeep(this.value);
+      if (typeof index !== 'undefined' && index !== '') {
+        modified[index] = value;
       } else {
-        this.value.$set(obj);
+        modified = value;
       }
+      this.updateValue(modified);
     },
-    'update-item-value'(value) {
-      this.updateValue(value);
-    },
-    'remove-item'(value) {
-      console.log("dn:remove-item was called", value);
-      const modified = Object.assign({}, this.value);
-      if (_.isArray(modified)) {
-        // Find item in the array and splice it..
-        _.remove(modified, (item) => {
-          if (_.isEqual(value, item)) {
-            return true;
-          }
-          return false;
-        });
-        this.updateValue(modified);
+    'remove-item'(index) {
+      let modified = _.cloneDeep(this.value);
+      if (typeof index !== 'undefined' && index !== '') {
+        modified.splice(index, 1);
       } else {
-        this.updateValue([]);
+        modified = [];
       }
+      this.updateValue(modified);
+    },
+    'add-item'(value) {
+      console.log("DataNode:"+ this.getPath +" - Adding", JSON.stringify(value));
+      const modified = _.cloneDeep(this.value);
+      modified.push(value);
+      this.updateValue(modified);
     },
   },
   ready() {
@@ -122,22 +146,6 @@ export default {
         this.$dispatch('update-value', this.key, value);
       }
     },
-    emptyValue() {
-      this.$dispatch('update-value', this.key, {});
-    },
-    removeKey() {
-      this.emptyValue();
-    },
-    removeByIndex(index) {
-      const modified = this.value;
-      modified.splice(index, 1);
-      this.updateValue(modified);
-    },
-    removeById(id) {
-      let modified = this.value;
-      modified = _.filter(this.value, (n) => (n['@id'] !== id));
-      this.updateValue(modified);
-    },
     isArray(o) {
       return _.isArray(o);
     },
@@ -164,9 +172,6 @@ export default {
       }
       return false;
     },
-    removeItem(key, value) {
-      this.$dispatch('remove-item', key, value);
-    },
   },
 };
 </script>
@@ -177,7 +182,7 @@ export default {
     <!-- <a href="/vocab/#{{property}}">{{ property | labelByLang | capitalize }}</a> -->
     {{ key | labelByLang | capitalize }}
   </div>
-  <div v-if="isArray(value)" class="value node-list">
+  <div v-if="isArray(value)" class="value node-list" v-bind:class="{'stackable': stackable}">
     <pre v-show="status.isDev">{{getPath}}</pre>
     <ul>
       <li v-for="item in value" track-by="$index">
@@ -196,7 +201,7 @@ export default {
     <item-value v-if="!isPlainObject(value) && !isLinked(value)" :is-locked="isLocked" :status="status" :focus="focus" :value="value" :key="key"></item-value>
   </div>
   <div class="actions" v-if="!isLocked">
-    <entity-adder class="action" v-if="!isLocked && (isRepeatable || isEmptyObject)" :key="key" :focus="focus"></entity-adder>
+    <entity-adder class="action" v-if="!isLocked && (isRepeatable || isEmptyObject)" :key="key" :focus="focus" :property-types="propertyTypes"></entity-adder>
     <div class="action action-remove" v-if="!isLocked" class="delete" v-on:click="removeField(k)"><i class="fa fa-trash"></i></div>
   </div>
 </div>
@@ -211,6 +216,24 @@ export default {
   flex-direction: row;
   outline: 2px solid transparent;
   transition: outline 3s ease;
+  .node-list {
+    > ul {
+      margin-bottom: 0px;
+      > li {
+        display: block;
+        margin-bottom: 2px;
+        &:last-of-type {
+          margin-bottom: auto;
+        }
+      }
+    }
+    &.stackable {
+      > ul > li {
+        display: inline-block;
+        margin-bottom: auto;
+      }
+    }
+  }
   &.highlight {
     outline: 2px solid @highlight-color;
   }

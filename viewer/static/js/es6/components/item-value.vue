@@ -39,7 +39,7 @@ export default {
   },
   methods: {
     valueChanged() {
-      this.$dispatch('update-item-value', this.value);
+      this.$dispatch('update-item', this.index, this.value);
     },
     isEmpty() {
       // TODO: Is the item empty?
@@ -49,16 +49,7 @@ export default {
       return _.isObject(obj);
     },
     removeThis() {
-      // TODO: Refactor data-binding so child component does not use parent-methods directly
-      console.log('Removethis called');
-      const holder = this.$parent.value;
-      if (_.isArray(holder)) {
-        this.$parent.removeById(this.item['@id']);
-      } else if (_.isPlainObject(holder)) {
-        this.$parent.removeKey(this.key);
-      } else {
-        this.$parent.emptyValue();
-      }
+      this.$dispatch('remove-item', this.index);
     },
     addFocus() {
       this.focused = true;
@@ -87,7 +78,11 @@ export default {
 .item-value {
   width: 95%;
   input {
+    padding: 2px 5px;
     width: 100%;
+    border-radius: 5px;
+    border: none;
+    box-shadow: inset 0px 0px 5px 0px rgba(0, 0, 0, 0.45);
   }
 }
 

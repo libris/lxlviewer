@@ -103,7 +103,7 @@ export default {
       return (this.isObject(value) || key === '@id');
     },
     removeThis() {
-      this.$dispatch('remove-item', this.item);
+      this.$dispatch('remove-item', this.index);
     },
     addFocus() {
       this.focused = true;

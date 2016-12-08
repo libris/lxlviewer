@@ -4,6 +4,9 @@ export function getLinked(id, linked) {
   if (typeof id === 'undefined') {
     throw new Error('getLinked was called with an undefined Id.');
   }
+  if (typeof linked === 'undefined' || !_.isArray(linked)) {
+    throw new Error('getLinked was called without an array of linked items.');
+  }
   let obj = { '@id': id };
   if (typeof linked !== 'undefined') {
     for (const entity of linked) {

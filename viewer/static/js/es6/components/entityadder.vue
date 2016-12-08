@@ -32,6 +32,7 @@ export default {
     key: '',
     focus: '',
     allowAnon: true,
+    propertyTypes: [],
   },
   components: {
     'processed-label': ProcessedLabel,
@@ -53,27 +54,13 @@ export default {
     getRange() {
       return VocabUtil.getRange(this.key, this.vocab, this.settings.vocabPfx);
     },
+    canRecieveObjects() {
+      return (this.propertyTypes.indexOf('DatatypeProperty') === -1);
+    },
     isLiteral() {
       if (this.getRange.length > 0) {
         for (const rangeElement of this.getRange) {
           if (rangeElement.indexOf('Literal') > -1) {
-            return true;
-          }
-        }
-      }
-      return false;
-    },
-    isEmbedded() {
-      // Is the type of the item derived from StructuredValue?
-      const embeddedTypes = ['StructuredValue', 'ProvisionActivity', 'Contribution'];
-      const typeChain = VocabUtil.getBaseClassesFromArray(
-        this.getRange,
-        this.vocab,
-        this.settings.vocabPfx
-      );
-      if (typeChain.length > 0) {
-        for (const typeElement of embeddedTypes) {
-          if (~typeChain.indexOf(`${this.settings.vocabPfx}${typeElement}`)) {
             return true;
           }
         }
@@ -86,7 +73,11 @@ export default {
   },
   methods: {
     add() {
-      this.openSearch();
+      if (this.canRecieveObjects) {
+        this.openSearch();
+      } else {
+        this.$dispatch('add-item', '');
+      }
     },
     addLinked(item) {
       this.$dispatch('add-item', this.key, item);
@@ -113,7 +104,7 @@ export default {
     addEmpty(type) {
       this.closeSearch();
       const obj = this.getEmptyForm(type);
-      this.$dispatch('add-anonymous', this.key, obj);
+      this.$dispatch('add-item', obj);
     },
     search(keyword) {
       const self = this;

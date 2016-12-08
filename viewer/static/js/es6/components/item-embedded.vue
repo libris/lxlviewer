@@ -88,7 +88,7 @@ export default {
   },
   methods: {
     removeThis() {
-      this.$dispatch('remove-item', this.item);
+      this.$dispatch('remove-item', this.index);
     },
     isObject(value) {
       return _.isObject(value);
@@ -120,7 +120,7 @@ export default {
       display: block;
     }
   }
-  width: 100%;
+  width: @col-value;
   padding: 10px;
   border: 2px dotted fadeout(@gray, 50%);
   border-radius: 5px;

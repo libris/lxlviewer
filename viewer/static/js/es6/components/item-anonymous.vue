@@ -138,14 +138,7 @@ export default {
       return _.isObject(obj);
     },
     removeThis() {
-      const holder = this.$parent.value;
-      if (_.isArray(holder)) {
-        this.$parent.removeById(this.item['@id']);
-      } else if (_.isPlainObject(holder)) {
-        this.$parent.removeKey(this.key);
-      } else {
-        this.$parent.emptyValue();
-      }
+      this.$dispatch('remove-item', this.index);
     },
     addFocus() {
       this.focused = true;

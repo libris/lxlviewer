@@ -139,43 +139,13 @@ export default {
       delete modifiedData[prop];
       this.updateForm(this.focus, modifiedData);
     },
-    'add-item'(key, item) {
-      this.linked.push(item);
-      const modified = this.formData;
-      const newItem = { '@id': item['@id'] };
-      modified[key].push(newItem);
-      const merged = Object.assign({}, this.formData, modified);
-      this.updateForm(this.focus, merged);
-    },
-    'remove-item'(key, item) {
-      const keyWithout = _.reject(this.formData[key], (o) => o === item);
-      const modified = this.formData;
-      modified[key] = keyWithout;
-      const merged = Object.assign({}, this.formData, modified);
-      this.updateForm(this.focus, merged);
-    },
-    'update-value'(key, value) {
-      const modified = this.formData;
-      const path = key;
-      _.update(modified, path, () => {
-        return (_.isArray(value) ? value : []).concat(value);
-      });
-      const basekey = key.split('.')[0];
-      console.log(basekey, 'changed to', _.get(modified, basekey));
-      const merged = Object.assign({}, modified);
-      this.updateForm(this.focus, merged);
-    },
-    'add-anonymous'(key, item) {
-      const modified = this.formData;
-      if (_.isArray(modified[key])) {
-        modified[key].push(item);
-      } else if (!this.isEmptyObject(modified[key])) {
-        modified[key] = [modified[key], item];
-      } else {
-        modified[key] = item;
-      }
-      const merged = Object.assign({}, this.formData, modified);
-      this.updateForm(this.focus, merged);
+    'update-value'(path, value) {
+      console.log("FormComp:"+this.focus+" - Updating " + path, 'to', JSON.stringify(value));
+      const modified = _.cloneDeep(this.formData);
+      _.set(modified, path, value);
+      console.log("New value recieved for", path, "=", value);
+      console.log(modified);
+      this.updateForm(this.focus, modified);
     },
   },
   methods: {
@@ -187,16 +157,6 @@ export default {
     },
     isPlainObject(o) {
       return _.isPlainObject(o);
-    },
-    isEmptyObject(value) {
-      if (typeof value === 'undefined') {
-        return true;
-      }
-      if (!_.isObject(value)) {
-        return false;
-      }
-      const bEmpty = (Object.keys(value).length === 0);
-      return bEmpty;
     },
     removeField(prop) {
       const pLabel = VocabUtil.getLabelByLang(
@@ -219,14 +179,6 @@ export default {
       }, () => {
           // declined
       });
-    },
-    isRepeatable(property) {
-      const types = VocabUtil.getPropertyTypes(
-        property,
-        this.vocab,
-        this.settings.vocabPfx
-      );
-      return types.indexOf('FunctionalProperty') < 0;
     },
     updateFromTextarea(e) {
       this.updateForm(this.focus, JSON.parse(e.target.value));
