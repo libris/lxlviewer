@@ -39,7 +39,7 @@ export default {
   },
   methods: {
     valueChanged() {
-      this.$dispatch('update-item-value', this.value);
+      this.$dispatch('update-item', this.index, this.value);
     },
     isEmpty() {
       // TODO: Is the item empty?
