@@ -65,15 +65,6 @@ export default {
         <div class="actions">
           <div class="action">
             <i class="fa fa-info-circle" aria-hidden="true" @click="toggleAdminData()"></i>
-            <div class="card-info-container" v-show="showAdminInfo">
-              <div class="card-info" v-bind:class="{ 'linked': isLinked, 'work-state': isWork, 'instance-state': isInstance }">
-                <ul>
-                  <li v-for="(k, v) in getAdminData">
-                    {{k}}: {{v}}
-                  </li>
-                </ul>
-              </div>
-            </div>
           </div>
           <div class="action" v-on:click="toggleDev()" v-bind:class="{'active': status.isDev}">
             <i class="fa fa-wrench" aria-hidden="true"></i>
@@ -94,6 +85,13 @@ export default {
           <i class="fa fa-fw fa-save" v-show="!status.saved.loading"></i>
           Spara
         </button>
+      </div>
+    </div>
+    <div>
+      <div class="card-info" v-bind:class="{ 'linked': isLinked, 'work-state': isWork, 'instance-state': isInstance, 'show-admin-info': showAdminInfo }">
+        <div v-for="(k, v) in getAdminData">
+          {{k}}: {{v}}
+        </div>
       </div>
     </div>
   </div>
@@ -142,38 +140,6 @@ export default {
           .action {
             display: inline-block;
             cursor: pointer;
-            .card-info-container {
-              position: absolute;
-              .card-info {
-                &.instance-state {
-                  background-color: @instance-background;
-                  color: @instance-text;
-                }
-                &.work-state {
-                  background-color: @work-background;
-                  color: @work-text;
-                }
-                cursor: auto;
-                max-width: 500px;
-                border: 1px solid #999;
-                border-bottom-left-radius: 10px;
-                border-bottom-right-radius: 10px;
-                border-top-right-radius: 10px;
-                position: relative;
-                left: 3%;
-                top: -8px;
-                padding: 10px;
-                ul {
-                  list-style: none;
-                  padding: 0px;
-                  li {
-                    span {
-                      word-break: break-word;
-                    }
-                  }
-                }
-              }
-            }
             &.active {
               i {
                 color: @brand-primary;
@@ -183,8 +149,28 @@ export default {
         }
       }
     }
+    .card-info {
+      &.instance-state {
+        background-color: @instance-background;
+      }
+      &.work-state {
+        background-color: @work-background;
+      }
+      cursor: auto;
+      font-size: 0.8em;
+      text-align: center;
+      max-height: 0px;
+      transition: all ease 1s;
+      padding: 0px;
+      columns: 2;
+      column-fill: balance;
+      overflow: hidden;
+      color: rgba(255, 255, 255, 0.0);
+      &.show-admin-info {
+        max-height: 120px;
+        padding: 5px 0px;
+        color: rgba(255, 255, 255, 1.0);
+      }
+    }
   }
-
-
-
 </style>
