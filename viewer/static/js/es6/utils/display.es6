@@ -2,6 +2,7 @@ import * as _ from 'lodash';
 import * as httpUtil from './http';
 import * as EditUtil from './edit';
 import * as VocabUtil from './vocab';
+import * as StringUtil from './string';
 
 function fetchDisplayDefinitions() {
   return new Promise((resolve, reject) => {
@@ -74,7 +75,7 @@ export function getDisplayObject(item, level, displayDefs, linked, vocab, vocabP
   }
   if (!trueItem.hasOwnProperty('@type') && trueItem.hasOwnProperty('@id')) {
     console.warn('Tried to get linked but failed', 'id was', trueItem['@id']);
-    return { 'label': 'Not found' };
+    return { 'label': StringUtil.removeDomain(trueItem['@id']) };
   }
 
   // Get the list of properties we want to show
