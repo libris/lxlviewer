@@ -129,8 +129,8 @@ export default {
     this.$nextTick(() => {
       setTimeout(() => {
         if (this.isLastAdded) {
-          const position = this.$el.offsetTop - (0.75 * window.innerHeight);
-          this.scrollTo(document.scrollingElement, position, 600, 600, () => {
+          const position = this.$el.offsetTop - (0.25 * window.innerHeight);
+          this.scrollTo(document.scrollingElement, position, 600, 600, Number.MAX_SAFE_INTEGER, () => {
             this.$dispatch('update-last-added', '');
           });
         }
@@ -138,21 +138,26 @@ export default {
     });
   },
   methods: {
-    scrollTo(element, to, timeLeft, duration, callback) {
+    scrollTo(element, to, timeLeft, duration, oldDiff, callback) {
       let durationThreshold = 10;
-      if (timeLeft <= 1) {
+      const difference = to - element.scrollTop;
+      const distanceFromBottom = element.offsetHeight - element.scrollTop - window.innerHeight;
+      const userScrollInterrupt = Math.abs(difference) > Math.abs(oldDiff);
+      if (userScrollInterrupt) {
+        console.log(Math.abs(difference), Math.abs(oldDiff));
+      }
+      if (Math.abs(difference) <= 1 || distanceFromBottom === 0 || userScrollInterrupt) {
         callback();
         return;
       } else if (timeLeft < (duration / 2)) {
         durationThreshold = timeLeft / (duration / 20);
       }
 
-      const difference = to - element.scrollTop;
-      const perTick = difference / timeLeft * durationThreshold;
+      let perTick = difference / timeLeft * durationThreshold;
       setTimeout(() => {
         element.scrollTop = element.scrollTop + perTick;
         if (element.scrollTop === to) return;
-        this.scrollTo(element, to, timeLeft - durationThreshold, duration, callback);
+        this.scrollTo(element, to, timeLeft - durationThreshold, duration, difference, callback);
       }, durationThreshold);
     },
     updateValue(value) {
