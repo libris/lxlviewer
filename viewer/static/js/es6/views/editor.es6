@@ -11,6 +11,7 @@ import * as VocabUtil from '../utils/vocab';
 import * as DisplayUtil from '../utils/display';
 import * as RecordUtil from '../utils/record';
 import * as UserUtil from '../utils/user';
+import * as StringUtil from '../utils/string';
 import FormComponent from '../components/formcomponent';
 import EditorControls from '../components/editorcontrols';
 import HeaderComponent from '../components/headercomponent';
@@ -71,37 +72,10 @@ export default class Editor extends View {
     }, false);
 
     Vue.filter('labelByLang', (label) => {
-      if (!label) {
-        return '[FAILED LABEL]';
-      }
-      const pfx = self.settings.vocabPfx;
-      const lang = self.settings.lang;
-      // Filter for fetching labels from vocab
-      let lbl = label.toString();
-      if (lbl && lbl.indexOf(pfx) !== -1) {
-        lbl = lbl.replace(pfx, '');
-      }
-      const item = _.find(self.vocab.descriptions, (d) => { return d['@id'] === `${pfx}${lbl}`; });
-      let labelByLang = '';
-      if (typeof item !== 'undefined' && item.labelByLang) {
-        labelByLang = item.labelByLang[lang];
-      }
-      // Check if we have something of value
-      if (labelByLang && labelByLang.length > 0) {
-        return labelByLang;
-      }
-      return lbl;
+      return StringUtil.labelByLang(label, self.settings.lang, self.vocab, self.vocabPfx);
     });
     Vue.filter('removeDomain', (value) => {
-      const removable = [
-        'http://libris.kb.se/',
-        'https://libris.kb.se/',
-      ];
-      let newValue = value;
-      for (let i = 0; i < removable.length; i++) {
-        newValue = newValue.replace(removable[i], '');
-      }
-      return newValue;
+      return StringUtil.removeDomain(value);
     });
 
     Vue.use(Vuex);
