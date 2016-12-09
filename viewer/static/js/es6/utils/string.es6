@@ -1,12 +1,7 @@
 import * as _ from 'lodash';
 
-export function removeDomain(string) {
-  const removable = [
-    'http://libris.kb.se/',
-    'https://libris.kb.se/',
-    'http://id.kb.se/',
-    'https://id.kb.se/',
-  ];
+export function removeDomain(string, removableBaseUriArray) {
+  const removable = removableBaseUriArray;
   let newValue = string;
   for (let i = 0; i < removable.length; i++) {
     newValue = newValue.replace(removable[i], '');

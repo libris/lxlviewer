@@ -39,6 +39,12 @@ export default class Editor extends View {
       lang: 'sv',
       vocabPfx: 'kbv:',
       embeddedTypes: ['StructuredValue', 'ProvisionActivity', 'Contribution'],
+      removableBaseUris: [
+        'http://libris.kb.se/',
+        'https://libris.kb.se/',
+        'http://id.kb.se/',
+        'https://id.kb.se/',
+      ],
     };
     $('#loadingText .fa-warning').hide();
     $('#loadingText .status').text('Hämtar vokabulärsdata');
@@ -75,7 +81,7 @@ export default class Editor extends View {
       return StringUtil.labelByLang(label, self.settings.lang, self.vocab, self.vocabPfx);
     });
     Vue.filter('removeDomain', (value) => {
-      return StringUtil.removeDomain(value);
+      return StringUtil.removeDomain(value, self.settings.removableBaseUris);
     });
 
     Vue.use(Vuex);
