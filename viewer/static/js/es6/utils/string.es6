@@ -25,6 +25,13 @@ export function labelByLang(string, lang, vocab, vocabPfx) {
     labelByLang = item.labelByLang[lang];
   }
   // Check if we have something of value
+  if (_.isArray(labelByLang)) {
+    labelByLang = _.uniqBy(labelByLang, (i) => {
+      return i.toLowerCase();
+    });
+    labelByLang = labelByLang.join(', ');
+  }
+
   if (labelByLang && labelByLang.length > 0) {
     return labelByLang;
   }
