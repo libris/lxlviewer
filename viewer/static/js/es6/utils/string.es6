@@ -1,12 +1,7 @@
 import * as _ from 'lodash';
 
-export function removeDomain(string) {
-  const removable = [
-    'http://libris.kb.se/',
-    'https://libris.kb.se/',
-    'http://id.kb.se/',
-    'https://id.kb.se/',
-  ];
+export function removeDomain(string, removableBaseUriArray) {
+  const removable = removableBaseUriArray;
   let newValue = string;
   for (let i = 0; i < removable.length; i++) {
     newValue = newValue.replace(removable[i], '');
@@ -30,6 +25,13 @@ export function labelByLang(string, lang, vocab, vocabPfx) {
     labelByLang = item.labelByLang[lang];
   }
   // Check if we have something of value
+  if (_.isArray(labelByLang)) {
+    labelByLang = _.uniqBy(labelByLang, (i) => {
+      return i.toLowerCase();
+    });
+    labelByLang = labelByLang.join(', ');
+  }
+
   if (labelByLang && labelByLang.length > 0) {
     return labelByLang;
   }
