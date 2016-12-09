@@ -54,7 +54,7 @@ export default {
         this.display,
         this.editorData.linked,
         this.vocab,
-        this.settings.vocabPfx
+        this.settings
       );
       return chip;
     },
@@ -64,7 +64,7 @@ export default {
         this.display,
         this.editorData.linked,
         this.vocab,
-        this.settings.vocabPfx
+        this.settings
       );
       return card;
     },

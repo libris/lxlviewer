@@ -45,7 +45,7 @@ export default {
         this.display,
         this.editorData.linked,
         this.vocab,
-        this.settings.vocabPfx
+        this.settings
       );
       return card;
     },
@@ -110,7 +110,7 @@ export default {
         <div class="admin-info" v-bind:class="{ 'linked': isLinked, 'work-state': isWork, 'instance-state': isInstance }">
           <div v-for="(k, v) in getCard">
             <div class="admin-key">
-              {{ k | labelByLang | capitalize }}: 
+              {{ k | labelByLang | capitalize }}:
             </div>
             <div>
               {{v}}
@@ -197,7 +197,7 @@ export default {
             width: 50%;
             text-align: right;
             font-style: italic;
-          } 
+          }
         }
         cursor: auto;
         font-size: 0.8em;
@@ -207,6 +207,6 @@ export default {
         overflow: hidden;
       }
     }
-    
+
   }
 </style>

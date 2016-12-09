@@ -66,7 +66,7 @@ export function getProperties(typeInput, level, displayDefs) {
   return [];
 }
 
-export function getDisplayObject(item, level, displayDefs, linked, vocab, vocabPfx) {
+export function getDisplayObject(item, level, displayDefs, linked, vocab, settings) {
   if (!item || typeof item === 'undefined') {
     throw new Error('getDisplayObject was called with an undefined object.');
   }
@@ -79,17 +79,17 @@ export function getDisplayObject(item, level, displayDefs, linked, vocab, vocabP
   if (trueItem.hasOwnProperty('@id') && !trueItem.hasOwnProperty('@type')) {
     trueItem = EditUtil.getLinked(trueItem['@id'], linked);
     if (!trueItem.hasOwnProperty('@type') && trueItem.hasOwnProperty('@id')) {
-      return { 'label': StringUtil.removeDomain(trueItem['@id']) };
+      return { 'label': StringUtil.removeDomain(trueItem['@id'], settings.removableBaseUris) };
     }
   }
 
   // Get the list of properties we want to show
   let properties = getProperties(trueItem['@type'], level, displayDefs);
   if (properties.length === 0) { // If none were found, traverse up inheritance tree
-    const baseClasses = VocabUtil.getBaseClassesFromArray(trueItem['@type'], vocab, vocabPfx);
+    const baseClasses = VocabUtil.getBaseClassesFromArray(trueItem['@type'], vocab, settings.vocabPfx);
     for (let i = 0; i < baseClasses.length; i++) {
       if (typeof baseClasses[i] !== 'undefined') {
-        properties = getProperties(baseClasses[i].replace(vocabPfx, ''), level, displayDefs);
+        properties = getProperties(baseClasses[i].replace(settings.vocabPfx, ''), level, displayDefs);
         if (properties.length > 0) {
           break;
         }
@@ -109,13 +109,13 @@ export function getDisplayObject(item, level, displayDefs, linked, vocab, vocabP
       if (typeof trueItem[properties[i]] !== 'undefined') {
         let value = trueItem[properties[i]];
         if (_.isObject(value) && !_.isArray(value)) {
-          value = getChip(value, displayDefs, linked, vocab, vocabPfx);
+          value = getChip(value, displayDefs, linked, vocab, settings);
           // value = getDisplayObject(value, 'chips', displayDefs, linked, vocab, vocabPfx);
         } else if (_.isArray(value)) {
           const newArray = [];
           for (const arrayItem of value) {
             if (_.isObject(arrayItem)) {
-              newArray.push(getChip(arrayItem, displayDefs, linked, vocab, vocabPfx));
+              newArray.push(getChip(arrayItem, displayDefs, linked, vocab, settings));
             } else {
               newArray.push(arrayItem);
             }
@@ -150,12 +150,12 @@ function extractStrings(obj) {
   return label;
 }
 
-export function getChip(item, displayDefs, linked, vocab, vocabPfx) {
-  const displayObject = getDisplayObject(item, 'chips', displayDefs, linked, vocab, vocabPfx);
+export function getChip(item, displayDefs, linked, vocab, settings) {
+  const displayObject = getDisplayObject(item, 'chips', displayDefs, linked, vocab, settings);
   const rendered = extractStrings(displayObject);
   return rendered;
 }
 
-export function getCard(item, displayDefs, linked, vocab, vocabPfx) {
-  return getDisplayObject(item, 'cards', displayDefs, linked, vocab, vocabPfx);
+export function getCard(item, displayDefs, linked, vocab, settings) {
+  return getDisplayObject(item, 'cards', displayDefs, linked, vocab, settings);
 }
