@@ -15,8 +15,11 @@ export function getLinked(id, linked) {
       }
     }
   }
-  if (!obj.hasOwnProperty('@type')) {
-    console.warn('Linked item not found:', id);
+  if (!obj.hasOwnProperty('@type') && Object.keys(obj).length === 1) {
+    console.warn('Couldn\'t find embellished entity:', id);
+  }
+  if (!obj.hasOwnProperty('@type') && Object.keys(obj).length > 1) {
+    console.warn('Embellished entity has an unknown type (missing @type). ID:', id);
   }
   return obj;
 }

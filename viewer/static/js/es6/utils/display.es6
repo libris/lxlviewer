@@ -72,10 +72,9 @@ export function getDisplayObject(item, level, displayDefs, linked, vocab, vocabP
 
   if (trueItem.hasOwnProperty('@id') && !trueItem.hasOwnProperty('@type')) {
     trueItem = EditUtil.getLinked(trueItem['@id'], linked);
-  }
-  if (!trueItem.hasOwnProperty('@type') && trueItem.hasOwnProperty('@id')) {
-    console.warn('Embellished entity rejected (missing @type)', 'ID:', trueItem['@id']);
-    return { 'label': StringUtil.removeDomain(trueItem['@id']) };
+    if (!trueItem.hasOwnProperty('@type') && trueItem.hasOwnProperty('@id')) {
+      return { 'label': StringUtil.removeDomain(trueItem['@id']) };
+    }
   }
 
   // Get the list of properties we want to show
