@@ -41,23 +41,29 @@ export function getDisplayDefinitions() {
   });
 }
 
-export function getProperties(type, level, displayDefs) {
-  if (!type || typeof type === 'undefined') {
+export function getProperties(typeInput, level, displayDefs) {
+  if (!typeInput || typeof typeInput === 'undefined') {
     throw new Error('getProperties was called with an undefined type.');
   }
-  if (_.isObject(type)) {
+  if (_.isObject(typeInput) && !_.isArray(typeInput)) {
     throw new Error(
-      'getProperties was called with an object as type parameter (should be a string).'
+      'getProperties was called with an object as type parameter (should be a string or an array of strings).'
     );
   }
-  const lenses = displayDefs.lensGroups[level].lenses;
-  let props = [];
-  if (typeof lenses[type] !== 'undefined') {
-    props = lenses[type].showProperties;
+  const typeList = [].concat(typeInput);
+  for (const type of typeList) {
+    const lenses = displayDefs.lensGroups[level].lenses;
+    let props = [];
+    if (typeof lenses[type] !== 'undefined') {
+      props = lenses[type].showProperties;
+    }
+    props = [].concat(props);
+    _.remove(props, (x) => _.isObject(x));
+    if (props.length > 0) {
+      return props;
+    }
   }
-  props = [].concat(props);
-  _.remove(props, (x) => _.isObject(x));
-  return props;
+  return [];
 }
 
 export function getDisplayObject(item, level, displayDefs, linked, vocab, vocabPfx) {
