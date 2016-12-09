@@ -166,6 +166,14 @@ export default {
         this.$dispatch('update-value', this.key, value);
       }
     },
+    removeThis() {
+      if (this.pkey) {
+        console.warn('Remove was called on an embedded field, this is not supported.');
+        return false;
+      } else {
+        this.$dispatch('remove-field', this.key);
+      }
+    },
     isArray(o) {
       return _.isArray(o);
     },
@@ -222,7 +230,7 @@ export default {
   </div>
   <div class="actions" v-if="!isLocked">
     <entity-adder class="action" v-if="!isLocked && (isRepeatable || isEmptyObject)" :key="key" :focus="focus" :property-types="propertyTypes" :allow-anon="allowAnon"></entity-adder>
-    <div class="action action-remove" v-if="!isLocked && isRemovable" class="delete" v-on:click="removeField(k)"><i class="fa fa-trash"></i></div>
+    <div class="action action-remove" v-if="!isLocked && isRemovable" class="delete" v-on:click="removeThis()"><i class="fa fa-trash"></i></div>
   </div>
 </div>
 </template>
@@ -234,8 +242,10 @@ export default {
   width: 100%;
   display: flex;
   flex-direction: row;
+  box-shadow: inset 0px 0px 1em 0px transparent;
   outline: 2px solid transparent;
-  transition: outline 3s ease;
+  transition: 3s ease;
+  transition-property: all;
   .node-list {
     > ul {
       margin-bottom: 0px;
@@ -257,6 +267,7 @@ export default {
   }
   &.highlight {
     outline: 2px solid @highlight-color;
+    box-shadow: inset 0px 0px 1em 0px gold;
   }
   .label {
     font-size: 1.2rem;
