@@ -74,7 +74,7 @@ export function getDisplayObject(item, level, displayDefs, linked, vocab, vocabP
     trueItem = EditUtil.getLinked(trueItem['@id'], linked);
   }
   if (!trueItem.hasOwnProperty('@type') && trueItem.hasOwnProperty('@id')) {
-    console.warn('Tried to get linked but failed', 'id was', trueItem['@id']);
+    console.warn('Embellished entity rejected (missing @type)', 'ID:', trueItem['@id']);
     return { 'label': StringUtil.removeDomain(trueItem['@id']) };
   }
 
