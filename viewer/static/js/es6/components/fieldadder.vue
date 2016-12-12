@@ -111,10 +111,18 @@ export default {
       }
     },
     'add-field-multiple'() {
-      this.addField(this.filteredResults[this.selectedIndex].item, false);
+      if (!this.filteredResults[this.selectedIndex].added) {
+        this.addField(this.filteredResults[this.selectedIndex].item, false);
+      } else {
+        console.warn("already added, should be handled");
+      }
     },
     'add-field-single'() {
-      this.addField(this.filteredResults[this.selectedIndex].item, true);
+      if (!this.filteredResults[this.selectedIndex].added) {
+        this.addField(this.filteredResults[this.selectedIndex].item, true);
+      } else {
+        console.warn("already added, should be handled");
+      }
     },
     'close-modals'() {
       this.hide();
