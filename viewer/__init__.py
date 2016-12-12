@@ -150,7 +150,7 @@ def jsonld_context():
 
 @app.route('/<path:path>', methods=['DELETE'])
 def handle_delete(path):
-    response = _whelk_request(request)
+    response = _proxy_request(request)
     return response
 
 
@@ -165,7 +165,7 @@ def handle_put(path):
 @app.route('/<path:path>/data-view', methods=R_METHODS)
 @app.route('/<path:path>/data-view.<suffix>', methods=R_METHODS)
 def thingdataview(path, suffix=None, methods=R_METHODS):
-    r = _whelk_request(request)
+    r = _proxy_request(request)
 
     response_body = json.loads(r.get_data())
     return rendered_response(path, suffix, response_body, r.mimetype)
@@ -178,7 +178,7 @@ def thingview(path, suffix=None):
     except (NotFound, UnicodeEncodeError) as e:
         pass
     whelk_accept_header = _get_whelk_accept_header(request, suffix)
-    r = _whelk_request(request, accept_header=whelk_accept_header)
+    r = _proxy_request(request, accept_header=whelk_accept_header)
 
     response_body = json.loads(r.get_data())
     return rendered_response(path, suffix, response_body)
@@ -197,7 +197,7 @@ def _get_whelk_accept_header(request, suffix):
 @app.route('/find', methods=R_METHODS)
 @app.route('/find.<suffix>', methods=R_METHODS)
 def find(suffix=None):
-    response = _whelk_request(request, query_params=request.args)
+    response = _proxy_request(request, query_params=request.args)
     results = json.loads(response.get_data())
     return rendered_response('/find', suffix, results)
 
@@ -386,7 +386,7 @@ def convert():
 
 @app.route('/_remotesearch')
 def _remotesearch():
-    return _whelk_request(request, query_params=['q','databases'])
+    return _proxy_request(request, query_params=['q', 'databases'])
 
 def _is_tombstone(data):
     items = data.get(GRAPH)
@@ -396,6 +396,7 @@ def _is_tombstone(data):
     else:
         return False
 
+
 def _handle_modification(request, item):
     # TODO: mock handling for now; should forward to backend API
     app.logger.debug('MODIFICATION %s %s', request.method, json.dumps(item))
@@ -404,7 +405,8 @@ def _handle_modification(request, item):
     if request.method == 'PUT':
         return _write_data(request, item, query_params={'collection': 'xl'})
     elif request.method == 'DELETE':
-        return _whelk_request(request)
+        return _proxy_request(request)
+
 
 # Map from Requests response to Flask response
 def _map_response(response):
@@ -419,15 +421,29 @@ def _map_response(response):
                     mimetype=response.headers.get('content-type'),
                     headers=_map_headers(response.headers))
 
-def _whelk_request(request, json_data=None, query_params=[], accept_header=None):
+
+def _proxy_request(request, json_data=None, query_params=[],
+                   accept_header=None):
     params = {}
     defaults = query_params if isinstance(query_params, dict) else {}
-    url = '%s%s' % (app.config.get('WHELK_REST_API_URL'), request.path)
-    json_data = json.dumps(json_data)
     for param in query_params:
         params[param] = request.args.get(param) or defaults.get(param)
 
     headers = dict(request.headers)
+
+    url = _get_api_url(request.path)
+    return _whelk_request(url, request.method, headers, json_data=json_data,
+                          query_params=params, accept_header=accept_header)
+
+
+def _get_api_url(path):
+    return '%s%s' % (app.config.get('WHELK_REST_API_URL'), path)
+
+
+def _whelk_request(url, method, headers, json_data=None,
+                   query_params=[], accept_header=None):
+    json_data = json.dumps(json_data)
+
     if accept_header:
         headers['Accept'] = accept_header
 
@@ -436,8 +452,12 @@ def _whelk_request(request, json_data=None, query_params=[], accept_header=None)
         headers['Authorization'] = auth_token
 
     # Proxy the request to rest api
-    app.logger.debug('Sending proxy %s request to : %s with:\n %s' % (request.method, url, json_data))
-    r = requests.request(request.method, url, data=json_data, headers=headers, params=params)
+    app.logger.debug('Sending proxy %s request to : %s with:\n %s' % (method,
+                                                                      url,
+                                                                      json_data))
+    r = requests.request(method, url, data=json_data, headers=headers,
+                         params=query_params)
+
     if r.status_code < 400:
         return _map_response(r)
     else:
