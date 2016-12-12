@@ -360,20 +360,23 @@ def thingnewp():
     thing = json.loads(request.form['item'])
     return render_template('edit.html', thing=thing, model={})
 
+
 @app.route('/<path:path>/edit')
 @admin.login_required
 def thingedit(path):
-    item_id = _get_served_uri(request.url_root, path)
-    thing = things.ldview.get_record_data(item_id)
-    if not thing:
-        return abort(404)
-    if _is_tombstone(thing):
-        return abort(410)
+    request_url = _get_api_url("/{0}".format(path))
 
-    model = {}
-    return render_template('edit.html',
-            thing=things.embellish(thing),
-            model=model)
+    r = _whelk_request(request_url, 'GET', dict(request.headers))
+
+    if r.status_code == 200:
+        model = {}
+        data = json.loads(r.get_data())
+        return render_template('edit.html', thing=data, model=model)
+    else:
+        # TODO handle this better. GET /<path> *should* return 200,
+        # but treating everything else as an error isn't awesome.
+        return abort(r.status_code)
+
 
 @app.route('/create', methods=['POST'])
 def create():
