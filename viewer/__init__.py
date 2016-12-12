@@ -453,7 +453,7 @@ def _whelk_request(url, method, headers, json_data=None,
     if r.status_code < 400:
         return _map_response(r)
     else:
-        return r.raise_for_status()
+        return abort(r.status_code)
 
 
 def _get_authorization_token():
