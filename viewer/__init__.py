@@ -400,17 +400,6 @@ def _is_tombstone(data):
         return False
 
 
-def _handle_modification(request, item):
-    # TODO: mock handling for now; should forward to backend API
-    app.logger.debug('MODIFICATION %s %s', request.method, json.dumps(item))
-    if item is None:
-        return abort(404)
-    if request.method == 'PUT':
-        return _write_data(request, item, query_params={'collection': 'xl'})
-    elif request.method == 'DELETE':
-        return _proxy_request(request)
-
-
 # Map from Requests response to Flask response
 def _map_response(response):
     def _map_headers(headers):
