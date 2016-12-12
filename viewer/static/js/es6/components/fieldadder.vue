@@ -3,6 +3,7 @@ import { mixin as clickaway } from 'vue-clickaway';
 import * as _ from 'lodash';
 import * as LayoutUtil from '../utils/layout';
 import { getSettings } from '../vuex/getters';
+import ComboKeys from 'combokeys';
 
 export default {
   mixins: [clickaway],
