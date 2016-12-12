@@ -183,8 +183,8 @@ export default {
     updateFromTextarea(e) {
       this.updateForm(this.focus, JSON.parse(e.target.value));
     },
-    changeState() {
-      this.$dispatch('change-state', this.focus);
+    changeState(newState) {
+      this.$dispatch('change-state', newState);
     },
   },
   components: {
@@ -198,9 +198,19 @@ export default {
   <div class="form-component" :class="{ 'locked': isLocked, 'work-state': isWork, 'instance-state': isInstance, 'focused-form-component': status.state === this.focus }">
     <div class="form-header" :class="{ 'work-state': isWork, 'instance-state': isInstance }">
       <span>{{ sortedFormData['@type'] | labelByLang | capitalize }}fält</span>
-      <span v-if="isLocked" class="edit-locked" :class="{ 'work-state': isWork, 'instance-state': isInstance }" @click="changeState()"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Gå till verk</span>
+      <span v-if="isLocked" class="edit-locked" :class="{ 'work-state': isWork, 'instance-state': isInstance }" @click="changeState('work')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Gå till verk</span>
     </div>
     <data-node v-for="(k,v) in sortedFormData" v-bind:class="{ 'locked': isLocked }" :is-removable="true" :is-locked="keyIsLocked(k)" :key="k" :value="v" :linked="linked" :focus="focus" :status="status"></data-node>
+    <div v-if="focus == 'work'" class="dummy-reverse">
+      <div class="label" v-bind:class="{ 'locked': isLocked }">
+        Har instanser
+      </div>
+      <div class="value">
+        <span class="dummy-chip" @click="changeState('it')"><i class="fa fa-link" aria-hidden="true"></i> Link to instance#1 </span>
+      </div>
+      <div class="actions" v-if="!isLocked">
+      </div>
+    </div>
     <field-adder v-if="!isLocked" :allowed="allowedProperties" :focus="focus"></field-adder>
     <div id="result" v-if="status.isDev && !isLocked">
       <div class="row">
@@ -307,6 +317,41 @@ export default {
   .node-anonymous {
     width: 420px;
     clear: left;
+  }
+
+  .dummy-reverse {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    background-color: #f2f2f2;
+    .label {
+      color: black;
+      order: 1;
+      flex-basis: @col-label;
+      display: flex;
+      text-align: right;
+      align-items: center;
+      justify-content: flex-end;
+      font-size: 1.2rem;
+      color: #333333;
+      font-weight: normal;
+    }
+    .value {
+      order: 2;
+      flex-basis: @col-value;
+      padding: 5px;
+      .dummy-chip {
+        height: 1.7em;
+        padding: 0.5px 1em 0.5px 0.5em;
+        margin: 0.25em;
+        border-radius: 1em;
+        border: 0px;
+        cursor: pointer;
+        color: @instance-chip-text;
+        background-color: @instance-chip-background;
+        box-shadow: inset -2px -2px darken(@instance-chip-background, 10%);
+      }
+    }
   }
 }
 

@@ -2,6 +2,7 @@ import View from './view';
 import Vue from 'vue';
 import Vuex from 'vuex';
 import store from '../vuex/store';
+import ComboKeys from 'combokeys';
 import * as editUtil from '../utils/edit';
 import * as httpUtil from '../utils/http';
 import * as toolbarUtil from '../utils/toolbar';
@@ -241,6 +242,12 @@ export default class Editor extends View {
             });
           });
         },
+        initializeKeybinds() {
+          this.combokeys = new ComboKeys(document.documentElement);
+          this.combokeys.bind('esc', () => {
+            this.$broadcast('close-modals');
+          });
+        },
       },
       ready() {
         this.changeSettings(self.settings);
@@ -248,6 +255,7 @@ export default class Editor extends View {
         this.loadDisplayDefs(self.display);
         this.syncData(self.dataIn);
         this.initialized = true;
+        this.initializeKeybinds();
       },
       components: {
         'form-component': FormComponent,
