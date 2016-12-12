@@ -24,6 +24,7 @@ export default {
     return {
       buttonFixed: true,
       buttonPos: -1,
+      selectedIndex: 0,
     };
   },
   ready() { // Ready method is deprecated in 2.0, switch to "mounted"
@@ -96,6 +97,25 @@ export default {
     },
   },
   events: {
+    'open-add-field-window'() {
+      this.show();
+    },
+    'select-next'() {
+      if (this.selectedIndex < this.filteredResults.length - 1) {
+        this.selectedIndex += 1;
+      }
+    },
+    'select-prev'() {
+      if (this.selectedIndex > 0) {
+        this.selectedIndex -= 1;
+      }
+    },
+    'add-field-multiple'() {
+      this.addField(this.filteredResults[this.selectedIndex].item, false);
+    },
+    'add-field-single'() {
+      this.addField(this.filteredResults[this.selectedIndex].item, true);
+    },
     'close-modals'() {
       this.hide();
     },
@@ -118,12 +138,14 @@ export default {
       LayoutUtil.scrollLock(true);
       const self = this;
       self.active = true;
+      this.$dispatch('keyboard-binding-state', 'field-adder');
     },
     hide() {
       if (!this.active) return;
       this.active = false;
       LayoutUtil.scrollLock(false);
       this.filterKey = '';
+      this.$dispatch('keyboard-binding-state', 'overview');
     },
   },
   components: {
@@ -155,7 +177,7 @@ export default {
         </span>
       </div>
       <ul v-if="active">
-        <li v-bind:class="{ 'added': prop.added, 'available': !prop.added }" v-for="prop in filteredResults" @click="addField(prop.item, true)">
+        <li v-bind:class="{ 'added': prop.added, 'available': !prop.added, 'selected': $index == selectedIndex }" v-for="prop in filteredResults" track-by="$index" @click="addField(prop.item, true)">
           <span class="fieldLabel" title="{{prop.item['@id'] | labelByLang | capitalize }}">
             {{prop.item['@id'] | labelByLang | capitalize }}
           </span>
@@ -291,6 +313,10 @@ export default {
       li {
         &:nth-child(odd) {
           background-color: darken(@neutral-color, 5%);
+        }
+        &.selected {
+          outline: solid 1px @brand-primary;
+          background-color: fadeout(@brand-primary, 70%);
         }
         &.available {
           &:hover {

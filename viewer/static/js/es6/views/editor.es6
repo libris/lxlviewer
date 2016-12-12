@@ -3,6 +3,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import store from '../vuex/store';
 import ComboKeys from 'combokeys';
+import KeyBindings from '../keybindings.json';
 import * as editUtil from '../utils/edit';
 import * as httpUtil from '../utils/http';
 import * as toolbarUtil from '../utils/toolbar';
@@ -105,6 +106,7 @@ export default class Editor extends View {
       },
       data: {
         initialized: false,
+        combokeys: null,
         status: {
           lastAdded: '',
           state: 'it',
@@ -137,6 +139,24 @@ export default class Editor extends View {
             console.warn('Something went wrong trying to update a focused object.');
           }
           this.syncData(newData);
+        },
+        'keyboard-binding-state': function(state) {
+          // Bindings are defined in keybindings.json
+          if (this.combokeys) {
+            this.combokeys.detach();
+          }
+          this.combokeys = new ComboKeys(document.documentElement);
+          const stateSettings = KeyBindings[state];
+          console.log(stateSettings);
+          if (typeof stateSettings !== 'undefined') {
+            _.each(stateSettings, (value, key) => {
+              if (value !== null && value !== '') {
+                this.combokeys.bind(key.toString(), () => {
+                  this.$broadcast(value);
+                });
+              }
+            });
+          }
         },
         'add-linked': function(item) {
           const newData = this.editorData;
@@ -242,12 +262,6 @@ export default class Editor extends View {
             });
           });
         },
-        initializeKeybinds() {
-          this.combokeys = new ComboKeys(document.documentElement);
-          this.combokeys.bind('esc', () => {
-            this.$broadcast('close-modals');
-          });
-        },
       },
       ready() {
         this.changeSettings(self.settings);
@@ -255,7 +269,7 @@ export default class Editor extends View {
         this.loadDisplayDefs(self.display);
         this.syncData(self.dataIn);
         this.initialized = true;
-        this.initializeKeybinds();
+        this.$dispatch('keyboard-binding-state', 'overview');
       },
       components: {
         'form-component': FormComponent,
