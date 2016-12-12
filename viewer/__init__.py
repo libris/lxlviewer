@@ -465,7 +465,11 @@ def _whelk_request(url, method, headers, json_data=None,
 
 
 def _get_authorization_token():
-    oauth_token = session['oauth_token']
+    oauth_token = None
+
+    if 'oauth_token' in session:
+        oauth_token = session['oauth_token']
+
     if oauth_token:
         token = oauth_token['access_token']
         token_type = oauth_token['token_type']
