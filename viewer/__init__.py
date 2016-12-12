@@ -473,18 +473,8 @@ def _get_authorization_token():
 
 
 def _write_data(request, item=None, query_params=[]):
-    try:
-        if JSONLD_MIMETYPE in request.headers.get('Content-Type'):
-            json_data = request.get_json(force=True)
-            if json_data is None:
-                return Response(status=400)
-            else:
-                return _proxy_request(request, json_data, query_params)
-        else:
-            return Response(status=415)
-    except Exception, e:
-        app.logger.error(e)
-        return Response(e, status=502)
+    json_data = request.get_json(force=True)
+    return _proxy_request(request, json_data, query_params)
 
 
 ##
