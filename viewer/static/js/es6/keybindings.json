@@ -7,6 +7,6 @@
     "down": "select-next",
     "up": "select-prev",
     "enter": "add-field-single",
-    "space": "add-field-multiple"
+    "mod+enter": "add-field-multiple"
   }
 }
