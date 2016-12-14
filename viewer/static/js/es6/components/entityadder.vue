@@ -80,7 +80,7 @@ export default {
       }
     },
     addLinked(item) {
-      this.$dispatch('add-item', this.key, item);
+      this.$dispatch('add-item', item);
       this.closeSearch();
     },
     goAnonymous() {
@@ -109,7 +109,7 @@ export default {
     search(keyword) {
       const self = this;
       self.loading = true;
-      this.getItems(keyword).then((result) => {
+      this.getItems(keyword, this.getRange).then((result) => {
         self.searchResult = result;
       });
     },
@@ -119,7 +119,7 @@ export default {
         this.display,
         this.editorData.linked,
         this.vocab,
-        this.settings.vocabPfx
+        this.settings
       );
     },
     getEmptyForm(type) {
@@ -159,11 +159,18 @@ export default {
       console.log('Form obj', JSON.stringify(formObj));
       return formObj;
     },
-    getItems(keyword) {
+    getItems(keyword, typeArray) {
       // TODO: Support asking for more items
       const searchKey = `${keyword}*`;
 
-      const searchUrl = `/find.json?q=${searchKey}&@type=${this.getRange[0]}&limit=10`;
+      let searchUrl = `/find?q=${searchKey}`;
+      console.log('typeArray', typeArray);
+      if (typeof typeArray !== 'undefined' && typeArray.length > 0) {
+        searchUrl += '&';
+        for (const type of typeArray) {
+          searchUrl += `@type=${type}`;
+        }
+      }
       // console.log(searchUrl);
       return new Promise((resolve, reject) => {
         httpUtil.get({ url: searchUrl, accept: 'application/ld+json' }).then((response) => {
@@ -191,10 +198,8 @@ export default {
         <input v-model="keyword"></input>
         <hr>
         <ul class="search-result" v-show="searchResult.length > 0">
-          <li v-for="item in searchResult" class="search-result-item" v-on:click="addLinked(item)">
-            <span v-for="value in getItemAsChip(item)">
-              {{value}}
-            </span>
+          <li v-for="item in searchResult" track-by="$index" class="search-result-item" v-on:click="addLinked(item)">
+            {{ getItemAsChip(item) }}
           </li>
         </ul>
       </div>
