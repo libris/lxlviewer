@@ -7,20 +7,17 @@ import random
 import string
 from urlparse import urljoin
 from datetime import datetime, timedelta
-import requests
 
-from rdflib import ConjunctiveGraph
-
-from flask import Flask, Response, g, request, render_template, redirect
-from flask import abort, url_for, session
+from flask import Flask, Response
+from flask import g, request, session, render_template, url_for, redirect, abort
 from flask.helpers import NotFound
 from flask_cors import CORS
 from werkzeug.urls import url_quote
 
-from lxltools.util import as_iterable
-from lxltools.ld.keys import CONTEXT, GRAPH, ID, TYPE, REVERSE
+from rdflib import ConjunctiveGraph
 
-from .thingview import Things, Uris, IDKBSE, LIBRIS
+from .util import as_iterable
+from .dataaccess import CONTEXT, GRAPH, ID, TYPE, REVERSE, DataAccess, Uris, IDKBSE, LIBRIS
 from .marcframeview import MarcFrameView, pretty_json
 from . import admin
 from . import conneg
@@ -112,7 +109,7 @@ def _get_served_uri(url, path):
 ##
 # Setup data-access
 
-things = Things(app.config)
+daccess = DataAccess(app.config)
 uris = Uris(app.config)
 
 
@@ -120,10 +117,9 @@ uris = Uris(app.config)
 def core_context():
     return {
         'ID': ID,'TYPE': TYPE, 'REVERSE': REVERSE,
-        'vocab': things.ldview.vocab,
-        'ldview': things.ldview,
-        'ui': things.ui_defs,
-        'lang': things.ldview.vocab.lang,
+        'vocab': daccess.vocab,
+        'ui': daccess.ui_defs,
+        'lang': daccess.vocab.lang,
         'page_limit': 50,
         'canonical_uri': lambda uri: uris.find_canonical_uri(request.url_root, uri),
         'view_url': lambda uri: uris.to_view_url(request.url_root, uri)
@@ -132,16 +128,11 @@ def core_context():
 @app.before_request
 def handle_base():
     canonical_site_id = uris.to_canonical_uri(request.url_root)
-    g.site = things.get_site(canonical_site_id) or things.get_site(LIBRIS)
-
-@app.teardown_request
-def disconnect_db(exception):
-    things.ldview.storage.disconnect()
-
+    g.site = daccess.get_site(canonical_site_id) or daccess.get_site(LIBRIS)
 
 @app.route(CONTEXT_PATH)
 def jsonld_context():
-    return Response(json.dumps(things.jsonld_context_data),
+    return Response(json.dumps(daccess.jsonld_context_data),
             mimetype='application/ld+json; charset=UTF-8')
 
 
@@ -150,7 +141,7 @@ def jsonld_context():
 
 @app.route('/<path:path>', methods=['DELETE'])
 def handle_delete(path):
-    response = _proxy_request(request)
+    response = _proxy_request(request, session)
     return response
 
 
@@ -165,7 +156,7 @@ def handle_put(path):
 @app.route('/<path:path>/data-view', methods=R_METHODS)
 @app.route('/<path:path>/data-view.<suffix>', methods=R_METHODS)
 def thingdataview(path, suffix=None, methods=R_METHODS):
-    r = _proxy_request(request)
+    r = _proxy_request(request, session)
 
     response_body = json.loads(r.get_data())
     return rendered_response(path, suffix, response_body, r.mimetype)
@@ -178,7 +169,7 @@ def thingview(path, suffix=None):
     except (NotFound, UnicodeEncodeError) as e:
         pass
     whelk_accept_header = _get_whelk_accept_header(request, suffix)
-    r = _proxy_request(request, accept_header=whelk_accept_header)
+    r = _proxy_request(request, session, accept_header=whelk_accept_header)
 
     response_body = json.loads(r.get_data())
     return rendered_response(path, suffix, response_body)
@@ -197,7 +188,7 @@ def _get_whelk_accept_header(request, suffix):
 @app.route('/find', methods=R_METHODS)
 @app.route('/find.<suffix>', methods=R_METHODS)
 def find(suffix=None):
-    response = _proxy_request(request, query_params=request.args)
+    response = _proxy_request(request, session, query_params=request.args)
     results = json.loads(response.get_data())
     return rendered_response('/find', suffix, results)
 
@@ -205,7 +196,7 @@ def find(suffix=None):
 @app.route('/some', methods=R_METHODS)
 @app.route('/some.<suffix>', methods=R_METHODS)
 def some(suffix=None):
-    ambiguity = things.ldview.find_ambiguity(request)
+    ambiguity = daccess.find_ambiguity(request)
     if not ambiguity:
         return abort(404)
     return rendered_response('/some', suffix, ambiguity)
@@ -217,7 +208,7 @@ def some(suffix=None):
 def dataindexview(suffix=None):
     slicerepr = request.args.get('slice')
     slicetree = json.loads(slicerepr) if slicerepr else g.site['slices']
-    results = things.ldview.get_index_stats(slicetree, make_find_url,
+    results = daccess.get_index_stats(slicetree, make_find_url,
             uris.to_canonical_uri(request.url_root))
     results.update(g.site)
     return rendered_response('/', suffix, results)
@@ -298,7 +289,7 @@ def _to_json(data):
 def _to_graph(data, base=None):
     cg = ConjunctiveGraph()
     cg.parse(data=json.dumps(data), base=base or IDKBSE,
-                format='json-ld', context=things.jsonld_context_data)
+                format='json-ld', context=daccess.jsonld_context_data)
     return cg
 
 def _get_template_for(data):
@@ -366,7 +357,8 @@ def thingnewp():
 def thingedit(path):
     request_url = _get_api_url("/{0}".format(path))
 
-    r = _whelk_request(request_url, 'GET', dict(request.headers))
+    r = _map_response(_whelk_request(request_url, 'GET', dict(request.headers),
+            auth_token=_get_authorization_token(session)))
 
     if r.status_code == 200:
         model = {}
@@ -389,7 +381,7 @@ def convert():
 
 @app.route('/_remotesearch')
 def _remotesearch():
-    return _proxy_request(request, query_params=['q', 'databases'])
+    return _proxy_request(request, session, query_params=['q', 'databases'])
 
 def _is_tombstone(data):
     items = data.get(GRAPH)
@@ -400,67 +392,8 @@ def _is_tombstone(data):
         return False
 
 
-# Map from Requests response to Flask response
-def _map_response(response):
-    def _map_headers(headers):
-        _headers = {}
-        for head in ['etag', 'location']:
-            if head in headers:
-                _headers[head] = headers[head];
-        return _headers
-    return Response(response.text,
-                    status=response.status_code,
-                    mimetype=response.headers.get('content-type'),
-                    headers=_map_headers(response.headers))
-
-
-def _proxy_request(request, json_data=None, query_params=[],
-                   accept_header=None):
-    params = {}
-    defaults = query_params if isinstance(query_params, dict) else {}
-    for param in query_params:
-        params[param] = request.args.get(param) or defaults.get(param)
-
-    headers = dict(request.headers)
-
-    url = _get_api_url(request.path)
-    return _whelk_request(url, request.method, headers, json_data=json_data,
-                          query_params=params, accept_header=accept_header)
-
-
-def _get_api_url(path):
-    return '%s%s' % (app.config.get('WHELK_REST_API_URL'), path)
-
-
-def _whelk_request(url, method, headers, json_data=None,
-                   query_params=[], accept_header=None):
-    json_data = json.dumps(json_data)
-
-    if accept_header:
-        headers['Accept'] = accept_header
-
-    auth_token = _get_authorization_token()
-    if auth_token:
-        headers['Authorization'] = auth_token
-
-    # Proxy the request to rest api
-    app.logger.debug('Sending proxy %s request to : %s with:\n %s' % (method,
-                                                                      url,
-                                                                      json_data))
-    r = requests.request(method, url, data=json_data, headers=headers,
-                         params=query_params)
-
-    if r.status_code < 400:
-        return _map_response(r)
-    else:
-        return abort(r.status_code)
-
-
-def _get_authorization_token():
-    oauth_token = None
-
-    if 'oauth_token' in session:
-        oauth_token = session['oauth_token']
+def _get_authorization_token(session):
+    oauth_token = session['oauth_token'] if 'oauth_token' in session else None
 
     if oauth_token:
         token = oauth_token['access_token']
@@ -470,6 +403,39 @@ def _get_authorization_token():
         return "{0} {1}".format(token_type, token)
     else:
         return None
+
+
+def _proxy_request(request, session, json_data=None, query_params=[],
+                   accept_header=None):
+    params = {}
+    defaults = query_params if isinstance(query_params, dict) else {}
+    for param in query_params:
+        params[param] = request.args.get(param) or defaults.get(param)
+
+    headers = dict(request.headers)
+    url = _get_api_url(request.path)
+    auth_token = _get_authorization_token(session)
+
+    return _map_response(_whelk_request(url, request.method, headers,
+                          json_data=json_data, query_params=params,
+                          accept_header=accept_header, auth_token=auth_token))
+
+
+# Map from Requests response to Flask response
+def _map_response(response):
+    def _map_headers(headers):
+        _headers = {}
+        for head in ['etag', 'location']:
+            if head in headers:
+                _headers[head] = headers[head];
+        return _headers
+
+    resp = Response(response.text,
+                    status=response.status_code,
+                    mimetype=response.headers.get('content-type'),
+                    headers=_map_headers(response.headers))
+
+    return resp if resp.status_code < 400 else abort(resp.status_code)
 
 
 def _write_data(request, item=None, query_params=[]):
@@ -499,7 +465,7 @@ app.context_processor(lambda: rdfns)
 @app.route('/vocab/', methods=R_METHODS)
 @app.route('/vocab/data.<suffix>', methods=R_METHODS)
 def vocabview(suffix=None):
-    voc = things.get_vocab_util()
+    voc = daccess.get_vocab_util()
 
     def link(obj):
         if ':' in obj.qname() and not any(obj.objects(None)):
@@ -517,7 +483,7 @@ def vocabview(suffix=None):
         return Response(voc.graph.serialize(format=
                 'json-ld' if mimetype == JSONLD_MIMETYPE else mimetype,
                 #context_id=CONTEXT_PATH,
-                context=things.jsonld_context_data[CONTEXT]), content_type='%s; charset=UTF-8' % mimetype)
+                context=daccess.jsonld_context_data[CONTEXT]), content_type='%s; charset=UTF-8' % mimetype)
 
     return render_template('vocab.html',
             URIRef=URIRef, **vars())

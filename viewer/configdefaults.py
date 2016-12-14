@@ -21,6 +21,7 @@ CACHE_DIR = P.join(P.dirname(__file__), "..", "cache")
 
 VOCAB_IRI = "https://id.kb.se/vocab/"
 CONTEXT_IRI = "https://id.kb.se/vocab/context"
+DISPLAY_IRI = "https://id.kb.se/vocab/display"
 LANG = "sv"
 
 BASE_URI_ALIAS = {}

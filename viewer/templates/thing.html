@@ -80,7 +80,7 @@
           <div class='expand-button'><i class='fa rotate fa-plus-circle'></i></div>
           % endif
           <a href="${thing_url}" class="thing-label">
-            % set label = ldview.getlabel(thing)
+            % set label = vocab.get_label_for(thing)
             % if isinstance(label, basestring)
               ${label}
             % else
