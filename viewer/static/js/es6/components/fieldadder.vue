@@ -24,7 +24,7 @@ export default {
     return {
       buttonFixed: true,
       buttonPos: -1,
-      selectedIndex: 0,
+      selectedIndex: -1,
     };
   },
   ready() { // Ready method is deprecated in 2.0, switch to "mounted"
@@ -102,12 +102,34 @@ export default {
     },
     'select-next'() {
       if (this.selectedIndex < this.filteredResults.length - 1) {
+        if (this.selectedIndex >= 0) {
+          const fieldList = document.getElementsByClassName('field-list')[0];
+          const threshold =
+            fieldList.getBoundingClientRect().top +
+            fieldList.getBoundingClientRect().height;
+          const selectedElement = document.getElementsByClassName('selected')[0];
+          const selectedPosition =
+            selectedElement.getBoundingClientRect().top +
+            selectedElement.getBoundingClientRect().height * 2;
+          if (selectedPosition > threshold) {
+            fieldList.scrollTop += selectedElement.getBoundingClientRect().height * 2;
+          }
+        }
         this.selectedIndex += 1;
       }
     },
     'select-prev'() {
       if (this.selectedIndex > 0) {
         this.selectedIndex -= 1;
+        const fieldList = document.getElementsByClassName('field-list')[0];
+        const threshold = fieldList.getBoundingClientRect().top;
+        const selectedElement = document.getElementsByClassName('selected')[0];
+        const selectedPosition =
+          selectedElement.getBoundingClientRect().top -
+          selectedElement.getBoundingClientRect().height;
+        if (selectedPosition < threshold) {
+          fieldList.scrollTop -= selectedElement.getBoundingClientRect().height * 2;
+        }
       }
     },
     'add-field-multiple'() {
@@ -126,6 +148,7 @@ export default {
     },
     'close-modals'() {
       this.hide();
+      this.selectedIndex = -1;
     },
   },
   methods: {
@@ -144,8 +167,10 @@ export default {
     },
     show() {
       LayoutUtil.scrollLock(true);
-      const self = this;
-      self.active = true;
+      this.active = true;
+      setTimeout(() => { // TODO: Solve this by setting focus after window has been rendered.
+        document.getElementById('test').focus();
+      }, 1);
       this.$dispatch('keyboard-binding-state', 'field-adder');
     },
     hide() {
@@ -154,6 +179,10 @@ export default {
       LayoutUtil.scrollLock(false);
       this.filterKey = '';
       this.$dispatch('keyboard-binding-state', 'overview');
+      this.resetSelectIndex();
+    },
+    resetSelectIndex() {
+      this.selectedIndex = -1;
     },
   },
   components: {
@@ -180,12 +209,12 @@ export default {
           <i v-on:click="hide" class="fa fa-close"></i>
         </span>
         <span class="filter">
-          Filtrera <input class="filterInput" type="text" v-model="filterKey"></input>
+          Filtrera <input id="test" class="filterInput mousetrap" @input="resetSelectIndex()" type="text" v-model="filterKey"></input>
           <span class="filterInfo">Visar {{ filteredResults.length }} av totalt {{allowed ? allowed.length : '0'}}</span>
         </span>
       </div>
-      <ul v-if="active">
-        <li v-bind:class="{ 'added': prop.added, 'available': !prop.added, 'selected': $index == selectedIndex }" v-for="prop in filteredResults" track-by="$index" @click="addField(prop.item, true)">
+      <ul v-if="active" class="field-list">
+        <li v-on:mouseover="selectedIndex = $index" v-bind:class="{ 'added': prop.added, 'available': !prop.added, 'selected': $index == selectedIndex }" v-for="prop in filteredResults" track-by="$index" @click="addField(prop.item, true)">
           <span class="fieldLabel" title="{{prop.item['@id'] | labelByLang | capitalize }}">
             {{prop.item['@id'] | labelByLang | capitalize }}
           </span>

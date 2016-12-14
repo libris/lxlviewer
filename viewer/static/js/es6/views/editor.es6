@@ -146,12 +146,13 @@ export default class Editor extends View {
             this.combokeys.detach();
           }
           this.combokeys = new ComboKeys(document.documentElement);
+          require('combokeys/plugins/global-bind')(this.combokeys); // TODO: Solve with ES6 syntax
           const stateSettings = KeyBindings[state];
           console.log(stateSettings);
           if (typeof stateSettings !== 'undefined') {
             _.each(stateSettings, (value, key) => {
               if (value !== null && value !== '') {
-                this.combokeys.bind(key.toString(), () => {
+                this.combokeys.bindGlobal(key.toString(), () => {
                   this.$broadcast(value);
                 });
               }
