@@ -202,8 +202,7 @@ def _whelk_request(url, method, headers, json_data=None, query_params=[],
         headers['Authorization'] = auth_token
 
     # Proxy the request to rest api
-    app.logger.debug('Sending proxy %s request to : %s with:\n %s' % (method,
-                                                                      url,
-                                                                      json_data))
+    app.logger.debug('Sending proxy %s request to : %s with:\n %s',
+                        method, url, json_data)
     return requests.request(method, url, data=json_data, headers=headers,
                          params=query_params)
