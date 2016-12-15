@@ -17,6 +17,7 @@ export default {
   },
   props: {
     status,
+    full: false,
   },
   data() {
     return {
@@ -35,6 +36,8 @@ export default {
           this.showChipHeader = false;
         }
       });
+      const expandableAdminInfo = document.getElementsByClassName('admin-info-container')[0];
+      expandableAdminInfo.onresize = this.resize;
     });
   },
   methods: {
@@ -155,10 +158,11 @@ export default {
 
 <template>
   <div class="header-component">
-    <div class="main-header" id="card-header">
+    <div v-if="full" class="main-header" id="card-header">
       <ul>
         <li v-for="(k, v) in getCard" v-bind:class="{'large-title': isTitle(k)}">{{v}}</li>
       </ul>
+    </div>
 <!--
     <div class="large-title">
       {{state}}
@@ -176,20 +180,20 @@ export default {
         </li>
       </ul>
     </div> -->
-    <div class="container">
+    <div v-if="full == false && showChipHeader" class="container fixed-header-container">
       <div class="row">
-      <div class="fixed-header" v-show="showChipHeader">
-        <span v-for="(k, v) in getCard">
-          <span v-if="isTitle(k)">
-            <span class="small-title">{{v}}</span>
+        <div class="fixed-header">
+          <span v-for="(k, v) in getCard">
+            <span v-if="isTitle(k)">
+              <span class="small-title">{{v}}</span>
+            </span>
+            <span v-if="!isTitle(k)" class="minimum-text">
+              <span v-if="showKey(k)">{{k}}: {{v}}</span>
+              <span v-if="!showKey(k)">{{v}}</span>
+            </span>
           </span>
-          <span v-if="!isTitle(k)" class="minimum-text">
-            <span v-if="showKey(k)">{{k}}: {{v}}</span>
-            <span v-if="!showKey(k)">{{v}}</span>
-          </span>
-        </span>
+        </div>
       </div>
-    </div>
     </div>
   </div>
 </template>
@@ -201,10 +205,10 @@ export default {
   padding: 0px;
 
   .container {
-    top: 32px;
-    position: fixed;
-    padding: 0px;
-    z-index: @header-z;
+    // top: 32px;
+    // position: fixed;
+    // padding: 0px;
+    // z-index: @header-z;
     .row {
       margin: 0px;
     }
@@ -213,6 +217,7 @@ export default {
       padding: 5px;
       width: inherit;
       background-color: white;
+      color: black;
       box-shadow: 0px 6px 10px -6px rgba(0, 0, 0, 0.6);
     }
   }

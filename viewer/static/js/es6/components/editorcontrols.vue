@@ -1,6 +1,7 @@
 <script>
 import * as _ from 'lodash';
 import Notifications from '../components/notifications';
+import HeaderComponent from './headercomponent';
 import moment from 'moment';
 import * as EditUtil from '../utils/edit';
 import * as DisplayUtil from '../utils/display';
@@ -29,12 +30,12 @@ export default {
       this.$dispatch('toggle-dev');
     },
     toggleAdminData() {
-      this.showAdminInfo = !this.showAdminInfo;
+      this.showAdminInfoDetails = !this.showAdminInfoDetails;
     },
   },
   data() {
     return {
-      showAdminInfo: false,
+      showAdminInfoDetails: false,
     };
   },
   computed: {
@@ -72,6 +73,7 @@ export default {
   },
   components: {
     notifications: Notifications,
+    'header-component': HeaderComponent,
   },
 };
 </script>
@@ -104,71 +106,72 @@ export default {
           Spara
         </button>
       </div>
-    </div>
-    <div>
-      <div class="admin-info-container" :class="{ 'show-admin-info': showAdminInfo }">
-        <div class="admin-info" v-bind:class="{ 'linked': isLinked, 'work-state': isWork, 'instance-state': isInstance }">
-          <div v-for="(k, v) in getCard">
-            <div class="admin-key">
-              {{ k | labelByLang | capitalize }}:
-            </div>
-            <div>
-              {{v}}
+      <div>
+        <div class="admin-info-container" :class="{ 'show-admin-info-details': showAdminInfoDetails }">
+          <div class="admin-info-details">
+            <div v-for="(k, v) in getCard">
+              <div class="admin-key">
+                {{ k | labelByLang | capitalize }}:
+              </div>
+              <div>
+                {{v}}
+              </div>
             </div>
           </div>
         </div>
       </div>
+      <header-component :status="status" :full="false"></header-component>
     </div>
+    
   </div>
 </template>
 
 <style lang="less">
 @import './variables.less';
 
-  .container {
-    padding: 0px;
+.container {
+  padding: 0px;
 
-    .editor-controls {
-      &.affix {
-          top: 0;
-          width: inherit;
-          z-index: @header-z;
-      }
-      &.instance-state {
-        background-color: @instance-background;
-        color: @instance-text;
-      }
-      &.work-state {
-        background-color: @work-background;
-        color: @work-text;
-      }
-      .admin-info {
-        flex-direction: row;
-        display: flex;
-        align-items: center;
-        position: relative;
-        padding: 5px 15px;
-        .admin-node {
-          flex-grow: 5;
-          text-align: center;
-          .node {
-            font-size: 0.8em;
-            vertical-align: middle;
-          }
+  .editor-controls {
+    &.affix {
+        top: 0;
+        width: inherit;
+        z-index: @header-z;
+    }
+    &.instance-state {
+      background-color: @instance-background;
+      color: @instance-text;
+    }
+    &.work-state {
+      background-color: @work-background;
+      color: @work-text;
+    }
+    .admin-info {
+      flex-direction: row;
+      display: flex;
+      align-items: center;
+      position: relative;
+      padding: 5px 15px;
+      .admin-node {
+        flex-grow: 5;
+        text-align: center;
+        .node {
+          font-size: 0.8em;
+          vertical-align: middle;
         }
-        #saveButton {
-          padding: 0px;
-          flex-grow: 1;
-        }
+      }
+      #saveButton {
+        padding: 0px;
+        flex-grow: 1;
+      }
 
-        .actions {
-          .action {
-            display: inline-block;
-            cursor: pointer;
-            &.active {
-              i {
-                color: @brand-primary;
-              }
+      .actions {
+        .action {
+          display: inline-block;
+          cursor: pointer;
+          &.active {
+            i {
+              color: @brand-primary;
             }
           }
         }
@@ -179,18 +182,10 @@ export default {
       padding: 0px;
       max-height: 0px;
       transition: all ease 1s;
-      &.show-admin-info {
+      &.show-admin-info-details {
         max-height: 120px;
       }
-      .admin-info {
-        &.instance-state {
-          background-color: @instance-background;
-          color: @instance-text;
-        }
-        &.work-state {
-          background-color: @work-background;
-          color: @work-text;
-        }
+      .admin-info-details {
         > div > div{
           display: inline-block;
           &.admin-key {
@@ -207,6 +202,6 @@ export default {
         overflow: hidden;
       }
     }
-
   }
+}
 </style>
