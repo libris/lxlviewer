@@ -87,6 +87,7 @@ class DataAccess(object):
         self.vocab_uri = config['VOCAB_IRI']
         self.context_uri = config['CONTEXT_IRI']
         self.ui_defs = ui_defs
+        self._api_base = config['WHELK_REST_API_URL']
         display_uri = config['DISPLAY_IRI']
 
         #ns_mgr = Graph().parse('sys/context/base.jsonld',
@@ -98,6 +99,27 @@ class DataAccess(object):
         # FIXME: reactivate
         #display = self.load_from_whelk(display_uri)
         #vocab = VocabView(self.load_vocab_graph(), self.vocab_uri, lang=self.lang)
+
+    def api_request(self, url_path, method, headers, json_data=None,
+            query_params=[], accept_header=None, auth_token=None):
+
+        url = self._get_api_url(url_path)
+        json_data = json.dumps(json_data)
+
+        if accept_header:
+            headers['Accept'] = accept_header
+
+        if auth_token:
+            headers['Authorization'] = auth_token
+
+        # Proxy the request to rest api
+        app.logger.debug('Sending proxy %s request to : %s with:\n %s',
+                            method, url, json_data)
+        return requests.request(method, url, data=json_data, headers=headers,
+                            params=query_params)
+
+    def _get_api_url(self, url_path):
+        return '%s%s' % (self._api_base, url_path)
 
     def find_ambiguity(self, request):
         raise NotImplementedError # FIXME: implement
@@ -184,25 +206,3 @@ class Uris(object):
                 if same_id and same_id.startswith(site_base_uri):
                     return same_id
         return thing_id
-
-
-def _get_api_url(path):
-    return '%s%s' % (app.config.get('WHELK_REST_API_URL'), path)
-
-
-def _whelk_request(url, method, headers, json_data=None, query_params=[],
-        accept_header=None, auth_token=None):
-
-    json_data = json.dumps(json_data)
-
-    if accept_header:
-        headers['Accept'] = accept_header
-
-    if auth_token:
-        headers['Authorization'] = auth_token
-
-    # Proxy the request to rest api
-    app.logger.debug('Sending proxy %s request to : %s with:\n %s',
-                        method, url, json_data)
-    return requests.request(method, url, data=json_data, headers=headers,
-                         params=query_params)

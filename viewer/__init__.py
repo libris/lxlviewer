@@ -342,6 +342,7 @@ def thingnew(item_type):
                     },
                 model={})
 
+
 # !TODO this is stupid and should be solved a less dangerous way
 # So rethink the flow for new records
 # or maybe its not that stupid after all?
@@ -355,10 +356,7 @@ def thingnewp():
 @app.route('/<path:path>/edit')
 @admin.login_required
 def thingedit(path):
-    request_url = _get_api_url("/{0}".format(path))
-
-    r = _map_response(_whelk_request(request_url, 'GET', dict(request.headers),
-            auth_token=_get_authorization_token(session)))
+    r = _proxy_request(request, session, url_path="/{0}".format(path))
 
     if r.status_code == 200:
         model = {}
@@ -375,21 +373,15 @@ def create():
     request.path = '/'
     return _write_data(request, query_params={'collection': 'xl'})
 
+
 @app.route('/_convert', methods=['POST'])
 def convert():
     return _write_data(request, query_params={'to': 'application/x-marc-json'})
 
+
 @app.route('/_remotesearch')
 def _remotesearch():
     return _proxy_request(request, session, query_params=['q', 'databases'])
-
-def _is_tombstone(data):
-    items = data.get(GRAPH)
-    record = items[0]
-    if record.get(TYPE) == 'Tombstone':
-        return True
-    else:
-        return False
 
 
 def _get_authorization_token(session):
@@ -406,23 +398,27 @@ def _get_authorization_token(session):
 
 
 def _proxy_request(request, session, json_data=None, query_params=[],
-                   accept_header=None):
+                   accept_header=None, url_path=None):
     params = {}
     defaults = query_params if isinstance(query_params, dict) else {}
     for param in query_params:
         params[param] = request.args.get(param) or defaults.get(param)
 
-    headers = dict(request.headers)
-    url = _get_api_url(request.path)
+    url_path = url_path or request.path
     auth_token = _get_authorization_token(session)
+    headers = dict(request.headers)
 
-    return _map_response(_whelk_request(url, request.method, headers,
-                          json_data=json_data, query_params=params,
-                          accept_header=accept_header, auth_token=auth_token))
+    response = daccess.api_request(url_path, request.method, headers,
+                              json_data=json_data, query_params=params,
+                              accept_header=accept_header, auth_token=auth_token)
+
+    return _map_response(response)
 
 
-# Map from Requests response to Flask response
 def _map_response(response):
+    """
+    Map from a Requests response to a Flask response.
+    """
     def _map_headers(headers):
         _headers = {}
         for head in ['etag', 'location']:
@@ -438,7 +434,7 @@ def _map_response(response):
     return resp if resp.status_code < 400 else abort(resp.status_code)
 
 
-def _write_data(request, item=None, query_params=[]):
+def _write_data(request, query_params=[]):
     json_data = request.get_json(force=True)
     return _proxy_request(request, json_data, query_params)
 
