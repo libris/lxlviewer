@@ -86,9 +86,10 @@ class DataAccess(object):
         self.lang = config['LANG']
         self.vocab_uri = config['VOCAB_IRI']
         self.context_uri = config['CONTEXT_IRI']
+        self.display_uri = config['DISPLAY_IRI']
         self.ui_defs = ui_defs
+        self.urimap = UriMap(config.get('BASE_URI_ALIAS') or {})
         self._api_base = config['WHELK_REST_API_URL']
-        display_uri = config['DISPLAY_IRI']
 
         #ns_mgr = Graph().parse('sys/context/base.jsonld',
         #        format='json-ld').namespace_manager
@@ -96,41 +97,28 @@ class DataAccess(object):
         #graphcache = GraphCache(config['GRAPH_CACHE'])
         #graphcache.graph.namespace_manager = ns_mgr
 
-        # FIXME: reactivate
-        #display = self.load_from_whelk(display_uri)
-        #vocab = VocabView(self.load_vocab_graph(), self.vocab_uri, lang=self.lang)
+        self.display = self.load_from_whelk(self.display_uri)
+        self.vocab = VocabView(self.load_vocab_graph(), self.vocab_uri, lang=self.lang)
 
-    def api_request(self, url_path, method, headers, json_data=None,
-            query_params=[], accept_header=None, auth_token=None):
-
+    def api_request(self, url_path, method='GET', headers=None, json_data=None, query_params=[]):
         url = self._get_api_url(url_path)
         json_data = json.dumps(json_data)
-
-        if accept_header:
-            headers['Accept'] = accept_header
-
-        if auth_token:
-            headers['Authorization'] = auth_token
-
-        # Proxy the request to rest api
-        app.logger.debug('Sending proxy %s request to : %s with:\n %s',
-                            method, url, json_data)
         return requests.request(method, url, data=json_data, headers=headers,
                             params=query_params)
 
     def _get_api_url(self, url_path):
-        return '%s%s' % (self._api_base, url_path)
+        return '%s/%s' % (self._api_base, url_path)
 
-    def find_ambiguity(self, request):
-        raise NotImplementedError # FIXME: implement
+    def load_from_whelk(self, url):
+        return self.api_request(url).json()
+
+    def find_in_whelk(self, url, **params):
+        return self.api_request('/find', query_params=params).json()
 
     def get_index_stats(self, slicetree, make_find_url, site_base_uri):
         raise NotImplementedError # FIXME: implement
 
-    def load_from_whelk(self, url):
-        raise NotImplementedError # FIXME: implement
-
-    def find_in_whelk(self, url, **params):
+    def find_ambiguity(self, request):
         raise NotImplementedError # FIXME: implement
 
     def get_site(self, site_id):
@@ -142,12 +130,13 @@ class DataAccess(object):
         if context is None:
             raise Exception('Failed to get context from storage ', self.context_uri)
 
-        self.jsonld_context_data = context.data
+        self.jsonld_context_data = context
 
         #vocabgraph = graphcache.load(config['VOCAB_SOURCE'])
-        vocab_items = sum((record.data[GRAPH] for record in
-                    self.find_in_whelk(self.vocab_uri, limit=4096)),
-                    self.load_from_whelk(self.vocab_uri).data[GRAPH])
+        vocab_items = [{}] or sum(
+                (record[GRAPH] for record in
+                    self.find_in_whelk({'isDefinedBy.@id': self.vocab_uri}, limit=4096)),
+        self.load_from_whelk(self.vocab_uri)[GRAPH])
         vocabdata = json.dumps(vocab_items, indent=2)
         vocabgraph = Graph().parse(
                 data=vocabdata,
@@ -167,19 +156,22 @@ class DataAccess(object):
         return VocabUtil(self.load_vocab_graph(), self.lang)
 
 
-class Uris(object):
+class UriMap(object):
 
-    def __init__(self, config):
-        self.base_uri_alias = config.get('BASE_URI_ALIAS') or {}
-        self.alias_uri_map = {v: k for k, v in self.base_uri_alias.items()}
+    def __init__(self, base_uri_alias):
+        self._base_uri_alias = base_uri_alias
+        self._alias_uri_map = {v: k for k, v in self._base_uri_alias.items()}
 
     def to_canonical_uri(self, url):
+        """
+        Turn a mapped URI into the formal URI.
+        """
         parsedurl = urlparse(url)
         if parsedurl.path.startswith(LEGACY_PATHS):
-            return LEGACY_BASE
-
-        uri_base = parsedurl._replace(path="/").geturl()
-        canonical_base = self.alias_uri_map.get(uri_base) or uri_base
+            uri_base = LEGACY_BASE
+        else:
+            uri_base = parsedurl._replace(path="/").geturl()
+        canonical_base = self._alias_uri_map.get(uri_base) or uri_base
         return urljoin(canonical_base, parsedurl.path)
 
     def to_view_url(self, url_root, uri):
@@ -190,19 +182,9 @@ class Uris(object):
         uri_base = url._replace(path="/").geturl()
         uri_path = url.path
 
-        if uri_base in self.base_uri_alias:
-            return urljoin(self.base_uri_alias[uri_base], uri_path)
+        if uri_base in self._base_uri_alias:
+            return urljoin(self._base_uri_alias[uri_base], uri_path)
         elif uri_base == self.to_canonical_uri(url_root):
             return uri_path
         else:
             return uri
-
-    def find_canonical_uri(self, url_root, thing):
-        site_base_uri = self.to_canonical_uri(url_root)
-        thing_id = thing.get(ID) or ""
-        if site_base_uri and not thing_id.startswith(site_base_uri):
-            for same in thing.get('sameAs', []):
-                same_id = same.get(ID)
-                if same_id and same_id.startswith(site_base_uri):
-                    return same_id
-        return thing_id

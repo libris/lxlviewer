@@ -17,7 +17,7 @@ from werkzeug.urls import url_quote
 from rdflib import ConjunctiveGraph
 
 from .util import as_iterable
-from .dataaccess import CONTEXT, GRAPH, ID, TYPE, REVERSE, DataAccess, Uris, IDKBSE, LIBRIS
+from .dataaccess import CONTEXT, GRAPH, ID, TYPE, REVERSE, DataAccess, IDKBSE, LIBRIS
 from .marcframeview import MarcFrameView, pretty_json
 from . import admin
 from . import conneg
@@ -102,7 +102,7 @@ def _get_served_uri(url, path):
     # TODO: why is Flask unquoting url and path values?
     url_base = url_quote(url)
     path = url_quote(path)
-    mapped_base = uris.to_canonical_uri(url_base)
+    mapped_base = daccess.urimap.to_canonical_uri(url_base)
     return urljoin(mapped_base, path)
 
 
@@ -110,7 +110,6 @@ def _get_served_uri(url, path):
 # Setup data-access
 
 daccess = DataAccess(app.config)
-uris = Uris(app.config)
 
 
 @app.context_processor
@@ -121,13 +120,12 @@ def core_context():
         'ui': daccess.ui_defs,
         'lang': daccess.vocab.lang,
         'page_limit': 50,
-        'canonical_uri': lambda uri: uris.find_canonical_uri(request.url_root, uri),
-        'view_url': lambda uri: uris.to_view_url(request.url_root, uri)
+        'view_url': lambda uri: daccess.urimap.to_view_url(request.url_root, uri)
     }
 
 @app.before_request
 def handle_base():
-    canonical_site_id = uris.to_canonical_uri(request.url_root)
+    canonical_site_id = daccess.urimap.to_canonical_uri(request.url_root)
     g.site = daccess.get_site(canonical_site_id) or daccess.get_site(LIBRIS)
 
 @app.route(CONTEXT_PATH)
@@ -169,7 +167,10 @@ def thingview(path, suffix=None):
     except (NotFound, UnicodeEncodeError) as e:
         pass
     whelk_accept_header = _get_whelk_accept_header(request, suffix)
-    r = _proxy_request(request, session, accept_header=whelk_accept_header)
+
+    resource_id = _get_served_uri(request.url_root, path) + '/data-view.json'
+    r = _proxy_request(request, session, accept_header=whelk_accept_header,
+            url_path=resource_id)
 
     response_body = json.loads(r.get_data())
     return rendered_response(path, suffix, response_body)
@@ -209,7 +210,7 @@ def dataindexview(suffix=None):
     slicerepr = request.args.get('slice')
     slicetree = json.loads(slicerepr) if slicerepr else g.site['slices']
     results = daccess.get_index_stats(slicetree, make_find_url,
-            uris.to_canonical_uri(request.url_root))
+            daccess.urimap.to_canonical_uri(request.url_root))
     results.update(g.site)
     return rendered_response('/', suffix, results)
 
@@ -253,7 +254,7 @@ def render_html(path, thing):
         elif path == '/some':
             return url_for('some', suffix=suffix, **request.args)
         else:
-            return url_for('thingview', path=path, suffix=suffix)
+            return url_for('thingdataview', path=path, suffix=suffix)
 
     return render_template(_get_template_for(thing),
             path=path, thing=thing, data_url=data_url)
@@ -334,7 +335,7 @@ def thingnew(item_type):
         return Response('Missing @type parameter', status=422)
     else:
         return render_template('edit.html',
-                thing={
+                record={
                         GRAPH: [
                             {TYPE: item_type},
                             {TYPE: json.loads(at_type)}
@@ -349,8 +350,8 @@ def thingnew(item_type):
 @app.route('/edit', methods=['POST'])
 @admin.login_required
 def thingnewp():
-    thing = json.loads(request.form['item'])
-    return render_template('edit.html', thing=thing, model={})
+    record = json.loads(request.form['item'])
+    return render_template('edit.html', record=record, model={})
 
 
 @app.route('/<path:path>/edit')
@@ -361,7 +362,7 @@ def thingedit(path):
     if r.status_code == 200:
         model = {}
         data = json.loads(r.get_data())
-        return render_template('edit.html', thing=data, model=model)
+        return render_template('edit.html', record=data, model=model)
     else:
         # TODO handle this better. GET /<path> *should* return 200,
         # but treating everything else as an error isn't awesome.
@@ -405,12 +406,19 @@ def _proxy_request(request, session, json_data=None, query_params=[],
         params[param] = request.args.get(param) or defaults.get(param)
 
     url_path = url_path or request.path
-    auth_token = _get_authorization_token(session)
+
     headers = dict(request.headers)
+    if accept_header:
+        headers['Accept'] = accept_header
+    auth_token = _get_authorization_token(session)
+    if auth_token:
+        headers['Authorization'] = auth_token
+
+    app.logger.debug('Sending proxy %s request to: %s with headers:\n%r\nand body:\n %s',
+                     request.method, url_path, headers, json_data)
 
     response = daccess.api_request(url_path, request.method, headers,
-                              json_data=json_data, query_params=params,
-                              accept_header=accept_header, auth_token=auth_token)
+                              json_data=json_data, query_params=params)
 
     return _map_response(response)
 
