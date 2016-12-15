@@ -120,8 +120,15 @@ export default {
     },
     'add-item'(value) {
       console.log("DataNode:"+ this.getPath +" - Adding", JSON.stringify(value));
+      let insertedValue = {};
+      if (value.hasOwnProperty('@id')) { // This is a linked item
+        insertedValue = { '@id': value['@id'] };
+        this.$dispatch('add-linked', value);
+      } else {
+        insertedValue = value;
+      }
       const modified = [].concat(_.cloneDeep(this.value));
-      modified.push(value);
+      modified.push(insertedValue);
       this.updateValue(modified);
     },
   },

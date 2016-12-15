@@ -351,15 +351,17 @@ export default {
         &:nth-child(odd) {
           background-color: darken(@neutral-color, 5%);
         }
-        &.selected {
-          outline: solid 1px @brand-primary;
-          background-color: fadeout(@brand-primary, 70%);
-        }
         &.available {
-          &:hover {
-            box-shadow: inset 0px 0px 0px 1em rgba(0, 0, 0, 0.1);
-          }
           cursor: pointer;
+          &.selected {
+            outline: solid 1px @brand-primary;
+            background-color: fadeout(@brand-primary, 70%);
+          }
+        }
+        &.added {
+          &.selected {
+            background-color: @gray-light;
+          }
         }
         margin: 0px;
         padding: 3px;
