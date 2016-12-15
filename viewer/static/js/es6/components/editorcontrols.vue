@@ -79,8 +79,8 @@ export default {
 </script>
 
 <template>
-  <div class="container editor-container">
-    <div class="editor-controls" :class="{ 'work-state': isWork, 'instance-state': isInstance }" data-spy="affix" data-offset-top="80">
+  <div class="container editor-container" data-spy="affix" data-offset-top="80">
+    <div class="editor-controls" :class="{ 'work-state': isWork, 'instance-state': isInstance }" >
       <div class="admin-info">
         <div class="actions">
           <div class="action">
@@ -93,10 +93,6 @@ export default {
         <div class="admin-node">
           <span v-if="editorData.record.created" class="node">Skapad {{created.date}} <span class="time-ago"> av {{created.by}}</span></span>
         </div>
-        <!-- <a id="add-button" v-on:click="">
-          <i class="fa fa-plus plus-icon" aria-hidden="true"></i>
-          Nytt fält
-        </a> -->
         <div class="admin-node">
           <span v-if="editorData.record.modified" class="node"> {{'Ändrad '+modified.date}} <span class="time-ago"> av {{modified.by || 'OKÄND'}}</span></span>
         </div>
@@ -131,13 +127,15 @@ export default {
 
 .container {
   padding: 0px;
+  &.affix {
+    top: 0;
+    z-index: @header-z;
+    + .header-component {
+      padding-top: 33px;
+    }
+  }
 
   .editor-controls {
-    &.affix {
-        top: 0;
-        width: inherit;
-        z-index: @header-z;
-    }
     &.instance-state {
       background-color: @instance-background;
       color: @instance-text;
