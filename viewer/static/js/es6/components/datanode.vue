@@ -53,6 +53,9 @@ export default {
       }
       return `${this.key}`;
     },
+    getRange() {
+      return VocabUtil.getRange(this.key, this.vocab, this.settings.vocabPfx);
+    },
     propertyTypes() {
       return VocabUtil.getPropertyTypes(
         this.key,
@@ -176,20 +179,7 @@ export default {
     },
     isEmbedded(o) {
       const type = o['@type'];
-      if (typeof type === 'undefined') {
-        return false;
-      }
-      // Is the type of the item derived from an "embedded" type?
-      const embeddedTypes = this.settings.embeddedTypes;
-      const typeChain = VocabUtil.getBaseClassesFromArray(type, this.vocab, this.settings.vocabPfx);
-      if (typeChain.length > 0) {
-        for (const typeElement of embeddedTypes) {
-          if (~typeChain.indexOf(`${this.settings.vocabPfx}${typeElement}`)) {
-            return true;
-          }
-        }
-      }
-      return false;
+      return VocabUtil.isEmbedded(type, this.vocab, this.settings);
     },
   },
 };

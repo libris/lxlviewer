@@ -200,7 +200,7 @@ export default {
       <span>{{ sortedFormData['@type'] | labelByLang | capitalize }}fält</span>
       <span v-if="isLocked" class="edit-locked" :class="{ 'work-state': isWork, 'instance-state': isInstance }" @click="changeState('work')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Gå till verk</span>
     </div>
-    <data-node v-for="(k,v) in sortedFormData" v-bind:class="{ 'locked': isLocked }" :is-removable="true" :is-locked="keyIsLocked(k)" :key="k" :value="v" :linked="linked" :focus="focus" :status="status"></data-node>
+    <data-node v-for="(k,v) in sortedFormData" v-bind:class="{ 'locked': isLocked }" :is-removable="true" :is-locked="keyIsLocked(k)" :key="k" :value="v" :linked="linked" :focus="focus" :status="status" :allow-anon="true"></data-node>
     <div v-if="focus == 'work'" class="dummy-reverse">
       <div class="label" v-bind:class="{ 'locked': isLocked }">
         Har instanser

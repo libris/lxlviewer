@@ -70,9 +70,6 @@ export default {
       );
       return card;
     },
-    embedded() {
-      return this.isEmbedded(this.item['@type']);
-    },
     getRange() {
       const types = VocabUtil.getRange(
         this.key,

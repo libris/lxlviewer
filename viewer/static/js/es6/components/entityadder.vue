@@ -54,6 +54,15 @@ export default {
     getRange() {
       return VocabUtil.getRange(this.key, this.vocab, this.settings.vocabPfx);
     },
+    onlyEmbedded() {
+      const range = this.getRange;
+      for (const prop of range) {
+        if (!VocabUtil.isEmbedded(prop, this.vocab, this.settings)) {
+          return false;
+        }
+      }
+      return true;
+    },
     canRecieveObjects() {
       return (this.propertyTypes.indexOf('DatatypeProperty') === -1);
     },
@@ -75,6 +84,9 @@ export default {
     add() {
       if (this.canRecieveObjects) {
         this.openSearch();
+        if (this.onlyEmbedded) {
+          this.goAnonymous();
+        }
       } else {
         this.$dispatch('add-item', '');
       }
