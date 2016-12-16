@@ -353,12 +353,17 @@ export default {
         height: 1.7em;
         padding: 0.5px 1em 0.5px 0.5em;
         margin: 0.25em;
+        display: inline-block;
         border-radius: 1em;
         border: 0px;
         cursor: pointer;
         color: @instance-chip-text;
         background-color: @instance-chip-background;
         box-shadow: inset -2px -2px darken(@instance-chip-background, 10%);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 230px;
       }
     }
   }
