@@ -133,7 +133,7 @@ class DataAccess(object):
         self.jsonld_context_data = context
 
         #vocabgraph = graphcache.load(config['VOCAB_SOURCE'])
-        vocab_items = [{}] or sum(
+        vocab_items = [{}] or sum( # FIXME: load all of vocab here!
                 (record[GRAPH] for record in
                     self.find_in_whelk({'isDefinedBy.@id': self.vocab_uri}, limit=4096)),
         self.load_from_whelk(self.vocab_uri)[GRAPH])
