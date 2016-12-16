@@ -121,6 +121,15 @@ export default {
       });
       return propertyList;
     },
+    dummyInstance() {
+      return DisplayUtil.getChip(
+        this.editorData.it,
+        this.display,
+        this.linked,
+        this.vocab,
+        this.settings
+      );
+    },
   },
   events: {
     'add-field'(prop) {
@@ -206,7 +215,7 @@ export default {
         Har instanser
       </div>
       <div class="value">
-        <span class="dummy-chip" @click="changeState('it')"><i class="fa fa-link" aria-hidden="true"></i> Link to instance#1 </span>
+        <span class="dummy-chip" @click="changeState('it')"><i class="fa fa-link" aria-hidden="true"></i> {{ dummyInstance }} </span>
       </div>
       <div class="actions" v-if="!isLocked">
       </div>
