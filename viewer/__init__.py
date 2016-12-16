@@ -24,7 +24,6 @@ from . import conneg
 
 
 R_METHODS = ['GET', 'HEAD', 'OPTIONS']
-RW_METHODS = R_METHODS + ['PUT']
 
 JSONLD_MIMETYPE = 'application/ld+json'
 RDF_MIMETYPES = {'text/turtle', JSONLD_MIMETYPE, 'application/rdf+xml', 'text/xml'}
@@ -47,7 +46,7 @@ class MyFlask(Flask):
             variable_start_string='${', variable_end_string='}',
             line_statement_prefix='%')
 
-app = MyFlask(__name__, static_url_path='/assets', static_folder='static',
+app = MyFlask(__name__, #static_url_path='/assets', static_folder='static',
         instance_relative_config=True)
 
 app.config.from_object('viewer.configdefaults')
@@ -77,6 +76,14 @@ def format_number(n):
 ##
 # Setup basic views
 
+@app.route('/assets/<path:path>.<suffix>')
+def static_assets(subdir=None, path=None, suffix=None):
+    return app.send_static_file('%s.%s' % (path, suffix))
+
+@app.route('/favicon.ico')
+def favicon():
+    abort(404)
+
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('4XX.html', status_code=404), 404
@@ -84,10 +91,6 @@ def page_not_found(e):
 @app.errorhandler(410)
 def page_not_found(e):
     return render_template('4XX.html', status_code=410), 410
-
-@app.route('/favicon.ico')
-def favicon():
-    abort(404)
 
 
 ##
@@ -149,26 +152,16 @@ def handle_put(path):
     return response
 
 
-@app.route('/<path:path>/data', methods=R_METHODS)
-@app.route('/<path:path>/data.<suffix>', methods=R_METHODS)
-@app.route('/<path:path>/data-view', methods=R_METHODS)
-@app.route('/<path:path>/data-view.<suffix>', methods=R_METHODS)
-def thingdataview(path, suffix=None, methods=R_METHODS):
-    r = _proxy_request(request, session)
-
-    response_body = json.loads(r.get_data())
-    return rendered_response(path, suffix, response_body, r.mimetype)
-
-
 @app.route('/<path:path>', methods=R_METHODS)
+@app.route('/<path:path>.<suffix>', methods=R_METHODS)
+#@app.route('/<path:path>/data', methods=R_METHODS)
+#@app.route('/<path:path>/data.<suffix>', methods=R_METHODS)
+#@app.route('/<path:path>/data-view', methods=R_METHODS)
+#@app.route('/<path:path>/data-view.<suffix>', methods=R_METHODS)
 def thingview(path, suffix=None):
-    try:
-        return app.send_static_file(path)
-    except (NotFound, UnicodeEncodeError) as e:
-        pass
-    whelk_accept_header = _get_whelk_accept_header(request, suffix)
+    whelk_accept_header = _get_view_data_accept_header(request, suffix)
 
-    resource_id = _get_served_uri(request.url_root, path) + '/data-view.json'
+    resource_id = _get_served_uri(request.url_root, path)
     r = _proxy_request(request, session, accept_header=whelk_accept_header,
             url_path=resource_id)
 
@@ -177,10 +170,9 @@ def thingview(path, suffix=None):
 
 
 # FIXME make this less sketcy
-def _get_whelk_accept_header(request, suffix):
+def _get_view_data_accept_header(request, suffix):
     mimetype, _ = negotiator.negotiate(request, suffix)
-    if (mimetype == 'text/html' or
-        mimetype == 'application/xhtml+xml'):
+    if mimetype in ('application/json', 'text/html', 'application/xhtml+xml'):
         return 'application/json'
     else:
         return None
@@ -254,7 +246,7 @@ def render_html(path, thing):
         elif path == '/some':
             return url_for('some', suffix=suffix, **request.args)
         else:
-            return url_for('thingdataview', path=path, suffix=suffix)
+            return url_for('thingview', path=path, suffix=suffix)
 
     return render_template(_get_template_for(thing),
             path=path, thing=thing, data_url=data_url)
