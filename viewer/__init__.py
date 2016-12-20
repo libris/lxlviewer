@@ -72,6 +72,10 @@ def union(*args):
 def format_number(n):
     return '{:,}'.format(n).replace(',', ' ')
 
+@app.template_global()
+def first(value):
+    for v in as_iterable(value):
+        return v
 
 ##
 # Setup basic views
@@ -199,9 +203,8 @@ def some(suffix=None):
 @app.route('/data', methods=R_METHODS)
 @app.route('/data.<suffix>', methods=R_METHODS)
 def dataindexview(suffix=None):
-    slicerepr = request.args.get('slice')
-    slicetree = json.loads(slicerepr) if slicerepr else g.site['slices']
-    results = daccess.get_index_stats(slicetree, make_find_url,
+    statsrepr = request.args.get('statsrepr') or g.site['stats']
+    results = daccess.get_index_stats(statsrepr,
             daccess.urimap.to_canonical_uri(request.url_root))
     results.update(g.site)
     return rendered_response('/', suffix, results)

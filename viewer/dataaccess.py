@@ -5,7 +5,7 @@ import json
 from urlparse import urlparse, urljoin
 
 import requests
-from rdflib import Graph
+from rdflib import Graph, ConjunctiveGraph
 
 from .util import as_iterable
 from .vocabview import VocabView, VocabUtil, ID, TYPE, CONTEXT, GRAPH, REVERSE
@@ -55,10 +55,7 @@ sites = {
             </p>
         """,
         "stylesheet": {"name": "id.css"},
-        "slices": {
-            'inScheme.@id':{'inCollection.@id':['@type'], '@type':[]},
-            #'wasDerivedFrom.@id': ['@type']
-        },
+        "stats": '{"inScheme.@id":{"inCollection.@id":["@type"], "@type":[]}}',
         "itemList": [
             {ID: "/doc/about", "title": "Om id.kb.se", "icon": "info-circle"},
             {ID: "/marcframe", "title": "MARC-mappningar", "icon": "exchange"},
@@ -69,10 +66,9 @@ sites = {
         ID: LIBRIS,
         "title": "libris.kb.se",
         "description": "<p>Data på <b>LIBRIS.KB.SE</b>.</p>",
-        "slices": {
-            'instanceOf.@type': {'@type': []} # TODO: @reverse.itemOf.heldBy.@id (and/or count)?
-        },
-        #"slices": {"@type":{"meta.bibliography.@id":{"publication.providerDate":[]}}}
+        "stats": '{"instanceOf.@type": {"@type": []}}',
+            # TODO: + @reverse.itemOf.heldBy.@id (and/or count)?
+        #"stats": {"@type":{"meta.bibliography.@id":{"publication.providerDate":[]}}}
         "itemList": [
         #    {ID: "/doc/about#", "title": "Om libris.kb.se", "icon": "info-circle"},
         ]
@@ -110,13 +106,25 @@ class DataAccess(object):
         return '%s/%s' % (self._api_base, url_path)
 
     def load_from_whelk(self, url):
-        return self.api_request(url).json()
+        # FIXME: hiding bug in backend failing on bnode IDs when embellishing
+        try:
+            return self.api_request(url).json()
+        except ValueError:
+            return {GRAPH: []}
 
-    def find_in_whelk(self, url, **params):
-        return self.api_request('/find', query_params=params).json()
+    def find_in_whelk(self, query=None, limit=None, stats=None):
+        query = query or {}
+        if 'q' not in query:
+            query['q'] = '*'
+        if limit is not None and '_limit' not in query:
+            query['_limit'] = limit
+        if stats and '_statsrepr' not in query:
+            query['_statsrepr'] = stats
+        return self.api_request('find', query_params=query).json()
 
-    def get_index_stats(self, slicetree, make_find_url, site_base_uri):
-        raise NotImplementedError # FIXME: implement
+    def get_index_stats(self, statstree, site_base_uri):
+        results = self.find_in_whelk(limit=1, stats=statstree) # FIXME: limit=0 gets no data...
+        return {TYPE: 'DataCatalog', ID: site_base_uri, 'statistics': results['stats']}
 
     def find_ambiguity(self, request):
         raise NotImplementedError # FIXME: implement
@@ -133,12 +141,14 @@ class DataAccess(object):
         self.jsonld_context_data = context
 
         #vocabgraph = graphcache.load(config['VOCAB_SOURCE'])
-        vocab_items = [{}] or sum( # FIXME: load all of vocab here!
-                (record[GRAPH] for record in
-                    self.find_in_whelk({'isDefinedBy.@id': self.vocab_uri}, limit=4096)),
-        self.load_from_whelk(self.vocab_uri)[GRAPH])
-        vocabdata = json.dumps(vocab_items, indent=2)
-        vocabgraph = Graph().parse(
+
+        results = self.find_in_whelk({'isDefinedBy.@id': self.vocab_uri}, limit=2000)
+        vocab_items = sum(
+                ([self.load_from_whelk(term[ID] + '/data.json')] for term in results['items']),
+                self.load_from_whelk(self.vocab_uri)[GRAPH])
+        vocabdata = json.dumps(vocab_items)
+        vocabgraph = ConjunctiveGraph()
+        vocabgraph.parse(
                 data=vocabdata,
                 context=self.jsonld_context_data,
                 format='json-ld')
