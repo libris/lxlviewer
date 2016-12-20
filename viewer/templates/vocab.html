@@ -117,7 +117,7 @@
             </ul>
           </dd>
         % endif
-        % set rangeprops = sorted(set(rclass.subjects(RANGE)))
+        % set rangeprops = sorted(no_bnodes(set(rclass.subjects(RANGE))))
         % if rangeprops
           <dt>In range of properties</dt>
           <dd>

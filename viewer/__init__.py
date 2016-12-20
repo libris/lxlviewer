@@ -14,7 +14,7 @@ from flask.helpers import NotFound
 from flask_cors import CORS
 from werkzeug.urls import url_quote
 
-from rdflib import ConjunctiveGraph
+from rdflib import ConjunctiveGraph, BNode
 
 from .util import as_iterable
 from .dataaccess import CONTEXT, GRAPH, ID, TYPE, REVERSE, DataAccess, IDKBSE, LIBRIS
@@ -470,6 +470,11 @@ def vocabview(suffix=None):
 
     def listclass(o):
         return 'ext' if ':' in o.qname() else 'loc'
+
+    def no_bnodes(coll):
+        for o in coll:
+            if not isinstance(o.identifier, BNode):
+                yield o
 
     if suffix:
         mimetype, render = negotiator.negotiate(request, suffix)
