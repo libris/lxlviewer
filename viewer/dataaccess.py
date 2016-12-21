@@ -103,6 +103,8 @@ class DataAccess(object):
                             params=query_params)
 
     def _get_api_url(self, url_path):
+        if url_path.startswith('/'):
+            url_path = url_path[1:]
         return '%s/%s' % (self._api_base, url_path)
 
     def load_from_whelk(self, url):
