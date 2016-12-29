@@ -75,7 +75,7 @@ export default {
 </template>
 
 <style lang="less">
-@import './variables.less';
+@import './_includes.less';
 
 .item-value {
   width: 95%;

@@ -192,7 +192,7 @@ export default {
 </template>
 
 <style lang="less">
-@import './variables.less';
+@import './_includes.less';
 
 .item-anonymous {
   background-color: @gray-lighter;
@@ -235,7 +235,11 @@ export default {
     margin: 0px 0px 1em 0px;
     border-radius: 5px;
     padding: 10px;
-    box-shadow: 0px 2px 3px 1px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.2);
+    background-color: #f5f5f5;
+    strong, i {
+      color: @black;
+    }
     .actions {
       text-align: right;
     }

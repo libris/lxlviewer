@@ -118,12 +118,12 @@ export default {
       </div>
       <header-component :status="status" :full="false"></header-component>
     </div>
-    
+
   </div>
 </template>
 
 <style lang="less">
-@import './variables.less';
+@import './_includes.less';
 
 .container {
   padding: 0px;

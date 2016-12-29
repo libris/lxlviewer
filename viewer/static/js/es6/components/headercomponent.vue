@@ -199,7 +199,7 @@ export default {
 </template>
 
 <style lang="less">
-@import './variables.less';
+@import './_includes.less';
 
 .header-component {
   padding: 0px;

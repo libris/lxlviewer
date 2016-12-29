@@ -231,7 +231,7 @@ export default {
 </template>
 
 <style lang="less">
-@import './variables.less';
+@import './_includes.less';
 
 .field-adder {
   padding-top: 10px;
