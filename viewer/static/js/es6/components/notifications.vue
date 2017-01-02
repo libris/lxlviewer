@@ -51,7 +51,7 @@ export default {
 </template>
 
 <style lang="less">
-@import './_includes.less';
+@import './_variables.less';
 
 .notifications {
   transition: 0.5s ease;

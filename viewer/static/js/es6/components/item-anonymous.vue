@@ -192,7 +192,7 @@ export default {
 </template>
 
 <style lang="less">
-@import './_includes.less';
+@import './_variables.less';
 
 .item-anonymous {
   background-color: @gray-lighter;

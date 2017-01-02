@@ -145,14 +145,7 @@ export default {
 </template>
 
 <style lang="less">
-@import './_includes.less';
-
-
-.entity-container {
-
-  .chip-action {
-    cursor: pointer;
-  }
+@import './_variables.less';
 
   .card-info-container {
     position: absolute;

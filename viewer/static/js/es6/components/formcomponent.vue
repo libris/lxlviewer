@@ -239,7 +239,7 @@ export default {
 </template>
 
 <style lang="less">
-@import './_includes.less';
+@import './_variables.less';
 
 .form-component {
   &.instance-state {

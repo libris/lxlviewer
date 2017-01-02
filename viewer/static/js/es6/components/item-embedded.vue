@@ -108,7 +108,7 @@ export default {
 </template>
 
 <style lang="less" scoped>
-@import './_includes.less';
+@import './_variables.less';
 
 .item-embedded {
   width: @col-value;

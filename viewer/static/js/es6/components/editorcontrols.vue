@@ -123,7 +123,7 @@ export default {
 </template>
 
 <style lang="less">
-@import './_includes.less';
+@import './_variables.less';
 
 .container {
   padding: 0px;
