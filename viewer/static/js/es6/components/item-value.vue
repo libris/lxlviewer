@@ -5,10 +5,12 @@ import * as VocabUtil from '../utils/vocab';
 import * as DisplayUtil from '../utils/display';
 import * as EditUtil from '../utils/edit';
 import ProcessedLabel from './processedlabel';
+import ItemMixin from './mixins/item-mixin';
 import { getVocabulary, getDisplayDefinitions, getSettings, getEditorData } from '../vuex/getters';
 
 export default {
   name: 'item-value',
+  mixins: [ItemMixin],
   props: {
     value: '',
     key: '',
@@ -45,12 +47,6 @@ export default {
     isEmpty() {
       // TODO: Is the item empty?
       return false;
-    },
-    isObject(obj) {
-      return _.isObject(obj);
-    },
-    removeThis() {
-      this.$dispatch('remove-item', this.index);
     },
     addFocus() {
       this.focused = true;

@@ -132,12 +132,6 @@ export default {
     closeForm() {
       this.inEdit = false;
     },
-    isObject(obj) {
-      return _.isObject(obj);
-    },
-    removeThis() {
-      this.$dispatch('remove-item', this.index);
-    },
     addFocus() {
       this.focused = true;
     },
