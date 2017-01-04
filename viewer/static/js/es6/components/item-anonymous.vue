@@ -8,10 +8,12 @@ import ProcessedLabel from './processedlabel';
 import ItemEntity from './item-entity';
 import DataNode from './datanode';
 import CardComponent from './card-component';
+import ItemMixin from './mixins/item-mixin';
 import { getVocabulary, getDisplayDefinitions, getSettings, getEditorData } from '../vuex/getters';
 
 export default {
   name: 'item-anonymous',
+  mixins: [ItemMixin],
   props: {
     item: {},
     key: '',
@@ -48,26 +50,6 @@ export default {
     },
     formObj() {
       return this.getForm(this.item);
-    },
-    getChip() {
-      const chip = DisplayUtil.getChip(
-        this.formObj,
-        this.display,
-        this.editorData.linked,
-        this.vocab,
-        this.settings
-      );
-      return chip;
-    },
-    getCard() {
-      const card = DisplayUtil.getCard(
-        this.linkedItem,
-        this.display,
-        this.editorData.linked,
-        this.vocab,
-        this.settings
-      );
-      return card;
     },
     getRange() {
       const types = VocabUtil.getRange(

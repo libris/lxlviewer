@@ -1,15 +1,15 @@
 <script>
 import * as _ from 'lodash';
-import * as httpUtil from '../utils/http';
 import * as VocabUtil from '../utils/vocab';
-import * as DisplayUtil from '../utils/display';
 import * as EditUtil from '../utils/edit';
 import CardComponent from './card-component';
 import ProcessedLabel from './processedlabel';
+import ItemMixin from './mixins/item-mixin';
 import { getVocabulary, getDisplayDefinitions, getSettings, getEditorData } from '../vuex/getters';
 
 export default {
   name: 'item-entity',
+  mixins: [ItemMixin],
   props: {
     item: {},
     key: '',
@@ -48,26 +48,6 @@ export default {
         this.item['@id'],
         this.editorData.linked
       );
-    },
-    getChip() {
-      const chip = DisplayUtil.getChip(
-        this.linkedItem,
-        this.display,
-        this.editorData.linked,
-        this.vocab,
-        this.settings
-      );
-      return chip;
-    },
-    getCard() {
-      const card = DisplayUtil.getCard(
-        this.linkedItem,
-        this.display,
-        this.editorData.linked,
-        this.vocab,
-        this.settings
-      );
-      return card;
     },
     embedded() {
       return this.isEmbedded(this.item['@type']);
