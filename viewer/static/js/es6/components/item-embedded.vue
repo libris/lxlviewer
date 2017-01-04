@@ -51,25 +51,6 @@ export default {
       );
       return obj;
     },
-    getChip() {
-      const chip = DisplayUtil.getChip(
-        this.linkedItem,
-        this.display,
-        this.editorData.linked,
-        this.vocab, this.settings.vocabPfx
-      );
-      return chip;
-    },
-    getCard() {
-      const card = DisplayUtil.getCard(
-        this.linkedItem,
-        this.display,
-        this.editorData.linked,
-        this.vocab,
-        this.settings.vocabPfx
-      );
-      return card;
-    },
     getRange() {
       const types = VocabUtil.getRange(
         this.key,
