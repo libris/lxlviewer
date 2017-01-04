@@ -1,4 +1,4 @@
-.chip-mixin(@color) {
+.chip-mixin(@color, @textColor) {
   height: 1.7em;
   padding: 0px 0.5em 0px 0.5em;
   margin: 0.25em;
@@ -6,12 +6,12 @@
   border-radius: 1em;
   border: 0px;
   background-color: @color;
-
   &.locked {
   }
   .chip-label {
     color: inherit;
     float: left;
+    color: @textColor;
     display: inline-block;
     max-width: 230px;
     white-space: nowrap;
@@ -23,9 +23,9 @@
     float: right;
     padding: 0.25em 0em 0.25em 0.25em;
     cursor: pointer;
-    color: fadeout(@instance-chip-text,20%);
+    color: fadeout(@textColor,20%);
     &:hover {
-      color: @instance-chip-text;
+      color: @textColor;
     }
   }
 }

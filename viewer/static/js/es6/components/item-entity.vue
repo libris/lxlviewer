@@ -137,7 +137,7 @@ export default {
 
 .item-entity {
   .chip {
-    .chip-mixin(#ccc);
+    .chip-mixin(@brand-primary, #fff);
   }
 }
 

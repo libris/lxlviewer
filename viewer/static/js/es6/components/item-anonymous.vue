@@ -196,7 +196,7 @@ export default {
 
 .item-anonymous {
   .chip {
-    .chip-mixin(green);
+    .chip-mixin(#bebebe, #fff);
   }
   .anonymous-form {
     border: 1px solid #ccc;
