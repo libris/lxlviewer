@@ -16,7 +16,6 @@ export default {
     index: Number,
     isLocked: false,
     focus: '',
-    status: {},
   },
   vuex: {
     getters: {
@@ -36,10 +35,6 @@ export default {
     };
   },
   computed: {
-    // TODO: Refactor computed
-    json() {
-      return JSON.stringify(this.item);
-    },
     embedded() {
       return this.isEmbedded(this.item['@type']);
     },

@@ -13,7 +13,6 @@ export default {
     active: false,
     filterKey: '',
     focus: '',
-    status: {},
   },
   vuex: {
     getters: {

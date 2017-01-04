@@ -16,7 +16,6 @@ export default {
     key: '',
     index: Number,
     isLocked: false,
-    status: {},
     isRemovable: false,
   },
   vuex: {
@@ -33,10 +32,6 @@ export default {
     };
   },
   computed: {
-    // TODO: Refactor computed
-    json() {
-      return JSON.stringify(this.item);
-    },
   },
   ready() {
   },

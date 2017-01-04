@@ -19,10 +19,10 @@
   % set canonical_id = canonical_uri(record)
   % set typename = record[TYPE]
   % set thing_url = view_url(canonical_id)
-  <editor-controls :status="status" :editor-data="editorData" :messages="messages" v-if="initialized == true"></editor-controls>
-  <header-component :status="status" :full="true" v-if="initialized == true"></header-component>
-  <form-component :status="status" focus="work" :linked="editorData.linked" v-if="initialized == true"></form-component>
-  <form-component :status="status" focus="it" :linked="editorData.linked" v-if="initialized == true && status.state === 'it'"></form-component>
+  <editor-controls v-if="initialized == true"></editor-controls>
+  <header-component :full="true" v-if="initialized == true"></header-component>
+  <form-component focus="work" v-if="initialized == true"></form-component>
+  <form-component focus="it" v-if="initialized == true && status.level === 'it'"></form-component>
 
 </div>
 </div>

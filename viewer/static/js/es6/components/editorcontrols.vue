@@ -5,19 +5,17 @@ import HeaderComponent from './headercomponent';
 import moment from 'moment';
 import * as EditUtil from '../utils/edit';
 import * as DisplayUtil from '../utils/display';
-import { getVocabulary, getDisplayDefinitions, getSettings, getEditorData } from '../vuex/getters';
+import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData, getStatus } from '../vuex/getters';
 moment.locale('sv');
 
 export default {
-  props: [
-    'status',
-  ],
   vuex: {
     getters: {
       vocab: getVocabulary,
       display: getDisplayDefinitions,
       settings: getSettings,
       editorData: getEditorData,
+      status: getStatus,
     },
   },
   methods: {
@@ -49,10 +47,10 @@ export default {
       return card;
     },
     isWork() {
-      return this.status.state === 'work';
+      return this.status.level === 'work';
     },
     isInstance() {
-      return this.status.state === 'it';
+      return this.status.level === 'it';
     },
   },
   components: {
@@ -100,7 +98,7 @@ export default {
           </div>
         </div>
       </div>
-      <header-component :status="status" :full="false"></header-component>
+      <header-component :full="false"></header-component>
     </div>
 
   </div>

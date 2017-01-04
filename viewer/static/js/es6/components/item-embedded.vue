@@ -20,7 +20,6 @@ export default {
     index: Number,
     isLocked: false,
     focus: '',
-    status: {},
     embedded: false,
   },
   vuex: {
@@ -41,10 +40,6 @@ export default {
       const filteredItem = Object.assign({}, this.item);
       delete filteredItem['@type'];
       return filteredItem;
-    },
-    // TODO: Refactor computed
-    json() {
-      return JSON.stringify(this.item);
     },
     getRange() {
       const types = VocabUtil.getRange(
@@ -73,7 +68,7 @@ export default {
   <div class="item-embedded">
     <i v-if="!isLocked" class="fa fa-trash chip-action" v-on:click="removeThis"></i>
     <strong>{{ item['@type'] | labelByLang | capitalize }}</strong>
-    <data-node v-for="(k,v) in filteredItem" :is-locked="isLocked" :is-removable="false" :embedded="true" :pkey="key" :pindex="index" :key="k" :value="v" :focus="focus" :linked="editorData.linked" :status="status"></data-node>
+    <data-node v-for="(k,v) in filteredItem" :is-locked="isLocked" :is-removable="false" :embedded="true" :pkey="key" :pindex="index" :key="k" :value="v" :focus="focus"></data-node>
   </div>
 </template>
 

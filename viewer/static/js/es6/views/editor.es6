@@ -17,7 +17,7 @@ import * as StringUtil from '../utils/string';
 import FormComponent from '../components/formcomponent';
 import EditorControls from '../components/editorcontrols';
 import HeaderComponent from '../components/headercomponent';
-import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData } from '../vuex/getters';
+import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData, getStatus } from '../vuex/getters';
 import { changeSettings, loadVocab, loadDisplayDefs, syncData } from '../vuex/actions';
 
 function showError(error) {
@@ -102,24 +102,12 @@ export default class Editor extends View {
           editorData: getEditorData,
           vocab: getVocabulary,
           display: getDisplayDefinitions,
+          status: getStatus,
         },
       },
       data: {
         initialized: false,
         combokeys: null,
-        status: {
-          lastAdded: '',
-          state: 'it',
-          dirty: true,
-          isDev: false,
-          saved: {
-            loading: false,
-            status: {
-              error: false,
-              info: '',
-            },
-          },
-        },
       },
       events: {
         'toggle-dev': function() {

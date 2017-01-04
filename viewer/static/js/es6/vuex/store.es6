@@ -10,6 +10,19 @@ const state = {
   vocab: {},
   display: {},
   settings: {},
+  status: {
+    lastAdded: '',
+    level: 'it',
+    dirty: true,
+    isDev: false,
+    saved: {
+      loading: false,
+      status: {
+        error: false,
+        info: '',
+      },
+    },
+  },
 };
 
 const mutations = {

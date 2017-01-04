@@ -12,7 +12,7 @@ import * as ModalUtil from '../utils/modals';
 import * as VocabUtil from '../utils/vocab';
 import * as DisplayUtil from '../utils/display';
 import { updateForm } from '../vuex/actions';
-import { getVocabulary, getSettings, getEditorData, getDisplayDefinitions } from '../vuex/getters';
+import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData, getStatus } from '../vuex/getters';
 
 export default {
   vuex: {
@@ -24,13 +24,12 @@ export default {
       settings: getSettings,
       editorData: getEditorData,
       display: getDisplayDefinitions,
+      status: getStatus,
     },
   },
   props: {
     focus: '',
-    linked: {},
     locked: false,
-    status: {},
   },
   data() {
     return {
@@ -45,7 +44,7 @@ export default {
       return this.focus === 'it';
     },
     isLocked() {
-      if (this.locked || this.status.state !== this.focus) {
+      if (this.locked || this.status.level !== this.focus) {
         return true;
       }
       return false;
@@ -125,7 +124,7 @@ export default {
       return DisplayUtil.getChip(
         this.editorData.it,
         this.display,
-        this.linked,
+        this.editorData.linked,
         this.vocab,
         this.settings
       );
@@ -176,12 +175,12 @@ export default {
 </script>
 
 <template>
-  <div class="form-component" :class="{ 'locked': isLocked, 'work-state': isWork, 'instance-state': isInstance, 'focused-form-component': status.state === this.focus }">
+  <div class="form-component" :class="{ 'locked': isLocked, 'work-state': isWork, 'instance-state': isInstance, 'focused-form-component': status.level === this.focus }">
     <div class="form-header" :class="{ 'work-state': isWork, 'instance-state': isInstance }">
       <span>{{ sortedFormData['@type'] | labelByLang | capitalize }}fält</span>
       <span v-if="isLocked" class="edit-locked" :class="{ 'work-state': isWork, 'instance-state': isInstance }" @click="changeState('work')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Gå till verk</span>
     </div>
-    <data-node v-for="(k,v) in sortedFormData" v-bind:class="{ 'locked': isLocked }" :is-removable="true" :is-locked="keyIsLocked(k)" :key="k" :value="v" :linked="linked" :focus="focus" :status="status" :allow-anon="true"></data-node>
+    <data-node v-for="(k,v) in sortedFormData" v-bind:class="{ 'locked': isLocked }" :is-removable="true" :is-locked="keyIsLocked(k)" :key="k" :value="v" :focus="focus" :allow-anon="true"></data-node>
     <div v-if="focus == 'work'" class="dummy-reverse">
       <div class="label" v-bind:class="{ 'locked': isLocked }">
         Har instanser
