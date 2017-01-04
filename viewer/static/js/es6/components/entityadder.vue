@@ -1,5 +1,4 @@
 <script>
-import * as _ from 'lodash';
 import * as httpUtil from '../utils/http';
 import * as VocabUtil from '../utils/vocab';
 import * as DisplayUtil from '../utils/display';
@@ -11,9 +10,6 @@ export default {
   mixins: [clickaway],
   data() {
     return {
-      result: [],
-      hitlistOpened: false,
-      active: false,
       searchOpen: false,
       searchResult: {},
       keyword: '',
@@ -35,7 +31,6 @@ export default {
     propertyTypes: [],
   },
   components: {
-    'processed-label': ProcessedLabel,
   },
   watch: {
     keyword(value) {
@@ -66,6 +61,7 @@ export default {
     canRecieveObjects() {
       return (this.propertyTypes.indexOf('DatatypeProperty') === -1);
     },
+    // TODO: Verify usage
     isLiteral() {
       if (this.getRange.length > 0) {
         for (const rangeElement of this.getRange) {

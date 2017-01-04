@@ -158,36 +158,8 @@ export default {
     },
   },
   methods: {
-    isArray(o) {
-      return _.isArray(o);
-    },
     keyIsLocked(key) {
       return (this.isLocked || key === '@id' || key === '@type');
-    },
-    isPlainObject(o) {
-      return _.isPlainObject(o);
-    },
-    removeField(prop) {
-      const pLabel = VocabUtil.getLabelByLang(
-        prop,
-        this.settings.lang,
-        this.vocab,
-        this.settings.vocabPfx
-      );
-      ModalUtil.confirmDialog(
-        {
-          sTitle: `Ta bort fältet "${pLabel}"?`,
-          sContent: `Detta tar bort fältet "${pLabel}" och allt dess innehåll.`,
-          sAccept: 'Ta bort',
-          sReject: 'Avbryt',
-          sType: 'danger',
-        }
-      ).then(() => {
-        // accepted by user
-        this.$dispatch('remove-field', prop);
-      }, () => {
-          // declined
-      });
     },
     updateFromTextarea(e) {
       this.updateForm(this.focus, JSON.parse(e.target.value));
