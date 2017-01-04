@@ -56,10 +56,10 @@ export default {
         <span class="type">{{ item['@type'] | labelByLang | capitalize }}</span>
       </div>
       <ul class="card-data">
-        <li v-for="(k,v) in item" v-if="k !== '@type'">
+        <li v-for="(k,v) in item" v-show="k !== '@type'">
           <span class="key">{{ k | labelByLang | capitalize }}</span>
-          <span class="value" v-if="!isObject(v)">{{v}}</span>
-          <span class="value" v-if="isObject(v)"><span v-for="(x,y) in v">{{y}}</span></span>
+          <span class="value" v-show="!isObject(v)">{{v}}</span>
+          <span class="value" v-show="isObject(v)"><span v-for="(x,y) in v" track-by="$index">{{y}}</span></span>
         </li>
       </ul>
     </div>
