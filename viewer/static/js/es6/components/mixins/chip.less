@@ -8,9 +8,9 @@
   background-color: @color;
 
   &.locked {
-    padding-right: 1em;
   }
   .chip-label {
+    color: inherit;
     float: left;
     display: inline-block;
     max-width: 230px;
@@ -19,13 +19,13 @@
     text-overflow: ellipsis;
   }
   .chip-action {
+    color: inherit;
     float: right;
-    padding: 0.25em;
+    padding: 0.25em 0em 0.25em 0.25em;
     cursor: pointer;
     color: fadeout(@instance-chip-text,20%);
     &:hover {
       color: @instance-chip-text;
     }
   }
-
 }
