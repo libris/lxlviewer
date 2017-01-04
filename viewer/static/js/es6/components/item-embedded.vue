@@ -46,13 +46,6 @@ export default {
     json() {
       return JSON.stringify(this.item);
     },
-    linkedItem() {
-      const obj = EditUtil.getLinked(
-        this.item['@id'],
-        this.editorData.linked
-      );
-      return obj;
-    },
     getRange() {
       const types = VocabUtil.getRange(
         this.key,
