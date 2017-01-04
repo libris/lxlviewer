@@ -74,17 +74,11 @@ export default {
       // TODO: Is the item empty?
       return false;
     },
-    isObject(obj) {
-      return _.isObject(obj);
-    },
     size(obj) {
       return _.size(obj);
     },
     isPretty(key, value) {
       return (this.isObject(value) || key === '@id');
-    },
-    removeThis() {
-      this.$dispatch('remove-item', this.index);
     },
     addFocus() {
       this.focused = true;

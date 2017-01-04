@@ -1,8 +1,15 @@
 <script>
 import * as DisplayUtil from '../../utils/display';
+import * as _ from 'lodash';
 
 export default {
   methods: {
+    removeThis() {
+      this.$dispatch('remove-item', this.index);
+    },
+    isObject(value) {
+      return _.isObject(value);
+    },
   },
   computed: {
     getChip() {
@@ -26,5 +33,5 @@ export default {
       return card;
     },
   },
-}
+};
 </script>

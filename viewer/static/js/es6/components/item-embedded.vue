@@ -8,10 +8,12 @@ import Vue from 'vue';
 import ProcessedLabel from './processedlabel';
 import DataNode from './datanode';
 import ItemEntity from './item-entity';
+import ItemMixin from './mixins/item-mixin';
 import { getVocabulary, getDisplayDefinitions, getSettings, getEditorData } from '../vuex/getters';
 
 export default {
   name: 'item-embedded',
+  mixins: [ItemMixin],
   props: {
     item: {},
     key: '',
@@ -66,12 +68,6 @@ export default {
   ready() {
   },
   methods: {
-    removeThis() {
-      this.$dispatch('remove-item', this.index);
-    },
-    isObject(value) {
-      return _.isObject(value);
-    },
   },
   components: {
     'processed-label': ProcessedLabel,
