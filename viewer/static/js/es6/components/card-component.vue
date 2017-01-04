@@ -38,7 +38,7 @@ export default {
         this.toBeActive = false;
         this.active = false;
       }
-    }
+    },
   },
   ready() { // Ready method is deprecated in 2.0, switch to "mounted"
     this.$nextTick(() => {

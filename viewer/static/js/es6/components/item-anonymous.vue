@@ -51,14 +51,6 @@ export default {
     formObj() {
       return this.getForm(this.item);
     },
-    getRange() {
-      const types = VocabUtil.getRange(
-        this.key,
-        this.vocab,
-        this.settings.vocabPfx
-      );
-      return types;
-    },
     isEmpty() {
       let bEmpty = true;
       // Check if item has any keys besides @type. If not, we'll consider it empty.

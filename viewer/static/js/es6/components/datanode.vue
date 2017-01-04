@@ -4,7 +4,6 @@
   It's responsible for its own data, and dispatches all changes to the form component.
 */
 import * as _ from 'lodash';
-import ProcessedLabel from './processedlabel';
 import EntityAdder from './entityadder';
 import ItemEntity from './item-entity';
 import ItemEmbedded from './item-embedded';
@@ -21,8 +20,6 @@ export default {
     'pindex',
     'key',
     'value',
-    'label',
-    'linked',
     'isLocked',
     'focus',
     'status',
@@ -37,7 +34,6 @@ export default {
     },
   },
   components: {
-    'processed-label': ProcessedLabel,
     'item-entity': ItemEntity,
     'item-value': ItemValue,
     'item-embedded': ItemEmbedded,
@@ -53,9 +49,6 @@ export default {
       }
       return `${this.key}`;
     },
-    getRange() {
-      return VocabUtil.getRange(this.key, this.vocab, this.settings.vocabPfx);
-    },
     propertyTypes() {
       return VocabUtil.getPropertyTypes(
         this.key,
@@ -66,24 +59,19 @@ export default {
     hasSingleValue() {
       if (!_.isArray(this.value) || this.value.length === 1) {
         return true;
-      } else {
-        return false;
       }
+      return false;
     },
     stackable() {
       return (this.propertyTypes.indexOf('DatatypeProperty') === -1);
     },
+    // TODO: Verify usage
     valueByIdPresence() {
       const list = _.sortBy(this.value, [(o) => (o['@id'])]);
       return list;
     },
     isRepeatable() {
-      const types = VocabUtil.getPropertyTypes(
-        this.key,
-        this.vocab,
-        this.settings.vocabPfx
-      );
-      return types.indexOf('FunctionalProperty') < 0;
+      return this.propertyTypes.indexOf('FunctionalProperty') < 0;
     },
     isEmptyObject() {
       const value = this.value;
@@ -164,9 +152,22 @@ export default {
       if (this.pkey) {
         console.warn('Remove was called on an embedded field, this is not supported.');
         return false;
-      } else {
-        this.$dispatch('remove-field', this.key);
       }
+      this.$dispatch('remove-field', this.key);
+      // ModalUtil.confirmDialog(
+      //   {
+      //     sTitle: `Ta bort fältet "${pLabel}"?`,
+      //     sContent: `Detta tar bort fältet "${pLabel}" och allt dess innehåll.`,
+      //     sAccept: 'Ta bort',
+      //     sReject: 'Avbryt',
+      //     sType: 'danger',
+      //   }
+      // ).then(() => {
+      //   // accepted by user
+      //   this.$dispatch('remove-field', prop);
+      // }, () => {
+      //     // declined
+      // });
     },
     isArray(o) {
       return _.isArray(o);

@@ -11,8 +11,6 @@ moment.locale('sv');
 export default {
   props: [
     'status',
-    'messages',
-    'editor-data',
   ],
   vuex: {
     getters: {
@@ -50,20 +48,6 @@ export default {
       );
       return card;
     },
-    modified() {
-      return {
-        date: moment(this.editorData.record.modified).format('lll'),
-        timeAgo: moment(this.editorData.record.modified).fromNow(),
-        by: '-', // Referencing property like below will not work. TODO: Handle array
-      };
-    },
-    created() {
-      return {
-        date: moment(this.editorData.record.created).format('lll'),
-        timeAgo: moment(this.editorData.record.created).fromNow(),
-        by: EditUtil.getLinked(this.editorData.record.assigner['@id'], this.editorData.linked).name,
-      };
-    },
     isWork() {
       return this.status.state === 'work';
     },
@@ -91,10 +75,10 @@ export default {
           </div>
         </div>
         <div class="admin-node">
-          <span v-if="editorData.record.created" class="node">Skapad {{created.date}} <span class="time-ago"> av {{created.by}}</span></span>
+          <span class="node">Skapad {{ getCard.created }} av {{ getCard.assigner }}</span>
         </div>
         <div class="admin-node">
-          <span v-if="editorData.record.modified" class="node"> {{'Ändrad '+modified.date}} <span class="time-ago"> av {{modified.by || 'OKÄND'}}</span></span>
+          <span class="node">Ändrad {{ getCard.modified }} av - </span>
         </div>
         <button id="saveButton" v-on:click="save()">
           <i class="fa fa-fw fa-cog fa-spin" v-show="status.saved.loading"></i>
