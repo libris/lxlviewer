@@ -226,8 +226,6 @@ export default {
   flex-direction: row;
   box-shadow: inset 0px 0px 1em 0px transparent;
   outline: 2px solid transparent;
-  transition: 3s ease;
-  transition-property: all;
   .node-list {
     > ul {
       margin-bottom: 0px;
@@ -267,6 +265,9 @@ export default {
     opacity: 0;
     transition: opacity 0.5s ease;
     transition-delay: 0.2s;
+    .action {
+      cursor: pointer;
+    }
   }
   &.rows {
     >.label {
@@ -307,6 +308,9 @@ export default {
     border: dashed @gray-light;
     border-width: 0px 0px 1px 0px;
     padding-bottom: 4px;
+    &:last-child {
+      border-width: 0px;
+    }
     >.label {
       flex: 0 1 100%;
       text-align: left;
