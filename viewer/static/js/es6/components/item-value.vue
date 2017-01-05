@@ -69,7 +69,7 @@ export default {
 @import './_variables.less';
 
 .item-value {
-  width: 95%;
+  width: 480px;
   input {
     color: @black;
     padding: 2px 5px;
