@@ -231,6 +231,7 @@ export default {
   box-shadow: inset 0px 0px 1em 0px transparent;
   outline: 2px solid transparent;
   .node-list {
+    line-height: 0;
     > ul {
       margin-bottom: 0px;
       padding: 0px;
@@ -239,6 +240,9 @@ export default {
         margin-bottom: 2px;
         &:last-of-type {
           margin-bottom: auto;
+        }
+        > * > * {
+          line-height: 1.6;
         }
       }
     }

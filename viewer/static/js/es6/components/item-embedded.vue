@@ -80,7 +80,7 @@ export default {
   padding: 10px;
   border: 2px dotted fadeout(@gray, 50%);
   border-radius: 5px;
-  margin: 0px 0px 1em 0px;
+  margin: 0px 0px 5px 0px;
   .chip-action {
     float: right;
     cursor: pointer;
