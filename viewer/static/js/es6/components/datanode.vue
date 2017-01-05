@@ -13,6 +13,7 @@ import * as VocabUtil from '../utils/vocab';
 import * as LayoutUtil from '../utils/layout';
 import LodashProxiesMixin from './mixins/lodash-proxies-mixin';
 import { getVocabulary, getSettings, getStatus } from '../vuex/getters';
+import { changeStatus } from '../vuex/actions';
 
 export default {
   name: 'data-node',
@@ -29,6 +30,9 @@ export default {
     'is-removable',
   ],
   vuex: {
+    actions: {
+      changeStatus,
+    },
     getters: {
       vocab: getVocabulary,
       settings: getSettings,
@@ -132,7 +136,7 @@ export default {
         if (this.isLastAdded) {
           const windowHeight = window.innerHeight || document.documentElement.clientHeight || document.getElementsByTagName('body')[0].clientHeight;
           LayoutUtil.scrollTo(this.$el.offsetTop - (windowHeight * 0.5), 1000, 'easeInOutQuad', () => {
-            this.$dispatch('update-last-added', '');
+            this.changeStatus('lastAdded', '');
           });
         }
       }, 300);
@@ -226,6 +230,8 @@ export default {
   display: flex;
   flex-direction: row;
   box-shadow: inset 0px 0px 1em 0px transparent;
+  transition: 3s ease;
+  transition-property: outline;
   outline: 2px solid transparent;
   .node-list {
     line-height: 0;
