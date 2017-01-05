@@ -9,7 +9,7 @@ import ItemEntity from './item-entity';
 import DataNode from './datanode';
 import CardComponent from './card-component';
 import ItemMixin from './mixins/item-mixin';
-import { getVocabulary, getDisplayDefinitions, getSettings, getEditorData } from '../vuex/getters';
+import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData } from '../vuex/getters';
 
 export default {
   name: 'item-anonymous',
@@ -20,7 +20,6 @@ export default {
     index: Number,
     isLocked: false,
     focus: '',
-    status: {},
   },
   vuex: {
     getters: {
@@ -43,10 +42,6 @@ export default {
       const filteredItem = Object.assign({}, this.item);
       delete filteredItem['@type'];
       return filteredItem;
-    },
-    // TODO: Refactor computed
-    json() {
-      return JSON.stringify(this.item);
     },
     formObj() {
       return this.getForm(this.item);
@@ -150,7 +145,7 @@ export default {
     <div class="anonymous-form" v-show="inEdit">
       <i class="fa fa-times action-remove" v-on:click="removeThis"></i>
       <strong>{{ item['@type'] | labelByLang | capitalize }}</strong>
-      <data-node v-for="(k,v) in filteredItem" :is-locked="isLocked" :pkey="key" :embedded="true" :is-removable="false" :pindex="index" :key="k" :value="v" :focus="focus" :linked="editorData.linked" :status="status" :allow-anon="false"></data-node>
+      <data-node v-for="(k,v) in filteredItem" :is-locked="isLocked" :pkey="key" :embedded="true" :is-removable="false" :pindex="index" :key="k" :value="v" :focus="focus" :allow-anon="false"></data-node>
       <div class="actions">
         <button v-on:click="closeForm" v-bind:disabled="isEmpty">Klar</button>
       </div>

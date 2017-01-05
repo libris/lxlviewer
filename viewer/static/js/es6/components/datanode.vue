@@ -11,7 +11,7 @@ import ItemValue from './item-value';
 import ItemAnonymous from './item-anonymous';
 import * as VocabUtil from '../utils/vocab';
 import * as LayoutUtil from '../utils/layout';
-import { getVocabulary, getSettings } from '../vuex/getters';
+import { getVocabulary, getSettings, getStatus } from '../vuex/getters';
 
 export default {
   name: 'data-node',
@@ -22,7 +22,6 @@ export default {
     'value',
     'isLocked',
     'focus',
-    'status',
     'allow-anon',
     'embedded',
     'is-removable',
@@ -31,6 +30,7 @@ export default {
     getters: {
       vocab: getVocabulary,
       settings: getSettings,
+      status: getStatus,
     },
   },
   components: {
@@ -196,19 +196,19 @@ export default {
     <pre v-show="status.isDev">{{getPath}}</pre>
     <ul>
       <li v-for="item in value" track-by="$index">
-        <item-entity v-if="isPlainObject(item) && isLinked(item)" :is-locked="isLocked" :status="status" :focus="focus" :item="item" :key="key" :index="$index"></item-entity>
-        <item-anonymous v-if="isPlainObject(item) && !isLinked(item) && !isEmbedded(item)" :is-locked="isLocked" :status="status" :focus="focus" :item="item" :key="key" :index="$index"></item-anonymous>
-        <item-embedded v-if="isPlainObject(item) && !isLinked(item) && isEmbedded(item)" :is-locked="isLocked" :status="status" :focus="focus" :item="item" :key="key" :index="$index"></item-embedded>
-        <item-value v-if="!isPlainObject(item) && !isLinked(item)" :is-removable="!hasSingleValue" :is-locked="isLocked" :status="status" :focus="focus" :value="item" :key="key" :index="$index"></item-value>
+        <item-entity v-if="isPlainObject(item) && isLinked(item)" :is-locked="isLocked" :focus="focus" :item="item" :key="key" :index="$index"></item-entity>
+        <item-anonymous v-if="isPlainObject(item) && !isLinked(item) && !isEmbedded(item)" :is-locked="isLocked" :focus="focus" :item="item" :key="key" :index="$index"></item-anonymous>
+        <item-embedded v-if="isPlainObject(item) && !isLinked(item) && isEmbedded(item)" :is-locked="isLocked" :focus="focus" :item="item" :key="key" :index="$index"></item-embedded>
+        <item-value v-if="!isPlainObject(item) && !isLinked(item)" :is-removable="!hasSingleValue" :is-locked="isLocked" :focus="focus" :value="item" :key="key" :index="$index"></item-value>
       </li>
     </ul>
   </div>
   <div v-if="!isArray(value)" class="value node-object">
     <pre v-show="status.isDev">{{getPath}}</pre>
-    <item-entity v-if="isPlainObject(value) && isLinked(value)" :is-locked="isLocked" :status="status" :focus="focus" :item="value" :key="key"></item-entity>
-    <item-anonymous v-if="isPlainObject(value) && !isLinked(value) && !isEmbedded(value)" :is-locked="isLocked" :status="status" :focus="focus" :item="value" :key="key" :index="$index"></item-anonymous>
-    <item-embedded v-if="isPlainObject(value) && !isLinked(value) && isEmbedded(value)" :is-locked="isLocked" :status="status" :focus="focus" :item="value" :key="key"></item-embedded>
-    <item-value v-if="!isPlainObject(value) && !isLinked(value)" :is-locked="isLocked" :is-removable="!hasSingleValue" :status="status" :focus="focus" :value="value" :key="key"></item-value>
+    <item-entity v-if="isPlainObject(value) && isLinked(value)" :is-locked="isLocked" :focus="focus" :item="value" :key="key"></item-entity>
+    <item-anonymous v-if="isPlainObject(value) && !isLinked(value) && !isEmbedded(value)" :is-locked="isLocked" :focus="focus" :item="value" :key="key" :index="$index"></item-anonymous>
+    <item-embedded v-if="isPlainObject(value) && !isLinked(value) && isEmbedded(value)" :is-locked="isLocked" :focus="focus" :item="value" :key="key"></item-embedded>
+    <item-value v-if="!isPlainObject(value) && !isLinked(value)" :is-locked="isLocked" :is-removable="!hasSingleValue" :focus="focus" :value="value" :key="key"></item-value>
   </div>
   <div class="actions" v-if="!isLocked">
     <entity-adder class="action" v-if="!isLocked && (isRepeatable || isEmptyObject)" :key="key" :focus="focus" :property-types="propertyTypes" :allow-anon="allowAnon"></entity-adder>

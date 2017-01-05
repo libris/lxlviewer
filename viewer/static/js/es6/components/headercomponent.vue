@@ -3,7 +3,7 @@ import * as _ from 'lodash';
 import * as DisplayUtil from '../utils/display';
 import * as VocabUtil from '../utils/vocab';
 import * as EditUtil from '../utils/edit';
-import { getVocabulary, getSettings, getEditorData, getDisplayDefinitions } from '../vuex/getters';
+import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData, getStatus } from '../vuex/getters';
 
 export default {
   name: 'header-component',
@@ -13,10 +13,10 @@ export default {
       settings: getSettings,
       editorData: getEditorData,
       display: getDisplayDefinitions,
+      status: getStatus,
     },
   },
   props: {
-    status,
     full: false,
   },
   data() {
@@ -52,7 +52,7 @@ export default {
   },
   computed: {
     state() {
-      const state = this.status.state;
+      const state = this.status.level;
       if (state === 'it') {
         return 'Instance';
       } else if (state === 'work') {
@@ -62,7 +62,7 @@ export default {
     },
     getCard() {
       return DisplayUtil.getCard(
-        this.editorData[this.status.state],
+        this.editorData[this.status.level],
         this.display,
         this.editorData.linked,
         this.vocab,
