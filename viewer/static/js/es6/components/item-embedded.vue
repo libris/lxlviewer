@@ -77,7 +77,7 @@ export default {
 
 .item-embedded {
   width: @col-value;
-  padding: 10px;
+  padding: 5px 5px 0px 5px;
   border: 2px dotted fadeout(@gray, 50%);
   border-radius: 5px;
   margin: 0px 0px 5px 0px;

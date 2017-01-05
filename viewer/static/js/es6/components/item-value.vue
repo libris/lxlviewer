@@ -57,7 +57,7 @@ export default {
 </script>
 
 <template>
-  <div class="item-value">
+  <div class="item-value" v-bind:class="{'locked': isLocked}">
   <!-- TODO: @input or @change? -->
     <input v-model="value" @change="valueChanged()" v-show="!isLocked"></input>
     <span v-show="isLocked">{{value}}</span>
@@ -70,6 +70,9 @@ export default {
 
 .item-value {
   width: 480px;
+  &.locked {
+    line-height: 2;
+  }
   input {
     color: @black;
     padding: 2px 5px;

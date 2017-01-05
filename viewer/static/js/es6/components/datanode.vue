@@ -226,6 +226,7 @@ export default {
 
 .data-node {
   width: 100%;
+  min-height: 3em;
   display: flex;
   flex-direction: row;
   box-shadow: inset 0px 0px 1em 0px transparent;
@@ -271,8 +272,8 @@ export default {
   }
   >.actions {
     opacity: 0;
-    transition: opacity 0.5s ease;
-    transition-delay: 0.2s;
+    transition: opacity 0.25s ease;
+    transition-delay: 0.1s;
     .action {
       cursor: pointer;
     }
@@ -325,7 +326,7 @@ export default {
     >.label {
       flex: 0 1 100%;
       text-align: left;
-      padding: 5px 0px;
+      padding: 5px 0px 3px 0px;
     }
     >.value {
       display: inline-block;
