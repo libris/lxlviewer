@@ -49,7 +49,7 @@ export default class Editor extends View {
       ],
     };
     $('#loadingText .fa-warning').hide();
-    $('#loadingText .status').text('Hämtar vokabulärsdata');
+    $('#loadingText .status').text('Hämtar vokabulär');
     VocabUtil.getVocab().then((vocab) => {
       self.vocab = vocab;
       $('#loadingText .status').text('Hämtar visningsdefinitioner');
