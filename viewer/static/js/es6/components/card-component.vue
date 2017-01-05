@@ -126,6 +126,8 @@ export default {
       list-style: none;
       padding: 0px;
       min-height: 70px;
+      margin-bottom: 5px;
+      overflow: hidden;
       li {
         padding: 2px 7px;
         display: block;
@@ -141,8 +143,11 @@ export default {
           text-align: right;
           padding-right: 0.5em;
           color: #6b6b6b;
+          font-size: 0.9em;
+          line-height: 1.9;
         }
         .value {
+          vertical-align: top;
           width: 64%;
         }
       }
