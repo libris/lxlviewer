@@ -40,7 +40,10 @@ const mutations = {
     state.settings = data;
   },
   CHANGESAVEDSTATUS (state, property, data) {
-    state.saved[property] = data;
+    state.status.saved[property] = data;
+  },
+  CHANGESTATUS (state, property, data) {
+    state.status[property] = data;
   },
 };
 
