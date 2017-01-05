@@ -11,10 +11,12 @@ import ItemValue from './item-value';
 import ItemAnonymous from './item-anonymous';
 import * as VocabUtil from '../utils/vocab';
 import * as LayoutUtil from '../utils/layout';
+import LodashProxiesMixin from './mixins/lodash-proxies-mixin';
 import { getVocabulary, getSettings, getStatus } from '../vuex/getters';
 
 export default {
   name: 'data-node',
+  mixins: [LodashProxiesMixin],
   props: [
     'pkey',
     'pindex',
@@ -168,12 +170,6 @@ export default {
       // }, () => {
       //     // declined
       // });
-    },
-    isArray(o) {
-      return _.isArray(o);
-    },
-    isPlainObject(o) {
-      return _.isPlainObject(o);
     },
     isLinked(o) {
       return (o.hasOwnProperty('@id') && !o.hasOwnProperty('@type'));

@@ -6,11 +6,12 @@ import * as DisplayUtil from '../utils/display';
 import * as EditUtil from '../utils/edit';
 import ProcessedLabel from './processedlabel';
 import ItemMixin from './mixins/item-mixin';
+import LensMixin from './mixins/lens-mixin';
 import { getVocabulary, getDisplayDefinitions, getSettings, getEditorData } from '../vuex/getters';
 
 export default {
   name: 'item-value',
-  mixins: [ItemMixin],
+  mixins: [ItemMixin, LensMixin],
   props: {
     value: '',
     key: '',

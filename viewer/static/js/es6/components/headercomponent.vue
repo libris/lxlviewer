@@ -3,10 +3,12 @@ import * as _ from 'lodash';
 import * as DisplayUtil from '../utils/display';
 import * as VocabUtil from '../utils/vocab';
 import * as EditUtil from '../utils/edit';
+import LensMixin from './mixins/lens-mixin';
 import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData, getStatus } from '../vuex/getters';
 
 export default {
   name: 'header-component',
+  mixins: [LensMixin],
   vuex: {
     getters: {
       vocab: getVocabulary,
@@ -67,14 +69,8 @@ export default {
       }
       return 'Unknown';
     },
-    getCard() {
-      return DisplayUtil.getCard(
-        this.editorData[this.status.level],
-        this.display,
-        this.editorData.linked,
-        this.vocab,
-        this.settings
-      );
+    focusData() {
+      return this.editorData[this.status.level];
     },
   },
   components: {

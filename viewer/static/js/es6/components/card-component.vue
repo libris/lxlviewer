@@ -1,8 +1,10 @@
 <script>
 import * as _ from 'lodash';
+import LodashProxiesMixin from './mixins/lodash-proxies-mixin';
 
 export default {
   name: 'card-component',
+  mixins: [LodashProxiesMixin],
   props: {
     item: {},
     title: {},
@@ -17,9 +19,6 @@ export default {
     };
   },
   methods: {
-    isObject(obj) {
-      return _.isObject(obj);
-    },
   },
   computed: {
   },

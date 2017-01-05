@@ -9,11 +9,12 @@ import ItemEntity from './item-entity';
 import DataNode from './datanode';
 import CardComponent from './card-component';
 import ItemMixin from './mixins/item-mixin';
+import LensMixin from './mixins/lens-mixin';
 import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData } from '../vuex/getters';
 
 export default {
   name: 'item-anonymous',
-  mixins: [ItemMixin],
+  mixins: [ItemMixin, LensMixin],
   props: {
     item: {},
     key: '',

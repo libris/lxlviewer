@@ -5,11 +5,12 @@ import * as EditUtil from '../utils/edit';
 import CardComponent from './card-component';
 import ProcessedLabel from './processedlabel';
 import ItemMixin from './mixins/item-mixin';
+import LensMixin from './mixins/lens-mixin';
 import { getVocabulary, getDisplayDefinitions, getSettings, getEditorData } from '../vuex/getters';
 
 export default {
   name: 'item-entity',
-  mixins: [ItemMixin],
+  mixins: [ItemMixin, LensMixin],
   props: {
     item: {},
     key: '',

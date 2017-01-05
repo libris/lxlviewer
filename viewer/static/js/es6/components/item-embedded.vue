@@ -9,11 +9,12 @@ import ProcessedLabel from './processedlabel';
 import DataNode from './datanode';
 import ItemEntity from './item-entity';
 import ItemMixin from './mixins/item-mixin';
+import LensMixin from './mixins/lens-mixin';
 import { getVocabulary, getDisplayDefinitions, getSettings, getEditorData } from '../vuex/getters';
 
 export default {
   name: 'item-embedded',
-  mixins: [ItemMixin],
+  mixins: [ItemMixin, LensMixin],
   props: {
     item: {},
     key: '',

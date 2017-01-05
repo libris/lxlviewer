@@ -1,5 +1,4 @@
 <script>
-import * as DisplayUtil from '../../utils/display';
 import * as EditUtil from '../../utils/edit';
 import * as _ from 'lodash';
 
@@ -8,12 +7,9 @@ export default {
     removeThis() {
       this.$dispatch('remove-item', this.index);
     },
-    isObject(value) {
-      return _.isObject(value);
-    },
   },
   computed: {
-    embellished() {
+    focusData() {
       if (!this.item['@id']) {
         return this.item;
       }
@@ -24,26 +20,6 @@ export default {
         this.item['@id'],
         this.editorData.linked
       );
-    },
-    getChip() {
-      const chip = DisplayUtil.getChip(
-        this.embellished,
-        this.display,
-        this.editorData.linked,
-        this.vocab,
-        this.settings
-      );
-      return chip;
-    },
-    getCard() {
-      const card = DisplayUtil.getCard(
-        this.embellished,
-        this.display,
-        this.editorData.linked,
-        this.vocab,
-        this.settings
-      );
-      return card;
     },
   },
 };
