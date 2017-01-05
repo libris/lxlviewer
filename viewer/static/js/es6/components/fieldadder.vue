@@ -239,14 +239,8 @@ export default {
   text-align: center;
   display: block; // So that the clickaway plugin triggers nicely
   #add-button {
-    &.instance-state {
-      background-color: @instance-background;
-      color: @instance-text;
-    }
-    &.work-state {
-      background-color: @work-background;
-      color: @work-text;
-    }
+    background-color: @brand-primary;
+    color: @white;
     &.is-fixed {
       position: fixed;
       bottom: 3%;
@@ -268,12 +262,7 @@ export default {
       vertical-align: middle;
     }
     &:hover {
-      &.instance-state {
-        background-color: @instance-hover;
-      }
-      &.work-state {
-        background-color: @work-hover;
-      }
+      background-color: lighten(@brand-primary, 5%);
     }
     &:active {
       bottom: 2.5%;

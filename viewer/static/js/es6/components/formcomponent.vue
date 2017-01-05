@@ -236,12 +236,7 @@ export default {
   }
 
   .form-header {
-    &.instance-state {
-      background-color: @instance-background;
-    }
-    &.work-state {
-      background-color: @work-background;
-    }
+    background-color: @brand-primary;
     .edit-locked {
       font-size: 15px;
       float: right;

@@ -64,7 +64,7 @@ export default {
 
 <template>
   <div class="container editor-container" data-spy="affix" data-offset-top="80">
-    <div class="editor-controls" :class="{ 'work-state': isWork, 'instance-state': isInstance }" >
+    <div class="editor-controls">
       <div class="admin-info">
         <div class="actions">
           <div class="action">
@@ -120,14 +120,8 @@ export default {
   }
 
   .editor-controls {
-    &.instance-state {
-      background-color: @instance-background;
-      color: @instance-text;
-    }
-    &.work-state {
-      background-color: @work-background;
-      color: @work-text;
-    }
+    background-color: @black;
+    color: @white;
     .admin-info {
       flex-direction: row;
       display: flex;
