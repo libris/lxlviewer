@@ -17,10 +17,8 @@ const state = {
     isDev: false,
     saved: {
       loading: false,
-      status: {
-        error: false,
-        info: '',
-      },
+      error: false,
+      info: '',
     },
   },
 };
@@ -40,6 +38,9 @@ const mutations = {
   },
   CHANGESETTINGS (state, data) {
     state.settings = data;
+  },
+  CHANGESAVEDSTATUS (state, property, data) {
+    state.saved[property] = data;
   },
 };
 

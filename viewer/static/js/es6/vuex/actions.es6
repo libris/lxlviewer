@@ -13,3 +13,6 @@ export const loadDisplayDefs = function ({ dispatch, state }, data) {
 export const changeSettings = function ({ dispatch, state }, data) {
   dispatch('CHANGESETTINGS', data);
 };
+export const changeSavedStatus = function ({ dispatch, state }, property, data) {
+  dispatch('CHANGESAVEDSTATUS', property, data);
+}
