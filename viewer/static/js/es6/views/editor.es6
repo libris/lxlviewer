@@ -17,8 +17,8 @@ import * as StringUtil from '../utils/string';
 import FormComponent from '../components/formcomponent';
 import EditorControls from '../components/editorcontrols';
 import HeaderComponent from '../components/headercomponent';
-import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData, getStatus } from '../vuex/getters';
-import { changeSettings, loadVocab, loadDisplayDefs, syncData } from '../vuex/actions';
+import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData, getStatus, getKeybindState } from '../vuex/getters';
+import { changeSettings, loadVocab, loadDisplayDefs, syncData, changeSavedStatus, changeStatus } from '../vuex/actions';
 
 function showError(error) {
   $('#loadingText .fa-cog').fadeOut('fast', () => {
@@ -96,6 +96,8 @@ export default class Editor extends View {
           loadVocab,
           loadDisplayDefs,
           changeSettings,
+          changeSavedStatus,
+          changeStatus,
         },
         getters: {
           settings: getSettings,
@@ -103,6 +105,7 @@ export default class Editor extends View {
           vocab: getVocabulary,
           display: getDisplayDefinitions,
           status: getStatus,
+          keybindState: getKeybindState,
         },
       },
       data: {
@@ -110,10 +113,6 @@ export default class Editor extends View {
         combokeys: null,
       },
       events: {
-        'toggle-dev': function() {
-          this.status.isDev = !this.status.isDev;
-          console.log("dev", JSON.stringify(this.status.isDev));
-        },
         'focus-update': function(value, oldValue) {
           const newData = this.editorData;
           console.log("Update");
@@ -128,7 +127,29 @@ export default class Editor extends View {
           }
           this.syncData(newData);
         },
-        'keyboard-binding-state': function(state) {
+        'add-linked': function(item) {
+          const newData = this.editorData;
+          newData.linked.push(item);
+          this.syncData(newData);
+        },
+        'save-item': function() {
+          this.saveItem();
+        },
+        'show-message': function(messageObj) {
+          console.log("Should show notification", JSON.stringify(messageObj));
+        },
+      },
+      watch: {
+        copyId(value, oldval) {
+          if (value.length === 0 && oldval && oldval.length > 0) {
+            this.copy.state = '';
+          } else if (!/[^a-z0-9]/gi.test(value)) {
+            this.getCopyItem(value);
+          } else {
+            this.copy.state = 'invalid';
+          }
+        },
+        keybindState(state) {
           // Bindings are defined in keybindings.json
           if (this.combokeys) {
             this.combokeys.detach();
@@ -145,40 +166,6 @@ export default class Editor extends View {
                 });
               }
             });
-          }
-        },
-        'add-linked': function(item) {
-          const newData = this.editorData;
-          newData.linked.push(item);
-          this.syncData(newData);
-        },
-        'save-item': function() {
-          this.status.saved.loading = true;
-          this.saveItem();
-        },
-        'check-changes': function() {
-          // TODO: Some logic plz...
-            this.status.dirty = true;
-            console.log('Form is dirty?', this.status.dirty);
-        },
-        'show-message': function(messageObj) {
-          console.log("Should show notification", JSON.stringify(messageObj));
-        },
-        'change-state': function(newState) {
-          this.status.state = newState;
-        },
-        'update-last-added': function(fieldName) {
-          this.status.lastAdded = fieldName;
-        },
-      },
-      watch: {
-        copyId(value, oldval) {
-          if (value.length === 0 && oldval && oldval.length > 0) {
-            this.copy.state = '';
-          } else if (!/[^a-z0-9]/gi.test(value)) {
-            this.getCopyItem(value);
-          } else {
-            this.copy.state = 'invalid';
           }
         },
       },
@@ -230,20 +217,21 @@ export default class Editor extends View {
           this.doRequest(httpUtil.post, obj, '/create');
         },
         doRequest(requestMethod, obj, url) {
-          this.status.saved.loading = true;
           requestMethod({ url, token: self.access_token }, obj).then((result) => {
             console.log('Success was had');
             self.vm.syncData(RecordUtil.splitJson(result));
-            self.vm.status.saved.loading = false;
-            self.vm.status.saved.status = { error: false, info: '' };
+            self.vm.changeSavedStatus('loading', false);
+            self.vm.changeSavedStatus('error', false);
+            self.vm.changeSavedStatus('info', '');
             this.$dispatch('show-message', {
               title: 'OK!',
               msg: 'Posten blev sparad...',
               type: 'success',
             });
           }, (error) => {
-            self.vm.status.saved.loading = false;
-            self.vm.status.saved.status = { error: true, info: error };
+            self.vm.changeSavedStatus('loading', false);
+            self.vm.changeSavedStatus('error', true);
+            self.vm.changeSavedStatus('info', error);
             this.$dispatch('show-message', {
               title: 'Något gick fel!',
               msg: error,
@@ -258,7 +246,7 @@ export default class Editor extends View {
         this.loadDisplayDefs(self.display);
         this.syncData(self.dataIn);
         this.initialized = true;
-        this.$dispatch('keyboard-binding-state', 'overview');
+        this.changeStatus('keybindState', 'overview');
       },
       components: {
         'form-component': FormComponent,

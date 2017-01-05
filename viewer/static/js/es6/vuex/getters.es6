@@ -13,3 +13,6 @@ export function getSettings(state) {
 export function getStatus(state) {
   return state.status;
 }
+export function getKeybindState(state) {
+  return state.status.keybindState;
+}

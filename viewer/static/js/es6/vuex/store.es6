@@ -15,6 +15,7 @@ const state = {
     level: 'it',
     dirty: true,
     isDev: false,
+    keybindState: '',
     saved: {
       loading: false,
       error: false,

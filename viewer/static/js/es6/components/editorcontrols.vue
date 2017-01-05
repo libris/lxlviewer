@@ -5,6 +5,7 @@ import HeaderComponent from './headercomponent';
 import moment from 'moment';
 import * as EditUtil from '../utils/edit';
 import * as DisplayUtil from '../utils/display';
+import { changeSavedStatus, changeStatus } from '../vuex/actions';
 import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData, getStatus } from '../vuex/getters';
 moment.locale('sv');
 
@@ -17,13 +18,18 @@ export default {
       editorData: getEditorData,
       status: getStatus,
     },
+    actions: {
+      changeSavedStatus,
+      changeStatus,
+    },
   },
   methods: {
     save() {
+      this.changeSavedStatus('loading', true);
       this.$dispatch('save-item');
     },
     toggleDev() {
-      this.$dispatch('toggle-dev');
+      this.changeStatus('isDev', !this.status.isDev);
     },
     toggleAdminData() {
       this.showAdminInfoDetails = !this.showAdminInfoDetails;

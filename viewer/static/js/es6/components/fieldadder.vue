@@ -3,6 +3,7 @@ import { mixin as clickaway } from 'vue-clickaway';
 import * as _ from 'lodash';
 import * as LayoutUtil from '../utils/layout';
 import { getSettings } from '../vuex/getters';
+import { changeStatus } from '../vuex/actions';
 import ComboKeys from 'combokeys';
 
 export default {
@@ -17,6 +18,9 @@ export default {
   vuex: {
     getters: {
       settings: getSettings,
+    },
+    actions: {
+      changeStatus,
     },
   },
   data() {
@@ -161,7 +165,7 @@ export default {
       if (close) {
         this.hide();
         const fieldName = prop['@id'].split(':')[1];
-        this.$dispatch('update-last-added', fieldName);
+        this.changeStatus('lastAdded', fieldName);
       }
     },
     show() {
@@ -170,14 +174,14 @@ export default {
       setTimeout(() => { // TODO: Solve this by setting focus after window has been rendered.
         document.getElementById('test').focus();
       }, 1);
-      this.$dispatch('keyboard-binding-state', 'field-adder');
+      this.changeStatus('keybindState', 'field-adder');
     },
     hide() {
       if (!this.active) return;
       this.active = false;
       LayoutUtil.scrollLock(false);
       this.filterKey = '';
-      this.$dispatch('keyboard-binding-state', 'overview');
+      this.changeStatus('keybindState', 'overview');
       this.resetSelectIndex();
     },
     resetSelectIndex() {
