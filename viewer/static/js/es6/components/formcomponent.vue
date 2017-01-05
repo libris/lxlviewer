@@ -11,13 +11,14 @@ import DataNode from './datanode';
 import * as ModalUtil from '../utils/modals';
 import * as VocabUtil from '../utils/vocab';
 import * as DisplayUtil from '../utils/display';
-import { updateForm } from '../vuex/actions';
+import { updateForm, changeStatus } from '../vuex/actions';
 import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData, getStatus } from '../vuex/getters';
 
 export default {
   vuex: {
     actions: {
       updateForm,
+      changeStatus,
     },
     getters: {
       vocab: getVocabulary,
@@ -163,9 +164,6 @@ export default {
     updateFromTextarea(e) {
       this.updateForm(this.focus, JSON.parse(e.target.value));
     },
-    changeState(newState) {
-      this.$dispatch('change-state', newState);
-    },
   },
   components: {
     'data-node': DataNode,
@@ -178,7 +176,7 @@ export default {
   <div class="form-component" :class="{ 'locked': isLocked, 'work-state': isWork, 'instance-state': isInstance, 'focused-form-component': status.level === this.focus }">
     <div class="form-header" :class="{ 'work-state': isWork, 'instance-state': isInstance }">
       <span>{{ sortedFormData['@type'] | labelByLang | capitalize }}fält</span>
-      <span v-if="isLocked" class="edit-locked" :class="{ 'work-state': isWork, 'instance-state': isInstance }" @click="changeState('work')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Gå till verk</span>
+      <span v-if="isLocked" class="edit-locked" :class="{ 'work-state': isWork, 'instance-state': isInstance }" @click="changeStatus('level' ,'work')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Gå till verk</span>
     </div>
     <data-node v-for="(k,v) in sortedFormData" v-bind:class="{ 'locked': isLocked }" :is-removable="true" :is-locked="keyIsLocked(k)" :key="k" :value="v" :focus="focus" :allow-anon="true"></data-node>
     <div v-if="focus == 'work'" class="dummy-reverse">
@@ -186,7 +184,7 @@ export default {
         Har instanser
       </div>
       <div class="value">
-        <div class="chip dummy-chip" v-on:click="changeState('it')" :class="{ 'locked': isLocked }" @mouseenter="showCardInfo=true">
+        <div class="chip dummy-chip" v-on:click="changeStatus('level' ,'it')" :class="{ 'locked': isLocked }" @mouseenter="showCardInfo=true">
           <span class="chip-label">
             {{ dummyInstance }}
           </span>

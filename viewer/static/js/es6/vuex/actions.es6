@@ -15,4 +15,7 @@ export const changeSettings = function ({ dispatch, state }, data) {
 };
 export const changeSavedStatus = function ({ dispatch, state }, property, data) {
   dispatch('CHANGESAVEDSTATUS', property, data);
-}
+};
+export const changeStatus = function ({ dispatch, state }, property, data) {
+  dispatch('CHANGESTATUS', property, data);
+};
