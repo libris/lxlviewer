@@ -22,6 +22,13 @@ export default {
   data() {
     return {
       showChipHeader: false,
+      inlineKeys: [
+        '@type',
+        'issuanceType',
+        'extent',
+        'dimensions',
+        'marc:otherPhysicalDetails',
+      ],
     };
   },
   ready() { // Ready method is deprecated in 2.0, switch to "mounted"
@@ -79,7 +86,7 @@ export default {
   <div class="header-component">
     <div v-if="full" class="main-header" id="card-header">
       <ul>
-        <li v-for="(k, v) in getCard" v-bind:class="{'large-title': isTitle(k)}">{{v}}</li>
+        <li v-for="(k, v) in getCard" v-bind:class="{'large-title': isTitle(k), 'inline': (inlineKeys.indexOf(k) !== -1) }">{{v}}</li>
       </ul>
     </div>
     <div v-if="full == false && showChipHeader" class="container fixed-header-container">
@@ -123,6 +130,12 @@ export default {
   .main-header {
     ul {
       padding: 20px;
+      .inline {
+        display: inline;
+        &::after {
+          content: ", ";
+        }
+      }
     }
   }
 

@@ -75,7 +75,6 @@ export default {
   opacity: 0;
   max-height: 0px;
   overflow-y: hidden;
-  margin-top: -5px;
   transition: opacity 0.25s ease;
   z-index: @active-component-z;
   &.to-be-active {

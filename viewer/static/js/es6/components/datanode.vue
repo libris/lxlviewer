@@ -192,7 +192,7 @@ export default {
     <!-- <a href="/vocab/#{{property}}">{{ property | labelByLang | capitalize }}</a> -->
     {{ key | labelByLang | capitalize }}
   </div>
-  <div v-if="isArray(value)" class="value node-list" v-bind:class="{'stackable': stackable}">
+  <div v-if="isArray(value)" class="value node-list">
     <pre v-show="status.isDev">{{getPath}}</pre>
     <ul>
       <li v-for="item in value" track-by="$index">
@@ -203,12 +203,16 @@ export default {
       </li>
     </ul>
   </div>
-  <div v-if="!isArray(value)" class="value node-object">
+  <div v-if="!isArray(value)" class="value node-list">
     <pre v-show="status.isDev">{{getPath}}</pre>
-    <item-entity v-if="isPlainObject(value) && isLinked(value)" :is-locked="isLocked" :focus="focus" :item="value" :key="key"></item-entity>
-    <item-anonymous v-if="isPlainObject(value) && !isLinked(value) && !isEmbedded(value)" :is-locked="isLocked" :focus="focus" :item="value" :key="key" :index="$index"></item-anonymous>
-    <item-embedded v-if="isPlainObject(value) && !isLinked(value) && isEmbedded(value)" :is-locked="isLocked" :focus="focus" :item="value" :key="key"></item-embedded>
-    <item-value v-if="!isPlainObject(value) && !isLinked(value)" :is-locked="isLocked" :is-removable="!hasSingleValue" :focus="focus" :value="value" :key="key"></item-value>
+    <ul>
+      <li>
+        <item-entity v-if="isPlainObject(value) && isLinked(value)" :is-locked="isLocked" :focus="focus" :item="value" :key="key"></item-entity>
+        <item-anonymous v-if="isPlainObject(value) && !isLinked(value) && !isEmbedded(value)" :is-locked="isLocked" :focus="focus" :item="value" :key="key" :index="$index"></item-anonymous>
+        <item-embedded v-if="isPlainObject(value) && !isLinked(value) && isEmbedded(value)" :is-locked="isLocked" :focus="focus" :item="value" :key="key"></item-embedded>
+        <item-value v-if="!isPlainObject(value) && !isLinked(value)" :is-locked="isLocked" :is-removable="!hasSingleValue" :focus="focus" :value="value" :key="key"></item-value>
+      </li>
+    </ul>
   </div>
   <div class="actions" v-if="!isLocked">
     <entity-adder class="action" v-if="!isLocked && (isRepeatable || isEmptyObject)" :key="key" :focus="focus" :property-types="propertyTypes" :allow-anon="allowAnon"></entity-adder>
@@ -227,6 +231,7 @@ export default {
   box-shadow: inset 0px 0px 1em 0px transparent;
   outline: 2px solid transparent;
   .node-list {
+    line-height: 0;
     > ul {
       margin-bottom: 0px;
       padding: 0px;
@@ -235,6 +240,9 @@ export default {
         margin-bottom: 2px;
         &:last-of-type {
           margin-bottom: auto;
+        }
+        > * > * {
+          line-height: 1.6;
         }
       }
     }
@@ -289,6 +297,9 @@ export default {
         width: 100%;
         list-style: none;
         padding: 0px;
+        > li {
+          display: inline-block;
+        }
       }
     }
     >.actions {
