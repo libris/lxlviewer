@@ -253,7 +253,7 @@ export default {
       margin-bottom: 0px;
       padding: 0px;
       > li {
-        display: block;
+        display: inline-block;
         margin-bottom: 2px;
         &:last-of-type {
           margin-bottom: auto;
