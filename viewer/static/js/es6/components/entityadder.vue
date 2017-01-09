@@ -195,7 +195,7 @@ export default {
 
 <template>
 <span class="entity-adder" v-on-clickaway="closeSearch">
-    <a class="add-entity-button" v-on:click="add()" :class="{ 'work-state': isWork, 'instance-state': isInstance }">
+    <a class="add-entity-button" v-on:click="add()">
       <i class="fa fa-plus plus-icon" aria-hidden="true"></i>
     </a>
     <div class="search-box" v-show="searchOpen">
@@ -225,14 +225,8 @@ export default {
 .entity-adder {
   opacity: 1;
   .add-entity-button {
-    &.instance-state {
-      color: @instance-text;
-      background-color: @instance-background;
-    }
-    &.work-state {
-      color: @work-text;
-      background-color: @work-background;
-    }
+    background-color: @brand-primary;
+    color: @white;
     border-radius:28px;
     display:inline-block;
     cursor:pointer;
@@ -245,12 +239,7 @@ export default {
       vertical-align: middle;
     }
     &:hover {
-      &.instance-state {
-        background-color: @instance-hover;
-      }
-      &.work-state {
-        background-color: @work-hover;
-      }
+      background-color: lighten(@brand-primary, 5%);
     }
     &:active {
       position:relative;
