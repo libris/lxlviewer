@@ -5,6 +5,7 @@ import HeaderComponent from './headercomponent';
 import moment from 'moment';
 import * as EditUtil from '../utils/edit';
 import * as DisplayUtil from '../utils/display';
+import LensMixin from './mixins/lens-mixin';
 import { changeSavedStatus, changeStatus } from '../vuex/actions';
 import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData, getStatus } from '../vuex/getters';
 moment.locale('sv');
@@ -23,6 +24,7 @@ export default {
       changeStatus,
     },
   },
+  mixins: [LensMixin],
   methods: {
     save() {
       this.changeSavedStatus('loading', true);
@@ -41,16 +43,8 @@ export default {
     };
   },
   computed: {
-    // TODO: Get all admin data, not only card info
-    getCard() {
-      const card = DisplayUtil.getCard(
-        this.editorData.record,
-        this.display,
-        this.editorData.linked,
-        this.vocab,
-        this.settings
-      );
-      return card;
+    focusData() {
+      return this.editorData.record;
     },
     isWork() {
       return this.status.level === 'work';
