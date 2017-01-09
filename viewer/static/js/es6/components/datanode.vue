@@ -175,6 +175,20 @@ export default {
       //     // declined
       // });
     },
+    getDatatype(o) {
+      if (this.isPlainObject(o) && this.isLinked(o)) {
+        return 'entity';
+      }
+      if (this.isPlainObject(o) && !this.isLinked(o) && !this.isEmbedded(o)) {
+        return 'anonymous';
+      }
+      if (this.isPlainObject(o) && !this.isLinked(o) && this.isEmbedded(o)) {
+        return 'embedded';
+      }
+      if (!this.isPlainObject(o) && !this.isLinked(o)) {
+        return 'value';
+      }
+    },
     isLinked(o) {
       return (o.hasOwnProperty('@id') && !o.hasOwnProperty('@type'));
     },
@@ -196,10 +210,10 @@ export default {
     <pre v-show="status.isDev">{{getPath}}</pre>
     <ul>
       <li v-for="item in value" track-by="$index">
-        <item-entity v-if="isPlainObject(item) && isLinked(item)" :is-locked="isLocked" :focus="focus" :item="item" :key="key" :index="$index"></item-entity>
-        <item-anonymous v-if="isPlainObject(item) && !isLinked(item) && !isEmbedded(item)" :is-locked="isLocked" :focus="focus" :item="item" :key="key" :index="$index"></item-anonymous>
-        <item-embedded v-if="isPlainObject(item) && !isLinked(item) && isEmbedded(item)" :is-locked="isLocked" :focus="focus" :item="item" :key="key" :index="$index"></item-embedded>
-        <item-value v-if="!isPlainObject(item) && !isLinked(item)" :is-removable="!hasSingleValue" :is-locked="isLocked" :focus="focus" :value="item" :key="key" :index="$index"></item-value>
+        <item-entity v-if="getDatatype(item) == 'entity'" :is-locked="isLocked" :focus="focus" :item="item" :key="key" :index="$index"></item-entity>
+        <item-anonymous v-if="getDatatype(item) == 'anonymous'" :is-locked="isLocked" :focus="focus" :item="item" :key="key" :index="$index"></item-anonymous>
+        <item-embedded v-if="getDatatype(item) == 'embedded'" :is-locked="isLocked" :focus="focus" :item="item" :key="key" :index="$index"></item-embedded>
+        <item-value v-if="getDatatype(item) == 'value'" :is-removable="!hasSingleValue" :is-locked="isLocked" :focus="focus" :value="item" :key="key" :index="$index"></item-value>
       </li>
     </ul>
   </div>
@@ -207,10 +221,10 @@ export default {
     <pre v-show="status.isDev">{{getPath}}</pre>
     <ul>
       <li>
-        <item-entity v-if="isPlainObject(value) && isLinked(value)" :is-locked="isLocked" :focus="focus" :item="value" :key="key"></item-entity>
-        <item-anonymous v-if="isPlainObject(value) && !isLinked(value) && !isEmbedded(value)" :is-locked="isLocked" :focus="focus" :item="value" :key="key" :index="$index"></item-anonymous>
-        <item-embedded v-if="isPlainObject(value) && !isLinked(value) && isEmbedded(value)" :is-locked="isLocked" :focus="focus" :item="value" :key="key"></item-embedded>
-        <item-value v-if="!isPlainObject(value) && !isLinked(value)" :is-locked="isLocked" :is-removable="!hasSingleValue" :focus="focus" :value="value" :key="key"></item-value>
+        <item-entity v-if="getDatatype(value) == 'entity'" :focus="focus" :item="value" :key="key"></item-entity>
+        <item-anonymous v-if="getDatatype(value) == 'anonymous'" :is-locked="isLocked" :focus="focus" :item="value" :key="key" :index="$index"></item-anonymous>
+        <item-embedded v-if="getDatatype(value) == 'embedded'" :is-locked="isLocked" :focus="focus" :item="value" :key="key"></item-embedded>
+        <item-value v-if="getDatatype(value) == 'value'" :is-locked="isLocked" :is-removable="!hasSingleValue" :focus="focus" :value="value" :key="key"></item-value>
       </li>
     </ul>
   </div>
