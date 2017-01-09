@@ -52,7 +52,8 @@ export default {
     <div class="card" :class="{ 'locked': isLocked, 'work-state': isWork, 'instance-state': isInstance }">
       <div class="header">
         <span class="title"><a :href="uri">{{ title }}</a></span>
-        <span class="type">{{ item['@type'] | labelByLang | capitalize }}</span>
+        <span class="type" v-if="item['@type']">{{ item['@type'] | labelByLang | capitalize }}</span>
+        <span class="type" v-if="!item['@type']">[missing type]</span>
       </div>
       <ul class="card-data">
         <li v-for="(k,v) in item" v-show="k !== '@type'">
