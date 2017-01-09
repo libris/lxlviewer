@@ -102,6 +102,8 @@ export default {
       width: 100%;
       background-color: rgb(243, 243, 243);
       height: 2em;
+      border: solid #e2e2e2;
+      border-width: 0px 0px 1px 0px;
       > * {
         padding: 3px 8px;
         display: inline-block;
