@@ -109,6 +109,7 @@ class DataAccess(object):
 
     def load_from_whelk(self, url):
         # FIXME: hiding bug in backend failing on bnode IDs when embellishing
+        # (E.g. <http://localhost:8180/https://id.kb.se/vocab/keyTitle>.)
         try:
             return self.api_request(url).json()
         except ValueError:
