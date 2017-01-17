@@ -96,7 +96,7 @@ export function getDisplayObject(item, level, displayDefs, linked, vocab, settin
       }
     }
     if (properties.length === 0) {
-      properties = getProperties('Resource', 'chips', displayDefs);
+      properties = getProperties('Resource', level, displayDefs);
     }
   }
 
@@ -128,11 +128,6 @@ export function getDisplayObject(item, level, displayDefs, linked, vocab, settin
   }
   if (_.isEmpty(result)) {
     result = { 'label': 'Unknown' };
-  }
-  if (Object.keys(result).length === 1) {
-    result = {
-      'label' : result[Object.keys(result)[0]]
-    }
   }
   return result;
 }

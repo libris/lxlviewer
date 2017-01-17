@@ -52,13 +52,14 @@ export default {
     <div class="card" :class="{ 'locked': isLocked, 'work-state': isWork, 'instance-state': isInstance }">
       <div class="header">
         <span class="title"><a :href="uri">{{ title }}</a></span>
-        <span class="type">{{ item['@type'] | labelByLang | capitalize }}</span>
+        <span class="type" v-if="item['@type']">{{ item['@type'] | labelByLang | capitalize }}</span>
+        <span class="type" v-if="!item['@type']">[missing type]</span>
       </div>
       <ul class="card-data">
         <li v-for="(k,v) in item" v-show="k !== '@type'">
           <span class="key">{{ k | labelByLang | capitalize }}</span>
           <span class="value" v-show="!isObject(v)">{{v}}</span>
-          <span class="value" v-show="isObject(v)"><span v-for="(x,y) in v" track-by="$index">{{y}}</span></span>
+          <ul class="value" v-show="isObject(v)"><li class="card-data-value-row" v-for="(x,y) in v" track-by="$index">{{y}}</li></ul>
         </li>
       </ul>
     </div>
@@ -101,6 +102,8 @@ export default {
       width: 100%;
       background-color: rgb(243, 243, 243);
       height: 2em;
+      border: solid #e2e2e2;
+      border-width: 0px 0px 1px 0px;
       > * {
         padding: 3px 8px;
         display: inline-block;
@@ -126,7 +129,7 @@ export default {
       min-height: 70px;
       margin-bottom: 5px;
       overflow: hidden;
-      li {
+      > li {
         padding: 2px 7px;
         display: block;
         border: solid #efebeb;
@@ -147,6 +150,12 @@ export default {
         .value {
           vertical-align: top;
           width: 64%;
+          display: inline-block;
+          padding: 0px;
+          .card-data-value-row {
+            display: block;
+            word-break: break-all;
+          }
         }
       }
     }
