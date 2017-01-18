@@ -301,7 +301,7 @@ export default {
     border-width: 1px 0px 1px 0px;
     background-color: @form-field;
     &:nth-child(odd) {
-      background-color: darken(@form-field, 3%);
+      background-color: darken(@form-field, 2%);
     }
     >.label {
       order: 1;
