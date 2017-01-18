@@ -295,6 +295,14 @@ export default {
     }
   }
   &.rows {
+    border: solid;
+    border-bottom-color: #d8d8d8;
+    border-top-color: #f3f3f3;
+    border-width: 1px 0px 1px 0px;
+    background-color: @form-field;
+    &:nth-child(odd) {
+      background-color: darken(@form-field, 3%);
+    }
     >.label {
       order: 1;
       flex-basis: @col-label;
