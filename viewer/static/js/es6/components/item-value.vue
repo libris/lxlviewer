@@ -79,8 +79,7 @@ export default {
     padding: 2px 5px;
     width: 90%;
     border-radius: 5px;
-    border: none;
-    box-shadow: inset 0px 0px 5px 0px rgba(0, 0, 0, 0.45);
+    border: 1px solid #ccc;
   }
   .remover {
     margin-left: 1em;
