@@ -290,6 +290,14 @@ export default {
     }
   }
   &.rows {
+    border: solid;
+    border-bottom-color: #d8d8d8;
+    border-top-color: #f3f3f3;
+    border-width: 1px 0px 1px 0px;
+    background-color: @form-field;
+    &:nth-child(odd) {
+      background-color: darken(@form-field, 2%);
+    }
     >.label {
       order: 1;
       flex-basis: @col-label;
@@ -328,7 +336,7 @@ export default {
   }
   &.column {
     flex-wrap: wrap;
-    border: dashed @gray-light;
+    border: solid rgba(196, 199, 202, 0.73);
     border-width: 0px 0px 1px 0px;
     padding-bottom: 4px;
     &:last-child {

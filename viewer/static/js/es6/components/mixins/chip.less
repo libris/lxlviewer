@@ -4,12 +4,15 @@
   margin: 0.25em;
   display: inline-block;
   border-radius: 1em;
-  border: 0px;
   background-color: @color;
+  transition: background-color 0.25s ease;
+  cursor: default;
+  &:hover {
+    background-color: lighten(@color, 5%);
+  }
   &.locked {
   }
   .chip-label {
-    color: inherit;
     float: left;
     color: @textColor;
     display: inline-block;

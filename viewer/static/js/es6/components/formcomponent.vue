@@ -215,23 +215,6 @@ export default {
 @import './_variables.less';
 
 .form-component {
-  &.instance-state {
-    >.data-node {
-      background-color: @instance-field;
-      &:nth-child(odd) {
-        background-color: darken(@instance-field, 5%);
-      }
-    }
-  }
-  &.work-state {
-    >.data-node {
-      background-color: @work-field;
-      &:nth-child(odd) {
-        background-color: darken(@work-field, 5%);
-      }
-    }
-  }
-
   .form-header {
     background-color: @brand-primary;
     .edit-locked {

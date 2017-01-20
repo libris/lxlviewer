@@ -78,11 +78,18 @@ export default {
 
 .item-embedded {
   width: @col-value;
-  padding: 5px 5px 0px 5px;
-  border: 2px dotted fadeout(@gray, 50%);
-  border-radius: 5px;
+  padding: 5px;
+  border: solid #ccc;
+  border-width: 1px 1px 3px 1px;
   margin: 0px 0px 5px 0px;
+  &:hover {
+    .chip-action {
+      opacity: 1;
+    }
+  }
   .chip-action {
+    transition: opacity 0.25s ease;
+    opacity: 0;
     float: right;
     cursor: pointer;
   }
