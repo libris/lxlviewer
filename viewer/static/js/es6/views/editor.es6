@@ -245,7 +245,7 @@ export default class Editor extends View {
         'form-component': FormComponent,
         'editor-controls': EditorControls,
         'header-component': HeaderComponent,
-        notification: Notification,
+        'notification': Notification,
       },
       store,
     });

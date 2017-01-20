@@ -3,7 +3,7 @@ import { getNotification } from '../vuex/getters';
 import { changeNotification } from '../vuex/actions';
 
 export default {
-  name: 'notifications',
+  name: 'notification',
   vuex: {
     actions: {
       changeNotification,

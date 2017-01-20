@@ -1,6 +1,5 @@
 <script>
 import * as _ from 'lodash';
-import Notifications from '../components/notifications';
 import HeaderComponent from './headercomponent';
 import moment from 'moment';
 import * as EditUtil from '../utils/edit';
@@ -54,7 +53,6 @@ export default {
     },
   },
   components: {
-    notifications: Notifications,
     'header-component': HeaderComponent,
   },
 };
