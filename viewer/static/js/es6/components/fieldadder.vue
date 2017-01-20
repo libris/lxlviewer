@@ -235,18 +235,20 @@ export default {
 @import './_variables.less';
 
 .field-adder {
-  padding-top: 10px;
   background-color: #fff;
   text-align: center;
+  height: 0;
   display: block; // So that the clickaway plugin triggers nicely
   #add-button {
     background-color: @brand-primary;
     color: @white;
+    top: 30px;
     &.is-fixed {
       position: fixed;
       bottom: 3%;
       right: 0;
       left: 0;
+      top: auto;
     }
     position: relative;
     width: 184px;

@@ -174,10 +174,6 @@ export default {
 
 <template>
   <div class="form-component" :class="{ 'locked': isLocked, 'work-state': isWork, 'instance-state': isInstance, 'focused-form-component': status.level === this.focus }">
-    <div class="form-header" :class="{ 'work-state': isWork, 'instance-state': isInstance }">
-      <span>{{ sortedFormData['@type'] | labelByLang | capitalize }}fält</span>
-      <span v-if="isLocked" class="edit-locked" :class="{ 'work-state': isWork, 'instance-state': isInstance }" @click="changeStatus('level' ,'work')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Gå till verk</span>
-    </div>
     <data-node v-for="(k,v) in sortedFormData" v-bind:class="{ 'locked': isLocked }" :is-removable="true" :is-locked="keyIsLocked(k)" :key="k" :value="v" :focus="focus" :allow-anon="true"></data-node>
     <div v-if="focus == 'work'" class="dummy-reverse">
       <div class="label" v-bind:class="{ 'locked': isLocked }">
@@ -215,31 +211,8 @@ export default {
 @import './_variables.less';
 
 .form-component {
-  .form-header {
-    background-color: @brand-primary;
-    .edit-locked {
-      font-size: 15px;
-      float: right;
-      cursor: pointer;
-      margin-right: 10px;
-      padding: 1px 4px;
-      border-radius: 2px;
-      transition: all ease 0.1s;
-      &:hover {
-        transform: scale(0.98);
-      }
-      i {
-        margin-left: 2px;
-      }
-    }
-    font-weight: bold;
-    font-size: 18px;
-    text-align: center;
-    padding: 10px 0px;
-    color: white;
-  }
-  margin: 40px 20px;
-
+  margin: 0px 10px  80px 10px;
+  border: 1px solid #ccc;
   &.locked {
     border-radius: 10px;
     > ul > li {
