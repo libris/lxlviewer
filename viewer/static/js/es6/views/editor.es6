@@ -19,7 +19,7 @@ import EditorControls from '../components/editorcontrols';
 import HeaderComponent from '../components/headercomponent';
 import Notification from '../components/notification';
 import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData, getStatus, getKeybindState } from '../vuex/getters';
-import { changeSettings, loadVocab, loadDisplayDefs, syncData, changeSavedStatus, changeStatus } from '../vuex/actions';
+import { changeSettings, changeNotification, loadVocab, loadDisplayDefs, syncData, changeSavedStatus, changeStatus } from '../vuex/actions';
 
 function showError(error) {
   $('#loadingText .fa-cog').fadeOut('fast', () => {
@@ -99,6 +99,7 @@ export default class Editor extends View {
           changeSettings,
           changeSavedStatus,
           changeStatus,
+          changeNotification,
         },
         getters: {
           settings: getSettings,
@@ -135,9 +136,6 @@ export default class Editor extends View {
         },
         'save-item': function() {
           this.saveItem();
-        },
-        'show-message': function(messageObj) {
-          console.log("Should show notification", JSON.stringify(messageObj));
         },
       },
       watch: {
@@ -224,20 +222,14 @@ export default class Editor extends View {
             self.vm.changeSavedStatus('loading', false);
             self.vm.changeSavedStatus('error', false);
             self.vm.changeSavedStatus('info', '');
-            this.$dispatch('show-message', {
-              title: 'OK!',
-              msg: 'Posten blev sparad...',
-              type: 'success',
-            });
+            self.vm.changeNotification('color', 'green');
+            self.vm.changeNotification('message', 'Posten blev sparad!');
           }, (error) => {
             self.vm.changeSavedStatus('loading', false);
-            self.vm.changeSavedStatus('error', true);
-            self.vm.changeSavedStatus('info', error);
-            this.$dispatch('show-message', {
-              title: 'Något gick fel!',
-              msg: error,
-              type: 'error',
-            });
+            // self.vm.changeSavedStatus('error', true);
+            // self.vm.changeSavedStatus('info', error);
+            self.vm.changeNotification('color', 'red');
+            self.vm.changeNotification('message', 'Något gick fel!');
           });
         },
       },

@@ -12,7 +12,7 @@ const state = {
   settings: {},
   notification: {
     message: '',
-    color: '',
+    color: 'grey',
   },
   status: {
     lastAdded: '',

@@ -157,15 +157,12 @@ export default {
   },
   methods: {
     addField(prop, close) {
+      const fieldName = prop['@id'].split(':')[1];
       this.$dispatch('add-field', prop);
-      this.$dispatch('show-message', {
-        title: 'Test',
-        msg: 'Added field',
-        type: 'success',
-      });
+      this.changeNotification('color', 'green');
+      this.changeNotification('message', `${fieldName} lades till.`);
       if (close) {
         this.hide();
-        const fieldName = prop['@id'].split(':')[1];
         this.changeStatus('lastAdded', fieldName);
       }
     },
@@ -175,8 +172,6 @@ export default {
       setTimeout(() => { // TODO: Solve this by setting focus after window has been rendered.
         document.getElementById('test').focus();
       }, 1);
-      this.changeNotification('message', 'Field adder open');
-      this.changeNotification('color', 'grey');
       this.changeStatus('keybindState', 'field-adder');
     },
     hide() {

@@ -28,8 +28,8 @@ export default {
 </script>
 
 <template>
-  <div class="notification-container" 
-    :class="{ 
+  <div class="notification-container"
+    :class="{
       'show-notification': notification.message.length > 0,
       'red': notification.color === 'red',
       'grey': notification.color === 'grey',
