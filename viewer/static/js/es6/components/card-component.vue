@@ -50,7 +50,7 @@ export default {
 
 <template>
   <div class="card-info-container" :class="{ 'active': active, 'to-be-active': toBeActive, 'floating': floating }">
-    <div class="card" :class="{ 'locked': isLocked, 'work-state': isWork, 'instance-state': isInstance }">
+    <div class="card" :class="{ 'locked': isLocked, 'anonymous': !uri }">
       <div class="header">
         <span class="title"><a :href="uri">{{ title }}</a></span>
         <span class="type" v-if="item['@type']">{{ item['@type'] | labelByLang | capitalize }}</span>
@@ -82,6 +82,15 @@ export default {
     .card {
       box-shadow: 0px 11px 15px -10px rgba(0,0,0,0.3);
       width: 400px;
+      &.anonymous .header {
+        background-color: rgb(243, 243, 243);
+        .title, .title a {
+          color: #4c4c4c;
+        }
+        .type {
+          color: #757575;
+        }
+      }
       .card-data {
         > li {
           .key {
@@ -116,7 +125,7 @@ export default {
     padding: 0px;
     .header {
       width: 100%;
-      background-color: rgb(243, 243, 243);
+      background-color: @brand-primary;
       height: 2em;
       border: solid #e2e2e2;
       border-width: 0px 0px 1px 0px;
@@ -127,13 +136,13 @@ export default {
         overflow: hidden;
         text-overflow: ellipsis;
       }
-      .title {
-        color: #4c4c4c;
+      .title, .title a {
+        color: @white;
         width: 60%;
         font-weight: 800;
       }
       .type {
-        color: #757575;
+        color: @white;
         text-align: right;
         width: 39%;
         font-weight: 400;
