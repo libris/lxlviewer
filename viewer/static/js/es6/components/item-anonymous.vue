@@ -21,6 +21,7 @@ export default {
     index: Number,
     isLocked: false,
     focus: '',
+    expanded: false,
   },
   vuex: {
     getters: {
@@ -40,9 +41,9 @@ export default {
   },
   computed: {
     filteredItem() {
-      const filteredItem = Object.assign({}, this.item);
-      delete filteredItem['@type'];
-      return filteredItem;
+      const fItem = Object.assign({}, this.item);
+      delete fItem['@type'];
+      return fItem;
     },
     formObj() {
       return this.getForm(this.item);
@@ -109,7 +110,7 @@ export default {
         if (item[key]) {
           formObj[key] = item[key];
         } else {
-          formObj[key] = '';
+          formObj[key] = [];
         }
       }
       return formObj;
@@ -151,7 +152,7 @@ export default {
         <button v-on:click="closeForm" v-bind:disabled="isEmpty">Klar</button>
       </div>
     </div>
-    <card-component :title="getChip" :item="getCard" :uri="item['@id']" :should-show="showCardInfo && !inEdit"></card-component>
+    <card-component :title="getChip" :item="getCard" :uri="item['@id']" :should-show="showCardInfo && !inEdit" :floating="!expanded"></card-component>
   </div>
 </template>
 

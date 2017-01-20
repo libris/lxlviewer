@@ -10,6 +10,7 @@ export default {
     title: {},
     shouldShow: false,
     uri: '',
+    floating: false,
   },
   data() {
     return {
@@ -48,7 +49,7 @@ export default {
 </script>
 
 <template>
-  <div class="card-info-container" :class="{ 'active': active, 'to-be-active': toBeActive }">
+  <div class="card-info-container" :class="{ 'active': active, 'to-be-active': toBeActive, 'floating': floating }">
     <div class="card" :class="{ 'locked': isLocked, 'work-state': isWork, 'instance-state': isInstance }">
       <div class="header">
         <span class="title"><a :href="uri">{{ title }}</a></span>
@@ -70,13 +71,29 @@ export default {
 @import './_variables.less';
 
 .card-info-container {
-  position: absolute;
-  display: none;
-  opacity: 0;
-  max-height: 0px;
   overflow-y: hidden;
-  transition: opacity 0.25s ease;
-  z-index: @active-component-z;
+  &.floating {
+    z-index: @active-component-z;
+    transition: opacity 0.25s ease;
+    max-height: 0px;
+    opacity: 0;
+    position: absolute;
+    display: none;
+    .card {
+      box-shadow: 0px 11px 15px -10px rgba(0,0,0,0.3);
+      width: 400px;
+      .card-data {
+        > li {
+          .key {
+            width: 35%;
+          }
+          .value {
+            width: 64%;
+          }
+        }
+      }
+    }
+  }
   &.to-be-active {
     display: block;
   }
@@ -87,8 +104,8 @@ export default {
   .card {
     border: solid;
     background-color: white;
-    width: 400px;
     overflow-x: hidden;
+    width: @col-value;
     margin-top: 2px; // To avoid clipping against parent container
     border-radius: 3px;
     border-width: 1px 1px 3px 1px;
@@ -97,7 +114,6 @@ export default {
     position: relative;
     top: -2px;
     padding: 0px;
-    box-shadow: 0px 11px 15px -10px rgba(0,0,0,0.3);
     .header {
       width: 100%;
       background-color: rgb(243, 243, 243);
@@ -139,7 +155,7 @@ export default {
           display: inline-block;
         }
         .key {
-          width: 35%;
+          width: 22%;
           vertical-align: top;
           text-align: right;
           padding-right: 0.5em;
@@ -149,7 +165,7 @@ export default {
         }
         .value {
           vertical-align: top;
-          width: 64%;
+          width: 77%;
           display: inline-block;
           padding: 0px;
           .card-data-value-row {

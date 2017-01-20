@@ -68,6 +68,12 @@ export default {
         this.settings.vocabPfx
       );
     },
+    isExpandedType() {
+      const expandKeys = [
+        'instanceOf',
+      ];
+      return ~expandKeys.indexOf(this.key);
+    },
     hasSingleValue() {
       if (!_.isArray(this.value) || this.value.length === 1) {
         return true;
@@ -216,7 +222,7 @@ export default {
     <pre v-show="status.isDev">{{getPath}}</pre>
     <ul>
       <li v-for="item in valueAsArray" track-by="$index">
-        <item-entity v-if="getDatatype(item) == 'entity'" :is-locked="isLocked" :focus="focus" :item="item" :key="key" :index="$index"></item-entity>
+        <item-entity v-if="getDatatype(item) == 'entity'" :is-locked="isLocked" :expanded="isExpandedType" :focus="focus" :item="item" :key="key" :index="$index"></item-entity>
         <item-anonymous v-if="getDatatype(item) == 'anonymous'" :is-locked="isLocked" :focus="focus" :item="item" :key="key" :index="$index"></item-anonymous>
         <item-embedded v-if="getDatatype(item) == 'embedded'" :is-locked="isLocked" :focus="focus" :item="item" :key="key" :index="$index"></item-embedded>
         <item-value v-if="getDatatype(item) == 'value'" :is-removable="!hasSingleValue" :is-locked="isLocked" :focus="focus" :value="item" :key="key" :index="$index"></item-value>

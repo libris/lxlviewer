@@ -17,6 +17,7 @@ export default {
     index: Number,
     isLocked: false,
     focus: '',
+    expanded: false,
   },
   vuex: {
     getters: {
@@ -82,14 +83,14 @@ export default {
 </script>
 
 <template>
-  <div class="item-entity" @mouseleave="showCardInfo=false">
-    <div class="chip entity-chip" :class="{ 'locked': isLocked }" @mouseenter="showCardInfo=true">
+  <div class="item-entity" @mouseleave="showCardInfo=false" v-bind:class="{'expanded': expanded}">
+    <div class="chip entity-chip" v-if="!expanded" :class="{ 'locked': isLocked }" @mouseenter="showCardInfo=true">
       <span class="chip-label">
         {{getChip}}
       </span>
       <i class="chip-action fa fa-times" v-on:click="removeThis" v-if="!isLocked"></i>
     </div>
-    <card-component :title="getChip" :item="getCard" :uri="item['@id']" :should-show="showCardInfo"></card-component>
+    <card-component :title="getChip" :item="getCard" :uri="item['@id']" :should-show="showCardInfo" :floating="!expanded"></card-component>
   </div>
 </template>
 
