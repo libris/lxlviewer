@@ -17,6 +17,7 @@ import * as StringUtil from '../utils/string';
 import FormComponent from '../components/formcomponent';
 import EditorControls from '../components/editorcontrols';
 import HeaderComponent from '../components/headercomponent';
+import Notification from '../components/notification';
 import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData, getStatus, getKeybindState } from '../vuex/getters';
 import { changeSettings, loadVocab, loadDisplayDefs, syncData, changeSavedStatus, changeStatus } from '../vuex/actions';
 
@@ -252,6 +253,7 @@ export default class Editor extends View {
         'form-component': FormComponent,
         'editor-controls': EditorControls,
         'header-component': HeaderComponent,
+        notification: Notification,
       },
       store,
     });

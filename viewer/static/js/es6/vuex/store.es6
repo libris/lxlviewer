@@ -10,6 +10,10 @@ const state = {
   vocab: {},
   display: {},
   settings: {},
+  notification: {
+    message: '',
+    color: '',
+  },
   status: {
     lastAdded: '',
     level: 'it',
@@ -45,6 +49,9 @@ const mutations = {
   },
   CHANGESTATUS (state, property, data) {
     state.status[property] = data;
+  },
+  CHANGENOTIFICATION (state, property, data) {
+    state.notification[property] = data;
   },
 };
 

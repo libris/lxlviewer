@@ -20,3 +20,6 @@ export const changeSavedStatus = function ({ dispatch, state }, property, data) 
 export const changeStatus = function ({ dispatch, state }, property, data) {
   dispatch('CHANGESTATUS', property, data);
 };
+export const changeNotification = function ({ dispatch, state }, property, data) {
+  dispatch('CHANGENOTIFICATION', property, data);
+};

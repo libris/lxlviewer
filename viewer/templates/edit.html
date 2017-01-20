@@ -23,6 +23,7 @@
   <header-component :full="true" v-if="initialized == true"></header-component>
   <form-component focus="work" v-if="initialized == true"></form-component>
   <form-component focus="it" v-if="initialized == true && status.level === 'it'"></form-component>
+  <notification v-if="initialized == true"></notification>
 
 </div>
 </div>

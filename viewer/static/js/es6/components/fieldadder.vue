@@ -3,7 +3,7 @@ import { mixin as clickaway } from 'vue-clickaway';
 import * as _ from 'lodash';
 import * as LayoutUtil from '../utils/layout';
 import { getSettings } from '../vuex/getters';
-import { changeStatus } from '../vuex/actions';
+import { changeStatus, changeNotification } from '../vuex/actions';
 import ComboKeys from 'combokeys';
 
 export default {
@@ -21,6 +21,7 @@ export default {
     },
     actions: {
       changeStatus,
+      changeNotification,
     },
   },
   data() {
@@ -174,6 +175,8 @@ export default {
       setTimeout(() => { // TODO: Solve this by setting focus after window has been rendered.
         document.getElementById('test').focus();
       }, 1);
+      this.changeNotification('message', 'Field adder open');
+      this.changeNotification('color', 'grey');
       this.changeStatus('keybindState', 'field-adder');
     },
     hide() {

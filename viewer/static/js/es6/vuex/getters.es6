@@ -16,3 +16,6 @@ export function getStatus(state) {
 export function getKeybindState(state) {
   return state.status.keybindState;
 }
+export function getNotification(state) {
+  return state.notification;
+}
