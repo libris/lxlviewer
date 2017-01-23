@@ -79,6 +79,7 @@ export default {
 .item-embedded {
   width: @col-value;
   padding: 5px;
+  background-color: #f2f2f2;
   border: solid #ccc;
   border-width: 1px 1px 3px 1px;
   margin: 0px 0px 5px 0px;
