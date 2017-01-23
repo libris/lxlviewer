@@ -278,38 +278,8 @@ export default {
     cursor: pointer;
   }
   .window {
-    box-shadow: 0px 5px 15px 0px rgba(0,0,0,0.4);
-    position: fixed;
-    z-index: @modal-z;
-    width: 50%;
-    top: 45%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    min-width: 600px;
-    height: 400px;
-    text-align: left;
-    border: 1px solid @black;
-    border-radius: 3px;
-    background-color: @neutral-color;
+    .window-mixin();
     .header {
-      background-color: @black;
-      color: @neutral-color;
-      height: 32px;
-      padding-top: 2px;
-      .title {
-        display: inline-block;
-        margin: 2px 0px 0px 5px;
-        text-transform: uppercase;
-      }
-      .windowControl {
-        float: right;
-        padding: 1px 8px 0px 30px;
-        display: inline-block;
-        i:hover {
-          cursor: pointer;
-          color: darken(@neutral-color, 25%);
-        }
-      }
       .filter {
         font-size: 85%;
         float: right;

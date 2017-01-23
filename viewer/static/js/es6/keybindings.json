@@ -8,5 +8,8 @@
     "up": "select-prev",
     "enter": "add-field-single",
     "mod+enter": "add-field-multiple"
+  },
+  "entity-adder": {
+    "esc": "close-modals",
   }
 }
