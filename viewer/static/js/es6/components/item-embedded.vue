@@ -68,7 +68,7 @@ export default {
 <template>
   <div class="item-embedded">
     <i v-if="!isLocked" class="fa fa-trash chip-action" v-on:click="removeThis"></i>
-    <strong>{{ item['@type'] | labelByLang | capitalize }}</strong>
+    <span class="type"><a href="/vocab/#{{item['@type']}}">{{ item['@type'] | labelByLang | capitalize }}</a></span>
     <data-node v-for="(k,v) in filteredItem" :is-locked="isLocked" :is-removable="false" :embedded="true" :pkey="key" :pindex="index" :key="k" :value="v" :focus="focus"></data-node>
   </div>
 </template>
@@ -82,6 +82,15 @@ export default {
   border: solid #ccc;
   border-width: 1px 1px 3px 1px;
   margin: 0px 0px 5px 0px;
+  .type {
+    text-transform: uppercase;
+    font-weight: bold;
+    a {
+      text-decoration: none;
+      cursor: help;
+      color: @black;
+    }
+  }
   &:hover {
     .chip-action {
       opacity: 1;

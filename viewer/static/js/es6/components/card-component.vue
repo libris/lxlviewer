@@ -53,7 +53,11 @@ export default {
     <div class="card" :class="{ 'locked': isLocked, 'anonymous': !uri }">
       <div class="header">
         <span class="title"><a :href="uri">{{ title }}</a></span>
-        <span class="type" v-if="item['@type']">{{ item['@type'] | labelByLang | capitalize }}</span>
+        <span class="type" v-if="item['@type']">
+          <a href="/vocab/#{{item['@type']}}">
+          {{ item['@type'] | labelByLang | capitalize }}
+          </a>
+        </span>
         <span class="type" v-if="!item['@type']">[missing type]</span>
       </div>
       <ul class="card-data">
@@ -89,6 +93,9 @@ export default {
         }
         .type {
           color: #757575;
+          a {
+            color: #757575;
+          }
         }
       }
       .card-data {
@@ -146,6 +153,11 @@ export default {
         text-align: right;
         width: 39%;
         font-weight: 400;
+        a {
+          color: @white;
+          cursor: help;
+          text-decoration: none;
+        }
       }
     }
     .card-data {

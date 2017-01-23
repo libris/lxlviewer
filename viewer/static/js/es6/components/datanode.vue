@@ -215,8 +215,8 @@ export default {
 <template>
 <div class="data-node" v-bind:class="{'column': embedded, 'rows': !embedded, 'highlight': isLastAdded }">
   <div class="label" v-bind:class="{ 'locked': isLocked }">
-    <!-- <a href="/vocab/#{{property}}">{{ property | labelByLang | capitalize }}</a> -->
-    {{ key | labelByLang | capitalize }}
+    <a href="/vocab/#{{key}}">{{ key | labelByLang | capitalize }}</a>
+    <!-- {{ key | labelByLang | capitalize }} -->
   </div>
   <div class="value node-list">
     <pre v-show="status.isDev">{{getPath}}</pre>
@@ -276,6 +276,13 @@ export default {
     box-shadow: inset 0px 0px 1em 0px gold;
   }
   .label {
+    a {
+      color: @black;
+      text-decoration: none;
+      &:hover {
+        cursor: help;
+      }
+    }
     font-size: 1.2rem;
     color: @black;
     font-weight: normal;
