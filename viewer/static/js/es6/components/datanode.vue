@@ -290,17 +290,17 @@ export default {
   .value {
   }
   &:hover {
-    >.actions {
-      opacity: 1;
-    }
+    // >.actions {
+    //   opacity: 1;
+    // }
   }
   >.actions {
-    opacity: 0;
-    transition: opacity 0.25s ease;
-    transition-delay: 0.1s;
-    .action {
-      cursor: pointer;
-    }
+    // opacity: 0;
+    // transition: opacity 0.25s ease;
+    // transition-delay: 0.1s;
+    // .action {
+    //   cursor: pointer;
+    // }
   }
   &.rows {
     border: solid;
