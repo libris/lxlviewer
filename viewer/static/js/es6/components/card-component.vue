@@ -62,7 +62,11 @@ export default {
       </div>
       <ul class="card-data">
         <li v-for="(k,v) in item" v-show="k !== '@type'">
-          <span class="key">{{ k | labelByLang | capitalize }}</span>
+          <span class="key">
+            <a href="/vocab/#{{k}}">
+            {{ k | labelByLang | capitalize }}
+            </a>
+          </span>
           <span class="value" v-show="!isObject(v)">{{v}}</span>
           <ul class="value" v-show="isObject(v)"><li class="card-data-value-row" v-for="(x,y) in v" track-by="$index">{{y}}</li></ul>
         </li>
@@ -187,6 +191,11 @@ export default {
           color: #6b6b6b;
           font-size: 0.9em;
           line-height: 1.9;
+          a {
+            color: #6b6b6b;
+            cursor: help;
+            text-decoration: none;
+          }
         }
         .value {
           vertical-align: top;
