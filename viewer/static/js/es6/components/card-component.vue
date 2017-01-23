@@ -88,6 +88,8 @@ export default {
       width: 400px;
       &.anonymous .header {
         background-color: rgb(243, 243, 243);
+        border-color: #b3b3b3;
+        border-bottom-color: #e0e0e0;
         .title, .title a {
           color: #4c4c4c;
         }
@@ -118,24 +120,21 @@ export default {
     max-height: 500px;
   }
   .card {
-    border: solid;
-    background-color: white;
+    border: 0;
     overflow-x: hidden;
     width: @col-value;
     margin-top: 2px; // To avoid clipping against parent container
-    border-radius: 3px;
-    border-width: 1px 1px 3px 1px;
-    border-color: #b5b5b5;
-    border-top-color: #ccc;
     position: relative;
     top: -2px;
     padding: 0px;
     .header {
+      border: solid;
+      border-radius: 3px 3px 0px 0px;
+      border-width: 1px;
+      border-color: @brand-primary;
       width: 100%;
       background-color: @brand-primary;
       height: 2em;
-      border: solid #e2e2e2;
-      border-width: 0px 0px 1px 0px;
       > * {
         padding: 3px 8px;
         display: inline-block;
@@ -161,10 +160,15 @@ export default {
       }
     }
     .card-data {
+      border: solid;
+      border-radius: 0px 0px 3px 3px;
+      border-width: 0px 1px 3px 1px;
+      border-color: #b3b3b3;
+      background-color: @white;
       list-style: none;
       padding: 0px;
       min-height: 70px;
-      margin-bottom: 5px;
+      padding-bottom: 5px;
       overflow: hidden;
       > li {
         padding: 2px 7px;
