@@ -108,12 +108,7 @@ class DataAccess(object):
         return '%s/%s' % (self._api_base, url_path)
 
     def load_from_whelk(self, url):
-        # FIXME: hiding bug in backend failing on bnode IDs when embellishing
-        # (E.g. <http://localhost:8180/https://id.kb.se/vocab/keyTitle>.)
-        try:
-            return self.api_request(url).json()
-        except ValueError:
-            return {GRAPH: []}
+        return self.api_request(url).json()
 
     def find_in_whelk(self, query=None, limit=None, stats=None):
         query = query or {}
