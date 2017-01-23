@@ -1,12 +1,19 @@
 <script>
 import * as _ from 'lodash';
 import LodashProxiesMixin from './mixins/lodash-proxies-mixin';
+import { changeStatus } from '../vuex/actions';
 
 export default {
   name: 'card-component',
   mixins: [LodashProxiesMixin],
+  vuex: {
+    actions: {
+      changeStatus,
+    },
+  },
   props: {
     item: {},
+    key: '',
     title: {},
     shouldShow: false,
     uri: '',
@@ -52,7 +59,7 @@ export default {
   <div class="card-info-container" :class="{ 'active': active, 'to-be-active': toBeActive, 'floating': floating }">
     <div class="card" :class="{ 'locked': isLocked, 'anonymous': !uri }">
       <div class="header">
-        <span class="title"><a :href="uri">{{ title }}</a></span>
+        <span class="title"><a :href="uri" v-if="key!=='instanceOf'">{{ title }}</a><a href="#" v-if="key==='instanceOf'" @click="changeStatus('level', 'work')"> {{title}} </a> </span>
         <span class="type" v-if="item['@type']">
           <a href="/vocab/#{{item['@type']}}">
           {{ item['@type'] | labelByLang | capitalize }}

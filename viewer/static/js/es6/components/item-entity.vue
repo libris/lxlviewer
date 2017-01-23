@@ -90,7 +90,7 @@ export default {
       </span>
       <i class="chip-action fa fa-times" v-on:click="removeThis" v-if="!isLocked"></i>
     </div>
-    <card-component :title="getChip" :item="getCard" :uri="item['@id']" :should-show="showCardInfo" :floating="!expanded"></card-component>
+    <card-component :title="getChip" :item="getCard" :uri="item['@id']" :should-show="showCardInfo" :floating="!expanded" :key="key"></card-component>
   </div>
 </template>
 
