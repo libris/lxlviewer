@@ -2,8 +2,10 @@
 import * as httpUtil from '../utils/http';
 import * as VocabUtil from '../utils/vocab';
 import * as DisplayUtil from '../utils/display';
+import * as LayoutUtil from '../utils/layout';
 import ProcessedLabel from './processedlabel';
 import { mixin as clickaway } from 'vue-clickaway';
+import { changeStatus, changeNotification } from '../vuex/actions';
 import { getVocabulary, getSettings, getDisplayDefinitions, getEditorData } from '../vuex/getters';
 
 export default {
@@ -14,6 +16,7 @@ export default {
       searchResult: {},
       keyword: '',
       chooseAnonymousType: false,
+      active: false,
     };
   },
   vuex: {
@@ -22,6 +25,10 @@ export default {
       display: getDisplayDefinitions,
       settings: getSettings,
       editorData: getEditorData,
+    },
+    actions: {
+      changeStatus,
+      changeNotification,
     },
   },
   props: {
@@ -79,16 +86,29 @@ export default {
   methods: {
     add() {
       if (this.canRecieveObjects) {
-        this.openSearch();
-        if (this.onlyEmbedded) {
-          this.goAnonymous();
-        }
+        this.show();
       } else {
         this.$dispatch('add-item', '');
       }
     },
+    show() {
+      LayoutUtil.scrollLock(true);
+      this.active = true;
+      setTimeout(() => { // TODO: Solve this by setting focus after window has been rendered.
+        document.getElementById('test').focus();
+      }, 1);
+      this.changeStatus('keybindState', 'entity-adder');
+    },
+    hide() {
+      if (!this.active) return;
+      this.active = false;
+      LayoutUtil.scrollLock(false);
+      this.changeStatus('keybindState', 'overview');
+    },
     addLinked(item) {
       this.$dispatch('add-item', item);
+      this.changeNotification('color', 'green');
+      this.changeNotification('message', `Lade till ${item['@id']}`);
       this.closeSearch();
     },
     goAnonymous() {
@@ -108,6 +128,7 @@ export default {
       this.keyword = '';
       this.searchResult = {};
       this.chooseAnonymousType = false;
+      this.hide();
     },
     addEmpty(type) {
       this.closeSearch();
@@ -195,27 +216,42 @@ export default {
 
 <template>
 <span class="entity-adder" v-on-clickaway="closeSearch">
-    <a class="add-entity-button" v-on:click="add()">
-      <i class="fa fa-plus plus-icon" aria-hidden="true"></i>
-    </a>
-    <div class="search-box" v-show="searchOpen">
+  <a class="add-entity-button" v-on:click="add()">
+    <i class="fa fa-plus plus-icon" aria-hidden="true"></i>
+  </a>
+  <div class="window" v-show="active">
+    <div class="header">
+      <span class="title">
+        Lägg till entitet
+      </span>
+      <span class="windowControl">
+        <i v-on:click="hide" class="fa fa-close"></i>
+      </span>
+    </div>
+    <div class="body">
       <div class="stage-0" v-show="!chooseAnonymousType">
-        <div v-show="allowAnon">
-          <button v-on:click="goAnonymous">Lägg till oauktoriserad</button>
+        <div class="search-header">
+          <div class="search">
+            Sök:
+            <input v-model="keyword"></input>
+          </div>
+          <div class="anonymous" v-show="allowAnon">
+            <button v-on:click="goAnonymous">Lägg till oauktoriserad</button>
+          </div>
         </div>
-        Sök:
-        <input v-model="keyword"></input>
-        <hr>
-        <ul class="search-result" v-show="searchResult.length > 0">
-          <li v-for="item in searchResult" track-by="$index" class="search-result-item" v-on:click="addLinked(item)">
-            {{ getItemAsChip(item) }}
-          </li>
-        </ul>
+        <div class="search-result">
+          <ul class="search-result-list" v-show="searchResult.length > 0">
+            <li v-for="item in searchResult" track-by="$index" class="search-result-item" v-on:click="addLinked(item)">
+              {{ getItemAsChip(item) }}
+            </li>
+          </ul>
+        </div>
       </div>
       <div class="stage-1" v-show="chooseAnonymousType">
         <button v-on:click="addEmpty(type)" v-for="type in getRange">{{ type }}</button>
       </div>
     </div>
+  </div>
 </span>
 </template>
 
@@ -224,6 +260,56 @@ export default {
 
 .entity-adder {
   opacity: 1;
+  .window {
+    .window-mixin();
+    .body {
+      width: 100%;
+      background-color: white;
+      border: 1px solid #ccc;
+      padding: 0px;
+      button {
+        font-size: 12px;
+      }
+      .search-header {
+        width: 100%;
+        height: 40px;
+        padding: 5px;
+        border: solid #ccc;
+        border-width: 0px 0px 1px 0px;
+        background-color: darken(@neutral-color, 4%);
+        .anonymous {
+          float: left;
+          width: 50%;
+          text-align: right;
+        }
+        .search {
+          float: left;
+          width: 50%;
+        }
+      }
+      .search-result {
+        overflow-y: scroll;
+        height: 328px;
+        .search-result-list {
+          width: 100%;
+          padding: 0px;
+          list-style-type: none;
+          .search-result-item {
+            &:nth-child(even) {
+              background-color: darken(@neutral-color, 2%);
+            }
+            cursor: pointer;
+            padding: 5px;
+            border: solid #ccc;
+            border-width: 0px 0px 1px 0px;
+            &:hover {
+              background-color: darken(white, 5%);
+            }
+          }
+        }
+      }
+    }
+  }
   .add-entity-button {
     background-color: @brand-primary;
     color: @white;
@@ -244,26 +330,6 @@ export default {
     &:active {
       position:relative;
       top:1px;
-    }
-  }
-  .search-box {
-    width: 200px;
-    background-color: white;
-    border: 1px solid #ccc;
-    padding: 4px;
-    button {
-      font-size: 12px;
-    }
-    .search-result {
-      list-style-type: none;
-      padding: 0px;
-      .search-result-item {
-        border: solid #ccc;
-        border-width: 1px 0px 0px 0px;
-        &:hover {
-          background-color: darken(white, 5%);
-        }
-      }
     }
   }
 }
