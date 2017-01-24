@@ -3,24 +3,34 @@ import * as _ from 'lodash';
 import * as DisplayUtil from '../utils/display';
 import * as VocabUtil from '../utils/vocab';
 import * as EditUtil from '../utils/edit';
-import { getVocabulary, getSettings, getEditorData, getDisplayDefinitions } from '../vuex/getters';
+import LensMixin from './mixins/lens-mixin';
+import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData, getStatus } from '../vuex/getters';
 
 export default {
   name: 'header-component',
+  mixins: [LensMixin],
   vuex: {
     getters: {
       vocab: getVocabulary,
       settings: getSettings,
       editorData: getEditorData,
       display: getDisplayDefinitions,
+      status: getStatus,
     },
   },
   props: {
-    status,
+    full: false,
   },
   data() {
     return {
       showChipHeader: false,
+      inlineKeys: [
+        '@type',
+        'issuanceType',
+        'extent',
+        'dimensions',
+        'marc:otherPhysicalDetails',
+      ],
     };
   },
   ready() { // Ready method is deprecated in 2.0, switch to "mounted"
@@ -35,96 +45,23 @@ export default {
           this.showChipHeader = false;
         }
       });
+      const expandableAdminInfo = document.getElementsByClassName('admin-info-container')[0];
+      expandableAdminInfo.onresize = this.resize;
     });
   },
   methods: {
-    isArray(o) {
-      return _.isArray(o);
-    },
     isTitle(key) {
       const k = key.toLowerCase();
       return ~k.indexOf('title');
-    },
-    isObject(obj) {
-      return _.isObject(obj);
     },
     showKey(k) {
       const listOfKeys = ['ISBN']; // TODO: Fix list of keys to show.
       return _.indexOf(listOfKeys, k) > -1;
     },
-    getValue(value) {
-      if (this.isObject(value)) {
-        if (typeof value['@id'] !== 'undefined') {
-          // return EditUtil.getLinked(value['@id'], this.editorData.linked);
-          return value['@id'];
-        }
-      }
-      return value;
-    },
-    getHeaderInfo(level) { // TODO: Make acceptList a parameter
-      const acceptList = ['value'];
-      const result = {};
-      const levelInfo = this.getDisplay(level, this.status.state);
-      // console.log(levelInfo);
-      _.each(levelInfo, (cardValue, cardKey) => {
-        if (_.isArray(cardValue)) {
-          _.each(cardValue, (deepValue) => {
-            _.each(deepValue, (deepestValue, deepestKey) => {
-              if (deepestKey === '@type') {
-                result[deepestValue] = '';
-              }
-            });
-            _.each(deepValue, (deepestValue, deepestKey) => {
-              // if (_.indexOf(acceptList, deepestKey) > -1 || this.isTitle(deepestKey)) {
-              if (deepestKey !== '@type') {
-                result[deepValue['@type']] += `${this.getValue(deepestValue)} `;
-              }
-            });
-          });
-        } else {
-          result[cardKey] = this.getValue(cardValue);
-        }
-      });
-      return result;
-    },
-    getDisplay(lens, level) {
-      const displayObj = {};
-      let item = '';
-      if (level === 'it') {
-        item = this.editorData.it;
-      } else if (level === 'work') {
-        item = this.editorData.work;
-      }
-
-      let propertyList = DisplayUtil.getProperties(item['@type'], lens, this.display);
-      if (propertyList.length === 0) {
-        const baseClasses = VocabUtil.getBaseClassesFromArray(
-          item['@type'],
-          this.vocab,
-          this.settings.vocabPfx
-        );
-        for (const baseClass of baseClasses) {
-          propertyList = DisplayUtil.getProperties(
-            baseClass.replace(this.settings.vocabPfx, ''),
-            lens,
-            this.display
-          );
-          if (propertyList.length > 0) {
-            break;
-          }
-        }
-      }
-      for (const property of propertyList) {
-        if (item[property]) {
-          displayObj[property] = item[property];
-        }
-      }
-      return displayObj;
-    },
   },
   computed: {
     state() {
-      const state = this.status.state;
+      const state = this.status.level;
       if (state === 'it') {
         return 'Instance';
       } else if (state === 'work') {
@@ -132,20 +69,8 @@ export default {
       }
       return 'Unknown';
     },
-    getCard() {
-      return DisplayUtil.getCard(
-        this.editorData[this.status.state],
-        this.display,
-        this.editorData.linked,
-        this.vocab,
-        this.settings
-      );
-    },
-    getHeaderCard() {
-      return this.getHeaderInfo('cards');
-    },
-    getHeaderChip() {
-      return this.getHeaderInfo('chips');
+    focusData() {
+      return this.editorData[this.status.level];
     },
   },
   components: {
@@ -155,56 +80,36 @@ export default {
 
 <template>
   <div class="header-component">
-    <div class="main-header" id="card-header">
+    <div v-if="full" class="main-header" id="card-header">
       <ul>
-        <li v-for="(k, v) in getCard" v-bind:class="{'large-title': isTitle(k)}">{{v}}</li>
+        <li v-for="(k, v) in getCard" v-bind:class="{'large-title': isTitle(k), 'inline': (inlineKeys.indexOf(k) !== -1) }">{{v}}</li>
       </ul>
-<!--
-    <div class="large-title">
-      {{state}}
     </div>
-      <ul>
-        <li v-for="(k, v) in getHeaderCard">
-          <div v-if="isTitle(k)">
-            <span class="large-title">{{v}}</span>
-            <span class="medium-text"> ({{k}})</span>
-          </div>
-          <div v-if="!isTitle(k)">
-            <span v-if="showKey(k)">{{k}}: {{v}}</span>
-            <span v-if="!showKey(k)">{{v}}</span>
-          </div>
-        </li>
-      </ul>
-    </div> -->
-    <div class="container">
+    <div v-if="full == false && showChipHeader" class="container fixed-header-container">
       <div class="row">
-      <div class="fixed-header" v-show="showChipHeader">
-        <span v-for="(k, v) in getCard">
-          <span v-if="isTitle(k)">
-            <span class="small-title">{{v}}</span>
+        <div class="fixed-header">
+          <span v-for="(k, v) in getCard">
+            <span v-if="isTitle(k)">
+              <span class="small-title">{{v}}</span>
+            </span>
+            <span v-if="!isTitle(k)" class="minimum-text">
+              <span v-if="showKey(k)">{{k}}: {{v}}</span>
+              <span v-if="!showKey(k)">{{v}}</span>
+            </span>
           </span>
-          <span v-if="!isTitle(k)" class="minimum-text">
-            <span v-if="showKey(k)">{{k}}: {{v}}</span>
-            <span v-if="!showKey(k)">{{v}}</span>
-          </span>
-        </span>
+        </div>
       </div>
-    </div>
     </div>
   </div>
 </template>
 
 <style lang="less">
-@import './variables.less';
+@import './_variables.less';
 
 .header-component {
   padding: 0px;
 
   .container {
-    top: 32px;
-    position: fixed;
-    padding: 0px;
-    z-index: @header-z;
     .row {
       margin: 0px;
     }
@@ -213,6 +118,7 @@ export default {
       padding: 5px;
       width: inherit;
       background-color: white;
+      color: black;
       box-shadow: 0px 6px 10px -6px rgba(0, 0, 0, 0.6);
     }
   }
@@ -220,6 +126,12 @@ export default {
   .main-header {
     ul {
       padding: 20px;
+      .inline {
+        display: inline;
+        &::after {
+          content: ", ";
+        }
+      }
     }
   }
 

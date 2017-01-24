@@ -4,39 +4,42 @@
   It's responsible for its own data, and dispatches all changes to the form component.
 */
 import * as _ from 'lodash';
-import ProcessedLabel from './processedlabel';
 import EntityAdder from './entityadder';
 import ItemEntity from './item-entity';
 import ItemEmbedded from './item-embedded';
 import ItemValue from './item-value';
 import ItemAnonymous from './item-anonymous';
 import * as VocabUtil from '../utils/vocab';
-import { getVocabulary, getSettings } from '../vuex/getters';
+import * as LayoutUtil from '../utils/layout';
+import LodashProxiesMixin from './mixins/lodash-proxies-mixin';
+import { getVocabulary, getSettings, getStatus } from '../vuex/getters';
+import { changeStatus } from '../vuex/actions';
 
 export default {
   name: 'data-node',
+  mixins: [LodashProxiesMixin],
   props: [
     'pkey',
     'pindex',
     'key',
     'value',
-    'label',
-    'linked',
     'isLocked',
     'focus',
-    'status',
     'allow-anon',
     'embedded',
     'is-removable',
   ],
   vuex: {
+    actions: {
+      changeStatus,
+    },
     getters: {
       vocab: getVocabulary,
       settings: getSettings,
+      status: getStatus,
     },
   },
   components: {
-    'processed-label': ProcessedLabel,
     'item-entity': ItemEntity,
     'item-value': ItemValue,
     'item-embedded': ItemEmbedded,
@@ -44,6 +47,12 @@ export default {
     'entity-adder': EntityAdder,
   },
   computed: {
+    valueAsArray() {
+      if (_.isArray(this.value)) {
+        return this.value;
+      }
+      return [this.value];
+    },
     getPath() {
       if (typeof this.pkey !== 'undefined' && typeof this.pindex !== 'undefined') {
         return `${this.pkey}[${this.pindex}].${this.key}`;
@@ -59,27 +68,28 @@ export default {
         this.settings.vocabPfx
       );
     },
+    isExpandedType() {
+      const expandKeys = [
+        'instanceOf',
+      ];
+      return ~expandKeys.indexOf(this.key);
+    },
     hasSingleValue() {
       if (!_.isArray(this.value) || this.value.length === 1) {
         return true;
-      } else {
-        return false;
       }
+      return false;
     },
     stackable() {
       return (this.propertyTypes.indexOf('DatatypeProperty') === -1);
     },
+    // TODO: Verify usage
     valueByIdPresence() {
       const list = _.sortBy(this.value, [(o) => (o['@id'])]);
       return list;
     },
     isRepeatable() {
-      const types = VocabUtil.getPropertyTypes(
-        this.key,
-        this.vocab,
-        this.settings.vocabPfx
-      );
-      return types.indexOf('FunctionalProperty') < 0;
+      return this.propertyTypes.indexOf('FunctionalProperty') < 0;
     },
     isEmptyObject() {
       const value = this.value;
@@ -136,37 +146,15 @@ export default {
     this.$nextTick(() => {
       setTimeout(() => {
         if (this.isLastAdded) {
-          const position = this.$el.offsetTop - (0.25 * window.innerHeight);
-          this.scrollTo(document.scrollingElement, position, 600, 600, Number.MAX_SAFE_INTEGER, () => {
-            this.$dispatch('update-last-added', '');
+          const windowHeight = window.innerHeight || document.documentElement.clientHeight || document.getElementsByTagName('body')[0].clientHeight;
+          LayoutUtil.scrollTo(this.$el.offsetTop - (windowHeight * 0.5), 1000, 'easeInOutQuad', () => {
+            this.changeStatus('lastAdded', '');
           });
         }
       }, 300);
     });
   },
   methods: {
-    scrollTo(element, to, timeLeft, duration, oldDiff, callback) {
-      let durationThreshold = 10;
-      const difference = to - element.scrollTop;
-      const distanceFromBottom = element.offsetHeight - element.scrollTop - window.innerHeight;
-      const userScrollInterrupt = Math.abs(difference) > Math.abs(oldDiff);
-      if (userScrollInterrupt) {
-        console.log(Math.abs(difference), Math.abs(oldDiff));
-      }
-      if (Math.abs(difference) <= 1 || distanceFromBottom === 0 || userScrollInterrupt) {
-        callback();
-        return;
-      } else if (timeLeft < (duration / 2)) {
-        durationThreshold = timeLeft / (duration / 20);
-      }
-
-      let perTick = difference / timeLeft * durationThreshold;
-      setTimeout(() => {
-        element.scrollTop = element.scrollTop + perTick;
-        if (element.scrollTop === to) return;
-        this.scrollTo(element, to, timeLeft - durationThreshold, duration, difference, callback);
-      }, durationThreshold);
-    },
     updateValue(value) {
       if (this.pkey && this.pindex !== '') {
         const path = this.pkey + '[' + this.pindex + ']' + '.' + this.key;
@@ -182,35 +170,43 @@ export default {
       if (this.pkey) {
         console.warn('Remove was called on an embedded field, this is not supported.');
         return false;
-      } else {
-        this.$dispatch('remove-field', this.key);
       }
+      this.$dispatch('remove-field', this.key);
+      // ModalUtil.confirmDialog(
+      //   {
+      //     sTitle: `Ta bort fältet "${pLabel}"?`,
+      //     sContent: `Detta tar bort fältet "${pLabel}" och allt dess innehåll.`,
+      //     sAccept: 'Ta bort',
+      //     sReject: 'Avbryt',
+      //     sType: 'danger',
+      //   }
+      // ).then(() => {
+      //   // accepted by user
+      //   this.$dispatch('remove-field', prop);
+      // }, () => {
+      //     // declined
+      // });
     },
-    isArray(o) {
-      return _.isArray(o);
-    },
-    isPlainObject(o) {
-      return _.isPlainObject(o);
+    getDatatype(o) {
+      if (this.isPlainObject(o) && this.isLinked(o)) {
+        return 'entity';
+      }
+      if (this.isPlainObject(o) && !this.isLinked(o) && !this.isEmbedded(o)) {
+        return 'anonymous';
+      }
+      if (this.isPlainObject(o) && !this.isLinked(o) && this.isEmbedded(o)) {
+        return 'embedded';
+      }
+      if (!this.isPlainObject(o) && !this.isLinked(o)) {
+        return 'value';
+      }
     },
     isLinked(o) {
       return (o.hasOwnProperty('@id') && !o.hasOwnProperty('@type'));
     },
     isEmbedded(o) {
       const type = o['@type'];
-      if (typeof type === 'undefined') {
-        return false;
-      }
-      // Is the type of the item derived from an "embedded" type?
-      const embeddedTypes = this.settings.embeddedTypes;
-      const typeChain = VocabUtil.getBaseClassesFromArray(type, this.vocab, this.settings.vocabPfx);
-      if (typeChain.length > 0) {
-        for (const typeElement of embeddedTypes) {
-          if (~typeChain.indexOf(`${this.settings.vocabPfx}${typeElement}`)) {
-            return true;
-          }
-        }
-      }
-      return false;
+      return VocabUtil.isEmbedded(type, this.vocab, this.settings);
     },
   },
 };
@@ -219,26 +215,19 @@ export default {
 <template>
 <div class="data-node" v-bind:class="{'column': embedded, 'rows': !embedded, 'highlight': isLastAdded }">
   <div class="label" v-bind:class="{ 'locked': isLocked }">
-    <!-- <a href="/vocab/#{{property}}">{{ property | labelByLang | capitalize }}</a> -->
-    {{ key | labelByLang | capitalize }}
+    <a href="/vocab/#{{key}}">{{ key | labelByLang | capitalize }}</a>
+    <!-- {{ key | labelByLang | capitalize }} -->
   </div>
-  <div v-if="isArray(value)" class="value node-list" v-bind:class="{'stackable': stackable}">
+  <div class="value node-list">
     <pre v-show="status.isDev">{{getPath}}</pre>
     <ul>
-      <li v-for="item in value" track-by="$index">
-        <item-entity v-if="isPlainObject(item) && isLinked(item)" :is-locked="isLocked" :status="status" :focus="focus" :item="item" :key="key" :index="$index"></item-entity>
-        <item-anonymous v-if="isPlainObject(item) && !isLinked(item) && !isEmbedded(item)" :is-locked="isLocked" :status="status" :focus="focus" :item="item" :key="key" :index="$index"></item-anonymous>
-        <item-embedded v-if="isPlainObject(item) && !isLinked(item) && isEmbedded(item)" :is-locked="isLocked" :status="status" :focus="focus" :item="item" :key="key" :index="$index"></item-embedded>
-        <item-value v-if="!isPlainObject(item) && !isLinked(item)" :is-removable="!hasSingleValue" :is-locked="isLocked" :status="status" :focus="focus" :value="item" :key="key" :index="$index"></item-value>
+      <li v-for="item in valueAsArray" track-by="$index">
+        <item-entity v-if="getDatatype(item) == 'entity'" :is-locked="isLocked" :expanded="isExpandedType" :focus="focus" :item="item" :key="key" :index="$index"></item-entity>
+        <item-anonymous v-if="getDatatype(item) == 'anonymous'" :is-locked="isLocked" :focus="focus" :item="item" :key="key" :index="$index"></item-anonymous>
+        <item-embedded v-if="getDatatype(item) == 'embedded'" :is-locked="isLocked" :focus="focus" :item="item" :key="key" :index="$index"></item-embedded>
+        <item-value v-if="getDatatype(item) == 'value'" :is-removable="!hasSingleValue" :is-locked="isLocked" :focus="focus" :value="item" :key="key" :index="$index"></item-value>
       </li>
     </ul>
-  </div>
-  <div v-if="!isArray(value)" class="value node-object">
-    <pre v-show="status.isDev">{{getPath}}</pre>
-    <item-entity v-if="isPlainObject(value) && isLinked(value)" :is-locked="isLocked" :status="status" :focus="focus" :item="value" :key="key"></item-entity>
-    <item-anonymous v-if="isPlainObject(value) && !isLinked(value) && !isEmbedded(value)" :is-locked="isLocked" :status="status" :focus="focus" :item="value" :key="key" :index="$index"></item-anonymous>
-    <item-embedded v-if="isPlainObject(value) && !isLinked(value) && isEmbedded(value)" :is-locked="isLocked" :status="status" :focus="focus" :item="value" :key="key"></item-embedded>
-    <item-value v-if="!isPlainObject(value) && !isLinked(value)" :is-locked="isLocked" :is-removable="!hasSingleValue" :status="status" :focus="focus" :value="value" :key="key"></item-value>
   </div>
   <div class="actions" v-if="!isLocked">
     <entity-adder class="action" v-if="!isLocked && (isRepeatable || isEmptyObject)" :key="key" :focus="focus" :property-types="propertyTypes" :allow-anon="allowAnon"></entity-adder>
@@ -248,25 +237,30 @@ export default {
 </template>
 
 <style lang="less">
-@import './variables.less';
+@import './_variables.less';
 
 .data-node {
   width: 100%;
+  min-height: 3em;
   display: flex;
   flex-direction: row;
   box-shadow: inset 0px 0px 1em 0px transparent;
-  outline: 2px solid transparent;
   transition: 3s ease;
-  transition-property: all;
+  transition-property: outline;
+  outline: 2px solid transparent;
   .node-list {
+    line-height: 0;
     > ul {
       margin-bottom: 0px;
       padding: 0px;
       > li {
-        display: block;
+        display: inline-block;
         margin-bottom: 2px;
         &:last-of-type {
           margin-bottom: auto;
+        }
+        > * > * {
+          line-height: 1.6;
         }
       }
     }
@@ -282,6 +276,13 @@ export default {
     box-shadow: inset 0px 0px 1em 0px gold;
   }
   .label {
+    a {
+      color: @black;
+      text-decoration: none;
+      &:hover {
+        cursor: help;
+      }
+    }
     font-size: 1.2rem;
     color: @black;
     font-weight: normal;
@@ -289,16 +290,27 @@ export default {
   .value {
   }
   &:hover {
-    >.actions {
-      opacity: 1;
-    }
+    // >.actions {
+    //   opacity: 1;
+    // }
   }
   >.actions {
-    opacity: 0;
-    transition: opacity 0.5s ease;
-    transition-delay: 0.2s;
+    // opacity: 0;
+    // transition: opacity 0.25s ease;
+    // transition-delay: 0.1s;
+    // .action {
+    //   cursor: pointer;
+    // }
   }
   &.rows {
+    border: solid;
+    border-bottom-color: #d8d8d8;
+    border-top-color: #f3f3f3;
+    border-width: 1px 0px 1px 0px;
+    background-color: @form-field;
+    &:nth-child(odd) {
+      background-color: darken(@form-field, 2%);
+    }
     >.label {
       order: 1;
       flex-basis: @col-label;
@@ -318,6 +330,9 @@ export default {
         width: 100%;
         list-style: none;
         padding: 0px;
+        > li {
+          display: inline-block;
+        }
       }
     }
     >.actions {
@@ -334,13 +349,16 @@ export default {
   }
   &.column {
     flex-wrap: wrap;
-    border: dashed @gray-light;
+    border: solid rgba(196, 199, 202, 0.73);
     border-width: 0px 0px 1px 0px;
     padding-bottom: 4px;
+    &:last-child {
+      border-width: 0px;
+    }
     >.label {
       flex: 0 1 100%;
       text-align: left;
-      padding: 5px 0px;
+      padding: 5px 0px 3px 0px;
     }
     >.value {
       display: inline-block;

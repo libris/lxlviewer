@@ -13,3 +13,13 @@ export const loadDisplayDefs = function ({ dispatch, state }, data) {
 export const changeSettings = function ({ dispatch, state }, data) {
   dispatch('CHANGESETTINGS', data);
 };
+export const changeSavedStatus = function ({ dispatch, state }, property, data) {
+  console.log(property, data);
+  dispatch('CHANGESAVEDSTATUS', property, data);
+};
+export const changeStatus = function ({ dispatch, state }, property, data) {
+  dispatch('CHANGESTATUS', property, data);
+};
+export const changeNotification = function ({ dispatch, state }, property, data) {
+  dispatch('CHANGENOTIFICATION', property, data);
+};

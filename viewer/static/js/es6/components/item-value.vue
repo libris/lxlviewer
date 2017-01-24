@@ -5,16 +5,18 @@ import * as VocabUtil from '../utils/vocab';
 import * as DisplayUtil from '../utils/display';
 import * as EditUtil from '../utils/edit';
 import ProcessedLabel from './processedlabel';
+import ItemMixin from './mixins/item-mixin';
+import LensMixin from './mixins/lens-mixin';
 import { getVocabulary, getDisplayDefinitions, getSettings, getEditorData } from '../vuex/getters';
 
 export default {
   name: 'item-value',
+  mixins: [ItemMixin, LensMixin],
   props: {
     value: '',
     key: '',
     index: Number,
     isLocked: false,
-    status: {},
     isRemovable: false,
   },
   vuex: {
@@ -31,10 +33,6 @@ export default {
     };
   },
   computed: {
-    // TODO: Refactor computed
-    json() {
-      return JSON.stringify(this.item);
-    },
   },
   ready() {
   },
@@ -45,12 +43,6 @@ export default {
     isEmpty() {
       // TODO: Is the item empty?
       return false;
-    },
-    isObject(obj) {
-      return _.isObject(obj);
-    },
-    removeThis() {
-      this.$dispatch('remove-item', this.index);
     },
     addFocus() {
       this.focused = true;
@@ -66,7 +58,7 @@ export default {
 </script>
 
 <template>
-  <div class="item-value">
+  <div class="item-value" v-bind:class="{'locked': isLocked}">
   <!-- TODO: @input or @change? -->
     <input v-model="value" @change="valueChanged()" v-show="!isLocked"></input>
     <span v-show="isLocked">{{value}}</span>
@@ -75,17 +67,19 @@ export default {
 </template>
 
 <style lang="less">
-@import './variables.less';
+@import './_variables.less';
 
 .item-value {
-  width: 95%;
+  width: 480px;
+  &.locked {
+    line-height: 2;
+  }
   input {
     color: @black;
     padding: 2px 5px;
     width: 90%;
     border-radius: 5px;
-    border: none;
-    box-shadow: inset 0px 0px 5px 0px rgba(0, 0, 0, 0.45);
+    border: 1px solid #ccc;
   }
   .remover {
     margin-left: 1em;

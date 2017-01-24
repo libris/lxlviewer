@@ -7,17 +7,21 @@ import Vue from 'vue';
 import ProcessedLabel from './processedlabel';
 import ItemEntity from './item-entity';
 import DataNode from './datanode';
-import { getVocabulary, getDisplayDefinitions, getSettings, getEditorData } from '../vuex/getters';
+import CardComponent from './card-component';
+import ItemMixin from './mixins/item-mixin';
+import LensMixin from './mixins/lens-mixin';
+import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData } from '../vuex/getters';
 
 export default {
   name: 'item-anonymous',
+  mixins: [ItemMixin, LensMixin],
   props: {
     item: {},
     key: '',
     index: Number,
     isLocked: false,
     focus: '',
-    status: {},
+    expanded: false,
   },
   vuex: {
     getters: {
@@ -37,34 +41,12 @@ export default {
   },
   computed: {
     filteredItem() {
-      const filteredItem = Object.assign({}, this.item);
-      delete filteredItem['@type'];
-      return filteredItem;
-    },
-    // TODO: Refactor computed
-    json() {
-      return JSON.stringify(this.item);
+      const fItem = Object.assign({}, this.item);
+      delete fItem['@type'];
+      return fItem;
     },
     formObj() {
       return this.getForm(this.item);
-    },
-    getChip() {
-      const chip = DisplayUtil.getChip(
-        this.formObj,
-        this.display,
-        this.editorData.linked,
-        this.vocab,
-        this.settings
-      );
-      return chip;
-    },
-    getRange() {
-      const types = VocabUtil.getRange(
-        this.key,
-        this.vocab,
-        this.settings.vocabPfx
-      );
-      return types;
     },
     isEmpty() {
       let bEmpty = true;
@@ -128,7 +110,7 @@ export default {
         if (item[key]) {
           formObj[key] = item[key];
         } else {
-          formObj[key] = '';
+          formObj[key] = [];
         }
       }
       return formObj;
@@ -138,12 +120,6 @@ export default {
     },
     closeForm() {
       this.inEdit = false;
-    },
-    isObject(obj) {
-      return _.isObject(obj);
-    },
-    removeThis() {
-      this.$dispatch('remove-item', this.index);
     },
     addFocus() {
       this.focused = true;
@@ -155,205 +131,51 @@ export default {
   components: {
     'processed-label': ProcessedLabel,
     'item-entity': ItemEntity,
+    'card-component': CardComponent,
   },
 };
 </script>
 
 <template>
-  <div class="item-anonymous" v-bind:class="{'expanded': inEdit, 'collapsed': !inEdit, 'locked': isLocked, 'work-state': isWork, 'instance-state': isInstance }">
-    <div v-show="!inEdit">
-      <span class="chip-label" @mouseenter="showCardInfo=true" @mouseleave="showCardInfo=false">
+  <div class="item-anonymous" @mouseleave="showCardInfo=false">
+    <div class="chip" v-show="!inEdit" v-bind:class="{ 'locked': isLocked }" @mouseenter="showCardInfo=true">
+      <span class="chip-label">
         {{getChip}}
       </span>
       <i class="chip-action fa fa-pencil" v-on:click="openForm" v-if="!isLocked"></i>
     </div>
-    <div v-show="inEdit">
-      <i class="fa fa-times chip-action" v-on:click="removeThis"></i>
+    <div class="anonymous-form" v-show="inEdit">
       <strong>{{ item['@type'] | labelByLang | capitalize }}</strong>
-      <data-node v-for="(k,v) in filteredItem" :is-locked="isLocked" :pkey="key" :embedded="true" :is-removable="false" :pindex="index" :key="k" :value="v" :focus="focus" :linked="editorData.linked" :status="status" :allow-anon="false"></data-node>
+      <data-node v-for="(k,v) in filteredItem" :is-locked="isLocked" :pkey="key" :embedded="true" :is-removable="false" :pindex="index" :key="k" :value="v" :focus="focus" :allow-anon="false"></data-node>
       <div class="actions">
+        <button v-on:click="removeThis">Radera</button>
         <button v-on:click="closeForm" v-bind:disabled="isEmpty">Klar</button>
       </div>
     </div>
-    <div class="card-info-container" v-show="showCardInfo">
-      <div class="card-info" :class="{ 'locked': isLocked, 'work-state': isWork, 'instance-state': isInstance }">
-        <ul>
-          <li v-for="(k,v) in getCard">
-            <span v-if="k === '@type'"><strong>{{v | labelByLang | capitalize }}</strong></span>
-            <span v-if="k !== '@type' && !isObject(v)">{{ k | labelByLang | capitalize }}: {{v}}</span>
-            <span v-if="k !== '@type' && isObject(v)">{{ k | labelByLang | capitalize }}:
-              <span v-for="(x,y) in v">{{y}}, </span>
-            </span>
-          </li>
-        </ul>
-      </div>
-    </div>
+    <card-component :title="getChip" :item="getCard" :uri="item['@id']" :should-show="showCardInfo && !inEdit" :floating="!expanded"></card-component>
   </div>
 </template>
 
 <style lang="less">
-@import './variables.less';
+@import './_variables.less';
 
 .item-anonymous {
-  background-color: @gray-lighter;
-  margin: 0px 0px 3px 3px;
-  transition: 1s ease;
-  transition-property: width, box-shadow;
-  &.instance-state {
-    background-color: @instance-chip-background;
-    color: @instance-chip-text;
-    box-shadow: inset -2px -2px darken(@instance-chip-background, 10%);
+  .chip {
+    .chip-mixin(#a2a2a2, #fff);
   }
-  &.work-state {
-    background-color: @work-chip-background;
-    color: @work-chip-text;
-    box-shadow: inset -2px -2px darken(@work-chip-background, 10%);
-  }
-  .item-label {
-    display: block;
-  }
-  &.collapsed {
-    height: 1.7em;
-    padding: 0px 0.2em 0px 0.5em;
-    margin: 0.25em;
-    border-radius: 1em;
-    &.locked {
-      padding-right: 1em;
-    }
-    border: 0px;
-    .chip-action {
-      float: right;
-      padding: 0.25em;
-      color: fadeout(@instance-chip-text,20%);
-      &:hover {
-        color: @instance-chip-text;
-      }
-    }
-  }
-  &.expanded {
-    width: 100%;
-    margin: 0px 0px 1em 0px;
+  .anonymous-form {
+    width: @col-value;
+    border: 1px solid #ccc;
     border-radius: 5px;
-    padding: 10px;
-    box-shadow: 0px 2px 3px 1px rgba(0, 0, 0, 0.2);
+    padding: 5px;
+    background-color: #e0e0e0;
     .actions {
       text-align: right;
     }
-    .entity-chip {
-    }
-    .entity-form {
-    }
-  }
-
-  strong {
-    display: block;
-  }
-
-  .chip-action {
-    cursor: pointer;
-    float: right;
-  }
-
-  .card-info-container {
-    position: absolute;
-    .card-info {
-      &.instance-state {
-        background-color: @instance-chip-background;
-        color: @instance-chip-text;
-      }
-      &.work-state {
-        background-color: @work-chip-background;
-        color: @work-chip-text;
-      }
-      max-width: 500px;
-      border-bottom-left-radius: 10px;
-      border-bottom-right-radius: 10px;
-      border-top-right-radius: 10px;
-      position: relative;
-      left: 5%;
-      top: -8px;
-      padding: 10px;
-      ul {
-        list-style: none;
-        padding: 0px;
-        li {
-          span {
-            word-break: break-word;
-          }
-        }
-      }
+    &::before {
+      content: '\00000A';
     }
   }
-  vertical-align: middle;
-  display: inline-block;
-  &.block {
-    display: block;
-  }
-  &.structured {
-    width: 100%;
-  }
-  >.entity-chip {
-    height: 1.7em;
-    padding: 0px 0.2em 0px 0.5em;
-    margin: 0px 0.5em 0.5em 0px;
-    border-radius: 1em;
-    color: @instance-chip-text;
-    background-color: @instance-chip-background;
-    border: 0px;
-    box-shadow: inset 0px -2px darken(@instance-chip-background, 10%);
-    &.locked {
-      padding-right: 0.5em;
-    }
-    .chip-label {
-      float: left;
-      display: inline-block;
-      max-width: 230px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .chip-action {
-      float: right;
-      padding: 0.25em;
-      color: fadeout(@instance-chip-text,20%);
-      &:hover {
-        color: @instance-chip-text;
-      }
-    }
-  }
-  .entity-form {
-    border: 0px solid;
-    background-color: darken(@instance-chip-background, 5%);
-    border-radius: 2px;
-    padding: 5px;
-    overflow: hidden;
-    width: 100%;
-    .entity-form-label {
-      color: #000;
-    }
-    .search-result {
-      background-color: @white;
-      border: 1px solid @black;
-      margin: 5px;
-      padding: 3px;
-      .search-result-item {
-        border: 1px solid @black;
-        min-height: 20px;
-        &:hover {
-          background-color: darken(@white, 5%);
-        }
-      }
-    }
-    .match-indicator {
-      background-color: @white;
-      border: 1px dashed @black;
-      margin: 5px;
-    }
-    .entity-form-row {
-      margin-bottom: 5px;
-    }
-  }
-
 }
 
 </style>

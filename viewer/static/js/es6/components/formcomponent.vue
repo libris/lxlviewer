@@ -11,26 +11,26 @@ import DataNode from './datanode';
 import * as ModalUtil from '../utils/modals';
 import * as VocabUtil from '../utils/vocab';
 import * as DisplayUtil from '../utils/display';
-import { updateForm } from '../vuex/actions';
-import { getVocabulary, getSettings, getEditorData, getDisplayDefinitions } from '../vuex/getters';
+import { updateForm, changeStatus } from '../vuex/actions';
+import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData, getStatus } from '../vuex/getters';
 
 export default {
   vuex: {
     actions: {
       updateForm,
+      changeStatus,
     },
     getters: {
       vocab: getVocabulary,
       settings: getSettings,
       editorData: getEditorData,
       display: getDisplayDefinitions,
+      status: getStatus,
     },
   },
   props: {
     focus: '',
-    linked: {},
     locked: false,
-    status: {},
   },
   data() {
     return {
@@ -45,7 +45,7 @@ export default {
       return this.focus === 'it';
     },
     isLocked() {
-      if (this.locked || this.status.state !== this.focus) {
+      if (this.locked || this.status.level !== this.focus) {
         return true;
       }
       return false;
@@ -121,6 +121,15 @@ export default {
       });
       return propertyList;
     },
+    dummyInstance() {
+      return DisplayUtil.getChip(
+        this.editorData.it,
+        this.display,
+        this.editorData.linked,
+        this.vocab,
+        this.settings
+      );
+    },
   },
   events: {
     'add-field'(prop) {
@@ -149,42 +158,11 @@ export default {
     },
   },
   methods: {
-    isArray(o) {
-      return _.isArray(o);
-    },
     keyIsLocked(key) {
       return (this.isLocked || key === '@id' || key === '@type');
     },
-    isPlainObject(o) {
-      return _.isPlainObject(o);
-    },
-    removeField(prop) {
-      const pLabel = VocabUtil.getLabelByLang(
-        prop,
-        this.settings.lang,
-        this.vocab,
-        this.settings.vocabPfx
-      );
-      ModalUtil.confirmDialog(
-        {
-          sTitle: `Ta bort fältet "${pLabel}"?`,
-          sContent: `Detta tar bort fältet "${pLabel}" och allt dess innehåll.`,
-          sAccept: 'Ta bort',
-          sReject: 'Avbryt',
-          sType: 'danger',
-        }
-      ).then(() => {
-        // accepted by user
-        this.$dispatch('remove-field', prop);
-      }, () => {
-          // declined
-      });
-    },
     updateFromTextarea(e) {
       this.updateForm(this.focus, JSON.parse(e.target.value));
-    },
-    changeState(newState) {
-      this.$dispatch('change-state', newState);
     },
   },
   components: {
@@ -195,18 +173,18 @@ export default {
 </script>
 
 <template>
-  <div class="form-component" :class="{ 'locked': isLocked, 'work-state': isWork, 'instance-state': isInstance, 'focused-form-component': status.state === this.focus }">
-    <div class="form-header" :class="{ 'work-state': isWork, 'instance-state': isInstance }">
-      <span>{{ sortedFormData['@type'] | labelByLang | capitalize }}fält</span>
-      <span v-if="isLocked" class="edit-locked" :class="{ 'work-state': isWork, 'instance-state': isInstance }" @click="changeState('work')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Gå till verk</span>
-    </div>
-    <data-node v-for="(k,v) in sortedFormData" v-bind:class="{ 'locked': isLocked }" :is-removable="true" :is-locked="keyIsLocked(k)" :key="k" :value="v" :linked="linked" :focus="focus" :status="status"></data-node>
+  <div class="form-component" :class="{ 'locked': isLocked, 'work-state': isWork, 'instance-state': isInstance, 'focused-form-component': status.level === this.focus }">
+    <data-node v-for="(k,v) in sortedFormData" v-bind:class="{ 'locked': isLocked }" :is-removable="true" :is-locked="keyIsLocked(k)" :key="k" :value="v" :focus="focus" :allow-anon="true"></data-node>
     <div v-if="focus == 'work'" class="dummy-reverse">
       <div class="label" v-bind:class="{ 'locked': isLocked }">
         Har instanser
       </div>
       <div class="value">
-        <span class="dummy-chip" @click="changeState('it')"><i class="fa fa-link" aria-hidden="true"></i> Link to instance#1 </span>
+        <div class="chip dummy-chip" v-on:click="changeStatus('level' ,'it')" :class="{ 'locked': isLocked }" @mouseenter="showCardInfo=true">
+          <span class="chip-label">
+            {{ dummyInstance }}
+          </span>
+        </div>
       </div>
       <div class="actions" v-if="!isLocked">
       </div>
@@ -230,56 +208,11 @@ export default {
 </template>
 
 <style lang="less">
-@import './variables.less';
+@import './_variables.less';
 
 .form-component {
-  &.instance-state {
-    >.data-node {
-      background-color: @instance-field;
-      &:nth-child(odd) {
-        background-color: darken(@instance-field, 5%);
-      }
-    }
-  }
-  &.work-state {
-    >.data-node {
-      background-color: @work-field;
-      &:nth-child(odd) {
-        background-color: darken(@work-field, 5%);
-      }
-    }
-  }
-
-  .form-header {
-    &.instance-state {
-      background-color: @instance-background;
-    }
-    &.work-state {
-      background-color: @work-background;
-    }
-    .edit-locked {
-      font-size: 15px;
-      float: right;
-      cursor: pointer;
-      margin-right: 10px;
-      padding: 1px 4px;
-      border-radius: 2px;
-      transition: all ease 0.1s;
-      &:hover {
-        transform: scale(0.98);
-      }
-      i {
-        margin-left: 2px;
-      }
-    }
-    font-weight: bold;
-    font-size: 18px;
-    text-align: center;
-    padding: 10px 0px;
-    color: white;
-  }
-  margin: 40px 20px;
-
+  margin: 0px 10px  80px 10px;
+  border: 1px solid #ccc;
   &.locked {
     border-radius: 10px;
     > ul > li {
@@ -341,15 +274,7 @@ export default {
       flex-basis: @col-value;
       padding: 5px;
       .dummy-chip {
-        height: 1.7em;
-        padding: 0.5px 1em 0.5px 0.5em;
-        margin: 0.25em;
-        border-radius: 1em;
-        border: 0px;
-        cursor: pointer;
-        color: @instance-chip-text;
-        background-color: @instance-chip-background;
-        box-shadow: inset -2px -2px darken(@instance-chip-background, 10%);
+        .chip-mixin(@brand-primary, #fff);
       }
     }
   }

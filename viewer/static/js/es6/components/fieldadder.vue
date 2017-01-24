@@ -3,6 +3,7 @@ import { mixin as clickaway } from 'vue-clickaway';
 import * as _ from 'lodash';
 import * as LayoutUtil from '../utils/layout';
 import { getSettings } from '../vuex/getters';
+import { changeStatus, changeNotification } from '../vuex/actions';
 import ComboKeys from 'combokeys';
 
 export default {
@@ -13,11 +14,14 @@ export default {
     active: false,
     filterKey: '',
     focus: '',
-    status: {},
   },
   vuex: {
     getters: {
       settings: getSettings,
+    },
+    actions: {
+      changeStatus,
+      changeNotification,
     },
   },
   data() {
@@ -153,16 +157,13 @@ export default {
   },
   methods: {
     addField(prop, close) {
+      const fieldName = prop['@id'].split(':')[1];
       this.$dispatch('add-field', prop);
-      this.$dispatch('show-message', {
-        title: 'Test',
-        msg: 'Added field',
-        type: 'success',
-      });
+      this.changeNotification('color', 'green');
+      this.changeNotification('message', `${fieldName} lades till.`);
       if (close) {
         this.hide();
-        const fieldName = prop['@id'].split(':')[1];
-        this.$dispatch('update-last-added', fieldName);
+        this.changeStatus('lastAdded', fieldName);
       }
     },
     show() {
@@ -171,14 +172,14 @@ export default {
       setTimeout(() => { // TODO: Solve this by setting focus after window has been rendered.
         document.getElementById('test').focus();
       }, 1);
-      this.$dispatch('keyboard-binding-state', 'field-adder');
+      this.changeStatus('keybindState', 'field-adder');
     },
     hide() {
       if (!this.active) return;
       this.active = false;
       LayoutUtil.scrollLock(false);
       this.filterKey = '';
-      this.$dispatch('keyboard-binding-state', 'overview');
+      this.changeStatus('keybindState', 'overview');
       this.resetSelectIndex();
     },
     resetSelectIndex() {
@@ -231,27 +232,23 @@ export default {
 </template>
 
 <style lang="less">
-@import './variables.less';
+@import './_variables.less';
 
 .field-adder {
-  padding-top: 10px;
   background-color: #fff;
   text-align: center;
+  height: 0;
   display: block; // So that the clickaway plugin triggers nicely
   #add-button {
-    &.instance-state {
-      background-color: @instance-background;
-      color: @instance-text;
-    }
-    &.work-state {
-      background-color: @work-background;
-      color: @work-text;
-    }
+    background-color: @brand-primary;
+    color: @white;
+    top: 30px;
     &.is-fixed {
       position: fixed;
       bottom: 3%;
       right: 0;
       left: 0;
+      top: auto;
     }
     position: relative;
     width: 184px;
@@ -268,12 +265,7 @@ export default {
       vertical-align: middle;
     }
     &:hover {
-      &.instance-state {
-        background-color: @instance-hover;
-      }
-      &.work-state {
-        background-color: @work-hover;
-      }
+      background-color: lighten(@brand-primary, 5%);
     }
     &:active {
       bottom: 2.5%;
@@ -286,38 +278,8 @@ export default {
     cursor: pointer;
   }
   .window {
-    box-shadow: 0px 5px 15px 0px rgba(0,0,0,0.4);
-    position: fixed;
-    z-index: @modal-z;
-    width: 50%;
-    top: 40%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    min-width: 600px;
-    height: 400px;
-    text-align: left;
-    border: 1px solid @black;
-    border-radius: 3px;
-    background-color: @neutral-color;
+    .window-mixin();
     .header {
-      background-color: @black;
-      color: @neutral-color;
-      height: 32px;
-      padding-top: 2px;
-      .title {
-        display: inline-block;
-        margin: 2px 0px 0px 5px;
-        text-transform: uppercase;
-      }
-      .windowControl {
-        float: right;
-        padding: 1px 8px 0px 30px;
-        display: inline-block;
-        i:hover {
-          cursor: pointer;
-          color: darken(@neutral-color, 25%);
-        }
-      }
       .filter {
         font-size: 85%;
         float: right;

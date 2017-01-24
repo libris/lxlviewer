@@ -8,17 +8,19 @@ import Vue from 'vue';
 import ProcessedLabel from './processedlabel';
 import DataNode from './datanode';
 import ItemEntity from './item-entity';
+import ItemMixin from './mixins/item-mixin';
+import LensMixin from './mixins/lens-mixin';
 import { getVocabulary, getDisplayDefinitions, getSettings, getEditorData } from '../vuex/getters';
 
 export default {
   name: 'item-embedded',
+  mixins: [ItemMixin, LensMixin],
   props: {
     item: {},
     key: '',
     index: Number,
     isLocked: false,
     focus: '',
-    status: {},
     embedded: false,
   },
   vuex: {
@@ -40,39 +42,6 @@ export default {
       delete filteredItem['@type'];
       return filteredItem;
     },
-    // TODO: Refactor computed
-    json() {
-      return JSON.stringify(this.item);
-    },
-    linkedItem() {
-      const obj = EditUtil.getLinked(
-        this.item['@id'],
-        this.editorData.linked
-      );
-      return obj;
-    },
-    getChip() {
-      const chip = DisplayUtil.getChip(
-        this.linkedItem,
-        this.display,
-        this.editorData.linked,
-        this.vocab, this.settings.vocabPfx
-      );
-      return chip;
-    },
-    getCard() {
-      const card = DisplayUtil.getCard(
-        this.linkedItem,
-        this.display,
-        this.editorData.linked,
-        this.vocab,
-        this.settings.vocabPfx
-      );
-      return card;
-    },
-    embedded() {
-      return this.isEmbedded(this.item['@type']);
-    },
     getRange() {
       const types = VocabUtil.getRange(
         this.key,
@@ -88,12 +57,6 @@ export default {
   ready() {
   },
   methods: {
-    removeThis() {
-      this.$dispatch('remove-item', this.index);
-    },
-    isObject(value) {
-      return _.isObject(value);
-    },
   },
   components: {
     'processed-label': ProcessedLabel,
@@ -105,21 +68,38 @@ export default {
 <template>
   <div class="item-embedded">
     <i v-if="!isLocked" class="fa fa-trash chip-action" v-on:click="removeThis"></i>
-    <strong>{{ item['@type'] | labelByLang | capitalize }}</strong>
-    <data-node v-for="(k,v) in filteredItem" :is-locked="isLocked" :is-removable="false" :embedded="true" :pkey="key" :pindex="index" :key="k" :value="v" :focus="focus" :linked="editorData.linked" :status="status"></data-node>
+    <span class="type"><a href="/vocab/#{{item['@type']}}">{{ item['@type'] | labelByLang | capitalize }}</a></span>
+    <data-node v-for="(k,v) in filteredItem" :is-locked="isLocked" :is-removable="false" :embedded="true" :pkey="key" :pindex="index" :key="k" :value="v" :focus="focus"></data-node>
   </div>
 </template>
 
 <style lang="less" scoped>
-@import './variables.less';
+@import './_variables.less';
 
 .item-embedded {
   width: @col-value;
-  padding: 10px;
-  border: 2px dotted fadeout(@gray, 50%);
-  border-radius: 5px;
-  margin: 0px 0px 1em 0px;
+  padding: 5px;
+  background-color: #f2f2f2;
+  border: solid #ccc;
+  border-width: 1px 1px 3px 1px;
+  margin: 0px 0px 5px 0px;
+  .type {
+    text-transform: uppercase;
+    font-weight: bold;
+    a {
+      text-decoration: none;
+      cursor: help;
+      color: @black;
+    }
+  }
+  &:hover {
+    .chip-action {
+      opacity: 1;
+    }
+  }
   .chip-action {
+    transition: opacity 0.25s ease;
+    opacity: 0;
     float: right;
     cursor: pointer;
   }

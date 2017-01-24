@@ -15,6 +15,10 @@ export function getLinked(id, linked) {
       }
     }
   }
+  if (id.indexOf('marc:') !== -1) {
+    console.warn('Tried to find embellished from marc-id. Returning', JSON.stringify(obj));
+    return obj;
+  }
   if (!obj.hasOwnProperty('@type') && Object.keys(obj).length === 1) {
     console.warn('Couldn\'t find embellished entity:', id);
   }

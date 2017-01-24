@@ -205,3 +205,20 @@ export function getLabelByLang(label, lang, vocab, vocabPfx) {
   }
   return label;
 }
+
+export function isEmbedded(classId, vocab, settings) {
+  if (_.isObject(classId)) {
+    throw new Error('isEmbedded was called with an object as class id (should be a string)');
+  }
+
+  const embeddedTypes = settings.embeddedTypes;
+  const typeChain = getBaseClasses(classId, vocab, settings.vocabPfx);
+  if (typeChain.length > 0) {
+    for (const item of embeddedTypes) {
+      if (~typeChain.indexOf(`${settings.vocabPfx}${item}`)) {
+        return true;
+      }
+    }
+  }
+  return false;
+}

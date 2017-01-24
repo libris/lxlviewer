@@ -10,6 +10,22 @@ const state = {
   vocab: {},
   display: {},
   settings: {},
+  notification: {
+    message: '',
+    color: 'grey',
+  },
+  status: {
+    lastAdded: '',
+    level: 'it',
+    dirty: true,
+    isDev: false,
+    keybindState: '',
+    saved: {
+      loading: false,
+      error: false,
+      info: '',
+    },
+  },
 };
 
 const mutations = {
@@ -27,6 +43,15 @@ const mutations = {
   },
   CHANGESETTINGS (state, data) {
     state.settings = data;
+  },
+  CHANGESAVEDSTATUS (state, property, data) {
+    state.status.saved[property] = data;
+  },
+  CHANGESTATUS (state, property, data) {
+    state.status[property] = data;
+  },
+  CHANGENOTIFICATION (state, property, data) {
+    state.notification[property] = data;
   },
 };
 
