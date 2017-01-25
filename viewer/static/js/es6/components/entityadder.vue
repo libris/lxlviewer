@@ -222,7 +222,7 @@ export default {
   <a class="add-entity-button" v-on:click="add()" @mouseenter="showToolTip=true" @mouseleave="showToolTip=false">
     <i class="fa fa-plus plus-icon" aria-hidden="true"></i>
   </a>
-  <tooltip-component v-if="showToolTip===true" :tooltiptext="key"></tooltip-component>
+  <tooltip-component :show-tooltip="showToolTip" :tooltiptext="key"></tooltip-component>
   <div class="window" v-show="active">
     <div class="header">
       <span class="title">

@@ -13,12 +13,16 @@ export default {
   },
   props: {
     tooltiptext: '',
+    showTooltip: false,
   },
   components: {
   },
   watch: {
   },
   computed: {
+    compShowTooltip() {
+      return this.showTooltip;
+    },
   },
   ready() {
   },
@@ -28,8 +32,8 @@ export default {
 </script>
 
 <template>
-  <div class="tooltip-container-outer">
-    <div class="tooltip-container-inner">
+  <div class="tooltip-container-outer" :class="{ 'show-tooltip': compShowTooltip }">
+    <div class="tooltip-container-inner" >
       Lägg till {{ tooltiptext | labelByLang }}
     </div>
   </div>
@@ -41,13 +45,18 @@ export default {
 .tooltip-container-outer {
   position: absolute;
   padding-left: 18px;
-  transform: translate(-50%, -210%);
+  transform: translate(-50%, -100%) scale(0.1);
+  visibility: hidden;
+  opacity: 0;
+  transition: all 0.2s ease;
+  transition-delay: 0s;
   .tooltip-container-inner { 
     background-color: @brand-primary;
     color: #fff;
     padding: 0px 5px;
     border-radius: 3px;
     text-align: center;
+
   }
   &::after {
     top: 98%;
@@ -62,6 +71,12 @@ export default {
     border-top-color: @brand-primary;
     border-width: 6px;
     margin-left: 3px;
+  }
+  &.show-tooltip {
+    opacity: 1;
+    transform: translate(-50%, -210%) scale(1);
+    transition-delay: 0.5s;
+    visibility: visible;
   }
 }
 
