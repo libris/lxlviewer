@@ -174,7 +174,7 @@ export function getDisplayObject(item, level, displayDefs, linked, vocab, settin
     }
   }
   if (_.isEmpty(result)) {
-    result = { 'label': 'Unknown' };
+    result = { 'label': '[Unknown]' };
   }
   return result;
 }
