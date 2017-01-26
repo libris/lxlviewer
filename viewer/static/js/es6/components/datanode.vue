@@ -231,7 +231,7 @@ export default {
   </div>
   <div class="actions" v-if="!isLocked">
     <entity-adder class="action" v-if="!isLocked && (isRepeatable || isEmptyObject)" :key="key" :focus="focus" :property-types="propertyTypes" :allow-anon="allowAnon"></entity-adder>
-    <div class="action action-remove" v-if="!isLocked && isRemovable" class="delete" v-on:click="removeThis()"><i class="fa fa-trash"></i></div>
+    <div class="action action-button action-remove" v-if="!isLocked && isRemovable" class="delete" v-on:click="removeThis()"><i class="fa fa-trash"></i></div>
   </div>
 </div>
 </template>
@@ -290,17 +290,17 @@ export default {
   .value {
   }
   &:hover {
-    // >.actions {
-    //   opacity: 1;
-    // }
+    >.actions .action-button {
+      opacity: 1;
+    }
   }
-  >.actions {
-    // opacity: 0;
-    // transition: opacity 0.25s ease;
-    // transition-delay: 0.1s;
-    // .action {
-    //   cursor: pointer;
-    // }
+  >.actions .action-button {
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    transition-delay: 0.1s;
+    .action {
+      cursor: pointer;
+    }
   }
   &.rows {
     border: solid;

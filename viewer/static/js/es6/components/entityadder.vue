@@ -231,8 +231,8 @@ export default {
 </script>
 
 <template>
-<span class="entity-adder" v-on-clickaway="closeSearch">
-  <a class="add-entity-button" v-on:click="add()" @mouseenter="showToolTip=true" @mouseleave="showToolTip=false">
+<span class="entity-adder">
+  <a class="action-button add-entity-button" v-on:click="add()" @mouseenter="showToolTip=true" @mouseleave="showToolTip=false">
     <i class="fa fa-plus plus-icon" aria-hidden="true"></i>
   </a>
   <tooltip-component :show-tooltip="showToolTip" :tooltiptext="key"></tooltip-component>
