@@ -161,6 +161,15 @@ export function getDisplayObject(item, level, displayDefs, linked, vocab, settin
           value = newArray;
         }
         result[properties[i]] = value;
+      } else if (properties.length < 3 && i === 0) {
+        const rangeOfMissingProp = VocabUtil.getRange(properties[i], vocab, settings.vocabPfx);
+        const expectedClassName = StringUtil.labelByLang(
+          rangeOfMissingProp[0], // Get the first one just to show something
+          settings.lang,
+          vocab,
+          settings.vocabPfx
+        );
+        result[properties[i]] = `Okänd ${expectedClassName.toLowerCase()}`;
       }
     }
   }
