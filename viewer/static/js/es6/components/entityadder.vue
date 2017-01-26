@@ -230,8 +230,8 @@ export default {
   <a class="add-entity-button" v-on:click="add()" @mouseenter="showToolTip=true" @mouseleave="showToolTip=false">
     <i class="fa fa-plus plus-icon" aria-hidden="true"></i>
   </a>
-  <div class="window" v-if="active">
   <tooltip-component :show-tooltip="showToolTip" :tooltiptext="key"></tooltip-component>
+  <div class="window" v-if="active">
     <div class="header">
       <span class="title">
         Lägg till entitet
