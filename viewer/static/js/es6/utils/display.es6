@@ -169,7 +169,7 @@ export function getDisplayObject(item, level, displayDefs, linked, vocab, settin
           vocab,
           settings.vocabPfx
         );
-        result[properties[i]] = `Okänd ${expectedClassName.toLowerCase()}`;
+        result[properties[i]] = `[${expectedClassName} saknas]`;
       }
     }
   }
