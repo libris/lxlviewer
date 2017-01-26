@@ -39,6 +39,11 @@ export default {
     allowAnon: true,
     propertyTypes: [],
   },
+  events: {
+    'close-modals'() {
+      this.closeSearch();
+    },
+  },
   components: {
     'tooltip-component': ToolTipComponent,
   },
