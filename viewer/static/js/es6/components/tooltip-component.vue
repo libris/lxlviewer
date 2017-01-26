@@ -50,16 +50,19 @@ export default {
   opacity: 0;
   transition: all 0.2s ease;
   transition-delay: 0s;
-  .tooltip-container-inner { 
+  .tooltip-container-inner {
     background-color: @brand-primary;
     color: #fff;
+    margin-bottom: 0.2em;
     padding: 0px 5px;
+    line-height: 1.8em;
     border-radius: 3px;
     text-align: center;
-
+    font-size: 0.8em;
+    font-weight: 600;
   }
   &::after {
-    top: 98%;
+    top: 1.4em;
     left: 50%;
     border: solid transparent;
     content: " ";
