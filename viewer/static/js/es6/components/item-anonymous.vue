@@ -86,7 +86,8 @@ export default {
       let inputKeys = DisplayUtil.getProperties(
         item['@type'],
         'cards',
-        this.display
+        this.display,
+        this.settings
       );
       if (inputKeys.length === 0) {
         const baseClasses = VocabUtil.getBaseClassesFromArray(
@@ -98,7 +99,8 @@ export default {
           inputKeys = DisplayUtil.getProperties(
             className.replace(this.settings.vocabPfx, ''),
             'cards',
-            this.display
+            this.display,
+            this.settings
           );
           if (inputKeys.length > 0) {
             break;

@@ -37,8 +37,6 @@ export default {
     allowAnon: true,
     propertyTypes: [],
   },
-  components: {
-  },
   watch: {
     keyword(value) {
       if (value) {
@@ -68,8 +66,8 @@ export default {
     canRecieveObjects() {
       return (this.propertyTypes.indexOf('DatatypeProperty') === -1);
     },
-    // TODO: Verify usage
     isLiteral() {
+      // TODO: Verify usage
       if (this.getRange.length > 0) {
         for (const rangeElement of this.getRange) {
           if (rangeElement.indexOf('Literal') > -1) {
@@ -108,7 +106,7 @@ export default {
     addLinked(item) {
       this.$dispatch('add-item', item);
       this.changeNotification('color', 'green');
-      this.changeNotification('message', `Lade till ${item['@id']}`);
+      this.changeNotification('message', `Lade till "${this.getItemAsChip(item)}"`);
       this.closeSearch();
     },
     goAnonymous() {
@@ -151,10 +149,19 @@ export default {
         this.settings
       );
     },
+    getItemAsCard(item) {
+      return DisplayUtil.getCard(
+        item,
+        this.display,
+        this.editorData.linked,
+        this.vocab,
+        this.settings
+      );
+    },
     getEmptyForm(type) {
       console.log('Type', type);
       const formObj = { '@type': type };
-      let inputKeys = DisplayUtil.getProperties(type, 'cards', this.display);
+      let inputKeys = DisplayUtil.getProperties(type, 'cards', this.display, this.settings);
       if (inputKeys.length === 0) {
         const baseClasses = VocabUtil.getBaseClassesFromArray(
           type,
@@ -166,14 +173,15 @@ export default {
           inputKeys = DisplayUtil.getProperties(
             baseClass.replace(this.settings.vocabPfx, ''),
             'cards',
-            this.display
+            this.display,
+            this.settings
           );
           if (inputKeys.length > 0) {
             break;
           }
         }
         if (inputKeys.length === 0) {
-          inputKeys = DisplayUtil.getProperties('Resource', 'cards', this.display);
+          inputKeys = DisplayUtil.getProperties('Resource', 'cards', this.display, this.settings);
         }
         console.log(inputKeys);
       }
@@ -191,9 +199,7 @@ export default {
     getItems(keyword, typeArray) {
       // TODO: Support asking for more items
       const searchKey = `${keyword}*`;
-
       let searchUrl = `/find?q=${searchKey}`;
-      console.log('typeArray', typeArray);
       if (typeof typeArray !== 'undefined' && typeArray.length > 0) {
         searchUrl += '&';
         for (const type of typeArray) {
@@ -219,7 +225,7 @@ export default {
   <a class="add-entity-button" v-on:click="add()">
     <i class="fa fa-plus plus-icon" aria-hidden="true"></i>
   </a>
-  <div class="window" v-show="active">
+  <div class="window" v-if="active">
     <div class="header">
       <span class="title">
         Lägg till entitet
