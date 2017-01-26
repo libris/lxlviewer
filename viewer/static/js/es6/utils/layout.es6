@@ -89,8 +89,7 @@ export function scrollTo(position, duration = 200, easing = 'linear', callback) 
     const time = Math.min(1, ((now - startTime) / duration));
     const timeFunction = easings[easing](time);
     body.scrollTop = (timeFunction * (destination - start)) + start;
-
-    if (body.scrollTop === destination) {
+    if (Math.round(body.scrollTop) === destination) {
       callback();
       return;
     }
