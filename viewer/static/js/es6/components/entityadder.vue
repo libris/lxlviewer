@@ -257,6 +257,11 @@ export default {
           </div>
         </div>
         <div class="search-result">
+          <ul class="search-result-list" v-show="searchResult.length === 0">
+            <li class="search-result-no-items">
+            Inga resultat...
+            </li>
+          </ul>
           <ul class="search-result-list" v-show="searchResult.length > 0">
             <li v-for="item in searchResult" track-by="$index" class="search-result-item" v-on:click="addLinked(item)">
               {{ getItemAsChip(item) }}
@@ -311,12 +316,14 @@ export default {
           width: 100%;
           padding: 0px;
           list-style-type: none;
+          li {
+            padding: 5px;
+          }
           .search-result-item {
             &:nth-child(even) {
               background-color: darken(@neutral-color, 2%);
             }
             cursor: pointer;
-            padding: 5px;
             border: solid #ccc;
             border-width: 0px 0px 1px 0px;
             &:hover {
