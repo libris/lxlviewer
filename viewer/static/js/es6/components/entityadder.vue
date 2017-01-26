@@ -4,6 +4,7 @@ import * as VocabUtil from '../utils/vocab';
 import * as DisplayUtil from '../utils/display';
 import * as LayoutUtil from '../utils/layout';
 import ProcessedLabel from './processedlabel';
+import ToolTipComponent from './tooltip-component';
 import { mixin as clickaway } from 'vue-clickaway';
 import { changeStatus, changeNotification } from '../vuex/actions';
 import { getVocabulary, getSettings, getDisplayDefinitions, getEditorData } from '../vuex/getters';
@@ -17,6 +18,7 @@ export default {
       keyword: '',
       chooseAnonymousType: false,
       active: false,
+      showToolTip: false,
     };
   },
   vuex: {
@@ -36,6 +38,9 @@ export default {
     focus: '',
     allowAnon: true,
     propertyTypes: [],
+  },
+  components: {
+    'tooltip-component': ToolTipComponent,
   },
   watch: {
     keyword(value) {
@@ -222,10 +227,11 @@ export default {
 
 <template>
 <span class="entity-adder" v-on-clickaway="closeSearch">
-  <a class="add-entity-button" v-on:click="add()">
+  <a class="add-entity-button" v-on:click="add()" @mouseenter="showToolTip=true" @mouseleave="showToolTip=false">
     <i class="fa fa-plus plus-icon" aria-hidden="true"></i>
   </a>
   <div class="window" v-if="active">
+  <tooltip-component :show-tooltip="showToolTip" :tooltiptext="key"></tooltip-component>
     <div class="header">
       <span class="title">
         Lägg till entitet
