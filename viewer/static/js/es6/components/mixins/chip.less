@@ -1,38 +1,34 @@
 .chip-mixin(@color, @textColor) {
-  .chip {
-    height: 1.7em;
-    padding: 0px 0.5em 0px 0.5em;
-    margin: 0.25em;
-    display: inline-block;
-    border-radius: 1em;
-    background-color: @color;
-    transition: background-color 0.25s ease;
-    cursor: default;
-    &.locked {
-    }
-    .chip-label {
-      float: left;
-      color: @textColor;
-      display: inline-block;
-      max-width: 230px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .chip-action {
-      color: inherit;
-      float: right;
-      padding: 0.25em 0em 0em 0.25em;
-      cursor: pointer;
-      color: fadeout(@textColor,20%);
-      &:hover {
-        color: @textColor;
-      }
-    }
+  height: 1.7em;
+  padding: 0px 0.5em 0px 0.5em;
+  margin: 0.25em;
+  display: inline-block;
+  border-radius: 1em;
+  background-color: @color;
+  transition: background-color 0.25s ease;
+  cursor: default;
+  &.highlighted {
+    background-color: lighten(@color, 5%);
   }
-  &:hover {
-    .chip {
-      background-color: lighten(@color, 5%);
+  &.locked {
+  }
+  .chip-label {
+    float: left;
+    color: @textColor;
+    display: inline-block;
+    max-width: 230px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .chip-action {
+    color: inherit;
+    float: right;
+    padding: 0.25em 0em 0em 0.25em;
+    cursor: pointer;
+    color: fadeout(@textColor,20%);
+    &:hover {
+      color: @textColor;
     }
   }
 }
