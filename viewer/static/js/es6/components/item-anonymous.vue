@@ -162,9 +162,7 @@ export default {
 @import './_variables.less';
 
 .item-anonymous {
-  .chip {
-    .chip-mixin(#a2a2a2, #fff);
-  }
+  .chip-mixin(#a2a2a2, #fff);
   .anonymous-form {
     width: @col-value;
     border: 1px solid #ccc;

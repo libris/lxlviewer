@@ -98,9 +98,7 @@ export default {
 @import './_variables.less';
 
 .item-entity {
-  .chip {
-    .chip-mixin(@brand-primary, #fff);
-  }
+  .chip-mixin(@brand-primary, #fff);
 }
 
 </style>
