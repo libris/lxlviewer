@@ -101,7 +101,7 @@ export default {
     position: absolute;
     display: none;
     .card {
-      margin-bottom: 15px;
+      margin-bottom: 7px;
       box-shadow: 0px 11px 15px -10px rgba(0,0,0,0.3);
       width: 400px;
       &.anonymous .header {
