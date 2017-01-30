@@ -97,6 +97,11 @@ export function getProperties(typeInput, level, displayDefs, settings) {
     _.remove(props, (x) => _.isObject(x));
     if (props.length > 0) {
       return props;
+    } else if (level === 'cards') { // Try fallback to chip level
+      props = getProperties(type, 'chips', displayDefs, settings);
+      if (props.length > 0) {
+        return props;
+      }
     }
   }
   return [];
