@@ -1,8 +1,52 @@
+@import '../../js/es6/components/mixins/_mixins.less';
+
 /********/
 /* Widths for definition lists */
 @width-step-1: 645px;
 @width-step-2: 440px;
 /********/
+
+div.thing {
+  width: 860px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  background-color: @white;
+  > .header {
+    padding: 1em;
+    background-color: @brand-primary;
+    color: @white;
+    h1 {
+      margin: 0;
+    }
+  }
+  .body {
+    .chip-container {
+      .chip-mixin(@brand-primary, @white);
+    }
+    ul {
+      list-style: none;
+      padding: 0px;
+    }
+    > ul > li {
+      border: solid #ccc;
+      border-width: 0px 0px 1px 0px;
+      .key {
+        display: inline-block;
+        width: 25%;
+        color: @gray-dark;
+        font-size: 0.8em;
+        text-align: right;
+        padding: 0 1em;
+      }
+      .value {
+        display: inline-block;
+        width: 74%;
+        > ul > li {
+        }
+      }
+    }
+  }
+}
 
 /********/
 /* Mixins for headers

@@ -11,6 +11,9 @@
 % endblock
 
 % block content
+    ${thing_full(thing)}
+    <hr>
+
   <div class="row">
     <div class="col-md-9">
       ${viewthing(thing, element='article', classes='panel panel-default main-item')}
@@ -42,6 +45,117 @@
     % endif
   </div>
 % endblock
+
+% macro thing_full(thing)
+<div class="thing">
+  <div class="header">
+    <h1>${thing[ID]}</h1>
+  </div>
+  <div class="body">
+    <ul>
+      % set node = thing['mainEntity']
+      % for k in vocab.sortedkeys(node)
+      % set v = node[k]
+      % set expandedProp = 'instanceOf'
+      <li>
+        <div class="key">${k}</div>
+        <div class="value">
+          % if isinstance(v, list)
+          <ul>
+            % for sub in v
+              <li>
+                % if isinstance(sub, dict)
+                  % if sub == expandedProp
+                    ${thing_card(sub)}
+                  % else
+                    ${thing_chip(sub)}
+                  % endif
+                % else
+                  ${sub}
+                % endif
+              </li>
+            % endfor
+          </ul>
+          % elif isinstance(v, dict)
+            % if k == expandedProp
+              ${thing_card(v)}
+            % else
+              ${thing_chip(v)}
+            % endif
+          % else
+            ${v}
+          % endif
+        </div>
+      </li>
+      % endfor
+    </ul>
+  </div>
+</div>
+
+% endmacro
+
+% macro thing_list_item(thing)
+
+% endmacro
+
+% macro thing_card(object)
+
+<div class="card-info-container">
+  <div class="card">
+    <div class="header">
+      <span class="title">
+        ${displayvalues(object)}
+      </span>
+      <span class="type">
+        ${object[TYPE]}
+      </span>
+    </div>
+    <ul class="card-data">
+      % for k,v in object.items()
+      <li>
+        <div class="key">${k}</div>
+        <div class="value">
+          ${v}
+        </div>
+      </li>
+      % endfor
+    </ul>
+  </div>
+</div>
+% endmacro
+
+% macro thing_chip(object)
+<div class="chip-container">
+  <div class="chip">
+    <span class="chip-label">${displayvalues(object)}</span>
+  </div>
+  <!-- ${thing_card(object)} -->
+</div>
+% endmacro
+
+% macro thing_embedded(object)
+<div class="item-embedded">
+  <b>${object[TYPE]}</b>
+  <hr>
+  <ul>
+    % for k,v in object.items()
+    <li>
+      ${k}: ${v}
+    </li>
+    % endfor
+  </ul>
+</div>
+% endmacro
+
+% macro displayvalues(object)
+  % for value in object.values()
+    % if isinstance(value, dict)
+      ${value} ++++
+    % else
+      ${ value }
+    % endif
+  % endfor
+% endmacro
 
 % macro viewthing(thing, element='div', classes='panel panel-default', rel=None, rev=None)
   % set thing_id = thing[ID]
