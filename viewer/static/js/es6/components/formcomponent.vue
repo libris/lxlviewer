@@ -88,7 +88,8 @@ export default {
       let propertyList = DisplayUtil.getProperties(
         formObj['@type'],
         'cards',
-        this.display
+        this.display,
+        this.settings
       );
       if (propertyList.length === 0) { // If none were found, traverse up inheritance tree
         const baseClasses = VocabUtil.getBaseClassesFromArray(
@@ -100,7 +101,8 @@ export default {
           propertyList = DisplayUtil.getProperties(
             baseClass.replace(this.settings.vocabPfx, ''),
             'cards',
-            this.display
+            this.display,
+            this.settings
           );
           if (propertyList.length > 0) {
             break;
@@ -110,7 +112,8 @@ export default {
           propertyList = DisplayUtil.getProperties(
             'Resource',
             'chips',
-            this.display
+            this.display,
+            this.settings
           );
         }
       }

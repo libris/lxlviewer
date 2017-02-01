@@ -195,7 +195,7 @@ export default {
   <div class="field-adder">
     <a id="add-button" v-on:click="show" :class="{ 'work-state': isWork, 'instance-state': isInstance, 'is-fixed': buttonFixed }">
       <i class="fa fa-plus plus-icon" aria-hidden="true"></i>
-      Nytt {{state}}fält
+      Lägg till fält
     </a>
     <a id="mock-button" v-show="buttonFixed">
       <i class="fa fa-plus plus-icon" aria-hidden="true"></i>

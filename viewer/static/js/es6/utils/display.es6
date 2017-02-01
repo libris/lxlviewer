@@ -41,7 +41,43 @@ export function getDisplayDefinitions() {
   });
 }
 
-export function getProperties(typeInput, level, displayDefs) {
+function getValueByLang(item, propertyId, displayDefs, langCode) {
+  // TODO: REMOVE FAKED CONTEXT, SHOULD BE PICKED UP FROM DISPLAYDEFS (see next line)
+  // const context = displayDefs['@context'];
+  const context = {
+    "fresnel": "http://www.w3.org/2004/09/fresnel#",
+      "skos": "http://www.w3.org/2004/02/skos/core#",
+      "owl": "http://www.w3.org/2002/07/owl#",
+      "@base": "https://id.kb.se/vocab/display",
+      "@vocab": "https://id.kb.se/vocab/",
+      "marc": "https://id.kb.se/marc/",
+      "lensGroups": {"@id": "@graph", "@container": "@index"},
+      "lenses": {"@reverse": "fresnel:group", "@container": "@index"},
+      "showProperties": {"@id": "fresnel:showProperties", "@container": "@list", "@type": "@vocab"},
+      "classLensDomain": {"@reverse": "displayLens", "@type": "@vocab"},
+      "inverseOf": {"@id": "owl:inverseOf", "@type": "@vocab"},
+      "labelByLang": {"@id": "label", "@container": "@language"},
+      "commentByLang": {"@id": "comment", "@container": "@language"},
+      "prefLabelByLang": {"@id": "prefLabel", "@container": "@language"},
+      "altLabelByLang": {"@id": "altLabel", "@container": "@language"},
+      "noteByLang": {"@id": "note", "@container": "@language"},
+      "titleByLang": {"@id": "title", "@container": "@language"},
+      "descriptionByLang": {"@id": "description", "@container": "@language"}
+  };
+  let translatedValue = item[propertyId];
+  let byLangKey = '';
+  for (const key in context) {
+    if (context[key]['@id'] === propertyId) {
+      byLangKey = key;
+    }
+  }
+  if (item[byLangKey] && item[byLangKey][langCode]) {
+    translatedValue = item[byLangKey][langCode];
+  }
+  return translatedValue;
+}
+
+export function getProperties(typeInput, level, displayDefs, settings) {
   if (!typeInput || typeof typeInput === 'undefined') {
     throw new Error('getProperties was called with an undefined type.');
   }
@@ -61,6 +97,11 @@ export function getProperties(typeInput, level, displayDefs) {
     _.remove(props, (x) => _.isObject(x));
     if (props.length > 0) {
       return props;
+    } else if (level === 'cards') { // Try fallback to chip level
+      props = getProperties(type, 'chips', displayDefs, settings);
+      if (props.length > 0) {
+        return props;
+      }
     }
   }
   return [];
@@ -84,19 +125,19 @@ export function getDisplayObject(item, level, displayDefs, linked, vocab, settin
   }
 
   // Get the list of properties we want to show
-  let properties = getProperties(trueItem['@type'], level, displayDefs);
+  let properties = getProperties(trueItem['@type'], level, displayDefs, settings);
   if (properties.length === 0) { // If none were found, traverse up inheritance tree
     const baseClasses = VocabUtil.getBaseClassesFromArray(trueItem['@type'], vocab, settings.vocabPfx);
     for (let i = 0; i < baseClasses.length; i++) {
       if (typeof baseClasses[i] !== 'undefined') {
-        properties = getProperties(baseClasses[i].replace(settings.vocabPfx, ''), level, displayDefs);
+        properties = getProperties(baseClasses[i].replace(settings.vocabPfx, ''), level, displayDefs, settings);
         if (properties.length > 0) {
           break;
         }
       }
     }
     if (properties.length === 0) {
-      properties = getProperties('Resource', level, displayDefs);
+      properties = getProperties('Resource', level, displayDefs, settings);
     }
   }
 
@@ -106,8 +147,10 @@ export function getDisplayObject(item, level, displayDefs, linked, vocab, settin
 
   for (let i = 0; i < properties.length; i++) {
     if (!_.isObject(properties[i])) {
-      if (typeof trueItem[properties[i]] !== 'undefined') {
-        let value = trueItem[properties[i]];
+      const valueOnItem = getValueByLang(trueItem, properties[i], displayDefs, settings.lang);
+      // const valueOnItem = getValueByLang(properties[i], trueItem[properties[i]], displayDefs, settings.lang) || trueItem[properties[i]];
+      if (typeof valueOnItem !== 'undefined') {
+        let value = valueOnItem;
         if (_.isObject(value) && !_.isArray(value)) {
           value = getChip(value, displayDefs, linked, vocab, settings);
           // value = getDisplayObject(value, 'chips', displayDefs, linked, vocab, vocabPfx);
@@ -123,11 +166,20 @@ export function getDisplayObject(item, level, displayDefs, linked, vocab, settin
           value = newArray;
         }
         result[properties[i]] = value;
+      } else if (properties.length < 3 && i === 0) {
+        const rangeOfMissingProp = VocabUtil.getRange(properties[i], vocab, settings.vocabPfx);
+        const expectedClassName = StringUtil.labelByLang(
+          rangeOfMissingProp[0], // Get the first one just to show something
+          settings.lang,
+          vocab,
+          settings.vocabPfx
+        );
+        result[properties[i]] = `[${expectedClassName} saknas]`;
       }
     }
   }
   if (_.isEmpty(result)) {
-    result = { 'label': 'Unknown' };
+    result = { 'label': '[Unknown]' };
   }
   return result;
 }

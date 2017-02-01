@@ -59,7 +59,13 @@ export default {
   <div class="card-info-container" :class="{ 'active': active, 'to-be-active': toBeActive, 'floating': floating }">
     <div class="card" :class="{ 'locked': isLocked, 'anonymous': !uri }">
       <div class="header">
-        <span class="title"><a :href="uri" v-if="key!=='instanceOf'">{{ title }}</a><a href="#" v-if="key==='instanceOf'" @click="changeStatus('level', 'work')"> {{title}} </a> </span>
+        <span class="title" v-if="uri">
+          <a :href="uri" v-if="key!=='instanceOf'">{{ title }}</a>
+          <a href="#" v-if="key==='instanceOf'" @click="changeStatus('level', 'work')"> {{title}} </a>
+        </span>
+        <span class="title" v-if="!uri">
+          <span>{{ title }}</span>
+        </span>
         <span class="type" v-if="item['@type']">
           <a href="/vocab/#{{item['@type']}}">
           {{ item['@type'] | labelByLang | capitalize }}
@@ -95,7 +101,7 @@ export default {
     position: absolute;
     display: none;
     .card {
-      margin-bottom: 15px;
+      margin-bottom: 7px;
       box-shadow: 0px 11px 15px -10px rgba(0,0,0,0.3);
       width: 400px;
       &.anonymous .header {

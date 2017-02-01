@@ -4,6 +4,7 @@ import * as VocabUtil from '../utils/vocab';
 import * as DisplayUtil from '../utils/display';
 import * as LayoutUtil from '../utils/layout';
 import ProcessedLabel from './processedlabel';
+import ToolTipComponent from './tooltip-component';
 import { mixin as clickaway } from 'vue-clickaway';
 import { changeStatus, changeNotification } from '../vuex/actions';
 import { getVocabulary, getSettings, getDisplayDefinitions, getEditorData } from '../vuex/getters';
@@ -17,6 +18,7 @@ export default {
       keyword: '',
       chooseAnonymousType: false,
       active: false,
+      showToolTip: false,
     };
   },
   vuex: {
@@ -37,7 +39,13 @@ export default {
     allowAnon: true,
     propertyTypes: [],
   },
+  events: {
+    'close-modals'() {
+      this.closeSearch();
+    },
+  },
   components: {
+    'tooltip-component': ToolTipComponent,
   },
   watch: {
     keyword(value) {
@@ -68,8 +76,8 @@ export default {
     canRecieveObjects() {
       return (this.propertyTypes.indexOf('DatatypeProperty') === -1);
     },
-    // TODO: Verify usage
     isLiteral() {
+      // TODO: Verify usage
       if (this.getRange.length > 0) {
         for (const rangeElement of this.getRange) {
           if (rangeElement.indexOf('Literal') > -1) {
@@ -108,7 +116,7 @@ export default {
     addLinked(item) {
       this.$dispatch('add-item', item);
       this.changeNotification('color', 'green');
-      this.changeNotification('message', `Lade till ${item['@id']}`);
+      this.changeNotification('message', `Lade till "${this.getItemAsChip(item)}"`);
       this.closeSearch();
     },
     goAnonymous() {
@@ -151,10 +159,19 @@ export default {
         this.settings
       );
     },
+    getItemAsCard(item) {
+      return DisplayUtil.getCard(
+        item,
+        this.display,
+        this.editorData.linked,
+        this.vocab,
+        this.settings
+      );
+    },
     getEmptyForm(type) {
       console.log('Type', type);
       const formObj = { '@type': type };
-      let inputKeys = DisplayUtil.getProperties(type, 'cards', this.display);
+      let inputKeys = DisplayUtil.getProperties(type, 'cards', this.display, this.settings);
       if (inputKeys.length === 0) {
         const baseClasses = VocabUtil.getBaseClassesFromArray(
           type,
@@ -166,14 +183,15 @@ export default {
           inputKeys = DisplayUtil.getProperties(
             baseClass.replace(this.settings.vocabPfx, ''),
             'cards',
-            this.display
+            this.display,
+            this.settings
           );
           if (inputKeys.length > 0) {
             break;
           }
         }
         if (inputKeys.length === 0) {
-          inputKeys = DisplayUtil.getProperties('Resource', 'cards', this.display);
+          inputKeys = DisplayUtil.getProperties('Resource', 'cards', this.display, this.settings);
         }
         console.log(inputKeys);
       }
@@ -191,9 +209,7 @@ export default {
     getItems(keyword, typeArray) {
       // TODO: Support asking for more items
       const searchKey = `${keyword}*`;
-
       let searchUrl = `/find?q=${searchKey}`;
-      console.log('typeArray', typeArray);
       if (typeof typeArray !== 'undefined' && typeArray.length > 0) {
         searchUrl += '&';
         for (const type of typeArray) {
@@ -215,11 +231,12 @@ export default {
 </script>
 
 <template>
-<span class="entity-adder" v-on-clickaway="closeSearch">
-  <a class="add-entity-button" v-on:click="add()">
+<span class="entity-adder">
+  <a class="action-button add-entity-button" v-on:click="add()" @mouseenter="showToolTip=true" @mouseleave="showToolTip=false">
     <i class="fa fa-plus plus-icon" aria-hidden="true"></i>
   </a>
-  <div class="window" v-show="active">
+  <tooltip-component :show-tooltip="showToolTip" :tooltiptext="key"></tooltip-component>
+  <div class="window" v-if="active">
     <div class="header">
       <span class="title">
         Lägg till entitet
@@ -240,6 +257,11 @@ export default {
           </div>
         </div>
         <div class="search-result">
+          <ul class="search-result-list" v-show="searchResult.length === 0">
+            <li class="search-result-no-items">
+            Inga resultat...
+            </li>
+          </ul>
           <ul class="search-result-list" v-show="searchResult.length > 0">
             <li v-for="item in searchResult" track-by="$index" class="search-result-item" v-on:click="addLinked(item)">
               {{ getItemAsChip(item) }}
@@ -294,12 +316,14 @@ export default {
           width: 100%;
           padding: 0px;
           list-style-type: none;
+          li {
+            padding: 5px;
+          }
           .search-result-item {
             &:nth-child(even) {
               background-color: darken(@neutral-color, 2%);
             }
             cursor: pointer;
-            padding: 5px;
             border: solid #ccc;
             border-width: 0px 0px 1px 0px;
             &:hover {

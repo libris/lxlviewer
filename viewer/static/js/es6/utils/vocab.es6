@@ -197,15 +197,6 @@ export function getPropertiesFromArray(typeArray, vocab, vocabPfx) {
   return props;
 }
 
-export function getLabelByLang(label, lang, vocab, vocabPfx) {
-  // Returns a translation of the label if present. Fallback to input value.
-  const c = getClass(label, vocab, vocabPfx);
-  if (c && c.labelByLang && c.labelByLang[lang]) {
-    return c.labelByLang[lang];
-  }
-  return label;
-}
-
 export function isEmbedded(classId, vocab, settings) {
   if (_.isObject(classId)) {
     throw new Error('isEmbedded was called with an object as class id (should be a string)');

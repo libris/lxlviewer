@@ -84,7 +84,7 @@ export default {
 
 <template>
   <div class="item-entity" @mouseleave="showCardInfo=false" v-bind:class="{'expanded': expanded}">
-    <div class="chip entity-chip" v-if="!expanded" :class="{ 'locked': isLocked }" @mouseenter="showCardInfo=true">
+    <div class="chip entity-chip" v-if="!expanded" :class="{ 'locked': isLocked, 'highlighted': showCardInfo }" @mouseenter="showCardInfo=true">
       <span class="chip-label">
         {{getChip}}
       </span>
