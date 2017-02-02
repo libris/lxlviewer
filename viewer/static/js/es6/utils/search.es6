@@ -1,3 +1,6 @@
+import PropertyMappings from '../propertymappings.json';
+import * as _ from 'lodash';
+
 export function getParameters() {
   const params = [];
   $('input[type=hidden]').each(function() {
@@ -32,7 +35,90 @@ export function initTypeButtons() {
   }
 }
 
+export function getConvertedSearchObject(object) {
+  const convertedObject = {};
+  _.each(object, (v, k) => {
+    const key = _.findKey(PropertyMappings, (value, mappingsKey) => {
+      return PropertyMappings[mappingsKey].indexOf(k) > -1;
+    });
+    if (typeof key !== 'undefined') {
+      convertedObject[key] = v;
+    } else {
+      convertedObject[k] = v;
+    }
+  });
+  return convertedObject;
+}
+
+
+export function doSearch() {
+  let queryText = '';
+  const tagObject = {};
+  const searchField = document.querySelector('#searchQ');
+  for (const node of searchField.childNodes) {
+    if (node.className.split(' ').indexOf('searchtag') > -1) {
+      const tag = node.innerHTML.split(':');
+      tagObject[tag[0]] = tag[1];
+    } else {
+      queryText = `${queryText}${node.innerHTML} `;
+    }
+  }
+  tagObject.q = queryText;
+  let query = '/find?';
+  _.each(getConvertedSearchObject(tagObject), (v, k) => {
+    query += `${k}=${v}&`;
+  });
+  console.log(query);
+  window.location = query;
+}
+
+export function initializeSearchTags() {
+  let counter = 0;
+  const searchField = document.querySelector('#searchQ');
+  const firstDiv = document.createElement('div');
+  firstDiv.setAttribute('id', `searchphrase-${counter}`);
+  firstDiv.setAttribute('class', 'searchphrase');
+  firstDiv.setAttribute('contenteditable', 'true');
+  searchField.appendChild(firstDiv);
+  firstDiv.focus();
+  searchField.addEventListener('keydown', e => {
+    if (e.keyCode === 13) {
+      e.preventDefault();
+      const tagEditing = document.querySelector(`#searchphrase-${counter}`).innerHTML.indexOf(':') > 0;
+      if (!tagEditing) {
+        doSearch();
+        return false;
+      } else {
+        counter++;
+        const newSearchTag = document.createElement('div');
+        newSearchTag.setAttribute('id', `searchphrase-${counter}`);
+        newSearchTag.setAttribute('class', 'searchphrase');
+        newSearchTag.setAttribute('contenteditable', 'true');
+        searchField.appendChild(newSearchTag);
+        newSearchTag.focus();
+        return false;
+      }
+    } else if (e.keyCode === 190) {
+      document.querySelector(`#searchphrase-${counter}`)
+        .setAttribute('class', 'searchphrase searchtag');
+    }
+    return true;
+  });
+}
+
+
+
+export function initializeSearchButton() {
+  document.querySelector('#searchSubmit').addEventListener('click', e => {
+    doSearch();
+  });
+}
+
+
+
 export function initializeSearch() {
+  initializeSearchTags();
+  initializeSearchButton();
   // Remove empty fields
   $('form').submit(function(e){
     if ($('#searchQ').val() === '') {
