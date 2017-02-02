@@ -121,8 +121,8 @@ class DataAccess(object):
         return self.api_request('find', query_params=query).json()
 
     def get_index_stats(self, statstree, site_base_uri):
-        results = self.find_in_whelk(limit=1, stats=statstree) # FIXME: limit=0 gets no data...
-        return {TYPE: 'DataCatalog', ID: site_base_uri, 'statistics': results['stats']}
+        results = self.find_in_whelk(limit=0, stats=statstree)
+        return {TYPE: 'DataCatalog', ID: site_base_uri, 'statistics': results.get('stats')}
 
     def find_ambiguity(self, request):
         raise NotImplementedError # FIXME: implement
