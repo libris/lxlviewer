@@ -492,6 +492,10 @@ def vocabview(suffix=None):
     return render_template('vocab.html',
             URIRef=URIRef, **vars())
 
+
+# TODO: This could be done by backend (it does not properly 303 to record for
+# contained id:s) Also, doing it here would overshadow non-contained resources
+# (importantly, context and display)
 #@app.route('/vocab/<term>')
 #def vocab_term(term):
 #    return redirect('/vocab/#' + term, 303)
@@ -500,11 +504,10 @@ def vocabview(suffix=None):
 ##
 # Setup marcframe view
 
-mfview = MarcFrameView(
-        app.config['MARCFRAME_SOURCE'], app.config['CACHE_DIR'])
-
 @app.route('/marcframe/')
 def marcframeview():
+    mfview = MarcFrameView(
+            daccess.api_request(app.config['MARCFRAME_SOURCE']).json())
     return render_template('marcframeview.html',
             mf=mfview,
             pretty_json=pretty_json)
