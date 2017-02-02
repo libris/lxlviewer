@@ -1,3 +1,6 @@
+import PropertyMappings from '../propertymappings.json';
+import * as _ from 'lodash';
+
 export function getParameters() {
   const params = [];
   $('input[type=hidden]').each(function() {
@@ -32,6 +35,42 @@ export function initTypeButtons() {
   }
 }
 
+export function getConvertedSearchObject(object) {
+  const convertedObject = {};
+  _.each(object, (v, k) => {
+    const key = _.findKey(PropertyMappings, (value, mappingsKey) => {
+      return PropertyMappings[mappingsKey].indexOf(k) > -1;
+    });
+    if (typeof key !== 'undefined') {
+      convertedObject[key] = v;
+    } else {
+      convertedObject[k] = v;
+    }
+  });
+  return convertedObject;
+}
+
+
+export function doSearch() {
+  let queryText = '';
+  const tagObject = {};
+  const searchField = document.querySelector('#searchQ');
+  for (const node of searchField.childNodes) {
+    if (node.className.split(' ').indexOf('searchtag') > -1) {
+      const tag = node.innerHTML.split(':');
+      tagObject[tag[0]] = tag[1];
+    } else {
+      queryText = `${queryText}${node.innerHTML} `;
+    }
+  }
+  tagObject.q = queryText;
+  let query = '/find?';
+  _.each(getConvertedSearchObject(tagObject), (v, k) => {
+    query += `${k}=${v}&`;
+  });
+  console.log(query);
+  window.location = query;
+}
 
 export function initializeSearchTags() {
   let counter = 0;
@@ -47,7 +86,7 @@ export function initializeSearchTags() {
       e.preventDefault();
       const tagEditing = document.querySelector(`#searchphrase-${counter}`).innerHTML.indexOf(':') > 0;
       if (!tagEditing) {
-        console.log('SEARCH!');
+        doSearch();
         return false;
       } else {
         counter++;
@@ -67,23 +106,15 @@ export function initializeSearchTags() {
   });
 }
 
+
+
 export function initializeSearchButton() {
   document.querySelector('#searchSubmit').addEventListener('click', e => {
-    let queryText = '';
-    const tagObject = {};
-    const searchField = document.querySelector('#searchQ');
-    for (const node of searchField.childNodes) {
-      if (node.className.split(' ').indexOf('searchtag') > -1) {
-        const tag = node.innerHTML.split(':');
-        tagObject[tag[0]] = tag[1];
-      } else {
-        queryText = `${queryText} ${node.innerHTML}`;
-      }
-    }
-    tagObject.q = queryText;
-    console.log(tagObject);
+    doSearch();
   });
 }
+
+
 
 export function initializeSearch() {
   initializeSearchTags();
