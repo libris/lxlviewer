@@ -1,3 +1,21 @@
+export function initializeHoverCards() {
+  const $chipContainers = $('.chip-container');
+  $chipContainers.each(function () {
+    const $chipContainer = $(this);
+    $(this).find('.chip').on('mouseenter', function () {
+      $(this).addClass('highlighted');
+      $chipContainer.find('.card-info-container')
+        .addClass('card-shown')
+        .removeClass('card-hidden');
+    });
+    $(this).on('mouseleave', function () {
+      $(this).find('.chip').removeClass('highlighted');
+      $chipContainer.find('.card-info-container')
+        .addClass('card-hidden')
+        .removeClass('card-shown');
+    });
+  });
+}
 
 export function createChips($panelElement) {
   if ($panelElement.length < 1)

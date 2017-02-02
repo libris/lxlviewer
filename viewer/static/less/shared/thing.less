@@ -11,26 +11,41 @@ div.thing {
   border: 1px solid #ccc;
   border-radius: 3px;
   background-color: @white;
+  font-size: 14px;
   > .header {
     padding: 1em;
     background-color: @brand-primary;
     color: @white;
     h1 {
       margin: 0;
+      width: 75%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
   }
   .body {
+    background-color: #fafafa;
     .chip-container {
-      .chip-mixin(@brand-primary, @white);
+      .chip {
+        .chip-mixin(@brand-primary, @white);
+      }
+      .card-hidden {
+        display: none;
+        opacity: 0;
+      }
+      .card-shown {
+        display: block;
+        opacity: 1;
+        max-height: 500px;
+      }
     }
-    ul {
-      list-style: none;
-      padding: 0px;
-    }
-    > ul > li {
+    .data-node {
+      min-height: 3em;
+      width: 100%;
       border: solid #ccc;
       border-width: 0px 0px 1px 0px;
-      .key {
+      > .key {
         display: inline-block;
         width: 25%;
         color: @gray-dark;
@@ -38,11 +53,9 @@ div.thing {
         text-align: right;
         padding: 0 1em;
       }
-      .value {
+      > .value {
         display: inline-block;
         width: 74%;
-        > ul > li {
-        }
       }
     }
   }

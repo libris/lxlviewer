@@ -51,46 +51,44 @@
 <div class="thing">
   ${toolbar(thing, current_user.is_authenticated)}
   <div class="header">
-    <h1>${thing[ID]}</h1>
+    <h1>${displayvalues(thing)}</h1>
   </div>
   <div class="body">
-    <ul>
       % set node = thing['mainEntity']
       % for k in vocab.sortedkeys(node)
       % set v = node[k]
       % set expandedProp = 'instanceOf'
-      <li>
+      <div class="data-node">
         <div class="key">${k}</div>
-        <div class="value">
+        <div class="value node-list">
           % if isinstance(v, list)
           <ul>
             % for sub in v
               <li>
                 % if isinstance(sub, dict)
                   % if sub == expandedProp
-                    ${thing_card(sub)}
+                    ${thing_card(sub, True)}
                   % else
                     ${thing_chip(sub)}
                   % endif
                 % else
-                  ${sub}
+                  ${thing_value(sub)}
                 % endif
               </li>
             % endfor
           </ul>
           % elif isinstance(v, dict)
             % if k == expandedProp
-              ${thing_card(v)}
+              ${thing_card(v, True)}
             % else
               ${thing_chip(v)}
             % endif
           % else
-            ${v}
+            ${thing_value(v)}
           % endif
         </div>
-      </li>
+      </div>
       % endfor
-    </ul>
   </div>
 </div>
 
@@ -100,9 +98,19 @@
 
 % endmacro
 
-% macro thing_card(object)
+% macro thing_value(object)
+<div class="item-value">
+  <span>${object}</span>
+</div>
+% endmacro
 
-<div class="card-info-container">
+% macro thing_card(object, expanded = False)
+
+% if expanded
+<div class="card-info-container expanded">
+% else
+<div class="card-info-container floating card-hidden">
+% endif
   <div class="card">
     <div class="header">
       <span class="title">
@@ -131,7 +139,7 @@
   <div class="chip">
     <span class="chip-label">${displayvalues(object)}</span>
   </div>
-  <!-- ${thing_card(object)} -->
+  ${thing_card(object)}
 </div>
 % endmacro
 

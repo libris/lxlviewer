@@ -93,6 +93,7 @@ export default {
 
 .card-info-container {
   overflow-y: hidden;
+  line-height: 1.6;
   &.floating {
     z-index: @active-component-z;
     transition: opacity 0.25s ease;
@@ -201,6 +202,7 @@ export default {
           width: 22%;
           vertical-align: top;
           text-align: right;
+          display: inline-block;
           padding-right: 0.5em;
           color: #6b6b6b;
           font-size: 0.9em;

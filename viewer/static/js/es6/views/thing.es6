@@ -11,6 +11,7 @@ export default class Thing extends View {
 
     VocabLoader.initVocabClicks();
     searchutil.initTypeButtons();
+    thingutil.initializeHoverCards();
     thingutil.createChips($('.main-item'));
     thingutil.createChips($('.side-view'));
     thingutil.initHitlistExpands('.result-list');
