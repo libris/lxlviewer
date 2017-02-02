@@ -1,6 +1,6 @@
 
 
-{% macro toolbar(thing_url, is_authenticated, thing_type, element='article', view='thing') %}
+{% macro toolbar_old(thing_url, is_authenticated, thing_type, element='article', view='thing') %}
   % if is_authenticated and element == 'article'
     <div class="toolbar">
     % if thing_type == 'Record' and view == 'edit'
@@ -25,3 +25,15 @@
     </div>
   % endif
 {% endmacro %}
+
+% macro toolbar(thing, is_authenticated, thing_type, element='article', view='thing')
+  % set thing_url = thing['@id']
+<div class="toolbar">
+  % if is_authenticated
+    <a href="" class="toolbar-button js-toolbar-remove" data-record-id="${thing_url}"><i class="fa fa-trash" aria-hidden="true"></i>Ta bort post</a>
+    <a href="${thing_url}/edit" class="toolbar-button js-toolbar-edit"><i class="fa fa-pencil"></i>Redigera</a>
+  % endif
+</div>
+
+
+% endmacro
