@@ -178,14 +178,10 @@ class DataAccess(object):
 
         #vocabgraph = graphcache.load(config['VOCAB_SOURCE'])
 
-        results = self.find_in_whelk({'isDefinedBy.@id': self.vocab_uri}, limit=2000)
-        vocab_items = sum(
-                ([self.load_from_whelk(term[ID] + '/data.json')] for term in results['items']),
-                self.load_from_whelk(self.vocab_uri)[GRAPH])
-        vocabdata = json.dumps(vocab_items)
+        vocab_item = self.load_from_whelk(self.vocab_uri)[GRAPH]
         vocabgraph = ConjunctiveGraph()
         vocabgraph.parse(
-                data=vocabdata,
+                data=json.dumps(vocab_item),
                 context=self.jsonld_context_data,
                 format='json-ld')
         #vocabgraph.namespace_manager = ns_mgr
