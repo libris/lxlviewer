@@ -1,4 +1,5 @@
 % extends "base.html"
+{% from 'toolbar.html' import toolbar_old %}
 {% from 'toolbar.html' import toolbar %}
 
 {% block title %}${vocab.labelgetter(thing)}{% endblock %}
@@ -48,6 +49,7 @@
 
 % macro thing_full(thing)
 <div class="thing">
+  ${toolbar(thing, current_user.is_authenticated)}
   <div class="header">
     <h1>${thing[ID]}</h1>
   </div>
@@ -176,7 +178,8 @@
 
     % if ID in thing
       % set thing_url = view_url(canonical_id)
-      ${toolbar(thing_url, current_user.is_authenticated, typename, element)}
+      ${toolbar_old(thing_url, current_user.is_authenticated, typename, element)}
+
 
       <header class="panel-heading">
         <div class="panel-heading-meta">
