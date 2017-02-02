@@ -7,27 +7,23 @@ import random
 import string
 from urlparse import urljoin
 from datetime import datetime, timedelta
-import requests
 
-from rdflib import ConjunctiveGraph
-
-from flask import Flask, Response, g, request, render_template, redirect
-from flask import abort, url_for, session
+from flask import Flask, Response
+from flask import g, request, session, render_template, url_for, redirect, abort
 from flask.helpers import NotFound
 from flask_cors import CORS
 from werkzeug.urls import url_quote
 
-from lxltools.util import as_iterable
-from lxltools.ld.keys import CONTEXT, GRAPH, ID, TYPE, REVERSE
+from rdflib import ConjunctiveGraph, BNode
 
-from .thingview import Things, Uris, IDKBSE, LIBRIS
+from .util import as_iterable
+from .dataaccess import CONTEXT, GRAPH, ID, TYPE, REVERSE, DataAccess, IDKBSE, LIBRIS
 from .marcframeview import MarcFrameView, pretty_json
 from . import admin
 from . import conneg
 
 
 R_METHODS = ['GET', 'HEAD', 'OPTIONS']
-RW_METHODS = R_METHODS + ['PUT']
 
 JSONLD_MIMETYPE = 'application/ld+json'
 RDF_MIMETYPES = {'text/turtle', JSONLD_MIMETYPE, 'application/rdf+xml', 'text/xml'}
@@ -50,7 +46,7 @@ class MyFlask(Flask):
             variable_start_string='${', variable_end_string='}',
             line_statement_prefix='%')
 
-app = MyFlask(__name__, static_url_path='/assets', static_folder='static',
+app = MyFlask(__name__, #static_url_path='/assets', static_folder='static',
         instance_relative_config=True)
 
 app.config.from_object('viewer.configdefaults')
@@ -76,9 +72,21 @@ def union(*args):
 def format_number(n):
     return '{:,}'.format(n).replace(',', ' ')
 
+@app.template_global()
+def first(value):
+    for v in as_iterable(value):
+        return v
 
 ##
 # Setup basic views
+
+@app.route('/assets/<path:path>.<suffix>')
+def static_assets(subdir=None, path=None, suffix=None):
+    return app.send_static_file('%s.%s' % (path, suffix))
+
+@app.route('/favicon.ico')
+def favicon():
+    abort(404)
 
 @app.errorhandler(404)
 def page_not_found(e):
@@ -87,10 +95,6 @@ def page_not_found(e):
 @app.errorhandler(410)
 def page_not_found(e):
     return render_template('4XX.html', status_code=410), 410
-
-@app.route('/favicon.ico')
-def favicon():
-    abort(404)
 
 
 ##
@@ -105,43 +109,35 @@ def _get_served_uri(url, path):
     # TODO: why is Flask unquoting url and path values?
     url_base = url_quote(url)
     path = url_quote(path)
-    mapped_base = uris.to_canonical_uri(url_base)
+    mapped_base = daccess.urimap.to_canonical_uri(url_base)
     return urljoin(mapped_base, path)
 
 
 ##
 # Setup data-access
 
-things = Things(app.config)
-uris = Uris(app.config)
+daccess = DataAccess(app.config)
 
 
 @app.context_processor
 def core_context():
     return {
         'ID': ID,'TYPE': TYPE, 'REVERSE': REVERSE,
-        'vocab': things.ldview.vocab,
-        'ldview': things.ldview,
-        'ui': things.ui_defs,
-        'lang': things.ldview.vocab.lang,
+        'vocab': daccess.vocab,
+        'ui': daccess.ui_defs,
+        'lang': daccess.vocab.lang,
         'page_limit': 50,
-        'canonical_uri': lambda uri: uris.find_canonical_uri(request.url_root, uri),
-        'view_url': lambda uri: uris.to_view_url(request.url_root, uri)
+        'view_url': lambda uri: daccess.urimap.to_view_url(request.url_root, uri)
     }
 
 @app.before_request
 def handle_base():
-    canonical_site_id = uris.to_canonical_uri(request.url_root)
-    g.site = things.get_site(canonical_site_id) or things.get_site(LIBRIS)
-
-@app.teardown_request
-def disconnect_db(exception):
-    things.ldview.storage.disconnect()
-
+    canonical_site_id = daccess.urimap.to_canonical_uri(request.url_root)
+    g.site = daccess.get_site(canonical_site_id) or daccess.get_site(LIBRIS)
 
 @app.route(CONTEXT_PATH)
 def jsonld_context():
-    return Response(json.dumps(things.jsonld_context_data),
+    return Response(json.dumps(daccess.jsonld_context_data),
             mimetype='application/ld+json; charset=UTF-8')
 
 
@@ -150,7 +146,7 @@ def jsonld_context():
 
 @app.route('/<path:path>', methods=['DELETE'])
 def handle_delete(path):
-    response = _proxy_request(request)
+    response = _proxy_request(request, session)
     return response
 
 
@@ -160,35 +156,27 @@ def handle_put(path):
     return response
 
 
-@app.route('/<path:path>/data', methods=R_METHODS)
-@app.route('/<path:path>/data.<suffix>', methods=R_METHODS)
-@app.route('/<path:path>/data-view', methods=R_METHODS)
-@app.route('/<path:path>/data-view.<suffix>', methods=R_METHODS)
-def thingdataview(path, suffix=None, methods=R_METHODS):
-    r = _proxy_request(request)
-
-    response_body = json.loads(r.get_data())
-    return rendered_response(path, suffix, response_body, r.mimetype)
-
-
 @app.route('/<path:path>', methods=R_METHODS)
+@app.route('/<path:path>.<suffix>', methods=R_METHODS)
+#@app.route('/<path:path>/data', methods=R_METHODS)
+#@app.route('/<path:path>/data.<suffix>', methods=R_METHODS)
+#@app.route('/<path:path>/data-view', methods=R_METHODS)
+#@app.route('/<path:path>/data-view.<suffix>', methods=R_METHODS)
 def thingview(path, suffix=None):
-    try:
-        return app.send_static_file(path)
-    except (NotFound, UnicodeEncodeError) as e:
-        pass
-    whelk_accept_header = _get_whelk_accept_header(request, suffix)
-    r = _proxy_request(request, accept_header=whelk_accept_header)
+    whelk_accept_header = _get_view_data_accept_header(request, suffix)
+
+    resource_id = _get_served_uri(request.url_root, path)
+    r = _proxy_request(request, session, accept_header=whelk_accept_header,
+            url_path=resource_id)
 
     response_body = json.loads(r.get_data())
     return rendered_response(path, suffix, response_body)
 
 
 # FIXME make this less sketcy
-def _get_whelk_accept_header(request, suffix):
+def _get_view_data_accept_header(request, suffix):
     mimetype, _ = negotiator.negotiate(request, suffix)
-    if (mimetype == 'text/html' or
-        mimetype == 'application/xhtml+xml'):
+    if mimetype in ('application/json', 'text/html', 'application/xhtml+xml'):
         return 'application/json'
     else:
         return None
@@ -197,7 +185,7 @@ def _get_whelk_accept_header(request, suffix):
 @app.route('/find', methods=R_METHODS)
 @app.route('/find.<suffix>', methods=R_METHODS)
 def find(suffix=None):
-    response = _proxy_request(request, query_params=request.args)
+    response = _proxy_request(request, session, query_params=request.args)
     results = json.loads(response.get_data())
     return rendered_response('/find', suffix, results)
 
@@ -205,7 +193,7 @@ def find(suffix=None):
 @app.route('/some', methods=R_METHODS)
 @app.route('/some.<suffix>', methods=R_METHODS)
 def some(suffix=None):
-    ambiguity = things.ldview.find_ambiguity(request)
+    ambiguity = daccess.find_ambiguity(request)
     if not ambiguity:
         return abort(404)
     return rendered_response('/some', suffix, ambiguity)
@@ -215,10 +203,9 @@ def some(suffix=None):
 @app.route('/data', methods=R_METHODS)
 @app.route('/data.<suffix>', methods=R_METHODS)
 def dataindexview(suffix=None):
-    slicerepr = request.args.get('slice')
-    slicetree = json.loads(slicerepr) if slicerepr else g.site['slices']
-    results = things.ldview.get_index_stats(slicetree, make_find_url,
-            uris.to_canonical_uri(request.url_root))
+    statsrepr = request.args.get('statsrepr') or g.site['stats']
+    results = daccess.get_index_stats(statsrepr,
+            daccess.urimap.to_canonical_uri(request.url_root))
     results.update(g.site)
     return rendered_response('/', suffix, results)
 
@@ -298,7 +285,7 @@ def _to_json(data):
 def _to_graph(data, base=None):
     cg = ConjunctiveGraph()
     cg.parse(data=json.dumps(data), base=base or IDKBSE,
-                format='json-ld', context=things.jsonld_context_data)
+                format='json-ld', context=daccess.jsonld_context_data)
     return cg
 
 def _get_template_for(data):
@@ -343,7 +330,7 @@ def thingnew(item_type):
         return Response('Missing @type parameter', status=422)
     else:
         return render_template('edit.html',
-                thing={
+                record={
                         GRAPH: [
                             {TYPE: item_type},
                             {TYPE: json.loads(at_type)}
@@ -351,27 +338,26 @@ def thingnew(item_type):
                     },
                 model={})
 
+
 # !TODO this is stupid and should be solved a less dangerous way
 # So rethink the flow for new records
 # or maybe its not that stupid after all?
 @app.route('/edit', methods=['POST'])
 @admin.login_required
 def thingnewp():
-    thing = json.loads(request.form['item'])
-    return render_template('edit.html', thing=thing, model={})
+    record = json.loads(request.form['item'])
+    return render_template('edit.html', record=record, model={})
 
 
 @app.route('/<path:path>/edit')
 @admin.login_required
 def thingedit(path):
-    request_url = _get_api_url("/{0}".format(path))
-
-    r = _whelk_request(request_url, 'GET', dict(request.headers))
+    r = _proxy_request(request, session, url_path="/{0}".format(path))
 
     if r.status_code == 200:
         model = {}
         data = json.loads(r.get_data())
-        return render_template('edit.html', thing=data, model=model)
+        return render_template('edit.html', record=data, model=model)
     else:
         # TODO handle this better. GET /<path> *should* return 200,
         # but treating everything else as an error isn't awesome.
@@ -383,84 +369,19 @@ def create():
     request.path = '/'
     return _write_data(request, query_params={'collection': 'xl'})
 
+
 @app.route('/_convert', methods=['POST'])
 def convert():
     return _write_data(request, query_params={'to': 'application/x-marc-json'})
 
+
 @app.route('/_remotesearch')
 def _remotesearch():
-    return _proxy_request(request, query_params=['q', 'databases'])
-
-def _is_tombstone(data):
-    items = data.get(GRAPH)
-    record = items[0]
-    if record.get(TYPE) == 'Tombstone':
-        return True
-    else:
-        return False
+    return _proxy_request(request, session, query_params=['q', 'databases'])
 
 
-# Map from Requests response to Flask response
-def _map_response(response):
-    def _map_headers(headers):
-        _headers = {}
-        for head in ['etag', 'location']:
-            if head in headers:
-                _headers[head] = headers[head];
-        return _headers
-    return Response(response.text,
-                    status=response.status_code,
-                    mimetype=response.headers.get('content-type'),
-                    headers=_map_headers(response.headers))
-
-
-def _proxy_request(request, json_data=None, query_params=[],
-                   accept_header=None):
-    params = {}
-    defaults = query_params if isinstance(query_params, dict) else {}
-    for param in query_params:
-        params[param] = request.args.get(param) or defaults.get(param)
-
-    headers = dict(request.headers)
-
-    url = _get_api_url(request.path)
-    return _whelk_request(url, request.method, headers, json_data=json_data,
-                          query_params=params, accept_header=accept_header)
-
-
-def _get_api_url(path):
-    return '%s%s' % (app.config.get('WHELK_REST_API_URL'), path)
-
-
-def _whelk_request(url, method, headers, json_data=None,
-                   query_params=[], accept_header=None):
-    json_data = json.dumps(json_data)
-
-    if accept_header:
-        headers['Accept'] = accept_header
-
-    auth_token = _get_authorization_token()
-    if auth_token:
-        headers['Authorization'] = auth_token
-
-    # Proxy the request to rest api
-    app.logger.debug('Sending proxy %s request to : %s with:\n %s' % (method,
-                                                                      url,
-                                                                      json_data))
-    r = requests.request(method, url, data=json_data, headers=headers,
-                         params=query_params)
-
-    if r.status_code < 400:
-        return _map_response(r)
-    else:
-        return abort(r.status_code)
-
-
-def _get_authorization_token():
-    oauth_token = None
-
-    if 'oauth_token' in session:
-        oauth_token = session['oauth_token']
+def _get_authorization_token(session):
+    oauth_token = session['oauth_token'] if 'oauth_token' in session else None
 
     if oauth_token:
         token = oauth_token['access_token']
@@ -472,7 +393,51 @@ def _get_authorization_token():
         return None
 
 
-def _write_data(request, item=None, query_params=[]):
+def _proxy_request(request, session, json_data=None, query_params=[],
+                   accept_header=None, url_path=None):
+    params = {}
+    defaults = query_params if isinstance(query_params, dict) else {}
+    for param in query_params:
+        params[param] = request.args.get(param) or defaults.get(param)
+
+    url_path = url_path or request.path
+
+    headers = dict(request.headers)
+    if accept_header:
+        headers['Accept'] = accept_header
+    auth_token = _get_authorization_token(session)
+    if auth_token:
+        headers['Authorization'] = auth_token
+
+    app.logger.debug('Sending proxy %s request to: %s with headers:\n%r\nand body:\n %s',
+                     request.method, url_path, headers, json_data)
+
+    response = daccess.api_request(url_path, request.method, headers,
+                              json_data=json_data, query_params=params)
+
+    return _map_response(response)
+
+
+def _map_response(response):
+    """
+    Map from a Requests response to a Flask response.
+    """
+    def _map_headers(headers):
+        _headers = {}
+        for head in ['etag', 'location']:
+            if head in headers:
+                _headers[head] = headers[head];
+        return _headers
+
+    resp = Response(response.text,
+                    status=response.status_code,
+                    mimetype=response.headers.get('content-type'),
+                    headers=_map_headers(response.headers))
+
+    return resp if resp.status_code < 400 else abort(resp.status_code)
+
+
+def _write_data(request, query_params=[]):
     json_data = request.get_json(force=True)
     return _proxy_request(request, json_data, query_params)
 
@@ -499,7 +464,7 @@ app.context_processor(lambda: rdfns)
 @app.route('/vocab/', methods=R_METHODS)
 @app.route('/vocab/data.<suffix>', methods=R_METHODS)
 def vocabview(suffix=None):
-    voc = things.get_vocab_util()
+    voc = daccess.get_vocab_util()
 
     def link(obj):
         if ':' in obj.qname() and not any(obj.objects(None)):
@@ -509,6 +474,11 @@ def vocabview(suffix=None):
     def listclass(o):
         return 'ext' if ':' in o.qname() else 'loc'
 
+    def no_bnodes(coll):
+        for o in coll:
+            if not isinstance(o.identifier, BNode):
+                yield o
+
     if suffix:
         mimetype, render = negotiator.negotiate(request, suffix)
     else:
@@ -517,7 +487,7 @@ def vocabview(suffix=None):
         return Response(voc.graph.serialize(format=
                 'json-ld' if mimetype == JSONLD_MIMETYPE else mimetype,
                 #context_id=CONTEXT_PATH,
-                context=things.jsonld_context_data[CONTEXT]), content_type='%s; charset=UTF-8' % mimetype)
+                context=daccess.jsonld_context_data[CONTEXT]), content_type='%s; charset=UTF-8' % mimetype)
 
     return render_template('vocab.html',
             URIRef=URIRef, **vars())

@@ -15,19 +15,14 @@
   <span class="error hidden"></span>
 </div>
 <div id="editorApp">
-  % set record = thing['@graph'][0]
-  % set canonical_id = canonical_uri(record)
-  % set typename = record[TYPE]
-  % set thing_url = view_url(canonical_id)
   <editor-controls v-if="initialized == true"></editor-controls>
   <header-component :full="true" v-if="initialized == true"></header-component>
   <form-component focus="work" v-if="initialized == true && status.level === 'work'"></form-component>
   <form-component focus="it" v-if="initialized == true && status.level === 'it'"></form-component>
   <notification v-if="initialized == true"></notification>
-
 </div>
 </div>
 
 <script id="baseUriAlias" type="application/json">${config.BASE_URI_ALIAS|tojson|safe}</script>
-<script id="data" type="application/json">${thing|tojson|safe}</script>
+<script id="data" type="application/json">${record|tojson|safe}</script>
 % endblock
