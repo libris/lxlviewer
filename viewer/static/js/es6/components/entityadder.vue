@@ -150,6 +150,15 @@ export default {
         self.searchResult = result;
       });
     },
+    getItemLabel(item) {
+      return DisplayUtil.getItemLabel(
+        item,
+        this.display,
+        this.editorData.linked,
+        this.vocab,
+        this.settings
+      );
+    },
     getItemAsChip(item) {
       return DisplayUtil.getChip(
         item,
@@ -264,7 +273,7 @@ export default {
           </ul>
           <ul class="search-result-list" v-show="searchResult.length > 0">
             <li v-for="item in searchResult" track-by="$index" class="search-result-item" v-on:click="addLinked(item)">
-              {{ getItemAsChip(item) }}
+              {{ getItemLabel(item) }}
             </li>
           </ul>
         </div>
