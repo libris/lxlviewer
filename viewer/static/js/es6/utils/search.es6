@@ -35,14 +35,17 @@ export function initTypeButtons() {
   }
 }
 
+
 export function getConvertedSearchObject(object) {
   const convertedObject = {};
   _.each(object, (v, k) => {
-    const key = _.findKey(PropertyMappings, (value, mappingsKey) => {
-      return PropertyMappings[mappingsKey].indexOf(k) > -1;
+    const tagMatchObject = _.find(PropertyMappings, (value, mappingKey) => {
+      return mappingKey.toLowerCase() === k;
     });
-    if (typeof key !== 'undefined') {
-      convertedObject[key] = v;
+
+    if (typeof tagMatchObject !== 'undefined') {
+      const resultKey = tagMatchObject.propertyChain.join('.');
+      convertedObject[resultKey] = v;
     } else {
       convertedObject[k] = v;
     }
@@ -52,7 +55,7 @@ export function getConvertedSearchObject(object) {
 
 
 export function doSearch() {
-  let queryText = '';
+  let queryText = [];
   const tagObject = {};
   const searchField = document.querySelector('#searchQ');
   for (const node of searchField.childNodes) {
@@ -60,56 +63,89 @@ export function doSearch() {
       const tag = node.innerHTML.split(':');
       tagObject[tag[0]] = tag[1];
     } else {
-      queryText = `${queryText}${node.innerHTML} `;
+      queryText.push(`${queryText}${node.innerHTML}`);
     }
   }
-  tagObject.q = queryText;
+  tagObject.q = queryText.join(' ');
   let query = '/find?';
+  const queryParts = [];
   _.each(getConvertedSearchObject(tagObject), (v, k) => {
-    query += `${k}=${v}&`;
+    queryParts.push(`${k}=${v}`);
   });
-  console.log(query);
+  query += queryParts.join('&');
   window.location = query;
 }
 
+export function searchPhraseFocus(event, counter) {
+  counter.counter = event.target.id.split('-')[1];
+  return true;
+}
+
+export function searchFieldBehaviour(e, counter, searchField) {
+  const validTags = ['isbn'];
+  const currentPhrase = document.querySelector(`#searchphrase-${counter.counter}`);
+  const tagEditing = currentPhrase.innerHTML.includes(':');
+
+  if (tagEditing || e.keyCode === 190) {
+    if (validTags.indexOf(currentPhrase.innerHTML.split(':')[0].toLowerCase()) > -1) {
+      currentPhrase.setAttribute('class', 'searchphrase searchtag valid');
+    } else {
+      currentPhrase.setAttribute('class', 'searchphrase searchtag invalid');
+    }
+  } else {
+    currentPhrase.setAttribute('class', 'searchphrase');
+  }
+    
+  if (e.keyCode === 13) { // Enter
+    e.preventDefault();
+    if (!tagEditing) {
+      doSearch();
+      return false;
+    } else {
+      const newSearchTag = document.createElement('div');
+      newSearchTag.setAttribute('id', `searchphrase-${parseInt(counter.counter, 10) + 1}`);
+      newSearchTag.setAttribute('class', 'searchphrase');
+      newSearchTag.setAttribute('contenteditable', 'true');
+      newSearchTag.addEventListener('focus', event => searchPhraseFocus(event, counter));
+      searchField.appendChild(newSearchTag);
+      newSearchTag.focus();
+      return false;
+    }
+  } else if (e.keyCode === 8 && // Backspace
+      !tagEditing &&
+      currentPhrase.innerHTML === '' &&
+      currentPhrase.classList.toString() !== 'searchphrase-0'
+    ) {
+    e.preventDefault();
+    const previousPhrase = searchField.children[(counter.counter - 1)];
+    previousPhrase.innerHTML = '';
+    previousPhrase.setAttribute('class', 'searchphrase');
+    
+
+    const oldPhrase = searchField.children[counter.counter];
+    searchField.removeChild(oldPhrase);
+    previousPhrase.focus();
+  }
+  return true;
+}
+
 export function initializeSearchTags() {
-  let counter = 0;
+  const counter = { counter: 0 };
   const searchField = document.querySelector('#searchQ');
   const firstDiv = document.createElement('div');
-  firstDiv.setAttribute('id', `searchphrase-${counter}`);
+  firstDiv.setAttribute('id', `searchphrase-${counter.counter}`);
   firstDiv.setAttribute('class', 'searchphrase');
   firstDiv.setAttribute('contenteditable', 'true');
+  firstDiv.addEventListener('focus', event => searchPhraseFocus(event, counter));
   searchField.appendChild(firstDiv);
   firstDiv.focus();
-  searchField.addEventListener('keydown', e => {
-    if (e.keyCode === 13) {
-      e.preventDefault();
-      const tagEditing = document.querySelector(`#searchphrase-${counter}`).innerHTML.indexOf(':') > 0;
-      if (!tagEditing) {
-        doSearch();
-        return false;
-      } else {
-        counter++;
-        const newSearchTag = document.createElement('div');
-        newSearchTag.setAttribute('id', `searchphrase-${counter}`);
-        newSearchTag.setAttribute('class', 'searchphrase');
-        newSearchTag.setAttribute('contenteditable', 'true');
-        searchField.appendChild(newSearchTag);
-        newSearchTag.focus();
-        return false;
-      }
-    } else if (e.keyCode === 190) {
-      document.querySelector(`#searchphrase-${counter}`)
-        .setAttribute('class', 'searchphrase searchtag');
-    }
-    return true;
-  });
+  searchField.addEventListener('keydown', e => searchFieldBehaviour(e, counter, searchField));
 }
 
 
 
 export function initializeSearchButton() {
-  document.querySelector('#searchSubmit').addEventListener('click', e => {
+  document.querySelector('#searchSubmit').addEventListener('click', () => {
     doSearch();
   });
 }
