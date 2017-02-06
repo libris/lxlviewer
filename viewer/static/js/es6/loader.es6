@@ -32,12 +32,17 @@ export default class Loader {
     this.views.push(view);
   }
 
+  getCurrentView() {
+    return this.currentView;
+  }
+
   initPage(id) {
     // This method should be called on page load.
     const bodyId = id;
 
     for (let i = 0; i < this.views.length; i++) {
       if (this.views[i].constructor.name.toLowerCase() === bodyId.toLowerCase()) {
+        this.currentView = this.views[i];
         this.views[i].initialize();
         return true;
       }
