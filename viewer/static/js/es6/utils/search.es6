@@ -40,7 +40,7 @@ export function getConvertedSearchObject(object) {
   const convertedObject = {};
   _.each(object, (v, k) => {
     const tagMatchObject = _.find(PropertyMappings, (value, mappingKey) => {
-      return mappingKey.toLowerCase() === k;
+      return mappingKey.toLowerCase() === k.toLowerCase();
     });
 
     if (typeof tagMatchObject !== 'undefined') {
@@ -114,7 +114,7 @@ export function searchFieldBehaviour(e, counter, searchField) {
   } else if (e.keyCode === 8 && // Backspace
       !tagEditing &&
       currentPhrase.innerHTML === '' &&
-      currentPhrase.classList.toString() !== 'searchphrase-0'
+      currentPhrase.id.toString() !== 'searchphrase-0'
     ) {
     e.preventDefault();
     const previousPhrase = searchField.children[(counter.counter - 1)];
