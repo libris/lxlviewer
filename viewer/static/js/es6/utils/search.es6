@@ -95,7 +95,7 @@ export function searchFieldBehaviour(e, counter, searchField) {
   } else {
     currentPhrase.setAttribute('class', 'searchphrase');
   }
-    
+
   if (e.keyCode === 13) { // Enter
     e.preventDefault();
     if (!tagEditing) {
@@ -120,7 +120,7 @@ export function searchFieldBehaviour(e, counter, searchField) {
     const previousPhrase = searchField.children[(counter.counter - 1)];
     previousPhrase.innerHTML = '';
     previousPhrase.setAttribute('class', 'searchphrase');
-    
+
 
     const oldPhrase = searchField.children[counter.counter];
     searchField.removeChild(oldPhrase);
