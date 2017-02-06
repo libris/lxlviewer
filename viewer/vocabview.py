@@ -19,62 +19,6 @@ SDO = Namespace("http://schema.org/")
 VS = Namespace("http://www.w3.org/2003/06/sw-vocab-status/ns#")
 
 
-class VocabUtil:
-
-    def __init__(self, graph, lang):
-        self.graph = graph
-        self.lang = lang
-        self.resource = graph.resource
-
-        vocabs = list(set(graph.subjects(RDF.type, OWL.Ontology))
-                    | set(graph.objects(RDFS.isDefinedBy)))
-        self.vocabs = vocabs
-        self.vocab = graph.resource(vocabs[0])
-        self.properties = self._get_properties()
-        self.classes = self._get_classes()
-
-    def _get_classes(self):
-        return [self.graph.resource(cid) for cid in sorted(
-                set((self.graph.subjects(RDF.type, RDFS.Class)))
-                | set((self.graph.subjects(RDF.type, OWL.Class))))
-            if isinstance(cid, URIRef)]
-
-    def _get_properties(self):
-        return map(self.graph.resource, sorted(
-            set(self.graph.subjects(RDF.type, RDF.Property))
-            | set(self.graph.subjects(RDF.type, OWL.ObjectProperty))
-            | set(self.graph.subjects(RDF.type, OWL.DatatypeProperty))))
-
-    def getrestrictions(self, rclass):
-        for c in rclass.objects(RDFS.subClassOf):
-            rtype = c.value(RDF.type)
-            if rtype and rtype.identifier == OWL.Restriction:
-                yield c
-
-    def value(self, obj, prop, lang=None):
-        lang = lang or self.lang
-        label = None
-        for label in obj.objects(prop):
-            if label.language == lang:
-                return label
-        return label
-
-    def label(self, obj, lang=None):
-        lang = lang or self.lang
-        return self.value(obj, RDFS.label, lang)
-        label = None
-        for label in obj.objects(RDFS.label):
-            if label.language == lang:
-                return label
-        return label
-
-    def find_references(self, items):
-        for o in items:
-            ref = o.identifier if isinstance(o, Resource) else o
-            if isinstance(ref, URIRef):
-                yield o
-
-
 class VocabView:
 
     def __init__(self, vocab_graph, vocab_uri, lang='en'):
@@ -281,3 +225,59 @@ def path_distance(g, s, p, base):
                     shortest = candidate
         return shortest
     return find_path(s)
+
+
+class VocabUtil:
+
+    def __init__(self, graph, lang):
+        self.graph = graph
+        self.lang = lang
+        self.resource = graph.resource
+
+        vocabs = list(set(graph.subjects(RDF.type, OWL.Ontology))
+                    | set(graph.objects(RDFS.isDefinedBy)))
+        self.vocabs = vocabs
+        self.vocab = graph.resource(vocabs[0])
+        self.properties = self._get_properties()
+        self.classes = self._get_classes()
+
+    def _get_classes(self):
+        return [self.graph.resource(cid) for cid in sorted(
+                set((self.graph.subjects(RDF.type, RDFS.Class)))
+                | set((self.graph.subjects(RDF.type, OWL.Class))))
+            if isinstance(cid, URIRef)]
+
+    def _get_properties(self):
+        return map(self.graph.resource, sorted(
+            set(self.graph.subjects(RDF.type, RDF.Property))
+            | set(self.graph.subjects(RDF.type, OWL.ObjectProperty))
+            | set(self.graph.subjects(RDF.type, OWL.DatatypeProperty))))
+
+    def getrestrictions(self, rclass):
+        for c in rclass.objects(RDFS.subClassOf):
+            rtype = c.value(RDF.type)
+            if rtype and rtype.identifier == OWL.Restriction:
+                yield c
+
+    def value(self, obj, prop, lang=None):
+        lang = lang or self.lang
+        label = None
+        for label in obj.objects(prop):
+            if label.language == lang:
+                return label
+        return label
+
+    def label(self, obj, lang=None):
+        lang = lang or self.lang
+        return self.value(obj, RDFS.label, lang)
+        label = None
+        for label in obj.objects(RDFS.label):
+            if label.language == lang:
+                return label
+        return label
+
+    def find_references(self, items):
+        for o in items:
+            ref = o.identifier if isinstance(o, Resource) else o
+            if isinstance(ref, URIRef):
+                yield o
