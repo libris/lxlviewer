@@ -82,21 +82,18 @@ export function collapse($elem) {
 
 export function initHitlistExpands($hitlist) {
   // Hit list expand functionality
-
-  $($hitlist).find('.hit-item .expand-button').click(function() {
-    const $subject = $(this).closest('.hit-item');
+  $($hitlist).find('.thing-list-item .expand-button').click(function() {
+    const $subject = $(this).closest('.thing-list-item');
     if ($subject.hasClass('expanded')) {
       $(this).find('i').removeClass('rotate-180');
       $(this).find('i').addClass('fa-plus-circle');
       $(this).find('i').removeClass('fa-minus-circle');
       $subject.removeClass('expanded');
-      destroyChips($subject);
     } else {
       $(this).find('i').addClass('rotate-180');
       $(this).find('i').addClass('fa-minus-circle');
       $(this).find('i').removeClass('fa-plus-circle');
       $subject.addClass('expanded');
-      createChips($subject);
     }
   });
 }

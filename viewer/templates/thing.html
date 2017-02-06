@@ -48,7 +48,7 @@
 % endblock
 
 % macro thing_full(thing)
-<div class="thing">
+<div class="thing thing-full">
   ${toolbar(thing, current_user.is_authenticated)}
   <div class="header">
     <h1>${displayvalues(thing)}</h1>
@@ -95,7 +95,50 @@
 % endmacro
 
 % macro thing_list_item(thing)
-
+<div class="thing thing-list-item">
+  <div class="header">
+    <span class="expand-button"><i class='fa rotate fa-plus-circle'></i></span>
+    <span class="title"><a href="${thing[ID]}">${displayvalues(thing)}</a></span>
+    <span class="class">${thing[TYPE]}</span>
+  </div>
+  <div class="body">
+      % set node = thing
+      % for k in vocab.sortedkeys(node)
+      % set v = node[k]
+      % set expandedProp = 'instanceOf'
+      <div class="data-node">
+        <div class="key">${k}</div>
+        <div class="value node-list">
+          % if isinstance(v, list)
+          <ul>
+            % for sub in v
+              <li>
+                % if isinstance(sub, dict)
+                  % if sub == expandedProp
+                    ${thing_card(sub, True)}
+                  % else
+                    ${thing_chip(sub)}
+                  % endif
+                % else
+                  ${thing_value(sub)}
+                % endif
+              </li>
+            % endfor
+          </ul>
+          % elif isinstance(v, dict)
+            % if k == expandedProp
+              ${thing_card(v, True)}
+            % else
+              ${thing_chip(v)}
+            % endif
+          % else
+            ${thing_value(v)}
+          % endif
+        </div>
+      </div>
+      % endfor
+  </div>
+</div>
 % endmacro
 
 % macro thing_value(object)

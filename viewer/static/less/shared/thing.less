@@ -7,21 +7,55 @@
 /********/
 
 div.thing {
-  width: 860px;
+  width: 100%;
   border: 1px solid #ccc;
-  border-radius: 3px;
   background-color: @white;
   font-size: 14px;
+  &.thing-list-item {
+    > .header {
+      width: 100%;
+      border: solid #ccc;
+      border-width: 0px 0px 1px 0px;
+    }
+    > .body {
+      display: none;
+    }
+    &.expanded > .body {
+      display: block;
+    }
+  }
+  &.thing-full {
+    border-radius: 3px;
+    > .header {
+      padding: 1em;
+      background-color: @brand-primary;
+      color: @white;
+    }
+  }
   > .header {
-    padding: 1em;
-    background-color: @brand-primary;
-    color: @white;
     h1 {
       margin: 0;
       width: 75%;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+    }
+    span {
+      display: inline-block;
+      padding: 0.5em 1em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    span.title {
+      width: 74%;
+    }
+    span.class {
+      text-align: right;
+      width: 20%;
+    }
+    span.expand-button {
+      cursor: pointer;
     }
   }
   .body {
