@@ -55,15 +55,20 @@ export function getConvertedSearchObject(object) {
 
 
 export function doSearch() {
+  const validTags = ['isbn'];
   let queryText = [];
   const tagObject = {};
   const searchField = document.querySelector('#searchQ');
   for (const node of searchField.childNodes) {
     if (node.className.split(' ').indexOf('searchtag') > -1) {
       const tag = node.innerHTML.split(':');
-      tagObject[tag[0]] = tag[1];
-    } else {
-      queryText.push(`${queryText}${node.innerHTML}`);
+      if (validTags.indexOf(tag[0].toLowerCase()) > -1) {
+        tagObject[tag[0]] = tag[1];
+      } else {
+        queryText.push(tag[1]);
+      }
+    } else if (node.innerHTML !== '') {
+      queryText.push(`${node.innerHTML}`);
     }
   }
   tagObject.q = queryText.join(' ');
