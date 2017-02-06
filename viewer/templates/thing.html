@@ -12,9 +12,17 @@
 % endblock
 
 % block content
+<div class="row">
+  <div class="col-md-9">
     ${thing_full(thing)}
-    <hr>
-
+  </div>
+  <div class="col-md-3">
+    <div>
+      Inversrelationer...
+    </div>
+  </div>
+</div>
+<hr>
   <div class="row">
     <div class="col-md-9">
       ${viewthing(thing, element='article', classes='panel panel-default main-item')}
