@@ -5,6 +5,16 @@ export default {
   methods: {
   },
   computed: {
+    getItemLabel() {
+      const label = DisplayUtil.getItemLabel(
+        this.focusData,
+        this.display,
+        this.editorData.linked,
+        this.vocab,
+        this.settings
+      );
+      return label;
+    },
     getChip() {
       const chip = DisplayUtil.getChip(
         this.focusData,
