@@ -15,15 +15,11 @@ ESHOST='127.0.0.1'
 ES_INDEX = DBNAME
 ES_SNIFF_ON_START=True
 
-# TODO: Move relative cache location to instance directory (or application storage)
-CACHE_DIR = P.join(P.dirname(__file__), "..", "cache")
-#GRAPH_CACHE = P.join(CACHE_DIR, "graph-cache")
-
 VOCAB_IRI = "https://id.kb.se/vocab/"
 CONTEXT_IRI = "https://id.kb.se/vocab/context"
+DISPLAY_IRI = "https://id.kb.se/vocab/display"
 LANG = "sv"
 
 BASE_URI_ALIAS = {}
 
-# TODO: read this from live XL system instead (as soon as that is possible)
-MARCFRAME_SOURCE = "https://raw.githubusercontent.com/libris/whelk-core/develop/src/main/resources/ext/marcframe.json"
+MARCFRAME_SOURCE = '/sys/marcframe.json'

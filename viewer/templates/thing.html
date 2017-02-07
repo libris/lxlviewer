@@ -220,7 +220,6 @@
 
 % macro viewthing(thing, element='div', classes='panel panel-default', rel=None, rev=None)
   % set thing_id = thing[ID]
-  % set canonical_id = canonical_uri(thing)
   % set typename = thing[TYPE]
   % if isinstance(typename, list)
     % set t = vocab.index[typename[0]] or vocab.index[typename[1]] or {}
@@ -232,13 +231,12 @@
 
       {% if rel %} property="${rel}"{% endif %}
       {% if rev %} rev="${rev}"{% endif %}
-      {% if ID in thing %} resource="${canonical_id}"{% endif %}
+      {% if ID in thing %} resource="${thing_id}"{% endif %}
       {% if t.curie %} typeof="${t.curie}"{% endif %}>
 
     % if ID in thing
-      % set thing_url = view_url(canonical_id)
+      % set thing_url = view_url(thing_id)
       ${toolbar_old(thing_url, current_user.is_authenticated, typename, element)}
-
 
       <header class="panel-heading">
         <div class="panel-heading-meta">
@@ -246,7 +244,7 @@
             ${termref(t, classes='', labeltype='label-class')}
           % endif
           <a href="" class="toolbar-button id-label thing-id">
-             <small><code>${canonical_id}</code></small>
+             <small><code>${thing_id}</code></small>
           </a>
 
 
@@ -256,7 +254,7 @@
           <div class='expand-button'><i class='fa rotate fa-plus-circle'></i></div>
           % endif
           <a href="${thing_url}" class="thing-label">
-            % set label = ldview.getlabel(thing)
+            % set label = vocab.get_label_for(thing)
             % if isinstance(label, basestring)
               ${label}
             % else

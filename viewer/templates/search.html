@@ -169,7 +169,7 @@
             </li>
           % else
           <li>
-            <a href="${result.first['@id'] + '&offset=' + str(limit * num) }">${num +1}</a>
+            <a href="${result.first['@id'] + '&_offset=' + str(limit * num) }">${num +1}</a>
           </li>
           % endif
         % endif
