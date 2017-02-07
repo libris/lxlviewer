@@ -12,6 +12,7 @@ div.thing {
   background-color: @white;
   font-size: 14px;
   &.thing-list-item {
+    border-width: 0px 1px 0px 1px;
     > .header {
       width: 100%;
       border: solid #ccc;
@@ -20,8 +21,23 @@ div.thing {
     > .body {
       display: none;
     }
-    &.expanded > .body {
-      display: block;
+    &.expanded {
+      .expand-button {
+        opacity: 1;
+      }
+      > .body {
+        display: block;
+      }
+    }
+    .expand-button {
+      opacity: 0.1;
+      transition: 0.25s ease;
+      transition-property: opacity;
+    }
+    &:hover {
+      .expand-button {
+        opacity: 1;
+      }
     }
   }
   &.thing-full {
@@ -43,20 +59,22 @@ div.thing {
     }
     span {
       display: inline-block;
-      padding: 0.5em 1em;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
     span.title {
       width: 74%;
+      padding: 0.5em 1em 0.5em 0;
     }
     span.class {
       text-align: right;
       width: 20%;
+      padding: 0.5em 1em;
     }
     span.expand-button {
       cursor: pointer;
+      padding: 0.5em 0.5em;
     }
   }
   .body {
