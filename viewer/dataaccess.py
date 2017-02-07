@@ -5,10 +5,9 @@ import json
 from urlparse import urlparse, urljoin
 
 import requests
-from rdflib import Graph, ConjunctiveGraph
 
 from .util import as_iterable
-from .vocabview import VocabView, VocabUtil, ID, TYPE, CONTEXT, GRAPH, REVERSE
+from .vocabview import VocabView, ID, TYPE, CONTEXT, GRAPH, REVERSE
 #from .graphcache import GraphCache, vocab_source_map
 
 
@@ -87,14 +86,11 @@ class DataAccess(object):
         self.urimap = UriMap(config.get('BASE_URI_ALIAS') or {})
         self._api_base = config['WHELK_REST_API_URL']
 
-        #ns_mgr = Graph().parse('sys/context/base.jsonld',
-        #        format='json-ld').namespace_manager
-        #ns_mgr.bind("", vocab_uri)
-        #graphcache = GraphCache(config['GRAPH_CACHE'])
-        #graphcache.graph.namespace_manager = ns_mgr
+        self.vocab = self.setup_vocab_view()
 
-        self.display = self.load_from_whelk(self.display_uri)
-        self.vocab = VocabView(self.load_vocab_graph(), self.vocab_uri, lang=self.lang)
+    @property
+    def jsonld_context_data(self):
+        return self.vocab.context_data
 
     def api_request(self, url_path, method='GET', headers=None, json_data=None, query_params=[]):
         url = self._get_api_url(url_path)
@@ -169,33 +165,21 @@ class DataAccess(object):
         # TODO: get_record_data(g.current_base)
         return sites.get(site_id)
 
-    def load_vocab_graph(self):
-        context = self.load_from_whelk(self.context_uri)
-        if context is None:
-            raise Exception('Failed to get context from storage ', self.context_uri)
+    def setup_vocab_view(self):
+        vocab_data = self._load_required(self.vocab_uri)
+        context_data = self._load_required(self.context_uri)
+        display_data = self._load_required(self.display_uri)
 
-        self.jsonld_context_data = context
+        return VocabView(self.vocab_uri,
+                vocab_data,
+                context_data,
+                display_data,
+                lang=self.lang)
 
-        #vocabgraph = graphcache.load(config['VOCAB_SOURCE'])
-
-        vocab_item = self.load_from_whelk(self.vocab_uri)[GRAPH]
-        vocabgraph = ConjunctiveGraph()
-        vocabgraph.parse(
-                data=json.dumps(vocab_item),
-                context=self.jsonld_context_data,
-                format='json-ld')
-        #vocabgraph.namespace_manager = ns_mgr
-        vocabgraph.namespace_manager.bind("", self.vocab_uri)
-
-        # TODO: load base vocabularies for labels, inheritance here,
-        # or in vocab build step?
-        #for url in vocabgraph.objects(None, OWL.imports):
-        #    graphcache.load(vocab_source_map.get(str(url), url))
-
-        return vocabgraph
-
-    def get_vocab_util(self):
-        return VocabUtil(self.load_vocab_graph(), self.lang)
+    def _load_required(self, uri):
+        data = self.load_from_whelk(uri)
+        assert data, 'Failed to get {} from whelk'.format(uri)
+        return data
 
 
 class UriMap(object):

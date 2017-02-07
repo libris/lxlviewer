@@ -14,7 +14,7 @@ from flask.helpers import NotFound
 from flask_cors import CORS
 from werkzeug.urls import url_quote
 
-from rdflib import ConjunctiveGraph, BNode
+from rdflib import ConjunctiveGraph
 
 from .util import as_iterable
 from .dataaccess import CONTEXT, GRAPH, ID, TYPE, REVERSE, DataAccess, IDKBSE, LIBRIS
@@ -445,7 +445,7 @@ def _write_data(request, query_params=[]):
 ##
 # Setup vocab view
 
-from rdflib import URIRef, RDF, RDFS, OWL, Namespace
+from rdflib import URIRef, BNode, RDF, RDFS, OWL, Namespace
 from rdflib.namespace import SKOS, DCTERMS
 
 rdfns = {
@@ -464,7 +464,7 @@ app.context_processor(lambda: rdfns)
 @app.route('/vocab/', methods=R_METHODS)
 @app.route('/vocab/data.<suffix>', methods=R_METHODS)
 def vocabview(suffix=None):
-    voc = daccess.get_vocab_util()
+    voc = daccess.vocab.get_util()
 
     def link(obj):
         if ':' in obj.qname() and not any(obj.objects(None)):

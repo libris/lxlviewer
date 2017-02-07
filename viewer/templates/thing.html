@@ -2,7 +2,7 @@
 {% from 'toolbar.html' import toolbar_old %}
 {% from 'toolbar.html' import toolbar %}
 
-{% block title %}${vocab.labelgetter(thing)}{% endblock %}
+{% block title %}${vocab.get_label_for(thing)}{% endblock %}
 
 {% block bodyattrs %}vocab="${config.VOCAB_IRI}" id="thing"{% endblock %}
 {% block navcontainerclass %} container {% endblock %}
