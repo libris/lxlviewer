@@ -42,10 +42,14 @@ export function getConvertedSearchObject(object) {
     const tagMatchObject = _.find(PropertyMappings, (value, mappingKey) => {
       return mappingKey.toLowerCase() === k.toLowerCase();
     });
-
     if (typeof tagMatchObject !== 'undefined') {
       const resultKey = tagMatchObject.propertyChain.join('.');
       convertedObject[resultKey] = v;
+      // Hardcoded for isbn
+      if (k.toLowerCase() === 'isbn') {
+        convertedObject['identifiedBy.type'] = 'isbn';
+      }
+      
     } else {
       convertedObject[k] = v;
     }
@@ -56,7 +60,7 @@ export function getConvertedSearchObject(object) {
 
 export function doSearch() {
   const validTags = ['isbn'];
-  let queryText = [];
+  const queryText = [];
   const tagObject = {};
   const searchField = document.querySelector('#searchQ');
   for (const node of searchField.childNodes) {
@@ -81,17 +85,16 @@ export function doSearch() {
   window.location = query;
 }
 
-export function searchPhraseFocus(event, counter) {
-  counter.counter = event.target.id.split('-')[1];
-  return true;
+export function searchPhraseFocus(event, state) {
+  state.counter = event.target.id.split('-')[1];
 }
 
-export function searchFieldBehaviour(e, counter, searchField) {
+export function updateStyle(event, state) {
   const validTags = ['isbn'];
-  const currentPhrase = document.querySelector(`#searchphrase-${counter.counter}`);
+  const currentPhrase = document.activeElement;
   const tagEditing = currentPhrase.innerHTML.includes(':');
 
-  if (tagEditing || e.keyCode === 190) {
+  if (tagEditing) {
     if (validTags.indexOf(currentPhrase.innerHTML.split(':')[0].toLowerCase()) > -1) {
       currentPhrase.setAttribute('class', 'searchphrase searchtag valid');
     } else {
@@ -100,21 +103,32 @@ export function searchFieldBehaviour(e, counter, searchField) {
   } else {
     currentPhrase.setAttribute('class', 'searchphrase');
   }
+}
+
+export function addSearchPhrase(state, searchField) {
+  const newSearchTag = document.createElement('div');
+  newSearchTag.setAttribute('id', `searchphrase-${parseInt(state.counter, 10) + 1}`);
+  newSearchTag.setAttribute('class', 'searchphrase');
+  newSearchTag.setAttribute('contenteditable', 'true');
+  newSearchTag.addEventListener('input', event => updateStyle(event, state));
+  newSearchTag.addEventListener('focus', event => searchPhraseFocus(event, state));
+  searchField.appendChild(newSearchTag);
+  newSearchTag.focus();
+}
+
+export function searchFieldBehaviour(e, state, searchField) {
+  const currentPhrase = document.activeElement;
+  const tagEditing = currentPhrase.className.includes('searchtag');
 
   if (e.keyCode === 13) { // Enter
     e.preventDefault();
+    const nextPhrase = document.querySelector(`#searchphrase-${parseInt(state.counter, 10) + 1}`);
     if (!tagEditing) {
       doSearch();
-      return false;
+    } else if (nextPhrase === null) {
+      addSearchPhrase(state, searchField);
     } else {
-      const newSearchTag = document.createElement('div');
-      newSearchTag.setAttribute('id', `searchphrase-${parseInt(counter.counter, 10) + 1}`);
-      newSearchTag.setAttribute('class', 'searchphrase');
-      newSearchTag.setAttribute('contenteditable', 'true');
-      newSearchTag.addEventListener('focus', event => searchPhraseFocus(event, counter));
-      searchField.appendChild(newSearchTag);
-      newSearchTag.focus();
-      return false;
+      nextPhrase.focus();
     }
   } else if (e.keyCode === 8 && // Backspace
       !tagEditing &&
@@ -122,40 +136,29 @@ export function searchFieldBehaviour(e, counter, searchField) {
       currentPhrase.id.toString() !== 'searchphrase-0'
     ) {
     e.preventDefault();
-    const previousPhrase = searchField.children[(counter.counter - 1)];
+    const previousPhrase = searchField.children[(state.counter - 1)];
     previousPhrase.innerHTML = '';
     previousPhrase.setAttribute('class', 'searchphrase');
 
 
-    const oldPhrase = searchField.children[counter.counter];
+    const oldPhrase = searchField.children[state.counter];
     searchField.removeChild(oldPhrase);
     previousPhrase.focus();
   }
-  return true;
 }
 
 export function initializeSearchTags() {
-  const counter = { counter: 0 };
+  const state = { counter: -1 };
   const searchField = document.querySelector('#searchQ');
-  const firstDiv = document.createElement('div');
-  firstDiv.setAttribute('id', `searchphrase-${counter.counter}`);
-  firstDiv.setAttribute('class', 'searchphrase');
-  firstDiv.setAttribute('contenteditable', 'true');
-  firstDiv.addEventListener('focus', event => searchPhraseFocus(event, counter));
-  searchField.appendChild(firstDiv);
-  firstDiv.focus();
-  searchField.addEventListener('keydown', e => searchFieldBehaviour(e, counter, searchField));
+  addSearchPhrase(state, searchField);
+  searchField.addEventListener('keydown', e => searchFieldBehaviour(e, state, searchField));
 }
-
-
 
 export function initializeSearchButton() {
   document.querySelector('#searchSubmit').addEventListener('click', () => {
     doSearch();
   });
 }
-
-
 
 export function initializeSearch() {
   initializeSearchTags();
