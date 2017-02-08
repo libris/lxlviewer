@@ -157,12 +157,15 @@ def handle_put(path):
 
 
 @app.route('/<path:path>', methods=R_METHODS)
-@app.route('/<path:path>.<suffix>', methods=R_METHODS)
+#@app.route('/<path:path>.<suffix>', methods=R_METHODS)
 #@app.route('/<path:path>/data', methods=R_METHODS)
-#@app.route('/<path:path>/data.<suffix>', methods=R_METHODS)
+@app.route('/<path:path>/data.<suffix>', methods=R_METHODS)
 #@app.route('/<path:path>/data-view', methods=R_METHODS)
 #@app.route('/<path:path>/data-view.<suffix>', methods=R_METHODS)
 def thingview(path, suffix=None):
+    #if not suffix and '.' in path:
+    #    path, suffix = path.rsplit('.')
+
     whelk_accept_header = _get_view_data_accept_header(request, suffix)
 
     resource_id = _get_served_uri(request.url_root, path)
