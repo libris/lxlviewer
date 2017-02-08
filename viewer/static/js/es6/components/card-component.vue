@@ -103,6 +103,7 @@ export default {
     opacity: 0;
     position: absolute;
     display: none;
+    overflow-x: hidden;
     .card {
       margin-bottom: 7px;
       box-shadow: 0px 11px 15px -10px rgba(0,0,0,0.3);
@@ -142,7 +143,6 @@ export default {
   }
   .card {
     border: 0;
-    overflow-x: hidden;
     width: @col-value;
     margin-top: 2px; // To avoid clipping against parent container
     position: relative;
@@ -190,7 +190,6 @@ export default {
       padding: 0px;
       min-height: 70px;
       padding-bottom: 5px;
-      overflow: hidden;
       > li {
         padding: 2px 7px;
         display: block;
