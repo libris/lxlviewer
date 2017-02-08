@@ -47,7 +47,7 @@ export function getConvertedSearchObject(object) {
       convertedObject[resultKey] = v;
       // Hardcoded for isbn
       if (k.toLowerCase() === 'isbn') {
-        convertedObject['identifiedBy.type'] = 'isbn';
+        convertedObject['identifiedBy.@type'] = 'ISBN';
       }
       
     } else {
