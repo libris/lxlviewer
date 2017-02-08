@@ -81,7 +81,9 @@ export default {
             </a>
           </span>
           <span class="value" v-show="!isObject(v)">{{v}}</span>
-          <ul class="value" v-show="isObject(v)"><li class="card-data-value-row" v-for="(x,y) in v" track-by="$index">{{y}}</li></ul>
+          <ul class="value" v-show="isObject(v)">
+            <li class="card-data-value-row" v-for="(x,y) in v" track-by="$index">{{y}}</li>
+          </ul>
         </li>
       </ul>
     </div>
@@ -198,7 +200,7 @@ export default {
           word-break: break-word;
           display: inline-block;
         }
-        .key {
+        > .key {
           width: 22%;
           vertical-align: top;
           text-align: right;
@@ -213,13 +215,13 @@ export default {
             text-decoration: none;
           }
         }
-        .value {
+        > .value {
           vertical-align: top;
           width: 77%;
           display: inline-block;
           padding: 0px;
           .card-data-value-row {
-            display: block;
+            display: inline-block;
             word-break: break-all;
           }
         }
