@@ -119,14 +119,22 @@
         <span class="key">${vocab_term(k)}</span>
           % if isinstance(v, dict) and len(v) > 1
             <span class="value">
-              ${thing_chip(v)}
+              % if expanded
+                ${thing_chip(v)}
+              % else
+                ${thing_chip(v, False)}
+              % endif
             </span>
           % elif isinstance(v, list)
             <ul class="value">
               % for sub in v
                 <li class="card-data-value-row">
                   % if isinstance(sub, dict)
-                    ${thing_chip(sub)}
+                    % if expanded
+                      ${thing_chip(sub)}
+                    % else
+                      ${thing_chip(sub, False)}
+                    % endif
                   % else
                   <span>${sub}</span>
                   % endif
@@ -143,13 +151,18 @@
 </div>
 % endmacro
 
-% macro thing_chip(object)
+% macro thing_chip(object, expandable = True)
 <div class="chip-container">
   <div class="chip">
-
-    <span class="chip-label">${vocab.get_label_for(object)}</span>
+    <span class="chip-label">
+      <a href="${object[ID]}">
+      ${vocab.get_label_for(object)}
+      </a>
+    </span>
   </div>
-  ${thing_card(object)}
+  % if expandable
+    ${thing_card(object)}
+  % endif
 </div>
 % endmacro
 
