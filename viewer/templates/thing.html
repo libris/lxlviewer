@@ -14,44 +14,13 @@
 % block content
 <div class="row">
   <div class="col-md-9">
-    ${thing_full(thing)}
+    ${thing_full(thing['mainEntity'])}
   </div>
   <div class="col-md-3">
     <div>
       Inversrelationer...
     </div>
   </div>
-</div>
-<hr>
-<div class="row">
-  <div class="col-md-9">
-    ${viewthing(thing, element='article', classes='panel panel-default main-item')}
-  </div>
-  % if not rel and thing[REVERSE]
-    <div class="col-md-3 side-view">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <h4>${ui[REVERSE].label}</h4>
-        </div>
-        <div class="panel-body">
-          <p>
-            <a href="${url_for('.find', o=thing[ID], limit=page_limit)}">${ui.SEE_ALL.label}&hellip;</a>
-          </p>
-          <dl resource="${thing[ID]}">
-            % for k, vs in thing[REVERSE].items()
-              % set p = vocab.index[k] or {'curie': k}
-              <dt>Med relation: ${termref(p)}</dt>
-              <dd>
-                % for v in vs
-                    ${viewthing(v, rev=p.curie)}
-                  % endfor
-                </dd>
-                % endfor
-              </dl>
-        </div>
-      </div>
-    </div>
-  % endif
 </div>
 % endblock
 
@@ -62,7 +31,7 @@
     <h1>${vocab.get_label_for(thing)}</h1>
   </div>
   <div class="body">
-    ${ thing_data_list(thing['mainEntity']) }
+    ${ thing_data_list(thing) }
   </div>
 </div>
 
@@ -150,14 +119,22 @@
         <span class="key">${vocab_term(k)}</span>
           % if isinstance(v, dict) and len(v) > 1
             <span class="value">
-              ${thing_chip(v)}
+              % if expanded
+                ${thing_chip(v)}
+              % else
+                ${thing_chip(v, False)}
+              % endif
             </span>
           % elif isinstance(v, list)
             <ul class="value">
               % for sub in v
                 <li class="card-data-value-row">
                   % if isinstance(sub, dict)
-                    ${thing_chip(sub)}
+                    % if expanded
+                      ${thing_chip(sub)}
+                    % else
+                      ${thing_chip(sub, False)}
+                    % endif
                   % else
                   <span>${sub}</span>
                   % endif
@@ -174,12 +151,18 @@
 </div>
 % endmacro
 
-% macro thing_chip(object)
+% macro thing_chip(object, expandable = True)
 <div class="chip-container">
   <div class="chip">
-    <span class="chip-label">${vocab.get_label_for(object)}</span>
+    <span class="chip-label">
+      <a href="${object[ID]}">
+      ${vocab.get_label_for(object)}
+      </a>
+    </span>
   </div>
-  ${thing_card(object)}
+  % if expandable
+    ${thing_card(object)}
+  % endif
 </div>
 % endmacro
 

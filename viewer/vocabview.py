@@ -125,6 +125,8 @@ class VocabView:
         types = set(as_iterable(node.get(TYPE)))
 
         if types & {'Record'}:
+            if 'mainEntity' not in node:
+                return self._label_from_chips(node)
             return "{} ({})".format(self._label_from_chips(node),
                     self.get_label_for(node['mainEntity']))
 

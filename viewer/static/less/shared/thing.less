@@ -17,11 +17,15 @@ div.thing {
       width: 100%;
       border: solid #ccc;
       border-width: 0px 0px 1px 0px;
+      background-color: @white;
     }
     > .body {
       display: none;
     }
     &.expanded {
+      > .header {
+        background-color: darken(@white, 5%);
+      }
       .expand-button {
         opacity: 1;
       }
@@ -35,6 +39,9 @@ div.thing {
       transition-property: opacity;
     }
     &:hover {
+      > .header {
+        background-color: darken(@white, 5%);
+      }
       .expand-button {
         opacity: 1;
       }
@@ -323,7 +330,7 @@ div.thing {
 
 /*********/
 
-body#thing {
+body#thing, body#pagedcollection {
 
   height: 100%;
 

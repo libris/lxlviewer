@@ -1,5 +1,5 @@
-export function initializeHoverCards() {
-  const $chipContainers = $('.chip-container');
+export function initializeHoverCards($thingContainer) {
+  const $chipContainers = $thingContainer.find('.chip-container');
   $chipContainers.each(function () {
     const $chipContainer = $(this);
     $(this).find('.chip').on('mouseenter', function () {
@@ -80,16 +80,20 @@ export function collapse($elem) {
   $elem.css('width', '').css('height', '');
 }
 
-export function initHitlistExpands($hitlist) {
+export function initHitlistExpands() {
   // Hit list expand functionality
-  $($hitlist).find('.thing-list-item .expand-button').click(function() {
-    const $subject = $(this).closest('.thing-list-item');
-    if ($subject.hasClass('expanded')) {
-      $(this).find('i').removeClass('rotate-90');
-      $subject.removeClass('expanded');
-    } else {
-      $(this).find('i').addClass('rotate-90');
-      $subject.addClass('expanded');
+  $('.thing-list-item .header').click(function(e) {
+    const targetIsLink = (e.target.tagName.toLowerCase() === 'a');
+    if (!targetIsLink) {
+      const $subject = $(this).closest('.thing-list-item');
+      if ($subject.hasClass('expanded')) {
+        $(this).find('i').removeClass('rotate-90');
+        $subject.removeClass('expanded');
+      } else {
+        $(this).find('i').addClass('rotate-90');
+        $subject.addClass('expanded');
+        initializeHoverCards($(this).parent());
+      }
     }
   });
 }

@@ -94,7 +94,6 @@ export default {
 @import './_variables.less';
 
 .card-info-container {
-  overflow-y: hidden;
   line-height: 1.6;
   &.floating {
     z-index: @active-component-z;
