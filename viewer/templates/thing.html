@@ -23,80 +23,46 @@
   </div>
 </div>
 <hr>
-  <div class="row">
-    <div class="col-md-9">
-      ${viewthing(thing, element='article', classes='panel panel-default main-item')}
-    </div>
-    % if not rel and thing[REVERSE]
-      <div class="col-md-3 side-view">
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <h4>${ui[REVERSE].label}</h4>
-          </div>
-          <div class="panel-body">
-            <p>
-              <a href="${url_for('.find', o=thing[ID], limit=page_limit)}">${ui.SEE_ALL.label}&hellip;</a>
-            </p>
-            <dl resource="${thing[ID]}">
-              % for k, vs in thing[REVERSE].items()
-                % set p = vocab.index[k] or {'curie': k}
-                <dt>Med relation: ${termref(p)}</dt>
-                <dd>
-                  % for v in vs
-                      ${viewthing(v, rev=p.curie)}
-                    % endfor
-                  </dd>
+<div class="row">
+  <div class="col-md-9">
+    ${viewthing(thing, element='article', classes='panel panel-default main-item')}
+  </div>
+  % if not rel and thing[REVERSE]
+    <div class="col-md-3 side-view">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4>${ui[REVERSE].label}</h4>
+        </div>
+        <div class="panel-body">
+          <p>
+            <a href="${url_for('.find', o=thing[ID], limit=page_limit)}">${ui.SEE_ALL.label}&hellip;</a>
+          </p>
+          <dl resource="${thing[ID]}">
+            % for k, vs in thing[REVERSE].items()
+              % set p = vocab.index[k] or {'curie': k}
+              <dt>Med relation: ${termref(p)}</dt>
+              <dd>
+                % for v in vs
+                    ${viewthing(v, rev=p.curie)}
                   % endfor
-                </dl>
-          </div>
+                </dd>
+                % endfor
+              </dl>
         </div>
       </div>
-    % endif
-  </div>
+    </div>
+  % endif
+</div>
 % endblock
 
 % macro thing_full(thing)
 <div class="thing thing-full">
   ${toolbar(thing, current_user.is_authenticated)}
   <div class="header">
-    <h1>${displayvalues(thing)}</h1>
+    <h1>${vocab.get_label_for(thing)}</h1>
   </div>
   <div class="body">
-      % set node = thing['mainEntity']
-      % for k in vocab.sortedkeys(node)
-      % set v = node[k]
-      % set expandedProp = 'instanceOf'
-      <div class="data-node">
-        <div class="key">${k}</div>
-        <div class="value node-list">
-          % if isinstance(v, list)
-          <ul>
-            % for sub in v
-              <li>
-                % if isinstance(sub, dict)
-                  % if sub == expandedProp
-                    ${thing_card(sub, True)}
-                  % else
-                    ${thing_chip(sub)}
-                  % endif
-                % else
-                  ${thing_value(sub)}
-                % endif
-              </li>
-            % endfor
-          </ul>
-          % elif isinstance(v, dict)
-            % if k == expandedProp
-              ${thing_card(v, True)}
-            % else
-              ${thing_chip(v)}
-            % endif
-          % else
-            ${thing_value(v)}
-          % endif
-        </div>
-      </div>
-      % endfor
+    ${ thing_data_list(thing['mainEntity']) }
   </div>
 </div>
 
@@ -106,47 +72,52 @@
 <div class="thing thing-list-item">
   <div class="header">
     <span class="expand-button"><i class='fa fa-chevron-right'></i></span>
-    <span class="title"><a href="${thing[ID]}">${displayvalues(thing)}</a></span>
+    <span class="title"><a href="${thing[ID]}">${vocab.get_label_for(thing)}</a></span>
     <span class="class">${thing[TYPE]}</span>
   </div>
   <div class="body">
-      % set node = thing
-      % for k in vocab.sortedkeys(node)
-      % set v = node[k]
-      % set expandedProp = 'instanceOf'
-      <div class="data-node">
-        <div class="key">${k}</div>
-        <div class="value node-list">
-          % if isinstance(v, list)
-          <ul>
-            % for sub in v
-              <li>
-                % if isinstance(sub, dict)
-                  % if sub == expandedProp
-                    ${thing_card(sub, True)}
-                  % else
-                    ${thing_chip(sub)}
-                  % endif
-                % else
-                  ${thing_value(sub)}
-                % endif
-              </li>
-            % endfor
-          </ul>
-          % elif isinstance(v, dict)
-            % if k == expandedProp
-              ${thing_card(v, True)}
-            % else
-              ${thing_chip(v)}
-            % endif
-          % else
-            ${thing_value(v)}
-          % endif
-        </div>
-      </div>
-      % endfor
+    ${thing_data_list(thing)}
   </div>
 </div>
+% endmacro
+
+% macro thing_data_list(thing)
+
+% set node = thing
+% for k in vocab.sortedkeys(node)
+% set v = node[k]
+% set expandedProp = 'instanceOf'
+<div class="data-node rows">
+  <div class="label">${vocab_term(k)}</div>
+  <div class="value node-list">
+    % if isinstance(v, list)
+    <ul>
+      % for sub in v
+        <li>
+          % if isinstance(sub, dict)
+            % if sub == expandedProp
+              ${thing_card(sub, True)}
+            % else
+              ${thing_chip(sub)}
+            % endif
+          % else
+            ${thing_value(sub)}
+          % endif
+        </li>
+      % endfor
+    </ul>
+    % elif isinstance(v, dict)
+      % if k == expandedProp
+        ${thing_card(v, True)}
+      % else
+        ${thing_chip(v)}
+      % endif
+    % else
+      ${thing_value(v)}
+    % endif
+  </div>
+</div>
+% endfor
 % endmacro
 
 % macro thing_value(object)
@@ -165,19 +136,37 @@
   <div class="card">
     <div class="header">
       <span class="title">
-        <a href="${object[ID]}">${displayvalues(object)}</a>
+        <a href="${object[ID]}">${vocab.get_label_for(object)}</a>
       </span>
       <span class="type">
         ${object[TYPE]}
       </span>
     </div>
     <ul class="card-data">
-      % for k,v in object.items()
+      % set node = object
+      % for k in vocab.sortedkeys(node)
+      % set v = node[k]
       <li>
-        <div class="key">${k}</div>
-        <div class="value">
-          ${v}
-        </div>
+        <span class="key">${vocab_term(k)}</span>
+          % if isinstance(v, dict) and len(v) > 1
+            <span class="value">
+              ${thing_chip(v)}
+            </span>
+          % elif isinstance(v, list)
+            <ul class="value">
+              % for sub in v
+                <li class="card-data-value-row">
+                  % if isinstance(sub, dict)
+                    ${thing_chip(sub)}
+                  % else
+                  <span>${sub}</span>
+                  % endif
+                </li>
+              % endfor
+            </ul>
+          % else
+            <span class="value">${v}</span>
+          % endif
       </li>
       % endfor
     </ul>
@@ -188,7 +177,7 @@
 % macro thing_chip(object)
 <div class="chip-container">
   <div class="chip">
-    <span class="chip-label">${displayvalues(object)}</span>
+    <span class="chip-label">${vocab.get_label_for(object)}</span>
   </div>
   ${thing_card(object)}
 </div>
@@ -201,11 +190,16 @@
   <ul>
     % for k,v in object.items()
     <li>
-      ${k}: ${v}
+      ${vocab_term(k)}: ${v}
     </li>
     % endfor
   </ul>
 </div>
+% endmacro
+
+% macro vocab_term(k)
+% set p = vocab.index[k] or {'curie': k}
+  ${termref(p)}
 % endmacro
 
 % macro displayvalues(object)

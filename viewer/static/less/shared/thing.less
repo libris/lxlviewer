@@ -43,7 +43,7 @@ div.thing {
   &.thing-full {
     border-radius: 3px;
     > .header {
-      padding: 1em;
+      padding: 0.5em;
       background-color: @brand-primary;
       color: @white;
     }
@@ -51,6 +51,7 @@ div.thing {
   > .header {
     line-height: 1em;
     h1 {
+      line-height: 1.6;
       margin: 0;
       width: 75%;
       white-space: nowrap;
@@ -80,6 +81,7 @@ div.thing {
   .body {
     background-color: #fafafa;
     .chip-container {
+      display: inline-block;
       .chip {
         .chip-mixin(@brand-primary, @white);
       }
@@ -99,18 +101,6 @@ div.thing {
       border: solid #ccc;
       border-width: 0px 0px 1px 0px;
       outline: none !important;
-      > .key {
-        display: inline-block;
-        width: 25%;
-        color: @gray-dark;
-        font-size: 0.8em;
-        text-align: right;
-        padding: 0 1em;
-      }
-      > .value {
-        display: inline-block;
-        width: 74%;
-      }
     }
   }
 }

@@ -81,7 +81,9 @@ export default {
             </a>
           </span>
           <span class="value" v-show="!isObject(v)">{{v}}</span>
-          <ul class="value" v-show="isObject(v)"><li class="card-data-value-row" v-for="(x,y) in v" track-by="$index">{{y}}</li></ul>
+          <ul class="value" v-show="isObject(v)">
+            <li class="card-data-value-row" v-for="(x,y) in v" track-by="$index">{{y}}</li>
+          </ul>
         </li>
       </ul>
     </div>
@@ -101,6 +103,7 @@ export default {
     opacity: 0;
     position: absolute;
     display: none;
+    overflow-x: hidden;
     .card {
       margin-bottom: 7px;
       box-shadow: 0px 11px 15px -10px rgba(0,0,0,0.3);
@@ -140,7 +143,6 @@ export default {
   }
   .card {
     border: 0;
-    overflow-x: hidden;
     width: @col-value;
     margin-top: 2px; // To avoid clipping against parent container
     position: relative;
@@ -188,7 +190,6 @@ export default {
       padding: 0px;
       min-height: 70px;
       padding-bottom: 5px;
-      overflow: hidden;
       > li {
         padding: 2px 7px;
         display: block;
@@ -198,7 +199,7 @@ export default {
           word-break: break-word;
           display: inline-block;
         }
-        .key {
+        > .key {
           width: 22%;
           vertical-align: top;
           text-align: right;
@@ -213,13 +214,13 @@ export default {
             text-decoration: none;
           }
         }
-        .value {
+        > .value {
           vertical-align: top;
           width: 77%;
           display: inline-block;
           padding: 0px;
           .card-data-value-row {
-            display: block;
+            display: inline-block;
             word-break: break-all;
           }
         }
