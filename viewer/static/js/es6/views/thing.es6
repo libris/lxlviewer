@@ -1,6 +1,5 @@
 import View from './view';
 import * as thingutil from '../utils/thing';
-import * as searchutil from '../utils/search';
 import * as VocabLoader from '../utils/vocabloader';
 import * as toolbarUtil from '../utils/toolbar';
 
@@ -10,13 +9,8 @@ export default class Thing extends View {
     super.initialize();
 
     VocabLoader.initVocabClicks();
-    searchutil.initTypeButtons();
-    thingutil.initializeHoverCards();
-    thingutil.createChips($('.main-item'));
-    thingutil.createChips($('.side-view'));
-    thingutil.initHitlistExpands('.result-list');
-    searchutil.initializeSearch();
-    toolbarUtil.initToolbar(this);
+    thingutil.initializeHoverCards($('.thing-full'));
+    // toolbarUtil.initToolbar(this);
   }
 
 }
