@@ -81,6 +81,7 @@ export function doSearch() {
   _.each(getConvertedSearchObject(tagObject), (v, k) => {
     queryParts.push(`${k}=${v}`);
   });
+  queryParts.push('@type=Instance');
   query += queryParts.join('&');
   window.location = query;
 }
@@ -155,7 +156,8 @@ export function initializeSearchTags() {
 }
 
 export function initializeSearchButton() {
-  document.querySelector('#searchSubmit').addEventListener('click', () => {
+  document.querySelector('#searchSubmit').addEventListener('click', (e) => {
+    e.preventDefault();
     doSearch();
   });
 }
