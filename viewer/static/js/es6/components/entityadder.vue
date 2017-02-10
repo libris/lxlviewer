@@ -116,7 +116,7 @@ export default {
     addLinked(item) {
       this.$dispatch('add-item', item);
       this.changeNotification('color', 'green');
-      this.changeNotification('message', `Lade till "${this.getItemAsChip(item)}"`);
+      this.changeNotification('message', `Lade till "${this.getItemLabel(item)}"`);
       this.closeSearch();
     },
     goAnonymous() {

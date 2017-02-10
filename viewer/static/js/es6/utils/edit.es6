@@ -21,6 +21,7 @@ export function getLinked(id, linked) {
   }
   if (!obj.hasOwnProperty('@type') && Object.keys(obj).length === 1) {
     console.warn('Couldn\'t find embellished entity:', id);
+    return {};
   }
   if (!obj.hasOwnProperty('@type') && Object.keys(obj).length > 1) {
     console.warn('Embellished entity has an unknown type (missing @type). ID:', id);

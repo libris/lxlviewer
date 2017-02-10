@@ -25,6 +25,9 @@ div.thing {
     &.expanded {
       > .header {
         background-color: darken(@white, 5%);
+        > .title {
+          font-size: 140%;
+        }
       }
       .expand-button {
         opacity: 1;
@@ -37,6 +40,9 @@ div.thing {
       opacity: 0.1;
       transition: 0.25s ease;
       transition-property: opacity;
+      i {
+        transition: transform 0.25s ease;
+      }
     }
     &:hover {
       > .header {
@@ -74,6 +80,7 @@ div.thing {
     span.title {
       width: 74%;
       padding: 0.5em 1em 0.5em 0;
+      transition: font-size 0.25s ease;
     }
     span.class {
       text-align: right;
