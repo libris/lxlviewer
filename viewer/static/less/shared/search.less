@@ -15,7 +15,7 @@ body#website {
       width: 24%;
     }
     .search-input {
-      width: 75%;
+      width: 100%;
     }
   }
 }
@@ -30,6 +30,13 @@ body#website {
   }
   .form-group {
     width: 100%;
+    > div {
+      display: flex;
+      > div {
+        flex-grow: 1;
+        margin-right: 5px;
+      }
+    }
   }
   .search-label {
     display: block;
@@ -57,12 +64,18 @@ body#website {
 
 
 #searchQ {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
   .searchphrase {
-    display: inline-block;
+    flex-grow: 1;
     margin-right: 5px;
     outline: none;
+    min-width:20px;
   }
   .searchtag {
+    outline: none;
+    margin-right: 5px;
     border-radius: 3px;
     padding: 0px 5px;
   }

@@ -101,9 +101,9 @@ export function updateStyle(event, state) {
 
   if (tagEditing) {
     if (validTags.indexOf(currentPhrase.innerHTML.split(':')[0].toLowerCase()) > -1) {
-      currentPhrase.setAttribute('class', 'searchphrase searchtag valid');
+      currentPhrase.setAttribute('class', 'searchtag valid');
     } else {
-      currentPhrase.setAttribute('class', 'searchphrase searchtag invalid');
+      currentPhrase.setAttribute('class', 'searchtag invalid');
     }
   } else {
     currentPhrase.setAttribute('class', 'searchphrase');
