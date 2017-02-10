@@ -214,8 +214,14 @@
   <label>
     Filtrera
   </label>
+  % for dimension in stats.sliceByDimension
+  % set value = stats.sliceByDimension[dimension]
+  % set dimension_prop = value.dimension.split('.')
+  % set last_prop = dimension_prop[-1]
+  <div class="dimension-header">${last_prop}</div>
   <ul>
-    % for observation in stats.sliceByDimension['@type'].observation
+    
+    % for observation in stats.sliceByDimension[dimension].observation
     % if observation.object.label
     <li>
       <a href="${observation.view['@id']}" title="${observation.object.label}">
@@ -233,6 +239,7 @@
     % endif
     % endfor
   </ul>
+  % endfor
   % else
     Inga facetter tillgängliga.
   % endif
