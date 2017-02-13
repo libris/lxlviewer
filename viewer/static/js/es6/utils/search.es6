@@ -83,9 +83,6 @@ export function doSearch() {
     queryParts.push(`${k}=${v}`);
   });
   queryParts.push('@type=Instance');
-  // TODO: 
-  const facetProperties = `_statsrepr=${JSON.stringify(FacetProperties)}`;
-  queryParts.push(facetProperties);
   query += queryParts.join('&');
   window.location = query;
 }
