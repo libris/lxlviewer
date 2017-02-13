@@ -20,11 +20,17 @@ div.thing {
       background-color: @white;
     }
     > .body {
+      max-height: 0px;
       display: none;
     }
     &.expanded {
+      border-width: 1px 1px 3px 1px;
       > .header {
-        background-color: darken(@white, 5%);
+        background-color: @brand-primary;
+        color: @white;
+        a {
+          color: @white;
+        }
         > .title {
           font-size: 140%;
         }
@@ -34,6 +40,10 @@ div.thing {
       }
       > .body {
         display: block;
+        animation-timing-function: linear;
+        animation-name: expand;
+        animation-duration: 0.5s;
+        animation-fill-mode: forwards;
       }
     }
     .expand-button {
@@ -45,9 +55,6 @@ div.thing {
       }
     }
     &:hover {
-      > .header {
-        background-color: darken(@white, 5%);
-      }
       .expand-button {
         opacity: 1;
       }
@@ -117,6 +124,10 @@ div.thing {
       outline: none !important;
     }
   }
+}
+
+.card-info-container {
+  .card-mixin(@brand-primary, @white);
 }
 
 /********/
@@ -637,11 +648,9 @@ dl.raw-json-list {
       color: @grey-dark;
     }
   }
-
   .ind {
     font-style: italic;
   }
-
   td {
     vertical-align: top;
     padding: 0 3px;
@@ -650,4 +659,17 @@ dl.raw-json-list {
 
 .marc-info-box {
    width: 70%;
+}
+
+@keyframes expand {
+  from {
+    max-height: 0px;
+    overflow: hidden;
+  }
+  1% {
+    overflow: auto;
+  }
+  to {
+    max-height: 1200px;
+  }
 }
