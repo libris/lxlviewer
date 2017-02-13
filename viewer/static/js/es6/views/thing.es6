@@ -9,7 +9,7 @@ export default class Thing extends View {
     super.initialize();
 
     VocabLoader.initVocabClicks();
-    thingutil.initializeHoverCards($('.thing-full'));
+    thingutil.initializeHoverCards($('.thing-full'), 500);
     // toolbarUtil.initToolbar(this);
   }
 
