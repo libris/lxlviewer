@@ -1,5 +1,4 @@
 import PropertyMappings from '../propertymappings.json';
-import FacetProperties from '../facetproperties.json';
 import * as _ from 'lodash';
 
 export function getParameters() {
