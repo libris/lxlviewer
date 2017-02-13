@@ -1,18 +1,25 @@
-export function initializeHoverCards($thingContainer) {
+export function initializeHoverCards($thingContainer, delay) {
   const $chipContainers = $thingContainer.find('.chip-container');
   $chipContainers.each(function () {
     const $chipContainer = $(this);
     $(this).find('.chip').on('mouseenter', function () {
       $(this).addClass('highlighted');
-      $chipContainer.find('.card-info-container')
-        .addClass('card-shown')
-        .removeClass('card-hidden');
+      const $card = $chipContainer.find('.card-info-container');
+      $card.addClass('to-be-active');
+      setTimeout(() => {
+        if ($card.hasClass('to-be-active')) {
+          $card.addClass('card-shown')
+          .removeClass('card-hidden')
+          .removeClass('to-be-active');
+        }
+      }, delay);
     });
     $(this).on('mouseleave', function () {
       $(this).find('.chip').removeClass('highlighted');
       $chipContainer.find('.card-info-container')
         .addClass('card-hidden')
-        .removeClass('card-shown');
+        .removeClass('card-shown')
+        .removeClass('to-be-active');
     });
   });
 }
@@ -92,7 +99,7 @@ export function initHitlistExpands() {
       } else {
         $(this).find('i').addClass('rotate-90');
         $subject.addClass('expanded');
-        initializeHoverCards($(this).parent());
+        initializeHoverCards($(this).parent(), 500);
       }
     }
   });
