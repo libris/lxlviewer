@@ -211,9 +211,8 @@ export default {
       const searchKey = `${keyword}*`;
       let searchUrl = `/find?q=${searchKey}`;
       if (typeof typeArray !== 'undefined' && typeArray.length > 0) {
-        searchUrl += '&';
         for (const type of typeArray) {
-          searchUrl += `@type=${type}`;
+          searchUrl += `&@type=${type}`;
         }
       }
       searchUrl += '&_limit=10';
