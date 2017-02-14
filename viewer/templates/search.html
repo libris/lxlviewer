@@ -25,7 +25,7 @@
           </label>
           <div>
             <div aria-labelledby="searchlabel" class="form-control search-input" name="q" id="searchQ" value="${q | safe | trim }" ></div>
-          
+
             <button id="searchSubmit" class="search-button btn btn-primary"><i class="fa fa-search"></i> Sök</button>
           </div>
         </div>
@@ -223,7 +223,7 @@
   % set last_prop = dimension_prop[-1]
   <div class="dimension-header">${last_prop}</div>
   <ul>
-    
+
     % for observation in stats.sliceByDimension[dimension].observation
     % if observation.object.label
     <li>
@@ -232,7 +232,7 @@
       </a>
       <span class="quantity">(${observation.totalItems})</span>
     </li>
-    % elif observation.object.prefLabelByLang.sv
+    % elif observation.object.prefLabelByLang and observation.object.prefLabelByLang.sv
     <li>
       <a href="${observation.view['@id']}" title="${observation.object.prefLabelByLang.sv}">
         ${observation.object.prefLabelByLang.sv | truncate(30, true) }
