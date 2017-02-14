@@ -142,7 +142,15 @@
               % endfor
             </ul>
           % else
-            <span class="value">${v}</span>
+            % if isinstance(v, dict)
+              % if expanded
+                ${thing_chip(v)}
+              % else
+                ${thing_chip(v, False)}
+              % endif
+            % else
+              <span class="value">${v}</span>
+            % endif
           % endif
       </li>
       % endfor
