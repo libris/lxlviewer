@@ -5,17 +5,21 @@ import * as DisplayUtil from '../utils/display';
 import * as LayoutUtil from '../utils/layout';
 import ProcessedLabel from './processedlabel';
 import ToolTipComponent from './tooltip-component';
+import EntitySearchList from './entity-search-list';
+import LensMixin from './mixins/lens-mixin';
 import { mixin as clickaway } from 'vue-clickaway';
 import { changeStatus, changeNotification } from '../vuex/actions';
 import { getVocabulary, getSettings, getDisplayDefinitions, getEditorData } from '../vuex/getters';
 
 export default {
-  mixins: [clickaway],
+  mixins: [clickaway, LensMixin],
   data() {
     return {
       searchOpen: false,
       searchResult: {},
       keyword: '',
+      loading: false,
+      debounceTimer: 500,
       chooseAnonymousType: false,
       active: false,
       showToolTip: false,
@@ -43,14 +47,27 @@ export default {
     'close-modals'() {
       this.closeSearch();
     },
+    'add-entity'(item) {
+      this.$dispatch('add-item', item);
+      this.changeNotification('color', 'green');
+      this.changeNotification('message', `Lade till "${this.getLabel(item)}"`);
+      this.closeSearch();
+    },
   },
   components: {
     'tooltip-component': ToolTipComponent,
+    'entity-search-list': EntitySearchList,
   },
   watch: {
     keyword(value) {
       if (value) {
-        this.search(value);
+        setTimeout(() => {
+          if (this.keyword === value) {
+            this.search(value);
+          }
+        }, this.debounceTimer);
+      } else {
+        this.searchResult = {};
       }
     },
   },
@@ -113,12 +130,6 @@ export default {
       LayoutUtil.scrollLock(false);
       this.changeStatus('keybindState', 'overview');
     },
-    addLinked(item) {
-      this.$dispatch('add-item', item);
-      this.changeNotification('color', 'green');
-      this.changeNotification('message', `Lade till "${this.getItemLabel(item)}"`);
-      this.closeSearch();
-    },
     goAnonymous() {
       const range = this.getRange;
       if (range.length > 1) {
@@ -145,37 +156,16 @@ export default {
     },
     search(keyword) {
       const self = this;
+      self.searchResult = {};
       self.loading = true;
       this.getItems(keyword, this.getRange).then((result) => {
-        self.searchResult = result;
+        setTimeout(() => {
+          self.searchResult = result;
+          self.loading = false;
+        }, 500);
+      }, (error) => {
+        self.loading = false;
       });
-    },
-    getItemLabel(item) {
-      return DisplayUtil.getItemLabel(
-        item,
-        this.display,
-        this.editorData.linked,
-        this.vocab,
-        this.settings
-      );
-    },
-    getItemAsChip(item) {
-      return DisplayUtil.getChip(
-        item,
-        this.display,
-        this.editorData.linked,
-        this.vocab,
-        this.settings
-      );
-    },
-    getItemAsCard(item) {
-      return DisplayUtil.getCard(
-        item,
-        this.display,
-        this.editorData.linked,
-        this.vocab,
-        this.settings
-      );
     },
     getEmptyForm(type) {
       console.log('Type', type);
@@ -265,18 +255,10 @@ export default {
             <button v-on:click="goAnonymous">Lägg till oauktoriserad</button>
           </div>
         </div>
-        <div class="search-result">
-          <ul class="search-result-list" v-show="searchResult.length === 0">
-            <li class="search-result-no-items">
-            Inga resultat...
-            </li>
-          </ul>
-          <ul class="search-result-list" v-show="searchResult.length > 0">
-            <li v-for="item in searchResult" track-by="$index" class="search-result-item" v-on:click="addLinked(item)">
-              {{ getItemLabel(item) }}
-            </li>
-          </ul>
-        </div>
+        <div v-if="!loading && keyword.length === 0" class="search-status">Skriv för att börja söka...</div>
+        <div v-if="loading" class="search-status">Söker...</div>
+        <div v-if="!loading && searchResult.length === 0 && keyword.length > 0" class="search-status">Inga resultat...</div>
+        <entity-search-list v-if="!loading && keyword.length > 0" :results="searchResult"></entity-search-list>
       </div>
       <div class="stage-1" v-show="chooseAnonymousType">
         <button v-on:click="addEmpty(type)" v-for="type in getRange">{{ type }}</button>
@@ -318,9 +300,13 @@ export default {
           width: 50%;
         }
       }
+      .search-status {
+        padding: 10px;
+      }
       .search-result {
         overflow-y: scroll;
         height: 328px;
+        margin-top: 10px;
         .search-result-list {
           width: 100%;
           padding: 0px;
