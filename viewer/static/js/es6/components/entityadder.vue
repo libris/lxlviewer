@@ -23,6 +23,7 @@ export default {
       chooseAnonymousType: false,
       active: false,
       showToolTip: false,
+      rangeInfo: false,
     };
   },
   vuex: {
@@ -250,6 +251,16 @@ export default {
           <div class="search">
             Sök:
             <input v-model="keyword"></input>
+            <div class="range-info-container" v-if="getRange.length > 0" @mouseleave="rangeInfo = false">
+              <i class="fa fa-info-circle" @mouseenter="rangeInfo = true"></i>
+              <div class="range-info" v-if="rangeInfo">
+                Tillåtna typer:
+                <br>
+                <span v-for="range in getRange" class="range">
+                  - {{range | labelByLang}}
+                </span>
+              </div>
+            </div>
           </div>
           <div class="anonymous" v-show="allowAnon">
             <button v-on:click="goAnonymous">Lägg till oauktoriserad</button>
@@ -298,6 +309,21 @@ export default {
         .search {
           float: left;
           width: 50%;
+          .range-info-container {
+            display: inline-block;
+            .range-info {
+              position: absolute;
+              background-color: #fff;
+              border: 1px solid #ccc;
+              padding: 5px;
+              border-radius: 3px;
+              font-size: 1.2rem;
+              .range {
+                display: block;
+                font-size: 1.4rem;
+              }
+            }
+          }
         }
       }
       .search-status {
