@@ -1,7 +1,8 @@
 % extends "base.html"
+{% from 'toolbar.html' import toolbar_old %}
 {% from 'toolbar.html' import toolbar %}
 
-{% block title %}${vocab.labelgetter(thing)}{% endblock %}
+{% block title %}${vocab.get_label_for(thing)}{% endblock %}
 
 {% block bodyattrs %}vocab="${config.VOCAB_IRI}" id="thing"{% endblock %}
 {% block navcontainerclass %} container {% endblock %}
@@ -11,37 +12,188 @@
 % endblock
 
 % block content
-  <div class="row">
-    <div class="col-md-9">
-      ${viewthing(thing, element='article', classes='panel panel-default main-item')}
+<div class="row">
+  <div class="col-md-9">
+    ${thing_full(thing['mainEntity'])}
+  </div>
+  <div class="col-md-3">
+    <div>
+      Inversrelationer...
     </div>
-    % if not rel and thing[REVERSE]
-      <div class="col-md-3 side-view">
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <h4>${ui[REVERSE].label}</h4>
-          </div>
-          <div class="panel-body">
-            <p>
-              <a href="${url_for('.find', o=thing[ID], limit=page_limit)}">${ui.SEE_ALL.label}&hellip;</a>
-            </p>
-            <dl resource="${thing[ID]}">
-              % for k, vs in thing[REVERSE].items()
-                % set p = vocab.index[k] or {'curie': k}
-                <dt>Med relation: ${termref(p)}</dt>
-                <dd>
-                  % for v in vs
-                      ${viewthing(v, rev=p.curie)}
-                    % endfor
-                  </dd>
-                  % endfor
-                </dl>
-          </div>
-        </div>
-      </div>
+  </div>
+</div>
+% endblock
+
+% macro thing_full(thing)
+<div class="thing thing-full">
+  ${toolbar(thing, current_user.is_authenticated)}
+  <div class="header">
+    <h1>${vocab.get_label_for(thing)}</h1>
+  </div>
+  <div class="body">
+    ${ thing_data_list(thing) }
+  </div>
+</div>
+
+% endmacro
+
+% macro thing_list_item(thing)
+<div class="thing thing-list-item">
+  <div class="header">
+    <span class="expand-button"><i class='fa fa-chevron-right'></i></span>
+    <span class="title"><a href="${thing[ID]}">${vocab.get_label_for(thing)}</a></span>
+    <span class="class">${thing[TYPE]}</span>
+  </div>
+  <div class="body">
+    ${thing_data_list(thing)}
+  </div>
+</div>
+% endmacro
+
+% macro thing_data_list(thing)
+
+% set node = thing
+% for k in vocab.sortedkeys(node)
+% set v = node[k]
+% set expandedProp = 'instanceOf'
+<div class="data-node rows">
+  <div class="label">${vocab_term(k)}</div>
+  <div class="value node-list">
+    % if isinstance(v, list)
+    <ul>
+      % for sub in v
+        <li>
+          % if isinstance(sub, dict)
+            % if sub == expandedProp
+              ${thing_card(sub, True)}
+            % else
+              ${thing_chip(sub)}
+            % endif
+          % else
+            ${thing_value(sub)}
+          % endif
+        </li>
+      % endfor
+    </ul>
+    % elif isinstance(v, dict)
+      % if k == expandedProp
+        ${thing_card(v, True)}
+      % else
+        ${thing_chip(v)}
+      % endif
+    % else
+      ${thing_value(v)}
     % endif
   </div>
-% endblock
+</div>
+% endfor
+% endmacro
+
+% macro thing_value(object)
+<div class="item-value">
+  <span>${object}</span>
+</div>
+% endmacro
+
+% macro thing_card(object, expanded = False)
+
+% if expanded
+<div class="card-info-container expanded">
+% else
+<div class="card-info-container floating card-hidden">
+% endif
+  <div class="card">
+    <div class="header">
+      <span class="title">
+        <a href="${object[ID]}">${vocab.get_label_for(object)}</a>
+      </span>
+      <span class="type">
+        ${object[TYPE]}
+      </span>
+    </div>
+    <ul class="card-data">
+      % set node = object
+      % for k in vocab.sortedkeys(node)
+      % set v = node[k]
+      <li>
+        <span class="key">${vocab_term(k)}</span>
+          % if isinstance(v, dict) and len(v) > 1
+            <span class="value">
+              % if expanded
+                ${thing_chip(v)}
+              % else
+                ${thing_chip(v, False)}
+              % endif
+            </span>
+          % elif isinstance(v, list)
+            <ul class="value">
+              % for sub in v
+                <li class="card-data-value-row">
+                  % if isinstance(sub, dict)
+                    % if expanded
+                      ${thing_chip(sub)}
+                    % else
+                      ${thing_chip(sub, False)}
+                    % endif
+                  % else
+                  <span>${sub}</span>
+                  % endif
+                </li>
+              % endfor
+            </ul>
+          % else
+            <span class="value">${v}</span>
+          % endif
+      </li>
+      % endfor
+    </ul>
+  </div>
+</div>
+% endmacro
+
+% macro thing_chip(object, expandable = True)
+<div class="chip-container">
+  <div class="chip">
+    <span class="chip-label">
+      <a href="${object[ID]}">
+      ${vocab.get_label_for(object)}
+      </a>
+    </span>
+  </div>
+  % if expandable
+    ${thing_card(object)}
+  % endif
+</div>
+% endmacro
+
+% macro thing_embedded(object)
+<div class="item-embedded">
+  <b>${object[TYPE]}</b>
+  <hr>
+  <ul>
+    % for k,v in object.items()
+    <li>
+      ${vocab_term(k)}: ${v}
+    </li>
+    % endfor
+  </ul>
+</div>
+% endmacro
+
+% macro vocab_term(k)
+% set p = vocab.index[k] or {'curie': k}
+  ${termref(p)}
+% endmacro
+
+% macro displayvalues(object)
+  % for value in object.values()
+    % if isinstance(value, dict)
+      ${value} ++++
+    % else
+      ${ value }
+    % endif
+  % endfor
+% endmacro
 
 % macro viewthing(thing, element='div', classes='panel panel-default', rel=None, rev=None)
   % set thing_id = thing[ID]
@@ -61,7 +213,7 @@
 
     % if ID in thing
       % set thing_url = view_url(thing_id)
-      ${toolbar(thing_url, current_user.is_authenticated, typename, element)}
+      ${toolbar_old(thing_url, current_user.is_authenticated, typename, element)}
 
       <header class="panel-heading">
         <div class="panel-heading-meta">

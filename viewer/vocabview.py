@@ -2,7 +2,9 @@
 from __future__ import unicode_literals
 __metaclass__ = type
 
-from rdflib import Graph, Literal, URIRef, Namespace, RDF, RDFS, OWL
+import json
+
+from rdflib import Graph, ConjunctiveGraph, Literal, URIRef, Namespace, RDF, RDFS, OWL
 from rdflib.resource import Resource
 
 from .util import as_iterable
@@ -15,155 +17,124 @@ GRAPH = '@graph'
 REVERSE = '@reverse'
 
 
-SDO = Namespace("http://schema.org/")
-VS = Namespace("http://www.w3.org/2003/06/sw-vocab-status/ns#")
-
-
 class VocabView:
 
-    def __init__(self, vocab_graph, vocab_uri, lang='en'):
-        self.index = {}
-        self.unstable_keys = set()
+    def __init__(self, vocab_uri, vocab_data, context_data, display_data, lang='en'):
+        self.vocab_uri = vocab_uri
+        self.vocab_data = vocab_data
+        self.context_data = context_data
+        self.display = display_data
         self.lang = lang
 
-        g = vocab_graph
-        default_ns = g.store.namespace('')
+        self.index = {}
 
-        get_key = lambda s: s.replace(vocab_uri, '')
-
-        VOCAB = Namespace(vocab_uri)
-        PREF_LABEL = VOCAB.prefLabel
-        BASE_LABEL = VOCAB.label
-
-        label_key_items = [(0, 'hasTitle')]
-
-        for s in set(g.subjects()):
-            if not isinstance(s, URIRef):
-                continue
-            if not s.startswith(vocab_uri):
+        for node in vocab_data[GRAPH]:
+            node_id = node.get(ID)
+            if not node_id.startswith(vocab_uri):
                 continue
 
-            key = get_key(s)
+            term_key = self._get_term_key(node_id)
 
-            label = None
-            for label in g.objects(s, RDFS.label):
-                if label.language == lang:
-                    break
+            label = node.get('label')
+            if not label:
+                for langkey, label in node.get('labelByLang', {}).items():
+                    if langkey == lang:
+                        break
             if label:
                 label = unicode(label)
 
-            for domain in g.objects(s, RDFS.domain | SDO.domainIncludes):
-                domain_key = get_key(domain)
+            for domain in as_iterable(node.get('domain') or node.get('domainIncludes')):
+                if ID not in domain:
+                    continue
+                domain_key = self._get_term_key(domain[ID])
                 self.index.setdefault(domain_key, {}).setdefault(
-                        'properties', []).append(key)
+                        'properties', []).append(term_key)
 
-            term = {ID: unicode(s),'label': label, 'curie': key}
+            self.index.setdefault(term_key, {}).update(
+                    dict(node, label=label, curie=term_key))
 
-            if (s, RDF.type, OWL.ObjectProperty) in g:
-                term[TYPE] = ID
+    def _get_term_key(self, node_id):
+        return node_id.replace(self.vocab_uri, '')
 
-            self.index.setdefault(key, {}).update(term)
-
-            if (s, VS.term_status, Literal('unstable')) in g:
-                self.unstable_keys.add(key)
-
-            def distance_to(prop):
-                return path_distance(g, s,
-                    RDFS.subPropertyOf | OWL.equivalentProperty, prop)
-
-            label_distance = distance_to(BASE_LABEL)
-
-            if label_distance is not None:
-                preflabel_distance = distance_to(PREF_LABEL)
-                order = (preflabel_distance
-                         if preflabel_distance is not None else -1,
-                         label_distance)
-                label_key_items.append((order, key))
-
-        self.label_keys = [key for ldist, key in sorted(label_key_items, reverse=True)]
-
-        self.partof_keys = ['inScheme', 'isDefinedBy', 'inCollection', 'inDataset']
-        # TODO: generate vocab-json for label keys, sorting etc.
-        #import pprint
-        #pprint.pprint(self.index)
-
-    def sortedkeys(self, item):
-        # TODO: groups:
-        #   - main: labels, descriptions, type-close links, notes
-        #   - provenance: dates, publication, ...
-        #   - for pages/records:
-        #       - administrativa: created, updated
-        #       - structural navigation: prev, next, alternate formats
-        typeprops = set()
-        for itype in as_iterable(item.get(TYPE)):
-            typedfn = self.index.get(itype)
-            if typedfn:
-                typeprops.update(typedfn.get('properties', []))
-
-        def keykey(key):
-            is_kw = key.startswith('@')
-            is_unstable = key in self.unstable_keys
-            try:
-                label_number = self.label_keys.index(key)
-            except ValueError:
-                label_number = len(self.label_keys)
-            try:
-                partof_number = self.partof_keys.index(key)
-            except ValueError:
-                partof_number = len(self.partof_keys)
-            is_link = self.index[key].get(TYPE) == ID
-            classdistance = 0 if typeprops and key in typeprops else 1
-            return (is_kw,
-                    partof_number,
-                    label_number,
-                    is_link,
-                    classdistance,
-                    key)
-
-        # Changing language containers to simple values...
-        # TODO:
+    def sortedkeys(self, node, lenstype='cards'):
+        lens = self._get_lens_for(node, lenstype)
+        # TODO: Rewriting language containers to localized, simple values...
         # - either support containers by properly using the context
         # - or optimize this rewriting
         # - or do not allow this form (remove from base context)
-        for key in item:
+        for key in node:
             if key.endswith('ByLang'):
-                v = item.pop(key).get(self.lang)
+                v = node.pop(key).get(self.lang)
                 newk = key[:-len('ByLang')]
-                item[newk] = v
+                node[newk] = v
 
-        return sorted((key for key in item
-            if key in self.index
-            and key not in self.unstable_keys), key=keykey)
+        # TODO: Prepare lensprops for speed.
+        lensprops = {key: i for i, key in enumerate(
+                    ['sameAs'] + lens['showProperties'] if lens else [])
+                    if isinstance(key, unicode)}
+        lensmax = len(lensprops)
 
-    def get_label_for(self, item):
-        focus = item.get('focus')
-        if focus:
-            label = self.construct_label(focus)
-            if label:
-                return label
+        return sorted((p for p in node if not p.startswith(('_', '@'))),
+                key=lambda key: (lensprops.get(key, lensmax), key))
 
-        if 'prefLabel' not in item: # ComplexTerm in types
-            termparts = item.get('termParts', [])
+    def _get_lens_for(self, node, lenstype):
+        lens_groups = {
+            'full': ['full', 'cards', 'chips'],
+            'cards': ['cards', 'chips'],
+            'chips': ['chips']
+        }[lenstype]
+        for lens_group_key in lens_groups:
+            lenses = self.display['lensGroups'][lens_group_key]['lenses']
+            for ntype in as_iterable(node.get(TYPE)):
+                lens = lenses.get(ntype)
+                if lens:
+                    return lens
+                typedfn = self.index.get(ntype)
+                if not typedfn:
+                    continue
+                for basetype in as_iterable(typedfn.get('subClassOf')):
+                    if ID not in basetype:
+                        continue
+                    lens = lenses.get(self._get_term_key(basetype[ID]))
+                    if lens:
+                        return lens
+        return lenses.get('Resource')
+
+    def reduce_node(self, node, lenstype='chips'):
+        lens = self._get_lens_for(node, lenstype)
+        return {k: v for k, v in node.items() if k in lens['showProperties']}
+
+    def get_label_for(self, node):
+        return self._construct_label(node) or self._label_from_chips(node)
+
+    def _construct_label(self, node):
+        # TODO:
+        # - replace hardcoded rules with vocab rules and/or chips logic
+        # - if the Term type is to be kept, put 'focus' in its lens (after prefLabel)
+
+        if 'prefLabel' not in node: # ComplexTerm in types
+            node = node.get('focus') or node
+            termparts = node.get('termParts', [])
             if termparts:
-                return " - ".join(self.labelgetter(bit) for bit in termparts)
+                return " - ".join(self._label_from_chips(bit) for bit in termparts)
 
-        label = self.labelgetter(item)
-        # TODO: remove this last crude fallback (really, replace this all with chip display logic)
-        return label or ",".join(v for k, v in item.items()
-                if k[0] != '@' and isinstance(v, unicode)) or item[ID]
-
-    def construct_label(self, item):
-        has = item.__contains__
-        v = lambda k: " ".join(as_iterable(item.get(k, '')))
+        has = node.__contains__
+        v = lambda k: " ".join(as_iterable(node.get(k, '')))
         vs = lambda *ks: [v(k) for k in ks if has(k)]
 
-        types = set(as_iterable(item.get(TYPE)))
+        types = set(as_iterable(node.get(TYPE)))
+
+        if types & {'Record'}:
+            if 'mainEntity' not in node:
+                return self._label_from_chips(node)
+            return "{} ({})".format(self._label_from_chips(node),
+                    self.get_label_for(node['mainEntity']))
 
         if types & {'UniformWork', 'CreativeWork'}:
-            label = self.labelgetter(item)
-            attr = item.get('attributedTo')
+            label = self._label_from_chips(node)
+            attr = node.get('attributedTo')
             if attr:
-                attr_label = self.construct_label(attr)
+                attr_label = self._construct_label(attr)
                 if attr_label:
                     label = "%s (%s)" % (label, attr_label)
             return label
@@ -176,55 +147,47 @@ class VocabView:
                     "%s-%s" % (v('birthYear'), v('deathYear'))
                     if (has('birthYear') or has('deathYear')) else ""])
 
-    def labelgetter(self, item):
-        for lkey in self.label_keys:
-            label = item.get(lkey)
-            if not label:
-                for label in as_iterable(item.get(lkey + 'ByLang')):
-                    label = label.get(self.lang)
-                    if label:
-                        break
-            if label:
-                if isinstance(label, list):
-                    return label[0]
-                return label
+    def _label_from_chips(self, node):
+        # NOTE: ByLang keys are implicitly rewritten by sortedkeys
+        for lkey in self.sortedkeys(node, 'chips'):
+            label = node.get(lkey)
+
+            def is_ref(node):
+                return isinstance(node, dict) and len(node) == 1 and ID in node
+
+            if not isinstance(label, unicode):
+                label = [self._label_from_chips(l) if isinstance(l, dict) else l
+                        for l in as_iterable(label) if not is_ref(l)]
+
+            for l in as_iterable(label):
+                return l
+
         return ""
 
+    def get_util(self):
+        try:
+            return self._util
+        except AttributeError:
+            #ns_mgr = Graph().parse('sys/context/base.jsonld',
+            #        format='json-ld').namespace_manager
+            #ns_mgr.bind("", vocab_uri)
+            #graphcache = GraphCache(config['GRAPH_CACHE'])
+            #graphcache.graph.namespace_manager = ns_mgr
+            #vocabgraph = graphcache.load(config['VOCAB_SOURCE'])
+            #vocabgraph.namespace_manager = ns_mgr
+            # TODO: load base vocabularies for labels, inheritance here,
+            # or in vocab build step? (Or not at all...)
+            #for url in vocabgraph.objects(None, OWL.imports):
+            #    graphcache.load(vocab_source_map.get(str(url), url))
+            vocabgraph = ConjunctiveGraph()
+            vocabgraph.parse(
+                    data=json.dumps(self.vocab_data[GRAPH]),
+                    context=self.context_data,
+                    format='json-ld')
+            vocabgraph.namespace_manager.bind("", self.vocab_uri)
 
-def path_distance(g, s, p, base):
-    """
-    >>> ns = Namespace("urn:x-ns:")
-    >>> g = Graph()
-    >>> subpropof = RDFS.subPropertyOf
-    >>> g.add((ns.name, subpropof, ns.label))
-    >>> g.add((ns.title, subpropof, ns.name))
-    >>> g.add((ns.notation, subpropof, ns.title))
-    >>> g.add((ns.notation, subpropof, ns.name))
-
-    >>> path_distance(g, ns.comment, subpropof, ns.label)
-    >>> path_distance(g, ns.label, subpropof, ns.label)
-    0
-    >>> path_distance(g, ns.name, subpropof, ns.label)
-    1
-    >>> path_distance(g, ns.title, subpropof, ns.label)
-    2
-    >>> path_distance(g, ns.notation, subpropof, ns.label)
-    2
-    """
-    if s == base:
-        return 0
-    def find_path(s, distance=1):
-        shortest = None
-        for o in g.objects(s, p):
-            if o == base:
-                return distance
-            else:
-                candidate = find_path(o, distance+1)
-                if shortest is None or (candidate is not None
-                        and candidate < shortest):
-                    shortest = candidate
-        return shortest
-    return find_path(s)
+            self._util = VocabUtil(vocabgraph, self.lang)
+            return self._util
 
 
 class VocabUtil:

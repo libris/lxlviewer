@@ -1,84 +1,43 @@
-
-export function createChips($panelElement) {
-  if ($panelElement.length < 1)
-    return;
-
-  setTimeout(function() {
-    // Copies every chip in the panel so that we can use absolute positioning on
-    // the expanded chips without breaking the layout.
-    $panelElement.find('.link-item').each(function() {
-      var $subject = $(this);
-      var $copy = $subject.clone();
-      var $holder = $('<div class="copy-holder">');
-      var $arrow = $('<div class="arrow">').appendTo($holder);
-      $arrow.css('left', ($subject.width()*0.25)-3);
-      $subject.addClass('link-item-original');
-      $copy.addClass('link-item-copy').appendTo($holder);
-      $holder.appendTo($subject);
-      if ($subject.width() > 260) {
-        $copy.css('min-width', $subject.width());
-      }
+export function initializeHoverCards($thingContainer, delay) {
+  const $chipContainers = $thingContainer.find('.chip-container');
+  $chipContainers.each(function () {
+    const $chipContainer = $(this);
+    $(this).find('.chip').on('mouseenter', function () {
+      $(this).addClass('highlighted');
+      const $card = $chipContainer.find('.card-info-container');
+      $card.addClass('to-be-active');
+      setTimeout(() => {
+        if ($card.hasClass('to-be-active')) {
+          $card.addClass('card-shown')
+          .removeClass('card-hidden')
+          .removeClass('to-be-active');
+        }
+      }, delay);
     });
-
-    // Initialize hover functionality
-    $panelElement.find('.link-item-original').hover(function() {
-      expand($(this).find('.copy-holder'));
-    }, function() {
-      collapse($(this).find('.copy-holder'));
-    }).focusin(function() {
-      expand($(this).find('.copy-holder'));
-    }).focusout(function() {
-      collapse($(this).find('.copy-holder'));
+    $(this).on('mouseleave', function () {
+      $(this).find('.chip').removeClass('highlighted');
+      $chipContainer.find('.card-info-container')
+        .addClass('card-hidden')
+        .removeClass('card-shown')
+        .removeClass('to-be-active');
     });
-
-  }, 250);
+  });
 }
 
-export function destroyChips($panelElement) {
-  $panelElement.find('.copy-holder').each(function() {
-    $(this).remove();
-  })
-}
-
-export function expand($elem) {
-  $elem.addClass('to-be-active');
-  var resource = $elem.attr('resource');
-  setTimeout(function() {
-    if($elem.hasClass('to-be-active')) {
-      $elem.addClass('active');
-    }
-  }, 500);
-}
-
-export function collapse($elem) {
-  $elem.removeClass('to-be-active');
-  $elem.removeClass('active');
-  $elem.find('.link-item-copy').removeClass('active');
-
-  // Removing these so that the chip isn't activated when hovering on the ghost of it...
-  $elem.css('margin-top', '');
-  $elem.removeClass('adjusted-top');
-
-  $elem.css('width', '').css('height', '');
-}
-
-export function initHitlistExpands($hitlist) {
+export function initHitlistExpands() {
   // Hit list expand functionality
-
-  $($hitlist).find('.hit-item .expand-button').click(function() {
-    const $subject = $(this).closest('.hit-item');
-    if ($subject.hasClass('expanded')) {
-      $(this).find('i').removeClass('rotate-180');
-      $(this).find('i').addClass('fa-plus-circle');
-      $(this).find('i').removeClass('fa-minus-circle');
-      $subject.removeClass('expanded');
-      destroyChips($subject);
-    } else {
-      $(this).find('i').addClass('rotate-180');
-      $(this).find('i').addClass('fa-minus-circle');
-      $(this).find('i').removeClass('fa-plus-circle');
-      $subject.addClass('expanded');
-      createChips($subject);
+  $('.thing-list-item .header').click(function(e) {
+    const targetIsLink = (e.target.tagName.toLowerCase() === 'a');
+    if (!targetIsLink) {
+      const $subject = $(this).closest('.thing-list-item');
+      if ($subject.hasClass('expanded')) {
+        $(this).find('i').removeClass('rotate-90');
+        $subject.removeClass('expanded');
+      } else {
+        $(this).find('i').addClass('rotate-90');
+        $subject.addClass('expanded');
+        initializeHoverCards($(this).parent(), 500);
+      }
     }
   });
 }

@@ -152,13 +152,13 @@ export function getDisplayObject(item, level, displayDefs, linked, vocab, settin
       if (typeof valueOnItem !== 'undefined') {
         let value = valueOnItem;
         if (_.isObject(value) && !_.isArray(value)) {
-          value = getChip(value, displayDefs, linked, vocab, settings);
+          value = getItemLabel(value, displayDefs, linked, vocab, settings);
           // value = getDisplayObject(value, 'chips', displayDefs, linked, vocab, vocabPfx);
         } else if (_.isArray(value)) {
           const newArray = [];
           for (const arrayItem of value) {
             if (_.isObject(arrayItem)) {
-              newArray.push(getChip(arrayItem, displayDefs, linked, vocab, settings));
+              newArray.push(getItemLabel(arrayItem, displayDefs, linked, vocab, settings));
             } else {
               newArray.push(arrayItem);
             }
@@ -197,10 +197,14 @@ function extractStrings(obj) {
   return label;
 }
 
-export function getChip(item, displayDefs, linked, vocab, settings) {
-  const displayObject = getDisplayObject(item, 'chips', displayDefs, linked, vocab, settings);
+export function getItemLabel(item, displayDefs, linked, vocab, settings) {
+  const displayObject = getChip(item, displayDefs, linked, vocab, settings);
   const rendered = extractStrings(displayObject);
   return rendered;
+}
+
+export function getChip(item, displayDefs, linked, vocab, settings) {
+  return getDisplayObject(item, 'chips', displayDefs, linked, vocab, settings);
 }
 
 export function getCard(item, displayDefs, linked, vocab, settings) {

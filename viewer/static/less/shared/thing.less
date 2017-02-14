@@ -1,8 +1,134 @@
+@import '../../js/es6/components/mixins/_mixins.less';
+
 /********/
 /* Widths for definition lists */
 @width-step-1: 645px;
 @width-step-2: 440px;
 /********/
+
+div.thing {
+  width: 100%;
+  border: 1px solid #ccc;
+  background-color: @white;
+  font-size: 14px;
+  &.thing-list-item {
+    border-width: 0px 1px 0px 1px;
+    > .header {
+      width: 100%;
+      border: solid #ccc;
+      border-width: 0px 0px 1px 0px;
+      background-color: @white;
+    }
+    > .body {
+      max-height: 0px;
+      display: none;
+    }
+    &.expanded {
+      border-width: 1px 1px 3px 1px;
+      > .header {
+        background-color: @brand-primary;
+        color: @white;
+        a {
+          color: @white;
+        }
+        > .title {
+          font-size: 140%;
+        }
+      }
+      .expand-button {
+        opacity: 1;
+      }
+      > .body {
+        display: block;
+        animation-timing-function: linear;
+        animation-name: expand;
+        animation-duration: 0.5s;
+        animation-fill-mode: forwards;
+      }
+    }
+    .expand-button {
+      opacity: 0.1;
+      transition: 0.25s ease;
+      transition-property: opacity;
+      i {
+        transition: transform 0.25s ease;
+      }
+    }
+    &:hover {
+      .expand-button {
+        opacity: 1;
+      }
+    }
+  }
+  &.thing-full {
+    border-radius: 3px;
+    > .header {
+      padding: 0.5em;
+      background-color: @brand-primary;
+      color: @white;
+    }
+  }
+  > .header {
+    line-height: 1em;
+    h1 {
+      line-height: 1.6;
+      margin: 0;
+      width: 75%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    span {
+      display: inline-block;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    span.title {
+      width: 74%;
+      padding: 0.5em 1em 0.5em 0;
+      transition: font-size 0.25s ease;
+    }
+    span.class {
+      text-align: right;
+      width: 20%;
+      padding: 0.5em 1em;
+    }
+    span.expand-button {
+      cursor: pointer;
+      padding: 0.5em 0.5em;
+    }
+  }
+  .body {
+    background-color: #fafafa;
+    .chip-container {
+      display: inline-block;
+      .chip {
+        .chip-mixin(@brand-primary, @white);
+      }
+      .card-hidden {
+        display: none;
+        opacity: 0;
+      }
+      .card-shown {
+        display: block;
+        opacity: 1;
+        max-height: 500px;
+      }
+    }
+    .data-node {
+      min-height: 3em;
+      width: 100%;
+      border: solid #ccc;
+      border-width: 0px 0px 1px 0px;
+      outline: none !important;
+    }
+  }
+}
+
+.card-info-container {
+  .card-mixin(@brand-primary, @white);
+}
 
 /********/
 /* Mixins for headers
@@ -222,7 +348,7 @@
 
 /*********/
 
-body#thing {
+body#thing, body#pagedcollection {
 
   height: 100%;
 
@@ -522,11 +648,9 @@ dl.raw-json-list {
       color: @grey-dark;
     }
   }
-
   .ind {
     font-style: italic;
   }
-
   td {
     vertical-align: top;
     padding: 0 3px;
@@ -535,4 +659,17 @@ dl.raw-json-list {
 
 .marc-info-box {
    width: 70%;
+}
+
+@keyframes expand {
+  from {
+    max-height: 0px;
+    overflow: hidden;
+  }
+  1% {
+    overflow: auto;
+  }
+  to {
+    max-height: 1200px;
+  }
 }

@@ -142,7 +142,7 @@ export default {
   <div class="item-anonymous" @mouseleave="showCardInfo=false">
     <div class="chip" v-show="!inEdit" v-bind:class="{ 'locked': isLocked, 'highlighted': showCardInfo }" @mouseenter="showCardInfo=true">
       <span class="chip-label">
-        {{getChip}}
+        {{getItemLabel}}
       </span>
       <i class="chip-action fa fa-pencil" v-on:click="openForm" v-if="!isLocked"></i>
     </div>
@@ -154,7 +154,7 @@ export default {
         <button v-on:click="closeForm" v-bind:disabled="isEmpty">Klar</button>
       </div>
     </div>
-    <card-component :title="getChip" :item="getCard" :uri="item['@id']" :should-show="showCardInfo && !inEdit" :floating="!expanded"></card-component>
+    <card-component :title="getItemLabel" :item="getCard" :uri="item['@id']" :should-show="showCardInfo && !inEdit" :floating="!expanded"></card-component>
   </div>
 </template>
 

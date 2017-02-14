@@ -125,7 +125,7 @@ export default {
       return propertyList;
     },
     dummyInstance() {
-      return DisplayUtil.getChip(
+      return DisplayUtil.getItemLabel(
         this.editorData.it,
         this.display,
         this.editorData.linked,

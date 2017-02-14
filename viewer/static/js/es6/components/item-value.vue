@@ -71,6 +71,7 @@ export default {
 
 .item-value {
   width: 480px;
+  line-height: 1.6;
   &.locked {
     line-height: 2;
   }

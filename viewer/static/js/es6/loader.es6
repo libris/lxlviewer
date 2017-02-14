@@ -2,6 +2,7 @@ import Thing from './views/thing';
 import Editor from './views/editor';
 import Vocab from './views/vocab';
 import Website from './views/website';
+import PagedCollection from './views/pagedcollection';
 import UserSettings from './views/usersettings';
 import CreateNew from './views/createnew';
 import Import from './views/import';
@@ -23,6 +24,7 @@ export default class Loader {
     this.createView(new Editor());
     this.createView(new Vocab());
     this.createView(new Website());
+    this.createView(new PagedCollection());
     this.createView(new UserSettings());
     this.createView(new CreateNew());
     this.createView(new Import());
@@ -32,12 +34,17 @@ export default class Loader {
     this.views.push(view);
   }
 
+  getCurrentView() {
+    return this.currentView;
+  }
+
   initPage(id) {
     // This method should be called on page load.
     const bodyId = id;
 
     for (let i = 0; i < this.views.length; i++) {
       if (this.views[i].constructor.name.toLowerCase() === bodyId.toLowerCase()) {
+        this.currentView = this.views[i];
         this.views[i].initialize();
         return true;
       }

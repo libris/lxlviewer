@@ -1,3 +1,6 @@
+import PropertyMappings from '../propertymappings.json';
+import * as _ from 'lodash';
+
 export function getParameters() {
   const params = [];
   $('input[type=hidden]').each(function() {
@@ -32,7 +35,136 @@ export function initTypeButtons() {
   }
 }
 
+
+export function getConvertedSearchObject(object) {
+  const convertedObject = {};
+  _.each(object, (v, k) => {
+    const tagMatchObject = _.find(PropertyMappings, (value, mappingKey) => {
+      return mappingKey.toLowerCase() === k.toLowerCase();
+    });
+    if (typeof tagMatchObject !== 'undefined') {
+      const resultKey = tagMatchObject.propertyChain.join('.');
+      convertedObject[resultKey] = v;
+      // Hardcoded for isbn
+      if (k.toLowerCase() === 'isbn') {
+        convertedObject['identifiedBy.@type'] = 'ISBN';
+      }
+      
+    } else {
+      convertedObject[k] = v;
+    }
+  });
+  return convertedObject;
+}
+
+
+export function doSearch() {
+  const validTags = ['isbn'];
+  const queryText = [];
+  const tagObject = {};
+  const searchField = document.querySelector('#searchQ');
+  for (const node of searchField.childNodes) {
+    if (node.className.split(' ').indexOf('searchtag') > -1) {
+      const tag = node.innerHTML.split(':');
+      if (validTags.indexOf(tag[0].toLowerCase()) > -1) {
+        tagObject[tag[0]] = tag[1];
+      } else {
+        queryText.push(tag[1]);
+      }
+    } else if (node.innerHTML !== '') {
+      queryText.push(`${node.innerHTML}`);
+    }
+  }
+  tagObject.q = queryText.join(' ');
+  let query = '/find?';
+  const queryParts = [];
+  _.each(getConvertedSearchObject(tagObject), (v, k) => {
+    queryParts.push(`${k}=${v}`);
+  });
+  queryParts.push('@type=Instance');
+  query += queryParts.join('&');
+  window.location = query;
+}
+
+export function searchPhraseFocus(event, state) {
+  state.counter = event.target.id.split('-')[1];
+}
+
+export function updateStyle(event, state) {
+  const validTags = ['isbn'];
+  const currentPhrase = document.activeElement;
+  const tagEditing = currentPhrase.innerHTML.includes(':');
+
+  if (tagEditing) {
+    if (validTags.indexOf(currentPhrase.innerHTML.split(':')[0].toLowerCase()) > -1) {
+      currentPhrase.setAttribute('class', 'searchtag valid');
+    } else {
+      currentPhrase.setAttribute('class', 'searchtag invalid');
+    }
+  } else {
+    currentPhrase.setAttribute('class', 'searchphrase');
+  }
+}
+
+export function addSearchPhrase(state, searchField) {
+  const newSearchTag = document.createElement('div');
+  newSearchTag.setAttribute('id', `searchphrase-${parseInt(state.counter, 10) + 1}`);
+  newSearchTag.setAttribute('class', 'searchphrase');
+  newSearchTag.setAttribute('contenteditable', 'true');
+  newSearchTag.addEventListener('input', event => updateStyle(event, state));
+  newSearchTag.addEventListener('focus', event => searchPhraseFocus(event, state));
+  searchField.appendChild(newSearchTag);
+  newSearchTag.focus();
+}
+
+export function searchFieldBehaviour(e, state, searchField) {
+  const currentPhrase = document.activeElement;
+  const tagEditing = currentPhrase.className.includes('searchtag');
+
+  if (e.keyCode === 13) { // Enter
+    e.preventDefault();
+    const nextPhrase = document.querySelector(`#searchphrase-${parseInt(state.counter, 10) + 1}`);
+    if (!tagEditing) {
+      doSearch();
+    } else if (nextPhrase === null) {
+      addSearchPhrase(state, searchField);
+    } else {
+      nextPhrase.focus();
+    }
+  } else if (e.keyCode === 8 && // Backspace
+      !tagEditing &&
+      currentPhrase.innerHTML === '' &&
+      currentPhrase.id.toString() !== 'searchphrase-0'
+    ) {
+    e.preventDefault();
+    const previousPhrase = searchField.children[(state.counter - 1)];
+    previousPhrase.innerHTML = '';
+    previousPhrase.setAttribute('class', 'searchphrase');
+
+
+    const oldPhrase = searchField.children[state.counter];
+    searchField.removeChild(oldPhrase);
+    previousPhrase.focus();
+  }
+}
+
+export function initializeSearchTags() {
+  const state = { counter: -1 };
+  const searchField = document.querySelector('#searchQ');
+  addSearchPhrase(state, searchField);
+  searchField.addEventListener('keydown', e => searchFieldBehaviour(e, state, searchField));
+}
+
+export function initializeSearchButton() {
+  document.querySelector('#searchSubmit').addEventListener('click', (e) => {
+    e.preventDefault();
+    doSearch();
+  });
+}
+
 export function initializeSearch() {
+  initializeSearchTags();
+  initializeSearchButton();
   // Remove empty fields
   $('form').submit(function(e){
     if ($('#searchQ').val() === '') {

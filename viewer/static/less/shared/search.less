@@ -1,4 +1,4 @@
-body#thing {
+body#pagedcollection {
   .search-controls {
     .search-button {
       min-width: 20%;
@@ -15,7 +15,7 @@ body#website {
       width: 24%;
     }
     .search-input {
-      width: 75%;
+      width: 100%;
     }
   }
 }
@@ -30,6 +30,13 @@ body#website {
   }
   .form-group {
     width: 100%;
+    > div {
+      display: flex;
+      > div {
+        flex-grow: 1;
+        margin-right: 5px;
+      }
+    }
   }
   .search-label {
     display: block;
@@ -49,6 +56,30 @@ body#website {
       }
     }
     margin-top: 1em;
+  }
+}
+
+#searchQ {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  line-height: 2em;
+  .searchphrase {
+    flex-grow: 1;
+    margin-right: 5px;
+    outline: none;
+  }
+  .searchtag {
+    outline: none;
+    margin-right: 5px;
+    border-radius: 3px;
+    padding: 0px 5px;
+  }
+  .valid {
+    background-color: #E0F2F1;
+  }
+  .invalid {
+    background-color: #EF9A9A;
   }
 }
 
@@ -116,6 +147,12 @@ body#website {
   padding: 15px 5px 15px 15px;
   label {
     text-transform: uppercase;
+  }
+  .dimension-header {
+    margin-top: 10px;
+    margin-bottom: 2px;
+    padding: 0px;
+    font-weight: bold;
   }
   div {
     padding: 5px;
