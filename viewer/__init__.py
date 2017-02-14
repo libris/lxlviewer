@@ -188,7 +188,10 @@ def _get_view_data_accept_header(request, suffix):
 @app.route('/find', methods=R_METHODS)
 @app.route('/find.<suffix>', methods=R_METHODS)
 def find(suffix=None):
-    response = _proxy_request(request, session, query_params=request.args)
+    arguments = request.args.copy()
+    if not arguments.get('_statsrepr') and g.site.get('statsfind'):
+        arguments.add('_statsrepr', g.site['statsfind'])
+    response = _proxy_request(request, session, query_params=arguments)
     results = json.loads(response.get_data())
     return rendered_response('/find', suffix, results)
 
@@ -206,7 +209,7 @@ def some(suffix=None):
 @app.route('/data', methods=R_METHODS)
 @app.route('/data.<suffix>', methods=R_METHODS)
 def dataindexview(suffix=None):
-    statsrepr = request.args.get('statsrepr') or g.site['stats']
+    statsrepr = request.args.get('statsrepr') or g.site['statsindex']
     results = daccess.get_index_stats(statsrepr,
             daccess.urimap.to_canonical_uri(request.url_root))
     results.update(g.site)
