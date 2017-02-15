@@ -309,6 +309,7 @@ export default {
           float: left;
           width: 50%;
           .range-info-container {
+            margin-left: 0.5em;
             display: inline-block;
             .range-info {
               position: absolute;
