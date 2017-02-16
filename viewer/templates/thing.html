@@ -64,7 +64,9 @@
       % for sub in v
         <li>
           % if isinstance(sub, dict)
-            % if sub == expandedProp
+            % if not ID in sub.keys()
+              ${thing_embedded(sub)}
+            % elif sub == expandedProp
               ${thing_card(sub, True)}
             % else
               ${thing_chip(sub)}
@@ -76,7 +78,9 @@
       % endfor
     </ul>
     % elif isinstance(v, dict)
-      % if k == expandedProp
+      % if not ID in v.keys()
+        ${thing_embedded(v)}
+      % elif k == expandedProp
         ${thing_card(v, True)}
       % else
         ${thing_chip(v)}
@@ -119,7 +123,9 @@
         <span class="key">${vocab_term(k)}</span>
           % if isinstance(v, dict) and len(v) > 1
             <span class="value">
-              % if expanded
+              % if not ID in v.keys()
+                ${vocab.get_label_for(v)}
+              % elif expanded
                 ${thing_chip(v)}
               % else
                 ${thing_chip(v, False)}
@@ -130,7 +136,9 @@
               % for sub in v
                 <li class="card-data-value-row">
                   % if isinstance(sub, dict)
-                    % if expanded
+                    % if not ID in sub.keys()
+                      ${vocab.get_label_for(sub)}
+                    % elif expanded
                       ${thing_chip(sub)}
                     % else
                       ${thing_chip(sub, False)}
@@ -143,7 +151,9 @@
             </ul>
           % else
             % if isinstance(v, dict)
-              % if expanded
+              % if not ID in v.keys()
+                ${thing_embedded(v)}
+              % elif expanded
                 ${thing_chip(v)}
               % else
                 ${thing_chip(v, False)}
@@ -176,15 +186,33 @@
 
 % macro thing_embedded(object)
 <div class="item-embedded">
-  <b>${object[TYPE]}</b>
-  <hr>
-  <ul>
+  <span class="type">${object[TYPE]}</span>
     % for k,v in object.items()
-    <li>
-      ${vocab_term(k)}: ${v}
-    </li>
+      % if k != TYPE
+        <div class="data-node column">
+          <div class="label">
+            ${vocab_term(k)}
+          </div>
+          <div class="value">
+            % if isinstance(v, list)
+              % for sub in v
+                % if isinstance(sub, dict)
+                  ${thing_chip(sub)}
+                % else
+                  ${sub}
+                % endif
+              % endfor
+            % else
+              % if isinstance(v, dict)
+                ${thing_chip(v)}
+              % else
+                ${v}
+              % endif
+            % endif
+          </div>
+        </div>
+      % endif
     % endfor
-  </ul>
 </div>
 % endmacro
 
