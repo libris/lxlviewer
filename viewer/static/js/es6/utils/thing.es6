@@ -26,7 +26,7 @@ export function initializeHoverCards($thingContainer, delay) {
 
 export function initHitlistExpands() {
   // Hit list expand functionality
-  $('.thing-list-item .header').click(function(e) {
+  $('.thing-list-item > .header').click(function(e) {
     const targetIsLink = (e.target.tagName.toLowerCase() === 'a');
     if (!targetIsLink) {
       const $subject = $(this).closest('.thing-list-item');
