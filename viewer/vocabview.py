@@ -29,7 +29,11 @@ class VocabView:
         self.index = {}
 
         for node in vocab_data[GRAPH]:
+            if GRAPH in node:
+                continue
             node_id = node.get(ID)
+            if not node_id:
+                continue
             if not node_id.startswith(vocab_uri):
                 continue
 
