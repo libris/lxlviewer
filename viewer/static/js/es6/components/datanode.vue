@@ -25,7 +25,7 @@ export default {
     'value',
     'isLocked',
     'focus',
-    'allow-anon',
+    'allow-local',
     'embedded',
     'is-removable',
   ],

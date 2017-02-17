@@ -20,7 +20,7 @@ export default {
       keyword: '',
       loading: false,
       debounceTimer: 500,
-      chooseAnonymousType: false,
+      chooseLocalType: false,
       active: false,
       showToolTip: false,
       rangeInfo: false,
@@ -131,10 +131,10 @@ export default {
       LayoutUtil.scrollLock(false);
       this.changeStatus('keybindState', 'overview');
     },
-    goAnonymous() {
+    goLocal() {
       const range = this.getRange;
       if (range.length > 1) {
-        this.chooseAnonymousType = true;
+        this.chooseLocalType = true;
       } else {
         this.addEmpty(range[0]);
       }
@@ -147,7 +147,7 @@ export default {
       this.searchOpen = false;
       this.keyword = '';
       this.searchResult = {};
-      this.chooseAnonymousType = false;
+      this.chooseLocalType = false;
       this.hide();
     },
     addEmpty(type) {
@@ -245,7 +245,7 @@ export default {
       </span>
     </div>
     <div class="body">
-      <div class="stage-0" v-show="!chooseAnonymousType">
+      <div class="stage-0" v-show="!chooseLocalType">
         <div class="search-header">
           <div class="search">
             Sök:
@@ -262,7 +262,7 @@ export default {
             </div>
           </div>
           <div class="local" v-show="allowLocal">
-            <button v-on:click="goAnonymous">Lägg till oauktoriserad</button>
+            <button v-on:click="goLocal">Skapa lokal entitet</button>
           </div>
         </div>
         <div v-if="!loading && keyword.length === 0" class="search-status">Skriv för att börja söka...</div>
@@ -270,7 +270,7 @@ export default {
         <div v-if="!loading && searchResult.length === 0 && keyword.length > 0" class="search-status">Inga resultat...</div>
         <entity-search-list v-if="!loading && keyword.length > 0" :results="searchResult"></entity-search-list>
       </div>
-      <div class="stage-1" v-show="chooseAnonymousType">
+      <div class="stage-1" v-show="chooseLocalType">
         <button v-on:click="addEmpty(type)" v-for="type in getRange">{{ type }}</button>
       </div>
     </div>
@@ -300,7 +300,7 @@ export default {
         border: solid #ccc;
         border-width: 0px 0px 1px 0px;
         background-color: darken(@neutral-color, 4%);
-        .anonymous {
+        .local {
           float: left;
           width: 50%;
           text-align: right;

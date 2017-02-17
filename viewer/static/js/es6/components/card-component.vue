@@ -57,7 +57,7 @@ export default {
 
 <template>
   <div class="card-info-container" :class="{ 'active': active, 'to-be-active': toBeActive, 'floating': floating }">
-    <div class="card" :class="{ 'locked': isLocked, 'anonymous': !uri }">
+    <div class="card" :class="{ 'locked': isLocked, 'local': !uri }">
       <div class="header">
         <span class="title" v-if="uri">
           <a :href="uri" v-if="key!=='instanceOf'">{{ title }}</a>

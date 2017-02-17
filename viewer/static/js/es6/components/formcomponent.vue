@@ -250,7 +250,7 @@ export default {
       width: @col-value;
     }
   }
-  .node-anonymous {
+  .node-local {
     width: 420px;
     clear: left;
   }
