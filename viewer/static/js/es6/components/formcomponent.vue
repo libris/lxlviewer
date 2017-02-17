@@ -177,7 +177,7 @@ export default {
 
 <template>
   <div class="form-component" :class="{ 'locked': isLocked, 'work-state': isWork, 'instance-state': isInstance, 'focused-form-component': status.level === this.focus }">
-    <data-node v-for="(k,v) in sortedFormData" v-bind:class="{ 'locked': isLocked }" :is-removable="true" :is-locked="keyIsLocked(k)" :key="k" :value="v" :focus="focus" :allow-anon="true"></data-node>
+    <data-node v-for="(k,v) in sortedFormData" v-bind:class="{ 'locked': isLocked }" :is-removable="true" :is-locked="keyIsLocked(k)" :key="k" :value="v" :focus="focus" :allow-local="true"></data-node>
     <div v-if="focus == 'work'" class="dummy-reverse">
       <div class="label" v-bind:class="{ 'locked': isLocked }">
         Har instanser

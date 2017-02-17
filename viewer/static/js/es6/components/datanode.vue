@@ -8,7 +8,7 @@ import EntityAdder from './entityadder';
 import ItemEntity from './item-entity';
 import ItemEmbedded from './item-embedded';
 import ItemValue from './item-value';
-import ItemAnonymous from './item-anonymous';
+import ItemLocal from './item-local';
 import * as VocabUtil from '../utils/vocab';
 import * as LayoutUtil from '../utils/layout';
 import LodashProxiesMixin from './mixins/lodash-proxies-mixin';
@@ -43,7 +43,7 @@ export default {
     'item-entity': ItemEntity,
     'item-value': ItemValue,
     'item-embedded': ItemEmbedded,
-    'item-anonymous': ItemAnonymous,
+    'item-local': ItemLocal,
     'entity-adder': EntityAdder,
   },
   computed: {
@@ -192,7 +192,7 @@ export default {
         return 'entity';
       }
       if (this.isPlainObject(o) && !this.isLinked(o) && !this.isEmbedded(o)) {
-        return 'anonymous';
+        return 'local';
       }
       if (this.isPlainObject(o) && !this.isLinked(o) && this.isEmbedded(o)) {
         return 'embedded';
@@ -223,14 +223,14 @@ export default {
     <ul>
       <li v-for="item in valueAsArray" track-by="$index">
         <item-entity v-if="getDatatype(item) == 'entity'" :is-locked="isLocked" :expanded="isExpandedType" :focus="focus" :item="item" :key="key" :index="$index"></item-entity>
-        <item-anonymous v-if="getDatatype(item) == 'anonymous'" :is-locked="isLocked" :focus="focus" :item="item" :key="key" :index="$index"></item-anonymous>
+        <item-local v-if="getDatatype(item) == 'local'" :is-locked="isLocked" :focus="focus" :item="item" :key="key" :index="$index"></item-local>
         <item-embedded v-if="getDatatype(item) == 'embedded'" :is-locked="isLocked" :focus="focus" :item="item" :key="key" :index="$index"></item-embedded>
         <item-value v-if="getDatatype(item) == 'value'" :is-removable="!hasSingleValue" :is-locked="isLocked" :focus="focus" :value="item" :key="key" :index="$index"></item-value>
       </li>
     </ul>
   </div>
   <div class="actions" v-if="!isLocked">
-    <entity-adder class="action" v-if="!isLocked && (isRepeatable || isEmptyObject)" :key="key" :focus="focus" :property-types="propertyTypes" :allow-anon="allowAnon"></entity-adder>
+    <entity-adder class="action" v-if="!isLocked && (isRepeatable || isEmptyObject)" :key="key" :focus="focus" :property-types="propertyTypes" :allow-local="allowLocal"></entity-adder>
     <div class="action action-button action-remove" v-if="!isLocked && isRemovable" class="delete" v-on:click="removeThis()"><i class="fa fa-trash"></i></div>
   </div>
 </div>

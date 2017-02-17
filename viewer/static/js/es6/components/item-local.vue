@@ -13,7 +13,7 @@ import LensMixin from './mixins/lens-mixin';
 import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData } from '../vuex/getters';
 
 export default {
-  name: 'item-anonymous',
+  name: 'item-local',
   mixins: [ItemMixin, LensMixin],
   props: {
     item: {},
@@ -139,16 +139,16 @@ export default {
 </script>
 
 <template>
-  <div class="item-anonymous" @mouseleave="showCardInfo=false">
+  <div class="item-local" @mouseleave="showCardInfo=false">
     <div class="chip" v-show="!inEdit" v-bind:class="{ 'locked': isLocked, 'highlighted': showCardInfo }" @mouseenter="showCardInfo=true">
       <span class="chip-label">
         {{getItemLabel}}
       </span>
       <i class="chip-action fa fa-pencil" v-on:click="openForm" v-if="!isLocked"></i>
     </div>
-    <div class="anonymous-form" v-show="inEdit">
+    <div class="local-form" v-show="inEdit">
       <strong>{{ item['@type'] | labelByLang | capitalize }}</strong>
-      <data-node v-for="(k,v) in filteredItem" :is-locked="isLocked" :pkey="key" :embedded="true" :is-removable="false" :pindex="index" :key="k" :value="v" :focus="focus" :allow-anon="false"></data-node>
+      <data-node v-for="(k,v) in filteredItem" :is-locked="isLocked" :pkey="key" :embedded="true" :is-removable="false" :pindex="index" :key="k" :value="v" :focus="focus" :allow-local="false"></data-node>
       <div class="actions">
         <button v-on:click="removeThis">Radera</button>
         <button v-on:click="closeForm" v-bind:disabled="isEmpty">Klar</button>
@@ -161,11 +161,11 @@ export default {
 <style lang="less">
 @import './_variables.less';
 
-.item-anonymous {
+.item-local {
   .chip {
     .chip-mixin(#a2a2a2, #fff);
   }
-  .anonymous-form {
+  .local-form {
     width: @col-value;
     border: 1px solid #ccc;
     border-radius: 5px;

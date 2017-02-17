@@ -41,7 +41,7 @@ export default {
   props: {
     key: '',
     focus: '',
-    allowAnon: true,
+    allowLocal: true,
     propertyTypes: [],
   },
   events: {
@@ -261,7 +261,7 @@ export default {
               </div>
             </div>
           </div>
-          <div class="anonymous" v-show="allowAnon">
+          <div class="local" v-show="allowLocal">
             <button v-on:click="goAnonymous">Lägg till oauktoriserad</button>
           </div>
         </div>
