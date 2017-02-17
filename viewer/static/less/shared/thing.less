@@ -22,6 +22,7 @@ div.thing {
     > .body {
       max-height: 0px;
       display: none;
+      overflow: hidden;
     }
     &.expanded {
       border-width: 1px 1px 3px 1px;
@@ -40,9 +41,9 @@ div.thing {
       }
       > .body {
         display: block;
-        animation-timing-function: linear;
+        animation-timing-function: ease;
         animation-name: expand;
-        animation-duration: 0.5s;
+        animation-duration: 0.3s;
         animation-fill-mode: forwards;
       }
     }
@@ -697,12 +698,11 @@ dl.raw-json-list {
 @keyframes expand {
   from {
     max-height: 0px;
-    overflow: hidden;
   }
-  1% {
-    overflow: auto;
+  99% {
+    max-height: 100vh;
   }
   to {
-    max-height: 1200px;
+    max-height: none;
   }
 }
