@@ -11,42 +11,41 @@ export function getMarc(json) {
 
 export function splitJson(json) {
   if (!json || json.length === 0) {
-    throw new Error('Trying to split empty JSON data.');
-  }
-  const orginal = json['@graph'];
+    throw new Error('Trying to split empty JSON data.');
+  }
+  const original = json['@graph'];
   const dataObj = {};
   dataObj.linked = [];
 
   // TODO: Relying on order here... tsk tsk tsk.
-  dataObj.record = orginal[0];
-  orginal.splice(0, 1);
+  dataObj.record = original[0];
+  original.splice(0, 1);
 
-  // TODO: Do something else!
-  console.warn('Finding focused item node by @id.indexOf("#it"). This approach is not reliable.');
-  for (let i = 0; i < orginal.length; i++) {
-    if (orginal[i]['@id'] && orginal[i]['@id'].indexOf('#it') !== -1) {
-      dataObj.it = orginal[i];
-      orginal.splice(i, 1);
+  // Find the instance
+  for (let i = 0; i < original.length; i++) {
+    if (dataObj.record.mainEntity['@id'] === original[i]['@id']) {
+      dataObj.it = original[i];
+      original.splice(i, 1);
       break;
     }
   }
-  for (let i = 0; i < orginal.length; i++) {
-    if (orginal[i]['@id'] && orginal[i]['@id'].indexOf('#work') !== -1) {
-      dataObj.work = orginal[i];
+
+  // Find the work
+  for (let i = 0; i < original.length; i++) {
+    if (dataObj.it.instanceOf['@id'] === original[i]['@id']) {
+      dataObj.work = original[i];
       // pushing work to linked list so that references to it will work for now.
       // TODO: do something else
-      dataObj.linked.push(orginal[i]);
-
-      orginal.splice(i, 1);
+      dataObj.linked.push(original[i]);
+      original.splice(i, 1);
       break;
     }
   }
 
-  for (let i = 0; i < orginal.length; i++) {
-    if (orginal[i].hasOwnProperty('@graph')) {
-      dataObj.linked.push(orginal[i]['@graph']);
-    } else {
-      dataObj.linked.push(orginal[i]);
+  // Find quoted and put them in a separate list
+  for (let i = 0; i < original.length; i++) {
+    if (original[i].hasOwnProperty('@graph')) {
+      dataObj.linked = dataObj.linked.concat(original[i]['@graph']);
     }
   }
   return dataObj;
