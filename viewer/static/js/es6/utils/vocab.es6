@@ -15,7 +15,7 @@ export function getVocab() {
   // 8 hours
   const cacheTTL = 28800000;
 
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     const vocab = JSON.parse(localStorage.getItem('vocab'));
 
     let isFresh = false;
@@ -31,6 +31,8 @@ export function getVocab() {
         fetchedVocab.cacheTime = new Date().getTime();
         localStorage.setItem('vocab', JSON.stringify(fetchedVocab));
         resolve(fetchedVocab);
+      }, (error) => {
+        reject(error);
       });
     }
   });
