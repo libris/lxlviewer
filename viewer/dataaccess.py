@@ -26,6 +26,14 @@ ui_defs = {
     TYPE: {'label': "Typ"},
     'SEARCH_RESULTS': {'label': "Sökresultat"},
     'SEE_ALL': {'label': "Se alla"},
+    'FACET_LABELS': {
+        '@type': 'Typ',
+        'carrierType': 'Bärartyp',
+        'instanceOf.@type': 'Verkstyp',
+        'instanceOf.contentType': 'Verksinnehållstyp',
+        'instanceOf.language': 'Verksspråk',
+        'publication.date': 'Utgivningsdatum'
+    }
 }
 
 sites = {

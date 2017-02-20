@@ -1,3 +1,4 @@
+
 % macro search_controls(result, filter_param=None)
 
 % if result.search
@@ -209,7 +210,7 @@
   </div>
 % endmacro
 
-% macro facet_controls(result)
+% macro facet_controls(result, ui)
   <div>
   % if result['stats']
   % set stats = result['stats']
@@ -217,11 +218,12 @@
   <label>
     Filtrera
   </label>
+  % set facet_labels = ui['FACET_LABELS']
   % for dimension in stats.sliceByDimension
   % set value = stats.sliceByDimension[dimension]
-  % set dimension_prop = value.dimension.split('.')
-  % set last_prop = dimension_prop[-1]
-  <div class="dimension-header">${last_prop}</div>
+  % set dimension_prop = value.dimension
+  % set swedish_label = facet_labels[dimension_prop]
+  <div class="dimension-header">${swedish_label}</div>
   <ul>
 
     % for observation in stats.sliceByDimension[dimension].observation
