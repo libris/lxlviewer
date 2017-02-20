@@ -52,7 +52,7 @@ export default class Editor extends View {
     $('#loadingText .fa-warning').hide();
     $('#loadingText .status').text('Hämtar vokabulär');
     VocabUtil.getVocab().then((vocab) => {
-      self.vocab = vocab;
+      self.vocab = vocab['@graph'];
       $('#loadingText .status').text('Hämtar visningsdefinitioner');
       DisplayUtil.getDisplayDefinitions().then((display) => {
         self.display = display;

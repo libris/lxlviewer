@@ -4,7 +4,11 @@ import * as _ from 'lodash';
 function fetchVocab() {
   return new Promise((resolve, reject) => {
     httpUtil.get({ url: 'https://id.kb.se/vocab/', accept: 'application/ld+json' }).then((response) => {
-      resolve(response);
+      if (!response.hasOwnProperty('@graph')) {
+        reject(`Fetched vocabulary had an unexpected structure.`);
+      } else {
+        resolve(response);
+      }
     }, (error) => {
       reject(`Couldn't fetch vocabulary: ${error}`);
     });
@@ -41,12 +45,12 @@ export function getVocab() {
 export function getClass(classId, vocab, vocabPfx) {
   // Returns a class object
 
-  if (typeof classId === 'undefined') {
+  if (!classId || typeof classId === 'undefined') {
     throw new Error('getClass was called with an undefined Id.');
   }
 
   const cn = classId.replace(vocabPfx, '');
-  const _class = _.find(vocab.descriptions, (d) => { return d['@id'] === vocabPfx + cn; });
+  const _class = _.find(vocab, (d) => { return d['@id'] === vocabPfx + cn; });
   if (!_class) {
     // console.warn('Class not found in vocab:', cn);
   }
@@ -89,7 +93,7 @@ export function getRange(propertyId, vocab, vocabPfx) {
 }
 
 export function getSubClasses(classname, vocab, vocabPfx) {
-  const subClasses = _.filter(vocab.descriptions, (o) => {
+  const subClasses = _.filter(vocab, (o) => {
     if (o.subClassOf) {
       for (let i = 0; i < o.subClassOf.length; i++) {
         if (o.subClassOf[i]['@id'] === vocabPfx + classname) return true;
@@ -128,7 +132,7 @@ export function getBaseClasses(classId, vocab, vocabPfx) {
 
 export function getProperties(className, vocab, vocabPfx) {
   // Get all properties which has the domain of the className
-  const vocabItems = vocab.descriptions;
+  const vocabItems = vocab;
   const props = [];
   const cn = className.replace(vocabPfx, '');
   for (let i = 0; i < vocabItems.length; i++) {
