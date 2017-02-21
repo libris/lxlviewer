@@ -1,5 +1,6 @@
 % extends "base.html"
 % import 'search.html' as search
+% from "termutils.html" import vocab_term
 
 {% block title %}{% endblock %}
 
@@ -116,7 +117,11 @@
       <header class="panel-heading">
         <h1 class="panel-title">
           <a href="${ obs.object['@id'] }">
-            ${show_label(obs.object)}
+            % if obs.object.titleByLang
+              ${show_label(obs.object)}
+            % else
+              ${vocab_term(obs.object['@id'])}
+            % endif
           </a>
         </h1>
       </header>
@@ -134,7 +139,11 @@
               % for item in obs.sliceByDimension[dimension].observation
                 <a class="list-group-item"
                     href="${item.view['@id']}">
-                    ${show_label(item.object)}
+                    % if item.object.titleByLang
+                      ${show_label(item.object)}
+                    % else
+                      ${vocab_term(item.object['@id'])}
+                    % endif
                     <span class="badge">${format_number(item.totalItems)} st.</span>
                 </a>
               % endfor
