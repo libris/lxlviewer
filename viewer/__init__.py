@@ -118,17 +118,14 @@ def _get_served_uri(url, path):
 
 daccess = DataAccess(app.config)
 
-
-@app.context_processor
-def core_context():
-    return {
+app.jinja_env.globals.update({
         'ID': ID,'TYPE': TYPE, 'REVERSE': REVERSE,
         'vocab': daccess.vocab,
         'ui': daccess.ui_defs,
         'lang': daccess.vocab.lang,
         'page_limit': 50,
         'view_url': lambda uri: daccess.urimap.to_view_url(request.url_root, uri)
-    }
+    })
 
 @app.before_request
 def handle_base():
