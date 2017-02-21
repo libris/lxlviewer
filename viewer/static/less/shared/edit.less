@@ -3,9 +3,10 @@
 #appContainer {
   margin-top: 30px;
   margin-bottom: 100px;
+  box-shadow: 0px 0px 16px 2px rgba(220,220,220,1);
+  background-color: fadeout(@neutral-color,25%);
 
   #loadingText {
-    background-color: fadeout(@neutral-color,25%);
     // margin: 120px 0;
     padding: 20px 0px;
     width: 100%;
@@ -14,6 +15,7 @@
     text-align: center;
     .status {
       display: block;
+      font-size: 0.7em;
     }
     .error {
       display: inline-block;
@@ -31,9 +33,7 @@
   width: 100%;
   padding-bottom: 5px;
   display: none;
-  background-color: fadeout(@neutral-color,25%);
   font-size: 14px;
-  box-shadow: 0px 0px 16px 2px rgba(220,220,220,1);
 
   .linked-items {
     >li {
