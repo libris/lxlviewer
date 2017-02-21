@@ -112,7 +112,7 @@
         <a href="${object[ID]}">${vocab.get_label_for(object)}</a>
       </span>
       <span class="type">
-        ${object[TYPE]}
+        ${vocab_term(object[TYPE])}
       </span>
     </div>
     <ul class="card-data">
@@ -186,7 +186,7 @@
 
 % macro thing_embedded(object)
 <div class="item-embedded">
-  <span class="type">${object[TYPE]}</span>
+  <span class="type">${vocab_term(object[TYPE])}</span>
     % for k,v in object.items()
       % if k != TYPE
         <div class="data-node column">
