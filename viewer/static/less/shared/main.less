@@ -39,6 +39,23 @@ html {
   overflow-y: scroll;
 }
 
+#body-blocker {
+  display: none;
+}
+html.scroll-lock {
+  overflow: hidden;
+  #body-blocker {
+    display: block;
+    z-index: @backdrop-z;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+}
+
 body {
   position: relative;
   background-color: @bg-site;
@@ -67,22 +84,7 @@ body {
 body.loading * {
   cursor: progress;
 }
-#body-blocker {
-  display: none;
-}
-body.scroll-lock {
-  overflow: hidden;
-  #body-blocker {
-    display: block;
-    z-index: @backdrop-z;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.1);
-  }
-}
+
 
 .dropdown-menu.list-inline {
   width: 42em;
