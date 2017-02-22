@@ -316,8 +316,9 @@ export default {
       flex-basis: @col-label;
       display: flex;
       text-align: right;
-      align-items: center;
+      align-items: flex-start;
       justify-content: flex-end;
+      line-height: 2.6;
     }
     >.value {
       order: 2;

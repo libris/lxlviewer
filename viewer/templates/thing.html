@@ -1,6 +1,7 @@
 % extends "base.html"
 {% from 'toolbar.html' import toolbar_old %}
 {% from 'toolbar.html' import toolbar %}
+% from "termutils.html" import vocab_term, termref
 
 {% block title %}${vocab.get_label_for(thing)}{% endblock %}
 
@@ -223,11 +224,6 @@
 </div>
 % endmacro
 
-% macro vocab_term(k)
-% set p = vocab.index[k] or {'curie': k}
-  ${termref(p)}
-% endmacro
-
 % macro displayvalues(object)
   % for value in object.values()
     % if isinstance(value, dict)
@@ -326,21 +322,6 @@
     % endif
 
   </${element}>
-% endmacro
-
-% macro termref(term, classes='', labeltype='')
-  % set label = term.curie
-  % if term.label
-    % set label = term.label[0].upper() + term.label[1:]
-  % endif
-  % if term.curie
-    <a href="/vocab/#${term.curie}" class="${labeltype}"><span
-        class="${classes}">${label}</span></a>
-  % elif term.label
-    ${label}
-  % else
-    <code>${term.curie}</code>
-  % endif
 % endmacro
 
 {# Macro to render random json to a html list #}

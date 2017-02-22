@@ -4,7 +4,7 @@ import * as _ from 'lodash';
 function fetchVocab() {
   return new Promise((resolve, reject) => {
     httpUtil.get({ url: 'https://id.kb.se/vocab/', accept: 'application/ld+json' }).then((response) => {
-      if (!response.hasOwnProperty('@graph')) {
+      if (!response.hasOwnProperty('@graph') || !response['@graph'][0].hasOwnProperty('@id')) {
         reject(`Fetched vocabulary had an unexpected structure.`);
       } else {
         resolve(response);

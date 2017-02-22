@@ -24,7 +24,8 @@ import { changeSettings, changeNotification, loadVocab, loadDisplayDefs, syncDat
 function showError(error) {
   $('#loadingText .fa-cog').fadeOut('fast', () => {
     $('#loadingText .fa-warning').removeClass('hidden').fadeIn('fast');
-    $('#loadingText .status').text('').append('Något gick fel...');
+    $('#loadingText .mainStatus').text('').append('Något gick fel...');
+    $('#loadingText .status').text('');
     $('#loadingText .error').text('').append(error).removeClass('hidden').fadeIn('slow');
   });
 }
@@ -50,6 +51,7 @@ export default class Editor extends View {
       ],
     };
     $('#loadingText .fa-warning').hide();
+    $('#loadingText .mainStatus').text('Laddar redigeringen...');
     $('#loadingText .status').text('Hämtar vokabulär');
     VocabUtil.getVocab().then((vocab) => {
       self.vocab = vocab['@graph'];

@@ -1,3 +1,4 @@
+% from "termutils.html" import vocab_term
 
 % macro search_controls(result, filter_param=None)
 
@@ -79,7 +80,7 @@
               % set label = item.value
             % endif
             <a href="${item.up['@id']}">
-              ${label}<i class="fa fa-remove"></i>
+              ${vocab_term(label)}<i class="fa fa-remove"></i>
             </a>
           </li>
           % endif
@@ -238,7 +239,7 @@
     % if observation.object.label
     <li>
       <a href="${observation.view['@id']}" title="${observation.object.label}">
-        ${observation.object.label | truncate(30, true) }
+        ${vocab_term(observation.object.label)}
       </a>
       <span class="quantity">(${observation.totalItems})</span>
     </li>
