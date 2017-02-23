@@ -63,6 +63,7 @@ sites = {
         """,
         "stylesheet": {"name": "id.css"},
         "statsindex": '{"inScheme.@id":{"inCollection.@id":["@type"], "@type":[]}}',
+        "filter_param": "inScheme.@id",
         "itemList": [
             {ID: "/doc/about", "title": "Om id.kb.se", "icon": "info-circle"},
             {ID: "/marcframe", "title": "MARC-mappningar", "icon": "exchange"},
@@ -74,6 +75,7 @@ sites = {
         "title": "libris.kb.se",
         "description": "<p>Data på <b>LIBRIS.KB.SE</b>.</p>",
         "statsindex": '{"instanceOf.@type": {"@type": []}}',
+        "filter_param": "instanceOf.@type",
             # TODO: + @reverse.itemOf.heldBy.@id (and/or count)?
         #"stats": {"@type":{"meta.bibliography.@id":{"publication.providerDate":[]}}}
         "statsfind": '{"instanceOf.language.@id":{},"carrierType":{},"instanceOf.@type":{},"instanceOf.contentType.@id":{},"publication.date":{},"@type":{}}',
