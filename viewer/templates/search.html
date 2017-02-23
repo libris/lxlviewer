@@ -26,15 +26,15 @@
             Sök
           </label>
           % if g.site.title == 'libris.kb.se'
-            <input class="tagInput" name="@type" value="Instance" />
+            <input class="tagInput" name="@type" value="Instance" type="hidden" />
           % endif
           <div class="tagInputContainer">
-            <input class="tagInput" name="identifiedBy.value">
-            <input class="tagInput" name="identifiedBy.@type">
+            <input class="tagInput" name="identifiedBy.value" type="hidden">
+            <input class="tagInput" name="identifiedBy.@type" type="hidden">
           </div>
 
           <div id="searchFieldContainer">
-            <input aria-labelledby="searchlabel" class="form-control search-input tagInput" name="q" id="searchQ" value="${q | safe | trim }" ></input>
+            <input aria-labelledby="searchlabel" class="form-control search-input tagInput" name="q" id="searchQ" value="${q | safe | trim }" type="hidden" \>
             <div aria-labelledby="searchlabel" class="form-control search-input" id="searchQsmart"></div>
             <button id="searchSubmit" class="search-button btn btn-primary"><i class="fa fa-search"></i> Sök</button>
           </div>

@@ -58,7 +58,7 @@ export function getConvertedSearchObject(object) {
 
 export function removeEmptyFields() {
   // Empty inputs
-  $('#searchForm').find('input').filter(function() {
+  $('.form-inline').find('input').filter(function() {
     return !$.trim(this.value).length;
   }).prop('disabled', true);
 }
@@ -170,14 +170,14 @@ export function initializeSearchButton() {
   });
 }
 
-export function hideTagInputFields() {
-  document.querySelectorAll('.tagInput').forEach(node => {
-    node.type='hidden';
-  });
-}
+// export function hideTagInputFields() {
+//   document.querySelectorAll('.tagInput').forEach(node => {
+//     node.type='hidden';
+//   });
+// }
 
 export function initializeSearch() {
-  hideTagInputFields();
+  // hideTagInputFields();
   initializeSearchTags();
   initializeSearchButton();
 }
