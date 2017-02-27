@@ -13,6 +13,7 @@ from flask import g, request, session, render_template, url_for, redirect, abort
 from flask.helpers import NotFound
 from flask_cors import CORS
 from werkzeug.urls import url_quote
+from werkzeug.datastructures import MultiDict
 
 from rdflib import ConjunctiveGraph
 
@@ -398,10 +399,15 @@ def _get_authorization_token(session):
 
 def _proxy_request(request, session, json_data=None, query_params=[],
                    accept_header=None, url_path=None):
-    params = {}
-    defaults = query_params if isinstance(query_params, dict) else {}
+    params = MultiDict([])
+    if isinstance(query_params, MultiDict):
+        defaults = query_params
+    else:
+        defaults = MultiDict([])
     for param in query_params:
-        params[param] = request.args.get(param) or defaults.get(param)
+        vals = request.args.getlist(param) or defaults.getlist(param)
+        for val in vals:
+            params.add(param, val)
 
     url_path = url_path or request.path
 
