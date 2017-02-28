@@ -24,7 +24,7 @@ export default class Import extends View {
     const vm = new Vue({
       el: '#app',
       data: {
-        vocabPfx: 'kbv:',
+        vocabPfx: self.vocabPfx,
         language: self.language,
         vocab,
         params,

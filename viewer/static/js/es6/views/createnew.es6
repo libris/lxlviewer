@@ -66,7 +66,7 @@ export default class CreateNew extends View {
       data: {
         materialLists,
         chosenMaterials: [],
-        vocabPfx: 'kbv:',
+        vocabPfx: self.vocabPfx,
         language: self.language,
         vocab,
       },

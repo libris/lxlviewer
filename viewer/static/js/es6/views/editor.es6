@@ -41,7 +41,7 @@ export default class Editor extends View {
 
     self.settings = {
       lang: 'sv',
-      vocabPfx: 'kbv:',
+      vocabPfx: self.vocabPfx,
       embeddedTypes: ['StructuredValue', 'ProvisionActivity', 'Contribution'],
       removableBaseUris: [
         'http://libris.kb.se/',
