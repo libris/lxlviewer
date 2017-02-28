@@ -26,7 +26,7 @@
     </div>
   </div>
   <div class="col-md-8">
-    ${ search.search_controls(thing) }
+    ${ search.search_controls(thing, g.site.filter_param) }
 
   % if thing.statistics.sliceByDimension
   <!-- <div class="col-md-12">

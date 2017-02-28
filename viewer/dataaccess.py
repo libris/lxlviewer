@@ -5,6 +5,7 @@ import json
 from urlparse import urlparse, urljoin
 
 import requests
+from werkzeug.datastructures import MultiDict
 
 from .util import as_iterable
 from .vocabview import VocabView, ID, TYPE, CONTEXT, GRAPH, REVERSE
@@ -63,6 +64,7 @@ sites = {
         """,
         "stylesheet": {"name": "id.css"},
         "statsindex": '{"inScheme.@id":{"inCollection.@id":["@type"], "@type":[]}}',
+        "filter_param": "inScheme.@id",
         "itemList": [
             {ID: "/doc/about", "title": "Om id.kb.se", "icon": "info-circle"},
             {ID: "/marcframe", "title": "MARC-mappningar", "icon": "exchange"},
@@ -74,6 +76,7 @@ sites = {
         "title": "libris.kb.se",
         "description": "<p>Data på <b>LIBRIS.KB.SE</b>.</p>",
         "statsindex": '{"instanceOf.@type": {"@type": []}}',
+        "filter_param": "instanceOf.@type",
             # TODO: + @reverse.itemOf.heldBy.@id (and/or count)?
         #"stats": {"@type":{"meta.bibliography.@id":{"publication.providerDate":[]}}}
         "statsfind": '{"instanceOf.language.@id":{},"carrierType":{},"instanceOf.@type":{},"instanceOf.contentType.@id":{},"publication.date":{},"@type":{}}',
@@ -101,11 +104,12 @@ class DataAccess(object):
     def jsonld_context_data(self):
         return self.vocab.context_data
 
-    def api_request(self, url_path, method='GET', headers=None, json_data=None, query_params=[]):
+    def api_request(self, url_path, method='GET', headers=None,
+                    json_data=None, query_params=MultiDict([])):
         url = self._get_api_url(url_path)
         json_data = json.dumps(json_data)
         return requests.request(method, url, data=json_data, headers=headers,
-                            params=query_params)
+                            params=query_params.to_dict(flat=False))
 
     def _get_api_url(self, url_path):
         if url_path.startswith('/'):
@@ -116,13 +120,13 @@ class DataAccess(object):
         return self.api_request(url).json()
 
     def find_in_whelk(self, query=None, limit=None, stats=None):
-        query = query or {}
+        query = query or MultiDict([])
         if 'q' not in query:
-            query['q'] = '*'
+            query.add('q', '*')
         if limit is not None and '_limit' not in query:
-            query['_limit'] = limit
+            query.add('_limit', limit)
         if stats and '_statsrepr' not in query:
-            query['_statsrepr'] = stats
+            query.add('_statsrepr', stats)
         return self.api_request('find', query_params=query).json()
 
     def get_index_stats(self, statstree, site_base_uri):

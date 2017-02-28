@@ -49,7 +49,6 @@ export function getConvertedSearchObject(object) {
       if (k.toLowerCase() === 'isbn') {
         convertedObject['identifiedBy.@type'] = 'ISBN';
       }
-      
     } else {
       convertedObject[k] = v;
     }
@@ -57,12 +56,18 @@ export function getConvertedSearchObject(object) {
   return convertedObject;
 }
 
+export function removeEmptyFields() {
+  // Empty inputs
+  $('#searchForm').find('input').filter(function() {
+    return !$.trim(this.value).length;
+  }).prop('disabled', true);
+}
 
 export function doSearch() {
   const validTags = ['isbn'];
   const queryText = [];
   const tagObject = {};
-  const searchField = document.querySelector('#searchQ');
+  const searchField = document.querySelector('#searchQsmart');
   for (const node of searchField.childNodes) {
     if (node.className.split(' ').indexOf('searchtag') > -1) {
       const tag = node.innerHTML.split(':');
@@ -76,15 +81,18 @@ export function doSearch() {
     }
   }
   tagObject.q = queryText.join(' ');
-  let query = '/find?';
-  const queryParts = [];
+  const tagInputs = document.querySelectorAll('.tagInput');
   _.each(getConvertedSearchObject(tagObject), (v, k) => {
-    queryParts.push(`${k}=${v}`);
+    tagInputs.forEach(inputTag => {
+      if (inputTag.name === k) {
+        inputTag.value = v;
+      }
+    });
   });
-  queryParts.push('@type=Instance');
-  query += queryParts.join('&');
-  window.location = query;
+  removeEmptyFields();
+  document.querySelector('#searchForm').submit();
 }
+
 
 export function searchPhraseFocus(event, state) {
   state.counter = event.target.id.split('-')[1];
@@ -150,7 +158,7 @@ export function searchFieldBehaviour(e, state, searchField) {
 
 export function initializeSearchTags() {
   const state = { counter: -1 };
-  const searchField = document.querySelector('#searchQ');
+  const searchField = document.querySelector('#searchQsmart');
   addSearchPhrase(state, searchField);
   searchField.addEventListener('keydown', e => searchFieldBehaviour(e, state, searchField));
 }
@@ -162,18 +170,14 @@ export function initializeSearchButton() {
   });
 }
 
+export function hideTagInputFields() {
+  document.querySelectorAll('.tagInput').forEach(node => {
+    node.type='hidden';
+  });
+}
+
 export function initializeSearch() {
+  hideTagInputFields();
   initializeSearchTags();
   initializeSearchButton();
-  // Remove empty fields
-  $('form').submit(function(e){
-    if ($('#searchQ').val() === '') {
-      e.preventDefault();
-      return;
-    }
-    // Empty inputs
-    $(this).find('input').filter(function(){
-      return !$.trim(this.value).length;
-    }).prop('disabled', true);
-  });
 }
