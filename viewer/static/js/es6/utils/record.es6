@@ -22,23 +22,27 @@ export function splitJson(json) {
   original.splice(0, 1);
 
   // Find the instance
-  for (let i = 0; i < original.length; i++) {
-    if (dataObj.record.mainEntity['@id'] === original[i]['@id']) {
-      dataObj.it = original[i];
-      original.splice(i, 1);
-      break;
+  if (dataObj.record.mainEntity && dataObj.record.mainEntity['@id']) {
+    for (let i = 0; i < original.length; i++) {
+      if (dataObj.record.mainEntity['@id'] === original[i]['@id']) {
+        dataObj.it = original[i];
+        original.splice(i, 1);
+        break;
+      }
     }
   }
 
   // Find the work
-  for (let i = 0; i < original.length; i++) {
-    if (dataObj.it.instanceOf['@id'] === original[i]['@id']) {
-      dataObj.work = original[i];
-      // pushing work to linked list so that references to it will work for now.
-      // TODO: do something else
-      dataObj.linked.push(original[i]);
-      original.splice(i, 1);
-      break;
+  if (dataObj.it && dataObj.it.instanceOf && dataObj.it.instanceOf['@id']) {
+    for (let i = 0; i < original.length; i++) {
+      if (dataObj.it.instanceOf['@id'] === original[i]['@id']) {
+        dataObj.work = original[i];
+        // pushing work to linked list so that references to it will work for now.
+        // TODO: do something else
+        dataObj.linked.push(original[i]);
+        original.splice(i, 1);
+        break;
+      }
     }
   }
 
