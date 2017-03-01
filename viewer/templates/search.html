@@ -44,7 +44,7 @@
     % if filter_param
       <div class="type-buttons" aria-label="Välj typ">
         <label class="no-choice">
-          <input name="${filter_param}" id="noneType" value="" type="radio"> Alla
+          <input name="${filter_param}" id="noneType" value="" type="radio" checked> Alla
         </label>
         % if len(result.statistics) > 0
           % for value in result.statistics.sliceByDimension.values()
