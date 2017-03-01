@@ -27,7 +27,7 @@
 {% endmacro %}
 
 % macro toolbar(thing, is_authenticated, thing_type, element='article', view='thing')
-  % set thing_url = thing['@id']
+  % set thing_url = view_url(thing['@id'])
   % set edit_url = thing_url.split('#')[0]
 <div class="toolbar">
   % if is_authenticated

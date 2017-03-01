@@ -9,9 +9,10 @@ export function initToolbar(_context) {
   $('.js-toolbar-remove').click(function(e) {
     e.preventDefault();
     let url = $(this).attr('data-record-id');
-    if (url[0] !== '/') {
-      url = `/${url}`;
-    }
+    // TODO: Is this legacy code?
+    // if (url[0] !== '/') {
+    //   url = `/${url}`;
+    // }
     modalUtil.confirmDialog({
       sTitle: 'Ta bort?',
       sContent: 'Du kan inte ångra detta val.',
