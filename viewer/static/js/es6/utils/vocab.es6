@@ -49,6 +49,10 @@ export function getClass(classId, vocab, vocabPfx) {
     throw new Error('getClass was called with an undefined Id.');
   }
 
+  if (classId.indexOf('@') !== -1) {
+    return {};
+  }
+
   const cn = classId.replace(vocabPfx, '');
   const _class = _.find(vocab, (d) => { return d['@id'] === vocabPfx + cn; });
   if (!_class) {
@@ -58,6 +62,9 @@ export function getClass(classId, vocab, vocabPfx) {
 }
 
 export function getPropertyTypes(propertyId, vocab, vocabPfx) {
+  if (propertyId.indexOf('@') !== -1) {
+    return [];
+  }
   const property = getClass(propertyId, vocab, vocabPfx);
   if (property) {
     const typeAttr = property['@type'].toString();
