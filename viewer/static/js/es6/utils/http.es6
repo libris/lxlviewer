@@ -24,7 +24,7 @@ function request(options, data) {
     }
 
     req.onload = () => {
-      if (req.status === 200 || req.status === 204 || req.status === 201) {
+      if (req.status === 200 || req.status === 201) {
         let resp = req.response;
         if (req.getResponseHeader('Content-Type').indexOf('json') !== -1) {
           try {
@@ -34,7 +34,10 @@ function request(options, data) {
           }
         }
         resolve(resp, req);
+      } else if (req.status === 204) {
+        resolve(req);
       } else {
+        debugger;
         reject(Error(req.statusText));
       }
     };
