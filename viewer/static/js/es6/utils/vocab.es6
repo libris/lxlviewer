@@ -108,6 +108,11 @@ export function getSubClasses(classname, vocab, vocabPfx) {
 
 export function getBaseClasses(classId, vocab, vocabPfx) {
   // Traverses up subClassOf properties and returns a list of all classes found
+
+  if (!classId || typeof classId === 'undefined') {
+    throw new Error('getBaseClasses was called with an undefined Id.');
+  }
+
   let classList = [];
   const classObj = getClass(classId, vocab, vocabPfx);
   if (classObj && classObj.hasOwnProperty('subClassOf')) {
