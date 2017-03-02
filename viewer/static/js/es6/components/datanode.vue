@@ -206,6 +206,9 @@ export default {
     },
     isEmbedded(o) {
       const type = o['@type'];
+      if (!type || typeof type === 'undefined') {
+        return false;
+      }
       return VocabUtil.isEmbedded(type, this.vocab, this.settings);
     },
   },
