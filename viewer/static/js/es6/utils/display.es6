@@ -125,7 +125,12 @@ export function getDisplayObject(item, level, displayDefs, linked, vocab, settin
   }
 
   // Get the list of properties we want to show
-  let properties = getProperties(trueItem['@type'], level, displayDefs, settings);
+  let properties = [];
+  if (trueItem['@type'] && typeof trueItem['@type'] !== 'undefined') {
+    properties = getProperties(trueItem['@type'], level, displayDefs, settings);
+  } else {
+    return {};
+  }
   if (properties.length === 0) { // If none were found, traverse up inheritance tree
     const baseClasses = VocabUtil.getBaseClassesFromArray(trueItem['@type'], vocab, settings.vocabPfx);
     for (let i = 0; i < baseClasses.length; i++) {
