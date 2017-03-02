@@ -5,7 +5,7 @@
   % if p.label
     % set label = p.label[0].upper() + p.label[1:]
   % endif
-  ${label}
+  ${- label -}
 % endmacro
 
 % macro termref(term, classes='', labeltype='')
