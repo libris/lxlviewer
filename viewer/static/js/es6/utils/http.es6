@@ -37,7 +37,6 @@ function request(options, data) {
       } else if (req.status === 204) {
         resolve(req);
       } else {
-        debugger;
         reject(Error(req.statusText));
       }
     };
