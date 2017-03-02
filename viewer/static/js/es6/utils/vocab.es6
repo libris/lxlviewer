@@ -216,6 +216,9 @@ export function getPropertiesFromArray(typeArray, vocab, vocabPfx) {
 }
 
 export function isEmbedded(classId, vocab, settings) {
+  if (!classId || typeof classId === 'undefined') {
+    throw new Error('isEmbedded was called with an undedfined class id');
+  }
   if (_.isObject(classId)) {
     throw new Error('isEmbedded was called with an object as class id (should be a string)');
   }
