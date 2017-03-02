@@ -19,8 +19,8 @@ export default {
   name: 'data-node',
   mixins: [LodashProxiesMixin],
   props: [
-    'pkey',
-    'pindex',
+    'parentKey',
+    'parentIndex',
     'key',
     'value',
     'isLocked',
@@ -54,10 +54,10 @@ export default {
       return [this.value];
     },
     getPath() {
-      if (typeof this.pkey !== 'undefined' && typeof this.pindex !== 'undefined') {
-        return `${this.pkey}[${this.pindex}].${this.key}`;
-      } else if (typeof this.pkey !== 'undefined') {
-        return `${this.pkey}.${this.key}`;
+      if (typeof this.parentKey !== 'undefined' && typeof this.parentIndex !== 'undefined') {
+        return `${this.parentKey}[${this.parentIndex}].${this.key}`;
+      } else if (typeof this.parentKey !== 'undefined') {
+        return `${this.parentKey}.${this.key}`;
       }
       return `${this.key}`;
     },
@@ -156,18 +156,18 @@ export default {
   },
   methods: {
     updateValue(value) {
-      if (this.pkey && this.pindex !== '') {
-        const path = this.pkey + '[' + this.pindex + ']' + '.' + this.key;
+      if (this.parentKey && this.parentIndex !== '') {
+        const path = this.parentKey + '[' + this.parentIndex + ']' + '.' + this.key;
         this.$dispatch('update-value', path, value);
-      } else if (this.pkey) {
-        const path = this.pkey + '.' + this.key;
+      } else if (this.parentKey) {
+        const path = this.parentKey + '.' + this.key;
         this.$dispatch('update-value', path, value);
       } else {
         this.$dispatch('update-value', this.key, value);
       }
     },
     removeThis() {
-      if (this.pkey) {
+      if (this.parentKey) {
         console.warn('Remove was called on an embedded field, this is not supported.');
         return false;
       }

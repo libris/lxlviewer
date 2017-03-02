@@ -148,7 +148,7 @@ export default {
     </div>
     <div class="local-form" v-show="inEdit">
       <strong>{{ item['@type'] | labelByLang | capitalize }}</strong>
-      <data-node v-for="(k,v) in filteredItem" :is-locked="isLocked" :pkey="key" :embedded="true" :is-removable="false" :pindex="index" :key="k" :value="v" :focus="focus" :allow-local="false"></data-node>
+      <data-node v-for="(k,v) in filteredItem" :is-locked="isLocked" :embedded="true" :is-removable="false" :parent-key="key" :parent-index="index" :key="k" :value="v" :focus="focus" :allow-local="false"></data-node>
       <div class="actions">
         <button v-on:click="removeThis">Radera</button>
         <button v-on:click="closeForm" v-bind:disabled="isEmpty">Klar</button>
