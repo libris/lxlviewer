@@ -97,7 +97,7 @@
     % endif
     {% block scripts %}{% endblock %}
     <script src="/assets/build/app.js"></script>
-
+    <script id="baseUriAlias" type="application/json">${config.BASE_URI_ALIAS|tojson|safe}</script>
 
 
     <!-- Piwik -->
