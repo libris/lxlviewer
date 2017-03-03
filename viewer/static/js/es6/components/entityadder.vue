@@ -21,7 +21,6 @@ export default {
       loading: false,
       debounceTimer: 500,
       chooseLocalType: false,
-      active: false,
       showToolTip: false,
       rangeInfo: false,
     };
@@ -43,6 +42,8 @@ export default {
     focus: '',
     allowLocal: true,
     propertyTypes: [],
+    showActionButtons: false,
+    active: false,
   },
   events: {
     'close-modals'() {
@@ -71,6 +72,9 @@ export default {
         this.searchResult = {};
       }
     },
+    active(value) {
+      this.$dispatch('toggle-modal', value);
+    }
   },
   computed: {
     isWork() {
@@ -231,7 +235,7 @@ export default {
 
 <template>
 <span class="entity-adder">
-  <a class="action-button add-entity-button" v-on:click="add()" @mouseenter="showToolTip=true" @mouseleave="showToolTip=false">
+  <a class="action-button add-entity-button" :class="{'shown-button': showActionButtons, 'hidden-button': !showActionButtons, 'disabled': active}" v-on:click="add()" @mouseenter="showToolTip=true" @mouseleave="showToolTip=false">
     <i class="fa fa-plus plus-icon" aria-hidden="true"></i>
   </a>
   <tooltip-component :show-tooltip="showToolTip" :tooltiptext="key"></tooltip-component>
@@ -283,6 +287,9 @@ export default {
 
 .entity-adder {
   opacity: 1;
+  .disabled {
+    visibility: hidden;
+  }
   .window {
     .window-mixin();
     .body {
