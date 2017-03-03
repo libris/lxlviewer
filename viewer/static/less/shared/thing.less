@@ -142,7 +142,7 @@ div.thing {
   .main-info {
     flex-basis: 60%;
     max-width: 60%;
-    .title {
+    .header {
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -150,8 +150,9 @@ div.thing {
       margin: 0px;
       width: 100%;
     }
-    .subtitle {
-
+    ul.info {
+      list-style-type: none;
+      padding: 0px;
     }
   }
   .identifiers {
@@ -161,12 +162,9 @@ div.thing {
     ul {
       list-style-type: none;
       padding: 0px;
-      li {
-
-      }
     }
   }
-  .bottom-info {
+  .sub {
     flex-basis: 100%;
   }
 }

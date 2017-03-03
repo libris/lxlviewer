@@ -3,6 +3,7 @@ import * as _ from 'lodash';
 import * as DisplayUtil from '../utils/display';
 import * as VocabUtil from '../utils/vocab';
 import * as EditUtil from '../utils/edit';
+import EntitySummary from './entity-summary';
 import LensMixin from './mixins/lens-mixin';
 import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData, getStatus } from '../vuex/getters';
 
@@ -77,32 +78,14 @@ export default {
     },
   },
   components: {
+    'entity-summary': EntitySummary,
   },
 };
 </script>
 
 <template>
   <div class="header-component">
-    <div v-if="full" class="main-header" id="card-header">
-      <ul>
-        <li v-for="(k, v) in getCard" v-bind:class="{'large-title': isTitle(k), 'inline': isInline(k) }">{{v}}</li>
-      </ul>
-    </div>
-    <div v-if="full == false && showChipHeader" class="container fixed-header-container">
-      <div class="row">
-        <div class="fixed-header">
-          <span v-for="(k, v) in getCard">
-            <span v-if="isTitle(k)">
-              <span class="small-title">{{v}}</span>
-            </span>
-            <span v-if="!isTitle(k)" class="minimum-text">
-              <span v-if="showKey(k)">{{k}}: {{v}}</span>
-              <span v-if="!showKey(k)">{{v}}</span>
-            </span>
-          </span>
-        </div>
-      </div>
-    </div>
+    <entity-summary :focus-data="focusData"></entity-summary>
   </div>
 </template>
 
@@ -126,52 +109,6 @@ export default {
     }
   }
 
-  .main-header {
-    ul {
-      padding: 20px;
-      .inline {
-        display: inline;
-        &::after {
-          content: ", ";
-        }
-      }
-    }
-  }
-
-  ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-
-
-  .large-title {
-    font-size: 20px;
-    font-weight: bold;
-  }
-
-  .work-title {
-    font-size: 22px;
-    border-bottom: 1px solid white;
-  }
-
-  .small-title {
-    font-size: 16px;
-    font-weight: bold;
-  }
-
-  .medium-text {
-    font-size: 14px;
-  }
-
-  .small-text {
-    font-size: 12px;
-  }
-
-  .minimum-text {
-    font-size: 10px;
-    font-style: italic;
-  }
 }
 
 </style>

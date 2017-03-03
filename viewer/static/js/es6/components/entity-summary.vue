@@ -46,33 +46,26 @@ export default {
 </script>
 
 <template>
-  <div class="entity-summary">
-    <span v-if="!getCard">Ohanterad entitet.</span>
-    <ul v-if="getCard">
-      <li v-for="(k, v) in getCard" v-bind:class="{'large-title': isTitle(k), 'inline': isInline(k) }">
-        <span v-if="k === '@type'"><i>{{v | labelByLang}}</i></span>
-        <span v-if="k !== '@type'">{{v}}</span>
-      </li>
+<div class="thing-summary">
+  <div class="main-info">
+    <h3 class="header">{{ getSummary.header }}</h3>
+    <ul class="info">
+      <li v-for="v in getSummary.info">{{ v }}</li>
     </ul>
   </div>
+  <div class="identifiers">
+    <ul>
+      <li v-for="v in getSummary.identifiers">{{v}}</li>
+    </ul>
+  </div>
+  <div class="sub">
+    <span>{{ getSummary.sub.join(', ') }}</span>
+  </div>
+</div>
 </template>
 
 <style lang="less">
 @import './_variables.less';
 
-.entity-summary {
-  > ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    > li {
-      padding: 0px;
-      &.large-title {
-        font-size: 1.6rem;
-        font-weight: bold;
-      }
-    }
-  }
-}
 
 </style>
