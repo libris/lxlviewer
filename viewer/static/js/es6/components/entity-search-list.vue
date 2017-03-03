@@ -35,3 +35,20 @@ export default {
     </ul>
   </div>
 </template>
+
+<style lang="less">
+@import './_variables.less';
+
+.search-result {
+  overflow-y: scroll;
+  height: 328px;
+  .search-result-list {
+    width: 100%;
+    padding: 0px;
+    list-style-type: none;
+    border: solid #ccc;
+    border-width: 1px 0px 0px 0px;
+  }
+}
+
+</style>

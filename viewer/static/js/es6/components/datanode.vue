@@ -12,7 +12,7 @@ import ItemLocal from './item-local';
 import * as VocabUtil from '../utils/vocab';
 import * as LayoutUtil from '../utils/layout';
 import LodashProxiesMixin from './mixins/lodash-proxies-mixin';
-import { getVocabulary, getSettings, getStatus } from '../vuex/getters';
+import { getVocabulary, getSettings, getStatus, getEditorData } from '../vuex/getters';
 import { changeStatus } from '../vuex/actions';
 
 export default {
@@ -37,6 +37,7 @@ export default {
       vocab: getVocabulary,
       settings: getSettings,
       status: getStatus,
+      editorData: getEditorData,
     },
   },
   components: {
@@ -189,9 +190,16 @@ export default {
     },
     getDatatype(o) {
       if (this.isPlainObject(o) && this.isLinked(o)) {
+      // if (this.isPlainObject(o) && this.isLinked(o) && o['@id'].indexOf(this.editorData.record['@id']) === -1) {
         return 'entity';
       }
-      if (this.isPlainObject(o) && !this.isLinked(o) && !this.isEmbedded(o)) {
+      if (
+        this.isPlainObject(o) &&
+        (
+        !this.isLinked(o) && !this.isEmbedded(o)
+        // || (this.isLinked(o) && o['@id'].indexOf(this.editorData.record['@id']) !== -1)
+        )
+      ) {
         return 'local';
       }
       if (this.isPlainObject(o) && !this.isLinked(o) && this.isEmbedded(o)) {

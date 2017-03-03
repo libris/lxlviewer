@@ -128,6 +128,48 @@ div.thing {
   }
 }
 
+.thing-summary {
+  width: 100%;
+  border: 1px solid #ccc;
+  background-color: @white;
+  font-size: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  > * {
+    padding: 5px;
+  }
+  .main-info {
+    flex-basis: 60%;
+    max-width: 60%;
+    .title {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.6em;
+      margin: 0px;
+      width: 100%;
+    }
+    .subtitle {
+
+    }
+  }
+  .identifiers {
+    flex-basis: 40%;
+    text-align: right;
+    padding: 10px;
+    ul {
+      list-style-type: none;
+      padding: 0px;
+      li {
+
+      }
+    }
+  }
+  .bottom-info {
+    flex-basis: 100%;
+  }
+}
 
 .item-embedded {
   width: @col-value;

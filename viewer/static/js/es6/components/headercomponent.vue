@@ -58,6 +58,9 @@ export default {
       const listOfKeys = ['ISBN']; // TODO: Fix list of keys to show.
       return _.indexOf(listOfKeys, k) > -1;
     },
+    isInline(k) {
+      return (this.settings.inlineKeys.indexOf(k) !== -1);
+    },
   },
   computed: {
     state() {
@@ -82,7 +85,7 @@ export default {
   <div class="header-component">
     <div v-if="full" class="main-header" id="card-header">
       <ul>
-        <li v-for="(k, v) in getCard" v-bind:class="{'large-title': isTitle(k), 'inline': (inlineKeys.indexOf(k) !== -1) }">{{v}}</li>
+        <li v-for="(k, v) in getCard" v-bind:class="{'large-title': isTitle(k), 'inline': isInline(k) }">{{v}}</li>
       </ul>
     </div>
     <div v-if="full == false && showChipHeader" class="container fixed-header-container">
