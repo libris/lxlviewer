@@ -214,7 +214,11 @@ export function getItemSummary(item, displayDefs, linked, vocab, settings) {
   };
   _.each(card, (value, key) => {
     if (displayGroups['header'].indexOf(key) !== -1) {
-      summary['header'].push(value);
+      if (_.isArray(value)) {
+        summary['header'] = summary['header'].concat(value);
+      } else {
+        summary['header'].push(value);
+      }
     } else if (displayGroups['info'].indexOf(key) !== -1) {
       summary['info'].push(value);
     } else if (displayGroups['identifiers'].indexOf(key) !== -1) {
@@ -227,7 +231,6 @@ export function getItemSummary(item, displayDefs, linked, vocab, settings) {
       summary['sub'].push(value);
     }
   });
-  console.log("Built summary", summary);
   return summary;
 }
 

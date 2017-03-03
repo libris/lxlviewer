@@ -48,7 +48,7 @@ export default {
 <template>
 <div class="thing-summary">
   <div class="main-info">
-    <h3 class="header">{{ getSummary.header }}</h3>
+    <h3 class="header">{{ getSummary.header.join(', ') }}</h3>
     <ul class="info">
       <li v-for="v in getSummary.info">{{ v }}</li>
     </ul>
