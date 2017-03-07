@@ -24,7 +24,6 @@ export default {
   },
   data() {
     return {
-      showChipHeader: false,
       inlineKeys: [
         '@type',
         'issuanceType',
@@ -33,22 +32,6 @@ export default {
         'marc:otherPhysicalDetails',
       ],
     };
-  },
-  ready() { // Ready method is deprecated in 2.0, switch to "mounted"
-    this.$nextTick(() => {
-      window.addEventListener('scroll', (e) => {
-        const cardHeader = document.getElementById('card-header');
-        const chipHeaderThreshold = cardHeader.offsetTop + (cardHeader.offsetHeight / 2);
-        const scrollPosition = e.target.body.scrollTop;
-        if (chipHeaderThreshold < scrollPosition) {
-          this.showChipHeader = true;
-        } else {
-          this.showChipHeader = false;
-        }
-      });
-      const expandableAdminInfo = document.getElementsByClassName('admin-info-container')[0];
-      expandableAdminInfo.onresize = this.resize;
-    });
   },
   methods: {
     isTitle(key) {
@@ -95,6 +78,11 @@ export default {
 .header-component {
   padding: 0px;
   &.compact {
+    max-height: 72px;
+    overflow-y: hidden;
+    &.collapsed {
+      max-height: 0px;
+    }
     .thing-summary {
       .main-info {
         .header {
