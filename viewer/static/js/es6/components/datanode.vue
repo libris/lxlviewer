@@ -118,6 +118,9 @@ export default {
   events: {
     'update-item'(index, value) {
       let modified = _.cloneDeep(this.value);
+      if (typeof modified === 'string' || modified instanceof String) {
+        modified = [].concat(modified);
+      }
       if (typeof index !== 'undefined' && index !== '') {
         modified[index] = value;
       } else {
