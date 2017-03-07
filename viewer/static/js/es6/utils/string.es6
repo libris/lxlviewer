@@ -20,9 +20,12 @@ export function labelByLang(string, lang, vocab, vocabPfx) {
     lbl = lbl.replace(pfx, '');
   }
   const item = _.find(vocab, (d) => { return d['@id'] === `${pfx}${lbl}`; });
+  let note = '';
   let labelByLang = '';
   if (typeof item !== 'undefined' && item.labelByLang) {
     labelByLang = item.labelByLang[lang];
+  } else {
+    note = ' (unhandled term)';
   }
   // Check if we have something of value
   if (_.isArray(labelByLang)) {
@@ -35,5 +38,5 @@ export function labelByLang(string, lang, vocab, vocabPfx) {
   if (labelByLang && labelByLang.length > 0) {
     return labelByLang;
   }
-  return lbl;
+  return `${lbl}${note}`;
 }

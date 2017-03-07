@@ -4,6 +4,9 @@ import * as EditUtil from './edit';
 import * as VocabUtil from './vocab';
 import * as StringUtil from './string';
 import * as displayGroups from '../displayGroups.json';
+import moment from 'moment';
+import 'moment/locale/sv';
+moment.locale('sv');
 
 function fetchDisplayDefinitions() {
   return new Promise((resolve, reject) => {
@@ -153,8 +156,13 @@ export function getDisplayObject(item, level, displayDefs, linked, vocab, settin
 
   for (let i = 0; i < properties.length; i++) {
     if (!_.isObject(properties[i])) {
-      const valueOnItem = getValueByLang(trueItem, properties[i], displayDefs, settings.lang);
-      // const valueOnItem = getValueByLang(properties[i], trueItem[properties[i]], displayDefs, settings.lang) || trueItem[properties[i]];
+      let valueOnItem = '';
+      if (properties[i] === 'created' || properties[i] === 'modified') {
+        valueOnItem = moment(item[properties[i]]).format('lll');
+      } else {
+        valueOnItem = getValueByLang(trueItem, properties[i], displayDefs, settings.lang);
+        // const valueOnItem = getValueByLang(properties[i], trueItem[properties[i]], displayDefs, settings.lang) || trueItem[properties[i]];
+      }
       if (typeof valueOnItem !== 'undefined') {
         let value = valueOnItem;
         if (_.isObject(value) && !_.isArray(value)) {
