@@ -103,6 +103,12 @@ export default {
         .info {
           > li {
             display: inline-block;
+            &:first-child {
+              margin-right: 0.3em;
+            }
+            &:not(:first-child):before {
+              content: "| ";
+            }
           }
         }
       }
