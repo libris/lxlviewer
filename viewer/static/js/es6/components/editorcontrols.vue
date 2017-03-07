@@ -1,13 +1,11 @@
 <script>
 import * as _ from 'lodash';
 import HeaderComponent from './headercomponent';
-import moment from 'moment';
 import * as EditUtil from '../utils/edit';
 import * as DisplayUtil from '../utils/display';
 import LensMixin from './mixins/lens-mixin';
 import { changeSavedStatus, changeStatus } from '../vuex/actions';
 import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData, getStatus } from '../vuex/getters';
-moment.locale('sv');
 
 export default {
   vuex: {
