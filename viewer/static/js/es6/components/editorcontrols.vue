@@ -117,8 +117,8 @@ export default {
 
   .editor-controls {
     background-color: @black;
-    color: @white;
     .admin-info {
+      color: @white;
       flex-direction: row;
       display: flex;
       align-items: center;
