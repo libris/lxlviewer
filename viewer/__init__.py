@@ -210,9 +210,8 @@ def some(suffix=None):
 @app.route('/data.<suffix>', methods=R_METHODS)
 def dataindexview(suffix=None):
     statsrepr = request.args.get('statsrepr') or g.site['statsindex']
-    results = daccess.get_index_stats(statsrepr,
-            daccess.urimap.to_canonical_uri(request.url_root))
-    results.update(g.site)
+    results = dict(g.site)
+    results['statistics'] = daccess.get_index_stats(statsrepr)
     return rendered_response('/', suffix, results)
 
 

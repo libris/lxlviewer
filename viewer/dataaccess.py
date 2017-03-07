@@ -40,28 +40,9 @@ ui_defs = {
 sites = {
     IDKBSE: {
         ID: IDKBSE,
+        TYPE: "DataCatalog",
         "title": "id.kb.se",
-        "description": """
-            <p>
-              <b>id.kb.se</b>
-              är en tjänst under utveckling som tillgängliggör
-              de grundstenar Kungliga biblioteket använder för att
-              publicera strukturerad,
-              <a href="https://sv.wikipedia.org/wiki/L%C3%A4nkad_data">länkad data</a>.
-              Tjänsten innehåller en samling gemensamma definitioner
-              och begrepp som hjälper till att samordna beskrivningar
-              av vårt material.
-            </p>
-            <p>
-              I första versionen av id.kb.se har vi lagt ut Svenska ämnesord,
-              barnämnesord och genre/formtermer, som utgör viktiga byggstenar
-              för denna samordning.<br/>
-              I grunden finns ett basvokabulär med gemensamma egenskaper och
-              typer.<br/>
-              I möjligaste mån länkar alla definitioner till internationella,
-              välkända motsvarigheter.
-            </p>
-        """,
+        "summary": {ID: "/doc/summary"},
         "stylesheet": {"name": "id.css"},
         "statsindex": '{"inScheme.@id":{"inCollection.@id":["@type"], "@type":[]}}',
         "filter_param": "inScheme.@id",
@@ -73,6 +54,7 @@ sites = {
     },
     LIBRIS: {
         ID: LIBRIS,
+        TYPE: "DataCatalog",
         "title": "libris.kb.se",
         "description": "<p>Data på <b>LIBRIS.KB.SE</b>.</p>",
         "statsindex": '{"instanceOf.@type": {"@type": []}}',
@@ -129,9 +111,9 @@ class DataAccess(object):
             query.add('_statsrepr', stats)
         return self.api_request('find', query_params=query).json()
 
-    def get_index_stats(self, statstree, site_base_uri):
+    def get_index_stats(self, statstree):
         results = self.find_in_whelk(limit=0, stats=statstree)
-        return {TYPE: 'DataCatalog', ID: site_base_uri, 'statistics': results.get('stats')}
+        return results.get('stats')
 
     def find_ambiguity(self, request):
         raise NotImplementedError # FIXME: implement
@@ -175,8 +157,19 @@ class DataAccess(object):
         #return {GRAPH: [item] + references}
 
     def get_site(self, site_id):
-        # TODO: get_record_data(g.current_base)
-        return sites.get(site_id)
+        site = sites.get(site_id)
+        if not site:
+            return None
+        summary = site.get('summary')
+        if summary and ID in summary and len(summary) == 1:
+            try:
+                # TODO: conneg on json instead of tampering with the url!
+                article_id = urljoin(site_id, summary[ID] + '/data.json')
+                doc = self.load_from_whelk(article_id)
+                summary.update(doc)
+            except ValueError:
+                pass
+        return site
 
     def setup_vocab_view(self):
         vocab_data = self._load_required(self.vocab_uri)
