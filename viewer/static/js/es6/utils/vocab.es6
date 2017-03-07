@@ -113,35 +113,6 @@ export function getSubClasses(classname, vocab, vocabPfx) {
   return subClasses;
 }
 
-export function getBaseClasses(classId, vocab, vocabPfx) {
-  // Traverses up subClassOf properties and returns a list of all classes found
-
-  if (!classId || typeof classId === 'undefined') {
-    throw new Error('getBaseClasses was called with an undefined Id.');
-  }
-
-  let classList = [];
-  const classObj = getClass(classId, vocab, vocabPfx);
-  if (classObj && classObj.hasOwnProperty('subClassOf')) {
-    for (let i = 0; i < classObj.subClassOf.length; i++) {
-      const baseClassId = classObj.subClassOf[i]['@id'];
-      const baseClass = getClass(baseClassId, vocab, vocabPfx);
-      if (
-        baseClass &&
-        baseClass.isDefinedBy &&
-        baseClass.isDefinedBy['@id'] === vocabPfx
-      ) {
-        classList = classList.concat(getBaseClasses(baseClassId, vocab, vocabPfx));
-        classList.push(baseClassId);
-      } else {
-        //
-      }
-    }
-  }
-  // console.log("getBaseClasses(" + JSON.stringify(classId) + ")", JSON.stringify(classList));
-  return classList;
-}
-
 export function getProperties(className, vocab, vocabPfx) {
   // Get all properties which has the domain of the className
   const vocabItems = vocab;
@@ -174,6 +145,38 @@ export function getProperties(className, vocab, vocabPfx) {
   }
   // console.log("getProperties("+JSON.stringify(className)+") ->", props.length, "properties found");
   return props;
+}
+
+export function getBaseClasses(classId, vocab, vocabPfx) {
+  // Traverses up subClassOf properties and returns a list of all classes found
+
+  if (!classId || typeof classId === 'undefined') {
+    throw new Error('getBaseClasses was called with an undefined Id.');
+  }
+
+  let classList = [];
+  const classObj = getClass(classId, vocab, vocabPfx);
+  if (classObj && classObj.hasOwnProperty('subClassOf')) {
+    for (let i = 0; i < classObj.subClassOf.length; i++) {
+      const baseClassId = classObj.subClassOf[i]['@id'];
+      let baseClass = {};
+      if (baseClassId) {
+        baseClass = getClass(baseClassId, vocab, vocabPfx);
+      }
+      if (
+        baseClass &&
+        baseClass.isDefinedBy &&
+        baseClass.isDefinedBy['@id'] === vocabPfx
+      ) {
+        classList = classList.concat(getBaseClasses(baseClassId, vocab, vocabPfx));
+        classList.push(baseClassId);
+      } else {
+        //
+      }
+    }
+  }
+  // console.log("getBaseClasses(" + JSON.stringify(classId) + ")", JSON.stringify(classList));
+  return classList;
 }
 
 export function getBaseClassesFromArray(typeArray, vocab, vocabPfx) {
