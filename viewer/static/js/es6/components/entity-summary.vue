@@ -67,5 +67,21 @@ export default {
 <style lang="less">
 @import './_variables.less';
 
+.thing-summary {
+  .main-info {
+    .header {
+      //
+    }
+    .info {
+      margin: 0px;
+    }
+  }
+  .identifiers {
+    //
+  }
+  .sub {
+    //
+  }
+}
 
 </style>
