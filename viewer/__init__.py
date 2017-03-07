@@ -191,7 +191,9 @@ def find(suffix=None):
         arguments.add('_statsrepr', g.site['statsfind'])
     if g.site['title'] == 'id.kb.se':
         arguments.add('_site_base_uri', 'https://id.kb.se')
-    response = _proxy_request(request, session, query_params=arguments)
+    response = _proxy_request(request, session,
+                              url_path='/find',
+                              query_params=arguments)
     results = json.loads(response.get_data())
     return rendered_response('/find', suffix, results)
 
