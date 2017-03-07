@@ -84,7 +84,7 @@ export default {
 </script>
 
 <template>
-  <div class="header-component">
+  <div class="header-component" v-bind:class="{ 'compact': !full }">
     <entity-summary :focus-data="focusData"></entity-summary>
   </div>
 </template>
@@ -94,6 +94,26 @@ export default {
 
 .header-component {
   padding: 0px;
+  &.compact {
+    .thing-summary {
+      .main-info {
+        .header {
+          //
+        }
+        .info {
+          > li {
+            display: inline-block;
+          }
+        }
+      }
+      .identifiers {
+        //
+      }
+      .sub {
+        display: none;
+      }
+    }
+  }
 
   .container {
     .row {
