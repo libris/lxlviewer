@@ -37,7 +37,7 @@ export default {
 <template>
   <div class="panel panel-default result-controls">
     <div class="search-details" v-if="showDetails">
-      Sökningen gav {{pageData.totalItems}} resultat.
+      Sökningen gav {{pageData.totalItems}} träffar.
     </div>
     <div class="search-buttons">
       <nav>

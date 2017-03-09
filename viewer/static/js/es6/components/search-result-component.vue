@@ -43,8 +43,8 @@ export default {
 <template>
   <div>
     <search-pagination :page-data="paginationData" show-details="true"></search-pagination>
-    <search-pagination :page-data="paginationData" show-details="false"></search-pagination>
     <result-list :results="result.items"></result-list>
+    <search-pagination :page-data="paginationData" show-details="false"></search-pagination>
   </div>
 </template>
 
