@@ -192,8 +192,8 @@ export function getBaseClassesFromArray(typeArray, vocab, vocabPfx) {
       const c = getClass(types[t], vocab, vocabPfx);
       if (typeof c !== 'undefined') {
         classes.push(c['@id']);
+        classes = classes.concat(getBaseClasses(c['@id'], vocab, vocabPfx));
       }
-      classes = classes.concat(getBaseClasses(c['@id'], vocab, vocabPfx));
     }
   }
   classes = _.uniq(classes);
