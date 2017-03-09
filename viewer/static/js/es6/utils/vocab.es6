@@ -56,7 +56,7 @@ export function getClass(classId, vocab, vocabPfx) {
   const cn = classId.replace(vocabPfx, '');
   const _class = _.find(vocab, (d) => { return d['@id'] === vocabPfx + cn; });
   if (!_class) {
-    console.warn('Not found in vocab:', cn);
+    // console.warn('Not found in vocab:', cn);
   }
   return _class;
 }

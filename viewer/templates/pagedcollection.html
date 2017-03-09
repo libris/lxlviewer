@@ -5,6 +5,19 @@
 {% block title %}${ui.SEARCH_RESULTS.label}{% endblock %}
 
 % block content
+
+<div id="PagedCollectionApp">
+  <div class="row">
+    <div class="col-md-3">
+      <facet-controls></facet-controls>
+    </div>
+    <div class="col-md-9">
+      <main-search-field :title="tjena"></main-search-field>
+      <search-result-component :result="result" v-if="initialized == true"></search-result-component>
+    </div>
+  </div>
+</div>
+
   % set items = thing['items']
 <div class="row">
   <div class="col-md-3 hidden-xs hidden-sm">
@@ -37,4 +50,7 @@
     ${ search.result_controls(thing, False) }
   </div>
 </div>
+
+
+<script id="data" type="application/json">${thing|tojson|safe}</script>
 % endblock

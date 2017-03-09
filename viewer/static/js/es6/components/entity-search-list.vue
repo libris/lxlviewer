@@ -40,8 +40,6 @@ export default {
 @import './_variables.less';
 
 .search-result {
-  overflow-y: scroll;
-  height: 328px;
   .search-result-list {
     width: 100%;
     padding: 0px;

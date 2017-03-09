@@ -47,13 +47,18 @@ export default {
 @import './_variables.less';
 
 .search-result-item {
-  padding: 5px;
+  border: 1px solid #ccc;
+  padding: 3px;
   .label {
+    color: @black;
     font-weight: bold;
     font-size: 16px;
     display: inline-block;
     width: 74%;
     text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .type {
     width: 24%;
