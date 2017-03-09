@@ -1,4 +1,5 @@
 <script>
+import ResultList from './result-list';
 import EntitySearchList from './entity-search-list';
 import SearchPagination from './search-pagination';
 
@@ -24,6 +25,7 @@ export default {
   components: {
     'entity-search-list': EntitySearchList,
     'search-pagination': SearchPagination,
+    'result-list': ResultList,
   },
   watch: {
     keyword(value, oldval) {
@@ -41,8 +43,8 @@ export default {
 <template>
   <div>
     <search-pagination :page-data="paginationData" show-details="true"></search-pagination>
-    <entity-search-list :results="result.items"></entity-search-list>
     <search-pagination :page-data="paginationData" show-details="false"></search-pagination>
+    <result-list :results="result.items"></result-list>
   </div>
 </template>
 
