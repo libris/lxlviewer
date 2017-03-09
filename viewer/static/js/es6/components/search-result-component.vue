@@ -1,5 +1,5 @@
 <script>
-import EntitySearchList from './entity-search-list';
+import ResultList from './result-list';
 
 export default {
   name: 'search-result-component',
@@ -16,7 +16,7 @@ export default {
   computed: {
   },
   components: {
-    'entity-search-list': EntitySearchList,
+    'result-list': ResultList,
   },
   watch: {
     keyword(value, oldval) {
@@ -33,7 +33,7 @@ export default {
 
 <template>
   <div>
-    <entity-search-list :results="result.items"></entity-search-list>
+    <result-list :results="result.items"></result-list>
   </div>
 </template>
 
