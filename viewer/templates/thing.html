@@ -38,6 +38,57 @@
 
 % endmacro
 
+% macro thing_summary(thing)
+
+% set title = vocab.get_label_for(thing)
+% set subtitle = ''
+% if thing.responsibilityStatement
+  % set subtitle = thing.responsibilityStatement
+% endif
+% set identifiers = []
+% if thing.sameAs
+% set identifiers = identifiers + thing.sameAs
+% endif
+% if thing.identifiedBy
+  % set identifiers = identifiers + thing.identifiedBy
+% endif
+% set typelabels = [vocab_term(thing[TYPE])]
+% if thing.issuanceType
+  % set typelabels =  typelabels + [vocab_term(thing.issuanceType)]
+% endif
+
+<div class="thing-summary">
+  <div class="main-info">
+    <h3 class="title"><a href="${thing[ID]}">${title}</a></h3>
+    <span class="subtitle">${subtitle}</span>
+  </div>
+  <div class="identifiers">
+    <ul>
+      % for i in identifiers
+      % if loop.index < 5
+        % if i[TYPE]
+        <li>${i[TYPE]}
+           % if isinstance(i.value, list)
+           ${ ", ".join(i.value)}
+           % else
+           ${i.value}
+           % endif
+         </li>
+        % else
+        <li>${i[ID]}</li>
+        % endif
+      % elif loop.index == 6
+        <li>...</li>
+      % endif
+      % endfor
+    </ul>
+  </div>
+  <div class="bottom-info">
+    <span>${typelabels|join(', ')}</span>
+  </div>
+</div>
+% endmacro
+
 % macro thing_list_item(thing)
 <div class="thing thing-list-item">
   <div class="header">
@@ -48,7 +99,7 @@
     </span>
   </div>
   <div class="body">
-    ${thing_data_list(thing)}
+    ${thing_summary(thing)}
   </div>
 </div>
 % endmacro

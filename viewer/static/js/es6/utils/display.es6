@@ -3,6 +3,7 @@ import * as httpUtil from './http';
 import * as EditUtil from './edit';
 import * as VocabUtil from './vocab';
 import * as StringUtil from './string';
+import * as displayGroups from '../displayGroups.json';
 import moment from 'moment';
 import 'moment/locale/sv';
 moment.locale('sv');
@@ -208,6 +209,37 @@ function extractStrings(obj) {
     label += ' ';
   });
   return label;
+}
+
+export function getItemSummary(item, displayDefs, linked, vocab, settings) {
+
+  const card = getCard(item, displayDefs, linked, vocab, settings);
+  const summary = {
+    header: [],
+    info: [],
+    identifiers: [],
+    sub: [],
+  };
+  _.each(card, (value, key) => {
+    if (displayGroups['header'].indexOf(key) !== -1) {
+      if (_.isArray(value)) {
+        summary['header'] = summary['header'].concat(value);
+      } else {
+        summary['header'].push(value);
+      }
+    } else if (displayGroups['info'].indexOf(key) !== -1) {
+      summary['info'].push(value);
+    } else if (displayGroups['identifiers'].indexOf(key) !== -1) {
+      if (_.isArray(value)) {
+        summary['identifiers'] = summary['identifiers'].concat(value);
+      } else {
+        summary['identifiers'].push(value);
+      }
+    } else {
+      summary['sub'].push(value);
+    }
+  });
+  return summary;
 }
 
 export function getItemLabel(item, displayDefs, linked, vocab, settings) {

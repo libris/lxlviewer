@@ -1,5 +1,6 @@
 <script>
 import LensMixin from './mixins/lens-mixin';
+import EntitySummary from './entity-summary';
 import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData } from '../vuex/getters';
 
 export default {
@@ -26,6 +27,7 @@ export default {
   computed: {
   },
   components: {
+    'entity-summary': EntitySummary,
   },
   watch: {
   },
@@ -36,8 +38,7 @@ export default {
 
 <template>
   <div class="search-result-item">
-    <span class="label">{{ getItemLabel }}</span>
-    <span class="type">{{ focusData['@type'] | labelByLang }}</span>
+    <entity-summary :focus-data="focusData"></entity-summary>
   </div>
 </template>
 
@@ -46,7 +47,7 @@ export default {
 @import './_variables.less';
 
 .search-result-item {
-  padding: 3px;
+  padding: 5px;
   .label {
     font-weight: bold;
     font-size: 16px;
@@ -58,6 +59,15 @@ export default {
     width: 24%;
     display: inline-block;
     text-align: right;
+  }
+  &:nth-child(even) {
+    background-color: darken(@neutral-color, 2%);
+  }
+  cursor: pointer;
+  border: solid #ccc;
+  border-width: 0px 0px 1px 0px;
+  &:hover {
+    background-color: darken(white, 5%);
   }
 }
 

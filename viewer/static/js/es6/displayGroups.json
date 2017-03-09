@@ -1,0 +1,12 @@
+{
+  "header": [
+    "hasTitle",
+    "title",
+    "prefLabel",
+    "notation",
+    "label"
+  ],
+  "info": ["responsibilityStatement", "instanceOf"],
+  "identifiers": ["identifiedBy", "sameAs"],
+  "sub": []
+}

@@ -49,6 +49,13 @@ export default class Editor extends View {
         'http://id.kb.se/',
         'https://id.kb.se/',
       ],
+      inlineKeys: [
+        '@type',
+        'issuanceType',
+        'extent',
+        'dimensions',
+        'marc:otherPhysicalDetails',
+      ],
     };
     $('#loadingText .fa-warning').hide();
     $('#loadingText .mainStatus').text('Laddar redigeringen...');

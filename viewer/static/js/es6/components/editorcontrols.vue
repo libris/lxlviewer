@@ -22,6 +22,22 @@ export default {
     },
   },
   mixins: [LensMixin],
+  ready() { // Ready method is deprecated in 2.0, switch to "mounted"
+    this.$nextTick(() => {
+      window.addEventListener('scroll', (e) => {
+        const cardHeader = document.getElementById('main-header');
+        const chipHeaderThreshold = cardHeader.offsetTop + (cardHeader.offsetHeight / 3);
+        const scrollPosition = e.target.body.scrollTop;
+        if (chipHeaderThreshold < scrollPosition) {
+          this.showChipHeader = true;
+        } else {
+          this.showChipHeader = false;
+        }
+      });
+      const expandableAdminInfo = document.getElementsByClassName('admin-info-container')[0];
+      expandableAdminInfo.onresize = this.resize;
+    });
+  },
   methods: {
     save() {
       this.changeSavedStatus('loading', true);
@@ -36,6 +52,7 @@ export default {
   },
   data() {
     return {
+      showChipHeader: false,
       showAdminInfoDetails: false,
     };
   },
@@ -94,7 +111,7 @@ export default {
           </div>
         </div>
       </div>
-      <header-component :full="false"></header-component>
+      <header-component v-bind:class="{'collapsed': !showChipHeader}" :full="false"></header-component>
     </div>
 
   </div>
@@ -115,8 +132,8 @@ export default {
 
   .editor-controls {
     background-color: @black;
-    color: @white;
     .admin-info {
+      color: @white;
       flex-direction: row;
       display: flex;
       align-items: center;

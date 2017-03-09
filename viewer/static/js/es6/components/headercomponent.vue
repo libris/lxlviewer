@@ -3,6 +3,7 @@ import * as _ from 'lodash';
 import * as DisplayUtil from '../utils/display';
 import * as VocabUtil from '../utils/vocab';
 import * as EditUtil from '../utils/edit';
+import EntitySummary from './entity-summary';
 import LensMixin from './mixins/lens-mixin';
 import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData, getStatus } from '../vuex/getters';
 
@@ -23,7 +24,6 @@ export default {
   },
   data() {
     return {
-      showChipHeader: false,
       inlineKeys: [
         '@type',
         'issuanceType',
@@ -33,22 +33,6 @@ export default {
       ],
     };
   },
-  ready() { // Ready method is deprecated in 2.0, switch to "mounted"
-    this.$nextTick(() => {
-      window.addEventListener('scroll', (e) => {
-        const cardHeader = document.getElementById('card-header');
-        const chipHeaderThreshold = cardHeader.offsetTop + (cardHeader.offsetHeight / 2);
-        const scrollPosition = e.target.body.scrollTop;
-        if (chipHeaderThreshold < scrollPosition) {
-          this.showChipHeader = true;
-        } else {
-          this.showChipHeader = false;
-        }
-      });
-      const expandableAdminInfo = document.getElementsByClassName('admin-info-container')[0];
-      expandableAdminInfo.onresize = this.resize;
-    });
-  },
   methods: {
     isTitle(key) {
       const k = key.toLowerCase();
@@ -57,6 +41,9 @@ export default {
     showKey(k) {
       const listOfKeys = ['ISBN']; // TODO: Fix list of keys to show.
       return _.indexOf(listOfKeys, k) > -1;
+    },
+    isInline(k) {
+      return (this.settings.inlineKeys.indexOf(k) !== -1);
     },
   },
   computed: {
@@ -74,32 +61,14 @@ export default {
     },
   },
   components: {
+    'entity-summary': EntitySummary,
   },
 };
 </script>
 
 <template>
-  <div class="header-component">
-    <div v-if="full" class="main-header" id="card-header">
-      <ul>
-        <li v-for="(k, v) in getCard" v-bind:class="{'large-title': isTitle(k), 'inline': (inlineKeys.indexOf(k) !== -1) }">{{v}}</li>
-      </ul>
-    </div>
-    <div v-if="full == false && showChipHeader" class="container fixed-header-container">
-      <div class="row">
-        <div class="fixed-header">
-          <span v-for="(k, v) in getCard">
-            <span v-if="isTitle(k)">
-              <span class="small-title">{{v}}</span>
-            </span>
-            <span v-if="!isTitle(k)" class="minimum-text">
-              <span v-if="showKey(k)">{{k}}: {{v}}</span>
-              <span v-if="!showKey(k)">{{v}}</span>
-            </span>
-          </span>
-        </div>
-      </div>
-    </div>
+  <div class="header-component" v-bind:class="{ 'compact': !full }">
+    <entity-summary :focus-data="focusData"></entity-summary>
   </div>
 </template>
 
@@ -108,6 +77,37 @@ export default {
 
 .header-component {
   padding: 0px;
+  &.compact {
+    max-height: 72px;
+    overflow-y: hidden;
+    &.collapsed {
+      max-height: 0px;
+    }
+    .thing-summary {
+      .main-info {
+        .header {
+          //
+        }
+        .info {
+          > li {
+            display: inline-block;
+            &:first-child {
+              margin-right: 0.3em;
+            }
+            &:not(:first-child):before {
+              content: "| ";
+            }
+          }
+        }
+      }
+      .identifiers {
+        //
+      }
+      .sub {
+        display: none;
+      }
+    }
+  }
 
   .container {
     .row {
@@ -123,52 +123,6 @@ export default {
     }
   }
 
-  .main-header {
-    ul {
-      padding: 20px;
-      .inline {
-        display: inline;
-        &::after {
-          content: ", ";
-        }
-      }
-    }
-  }
-
-  ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-
-
-  .large-title {
-    font-size: 20px;
-    font-weight: bold;
-  }
-
-  .work-title {
-    font-size: 22px;
-    border-bottom: 1px solid white;
-  }
-
-  .small-title {
-    font-size: 16px;
-    font-weight: bold;
-  }
-
-  .medium-text {
-    font-size: 14px;
-  }
-
-  .small-text {
-    font-size: 12px;
-  }
-
-  .minimum-text {
-    font-size: 10px;
-    font-style: italic;
-  }
 }
 
 </style>

@@ -270,7 +270,7 @@ export default {
           </div>
         </div>
         <div v-if="!loading && keyword.length === 0" class="search-status">Skriv för att börja söka...</div>
-        <div v-if="loading" class="search-status">Söker...</div>
+        <div v-if="loading" class="search-status">Söker...<br><i class="fa fa-cog fa-spin"></i></div>
         <div v-if="!loading && searchResult.length === 0 && keyword.length > 0" class="search-status">Inga resultat...</div>
         <entity-search-list v-if="!loading && keyword.length > 0" :results="searchResult"></entity-search-list>
       </div>
@@ -335,29 +335,9 @@ export default {
       }
       .search-status {
         padding: 10px;
-      }
-      .search-result {
-        overflow-y: scroll;
-        height: 328px;
-        margin-top: 10px;
-        .search-result-list {
-          width: 100%;
-          padding: 0px;
-          list-style-type: none;
-          li {
-            padding: 5px;
-          }
-          .search-result-item {
-            &:nth-child(even) {
-              background-color: darken(@neutral-color, 2%);
-            }
-            cursor: pointer;
-            border: solid #ccc;
-            border-width: 0px 0px 1px 0px;
-            &:hover {
-              background-color: darken(white, 5%);
-            }
-          }
+        text-align: center;
+        > i {
+          font-size: 2rem;
         }
       }
     }
