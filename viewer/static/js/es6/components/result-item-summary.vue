@@ -82,8 +82,8 @@ export default {
       background-color: darken(white, 2%);
   }
   .main-info {
-    flex-basis: 80%;
-    max-width: 80%;
+    flex-basis: 70%;
+    max-width: 70%;
     .categorization {
       color: #8a8a8a;
       font-weight: bold;
@@ -106,7 +106,7 @@ export default {
     }
   }
   .identifiers {
-    flex-basis: 20%;
+    flex-basis: 30%;
     text-align: right;
     padding: 10px;
     font-weight: bold;
