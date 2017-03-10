@@ -10,7 +10,7 @@
 <div id="PagedCollectionApp">
   <div class="row">
     <div class="col-md-3">
-      <facet-controls></facet-controls>
+      <facet-controls v-if="initialized == true" :result="result"></facet-controls>
     </div>
     <div class="col-md-9">
       ${ search.search_controls(thing) }
