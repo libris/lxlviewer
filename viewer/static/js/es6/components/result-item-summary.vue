@@ -49,6 +49,7 @@ export default {
 <template>
 <div class="result-item-summary">
   <div class="main-info">
+    <div class="categorization">{{ getSummary.categorization.join(', ') }}</div>
     <h3 class="header"><a :href="focusData['@id']">{{ getSummary.header.join(', ') }}</a></h3>
     <ul class="info">
       <li v-for="v in getSummary.info">{{ v }}</li>
@@ -83,6 +84,13 @@ export default {
   .main-info {
     flex-basis: 80%;
     max-width: 80%;
+    .categorization {
+      color: #8a8a8a;
+      font-weight: bold;
+      font-size: 0.9em;
+      margin-bottom: -0.4em;
+
+    }
     .header {
       color: @brand-primary;
       white-space: nowrap;

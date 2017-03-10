@@ -215,6 +215,7 @@ export function getItemSummary(item, displayDefs, linked, vocab, settings) {
 
   const card = getCard(item, displayDefs, linked, vocab, settings);
   const summary = {
+    categorization: [],
     header: [],
     info: [],
     identifiers: [],
@@ -234,6 +235,12 @@ export function getItemSummary(item, displayDefs, linked, vocab, settings) {
         summary['identifiers'] = summary['identifiers'].concat(value);
       } else {
         summary['identifiers'].push(value);
+      }
+    } else if (displayGroups['categorization'].indexOf(key) !== -1) {
+      if (_.isArray(value)) {
+        summary['categorization'] = summary['categorization'].concat(value);
+      } else {
+        summary['categorization'].push(value);
       }
     } else {
       summary['sub'].push(value);

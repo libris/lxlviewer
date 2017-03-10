@@ -1,4 +1,10 @@
 {
+  "categorization": [
+    "@type",
+    "issuanceType",
+    "inCollection",
+    "inScheme"
+  ],
   "header": [
     "hasTitle",
     "title",
@@ -7,6 +13,5 @@
     "label"
   ],
   "info": ["responsibilityStatement", "instanceOf"],
-  "identifiers": ["identifiedBy", "sameAs"],
-  "sub": []
+  "identifiers": ["identifiedBy", "sameAs"]
 }
