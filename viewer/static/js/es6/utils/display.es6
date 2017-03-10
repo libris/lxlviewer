@@ -251,7 +251,7 @@ export function getItemSummary(item, displayDefs, linked, vocab, settings) {
 
 export function getItemLabel(item, displayDefs, linked, vocab, settings) {
   const displayObject = getChip(item, displayDefs, linked, vocab, settings);
-  const rendered = extractStrings(displayObject);
+  const rendered = extractStrings(displayObject).trim();
   return rendered;
 }
 
