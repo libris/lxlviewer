@@ -4,6 +4,7 @@ import Vuex from 'vuex';
 import store from '../vuex/store';
 import * as _ from 'lodash';
 import * as StringUtil from '../utils/string';
+import * as SearchUtil from '../utils/search';
 import * as VocabUtil from '../utils/vocab';
 import * as DisplayUtil from '../utils/display';
 import ComboKeys from 'combokeys';
@@ -19,6 +20,9 @@ export default class PagedCollection extends View {
 
   initialize() {
     super.initialize();
+    SearchUtil.initTypeButtons();
+    SearchUtil.initializeSearch();
+
     const self = this;
     this.dataIn = JSON.parse(document.getElementById('data').innerText);
 

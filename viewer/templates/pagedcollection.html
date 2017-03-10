@@ -5,6 +5,7 @@
 {% block title %}${ui.SEARCH_RESULTS.label}{% endblock %}
 
 % block content
+% set items = thing['items']
 
 <div id="PagedCollectionApp">
   <div class="row">
@@ -12,45 +13,12 @@
       <facet-controls></facet-controls>
     </div>
     <div class="col-md-9">
-      <main-search-field :title="tjena"></main-search-field>
+      ${ search.search_controls(thing) }
+      <!-- <main-search-field :title="tjena"></main-search-field> -->
       <search-result-component :result="result" v-if="initialized == true"></search-result-component>
     </div>
   </div>
 </div>
-
-  % set items = thing['items']
-<div class="row">
-  <div class="col-md-3 hidden-xs hidden-sm">
-    <!--% if not request.args.get('@type')-->
-    <div class="panel panel-default">
-      <div class="panel-body facet-controls">
-      ${ search.facet_controls(thing, ui) }
-      </div>
-    </div>
-    <!--% endif-->
-  </div>
-  <div class="col-md-9">
-
-    ${ search.search_controls(thing) }
-    % if not request.args.get('@type')
-    <div class="panel panel-default hidden-md hidden-lg">
-      <div class="panel-body facet-controls">
-      ${ search.facet_controls(thing, ui) }
-      </div>
-    </div>
-    % endif
-    ${ search.result_controls(thing, True) }
-    % if items
-    <div class="result-list">
-    % for item in items
-      ${thing_summary(item)}
-    % endfor
-    </div>
-    % endif
-    ${ search.result_controls(thing, False) }
-  </div>
-</div>
-
 
 <script id="data" type="application/json">${thing|tojson|safe}</script>
 % endblock
