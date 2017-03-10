@@ -243,7 +243,11 @@ export function getItemSummary(item, displayDefs, linked, vocab, settings) {
         summary['categorization'].push(value);
       }
     } else {
-      summary['sub'].push(value);
+      if (_.isArray(value)) {
+        summary['sub'] = summary['sub'].concat(value);
+      } else {
+        summary['sub'].push(value);
+      }
     }
   });
   return summary;
