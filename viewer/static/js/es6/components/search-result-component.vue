@@ -1,5 +1,7 @@
 <script>
 import ResultList from './result-list';
+import EntitySearchList from './entity-search-list';
+import SearchPagination from './search-pagination';
 
 export default {
   name: 'search-result-component',
@@ -14,8 +16,15 @@ export default {
   methods: {
   },
   computed: {
+    paginationData() {
+      const page = Object.assign({}, this.result);
+      delete page.items;
+      return page;
+    },
   },
   components: {
+    'entity-search-list': EntitySearchList,
+    'search-pagination': SearchPagination,
     'result-list': ResultList,
   },
   watch: {
@@ -33,7 +42,9 @@ export default {
 
 <template>
   <div>
+    <search-pagination :page-data="paginationData" show-details="true"></search-pagination>
     <result-list :results="result.items"></result-list>
+    <search-pagination :page-data="paginationData" show-details="false"></search-pagination>
   </div>
 </template>
 

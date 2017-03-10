@@ -9,6 +9,19 @@ export function removeDomain(string, removableBaseUriArray) {
   return newValue;
 }
 
+export function getParamValueFromUrl(url, param) {
+  const splitUrl = url.split('&');
+  let paramString;
+  for (let i = 0; i < splitUrl.length; i++) {
+    if (splitUrl[i].indexOf(param) !== -1) {
+      paramString = splitUrl[i];
+      break;
+    }
+  }
+  const value = paramString.split('=')[1];
+  return value;
+}
+
 export function labelByLang(string, lang, vocab, vocabPfx) {
   if (!string) {
     return '[FAILED LABEL]';
