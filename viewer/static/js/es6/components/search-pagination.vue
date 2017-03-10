@@ -13,13 +13,16 @@ export default {
     }
   },
   computed: {
+    limit() {
+      return StringUtil.getParamValueFromUrl(this.pageData.first['@id'], '_limit');
+    },
     pageList() {
       const list = [];
       const first = this.pageData.first['@id'];
       const limit = StringUtil.getParamValueFromUrl(first, '_limit');
       const offset = this.pageData.itemOffset;
-      const noOfPages = parseInt(this.pageData.totalItems / limit) + 1 || 1;
-      const currentPage = parseInt(offset/limit);
+      const noOfPages = parseInt(this.pageData.totalItems / this.limit) + 1 || 1;
+      const currentPage = parseInt(offset/this.limit);
       let paddedPages = 4;
       if (currentPage < paddedPages) {
         paddedPages = paddedPages + (paddedPages - currentPage -1);
@@ -27,7 +30,7 @@ export default {
         paddedPages = paddedPages + (currentPage + paddedPages - noOfPages);
       }
       for (let i = 0; i < noOfPages; i++) {
-        const pageOffset = i * limit;
+        const pageOffset = i * this.limit;
         list.push({ link: `${this.pageData.first['@id']}&_offset=${pageOffset}`, active: (i === currentPage)});
       }
       return list;
@@ -37,11 +40,11 @@ export default {
 </script>
 
 <template>
-  <div class="panel panel-default result-controls">
+  <div class="panel panel-default result-controls" v-if="!(!showDetails && pageData.totalItems < limit)">
     <div class="search-details" v-if="showDetails">
       Sökningen gav {{pageData.totalItems}} träffar.
     </div>
-    <div class="search-buttons">
+    <div class="search-buttons" v-if="pageData.totalItems > limit">
       <nav>
         <ul class="pagination">
           <li v-bind:class="{ 'disabled': !pageData.first || pageData['@id'] === pageData.first['@id'] }">
