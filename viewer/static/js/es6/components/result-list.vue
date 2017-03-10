@@ -12,7 +12,7 @@ export default {
     }
   },
   methods: {
-    
+
   },
   computed: {
   },
@@ -38,7 +38,6 @@ export default {
 @import './_variables.less';
 
 .result {
-  background-color: white;
   .result-list {
     width: 100%;
     padding: 0px;

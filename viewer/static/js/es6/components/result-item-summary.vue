@@ -35,7 +35,6 @@ export default {
     },
   },
   computed: {
-
   },
   components: {
   },
@@ -60,7 +59,7 @@ export default {
       <li v-for="v in getSummary.identifiers">{{v}}</li>
     </ul>
   </div>
-  <div class="sub">
+  <div class="sub" v-if="getSummary.sub.length > 0 && getSummary.sub[0] !== ''">
     <span>{{ getSummary.sub.join(', ') }}</span>
   </div>
 </div>
@@ -77,9 +76,6 @@ export default {
   justify-content: flex-start;
   > * {
     padding: 5px;
-  }
-  &:hover {
-      background-color: darken(white, 2%);
   }
   .main-info {
     flex-basis: 70%;
@@ -118,6 +114,14 @@ export default {
   .sub {
     font-style: italic;
     flex-basis: 100%;
+    background-color: rgba(0, 0, 0, 0.01);
+    border: solid rgba(0, 0, 0, 0.1);
+    border-width: 1px 0px 0px 0px;
+    > span {
+      display: block;
+      height: 1.7em;
+      overflow-y: hidden;
+    }
   }
 }
 

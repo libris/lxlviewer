@@ -48,6 +48,8 @@ export default {
 
 .result-list-item {
   list-style: none;
+  margin-bottom: 0.5em;
+  background-color: @neutral-color;
   .label {
     color: @black;
     font-weight: bold;
