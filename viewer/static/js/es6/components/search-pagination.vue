@@ -1,4 +1,5 @@
 <script>
+import * as StringUtil from '../utils/string';
 
 export default {
   name: 'search-pagination',
@@ -14,7 +15,8 @@ export default {
   computed: {
     pageList() {
       const list = [];
-      const limit = 200; // TODO: PLZ NO MAGIC
+      const first = this.pageData.first['@id'];
+      const limit = StringUtil.getParamValueFromUrl(first, '_limit');
       const offset = this.pageData.itemOffset;
       const noOfPages = parseInt(this.pageData.totalItems / limit) + 1 || 1;
       const currentPage = parseInt(offset/limit);
