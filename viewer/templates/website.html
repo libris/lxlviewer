@@ -145,11 +145,7 @@
               % for item in obs.sliceByDimension[dimension].observation
                 <a class="list-group-item"
                     href="${item.view['@id']}">
-                    % if g.site.title == 'id.kb.se'
-                      ${show_label(item.object)}
-                    % else
-                      ${vocab_term(item.object['@id'])}
-                    % endif
+                    ${show_label(item.object)}
                     <span class="badge">${format_number(item.totalItems)} st.</span>
                 </a>
               % endfor
@@ -172,6 +168,7 @@
 % endmacro
 
 % macro show_label(obj)
+  % set obj = vocab.get_term_dfn(obj[ID]) or obj
   % if obj.titleByLang
     ${obj.titleByLang[lang]}
   % elif obj.labelByLang
