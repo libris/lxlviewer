@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 import re
 import json
 from urlparse import urlparse, urljoin
+from collections import namedtuple
 
 import requests
 from werkzeug.datastructures import MultiDict
@@ -172,20 +173,21 @@ class DataAccess(object):
         return site
 
     def setup_vocab_view(self):
-        vocab_data = self._load_required(self.vocab_uri)
-        context_data = self._load_required(self.context_uri)
-        display_data = self._load_required(self.display_uri)
-
-        return VocabView(self.vocab_uri,
-                vocab_data,
-                context_data,
-                display_data,
-                lang=self.lang)
+        vocab = self._load_required(self.vocab_uri)
+        context = self._load_required(self.context_uri)
+        display = self._load_required(self.display_uri)
+        return VocabView(vocab, context, display, lang=self.lang)
 
     def _load_required(self, uri):
         data = self.load_from_whelk(uri)
+        resp = self.api_request(uri)
+        data = resp.json()
+        etag = resp.headers.get('ETag')
         assert data, 'Failed to get {} from whelk'.format(uri)
-        return data
+        return ApiResource(uri, data, etag)
+
+
+ApiResource = namedtuple('ApiResource', 'uri, data, etag')
 
 
 class UriMap(object):

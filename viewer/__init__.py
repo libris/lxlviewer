@@ -517,19 +517,24 @@ def vocabview(suffix=None):
     else:
         mimetype = request.accept_mimetypes.best_match(MIMETYPE_FORMATS)
 
+    resp = None
     if mimetype == JSONLD_MIMETYPE:
         vocab_data = {
             CONTEXT: CONTEXT_PATH,
             GRAPH: daccess.vocab.vocab_data[GRAPH]
         }
-        return Response(json.dumps(vocab_data),
+        resp = Response(json.dumps(vocab_data),
                 content_type='%s; charset=UTF-8' % mimetype)
 
     if mimetype in RDF_MIMETYPES:
-        return Response(voc.graph.serialize(format=
+        resp = Response(voc.graph.serialize(format=
                 'json-ld' if mimetype == JSONLD_MIMETYPE else mimetype,
                 #context_id=CONTEXT_PATH,
                 context=daccess.jsonld_context_data[CONTEXT]), content_type='%s; charset=UTF-8' % mimetype)
+
+    if resp:
+        resp.headers['ETag'] = daccess.vocab.vocab_etag
+        return resp
 
     return render_template('vocab.html',
             URIRef=URIRef, **vars())

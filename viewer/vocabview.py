@@ -19,22 +19,23 @@ REVERSE = '@reverse'
 
 class VocabView:
 
-    def __init__(self, vocab_uri, vocab_data, context_data, display_data, lang='en'):
-        self.vocab_uri = vocab_uri
-        self.vocab_data = vocab_data
-        self.context_data = context_data
-        self.display = display_data
+    def __init__(self, vocab, context, display, lang='en'):
+        self.vocab_uri = vocab.uri
+        self.vocab_data = vocab.data
+        self.vocab_etag = vocab.etag
+        self.context_data = context.data
+        self.display_data = display.data
         self.lang = lang
 
         self.index = {}
 
-        for node in vocab_data[GRAPH]:
+        for node in vocab.data[GRAPH]:
             if GRAPH in node:
                 continue
             node_id = node.get(ID)
             if not node_id:
                 continue
-            if not node_id.startswith(vocab_uri):
+            if not node_id.startswith(vocab.uri):
                 continue
 
             term_key = self._get_term_key(node_id)
@@ -99,7 +100,7 @@ class VocabView:
 
     def _find_lens_for_type(self, type_key, lens_group_keys):
         for lens_group_key in lens_group_keys:
-            lenses = self.display['lensGroups'][lens_group_key]['lenses']
+            lenses = self.display_data['lensGroups'][lens_group_key]['lenses']
             for ntype in as_iterable(type_key):
                 lens = lenses.get(ntype)
                 if lens:
