@@ -60,6 +60,11 @@ class VocabView:
     def _get_term_key(self, node_id):
         return node_id.replace(self.vocab_uri, '')
 
+    def get_term_dfn(self, id_or_key):
+        if not id_or_key:
+            return None
+        return self.index.get(self._get_term_key(id_or_key))
+
     def sortedkeys(self, node, lenstype='cards'):
         lens = self._get_lens_for(node, lenstype)
         # TODO: Rewriting language containers to localized, simple values...
