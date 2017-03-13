@@ -30,6 +30,8 @@ JSONLD_MIMETYPE = 'application/ld+json'
 RDF_MIMETYPES = {'text/turtle', JSONLD_MIMETYPE, 'application/rdf+xml', 'text/xml'}
 MIMETYPE_FORMATS = ['text/html', 'application/xhtml+xml'] + list(RDF_MIMETYPES)
 
+KEEP_HEADERS = ['ETag', 'Location']
+
 CONTEXT_PATH = '/context.jsonld'
 
 TYPE_TEMPLATES = {
@@ -167,11 +169,10 @@ def thingview(path, suffix=None):
     whelk_accept_header = _get_view_data_accept_header(request, suffix)
 
     resource_id = _get_served_uri(request.url_root, path)
-    r = _proxy_request(request, session, accept_header=whelk_accept_header,
+    resp = _proxy_request(request, session, accept_header=whelk_accept_header,
             url_path=resource_id)
 
-    response_body = json.loads(r.get_data())
-    return rendered_response(path, suffix, response_body)
+    return rendered_response(path, suffix, resp)
 
 
 # FIXME make this less sketcy
@@ -194,8 +195,7 @@ def find(suffix=None):
     response = _proxy_request(request, session,
                               url_path='/find',
                               query_params=arguments)
-    results = json.loads(response.get_data())
-    return rendered_response('/find', suffix, results)
+    return rendered_response('/find', suffix, response)
 
 
 @app.route('/some', methods=R_METHODS)
@@ -218,6 +218,13 @@ def dataindexview(suffix=None):
 
 
 def rendered_response(path, suffix, data, mimetype=None):
+
+    if isinstance(data, Response):
+        resp = data
+        data = json.loads(resp.get_data())
+    else:
+        resp = None
+
     if mimetype:
         render = _get_render_for_mimetype(mimetype)
     else:
@@ -225,14 +232,27 @@ def rendered_response(path, suffix, data, mimetype=None):
 
     if not render:
         return abort(406)
+
     result = render(path, data)
+
     charset = 'charset=UTF-8' # technically redundant, but for e.g. JSONView
-    resp = Response(result, mimetype=mimetype +'; '+ charset) if isinstance(
-            result, bytes) else result
+
+    if isinstance(result, unicode):
+        return result
+
+    new_resp = Response(result, mimetype=mimetype +'; '+ charset)
+
+    if resp:
+        for header in KEEP_HEADERS:
+            value = resp.headers.get(header)
+            if value:
+                new_resp.headers[header] = value
+
     if mimetype == 'application/json':
         context_link = '<%s>; rel="http://www.w3.org/ns/json-ld#context"' % CONTEXT_PATH
-        resp.headers['Link'] = context_link
-    return resp
+        new_resp.headers['Link'] = context_link
+
+    return new_resp
 
 
 # FIXME make this less sketchy
@@ -436,9 +456,10 @@ def _map_response(response):
     """
     def _map_headers(headers):
         _headers = {}
-        for head in ['etag', 'location']:
-            if head in headers:
-                _headers[head] = headers[head];
+        for header in KEEP_HEADERS:
+            value = headers.get(header)
+            if value:
+                _headers[header] = value
         return _headers
 
     resp = Response(response.text,
