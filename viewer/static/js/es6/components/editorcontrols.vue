@@ -25,10 +25,8 @@ export default {
   ready() { // Ready method is deprecated in 2.0, switch to "mounted"
     this.$nextTick(() => {
       window.addEventListener('scroll', (e) => {
-        const cardHeader = document.getElementById('main-header');
-        const chipHeaderThreshold = cardHeader.offsetTop + (cardHeader.offsetHeight / 3);
         const scrollPosition = e.target.body.scrollTop;
-        if (chipHeaderThreshold < scrollPosition) {
+        if (this.headerThreshold < scrollPosition) {
           this.showChipHeader = true;
         } else {
           this.showChipHeader = false;
@@ -42,6 +40,9 @@ export default {
     save() {
       this.changeSavedStatus('loading', true);
       this.$dispatch('save-item');
+    },
+    edit() {
+      this.$dispatch('edit-item');
     },
     toggleDev() {
       this.changeStatus('isDev', !this.status.isDev);
@@ -57,6 +58,10 @@ export default {
     };
   },
   computed: {
+    headerThreshold() {
+      const cardHeader = document.getElementById('main-header');
+      return cardHeader.offsetTop + (cardHeader.offsetHeight / 6);
+    },
     focusData() {
       return this.editorData.record;
     },
@@ -91,11 +96,16 @@ export default {
         <div class="admin-node">
           <span class="node">Ändrad {{ getCard.modified }} av - </span>
         </div>
-        <button id="saveButton" v-on:click="save()">
+        <button id="saveButton" v-on:click="save()" v-if="status.inEdit">
           <i class="fa fa-fw fa-cog fa-spin" v-show="status.saved.loading"></i>
           <i class="fa fa-fw fa-save" v-show="!status.saved.loading"></i>
           Spara
         </button>
+        <button id="editButton" v-on:click="edit()" v-if="!status.inEdit">
+          <i class="fa fa-fw fa-pencil"></i>
+          Redigera
+        </button>
+
       </div>
       <div>
         <div class="admin-info-container" :class="{ 'show-admin-info-details': showAdminInfoDetails }">
@@ -147,7 +157,7 @@ export default {
           vertical-align: middle;
         }
       }
-      #saveButton {
+      #saveButton, #editButton {
         padding: 0px;
         flex-grow: 1;
       }

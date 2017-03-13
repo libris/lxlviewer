@@ -217,7 +217,6 @@ export default {
   margin: 0px 10px  80px 10px;
   border: 1px solid #ccc;
   &.locked {
-    border-radius: 10px;
     > ul > li {
       margin: 0px;
     }

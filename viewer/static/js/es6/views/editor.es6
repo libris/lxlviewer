@@ -122,6 +122,7 @@ export default class Editor extends View {
       data: {
         initialized: false,
         combokeys: null,
+        locked: true,
       },
       events: {
         'focus-update': function(value, oldValue) {
@@ -145,6 +146,9 @@ export default class Editor extends View {
         },
         'save-item': function() {
           this.saveItem();
+        },
+        'edit-item': function() {
+          this.editItem();
         },
       },
       watch: {
@@ -197,6 +201,9 @@ export default class Editor extends View {
               this.editorData.linked
             )
           );
+        },
+        editItem() {
+          this.changeStatus('inEdit', true);
         },
         saveItem() {
           const inputData = JSON.parse(document.getElementById('data').innerText);
