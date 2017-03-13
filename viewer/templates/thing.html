@@ -44,7 +44,13 @@
     <span class="expand-button"><i class='fa fa-chevron-right'></i></span>
     <span class="title"><a href="${view_url(thing[ID])}">${vocab.get_label_for(thing)}</a></span>
     <span class="class">
-      ${vocab_term(thing[TYPE])}
+      % if isinstance(thing[TYPE], list)
+        % for t in thing[TYPE]
+          ${vocab_term(t)}
+        % endfor
+      % else
+        ${vocab_term(thing[TYPE])}
+      % endif
     </span>
   </div>
   <div class="body">
