@@ -172,6 +172,9 @@ def thingview(path, suffix=None):
     resp = _proxy_request(request, session, accept_header=whelk_accept_header,
             url_path=resource_id)
 
+    if resp.status_code > 200:
+        return resp
+
     return rendered_response(path, suffix, resp)
 
 
@@ -498,6 +501,9 @@ app.context_processor(lambda: rdfns)
 @app.route('/vocab/data.<suffix>', methods=R_METHODS)
 def vocabview(suffix=None):
     voc = daccess.vocab.get_util()
+
+    if request.headers.get('if-none-match') == daccess.vocab.vocab_etag:
+        return Response(status=304)
 
     def link(obj):
         if ':' in obj.qname() and not any(obj.objects(None)):
