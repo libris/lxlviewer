@@ -25,10 +25,8 @@ export default {
   ready() { // Ready method is deprecated in 2.0, switch to "mounted"
     this.$nextTick(() => {
       window.addEventListener('scroll', (e) => {
-        const cardHeader = document.getElementById('main-header');
-        const chipHeaderThreshold = cardHeader.offsetTop + (cardHeader.offsetHeight / 3);
         const scrollPosition = e.target.body.scrollTop;
-        if (chipHeaderThreshold < scrollPosition) {
+        if (this.headerThreshold < scrollPosition) {
           this.showChipHeader = true;
         } else {
           this.showChipHeader = false;
@@ -57,6 +55,10 @@ export default {
     };
   },
   computed: {
+    headerThreshold() {
+      const cardHeader = document.getElementById('main-header');
+      return cardHeader.offsetTop + (cardHeader.offsetHeight / 6);
+    },
     focusData() {
       return this.editorData.record;
     },
