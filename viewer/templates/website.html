@@ -55,10 +55,11 @@
       </div>
     </div>
   </div> -->
-
+  </div>
+  <div class="col-md-8 col-md-offset-2 observations">
     % for value in thing.statistics.sliceByDimension.values()
       % for obs in value.observation
-        ${view_observation(obs)}
+        ${observation_button(obs)}
       % endfor
     % endfor
   % endif
@@ -110,6 +111,53 @@
 % block scripts
 
 % endblock
+
+% macro observation_button(obs)
+  % if obs.object is not none
+    <div class="observation-container">
+      <a href="${ obs.view['@id'] }">
+    % if obs.object.notation
+    
+      <div id="${obs.object.notation[0].replace('/','-')}" class="observation-button">
+      % else
+      <div class="observation-button">
+      % endif
+        
+          <!-- <p class="description collapsed">
+            % if 'descriptionByLang' in obs.object
+            ${ obs.object.descriptionByLang[lang].strip().replace('\n','<br/>') | safe }
+            % endif
+          </p> -->
+          
+        </div>
+        <div class="observation-label">
+            % if g.site.title == 'id.kb.se'
+            <a href="${ obs.object['@id'] }">
+                ${show_label(obs.object)}
+            </a>
+            % else
+            <a href="https://id.kb.se/vocab/#${ obs.object['@id'] }">
+              ${vocab_term(obs.object['@id'])}
+            </a>
+            % endif
+             
+        </div>
+        <div class="observation-quantity">
+          % if obs.sliceByDimension
+              <!-- First item is "all" -->
+                <span>
+                  ${format_number(obs.totalItems)} st.
+                </span>
+              
+          % else
+            ${view_observation_item(obs)}
+          % endif
+        </div>
+       </a>
+      </div>
+  % endif
+% endmacro
+
 
 % macro view_observation(obs)
   % if obs.object is not none
