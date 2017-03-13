@@ -102,7 +102,7 @@ export default {
           Spara
         </button>
         <button id="editButton" v-on:click="edit()" v-if="!status.inEdit">
-          <i class="fa fa-fw fa-pen"></i>
+          <i class="fa fa-fw fa-pencil"></i>
           Redigera
         </button>
 
