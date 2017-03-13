@@ -20,17 +20,19 @@
 
 % block content
 <div class="row">
-  <div class="col-md-4">
-    <div class="panel panel-default intro-text">
+  <div class="col-md-8 col-md-offset-2">
+    <!-- <div class="panel panel-default intro-text"> -->
       % if thing.summary
         ${thing.summary.articleBody|safe}
       % else
         ${thing.description|safe}
       % endif
-    </div>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus porta venenatis lorem, sed finibus dolor feugiat eget. Vestibulum placerat lorem massa, luctus dapibus lectus commodo aliquam. Sed cursus nisl euismod venenatis maximus. Donec volutpat porta tortor, id euismod leo hendrerit sit amet. Aenean euismod erat lectus, quis vehicula erat faucibus nec. Maecenas in purus mauris. Aliquam ac felis convallis, efficitur massa id, efficitur arcu. Nam ac neque pharetra, rutrum sem sit amet, aliquam massa. Sed libero ex, luctus eget bibendum ac, molestie porta arcu. Nullam iaculis, nibh non ullamcorper dictum, justo sem posuere quam, eget dapibus tortor nisl ut purus.
+    <!-- </div> -->
   </div>
-  <div class="col-md-8">
+  <div class="col-md-8 col-md-offset-2 search-container">
     ${ search.search_controls(thing, g.site.filter_param) }
+  </div>
 
   % if thing.statistics.sliceByDimension
   <!-- <div class="col-md-12">
@@ -62,7 +64,6 @@
       % endfor
     % endfor
   % endif
-  </div>
 </div>
 
 % endblock
@@ -113,6 +114,7 @@
 
 % macro view_observation(obs)
   % if obs.object is not none
+  <div class="col-md-6">
     % if obs.object.notation
     <div id="${obs.object.notation[0].replace('/','-')}" class="panel panel-default scheme-item">
     % else
@@ -168,6 +170,7 @@
         % endif
       </div>
   </div>
+</div>
   % endif
 % endmacro
 
