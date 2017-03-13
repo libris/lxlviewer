@@ -20,6 +20,7 @@ const state = {
     dirty: true,
     isDev: false,
     keybindState: '',
+    inEdit: false,
     saved: {
       loading: false,
       error: false,

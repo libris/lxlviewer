@@ -41,6 +41,9 @@ export default {
       this.changeSavedStatus('loading', true);
       this.$dispatch('save-item');
     },
+    edit() {
+      this.$dispatch('edit-item');
+    },
     toggleDev() {
       this.changeStatus('isDev', !this.status.isDev);
     },
@@ -93,11 +96,16 @@ export default {
         <div class="admin-node">
           <span class="node">Ändrad {{ getCard.modified }} av - </span>
         </div>
-        <button id="saveButton" v-on:click="save()">
+        <button id="saveButton" v-on:click="save()" v-if="status.inEdit">
           <i class="fa fa-fw fa-cog fa-spin" v-show="status.saved.loading"></i>
           <i class="fa fa-fw fa-save" v-show="!status.saved.loading"></i>
           Spara
         </button>
+        <button id="editButton" v-on:click="edit()" v-if="!status.inEdit">
+          <i class="fa fa-fw fa-pen"></i>
+          Redigera
+        </button>
+
       </div>
       <div>
         <div class="admin-info-container" :class="{ 'show-admin-info-details': showAdminInfoDetails }">
@@ -149,7 +157,7 @@ export default {
           vertical-align: middle;
         }
       }
-      #saveButton {
+      #saveButton, #editButton {
         padding: 0px;
         flex-grow: 1;
       }
