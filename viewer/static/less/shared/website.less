@@ -125,23 +125,36 @@ footer {
   .observation-container {
     flex-basis: 18%;
     text-align: center;
+    margin-bottom: 2em;
+    position: relative;
     .observation-button {
-      
-      background-color: blue;
+      i {
+        position:  absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        font-size: 3.5em;
+        padding: 0.7em;
+      }
+      background-color: fadeout(@brand-primary, 85%);
       border-radius: 50%;
       &:before{
         content: "";
         display: block;
         padding-top: 100%; 	/* initial ratio of 1:1*/
-      }  
+      }
     }
-    
+
     .observation-label {
       // background-color: red;
-
+    }
+    .observation-quantity {
+      font-size: 0.8em;
+      line-height: 0.8em;
     }
   }
-  
+
 }
 
 }

@@ -114,48 +114,64 @@
 % endblock
 
 % macro observation_button(obs)
+  {%
+    set icons = {
+      "Text": "file-text",
+      "ManuscriptText": "file-text",
+      "Cartography": "globe",
+      "StillImage": "image",
+      "Music": "music",
+      "NotatedMusic": "music",
+      "Audio": "file-audio-o",
+      "Kit": "cube",
+      "ProjectedImage": "film",
+      "Multimedia": "play-circle-o"
+    }
+  %}
+
   % if obs.object is not none
     <div class="observation-container">
       <a href="${ obs.view['@id'] }">
+
     % if obs.object.notation
-    
       <div id="${obs.object.notation[0].replace('/','-')}" class="observation-button">
-      % else
+    % else
       <div class="observation-button">
-      % endif
-        
+    % endif
+    % set type = obs.object['@id']
+        <i class="fa fa-${icons[type] or 'file' }"></i>
           <!-- <p class="description collapsed">
             % if 'descriptionByLang' in obs.object
             ${ obs.object.descriptionByLang[lang].strip().replace('\n','<br/>') | safe }
             % endif
           </p> -->
-          
-        </div>
-        <div class="observation-label">
-            % if g.site.title == 'id.kb.se'
-            <a href="${ obs.object['@id'] }">
-                ${show_label(obs.object)}
-            </a>
-            % else
-            <a href="https://id.kb.se/vocab/#${ obs.object['@id'] }">
-              ${vocab_term(obs.object['@id'])}
-            </a>
-            % endif
-             
-        </div>
-        <div class="observation-quantity">
-          % if obs.sliceByDimension
-              <!-- First item is "all" -->
-                <span>
-                  ${format_number(obs.totalItems)} st.
-                </span>
-              
-          % else
-            ${view_observation_item(obs)}
-          % endif
-        </div>
-       </a>
+
       </div>
+      <div class="observation-label">
+          % if g.site.title == 'id.kb.se'
+          <a href="${ obs.object['@id'] }">
+              ${show_label(obs.object)}
+          </a>
+          % else
+          <a href="https://id.kb.se/vocab/#${ obs.object['@id'] }">
+            ${vocab_term(obs.object['@id'])}
+          </a>
+          % endif
+
+      </div>
+      <div class="observation-quantity">
+        % if obs.sliceByDimension
+            <!-- First item is "all" -->
+              <span>
+                ${format_number(obs.totalItems)} st.
+              </span>
+
+        % else
+          ${view_observation_item(obs)}
+        % endif
+      </div>
+      </a>
+    </div>
   % endif
 % endmacro
 
