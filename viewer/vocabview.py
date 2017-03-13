@@ -1,5 +1,5 @@
 # -*- coding: UTF-8 -*-
-from __future__ import unicode_literals
+from __future__ import unicode_literals, print_function
 __metaclass__ = type
 
 import json
@@ -81,15 +81,21 @@ class VocabView:
         return sorted((p for p in node if not p.startswith(('_', '@'))),
                 key=lambda key: (lensprops.get(key, lensmax), key))
 
+    _lens_group_key_chains = {
+        'full': ['full', 'cards', 'chips'],
+        'cards': ['cards', 'chips'],
+        'chips': ['chips']
+    }
+
     def _get_lens_for(self, node, lenstype):
-        lens_groups = {
-            'full': ['full', 'cards', 'chips'],
-            'cards': ['cards', 'chips'],
-            'chips': ['chips']
-        }[lenstype]
-        for lens_group_key in lens_groups:
+        lens_group_keys = self._lens_group_key_chains[lenstype]
+        return (self._find_lens_for_type(node.get(TYPE), lens_group_keys)
+                or self._find_lens_for_type('Resource', lens_group_keys))
+
+    def _find_lens_for_type(self, type_key, lens_group_keys):
+        for lens_group_key in lens_group_keys:
             lenses = self.display['lensGroups'][lens_group_key]['lenses']
-            for ntype in as_iterable(node.get(TYPE)):
+            for ntype in as_iterable(type_key):
                 lens = lenses.get(ntype)
                 if lens:
                     return lens
@@ -99,10 +105,12 @@ class VocabView:
                 for basetype in as_iterable(typedfn.get('subClassOf')):
                     if ID not in basetype:
                         continue
-                    lens = lenses.get(self._get_term_key(basetype[ID]))
+                    base_type_key = self._get_term_key(basetype[ID])
+                    lens = self._find_lens_for_type(base_type_key, lens_group_keys)
                     if lens:
                         return lens
-        return lenses.get('Resource')
+        else:
+            return None
 
     def reduce_node(self, node, lenstype='chips'):
         lens = self._get_lens_for(node, lenstype)
