@@ -175,6 +175,7 @@ export default {
       }
     }
     .admin-info-container {
+      color: white;
       overflow: hidden;
       padding: 0px;
       max-height: 0px;
