@@ -132,8 +132,6 @@ footer {
         position:  absolute;
         top: 0;
         left: 0;
-        bottom: 0;
-        right: 0;
         font-size: 3.5em;
         padding: 0.7em;
       }
@@ -144,8 +142,24 @@ footer {
         display: block;
         padding-top: 100%; 	/* initial ratio of 1:1*/
       }
+      &:hover {
+        background-color: fadeout(@brand-primary, 70%);
+        > i {
+          color: darken(@brand-primary, 15%);
+        }
+      }
     }
 
+    > a > i {
+      position: absolute;
+      font-size: 2em;
+      top: 100px;
+      right: 0;
+      color: @brand-primary;
+      &:hover {
+        color: darken(@brand-primary, 15%);
+      }
+    }
     .observation-label {
       // background-color: red;
     }

@@ -132,32 +132,34 @@
   % if obs.object is not none
     <div class="observation-container">
       <a href="${ obs.view['@id'] }">
-
-    % if obs.object.notation
-      <div id="${obs.object.notation[0].replace('/','-')}" class="observation-button">
-    % else
-      <div class="observation-button">
-    % endif
-    % set type = obs.object['@id']
-        <i class="fa fa-fw fa-${icons[type] or 'file' }"></i>
-          <!-- <p class="description collapsed">
-            % if 'descriptionByLang' in obs.object
-            ${ obs.object.descriptionByLang[lang].strip().replace('\n','<br/>') | safe }
-            % endif
-          </p> -->
-
-      </div>
+        % if obs.object.notation
+          <div id="${obs.object.notation[0].replace('/','-')}" class="observation-button">
+        % else
+          <div class="observation-button">
+        % endif
+        % set type = obs.object['@id']
+            <i class="fa fa-fw fa-${icons[type] or 'file' }"></i>
+              <!-- <p class="description collapsed">
+                % if 'descriptionByLang' in obs.object
+                ${ obs.object.descriptionByLang[lang].strip().replace('\n','<br/>') | safe }
+                % endif
+              </p> -->
+          </div>
+      </a>
+      % if g.site.title == 'id.kb.se'
+      <a href="${ obs.object['@id'] }">
+      % else
+      <a href="https://id.kb.se/vocab/#${ obs.object['@id'] }">
+      % endif
+      <i class="fa fa-info-circle" aria-hidden="true"></i>
+      </a>
+      
       <div class="observation-label">
           % if g.site.title == 'id.kb.se'
-          <a href="${ obs.object['@id'] }">
-              ${show_label(obs.object)}
-          </a>
+            ${show_label(obs.object)}
           % else
-          <a href="https://id.kb.se/vocab/#${ obs.object['@id'] }">
             ${vocab_term(obs.object['@id'])}
-          </a>
           % endif
-
       </div>
       <div class="observation-quantity">
         % if obs.sliceByDimension
@@ -170,7 +172,6 @@
           ${view_observation_item(obs)}
         % endif
       </div>
-      </a>
     </div>
   % endif
 % endmacro
