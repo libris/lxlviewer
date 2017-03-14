@@ -56,7 +56,7 @@ app.config.from_object('viewer.configdefaults')
 app.config.from_envvar('DEFVIEW_SETTINGS', silent=True)
 app.config.from_pyfile('config.cfg', silent=True)
 
-CORS(app, methods=R_METHODS)
+CORS(app, methods=R_METHODS, expose_headers=['ETag'])
 
 
 import __builtin__
