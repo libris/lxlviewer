@@ -1,7 +1,6 @@
 
 function request(options, data) {
   // method, url, token, accept
-
   options.method = options.method || 'GET';
 
   // Fix baseUri
@@ -22,6 +21,13 @@ function request(options, data) {
     if (options.accept) {
       req.setRequestHeader('Accept', options.accept);
     }
+    if (options.ETag) {
+      if (options.method === 'GET') {
+        req.setRequestHeader('If-None-Match', options.ETag);
+      } else if (options.method === 'PUT' || options.method === 'DELETE') {
+        req.setRequestHeader('If-Match', options.ETag);
+      }
+    }
 
     req.onload = () => {
       if (req.status === 200 || req.status === 201) {
@@ -29,12 +35,15 @@ function request(options, data) {
         if (req.getResponseHeader('Content-Type').indexOf('json') !== -1) {
           try {
             resp = JSON.parse(resp);
+            if (req.getResponseHeader('ETag')) {
+              resp.ETag = req.getResponseHeader('ETag');
+            }
           } catch (e) {
             console.error('Failed to parse response said to be JSON', e, resp);
           }
         }
         resolve(resp, req);
-      } else if (req.status === 204) {
+      } else if (req.status === 204 || req.status === 304) {
         resolve(req);
       } else {
         reject(Error(req.statusText));
@@ -69,4 +78,21 @@ export function post(options, data) {
 export function _delete(options) {
   options.method = 'DELETE';
   return request(options);
+}
+
+export function getResourceFromCache(url) {
+  return new Promise((resolve, reject) => {
+    const resource = JSON.parse(localStorage.getItem(url));
+    const ETag = resource ? resource.ETag : '';
+    get({ url, accept: 'application/ld+json', ETag }).then((result) => {
+      if (result.status === 304) {
+        resolve(resource);
+      } else {
+        localStorage.setItem(url, JSON.stringify(result));
+        resolve(result);
+      }
+    }, (error) => {
+      reject(error);
+    });
+  });
 }

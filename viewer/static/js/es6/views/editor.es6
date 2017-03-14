@@ -54,7 +54,7 @@ export default class Editor extends View {
     $('#loadingText .mainStatus').text('Laddar redigeringen...');
     $('#loadingText .status').text('Hämtar vokabulär');
     VocabUtil.getVocab().then((vocab) => {
-      self.vocab = vocab['@graph'];
+      self.vocab = vocab['@graph'][0]['@graph'];
       $('#loadingText .status').text('Hämtar visningsdefinitioner');
       DisplayUtil.getDisplayDefinitions().then((display) => {
         self.display = display;

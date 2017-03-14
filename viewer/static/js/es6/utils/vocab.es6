@@ -1,44 +1,13 @@
 import * as httpUtil from './http';
 import * as _ from 'lodash';
 
-function fetchVocab() {
-  return new Promise((resolve, reject) => {
-    httpUtil.get({ url: 'https://id.kb.se/vocab/', accept: 'application/ld+json' }).then((response) => {
-      if (!response.hasOwnProperty('@graph') || !response['@graph'][0].hasOwnProperty('@id')) {
-        reject(`Fetched vocabulary had an unexpected structure.`);
-      } else {
-        resolve(response);
-      }
-    }, (error) => {
-      reject(`Couldn't fetch vocabulary: ${error}`);
-    });
-  });
-}
-
 export function getVocab() {
-  // 8 hours
-  const cacheTTL = 28800000;
-
   return new Promise((resolve, reject) => {
-    const vocab = JSON.parse(localStorage.getItem('vocab'));
-
-    let isFresh = false;
-    if (vocab) {
-      isFresh = (new Date().getTime() - vocab.cacheTime < cacheTTL);
-    }
-
-    if (vocab && isFresh) {
-      resolve(vocab);
-    } else {
-      fetchVocab().then((result) => {
-        const fetchedVocab = result;
-        fetchedVocab.cacheTime = new Date().getTime();
-        localStorage.setItem('vocab', JSON.stringify(fetchedVocab));
-        resolve(fetchedVocab);
-      }, (error) => {
-        reject(error);
-      });
-    }
+    httpUtil.getResourceFromCache('https://id.kb.se/vocab/').then((result) => {
+      resolve(result);
+    }, (error) => {
+      reject(error);
+    });
   });
 }
 

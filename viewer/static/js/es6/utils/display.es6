@@ -7,40 +7,13 @@ import moment from 'moment';
 import 'moment/locale/sv';
 moment.locale('sv');
 
-function fetchDisplayDefinitions() {
-  return new Promise((resolve, reject) => {
-    httpUtil.get({ url: 'https://id.kb.se/vocab/display', accept: 'application/ld+json' }).then((response) => {
-      resolve(response);
-    }, (error) => {
-      reject(`Couldn't fetch display definitions: ${error}`);
-    });
-  });
-}
-
 export function getDisplayDefinitions() {
-  // 8 hours
-  const cacheTTL = 28800000;
-
   return new Promise((resolve, reject) => {
-    const displayDefs = JSON.parse(localStorage.getItem('display'));
-
-    let isFresh = false;
-    if (displayDefs) {
-      isFresh = (new Date().getTime() - displayDefs.cacheTime < cacheTTL);
-    }
-
-    if (displayDefs && isFresh) {
-      resolve(displayDefs);
-    } else {
-      fetchDisplayDefinitions().then((result) => {
-        const fetchedDisplayDefs = result;
-        fetchedDisplayDefs.cacheTime = new Date().getTime();
-        localStorage.setItem('display', JSON.stringify(fetchedDisplayDefs));
-        resolve(fetchedDisplayDefs);
-      }, (error) => {
-        reject(error);
-      });
-    }
+    httpUtil.getResourceFromCache('https://id.kb.se/vocab/display').then((result) => {
+      resolve(result);
+    }, (error) => {
+      reject(error);
+    });
   });
 }
 
