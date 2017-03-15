@@ -79,7 +79,7 @@ export default {
   background-color: @neutral-color;
   padding: 0px;
   &.compact {
-    max-height: 72px;
+    max-height: 74px;
     overflow-y: hidden;
     border: solid #ccc;
     border-width: 0px 0px 1px 0px;
@@ -87,10 +87,10 @@ export default {
     &.collapsed {
       max-height: 0px;
     }
-    .thing-summary {
+    .entity-summary {
       .main-info {
         .header {
-          //
+          line-height: 1.2;
         }
         .info {
           > li {
