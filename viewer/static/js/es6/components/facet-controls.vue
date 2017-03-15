@@ -38,7 +38,7 @@ export default {
 </script>
 
 <template>
-  <div v-if="result" class="panel panel-default">
+  <div v-if="result.totalItems > 0" class="panel panel-default">
     <div class="panel-body facet-controls">
       <label>Filtrera</label>
       <div>
