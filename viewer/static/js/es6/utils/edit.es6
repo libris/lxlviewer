@@ -1,21 +1,40 @@
+import * as _ from 'lodash';
+
 export function getLinked(id, linked) {
+  if (typeof id === 'undefined') {
+    throw new Error('getLinked was called with an undefined Id.');
+  }
+  if (typeof linked === 'undefined' || !_.isArray(linked)) {
+    throw new Error('getLinked was called without an array of linked items.');
+  }
+  let obj = { '@id': id };
   if (typeof linked !== 'undefined') {
-    for (let i = 0; i < linked.length; i ++) {
-      if (linked[i]['@id'] === id) {
-        return linked[i];
+    for (const entity of linked) {
+      if (entity['@id'] === id) {
+        obj = Object.assign({}, entity);
       }
     }
   }
-  console.warn(`Linked item not found:`, id);
-  return { '@id': id };
+  if (id.indexOf('marc:') !== -1) {
+    console.warn('Tried to find embellished from marc-id. Returning', JSON.stringify(obj));
+    return obj;
+  }
+  if (!obj.hasOwnProperty('@type') && Object.keys(obj).length === 1) {
+    console.warn('Couldn\'t find entity in list of quoted:', id);
+  }
+  if (!obj.hasOwnProperty('@type') && Object.keys(obj).length > 1) {
+    console.warn('Embellished entity has an unknown type (missing @type). ID:', id);
+  }
+  return obj;
 }
 
-export function getMergedItems(meta, thing, linked) {
+export function getMergedItems(record, it, work, linked) {
   const obj = { '@graph': [] };
-  obj['@graph'].push(meta);
-  obj['@graph'].push(thing);
-  for (let i = 0; i < linked.length; i++) {
-    obj['@graph'].push({ '@graph': linked[i] });
+  obj['@graph'].push(record);
+  obj['@graph'].push(it);
+  obj['@graph'].push(work);
+  for (const entity of linked) {
+    obj['@graph'].push({ '@graph': entity });
   }
   return obj;
 }
@@ -23,13 +42,11 @@ export function getMergedItems(meta, thing, linked) {
 export function removeNullValues(obj) {
   // Strips away all null value keys
   const cleanObj = {};
-  for (const key in obj) {
-    if (obj.hasOwnProperty(key)) {
-      if (obj[key] !== null && obj[key] !== '') {
-        cleanObj[key] = obj[key];
-      }
+  _.each(obj, (value, key) => {
+    if (value !== null && value !== '') {
+      cleanObj[key] = value;
     }
-  }
+  });
   return cleanObj;
 }
 
@@ -47,16 +64,16 @@ export function marcJsonToHtml(marcJson) {
       return subfieldStr;
     }).join(' ');
   }
-  if(marcJson.leader) {
+  if (marcJson.leader) {
     htmlStr += toTableRow('000', '', '', marcJson.leader);
   }
-  if(marcJson.fields) {
-    let fields = marcJson.fields;
+  if (marcJson.fields) {
+    const fields = marcJson.fields;
     fields.forEach((field) => {
-      let fieldKeys = Object.keys(field);
+      const fieldKeys = Object.keys(field);
       fieldKeys.forEach((key) => {
-        let value = field[key];
-        if(value.subfields) {
+        const value = field[key];
+        if (value.subfields) {
           htmlStr += toTableRow(key, value.ind1, value.ind2, parseSubfields(value.subfields));
         } else {
           htmlStr += toTableRow(key, '', '', value);

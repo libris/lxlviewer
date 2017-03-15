@@ -14,8 +14,8 @@ describe('Utility: vocab', function () {
   let textClass = {
     "@id": "kbv:text",
     "@type": [
-      "FunctionalProperty",
-      "ObjectProperty"
+      "ObjectProperty",
+      "FunctionalProperty"
     ],
     "domainIncludes": [
       {
@@ -34,10 +34,13 @@ describe('Utility: vocab', function () {
       "@id": "kbv:"
     },
     "note": [
-      "MARC bib 006[13:14]",
-      "MARC bib 006[14:15]",
       "MARC bib 008[31:32]",
-      "MARC bib 008[30:31]"
+      "MARC bib 008[30:31]",
+      "MARC bib 006[14:15]",
+      "MARC bib 006[13:14]"
+    ],
+    "sameAs": [
+      "http:\/\/127.0.0.1:5000\/jp142t6qgb8q8fkm"
     ],
     "wasDerivedFrom": {
       "@id": "file:\/\/\/dataset\/vocab"
@@ -64,6 +67,9 @@ describe('Utility: vocab', function () {
     "labelByLang": {
       "sv": "Bild"
     },
+    "sameAs": [
+      "http:\/\/127.0.0.1:5000\/qw7b81dvnmnglp3s"
+    ],
     "subClassOf": [
       {
         "@id": "kbv:CreativeWork"
@@ -83,6 +89,9 @@ describe('Utility: vocab', function () {
       },
       {
         "@id": "bf:Audio"
+      },
+      {
+        "@id": "bf2:Audio"
       }
     ],
     "exactMatch": [
@@ -100,11 +109,18 @@ describe('Utility: vocab', function () {
       "@id": "kbv:"
     },
     "labelByLang": {
+      "en": "Audio",
       "sv": "Ljudmaterial"
     },
+    "sameAs": [
+      "http:\/\/127.0.0.1:5000\/z4gkh8mcwk518r76"
+    ],
     "subClassOf": [
       {
         "@id": "kbv:CreativeWork"
+      },
+      {
+        "@id": "kbv:Work"
       }
     ],
     "wasDerivedFrom": {
@@ -155,22 +171,46 @@ describe('Utility: vocab', function () {
   });
 
   describe('getBaseClasses()', function() {
-    let baseClasses = {};
+    let baseClasses;
 
     before(function() {
       // runs before all tests in this block
-      baseClasses = VocabUtil.getBaseClasses(audioClass, vocab);
+      baseClasses = VocabUtil.getBaseClasses(audioClass['@id'], vocab, vocabPfx);
     });
 
-    it('should return a list of class objects', function() {
+    it('should return an array', function() {
       expect(baseClasses).to.be.an('array');
-      expect(baseClasses[0]).to.be.an('object');
+    });
+    it('should contain strings of IDs', function() {
+      expect(baseClasses[0]).to.be.a('string');
     });
 
     it('should return the correct things', function() {
-      expect(baseClasses[0]).to.equal();
+      expect(baseClasses[0]).to.equal('kbv:CreativeWork');
     });
   });
+
+  describe('getBaseClassesFromArray()', function() {
+    let baseClasses;
+    let classList = ['kbv:Audio', 'kbv:Image'];
+
+    before(function() {
+      // runs before all tests in this block
+      baseClasses = VocabUtil.getBaseClassesFromArray(classList, vocab, vocabPfx);
+    });
+
+    it('should return an array', function() {
+      expect(baseClasses).to.be.an('array');
+    });
+    it('should contain strings of IDs', function() {
+      expect(baseClasses[0]).to.be.a('string');
+    });
+
+    it('should return the correct things', function() {
+      expect(baseClasses.length).to.equal(6);
+    });
+  });
+
 
   describe('getRange()', function() {
     it('should return a list of class IDs which is in range of the property provided', function() {

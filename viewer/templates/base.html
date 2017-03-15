@@ -4,6 +4,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="utf-8" />
     <title>${g.site.title} - {% block title %}{% endblock %}</title>
+    <link rel="shortcut icon" href="/assets/img/favicon.ico">
     <link rel="stylesheet" href="/assets/vendor/font-awesome/css/font-awesome.min.css">
     % if g.site.stylesheet
       <link rel="stylesheet" href="/assets/build/${g.site.stylesheet.name}" />
@@ -15,11 +16,21 @@
   <body {% block bodyattrs %}{% endblock %}>
     <div id="body-blocker"></div>
     {% block navigation %}
-    <nav class="navbar navbar-inverse">
+    % if g.site.stylesheet
+      <nav class="navbar navbar-inverse">
+    % else
+      <nav class="navbar">
+    % endif
       <div class="{% block navcontainerclass %}container{% endblock %}">
         <div class="navbar-header" role="banner">
           <div class="navbar-brand navbar-logo">
-                <a href="/"><img src="/assets/img/kb_logo_white.svg" alt="Kungliga Bibliotekets logotyp"></a>
+                <a href="/">
+                  % if g.site.stylesheet
+                    <img src="/assets/img/kb_logo_white.svg" alt="Kungliga Bibliotekets logotyp">
+                  % else
+                    <img src="/assets/img/kb_logo_black.svg" alt="Kungliga Bibliotekets logotyp">
+                  % endif
+                </a>
           </div>
           <a class="navbar-brand" href="/" title="Version ${ config.VERSION }">${g.site.title}
             <span class="environment-label">
@@ -85,8 +96,8 @@
       </script>
     % endif
     {% block scripts %}{% endblock %}
-    <script src="/build/app.js"></script>
-
+    <script id="baseUriAlias" type="application/json">${config.BASE_URI_ALIAS|tojson|safe}</script>
+    <script src="/assets/build/app.js"></script>
 
 
     <!-- Piwik -->

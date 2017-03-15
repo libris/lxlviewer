@@ -8,13 +8,13 @@ export default {
   },
   vuex: {
     getters: {
-      lang: function (state) {
+      lang(state) {
         return state.settings.lang;
       },
     },
   },
   methods: {
-    formatId: function(id) {
+    formatId(id) {
       if (typeof id === 'undefined') {
         return '[no id]';
       }
@@ -23,7 +23,7 @@ export default {
       if (label.indexOf('http://') > -1 || label.indexOf('https://') > -1) {
         label = label.split('//')[1];
         const labelArr = label.split('/');
-        labelArr.splice(0,1);
+        labelArr.splice(0, 1);
         label = labelArr.join('/');
       }
       return label;
@@ -62,7 +62,7 @@ export default {
             if (item.name) {
               tlabel = item.name;
             } else if (item.notation) {
-              tlabel = item.notation
+              tlabel = item.notation;
             } else {
               tlabel = item['@id'];
             }
@@ -81,7 +81,7 @@ export default {
               tlabel = `${item.name}`;
             }
             if (item.numeration) {
-              tlabel += ` ${item.numeration}`
+              tlabel += ` ${item.numeration}`;
             }
             if (item.birthYear && item.deathYear) {
               tlabel += ` (${item.birthYear}-${item.deathYear})`;

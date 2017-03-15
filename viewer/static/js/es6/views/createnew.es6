@@ -48,7 +48,7 @@ export default class CreateNew extends View {
       if (lbl && lbl.indexOf(vocabPfx) !== -1) {
         lbl = lbl.replace(vocabPfx, '');
       }
-      const item = _.find(vocab.descriptions, (d) => { return d['@id'] === `${vocabPfx}${lbl}` });
+      const item = _.find(vocab, (d) => { return d['@id'] === `${vocabPfx}${lbl}` });
       if(!item) { console.warn(`${vocabPfx}${lbl} not found`); }
       let labelByLang = '';
       if (typeof item !== 'undefined' && item.labelByLang) {
@@ -66,7 +66,7 @@ export default class CreateNew extends View {
       data: {
         materialLists,
         chosenMaterials: [],
-        vocabPfx: 'kbv:',
+        vocabPfx: self.vocabPfx,
         language: self.language,
         vocab,
       },

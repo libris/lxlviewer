@@ -61,7 +61,7 @@ describe('Component: formcomponent', function () {
         expect(form.linked).to.include(testItem);
       });
     });
-    describe('addAnonymous()', function() {
+    describe('addLocal()', function() {
       it('should add the item if key is array and set key to item if it is an object', function() {
         const testItem = { '@id': 'gobbledygook', 'dimension': 'blahh' };
 
@@ -74,8 +74,8 @@ describe('Component: formcomponent', function () {
         const form = attachProps(vm.$refs.testComponent);
 
         // Do manipulation
-        vm.$broadcast('add-anonymous', 'extent', testItem);
-        vm.$broadcast('add-anonymous', 'relation', testItem);
+        vm.$broadcast('add-local', 'extent', testItem);
+        vm.$broadcast('add-local', 'relation', testItem);
         // Tests
         expect(form.focus.extent[0]).to.deep.equal(testItem);
         expect(form.focus.relation).to.deep.equal(testItem);

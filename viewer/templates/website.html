@@ -1,5 +1,6 @@
 % extends "base.html"
 % import 'search.html' as search
+% from "termutils.html" import vocab_term
 
 {% block title %}{% endblock %}
 
@@ -21,11 +22,15 @@
 <div class="row">
   <div class="col-md-4">
     <div class="panel panel-default intro-text">
-      ${thing.description|safe}
+      % if thing.summary
+        ${thing.summary.articleBody|safe}
+      % else
+        ${thing.description|safe}
+      % endif
     </div>
   </div>
   <div class="col-md-8">
-    ${search.search_controls(thing, true) }
+    ${ search.search_controls(thing, g.site.filter_param) }
 
   % if thing.statistics.sliceByDimension
   <!-- <div class="col-md-12">
@@ -91,8 +96,8 @@
             </div>
             <div>
               <p><br/>
-                <strong><a href="http://www.kb.se" alt="Länk till Kungl. bibliotekets webbplats">
-                  KUNGL. BIBLIOTEKET
+                <strong><a href="http://www.kb.se" alt="Länk till Kungliga bibliotekets webbplats">
+                  KUNGLIGA BIBLIOTEKET
                 </a></strong>
               </p>
             </div>
@@ -115,13 +120,15 @@
     % endif
       <header class="panel-heading">
         <h1 class="panel-title">
+          % if g.site.title == 'id.kb.se'
           <a href="${ obs.object['@id'] }">
-            % if 'titleByLang' in obs.object
-              ${obs.object.titleByLang[lang]}
-            % elif 'label' in obs.object
-              ${obs.object.label}
-            % endif
+              ${show_label(obs.object)}
           </a>
+          % else
+          <a href="https://id.kb.se/vocab/#${ obs.object['@id'] }">
+            ${vocab_term(obs.object['@id'])}
+          </a>
+          % endif
         </h1>
       </header>
       <div class="panel-body container-fluid">
@@ -138,11 +145,7 @@
               % for item in obs.sliceByDimension[dimension].observation
                 <a class="list-group-item"
                     href="${item.view['@id']}">
-                    % if item.object.titleByLang
-                      ${item.object.titleByLang[lang]}
-                    % elif item.object.label
-                      ${item.object.label}
-                    % endif
+                    ${show_label(item.object)}
                     <span class="badge">${format_number(item.totalItems)} st.</span>
                 </a>
               % endfor
@@ -152,20 +155,42 @@
                 <h4>Uppdelning: ${subkey}</h4>
               % endif
               % for observation in obs.sliceByDimension[subkey].observation
-                <a class="list-group-item"
-                  href="${observation.view[ID]}">
-                    % if observation.object
-                      ${observation.object.label or observation.object.titleByLang.sv}
-                    % else
-                      ${observation.view[ID]}
-                    % endif
-                    <span class="badge">${format_number(observation.totalItems)} st.</span>
-                </a>
+                ${view_observation_item(observation)}
               % endfor
             % endfor
           </div>
+        % else
+          ${view_observation_item(obs)}
         % endif
       </div>
   </div>
   % endif
+% endmacro
+
+% macro show_label(obj)
+  % set obj = vocab.get_term_dfn(obj[ID]) or obj
+  % if obj.titleByLang
+    ${obj.titleByLang[lang]}
+  % elif obj.labelByLang
+    ${obj.labelByLang[lang]}
+  % elif obj.label
+    ${obj.label}
+  % elif obj.notation
+    ${first(obj.notation)}
+  % else
+    <code>${obj[ID]}</code>
+  % endif
+% endmacro
+
+% macro view_observation_item(item)
+  <a class="list-group-item"
+    href="${item.view[ID]}">
+      % set o = item.object
+      % if o
+        ${o.label or (o.titleByLang and o.titleByLang.sv) or o.prefLabelByLang and o.prefLabelByLang.sv}
+      % else
+        <code>${item.view[ID]}</code>
+      % endif
+      <span class="badge">${format_number(item.totalItems)} st.</span>
+  </a>
 % endmacro

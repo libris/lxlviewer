@@ -1,51 +1,78 @@
 <script>
 import * as _ from 'lodash';
-import Notifications from '../components/notifications';
-import moment from 'moment';
-import locale_sv from 'moment/locale/sv';
-moment.locale('sv');
+import HeaderComponent from './headercomponent';
+import * as EditUtil from '../utils/edit';
+import * as DisplayUtil from '../utils/display';
+import LensMixin from './mixins/lens-mixin';
+import { changeSavedStatus, changeStatus } from '../vuex/actions';
+import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData, getStatus } from '../vuex/getters';
 
 export default {
-  props: [
-    'status',
-    'messages',
-    'editor-data',
-  ],
-  methods: {
-    save() {
-      this.$dispatch('save-item');
+  vuex: {
+    getters: {
+      vocab: getVocabulary,
+      display: getDisplayDefinitions,
+      settings: getSettings,
+      editorData: getEditorData,
+      status: getStatus,
+    },
+    actions: {
+      changeSavedStatus,
+      changeStatus,
     },
   },
-  computed: {
-    modified: function() {
-      return {
-        date: moment(this.editorData.meta.modified).format('lll'),
-        timeAgo: moment(this.editorData.meta.modified).fromNow(),
-      };
+  mixins: [LensMixin],
+  methods: {
+    save() {
+      this.changeSavedStatus('loading', true);
+      this.$dispatch('save-item');
     },
-    created: function() {
-      return {
-        date: moment(this.editorData.meta.created).format('lll'),
-        timeAgo: moment(this.editorData.meta.created).fromNow(),
-      };
+    toggleDev() {
+      this.changeStatus('isDev', !this.status.isDev);
+    },
+    toggleAdminData() {
+      this.showAdminInfoDetails = !this.showAdminInfoDetails;
+    },
+  },
+  data() {
+    return {
+      showAdminInfoDetails: false,
+    };
+  },
+  computed: {
+    focusData() {
+      return this.editorData.record;
+    },
+    isWork() {
+      return this.status.level === 'work';
+    },
+    isInstance() {
+      return this.status.level === 'it';
     },
   },
   components: {
-    'notifications': Notifications,
+    'header-component': HeaderComponent,
   },
 };
 </script>
 
 <template>
-  <div class="editor-controls container">
-    <div class="row">
-      <div class="col-md-4 col-md-offset-8">
-        <!-- <notifications :messages="messages"></notifications> -->
-      </div>
-      <div class="col-md-12 controls-container">
-        <div class="change-info pull-left">
-          <span v-if="editorData.meta.created" class="node">Skapad {{created.date}} <span class="time-ago">({{created.timeAgo}})</span></span>
-          <span v-if="editorData.meta.modified" class="node">Ändrad {{modified.date}} <span class="time-ago">({{modified.timeAgo}})</span></span>
+  <div class="container editor-container" data-spy="affix" data-offset-top="80">
+    <div class="editor-controls">
+      <div class="admin-info">
+        <div class="actions">
+          <div class="action">
+            <i class="fa fa-info-circle" aria-hidden="true" @click="toggleAdminData()"></i>
+          </div>
+          <div class="action" v-on:click="toggleDev()" v-bind:class="{'active': status.isDev}">
+            <i class="fa fa-wrench" aria-hidden="true"></i>
+          </div>
+        </div>
+        <div class="admin-node">
+          <span class="node">Skapad {{ getCard.created }} av {{ getCard.assigner }}</span>
+        </div>
+        <div class="admin-node">
+          <span class="node">Ändrad {{ getCard.modified }} av - </span>
         </div>
         <button id="saveButton" v-on:click="save()">
           <i class="fa fa-fw fa-cog fa-spin" v-show="status.saved.loading"></i>
@@ -53,6 +80,98 @@ export default {
           Spara
         </button>
       </div>
+      <div>
+        <div class="admin-info-container" :class="{ 'show-admin-info-details': showAdminInfoDetails }">
+          <div class="admin-info-details">
+            <div v-for="(k, v) in getCard">
+              <div class="admin-key">
+                {{ k | labelByLang | capitalize }}:
+              </div>
+              <div>
+                {{v}}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <header-component :full="false"></header-component>
     </div>
+
   </div>
 </template>
+
+<style lang="less">
+@import './_variables.less';
+
+.container {
+  padding: 0px;
+  &.affix {
+    top: 0;
+    z-index: @header-z;
+    + .header-component {
+      padding-top: 33px;
+    }
+  }
+
+  .editor-controls {
+    background-color: @black;
+    color: @white;
+    .admin-info {
+      flex-direction: row;
+      display: flex;
+      align-items: center;
+      position: relative;
+      padding: 5px 15px;
+      .admin-node {
+        flex-grow: 5;
+        text-align: center;
+        .node {
+          font-size: 0.8em;
+          vertical-align: middle;
+        }
+      }
+      #saveButton {
+        padding: 0px;
+        flex-grow: 1;
+      }
+
+      .actions {
+        .action {
+          display: inline-block;
+          cursor: pointer;
+          &.active {
+            i {
+              color: @brand-primary;
+            }
+          }
+        }
+      }
+    }
+    .admin-info-container {
+      overflow: hidden;
+      padding: 0px;
+      max-height: 0px;
+      transition: all ease 1s;
+      &.show-admin-info-details {
+        max-height: 120px;
+      }
+      .admin-info-details {
+        > div > div{
+          display: inline-block;
+          &.admin-key {
+            width: 50%;
+            text-align: right;
+            font-style: italic;
+          }
+        }
+        cursor: auto;
+        font-size: 0.8em;
+        padding: 5px 0px;
+        columns: 2;
+        column-fill: balance;
+        overflow: hidden;
+      }
+    }
+  }
+}
+</style>

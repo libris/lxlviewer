@@ -1,121 +1,398 @@
 <script>
+/*
+  The datanode component is responsible for a specific key value pair.
+  It's responsible for its own data, and dispatches all changes to the form component.
+*/
 import * as _ from 'lodash';
-import ProcessedLabel from './processedlabel';
-import AnonymousValue from './anonymousvalue';
-import LinkedItem from './linkeditem';
-import * as editUtil from '../utils/edit';
+import EntityAdder from './entityadder';
+import ItemEntity from './item-entity';
+import ItemEmbedded from './item-embedded';
+import ItemValue from './item-value';
+import ItemLocal from './item-local';
 import * as VocabUtil from '../utils/vocab';
-import { getVocabulary, getSettings } from '../vuex/getters';
+import * as LayoutUtil from '../utils/layout';
+import LodashProxiesMixin from './mixins/lodash-proxies-mixin';
+import { getVocabulary, getSettings, getStatus } from '../vuex/getters';
+import { changeStatus } from '../vuex/actions';
 
 export default {
   name: 'data-node',
-  props: ['key', 'value', 'label', 'linked', 'isLocked'],
+  mixins: [LodashProxiesMixin],
+  props: [
+    'parentKey',
+    'parentIndex',
+    'key',
+    'value',
+    'isLocked',
+    'focus',
+    'allow-local',
+    'embedded',
+    'is-removable',
+  ],
+  data() {
+    return {
+      showActionButtons: false,
+      activeModal: false,
+    };
+  },
   vuex: {
+    actions: {
+      changeStatus,
+    },
     getters: {
       vocab: getVocabulary,
       settings: getSettings,
-    }
+      status: getStatus,
+    },
   },
   components: {
-    'processed-label': ProcessedLabel,
-    'anonymous-value': AnonymousValue,
-    'linked-item': LinkedItem,
+    'item-entity': ItemEntity,
+    'item-value': ItemValue,
+    'item-embedded': ItemEmbedded,
+    'item-local': ItemLocal,
+    'entity-adder': EntityAdder,
   },
   computed: {
-    propertyTypes: function () {
-      return VocabUtil.getPropertyTypes(this.key, this.vocab, this.settings.vocabPfx);
-    },
-    valueByIdPresence: function () {
-      const list = _.sortBy(this.value, [function(o) { return o['@id']; }]);
-      return list;
-    },
-  },
-  methods: {
-    isMarc(key) {
-      if (typeof key === 'undefined') {
-        return false;
+    valueAsArray() {
+      if (_.isArray(this.value)) {
+        return this.value;
       }
-      return (
-        !!~key.indexOf('marc:') || !!~key.indexOf('_marc')
+      return [this.value];
+    },
+    getPath() {
+      if (typeof this.parentKey !== 'undefined' && typeof this.parentIndex !== 'undefined') {
+        return `${this.parentKey}[${this.parentIndex}].${this.key}`;
+      } else if (typeof this.parentKey !== 'undefined') {
+        return `${this.parentKey}.${this.key}`;
+      }
+      return `${this.key}`;
+    },
+    propertyTypes() {
+      return VocabUtil.getPropertyTypes(
+        this.key,
+        this.vocab,
+        this.settings.vocabPfx
       );
     },
-    updateValue(value) {
-      this.$dispatch('update-value', this.key, value);
-    },
-    updateArray(index, value) {
-      const object = this.$el;
-      this.value.$set(index, value);
-    },
-    emptyValue() {
-      this.$dispatch('update-value', this.key, {});
-    },
-    removeKey(key) {
-      this.emptyValue();
-    },
-    getLinked(id) {
-      return editUtil.getLinked(id, this.linked);
-    },
-    isEditable(key) {
-      const tempNotEditable = [
-        '@id',
-        '@type',
-        'controlNumber',
-        'systemNumber',
-        'created',
-        'modified',
+    isExpandedType() {
+      const expandKeys = [
+        'instanceOf',
       ];
-      return !~tempNotEditable.indexOf(key);
+      return ~expandKeys.indexOf(this.key);
     },
-    removeByIndex(index) {
-      const modified = this.value;
-      modified.splice(index, 1);
+    hasSingleValue() {
+      if (!_.isArray(this.value) || this.value.length === 1) {
+        return true;
+      }
+      return false;
+    },
+    stackable() {
+      return (this.propertyTypes.indexOf('DatatypeProperty') === -1);
+    },
+    // TODO: Verify usage
+    valueByIdPresence() {
+      const list = _.sortBy(this.value, [(o) => (o['@id'])]);
+      return list;
+    },
+    isRepeatable() {
+      return this.propertyTypes.indexOf('FunctionalProperty') < 0;
+    },
+    isEmptyObject() {
+      const value = this.value;
+      if (typeof value === 'undefined') {
+        return true;
+      }
+      if (!_.isObject(value)) {
+        return false;
+      }
+      const bEmpty = (Object.keys(value).length === 0);
+      return bEmpty;
+    },
+    isLastAdded() {
+      if (this.status.lastAdded === this.getPath) {
+        return true;
+      }
+      return false;
+    },
+  },
+  events: {
+    'update-item'(index, value) {
+      let modified = _.cloneDeep(this.value);
+      if (typeof modified === 'string' || modified instanceof String) {
+        modified = [].concat(modified);
+      }
+      if (typeof index !== 'undefined' && index !== '') {
+        modified[index] = value;
+      } else {
+        modified = value;
+      }
       this.updateValue(modified);
     },
-    removeById(id) {
-      let modified = this.value;
-      modified = _.filter(this.value, function(n) {
-        return n['@id'] !== id;
-      });
+    'remove-item'(index) {
+      let modified = _.cloneDeep(this.value);
+      if (typeof index !== 'undefined' && index !== '') {
+        modified.splice(index, 1);
+      } else {
+        modified = [];
+      }
       this.updateValue(modified);
     },
-    isArray(o) {
-      return _.isArray(o);
+    'add-item'(value) {
+      console.log("DataNode:"+ this.getPath +" - Adding", JSON.stringify(value));
+      let insertedValue = {};
+      if (value.hasOwnProperty('@id')) { // This is a linked item
+        insertedValue = { '@id': value['@id'] };
+        this.$dispatch('add-linked', value);
+      } else {
+        insertedValue = value;
+      }
+      const modified = [].concat(_.cloneDeep(this.value));
+      modified.push(insertedValue);
+      this.updateValue(modified);
     },
-    isPlainObject(o) {
-      return _.isPlainObject(o);
+    'toggle-modal'(active) {
+      this.activeModal = active;
     },
-    removeItem(key, value) {
-      this.$dispatch('remove-item', key, value);
+  },
+  ready() {
+    this.$nextTick(() => {
+      setTimeout(() => {
+        if (this.isLastAdded) {
+          const windowHeight = window.innerHeight || document.documentElement.clientHeight || document.getElementsByTagName('body')[0].clientHeight;
+          LayoutUtil.scrollTo(this.$el.offsetTop - (windowHeight * 0.5), 1000, 'easeInOutQuad', () => {
+            this.changeStatus('lastAdded', '');
+          });
+        }
+      }, 300);
+    });
+  },
+  methods: {
+    updateValue(value) {
+      if (this.parentKey && this.parentIndex !== '') {
+        const path = this.parentKey + '[' + this.parentIndex + ']' + '.' + this.key;
+        this.$dispatch('update-value', path, value);
+      } else if (this.parentKey) {
+        const path = this.parentKey + '.' + this.key;
+        this.$dispatch('update-value', path, value);
+      } else {
+        this.$dispatch('update-value', this.key, value);
+      }
+    },
+    removeThis() {
+      if (this.parentKey) {
+        console.warn('Remove was called on an embedded field, this is not supported.');
+        return false;
+      }
+      this.$dispatch('remove-field', this.key);
+      // ModalUtil.confirmDialog(
+      //   {
+      //     sTitle: `Ta bort fältet "${pLabel}"?`,
+      //     sContent: `Detta tar bort fältet "${pLabel}" och allt dess innehåll.`,
+      //     sAccept: 'Ta bort',
+      //     sReject: 'Avbryt',
+      //     sType: 'danger',
+      //   }
+      // ).then(() => {
+      //   // accepted by user
+      //   this.$dispatch('remove-field', prop);
+      // }, () => {
+      //     // declined
+      // });
+    },
+    getDatatype(o) {
+      if (this.isPlainObject(o) && this.isLinked(o)) {
+        return 'entity';
+      }
+      if (this.isPlainObject(o) && !this.isLinked(o) && !this.isEmbedded(o)) {
+        return 'local';
+      }
+      if (this.isPlainObject(o) && !this.isLinked(o) && this.isEmbedded(o)) {
+        return 'embedded';
+      }
+      if (!this.isPlainObject(o) && !this.isLinked(o)) {
+        return 'value';
+      }
+    },
+    isLinked(o) {
+      return (o.hasOwnProperty('@id') && !o.hasOwnProperty('@type'));
+    },
+    isEmbedded(o) {
+      const type = o['@type'];
+      if (!type || typeof type === 'undefined') {
+        return false;
+      }
+      return VocabUtil.isEmbedded(type, this.vocab, this.settings);
     },
   },
 };
 </script>
 
 <template>
-  <div v-if="isArray(value)">
+<div class="data-node" v-bind:class="{'column': embedded, 'rows': !embedded, 'highlight': isLastAdded }" @mouseover="showActionButtons=true" @mouseleave="showActionButtons=false">
+  <div class="label" v-bind:class="{ 'locked': isLocked }">
+    <a href="/vocab/#{{key}}">{{ key | labelByLang | capitalize }}</a>
+    <!-- {{ key | labelByLang | capitalize }} -->
+  </div>
+  <div class="value node-list">
+    <pre v-show="status.isDev">{{getPath}}</pre>
     <ul>
-      <li v-for="v in valueByIdPresence" v-bind:class="{'display-block': !v['@id'] }">
-        <div v-if="isPlainObject(v) && v['@id']" class="node-linked">
-          <linked-item :is-locked="isLocked" :item="getLinked(v['@id'])" :key="key" :index="$index"></linked-item>
-        </div>
-        <div v-if="isPlainObject(v) && !v['@id']" class="node-anonymous">
-          <anonymous-value :is-locked="isLocked" :value="v" :key="key" :linked="linked"></anonymous-value>
-        </div>
-        <div v-if="!isPlainObject(v)" class="node-input">
-          <input v-if="!isLocked" v-el:input v-model="v" v-on:keyup="updateArray($index, v)"></input>
-          <span v-if="isLocked">{{v}}</span>
-        </div>
+      <li v-for="item in valueAsArray" track-by="$index">
+        <item-entity v-if="getDatatype(item) == 'entity'" :is-locked="isLocked" :expanded="isExpandedType" :focus="focus" :item="item" :key="key" :index="$index"></item-entity>
+        <item-local v-if="getDatatype(item) == 'local'" :is-locked="isLocked" :focus="focus" :item="item" :key="key" :index="$index"></item-local>
+        <item-embedded v-if="getDatatype(item) == 'embedded'" :is-locked="isLocked" :focus="focus" :item="item" :key="key" :index="$index"></item-embedded>
+        <item-value v-if="getDatatype(item) == 'value'" :is-removable="!hasSingleValue" :is-locked="isLocked" :focus="focus" :value="item" :key="key" :index="$index"></item-value>
       </li>
     </ul>
   </div>
-  <div v-if="isPlainObject(value) && value['@id']" class="node-linked">
-    <linked-item :is-locked="isLocked" :item="getLinked(value['@id'])"></linked-item>
+  <div class="actions" v-if="!isLocked">
+    <entity-adder class="action" v-if="!isLocked && (isRepeatable || isEmptyObject)" :key="key" :focus="focus" :property-types="propertyTypes" :allow-local="allowLocal" :show-action-buttons="showActionButtons" :active="activeModal"></entity-adder>
+    <div class="action action-button action-remove" v-if="!isLocked && isRemovable" :class="{'shown-button': showActionButtons, 'hidden-button': !showActionButtons, 'disabled': activeModal}" v-on:click="removeThis()"><i class="fa fa-trash"></i></div>
   </div>
-  <div v-if="isPlainObject(value) && !value['@id']" class="node-anonymous">
-    <anonymous-value :is-locked="isLocked" :value="value" :linked="linked"></anonymous-value>
-  </div>
-  <div v-if="!isArray(value) && !isPlainObject(value)" class="node-input">
-    <input v-if="!isLocked" v-model="value" v-on:keyup="updateValue(value)"></input>
-    <span v-if="isLocked">{{value}}</span>
-  </div>
+</div>
 </template>
+
+<style lang="less">
+@import './_variables.less';
+
+.data-node {
+  width: 100%;
+  min-height: 3em;
+  display: flex;
+  flex-direction: row;
+  box-shadow: inset 0px 0px 1em 0px transparent;
+  transition: 3s ease;
+  transition-property: outline;
+  outline: 2px solid transparent;
+  .node-list {
+    line-height: 0;
+    > ul {
+      margin-bottom: 0px;
+      padding: 0px;
+      > li {
+        display: inline-block;
+        margin-bottom: 2px;
+        &:last-of-type {
+          margin-bottom: auto;
+        }
+        > * > * {
+          line-height: 1.6;
+        }
+      }
+    }
+    &.stackable {
+      > ul > li {
+        display: inline-block;
+        margin-bottom: auto;
+      }
+    }
+  }
+  &.highlight {
+    outline: 2px solid @highlight-color;
+    box-shadow: inset 0px 0px 1em 0px gold;
+  }
+  .label {
+    a {
+      color: @black;
+      text-decoration: none;
+      &:hover {
+        cursor: help;
+      }
+    }
+    font-size: 1.2rem;
+    color: @black;
+    font-weight: normal;
+  }
+  .value {
+  }
+  .shown-button {
+    opacity: 1;
+  }
+  .hidden-button {
+    opacity: 0;
+  }
+  >.actions .action-button {
+    transition: opacity 0.25s ease;
+    transition-delay: 0.1s;
+    .action {
+      cursor: pointer;
+    }
+  }
+  &.rows {
+    border: solid;
+    border-bottom-color: #d8d8d8;
+    border-top-color: #f3f3f3;
+    border-width: 1px 0px 1px 0px;
+    background-color: @form-field;
+    &:nth-child(odd) {
+      background-color: darken(@form-field, 2%);
+    }
+    >.label {
+      order: 1;
+      flex-basis: @col-label;
+      display: flex;
+      text-align: right;
+      align-items: flex-start;
+      justify-content: flex-end;
+      line-height: 2.6;
+    }
+    >.value {
+      order: 2;
+      flex-basis: @col-value;
+      padding: 5px;
+      > * {
+        display: inline-block;
+      }
+      > ul {
+        width: 100%;
+        list-style: none;
+        padding: 0px;
+        > li {
+          display: inline-block;
+        }
+      }
+    }
+    >.actions {
+      order: 3;
+      flex-basis: @col-action;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      > * {
+        display: inline;
+        margin: 0px 5px;
+      }
+      .disabled {
+        visibility: hidden;
+      }
+    }
+  }
+  &.column {
+    flex-wrap: wrap;
+    border: solid rgba(196, 199, 202, 0.73);
+    border-width: 0px 0px 1px 0px;
+    padding-bottom: 4px;
+    &:last-child {
+      border-width: 0px;
+    }
+    >.label {
+      flex: 0 1 100%;
+      text-align: left;
+      padding: 5px 0px 3px 0px;
+    }
+    >.value {
+      display: inline-block;
+      flex: 1 0 85%;
+      flex-grow: 1;
+    }
+    >.actions {
+      display: inline-block;
+      flex: 1 0 15%;
+      > * {
+        display: inline-block;
+      }
+    }
+  }
+  align-content: stretch;
+}
+
+</style>

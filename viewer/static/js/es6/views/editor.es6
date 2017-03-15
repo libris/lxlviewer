@@ -2,18 +2,33 @@ import View from './view';
 import Vue from 'vue';
 import Vuex from 'vuex';
 import store from '../vuex/store';
+import ComboKeys from 'combokeys';
+import KeyBindings from '../keybindings.json';
 import * as editUtil from '../utils/edit';
 import * as httpUtil from '../utils/http';
 import * as toolbarUtil from '../utils/toolbar';
 import * as _ from 'lodash';
 import * as VocabLoader from '../utils/vocabloader';
 import * as VocabUtil from '../utils/vocab';
+import * as DisplayUtil from '../utils/display';
 import * as RecordUtil from '../utils/record';
 import * as UserUtil from '../utils/user';
+import * as StringUtil from '../utils/string';
 import FormComponent from '../components/formcomponent';
 import EditorControls from '../components/editorcontrols';
-import { getSettings, getVocabulary, getEditorData } from '../vuex/getters';
-import { changeSettings, loadVocab, syncData } from '../vuex/actions';
+import HeaderComponent from '../components/headercomponent';
+import Notification from '../components/notification';
+import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData, getStatus, getKeybindState } from '../vuex/getters';
+import { changeSettings, changeNotification, loadVocab, loadDisplayDefs, syncData, changeSavedStatus, changeStatus } from '../vuex/actions';
+
+function showError(error) {
+  $('#loadingText .fa-cog').fadeOut('fast', () => {
+    $('#loadingText .fa-warning').removeClass('hidden').fadeIn('fast');
+    $('#loadingText .mainStatus').text('').append('Något gick fel...');
+    $('#loadingText .status').text('');
+    $('#loadingText .error').text('').append(error).removeClass('hidden').fadeIn('slow');
+  });
+}
 
 export default class Editor extends View {
 
@@ -26,12 +41,29 @@ export default class Editor extends View {
 
     self.settings = {
       lang: 'sv',
-      vocabPfx: 'kbv:',
+      vocabPfx: self.vocabPfx,
+      embeddedTypes: ['StructuredValue', 'ProvisionActivity', 'Contribution'],
+      removableBaseUris: [
+        'http://libris.kb.se/',
+        'https://libris.kb.se/',
+        'http://id.kb.se/',
+        'https://id.kb.se/',
+      ],
     };
-
+    $('#loadingText .fa-warning').hide();
+    $('#loadingText .mainStatus').text('Laddar redigeringen...');
+    $('#loadingText .status').text('Hämtar vokabulär');
     VocabUtil.getVocab().then((vocab) => {
-      self.vocab = vocab;
-      self.initVue();
+      self.vocab = vocab['@graph'][0]['@graph'];
+      $('#loadingText .status').text('Hämtar visningsdefinitioner');
+      DisplayUtil.getDisplayDefinitions().then((display) => {
+        self.display = display;
+        self.initVue();
+      }, (error) => {
+        showError(error);
+      });
+    }, (error) => {
+      showError(error);
     });
   }
 
@@ -51,23 +83,10 @@ export default class Editor extends View {
     }, false);
 
     Vue.filter('labelByLang', (label) => {
-      const pfx = self.settings.vocabPfx;
-      const lang = self.settings.lang;
-      // Filter for fetching labels from vocab
-      let lbl = label;
-      if (lbl && lbl.indexOf(pfx) !== -1) {
-        lbl = lbl.replace(pfx, '');
-      }
-      const item = _.find(self.vocab.descriptions, (d) => { return d['@id'] === `${pfx}${lbl}`; });
-      let labelByLang = '';
-      if (typeof item !== 'undefined' && item.labelByLang) {
-        labelByLang = item.labelByLang[lang];
-      }
-      // Check if we have something of value
-      if (labelByLang && labelByLang.length > 0) {
-        return labelByLang;
-      }
-      return lbl;
+      return StringUtil.labelByLang(label, self.settings.lang, self.vocab, self.vocabPfx);
+    });
+    Vue.filter('removeDomain', (value) => {
+      return StringUtil.removeDomain(value, self.settings.removableBaseUris);
     });
 
     Vue.use(Vuex);
@@ -78,26 +97,24 @@ export default class Editor extends View {
         actions: {
           syncData,
           loadVocab,
+          loadDisplayDefs,
           changeSettings,
+          changeSavedStatus,
+          changeStatus,
+          changeNotification,
         },
         getters: {
           settings: getSettings,
           editorData: getEditorData,
           vocab: getVocabulary,
+          display: getDisplayDefinitions,
+          status: getStatus,
+          keybindState: getKeybindState,
         },
       },
       data: {
         initialized: false,
-        status: {
-          dirty: true,
-          saved: {
-            loading: false,
-            status: {
-              error: false,
-              info: '',
-            },
-          },
-        },
+        combokeys: null,
       },
       events: {
         'focus-update': function(value, oldValue) {
@@ -114,17 +131,13 @@ export default class Editor extends View {
           }
           this.syncData(newData);
         },
+        'add-linked': function(item) {
+          const newData = this.editorData;
+          newData.linked.push(item);
+          this.syncData(newData);
+        },
         'save-item': function() {
-          this.status.saved.loading = true;
           this.saveItem();
-        },
-        'check-changes': function() {
-          // TODO: Some logic plz...
-            this.status.dirty = true;
-            console.log('Form is dirty?', this.status.dirty);
-        },
-        'show-message': function(messageObj) {
-          console.log("Should show notification", JSON.stringify(messageObj));
         },
       },
       watch: {
@@ -135,6 +148,25 @@ export default class Editor extends View {
             this.getCopyItem(value);
           } else {
             this.copy.state = 'invalid';
+          }
+        },
+        keybindState(state) {
+          // Bindings are defined in keybindings.json
+          if (this.combokeys) {
+            this.combokeys.detach();
+          }
+          this.combokeys = new ComboKeys(document.documentElement);
+          require('combokeys/plugins/global-bind')(this.combokeys); // TODO: Solve with ES6 syntax
+          const stateSettings = KeyBindings[state];
+          console.log(stateSettings);
+          if (typeof stateSettings !== 'undefined') {
+            _.each(stateSettings, (value, key) => {
+              if (value !== null && value !== '') {
+                this.combokeys.bindGlobal(key.toString(), () => {
+                  this.$broadcast(value);
+                });
+              }
+            });
           }
         },
       },
@@ -148,32 +180,35 @@ export default class Editor extends View {
         convertItemToMarc() {
           return httpUtil.post({
             url: '/_convert',
-            token: self.access_token
+            token: self.access_token,
           },
             // Use clean method on args
-            editUtil.getMergedItems(this.editorData.meta, this.editorData.thing, this.editorData.linked)
+            editUtil.getMergedItems(
+              this.editorData.record,
+              this.editorData.it,
+              this.editorData.work,
+              this.editorData.linked
+            )
           );
         },
         saveItem() {
           const inputData = JSON.parse(document.getElementById('data').innerText);
           const obj = editUtil.getMergedItems(
-            editUtil.removeNullValues(this.editorData.meta),
-            editUtil.removeNullValues(this.editorData.thing),
+            editUtil.removeNullValues(this.editorData.record),
+            editUtil.removeNullValues(this.editorData.it),
+            editUtil.removeNullValues(this.editorData.work),
             this.editorData.linked
           );
 
           // if (JSON.stringify(obj) === JSON.stringify(inputData)) {
           //   console.warn("No changes done, skipping to save. Time to tell the user?");
           // } else {
-            const atId = this.editorData.meta['@id'];
-            console.log(atId);
-            if(atId) {
-              console.log("Save called WITH changes.");
-              this.doSave(atId, obj);
-            } else {
-              console.log("Create called WITH changes.");
-              this.doCreate(obj);
-            }
+          const atId = this.editorData.record['@id'];
+          if (atId) {
+            this.doSave(atId, obj);
+          } else {
+            this.doCreate(obj);
+          }
           // }
         },
         doSave(url, obj) {
@@ -183,37 +218,36 @@ export default class Editor extends View {
           this.doRequest(httpUtil.post, obj, '/create');
         },
         doRequest(requestMethod, obj, url) {
-          this.status.saved.loading = true;
           requestMethod({ url, token: self.access_token }, obj).then((result) => {
             console.log('Success was had');
             self.vm.syncData(RecordUtil.splitJson(result));
-            self.vm.status.saved.loading = false;
-            self.vm.status.saved.status = { error: false, info: '' };
-            this.$dispatch('show-message', {
-              title: 'OK!',
-              msg: 'Posten blev sparad...',
-              type: 'success',
-            });
+            self.vm.changeSavedStatus('loading', false);
+            self.vm.changeSavedStatus('error', false);
+            self.vm.changeSavedStatus('info', '');
+            self.vm.changeNotification('color', 'green');
+            self.vm.changeNotification('message', 'Posten blev sparad!');
           }, (error) => {
-            self.vm.status.saved.loading = false;
-            self.vm.status.saved.status = { error: true, info: error };
-            this.$dispatch('show-message', {
-              title: 'Något gick fel!',
-              msg: error,
-              type: 'error',
-            });
+            self.vm.changeSavedStatus('loading', false);
+            // self.vm.changeSavedStatus('error', true);
+            // self.vm.changeSavedStatus('info', error);
+            self.vm.changeNotification('color', 'red');
+            self.vm.changeNotification('message', 'Något gick fel!');
           });
         },
       },
       ready() {
         this.changeSettings(self.settings);
         this.loadVocab(self.vocab);
+        this.loadDisplayDefs(self.display);
         this.syncData(self.dataIn);
         this.initialized = true;
+        this.changeStatus('keybindState', 'overview');
       },
       components: {
         'form-component': FormComponent,
         'editor-controls': EditorControls,
+        'header-component': HeaderComponent,
+        'notification': Notification,
       },
       store,
     });

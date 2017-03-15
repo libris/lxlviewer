@@ -1,1 +1,9 @@
-{ "extends": "airbnb/base" }
+{
+  "extends": "airbnb/base",
+  "rules": {
+    "no-console": 2
+  },
+  "plugins": [
+    "html"
+  ],
+}

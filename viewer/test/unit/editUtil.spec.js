@@ -9,9 +9,10 @@ import * as editUtil from '../../static/js/es6/utils/edit';
 describe('Utility: edit', function () {
 
   let linked = [];
-  let bibObj = {};
-  let metaObj = {};
-  let mergedObj = {};
+  let instanceObj = {};
+  let workObj = {};
+  let recordObj = {};
+  let packagedObj = {};
 
   beforeEach(function() {
     linked = [
@@ -20,12 +21,14 @@ describe('Utility: edit', function () {
       { '@id': 'oPdedsEFvMsw' },
     ];
 
-    bibObj = { '@id': 'defmfnwEdesS', dimensions: null, extent: null };
-    metaObj = { '@id': 'mnfwSwdSsdcD' };
-    mergedObj = {
+    instanceObj = { '@id': 'defmfnwEdesS', dimensions: null, extent: null };
+    workObj = { '@id': 'eklejwsdDss', hasTitle: [] };
+    recordObj = { '@id': 'mnfwSwdSsdcD' };
+    packagedObj = {
       '@graph': [
         { '@id': 'mnfwSwdSsdcD' },
         { '@id': 'defmfnwEdesS', dimensions: null, extent: null },
+        { '@id': 'eklejwsdDss', hasTitle: [] },
         {
           '@graph': {
             '@id': 'sdflkjDFsemn',
@@ -61,15 +64,15 @@ describe('Utility: edit', function () {
 
   describe('getMergedItems()', function () {
     it('returns an object matching the same structure as input data', function () {
-      let result = editUtil.getMergedItems(metaObj, bibObj, linked);
-      expect(result).to.deep.equal(mergedObj);
+      let result = editUtil.getMergedItems(recordObj, instanceObj, workObj, linked);
+      expect(result).to.deep.equal(packagedObj);
     });
   });
 
-  describe('clean()', function () {
+  describe('removeNullValues()', function () {
     it('should return the same object without any null fields', function () {
-      expect(editUtil.clean(bibObj)).to.not.have.ownProperty('dimensions');
-      expect(editUtil.clean(bibObj)).to.not.have.ownProperty('extent');
+      expect(editUtil.removeNullValues(instanceObj)).to.not.have.ownProperty('dimensions');
+      expect(editUtil.removeNullValues(instanceObj)).to.not.have.ownProperty('extent');
     });
   });
 });

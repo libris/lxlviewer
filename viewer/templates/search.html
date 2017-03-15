@@ -1,4 +1,6 @@
-% macro search_controls(result, typecontrols)
+% from "termutils.html" import vocab_term
+
+% macro search_controls(result, filter_param=None)
 
 % if result.search
 
@@ -23,21 +25,32 @@
           <label class="search-label" id="searchlabel" for="q">
             Sök
           </label>
-          <input aria-labelledby="searchlabel" class="form-control search-input" name="q" id="searchQ" value="${q | safe | trim }" />
-          <button id="searchSubmit" class="search-button btn btn-primary"><i class="fa fa-search"></i> Sök</button>
+          % if g.site.title == 'libris.kb.se'
+            <input class="tagInput" name="@type" value="Instance" />
+          % endif
+          <div class="tagInputContainer">
+            <input class="tagInput" name="identifiedBy.value">
+            <input class="tagInput" name="identifiedBy.@type">
+          </div>
+
+          <div id="searchFieldContainer">
+            <input aria-labelledby="searchlabel" class="form-control search-input tagInput" name="q" id="searchQ" value="${q | safe | trim }" ></input>
+            <div aria-labelledby="searchlabel" class="form-control search-input" id="searchQsmart"></div>
+            <button id="searchSubmit" class="search-button btn btn-primary"><i class="fa fa-search"></i> Sök</button>
+          </div>
         </div>
       </div>
 
-    % if typecontrols
+    % if filter_param
       <div class="type-buttons" aria-label="Välj typ">
         <label class="no-choice">
-          <input name="inScheme.@id" id="noneType" value="" type="radio"> Alla
+          <input name="${filter_param}" id="noneType" value="" type="radio" checked> Alla
         </label>
         % if len(result.statistics) > 0
           % for value in result.statistics.sliceByDimension.values()
             % for obs in value.observation
               <label class="">
-                <input name="inScheme.@id" value="${obs.object['@id']}" type="radio">
+                <input name="${filter_param}" value="${obs.object['curie'] or obs.object['@id']}" type="radio">
                 % if obs.object.titleByLang
                   ${obs.object.titleByLang['sv']}
                 % elif obs.object.label
@@ -67,7 +80,7 @@
               % set label = item.value
             % endif
             <a href="${item.up['@id']}">
-              ${label}<i class="fa fa-remove"></i>
+              ${vocab_term(label)}<i class="fa fa-remove"></i>
             </a>
           </li>
           % endif
@@ -169,7 +182,7 @@
             </li>
           % else
           <li>
-            <a href="${result.first['@id'] + '&offset=' + str(limit * num) }">${num +1}</a>
+            <a href="${result.first['@id'] + '&_offset=' + str(limit * num) }">${num +1}</a>
           </li>
           % endif
         % endif
@@ -206,7 +219,7 @@
   </div>
 % endmacro
 
-% macro facet_controls(result)
+% macro facet_controls(result, ui)
   <div>
   % if result['stats']
   % set stats = result['stats']
@@ -214,18 +227,33 @@
   <label>
     Filtrera
   </label>
+  % set facet_labels = ui['FACET_LABELS']
+  % for dimension in stats.sliceByDimension
+  % set value = stats.sliceByDimension[dimension]
+  % set dimension_prop = value.dimension
+  % set swedish_label = facet_labels[dimension_prop]
+  <div class="dimension-header">${swedish_label}</div>
   <ul>
-    % for observation in stats.sliceByDimension['@type'].observation
+
+    % for observation in stats.sliceByDimension[dimension].observation
     % if observation.object.label
     <li>
       <a href="${observation.view['@id']}" title="${observation.object.label}">
-        ${observation.object.label | truncate(30, true) }
+        ${vocab_term(observation.object.label)}
+      </a>
+      <span class="quantity">(${observation.totalItems})</span>
+    </li>
+    % elif observation.object.prefLabelByLang and observation.object.prefLabelByLang.sv
+    <li>
+      <a href="${observation.view['@id']}" title="${observation.object.prefLabelByLang.sv}">
+        ${observation.object.prefLabelByLang.sv | truncate(30, true) }
       </a>
       <span class="quantity">(${observation.totalItems})</span>
     </li>
     % endif
     % endfor
   </ul>
+  % endfor
   % else
     Inga facetter tillgängliga.
   % endif

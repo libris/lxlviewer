@@ -14,7 +14,7 @@ export default {
       databases: { state: '', list: [] },
       remoteQuery: '',
       remoteResult: { state: '', totalResults: {}, items: [] },
-    }
+    };
   },
   components: {
     'result-item': ResultItem,
@@ -27,9 +27,9 @@ export default {
       const vself = this;
 
       const urlDbs = vself.db.toUpperCase().split(',');
-      this.databases['state'] = 'loading';
-      this.databases['debug'] = '';
-      this.fetchDatabases().then(function(dbs) {
+      this.databases.state = 'loading';
+      this.databases.debug = '';
+      this.fetchDatabases().then((dbs) => {
         const newDbList = [];
         for (let i = 0; i < dbs.length; i++) {
           const obj = { item: dbs[i], active: false };
@@ -43,13 +43,14 @@ export default {
         if (vself.q.length > 0) {
           vself.searchRemote();
         }
-      }, function(error) {
+      }, () => {
         vself.databases.state = 'error';
       });
     },
     fetchDatabases() {
       return new Promise((resolve, reject) => {
-        httpUtil.get({url: '/_remotesearch?databases=list'}).then((response) => {
+        httpUtil.get({ url: '/_remotesearch?databases=list' })
+        .then((response) => {
           resolve(response);
         }, (error) => {
           reject('Error loading databases...', error);
@@ -62,18 +63,20 @@ export default {
       const q = this.remoteQuery;
       const databases = this.selectedDatabases.join();
       vself.remoteResult = {};
-      vself.remoteResult['state'] = 'loading';
-      this.remoteSearch(q, databases).then(function(response) {
+      vself.remoteResult.state = 'loading';
+      this.remoteSearch(q, databases)
+      .then((response) => {
         vself.remoteResult = response;
-        vself.remoteResult['state'] = 'complete';
-      }, function(error) {
-        vself.remoteResult['state'] = 'error';
+        vself.remoteResult.state = 'complete';
+      }, () => {
+        vself.remoteResult.state = 'error';
       });
     },
     remoteSearch(q, databases) {
       return new Promise((resolve, reject) => {
         const url = `/_remotesearch?q=${q}&databases=${databases}`;
-        httpUtil.get({url: url}).then((response) => {
+        httpUtil.get({ url })
+        .then((response) => {
           resolve(response);
         }, (error) => {
           reject('Error loading databases...', error);
@@ -81,14 +84,14 @@ export default {
       });
     },
   },
-  ready: function() {
+  ready() {
     this.remoteQuery = this.q;
     this.loadRemoteDatabases();
   },
   computed: {
     selectedDatabases() {
       const selected = [];
-      const dbs =  _.filter(this.databases.list, function (o) {
+      const dbs = _.filter(this.databases.list, function (o) {
         return o.active;
       });
       for (let i = 0; i < dbs.length; i++) {

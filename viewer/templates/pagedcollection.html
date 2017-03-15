@@ -1,27 +1,28 @@
 % extends "thing.html"
 % import 'search.html' as search
 
+{% block bodyattrs %}vocab="${config.VOCAB_IRI}" id="pagedcollection"{% endblock %}
 {% block title %}${ui.SEARCH_RESULTS.label}{% endblock %}
 
 % block content
   % set items = thing['items']
 <div class="row">
   <div class="col-md-3 hidden-xs hidden-sm">
-    % if not request.args.get('@type')
+    <!--% if not request.args.get('@type')-->
     <div class="panel panel-default">
       <div class="panel-body facet-controls">
-      ${ search.facet_controls(thing) }
+      ${ search.facet_controls(thing, ui) }
       </div>
     </div>
-    % endif
+    <!--% endif-->
   </div>
   <div class="col-md-9">
 
-    ${ search.search_controls(thing, false) }
+    ${ search.search_controls(thing) }
     % if not request.args.get('@type')
     <div class="panel panel-default hidden-md hidden-lg">
       <div class="panel-body facet-controls">
-      ${ search.facet_controls(thing) }
+      ${ search.facet_controls(thing, ui) }
       </div>
     </div>
     % endif
@@ -29,7 +30,7 @@
     % if items
     <div class="result-list">
     % for item in items
-      ${viewthing(item, classes='panel panel-default hit-item', rel='items')}
+      ${thing_list_item(item)}
     % endfor
     </div>
     % endif

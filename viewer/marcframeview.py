@@ -1,5 +1,4 @@
 import re
-from os import makedirs, path as P
 import json
 
 import requests
@@ -8,32 +7,10 @@ import requests
 MARC_CATEGORIES = 'bib', 'auth', 'hold'
 
 
-def load_marcframe(source, cachedir):
-    if not P.isdir(cachedir):
-        makedirs(cachedir)
-    marcframe_file = P.join(cachedir, 'marcframe.json')
+class MarcFrameView:
 
-    try:
-        with open(marcframe_file, 'w') as f:
-            resp = requests.get(source, stream=True)
-            for chunk in resp.iter_content(1024):
-                f.write(chunk)
-    except requests.exceptions.ConnectionError:
-        pass
-
-    with open(marcframe_file) as fp:
-        try:
-            marcframe = json.load(fp)
-        except ValueError:
-            marcframe = None
-
-    return marcframe
-
-
-class MarcFrameView():
-
-    def __init__(self, source, cachedir):
-        self.marcframe = load_marcframe(source, cachedir)
+    def __init__(self, marcframe):
+        self.marcframe = marcframe
 
     def marc_categories(self):
         for cat in MARC_CATEGORIES:

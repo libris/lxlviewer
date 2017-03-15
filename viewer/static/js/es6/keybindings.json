@@ -1,0 +1,15 @@
+{
+  "overview": {
+    "a f": "open-add-field-window",
+  },
+  "field-adder": {
+    "esc": "close-modals",
+    "down": "select-next",
+    "up": "select-prev",
+    "enter": "add-field-single",
+    "mod+enter": "add-field-multiple"
+  },
+  "entity-adder": {
+    "esc": "close-modals",
+  }
+}

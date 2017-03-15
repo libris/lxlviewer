@@ -8,7 +8,11 @@ export function initToolbar(_context) {
   // TOOLBAR-REMOVE
   $('.js-toolbar-remove').click(function(e) {
     e.preventDefault();
-    const url = $(this).attr('data-record-id').replace('/', '');
+    let url = $(this).attr('data-record-id');
+    // TODO: Is this legacy code?
+    // if (url[0] !== '/') {
+    //   url = `/${url}`;
+    // }
     modalUtil.confirmDialog({
       sTitle: 'Ta bort?',
       sContent: 'Du kan inte ångra detta val.',
@@ -18,6 +22,9 @@ export function initToolbar(_context) {
         // accepted by user
         httpUtil._delete({ url, token: context.access_token }).then((result) => {
           console.log("post WAS deleted...", result);
+
+          // Force reload
+          window.location.reload();
         }, (result) => {
           console.log("post was NOT deleted...", result);
         });
@@ -31,8 +38,8 @@ export function initToolbar(_context) {
     function showModal(result) {
       let content = '';
       // !TODO add general error message display for all xhr-requests
-      if(result.name === 'Error') {
-        content = `Failed to convert to MARC: ${result}`
+      if (result.name === 'Error') {
+        content = `Failed to convert to MARC: ${result}`;
       } else {
         content = `<section class="marc-code">
                     ${marcJsonToHtml(result)}
@@ -40,29 +47,20 @@ export function initToolbar(_context) {
       }
       modalUtil.modal({
         sTitle: 'MARC förhandsgranskning',
-        sContent: content
-      }).then(() => {}, () => {});;
+        sContent: content,
+      }).then(() => {}, () => {});
     }
     context.vm.convertItemToMarc().then(showModal, showModal);
   });
 
   // Copy button
-  getCopyItem();
-
-}
-
-function getCopyItem() {
-  const itemUrl = $('#itemId').text().replace('/', '');
-  if (!itemUrl) return;
-
-  const copyUrl = `/${itemUrl}/data.jsonld`;
-  httpUtil.get({ url: copyUrl, accept: 'application/ld+json' }).then((responseObject) => {
-    // TODO: Relying on order. How can we do this in a safer way?
-    responseObject['@graph'][0] = RecordUtil.stripId(responseObject['@graph'][0]);
-    responseObject['@graph'][1] = RecordUtil.stripId(responseObject['@graph'][1]);
-    $('#copyItem').text(JSON.stringify(responseObject));
-    $('.js-toolbar-copy').removeClass('hidden');
-  }, (error) => {
-    console.warn("Couldn't fetch json");
-  });
+  const itemId = $('#itemId').text();
+  if (itemId.length > 0) {
+    RecordUtil.getNewCopy(itemId).then((response) => {
+      $('#copyItem').text(JSON.stringify(response));
+      $('.js-toolbar-copy').removeClass('hidden');
+    }, (error) => {
+      console.warn("Couldn't prepare item copy, hiding copy button.", error);
+    });
+  }
 }
