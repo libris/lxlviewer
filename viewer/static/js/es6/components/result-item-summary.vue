@@ -22,17 +22,6 @@ export default {
     }
   },
   methods: {
-    isTitle(key) {
-      const k = key.toLowerCase();
-      return ~k.indexOf('title') || ~k.indexOf('preflabel');
-    },
-    showKey(k) {
-      const listOfKeys = ['ISBN']; // TODO: Fix list of keys to show.
-      return _.indexOf(listOfKeys, k) > -1;
-    },
-    isInline(k) {
-      return (this.settings.inlineKeys.indexOf(k) !== -1);
-    },
   },
   computed: {
   },
