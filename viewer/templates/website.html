@@ -25,11 +25,15 @@
       % if thing.summary
         ${thing.summary.articleBody|safe}
       % else
-        <h1 class="welcome">
-          Välkommen till katalogiseringstjänsten LibrisXL
-        </h1>
+        ${thing.description|safe}
       % endif
-      
+      <h1 class="welcome">
+        % if g.site.title == 'libris.kb.se'
+          Välkommen till katalogiseringstjänsten LibrisXL
+        % else
+          Välkommen till id.kb.se
+        % endif
+      </h1>
       Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus porta venenatis lorem, sed finibus dolor feugiat eget. Vestibulum placerat lorem massa, luctus dapibus lectus commodo aliquam. Sed cursus nisl euismod venenatis maximus. Donec volutpat porta tortor, id euismod leo hendrerit sit amet.
     <!-- </div> -->
   </div>
