@@ -67,10 +67,20 @@ body#website {
   flex-direction: row;
   flex-wrap: nowrap;
   line-height: 2em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  #searchphrase-0[contenteditable=true]:empty:before{
+    content: attr(placeholder);
+    display: block; /* For Firefox */
+    color: #777;
+    font-style: italic;
+  }
   .searchphrase {
     flex-grow: 1;
     margin-right: 5px;
     outline: none;
+    cursor: text;
   }
   .searchtag {
     outline: none;
