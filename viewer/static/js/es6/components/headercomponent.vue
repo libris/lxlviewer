@@ -68,7 +68,7 @@ export default {
 
 <template>
   <div class="header-component" v-bind:class="{ 'compact': !full }">
-    <entity-summary :focus-data="focusData"></entity-summary>
+    <entity-summary :focus-data="focusData" :render-link="false"></entity-summary>
   </div>
 </template>
 
@@ -76,6 +76,7 @@ export default {
 @import './_variables.less';
 
 .header-component {
+  background-color: @neutral-color;
   padding: 0px;
   &.compact {
     max-height: 72px;

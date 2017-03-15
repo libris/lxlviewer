@@ -1,6 +1,6 @@
 <script>
 import LensMixin from './mixins/lens-mixin';
-import ResultItemSummary from './result-item-summary';
+import EntitySummary from './entity-summary';
 import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData } from '../vuex/getters';
 
 export default {
@@ -27,7 +27,7 @@ export default {
   computed: {
   },
   components: {
-    'result-item-summary': ResultItemSummary,
+    'entity-summary': EntitySummary,
   },
   watch: {
   },
@@ -38,7 +38,7 @@ export default {
 
 <template>
   <div class="result-list-item">
-    <result-item-summary :focus-data="focusData"></result-item-summary>
+    <entity-summary :focus-data="focusData" :render-link="true"></entity-summary>
   </div>
 </template>
 
