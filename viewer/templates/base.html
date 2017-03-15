@@ -96,6 +96,7 @@
       </script>
     % endif
     {% block scripts %}{% endblock %}
+    <script id="serviceTitle" type="application/json">${g.site.title}</script>
     <script id="baseUriAlias" type="application/json">${config.BASE_URI_ALIAS|tojson|safe}</script>
     <script src="/assets/build/app.js"></script>
 
