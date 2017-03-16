@@ -8,8 +8,8 @@ export default class View {
 
   constructor() {
     this.name = this.constructor.name;
-    // this.vocabPfx = 'kbv:';
-    this.vocabPfx = 'https://id.kb.se/vocab/';
+    this.vocabPfx = 'kbv:';
+    // this.vocabPfx = 'https://id.kb.se/vocab/';
   }
 
   initialize() {
