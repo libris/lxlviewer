@@ -136,6 +136,8 @@
     }
   %}
 
+  % set vocab_url = 'https://id.kb.se/vocab/'
+
   % if obs.object is not none
     <div class="observation-container">
       <a href="${ obs.view['@id'] }">
@@ -144,7 +146,7 @@
         % else
           <div class="observation-button">
         % endif
-        % set type = obs.object['@id']
+        % set type = obs.object['@id'].replace(vocab_url, '')
             <i class="fa fa-fw fa-${icons[type] or 'file' }"></i>
               <!-- <p class="description collapsed">
                 % if 'descriptionByLang' in obs.object
@@ -156,7 +158,7 @@
       % if g.site.title == 'id.kb.se'
       <a href="${ obs.object['@id'] }">
       % else
-      <a href="https://id.kb.se/vocab/#${ obs.object['@id'] }">
+      <a href="${vocab_url}#${ obs.object['@id'] }">
       % endif
       <i class="fa fa-info-circle" aria-hidden="true"></i>
       </a>
@@ -185,6 +187,8 @@
 
 
 % macro view_observation(obs)
+  % set vocab_url = 'https://id.kb.se/vocab/'
+
   % if obs.object is not none
   <div class="col-md-6">
     % if obs.object.notation
@@ -199,7 +203,7 @@
               ${show_label(obs.object)}
           </a>
           % else
-          <a href="https://id.kb.se/vocab/#${ obs.object['@id'] }">
+          <a href="${vocab_url}#${ obs.object['@id'] }">
             ${vocab_term(obs.object['@id'])}
           </a>
           % endif
