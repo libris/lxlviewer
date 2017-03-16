@@ -13,6 +13,9 @@ export default {
     }
   },
   computed: {
+    queryText() {
+      return StringUtil.getParamValueFromUrl(this.pageData.first['@id'], 'q');
+    },
     limit() {
       return StringUtil.getParamValueFromUrl(this.pageData.first['@id'], '_limit');
     },
@@ -42,7 +45,8 @@ export default {
 <template>
   <div class="panel panel-default result-controls" v-if="!(!showDetails && pageData.totalItems < limit)">
     <div class="search-details" v-if="showDetails">
-      Sökningen gav {{pageData.totalItems}} träffar.
+      <span class="pull-left">Sökning på <strong>"{{ queryText }}"</strong> gav {{pageData.totalItems}} träffar.</span>
+      <span class="pull-right">Visar {{ limit }} träffar per sida.</span>
     </div>
     <div class="search-buttons" v-if="pageData.totalItems > limit">
       <nav>
