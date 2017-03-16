@@ -144,7 +144,7 @@
         % else
           <div class="observation-button">
         % endif
-        % set type = obs.object['@id']
+        % set type = obs.object['@id'].split('/')[-1]
             <i class="fa fa-fw fa-${icons[type] or 'file' }"></i>
               <!-- <p class="description collapsed">
                 % if 'descriptionByLang' in obs.object
