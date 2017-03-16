@@ -25,7 +25,7 @@ export function getClass(classId, vocab, vocabPfx) {
   const cn = classId.replace(vocabPfx, '');
   const _class = _.find(vocab, (d) => { return d['@id'] === vocabPfx + cn; });
   if (!_class) {
-    console.warn('Not found in vocab:', cn);
+    // console.warn('Not found in vocab:', cn);
   }
   return _class;
 }
@@ -161,8 +161,8 @@ export function getBaseClassesFromArray(typeArray, vocab, vocabPfx) {
       const c = getClass(types[t], vocab, vocabPfx);
       if (typeof c !== 'undefined') {
         classes.push(c['@id']);
+        classes = classes.concat(getBaseClasses(c['@id'], vocab, vocabPfx));
       }
-      classes = classes.concat(getBaseClasses(c['@id'], vocab, vocabPfx));
     }
   }
   classes = _.uniq(classes);

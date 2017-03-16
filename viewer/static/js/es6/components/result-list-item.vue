@@ -4,7 +4,7 @@ import EntitySummary from './entity-summary';
 import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData } from '../vuex/getters';
 
 export default {
-  name: 'entity-search-item',
+  name: 'result-list-item',
   mixins: [LensMixin],
   props: {
     focusData: {},
@@ -37,8 +37,8 @@ export default {
 </script>
 
 <template>
-  <div class="search-result-item">
-    <entity-summary :focus-data="focusData"></entity-summary>
+  <div class="result-list-item">
+    <entity-summary :focus-data="focusData" :render-link="true"></entity-summary>
   </div>
 </template>
 
@@ -46,9 +46,10 @@ export default {
 <style lang="less">
 @import './_variables.less';
 
-.search-result-item {
-  border: 1px solid #ccc;
-  padding: 3px;
+.result-list-item {
+  list-style: none;
+  margin-bottom: 0.5em;
+  background-color: @neutral-color;
   .label {
     color: @black;
     font-weight: bold;
@@ -64,15 +65,6 @@ export default {
     width: 24%;
     display: inline-block;
     text-align: right;
-  }
-  &:nth-child(even) {
-    background-color: darken(@neutral-color, 2%);
-  }
-  cursor: pointer;
-  border: solid #ccc;
-  border-width: 0px 0px 1px 0px;
-  &:hover {
-    background-color: darken(white, 5%);
   }
 }
 

@@ -48,6 +48,16 @@ export default {
       );
       return card;
     },
+    getSummary() {
+      const summary = DisplayUtil.getItemSummary(
+        this.focusData,
+        this.display,
+        this.editorData.linked,
+        this.vocab,
+        this.settings
+      );
+      return summary;
+    },
   },
 };
 </script>

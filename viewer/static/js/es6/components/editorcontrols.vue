@@ -22,10 +22,27 @@ export default {
     },
   },
   mixins: [LensMixin],
+  ready() { // Ready method is deprecated in 2.0, switch to "mounted"
+    this.$nextTick(() => {
+      window.addEventListener('scroll', (e) => {
+        const scrollPosition = e.target.body.scrollTop;
+        if (this.headerThreshold < scrollPosition) {
+          this.showChipHeader = true;
+        } else {
+          this.showChipHeader = false;
+        }
+      });
+      const expandableAdminInfo = document.getElementsByClassName('admin-info-container')[0];
+      expandableAdminInfo.onresize = this.resize;
+    });
+  },
   methods: {
     save() {
       this.changeSavedStatus('loading', true);
       this.$dispatch('save-item');
+    },
+    edit() {
+      this.$dispatch('edit-item');
     },
     toggleDev() {
       this.changeStatus('isDev', !this.status.isDev);
@@ -36,10 +53,15 @@ export default {
   },
   data() {
     return {
+      showChipHeader: false,
       showAdminInfoDetails: false,
     };
   },
   computed: {
+    headerThreshold() {
+      const cardHeader = document.getElementById('main-header');
+      return cardHeader.offsetTop + (cardHeader.offsetHeight / 6);
+    },
     focusData() {
       return this.editorData.record;
     },
@@ -74,11 +96,16 @@ export default {
         <div class="admin-node">
           <span class="node">Ändrad {{ getCard.modified }} av - </span>
         </div>
-        <button id="saveButton" v-on:click="save()">
+        <button id="saveButton" v-on:click="save()" v-if="status.inEdit">
           <i class="fa fa-fw fa-cog fa-spin" v-show="status.saved.loading"></i>
           <i class="fa fa-fw fa-save" v-show="!status.saved.loading"></i>
           Spara
         </button>
+        <button id="editButton" v-on:click="edit()" v-if="!status.inEdit">
+          <i class="fa fa-fw fa-pencil"></i>
+          Redigera
+        </button>
+
       </div>
       <div>
         <div class="admin-info-container" :class="{ 'show-admin-info-details': showAdminInfoDetails }">
@@ -94,7 +121,7 @@ export default {
           </div>
         </div>
       </div>
-      <header-component :full="false"></header-component>
+      <header-component v-bind:class="{'collapsed': !showChipHeader}" :full="false"></header-component>
     </div>
 
   </div>
@@ -115,8 +142,8 @@ export default {
 
   .editor-controls {
     background-color: @black;
-    color: @white;
     .admin-info {
+      color: @white;
       flex-direction: row;
       display: flex;
       align-items: center;
@@ -130,7 +157,7 @@ export default {
           vertical-align: middle;
         }
       }
-      #saveButton {
+      #saveButton, #editButton {
         padding: 0px;
         flex-grow: 1;
       }
@@ -148,6 +175,7 @@ export default {
       }
     }
     .admin-info-container {
+      color: white;
       overflow: hidden;
       padding: 0px;
       max-height: 0px;

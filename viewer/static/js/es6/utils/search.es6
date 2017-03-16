@@ -119,6 +119,9 @@ export function addSearchPhrase(state, searchField) {
   newSearchTag.setAttribute('id', `searchphrase-${parseInt(state.counter, 10) + 1}`);
   newSearchTag.setAttribute('class', 'searchphrase');
   newSearchTag.setAttribute('contenteditable', 'true');
+  if (state.counter === -1 && document.getElementById('serviceTitle').innerText === 'libris.kb.se') {
+    newSearchTag.setAttribute('placeholder', '"Mumintrollen", "ISBN:123456789"');
+  }
   newSearchTag.addEventListener('input', event => updateStyle(event, state));
   newSearchTag.addEventListener('focus', event => searchPhraseFocus(event, state));
   searchField.appendChild(newSearchTag);

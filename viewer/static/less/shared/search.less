@@ -67,10 +67,20 @@ body#website {
   flex-direction: row;
   flex-wrap: nowrap;
   line-height: 2em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  #searchphrase-0[contenteditable=true]:empty:before{
+    content: attr(placeholder);
+    display: block; /* For Firefox */
+    color: #777;
+    font-style: italic;
+  }
   .searchphrase {
     flex-grow: 1;
     margin-right: 5px;
     outline: none;
+    cursor: text;
   }
   .searchtag {
     outline: none;
@@ -91,10 +101,7 @@ body#website {
   padding: 20px;
   margin: 10px 0px;
   .search-details {
-    margin-bottom: 1em;
     color: @gray-darker;
-    border-bottom: 1px solid #f5f5f5;
-    padding-bottom: 5px;
     .query {
       font-weight:600;
       &:before {
@@ -107,25 +114,31 @@ body#website {
       }
     }
   }
-  .pagination {
-    margin: 0px;
-    li {
-      a {
-        border-radius: 0px !important;
-        font-size: 12px;
-        text-transform: uppercase;
-        font-weight: bold;
-        opacity: 0.7;
-        //background-color:#f5f5f5; TODO: test visual unity
-        .disabled {
-          border: none;
-        }
-        &:hover {
-          opacity:1;
+  .search-buttons {
+    &:first-child {
+      margin-top: 0;
+    }
+    margin-top: 1em;
+    .pagination {
+      margin: 0px;
+      li {
+        a {
+          border-radius: 0px !important;
+          font-size: 12px;
+          text-transform: uppercase;
+          font-weight: bold;
+          opacity: 0.7;
+          //background-color:#f5f5f5; TODO: test visual unity
+          .disabled {
+            border: none;
+          }
+          &:hover {
+            opacity:1;
 
-        }
-        i {
-          padding: 0 5px 0 5px;
+          }
+          i {
+            padding: 0 5px 0 5px;
+          }
         }
       }
     }
@@ -165,6 +178,10 @@ body#website {
     padding: 0px;
     li {
       padding: 2px 0px;
+      width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
       a {
         color: @gray-darker;
         font-size: 14px;

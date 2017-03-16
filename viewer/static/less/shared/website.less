@@ -1,9 +1,9 @@
 body#website {
-  
+
 background-color: @bg-site;
 
 main {
-  min-height: 100vh;
+  min-height: 90vh;
   padding-bottom: 100px;
 }
 
@@ -33,7 +33,10 @@ main {
   padding: 20px 15px;
   font-size: 16px;
 }
-
+.search-container {
+  margin-bottom: 4em;
+  margin-top: 3em;
+}
 .search-controls {
   margin-bottom: 2em;
 }
@@ -87,7 +90,7 @@ main {
       }
     }
     .chip-prop {
-        
+
     }
     .thing-id {
       text-decoration: none;
@@ -114,5 +117,63 @@ footer {
     font-size: 16px;
   }
 }
-  
+
+.welcome {
+  text-align: center;
+  font-family: sans-serif;
+}
+
+.observations {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  .observation-container {
+    flex-basis: 8em;
+    text-align: center;
+    margin: 0 1% 2em 1%;
+    position: relative;
+    .observation-button {
+      i {
+        position:  absolute;
+        top: 0;
+        left: 0;
+        font-size: 3.5em;
+        padding: 0.7em;
+      }
+      background-color: fadeout(@brand-primary, 85%);
+      border-radius: 50%;
+      &:before{
+        content: "";
+        display: block;
+        padding-top: 100%; 	/* initial ratio of 1:1*/
+      }
+      &:hover {
+        background-color: fadeout(@brand-primary, 70%);
+        > i {
+          color: darken(@brand-primary, 15%);
+        }
+      }
+    }
+
+    > a > i {
+      position: absolute;
+      font-size: 2em;
+      top: 100px;
+      right: 0;
+      color: @brand-primary;
+      &:hover {
+        color: darken(@brand-primary, 15%);
+      }
+    }
+    .observation-label {
+      word-break: break-all;
+    }
+    .observation-quantity {
+      font-size: 0.8em;
+      line-height: 0.8em;
+    }
+  }
+
+}
+
 }

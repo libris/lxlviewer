@@ -20,17 +20,26 @@
 
 % block content
 <div class="row">
-  <div class="col-md-4">
-    <div class="panel panel-default intro-text">
+  <div class="col-md-8 col-md-offset-2">
+    <!-- <div class="panel panel-default intro-text"> -->
       % if thing.summary
         ${thing.summary.articleBody|safe}
       % else
         ${thing.description|safe}
       % endif
-    </div>
+      <h1 class="welcome">
+        % if g.site.title == 'libris.kb.se'
+          Välkommen till Libris katalogiseringstjänst
+        % else
+          Välkommen till id.kb.se
+        % endif
+      </h1>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus porta venenatis lorem, sed finibus dolor feugiat eget. Vestibulum placerat lorem massa, luctus dapibus lectus commodo aliquam. Sed cursus nisl euismod venenatis maximus. Donec volutpat porta tortor, id euismod leo hendrerit sit amet.
+    <!-- </div> -->
   </div>
-  <div class="col-md-8">
+  <div class="col-md-8 col-md-offset-2 search-container">
     ${ search.search_controls(thing, g.site.filter_param) }
+  </div>
 
   % if thing.statistics.sliceByDimension
   <!-- <div class="col-md-12">
@@ -55,14 +64,14 @@
       </div>
     </div>
   </div> -->
-
+  </div>
+  <div class="col-md-8 col-md-offset-2 observations">
     % for value in thing.statistics.sliceByDimension.values()
       % for obs in value.observation
-        ${view_observation(obs)}
+        ${observation_button(obs)}
       % endfor
     % endfor
   % endif
-  </div>
 </div>
 
 % endblock
@@ -111,8 +120,73 @@
 
 % endblock
 
+% macro observation_button(obs)
+  {%
+    set icons = {
+      "Text": "file-text",
+      "ManuscriptText": "file-text",
+      "Cartography": "globe",
+      "StillImage": "image",
+      "Music": "music",
+      "NotatedMusic": "music",
+      "Audio": "file-audio-o",
+      "Kit": "cube",
+      "ProjectedImage": "film",
+      "Multimedia": "play-circle-o"
+    }
+  %}
+
+  % if obs.object is not none
+    <div class="observation-container">
+      <a href="${ obs.view['@id'] }">
+        % if obs.object.notation
+          <div id="${obs.object.notation[0].replace('/','-')}" class="observation-button">
+        % else
+          <div class="observation-button">
+        % endif
+        % set type = obs.object['@id']
+            <i class="fa fa-fw fa-${icons[type] or 'file' }"></i>
+              <!-- <p class="description collapsed">
+                % if 'descriptionByLang' in obs.object
+                ${ obs.object.descriptionByLang[lang].strip().replace('\n','<br/>') | safe }
+                % endif
+              </p> -->
+          </div>
+      </a>
+      % if g.site.title == 'id.kb.se'
+      <a href="${ obs.object['@id'] }">
+      % else
+      <a href="https://id.kb.se/vocab/#${ obs.object['@id'] }">
+      % endif
+      <i class="fa fa-info-circle" aria-hidden="true"></i>
+      </a>
+
+      <div class="observation-label">
+          % if g.site.title == 'id.kb.se'
+            ${show_label(obs.object)}
+          % else
+            ${vocab_term(obs.object['@id'])}
+          % endif
+      </div>
+      <div class="observation-quantity">
+        % if obs.sliceByDimension
+            <!-- First item is "all" -->
+              <span>
+                ${format_number(obs.totalItems)} st.
+              </span>
+
+        % else
+          ${view_observation_item(obs)}
+        % endif
+      </div>
+    </div>
+  % endif
+% endmacro
+
+
 % macro view_observation(obs)
   % if obs.object is not none
+  <div class="col-md-6">
     % if obs.object.notation
     <div id="${obs.object.notation[0].replace('/','-')}" class="panel panel-default scheme-item">
     % else
@@ -164,6 +238,7 @@
         % endif
       </div>
   </div>
+</div>
   % endif
 % endmacro
 
