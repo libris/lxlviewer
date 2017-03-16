@@ -39,7 +39,7 @@ export default class PagedCollection extends View {
     };
 
     VocabUtil.getVocab().then((vocab) => {
-      self.vocab = vocab['@graph'];
+      self.vocab = vocab['@graph'][0]['@graph'];
       DisplayUtil.getDisplayDefinitions().then((display) => {
         self.display = display;
         self.initVue();
