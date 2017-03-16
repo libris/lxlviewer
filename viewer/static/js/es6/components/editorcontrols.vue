@@ -59,8 +59,8 @@ export default {
   },
   computed: {
     headerThreshold() {
-      const cardHeader = document.getElementById('main-header');
-      return cardHeader.offsetTop + (cardHeader.offsetHeight / 6);
+      const editorContainer = document.getElementById('editor-container');
+      return editorContainer.offsetTop;
     },
     focusData() {
       return this.editorData.record;
@@ -79,7 +79,7 @@ export default {
 </script>
 
 <template>
-  <div class="container editor-container" data-spy="affix" data-offset-top="80">
+  <div class="container" id="editor-container" v-bind:class="{'affix': showChipHeader}">
     <div class="editor-controls">
       <div class="admin-info">
         <div class="actions">
