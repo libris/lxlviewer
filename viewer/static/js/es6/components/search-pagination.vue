@@ -80,5 +80,10 @@ export default {
 <style lang="less">
 @import './_variables.less';
 
+.search-details {
+  height: 1em;
+  margin-bottom: 1em;
+}
+
 
 </style>
