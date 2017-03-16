@@ -218,21 +218,22 @@ export default class Editor extends View {
           //   console.warn("No changes done, skipping to save. Time to tell the user?");
           // } else {
           const atId = this.editorData.record['@id'];
+          const ETag = this.editorData.record.modified;
           if (atId) {
-            this.doSave(atId, obj);
+            this.doSave(atId, obj, ETag);
           } else {
             this.doCreate(obj);
           }
           // }
         },
-        doSave(url, obj) {
-          this.doRequest(httpUtil.put, obj, url);
+        doSave(url, obj, ETag) {
+          this.doRequest(httpUtil.put, obj, url, ETag);
         },
         doCreate(obj) {
           this.doRequest(httpUtil.post, obj, '/create');
         },
-        doRequest(requestMethod, obj, url) {
-          requestMethod({ url, token: self.access_token }, obj).then((result) => {
+        doRequest(requestMethod, obj, url, ETag) {
+          requestMethod({ url, token: self.access_token, ETag }, obj).then((result) => {
             console.log('Success was had');
             self.vm.syncData(RecordUtil.splitJson(result));
             self.vm.changeSavedStatus('loading', false);
