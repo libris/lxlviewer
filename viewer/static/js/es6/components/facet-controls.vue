@@ -52,6 +52,9 @@ export default {
               <a v-if="observation.object.prefLabelByLang && observation.object.prefLabelByLang.sv" :href="observation.view['@id']" title="observation.object.prefLabelByLang.sv">
                 {{observation.object.prefLabelByLang.sv}}
               </a>
+              <a v-if="observation.object.labelByLang && observation.object.labelByLang.sv" :href="observation.view['@id']" title="observation.object.labelByLang.sv">
+                {{observation.object.labelByLang.sv}}
+              </a>
               <span class="quantity">({{observation.totalItems}})</span>
             </li>
           </ul>
