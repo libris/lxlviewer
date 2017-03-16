@@ -219,7 +219,7 @@ export default {
           searchUrl += `&@type=${type}`;
         }
       }
-      searchUrl += '&_limit=10';
+      searchUrl += '&_limit=20';
       // console.log(searchUrl);
       return new Promise((resolve, reject) => {
         httpUtil.get({ url: searchUrl, accept: 'application/ld+json' }).then((response) => {
@@ -297,10 +297,15 @@ export default {
       background-color: white;
       border: 1px solid #ccc;
       padding: 0px;
+      overflow-y: scroll;
       button {
         font-size: 12px;
       }
+      .search-result {
+        padding-top: 50px;
+      }
       .search-header {
+        position: absolute;
         width: 100%;
         height: 40px;
         padding: 5px;
@@ -335,6 +340,7 @@ export default {
       }
       .search-status {
         padding: 10px;
+        padding-top: 50px;
         text-align: center;
         > i {
           font-size: 2rem;
