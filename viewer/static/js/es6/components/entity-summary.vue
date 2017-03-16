@@ -81,9 +81,6 @@ export default {
 
     }
     .header {
-      a {
-        color: @brand-primary;
-      }
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
