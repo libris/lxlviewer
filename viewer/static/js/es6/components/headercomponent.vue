@@ -67,7 +67,7 @@ export default {
 </script>
 
 <template>
-  <div class="header-component" v-bind:class="{ 'compact': !full }">
+  <div class="header-component" v-bind:class="{ 'compact': !full, 'full': full }">
     <entity-summary :focus-data="focusData" :render-link="false"></entity-summary>
   </div>
 </template>
@@ -78,6 +78,11 @@ export default {
 .header-component {
   background-color: @neutral-color;
   padding: 0px;
+  &.full {
+    .entity-summary {
+      border-width: 0px 0px 1px 0px;
+    }
+  }
   &.compact {
     max-height: 74px;
     overflow-y: hidden;
@@ -88,6 +93,7 @@ export default {
       max-height: 0px;
     }
     .entity-summary {
+      border-width: 0px 1px 0px 0px;
       .main-info {
         .header {
           line-height: 1.2;
