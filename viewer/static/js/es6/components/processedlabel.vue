@@ -9,7 +9,7 @@ export default {
   vuex: {
     getters: {
       lang(state) {
-        return state.settings.lang;
+        return state.settings.language;
       },
     },
   },

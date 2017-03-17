@@ -8,7 +8,17 @@ export default class View {
 
   constructor() {
     this.name = this.constructor.name;
-    this.vocabPfx = 'kbv:';
+    this.settings = {
+      vocabPfx: 'kbv:',
+      siteInfo: window.siteInfo,
+      embeddedTypes: ['StructuredValue', 'ProvisionActivity', 'Contribution'],
+      removableBaseUris: [
+        'http://libris.kb.se/',
+        'https://libris.kb.se/',
+        'http://id.kb.se/',
+        'https://id.kb.se/',
+      ],
+    };
     // this.vocabPfx = 'https://id.kb.se/vocab/';
   }
 
@@ -16,7 +26,7 @@ export default class View {
     if (window.location.hash) {
       this.shiftWindow();
     }
-    this.language = $('html').attr('lang');
+    this.settings.language = $('html').attr('lang');
     this.loadUser();
     // console.log('Initialized view', this);
   }

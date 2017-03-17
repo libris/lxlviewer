@@ -56,7 +56,7 @@ export default {
       return this.focus === 'it';
     },
     filteredResults() {
-      const lang = this.settings.lang;
+      const lang = this.settings.language;
       if (!this.allowed || this.allowed.length === 0) {
         return [];
       }

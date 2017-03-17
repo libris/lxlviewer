@@ -93,6 +93,10 @@
         % if current_user.is_authenticated
           window.userInfo = ${current_user.get_as_json() | safe};
         % endif
+        window.siteInfo = {}
+        % if g.site
+          window.siteInfo.title = "${g.site.title}"
+        % endif
       </script>
     % endif
     {% block scripts %}{% endblock %}

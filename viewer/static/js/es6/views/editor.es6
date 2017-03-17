@@ -39,24 +39,6 @@ export default class Editor extends View {
     this.dataIn = RecordUtil.splitJson(JSON.parse(document.getElementById('data').innerText));
     const self = this;
 
-    self.settings = {
-      lang: 'sv',
-      vocabPfx: self.vocabPfx,
-      embeddedTypes: ['StructuredValue', 'ProvisionActivity', 'Contribution'],
-      removableBaseUris: [
-        'http://libris.kb.se/',
-        'https://libris.kb.se/',
-        'http://id.kb.se/',
-        'https://id.kb.se/',
-      ],
-      inlineKeys: [
-        '@type',
-        'issuanceType',
-        'extent',
-        'dimensions',
-        'marc:otherPhysicalDetails',
-      ],
-    };
     $('#loadingText .fa-warning').hide();
     $('#loadingText .mainStatus').text('Laddar redigeringen...');
     $('#loadingText .status').text('Hämtar vokabulär');
@@ -90,7 +72,7 @@ export default class Editor extends View {
     }, false);
 
     Vue.filter('labelByLang', (label) => {
-      return StringUtil.labelByLang(label, self.settings.lang, self.vocab, self.vocabPfx);
+      return StringUtil.labelByLang(label, self.settings.language, self.vocab, self.settings.vocabPfx);
     });
     Vue.filter('removeDomain', (value) => {
       return StringUtil.removeDomain(value, self.settings.removableBaseUris);

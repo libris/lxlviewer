@@ -26,18 +26,6 @@ export default class PagedCollection extends View {
     const self = this;
     this.dataIn = JSON.parse(document.getElementById('data').innerText);
 
-    self.settings = {
-      lang: 'sv',
-      vocabPfx: self.vocabPfx,
-      embeddedTypes: ['StructuredValue', 'ProvisionActivity', 'Contribution'],
-      removableBaseUris: [
-        'http://libris.kb.se/',
-        'https://libris.kb.se/',
-        'http://id.kb.se/',
-        'https://id.kb.se/',
-      ],
-    };
-
     VocabUtil.getVocab().then((vocab) => {
       self.vocab = vocab['@graph'][0]['@graph'];
       DisplayUtil.getDisplayDefinitions().then((display) => {
@@ -59,7 +47,7 @@ export default class PagedCollection extends View {
     }, false);
 
     Vue.filter('labelByLang', (label) => {
-      return StringUtil.labelByLang(label, self.settings.lang, self.vocab, self.vocabPfx);
+      return StringUtil.labelByLang(label, self.settings.language, self.vocab, self.vocabPfx);
     });
     Vue.filter('removeDomain', (value) => {
       return StringUtil.removeDomain(value, self.settings.removableBaseUris);

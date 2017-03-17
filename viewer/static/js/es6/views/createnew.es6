@@ -20,7 +20,7 @@ export default class CreateNew extends View {
     ];
 
     VocabUtil.getVocab().then((vocab) => {
-      self.initVue(vocab, self.vocabPfx, baseMaterials);
+      self.initVue(vocab, self.settings.vocabPfx, baseMaterials);
     });
   }
 
@@ -30,7 +30,7 @@ export default class CreateNew extends View {
     for (let i = 0; i < baseMaterials.length; i++) {
       const materialList = {
         id: baseMaterials[i],
-        list: VocabUtil.getSubClasses(baseMaterials[i], vocab, self.vocabPfx),
+        list: VocabUtil.getSubClasses(baseMaterials[i], vocab, self.settings.vocabPfx),
       };
       materialLists[i] = materialList;
     }
@@ -66,8 +66,8 @@ export default class CreateNew extends View {
       data: {
         materialLists,
         chosenMaterials: [],
-        vocabPfx: self.vocabPfx,
-        language: self.language,
+        vocabPfx: self.settings.vocabPfx,
+        language: self.settings.language,
         vocab,
       },
       watch: {
