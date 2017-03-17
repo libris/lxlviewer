@@ -50,6 +50,8 @@ export default {
   list-style: none;
   margin-bottom: 0.5em;
   background-color: @neutral-color;
+  border: solid 0px #ccc;
+  border-width: 0px 0px 2px 0px;
   .label {
     color: @black;
     font-weight: bold;
