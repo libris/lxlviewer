@@ -40,8 +40,8 @@ export default {
   <div class="main-info">
     <div class="categorization">{{ getSummary.categorization.join(', ') }}</div>
     <h3 class="header">
-      <a v-if="renderLink" :href="focusData['@id']">{{ getSummary.header.join(', ') }}</a>
-      <span v-if="!renderLink">{{ getSummary.header.join(', ') }}</span>
+      <a v-if="renderLink" title="{{ getSummary.header.join(', ') }}" :href="focusData['@id']">{{ getSummary.header.join(', ') }}</a>
+      <span v-if="!renderLink" title="{{ getSummary.header.join(', ') }}">{{ getSummary.header.join(', ') }}</span>
     </h3>
     <ul class="info">
       <li v-for="v in getSummary.info">{{ v }}</li>
