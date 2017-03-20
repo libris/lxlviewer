@@ -179,7 +179,6 @@ class DataAccess(object):
         return VocabView(vocab, context, display, lang=self.lang)
 
     def _load_required(self, uri):
-        data = self.load_from_whelk(uri)
         resp = self.api_request(uri)
         data = resp.json()
         etag = resp.headers.get('ETag')
