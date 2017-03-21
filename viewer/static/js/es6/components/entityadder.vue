@@ -219,7 +219,7 @@ export default {
           searchUrl += `&@type=${type}`;
         }
       }
-      searchUrl += '&_limit=20';
+      searchUrl += '&_limit=40';
       // console.log(searchUrl);
       return new Promise((resolve, reject) => {
         httpUtil.get({ url: searchUrl, accept: 'application/ld+json' }).then((response) => {
