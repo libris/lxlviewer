@@ -124,7 +124,7 @@ export default {
               </td>
               <td v-if="!getValue(field)['value']">
                 <span v-for="sub in getValue(field)['subfields']">
-                  <span class="sub-key"> #{{ getKeys(sub)[0] }}</span> {{ sub[getKeys(sub)[0]] }}
+                  <span class="sub-key">#{{ getKeys(sub)[0] }}</span> {{ sub[getKeys(sub)[0]] }}
                 </span>
               </td>
             </tr>
@@ -168,6 +168,9 @@ export default {
           padding: 5px;
           .sub-key {
             font-weight: bold;
+            &::before {
+              content: " ";
+            }
           }
         }
       }
