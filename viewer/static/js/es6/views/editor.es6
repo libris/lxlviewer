@@ -173,20 +173,6 @@ export default class Editor extends View {
         isPlainObject(o) {
           return _.isPlainObject(o);
         },
-        convertItemToMarc() {
-          return httpUtil.post({
-            url: '/_convert',
-            token: self.access_token,
-          },
-            // Use clean method on args
-            editUtil.getMergedItems(
-              this.editorData.record,
-              this.editorData.it,
-              this.editorData.work,
-              this.editorData.linked
-            )
-          );
-        },
         editItem() {
           this.changeStatus('inEdit', true);
         },

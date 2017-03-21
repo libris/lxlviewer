@@ -11,5 +11,8 @@
   },
   "entity-adder": {
     "esc": "close-modals",
+  },
+  "marc-preview": {
+    "esc": "close-modals",
   }
 }
