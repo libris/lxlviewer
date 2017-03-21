@@ -41,10 +41,10 @@ export default {
       this.changeStatus('keybindState', 'marc-preview');
     },
     hide() {
-      this.marcObj = {};
       this.active = false;
       LayoutUtil.scrollLock(false);
       this.changeStatus('keybindState', 'overview');
+      this.marcObj = {};
       this.dataLoaded = false;
     },
     isObject(o) {
@@ -61,6 +61,8 @@ export default {
       return val;
     },
     convertItemToMarc() {
+      this.dataLoaded = false;
+      this.error = false;
       const editorObj = editUtil.getMergedItems(
         editUtil.removeNullValues(this.editorData.record),
         editUtil.removeNullValues(this.editorData.it),
