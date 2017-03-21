@@ -475,7 +475,7 @@ def _map_response(response):
 
 def _write_data(request, query_params=[]):
     json_data = request.get_json(force=True)
-    return _proxy_request(request, json_data, query_params)
+    return _proxy_request(request, session, json_data, query_params)
 
 
 ##
