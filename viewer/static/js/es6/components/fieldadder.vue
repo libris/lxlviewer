@@ -195,7 +195,7 @@ export default {
   <div class="field-adder">
     <a id="add-button" v-on:click="show" :class="{ 'work-state': isWork, 'instance-state': isInstance, 'is-fixed': buttonFixed }">
       <i class="fa fa-plus plus-icon" aria-hidden="true"></i>
-      Lägg till fält
+      {{ "Add field" | translatePhrase }}
     </a>
     <a id="mock-button" v-show="buttonFixed">
       <i class="fa fa-plus plus-icon" aria-hidden="true"></i>
@@ -204,14 +204,14 @@ export default {
     <div class="window" v-show="active">
       <div class="header">
         <span class="title">
-          Lägg till fält
+          {{ "Add field" | translatePhrase }}
         </span>
         <span class="windowControl">
           <i v-on:click="hide" class="fa fa-close"></i>
         </span>
         <span class="filter">
-          Filtrera <input id="test" class="filterInput mousetrap" @input="resetSelectIndex()" type="text" v-model="filterKey"></input>
-          <span class="filterInfo">Visar {{ filteredResults.length }} av totalt {{allowed ? allowed.length : '0'}}</span>
+          {{ "Filter by" | translatePhrase }} <input id="test" class="filterInput mousetrap" @input="resetSelectIndex()" type="text" v-model="filterKey"></input>
+          <span class="filterInfo">{{ "Showing" | translatePhrase }} {{ filteredResults.length }} {{ "of" | translatePhrase }} {{allowed ? allowed.length : '0'}} {{ "total" | translatePhrase }}</span>
         </span>
       </div>
       <ul v-if="active" class="field-list">
@@ -225,7 +225,7 @@ export default {
             <span><i class="fa fa-check"></i></span>
           </span>
         </li>
-        <li v-if="filteredResults.length === 0"><i>Hittade inga fält...</i></li>
+        <li v-if="filteredResults.length === 0"><i>{{ "Did not find any fields" | translatePhrase }}...</i></li>
       </ul>
     </div>
   </div>

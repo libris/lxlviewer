@@ -34,7 +34,7 @@ export default {
 <template>
   <div class="tooltip-container-outer" :class="{ 'show-tooltip': compShowTooltip }">
     <div class="tooltip-container-inner" >
-      Lägg till {{ tooltiptext | labelByLang }}
+      {{ "Add" | translatePhrase }} {{ tooltiptext | labelByLang }}
     </div>
   </div>
 </template>

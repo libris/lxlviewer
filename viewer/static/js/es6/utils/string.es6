@@ -1,4 +1,5 @@
 import * as _ from 'lodash';
+import * as translationsFile from '../i18n';
 
 export function removeDomain(string, removableBaseUriArray) {
   const removable = removableBaseUriArray;
@@ -7,6 +8,13 @@ export function removeDomain(string, removableBaseUriArray) {
     newValue = newValue.replace(removable[i], '');
   }
   return newValue;
+}
+
+export function getUiPhraseByLang(phrase, langcode) {
+  if (translationsFile[langcode] && translationsFile[langcode][phrase]) {
+    return translationsFile[langcode][phrase];
+  }
+  return phrase;
 }
 
 export function getParamValueFromUrl(url, param) {

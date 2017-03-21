@@ -242,7 +242,7 @@ export default {
   <div class="window" v-if="active">
     <div class="header">
       <span class="title">
-        Lägg till entitet
+        {{ "Add entity" | translatePhrase }}
       </span>
       <span class="windowControl">
         <i v-on:click="hide" class="fa fa-close"></i>
@@ -252,12 +252,12 @@ export default {
       <div class="stage-0" v-show="!chooseLocalType">
         <div class="search-header">
           <div class="search">
-            Sök:
+            {{ "Search" | translatePhrase }}:
             <input v-model="keyword"></input>
             <div class="range-info-container" v-if="getRange.length > 0" @mouseleave="rangeInfo = false">
               <i class="fa fa-info-circle" @mouseenter="rangeInfo = true"></i>
               <div class="range-info" v-if="rangeInfo">
-                Tillåtna typer:
+                {{ "Allowed types" | translatePhrase }}:
                 <br>
                 <span v-for="range in getRange" class="range">
                   - {{range | labelByLang}}
@@ -266,12 +266,12 @@ export default {
             </div>
           </div>
           <div class="local" v-show="allowLocal">
-            <button v-on:click="goLocal">Skapa lokal entitet</button>
+            <button v-on:click="goLocal">{{ "Create local entity" | translatePhrase }}</button>
           </div>
         </div>
-        <div v-if="!loading && keyword.length === 0" class="search-status">Skriv för att börja söka...</div>
-        <div v-if="loading" class="search-status">Söker...<br><i class="fa fa-cog fa-spin"></i></div>
-        <div v-if="!loading && searchResult.length === 0 && keyword.length > 0" class="search-status">Inga resultat...</div>
+        <div v-if="!loading && keyword.length === 0" class="search-status">{{ "Start writing to begin search" | translatePhrase }}...</div>
+        <div v-if="loading" class="search-status">{{ "Searching" | translatePhrase }}...<br><i class="fa fa-cog fa-spin"></i></div>
+        <div v-if="!loading && searchResult.length === 0 && keyword.length > 0" class="search-status">{{ "No results" | translatePhrase }}...</div>
         <entity-search-list v-if="!loading && keyword.length > 0" :results="searchResult"></entity-search-list>
       </div>
       <div class="stage-1" v-show="chooseLocalType">
