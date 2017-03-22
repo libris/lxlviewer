@@ -96,7 +96,7 @@ export default {
 
 <template>
   <div class="marc-preview">
-    <button v-on:click="show()"><i class="fa fa-fw fa-search"></i> {{ "View MARC21" | translatePhrase }}</button>
+    <button v-on:click="show()"><i class="fa fa-fw fa-eye"></i> {{ "View MARC21" | translatePhrase }}</button>
     <div class="window" v-if="active">
       <div class="header">
         <span class="title">{{ "View MARC21" | translatePhrase }}</span>
