@@ -1,9 +1,10 @@
 # -*- coding: UTF-8 -*-
 from __future__ import absolute_import, unicode_literals, print_function
-import os
-import operator
 import json
+import operator
+import os
 import random
+import re
 import string
 from urlparse import urljoin
 from datetime import datetime, timedelta
@@ -113,6 +114,10 @@ def _get_served_uri(url, path):
     url_base = url_quote(url)
     path = url_quote(path)
     mapped_base = daccess.urimap.to_canonical_uri(url_base)
+    # NOTE: Needed since some proxies lose one slash from paths that represent
+    # full URIs (through seemingly incorrect path normalization).
+    if re.match(r'^https?:/[^/]', path):
+        path = path.replace(':/', '://', 1)
     return urljoin(mapped_base, path)
 
 
