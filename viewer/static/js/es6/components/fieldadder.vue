@@ -304,7 +304,7 @@ export default {
       border-width: 1px 0px 0px 0px;
       border-radius: 0px 0px 3px 3px;
       width: 100%;
-      max-height: 366px;
+      height: 100%;
       overflow-y: auto;
       margin: 0px;
       list-style-type: none;
