@@ -79,7 +79,7 @@ export default {
       const expandKeys = [
         'instanceOf',
       ];
-      return ~expandKeys.indexOf(this.key);
+      return expandKeys.indexOf(this.key) !== -1;
     },
     hasSingleValue() {
       if (!_.isArray(this.value) || this.value.length === 1) {
