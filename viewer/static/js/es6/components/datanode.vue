@@ -78,6 +78,7 @@ export default {
     isExpandedType() {
       const expandKeys = [
         'instanceOf',
+        'itemOf',
       ];
       return expandKeys.indexOf(this.key) !== -1;
     },
