@@ -56,11 +56,6 @@ export default class Editor extends View {
     });
   }
 
-  populateHolding(meta, thing) {
-    const emptyHolding = JSON.stringify(RecordUtil.getEmptyHolding(thing['@id'], UserUtil.get('sigel')));
-    $('#holdingItem').text(emptyHolding);
-  }
-
   initVue() {
     const self = this;
     $('#loadingText').fadeOut('slow', function() {
