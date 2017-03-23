@@ -10,7 +10,8 @@
     "title",
     "prefLabel",
     "notation",
-    "label"
+    "label",
+    "itemOf",
   ],
   "info": ["responsibilityStatement", "instanceOf"],
   "identifiers": ["identifiedBy", "sameAs"]

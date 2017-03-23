@@ -24,7 +24,7 @@ import { changeSettings, changeNotification, loadVocab, loadDisplayDefs, syncDat
 function showError(error) {
   $('#loadingText .fa-cog').fadeOut('fast', () => {
     $('#loadingText .fa-warning').removeClass('hidden').fadeIn('fast');
-    $('#loadingText .mainStatus').text('').append('Något gick fel...');
+    $('#loadingText .mainStatus').text('').append(StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language));
     $('#loadingText .status').text('');
     $('#loadingText .error').text('').append(error).removeClass('hidden').fadeIn('slow');
   });
@@ -40,7 +40,7 @@ export default class Editor extends View {
     const self = this;
 
     $('#loadingText .fa-warning').hide();
-    $('#loadingText .mainStatus').text('Laddar redigeringen...');
+    $('#loadingText .mainStatus').text(StringUtil.getUiPhraseByLang("Loading editor", self.settings.language));
     $('#loadingText .status').text('Hämtar vokabulär');
     VocabUtil.getVocab().then((vocab) => {
       self.vocab = vocab['@graph'][0]['@graph'];
@@ -54,11 +54,6 @@ export default class Editor extends View {
     }, (error) => {
       showError(error);
     });
-  }
-
-  populateHolding(meta, thing) {
-    const emptyHolding = JSON.stringify(RecordUtil.getEmptyHolding(thing['@id'], UserUtil.get('sigel')));
-    $('#holdingItem').text(emptyHolding);
   }
 
   initVue() {
@@ -76,6 +71,9 @@ export default class Editor extends View {
     });
     Vue.filter('removeDomain', (value) => {
       return StringUtil.removeDomain(value, self.settings.removableBaseUris);
+    });
+    Vue.filter('translatePhrase', (string) => {
+      return StringUtil.getUiPhraseByLang(string, self.settings.language);
     });
 
     Vue.use(Vuex);
@@ -151,7 +149,6 @@ export default class Editor extends View {
           this.combokeys = new ComboKeys(document.documentElement);
           require('combokeys/plugins/global-bind')(this.combokeys); // TODO: Solve with ES6 syntax
           const stateSettings = KeyBindings[state];
-          console.log(stateSettings);
           if (typeof stateSettings !== 'undefined') {
             _.each(stateSettings, (value, key) => {
               if (value !== null && value !== '') {
@@ -169,20 +166,6 @@ export default class Editor extends View {
         },
         isPlainObject(o) {
           return _.isPlainObject(o);
-        },
-        convertItemToMarc() {
-          return httpUtil.post({
-            url: '/_convert',
-            token: self.access_token,
-          },
-            // Use clean method on args
-            editUtil.getMergedItems(
-              this.editorData.record,
-              this.editorData.it,
-              this.editorData.work,
-              this.editorData.linked
-            )
-          );
         },
         editItem() {
           this.changeStatus('inEdit', true);
@@ -228,7 +211,7 @@ export default class Editor extends View {
             // self.vm.changeSavedStatus('error', true);
             // self.vm.changeSavedStatus('info', error);
             self.vm.changeNotification('color', 'red');
-            self.vm.changeNotification('message', 'Något gick fel!');
+            self.vm.changeNotification('message', StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language));
           });
         },
       },

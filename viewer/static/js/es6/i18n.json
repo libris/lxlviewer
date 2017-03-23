@@ -1,0 +1,25 @@
+{
+  "sv": {
+    "Loading editor" : "Laddar redigeringen",
+    "View MARC21" : "Granska MARC21",
+    "Loading marc" : "Laddar MARC21",
+    "Add entity" : "Lägg till entitet",
+    "Add field" : "Lägg till fält",
+    "Add" : "Lägg till",
+    "Edit": "Redigera",
+    "Save": "Spara",
+    "Remove": "Radera",
+    "Search" : "Sök",
+    "Searching": "Söker",
+    "Allowed types" : "Tillåtna typer",
+    "Create local entity" : "Skapa lokal entitet",
+    "Start writing to begin search": "Skriva för att börja söka",
+    "No results": "Inga resultat",
+    "Filter by": "Filtrera",
+    "Showing": "Visar",
+    "of": "av",
+    "total": "totalt",
+    "Did not find any fields" : "Hittade inga fält",
+    "Something went wrong": "Något gick fel",
+  }
+}

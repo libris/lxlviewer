@@ -18,6 +18,9 @@ export default class View {
         'http://id.kb.se/',
         'https://id.kb.se/',
       ],
+      userInfo: {
+        sigel: UserUtil.get('sigel'),
+      },
     };
     // this.vocabPfx = 'https://id.kb.se/vocab/';
   }

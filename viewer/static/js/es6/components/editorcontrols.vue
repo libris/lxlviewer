@@ -1,6 +1,8 @@
 <script>
 import * as _ from 'lodash';
 import HeaderComponent from './headercomponent';
+import MarcPreview from '../components/marc-preview';
+import CreateItemButton from '../components/create-item-button';
 import * as EditUtil from '../utils/edit';
 import * as DisplayUtil from '../utils/display';
 import LensMixin from './mixins/lens-mixin';
@@ -74,6 +76,8 @@ export default {
   },
   components: {
     'header-component': HeaderComponent,
+    'marc-preview': MarcPreview,
+    'create-item-button': CreateItemButton,
   },
 };
 </script>
@@ -96,14 +100,16 @@ export default {
         <div class="admin-node">
           <span class="node">Ändrad {{ getCard.modified }} av - </span>
         </div>
+        <create-item-button v-if="editorData.it['@type'] === 'Instance'"></create-item-button>
+        <marc-preview></marc-preview>
         <button id="saveButton" v-on:click="save()" v-if="status.inEdit">
           <i class="fa fa-fw fa-cog fa-spin" v-show="status.saved.loading"></i>
           <i class="fa fa-fw fa-save" v-show="!status.saved.loading"></i>
-          Spara
+          {{ "Save" | translatePhrase }}
         </button>
         <button id="editButton" v-on:click="edit()" v-if="!status.inEdit">
           <i class="fa fa-fw fa-pencil"></i>
-          Redigera
+          {{ "Edit" | translatePhrase }}
         </button>
 
       </div>
@@ -157,11 +163,9 @@ export default {
           vertical-align: middle;
         }
       }
-      #saveButton, #editButton {
-        padding: 0px;
-        flex-grow: 1;
+      button {
+        margin: 0 1em;
       }
-
       .actions {
         .action {
           display: inline-block;
