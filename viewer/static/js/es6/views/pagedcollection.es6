@@ -13,6 +13,7 @@ import MainSearchField from '../components/main-search-field';
 import FacetControls from '../components/facet-controls';
 import SearchResultComponent from '../components/search-result-component';
 import EntitySearchList from '../components/entity-search-list';
+import SearchForm from '../components/search-form';
 import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData, getKeybindState } from '../vuex/getters';
 import { changeSettings, changeNotification, loadVocab, loadDisplayDefs, changeSavedStatus } from '../vuex/actions';
 
@@ -20,8 +21,8 @@ export default class PagedCollection extends View {
 
   initialize() {
     super.initialize();
-    SearchUtil.initTypeButtons();
-    SearchUtil.initializeSearch();
+    // SearchUtil.initTypeButtons();
+    // SearchUtil.initializeSearch();
 
     const self = this;
     this.dataIn = JSON.parse(document.getElementById('data').innerText);
@@ -105,6 +106,7 @@ export default class PagedCollection extends View {
         'facet-controls': FacetControls,
         'search-result-component': SearchResultComponent,
         'entity-search-list': EntitySearchList,
+        'search-form': SearchForm,
       },
       store,
     });

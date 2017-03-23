@@ -114,6 +114,15 @@ export function updateStyle(event, state) {
   }
 }
 
+export function handlePaste(event) {
+  event.stopPropagation();
+  event.preventDefault();
+  const clipboardData = event.clipboardData || window.clipboardData;
+  const pastedData = clipboardData.getData('Text');
+  const currentPhrase = document.activeElement;
+  currentPhrase.innerHTML += pastedData;
+}
+
 export function addSearchPhrase(state, searchField) {
   const newSearchTag = document.createElement('div');
   newSearchTag.setAttribute('id', `searchphrase-${parseInt(state.counter, 10) + 1}`);
@@ -124,6 +133,7 @@ export function addSearchPhrase(state, searchField) {
   }
   newSearchTag.addEventListener('input', event => updateStyle(event, state));
   newSearchTag.addEventListener('focus', event => searchPhraseFocus(event, state));
+  newSearchTag.addEventListener('paste', event => handlePaste(event));
   searchField.appendChild(newSearchTag);
   newSearchTag.focus();
 }
