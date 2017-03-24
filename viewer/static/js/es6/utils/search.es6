@@ -83,7 +83,7 @@ export function doSearch() {
   tagObject.q = queryText.join(' ');
   const tagInputs = document.querySelectorAll('.tagInput');
   _.each(getConvertedSearchObject(tagObject), (v, k) => {
-    tagInputs.forEach(inputTag => {
+    _.each(tagInputs, inputTag => {
       if (inputTag.name === k) {
         inputTag.value = v;
       }
@@ -140,7 +140,7 @@ export function addSearchPhrase(state, searchField) {
 
 export function searchFieldBehaviour(e, state, searchField) {
   const currentPhrase = document.activeElement;
-  const tagEditing = currentPhrase.className.includes('searchtag');
+  const tagEditing = _.includes(currentPhrase.className, 'searchtag');
 
   if (e.keyCode === 13) { // Enter
     e.preventDefault();
@@ -184,7 +184,7 @@ export function initializeSearchButton() {
 }
 
 export function hideTagInputFields() {
-  document.querySelectorAll('.tagInput').forEach(node => {
+  _.each(document.querySelectorAll('.tagInput'), node => {
     node.type='hidden';
   });
 }

@@ -7,7 +7,7 @@ export default class View {
   */
 
   constructor() {
-    this.name = this.constructor.name;
+    this.name = name;
     this.settings = {
       vocabPfx: 'kbv:',
       siteInfo: window.siteInfo,
