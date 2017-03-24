@@ -196,6 +196,14 @@ def _get_view_data_accept_header(request, suffix):
 @app.route('/find.<suffix>', methods=R_METHODS)
 def find(suffix=None):
     arguments = request.args.copy()
+    # TODO: HACK (to be removed!) for old ES-style searches:
+    q = arguments.get('q')
+    if q:
+        for term in re.findall(r'^(\w+):', q):
+            arguments[term] = q[len(term) +1:]
+            del arguments['q']
+            del q
+
     if not arguments.get('_statsrepr') and g.site.get('statsfind'):
         arguments.add('_statsrepr', g.site['statsfind'])
     if g.site['title'] == 'id.kb.se':
