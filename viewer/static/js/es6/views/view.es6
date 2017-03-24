@@ -6,8 +6,9 @@ export default class View {
     Base class for the "views".
   */
 
-  constructor() {
-    this.name = this.constructor.name;
+  constructor(name) {
+    this.name = name;
+    //this.name = this.constructor.name;
     // this.vocabPfx = 'kbv:';
     this.vocabPfx = 'https://id.kb.se/vocab/';
   }
