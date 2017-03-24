@@ -20,14 +20,14 @@ export default class Loader {
   createViews() {
     // Creates instances of our different classes.
     // TODO: Should probably be done on demand.
-    this.createView(new Thing());
-    this.createView(new Editor());
-    this.createView(new Vocab());
-    this.createView(new Website());
-    this.createView(new PagedCollection());
-    this.createView(new UserSettings());
-    this.createView(new CreateNew());
-    this.createView(new Import());
+    this.createView(new Thing('Thing'));
+    this.createView(new Editor('Editor'));
+    this.createView(new Vocab('Vocab'));
+    this.createView(new Website('Website'));
+    this.createView(new PagedCollection('PagedCollection'));
+    this.createView(new UserSettings('UserSettings'));
+    this.createView(new CreateNew('CreateNew'));
+    this.createView(new Import('Import'));
   }
 
   createView(view) {
@@ -43,7 +43,7 @@ export default class Loader {
     const bodyId = id;
 
     for (let i = 0; i < this.views.length; i++) {
-      if (this.views[i].constructor.name.toLowerCase() === bodyId.toLowerCase()) {
+      if (this.views[i].name.toLowerCase() === bodyId.toLowerCase()) {
         this.currentView = this.views[i];
         this.views[i].initialize();
         return true;
