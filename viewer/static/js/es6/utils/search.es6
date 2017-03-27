@@ -70,14 +70,14 @@ export function doSearch() {
   const searchField = document.querySelector('#searchQsmart');
   for (const node of searchField.childNodes) {
     if (node.className.split(' ').indexOf('searchtag') > -1) {
-      const tag = node.innerHTML.split(':');
+      const tag = node.innerText.split(':');
       if (validTags.indexOf(tag[0].toLowerCase()) > -1) {
         tagObject[tag[0]] = tag[1];
       } else {
         queryText.push(tag[1]);
       }
-    } else if (node.innerHTML !== '') {
-      queryText.push(`${node.innerHTML}`);
+    } else if (node.innerText !== '') {
+      queryText.push(`${node.innerText}`);
     }
   }
   tagObject.q = queryText.join(' ');
@@ -152,6 +152,7 @@ export function searchFieldBehaviour(e, state, searchField) {
     } else {
       nextPhrase.focus();
     }
+    return false;
   } else if (e.keyCode === 8 && // Backspace
       !tagEditing &&
       currentPhrase.innerHTML === '' &&
@@ -166,6 +167,7 @@ export function searchFieldBehaviour(e, state, searchField) {
     const oldPhrase = searchField.children[state.counter];
     searchField.removeChild(oldPhrase);
     previousPhrase.focus();
+    return false;
   }
 }
 
