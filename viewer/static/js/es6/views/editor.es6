@@ -40,7 +40,7 @@ export default class Editor extends View {
     const self = this;
 
     $('#loadingText .fa-warning').hide();
-    $('#loadingText .mainStatus').text(StringUtil.getUiPhraseByLang("Loading editor", self.settings.language));
+    $('#loadingText .mainStatus').text(StringUtil.getUiPhraseByLang("Loading", self.settings.language));
     $('#loadingText .status').text('Hämtar vokabulär');
     VocabUtil.getVocab().then((vocab) => {
       self.vocab = vocab['@graph'];

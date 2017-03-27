@@ -1,5 +1,6 @@
 {
   "sv": {
+    "Loading" : "Laddar",
     "Loading editor" : "Laddar redigeringen",
     "View MARC21" : "Granska MARC21",
     "Loading marc" : "Laddar MARC21",
@@ -21,5 +22,6 @@
     "total": "totalt",
     "Did not find any fields" : "Hittade inga fält",
     "Something went wrong": "Något gick fel",
+    "Try again" : "Försök igen",
   }
 }
