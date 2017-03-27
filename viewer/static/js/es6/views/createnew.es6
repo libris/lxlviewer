@@ -22,7 +22,7 @@ export default class CreateNew extends View {
     ];
 
     VocabUtil.getVocab().then((vocab) => {
-      self.initVue(vocab['@graph'][0]['@graph'], self.settings.vocabPfx, baseMaterials);
+      self.initVue(vocab['@graph'], self.settings.vocabPfx, baseMaterials);
     });
   }
 
