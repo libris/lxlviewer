@@ -43,7 +43,7 @@ export default class Editor extends View {
     $('#loadingText .mainStatus').text(StringUtil.getUiPhraseByLang("Loading editor", self.settings.language));
     $('#loadingText .status').text('Hämtar vokabulär');
     VocabUtil.getVocab().then((vocab) => {
-      self.vocab = vocab['@graph'][0]['@graph'];
+      self.vocab = vocab['@graph'];
       $('#loadingText .status').text('Hämtar visningsdefinitioner');
       DisplayUtil.getDisplayDefinitions().then((display) => {
         self.display = display;

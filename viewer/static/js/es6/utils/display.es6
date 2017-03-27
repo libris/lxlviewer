@@ -10,7 +10,7 @@ moment.locale('sv');
 
 export function getDisplayDefinitions() {
   return new Promise((resolve, reject) => {
-    httpUtil.getResourceFromCache('https://id.kb.se/vocab/display').then((result) => {
+    httpUtil.getResourceFromCache('/https://id.kb.se/vocab/display').then((result) => {
       resolve(result);
     }, (error) => {
       reject(error);

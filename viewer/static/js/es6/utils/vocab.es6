@@ -3,7 +3,7 @@ import * as _ from 'lodash';
 
 export function getVocab() {
   return new Promise((resolve, reject) => {
-    httpUtil.getResourceFromCache('https://id.kb.se/vocab/').then((result) => {
+    httpUtil.getResourceFromCache('/https://id.kb.se/vocab/').then((result) => {
       resolve(result);
     }, (error) => {
       reject(error);

@@ -9,7 +9,8 @@ export default class View {
   constructor(name) {
     this.name = name;
     this.settings = {
-      vocabPfx: 'kbv:',
+      // vocabPfx: 'kbv:',
+      vocabPfx: 'https://id.kb.se/vocab/',
       siteInfo: window.siteInfo,
       embeddedTypes: ['StructuredValue', 'ProvisionActivity', 'Contribution'],
       removableBaseUris: [
@@ -22,7 +23,6 @@ export default class View {
         sigel: UserUtil.get('sigel'),
       },
     };
-    // this.vocabPfx = 'https://id.kb.se/vocab/';
   }
 
   initialize() {
