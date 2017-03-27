@@ -28,7 +28,7 @@ export default class PagedCollection extends View {
     this.dataIn = JSON.parse(document.getElementById('data').innerText);
 
     VocabUtil.getVocab().then((vocab) => {
-      self.vocab = vocab['@graph'][0]['@graph'];
+      self.vocab = vocab['@graph'];
       DisplayUtil.getDisplayDefinitions().then((display) => {
         self.display = display;
         self.initVue();

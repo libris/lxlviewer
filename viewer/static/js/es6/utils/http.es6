@@ -7,7 +7,9 @@ function request(options, data) {
   const baseUriJson = document.getElementById('baseUriAlias').innerHTML;
   const baseUriAlias = JSON.parse(baseUriJson);
   for (const key in baseUriAlias) {
-    options.url = options.url.replace(key, baseUriAlias[key]);
+    if (options.url[0] !== '/') {
+      options.url = options.url.replace(key, baseUriAlias[key]);
+    }
   }
 
   return new Promise((resolve, reject) => {
