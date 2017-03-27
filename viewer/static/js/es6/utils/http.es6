@@ -52,7 +52,11 @@ function request(options, data) {
       }
     };
     req.onerror = () => {
-      reject(Error('Network error'));
+      if (req.status === 401) {
+        reject(Error('Authentication error'));
+      } else {
+        reject(Error('Network error'));
+      }
     };
 
     if (options.method === 'DELETE' || options.method === 'GET') {
