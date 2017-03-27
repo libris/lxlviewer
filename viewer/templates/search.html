@@ -246,7 +246,11 @@
     % elif observation.object.prefLabelByLang and observation.object.prefLabelByLang.sv
     <li>
       <a href="${observation.view['@id']}" title="${observation.object.prefLabelByLang.sv}">
-        ${observation.object.prefLabelByLang.sv | truncate(30, true) }
+        % if isinstance(observation.object.prefLabelByLang.sv, list)
+          ${observation.object.prefLabelByLang.sv | join(', ') | truncate(30, true) }
+        % else
+          ${observation.object.prefLabelByLang.sv | truncate(30, true) }
+        % endif
       </a>
       <span class="quantity">(${observation.totalItems})</span>
     </li>
