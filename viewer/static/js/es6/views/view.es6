@@ -6,7 +6,7 @@ export default class View {
     Base class for the "views".
   */
 
-  constructor() {
+  constructor(name) {
     this.name = name;
     this.settings = {
       vocabPfx: 'kbv:',
