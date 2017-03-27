@@ -254,6 +254,17 @@
       </a>
       <span class="quantity">(${observation.totalItems})</span>
     </li>
+    % elif observation.object.labelByLang and observation.object.labelByLang.sv
+    <li>
+      <a href="${observation.view['@id']}" title="${observation.object.labelByLang.sv}">
+        % if isinstance(observation.object.labelByLang.sv, list)
+          ${observation.object.labelByLang.sv | join(', ') | truncate(30, true) }
+        % else
+          ${observation.object.labelByLang.sv | truncate(30, true) }
+        % endif
+      </a>
+      <span class="quantity">(${observation.totalItems})</span>
+    </li>
     % endif
     % endfor
   </ul>
