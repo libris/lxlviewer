@@ -5,6 +5,7 @@ import * as UserUtil from '../utils/user';
 import * as VocabUtil from '../utils/vocab';
 import * as httpUtil from '../utils/http';
 import * as RecordUtil from '../utils/record';
+import * as DisplayUtil from '../utils/display';
 
 export default class CreateNew extends View {
 
@@ -13,14 +14,15 @@ export default class CreateNew extends View {
     const self = this;
     this.activeForm = '';
     this.transition = false;
+    this.language = 'sv';
 
     const baseMaterials = [
-      'CreativeWork',
-      'Aggregate',
+      'Instance',
+      'Work',
     ];
 
     VocabUtil.getVocab().then((vocab) => {
-      self.initVue(vocab, self.settings.vocabPfx, baseMaterials);
+      self.initVue(vocab['@graph'], self.settings.vocabPfx, baseMaterials);
     });
   }
 
@@ -52,7 +54,7 @@ export default class CreateNew extends View {
       if(!item) { console.warn(`${vocabPfx}${lbl} not found`); }
       let labelByLang = '';
       if (typeof item !== 'undefined' && item.labelByLang) {
-        labelByLang = item.labelByLang[self.language];
+        labelByLang = (item.labelByLang[self.language] || item.labelByLang['en']);
       }
       // Check if we have something of value
       if (labelByLang.length > 0) {
@@ -68,27 +70,38 @@ export default class CreateNew extends View {
         chosenMaterials: [],
         vocabPfx: self.settings.vocabPfx,
         language: self.settings.language,
+        sigel: self.settings.userInfo.sigel,
         vocab,
+        chosenType: '',
       },
       watch: {
       },
       methods: {
-        createNew() {
-          if (this.chosenMaterials.length === 0) return;
-          const m = _.filter(this.chosenMaterials, (o) => {
-            return o && o.length > 0;
-          });
-          const params = '@type=' + JSON.stringify(m);
-          window.location.href = '/new/record?' + params;
-        },
-        setMaterial(index, material) {
-          const m = material.replace(vocabPfx, '');
-          this.chosenMaterials.$set(index, m);
+        updateChosenType(event) {
+          this.chosenType = event.target.value;
         },
       },
       computed: {
         hasChosenMaterials() {
-          return (this.chosenMaterials.length !== 0);
+          return (this.chosenType !== '');
+        },
+        itemData() {
+          const itemData = {
+            '@graph': [
+              {
+                '@type': 'Record',
+                'assigner': this.sigel,
+                'mainEntity': {
+                  '@id': '_:TEMP_ID',
+                },
+              },
+              {
+                '@id': '_:TEMP_ID',
+                '@type': this.chosenType,
+              },
+            ],
+          };
+          return itemData;
         },
       },
       components: {
