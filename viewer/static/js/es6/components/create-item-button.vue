@@ -40,7 +40,9 @@ export default {
             'itemOf': {
               '@id': this.editorData.it['@id'],
             },
-            'heldBy': this.settings.userInfo.sigel,
+            'heldBy': {
+              '@id': `https://libris.kb.se/library/${this.settings.userInfo.sigel}`,
+            },
           },
           {
             '@graph': [
