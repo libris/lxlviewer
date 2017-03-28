@@ -100,8 +100,8 @@ export default {
         <div class="admin-node">
           <span class="node">Ändrad {{ getCard.modified }} av - </span>
         </div>
-        <create-item-button v-if="editorData.it['@type'] === 'Instance'"></create-item-button>
         <marc-preview></marc-preview>
+        <create-item-button v-show="!status.inEdit && editorData.it['@type'] === 'Instance'"></create-item-button>
         <button id="saveButton" v-on:click="save()" v-if="status.inEdit">
           <i class="fa fa-fw fa-cog fa-spin" v-show="status.saved.loading"></i>
           <i class="fa fa-fw fa-save" v-show="!status.saved.loading"></i>
