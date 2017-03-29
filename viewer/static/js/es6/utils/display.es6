@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 import * as httpUtil from './http';
-import * as EditUtil from './edit';
+import * as DataUtil from './data';
 import * as VocabUtil from './vocab';
 import * as StringUtil from './string';
 import * as displayGroups from '../displayGroups.json';
@@ -95,7 +95,7 @@ export function getDisplayObject(item, level, displayDefs, linked, vocab, settin
   let trueItem = Object.assign({}, item);
 
   if (trueItem.hasOwnProperty('@id') && !trueItem.hasOwnProperty('@type')) {
-    trueItem = EditUtil.getLinked(trueItem['@id'], linked);
+    trueItem = DataUtil.getLinked(trueItem['@id'], linked);
     if (!trueItem.hasOwnProperty('@type') && trueItem.hasOwnProperty('@id')) {
       return { 'label': StringUtil.removeDomain(trueItem['@id'], settings.removableBaseUris) };
     }

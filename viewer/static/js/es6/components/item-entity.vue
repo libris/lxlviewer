@@ -1,7 +1,7 @@
 <script>
 import * as _ from 'lodash';
 import * as VocabUtil from '../utils/vocab';
-import * as EditUtil from '../utils/edit';
+import * as DataUtil from '../utils/data';
 import CardComponent from './card-component';
 import ProcessedLabel from './processedlabel';
 import ItemMixin from './mixins/item-mixin';

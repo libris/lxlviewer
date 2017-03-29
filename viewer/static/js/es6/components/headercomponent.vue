@@ -2,7 +2,7 @@
 import * as _ from 'lodash';
 import * as DisplayUtil from '../utils/display';
 import * as VocabUtil from '../utils/vocab';
-import * as EditUtil from '../utils/edit';
+import * as DataUtil from '../utils/data';
 import EntitySummary from './entity-summary';
 import LensMixin from './mixins/lens-mixin';
 import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData, getStatus } from '../vuex/getters';

@@ -4,7 +4,7 @@ import Vuex from 'vuex';
 import store from '../vuex/store';
 import ComboKeys from 'combokeys';
 import KeyBindings from '../keybindings.json';
-import * as editUtil from '../utils/edit';
+import * as DataUtil from '../utils/data';
 import * as httpUtil from '../utils/http';
 import * as toolbarUtil from '../utils/toolbar';
 import * as _ from 'lodash';
@@ -172,10 +172,10 @@ export default class Editor extends View {
         },
         saveItem() {
           const inputData = JSON.parse(document.getElementById('data').innerText);
-          const obj = editUtil.getMergedItems(
-            editUtil.removeNullValues(this.editorData.record),
-            editUtil.removeNullValues(this.editorData.it),
-            editUtil.removeNullValues(this.editorData.work),
+          const obj = DataUtil.getMergedItems(
+            DataUtil.removeNullValues(this.editorData.record),
+            DataUtil.removeNullValues(this.editorData.it),
+            DataUtil.removeNullValues(this.editorData.work),
             this.editorData.linked
           );
 

@@ -3,7 +3,7 @@ import * as _ from 'lodash';
 import HeaderComponent from './headercomponent';
 import MarcPreview from '../components/marc-preview';
 import CreateItemButton from '../components/create-item-button';
-import * as EditUtil from '../utils/edit';
+import * as DataUtil from '../utils/data';
 import * as DisplayUtil from '../utils/display';
 import LensMixin from './mixins/lens-mixin';
 import { changeSavedStatus, changeStatus } from '../vuex/actions';
