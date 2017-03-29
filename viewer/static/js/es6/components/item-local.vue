@@ -147,7 +147,7 @@ export default {
       <i class="chip-action fa fa-pencil" v-on:click="openForm" v-if="!isLocked"></i>
     </div>
     <div class="local-form" v-show="inEdit">
-      <strong>{{ item['@type'] | labelByLang | capitalize }}</strong>
+      <strong>{{ item['@type'] | labelByLang | uppercase }}</strong> ({{ "Local entity" | translatePhrase }})
       <data-node v-for="(k,v) in filteredItem" :is-locked="isLocked" :embedded="true" :is-removable="false" :parent-key="key" :parent-index="index" :key="k" :value="v" :focus="focus" :allow-local="false"></data-node>
       <div class="actions">
         <button v-on:click="removeThis">Radera</button>
@@ -166,12 +166,15 @@ export default {
     .chip-mixin(#a2a2a2, #fff);
   }
   .local-form {
-    width: @col-value;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    width: @col-value - 20;
+    border: dashed #ababab;
+    border-bottom-color: #ccc;
+    border-bottom-style: solid;
+    border-width: 1px 1px 2px 1px;
     padding: 5px;
-    background-color: #e0e0e0;
+    background-color: #ececec;
     .actions {
+      margin-top: 0.5em;
       text-align: right;
     }
     &::before {
