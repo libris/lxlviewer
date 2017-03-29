@@ -6,6 +6,7 @@
 */
 
 import * as _ from 'lodash';
+import AutoSize from 'autosize';
 import FieldAdder from './fieldadder';
 import DataNode from './datanode';
 import * as ModalUtil from '../utils/modals';
@@ -134,6 +135,11 @@ export default {
       );
     },
   },
+  watch: {
+    isLocked() {
+      AutoSize.update(document.querySelectorAll('textarea'));
+    }
+  },
   events: {
     'add-field'(prop) {
       const newItem = {};
@@ -172,6 +178,9 @@ export default {
     'data-node': DataNode,
     'field-adder': FieldAdder,
   },
+  ready() {
+    AutoSize(this.$el.querySelectorAll('textarea'));
+  }
 };
 </script>
 

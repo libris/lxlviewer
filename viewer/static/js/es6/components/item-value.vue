@@ -60,7 +60,7 @@ export default {
 <template>
   <div class="item-value" v-bind:class="{'locked': isLocked}">
   <!-- TODO: @input or @change? -->
-    <input v-model="value" @change="valueChanged()" v-show="!isLocked"></input>
+    <textarea v-model="value" @change="valueChanged()" v-show="!isLocked"></textarea>
     <span v-show="isLocked">{{value}}</span>
     <div class="remover" v-show="!isLocked && isRemovable" v-on:click="removeThis()"><i class="fa fa-trash"></i></div>
   </div>
@@ -75,7 +75,7 @@ export default {
   &.locked {
     line-height: 2;
   }
-  input {
+  textarea {
     color: @black;
     padding: 2px 5px;
     width: 90%;
