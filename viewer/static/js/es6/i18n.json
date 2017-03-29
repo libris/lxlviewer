@@ -20,8 +20,9 @@
     "Showing": "Visar",
     "of": "av",
     "total": "totalt",
-    "Did not find any fields" : "Hittade inga fält",
+    "Did not find any fields": "Hittade inga fält",
     "Something went wrong": "Något gick fel",
-    "Try again" : "Försök igen",
+    "Try again": "Försök igen",
+    "Local entity": "Lokal entitet",
   }
 }
