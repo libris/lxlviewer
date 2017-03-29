@@ -52,7 +52,7 @@ export default {
       return this.focus === 'work';
     },
     isInstance() {
-      return this.focus === 'it';
+      return this.focus === 'mainEntity';
     },
   },
   ready() {

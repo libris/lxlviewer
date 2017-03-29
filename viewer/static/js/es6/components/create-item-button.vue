@@ -23,8 +23,8 @@ export default {
   },
   methods: {
     buildItem() {
-      const embellishedReference = DisplayUtil.getCard(this.editorData.it, this.display, this.editorData.linked, this.vocab, this.settings);
-      embellishedReference['@id'] = this.editorData.it['@id'];
+      const embellishedReference = DisplayUtil.getCard(this.editorData.mainEntity, this.display, this.editorData.linked, this.vocab, this.settings);
+      embellishedReference['@id'] = this.editorData.mainEntity['@id'];
 
       this.itemData = {
         '@graph': [
@@ -38,7 +38,7 @@ export default {
             '@id': '_:TEMP_ID',
             '@type': 'Item',
             'itemOf': {
-              '@id': this.editorData.it['@id'],
+              '@id': this.editorData.mainEntity['@id'],
             },
             'heldBy': {
               '@id': `https://libris.kb.se/library/${this.settings.userInfo.sigel}`,

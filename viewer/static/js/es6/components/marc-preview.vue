@@ -65,7 +65,7 @@ export default {
       this.error = false;
       const editorObj = DataUtil.getMergedItems(
         DataUtil.removeNullValues(this.editorData.record),
-        DataUtil.removeNullValues(this.editorData.it),
+        DataUtil.removeNullValues(this.editorData.mainEntity),
         DataUtil.removeNullValues(this.editorData.work),
         this.editorData.linked
       );

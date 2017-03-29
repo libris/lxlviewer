@@ -16,7 +16,7 @@ const state = {
   },
   status: {
     lastAdded: '',
-    level: 'it',
+    level: 'mainEntity',
     dirty: true,
     isDev: false,
     keybindState: '',

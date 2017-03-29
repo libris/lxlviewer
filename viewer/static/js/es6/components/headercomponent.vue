@@ -49,7 +49,7 @@ export default {
   computed: {
     state() {
       const state = this.status.level;
-      if (state === 'it') {
+      if (state === 'mainEntity') {
         return 'Instance';
       } else if (state === 'work') {
         return 'Work';

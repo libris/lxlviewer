@@ -71,7 +71,7 @@ export default {
       return this.status.level === 'work';
     },
     isInstance() {
-      return this.status.level === 'it';
+      return this.status.level === 'mainEntity';
     },
   },
   components: {
@@ -101,7 +101,7 @@ export default {
           <span class="node">Ändrad {{ getCard.modified }} av - </span>
         </div>
         <marc-preview></marc-preview>
-        <create-item-button v-show="!status.inEdit && editorData.it['@type'] === 'Instance'"></create-item-button>
+        <create-item-button v-show="!status.inEdit && editorData.mainEntity['@type'] === 'Instance'"></create-item-button>
         <button id="saveButton" v-on:click="save()" v-if="status.inEdit">
           <i class="fa fa-fw fa-cog fa-spin" v-show="status.saved.loading"></i>
           <i class="fa fa-fw fa-save" v-show="!status.saved.loading"></i>
