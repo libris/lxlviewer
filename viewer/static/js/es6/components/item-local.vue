@@ -162,7 +162,7 @@ export default {
 @import './_variables.less';
 
 .item-local {
-  .chip {
+  > .chip {
     .chip-mixin(#a2a2a2, #fff);
   }
   .local-form {
