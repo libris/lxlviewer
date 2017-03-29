@@ -1,5 +1,5 @@
 <script>
-import * as editUtil from '../utils/edit';
+import * as DataUtil from '../utils/data';
 import * as httpUtil from '../utils/http';
 import * as LayoutUtil from '../utils/layout';
 import * as _ from 'lodash';
@@ -63,10 +63,10 @@ export default {
     convertItemToMarc() {
       this.dataLoaded = false;
       this.error = false;
-      const editorObj = editUtil.getMergedItems(
-        editUtil.removeNullValues(this.editorData.record),
-        editUtil.removeNullValues(this.editorData.it),
-        editUtil.removeNullValues(this.editorData.work),
+      const editorObj = DataUtil.getMergedItems(
+        DataUtil.removeNullValues(this.editorData.record),
+        DataUtil.removeNullValues(this.editorData.mainEntity),
+        DataUtil.removeNullValues(this.editorData.work),
         this.editorData.linked
       );
       httpUtil.post({

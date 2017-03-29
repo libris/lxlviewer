@@ -53,7 +53,7 @@ export default {
       return this.focus === 'work';
     },
     isInstance() {
-      return this.focus === 'it';
+      return this.focus === 'mainEntity';
     },
     filteredResults() {
       const lang = this.settings.language;
@@ -92,7 +92,7 @@ export default {
     },
     state() {
       const focus = this.focus;
-      if (focus === 'it') {
+      if (focus === 'mainEntity') {
         return 'instans';
       } else if (focus === 'work') {
         return 'verks';

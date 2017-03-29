@@ -157,7 +157,7 @@ def handle_delete(path):
 
 @app.route('/<path:path>', methods=['PUT'])
 def handle_put(path):
-    response = _write_data(request, query_params={'collection': 'xl'})
+    response = _write_data(request, query_params=MultiDict([('collection', 'xl')]))
     return response
 
 

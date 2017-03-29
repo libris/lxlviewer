@@ -43,7 +43,7 @@ export default {
       return this.focus === 'work';
     },
     isInstance() {
-      return this.focus === 'it';
+      return this.focus === 'mainEntity';
     },
     isLocked() {
       if (this.locked || this.status.level !== this.focus) {
@@ -127,7 +127,7 @@ export default {
     },
     dummyInstance() {
       return DisplayUtil.getItemLabel(
-        this.editorData.it,
+        this.editorData.mainEntity,
         this.display,
         this.editorData.linked,
         this.vocab,
@@ -192,7 +192,7 @@ export default {
         Har instanser
       </div>
       <div class="value">
-        <div class="chip dummy-chip" v-on:click="changeStatus('level' ,'it')" :class="{ 'locked': isLocked }" @mouseenter="showCardInfo=true">
+        <div class="chip dummy-chip" v-on:click="changeStatus('level' ,'mainEntity')" :class="{ 'locked': isLocked }" @mouseenter="showCardInfo=true">
           <span class="chip-label">
             {{ dummyInstance }}
           </span>

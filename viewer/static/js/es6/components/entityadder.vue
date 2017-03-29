@@ -81,7 +81,7 @@ export default {
       return this.focus === 'work';
     },
     isInstance() {
-      return this.focus === 'it';
+      return this.focus === 'mainEntity';
     },
     getRange() {
       return VocabUtil.getRange(this.key, this.vocab, this.settings.vocabPfx);

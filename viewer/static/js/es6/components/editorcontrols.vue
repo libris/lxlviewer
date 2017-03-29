@@ -3,7 +3,7 @@ import * as _ from 'lodash';
 import HeaderComponent from './headercomponent';
 import MarcPreview from '../components/marc-preview';
 import CreateItemButton from '../components/create-item-button';
-import * as EditUtil from '../utils/edit';
+import * as DataUtil from '../utils/data';
 import * as DisplayUtil from '../utils/display';
 import LensMixin from './mixins/lens-mixin';
 import { changeSavedStatus, changeStatus } from '../vuex/actions';
@@ -71,7 +71,7 @@ export default {
       return this.status.level === 'work';
     },
     isInstance() {
-      return this.status.level === 'it';
+      return this.status.level === 'mainEntity';
     },
   },
   components: {
@@ -100,8 +100,8 @@ export default {
         <div class="admin-node">
           <span class="node">Ändrad {{ getCard.modified }} av - </span>
         </div>
-        <marc-preview></marc-preview>
-        <create-item-button v-show="!status.inEdit && editorData.it['@type'] === 'Instance'"></create-item-button>
+        <create-item-button v-show="!status.inEdit && editorData.mainEntity['@type'] === 'Instance'"></create-item-button>
+        <marc-preview v-show="status.inEdit"></marc-preview>
         <button id="saveButton" v-on:click="save()" v-if="status.inEdit">
           <i class="fa fa-fw fa-cog fa-spin" v-show="status.saved.loading"></i>
           <i class="fa fa-fw fa-save" v-show="!status.saved.loading"></i>

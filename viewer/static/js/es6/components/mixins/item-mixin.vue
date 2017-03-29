@@ -1,5 +1,5 @@
 <script>
-import * as EditUtil from '../../utils/edit';
+import * as DataUtil from '../../utils/data';
 import * as _ from 'lodash';
 
 export default {
@@ -16,7 +16,7 @@ export default {
       if (_.isArray(this.item) || !_.isObject(this.item)) {
         throw new Error('Item is not an object.');
       }
-      return EditUtil.getLinked(
+      return DataUtil.getLinked(
         this.item['@id'],
         this.editorData.linked
       );

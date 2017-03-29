@@ -3,7 +3,7 @@ import * as _ from 'lodash';
 import * as httpUtil from '../utils/http';
 import * as VocabUtil from '../utils/vocab';
 import * as DisplayUtil from '../utils/display';
-import * as EditUtil from '../utils/edit';
+import * as DataUtil from '../utils/data';
 import Vue from 'vue';
 import ProcessedLabel from './processedlabel';
 import DataNode from './datanode';

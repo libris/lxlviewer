@@ -4,7 +4,7 @@ import Vuex from 'vuex';
 import store from '../vuex/store';
 import ComboKeys from 'combokeys';
 import KeyBindings from '../keybindings.json';
-import * as editUtil from '../utils/edit';
+import * as DataUtil from '../utils/data';
 import * as httpUtil from '../utils/http';
 import * as toolbarUtil from '../utils/toolbar';
 import * as _ from 'lodash';
@@ -172,10 +172,10 @@ export default class Editor extends View {
         },
         saveItem() {
           const inputData = JSON.parse(document.getElementById('data').innerText);
-          const obj = editUtil.getMergedItems(
-            editUtil.removeNullValues(this.editorData.record),
-            editUtil.removeNullValues(this.editorData.it),
-            editUtil.removeNullValues(this.editorData.work),
+          const obj = DataUtil.getMergedItems(
+            DataUtil.removeNullValues(this.editorData.record),
+            DataUtil.removeNullValues(this.editorData.mainEntity),
+            DataUtil.removeNullValues(this.editorData.work),
             this.editorData.linked
           );
 
@@ -185,27 +185,39 @@ export default class Editor extends View {
           const atId = this.editorData.record['@id'];
           const ETag = this.editorData.record.modified;
           if (atId) {
-            this.doSave(atId, obj, ETag);
+            this.doUpdate(atId, obj, ETag);
           } else {
             this.doCreate(obj);
           }
           // }
         },
-        doSave(url, obj, ETag) {
-          this.doRequest(httpUtil.put, obj, url, ETag);
+        doUpdate(url, obj, ETag) {
+          this.doSaveRequest(httpUtil.put, obj, url, ETag);
         },
         doCreate(obj) {
-          this.doRequest(httpUtil.post, obj, '/create');
+          this.doSaveRequest(httpUtil.post, obj, '/create');
         },
-        doRequest(requestMethod, obj, url, ETag) {
+        doSaveRequest(requestMethod, obj, url, ETag) {
           requestMethod({ url, token: self.access_token, ETag }, obj).then((result) => {
-            console.log('Success was had');
-            self.vm.syncData(RecordUtil.splitJson(result));
-            self.vm.changeSavedStatus('loading', false);
-            self.vm.changeSavedStatus('error', false);
-            self.vm.changeSavedStatus('info', '');
-            self.vm.changeNotification('color', 'green');
-            self.vm.changeNotification('message', 'Posten blev sparad!');
+            const postUrl = `${result.getResponseHeader('Location')}/data.jsonld`;
+            if (result.status === 201) {
+              window.location = result.getResponseHeader('Location');
+            } else {
+              httpUtil.get({ url: postUrl }).then((getResult) => {
+                self.vm.syncData(RecordUtil.splitJson(getResult));
+                console.log('Success was had');
+                self.vm.changeSavedStatus('loading', false);
+                self.vm.changeSavedStatus('error', false);
+                self.vm.changeSavedStatus('info', '');
+                self.vm.changeNotification('color', 'green');
+                self.vm.changeNotification('message', 'Posten blev sparad!');
+                this.changeStatus('inEdit', false);
+              }, (error) => {
+                self.vm.changeSavedStatus('loading', false);
+                self.vm.changeNotification('color', 'red');
+                self.vm.changeNotification('message', `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error}`);
+              });
+            }
           }, (error) => {
             self.vm.changeSavedStatus('loading', false);
             // self.vm.changeSavedStatus('error', true);

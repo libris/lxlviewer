@@ -3,7 +3,7 @@ import * as _ from 'lodash';
 import * as httpUtil from '../utils/http';
 import * as VocabUtil from '../utils/vocab';
 import * as DisplayUtil from '../utils/display';
-import * as EditUtil from '../utils/edit';
+import * as DataUtil from '../utils/data';
 import ProcessedLabel from './processedlabel';
 import ItemMixin from './mixins/item-mixin';
 import LensMixin from './mixins/lens-mixin';
