@@ -215,12 +215,11 @@ export default class Editor extends View {
             } else {
               httpUtil.get({ url: postUrl }).then((getResult) => {
                 self.vm.syncData(RecordUtil.splitJson(getResult));
-                console.log('Success was had');
                 self.vm.changeSavedStatus('loading', false);
                 self.vm.changeSavedStatus('error', false);
                 self.vm.changeSavedStatus('info', '');
                 self.vm.changeNotification('color', 'green');
-                self.vm.changeNotification('message', 'Posten blev sparad!');
+                self.vm.changeNotification('message', `${StringUtil.getUiPhraseByLang('The post was saved', this.settings.language)}!`);
                 this.changeStatus('inEdit', false);
               }, (error) => {
                 self.vm.changeSavedStatus('loading', false);
