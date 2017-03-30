@@ -185,30 +185,27 @@ export default class Editor extends View {
         },
         saveItem() {
           const inputData = JSON.parse(document.getElementById('data').innerText);
+          const collection = this.getCollectionName(this.editorData.mainEntity);
+          const ETag = this.editorData.record.modified;
+          const RecordId = this.editorData.record['@id'];
           const obj = DataUtil.getMergedItems(
             DataUtil.removeNullValues(this.editorData.record),
             DataUtil.removeNullValues(this.editorData.mainEntity),
-            DataUtil.removeNullValues(this.editorData.work),
-            this.editorData.linked
+            DataUtil.removeNullValues(this.editorData.work)
           );
 
-          // if (JSON.stringify(obj) === JSON.stringify(inputData)) {
-          //   console.warn("No changes done, skipping to save. Time to tell the user?");
-          // } else {
-          const atId = this.editorData.record['@id'];
-          const ETag = this.editorData.record.modified;
-          if (atId) {
-            this.doUpdate(atId, obj, ETag);
-          } else {
-            this.doCreate(obj);
+          if (!RecordId || RecordId === '_:TEMP_ID') { // No ID -> create new
+            this.doCreate(obj, collection);
+          } else { // ID exists -> update
+            this.doUpdate(RecordId, obj, ETag);
           }
           // }
         },
         doUpdate(url, obj, ETag) {
           this.doSaveRequest(httpUtil.put, obj, url, ETag);
         },
-        doCreate(obj) {
-          this.doSaveRequest(httpUtil.post, obj, '/create');
+        doCreate(obj, collection) {
+          this.doSaveRequest(httpUtil.post, obj, `/?collection=${collection}`);
         },
         doSaveRequest(requestMethod, obj, url, ETag) {
           requestMethod({ url, token: self.access_token, ETag }, obj).then((result) => {
