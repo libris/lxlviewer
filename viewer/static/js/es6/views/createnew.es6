@@ -1,11 +1,14 @@
 import * as _ from 'lodash';
 import View from './view';
 import Vue from 'vue';
+import Vuex from 'vuex';
+import store from '../vuex/store';
 import * as UserUtil from '../utils/user';
 import * as VocabUtil from '../utils/vocab';
-import * as httpUtil from '../utils/http';
 import * as RecordUtil from '../utils/record';
 import * as DisplayUtil from '../utils/display';
+import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData, getStatus, getKeybindState } from '../vuex/getters';
+import { changeSettings, changeNotification, loadVocab, loadDisplayDefs, syncData, changeSavedStatus, changeStatus } from '../vuex/actions';
 
 export default class CreateNew extends View {
 
@@ -41,6 +44,7 @@ export default class CreateNew extends View {
 
   initVue(vocab, vocabPfx, baseMaterials) {
     const self = this;
+    Vue.use(Vuex);
     const materialLists = self.getMaterials(baseMaterials, vocab);
     $('#app').show();
 
@@ -63,16 +67,34 @@ export default class CreateNew extends View {
       return lbl;
     });
 
-    const vm = new Vue({
+    self.vm = new Vue({
       el: '#app',
+      vuex: {
+        actions: {
+          syncData,
+          loadVocab,
+          loadDisplayDefs,
+          changeSettings,
+          changeSavedStatus,
+          changeStatus,
+          changeNotification,
+        },
+        getters: {
+          settings: getSettings,
+          editorData: getEditorData,
+          vocab: getVocabulary,
+          display: getDisplayDefinitions,
+          status: getStatus,
+          keybindState: getKeybindState,
+        },
+      },
       data: {
         materialLists,
         chosenMaterials: [],
         vocabPfx: self.settings.vocabPfx,
-        language: self.settings.language,
-        sigel: self.settings.userInfo.sigel,
         vocab,
         chosenType: '',
+        initialized: false,
       },
       watch: {
       },
@@ -86,25 +108,33 @@ export default class CreateNew extends View {
           return (this.chosenType !== '');
         },
         itemData() {
-          const itemData = {
+          const obj = {
             '@graph': [
               {
                 '@type': 'Record',
-                'assigner': this.sigel,
+                '@id': '_:TEMP_ID',
+                'assigner': {
+                  '@id': `https://libris.kb.se/library/${this.settings.userInfo.sigel}`,
+                },
                 'mainEntity': {
-                  '@id': '_:TEMP_ID',
+                  '@id': '_:TEMP_ID#it',
                 },
               },
               {
-                '@id': '_:TEMP_ID',
+                '@id': '_:TEMP_ID#it',
                 '@type': this.chosenType,
               },
             ],
           };
-          return itemData;
+          return obj;
         },
       },
       components: {
+      },
+      store,
+      ready() {
+        this.changeSettings(self.settings);
+        this.initialized = true;
       },
     });
   }
