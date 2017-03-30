@@ -170,6 +170,19 @@ export default class Editor extends View {
         editItem() {
           this.changeStatus('inEdit', true);
         },
+        getCollectionName(entity) {
+          const vocabPfx = this.settings.vocabPfx;
+          const baseClasses = VocabUtil.getBaseClasses(entity['@type'], this.vocab, vocabPfx);
+          const classList = [entity['@type']].concat(baseClasses);
+          for (const cn of classList) {
+            if (cn === 'Instance' || cn === `${vocabPfx}Instance`) {
+              return 'bib';
+            } else if (cn === 'Item' || cn === `${vocabPfx}Item`) {
+              return 'hold';
+            }
+          }
+          return 'auth';
+        },
         saveItem() {
           const inputData = JSON.parse(document.getElementById('data').innerText);
           const obj = DataUtil.getMergedItems(
