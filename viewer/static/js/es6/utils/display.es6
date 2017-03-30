@@ -133,8 +133,7 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
       if (properties[i] === 'created' || properties[i] === 'modified') {
         valueOnItem = moment(item[properties[i]]).format('lll');
       } else {
-        valueOnItem = getValueByLang(trueItem, properties[i], displayDefs, settings.lang);
-        // const valueOnItem = getValueByLang(properties[i], trueItem[properties[i]], displayDefs, settings.lang) || trueItem[properties[i]];
+        valueOnItem = getValueByLang(trueItem, properties[i], displayDefs, settings.language);
       }
       if (typeof valueOnItem !== 'undefined') {
         let value = valueOnItem;
