@@ -409,7 +409,7 @@ def thingedit(path):
         return abort(r.status_code)
 
 
-@app.route('/create', methods=['POST'])
+@app.route('/', methods=['POST'])
 def create():
     request.path = '/'
     collection = request.args.get('collection')
