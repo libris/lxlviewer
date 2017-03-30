@@ -5,29 +5,29 @@
 % block content
 {% if current_user.is_authenticated %}
 
-  <div id="app">
   <h1>Skapa ny</h1>
 
     <!-- Create new form -->
     <div class="panel panel-default form-container" id="create_new_post">
-      <div class="panel-body container-fluid">
-        <div class="row">
-          <form action="/edit" method="POST">
-            <div class="radio" v-for="material in materialLists" track-by="$index">
-              <label v-on:click="updateChosenType">
-                <input name="@type" type="radio" value="{{material.id}}">{{material.id | labelByLang}}</input>
-              </label>
-            </div>
-            <textarea id="copyItem" name="item" class="hidden">{{itemData | json}}</textarea>
-            <div class="submitter">
-              <button v-bind:disabled="!hasChosenMaterials">Skapa formulär</button>
-            </div>
-          </form>
+      <div class="panel-body">
+        <div id="app">
+          <div class="createnew-form" v-if="initialized === true">
+            <form action="/edit" method="POST">
+              <div class="radio" v-for="material in materialLists" track-by="$index">
+                <label v-on:click="updateChosenType">
+                  <input name="@type" type="radio" value="{{material.id}}">{{material.id | labelByLang}}</input>
+                </label>
+              </div>
+              <textarea id="copyItem" name="data" class="hidden">{{itemData | json}}</textarea>
+              <div class="submitter">
+                <button v-bind:disabled="!hasChosenMaterials">Skapa formulär</button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     </div>
 
-  </div>
   {% else %}
   <p>Du måste logga in.</p>
   {% endif %}

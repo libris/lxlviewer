@@ -388,7 +388,9 @@ def thingnew(item_type):
 @app.route('/edit', methods=['POST'])
 @admin.login_required
 def thingnewp():
-    record = json.loads(request.form['item'])
+    record = json.loads(request.form['data'])
+    app.logger.debug('Posting data to editor:\n %s',
+                     record)
     return render_template('edit.html', record=record, model={})
 
 

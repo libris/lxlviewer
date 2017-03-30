@@ -68,7 +68,7 @@ export default {
 <template>
   <div>
     <form method="POST" action="/edit">
-      <textarea id="copyItem" name="item" class="hidden">{{itemData | json}}</textarea>
+      <textarea id="copyItem" name="data" class="hidden">{{itemData | json}}</textarea>
       <button type="submit"><i class="fa fa-plus"></i> Bestånd</button>
     </form>
   </div>
