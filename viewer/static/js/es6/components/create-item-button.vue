@@ -30,12 +30,13 @@ export default {
         '@graph': [
           {
             '@type': 'Record',
+            '@id': '_:TEMP_ID',
             'mainEntity': {
-              '@id': '_:TEMP_ID',
+              '@id': '_:TEMP_ID#it',
             },
           },
           {
-            '@id': '_:TEMP_ID',
+            '@id': '_:TEMP_ID#it',
             '@type': 'Item',
             'itemOf': {
               '@id': this.editorData.mainEntity['@id'],
