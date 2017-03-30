@@ -110,10 +110,8 @@ export default class Editor extends View {
           console.log("Update");
           if (oldValue === this.editorData.meta) {
             newData.meta = value;
-            // this.$set('meta', value);
           } else if (oldValue === this.editorData.thing) {
             newData.thing = value;
-            // this.$set('thing', value);
           } else {
             console.warn('Something went wrong trying to update a focused object.');
           }
@@ -199,7 +197,6 @@ export default class Editor extends View {
           } else { // ID exists -> update
             this.doUpdate(RecordId, obj, ETag);
           }
-          // }
         },
         doUpdate(url, obj, ETag) {
           this.doSaveRequest(httpUtil.put, obj, url, ETag);
