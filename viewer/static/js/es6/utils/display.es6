@@ -19,6 +19,10 @@ export function getDisplayDefinitions() {
 }
 
 function getValueByLang(item, propertyId, displayDefs, langCode) {
+  if (!langCode || typeof langCode === 'undefined') {
+    throw new Error('getValueByLang was called with an undefined language code.');
+  }
+
   // TODO: REMOVE FAKED CONTEXT, SHOULD BE PICKED UP FROM DISPLAYDEFS (see next line)
   // const context = displayDefs['@context'];
   const context = {
