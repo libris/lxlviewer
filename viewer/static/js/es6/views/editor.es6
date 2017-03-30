@@ -243,6 +243,11 @@ export default class Editor extends View {
         this.syncData(self.dataIn);
         this.initialized = true;
         this.changeStatus('keybindState', 'overview');
+
+        const atId = this.editorData.record['@id'];
+        if (!atId || atId === '_:TEMP_ID') {
+          this.editItem();
+        }
       },
       components: {
         'form-component': FormComponent,
