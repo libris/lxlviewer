@@ -1,4 +1,5 @@
 <script>
+import AutoSize from 'autosize';
 import * as _ from 'lodash';
 import * as httpUtil from '../utils/http';
 import * as VocabUtil from '../utils/vocab';
@@ -27,6 +28,13 @@ export default {
       editorData: getEditorData,
     },
   },
+  watch: {
+    isLocked(val) {
+      if (!val) {
+        this.initializeTextarea();
+      }
+    },
+  },
   data() {
     return {
       inEdit: false,
@@ -35,10 +43,17 @@ export default {
   computed: {
   },
   ready() {
+    this.$nextTick(() => {
+      this.initializeTextarea();
+    });
   },
   methods: {
     valueChanged() {
       this.$dispatch('update-item', this.index, this.value);
+    },
+    initializeTextarea() {
+      AutoSize(this.$el.querySelector('textarea'));
+      AutoSize.update(this.$el.querySelector('textarea'));
     },
     isEmpty() {
       // TODO: Is the item empty?
@@ -60,8 +75,8 @@ export default {
 <template>
   <div class="item-value" v-bind:class="{'locked': isLocked}">
   <!-- TODO: @input or @change? -->
-    <textarea v-model="value" @change="valueChanged()" v-show="!isLocked"></textarea>
-    <span v-show="isLocked">{{value}}</span>
+    <textarea v-model="value" @change="valueChanged()" v-if="!isLocked"></textarea>
+    <span v-if="isLocked">{{value}}</span>
     <div class="remover" v-show="!isLocked && isRemovable" v-on:click="removeThis()"><i class="fa fa-trash"></i></div>
   </div>
 </template>
@@ -74,6 +89,9 @@ export default {
   line-height: 1.6;
   &.locked {
     line-height: 2;
+    span {
+      word-break: break-word;
+    }
   }
   textarea {
     color: @black;
