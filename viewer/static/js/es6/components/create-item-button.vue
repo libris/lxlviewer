@@ -23,7 +23,7 @@ export default {
   },
   methods: {
     buildItem() {
-      const embellishedReference = DisplayUtil.getCard(this.editorData.mainEntity, this.display, this.editorData.linked, this.vocab, this.settings);
+      const embellishedReference = DisplayUtil.getCard(this.editorData.mainEntity, this.display, this.editorData.quoted, this.vocab, this.settings);
       embellishedReference['@id'] = this.editorData.mainEntity['@id'];
 
       this.itemData = {

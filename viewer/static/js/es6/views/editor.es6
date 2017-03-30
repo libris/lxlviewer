@@ -121,7 +121,7 @@ export default class Editor extends View {
         },
         'add-linked': function(item) {
           const newData = this.editorData;
-          newData.linked.push(item);
+          newData.quoted.push(item);
           this.syncData(newData);
         },
         'save-item': function() {

@@ -84,7 +84,7 @@ export function getProperties(typeInput, level, displayDefs, settings) {
   return [];
 }
 
-export function getDisplayObject(item, level, displayDefs, linked, vocab, settings) {
+export function getDisplayObject(item, level, displayDefs, quoted, vocab, settings) {
   if (!item || typeof item === 'undefined') {
     throw new Error('getDisplayObject was called with an undefined object.');
   }
@@ -95,7 +95,7 @@ export function getDisplayObject(item, level, displayDefs, linked, vocab, settin
   let trueItem = Object.assign({}, item);
 
   if (trueItem.hasOwnProperty('@id') && !trueItem.hasOwnProperty('@type')) {
-    trueItem = DataUtil.getLinked(trueItem['@id'], linked);
+    trueItem = DataUtil.getLinked(trueItem['@id'], quoted);
     if (!trueItem.hasOwnProperty('@type') && trueItem.hasOwnProperty('@id')) {
       return { 'label': StringUtil.removeDomain(trueItem['@id'], settings.removableBaseUris) };
     }
@@ -139,13 +139,13 @@ export function getDisplayObject(item, level, displayDefs, linked, vocab, settin
       if (typeof valueOnItem !== 'undefined') {
         let value = valueOnItem;
         if (_.isObject(value) && !_.isArray(value)) {
-          value = getItemLabel(value, displayDefs, linked, vocab, settings);
-          // value = getDisplayObject(value, 'chips', displayDefs, linked, vocab, vocabPfx);
+          value = getItemLabel(value, displayDefs, quoted, vocab, settings);
+          // value = getDisplayObject(value, 'chips', displayDefs, quoted, vocab, vocabPfx);
         } else if (_.isArray(value)) {
           const newArray = [];
           for (const arrayItem of value) {
             if (_.isObject(arrayItem)) {
-              newArray.push(getItemLabel(arrayItem, displayDefs, linked, vocab, settings));
+              newArray.push(getItemLabel(arrayItem, displayDefs, quoted, vocab, settings));
             } else {
               newArray.push(arrayItem);
             }
@@ -184,9 +184,9 @@ function extractStrings(obj) {
   return label;
 }
 
-export function getItemSummary(item, displayDefs, linked, vocab, settings) {
+export function getItemSummary(item, displayDefs, quoted, vocab, settings) {
 
-  const card = getCard(item, displayDefs, linked, vocab, settings);
+  const card = getCard(item, displayDefs, quoted, vocab, settings);
   const summary = {
     categorization: [],
     header: [],
@@ -226,16 +226,16 @@ export function getItemSummary(item, displayDefs, linked, vocab, settings) {
   return summary;
 }
 
-export function getItemLabel(item, displayDefs, linked, vocab, settings) {
-  const displayObject = getChip(item, displayDefs, linked, vocab, settings);
+export function getItemLabel(item, displayDefs, quoted, vocab, settings) {
+  const displayObject = getChip(item, displayDefs, quoted, vocab, settings);
   const rendered = extractStrings(displayObject).trim();
   return rendered;
 }
 
-export function getChip(item, displayDefs, linked, vocab, settings) {
-  return getDisplayObject(item, 'chips', displayDefs, linked, vocab, settings);
+export function getChip(item, displayDefs, quoted, vocab, settings) {
+  return getDisplayObject(item, 'chips', displayDefs, quoted, vocab, settings);
 }
 
-export function getCard(item, displayDefs, linked, vocab, settings) {
-  return getDisplayObject(item, 'cards', displayDefs, linked, vocab, settings);
+export function getCard(item, displayDefs, quoted, vocab, settings) {
+  return getDisplayObject(item, 'cards', displayDefs, quoted, vocab, settings);
 }

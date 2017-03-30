@@ -15,7 +15,7 @@ export function splitJson(json) {
   }
   const original = json['@graph'];
   const dataObj = {};
-  dataObj.linked = [];
+  dataObj.quoted = [];
 
   // TODO: Relying on order here... tsk tsk tsk.
   dataObj.record = original[0];
@@ -37,9 +37,9 @@ export function splitJson(json) {
     for (let i = 0; i < original.length; i++) {
       if (dataObj.mainEntity.instanceOf['@id'] === original[i]['@id']) {
         dataObj.work = original[i];
-        // pushing work to linked list so that references to it will work for now.
+        // pushing work to quoted list so that references to it will work for now.
         // TODO: do something else
-        dataObj.linked.push(original[i]);
+        dataObj.quoted.push(original[i]);
         original.splice(i, 1);
         break;
       }
@@ -49,7 +49,7 @@ export function splitJson(json) {
   // Find quoted and put them in a separate list
   for (let i = 0; i < original.length; i++) {
     if (original[i].hasOwnProperty('@graph')) {
-      dataObj.linked = dataObj.linked.concat(original[i]['@graph']);
+      dataObj.quoted = dataObj.quoted.concat(original[i]['@graph']);
     }
   }
   return dataObj;
