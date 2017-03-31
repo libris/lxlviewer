@@ -6,6 +6,20 @@ import { getSettings } from '../vuex/getters';
 import { changeStatus, changeNotification } from '../vuex/actions';
 import ComboKeys from 'combokeys';
 
+function moveFieldAdderButton(e) {
+  const topFormComponent = document.getElementsByClassName('focused-form-component')[0];
+  const buttonThreshold = topFormComponent.offsetTop + topFormComponent.offsetHeight + document.getElementById('add-button').offsetHeight;
+  if (this.buttonPos === -1) {
+    this.buttonPos = document.getElementById('add-button').offsetTop;
+  }
+  const scrollPosition = this.buttonPos + e.target.body.scrollTop;
+  if (buttonThreshold > scrollPosition) {
+    this.buttonFixed = true;
+  } else {
+    this.buttonFixed = false;
+  }
+}
+
 export default {
   mixins: [clickaway],
   name: 'field-adder',
@@ -31,21 +45,12 @@ export default {
       selectedIndex: -1,
     };
   },
+  beforeDestroy() {
+    window.removeEventListener('scroll', moveFieldAdderButton);
+  },
   ready() { // Ready method is deprecated in 2.0, switch to "mounted"
     this.$nextTick(() => { // TODO: Fix proper scroll tracking. This is just an ugly solution using document.onscroll here and window.scroll in editorcontrols.vue
-      window.addEventListener('scroll', (e) => {
-        const topFormComponent = document.getElementsByClassName('focused-form-component')[0];
-        const buttonThreshold = topFormComponent.offsetTop + topFormComponent.offsetHeight + document.getElementById('add-button').offsetHeight;
-        if (this.buttonPos === -1) {
-          this.buttonPos = document.getElementById('add-button').offsetTop;
-        }
-        const scrollPosition = this.buttonPos + e.target.body.scrollTop;
-        if (buttonThreshold > scrollPosition) {
-          this.buttonFixed = true;
-        } else {
-          this.buttonFixed = false;
-        }
-      });
+      window.addEventListener('scroll', moveFieldAdderButton);
     });
   },
   computed: {
