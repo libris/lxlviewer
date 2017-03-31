@@ -109,6 +109,7 @@ export default {
         });
         this.removeEmptyFields();
         document.querySelector('#searchForm').submit();
+        return false;
       },
       removeEmptyFields() {
         // Empty inputs
@@ -120,7 +121,7 @@ export default {
   computed: {
       observations() {
           const observations = [];
-          const dimensionObservations = this.result.stats.sliceByDimension;
+          const dimensionObservations = this.result.statistics.sliceByDimension; //this.result.stats.sliceByDimension
           _.each(dimensionObservations, dimensionObservation => {
             _.each(dimensionObservation.observation, observation => {
                 if (typeof observation.object.titleByLang !== 'undefined') {
@@ -138,7 +139,8 @@ export default {
       },
       filters() {
           const filters = [];
-          this.result.search.mapping.forEach(item => {
+          if (typeof this.result.search !== 'undefined') {
+              this.result.search.mapping.forEach(item => {
               if (item.variable !== 'q') {
                   const filterObj = {
                       label: '',
@@ -152,7 +154,8 @@ export default {
                   filterObj.up = item.up['@id'];
                   filters.push(filterObj);
               }
-          });
+            });
+          }
           return filters;
       },
       currentIsTag() {
@@ -200,17 +203,17 @@ export default {
                     <div aria-labelledby="searchlabel" class="form-control search-input" id="searchQsmart">
                         <input v-for="input in formData" type="text" @focus="handleFocus($index)" @input="updateField" @keydown="handleInput" :name="input.name" v-model="input.value" class="smartInput" :class="input.class">
                     </div>
-                    <button id="searchSubmit" class="search-button btn btn-primary"><i class="fa fa-search"></i> Sök</button>
+                    <button id="searchSubmit" class="search-button btn btn-primary" @click.prevent="doSearch"><i class="fa fa-search"></i> Sök</button>
                 </div>
                 </div>
             </div>
 
-            <div v-if="filterParam.length > 0 && result.statistics.length > 0" class="type-buttons" aria-label="Välj typ">
+            <div v-if="filterParam.length > 0 && result.statistics" class="type-buttons" aria-label="Välj typ">
                 <label class="no-choice">
-                    <input name="filterParam" id="noneType" value="" type="radio" checked> Alla
+                    <input :name="filterParam" id="noneType" value="" type="radio" checked> Alla
                 </label>
-                <label v-for="observation observations" class="">
-                    <input name="filterParam" value="test" type="radio">
+                <label v-for="observation in observations" class="">
+                    <input :name="filterParam" :value="observation" type="radio">
                     {{observation}}
                 </label>
             </div>

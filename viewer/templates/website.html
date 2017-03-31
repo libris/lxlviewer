@@ -19,61 +19,22 @@
 {% block navcontainerclass %} container {% endblock %}
 
 % block content
-<div class="row">
-  <div class="col-md-8 col-md-offset-2">
-    <!-- <div class="panel panel-default intro-text"> -->
-      % if thing.summary
-        ${thing.summary.articleBody|safe}
-      % else
-        ${thing.description|safe}
-      % endif
+<div id="startPageApp">
+  <div class="row" v-if="initialized == true">
+    <div class="col-md-8 col-md-offset-2">
+      <div v-html="summary"></div>
       <h1 class="welcome">
-        % if g.site.title == 'libris.kb.se'
-          Välkommen till Libris katalogiseringstjänst
-        % else
-          Välkommen till id.kb.se
-        % endif
+        Välkommen till {{serviceName}}
       </h1>
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus porta venenatis lorem, sed finibus dolor feugiat eget. Vestibulum placerat lorem massa, luctus dapibus lectus commodo aliquam. Sed cursus nisl euismod venenatis maximus. Donec volutpat porta tortor, id euismod leo hendrerit sit amet.
-    <!-- </div> -->
-  </div>
-  <div class="col-md-8 col-md-offset-2 search-container">
-    ${ search.search_controls(thing, g.site.filter_param) }
-  </div>
-
-  % if thing.statistics.sliceByDimension
-  <!-- <div class="col-md-12">
-    <div class="panel panel-default scheme-item">
-      <div class="col-md-12 main-nav">
-        <div class="list-group">
-          % for value in thing.statistics.sliceByDimension.values()
-            % for obs in value.observation
-              % if obs.object and 'titleByLang' in obs.object and 'descriptionByLang' in obs.object
-                % if obs.object.notation
-                  % set ref = obs.object.notation[0].replace('/','-')
-                % else
-                  % set ref = obs.object.label
-                % endif
-                <a class="list-group-item" href="#${ref}">
-                  ${obs.object.label or obs.object.titleByLang[lang]}
-                </a>
-              % endif
-            % endfor
-          % endfor
-        </div>
-      </div>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus porta venenatis lorem, sed finibus dolor feugiat eget. Vestibulum placerat lorem massa, luctus dapibus lectus commodo aliquam. Sed cursus nisl euismod venenatis maximus. Donec volutpat porta tortor, id euismod leo hendrerit sit amet.
     </div>
-  </div> -->
+    <div class="col-md-8 col-md-offset-2 search-container">
+      <search-form v-if="initialized == true" :result="result" filter-param="${g.site.filter_param}" site-title="${g.site.title}"></search-form>
+    </div>
+    <dataset-observations :statistics="result.statistics" site-title="${g.site.title}"></dataset-observations>
   </div>
-  <div class="col-md-8 col-md-offset-2 observations">
-    % for value in thing.statistics.sliceByDimension.values()
-      % for obs in value.observation
-        ${observation_button(obs)}
-      % endfor
-    % endfor
-  % endif
 </div>
-
+<script id="data" type="application/json">${thing|tojson|safe}</script>
 % endblock
 
 % block footer
