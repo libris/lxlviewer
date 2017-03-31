@@ -110,10 +110,8 @@ export default class Editor extends View {
           console.log("Update");
           if (oldValue === this.editorData.meta) {
             newData.meta = value;
-            // this.$set('meta', value);
           } else if (oldValue === this.editorData.thing) {
             newData.thing = value;
-            // this.$set('thing', value);
           } else {
             console.warn('Something went wrong trying to update a focused object.');
           }
@@ -121,7 +119,7 @@ export default class Editor extends View {
         },
         'add-linked': function(item) {
           const newData = this.editorData;
-          newData.linked.push(item);
+          newData.quoted.push(item);
           this.syncData(newData);
         },
         'save-item': function() {
@@ -170,32 +168,41 @@ export default class Editor extends View {
         editItem() {
           this.changeStatus('inEdit', true);
         },
+        getCollectionName(entity) {
+          const vocabPfx = this.settings.vocabPfx;
+          const baseClasses = VocabUtil.getBaseClasses(entity['@type'], this.vocab, vocabPfx);
+          const classList = [entity['@type']].concat(baseClasses);
+          for (const cn of classList) {
+            if (cn === 'Instance' || cn === `${vocabPfx}Instance`) {
+              return 'bib';
+            } else if (cn === 'Item' || cn === `${vocabPfx}Item`) {
+              return 'hold';
+            }
+          }
+          return 'auth';
+        },
         saveItem() {
           const inputData = JSON.parse(document.getElementById('data').innerText);
+          const collection = this.getCollectionName(this.editorData.mainEntity);
+          const ETag = this.editorData.record.modified;
+          const RecordId = this.editorData.record['@id'];
           const obj = DataUtil.getMergedItems(
             DataUtil.removeNullValues(this.editorData.record),
             DataUtil.removeNullValues(this.editorData.mainEntity),
-            DataUtil.removeNullValues(this.editorData.work),
-            this.editorData.linked
+            DataUtil.removeNullValues(this.editorData.work)
           );
 
-          // if (JSON.stringify(obj) === JSON.stringify(inputData)) {
-          //   console.warn("No changes done, skipping to save. Time to tell the user?");
-          // } else {
-          const atId = this.editorData.record['@id'];
-          const ETag = this.editorData.record.modified;
-          if (atId) {
-            this.doUpdate(atId, obj, ETag);
-          } else {
-            this.doCreate(obj);
+          if (!RecordId || RecordId === '_:TEMP_ID') { // No ID -> create new
+            this.doCreate(obj, collection);
+          } else { // ID exists -> update
+            this.doUpdate(RecordId, obj, ETag);
           }
-          // }
         },
         doUpdate(url, obj, ETag) {
           this.doSaveRequest(httpUtil.put, obj, url, ETag);
         },
-        doCreate(obj) {
-          this.doSaveRequest(httpUtil.post, obj, '/create');
+        doCreate(obj, collection) {
+          this.doSaveRequest(httpUtil.post, obj, `/?collection=${collection}`);
         },
         doSaveRequest(requestMethod, obj, url, ETag) {
           requestMethod({ url, token: self.access_token, ETag }, obj).then((result) => {
@@ -205,12 +212,11 @@ export default class Editor extends View {
             } else {
               httpUtil.get({ url: postUrl }).then((getResult) => {
                 self.vm.syncData(RecordUtil.splitJson(getResult));
-                console.log('Success was had');
                 self.vm.changeSavedStatus('loading', false);
                 self.vm.changeSavedStatus('error', false);
                 self.vm.changeSavedStatus('info', '');
                 self.vm.changeNotification('color', 'green');
-                self.vm.changeNotification('message', 'Posten blev sparad!');
+                self.vm.changeNotification('message', `${StringUtil.getUiPhraseByLang('The post was saved', this.settings.language)}!`);
                 this.changeStatus('inEdit', false);
               }, (error) => {
                 self.vm.changeSavedStatus('loading', false);
@@ -234,6 +240,11 @@ export default class Editor extends View {
         this.syncData(self.dataIn);
         this.initialized = true;
         this.changeStatus('keybindState', 'overview');
+
+        const atId = this.editorData.record['@id'];
+        if (!atId || atId === '_:TEMP_ID') {
+          this.editItem();
+        }
       },
       components: {
         'form-component': FormComponent,

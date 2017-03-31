@@ -10,7 +10,7 @@ export default {
       const label = DisplayUtil.getItemLabel(
         item,
         this.display,
-        this.editorData.linked,
+        this.editorData.quoted,
         this.vocab,
         this.settings
       );
@@ -22,7 +22,7 @@ export default {
       const label = DisplayUtil.getItemLabel(
         this.focusData,
         this.display,
-        this.editorData.linked,
+        this.editorData.quoted,
         this.vocab,
         this.settings
       );
@@ -32,7 +32,7 @@ export default {
       const chip = DisplayUtil.getChip(
         this.focusData,
         this.display,
-        this.editorData.linked,
+        this.editorData.quoted,
         this.vocab,
         this.settings
       );
@@ -42,7 +42,7 @@ export default {
       const card = DisplayUtil.getCard(
         this.focusData,
         this.display,
-        this.editorData.linked,
+        this.editorData.quoted,
         this.vocab,
         this.settings
       );
@@ -52,7 +52,7 @@ export default {
       const summary = DisplayUtil.getItemSummary(
         this.focusData,
         this.display,
-        this.editorData.linked,
+        this.editorData.quoted,
         this.vocab,
         this.settings
       );

@@ -25,13 +25,12 @@ export function getLinked(id, linked) {
   return obj;
 }
 
-export function getMergedItems(record, mainEntity, work, linked) {
+export function getMergedItems(record, mainEntity, work) {
   const obj = { '@graph': [] };
   obj['@graph'].push(record);
   obj['@graph'].push(mainEntity);
-  obj['@graph'].push(work);
-  for (const entity of linked) {
-    obj['@graph'].push({ '@graph': entity });
+  if (!_.isEmpty(work)) {
+    obj['@graph'].push(work);
   }
   return obj;
 }

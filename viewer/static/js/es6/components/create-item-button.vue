@@ -23,19 +23,20 @@ export default {
   },
   methods: {
     buildItem() {
-      const embellishedReference = DisplayUtil.getCard(this.editorData.mainEntity, this.display, this.editorData.linked, this.vocab, this.settings);
+      const embellishedReference = DisplayUtil.getCard(this.editorData.mainEntity, this.display, this.editorData.quoted, this.vocab, this.settings);
       embellishedReference['@id'] = this.editorData.mainEntity['@id'];
 
       this.itemData = {
         '@graph': [
           {
             '@type': 'Record',
+            '@id': '_:TEMP_ID',
             'mainEntity': {
-              '@id': '_:TEMP_ID',
+              '@id': '_:TEMP_ID#it',
             },
           },
           {
-            '@id': '_:TEMP_ID',
+            '@id': '_:TEMP_ID#it',
             '@type': 'Item',
             'itemOf': {
               '@id': this.editorData.mainEntity['@id'],
@@ -68,7 +69,7 @@ export default {
 <template>
   <div>
     <form method="POST" action="/edit">
-      <textarea id="copyItem" name="item" class="hidden">{{itemData | json}}</textarea>
+      <textarea id="copyItem" name="data" class="hidden">{{itemData | json}}</textarea>
       <button type="submit"><i class="fa fa-plus"></i> Bestånd</button>
     </form>
   </div>

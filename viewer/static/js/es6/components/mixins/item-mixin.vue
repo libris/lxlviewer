@@ -18,7 +18,7 @@ export default {
       }
       return DataUtil.getLinked(
         this.item['@id'],
-        this.editorData.linked
+        this.editorData.quoted
       );
     },
   },

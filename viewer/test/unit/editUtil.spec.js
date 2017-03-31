@@ -64,7 +64,7 @@ describe('Utility: edit', function () {
 
   describe('getMergedItems()', function () {
     it('returns an object matching the same structure as input data', function () {
-      let result = editUtil.getMergedItems(recordObj, instanceObj, workObj, linked);
+      let result = editUtil.getMergedItems(recordObj, instanceObj, workObj);
       expect(result).to.deep.equal(packagedObj);
     });
   });

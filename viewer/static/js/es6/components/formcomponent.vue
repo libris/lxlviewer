@@ -128,7 +128,7 @@ export default {
       return DisplayUtil.getItemLabel(
         this.editorData.mainEntity,
         this.display,
-        this.editorData.linked,
+        this.editorData.quoted,
         this.vocab,
         this.settings
       );
