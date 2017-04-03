@@ -201,7 +201,7 @@ export default class Editor extends View {
           this.doSaveRequest(httpUtil.put, obj, url, ETag);
         },
         doCreate(obj, collection) {
-          this.doSaveRequest(httpUtil.post, obj);
+          this.doSaveRequest(httpUtil.post, obj, '/');
         },
         doSaveRequest(requestMethod, obj, url, ETag) {
           requestMethod({ url, token: self.access_token, ETag }, obj).then((result) => {
