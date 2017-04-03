@@ -22,6 +22,13 @@ export default class CreateNew extends View {
     const baseMaterials = [
       'Instance',
       'Work',
+      'UniformWork',
+      'Person',
+      'Organization',
+      'Meeting',
+      'Event',
+      'GenreFormTerm',
+      'TopicalTerm',
     ];
 
     VocabUtil.getVocab().then((vocab) => {
