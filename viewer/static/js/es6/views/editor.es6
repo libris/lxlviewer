@@ -192,7 +192,7 @@ export default class Editor extends View {
           );
 
           if (!RecordId || RecordId === '_:TEMP_ID') { // No ID -> create new
-            this.doCreate(obj, collection);
+            this.doCreate(obj);
           } else { // ID exists -> update
             this.doUpdate(RecordId, obj, ETag);
           }
