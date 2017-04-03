@@ -205,10 +205,10 @@ export default class Editor extends View {
         },
         doSaveRequest(requestMethod, obj, url, ETag) {
           requestMethod({ url, token: self.access_token, ETag }, obj).then((result) => {
-            const postUrl = `${result.getResponseHeader('Location')}/data.jsonld`;
             if (result.status === 201) {
               window.location = result.getResponseHeader('Location');
             } else {
+              const postUrl = `${result.getResponseHeader('Location')}/data.jsonld`;
               httpUtil.get({ url: postUrl }).then((getResult) => {
                 self.vm.syncData(RecordUtil.splitJson(getResult));
                 self.vm.changeSavedStatus('loading', false);
