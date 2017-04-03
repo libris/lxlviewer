@@ -116,7 +116,12 @@ export default {
   methods: {
     add() {
       if (this.canRecieveObjects) {
-        this.show();
+        const range = this.getRange;
+        if (range.length < 2 && this.onlyEmbedded) {
+          this.addEmpty(range[0]);
+        } else {
+          this.show();
+        }
       } else {
         this.$dispatch('add-item', '');
       }
