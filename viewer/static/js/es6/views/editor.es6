@@ -183,7 +183,6 @@ export default class Editor extends View {
         },
         saveItem() {
           const inputData = JSON.parse(document.getElementById('data').innerText);
-          const collection = this.getCollectionName(this.editorData.mainEntity);
           const ETag = this.editorData.record.modified;
           const RecordId = this.editorData.record['@id'];
           const obj = DataUtil.getMergedItems(
@@ -202,7 +201,7 @@ export default class Editor extends View {
           this.doSaveRequest(httpUtil.put, obj, url, ETag);
         },
         doCreate(obj, collection) {
-          this.doSaveRequest(httpUtil.post, obj, `/?collection=${collection}`);
+          this.doSaveRequest(httpUtil.post, obj);
         },
         doSaveRequest(requestMethod, obj, url, ETag) {
           requestMethod({ url, token: self.access_token, ETag }, obj).then((result) => {
