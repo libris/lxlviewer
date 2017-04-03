@@ -31,13 +31,26 @@ export default {
       updateField() {
         const validTags = ['isbn'];
         if (this.currentIsTag) {
-            if (validTags.indexOf(this.currentField.value.split(':')[0].toLowerCase()) > -1) {
-            this.currentField.class = 'searchtag valid';
-            } else {
-            this.currentField.class = 'searchtag invalid';
-            }
+          if (validTags.indexOf(this.currentField.value.split(':')[0].toLowerCase()) > -1) {
+          this.currentField.class = 'searchtag valid';
+          } else {
+          this.currentField.class = 'searchtag invalid';
+          }
         } else {
             this.currentField.class = 'searchphrase';
+        }
+      },
+      getSelectedFilter() {
+        const filterInputs = document.querySelectorAll('.type-buttons input');
+        for (const input of filterInputs) {
+          if (input.checked) {
+            const obj = {};
+            if (input.value === 'allParam') {
+              return obj;
+            }
+            obj[input.name] = input.value;
+            return obj;
+          }
         }
       },
       handleFocus(focusedIndex) {
@@ -87,25 +100,28 @@ export default {
         const queryText = [];
         const tagObject = {};
         for (const node of this.formData) {
-            if (node.class.includes('searchtag')) {
-                const tag = node.value.split(':');
-                if (validTags.indexOf(tag[0].toLowerCase()) > -1) {
-                    tagObject[tag[0]] = tag[1];
-                } else {
-                    queryText.push(tag[1]);
-                }
-            } else if (node.value !== '') {
-                queryText.push(`${node.value}`);
-            }
+          if (node.class.includes('searchtag')) {
+              const tag = node.value.split(':');
+              if (validTags.indexOf(tag[0].toLowerCase()) > -1) {
+                  tagObject[tag[0]] = tag[1];
+              } else {
+                  queryText.push(tag[1]);
+              }
+          } else if (node.value !== '') {
+              queryText.push(`${node.value}`);
+          }
         }
+        const filterObject = this.getSelectedFilter();
         tagObject.q = queryText.join(' ');
+        const searchObj = Object.assign(tagObject, filterObject);
+        console.log(searchObj);
         const tagInputs = document.querySelectorAll('.tagInput');
-        _.each(this.getConvertedSearchObject(tagObject), (v, k) => {
-            tagInputs.forEach(inputTag => {
-                if (inputTag.name === k) {
-                    inputTag.value = v;
-                }
-            });
+        _.each(this.getConvertedSearchObject(searchObj), (v, k) => {
+          tagInputs.forEach(inputTag => {
+            if (inputTag.name === k) {
+                inputTag.value = v;
+            }
+          });
         });
         this.removeEmptyFields();
         document.querySelector('#searchForm').submit();
@@ -114,7 +130,7 @@ export default {
       removeEmptyFields() {
         // Empty inputs
         $('#searchForm').find('input').filter(function() {
-            return !$.trim(this.value).length;
+            return !$.trim(this.value).length || this.type === 'radio';
         }).prop('disabled', true);
       },
   },
@@ -124,15 +140,18 @@ export default {
           const dimensionObservations = this.result.statistics.sliceByDimension; //this.result.stats.sliceByDimension
           _.each(dimensionObservations, dimensionObservation => {
             _.each(dimensionObservation.observation, observation => {
-                if (typeof observation.object.titleByLang !== 'undefined') {
-                    observations.push(observation.object.titleByLang['sv']);
-                } else if (typeof observation.object.label !== 'undefined') {
-                    observations.push(observation.object.label);
-                } else if (typeof observation.object.notation !== 'undefined') {
-                    observations.push(observation.object.notation.join(', '));
-                } else {
-                    observations.push(observation.object['@id'].replace(this.vocabUrl, ''));
-                }
+              const obs = {};
+              obs['@id'] = observation.object['@id'].replace(this.vocabUrl, '');
+              if (typeof observation.object.titleByLang !== 'undefined') {
+                  obs['label'] = observation.object.titleByLang['sv'];
+              } else if (typeof observation.object.label !== 'undefined') {
+                  obs['label'] = observation.object.label;
+              } else if (typeof observation.object.notation !== 'undefined') {
+                  obs['label'] = observation.object.notation.join(', ');
+              } else {
+                  obs['label'] = observation.object['@id'].replace(this.vocabUrl, '');
+              }
+              observations.push(obs);
             });
           });
           return observations;
@@ -194,6 +213,7 @@ export default {
                     <input class="tagInput" name="identifiedBy.value">
                     <input class="tagInput" name="identifiedBy.@type">
                     <input class="tagInput" name="_limit" value="20">
+                    <input class="tagInput" name="{{filterParam}}">
                 </div>
                 <label class="search-label" id="searchlabel" for="q">
                     Sök
@@ -210,11 +230,11 @@ export default {
 
             <div v-if="filterParam.length > 0 && result.statistics" class="type-buttons" aria-label="Välj typ">
                 <label class="no-choice">
-                    <input :name="filterParam" id="noneType" value="" type="radio" checked> Alla
+                    <input :name="filterParam" id="noneType" value="allParam" checked type="radio"> Alla
                 </label>
                 <label v-for="observation in observations" class="">
-                    <input :name="filterParam" :value="observation" type="radio">
-                    {{observation}}
+                    <input :name="filterParam" :value="observation['@id']" type="radio">
+                    {{observation.label}}
                 </label>
             </div>
 
