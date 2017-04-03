@@ -226,8 +226,6 @@ export default class Editor extends View {
             }
           }, (error) => {
             self.vm.changeSavedStatus('loading', false);
-            // self.vm.changeSavedStatus('error', true);
-            // self.vm.changeSavedStatus('info', error);
             self.vm.changeNotification('color', 'red');
             self.vm.changeNotification('message', `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error}`);
           });
