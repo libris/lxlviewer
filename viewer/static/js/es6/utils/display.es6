@@ -198,32 +198,20 @@ export function getItemSummary(item, displayDefs, quoted, vocab, settings) {
     sub: [],
   };
   _.each(card, (value, key) => {
+    let v = value;
+    if (!_.isArray(value)) {
+      v = [value];
+    }
     if (displayGroups['header'].indexOf(key) !== -1) {
-      if (_.isArray(value)) {
-        summary['header'] = summary['header'].concat(value);
-      } else {
-        summary['header'].push(value);
-      }
+      summary['header'].push({ 'property': key, value: v });
     } else if (displayGroups['info'].indexOf(key) !== -1) {
-      summary['info'].push(value);
+      summary['info'].push({ 'property': key, value: v });
     } else if (displayGroups['identifiers'].indexOf(key) !== -1) {
-      if (_.isArray(value)) {
-        summary['identifiers'] = summary['identifiers'].concat(value);
-      } else {
-        summary['identifiers'].push(value);
-      }
+      summary['identifiers'].push({ 'property': key, value: v });
     } else if (displayGroups['categorization'].indexOf(key) !== -1) {
-      if (_.isArray(value)) {
-        summary['categorization'] = summary['categorization'].concat(value);
-      } else {
-        summary['categorization'].push(value);
-      }
+      summary['categorization'].push({ 'property': key, value: v });
     } else {
-      if (_.isArray(value)) {
-        summary['sub'] = summary['sub'].concat(value);
-      } else {
-        summary['sub'].push(value);
-      }
+      summary['sub'].push({ 'property': key, value: v });
     }
   });
   return summary;
