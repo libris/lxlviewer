@@ -1,5 +1,6 @@
 <script>
 import LensMixin from './mixins/lens-mixin';
+import * as StringUtil from '../utils/string';
 import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData } from '../vuex/getters';
 
 export default {
@@ -23,6 +24,25 @@ export default {
     }
   },
   methods: {
+    translateable(type) {
+      if (type === '@type' || type === 'issuanceType') {
+        return true;
+      }
+      return false;
+    },
+    getFormattedEntries(list) {
+      let formatted = [];
+      for (const entry of list) {
+        if (this.translateable(entry.property)) {
+          formatted = formatted.concat(entry.value.map((obj) => {
+            return StringUtil.labelByLang(obj, this.settings.language, this.vocab, this.settings.vocabPfx);
+          }));
+        } else {
+          formatted = formatted.concat(entry.value);
+        }
+      }
+      return formatted;
+    },
   },
   computed: {
   },
@@ -38,22 +58,24 @@ export default {
 <template>
 <div class="entity-summary">
   <div class="main-info">
-    <div class="categorization">{{ getSummary.categorization.join(', ') }}</div>
+    <div class="categorization">
+      {{getFormattedEntries(getSummary.categorization).join(', ')}}
+    </div>
     <h3 class="header">
-      <a v-if="renderLink" title="{{ getSummary.header.join(', ') }}" :href="focusData['@id']">{{ getSummary.header.join(', ') }}</a>
-      <span v-if="!renderLink" title="{{ getSummary.header.join(', ') }}">{{ getSummary.header.join(', ') }}</span>
+      <a v-if="renderLink" title="{{ getFormattedEntries(getSummary.header).join(', ') }}" :href="focusData['@id']">{{ getFormattedEntries(getSummary.header).join(', ') }}</a>
+      <span v-if="!renderLink" title="{{ getFormattedEntries(getSummary.header).join(', ') }}">{{ getFormattedEntries(getSummary.header).join(', ') }}</span>
     </h3>
     <ul class="info">
-      <li v-for="v in getSummary.info">{{ v }}</li>
+      <li v-for="v in getFormattedEntries(getSummary.info)">{{ v }}</li>
     </ul>
   </div>
   <div class="identifiers">
     <ul>
-      <li v-for="v in getSummary.identifiers">{{v}}</li>
+      <li v-for="v in getFormattedEntries(getSummary.identifiers)">{{v}}</li>
     </ul>
   </div>
-  <div class="sub" v-if="getSummary.sub.length > 0 && getSummary.sub[0] !== ''">
-    <span>{{ getSummary.sub.join(', ') }}</span>
+  <div class="sub" v-if="getFormattedEntries(getSummary.sub).length > 0 && getFormattedEntries(getSummary.sub)[0] !== ''">
+    <span>{{ getFormattedEntries(getSummary.sub).join(', ') }}</span>
   </div>
 </div>
 </template>
