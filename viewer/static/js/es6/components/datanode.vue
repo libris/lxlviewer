@@ -33,6 +33,7 @@ export default {
     return {
       showActionButtons: false,
       activeModal: false,
+      removeHover: false,
     };
   },
   vuex: {
@@ -237,7 +238,7 @@ export default {
 </script>
 
 <template>
-<div class="data-node" v-bind:class="{'column': embedded, 'rows': !embedded, 'highlight': isLastAdded }" @mouseover="showActionButtons=true" @mouseleave="showActionButtons=false">
+<div class="data-node" v-bind:class="{'column': embedded, 'rows': !embedded, 'highlight': isLastAdded, 'distinguish-removal': removeHover }" @mouseover="showActionButtons=true" @mouseleave="showActionButtons=false">
   <div class="label" v-bind:class="{ 'locked': isLocked }">
     <a href="/vocab/#{{key}}">{{ key | labelByLang | capitalize }}</a>
     <!-- {{ key | labelByLang | capitalize }} -->
@@ -255,7 +256,7 @@ export default {
   </div>
   <div class="actions" v-if="!isLocked">
     <entity-adder class="action" v-if="!isLocked && (isRepeatable || isEmptyObject)" :key="key" :focus="focus" :property-types="propertyTypes" :allow-local="allowLocal" :show-action-buttons="showActionButtons" :active="activeModal"></entity-adder>
-    <div class="action action-button action-remove" v-if="!isLocked && isRemovable" :class="{'shown-button': showActionButtons, 'hidden-button': !showActionButtons, 'disabled': activeModal}" v-on:click="removeThis()"><i class="fa fa-trash"></i></div>
+    <div class="action action-button action-remove" @mouseover="removeHover = true" @mouseout="removeHover = false" v-if="!isLocked && isRemovable" :class="{'shown-button': showActionButtons, 'hidden-button': !showActionButtons, 'disabled': activeModal}" v-on:click="removeThis()"><i class="fa fa-trash"></i></div>
   </div>
 </div>
 </template>
@@ -322,15 +323,17 @@ export default {
   >.actions .action-button {
     transition: opacity 0.25s ease;
     transition-delay: 0.1s;
+    cursor: pointer;
     .action {
       cursor: pointer;
     }
   }
   &.rows {
     border: solid;
+    border-color: transparent;
     border-bottom-color: #d8d8d8;
     border-top-color: #f3f3f3;
-    border-width: 1px 0px 1px 0px;
+    border-width: 1px;
     background-color: #f2f2f2;
     &:nth-child(odd) {
       background-color: #ededed;
@@ -344,7 +347,7 @@ export default {
       align-items: flex-start;
       justify-content: flex-end;
       line-height: 2.6;
-      border: 1px solid rgb(236, 235, 235);
+      border: 1px solid #e4e2e2;
       border-width: 0px 1px 0px 0px;
       border-radius: 0px;
       a {

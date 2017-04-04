@@ -38,6 +38,7 @@ export default {
   data() {
     return {
       inEdit: false,
+      removeHover: false,
     };
   },
   computed: {
@@ -73,11 +74,11 @@ export default {
 </script>
 
 <template>
-  <div class="item-value" v-bind:class="{'locked': isLocked, 'unlocked': !isLocked}">
+  <div class="item-value" v-bind:class="{'locked': isLocked, 'unlocked': !isLocked, 'distinguish-removal': removeHover}">
   <!-- TODO: @input or @change? -->
     <textarea rows="1" v-model="value" @change="valueChanged()" v-if="!isLocked"></textarea>
     <span v-if="isLocked">{{value}}</span>
-    <div class="remover" v-show="!isLocked && isRemovable" v-on:click="removeThis()"><i class="fa fa-trash"></i></div>
+    <div class="remover" v-show="!isLocked && isRemovable" v-on:click="removeThis()" @mouseover="removeHover = true" @mouseout="removeHover = false"><i class="fa fa-trash"></i></div>
   </div>
 </template>
 
@@ -112,7 +113,6 @@ export default {
   &.unlocked {
     padding: 3px;
     &:hover {
-      border: 1px dashed #ccc;
       .remover {
         opacity: 1;
       }
