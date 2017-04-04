@@ -127,6 +127,8 @@ export default class Editor extends View {
         },
         'edit-item': function() {
           this.editItem();
+          self.dirty = true;
+          this.initiateWarnBeforeUnload();
         },
       },
       watch: {
@@ -159,6 +161,21 @@ export default class Editor extends View {
         },
       },
       methods: {
+        initiateWarnBeforeUnload() {
+          window.addEventListener("beforeunload", function (e) {
+            if (!self.dirty) {
+                return undefined;
+            }
+            const confirmationMessage = StringUtil.getUiPhraseByLang('You have unsaved changes. Do you want to leave the page?', self.settings.language);
+
+            (e || window.event).returnValue = confirmationMessage; //Gecko + IE
+            return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
+          });
+        },
+        removeWarnBeforeUnload() {
+          self.dirty = false;
+          window.onbeforeunload = null;
+        },
         isArray(o) {
           return _.isArray(o);
         },
@@ -217,6 +234,7 @@ export default class Editor extends View {
                 self.vm.changeNotification('color', 'green');
                 self.vm.changeNotification('message', `${StringUtil.getUiPhraseByLang('The post was saved', this.settings.language)}!`);
                 this.changeStatus('inEdit', false);
+                this.removeWarnBeforeUnload();
               }, (error) => {
                 self.vm.changeSavedStatus('loading', false);
                 self.vm.changeNotification('color', 'red');
