@@ -331,18 +331,27 @@ export default {
     border-bottom-color: #d8d8d8;
     border-top-color: #f3f3f3;
     border-width: 1px 0px 1px 0px;
-    background-color: @form-field;
+    background-color: #f2f2f2;
     &:nth-child(odd) {
-      background-color: darken(@form-field, 2%);
+      background-color: #ededed;
     }
     >.label {
       order: 1;
       flex-basis: @col-label;
+      max-width: @col-label;
       display: flex;
       text-align: right;
       align-items: flex-start;
       justify-content: flex-end;
       line-height: 2.6;
+      border: 1px solid rgb(236, 235, 235);
+      border-width: 0px 1px 0px 0px;
+      border-radius: 0px;
+      a {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
     }
     >.value {
       order: 2;

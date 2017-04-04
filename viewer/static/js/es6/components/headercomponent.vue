@@ -86,7 +86,7 @@ export default {
   &.compact {
     max-height: 74px;
     overflow-y: hidden;
-    border: solid #ccc;
+    border: solid rgb(204, 204, 204);
     border-width: 0px 0px 1px 0px;
     box-shadow: 0px 5px 10px -5px rgba(0, 0, 0, 0.26);
     &.collapsed {

@@ -73,7 +73,7 @@ export default {
 </script>
 
 <template>
-  <div class="item-value" v-bind:class="{'locked': isLocked}">
+  <div class="item-value" v-bind:class="{'locked': isLocked, 'unlocked': !isLocked}">
   <!-- TODO: @input or @change? -->
     <textarea rows="1" v-model="value" @change="valueChanged()" v-if="!isLocked"></textarea>
     <span v-if="isLocked">{{value}}</span>
@@ -86,7 +86,7 @@ export default {
 
 .item-value {
   width: 480px;
-  line-height: 1.6;
+  border: solid 1px transparent;
   &.locked {
     line-height: 2;
     span {
@@ -95,22 +95,27 @@ export default {
   }
   textarea {
     resize: none;
-    color: @black;
+    color: #333333;
     padding: 2px 5px;
-    width: 90%;
-    border-radius: 5px;
-    border: 1px solid #ccc;
+    width: 95%;
+    border: 1px solid #d6d6d6;
+    box-shadow: inset 0px 2px 0px 0px rgba(204, 204, 204, 0.35);
   }
   .remover {
-    margin-left: 1em;
+    float: right;
     display: inline-block;
     opacity: 0;
+    padding: 3px;
     cursor: pointer;
     transition: opacity 0.5s ease;
   }
-  &:hover {
-    .remover {
-      opacity: 1;
+  &.unlocked {
+    padding: 3px;
+    &:hover {
+      border: 1px dashed #ccc;
+      .remover {
+        opacity: 1;
+      }
     }
   }
 }
