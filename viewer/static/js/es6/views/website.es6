@@ -14,6 +14,7 @@ import FacetControls from '../components/facet-controls';
 import SearchResultComponent from '../components/search-result-component';
 import EntitySearchList from '../components/entity-search-list';
 import SearchForm from '../components/search-form';
+import LandingBox from '../components/landing-box';
 import DatasetObservations from '../components/dataset-observations';
 import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData, getKeybindState } from '../vuex/getters';
 import { changeSettings, changeNotification, loadVocab, loadDisplayDefs, changeSavedStatus } from '../vuex/actions';
@@ -93,10 +94,6 @@ export default class Website extends View {
           }
           return this.result.description;
         },
-        serviceName() {
-          const siteTitle = this.result.title;
-          return siteTitle === 'libris.kb.se' ? 'Libris katalogiseringstjänst' : 'id.kb.se';
-        },
       },
       methods: {
         isArray(o) {
@@ -121,6 +118,7 @@ export default class Website extends View {
         'entity-search-list': EntitySearchList,
         'search-form': SearchForm,
         'dataset-observations': DatasetObservations,
+        'landing-box': LandingBox,
       },
       store,
     });

@@ -20,14 +20,8 @@
 
 % block content
 <div id="startPageApp">
-  <div class="row" v-if="initialized == true">
-    <div class="col-md-8 col-md-offset-2">
-      <div v-html="summary"></div>
-      <h1 class="welcome">
-        Välkommen till {{serviceName}}
-      </h1>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus porta venenatis lorem, sed finibus dolor feugiat eget. Vestibulum placerat lorem massa, luctus dapibus lectus commodo aliquam. Sed cursus nisl euismod venenatis maximus. Donec volutpat porta tortor, id euismod leo hendrerit sit amet.
-    </div>
+  <div class="row">
+    <landing-box v-if="initialized == true" :title="result.title" :text="summary"></landing-box>
     <div class="col-md-8 col-md-offset-2 search-container">
       <search-form v-if="initialized == true" :result="result" filter-param="${g.site.filter_param}" site-title="${g.site.title}"></search-form>
     </div>
