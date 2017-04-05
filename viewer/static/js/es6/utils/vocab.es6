@@ -11,6 +11,25 @@ export function getVocab() {
   });
 }
 
+export function getClassFromLabel(label, language, vocab, vocabPfx) {
+  const classObject = _.find(vocab, (obj) => {
+    if (typeof obj.labelByLang === 'undefined' || typeof obj.labelByLang[language] === 'undefined') {
+      return false;
+    }
+    if (_.isArray(obj.labelByLang[language])) {
+      for (const lbl of obj.labelByLang[language]) {
+        console.log(lbl.toLowerCase(), label.toLowerCase());
+        if (lbl.toLowerCase() === label.toLowerCase()) {
+          return true;
+        }
+      }
+    } else {
+      return obj.labelByLang[language].toLowerCase() === label.toLowerCase();
+    }
+  });
+  return classObject;
+}
+
 export function getClass(classId, vocab, vocabPfx) {
   // Returns a class object
 
