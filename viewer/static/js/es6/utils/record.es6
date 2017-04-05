@@ -63,6 +63,36 @@ export function stripId(obj) {
   return newObj;
 }
 
+export function getItemObject(itemOf, heldBy, instance) {
+  const itemObj = {
+    '@graph': [
+      {
+        '@type': 'Record',
+        '@id': '_:TEMP_ID',
+        'mainEntity': {
+          '@id': '_:TEMP_ID#it',
+        },
+      },
+      {
+        '@id': '_:TEMP_ID#it',
+        '@type': 'Item',
+        'itemOf': {
+          '@id': itemOf,
+        },
+        'heldBy': {
+          '@id': heldBy,
+        },
+      },
+      {
+        '@graph': [
+          instance,
+        ],
+      },
+    ],
+  };
+  return itemObj;
+}
+
 export function getNewCopy(id) {
   let copyUrl = `${id}/data.jsonld`;
   if (copyUrl[0] !== '/') {
