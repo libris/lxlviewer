@@ -75,12 +75,12 @@ export function getRange(propertyId, vocab, vocabPfx) {
   }
   if (property.rangeIncludes) {
     for (let i = 0; i < property.rangeIncludes.length; i++) {
-      range.push(property.rangeIncludes[i]['@id'].replace(vocabPfx, ''));
+      range.push(property.rangeIncludes[i]['@id']);
     }
   }
   if (property.range) {
     for (let i = 0; i < property.range.length; i++) {
-      range.push(property.range[i]['@id'].replace(vocabPfx, ''));
+      range.push(property.range[i]['@id']);
     }
   }
   range = _.uniq(range);

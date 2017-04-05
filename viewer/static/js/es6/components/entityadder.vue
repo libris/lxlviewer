@@ -1,4 +1,5 @@
 <script>
+import * as _ from 'lodash';
 import * as httpUtil from '../utils/http';
 import * as VocabUtil from '../utils/vocab';
 import * as DisplayUtil from '../utils/display';
@@ -23,6 +24,7 @@ export default {
       chooseLocalType: false,
       showToolTip: false,
       rangeInfo: false,
+      selectedType: '',
     };
   },
   vuex: {
@@ -86,8 +88,19 @@ export default {
     getRange() {
       return VocabUtil.getRange(this.key, this.vocab, this.settings.vocabPfx);
     },
+    getFullRange() {
+      let types = [].concat(this.getRange);
+      _.each(this.getRange, typeName => {
+        const type = typeName.replace(this.settings.vocabPfx, '');
+        const subClassArray = (VocabUtil.getSubClasses(type, this.vocab, this.settings.vocabPfx)).map(entry => {
+          return entry['@id'];
+        });
+        types = types.concat(subClassArray);
+      });
+      return types;
+    },
     onlyEmbedded() {
-      const range = this.getRange;
+      const range = this.getFullRange;
       for (const prop of range) {
         if (!VocabUtil.isEmbedded(prop, this.vocab, this.settings)) {
           return false;
@@ -100,8 +113,8 @@ export default {
     },
     isLiteral() {
       // TODO: Verify usage
-      if (this.getRange.length > 0) {
-        for (const rangeElement of this.getRange) {
+      if (this.getFullRange.length > 0) {
+        for (const rangeElement of this.getFullRange) {
           if (rangeElement.indexOf('Literal') > -1) {
             return true;
           }
@@ -116,7 +129,7 @@ export default {
   methods: {
     add() {
       if (this.canRecieveObjects) {
-        const range = this.getRange;
+        const range = this.getFullRange;
         if (range.length < 2 && this.onlyEmbedded) {
           this.addEmpty(range[0]);
         } else {
@@ -141,9 +154,11 @@ export default {
       this.changeStatus('keybindState', 'overview');
     },
     goLocal() {
-      const range = this.getRange;
+      const range = this.getFullRange;
       if (range.length > 1) {
         this.chooseLocalType = true;
+        const test = document.querySelector('#localTypePicker');
+        test.focus();
       } else {
         this.addEmpty(range[0]);
       }
@@ -164,11 +179,20 @@ export default {
       const obj = this.getEmptyForm(type);
       this.$dispatch('add-item', obj);
     },
+    addType(label) {
+      const vocabClass = VocabUtil.getClassFromLabel(label, this.settings.language, this.vocab, this.settings.vocabPfx);
+      if (typeof vocabClass === 'undefined') {
+        this.changeNotification('color', 'red');
+        this.changeNotification('message', `Ogiltig typ: ${label}`);
+      } else {
+        this.addEmpty(vocabClass['@id']);
+      }
+    },
     search(keyword) {
       const self = this;
       self.searchResult = {};
       self.loading = true;
-      this.getItems(keyword, this.getRange).then((result) => {
+      this.getItems(keyword, this.getFullRange).then((result) => {
         setTimeout(() => {
           self.searchResult = result;
           self.loading = false;
@@ -259,12 +283,12 @@ export default {
           <div class="search">
             {{ "Search" | translatePhrase }}:
             <input v-model="keyword"></input>
-            <div class="range-info-container" v-if="getRange.length > 0" @mouseleave="rangeInfo = false">
+            <div class="range-info-container" v-if="getFullRange.length > 0" @mouseleave="rangeInfo = false">
               <i class="fa fa-info-circle" @mouseenter="rangeInfo = true"></i>
               <div class="range-info" v-if="rangeInfo">
                 {{ "Allowed types" | translatePhrase }}:
                 <br>
-                <span v-for="range in getRange" class="range">
+                <span v-for="range in getFullRange" class="range">
                   - {{range | labelByLang}}
                 </span>
               </div>
@@ -280,7 +304,11 @@ export default {
         <entity-search-list v-if="!loading && keyword.length > 0" :results="searchResult"></entity-search-list>
       </div>
       <div class="stage-1" v-show="chooseLocalType">
-        <button v-on:click="addEmpty(type)" v-for="type in getRange">{{ type }}</button>
+        {{ "Choose type" | translatePhrase }}:
+        <input list="types" autofocus id="localTypePicker" name="type" v-model="selectedType" @keyup.enter="addType(selectedType)">
+        <datalist id="types">
+          <option v-for="type in getFullRange" value="{{type | labelByLang}}">
+        </datalist>
       </div>
     </div>
   </div>
@@ -303,6 +331,10 @@ export default {
       border: 1px solid #ccc;
       padding: 0px;
       overflow-y: scroll;
+      .stage-1 {
+        text-align: center;
+        padding: 15px;
+      }
       button {
         font-size: 12px;
       }
