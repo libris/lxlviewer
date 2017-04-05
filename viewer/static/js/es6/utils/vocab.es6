@@ -18,7 +18,6 @@ export function getClassFromLabel(label, language, vocab, vocabPfx) {
     }
     if (_.isArray(obj.labelByLang[language])) {
       for (const lbl of obj.labelByLang[language]) {
-        console.log(lbl.toLowerCase(), label.toLowerCase());
         if (lbl.toLowerCase() === label.toLowerCase()) {
           return true;
         }
