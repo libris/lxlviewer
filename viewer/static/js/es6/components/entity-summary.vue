@@ -23,6 +23,24 @@ export default {
       keyword: '',
     }
   },
+  computed: {
+    categorization() {
+      return this.getFormattedEntries(this.getSummary.categorization);
+    },
+    header() {
+      return this.getFormattedEntries(this.getSummary.header);
+    },
+    identifiers() {
+      const identifiersList = this.getFormattedEntries(this.getSummary.identifiers);
+      return identifiersList;
+    },
+    info() {
+      return this.getFormattedEntries(this.getSummary.info);
+    },
+    sub() {
+      return this.getFormattedEntries(this.getSummary.sub);
+    },
+  },
   methods: {
     translateable(type) {
       if (type === '@type' || type === 'issuanceType') {
@@ -44,8 +62,6 @@ export default {
       return formatted;
     },
   },
-  computed: {
-  },
   components: {
   },
   watch: {
@@ -59,23 +75,23 @@ export default {
 <div class="entity-summary">
   <div class="main-info">
     <div class="categorization">
-      {{getFormattedEntries(getSummary.categorization).join(', ')}}
+      {{categorization.join(', ')}}
     </div>
     <h3 class="header">
-      <a v-if="renderLink" title="{{ getFormattedEntries(getSummary.header).join(', ') }}" :href="focusData['@id']">{{ getFormattedEntries(getSummary.header).join(', ') }}</a>
-      <span v-if="!renderLink" title="{{ getFormattedEntries(getSummary.header).join(', ') }}">{{ getFormattedEntries(getSummary.header).join(', ') }}</span>
+      <a v-if="renderLink" title="{{ header.join(', ') }}" :href="focusData['@id']">{{ header.join(', ') }}</a>
+      <span v-if="!renderLink" title="{{ header.join(', ') }}">{{ header.join(', ') }}</span>
     </h3>
     <ul class="info">
-      <li v-for="v in getFormattedEntries(getSummary.info)">{{ v }}</li>
+      <li v-for="v in info">{{ v }}</li>
     </ul>
   </div>
   <div class="identifiers">
     <ul>
-      <li v-for="v in getFormattedEntries(getSummary.identifiers)">{{v}}</li>
+      <li v-for="v in identifiers">{{v}}</li>
     </ul>
   </div>
-  <div class="sub" v-if="getFormattedEntries(getSummary.sub).length > 0 && getFormattedEntries(getSummary.sub)[0] !== ''">
-    <span>{{ getFormattedEntries(getSummary.sub).join(', ') }}</span>
+  <div class="sub" v-if="sub.length > 0 && sub[0] !== ''">
+    <span>{{ sub.join(', ') }}</span>
   </div>
 </div>
 </template>

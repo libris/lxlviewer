@@ -2,6 +2,7 @@
 import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData, getStatus } from '../vuex/getters';
 import * as DisplayUtil from '../utils/display';
 import * as StringUtil from '../utils/string';
+import * as RecordUtil from '../utils/record';
 
 export default {
   name: 'create-item-button',
@@ -26,32 +27,11 @@ export default {
       const embellishedReference = DisplayUtil.getCard(this.editorData.mainEntity, this.display, this.editorData.quoted, this.vocab, this.settings);
       embellishedReference['@id'] = this.editorData.mainEntity['@id'];
 
-      this.itemData = {
-        '@graph': [
-          {
-            '@type': 'Record',
-            '@id': '_:TEMP_ID',
-            'mainEntity': {
-              '@id': '_:TEMP_ID#it',
-            },
-          },
-          {
-            '@id': '_:TEMP_ID#it',
-            '@type': 'Item',
-            'itemOf': {
-              '@id': this.editorData.mainEntity['@id'],
-            },
-            'heldBy': {
-              '@id': `https://libris.kb.se/library/${this.settings.userInfo.sigel}`,
-            },
-          },
-          {
-            '@graph': [
-              embellishedReference,
-            ],
-          },
-        ],
-      };
+      this.itemData = RecordUtil.getItemObject(
+        this.editorData.mainEntity['@id'],
+        `https://libris.kb.se/library/${this.settings.userInfo.sigel}`,
+        embellishedReference
+      );
     },
   },
   computed: {
