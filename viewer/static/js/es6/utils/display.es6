@@ -214,6 +214,9 @@ export function getItemSummary(item, displayDefs, quoted, vocab, settings) {
       summary['sub'].push({ 'property': key, value: v });
     }
   });
+  if (summary['header'].length === 0) {
+    summary['header'].push({ 'property': 'error', value: '[label/title missing]' });
+  }
   return summary;
 }
 

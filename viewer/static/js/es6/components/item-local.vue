@@ -154,7 +154,7 @@ export default {
         <button v-on:click="closeForm" v-bind:disabled="isEmpty">Klar</button>
       </div>
     </div>
-    <card-component :title="getItemLabel" :item="getCard" :uri="item['@id']" :should-show="showCardInfo && !inEdit" :floating="!expanded"></card-component>
+    <card-component :title="getItemLabel" :focus-data="item" :uri="item['@id']" :should-show="showCardInfo && !inEdit" :floating="!expanded"></card-component>
   </div>
 </template>
 
