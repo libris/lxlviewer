@@ -26,15 +26,25 @@ export default {
       const offset = this.pageData.itemOffset;
       const noOfPages = parseInt(this.pageData.totalItems / this.limit) + 1 || 1;
       const currentPage = parseInt(offset/this.limit);
-      let paddedPages = 4;
+      let paddedPages = 3;
       if (currentPage < paddedPages) {
-        paddedPages = paddedPages + (paddedPages - currentPage -1);
+        paddedPages = paddedPages + 1 + (paddedPages - currentPage -1);
       } else if (currentPage + paddedPages > noOfPages) {
-        paddedPages = paddedPages + (currentPage + paddedPages - noOfPages);
+        paddedPages = paddedPages + 1 + (currentPage + paddedPages - noOfPages);
+      }
+      const minPage = currentPage - paddedPages;
+      const maxPage = currentPage + paddedPages;
+      if (minPage > 0) {
+        list.push({pageLabel: '...'});
       }
       for (let i = 0; i < noOfPages; i++) {
         const pageOffset = i * this.limit;
-        list.push({ link: `${this.pageData.first['@id']}&_offset=${pageOffset}`, active: (i === currentPage)});
+        if (i >= minPage && i <= maxPage) {
+          list.push({ pageLabel: i+1, link: `${this.pageData.first['@id']}&_offset=${pageOffset}`, active: (i === currentPage)});
+        }
+      }
+      if (noOfPages > maxPage) {
+        list.push({pageLabel: '...'});
       }
       return list;
     },
@@ -59,9 +69,10 @@ export default {
             <a v-if="pageData.previous" href="{{pageData.previous['@id']}}">Föregående</a>
             <a v-if="!pageData.previous">Föregående</a>
           </li>
-          <li v-bind:class="{ 'active': page.active}" v-for="page in pageList" track-by="$index">
-            <a v-if="!page.active" href="{{page.link}}">{{$index+1}}</a>
-            <a v-if="page.active">{{$index+1}}</a>
+          <li v-bind:class="{ 'active': page.active }" v-for="page in pageList" track-by="$index">
+            <span class="decorative" v-if="!page.link">...</span>
+            <a v-if="!page.active && page.link" href="{{page.link}}">{{page.pageLabel}}</a>
+            <a v-if="page.active">{{page.pageLabel}}</a>
           </li>
           <li v-bind:class="{ 'disabled': !pageData.next }">
             <a v-if="pageData.next" href="{{pageData.next['@id']}}">Nästa</a>
@@ -83,6 +94,18 @@ export default {
 .search-details {
   height: 1em;
   margin-bottom: 1em;
+}
+.search-buttons {
+  .decorative {
+    font-size: 12px;
+    border: none;
+    line-height: 1;
+    color: @black;
+    background-color: @neutral-color;
+    &:hover {
+      background-color: @neutral-color;
+    }
+  }
 }
 
 
