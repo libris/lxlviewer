@@ -46,6 +46,8 @@ export default {
     propertyTypes: [],
     showActionButtons: false,
     active: false,
+    isInner: false,
+    isChip: false,
   },
   events: {
     'close-modals'() {
@@ -263,11 +265,14 @@ export default {
 </script>
 
 <template>
-<span class="entity-adder">
-  <a class="action-button add-entity-button" :class="{'shown-button': showActionButtons, 'hidden-button': !showActionButtons, 'disabled': active}" v-on:click="add()" @mouseenter="showToolTip=true" @mouseleave="showToolTip=false">
-    <i class="fa fa-plus plus-icon" aria-hidden="true"></i>
+<span class="entity-adder" :class="{'inner-button': (isInner), 'outer-button': !isInner}">
+  <a v-if="isChip" class="action-button add-entity-button" :class="{'disabled': active, 'is-chip': isChip}" v-on:click="add()" @mouseenter="showToolTip=true" @mouseleave="showToolTip=false">
+    <i class="fa fa-plus fa-2x plus-icon" aria-hidden="true"></i>
   </a>
-  <tooltip-component :show-tooltip="showToolTip" :tooltiptext="key"></tooltip-component>
+  <a v-if="!isChip" class="action-button add-entity-button" :class="{'disabled': active, 'is-chip': isChip}" v-on:click="add()" @mouseenter="showToolTip=true" @mouseleave="showToolTip=false">
+    <i class="fa fa-plus fa-2x plus-icon" aria-hidden="true"></i>
+  </a>
+  <!--<tooltip-component :show-tooltip="showToolTip" :tooltiptext="key"></tooltip-component>-->
   <div class="window" v-if="active">
     <div class="header">
       <span class="title">
@@ -322,6 +327,91 @@ export default {
   opacity: 1;
   .disabled {
     visibility: hidden;
+  }
+  &.inner-button {
+    width: 100%;
+    .add-entity-button {
+      color: black;
+      text-align: center;
+      display: block;
+      border: 1px dashed #bfbfbf;
+      cursor: pointer;
+      font-size: 8px;
+      padding: 2px 8px;
+      text-decoration: none;
+      .plus-icon {
+        vertical-align: middle;
+        font-size: 2.2em;
+        -webkit-text-stroke: 2.9px #f2f2f2;
+      }
+      &:hover {
+        background-color: @brand-primary;
+        color: white;
+        border: 1px dashed rgba(0, 0, 0, 0.0);
+        > i {
+          -webkit-text-stroke: 2.5px @brand-primary;
+        }
+        &.is-chip {
+          .plus-icon {
+            -webkit-text-stroke: 2.5px @brand-primary;
+          }
+        }
+      }
+      &:active {
+        position:relative;
+        top:1px;
+      }
+      &.is-chip {
+        border-radius: 24px;
+        font-size: 10px;
+        margin: 0.4em;
+        .plus-icon {
+          -webkit-text-stroke: 3.4px #f2f2f2;
+        }
+      }
+    }
+  }
+  &.outer-button {
+    .add-entity-button {
+      color: black;
+      text-align: center;
+      display: block;
+      border: 1px dashed #bfbfbf;
+      cursor: pointer;
+      font-size: 8px;
+      padding: 2px 8px;
+      text-decoration: none;
+      .plus-icon {
+        vertical-align: middle;
+        font-size: 2.2em;
+        -webkit-text-stroke: 2.9px #f2f2f2;
+      }
+      &:hover {
+        background-color: @brand-primary;
+        color: white;
+        border: 1px dashed rgba(0, 0, 0, 0.0);
+        > i {
+          -webkit-text-stroke: 2.5px @brand-primary;
+        }
+        &.is-chip {
+          .plus-icon {
+            -webkit-text-stroke: 2.5px @brand-primary;
+          }
+        }
+      }
+      &:active {
+        position:relative;
+        top:1px;
+      }
+      &.is-chip {
+        border-radius: 24px;
+        font-size: 10px;
+        margin: 0.4em;
+        .plus-icon {
+          -webkit-text-stroke: 3.4px #f2f2f2;
+        }
+      }
+    }
   }
   .window {
     .window-mixin();
@@ -385,28 +475,7 @@ export default {
       }
     }
   }
-  .add-entity-button {
-    background-color: @brand-primary;
-    color: @white;
-    border-radius:28px;
-    display:inline-block;
-    cursor:pointer;
-    font-family:Arial;
-    font-size:10px;
-    padding-right: 5px;
-    padding-left: 5px;
-    text-decoration:none;
-    .plus-icon {
-      vertical-align: middle;
-    }
-    &:hover {
-      background-color: lighten(@brand-primary, 5%);
-    }
-    &:active {
-      position:relative;
-      top:1px;
-    }
-  }
+  
 }
 
 </style>

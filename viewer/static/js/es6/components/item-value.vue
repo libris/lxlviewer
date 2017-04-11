@@ -86,10 +86,10 @@ export default {
 @import './_variables.less';
 
 .item-value {
-  width: 480px;
   border: solid 1px transparent;
   &.locked {
     line-height: 2;
+    padding-left: 5px;
     span {
       word-break: break-word;
     }
@@ -111,7 +111,6 @@ export default {
     transition: opacity 0.5s ease;
   }
   &.unlocked {
-    padding: 3px;
     &:hover {
       .remover {
         opacity: 1;

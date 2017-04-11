@@ -28,12 +28,14 @@ export default {
     'allow-local',
     'embedded',
     'is-removable',
+    'isInner',
   ],
   data() {
     return {
       showActionButtons: false,
       activeModal: false,
       removeHover: false,
+      foundChip: false,
     };
   },
   vuex: {
@@ -233,6 +235,13 @@ export default {
       }
       return VocabUtil.isEmbedded(type, this.vocab, this.settings);
     },
+    isChip(item) {
+      if (((this.getDatatype(item) == 'entity' || this.getDatatype(item) == 'local') && !this.isExpandedType)) {
+        this.foundChip = true;
+        return true;
+      }
+      return false;
+    },
   },
 };
 </script>
@@ -245,18 +254,21 @@ export default {
   </div>
   <div class="value node-list">
     <pre v-show="status.isDev">{{getPath}}</pre>
-    <ul>
-      <li v-for="item in valueAsArray" track-by="$index">
+    <ul :class="{ 'isChip': foundChip}">
+      <li v-for="item in valueAsArray" :class="{ 'isChip': isChip(item)}" track-by="$index">
         <item-entity v-if="getDatatype(item) == 'entity'" :is-locked="isLocked" :expanded="isExpandedType" :focus="focus" :item="item" :key="key" :index="$index"></item-entity>
         <item-local v-if="getDatatype(item) == 'local'" :is-locked="isLocked" :focus="focus" :item="item" :key="key" :index="$index"></item-local>
         <item-embedded v-if="getDatatype(item) == 'embedded'" :is-locked="isLocked" :focus="focus" :item="item" :key="key" :index="$index"></item-embedded>
         <item-value v-if="getDatatype(item) == 'value'" :is-removable="!hasSingleValue" :is-locked="isLocked" :focus="focus" :value="item" :key="key" :index="$index"></item-value>
       </li>
+      <li :class="{ 'isChip': foundChip}">
+        <entity-adder class="action" v-if="!isLocked && (isRepeatable || isEmptyObject)" :key="key" :focus="focus" :property-types="propertyTypes" :allow-local="allowLocal" :show-action-buttons="showActionButtons" :active="activeModal" :is-inner="isInner" :is-chip="foundChip"></entity-adder>
+      </li>
     </ul>
+    
   </div>
-  <div class="actions" v-if="!isLocked">
-    <entity-adder class="action" v-if="!isLocked && (isRepeatable || isEmptyObject)" :key="key" :focus="focus" :property-types="propertyTypes" :allow-local="allowLocal" :show-action-buttons="showActionButtons" :active="activeModal"></entity-adder>
-    <div class="action action-button action-remove" @mouseover="removeHover = true" @mouseout="removeHover = false" v-if="!isLocked && isRemovable" :class="{'shown-button': showActionButtons, 'hidden-button': !showActionButtons, 'disabled': activeModal}" v-on:click="removeThis()"><i class="fa fa-trash"></i></div>
+  <div class="actions">
+    <div class="action" v-if="!isLocked && isRemovable" :class="{'shown-button': showActionButtons, 'hidden-button': !showActionButtons, 'disabled': activeModal}"><i v-on:click="removeThis()" @mouseover="removeHover = true" @mouseout="removeHover = false" class="fa fa-trash fa-lg action-button action-remove"></i></div>
   </div>
 </div>
 </template>
@@ -279,7 +291,6 @@ export default {
       margin-bottom: 0px;
       padding: 0px;
       > li {
-        display: inline-block;
         margin-bottom: 2px;
         &:last-of-type {
           margin-bottom: auto;
@@ -335,13 +346,13 @@ export default {
     border-top-color: #f3f3f3;
     border-width: 1px;
     background-color: #f2f2f2;
+    padding: 4px 0px;
     &:nth-child(odd) {
       background-color: #ededed;
     }
     >.label {
       order: 1;
-      flex-basis: @col-label;
-      max-width: @col-label;
+      flex: 0 0 @col-label;
       display: flex;
       text-align: right;
       align-items: flex-start;
@@ -350,15 +361,15 @@ export default {
       border: 1px solid #e4e2e2;
       border-width: 0px 1px 0px 0px;
       border-radius: 0px;
+      overflow: hidden;
       a {
-        white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
       }
     }
     >.value {
       order: 2;
-      flex-basis: @col-value;
+      flex: 1 1 0px;
       padding: 5px;
       > * {
         display: inline-block;
@@ -368,22 +379,52 @@ export default {
         list-style: none;
         padding: 0px;
         > li {
-          display: inline-block;
+          .item-value {
+            width: 100%;
+            display: flex;
+            > textarea {
+              flex: 9 9 90%;
+            }
+            > div {
+              flex: 1 1 10%;
+            }
+          }
+        }
+        &.isChip {
+          width: 100%;
+          list-style: none;
+          padding: 0px;
+          &.isChip {
+            display: flex;
+          }
+          > li {
+            display: block;
+            .item-value {
+              > textarea {
+                width: 100%;
+              }
+            }
+          }
         }
       }
     }
     >.actions {
       order: 3;
-      flex-basis: @col-action;
+      flex: 0 0 @col-action;
       display: flex;
       justify-content: flex-end;
       align-items: center;
-      > * {
-        display: inline;
-        margin: 0px 5px;
+      margin-left: -5px;
+      > div {
+        
+      }
+      > span {
       }
       .disabled {
         visibility: hidden;
+      }
+      .action-remove {
+        padding: 10px;
       }
     }
   }
@@ -402,12 +443,44 @@ export default {
     }
     >.value {
       display: inline-block;
-      flex: 1 0 85%;
-      flex-grow: 1;
+      flex: 1 1 100%;
+      > ul {
+        width: 100%;
+        list-style: none;
+        padding: 0px;
+        > li {
+          .item-value {
+            width: 100%;
+            display: flex;
+            > textarea {
+              flex: 9 9 90%;
+            }
+            > div {
+              flex: 1 1 10%;
+            }
+          }
+        }
+        &.isChip {
+          width: 100%;
+          list-style: none;
+          padding: 0px;
+          &.isChip {
+            display: flex;
+          }
+          > li {
+            display: block;
+            .item-value {
+              > textarea {
+                width: 100%;
+              }
+            }
+          }
+        }
+      }
     }
     >.actions {
       display: inline-block;
-      flex: 1 0 15%;
+      flex: 0 0 10%;
       > * {
         display: inline-block;
       }
