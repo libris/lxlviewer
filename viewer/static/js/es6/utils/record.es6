@@ -55,6 +55,17 @@ export function splitJson(json) {
   return dataObj;
 }
 
+export function extractFnurgel(uri) {
+  // TODO: Make more checks before returning something
+  const recordUri = uri.split('#')[0];
+  const splitUri = recordUri.split('/');
+  const fnurgel = splitUri[splitUri.length - 1];
+  if (fnurgel.length === 15 || fnurgel.length === 16) {
+    return fnurgel;
+  }
+  return undefined;
+}
+
 export function stripId(obj) {
   const newObj = obj;
   if (newObj.hasOwnProperty('@id')) {
