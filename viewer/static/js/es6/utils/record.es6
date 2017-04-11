@@ -39,7 +39,8 @@ export function splitJson(json) {
         dataObj.work = original[i];
         // pushing work to quoted list so that references to it will work for now.
         // TODO: do something else
-        dataObj.quoted.push(original[i]);
+        const graphId = extractFnurgel(original[i]['@id']);
+        dataObj.quoted.push({ '@id': graphId, '@graph': [original[i]] });
         original.splice(i, 1);
         break;
       }
@@ -49,7 +50,7 @@ export function splitJson(json) {
   // Find quoted and put them in a separate list
   for (let i = 0; i < original.length; i++) {
     if (original[i].hasOwnProperty('@graph')) {
-      dataObj.quoted = dataObj.quoted.concat(original[i]['@graph']);
+      dataObj.quoted.push({ '@id': original[i]['@id'], '@graph': original[i]['@graph'] });
     }
   }
   return dataObj;
@@ -98,6 +99,7 @@ export function getItemObject(itemOf, heldBy, instance) {
         '@graph': [
           instance,
         ],
+        '@id': extractFnurgel(itemOf),
       },
     ],
   };
