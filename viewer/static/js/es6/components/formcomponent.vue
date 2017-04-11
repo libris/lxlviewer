@@ -249,7 +249,7 @@ export default {
 
     }
   }
-  .node-linked {
+  .node-linked, .node-list li {
     > div.expanded {
       width: @col-value;
     }

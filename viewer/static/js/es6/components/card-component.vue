@@ -1,6 +1,7 @@
 <script>
 import * as _ from 'lodash';
 import LodashProxiesMixin from './mixins/lodash-proxies-mixin';
+import EntitySummary from './entity-summary';
 import { changeStatus } from '../vuex/actions';
 
 export default {
@@ -12,7 +13,7 @@ export default {
     },
   },
   props: {
-    item: {},
+    focusData: {},
     key: '',
     title: {},
     shouldShow: false,
@@ -29,8 +30,15 @@ export default {
   methods: {
   },
   computed: {
+    hasUri() {
+      if (typeof this.uri !== 'undefined' && this.uri.length > 0) {
+        return true;
+      }
+      return false;
+    }
   },
   components: {
+    'entity-summary': EntitySummary,
   },
   watch: {
     shouldShow(v) {
@@ -57,39 +65,19 @@ export default {
 
 <template>
   <div class="card-info-container" :class="{ 'active': active, 'to-be-active': toBeActive, 'floating': floating }">
-    <div class="card" :class="{ 'locked': isLocked, 'local': !uri }">
-      <div class="header">
-        <span class="title" v-if="uri">
-          <a :href="uri" v-if="key!=='instanceOf'">{{ title }}</a>
-          <a href="#" v-if="key==='instanceOf'" @click="changeStatus('level', 'work')"> {{title}} </a>
-        </span>
-        <span class="title" v-if="!uri">
-          <span>{{ title }}</span>
-        </span>
-        <span class="type" v-if="item['@type']">
-          <a href="/vocab/#{{item['@type']}}">
-          {{ item['@type'] | labelByLang | capitalize }}
-          </a>
-        </span>
-        <span class="type" v-if="!item['@type']">[missing type]</span>
-      </div>
-      <ul class="card-data">
-        <li v-for="(k,v) in item" v-show="k !== '@type'">
-          <span class="key">
-            <a href="/vocab/#{{k}}">
-            {{ k | labelByLang | capitalize }}
-            </a>
-          </span>
-          <span class="value" v-show="!isObject(v)">{{v}}</span>
-          <ul class="value" v-show="isObject(v)">
-            <li class="card-data-value-row" v-for="(x,y) in v" track-by="$index">{{y}}</li>
-          </ul>
-        </li>
-      </ul>
-    </div>
+    <entity-summary :focus-data="focusData" :render-link="hasUri"></entity-summary>
   </div>
 </template>
 
 <style lang="less">
-
+  .card-info-container {
+    width: 100%;
+    &.floating {
+      width: 500px;
+      box-shadow: 0px 3px 5px 0px rgba(0, 0, 0, 0.3);
+    }
+    .entity-summary {
+      border-width: 1px 1px 3px 1px;
+    }
+  }
 </style>

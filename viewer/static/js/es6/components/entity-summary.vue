@@ -113,8 +113,8 @@ export default {
     max-width: 70%;
     .categorization {
       color: #8a8a8a;
+      display: block;
       font-weight: bold;
-      font-size: 0.9em;
       margin-bottom: -0.4em;
 
     }
@@ -123,6 +123,7 @@ export default {
       overflow: hidden;
       text-overflow: ellipsis;
       line-height: 1.6em;
+      min-height: 1.2em;
       margin: 0px;
       width: 100%;
     }

@@ -13,6 +13,6 @@
     "label",
     "itemOf",
   ],
-  "info": ["responsibilityStatement", "instanceOf"],
+  "info": ["responsibilityStatement", "instanceOf", "contribution"],
   "identifiers": ["identifiedBy", "sameAs"]
 }

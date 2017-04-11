@@ -101,6 +101,14 @@ export default {
       });
       return types;
     },
+    searchTypes() {
+      const types = this.getFullRange;
+      const typeArray = [];
+      for (const type of types) {
+        typeArray.push(type.replace(this.settings.vocabPfx, ''));
+      }
+      return typeArray;
+    },
     onlyEmbedded() {
       const range = this.getFullRange;
       for (const prop of range) {
@@ -194,7 +202,7 @@ export default {
       const self = this;
       self.searchResult = {};
       self.loading = true;
-      this.getItems(keyword, this.getFullRange).then((result) => {
+      this.getItems(keyword, this.searchTypes).then((result) => {
         setTimeout(() => {
           self.searchResult = result;
           self.loading = false;
@@ -243,7 +251,7 @@ export default {
     },
     getItems(keyword, typeArray) {
       // TODO: Support asking for more items
-      const searchKey = `${keyword}`;
+      const searchKey = `${keyword}*`;
       let searchUrl = `/find?q=${searchKey}`;
       if (typeof typeArray !== 'undefined' && typeArray.length > 0) {
         for (const type of typeArray) {
