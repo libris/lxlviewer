@@ -1,6 +1,17 @@
 <!DOCTYPE html>
 <html lang="${lang}">
   <head>
+    <!--[if lt IE 9]>
+  <style>
+    .container {
+      display: none;
+    }
+    #oldbrowsermsg {
+      padding: 25px;
+      display: block !important;
+    }
+  </style>
+<![endif]-->
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="utf-8" />
     <title>${g.site.title} - {% block title %}{% endblock %}</title>
@@ -15,6 +26,19 @@
   </head>
   <body {% block bodyattrs %}{% endblock %}>
     <div id="body-blocker"></div>
+    <div id="oldbrowsermsg" style="display:none">
+      <h1>${g.site.title}</h1>
+      <p>Din webbläsare stöds inte av tjänsten.<br>
+        <br>
+        <u>Kompatibla webbläsare:</u><br>
+        Google Chrome<br>
+        Mozilla Firefox<br>
+        Apple Safari<br>
+        Microsoft Internet Explorer (version 9 eller senare)<br>
+        <br><br>
+        Kontakta oss via <a href="mailto:libris@kb.se">libris@kb.se</a> om du har några frågor.
+    </p>
+    </div>
     {% block navigation %}
     % if g.site.stylesheet
       <nav class="navbar navbar-inverse">

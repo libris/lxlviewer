@@ -90,7 +90,7 @@ export default {
       <li v-for="v in identifiers">{{v}}</li>
     </ul>
   </div>
-  <div class="sub" v-if="sub.length > 0 && sub[0] !== ''">
+  <div class="sub">
     <span>{{ sub.join(', ') }}</span>
   </div>
 </div>
@@ -101,7 +101,7 @@ export default {
 .entity-summary {
   width: 100%;
   border: 1px solid #ccc;
-  font-size: 14px;
+  font-size: 12px;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
@@ -122,6 +122,7 @@ export default {
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      font-size: 1.6em;
       line-height: 1.6em;
       min-height: 1.2em;
       margin: 0px;
