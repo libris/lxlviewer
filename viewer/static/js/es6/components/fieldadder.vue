@@ -199,7 +199,7 @@ export default {
 <template>
   <div class="field-adder container">
     <a id="add-button" v-on:click="show" :class="{ 'work-state': isWork, 'instance-state': isInstance, 'is-fixed': buttonFixed }">
-      <i class="fa fa-plus plus-icon" aria-hidden="true"></i>
+      <i class="fa fa-fw fa-plus plus-icon" aria-hidden="true"></i>
     </a>
     <a id="mock-button" v-show="buttonFixed">
       <i class="fa fa-plus plus-icon" aria-hidden="true"></i>
@@ -252,23 +252,25 @@ export default {
       bottom: 3%;
       top: auto;
     }
-    border-radius:55px;
+    border-radius:2em;
     box-shadow: 0px 7px 10px 0px rgba(0,0,0,0.7);
     cursor:pointer;
-    font-size:40px;
-    padding:12px 30px;
+    font-size: 1.5em;
+    padding: 1em 1em;
+    line-height: 1.2em;
     text-decoration: none;
     .plus-icon {
-      -webkit-text-stroke: 5.5px @brand-primary;
+      -webkit-text-stroke: 0.12em @brand-primary;
     }
     &:hover {
       background-color: lighten(@brand-primary, 5%);
       .plus-icon {
-        -webkit-text-stroke: 5.5px lighten(@brand-primary, 5%);
+        -webkit-text-stroke: 0.12em lighten(@brand-primary, 5%);
       }
     }
     &:active {
-      bottom: 2.5%;
+      bottom: 2.7%;
+      box-shadow: 0px 5px 10px 0px rgba(0,0,0,0.5);
     }
   }
   #mock-button {
