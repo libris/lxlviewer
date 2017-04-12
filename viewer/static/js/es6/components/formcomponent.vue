@@ -249,11 +249,6 @@ export default {
 
     }
   }
-  .node-linked, .node-list li {
-    > div.expanded {
-      width: @col-value;
-    }
-  }
   .node-local {
     width: 420px;
     clear: left;
