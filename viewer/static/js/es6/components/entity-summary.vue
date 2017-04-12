@@ -104,7 +104,7 @@ export default {
   font-size: 14px;
   display: flex;
   flex-wrap: wrap;
-  justify-content: flex-start;
+  justify-content: space-between;
   > * {
     padding: 5px;
   }
@@ -133,7 +133,7 @@ export default {
     }
   }
   .identifiers {
-    flex-basis: 30%;
+    flex-basis: 27%;
     text-align: right;
     padding: 10px;
     font-weight: bold;

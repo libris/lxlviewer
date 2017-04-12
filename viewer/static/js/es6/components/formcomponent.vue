@@ -118,7 +118,7 @@ export default {
         }
       }
       _.each(formObj, (v, k) => {
-        if (!propertyList.includes(k)) {
+        if (!_.includes(propertyList, k)) {
           propertyList.push(k);
         }
       });

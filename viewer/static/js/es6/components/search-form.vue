@@ -100,7 +100,7 @@ export default {
         const queryText = [];
         const tagObject = {};
         for (const node of this.formData) {
-          if (node.class.includes('searchtag')) {
+          if (node.class.indexOf('searchtag') > -1) {
               const tag = node.value.split(':');
               if (validTags.indexOf(tag[0].toLowerCase()) > -1) {
                   tagObject[tag[0]] = tag[1];
@@ -117,7 +117,7 @@ export default {
         console.log(searchObj);
         const tagInputs = document.querySelectorAll('.tagInput');
         _.each(this.getConvertedSearchObject(searchObj), (v, k) => {
-          tagInputs.forEach(inputTag => {
+          _.each(tagInputs, inputTag => {
             if (inputTag.name === k) {
                 inputTag.value = v;
             }
@@ -178,7 +178,7 @@ export default {
           return filters;
       },
       currentIsTag() {
-          return this.currentField.value.includes(':')
+          return this.currentField.value.indexOf(':') > -1;
       },
       currentField() {
           return this.formData[this.currentInput];
