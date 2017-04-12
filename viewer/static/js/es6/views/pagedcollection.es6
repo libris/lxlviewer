@@ -101,7 +101,6 @@ export default class PagedCollection extends View {
         this.initialized = true;
       },
       components: {
-        'notification': Notification,
         'main-search-field': MainSearchField,
         'facet-controls': FacetControls,
         'search-result-component': SearchResultComponent,

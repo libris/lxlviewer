@@ -69,7 +69,7 @@ export default {
   <div class="item-embedded">
     <i v-if="!isLocked" class="fa fa-trash chip-action" v-on:click="removeThis"></i>
     <span class="type"><a href="/vocab/#{{item['@type']}}">{{ item['@type'] | labelByLang | capitalize }}</a></span>
-    <data-node v-for="(k,v) in filteredItem" :is-locked="isLocked" :is-removable="false" :embedded="true" :parent-key="key" :parent-index="index" :key="k" :value="v" :focus="focus"></data-node>
+    <data-node v-for="(k,v) in filteredItem" :is-inner="true" :is-locked="isLocked" :is-removable="false" :embedded="true" :parent-key="key" :parent-index="index" :key="k" :value="v" :focus="focus"></data-node>
   </div>
 </template>
 
