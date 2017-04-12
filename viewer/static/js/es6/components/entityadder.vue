@@ -81,12 +81,6 @@ export default {
     }
   },
   computed: {
-    isWork() {
-      return this.focus === 'work';
-    },
-    isInstance() {
-      return this.focus === 'mainEntity';
-    },
     getRange() {
       return VocabUtil.getRange(this.key, this.vocab, this.settings.vocabPfx);
     },
@@ -273,13 +267,13 @@ export default {
 </script>
 
 <template>
-<span class="entity-adder" :class="{'inner-button': (isInner), 'outer-button': !isInner}">
-  <a v-if="isChip" class="action-button add-entity-button" :class="{'disabled': active, 'is-chip': isChip}" v-on:click="add()" @mouseenter="showToolTip=true" @mouseleave="showToolTip=false">
-    <i class="fa fa-plus fa-2x plus-icon" aria-hidden="true"></i>
-  </a>
-  <a v-if="!isChip" class="action-button add-entity-button" :class="{'disabled': active, 'is-chip': isChip}" v-on:click="add()" @mouseenter="showToolTip=true" @mouseleave="showToolTip=false">
-    <i class="fa fa-plus fa-2x plus-icon" aria-hidden="true"></i>
-  </a>
+<div class="entity-adder">
+  <div v-if="isChip" class="chip action-button add-entity-button" :class="{ 'fade': !showActionButtons }" v-on:click="add()" @mouseenter="showToolTip=true" @mouseleave="showToolTip=false">
+    <span class="chip-label"><i class="fa fa-fw fa-plus plus-icon" aria-hidden="true"></i><span class="label-text">{{ "Add" | translatePhrase }}</span></span>
+  </div>
+  <div v-if="!isChip" class="action-button add-entity-button" :class="{'disabled': active, 'fade': !showActionButtons }" v-on:click="add()" @mouseenter="showToolTip=true" @mouseleave="showToolTip=false">
+    <span class="chip-label"><i class="fa fa-fw fa-plus plus-icon" aria-hidden="true"></i><span class="label-text">{{ "Add" | translatePhrase }}</span></span>
+  </div>
   <!--<tooltip-component :show-tooltip="showToolTip" :tooltiptext="key"></tooltip-component>-->
   <div class="window" v-if="active">
     <div class="header">
@@ -325,100 +319,42 @@ export default {
       </div>
     </div>
   </div>
-</span>
+</div>
 </template>
 
 <style lang="less">
 @import './_variables.less';
 
 .entity-adder {
-  opacity: 1;
   .disabled {
     visibility: hidden;
   }
-  &.inner-button {
-    width: 100%;
-    .add-entity-button {
-      color: black;
-      text-align: center;
-      display: block;
-      border: 1px dashed #bfbfbf;
-      cursor: pointer;
-      font-size: 8px;
-      padding: 2px 8px;
-      text-decoration: none;
-      .plus-icon {
-        vertical-align: middle;
-        font-size: 2.2em;
-        -webkit-text-stroke: 2.9px #f2f2f2;
-      }
-      &:hover {
-        background-color: @brand-primary;
-        color: white;
-        border: 1px dashed rgba(0, 0, 0, 0.0);
-        > i {
-          -webkit-text-stroke: 2.5px @brand-primary;
-        }
-        &.is-chip {
-          .plus-icon {
-            -webkit-text-stroke: 2.5px @brand-primary;
-          }
-        }
-      }
-      &:active {
-        position:relative;
-        top:1px;
-      }
-      &.is-chip {
-        border-radius: 24px;
-        font-size: 10px;
-        margin: 0.4em;
-        .plus-icon {
-          -webkit-text-stroke: 3.4px #f2f2f2;
-        }
-      }
+  > .chip {
+    .chip-mixin(transparent, @gray-darker);
+    .label-text {
+      display: inline-block;
     }
   }
-  &.outer-button {
-    .add-entity-button {
-      color: black;
-      text-align: center;
-      display: block;
-      border: 1px dashed #bfbfbf;
-      cursor: pointer;
-      font-size: 8px;
-      padding: 2px 8px;
-      text-decoration: none;
-      .plus-icon {
-        vertical-align: middle;
-        font-size: 2.2em;
-        -webkit-text-stroke: 2.9px #f2f2f2;
+  .add-entity-button {
+    opacity: 1;
+    transition: opacity 0.5s ease;
+    &.fade {
+      opacity: 0;
+    }
+    cursor: pointer;
+    text-align: center;
+    border: 1px dashed @gray-darker;
+    background-color: transparent;
+    .chip-label {
+      color: @gray-darker;
+    }
+    &:hover {
+      .chip-label {
+        color: @gray-darker;
       }
-      &:hover {
-        background-color: @brand-primary;
-        color: white;
-        border: 1px dashed rgba(0, 0, 0, 0.0);
-        > i {
-          -webkit-text-stroke: 2.5px @brand-primary;
-        }
-        &.is-chip {
-          .plus-icon {
-            -webkit-text-stroke: 2.5px @brand-primary;
-          }
-        }
-      }
-      &:active {
-        position:relative;
-        top:1px;
-      }
-      &.is-chip {
-        border-radius: 24px;
-        font-size: 10px;
-        margin: 0.4em;
-        .plus-icon {
-          -webkit-text-stroke: 3.4px #f2f2f2;
-        }
-      }
+    }
+    .chip-action {
+
     }
   }
   .window {
@@ -483,7 +419,7 @@ export default {
       }
     }
   }
-  
+
 }
 
 </style>

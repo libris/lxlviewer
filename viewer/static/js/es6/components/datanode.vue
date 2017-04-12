@@ -254,7 +254,7 @@ export default {
   </div>
   <div class="value node-list">
     <pre v-show="status.isDev">{{getPath}}</pre>
-    <ul :class="{ 'isChip': foundChip}">
+    <ul>
       <li v-for="item in valueAsArray" :class="{ 'isChip': isChip(item)}" track-by="$index">
         <item-entity v-if="getDatatype(item) == 'entity'" :is-locked="isLocked" :expanded="isExpandedType" :focus="focus" :item="item" :key="key" :index="$index"></item-entity>
         <item-local v-if="getDatatype(item) == 'local'" :is-locked="isLocked" :focus="focus" :item="item" :key="key" :index="$index"></item-local>
@@ -265,7 +265,7 @@ export default {
         <entity-adder class="action" v-if="!isLocked && (isRepeatable || isEmptyObject)" :key="key" :focus="focus" :property-types="propertyTypes" :allow-local="allowLocal" :show-action-buttons="showActionButtons" :active="activeModal" :is-inner="isInner" :is-chip="foundChip"></entity-adder>
       </li>
     </ul>
-    
+
   </div>
   <div class="actions">
     <div class="action" v-if="!isLocked && isRemovable" :class="{'shown-button': showActionButtons, 'hidden-button': !showActionButtons, 'disabled': activeModal}"><i v-on:click="removeThis()" @mouseover="removeHover = true" @mouseout="removeHover = false" class="fa fa-trash fa-lg action-button action-remove"></i></div>
@@ -346,7 +346,6 @@ export default {
     border-top-color: #f3f3f3;
     border-width: 1px;
     background-color: #f2f2f2;
-    padding: 4px 0px;
     &:nth-child(odd) {
       background-color: #ededed;
     }
@@ -371,6 +370,8 @@ export default {
       order: 2;
       flex: 1 1 0px;
       padding: 5px;
+      border: 1px solid #e4e2e2;
+      border-width: 0px 1px 0px 0px;
       > * {
         display: inline-block;
       }
@@ -379,6 +380,7 @@ export default {
         list-style: none;
         padding: 0px;
         > li {
+          display: block;
           .item-value {
             width: 100%;
             display: flex;
@@ -389,20 +391,13 @@ export default {
               flex: 1 1 10%;
             }
           }
-        }
-        &.isChip {
-          width: 100%;
-          list-style: none;
-          padding: 0px;
           &.isChip {
-            display: flex;
+            display: inline-block;
+            float: left;
           }
-          > li {
-            display: block;
-            .item-value {
-              > textarea {
-                width: 100%;
-              }
+          .item-value {
+            > textarea {
+              width: 100%;
             }
           }
         }
@@ -416,7 +411,7 @@ export default {
       align-items: center;
       margin-left: -5px;
       > div {
-        
+
       }
       > span {
       }
@@ -449,6 +444,9 @@ export default {
         list-style: none;
         padding: 0px;
         > li {
+          &.isChip {
+            display: inline-block;
+          }
           .item-value {
             width: 100%;
             display: flex;
@@ -460,19 +458,11 @@ export default {
             }
           }
         }
-        &.isChip {
-          width: 100%;
-          list-style: none;
-          padding: 0px;
-          &.isChip {
-            display: flex;
-          }
-          > li {
-            display: block;
-            .item-value {
-              > textarea {
-                width: 100%;
-              }
+        > li {
+          display: block;
+          .item-value {
+            > textarea {
+              width: 100%;
             }
           }
         }
