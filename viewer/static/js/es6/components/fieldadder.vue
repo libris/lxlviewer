@@ -197,10 +197,9 @@ export default {
 </script>
 
 <template>
-  <div class="field-adder">
+  <div class="field-adder container">
     <a id="add-button" v-on:click="show" :class="{ 'work-state': isWork, 'instance-state': isInstance, 'is-fixed': buttonFixed }">
       <i class="fa fa-plus plus-icon" aria-hidden="true"></i>
-      {{ "Add field" | translatePhrase }}
     </a>
     <a id="mock-button" v-show="buttonFixed">
       <i class="fa fa-plus plus-icon" aria-hidden="true"></i>
@@ -241,36 +240,32 @@ export default {
 
 .field-adder {
   background-color: #fff;
-  text-align: center;
+  text-align: right;
   height: 0;
+  margin: 35px;
   display: block; // So that the clickaway plugin triggers nicely
   #add-button {
     background-color: @brand-primary;
     color: @white;
-    top: 30px;
     &.is-fixed {
       position: fixed;
       bottom: 3%;
-      right: 0;
-      left: 0;
       top: auto;
     }
-    position: relative;
-    width: 152px;
-    margin-right: auto;
-    margin-left: auto;
-    border-radius:2px;
+    border-radius:55px;
     box-shadow: 0px 7px 10px 0px rgba(0,0,0,0.7);
     cursor:pointer;
-    font-size:16px;
-    font-weight: bold;
-    padding:5px 20px;
+    font-size:40px;
+    padding:12px 30px;
     text-decoration: none;
     .plus-icon {
-      vertical-align: middle;
+      -webkit-text-stroke: 5.5px @brand-primary;
     }
     &:hover {
       background-color: lighten(@brand-primary, 5%);
+      .plus-icon {
+        -webkit-text-stroke: 5.5px lighten(@brand-primary, 5%);
+      }
     }
     &:active {
       bottom: 2.5%;
