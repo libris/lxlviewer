@@ -188,6 +188,20 @@ export function getBaseClassesFromArray(typeArray, vocab, vocabPfx) {
   return classes;
 }
 
+export function isSubClassOf(classId, baseClassId, vocab, vocabPfx) {
+  if (!classId || typeof classId === 'undefined') {
+    throw new Error('isSubClassOf was called without a classId');
+  }
+  if (!baseClassId || typeof baseClassId === 'undefined') {
+    throw new Error('isSubClassOf was called without a baseClassId');
+  }
+  const baseClasses = getBaseClasses(classId, vocab, vocabPfx);
+  if (baseClasses.indexOf(`${vocabPfx}${baseClassId}`) > -1) {
+    return true;
+  }
+  return false;
+}
+
 export function getPropertiesFromArray(typeArray, vocab, vocabPfx) {
   let props = [];
   const classNames = getBaseClassesFromArray(typeArray, vocab, vocabPfx);
