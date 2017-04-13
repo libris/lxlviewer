@@ -73,7 +73,7 @@ export default {
   .card-info-container {
     width: 100%;
     &.floating {
-      width: 500px;
+      width: 600px;
       box-shadow: 0px 3px 5px 0px rgba(0, 0, 0, 0.3);
     }
     .entity-summary {
