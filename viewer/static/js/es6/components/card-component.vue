@@ -65,7 +65,7 @@ export default {
 
 <template>
   <div class="card-info-container" :class="{ 'active': active, 'to-be-active': toBeActive, 'floating': floating }">
-    <entity-summary :focus-data="focusData" :render-link="hasUri"></entity-summary>
+    <entity-summary :focus-data="focusData" :render-link="hasUri" :lines="5"></entity-summary>
   </div>
 </template>
 
