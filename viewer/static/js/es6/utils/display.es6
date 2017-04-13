@@ -222,7 +222,10 @@ export function getItemSummary(item, displayDefs, quoted, vocab, settings) {
 
 export function getItemLabel(item, displayDefs, quoted, vocab, settings) {
   const displayObject = getChip(item, displayDefs, quoted, vocab, settings);
-  const rendered = extractStrings(displayObject).trim();
+  let rendered = extractStrings(displayObject).trim();
+  if (item['@type'] && VocabUtil.isSubClassOf(item['@type'], 'Identifier', vocab, settings.vocabPfx)) {
+    rendered = `${item['@type']} ${rendered}`;
+  }
   return rendered;
 }
 
