@@ -123,6 +123,7 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
       }
     }
     if (properties.length === 0) {
+      // No props found, default to Resource class and get those
       properties = getProperties('Resource', level, displayDefs, settings);
     }
   }
@@ -131,6 +132,7 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
     properties = ['@type'].concat(properties);
   }
 
+  // Start filling the object with the selected properties
   for (let i = 0; i < properties.length; i++) {
     if (!_.isObject(properties[i])) {
       let valueOnItem = '';
