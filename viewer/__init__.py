@@ -265,11 +265,11 @@ def rendered_response(path, suffix, data, mimetype=None):
         for header in KEEP_HEADERS:
             value = resp.headers.get(header)
             if value:
-                new_resp.headers[header] = value
+                new_resp.headers.add(header, value)
 
     if mimetype == 'application/json':
         context_link = '<%s>; rel="http://www.w3.org/ns/json-ld#context"' % CONTEXT_PATH
-        new_resp.headers['Link'] = context_link
+        new_resp.headers.add('Link', context_link)
 
     return new_resp
 
