@@ -151,7 +151,7 @@ export default {
     moveFieldAdderButton(e) {
       const topFormComponent = document.getElementsByClassName('focused-form-component')[0];
       const buttonThreshold = topFormComponent.offsetTop + topFormComponent.offsetHeight;
-      const buttonPos = window.pageYOffset + window.innerHeight - 120;
+      const buttonPos = window.pageYOffset + window.innerHeight - 80;
       if (buttonThreshold > buttonPos) {
         this.buttonFixed = true;
       } else {
@@ -200,10 +200,23 @@ export default {
         <i v-show="buttonFixed" class="fa fa-plus plus-icon" aria-hidden="true"></i>
         <div>{{ "Add field" | translatePhrase }}</div>
       </a>
-      <div class="window" v-show="active">
-        <div class="header">
-          <span class="title">
-            {{ "Add field" | translatePhrase }}
+    <div class="window" v-show="active">
+      <div class="header">
+        <span class="title">
+          {{ "Add field" | translatePhrase }}
+        </span>
+        <span class="windowControl">
+          <i v-on:click="hide" class="fa fa-close"></i>
+        </span>
+        <span class="filter">
+          {{ "Filter by" | translatePhrase }} <input id="test" class="filterInput mousetrap" @input="resetSelectIndex()" type="text" v-model="filterKey"></input>
+          <span class="filterInfo">{{ "Showing" | translatePhrase }} {{ filteredResults.length }} {{ "of" | translatePhrase }} {{allowed ? allowed.length : '0'}} {{ "total" | translatePhrase }}</span>
+        </span>
+      </div>
+      <ul v-if="active" class="field-list">
+        <li v-on:mouseover="selectedIndex = $index" v-bind:class="{ 'added': prop.added, 'available': !prop.added, 'selected': $index == selectedIndex }" v-for="prop in filteredResults" track-by="$index" @click="addField(prop.item, true)">
+          <span class="fieldLabel" title="{{prop.item['@id'] | labelByLang | capitalize }}">
+            {{prop.item['@id'] | labelByLang | capitalize }}
           </span>
           <span class="windowControl">
             <i v-on:click="hide" class="fa fa-close"></i>
@@ -259,7 +272,7 @@ export default {
         display: block;
         max-height: 100%;
         max-width: 100%;
-        padding: 30px 0px;
+        padding: 0.95em 0em;
       }
     }
   }
@@ -269,26 +282,28 @@ export default {
     color: @white;
     &.is-fixed {
       position: fixed;
-      margin-left: -46px;
+      margin-left: -1.75em;
       bottom: 12px;
     }
-    border-radius:55px;
+    border-radius:2em;
     box-shadow: 0px 7px 10px 0px rgba(0,0,0,0.7);
     cursor:pointer;
-    font-size:40px;
-    padding:12px 30px;
+    font-size: 1.5em;
+    padding: 1em 1.2em;
+    line-height: 1.2em;
     text-decoration: none;
     .plus-icon {
-      -webkit-text-stroke: 5.5px @brand-primary;
+      -webkit-text-stroke: 0.12em @brand-primary;
     }
     &:hover {
       background-color: lighten(@brand-primary, 5%);
       .plus-icon {
-        -webkit-text-stroke: 5.5px lighten(@brand-primary, 5%);
+        -webkit-text-stroke: 0.12em lighten(@brand-primary, 5%);
       }
     }
     &:active {
-      bottom: 2.5%;
+      bottom: 2.7%;
+      box-shadow: 0px 5px 10px 0px rgba(0,0,0,0.5);
     }
     > div {
       font-size: 22px;

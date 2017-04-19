@@ -65,7 +65,7 @@ export default {
 
 <template>
   <div class="card-info-container" :class="{ 'active': active, 'to-be-active': toBeActive, 'floating': floating }">
-    <entity-summary :focus-data="focusData" :render-link="hasUri"></entity-summary>
+    <entity-summary :focus-data="focusData" :render-link="hasUri" :lines="5"></entity-summary>
   </div>
 </template>
 
@@ -73,7 +73,7 @@ export default {
   .card-info-container {
     width: 100%;
     &.floating {
-      width: 500px;
+      width: 600px;
       box-shadow: 0px 3px 5px 0px rgba(0, 0, 0, 0.3);
     }
     .entity-summary {

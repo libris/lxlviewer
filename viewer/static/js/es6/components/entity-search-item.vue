@@ -38,7 +38,7 @@ export default {
 
 <template>
   <div class="search-result-item">
-    <entity-summary :focus-data="focusData"></entity-summary>
+    <entity-summary :focus-data="focusData" :lines="4"></entity-summary>
   </div>
 </template>
 

@@ -9,6 +9,7 @@ export default {
   props: {
     focusData: {},
     renderLink: false,
+    lines: Number,
   },
   vuex: {
     getters: {
@@ -31,7 +32,14 @@ export default {
       return this.getFormattedEntries(this.getSummary.header);
     },
     identifiers() {
-      const identifiersList = this.getFormattedEntries(this.getSummary.identifiers);
+      let identifiersList = this.getFormattedEntries(this.getSummary.identifiers);
+      console.log("before", identifiersList.length, "lines:", this.lines);
+      if (identifiersList.length > this.lines) {
+        const diff = identifiersList.length - this.lines;
+        identifiersList.splice((this.lines - 1), diff+1);
+        console.log("after", identifiersList.length);
+        identifiersList.push(`+ ${diff+1} identifierare`);
+      }
       return identifiersList;
     },
     info() {
