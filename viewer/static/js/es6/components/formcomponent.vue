@@ -218,7 +218,7 @@ export default {
 @import './_variables.less';
 
 .form-component {
-  margin: 20px 0px  80px;
+  margin: 20px 0px 0px;
   border: solid #ccc;
   border-width: 1px 0px 0px 0px;
   &.locked {
