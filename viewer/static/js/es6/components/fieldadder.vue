@@ -200,23 +200,10 @@ export default {
         <i v-show="buttonFixed" class="fa fa-plus plus-icon" aria-hidden="true"></i>
         <div>{{ "Add field" | translatePhrase }}</div>
       </a>
-    <div class="window" v-show="active">
-      <div class="header">
-        <span class="title">
-          {{ "Add field" | translatePhrase }}
-        </span>
-        <span class="windowControl">
-          <i v-on:click="hide" class="fa fa-close"></i>
-        </span>
-        <span class="filter">
-          {{ "Filter by" | translatePhrase }} <input id="test" class="filterInput mousetrap" @input="resetSelectIndex()" type="text" v-model="filterKey"></input>
-          <span class="filterInfo">{{ "Showing" | translatePhrase }} {{ filteredResults.length }} {{ "of" | translatePhrase }} {{allowed ? allowed.length : '0'}} {{ "total" | translatePhrase }}</span>
-        </span>
-      </div>
-      <ul v-if="active" class="field-list">
-        <li v-on:mouseover="selectedIndex = $index" v-bind:class="{ 'added': prop.added, 'available': !prop.added, 'selected': $index == selectedIndex }" v-for="prop in filteredResults" track-by="$index" @click="addField(prop.item, true)">
-          <span class="fieldLabel" title="{{prop.item['@id'] | labelByLang | capitalize }}">
-            {{prop.item['@id'] | labelByLang | capitalize }}
+      <div class="window" v-show="active">
+        <div class="header">
+          <span class="title">
+            {{ "Add field" | translatePhrase }}
           </span>
           <span class="windowControl">
             <i v-on:click="hide" class="fa fa-close"></i>
