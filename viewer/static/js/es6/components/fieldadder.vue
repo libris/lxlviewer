@@ -6,19 +6,6 @@ import { getSettings } from '../vuex/getters';
 import { changeStatus, changeNotification } from '../vuex/actions';
 import ComboKeys from 'combokeys';
 
-function moveFieldAdderButton(e) {
-  const topFormComponent = document.getElementsByClassName('focused-form-component')[0];
-  const buttonThreshold = topFormComponent.offsetTop + topFormComponent.offsetHeight + document.getElementById('add-button').offsetHeight;
-  if (this.buttonPos === -1) {
-    this.buttonPos = document.getElementById('add-button').offsetTop;
-  }
-  const scrollPosition = this.buttonPos + e.target.body.scrollTop;
-  if (buttonThreshold > scrollPosition) {
-    this.buttonFixed = true;
-  } else {
-    this.buttonFixed = false;
-  }
-}
 
 export default {
   mixins: [clickaway],
@@ -46,11 +33,11 @@ export default {
     };
   },
   beforeDestroy() {
-    window.removeEventListener('scroll', moveFieldAdderButton);
+    window.removeEventListener('scroll', this.moveFieldAdderButton);
   },
   ready() { // Ready method is deprecated in 2.0, switch to "mounted"
     this.$nextTick(() => { // TODO: Fix proper scroll tracking. This is just an ugly solution using document.onscroll here and window.scroll in editorcontrols.vue
-      window.addEventListener('scroll', moveFieldAdderButton);
+      window.addEventListener('scroll', this.moveFieldAdderButton);
     });
   },
   computed: {
@@ -161,6 +148,16 @@ export default {
     },
   },
   methods: {
+    moveFieldAdderButton(e) {
+      const topFormComponent = document.getElementsByClassName('focused-form-component')[0];
+      const buttonThreshold = topFormComponent.offsetTop + topFormComponent.offsetHeight;
+      const buttonPos = window.pageYOffset + window.innerHeight - 80;
+      if (buttonThreshold > buttonPos) {
+        this.buttonFixed = true;
+      } else {
+        this.buttonFixed = false;
+      }
+    },
     addField(prop, close) {
       const fieldName = prop['@id'].split(':')[1];
       this.$dispatch('add-field', prop);
@@ -197,40 +194,39 @@ export default {
 </script>
 
 <template>
-  <div class="field-adder container">
-    <a id="add-button" v-on:click="show" :class="{ 'work-state': isWork, 'instance-state': isInstance, 'is-fixed': buttonFixed }">
-      <i class="fa fa-fw fa-plus plus-icon" aria-hidden="true"></i>
-    </a>
-    <a id="mock-button" v-show="buttonFixed">
-      <i class="fa fa-plus plus-icon" aria-hidden="true"></i>
-      NYTT FÄLT
-    </a>
-    <div class="window" v-show="active">
-      <div class="header">
-        <span class="title">
-          {{ "Add field" | translatePhrase }}
-        </span>
-        <span class="windowControl">
-          <i v-on:click="hide" class="fa fa-close"></i>
-        </span>
-        <span class="filter">
-          {{ "Filter by" | translatePhrase }} <input id="test" class="filterInput mousetrap" @input="resetSelectIndex()" type="text" v-model="filterKey"></input>
-          <span class="filterInfo">{{ "Showing" | translatePhrase }} {{ filteredResults.length }} {{ "of" | translatePhrase }} {{allowed ? allowed.length : '0'}} {{ "total" | translatePhrase }}</span>
-        </span>
+  <div class="container">
+    <div class="field-adder" :class="{ 'at-bottom': !buttonFixed }">
+      <a id="add-button" v-on:click="show" :class="{ 'work-state': isWork, 'instance-state': isInstance, 'is-fixed': buttonFixed }">
+        <i v-show="buttonFixed" class="fa fa-plus plus-icon" aria-hidden="true"></i>
+        <div>{{ "Add field" | translatePhrase }}</div>
+      </a>
+      <div class="window" v-show="active">
+        <div class="header">
+          <span class="title">
+            {{ "Add field" | translatePhrase }}
+          </span>
+          <span class="windowControl">
+            <i v-on:click="hide" class="fa fa-close"></i>
+          </span>
+          <span class="filter">
+            {{ "Filter by" | translatePhrase }} <input id="test" class="filterInput mousetrap" @input="resetSelectIndex()" type="text" v-model="filterKey"></input>
+            <span class="filterInfo">{{ "Showing" | translatePhrase }} {{ filteredResults.length }} {{ "of" | translatePhrase }} {{allowed ? allowed.length : '0'}} {{ "total" | translatePhrase }}</span>
+          </span>
+        </div>
+        <ul v-if="active" class="field-list">
+          <li v-on:mouseover="selectedIndex = $index" v-bind:class="{ 'added': prop.added, 'available': !prop.added, 'selected': $index == selectedIndex }" v-for="prop in filteredResults" track-by="$index" @click="addField(prop.item, true)">
+            <span class="fieldLabel" title="{{prop.item['@id'] | labelByLang | capitalize }}">
+              {{prop.item['@id'] | labelByLang | capitalize }}
+            </span>
+            <span class="typeLabel">{{ prop.item['@id'] }}</span>
+            <span class="addControl">
+              <a v-on:click.prevent="addField(prop.item, false)"><i class="fa fa-plus-circle"></i></a>
+              <span><i class="fa fa-check"></i></span>
+            </span>
+          </li>
+          <li v-if="filteredResults.length === 0"><i>{{ "Did not find any fields" | translatePhrase }}...</i></li>
+        </ul>
       </div>
-      <ul v-if="active" class="field-list">
-        <li v-on:mouseover="selectedIndex = $index" v-bind:class="{ 'added': prop.added, 'available': !prop.added, 'selected': $index == selectedIndex }" v-for="prop in filteredResults" track-by="$index" @click="addField(prop.item, true)">
-          <span class="fieldLabel" title="{{prop.item['@id'] | labelByLang | capitalize }}">
-            {{prop.item['@id'] | labelByLang | capitalize }}
-          </span>
-          <span class="typeLabel">{{ prop.item['@id'] }}</span>
-          <span class="addControl">
-            <a v-on:click.prevent="addField(prop.item, false)"><i class="fa fa-plus-circle"></i></a>
-            <span><i class="fa fa-check"></i></span>
-          </span>
-        </li>
-        <li v-if="filteredResults.length === 0"><i>{{ "Did not find any fields" | translatePhrase }}...</i></li>
-      </ul>
     </div>
   </div>
 </template>
@@ -240,23 +236,47 @@ export default {
 
 .field-adder {
   background-color: #fff;
-  text-align: right;
   height: 0;
-  margin: 35px;
+  margin-left: 100%;
+  &.at-bottom {
+    margin: 0;
+    #add-button {
+      position: relative;
+      border-radius: 0px;
+      box-shadow: none;
+      display: block;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      animation-name: buttonAnimation;
+      animation-duration: 0.8s;
+      > div {
+        transition: opacity ease 0.8s;
+        opacity: 1;
+        display: block;
+        max-height: 100%;
+        max-width: 100%;
+        padding: 0.95em 0em;
+      }
+    }
+  }
   display: block; // So that the clickaway plugin triggers nicely
   #add-button {
     background-color: @brand-primary;
     color: @white;
     &.is-fixed {
       position: fixed;
-      bottom: 3%;
-      top: auto;
+      margin-left: -1.75em;
+      bottom: 12px;
     }
     border-radius:2em;
     box-shadow: 0px 7px 10px 0px rgba(0,0,0,0.7);
     cursor:pointer;
     font-size: 1.5em;
-    padding: 1em 1em;
+    padding: 1em 1.2em;
     line-height: 1.2em;
     text-decoration: none;
     .plus-icon {
@@ -272,9 +292,12 @@ export default {
       bottom: 2.7%;
       box-shadow: 0px 5px 10px 0px rgba(0,0,0,0.5);
     }
-  }
-  #mock-button {
-    visibility: hidden;
+    > div {
+      font-size: 22px;
+      opacity: 0;
+      max-height: 0;
+      max-width: 0;
+    }
   }
   >a {
     cursor: pointer;
@@ -376,4 +399,17 @@ export default {
   }
 }
 
+@keyframes buttonAnimation {
+  0% {
+    border-radius: 40px;
+    margin-left: 94%;
+    border-radius: 40px;
+    width: 90px;
+  }
+  100% {
+    width: 100%;
+    margin-left: 0;
+    border-radius: 0px;
+  }
+}
 </style>
