@@ -57,6 +57,9 @@ export default {
     'entity-adder': EntityAdder,
   },
   computed: {
+    keyAsVocabProperty() {
+      return VocabUtil.getClass(this.key, this.vocab, this.settings.vocabPfx);
+    },
     valueAsArray() {
       if (_.isArray(this.value)) {
         return this.value;
