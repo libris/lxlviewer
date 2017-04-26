@@ -57,6 +57,20 @@ export default {
     'entity-adder': EntityAdder,
   },
   computed: {
+    keyAsVocabProperty() {
+      return VocabUtil.getClass(this.key, this.vocab, this.settings.vocabPfx);
+    },
+    propertyComment() {
+      if (this.keyAsVocabProperty && this.keyAsVocabProperty.commentByLang) {
+        if (this.keyAsVocabProperty.commentByLang[this.settings.language]) {
+          return this.keyAsVocabProperty.commentByLang[this.settings.language];
+        } else {
+          return this.keyAsVocabProperty.commentByLang[0];
+        }
+      } else {
+        return '';
+      }
+    },
     valueAsArray() {
       if (_.isArray(this.value)) {
         return this.value;
@@ -250,6 +264,10 @@ export default {
 <div class="data-node" v-bind:class="{'column': embedded, 'rows': !embedded, 'highlight': isLastAdded, 'distinguish-removal': removeHover }" @mouseover="showActionButtons=true" @mouseleave="showActionButtons=false">
   <div class="label" v-bind:class="{ 'locked': isLocked }">
     <a href="/vocab/#{{key}}">{{ key | labelByLang | capitalize }}</a>
+    <div v-if="propertyComment && !isLocked" class="comment-icon">
+      <i class="fa fa-question-circle"></i>
+      <div class="comment">{{ propertyComment }}</div>
+    </div>
     <!-- {{ key | labelByLang | capitalize }} -->
   </div>
   <div class="value node-list">
@@ -322,6 +340,25 @@ export default {
     font-size: 1.2rem;
     color: @black;
     font-weight: normal;
+    .comment-icon {
+      display: inline-block;
+      .comment {
+        display: none;
+        border-radius: 4px;
+        position: absolute;
+        background-color: @white;
+        max-width: 300px;
+        line-height: 1.6;
+        border: 1px solid @gray-light;
+        white-space: normal;
+        padding: 0.5em;
+      }
+      &:hover {
+        .comment {
+          display: block;
+        }
+      }
+    }
   }
   .value {
   }
@@ -352,7 +389,6 @@ export default {
     >.label {
       order: 1;
       flex: 0 0 @col-label;
-      display: flex;
       text-align: right;
       align-items: flex-start;
       justify-content: flex-end;

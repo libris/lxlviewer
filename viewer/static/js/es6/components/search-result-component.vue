@@ -41,7 +41,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div class="search-result-component">
     <search-pagination :page-data="paginationData" :show-details="true"></search-pagination>
     <result-list :results="result.items"></result-list>
     <search-pagination :page-data="paginationData" :show-details="false"></search-pagination>
@@ -50,5 +50,11 @@ export default {
 
 <style lang="less">
 @import './_variables.less';
+
+.search-result-component {
+  .main-info {
+    height: 10em;
+  }
+}
 
 </style>
