@@ -25,6 +25,7 @@ export default {
       showToolTip: false,
       rangeInfo: false,
       selectedType: '',
+      addEmbedded: false,
     };
   },
   vuex: {
@@ -136,6 +137,8 @@ export default {
         const range = this.getFullRange;
         if (range.length < 2 && this.onlyEmbedded) {
           this.addEmpty(range[0]);
+        } else if (this.onlyEmbedded) {
+          this.addEmbedded = true;
         } else {
           this.show();
         }
@@ -189,7 +192,9 @@ export default {
         this.changeNotification('color', 'red');
         this.changeNotification('message', `Ogiltig typ: ${label}`);
       } else {
-        this.addEmpty(vocabClass['@id']);
+        const idArray = vocabClass['@id'].split('/');
+        this.addEmpty(idArray[idArray.length - 1]);
+        this.addEmbedded = false;
       }
     },
     search(keyword) {
@@ -268,11 +273,19 @@ export default {
 
 <template>
 <div class="entity-adder">
-  <div v-if="isChip" class="chip action-button add-entity-button" :class="{ 'fade': !showActionButtons }" v-on:click="add()" @mouseenter="showToolTip=true" @mouseleave="showToolTip=false">
+  <div v-if="isChip && !addEmbedded" class="chip action-button add-entity-button" :class="{ 'fade': !showActionButtons }" v-on:click="add()" @mouseenter="showToolTip=true" @mouseleave="showToolTip=false">
     <span class="chip-label"><i class="fa fa-fw fa-plus plus-icon" aria-hidden="true"></i><span class="label-text">{{ "Add" | translatePhrase }}</span></span>
   </div>
-  <div v-if="!isChip" class="action-button add-entity-button" :class="{'disabled': active, 'fade': !showActionButtons }" v-on:click="add()" @mouseenter="showToolTip=true" @mouseleave="showToolTip=false">
+  <div v-if="!isChip && !addEmbedded" class="action-button add-entity-button" :class="{'disabled': active, 'fade': !showActionButtons }" v-on:click="add()" @mouseenter="showToolTip=true" @mouseleave="showToolTip=false">
     <span class="chip-label"><i class="fa fa-fw fa-plus plus-icon" aria-hidden="true"></i><span class="label-text">{{ "Add" | translatePhrase }}</span></span>
+  </div>
+  <div v-show="addEmbedded">
+    {{ "Choose type" | translatePhrase }}:
+    <input :list="key" autofocus id="localTypePicker" name="type" v-model="selectedType" @keyup.enter="addType(selectedType)">
+    <datalist :id="key">
+      <option v-for="type in getFullRange" value="{{type | labelByLang}}">
+    </datalist>
+    <button @click="addType(selectedType)">{{"Add" | translatePhrase}}</button>
   </div>
   <!--<tooltip-component :show-tooltip="showToolTip" :tooltiptext="key"></tooltip-component>-->
   <div class="window" v-if="active">

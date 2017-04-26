@@ -13,17 +13,20 @@ export function getVocab() {
 
 export function getClassFromLabel(label, language, vocab, vocabPfx) {
   const classObject = _.find(vocab, (obj) => {
-    if (typeof obj.labelByLang === 'undefined' || typeof obj.labelByLang[language] === 'undefined') {
+    let existingLang = language;
+    if (typeof obj.labelByLang === 'undefined') {
       return false;
+    } else if (typeof obj.labelByLang[language] === 'undefined') {
+      existingLang = 'en';
     }
-    if (_.isArray(obj.labelByLang[language])) {
-      for (const lbl of obj.labelByLang[language]) {
+    if (_.isArray(obj.labelByLang[existingLang])) {
+      for (const lbl of obj.labelByLang[existingLang]) {
         if (lbl.toLowerCase() === label.toLowerCase()) {
           return true;
         }
       }
     } else {
-      return obj.labelByLang[language].toLowerCase() === label.toLowerCase();
+      return obj.labelByLang[existingLang].toLowerCase() === label.toLowerCase();
     }
   });
   return classObject;
