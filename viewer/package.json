@@ -55,6 +55,7 @@
     ]
   },
   "scripts": {
+    "modernizr": "modernizr -c modernizr-config.json -d static/vendor/modernizr/ -u",
     "postinstall": "mkdir -p static/build && npm run vendor && npm run app",
     "vendor": "npm run vendor:fetch && parallelshell 'npm run vendor:js'",
     "vendor:fetch": "bower-installer",
@@ -63,7 +64,7 @@
     "app:eslint": "eslint 'static/js/**/*.es6' 'static/js/**/*.vue' || true",
     "app:js": "parallelshell 'npm run app:transpile'",
     "app:transpile": "browserify static/js/es6/app.es6 -t babelify -o static/build/app.js --extension=.js --extension=.json --extension=.es6 --extension=.vue",
-    "watch": "parallelshell 'npm run watch:js' 'npm run watch:libris:less' 'npm run watch:id:less'",
+    "watch": "parallelshell 'npm run modernizr' 'npm run watch:js' 'npm run watch:libris:less' 'npm run watch:id:less'",
     "watch:js": "parallelshell gulp",
     "watch:id:less": "watch 'npm run app:id:less' static/less/",
     "watch:libris:less": "watch 'npm run app:libris:less' static/less/",
