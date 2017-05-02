@@ -11,7 +11,7 @@ export function getVocab() {
   });
 }
 
-export function getClassFromLabel(label, language, vocab, vocabPfx) {
+export function getTermFromLabel(label, language, vocab, vocabPfx) {
   const classObject = _.find(vocab, (obj) => {
     let existingLang = language;
     if (typeof obj.labelByLang === 'undefined') {
@@ -32,18 +32,18 @@ export function getClassFromLabel(label, language, vocab, vocabPfx) {
   return classObject;
 }
 
-export function getClass(classId, vocab, vocabPfx) {
+export function getTerm(term, vocab, vocabPfx) {
   // Returns a class object
 
-  if (!classId || typeof classId === 'undefined') {
-    throw new Error('getClass was called with an undefined Id.');
+  if (!term || typeof term === 'undefined') {
+    throw new Error('getTerm was called with an undefined Id.');
   }
 
-  if (classId.indexOf('@') !== -1) {
+  if (term.indexOf('@') !== -1) {
     return {};
   }
 
-  const cn = classId.replace(vocabPfx, '');
+  const cn = term.replace(vocabPfx, '');
   const _class = _.find(vocab, (d) => { return d['@id'] === vocabPfx + cn; });
   if (!_class) {
     // console.warn('Not found in vocab:', cn);
@@ -55,7 +55,7 @@ export function getPropertyTypes(propertyId, vocab, vocabPfx) {
   if (propertyId.indexOf('@') !== -1) {
     return [];
   }
-  const property = getClass(propertyId, vocab, vocabPfx);
+  const property = getTerm(propertyId, vocab, vocabPfx);
   if (property) {
     const typeAttr = property['@type'].toString();
     let types = [];
@@ -70,7 +70,7 @@ export function getPropertyTypes(propertyId, vocab, vocabPfx) {
 }
 
 export function getRange(propertyId, vocab, vocabPfx) {
-  const property = getClass(propertyId, vocab, vocabPfx);
+  const property = getTerm(propertyId, vocab, vocabPfx);
   let range = [];
   if (!property) {
     return range;
@@ -145,13 +145,13 @@ export function getBaseClasses(classId, vocab, vocabPfx) {
   }
 
   let classList = [];
-  const classObj = getClass(classId, vocab, vocabPfx);
-  if (classObj && classObj.hasOwnProperty('subClassOf')) {
-    for (let i = 0; i < classObj.subClassOf.length; i++) {
-      const baseClassId = classObj.subClassOf[i]['@id'];
+  const termObj = getTerm(classId, vocab, vocabPfx);
+  if (termObj && termObj.hasOwnProperty('subClassOf')) {
+    for (let i = 0; i < termObj.subClassOf.length; i++) {
+      const baseClassId = termObj.subClassOf[i]['@id'];
       let baseClass = {};
       if (baseClassId) {
-        baseClass = getClass(baseClassId, vocab, vocabPfx);
+        baseClass = getTerm(baseClassId, vocab, vocabPfx);
       }
       if (
         baseClass &&
@@ -179,7 +179,7 @@ export function getBaseClassesFromArray(typeArray, vocab, vocabPfx) {
   let classes = [];
   for (let t = 0; t < types.length; t++) {
     if (types[t].indexOf('marc:') === -1) {
-      const c = getClass(types[t], vocab, vocabPfx);
+      const c = getTerm(types[t], vocab, vocabPfx);
       if (typeof c !== 'undefined') {
         classes.push(c['@id']);
         classes = classes.concat(getBaseClasses(c['@id'], vocab, vocabPfx));

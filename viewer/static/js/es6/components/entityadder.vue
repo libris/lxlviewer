@@ -191,7 +191,7 @@ export default {
       this.$dispatch('add-item', obj);
     },
     addType(label) {
-      const vocabClass = VocabUtil.getClassFromLabel(label, this.settings.language, this.vocab, this.settings.vocabPfx);
+      const vocabClass = VocabUtil.getTermFromLabel(label, this.settings.language, this.vocab, this.settings.vocabPfx);
       if (typeof vocabClass === 'undefined') {
         this.changeNotification('color', 'red');
         this.changeNotification('message', `Ogiltig typ: ${label}`);

@@ -58,7 +58,7 @@ export default {
   },
   computed: {
     keyAsVocabProperty() {
-      return VocabUtil.getClass(this.key, this.vocab, this.settings.vocabPfx);
+      return VocabUtil.getTerm(this.key, this.vocab, this.settings.vocabPfx);
     },
     propertyComment() {
       if (this.keyAsVocabProperty && this.keyAsVocabProperty.commentByLang) {
