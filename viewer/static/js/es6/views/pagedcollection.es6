@@ -80,7 +80,13 @@ export default class PagedCollection extends View {
         result: {},
       },
       events: {
-
+        newresult(resultPromise) {
+          resultPromise.then((result) => {
+            this.result = result;
+          }, (error) => {
+            console.log(error);
+          });
+        },
       },
       watch: {
 
