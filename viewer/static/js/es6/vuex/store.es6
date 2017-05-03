@@ -26,6 +26,11 @@ const state = {
       error: false,
       info: '',
     },
+    resultList: {
+      loading: false,
+      error: false,
+      info: '',
+    },
   },
 };
 
@@ -47,6 +52,9 @@ const mutations = {
   },
   CHANGESAVEDSTATUS (state, property, data) {
     state.status.saved[property] = data;
+  },
+  CHANGERESULTLISTSTATUS (state, property, data) {
+    state.status.resultList[property] = data;
   },
   CHANGESTATUS (state, property, data) {
     state.status[property] = data;
