@@ -58,7 +58,7 @@ export default {
   },
   computed: {
     keyAsVocabProperty() {
-      return VocabUtil.getClass(this.key, this.vocab, this.settings.vocabPfx);
+      return VocabUtil.getTerm(this.key, this.vocab, this.settings.vocabPfx);
     },
     propertyComment() {
       if (this.keyAsVocabProperty && this.keyAsVocabProperty.commentByLang) {
@@ -423,8 +423,9 @@ export default {
             > textarea {
               flex: 9 9 90%;
             }
-            > div {
-              flex: 1 1 10%;
+            > .remover {
+              flex: 1 1 2em;
+              text-align: center;
             }
           }
           &.isChip {
@@ -489,8 +490,9 @@ export default {
             > textarea {
               flex: 9 9 90%;
             }
-            > div {
-              flex: 1 1 10%;
+            > .remover {
+              flex: 1 1 2em;
+              text-align: center;
             }
           }
         }

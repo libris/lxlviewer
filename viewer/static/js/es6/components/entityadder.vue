@@ -132,6 +132,10 @@ export default {
     this.searchOpen = false;
   },
   methods: {
+    dismissTypeChooser() {
+      this.addEmbedded = false;
+      this.selectedType = '';
+    },
     add() {
       if (this.canRecieveObjects) {
         const range = this.getFullRange;
@@ -187,7 +191,7 @@ export default {
       this.$dispatch('add-item', obj);
     },
     addType(label) {
-      const vocabClass = VocabUtil.getClassFromLabel(label, this.settings.language, this.vocab, this.settings.vocabPfx);
+      const vocabClass = VocabUtil.getTermFromLabel(label, this.settings.language, this.vocab, this.settings.vocabPfx);
       if (typeof vocabClass === 'undefined') {
         this.changeNotification('color', 'red');
         this.changeNotification('message', `Ogiltig typ: ${label}`);
@@ -279,11 +283,11 @@ export default {
   <div v-if="!isChip && !addEmbedded" class="action-button add-entity-button" :class="{'disabled': active, 'fade': !showActionButtons }" v-on:click="add()" @mouseenter="showToolTip=true" @mouseleave="showToolTip=false">
     <span class="chip-label"><i class="fa fa-fw fa-plus plus-icon" aria-hidden="true"></i><span class="label-text">{{ "Add" | translatePhrase }}</span></span>
   </div>
-  <div v-show="addEmbedded">
+  <div class="type-chooser" v-if="addEmbedded" v-on-clickaway="dismissTypeChooser">
     {{ "Choose type" | translatePhrase }}:
     <input :list="key" autofocus id="localTypePicker" name="type" v-model="selectedType" @keyup.enter="addType(selectedType)">
     <datalist :id="key">
-      <option v-for="type in getFullRange" value="{{type | labelByLang}}">
+      <option v-for="type in getFullRange" track-by="$index" value="{{type | labelByLang}}">
     </datalist>
     <button @click="addType(selectedType)">{{"Add" | translatePhrase}}</button>
   </div>
@@ -347,6 +351,11 @@ export default {
     .label-text {
       display: inline-block;
     }
+  }
+  .type-chooser {
+    text-align: center;
+    padding: 5px;
+    border: 1px dashed @gray-darker;
   }
   .add-entity-button {
     opacity: 1;
