@@ -117,6 +117,7 @@ export default class PagedCollection extends View {
         this.initialized = true;
         history.replaceState(this.result, "TEST", this.result['@id']);
         if (Modernizr.history) {
+          history.scrollRestoration = 'manual';
           window.onpopstate = e => {
             this.changeResultListStatus('loading', true);
             const resultPromise = new Promise((resolve, reject) => {
