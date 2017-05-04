@@ -13,7 +13,7 @@
       <facet-controls v-if="initialized == true" :result="result"></facet-controls>
     </div>
     <div class="col-md-9">
-      <search-form v-if="initialized == true" :result="result" site-title="${g.site.title}" filter-param=""></search-form>
+      <search-form v-if="initialized == true" :result="result" site-title="${g.site.title}" filter-param="" :use-submit="false"></search-form>
       <!--${ search.search_controls(thing) }-->
       <!-- <main-search-field :title="tjena"></main-search-field> -->
       <search-result-component :result="result" v-if="initialized == true"></search-result-component>
