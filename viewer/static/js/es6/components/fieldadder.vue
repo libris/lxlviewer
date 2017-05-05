@@ -38,6 +38,7 @@ export default {
   ready() { // Ready method is deprecated in 2.0, switch to "mounted"
     this.$nextTick(() => { // TODO: Fix proper scroll tracking. This is just an ugly solution using document.onscroll here and window.scroll in editorcontrols.vue
       window.addEventListener('scroll', this.moveFieldAdderButton);
+      this.moveFieldAdderButton();
     });
   },
   computed: {
