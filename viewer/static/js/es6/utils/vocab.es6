@@ -110,37 +110,52 @@ export function getSubClasses(classname, vocab, vocabPfx) {
   return subClasses;
 }
 
-export function getProperties(className, vocab, vocabPfx) {
-  // Get all properties which has the domain of the className
-  const vocabItems = vocab;
-  const props = [];
-  const cn = className.replace(vocabPfx, '');
-  for (let i = 0; i < vocabItems.length; i++) {
-    const prop = vocabItems[i];
+export function getDomainList(property, vocab, vocabPfx) {
 
-    if (
-      prop['@type'] !== 'Class' &&
-      (prop.hasOwnProperty('domainIncludes') || prop.hasOwnProperty('domain'))
-    ) {
-      if (prop.hasOwnProperty('domainIncludes')) {
-        for (let t = 0; t < prop.domainIncludes.length; t++) {
-          const type = prop.domainIncludes[t]['@id'].replace(vocabPfx, '');
-          if (cn === type) {
-            props.push(prop);
-          }
-        }
-      }
-      if (prop.hasOwnProperty('domain')) {
-        for (let t = 0; t < prop.domain.length; t++) {
-          const type = prop.domain[t]['@id'].replace(vocabPfx, '');
-          if (cn === type) {
-            props.push(prop);
-          }
+  if (property['@type'] === 'Class') {
+    return false;
+  }
+  let domainList = [];
+  if (property.hasOwnProperty('domain')) {
+    domainList = domainList.concat(property.domain);
+  }
+  if (property.hasOwnProperty('domainIncludes')) {
+    domainList = domainList.concat(property.domainIncludes);
+  }
+  if (domainList.length === 0 && property.hasOwnProperty('subPropertyOf')) {
+    for (const superPropNode of property.subPropertyOf) {
+      if (superPropNode['@id'] && superPropNode['@id'].indexOf(vocabPfx) !== -1) {
+        const superProp = getTerm(superPropNode['@id'], vocab, vocabPfx);
+        if (superProp) {
+          domainList = domainList.concat(getDomainList(superProp, vocab, vocabPfx));
         }
       }
     }
   }
-  // console.log("getProperties("+JSON.stringify(className)+") ->", props.length, "properties found");
+
+  return domainList;
+}
+
+export function getProperties(className, vocab, vocabPfx) {
+  // Get all properties which has the domain of the className
+
+  const vocabItems = vocab;
+  const props = [];
+  const cn = className.replace(vocabPfx, '');
+  // console.log("Getting props for", className);
+  for (let i = 0; i < vocabItems.length; i++) {
+    const prop = vocabItems[i];
+    if (prop['@type'] !== 'Class') {
+      const domainList = getDomainList(prop, vocab, vocabPfx);
+      const classId = vocabPfx + cn;
+      for (const domain of domainList) {
+        if (domain['@id'] === classId) {
+          props.push(prop);
+        }
+      }
+    }
+  }
+  console.log("getProperties("+JSON.stringify(className)+") ->", props.length, "properties found");
   return props;
 }
 

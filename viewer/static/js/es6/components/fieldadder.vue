@@ -219,7 +219,7 @@ export default {
             <span class="fieldLabel" title="{{prop.item['@id'] | labelByLang | capitalize }}">
               {{prop.item['@id'] | labelByLang | capitalize }}
             </span>
-            <span class="typeLabel">{{ prop.item['@id'] }}</span>
+            <span class="typeLabel">{{ prop.item['@id'] | removeDomain }}</span>
             <span class="addControl">
               <a v-on:click.prevent="addField(prop.item, false)"><i class="fa fa-plus-circle"></i></a>
               <span><i class="fa fa-check"></i></span>
