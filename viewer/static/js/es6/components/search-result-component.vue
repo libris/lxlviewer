@@ -2,9 +2,17 @@
 import ResultList from './result-list';
 import EntitySearchList from './entity-search-list';
 import SearchPagination from './search-pagination';
+import { getStatus } from '../vuex/getters';
 
 export default {
   name: 'search-result-component',
+  vuex: {
+    actions: {
+    },
+    getters: {
+      status: getStatus,
+    },
+  },
   props: {
     result: {},
   },
@@ -42,9 +50,15 @@ export default {
 
 <template>
   <div class="search-result-component">
-    <search-pagination :page-data="paginationData" :show-details="true"></search-pagination>
-    <result-list :results="result.items"></result-list>
-    <search-pagination :page-data="paginationData" :show-details="false"></search-pagination>
+    <div v-if="status.resultList.loading || status.resultList.error" class="loadingText panel panel-default">
+      <h1 v-if="!status.resultList.error"><i class="fa fa-cog fa-spin"></i></h1>
+      <h1 v-if="status.resultList.error"><i class="fa fa-warning"></i></h1>
+      <span v-if="!status.resultList.error" class="status">{{"Fetching results" | translatePhrase}}</span>
+      <span v-if="status.resultList.error" class="error">{{status.resultList.info}}</span>
+    </div>
+    <search-pagination v-if="!status.resultList.loading" :page-data="paginationData" :show-details="true"></search-pagination>
+    <result-list v-if="!status.resultList.loading" :results="result.items"></result-list>
+    <search-pagination v-if="!status.resultList.loading" :page-data="paginationData" :show-details="false"></search-pagination>
   </div>
 </template>
 
@@ -54,6 +68,28 @@ export default {
 .search-result-component {
   .main-info {
     height: 10em;
+  }
+  .loadingText {
+    box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.1);
+    // margin: 120px 0;
+    padding: 20px 0px;
+    width: 100%;
+    min-height: 50vh;
+    vertical-align: middle;
+    text-align: center;
+    .status {
+      display: block;
+      font-size: 0.7em;
+    }
+    .error {
+      display: inline-block;
+      font-family: monospace;
+      border: 1px solid maroon;
+      margin-top: 30px;
+      padding: 5px;
+      max-width: 50%;
+      color: maroon;
+    }
   }
 }
 

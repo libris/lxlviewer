@@ -7,6 +7,7 @@ import * as StringUtil from '../utils/string';
 import * as SearchUtil from '../utils/search';
 import * as VocabUtil from '../utils/vocab';
 import * as DisplayUtil from '../utils/display';
+import * as httpUtil from '../utils/http';
 import ComboKeys from 'combokeys';
 import KeyBindings from '../keybindings.json';
 import MainSearchField from '../components/main-search-field';
@@ -14,8 +15,8 @@ import FacetControls from '../components/facet-controls';
 import SearchResultComponent from '../components/search-result-component';
 import EntitySearchList from '../components/entity-search-list';
 import SearchForm from '../components/search-form';
-import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData, getKeybindState } from '../vuex/getters';
-import { changeSettings, changeNotification, loadVocab, loadDisplayDefs, changeSavedStatus } from '../vuex/actions';
+import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData, getKeybindState, getStatus } from '../vuex/getters';
+import { changeSettings, changeNotification, loadVocab, loadDisplayDefs, changeSavedStatus, changeResultListStatus } from '../vuex/actions';
 
 export default class PagedCollection extends View {
 
@@ -53,6 +54,9 @@ export default class PagedCollection extends View {
     Vue.filter('removeDomain', (value) => {
       return StringUtil.removeDomain(value, self.settings.removableBaseUris);
     });
+    Vue.filter('translatePhrase', (string) => {
+      return StringUtil.getUiPhraseByLang(string, self.settings.language);
+    });
 
     Vue.use(Vuex);
 
@@ -65,8 +69,10 @@ export default class PagedCollection extends View {
           changeSettings,
           changeSavedStatus,
           changeNotification,
+          changeResultListStatus,
         },
         getters: {
+          status: getStatus,
           settings: getSettings,
           editorData: getEditorData,
           vocab: getVocabulary,
@@ -83,7 +89,11 @@ export default class PagedCollection extends View {
         newresult(resultPromise) {
           resultPromise.then((result) => {
             this.result = result;
+            this.changeResultListStatus('loading', false);
           }, (error) => {
+            this.changeResultListStatus('error', true);
+            this.changeResultListStatus('loading', false);
+            this.changeResultListStatus('info', 'Could not find result');
             console.log(error);
           });
         },
@@ -105,6 +115,21 @@ export default class PagedCollection extends View {
         this.loadDisplayDefs(self.display);
         this.result = self.dataIn;
         this.initialized = true;
+        history.replaceState(this.result, "TEST", this.result['@id']);
+        if (Modernizr.history) {
+          history.scrollRestoration = 'manual';
+          window.onpopstate = e => {
+            this.changeResultListStatus('loading', true);
+            const resultPromise = new Promise((resolve, reject) => {
+              if (e.state !== null) {
+                resolve(e.state);
+              } else {
+                reject(Error('State error'));
+              }
+            });
+            this.$dispatch('newresult', resultPromise);
+          };
+        }
       },
       components: {
         'main-search-field': MainSearchField,

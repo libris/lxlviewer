@@ -23,7 +23,7 @@
   <div class="row">
     <landing-box v-if="initialized == true" :title="result.title" :text="summary"></landing-box>
     <div class="col-md-8 col-md-offset-2 search-container">
-      <search-form v-if="initialized == true" :result="result" filter-param="${g.site.filter_param}" site-title="${g.site.title}"></search-form>
+      <search-form v-if="initialized == true" :result="result" filter-param="${g.site.filter_param}" site-title="${g.site.title}" :use-submit="true"></search-form>
     </div>
     <dataset-observations v-if="initialized == true" :statistics="result.statistics" site-title="${g.site.title}"></dataset-observations>
   </div>
