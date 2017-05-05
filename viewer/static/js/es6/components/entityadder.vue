@@ -26,6 +26,7 @@ export default {
       rangeInfo: false,
       selectedType: '',
       addEmbedded: false,
+      searchMade: false,
     };
   },
   vuex: {
@@ -67,6 +68,7 @@ export default {
   },
   watch: {
     keyword(value) {
+      this.searchMade = false;
       if (value) {
         setTimeout(() => {
           if (this.keyword === value) {
@@ -210,6 +212,7 @@ export default {
         setTimeout(() => {
           self.searchResult = result;
           self.loading = false;
+          self.searchMade = true;
         }, 500);
       }, (error) => {
         self.loading = false;
@@ -319,14 +322,16 @@ export default {
               </div>
             </div>
           </div>
-          <div class="local" v-show="allowLocal">
-            <button v-on:click="goLocal">{{ "Create local entity" | translatePhrase }}</button>
-          </div>
         </div>
         <div v-if="!loading && keyword.length === 0" class="search-status">{{ "Start writing to begin search" | translatePhrase }}...</div>
         <div v-if="loading" class="search-status">{{ "Searching" | translatePhrase }}...<br><i class="fa fa-cog fa-spin"></i></div>
-        <div v-if="!loading && searchResult.length === 0 && keyword.length > 0" class="search-status">{{ "No results" | translatePhrase }}...</div>
+        <div v-if="!loading && searchResult.length === 0 && keyword.length > 0 && searchMade" class="search-status">
+          {{ "No results" | translatePhrase }}...
+        </div>
         <entity-search-list v-if="!loading && keyword.length > 0" :results="searchResult"></entity-search-list>
+        <div class="local" v-show="allowLocal && searchMade && !loading">
+          <button v-on:click="goLocal">{{ "Create local entity" | translatePhrase }}</button>
+        </div>
       </div>
       <div class="stage-1" v-show="chooseLocalType">
         {{ "Choose type" | translatePhrase }}:
@@ -392,11 +397,15 @@ export default {
         text-align: center;
         padding: 15px;
       }
+      .local {
+        text-align: center;
+      }
       button {
         font-size: 12px;
       }
       .search-result {
         padding-top: 50px;
+        padding-bottom: 2em;
       }
       .search-header {
         position: absolute;
@@ -406,11 +415,6 @@ export default {
         border: solid #ccc;
         border-width: 0px 0px 1px 0px;
         background-color: darken(@neutral-color, 4%);
-        .local {
-          float: left;
-          width: 50%;
-          text-align: right;
-        }
         .search {
           float: left;
           width: 50%;
