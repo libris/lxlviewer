@@ -94,6 +94,7 @@ export default {
         });
         types = types.concat(subClassArray);
       });
+      types = _.uniq(types);
       return types;
     },
     searchTypes() {
@@ -287,7 +288,7 @@ export default {
     {{ "Choose type" | translatePhrase }}:
     <input :list="key" autofocus id="localTypePicker" name="type" v-model="selectedType" @keyup.enter="addType(selectedType)">
     <datalist :id="key">
-      <option v-for="type in getFullRange" track-by="$index" value="{{type | labelByLang}}">
+      <option v-for="type in getFullRange" value="{{type | labelByLang}}">
     </datalist>
     <button @click="addType(selectedType)">{{"Add" | translatePhrase}}</button>
   </div>
