@@ -290,7 +290,7 @@ export default {
       }
     }
     &:active {
-      bottom: 2.7%;
+      bottom: 8px;
       box-shadow: 0px 5px 10px 0px rgba(0,0,0,0.5);
     }
     > div {
