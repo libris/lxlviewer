@@ -87,6 +87,7 @@ export default class PagedCollection extends View {
       },
       events: {
         newresult(resultPromise) {
+          this.changeResultListStatus('error', false);
           resultPromise.then((result) => {
             this.result = result;
             this.changeResultListStatus('loading', false);

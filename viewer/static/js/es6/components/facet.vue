@@ -25,6 +25,7 @@ export default {
             history.pushState(response, "title", this.observation.view['@id']);
             resolve(response);
           }, (error) => {
+            history.pushState({}, "title", this.observation.view['@id']);
             reject('Error searching...', error);
           });
         });
