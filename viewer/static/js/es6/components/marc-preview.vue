@@ -153,6 +153,7 @@ export default {
       }
       width: 100%;
       overflow-y: scroll;
+      padding-bottom: 3em;
       .marc-preview-table {
         width: 100%;
         font-family: monospace;
