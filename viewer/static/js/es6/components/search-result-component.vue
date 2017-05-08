@@ -56,9 +56,9 @@ export default {
       <span v-if="!status.resultList.error" class="status">{{"Fetching results" | translatePhrase}}</span>
       <span v-if="status.resultList.error" class="error">{{status.resultList.info}}</span>
     </div>
-    <search-pagination v-if="!status.resultList.loading" :page-data="paginationData" :show-details="true"></search-pagination>
-    <result-list v-if="!status.resultList.loading" :results="result.items"></result-list>
-    <search-pagination v-if="!status.resultList.loading" :page-data="paginationData" :show-details="false"></search-pagination>
+    <search-pagination v-if="!status.resultList.loading && !status.resultList.error" :page-data="paginationData" :show-details="true"></search-pagination>
+    <result-list v-if="!status.resultList.loading && !status.resultList.error" :results="result.items"></result-list>
+    <search-pagination v-if="!status.resultList.loading && !status.resultList.error" :page-data="paginationData" :show-details="false"></search-pagination>
   </div>
 </template>
 

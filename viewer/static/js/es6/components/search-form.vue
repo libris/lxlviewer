@@ -145,6 +145,7 @@ export default {
                     history.pushState(response, "title", url);
                     resolve(response);
                 }, (error) => {
+                    history.pushState({}, "title", url);
                     reject('Error searching...', error);
                 });
             });
