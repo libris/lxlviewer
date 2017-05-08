@@ -1,9 +1,13 @@
 <script>
 import * as httpUtil from '../utils/http';
+import { getSettings } from '../vuex/getters';
 import { changeResultListStatus } from '../vuex/actions';
 export default {
   name: 'facet',
   vuex: {
+    getters: {
+      settings: getSettings,
+    },
     actions: {
       changeResultListStatus,
     },
@@ -41,10 +45,13 @@ export default {
       const object = this.observation.object;
       if (typeof object.label !== 'undefined') {
         return object.label;
-      } else if (typeof object.prefLabelByLang !== 'undefined' && typeof object.prefLabelByLang.sv !== 'undefined') {
-        return object.prefLabelByLang.sv;
-      } else if (object.labelByLang !== 'undefined' && object.labelByLang.sv !== 'undefined') {
-        return object.labelByLang.sv;
+      } else if (typeof object.prefLabelByLang !== 'undefined' && typeof object.prefLabelByLang[this.settings.language] !== 'undefined') {
+        return object.prefLabelByLang[this.settings.language];
+      } else if (typeof object.labelByLang !== 'undefined' && typeof object.labelByLang[this.settings.language] !== 'undefined') {
+        return object.labelByLang[this.settings.language];
+      } else {
+        const idArray = object['@id'].split('/');
+        return `${idArray[idArray.length - 1]} (has no label)`;
       }
     },
     historySupported() {
