@@ -22,6 +22,7 @@ export default class View {
       specialProperties: [
         '@type',
         '@id',
+        'issuanceType',
       ],
       userInfo: {
         sigel: UserUtil.get('sigel'),

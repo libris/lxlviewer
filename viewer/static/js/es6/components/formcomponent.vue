@@ -119,11 +119,14 @@ export default {
       }
       _.each(formObj, (v, k) => {
         if (!_.includes(propertyList, k)) {
-          if (this.settings.specialProperties.indexOf(k) === -1) {
-            propertyList.push(k);
-          }
+          propertyList.push(k);
         }
       });
+
+      _.remove(propertyList, (k) => {
+        return (this.settings.specialProperties.indexOf(k) !== -1);
+      });
+
       return propertyList;
     },
     dummyInstance() {
