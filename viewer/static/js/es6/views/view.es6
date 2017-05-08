@@ -19,6 +19,10 @@ export default class View {
         'http://id.kb.se/',
         'https://id.kb.se/',
       ],
+      specialProperties: [
+        '@type',
+        '@id',
+      ],
       userInfo: {
         sigel: UserUtil.get('sigel'),
       },
