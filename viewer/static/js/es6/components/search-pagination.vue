@@ -13,6 +13,27 @@ export default {
     }
   },
   computed: {
+    filters() {
+        const filters = [];
+        if (typeof this.pageData.search !== 'undefined') {
+            this.pageData.search.mapping.forEach(item => {
+            if (item.variable !== 'q') {
+                const filterObj = {
+                    label: '',
+                    up: '',
+                };
+                if (typeof item.object !== 'undefined') {
+                  filterObj.label = item.object['@id'];
+                } else {
+                  filterObj.label = item.value;
+                }
+                filterObj.up = item.up['@id'];
+                filters.push(filterObj);
+            }
+          });
+        }
+        return filters;
+    },
     queryText() {
       return StringUtil.getParamValueFromUrl(this.pageData.first['@id'], 'q');
     },
@@ -55,7 +76,11 @@ export default {
 <template>
   <div class="panel panel-default result-controls" v-if="!(!showDetails && pageData.totalItems < limit)">
     <div class="search-details" v-if="showDetails">
-      <span class="pull-left">Sökning på <strong>"{{ queryText }}"</strong> gav {{pageData.totalItems}} träffar.</span>
+      <span class="pull-left">Sökning på <strong>{{ queryText }}</strong>
+        <span v-if="filters.length > 0">
+        (filtrerat på <span v-for="filter in filters" track-by="$index">{{filter.label | labelByLang}}{{ $index === filters.length - 1 ? '' : ', ' }}</span>)
+      </span>
+      gav {{pageData.totalItems}} träffar.</span>
       <span class="pull-right">Visar {{ limit }} träffar per sida.</span>
     </div>
     <div class="search-buttons" v-if="pageData.totalItems > limit">
