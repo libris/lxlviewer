@@ -488,6 +488,7 @@ export default {
             width: 100%;
             display: flex;
             > textarea {
+              background-color: #f9f9f9;
               flex: 9 9 90%;
             }
             > .remover {
