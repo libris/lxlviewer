@@ -27,7 +27,7 @@
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0",
     "vue": "^1.0.21",
-    "vue-clickaway": "^1.1.1",
+    "vue-clickaway": "1.2.0",
     "vueify": "^8.5.4",
     "vuex": "^1.0.0-rc.2"
   },
