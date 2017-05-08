@@ -193,16 +193,10 @@ export default {
       const obj = this.getEmptyForm(type);
       this.$dispatch('add-item', obj);
     },
-    addType(label) {
-      const vocabClass = VocabUtil.getTermFromLabel(label, this.settings.language, this.vocab, this.settings.vocabPfx);
-      if (typeof vocabClass === 'undefined') {
-        this.changeNotification('color', 'red');
-        this.changeNotification('message', `Ogiltig typ: ${label}`);
-      } else {
-        const idArray = vocabClass['@id'].split('/');
-        this.addEmpty(idArray[idArray.length - 1]);
-        this.addEmbedded = false;
-      }
+    addType(type) {
+      const idArray = type.split('/');
+      this.addEmpty(idArray[idArray.length - 1]);
+      this.addEmbedded = false;
     },
     search(keyword) {
       const self = this;
@@ -289,10 +283,10 @@ export default {
   </div>
   <div class="type-chooser" v-if="addEmbedded" v-on-clickaway="dismissTypeChooser">
     {{ "Choose type" | translatePhrase }}:
-    <input :list="key" autofocus id="localTypePicker" name="type" v-model="selectedType" @keyup.enter="addType(selectedType)">
-    <datalist :id="key">
-      <option v-for="type in getFullRange" value="{{type | labelByLang}}">
-    </datalist>
+    <select v-model="selectedType">
+      <option disabled value="">{{"Choose type" | translatePhrase}}</option>
+      <option v-for="type in getFullRange" value="{{type}}" label="{{type | labelByLang}}">
+    </select>
     <button @click="addType(selectedType)">{{"Add" | translatePhrase}}</button>
   </div>
   <!--<tooltip-component :show-tooltip="showToolTip" :tooltiptext="key"></tooltip-component>-->
@@ -335,10 +329,11 @@ export default {
       </div>
       <div class="stage-1" v-show="chooseLocalType">
         {{ "Choose type" | translatePhrase }}:
-        <input list="types" autofocus id="localTypePicker" name="type" v-model="selectedType" @keyup.enter="addType(selectedType)">
-        <datalist id="types">
-          <option v-for="type in getFullRange" value="{{type | labelByLang}}">
-        </datalist>
+        <select v-model="selectedType">
+          <option disabled value="">{{"Choose type" | translatePhrase}}</option>
+          <option v-for="type in getFullRange" value="{{type}}" label="{{type | labelByLang}}">
+        </select>
+        <button @click="addType(selectedType)">{{"Add" | translatePhrase}}</button>
       </div>
     </div>
   </div>
