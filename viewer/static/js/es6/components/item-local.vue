@@ -3,6 +3,7 @@ import * as _ from 'lodash';
 import * as httpUtil from '../utils/http';
 import * as VocabUtil from '../utils/vocab';
 import * as DisplayUtil from '../utils/display';
+import * as RecordUtil from '../utils/record';
 import Vue from 'vue';
 import ProcessedLabel from './processedlabel';
 import ItemEntity from './item-entity';
@@ -37,6 +38,7 @@ export default {
       showCardInfo: false,
       searchResult: {},
       searchDelay: 2,
+      extracted: {},
     };
   },
   computed: {
@@ -70,14 +72,41 @@ export default {
   created() {
     this.$options.components['data-node'] = Vue.extend(DataNode);
   },
-  ready() {
-    this.$nextTick(() => {
-      if (this.isEmpty) {
-        this.openForm();
-      }
-    });
-  },
   methods: {
+    doExtract() {
+      const hackedObject = this.extracted;
+
+      // TODO: Remove this when Text is supported
+      if (hackedObject['@graph'][1]['@type'] === 'Text') {
+        hackedObject['@graph'][1]['@type'] = 'Work';
+      }
+      delete hackedObject['@graph'][1].summary;
+      this.doCreateRequest(httpUtil.post, hackedObject, '/');
+
+      // this.doCreateRequest(httpUtil.post, this.extracted, '/');
+    },
+    doCreateRequest(requestMethod, obj, url) {
+      requestMethod({ url, token: self.access_token }, obj).then((result) => {
+        if (result.status === 201) {
+          const postUrl = `${result.getResponseHeader('Location')}/data.jsonld`;
+          httpUtil.get({ url: postUrl }).then((getResult) => {
+            const recievedObj = {
+              '@graph': getResult['@graph'],
+            }
+            const mainEntity = RecordUtil.splitJson(recievedObj).mainEntity;
+            this.$dispatch('add-item', mainEntity);
+          }, (error) => {
+            self.vm.changeSavedStatus('loading', false);
+            self.vm.changeNotification('color', 'red');
+            self.vm.changeNotification('message', `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error}`);
+          });
+        } else {
+          console.log("something broke");
+        }
+      }, (error) => {
+        console.log("Somethingg broke");
+      });
+    },
     getForm(item) {
       const formObj = {};
       if (!item['@type']) {
@@ -130,6 +159,19 @@ export default {
       this.focused = false;
     },
   },
+  events: {
+    'extract-item'() {
+      this.doExtract();
+    },
+  }
+  ready() {
+    this.$nextTick(() => {
+      this.extracted = RecordUtil.getObjectAsRecord(this.focusData);
+      if (this.isEmpty) {
+        this.openForm();
+      }
+    });
+  },
   components: {
     'processed-label': ProcessedLabel,
     'item-entity': ItemEntity,
@@ -140,7 +182,7 @@ export default {
 
 <template>
   <div class="item-local" @mouseleave="showCardInfo=false">
-    <div class="chip" v-show="!inEdit" v-bind:class="{ 'locked': isLocked, 'highlighted': showCardInfo }" @mouseenter="showCardInfo=true">
+    <div class="chip" v-show="!inEdit && !expanded" v-bind:class="{ 'locked': isLocked, 'highlighted': showCardInfo }" @mouseenter="showCardInfo=true">
       <span class="chip-label">
         {{getItemLabel}}
       </span>
@@ -154,7 +196,8 @@ export default {
         <button v-on:click="closeForm" v-bind:disabled="isEmpty">Klar</button>
       </div>
     </div>
-    <card-component :title="getItemLabel" :focus-data="item" :uri="item['@id']" :should-show="showCardInfo && !inEdit" :floating="!expanded"></card-component>
+    <card-component :title="getItemLabel" :focus-data="item" :uri="item['@id']" :is-local="true" :should-show="showCardInfo && !inEdit" :floating="!expanded"></card-component>
+    <button v-if="!isLocked" v-on:click="doExtract">Bryt ut</button>
   </div>
 </template>
 

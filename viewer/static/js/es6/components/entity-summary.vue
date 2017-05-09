@@ -8,8 +8,8 @@ export default {
   name: 'entity-summary',
   props: {
     focusData: {},
-    renderLink: false,
     lines: Number,
+    isLocal: false,
   },
   vuex: {
     getters: {
@@ -84,8 +84,8 @@ export default {
       {{categorization.join(', ')}}
     </div>
     <h3 class="header">
-      <a v-if="renderLink" title="{{ header.join(', ') }}" :href="focusData['@id']">{{ header.join(', ') }}</a>
-      <span v-if="!renderLink" title="{{ header.join(', ') }}">{{ header.join(', ') }}</span>
+      <a v-if="!isLocal" title="{{ header.join(', ') }}" :href="focusData['@id']">{{ header.join(', ') }}</a>
+      <span v-if="isLocal" title="{{ header.join(', ') }}">{{ header.join(', ') }}</span>
     </h3>
     <ul class="info">
       <li v-for="v in info">{{ v }}</li>

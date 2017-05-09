@@ -240,7 +240,14 @@ export default {
       }
     },
     isLinked(o) {
-      return (o.hasOwnProperty('@id') && !o.hasOwnProperty('@type'));
+      const recordId = this.editorData.record['@id'];
+      if (o.hasOwnProperty('@id') && !o.hasOwnProperty('@type')) {
+        if (o['@id'].indexOf(recordId) > -1) {
+          return false;
+        }
+        return true;
+      }
+      return false;
     },
     isEmbedded(o) {
       const type = o['@type'];
@@ -275,7 +282,7 @@ export default {
     <ul>
       <li v-for="item in valueAsArray" :class="{ 'isChip': isChip(item)}" track-by="$index">
         <item-entity v-if="getDatatype(item) == 'entity'" :is-locked="isLocked" :expanded="isExpandedType" :focus="focus" :item="item" :key="key" :index="$index"></item-entity>
-        <item-local v-if="getDatatype(item) == 'local'" :is-locked="isLocked" :focus="focus" :item="item" :key="key" :index="$index"></item-local>
+        <item-local v-if="getDatatype(item) == 'local'" :is-locked="isLocked" :expanded="isExpandedType" :focus="focus" :item="item" :key="key" :index="$index"></item-local>
         <item-embedded v-if="getDatatype(item) == 'embedded'" :is-locked="isLocked" :focus="focus" :item="item" :key="key" :index="$index"></item-embedded>
         <item-value v-if="getDatatype(item) == 'value'" :is-removable="!hasSingleValue" :is-locked="isLocked" :focus="focus" :value="item" :key="key" :index="$index"></item-value>
       </li>
