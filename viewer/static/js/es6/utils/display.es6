@@ -123,6 +123,7 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
       }
     }
     if (properties.length === 0) {
+      // No props found, default to Resource class and get those
       properties = getProperties('Resource', level, displayDefs, settings);
     }
   }
@@ -131,6 +132,7 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
     properties = ['@type'].concat(properties);
   }
 
+  // Start filling the object with the selected properties
   for (let i = 0; i < properties.length; i++) {
     if (!_.isObject(properties[i])) {
       let valueOnItem = '';
@@ -214,12 +216,18 @@ export function getItemSummary(item, displayDefs, quoted, vocab, settings) {
       summary['sub'].push({ 'property': key, value: v });
     }
   });
+  if (summary['header'].length === 0) {
+    summary['header'].push({ 'property': 'error', value: '[label/title missing]' });
+  }
   return summary;
 }
 
 export function getItemLabel(item, displayDefs, quoted, vocab, settings) {
   const displayObject = getChip(item, displayDefs, quoted, vocab, settings);
-  const rendered = extractStrings(displayObject).trim();
+  let rendered = extractStrings(displayObject).trim();
+  if (item['@type'] && VocabUtil.isSubClassOf(item['@type'], 'Identifier', vocab, settings.vocabPfx)) {
+    rendered = `${item['@type']} ${rendered}`;
+  }
   return rendered;
 }
 

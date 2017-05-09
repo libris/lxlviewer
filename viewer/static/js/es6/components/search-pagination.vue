@@ -13,6 +13,27 @@ export default {
     }
   },
   computed: {
+    filters() {
+        const filters = [];
+        if (typeof this.pageData.search !== 'undefined') {
+            this.pageData.search.mapping.forEach(item => {
+            if (item.variable !== 'q') {
+                const filterObj = {
+                    label: '',
+                    up: '',
+                };
+                if (typeof item.object !== 'undefined') {
+                  filterObj.label = item.object['@id'];
+                } else {
+                  filterObj.label = item.value;
+                }
+                filterObj.up = item.up['@id'];
+                filters.push(filterObj);
+            }
+          });
+        }
+        return filters;
+    },
     queryText() {
       return StringUtil.getParamValueFromUrl(this.pageData.first['@id'], 'q');
     },
@@ -26,15 +47,25 @@ export default {
       const offset = this.pageData.itemOffset;
       const noOfPages = parseInt(this.pageData.totalItems / this.limit) + 1 || 1;
       const currentPage = parseInt(offset/this.limit);
-      let paddedPages = 4;
+      let paddedPages = 3;
       if (currentPage < paddedPages) {
-        paddedPages = paddedPages + (paddedPages - currentPage -1);
+        paddedPages = paddedPages + 1 + (paddedPages - currentPage -1);
       } else if (currentPage + paddedPages > noOfPages) {
-        paddedPages = paddedPages + (currentPage + paddedPages - noOfPages);
+        paddedPages = paddedPages + 1 + (currentPage + paddedPages - noOfPages);
+      }
+      const minPage = currentPage - paddedPages;
+      const maxPage = currentPage + paddedPages;
+      if (minPage > 0) {
+        list.push({pageLabel: '...'});
       }
       for (let i = 0; i < noOfPages; i++) {
         const pageOffset = i * this.limit;
-        list.push({ link: `${this.pageData.first['@id']}&_offset=${pageOffset}`, active: (i === currentPage)});
+        if (i >= minPage && i <= maxPage) {
+          list.push({ pageLabel: i+1, link: `${this.pageData.first['@id']}&_offset=${pageOffset}`, active: (i === currentPage)});
+        }
+      }
+      if (noOfPages > maxPage) {
+        list.push({pageLabel: '...'});
       }
       return list;
     },
@@ -45,7 +76,11 @@ export default {
 <template>
   <div class="panel panel-default result-controls" v-if="!(!showDetails && pageData.totalItems < limit)">
     <div class="search-details" v-if="showDetails">
-      <span class="pull-left">Sökning på <strong>"{{ queryText }}"</strong> gav {{pageData.totalItems}} träffar.</span>
+      <span class="pull-left">Sökning på <strong>{{ queryText }}</strong>
+        <span v-if="filters.length > 0">
+        (filtrerat på <span v-for="filter in filters" track-by="$index">{{filter.label | labelByLang}}{{ $index === filters.length - 1 ? '' : ', ' }}</span>)
+      </span>
+      gav {{pageData.totalItems}} träffar.</span>
       <span class="pull-right">Visar {{ limit }} träffar per sida.</span>
     </div>
     <div class="search-buttons" v-if="pageData.totalItems > limit">
@@ -59,9 +94,10 @@ export default {
             <a v-if="pageData.previous" href="{{pageData.previous['@id']}}">Föregående</a>
             <a v-if="!pageData.previous">Föregående</a>
           </li>
-          <li v-bind:class="{ 'active': page.active}" v-for="page in pageList" track-by="$index">
-            <a v-if="!page.active" href="{{page.link}}">{{$index+1}}</a>
-            <a v-if="page.active">{{$index+1}}</a>
+          <li v-bind:class="{ 'active': page.active }" v-for="page in pageList" track-by="$index">
+            <span class="decorative" v-if="!page.link">...</span>
+            <a v-if="!page.active && page.link" href="{{page.link}}">{{page.pageLabel}}</a>
+            <a v-if="page.active">{{page.pageLabel}}</a>
           </li>
           <li v-bind:class="{ 'disabled': !pageData.next }">
             <a v-if="pageData.next" href="{{pageData.next['@id']}}">Nästa</a>
@@ -83,6 +119,18 @@ export default {
 .search-details {
   height: 1em;
   margin-bottom: 1em;
+}
+.search-buttons {
+  .decorative {
+    font-size: 12px;
+    border: none;
+    line-height: 1;
+    color: @black;
+    background-color: @neutral-color;
+    &:hover {
+      background-color: @neutral-color;
+    }
+  }
 }
 
 

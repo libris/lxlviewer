@@ -62,7 +62,41 @@ sites = {
         "filter_param": "instanceOf.@type",
             # TODO: + @reverse.itemOf.heldBy.@id (and/or count)?
         #"stats": {"@type":{"meta.bibliography.@id":{"publication.providerDate":[]}}}
-        "statsfind": '{"instanceOf.language.@id":{},"carrierType":{},"instanceOf.@type":{},"instanceOf.contentType.@id":{},"publication.date":{},"@type":{}}',
+        "statsfind": 
+        """
+            {
+                "instanceOf.language.@id":{
+                    "sort":"value",
+                    "sortOrder":"desc",
+                    "size":10
+                },
+                "carrierType":{
+                    "sort":"value",
+                    "sortOrder":"desc",
+                    "size":10
+                },
+                "instanceOf.@type":{
+                    "sort":"key",
+                    "sortOrder":"asc",
+                    "size":100
+                },
+                "instanceOf.contentType.@id":{
+                    "sort":"key",
+                    "sortOrder":"asc",
+                    "size":100
+                },
+                "publication.date":{
+                    "sort":"key",
+                    "sortOrder":"desc",
+                    "size":50
+                },
+                "@type":{
+                    "sort":"key",
+                    "sortOrder":"asc",
+                    "size":100
+                }
+            }
+        """,
         "itemList": [
         #    {ID: "/doc/about#", "title": "Om libris.kb.se", "icon": "info-circle"},
         ]

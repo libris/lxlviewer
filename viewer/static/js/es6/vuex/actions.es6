@@ -23,3 +23,6 @@ export const changeStatus = function ({ dispatch, state }, property, data) {
 export const changeNotification = function ({ dispatch, state }, property, data) {
   dispatch('CHANGENOTIFICATION', property, data);
 };
+export const changeResultListStatus = function ({ dispatch, state }, property, data) {
+  dispatch('CHANGERESULTLISTSTATUS', property, data);
+};

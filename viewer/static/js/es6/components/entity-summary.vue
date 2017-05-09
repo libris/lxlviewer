@@ -9,6 +9,7 @@ export default {
   props: {
     focusData: {},
     renderLink: false,
+    lines: Number,
   },
   vuex: {
     getters: {
@@ -31,7 +32,12 @@ export default {
       return this.getFormattedEntries(this.getSummary.header);
     },
     identifiers() {
-      const identifiersList = this.getFormattedEntries(this.getSummary.identifiers);
+      let identifiersList = this.getFormattedEntries(this.getSummary.identifiers);
+      if (identifiersList.length > this.lines) {
+        const diff = identifiersList.length - this.lines;
+        identifiersList.splice((this.lines - 1), diff+1);
+        identifiersList.push(`+ ${diff+1} identifierare`);
+      }
       return identifiersList;
     },
     info() {
@@ -90,7 +96,7 @@ export default {
       <li v-for="v in identifiers">{{v}}</li>
     </ul>
   </div>
-  <div class="sub" v-if="sub.length > 0 && sub[0] !== ''">
+  <div class="sub">
     <span>{{ sub.join(', ') }}</span>
   </div>
 </div>
@@ -101,10 +107,10 @@ export default {
 .entity-summary {
   width: 100%;
   border: 1px solid #ccc;
-  font-size: 14px;
+  font-size: 12px;
   display: flex;
   flex-wrap: wrap;
-  justify-content: flex-start;
+  justify-content: space-between;
   > * {
     padding: 5px;
   }
@@ -113,8 +119,8 @@ export default {
     max-width: 70%;
     .categorization {
       color: #8a8a8a;
+      display: block;
       font-weight: bold;
-      font-size: 0.9em;
       margin-bottom: -0.4em;
 
     }
@@ -122,7 +128,9 @@ export default {
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      font-size: 1.6em;
       line-height: 1.6em;
+      min-height: 1.2em;
       margin: 0px;
       width: 100%;
     }
@@ -132,7 +140,7 @@ export default {
     }
   }
   .identifiers {
-    flex-basis: 30%;
+    flex-basis: 27%;
     text-align: right;
     padding: 10px;
     font-weight: bold;

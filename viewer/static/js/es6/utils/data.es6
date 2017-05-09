@@ -1,14 +1,24 @@
 import * as _ from 'lodash';
+import * as RecordUtil from './record';
 
 export function getLinked(id, linked) {
   if (typeof id === 'undefined') {
     throw new Error('getLinked was called with an undefined Id.');
   }
   let obj = { '@id': id };
+  let graphId = id;
+  if (id.indexOf('#') > -1) {
+    graphId = RecordUtil.extractFnurgel(id);
+  }
   if (typeof linked !== 'undefined') {
-    for (const entity of linked) {
-      if (entity['@id'] === id) {
-        obj = Object.assign({}, entity);
+    for (const graph of linked) {
+      if (graph['@id'] === graphId) {
+        for (const entity of graph['@graph']) {
+          if (entity['@id'] === id) {
+            obj = Object.assign({}, entity);
+            return obj;
+          }
+        }
       }
     }
   }
@@ -25,12 +35,15 @@ export function getLinked(id, linked) {
   return obj;
 }
 
-export function getMergedItems(record, mainEntity, work) {
+export function getMergedItems(record, mainEntity, work, quoted) {
   const obj = { '@graph': [] };
   obj['@graph'].push(record);
   obj['@graph'].push(mainEntity);
   if (!_.isEmpty(work)) {
     obj['@graph'].push(work);
+  }
+  for (const graph of quoted) {
+    obj['@graph'].push(graph);
   }
   return obj;
 }

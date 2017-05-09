@@ -66,7 +66,8 @@ export default {
       const editorObj = DataUtil.getMergedItems(
         DataUtil.removeNullValues(this.editorData.record),
         DataUtil.removeNullValues(this.editorData.mainEntity),
-        DataUtil.removeNullValues(this.editorData.work)
+        DataUtil.removeNullValues(this.editorData.work),
+        this.editorData.quoted
       );
       httpUtil.post({
         url: '/_convert',
@@ -152,6 +153,7 @@ export default {
       }
       width: 100%;
       overflow-y: scroll;
+      padding-bottom: 3em;
       .marc-preview-table {
         width: 100%;
         font-family: monospace;

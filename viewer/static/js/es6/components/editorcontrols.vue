@@ -93,6 +93,15 @@ export default {
           <div class="action" v-on:click="toggleDev()" v-bind:class="{'active': status.isDev}">
             <i class="fa fa-wrench" aria-hidden="true"></i>
           </div>
+          <div class="action">
+            <a :href="`${focusData['@id']}/data.jsonld`"><button>JSON-LD</button></a>
+          </div>
+          <div class="action">
+            <a :href="`${focusData['@id']}/data.ttl`"><button>Turtle</button></a>
+          </div>
+          <div class="action">
+            <a :href="`${focusData['@id']}/data.rdf`"><button>RDF</button></a>
+          </div>
         </div>
         <div class="admin-node">
           <span class="node">Skapad {{ getCard.created }} av {{ getCard.assigner }}</span>
@@ -154,7 +163,7 @@ export default {
       display: flex;
       align-items: center;
       position: relative;
-      padding: 5px 15px;
+      padding: 5px 7px;
       .admin-node {
         flex-grow: 5;
         text-align: center;
@@ -164,12 +173,16 @@ export default {
         }
       }
       button {
-        margin: 0 1em;
+        margin: 0 0.3em;
       }
       .actions {
         .action {
           display: inline-block;
           cursor: pointer;
+          > a {
+            color: #fff;
+            font-size: 11px;
+          }
           &.active {
             i {
               color: @brand-primary;

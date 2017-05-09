@@ -119,7 +119,12 @@ export default class Editor extends View {
         },
         'add-linked': function(item) {
           const newData = this.editorData;
-          newData.quoted.push(item);
+          const graphId = RecordUtil.extractFnurgel(item['@id']) || item['@id'];
+          const graphObj = {
+            '@id': graphId,
+            '@graph': [item],
+          };
+          newData.quoted.push(graphObj);
           this.syncData(newData);
         },
         'save-item': function() {
@@ -205,7 +210,8 @@ export default class Editor extends View {
           const obj = DataUtil.getMergedItems(
             DataUtil.removeNullValues(this.editorData.record),
             DataUtil.removeNullValues(this.editorData.mainEntity),
-            DataUtil.removeNullValues(this.editorData.work)
+            DataUtil.removeNullValues(this.editorData.work),
+            this.editorData.quoted
           );
 
           if (!RecordId || RecordId === '_:TEMP_ID') { // No ID -> create new

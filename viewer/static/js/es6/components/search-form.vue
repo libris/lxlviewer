@@ -1,12 +1,20 @@
 <script>
 import * as _ from 'lodash';
 import PropertyMappings from '../propertymappings.json';
+import * as httpUtil from '../utils/http';
+import { changeResultListStatus } from '../vuex/actions';
 export default {
   name: 'search-form',
+  vuex: {
+    actions: {
+      changeResultListStatus,
+    },
+  },
   props: {
     siteTitle: '',
     result: {},
     filterParam: '',
+    useSubmit: false,
   },
   data() {
     return {
@@ -100,7 +108,7 @@ export default {
         const queryText = [];
         const tagObject = {};
         for (const node of this.formData) {
-          if (node.class.includes('searchtag')) {
+          if (node.class.indexOf('searchtag') > -1) {
               const tag = node.value.split(':');
               if (validTags.indexOf(tag[0].toLowerCase()) > -1) {
                   tagObject[tag[0]] = tag[1];
@@ -114,24 +122,54 @@ export default {
         const filterObject = this.getSelectedFilter();
         tagObject.q = queryText.join(' ');
         const searchObj = Object.assign(tagObject, filterObject);
-        console.log(searchObj);
         const tagInputs = document.querySelectorAll('.tagInput');
         _.each(this.getConvertedSearchObject(searchObj), (v, k) => {
-          tagInputs.forEach(inputTag => {
+          _.each(tagInputs, inputTag => {
             if (inputTag.name === k) {
                 inputTag.value = v;
             }
           });
         });
         this.removeEmptyFields();
-        document.querySelector('#searchForm').submit();
+        const form = document.querySelector('#searchForm');
+        if (!this.useSubmit) {
+            const data = new FormData(form);
+            const inputs = [];
+            for(const pair of data.entries()) {
+                inputs.push(`${pair[0]}=${pair[1]}`);
+            }
+            const url = `${form.action}?${inputs.join('&')}`;
+            this.changeResultListStatus('loading', true);
+            const resultPromise = new Promise((resolve, reject) => {
+                httpUtil.get({ url: url, accept: 'application/ld+json' }).then((response) => {
+                    history.pushState(response, "title", url);
+                    resolve(response);
+                }, (error) => {
+                    history.pushState({}, "title", url);
+                    reject('Error searching...', error);
+                });
+            });
+            this.clearFields();
+            this.currentInput = 0;
+            this.formData.splice(1, this.formData.length);
+            this.formData[0].value = '';
+            this.$dispatch('newresult', resultPromise);
+        } else {
+            form.submit();
+        }
         return false;
       },
       removeEmptyFields() {
         // Empty inputs
         $('#searchForm').find('input').filter(function() {
-            return !$.trim(this.value).length || this.type === 'radio';
+            return !$.trim(this.value).length || this.type === 'radio' && (this.className.indexOf('searchphrase') < 0);
         }).prop('disabled', true);
+      },
+      clearFields() {
+        // Empty inputs
+        $('#searchForm').find('input').filter(function() {
+            return this.name.indexOf('identifiedBy') > -1;
+        }).prop('value', '');
       },
   },
   computed: {
@@ -178,7 +216,7 @@ export default {
           return filters;
       },
       currentIsTag() {
-          return this.currentField.value.includes(':')
+          return this.currentField.value.indexOf(':') > -1;
       },
       currentField() {
           return this.formData[this.currentInput];

@@ -1,4 +1,5 @@
 <script>
+import * as _ from 'lodash';
 import * as httpUtil from '../utils/http';
 import * as VocabUtil from '../utils/vocab';
 import * as DisplayUtil from '../utils/display';
@@ -23,6 +24,9 @@ export default {
       chooseLocalType: false,
       showToolTip: false,
       rangeInfo: false,
+      selectedType: '',
+      addEmbedded: false,
+      searchMade: false,
     };
   },
   vuex: {
@@ -44,6 +48,8 @@ export default {
     propertyTypes: [],
     showActionButtons: false,
     active: false,
+    isInner: false,
+    isChip: false,
   },
   events: {
     'close-modals'() {
@@ -62,6 +68,7 @@ export default {
   },
   watch: {
     keyword(value) {
+      this.searchMade = false;
       if (value) {
         setTimeout(() => {
           if (this.keyword === value) {
@@ -77,17 +84,31 @@ export default {
     }
   },
   computed: {
-    isWork() {
-      return this.focus === 'work';
-    },
-    isInstance() {
-      return this.focus === 'mainEntity';
-    },
     getRange() {
       return VocabUtil.getRange(this.key, this.vocab, this.settings.vocabPfx);
     },
+    getFullRange() {
+      let types = [].concat(this.getRange);
+      _.each(this.getRange, typeName => {
+        const type = typeName.replace(this.settings.vocabPfx, '');
+        const subClassArray = (VocabUtil.getSubClasses(type, this.vocab, this.settings.vocabPfx)).map(entry => {
+          return entry['@id'];
+        });
+        types = types.concat(subClassArray);
+      });
+      types = _.uniq(types);
+      return types;
+    },
+    searchTypes() {
+      const types = this.getFullRange;
+      const typeArray = [];
+      for (const type of types) {
+        typeArray.push(type.replace(this.settings.vocabPfx, ''));
+      }
+      return typeArray;
+    },
     onlyEmbedded() {
-      const range = this.getRange;
+      const range = this.getFullRange;
       for (const prop of range) {
         if (!VocabUtil.isEmbedded(prop, this.vocab, this.settings)) {
           return false;
@@ -100,8 +121,8 @@ export default {
     },
     isLiteral() {
       // TODO: Verify usage
-      if (this.getRange.length > 0) {
-        for (const rangeElement of this.getRange) {
+      if (this.getFullRange.length > 0) {
+        for (const rangeElement of this.getFullRange) {
           if (rangeElement.indexOf('Literal') > -1) {
             return true;
           }
@@ -114,11 +135,17 @@ export default {
     this.searchOpen = false;
   },
   methods: {
+    dismissTypeChooser() {
+      this.addEmbedded = false;
+      this.selectedType = '';
+    },
     add() {
       if (this.canRecieveObjects) {
-        const range = this.getRange;
+        const range = this.getFullRange;
         if (range.length < 2 && this.onlyEmbedded) {
           this.addEmpty(range[0]);
+        } else if (this.onlyEmbedded) {
+          this.addEmbedded = true;
         } else {
           this.show();
         }
@@ -141,9 +168,11 @@ export default {
       this.changeStatus('keybindState', 'overview');
     },
     goLocal() {
-      const range = this.getRange;
+      const range = this.getFullRange;
       if (range.length > 1) {
         this.chooseLocalType = true;
+        const test = document.querySelector('#localTypePicker');
+        test.focus();
       } else {
         this.addEmpty(range[0]);
       }
@@ -164,14 +193,20 @@ export default {
       const obj = this.getEmptyForm(type);
       this.$dispatch('add-item', obj);
     },
+    addType(type) {
+      const idArray = type.split('/');
+      this.addEmpty(idArray[idArray.length - 1]);
+      this.addEmbedded = false;
+    },
     search(keyword) {
       const self = this;
       self.searchResult = {};
       self.loading = true;
-      this.getItems(keyword, this.getRange).then((result) => {
+      this.getItems(keyword, this.searchTypes).then((result) => {
         setTimeout(() => {
           self.searchResult = result;
           self.loading = false;
+          self.searchMade = true;
         }, 500);
       }, (error) => {
         self.loading = false;
@@ -217,7 +252,7 @@ export default {
     },
     getItems(keyword, typeArray) {
       // TODO: Support asking for more items
-      const searchKey = `${keyword}`;
+      const searchKey = `${keyword}*`;
       let searchUrl = `/find?q=${searchKey}`;
       if (typeof typeArray !== 'undefined' && typeArray.length > 0) {
         for (const type of typeArray) {
@@ -239,11 +274,22 @@ export default {
 </script>
 
 <template>
-<span class="entity-adder">
-  <a class="action-button add-entity-button" :class="{'shown-button': showActionButtons, 'hidden-button': !showActionButtons, 'disabled': active}" v-on:click="add()" @mouseenter="showToolTip=true" @mouseleave="showToolTip=false">
-    <i class="fa fa-plus plus-icon" aria-hidden="true"></i>
-  </a>
-  <tooltip-component :show-tooltip="showToolTip" :tooltiptext="key"></tooltip-component>
+<div class="entity-adder">
+  <div v-if="isChip && !addEmbedded" class="chip action-button add-entity-button" :class="{ 'fade': !showActionButtons }" v-on:click="add()" @mouseenter="showToolTip=true" @mouseleave="showToolTip=false">
+    <span class="chip-label"><i class="fa fa-fw fa-plus plus-icon" aria-hidden="true"></i><span class="label-text">{{ "Add" | translatePhrase }}</span></span>
+  </div>
+  <div v-if="!isChip && !addEmbedded" class="action-button add-entity-button" :class="{'disabled': active, 'fade': !showActionButtons }" v-on:click="add()" @mouseenter="showToolTip=true" @mouseleave="showToolTip=false">
+    <span class="chip-label"><i class="fa fa-fw fa-plus plus-icon" aria-hidden="true"></i><span class="label-text">{{ "Add" | translatePhrase }}</span></span>
+  </div>
+  <div class="type-chooser" v-if="addEmbedded" v-on-clickaway="dismissTypeChooser">
+    {{ "Choose type" | translatePhrase }}:
+    <select v-model="selectedType">
+      <option disabled value="">{{"Choose type" | translatePhrase}}</option>
+      <option v-for="type in getFullRange" value="{{type}}" label="{{type | labelByLang}}">
+    </select>
+    <button @click="addType(selectedType)">{{"Add" | translatePhrase}}</button>
+  </div>
+  <!--<tooltip-component :show-tooltip="showToolTip" :tooltiptext="key"></tooltip-component>-->
   <div class="window" v-if="active">
     <div class="header">
       <span class="title">
@@ -259,41 +305,80 @@ export default {
           <div class="search">
             {{ "Search" | translatePhrase }}:
             <input v-model="keyword"></input>
-            <div class="range-info-container" v-if="getRange.length > 0" @mouseleave="rangeInfo = false">
+            <div class="range-info-container" v-if="getFullRange.length > 0" @mouseleave="rangeInfo = false">
               <i class="fa fa-info-circle" @mouseenter="rangeInfo = true"></i>
               <div class="range-info" v-if="rangeInfo">
                 {{ "Allowed types" | translatePhrase }}:
                 <br>
-                <span v-for="range in getRange" class="range">
+                <span v-for="range in getFullRange" class="range">
                   - {{range | labelByLang}}
                 </span>
               </div>
             </div>
           </div>
-          <div class="local" v-show="allowLocal">
-            <button v-on:click="goLocal">{{ "Create local entity" | translatePhrase }}</button>
-          </div>
         </div>
         <div v-if="!loading && keyword.length === 0" class="search-status">{{ "Start writing to begin search" | translatePhrase }}...</div>
         <div v-if="loading" class="search-status">{{ "Searching" | translatePhrase }}...<br><i class="fa fa-cog fa-spin"></i></div>
-        <div v-if="!loading && searchResult.length === 0 && keyword.length > 0" class="search-status">{{ "No results" | translatePhrase }}...</div>
+        <div v-if="!loading && searchResult.length === 0 && keyword.length > 0 && searchMade" class="search-status">
+          {{ "No results" | translatePhrase }}...
+        </div>
         <entity-search-list v-if="!loading && keyword.length > 0" :results="searchResult"></entity-search-list>
+        <div class="local" v-show="allowLocal && searchMade && !loading">
+          <button v-on:click="goLocal">{{ "Create local entity" | translatePhrase }}</button>
+        </div>
       </div>
       <div class="stage-1" v-show="chooseLocalType">
-        <button v-on:click="addEmpty(type)" v-for="type in getRange">{{ type }}</button>
+        {{ "Choose type" | translatePhrase }}:
+        <select v-model="selectedType">
+          <option disabled value="">{{"Choose type" | translatePhrase}}</option>
+          <option v-for="type in getFullRange" value="{{type}}" label="{{type | labelByLang}}">
+        </select>
+        <button @click="addType(selectedType)">{{"Add" | translatePhrase}}</button>
       </div>
     </div>
   </div>
-</span>
+</div>
 </template>
 
 <style lang="less">
 @import './_variables.less';
 
 .entity-adder {
-  opacity: 1;
   .disabled {
     visibility: hidden;
+  }
+  > .chip {
+    .chip-mixin(transparent, @gray-darker);
+    .label-text {
+      display: inline-block;
+    }
+  }
+  .type-chooser {
+    text-align: center;
+    padding: 5px;
+    border: 1px dashed @gray-darker;
+  }
+  .add-entity-button {
+    opacity: 1;
+    transition: opacity 0.5s ease;
+    &.fade {
+      opacity: 0;
+    }
+    cursor: pointer;
+    text-align: center;
+    border: 1px dashed @gray-darker;
+    background-color: transparent;
+    .chip-label {
+      color: @gray-darker;
+    }
+    &:hover {
+      .chip-label {
+        color: @gray-darker;
+      }
+    }
+    .chip-action {
+
+    }
   }
   .window {
     .window-mixin();
@@ -303,11 +388,19 @@ export default {
       border: 1px solid #ccc;
       padding: 0px;
       overflow-y: scroll;
+      .stage-1 {
+        text-align: center;
+        padding: 15px;
+      }
+      .local {
+        text-align: center;
+      }
       button {
         font-size: 12px;
       }
       .search-result {
         padding-top: 50px;
+        padding-bottom: 2em;
       }
       .search-header {
         position: absolute;
@@ -317,11 +410,6 @@ export default {
         border: solid #ccc;
         border-width: 0px 0px 1px 0px;
         background-color: darken(@neutral-color, 4%);
-        .local {
-          float: left;
-          width: 50%;
-          text-align: right;
-        }
         .search {
           float: left;
           width: 50%;
@@ -353,28 +441,7 @@ export default {
       }
     }
   }
-  .add-entity-button {
-    background-color: @brand-primary;
-    color: @white;
-    border-radius:28px;
-    display:inline-block;
-    cursor:pointer;
-    font-family:Arial;
-    font-size:10px;
-    padding-right: 5px;
-    padding-left: 5px;
-    text-decoration:none;
-    .plus-icon {
-      vertical-align: middle;
-    }
-    &:hover {
-      background-color: lighten(@brand-primary, 5%);
-    }
-    &:active {
-      position:relative;
-      top:1px;
-    }
-  }
+
 }
 
 </style>

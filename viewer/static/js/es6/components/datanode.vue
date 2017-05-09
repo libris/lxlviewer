@@ -28,12 +28,14 @@ export default {
     'allow-local',
     'embedded',
     'is-removable',
+    'isInner',
   ],
   data() {
     return {
       showActionButtons: false,
       activeModal: false,
       removeHover: false,
+      foundChip: false,
     };
   },
   vuex: {
@@ -55,6 +57,20 @@ export default {
     'entity-adder': EntityAdder,
   },
   computed: {
+    keyAsVocabProperty() {
+      return VocabUtil.getTerm(this.key, this.vocab, this.settings.vocabPfx);
+    },
+    propertyComment() {
+      if (this.keyAsVocabProperty && this.keyAsVocabProperty.commentByLang) {
+        if (this.keyAsVocabProperty.commentByLang[this.settings.language]) {
+          return this.keyAsVocabProperty.commentByLang[this.settings.language];
+        } else {
+          return this.keyAsVocabProperty.commentByLang[0];
+        }
+      } else {
+        return '';
+      }
+    },
     valueAsArray() {
       if (_.isArray(this.value)) {
         return this.value;
@@ -233,6 +249,13 @@ export default {
       }
       return VocabUtil.isEmbedded(type, this.vocab, this.settings);
     },
+    isChip(item) {
+      if (((this.getDatatype(item) == 'entity' || this.getDatatype(item) == 'local') && !this.isExpandedType)) {
+        this.foundChip = true;
+        return true;
+      }
+      return false;
+    },
   },
 };
 </script>
@@ -241,22 +264,29 @@ export default {
 <div class="data-node" v-bind:class="{'column': embedded, 'rows': !embedded, 'highlight': isLastAdded, 'distinguish-removal': removeHover }" @mouseover="showActionButtons=true" @mouseleave="showActionButtons=false">
   <div class="label" v-bind:class="{ 'locked': isLocked }">
     <a href="/vocab/#{{key}}">{{ key | labelByLang | capitalize }}</a>
+    <div v-if="propertyComment && !isLocked" class="comment-icon">
+      <i class="fa fa-question-circle"></i>
+      <div class="comment">{{ propertyComment }}</div>
+    </div>
     <!-- {{ key | labelByLang | capitalize }} -->
   </div>
   <div class="value node-list">
     <pre v-show="status.isDev">{{getPath}}</pre>
     <ul>
-      <li v-for="item in valueAsArray" track-by="$index">
+      <li v-for="item in valueAsArray" :class="{ 'isChip': isChip(item)}" track-by="$index">
         <item-entity v-if="getDatatype(item) == 'entity'" :is-locked="isLocked" :expanded="isExpandedType" :focus="focus" :item="item" :key="key" :index="$index"></item-entity>
         <item-local v-if="getDatatype(item) == 'local'" :is-locked="isLocked" :focus="focus" :item="item" :key="key" :index="$index"></item-local>
         <item-embedded v-if="getDatatype(item) == 'embedded'" :is-locked="isLocked" :focus="focus" :item="item" :key="key" :index="$index"></item-embedded>
         <item-value v-if="getDatatype(item) == 'value'" :is-removable="!hasSingleValue" :is-locked="isLocked" :focus="focus" :value="item" :key="key" :index="$index"></item-value>
       </li>
+      <li :class="{ 'isChip': foundChip}">
+        <entity-adder class="action" v-if="!isLocked && (isRepeatable || isEmptyObject)" :key="key" :focus="focus" :property-types="propertyTypes" :allow-local="allowLocal" :show-action-buttons="showActionButtons" :active="activeModal" :is-inner="isInner" :is-chip="foundChip"></entity-adder>
+      </li>
     </ul>
+
   </div>
-  <div class="actions" v-if="!isLocked">
-    <entity-adder class="action" v-if="!isLocked && (isRepeatable || isEmptyObject)" :key="key" :focus="focus" :property-types="propertyTypes" :allow-local="allowLocal" :show-action-buttons="showActionButtons" :active="activeModal"></entity-adder>
-    <div class="action action-button action-remove" @mouseover="removeHover = true" @mouseout="removeHover = false" v-if="!isLocked && isRemovable" :class="{'shown-button': showActionButtons, 'hidden-button': !showActionButtons, 'disabled': activeModal}" v-on:click="removeThis()"><i class="fa fa-trash"></i></div>
+  <div class="actions">
+    <div class="action" v-if="!isLocked && isRemovable" :class="{'shown-button': showActionButtons, 'hidden-button': !showActionButtons, 'disabled': activeModal}"><i v-on:click="removeThis()" @mouseover="removeHover = true" @mouseout="removeHover = false" class="fa fa-trash fa-lg action-button action-remove"></i></div>
   </div>
 </div>
 </template>
@@ -279,7 +309,6 @@ export default {
       margin-bottom: 0px;
       padding: 0px;
       > li {
-        display: inline-block;
         margin-bottom: 2px;
         &:last-of-type {
           margin-bottom: auto;
@@ -311,6 +340,25 @@ export default {
     font-size: 1.2rem;
     color: @black;
     font-weight: normal;
+    .comment-icon {
+      display: inline-block;
+      .comment {
+        display: none;
+        border-radius: 4px;
+        position: absolute;
+        background-color: @white;
+        max-width: 300px;
+        line-height: 1.6;
+        border: 1px solid @gray-light;
+        white-space: normal;
+        padding: 0.5em;
+      }
+      &:hover {
+        .comment {
+          display: block;
+        }
+      }
+    }
   }
   .value {
   }
@@ -340,9 +388,7 @@ export default {
     }
     >.label {
       order: 1;
-      flex-basis: @col-label;
-      max-width: @col-label;
-      display: flex;
+      flex: 0 0 @col-label;
       text-align: right;
       align-items: flex-start;
       justify-content: flex-end;
@@ -350,16 +396,18 @@ export default {
       border: 1px solid #e4e2e2;
       border-width: 0px 1px 0px 0px;
       border-radius: 0px;
+      overflow: hidden;
       a {
-        white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
       }
     }
     >.value {
       order: 2;
-      flex-basis: @col-value;
+      flex: 1 1 0px;
       padding: 5px;
+      border: 1px solid #e4e2e2;
+      border-width: 0px 1px 0px 0px;
       > * {
         display: inline-block;
       }
@@ -368,22 +416,47 @@ export default {
         list-style: none;
         padding: 0px;
         > li {
-          display: inline-block;
+          display: block;
+          .item-value {
+            width: 100%;
+            display: flex;
+            > textarea {
+              flex: 9 9 90%;
+            }
+            > .remover {
+              flex: 1 1 2em;
+              text-align: center;
+            }
+          }
+          &.isChip {
+            display: inline-block;
+            float: left;
+          }
+          .item-value {
+            > textarea {
+              width: 100%;
+            }
+          }
         }
       }
     }
     >.actions {
       order: 3;
-      flex-basis: @col-action;
+      flex: 0 0 @col-action;
       display: flex;
       justify-content: flex-end;
       align-items: center;
-      > * {
-        display: inline;
-        margin: 0px 5px;
+      margin-left: -5px;
+      > div {
+
+      }
+      > span {
       }
       .disabled {
         visibility: hidden;
+      }
+      .action-remove {
+        padding: 10px;
       }
     }
   }
@@ -402,12 +475,41 @@ export default {
     }
     >.value {
       display: inline-block;
-      flex: 1 0 85%;
-      flex-grow: 1;
+      flex: 1 1 100%;
+      > ul {
+        width: 100%;
+        list-style: none;
+        padding: 0px;
+        > li {
+          &.isChip {
+            display: inline-block;
+          }
+          .item-value {
+            width: 100%;
+            display: flex;
+            > textarea {
+              background-color: #f9f9f9;
+              flex: 9 9 90%;
+            }
+            > .remover {
+              flex: 1 1 2em;
+              text-align: center;
+            }
+          }
+        }
+        > li {
+          display: block;
+          .item-value {
+            > textarea {
+              width: 100%;
+            }
+          }
+        }
+      }
     }
     >.actions {
       display: inline-block;
-      flex: 1 0 15%;
+      flex: 0 0 10%;
       > * {
         display: inline-block;
       }

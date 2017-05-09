@@ -148,13 +148,13 @@ export default {
     </div>
     <div class="local-form" v-show="inEdit">
       <strong>{{ item['@type'] | labelByLang | uppercase }}</strong> ({{ "Local entity" | translatePhrase }})
-      <data-node v-for="(k,v) in filteredItem" :is-locked="isLocked" :embedded="true" :is-removable="false" :parent-key="key" :parent-index="index" :key="k" :value="v" :focus="focus" :allow-local="false"></data-node>
+      <data-node v-for="(k,v) in filteredItem" :is-inner="true" :is-locked="isLocked" :embedded="true" :is-removable="false" :parent-key="key" :parent-index="index" :key="k" :value="v" :focus="focus" :allow-local="false"></data-node>
       <div class="actions">
         <button v-on:click="removeThis">Radera</button>
         <button v-on:click="closeForm" v-bind:disabled="isEmpty">Klar</button>
       </div>
     </div>
-    <card-component :title="getItemLabel" :item="getCard" :uri="item['@id']" :should-show="showCardInfo && !inEdit" :floating="!expanded"></card-component>
+    <card-component :title="getItemLabel" :focus-data="item" :uri="item['@id']" :should-show="showCardInfo && !inEdit" :floating="!expanded"></card-component>
   </div>
 </template>
 
