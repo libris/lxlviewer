@@ -8,8 +8,10 @@ export default {
   name: 'entity-summary',
   props: {
     focusData: {},
-    renderLink: false,
+    addLink: false,
     lines: Number,
+    actions: false,
+    isLocal: false,
   },
   vuex: {
     getters: {
@@ -25,6 +27,12 @@ export default {
     }
   },
   computed: {
+    renderLink() {
+      if (this.addLink && !this.isLocal) {
+        return true;
+      }
+      return false;
+    },
     categorization() {
       return this.getFormattedEntries(this.getSummary.categorization);
     },
@@ -48,6 +56,12 @@ export default {
     },
   },
   methods: {
+    removeEntity() {
+      this.$dispatch('remove-entity');
+    },
+    extractEntity() {
+      this.$dispatch('extract-item');
+    },
     translateable(type) {
       if (type === '@type' || type === 'issuanceType') {
         return true;
@@ -79,13 +93,16 @@ export default {
 
 <template>
 <div class="entity-summary">
+  <div class="categorization">
+    {{categorization.join(', ')}}
+  </div>
+  <div class="actions" v-if="actions">
+    <i class="fa fa-file-o" v-if="isLocal" v-on:click="extractEntity"></i> <i class="fa fa-trash" v-on:click="removeEntity"></i>
+  </div>
   <div class="main-info">
-    <div class="categorization">
-      {{categorization.join(', ')}}
-    </div>
     <h3 class="header">
-      <a v-if="renderLink" title="{{ header.join(', ') }}" :href="focusData['@id']">{{ header.join(', ') }}</a>
-      <span v-if="!renderLink" title="{{ header.join(', ') }}">{{ header.join(', ') }}</span>
+      <a v-if="!isLocal" title="{{ header.join(', ') }}" :href="focusData['@id']">{{ header.join(', ') }}</a>
+      <span v-if="isLocal" title="{{ header.join(', ') }}">{{ header.join(', ') }}</span>
     </h3>
     <ul class="info">
       <li v-for="v in info">{{ v }}</li>
@@ -111,19 +128,23 @@ export default {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  > * {
-    padding: 5px;
+  .categorization {
+    color: #8a8a8a;
+    flex-basis: 85%;
+    padding: 3px;
+    flex-grow: 2;
+    display: block;
+    font-weight: bold;
+    margin-bottom: -0.4em;
+  }
+  .actions {
+    flex-basis: 3em;
+    text-align: center;
   }
   .main-info {
     flex-basis: 70%;
     max-width: 70%;
-    .categorization {
-      color: #8a8a8a;
-      display: block;
-      font-weight: bold;
-      margin-bottom: -0.4em;
-
-    }
+    padding: 0px 3px;
     .header {
       white-space: nowrap;
       overflow: hidden;
@@ -142,7 +163,7 @@ export default {
   .identifiers {
     flex-basis: 27%;
     text-align: right;
-    padding: 10px;
+    padding: 0px;
     font-weight: bold;
     ul {
       list-style-type: none;
@@ -152,6 +173,7 @@ export default {
   .sub {
     font-style: italic;
     flex-basis: 100%;
+    padding: 3px;
     background-color: rgba(0, 0, 0, 0.01);
     border: solid rgba(0, 0, 0, 0.1);
     border-width: 1px 0px 0px 0px;

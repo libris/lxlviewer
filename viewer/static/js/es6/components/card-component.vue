@@ -19,6 +19,8 @@ export default {
     shouldShow: false,
     uri: '',
     floating: false,
+    isLocked: false,
+    isLocal: false,
   },
   data() {
     return {
@@ -65,7 +67,7 @@ export default {
 
 <template>
   <div class="card-info-container" :class="{ 'active': active, 'to-be-active': toBeActive, 'floating': floating }">
-    <entity-summary :focus-data="focusData" :render-link="hasUri" :lines="5"></entity-summary>
+    <entity-summary :focus-data="focusData" :add-link="hasUri" :lines="5" :actions="!floating && !isLocked" :is-local="isLocal"></entity-summary>
   </div>
 </template>
 

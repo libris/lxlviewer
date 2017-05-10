@@ -38,7 +38,7 @@ export default {
 
 <template>
   <div class="result-list-item">
-    <entity-summary :focus-data="focusData" :render-link="true" :lines="5"></entity-summary>
+    <entity-summary :focus-data="focusData" :add-link="true" :lines="4"></entity-summary>
   </div>
 </template>
 

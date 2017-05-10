@@ -24,6 +24,9 @@ export default class View {
         '@id',
         'issuanceType',
       ],
+      disallowLocal: [
+        'instanceOf',
+      ],
       userInfo: {
         sigel: UserUtil.get('sigel'),
       },

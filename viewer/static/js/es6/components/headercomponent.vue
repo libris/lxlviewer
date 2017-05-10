@@ -68,7 +68,7 @@ export default {
 
 <template>
   <div class="header-component" v-bind:class="{ 'compact': !full, 'full': full }">
-    <entity-summary :focus-data="focusData" :render-link="false" :lines="full ? 6 : 3"></entity-summary>
+    <entity-summary :focus-data="focusData" :add-link="false" :lines="full ? 6 : 3"></entity-summary>
   </div>
 </template>
 

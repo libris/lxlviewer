@@ -1,4 +1,5 @@
 import * as httpUtil from '../utils/http';
+import * as _ from 'lodash';
 
 export function getMarc(json) {
   return new Promise((resolve, reject) => {
@@ -103,6 +104,25 @@ export function getItemObject(itemOf, heldBy, instance) {
     ],
   };
   return itemObj;
+}
+
+export function getObjectAsRecord(data) {
+  const mainEntity = _.cloneDeep(data);
+  mainEntity['@id'] = '_:TEMP_ID#it';
+
+  const newObj = {
+    '@graph': [
+      {
+        '@type': 'Record',
+        '@id': '_:TEMP_ID',
+        'mainEntity': {
+          '@id': '_:TEMP_ID#it',
+        },
+      },
+      mainEntity
+    ],
+  };
+  return newObj;
 }
 
 export function getNewCopy(id) {

@@ -50,6 +50,15 @@ export default {
       }
       return false;
     },
+    specialProperties() {
+      const props = [];
+      for (const prop of this.settings.specialProperties) {
+        if (this.editorData.mainEntity[prop]) {
+          props.push(prop);
+        }
+      }
+      return props;
+    },
     allowedProperties() {
       const settings = this.settings;
       const formObj = this.formData;
@@ -185,8 +194,8 @@ export default {
 </script>
 
 <template>
-  <div class="form-component" :class="{ 'locked': isLocked, 'work-state': isWork, 'instance-state': isInstance, 'focused-form-component': status.level === this.focus }">
-    <data-node v-for="k in settings.specialProperties" :key="k" :value="editorData.mainEntity[k]" is-locked="true"></data-node>
+  <div class="form-component" :class="{ 'locked': isLocked, 'focused-form-component': status.level === this.focus }">
+    <data-node v-for="k in specialProperties" :key="k" :value="editorData.mainEntity[k]" is-locked="true"></data-node>
     <data-node v-for="(k,v) in sortedFormData" v-bind:class="{ 'locked': isLocked }" :is-inner="false" :is-removable="true" :is-locked="keyIsLocked(k)" :key="k" :value="v" :focus="focus" :allow-local="true"></data-node>
     <div v-if="focus == 'work'" class="dummy-reverse">
       <div class="label" v-bind:class="{ 'locked': isLocked }">
