@@ -31,7 +31,7 @@ export default {
 <template>
   <div class="search-result">
     <ul class="search-result-list" v-show="results.length > 0">
-      <entity-search-item :focus-data="item" :render-link="false" v-for="item in results" track-by="$index" v-on:click="addLinked(item)"></entity-search-item>
+      <entity-search-item :focus-data="item" :add-link="false" v-for="item in results" track-by="$index" v-on:click="addLinked(item)"></entity-search-item>
     </ul>
   </div>
 </template>

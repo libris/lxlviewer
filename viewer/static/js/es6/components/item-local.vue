@@ -101,10 +101,12 @@ export default {
             self.vm.changeNotification('message', `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error}`);
           });
         } else {
-          console.log("something broke");
+          self.vm.changeNotification('color', 'red');
+          self.vm.changeNotification('message', `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${result.status}`);
         }
       }, (error) => {
-        console.log("Somethingg broke");
+        self.vm.changeNotification('color', 'red');
+        self.vm.changeNotification('message', `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error}`);
       });
     },
     getForm(item) {
@@ -163,7 +165,10 @@ export default {
     'extract-item'() {
       this.doExtract();
     },
-  }
+    'delete-item'() {
+      this.removeThis();
+    },
+  },
   ready() {
     this.$nextTick(() => {
       this.extracted = RecordUtil.getObjectAsRecord(this.focusData);
@@ -196,8 +201,7 @@ export default {
         <button v-on:click="closeForm" v-bind:disabled="isEmpty">Klar</button>
       </div>
     </div>
-    <card-component :title="getItemLabel" :focus-data="item" :uri="item['@id']" :is-local="true" :should-show="showCardInfo && !inEdit" :floating="!expanded"></card-component>
-    <button v-if="!isLocked" v-on:click="doExtract">Bryt ut</button>
+    <card-component :title="getItemLabel" :focus-data="item" :uri="item['@id']" :is-local="true" :is-locked="isLocked" :should-show="showCardInfo && !inEdit" :floating="!expanded"></card-component>
   </div>
 </template>
 

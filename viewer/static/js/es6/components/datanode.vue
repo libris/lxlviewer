@@ -57,6 +57,12 @@ export default {
     'entity-adder': EntityAdder,
   },
   computed: {
+    isLocalAllowed() {
+      if (this.settings.disallowLocal.indexOf(this.key) === -1) {
+        return true;
+      }
+      return false;
+    },
     keyAsVocabProperty() {
       return VocabUtil.getTerm(this.key, this.vocab, this.settings.vocabPfx);
     },
@@ -148,7 +154,11 @@ export default {
       this.updateValue(modified);
     },
     'remove-item'(index) {
+      console.log("Remove item with index", index);
       let modified = _.cloneDeep(this.value);
+      if (!_.isArray(modified)) {
+        modified = [modified];
+      }
       if (typeof index !== 'undefined' && index !== '') {
         modified.splice(index, 1);
       } else {
@@ -219,6 +229,9 @@ export default {
       // });
     },
     getDatatype(o) {
+      if (typeof o === 'undefined') {
+        throw new Error('Cannot check data type of undefined object.');
+      }
       if (this.isPlainObject(o) && this.isLinked(o)) {
       // if (this.isPlainObject(o) && this.isLinked(o) && o['@id'].indexOf(this.editorData.record['@id']) === -1) {
         return 'entity';
@@ -240,6 +253,9 @@ export default {
       }
     },
     isLinked(o) {
+      if (typeof o === 'undefined') {
+        throw new Error('Cannot check link status of undefined object.');
+      }
       const recordId = this.editorData.record['@id'];
       if (o.hasOwnProperty('@id') && !o.hasOwnProperty('@type')) {
         if (o['@id'].indexOf(recordId) > -1) {
@@ -287,7 +303,7 @@ export default {
         <item-value v-if="getDatatype(item) == 'value'" :is-removable="!hasSingleValue" :is-locked="isLocked" :focus="focus" :value="item" :key="key" :index="$index"></item-value>
       </li>
       <li :class="{ 'isChip': foundChip}">
-        <entity-adder class="action" v-if="!isLocked && (isRepeatable || isEmptyObject)" :key="key" :focus="focus" :property-types="propertyTypes" :allow-local="allowLocal" :show-action-buttons="showActionButtons" :active="activeModal" :is-inner="isInner" :is-chip="foundChip"></entity-adder>
+        <entity-adder class="action" v-if="!isLocked && (isRepeatable || isEmptyObject)" :key="key" :focus="focus" :property-types="propertyTypes" :allow-local="allowLocal && isLocalAllowed" :show-action-buttons="showActionButtons" :active="activeModal" :is-inner="isInner" :is-chip="foundChip"></entity-adder>
       </li>
     </ul>
 

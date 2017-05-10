@@ -8,6 +8,11 @@ export default {
       this.$dispatch('remove-item', this.index);
     },
   },
+  events: {
+    'remove-entity'(){
+      this.removeThis();
+    },
+  },
   computed: {
     focusData() {
       if (!this.item['@id']) {
