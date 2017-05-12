@@ -165,8 +165,6 @@ export default {
       const range = this.getFullRange;
       if (range.length > 1) {
         this.chooseLocalType = true;
-        const test = document.querySelector('#localTypePicker');
-        test.focus();
       } else {
         this.addEmpty(range[0]);
       }
