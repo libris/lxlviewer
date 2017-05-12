@@ -231,14 +231,18 @@ export default {
         if (inputKeys.length === 0) {
           inputKeys = DisplayUtil.getProperties('Resource', 'cards', this.display, this.settings);
         }
-        console.log(inputKeys);
       }
       inputKeys = ['@type'].concat(inputKeys);
       for (const inputKey of inputKeys) {
         if (inputKey === '@type') {
           formObj[inputKey] = type;
         } else {
-          formObj[inputKey] = '';
+          const keyRange = VocabUtil.getRange(inputKey, this.vocab, this.settings.vocabPfx);
+          if (keyRange[0].split(':')[1] === 'Literal') {
+            formObj[inputKey] = '';
+          } else {
+            formObj[inputKey] = [];
+          }
         }
       }
       console.log('Form obj', JSON.stringify(formObj));
