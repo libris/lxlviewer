@@ -49,9 +49,9 @@ export default {
     });
   },
   methods: {
-    valueChanged() {
+    valueChanged: _.debounce(function () {
       this.$dispatch('update-item', this.index, this.value);
-    },
+    }, 1000),
     initializeTextarea() {
       AutoSize(this.$el.querySelector('textarea'));
       AutoSize.update(this.$el.querySelector('textarea'));
@@ -75,8 +75,7 @@ export default {
 
 <template>
   <div class="item-value" v-bind:class="{'locked': isLocked, 'unlocked': !isLocked, 'distinguish-removal': removeHover}">
-  <!-- TODO: @input or @change? -->
-    <textarea rows="1" v-model="value" @change="valueChanged()" v-if="!isLocked"></textarea>
+    <textarea rows="1" v-model="value" @input="valueChanged()" v-if="!isLocked"></textarea>
     <span v-if="isLocked">{{value}}</span>
     <div class="remover" v-show="!isLocked && isRemovable" v-on:click="removeThis()" @mouseover="removeHover = true" @mouseout="removeHover = false"><i class="fa fa-trash"></i></div>
   </div>
