@@ -4,6 +4,7 @@ import * as httpUtil from '../utils/http';
 import * as VocabUtil from '../utils/vocab';
 import * as DisplayUtil from '../utils/display';
 import * as RecordUtil from '../utils/record';
+import * as StringUtil from '../utils/string';
 import Vue from 'vue';
 import ProcessedLabel from './processedlabel';
 import ItemEntity from './item-entity';
@@ -11,7 +12,8 @@ import DataNode from './datanode';
 import CardComponent from './card-component';
 import ItemMixin from './mixins/item-mixin';
 import LensMixin from './mixins/lens-mixin';
-import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData } from '../vuex/getters';
+import { changeNotification } from '../vuex/actions';
+import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData, getStatus } from '../vuex/getters';
 
 export default {
   name: 'item-local',
@@ -30,6 +32,10 @@ export default {
       display: getDisplayDefinitions,
       settings: getSettings,
       editorData: getEditorData,
+      status: getStatus,
+    },
+    actions: {
+      changeNotification,
     },
   },
   data() {
@@ -74,12 +80,8 @@ export default {
   },
   methods: {
     doExtract() {
+      // TODO: Remove this when Summary isn't broken
       const hackedObject = this.extracted;
-
-      // TODO: Remove this when Text is supported
-      if (hackedObject['@graph'][1]['@type'] === 'Text') {
-        hackedObject['@graph'][1]['@type'] = 'Work';
-      }
       delete hackedObject['@graph'][1].summary;
       this.doCreateRequest(httpUtil.post, hackedObject, '/');
 
@@ -96,17 +98,16 @@ export default {
             const mainEntity = RecordUtil.splitJson(recievedObj).mainEntity;
             this.$dispatch('add-item', mainEntity);
           }, (error) => {
-            self.vm.changeSavedStatus('loading', false);
-            self.vm.changeNotification('color', 'red');
-            self.vm.changeNotification('message', `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error}`);
+            this.changeNotification('color', 'red');
+            this.changeNotification('message', `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error}`);
           });
         } else {
-          self.vm.changeNotification('color', 'red');
-          self.vm.changeNotification('message', `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${result.status}`);
+          this.changeNotification('color', 'red');
+          this.changeNotification('message', `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${result.status}`);
         }
       }, (error) => {
-        self.vm.changeNotification('color', 'red');
-        self.vm.changeNotification('message', `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error}`);
+        this.changeNotification('color', 'red');
+        this.changeNotification('message', `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error}`);
       });
     },
     getForm(item) {
