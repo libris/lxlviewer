@@ -236,7 +236,7 @@ export default {
           formObj[inputKey] = type;
         } else {
           const keyRange = VocabUtil.getRange(inputKey, this.vocab, this.settings.vocabPfx);
-          if (keyRange[0].split(':')[1] === 'Literal') {
+          if (keyRange.length === 0 || keyRange[0].split(':')[1] === 'Literal') {
             formObj[inputKey] = '';
           } else {
             formObj[inputKey] = [];
