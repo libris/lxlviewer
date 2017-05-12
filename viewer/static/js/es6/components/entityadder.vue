@@ -89,13 +89,7 @@ export default {
     },
     getFullRange() {
       let types = [].concat(this.getRange);
-      _.each(this.getRange, typeName => {
-        const type = typeName.replace(this.settings.vocabPfx, '');
-        const subClassArray = (VocabUtil.getSubClasses(type, this.vocab, this.settings.vocabPfx)).map(entry => {
-          return entry['@id'];
-        });
-        types = types.concat(subClassArray);
-      });
+      types = VocabUtil.getAllSubClasses(types, this.vocab, this.settings.vocabPfx);
       types = _.uniq(types);
       return types;
     },

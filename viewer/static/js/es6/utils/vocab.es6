@@ -96,6 +96,7 @@ export function getRange(propertyId, vocab, vocabPfx) {
   return range;
 }
 
+
 export function getSubClasses(classname, vocab, vocabPfx) {
   const subClasses = _.filter(vocab, (o) => {
     if (o.subClassOf) {
@@ -108,6 +109,23 @@ export function getSubClasses(classname, vocab, vocabPfx) {
     console.warn('subclasses for', vocabPfx + classname, 'not found in vocab');
   }
   return subClasses;
+}
+
+export function getAllSubClasses(classArray, vocab, vocabPfx) {
+  const inputSubClasses = classArray;
+  let newSubClasses = [];
+  if (classArray.length > 0) {
+    _.each(classArray, classId => {
+      const className = classId.split('/')[classId.split('/').length - 1];
+      const subClasses = getSubClasses(className, vocab, vocabPfx);
+      if (subClasses.length > 0) {
+        newSubClasses = getAllSubClasses(subClasses.map(classObject => {
+          return classObject['@id'];
+        }), vocab, vocabPfx);
+      }
+    });
+  }
+  return inputSubClasses.concat(newSubClasses);
 }
 
 export function getDomainList(property, vocab, vocabPfx) {
