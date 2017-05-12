@@ -6,6 +6,7 @@ import CreateItemButton from '../components/create-item-button';
 import * as DataUtil from '../utils/data';
 import * as DisplayUtil from '../utils/display';
 import LensMixin from './mixins/lens-mixin';
+import { mixin as clickaway } from 'vue-clickaway';
 import { changeSavedStatus, changeStatus } from '../vuex/actions';
 import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData, getStatus } from '../vuex/getters';
 
@@ -23,7 +24,7 @@ export default {
       changeStatus,
     },
   },
-  mixins: [LensMixin],
+  mixins: [clickaway, LensMixin],
   ready() { // Ready method is deprecated in 2.0, switch to "mounted"
     this.$nextTick(() => {
       window.addEventListener('scroll', (e) => {
@@ -57,6 +58,7 @@ export default {
     return {
       showChipHeader: false,
       showAdminInfoDetails: false,
+      otherFormatMenu: false,
     };
   },
   computed: {
@@ -94,13 +96,12 @@ export default {
             <i class="fa fa-wrench" aria-hidden="true"></i>
           </div>
           <div class="action">
-            <a :href="`${focusData['@id']}/data.jsonld`"><button>JSON-LD</button></a>
-          </div>
-          <div class="action">
-            <a :href="`${focusData['@id']}/data.ttl`"><button>Turtle</button></a>
-          </div>
-          <div class="action">
-            <a :href="`${focusData['@id']}/data.rdf`"><button>RDF</button></a>
+            <button v-on:click="otherFormatMenu = true"><i class="fa fa-file-text"></i> data</button>
+            <div class="other-format-menu" v-if="otherFormatMenu" v-on-clickaway="otherFormatMenu = false">
+              <a :href="`${focusData['@id']}/data.jsonld`">JSON-LD</a>
+              <a :href="`${focusData['@id']}/data.ttl`">Turtle</a>
+              <a :href="`${focusData['@id']}/data.rdf`">RDF</a>
+            </div>
           </div>
         </div>
         <div class="admin-node">
@@ -157,6 +158,20 @@ export default {
 
   .editor-controls {
     background-color: @black;
+    .other-format-menu {
+      position: absolute;
+      top: 2em;
+      margin-left: 1em;
+      border-radius: 4px;
+      background-color: @white;
+      line-height: 1.6;
+      border: 1px solid @gray-light;
+      white-space: normal;
+      padding: 0.5em;
+      a {
+        display: block;
+      }
+    }
     .admin-info {
       color: @white;
       flex-direction: row;
