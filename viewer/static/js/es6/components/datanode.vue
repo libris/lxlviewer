@@ -365,6 +365,7 @@ export default {
     font-weight: normal;
     .comment-icon {
       display: inline-block;
+      margin-left: 0.25em;
       .comment {
         display: none;
         border-radius: 4px;
