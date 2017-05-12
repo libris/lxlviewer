@@ -57,7 +57,7 @@ export default {
     'entity-adder': EntityAdder,
   },
   computed: {
-    isLocalAllowed() {
+    propAllowsLocal() {
       if (this.settings.disallowLocal.indexOf(this.key) === -1) {
         return true;
       }
@@ -303,7 +303,7 @@ export default {
         <item-value v-if="getDatatype(item) == 'value'" :is-removable="!hasSingleValue" :is-locked="isLocked" :focus="focus" :value="item" :key="key" :index="$index"></item-value>
       </li>
       <li :class="{ 'isChip': foundChip}">
-        <entity-adder class="action" v-if="!isLocked && (isRepeatable || isEmptyObject)" :key="key" :focus="focus" :property-types="propertyTypes" :allow-local="allowLocal && isLocalAllowed" :show-action-buttons="showActionButtons" :active="activeModal" :is-inner="isInner" :is-chip="foundChip"></entity-adder>
+        <entity-adder class="action" v-if="!isLocked && (isRepeatable || isEmptyObject)" :key="key" :focus="focus" :property-types="propertyTypes" :allow-local="allowLocal && propAllowsLocal" :show-action-buttons="showActionButtons" :active="activeModal" :is-inner="isInner" :is-chip="foundChip"></entity-adder>
       </li>
     </ul>
 
