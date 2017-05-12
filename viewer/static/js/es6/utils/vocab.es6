@@ -186,6 +186,10 @@ export function getBaseClasses(classId, vocab, vocabPfx) {
 
   let classList = [];
   const termObj = getTerm(classId, vocab, vocabPfx);
+  if (typeof termObj === 'undefined') {
+    return classList;
+  }
+  classList.push(termObj['@id']);
   if (termObj && termObj.hasOwnProperty('subClassOf')) {
     for (let i = 0; i < termObj.subClassOf.length; i++) {
       const baseClassId = termObj.subClassOf[i]['@id'];
@@ -269,7 +273,6 @@ export function isEmbedded(classId, vocab, settings) {
   if (_.isObject(classId)) {
     throw new Error('isEmbedded was called with an object as class id (should be a string)');
   }
-
   const embeddedTypes = settings.embeddedTypes;
   const typeChain = getBaseClasses(classId, vocab, settings.vocabPfx);
   if (typeChain.length > 0) {

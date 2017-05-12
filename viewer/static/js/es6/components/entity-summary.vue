@@ -163,7 +163,7 @@ export default {
   .identifiers {
     flex-basis: 27%;
     text-align: right;
-    padding: 0px;
+    padding: 0px 0.5em;
     font-weight: bold;
     ul {
       list-style-type: none;

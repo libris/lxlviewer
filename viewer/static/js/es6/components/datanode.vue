@@ -294,7 +294,7 @@ export default {
     <!-- {{ key | labelByLang | capitalize }} -->
   </div>
   <div class="value node-list">
-    <pre v-show="status.isDev">{{getPath}}</pre>
+    <pre class="path-code" v-show="status.isDev">{{getPath}}</pre>
     <ul>
       <li v-for="item in valueAsArray" :class="{ 'isChip': isChip(item)}" track-by="$index">
         <item-entity v-if="getDatatype(item) == 'entity'" :is-locked="isLocked" :expanded="isExpandedType" :focus="focus" :item="item" :key="key" :index="$index"></item-entity>
@@ -326,6 +326,11 @@ export default {
   transition: 3s ease;
   transition-property: outline;
   outline: 2px solid transparent;
+  .path-code {
+    padding: 1px 3px;
+    margin: 0px;
+    color: black;
+  }
   .node-list {
     line-height: 0;
     > ul {
