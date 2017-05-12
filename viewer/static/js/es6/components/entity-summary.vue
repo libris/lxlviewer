@@ -28,7 +28,7 @@ export default {
   },
   computed: {
     renderLink() {
-      if (this.addLink && !this.isLocal) {
+      if (this.addLink === true && !this.isLocal) {
         return true;
       }
       return false;
@@ -101,8 +101,8 @@ export default {
   </div>
   <div class="main-info">
     <h3 class="header">
-      <a v-if="!isLocal" title="{{ header.join(', ') }}" :href="focusData['@id']">{{ header.join(', ') }}</a>
-      <span v-if="isLocal" title="{{ header.join(', ') }}">{{ header.join(', ') }}</span>
+      <a v-if="renderLink" title="{{ header.join(', ') }}" :href="focusData['@id']">{{ header.join(', ') }}</a>
+      <span v-if="!renderLink" title="{{ header.join(', ') }}">{{ header.join(', ') }}</span>
     </h3>
     <ul class="info">
       <li v-for="v in info">{{ v }}</li>
