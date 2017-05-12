@@ -11,7 +11,8 @@ import DataNode from './datanode';
 import CardComponent from './card-component';
 import ItemMixin from './mixins/item-mixin';
 import LensMixin from './mixins/lens-mixin';
-import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData } from '../vuex/getters';
+import { changeStatus } from '../vuex/actions';
+import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData, getStatus } from '../vuex/getters';
 
 export default {
   name: 'item-local',
@@ -30,6 +31,10 @@ export default {
       display: getDisplayDefinitions,
       settings: getSettings,
       editorData: getEditorData,
+      status: getStatus,
+    },
+    actions: {
+      changeStatus,
     },
   },
   data() {
