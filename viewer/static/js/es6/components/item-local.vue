@@ -80,12 +80,8 @@ export default {
   },
   methods: {
     doExtract() {
+      // TODO: Remove this when Summary isn't broken
       const hackedObject = this.extracted;
-
-      // TODO: Remove this when Text is supported
-      if (hackedObject['@graph'][1]['@type'] === 'Text') {
-        hackedObject['@graph'][1]['@type'] = 'Work';
-      }
       delete hackedObject['@graph'][1].summary;
       this.doCreateRequest(httpUtil.post, hackedObject, '/');
 
