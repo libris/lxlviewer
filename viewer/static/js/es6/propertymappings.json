@@ -1,9 +1,10 @@
 {
   "isbn": {
     "range": "ISBN",
-    "propertyChain": [
-      "identifiedBy",
-      "value"
+    "propertyChains": [
+      "identifiedBy.value",
+      "identifiedBy.@type"
     ]
-  },
+  }
 }
+

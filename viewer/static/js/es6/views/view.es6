@@ -13,6 +13,16 @@ export default class View {
       vocabPfx: 'https://id.kb.se/vocab/',
       siteInfo: window.siteInfo,
       embeddedTypes: ['StructuredValue', 'ProvisionActivity', 'Contribution'],
+      baseMaterials: [
+        'https://id.kb.se/vocab/Instance',
+        'https://id.kb.se/vocab/Work',
+        'https://id.kb.se/vocab/Person',
+        'https://id.kb.se/vocab/Organization',
+        'https://id.kb.se/vocab/Meeting',
+        'https://id.kb.se/vocab/Event',
+        'https://id.kb.se/vocab/GenreForm',
+        'https://id.kb.se/vocab/Topic',
+      ],
       removableBaseUris: [
         'http://libris.kb.se/',
         'https://libris.kb.se/',
@@ -26,6 +36,39 @@ export default class View {
       ],
       disallowLocal: [
         'instanceOf',
+      ],
+      expandKeys: [
+        'instanceOf',
+        'itemOf',
+      ],
+      propertyChains: {
+        '@type': {
+          sv: 'Typ',
+          en: 'Type',
+        },
+        'carrierType': {
+          sv: 'Bärartyp',
+          en: 'Carrier type',
+        },
+        'instanceOf.@type': {
+          sv: 'Verkstyp',
+          en: 'Type of work',
+        },
+        'instanceOf.contentType': {
+          sv: 'Verksinnehållstyp',
+          en: 'Content type of work',
+        },
+        'instanceOf.language': {
+          sv: 'Verksspråk',
+          en: 'Language of work',
+        },
+        'publication.date': {
+          sv: 'Utgivningsdatum',
+          en: 'Publication date',
+        },
+      },
+      validSearchTags: [
+        'isbn',
       ],
       userInfo: {
         sigel: UserUtil.get('sigel'),

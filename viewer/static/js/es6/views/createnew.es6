@@ -19,34 +19,17 @@ export default class CreateNew extends View {
     this.transition = false;
     this.language = 'sv';
 
-    const baseMaterials = [
-      'Instance',
-      'Work',
-      'UniformWork',
-      'Person',
-      'Organization',
-      'Meeting',
-      'Event',
-      'GenreFormTerm',
-      'TopicalTerm',
-    ];
-
     VocabUtil.getVocab().then((vocab) => {
-      self.initVue(vocab['@graph'], self.settings.vocabPfx, baseMaterials);
+      self.initVue(vocab['@graph'], self.settings.vocabPfx, self.settings.baseMaterials);
     });
   }
 
   getMaterials(baseMaterials, vocab) {
     const self = this;
-    const materialLists = [];
-    for (let i = 0; i < baseMaterials.length; i++) {
-      const materialList = {
-        id: baseMaterials[i],
-        list: VocabUtil.getSubClasses(baseMaterials[i], vocab, self.settings.vocabPfx),
-      };
-      materialLists[i] = materialList;
-    }
-    return materialLists;
+    const allMaterials = 
+      VocabUtil.getAllSubClasses(baseMaterials, vocab, self.settings.vocabPfx)
+      .map(subClassId => subClassId.replace(self.settings.vocabPfx, ''));
+    return allMaterials;
   }
 
   initVue(vocab, vocabPfx, baseMaterials) {

@@ -1,4 +1,6 @@
 <script>
+import * as StringUtil from '../utils/string';
+import { getSettings, getVocabulary } from '../vuex/getters';
 import RangeInput from './range-input.vue';
 import Facet from './facet.vue';
 export default {
@@ -6,22 +8,27 @@ export default {
   props: {
     result: {},
   },
+  vuex: {
+    getters: {
+      settings: getSettings,
+      vocab: getVocabulary,
+    },
+  },
   data() {
     return {
-      facetlabels: {
-        '@type': 'Typ',
-        'carrierType': 'Bärartyp',
-        'instanceOf.@type': 'Verkstyp',
-        'instanceOf.contentType': 'Verksinnehållstyp',
-        'instanceOf.language': 'Verksspråk',
-        'publication.date': 'Utgivningsdatum'
-      },
     }
   },
   methods: {
     isRangeFacet(dimensionKey) {
       return dimensionKey === 'publication.date';
     },
+    facetLabelByLang(facetType) {
+      const typeByLang = StringUtil.labelByLang(facetType, this.settings.language, this.vocab, this.settings.vocabPfx);
+      if (typeByLang.indexOf('unhandled term') < 0) {
+        return typeByLang;
+      }
+      return this.settings.propertyChains[facetType][this.settings.language];
+    }
   },
   computed: {
   },
@@ -47,7 +54,7 @@ export default {
       <label>Filtrera</label>
       <div>
         <div v-for="(dimensionKey, dimensionValue) in result.stats.sliceByDimension">
-          <div class="dimension-header">{{facetlabels[dimensionValue.dimension]}}</div>
+          <div class="dimension-header">{{facetLabelByLang(dimensionValue.dimension)}}</div>
           <!--<range-input v-if="isRangeFacet(dimensionKey)"></range-input>-->
           <ul>
             <facet v-for="observation in dimensionValue.observation" :observation="observation"></facet>
