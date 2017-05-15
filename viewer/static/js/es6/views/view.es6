@@ -41,6 +41,32 @@ export default class View {
         'instanceOf',
         'itemOf',
       ],
+      propertyChains: {
+        '@type': {
+          sv: 'Typ',
+          en: 'Type',
+        },
+        'carrierType': {
+          sv: 'Bärartyp',
+          en: 'Carrier type',
+        },
+        'instanceOf.@type': {
+          sv: 'Verkstyp',
+          en: 'Type of work',
+        },
+        'instanceOf.contentType': {
+          sv: 'Verksinnehållstyp',
+          en: 'Content type of work',
+        },
+        'instanceOf.language': {
+          sv: 'Verksspråk',
+          en: 'Language of work',
+        },
+        'publication.date': {
+          sv: 'Utgivningsdatum',
+          en: 'Publication date',
+        },
+      },
       userInfo: {
         sigel: UserUtil.get('sigel'),
       },
