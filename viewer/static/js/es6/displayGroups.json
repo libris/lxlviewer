@@ -12,6 +12,9 @@
     "notation",
     "label",
     "itemOf",
+    "familyName",
+    "givenName",
+    "name"
   ],
   "info": ["responsibilityStatement", "instanceOf", "contribution"],
   "identifiers": ["identifiedBy", "sameAs"]
