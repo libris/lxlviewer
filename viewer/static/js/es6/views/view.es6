@@ -67,6 +67,9 @@ export default class View {
           en: 'Publication date',
         },
       },
+      validSearchTags: [
+        'isbn',
+      ],
       userInfo: {
         sigel: UserUtil.get('sigel'),
       },

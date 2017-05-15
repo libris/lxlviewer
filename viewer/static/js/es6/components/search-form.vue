@@ -3,9 +3,13 @@ import * as _ from 'lodash';
 import PropertyMappings from '../propertymappings.json';
 import * as httpUtil from '../utils/http';
 import { changeResultListStatus } from '../vuex/actions';
+import { getSettings } from '../vuex/getters';
 export default {
   name: 'search-form',
   vuex: {
+    getters: {
+      settings: getSettings,
+    },
     actions: {
       changeResultListStatus,
     },
@@ -37,7 +41,7 @@ export default {
           this.currentInput += 1;
       },
       updateField() {
-        const validTags = ['isbn'];
+        const validTags = this.settings.validSearchTags;
         if (this.currentIsTag) {
           if (validTags.indexOf(this.currentField.value.split(':')[0].toLowerCase()) > -1) {
           this.currentField.class = 'searchtag valid';
@@ -104,7 +108,7 @@ export default {
         return convertedObject;
       },
       doSearch() {
-        const validTags = ['isbn'];
+        const validTags = this.settings.validSearchTags;
         const queryText = [];
         const tagObject = {};
         for (const node of this.formData) {
