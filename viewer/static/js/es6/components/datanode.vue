@@ -99,10 +99,7 @@ export default {
       );
     },
     isExpandedType() {
-      const expandKeys = [
-        'instanceOf',
-        'itemOf',
-      ];
+      const expandKeys = this.settings.expandKeys;
       return expandKeys.indexOf(this.key) !== -1;
     },
     hasSingleValue() {

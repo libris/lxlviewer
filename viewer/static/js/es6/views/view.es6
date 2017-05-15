@@ -37,6 +37,10 @@ export default class View {
       disallowLocal: [
         'instanceOf',
       ],
+      expandKeys: [
+        'instanceOf',
+        'itemOf',
+      ],
       userInfo: {
         sigel: UserUtil.get('sigel'),
       },
