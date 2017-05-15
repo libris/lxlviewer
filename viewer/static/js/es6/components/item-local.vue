@@ -96,7 +96,7 @@ export default {
           });
         } else {
           this.changeNotification('color', 'red');
-          this.changeNotification('message', `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${result.status}`);
+          this.changeNotification('message', `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error}`);
         }
       }, (error) => {
         this.changeNotification('color', 'red');
