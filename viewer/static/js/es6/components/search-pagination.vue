@@ -81,7 +81,7 @@ export default {
         (filtrerat på <span v-for="filter in filters" track-by="$index">{{filter.label | labelByLang}}{{ $index === filters.length - 1 ? '' : ', ' }}</span>)
       </span>
       gav {{pageData.totalItems}} träffar.</span>
-      <span class="pull-right">Visar {{ limit }} träffar per sida.</span>
+      <span v-if="pageData.totalItems > limit" class="pull-right">Visar {{ limit }} träffar per sida.</span>
     </div>
     <div class="search-buttons" v-if="pageData.totalItems > limit">
       <nav>
