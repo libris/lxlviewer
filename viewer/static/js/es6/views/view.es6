@@ -67,13 +67,6 @@ export default class View {
           en: 'Publication date',
         },
       },
-      inlineKeys: [
-        '@type',
-        'issuanceType',
-        'extent',
-        'dimensions',
-        'marc:otherPhysicalDetails',
-      ],
       userInfo: {
         sigel: UserUtil.get('sigel'),
       },
