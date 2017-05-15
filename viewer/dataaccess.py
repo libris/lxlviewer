@@ -127,7 +127,8 @@ class DataAccess(object):
         url = self._get_api_url(url_path)
         json_data = json.dumps(json_data)
         return requests.request(method, url, data=json_data, headers=headers,
-                            params=query_params.to_dict(flat=False))
+                            params=query_params.to_dict(flat=False),
+                            allow_redirects=False)
 
     def _get_api_url(self, url_path):
         if url_path.startswith('/'):
