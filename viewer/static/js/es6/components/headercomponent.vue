@@ -24,13 +24,6 @@ export default {
   },
   data() {
     return {
-      inlineKeys: [
-        '@type',
-        'issuanceType',
-        'extent',
-        'dimensions',
-        'marc:otherPhysicalDetails',
-      ],
     };
   },
   methods: {
