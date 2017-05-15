@@ -13,6 +13,16 @@ export default class View {
       vocabPfx: 'https://id.kb.se/vocab/',
       siteInfo: window.siteInfo,
       embeddedTypes: ['StructuredValue', 'ProvisionActivity', 'Contribution'],
+      baseMaterials: [
+        'https://id.kb.se/vocab/Instance',
+        'https://id.kb.se/vocab/Work',
+        'https://id.kb.se/vocab/Person',
+        'https://id.kb.se/vocab/Organization',
+        'https://id.kb.se/vocab/Meeting',
+        'https://id.kb.se/vocab/Event',
+        'https://id.kb.se/vocab/GenreForm',
+        'https://id.kb.se/vocab/Topic',
+      ],
       removableBaseUris: [
         'http://libris.kb.se/',
         'https://libris.kb.se/',

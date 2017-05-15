@@ -15,7 +15,7 @@
             <form action="/edit" method="POST">
               <div class="radio" v-for="material in materialLists" track-by="$index">
                 <label v-on:click="updateChosenType">
-                  <input name="@type" type="radio" value="{{material.id}}">{{material.id | labelByLang}}</input>
+                  <input name="@type" type="radio" value="{{material}}">{{material | labelByLang}}</input>
                 </label>
               </div>
               <textarea id="copyItem" name="data" class="hidden">{{itemData | json}}</textarea>
