@@ -165,8 +165,6 @@ export default {
       const range = this.getFullRange;
       if (range.length > 1) {
         this.chooseLocalType = true;
-        const test = document.querySelector('#localTypePicker');
-        test.focus();
       } else {
         this.addEmpty(range[0]);
       }
@@ -238,7 +236,7 @@ export default {
           formObj[inputKey] = type;
         } else {
           const keyRange = VocabUtil.getRange(inputKey, this.vocab, this.settings.vocabPfx);
-          if (keyRange[0].split(':')[1] === 'Literal') {
+          if (keyRange.length === 0 || keyRange[0].split(':')[1] === 'Literal') {
             formObj[inputKey] = '';
           } else {
             formObj[inputKey] = [];
