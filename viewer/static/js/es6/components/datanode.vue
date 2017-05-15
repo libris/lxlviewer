@@ -162,7 +162,7 @@ export default {
       }
       this.updateValue(modified);
     },
-    'add-item'(value) {
+    'add-item'(value, replaces) {
       console.log("DataNode:"+ this.getPath +" - Adding", JSON.stringify(value));
       let insertedValue = {};
       if (value.hasOwnProperty('@id')) { // This is a linked item
@@ -172,6 +172,9 @@ export default {
         insertedValue = value;
       }
       const modified = [].concat(_.cloneDeep(this.value));
+      if (typeof replaces !== 'undefined') {
+        modified.splice(replaces, 1);
+      }
       modified.push(insertedValue);
       this.updateValue(modified);
     },

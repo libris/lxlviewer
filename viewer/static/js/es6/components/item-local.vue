@@ -89,7 +89,7 @@ export default {
               '@graph': getResult['@graph'],
             }
             const mainEntity = RecordUtil.splitJson(recievedObj).mainEntity;
-            this.$dispatch('add-item', mainEntity);
+            this.$dispatch('add-item', mainEntity, this.index);
           }, (error) => {
             this.changeNotification('color', 'red');
             this.changeNotification('message', `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error}`);
