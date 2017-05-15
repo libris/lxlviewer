@@ -95,12 +95,9 @@ export default {
                 return mappingKey.toLowerCase() === k.toLowerCase();
             });
             if (typeof tagMatchObject !== 'undefined') {
-                const resultKey = tagMatchObject.propertyChain.join('.');
-                convertedObject[resultKey] = v;
-                // Hardcoded for isbn
-                if (k.toLowerCase() === 'isbn') {
-                    convertedObject['identifiedBy.@type'] = 'ISBN';
-                }
+                _.each(tagMatchObject.propertyChains, property => {
+                    property.indexOf('@type') >= 0 ? convertedObject[property] = k.toUpperCase() : convertedObject[property] = v;
+                });
             } else {
                 convertedObject[k] = v;
             }
