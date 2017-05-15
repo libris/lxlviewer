@@ -16,7 +16,6 @@ export default {
     key: '',
     index: Number,
     isLocked: false,
-    focus: '',
     expanded: false,
   },
   vuex: {
@@ -47,12 +46,6 @@ export default {
         this.settings.vocabPfx
       );
       return types;
-    },
-    isWork() {
-      return this.focus === 'work';
-    },
-    isInstance() {
-      return this.focus === 'mainEntity';
     },
   },
   ready() {

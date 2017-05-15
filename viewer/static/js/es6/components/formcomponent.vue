@@ -29,7 +29,6 @@ export default {
     },
   },
   props: {
-    focus: '',
     locked: false,
   },
   data() {
@@ -38,14 +37,8 @@ export default {
     };
   },
   computed: {
-    isWork() {
-      return this.focus === 'work';
-    },
-    isInstance() {
-      return this.focus === 'mainEntity';
-    },
     isLocked() {
-      if (this.locked || this.status.level !== this.focus) {
+      if (this.locked) {
         return true;
       }
       return false;
@@ -77,7 +70,7 @@ export default {
       return allowed;
     },
     formData() {
-      return this.editorData[this.focus];
+      return this.editorData.mainEntity;
     },
     sortedFormData() {
       const sortedForm = {};
@@ -160,20 +153,20 @@ export default {
         newItem[key] = '';
       }
       const merged = Object.assign({}, this.formData, newItem);
-      this.updateForm(this.focus, merged);
+      this.updateForm('mainEntity', merged);
     },
     'remove-field'(prop) {
       const modifiedData = Object.assign({}, this.formData);
       delete modifiedData[prop];
-      this.updateForm(this.focus, modifiedData);
+      this.updateForm('mainEntity', modifiedData);
     },
     'update-value'(path, value) {
-      console.log("FormComp:"+this.focus+" - Updating " + path, 'to', JSON.stringify(value));
+      console.log("FormComp: - Updating " + path, 'to', JSON.stringify(value));
       const modified = _.cloneDeep(this.formData);
       _.set(modified, path, value);
       console.log("New value recieved for", path, "=", value);
       console.log(modified);
-      this.updateForm(this.focus, modified);
+      this.updateForm('mainEntity', modified);
     },
   },
   methods: {
@@ -181,7 +174,7 @@ export default {
       return (this.isLocked || key === '@id' || key === '@type');
     },
     updateFromTextarea(e) {
-      this.updateForm(this.focus, JSON.parse(e.target.value));
+      this.updateForm('mainEntity', JSON.parse(e.target.value));
     },
   },
   components: {
@@ -194,24 +187,10 @@ export default {
 </script>
 
 <template>
-  <div class="form-component" :class="{ 'locked': isLocked, 'focused-form-component': status.level === this.focus }">
+  <div class="form-component focused-form-component" :class="{ 'locked': isLocked }">
     <data-node v-for="k in specialProperties" :key="k" :value="editorData.mainEntity[k]" is-locked="true"></data-node>
-    <data-node v-for="(k,v) in sortedFormData" v-bind:class="{ 'locked': isLocked }" :is-inner="false" :is-removable="true" :is-locked="keyIsLocked(k)" :key="k" :value="v" :focus="focus" :allow-local="true"></data-node>
-    <div v-if="focus == 'work'" class="dummy-reverse">
-      <div class="label" v-bind:class="{ 'locked': isLocked }">
-        Har instanser
-      </div>
-      <div class="value">
-        <div class="chip dummy-chip" v-on:click="changeStatus('level' ,'mainEntity')" :class="{ 'locked': isLocked }" @mouseenter="showCardInfo=true">
-          <span class="chip-label">
-            {{ dummyInstance }}
-          </span>
-        </div>
-      </div>
-      <div class="actions" v-if="!isLocked">
-      </div>
-    </div>
-    <field-adder v-if="!isLocked" :allowed="allowedProperties" :focus="focus"></field-adder>
+    <data-node v-for="(k,v) in sortedFormData" v-bind:class="{ 'locked': isLocked }" :is-inner="false" :is-removable="true" :is-locked="keyIsLocked(k)" :key="k" :value="v" :allow-local="true"></data-node>
+    <field-adder v-if="!isLocked" :allowed="allowedProperties"></field-adder>
     <div id="result" v-if="status.isDev && !isLocked">
       <div class="row">
       <pre class="col-md-6">
