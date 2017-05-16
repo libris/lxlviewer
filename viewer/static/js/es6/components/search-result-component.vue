@@ -67,7 +67,7 @@ export default {
 
 .search-result-component {
   .main-info {
-    height: 10em;
+    height: 7em;
   }
   .loadingText {
     box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.1);
