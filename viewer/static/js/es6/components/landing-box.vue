@@ -31,7 +31,7 @@ export default {
 </script>
 
 <template>
-  <div class="landing-box col-md-8 col-md-offset-2">
+  <div class="landing-box">
     <div v-html="summary"></div>
     <h1 class="welcome">
       {{ titleText }}
@@ -43,5 +43,8 @@ export default {
 
 <style lang="less">
 @import './_variables.less';
+.landing-box {
+  text-align: center;
+}
 
 </style>

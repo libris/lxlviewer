@@ -15,6 +15,8 @@ import FacetControls from '../components/facet-controls';
 import SearchResultComponent from '../components/search-result-component';
 import EntitySearchList from '../components/entity-search-list';
 import SearchForm from '../components/search-form';
+import DatasetObservations from '../components/dataset-observations';
+import LandingBox from '../components/landing-box';
 import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData, getKeybindState, getStatus } from '../vuex/getters';
 import { changeSettings, changeNotification, loadVocab, loadDisplayDefs, changeSavedStatus, changeResultListStatus } from '../vuex/actions';
 
@@ -116,7 +118,7 @@ export default class PagedCollection extends View {
         this.loadDisplayDefs(self.display);
         this.result = self.dataIn;
         this.initialized = true;
-        history.replaceState(this.result, "TEST", this.result['@id']);
+        history.replaceState(this.result, "TEST");
         if (Modernizr.history) {
           history.scrollRestoration = 'manual';
           window.onpopstate = e => {
@@ -138,6 +140,8 @@ export default class PagedCollection extends View {
         'search-result-component': SearchResultComponent,
         'entity-search-list': EntitySearchList,
         'search-form': SearchForm,
+        'dataset-observations': DatasetObservations,
+        'landing-box': LandingBox,
       },
       store,
     });
