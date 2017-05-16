@@ -404,6 +404,7 @@ export default {
         border: solid #ccc;
         border-width: 0px 0px 1px 0px;
         background-color: darken(@neutral-color, 4%);
+        z-index: @modal-z;
         .search {
           float: left;
           width: 50%;
