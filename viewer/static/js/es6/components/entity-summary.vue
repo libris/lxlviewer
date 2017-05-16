@@ -105,7 +105,7 @@ export default {
       <span v-if="!renderLink" title="{{ header.join(', ') }}">{{ header.join(', ') }}</span>
     </h3>
     <ul class="info">
-      <li v-for="v in info">{{ v }}</li>
+      <li v-for="v in info" track-by="$index">{{ v }}</li>
     </ul>
   </div>
   <div class="identifiers">

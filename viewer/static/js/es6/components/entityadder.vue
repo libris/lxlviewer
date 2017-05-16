@@ -277,12 +277,10 @@ export default {
     <span class="chip-label"><i class="fa fa-fw fa-plus plus-icon" aria-hidden="true"></i><span class="label-text">{{ "Add" | translatePhrase }}</span></span>
   </div>
   <div class="type-chooser" v-if="addEmbedded" v-on-clickaway="dismissTypeChooser">
-    {{ "Choose type" | translatePhrase }}:
-    <select v-model="selectedType">
+    <select v-model="selectedType" @change="addType(selectedType)">
       <option disabled value="">{{"Choose type" | translatePhrase}}</option>
       <option v-for="type in getFullRange" value="{{type}}" label="{{type | labelByLang}}">
     </select>
-    <button @click="addType(selectedType)">{{"Add" | translatePhrase}}</button>
   </div>
   <!--<tooltip-component :show-tooltip="showToolTip" :tooltiptext="key"></tooltip-component>-->
   <div class="window" v-if="active">
