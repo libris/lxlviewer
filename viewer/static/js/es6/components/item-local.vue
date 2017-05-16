@@ -1,6 +1,7 @@
 <script>
 import * as _ from 'lodash';
 import * as httpUtil from '../utils/http';
+import * as LayoutUtil from '../utils/layout';
 import * as VocabUtil from '../utils/vocab';
 import * as DisplayUtil from '../utils/display';
 import * as RecordUtil from '../utils/record';
@@ -44,6 +45,8 @@ export default {
       searchResult: {},
       searchDelay: 2,
       extracted: {},
+      extractDialogActive: false,
+      extracting: false,
     };
   },
   computed: {
@@ -72,7 +75,18 @@ export default {
     this.$options.components['data-node'] = Vue.extend(DataNode);
   },
   methods: {
+    openExtractDialog() {
+      LayoutUtil.scrollLock(true);
+      this.extractDialogActive = true;
+    },
+    closeExtractDialog() {
+      LayoutUtil.scrollLock(false);
+      this.extractDialogActive = false;
+      this.extracting = false;
+    },
     doExtract() {
+      this.extracting = true;
+
       // TODO: Remove this when Summary isn't broken
       const hackedObject = this.extracted;
       delete hackedObject['@graph'][1].summary;
@@ -90,17 +104,23 @@ export default {
             }
             const mainEntity = RecordUtil.splitJson(recievedObj).mainEntity;
             this.$dispatch('add-item', mainEntity, this.index);
+            this.changeNotification('color', 'green');
+            this.changeNotification('message', `${StringUtil.getUiPhraseByLang('Extraction was successful', this.settings.language)}`);
+            this.closeExtractDialog();
           }, (error) => {
             this.changeNotification('color', 'red');
-            this.changeNotification('message', `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error}`);
+            this.changeNotification('message', `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${StringUtil.getUiPhraseByLang(error, this.settings.language)}`);
+            this.closeExtractDialog();
           });
         } else {
           this.changeNotification('color', 'red');
-          this.changeNotification('message', `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error}`);
+          this.changeNotification('message', `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${StringUtil.getUiPhraseByLang(error, this.settings.language)}`);
+          this.closeExtractDialog();
         }
       }, (error) => {
         this.changeNotification('color', 'red');
-        this.changeNotification('message', `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error}`);
+        this.changeNotification('message', `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${StringUtil.getUiPhraseByLang(error, this.settings.language)}`);
+        this.closeExtractDialog();
       });
     },
     getForm(item) {
@@ -157,10 +177,7 @@ export default {
   },
   events: {
     'extract-item'() {
-      this.doExtract();
-    },
-    'delete-item'() {
-      this.removeThis();
+      this.openExtractDialog();
     },
   },
   ready() {
@@ -196,6 +213,25 @@ export default {
       </div>
     </div>
     <card-component :title="getItemLabel" :focus-data="item" :uri="item['@id']" :is-local="true" :is-locked="isLocked" :should-show="showCardInfo && !inEdit" :floating="!expanded"></card-component>
+    <div class="window" v-if="extractDialogActive">
+      <div class="header">
+        <span class="title">
+          {{ "Bryt ut entitet" | translatePhrase }}
+        </span>
+        <span class="windowControl">
+          <i v-on:click="closeExtractDialog" class="fa fa-close"></i>
+        </span>
+      </div>
+      <div class="body">
+        <p>
+          {{ "Utbrytning av lokala entiteter är ett önskat beteende yadda yadda lorem ipsum" | translatePhrase }}
+        </p>
+        <div class="button-container">
+          <button v-on:click="doExtract()" v-show="!extracting">{{ "Accept" | translatePhrase }}</button>
+          <div v-show="extracting"><i class="fa fa-cog fa-spin" aria-hidden="true"></i> {{ "Extracting" | translatePhrase }}</div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -205,6 +241,15 @@ export default {
 .item-local {
   > .chip {
     .chip-mixin(#a2a2a2, #fff);
+  }
+  .window {
+    .window-mixin();
+    .body {
+      padding: 2em;
+      .button-container {
+        text-align: center;
+      }
+    }
   }
   .local-form {
     width: @col-value - 20;
