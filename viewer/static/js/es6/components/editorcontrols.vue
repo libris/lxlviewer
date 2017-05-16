@@ -96,7 +96,7 @@ export default {
             <i class="fa fa-wrench" aria-hidden="true"></i>
           </div>
           <div class="action">
-            <button v-on:click="otherFormatMenu = true"><i class="fa fa-file-text"></i> data</button>
+            <span class="data-selector" v-on:click="otherFormatMenu = true"></i> {{"Data" | translatePhrase}} <i class="fa fa-caret-down" aria-hidden="true"></i></span>
             <div class="other-format-menu" v-if="otherFormatMenu" v-on-clickaway="otherFormatMenu = false">
               <a :href="`${focusData['@id']}/data.jsonld`">JSON-LD</a>
               <a :href="`${focusData['@id']}/data.ttl`">Turtle</a>
@@ -104,6 +104,7 @@ export default {
             </div>
           </div>
         </div>
+        <marc-preview v-show="status.inEdit"></marc-preview>
         <div class="admin-node">
           <span class="node">Skapad {{ getCard.created }} av {{ getCard.assigner }}</span>
         </div>
@@ -111,7 +112,6 @@ export default {
           <span class="node">Ändrad {{ getCard.modified }} av - </span>
         </div>
         <create-item-button v-show="!status.inEdit && editorData.mainEntity['@type'] === 'Instance'"></create-item-button>
-        <marc-preview v-show="status.inEdit"></marc-preview>
         <button id="saveButton" v-on:click="save()" v-if="status.inEdit">
           <i class="fa fa-fw fa-cog fa-spin" v-show="status.saved.loading"></i>
           <i class="fa fa-fw fa-save" v-show="!status.saved.loading"></i>
@@ -158,18 +158,34 @@ export default {
 
   .editor-controls {
     background-color: @black;
+    .data-selector {
+      padding: 0 0.5em;
+    }
     .other-format-menu {
       position: absolute;
-      top: 2em;
-      margin-left: 1em;
-      border-radius: 4px;
-      background-color: @white;
+      top: 1.5em;
       line-height: 1.6;
-      border: 1px solid @gray-light;
       white-space: normal;
-      padding: 0.5em;
       a {
+        background-color: @black;
         display: block;
+        padding: 0.1em 0.5em;
+        text-decoration: none;
+        color: white;
+        &:hover {
+          background-color: @gray-dark;
+        }
+      }
+      &::before {
+        content: "";
+        width: 0;
+        height: 0;
+        border-style: solid;
+        border-width: 0 5px 6px 5px;
+        border-color: transparent transparent @black transparent;
+        font-size: 0;
+	      line-height: 0;
+        margin-left: 29px;
       }
     }
     .admin-info {
