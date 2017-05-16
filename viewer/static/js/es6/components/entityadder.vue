@@ -43,7 +43,6 @@ export default {
   },
   props: {
     key: '',
-    focus: '',
     allowLocal: true,
     propertyTypes: [],
     showActionButtons: false,

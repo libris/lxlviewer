@@ -18,8 +18,7 @@
 <div id="editorApp">
   <editor-controls v-if="initialized == true"></editor-controls>
   <header-component id="main-header" :full="true" v-if="initialized == true"></header-component>
-  <form-component :locked="!status.inEdit" focus="work" v-if="initialized == true && status.level === 'work'"></form-component>
-  <form-component :locked="!status.inEdit" focus="mainEntity" v-if="initialized == true && status.level === 'mainEntity'"></form-component>
+  <form-component :locked="!status.inEdit" v-if="initialized == true"></form-component>
   <notification v-if="initialized == true"></notification>
 </div>
 </div>

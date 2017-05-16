@@ -7,6 +7,7 @@
     "Add entity" : "Lägg till entitet",
     "Add field" : "Lägg till fält",
     "Add" : "Lägg till",
+    "Accept": "Godkänn",
     "Edit": "Redigera",
     "Save": "Spara",
     "Remove": "Radera",
@@ -28,5 +29,8 @@
     "You have unsaved changes. Do you want to leave the page?": "Du har osparade ändringar. Vill du lämna sidan?",
     "Choose type": "Välj typ",
     "Fetching results": "Hämtar Resultat",
+    "Extraction was successful": "Utbrytning lyckades",
+    "Extract entity": "Bryt ut entitet",
+    "Extracting": "Bryter ut",
   }
 }

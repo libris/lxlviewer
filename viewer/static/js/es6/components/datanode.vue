@@ -24,7 +24,6 @@ export default {
     'key',
     'value',
     'isLocked',
-    'focus',
     'allow-local',
     'embedded',
     'is-removable',
@@ -163,7 +162,7 @@ export default {
       }
       this.updateValue(modified);
     },
-    'add-item'(value) {
+    'add-item'(value, replaces) {
       console.log("DataNode:"+ this.getPath +" - Adding", JSON.stringify(value));
       let insertedValue = {};
       if (value.hasOwnProperty('@id')) { // This is a linked item
@@ -173,6 +172,9 @@ export default {
         insertedValue = value;
       }
       const modified = [].concat(_.cloneDeep(this.value));
+      if (typeof replaces !== 'undefined') {
+        modified.splice(replaces, 1);
+      }
       modified.push(insertedValue);
       this.updateValue(modified);
     },
@@ -294,13 +296,13 @@ export default {
     <pre class="path-code" v-show="status.isDev">{{getPath}}</pre>
     <ul>
       <li v-for="item in valueAsArray" :class="{ 'isChip': isChip(item)}" track-by="$index">
-        <item-entity v-if="getDatatype(item) == 'entity'" :is-locked="isLocked" :expanded="isExpandedType" :focus="focus" :item="item" :key="key" :index="$index"></item-entity>
-        <item-local v-if="getDatatype(item) == 'local'" :is-locked="isLocked" :expanded="isExpandedType" :focus="focus" :item="item" :key="key" :index="$index"></item-local>
-        <item-embedded v-if="getDatatype(item) == 'embedded'" :is-locked="isLocked" :focus="focus" :item="item" :key="key" :index="$index"></item-embedded>
-        <item-value v-if="getDatatype(item) == 'value'" :is-removable="!hasSingleValue" :is-locked="isLocked" :focus="focus" :value="item" :key="key" :index="$index"></item-value>
+        <item-entity v-if="getDatatype(item) == 'entity'" :is-locked="isLocked" :expanded="isExpandedType" :item="item" :key="key" :index="$index"></item-entity>
+        <item-local v-if="getDatatype(item) == 'local'" :is-locked="isLocked" :expanded="isExpandedType" :item="item" :key="key" :index="$index"></item-local>
+        <item-embedded v-if="getDatatype(item) == 'embedded'" :is-locked="isLocked" :item="item" :key="key" :index="$index"></item-embedded>
+        <item-value v-if="getDatatype(item) == 'value'" :is-removable="!hasSingleValue" :is-locked="isLocked" :value="item" :key="key" :index="$index"></item-value>
       </li>
       <li :class="{ 'isChip': foundChip}">
-        <entity-adder class="action" v-if="!isLocked && (isRepeatable || isEmptyObject)" :key="key" :focus="focus" :property-types="propertyTypes" :allow-local="allowLocal && propAllowsLocal" :show-action-buttons="showActionButtons" :active="activeModal" :is-inner="isInner" :is-chip="foundChip"></entity-adder>
+        <entity-adder class="action" v-if="!isLocked && (isRepeatable || isEmptyObject)" :key="key" :property-types="propertyTypes" :allow-local="allowLocal && propAllowsLocal" :show-action-buttons="showActionButtons" :active="activeModal" :is-inner="isInner" :is-chip="foundChip"></entity-adder>
       </li>
     </ul>
 

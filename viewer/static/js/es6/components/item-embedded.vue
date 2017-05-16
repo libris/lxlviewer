@@ -20,7 +20,6 @@ export default {
     key: '',
     index: Number,
     isLocked: false,
-    focus: '',
     embedded: false,
   },
   vuex: {

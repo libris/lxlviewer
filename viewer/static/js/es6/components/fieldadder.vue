@@ -14,7 +14,6 @@ export default {
     allowed: [],
     active: false,
     filterKey: '',
-    focus: '',
   },
   vuex: {
     getters: {
@@ -42,12 +41,6 @@ export default {
     });
   },
   computed: {
-    isWork() {
-      return this.focus === 'work';
-    },
-    isInstance() {
-      return this.focus === 'mainEntity';
-    },
     filteredResults() {
       const lang = this.settings.language;
       if (!this.allowed || this.allowed.length === 0) {
@@ -82,15 +75,6 @@ export default {
         );
       });
       return filtered;
-    },
-    state() {
-      const focus = this.focus;
-      if (focus === 'mainEntity') {
-        return 'instans';
-      } else if (focus === 'work') {
-        return 'verks';
-      }
-      return 'Unknown';
     },
   },
   events: {
@@ -197,7 +181,7 @@ export default {
 <template>
   <div class="container">
     <div class="field-adder" :class="{ 'at-bottom': !buttonFixed }">
-      <a id="add-button" v-on:click="show" :class="{ 'work-state': isWork, 'instance-state': isInstance, 'is-fixed': buttonFixed }">
+      <a id="add-button" v-on:click="show" :class="{ 'is-fixed': buttonFixed }">
         <i v-show="buttonFixed" class="fa fa-plus plus-icon" aria-hidden="true"></i>
         <div>{{ "Add field" | translatePhrase }}</div>
       </a>
