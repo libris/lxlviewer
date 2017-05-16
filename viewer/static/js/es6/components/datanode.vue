@@ -62,6 +62,15 @@ export default {
       }
       return false;
     },
+    linkedIds() {
+      const ids = [];
+      for (const obj of this.valueAsArray) {
+        if (obj['@id']) {
+          ids.push(obj['@id']);
+        }
+      }
+      return ids;
+    },
     keyAsVocabProperty() {
       return VocabUtil.getTerm(this.key, this.vocab, this.settings.vocabPfx);
     },
@@ -302,7 +311,7 @@ export default {
         <item-value v-if="getDatatype(item) == 'value'" :is-removable="!hasSingleValue" :is-locked="isLocked" :value="item" :key="key" :index="$index"></item-value>
       </li>
       <li :class="{ 'isChip': foundChip}">
-        <entity-adder class="action" v-if="!isLocked && (isRepeatable || isEmptyObject)" :key="key" :property-types="propertyTypes" :allow-local="allowLocal && propAllowsLocal" :show-action-buttons="showActionButtons" :active="activeModal" :is-inner="isInner" :is-chip="foundChip"></entity-adder>
+        <entity-adder class="action" v-if="!isLocked && (isRepeatable || isEmptyObject)" :key="key" :already-added="linkedIds" :property-types="propertyTypes" :allow-local="allowLocal && propAllowsLocal" :show-action-buttons="showActionButtons" :active="activeModal" :is-inner="isInner" :is-chip="foundChip"></entity-adder>
       </li>
     </ul>
 

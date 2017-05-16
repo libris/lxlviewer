@@ -49,6 +49,7 @@ export default {
     active: false,
     isInner: false,
     isChip: false,
+    alreadyAdded: [],
   },
   events: {
     'close-modals'() {
@@ -317,7 +318,7 @@ export default {
         <div v-if="!loading && searchResult.length === 0 && keyword.length > 0 && searchMade" class="search-status">
           {{ "No results" | translatePhrase }}...
         </div>
-        <entity-search-list v-if="!loading && keyword.length > 0" :results="searchResult"></entity-search-list>
+        <entity-search-list v-if="!loading && keyword.length > 0" :results="searchResult" :disabled-ids="alreadyAdded"></entity-search-list>
         <div class="local" v-show="allowLocal && searchMade && !loading">
           <button v-on:click="goLocal">{{ "Create local entity" | translatePhrase }}</button>
         </div>
