@@ -445,6 +445,7 @@ export default {
       padding: 5px;
       border: 1px solid #e4e2e2;
       border-width: 0px 1px 0px 0px;
+      overflow: hidden; // This is important because of the flex rules of entities
       > * {
         display: inline-block;
       }
