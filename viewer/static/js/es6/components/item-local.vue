@@ -13,7 +13,7 @@ import DataNode from './datanode';
 import CardComponent from './card-component';
 import ItemMixin from './mixins/item-mixin';
 import LensMixin from './mixins/lens-mixin';
-import { changeNotification } from '../vuex/actions';
+import { changeNotification, changeStatus } from '../vuex/actions';
 import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData, getStatus } from '../vuex/getters';
 
 export default {
@@ -35,6 +35,7 @@ export default {
       status: getStatus,
     },
     actions: {
+      changeStatus,
       changeNotification,
     },
   },
@@ -76,10 +77,12 @@ export default {
   },
   methods: {
     openExtractDialog() {
+      this.changeStatus('keybindState', 'extraction-dialog');
       LayoutUtil.scrollLock(true);
       this.extractDialogActive = true;
     },
     closeExtractDialog() {
+      this.changeStatus('keybindState', 'overview');
       LayoutUtil.scrollLock(false);
       this.extractDialogActive = false;
       this.extracting = false;
@@ -178,6 +181,9 @@ export default {
   events: {
     'extract-item'() {
       this.openExtractDialog();
+    },
+    'close-modals'() {
+      this.closeExtractDialog();
     },
   },
   ready() {
