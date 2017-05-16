@@ -72,8 +72,11 @@ export default {
 </template>
 
 <style lang="less">
+@import './_variables.less';
+
   .card-info-container {
     width: 100%;
+    background-color: @white;
     &.floating {
       width: 600px;
       box-shadow: 0px 3px 5px 0px rgba(0, 0, 0, 0.3);

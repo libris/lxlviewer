@@ -145,15 +145,18 @@ export default {
     flex-basis: 70%;
     max-width: 70%;
     padding: 0px 3px;
+    a {
+      color: @brand-primary;
+    }
     .header {
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      width: 100%;
       font-size: 1.6em;
       line-height: 1.6em;
       min-height: 1.2em;
       margin: 0px;
-      width: 100%;
     }
     ul.info {
       list-style-type: none;

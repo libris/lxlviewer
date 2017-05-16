@@ -49,6 +49,10 @@ export default {
 .search-result-item {
   border: 1px solid #ccc;
   padding: 3px;
+  &.already-added {
+    opacity: 0.5;
+    cursor: default;
+  }
   .label {
     color: @black;
     font-weight: bold;
