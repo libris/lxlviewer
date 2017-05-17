@@ -4,6 +4,7 @@ import * as httpUtil from '../utils/http';
 import * as VocabUtil from '../utils/vocab';
 import * as DisplayUtil from '../utils/display';
 import * as LayoutUtil from '../utils/layout';
+import * as StringUtil from '../utils/string';
 import ProcessedLabel from './processedlabel';
 import ToolTipComponent from './tooltip-component';
 import EntitySearchList from './entity-search-list';
@@ -84,6 +85,16 @@ export default {
     }
   },
   computed: {
+    addLabel() {
+      if (this.isLiteral) {
+        return this.key;
+      } else if (this.getRange.length === 1) {
+        return this.getRange[0];
+      } else if (this.getRange.length > 1) {
+        return StringUtil.getUiPhraseByLang('entity', this.settings.language);
+      }
+      return this.key;
+    },
     getRange() {
       return VocabUtil.getRange(this.key, this.vocab, this.settings.vocabPfx);
     },
@@ -272,10 +283,10 @@ export default {
 <template>
 <div class="entity-adder">
   <div v-if="isChip && !addEmbedded" class="chip action-button add-entity-button" :class="{ 'fade': !showActionButtons }" v-on:click="add()" @mouseenter="showToolTip=true" @mouseleave="showToolTip=false">
-    <span class="chip-label"><i class="fa fa-fw fa-plus plus-icon" aria-hidden="true"></i><span class="label-text">{{ "Add" | translatePhrase }}</span></span>
+    <span class="chip-label"><i class="fa fa-fw fa-plus plus-icon" aria-hidden="true"></i><span class="label-text">{{ "Add" | translatePhrase }} {{ addLabel | labelByLang | lowercase }}</span></span>
   </div>
   <div v-if="!isChip && !addEmbedded" class="action-button add-entity-button" :class="{'disabled': active, 'fade': !showActionButtons }" v-on:click="add()" @mouseenter="showToolTip=true" @mouseleave="showToolTip=false">
-    <span class="chip-label"><i class="fa fa-fw fa-plus plus-icon" aria-hidden="true"></i><span class="label-text">{{ "Add" | translatePhrase }}</span></span>
+    <span class="chip-label"><i class="fa fa-fw fa-plus plus-icon" aria-hidden="true"></i><span class="label-text">{{ "Add" | translatePhrase }} {{ addLabel | labelByLang | lowercase }}</span></span>
   </div>
   <div class="type-chooser" v-if="addEmbedded" v-on-clickaway="dismissTypeChooser">
     <select v-model="selectedType" @change="addType(selectedType)">
