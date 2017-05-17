@@ -36,7 +36,7 @@ KEEP_HEADERS = ['ETag', 'Location']
 CONTEXT_PATH = '/context.jsonld'
 
 TYPE_TEMPLATES = {
-    'DataCatalog': 'website.html',
+    'DataCatalog': 'pagedcollection.html',
     'PartialCollectionView': 'pagedcollection.html',
     'Article': 'article.html'
 }

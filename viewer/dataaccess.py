@@ -57,7 +57,7 @@ sites = {
         ID: LIBRIS,
         TYPE: "DataCatalog",
         "title": "libris.kb.se",
-        "description": "<p>Data på <b>LIBRIS.KB.SE</b>.</p>",
+        "summary": {"articleBody": "<p>Data på <b>LIBRIS.KB.SE</b>.</p>"},
         "statsindex": '{"instanceOf.@type": {"@type": []}}',
         "filter_param": "instanceOf.@type",
             # TODO: + @reverse.itemOf.heldBy.@id (and/or count)?

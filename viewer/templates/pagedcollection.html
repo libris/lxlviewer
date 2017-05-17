@@ -13,10 +13,17 @@
       <facet-controls v-if="initialized == true" :result="result"></facet-controls>
     </div>
     <div class="col-md-9">
-      <search-form v-if="initialized == true" :result="result" site-title="${g.site.title}" filter-param="" :use-submit="false"></search-form>
+      <landing-box v-if="initialized == true && typeof result.totalItems === 'undefined'" :title="result.title" :text="result.summary.articleBody"></landing-box>
+      <search-form v-if="initialized == true" :result="result" site-title="${g.site.title}" filter-param="'${g.site.filter_param}'" :use-submit="false"></search-form>
       <!--${ search.search_controls(thing) }-->
       <!-- <main-search-field :title="tjena"></main-search-field> -->
-      <search-result-component :result="result" v-if="initialized == true"></search-result-component>
+      <search-result-component :result="result" v-if="initialized == true && result.totalItems > -1"></search-result-component>
+      <dataset-observations
+      v-if="initialized == true && !result.totalItems && '${g.site.title}' === 'id.kb.se'"
+      :statistics="result.statistics"
+      :stats-index="${g.site.statsindex}"
+      site-title="${g.site.title}"
+      ></dataset-observations>
     </div>
   </div>
 </div>
