@@ -173,7 +173,7 @@ export function getProperties(className, vocab, vocabPfx) {
       }
     }
   }
-  console.log("getProperties("+JSON.stringify(className)+") ->", props.length, "properties found");
+  // console.log("getProperties("+JSON.stringify(className)+") ->", props.length, "properties found");
   return props;
 }
 
