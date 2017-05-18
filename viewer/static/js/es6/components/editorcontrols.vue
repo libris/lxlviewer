@@ -205,6 +205,11 @@ export default {
       }
       button {
         margin: 0 0.3em;
+        padding: 3px 10px;
+        font-size: 12px;
+        line-height: 20px;
+        background-color: #efefef;
+        border: 1px solid rgba(27,31,35,0);
       }
       .actions {
         .action {
