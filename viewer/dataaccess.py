@@ -80,11 +80,6 @@ sites = {
                     "sortOrder":"asc",
                     "size":100
                 },
-                "instanceOf.contentType.@id":{
-                    "sort":"key",
-                    "sortOrder":"asc",
-                    "size":100
-                },
                 "publication.date":{
                     "sort":"key",
                     "sortOrder":"desc",
@@ -102,6 +97,12 @@ sites = {
         ]
     }
 }
+
+# "instanceOf.contentType.@id":{
+#                     "sort":"key",
+#                     "sortOrder":"asc",
+#                     "size":100
+#                 },
 
 
 class DataAccess(object):
