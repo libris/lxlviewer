@@ -26,9 +26,12 @@ export default class CreateNew extends View {
 
   getMaterials(baseMaterials, vocab) {
     const self = this;
-    const allMaterials = 
-      VocabUtil.getAllSubClasses(baseMaterials, vocab, self.settings.vocabPfx)
-      .map(subClassId => subClassId.replace(self.settings.vocabPfx, ''));
+    let allMaterials = [];
+    _.each(baseMaterials, type => {
+      const typeInArray = [].concat(type);
+      allMaterials = allMaterials.concat(VocabUtil.getAllSubClasses(typeInArray, vocab, self.settings.vocabPfx)
+        .map(subClassId => subClassId.replace(self.settings.vocabPfx, '')));
+    });
     return allMaterials;
   }
 
