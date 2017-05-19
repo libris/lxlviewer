@@ -1,8 +1,15 @@
 <script>
 import * as StringUtil from '../utils/string';
+import * as httpUtil from '../utils/http';
+import { changeResultListStatus } from '../vuex/actions';
 
 export default {
   name: 'search-pagination',
+  vuex: {
+    actions: {
+      changeResultListStatus,
+    },
+  },
   props: {
     pageData: {},
     showDetails: false,
@@ -69,6 +76,28 @@ export default {
       }
       return list;
     },
+    historySupported() {
+      if (Modernizr.history) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+  },
+  methods: {
+    getNewResult(url) {
+      this.changeResultListStatus('loading', true);
+      const resultPromise = new Promise((resolve, reject) => {
+        httpUtil.get({ url: url, accept: 'application/ld+json' }).then((response) => {
+          history.pushState(response, "title", url);
+          resolve(response);
+        }, (error) => {
+          history.pushState({}, "title", url);
+          reject('Error searching...', error);
+        });
+      });
+      this.$dispatch('newresult', resultPromise);
+    }
   },
 };
 </script>
@@ -87,24 +116,29 @@ export default {
       <nav>
         <ul class="pagination">
           <li v-bind:class="{ 'disabled': !pageData.first || pageData['@id'] === pageData.first['@id'] }">
-            <a v-if="pageData.first" href="{{pageData.first['@id']}}">Första</a>
+            <a v-if="pageData.first && historySupported" @click="getNewResult(pageData.first['@id'])" class="pointer">Första</a>
+            <a v-if="pageData.first && !historySupported" href="{{pageData.first['@id']}}">Första</a>
             <a v-if="!pageData.first">Första</a>
           </li>
           <li v-bind:class="{ 'disabled': !pageData.previous }">
-            <a v-if="pageData.previous" href="{{pageData.previous['@id']}}">Föregående</a>
+            <a v-if="pageData.previous && historySupported" @click="getNewResult(pageData.previous['@id'])" class="pointer">Föregående</a>
+            <a v-if="pageData.previous && !historySupported" href="{{pageData.previous['@id']}}">Föregående</a>
             <a v-if="!pageData.previous">Föregående</a>
           </li>
           <li v-bind:class="{ 'active': page.active }" v-for="page in pageList" track-by="$index">
             <span class="decorative" v-if="!page.link">...</span>
-            <a v-if="!page.active && page.link" href="{{page.link}}">{{page.pageLabel}}</a>
+            <a v-if="!page.active && page.link && historySupported" @click="getNewResult(page.link)" class="pointer">{{page.pageLabel}}</a>
+            <a v-if="!page.active && page.link && !historySupported" href="{{page.link}}">{{page.pageLabel}}</a>
             <a v-if="page.active">{{page.pageLabel}}</a>
           </li>
           <li v-bind:class="{ 'disabled': !pageData.next }">
-            <a v-if="pageData.next" href="{{pageData.next['@id']}}">Nästa</a>
+            <a v-if="pageData.next && historySupported" @click="getNewResult(pageData.next['@id'])" class="pointer">Nästa</a>
+            <a v-if="pageData.next && !historySupported" href="{{pageData.next['@id']}}">Nästa</a>
             <a v-if="!pageData.next">Nästa</a>
           </li>
           <li v-bind:class="{ 'disabled': !pageData.last || pageData['@id'] === pageData.last['@id'] }">
-            <a v-if="pageData.last" href="{{pageData.last['@id']}}">Sista</a>
+            <a v-if="pageData.last && historySupported" @click="getNewResult(pageData.last['@id'])" class="pointer">Sista</a>
+            <a v-if="pageData.last && !historySupported" href="{{pageData.last['@id']}}">Sista</a>
             <a v-if="!pageData.last">Sista</a>
           </li>
         </ul>
