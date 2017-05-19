@@ -90,7 +90,7 @@ export default {
       <div class="admin-info">
         <div class="actions">
           <div class="action">
-            <i class="fa fa-info-circle" aria-hidden="true" @click="toggleAdminData()"></i>
+            <i class="fa fa-chevron-down" :class="{'up': showAdminInfoDetails}" aria-hidden="true" @click="toggleAdminData()"></i>
           </div>
           <div class="action" v-on:click="toggleDev()" v-bind:class="{'active': status.isDev}">
             <i class="fa fa-wrench" aria-hidden="true"></i>
@@ -215,6 +215,7 @@ export default {
         .action {
           display: inline-block;
           cursor: pointer;
+          margin: 0 0.5em;
           > a {
             color: #fff;
             font-size: 11px;
@@ -222,6 +223,12 @@ export default {
           &.active {
             i {
               color: @brand-primary;
+            }
+          }
+          i {
+            transition: all 0.5s ease;
+            &.up {
+              transform:rotate(-180deg);
             }
           }
         }
