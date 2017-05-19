@@ -273,7 +273,7 @@ export default {
                 </label>
                 <label v-for="observation in observations" class="">
                     <input :name="filterParam" :value="observation['@id']" type="radio">
-                    {{observation.label}}
+                    {{observation.label | labelByLang}}
                 </label>
             </div>
 
