@@ -252,6 +252,7 @@ export default {
             font-style: italic;
           }
         }
+        background-color: rgba(255, 255, 255, 0.15);
         cursor: auto;
         font-size: 0.8em;
         padding: 5px 0px;
