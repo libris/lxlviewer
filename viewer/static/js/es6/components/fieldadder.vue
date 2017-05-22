@@ -180,9 +180,13 @@ export default {
 
 <template>
   <div class="container">
-    <div class="field-adder" :class="{ 'at-bottom': !buttonFixed }">
-      <a id="add-button" v-on:click="show" :class="{ 'is-fixed': buttonFixed }">
-        <i v-show="buttonFixed" class="fa fa-plus plus-icon" aria-hidden="true"></i>
+    <div class="field-adder">
+      <div class="field-adder-bar" v-on:click="show">
+        <i class="fa fa-plus plus-icon" aria-hidden="true"></i>
+        {{ "Add field" | translatePhrase }}
+      </div>
+      <a id="add-button" v-on:click="show" :class="{'at-bottom': !buttonFixed }">
+        <i class="fa fa-plus plus-icon" aria-hidden="true"></i>
         <div>{{ "Add field" | translatePhrase }}</div>
       </a>
       <div class="window" v-show="active">
@@ -221,42 +225,22 @@ export default {
 
 .field-adder {
   background-color: #fff;
-  height: 0;
-  margin-left: 100%;
-  &.at-bottom {
-    margin: 0;
-    #add-button {
-      position: relative;
-      border-radius: 0px;
-      box-shadow: none;
-      display: block;
-      margin: 0;
-      padding: 0;
-      text-align: center;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      animation-name: buttonAnimation;
-      animation-duration: 0.8s;
-      > div {
-        transition: opacity ease 0.8s;
-        opacity: 1;
-        display: block;
-        max-height: 100%;
-        max-width: 100%;
-        padding: 0.95em 0em;
-      }
-    }
+  text-align: right;
+  .field-adder-bar {
+    cursor: pointer;
+    border: 1px dashed @gray-darker;
+    padding: 0.8em;
+    text-align: center;
   }
   display: block; // So that the clickaway plugin triggers nicely
   #add-button {
+    margin-left: 100%;
     background-color: @brand-primary;
+    transition: bottom 0.25s cubic-bezier(0.4, 0, 1, 1);
     color: @white;
-    &.is-fixed {
-      position: fixed;
-      margin-left: -1.75em;
-      bottom: 12px;
-    }
+    position: fixed;
+    margin-left: -1.75em;
+    bottom: 12px;
     border-radius:2em;
     box-shadow: 0px 7px 10px 0px rgba(0,0,0,0.7);
     cursor:pointer;
@@ -264,6 +248,9 @@ export default {
     padding: 1em 1.2em;
     line-height: 1.2em;
     text-decoration: none;
+    &.at-bottom {
+      bottom: -100px;
+    }
     .plus-icon {
       -webkit-text-stroke: 0.12em @brand-primary;
     }
@@ -384,17 +371,4 @@ export default {
   }
 }
 
-@keyframes buttonAnimation {
-  0% {
-    border-radius: 40px;
-    margin-left: 94%;
-    border-radius: 40px;
-    width: 90px;
-  }
-  100% {
-    width: 100%;
-    margin-left: 0;
-    border-radius: 0px;
-  }
-}
 </style>
