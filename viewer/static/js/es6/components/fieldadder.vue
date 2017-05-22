@@ -228,9 +228,12 @@ export default {
   text-align: right;
   .field-adder-bar {
     cursor: pointer;
-    border: 1px dashed @gray-darker;
+    border: 1px dashed @gray-light;
     padding: 0.8em;
     text-align: center;
+    &:hover {
+      border-color: @gray-darker;
+    }
   }
   display: block; // So that the clickaway plugin triggers nicely
   #add-button {
