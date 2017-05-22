@@ -5,6 +5,8 @@ import MarcPreview from '../components/marc-preview';
 import CreateItemButton from '../components/create-item-button';
 import * as DataUtil from '../utils/data';
 import * as DisplayUtil from '../utils/display';
+import * as ModalUtil from '../utils/modals';
+import * as HttpUtil from '../utils/http';
 import LensMixin from './mixins/lens-mixin';
 import { mixin as clickaway } from 'vue-clickaway';
 import { changeSavedStatus, changeStatus } from '../vuex/actions';
@@ -52,6 +54,27 @@ export default {
     },
     toggleAdminData() {
       this.showAdminInfoDetails = !this.showAdminInfoDetails;
+    },
+    removePost() {
+      const url = this.focusData['@id'];
+      ModalUtil.confirmDialog({
+        sTitle: 'Ta bort?',
+        sContent: 'Du kan inte ångra detta val.',
+        sAccept: 'OK',
+        sReject: 'Avbryt',
+        sType: 'danger' }).then(() => {
+          // accepted by user
+          HttpUtil._delete({ url }).then((result) => {
+            console.log("post WAS deleted...", result);
+
+            // Force reload
+            window.location.reload();
+          }, (result) => {
+            console.log("post was NOT deleted...", result);
+          });
+        }, () => {
+        // rejected by user
+      });
     },
   },
   data() {
@@ -111,6 +134,7 @@ export default {
         <div class="admin-node">
           <span class="node">Ändrad {{ getCard.modified }} av - </span>
         </div>
+        <button @click="removePost"><i class="fa fa-trash" aria-hidden="true"></i> {{"Remove" | translatePhrase}} post</button>
         <create-item-button v-show="!status.inEdit && editorData.mainEntity['@type'] === 'Instance'"></create-item-button>
         <button id="saveButton" v-on:click="save()" v-if="status.inEdit">
           <i class="fa fa-fw fa-cog fa-spin" v-show="status.saved.loading"></i>
