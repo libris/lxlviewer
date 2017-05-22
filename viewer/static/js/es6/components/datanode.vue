@@ -380,6 +380,7 @@ export default {
       display: inline-block;
       margin-left: 0.25em;
       .comment {
+        z-index: @active-component-z;
         display: none;
         border-radius: 4px;
         position: absolute;
