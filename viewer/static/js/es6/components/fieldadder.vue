@@ -2,7 +2,8 @@
 import { mixin as clickaway } from 'vue-clickaway';
 import * as _ from 'lodash';
 import * as LayoutUtil from '../utils/layout';
-import { getSettings } from '../vuex/getters';
+import * as StringUtil from '../utils/string';
+import { getSettings, getVocabulary } from '../vuex/getters';
 import { changeStatus, changeNotification } from '../vuex/actions';
 import ComboKeys from 'combokeys';
 
@@ -18,6 +19,7 @@ export default {
   vuex: {
     getters: {
       settings: getSettings,
+      vocab: getVocabulary,
     },
     actions: {
       changeStatus,
@@ -144,13 +146,16 @@ export default {
       }
     },
     addField(prop, close) {
+      const splitProp = prop['@id'].split('/');
+      const propLastPart = splitProp[splitProp.length-1];
       const fieldName = prop['@id'].split(':')[1];
       this.$dispatch('add-field', prop);
+      const translatedProp = StringUtil.labelByLang(propLastPart, this.settings.language, this.vocab, this.settings.vocabPfx);
       this.changeNotification('color', 'green');
-      this.changeNotification('message', `${fieldName} lades till.`);
+      this.changeNotification('message', `Fältet "${translatedProp}" lades till.`);
       if (close) {
         this.hide();
-        this.changeStatus('lastAdded', fieldName);
+        this.changeStatus('lastAdded', propLastPart);
       }
     },
     show() {
