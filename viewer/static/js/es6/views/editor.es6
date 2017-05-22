@@ -22,7 +22,7 @@ import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData, getSt
 import { changeSettings, changeNotification, loadVocab, loadDisplayDefs, syncData, changeSavedStatus, changeStatus } from '../vuex/actions';
 
 function showError(error) {
-  $('#loadingText .fa-cog').fadeOut('fast', () => {
+  $('#loadingText .fa-circle-o-notch').fadeOut('fast', () => {
     $('#loadingText .fa-warning').removeClass('hidden').fadeIn('fast');
     $('#loadingText .mainStatus').text('').append(StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language));
     $('#loadingText .status').text('');
@@ -40,11 +40,12 @@ export default class Editor extends View {
     const self = this;
 
     $('#loadingText .fa-warning').hide();
-    $('#loadingText .mainStatus').text(StringUtil.getUiPhraseByLang("Loading", self.settings.language));
-    $('#loadingText .status').text('Hämtar vokabulär');
+    const loadingStr = `${StringUtil.getUiPhraseByLang("Loading", self.settings.language)} ${StringUtil.getUiPhraseByLang("Post", self.settings.language).toLowerCase()}`;
+    $('#loadingText .mainStatus').text(loadingStr);
+    // $('#loadingText .status').text('Hämtar vokabulär');
     VocabUtil.getVocab().then((vocab) => {
       self.vocab = vocab['@graph'];
-      $('#loadingText .status').text('Hämtar visningsdefinitioner');
+      // $('#loadingText .status').text('Hämtar visningsdefinitioner');
       DisplayUtil.getDisplayDefinitions().then((display) => {
         self.display = display;
         self.initVue();
@@ -58,8 +59,8 @@ export default class Editor extends View {
 
   initVue() {
     const self = this;
-    $('#loadingText').fadeOut('slow', function() {
-      $('#editorApp').fadeIn('slow');
+    $('#loadingText').fadeOut('fast', function() {
+      $('#editorApp').fadeIn('fast');
     });
 
     document.getElementById('body-blocker').addEventListener('click', function () {
