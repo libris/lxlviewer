@@ -31,15 +31,20 @@ export default {
       buttonFixed: true,
       buttonPos: -1,
       selectedIndex: -1,
+      fieldListBottom: false,
     };
   },
   beforeDestroy() {
     window.removeEventListener('scroll', this.moveFieldAdderButton);
+    const fieldsWindow = document.getElementById('fields-window');
+    fieldsWindow.removeEventListener('scroll', this.toggleWindowFade);
   },
   ready() { // Ready method is deprecated in 2.0, switch to "mounted"
     this.$nextTick(() => { // TODO: Fix proper scroll tracking. This is just an ugly solution using document.onscroll here and window.scroll in editorcontrols.vue
       window.addEventListener('scroll', this.moveFieldAdderButton);
       this.moveFieldAdderButton();
+      const fieldsWindow = document.getElementById('fields-window');
+      fieldsWindow.addEventListener('scroll', this.toggleWindowFade);
     });
   },
   computed: {
@@ -135,6 +140,21 @@ export default {
     },
   },
   methods: {
+    toggleWindowFade(e) {
+      const targetElement = e.target;
+      const threshold = targetElement.scrollHeight;
+      const position = targetElement.offsetHeight + targetElement.scrollTop;
+      if (threshold > position) {
+        this.fieldListBottom = false;
+      } else {
+        this.fieldListBottom = true;
+      }
+    },
+    scrollToBottom() {
+      const scrollElement = document.getElementById('fields-window');
+      const scrollPos = scrollElement.scrollHeight - scrollElement.offsetHeight;
+      scrollElement.scrollTop = scrollPos;
+    },
     moveFieldAdderButton(e) {
       const topFormComponent = document.getElementsByClassName('focused-form-component')[0];
       const buttonThreshold = topFormComponent.offsetTop + topFormComponent.offsetHeight;
@@ -196,7 +216,7 @@ export default {
         <i class="fa fa-plus plus-icon" aria-hidden="true"></i>
         <div>{{ "Add field" | translatePhrase }}</div>
       </a>
-      <div class="window" v-show="active">
+      <div class="window"  v-show="active" :class="{'at-bottom': fieldListBottom}">
         <div class="header">
           <span class="title">
             {{ "Add field" | translatePhrase }}
@@ -209,7 +229,7 @@ export default {
             <span class="filterInfo">{{ "Showing" | translatePhrase }} {{ filteredResults.length }} {{ "of" | translatePhrase }} {{allowed ? allowed.length : '0'}} {{ "total" | translatePhrase }}</span>
           </span>
         </div>
-        <ul v-if="active" class="field-list">
+        <ul v-show="active" id="fields-window" class="field-list">
           <li v-on:mouseover="selectedIndex = $index" v-bind:class="{ 'added': prop.added, 'available': !prop.added, 'selected': $index == selectedIndex }" v-for="prop in filteredResults" track-by="$index" @click="addField(prop, true)">
             <span class="fieldLabel" title="{{prop.item['@id'] | labelByLang | capitalize }}">
               {{prop.item['@id'] | labelByLang | capitalize }}
@@ -223,6 +243,7 @@ export default {
           <li v-if="filteredResults.length === 0"><i>{{ "Did not find any fields" | translatePhrase }}...</i></li>
         </ul>
       </div>
+      <i v-show="active" :class="{'at-bottom': fieldListBottom}" class="fa fa-chevron-down list-scroller" aria-hidden="true" @click="scrollToBottom"></i>
     </div>
   </div>
 </template>
@@ -284,7 +305,58 @@ export default {
   >a {
     cursor: pointer;
   }
+  .list-scroller {
+    color: @gray-darker;
+    font-size: 39px;
+    width: 0;
+    position: fixed;
+    left: 0;
+    right: 0;
+    cursor: pointer;
+    bottom: 5%;
+    margin: 0 auto;
+    z-index: 1000;
+    opacity: 1;
+    transition: all 0.2s ease;
+    &:hover {
+      color: @black;
+      font-size: 40px;
+    }
+    &.at-bottom {
+      opacity: 0;
+      bottom: 2%;
+      transition: all 0.2s ease;
+    }
+  }
+  .at-bottom {
+    &:after {
+      opacity: 0;
+      transition: all 0.5s ease;
+    }
+  }
+  
   .window {
+    &:after {
+      transition: all 0.5s ease;
+      position: absolute;
+      bottom: 0;  
+      height: 100%;
+      width: 100%;
+      content: "";
+      opacity: 0;
+      background: linear-gradient(to top,
+        rgba(255,255,255, 1) 0%, 
+        rgba(255,255,255, 0) 12%
+      );
+      pointer-events: none; /* so the text is still selectable */
+      
+    }
+    &:not(.at-bottom) {
+      &:after {
+        opacity: 1;
+        transition: all 0.5s ease;
+      }
+    }
     .window-mixin();
     .header {
       .filter {
@@ -311,7 +383,7 @@ export default {
       border-width: 1px 0px 0px 0px;
       border-radius: 0px 0px 3px 3px;
       width: 100%;
-      height: 100%;
+      height: 95%;
       overflow-y: auto;
       margin: 0px;
       list-style-type: none;
