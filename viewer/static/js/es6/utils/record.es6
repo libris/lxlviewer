@@ -1,4 +1,6 @@
 import * as httpUtil from '../utils/http';
+import * as DisplayUtil from '../utils/display';
+import * as VocabUtil from '../utils/vocab';
 import * as _ from 'lodash';
 
 export function getMarc(json) {
@@ -142,4 +144,47 @@ export function getNewCopy(id) {
       reject('Error when getting record from', copyUrl, error);
     });
   });
+}
+
+export function getEmptyForm(type, vocab, display, settings) {
+  console.log('Type', type);
+  const formObj = { '@type': type };
+  let inputKeys = DisplayUtil.getProperties(type, 'cards', display, settings);
+  if (inputKeys.length === 0) {
+    const baseClasses = VocabUtil.getBaseClassesFromArray(
+      type,
+      vocab,
+      settings.vocabPfx
+    );
+    console.log('baseClasses for', type, 'is', JSON.stringify(baseClasses));
+    for (const baseClass of baseClasses) {
+      inputKeys = DisplayUtil.getProperties(
+        baseClass.replace(settings.vocabPfx, ''),
+        'cards',
+        display,
+        settings
+      );
+      if (inputKeys.length > 0) {
+        break;
+      }
+    }
+    if (inputKeys.length === 0) {
+      inputKeys = DisplayUtil.getProperties('Resource', 'cards', display, settings);
+    }
+  }
+  inputKeys = ['@type'].concat(inputKeys);
+  for (const inputKey of inputKeys) {
+    if (inputKey === '@type') {
+      formObj[inputKey] = type;
+    } else {
+      const keyRange = VocabUtil.getRange(inputKey, vocab, settings.vocabPfx);
+      if (keyRange.length === 0 || keyRange[0].split(':')[1] === 'Literal') {
+        formObj[inputKey] = '';
+      } else {
+        formObj[inputKey] = [];
+      }
+    }
+  }
+  console.log('Form obj', JSON.stringify(formObj));
+  return formObj;
 }

@@ -196,7 +196,8 @@ export default {
       setTimeout(() => {
         if (this.isLastAdded) {
           const windowHeight = window.innerHeight || document.documentElement.clientHeight || document.getElementsByTagName('body')[0].clientHeight;
-          LayoutUtil.scrollTo(this.$el.offsetTop - (windowHeight * 0.5), 1000, 'easeInOutQuad', () => {
+          const scrollPos = this.$el.offsetTop - (windowHeight * 0.5);
+          LayoutUtil.scrollTo(scrollPos, 1000, 'easeInOutQuad', () => {
             this.changeStatus('lastAdded', '');
           });
         }
@@ -380,6 +381,7 @@ export default {
       display: inline-block;
       margin-left: 0.25em;
       .comment {
+        z-index: @active-component-z;
         display: none;
         border-radius: 4px;
         position: absolute;

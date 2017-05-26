@@ -4,6 +4,7 @@ import * as httpUtil from '../utils/http';
 import * as VocabUtil from '../utils/vocab';
 import * as DisplayUtil from '../utils/display';
 import * as LayoutUtil from '../utils/layout';
+import * as RecordUtil from '../utils/record';
 import * as StringUtil from '../utils/string';
 import ProcessedLabel from './processedlabel';
 import ToolTipComponent from './tooltip-component';
@@ -102,7 +103,7 @@ export default {
       let types = [].concat(this.getRange);
       let allTypes = [];
       _.each(types, type => {
-        const typeInArray = [].concat(type);  
+        const typeInArray = [].concat(type);
         allTypes = allTypes.concat(VocabUtil.getAllSubClasses(typeInArray, this.vocab, this.settings.vocabPfx));
       });
       allTypes = _.uniq(allTypes);
@@ -197,7 +198,7 @@ export default {
     },
     addEmpty(type) {
       this.closeSearch();
-      const obj = this.getEmptyForm(type);
+      const obj = RecordUtil.getEmptyForm(type, this.vocab, this.display, this.settings);
       this.$dispatch('add-item', obj);
     },
     addType(type) {
@@ -218,48 +219,6 @@ export default {
       }, (error) => {
         self.loading = false;
       });
-    },
-    getEmptyForm(type) {
-      console.log('Type', type);
-      const formObj = { '@type': type };
-      let inputKeys = DisplayUtil.getProperties(type, 'cards', this.display, this.settings);
-      if (inputKeys.length === 0) {
-        const baseClasses = VocabUtil.getBaseClassesFromArray(
-          type,
-          this.vocab,
-          this.settings.vocabPfx
-        );
-        console.log('baseClasses for', type, 'is', JSON.stringify(baseClasses));
-        for (const baseClass of baseClasses) {
-          inputKeys = DisplayUtil.getProperties(
-            baseClass.replace(this.settings.vocabPfx, ''),
-            'cards',
-            this.display,
-            this.settings
-          );
-          if (inputKeys.length > 0) {
-            break;
-          }
-        }
-        if (inputKeys.length === 0) {
-          inputKeys = DisplayUtil.getProperties('Resource', 'cards', this.display, this.settings);
-        }
-      }
-      inputKeys = ['@type'].concat(inputKeys);
-      for (const inputKey of inputKeys) {
-        if (inputKey === '@type') {
-          formObj[inputKey] = type;
-        } else {
-          const keyRange = VocabUtil.getRange(inputKey, this.vocab, this.settings.vocabPfx);
-          if (keyRange.length === 0 || keyRange[0].split(':')[1] === 'Literal') {
-            formObj[inputKey] = '';
-          } else {
-            formObj[inputKey] = [];
-          }
-        }
-      }
-      console.log('Form obj', JSON.stringify(formObj));
-      return formObj;
     },
     getItems(keyword, typeArray) {
       // TODO: Support asking for more items

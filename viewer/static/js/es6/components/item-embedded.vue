@@ -1,6 +1,7 @@
 <script>
 import * as _ from 'lodash';
 import * as httpUtil from '../utils/http';
+import * as RecordUtil from '../utils/record';
 import * as VocabUtil from '../utils/vocab';
 import * as DisplayUtil from '../utils/display';
 import * as DataUtil from '../utils/data';
@@ -37,7 +38,8 @@ export default {
   },
   computed: {
     filteredItem() {
-      const filteredItem = Object.assign({}, this.item);
+      const emptyItem = RecordUtil.getEmptyForm(this.item['@type'], this.vocab, this.display, this.settings);
+      const filteredItem = Object.assign(emptyItem, this.item);
       delete filteredItem['@type'];
       return filteredItem;
     },
