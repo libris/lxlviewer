@@ -25,11 +25,12 @@ export default {
       if (this.active) {
         this.changeResultListStatus('loading', true);
         const resultPromise = new Promise((resolve, reject) => {
-          httpUtil.get({ url: this.observation.view['@id'], accept: 'application/ld+json' }).then((response) => {
-            history.pushState(response, "title", this.observation.view['@id']);
+          httpUtil.get({ url: `${window.location.host}${this.observation.view['@id']}`, accept: 'application/ld+json' }).then((response) => {
+            history.pushState(response, 'unused', response['@id']);
+            console.log(response);
             resolve(response);
           }, (error) => {
-            history.pushState({}, "title", this.observation.view['@id']);
+            history.pushState({}, 'unused', this.observation.view['@id']);
             reject('Error searching...', error);
           });
         });
