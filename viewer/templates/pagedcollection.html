@@ -18,7 +18,7 @@
       
       <!--${ search.search_controls(thing) }-->
       <!-- <main-search-field :title="tjena"></main-search-field> -->
-      <search-result-component :result="result" v-if="initialized == true && result.totalItems > -1"></search-result-component>
+      <search-result-component :result="result" v-if="(initialized == true && result.totalItems > -1) || status.resultList.loading"></search-result-component>
       <dataset-observations
       v-if="initialized == true && !result.totalItems && '${g.site.title}' === 'id.kb.se'"
       :statistics="result.statistics"
