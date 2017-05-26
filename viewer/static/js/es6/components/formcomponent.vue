@@ -60,14 +60,14 @@ export default {
         this.vocab,
         this.settings.vocabPfx
       );
-
+      sortedAllowed = _.sortBy(allowed, [property => property.item['@id']]);
       // Add the "added" property
-      for (const element of allowed) {
+      for (const element of sortedAllowed) {
         const oId = element.item['@id'].replace(settings.vocabPfx, '');
         element.added = (formObj.hasOwnProperty(oId) && formObj[oId] !== null);
       }
 
-      return allowed;
+      return sortedAllowed;
     },
     formData() {
       return this.editorData.mainEntity;
