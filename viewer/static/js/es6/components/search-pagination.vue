@@ -107,9 +107,9 @@ export default {
     <div class="search-details" v-if="showDetails">
       <span class="pull-left">Sökning på <strong>{{ queryText }}</strong>
         <span v-if="filters.length > 0">
-        (filtrerat på <span v-for="filter in filters" track-by="$index">{{filter.label | labelByLang}}{{ $index === filters.length - 1 ? '' : ', ' }}</span>)
+        (filtrerat på <span v-for="filter in filters" track-by="$index"><strong>{{filter.label | labelByLang}}{{ $index === filters.length - 1 ? '' : ', ' }}</strong></span>)
       </span>
-      gav {{pageData.totalItems}} träffar.</span>
+      gav <strong>{{pageData.totalItems}}</strong> träffar.</span>
       <span v-if="pageData.totalItems > limit" class="pull-right">Visar {{ limit }} träffar per sida.</span>
     </div>
     <div class="search-buttons" v-if="pageData.totalItems > limit">
