@@ -117,14 +117,14 @@ export default {
     },
     'add-field-multiple'() {
       if (!this.filteredResults[this.selectedIndex].added) {
-        this.addField(this.filteredResults[this.selectedIndex].item, false);
+        this.addField(this.filteredResults[this.selectedIndex], false);
       } else {
         console.warn("already added, should be handled");
       }
     },
     'add-field-single'() {
       if (!this.filteredResults[this.selectedIndex].added) {
-        this.addField(this.filteredResults[this.selectedIndex].item, true);
+        this.addField(this.filteredResults[this.selectedIndex], true);
       } else {
         console.warn("already added, should be handled");
       }
@@ -146,16 +146,18 @@ export default {
       }
     },
     addField(prop, close) {
-      const splitProp = prop['@id'].split('/');
-      const propLastPart = splitProp[splitProp.length-1];
-      const fieldName = prop['@id'].split(':')[1];
-      this.$dispatch('add-field', prop);
-      const translatedProp = StringUtil.labelByLang(propLastPart, this.settings.language, this.vocab, this.settings.vocabPfx);
-      this.changeNotification('color', 'green');
-      this.changeNotification('message', `Fältet "${translatedProp}" lades till.`);
-      if (close) {
-        this.hide();
-        this.changeStatus('lastAdded', propLastPart);
+      if (!prop.added) {
+        const splitProp = prop.item['@id'].split('/');
+        const propLastPart = splitProp[splitProp.length-1];
+        const fieldName = prop.item['@id'].split(':')[1];
+        this.$dispatch('add-field', prop.item);
+        const translatedProp = StringUtil.labelByLang(propLastPart, this.settings.language, this.vocab, this.settings.vocabPfx);
+        this.changeNotification('color', 'green');
+        this.changeNotification('message', `Fältet "${translatedProp}" lades till.`);
+        if (close) {
+          this.hide();
+          this.changeStatus('lastAdded', propLastPart);
+        }
       }
     },
     show() {
@@ -208,13 +210,13 @@ export default {
           </span>
         </div>
         <ul v-if="active" class="field-list">
-          <li v-on:mouseover="selectedIndex = $index" v-bind:class="{ 'added': prop.added, 'available': !prop.added, 'selected': $index == selectedIndex }" v-for="prop in filteredResults" track-by="$index" @click="addField(prop.item, true)">
+          <li v-on:mouseover="selectedIndex = $index" v-bind:class="{ 'added': prop.added, 'available': !prop.added, 'selected': $index == selectedIndex }" v-for="prop in filteredResults" track-by="$index" @click="addField(prop, true)">
             <span class="fieldLabel" title="{{prop.item['@id'] | labelByLang | capitalize }}">
               {{prop.item['@id'] | labelByLang | capitalize }}
             </span>
             <span class="typeLabel">{{ prop.item['@id'] | removeDomain }}</span>
             <span class="addControl">
-              <a v-on:click.prevent="addField(prop.item, false)"><i class="fa fa-plus-circle"></i></a>
+              <a v-on:click.prevent="addField(prop, false)"><i class="fa fa-plus-circle"></i></a>
               <span><i class="fa fa-check"></i></span>
             </span>
           </li>
