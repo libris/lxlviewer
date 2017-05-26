@@ -25,7 +25,7 @@ export default {
       if (this.active) {
         this.changeResultListStatus('loading', true);
         const resultPromise = new Promise((resolve, reject) => {
-          httpUtil.get({ url: `${window.location.host}${this.observation.view['@id']}`, accept: 'application/ld+json' }).then((response) => {
+          httpUtil.get({ url: `${location.origin}${this.observation.view['@id']}`, accept: 'application/ld+json' }).then((response) => {
             history.pushState(response, 'unused', response['@id']);
             console.log(response);
             resolve(response);
