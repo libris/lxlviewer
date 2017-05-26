@@ -112,16 +112,20 @@ export default class PagedCollection extends View {
           return _.isPlainObject(o);
         },
       },
+      beforeCompile() {
+        this.changeResultListStatus('loading', true);
+      },
       ready() {
         this.changeSettings(self.settings);
         this.loadVocab(self.vocab);
         this.loadDisplayDefs(self.display);
         this.result = self.dataIn;
         this.initialized = true;
-        history.replaceState(this.result, "TEST");
         if (Modernizr.history) {
+          history.replaceState(this.result, 'unused');
           history.scrollRestoration = 'manual';
           window.onpopstate = e => {
+            e.preventDefault();
             this.changeResultListStatus('loading', true);
             const resultPromise = new Promise((resolve, reject) => {
               if (e.state !== null) {
@@ -131,8 +135,10 @@ export default class PagedCollection extends View {
               }
             });
             this.$dispatch('newresult', resultPromise);
+            return false;
           };
         }
+        this.changeResultListStatus('loading', false);
       },
       components: {
         'main-search-field': MainSearchField,

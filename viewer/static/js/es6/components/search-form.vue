@@ -142,11 +142,12 @@ export default {
             const url = `${form.action}?${inputs.join('&')}`;
             this.changeResultListStatus('loading', true);
             const resultPromise = new Promise((resolve, reject) => {
-                httpUtil.get({ url: url, accept: 'application/ld+json' }).then((response) => {
-                    history.pushState(response, "title", url);
+                httpUtil.get({ url: url, accept: 'application/ld+json' })
+                .then((response) => {
+                    history.pushState(response, 'unused', response['@id']);
                     resolve(response);
                 }, (error) => {
-                    history.pushState({}, "title", url);
+                    history.pushState({}, 'unused', url);
                     reject('Error searching...', error);
                 });
             });
