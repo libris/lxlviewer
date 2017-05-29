@@ -9,16 +9,20 @@
 
 <div id="PagedCollectionApp">
   <div class="row">
+    <div v-if="(status.resultList.loading || status.resultList.error) && !formDataSupported" class="loadingText panel panel-default">
+      <h1 v-if="!status.resultList.error"><i class="fa fa-cog fa-spin"></i></h1>
+      <span v-if="!status.resultList.error" class="status">Hämtar resultat</span>
+    </div>
     <div class="col-md-3">
       <facet-controls v-if="initialized == true" :result="result"></facet-controls>
       <landing-box v-if="initialized == true && typeof result.totalItems === 'undefined'" :title="result.title" :text="result.summary.articleBody"></landing-box>
     </div>
     <div class="col-md-9">
-      <search-form v-if="initialized == true" :result="result" site-title="${g.site.title}" filter-param="'${g.site.filter_param}'" :use-submit="false"></search-form>
+      <search-form v-if="initialized == true" :result="result" :form-data-supported="formDataSupported" site-title="${g.site.title}" filter-param="'${g.site.filter_param}'" :use-submit="false"></search-form>
       
       <!--${ search.search_controls(thing) }-->
       <!-- <main-search-field :title="tjena"></main-search-field> -->
-      <search-result-component :result="result" v-if="(initialized == true && result.totalItems > -1) || status.resultList.loading"></search-result-component>
+      <search-result-component :result="result" :form-data-supported="formDataSupported" v-if="(initialized == true && result.totalItems > -1) || status.resultList.loading"></search-result-component>
       <dataset-observations
       v-if="initialized == true && !result.totalItems && '${g.site.title}' === 'id.kb.se'"
       :statistics="result.statistics"

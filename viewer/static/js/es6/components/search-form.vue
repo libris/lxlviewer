@@ -19,6 +19,7 @@ export default {
     result: {},
     filterParam: '',
     useSubmit: false,
+    formDataSupported: false,
   },
   data() {
     return {
@@ -105,7 +106,10 @@ export default {
         return convertedObject;
       },
       doSearch() {
-        this.changeResultListStatus('loading', true);
+        if (this.formDataSupported) {
+            this.changeResultListStatus('loading', true);
+        }
+        const form = document.querySelector('#searchForm');
         const validTags = this.settings.validSearchTags;
         const queryText = [];
         const tagObject = {};
@@ -133,7 +137,6 @@ export default {
           });
         });
         this.removeEmptyFields();
-        const form = document.querySelector('#searchForm');
         if (!this.useSubmit) {
             const data = new FormData(form);
             const inputs = [];
