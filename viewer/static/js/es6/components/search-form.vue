@@ -105,6 +105,7 @@ export default {
         return convertedObject;
       },
       doSearch() {
+        this.changeResultListStatus('loading', true);
         const validTags = this.settings.validSearchTags;
         const queryText = [];
         const tagObject = {};
@@ -136,26 +137,29 @@ export default {
         if (!this.useSubmit) {
             const data = new FormData(form);
             const inputs = [];
-            for(const pair of data.entries()) {
-                inputs.push(`${pair[0]}=${pair[1]}`);
-            }
-            const url = `${form.action}?${inputs.join('&')}`;
-            this.changeResultListStatus('loading', true);
-            const resultPromise = new Promise((resolve, reject) => {
-                httpUtil.get({ url: url, accept: 'application/ld+json' })
-                .then((response) => {
-                    history.pushState(response, 'unused', response['@id']);
-                    resolve(response);
-                }, (error) => {
-                    history.pushState({}, 'unused', url);
-                    reject('Error searching...', error);
+            if (typeof(data.entries) === "undefined") {
+                form.submit();
+            } else {
+                for(const pair of data.entries()) {
+                    inputs.push(`${pair[0]}=${pair[1]}`);
+                }
+                const url = `${form.action}?${inputs.join('&')}`;
+                const resultPromise = new Promise((resolve, reject) => {
+                    httpUtil.get({ url: url, accept: 'application/ld+json' })
+                    .then((response) => {
+                        history.pushState(response, 'unused', response['@id']);
+                        resolve(response);
+                    }, (error) => {
+                        history.pushState({}, 'unused', url);
+                        reject('Error searching...', error);
+                    });
                 });
-            });
-            this.clearFields();
-            this.currentInput = 0;
-            this.formData.splice(1, this.formData.length);
-            this.formData[0].value = '';
-            this.$dispatch('newresult', resultPromise);
+                this.clearFields();
+                this.currentInput = 0;
+                this.formData.splice(1, this.formData.length);
+                this.formData[0].value = '';
+                this.$dispatch('newresult', resultPromise);
+            }
         } else {
             form.submit();
         }
