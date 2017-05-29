@@ -254,7 +254,7 @@ export default {
   <div class="type-chooser" v-if="addEmbedded" v-on-clickaway="dismissTypeChooser">
     <select v-model="selectedType" @change="addType(selectedType)">
       <option disabled value="">{{"Choose type" | translatePhrase}}</option>
-      <option v-for="type in getFullRange" value="{{type}}" label="{{type | labelByLang}}">
+      <option v-for="type in getFullRange" value="{{type}}">{{type | labelByLang}}</option>
     </select>
   </div>
   <!--<tooltip-component :show-tooltip="showToolTip" :tooltiptext="key"></tooltip-component>-->
