@@ -138,7 +138,7 @@ app.jinja_env.globals.update({
 @app.before_request
 def handle_base():
     canonical_site_id = daccess.urimap.to_canonical_uri(request.url_root)
-    g.site = daccess.get_site(canonical_site_id) or daccess.get_site(LIBRIS)
+    g.site = daccess.get_site(canonical_site_id) or daccess.get_site(LIBRIS) or daccess.get_site(IDKBSE)
 
 @app.route(CONTEXT_PATH)
 def jsonld_context():
