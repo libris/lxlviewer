@@ -117,7 +117,7 @@ export default {
               <span class="dbAddr" v-show="db.item.address"><a href="{{ db.item.address }}" target="_blank"><i class="fa fa-external-link-square"></i> Webbplats</a></span>
             </li>
           </ul>
-          <p v-show="databases.state == 'loading'"><i class="fa fa-cog fa-spin"></i> Laddar externa databaser...</p>
+          <p v-show="databases.state == 'loading'"><i class="fa fa-circle-o-notch fa-spin"></i> Laddar externa databaser...</p>
           <p v-show="databases.state == 'error'"><i class="fa fa-close"></i> Kunde inte hämta externa databaser. <a href="" v-on:click.prevent="loadRemoteDatabases()">Försök igen</a></p>
         </div>
       </div>
@@ -138,7 +138,7 @@ export default {
             <i class="fa fa-close"></i> Något gick fel.
           </p>
           <p v-if="remoteResult.state === 'loading'">
-            <i class="fa fa-cog fa-spin"></i> Söker...
+            <i class="fa fa-circle-o-notch fa-spin"></i> Söker...
           </p>
           <button v-if="selectedDatabases.length > 0 && remoteResult.state !== 'loading'" v-on:click.prevent="searchRemote()" id="searchSubmit" class="search-button btn btn-primary"><i class="fa fa-search"></i> Sök</button>
         </div>
