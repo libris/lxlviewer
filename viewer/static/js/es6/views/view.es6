@@ -30,8 +30,9 @@ export default class View {
         'https://id.kb.se/',
       ],
       specialProperties: [
-        '@type',
         '@id',
+        'sameAs',
+        '@type',
         'issuanceType',
       ],
       disallowLocal: [
