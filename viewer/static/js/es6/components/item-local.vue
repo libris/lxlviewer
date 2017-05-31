@@ -208,7 +208,7 @@ export default {
       <span class="chip-label">
         {{getItemLabel}}
       </span>
-      <i class="chip-action fa fa-pencil" v-on:click="openForm" v-if="!isLocked"></i>
+      <i class="chip-action fa fa-file" v-on:click="openExtractDialog" v-if="!isLocked"></i>
     </div>
     <div class="local-form" v-show="inEdit">
       <strong>{{ item['@type'] | labelByLang | uppercase }}</strong> ({{ "Local entity" | translatePhrase }})
