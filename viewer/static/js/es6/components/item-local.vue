@@ -189,9 +189,6 @@ export default {
   ready() {
     this.$nextTick(() => {
       this.extracted = RecordUtil.getObjectAsRecord(this.focusData);
-      if (this.isEmpty) {
-        this.openForm();
-      }
     });
   },
   components: {

@@ -291,9 +291,9 @@ export default {
           {{ "No results" | translatePhrase }}...
         </div>
         <entity-search-list v-if="!loading && keyword.length > 0" :results="searchResult" :disabled-ids="alreadyAdded"></entity-search-list>
-        <div class="local" v-show="allowLocal && searchMade && !loading">
-          <button v-on:click="goLocal">{{ "Create local entity" | translatePhrase }}</button>
-        </div>
+        <!-- <div class="local" v-show="allowLocal && searchMade && !loading">
+          <button v-on:click="goLocal">{{ "Create entity" | translatePhrase }}</button>
+        </div> -->
       </div>
       <div class="stage-1" v-show="chooseLocalType">
         {{ "Choose type" | translatePhrase }}:
