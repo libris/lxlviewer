@@ -1,6 +1,13 @@
 <script>
+import { getSettings } from '../vuex/getters';
+
 export default {
   name: 'landing-box',
+  vuex: {
+    getters: {
+      settings: getSettings,
+    },
+  },
   props: [
     'title',
     'text',
@@ -28,7 +35,7 @@ export default {
 </script>
 
 <template>
-  <div class="landing-box">
+  <div class="landing-box" :class="{'libris-color': settings.siteInfo.title === 'libris.kb.se', 'id-color': settings.siteInfo.title === 'id.kb.se'}">
     <p v-html="text">
     </p>
   </div>
