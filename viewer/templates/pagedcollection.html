@@ -18,7 +18,7 @@
       <landing-box v-if="initialized == true && typeof result.totalItems === 'undefined'" :title="result.title" :text="result.summary.articleBody"></landing-box>
     </div>
     <div class="col-md-9">
-      <search-form v-if="initialized == true" :result="result" :form-data-supported="formDataSupported" site-title="${g.site.title}" filter-param="'${g.site.filter_param}'" :use-submit="false"></search-form>
+      <search-form v-if="initialized == true" :result="result" :form-data-supported="formDataSupported" site-title="${g.site.title}" filter-param="${g.site.filter_param}" :use-submit="false"></search-form>
       
       <!--${ search.search_controls(thing) }-->
       <!-- <main-search-field :title="tjena"></main-search-field> -->
