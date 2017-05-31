@@ -105,7 +105,7 @@ export default {
         </span>
       </div>
       <div class="body">
-        <div v-show="!dataLoaded && !error" class="status">{{ "Loading marc" | translatePhrase }}...<br><i class="fa fa-cog fa-spin"></i></div>
+        <div v-show="!dataLoaded && !error" class="status">{{ "Loading marc" | translatePhrase }}...<br><i class="fa fa-circle-o-notch fa-spin"></i></div>
         <div v-show="error" class="status">{{ "Something went wrong" | translatePhrase }}...</div>
         <table class="marc-preview-table" v-show="dataLoaded">
           <thead>

@@ -286,7 +286,7 @@ export default {
           </div>
         </div>
         <div v-if="!loading && keyword.length === 0" class="search-status">{{ "Start writing to begin search" | translatePhrase }}...</div>
-        <div v-if="loading" class="search-status">{{ "Searching" | translatePhrase }}...<br><i class="fa fa-cog fa-spin"></i></div>
+        <div v-if="loading" class="search-status">{{ "Searching" | translatePhrase }}...<br><i class="fa fa-circle-o-notch fa-spin"></i></div>
         <div v-if="!loading && searchResult.length === 0 && keyword.length > 0 && searchMade" class="search-status">
           {{ "No results" | translatePhrase }}...
         </div>

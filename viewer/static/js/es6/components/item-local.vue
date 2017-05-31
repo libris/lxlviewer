@@ -234,7 +234,7 @@ export default {
         </p>
         <div class="button-container">
           <button v-on:click="doExtract()" v-show="!extracting">{{ "Accept" | translatePhrase }}</button>
-          <div v-show="extracting"><i class="fa fa-cog fa-spin" aria-hidden="true"></i> {{ "Extracting" | translatePhrase }}</div>
+          <div v-show="extracting"><i class="fa fa-circle-o-notch fa-spin" aria-hidden="true"></i> {{ "Extracting" | translatePhrase }}</div>
         </div>
       </div>
     </div>

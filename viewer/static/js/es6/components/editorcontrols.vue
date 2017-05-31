@@ -41,13 +41,21 @@ export default {
       expandableAdminInfo.onresize = this.resize;
     });
   },
+  watch: {
+    inEdit(state) {
+      if (state) {
+        this.loadingEdit = false;
+      }
+    },
+  },
   methods: {
     save() {
       this.changeSavedStatus('loading', true);
       this.$dispatch('save-item');
     },
     edit() {
-      this.$dispatch('edit-item');
+      this.loadingEdit = true;
+      setTimeout(() => this.$dispatch('edit-item'), 0); // $nextTick doesn't work
     },
     toggleDev() {
       this.changeStatus('isDev', !this.status.isDev);
@@ -82,6 +90,7 @@ export default {
       showChipHeader: false,
       showAdminInfoDetails: false,
       otherFormatMenu: false,
+      loadingEdit: false,
     };
   },
   computed: {
@@ -97,6 +106,9 @@ export default {
     },
     isInstance() {
       return this.status.level === 'mainEntity';
+    },
+    inEdit() {
+      return this.status.inEdit;
     },
   },
   components: {
@@ -137,12 +149,13 @@ export default {
         <create-item-button v-show="!status.inEdit && editorData.mainEntity['@type'] === 'Instance'"></create-item-button>
         <button @click="removePost"><i class="fa fa-trash" aria-hidden="true"></i> {{"Remove" | translatePhrase}} post</button>
         <button id="saveButton" v-on:click="save()" v-if="status.inEdit">
-          <i class="fa fa-fw fa-cog fa-spin" v-show="status.saved.loading"></i>
+          <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="status.saved.loading"></i>
           <i class="fa fa-fw fa-save" v-show="!status.saved.loading"></i>
           {{ "Save" | translatePhrase }}
         </button>
-        <button id="editButton" v-on:click="edit()" v-if="!status.inEdit">
-          <i class="fa fa-fw fa-pencil"></i>
+        <button id="editButton" v-on:click="edit()" v-show="!status.inEdit">
+          <i class="fa fa-fw fa-pencil" v-show="!loadingEdit"></i>
+          <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="loadingEdit"></i>
           {{ "Edit" | translatePhrase }}
         </button>
 

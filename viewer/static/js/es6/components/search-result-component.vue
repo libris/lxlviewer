@@ -52,7 +52,7 @@ export default {
 <template>
   <div class="search-result-component">
     <div v-if="(status.resultList.loading || status.resultList.error) && formDataSupported" class="loadingText panel panel-default">
-      <h1 v-if="!status.resultList.error"><i class="fa fa-cog fa-spin"></i></h1>
+      <h1 v-if="!status.resultList.error"><i class="fa fa-circle-o-notch fa-spin"></i></h1>
       <h1 v-if="status.resultList.error"><i class="fa fa-warning"></i></h1>
       <span v-if="!status.resultList.error" class="status">{{"Fetching results" | translatePhrase}}</span>
       <span v-if="status.resultList.error" class="error">{{status.resultList.info}}</span>

@@ -101,7 +101,7 @@ export default {
   </div>
   <div class="main-info">
     <h3 class="header">
-      <a v-if="renderLink" title="{{ header.join(', ') }}" :href="focusData['@id']">{{ header.join(', ') }}</a>
+      <a v-if="renderLink" :class="{'blue-link': settings.siteInfo.title === 'id.kb.se'}" title="{{ header.join(', ') }}" :href="focusData['@id']">{{ header.join(', ') }}</a>
       <span v-if="!renderLink" title="{{ header.join(', ') }}">{{ header.join(', ') }}</span>
     </h3>
     <ul class="info">
@@ -147,6 +147,9 @@ export default {
     padding: 0px 3px;
     a {
       color: @brand-primary;
+      &.blue-link {
+        color: @brand-id;
+      }
     }
     .header {
       white-space: nowrap;
