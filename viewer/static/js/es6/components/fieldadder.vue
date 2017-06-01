@@ -387,7 +387,7 @@ export default {
       overflow-y: auto;
       margin: 0px;
       list-style-type: none;
-      padding: 0px;
+      padding: 0px 0px 3em 0px;
       li {
         &:nth-child(odd) {
           background-color: darken(@neutral-color, 5%);
