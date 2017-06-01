@@ -18,7 +18,7 @@ export default {
         if (this.notification.message !== '') {
           setTimeout(() => {
             this.changeNotification('message', '');
-          }, 3000);
+          }, 6000);
         }
       },
       deep: true,
@@ -49,6 +49,7 @@ export default {
   bottom: -60px;
   width: 200px;
   min-height: 50px;
+  border: 1px solid white;
   border-radius: 2px;
   padding: 5px 10px;
   font-size: medium;
@@ -69,7 +70,7 @@ export default {
     background-color: #757575;
   }
   &.green {
-    background-color: #388e3c;
+    background-color: @brand-primary;
   }
   > div {
     text-align: center;

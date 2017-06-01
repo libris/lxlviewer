@@ -332,8 +332,8 @@ export default {
   display: flex;
   flex-direction: row;
   box-shadow: inset 0px 0px 1em 0px transparent;
-  transition: 3s ease;
-  transition-property: outline;
+  transition: 6s ease;
+  transition-property: outline box-shadow;
   outline: 2px solid transparent;
   .path-code {
     padding: 1px 3px;
@@ -364,7 +364,7 @@ export default {
   }
   &.highlight {
     outline: 2px solid @highlight-color;
-    box-shadow: inset 0px 0px 1em 0px gold;
+    box-shadow: inset 0px 0px 1em 0px @highlight-color;
   }
   .label {
     a {
