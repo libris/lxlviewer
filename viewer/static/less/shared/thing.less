@@ -145,16 +145,14 @@ div.thing {
       color: @black;
     }
   }
-  &:hover {
-    >.chip-action {
-      opacity: 1;
-    }
-  }
   >.chip-action {
     transition: opacity 0.25s ease;
     opacity: 0;
     float: right;
     cursor: pointer;
+    &.show-icon {
+      opacity: 1;
+    }
   }
   .item-label {
     display: block;

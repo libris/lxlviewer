@@ -28,10 +28,10 @@ export default {
     'embedded',
     'is-removable',
     'isInner',
+    'showActionButtons',
   ],
   data() {
     return {
-      showActionButtons: false,
       activeModal: false,
       removeHover: false,
       foundChip: false,
@@ -288,12 +288,17 @@ export default {
       }
       return false;
     },
+    handleMouseLeave() {
+      if (!this.isInner) {
+        this.showActionButtons=false
+      }
+    }
   },
 };
 </script>
 
 <template>
-<div class="data-node" v-bind:class="{'column': embedded, 'rows': !embedded, 'highlight': isLastAdded, 'distinguish-removal': removeHover }" @mouseover="showActionButtons=true" @mouseleave="showActionButtons=false">
+<div class="data-node" v-bind:class="{'column': embedded, 'rows': !embedded, 'highlight': isLastAdded, 'distinguish-removal': removeHover }" @mouseover="showActionButtons=true" @mouseleave="handleMouseLeave()">
   <div class="label" v-bind:class="{ 'locked': isLocked }">
     <a href="/vocab/#{{key}}">{{ key | labelByLang | capitalize }}</a>
     <div v-if="propertyComment && !isLocked" class="comment-icon">
@@ -307,9 +312,9 @@ export default {
     <ul>
       <li v-for="item in valueAsArray" :class="{ 'isChip': isChip(item)}" track-by="$index">
         <item-entity v-if="getDatatype(item) == 'entity'" :is-locked="isLocked" :expanded="isExpandedType" :item="item" :key="key" :index="$index"></item-entity>
-        <item-local v-if="getDatatype(item) == 'local'" :is-locked="isLocked" :expanded="isExpandedType" :item="item" :key="key" :index="$index"></item-local>
-        <item-embedded v-if="getDatatype(item) == 'embedded'" :is-locked="isLocked" :item="item" :key="key" :index="$index"></item-embedded>
-        <item-value v-if="getDatatype(item) == 'value'" :is-removable="!hasSingleValue" :is-locked="isLocked" :value="item" :key="key" :index="$index"></item-value>
+        <item-local v-if="getDatatype(item) == 'local'" :is-locked="isLocked" :expanded="isExpandedType" :item="item" :key="key" :index="$index" :show-action-buttons="showActionButtons"></item-local>
+        <item-embedded v-if="getDatatype(item) == 'embedded'" :is-locked="isLocked" :item="item" :key="key" :index="$index" :show-action-buttons="showActionButtons"></item-embedded>
+        <item-value v-if="getDatatype(item) == 'value'" :is-removable="!hasSingleValue" :is-locked="isLocked" :value="item" :key="key" :index="$index" :show-action-buttons="showActionButtons"></item-value>
       </li>
       <li :class="{ 'isChip': foundChip}">
         <entity-adder class="action" v-if="!isLocked && (isRepeatable || isEmptyObject)" :key="key" :already-added="linkedIds" :property-types="propertyTypes" :allow-local="allowLocal && propAllowsLocal" :show-action-buttons="showActionButtons" :active="activeModal" :is-inner="isInner" :is-chip="foundChip"></entity-adder>

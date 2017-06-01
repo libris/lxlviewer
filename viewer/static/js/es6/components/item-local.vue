@@ -25,6 +25,7 @@ export default {
     index: Number,
     isLocked: false,
     expanded: false,
+    showActionButtons: false,
   },
   vuex: {
     getters: {
@@ -208,11 +209,11 @@ export default {
       <span class="chip-label">
         {{getItemLabel}}
       </span>
-      <i class="chip-action fa fa-pencil" v-on:click="openForm" v-if="!isLocked"></i>
+      <i class="chip-action fa fa-pencil" :class="{'show-icon': showActionButtons}" v-on:click="openForm" v-if="!isLocked"></i>
     </div>
     <div class="local-form" v-show="inEdit">
       <strong>{{ item['@type'] | labelByLang | uppercase }}</strong> ({{ "Local entity" | translatePhrase }})
-      <data-node v-for="(k,v) in filteredItem" :is-inner="true" :is-locked="isLocked" :embedded="true" :is-removable="false" :parent-key="key" :parent-index="index" :key="k" :value="v" :focus="focus" :allow-local="false"></data-node>
+      <data-node v-for="(k,v) in filteredItem" :is-inner="true" :is-locked="isLocked" :embedded="true" :is-removable="false" :parent-key="key" :parent-index="index" :key="k" :value="v" :focus="focus" :allow-local="false" :show-action-buttons="showActionButtons"></data-node>
       <div class="actions">
         <button v-on:click="removeThis">Radera</button>
         <button v-on:click="closeForm" v-bind:disabled="isEmpty">Klar</button>

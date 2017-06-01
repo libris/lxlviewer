@@ -22,6 +22,7 @@ export default {
     index: Number,
     isLocked: false,
     embedded: false,
+    showActionButtons: false,
   },
   vuex: {
     getters: {
@@ -68,9 +69,9 @@ export default {
 
 <template>
   <div class="item-embedded">
-    <i v-if="!isLocked" class="fa fa-trash chip-action" v-on:click="removeThis"></i>
+    <i v-if="!isLocked" class="fa fa-trash chip-action" :class="{'show-icon': showActionButtons}" v-on:click="removeThis"></i>
     <span class="type"><a href="/vocab/#{{item['@type']}}">{{ item['@type'] | labelByLang | capitalize }}</a></span>
-    <data-node v-for="(k,v) in filteredItem" v-show="!isLocked || v" :is-inner="true" :is-locked="isLocked" :allow-local="true" :is-removable="false" :embedded="true" :parent-key="key" :parent-index="index" :key="k" :value="v" :focus="focus"></data-node>
+    <data-node v-for="(k,v) in filteredItem" v-show="!isLocked || v" :is-inner="true" :is-locked="isLocked" :allow-local="true" :is-removable="false" :embedded="true" :parent-key="key" :parent-index="index" :key="k" :value="v" :focus="focus" :show-action-buttons="showActionButtons"></data-node>
   </div>
 </template>
 

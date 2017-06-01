@@ -19,6 +19,7 @@ export default {
     index: Number,
     isLocked: false,
     isRemovable: false,
+    showActionButtons: false,
   },
   vuex: {
     getters: {
@@ -77,7 +78,7 @@ export default {
   <div class="item-value" v-bind:class="{'locked': isLocked, 'unlocked': !isLocked, 'distinguish-removal': removeHover}">
     <textarea rows="1" v-model="value" @input="valueChanged()" v-if="!isLocked"></textarea>
     <span v-if="isLocked">{{value}}</span>
-    <div class="remover" v-show="!isLocked && isRemovable" v-on:click="removeThis()" @mouseover="removeHover = true" @mouseout="removeHover = false"><i class="fa fa-trash"></i></div>
+    <div class="remover" :class="{'show-icon': showActionButtons}" v-show="!isLocked && isRemovable" v-on:click="removeThis()" @mouseover="removeHover = true" @mouseout="removeHover = false"><i class="fa fa-trash"></i></div>
   </div>
 </template>
 
@@ -108,13 +109,12 @@ export default {
     padding: 3px;
     cursor: pointer;
     transition: opacity 0.5s ease;
+    &.show-icon {
+      opacity: 1;
+    }
   }
   &.unlocked {
-    &:hover {
-      .remover {
-        opacity: 1;
-      }
-    }
+    
   }
 }
 

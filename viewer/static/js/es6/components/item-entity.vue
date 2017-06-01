@@ -78,7 +78,7 @@ export default {
       <span class="chip-label">
         {{getItemLabel}}
       </span>
-      <i class="chip-action fa fa-times" v-on:click="removeThis" v-if="!isLocked"></i>
+      <i class="chip-action fa fa-times" :class="{'show-icon': showActionButtons}" v-on:click="removeThis" v-if="!isLocked"></i>
     </div>
     <card-component :title="getItemLabel" :focus-data="item" :uri="item['@id']" :is-local="false" :is-locked="isLocked" :should-show="showCardInfo" :floating="!expanded" :key="key"></card-component>
   </div>
