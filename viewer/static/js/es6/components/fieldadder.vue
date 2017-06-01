@@ -172,8 +172,8 @@ export default {
         const fieldName = prop.item['@id'].split(':')[1];
         this.$dispatch('add-field', prop.item);
         const translatedProp = StringUtil.labelByLang(propLastPart, this.settings.language, this.vocab, this.settings.vocabPfx);
-        this.changeNotification('color', 'green');
-        this.changeNotification('message', `Fältet "${translatedProp}" lades till.`);
+        // this.changeNotification('color', 'green');
+        // this.changeNotification('message', `Fältet "${translatedProp}" lades till.`);
         if (close) {
           this.hide();
           this.changeStatus('lastAdded', propLastPart);
@@ -232,7 +232,7 @@ export default {
         <ul v-show="active" id="fields-window" class="field-list">
           <li v-on:mouseover="selectedIndex = $index" v-bind:class="{ 'added': prop.added, 'available': !prop.added, 'selected': $index == selectedIndex }" v-for="prop in filteredResults" track-by="$index" @click="addField(prop, true)">
             <span class="fieldLabel" title="{{prop.label | capitalize }}">
-              {{prop.label | capitalize }}
+              {{prop.label | capitalize }} <span v-show="prop.added">- <i class="fa fa-check"></i> Fält tillagt</span>
             </span>
             <span class="typeLabel">{{ prop.item['@id'] | removeDomain }}</span>
             <span class="addControl">

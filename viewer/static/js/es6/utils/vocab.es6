@@ -32,11 +32,14 @@ export function getTermFromLabel(label, language, vocab, vocabPfx) {
   return classObject;
 }
 
-export function getTerm(term, vocab, vocabPfx) {
+export function getTermObject(term, vocab, vocabPfx) {
   // Returns a class object
 
   if (!term || typeof term === 'undefined') {
-    throw new Error('getTerm was called with an undefined Id.');
+    throw new Error('getTermObject was called with an undefined Id.');
+  }
+  if (_.isObject(term)) {
+    throw new Error('getTermObject was called with an object (should be a string).');
   }
 
   if (term.indexOf('@') !== -1) {
@@ -62,7 +65,7 @@ export function getPropertyTypes(propertyId, vocab, vocabPfx) {
   if (propertyId.indexOf('@') !== -1) {
     return [];
   }
-  const property = getTerm(propertyId, vocab, vocabPfx);
+  const property = getTermObject(propertyId, vocab, vocabPfx);
   if (property) {
     const typeAttr = property['@type'].toString();
     let types = [];
@@ -77,7 +80,7 @@ export function getPropertyTypes(propertyId, vocab, vocabPfx) {
 }
 
 export function getRange(propertyId, vocab, vocabPfx) {
-  const property = getTerm(propertyId, vocab, vocabPfx);
+  const property = getTermObject(propertyId, vocab, vocabPfx);
   let range = [];
   if (!property) {
     return range;
@@ -143,7 +146,7 @@ export function getDomainList(property, vocab, vocabPfx) {
   if (domainList.length === 0 && property.hasOwnProperty('subPropertyOf')) {
     for (const superPropNode of property.subPropertyOf) {
       if (superPropNode['@id'] && superPropNode['@id'].indexOf(vocabPfx) !== -1) {
-        const superProp = getTerm(superPropNode['@id'], vocab, vocabPfx);
+        const superProp = getTermObject(superPropNode['@id'], vocab, vocabPfx);
         if (superProp) {
           domainList = domainList.concat(getDomainList(superProp, vocab, vocabPfx));
         }
@@ -185,7 +188,7 @@ export function getBaseClasses(classId, vocab, vocabPfx) {
   }
 
   let classList = [];
-  const termObj = getTerm(classId, vocab, vocabPfx);
+  const termObj = getTermObject(classId, vocab, vocabPfx);
   if (typeof termObj === 'undefined') {
     return classList;
   }
@@ -195,7 +198,7 @@ export function getBaseClasses(classId, vocab, vocabPfx) {
       const baseClassId = termObj.subClassOf[i]['@id'];
       let baseClass = {};
       if (baseClassId) {
-        baseClass = getTerm(baseClassId, vocab, vocabPfx);
+        baseClass = getTermObject(baseClassId, vocab, vocabPfx);
       }
       if (
         baseClass &&
@@ -223,7 +226,7 @@ export function getBaseClassesFromArray(typeArray, vocab, vocabPfx) {
   let classes = [];
   for (let t = 0; t < types.length; t++) {
     if (types[t].indexOf('marc:') === -1) {
-      const c = getTerm(types[t], vocab, vocabPfx);
+      const c = getTermObject(types[t], vocab, vocabPfx);
       if (typeof c !== 'undefined') {
         classes.push(c['@id']);
         classes = classes.concat(getBaseClasses(c['@id'], vocab, vocabPfx));

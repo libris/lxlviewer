@@ -42,6 +42,10 @@ export default class View {
         'instanceOf',
         'itemOf',
       ],
+      nonExtractableClasses: [
+        'Place',
+        'Library',
+      ],
       propertyChains: {
         '@type': {
           sv: 'Typ',

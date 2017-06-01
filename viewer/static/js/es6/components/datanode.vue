@@ -72,7 +72,7 @@ export default {
       return ids;
     },
     keyAsVocabProperty() {
-      return VocabUtil.getTerm(this.key, this.vocab, this.settings.vocabPfx);
+      return VocabUtil.getTermObject(this.key, this.vocab, this.settings.vocabPfx);
     },
     propertyComment() {
       if (this.keyAsVocabProperty && this.keyAsVocabProperty.commentByLang) {
