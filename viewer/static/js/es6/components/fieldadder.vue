@@ -232,7 +232,7 @@ export default {
         <ul v-show="active" id="fields-window" class="field-list">
           <li v-on:mouseover="selectedIndex = $index" v-bind:class="{ 'added': prop.added, 'available': !prop.added, 'selected': $index == selectedIndex }" v-for="prop in filteredResults" track-by="$index" @click="addField(prop, true)">
             <span class="fieldLabel" title="{{prop.label | capitalize }}">
-              {{prop.label | capitalize }}
+              {{prop.label | capitalize }} <span v-show="prop.added">- <i class="fa fa-check"></i> Fält tillagt</span>
             </span>
             <span class="typeLabel">{{ prop.item['@id'] | removeDomain }}</span>
             <span class="addControl">
