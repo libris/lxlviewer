@@ -52,6 +52,7 @@ export default {
     isInner: false,
     isChip: false,
     alreadyAdded: [],
+    valueList: [],
   },
   events: {
     'close-modals'() {
@@ -245,10 +246,10 @@ export default {
 
 <template>
 <div class="entity-adder">
-  <div v-if="isChip && !addEmbedded" class="chip action-button add-entity-button" :class="{ 'fade': !showActionButtons }" v-on:click="add()" @mouseenter="showToolTip=true" @mouseleave="showToolTip=false">
+  <div v-if="isChip && !addEmbedded" class="chip action-button add-entity-button" :class="{ 'fade': (!showActionButtons && valueList.length > 0) }" v-on:click="add()" @mouseenter="showToolTip=true" @mouseleave="showToolTip=false">
     <span class="chip-label"><i class="fa fa-fw fa-plus plus-icon" aria-hidden="true"></i><span class="label-text">{{ "Add" | translatePhrase }} {{ addLabel | labelByLang | lowercase }}</span></span>
   </div>
-  <div v-if="!isChip && !addEmbedded" class="action-button add-entity-button" :class="{'disabled': active, 'fade': !showActionButtons }" v-on:click="add()" @mouseenter="showToolTip=true" @mouseleave="showToolTip=false">
+  <div v-if="!isChip && !addEmbedded" class="action-button add-entity-button" :class="{'disabled': active, 'fade': (!showActionButtons && valueList.length > 0) }" v-on:click="add()" @mouseenter="showToolTip=true" @mouseleave="showToolTip=false">
     <span class="chip-label"><i class="fa fa-fw fa-plus plus-icon" aria-hidden="true"></i><span class="label-text">{{ "Add" | translatePhrase }} {{ addLabel | labelByLang | lowercase }}</span></span>
   </div>
   <div class="type-chooser" v-if="addEmbedded" v-on-clickaway="dismissTypeChooser">
