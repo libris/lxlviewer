@@ -231,14 +231,14 @@ export default {
         </div>
         <ul v-show="active" id="fields-window" class="field-list">
           <li v-on:mouseover="selectedIndex = $index" v-bind:class="{ 'added': prop.added, 'available': !prop.added, 'selected': $index == selectedIndex }" v-for="prop in filteredResults" track-by="$index" @click="addField(prop, true)">
+            <span class="addControl">
+              <a v-on:click.prevent="addField(prop, false)"><i class="fa fa-fw fa-plus-circle"></i></a>
+              <span><i class="fa fa-fw fa-check"></i></span>
+            </span>
             <span class="fieldLabel" title="{{prop.label | capitalize }}">
-              {{prop.label | capitalize }} <span v-show="prop.added">- <i class="fa fa-check"></i> Fält tillagt</span>
+              {{prop.label | capitalize }}
             </span>
             <span class="typeLabel">{{ prop.item['@id'] | removeDomain }}</span>
-            <span class="addControl">
-              <a v-on:click.prevent="addField(prop, false)"><i class="fa fa-plus-circle"></i></a>
-              <span><i class="fa fa-check"></i></span>
-            </span>
           </li>
           <li v-if="filteredResults.length === 0"><i>{{ "Did not find any fields" | translatePhrase }}...</i></li>
         </ul>
@@ -334,22 +334,22 @@ export default {
       transition: all 0.5s ease;
     }
   }
-  
+
   .window {
     &:after {
       transition: all 0.5s ease;
       position: absolute;
-      bottom: 0;  
+      bottom: 0;
       height: 100%;
       width: 100%;
       content: "";
       opacity: 0;
       background: linear-gradient(to top,
-        rgba(255,255,255, 1) 0%, 
+        rgba(255,255,255, 1) 0%,
         rgba(255,255,255, 0) 12%
       );
       pointer-events: none; /* so the text is still selectable */
-      
+
     }
     &:not(.at-bottom) {
       &:after {
@@ -387,7 +387,7 @@ export default {
       overflow-y: auto;
       margin: 0px;
       list-style-type: none;
-      padding: 0px;
+      padding: 0px 0px 3em 0px;
       li {
         &:nth-child(odd) {
           background-color: darken(@neutral-color, 5%);
@@ -425,7 +425,7 @@ export default {
           font-family: monospace;
         }
         .addControl {
-          float: right;
+          float: left;
           margin-left: 1em;
           margin-right: 1em;
           a {
