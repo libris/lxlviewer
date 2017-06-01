@@ -58,15 +58,32 @@ export default {
       const allowed = VocabUtil.getPropertiesFromArray(
         formObj['@type'],
         this.vocab,
-        this.settings.vocabPfx
+        this.settings.vocabPfx // LÄGG TILL LABEL I ALLOWED
       );
-      sortedAllowed = _.sortBy(allowed, [property => property.item['@id']]);
       // Add the "added" property
-      for (const element of sortedAllowed) {
+      for (const element of allowed) {
         const oId = element.item['@id'].replace(settings.vocabPfx, '');
         element.added = (formObj.hasOwnProperty(oId) && formObj[oId] !== null);
       }
-
+      
+      const extendedAllowed = allowed.map(property => {
+        const labelByLang = property.item.labelByLang;
+        if (typeof labelByLang !== 'undefined') {
+          const label = ((typeof labelByLang[this.settings.language] !== 'undefined') ? labelByLang[this.settings.language] : labelByLang.en);
+          return {
+            added: property.added,
+            item: property.item,
+            label: label
+          };
+        } else {
+          return {
+            added: property.added,
+            item: property.item,
+            label: property.item['@id']
+          };
+        }
+      });
+      sortedAllowed = _.sortBy(extendedAllowed, [property => property.label.toLowerCase()]);
       return sortedAllowed;
     },
     formData() {

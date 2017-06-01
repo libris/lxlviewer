@@ -231,8 +231,8 @@ export default {
         </div>
         <ul v-show="active" id="fields-window" class="field-list">
           <li v-on:mouseover="selectedIndex = $index" v-bind:class="{ 'added': prop.added, 'available': !prop.added, 'selected': $index == selectedIndex }" v-for="prop in filteredResults" track-by="$index" @click="addField(prop, true)">
-            <span class="fieldLabel" title="{{prop.item['@id'] | labelByLang | capitalize }}">
-              {{prop.item['@id'] | labelByLang | capitalize }}
+            <span class="fieldLabel" title="{{prop.label | capitalize }}">
+              {{prop.label | capitalize }}
             </span>
             <span class="typeLabel">{{ prop.item['@id'] | removeDomain }}</span>
             <span class="addControl">
