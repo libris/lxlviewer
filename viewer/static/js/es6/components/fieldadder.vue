@@ -232,8 +232,8 @@ export default {
         <ul v-show="active" id="fields-window" class="field-list">
           <li v-on:mouseover="selectedIndex = $index" v-bind:class="{ 'added': prop.added, 'available': !prop.added, 'selected': $index == selectedIndex }" v-for="prop in filteredResults" track-by="$index" @click="addField(prop, true)">
             <span class="addControl">
-              <a v-on:click.prevent="addField(prop, false)"><i class="fa fa-plus-circle"></i></a>
-              <span><i class="fa fa-check"></i></span>
+              <a v-on:click.prevent="addField(prop, false)"><i class="fa fa-fw fa-plus-circle"></i></a>
+              <span><i class="fa fa-fw fa-check"></i></span>
             </span>
             <span class="fieldLabel" title="{{prop.label | capitalize }}">
               {{prop.label | capitalize }}
