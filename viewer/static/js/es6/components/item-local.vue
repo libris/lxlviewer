@@ -51,6 +51,12 @@ export default {
     };
   },
   computed: {
+    isExtractable() {
+      if (this.settings.nonExtractableClasses.indexOf(this.focusData['@type']) === -1) {
+        return true;
+      }
+      return false;
+    },
     filteredItem() {
       const fItem = Object.assign({}, this.item);
       delete fItem['@type'];
@@ -205,7 +211,7 @@ export default {
       <span class="chip-label">
         {{getItemLabel}}
       </span>
-      <i class="chip-action fa fa-file" v-on:click="openExtractDialog" v-if="!isLocked"></i>
+      <i v-if="isExtractable && !isLocked" class="chip-action fa fa-file" v-on:click="openExtractDialog" v-if="!isLocked"></i>
     </div>
     <div class="local-form" v-show="inEdit">
       <strong>{{ item['@type'] | labelByLang | uppercase }}</strong> ({{ "Local entity" | translatePhrase }})
@@ -215,7 +221,7 @@ export default {
         <button v-on:click="closeForm" v-bind:disabled="isEmpty">Klar</button>
       </div>
     </div>
-    <card-component :title="getItemLabel" :focus-data="item" :uri="item['@id']" :is-local="true" :is-locked="isLocked" :should-show="showCardInfo && !inEdit" :floating="!expanded"></card-component>
+    <card-component :title="getItemLabel" :focus-data="item" :uri="item['@id']" :is-local="true" :is-extractable="isExtractable" :is-locked="isLocked" :should-show="showCardInfo && !inEdit" :floating="!expanded"></card-component>
     <div class="window" v-if="extractDialogActive">
       <div class="header">
         <span class="title">
