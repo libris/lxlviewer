@@ -236,7 +236,7 @@ export default {
         flex-grow: 5;
         text-align: center;
         .node {
-          font-size: 0.8em;
+          font-size: 0.9em;
           vertical-align: middle;
         }
       }
