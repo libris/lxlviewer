@@ -138,7 +138,7 @@ export default class Editor extends View {
         },
         'cancel-edit': function() {
           this.changeStatus('inEdit', false);
-          this.syncData(this.status.lastSavedData);
+          this.syncData(Object.assign({}, this.status.lastSavedData));
         },
       },
       watch: {
