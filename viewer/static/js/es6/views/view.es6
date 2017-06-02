@@ -16,6 +16,7 @@ export default class View {
       baseMaterials: [
         'https://id.kb.se/vocab/Instance',
         'https://id.kb.se/vocab/Work',
+        'https://id.kb.se/vocab/Agent',
         // 'https://id.kb.se/vocab/Person'
         // 'https://id.kb.se/vocab/Organization',
         // 'https://id.kb.se/vocab/Meeting',
