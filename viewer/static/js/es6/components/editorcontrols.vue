@@ -147,10 +147,10 @@ export default {
         </div>
         <marc-preview v-show="status.inEdit"></marc-preview>
         <div class="admin-node">
-          <span class="node">Skapad {{ getCard.created }} av {{ getCard.assigner }}</span>
+          <span class="node">Skapad <strong>{{ getCard.created }}</strong> av <strong>{{ getCard.assigner }}</strong></span>
         </div>
         <div class="admin-node">
-          <span class="node">Ändrad {{ getCard.modified }} av okänd</span>
+          <span class="node">Ändrad <strong>{{ getCard.modified }}</strong> av <strong>{{ getCard.descriptionModifier }}</strong></span>
         </div>
         <create-item-button v-show="!status.inEdit && editorData.mainEntity['@type'] === 'Instance'"></create-item-button>
         <button v-show="!status.inEdit" @click="removePost"><i class="fa fa-trash" aria-hidden="true"></i> {{"Remove" | translatePhrase}} post</button>
