@@ -30,7 +30,10 @@ export default {
   ready() { // Ready method is deprecated in 2.0, switch to "mounted"
     this.$nextTick(() => {
       window.addEventListener('scroll', (e) => {
-        const scrollPosition = e.target.body.scrollTop;
+        let scrollPosition = e.target.body.scrollTop;
+        if (e.target.body.scrollTop === 0) {
+          scrollPosition = document.documentElement.scrollTop;
+        }
         if (this.headerThreshold < scrollPosition) {
           this.showChipHeader = true;
         } else {
