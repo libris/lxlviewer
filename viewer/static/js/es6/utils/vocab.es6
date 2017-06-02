@@ -240,12 +240,18 @@ export function getBaseClassesFromArray(typeArray, vocab, vocabPfx) {
 
 export function isSubClassOf(classId, baseClassId, vocab, vocabPfx) {
   if (!classId || typeof classId === 'undefined') {
-    throw new Error('isSubClassOf was called without a classId');
+    throw new Error('isSubClassOf was called without a classId or classId array');
   }
   if (!baseClassId || typeof baseClassId === 'undefined') {
     throw new Error('isSubClassOf was called without a baseClassId');
   }
-  const baseClasses = getBaseClasses(classId, vocab, vocabPfx);
+
+  let baseClasses;
+  if (_.isArray(classId)) {
+    baseClasses = getBaseClassesFromArray(classId, vocab, vocabPfx);
+  } else {
+    baseClasses = getBaseClasses(classId, vocab, vocabPfx);
+  }
   if (baseClasses.indexOf(`${vocabPfx}${baseClassId}`) > -1) {
     return true;
   }
