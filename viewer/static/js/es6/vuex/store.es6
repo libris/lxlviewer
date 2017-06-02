@@ -16,6 +16,7 @@ const state = {
   },
   status: {
     lastAdded: '',
+    lastSavedData: {},
     level: 'mainEntity',
     dirty: true,
     isDev: false,
