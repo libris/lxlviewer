@@ -146,6 +146,9 @@ export default {
     this.searchOpen = false;
   },
   methods: {
+    setSearching() {
+      this.loading = true;
+    },
     dismissTypeChooser() {
       this.addEmbedded = false;
       this.selectedType = '';
@@ -210,7 +213,6 @@ export default {
     search(keyword) {
       const self = this;
       self.searchResult = {};
-      self.loading = true;
       this.getItems(keyword, this.searchTypes).then((result) => {
         setTimeout(() => {
           self.searchResult = result;
@@ -273,7 +275,7 @@ export default {
         <div class="search-header">
           <div class="search">
             {{ "Search" | translatePhrase }}:
-            <input v-model="keyword"></input>
+            <input v-model="keyword" @input="setSearching()"></input>
             <div class="range-info-container" v-if="getFullRange.length > 0" @mouseleave="rangeInfo = false">
               <i class="fa fa-info-circle" @mouseenter="rangeInfo = true"></i>
               <div class="range-info" v-if="rangeInfo">
