@@ -30,7 +30,10 @@ export default {
   ready() { // Ready method is deprecated in 2.0, switch to "mounted"
     this.$nextTick(() => {
       window.addEventListener('scroll', (e) => {
-        const scrollPosition = e.target.body.scrollTop;
+        let scrollPosition = e.target.body.scrollTop;
+        if (e.target.body.scrollTop === 0) {
+          scrollPosition = document.documentElement.scrollTop;
+        }
         if (this.headerThreshold < scrollPosition) {
           this.showChipHeader = true;
         } else {
@@ -137,23 +140,23 @@ export default {
             <i class="fa fa-wrench" aria-hidden="true"></i>
           </div>
           <div class="action">
-            <span class="data-selector" v-on:click="otherFormatMenu = true"></i> {{"Data" | translatePhrase}} <i class="fa fa-caret-down" aria-hidden="true"></i></span>
+            <span class="data-selector" v-on:click="otherFormatMenu = true"></i> RDF <i class="fa fa-caret-down" aria-hidden="true"></i></span>
             <div class="other-format-menu" v-if="otherFormatMenu" v-on-clickaway="otherFormatMenu = false">
               <a :href="`${focusData['@id']}/data.jsonld`">JSON-LD</a>
               <a :href="`${focusData['@id']}/data.ttl`">Turtle</a>
-              <a :href="`${focusData['@id']}/data.rdf`">RDF</a>
+              <a :href="`${focusData['@id']}/data.rdf`">RDF/XML</a>
             </div>
           </div>
         </div>
         <marc-preview v-show="status.inEdit"></marc-preview>
         <div class="admin-node">
-          <span class="node">Skapad {{ getCard.created }} av {{ getCard.assigner }}</span>
+          <span class="node">Skapad <strong>{{ getCard.created }}</strong> av <strong>{{ getCard.assigner || 'okänd' }}</strong></span>
         </div>
         <div class="admin-node">
-          <span class="node">Ändrad {{ getCard.modified }} av okänd</span>
+          <span class="node">Ändrad <strong>{{ getCard.modified }}</strong> av <strong>{{ getCard.descriptionModifier || 'okänd' }}</strong></span>
         </div>
+        <button class="removeButton" v-show="!status.inEdit" @click="removePost"><i class="fa fa-trash" aria-hidden="true"></i> {{"Remove" | translatePhrase}} post</button>
         <create-item-button v-show="!status.inEdit && editorData.mainEntity['@type'] === 'Instance'"></create-item-button>
-        <button v-show="!status.inEdit" @click="removePost"><i class="fa fa-trash" aria-hidden="true"></i> {{"Remove" | translatePhrase}} post</button>
         <button v-show="status.inEdit" @click="cancelEdit">
           <i class="fa fa-times" aria-hidden="true" v-show="!loadingCancel"></i>
           <i class="fa fa-fw fa-circle-o-notch fa-spin" aria-hidden="true" v-show="loadingCancel"></i>
@@ -178,7 +181,7 @@ export default {
               <div class="admin-key">
                 {{ k | labelByLang | capitalize }}:
               </div>
-              <div>
+              <div class="admin-value">
                 {{v}}
               </div>
             </div>
@@ -258,6 +261,15 @@ export default {
         line-height: 20px;
         background-color: #efefef;
         border: 1px solid rgba(27,31,35,0);
+        &.removeButton {
+          margin-right: 3em;
+          background-color: gray;
+          color: #e6e6e6;
+          transition: background-color 0.25s ease;
+          &:hover {
+            background-color: #986e6e;
+          }
+        }
       }
       .actions {
         .action {
@@ -295,9 +307,12 @@ export default {
         > div > div{
           display: inline-block;
           &.admin-key {
+            color: #c7c7c7;
             width: 50%;
             text-align: right;
-            font-style: italic;
+          }
+          &.admin-value {
+            font-weight: bold;
           }
         }
         background-color: rgba(255, 255, 255, 0.15);
