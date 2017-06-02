@@ -233,11 +233,22 @@ export default {
         </span>
       </div>
       <div class="body">
-        <p>
-          {{ "Utbrytning av lokala entiteter är ett önskat beteende yadda yadda lorem ipsum" | translatePhrase }}
+        <p class="extractLeadingText">
+          Utbrytning av:<br><strong>"{{getItemLabel}}"</strong>
         </p>
+        <p>
+          Den här operationen kommer att skapa en egen post utav den lokala entiteten. Detta gör att entiteten går att länka till från denna och andra poster (och på det sättet kunna återanvändas).
+        </p>
+        <p>
+          När den nya posten är skapad kommer den att ersätta den lokala versionen i den post du nu står i.
+        </p>
+        <hr>
         <div class="button-container">
-          <button v-on:click="doExtract()" v-show="!extracting">{{ "Accept" | translatePhrase }}</button>
+          <p>
+            Vill du bryta ut entiteten till en egen post?
+          </p>
+          <button class="acceptExtractButton" v-on:click="doExtract" v-show="!extracting">{{ "Ja, bryt ut" | translatePhrase }}</button>
+          <button class="declineExtractButton" v-on:click="closeExtractDialog" v-show="!extracting">{{ "Nej, avbryt" | translatePhrase }}</button>
           <div v-show="extracting"><i class="fa fa-circle-o-notch fa-spin" aria-hidden="true"></i> {{ "Extracting" | translatePhrase }}</div>
         </div>
       </div>
@@ -256,8 +267,20 @@ export default {
     .window-mixin();
     .body {
       padding: 2em;
+      .extractLeadingText {
+        text-align: center;
+      }
       .button-container {
         text-align: center;
+        button {
+          padding: 0px 1em;
+        }
+        .acceptExtractButton {
+          margin-right: 2em;
+        }
+        .declineExtractButton {
+
+        }
       }
     }
   }
