@@ -150,7 +150,7 @@ export default {
           <span class="node">Skapad {{ getCard.created }} av {{ getCard.assigner }}</span>
         </div>
         <div class="admin-node">
-          <span class="node">Ändrad {{ getCard.modified }} av - </span>
+          <span class="node">Ändrad {{ getCard.modified }} av okänd</span>
         </div>
         <create-item-button v-show="!status.inEdit && editorData.mainEntity['@type'] === 'Instance'"></create-item-button>
         <button v-show="!status.inEdit" @click="removePost"><i class="fa fa-trash" aria-hidden="true"></i> {{"Remove" | translatePhrase}} post</button>
@@ -247,7 +247,7 @@ export default {
         flex-grow: 5;
         text-align: center;
         .node {
-          font-size: 0.8em;
+          font-size: 0.9em;
           vertical-align: middle;
         }
       }
