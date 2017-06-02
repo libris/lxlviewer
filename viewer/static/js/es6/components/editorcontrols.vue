@@ -45,6 +45,7 @@ export default {
     inEdit(state) {
       if (state) {
         this.loadingEdit = false;
+        this.loadingCancel = false;
       }
     },
   },
@@ -84,6 +85,10 @@ export default {
         // rejected by user
       });
     },
+    cancelEdit() {
+      this.loadingCancel = true;
+      setTimeout(() => this.$dispatch('cancel-edit'), 0);
+    },
   },
   data() {
     return {
@@ -91,6 +96,7 @@ export default {
       showAdminInfoDetails: false,
       otherFormatMenu: false,
       loadingEdit: false,
+      loadingCancel: false,
     };
   },
   computed: {
@@ -147,7 +153,12 @@ export default {
           <span class="node">Ändrad {{ getCard.modified }} av - </span>
         </div>
         <create-item-button v-show="!status.inEdit && editorData.mainEntity['@type'] === 'Instance'"></create-item-button>
-        <button @click="removePost"><i class="fa fa-trash" aria-hidden="true"></i> {{"Remove" | translatePhrase}} post</button>
+        <button v-show="!status.inEdit" @click="removePost"><i class="fa fa-trash" aria-hidden="true"></i> {{"Remove" | translatePhrase}} post</button>
+        <button v-show="status.inEdit" @click="cancelEdit">
+          <i class="fa fa-times" aria-hidden="true" v-show="!loadingCancel"></i>
+          <i class="fa fa-fw fa-circle-o-notch fa-spin" aria-hidden="true" v-show="loadingCancel"></i>
+           {{"Cancel" | translatePhrase}}
+        </button>
         <button id="saveButton" v-on:click="save()" v-if="status.inEdit">
           <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="status.saved.loading"></i>
           <i class="fa fa-fw fa-save" v-show="!status.saved.loading"></i>

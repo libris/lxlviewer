@@ -136,6 +136,10 @@ export default class Editor extends View {
           self.dirty = true;
           this.initiateWarnBeforeUnload();
         },
+        'cancel-edit': function() {
+          this.changeStatus('inEdit', false);
+          this.syncData(this.status.lastSavedData);
+        },
       },
       watch: {
         copyId(value, oldval) {
@@ -234,7 +238,9 @@ export default class Editor extends View {
             } else {
               const postUrl = `${result.getResponseHeader('Location')}/data.jsonld`;
               httpUtil.get({ url: postUrl }).then((getResult) => {
-                self.vm.syncData(RecordUtil.splitJson(getResult));
+                const newData = RecordUtil.splitJson(getResult);
+                self.vm.syncData(newData);
+                self.vm.changeStatus('lastSavedData', Object.assign({}, newData));
                 self.vm.changeSavedStatus('loading', false);
                 self.vm.changeSavedStatus('error', false);
                 self.vm.changeSavedStatus('info', '');
@@ -260,6 +266,7 @@ export default class Editor extends View {
         this.loadVocab(self.vocab);
         this.loadDisplayDefs(self.display);
         this.syncData(self.dataIn);
+        this.changeStatus('lastSavedData', Object.assign({}, self.dataIn));
         this.initialized = true;
         this.changeStatus('keybindState', 'overview');
 
