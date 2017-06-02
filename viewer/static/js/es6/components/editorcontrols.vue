@@ -155,8 +155,8 @@ export default {
         <div class="admin-node">
           <span class="node">Ändrad <strong>{{ getCard.modified }}</strong> av <strong>{{ getCard.descriptionModifier || 'okänd' }}</strong></span>
         </div>
+        <button class="removeButton" v-show="!status.inEdit" @click="removePost"><i class="fa fa-trash" aria-hidden="true"></i> {{"Remove" | translatePhrase}} post</button>
         <create-item-button v-show="!status.inEdit && editorData.mainEntity['@type'] === 'Instance'"></create-item-button>
-        <button v-show="!status.inEdit" @click="removePost"><i class="fa fa-trash" aria-hidden="true"></i> {{"Remove" | translatePhrase}} post</button>
         <button v-show="status.inEdit" @click="cancelEdit">
           <i class="fa fa-times" aria-hidden="true" v-show="!loadingCancel"></i>
           <i class="fa fa-fw fa-circle-o-notch fa-spin" aria-hidden="true" v-show="loadingCancel"></i>
@@ -261,6 +261,15 @@ export default {
         line-height: 20px;
         background-color: #efefef;
         border: 1px solid rgba(27,31,35,0);
+        &.removeButton {
+          margin-right: 3em;
+          background-color: gray;
+          color: #e6e6e6;
+          transition: background-color 0.25s ease;
+          &:hover {
+            background-color: #986e6e;
+          }
+        }
       }
       .actions {
         .action {
