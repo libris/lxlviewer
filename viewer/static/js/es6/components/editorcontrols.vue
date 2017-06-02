@@ -137,11 +137,11 @@ export default {
             <i class="fa fa-wrench" aria-hidden="true"></i>
           </div>
           <div class="action">
-            <span class="data-selector" v-on:click="otherFormatMenu = true"></i> {{"Data" | translatePhrase}} <i class="fa fa-caret-down" aria-hidden="true"></i></span>
+            <span class="data-selector" v-on:click="otherFormatMenu = true"></i> RDF <i class="fa fa-caret-down" aria-hidden="true"></i></span>
             <div class="other-format-menu" v-if="otherFormatMenu" v-on-clickaway="otherFormatMenu = false">
               <a :href="`${focusData['@id']}/data.jsonld`">JSON-LD</a>
               <a :href="`${focusData['@id']}/data.ttl`">Turtle</a>
-              <a :href="`${focusData['@id']}/data.rdf`">RDF</a>
+              <a :href="`${focusData['@id']}/data.rdf`">RDF/XML</a>
             </div>
           </div>
         </div>
