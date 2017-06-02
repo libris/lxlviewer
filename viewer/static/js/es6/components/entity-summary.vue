@@ -63,25 +63,6 @@ export default {
     extractEntity() {
       this.$dispatch('extract-item');
     },
-    translateable(type) {
-      if (type === '@type' || type === 'issuanceType') {
-        return true;
-      }
-      return false;
-    },
-    getFormattedEntries(list) {
-      let formatted = [];
-      for (const entry of list) {
-        if (this.translateable(entry.property)) {
-          formatted = formatted.concat(entry.value.map((obj) => {
-            return StringUtil.labelByLang(obj, this.settings.language, this.vocab, this.settings.vocabPfx);
-          }));
-        } else {
-          formatted = formatted.concat(entry.value);
-        }
-      }
-      return formatted;
-    },
   },
   components: {
   },
