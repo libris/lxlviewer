@@ -167,7 +167,7 @@ export default {
               <div class="admin-key">
                 {{ k | labelByLang | capitalize }}:
               </div>
-              <div>
+              <div class="admin-value">
                 {{v}}
               </div>
             </div>
@@ -284,9 +284,12 @@ export default {
         > div > div{
           display: inline-block;
           &.admin-key {
+            color: #c7c7c7;
             width: 50%;
             text-align: right;
-            font-style: italic;
+          }
+          &.admin-value {
+            font-weight: bold;
           }
         }
         background-color: rgba(255, 255, 255, 0.15);
