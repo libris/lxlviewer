@@ -170,9 +170,9 @@ export default {
     show() {
       LayoutUtil.scrollLock(true);
       this.active = true;
-      setTimeout(() => { // TODO: Solve this by setting focus after window has been rendered.
-        document.getElementById('test').focus();
-      }, 1);
+      this.$nextTick(() => {
+        this.$el.querySelector('.entity-search-keyword-input').focus();
+      });
       this.changeStatus('keybindState', 'entity-adder');
     },
     hide() {
@@ -275,7 +275,7 @@ export default {
         <div class="search-header">
           <div class="search">
             {{ "Search" | translatePhrase }}:
-            <input v-model="keyword" @input="setSearching()"></input>
+            <input class="entity-search-keyword-input" v-model="keyword" @input="setSearching()"></input>
             <div class="range-info-container" v-if="getFullRange.length > 0" @mouseleave="rangeInfo = false">
               <i class="fa fa-info-circle" @mouseenter="rangeInfo = true"></i>
               <div class="range-info" v-if="rangeInfo">
