@@ -81,7 +81,7 @@ export default {
     <a v-if="!historySupported" href="{{observation.view['@id']}}" title="{{determinedLabel | capitalize}}">{{determinedLabel | capitalize}}</a>
     <span v-if="historySupported" @click="toggleActive">
       <input type="checkbox" v-model="active">
-      <span title="{{determinedLabe | capitalizel}}">
+      <span title="{{determinedLabe | capitalize}}">
         {{determinedLabel | capitalize}}
       </span>
     </span>
