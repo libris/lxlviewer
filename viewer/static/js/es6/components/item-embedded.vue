@@ -42,7 +42,7 @@ export default {
     isEmpty() {
       let foundValue = false;
       _.each(this.filteredItem, (v, k) => {
-        if (v !== "" && v !== []) {
+        if (v.length !== 0) {
           foundValue = true;
         }
       });
