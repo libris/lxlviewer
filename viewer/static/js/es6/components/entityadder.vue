@@ -147,7 +147,11 @@ export default {
   },
   methods: {
     setSearching() {
-      this.loading = true;
+      if (this.keyword === '') {
+        this.loading = false;
+      } else {
+        this.loading = true;
+      }
     },
     dismissTypeChooser() {
       this.addEmbedded = false;
