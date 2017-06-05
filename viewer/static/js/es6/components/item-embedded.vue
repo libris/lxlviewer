@@ -39,6 +39,15 @@ export default {
     };
   },
   computed: {
+    isEmpty() {
+      let foundValue = false;
+      _.each(this.filteredItem, (v, k) => {
+        if (v !== "" && v !== []) {
+          foundValue = true;
+        }
+      });
+      return !foundValue;
+    },
     filteredItem() {
       const emptyItem = RecordUtil.getEmptyForm(this.item['@type'], this.vocab, this.display, this.settings);
       const filteredItem = Object.assign(emptyItem, this.item);
@@ -55,9 +64,9 @@ export default {
     },
     collapsedLabel() {
       const summary = this.getSummary;
-      
+
       const infoArray = [].concat(summary.header, summary.sub, summary.info, summary.identifiers);
-      const filteredArray = 
+      const filteredArray =
         [].concat(summary.header, summary.sub, summary.info, summary.identifiers)
         .filter(item => {
           return (item.property !== '@type' && item.property !== 'error');
@@ -70,6 +79,9 @@ export default {
     this.$options.components['data-node'] = Vue.extend(DataNode);
   },
   ready() {
+    if (this.isEmpty && !this.isLocked) {
+      this.expanded = true;
+    }
   },
   methods: {
     toggleExpanded() {
