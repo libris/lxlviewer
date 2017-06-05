@@ -208,7 +208,7 @@ export default {
     addType(type) {
       const idArray = type.split('/');
       this.addEmpty(idArray[idArray.length - 1]);
-      this.addEmbedded = false;
+      this.dismissTypeChooser();
     },
     search(keyword) {
       const self = this;
