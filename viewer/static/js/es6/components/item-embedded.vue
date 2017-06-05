@@ -35,6 +35,7 @@ export default {
   data() {
     return {
       formObj: {},
+      expanded: false,
     };
   },
   computed: {
@@ -52,6 +53,18 @@ export default {
       );
       return types;
     },
+    collapsedLabel() {
+      const summary = this.getSummary;
+      
+      const infoArray = [].concat(summary.header, summary.sub, summary.info, summary.identifiers);
+      const filteredArray = 
+        [].concat(summary.header, summary.sub, summary.info, summary.identifiers)
+        .filter(item => {
+          return (item.property !== '@type' && item.property !== 'error');
+        });
+      const label = this.getFormattedEntries(filteredArray).join(' | ');
+      return label;
+    },
   },
   created() {
     this.$options.components['data-node'] = Vue.extend(DataNode);
@@ -59,6 +72,9 @@ export default {
   ready() {
   },
   methods: {
+    toggleExpanded() {
+      this.expanded = !this.expanded;
+    }
   },
   components: {
     'processed-label': ProcessedLabel,
@@ -68,10 +84,14 @@ export default {
 </script>
 
 <template>
-  <div class="item-embedded">
-    <i v-if="!isLocked" class="fa fa-trash chip-action" :class="{'show-icon': showActionButtons}" v-on:click="removeThis"></i>
-    <span class="type"><a href="/vocab/#{{item['@type']}}">{{ item['@type'] | labelByLang | capitalize }}</a></span>
-    <data-node v-for="(k,v) in filteredItem" v-show="!isLocked || v" :is-inner="true" :is-locked="isLocked" :allow-local="true" :is-removable="false" :embedded="true" :parent-key="key" :parent-index="index" :key="k" :value="v" :focus="focus" :show-action-buttons="showActionButtons"></data-node>
+  <div class="item-embedded" :class="{'expanded': expanded}">
+    <span>
+      <i class="fa fa-chevron-right" :class="{'down': expanded}" @click="toggleExpanded()"></i>
+      <span class="type"><a href="/vocab/#{{item['@type']}}">{{ item['@type'] | labelByLang | capitalize }}</a></span>
+      <span class="collapsed-label" @click="toggleExpanded()"><span v-show="!expanded">{{collapsedLabel}}</span><span class="placeholder">.</span></span>
+      <i v-if="!isLocked" class="fa fa-trash chip-action" :class="{'show-icon': showActionButtons}" v-on:click="removeThis"></i>
+    </span>
+    <data-node v-show="expanded" v-for="(k,v) in filteredItem" v-show="!isLocked || v" :is-inner="true" :is-locked="isLocked" :allow-local="true" :is-removable="false" :embedded="true" :parent-key="key" :parent-index="index" :key="k" :value="v" :focus="focus" :show-action-buttons="showActionButtons"></data-node>
   </div>
 </template>
 

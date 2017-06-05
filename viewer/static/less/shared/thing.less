@@ -130,13 +130,48 @@ div.thing {
 
 .item-embedded {
   width: 100%;
-  padding: 5px;
   background-color: #fdfdfd;
   border: solid #ccc;
   border-width: 1px 1px 3px 1px;
   margin: 0px 0px 5px 0px;
   line-height: 1.6;
-  >.type {
+  max-height: 40px;
+  transition: all 0.5s ease;
+  overflow: hidden;
+  &.expanded {
+    transition: all 0.5s ease;
+    max-height: 700px;
+  }
+  > div {
+    padding: 5px;
+  }
+  > span {
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    i {
+      transition: all 0.2s ease;
+      padding: 0 0.5em;
+      cursor: pointer;
+      &.down {
+        transform:rotate(90deg);
+      }
+    }
+    .collapsed-label {
+      cursor: pointer;
+      flex-grow: 1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      .placeholder {
+        visibility: hidden;
+      }
+      > span {
+        padding-left: 1em;
+      }
+    }
+  }
+  .type {
     text-transform: uppercase;
     font-weight: bold;
     a {
@@ -145,10 +180,10 @@ div.thing {
       color: @black;
     }
   }
-  >.chip-action {
+  .chip-action {
     transition: opacity 0.25s ease;
     opacity: 0;
-    float: right;
+    align-self: right;
     cursor: pointer;
     &.show-icon {
       opacity: 1;
