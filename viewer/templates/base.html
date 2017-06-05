@@ -96,11 +96,16 @@
                 <li><a href="/logout"><i class="fa fa-sign-out" aria-hidden="true"></i> Logga ut</a></li>
               </ul>
             </li>
-            % else
+          % elif request.path == '/login' 
+              <li class="">
+                <a href="/">
+                  <i class="fa fa-home" aria-hidden="true"></i> Hem</a>
+              </li>
+          % else
               <li class=""><a href="/login">
                 <i class="fa fa-fw fa-sign-in"></i> Logga in</a>
               </li>
-            % endif
+          % endif
         % endif
         </ul>
       </div>
