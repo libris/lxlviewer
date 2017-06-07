@@ -84,12 +84,12 @@ export default {
 </script>
 
 <template>
-  <div class="item-embedded" :class="{'expanded': expanded}">
+  <div class="item-embedded" :class="{'expanded': expanded, 'removed': removed}">
     <span>
       <i class="fa fa-chevron-right" :class="{'down': expanded}" @click="toggleExpanded()"></i>
       <span class="type"><a href="/vocab/#{{item['@type']}}">{{ item['@type'] | labelByLang | capitalize }}</a></span>
       <span class="collapsed-label" @click="toggleExpanded()"><span v-show="!expanded">{{collapsedLabel}}</span><span class="placeholder">.</span></span>
-      <i v-if="!isLocked" class="fa fa-trash chip-action" :class="{'show-icon': showActionButtons}" v-on:click="removeThis"></i>
+      <i v-if="!isLocked" class="fa fa-trash chip-action" :class="{'show-icon': showActionButtons}" v-on:click="removeThis(true)"></i>
     </span>
     <data-node v-show="expanded" v-for="(k,v) in filteredItem" v-show="!isLocked || v" :is-inner="true" :is-locked="isLocked" :allow-local="true" :is-removable="false" :embedded="true" :parent-key="key" :parent-index="index" :key="k" :value="v" :focus="focus" :show-action-buttons="showActionButtons"></data-node>
   </div>

@@ -183,6 +183,7 @@ export default {
       _.set(modified, path, value);
       console.log("New value recieved for", path, "=", value);
       console.log(modified);
+      this.changeStatus('removing', false);
       this.updateForm('mainEntity', modified);
     },
   },

@@ -32,15 +32,16 @@ const state = {
       error: false,
       info: '',
     },
+    removing: false,
   },
 };
 
 const mutations = {
   SYNCPOST (state, data) {
-    state.editor.data = data;
+    Vue.set(state.editor, 'data', data);
   },
   UPDATE_FORM (state, form, data) {
-    state.editor.data[form] = data;
+    Vue.set(state.editor.data, form, data);
   },
   LOADVOCAB (state, data) {
     state.vocab = data;

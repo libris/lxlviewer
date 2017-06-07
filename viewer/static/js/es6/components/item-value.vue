@@ -75,7 +75,7 @@ export default {
 </script>
 
 <template>
-  <div class="item-value" v-bind:class="{'locked': isLocked, 'unlocked': !isLocked, 'distinguish-removal': removeHover}">
+  <div class="item-value" v-bind:class="{'locked': isLocked, 'unlocked': !isLocked, 'distinguish-removal': removeHover, 'removed': removed}">
     <textarea rows="1" v-model="value" @input="valueChanged()" v-if="!isLocked"></textarea>
     <span v-if="isLocked">{{value}}</span>
     <div class="remover" :class="{'show-icon': showActionButtons}" v-show="!isLocked && isRemovable" v-on:click="removeThis()" @mouseover="removeHover = true" @mouseout="removeHover = false"><i class="fa fa-trash"></i></div>
@@ -93,6 +93,13 @@ export default {
     span {
       word-break: break-word;
     }
+  }
+  &.removed {
+    transition: all 0.5s ease;
+    max-height: 0px;
+    margin: 0px;
+    border: none;
+    overflow: hidden;
   }
   textarea {
     resize: none;

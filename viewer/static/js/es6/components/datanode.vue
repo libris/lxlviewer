@@ -35,6 +35,7 @@ export default {
       activeModal: false,
       removeHover: false,
       foundChip: false,
+      removed: false,
     };
   },
   vuex: {
@@ -221,7 +222,10 @@ export default {
         console.warn('Remove was called on an embedded field, this is not supported.');
         return false;
       }
-      this.$dispatch('remove-field', this.key);
+      this.removed = true;
+      setTimeout(() => {
+        this.$dispatch('remove-field', this.key);
+      }, 500);
       // ModalUtil.confirmDialog(
       //   {
       //     sTitle: `Ta bort fältet "${pLabel}"?`,
@@ -292,13 +296,13 @@ export default {
       if (!this.isInner) {
         this.showActionButtons=false
       }
-    }
+    },
   },
 };
 </script>
 
 <template>
-<div class="data-node" v-bind:class="{'column': embedded, 'rows': !embedded, 'highlight': isLastAdded, 'distinguish-removal': removeHover }" @mouseover="showActionButtons=true" @mouseleave="handleMouseLeave()">
+<div class="data-node" v-bind:class="{'column': embedded, 'rows': !embedded, 'highlight': isLastAdded, 'distinguish-removal': removeHover, 'removed': removed }" @mouseover="showActionButtons=true" @mouseleave="handleMouseLeave()">
   <div class="label" v-bind:class="{ 'locked': isLocked }">
     <a href="/vocab/#{{key}}">{{ key | labelByLang | capitalize }}</a>
     <div v-if="propertyComment && !isLocked" class="comment-icon">
@@ -320,7 +324,6 @@ export default {
         <entity-adder class="action" v-if="!isLocked && (isRepeatable || isEmptyObject)" :key="key" :already-added="linkedIds" :property-types="propertyTypes" :allow-local="allowLocal && propAllowsLocal" :show-action-buttons="showActionButtons" :active="activeModal" :is-inner="isInner" :is-chip="foundChip" :value-list="valueAsArray"></entity-adder>
       </li>
     </ul>
-
   </div>
   <div class="actions">
     <div class="action" v-if="!isLocked && isRemovable" :class="{'shown-button': showActionButtons, 'hidden-button': !showActionButtons, 'disabled': activeModal}"><i v-on:click="removeThis()" @mouseover="removeHover = true" @mouseout="removeHover = false" class="fa fa-trash fa-lg action-button action-remove"></i></div>
@@ -340,6 +343,13 @@ export default {
   transition: 6s ease;
   transition-property: outline box-shadow;
   outline: 2px solid transparent;
+  max-height: 200vh;
+  opacity: 1;
+  &.removed {
+    min-height: 0em;
+    max-height: 0em;
+    opacity: 0;
+  }
   .path-code {
     padding: 1px 3px;
     margin: 0px;
