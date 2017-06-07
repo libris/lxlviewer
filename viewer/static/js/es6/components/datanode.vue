@@ -119,11 +119,6 @@ export default {
     stackable() {
       return (this.propertyTypes.indexOf('DatatypeProperty') === -1);
     },
-    // TODO: Verify usage
-    valueByIdPresence() {
-      const list = _.sortBy(this.value, [(o) => (o['@id'])]);
-      return list;
-    },
     isRepeatable() {
       return this.propertyTypes.indexOf('FunctionalProperty') < 0;
     },
