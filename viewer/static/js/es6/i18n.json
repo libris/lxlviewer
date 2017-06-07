@@ -19,7 +19,7 @@
     "The post was saved": "Posten blev sparad",
     "Allowed types" : "Tillåtna typer",
     "Create local entity" : "Skapa lokal entitet",
-    "Start writing to begin search": "Skriva för att börja söka",
+    "Start writing to begin search": "Skriv för att börja söka",
     "No results": "Inga resultat",
     "Filter by": "Filtrera",
     "Showing": "Visar",
@@ -36,5 +36,6 @@
     "Extract entity": "Bryt ut entitet",
     "Extracting": "Bryter ut",
     "Item": "Exemplar",
+    "Missing label": "Etikett saknas",
   }
 }

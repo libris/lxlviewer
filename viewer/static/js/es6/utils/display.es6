@@ -112,18 +112,21 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
   } else {
     return {};
   }
+  let usedLensType;
   if (properties.length === 0) { // If none were found, traverse up inheritance tree
     const baseClasses = VocabUtil.getBaseClassesFromArray(trueItem['@type'], vocab, settings.vocabPfx);
     for (let i = 0; i < baseClasses.length; i++) {
       if (typeof baseClasses[i] !== 'undefined') {
         properties = getProperties(baseClasses[i].replace(settings.vocabPfx, ''), level, displayDefs, settings);
         if (properties.length > 0) {
+          usedLensType = baseClasses[i];
           break;
         }
       }
     }
     if (properties.length === 0) {
       // No props found, default to Resource class and get those
+      usedLensType = 'Resource';
       properties = getProperties('Resource', level, displayDefs, settings);
     }
   }
@@ -171,6 +174,7 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
     }
   }
   if (_.isEmpty(result)) {
+    console.warn(`DisplayObject was empty. @type was ${trueItem['@type']}. Used lens: "${usedLensType}".`, 'Item data:', trueItem);
     result = { 'label': '[Unknown]' };
   }
   return result;
@@ -217,7 +221,7 @@ export function getItemSummary(item, displayDefs, quoted, vocab, settings) {
     }
   });
   if (summary['header'].length === 0) {
-    summary['header'].push({ 'property': 'error', value: '[label/title missing]' });
+    summary['header'].push({ property: 'error', value: `{${StringUtil.getUiPhraseByLang('Missing label', settings.language)}}` });
   }
   return summary;
 }

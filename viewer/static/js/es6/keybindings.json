@@ -1,6 +1,6 @@
 {
   "overview": {
-    "a f": "open-add-field-window",
+    "mod+shift+f": "open-add-field-window",
   },
   "field-adder": {
     "esc": "close-modals",

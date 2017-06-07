@@ -120,11 +120,6 @@ export default {
     stackable() {
       return (this.propertyTypes.indexOf('DatatypeProperty') === -1);
     },
-    // TODO: Verify usage
-    valueByIdPresence() {
-      const list = _.sortBy(this.value, [(o) => (o['@id'])]);
-      return list;
-    },
     isRepeatable() {
       return this.propertyTypes.indexOf('FunctionalProperty') < 0;
     },
@@ -245,6 +240,9 @@ export default {
       if (typeof o === 'undefined') {
         throw new Error('Cannot check data type of undefined object.');
       }
+      if (this.isPlainObject(o) && !o.hasOwnProperty('@id') && !o.hasOwnProperty('@type')) {
+        return 'error';
+      }
       if (this.isPlainObject(o) && this.isLinked(o)) {
       // if (this.isPlainObject(o) && this.isLinked(o) && o['@id'].indexOf(this.editorData.record['@id']) === -1) {
         return 'entity';
@@ -315,6 +313,7 @@ export default {
     <pre class="path-code" v-show="status.isDev">{{getPath}}</pre>
     <ul>
       <li v-for="item in valueAsArray" :class="{ 'isChip': isChip(item)}" track-by="$index">
+        <div class="erroneous-object" v-if="getDatatype(item) == 'error'"><i class="fa fa-frown-o"></i> {{item | json}}</div>
         <item-entity v-if="getDatatype(item) == 'entity'" :is-locked="isLocked" :expanded="isExpandedType" :item="item" :key="key" :index="$index"></item-entity>
         <item-local v-if="getDatatype(item) == 'local'" :is-locked="isLocked" :expanded="isExpandedType" :item="item" :key="key" :index="$index" :show-action-buttons="showActionButtons"></item-local>
         <item-embedded v-if="getDatatype(item) == 'embedded'" :is-locked="isLocked" :item="item" :key="key" :index="$index" :show-action-buttons="showActionButtons"></item-embedded>
@@ -349,6 +348,13 @@ export default {
     min-height: 0em;
     max-height: 0em;
     opacity: 0;
+  }
+  .erroneous-object {
+    line-height: 1.6;
+    display: inline-block;
+    padding: 3px;
+    border: 1px solid #ffa6a6;
+    background-color: #fff1f1;
   }
   .path-code {
     padding: 1px 3px;
