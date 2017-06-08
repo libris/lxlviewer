@@ -341,14 +341,14 @@ export default {
     }
     cursor: pointer;
     text-align: center;
-    border: 1px dashed @gray-darker;
+    border: 1px dashed @gray;
     background-color: transparent;
     .chip-label {
-      color: @gray-darker;
+      color: @gray-dark;
     }
     &:hover {
       .chip-label {
-        color: @gray-darker;
+        color: @gray-dark;
       }
     }
     .chip-action {
