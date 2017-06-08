@@ -1,38 +1,29 @@
 
-function saveUserInfo(userObj) {
+export function saveUserSettings(userObj) {
   localStorage.setItem('user', JSON.stringify(userObj));
 }
 
-function fetchUserInfo() {
+export function loadUserSettings() {
   const fetchedObj = JSON.parse(localStorage.getItem('user'));
-  if (
-    fetchedObj &&
-    window.userInfo &&
-    fetchedObj.username === window.userInfo.username &&
-    fetchedObj.access_token === window.userInfo.access_token
-  ) {
+  const userInfo = window.userInfo;
+  if (fetchedObj) {
+    if (verifySigel(fetchedObj.currentSigel, userInfo.authorization) === false) {
+      fetchedObj.currentSigel = userInfo.authorization[0].sigel;
+    }
     return fetchedObj;
   }
-  const userObj = window.userInfo || {};
-  if(userObj) {
-    saveUserInfo(userObj);
-  }
+  const userObj = {
+    currentSigel: userInfo.authorization[0].sigel,
+  };
+  saveUserSettings(userObj);
   return userObj;
 }
 
-export function set(key, val) {
-  const user = fetchUserInfo();
-  user[key] = val;
-  saveUserInfo(user);
-}
-
-export function get(key) {
-  const user = fetchUserInfo();
-  if (user.hasOwnProperty(key)) {
-    return user[key];
+function verifySigel(sigelId, authorizationList) {
+  for (const sigel of authorizationList) {
+    if (sigel.sigel === sigelId) {
+      return true;
+    }
   }
-  if (key === 'sigel' && user.authorization && user.authorization.length > 0) {
-    return user.authorization[0].sigel;
-  }
-  return null;
+  return false;
 }

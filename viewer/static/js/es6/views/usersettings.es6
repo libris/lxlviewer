@@ -5,21 +5,34 @@ export default class UserSettings extends View {
 
   initialize() {
     super.initialize();
+    const self = this;
 
     $('#switchLocation').val(this.getSigel());
 
-    $('#sigelSubmit').click((e) => {
-      e.preventDefault();
-      this.changeSigel($('#switchLocation').val());
+    this.updateButtons();
+    $('.sigel-button').click(function() {
+      self.changeSigel($(this).val());
+    });
+  }
+
+  updateButtons() {
+    const sigel = this.getSigel();
+    $('.sigel-option').each(function () {
+      $(this).removeClass('active');
+      if ($(this).find('.sigel-button').val() === sigel) {
+        $(this).addClass('active');
+      }
     });
   }
 
   getSigel() {
-    return UserUtil.get('sigel');
+    return this.settings.userSettings.currentSigel;
   }
 
   changeSigel(sigel) {
-    UserUtil.set('sigel', sigel);
-    $('.sigelLabel').text(`(${sigel})`);
+    this.settings.userSettings.currentSigel = sigel;
+    UserUtil.saveUserSettings(this.settings.userSettings);
+    $('.sigelLabel').text(`(${this.settings.userSettings.currentSigel})`);
+    this.updateButtons();
   }
 }

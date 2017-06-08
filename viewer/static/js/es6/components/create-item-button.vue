@@ -29,7 +29,7 @@ export default {
 
       this.itemData = RecordUtil.getItemObject(
         this.editorData.mainEntity['@id'],
-        `https://libris.kb.se/library/${this.settings.userInfo.sigel}`,
+        `https://libris.kb.se/library/${this.settings.userSettings.currentSigel}`,
         embellishedReference
       );
     },

@@ -76,9 +76,6 @@ export default class View {
       validSearchTags: [
         'isbn',
       ],
-      userInfo: {
-        sigel: UserUtil.get('sigel'),
-      },
     };
   }
 
@@ -87,7 +84,8 @@ export default class View {
       this.shiftWindow();
     }
     this.settings.language = $('html').attr('lang');
-    this.loadUser();
+    this.settings.userSettings = UserUtil.loadUserSettings();
+    $('.sigelLabel').text(`(${this.settings.userSettings.currentSigel})`);
     // console.log('Initialized view', this);
   }
 
@@ -96,11 +94,5 @@ export default class View {
     if (navbarHeight) {
       scrollBy(0, -navbarHeight);
     }
-  }
-
-  loadUser() {
-    this.access_token = UserUtil.get('access_token');;
-    const sigel = UserUtil.get('sigel');
-    $('.sigelLabel').text(`(${sigel})`);
   }
 }

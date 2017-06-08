@@ -107,7 +107,7 @@ export default class CreateNew extends View {
                 '@type': 'Record',
                 '@id': '_:TEMP_ID',
                 'assigner': {
-                  '@id': `https://libris.kb.se/library/${this.settings.userInfo.sigel}`,
+                  '@id': `https://libris.kb.se/library/${this.settings.userSettings.currentSigel}`,
                 },
                 'mainEntity': {
                   '@id': '_:TEMP_ID#it',

@@ -18,20 +18,19 @@
           </div>
         <div class="col-lg-7 col-lg-offset-1">
           <span class="circle"><i class="icon fa fa-cogs" aria-hidden="true"></i></span>
-          <h2>${current_user.get().username}</h2>
-          <form>
-            <div class="form-group">
-              {% if current_user.get().authorization %}
-                <label for="switchLocation" class="label">Aktivt sigel</label>
-                <select class="form-control" id=switchLocation>
-                  {% for auth in current_user.get().authorization %}
-                  <option>${auth.sigel}</option>
-                  {% endfor %}
-                </select>
-                <button type="button" id="sigelSubmit" class="btn btn-default">Växla sigel</button>
-              {% endif %}
-            </div>
-        </form>
+          <h3>Användarnamn</h3>
+          <div>${current_user.get().username}</div>
+          <div class="form-group">
+            <h3>Aktivt sigel</h3>
+            {% if current_user.get().authorization %}
+              {% for auth in current_user.get().authorization %}
+              <div class="sigel-option">
+                ${auth.sigel} <span class="active-text">(valt)</span>
+                <button type="button" class="sigel-button" value="${auth.sigel}">Välj</button>
+              </div>
+              {% endfor %}
+            {% endif %}
+          </div>
         </div>
     </div>
   </div>

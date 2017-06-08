@@ -29,6 +29,9 @@ body#usersettings {
     font-size: 16px;
     text-transform: uppercase;
     }
+    h3 {
+      font-size: 16px;
+    }
     .label {
       color:@gray;
       font-weight:normal;
@@ -48,6 +51,29 @@ body#usersettings {
       }
       .info-box {
         border-right:1px solid #dddddd;
+      }
+    }
+    .sigel-option {
+      width: 100%;
+      border: 1px solid #b7b7b7;
+      margin: 0.5em 0px;
+      padding: 0.5em;
+      border-radius: 5px;
+      &.active {
+        background-color: rgba(202, 149, 67, 0.18);
+        .active-text {
+          display: inline;
+          font-weight: bold;
+        }
+        .sigel-button {
+          display: none;
+        }
+      }
+      .active-text {
+        display: none;
+      }
+      .sigel-button {
+        float: right;
       }
     }
 
