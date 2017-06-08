@@ -136,11 +136,16 @@ div.thing {
   margin: 0px 0px 5px 0px;
   line-height: 1.6;
   max-height: 40px;
-  transition: all 0.5s ease;
   overflow: hidden;
   &.expanded {
     transition: all 0.5s ease;
-    max-height: 700px;
+    max-height: 200vh;
+  }
+  &.removed {
+    transition: all 0.5s ease;
+    max-height: 0px;
+    margin: 0px;
+    border: none;
   }
   > div {
     padding: 5px;
