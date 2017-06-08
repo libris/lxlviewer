@@ -162,6 +162,15 @@ div.thing {
         transform:rotate(90deg);
       }
     }
+    >.chip-action {
+      transition: opacity 0.25s ease;
+      opacity: 0;
+      align-self: right;
+      cursor: pointer;
+      &.show-icon {
+        opacity: 1;
+      }
+    }
     .collapsed-label {
       cursor: pointer;
       flex-grow: 1;
@@ -186,15 +195,7 @@ div.thing {
       color: @black;
     }
   }
-  .chip-action {
-    transition: opacity 0.25s ease;
-    opacity: 0;
-    align-self: right;
-    cursor: pointer;
-    &.show-icon {
-      opacity: 1;
-    }
-  }
+  
   .item-label {
     display: block;
   }
