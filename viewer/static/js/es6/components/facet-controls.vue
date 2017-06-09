@@ -54,7 +54,7 @@ export default {
       <label>Filtrera</label>
       <div>
         <div v-for="(dimensionKey, dimensionValue) in result.stats.sliceByDimension">
-          <div class="dimension-header">{{facetLabelByLang(dimensionValue.dimension)}}</div>
+          <div class="dimension-header">{{facetLabelByLang(dimensionValue.dimension) | capitalize}}</div>
           <!--<range-input v-if="isRangeFacet(dimensionKey)"></range-input>-->
           <ul>
             <facet v-for="observation in dimensionValue.observation" :observation="observation"></facet>

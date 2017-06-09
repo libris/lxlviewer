@@ -56,6 +56,10 @@ export default class View {
           sv: 'Bärartyp',
           en: 'Carrier type',
         },
+        'issuanceType': {
+          sv: 'Utgivningssätt',
+          en: 'Issuance type',
+        },
         'instanceOf.@type': {
           sv: 'Verkstyp',
           en: 'Type of work',
