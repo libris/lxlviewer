@@ -26,6 +26,12 @@ export default {
   methods: {
   },
   computed: {
+    categorization() {
+      return this.getFormattedEntries(this.getSummary.categorization);
+    },
+    header() {
+      return this.getFormattedEntries(this.getSummary.header);
+    },
   },
   components: {
     'entity-summary': EntitySummary,
@@ -39,7 +45,12 @@ export default {
 
 <template>
   <div class="result-item-compact">
-    <entity-summary :focus-data="focusData" :render-link="true"></entity-summary>
+    <h3 class="header">
+      <a :class="{'blue-link': settings.siteInfo.title === 'id.kb.se'}" title="{{ header.join(', ') }}" :href="focusData['@id']">{{ header.join(', ') }}</a>
+    </h3>
+    <div class="categorization">
+      {{categorization.join(', ')}}
+    </div>
   </div>
 </template>
 
@@ -49,28 +60,23 @@ export default {
 
 .result-item-compact {
   margin-bottom: 0;
+  background-color: @white;
   border: 1px solid #ccc;
-  .entity-summary {
-    border: 0;
-    .identifiers, .info, .sub {
-      display: none;
-    }
-    list-style: none;
-    .main-info {
-      flex-basis: 100%;
-      max-width: 100%;
-      .header {
-        font-size: 1em;
-        display: inline-block;
-        width: 68%;
-        float: left;
-      }
-      .categorization {
-        display: inline-block;
-        width: 30%;
-        text-align: right;
-      }
-    }
+  padding: 0.2em;
+  .header {
+    margin: 0px;
+    display: inline-block;
+    width: 70%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 16px;
+  }
+  .categorization {
+    display: inline-block;
+    width: 28%;
+    font-size: 14px;
+    text-align: right;
   }
 }
 
