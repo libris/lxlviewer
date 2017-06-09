@@ -45,12 +45,10 @@ export default {
 
 <template>
   <div class="result-item-compact">
-    <h3 class="header">
-      <a :class="{'blue-link': settings.siteInfo.title === 'id.kb.se'}" title="{{ header.join(', ') }}" :href="focusData['@id']">{{ header.join(', ') }}</a>
-    </h3>
-    <div class="categorization">
+    <a class="header" :class="{'blue-link': settings.siteInfo.title === 'id.kb.se'}" title="{{ header.join(', ') }}" :href="focusData['@id']">{{ header.join(', ') }}</a>
+    <span class="categorization">
       {{categorization.join(', ')}}
-    </div>
+    </span>
   </div>
 </template>
 
@@ -60,9 +58,11 @@ export default {
 
 .result-item-compact {
   margin-bottom: 0;
+  margin-top: -1px;
   background-color: @white;
   border: 1px solid #ccc;
-  padding: 0.2em;
+  padding: 0.4em 1em;
+  line-height: 1.2em;
   .header {
     margin: 0px;
     display: inline-block;
@@ -71,8 +71,10 @@ export default {
     overflow: hidden;
     text-overflow: ellipsis;
     font-size: 16px;
+    font-weight: normal;
   }
   .categorization {
+    float: right;
     display: inline-block;
     width: 28%;
     font-size: 14px;
