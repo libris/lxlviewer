@@ -1,4 +1,5 @@
 import * as UserUtil from '../utils/user';
+import * as StringUtil from '../utils/string';
 
 export default class View {
 
@@ -89,8 +90,18 @@ export default class View {
     }
     this.settings.userSettings = UserUtil.loadUserSettings();
     this.settings.language = this.settings.userSettings.language || $('html').attr('lang');
+    this.translate();
     $('.sigelLabel').text(`(${this.settings.userSettings.currentSigel})`);
     // console.log('Initialized view', this);
+  }
+
+  translate() {
+    const langCode = this.settings.userSettings.language;
+    $('.js-translateable').each(function () {
+      const originalText = $(this).attr('data-translateable');
+      const newText = StringUtil.getUiPhraseByLang(originalText, langCode);
+      $(this).text(newText);
+    });
   }
 
   shiftWindow() {

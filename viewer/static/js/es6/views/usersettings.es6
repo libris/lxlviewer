@@ -17,7 +17,6 @@ export default class UserSettings extends View {
     });
 
     $('.language-button').click(function() {
-      console.log($(this).val());
       self.changeLanguage($(this).val());
     });
   }
@@ -60,5 +59,6 @@ export default class UserSettings extends View {
     this.settings.userSettings.language = langCode;
     UserUtil.saveUserSettings(this.settings.userSettings);
     this.updateLanguageButtons();
+    this.translate();
   }
 }
