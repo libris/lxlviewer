@@ -87,8 +87,8 @@ export default class View {
     if (window.location.hash) {
       this.shiftWindow();
     }
-    this.settings.language = $('html').attr('lang');
     this.settings.userSettings = UserUtil.loadUserSettings();
+    this.settings.language = this.settings.userSettings.language || $('html').attr('lang');
     $('.sigelLabel').text(`(${this.settings.userSettings.currentSigel})`);
     // console.log('Initialized view', this);
   }

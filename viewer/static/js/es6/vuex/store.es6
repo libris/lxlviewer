@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import * as UserUtil from '../utils/user';
 
 Vue.use(Vuex);
 
@@ -51,6 +52,7 @@ const mutations = {
   },
   CHANGESETTINGS (state, data) {
     state.settings = data;
+    UserUtil.saveUserSettings(data.userSettings);
   },
   CHANGESAVEDSTATUS (state, property, data) {
     state.status.saved[property] = data;

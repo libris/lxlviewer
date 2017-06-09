@@ -1,13 +1,19 @@
 <script>
 import * as StringUtil from '../utils/string';
 import * as httpUtil from '../utils/http';
-import { changeResultListStatus } from '../vuex/actions';
+import * as UserUtil from '../utils/user';
+import { changeResultListStatus, changeSettings } from '../vuex/actions';
+import { getSettings } from '../vuex/getters';
 
 export default {
   name: 'search-pagination',
   vuex: {
     actions: {
       changeResultListStatus,
+      changeSettings,
+    },
+    getters: {
+      settings: getSettings,
     },
   },
   props: {
@@ -85,6 +91,16 @@ export default {
     },
   },
   methods: {
+    setCompact() {
+      const settings = this.settings;
+      settings.userSettings.resultListType = 'compact';
+      this.changeSettings(settings);
+    },
+    setFull() {
+      const settings = this.settings;
+      settings.userSettings.resultListType = 'detailed';
+      this.changeSettings(settings);
+    },
     getNewResult(url) {
       this.changeResultListStatus('loading', true);
       const resultPromise = new Promise((resolve, reject) => {
@@ -112,7 +128,11 @@ export default {
       gav <strong>{{pageData.totalItems}}</strong> träffar.</span>
       <span v-if="pageData.totalItems > limit" class="pull-right">Visar <strong>{{ limit }}</strong> träffar per sida.</span>
     </div>
-    <div class="search-buttons" v-if="pageData.totalItems > limit">
+    <div class="list-type-buttons" v-if="showDetails">
+      <button v-on:click="setFull()" v-bind:class="{'active': settings.userSettings.resultListType === 'detailed'}"><i class="fa fa-th-list"></i></button>
+      <button v-on:click="setCompact()" v-bind:class="{'active': settings.userSettings.resultListType === 'compact'}"><i class="fa fa-list"></i></button>
+    </div>
+    <div class="search-buttons">
       <nav>
         <ul class="pagination">
           <li v-bind:class="{ 'disabled': !pageData.first || pageData['@id'] === pageData.first['@id'] }">
@@ -150,9 +170,23 @@ export default {
 <style lang="less">
 @import './_variables.less';
 
+@buttoncolor: darken(@neutral-color, 10%);
+
 .search-details {
   height: 1em;
   margin-bottom: 1em;
+}
+.list-type-buttons {
+  float: right;
+  button {
+    background-color: @buttoncolor;
+    &.active {
+      background-color: @brand-primary;
+      i {
+        color: @neutral-color;
+      }
+    }
+  }
 }
 .search-buttons {
   .decorative {

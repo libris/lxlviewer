@@ -9,13 +9,20 @@ export default class UserSettings extends View {
 
     $('#switchLocation').val(this.getSigel());
 
-    this.updateButtons();
+    this.updateSigelButtons();
+    this.updateLanguageButtons();
+
     $('.sigel-button').click(function() {
       self.changeSigel($(this).val());
     });
+
+    $('.language-button').click(function() {
+      console.log($(this).val());
+      self.changeLanguage($(this).val());
+    });
   }
 
-  updateButtons() {
+  updateSigelButtons() {
     const sigel = this.getSigel();
     $('.sigel-option').each(function () {
       $(this).removeClass('active');
@@ -23,6 +30,19 @@ export default class UserSettings extends View {
         $(this).addClass('active');
       }
     });
+  }
+  updateLanguageButtons() {
+    const language = this.getLanguage();
+    $('.language-option').each(function () {
+      $(this).removeClass('active');
+      if ($(this).find('.language-button').val() === language) {
+        $(this).addClass('active');
+      }
+    });
+  }
+
+  getLanguage() {
+    return this.settings.userSettings.language || this.settings.language;
   }
 
   getSigel() {
@@ -33,6 +53,12 @@ export default class UserSettings extends View {
     this.settings.userSettings.currentSigel = sigel;
     UserUtil.saveUserSettings(this.settings.userSettings);
     $('.sigelLabel').text(`(${this.settings.userSettings.currentSigel})`);
-    this.updateButtons();
+    this.updateSigelButtons();
+  }
+
+  changeLanguage(langCode) {
+    this.settings.userSettings.language = langCode;
+    UserUtil.saveUserSettings(this.settings.userSettings);
+    this.updateLanguageButtons();
   }
 }

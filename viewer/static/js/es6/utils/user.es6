@@ -14,6 +14,7 @@ export function loadUserSettings() {
   }
   const userObj = {
     currentSigel: userInfo.authorization[0].sigel,
+    resultListType: 'detailed',
   };
   saveUserSettings(userObj);
   return userObj;
