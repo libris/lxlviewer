@@ -4,7 +4,7 @@ import EntitySummary from './entity-summary';
 import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData } from '../vuex/getters';
 
 export default {
-  name: 'result-list-item',
+  name: 'result-item-detailed',
   mixins: [LensMixin],
   props: {
     focusData: {},
@@ -37,7 +37,7 @@ export default {
 </script>
 
 <template>
-  <div class="result-list-item">
+  <div class="result-item-detailed">
     <entity-summary :focus-data="focusData" :add-link="true" :lines="4"></entity-summary>
   </div>
 </template>
@@ -46,7 +46,7 @@ export default {
 <style lang="less">
 @import './_variables.less';
 
-.result-list-item {
+.result-item-detailed {
   list-style: none;
   margin-bottom: 0.5em;
   background-color: @neutral-color;

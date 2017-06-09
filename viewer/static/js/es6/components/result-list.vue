@@ -1,10 +1,12 @@
 <script>
-import ResultListItem from './result-list-item';
+import ResultItemCompact from './result-item-compact';
+import ResultItemDetailed from './result-item-detailed';
 
 export default {
   name: 'result-list',
   props: {
     results: [],
+    compact: false,
   },
   data() {
     return {
@@ -17,7 +19,8 @@ export default {
   computed: {
   },
   components: {
-    'result-list-item': ResultListItem,
+    'result-item-compact': ResultItemCompact,
+    'result-item-detailed': ResultItemDetailed,
   },
   watch: {
   },
@@ -28,8 +31,11 @@ export default {
 
 <template>
   <div class="result">
-    <ul class="result-list" v-show="results.length > 0">
-      <result-list-item :focus-data="item" v-for="item in results" track-by="$index"></result-list-item>
+    <ul class="result-list" v-if="!compact && results.length > 0">
+      <result-item-detailed :focus-data="item" v-for="item in results" track-by="$index"></result-item-detailed>
+    </ul>
+    <ul class="result-list" v-if="compact && results.length > 0">
+      <result-item-compact :focus-data="item" v-for="item in results" track-by="$index"></result-item-compact>
     </ul>
   </div>
 </template>

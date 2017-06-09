@@ -2,7 +2,7 @@
 import ResultList from './result-list';
 import EntitySearchList from './entity-search-list';
 import SearchPagination from './search-pagination';
-import { getStatus } from '../vuex/getters';
+import { getStatus, getSettings } from '../vuex/getters';
 
 export default {
   name: 'search-result-component',
@@ -11,6 +11,7 @@ export default {
     },
     getters: {
       status: getStatus,
+      settings: getSettings,
     },
   },
   props: {
@@ -58,7 +59,7 @@ export default {
       <span v-if="status.resultList.error" class="error">{{status.resultList.info}}</span>
     </div>
     <search-pagination v-if="!status.resultList.loading && !status.resultList.error" :page-data="paginationData" :show-details="true"></search-pagination>
-    <result-list v-if="!status.resultList.loading && !status.resultList.error" :results="result.items"></result-list>
+    <result-list v-if="!status.resultList.loading && !status.resultList.error" :results="result.items" :compact="settings.userSettings.resultListType === 'compact'"></result-list>
     <search-pagination v-if="!status.resultList.loading && !status.resultList.error" :page-data="paginationData" :show-details="false"></search-pagination>
   </div>
 </template>
