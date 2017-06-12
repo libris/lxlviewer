@@ -4,7 +4,7 @@
 
 {% block content %}
 {% if current_user.is_authenticated %}
-<h1>Inställningar</h1>
+<h1><span class="js-translateable" data-translateable="Settings">Settings</span></h1>
     <div class="row">
       <div class="panel panel-default">
         <div class="panel-body container-fluid settings-container dash orange">
@@ -18,29 +18,29 @@
           </div>
         <div class="col-lg-7 col-lg-offset-1">
           <span class="circle"><i class="icon fa fa-cogs" aria-hidden="true"></i></span>
-          <h3>Användarnamn</h3>
+          <h3><span class="js-translateable" data-translateable="User name">User name</span></h3>
           <div>${current_user.get().username}</div>
           <div class="form-group">
-            <h3>Aktivt sigel</h3>
+            <h3><span class="js-translateable" data-translateable="Active sigel">Active sigel</span></h3>
             {% if current_user.get().authorization %}
               {% for auth in current_user.get().authorization %}
               <div class="sigel-option">
-                ${auth.sigel} <span class="active-text">(valt)</span>
-                <button type="button" class="sigel-button" value="${auth.sigel}">Välj</button>
+                <span class="active-text"><i class="fa fa-check"></i></span> ${auth.sigel}
+                <button type="button" class="sigel-button js-translateable" value="${auth.sigel}" data-translateable="Choose">Choose</button>
               </div>
               {% endfor %}
             {% endif %}
           </div>
           <div class="form-group">
-            <h3>Språk</h3>
+            <h3><span class="js-translateable" data-translateable="Language">Language</span></h3>
              Experimentell inställning, svenska rekommenderas.
             <div class="language-option">
-              Svenska <span class="active-text">(valt)</span>
-              <button type="button" class="language-button" value="sv">Välj</button>
+              <span class="active-text"><i class="fa fa-check"></i></span> Svenska
+              <button type="button" class="language-button js-translateable" value="sv" data-translateable="Choose">Choose</button>
             </div>
             <div class="language-option">
-              Engelska <span class="active-text">(valt)</span>
-              <button type="button" class="language-button" value="en">Välj</button>
+              <span class="active-text"><i class="fa fa-check"></i></span> English
+              <button type="button" class="language-button js-translateable" value="en" data-translateable="Choose">Choose</button>
             </div>
           </div>
         </div>

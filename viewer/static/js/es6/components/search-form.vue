@@ -263,21 +263,21 @@ export default {
                     <input class="tagInput" name="{{filterParam}}">
                 </div>
                 <label class="search-label" id="searchlabel" for="q">
-                    Sök
+                    {{"Search" | translatePhrase}}
                 </label>
                 <div id="searchFieldContainer">
                     <input aria-labelledby="searchlabel" class="form-control search-input tagInput" name="q" id="searchQ" ></input>
                     <div aria-labelledby="searchlabel" class="form-control search-input" id="searchQsmart">
                         <input v-for="input in formData" type="text" @focus="handleFocus($index)" @input="updateField" @keydown="handleInput" :name="input.name" v-model="input.value" class="smartInput" :class="input.class">
                     </div>
-                    <button id="searchSubmit" class="search-button btn btn-primary" @click.prevent="doSearch"><i class="fa fa-search"></i> Sök</button>
+                    <button id="searchSubmit" class="search-button btn btn-primary" @click.prevent="doSearch"><i class="fa fa-search"></i> {{"Search" | translatePhrase}}</button>
                 </div>
                 </div>
             </div>
 
             <div v-if="filterParam.length > 0 && result.statistics" class="type-buttons" aria-label="Välj typ">
                 <label class="no-choice">
-                    <input :name="filterParam" id="noneType" value="allParam" checked type="radio"> Alla
+                    <input :name="filterParam" id="noneType" value="allParam" checked type="radio"> {{"All" | translatePhrase}}
                 </label>
                 <label v-for="observation in observations" class="">
                     <input :name="filterParam" :value="observation['@id']" type="radio">

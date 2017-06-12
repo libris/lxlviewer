@@ -350,7 +350,7 @@ export default {
   flex-direction: row;
   box-shadow: inset 0px 0px 1em 0px transparent;
   transition: 6s ease;
-  transition-property: outline;
+  transition-property: outline, box-shadow;
   outline: 2px solid transparent;
   max-height: 200vh;
   opacity: 1;
