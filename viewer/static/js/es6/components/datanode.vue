@@ -9,6 +9,7 @@ import ItemEntity from './item-entity';
 import ItemEmbedded from './item-embedded';
 import ItemValue from './item-value';
 import ItemLocal from './item-local';
+import { mixin as clickaway } from 'vue-clickaway';
 import * as VocabUtil from '../utils/vocab';
 import * as LayoutUtil from '../utils/layout';
 import LodashProxiesMixin from './mixins/lodash-proxies-mixin';
@@ -17,7 +18,7 @@ import { changeStatus } from '../vuex/actions';
 
 export default {
   name: 'data-node',
-  mixins: [LodashProxiesMixin],
+  mixins: [clickaway, LodashProxiesMixin],
   props: [
     'parentKey',
     'parentIndex',
@@ -36,6 +37,7 @@ export default {
       removeHover: false,
       foundChip: false,
       removed: false,
+      removeConfirmation: false,
     };
   },
   vuex: {
@@ -213,6 +215,7 @@ export default {
       }
     },
     removeThis() {
+      this.removeConfirmation = false;
       if (this.parentKey) {
         console.warn('Remove was called on an embedded field, this is not supported.');
         return false;
@@ -325,7 +328,14 @@ export default {
     </ul>
   </div>
   <div class="actions">
-    <div class="action" v-if="!isLocked && isRemovable" :class="{'shown-button': showActionButtons, 'hidden-button': !showActionButtons, 'disabled': activeModal}"><i v-on:click="removeThis()" @mouseover="removeHover = true" @mouseout="removeHover = false" class="fa fa-trash fa-lg action-button action-remove"></i></div>
+    <div class="action" v-show="!isLocked && isRemovable" :class="{'shown-button': showActionButtons, 'hidden-button': !showActionButtons, 'disabled': activeModal}">
+      <i v-on:click="removeConfirmation = true" @mouseover="removeHover = true" @mouseout="removeHover = false" class="fa fa-trash fa-lg action-button action-remove"></i>
+    </div>
+    <div class="confirm-remove-box" v-if="removeConfirmation" v-on-clickaway="removeConfirmation = false" v-on:click="removeThis(true)">
+      <div>
+        {{"Remove" | translatePhrase}}
+      </div>
+    </div>
   </div>
 </div>
 </template>
@@ -340,11 +350,12 @@ export default {
   flex-direction: row;
   box-shadow: inset 0px 0px 1em 0px transparent;
   transition: 6s ease;
-  transition-property: outline box-shadow;
+  transition-property: outline;
   outline: 2px solid transparent;
   max-height: 200vh;
   opacity: 1;
   &.removed {
+    transition: 0.5s all ease;
     min-height: 0em;
     max-height: 0em;
     opacity: 0;
@@ -360,6 +371,31 @@ export default {
     padding: 1px 3px;
     margin: 0px;
     color: black;
+  }
+  .confirm-remove-box {
+    position: absolute;
+    line-height: 1.6;
+    white-space: normal;
+    div {
+      background-color: @black;
+      padding: 0.1em 0.5em;
+      cursor: pointer;
+      color: white;
+      &:hover {
+        background-color: @gray-dark;
+      }
+    }
+    &::before {
+      content: "";
+      width: 0;
+      height: 0;
+      border-style: solid;
+      border-width: 0 5px 6px 5px;
+      border-color: transparent transparent @black transparent;
+      font-size: 0;
+      line-height: 0;
+      margin-left: 27px;
+    }
   }
   .node-list {
     line-height: 0;
@@ -508,16 +544,14 @@ export default {
       justify-content: flex-end;
       align-items: center;
       margin-left: -5px;
-      > div {
-
-      }
-      > span {
-      }
       .disabled {
         visibility: hidden;
       }
       .action-remove {
         padding: 10px;
+      }
+      .confirm-remove-box {
+        transform: translate(12px, 18px);
       }
     }
   }

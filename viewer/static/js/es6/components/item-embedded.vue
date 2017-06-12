@@ -11,11 +11,12 @@ import DataNode from './datanode';
 import ItemEntity from './item-entity';
 import ItemMixin from './mixins/item-mixin';
 import LensMixin from './mixins/lens-mixin';
+import {mixin as clickaway} from 'vue-clickaway';
 import { getVocabulary, getDisplayDefinitions, getSettings, getEditorData } from '../vuex/getters';
 
 export default {
   name: 'item-embedded',
-  mixins: [ItemMixin, LensMixin],
+  mixins: [ItemMixin, LensMixin, clickaway],
   props: {
     item: {},
     key: '',
@@ -36,6 +37,7 @@ export default {
     return {
       formObj: {},
       expanded: false,
+      removeConfirmation: false,
     };
   },
   computed: {
@@ -101,7 +103,14 @@ export default {
       <i class="fa fa-chevron-right" :class="{'down': expanded}" @click="toggleExpanded()"></i>
       <span class="type"><a href="/vocab/#{{item['@type']}}">{{ item['@type'] | labelByLang | capitalize }}</a></span>
       <span class="collapsed-label" @click="toggleExpanded()"><span v-show="!expanded">{{collapsedLabel}}</span><span class="placeholder">.</span></span>
-      <i v-if="!isLocked" class="fa fa-trash chip-action" :class="{'show-icon': showActionButtons}" v-on:click="removeThis(true)"></i>
+      <span>
+        <i v-if="!isLocked" class="fa fa-trash chip-action" :class="{'show-icon': showActionButtons}" v-on:click="removeConfirmation = true"></i>
+        <div class="confirm-remove-box" v-if="removeConfirmation" v-on-clickaway="removeConfirmation = false" v-on:click="removeThis(true)">
+          <div>
+            {{"Remove" | translatePhrase}}
+          </div>
+        </div>
+      </span>
     </span>
     <data-node v-show="expanded" v-for="(k,v) in filteredItem" v-show="!isLocked || v" :is-inner="true" :is-locked="isLocked" :allow-local="true" :is-removable="false" :embedded="true" :parent-key="key" :parent-index="index" :key="k" :value="v" :focus="focus" :show-action-buttons="showActionButtons"></data-node>
   </div>
