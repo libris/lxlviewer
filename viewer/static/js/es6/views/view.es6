@@ -96,7 +96,7 @@ export default class View {
   }
 
   translate() {
-    const langCode = this.settings.language;
+    const langCode = this.settings.userSettings.language || this.settings.language;
     $('.js-translateable').each(function () {
       const originalText = $(this).attr('data-translateable');
       const newText = StringUtil.getUiPhraseByLang(originalText, langCode);
