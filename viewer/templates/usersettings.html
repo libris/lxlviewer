@@ -25,7 +25,7 @@
             {% if current_user.get().authorization %}
               {% for auth in current_user.get().authorization %}
               <div class="sigel-option">
-                ${auth.sigel} <span class="active-text"><i class="fa fa-check"></i></span>
+                <span class="active-text"><i class="fa fa-check"></i></span> ${auth.sigel}
                 <button type="button" class="sigel-button js-translateable" value="${auth.sigel}" data-translateable="Choose">Choose</button>
               </div>
               {% endfor %}
@@ -35,11 +35,11 @@
             <h3><span class="js-translateable" data-translateable="Language">Language</span></h3>
              Experimentell inställning, svenska rekommenderas.
             <div class="language-option">
-              Svenska <span class="active-text"><i class="fa fa-check"></i></span>
+              <span class="active-text"><i class="fa fa-check"></i></span> Svenska
               <button type="button" class="language-button js-translateable" value="sv" data-translateable="Choose">Choose</button>
             </div>
             <div class="language-option">
-              English <span class="active-text"><i class="fa fa-check"></i></span>
+              <span class="active-text"><i class="fa fa-check"></i></span> English
               <button type="button" class="language-button js-translateable" value="en" data-translateable="Choose">Choose</button>
             </div>
           </div>
