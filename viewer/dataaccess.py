@@ -75,11 +75,6 @@ sites = {
                     "sortOrder":"desc",
                     "size":10
                 },
-                "issuanceType":{
-                    "sort":"value",
-                    "sortOrder":"desc",
-                    "size":10
-                },
                 "instanceOf.@type":{
                     "sort":"key",
                     "sortOrder":"asc",
