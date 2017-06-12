@@ -107,8 +107,8 @@ export default {
       <span class="collapsed-label" @click="toggleExpanded()"><span v-show="!expanded">{{collapsedLabel}}</span><span class="placeholder">.</span></span>
       <span>
         <i v-if="!isLocked" class="fa fa-trash chip-action" :class="{'show-icon': showActionButtons}" v-on:click="removeConfirmation = true"></i>
-        <div class="confirm-remove-box" v-if="removeConfirmation" v-on-clickaway="removeConfirmation = false" v-on:click="removeThis(true)">
-          <div>
+        <div class="confirm-remove-box" v-if="removeConfirmation" v-on-clickaway="removeConfirmation = false">
+          <div v-on:click="removeThis(true)">
             {{"Remove" | translatePhrase}}
           </div>
         </div>
