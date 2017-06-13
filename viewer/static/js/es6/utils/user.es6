@@ -15,7 +15,7 @@ export function loadUserSettings() {
   const fetchedObj = JSON.parse(localStorage.getItem('user'));
   const userInfo = window.userInfo;
   if (fetchedObj) {
-    if (verifySigel(fetchedObj.currentSigel, userInfo.authorization) === false) {
+    if (verifySigel(fetchedObj.currentSigel, userInfo) === false) {
       if (userInfo.authorization && userInfo.authorization.length > 0) {
         fetchedObj.currentSigel = userInfo.authorization[0].sigel;
       }
@@ -32,8 +32,8 @@ export function loadUserSettings() {
   return userObj;
 }
 
-function verifySigel(sigelId, authorizationList) {
-  if (!authorizationList) {
+function verifySigel(sigelId, userInfo) {
+  if (!userInfo || !userInfo.authorizationList) {
     return false;
   }
   for (const sigel of authorizationList) {
