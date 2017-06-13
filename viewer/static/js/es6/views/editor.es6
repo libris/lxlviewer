@@ -133,8 +133,6 @@ export default class Editor extends View {
         },
         'edit-item': function() {
           this.editItem();
-          self.dirty = true;
-          this.initiateWarnBeforeUnload();
         },
         'cancel-edit': function() {
           this.changeStatus('inEdit', false);
@@ -193,7 +191,13 @@ export default class Editor extends View {
           return _.isPlainObject(o);
         },
         editItem() {
-          this.changeStatus('inEdit', true);
+          if (UserUtil.isLoggedIn(window.userInfo)) {
+            self.dirty = true;
+            this.initiateWarnBeforeUnload();
+            this.changeStatus('inEdit', true);
+          } else {
+            window.location = '/login';
+          }
         },
         getCollectionName(entity) {
           const vocabPfx = this.settings.vocabPfx;
