@@ -15,7 +15,7 @@ export function loadUserSettings() {
   const fetchedObj = JSON.parse(localStorage.getItem('user'));
   const userInfo = window.userInfo;
   if (fetchedObj) {
-    if (verifySigel(fetchedObj.currentSigel, userInfo) === false) {
+    if (isLoggedIn(userInfo) && verifySigel(fetchedObj.currentSigel, userInfo) === false) {
       if (userInfo.authorization && userInfo.authorization.length > 0) {
         fetchedObj.currentSigel = userInfo.authorization[0].sigel;
       }
@@ -25,7 +25,7 @@ export function loadUserSettings() {
   const userObj = {
     resultListType: 'detailed',
   };
-  if (userInfo.authorization && userInfo.authorization.length > 0) {
+  if (isLoggedIn(userInfo)) {
     userObj.currentSigel = userInfo.authorization[0].sigel;
   }
   saveUserSettings(userObj);
