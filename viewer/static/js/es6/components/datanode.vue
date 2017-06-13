@@ -331,8 +331,8 @@ export default {
     <div class="action" v-show="!isLocked && isRemovable" :class="{'shown-button': showActionButtons, 'hidden-button': !showActionButtons, 'disabled': activeModal}">
       <i v-on:click="removeConfirmation = true" @mouseover="removeHover = true" @mouseout="removeHover = false" class="fa fa-trash fa-lg action-button action-remove"></i>
     </div>
-    <div class="confirm-remove-box" v-if="removeConfirmation" v-on-clickaway="removeConfirmation = false" v-on:click="removeThis(true)">
-      <div>
+    <div class="confirm-remove-box" v-if="removeConfirmation" v-on-clickaway="removeConfirmation = false">
+      <div v-on:click="removeThis(true)">
         {{"Remove" | translatePhrase}}
       </div>
     </div>
