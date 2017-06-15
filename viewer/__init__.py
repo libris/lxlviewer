@@ -395,7 +395,6 @@ def thingnewp():
 
 
 @app.route('/<path:path>/edit')
-@admin.login_required
 def thingedit(path):
     r = _proxy_request(request, session, url_path="/{0}".format(path))
 
