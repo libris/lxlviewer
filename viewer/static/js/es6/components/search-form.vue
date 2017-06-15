@@ -144,7 +144,9 @@ export default {
                 form.submit();
             } else {
                 for(const pair of data.entries()) {
-                    inputs.push(`${pair[0]}=${pair[1]}`);
+                    if (pair[1] !== '') {
+                        inputs.push(`${pair[0]}=${pair[1]}`);
+                    }
                 }
                 const url = `${form.action}?${inputs.join('&')}`;
                 const resultPromise = new Promise((resolve, reject) => {
@@ -171,7 +173,7 @@ export default {
       removeEmptyFields() {
         // Empty inputs
         $('#searchForm').find('input').filter(function() {
-            return !$.trim(this.value).length || this.type === 'radio' && (this.className.indexOf('searchphrase') < 0);
+            return !$.trim(this.value).length && this.type !== 'radio' && (this.className.indexOf('searchphrase') < 0);
         }).prop('disabled', true);
       },
       clearFields() {
@@ -202,6 +204,12 @@ export default {
             });
           });
           return observations;
+      },
+      dataSetFilters() {
+          if (this.settings.siteInfo.title === 'libris.kb.se') {
+            return this.settings.dataSetFilters.libris;
+          }
+          return this.observations.map(observation => observation['@id']);
       },
       filters() {
           const filters = [];
@@ -255,12 +263,10 @@ export default {
         <form action="/find" method="GET" id="searchForm">
             <div class="form-inline">
                 <div class="form-group">
-                <input v-if="siteTitle == 'libris.kb.se'" class="tagInput" name="@type" value="Instance" />
                 <div class="tagInputContainer">
                     <input class="tagInput" name="identifiedBy.value">
                     <input class="tagInput" name="identifiedBy.@type">
                     <input class="tagInput" name="_limit" value="20">
-                    <input class="tagInput" name="{{filterParam}}">
                 </div>
                 <label class="search-label" id="searchlabel" for="q">
                     {{"Search" | translatePhrase}}
@@ -275,17 +281,17 @@ export default {
                 </div>
             </div>
 
-            <div v-if="filterParam.length > 0 && result.statistics" class="type-buttons" aria-label="Välj typ">
-                <label class="no-choice">
-                    <input :name="filterParam" id="noneType" value="allParam" checked type="radio"> {{"All" | translatePhrase}}
+            <div class="type-buttons" aria-label="Välj typ">
+                <label v-for="filter in dataSetFilters" class="">
+                    <input :name="filterParam" :value="filter" type="radio" :checked="filter === 'Instance'">
+                    {{filter | labelByLang}}
                 </label>
-                <label v-for="observation in observations" class="">
-                    <input :name="filterParam" :value="observation['@id']" type="radio">
-                    {{observation.label | labelByLang}}
+                <label class="no-choice">
+                    <input :name="filterParam" id="noneType" value="" :checked="siteTitle != 'libris.kb.se'" type="radio"> {{"All" | translatePhrase}}
                 </label>
             </div>
 
-            <div v-if="result.search" class="activated-facets">
+           <!-- <div v-if="result.search" class="activated-facets">
                 <label>
                     Aktiv filtrering
                 </label>
@@ -296,7 +302,7 @@ export default {
                         </a>
                     </li>
                 </ul>
-            </div>
+            </div> -->
         </form>
     </div>
 </template>

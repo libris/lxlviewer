@@ -58,8 +58,8 @@ sites = {
         TYPE: "DataCatalog",
         "title": "libris.kb.se",
         "summary": {"articleBody": "<p>Data på <b>LIBRIS.KB.SE</b>.</p>"},
-        "statsindex": '{"instanceOf.@type": {"@type": []}}',
-        "filter_param": "instanceOf.@type",
+        "statsindex": '{"@type": []}',
+        "filter_param": "@type",
             # TODO: + @reverse.itemOf.heldBy.@id (and/or count)?
         #"stats": {"@type":{"meta.bibliography.@id":{"publication.providerDate":[]}}}
         "statsfind": 

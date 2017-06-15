@@ -81,6 +81,14 @@ export default class View {
       validSearchTags: [
         'isbn',
       ],
+      dataSetFilters: {
+        libris: [
+          'Instance',
+          'Work',
+          'Agent',
+          'Concept',
+        ],
+      },
     };
   }
 
