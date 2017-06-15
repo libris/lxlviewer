@@ -78,10 +78,12 @@
               <a href="/import">
                 <i class="fa fa-download" aria-hidden="true"></i> Importera</a>
             </li>-->
+            % if request.path.find('/edit') != -1
             <li class="">
               <a href="/">
-                <i class="fa fa-home" aria-hidden="true"></i> <span class="js-translateable" data-translateable="Home">Home</span></a>
+                <i class="fa fa-search" aria-hidden="true"></i> <span class="js-translateable" data-translateable="New search">New search</span></a>
             </li>
+            % endif
             <li class="">
               <a href="/createnew">
                 <i class="fa fa-file-text" aria-hidden="true"></i> <span class="js-translateable" data-translateable="Create new">Create new</a></a>
