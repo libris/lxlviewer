@@ -15,6 +15,6 @@
     "givenName",
     "name"
   ],
-  "info": ["responsibilityStatement", "instanceOf", "contribution"],
+  "info": ["responsibilityStatement", "instanceOf", "contribution", "broader"],
   "identifiers": ["identifiedBy", "sameAs"]
 }
