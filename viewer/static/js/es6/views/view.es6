@@ -13,7 +13,11 @@ export default class View {
       // vocabPfx: 'kbv:',
       vocabPfx: 'https://id.kb.se/vocab/',
       siteInfo: window.siteInfo,
-      embeddedTypes: ['StructuredValue', 'ProvisionActivity', 'Contribution'],
+      embeddedTypes: [
+        'StructuredValue',
+        'ProvisionActivity',
+        'Contribution',
+      ],
       baseMaterials: [
         'https://id.kb.se/vocab/Instance',
         'https://id.kb.se/vocab/Work',
