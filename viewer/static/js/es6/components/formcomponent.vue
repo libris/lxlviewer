@@ -83,7 +83,7 @@ export default {
           };
         }
       });
-      sortedAllowed = _.sortBy(extendedAllowed, [property => property.label.toLowerCase()]);
+      sortedAllowed = _.sortBy(extendedAllowed, ['label']);
       return sortedAllowed;
     },
     formData() {
