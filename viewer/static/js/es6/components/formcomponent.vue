@@ -65,17 +65,23 @@ export default {
         const oId = element.item['@id'].replace(settings.vocabPfx, '');
         element.added = (formObj.hasOwnProperty(oId) && formObj[oId] !== null);
       }
-      
+
       const extendedAllowed = allowed.map(property => {
         const labelByLang = property.item.labelByLang;
         if (typeof labelByLang !== 'undefined') {
-          const label = ((typeof labelByLang[this.settings.language] !== 'undefined') ? labelByLang[this.settings.language] : labelByLang.en);
+          // Try to get the label in the preferred language
+          let label = ((typeof labelByLang[this.settings.language] !== 'undefined') ? labelByLang[this.settings.language] : labelByLang.en);
+          // If several labels are present, use the first one
+          if (_.isArray(label)) {
+            label = label[0];
+          }
           return {
             added: property.added,
             item: property.item,
             label: label
           };
         } else {
+          // If no label, use @id as label
           return {
             added: property.added,
             item: property.item,
@@ -83,7 +89,9 @@ export default {
           };
         }
       });
-      sortedAllowed = _.sortBy(extendedAllowed, ['label']);
+      sortedAllowed = _.sortBy(extendedAllowed, (prop) => {
+        return prop.label.toLowerCase();
+      });
       return sortedAllowed;
     },
     formData() {
