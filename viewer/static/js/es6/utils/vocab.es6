@@ -293,3 +293,10 @@ export function isEmbedded(classId, vocab, settings) {
   }
   return false;
 }
+
+export function getInstances(className, vocab, vocabPfx) {
+  const instances = vocab
+    .filter(vocabObj => (typeof vocabObj['@type'] !== 'undefined' && vocabObj['@type'].indexOf(`${vocabPfx + className}`) > -1))
+    .map(vocabObj => vocabObj['@id'].replace(vocabPfx, ''));
+  return instances;
+}

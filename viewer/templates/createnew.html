@@ -13,15 +13,18 @@
         <div id="app">
           <div class="createnew-form" v-if="initialized === true">
             <form action="/edit" method="POST">
-              <div class="radio" v-for="material in materialLists" track-by="$index">
-                <label v-on:click="updateChosenType">
-                  <input name="@type" type="radio" value="{{material}}">{{material | labelByLang}}</input>
-                </label>
-              </div>
+              <select v-model="chosenType">
+                <option disabled value="">{{"Choose type" | translatePhrase}}</option>
+                <option v-for="material in materialLists" value="{{material}}">{{material | labelByLang}}</option>
+              </select>
+              <select v-model="selectedIssuanceType">
+                <option disabled value="">{{"Choose" | translatePhrase}} {{"issuanceType" | labelByLang}}</option>
+                <option v-for="issuanceType in issuanceTypes" value="{{issuanceType}}" label="{{issuanceType | labelByLang}}">
+              </select>
               <textarea id="copyItem" name="data" class="hidden">{{itemData | json}}</textarea>
-              <div class="submitter">
+              <span class="submitter">
                 <button v-bind:disabled="!hasChosenMaterials">Skapa formulär</button>
-              </div>
+              </span>
             </form>
           </div>
         </div>

@@ -7,6 +7,7 @@ import * as UserUtil from '../utils/user';
 import * as VocabUtil from '../utils/vocab';
 import * as RecordUtil from '../utils/record';
 import * as DisplayUtil from '../utils/display';
+import * as StringUtil from '../utils/string';
 import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData, getStatus, getKeybindState } from '../vuex/getters';
 import { changeSettings, changeNotification, loadVocab, loadDisplayDefs, syncData, changeSavedStatus, changeStatus } from '../vuex/actions';
 
@@ -60,6 +61,10 @@ export default class CreateNew extends View {
       return lbl;
     });
 
+    Vue.filter('translatePhrase', (string) => {
+      return StringUtil.getUiPhraseByLang(string, self.settings.language);
+    });
+
     self.vm = new Vue({
       el: '#app',
       vuex: {
@@ -88,6 +93,7 @@ export default class CreateNew extends View {
         vocab,
         chosenType: '',
         initialized: false,
+        selectedIssuanceType: '',
       },
       watch: {
       },
@@ -116,10 +122,14 @@ export default class CreateNew extends View {
               {
                 '@id': '_:TEMP_ID#it',
                 '@type': this.chosenType,
+                issuanceType: this.selectedIssuanceType,
               },
             ],
           };
           return obj;
+        },
+        issuanceTypes() {
+          return VocabUtil.getInstances('IssuanceType', this.vocab, this.settings.vocabPfx);
         },
       },
       components: {
