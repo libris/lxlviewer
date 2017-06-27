@@ -136,7 +136,6 @@ export default {
     },
     'close-modals'() {
       this.hide();
-      this.selectedIndex = -1;
     },
   },
   methods: {
