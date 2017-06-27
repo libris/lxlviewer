@@ -5,6 +5,7 @@ import store from '../vuex/store';
 import ComboKeys from 'combokeys';
 import KeyBindings from '../keybindings.json';
 import * as DataUtil from '../utils/data';
+import * as LayoutUtil from '../utils/layout';
 import * as httpUtil from '../utils/http';
 import * as toolbarUtil from '../utils/toolbar';
 import * as _ from 'lodash';
@@ -15,6 +16,7 @@ import * as RecordUtil from '../utils/record';
 import * as UserUtil from '../utils/user';
 import * as StringUtil from '../utils/string';
 import FormComponent from '../components/formcomponent';
+import HelpComponent from '../components/help-component';
 import EditorControls from '../components/editorcontrols';
 import HeaderComponent from '../components/headercomponent';
 import Notification from '../components/notification';
@@ -130,6 +132,12 @@ export default class Editor extends View {
         },
         'save-item': function() {
           this.saveItem();
+        },
+        'show-help': function(value) {
+          LayoutUtil.scrollLock(true);
+          this.changeStatus('keybindState', 'help-window');
+          this.changeStatus('showHelp', true);
+          this.changeStatus('helpSection', value);
         },
         'edit-item': function() {
           this.editItem();
@@ -283,6 +291,7 @@ export default class Editor extends View {
         'form-component': FormComponent,
         'editor-controls': EditorControls,
         'header-component': HeaderComponent,
+        'help-component': HelpComponent,
         'notification': Notification,
       },
       store,

@@ -17,5 +17,8 @@
   },
   "marc-preview": {
     "esc": "close-modals",
+  },
+  "help-window": {
+    "esc": "close-modals",
   }
 }

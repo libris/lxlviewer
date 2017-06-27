@@ -61,6 +61,9 @@ export default {
       this.loadingEdit = true;
       setTimeout(() => this.$dispatch('edit-item'), 0); // $nextTick doesn't work
     },
+    showHelp() {
+      this.$dispatch('show-help', 'editor-overview');
+    },
     toggleDev() {
       this.changeStatus('isDev', !this.status.isDev);
     },
@@ -138,6 +141,9 @@ export default {
           </div>
           <div class="action" v-on:click="toggleDev()" v-bind:class="{'active': status.isDev}">
             <i class="fa fa-wrench" aria-hidden="true"></i>
+          </div>
+          <div class="action" v-on:click="showHelp()">
+            <i class="fa fa-question-circle action" aria-hidden="true"></i>
           </div>
           <div class="action">
             <span class="data-selector" v-on:click="otherFormatMenu = true"></i> RDF <i class="fa fa-caret-down" aria-hidden="true"></i></span>

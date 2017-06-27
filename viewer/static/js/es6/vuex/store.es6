@@ -16,6 +16,8 @@ const state = {
     color: 'grey',
   },
   status: {
+    showHelp: false,
+    helpSection: 'none',
     lastAdded: '',
     lastSavedData: {},
     level: 'mainEntity',

@@ -16,6 +16,7 @@
   <span class="error hidden"></span>
 </div>
 <div id="editorApp">
+  <help-component :open-all="true"></help-component>
   <editor-controls v-if="initialized == true"></editor-controls>
   <header-component id="main-header" :full="true" v-if="initialized == true"></header-component>
   <form-component :locked="!status.inEdit" v-if="initialized == true"></form-component>
