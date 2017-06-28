@@ -13,7 +13,11 @@
     "itemOf",
     "familyName",
     "givenName",
-    "name"
+    "name",
+    "numeration",
+    "qualifyingNote",
+    "birthYear",
+    "deathYear"
   ],
   "info": ["responsibilityStatement", "instanceOf", "contribution", "broader"],
   "identifiers": ["identifiedBy", "sameAs"]
