@@ -353,7 +353,7 @@ export default {
   transition-property: outline, box-shadow;
   outline: 2px solid transparent;
   max-height: 200vh;
-  overflow-y: scroll;
+  overflow-y: auto;
   opacity: 1;
   &.removed {
     transition: 0.5s all ease;
