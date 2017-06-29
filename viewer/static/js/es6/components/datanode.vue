@@ -353,6 +353,7 @@ export default {
   transition-property: outline, box-shadow;
   outline: 2px solid transparent;
   max-height: 200vh;
+  overflow-y: scroll;
   opacity: 1;
   &.removed {
     transition: 0.5s all ease;
@@ -571,6 +572,8 @@ export default {
     >.value {
       display: inline-block;
       flex: 1 1 100%;
+      max-height: 50vh;
+      overflow-y: scroll;
       > ul {
         width: 100%;
         list-style: none;
