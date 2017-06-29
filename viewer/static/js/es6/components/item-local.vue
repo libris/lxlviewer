@@ -24,8 +24,8 @@ export default {
     key: '',
     index: Number,
     isLocked: false,
-    expanded: false,
     showActionButtons: false,
+    isExpandedType: false,
   },
   vuex: {
     getters: {
@@ -49,9 +49,24 @@ export default {
       extracted: {},
       extractDialogActive: false,
       extracting: false,
+      expanded: false,
     };
   },
   computed: {
+    collapsedLabel() {
+      const summary = this.getSummary;
+
+      const infoArray = [].concat(summary.header, summary.sub, summary.info, summary.identifiers);
+      const filteredArray =
+        [].concat(summary.header, summary.sub, summary.info, summary.identifiers)
+        .filter(item => {
+          return (item.property !== '@type' && item.property !== 'error');
+        });
+      const label = this.getFormattedEntries(filteredArray).filter(value => {
+        return value !== '';
+      }).join(' | ');
+      return label;
+    },
     isExtractable() {
       if (this.settings.nonExtractableClasses.indexOf(this.focusData['@type']) === -1) {
         return true;
@@ -83,6 +98,9 @@ export default {
     this.$options.components['data-node'] = Vue.extend(DataNode);
   },
   methods: {
+    toggleExpanded() {
+      this.expanded = !this.expanded;
+    },
     openExtractDialog() {
       this.changeStatus('keybindState', 'extraction-dialog');
       LayoutUtil.scrollLock(true);
@@ -207,22 +225,26 @@ export default {
 </script>
 
 <template>
-  <div class="item-local" @mouseleave="showCardInfo=false">
-    <div class="chip" v-show="!inEdit && !expanded" v-bind:class="{ 'locked': isLocked, 'highlighted': showCardInfo }" @mouseenter="showCardInfo=true">
-      <span class="chip-label">
-        {{getItemLabel}}
+  <div class="item-local-container">
+    <div v-if="!isExpandedType" class="item-local" :class="{'expanded': expanded}">
+      <span>
+        <i class="fa fa-chevron-right" :class="{'down': expanded}" @click="toggleExpanded()"></i>
+        <span class="type"><a href="/vocab/#{{item['@type']}}">{{ item['@type'] | labelByLang | capitalize }}</a></span>
+        <span class="collapsed-label" @click="toggleExpanded()"><span v-show="!expanded">{{collapsedLabel}}</span><span class="placeholder">.</span></span>
+        <span>
+          <i v-if="isExtractable && !isLocked" class="chip-action fa fa-file-o" v-on:click="openExtractDialog" v-if="!isLocked" :class="{'show-icon': showActionButtons}"></i>
+          <i v-if="!isLocked" class="fa fa-trash chip-action" :class="{'show-icon': showActionButtons}" v-on:click="removeConfirmation = true"></i>
+          <div class="confirm-remove-box" v-if="removeConfirmation" v-on-clickaway="removeConfirmation = false">
+            <div v-on:click="removeThis(true)">
+              {{"Remove" | translatePhrase}}
+            </div>
+          </div>
+        </span>
       </span>
-      <i v-if="isExtractable && !isLocked" class="chip-action fa fa-file" v-on:click="openExtractDialog" v-if="!isLocked"></i>
+      <data-node v-show="expanded" v-for="(k,v) in filteredItem" v-show="!isLocked || v" :is-inner="true" :is-locked="isLocked" :allow-local="true" :is-removable="false" :embedded="true" :parent-key="key" :parent-index="index" :key="k" :value="v" :focus="focus" :show-action-buttons="showActionButtons"></data-node>
     </div>
-    <div class="local-form" v-show="inEdit">
-      <strong>{{ item['@type'] | labelByLang | uppercase }}</strong> ({{ "Local entity" | translatePhrase }})
-      <data-node v-for="(k,v) in filteredItem" :is-inner="true" :is-locked="isLocked" :embedded="true" :is-removable="false" :parent-key="key" :parent-index="index" :key="k" :value="v" :focus="focus" :allow-local="false" :show-action-buttons="showActionButtons"></data-node>
-      <div class="actions">
-        <button v-on:click="removeThis">Radera</button>
-        <button v-on:click="closeForm" v-bind:disabled="isEmpty">Klar</button>
-      </div>
-    </div>
-    <card-component :title="getItemLabel" :focus-data="item" :uri="item['@id']" :is-local="true" :is-extractable="isExtractable" :is-locked="isLocked" :should-show="showCardInfo && !inEdit" :floating="!expanded"></card-component>
+    <card-component v-if="isExpandedType" :title="getItemLabel" :focus-data="item" :uri="item['@id']" :is-local="true" :is-extractable="isExtractable" :is-locked="isLocked"></card-component>
+    
     <div class="window" v-if="extractDialogActive">
       <div class="header">
         <span class="title">
@@ -258,10 +280,98 @@ export default {
 
 <style lang="less">
 @import './_variables.less';
+.item-local-container {
+  .item-local {
+    .local-form {
+      width: @col-value - 20;
+      border: dashed #ababab;
+      border-bottom-color: #ccc;
+      border-bottom-style: solid;
+      border-width: 1px 1px 2px 1px;
+      padding: 5px;
+      background-color: #ececec;
+      .actions {
+        margin-top: 0.5em;
+        text-align: right;
+      }
+      &::before {
+        content: '\00000A';
+      }
+    }
 
-.item-local {
-  > .chip {
-    .chip-mixin(#a2a2a2, #fff);
+    width: 100%;
+    background-color: #fdfdfd;
+    border: solid #ccc;
+    border-width: 1px 1px 3px 1px;
+    margin: 0px 0px 5px 0px;
+    line-height: 1.6;
+    max-height: 40px;
+    overflow: hidden;
+    &.expanded {
+      transition: all 0.5s ease;
+      max-height: 200vh;
+    }
+    &.removed {
+      transition: all 0.5s ease;
+      max-height: 0px;
+      margin: 0px;
+      border: none;
+    }
+    > div {
+      padding: 5px;
+    }
+    > span {
+      display: flex;
+      align-items: center;
+      padding: 5px;
+      .confirm-remove-box {
+        transform: translate(-20px, -20px);
+      }
+      i {
+        transition: all 0.2s ease;
+        padding: 0 0.5em;
+        cursor: pointer;
+        &.down {
+          transform:rotate(90deg);
+        }
+      }
+      .chip-action {
+        transition: opacity 0.25s ease;
+        opacity: 0;
+        align-self: right;
+        cursor: pointer;
+        &.show-icon {
+          opacity: 1;
+        }
+      }
+      .collapsed-label {
+        cursor: pointer;
+        flex-grow: 1;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        .placeholder {
+          visibility: hidden;
+        }
+        > span {
+          padding-left: 1em;
+          height: 1.6em;
+        }
+      }
+    }
+    .type {
+      // text-transform: uppercase;
+      font-weight: bold;
+      a {
+        text-decoration: none;
+        cursor: help;
+        color: @black;
+      }
+    }
+
+    .item-label {
+      display: block;
+    }
   }
   .window {
     .window-mixin();
@@ -282,22 +392,6 @@ export default {
 
         }
       }
-    }
-  }
-  .local-form {
-    width: @col-value - 20;
-    border: dashed #ababab;
-    border-bottom-color: #ccc;
-    border-bottom-style: solid;
-    border-width: 1px 1px 2px 1px;
-    padding: 5px;
-    background-color: #ececec;
-    .actions {
-      margin-top: 0.5em;
-      text-align: right;
-    }
-    &::before {
-      content: '\00000A';
     }
   }
 }

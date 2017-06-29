@@ -287,7 +287,7 @@ export default {
       return VocabUtil.isEmbedded(type, this.vocab, this.settings);
     },
     isChip(item) {
-      if (((this.getDatatype(item) == 'entity' || this.getDatatype(item) == 'local') && !this.isExpandedType)) {
+      if (((this.getDatatype(item) == 'entity') && !this.isExpandedType)) {
         this.foundChip = true;
         return true;
       }
@@ -318,7 +318,7 @@ export default {
       <li v-for="item in valueAsArray" :class="{ 'isChip': isChip(item)}" track-by="$index">
         <div class="erroneous-object" v-if="getDatatype(item) == 'error'"><i class="fa fa-frown-o"></i> {{item | json}}</div>
         <item-entity v-if="getDatatype(item) == 'entity'" :is-locked="isLocked" :expanded="isExpandedType" :item="item" :key="key" :index="$index"></item-entity>
-        <item-local v-if="getDatatype(item) == 'local'" :is-locked="isLocked" :expanded="isExpandedType" :item="item" :key="key" :index="$index" :show-action-buttons="showActionButtons"></item-local>
+        <item-local v-if="getDatatype(item) == 'local'" :is-locked="isLocked" :is-expanded-type="isExpandedType" :item="item" :key="key" :index="$index" :show-action-buttons="showActionButtons"></item-local>
         <item-embedded v-if="getDatatype(item) == 'embedded'" :is-locked="isLocked" :item="item" :key="key" :index="$index" :show-action-buttons="showActionButtons"></item-embedded>
         <item-value v-if="getDatatype(item) == 'value'" :is-removable="!hasSingleValue" :is-locked="isLocked" :value="item" :key="key" :index="$index" :show-action-buttons="showActionButtons"></item-value>
       </li>
