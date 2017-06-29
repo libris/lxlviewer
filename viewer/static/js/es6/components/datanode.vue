@@ -573,7 +573,7 @@ export default {
       display: inline-block;
       flex: 1 1 100%;
       max-height: 50vh;
-      overflow-y: scroll;
+      overflow-y: auto;
       > ul {
         width: 100%;
         list-style: none;
