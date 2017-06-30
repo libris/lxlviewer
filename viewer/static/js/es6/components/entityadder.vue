@@ -101,14 +101,7 @@ export default {
       return VocabUtil.getRange(this.key, this.vocab, this.settings.vocabPfx);
     },
     getFullRange() {
-      let types = [].concat(this.getRange);
-      let allTypes = [];
-      _.each(types, type => {
-        const typeInArray = [].concat(type);
-        allTypes = allTypes.concat(VocabUtil.getAllSubClasses(typeInArray, this.vocab, this.settings.vocabPfx));
-      });
-      allTypes = _.uniq(allTypes);
-      return allTypes;
+      return VocabUtil.getFullRange(this.key, this.vocab, this.settings.vocabPfx);
     },
     searchTypes() {
       const types = this.getFullRange;

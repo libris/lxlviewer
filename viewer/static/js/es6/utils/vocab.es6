@@ -79,6 +79,17 @@ export function getPropertyTypes(propertyId, vocab, vocabPfx) {
   return [];
 }
 
+export function getFullRange(key, vocab, vocabPfx) {
+  let types = [].concat(getRange(key, vocab, vocabPfx));
+  let allTypes = [];
+  _.each(types, type => {
+    const typeInArray = [].concat(type);
+    allTypes = allTypes.concat(getAllSubClasses(typeInArray, vocab, vocabPfx));
+  });
+  allTypes = _.uniq(allTypes);
+  return allTypes;
+}
+
 export function getRange(propertyId, vocab, vocabPfx) {
   const property = getTermObject(propertyId, vocab, vocabPfx);
   let range = [];
