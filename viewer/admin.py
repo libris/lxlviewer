@@ -173,6 +173,25 @@ def _get_requests_oauth():
     return requests_oauth
 
 
+def refresh_token():
+    """Refresh access token.
+
+    Raises InvalidGrantError if refresh token not recognized by provider.
+    """
+    extra = {
+        'client_id': app.config['OAUTH_CLIENT_ID'],
+        'client_secret': app.config['OAUTH_CLIENT_SECRET']
+    }
+
+    app.logger.debug("Refreshing OAuth2 token")
+    requests_oauth = OAuth2Session(app.config['OAUTH_CLIENT_ID'],
+                                   token=_get_token())
+    token = requests_oauth.refresh_token(
+        app.config['OAUTH_TOKEN_URL'],
+        **extra)
+    _token_updater(token)
+
+
 def _fake_login():
     fake_user_login = app.config.get('FAKE_LOGIN')
     if app.config.get('FAKE_LOGIN'):
