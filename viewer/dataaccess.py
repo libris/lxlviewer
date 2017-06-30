@@ -127,9 +127,13 @@ class DataAccess(object):
         url = self._get_api_url(url_path)
         json_data = json.dumps(json_data)
         return requests.request(method, url, data=json_data, headers=headers,
-                            params=query_params.to_dict(flat=False))
+                            params=query_params.to_dict(flat=False),
+                            allow_redirects=False)
 
     def _get_api_url(self, url_path):
+        if url_path.startswith(self._api_base):
+            return url_path
+
         if url_path.startswith('/'):
             url_path = url_path[1:]
         return '%s/%s' % (self._api_base, url_path)
@@ -215,10 +219,13 @@ class DataAccess(object):
 
     def _load_required(self, uri):
         resp = self.api_request(uri)
-        data = resp.json()
-        etag = resp.headers.get('ETag')
-        assert data, 'Failed to get {} from whelk'.format(uri)
-        return ApiResource(uri, data, etag)
+        if resp.status_code == 302:
+            return self._load_required(resp.headers.get('Location'))
+        else:
+            data = resp.json()
+            etag = resp.headers.get('ETag')
+            assert data, 'Failed to get {} from whelk'.format(uri)
+            return ApiResource(uri, data, etag)
 
 
 ApiResource = namedtuple('ApiResource', 'uri, data, etag')

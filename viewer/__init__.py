@@ -31,7 +31,7 @@ JSONLD_MIMETYPE = 'application/ld+json'
 RDF_MIMETYPES = {'text/turtle', JSONLD_MIMETYPE, 'application/rdf+xml', 'text/xml'}
 MIMETYPE_FORMATS = ['text/html', 'application/xhtml+xml'] + list(RDF_MIMETYPES)
 
-KEEP_HEADERS = ['ETag', 'Location']
+KEEP_HEADERS = ['ETag', 'Location', 'Content-Location', 'Document', 'Link']
 
 CONTEXT_PATH = '/context.jsonld'
 
@@ -253,6 +253,9 @@ def rendered_response(path, suffix, data, mimetype=None):
 
     charset = 'charset=UTF-8' # technically redundant, but for e.g. JSONView
 
+    # return if result is a rendered page
+    # we might want to add (some) headers here in the future
+    # (e.g. Content-Location, Document, and Link)
     if isinstance(result, unicode):
         return result
 
@@ -262,11 +265,11 @@ def rendered_response(path, suffix, data, mimetype=None):
         for header in KEEP_HEADERS:
             value = resp.headers.get(header)
             if value:
-                new_resp.headers[header] = value
+                new_resp.headers.add(header, value)
 
     if mimetype == 'application/json':
         context_link = '<%s>; rel="http://www.w3.org/ns/json-ld#context"' % CONTEXT_PATH
-        new_resp.headers['Link'] = context_link
+        new_resp.headers.add('Link', context_link)
 
     return new_resp
 
