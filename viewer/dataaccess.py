@@ -216,10 +216,13 @@ class DataAccess(object):
 
     def _load_required(self, uri):
         resp = self.api_request(uri)
-        data = resp.json()
-        etag = resp.headers.get('ETag')
-        assert data, 'Failed to get {} from whelk'.format(uri)
-        return ApiResource(uri, data, etag)
+        if resp.status_code == 302:
+            return self._load_required(resp.headers.get('Location'))
+        else:
+            data = resp.json()
+            etag = resp.headers.get('ETag')
+            assert data, 'Failed to get {} from whelk'.format(uri)
+            return ApiResource(uri, data, etag)
 
 
 ApiResource = namedtuple('ApiResource', 'uri, data, etag')
