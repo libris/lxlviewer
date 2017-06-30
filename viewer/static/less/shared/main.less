@@ -46,19 +46,16 @@ main {
 
 #body-blocker {
   display: none;
+  z-index: @backdrop-z;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.3);
 }
 html.scroll-lock {
   overflow: hidden;
-  #body-blocker {
-    display: block;
-    z-index: @backdrop-z;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.3);
-  }
 }
 
 body {
