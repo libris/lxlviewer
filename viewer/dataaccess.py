@@ -131,6 +131,9 @@ class DataAccess(object):
                             allow_redirects=False)
 
     def _get_api_url(self, url_path):
+        if url_path.startswith(self._api_base):
+            return url_path
+
         if url_path.startswith('/'):
             url_path = url_path[1:]
         return '%s/%s' % (self._api_base, url_path)
