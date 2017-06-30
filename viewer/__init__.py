@@ -6,6 +6,7 @@ import os
 import random
 import re
 import string
+import time
 from urlparse import urljoin
 from datetime import datetime, timedelta
 
@@ -15,6 +16,8 @@ from flask.helpers import NotFound
 from flask_cors import CORS
 from werkzeug.urls import url_quote
 from werkzeug.datastructures import MultiDict
+
+from oauthlib.oauth2.rfc6749.errors import InvalidGrantError
 
 from rdflib import ConjunctiveGraph
 
@@ -464,10 +467,43 @@ def _proxy_request(request, session, json_data=None, query_params=[],
     app.logger.debug('Sending proxy %s request to: %s with headers:\n%r\nand body:\n %s',
                      request.method, url_path, headers, json_data)
 
-    response = daccess.api_request(url_path, request.method, headers,
-                              json_data=json_data, query_params=params)
+    response = _request_with_refresh(request.method, url_path, headers,
+                                     json_data, params)
 
     return _map_response(response)
+
+
+def _request_with_refresh(method, url_path, headers, json_data, query_params):
+    response = daccess.api_request(url_path, request.method, headers,
+                                   json_data=json_data,
+                                   query_params=query_params)
+
+    now = time.time()
+
+    if (response.status_code == 401 and
+            ('oauth_token' in session) and
+            (session['oauth_token']['expires_at'] < now)):
+        app.logger.debug("Unauthorized, w/ existing token. Refreshing...")
+
+        refreshed = False
+
+        try:
+            admin.refresh_token()
+            refreshed = True
+        except InvalidGrantError:
+            app.logger.debug("Failed to refresh access token")
+
+        if refreshed:
+            auth_token = _get_authorization_token(session)
+            if auth_token:
+                headers['Authorization'] = auth_token
+            return daccess.api_request(url_path, request.method, headers,
+                                       json_data=json_data,
+                                       query_params=query_params)
+        else:
+            return response
+
+    return response
 
 
 def _map_response(response):
