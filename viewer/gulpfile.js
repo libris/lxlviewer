@@ -31,13 +31,22 @@ function compile(watch) {
 
   if (watch) {
     bundler.on('update', function() {
-      console.log('-> bundling...');
+      console.log(timestamp() + '-> bundling...');
       rebundle();
     });
   }
 
   rebundle();
 }
+
+function timestamp() {
+  var date = new Date();
+  var hours = (date.getHours() < 10 ? '0' : '') + date.getHours();
+  var minutes = (date.getMinutes() < 10 ? '0' : '') + date.getMinutes();
+  var seconds = (date.getSeconds() < 10 ? '0' : '') + date.getSeconds();
+  var dateString = '[' + hours + ':' + minutes + ':' + seconds + '] ';
+  return dateString;
+};
 
 function watch() {
   return compile(true);
