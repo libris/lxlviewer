@@ -187,7 +187,13 @@ export function getProperties(className, vocab, vocabPfx) {
       }
     }
   }
-  // console.log("getProperties("+JSON.stringify(className)+") ->", props.length, "properties found");
+
+  // HARDCODED INCLUDE OF LABEL PROPERTY
+  // TODO: Remove when label has a domain
+  const labelProperty = getTermObject('label', vocab, vocabPfx);
+  props.push(labelProperty);
+  // end HARDCODED
+
   return props;
 }
 
