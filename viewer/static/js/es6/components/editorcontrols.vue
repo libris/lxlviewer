@@ -5,6 +5,7 @@ import MarcPreview from '../components/marc-preview';
 import CreateItemButton from '../components/create-item-button';
 import * as DataUtil from '../utils/data';
 import * as DisplayUtil from '../utils/display';
+import * as VocabUtil from '../utils/vocab';
 import * as ModalUtil from '../utils/modals';
 import * as HttpUtil from '../utils/http';
 import LensMixin from './mixins/lens-mixin';
@@ -95,6 +96,11 @@ export default {
       this.loadingCancel = true;
       setTimeout(() => this.$dispatch('cancel-edit'), 0);
     },
+    isSubClassOf(type) {
+      const baseClasses = VocabUtil.getBaseClasses(this.editorData.mainEntity['@type'], this.vocab, this.settings.vocabPfx)
+        .map(id => id.replace(this.settings.vocabPfx, ''));
+      return baseClasses.indexOf(type) > -1;
+    }
   },
   data() {
     return {
@@ -162,7 +168,7 @@ export default {
           <span class="node">Ändrad <strong>{{ getCard.modified }}</strong> av <strong>{{ getCard.descriptionModifier || 'okänd' }}</strong></span>
         </div>
         <button class="removeButton" v-show="!status.inEdit" @click="removePost"><i class="fa fa-trash" aria-hidden="true"></i> {{"Remove" | translatePhrase}} post</button>
-        <create-item-button v-show="!status.inEdit && editorData.mainEntity['@type'] === 'Instance'"></create-item-button>
+        <create-item-button v-show="!status.inEdit && isSubClassOf('Instance')"></create-item-button>
         <button v-show="status.inEdit" @click="cancelEdit">
           <i class="fa fa-times" aria-hidden="true" v-show="!loadingCancel"></i>
           <i class="fa fa-fw fa-circle-o-notch fa-spin" aria-hidden="true" v-show="loadingCancel"></i>
