@@ -72,6 +72,12 @@ export default {
             </ul>
           </div>
           <div class="content">
+            <div v-show="activeSection == ''">
+              <h1>Hjälp</h1>
+              <p>
+                Här kan du få hjälp. Välj avsnitt till vänster.
+              </p>
+            </div>
             <div v-for="section in docs" v-html="section.body" v-show="section.title == activeSection"></div>
           </div>
         </div>
@@ -86,12 +92,21 @@ export default {
   .window {
     .window-mixin();
     .body {
-      padding: 1em 2em 4em;
+      padding: 1em 1em 4em;
       overflow-y: scroll;
       .content {
         padding: 0em 1em;
         width: 80%;
         float: right;
+        h1, h2, h3, h4 {
+          font-weight: normal;
+          margin-top: 0px;
+          border: solid @gray;
+          border-width: 0px 0px 1px 0px;
+        }
+        p {
+          margin: 1.5em 0px 2.5em;
+        }
       }
       .menu {
         width: 20%;

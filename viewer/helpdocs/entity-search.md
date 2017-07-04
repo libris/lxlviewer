@@ -1,10 +1,10 @@
 ---
 section: Editor
-title: Entity search
+title: Entitetssök
 tags:
 - editor
 ---
 
 # Entitetssök
 
-Söka stöka
+Söka och stöka
