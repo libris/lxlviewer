@@ -22,8 +22,9 @@ function compile(watch) {
     packageCache: {},
   }));
 
+  markdown();
+
   function rebundle() {
-    markdown();
     bundler.bundle()
       .on('error', function(err) { console.error(err); this.emit('end'); })
       .pipe(source('app.js'))
@@ -56,7 +57,7 @@ function markdown() {
   gulp.src('./helpdocs/**/*.md')
     .pipe(gutil.buffer())
     .pipe(markdownToJSON(marked, 'helpdocs.json'))
-    .pipe(gulp.dest('./static/js/es6/'))
+    .pipe(gulp.dest('./helpdocs/'))
 }
 
 function watch() {

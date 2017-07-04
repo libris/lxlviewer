@@ -19,4 +19,4 @@ npm-debug.log
 *.pyc
 selenium-debug.log
 
-viewer/static/js/es6/helpdocs\.json
+viewer/helpdocs/helpdocs\.json
