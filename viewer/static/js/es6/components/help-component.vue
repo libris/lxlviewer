@@ -10,6 +10,7 @@ export default {
     return {
       openAll: 'open-all',
       activeSection: '',
+      activeCategory: '',
     }
   },
   vuex: {
@@ -38,6 +39,18 @@ export default {
   computed: {
     helpSection() {
       return this.status.helpSection;
+    },
+    helpCategories() {
+      const json = this.docs;
+      const categories = {};
+      for (const section in json) {
+        const cat = json[section].section;
+        if (categories.hasOwnProperty(cat) === false) {
+          categories[cat] = [];
+        }
+        categories[cat].push(json[section]);
+      }
+      return categories;
     },
     docs() {
       const json = helpdocsJson;
@@ -70,8 +83,13 @@ export default {
         </div>
         <div class="body">
           <div class="menu">
-            <ul>
-              <li v-for="section in docs" v-bind:class="{'active': section.title == helpSection }" v-on:click="setSection(section.title)">{{section.title}}</li>
+            <ul class="categories">
+              <li v-for="(key, value) in helpCategories" v-bind:class="{'active': key == activeCategory }" v-on:click="activeCategory = key">
+                {{key}}
+                <ul class="sections">
+                  <li v-for="section in value" v-bind:class="{'active': section.title == helpSection }" v-on:click="setSection(section.title)">{{section.title}}</li>
+                </ul>
+              </li>
             </ul>
           </div>
           <div class="content">
@@ -116,18 +134,33 @@ export default {
         background-color: #e6e6e6;
         border-radius: 5px;
         float: left;
-        ul {
+        ul.categories {
           list-style: none;
-          padding: 5px;
-          li {
-            border-radius: 5px;
-            padding: 3px;
-            cursor: pointer;
-            &:hover {
-              text-decoration: underline;
+          padding: 5px 10px;
+          > li {
+            font-weight: bold;
+            // cursor: pointer;
+            ul.sections {
+              // display: none; // SHOW ALL
+              list-style: none;
+              padding: 5px;
+              li {
+                font-weight: normal;
+                border-radius: 5px;
+                padding: 3px;
+                cursor: pointer;
+                &:hover {
+                  text-decoration: underline;
+                }
+                &.active {
+                  background-color: #ccc;
+                }
+              }
             }
             &.active {
-              background-color: #ccc;
+              > ul {
+                display: block;
+              }
             }
           }
         }

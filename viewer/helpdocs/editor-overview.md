@@ -1,5 +1,5 @@
 ---
-section: Editor
+section: Redigering
 title: Redigering
 tags:
 - editor

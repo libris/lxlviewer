@@ -1,5 +1,5 @@
 ---
-section: Editor
+section: Redigering
 title: Entitetssök
 tags:
 - editor
