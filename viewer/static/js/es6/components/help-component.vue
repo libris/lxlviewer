@@ -2,12 +2,14 @@
 import * as LayoutUtil from '../utils/layout';
 import { getStatus } from '../vuex/getters';
 import { changeStatus } from '../vuex/actions';
+import * as helpdocsJson from '../helpdocs';
 
 export default {
   name: 'help-component',
   data() {
     return {
       openAll: 'open-all',
+      activeSection: '',
     }
   },
   vuex: {
@@ -34,6 +36,11 @@ export default {
     helpSection() {
       return this.status.helpSection;
     },
+    docs() {
+      const json = helpdocsJson;
+      delete json.default;
+      return json;
+    }
   },
   components: {
   },
@@ -59,29 +66,13 @@ export default {
           </span>
         </div>
         <div class="body">
-          <div v-show="openAll || status.helpSection === 'editor-overview'">
-            <h1>Redigering</h1>
-            <p>Lorem ipsum</p>
+          <div class="menu">
+            <ul>
+              <li v-for="section in docs" v-bind:class="{'active': section.title == activeSection }" v-on:click="activeSection = section.title">{{section.title}}</li>
+            </ul>
           </div>
-          <div v-show="openAll || status.helpSection === 'linked-entities'">
-            <h1>Länkade entiteter</h1>
-            <p>linked data or die</p>
-          </div>
-          <div v-show="openAll || status.helpSection === 'entity-search'">
-            <h1>Entitetsök</h1>
-            <p>Ipsum lorem</p>
-          </div>
-          <div v-show="openAll || status.helpSection === 'entity-search'">
-            <h1>Entitetsök</h1>
-            <p>Ipsum lorem</p>
-          </div>
-          <div v-show="openAll || status.helpSection === 'entity-search'">
-            <h1>Entitetsök</h1>
-            <p>Ipsum lorem</p>
-          </div>
-          <div v-show="openAll || status.helpSection === 'entity-search'">
-            <h1>Entitetsök</h1>
-            <p>Ipsum lorem</p>
+          <div class="content">
+            <div v-for="section in docs" v-html="section.body" v-show="section.title == activeSection"></div>
           </div>
         </div>
       </div>
@@ -97,6 +88,32 @@ export default {
     .body {
       padding: 1em 2em 4em;
       overflow-y: scroll;
+      .content {
+        padding: 0em 1em;
+        width: 80%;
+        float: right;
+      }
+      .menu {
+        width: 20%;
+        background-color: #e6e6e6;
+        border-radius: 5px;
+        float: left;
+        ul {
+          list-style: none;
+          padding: 5px;
+          li {
+            border-radius: 5px;
+            padding: 3px;
+            cursor: pointer;
+            &:hover {
+              text-decoration: underline;
+            }
+            &.active {
+              background-color: #ccc;
+            }
+          }
+        }
+      }
     }
   }
 }

@@ -20,6 +20,7 @@
     "gulp-sourcemaps": "^1.6.0",
     "less": "~2.3.1",
     "lodash": "~4.16.4",
+    "marked": "^0.3.6",
     "modernizr": "^3.5.0",
     "moment": "^2.14.1",
     "parallelshell": "~1.0.4",
@@ -36,6 +37,7 @@
     "eslint": "^3.16.1",
     "eslint-config-airbnb": "^7.0.0",
     "eslint-plugin-html": "^1.7.0",
+    "gulp-markdown-to-json": "^1.0.3",
     "karma": "^1.2.0",
     "karma-browserify": "^5.0.5",
     "karma-chai": "^0.1.0",
@@ -57,6 +59,7 @@
   },
   "scripts": {
     "modernizr": "modernizr -c modernizr-config.json -d static/vendor/modernizr/js/ -u",
+    "generatehelp": "gulp markdown",
     "postinstall": "mkdir -p static/build && npm run vendor && npm run app",
     "vendor": "npm run vendor:fetch && npm run modernizr && parallelshell 'npm run vendor:js'",
     "vendor:fetch": "bower-installer",

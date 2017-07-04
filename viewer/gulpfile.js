@@ -1,4 +1,5 @@
 var gulp = require('gulp');
+var gutil = require('gulp-util');
 var sourcemaps = require('gulp-sourcemaps');
 var source = require('vinyl-source-stream');
 var buffer = require('vinyl-buffer');
@@ -6,6 +7,8 @@ var browserify = require('browserify');
 var watchify = require('watchify');
 var babelify = require('babelify');
 var vueify = require('vueify');
+var markdownToJSON = require('gulp-markdown-to-json');
+var marked = require('marked');
 
 function compile(watch) {
   var extensions = ['.es6', '.js', '.json', '.vue'];
@@ -20,6 +23,7 @@ function compile(watch) {
   }));
 
   function rebundle() {
+    markdown();
     bundler.bundle()
       .on('error', function(err) { console.error(err); this.emit('end'); })
       .pipe(source('app.js'))
@@ -48,6 +52,13 @@ function timestamp() {
   return dateString;
 };
 
+function markdown() {
+  gulp.src('./helpdocs/**/*.md')
+    .pipe(gutil.buffer())
+    .pipe(markdownToJSON(marked, 'helpdocs.json'))
+    .pipe(gulp.dest('./static/js/es6/'))
+}
+
 function watch() {
   return compile(true);
 };
@@ -56,3 +67,12 @@ gulp.task('build', function() { return compile(); });
 gulp.task('watch', function() { return watch(); });
 
 gulp.task('default', ['watch']);
+
+marked.setOptions({
+  pedantic: true,
+  smartypants: true
+});
+
+gulp.task('markdown', () => {
+  markdown();
+});
