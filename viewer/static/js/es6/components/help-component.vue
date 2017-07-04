@@ -26,6 +26,9 @@ export default {
       LayoutUtil.scrollLock(false);
       this.changeStatus('keybindState', 'overview');
     },
+    setSection(value) {
+      this.changeStatus('helpSection', value);
+    },
   },
   events: {
     'close-modals'() {
@@ -68,17 +71,17 @@ export default {
         <div class="body">
           <div class="menu">
             <ul>
-              <li v-for="section in docs" v-bind:class="{'active': section.title == activeSection }" v-on:click="activeSection = section.title">{{section.title}}</li>
+              <li v-for="section in docs" v-bind:class="{'active': section.title == helpSection }" v-on:click="setSection(section.title)">{{section.title}}</li>
             </ul>
           </div>
           <div class="content">
-            <div v-show="activeSection == ''">
+            <div v-show="helpSection == ''">
               <h1>Hjälp</h1>
               <p>
                 Här kan du få hjälp. Välj avsnitt till vänster.
               </p>
             </div>
-            <div v-for="section in docs" v-html="section.body" v-show="section.title == activeSection"></div>
+            <div v-for="section in docs" v-html="section.body" v-show="section.title == helpSection"></div>
           </div>
         </div>
       </div>
