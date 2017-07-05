@@ -63,7 +63,7 @@ export default {
       setTimeout(() => this.$dispatch('edit-item'), 0); // $nextTick doesn't work
     },
     showHelp() {
-      this.$dispatch('show-help', 'editor-overview');
+      this.$dispatch('show-help', '');
     },
     toggleDev() {
       this.changeStatus('isDev', !this.status.isDev);
