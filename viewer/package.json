@@ -64,7 +64,7 @@
     "vendor": "npm run vendor:fetch && npm run modernizr && parallelshell 'npm run vendor:js'",
     "vendor:fetch": "bower-installer",
     "vendor:js": "uglifyjs static/vendor/{jquery,bootstrap,modernizr}/js/*.js -o static/build/vendor.min.js --source-map static/build/vendor.min.js.map --source-map-url ./vendor.min.js.map --source-map-root /",
-    "app": "parallelshell 'npm run app:js' 'npm run app:id:less' 'npm run app:libris:less'",
+    "app": "parallelshell 'npm run generatehelp' 'npm run app:js' 'npm run app:id:less' 'npm run app:libris:less'",
     "app:eslint": "eslint 'static/js/**/*.es6' 'static/js/**/*.vue' || true",
     "app:js": "parallelshell 'npm run app:transpile'",
     "app:transpile": "browserify static/js/es6/app.es6 -t babelify -o static/build/app.js --extension=.js --extension=.json --extension=.es6 --extension=.vue",
