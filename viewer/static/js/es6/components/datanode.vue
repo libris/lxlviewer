@@ -22,6 +22,7 @@ export default {
   props: [
     'parentKey',
     'parentIndex',
+    'parentPath',
     'key',
     'value',
     'isLocked',
@@ -95,10 +96,10 @@ export default {
       return [this.value];
     },
     getPath() {
-      if (typeof this.parentKey !== 'undefined' && typeof this.parentIndex !== 'undefined') {
-        return `${this.parentKey}[${this.parentIndex}].${this.key}`;
-      } else if (typeof this.parentKey !== 'undefined') {
-        return `${this.parentKey}.${this.key}`;
+      if (typeof this.parentPath !== 'undefined') { 
+        if (typeof this.parentKey !== 'undefined' && typeof this.parentIndex !== 'undefined') {
+          return `${this.parentPath}.${this.key}`;
+        }
       }
       return `${this.key}`;
     },
@@ -253,14 +254,11 @@ export default {
       if (
         this.isPlainObject(o) &&
         (
-        !this.isLinked(o) && !this.isEmbedded(o)
+        !this.isLinked(o)
         // || (this.isLinked(o) && o['@id'].indexOf(this.editorData.record['@id']) !== -1)
         )
       ) {
         return 'local';
-      }
-      if (this.isPlainObject(o) && !this.isLinked(o) && this.isEmbedded(o)) {
-        return 'embedded';
       }
       if (!this.isPlainObject(o) && !this.isLinked(o)) {
         return 'value';
@@ -318,7 +316,7 @@ export default {
       <li v-for="item in valueAsArray" :class="{ 'isChip': isChip(item)}" track-by="$index">
         <div class="erroneous-object" v-if="getDatatype(item) == 'error'"><i class="fa fa-frown-o"></i> {{item | json}}</div>
         <item-entity v-if="getDatatype(item) == 'entity'" :is-locked="isLocked" :expanded="isExpandedType" :item="item" :key="key" :index="$index"></item-entity>
-        <item-local v-if="getDatatype(item) == 'local'" :is-locked="isLocked" :is-expanded-type="isExpandedType" :item="item" :key="key" :index="$index" :show-action-buttons="showActionButtons"></item-local>
+        <item-local v-if="getDatatype(item) == 'local'" :is-locked="isLocked" :is-expanded-type="isExpandedType" :item="item" :key="key" :index="$index" :parent-path="getPath" :show-action-buttons="showActionButtons"></item-local>
         <item-embedded v-if="getDatatype(item) == 'embedded'" :is-locked="isLocked" :item="item" :key="key" :index="$index" :show-action-buttons="showActionButtons"></item-embedded>
         <item-value v-if="getDatatype(item) == 'value'" :is-removable="!hasSingleValue" :is-locked="isLocked" :value="item" :key="key" :index="$index" :show-action-buttons="showActionButtons"></item-value>
       </li>

@@ -11,6 +11,7 @@ import ProcessedLabel from './processedlabel';
 import ItemEntity from './item-entity';
 import DataNode from './datanode';
 import CardComponent from './card-component';
+import FieldAdder from './fieldadder';
 import ItemMixin from './mixins/item-mixin';
 import LensMixin from './mixins/lens-mixin';
 import { changeNotification, changeStatus } from '../vuex/actions';
@@ -26,6 +27,7 @@ export default {
     isLocked: false,
     showActionButtons: false,
     isExpandedType: false,
+    parentPath: '',
   },
   vuex: {
     getters: {
@@ -68,10 +70,17 @@ export default {
       return label;
     },
     isExtractable() {
-      if (this.settings.nonExtractableClasses.indexOf(this.focusData['@type']) === -1) {
+      const classId = `${this.settings.vocabPfx}${this.item['@type']}`;
+      if (
+        this.settings.nonExtractableClasses.indexOf(this.item['@type']) === -1 &&
+        !VocabUtil.isEmbedded(classId, this.vocab, this.settings)
+      ) {
         return true;
       }
       return false;
+    },
+    getPath() {
+      return `${this.parentPath}[${this.index}]`
     },
     filteredItem() {
       const fItem = Object.assign({}, this.item);
@@ -92,6 +101,48 @@ export default {
         }
       });
       return bEmpty;
+    },
+    allowedProperties() {
+      const settings = this.settings;
+      const formObj = this.item;
+      const allowed = VocabUtil.getPropertiesFromArray(
+        formObj['@type'],
+        this.vocab,
+        this.settings.vocabPfx
+      );
+      // Add the "added" property
+      for (const element of allowed) {
+        const oId = element.item['@id'].replace(settings.vocabPfx, '');
+        element.added = (formObj.hasOwnProperty(oId) && formObj[oId] !== null);
+      }
+
+      const extendedAllowed = allowed.map(property => {
+        const labelByLang = property.item.labelByLang;
+        if (typeof labelByLang !== 'undefined') {
+          // Try to get the label in the preferred language
+          let label = ((typeof labelByLang[this.settings.language] !== 'undefined') ? labelByLang[this.settings.language] : labelByLang.en);
+          // If several labels are present, use the first one
+          if (_.isArray(label)) {
+            label = label[0];
+          }
+          return {
+            added: property.added,
+            item: property.item,
+            label: label
+          };
+        } else {
+          // If no label, use @id as label
+          return {
+            added: property.added,
+            item: property.item,
+            label: property.item['@id']
+          };
+        }
+      });
+      sortedAllowed = _.sortBy(extendedAllowed, (prop) => {
+        return prop.label.toLowerCase();
+      });
+      return sortedAllowed;
     },
   },
   created() {
@@ -209,6 +260,7 @@ export default {
     },
     'close-modals'() {
       this.closeExtractDialog();
+      return true;
     },
   },
   ready() {
@@ -220,6 +272,7 @@ export default {
     'processed-label': ProcessedLabel,
     'item-entity': ItemEntity,
     'card-component': CardComponent,
+    'field-adder': FieldAdder,
   },
 };
 </script>
@@ -241,10 +294,10 @@ export default {
           </div>
         </span>
       </span>
-      <data-node v-show="expanded" v-for="(k,v) in filteredItem" v-show="!isLocked || v" :is-inner="true" :is-locked="isLocked" :allow-local="true" :is-removable="false" :embedded="true" :parent-key="key" :parent-index="index" :key="k" :value="v" :focus="focus" :show-action-buttons="showActionButtons"></data-node>
+      <data-node v-show="expanded" v-for="(k,v) in filteredItem" v-show="!isLocked || v" :parent-path="getPath" :is-inner="true" :is-locked="isLocked" :allow-local="true" :is-removable="false" :embedded="true" :parent-key="key" :parent-index="index" :key="k" :value="v" :focus="focus" :show-action-buttons="showActionButtons"></data-node>
+      <field-adder v-if="!isLocked" :allowed="allowedProperties" :inner="true" :path="getPath"></field-adder>
     </div>
     <card-component v-if="isExpandedType" :title="getItemLabel" :focus-data="item" :uri="item['@id']" :is-local="true" :is-extractable="isExtractable" :is-locked="isLocked"></card-component>
-    
     <div class="window" v-if="extractDialogActive">
       <div class="header">
         <span class="title">
@@ -281,6 +334,7 @@ export default {
 <style lang="less">
 @import './_variables.less';
 .item-local-container {
+  margin: 0px 0px 5px 0px;
   .item-local {
     .local-form {
       width: @col-value - 20;
@@ -303,7 +357,6 @@ export default {
     background-color: #fdfdfd;
     border: solid #ccc;
     border-width: 1px 1px 3px 1px;
-    margin: 0px 0px 5px 0px;
     line-height: 1.6;
     max-height: 40px;
     overflow: hidden;

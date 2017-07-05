@@ -15,6 +15,9 @@ export default {
     allowed: [],
     active: false,
     filterKey: '',
+    inner: false,
+    path: '',
+    index: Number,
   },
   vuex: {
     getters: {
@@ -136,6 +139,7 @@ export default {
     },
     'close-modals'() {
       this.hide();
+      return true;
     },
   },
   methods: {
@@ -169,7 +173,7 @@ export default {
         const splitProp = prop.item['@id'].split('/');
         const propLastPart = splitProp[splitProp.length-1];
         const fieldName = prop.item['@id'].split(':')[1];
-        this.$dispatch('add-field', prop.item);
+        this.$dispatch('add-field', prop.item, this.path);
         const translatedProp = StringUtil.labelByLang(propLastPart, this.settings.language, this.vocab, this.settings.vocabPfx);
         // this.changeNotification('color', 'green');
         // this.changeNotification('message', `Fältet "${translatedProp}" lades till.`);
@@ -205,13 +209,13 @@ export default {
 </script>
 
 <template>
-  <div class="container">
+  <div :class="{'container': !inner}">
     <div class="field-adder">
       <div class="field-adder-bar" v-on:click="show">
         <i class="fa fa-plus plus-icon" aria-hidden="true"></i>
         {{ "Add field" | translatePhrase }}
       </div>
-      <a id="add-button" v-on:click="show" :class="{'at-bottom': !buttonFixed }">
+      <a v-if="!inner" id="add-button" v-on:click="show" :class="{'at-bottom': !buttonFixed }">
         <i class="fa fa-plus plus-icon" aria-hidden="true"></i>
         <div>{{ "Add field" | translatePhrase }}</div>
       </a>

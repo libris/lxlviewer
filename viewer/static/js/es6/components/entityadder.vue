@@ -57,6 +57,7 @@ export default {
   events: {
     'close-modals'() {
       this.closeSearch();
+      return true;
     },
     'add-entity'(item) {
       this.$dispatch('add-item', item);
@@ -199,7 +200,7 @@ export default {
     },
     addEmpty(type) {
       this.closeSearch();
-      const obj = RecordUtil.getEmptyForm(type, this.vocab, this.display, this.settings);
+      let obj = {'@type': type};
       this.$dispatch('add-item', obj);
     },
     addType(type) {
@@ -252,7 +253,7 @@ export default {
     <span class="chip-label"><i class="fa fa-fw fa-plus plus-icon" aria-hidden="true"></i><span class="label-text">{{ "Add" | translatePhrase }} {{ addLabel | labelByLang | lowercase }}</span></span>
   </div>
   <div class="type-chooser" v-if="addEmbedded" v-on-clickaway="dismissTypeChooser">
-    <select v-model="selectedType" @change="addType(selectedType)">
+    <select v-model="selectedType" @change="addType(selectedType, true)">
       <option disabled value="">{{"Choose type" | translatePhrase}}</option>
       <option v-for="type in getFullRange" value="{{type}}">{{type | labelByLang}}</option>
     </select>

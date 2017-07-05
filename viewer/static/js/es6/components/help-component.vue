@@ -28,6 +28,7 @@ export default {
   events: {
     'close-modals'() {
       this.hide();
+      return true;
     },
   },
   computed: {
