@@ -13,6 +13,7 @@
     "babelify": "7.2.0",
     "bower-installer": "~1.2.0",
     "browserify": "13.0.0",
+    "watchify": "^3.7.0",
     "browserify-hmr": "^0.3.1",
     "browserify-shim": "^3.8.0",
     "combokeys": "^2.4.6",
@@ -48,8 +49,7 @@
     "mocha": "^2.5.3",
     "phantomjs-prebuilt": "^2.1.7",
     "proxyquireify": "^3.2.0",
-    "watch": "~0.13.0",
-    "watchify": "^3.7.0"
+    "watch": "~0.13.0"
   },
   "browserify": {
     "transform": [
