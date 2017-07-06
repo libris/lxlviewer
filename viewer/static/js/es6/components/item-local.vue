@@ -14,12 +14,13 @@ import CardComponent from './card-component';
 import FieldAdder from './fieldadder';
 import ItemMixin from './mixins/item-mixin';
 import LensMixin from './mixins/lens-mixin';
+import {mixin as clickaway} from 'vue-clickaway';
 import { changeNotification, changeStatus } from '../vuex/actions';
 import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData, getStatus } from '../vuex/getters';
 
 export default {
   name: 'item-local',
-  mixins: [ItemMixin, LensMixin],
+  mixins: [ItemMixin, LensMixin, clickaway],
   props: {
     item: {},
     key: '',
@@ -52,6 +53,7 @@ export default {
       extractDialogActive: false,
       extracting: false,
       expanded: false,
+      removeConfirmation: false,
     };
   },
   computed: {
