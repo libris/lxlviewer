@@ -31,6 +31,7 @@
     "vue": "^1.0.21",
     "vue-clickaway": "1.2.0",
     "vueify": "^8.5.4",
+    "gulp-markdown-to-json": "^1.0.3",
     "vuex": "^1.0.0-rc.2"
   },
   "devDependencies": {
@@ -38,7 +39,6 @@
     "eslint": "^3.16.1",
     "eslint-config-airbnb": "^7.0.0",
     "eslint-plugin-html": "^1.7.0",
-    "gulp-markdown-to-json": "^1.0.3",
     "karma": "^1.2.0",
     "karma-browserify": "^5.0.5",
     "karma-chai": "^0.1.0",
