@@ -30,3 +30,7 @@ Each one of these main files include:
 * Importing of style libraries (vendor packages handled by bower).
 * Importing of styles shared by both services (contained in the ``shared`` folder).
 * Color and style variables specific to the service.
+
+## Help documents
+
+[Go here](helpdocs/).
