@@ -173,7 +173,7 @@ export default {
       const key = prop['@id'].replace(this.settings.vocabPfx, '');
       let value = [];
       if (prop['@type'] && prop['@type'].indexOf('ObjectProperty') === -1) {
-        value = [''];
+        value = '';
       }
       let modified = _.cloneDeep(this.formData);
       if (typeof path !== 'undefined') {
