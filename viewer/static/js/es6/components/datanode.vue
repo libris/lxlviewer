@@ -205,15 +205,7 @@ export default {
   },
   methods: {
     updateValue(value) {
-      if (this.parentKey && this.parentIndex !== '') {
-        const path = this.parentKey + '[' + this.parentIndex + ']' + '.' + this.key;
-        this.$dispatch('update-value', path, value);
-      } else if (this.parentKey) {
-        const path = this.parentKey + '.' + this.key;
-        this.$dispatch('update-value', path, value);
-      } else {
-        this.$dispatch('update-value', this.key, value);
-      }
+      this.$dispatch('update-value', this.getPath, value);
     },
     removeThis() {
       this.removeConfirmation = false;
