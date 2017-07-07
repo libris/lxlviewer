@@ -34,7 +34,6 @@ export default {
   events: {
     'close-modals'() {
       this.hide();
-      return true;
     },
   },
   computed: {
@@ -56,6 +55,7 @@ export default {
     docs() {
       const json = helpdocsJson;
       delete json.default;
+      delete json.readme;
       return json;
     }
   },
