@@ -372,4 +372,15 @@ export function getEnumerations(type, property, vocab, vocabPfx) {
       });
     });
   }
+  const enumerationTypesUrl = getAllEnumerationTypesFor(`${vocabPfx}${property}`, vocab)
+    .map(enumerationType => `@type=${enumerationType}`)
+    .join('&');
+  return new Promise((resolve, reject) => {
+    httpUtil.get({ url: `/find?@type=${enumerationTypesUrl}`, accept: 'application/ld+json' }).then((response) => {
+      console.log(response);
+      resolve(response.items);
+    }, (error) => {
+      reject('Error searching...', error);
+    });
+  });
 }
