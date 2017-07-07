@@ -79,6 +79,28 @@ export function getPropertyTypes(propertyId, vocab, vocabPfx) {
   return [];
 }
 
+export function getAllEnumerationTypesFor(onProp, vocab) {
+  let enumerationTypes = [];
+  _.each(vocab, (term) => {
+    if (term.hasOwnProperty('subClassOf')) {
+      _.each(term.subClassOf, (superClass) => {
+        if (superClass['@type'] === 'Restriction') {
+          if (superClass.onProperty['@id'] === onProp) {
+            enumerationTypes = enumerationTypes.concat(superClass.someValuesFrom);
+          }
+        }
+      });
+    }
+  });
+  const enumerationTypeIds = [];
+  for (let i = 0; i < enumerationTypes.length; i++) {
+    if (enumerationTypeIds.indexOf(enumerationTypes[i]['@id']) === -1) {
+      enumerationTypeIds.push(enumerationTypes[i]['@id']);
+    };
+  }
+  return enumerationTypeIds;
+}
+
 export function getFullRange(key, vocab, vocabPfx) {
   let types = [].concat(getRange(key, vocab, vocabPfx));
   let allTypes = [];
