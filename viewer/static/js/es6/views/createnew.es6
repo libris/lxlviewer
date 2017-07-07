@@ -94,12 +94,22 @@ export default class CreateNew extends View {
         chosenType: '',
         initialized: false,
         selectedIssuanceType: '',
+        selectedCarrierType: '',
+        carrierTypes: [],
       },
       watch: {
+        'chosenType': function(newVal) {
+          VocabUtil.getEnumerations(newVal, 'carrierType', this.vocab, this.settings.vocabPfx).then((result) => {
+            this.carrierTypes = result;
+          });
+        },
       },
       methods: {
         updateChosenType(event) {
           this.chosenType = event.target.value;
+        },
+        getPrefLabelByLang(item) {
+          return item.prefLabelByLang[self.language] || item.prefLabelByLang.en;
         },
       },
       computed: {
@@ -123,6 +133,7 @@ export default class CreateNew extends View {
                 '@id': '_:TEMP_ID#it',
                 '@type': this.chosenType,
                 issuanceType: this.selectedIssuanceType,
+                carrierType: this.selectedCarrierType,
               },
             ],
           };

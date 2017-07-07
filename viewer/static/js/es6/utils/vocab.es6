@@ -317,3 +317,37 @@ export function getInstances(className, vocab, vocabPfx) {
     .map(vocabObj => vocabObj['@id'].replace(vocabPfx, ''));
   return instances;
 }
+
+export function getRestrictionId(type, property, vocab, vocabPfx) {
+  let result = '';
+  vocab.forEach(vocabEntry => {
+    if (vocabEntry['@id'] === `${vocabPfx}${type}`) {
+      if (typeof vocabEntry.subClassOf !== 'undefined') {
+        vocabEntry.subClassOf.forEach(subClassEntry => {
+          if (typeof subClassEntry['@type'] !== 'undefined') {
+            if (subClassEntry['@type'] === 'Restriction' &&
+            subClassEntry.onProperty['@id'] === `${vocabPfx}${property}`) {
+              // Found that type has restriction on property. Return restriction ID.
+              result = subClassEntry.someValuesFrom['@id'];
+            }
+          }
+        });
+      }
+    }
+  });
+  return result;
+}
+
+export function getEnumerations(type, property, vocab, vocabPfx) {
+  const restrictionUrl = getRestrictionId(type, property, vocab, vocabPfx);
+  if (restrictionUrl !== '') {
+    return new Promise((resolve, reject) => {
+      httpUtil.get({ url: `/find?@type=${restrictionUrl}`, accept: 'application/ld+json' }).then((response) => {
+        console.log(response);
+        resolve(response.items);
+      }, (error) => {
+        reject('Error searching...', error);
+      });
+    });
+  }
+}

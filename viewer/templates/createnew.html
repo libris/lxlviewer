@@ -21,6 +21,10 @@
                 <option disabled value="">{{"Choose" | translatePhrase}} {{"issuanceType" | labelByLang}}</option>
                 <option v-for="issuanceType in issuanceTypes" value="{{issuanceType}}" label="{{issuanceType | labelByLang}}">
               </select>
+              <select v-model="selectedCarrierType">
+                <option disabled value="">{{"Choose" | translatePhrase}} {{"carrierType" | labelByLang}}</option>
+                <option v-for="carrierType in carrierTypes" value="{{carrierType['@id']}}" label="{{getPrefLabelByLang(carrierType)}}">
+              </select>
               <textarea id="copyItem" name="data" class="hidden">{{itemData | json}}</textarea>
               <span class="submitter">
                 <button v-bind:disabled="!hasChosenMaterials">Skapa formulär</button>
