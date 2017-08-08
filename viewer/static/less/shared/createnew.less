@@ -4,6 +4,24 @@ body#createnew, body#import {
     display: none;
     form {
       padding: 0px 15px;
+      > div {
+        display: flex;
+        margin-bottom: 5px;
+        > div {
+          display: flex;
+          flex-direction: column;
+          flex: 100px 1 1;
+          margin: 0 5px;
+          > select {
+            width: 100%;
+            overflow-x: hidden;
+          }
+        }
+      }
+      .submitter {
+        display: flex;
+        flex-direction: row-reverse;
+      }
     }
   }
 

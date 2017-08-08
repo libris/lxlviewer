@@ -13,18 +13,27 @@
         <div id="app">
           <div class="createnew-form" v-if="initialized === true">
             <form action="/edit" method="POST">
-              <select v-model="chosenType">
-                <option disabled value="">{{"Choose type" | translatePhrase}}</option>
-                <option v-for="material in materialLists" value="{{material}}">{{material | labelByLang}}</option>
-              </select>
-              <select v-model="selectedIssuanceType">
-                <option disabled value="">{{"Choose" | translatePhrase}} {{"issuanceType" | labelByLang}}</option>
-                <option v-for="issuanceType in issuanceTypes" value="{{issuanceType}}" label="{{issuanceType | labelByLang}}">
-              </select>
-              <select v-model="selectedCarrierType">
-                <option disabled value="">{{"Choose" | translatePhrase}} {{"carrierType" | labelByLang}}</option>
-                <option v-for="carrierType in carrierTypes" value="{{carrierType['@id']}}" label="{{getPrefLabelByLang(carrierType)}}">
-              </select>
+              <div>
+                <div>
+                  <label for="type">{{"type" | translatePhrase | capitalize}}</label>
+                  <select id="type" v-model="chosenType" size="10">
+                    <option v-for="material in materialLists" value="{{material}}">{{material | labelByLang}}</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="issuanceType">{{"issuanceType" | labelByLang | capitalize}}</label>
+                  <select id="issuanceType" v-model="selectedIssuanceType" size="10">
+                    <option v-for="issuanceType in issuanceTypes" value="{{issuanceType}}" label="{{issuanceType | labelByLang}}">
+                  </select>
+                </div>
+                <div>
+                  <label for="carrierType">{{"carrierType" | labelByLang | capitalize}}</label>
+                  <select id="carrierType" v-model="selectedCarrierType" size="10">
+                    <!--<option disabled value="">{{"Choose type" | translatePhrase}}</option>-->
+                    <option v-for="carrierType in carrierTypes" value="{{carrierType['@id']}}" label="{{getPrefLabelByLang(carrierType)}}">
+                  </select>
+                </div>
+              </div>
               <textarea id="copyItem" name="data" class="hidden">{{itemData | json}}</textarea>
               <span class="submitter">
                 <button v-bind:disabled="!hasChosenMaterials">Skapa formulär</button>
