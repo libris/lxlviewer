@@ -229,7 +229,7 @@ export function getBaseClasses(classId, vocab, vocabPfx) {
   let classList = [];
   const termObj = getTermObject(classId, vocab, vocabPfx);
   if (typeof termObj === 'undefined') {
-    return classList;
+    return _.uniq(classList);
   }
   classList.push(termObj['@id']);
   if (termObj && termObj.hasOwnProperty('subClassOf')) {
@@ -252,7 +252,7 @@ export function getBaseClasses(classId, vocab, vocabPfx) {
     }
   }
   // console.log("getBaseClasses(" + JSON.stringify(classId) + ")", JSON.stringify(classList));
-  return classList;
+  return _.uniq(classList);
 }
 
 export function getBaseClassesFromArray(typeArray, vocab, vocabPfx) {
@@ -342,8 +342,9 @@ export function getInstances(className, vocab, vocabPfx) {
 
 export function getRestrictionId(type, property, vocab, vocabPfx) {
   let result = '';
+  const baseClasses = getBaseClasses(`${vocabPfx}${type}`, vocab, vocabPfx);
   vocab.forEach(vocabEntry => {
-    if (vocabEntry['@id'] === `${vocabPfx}${type}`) {
+    if (baseClasses.indexOf(vocabEntry['@id']) > -1) {
       if (typeof vocabEntry.subClassOf !== 'undefined') {
         vocabEntry.subClassOf.forEach(subClassEntry => {
           if (typeof subClassEntry['@type'] !== 'undefined') {
