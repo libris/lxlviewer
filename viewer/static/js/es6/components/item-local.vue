@@ -286,14 +286,14 @@ export default {
         <i class="fa fa-chevron-right" :class="{'down': expanded}" @click="toggleExpanded()"></i>
         <span class="type"><a href="/vocab/#{{item['@type']}}">{{ item['@type'] | labelByLang | capitalize }}</a></span>
         <span class="collapsed-label" @click="toggleExpanded()"><span v-show="!expanded">{{collapsedLabel}}</span><span class="placeholder">.</span></span>
-        <span>
-          <i v-if="isExtractable && !isLocked" class="chip-action fa fa-file-o" v-on:click="openExtractDialog" v-if="!isLocked" :class="{'show-icon': showActionButtons}"></i>
-          <i v-if="!isLocked" class="fa fa-trash chip-action" :class="{'show-icon': showActionButtons}" v-on:click="removeConfirmation = true"></i>
+        <span class="actions">
           <div class="confirm-remove-box" v-if="removeConfirmation" v-on-clickaway="removeConfirmation = false">
             <div v-on:click="removeThis(true)">
               {{"Remove" | translatePhrase}}
             </div>
           </div>
+          <i v-if="!isLocked" class="fa fa-trash chip-action" :class="{'show-icon': showActionButtons}" v-on:click="removeConfirmation = true"></i>
+          <i v-if="isExtractable && !isLocked" :title="'Bryt ut entitet' | translatePhrase" class="chip-action fa fa-share-square-o" v-on:click="openExtractDialog" v-if="!isLocked" :class="{'show-icon': showActionButtons}"></i>
         </span>
       </span>
       <data-node v-show="expanded" v-for="(k,v) in filteredItem" v-show="!isLocked || v" :parent-path="getPath" :is-inner="true" :is-locked="isLocked" :allow-local="true" :is-removable="false" :embedded="true" :parent-key="key" :parent-index="index" :key="k" :value="v" :focus="focus" :show-action-buttons="showActionButtons"></data-node>
@@ -379,8 +379,12 @@ export default {
       display: flex;
       align-items: center;
       padding: 5px;
-      .confirm-remove-box {
-        transform: translate(-20px, -20px);
+      > .actions {
+        display: flex;
+        flex-direction: row-reverse;
+        .confirm-remove-box {
+          transform: translate(16px, 0px);
+        }
       }
       i {
         transition: all 0.2s ease;
