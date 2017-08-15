@@ -5,6 +5,7 @@ import MarcPreview from '../components/marc-preview';
 import CreateItemButton from '../components/create-item-button';
 import * as DataUtil from '../utils/data';
 import * as DisplayUtil from '../utils/display';
+import * as LayoutUtil from '../utils/layout';
 import * as VocabUtil from '../utils/vocab';
 import * as ModalUtil from '../utils/modals';
 import * as HttpUtil from '../utils/http';
@@ -45,6 +46,12 @@ export default {
       expandableAdminInfo.onresize = this.resize;
     });
   },
+  events: {
+    'close-modals'() {
+      this.closeDuplicateDialog();
+      return true;
+    },
+  },
   watch: {
     inEdit(state) {
       if (state) {
@@ -61,6 +68,14 @@ export default {
     edit() {
       this.loadingEdit = true;
       setTimeout(() => this.$dispatch('edit-item'), 0); // $nextTick doesn't work
+    },
+    duplicate() {
+      this.duplicating = true;
+      this.$dispatch('duplicate-item');
+    },
+    openDuplicateWindow() {
+      this.showDuplicateWindow = true;
+      LayoutUtil.scrollLock(true);
     },
     showHelp() {
       this.$dispatch('show-help', '');
@@ -100,12 +115,18 @@ export default {
       const baseClasses = VocabUtil.getBaseClasses(this.editorData.mainEntity['@type'], this.vocab, this.settings.vocabPfx)
         .map(id => id.replace(this.settings.vocabPfx, ''));
       return baseClasses.indexOf(type) > -1;
+    },
+    closeDuplicateDialog() {
+      this.showDuplicateWindow = false;
+      LayoutUtil.scrollLock(false);
     }
   },
   data() {
     return {
       showChipHeader: false,
       showAdminInfoDetails: false,
+      showDuplicateWindow: false,
+      duplicating: false,
       otherFormatMenu: false,
       loadingEdit: false,
       loadingCancel: false,
@@ -128,6 +149,9 @@ export default {
     inEdit() {
       return this.status.inEdit;
     },
+    hasLocalWork() {
+      return (typeof this.editorData.work !== 'undefined') ? true : false;
+    }
   },
   components: {
     'header-component': HeaderComponent,
@@ -179,12 +203,15 @@ export default {
           <i class="fa fa-fw fa-save" v-show="!status.saved.loading"></i>
           {{ "Save" | translatePhrase }}
         </button>
+        <button id="duplicateButton" v-on:click="openDuplicateWindow()" v-show="!status.inEdit">
+          <i class="fa fa-fw fa-files-o"></i>
+          {{ "Duplicate" | translatePhrase }}
+        </button>
         <button id="editButton" v-on:click="edit()" v-show="!status.inEdit">
           <i class="fa fa-fw fa-pencil" v-show="!loadingEdit"></i>
           <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="loadingEdit"></i>
           {{ "Edit" | translatePhrase }}
         </button>
-
       </div>
       <div>
         <div class="admin-info-container" :class="{ 'show-admin-info-details': showAdminInfoDetails }">
@@ -202,7 +229,38 @@ export default {
       </div>
       <header-component v-bind:class="{'collapsed': !showChipHeader}" :full="false"></header-component>
     </div>
-
+    <div class="window" v-if="showDuplicateWindow">
+      <div class="header">
+        <span class="title">
+          {{ "Duplicera post" | translatePhrase }}
+        </span>
+        <span class="windowControl">
+          <i v-on:click="closeDuplicateDialog()" class="fa fa-close"></i>
+        </span>
+      </div>
+      <div v-if="!hasLocalWork" class="body">
+        <p class="duplicateLeadingText">
+          Detta kommer att skapa en kopia av denna posten med samma innehåll som vid senaste sparning. Sedan skickas du vidare till den skapade posten.
+        </p>
+        <hr>
+        <div class="button-container">
+          <p>
+            Vill du fortsätta?
+          </p>
+          <button class="acceptDuplicateButton" v-on:click="duplicate()" v-show="!duplicating">{{ "Ja" | translatePhrase }}</button>
+          <button class="declineDuplicateButton" v-on:click="closeDuplicateDialog()" v-show="!duplicating">{{ "Nej" | translatePhrase }}</button>
+          <div v-show="duplicating"><i class="fa fa-circle-o-notch fa-spin" aria-hidden="true"></i> {{ "Kopierar" | translatePhrase }}</div>
+        </div>
+      </div>
+      <div v-if="hasLocalWork" class="body">
+        <p class="duplicateLeadingText">
+          Denna post innehåller ett lokalt verk och kan därför inte kopieras.
+        </p>
+        <p class="duplicateLeadingText">
+          Bryt ut det lokala verket för att fortsätta.
+        </p>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -334,6 +392,27 @@ export default {
         columns: 2;
         column-fill: balance;
         overflow: hidden;
+      }
+    }
+  }
+  .window {
+    .window-mixin();
+    .body {
+      padding: 2em;
+      .duplicateLeadingText {
+        text-align: center;
+      }
+      .button-container {
+        text-align: center;
+        button {
+          padding: 0px 1em;
+        }
+        .acceptDuplicateButton {
+          margin-right: 2em;
+        }
+        .declineDuplicateButton {
+
+        }
       }
     }
   }
