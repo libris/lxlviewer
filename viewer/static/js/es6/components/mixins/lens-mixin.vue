@@ -1,8 +1,16 @@
 <script>
 import * as DisplayUtil from '../../utils/display';
 import * as StringUtil from '../../utils/string';
+import { getVocabularyClasses } from '../../vuex/getters';
 
 export default {
+  vuex: {
+    actions: {
+    },
+    getters: {
+      vocabClasses: getVocabularyClasses,
+    },
+  },
   methods: {
     getLabel(item) {
       if (!this.display || !this.editorData || !this.vocab || !this.settings) {
@@ -12,7 +20,7 @@ export default {
         item,
         this.display,
         this.editorData.quoted,
-        this.vocab,
+        this.vocabClasses,
         this.settings
       );
       return label;
@@ -28,7 +36,7 @@ export default {
       for (const entry of list) {
         if (this.translateable(entry.property)) {
           formatted = formatted.concat(entry.value.map((obj) => {
-            return StringUtil.labelByLang(obj, this.settings.language, this.vocab, this.settings.vocabPfx);
+            return StringUtil.labelByLang(obj, this.settings.language, this.vocabClasses, this.settings.vocabPfx);
           }));
         } else {
           formatted = formatted.concat(entry.value);
@@ -47,7 +55,7 @@ export default {
         this.focusData,
         this.display,
         this.editorData.quoted,
-        this.vocab,
+        this.vocabClasses,
         this.settings
       );
       return chip;
@@ -57,7 +65,7 @@ export default {
         this.focusData,
         this.display,
         this.editorData.quoted,
-        this.vocab,
+        this.vocabClasses,
         this.settings
       );
       return card;
@@ -67,7 +75,7 @@ export default {
         this.focusData,
         this.display,
         this.editorData.quoted,
-        this.vocab,
+        this.vocabClasses,
         this.settings
       );
       return summary;

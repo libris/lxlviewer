@@ -16,7 +16,7 @@ import ItemMixin from './mixins/item-mixin';
 import LensMixin from './mixins/lens-mixin';
 import {mixin as clickaway} from 'vue-clickaway';
 import { changeNotification, changeStatus } from '../vuex/actions';
-import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData, getStatus } from '../vuex/getters';
+import { getSettings, getVocabulary, getVocabularyClasses, getDisplayDefinitions, getEditorData, getStatus } from '../vuex/getters';
 
 export default {
   name: 'item-local',
@@ -33,6 +33,7 @@ export default {
   vuex: {
     getters: {
       vocab: getVocabulary,
+      vocabClasses: getVocabularyClasses,
       display: getDisplayDefinitions,
       settings: getSettings,
       editorData: getEditorData,
@@ -75,7 +76,7 @@ export default {
       const classId = `${this.settings.vocabPfx}${this.item['@type']}`;
       if (
         this.settings.nonExtractableClasses.indexOf(this.item['@type']) === -1 &&
-        !VocabUtil.isEmbedded(classId, this.vocab, this.settings)
+        !VocabUtil.isEmbedded(classId, this.vocabClasses, this.settings)
       ) {
         return true;
       }

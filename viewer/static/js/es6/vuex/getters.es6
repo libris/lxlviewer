@@ -4,6 +4,15 @@ export function getEditorData(state) {
 export function getVocabulary(state) {
   return state.vocab;
 }
+export function getVocabMap(state) {
+  return state.vocabMap;
+}
+export function getVocabularyClasses(state) {
+  return state.vocabClasses;
+}
+export function getVocabularyProperties(state) {
+  return state.vocabProperties;
+}
 export function getDisplayDefinitions(state) {
   return state.display;
 }
