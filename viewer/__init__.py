@@ -400,6 +400,11 @@ def thingnewp():
     return render_template('edit.html', record=record, model={})
 
 
+@app.route('/sys/forcedsetterms.json')
+def sysroute():
+    r = _proxy_request(request, session, None)
+    return r.get_data()
+
 @app.route('/<path:path>/edit')
 def thingedit(path):
     r = _proxy_request(request, session, url_path="/{0}".format(path))
