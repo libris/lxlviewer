@@ -11,6 +11,20 @@ export function getVocab() {
   });
 }
 
+export function getTermByType(type, vocab) {
+  if (!vocab || typeof vocab === 'undefined') {
+    throw new Error('getTermByType was called without a vocabulary.');
+  }
+  const termList = _.filter(vocab, (term) => {
+    if (_.isArray(term['@type'])) {
+      return term['@type'].indexOf(type) > -1;
+    } else {
+      return term['@type'] === type;
+    }
+  })
+  return termList;
+}
+
 export function getTermFromLabel(label, language, vocab, vocabPfx) {
   const classObject = _.find(vocab, (obj) => {
     let existingLang = language;
