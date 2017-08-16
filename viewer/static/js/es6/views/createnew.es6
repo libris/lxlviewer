@@ -33,7 +33,7 @@ export default class CreateNew extends View {
       allMaterials = allMaterials.concat(VocabUtil.getAllSubClasses(typeInArray, vocab, self.settings.vocabPfx)
         .map(subClassId => subClassId.replace(self.settings.vocabPfx, '')));
     });
-    return allMaterials;
+    return _.sortBy(allMaterials, label => StringUtil.labelByLang(label, self.language, vocab, this.settings.vocabPfx));
   }
 
   initVue(vocab, vocabPfx, baseMaterials) {
@@ -94,12 +94,26 @@ export default class CreateNew extends View {
         chosenType: '',
         initialized: false,
         selectedIssuanceType: '',
+        selectedCarrierType: '',
+        carrierTypes: [],
       },
       watch: {
+        'chosenType': function(newVal) {
+          VocabUtil.getEnumerations(newVal, 'carrierType', this.vocab, this.settings.vocabPfx).then((result) => {
+            this.carrierTypes = _.sortBy(result, item => this.getPrefLabelByLang(item));
+          });
+        },
       },
       methods: {
         updateChosenType(event) {
           this.chosenType = event.target.value;
+        },
+        getPrefLabelByLang(item) {
+          const label = item.prefLabelByLang[self.language] || item.prefLabelByLang.en;
+          if (typeof label === 'string') {
+            return label;
+          }
+          return label.join(', ');
         },
       },
       computed: {
@@ -123,13 +137,16 @@ export default class CreateNew extends View {
                 '@id': '_:TEMP_ID#it',
                 '@type': this.chosenType,
                 issuanceType: this.selectedIssuanceType,
+                carrierType: this.selectedCarrierType,
               },
             ],
           };
           return obj;
         },
         issuanceTypes() {
-          return VocabUtil.getInstances('IssuanceType', this.vocab, this.settings.vocabPfx);
+          return _.sortBy(VocabUtil.getInstances('IssuanceType', this.vocab, this.settings.vocabPfx), label => {
+            return StringUtil.labelByLang(label, self.language, this.vocab, this.settings.vocabPfx);
+          });
         },
       },
       components: {

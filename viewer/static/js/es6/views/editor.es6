@@ -145,6 +145,9 @@ export default class Editor extends View {
         'edit-item': function() {
           this.editItem();
         },
+        'duplicate-item': function() {
+          this.doCreate(RecordUtil.getObjectAsRecord(this.editorData.mainEntity));
+        },
         'cancel-edit': function() {
           this.changeStatus('inEdit', false);
           this.syncData(Object.assign({}, this.status.lastSavedData));
