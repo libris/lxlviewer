@@ -20,7 +20,7 @@ import HelpComponent from '../components/help-component';
 import EditorControls from '../components/editorcontrols';
 import HeaderComponent from '../components/headercomponent';
 import Notification from '../components/notification';
-import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData, getStatus, getKeybindState } from '../vuex/getters';
+import { getSettings, getVocabulary, getVocabularyClasses, getVocabularyProperties, getVocabMap, getDisplayDefinitions, getEditorData, getStatus, getKeybindState } from '../vuex/getters';
 import { changeSettings, changeNotification, loadVocab, loadDisplayDefs, syncData, changeSavedStatus, changeStatus } from '../vuex/actions';
 
 function showError(error) {
@@ -97,6 +97,9 @@ export default class Editor extends View {
           settings: getSettings,
           editorData: getEditorData,
           vocab: getVocabulary,
+          vocabClasses: getVocabularyClasses,
+          vocabProperties: getVocabularyProperties,
+          vocabMap: getVocabMap,
           display: getDisplayDefinitions,
           status: getStatus,
           keybindState: getKeybindState,

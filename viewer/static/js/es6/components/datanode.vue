@@ -13,7 +13,7 @@ import { mixin as clickaway } from 'vue-clickaway';
 import * as VocabUtil from '../utils/vocab';
 import * as LayoutUtil from '../utils/layout';
 import LodashProxiesMixin from './mixins/lodash-proxies-mixin';
-import { getVocabulary, getSettings, getStatus, getEditorData } from '../vuex/getters';
+import { getVocabulary, getVocabularyProperties, getSettings, getStatus, getEditorData } from '../vuex/getters';
 import { changeStatus } from '../vuex/actions';
 
 export default {
@@ -47,6 +47,7 @@ export default {
     },
     getters: {
       vocab: getVocabulary,
+      vocabProperties: getVocabularyProperties,
       settings: getSettings,
       status: getStatus,
       editorData: getEditorData,
@@ -76,7 +77,7 @@ export default {
       return ids;
     },
     keyAsVocabProperty() {
-      return VocabUtil.getTermObject(this.key, this.vocab, this.settings.vocabPfx);
+      return VocabUtil.getTermObject(this.key, this.vocabProperties, this.settings.vocabPfx);
     },
     propertyComment() {
       if (this.keyAsVocabProperty && this.keyAsVocabProperty.commentByLang) {

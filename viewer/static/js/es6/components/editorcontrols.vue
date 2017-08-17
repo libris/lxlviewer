@@ -12,12 +12,13 @@ import * as HttpUtil from '../utils/http';
 import LensMixin from './mixins/lens-mixin';
 import { mixin as clickaway } from 'vue-clickaway';
 import { changeSavedStatus, changeStatus } from '../vuex/actions';
-import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData, getStatus } from '../vuex/getters';
+import { getSettings, getVocabulary, getVocabularyClasses, getDisplayDefinitions, getEditorData, getStatus } from '../vuex/getters';
 
 export default {
   vuex: {
     getters: {
       vocab: getVocabulary,
+      vocabClasses: getVocabularyClasses,
       display: getDisplayDefinitions,
       settings: getSettings,
       editorData: getEditorData,
@@ -112,7 +113,7 @@ export default {
       setTimeout(() => this.$dispatch('cancel-edit'), 0);
     },
     isSubClassOf(type) {
-      const baseClasses = VocabUtil.getBaseClasses(this.editorData.mainEntity['@type'], this.vocab, this.settings.vocabPfx)
+      const baseClasses = VocabUtil.getBaseClasses(this.editorData.mainEntity['@type'], this.vocabClasses, this.settings.vocabPfx)
         .map(id => id.replace(this.settings.vocabPfx, ''));
       return baseClasses.indexOf(type) > -1;
     },
