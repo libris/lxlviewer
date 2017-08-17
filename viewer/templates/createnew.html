@@ -12,21 +12,29 @@
       <div class="panel-body">
         <div id="app">
           <div class="createnew-form" v-if="initialized === true">
+            <button @click="activateMode('Instance')">Instance</button>
+            <button @click="activateMode('Work')">Work</button>
+            <div>
+              <button @click="activateMode('compose')">Compose</button>
+              <button v-if="selectedCreation === 'Instance'" @click="activateMode('template')">Template</button>
+              <!--<button @click="activateMode('compose')">Compose</button>
+              <button @click="activateMode('template')">Template</button>-->
+            </div>
             <form action="/edit" method="POST">
-              <div>
+              <div v-if="!templateMode">
                 <div>
                   <label for="type">{{"type" | translatePhrase | capitalize}}</label>
                   <select id="type" v-model="chosenType" size="10">
-                    <option v-for="material in materialLists" value="{{material}}">{{material | labelByLang}}</option>
+                    <option v-for="material in materialList" value="{{material}}">{{material | labelByLang}}</option>
                   </select>
                 </div>
-                <div>
+                <div v-if="selectedCreation === 'Instance'">
                   <label for="issuanceType">{{"issuanceType" | labelByLang | capitalize}}</label>
                   <select id="issuanceType" v-model="selectedIssuanceType" size="10">
                     <option v-for="issuanceType in issuanceTypes" value="{{issuanceType}}" label="{{issuanceType | labelByLang}}">
                   </select>
                 </div>
-                <div>
+                <div v-if="selectedCreation === 'Instance'">
                   <label for="carrierType">{{"carrierType" | labelByLang | capitalize}}</label>
                   <select id="carrierType" v-model="selectedCarrierType" size="10">
                     <!--<option disabled value="">{{"Choose type" | translatePhrase}}</option>-->
@@ -34,9 +42,17 @@
                   </select>
                 </div>
               </div>
-              <textarea id="copyItem" name="data" class="hidden">{{itemData | json}}</textarea>
+              <div v-if="templateMode">
+                <div>
+                  <label for="templates">{{"templates" | labelByLang | capitalize}}</label>
+                  <select id="templates" v-model="selectedTemplate" size="10">
+                    <option v-for="template in getCombinedTemplates" value="{{$key}}" label="{{template.label | translatePhrase}}">
+                  </select>
+                </div>
+              </div>
+              <textarea id="copyItem" name="data" class="hidden">{{postTemplate | json}}</textarea>
               <span class="submitter">
-                <button v-bind:disabled="!hasChosenMaterials">Skapa formulär</button>
+                <button v-bind:disabled="!hasChosenMaterials && !hasChosenTemplate">Skapa formulär</button>
               </span>
             </form>
           </div>
