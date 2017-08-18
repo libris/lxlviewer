@@ -23,32 +23,18 @@ export default class CreateNew extends View {
     this.language = 'sv';
 
     VocabUtil.getVocab().then((vocab) => {
-      self.initVue(vocab['@graph'], self.settings.vocabPfx);
+      self.vocab = vocab['@graph'];
+      self.initVue();
     });
   }
 
-  initVue(vocab, vocabPfx) {
+  initVue() {
     const self = this;
     Vue.use(Vuex);
     $('#app').show();
 
     Vue.filter('labelByLang', (label) => {
-      // Filter for fetching labels from vocab
-      let lbl = label;
-      if (lbl && lbl.indexOf(vocabPfx) !== -1) {
-        lbl = lbl.replace(vocabPfx, '');
-      }
-      const item = _.find(vocab, (d) => { return d['@id'] === `${vocabPfx}${lbl}` });
-      if(!item) { console.warn(`${vocabPfx}${lbl} not found`); }
-      let labelByLang = '';
-      if (typeof item !== 'undefined' && item.labelByLang) {
-        labelByLang = (item.labelByLang[self.language] || item.labelByLang['en']);
-      }
-      // Check if we have something of value
-      if (labelByLang.length > 0) {
-        return labelByLang;
-      }
-      return lbl;
+      return StringUtil.labelByLang(label, self.settings.language, self.vocab, self.settings.vocabPfx);
     });
 
     Vue.filter('translatePhrase', (string) => {
@@ -78,15 +64,14 @@ export default class CreateNew extends View {
       },
       data: {
         materialList: [],
+        carrierTypes: [],
         vocabPfx: self.settings.vocabPfx,
-        vocab,
         chosenType: '',
         initialized: false,
         selectedIssuanceType: '',
         selectedCarrierType: '',
         selectedTemplate: '',
         selectedCreation: '',
-        carrierTypes: [],
         templateMode: false,
       },
       watch: {
@@ -119,7 +104,7 @@ export default class CreateNew extends View {
         },
         getMaterials(creation) {
           let allMaterials = [];
-          allMaterials = allMaterials.concat(VocabUtil.getAllSubClasses([creation], this.vocab, this.settings.vocabPfx)
+          allMaterials = allMaterials.concat(VocabUtil.getAllSubClasses([`${this.settings.vocabPfx}${creation}`], this.vocab, this.settings.vocabPfx)
             .map(subClassId => subClassId.replace(this.settings.vocabPfx, '')));
           return _.sortBy(allMaterials, label => StringUtil.labelByLang(label, this.settings.language, this.vocab, this.settings.vocabPfx));
         },
@@ -220,8 +205,8 @@ export default class CreateNew extends View {
       store,
       ready() {
         this.changeSettings(self.settings);
+        this.loadVocab(self.vocab);
         this.initialized = true;
-        console.log(CombinedTemplates['rdabook'].value);
       },
     });
   }

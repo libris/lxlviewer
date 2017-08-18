@@ -21,11 +21,11 @@ export function getTermByType(type, vocab) {
     } else {
       return term['@type'] === type;
     }
-  })
+  });
   return termList;
 }
 
-export function getTermFromLabel(label, language, vocab, vocabPfx) {
+export function getTermFromLabel(label, language, vocab) {
   const classObject = _.find(vocab, (obj) => {
     let existingLang = language;
     if (typeof obj.labelByLang === 'undefined') {
@@ -61,18 +61,18 @@ export function getTermObject(term, vocab, vocabPfx) {
   }
 
   const cn = term.replace(vocabPfx, '');
-  const _class = _.find(vocab, (d) => { return d['@id'] === vocabPfx + cn; });
+  const _class = vocab.get(`${vocabPfx}${cn}`);
   if (!_class) {
     // console.warn('Not found in vocab:', cn);
   }
   return _class;
 }
 
-export function getTermsByType(type, vocab) {
+export function getTermsByType(type, vocab, vocabPfx) {
   if (!vocab || typeof vocab === 'undefined') {
     throw new Error('getTermsByType was called without a vocabulary.');
   }
-  return _.filter(vocab, function(o) { return o['@type'] === type; });
+  return vocab.get(`${vocabPfx}${type}`);
 }
 
 export function getPropertyTypes(propertyId, vocab, vocabPfx) {
@@ -94,36 +94,21 @@ export function getPropertyTypes(propertyId, vocab, vocabPfx) {
 }
 
 export function getAllEnumerationTypesFor(onProp, vocab) {
-  let enumerationTypes = [];
-  _.each(vocab, (term) => {
+  const enumerationTypes = [];
+  vocab.forEach(term => {
     if (term.hasOwnProperty('subClassOf')) {
-      _.each(term.subClassOf, (superClass) => {
-        if (superClass['@type'] === 'Restriction') {
-          if (superClass.onProperty['@id'] === onProp) {
-            enumerationTypes = enumerationTypes.concat(superClass.someValuesFrom);
+      _.each(term.subClassOf, (superClassObj) => {
+        if (superClassObj.hasOwnProperty('@type') && superClassObj['@type'] === 'Restriction') {
+          if (superClassObj.onProperty['@id'] === onProp) {
+            if (superClassObj.hasOwnProperty('someValuesFrom')) {
+              enumerationTypes.push(superClassObj.someValuesFrom['@id']);
+            }
           }
         }
       });
     }
   });
-  const enumerationTypeIds = [];
-  for (let i = 0; i < enumerationTypes.length; i++) {
-    if (enumerationTypeIds.indexOf(enumerationTypes[i]['@id']) === -1) {
-      enumerationTypeIds.push(enumerationTypes[i]['@id']);
-    };
-  }
-  return enumerationTypeIds;
-}
-
-export function getFullRange(key, vocab, vocabPfx) {
-  let types = [].concat(getRange(key, vocab, vocabPfx));
-  let allTypes = [];
-  _.each(types, type => {
-    const typeInArray = [].concat(type);
-    allTypes = allTypes.concat(getAllSubClasses(typeInArray, vocab, vocabPfx));
-  });
-  allTypes = _.uniq(allTypes);
-  return allTypes;
+  return enumerationTypes;
 }
 
 export function getRange(propertyId, vocab, vocabPfx) {
@@ -146,12 +131,14 @@ export function getRange(propertyId, vocab, vocabPfx) {
   return range;
 }
 
-
 export function getSubClasses(classname, vocab, vocabPfx) {
-  const subClasses = _.filter(vocab, (o) => {
+  const subClasses = [];
+  vocab.forEach((o) => {
     if (o.subClassOf) {
       for (let i = 0; i < o.subClassOf.length; i++) {
-        if (o.subClassOf[i]['@id'] === vocabPfx + classname) return true;
+        if (o.subClassOf[i]['@id'] === vocabPfx + classname) {
+          subClasses.push(o);
+        }
       }
     }
   });
@@ -178,8 +165,19 @@ export function getAllSubClasses(classArray, vocab, vocabPfx) {
   return inputSubClasses.concat(newSubClasses);
 }
 
-export function getDomainList(property, vocab, vocabPfx) {
+export function getFullRange(key, vocab, vocabPfx) {
+  const types = [].concat(getRange(key, vocab, vocabPfx));
+  let allTypes = [];
+  _.each(types, type => {
+    const typeInArray = [].concat(type);
+    allTypes = allTypes.concat(getAllSubClasses(typeInArray, vocab, vocabPfx));
+  });
+  allTypes = _.uniq(allTypes);
+  return allTypes;
+}
 
+
+export function getDomainList(property, vocab, vocabPfx) {
   if (property['@type'] === 'Class') {
     return false;
   }
@@ -203,25 +201,20 @@ export function getDomainList(property, vocab, vocabPfx) {
   return domainList;
 }
 
-export function getProperties(className, vocab, vocabPfx) {
+export function getProperties(className, vocab, vocabPfx, vocabProperties) {
   // Get all properties which has the domain of the className
-
-  const vocabItems = vocab;
   const props = [];
   const cn = className.replace(vocabPfx, '');
   // console.log("Getting props for", className);
-  for (let i = 0; i < vocabItems.length; i++) {
-    const prop = vocabItems[i];
-    if (prop['@type'] !== 'Class') {
-      const domainList = getDomainList(prop, vocab, vocabPfx);
-      const classId = vocabPfx + cn;
-      for (const domain of domainList) {
-        if (domain['@id'] === classId) {
-          props.push(prop);
-        }
+  vocabProperties.forEach(prop => {
+    const domainList = getDomainList(prop, vocab, vocabPfx);
+    const classId = vocabPfx + cn;
+    for (const domain of domainList) {
+      if (domain['@id'] === classId) {
+        props.push(prop);
       }
     }
-  }
+  });
 
   // HARDCODED INCLUDE OF LABEL PROPERTY
   // TODO: Remove when label has a domain
@@ -310,12 +303,12 @@ export function isSubClassOf(classId, baseClassId, vocab, vocabPfx) {
   return false;
 }
 
-export function getPropertiesFromArray(typeArray, vocab, vocabPfx) {
+export function getPropertiesFromArray(typeArray, vocab, vocabPfx, vocabProperties) {
   let props = [];
   const classNames = getBaseClassesFromArray(typeArray, vocab, vocabPfx);
 
   for (let i = 0; i < classNames.length; i++) {
-    const properties = getProperties(classNames[i], vocab, vocabPfx);
+    const properties = getProperties(classNames[i], vocab, vocabPfx, vocabProperties);
     for (let x = 0; x < properties.length; x++) {
       const p = {
         item: properties[x],
@@ -347,28 +340,30 @@ export function isEmbedded(classId, vocab, settings) {
 }
 
 export function getInstances(className, vocab, vocabPfx) {
-  const instances = vocab
-    .filter(vocabObj => (typeof vocabObj['@type'] !== 'undefined' && vocabObj['@type'].indexOf(`${vocabPfx + className}`) > -1))
-    .map(vocabObj => vocabObj['@id'].replace(vocabPfx, ''));
+  const instances = [];
+  vocab.forEach(vocabObj => {
+    if (typeof vocabObj['@type'] !== 'undefined' && vocabObj['@type'].indexOf(`${vocabPfx + className}`) > -1) {
+      instances.push(vocabObj['@id'].replace(vocabPfx, ''));
+    }
+  });
   return instances;
 }
 
 export function getRestrictionId(type, property, vocab, vocabPfx) {
   let result = '';
   const baseClasses = getBaseClasses(`${vocabPfx}${type}`, vocab, vocabPfx);
-  vocab.forEach(vocabEntry => {
-    if (baseClasses.indexOf(vocabEntry['@id']) > -1) {
-      if (typeof vocabEntry.subClassOf !== 'undefined') {
-        vocabEntry.subClassOf.forEach(subClassEntry => {
-          if (typeof subClassEntry['@type'] !== 'undefined') {
-            if (subClassEntry['@type'] === 'Restriction' &&
-            subClassEntry.onProperty['@id'] === `${vocabPfx}${property}`) {
-              // Found that type has restriction on property. Return restriction ID.
-              result = subClassEntry.someValuesFrom['@id'];
+  baseClasses.forEach(baseClass => {
+    const vocabEntry = vocab.get(baseClass);
+    if (typeof vocabEntry.subClassOf !== 'undefined') {
+      vocabEntry.subClassOf.forEach(subClassObject => {
+        if (subClassObject.hasOwnProperty('@type') && subClassObject['@type'] === 'Restriction') {
+          if (subClassObject.onProperty['@id'] === property) {
+            if (subClassObject.hasOwnProperty('someValuesFrom')) {
+              result = subClassObject.someValuesFrom['@id'];
             }
           }
-        });
-      }
+        }
+      });
     }
   });
   return result;
@@ -379,19 +374,17 @@ export function getEnumerations(type, property, vocab, vocabPfx) {
   if (restrictionUrl !== '') {
     return new Promise((resolve, reject) => {
       httpUtil.get({ url: `/find?@type=${restrictionUrl}`, accept: 'application/ld+json' }).then((response) => {
-        console.log(response);
         resolve(response.items);
       }, (error) => {
         reject('Error searching...', error);
       });
     });
   }
-  const enumerationTypesUrl = getAllEnumerationTypesFor(`${vocabPfx}${property}`, vocab)
+  const enumerationTypesUrl = getAllEnumerationTypesFor(`${vocabPfx}${property}`, vocab, vocabPfx)
     .map(enumerationType => `@type=${enumerationType}`)
     .join('&');
   return new Promise((resolve, reject) => {
     httpUtil.get({ url: `/find?@type=${enumerationTypesUrl}`, accept: 'application/ld+json' }).then((response) => {
-      console.log(response);
       resolve(response.items);
     }, (error) => {
       reject('Error searching...', error);

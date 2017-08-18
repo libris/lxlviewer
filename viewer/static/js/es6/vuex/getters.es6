@@ -4,9 +4,6 @@ export function getEditorData(state) {
 export function getVocabulary(state) {
   return state.vocab;
 }
-export function getVocabMap(state) {
-  return state.vocabMap;
-}
 export function getVocabularyClasses(state) {
   return state.vocabClasses;
 }

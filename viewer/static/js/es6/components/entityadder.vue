@@ -101,7 +101,7 @@ export default {
       return this.key;
     },
     getRange() {
-      const fetchedRange = VocabUtil.getRange(this.key, this.vocabProperties, this.settings.vocabPfx);
+      const fetchedRange = VocabUtil.getRange(this.key, this.vocab, this.settings.vocabPfx);
       return fetchedRange;
     },
     getFullRange() {

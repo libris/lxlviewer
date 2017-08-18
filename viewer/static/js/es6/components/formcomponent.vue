@@ -12,7 +12,7 @@ import * as ModalUtil from '../utils/modals';
 import * as VocabUtil from '../utils/vocab';
 import * as DisplayUtil from '../utils/display';
 import { updateForm, changeStatus } from '../vuex/actions';
-import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData, getStatus } from '../vuex/getters';
+import { getSettings, getVocabulary, getVocabularyProperties, getDisplayDefinitions, getEditorData, getStatus } from '../vuex/getters';
 
 export default {
   vuex: {
@@ -22,6 +22,7 @@ export default {
     },
     getters: {
       vocab: getVocabulary,
+      vocabProperties: getVocabularyProperties,
       settings: getSettings,
       editorData: getEditorData,
       display: getDisplayDefinitions,
@@ -58,7 +59,8 @@ export default {
       const allowed = VocabUtil.getPropertiesFromArray(
         formObj['@type'],
         this.vocab,
-        this.settings.vocabPfx // LÄGG TILL LABEL I ALLOWED
+        this.settings.vocabPfx, // LÄGG TILL LABEL I ALLOWED
+        this.vocabProperties
       );
       // Add the "added" property
       for (const element of allowed) {

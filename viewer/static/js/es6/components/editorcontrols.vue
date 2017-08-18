@@ -113,7 +113,7 @@ export default {
       setTimeout(() => this.$dispatch('cancel-edit'), 0);
     },
     isSubClassOf(type) {
-      const baseClasses = VocabUtil.getBaseClasses(this.editorData.mainEntity['@type'], this.vocabClasses, this.settings.vocabPfx)
+      const baseClasses = VocabUtil.getBaseClasses(this.editorData.mainEntity['@type'], this.vocab, this.settings.vocabPfx)
         .map(id => id.replace(this.settings.vocabPfx, ''));
       return baseClasses.indexOf(type) > -1;
     },

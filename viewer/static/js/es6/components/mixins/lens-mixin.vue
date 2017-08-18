@@ -20,7 +20,7 @@ export default {
         item,
         this.display,
         this.editorData.quoted,
-        this.vocabClasses,
+        this.vocab,
         this.settings
       );
       return label;
@@ -36,7 +36,7 @@ export default {
       for (const entry of list) {
         if (this.translateable(entry.property)) {
           formatted = formatted.concat(entry.value.map((obj) => {
-            return StringUtil.labelByLang(obj, this.settings.language, this.vocabClasses, this.settings.vocabPfx);
+            return StringUtil.labelByLang(obj, this.settings.language, this.vocab, this.settings.vocabPfx);
           }));
         } else {
           formatted = formatted.concat(entry.value);
@@ -55,7 +55,7 @@ export default {
         this.focusData,
         this.display,
         this.editorData.quoted,
-        this.vocabClasses,
+        this.vocab,
         this.settings
       );
       return chip;
@@ -65,7 +65,7 @@ export default {
         this.focusData,
         this.display,
         this.editorData.quoted,
-        this.vocabClasses,
+        this.vocab,
         this.settings
       );
       return card;
@@ -75,7 +75,7 @@ export default {
         this.focusData,
         this.display,
         this.editorData.quoted,
-        this.vocabClasses,
+        this.vocab,
         this.settings
       );
       return summary;

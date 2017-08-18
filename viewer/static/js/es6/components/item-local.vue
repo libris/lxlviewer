@@ -16,7 +16,7 @@ import ItemMixin from './mixins/item-mixin';
 import LensMixin from './mixins/lens-mixin';
 import {mixin as clickaway} from 'vue-clickaway';
 import { changeNotification, changeStatus } from '../vuex/actions';
-import { getSettings, getVocabulary, getVocabularyClasses, getDisplayDefinitions, getEditorData, getStatus } from '../vuex/getters';
+import { getSettings, getVocabulary, getVocabularyClasses, getVocabularyProperties, getDisplayDefinitions, getEditorData, getStatus } from '../vuex/getters';
 
 export default {
   name: 'item-local',
@@ -34,6 +34,7 @@ export default {
     getters: {
       vocab: getVocabulary,
       vocabClasses: getVocabularyClasses,
+      vocabProperties: getVocabularyProperties,
       display: getDisplayDefinitions,
       settings: getSettings,
       editorData: getEditorData,
@@ -76,7 +77,7 @@ export default {
       const classId = `${this.settings.vocabPfx}${this.item['@type']}`;
       if (
         this.settings.nonExtractableClasses.indexOf(this.item['@type']) === -1 &&
-        !VocabUtil.isEmbedded(classId, this.vocabClasses, this.settings)
+        !VocabUtil.isEmbedded(classId, this.vocab, this.settings)
       ) {
         return true;
       }
@@ -111,7 +112,8 @@ export default {
       const allowed = VocabUtil.getPropertiesFromArray(
         formObj['@type'],
         this.vocab,
-        this.settings.vocabPfx
+        this.settings.vocabPfx,
+        this.vocabProperties
       );
       // Add the "added" property
       for (const element of allowed) {
