@@ -40,7 +40,7 @@ export function labelByLang(string, lang, vocab, vocabPfx) {
   if (lbl && lbl.indexOf(pfx) !== -1) {
     lbl = lbl.replace(pfx, '');
   }
-  const item = _.find(vocab, (d) => { return d['@id'] === `${pfx}${lbl}`; });
+  const item = vocab.get(`${pfx}${lbl}`);
   let note = '';
   let labelByLang = '';
   if (typeof item !== 'undefined' && item.labelByLang) {

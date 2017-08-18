@@ -7,6 +7,9 @@ export const updateForm = function ({ dispatch, state }, form, data) {
 export const loadVocab = function ({ dispatch, state }, data) {
   dispatch('LOADVOCAB', data);
 };
+export const loadVocabMap = function ({ dispatch, state }, data) {
+  dispatch('LOADVOCABMAP', data);
+};
 export const loadDisplayDefs = function ({ dispatch, state }, data) {
   dispatch('LOADDISPLAYDEFS', data);
 };

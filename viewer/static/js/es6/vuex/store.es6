@@ -50,7 +50,6 @@ const mutations = {
     Vue.set(state.editor.data, form, data);
   },
   LOADVOCAB (state, data) {
-    state.vocab = new Map(data.map((entry) => [entry['@id'], entry]));
     // state.vocabMap = new Map(data.map((entry) => [entry['@id'], entry]));
 
     state.vocabClasses = VocabUtil.getTermByType('Class', data);
@@ -61,7 +60,9 @@ const mutations = {
     props = props.concat(VocabUtil.getTermByType('ObjectProperty', data));
     props = props.concat(VocabUtil.getTermByType('owl:SymmetricProperty', data));
     state.vocabProperties = new Map(props.map((entry) => [entry['@id'], entry]));
-
+  },
+  LOADVOCABMAP (state, data) {
+    state.vocab = data;
   },
   LOADDISPLAYDEFS (state, data) {
     state.display = data;

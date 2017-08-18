@@ -21,7 +21,7 @@ import EditorControls from '../components/editorcontrols';
 import HeaderComponent from '../components/headercomponent';
 import Notification from '../components/notification';
 import { getSettings, getVocabulary, getVocabularyClasses, getVocabularyProperties, getDisplayDefinitions, getEditorData, getStatus, getKeybindState } from '../vuex/getters';
-import { changeSettings, changeNotification, loadVocab, loadDisplayDefs, syncData, changeSavedStatus, changeStatus } from '../vuex/actions';
+import { changeSettings, changeNotification, loadVocab, loadVocabMap, loadDisplayDefs, syncData, changeSavedStatus, changeStatus } from '../vuex/actions';
 
 function showError(error) {
   $('#loadingText .fa-circle-o-notch').fadeOut('fast', () => {
@@ -46,6 +46,7 @@ export default class Editor extends View {
     $('#loadingText .mainStatus').text(loadingStr);
     // $('#loadingText .status').text('Hämtar vokabulär');
     VocabUtil.getVocab().then((vocab) => {
+      self.vocabMap = new Map(vocab['@graph'].map((entry) => [entry['@id'], entry]));
       self.vocab = vocab['@graph'];
       // $('#loadingText .status').text('Hämtar visningsdefinitioner');
       DisplayUtil.getDisplayDefinitions().then((display) => {
@@ -70,7 +71,7 @@ export default class Editor extends View {
     }, false);
 
     Vue.filter('labelByLang', (label) => {
-      return StringUtil.labelByLang(label, self.settings.language, self.vocab, self.settings.vocabPfx);
+      return StringUtil.labelByLang(label, self.settings.language, self.vocabMap, self.settings.vocabPfx);
     });
     Vue.filter('removeDomain', (value) => {
       return StringUtil.removeDomain(value, self.settings.removableBaseUris);
@@ -87,6 +88,7 @@ export default class Editor extends View {
         actions: {
           syncData,
           loadVocab,
+          loadVocabMap,
           loadDisplayDefs,
           changeSettings,
           changeSavedStatus,
@@ -281,6 +283,7 @@ export default class Editor extends View {
       ready() {
         this.changeSettings(self.settings);
         this.loadVocab(self.vocab);
+        this.loadVocabMap(self.vocabMap);
         this.loadDisplayDefs(self.display);
         this.syncData(self.dataIn);
         this.changeStatus('lastSavedData', Object.assign({}, self.dataIn));
