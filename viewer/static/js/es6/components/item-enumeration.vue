@@ -55,6 +55,7 @@ export default {
       const enumObj = {
         '@id': val['@id'],
       }
+      this.$dispatch('add-linked', val);
       this.$dispatch('update-item', this.index, enumObj);
     },
   },
