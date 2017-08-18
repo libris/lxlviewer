@@ -246,7 +246,7 @@ export default {
       if (this.isPlainObject(o) && !o.hasOwnProperty('@id') && !o.hasOwnProperty('@type')) {
         return 'error';
       }
-      if (this.restrictionOnProp.length > 0) {
+      if (this.restrictionOnProp && this.restrictionOnProp.length > 0) {
         return 'enumeration';
       }
       if (this.isPlainObject(o) && this.isLinked(o)) {
