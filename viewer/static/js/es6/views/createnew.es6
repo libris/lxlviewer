@@ -3,6 +3,8 @@ import View from './view';
 import Vue from 'vue';
 import Vuex from 'vuex';
 import store from '../vuex/store';
+import * as CombinedTemplates from '../templates/combinedTemplates.json';
+import * as OtherTemplates from '../templates/otherTemplates.json';
 import * as UserUtil from '../utils/user';
 import * as VocabUtil from '../utils/vocab';
 import * as RecordUtil from '../utils/record';
@@ -21,25 +23,13 @@ export default class CreateNew extends View {
     this.language = 'sv';
 
     VocabUtil.getVocab().then((vocab) => {
-      self.initVue(vocab['@graph'], self.settings.vocabPfx, self.settings.baseMaterials);
+      self.initVue(vocab['@graph'], self.settings.vocabPfx);
     });
   }
 
-  getMaterials(baseMaterials, vocab) {
-    const self = this;
-    let allMaterials = [];
-    _.each(baseMaterials, type => {
-      const typeInArray = [].concat(type);
-      allMaterials = allMaterials.concat(VocabUtil.getAllSubClasses(typeInArray, vocab, self.settings.vocabPfx)
-        .map(subClassId => subClassId.replace(self.settings.vocabPfx, '')));
-    });
-    return _.sortBy(allMaterials, label => StringUtil.labelByLang(label, self.language, vocab, this.settings.vocabPfx));
-  }
-
-  initVue(vocab, vocabPfx, baseMaterials) {
+  initVue(vocab, vocabPfx) {
     const self = this;
     Vue.use(Vuex);
-    const materialLists = self.getMaterials(baseMaterials, vocab);
     $('#app').show();
 
     Vue.filter('labelByLang', (label) => {
@@ -87,15 +77,17 @@ export default class CreateNew extends View {
         },
       },
       data: {
-        materialLists,
-        chosenMaterials: [],
+        materialList: [],
         vocabPfx: self.settings.vocabPfx,
         vocab,
         chosenType: '',
         initialized: false,
         selectedIssuanceType: '',
         selectedCarrierType: '',
+        selectedTemplate: '',
+        selectedCreation: '',
         carrierTypes: [],
+        templateMode: false,
       },
       watch: {
         'chosenType': function(newVal) {
@@ -115,30 +107,101 @@ export default class CreateNew extends View {
           }
           return label.join(', ');
         },
+        activateMode(mode) {
+          if (mode === 'template') {
+            this.templateMode = true;
+          } else if (mode === 'compose') {
+            this.templateMode = false;
+          } else {
+            this.selectedCreation = mode;
+            this.materialList = this.getMaterials(mode);
+          }
+        },
+        getMaterials(creation) {
+          let allMaterials = [];
+          allMaterials = allMaterials.concat(VocabUtil.getAllSubClasses([creation], this.vocab, this.settings.vocabPfx)
+            .map(subClassId => subClassId.replace(this.settings.vocabPfx, '')));
+          return _.sortBy(allMaterials, label => StringUtil.labelByLang(label, this.settings.language, this.vocab, this.settings.vocabPfx));
+        },
       },
       computed: {
         hasChosenMaterials() {
           return (this.chosenType !== '');
         },
-        itemData() {
-          const obj = {
-            '@graph': [
-              {
-                '@type': 'Record',
-                '@id': '_:TEMP_ID',
-                'assigner': {
-                  '@id': `https://libris.kb.se/library/${this.settings.userSettings.currentSigel}`,
-                },
-                'mainEntity': {
-                  '@id': '_:TEMP_ID#it',
-                },
-              },
-              {
+        hasChosenTemplate() {
+          return (this.selectedTemplate !== '');
+        },
+        mainEntity() {
+          if (this.selectedCreation === 'Instance') {
+            let instanceIt = {};
+            if (!this.templateMode) {
+              instanceIt = {
                 '@id': '_:TEMP_ID#it',
                 '@type': this.chosenType,
                 issuanceType: this.selectedIssuanceType,
                 carrierType: this.selectedCarrierType,
+              };
+            }
+            if (this.selectedTemplate !== '') {
+              instanceIt = Object.assign({ '@id': '_:TEMP_ID#it' }, CombinedTemplates[this.selectedTemplate].value.mainEntity);
+            }
+            return instanceIt;
+          }
+          if (this.selectedCreation === 'Work') {
+            const workEntity = {
+              '@id': '_:TEMP_ID#it',
+              '@type': this.chosenType,
+            };
+            return Object.assign(workEntity, OtherTemplates.work);
+          }
+          return {};
+        },
+        record() {
+          if (this.selectedCreation === 'Instance') {
+            let instanceRecord = {};
+            instanceRecord = {
+              '@type': 'Record',
+              '@id': '_:TEMP_ID',
+              'assigner': {
+                '@id': `https://libris.kb.se/library/${this.settings.userSettings.currentSigel}`,
               },
+              'marc:catalogingSource': {
+                '@id': 'marc:CooperativeCatalogingProgram',
+              },
+              'descriptionLanguage': [
+                {
+                  '@id': 'https://id.kb.se/language/swe',
+                  'code': 'swe',
+                },
+              ],
+              'mainEntity': {
+                '@id': '_:TEMP_ID#it',
+              },
+            };
+            if (this.selectedTemplate !== '') {
+              instanceRecord = Object.assign(instanceRecord, CombinedTemplates[this.selectedTemplate].value.record);
+            }
+            return instanceRecord;
+          }
+          if (this.selectedCreation === 'Work') {
+            return {
+              '@type': 'Record',
+              '@id': '_:TEMP_ID',
+              'assigner': {
+                '@id': `https://libris.kb.se/library/${this.settings.userSettings.currentSigel}`,
+              },
+              'mainEntity': {
+                '@id': '_:TEMP_ID#it',
+              },
+            };
+          }
+          return {};
+        },
+        postTemplate() {
+          const obj = {
+            '@graph': [
+              this.record,
+              this.mainEntity,
             ],
           };
           return obj;
@@ -148,6 +211,9 @@ export default class CreateNew extends View {
             return StringUtil.labelByLang(label, self.language, this.vocab, this.settings.vocabPfx);
           });
         },
+        getCombinedTemplates() {
+          return CombinedTemplates;
+        },
       },
       components: {
       },
@@ -155,6 +221,7 @@ export default class CreateNew extends View {
       ready() {
         this.changeSettings(self.settings);
         this.initialized = true;
+        console.log(CombinedTemplates['rdabook'].value);
       },
     });
   }
