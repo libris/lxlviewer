@@ -7,6 +7,7 @@ import * as _ from 'lodash';
 import EntityAdder from './entityadder';
 import ItemEntity from './item-entity';
 import ItemEmbedded from './item-embedded';
+import ItemEnumeration from './item-enumeration';
 import ItemValue from './item-value';
 import ItemLocal from './item-local';
 import { mixin as clickaway } from 'vue-clickaway';
@@ -31,6 +32,7 @@ export default {
     'is-removable',
     'isInner',
     'showActionButtons',
+    'entityType',
   ],
   data() {
     return {
@@ -57,10 +59,14 @@ export default {
     'item-entity': ItemEntity,
     'item-value': ItemValue,
     'item-embedded': ItemEmbedded,
+    'item-enumeration': ItemEnumeration,
     'item-local': ItemLocal,
     'entity-adder': EntityAdder,
   },
   computed: {
+    restrictionOnProp() {
+      return VocabUtil.getRestrictionId(this.entityType, this.key, this.vocab, this.settings.vocabPfx);
+    },
     propAllowsLocal() {
       if (this.settings.disallowLocal.indexOf(this.key) === -1) {
         return true;
@@ -97,7 +103,7 @@ export default {
       return [this.value];
     },
     getPath() {
-      if (typeof this.parentPath !== 'undefined') { 
+      if (typeof this.parentPath !== 'undefined') {
         if (typeof this.parentKey !== 'undefined' && typeof this.parentIndex !== 'undefined') {
           return `${this.parentPath}.${this.key}`;
         }
@@ -240,6 +246,9 @@ export default {
       if (this.isPlainObject(o) && !o.hasOwnProperty('@id') && !o.hasOwnProperty('@type')) {
         return 'error';
       }
+      if (this.restrictionOnProp.length > 0) {
+        return 'enumeration';
+      }
       if (this.isPlainObject(o) && this.isLinked(o)) {
       // if (this.isPlainObject(o) && this.isLinked(o) && o['@id'].indexOf(this.editorData.record['@id']) === -1) {
         return 'entity';
@@ -308,6 +317,7 @@ export default {
     <ul>
       <li v-for="item in valueAsArray" :class="{ 'isChip': isChip(item)}" track-by="$index">
         <div class="erroneous-object" v-if="getDatatype(item) == 'error'"><i class="fa fa-frown-o"></i> {{item | json}}</div>
+        <item-enumeration v-if="getDatatype(item) == 'enumeration'" :restriction="restrictionOnProp" :is-locked="isLocked" :expanded="isExpandedType" :value="item" :key="key" :index="$index"></item-enumeration>
         <item-entity v-if="getDatatype(item) == 'entity'" :is-locked="isLocked" :expanded="isExpandedType" :item="item" :key="key" :index="$index"></item-entity>
         <item-local v-if="getDatatype(item) == 'local'" :is-locked="isLocked" :is-expanded-type="isExpandedType" :item="item" :key="key" :index="$index" :parent-path="getPath" :show-action-buttons="showActionButtons"></item-local>
         <item-embedded v-if="getDatatype(item) == 'embedded'" :is-locked="isLocked" :item="item" :key="key" :index="$index" :show-action-buttons="showActionButtons"></item-embedded>

@@ -193,7 +193,7 @@ export default {
     'update-value'(path, value) {
       console.log("FormComp: - Updating " + path, 'to', JSON.stringify(value));
       const modified = _.cloneDeep(this.formData);
-      
+
       _.set(modified, path, value);
       console.log("New value recieved for", path, "=", value);
       console.log(modified);
@@ -220,8 +220,8 @@ export default {
 
 <template>
   <div class="form-component focused-form-component" :class="{ 'locked': isLocked }">
-    <data-node v-for="k in specialProperties" :key="k" :value="editorData.mainEntity[k]" is-locked="true"></data-node>
-    <data-node v-for="(k,v) in sortedFormData" v-bind:class="{ 'locked': isLocked }" :is-inner="false" :is-removable="true" :is-locked="keyIsLocked(k)" :key="k" :value="v" :allow-local="true"></data-node>
+    <data-node v-for="k in specialProperties" :key="k" :value="editorData.mainEntity[k]" :entity-type="editorData.mainEntity['@type']" is-locked="true"></data-node>
+    <data-node v-for="(k,v) in sortedFormData" v-bind:class="{ 'locked': isLocked }"  :entity-type="editorData.mainEntity['@type']" :is-inner="false" :is-removable="true" :is-locked="keyIsLocked(k)" :key="k" :value="v" :allow-local="true"></data-node>
     <field-adder v-if="!isLocked" :allowed="allowedProperties" :inner="false"></field-adder>
     <div id="result" v-if="status.isDev && !isLocked">
       <div class="row">

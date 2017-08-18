@@ -40,6 +40,7 @@ export default class View {
         'sameAs',
         '@type',
         'issuanceType',
+        'carrierType',
       ],
       disallowLocal: [
         'instanceOf',
