@@ -52,7 +52,7 @@ export default {
   },
   watch: {
     selected(val) {
-      this.$dispatch('update-item', this.index, val);
+      this.$dispatch('update-item', this.index, val['@id']);
     },
   },
   methods: {
@@ -60,7 +60,23 @@ export default {
       VocabUtil.getEnumerations(this.restriction, this.key, this.vocab, this.settings.vocabPfx).then((result) => {
         console.log('enumerations', result);
         this.possibleValues = result;
+        this.setInitialValue();
       });
+    },
+    setInitialValue() {
+      if (this.value !== '') {
+        let matchId = this.value['@id'];
+        if (matchId.indexOf('marc:') > -1) {
+          matchId = matchId.replace(':', '/');
+          console.log(matchId);
+        }
+        const match = _.find(this.possibleValues, (item) => {
+          return item['@id'].indexOf(matchId) > -1;
+        });
+        if (match) {
+          this.selected = match;
+        }
+      }
     },
     isEmpty() {
       // TODO: Is the item empty?
@@ -87,14 +103,17 @@ export default {
 
 <template>
   <div class="item-enumeration">
-    <ul class="enumeration-radio" v-if="possibleValues.length < this.radioLimit+1">
+    <div class="item-value" v-if="isLocked && selected">
+      {{ selected.prefLabelByLang[this.settings.language] || selected.prefLabelByLang['en'] }}
+    </div>
+    <ul class="enumeration-radio" v-if="!isLocked && possibleValues.length < this.radioLimit+1">
       <li v-for="option in possibleValues">
-        <input type="radio" v-model="selected" id="{{ this.key + '_' + option['@id'] }}" v-bind:value="option['@id']"><label for="{{ this.key + '_' + option['@id'] }}"> {{ option.prefLabelByLang[this.settings.language] || option.prefLabelByLang['en'] }}</label>
+        <input type="radio" v-model="selected" id="{{ this.key + '_' + option['@id'] }}" v-bind:value="option"><label for="{{ this.key + '_' + option['@id'] }}"> {{ option.prefLabelByLang[this.settings.language] || option.prefLabelByLang['en'] }}</label>
       </li>
     </ul>
-    <div class="enumeration-dropdown" v-if="possibleValues.length > this.radioLimit">
+    <div class="enumeration-dropdown" v-if="!isLocked && possibleValues.length > this.radioLimit">
       <select v-model="selected">
-        <option v-for="option in possibleValues" v-bind:value="option['@id']">{{ option.prefLabelByLang[this.settings.language] || option.prefLabelByLang['en'] }}</option>
+        <option v-for="option in possibleValues" v-bind:value="option">{{ option.prefLabelByLang[this.settings.language] || option.prefLabelByLang['en'] }}</option>
       </select>
     </div>
   </div>
@@ -104,6 +123,9 @@ export default {
 @import './_variables.less';
 
 .item-enumeration {
+  .item-value {
+    padding-left: 5px;
+  }
   .enumeration-radio {
     list-style: none;
     padding-left: 0.5em;
