@@ -11,7 +11,7 @@ import * as RecordUtil from '../utils/record';
 import * as DisplayUtil from '../utils/display';
 import * as StringUtil from '../utils/string';
 import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData, getStatus, getKeybindState } from '../vuex/getters';
-import { changeSettings, changeNotification, loadVocab, loadDisplayDefs, syncData, changeSavedStatus, changeStatus } from '../vuex/actions';
+import { changeSettings, changeNotification, loadVocab, loadVocabMap, loadDisplayDefs, syncData, changeSavedStatus, changeStatus } from '../vuex/actions';
 
 export default class CreateNew extends View {
 
@@ -23,6 +23,7 @@ export default class CreateNew extends View {
     this.language = 'sv';
 
     VocabUtil.getVocab().then((vocab) => {
+      self.vocabMap = new Map(vocab['@graph'].map((entry) => [entry['@id'], entry]));
       self.vocab = vocab['@graph'];
       self.initVue();
     });
@@ -34,7 +35,7 @@ export default class CreateNew extends View {
     $('#app').show();
 
     Vue.filter('labelByLang', (label) => {
-      return StringUtil.labelByLang(label, self.settings.language, self.vocab, self.settings.vocabPfx);
+      return StringUtil.labelByLang(label, self.settings.language, self.vocabMap, self.settings.vocabPfx);
     });
 
     Vue.filter('translatePhrase', (string) => {
@@ -47,6 +48,7 @@ export default class CreateNew extends View {
         actions: {
           syncData,
           loadVocab,
+          loadVocabMap,
           loadDisplayDefs,
           changeSettings,
           changeSavedStatus,
@@ -206,6 +208,7 @@ export default class CreateNew extends View {
       ready() {
         this.changeSettings(self.settings);
         this.loadVocab(self.vocab);
+        this.loadVocabMap(self.vocabMap);
         this.initialized = true;
       },
     });

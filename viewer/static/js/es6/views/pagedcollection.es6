@@ -18,7 +18,7 @@ import SearchForm from '../components/search-form';
 import DatasetObservations from '../components/dataset-observations';
 import LandingBox from '../components/landing-box';
 import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData, getKeybindState, getStatus } from '../vuex/getters';
-import { changeSettings, changeNotification, loadVocab, loadDisplayDefs, changeSavedStatus, changeResultListStatus } from '../vuex/actions';
+import { changeSettings, changeNotification, loadVocab, loadVocabMap, loadDisplayDefs, changeSavedStatus, changeResultListStatus } from '../vuex/actions';
 
 export default class PagedCollection extends View {
 
@@ -32,6 +32,7 @@ export default class PagedCollection extends View {
 
     VocabUtil.getVocab().then((vocab) => {
       self.vocab = vocab['@graph'];
+      self.vocabMap = new Map(vocab['@graph'].map((entry) => [entry['@id'], entry]));
       DisplayUtil.getDisplayDefinitions().then((display) => {
         self.display = display;
         self.initVue();
@@ -51,7 +52,7 @@ export default class PagedCollection extends View {
     }, false);
 
     Vue.filter('labelByLang', (label) => {
-      return StringUtil.labelByLang(label, self.settings.language, self.vocab, self.settings.vocabPfx);
+      return StringUtil.labelByLang(label, self.settings.language, self.vocabMap, self.settings.vocabPfx);
     });
     Vue.filter('removeDomain', (value) => {
       return StringUtil.removeDomain(value, self.settings.removableBaseUris);
@@ -67,6 +68,7 @@ export default class PagedCollection extends View {
       vuex: {
         actions: {
           loadVocab,
+          loadVocabMap,
           loadDisplayDefs,
           changeSettings,
           changeSavedStatus,
@@ -126,6 +128,7 @@ export default class PagedCollection extends View {
       ready() {
         this.changeSettings(self.settings);
         this.loadVocab(self.vocab);
+        this.loadVocabMap(self.vocabMap);
         this.loadDisplayDefs(self.display);
         this.result = self.dataIn;
         this.initialized = true;
