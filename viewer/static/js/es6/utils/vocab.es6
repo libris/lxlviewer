@@ -354,10 +354,10 @@ export function getRestrictionId(type, property, vocab, vocabPfx) {
   const baseClasses = getBaseClasses(`${vocabPfx}${type}`, vocab, vocabPfx);
   baseClasses.forEach(baseClass => {
     const vocabEntry = vocab.get(baseClass);
-    if (typeof vocabEntry.subClassOf !== 'undefined') {
+    if (vocabEntry.hasOwnProperty('subClassOf')) {
       vocabEntry.subClassOf.forEach(subClassObject => {
         if (subClassObject.hasOwnProperty('@type') && subClassObject['@type'] === 'Restriction') {
-          if (subClassObject.onProperty['@id'] === property) {
+          if (subClassObject.onProperty['@id'] === `${vocabPfx}${property}`) {
             if (subClassObject.hasOwnProperty('someValuesFrom')) {
               result = subClassObject.someValuesFrom['@id'];
             }
