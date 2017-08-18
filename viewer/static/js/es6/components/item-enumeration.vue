@@ -52,13 +52,15 @@ export default {
   },
   watch: {
     selected(val) {
-      this.$dispatch('update-item', this.index, val['@id']);
+      const enumObj = {
+        '@id': val['@id'],
+      }
+      this.$dispatch('update-item', this.index, enumObj);
     },
   },
   methods: {
     getPossibleValues() {
       VocabUtil.getEnumerations(this.restriction, this.key, this.vocab, this.settings.vocabPfx).then((result) => {
-        console.log('enumerations', result);
         this.possibleValues = result;
         this.setInitialValue();
       });
