@@ -92,7 +92,7 @@ export default {
   </div>
   <div class="identifiers">
     <ul>
-      <li v-for="v in identifiers">{{v}}</li>
+      <li v-for="v in identifiers" track-by="$index">{{v}}</li>
     </ul>
   </div>
   <div class="sub">
