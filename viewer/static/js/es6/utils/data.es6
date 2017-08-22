@@ -53,7 +53,11 @@ export function removeNullValues(obj) {
   const cleanObj = {};
   _.each(obj, (value, key) => {
     if (value !== null && value !== '') {
-      cleanObj[key] = value;
+      if (_.isPlainObject(value)) {
+        cleanObj[key] = removeNullValues(value);
+      } else {
+        cleanObj[key] = value;
+      }
     }
   });
   return cleanObj;

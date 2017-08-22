@@ -21,7 +21,7 @@ describe('Utility: data', function () {
       { '@id': 'oPdedsEFvMsw' },
     ];
 
-    instanceObj = { '@id': 'defmfnwEdesS', dimensions: null, extent: null };
+    instanceObj = { '@id': 'defmfnwEdesS', dimensions: null, extent: null, instanceOf: { '@id': 'bdsfgsfdds', nullField: null } };
     workObj = { '@id': 'eklejwsdDss', hasTitle: [] };
     recordObj = { '@id': 'mnfwSwdSsdcD' };
     packagedObj = {
@@ -71,8 +71,10 @@ describe('Utility: data', function () {
 
   describe('removeNullValues()', function () {
     it('should return the same object without any null fields', function () {
-      expect(dataUtil.removeNullValues(instanceObj)).to.not.have.ownProperty('dimensions');
-      expect(dataUtil.removeNullValues(instanceObj)).to.not.have.ownProperty('extent');
+      const instanceWithoutNull = dataUtil.removeNullValues(instanceObj);
+      expect(instanceWithoutNull).to.not.have.ownProperty('dimensions');
+      expect(instanceWithoutNull).to.not.have.ownProperty('extent');
+      expect(instanceWithoutNull.instanceOf).to.not.have.ownProperty('nullField');
     });
   });
 });
