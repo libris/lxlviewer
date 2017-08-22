@@ -8,7 +8,7 @@ global.expect = global.chai.expect;
 
 // Utilities
 require('./unit/modalUtil.spec.js');
-require('./unit/editUtil.spec.js');
+require('./unit/dataUtil.spec.js');
 require('./unit/vocabUtil.spec.js');
 
 // Components

@@ -3,10 +3,10 @@
  */
 
 // Module
-import * as editUtil from '../../static/js/es6/utils/edit';
+import * as dataUtil from '../../static/js/es6/utils/data';
 
 // Suite
-describe('Utility: edit', function () {
+describe('Utility: data', function () {
 
   let linked = [];
   let instanceObj = {};
@@ -51,28 +51,28 @@ describe('Utility: edit', function () {
 
   // Test
   it('is available', function () {
-    expect(editUtil).not.to.be.null;
+    expect(dataUtil).not.to.be.null;
   });
   describe('getLinked()', function () {
     it('returns the correct object on match', function () {
-      expect(editUtil.getLinked('tdrErwdfEWsd', linked)).to.deep.equal(linked[1]);
+      expect(dataUtil.getLinked('tdrErwdfEWsd', linked)).to.deep.equal(linked[1]);
     });
     it('if no match: return object with @id based on get parameter', function () {
-      expect(editUtil.getLinked('tdreFefmaSsd', linked)).to.deep.equal({'@id': 'tdreFefmaSsd'});
+      expect(dataUtil.getLinked('tdreFefmaSsd', linked)).to.deep.equal({'@id': 'tdreFefmaSsd'});
     });
   });
 
   describe('getMergedItems()', function () {
     it('returns an object matching the same structure as input data', function () {
-      let result = editUtil.getMergedItems(recordObj, instanceObj, workObj);
+      let result = dataUtil.getMergedItems(recordObj, instanceObj, workObj);
       expect(result).to.deep.equal(packagedObj);
     });
   });
 
   describe('removeNullValues()', function () {
     it('should return the same object without any null fields', function () {
-      expect(editUtil.removeNullValues(instanceObj)).to.not.have.ownProperty('dimensions');
-      expect(editUtil.removeNullValues(instanceObj)).to.not.have.ownProperty('extent');
+      expect(dataUtil.removeNullValues(instanceObj)).to.not.have.ownProperty('dimensions');
+      expect(dataUtil.removeNullValues(instanceObj)).to.not.have.ownProperty('extent');
     });
   });
 });
