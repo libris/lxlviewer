@@ -10,6 +10,9 @@ export const loadVocab = function ({ dispatch, state }, data) {
 export const loadVocabMap = function ({ dispatch, state }, data) {
   dispatch('LOADVOCABMAP', data);
 };
+export const loadForcedListTerms = function ({ dispatch, state }, data) {
+  dispatch('LOADFORCEDLISTTERMS', data);
+};
 export const loadDisplayDefs = function ({ dispatch, state }, data) {
   dispatch('LOADDISPLAYDEFS', data);
 };
