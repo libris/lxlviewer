@@ -9,89 +9,157 @@ import * as vocab from './vocab.json';
 // Suite
 describe('Utility: vocab', function () {
 
-  const vocabPfx = 'kbv:';
+  const vocabPfx = 'https://id.kb.se/vocab/';
+  const vocabMap = new Map(vocab['@graph'].map((entry) => [entry['@id'], entry]));
 
   let textClass = {
-    "@id": "kbv:text",
-    "@type": [
-      "ObjectProperty",
-      "FunctionalProperty"
-    ],
-    "domainIncludes": [
+    "@id": "https:\/\/id.kb.se\/vocab\/Text",
+    "@type": "Class",
+    "equivalentClass": [
       {
-        "@id": "kbv:Audio"
+        "@id": "http:\/\/id.loc.gov\/ontologies\/bibframe\/Text"
+      },
+      {
+        "@id": "http:\/\/purl.org\/dc\/dcmitype\/Text"
       }
     ],
-    "equivalentProperty": [
+    "exactMatch": [
       {
-        "@id": "sdo:text"
+        "@id": "http:\/\/rdvocab.info\/termList\/RDAContentType\/1020"
       }
     ],
-    "inDataset": {
-      "@id": "https:\/\/id.kb.se\/definitions"
+    "inCollection": {
+      "@id": "https:\/\/id.kb.se\/marc\/typeOfRecord"
     },
     "isDefinedBy": {
-      "@id": "kbv:"
+      "@id": "https:\/\/id.kb.se\/vocab\/"
     },
-    "note": [
-      "MARC bib 008[31:32]",
-      "MARC bib 008[30:31]",
-      "MARC bib 006[14:15]",
-      "MARC bib 006[13:14]"
-    ],
-    "sameAs": [
-      "http:\/\/127.0.0.1:5000\/jp142t6qgb8q8fkm"
-    ],
-    "wasDerivedFrom": {
-      "@id": "file:\/\/\/dataset\/vocab"
-    }
+    "labelByLang": {
+      "en": "Text",
+      "sv": "Text"
+    },
+    "subClassOf": [
+      {
+        "@type": "Restriction",
+        "onProperty": {
+          "@id": "https:\/\/id.kb.se\/vocab\/illustrativeContent"
+        },
+        "someValuesFrom": {
+          "@id": "https:\/\/id.kb.se\/marc\/BooksIllustrationsType"
+        }
+      },
+      {
+        "@type": "Restriction",
+        "onProperty": {
+          "@id": "https:\/\/id.kb.se\/vocab\/genreForm"
+        },
+        "someValuesFrom": [
+          {
+            "@id": "https:\/\/id.kb.se\/marc\/BooksLiteraryFormType"
+          },
+          {
+            "@id": "https:\/\/id.kb.se\/marc\/GovernmentPublicationType"
+          },
+          {
+            "@id": "https:\/\/id.kb.se\/marc\/BooksBiographyType"
+          },
+          {
+            "@id": "https:\/\/id.kb.se\/marc\/BooksFestschriftType"
+          },
+          {
+            "@id": "https:\/\/id.kb.se\/marc\/ConferencePublicationType"
+          }
+        ]
+      },
+      {
+        "@type": "Restriction",
+        "onProperty": {
+          "@id": "https:\/\/id.kb.se\/vocab\/contentType"
+        },
+        "someValuesFrom": {
+          "@id": "https:\/\/id.kb.se\/marc\/BooksContentsType"
+        }
+      },
+      {
+        "@type": "Restriction",
+        "onProperty": {
+          "@id": "https:\/\/id.kb.se\/vocab\/carrierType"
+        },
+        "someValuesFrom": [
+          {
+            "@id": "https:\/\/id.kb.se\/marc\/TextMaterialType"
+          },
+          {
+            "@id": "https:\/\/id.kb.se\/marc\/BooksItemType"
+          }
+        ]
+      },
+      {
+        "@id": "https:\/\/id.kb.se\/vocab\/Work"
+      },
+      {
+        "@type": "Restriction",
+        "onProperty": {
+          "@id": "https:\/\/id.kb.se\/vocab\/contentType"
+        },
+        "someValuesFrom": {
+          "@id": "https:\/\/id.kb.se\/marc\/BooksContentsType"
+        }
+      },
+      {
+        "@type": "Restriction",
+        "onProperty": {
+          "@id": "https:\/\/id.kb.se\/vocab\/intendedAudience"
+        },
+        "someValuesFrom": {
+          "@id": "https:\/\/id.kb.se\/marc\/AudienceType"
+        }
+      },
+      {
+        "@type": "Restriction",
+        "onProperty": {
+          "@id": "https:\/\/id.kb.se\/vocab\/supplementaryContent"
+        },
+        "someValuesFrom": {
+          "@id": "https:\/\/id.kb.se\/marc\/IndexType"
+        }
+      }
+    ]
   };
 
   let imageClass = {
-    "@id": "kbv:Image",
+    "@id": "https:\/\/id.kb.se\/vocab\/Image",
     "@type": "Class",
     "equivalentClass": [
       {
         "@id": "foaf:Image"
       },
       {
-        "@id": "dctype:Image"
+        "@id": "http:\/\/purl.org\/dc\/dcmitype\/Image"
       }
     ],
-    "inDataset": {
-      "@id": "https:\/\/id.kb.se\/definitions"
-    },
     "isDefinedBy": {
-      "@id": "kbv:"
+      "@id": "https:\/\/id.kb.se\/vocab\/"
     },
     "labelByLang": {
       "sv": "Bild"
     },
-    "sameAs": [
-      "http:\/\/127.0.0.1:5000\/qw7b81dvnmnglp3s"
-    ],
     "subClassOf": [
       {
-        "@id": "kbv:CreativeWork"
+        "@id": "https:\/\/id.kb.se\/vocab\/Work"
       }
-    ],
-    "wasDerivedFrom": {
-      "@id": "file:\/\/\/dataset\/vocab"
-    }
+    ]
   };
 
   let audioClass = {
-    "@id": "kbv:Audio",
+    "@id": "https:\/\/id.kb.se\/vocab\/Audio",
     "@type": "Class",
     "equivalentClass": [
       {
-        "@id": "dctype:Sound"
+        "@id": "http:\/\/id.loc.gov\/ontologies\/bibframe\/Audio"
       },
       {
-        "@id": "bf:Audio"
-      },
-      {
-        "@id": "bf2:Audio"
+        "@id": "http:\/\/purl.org\/dc\/dcmitype\/Sound"
       }
     ],
     "exactMatch": [
@@ -100,44 +168,82 @@ describe('Utility: vocab', function () {
       }
     ],
     "inCollection": {
-      "@id": "marc:typeOfRecord"
-    },
-    "inDataset": {
-      "@id": "https:\/\/id.kb.se\/definitions"
+      "@id": "https:\/\/id.kb.se\/marc\/typeOfRecord"
     },
     "isDefinedBy": {
-      "@id": "kbv:"
+      "@id": "https:\/\/id.kb.se\/vocab\/"
     },
     "labelByLang": {
       "en": "Audio",
       "sv": "Ljudmaterial"
     },
-    "sameAs": [
-      "http:\/\/127.0.0.1:5000\/z4gkh8mcwk518r76"
-    ],
     "subClassOf": [
       {
-        "@id": "kbv:CreativeWork"
+        "@type": "Restriction",
+        "onProperty": {
+          "@id": "https:\/\/id.kb.se\/vocab\/genreForm"
+        },
+        "someValuesFrom": [
+          {
+            "@id": "https:\/\/id.kb.se\/marc\/MusicCompositionType"
+          },
+          {
+            "@id": "https:\/\/id.kb.se\/marc\/MusicTextType"
+          }
+        ]
       },
       {
-        "@id": "kbv:Work"
+        "@type": "Restriction",
+        "onProperty": {
+          "@id": "https:\/\/id.kb.se\/vocab\/musicFormat"
+        },
+        "someValuesFrom": {
+          "@id": "https:\/\/id.kb.se\/marc\/MusicFormatType"
+        }
+      },
+      {
+        "@id": "https:\/\/id.kb.se\/vocab\/Work"
+      },
+      {
+        "@type": "Restriction",
+        "onProperty": {
+          "@id": "https:\/\/id.kb.se\/vocab\/intendedAudience"
+        },
+        "someValuesFrom": {
+          "@id": "https:\/\/id.kb.se\/marc\/AudienceType"
+        }
+      },
+      {
+        "@type": "Restriction",
+        "onProperty": {
+          "@id": "https:\/\/id.kb.se\/vocab\/supplementaryContent"
+        },
+        "someValuesFrom": {
+          "@id": "https:\/\/id.kb.se\/marc\/MusicMatterType"
+        }
+      },
+      {
+        "@type": "Restriction",
+        "onProperty": {
+          "@id": "https:\/\/id.kb.se\/vocab\/carrierType"
+        },
+        "someValuesFrom": {
+          "@id": "https:\/\/id.kb.se\/marc\/ItemType"
+        }
       }
-    ],
-    "wasDerivedFrom": {
-      "@id": "file:\/\/\/dataset\/vocab"
-    }
+    ]
   };
 
   // Test
   it('is available', function () {
     expect(VocabUtil).not.to.be.null;
   });
-  describe('getClass()', function() {
+  describe('getTermObject()', function() {
     let fetchedClass = {};
 
     before(function() {
       // runs before all tests in this block
-      fetchedClass = VocabUtil.getClass('text', vocab, vocabPfx);
+      fetchedClass = VocabUtil.getTermObject('Text', vocabMap, vocabPfx);
     });
 
     it('should return a vocab class as an object', function() {
