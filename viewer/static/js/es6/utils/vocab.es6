@@ -148,20 +148,20 @@ export function getSubClasses(classname, vocab, vocabPfx) {
 }
 
 export function getAllSubClasses(classArray, vocab, vocabPfx) {
-  const inputSubClasses = classArray;
+  let inputSubClasses = [].concat(classArray);
   let newSubClasses = [];
-  if (classArray.length > 0) {
-    _.each(classArray, classId => {
+  if (inputSubClasses.length > 0) {
+    _.each(inputSubClasses, classId => {
       const className = classId.split('/')[classId.split('/').length - 1];
       const subClasses = getSubClasses(className, vocab, vocabPfx);
       if (subClasses.length > 0) {
-        newSubClasses = getAllSubClasses(subClasses.map(classObject => {
-          return classObject['@id'];
-        }), vocab, vocabPfx);
+        newSubClasses = newSubClasses.concat(getAllSubClasses(subClasses, vocab, vocabPfx));
       }
     });
   }
-  return inputSubClasses.concat(newSubClasses);
+  inputSubClasses = inputSubClasses.concat(newSubClasses);
+  inputSubClasses = _.uniq(inputSubClasses);
+  return inputSubClasses;
 }
 
 export function getFullRange(key, vocab, vocabPfx) {

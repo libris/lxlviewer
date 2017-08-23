@@ -256,7 +256,7 @@ describe('Utility: vocab', function () {
   });
 
   describe('getSubClasses()', function() {
-    let fetchedClasses = {};
+    let fetchedClasses = [];
     let expectedSubclasses = [];
 
     before(function() {
@@ -264,7 +264,7 @@ describe('Utility: vocab', function () {
       fetchedClasses = VocabUtil.getSubClasses('Creation', vocabMap, vocabPfx);
     });
 
-    it('should return a list vocab classes as an array of strings', function() {
+    it('should return a list of vocab classes as an array of strings', function() {
       expect(fetchedClasses).to.be.an('array');
       expect(fetchedClasses[0]).to.be.a('string');
     });
@@ -272,8 +272,32 @@ describe('Utility: vocab', function () {
     it('should return the correct vocab classes', function() {
       expect(fetchedClasses.indexOf(`${vocabPfx}Work`)).to.not.equal(-1);
       expect(fetchedClasses.indexOf(`${vocabPfx}Instance`)).to.not.equal(-1);
+
       expect(fetchedClasses.indexOf(`${vocabPfx}Electronic`)).to.equal(-1);
     });
+  });
+
+  describe('getAllSubClasses()', function() {
+    let fetchedClasses = [];
+
+    before(function() {
+      // runs before all tests in this block
+      fetchedClasses = VocabUtil.getAllSubClasses('Creation', vocabMap, vocabPfx);
+    });
+
+    it('should return a list of vocab classes as an array of strings', function() {
+      expect(fetchedClasses).to.be.an('array');
+      expect(fetchedClasses[0]).to.be.a('string');
+    });
+
+    it('should return the correct vocab classes', function() {
+      expect(fetchedClasses.indexOf(`${vocabPfx}Electronic`)).to.not.equal(-1);
+      expect(fetchedClasses.indexOf(`${vocabPfx}Image`)).to.not.equal(-1);
+      expect(fetchedClasses.indexOf(`${vocabPfx}Work`)).to.not.equal(-1);
+
+      expect(fetchedClasses.indexOf(`${vocabPfx}IndividualItem`)).to.equal(-1);
+    });
+
   });
 
   describe('getBaseClasses()', function() {
