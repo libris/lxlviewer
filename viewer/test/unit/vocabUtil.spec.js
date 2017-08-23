@@ -380,4 +380,25 @@ describe('Utility: vocab', function () {
     });
   });
 
+  describe('getInstances()', function () {
+
+    let result = [];
+    before(function() {
+      // runs before all tests in this block
+      result = VocabUtil.getInstances('IssuanceType', vocabMap, vocabPfx);
+    });
+
+    it('returns instances', function() {
+      expect(result.length).to.not.equal(0);
+    });
+    it('returns the an array of strings', function() {
+      expect(result).to.be.an('array');
+      expect(result[0]).to.be.a('string');
+    });
+    it('returns the correct instances', function() {
+      expect(result.indexOf(`Monograph`)).to.not.equal(-1);
+    });
+
+  });
+
 });
