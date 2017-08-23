@@ -261,18 +261,18 @@ describe('Utility: vocab', function () {
 
     before(function() {
       // runs before all tests in this block
-      fetchedClasses = VocabUtil.getSubClasses('CreativeWork', vocab, vocabPfx);
+      fetchedClasses = VocabUtil.getSubClasses('Creation', vocabMap, vocabPfx);
     });
 
-    it('should return a list vocab classes as an object array', function() {
+    it('should return a list vocab classes as an array of strings', function() {
       expect(fetchedClasses).to.be.an('array');
-      expect(fetchedClasses[0]).to.be.an('object');
+      expect(fetchedClasses[0]).to.be.a('string');
     });
 
     it('should return the correct vocab classes', function() {
-      // Testing if 'CreativeWork' has subClasses 'image' and 'audio'.
-      expect(fetchedClasses[0]).to.deep.equal(imageClass);
-      expect(fetchedClasses[15]).to.deep.equal(audioClass);
+      expect(fetchedClasses.indexOf(`${vocabPfx}Work`)).to.not.equal(-1);
+      expect(fetchedClasses.indexOf(`${vocabPfx}Instance`)).to.not.equal(-1);
+      expect(fetchedClasses.indexOf(`${vocabPfx}Electronic`)).to.equal(-1);
     });
   });
 
@@ -281,7 +281,7 @@ describe('Utility: vocab', function () {
 
     before(function() {
       // runs before all tests in this block
-      baseClasses = VocabUtil.getBaseClasses(audioClass['@id'], vocab, vocabPfx);
+      baseClasses = VocabUtil.getBaseClasses(audioClass['@id'], vocabMap, vocabPfx);
     });
 
     it('should return an array', function() {
@@ -302,7 +302,7 @@ describe('Utility: vocab', function () {
 
     before(function() {
       // runs before all tests in this block
-      baseClasses = VocabUtil.getBaseClassesFromArray(classList, vocab, vocabPfx);
+      baseClasses = VocabUtil.getBaseClassesFromArray(classList, vocabMap, vocabPfx);
     });
 
     it('should return an array', function() {

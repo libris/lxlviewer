@@ -48,7 +48,6 @@ export function getTermFromLabel(label, language, vocab) {
 
 export function getTermObject(term, vocab, vocabPfx) {
   // Returns a class object
-
   if (!term || typeof term === 'undefined') {
     throw new Error('getTermObject was called with an undefined Id.');
   }
@@ -137,7 +136,7 @@ export function getSubClasses(classname, vocab, vocabPfx) {
     if (o.subClassOf) {
       for (let i = 0; i < o.subClassOf.length; i++) {
         if (o.subClassOf[i]['@id'] === vocabPfx + classname) {
-          subClasses.push(o);
+          subClasses.push(o['@id']);
         }
       }
     }
