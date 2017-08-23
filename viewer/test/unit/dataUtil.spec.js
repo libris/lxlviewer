@@ -9,7 +9,7 @@ import * as dataUtil from '../../static/js/es6/utils/data';
 describe('Utility: data', function () {
 
   let quoted = [];
-  let instanceObj = {};
+  let mainEntityObj = {};
   let workObj = {};
   let recordObj = {};
   let packagedObj = {};
@@ -39,30 +39,22 @@ describe('Utility: data', function () {
       },
     ];
 
-    instanceObj = { '@id': 'defmfnwEdesS', dimensions: null, extent: null, instanceOf: { '@id': 'bdsfgsfdds', nullField: null } };
+    mainEntityObj = {
+      '@id': 'defmfnwEdesS',
+      dimensions: null,
+      extent: null,
+      instanceOf: {
+        '@id': 'bdsfgsfdds',
+        nullField: null
+      }
+    };
     workObj = { '@id': 'eklejwsdDss', hasTitle: [] };
     recordObj = { '@id': 'mnfwSwdSsdcD' };
     packagedObj = {
       '@graph': [
         { '@id': 'mnfwSwdSsdcD' },
-        { '@id': 'defmfnwEdesS', dimensions: null, extent: null },
+        { '@id': 'defmfnwEdesS', dimensions: null, extent: null, instanceOf: { '@id': 'bdsfgsfdds', nullField: null } },
         { '@id': 'eklejwsdDss', hasTitle: [] },
-        {
-          '@graph': {
-            '@id': 'sdflkjDFsemn',
-          },
-        },
-        {
-          '@graph': {
-            '@id': 'tdrErwdfEWsd',
-            '@type': 'Record',
-          },
-        },
-        {
-          '@graph': {
-            '@id': 'oPdedsEFvMsw',
-          },
-        },
       ],
     };
   });
@@ -86,14 +78,14 @@ describe('Utility: data', function () {
 
   describe('getMergedItems()', function () {
     it('returns an object matching the same structure as input data', function () {
-      let result = dataUtil.getMergedItems(recordObj, instanceObj, workObj);
+      const result = dataUtil.getMergedItems(recordObj, mainEntityObj, workObj);
       expect(result).to.deep.equal(packagedObj);
     });
   });
 
   describe('removeNullValues()', function () {
     it('should return the same object without any null fields', function () {
-      const instanceWithoutNull = dataUtil.removeNullValues(instanceObj);
+      const instanceWithoutNull = dataUtil.removeNullValues(mainEntityObj);
       expect(instanceWithoutNull).to.not.have.ownProperty('dimensions');
       expect(instanceWithoutNull).to.not.have.ownProperty('extent');
       expect(instanceWithoutNull.instanceOf).to.not.have.ownProperty('nullField');
