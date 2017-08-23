@@ -34,54 +34,54 @@ describe('Component: formcomponent', function () {
     expect(formComponent).not.to.be.null;
   });
 
-  describe('Events', function() {
-    describe('addItem()', function() {
-      it('should add the item to the focused object', function () {
-        const testItem = { '@id': 'gobbledygook', 'dimension': 'blahh' };
-        const testItemStripped = { '@id': testItem['@id'] };
-        const testFocus = {
-          '@type': 'Text',
-          extent: [testItemStripped],
-          relation: {},
-        };
-
-        const vm = new Vue({
-          template: '<div><test v-ref:test-component></test></div>',
-          components: {
-            'test': formComponent,
-          }
-        }).$mount();
-
-        const form = attachProps(vm.$refs.testComponent);
-
-        // Do manipulation
-        vm.$broadcast('add-item', 'extent', testItem);
-        // Tests
-        expect(form.focus).to.deep.equal(testFocus);
-        expect(form.linked).to.include(testItem);
-      });
-    });
-    describe('addLocal()', function() {
-      it('should add the item if key is array and set key to item if it is an object', function() {
-        const testItem = { '@id': 'gobbledygook', 'dimension': 'blahh' };
-
-        const vm = new Vue({
-          template: '<div><test v-ref:test-component></test></div>',
-          components: {
-            'test': formComponent,
-          }
-        }).$mount();
-        const form = attachProps(vm.$refs.testComponent);
-
-        // Do manipulation
-        vm.$broadcast('add-local', 'extent', testItem);
-        vm.$broadcast('add-local', 'relation', testItem);
-        // Tests
-        expect(form.focus.extent[0]).to.deep.equal(testItem);
-        expect(form.focus.relation).to.deep.equal(testItem);
-      });
-    });
-  });
+  // describe('Events', function() {
+  //   describe('addItem()', function() {
+  //     it('should add the item to the focused object', function () {
+  //       const testItem = { '@id': 'gobbledygook', 'dimension': 'blahh' };
+  //       const testItemStripped = { '@id': testItem['@id'] };
+  //       const testFocus = {
+  //         '@type': 'Text',
+  //         extent: [testItemStripped],
+  //         relation: {},
+  //       };
+  //
+  //       const vm = new Vue({
+  //         template: '<div><test v-ref:test-component></test></div>',
+  //         components: {
+  //           'test': formComponent,
+  //         }
+  //       }).$mount();
+  //
+  //       const form = attachProps(vm.$refs.testComponent);
+  //
+  //       // Do manipulation
+  //       vm.$broadcast('add-item', 'extent', testItem);
+  //       // Tests
+  //       expect(form.focus).to.deep.equal(testFocus);
+  //       expect(form.linked).to.include(testItem);
+  //     });
+  //   });
+  //   describe('addLocal()', function() {
+  //     it('should add the item if key is array and set key to item if it is an object', function() {
+  //       const testItem = { '@id': 'gobbledygook', 'dimension': 'blahh' };
+  //
+  //       const vm = new Vue({
+  //         template: '<div><test v-ref:test-component></test></div>',
+  //         components: {
+  //           'test': formComponent,
+  //         }
+  //       }).$mount();
+  //       const form = attachProps(vm.$refs.testComponent);
+  //
+  //       // Do manipulation
+  //       vm.$broadcast('add-local', 'extent', testItem);
+  //       vm.$broadcast('add-local', 'relation', testItem);
+  //       // Tests
+  //       expect(form.focus.extent[0]).to.deep.equal(testItem);
+  //       expect(form.focus.relation).to.deep.equal(testItem);
+  //     });
+  //   });
+  // });
   describe('Methods', function() {
     describe('isEmpty()', function() {
       it('should return true if node is empty');
