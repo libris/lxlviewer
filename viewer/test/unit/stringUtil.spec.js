@@ -9,7 +9,7 @@ import * as vocab from './vocab.json';
 // Suite
 describe('Utility: string', function () {
 
-  const vocabPfx = 'https://id.kb.se/vocab/';
+  const vocabPfx = 'kbv:';
   const vocabMap = new Map(vocab['@graph'].map((entry) => [entry['@id'], entry]));
 
   beforeEach(function() {
