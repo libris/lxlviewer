@@ -8,17 +8,35 @@ import * as dataUtil from '../../static/js/es6/utils/data';
 // Suite
 describe('Utility: data', function () {
 
-  let linked = [];
+  let quoted = [];
   let instanceObj = {};
   let workObj = {};
   let recordObj = {};
   let packagedObj = {};
 
   beforeEach(function() {
-    linked = [
-      { '@id': 'sdflkjDFsemn' },
-      { '@id': 'tdrErwdfEWsd', '@type': 'Record' },
-      { '@id': 'oPdedsEFvMsw' },
+    quoted = [
+      {
+        '@id': 'sdflkjDFsemn',
+        '@graph': [
+          {
+            '@id': 'sdflkjDFsemn',
+            'someProp': { '@id': 'dsfsDfmndfDE' },
+          }
+        ],
+      },
+      {
+        '@id': 'tdrErwdfEWsd',
+        '@graph': [
+          { '@id': 'tdrErwdfEWsd', '@type': 'Record' },
+        ],
+      },
+      {
+        '@id': 'oPdedsEFvMsw',
+        '@graph': [
+          { '@id': 'oPdedsEFvMsw' },
+        ],
+      },
     ];
 
     instanceObj = { '@id': 'defmfnwEdesS', dimensions: null, extent: null, instanceOf: { '@id': 'bdsfgsfdds', nullField: null } };
@@ -55,10 +73,14 @@ describe('Utility: data', function () {
   });
   describe('getLinked()', function () {
     it('returns the correct object on match', function () {
-      expect(dataUtil.getLinked('tdrErwdfEWsd', linked)).to.deep.equal(linked[1]);
+      expect(dataUtil.getLinked('tdrErwdfEWsd', quoted)).to.deep.equal(quoted[1]['@graph'][0]);
+    });
+
+    it('returns marc: links un-embellished', function () {
+      expect(dataUtil.getLinked('marc:someThing', quoted)).to.deep.equal({ '@id': 'marc:someThing' });
     });
     it('if no match: return object with @id based on get parameter', function () {
-      expect(dataUtil.getLinked('tdreFefmaSsd', linked)).to.deep.equal({'@id': 'tdreFefmaSsd'});
+      expect(dataUtil.getLinked('tdreFefmaSsd', quoted)).to.deep.equal({'@id': 'tdreFefmaSsd'});
     });
   });
 
