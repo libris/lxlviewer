@@ -220,13 +220,14 @@ describe('Utility: vocab', function () {
     });
 
     it('should return the correct things', function() {
-      expect(baseClasses[0]).to.equal('kbv:CreativeWork');
+      expect(baseClasses.indexOf(`${vocabPfx}Work`)).to.not.equal(-1);
+      expect(baseClasses.indexOf(`${vocabPfx}Creation`)).to.not.equal(-1);
     });
   });
 
   describe('getBaseClassesFromArray()', function() {
     let baseClasses;
-    let classList = ['kbv:Audio', 'kbv:Image'];
+    let classList = [`${vocabPfx}Audio`, `${vocabPfx}Image`];
 
     before(function() {
       // runs before all tests in this block
@@ -240,8 +241,14 @@ describe('Utility: vocab', function () {
       expect(baseClasses[0]).to.be.a('string');
     });
 
-    it('should return the correct things', function() {
-      expect(baseClasses.length).to.equal(6);
+    it('should include the original classlist in the result', function() {
+      expect(baseClasses.indexOf(`${vocabPfx}Audio`)).to.not.equal(-1);
+      expect(baseClasses.indexOf(`${vocabPfx}Image`)).to.not.equal(-1);
+    });
+
+    it('should return the correct baseclasses', function() {
+      expect(baseClasses.indexOf(`${vocabPfx}Creation`)).to.not.equal(-1);
+      expect(baseClasses.indexOf(`${vocabPfx}Endeavour`)).to.not.equal(-1);
     });
   });
 
@@ -249,37 +256,48 @@ describe('Utility: vocab', function () {
   describe('getRange()', function() {
     it('should return a list of class IDs which is in range of the property provided', function() {
       let propertyId = 'place';
-      let range = VocabUtil.getRange(propertyId, vocab, vocabPfx).sort();
-      let expectedResult = ['Place'].sort();
-      expect(range).to.eql(expectedResult);
+      let range = VocabUtil.getRange(propertyId, vocabMap, vocabPfx);
+      expect(range.indexOf(`${vocabPfx}Place`)).to.not.eql(-1);
 
-      propertyId = 'replaces';
-      range = VocabUtil.getRange(propertyId, vocab, vocabPfx).sort();
-      expectedResult = ['Concept', 'Serial'].sort();
-      expect(range).to.eql(expectedResult);
-
-      propertyId = 'manufacture';
-      range = VocabUtil.getRange(propertyId, vocab, vocabPfx).sort();
-      expectedResult = ['Manufacture', 'ProviderEvent'].sort();
-      expect(range).to.eql(expectedResult);
+      propertyId = 'mergedToForm';
+      range = VocabUtil.getRange(propertyId, vocabMap, vocabPfx);
+      expect(range.indexOf(`${vocabPfx}Creation`)).to.not.eql(-1);
 
       propertyId = 'gobbledygook'; // Invalid
-      range = VocabUtil.getRange(propertyId, vocab, vocabPfx).sort();
-      expectedResult = [];
-      expect(range).to.eql(expectedResult);
+      range = VocabUtil.getRange(propertyId, vocabMap, vocabPfx);
+      expect(range.length).to.eql(0);
+      expect(range.indexOf(`${vocabPfx}gobbledygook`)).to.eql(-1);
     });
+
+    it('should return a list of class IDs which is in range of the baseProperty provided', function() {
+      let propertyId = 'findingAid';
+      let range = VocabUtil.getRange(propertyId, vocabMap, vocabPfx);
+      expect(range.indexOf(`${vocabPfx}Endeavour`)).to.not.eql(-1);
+      expect(range.indexOf(`${vocabPfx}Creation`)).to.not.eql(-1);
+    });
+  });
+
+  describe('getFullRange()', function() {
+
   });
 
   describe('getPropertyTypes()', function() {
     it('Should return an array of property types', function() {
+
       let propertyId = 'place';
-      let types = VocabUtil.getPropertyTypes(propertyId, vocab, vocabPfx).sort();
-      let expectedResult = ['FunctionalProperty', 'ObjectProperty'].sort();
+      let types = VocabUtil.getPropertyTypes(propertyId, vocabMap, vocabPfx);
+      let expectedResult = ['ObjectProperty'];
+      expect(types).to.be.an('array');
       expect(types).to.eql(expectedResult);
 
       propertyId = 'sameAs';
-      types = VocabUtil.getPropertyTypes(propertyId, vocab, vocabPfx).sort();
+      types = VocabUtil.getPropertyTypes(propertyId, vocabMap, vocabPfx);
       expectedResult = ['ObjectProperty'];
+      expect(types).to.eql(expectedResult);
+
+      propertyId = 'availability';
+      types = VocabUtil.getPropertyTypes(propertyId, vocabMap, vocabPfx);
+      expectedResult = ['Property'];
       expect(types).to.eql(expectedResult);
     });
   });
@@ -295,14 +313,32 @@ describe('Utility: vocab', function () {
     it('returns instances', function() {
       expect(result.length).to.not.equal(0);
     });
-    it('returns the an array of strings', function() {
+    it('returns an array of strings', function() {
       expect(result).to.be.an('array');
       expect(result[0]).to.be.a('string');
     });
     it('returns the correct instances', function() {
       expect(result.indexOf(`Monograph`)).to.not.equal(-1);
     });
+  });
 
+  describe('getRestrictionType()', function() {
+    let result = VocabUtil.getRestrictionType('Electronic', 'carrierType', vocabMap, vocabPfx);
+
+    it('returns type as string', function() {
+      expect(result).to.be.a('string');
+    });
+
+    it('returns the restriction type for the specified property and entityType', function() {
+      expect(result).to.eql('https://id.kb.se/marc/ComputerMaterialType');
+    });
+
+
+    it('returns an empty string if no restriction type is found', function() {
+      result = VocabUtil.getRestrictionType('Electronic', 'kalle', vocabMap, vocabPfx);
+      expect(result).to.be.a('string');
+      expect(result.length).to.eql(0);
+    });
   });
 
 });

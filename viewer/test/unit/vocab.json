@@ -14250,7 +14250,13 @@
           "@id": "_:N98a9b64f21604cea860688bdadcd15ec"
         },
         {
-          "@id": "_:Nfb4a2d99a2524f298567bf97a21e0fa4"
+          "@type": "Restriction",
+          "onProperty": {
+            "@id": "kbv:carrierType"
+          },
+          "someValuesFrom": {
+            "@id": "https://id.kb.se/marc/ComputerMaterialType"
+          }
         },
         {
           "@id": "kbv:Instance"
