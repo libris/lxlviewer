@@ -140,7 +140,7 @@ export function getSubClasses(classname, vocab, vocabPfx) {
   vocab.forEach((o) => {
     if (o.subClassOf) {
       for (let i = 0; i < o.subClassOf.length; i++) {
-        if (o.subClassOf[i]['@id'] === vocabPfx + classname) {
+        if (o.subClassOf[i].hasOwnProperty('@id') && o.subClassOf[i]['@id'] === vocabPfx + classname) {
           subClasses.push(o['@id']);
         }
       }
