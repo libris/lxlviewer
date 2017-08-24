@@ -353,9 +353,9 @@ export function getInstances(className, vocab, vocabPfx) {
   return instances;
 }
 
-export function getRestrictionId(type, property, vocab, vocabPfx) {
+export function getRestrictionType(entityType, property, vocab, vocabPfx) {
   let result = '';
-  const baseClasses = getBaseClasses(`${vocabPfx}${type}`, vocab, vocabPfx);
+  const baseClasses = getBaseClasses(`${vocabPfx}${entityType}`, vocab, vocabPfx);
   baseClasses.forEach(baseClass => {
     const vocabEntry = vocab.get(baseClass);
     if (vocabEntry.hasOwnProperty('subClassOf')) {
@@ -373,8 +373,8 @@ export function getRestrictionId(type, property, vocab, vocabPfx) {
   return result;
 }
 
-export function getEnumerations(type, property, vocab, vocabPfx) {
-  const restrictionUrl = getRestrictionId(type, property, vocab, vocabPfx);
+export function getEnumerations(entityType, property, vocab, vocabPfx) {
+  const restrictionUrl = getRestrictionType(entityType, property, vocab, vocabPfx);
   if (restrictionUrl !== '') {
     return new Promise((resolve, reject) => {
       httpUtil.get({ url: `/find?@type=${restrictionUrl}`, accept: 'application/ld+json' }).then((response) => {
