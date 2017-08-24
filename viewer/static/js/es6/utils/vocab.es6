@@ -126,6 +126,11 @@ export function getRange(propertyId, vocab, vocabPfx) {
       range.push(property.range[i]['@id']);
     }
   }
+  if (property.hasOwnProperty('subPropertyOf')) {
+    _.each(property.subPropertyOf, (prop) => {
+      range = range.concat(getRange(prop['@id'], vocab, vocabPfx));
+    });
+  }
   range = _.uniq(range);
   return range;
 }
