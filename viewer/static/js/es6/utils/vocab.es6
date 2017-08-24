@@ -157,7 +157,7 @@ export function getAllSubClasses(classArray, vocab, vocabPfx) {
   let newSubClasses = [];
   if (inputSubClasses.length > 0) {
     _.each(inputSubClasses, classId => {
-      const className = classId.split('/')[classId.split('/').length - 1];
+      const className = classId.replace(vocabPfx, '');
       const subClasses = getSubClasses(className, vocab, vocabPfx);
       if (subClasses.length > 0) {
         newSubClasses = newSubClasses.concat(getAllSubClasses(subClasses, vocab, vocabPfx));
@@ -346,7 +346,7 @@ export function isEmbedded(classId, vocab, settings) {
 export function getInstances(className, vocab, vocabPfx) {
   const instances = [];
   vocab.forEach(vocabObj => {
-    if (typeof vocabObj['@type'] !== 'undefined' && vocabObj['@type'].indexOf(`${vocabPfx + className}`) > -1) {
+    if (typeof vocabObj['@type'] !== 'undefined' && vocabObj['@type'].indexOf(`${className}`) > -1) {
       instances.push(vocabObj['@id'].replace(vocabPfx, ''));
     }
   });
