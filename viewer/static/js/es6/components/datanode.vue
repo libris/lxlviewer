@@ -41,6 +41,7 @@ export default {
       foundChip: false,
       removed: false,
       removeConfirmation: false,
+      possibleValues: [],
     };
   },
   vuex: {
@@ -64,8 +65,15 @@ export default {
     'entity-adder': EntityAdder,
   },
   computed: {
-    restrictionOnProp() {
-      return VocabUtil.getRestrictionId(this.entityType, this.key, this.vocab, this.settings.vocabPfx);
+    hasRescriction() {
+      const restr = VocabUtil.getEnumerationKeys(this.entityType, this.key, this.vocab, this.settings.vocabPfx);
+      if (restr && restr.length > 0) {
+         VocabUtil.getEnumerations(this.entityType, this.key, this.vocab, this.settings.vocabPfx).then((result) => {
+           this.possibleValues = result;
+         });
+         return true;
+      }
+      return false;
     },
     propAllowsLocal() {
       if (this.settings.disallowLocal.indexOf(this.key) === -1) {
@@ -246,7 +254,7 @@ export default {
       if (this.isPlainObject(o) && !o.hasOwnProperty('@id') && !o.hasOwnProperty('@type')) {
         return 'error';
       }
-      if (this.restrictionOnProp && this.restrictionOnProp.length > 0) {
+      if (this.hasRescriction) {
         return 'enumeration';
       }
       if (this.isPlainObject(o) && this.isLinked(o)) {
@@ -317,7 +325,7 @@ export default {
     <ul>
       <li v-for="item in valueAsArray" :class="{ 'isChip': isChip(item)}" track-by="$index">
         <div class="erroneous-object" v-if="getDatatype(item) == 'error'"><i class="fa fa-frown-o"></i> {{item | json}}</div>
-        <item-enumeration v-if="getDatatype(item) == 'enumeration'" :restriction="restrictionOnProp" :is-locked="isLocked" :expanded="isExpandedType" :value="item" :key="key" :index="$index"></item-enumeration>
+        <item-enumeration v-if="getDatatype(item) == 'enumeration'" :is-locked="isLocked" :entity-type="entityType" :possible-values="possibleValues" :expanded="isExpandedType" :value="item" :key="key" :index="$index" :show-action-buttons="showActionButtons"></item-enumeration>
         <item-entity v-if="getDatatype(item) == 'entity'" :is-locked="isLocked" :expanded="isExpandedType" :item="item" :key="key" :index="$index"></item-entity>
         <item-local v-if="getDatatype(item) == 'local'" :is-locked="isLocked" :is-expanded-type="isExpandedType" :item="item" :key="key" :index="$index" :parent-path="getPath" :show-action-buttons="showActionButtons"></item-local>
         <item-embedded v-if="getDatatype(item) == 'embedded'" :is-locked="isLocked" :item="item" :key="key" :index="$index" :show-action-buttons="showActionButtons"></item-embedded>
