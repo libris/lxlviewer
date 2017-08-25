@@ -186,10 +186,7 @@ export default {
   events: {
     'add-field'(prop, path) {
       const key = prop['@id'].replace(this.settings.vocabPfx, '');
-      let value = [];
-      if (prop['@type'] && prop['@type'].indexOf('ObjectProperty') === -1) {
-        value = '';
-      }
+      const value = [];
       let modified = _.cloneDeep(this.formData);
       if (typeof path !== 'undefined') {
         _.set(modified, `${path}.${key}`, value);

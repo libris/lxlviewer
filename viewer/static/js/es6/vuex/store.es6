@@ -12,6 +12,7 @@ const state = {
   vocab: {},
   vocabClasses: [],
   vocabProperties: [],
+  forcedListTerms: [],
   display: {},
   settings: {},
   notification: {
@@ -63,6 +64,9 @@ const mutations = {
   },
   LOADVOCABMAP (state, data) {
     state.vocab = data;
+  },
+  LOADFORCEDLISTTERMS(state, data) {
+    state.forcedListTerms = data;
   },
   LOADDISPLAYDEFS (state, data) {
     state.display = data;

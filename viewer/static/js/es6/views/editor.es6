@@ -21,7 +21,7 @@ import EditorControls from '../components/editorcontrols';
 import HeaderComponent from '../components/headercomponent';
 import Notification from '../components/notification';
 import { getSettings, getVocabulary, getVocabularyClasses, getVocabularyProperties, getDisplayDefinitions, getEditorData, getStatus, getKeybindState } from '../vuex/getters';
-import { changeSettings, changeNotification, loadVocab, loadVocabMap, loadDisplayDefs, syncData, changeSavedStatus, changeStatus } from '../vuex/actions';
+import { changeSettings, changeNotification, loadVocab, loadVocabMap, loadForcedListTerms, loadDisplayDefs, syncData, changeSavedStatus, changeStatus } from '../vuex/actions';
 
 function showError(error) {
   $('#loadingText .fa-circle-o-notch').fadeOut('fast', () => {
@@ -58,6 +58,11 @@ export default class Editor extends View {
     }, (error) => {
       showError(error);
     });
+    VocabUtil.getForcedListTerms().then((result) => {
+      self.forcedListTerms = result;
+    }, (error) => {
+      showError(error);
+    });
   }
 
   initVue() {
@@ -89,6 +94,7 @@ export default class Editor extends View {
           syncData,
           loadVocab,
           loadVocabMap,
+          loadForcedListTerms,
           loadDisplayDefs,
           changeSettings,
           changeSavedStatus,
@@ -284,6 +290,7 @@ export default class Editor extends View {
         this.changeSettings(self.settings);
         this.loadVocab(self.vocab);
         this.loadVocabMap(self.vocabMap);
+        this.loadForcedListTerms(self.forcedListTerms);
         this.loadDisplayDefs(self.display);
         this.syncData(self.dataIn);
         this.changeStatus('lastSavedData', Object.assign({}, self.dataIn));

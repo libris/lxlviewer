@@ -14,7 +14,7 @@ import { mixin as clickaway } from 'vue-clickaway';
 import * as VocabUtil from '../utils/vocab';
 import * as LayoutUtil from '../utils/layout';
 import LodashProxiesMixin from './mixins/lodash-proxies-mixin';
-import { getVocabulary, getVocabularyProperties, getSettings, getStatus, getEditorData } from '../vuex/getters';
+import { getVocabulary, getVocabularyProperties, getForcedListTerms, getSettings, getStatus, getEditorData } from '../vuex/getters';
 import { changeStatus } from '../vuex/actions';
 
 export default {
@@ -51,6 +51,7 @@ export default {
     getters: {
       vocab: getVocabulary,
       vocabProperties: getVocabularyProperties,
+      forcedListTerms: getForcedListTerms,
       settings: getSettings,
       status: getStatus,
       editorData: getEditorData,
@@ -158,13 +159,16 @@ export default {
       }
       return false;
     },
+    forcedToArray() {
+      return this.forcedListTerms.indexOf(this.key) > -1;
+    },
   },
   events: {
     'update-item'(index, value) {
       let modified = _.cloneDeep(this.value);
-      if (typeof modified === 'string' || modified instanceof String) {
-        modified = [].concat(modified);
-      }
+      // if (typeof modified === 'string' || modified instanceof String) {
+      //   modified = [].concat(modified);
+      // }
       if (typeof index !== 'undefined' && index !== '') {
         modified[index] = value;
       } else {
@@ -183,6 +187,9 @@ export default {
       } else {
         modified = [];
       }
+      if (modified.length === 1 && !this.forcedToArray) {
+        modified = modified[0];
+      }
       this.updateValue(modified);
     },
     'add-item'(value, replaces) {
@@ -194,11 +201,14 @@ export default {
       } else {
         insertedValue = value;
       }
-      const modified = [].concat(_.cloneDeep(this.value));
+      let modified = [].concat(_.cloneDeep(this.value));
       if (typeof replaces !== 'undefined') {
         modified.splice(replaces, 1);
       }
       modified.push(insertedValue);
+      if (modified.length === 1 && !this.forcedToArray) {
+        modified = modified[0];
+      }
       this.updateValue(modified);
     },
     'toggle-modal'(active) {

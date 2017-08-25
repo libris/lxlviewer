@@ -173,7 +173,11 @@ export default {
       removeEmptyFields() {
         // Empty inputs
         $('#searchForm').find('input').filter(function() {
-            return !$.trim(this.value).length && this.type !== 'radio' && (this.className.indexOf('searchphrase') < 0);
+            return 
+            !$.trim(this.value).length &&
+            this.type !== 'radio' &&
+            (this.className.indexOf('searchphrase') < 0) &&
+            this.name !== 'q';
         }).prop('disabled', true);
       },
       clearFields() {

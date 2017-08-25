@@ -43,7 +43,10 @@ export default {
   },
   computed: {
     determinedLabel() {
-      const object = this.observation.object;
+      let object = this.observation.object;
+      if (object.hasOwnProperty('mainEntity')) {
+        object = object.mainEntity;
+      }
       if (typeof object.label !== 'undefined') {
         return object.label;
       } else if (typeof object.prefLabelByLang !== 'undefined' && typeof object.prefLabelByLang[this.settings.language] !== 'undefined') {
@@ -81,7 +84,7 @@ export default {
     <a v-if="!historySupported" href="{{observation.view['@id']}}" title="{{determinedLabel | capitalize}}">{{determinedLabel | capitalize}}</a>
     <span v-if="historySupported" @click="toggleActive">
       <input type="checkbox" v-model="active">
-      <span title="{{determinedLabe | capitalize}}">
+      <span title="{{determinedLabel | capitalize}}">
         {{determinedLabel | capitalize}}
       </span>
     </span>

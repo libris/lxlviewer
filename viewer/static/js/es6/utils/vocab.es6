@@ -11,6 +11,16 @@ export function getVocab() {
   });
 }
 
+export function getForcedListTerms() {
+  return new Promise((resolve, reject) => {
+    httpUtil.getResourceFromCache('/sys/forcedsetterms.json').then((result) => {
+      resolve(JSON.parse(result));
+    }, (error) => {
+      reject(error);
+    });
+  });
+}
+
 export function getTermByType(type, vocab) {
   if (!vocab || typeof vocab === 'undefined') {
     throw new Error('getTermByType was called without a vocabulary.');

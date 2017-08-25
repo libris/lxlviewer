@@ -7,6 +7,9 @@ export function getVocabulary(state) {
 export function getVocabularyClasses(state) {
   return state.vocabClasses;
 }
+export function getForcedListTerms(state) {
+  return state.forcedListTerms;
+}
 export function getVocabularyProperties(state) {
   return state.vocabProperties;
 }
