@@ -230,7 +230,7 @@ export default {
       </div>
       <header-component v-bind:class="{'collapsed': !showChipHeader}" :full="false"></header-component>
     </div>
-    <div class="window" v-if="showDuplicateWindow">
+    <div class="window duplicate-dialog" v-if="showDuplicateWindow">
       <div class="header">
         <span class="title">
           {{ "Duplicera post" | translatePhrase }}
@@ -396,7 +396,7 @@ export default {
       }
     }
   }
-  .window {
+  .duplicate-dialog {
     .window-mixin();
     .body {
       padding: 2em;
