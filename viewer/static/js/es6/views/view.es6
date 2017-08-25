@@ -39,7 +39,6 @@ export default class View {
         '@id',
         'sameAs',
         '@type',
-        'issuanceType',
       ],
       disallowLocal: [
         'instanceOf',
