@@ -348,8 +348,13 @@ export function getInstances(className, vocab, vocabPfx) {
   return instances;
 }
 
-export function getRestrictionType(entityType, property, vocab, vocabPfx) {
-  let result = '';
+export function getEnumerationKeys(entityType, property, vocab, vocabPfx) {
+
+  if (_.isPlainObject(property)) {
+    throw new Error('getEnumerationKeys was called with an object as property id (should be a string)');
+  }
+
+  let result = [];
   const baseClasses = getBaseClasses(`${vocabPfx}${entityType}`, vocab, vocabPfx);
   baseClasses.forEach(baseClass => {
     const vocabEntry = vocab.get(baseClass);
@@ -358,21 +363,29 @@ export function getRestrictionType(entityType, property, vocab, vocabPfx) {
         if (subClassObject.hasOwnProperty('@type') && subClassObject['@type'] === 'Restriction') {
           if (subClassObject.onProperty['@id'] === `${vocabPfx}${property}`) {
             if (subClassObject.hasOwnProperty('someValuesFrom')) {
-              result = subClassObject.someValuesFrom['@id'];
+              result = [subClassObject.someValuesFrom['@id']];
             }
           }
         }
       });
     }
   });
+  if (result.length === 0) {
+    const propObj = vocab.get(property);
+    if (propObj && propObj.hasOwnProperty('rangeIncludes')) {
+      result = propObj.rangeIncludes.map(item => item['@id']);
+    }
+  }
   return result;
 }
 
 export function getEnumerations(entityType, property, vocab, vocabPfx) {
-  const restrictionUrl = getRestrictionType(entityType, property, vocab, vocabPfx);
-  if (restrictionUrl !== '') {
+  const enumerationKeys = getEnumerationKeys(entityType, property, vocab, vocabPfx)
+  .map(enumerationKey => `@type=${enumerationKey}`);
+  if (enumerationKeys.length > 0) {
+    const enumerationUrl = enumerationKeys.join('&');
     return new Promise((resolve, reject) => {
-      httpUtil.get({ url: `/find?@type=${restrictionUrl}`, accept: 'application/ld+json' }).then((response) => {
+      httpUtil.get({ url: `/find?${enumerationUrl}`, accept: 'application/ld+json' }).then((response) => {
         resolve(response.items);
       }, (error) => {
         reject('Error searching...', error);
