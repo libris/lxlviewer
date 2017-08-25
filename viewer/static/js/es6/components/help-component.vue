@@ -114,10 +114,12 @@ export default {
   .window {
     .window-mixin();
     .body {
-      padding: 1em 1em 4em;
+      padding: 0em 0em 0em 2em;
       overflow-y: scroll;
       .content {
-        padding: 0em 1em;
+        padding: 2em 2em 3em 1em;
+        height: 100%;
+        overflow-y: scroll;
         width: 80%;
         float: right;
         h1, h2, h3, h4 {
@@ -132,6 +134,7 @@ export default {
       }
       .menu {
         width: 20%;
+        margin: 2em 0em 0em 0em;
         background-color: #e6e6e6;
         border-radius: 5px;
         float: left;
