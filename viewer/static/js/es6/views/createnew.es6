@@ -126,7 +126,7 @@ export default class CreateNew extends View {
                 '@id': '_:TEMP_ID#it',
                 '@type': this.chosenType,
                 issuanceType: this.selectedIssuanceType,
-                carrierType: { '@id': this.selectedCarrierType },
+                carrierType: [{ '@id': this.selectedCarrierType }],
               };
             }
             if (this.selectedTemplate !== '') {
