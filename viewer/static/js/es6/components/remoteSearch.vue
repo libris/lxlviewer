@@ -118,12 +118,6 @@ export default {
         <p class="small" v-if="selectedDatabases.length == 0">
           <span>Ingen källa vald...</span>
         </p>
-        <p v-if="remoteResult.state === 'error'">
-          <i class="fa fa-close"></i> Något gick fel.
-        </p>
-        <p v-if="remoteResult.state === 'loading'">
-          <i class="fa fa-circle-o-notch fa-spin"></i> Söker...
-        </p>
       </div>
       <div>
         <div class="form-group remote-sources">
@@ -144,8 +138,14 @@ export default {
       </div>
     </form>
   </div>
-  <div class="panel panel-default">
-    <div v-if="remoteResult.state == 'complete'">
+  <p v-if="remoteResult.state === 'error'">
+    <i class="fa fa-close"></i> Något gick fel.
+  </p>
+  <p v-if="remoteResult.state === 'loading'">
+    <i class="fa fa-circle-o-notch fa-spin"></i> Söker...
+  </p>
+  <div class="panel panel-default" v-if="remoteResult.state == 'complete'">
+    <div>
       <label for="results">RESULTAT</label>
       <p v-for="(db, results) in remoteResult.totalResults">{{ results }} resultat från {{ db }}</p>
       <hr>
