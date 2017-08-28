@@ -18,7 +18,10 @@
       <landing-box v-if="initialized == true && typeof result.totalItems === 'undefined'" :title="result.title" :text="result.summary.articleBody"></landing-box>
     </div>
     <div class="col-md-9" v-if="status.searchType === 'libris'">
-      <h1 v-on:click="switchSearchType">Libris</h1>
+      <div class="search-type-button-container" v-if="initialized == true">
+        <div class="search-type-button active">Libris</div>
+        <div class="search-type-button" v-on:click="switchSearchType">Remote</div>
+      </div>
       <search-form v-if="initialized == true" :result="result" :form-data-supported="formDataSupported" site-title="${g.site.title}" filter-param="${g.site.filter_param}" :use-submit="false"></search-form>
 
       <search-result-component :result="result" :form-data-supported="formDataSupported" v-if="(initialized == true && result.totalItems > -1) || status.resultList.loading"></search-result-component>
@@ -30,7 +33,10 @@
       ></dataset-observations>
     </div>
     <div class="col-md-9" v-if="status.searchType === 'remote'">
-      <h1 v-on:click="switchSearchType">Remote</h1>
+      <div class="search-type-button-container" v-if="initialized == true">
+        <div class="search-type-button" v-on:click="switchSearchType">Libris</div>
+        <div class="search-type-button active">Remote</div>
+      </div>
 
       <remote-search></remote-search>
     </div>

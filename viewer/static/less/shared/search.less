@@ -1,4 +1,27 @@
 body#pagedcollection {
+  .search-type-button-container {
+    margin-left: 1em;
+    .search-type-button {
+      display: inline-block;
+      border: solid @gray;
+      color: @gray-darker;
+      font-size: 85%;
+      line-height: 2em;
+      font-weight: bold;
+      text-transform: uppercase;
+      border-width: 1px 1px 0px 1px;
+      border-radius: 0.3em 0.3em 0px 0px;
+      padding: 0px 10px;
+      background-color: @gray-lighter;
+      box-shadow: inset 0px -0.1em 0.1em rgba(0, 0, 0, 0.15);
+      cursor: pointer;
+      &.active {
+        color: darken(@brand-primary, 15%);
+        border-color: @brand-primary;
+        background-color: desaturate(lighten(@brand-primary, 30%), 50%);
+      }
+    }
+  }
   .search-controls {
     .search-button {
       min-width: 20%;

@@ -14,6 +14,7 @@ export default {
       databases: { state: '', list: [] },
       remoteQuery: '',
       remoteResult: { state: '', totalResults: {}, items: [] },
+      showList: false,
     };
   },
   components: {
@@ -104,9 +105,10 @@ export default {
   <div class="panel panel-default remote-search-controls">
     <form v-on:submit.prevent="searchRemote()">
       <div v-show="databases.state == 'complete'">
-        <div class="form-group">
-          <label for="search">SÖK</label>
+        <label for="search">SÖK</label>
+        <div class="form-group search-field">
           <input type="text" class="form-control" placeholder="Titel, författare, isbn..." id="search" v-model="remoteQuery">
+          <button v-bind:class="{'disabled': selectedDatabases.length === 0 || remoteResult.state === 'loading'}" v-on:click.prevent="searchRemote()" id="searchSubmit" class="search-button btn btn-primary"><i class="fa fa-search"></i> Sök</button>
         </div>
         <p class="small" v-if="selectedDatabases.length > 0">
           <span v-if="selectedDatabases.length == 1">Vald databas:</span>
@@ -122,12 +124,14 @@ export default {
         <p v-if="remoteResult.state === 'loading'">
           <i class="fa fa-circle-o-notch fa-spin"></i> Söker...
         </p>
-        <button v-if="selectedDatabases.length > 0 && remoteResult.state !== 'loading'" v-on:click.prevent="searchRemote()" id="searchSubmit" class="search-button btn btn-primary"><i class="fa fa-search"></i> Sök</button>
       </div>
       <div>
         <div class="form-group">
-          <label for="source">KÄLLOR</label>
-          <ul v-show="databases.state == 'complete'" class="remoteDatabases">
+          <label for="source" v-on:click="showList = !showList">
+            KÄLLOR
+            <i class="fa fa-fw fa-caret-right" v-show="!showList"></i>
+            <i class="fa fa-fw fa-caret-down" v-show="showList"></i></label>
+          <ul v-show="databases.state == 'complete' && showList" class="remoteDatabases">
             <li class="databaseItem" v-for="db in databases.list" track-by="$index">
               <input class="dbCheckbox" type="checkbox" name="database" v-model="db.active" />
               <span class="dbLabel">{{db.item.database}} <i v-show="db.item.database !== db.item.name">- {{db.item.name}}</i></span>
@@ -159,6 +163,16 @@ export default {
   .remote-search {
     .remote-search-controls {
       padding: 20px;
+      .search-field {
+        display: flex;
+        button {
+          min-width: 20%;
+        }
+      }
+      ul.remoteDatabases {
+        list-style: none;
+        padding: 0px;
+      }
     }
   }
 </style>
