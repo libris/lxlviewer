@@ -126,7 +126,7 @@ export default {
         </p>
       </div>
       <div>
-        <div class="form-group">
+        <div class="form-group remote-sources">
           <label for="source" v-on:click="showList = !showList">
             KÄLLOR
             <i class="fa fa-fw fa-caret-right" v-show="!showList"></i>
@@ -169,9 +169,14 @@ export default {
           min-width: 20%;
         }
       }
-      ul.remoteDatabases {
-        list-style: none;
-        padding: 0px;
+      .remote-sources {
+        label {
+          cursor: pointer;
+        }
+        ul.remoteDatabases {
+          list-style: none;
+          padding: 0px;
+        }
       }
     }
   }
