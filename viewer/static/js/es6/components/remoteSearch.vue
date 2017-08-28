@@ -26,23 +26,19 @@ export default {
     loadRemoteDatabases() {
       const vself = this;
 
-      const urlDbs = vself.db.toUpperCase().split(',');
       this.databases.state = 'loading';
       this.databases.debug = '';
       this.fetchDatabases().then((dbs) => {
         const newDbList = [];
         for (let i = 0; i < dbs.length; i++) {
           const obj = { item: dbs[i], active: false };
-          if (urlDbs.indexOf(obj.item.database) !== -1) {
-            obj.active = true;
-          }
           newDbList.push(obj);
         }
         vself.databases.list = newDbList;
         vself.databases.state = 'complete';
-        if (vself.q.length > 0) {
-          vself.searchRemote();
-        }
+        // if (vself.q.length > 0) {
+        //   vself.searchRemote();
+        // }
       }, () => {
         vself.databases.state = 'error';
       });
@@ -104,10 +100,31 @@ export default {
 </script>
 
 <template>
-  <div class="panel-body container-fluid">
-  <div class="row">
-      <form v-on:submit.prevent="searchRemote()">
-      <div class="col-md-6">
+<div class="remote-search">
+  <div class="panel panel-default remote-search-controls">
+    <form v-on:submit.prevent="searchRemote()">
+      <div v-show="databases.state == 'complete'">
+        <div class="form-group">
+          <label for="search">SÖK</label>
+          <input type="text" class="form-control" placeholder="Titel, författare, isbn..." id="search" v-model="remoteQuery">
+        </div>
+        <p class="small" v-if="selectedDatabases.length > 0">
+          <span v-if="selectedDatabases.length == 1">Vald databas:</span>
+          <span v-if="selectedDatabases.length > 1">Valda databaser:</span>
+          <span v-for="db in selectedDatabases">{{db}}{{ $index === (selectedDatabases.length-1) ? '' : ', ' }}</span>
+        </p>
+        <p class="small" v-if="selectedDatabases.length == 0">
+          <span>Ingen databas vald...</span>
+        </p>
+        <p v-if="remoteResult.state === 'error'">
+          <i class="fa fa-close"></i> Något gick fel.
+        </p>
+        <p v-if="remoteResult.state === 'loading'">
+          <i class="fa fa-circle-o-notch fa-spin"></i> Söker...
+        </p>
+        <button v-if="selectedDatabases.length > 0 && remoteResult.state !== 'loading'" v-on:click.prevent="searchRemote()" id="searchSubmit" class="search-button btn btn-primary"><i class="fa fa-search"></i> Sök</button>
+      </div>
+      <div>
         <div class="form-group">
           <label for="source">KÄLLOR</label>
           <ul v-show="databases.state == 'complete'" class="remoteDatabases">
@@ -121,38 +138,27 @@ export default {
           <p v-show="databases.state == 'error'"><i class="fa fa-close"></i> Kunde inte hämta externa databaser. <a href="" v-on:click.prevent="loadRemoteDatabases()">Försök igen</a></p>
         </div>
       </div>
-        <div class="col-md-6" v-show="databases.state == 'complete'">
-          <div class="form-group">
-            <label for="search">SÖK</label>
-            <input type="text" class="form-control" placeholder="Titel, författare, isbn..." id="search" v-model="remoteQuery">
-          </div>
-          <p class="small" v-if="selectedDatabases.length > 0">
-            <span v-if="selectedDatabases.length == 1">Vald databas:</span>
-            <span v-if="selectedDatabases.length > 1">Valda databaser:</span>
-            <span v-for="db in selectedDatabases">{{db}}{{ $index === (selectedDatabases.length-1) ? '' : ', ' }}</span>
-          </p>
-          <p class="small" v-if="selectedDatabases.length == 0">
-            <span>Ingen databas vald...</span>
-          </p>
-          <p v-if="remoteResult.state === 'error'">
-            <i class="fa fa-close"></i> Något gick fel.
-          </p>
-          <p v-if="remoteResult.state === 'loading'">
-            <i class="fa fa-circle-o-notch fa-spin"></i> Söker...
-          </p>
-          <button v-if="selectedDatabases.length > 0 && remoteResult.state !== 'loading'" v-on:click.prevent="searchRemote()" id="searchSubmit" class="search-button btn btn-primary"><i class="fa fa-search"></i> Sök</button>
-        </div>
-      </form>
-    </div>
-    <div class="row">
-      <div class="col-md-12 " v-if="remoteResult.state == 'complete'">
-        <label for="results">RESULTAT</label>
-        <p v-for="(db, results) in remoteResult.totalResults">{{ results }} resultat från {{ db }}</p>
-        <hr>
-        <ul class="remote-list">
-          <result-item :item="item" v-for="item in remoteResult.items"></result-item>
-        </ul>
-      </div>
+    </form>
+  </div>
+  <div class="panel panel-default">
+    <div v-if="remoteResult.state == 'complete'">
+      <label for="results">RESULTAT</label>
+      <p v-for="(db, results) in remoteResult.totalResults">{{ results }} resultat från {{ db }}</p>
+      <hr>
+      <ul class="remote-list">
+        <result-item :item="item" v-for="item in remoteResult.items"></result-item>
+      </ul>
     </div>
   </div>
+</div>
 </template>
+
+<style lang="less">
+@import './_variables.less';
+
+  .remote-search {
+    .remote-search-controls {
+      padding: 20px;
+    }
+  }
+</style>

@@ -17,11 +17,10 @@
       <facet-controls v-if="initialized == true" :result="result"></facet-controls>
       <landing-box v-if="initialized == true && typeof result.totalItems === 'undefined'" :title="result.title" :text="result.summary.articleBody"></landing-box>
     </div>
-    <div class="col-md-9">
+    <div class="col-md-9" v-if="status.searchType === 'libris'">
+      <h1 v-on:click="switchSearchType">Libris</h1>
       <search-form v-if="initialized == true" :result="result" :form-data-supported="formDataSupported" site-title="${g.site.title}" filter-param="${g.site.filter_param}" :use-submit="false"></search-form>
 
-      <!--${ search.search_controls(thing) }-->
-      <!-- <main-search-field :title="tjena"></main-search-field> -->
       <search-result-component :result="result" :form-data-supported="formDataSupported" v-if="(initialized == true && result.totalItems > -1) || status.resultList.loading"></search-result-component>
       <dataset-observations
       v-if="initialized == true && !result.totalItems && '${g.site.title}' === 'id.kb.se'"
@@ -30,8 +29,12 @@
       site-title="${g.site.title}"
       ></dataset-observations>
     </div>
+    <div class="col-md-9" v-if="status.searchType === 'remote'">
+      <h1 v-on:click="switchSearchType">Remote</h1>
+
+      <remote-search></remote-search>
+    </div>
   </div>
 </div>
-
 <script id="data" type="application/json">${thing|tojson|safe}</script>
 % endblock

@@ -22,6 +22,7 @@ const state = {
   status: {
     showHelp: false,
     helpSection: 'none',
+    searchType: 'libris',
     lastAdded: '',
     lastSavedData: {},
     level: 'mainEntity',

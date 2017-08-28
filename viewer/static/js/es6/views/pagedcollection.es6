@@ -17,8 +17,9 @@ import EntitySearchList from '../components/entity-search-list';
 import SearchForm from '../components/search-form';
 import DatasetObservations from '../components/dataset-observations';
 import LandingBox from '../components/landing-box';
+import RemoteSearch from '../components/remoteSearch';
 import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData, getKeybindState, getStatus } from '../vuex/getters';
-import { changeSettings, changeNotification, loadVocab, loadVocabMap, loadDisplayDefs, changeSavedStatus, changeResultListStatus } from '../vuex/actions';
+import { changeSettings, changeStatus, changeNotification, loadVocab, loadVocabMap, loadDisplayDefs, changeSavedStatus, changeResultListStatus } from '../vuex/actions';
 
 export default class PagedCollection extends View {
 
@@ -71,6 +72,7 @@ export default class PagedCollection extends View {
           loadVocabMap,
           loadDisplayDefs,
           changeSettings,
+          changeStatus,
           changeSavedStatus,
           changeNotification,
           changeResultListStatus,
@@ -112,6 +114,13 @@ export default class PagedCollection extends View {
         },
         isPlainObject(o) {
           return _.isPlainObject(o);
+        },
+        switchSearchType() {
+          if (this.status.searchType === 'libris') {
+            this.changeStatus('searchType', 'remote');
+          } else {
+            this.changeStatus('searchType', 'libris');
+          }
         },
       },
       computed: {
@@ -159,6 +168,7 @@ export default class PagedCollection extends View {
         'search-form': SearchForm,
         'dataset-observations': DatasetObservations,
         'landing-box': LandingBox,
+        'remote-search': RemoteSearch,
       },
       store,
     });
