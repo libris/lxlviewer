@@ -116,7 +116,7 @@ export default {
           <span v-for="db in selectedDatabases">{{db}}{{ $index === (selectedDatabases.length-1) ? '' : ', ' }}</span>
         </p>
         <p class="small" v-if="selectedDatabases.length == 0">
-          <span>Ingen databas vald...</span>
+          <span>Ingen källa vald...</span>
         </p>
         <p v-if="remoteResult.state === 'error'">
           <i class="fa fa-close"></i> Något gick fel.
