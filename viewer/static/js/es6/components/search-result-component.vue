@@ -75,7 +75,6 @@ export default {
     box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.1);
     // margin: 120px 0;
     padding: 20px 0px;
-    width: 100%;
     min-height: 50vh;
     vertical-align: middle;
     text-align: center;

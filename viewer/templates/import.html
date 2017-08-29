@@ -19,16 +19,15 @@
 % block content
 {% if current_user.is_authenticated %}
   <div id="app">
-    <h1>Importera post</h1>
-      <!-- Import form -->
-      <p>
-        Välj extern databas och importera en post som du kan använda som underlag för en ny bibliografisk instans.
-      </p>
-    <div class="panel panel-default form-container" id="import_post">
-      <remote-search :db="params.db" :q="params.q"></remote-search>
+    <div class="row">
+      <div class="col-md-3">
+      </div>
+      <div class="col-md-9" v-if="initialized == true">
+        <remote-search></remote-search>
+      </div>
     </div>
   </div>
-</div>
+
   {% else %}
   <p>Du måste logga in.</p>
   {% endif %}

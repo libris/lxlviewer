@@ -2,6 +2,7 @@
 import * as _ from 'lodash';
 import * as httpUtil from '../utils/http';
 import ResultItem from './resultitem';
+import ResultList from './result-list';
 
 export default {
   name: 'remote-search',
@@ -14,11 +15,13 @@ export default {
       databases: { state: '', list: [] },
       remoteQuery: '',
       remoteResult: { state: '', totalResults: {}, items: [] },
+      convertedItems: [],
       showList: false,
     };
   },
   components: {
     'result-item': ResultItem,
+    'result-list': ResultList,
   },
   methods: {
     isPlainObject(o) {
@@ -64,6 +67,7 @@ export default {
       this.remoteSearch(q, databases)
       .then((response) => {
         vself.remoteResult = response;
+        vself.convertedItems = this.convertResult(response.items);
         vself.remoteResult.state = 'complete';
       }, () => {
         vself.remoteResult.state = 'error';
@@ -79,6 +83,24 @@ export default {
           reject('Error loading databases...', error);
         });
       });
+    },
+    convertResult(items) {
+      const convertedList = [];
+      _.each(items, (item) => {
+        const convertedItem = this.getMainEntity(item.data['@graph']);
+        convertedList.push(convertedItem);
+      })
+      return convertedList;
+    },
+    getMainEntity(graph) {
+      const mainEntityId = graph[0].mainEntity['@id'];
+      let mainEntity = {};
+      _.each(graph, (node) => {
+        if (node['@id'] === mainEntityId) {
+          mainEntity = node;
+        }
+      });
+      return mainEntity;
     },
   },
   ready() {
@@ -102,14 +124,20 @@ export default {
 
 <template>
 <div class="remote-search">
-  <div class="panel panel-default remote-search-controls">
+  <div class="search-type-button-container">
+    <a href="/"><div class="search-type-button"><i class="fa fa-leaf"></i> Libris</div></a>
+    <div class="search-type-button active"><i class="fa fa-globe"></i> Metaproxy</div>
+  </div>
+  <div class="panel panel-default remote-search-controls" v-show="databases.state == 'complete'">
     <form v-on:submit.prevent="searchRemote()">
-      <div v-show="databases.state == 'complete'">
-        <label for="search">SÖK</label>
+      <label for="search">SÖK (METAPROXY)</label>
+      <div>
         <div class="form-group search-field">
-          <input type="text" class="form-control" placeholder="Titel, författare, isbn..." id="search" v-model="remoteQuery">
+          <input type="text" class="form-control search-input" placeholder="Titel, författare, isbn..." id="search" v-model="remoteQuery">
           <button v-bind:class="{'disabled': selectedDatabases.length === 0 || remoteResult.state === 'loading'}" v-on:click.prevent="searchRemote()" id="searchSubmit" class="search-button btn btn-primary"><i class="fa fa-search"></i> Sök</button>
         </div>
+      </div>
+      <div>
         <p class="small" v-if="selectedDatabases.length > 0">
           <span v-if="selectedDatabases.length == 1">Vald databas:</span>
           <span v-if="selectedDatabases.length > 1">Valda databaser:</span>
@@ -118,8 +146,6 @@ export default {
         <p class="small" v-if="selectedDatabases.length == 0">
           <span>Ingen källa vald...</span>
         </p>
-      </div>
-      <div>
         <div class="form-group remote-sources">
           <label for="source" v-on:click="showList = !showList">
             KÄLLOR
@@ -144,16 +170,11 @@ export default {
   <p v-if="remoteResult.state === 'loading'">
     <i class="fa fa-circle-o-notch fa-spin"></i> Söker...
   </p>
-  <div class="panel panel-default" v-if="remoteResult.state == 'complete'">
-    <div>
-      <label for="results">RESULTAT</label>
-      <p v-for="(db, results) in remoteResult.totalResults">{{ results }} resultat från {{ db }}</p>
-      <hr>
-      <ul class="remote-list">
-        <result-item :item="item" v-for="item in remoteResult.items"></result-item>
-      </ul>
-    </div>
+  <div class="panel panel-default result-status" v-if="remoteResult.state == 'complete'">
+    <label for="results">RESULTAT</label>
+    <p v-for="(db, results) in remoteResult.totalResults">{{ results }} resultat från {{ db }}</p>
   </div>
+  <result-list :results="convertedItems"></result-list>
 </div>
 </template>
 
@@ -165,6 +186,9 @@ export default {
       padding: 20px;
       .search-field {
         display: flex;
+        .search-input {
+          height: 44px;
+        }
         button {
           min-width: 20%;
         }
@@ -178,6 +202,9 @@ export default {
           padding: 0px;
         }
       }
+    }
+    .result-status {
+      padding: 20px;
     }
   }
 </style>

@@ -2,15 +2,17 @@
 import * as _ from 'lodash';
 import PropertyMappings from '../propertymappings.json';
 import * as httpUtil from '../utils/http';
-import { changeResultListStatus } from '../vuex/actions';
-import { getSettings } from '../vuex/getters';
+import { changeResultListStatus, changeStatus } from '../vuex/actions';
+import { getSettings, getStatus } from '../vuex/getters';
 export default {
   name: 'search-form',
   vuex: {
     getters: {
       settings: getSettings,
+      status: getStatus,
     },
     actions: {
+      changeStatus,
       changeResultListStatus,
     },
   },
@@ -34,12 +36,15 @@ export default {
     }
   },
   methods: {
-      addSearchField(){
+      addSearchField() {
           const newobj = {};
           newobj.value='';
           newobj.class='searchphrase';
           this.formData.push(newobj);
           this.currentInput += 1;
+      },
+      setSearchType(type) {
+        this.changeStatus('searchType', type);
       },
       updateField() {
         const validTags = this.settings.validSearchTags;
@@ -173,7 +178,7 @@ export default {
       removeEmptyFields() {
         // Empty inputs
         $('#searchForm').find('input').filter(function() {
-            return 
+            return
             !$.trim(this.value).length &&
             this.type !== 'radio' &&
             (this.className.indexOf('searchphrase') < 0) &&
@@ -263,6 +268,11 @@ export default {
 </script>
 
 <template>
+  <div>
+    <div class="search-type-button-container">
+      <div class="search-type-button active"><i class="fa fa-leaf"></i> Libris</div>
+      <a href="/import"><div class="search-type-button"><i class="fa fa-globe"></i> Metaproxy</div></a>
+    </div>
     <div class="panel panel-default search-controls">
         <form action="/find" method="GET" id="searchForm">
             <div class="form-inline">
@@ -273,7 +283,7 @@ export default {
                     <input class="tagInput" name="_limit" value="20">
                 </div>
                 <label class="search-label" id="searchlabel" for="q">
-                    {{"Search" | translatePhrase}}
+                    SÖK
                 </label>
                 <div id="searchFieldContainer">
                     <input aria-labelledby="searchlabel" class="form-control search-input tagInput" name="q" id="searchQ" ></input>
@@ -309,6 +319,7 @@ export default {
             </div> -->
         </form>
     </div>
+  </div>
 </template>
 
 <style>
