@@ -5,54 +5,21 @@
 % block content
 {% if current_user.is_authenticated %}
 
-  <h1>Skapa ny</h1>
-
     <!-- Create new form -->
     <div class="panel panel-default form-container" id="create_new_post">
       <div class="panel-body">
         <div id="app">
+          <div class="app-heading">{{'Create new' | translatePhrase}}</div>
           <div class="createnew-form" v-if="initialized === true">
-            <button @click="activateMode('Instance')">Instance</button>
-            <button @click="activateMode('Work')">Work</button>
-            <div>
-              <button @click="activateMode('compose')">Compose</button>
-              <button v-if="selectedCreation === 'Instance'" @click="activateMode('template')">Template</button>
-              <!--<button @click="activateMode('compose')">Compose</button>
-              <button @click="activateMode('template')">Template</button>-->
+            <creation-tab :creation-list="creationList"></creation-tab>
+            <div class="creation-cards-container">
+              <creation-card :is-base="true" :material-list="materialList" :index="0" :active-index="activeIndex"></creation-card>
+              <creation-card v-for="template in combinedTemplates" :is-base="false" :template="template" :index="$index + 1" :active-index="activeIndex"></creation-card>
             </div>
-            <form action="/edit" method="POST">
-              <div v-if="!templateMode">
-                <div>
-                  <label for="type">{{"type" | translatePhrase | capitalize}}</label>
-                  <select id="type" v-model="chosenType" size="10">
-                    <option v-for="material in materialList" value="{{material}}">{{material | labelByLang}}</option>
-                  </select>
-                </div>
-                <div v-if="selectedCreation === 'Instance'">
-                  <label for="issuanceType">{{"issuanceType" | labelByLang | capitalize}}</label>
-                  <select id="issuanceType" v-model="selectedIssuanceType" size="10">
-                    <option v-for="issuanceType in issuanceTypes" value="{{issuanceType}}" label="{{issuanceType | labelByLang}}">
-                  </select>
-                </div>
-                <div v-if="selectedCreation === 'Instance'">
-                  <label for="carrierType">{{"carrierType" | labelByLang | capitalize}}</label>
-                  <select id="carrierType" v-model="selectedCarrierType" size="10">
-                    <!--<option disabled value="">{{"Choose type" | translatePhrase}}</option>-->
-                    <option v-for="carrierType in carrierTypes" value="{{carrierType['@id']}}" label="{{getPrefLabelByLang(carrierType)}}">
-                  </select>
-                </div>
-              </div>
-              <div v-if="templateMode">
-                <div>
-                  <label for="templates">{{"templates" | labelByLang | capitalize}}</label>
-                  <select id="templates" v-model="selectedTemplate" size="10">
-                    <option v-for="template in getCombinedTemplates" value="{{$key}}" label="{{template.label | translatePhrase}}">
-                  </select>
-                </div>
-              </div>
-              <textarea id="copyItem" name="data" class="hidden">{{postTemplate | json}}</textarea>
+            <form action="/edit" method="POST" id="thingDataForm">
+              <textarea id="copyItem" name="data" class="hidden">{{thingData | json}}</textarea>
               <span class="submitter">
-                <button v-bind:disabled="!hasChosenMaterials && !hasChosenTemplate">Skapa formulär</button>
+                <button :class="{'disabled': !hasChosen}" :disabled="!hasChosen">Skapa</button>
               </span>
             </form>
           </div>

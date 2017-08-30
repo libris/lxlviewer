@@ -1,0 +1,61 @@
+{
+  "instance": {
+    "record": {
+      "marc:catalogingSource": {
+        "@id": "marc:CooperativeCatalogingProgram"
+      }
+    },
+    "mainEntity": {
+      "publicationCountry": [],
+      "identifiedBy": [],
+      "hasTitle": [],
+      "publication": []
+    }
+  },
+  "work": {
+    "record": {
+      "marc:catalogingSource": {
+        "@id": "marc:CooperativeCatalogingProgram"
+      }
+    },
+    "mainEntity": {
+      "language": [],
+      "genreForm": [],
+      "classification": [],
+      "contribution": [],
+      "contentType": [],
+      "subject": []
+    }
+  },
+  "agent": {
+    "record": {
+      "marc:catalogingSource": {
+        "@id": "marc:CooperativeCatalogingProgram"
+      }
+    },
+    "mainEntity": {
+      "birthDate": "",
+      "deathDate": ""
+    }
+  },
+  "concept": {
+    "record": {
+      "marc:catalogingSource": {
+        "@id": "marc:CooperativeCatalogingProgram"
+      }
+    },
+    "mainEntity": {
+      "inScheme": {},
+      "inCollection": [],
+      "prefLabel": [],
+      "closeMatch": [],
+      "altLabel": [],
+      "broader": [],
+      "narrower": [],
+      "related": [],
+      "label": [],
+      "scopeNote": [],
+      "historyNote": []
+    }
+  }
+}

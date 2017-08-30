@@ -1,61 +1,31 @@
-body#createnew, body#import {
-
+body#createnew {
   #app {
-    display: none;
+    .app-heading {
+      font-size: 1.5em;
+      margin: 0 0 0.3em 0.7em;
+    }
     form {
-      padding: 0px 15px;
-      > div {
-        display: flex;
-        margin-bottom: 5px;
-        > div {
-          display: flex;
-          flex-direction: column;
-          flex: 100px 1 1;
-          margin: 0 5px;
-          > select {
-            width: 100%;
-            overflow-x: hidden;
-          }
-        }
-      }
       .submitter {
         display: flex;
         flex-direction: row-reverse;
+        > button {
+          color: @white;
+          background-color: @brand-primary;
+          margin-right: 1em;
+          padding: 0.5em 3em;
+          &.disabled {
+            color: @black;
+            background-color: @gray-lighter;
+          }
+        }
       }
     }
-    > div button {
-      margin: 5px;
+    .creation-cards-container {
+      display: flex;
+      flex-wrap: wrap;
     }
   }
 
-  h1 {
-    font-weight: 600;
-    font-size: 16px;
-    text-transform: uppercase;
-  }
-
-  .choice-container {
-    padding: 0 15px;
-    margin: 0px;
-  }
-
-  // create new thing
-  .choice {
-    color: inherit;
-    > div {
-      padding: 15px;
-    }
-    &:hover {
-      color: inherit;
-      > div {
-        background-color: lighten(@gray-lighter, 5%);
-      }
-    }
-    cursor: pointer;
-    text-align: center;
-  }
-  .submitter {
-  }
 
   #import_post {
     .hidden {
