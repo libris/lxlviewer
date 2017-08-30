@@ -73,6 +73,15 @@ export default {
           } else {
             labelByLang = o.item.labelByLang[lang];
           }
+        } else if (
+          typeof o.item.prefLabelByLang !== 'undefined' &&
+          typeof o.item.prefLabelByLang[lang] !== 'undefined'
+        ) {
+          if (_.isArray(o.item.prefLabelByLang[lang])) {
+            labelByLang = o.item.prefLabelByLang[lang][0];
+          } else {
+            labelByLang = o.item.prefLabelByLang[lang];
+          }
         }
         // @id
         const pId = o.item['@id'].toString().toLowerCase();

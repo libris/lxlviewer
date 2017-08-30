@@ -40,11 +40,19 @@ export function labelByLang(string, lang, vocab, vocabPfx) {
   if (lbl && lbl.indexOf(pfx) !== -1) {
     lbl = lbl.replace(pfx, '');
   }
-  const item = vocab.get(`${pfx}${lbl}`);
+  let item = vocab.get(`${pfx}${lbl}`);
+
+  // Handle marc:
+  if (typeof item === 'undefined') {
+    item = vocab.get(lbl);
+  }
+
   let note = '';
   let labelByLang = '';
   if (typeof item !== 'undefined' && item.labelByLang) {
     labelByLang = item.labelByLang[lang];
+  } else if (typeof item !== 'undefined' && item.prefLabelByLang) {
+    labelByLang = item.prefLabelByLang[lang];
   } else {
     note = ' (unhandled term)';
   }

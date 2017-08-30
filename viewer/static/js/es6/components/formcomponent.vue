@@ -70,9 +70,22 @@ export default {
 
       const extendedAllowed = allowed.map(property => {
         const labelByLang = property.item.labelByLang;
+        const prefLabelByLang = property.item.prefLabelByLang;
         if (typeof labelByLang !== 'undefined') {
           // Try to get the label in the preferred language
           let label = ((typeof labelByLang[this.settings.language] !== 'undefined') ? labelByLang[this.settings.language] : labelByLang.en);
+          // If several labels are present, use the first one
+          if (_.isArray(label)) {
+            label = label[0];
+          }
+          return {
+            added: property.added,
+            item: property.item,
+            label: label
+          };
+        } else if (typeof prefLabelByLang !== 'undefined') {
+          // Try to get the label in the preferred language
+          let label = ((typeof prefLabelByLang[this.settings.language] !== 'undefined') ? prefLabelByLang[this.settings.language] : prefLabelByLang.en);
           // If several labels are present, use the first one
           if (_.isArray(label)) {
             label = label[0];

@@ -9,13 +9,16 @@ import { getVocabulary, getDisplayDefinitions, getSettings, getEditorData } from
 
 export default {
   name: 'item-enumeration',
+  mixins: [ItemMixin],
   props: {
     value: '',
     key: '',
     index: Number,
     isLocked: false,
     expanded: false,
-    restriction: '',
+    entityType: '',
+    possibleValues: [],
+    showActionButtons: false,
   },
   vuex: {
     getters: {
@@ -31,8 +34,8 @@ export default {
       showCardInfo: false,
       searchResult: {},
       searchDelay: 2,
+      removeHover: false,
       formObj: {},
-      possibleValues: [],
       selected: '',
       radioLimit: 4,
     };
@@ -48,7 +51,7 @@ export default {
     },
   },
   ready() {
-    this.getPossibleValues();
+    this.setInitialValue();
   },
   watch: {
     selected(val) {
@@ -60,15 +63,10 @@ export default {
     },
   },
   methods: {
-    getPossibleValues() {
-      VocabUtil.getEnumerations(this.restriction, this.key, this.vocab, this.settings.vocabPfx).then((result) => {
-        this.possibleValues = result;
-        this.setInitialValue();
-      });
-    },
     setInitialValue() {
-      if (this.value !== '') {
-        let matchId = this.value['@id'];
+      console.log("Setting init value");
+      if (_.isArray(this.value)) {
+        let matchId = this.value[0]['@id'];
         if (matchId.indexOf('marc:') > -1) {
           matchId = matchId.replace(':', '/');
           console.log(matchId);
@@ -78,8 +76,16 @@ export default {
         });
         if (match) {
           this.selected = match;
+        } else {
+          this.setEmptyValue();
         }
+      } else {
+        this.setEmptyValue();
       }
+    },
+    setEmptyValue() {
+      // console.log("setting to empty");
+      this.$dispatch('update-item', this.index, {'@id': ''});
     },
     isEmpty() {
       // TODO: Is the item empty?
@@ -105,20 +111,21 @@ export default {
 </script>
 
 <template>
-  <div class="item-enumeration">
+  <div class="item-enumeration" v-bind:class="{'distinguish-removal': removeHover}">
     <div class="item-value" v-if="isLocked && selected">
       {{ selected.prefLabelByLang[this.settings.language] || selected.prefLabelByLang['en'] }}
     </div>
-    <ul class="enumeration-radio" v-if="!isLocked && possibleValues.length < this.radioLimit+1">
+    <ul class="enumeration-input enumeration-radio" v-if="!isLocked && possibleValues.length < this.radioLimit+1">
       <li v-for="option in possibleValues">
-        <input type="radio" v-model="selected" id="{{ this.key + '_' + option['@id'] }}" v-bind:value="option"><label for="{{ this.key + '_' + option['@id'] }}"> {{ option.prefLabelByLang[this.settings.language] || option.prefLabelByLang['en'] }}</label>
+        <input type="radio" v-model="selected" id="{{ this.key + '_' + option['@id'] }}" v-bind:value="option"><label for="{{ this.key + '_' + option['@id'] }}"> {{ option.prefLabelByLang[this.settings.language] || option.prefLabelByLang['en'] }}{{ option.notation ? ` (${option.notation})` : '' }}</label>
       </li>
     </ul>
-    <div class="enumeration-dropdown" v-if="!isLocked && possibleValues.length > this.radioLimit">
+    <div class="enumeration-input enumeration-dropdown" v-if="!isLocked && possibleValues.length > this.radioLimit">
       <select v-model="selected">
-        <option v-for="option in possibleValues" v-bind:value="option">{{ option.prefLabelByLang[this.settings.language] || option.prefLabelByLang['en'] }}</option>
+        <option v-for="option in possibleValues" v-bind:value="option">{{ option.prefLabelByLang[this.settings.language] || option.prefLabelByLang['en'] }}{{ option.notation ? ` (${option.notation})` : '' }}</option>
       </select>
     </div>
+    <div class="remover" :class="{'show-icon': showActionButtons}" v-show="!isLocked" v-on:click="removeThis()" @mouseover="removeHover = true" @mouseout="removeHover = false"><i class="fa fa-trash"></i></div>
   </div>
 </template>
 
@@ -126,21 +133,38 @@ export default {
 @import './_variables.less';
 
 .item-enumeration {
+  border: solid 1px transparent;
   .item-value {
     padding-left: 5px;
   }
-  .enumeration-radio {
-    list-style: none;
-    padding-left: 0.5em;
-    li {
-      display: inline-block;
-      margin-right: 1em;
-      input {
-        margin-right: 0.5em;
+  .enumeration-input {
+    max-width: 95%;
+    display: inline-block;
+    &.enumeration-dropdown {
+    }
+    &.enumeration-radio {
+      list-style: none;
+      padding-left: 0.5em;
+      li {
+        display: inline-block;
+        margin-right: 1em;
+        input {
+          margin-right: 0.5em;
+        }
+        label {
+          font-weight: normal;
+        }
       }
-      label {
-        font-weight: normal;
-      }
+    }
+  }
+  .remover {
+    display: inline-block;
+    opacity: 0;
+    padding: 3px;
+    cursor: pointer;
+    transition: opacity 0.5s ease;
+    &.show-icon {
+      opacity: 1;
     }
   }
 }
