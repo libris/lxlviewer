@@ -16,7 +16,7 @@ export default {
       remoteQuery: '',
       remoteResult: { state: '', totalResults: {}, items: [] },
       convertedItems: [],
-      showList: false,
+      showList: true,
     };
   },
   components: {
@@ -61,6 +61,7 @@ export default {
       if (this.selectedDatabases.length === 0 || this.remoteQuery === '') return;
       const vself = this;
       const q = this.remoteQuery;
+      this.showList = false;
       const databases = this.selectedDatabases.join();
       vself.remoteResult = {};
       vself.remoteResult.state = 'loading';
@@ -101,6 +102,11 @@ export default {
         }
       });
       return mainEntity;
+    },
+    toggleDatabase(index) {
+      if (this.databases.list[index]) {
+        this.databases.list[index].active = !this.databases.list[index].active;
+      }
     },
   },
   ready() {
@@ -148,10 +154,9 @@ export default {
             <i class="fa fa-fw fa-caret-right" v-show="!showList"></i>
             <i class="fa fa-fw fa-caret-down" v-show="showList"></i></label>
           <ul v-show="databases.state == 'complete' && showList" class="remoteDatabases">
-            <li class="databaseItem" v-for="db in databases.list" track-by="$index">
-              <input class="dbCheckbox" type="checkbox" name="database" v-model="db.active" />
-              <span class="dbLabel">{{db.item.database}} <i v-show="db.item.database !== db.item.name">- {{db.item.name}}</i></span>
-              <span class="dbAddr" v-show="db.item.address"><a href="{{ db.item.address }}" target="_blank"><i class="fa fa-external-link-square"></i> Webbplats</a></span>
+            <li class="databaseItem" v-bind:class="{'active': db.active}" v-for="db in databases.list" track-by="$index" v-on:click="toggleDatabase($index)">
+              <span class="dbLabel">{{db.item.database}}</span>
+              <i class="dbName" v-show="db.item.database !== db.item.name">{{db.item.name}}</i>
             </li>
           </ul>
           <p v-show="databases.state == 'loading'"><i class="fa fa-circle-o-notch fa-spin"></i> Laddar externa databaser...</p>
@@ -196,6 +201,40 @@ export default {
         ul.remoteDatabases {
           list-style: none;
           padding: 0px;
+          display: flex;
+          flex-wrap: wrap;
+          width: 100%;
+          text-align: center;
+          .databaseItem {
+            width: 19%;
+            cursor: pointer;
+            border: 1px solid @gray;
+            margin: 0.2em;
+            padding: 0.2em;
+            border-radius: 0.2em;
+            background-color: #f1f1f1;
+            &.active {
+              background-color: desaturate(lighten(@brand-primary, 30%), 50%);
+            }
+            .dbLabel {
+              display: block;
+              font-weight: bold;
+            }
+            .dbName {
+              width: 100%;
+              display: inline-block;
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+            }
+            .dbAddr {
+              float: right;
+              display: block;
+            }
+            .dbCheckbox {
+              display: block;
+            }
+          }
         }
       }
     }
