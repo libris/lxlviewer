@@ -401,9 +401,13 @@ def thingnewp():
 
 
 @app.route('/sys/forcedsetterms.json')
-def sysroute():
-    r = _proxy_request(request, session, None)
-    return r.get_data()
+def forcedsetterms():
+    return _proxy_request(request, session, None)
+
+@app.route('/_compilemarc')
+def _compilemarc():
+    return _proxy_request(request, session, query_params=['id', 'library'])
+
 
 @app.route('/<path:path>/edit')
 def thingedit(path):
