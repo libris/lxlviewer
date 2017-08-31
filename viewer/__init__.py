@@ -408,6 +408,9 @@ def forcedsetterms():
 def _compilemarc():
     return _proxy_request(request, session, query_params=['id', 'library'])
 
+@app.route('/_findhold')
+def _findhold():
+    return _proxy_request(request, session, query_params=['id', 'library'])
 
 @app.route('/<path:path>/edit')
 def thingedit(path):
