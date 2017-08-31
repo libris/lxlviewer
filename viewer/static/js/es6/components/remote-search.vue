@@ -124,10 +124,6 @@ export default {
 
 <template>
 <div class="remote-search">
-  <div class="search-type-button-container">
-    <a href="/"><div class="search-type-button"><i class="fa fa-leaf"></i> Libris</div></a>
-    <div class="search-type-button active"><i class="fa fa-globe"></i> Metaproxy</div>
-  </div>
   <div class="panel panel-default remote-search-controls" v-show="databases.state == 'complete'">
     <form v-on:submit.prevent="searchRemote()">
       <label for="search">SÖK (METAPROXY)</label>

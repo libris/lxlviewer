@@ -266,10 +266,6 @@ export default {
 
 <template>
   <div>
-    <div class="search-type-button-container">
-      <div class="search-type-button active"><i class="fa fa-leaf"></i> Libris</div>
-      <a href="/import"><div class="search-type-button"><i class="fa fa-globe"></i> Metaproxy</div></a>
-    </div>
     <div class="panel panel-default search-controls">
         <form action="/find" method="GET" id="searchForm">
             <div class="form-inline">
