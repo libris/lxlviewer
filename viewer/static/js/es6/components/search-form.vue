@@ -43,9 +43,6 @@ export default {
           this.formData.push(newobj);
           this.currentInput += 1;
       },
-      setSearchType(type) {
-        this.changeStatus('searchType', type);
-      },
       updateField() {
         const validTags = this.settings.validSearchTags;
         if (this.currentIsTag) {
