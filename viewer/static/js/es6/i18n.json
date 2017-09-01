@@ -51,8 +51,12 @@
     "Extraction was successful": "Utbrytning lyckades",
     "Extract entity": "Bryt ut entitet",
     "Extracting": "Bryter ut",
-    "Item": "Exemplar",
+    "Item": "Bestånd",
     "Missing label": "Etikett saknas",
     "Duplicate": "Duplicera",
+    "Show record data": "Visa postdata",
+    "Hide record data": "Dölj postdata",
+    "Missing holding for sigel": "Saknar bestånd för sigel",
+    "Has holding for sigel": "Har bestånd för sigel"
   }
 }

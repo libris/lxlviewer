@@ -2,7 +2,6 @@
 import * as _ from 'lodash';
 import HeaderComponent from './headercomponent';
 import MarcPreview from '../components/marc-preview';
-import CreateItemButton from '../components/create-item-button';
 import * as DataUtil from '../utils/data';
 import * as DisplayUtil from '../utils/display';
 import * as LayoutUtil from '../utils/layout';
@@ -31,21 +30,6 @@ export default {
   },
   mixins: [clickaway, LensMixin],
   ready() { // Ready method is deprecated in 2.0, switch to "mounted"
-    this.$nextTick(() => {
-      window.addEventListener('scroll', (e) => {
-        let scrollPosition = e.target.body.scrollTop;
-        if (e.target.body.scrollTop === 0) {
-          scrollPosition = document.documentElement.scrollTop;
-        }
-        if (this.headerThreshold < scrollPosition) {
-          this.showChipHeader = true;
-        } else {
-          this.showChipHeader = false;
-        }
-      });
-      const expandableAdminInfo = document.getElementsByClassName('admin-info-container')[0];
-      expandableAdminInfo.onresize = this.resize;
-    });
   },
   events: {
     'close-modals'() {
@@ -112,11 +96,6 @@ export default {
       this.loadingCancel = true;
       setTimeout(() => this.$dispatch('cancel-edit'), 0);
     },
-    isSubClassOf(type) {
-      const baseClasses = VocabUtil.getBaseClasses(this.editorData.mainEntity['@type'], this.vocab, this.settings.vocabPfx)
-        .map(id => id.replace(this.settings.vocabPfx, ''));
-      return baseClasses.indexOf(type) > -1;
-    },
     closeDuplicateDialog() {
       this.showDuplicateWindow = false;
       LayoutUtil.scrollLock(false);
@@ -124,7 +103,6 @@ export default {
   },
   data() {
     return {
-      showChipHeader: false,
       showAdminInfoDetails: false,
       showDuplicateWindow: false,
       duplicating: false,
@@ -155,21 +133,16 @@ export default {
     }
   },
   components: {
-    'header-component': HeaderComponent,
     'marc-preview': MarcPreview,
-    'create-item-button': CreateItemButton,
   },
 };
 </script>
 
 <template>
-  <div class="container" id="editor-container" v-bind:class="{'affix': showChipHeader}">
+  <div class="container" id="editor-container">
     <div class="editor-controls">
       <div class="admin-info">
         <div class="actions">
-          <div class="action">
-            <i class="fa fa-chevron-down" :class="{'up': showAdminInfoDetails}" aria-hidden="true" @click="toggleAdminData()"></i>
-          </div>
           <div class="action" v-on:click="toggleDev()" v-bind:class="{'active': status.isDev}">
             <i class="fa fa-wrench" aria-hidden="true"></i>
           </div>
@@ -186,49 +159,32 @@ export default {
           </div>
         </div>
         <marc-preview v-show="status.inEdit"></marc-preview>
-        <div class="admin-node">
-          <span class="node">Skapad <strong>{{ getCard.created }}</strong> av <strong>{{ getCard.assigner || 'okänd' }}</strong></span>
+        <div class="type-label">
+          {{editorData.mainEntity['@type'] | labelByLang}}
         </div>
-        <div class="admin-node">
-          <span class="node">Ändrad <strong>{{ getCard.modified }}</strong> av <strong>{{ getCard.descriptionModifier || 'okänd' }}</strong></span>
-        </div>
-        <button class="removeButton" v-show="!status.inEdit" @click="removePost"><i class="fa fa-trash" aria-hidden="true"></i> {{"Remove" | translatePhrase}} post</button>
-        <create-item-button v-show="!status.inEdit && isSubClassOf('Instance')"></create-item-button>
-        <button v-show="status.inEdit" @click="cancelEdit">
-          <i class="fa fa-times" aria-hidden="true" v-show="!loadingCancel"></i>
-          <i class="fa fa-fw fa-circle-o-notch fa-spin" aria-hidden="true" v-show="loadingCancel"></i>
-           {{"Cancel" | translatePhrase}}
-        </button>
-        <button id="saveButton" v-on:click="save()" v-if="status.inEdit">
-          <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="status.saved.loading"></i>
-          <i class="fa fa-fw fa-save" v-show="!status.saved.loading"></i>
-          {{ "Save" | translatePhrase }}
-        </button>
-        <button id="duplicateButton" v-on:click="openDuplicateWindow()" v-show="!status.inEdit">
-          <i class="fa fa-fw fa-files-o"></i>
-          {{ "Duplicate" | translatePhrase }}
-        </button>
-        <button id="editButton" v-on:click="edit()" v-show="!status.inEdit">
-          <i class="fa fa-fw fa-pencil" v-show="!loadingEdit"></i>
-          <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="loadingEdit"></i>
-          {{ "Edit" | translatePhrase }}
-        </button>
-      </div>
-      <div>
-        <div class="admin-info-container" :class="{ 'show-admin-info-details': showAdminInfoDetails }">
-          <div class="admin-info-details">
-            <div v-for="(k, v) in getCard">
-              <div class="admin-key">
-                {{ k | labelByLang | capitalize }}:
-              </div>
-              <div class="admin-value">
-                {{v}}
-              </div>
-            </div>
-          </div>
+        <div>
+          <button class="removeButton" v-show="!status.inEdit" @click="removePost"><i class="fa fa-trash" aria-hidden="true"></i> {{"Remove" | translatePhrase}} post</button>
+          <button v-show="status.inEdit" @click="cancelEdit">
+            <i class="fa fa-times" aria-hidden="true" v-show="!loadingCancel"></i>
+            <i class="fa fa-fw fa-circle-o-notch fa-spin" aria-hidden="true" v-show="loadingCancel"></i>
+            {{"Cancel" | translatePhrase}}
+          </button>
+          <button id="saveButton" v-on:click="save()" v-if="status.inEdit">
+            <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="status.saved.loading"></i>
+            <i class="fa fa-fw fa-save" v-show="!status.saved.loading"></i>
+            {{ "Save" | translatePhrase }}
+          </button>
+          <button id="duplicateButton" v-on:click="openDuplicateWindow()" v-show="!status.inEdit">
+            <i class="fa fa-fw fa-files-o"></i>
+            {{ "Duplicate" | translatePhrase }}
+          </button>
+          <button id="editButton" v-on:click="edit()" v-show="!status.inEdit">
+            <i class="fa fa-fw fa-pencil" v-show="!loadingEdit"></i>
+            <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="loadingEdit"></i>
+            {{ "Edit" | translatePhrase }}
+          </button>
         </div>
       </div>
-      <header-component v-bind:class="{'collapsed': !showChipHeader}" :full="false"></header-component>
     </div>
     <div class="window duplicate-dialog" v-if="showDuplicateWindow">
       <div class="header">
@@ -270,13 +226,6 @@ export default {
 
 .container {
   padding: 0px;
-  &.affix {
-    top: 0;
-    z-index: @header-z;
-    + .header-component {
-      padding-top: 33px;
-    }
-  }
 
   .editor-controls {
     background-color: @black;
@@ -315,8 +264,13 @@ export default {
       flex-direction: row;
       display: flex;
       align-items: center;
+      justify-content: space-between;
       position: relative;
       padding: 5px 7px;
+      .type-label {
+        font-size: 1.6em;
+        font-weight: bold;
+      }
       .admin-node {
         flex-grow: 5;
         text-align: center;
@@ -386,7 +340,6 @@ export default {
             font-weight: bold;
           }
         }
-        background-color: rgba(255, 255, 255, 0.15);
         cursor: auto;
         font-size: 0.8em;
         padding: 5px 0px;

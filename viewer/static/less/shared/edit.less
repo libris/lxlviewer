@@ -3,9 +3,6 @@
 #appContainer {
   margin-top: 30px;
   margin-bottom: 200px;
-  border: solid #ccc;
-  border-width: 1px 1px 3px 1px;
-  background-color: fadeout(@neutral-color,25%);
   display: flex;
   justify-content: center;
 
@@ -16,6 +13,9 @@
     min-height: 50vh;
     vertical-align: middle;
     text-align: center;
+    outline: solid #ccc;
+    outline-width: 1px;
+    background-color: #fff;
     .status {
       display: block;
       font-size: 0.7em;
@@ -36,10 +36,6 @@
   width: 100%;
   display: none;
   font-size: 14px;
-  #main-header {
-    border: solid #efefef;
-    border-width: 0px 0px 3px 0px;
-  }
 
   .linked-items {
     >li {

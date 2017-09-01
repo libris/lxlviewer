@@ -7,6 +7,8 @@ import * as RecordUtil from '../utils/record';
 export default {
   name: 'create-item-button',
   props: {
+    hasHolding: false,
+    checkingHolding: true,
   },
   data() {
     return {
@@ -47,15 +49,33 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div class="create-item-button-container">
     <form method="POST" action="/edit">
       <textarea id="copyItem" name="data" class="hidden">{{itemData | json}}</textarea>
-      <button type="submit"><i class="fa fa-plus"></i> {{"Item" | translatePhrase}}</button>
+      <button :disabled="hasHolding || checkingHolding" type="submit" :class="{'green': hasHolding}">
+        <i v-if="!hasHolding && !checkingHolding" class="fa fa-plus"></i>
+        <i v-if="hasHolding && !checkingHolding" class="fa fa-check"></i> 
+        <i v-if="checkingHolding" class="fa fa-fw fa-circle-o-notch fa-spin"></i>
+        {{"Item" | translatePhrase}}
+        <span v-if="hasHolding">({{settings.userSettings.currentSigel}})</span>
+      </button>
     </form>
   </div>
 </template>
 
 <style lang="less">
 @import './_variables.less';
+.create-item-button-container{
+  button {
+    height: 2.2em;
+    border-radius: 3px;
+    font-weight: normal;
+    color: @white;
+    background: @gray;
+    &.green {
+      background: #4cba2a;
+    }
+  }
 
+}
 </style>

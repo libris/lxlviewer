@@ -20,6 +20,7 @@ import HelpComponent from '../components/help-component';
 import EditorControls from '../components/editorcontrols';
 import HeaderComponent from '../components/headercomponent';
 import Notification from '../components/notification';
+import RecordSummary from '../components/record-summary';
 import { getSettings, getVocabulary, getVocabularyClasses, getVocabularyProperties, getDisplayDefinitions, getEditorData, getStatus, getKeybindState } from '../vuex/getters';
 import { changeSettings, changeNotification, loadVocab, loadVocabMap, loadForcedListTerms, loadDisplayDefs, syncData, changeSavedStatus, changeStatus } from '../vuex/actions';
 
@@ -189,6 +190,11 @@ export default class Editor extends View {
           }
         },
       },
+      computed: {
+        isItem() {
+          return this.editorData.mainEntity['@type'] === 'Item';
+        },
+      },
       methods: {
         initiateWarnBeforeUnload() {
           window.addEventListener("beforeunload", function (e) {
@@ -308,6 +314,7 @@ export default class Editor extends View {
         'header-component': HeaderComponent,
         'help-component': HelpComponent,
         'notification': Notification,
+        'record-summary': RecordSummary,
       },
       store,
     });
