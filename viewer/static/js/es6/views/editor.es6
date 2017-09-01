@@ -52,15 +52,15 @@ export default class Editor extends View {
       // $('#loadingText .status').text('Hämtar visningsdefinitioner');
       DisplayUtil.getDisplayDefinitions().then((display) => {
         self.display = display;
-        self.initVue();
+        VocabUtil.getForcedListTerms().then((result) => {
+          self.forcedListTerms = result;
+          self.initVue();
+        }, (error) => {
+          showError(error);
+        });
       }, (error) => {
         showError(error);
       });
-    }, (error) => {
-      showError(error);
-    });
-    VocabUtil.getForcedListTerms().then((result) => {
-      self.forcedListTerms = result;
     }, (error) => {
       showError(error);
     });

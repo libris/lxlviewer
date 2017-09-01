@@ -14,7 +14,7 @@ export function getVocab() {
 export function getForcedListTerms() {
   return new Promise((resolve, reject) => {
     httpUtil.getResourceFromCache('/sys/forcedsetterms.json').then((result) => {
-      resolve(JSON.parse(result));
+      resolve(result);
     }, (error) => {
       reject(error);
     });
