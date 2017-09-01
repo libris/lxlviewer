@@ -43,11 +43,11 @@ export default {
 
 <template>
   <div class="creation-container">
-    <div :class="{'active': isActive}">
+    <div class="creation-card-container" :class="{'active': isActive}">
       <div v-if="isBase" class="creation-card" @click="setIndex()">
         <div>{{'Baspost'}}</div>
         <div class="description">Innehåller de vanligaste fälten för vald typ.</div>
-        <select @change="useBase()">
+        <select class="creation-dropdown" @change="useBase()">
           <option selected disabled>{{'Choose type' | translatePhrase}}</option>
           <option v-for="material in materialList" value="{{material}}">{{material | labelByLang}}</option>
         </select>
@@ -68,7 +68,8 @@ export default {
   flex: 1 1 33%;
   padding: 1em;
   max-width: 33.34%;
-  > div {
+  > .creation-card-container {
+    height: 100%;
     .creation-card {
       > div {
         font-size: 1.3em;
@@ -76,14 +77,18 @@ export default {
       .description {
         font-size: 0.9em;
         margin-bottom: 0.1em;
+        flex-grow: 1;
       }
+      height: 100%;
       border: 1px solid @gray-lighter;
       padding: 0.5em;
       display: flex;
       flex-direction: column;
-      justify-content: center;
-      align-content: center;
+      justify-content: space-between;
       cursor: pointer;
+      .creation-dropdown {
+        height: 2.4em;
+      }
       > button, select {
         color: @black;
         border:none;

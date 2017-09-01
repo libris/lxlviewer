@@ -129,7 +129,7 @@ export default {
           border-width: 0px 0px 1px 0px;
         }
         p {
-          margin: 1.5em 0px 2.5em;
+          margin: 0.5em 0px 1.5em;
         }
       }
       .menu {
