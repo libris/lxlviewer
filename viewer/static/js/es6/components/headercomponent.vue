@@ -48,6 +48,12 @@ export default {
       }
       return 'Unknown';
     },
+    isNew() {
+      if (this.editorData.record['@id'] === '_:TEMP_ID') {
+        return true;
+      }
+      return false;
+    },
     focusData() {
       return this.editorData[this.status.level];
     },
@@ -82,7 +88,7 @@ export default {
     <div class="header-component" v-bind:class="{ 'compact': !full, 'full': full }">
       <entity-summary :focus-data="focusData" :add-link="false" :lines="full ? 6 : 3"></entity-summary>
     </div>
-    <div class="create-item-container" v-if="isSubClassOf('Instance')">
+    <div class="create-item-container" v-if="!isNew && isSubClassOf('Instance')">
       <div>
         <span v-if="!hasHolding && !checkingHolding">{{'Missing holding for sigel' | translatePhrase}}</span>
         <span v-if="hasHolding && !checkingHolding">{{'Has holding for sigel' | translatePhrase}}</span>
