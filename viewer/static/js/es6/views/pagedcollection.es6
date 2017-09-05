@@ -122,6 +122,9 @@ export default class PagedCollection extends View {
           }
           return false;
         },
+        isLibris() {
+          return this.settings.siteInfo.title === 'libris.kb.se';
+        },
       },
       beforeCompile() {
         this.changeResultListStatus('loading', true);

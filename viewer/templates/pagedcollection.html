@@ -14,7 +14,7 @@
       <facet-controls v-if="initialized == true" :result="result"></facet-controls>
     </div>
     <div class="col-md-9">
-      <div class="search-type-button-container">
+      <div class="search-type-button-container" v-if="isLibris">
         <div class="search-type-button active"><i class="fa fa-leaf"></i> Libris</div>
         <a href="/import"><div class="search-type-button"><i class="fa fa-download"></i> Metaproxy</div></a>
       </div>
