@@ -1,12 +1,14 @@
 <script>
 import ResultItemCompact from './result-item-compact';
 import ResultItemDetailed from './result-item-detailed';
+import * as RecordUtil from '../utils/record';
 
 export default {
   name: 'result-list',
   props: {
     results: [],
     compact: false,
+    importData: [],
   },
   data() {
     return {
@@ -14,7 +16,11 @@ export default {
     }
   },
   methods: {
-
+    getImportItem(index) {
+      const node = this.importData[index].data;
+      const importItem = RecordUtil.getImportObject(node['@graph']);
+      return importItem;
+    },
   },
   computed: {
   },
@@ -32,10 +38,10 @@ export default {
 <template>
   <div class="result">
     <ul class="result-list" v-if="!compact && results.length > 0">
-      <result-item-detailed :focus-data="item" v-for="item in results" track-by="$index"></result-item-detailed>
+      <result-item-detailed :focus-data="item" :import-item="getImportItem($index)" v-for="item in results" track-by="$index"></result-item-detailed>
     </ul>
     <ul class="result-list" v-if="compact && results.length > 0">
-      <result-item-compact :focus-data="item" v-for="item in results" track-by="$index"></result-item-compact>
+      <result-item-compact :focus-data="item" :import-item="getImportItem($index)"  v-for="item in results" track-by="$index"></result-item-compact>
     </ul>
   </div>
 </template>

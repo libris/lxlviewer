@@ -17,6 +17,7 @@ export default {
   props: {
     result: {},
     formDataSupported: false,
+    importData: [],
   },
   data() {
     return {
@@ -59,7 +60,7 @@ export default {
       <span v-if="status.resultList.error" class="error">{{status.resultList.info}}</span>
     </div>
     <search-pagination v-if="!status.resultList.loading && !status.resultList.error" :page-data="paginationData" :show-details="true"></search-pagination>
-    <result-list v-if="!status.resultList.loading && !status.resultList.error" :results="result.items" :compact="settings.userSettings.resultListType === 'compact'"></result-list>
+    <result-list v-if="!status.resultList.loading && !status.resultList.error" :results="result.items" :import-data="importData" :compact="settings.userSettings.resultListType === 'compact'"></result-list>
     <search-pagination v-if="!status.resultList.loading && !status.resultList.error" :page-data="paginationData" :show-details="false"></search-pagination>
   </div>
 </template>

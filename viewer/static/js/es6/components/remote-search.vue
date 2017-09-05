@@ -1,8 +1,11 @@
 <script>
 import * as _ from 'lodash';
 import * as httpUtil from '../utils/http';
+import * as RecordUtil from '../utils/record';
 import ResultItem from './resultitem';
 import ResultList from './result-list';
+import SearchResultComponent from './search-result-component';
+import { getSettings, getStatus } from '../vuex/getters';
 
 export default {
   name: 'remote-search',
@@ -10,18 +13,37 @@ export default {
     db: [],
     q: '',
   },
+  vuex: {
+    actions: {
+    },
+    getters: {
+      settings: getSettings,
+      status: getStatus,
+    },
+  },
   data() {
     return {
       databases: { state: '', list: [] },
       remoteQuery: '',
       remoteResult: { state: '', totalResults: {}, items: [] },
-      convertedItems: [],
+      convertedItems: {},
+      importData: [],
       showList: true,
+      importJson: '',
     };
   },
   components: {
     'result-item': ResultItem,
     'result-list': ResultList,
+    'search-result-component': SearchResultComponent,
+  },
+  events: {
+    'set-import'(data){
+      this.importJson = data;
+      this.$nextTick(() => {
+        document.getElementById("importForm").submit();
+      });
+    },
   },
   methods: {
     isPlainObject(o) {
@@ -68,7 +90,8 @@ export default {
       this.remoteSearch(q, databases)
       .then((response) => {
         vself.remoteResult = response;
-        vself.convertedItems = this.convertResult(response.items);
+        vself.convertedItems = this.convertResult(response);
+        vself.importData = response.items;
         vself.remoteResult.state = 'complete';
       }, () => {
         vself.remoteResult.state = 'error';
@@ -85,23 +108,19 @@ export default {
         });
       });
     },
-    convertResult(items) {
-      const convertedList = [];
-      _.each(items, (item) => {
-        const convertedItem = this.getMainEntity(item.data['@graph']);
-        convertedList.push(convertedItem);
+    convertResult(result) {
+      let totalResults = 0;
+      for (const db in result.totalResults) {
+        if (result.totalResults.hasOwnProperty(db)) {
+           totalResults += result.totalResults[db];
+        }
+      }
+      const convertedList = { totalItems: totalResults, items: []};
+      _.each(result.items, (item) => {
+        const convertedItem = RecordUtil.getMainEntity(item.data['@graph']);
+        convertedList.items.push(convertedItem);
       })
       return convertedList;
-    },
-    getMainEntity(graph) {
-      const mainEntityId = graph[0].mainEntity['@id'];
-      let mainEntity = {};
-      _.each(graph, (node) => {
-        if (node['@id'] === mainEntityId) {
-          mainEntity = node;
-        }
-      });
-      return mainEntity;
     },
     toggleDatabase(index) {
       if (this.databases.list[index]) {
@@ -130,6 +149,9 @@ export default {
 
 <template>
 <div class="remote-search">
+  <form id="importForm" method="POST" action="/edit">
+    <textarea name="data" class="hidden">{{importJson}}</textarea>
+  </form>
   <div class="panel panel-default remote-search-controls" v-show="databases.state == 'complete'">
     <form v-on:submit.prevent="searchRemote()">
       <label for="search">SÖK (METAPROXY)</label>
@@ -171,11 +193,7 @@ export default {
   <p v-if="remoteResult.state === 'loading'">
     <i class="fa fa-circle-o-notch fa-spin"></i> Söker...
   </p>
-  <div class="panel panel-default result-status" v-if="remoteResult.state == 'complete'">
-    <label for="results">RESULTAT</label>
-    <p v-for="(db, results) in remoteResult.totalResults">{{ results }} resultat från {{ db }}</p>
-  </div>
-  <result-list :results="convertedItems"></result-list>
+  <search-result-component :result="convertedItems" :import-data="importData" v-if="convertedItems.totalItems > -1 || status.resultList.loading"></search-result-component>
 </div>
 </template>
 
