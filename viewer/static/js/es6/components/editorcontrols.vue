@@ -157,8 +157,8 @@ export default {
               <a :href="`${focusData['@id']}/data.rdf`">RDF/XML</a>
             </div>
           </div>
+          <marc-preview v-show="status.inEdit"></marc-preview>
         </div>
-        <marc-preview v-show="status.inEdit"></marc-preview>
         <div class="type-label">
           {{editorData.mainEntity['@type'] | labelByLang}}
         </div>
@@ -297,6 +297,7 @@ export default {
         }
       }
       .actions {
+        display: flex;
         .action {
           display: inline-block;
           cursor: pointer;

@@ -3,6 +3,7 @@ import * as _ from 'lodash';
 import * as DisplayUtil from '../utils/display';
 import * as VocabUtil from '../utils/vocab';
 import * as DataUtil from '../utils/data';
+import * as HttpUtil from '../utils/http';
 import EntitySummary from './entity-summary';
 import CreateItemButton from '../components/create-item-button';
 import LensMixin from './mixins/lens-mixin';
@@ -27,6 +28,7 @@ export default {
     return {
       hasHolding: false,
       checkingHolding: false,
+      holdingId: '',
     };
   },
   methods: {
@@ -49,8 +51,24 @@ export default {
     focusData() {
       return this.editorData[this.status.level];
     },
+    libraryUrl() {
+      return `https://libris.kb.se/library/${this.settings.userSettings.currentSigel}`;
+    }
   },
   ready() { // Ready method is deprecated in 2.0, switch to "mounted"
+    this.checkingHolding = true;
+    const holdingCheckUrl = `/_findhold?library=${this.libraryUrl}&id=${this.editorData.record['@id']}`
+    HttpUtil.get({ url: holdingCheckUrl, accept: 'application/ld+json' }).then((response) => {
+      this.checkingHolding = false;
+      if (response.length > 0) {
+        this.hasHolding = true;
+        this.holdingId = response;
+      } else {
+        this.hasHolding = false;
+      }
+    }, (error) => {
+      console.log('Error checking for holding');
+    });
   },
   components: {
     'entity-summary': EntitySummary,
@@ -64,13 +82,13 @@ export default {
     <div class="header-component" v-bind:class="{ 'compact': !full, 'full': full }">
       <entity-summary :focus-data="focusData" :add-link="false" :lines="full ? 6 : 3"></entity-summary>
     </div>
-    <div class="create-item-container">
+    <div class="create-item-container" v-if="isSubClassOf('Instance')">
       <div>
         <span v-if="!hasHolding && !checkingHolding">{{'Missing holding for sigel' | translatePhrase}}</span>
         <span v-if="hasHolding && !checkingHolding">{{'Has holding for sigel' | translatePhrase}}</span>
         <span v-if="!checkingHolding"> {{settings.userSettings.currentSigel}}</span>
       </div>
-      <create-item-button v-show="!status.inEdit && isSubClassOf('Instance')" :has-holding="hasHolding" :checking-holding="checkingHolding"></create-item-button>
+      <create-item-button :disabled="status.inEdit" :has-holding="hasHolding" :checking-holding="checkingHolding" :holding-id="holdingId"></create-item-button>
     </div>
   </div>
 </template>

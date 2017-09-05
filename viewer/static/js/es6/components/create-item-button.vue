@@ -9,6 +9,8 @@ export default {
   props: {
     hasHolding: false,
     checkingHolding: true,
+    holdingId: '',
+    disabled: false,
   },
   data() {
     return {
@@ -35,6 +37,9 @@ export default {
         embellishedReference
       );
     },
+    fetchHolding() {
+      window.location = this.holdingId;
+    }
   },
   computed: {
   },
@@ -52,12 +57,15 @@ export default {
   <div class="create-item-button-container">
     <form method="POST" action="/edit">
       <textarea id="copyItem" name="data" class="hidden">{{itemData | json}}</textarea>
-      <button :disabled="hasHolding || checkingHolding" type="submit" :class="{'green': hasHolding}">
+      <button v-if="!hasHolding || checkingHolding" type="submit" :disabled="disabled">
         <i v-if="!hasHolding && !checkingHolding" class="fa fa-plus"></i>
-        <i v-if="hasHolding && !checkingHolding" class="fa fa-check"></i> 
         <i v-if="checkingHolding" class="fa fa-fw fa-circle-o-notch fa-spin"></i>
         {{"Item" | translatePhrase}}
-        <span v-if="hasHolding">({{settings.userSettings.currentSigel}})</span>
+      </button>
+      <button v-if="hasHolding" :class="{'green': hasHolding}" :disabled="disabled" @click.prevent="fetchHolding()">
+        <i v-if="hasHolding && !checkingHolding" class="fa fa-check"></i> 
+        {{"Item" | translatePhrase}}
+        <span>({{settings.userSettings.currentSigel}})</span>
       </button>
     </form>
   </div>
