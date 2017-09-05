@@ -116,6 +116,12 @@ export default {
       const editorContainer = document.getElementById('editor-container');
       return editorContainer.offsetTop;
     },
+    isNew() {
+      if (this.editorData.record['@id'] === '_:TEMP_ID') {
+        return true;
+      }
+      return false;
+    },
     focusData() {
       return this.editorData.record;
     },
@@ -164,7 +170,7 @@ export default {
         </div>
         <div>
           <button class="removeButton" v-show="!status.inEdit" @click="removePost"><i class="fa fa-trash" aria-hidden="true"></i> {{"Remove" | translatePhrase}} post</button>
-          <button v-show="status.inEdit" @click="cancelEdit">
+          <button v-if="!isNew" v-show="status.inEdit" @click="cancelEdit">
             <i class="fa fa-times" aria-hidden="true" v-show="!loadingCancel"></i>
             <i class="fa fa-fw fa-circle-o-notch fa-spin" aria-hidden="true" v-show="loadingCancel"></i>
             {{"Cancel" | translatePhrase}}

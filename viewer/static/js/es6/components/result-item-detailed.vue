@@ -1,13 +1,15 @@
 <script>
 import LensMixin from './mixins/lens-mixin';
+import ResultMixin from './mixins/result-mixin';
 import EntitySummary from './entity-summary';
 import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData } from '../vuex/getters';
 
 export default {
   name: 'result-item-detailed',
-  mixins: [LensMixin],
+  mixins: [LensMixin, ResultMixin],
   props: {
     focusData: {},
+    importItem: {},
   },
   vuex: {
     getters: {
@@ -38,7 +40,7 @@ export default {
 
 <template>
   <div class="result-item-detailed">
-    <entity-summary :focus-data="focusData" :add-link="true" :lines="4"></entity-summary>
+    <entity-summary :focus-data="focusData" :is-import="isImport" :import-item="importItem" :add-link="true" :lines="4"></entity-summary>
   </div>
 </template>
 

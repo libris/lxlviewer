@@ -1,14 +1,15 @@
 <script>
 import LensMixin from './mixins/lens-mixin';
+import ResultMixin from './mixins/result-mixin';
 import EntitySummary from './entity-summary';
 import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData } from '../vuex/getters';
 
 export default {
   name: 'result-item-compact',
-  mixins: [LensMixin],
+  mixins: [LensMixin, ResultMixin],
   props: {
     focusData: {},
-    compact: false,
+    importItem: {},
   },
   vuex: {
     getters: {
@@ -45,7 +46,8 @@ export default {
 
 <template>
   <div class="result-item-compact">
-    <a class="header" :class="{'blue-link': settings.siteInfo.title === 'id.kb.se'}" title="{{ header.join(', ') }}" :href="focusData['@id']">{{ header.join(', ') }}</a>
+    <span class="import-header header" title="{{ header.join(', ') }}" v-on:click="importThis()" v-if="isImport">{{ header.join(', ') }}</span>
+    <a v-if="!isImport" class="header" :class="{'blue-link': settings.siteInfo.title === 'id.kb.se'}" title="{{ header.join(', ') }}" :href="focusData['@id']">{{ header.join(', ') }}</a>
     <span class="categorization">
       {{categorization.join(', ')}}
     </span>

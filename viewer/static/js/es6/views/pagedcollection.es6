@@ -18,7 +18,7 @@ import SearchForm from '../components/search-form';
 import DatasetObservations from '../components/dataset-observations';
 import LandingBox from '../components/landing-box';
 import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData, getKeybindState, getStatus } from '../vuex/getters';
-import { changeSettings, changeNotification, loadVocab, loadVocabMap, loadDisplayDefs, changeSavedStatus, changeResultListStatus } from '../vuex/actions';
+import { changeSettings, changeStatus, changeNotification, loadVocab, loadVocabMap, loadDisplayDefs, changeSavedStatus, changeResultListStatus } from '../vuex/actions';
 
 export default class PagedCollection extends View {
 
@@ -71,6 +71,7 @@ export default class PagedCollection extends View {
           loadVocabMap,
           loadDisplayDefs,
           changeSettings,
+          changeStatus,
           changeSavedStatus,
           changeNotification,
           changeResultListStatus,
