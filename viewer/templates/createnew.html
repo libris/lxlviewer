@@ -19,7 +19,7 @@
             <form action="/edit" method="POST" id="thingDataForm">
               <textarea id="copyItem" name="data" class="hidden">{{thingData | json}}</textarea>
               <span class="submitter">
-                <button :class="{'disabled': !hasChosen}" :disabled="!hasChosen">Gå vidare</button>
+                <button :class="{'disabled': !hasChosen}" :disabled="!hasChosen">Gå vidare <i class="fa fa-chevron-circle-right"></i></button>
               </span>
             </form>
           </div>
