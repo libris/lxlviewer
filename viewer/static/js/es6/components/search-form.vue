@@ -287,11 +287,8 @@ export default {
 
             <div class="type-buttons" aria-label="Välj typ">
                 <label v-for="filter in dataSetFilters" class="">
-                    <input :name="filterParam" :value="filter" type="radio" :checked="filter === 'Instance'">
+                    <input :name="filterParam" :value="filter" type="checkbox" :checked="filter === 'Instance'">
                     {{filter | labelByLang}}
-                </label>
-                <label class="no-choice">
-                    <input :name="filterParam" id="noneType" value="" :checked="siteTitle != 'libris.kb.se'" type="radio"> {{"All" | translatePhrase}}
                 </label>
             </div>
 
