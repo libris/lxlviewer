@@ -37,6 +37,21 @@ export default {
         .map(id => id.replace(this.settings.vocabPfx, ''));
       return baseClasses.indexOf(type) > -1;
     },
+    getHoldingInfo() {
+      this.checkingHolding = true;
+      const holdingCheckUrl = `/_findhold?library=${this.libraryUrl}&id=${this.editorData.record['@id']}`
+      HttpUtil.get({ url: holdingCheckUrl, accept: 'application/ld+json' }).then((response) => {
+        this.checkingHolding = false;
+        if (response.length > 0) {
+          this.hasHolding = true;
+          this.holdingId = response;
+        } else {
+          this.hasHolding = false;
+        }
+      }, (error) => {
+        console.log('Error checking for holding');
+      });
+    },
   },
   computed: {
     state() {
@@ -62,19 +77,9 @@ export default {
     }
   },
   ready() { // Ready method is deprecated in 2.0, switch to "mounted"
-    this.checkingHolding = true;
-    const holdingCheckUrl = `/_findhold?library=${this.libraryUrl}&id=${this.editorData.record['@id']}`
-    HttpUtil.get({ url: holdingCheckUrl, accept: 'application/ld+json' }).then((response) => {
-      this.checkingHolding = false;
-      if (response.length > 0) {
-        this.hasHolding = true;
-        this.holdingId = response;
-      } else {
-        this.hasHolding = false;
-      }
-    }, (error) => {
-      console.log('Error checking for holding');
-    });
+    if (this.isNew === false) {
+      this.getHoldingInfo();
+    }
   },
   components: {
     'entity-summary': EntitySummary,
