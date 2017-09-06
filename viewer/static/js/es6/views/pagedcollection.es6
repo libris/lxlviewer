@@ -116,12 +116,6 @@ export default class PagedCollection extends View {
         },
       },
       computed: {
-        formDataSupported() {
-          if (typeof(new FormData().entries) !== "undefined") {
-            return true;
-          }
-          return false;
-        },
         isLibris() {
           return this.settings.siteInfo.title === 'libris.kb.se';
         },
