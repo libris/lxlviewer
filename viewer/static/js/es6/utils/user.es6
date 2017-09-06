@@ -33,10 +33,10 @@ export function loadUserSettings() {
 }
 
 function verifySigel(sigelId, userInfo) {
-  if (!userInfo || !userInfo.authorizationList) {
+  if (!userInfo || !userInfo.authorization) {
     return false;
   }
-  for (const sigel of authorizationList) {
+  for (const sigel of userInfo.authorization) {
     if (sigel.sigel === sigelId) {
       return true;
     }
