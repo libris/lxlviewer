@@ -68,6 +68,7 @@ export default {
   bottom: -30%;
   left: 25%;
   width: 50%;
+  z-index: @notification-z;
   transition: all ease 0.5s;
   .notification {
     width: 100%;
