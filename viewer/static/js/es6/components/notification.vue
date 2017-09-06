@@ -18,7 +18,7 @@ export default {
         if (this.notification.active === true) {
           setTimeout(() => {
             this.changeNotification('active', false);
-          }, 6000);
+          }, 4000);
         }
       },
       deep: true,
