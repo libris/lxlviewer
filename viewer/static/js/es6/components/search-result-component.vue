@@ -16,11 +16,7 @@ export default {
   },
   props: {
     result: {},
-<<<<<<< HEAD
-=======
-    formDataSupported: false,
     importData: [],
->>>>>>> cf0b48d88d938bd7f2fc0a913ff3b3612164bcbf
   },
   data() {
     return {
