@@ -17,9 +17,12 @@ export default {
   },
   methods: {
     getImportItem(index) {
-      const node = this.importData[index].data;
-      const importItem = RecordUtil.getImportObject(node['@graph']);
-      return importItem;
+      if (typeof this.importData !== 'undefined') {
+        const node = this.importData[index].data;
+        const importItem = RecordUtil.getImportObject(node['@graph']);
+        return importItem;
+      }
+      return {};
     },
   },
   computed: {
