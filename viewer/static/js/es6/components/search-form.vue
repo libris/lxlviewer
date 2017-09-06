@@ -2,15 +2,17 @@
 import * as _ from 'lodash';
 import PropertyMappings from '../propertymappings.json';
 import * as httpUtil from '../utils/http';
-import { changeResultListStatus } from '../vuex/actions';
-import { getSettings } from '../vuex/getters';
+import { changeResultListStatus, changeStatus } from '../vuex/actions';
+import { getSettings, getStatus } from '../vuex/getters';
 export default {
   name: 'search-form',
   vuex: {
     getters: {
       settings: getSettings,
+      status: getStatus,
     },
     actions: {
+      changeStatus,
       changeResultListStatus,
     },
   },
@@ -37,7 +39,7 @@ export default {
     }
   },
   methods: {
-      addSearchField(){
+      addSearchField() {
           const newobj = {};
           newobj.value='';
           newobj.class='searchphrase';
@@ -182,6 +184,7 @@ export default {
 </script>
 
 <template>
+  <div>
     <div class="panel panel-default search-controls">
         <form action="/find" method="GET" id="searchForm">
             <div class="form-inline">
@@ -218,6 +221,7 @@ export default {
             </div>
         </form>
     </div>
+  </div>
 </template>
 
 <style>

@@ -16,6 +16,11 @@ export default {
   },
   props: {
     result: {},
+<<<<<<< HEAD
+=======
+    formDataSupported: false,
+    importData: [],
+>>>>>>> cf0b48d88d938bd7f2fc0a913ff3b3612164bcbf
   },
   data() {
     return {
@@ -58,7 +63,7 @@ export default {
       <span v-if="status.resultList.error" class="error">{{status.resultList.info}}</span>
     </div>
     <search-pagination v-if="!status.resultList.loading && !status.resultList.error" :page-data="paginationData" :show-details="true"></search-pagination>
-    <result-list v-if="!status.resultList.loading && !status.resultList.error" :results="result.items" :compact="settings.userSettings.resultListType === 'compact'"></result-list>
+    <result-list v-if="!status.resultList.loading && !status.resultList.error" :results="result.items" :import-data="importData" :compact="settings.userSettings.resultListType === 'compact'"></result-list>
     <search-pagination v-if="!status.resultList.loading && !status.resultList.error" :page-data="paginationData" :show-details="false"></search-pagination>
   </div>
 </template>
@@ -74,7 +79,6 @@ export default {
     box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.1);
     // margin: 120px 0;
     padding: 20px 0px;
-    width: 100%;
     min-height: 50vh;
     vertical-align: middle;
     text-align: center;

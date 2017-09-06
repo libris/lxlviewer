@@ -48,13 +48,25 @@ export default {
         return filters;
     },
     queryText() {
-      return StringUtil.getParamValueFromUrl(this.pageData.first['@id'], 'q');
+      if (this.pageData.first) {
+        return StringUtil.getParamValueFromUrl(this.pageData.first['@id'], 'q');
+      }
+      console.warn('Search details is missing Q parameter');
+      return '';
     },
     limit() {
-      return StringUtil.getParamValueFromUrl(this.pageData.first['@id'], '_limit');
+      if (this.pageData.first) {
+        return StringUtil.getParamValueFromUrl(this.pageData.first['@id'], '_limit');
+      }
+      console.warn('Search details is missing limit parameter');
+      return '';
     },
     pageList() {
       const list = [];
+      if (!this.pageData || !this.pageData.first) {
+        console.warn('Search failed in getting pagination data');
+        return list;
+      }
       const first = this.pageData.first['@id'];
       const limit = StringUtil.getParamValueFromUrl(first, '_limit');
       const offset = this.pageData.itemOffset;

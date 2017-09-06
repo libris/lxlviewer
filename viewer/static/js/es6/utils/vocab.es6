@@ -225,10 +225,14 @@ export function getProperties(className, vocab, vocabPfx, vocabProperties) {
     }
   });
 
-  // HARDCODED INCLUDE OF LABEL PROPERTY
+  // HARDCODED INCLUDE OF GENERAL PROPERTIES
   // TODO: Remove when label has a domain
   const labelProperty = getTermObject('label', vocab, vocabPfx);
   props.push(labelProperty);
+  const noteProperty = getTermObject('note', vocab, vocabPfx);
+  props.push(noteProperty);
+  const valueProperty = getTermObject('value', vocab, vocabPfx);
+  props.push(valueProperty);
   // end HARDCODED
 
   return props;

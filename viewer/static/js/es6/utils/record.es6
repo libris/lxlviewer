@@ -77,6 +77,50 @@ export function stripId(obj) {
   return newObj;
 }
 
+export function replaceIdWithTemp(obj) {
+  const replaceableId = graph[0]['@id'];
+  for (const node in obj) {
+      if (data.hasOwnProperty(k)) {
+         user[k] = data[k];
+      }
+  }
+  return itemObj;
+}
+
+export function getMainEntity(graph) {
+  const mainEntityId = graph[0].mainEntity['@id'];
+  let mainEntity = {};
+  _.each(graph, (node) => {
+    if (node['@id'] === mainEntityId) {
+      mainEntity = node;
+    }
+  });
+  return mainEntity;
+};
+
+export function getImportObject(graph) {
+  // Replaces the @id with temporary ones.
+
+  const itemGraph = [];
+  const newRecord = _.cloneDeep(graph[0]);
+  const newMainEntity = _.cloneDeep(getMainEntity(graph));
+
+  const recordId = newRecord['@id'];
+  const mainEntityId = newMainEntity['@id'];
+
+  newRecord['@id'] = newRecord['@id'].replace(recordId, '_:TEMP_ID');
+  newRecord.mainEntity['@id'] = newRecord.mainEntity['@id'].replace(mainEntityId, '_:TEMP_ID#it');
+
+  newMainEntity['@id'] = newMainEntity['@id'].replace(mainEntityId, '_:TEMP_ID#it');
+
+  itemGraph.push(newRecord);
+  itemGraph.push(newMainEntity);
+
+  const itemObj = { '@graph': itemGraph };
+
+  return itemObj;
+}
+
 export function getItemObject(itemOf, heldBy, instance) {
   const itemObj = {
     '@graph': [

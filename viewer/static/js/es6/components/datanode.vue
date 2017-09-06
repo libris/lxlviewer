@@ -468,6 +468,7 @@ export default {
         border: 1px solid @gray-light;
         white-space: normal;
         padding: 0.5em;
+        text-align: left;
       }
       &:hover {
         .comment {

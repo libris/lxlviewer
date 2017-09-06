@@ -13,6 +13,8 @@ export default {
     actions: false,
     isLocal: false,
     isExtractable: false,
+    importItem: '',
+    isImport: false,
   },
   vuex: {
     getters: {
@@ -57,6 +59,9 @@ export default {
     },
   },
   methods: {
+    importThis() {
+      this.$dispatch('import-this');
+    },
     removeEntity() {
       this.$dispatch('remove-entity');
     },
@@ -83,8 +88,9 @@ export default {
   </div>
   <div class="main-info">
     <h3 class="header">
-      <a v-if="renderLink" :class="{'blue-link': settings.siteInfo.title === 'id.kb.se'}" title="{{ header.join(', ') }}" :href="focusData['@id']">{{ header.join(', ') }}</a>
-      <span v-if="!renderLink" title="{{ header.join(', ') }}">{{ header.join(', ') }}</span>
+      <span class="import-header" title="{{ header.join(', ') }}" v-on:click="importThis()" v-if="isImport">{{ header.join(', ') }}</span>
+      <a v-if="!isImport && renderLink" :class="{'blue-link': settings.siteInfo.title === 'id.kb.se'}" title="{{ header.join(', ') }}" :href="focusData['@id']">{{ header.join(', ') }}</a>
+      <span v-if="!isImport && !renderLink" title="{{ header.join(', ') }}">{{ header.join(', ') }}</span>
     </h3>
     <ul class="info">
       <li v-for="v in info" track-by="$index">{{ v }}</li>

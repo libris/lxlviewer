@@ -70,7 +70,7 @@ export default class CreateNew extends View {
         materialList: [],
         creationList: ['Instance', 'Work', 'Agent', 'Concept'],
         vocabPfx: self.settings.vocabPfx,
-        chosenType: 'Instance',
+        chosenType: '',
         initialized: false,
         selectedCreation: 'Instance',
         thingData: {},
@@ -151,7 +151,7 @@ export default class CreateNew extends View {
           return CombinedTemplates[this.selectedCreation.toLowerCase()];
         },
         hasChosen() {
-          return this.activeIndex > -1;
+          return this.activeIndex > 0 || (this.activeIndex === 0 && this.chosenType);
         },
       },
       components: {
