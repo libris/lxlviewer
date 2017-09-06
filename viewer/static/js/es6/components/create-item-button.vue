@@ -79,7 +79,7 @@ export default {
     border-radius: 3px;
     font-weight: normal;
     color: @white;
-    background: @gray;
+    background: @holding-color;
     &.green {
       background: #4cba2a;
     }
