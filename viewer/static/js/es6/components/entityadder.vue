@@ -63,8 +63,6 @@ export default {
     },
     'add-entity'(item) {
       this.$dispatch('add-item', item);
-      // this.changeNotification('color', 'green');
-      // this.changeNotification('message', `Lade till "${this.getLabel(item)}"`);
       this.closeSearch();
     },
   },

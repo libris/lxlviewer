@@ -184,8 +184,6 @@ export default {
         const fieldName = prop.item['@id'].split(':')[1];
         this.$dispatch('add-field', prop.item, this.path);
         const translatedProp = StringUtil.labelByLang(propLastPart, this.settings.language, this.vocab, this.settings.vocabPfx);
-        // this.changeNotification('color', 'green');
-        // this.changeNotification('message', `Fältet "${translatedProp}" lades till.`);
         if (close) {
           this.hide();
           this.changeStatus('lastAdded', propLastPart);

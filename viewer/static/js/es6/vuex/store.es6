@@ -18,6 +18,7 @@ const state = {
   notification: {
     message: '',
     color: 'grey',
+    active: false,
   },
   status: {
     showHelp: false,
@@ -85,6 +86,9 @@ const mutations = {
     state.status[property] = data;
   },
   CHANGENOTIFICATION (state, property, data) {
+    if (property === 'message') {
+      state.notification.active = true;
+    }
     state.notification[property] = data;
   },
 };
