@@ -16,9 +16,10 @@ export default {
     notification: {
       handler() {
         if (this.notification.active === true) {
+          const TTL = this.notification.message.length * 100;
           setTimeout(() => {
             this.changeNotification('active', false);
-          }, 4000);
+          }, TTL);
         }
       },
       deep: true,
