@@ -121,6 +121,12 @@ export default {
         });
         this.$dispatch('newresult', resultPromise);
       },
+      clearInputs() {
+        this.inputData.currentInput = 0;
+        this.inputData.textInput.splice(1, this.inputData.textInput.length);
+        this.inputData.textInput[0].value = '';
+        this.inputData.textInput[0].class = 'searchphrase';
+      }
   },
   computed: {
       observations() {
@@ -167,6 +173,15 @@ export default {
       currentComputedInput() {
         return this.inputData.currentInput;
       },
+      hasInput() {
+        let hasInput = false;
+        _.each(this.inputData.textInput, inputField => {
+            if (inputField.value !== '') {
+                hasInput = true;
+            }
+        });
+        return hasInput;
+      }
   },
   components: {
   },
@@ -193,20 +208,23 @@ export default {
                         {{"Search" | translatePhrase}}
                     </label>
                     <div id="searchFieldContainer">
-                        <div aria-labelledby="searchlabel" class="form-control search-input" id="searchQsmart">
-                            <input
-                                list="matchingParameters"
-                                v-for="input in inputData.textInput"
-                                @focus="handleFocus($index)"
-                                @input="updateField"
-                                @keydown="handleInput"
-                                v-model="input.value"
-                                class="smartInput"
-                                :class="input.class"
-                            >
-                            <datalist id="matchingParameters">
-                                <option v-for="matchingParameter in validSearchTags" :value="`${matchingParameter}:`">{{matchingParameter}}:</option>
-                            </datalist>
+                        <div class="form-control search-input">
+                            <div aria-labelledby="searchlabel" id="searchQsmart">
+                                <input
+                                    list="matchingParameters"
+                                    v-for="input in inputData.textInput"
+                                    @focus="handleFocus($index)"
+                                    @input="updateField"
+                                    @keydown="handleInput"
+                                    v-model="input.value"
+                                    class="smartInput"
+                                    :class="input.class"
+                                >
+                                <datalist id="matchingParameters">
+                                    <option v-for="matchingParameter in validSearchTags" :value="`${matchingParameter}:`">{{matchingParameter}}:</option>
+                                </datalist>
+                            </div>
+                            <span v-show="hasInput" class="field-clearer" @click="clearInputs()"><i class="fa fa-fw fa-close"></i></span>
                         </div>
                         <button id="searchSubmit" class="search-button btn btn-primary" @click.prevent="doSearch"><i class="fa fa-search"></i> {{"Search" | translatePhrase}}</button>
                     </div>
