@@ -18,12 +18,7 @@
         <div class="search-type-button active"><i class="fa fa-leaf"></i> Libris</div>
         <a href="/import"><div class="search-type-button"><i class="fa fa-download"></i> Metaproxy</div></a>
       </div>
-      <div v-if="(status.resultList.loading || status.resultList.error)" class="loadingText panel panel-default">
-        <h1 v-if="!status.resultList.error"><i class="fa fa-circle-o-notch fa-spin"></i></h1>
-        <span v-if="!status.resultList.error" class="status">Hämtar resultat</span>
-      </div>
       <search-form v-if="initialized == true" :result="result" site-title="${g.site.title}" filter-param="${g.site.filter_param}"></search-form>
-
       <search-result-component :result="result" v-if="(initialized == true && result.totalItems > -1) || status.resultList.loading"></search-result-component>
       <dataset-observations
       v-if="initialized == true && !result.totalItems && '${g.site.title}' === 'id.kb.se'"
