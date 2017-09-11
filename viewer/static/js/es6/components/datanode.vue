@@ -66,6 +66,9 @@ export default {
     'entity-adder': EntityAdder,
   },
   computed: {
+    valueIsArray() {
+      return _.isArray(this.value);
+    },
     hasRescriction() {
       const restr = VocabUtil.getEnumerationKeys(this.entityType, this.key, this.vocab, this.settings.vocabPfx);
       if (restr && restr.length > 0) {
@@ -166,10 +169,7 @@ export default {
   events: {
     'update-item'(index, value) {
       let modified = _.cloneDeep(this.value);
-      // if (typeof modified === 'string' || modified instanceof String) {
-      //   modified = [].concat(modified);
-      // }
-      if (typeof index !== 'undefined' && index !== '') {
+      if (_.isArray(modified)) {
         modified[index] = value;
       } else {
         modified = value;
@@ -337,7 +337,7 @@ export default {
         <div class="erroneous-object" v-if="getDatatype(item) == 'error'"><i class="fa fa-frown-o"></i> {{item | json}}</div>
         <item-enumeration v-if="getDatatype(item) == 'enumeration'" :is-locked="isLocked" :entity-type="entityType" :possible-values="possibleValues" :expanded="isExpandedType" :value="item" :key="key" :index="$index" :show-action-buttons="showActionButtons"></item-enumeration>
         <item-entity v-if="getDatatype(item) == 'entity'" :is-locked="isLocked" :expanded="isExpandedType" :item="item" :key="key" :index="$index"></item-entity>
-        <item-local v-if="getDatatype(item) == 'local'" :is-locked="isLocked" :is-expanded-type="isExpandedType" :item="item" :key="key" :index="$index" :parent-path="getPath" :show-action-buttons="showActionButtons"></item-local>
+        <item-local v-if="getDatatype(item) == 'local'" :is-locked="isLocked" :is-expanded-type="isExpandedType" :item="item" :key="key" :index="$index" :parent-path="getPath" :in-array="valueIsArray" :show-action-buttons="showActionButtons"></item-local>
         <item-embedded v-if="getDatatype(item) == 'embedded'" :is-locked="isLocked" :item="item" :key="key" :index="$index" :show-action-buttons="showActionButtons"></item-embedded>
         <item-value v-if="getDatatype(item) == 'value'" :is-removable="!hasSingleValue" :is-locked="isLocked" :value="item" :key="key" :index="$index" :show-action-buttons="showActionButtons"></item-value>
       </li>

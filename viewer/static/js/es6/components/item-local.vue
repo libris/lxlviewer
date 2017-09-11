@@ -29,6 +29,7 @@ export default {
     showActionButtons: false,
     isExpandedType: false,
     parentPath: '',
+    inArray: false,
   },
   vuex: {
     getters: {
@@ -84,7 +85,10 @@ export default {
       return false;
     },
     getPath() {
-      return `${this.parentPath}[${this.index}]`
+      if (this.inArray) {
+        return `${this.parentPath}[${this.index}]`;
+      }
+      return this.parentPath; 
     },
     filteredItem() {
       const fItem = Object.assign({}, this.item);
