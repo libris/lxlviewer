@@ -2,7 +2,7 @@
   "instance": {
     "rdabook": {
       "label": "RDA-bok (svensk)",
-      "description": "<Insert description>",
+      "description": "Vanligaste fälten för en bok med RDA-regler.",
       "value": {
         "record": {
           "marc:encLevel": {
@@ -30,26 +30,30 @@
           ],
           "identifiedBy": [
             {
-              "@type": "ISBN"
+              "@type": "ISBN",
+              "value": "",
+              "note": ""
             }
           ],
           "hasTitle": [
             {
               "@type": "Title",
-              "mainTitle": ":",
-              "titleRemainder": "/"
+              "mainTitle": "RDA-mall",
+              "subTitle": "bok",
+              "titleRemainder": ""
             }
           ],
+          "responsibilityStatement": "",
           "publication": [
             {
               "@type": "Publication",
               "place": {
                 "@type": "Place",
-                "label": ":"
+                "label": ""
               },
               "agent": {
                 "@type": "Agent",
-                "label": ","
+                "label": ""
               }
             }
           ],
@@ -62,9 +66,13 @@
           "extent": [
             {
               "@type": "Extent",
-              "label": ":"
+              "label": "(Antal) Sidor"
             }
           ],
+          "hasDimensions": {
+            "@type": "Dimensions",
+            "label": "18 centimeter"
+          },
           "mediaType": [
             {
               "@type": "MediaType",
@@ -82,8 +90,8 @@
           "hasSeries": [
             {
               "@type": "Serial",
-              "title": ",",
-              "issn": ";"
+              "title": "",
+              "issn": ""
             }
           ],
           "@type": "Instance",
