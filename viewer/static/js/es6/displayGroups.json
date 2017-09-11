@@ -19,6 +19,6 @@
     "birthYear",
     "deathYear"
   ],
-  "info": ["responsibilityStatement", "instanceOf", "contribution", "broader"],
+  "info": ["responsibilityStatement", "instanceOf", "contribution", "broader", "note"],
   "identifiers": ["identifiedBy", "sameAs"]
 }
