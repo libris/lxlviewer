@@ -61,6 +61,12 @@ export function splitJson(json) {
 export function extractFnurgel(uri) {
   // TODO: Make more checks before returning something
   const recordUri = uri.split('#')[0];
+
+  // If Marc entity, don't proceed
+  if (recordUri.indexOf('marc/') !== -1) {
+    return recordUri;
+  }
+
   const splitUri = recordUri.split('/');
   const fnurgel = splitUri[splitUri.length - 1];
   if (fnurgel.length === 15 || fnurgel.length === 16) {
