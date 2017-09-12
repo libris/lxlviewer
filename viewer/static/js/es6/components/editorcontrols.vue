@@ -107,11 +107,20 @@ export default {
       this.showDuplicateWindow = false;
       LayoutUtil.scrollLock(false);
     },
+    download(text) {
+      const element = document.createElement('a');
+      element.setAttribute('href', 'data:application/octet-stream,' + encodeURIComponent(text));
+      const splitIdParts = this.editorData.record['@id'].split('/');
+      const id = splitIdParts[splitIdParts.length-1];
+      element.setAttribute('download', id);
+      element.style.display = 'none';
+      document.body.appendChild(element);
+      element.click();
+      document.body.removeChild(element);
+    },
     getCompiledPost() {
-      const compiledPostUrl = `/_compilemarc?library=${this.libraryUrl}&id=${this.editorData.record['@id']}`
-      HttpUtil.get({ url: compiledPostUrl }).then((response) => {
-        this.changeNotification('color', 'green');
-        this.changeNotification('message', `${StringUtil.getUiPhraseByLang('Success', this.settings.language)}`);
+      HttpUtil.get({ url: this.compileMARCUrl }).then((response) => {
+        this.download(response);
       }, (error) => {
         this.changeNotification('color', 'red');
         this.changeNotification('message', `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${StringUtil.getUiPhraseByLang(error, this.settings.language)}`);
@@ -129,8 +138,18 @@ export default {
     };
   },
   computed: {
+    downloadIsSupported() {
+      const a = document.createElement('a');
+      return typeof a.download != 'undefined';
+    },
     libraryUrl() {
       return `https://libris.kb.se/library/${this.settings.userSettings.currentSigel}`;
+    },
+    compileMARCUrl() {
+      return `/_compilemarc?library=${this.libraryUrl}&id=${this.editorData.record['@id']}`;
+    },
+    hasSigel() {
+      return typeof this.settings.userSettings.currentSigel !== 'undefined';
     },
     headerThreshold() {
       const editorContainer = document.getElementById('editor-container');
@@ -184,10 +203,16 @@ export default {
             </div>
           </div>
           <marc-preview v-show="status.inEdit"></marc-preview>
-          <button v-show="!status.inEdit && isSubClassOf('Instance')" @click="getCompiledPost()">
+          <button v-if="!status.inEdit && isSubClassOf('Instance') && downloadIsSupported && hasSigel" @click="getCompiledPost()">
             <i class="fa fa-download" aria-hidden="true"></i>
             {{"Compiled" | translatePhrase}}
           </button>
+          <a :href="compileMARCUrl" v-if="!status.inEdit && isSubClassOf('Instance') & !downloadIsSupported && hasSigel">
+            <button>
+              <i class="fa fa-download" aria-hidden="true"></i>
+              {{"Compiled" | translatePhrase}}
+            </button>
+          </a>
         </div>
         <div class="type-label">
           {{editorData.mainEntity['@type'] | labelByLang}}
