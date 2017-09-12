@@ -73,7 +73,10 @@ export default {
       const restr = VocabUtil.getEnumerationKeys(this.entityType, this.key, this.vocab, this.settings.vocabPfx);
       if (restr && restr.length > 0) {
          VocabUtil.getEnumerations(this.entityType, this.key, this.vocab, this.settings.vocabPfx).then((result) => {
-           this.possibleValues = result;
+           for (const value of result) {
+             this.$dispatch('add-linked', value);
+             this.possibleValues.push(value);
+           }
          });
          return true;
       }
@@ -342,7 +345,7 @@ export default {
         <item-value v-if="getDatatype(item) == 'value'" :is-removable="!hasSingleValue" :is-locked="isLocked" :value="item" :key="key" :index="$index" :show-action-buttons="showActionButtons"></item-value>
       </li>
       <li :class="{ 'isChip': foundChip}">
-        <entity-adder class="action" v-if="!isLocked && (isRepeatable || isEmptyObject)" :key="key" :already-added="linkedIds" :property-types="propertyTypes" :allow-local="allowLocal && propAllowsLocal" :show-action-buttons="showActionButtons" :active="activeModal" :is-inner="isInner" :is-chip="foundChip" :value-list="valueAsArray"></entity-adder>
+        <entity-adder class="action" v-if="!isLocked && (isRepeatable || isEmptyObject)" :has-restriction="hasRescriction" :possible-values="possibleValues" :key="key" :already-added="linkedIds" :property-types="propertyTypes" :allow-local="allowLocal && propAllowsLocal" :show-action-buttons="showActionButtons" :active="activeModal" :is-inner="isInner" :is-chip="foundChip" :value-list="valueAsArray"></entity-adder>
       </li>
     </ul>
   </div>

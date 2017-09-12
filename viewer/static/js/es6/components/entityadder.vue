@@ -55,6 +55,8 @@ export default {
     isChip: false,
     alreadyAdded: [],
     valueList: [],
+    possibleValues: [],
+    hasRescriction: false,
   },
   events: {
     'close-modals'() {
@@ -122,6 +124,12 @@ export default {
       }
       return true;
     },
+    isEnumeration() {
+      if (this.possibleValues && this.possibleValues.length > 0) {
+        return true;
+      }
+      return false;
+    },
     canRecieveObjects() {
       return (this.propertyTypes.indexOf('DatatypeProperty') === -1);
     },
@@ -153,7 +161,9 @@ export default {
       this.selectedType = '';
     },
     add() {
-      if (this.canRecieveObjects) {
+      if (this.isEnumeration) {
+        this.$dispatch('add-item', {'@id': ''});
+      } else if (this.canRecieveObjects) {
         const range = this.getFullRange;
         if (range.length < 2 && this.onlyEmbedded) {
           this.addEmpty(range[0]);
