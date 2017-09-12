@@ -8,9 +8,10 @@ import * as LayoutUtil from '../utils/layout';
 import * as VocabUtil from '../utils/vocab';
 import * as ModalUtil from '../utils/modals';
 import * as HttpUtil from '../utils/http';
+import * as StringUtil from '../utils/string';
 import LensMixin from './mixins/lens-mixin';
 import { mixin as clickaway } from 'vue-clickaway';
-import { changeSavedStatus, changeStatus } from '../vuex/actions';
+import { changeSavedStatus, changeStatus, changeNotification } from '../vuex/actions';
 import { getSettings, getVocabulary, getVocabularyClasses, getDisplayDefinitions, getEditorData, getStatus } from '../vuex/getters';
 
 export default {
@@ -26,6 +27,7 @@ export default {
     actions: {
       changeSavedStatus,
       changeStatus,
+      changeNotification,
     },
   },
   mixins: [clickaway, LensMixin],
@@ -71,6 +73,11 @@ export default {
     toggleAdminData() {
       this.showAdminInfoDetails = !this.showAdminInfoDetails;
     },
+    isSubClassOf(type) {
+      const baseClasses = VocabUtil.getBaseClasses(this.editorData.mainEntity['@type'], this.vocab, this.settings.vocabPfx)
+        .map(id => id.replace(this.settings.vocabPfx, ''));
+      return baseClasses.indexOf(type) > -1;
+    },
     removePost() {
       const url = this.focusData['@id'];
       ModalUtil.confirmDialog({
@@ -99,7 +106,17 @@ export default {
     closeDuplicateDialog() {
       this.showDuplicateWindow = false;
       LayoutUtil.scrollLock(false);
-    }
+    },
+    getCompiledPost() {
+      const compiledPostUrl = `/_compilemarc?library=${this.libraryUrl}&id=${this.editorData.record['@id']}`
+      HttpUtil.get({ url: compiledPostUrl }).then((response) => {
+        this.changeNotification('color', 'green');
+        this.changeNotification('message', `${StringUtil.getUiPhraseByLang('Success', this.settings.language)}`);
+      }, (error) => {
+        this.changeNotification('color', 'red');
+        this.changeNotification('message', `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${StringUtil.getUiPhraseByLang(error, this.settings.language)}`);
+      });
+    },
   },
   data() {
     return {
@@ -112,6 +129,9 @@ export default {
     };
   },
   computed: {
+    libraryUrl() {
+      return `https://libris.kb.se/library/${this.settings.userSettings.currentSigel}`;
+    },
     headerThreshold() {
       const editorContainer = document.getElementById('editor-container');
       return editorContainer.offsetTop;
@@ -156,7 +176,7 @@ export default {
             <i class="fa fa-question-circle action" aria-hidden="true"></i>
           </div>
           <div class="action">
-            <span class="data-selector" v-on:click="otherFormatMenu = true"></i> RDF <i class="fa fa-caret-down" aria-hidden="true"></i></span>
+            <span class="data-selector" v-on:click="otherFormatMenu = true">RDF <i class="fa fa-caret-down" aria-hidden="true"></i></span>
             <div class="other-format-menu" v-if="otherFormatMenu" v-on-clickaway="otherFormatMenu = false">
               <a :href="`${focusData['@id']}/data.jsonld`">JSON-LD</a>
               <a :href="`${focusData['@id']}/data.ttl`">Turtle</a>
@@ -164,6 +184,10 @@ export default {
             </div>
           </div>
           <marc-preview v-show="status.inEdit"></marc-preview>
+          <button v-show="!status.inEdit && isSubClassOf('Instance')" @click="getCompiledPost()">
+            <i class="fa fa-download" aria-hidden="true"></i>
+            {{"Compiled" | translatePhrase}}
+          </button>
         </div>
         <div class="type-label">
           {{editorData.mainEntity['@type'] | labelByLang}}
