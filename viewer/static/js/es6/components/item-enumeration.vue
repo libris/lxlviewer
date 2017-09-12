@@ -117,7 +117,7 @@ export default {
     </div>
     <ul class="enumeration-input enumeration-radio" v-if="!isLocked && possibleValues.length < this.radioLimit+1">
       <li v-for="option in possibleValues">
-        <input type="radio" v-model="selected" id="{{ this.key + '_' + option['@id'] }}" v-bind:value="option"><label for="{{ this.key + '_' + option['@id'] }}"> {{ option.prefLabelByLang[this.settings.language] || option.prefLabelByLang['en'] }}{{ option.notation ? ` (${option.notation})` : '' }}</label>
+        <input type="radio" v-model="selected" id="{{ this.key + '_' + this.index + '_' + option['@id'] }}" v-bind:value="option"><label for="{{ this.key + '_' + this.index + '_' + option['@id'] }}"> {{ option.prefLabelByLang[this.settings.language] || option.prefLabelByLang['en'] }}{{ option.notation ? ` (${option.notation})` : '' }}</label>
       </li>
     </ul>
     <div class="enumeration-input enumeration-dropdown" v-if="!isLocked && possibleValues.length > this.radioLimit">
