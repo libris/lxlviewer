@@ -412,6 +412,10 @@ def _compilemarc():
 def _findhold():
     return _proxy_request(request, session, query_params=['id', 'library'])
 
+@app.route('/_dependencies')
+def _dependencies():
+    return _proxy_request(request, session, query_params=['id', 'relation', 'reverse'])
+
 @app.route('/<path:path>/edit')
 def thingedit(path):
     r = _proxy_request(request, session, url_path="/{0}".format(path))
