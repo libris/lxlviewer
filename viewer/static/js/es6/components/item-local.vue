@@ -301,10 +301,10 @@ export default {
           </div>
           <i v-if="!isLocked" class="fa fa-trash chip-action" :class="{'show-icon': showActionButtons}" v-on:click="removeConfirmation = true"></i>
           <i v-if="isExtractable && !isLocked" :title="'Bryt ut entitet' | translatePhrase" class="chip-action fa fa-share-square-o" v-on:click="openExtractDialog" v-if="!isLocked" :class="{'show-icon': showActionButtons}"></i>
+        <field-adder v-if="!isLocked" :allowed="allowedProperties" :inner="true" :path="getPath"></field-adder>
         </span>
       </span>
       <data-node v-show="expanded" v-for="(k,v) in filteredItem" v-show="!isLocked || v" :parent-path="getPath" :entity-type="item['@type']" :is-inner="true" :is-locked="isLocked" :allow-local="true" :is-removable="false" :embedded="true" :parent-key="key" :parent-index="index" :key="k" :value="v" :focus="focus" :show-action-buttons="showActionButtons"></data-node>
-      <field-adder v-if="!isLocked" :allowed="allowedProperties" :inner="true" :path="getPath"></field-adder>
     </div>
     <card-component v-if="isExpandedType" :title="getItemLabel" :focus-data="item" :uri="item['@id']" :is-local="true" :is-extractable="isExtractable" :is-locked="isLocked"></card-component>
     <div class="window" v-if="extractDialogActive">
@@ -386,6 +386,9 @@ export default {
       display: flex;
       align-items: center;
       padding: 5px;
+      background: #d1d1d1;
+      white-space: nowrap;
+      overflow: hidden;
       > .actions {
         display: flex;
         flex-direction: row-reverse;
@@ -393,22 +396,19 @@ export default {
           transform: translate(16px, 0px);
         }
       }
-      i {
+      > i, > span > i {
         transition: all 0.2s ease;
         padding: 0 0.5em;
         cursor: pointer;
         &.down {
           transform:rotate(90deg);
         }
+        &::before {
+          vertical-align: sub;
+        }
       }
       .chip-action {
-        transition: opacity 0.25s ease;
-        opacity: 0;
-        align-self: right;
         cursor: pointer;
-        &.show-icon {
-          opacity: 1;
-        }
       }
       .collapsed-label {
         cursor: pointer;
@@ -416,12 +416,18 @@ export default {
         display: flex;
         justify-content: space-between;
         align-items: center;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
         .placeholder {
           visibility: hidden;
         }
         > span {
           padding-left: 1em;
           height: 1.6em;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          overflow: hidden;
         }
       }
     }

@@ -125,7 +125,7 @@ export default {
         <option v-for="option in possibleValues" v-bind:value="option">{{ option.prefLabelByLang[this.settings.language] || option.prefLabelByLang['en'] }}{{ option.notation ? ` (${option.notation})` : '' }}</option>
       </select>
     </div>
-    <div class="remover" :class="{'show-icon': showActionButtons}" v-show="!isLocked" v-on:click="removeThis()" @mouseover="removeHover = true" @mouseout="removeHover = false"><i class="fa fa-trash"></i></div>
+    <div class="remover" v-show="!isLocked" v-on:click="removeThis()" @mouseover="removeHover = true" @mouseout="removeHover = false"><i class="fa fa-trash"></i></div>
   </div>
 </template>
 
@@ -159,7 +159,6 @@ export default {
   }
   .remover {
     display: inline-block;
-    opacity: 0;
     padding: 3px;
     cursor: pointer;
     transition: opacity 0.5s ease;

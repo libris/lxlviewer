@@ -146,7 +146,7 @@ export default {
       return (this.propertyTypes.indexOf('DatatypeProperty') === -1);
     },
     isRepeatable() {
-      return this.propertyTypes.indexOf('FunctionalProperty') < 0;
+      return this.forcedListTerms.indexOf(this.key) > -1;
     },
     isEmptyObject() {
       const value = this.value;
@@ -326,11 +326,14 @@ export default {
 <template>
 <div class="data-node" v-bind:class="{'column': embedded, 'rows': !embedded, 'highlight': isLastAdded, 'distinguish-removal': removeHover, 'removed': removed }" @mouseover="showActionButtons=true" @mouseleave="handleMouseLeave()">
   <div class="label" v-bind:class="{ 'locked': isLocked }">
-    <a href="/vocab/#{{key}}">{{ key | labelByLang | capitalize }}</a>
-    <div v-if="propertyComment && !isLocked" class="comment-icon">
-      <i class="fa fa-question-circle"></i>
-      <div class="comment">{{ propertyComment }}</div>
+    <div>
+      <a href="/vocab/#{{key}}">{{ key | labelByLang | capitalize }}</a>
+      <div v-if="propertyComment && !isLocked" class="comment-icon">
+        <i class="fa fa-question-circle"></i>
+        <div class="comment">{{ propertyComment }}</div>
+      </div>
     </div>
+    <entity-adder class="action" v-if="!isLocked && (isRepeatable || isEmptyObject) && isInner" :has-restriction="hasRescriction" :possible-values="possibleValues" :key="key" :already-added="linkedIds" :property-types="propertyTypes" :allow-local="allowLocal && propAllowsLocal" :show-action-buttons="showActionButtons" :active="activeModal" :is-inner="isInner" :value-list="valueAsArray"></entity-adder>
     <!-- {{ key | labelByLang | capitalize }} -->
   </div>
   <div class="value node-list">
@@ -344,14 +347,12 @@ export default {
         <item-embedded v-if="getDatatype(item) == 'embedded'" :is-locked="isLocked" :item="item" :key="key" :index="$index" :show-action-buttons="showActionButtons"></item-embedded>
         <item-value v-if="getDatatype(item) == 'value'" :is-removable="!hasSingleValue" :is-locked="isLocked" :value="item" :key="key" :index="$index" :show-action-buttons="showActionButtons"></item-value>
       </li>
-      <li :class="{ 'isChip': foundChip}">
-        <entity-adder class="action" v-if="!isLocked && (isRepeatable || isEmptyObject)" :has-restriction="hasRescriction" :possible-values="possibleValues" :key="key" :already-added="linkedIds" :property-types="propertyTypes" :allow-local="allowLocal && propAllowsLocal" :show-action-buttons="showActionButtons" :active="activeModal" :is-inner="isInner" :is-chip="foundChip" :value-list="valueAsArray"></entity-adder>
-      </li>
     </ul>
+    <entity-adder class="action" v-if="!isLocked && (isRepeatable || isEmptyObject) && !isInner" :has-restriction="hasRescriction" :possible-values="possibleValues" :key="key" :already-added="linkedIds" :property-types="propertyTypes" :allow-local="allowLocal && propAllowsLocal" :show-action-buttons="showActionButtons" :active="activeModal" :is-inner="isInner" :value-list="valueAsArray"></entity-adder>
   </div>
   <div class="actions">
-    <div class="action" v-show="!isLocked && isRemovable" :class="{'shown-button': showActionButtons, 'hidden-button': !showActionButtons, 'disabled': activeModal}">
-      <i v-on:click="removeConfirmation = true" @mouseover="removeHover = true" @mouseout="removeHover = false" class="fa fa-trash fa-lg action-button action-remove"></i>
+    <div class="action" v-show="!isLocked && isRemovable" :class="{'disabled': activeModal}">
+      <i v-on:click="removeConfirmation = true" @mouseover="removeHover = true" @mouseout="removeHover = false" class="fa fa-trash action-button action-remove"></i>
     </div>
     <div class="confirm-remove-box" v-if="removeConfirmation" v-on-clickaway="removeConfirmation = false">
       <div v-on:click="removeThis(true)">
@@ -588,9 +589,11 @@ export default {
       border-width: 0px;
     }
     >.label {
-      flex: 0 1 100%;
+      min-width: 100%;
+      justify-content: space-between;
       text-align: left;
       padding: 5px 0px 3px 0px;
+      display: flex;
     }
     >.value {
       display: inline-block;
