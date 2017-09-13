@@ -55,6 +55,8 @@ export default {
     isChip: false,
     alreadyAdded: [],
     valueList: [],
+    possibleValues: [],
+    hasRescriction: false,
   },
   events: {
     'close-modals'() {
@@ -122,6 +124,12 @@ export default {
       }
       return true;
     },
+    isEnumeration() {
+      if (this.possibleValues && this.possibleValues.length > 0) {
+        return true;
+      }
+      return false;
+    },
     canRecieveObjects() {
       return (this.propertyTypes.indexOf('DatatypeProperty') === -1);
     },
@@ -153,7 +161,9 @@ export default {
       this.selectedType = '';
     },
     add() {
-      if (this.canRecieveObjects) {
+      if (this.isEnumeration) {
+        this.$dispatch('add-item', {'@id': ''});
+      } else if (this.canRecieveObjects) {
         const range = this.getFullRange;
         if (range.length < 2 && this.onlyEmbedded) {
           this.addEmpty(range[0]);
@@ -246,17 +256,17 @@ export default {
 </script>
 
 <template>
-<div class="entity-adder">
-  <div v-if="isChip && !addEmbedded" class="chip action-button add-entity-button" :class="{ 'fade': (!showActionButtons && valueList.length > 0) }" v-on:click="add()" @mouseenter="showToolTip=true" @mouseleave="showToolTip=false">
-    <span class="chip-label"><i class="fa fa-fw fa-plus plus-icon" aria-hidden="true"></i><span class="label-text">{{ "Add" | translatePhrase }} {{ addLabel | labelByLang | lowercase }}</span></span>
+<div class="entity-adder" :class="{'inner-adder': isInner}">
+  <div v-if="isInner && !addEmbedded" v-on:click="add()">
+    <span class="chip-label"><i class="fa fa-fw fa-plus plus-icon" aria-hidden="true"></i></span>
   </div>
-  <div v-if="!isChip && !addEmbedded" class="action-button add-entity-button" :class="{'disabled': active, 'fade': (!showActionButtons && valueList.length > 0) }" v-on:click="add()" @mouseenter="showToolTip=true" @mouseleave="showToolTip=false">
-    <span class="chip-label"><i class="fa fa-fw fa-plus plus-icon" aria-hidden="true"></i><span class="label-text">{{ "Add" | translatePhrase }} {{ addLabel | labelByLang | lowercase }}</span></span>
+  <div v-if="!isInner && !addEmbedded" class="action-button add-entity-button" v-on:click="add()">
+    <span class="chip-label"><i class="fa fa-fw fa-plus plus-icon" aria-hidden="true"></i><span class="label-text">{{ addLabel | labelByLang | capitalize }}</span></span>
   </div>
   <div class="type-chooser" v-if="addEmbedded" v-on-clickaway="dismissTypeChooser">
     <select v-model="selectedType" @change="addType(selectedType, true)">
       <option disabled value="">{{"Choose type" | translatePhrase}}</option>
-      <option v-for="type in getFullRange" value="{{type}}">{{type | labelByLang}}</option>
+      <option v-for="rangeType in getFullRange" value="{{rangeType}}">{{rangeType | labelByLang}}</option>
     </select>
   </div>
   <!--<tooltip-component :show-tooltip="showToolTip" :tooltiptext="key"></tooltip-component>-->
@@ -317,6 +327,9 @@ export default {
   .disabled {
     visibility: hidden;
   }
+  &.inner-adder {
+    cursor: pointer;
+  }
   > .chip {
     .chip-mixin(transparent, @gray-darker);
     .label-text {
@@ -329,15 +342,13 @@ export default {
     border: 1px dashed @gray-darker;
   }
   .add-entity-button {
+    padding: 0.3em 0;
     opacity: 1;
     transition: opacity 0.5s ease;
     &.fade {
       opacity: 0;
     }
     cursor: pointer;
-    text-align: center;
-    border: 1px dashed @gray;
-    background-color: transparent;
     .chip-label {
       color: @gray-dark;
     }

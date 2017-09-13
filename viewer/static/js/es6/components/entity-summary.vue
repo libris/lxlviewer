@@ -84,7 +84,7 @@ export default {
     {{categorization.join(', ')}} {{ isLocal ? '(lokal entitet)' : '' }}
   </div>
   <div class="actions" v-if="actions">
-    <i class="fa fa-file-o" v-if="isLocal && isExtractable" v-on:click="extractEntity"></i> <i class="fa fa-trash" v-on:click="removeEntity"></i>
+    <i class="fa fa-share-square-o" v-if="isLocal && isExtractable" v-on:click="extractEntity"></i> <i class="fa fa-trash" v-on:click="removeEntity"></i>
   </div>
   <div class="main-info">
     <h3 class="header">

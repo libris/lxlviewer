@@ -220,7 +220,7 @@ export default {
     <div class="field-adder">
       <div class="field-adder-bar" v-on:click="show">
         <i class="fa fa-plus plus-icon" aria-hidden="true"></i>
-        {{ "Add field" | translatePhrase }}
+        {{ "Field" | translatePhrase }}
       </div>
       <a v-if="!inner" id="add-button" v-on:click="show" :class="{'at-bottom': !buttonFixed }">
         <i class="fa fa-plus plus-icon" aria-hidden="true"></i>
@@ -262,16 +262,12 @@ export default {
 @import './_variables.less';
 
 .field-adder {
-  background-color: #fff;
   text-align: right;
   .field-adder-bar {
+    font-size: 13px;
     cursor: pointer;
-    border: 1px dashed @gray-light;
-    padding: 0.8em;
     text-align: center;
-    &:hover {
-      border-color: @gray-darker;
-    }
+    padding: 0 0.5em;
   }
   display: block; // So that the clickaway plugin triggers nicely
   #add-button {

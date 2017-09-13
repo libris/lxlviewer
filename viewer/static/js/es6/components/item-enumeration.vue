@@ -51,7 +51,7 @@ export default {
     },
   },
   ready() {
-    this.setInitialValue();
+
   },
   watch: {
     selected(val) {
@@ -61,24 +61,25 @@ export default {
       this.$dispatch('add-linked', val);
       this.$dispatch('update-item', this.index, enumObj);
     },
+    possibleValues(collection) {
+      // Watch so that we can match against value when recieved
+      if (collection.length > 0) {
+        this.setInitialValue();
+      }
+    },
   },
   methods: {
     setInitialValue() {
       console.log("Setting init value");
-      if (_.isArray(this.value)) {
-        let matchId = this.value[0]['@id'];
-        if (matchId.indexOf('marc:') > -1) {
-          matchId = matchId.replace(':', '/');
-          console.log(matchId);
-        }
-        const match = _.find(this.possibleValues, (item) => {
-          return item['@id'].indexOf(matchId) > -1;
-        });
-        if (match) {
-          this.selected = match;
-        } else {
-          this.setEmptyValue();
-        }
+      let matchId = this.value['@id'];
+      if (matchId.indexOf('marc:') > -1) {
+        matchId = matchId.replace(':', '/');
+      }
+      const match = _.find(this.possibleValues, (item) => {
+        return item['@id'].indexOf(matchId) > -1;
+      });
+      if (match && matchId !== '') {
+        this.selected = match;
       } else {
         this.setEmptyValue();
       }
@@ -117,7 +118,7 @@ export default {
     </div>
     <ul class="enumeration-input enumeration-radio" v-if="!isLocked && possibleValues.length < this.radioLimit+1">
       <li v-for="option in possibleValues">
-        <input type="radio" v-model="selected" id="{{ this.key + '_' + option['@id'] }}" v-bind:value="option"><label for="{{ this.key + '_' + option['@id'] }}"> {{ option.prefLabelByLang[this.settings.language] || option.prefLabelByLang['en'] }}{{ option.notation ? ` (${option.notation})` : '' }}</label>
+        <input type="radio" v-model="selected" id="{{ this.key + '_' + this.index + '_' + option['@id'] }}" v-bind:value="option"><label for="{{ this.key + '_' + this.index + '_' + option['@id'] }}"> {{ option.prefLabelByLang[this.settings.language] || option.prefLabelByLang['en'] }}{{ option.notation ? ` (${option.notation})` : '' }}</label>
       </li>
     </ul>
     <div class="enumeration-input enumeration-dropdown" v-if="!isLocked && possibleValues.length > this.radioLimit">
@@ -125,7 +126,7 @@ export default {
         <option v-for="option in possibleValues" v-bind:value="option">{{ option.prefLabelByLang[this.settings.language] || option.prefLabelByLang['en'] }}{{ option.notation ? ` (${option.notation})` : '' }}</option>
       </select>
     </div>
-    <div class="remover" :class="{'show-icon': showActionButtons}" v-show="!isLocked" v-on:click="removeThis()" @mouseover="removeHover = true" @mouseout="removeHover = false"><i class="fa fa-trash"></i></div>
+    <div class="remover" v-show="!isLocked" v-on:click="removeThis()" @mouseover="removeHover = true" @mouseout="removeHover = false"><i class="fa fa-trash"></i></div>
   </div>
 </template>
 
@@ -159,7 +160,6 @@ export default {
   }
   .remover {
     display: inline-block;
-    opacity: 0;
     padding: 3px;
     cursor: pointer;
     transition: opacity 0.5s ease;

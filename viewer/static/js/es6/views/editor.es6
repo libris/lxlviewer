@@ -138,7 +138,15 @@ export default class Editor extends View {
             '@id': graphId,
             '@graph': [item],
           };
-          newData.quoted.push(graphObj);
+          let found = false;
+          _.each(newData.quoted, (node) => {
+            if (node['@id'] === graphId) {
+              found = true;
+            }
+          });
+          if (!found) {
+            newData.quoted.push(graphObj);
+          }
           this.syncData(newData);
         },
         'save-item': function() {
