@@ -69,8 +69,17 @@ export function getTermObject(term, vocab, vocabPfx) {
     return {};
   }
 
-  const cn = term.replace(vocabPfx, '');
-  const _class = vocab.get(`${vocabPfx}${cn}`);
+  let cn = term.replace(vocabPfx, '');
+  cn = `${vocabPfx}${cn}`;
+  let _class = vocab.get(cn);
+
+  if (!_class && cn.indexOf('marc:') !== -1) {
+    const cnParts = cn.split('/');
+    cn = 'https://id.kb.se/' + cnParts[cnParts.length - 1];
+    cn = cn.replace('marc:', 'marc/');
+    _class = vocab.get(cn);
+  }
+
   if (!_class) {
     // console.warn('Not found in vocab:', cn);
   }

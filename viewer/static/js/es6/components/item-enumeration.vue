@@ -51,7 +51,7 @@ export default {
     },
   },
   ready() {
-    this.setInitialValue();
+
   },
   watch: {
     selected(val) {
@@ -61,24 +61,25 @@ export default {
       this.$dispatch('add-linked', val);
       this.$dispatch('update-item', this.index, enumObj);
     },
+    possibleValues(collection) {
+      // Watch so that we can match against value when recieved
+      if (collection.length > 0) {
+        this.setInitialValue();
+      }
+    },
   },
   methods: {
     setInitialValue() {
       console.log("Setting init value");
-      if (_.isArray(this.value)) {
-        let matchId = this.value[0]['@id'];
-        if (matchId.indexOf('marc:') > -1) {
-          matchId = matchId.replace(':', '/');
-          console.log(matchId);
-        }
-        const match = _.find(this.possibleValues, (item) => {
-          return item['@id'].indexOf(matchId) > -1;
-        });
-        if (match) {
-          this.selected = match;
-        } else {
-          this.setEmptyValue();
-        }
+      let matchId = this.value['@id'];
+      if (matchId.indexOf('marc:') > -1) {
+        matchId = matchId.replace(':', '/');
+      }
+      const match = _.find(this.possibleValues, (item) => {
+        return item['@id'].indexOf(matchId) > -1;
+      });
+      if (match && matchId !== '') {
+        this.selected = match;
       } else {
         this.setEmptyValue();
       }

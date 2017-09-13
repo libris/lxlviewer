@@ -44,7 +44,7 @@ export function labelByLang(string, lang, vocab, vocabPfx) {
 
   // Handle marc:
   if (typeof item === 'undefined') {
-    item = vocab.get(lbl);
+    item = vocab.get(`https://id.kb.se/${lbl.replace('marc:', 'marc/')}`);
   }
 
   let note = '';
