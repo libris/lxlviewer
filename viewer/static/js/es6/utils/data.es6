@@ -64,9 +64,10 @@ export function removeNullValues(obj) {
     for (const key in obj) {
       if (obj.hasOwnProperty(key) && key !== '_uid') {
         const cleanValue = removeNullValues(obj[key]);
-        if (cleanValue.length > 0) {
+        if (!(_.isArray(cleanValue) && cleanValue.length === 0)) {
           cleanObj[key] = cleanValue;
         }
+      } else {
       }
     }
   } else if (typeof obj !== 'undefined' && obj !== '' && obj !== null) {
