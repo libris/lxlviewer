@@ -50,15 +50,27 @@ export function getMergedItems(record, mainEntity, work, quoted) {
 
 export function removeNullValues(obj) {
   // Strips away all null value keys
-  const cleanObj = {};
-  _.each(obj, (value, key) => {
-    if (value !== null && value !== '') {
-      if (_.isPlainObject(value)) {
-        cleanObj[key] = removeNullValues(value);
-      } else {
-        cleanObj[key] = value;
+  let cleanObj;
+  if (_.isArray(obj)) {
+    cleanObj = [];
+    for (let i = 0; i < obj.length; i++) {
+      const item = removeNullValues(obj[i]);
+      if (typeof item !== 'undefined' && item !== '' && item !== null) {
+        cleanObj.push(item);
       }
     }
-  });
+  } else if (_.isObject(obj)) {
+    cleanObj = {};
+    for (const key in obj) {
+      if (obj.hasOwnProperty(key) && key !== '_uid') {
+        const cleanValue = removeNullValues(obj[key]);
+        if (cleanValue.length > 0) {
+          cleanObj[key] = cleanValue;
+        }
+      }
+    }
+  } else if (typeof obj !== 'undefined' && obj !== '' && obj !== null) {
+    cleanObj = obj;
+  }
   return cleanObj;
 }
