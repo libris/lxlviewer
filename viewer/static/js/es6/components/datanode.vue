@@ -332,8 +332,13 @@ export default {
         <i class="fa fa-question-circle"></i>
         <div class="comment">{{ propertyComment }}</div>
       </div>
+      <entity-adder class="action" v-if="!isLocked && isRepeatable && (isInner && !isEmptyObject)" :has-restriction="hasRescriction" :possible-values="possibleValues" :key="key" :already-added="linkedIds" :property-types="propertyTypes" :allow-local="allowLocal && propAllowsLocal" :show-action-buttons="showActionButtons" :active="activeModal" :is-placeholder="true" :value-list="valueAsArray"></entity-adder>
     </div>
-    <entity-adder class="action" v-if="!isLocked && (isRepeatable || isEmptyObject) && isInner" :has-restriction="hasRescriction" :possible-values="possibleValues" :key="key" :already-added="linkedIds" :property-types="propertyTypes" :allow-local="allowLocal && propAllowsLocal" :show-action-buttons="showActionButtons" :active="activeModal" :is-inner="isInner" :value-list="valueAsArray"></entity-adder>
+    <div v-if="isInner" class="actions">
+      <div class="action" v-show="!isLocked" :class="{'disabled': activeModal}">
+        <i v-on:click="removeThis(true)" @mouseover="removeHover = true" @mouseout="removeHover = false" class="fa fa-trash action-button action-remove"></i>
+      </div>
+    </div>
     <!-- {{ key | labelByLang | capitalize }} -->
   </div>
   <div class="value node-list">
@@ -348,10 +353,10 @@ export default {
         <item-value v-if="getDatatype(item) == 'value'" :is-removable="!hasSingleValue" :is-locked="isLocked" :value="item" :key="key" :index="$index" :show-action-buttons="showActionButtons"></item-value>
       </li>
     </ul>
-    <entity-adder class="action" v-if="!isLocked && (isRepeatable || isEmptyObject) && !isInner" :has-restriction="hasRescriction" :possible-values="possibleValues" :key="key" :already-added="linkedIds" :property-types="propertyTypes" :allow-local="allowLocal && propAllowsLocal" :show-action-buttons="showActionButtons" :active="activeModal" :is-inner="isInner" :value-list="valueAsArray"></entity-adder>
+    <entity-adder class="action" v-if="!isLocked && isRepeatable && (!isInner || (isInner && isEmptyObject))" :has-restriction="hasRescriction" :possible-values="possibleValues" :key="key" :already-added="linkedIds" :property-types="propertyTypes" :allow-local="allowLocal && propAllowsLocal" :show-action-buttons="showActionButtons" :active="activeModal" :is-placeholder="false" :value-list="valueAsArray"></entity-adder>
   </div>
-  <div class="actions">
-    <div class="action" v-show="!isLocked && isRemovable" :class="{'disabled': activeModal}">
+  <div v-if="!isInner" class="actions">
+    <div class="action" v-show="!isLocked" :class="{'disabled': activeModal}">
       <i v-on:click="removeConfirmation = true" @mouseover="removeHover = true" @mouseout="removeHover = false" class="fa fa-trash action-button action-remove"></i>
     </div>
     <div class="confirm-remove-box" v-if="removeConfirmation" v-on-clickaway="removeConfirmation = false">
@@ -594,6 +599,12 @@ export default {
       text-align: left;
       padding: 5px 0px 3px 0px;
       display: flex;
+      > div {
+        display: flex;
+        > .action {
+          cursor: pointer;
+        }
+      }
     }
     >.value {
       display: inline-block;

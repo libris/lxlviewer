@@ -51,7 +51,7 @@ export default {
     propertyTypes: [],
     showActionButtons: false,
     active: false,
-    isInner: false,
+    isPlaceholder: false,
     isChip: false,
     alreadyAdded: [],
     valueList: [],
@@ -256,11 +256,11 @@ export default {
 </script>
 
 <template>
-<div class="entity-adder" :class="{'inner-adder': isInner}">
-  <div v-if="isInner && !addEmbedded" v-on:click="add()">
+<div class="entity-adder" :class="{'inner-adder': isPlaceholder}">
+  <div v-if="isPlaceholder && !addEmbedded" v-on:click="add()">
     <span class="chip-label"><i class="fa fa-fw fa-plus plus-icon" aria-hidden="true"></i></span>
   </div>
-  <div v-if="!isInner && !addEmbedded" class="action-button add-entity-button" v-on:click="add()">
+  <div v-if="!isPlaceholder && !addEmbedded" class="action-button add-entity-button" v-on:click="add()">
     <span class="chip-label"><i class="fa fa-fw fa-plus plus-icon" aria-hidden="true"></i><span class="label-text">{{ addLabel | labelByLang | capitalize }}</span></span>
   </div>
   <div class="type-chooser" v-if="addEmbedded" v-on-clickaway="dismissTypeChooser">
