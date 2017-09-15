@@ -95,8 +95,8 @@ export default {
     </div>
     <div class="create-item-container" v-if="!isNew && isSubClassOf('Instance')">
       <div>
-        <span v-if="!hasHolding && !checkingHolding">{{'Missing holding for sigel' | translatePhrase}} {{settings.userSettings.currentSigel}}</span>
-        <span v-if="hasHolding && !checkingHolding">{{'Has holding for sigel' | translatePhrase}} {{settings.userSettings.currentSigel}}</span>
+        <span v-if="!hasHolding && !checkingHolding">{{'Missing holding' | translatePhrase}}</span>
+        <span v-if="hasHolding && !checkingHolding">{{'Has holding' | translatePhrase}}</span>
       </div>
       <create-item-button :disabled="status.inEdit" :has-holding="hasHolding" :checking-holding="checkingHolding" :holding-id="holdingId"></create-item-button>
     </div>

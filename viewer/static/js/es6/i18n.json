@@ -58,8 +58,8 @@
     "Duplicate": "Duplicera",
     "Show record data": "Visa postdata",
     "Hide record data": "Dölj postdata",
-    "Missing holding for sigel": "Saknar bestånd för sigel",
-    "Has holding for sigel": "Har bestånd för sigel",
+    "Missing holding": "Saknar bestånd",
+    "Has holding": "Har bestånd",
     "To holding": "Till beståndspost",
     "Use": "Använd",
     "Compiled": "Sammanslagen"

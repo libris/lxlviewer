@@ -61,6 +61,7 @@ export default {
         <i v-if="!hasHolding && !checkingHolding" class="fa fa-plus"></i>
         <i v-if="checkingHolding" class="fa fa-fw fa-circle-o-notch fa-spin"></i>
         {{"Item" | translatePhrase}}
+        <span>({{settings.userSettings.currentSigel}})</span>
       </button>
       <button v-if="hasHolding" :class="{'green': hasHolding}" :disabled="disabled" @click.prevent="fetchHolding()">
         <i v-if="hasHolding && !checkingHolding" class="fa fa-check"></i> 
