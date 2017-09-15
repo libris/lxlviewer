@@ -113,8 +113,9 @@ export default {
   outline: solid #ccc;
   outline-width: 1px;
   .header-component {
-    flex: 8 8 80%;
-    max-width: 80%;
+    flex: 8 8 100%;
+    max-width: 100%;
+    min-width: 0;
     border-right: 1px solid #ccc;
     &.full {
       .entity-summary {
