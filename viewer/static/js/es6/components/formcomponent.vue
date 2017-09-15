@@ -197,9 +197,9 @@ export default {
       }
       this.updateForm('mainEntity', modified);
     },
-    'remove-field'(prop) {
+    'remove-field'(path) {
       const modifiedData = Object.assign({}, this.formData);
-      delete modifiedData[prop];
+      _.unset(modifiedData, path);
       this.updateForm('mainEntity', modifiedData);
     },
     'update-value'(path, value) {

@@ -237,13 +237,9 @@ export default {
     },
     removeThis() {
       this.removeConfirmation = false;
-      if (this.parentKey) {
-        console.warn('Remove was called on an embedded field, this is not supported.');
-        return false;
-      }
       this.removed = true;
       setTimeout(() => {
-        this.$dispatch('remove-field', this.key);
+        this.$dispatch('remove-field', this.getPath);
       }, 500);
       // ModalUtil.confirmDialog(
       //   {
@@ -332,11 +328,11 @@ export default {
         <i class="fa fa-question-circle"></i>
         <div class="comment">{{ propertyComment }}</div>
       </div>
-      <entity-adder class="action" v-if="!isLocked && isRepeatable && (isInner && !isEmptyObject)" :has-restriction="hasRescriction" :possible-values="possibleValues" :key="key" :already-added="linkedIds" :property-types="propertyTypes" :allow-local="allowLocal && propAllowsLocal" :show-action-buttons="showActionButtons" :active="activeModal" :is-placeholder="true" :value-list="valueAsArray"></entity-adder>
+      <entity-adder v-if="!isLocked && isRepeatable && (isInner && !isEmptyObject)" :has-restriction="hasRescriction" :possible-values="possibleValues" :key="key" :already-added="linkedIds" :property-types="propertyTypes" :allow-local="allowLocal && propAllowsLocal" :show-action-buttons="showActionButtons" :active="activeModal" :is-placeholder="true" :value-list="valueAsArray"></entity-adder>
     </div>
     <div v-if="isInner" class="actions">
       <div class="action" v-show="!isLocked" :class="{'disabled': activeModal}">
-        <i v-on:click="removeThis(true)" @mouseover="removeHover = true" @mouseout="removeHover = false" class="fa fa-trash action-button action-remove"></i>
+        <i v-on:click="removeThis()" @mouseover="removeHover = true" @mouseout="removeHover = false" class="fa fa-trash action-button action-remove"></i>
       </div>
     </div>
     <!-- {{ key | labelByLang | capitalize }} -->
