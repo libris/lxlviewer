@@ -214,8 +214,9 @@ export default {
             </button>
           </a>
         </div>
-        <div class="type-label">
-          {{editorData.mainEntity['@type'] | labelByLang}}
+        <div>
+          <span class="type-label">{{editorData.mainEntity['@type'] | labelByLang}}</span>
+          <span v-if="isNew" class="new-indicator">- [{{"new record" | translatePhrase}}]</span>
         </div>
         <div>
           <button class="removeButton" v-show="!status.inEdit" @click="removePost"><i class="fa fa-trash" aria-hidden="true"></i> {{"Remove" | translatePhrase}} post</button>
@@ -325,6 +326,9 @@ export default {
       .type-label {
         font-size: 1.6em;
         font-weight: bold;
+      }
+      .new-indicator {
+        font-size: 1.6em;
       }
       .admin-node {
         flex-grow: 5;
