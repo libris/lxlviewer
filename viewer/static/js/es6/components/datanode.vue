@@ -13,6 +13,7 @@ import ItemLocal from './item-local';
 import { mixin as clickaway } from 'vue-clickaway';
 import * as VocabUtil from '../utils/vocab';
 import * as LayoutUtil from '../utils/layout';
+import * as MathUtil from '../utils/math';
 import LodashProxiesMixin from './mixins/lodash-proxies-mixin';
 import { getVocabulary, getVocabularyProperties, getForcedListTerms, getSettings, getStatus, getEditorData } from '../vuex/getters';
 import { changeStatus } from '../vuex/actions';
@@ -42,6 +43,7 @@ export default {
       removed: false,
       removeConfirmation: false,
       possibleValues: [],
+      uniqueIds: [],
     };
   },
   vuex: {
@@ -68,6 +70,9 @@ export default {
   computed: {
     valueIsArray() {
       return _.isArray(this.value);
+    },
+    isObjectArray() {
+      return _.isPlainObject(this.valueAsArray[0]);
     },
     hasRescriction() {
       const restr = VocabUtil.getEnumerationKeys(this.entityType, this.key, this.vocab, this.settings.vocabPfx);
@@ -112,10 +117,17 @@ export default {
       }
     },
     valueAsArray() {
-      if (_.isArray(this.value)) {
-        return this.value;
+      let valueArray = this.value;
+      if (!_.isArray(this.value)) {
+        valueArray = [this.value];
       }
-      return [this.value];
+      for (let i = 0; i < valueArray.length; i++) {
+        if (_.isPlainObject(valueArray[i]) && !valueArray[i].hasOwnProperty('_uid')) {
+          this.uniqueIds.push(MathUtil.getNewRandom(this.uniqueIds));
+          valueArray[i]._uid = this.uniqueIds[this.uniqueIds.length-1];
+        }
+      }
+      return valueArray;
     },
     getPath() {
       if (typeof this.parentPath !== 'undefined') {
@@ -339,13 +351,17 @@ export default {
   </div>
   <div class="value node-list">
     <pre class="path-code" v-show="status.isDev">{{getPath}}</pre>
-    <ul>
-      <li v-for="item in valueAsArray" :class="{ 'isChip': isChip(item)}" track-by="$index">
+    <ul v-if="isObjectArray">
+      <li v-for="item in valueAsArray" :class="{ 'isChip': isChip(item)}" track-by="_uid">
         <div class="erroneous-object" v-if="getDatatype(item) == 'error'"><i class="fa fa-frown-o"></i> {{item | json}}</div>
         <item-enumeration v-if="getDatatype(item) == 'enumeration'" :is-locked="isLocked" :entity-type="entityType" :possible-values="possibleValues" :expanded="isExpandedType" :value="item" :key="key" :index="$index" :show-action-buttons="showActionButtons"></item-enumeration>
         <item-entity v-if="getDatatype(item) == 'entity'" :is-locked="isLocked" :expanded="isExpandedType" :item="item" :key="key" :index="$index"></item-entity>
         <item-local v-if="getDatatype(item) == 'local'" :is-locked="isLocked" :is-expanded-type="isExpandedType" :item="item" :key="key" :index="$index" :parent-path="getPath" :in-array="valueIsArray" :show-action-buttons="showActionButtons"></item-local>
         <item-embedded v-if="getDatatype(item) == 'embedded'" :is-locked="isLocked" :item="item" :key="key" :index="$index" :show-action-buttons="showActionButtons"></item-embedded>
+      </li>
+    </ul>
+    <ul v-if="!isObjectArray">
+      <li v-for="item in valueAsArray" :class="{ 'isChip': isChip(item)}" track-by="$index">
         <item-value v-if="getDatatype(item) == 'value'" :is-removable="!hasSingleValue" :is-locked="isLocked" :value="item" :key="key" :index="$index" :show-action-buttons="showActionButtons"></item-value>
       </li>
     </ul>
