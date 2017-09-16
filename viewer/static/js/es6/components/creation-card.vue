@@ -55,7 +55,8 @@ export default {
       <div v-if="!isBase" class="creation-card" @click="useTemplate(template.value)">
         <div>{{template.label}}</div>
         <div class="description">{{template.description}}</div>
-        <button>{{ 'Choose' | translatePhrase }}</button>
+        <button v-show="!isActive">{{ 'Choose' | translatePhrase }}</button>
+        <button v-show="isActive">{{ 'Chosen' | translatePhrase }}</button>
       </div>
     </div>
   </div>
@@ -108,7 +109,7 @@ export default {
       }
     }
     &:hover {
-      outline: 2px dashed @brand-primary;
+      outline: 2px dashed fadeout(@brand-primary, 70%);
       button, select {
         color: @white;
         background-color: lighten(@brand-primary, 5%);
