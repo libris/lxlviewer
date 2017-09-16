@@ -146,6 +146,8 @@ export function getItemObject(itemOf, heldBy, instance) {
         'heldBy': {
           '@id': heldBy,
         },
+        'shelfMark': [],
+        'note': [],
       },
       {
         '@graph': [
