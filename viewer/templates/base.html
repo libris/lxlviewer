@@ -73,17 +73,11 @@
               class="fa fa-fw fa-${item.icon}"></i> ${item.title}</a></li>
         % endfor
         % if g.site.title == 'libris.kb.se'
+        <li class="">
+          <a href="/">
+            <i class="fa fa-search" aria-hidden="true"></i> <span class="js-translateable" data-translateable="Sök">Search</span></a>
+          </li>
           % if current_user.is_authenticated
-            <!--<li class="">
-              <a href="/import">
-                <i class="fa fa-download" aria-hidden="true"></i> Importera</a>
-            </li>-->
-            % if request.path.find('/edit') != -1
-            <li class="">
-              <a href="/">
-                <i class="fa fa-search" aria-hidden="true"></i> <span class="js-translateable" data-translateable="New search">New search</span></a>
-            </li>
-            % endif
             <li class="">
               <a href="/createnew">
                 <i class="fa fa-file-text" aria-hidden="true"></i> <span class="js-translateable" data-translateable="Create new">Create new</a></a>
@@ -98,11 +92,6 @@
                 <li><a href="/logout"><i class="fa fa-sign-out" aria-hidden="true"></i> <span class="js-translateable" data-translateable="Log out">Log out</span></a></li>
               </ul>
             </li>
-          % elif request.path == '/login'
-              <li class="">
-                <a href="/">
-                  <i class="fa fa-home" aria-hidden="true"></i> <span class="js-translateable" data-translateable="Home">Home</span></a>
-              </li>
           % else
               <li class=""><a href="/login">
                 <i class="fa fa-fw fa-sign-in"></i> <span class="js-translateable" data-translateable="Log in">Log in</span></a>
