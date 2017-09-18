@@ -55,7 +55,7 @@ export default {
       extracted: {},
       extractDialogActive: false,
       extracting: false,
-      expanded: false,
+      expanded: this.status.isNew,
       removeConfirmation: false,
     };
   },
@@ -105,7 +105,7 @@ export default {
       let bEmpty = true;
       // Check if item has any keys besides @type. If not, we'll consider it empty.
       _.each(this.item, (value, key) => {
-        if (key !== '@type') {
+        if (key !== '@type' && key !== '_uid') {
           if (value && value !== '') {
             bEmpty = false;
           }
@@ -295,7 +295,7 @@ export default {
       <span>
         <i class="fa fa-chevron-right" :class="{'down': expanded}" @click="toggleExpanded()"></i>
         <span class="type"><a href="/vocab/#{{item['@type']}}">{{ item['@type'] | labelByLang | capitalize }}</a></span>
-        <span class="collapsed-label" @click="toggleExpanded()"><span v-show="!expanded">{{collapsedLabel}}</span><span class="placeholder">.</span></span>
+        <span class="collapsed-label" @click="toggleExpanded()"><span v-show="!expanded || isEmpty">{{collapsedLabel}}</span><span class="placeholder">.</span></span>
         <span class="actions">
           <div class="confirm-remove-box" v-if="removeConfirmation" v-on-clickaway="removeConfirmation = false">
             <div v-on:click="removeThis(true)">

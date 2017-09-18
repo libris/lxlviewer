@@ -30,6 +30,7 @@ const state = {
     isDev: false,
     keybindState: '',
     inEdit: false,
+    isNew: false,
     saved: {
       loading: false,
       error: false,

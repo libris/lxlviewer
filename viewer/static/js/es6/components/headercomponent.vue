@@ -63,12 +63,6 @@ export default {
       }
       return 'Unknown';
     },
-    isNew() {
-      if (this.editorData.record['@id'] === '_:TEMP_ID') {
-        return true;
-      }
-      return false;
-    },
     focusData() {
       return this.editorData[this.status.level];
     },
@@ -77,7 +71,7 @@ export default {
     }
   },
   ready() { // Ready method is deprecated in 2.0, switch to "mounted"
-    if (this.isNew === false) {
+    if (this.status.isNew === false) {
       this.getHoldingInfo();
     }
   },
@@ -93,7 +87,7 @@ export default {
     <div class="header-component" v-bind:class="{ 'compact': !full, 'full': full }">
       <entity-summary :focus-data="focusData" :add-link="false" :lines="full ? 6 : 3"></entity-summary>
     </div>
-    <div class="create-item-container" v-if="!isNew && isSubClassOf('Instance')">
+    <div class="create-item-container" v-if="!status.isNew && isSubClassOf('Instance')">
       <div>
         <span v-if="!hasHolding && !checkingHolding">{{'Missing holding' | translatePhrase}}</span>
         <span v-if="hasHolding && !checkingHolding">{{'Has holding' | translatePhrase}}</span>

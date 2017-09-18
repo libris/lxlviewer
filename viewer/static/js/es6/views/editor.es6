@@ -314,6 +314,7 @@ export default class Editor extends View {
         const atId = this.editorData.record['@id'];
         if (!atId || atId === '_:TEMP_ID') {
           this.editItem();
+          this.changeStatus('isNew', true);
         }
       },
       components: {
