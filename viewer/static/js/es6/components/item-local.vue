@@ -59,6 +59,15 @@ export default {
       removeConfirmation: false,
     };
   },
+  watch: {
+    'item': function(newVal, oldVal) {
+      const newValJSON = JSON.stringify(newVal);
+      const oldValJSON = JSON.stringify(oldVal);
+      if (newValJSON !== oldValJSON) {
+        this.expanded = true;
+      }
+    },
+  },
   computed: {
     collapsedLabel() {
       const summary = this.getSummary;
