@@ -365,7 +365,7 @@ export default {
         <item-value v-if="getDatatype(item) == 'value'" :is-removable="!hasSingleValue" :is-locked="isLocked" :value="item" :key="key" :index="$index" :show-action-buttons="showActionButtons"></item-value>
       </li>
     </ul>
-    <entity-adder class="action" v-if="!isLocked && isRepeatable && (!isInner || (isInner && isEmptyObject))" :has-restriction="hasRescriction" :possible-values="possibleValues" :key="key" :already-added="linkedIds" :property-types="propertyTypes" :allow-local="allowLocal && propAllowsLocal" :show-action-buttons="showActionButtons" :active="activeModal" :is-placeholder="false" :value-list="valueAsArray"></entity-adder>
+    <entity-adder class="action" v-if="!isLocked && (isRepeatable || isEmptyObject) && (!isInner || (isInner && isEmptyObject))" :has-restriction="hasRescriction" :possible-values="possibleValues" :key="key" :already-added="linkedIds" :property-types="propertyTypes" :allow-local="allowLocal && propAllowsLocal" :show-action-buttons="showActionButtons" :active="activeModal" :is-placeholder="false" :value-list="valueAsArray"></entity-adder>
   </div>
   <div v-if="!isInner" class="actions">
     <div class="action" v-show="!isLocked" :class="{'disabled': activeModal}">
