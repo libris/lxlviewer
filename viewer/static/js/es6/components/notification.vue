@@ -12,11 +12,22 @@ export default {
       notification: getNotification,
     },
   },
+  data() {
+    return {
+      minTTL: 1000,
+      maxTTL: 6000,
+    }
+  },
   watch: {
     notification: {
       handler() {
         if (this.notification.active === true) {
-          const TTL = this.notification.message.length * 100;
+          let TTL = this.notification.message.length * 100;
+          if (TTL > this.maxTTL) {
+            TTL = this.maxTTL;
+          } else if (TTL < this.minTTL) {
+            TTL = this.minTTL;
+          }
           setTimeout(() => {
             this.changeNotification('active', false);
           }, TTL);
