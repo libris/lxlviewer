@@ -8,6 +8,7 @@ export default class Thing extends View {
   initialize() {
     super.initialize();
     const postId = window.location.toString().split('#')[0];
+    document.title = postId;
     window.location = `${postId}/edit`;
     // VocabLoader.initVocabClicks();
     // thingutil.initializeHoverCards($('.thing-full'), 500);

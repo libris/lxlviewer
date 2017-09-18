@@ -1,11 +1,13 @@
 import View from './view';
 import * as UserUtil from '../utils/user';
+import * as StringUtil from '../utils/string';
 
 export default class UserSettings extends View {
 
   initialize() {
     super.initialize();
     const self = this;
+    document.title = StringUtil.getUiPhraseByLang('Settings', this.getLanguage());
 
     $('#switchLocation').val(this.getSigel());
 

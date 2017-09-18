@@ -19,6 +19,7 @@ export default class Vocab extends View {
 
   initialize() {
     super.initialize();
+    document.title = 'Vocabulary';
 
     function accept(id) { return id.indexOf(':') === -1; }
 

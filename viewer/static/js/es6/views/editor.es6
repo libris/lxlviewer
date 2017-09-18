@@ -2,6 +2,7 @@ import View from './view';
 import Vue from 'vue';
 import Vuex from 'vuex';
 import store from '../vuex/store';
+import LensMixin from '../components/mixins/lens-mixin';
 import ComboKeys from 'combokeys';
 import KeyBindings from '../keybindings.json';
 import * as DataUtil from '../utils/data';
@@ -90,6 +91,7 @@ export default class Editor extends View {
 
     self.vm = new Vue({
       el: '#editorApp',
+      mixins: [LensMixin],
       vuex: {
         actions: {
           syncData,
@@ -202,6 +204,9 @@ export default class Editor extends View {
         isItem() {
           return this.editorData.mainEntity['@type'] === 'Item';
         },
+        focusData() {
+          return this.editorData[this.status.level];
+        },
       },
       methods: {
         initiateWarnBeforeUnload() {
@@ -308,6 +313,7 @@ export default class Editor extends View {
         this.loadForcedListTerms(self.forcedListTerms);
         this.loadDisplayDefs(self.display);
         this.syncData(self.dataIn);
+        document.title = this.getItemLabel[0];
         this.changeStatus('lastSavedData', Object.assign({}, self.dataIn));
         this.initialized = true;
         this.changeStatus('keybindState', 'overview');

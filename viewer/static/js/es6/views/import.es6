@@ -4,6 +4,7 @@ import Vuex from 'vuex';
 import store from '../vuex/store';
 import * as VocabUtil from '../utils/vocab';
 import * as DisplayUtil from '../utils/display';
+import * as StringUtil from '../utils/string';
 import remoteSearch from '../components/remote-search';
 import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData, getKeybindState, getStatus } from '../vuex/getters';
 import { changeSettings, changeStatus, changeNotification, loadVocab, loadVocabMap, loadDisplayDefs, changeSavedStatus, changeResultListStatus } from '../vuex/actions';
@@ -82,6 +83,7 @@ export default class Import extends View {
         this.loadVocabMap(self.vocabMap);
         this.loadDisplayDefs(self.display);
         this.initialized = true;
+        document.title = StringUtil.getUiPhraseByLang('Import', this.settings.language);
       },
     });
   }
