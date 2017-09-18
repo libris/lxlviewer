@@ -56,6 +56,13 @@ export default {
     updateValue() {
       this.$dispatch('update-item', this.index, this.value);
     },
+    handleEnter(e) {
+      if (e.keyCode === 13) {
+        e.target.blur();
+        e.preventDefault();
+        return false;
+      }
+    },
     initializeTextarea() {
       AutoSize(this.$el.querySelector('textarea'));
       AutoSize.update(this.$el.querySelector('textarea'));
@@ -79,7 +86,7 @@ export default {
 
 <template>
   <div class="item-value" v-bind:class="{'locked': isLocked, 'unlocked': !isLocked, 'distinguish-removal': removeHover, 'removed': removed}">
-    <textarea rows="1" v-model="value" @input="valueChanged()" @blur="updateValue()" v-if="!isLocked"></textarea>
+    <textarea rows="1" v-model="value" @input="valueChanged()" @keydown="handleEnter" @blur="updateValue()" v-if="!isLocked"></textarea>
     <span v-if="isLocked">{{value}}</span>
     <div class="remover" :class="{'show-icon': showActionButtons}" v-show="!isLocked && isRemovable" v-on:click="removeThis()" @mouseover="removeHover = true" @mouseout="removeHover = false"><i class="fa fa-trash"></i></div>
   </div>
