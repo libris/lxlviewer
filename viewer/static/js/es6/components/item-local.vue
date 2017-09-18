@@ -69,9 +69,12 @@ export default {
         .filter(item => {
           return (item.property !== '@type' && item.property !== 'error');
         });
-      const label = this.getFormattedEntries(filteredArray).filter(value => {
+      let label = this.getFormattedEntries(filteredArray).filter(value => {
         return value !== '';
       }).join(' | ');
+      if (label === '') {
+        label = `{${StringUtil.getUiPhraseByLang('Empty entity', this.settings.language)}}`;
+      }
       return label;
     },
     isExtractable() {
