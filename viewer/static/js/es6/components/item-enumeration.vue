@@ -37,7 +37,7 @@ export default {
       removeHover: false,
       formObj: {},
       selected: '',
-      radioLimit: 4,
+      radioLimit: 2,
     };
   },
   computed: {
@@ -148,7 +148,6 @@ export default {
       list-style: none;
       padding-left: 0.5em;
       li {
-        display: inline-block;
         margin-right: 1em;
         input {
           margin-right: 0.5em;
