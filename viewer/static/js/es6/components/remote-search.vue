@@ -207,6 +207,7 @@ export default {
         display: flex;
         .search-input {
           height: 44px;
+          margin-right: 5px;
         }
         button {
           min-width: 20%;
