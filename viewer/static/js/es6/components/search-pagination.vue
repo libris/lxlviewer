@@ -19,6 +19,7 @@ export default {
   props: {
     pageData: {},
     showDetails: false,
+    hasPagination: true,
   },
   data() {
     return {
@@ -144,7 +145,7 @@ export default {
       <button v-on:click="setFull()" v-bind:class="{'active': settings.userSettings.resultListType === 'detailed'}"><i class="fa fa-th-list"></i></button>
       <button v-on:click="setCompact()" v-bind:class="{'active': settings.userSettings.resultListType === 'compact'}"><i class="fa fa-list"></i></button>
     </div>
-    <div class="search-buttons">
+    <div v-if="hasPagination" class="search-buttons">
       <nav>
         <ul class="pagination">
           <li v-bind:class="{ 'disabled': !pageData.first || pageData['@id'] === pageData.first['@id'] }">
