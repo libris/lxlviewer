@@ -88,7 +88,7 @@ export default {
   <div class="item-value" v-bind:class="{'locked': isLocked, 'unlocked': !isLocked, 'distinguish-removal': removeHover, 'removed': removed}">
     <textarea rows="1" v-model="value" @input="valueChanged()" @keydown="handleEnter" @blur="updateValue()" v-if="!isLocked"></textarea>
     <span v-if="isLocked">{{value}}</span>
-    <div class="remover" :class="{'show-icon': showActionButtons}" v-show="!isLocked && isRemovable" v-on:click="removeThis()" @mouseover="removeHover = true" @mouseout="removeHover = false"><i class="fa fa-trash"></i></div>
+    <div class="remover" v-show="!isLocked && isRemovable" v-on:click="removeThis()" @mouseover="removeHover = true" @mouseout="removeHover = false"><i class="fa fa-minus"></i></div>
   </div>
 </template>
 
@@ -120,15 +120,11 @@ export default {
     box-shadow: inset 0px 2px 0px 0px rgba(204, 204, 204, 0.35);
   }
   .remover {
+    font-size: 12px;
     float: right;
     display: inline-block;
-    opacity: 0;
     padding: 3px;
     cursor: pointer;
-    transition: opacity 0.5s ease;
-    &.show-icon {
-      opacity: 1;
-    }
   }
   &.unlocked {
 

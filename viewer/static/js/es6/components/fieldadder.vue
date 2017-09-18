@@ -219,7 +219,7 @@ export default {
   <div :class="{'container': !inner}">
     <div class="field-adder">
       <div class="field-adder-bar" v-on:click="show">
-        <i class="fa fa-plus plus-icon" aria-hidden="true"></i>
+        <i class="fa fa-plus-square-o plus-icon" aria-hidden="true"></i>
         {{ "Field" | translatePhrase }}
       </div>
       <a v-if="!inner" id="add-button" v-on:click="show" :class="{'at-bottom': !buttonFixed }">
@@ -264,7 +264,6 @@ export default {
 .field-adder {
   text-align: right;
   .field-adder-bar {
-    font-size: 13px;
     cursor: pointer;
     text-align: center;
     padding: 0 0.5em;

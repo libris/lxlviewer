@@ -344,7 +344,7 @@ export default {
     </div>
     <div v-if="isInner" class="actions">
       <div class="action" v-show="!isLocked" :class="{'disabled': activeModal}">
-        <i v-on:click="removeThis()" @mouseover="removeHover = true" @mouseout="removeHover = false" class="fa fa-trash action-button action-remove"></i>
+        <i v-on:click="removeThis()" @mouseover="removeHover = true" @mouseout="removeHover = false" class="fa fa-times action-button action-remove"></i>
       </div>
     </div>
     <!-- {{ key | labelByLang | capitalize }} -->
@@ -369,7 +369,7 @@ export default {
   </div>
   <div v-if="!isInner" class="actions">
     <div class="action" v-show="!isLocked" :class="{'disabled': activeModal}">
-      <i v-on:click="removeConfirmation = true" @mouseover="removeHover = true" @mouseout="removeHover = false" class="fa fa-trash action-button action-remove"></i>
+      <i v-on:click="removeConfirmation = true" @mouseover="removeHover = true" @mouseout="removeHover = false" class="fa fa-trash-o action-button action-remove"></i>
     </div>
     <div class="confirm-remove-box" v-if="removeConfirmation" v-on-clickaway="removeConfirmation = false">
       <div v-on:click="removeThis(true)">
@@ -599,8 +599,9 @@ export default {
   }
   &.column {
     flex-wrap: wrap;
-    border: solid rgba(196, 199, 202, 0.73);
-    border-width: 0px 0px 1px 0px;
+    border: solid;
+    border-color: rgba(0, 0, 0, 0.0) rgba(0, 0, 0, 0.0) rgba(196, 199, 202, 0.73) rgba(0, 0, 0, 0.0);
+    border-width: 1px;
     padding-bottom: 4px;
     &:last-child {
       border-width: 0px;
