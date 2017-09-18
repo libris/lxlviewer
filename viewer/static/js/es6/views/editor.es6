@@ -205,9 +205,10 @@ export default class Editor extends View {
       },
       methods: {
         initiateWarnBeforeUnload() {
-          window.addEventListener("beforeunload", function (e) {
+          window.addEventListener("beforeunload", (e) => {
+            if (this.status.isNew) return false;
             if (!self.dirty) {
-                return undefined;
+              return undefined;
             }
             const confirmationMessage = StringUtil.getUiPhraseByLang('You have unsaved changes. Do you want to leave the page?', self.settings.language);
 
