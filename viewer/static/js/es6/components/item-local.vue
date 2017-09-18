@@ -301,10 +301,10 @@ export default {
 <template>
   <div class="item-local-container">
     <div v-if="!isExpandedType" class="item-local" :class="{'expanded': expanded}">
-      <span @click="toggleExpanded()">
+      <span>
         <i class="fa fa-chevron-right" :class="{'down': expanded}" @click="toggleExpanded()"></i>
-        <span class="type">{{ item['@type'] | labelByLang | capitalize }}</span>
-        <span class="collapsed-label"><span v-show="!expanded || isEmpty">{{collapsedLabel}}</span><span class="placeholder">.</span></span>
+        <span class="type" @click="toggleExpanded()">{{ item['@type'] | labelByLang | capitalize }}</span>
+        <span class="collapsed-label" @click="toggleExpanded()"><span v-show="!expanded || isEmpty">{{collapsedLabel}}</span><span class="placeholder">.</span></span>
         <span class="actions">
           <div class="confirm-remove-box" v-if="removeConfirmation" v-on-clickaway="removeConfirmation = false">
             <div v-on:click="removeThis(true)">

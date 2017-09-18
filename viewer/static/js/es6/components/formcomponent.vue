@@ -12,7 +12,7 @@ import * as ModalUtil from '../utils/modals';
 import * as VocabUtil from '../utils/vocab';
 import * as DisplayUtil from '../utils/display';
 import { updateForm, changeStatus } from '../vuex/actions';
-import { getSettings, getVocabulary, getVocabularyProperties, getDisplayDefinitions, getEditorData, getStatus } from '../vuex/getters';
+import { getSettings, getVocabulary, getForcedListTerms, getVocabularyProperties, getDisplayDefinitions, getEditorData, getStatus } from '../vuex/getters';
 
 export default {
   vuex: {
@@ -23,6 +23,7 @@ export default {
     getters: {
       vocab: getVocabulary,
       vocabProperties: getVocabularyProperties,
+      forcedListTerms: getForcedListTerms,
       settings: getSettings,
       editorData: getEditorData,
       display: getDisplayDefinitions,
@@ -186,9 +187,17 @@ export default {
   events: {
     'add-field'(prop, path) {
       const key = prop['@id'].replace(this.settings.vocabPfx, '');
-      const value = [];
+      let value = [];
+      if (prop['@type'] === 'DatatypeProperty') {
+        if (this.forcedListTerms.indexOf(key) > -1) {
+          value = [''];
+        } else {
+          value = '';
+        }
+      }
       let modified = _.cloneDeep(this.formData);
       if (typeof path !== 'undefined') {
+
         _.set(modified, `${path}.${key}`, value);
       } else {
         const newItem = {};
