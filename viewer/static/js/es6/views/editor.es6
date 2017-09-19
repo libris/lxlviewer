@@ -170,6 +170,11 @@ export default class Editor extends View {
           this.changeStatus('inEdit', false);
           this.syncData(Object.assign({}, this.status.lastSavedData));
         },
+        'new-editordata'(newData) {
+          const atId = newData.record['@id'];
+          self.vm.changeStatus('isNew', (!atId || atId === '_:TEMP_ID'));
+          this.syncData(newData);
+        },
       },
       watch: {
         copyId(value, oldval) {
@@ -278,27 +283,30 @@ export default class Editor extends View {
         },
         doSaveRequest(requestMethod, obj, url, ETag) {
           requestMethod({ url, token: self.access_token, ETag }, obj).then((result) => {
-            if (result.status === 201) {
-              window.location = result.getResponseHeader('Location');
-            } else {
-              const postUrl = `${result.getResponseHeader('Location')}/data.jsonld`;
-              httpUtil.get({ url: postUrl }).then((getResult) => {
-                const newData = RecordUtil.splitJson(getResult);
+            const postUrl = `${result.getResponseHeader('Location')}`;
+            httpUtil.get({ url: postUrl, accept: 'application/ld+json' }).then((getResult) => {
+              const newData = RecordUtil.splitJson(getResult);
+              if (Modernizr.history) {
+                this.$dispatch('new-editordata', newData);
+                history.pushState(newData, 'unused', `${postUrl}/edit`);
+              } else if (result.status === 201) {
+                window.location = result.getResponseHeader('Location');
+              } else {
                 self.vm.syncData(newData);
-                self.vm.changeStatus('lastSavedData', Object.assign({}, newData));
-                self.vm.changeSavedStatus('loading', false);
-                self.vm.changeSavedStatus('error', false);
-                self.vm.changeSavedStatus('info', '');
-                self.vm.changeNotification('color', 'green');
-                self.vm.changeNotification('message', `${StringUtil.getUiPhraseByLang('The post was saved', this.settings.language)}!`);
-                this.changeStatus('inEdit', false);
-                this.removeWarnBeforeUnload();
-              }, (error) => {
-                self.vm.changeSavedStatus('loading', false);
-                self.vm.changeNotification('color', 'red');
-                self.vm.changeNotification('message', `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error}`);
-              });
-            }
+              }
+              self.vm.changeStatus('lastSavedData', Object.assign({}, newData));
+              self.vm.changeSavedStatus('loading', false);
+              self.vm.changeSavedStatus('error', false);
+              self.vm.changeSavedStatus('info', '');
+              self.vm.changeNotification('color', 'green');
+              self.vm.changeNotification('message', `${StringUtil.getUiPhraseByLang('The post was saved', this.settings.language)}!`);
+              this.changeStatus('inEdit', false);
+              this.removeWarnBeforeUnload();
+            }, (error) => {
+              self.vm.changeSavedStatus('loading', false);
+              self.vm.changeNotification('color', 'red');
+              self.vm.changeNotification('message', `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error}`);
+            });
           }, (error) => {
             self.vm.changeSavedStatus('loading', false);
             self.vm.changeNotification('color', 'red');
@@ -322,6 +330,15 @@ export default class Editor extends View {
         if (!atId || atId === '_:TEMP_ID') {
           this.editItem();
           this.changeStatus('isNew', true);
+        }
+        if (Modernizr.history) {
+          history.replaceState(this.editorData, 'unused');
+          history.scrollRestoration = 'manual';
+          window.onpopstate = e => {
+            e.preventDefault();
+            this.$dispatch('new-editordata', e.state);
+            return false;
+          };
         }
       },
       components: {
