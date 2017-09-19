@@ -9,6 +9,7 @@ import * as VocabUtil from '../utils/vocab';
 import * as ModalUtil from '../utils/modals';
 import * as HttpUtil from '../utils/http';
 import * as StringUtil from '../utils/string';
+import * as RecordUtil from '../utils/record';
 import LensMixin from './mixins/lens-mixin';
 import { mixin as clickaway } from 'vue-clickaway';
 import { changeSavedStatus, changeStatus, changeNotification } from '../vuex/actions';
@@ -32,6 +33,11 @@ export default {
   },
   mixins: [clickaway, LensMixin],
   ready() { // Ready method is deprecated in 2.0, switch to "mounted"
+    this.$nextTick(() => {
+      if (!this.status.isNew) {
+        this.buildCopiedRecord();
+      }
+    });
   },
   events: {
     'close-modals'() {
@@ -126,6 +132,19 @@ export default {
         this.changeNotification('message', `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${StringUtil.getUiPhraseByLang(error, this.settings.language)}`);
       });
     },
+    submitCopyForm() {
+      const copyForm = document.getElementById('copyForm');
+      copyForm.submit();
+    },
+    buildCopiedRecord() {
+      const mainEntity = _.cloneDeep(this.editorData.mainEntity);
+      if (mainEntity.hasOwnProperty('instanceOf') && mainEntity.instanceOf['@id'].indexOf('#work') > -1) {
+        const work = _.cloneDeep(this.editorData.work);
+        _.unset(work, "['@id']");
+        mainEntity.instanceOf = work;
+      }
+      this.copyRecord = RecordUtil.getObjectAsRecord(mainEntity);
+    },
   },
   data() {
     return {
@@ -135,6 +154,7 @@ export default {
       otherFormatMenu: false,
       loadingEdit: false,
       loadingCancel: false,
+      copyRecord: {},
     };
   },
   computed: {
@@ -224,9 +244,9 @@ export default {
             <i class="fa fa-fw fa-save" v-show="!status.saved.loading"></i>
             {{ "Save" | translatePhrase }}
           </button>
-          <button id="duplicateButton" v-on:click="openDuplicateWindow()" v-show="!status.inEdit">
+          <button id="duplicateButton" @click="submitCopyForm" v-show="!status.inEdit">
             <i class="fa fa-fw fa-files-o"></i>
-            {{ "Duplicate" | translatePhrase }}
+            {{ "Copy" | translatePhrase }}
           </button>
           <button id="editButton" v-on:click="edit()" v-show="!status.inEdit">
             <i class="fa fa-fw fa-pencil" v-show="!loadingEdit"></i>
@@ -236,6 +256,9 @@ export default {
         </div>
       </div>
     </div>
+    <form id="copyForm" method="POST" action="/edit">
+      <textarea name="data" class="hidden">{{copyRecord | json}}</textarea>
+    </form>
     <div class="window duplicate-dialog" v-if="showDuplicateWindow">
       <div class="header">
         <span class="title">
