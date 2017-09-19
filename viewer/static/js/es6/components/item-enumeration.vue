@@ -2,6 +2,7 @@
 import * as _ from 'lodash';
 import * as VocabUtil from '../utils/vocab';
 import * as DataUtil from '../utils/data';
+import * as StringUtil from '../utils/string';
 import ProcessedLabel from './processedlabel';
 import ItemMixin from './mixins/item-mixin';
 import LensMixin from './mixins/lens-mixin';
@@ -48,6 +49,9 @@ export default {
         this.settings.vocabPfx
       );
       return types;
+    },
+    disabledLabel() {
+      return `${StringUtil.getUiPhraseByLang('Choose', this.settings.language)} ${StringUtil.labelByLang(this.key, this.settings.language, this.vocab, this.settings.vocabPfx)}`;
     },
   },
   ready() {
@@ -124,6 +128,7 @@ export default {
     </ul>
     <div class="enumeration-input enumeration-dropdown" v-if="!isLocked && possibleValues.length > this.radioLimit">
       <select v-model="selected">
+        <option v-if="selected === ''" disabled value="">{{disabledLabel}}</option>
         <option v-for="option in possibleValues" v-bind:value="option">{{ option.prefLabelByLang[this.settings.language] || option.prefLabelByLang['en'] }}{{ option.notation ? ` (${option.notation})` : '' }}</option>
       </select>
     </div>
