@@ -370,8 +370,9 @@ export default {
         background-color: #efefef;
         border: 1px solid rgba(27,31,35,0);
         &.removeButton {
-          margin-right: 3em;
+          margin-right: 2em;
           background-color: gray;
+          border: 1px solid #696969;
           color: #e6e6e6;
           transition: background-color 0.25s ease;
           &:hover {
