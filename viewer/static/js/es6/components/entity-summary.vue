@@ -37,13 +37,13 @@ export default {
       return false;
     },
     categorization() {
-      return this.getFormattedEntries(this.getSummary.categorization);
+      return StringUtil.getFormattedEntries(this.getSummary.categorization, this.vocab, this.settings);
     },
     header() {
-      return this.getFormattedEntries(this.getSummary.header);
+      return StringUtil.getFormattedEntries(this.getSummary.header, this.vocab, this.settings);
     },
     identifiers() {
-      let identifiersList = this.getFormattedEntries(this.getSummary.identifiers);
+      let identifiersList = StringUtil.getFormattedEntries(this.getSummary.identifiers, this.vocab, this.settings);
       if (identifiersList.length > this.lines) {
         const diff = identifiersList.length - this.lines;
         identifiersList.splice((this.lines - 1), diff+1);
@@ -52,10 +52,10 @@ export default {
       return identifiersList;
     },
     info() {
-      return this.getFormattedEntries(this.getSummary.info);
+      return StringUtil.getFormattedEntries(this.getSummary.info, this.vocab, this.settings);
     },
     sub() {
-      return this.getFormattedEntries(this.getSummary.sub);
+      return StringUtil.getFormattedEntries(this.getSummary.sub, this.vocab, this.settings);
     },
   },
   methods: {

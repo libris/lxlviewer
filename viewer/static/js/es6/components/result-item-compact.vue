@@ -28,10 +28,10 @@ export default {
   },
   computed: {
     categorization() {
-      return this.getFormattedEntries(this.getSummary.categorization);
+      return StringUtil.getFormattedEntries(this.getSummary.categorization, this.vocab, this.settings);
     },
     header() {
-      return this.getFormattedEntries(this.getSummary.header);
+      return StringUtil.getFormattedEntries(this.getSummary.header, this.vocab, this.settings);
     },
   },
   components: {

@@ -73,7 +73,7 @@ export default {
         .filter(item => {
           return (item.property !== '@type' && item.property !== 'error');
         });
-      const label = this.getFormattedEntries(filteredArray).filter(value => {
+      const label = StringUtil.getFormattedEntries(filteredArray, this.vocab, this.settings).filter(value => {
         return value !== '';
       }).join(' | ');
       return label;
