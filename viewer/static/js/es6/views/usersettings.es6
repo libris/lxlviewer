@@ -7,7 +7,7 @@ export default class UserSettings extends View {
   initialize() {
     super.initialize();
     const self = this;
-    document.title = StringUtil.getUiPhraseByLang('Settings', this.getLanguage());
+    document.title = `${StringUtil.getUiPhraseByLang('Settings', this.getLanguage())} - ${this.settings.siteInfo.title}`;
 
     $('#switchLocation').val(this.getSigel());
 

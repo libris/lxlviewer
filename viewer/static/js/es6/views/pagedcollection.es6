@@ -129,7 +129,7 @@ export default class PagedCollection extends View {
         this.loadVocabMap(self.vocabMap);
         this.loadDisplayDefs(self.display);
         this.result = self.dataIn;
-        document.title = StringUtil.getUiPhraseByLang('Search', this.settings.language);
+        document.title = `${StringUtil.getUiPhraseByLang('Search', this.settings.language)} - ${this.settings.siteInfo.title}`;
         this.initialized = true;
         if (Modernizr.history) {
           history.replaceState(this.result, 'unused');
