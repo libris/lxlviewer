@@ -129,26 +129,26 @@ export function getImportObject(graph) {
 
 export function getItemObject(itemOf, heldBy, instance) {
   const itemObj = {
-    '@graph': [
-      {
-        '@type': 'Record',
-        '@id': '_:TEMP_ID',
-        'mainEntity': {
-          '@id': '_:TEMP_ID#it',
-        },
-      },
-      {
+    record: {
+      '@type': 'Record',
+      '@id': '_:TEMP_ID',
+      'mainEntity': {
         '@id': '_:TEMP_ID#it',
-        '@type': 'Item',
-        'itemOf': {
-          '@id': itemOf,
-        },
-        'heldBy': {
-          '@id': heldBy,
-        },
-        'shelfMark': [],
-        'note': [],
       },
+    },
+    mainEntity: {
+      '@id': '_:TEMP_ID#it',
+      '@type': 'Item',
+      'itemOf': {
+        '@id': itemOf,
+      },
+      'heldBy': {
+        '@id': heldBy,
+      },
+      'shelfMark': [],
+      'note': [],
+    },
+    quoted: [
       {
         '@graph': [
           instance,
