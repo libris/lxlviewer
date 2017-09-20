@@ -301,7 +301,7 @@ export default {
 <template>
   <div class="item-local-container">
     <div v-if="!isExpandedType" class="item-local" :class="{'expanded': expanded}">
-      <span>
+      <span class="topbar">
         <i class="fa fa-chevron-right" :class="{'down': expanded}" @click="toggleExpanded()"></i>
         <span class="type" @click="toggleExpanded()">{{ item['@type'] | labelByLang | capitalize }}</span>
         <span class="collapsed-label" @click="toggleExpanded()"><span v-show="!expanded || isEmpty">{{collapsedLabel}}</span><span class="placeholder">.</span></span>
@@ -395,11 +395,11 @@ export default {
     > div {
       padding: 5px;
     }
-    > span {
+    > .topbar {
       display: flex;
       align-items: center;
       padding: 5px;
-      background: #d1d1d1;
+      background: @topbar-color;
       white-space: nowrap;
       overflow: hidden;
       cursor: pointer;

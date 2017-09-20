@@ -301,7 +301,8 @@ export default {
   padding: 0px;
 
   .editor-controls {
-    background-color: @black;
+    background-color: @topbar-color;
+    border: 1px solid #ccc;
     .data-selector {
       padding: 0 0.5em;
     }
@@ -333,7 +334,7 @@ export default {
       }
     }
     .admin-info {
-      color: @white;
+      color: @gray-darker;
       flex-direction: row;
       display: flex;
       align-items: center;
