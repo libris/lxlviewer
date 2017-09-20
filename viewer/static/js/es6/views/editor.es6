@@ -211,8 +211,7 @@ export default class Editor extends View {
           }
         },
         entityTitle(val) {
-          const pageTitle = `${val} - ${this.settings.siteInfo.title}`;
-          document.title = pageTitle;
+          this.updateDocumentTitle(val);
         },
       },
       computed: {
@@ -230,10 +229,14 @@ export default class Editor extends View {
               return header;
             }
           }
-          return 'Namnlös entitet';
+          return `{${StringUtil.getUiPhraseByLang('Unnamed entity', self.settings.language)}}`;
         },
       },
       methods: {
+        updateDocumentTitle(recordTitle) {
+          const pageTitle = `${recordTitle} - ${this.settings.siteInfo.title}`;
+          document.title = pageTitle;
+        },
         initiateWarnBeforeUnload() {
           window.addEventListener("beforeunload", (e) => {
             if (this.status.isNew) return false;
@@ -344,6 +347,7 @@ export default class Editor extends View {
         this.changeStatus('lastSavedData', Object.assign({}, self.dataIn));
         this.initialized = true;
         this.changeStatus('keybindState', 'overview');
+        this.updateDocumentTitle(this.entityTitle);
 
         const atId = this.editorData.record['@id'];
         if (!atId || atId === '_:TEMP_ID') {

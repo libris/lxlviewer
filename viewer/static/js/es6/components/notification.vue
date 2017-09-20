@@ -16,13 +16,14 @@ export default {
     return {
       minTTL: 1000,
       maxTTL: 6000,
+      padTTL: 500,
     }
   },
   watch: {
     notification: {
       handler() {
         if (this.notification.active === true) {
-          let TTL = this.notification.message.length * 100;
+          let TTL = (this.notification.message.length * 100) + this.padTTL;
           if (TTL > this.maxTTL) {
             TTL = this.maxTTL;
           } else if (TTL < this.minTTL) {

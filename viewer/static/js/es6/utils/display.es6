@@ -221,7 +221,7 @@ export function getItemSummary(item, displayDefs, quoted, vocab, settings) {
     }
   });
   if (summary['header'].length === 0) {
-    summary['header'].push({ property: 'error', value: `{${StringUtil.getUiPhraseByLang('Missing label', settings.language)}}` });
+    summary['header'].push({ property: 'error', value: `{${StringUtil.getUiPhraseByLang('Unnamed entity', settings.language)}}` });
   }
   return summary;
 }
