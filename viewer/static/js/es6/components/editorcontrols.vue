@@ -132,9 +132,13 @@ export default {
         this.changeNotification('message', `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${StringUtil.getUiPhraseByLang(error, this.settings.language)}`);
       });
     },
-    submitCopyForm() {
-      const copyForm = document.getElementById('copyForm');
-      copyForm.submit();
+    handleCopy() {
+      if (Modernizr.history) {
+        history.pushState(this.copyRecord, 'unused', '/edit');
+        this.$dispatch('new-editordata', this.copyRecord);
+        this.changeNotification('color', 'green');
+        this.changeNotification('message', `${StringUtil.getUiPhraseByLang('Copy successful', this.settings.language)}!`);
+      }
     },
     buildCopiedRecord() {
       const mainEntity = _.cloneDeep(this.editorData.mainEntity);
@@ -145,7 +149,7 @@ export default {
         _.unset(work, "['@id']");
         mainEntity.instanceOf = work;
       }
-      this.copyRecord = RecordUtil.getObjectAsRecord(mainEntity);
+      this.copyRecord = RecordUtil.splitJson(RecordUtil.getObjectAsRecord(mainEntity));
     },
   },
   data() {
@@ -243,7 +247,7 @@ export default {
             <i class="fa fa-fw fa-save" v-show="!status.saved.loading"></i>
             {{ "Save" | translatePhrase }}
           </button>
-          <button id="duplicateButton" @click="submitCopyForm" v-show="!status.inEdit">
+          <button id="duplicateButton" @click="handleCopy" v-show="!status.inEdit">
             <i class="fa fa-fw fa-files-o"></i>
             {{ "Copy" | translatePhrase }}
           </button>
@@ -255,9 +259,6 @@ export default {
         </div>
       </div>
     </div>
-    <form id="copyForm" method="POST" action="/edit">
-      <textarea name="data" class="hidden">{{copyRecord | json}}</textarea>
-    </form>
     <div class="window duplicate-dialog" v-if="showDuplicateWindow">
       <div class="header">
         <span class="title">
