@@ -69,3 +69,24 @@ export function labelByLang(string, lang, vocab, vocabPfx) {
   }
   return `${lbl}${note}`;
 }
+
+function translateable(type) {
+  if (type === '@type' || type === 'issuanceType') {
+    return true;
+  }
+  return false;
+}
+
+export function getFormattedEntries(list, vocab, settings) {
+  let formatted = [];
+  for (const entry of list) {
+    if (translateable(entry.property)) {
+      formatted = formatted.concat(entry.value.map((obj) => {
+        return labelByLang(obj, settings.language, vocab, settings.vocabPfx);
+      }));
+    } else {
+      formatted = formatted.concat(entry.value);
+    }
+  }
+  return formatted;
+}

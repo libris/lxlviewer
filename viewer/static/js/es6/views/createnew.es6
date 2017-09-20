@@ -164,7 +164,7 @@ export default class CreateNew extends View {
         this.loadVocab(self.vocab);
         this.loadVocabMap(self.vocabMap);
         this.initialized = true;
-        document.title = StringUtil.getUiPhraseByLang('Create new', this.settings.language);
+        document.title = `${StringUtil.getUiPhraseByLang('Create new', this.settings.language)} - ${this.settings.siteInfo.title}`;
         this.getMaterials('Instance');
       },
     });

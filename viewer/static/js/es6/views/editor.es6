@@ -210,6 +210,10 @@ export default class Editor extends View {
             });
           }
         },
+        entityTitle(val) {
+          const pageTitle = `${val} - ${this.settings.siteInfo.title}`;
+          document.title = pageTitle;
+        },
       },
       computed: {
         isItem() {
@@ -217,6 +221,16 @@ export default class Editor extends View {
         },
         focusData() {
           return this.editorData[this.status.level];
+        },
+        entityTitle() {
+          if (typeof this.editorData.mainEntity !== 'undefined') {
+            const headerList = DisplayUtil.getItemSummary(this.editorData.mainEntity, this.display, this.editorData.quoted, this.vocab, this.settings).header;
+            const header = StringUtil.getFormattedEntries(headerList, this.vocab, this.settings).join(', ');
+            if (header.length > 0 && header !== '[Unknown]') {
+              return header;
+            }
+          }
+          return 'Namnlös entitet';
         },
       },
       methods: {
@@ -327,7 +341,6 @@ export default class Editor extends View {
         this.loadForcedListTerms(self.forcedListTerms);
         this.loadDisplayDefs(self.display);
         this.syncData(self.dataIn);
-        document.title = this.getItemLabel[0];
         this.changeStatus('lastSavedData', Object.assign({}, self.dataIn));
         this.initialized = true;
         this.changeStatus('keybindState', 'overview');
