@@ -178,11 +178,8 @@ export default {
     focusData() {
       return this.editorData.record;
     },
-    isWork() {
-      return this.status.level === 'work';
-    },
-    isInstance() {
-      return this.status.level === 'mainEntity';
+    isHolding() {
+      return this.editorData.mainEntity['@type'] === 'Item';
     },
     inEdit() {
       return this.status.inEdit;
@@ -199,7 +196,7 @@ export default {
 
 <template>
   <div class="container" id="editor-container">
-    <div class="editor-controls">
+    <div class="editor-controls" v-bind:class="{ 'bib-style': !isHolding, 'holding-style': isHolding }">
       <div class="admin-info">
         <div class="actions">
           <div class="action" v-on:click="toggleDev()" v-bind:class="{'active': status.isDev}">
@@ -301,7 +298,12 @@ export default {
   padding: 0px;
 
   .editor-controls {
-    background-color: @topbar-color;
+    &.bib-style {
+      background-color: @bib-color;
+    }
+    &.holding-style {
+      background-color: desaturate(darken(@holding-color, 10%), 10%);
+    }
     border: 1px solid #ccc;
     .data-selector {
       padding: 0 0.5em;
@@ -334,7 +336,7 @@ export default {
       }
     }
     .admin-info {
-      color: @gray-darker;
+      color: @white;
       flex-direction: row;
       display: flex;
       align-items: center;
