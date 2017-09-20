@@ -1,8 +1,10 @@
 <script>
 import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData, getStatus } from '../vuex/getters';
+import { changeNotification, syncData, changeStatus } from '../vuex/actions';
 import * as DisplayUtil from '../utils/display';
 import * as StringUtil from '../utils/string';
 import * as RecordUtil from '../utils/record';
+import * as HttpUtil from '../utils/http';
 
 export default {
   name: 'create-item-button',
@@ -25,6 +27,11 @@ export default {
       editorData: getEditorData,
       status: getStatus,
     },
+    actions: {
+      syncData,
+      changeStatus,
+      changeNotification,
+    },
   },
   methods: {
     buildItem() {
@@ -38,7 +45,27 @@ export default {
       );
     },
     fetchHolding() {
-      window.location = this.holdingId;
+      HttpUtil.get({ url: this.holdingId[0], accept: 'application/ld+json' }).then((getResult) => {
+        const newData = RecordUtil.splitJson(getResult);
+        if (Modernizr.history) {
+          this.$dispatch('new-editordata', newData);
+          history.pushState(newData, 'unused', `${this.holdingId[0]}/edit`);
+        } else if (result.status === 201) {
+          window.location = result.getResponseHeader('Location');
+        } else {
+          this.syncData(newData);
+        }
+        this.changeStatus('inEdit', false);
+      }, (error) => {
+        this.changeNotification('color', 'red');
+        this.changeNotification('message', `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error}`);
+      });
+    },
+    previewHolding() {
+      if (Modernizr.history) {
+        history.pushState(this.itemData, 'unused', '/edit');
+        this.$dispatch('new-editordata', this.itemData);
+      }
     }
   },
   computed: {
@@ -55,9 +82,9 @@ export default {
 
 <template>
   <div class="create-item-button-container">
-    <form method="POST" action="/edit">
-      <textarea id="copyItem" name="data" class="hidden">{{itemData | json}}</textarea>
-      <button v-if="!hasHolding || checkingHolding" type="submit" :disabled="disabled">
+    <!--<form method="POST" action="/edit">-->
+      <!--<textarea id="copyItem" name="data" class="hidden">{{itemData | json}}</textarea>-->
+      <button v-if="!hasHolding || checkingHolding" @click="previewHolding()" :disabled="disabled">
         <i v-if="!hasHolding && !checkingHolding" class="fa fa-plus"></i>
         <i v-if="checkingHolding" class="fa fa-fw fa-circle-o-notch fa-spin"></i>
         {{"Item" | translatePhrase}}
@@ -68,7 +95,7 @@ export default {
         {{"Item" | translatePhrase}}
         <span>({{settings.userSettings.currentSigel}})</span>
       </button>
-    </form>
+    <!--</form>-->
   </div>
 </template>
 

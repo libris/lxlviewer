@@ -172,7 +172,13 @@ export default class Editor extends View {
         },
         'new-editordata'(newData) {
           const atId = newData.record['@id'];
-          self.vm.changeStatus('isNew', (!atId || atId === '_:TEMP_ID'));
+          if (!atId || atId === '_:TEMP_ID') {
+            this.editItem();
+            self.vm.changeStatus('isNew', true);
+          } else {
+            self.vm.changeStatus('inEdit', false);
+            self.vm.changeStatus('isNew', false);
+          }
           this.syncData(newData);
         },
       },
@@ -302,7 +308,7 @@ export default class Editor extends View {
               const newData = RecordUtil.splitJson(getResult);
               if (Modernizr.history) {
                 this.$dispatch('new-editordata', newData);
-                history.pushState(newData, 'unused', `${postUrl}/edit`);
+                history.replaceState(newData, 'unused', `${postUrl}/edit`);
               } else if (result.status === 201) {
                 window.location = result.getResponseHeader('Location');
               } else {
