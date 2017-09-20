@@ -302,11 +302,12 @@ export default {
   .editor-controls {
     &.bib-style {
       background-color: @bib-color;
+      border: 1px solid darken(@bib-color, 5%);
     }
     &.holding-style {
       background-color: desaturate(darken(@holding-color, 10%), 10%);
+      border: 1px solid darken(desaturate(darken(@holding-color, 10%), 10%), 5%);
     }
-    border: 1px solid #ccc;
     .data-selector {
       padding: 0 0.5em;
     }
