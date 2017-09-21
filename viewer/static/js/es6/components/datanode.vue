@@ -262,20 +262,6 @@ export default {
       setTimeout(() => {
         this.$dispatch('remove-field', this.getPath);
       }, 500);
-      // ModalUtil.confirmDialog(
-      //   {
-      //     sTitle: `Ta bort fältet "${pLabel}"?`,
-      //     sContent: `Detta tar bort fältet "${pLabel}" och allt dess innehåll.`,
-      //     sAccept: 'Ta bort',
-      //     sReject: 'Avbryt',
-      //     sType: 'danger',
-      //   }
-      // ).then(() => {
-      //   // accepted by user
-      //   this.$dispatch('remove-field', prop);
-      // }, () => {
-      //     // declined
-      // });
     },
     getDatatype(o) {
       if (typeof o === 'undefined') {
