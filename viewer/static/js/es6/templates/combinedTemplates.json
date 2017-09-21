@@ -38,8 +38,8 @@
           "hasTitle": [
             {
               "@type": "Title",
-              "mainTitle": "RDA-mall",
-              "subTitle": "bok",
+              "mainTitle": "",
+              "subTitle": "",
               "titleRemainder": ""
             }
           ],
@@ -423,8 +423,8 @@
             },
             {
               "@type": "Title",
-              "mainTitle": ":",
-              "titleRemainder": "/"
+              "mainTitle": "",
+              "titleRemainder": ""
             }
           ],
           "publication": [
@@ -432,11 +432,11 @@
               "@type": "Publication",
               "place": {
                 "@type": "Place",
-                "label": ":"
+                "label": ""
               },
               "agent": {
                 "@type": "Agent",
-                "label": ","
+                "label": ""
               }
             }
           ],
@@ -445,7 +445,7 @@
               "@type": "Serial"
             }
           ],
-          "temporalCoverage": "null-",
+          "temporalCoverage": "",
           "@type": "Instance",
           "instanceOf": {
             "@type": "Text",
