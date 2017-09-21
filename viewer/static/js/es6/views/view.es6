@@ -40,6 +40,10 @@ export default class View {
         'sameAs',
         '@type',
       ],
+      lockedProperties: [
+        'heldBy',
+        'itemOf',
+      ],
       disallowLocal: [
         'instanceOf',
       ],
