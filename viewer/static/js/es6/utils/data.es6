@@ -2,19 +2,23 @@ import * as _ from 'lodash';
 import * as RecordUtil from './record';
 
 export function getLinked(id, linked) {
-  if (typeof id === 'undefined') {
-    throw new Error('getLinked was called with an undefined Id.');
+  if (typeof id === 'undefined' || id === '') {
+    throw new Error('getLinked was called with an undefined or empty Id.');
   }
   let obj = { '@id': id };
   let graphId = id;
   if (id.indexOf('#') > -1) {
     graphId = RecordUtil.extractFnurgel(id);
   }
+  if (id.indexOf('marc:') !== -1) {
+    graphId = id.replace('marc:', 'https://id.kb.se/marc/');
+    // console.warn('Tried to find embellished from marc-id. Returning', JSON.stringify(obj));
+  }
   if (typeof linked !== 'undefined') {
     for (const graph of linked) {
       if (graph['@id'] === graphId) {
         for (const entity of graph['@graph']) {
-          if (entity['@id'] === id) {
+          if (entity['@id'] === id || (id.indexOf('marc:') !== -1 && entity['@id'] === graphId)) {
             obj = Object.assign({}, entity);
             return obj;
           }
@@ -22,15 +26,11 @@ export function getLinked(id, linked) {
       }
     }
   }
-  if (id.indexOf('marc:') !== -1) {
-    console.warn('Tried to find embellished from marc-id. Returning', JSON.stringify(obj));
-    return obj;
-  }
   if (!obj.hasOwnProperty('@type') && Object.keys(obj).length === 1) {
-    console.warn('Couldn\'t find entity in list of quoted:', id);
+    console.warn(`Couldn\'t find entity in list of quoted: ${graphId} (${id})`);
   }
   if (!obj.hasOwnProperty('@type') && Object.keys(obj).length > 1) {
-    console.warn('Embellished entity has an unknown type (missing @type). ID:', id);
+    console.warn('Embellished entity has an unknown type (missing @type). ID:', graphId);
   }
   return obj;
 }
