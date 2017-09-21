@@ -71,12 +71,17 @@ export default {
     valueIsArray() {
       return _.isArray(this.value);
     },
+    locked() {
+      if (this.settings.lockedProperties.indexOf(this.key) !== -1) {
+        return true;
+      }
+      return this.isLocked;
+    },
     isObjectArray() {
       return _.isPlainObject(this.valueAsArray[0]);
     },
     hasRescriction() {
-      const restr = VocabUtil.getEnumerationKeys(this.entityType, this.key, this.vocab, this.settings.vocabPfx);
-      if (restr && restr.length > 0) {
+      if (this.restrictionOnProp && this.restrictionOnProp.length > 0) {
          VocabUtil.getEnumerations(this.entityType, this.key, this.vocab, this.settings.vocabPfx).then((result) => {
            for (const value of result) {
              this.$dispatch('add-linked', value);
@@ -86,6 +91,10 @@ export default {
          return true;
       }
       return false;
+    },
+    restrictionOnProp() {
+      const restr = VocabUtil.getEnumerationKeys(this.entityType, this.key, this.vocab, this.settings.vocabPfx);
+      return restr;
     },
     propAllowsLocal() {
       if (this.settings.disallowLocal.indexOf(this.key) === -1) {
@@ -333,17 +342,17 @@ export default {
 
 <template>
 <div class="data-node" v-bind:class="{'column': embedded, 'rows': !embedded, 'highlight': isLastAdded, 'distinguish-removal': removeHover, 'removed': removed }" @mouseover="showActionButtons=true" @mouseleave="handleMouseLeave()">
-  <div class="label" v-bind:class="{ 'locked': isLocked }">
+  <div class="label" v-bind:class="{ 'locked': locked }">
     <div>
       <a href="/vocab/#{{key}}">{{ key | labelByLang | capitalize }}</a>
-      <div v-if="propertyComment && !isLocked" class="comment-icon">
+      <div v-if="propertyComment && !locked" class="comment-icon">
         <i class="fa fa-question-circle"></i>
         <div class="comment">{{ propertyComment }}</div>
       </div>
-      <entity-adder v-if="!isLocked && isRepeatable && (isInner && !isEmptyObject)" :has-restriction="hasRescriction" :possible-values="possibleValues" :key="key" :already-added="linkedIds" :property-types="propertyTypes" :allow-local="allowLocal && propAllowsLocal" :show-action-buttons="showActionButtons" :active="activeModal" :is-placeholder="true" :value-list="valueAsArray"></entity-adder>
+      <entity-adder v-if="!locked && isRepeatable && (isInner && !isEmptyObject)" :has-restriction="hasRescriction" :possible-values="possibleValues" :key="key" :already-added="linkedIds" :property-types="propertyTypes" :allow-local="allowLocal && propAllowsLocal" :show-action-buttons="showActionButtons" :active="activeModal" :is-placeholder="true" :value-list="valueAsArray"></entity-adder>
     </div>
     <div v-if="isInner" class="actions">
-      <div class="action" v-show="!isLocked" :class="{'disabled': activeModal}">
+      <div class="action" v-show="!locked" :class="{'disabled': activeModal}">
         <i v-on:click="removeThis()" @mouseover="removeHover = true" @mouseout="removeHover = false" class="fa fa-times action-button action-remove"></i>
       </div>
     </div>
@@ -354,21 +363,21 @@ export default {
     <ul v-if="isObjectArray">
       <li v-for="item in valueAsArray" :class="{ 'isChip': isChip(item)}" track-by="_uid">
         <div class="erroneous-object" v-if="getDatatype(item) == 'error'"><i class="fa fa-frown-o"></i> {{item | json}}</div>
-        <item-enumeration v-if="getDatatype(item) == 'enumeration'" :is-locked="isLocked" :entity-type="entityType" :possible-values="possibleValues" :expanded="isExpandedType" :value="item" :key="key" :index="$index" :show-action-buttons="showActionButtons"></item-enumeration>
-        <item-entity v-if="getDatatype(item) == 'entity'" :is-locked="isLocked" :expanded="isExpandedType" :item="item" :key="key" :index="$index"></item-entity>
-        <item-local v-if="getDatatype(item) == 'local'" :is-locked="isLocked" :is-expanded-type="isExpandedType" :item="item" :key="key" :index="$index" :parent-path="getPath" :in-array="valueIsArray" :show-action-buttons="showActionButtons"></item-local>
-        <item-embedded v-if="getDatatype(item) == 'embedded'" :is-locked="isLocked" :item="item" :key="key" :index="$index" :show-action-buttons="showActionButtons"></item-embedded>
+        <item-enumeration v-if="getDatatype(item) == 'enumeration'" :is-locked="locked" :entity-type="entityType" :possible-values="possibleValues" :expanded="isExpandedType" :value="item" :key="key" :index="$index" :show-action-buttons="showActionButtons"></item-enumeration>
+        <item-entity v-if="getDatatype(item) == 'entity'" :is-locked="locked" :expanded="isExpandedType" :item="item" :key="key" :index="$index"></item-entity>
+        <item-local v-if="getDatatype(item) == 'local'" :is-locked="locked" :is-expanded-type="isExpandedType" :item="item" :key="key" :index="$index" :parent-path="getPath" :in-array="valueIsArray" :show-action-buttons="showActionButtons"></item-local>
+        <item-embedded v-if="getDatatype(item) == 'embedded'" :is-locked="locked" :item="item" :key="key" :index="$index" :show-action-buttons="showActionButtons"></item-embedded>
       </li>
     </ul>
     <ul v-if="!isObjectArray">
       <li v-for="item in valueAsArray" :class="{ 'isChip': isChip(item)}" track-by="$index">
-        <item-value v-if="getDatatype(item) == 'value'" :is-removable="!hasSingleValue" :is-locked="isLocked" :value="item" :key="key" :index="$index" :show-action-buttons="showActionButtons"></item-value>
+        <item-value v-if="getDatatype(item) == 'value'" :is-removable="!hasSingleValue" :is-locked="locked" :value="item" :key="key" :index="$index" :show-action-buttons="showActionButtons"></item-value>
       </li>
     </ul>
-    <entity-adder class="action" v-if="!isLocked && (isRepeatable || isEmptyObject) && (!isInner || (isInner && isEmptyObject))" :has-restriction="hasRescriction" :possible-values="possibleValues" :key="key" :already-added="linkedIds" :property-types="propertyTypes" :allow-local="allowLocal && propAllowsLocal" :show-action-buttons="showActionButtons" :active="activeModal" :is-placeholder="false" :value-list="valueAsArray"></entity-adder>
+    <entity-adder class="action" v-if="!locked && (isRepeatable || isEmptyObject) && (!isInner || (isInner && isEmptyObject))" :has-restriction="hasRescriction" :possible-values="possibleValues" :key="key" :already-added="linkedIds" :property-types="propertyTypes" :allow-local="allowLocal && propAllowsLocal" :show-action-buttons="showActionButtons" :active="activeModal" :is-placeholder="false" :value-list="valueAsArray"></entity-adder>
   </div>
   <div v-if="!isInner" class="actions">
-    <div class="action" v-show="!isLocked" :class="{'disabled': activeModal}">
+    <div class="action" v-show="!locked" :class="{'disabled': activeModal}">
       <i v-on:click="removeConfirmation = true" @mouseover="removeHover = true" @mouseout="removeHover = false" class="fa fa-trash-o action-button action-remove"></i>
     </div>
     <div class="confirm-remove-box" v-if="removeConfirmation" v-on-clickaway="removeConfirmation = false">

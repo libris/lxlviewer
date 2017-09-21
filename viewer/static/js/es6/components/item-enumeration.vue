@@ -77,14 +77,18 @@ export default {
     setInitialValue() {
       console.log("Setting init value");
       let matchId = this.value['@id'];
-      if (matchId.indexOf('marc:') > -1) {
-        matchId = matchId.replace(':', '/');
-      }
-      const match = _.find(this.possibleValues, (item) => {
-        return item['@id'].indexOf(matchId) > -1;
-      });
-      if (match && matchId !== '') {
-        this.selected = match;
+      if (typeof matchId !== 'undefined' && matchId !== '') {
+        if (matchId.indexOf('marc:') > -1) {
+          matchId = matchId.replace(':', '/');
+        }
+        const match = _.find(this.possibleValues, (item) => {
+          return item['@id'].indexOf(matchId) > -1;
+        });
+        if (match) {
+          this.selected = match;
+        } else {
+          this.setEmptyValue();
+        }
       } else {
         this.setEmptyValue();
       }
