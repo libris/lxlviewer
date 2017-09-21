@@ -75,8 +75,7 @@ export default {
       return _.isPlainObject(this.valueAsArray[0]);
     },
     hasRescriction() {
-      const restr = VocabUtil.getEnumerationKeys(this.entityType, this.key, this.vocab, this.settings.vocabPfx);
-      if (restr && restr.length > 0) {
+      if (this.restrictionOnProp && this.restrictionOnProp.length > 0) {
          VocabUtil.getEnumerations(this.entityType, this.key, this.vocab, this.settings.vocabPfx).then((result) => {
            for (const value of result) {
              this.$dispatch('add-linked', value);
@@ -86,6 +85,10 @@ export default {
          return true;
       }
       return false;
+    },
+    restrictionOnProp() {
+      const restr = VocabUtil.getEnumerationKeys(this.entityType, this.key, this.vocab, this.settings.vocabPfx);
+      return restr;
     },
     propAllowsLocal() {
       if (this.settings.disallowLocal.indexOf(this.key) === -1) {
