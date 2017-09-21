@@ -81,7 +81,7 @@ export default {
       let label = StringUtil.getFormattedEntries(filteredArray, this.vocab, this.settings).filter(value => {
         return value !== '';
       }).join(' | ');
-      if (label === '') {
+      if (this.isEmpty) {
         label = `{${StringUtil.getUiPhraseByLang('Empty entity', this.settings.language)}}`;
       }
       return label;
