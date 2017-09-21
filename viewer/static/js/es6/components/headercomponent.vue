@@ -71,7 +71,7 @@ export default {
     }
   },
   ready() { // Ready method is deprecated in 2.0, switch to "mounted"
-    if (this.status.isNew === false) {
+    if (!this.status.isNew && isSubClassOf('Instance')) {
       this.getHoldingInfo();
     }
   },
