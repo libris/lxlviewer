@@ -254,7 +254,7 @@ export default {
       setTimeout(() => {
         if (this.isLastAdded) {
           const windowHeight = window.innerHeight || document.documentElement.clientHeight || document.getElementsByTagName('body')[0].clientHeight;
-          const scrollPos = this.$el.offsetTop - (windowHeight * 0.5);
+          const scrollPos = this.$el.offsetTop - (windowHeight * 0.2);
           LayoutUtil.scrollTo(scrollPos, 1000, 'easeInOutQuad', () => {
             this.changeStatus('lastAdded', '');
           });
