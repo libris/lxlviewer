@@ -50,6 +50,7 @@ export default {
     return {
       inEdit: false,
       showCardInfo: false,
+      isNewlyAdded: false,
       searchResult: {},
       searchDelay: 2,
       extracted: {},
@@ -277,9 +278,19 @@ export default {
     },
   },
   events: {
-    'expand-item'(index) {
+    'focus-new-item'(index) {
       if (this.index === index) {
         this.expand();
+        this.isNewlyAdded = true;
+
+        // Scroll to item
+        const windowHeight = window.innerHeight || document.documentElement.clientHeight || document.getElementsByTagName('body')[0].clientHeight;
+        const scrollPos = this.$el.offsetTop - (windowHeight * 0.2);
+        LayoutUtil.scrollTo(scrollPos, 1000, 'easeInOutQuad', () => {
+          setTimeout(() => {
+            this.isNewlyAdded = false;
+          }, 1500);
+        });
       }
     },
     'extract-item'() {
@@ -305,7 +316,7 @@ export default {
 </script>
 
 <template>
-  <div class="item-local-container">
+  <div class="item-local-container" v-bind:class="{'highlight': isNewlyAdded}">
     <div v-if="!isExpandedType" class="item-local" :class="{'expanded': expanded}">
       <span class="topbar">
         <i class="fa fa-chevron-right" :class="{'down': expanded}" @click="toggleExpanded()"></i>
@@ -363,6 +374,14 @@ export default {
 @import './_variables.less';
 .item-local-container {
   margin: 0px 0px 5px 0px;
+  box-shadow: 0px 0px 1em 0px transparent;
+  outline: 2px solid transparent;
+  transition: 3s ease;
+  transition-property: outline, box-shadow;
+  &.highlight {
+    outline: 2px solid @highlight-color;
+    box-shadow: 0px 0px 1em 0px @highlight-color;
+  }
   .item-local {
     .local-form {
       width: @col-value - 20;

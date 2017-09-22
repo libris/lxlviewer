@@ -70,7 +70,7 @@ export default {
   watch: {
     'arrayLength': function (newVal, oldVal) {
       if (newVal > oldVal) {
-        this.$broadcast('expand-item', newVal-1);
+        this.$broadcast('focus-new-item', newVal-1);
       }
     },
   },
@@ -396,9 +396,9 @@ export default {
   display: flex;
   flex-direction: row;
   box-shadow: inset 0px 0px 1em 0px transparent;
+  outline: 2px solid transparent;
   transition: 6s ease;
   transition-property: outline, box-shadow;
-  outline: 2px solid transparent;
   max-height: 200vh;
   overflow-y: auto;
   opacity: 1;
