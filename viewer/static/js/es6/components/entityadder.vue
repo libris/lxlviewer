@@ -29,6 +29,7 @@ export default {
       selectedType: '',
       addEmbedded: false,
       searchMade: false,
+      currentSearchTypes: this.allSearchTypes,
     };
   },
   vuex: {
@@ -75,10 +76,18 @@ export default {
   watch: {
     keyword(value) {
       this.searchMade = false;
+      let searchPhrase = value;
       if (value) {
+        if (value.indexOf(':') > -1) {
+          const searchParts = value.split(':');
+          searchPhrase = searchParts[1];
+          this.currentSearchTypes = [searchParts[0]];
+        } else {
+          this.currentSearchTypes = this.allSearchTypes;
+        }
         setTimeout(() => {
           if (this.keyword === value) {
-            this.search(value);
+            this.search(searchPhrase);
           }
         }, this.debounceTimer);
       } else {
@@ -107,7 +116,7 @@ export default {
     getFullRange() {
       return VocabUtil.getFullRange(this.key, this.vocab, this.settings.vocabPfx);
     },
-    searchTypes() {
+    allSearchTypes() {
       const types = this.getFullRange;
       const typeArray = [];
       for (const type of types) {
@@ -222,7 +231,7 @@ export default {
     search(keyword) {
       const self = this;
       self.searchResult = {};
-      this.getItems(keyword, this.searchTypes).then((result) => {
+      this.getItems(keyword, this.currentSearchTypes).then((result) => {
         setTimeout(() => {
           self.searchResult = result;
           self.loading = false;
@@ -273,7 +282,7 @@ export default {
   <div class="window" v-if="active">
     <div class="header">
       <span class="title">
-        {{ "Add entity" | translatePhrase }}
+        {{ "Add entity" | translatePhrase }} | {{ addLabel | labelByLang }}
       </span>
       <span class="windowControl">
         <i v-on:click="hide" class="fa fa-close"></i>
@@ -282,9 +291,20 @@ export default {
     <div class="body">
       <div class="stage-0" v-show="!chooseLocalType">
         <div class="search-header">
+          <span>{{ "Search" | translatePhrase }}</span>
           <div class="search">
-            {{ "Search" | translatePhrase }}:
-            <input class="entity-search-keyword-input" v-model="keyword" @input="setSearching()"></input>
+            <!--<input class="entity-search-keyword-input" v-model="keyword" @input="setSearching()"></input>-->
+            <div class="input-container">  
+              <input
+                list="allowedTypes"
+                v-model="keyword"
+                @input="setSearching()"
+                class="entity-search-keyword-input"
+              >
+            </div>  
+            <datalist id="allowedTypes">
+              <option v-for="range in getFullRange" :value="`${range.replace(settings.vocabPfx, '')}:`">{{range | labelByLang}}:</option>
+            </datalist>
             <div class="range-info-container" v-if="getFullRange.length > 0" @mouseleave="rangeInfo = false">
               <i class="fa fa-info-circle" @mouseenter="rangeInfo = true"></i>
               <div class="range-info" v-if="rangeInfo">
@@ -295,6 +315,9 @@ export default {
                 </span>
               </div>
             </div>
+            <div class="controls">
+              <button class="local" v-show="allowLocal" v-on:click="goLocal">{{ "Create local entity" | translatePhrase }} ({{ addLabel | labelByLang }})</button>
+            </div>
           </div>
         </div>
         <div v-if="!loading && keyword.length === 0" class="search-status">{{ "Start writing to begin search" | translatePhrase }}...</div>
@@ -303,9 +326,6 @@ export default {
           {{ "No results" | translatePhrase }}...
         </div>
         <entity-search-list v-if="!loading && keyword.length > 0" :results="searchResult" :disabled-ids="alreadyAdded"></entity-search-list>
-        <div class="local" v-show="allowLocal && searchMade && !loading">
-          <button v-on:click="goLocal">{{ "Create entity" | translatePhrase }}</button>
-        </div>
       </div>
       <div class="stage-1" v-show="chooseLocalType">
         {{ "Choose type" | translatePhrase }}:
@@ -373,9 +393,6 @@ export default {
         text-align: center;
         padding: 15px;
       }
-      .local {
-        text-align: center;
-      }
       button {
         font-size: 12px;
       }
@@ -386,15 +403,27 @@ export default {
       .search-header {
         position: absolute;
         width: 100%;
-        height: 40px;
-        padding: 5px;
+        padding: 0.5em 1em;
         border: solid #ccc;
         border-width: 0px 0px 1px 0px;
         background-color: darken(@neutral-color, 4%);
         z-index: @modal-z;
+        > span {
+         font-weight: bold;
+        }
         .search {
-          float: left;
-          width: 50%;
+          display: flex;
+          align-items: center;
+          .input-container {
+            padding: 0.2em 0.5em;
+            border: 2px solid #aaa;
+            border-radius: 0.2em;
+            background: #fff;
+            > input {
+              border: none;
+              outline: none;
+            }
+          }
           .range-info-container {
             margin-left: 0.5em;
             display: inline-block;
@@ -412,13 +441,22 @@ export default {
             }
           }
         }
+        .controls {
+          display: flex;
+          flex-grow: 1;
+          justify-content: flex-end;
+          .local {
+            padding: 0.5em 1em;
+          }
+        }
       }
       .search-status {
         padding: 10px;
-        padding-top: 50px;
+        padding-top: 30%;
+        font-size: 2em;
         text-align: center;
         > i {
-          font-size: 2rem;
+          font-size: 8rem;
         }
       }
     }
