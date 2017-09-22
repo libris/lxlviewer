@@ -67,7 +67,17 @@ export default {
     'item-local': ItemLocal,
     'entity-adder': EntityAdder,
   },
+  watch: {
+    'arrayLength': function (newVal, oldVal) {
+      if (newVal > oldVal) {
+        this.$broadcast('expand-item', newVal-1);
+      }
+    },
+  },
   computed: {
+    arrayLength() {
+      return this.valueAsArray.length;
+    },
     valueIsArray() {
       return _.isArray(this.value);
     },

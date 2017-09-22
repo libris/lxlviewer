@@ -286,6 +286,11 @@ export default {
     },
   },
   events: {
+    'expand-item'(index) {
+      if (this.index === index) {
+        this.expand();
+      }
+    },
     'extract-item'() {
       this.openExtractDialog();
     },
