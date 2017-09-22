@@ -7,6 +7,7 @@ import random
 import re
 import string
 import time
+import requests
 from urlparse import urljoin
 from datetime import datetime, timedelta
 
@@ -83,6 +84,12 @@ def format_number(n):
 def first(value):
     for v in as_iterable(value):
         return v
+
+##
+# Setup Github rss
+@app.route('/releasefeed', methods=['GET'])
+def get_release_feed():
+    return requests.get('https://github.com/libris/lxlviewer/releases.atom').content
 
 ##
 # Setup basic views
