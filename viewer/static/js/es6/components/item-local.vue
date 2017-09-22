@@ -170,8 +170,18 @@ export default {
     this.$options.components['data-node'] = Vue.extend(DataNode);
   },
   methods: {
+    expand() {
+      this.expanded = true;
+    },
+    collapse() {
+      this.expanded = false;
+    },
     toggleExpanded() {
-      this.expanded = !this.expanded;
+      if (this.expanded === true) {
+        this.collapse();
+      } else {
+        this.expand();
+      }
     },
     openExtractDialog() {
       this.changeStatus('keybindState', 'extraction-dialog');
