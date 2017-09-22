@@ -81,7 +81,7 @@ export default {
       let label = StringUtil.getFormattedEntries(filteredArray, this.vocab, this.settings).filter(value => {
         return value !== '';
       }).join(' | ');
-      if (label === '') {
+      if (this.isEmpty) {
         label = `{${StringUtil.getUiPhraseByLang('Empty entity', this.settings.language)}}`;
       }
       return label;
@@ -112,10 +112,10 @@ export default {
     },
     isEmpty() {
       let bEmpty = true;
-      // Check if item has any keys besides @type. If not, we'll consider it empty.
+      // Check if item has any keys besides @type and _uid. If not, we'll consider it empty.
       _.each(this.item, (value, key) => {
         if (key !== '@type' && key !== '_uid') {
-          if (value && value !== '') {
+          if (typeof value !== 'undefined') {
             bEmpty = false;
           }
         }
@@ -316,6 +316,7 @@ export default {
         <field-adder v-if="!isLocked" :allowed="allowedProperties" :inner="true" :path="getPath"></field-adder>
         </span>
       </span>
+      <field-adder v-if="!isLocked && isEmpty" :allowed="allowedProperties" :inner="true" :path="getPath"></field-adder>
       <data-node v-show="expanded && k !== '_uid'" v-for="(k,v) in filteredItem" :parent-path="getPath" :entity-type="item['@type']" :is-inner="true" :is-locked="isLocked" :allow-local="true" :is-removable="false" :embedded="true" :parent-key="key" :parent-index="index" :key="k" :value="v" :focus="focus" :show-action-buttons="showActionButtons"></data-node>
     </div>
     <card-component v-if="isExpandedType" :title="getItemLabel" :focus-data="item" :uri="item['@id']" :is-local="true" :is-extractable="isExtractable" :is-locked="isLocked"></card-component>

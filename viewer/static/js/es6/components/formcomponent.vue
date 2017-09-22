@@ -207,7 +207,7 @@ export default {
       this.updateForm('mainEntity', modified);
     },
     'remove-field'(path) {
-      const modifiedData = Object.assign({}, this.formData);
+      const modifiedData = _.cloneDeep(this.formData);
       _.unset(modifiedData, path);
       this.updateForm('mainEntity', modifiedData);
     },
