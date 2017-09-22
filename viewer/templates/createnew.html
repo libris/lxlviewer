@@ -6,25 +6,8 @@
 {% if current_user.is_authenticated %}
 
     <!-- Create new form -->
-    <div class="panel panel-default form-container" id="create_new_post">
-      <div class="panel-body">
-        <div id="app">
-          <div class="app-heading">{{'Create new' | translatePhrase}}</div>
-          <div class="createnew-form" v-if="initialized === true">
-            <creation-tab :creation-list="creationList"></creation-tab>
-            <div class="creation-cards-container">
-              <creation-card :is-base="true" :material-list="materialList" :index="0" :active-index="activeIndex"></creation-card>
-              <creation-card v-for="template in combinedTemplates" :is-base="false" :template="template" :index="$index + 1" :active-index="activeIndex"></creation-card>
-            </div>
-            <form action="/edit" method="POST" id="thingDataForm">
-              <textarea id="copyItem" name="data" class="hidden">{{thingData | json}}</textarea>
-              <span class="submitter">
-                <button :class="{'disabled': !hasChosen}" :disabled="!hasChosen">Gå vidare <i class="fa fa-chevron-circle-right"></i></button>
-              </span>
-            </form>
-          </div>
-        </div>
-      </div>
+    <div id="app">
+      <create-new-form v-if="initialized === true"></create-new-form>
     </div>
 
   {% else %}
