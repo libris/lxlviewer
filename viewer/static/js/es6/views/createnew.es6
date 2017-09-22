@@ -10,8 +10,7 @@ import * as VocabUtil from '../utils/vocab';
 import * as RecordUtil from '../utils/record';
 import * as DisplayUtil from '../utils/display';
 import * as StringUtil from '../utils/string';
-import CreationCard from '../components/creation-card';
-import CreationTab from '../components/creation-tab';
+import CreateNewForm from '../components/create-new-form';
 import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData, getStatus, getKeybindState } from '../vuex/getters';
 import { changeSettings, changeNotification, loadVocab, loadVocabMap, loadDisplayDefs, syncData, changeSavedStatus, changeStatus } from '../vuex/actions';
 
@@ -67,96 +66,14 @@ export default class CreateNew extends View {
         },
       },
       data: {
-        materialList: [],
-        creationList: ['Instance', 'Work', 'Agent', 'Concept'],
-        vocabPfx: self.settings.vocabPfx,
-        chosenType: '',
         initialized: false,
-        selectedCreation: 'Instance',
-        thingData: {},
-        activeIndex: -1,
       },
       watch: {
-        'selectedCreation': function(newVal) {
-          this.getMaterials(newVal);
-        },
       },
       methods: {
-        getPrefLabelByLang(item) {
-          const label = item.prefLabelByLang[self.language] || item.prefLabelByLang.en;
-          if (typeof label === 'string') {
-            return label;
-          }
-          return label.join(', ');
-        },
-        getMaterials(creation) {
-          let allMaterials = [];
-          allMaterials = allMaterials.concat(VocabUtil.getAllSubClasses([`${this.settings.vocabPfx}${creation}`], this.vocab, this.settings.vocabPfx)
-            .map(subClassId => subClassId.replace(this.settings.vocabPfx, '')));
-          this.materialList = _.sortBy(allMaterials, label => StringUtil.labelByLang(label, this.settings.language, this.vocab, this.settings.vocabPfx));
-        },
-      },
-      events: {
-        'use-base'(type) {
-          this.chosenType = type;
-          const baseRecord = Object.assign(this.baseRecord, BaseTemplates[this.selectedCreation.toLowerCase()].record);
-          const baseMainEntity = Object.assign(this.baseMainEntity, BaseTemplates[this.selectedCreation.toLowerCase()].mainEntity);
-          this.thingData = {
-            '@graph': [
-              baseRecord,
-              baseMainEntity,
-            ],
-          };
-        },
-        'use-template'(templateValue) {
-          const templateRecord = Object.assign(this.baseRecord, templateValue.record);
-          const templateMainEntity = Object.assign(this.baseMainEntity, templateValue.mainEntity);
-          this.thingData = {
-            '@graph': [
-              templateRecord,
-              templateMainEntity,
-            ],
-          };
-        },
-        'set-creation'(creation) {
-          this.selectedCreation = creation;
-          this.activeIndex = -1;
-        },
-        'set-active-index'(index) {
-          this.activeIndex = index;
-        },
-      },
-      computed: {
-        baseMainEntity() {
-          const baseMainEntity = {
-            '@id': '_:TEMP_ID#it',
-            '@type': this.chosenType,
-          };
-          return baseMainEntity;
-        },
-        baseRecord() {
-          const baseRecord = {
-            '@type': 'Record',
-            '@id': '_:TEMP_ID',
-            'assigner': {
-              '@id': `https://libris.kb.se/library/${this.settings.userSettings.currentSigel}`,
-            },
-            'mainEntity': {
-              '@id': '_:TEMP_ID#it',
-            },
-          };
-          return baseRecord;
-        },
-        combinedTemplates() {
-          return CombinedTemplates[this.selectedCreation.toLowerCase()];
-        },
-        hasChosen() {
-          return this.activeIndex > 0 || (this.activeIndex === 0 && this.chosenType);
-        },
       },
       components: {
-        'creation-card': CreationCard,
-        'creation-tab': CreationTab,
+        'create-new-form': CreateNewForm,
       },
       store,
       ready() {
@@ -165,7 +82,6 @@ export default class CreateNew extends View {
         this.loadVocabMap(self.vocabMap);
         this.initialized = true;
         document.title = `${StringUtil.getUiPhraseByLang('Create new', this.settings.language)} - ${this.settings.siteInfo.title}`;
-        this.getMaterials('Instance');
       },
     });
   }
