@@ -340,7 +340,9 @@ export default {
 <div class="data-node" v-bind:class="{'column': embedded, 'rows': !embedded, 'highlight': isLastAdded, 'distinguish-removal': removeHover, 'removed': removed }" @mouseover="showActionButtons=true" @mouseleave="handleMouseLeave()">
   <div class="label" v-bind:class="{ 'locked': locked }">
     <div>
-      {{ key | labelByLang | capitalize }}
+      <span v-show="key === '@id'">{{ 'ID' | translatePhrase | capitalize }}</span>
+      <span v-show="key === '@type'">{{ 'Type' | translatePhrase | capitalize }}</span>
+      <span v-show="key !== '@id' && key !== '@type'">{{ key | labelByLang | capitalize }}</span>
       <div v-if="propertyComment && !locked" class="comment-icon">
         <i class="fa fa-question-circle"></i>
         <div class="comment">{{ propertyComment }}</div>
