@@ -53,7 +53,6 @@ export default {
       isNewlyAdded: false,
       searchResult: {},
       searchDelay: 2,
-      extracted: {},
       extractDialogActive: false,
       extracting: false,
       expanded: this.status.isNew,
@@ -61,6 +60,9 @@ export default {
     };
   },
   computed: {
+    extractedItem() {
+      return RecordUtil.getObjectAsRecord(this.focusData);
+    },
     collapsedLabel() {
       const summary = this.getSummary;
 
@@ -190,7 +192,7 @@ export default {
       this.extracting = true;
 
       // TODO: Remove this when Summary isn't broken
-      const hackedObject = this.extracted;
+      const hackedObject = this.extractedItem;
       delete hackedObject['@graph'][1].summary;
       this.doCreateRequest(httpUtil.post, hackedObject, '/');
 
@@ -303,7 +305,6 @@ export default {
   },
   ready() {
     this.$nextTick(() => {
-      this.extracted = RecordUtil.getObjectAsRecord(this.focusData);
     });
   },
   components: {
