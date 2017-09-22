@@ -56,6 +56,7 @@ export default {
   methods: {
     save() {
       this.changeSavedStatus('loading', true);
+      this.buildCopiedRecord();
       this.$dispatch('save-item');
     },
     edit() {
