@@ -59,15 +59,6 @@ export default {
       removeConfirmation: false,
     };
   },
-  watch: {
-    'item': function(newVal, oldVal) {
-      const newValJSON = JSON.stringify(newVal);
-      const oldValJSON = JSON.stringify(oldVal);
-      if (newValJSON !== oldValJSON) {
-        this.expanded = true;
-      }
-    },
-  },
   computed: {
     collapsedLabel() {
       const summary = this.getSummary;
@@ -170,8 +161,18 @@ export default {
     this.$options.components['data-node'] = Vue.extend(DataNode);
   },
   methods: {
+    expand() {
+      this.expanded = true;
+    },
+    collapse() {
+      this.expanded = false;
+    },
     toggleExpanded() {
-      this.expanded = !this.expanded;
+      if (this.expanded === true) {
+        this.collapse();
+      } else {
+        this.expand();
+      }
     },
     openExtractDialog() {
       this.changeStatus('keybindState', 'extraction-dialog');
@@ -276,6 +277,11 @@ export default {
     },
   },
   events: {
+    'expand-item'(index) {
+      if (this.index === index) {
+        this.expand();
+      }
+    },
     'extract-item'() {
       this.openExtractDialog();
     },

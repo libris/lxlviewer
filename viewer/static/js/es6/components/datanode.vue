@@ -67,7 +67,17 @@ export default {
     'item-local': ItemLocal,
     'entity-adder': EntityAdder,
   },
+  watch: {
+    'arrayLength': function (newVal, oldVal) {
+      if (newVal > oldVal) {
+        this.$broadcast('expand-item', newVal-1);
+      }
+    },
+  },
   computed: {
+    arrayLength() {
+      return this.valueAsArray.length;
+    },
     valueIsArray() {
       return _.isArray(this.value);
     },
@@ -244,7 +254,7 @@ export default {
       setTimeout(() => {
         if (this.isLastAdded) {
           const windowHeight = window.innerHeight || document.documentElement.clientHeight || document.getElementsByTagName('body')[0].clientHeight;
-          const scrollPos = this.$el.offsetTop - (windowHeight * 0.5);
+          const scrollPos = this.$el.offsetTop - (windowHeight * 0.2);
           LayoutUtil.scrollTo(scrollPos, 1000, 'easeInOutQuad', () => {
             this.changeStatus('lastAdded', '');
           });
@@ -330,7 +340,7 @@ export default {
 <div class="data-node" v-bind:class="{'column': embedded, 'rows': !embedded, 'highlight': isLastAdded, 'distinguish-removal': removeHover, 'removed': removed }" @mouseover="showActionButtons=true" @mouseleave="handleMouseLeave()">
   <div class="label" v-bind:class="{ 'locked': locked }">
     <div>
-      <a href="/vocab/#{{key}}">{{ key | labelByLang | capitalize }}</a>
+      {{ key | labelByLang | capitalize }}
       <div v-if="propertyComment && !locked" class="comment-icon">
         <i class="fa fa-question-circle"></i>
         <div class="comment">{{ propertyComment }}</div>
