@@ -47,6 +47,7 @@ export default {
   ready() {
     this.$nextTick(() => {
       this.initializeTextarea();
+      this.addFocus();
     });
   },
   methods: {
@@ -72,10 +73,20 @@ export default {
       return false;
     },
     addFocus() {
-      this.focused = true;
+      const children = this.$el.children;
+      _.each(children, child => {
+        if (child.className.indexOf('item-value-textarea') > -1) {
+          child.focus();
+        }
+      });
     },
     removeFocus() {
-      this.focused = false;
+      const children = this.$el.children;
+      _.each(children, child => {
+        if (child.className.indexOf('item-value-textarea') > -1) {
+          child.blur();
+        }
+      });
     },
   },
   components: {
@@ -86,7 +97,7 @@ export default {
 
 <template>
   <div class="item-value" v-bind:class="{'locked': isLocked, 'unlocked': !isLocked, 'distinguish-removal': removeHover, 'removed': removed}">
-    <textarea rows="1" v-model="value" @input="valueChanged()" @keydown="handleEnter" @blur="updateValue()" v-if="!isLocked"></textarea>
+    <textarea class="item-value-textarea" rows="1" v-model="value" @input="valueChanged()" @keydown="handleEnter" @blur="updateValue()" v-if="!isLocked"></textarea>
     <span v-if="isLocked">{{value}}</span>
     <div class="remover" v-show="!isLocked && isRemovable" v-on:click="removeThis()" @mouseover="removeHover = true" @mouseout="removeHover = false"><i class="fa fa-minus"></i></div>
   </div>
