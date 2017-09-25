@@ -108,7 +108,11 @@ export default {
     },
     cancelEdit() {
       this.loadingCancel = true;
-      setTimeout(() => this.$dispatch('cancel-edit'), 0);
+      if (this.status.isNew) {
+        window.history.back();
+      } else {
+        setTimeout(() => this.$dispatch('cancel-edit'), 0);
+      }
     },
     closeDuplicateDialog() {
       this.showDuplicateWindow = false;
@@ -238,7 +242,7 @@ export default {
         </div>
         <div>
           <button class="removeButton" v-show="status.inEdit" @click="removePost"><i class="fa fa-trash" aria-hidden="true"></i> {{"Remove" | translatePhrase}} post</button>
-          <button v-if="!status.isNew" v-show="status.inEdit" @click="cancelEdit">
+          <button v-show="status.inEdit" @click="cancelEdit">
             <i class="fa fa-times" aria-hidden="true" v-show="!loadingCancel"></i>
             <i class="fa fa-fw fa-circle-o-notch fa-spin" aria-hidden="true" v-show="loadingCancel"></i>
             {{"Cancel" | translatePhrase}}
