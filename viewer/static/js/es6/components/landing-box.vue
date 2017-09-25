@@ -25,6 +25,7 @@ export default {
     return {
       releases: [],
       showReleaseInfo: false,
+      releaseFeed: '',
     }
   },
   methods: {
@@ -41,6 +42,7 @@ export default {
       this.getFeed().then((feed) => {
         const xml = new DOMParser().parseFromString(feed, 'text/xml');
         const json = DataUtil.xmlToJson(xml).feed;
+        this.releaseFeed = json;
         this.releases = this.verifyFeed(json);
       });
     },
@@ -50,7 +52,13 @@ export default {
       const envVersionSemverParts = envVersion.split('.');
 
       _.each(json.entry, (release) => {
-        const releaseSemverParts = release.title.split('.');
+        const idParts = release.id.split('/');
+        const tag = idParts[idParts.length-1];
+        release.tag = tag;
+        if (release.content === `<p>${tag}</p>`) {
+          release.content = '';
+        }
+        const releaseSemverParts = tag.split('.');
         let isValid = true;
         if (releaseSemverParts.length > 3) {
           isValid = false;
@@ -146,11 +154,11 @@ export default {
         </div>
         <div class="body">
           <div class="release-info-node" v-for="release in releases">
-            <h4>{{release.title}}</h4>
+            <h4>{{release.tag}}</h4>
             <div v-html="release.content"></div>
           </div>
           <div class="show-more">
-            <a href="https://github.com/libris/lxlviewer/releases" v-if="showReleaseInfo" target="_blank">Visa fler versioner</a>
+            <a href="https://github.com/libris/lxlviewer/releases" v-if="showReleaseInfo" target="_blank"><i class="fa fa-github"></i> Läs mer på GitHub</a>
           </div>
         </div>
       </div>
@@ -178,6 +186,12 @@ export default {
         overflow-y: scroll;
         .show-more {
           padding: 1em;
+          text-align: center;
+          box-shadow: inset 0px 10px 5px -5px rgba(0, 0, 0, 0.05);
+          background-color: @gray-lighter;
+          i.fa-github {
+            color: black;
+          }
         }
         .release-info-node {
           padding: 1em;
