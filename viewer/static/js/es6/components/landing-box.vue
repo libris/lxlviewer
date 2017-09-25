@@ -138,9 +138,9 @@ export default {
     <p v-html="text">
     </p>
     <hr>
-    <div class="release-info" v-show="releases">
+    <div class="release-info" v-show="releases.length > 0">
       <div class="release-header">
-        <b>Version {{latestVersion.title}}</b>
+        <b>Version {{latestVersion.tag}}</b>
         <a v-on:click="openReleaseInfo()">(visa versionsinfo)</a>
       </div>
       <div class="release-info-window window" v-if="showReleaseInfo">
