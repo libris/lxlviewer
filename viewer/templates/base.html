@@ -159,6 +159,7 @@
         window.siteInfo = {}
         % if g.site
           window.siteInfo.title = "${g.site.title}"
+          window.siteInfo.version = "${config.VERSION}"
         % endif
       </script>
     {% block scripts %}{% endblock %}
