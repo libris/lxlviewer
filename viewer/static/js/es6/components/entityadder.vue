@@ -444,6 +444,7 @@ export default {
           flex-grow: 1;
           justify-content: flex-end;
           button, select {
+            cursor: pointer;
             padding: 0.5em 1em;
             color: #444;
             border: none;
