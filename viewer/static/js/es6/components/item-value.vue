@@ -108,6 +108,7 @@ export default {
 
 .item-value {
   border: solid 1px transparent;
+  line-height: 1.6;
   &.locked {
     line-height: 2;
     padding-left: 5px;
