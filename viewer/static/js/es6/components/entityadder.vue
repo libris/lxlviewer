@@ -99,6 +99,9 @@ export default {
     }
   },
   computed: {
+    hasSingleRange() {
+      return this.getFullRange.length === 1;
+    },
     addLabel() {
       if (this.isLiteral) {
         return this.key;
@@ -289,7 +292,7 @@ export default {
       </span>
     </div>
     <div class="body">
-      <div class="stage-0" v-show="!chooseLocalType">
+      <div class="stage-0">
         <div class="search-header">
           <span>{{ "Search" | translatePhrase }}</span>
           <div class="search">
@@ -316,7 +319,11 @@ export default {
               </div>
             </div>
             <div class="controls">
-              <button class="local" v-show="allowLocal" v-on:click="goLocal">{{ "Create local entity" | translatePhrase }} ({{ addLabel | labelByLang }})</button>
+              <button v-if="allowLocal && hasSingleRange" v-on:click="addEmpty(getFullRange[0])">{{ "Create local entity" | translatePhrase }} ({{ addLabel | labelByLang }})</button>
+              <select v-model="selectedType" @change="addType(selectedType)" v-if="allowLocal && !hasSingleRange">
+                <option disabled value="">{{ "Create local entity" | translatePhrase }} ({{ addLabel | labelByLang }})</option>
+                <option v-for="rangeType in getFullRange" value="{{rangeType}}" label="{{rangeType | labelByLang}}">
+              </select>
             </div>
           </div>
         </div>
@@ -326,14 +333,6 @@ export default {
           {{ "No results" | translatePhrase }}...
         </div>
         <entity-search-list v-if="!loading && keyword.length > 0" :results="searchResult" :disabled-ids="alreadyAdded"></entity-search-list>
-      </div>
-      <div class="stage-1" v-show="chooseLocalType">
-        {{ "Choose type" | translatePhrase }}:
-        <select v-model="selectedType">
-          <option disabled value="">{{"Choose type" | translatePhrase}}</option>
-          <option v-for="type in getFullRange" value="{{type}}" label="{{type | labelByLang}}">
-        </select>
-        <button @click="addType(selectedType)">{{"Add" | translatePhrase}}</button>
       </div>
     </div>
   </div>
@@ -391,7 +390,6 @@ export default {
       overflow-y: scroll;
       .stage-1 {
         text-align: center;
-        padding: 15px;
       }
       button {
         font-size: 12px;
@@ -445,8 +443,14 @@ export default {
           display: flex;
           flex-grow: 1;
           justify-content: flex-end;
-          .local {
+          button, select {
             padding: 0.5em 1em;
+            color: #444;
+            border: none;
+            border-radius: 2px;
+            background: #ccc;
+            font-weight: bold;
+            font-size: 12px;
           }
         }
       }
