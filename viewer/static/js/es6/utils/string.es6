@@ -30,6 +30,10 @@ export function getParamValueFromUrl(url, param) {
   return value;
 }
 
+export function isNumeric(num) {
+  return !isNaN(num);
+}
+
 export function labelByLang(string, lang, vocab, vocabPfx) {
   if (!string) {
     return '[FAILED LABEL]';

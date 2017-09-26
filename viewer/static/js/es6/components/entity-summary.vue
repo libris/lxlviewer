@@ -165,7 +165,6 @@ export default {
     }
   }
   .sub {
-    font-style: italic;
     flex-basis: 100%;
     padding: 3px;
     background-color: rgba(0, 0, 0, 0.01);
