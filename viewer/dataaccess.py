@@ -46,6 +46,7 @@ sites = {
         "summary": {ID: "/doc/summary"},
         "stylesheet": {"name": "id.css"},
         "statsindex": '{"inScheme.@id":{"inCollection.@id":["@type"], "@type":[]}}',
+        "statsfind": '{"inScheme.@id":{"inCollection.@id":["@type"], "@type":[]}}',
         "filter_param": "inScheme.@id",
         "itemList": [
             {ID: "/doc/about", "title": "Om id.kb.se", "icon": "info-circle"},
@@ -62,7 +63,7 @@ sites = {
         "filter_param": "@type",
             # TODO: + @reverse.itemOf.heldBy.@id (and/or count)?
         #"stats": {"@type":{"meta.bibliography.@id":{"publication.providerDate":[]}}}
-        "statsfind": 
+        "statsfind":
         """
             {
                 "instanceOf.language.@id":{

@@ -34,6 +34,24 @@ export function isNumeric(num) {
   return !isNaN(num);
 }
 
+export function getLabelFromObject(object, language) {
+  let label = '';
+  if (object.hasOwnProperty('titleByLang')) {
+    label = object.titleByLang[language] || object.titleByLang[Object.keys(object.titleByLang)[0]];
+  } else if (object.hasOwnProperty('labelByLang')) {
+    label = object.labelByLang[language] || object.labelByLang[Object.keys(object.labelByLang)[0]];
+  } else if (object.hasOwnProperty('prefLabelByLang')) {
+    label = object.prefLabelByLang[language] || object.prefLabelByLang[Object.keys(object.prefLabelByLang)[0]];
+  } else if (object.hasOwnProperty('label')) {
+    label = object.label;
+  } else if (object.hasOwnProperty('notation')) {
+    label = object.notation.join(', ');
+  } else {
+    label = object['@id'];
+  }
+  return label;
+}
+
 export function labelByLang(string, lang, vocab, vocabPfx) {
   if (!string) {
     return '[FAILED LABEL]';

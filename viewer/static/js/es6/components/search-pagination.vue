@@ -37,7 +37,11 @@ export default {
                     up: '',
                 };
                 if (typeof item.object !== 'undefined') {
-                  filterObj.label = item.object['@id'];
+                  if (item.variable === '@type') {
+                    filterObj.label = StringUtil.labelByLang(item.object['@id'], this.settings.language, this.vocab, this.settings.vocabPfx);
+                  } else {
+                    filterObj.label = item.object['@id'].replace('https://id.kb.se/', '');
+                  }
                 } else {
                   filterObj.label = item.value;
                 }
@@ -136,7 +140,7 @@ export default {
     <div class="search-details" v-if="showDetails">
       <span class="pull-left">Sökning på <strong>{{ queryText }}</strong>
         <span v-if="filters.length > 0">
-        (filtrerat på <span v-for="filter in filters" track-by="$index"><strong>{{filter.label | labelByLang}}{{ $index === filters.length - 1 ? '' : ', ' }}</strong></span>)
+        (filtrerat på <span v-for="filter in filters" track-by="$index"><strong>{{filter.label}}{{ $index === filters.length - 1 ? '' : ', ' }}</strong></span>)
       </span>
       gav <strong>{{pageData.totalItems}}</strong> träffar.</span>
       <span v-if="pageData.totalItems > limit" class="pull-right">Visar <strong>{{ limit }}</strong> träffar per sida.</span>
