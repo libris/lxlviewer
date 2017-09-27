@@ -170,7 +170,8 @@ export default {
     },
     moveFieldAdderButton(e) {
       const topFormComponent = document.getElementsByClassName('focused-form-component')[0];
-      const buttonThreshold = topFormComponent.offsetTop + topFormComponent.offsetHeight;
+      const buttonHeight = document.getElementsByClassName('add-button')[0].offsetHeight;
+      const buttonThreshold = topFormComponent.offsetTop + topFormComponent.offsetHeight - buttonHeight;
       const buttonPos = window.pageYOffset + window.innerHeight - 80;
       if (buttonThreshold > buttonPos) {
         this.buttonFixed = true;
@@ -224,11 +225,15 @@ export default {
 <template>
   <div :class="{'container': !inner}">
     <div class="field-adder">
-      <div class="field-adder-bar" v-on:click="show">
+      <div v-if="inner" class="field-adder-bar" v-on:click="show">
         <i class="fa fa-plus-square-o plus-icon" aria-hidden="true"></i>
         {{ "Field" | translatePhrase }}
       </div>
-      <a v-if="!inner" id="add-button" v-on:click="show" :class="{'at-bottom': !buttonFixed }">
+      <a v-if="!inner && !buttonFixed" class="add-button absolute" v-on:click="show">
+        <i class="fa fa-plus plus-icon" aria-hidden="true"></i>
+        <div>{{ "Add field" | translatePhrase }}</div>
+      </a>
+      <a v-if="!inner && buttonFixed" class="add-button fixed" v-on:click="show">
         <i class="fa fa-plus plus-icon" aria-hidden="true"></i>
         <div>{{ "Add field" | translatePhrase }}</div>
       </a>
@@ -274,23 +279,27 @@ export default {
     padding: 0 0.5em;
   }
   display: block; // So that the clickaway plugin triggers nicely
-  #add-button {
+  .add-button {
     margin-left: 100%;
     background-color: @brand-primary;
     transition: bottom 0.25s cubic-bezier(0.4, 0, 1, 1);
     color: @white;
     position: fixed;
-    margin-left: -1.75em;
-    bottom: 12px;
+    margin-left: 0.5em;
     border-radius:2em;
     box-shadow: 0px 7px 10px 0px rgba(0,0,0,0.7);
-    cursor:pointer;
+    cursor: pointer;
     font-size: 1.5em;
     padding: 1em 1.2em;
     line-height: 1.2em;
     text-decoration: none;
-    &.at-bottom {
-      bottom: -100px;
+    &.fixed {
+      position: fixed;
+      bottom: 12px;
+    }
+    &.absolute {
+      position: absolute;
+      transform: translateY(-67px);
     }
     .plus-icon {
       -webkit-text-stroke: 0.12em @brand-primary;
@@ -302,7 +311,6 @@ export default {
       }
     }
     &:active {
-      bottom: 8px;
       box-shadow: 0px 5px 10px 0px rgba(0,0,0,0.5);
     }
     > div {
