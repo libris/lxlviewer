@@ -49,7 +49,7 @@ export default {
   <div class="result-item-compact">
     <span class="import-header header" title="{{ header.join(', ') }}" v-on:click="importThis()" v-if="isImport">{{ header.join(', ') }}</span>
     <a v-if="!isImport" class="header" :class="{'blue-link': settings.siteInfo.title === 'id.kb.se'}" title="{{ header.join(', ') }}" :href="focusData['@id']">{{ header.join(', ') }}</a>
-    <span class="categorization">
+    <span class="categorization" title="{{categorization.join(', ')}}">
       {{categorization.join(', ')}}
     </span>
   </div>
@@ -60,6 +60,7 @@ export default {
 @import './_variables.less';
 
 .result-item-compact {
+  display: flex;
   margin-bottom: 0;
   margin-top: -1px;
   background-color: @white;
@@ -69,7 +70,8 @@ export default {
   .header {
     margin: 0px;
     display: inline-block;
-    width: 70%;
+    flex-basis: 50%;
+    flex-grow: 1;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -77,11 +79,13 @@ export default {
     font-weight: normal;
   }
   .categorization {
-    float: right;
     display: inline-block;
-    width: 28%;
+    flex-basis: 30%;
     font-size: 14px;
     text-align: right;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
 
