@@ -32,7 +32,7 @@ export default {
       return page;
     },
     hasPagination() {
-      return typeof this.importData === 'undefined';
+      return (typeof this.paginationData.first !== 'undefined');
     },
   },
   components: {
@@ -63,7 +63,7 @@ export default {
     </div>
     <search-pagination v-if="!status.resultList.loading && !status.resultList.error" :page-data="paginationData" :show-details="true" :has-pagination="hasPagination"></search-pagination>
     <result-list v-if="!status.resultList.loading && !status.resultList.error" :results="result.items" :import-data="importData" :compact="settings.userSettings.resultListType === 'compact'"></result-list>
-    <search-pagination v-if="!status.resultList.loading && !status.resultList.error && hasPagination" :page-data="paginationData" :show-details="false"></search-pagination>
+    <search-pagination v-if="!status.resultList.loading && !status.resultList.error && hasPagination" :has-pagination="hasPagination" :page-data="paginationData" :show-details="false"></search-pagination>
   </div>
 </template>
 
