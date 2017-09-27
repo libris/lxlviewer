@@ -295,6 +295,12 @@ export default {
         });
       }
     },
+    'expand-item'() {
+      this.expand();
+    },
+    'collapse-item'() {
+      this.collapse();
+    },
     'extract-item'() {
       this.openExtractDialog();
     },
