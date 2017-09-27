@@ -29,6 +29,7 @@ export default {
       hasHolding: false,
       checkingHolding: false,
       holdingId: '',
+      numberOfHoldings: '?',
     };
   },
   methods: {
@@ -39,6 +40,12 @@ export default {
     },
     getHoldingInfo() {
       this.checkingHolding = true;
+      const numberOfHoldingsUrl = `/_dependencies?id=${this.editorData.record['@id']}&relation=itemOf&reverse=true`;
+      HttpUtil.get({ url: numberOfHoldingsUrl, accept: 'application/ld+json' }).then((response) => {
+        this.numberOfHoldings = response.length;
+      }, (error) => {
+        console.log('Error checking for holding');
+      });
       const holdingCheckUrl = `/_findhold?library=${this.libraryUrl}&id=${this.editorData.record['@id']}`
       HttpUtil.get({ url: holdingCheckUrl, accept: 'application/ld+json' }).then((response) => {
         this.checkingHolding = false;
@@ -93,6 +100,7 @@ export default {
         <span v-if="hasHolding && !checkingHolding">{{'Has holding' | translatePhrase}}</span>
       </div>
       <create-item-button :disabled="status.inEdit" :has-holding="hasHolding" :checking-holding="checkingHolding" :holding-id="holdingId"></create-item-button>
+      <div class="holdings-number">{{ "Number of holdings" | translatePhrase }}: {{numberOfHoldings}}</div>
     </div>
   </div>
 </template>
@@ -175,6 +183,9 @@ export default {
     flex-direction: column;
     justify-content: space-evenly;
     align-items: center;
+    .holdings-number {
+      font-weight: bold;
+    }
   }
 }
 

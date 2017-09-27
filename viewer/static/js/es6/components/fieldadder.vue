@@ -39,15 +39,13 @@ export default {
   },
   beforeDestroy() {
     window.removeEventListener('scroll', this.moveFieldAdderButton);
-    const fieldsWindow = document.getElementById('fields-window');
-    fieldsWindow.removeEventListener('scroll', this.toggleWindowFade);
+    // const fieldsWindow = document.getElementById('fields-window');
+    // fieldsWindow.removeEventListener('scroll', this.toggleWindowFade);
   },
   ready() { // Ready method is deprecated in 2.0, switch to "mounted"
     this.$nextTick(() => { // TODO: Fix proper scroll tracking. This is just an ugly solution using document.onscroll here and window.scroll in editorcontrols.vue
       window.addEventListener('scroll', this.moveFieldAdderButton);
       this.moveFieldAdderButton();
-      const fieldsWindow = document.getElementById('fields-window');
-      fieldsWindow.addEventListener('scroll', this.toggleWindowFade);
     });
   },
   computed: {
@@ -101,49 +99,57 @@ export default {
       this.show();
     },
     'select-next'() {
-      if (this.selectedIndex < this.filteredResults.length - 1) {
-        if (this.selectedIndex >= 0) {
-          const fieldList = document.getElementsByClassName('field-list')[0];
-          const threshold =
-            fieldList.getBoundingClientRect().top +
-            fieldList.getBoundingClientRect().height;
-          const selectedElement = document.getElementsByClassName('selected')[0];
-          const selectedPosition =
-            selectedElement.getBoundingClientRect().top +
-            selectedElement.getBoundingClientRect().height * 2;
-          if (selectedPosition > threshold) {
-            fieldList.scrollTop += selectedElement.getBoundingClientRect().height * 2;
+      if (this.active) {
+        if (this.selectedIndex < this.filteredResults.length - 1) {
+          if (this.selectedIndex >= 0) {
+            const fieldList = document.getElementsByClassName('field-list')[0];
+            const threshold =
+              fieldList.getBoundingClientRect().top +
+              fieldList.getBoundingClientRect().height;
+            const selectedElement = document.getElementsByClassName('selected')[0];
+            const selectedPosition =
+              selectedElement.getBoundingClientRect().top +
+              selectedElement.getBoundingClientRect().height * 2;
+            if (selectedPosition > threshold) {
+              fieldList.scrollTop += selectedElement.getBoundingClientRect().height * 2;
+            }
           }
+          this.selectedIndex += 1;
         }
-        this.selectedIndex += 1;
       }
     },
     'select-prev'() {
-      if (this.selectedIndex > 0) {
-        this.selectedIndex -= 1;
-        const fieldList = document.getElementsByClassName('field-list')[0];
-        const threshold = fieldList.getBoundingClientRect().top;
-        const selectedElement = document.getElementsByClassName('selected')[0];
-        const selectedPosition =
-          selectedElement.getBoundingClientRect().top -
-          selectedElement.getBoundingClientRect().height;
-        if (selectedPosition < threshold) {
-          fieldList.scrollTop -= selectedElement.getBoundingClientRect().height * 2;
+      if (this.active) {
+        if (this.selectedIndex > 0) {
+          this.selectedIndex -= 1;
+          const fieldList = document.getElementsByClassName('field-list')[0];
+          const threshold = fieldList.getBoundingClientRect().top;
+          const selectedElement = document.getElementsByClassName('selected')[0];
+          const selectedPosition =
+            selectedElement.getBoundingClientRect().top -
+            selectedElement.getBoundingClientRect().height;
+          if (selectedPosition < threshold) {
+            fieldList.scrollTop -= selectedElement.getBoundingClientRect().height * 2;
+          }
         }
       }
     },
     'add-field-multiple'() {
-      if (!this.filteredResults[this.selectedIndex].added) {
-        this.addField(this.filteredResults[this.selectedIndex], false);
-      } else {
-        console.warn("already added, should be handled");
+      if (this.active) {
+        if (!this.filteredResults[this.selectedIndex].added) {
+          this.addField(this.filteredResults[this.selectedIndex], false);
+        } else {
+          console.warn("already added, should be handled");
+        }
       }
     },
     'add-field-single'() {
-      if (!this.filteredResults[this.selectedIndex].added) {
-        this.addField(this.filteredResults[this.selectedIndex], true);
-      } else {
-        console.warn("already added, should be handled");
+      if (this.active) {
+        if (!this.filteredResults[this.selectedIndex].added) {
+          this.addField(this.filteredResults[this.selectedIndex], true);
+        } else {
+          console.warn("already added, should be handled");
+        }
       }
     },
     'close-modals'() {
@@ -162,14 +168,10 @@ export default {
         this.fieldListBottom = true;
       }
     },
-    scrollToBottom() {
-      const scrollElement = document.getElementById('fields-window');
-      const scrollPos = scrollElement.scrollHeight - scrollElement.offsetHeight;
-      scrollElement.scrollTop = scrollPos;
-    },
     moveFieldAdderButton(e) {
       const topFormComponent = document.getElementsByClassName('focused-form-component')[0];
-      const buttonThreshold = topFormComponent.offsetTop + topFormComponent.offsetHeight;
+      const buttonHeight = document.getElementsByClassName('add-button')[0].offsetHeight;
+      const buttonThreshold = topFormComponent.offsetTop + topFormComponent.offsetHeight - buttonHeight;
       const buttonPos = window.pageYOffset + window.innerHeight - 80;
       if (buttonThreshold > buttonPos) {
         this.buttonFixed = true;
@@ -195,10 +197,14 @@ export default {
       this.active = true;
       setTimeout(() => { // TODO: Solve this by setting focus after window has been rendered.
         document.getElementById('test').focus();
+        const fieldsWindow = document.getElementById('fields-window');
+        fieldsWindow.addEventListener('scroll', this.toggleWindowFade);
       }, 1);
       this.changeStatus('keybindState', 'field-adder');
     },
     hide() {
+      const fieldsWindow = document.getElementById('fields-window');
+      fieldsWindow.removeEventListener('scroll', this.toggleWindowFade);
       if (!this.active) return;
       this.active = false;
       LayoutUtil.scrollLock(false);
@@ -207,6 +213,7 @@ export default {
       this.resetSelectIndex();
     },
     resetSelectIndex() {
+      this.fieldListBottom = false;
       this.selectedIndex = -1;
     },
   },
@@ -218,15 +225,19 @@ export default {
 <template>
   <div :class="{'container': !inner}">
     <div class="field-adder">
-      <div class="field-adder-bar" v-on:click="show">
+      <div v-if="inner" class="field-adder-bar" v-on:click="show">
         <i class="fa fa-plus-square-o plus-icon" aria-hidden="true"></i>
         {{ "Field" | translatePhrase }}
       </div>
-      <a v-if="!inner" id="add-button" v-on:click="show" :class="{'at-bottom': !buttonFixed }">
+      <a v-if="!inner && !buttonFixed" class="add-button absolute" v-on:click="show">
         <i class="fa fa-plus plus-icon" aria-hidden="true"></i>
         <div>{{ "Add field" | translatePhrase }}</div>
       </a>
-      <div class="window"  v-show="active" :class="{'at-bottom': fieldListBottom}">
+      <a v-if="!inner && buttonFixed" class="add-button fixed" v-on:click="show">
+        <i class="fa fa-plus plus-icon" aria-hidden="true"></i>
+        <div>{{ "Add field" | translatePhrase }}</div>
+      </a>
+      <div class="window"  v-if="active" :class="{'at-bottom': fieldListBottom}">
         <div class="header">
           <span class="title">
             {{ "Add field" | translatePhrase }}
@@ -239,11 +250,11 @@ export default {
             <span class="filterInfo">{{ "Showing" | translatePhrase }} {{ filteredResults.length }} {{ "of" | translatePhrase }} {{allowed ? allowed.length : '0'}} {{ "total" | translatePhrase }}</span>
           </span>
         </div>
-        <ul v-show="active" id="fields-window" class="field-list">
+        <ul v-if="active" id="fields-window" class="field-list">
           <li v-on:mouseover="selectedIndex = $index" v-bind:class="{ 'added': prop.added, 'available': !prop.added, 'selected': $index == selectedIndex }" v-for="prop in filteredResults" track-by="$index" @click="addField(prop, true)">
             <span class="addControl">
-              <a v-on:click.prevent="addField(prop, false)"><i class="fa fa-fw fa-plus-circle"></i></a>
-              <span><i class="fa fa-fw fa-check"></i></span>
+              <a v-on:click.prevent="addField(prop, false)"><i class="fa fa-fw fa-2x fa-plus-circle"></i></a>
+              <span><i class="fa fa-fw fa-check fa-2x"></i></span>
             </span>
             <span class="fieldLabel" title="{{prop.label | capitalize }}">
               {{prop.label | capitalize }}
@@ -253,7 +264,6 @@ export default {
           <li v-if="filteredResults.length === 0"><i>{{ "Did not find any fields" | translatePhrase }}...</i></li>
         </ul>
       </div>
-      <i v-show="active" :class="{'at-bottom': fieldListBottom}" class="fa fa-chevron-down list-scroller" aria-hidden="true" @click="scrollToBottom"></i>
     </div>
   </div>
 </template>
@@ -269,23 +279,27 @@ export default {
     padding: 0 0.5em;
   }
   display: block; // So that the clickaway plugin triggers nicely
-  #add-button {
+  .add-button {
     margin-left: 100%;
     background-color: @brand-primary;
     transition: bottom 0.25s cubic-bezier(0.4, 0, 1, 1);
     color: @white;
     position: fixed;
-    margin-left: -1.75em;
-    bottom: 12px;
+    margin-left: 0.5em;
     border-radius:2em;
     box-shadow: 0px 7px 10px 0px rgba(0,0,0,0.7);
-    cursor:pointer;
+    cursor: pointer;
     font-size: 1.5em;
     padding: 1em 1.2em;
     line-height: 1.2em;
     text-decoration: none;
-    &.at-bottom {
-      bottom: -100px;
+    &.fixed {
+      position: fixed;
+      bottom: 12px;
+    }
+    &.absolute {
+      position: absolute;
+      transform: translateY(-67px);
     }
     .plus-icon {
       -webkit-text-stroke: 0.12em @brand-primary;
@@ -297,7 +311,6 @@ export default {
       }
     }
     &:active {
-      bottom: 8px;
       box-shadow: 0px 5px 10px 0px rgba(0,0,0,0.5);
     }
     > div {
@@ -392,7 +405,7 @@ export default {
       overflow-y: auto;
       margin: 0px;
       list-style-type: none;
-      padding: 0px 0px 3em 0px;
+      padding: 0;
       li {
         &:nth-child(odd) {
           background-color: darken(@neutral-color, 5%);
@@ -410,11 +423,15 @@ export default {
           }
         }
         margin: 0px;
-        padding: 3px;
+        padding: 1em 0;
         line-height: 1.3;
+        display: flex;
+        align-items: center;
         .fieldLabel {
           display: inline-block;
+          padding-left: 1em;
           width: 45%;
+          font-size: 16px;
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
