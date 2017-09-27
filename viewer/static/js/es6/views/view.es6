@@ -32,6 +32,8 @@ export default class View {
       removableBaseUris: [
         'http://libris.kb.se/',
         'https://libris.kb.se/',
+        'http://id.kb.se/vocab/',
+        'https://id.kb.se/vocab/',
         'http://id.kb.se/',
         'https://id.kb.se/',
       ],
