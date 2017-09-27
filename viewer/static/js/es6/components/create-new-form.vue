@@ -82,6 +82,11 @@ export default {
     'use-template'(templateValue) {
       const templateRecord = Object.assign(this.baseRecord, templateValue.record);
       const templateMainEntity = Object.assign(this.baseMainEntity, templateValue.mainEntity);
+
+      // CLEAN IDS
+      templateRecord['@id'] = '_:TEMP_ID';
+      templateMainEntity['@id'] = '_:TEMP_ID#it';
+
       this.thingData = {
         '@graph': [
           templateRecord,
