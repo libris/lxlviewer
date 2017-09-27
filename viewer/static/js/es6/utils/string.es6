@@ -99,6 +99,19 @@ function translateable(type) {
   return false;
 }
 
+export function extractStrings(obj) {
+  let label = '';
+  _.each(obj, (value, key) => {
+    if (!_.isObject(value)) {
+      label += value;
+    } else {
+      label += extractStrings(value);
+    }
+    label += ' ';
+  });
+  return label;
+}
+
 export function getFormattedEntries(list, vocab, settings) {
   let formatted = [];
   for (const entry of list) {

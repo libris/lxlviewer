@@ -182,19 +182,6 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
   return result;
 }
 
-function extractStrings(obj) {
-  let label = '';
-  _.each(obj, (value, key) => {
-    if (!_.isObject(value)) {
-      label += value;
-    } else {
-      label += extractStrings(value);
-    }
-    label += ' ';
-  });
-  return label;
-}
-
 export function getItemSummary(item, displayDefs, quoted, vocab, settings) {
 
   const card = getCard(item, displayDefs, quoted, vocab, settings);
@@ -230,7 +217,7 @@ export function getItemSummary(item, displayDefs, quoted, vocab, settings) {
 
 export function getItemLabel(item, displayDefs, quoted, vocab, settings) {
   const displayObject = getChip(item, displayDefs, quoted, vocab, settings);
-  let rendered = extractStrings(displayObject).trim();
+  let rendered = StringUtil.extractStrings(displayObject).trim();
   if (item['@type'] && VocabUtil.isSubClassOf(item['@type'], 'Identifier', vocab, settings.vocabPfx)) {
     rendered = `${item['@type']} ${rendered}`;
   }
