@@ -190,6 +190,7 @@ export default {
           this.hide();
           this.changeStatus('lastAdded', propLastPart);
         }
+        this.$dispatch('expand-item');
       }
     },
     show() {
