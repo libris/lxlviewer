@@ -3,7 +3,7 @@ import * as StringUtil from '../utils/string';
 import * as httpUtil from '../utils/http';
 import * as UserUtil from '../utils/user';
 import { changeResultListStatus, changeSettings } from '../vuex/actions';
-import { getSettings } from '../vuex/getters';
+import { getSettings, getVocabulary } from '../vuex/getters';
 
 export default {
   name: 'search-pagination',
@@ -14,6 +14,7 @@ export default {
     },
     getters: {
       settings: getSettings,
+      vocab: getVocabulary,
     },
   },
   props: {
