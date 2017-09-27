@@ -92,10 +92,10 @@ export default class View {
       ],
       dataSetFilters: {
         libris: [
-          'Instance',
-          'Work',
-          'Agent',
-          'Concept',
+          'https://id.kb.se/vocab/Instance',
+          'https://id.kb.se/vocab/Work',
+          'https://id.kb.se/vocab/Agent',
+          'https://id.kb.se/vocab/Concept',
         ],
       },
     };

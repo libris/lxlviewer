@@ -27,17 +27,19 @@
   <body {% block bodyattrs %}{% endblock %}>
     <div id="body-blocker"></div>
     <div id="oldbrowsermsg" style="display:none">
-      <h1>${g.site.title}</h1>
-      <p>Din webbläsare stöds inte av tjänsten.<br>
-        <br>
-        <u>Kompatibla webbläsare:</u><br>
-        Google Chrome<br>
-        Mozilla Firefox<br>
-        Apple Safari<br>
-        Microsoft Internet Explorer (version 9 eller senare)<br>
-        <br><br>
-        Kontakta oss via <a href="mailto:libris@kb.se">libris@kb.se</a> om du har några frågor.
-    </p>
+      <div>
+        <h2>${g.site.title}</h2>
+        <h1>Din webbläsare stöds inte av tjänsten <i class="fa fa-meh-o"></i></h1><br>
+          <br>
+          <u>Kompatibla webbläsare:</u><br>
+          Google Chrome<br>
+          Mozilla Firefox<br>
+          Apple Safari<br>
+          Microsoft Internet Explorer (version 9 eller senare)<br>
+          <br><br>
+          Kontakta oss via <a href="mailto:libris@kb.se">libris@kb.se</a> om du har några frågor.
+        </p>
+      </div>
     </div>
     {% block navigation %}
     % if g.site.stylesheet

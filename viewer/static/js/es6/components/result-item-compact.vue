@@ -2,6 +2,7 @@
 import LensMixin from './mixins/lens-mixin';
 import ResultMixin from './mixins/result-mixin';
 import EntitySummary from './entity-summary';
+import * as StringUtil from '../utils/string';
 import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData } from '../vuex/getters';
 
 export default {

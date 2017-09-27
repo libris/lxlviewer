@@ -152,10 +152,12 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
         } else if (_.isArray(value)) {
           const newArray = [];
           for (const arrayItem of value) {
-            if (_.isObject(arrayItem)) {
+            if (_.isObject(arrayItem) && (Object.keys(arrayItem).length > 1 || arrayItem[Object.keys(arrayItem)[0]] !== '')) {
               newArray.push(getItemLabel(arrayItem, displayDefs, quoted, vocab, settings));
-            } else {
+            } else if (arrayItem.length > 0) {
               newArray.push(arrayItem);
+            } else {
+              console.warn("Array contained unknown item", arrayItem);
             }
           }
           value = newArray;

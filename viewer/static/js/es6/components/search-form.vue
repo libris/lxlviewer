@@ -2,14 +2,16 @@
 import * as _ from 'lodash';
 import PropertyMappings from '../propertymappings.json';
 import * as httpUtil from '../utils/http';
+import * as StringUtil from '../utils/string';
 import { changeResultListStatus, changeStatus } from '../vuex/actions';
-import { getSettings, getStatus } from '../vuex/getters';
+import { getSettings, getStatus, getVocabulary } from '../vuex/getters';
 export default {
   name: 'search-form',
   vuex: {
     getters: {
       settings: getSettings,
       status: getStatus,
+      vocab: getVocabulary,
     },
     actions: {
       changeStatus,
@@ -26,7 +28,7 @@ export default {
   data() {
     return {
       vocabUrl: 'https://id.kb.se/vocab/',
-      inputData: {  
+      inputData: {
         textInput: [
             {
                 value: '',
@@ -34,7 +36,7 @@ export default {
             },
         ],
         currentInput: 0,
-        types: [],
+        ids: [],
       },
     }
   },
@@ -107,7 +109,8 @@ export default {
             }
         }
         queryText.push('_limit=20');
-        _.each(this.inputData.types, type => queryText.push(`@type=${type}`));
+        _.each(this.inputData.ids, id => queryText.push(`${this.filterParam}=${id}`));
+        // _.each(this.inputData.ids, type => queryText.push(`@type=${type}`));
         const url = `/find?${queryText.join('&')}`;
         const resultPromise = new Promise((resolve, reject) => {
             httpUtil.get({ url: url, accept: 'application/ld+json' })
@@ -131,20 +134,13 @@ export default {
   computed: {
       observations() {
           const observations = [];
-          const dimensionObservations = this.result.statistics.sliceByDimension; //this.result.stats.sliceByDimension
+          const statistics = this.result.statistics || this.result.stats;
+          const dimensionObservations = statistics.sliceByDimension; //this.result.stats.sliceByDimension
           _.each(dimensionObservations, dimensionObservation => {
             _.each(dimensionObservation.observation, observation => {
               const obs = {};
               obs['@id'] = observation.object['@id'].replace(this.vocabUrl, '');
-              if (typeof observation.object.titleByLang !== 'undefined') {
-                  obs['label'] = observation.object.titleByLang['sv'];
-              } else if (typeof observation.object.label !== 'undefined') {
-                  obs['label'] = observation.object.label;
-              } else if (typeof observation.object.notation !== 'undefined') {
-                  obs['label'] = observation.object.notation.join(', ');
-              } else {
-                  obs['label'] = observation.object['@id'].replace(this.vocabUrl, '');
-              }
+              obs.label = StringUtil.getLabelFromObject(observation.object, this.settings.language);
               observations.push(obs);
             });
           });
@@ -152,9 +148,14 @@ export default {
       },
       dataSetFilters() {
           if (this.settings.siteInfo.title === 'libris.kb.se') {
-            return this.settings.dataSetFilters.libris;
+            return this.settings.dataSetFilters.libris.map(term => {
+              return {
+                '@id': term.replace(this.settings.vocabPfx, ''),
+                'label': StringUtil.labelByLang(term, this.settings.language, this.vocab, this.settings.vocabPfx)
+              };
+            });
           }
-          return this.observations.map(observation => observation['@id']);
+          return this.observations;
       },
       currentIsTag() {
           return this.currentField.value.indexOf(':') > -1;
@@ -231,10 +232,10 @@ export default {
                 </div>
             </div>
 
-            <div class="type-buttons" aria-label="Välj typ">
+            <div class="type-buttons" aria-label="Välj typ" v-if="!result.totalItems || settings.siteInfo.title === 'libris.kb.se'">
                 <label v-for="filter in dataSetFilters">
-                    <input :value="filter" type="checkbox" :checked="filter === 'Instance'" v-model="inputData.types">
-                    {{filter | labelByLang}}
+                    <input :value="filter['@id']" type="checkbox" :checked="filter['@id'] === 'Instance'" v-model="inputData.ids">
+                    {{ filter.label }}
                 </label>
             </div>
         </form>
