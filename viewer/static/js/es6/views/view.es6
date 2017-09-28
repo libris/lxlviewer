@@ -45,6 +45,7 @@ export default class View {
       lockedProperties: [
         'heldBy',
         'itemOf',
+        'mainEntity'
       ],
       disallowLocal: [
         'instanceOf',

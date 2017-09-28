@@ -1,18 +1,23 @@
 <script>
 import LensMixin from './mixins/lens-mixin';
 import { mixin as clickaway } from 'vue-clickaway';
-import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData } from '../vuex/getters';
+import { getSettings, getStatus, getVocabulary, getDisplayDefinitions, getEditorData } from '../vuex/getters';
+import { changeStatus } from '../vuex/actions';
 
 export default {
   name: 'record-summary',
   mixins: [clickaway, LensMixin],
   vuex: {
     getters: {
+      status: getStatus,
       settings: getSettings,
       editorData: getEditorData,
       vocab: getVocabulary,
       display: getDisplayDefinitions,
     },
+    actions: {
+      changeStatus,
+    }
   },
   props: {
   },
@@ -22,10 +27,16 @@ export default {
     }
   },
   methods: {
+    toggleRecord() {
+      this.$dispatch('toggle-record');
+    },
   },
   computed: {
     focusData() {
       return this.editorData.record;
+    },
+    showRecord() {
+      return this.status.showRecord;
     },
   },
   components: {
@@ -40,11 +51,11 @@ export default {
 <template>
   <div class="record-summary-container">
     <div>
-      <span class="record-chip-element">Skapad {{ getCard.created }} av {{ getCard.assigner || 'okänd' }}</span> | 
+      <span class="record-chip-element">Skapad {{ getCard.created }} av {{ getCard.assigner || 'okänd' }}</span> |
       <span class="record-chip-element">Ändrad {{ getCard.modified }} av {{ getCard.descriptionModifier || 'okänd' }}</span>
     </div>
-    <span @click="showFull = true">{{'Show record data' | translatePhrase}}</span>
-    <div class="container-wrapper" v-if="showFull">
+    <span v-on:click="toggleRecord">{{'Show record data' | translatePhrase}}</span>
+    <!-- <div class="container-wrapper" v-if="showFull">
       <div class="full-info-container" v-on-clickaway="showFull = false">
         <div v-for="(k, v) in getCard">
           <span class="record-key">
@@ -55,7 +66,7 @@ export default {
           </span>
         </div>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 

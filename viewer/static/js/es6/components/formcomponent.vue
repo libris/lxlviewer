@@ -32,6 +32,7 @@ export default {
   },
   props: {
     locked: false,
+    editingObject: '',
   },
   data() {
     return {
@@ -48,7 +49,7 @@ export default {
     specialProperties() {
       const props = [];
       for (const prop of this.settings.specialProperties) {
-        if (this.editorData.mainEntity[prop]) {
+        if (this.editorData[this.editingObject][prop]) {
           props.push(prop);
         }
       }
@@ -111,7 +112,7 @@ export default {
       return sortedAllowed;
     },
     formData() {
-      return this.editorData.mainEntity;
+      return this.editorData[this.editingObject];
     },
     sortedFormData() {
       const sortedForm = {};
@@ -172,15 +173,6 @@ export default {
 
       return propertyList;
     },
-    dummyInstance() {
-      return DisplayUtil.getItemLabel(
-        this.editorData.mainEntity,
-        this.display,
-        this.editorData.quoted,
-        this.vocab,
-        this.settings
-      );
-    },
   },
   watch: {
   },
@@ -204,12 +196,12 @@ export default {
         newItem[key] = value;
         modified = Object.assign({}, this.formData, newItem);
       }
-      this.updateForm('mainEntity', modified);
+      this.updateForm(this.editingObject, modified);
     },
     'remove-field'(path) {
       const modifiedData = _.cloneDeep(this.formData);
       _.unset(modifiedData, path);
-      this.updateForm('mainEntity', modifiedData);
+      this.updateForm(this.editingObject, modifiedData);
     },
     'update-value'(path, value) {
       console.log("FormComp: - Updating " + path, 'to', JSON.stringify(value));
@@ -219,7 +211,7 @@ export default {
       console.log("New value recieved for", path, "=", value);
       console.log(modified);
       this.changeStatus('removing', false);
-      this.updateForm('mainEntity', modified);
+      this.updateForm(this.editingObject, modified);
     },
   },
   methods: {
@@ -227,7 +219,7 @@ export default {
       return (this.isLocked || key === '@id' || key === '@type');
     },
     updateFromTextarea(e) {
-      this.updateForm('mainEntity', JSON.parse(e.target.value));
+      this.updateForm(this.editingObject, JSON.parse(e.target.value));
     },
   },
   components: {
@@ -241,8 +233,8 @@ export default {
 
 <template>
   <div class="form-component focused-form-component" :class="{ 'locked': isLocked }">
-    <data-node v-for="k in specialProperties" :key="k" :value="editorData.mainEntity[k]" :entity-type="editorData.mainEntity['@type']" is-locked="true"></data-node>
-    <data-node v-for="(k,v) in sortedFormData" v-bind:class="{ 'locked': isLocked }"  :entity-type="editorData.mainEntity['@type']" :is-inner="false" :is-removable="true" :is-locked="keyIsLocked(k)" :key="k" :value="v" :allow-local="true"></data-node>
+    <data-node v-for="k in specialProperties" :key="k" :value="editorData[editingObject][k]" :entity-type="editorData[editingObject]['@type']" is-locked="true"></data-node>
+    <data-node v-for="(k,v) in sortedFormData" v-bind:class="{ 'locked': isLocked }" :entity-type="editorData[editingObject]['@type']" :is-inner="false" :is-removable="true" :is-locked="keyIsLocked(k)" :key="k" :value="v" :allow-local="true"></data-node>
     <field-adder v-if="!isLocked" :allowed="allowedProperties" :inner="false"></field-adder>
     <div id="result" v-if="status.isDev && !isLocked">
       <div class="row">
@@ -267,6 +259,7 @@ export default {
 .form-component {
   border: solid #ccc;
   border-width: 1px;
+  margin-bottom: 2em;
   &.locked {
     > ul > li {
       margin: 0px;
