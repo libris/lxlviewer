@@ -20,6 +20,7 @@ export default {
     }
   },
   props: {
+    showRecord: false,
   },
   data() {
     return {
@@ -35,9 +36,6 @@ export default {
     focusData() {
       return this.editorData.record;
     },
-    showRecord() {
-      return this.status.showRecord;
-    },
   },
   components: {
   },
@@ -52,9 +50,10 @@ export default {
   <div class="record-summary-container">
     <div>
       <span class="record-chip-element">Skapad {{ getCard.created }} av {{ getCard.assigner || 'okänd' }}</span> |
-      <span class="record-chip-element">Ändrad {{ getCard.modified }} av {{ getCard.descriptionModifier || 'okänd' }}</span>
+      <span class="record-chip-element">Ändrad {{ getCard.modified }} av {{ getCard.descriptionModifier || 'okänd' }}</span> |
+      <span class="show-record-toggle" v-show="!showRecord" v-on:click="toggleRecord">{{'Show admin metadata' | translatePhrase}}</span>
+      <span class="show-record-toggle" v-show="showRecord" v-on:click="toggleRecord">{{'Hide admin metadata' | translatePhrase}}</span>
     </div>
-    <span v-on:click="toggleRecord">{{'Show record data' | translatePhrase}}</span>
     <!-- <div class="container-wrapper" v-if="showFull">
       <div class="full-info-container" v-on-clickaway="showFull = false">
         <div v-for="(k, v) in getCard">
@@ -78,9 +77,7 @@ export default {
   flex-direction: row;
   padding: 1em 1em;
   align-items: center;
-  > span {
-    display: flex;
-    flex-direction: row;
+  .show-record-toggle {
     cursor: pointer;
     font-size: 13px;
     text-decoration: underline;
