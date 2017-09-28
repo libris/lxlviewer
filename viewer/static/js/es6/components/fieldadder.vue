@@ -204,8 +204,6 @@ export default {
       this.changeStatus('keybindState', 'field-adder');
     },
     hide() {
-      const fieldsWindow = document.getElementById('fields-window');
-      fieldsWindow.removeEventListener('scroll', this.toggleWindowFade);
       if (!this.active) return;
       this.active = false;
       LayoutUtil.scrollLock(false);
