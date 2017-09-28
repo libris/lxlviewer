@@ -6,7 +6,6 @@
 import * as _ from 'lodash';
 import EntityAdder from './entityadder';
 import ItemEntity from './item-entity';
-import ItemEmbedded from './item-embedded';
 import ItemEnumeration from './item-enumeration';
 import ItemValue from './item-value';
 import ItemLocal from './item-local';
@@ -62,7 +61,6 @@ export default {
   components: {
     'item-entity': ItemEntity,
     'item-value': ItemValue,
-    'item-embedded': ItemEmbedded,
     'item-enumeration': ItemEnumeration,
     'item-local': ItemLocal,
     'entity-adder': EntityAdder,
@@ -364,7 +362,6 @@ export default {
         <item-enumeration v-if="getDatatype(item) == 'enumeration'" :is-locked="locked" :entity-type="entityType" :possible-values="possibleValues" :expanded="isExpandedType" :value="item" :key="key" :index="$index" :show-action-buttons="showActionButtons"></item-enumeration>
         <item-entity v-if="getDatatype(item) == 'entity'" :is-locked="locked" :expanded="isExpandedType" :item="item" :key="key" :index="$index"></item-entity>
         <item-local v-if="getDatatype(item) == 'local'" :is-locked="locked" :is-expanded-type="isExpandedType" :item="item" :key="key" :index="$index" :parent-path="getPath" :in-array="valueIsArray" :show-action-buttons="showActionButtons"></item-local>
-        <item-embedded v-if="getDatatype(item) == 'embedded'" :is-locked="locked" :item="item" :key="key" :index="$index" :show-action-buttons="showActionButtons"></item-embedded>
       </li>
     </ul>
     <ul v-if="!isObjectArray">
