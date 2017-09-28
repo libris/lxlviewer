@@ -136,7 +136,7 @@ export default {
         <option v-for="option in possibleValues" v-bind:value="option">{{ option.prefLabelByLang[this.settings.language] || option.prefLabelByLang['en'] }}{{ option.notation ? ` (${option.notation})` : '' }}</option>
       </select>
     </div>
-    <div class="remover" v-show="!isLocked" v-on:click="removeThis()" @mouseover="removeHover = true" @mouseout="removeHover = false"><i class="fa fa-trash"></i></div>
+    <div class="remover" v-show="!isLocked" v-on:click="removeThis()" @mouseover="removeHover = true" @mouseout="removeHover = false"><i class="fa fa-trash-o"></i></div>
   </div>
 </template>
 
@@ -145,6 +145,9 @@ export default {
 
 .item-enumeration {
   border: solid 1px transparent;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   .item-value {
     padding-left: 5px;
   }
@@ -152,6 +155,10 @@ export default {
     max-width: 95%;
     display: inline-block;
     &.enumeration-dropdown {
+      width: 94%;
+      > select {
+        width: 100%;
+      }
     }
     &.enumeration-radio {
       list-style: none;
