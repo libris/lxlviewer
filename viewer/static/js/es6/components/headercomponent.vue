@@ -114,6 +114,7 @@ export default {
   margin-bottom: 2em;
   outline: solid #ccc;
   outline-width: 1px;
+  border-bottom: 1px solid #ccc;
   .header-component {
     flex: 8 8 100%;
     max-width: 100%;
@@ -121,7 +122,8 @@ export default {
     border-right: 1px solid #ccc;
     &.full {
       .entity-summary {
-        border-width: 0px 0px 1px 0px;
+        border-width: 0;
+        height: 100%;
       }
     }
     &.compact {
