@@ -94,7 +94,7 @@ export default {
       if (this.inArray) {
         return `${this.parentPath}[${this.index}]`;
       }
-      return this.parentPath; 
+      return this.parentPath;
     },
     filteredItem() {
       const fItem = Object.assign({}, this.item);
