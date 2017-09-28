@@ -259,6 +259,7 @@ export default {
 .form-component {
   border: solid #ccc;
   border-width: 1px;
+  margin-bottom: 2em;
   &.locked {
     > ul > li {
       margin: 0px;
