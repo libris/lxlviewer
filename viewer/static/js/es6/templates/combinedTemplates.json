@@ -1206,7 +1206,7 @@
   },
   "agent": {
     "person":{
-      "label:": "Person",
+      "label": "Person",
       "description": "Person bas",
       "value": {
         "record": {
