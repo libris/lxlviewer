@@ -119,8 +119,12 @@ export default class Editor extends View {
         initialized: false,
         combokeys: null,
         locked: true,
+        showRecord: false,
       },
       events: {
+        'toggle-record': function () {
+          this.showRecord = !this.showRecord;
+        },
         'focus-update': function(value, oldValue) {
           const newData = this.editorData;
           console.log("Update");
@@ -347,6 +351,7 @@ export default class Editor extends View {
         this.changeStatus('lastSavedData', Object.assign({}, self.dataIn));
         this.initialized = true;
         this.changeStatus('keybindState', 'overview');
+        this.changeStatus('showRecord', false);
         this.updateDocumentTitle(this.entityTitle);
 
         const atId = this.editorData.record['@id'];
