@@ -120,6 +120,7 @@ export default class Editor extends View {
         combokeys: null,
         locked: true,
         showRecord: false,
+        relatedInstances: [],
       },
       events: {
         'toggle-record': function () {
@@ -246,6 +247,38 @@ export default class Editor extends View {
         },
       },
       methods: {
+        getRelatedInstances() {
+          if (VocabUtil.isSubClassOf(this.editorData.mainEntity['@type'], 'Work', this.vocab, this.settings.vocabPfx)) {
+            const getInstancesUrl = `/_dependencies?id=${this.editorData.record['@id']}&relation=instanceOf&reverse=true`;
+            httpUtil.get({ url: getInstancesUrl, accept: 'application/ld+json' }).then((response) => {
+              console.log(response);
+              _.each(response, (node) => {
+                console.log("Extracting title from", node);
+                this.extractTitle(node).then((titleArray) => {
+                  console.log("Extracted", titleArray);
+                  this.relatedInstances = this.relatedInstances.concat(titleArray);
+                }, (error) => {
+                  console.log(error);
+                });
+              })
+            }, (error) => {
+              console.log('Error checking for related instances');
+            });
+          }
+        },
+        extractTitle(id) {
+          return new Promise((resolve, reject) => {
+            console.log("Getting", id);
+            httpUtil.get({ url: id, accept: 'application/ld+json' }).then((response) => {
+              console.log("Found", id);
+              const mainEntity = RecordUtil.getMainEntity(response['@graph']);
+              console.log("mainEntity found", mainEntity);
+              resolve(mainEntity.hasTitle);
+            }, (error) => {
+              reject(Error('Something failed', error));
+            });
+          });
+        },
         updateDocumentTitle(recordTitle) {
           const pageTitle = `${recordTitle} - ${this.settings.siteInfo.title}`;
           document.title = pageTitle;
@@ -362,6 +395,8 @@ export default class Editor extends View {
         this.changeStatus('keybindState', 'overview');
         this.changeStatus('showRecord', false);
         this.updateDocumentTitle(this.entityTitle);
+
+        this.getRelatedInstances();
 
         // add own mainentity to quoted graph so that we can self-reference
         this.$dispatch('add-linked', this.editorData.mainEntity);
