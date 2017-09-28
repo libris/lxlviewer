@@ -43,9 +43,13 @@ export default class View {
         '@type',
       ],
       lockedProperties: [
+        'controlNumber',
+        'systemNumber',
         'heldBy',
         'itemOf',
-        'mainEntity'
+        'mainEntity',
+        'created',
+        'modified',
       ],
       disallowLocal: [
         'instanceOf',
