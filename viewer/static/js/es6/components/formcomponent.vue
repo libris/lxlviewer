@@ -172,15 +172,6 @@ export default {
 
       return propertyList;
     },
-    dummyInstance() {
-      return DisplayUtil.getItemLabel(
-        this.editorData.mainEntity,
-        this.display,
-        this.editorData.quoted,
-        this.vocab,
-        this.settings
-      );
-    },
   },
   watch: {
   },
