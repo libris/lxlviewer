@@ -18,9 +18,10 @@
 <div id="editorApp">
   <help-component :open-all="true"></help-component>
   <record-summary v-if="initialized == true"></record-summary>
+  <form-component v-show="showRecord" editing-object="record" :locked="!status.inEdit" v-if="initialized == true"></form-component>
   <header-component id="main-header" :full="true" v-if="initialized == true && !isItem"></header-component>
   <editor-controls v-if="initialized == true"></editor-controls>
-  <form-component :locked="!status.inEdit" v-if="initialized == true"></form-component>
+  <form-component editing-object="mainEntity" :locked="!status.inEdit" v-if="initialized == true"></form-component>
   <notification v-if="initialized == true"></notification>
 </div>
 </div>
