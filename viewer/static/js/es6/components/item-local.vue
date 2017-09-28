@@ -327,7 +327,7 @@ export default {
     <div v-if="!isExpandedType" class="item-local" :class="{'expanded': expanded}">
       <span class="topbar">
         <i class="fa fa-chevron-right" :class="{'down': expanded}" @click="toggleExpanded()"></i>
-        <span class="type" @click="toggleExpanded()">{{ item['@type'] | labelByLang | capitalize }}</span>
+        <span class="type" @click="toggleExpanded()" title="{{ item['@type'] }}">{{ item['@type'] | labelByLang | capitalize }}</span>
         <span class="collapsed-label" @click="toggleExpanded()"><span v-show="!expanded || isEmpty">{{collapsedLabel}}</span><span class="placeholder">.</span></span>
         <span class="actions">
           <div class="confirm-remove-box" v-if="removeConfirmation" v-on-clickaway="removeConfirmation = false">
