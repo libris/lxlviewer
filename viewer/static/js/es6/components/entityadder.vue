@@ -27,7 +27,7 @@ export default {
       showToolTip: false,
       rangeInfo: false,
       selectedType: '',
-      addEmbedded: false,
+      addEmbedded: (this.valueList.length === 0),
       searchMade: false,
       currentSearchTypes: this.allSearchTypes,
     };
@@ -74,6 +74,13 @@ export default {
     'entity-search-list': EntitySearchList,
   },
   watch: {
+    valueList(newVal) {
+      if (newVal.length === 0) {
+        this.addEmbedded = true;
+      } else {
+        this.addEmbedded = false;
+      }
+    },
     keyword(value) {
       this.searchMade = false;
       let searchPhrase = value;
@@ -169,8 +176,10 @@ export default {
       }
     },
     dismissTypeChooser() {
-      this.addEmbedded = false;
-      this.selectedType = '';
+      if (this.valueList.length > 0) {
+        this.addEmbedded = false;
+        this.selectedType = '';
+      }
     },
     add() {
       if (this.isEnumeration) {
@@ -268,7 +277,7 @@ export default {
 </script>
 
 <template>
-<div class="entity-adder" :class="{'inner-adder': isPlaceholder}">
+<div class="entity-adder" :class="{'inner-adder': isPlaceholder, 'fill-width': addEmbedded}">
   <div v-if="isPlaceholder && !addEmbedded" v-on:click="add()">
     <span class="chip-label"><i class="fa fa-fw fa-plus plus-icon" aria-hidden="true"></i></span>
   </div>
@@ -346,6 +355,9 @@ export default {
   .disabled {
     visibility: hidden;
   }
+  &.fill-width {
+    width: 100%;
+  }
   &.inner-adder {
     cursor: pointer;
   }
@@ -358,7 +370,10 @@ export default {
   .type-chooser {
     text-align: center;
     padding: 5px;
-    border: 1px dashed @gray-darker;
+    border: 2px solid #b2b2b2;
+    > select {
+      width: 100%;
+    }
   }
   .add-entity-button {
     padding: 0.3em 0;
