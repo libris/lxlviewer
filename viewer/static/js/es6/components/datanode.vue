@@ -342,7 +342,7 @@ export default {
     <div>
       <span v-show="key === '@id'">{{ 'ID' | translatePhrase | capitalize }}</span>
       <span v-show="key === '@type'">{{ 'Type' | translatePhrase | capitalize }}</span>
-      <span v-show="key !== '@id' && key !== '@type'">{{ key | labelByLang | capitalize }}</span>
+      <span v-show="key !== '@id' && key !== '@type'" title="{{ key }}">{{ key | labelByLang | capitalize }}</span>
       <div v-if="propertyComment && !locked" class="comment-icon">
         <i class="fa fa-question-circle"></i>
         <div class="comment">{{ propertyComment }}</div>
