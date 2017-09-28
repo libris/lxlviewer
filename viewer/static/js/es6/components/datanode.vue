@@ -304,6 +304,9 @@ export default {
       }
       const recordId = this.editorData.record['@id'];
       if (o.hasOwnProperty('@id') && !o.hasOwnProperty('@type')) {
+        if (o['@id'] === this.editorData.mainEntity['@id']) {
+          return true;
+        }
         if (o['@id'].indexOf(recordId) > -1) {
           return false;
         }

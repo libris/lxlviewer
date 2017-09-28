@@ -147,6 +147,15 @@ export default class Editor extends View {
           let found = false;
           _.each(newData.quoted, (node) => {
             if (node['@id'] === graphId) {
+              let subnodefound = false;
+              _.each(node['@graph'], (subnode) => {
+                if (subnode['@id'] === item['@id']) {
+                  subnodefound = true;
+                }
+              });
+              if (!subnodefound) {
+                node['@graph'].push(item);
+              }
               found = true;
             }
           });
@@ -353,6 +362,9 @@ export default class Editor extends View {
         this.changeStatus('keybindState', 'overview');
         this.changeStatus('showRecord', false);
         this.updateDocumentTitle(this.entityTitle);
+
+        // add own mainentity to quoted graph so that we can self-reference
+        this.$dispatch('add-linked', this.editorData.mainEntity);
 
         const atId = this.editorData.record['@id'];
         if (!atId || atId === '_:TEMP_ID') {
