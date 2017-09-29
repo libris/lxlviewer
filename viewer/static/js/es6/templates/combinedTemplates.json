@@ -1388,7 +1388,7 @@
               "code": "Fack"
             }
           ],
-          "prefLabel": "Allmänt ämnesord",
+          "prefLabel": "",
           "closeMatch": [
             {
               "@type": "ClassificationDdc",
@@ -1411,7 +1411,7 @@
             }
           ],
           "altLabel": [
-            "Se-hänvisning"
+            ""
           ],
           "broader": [
             {
@@ -1439,7 +1439,7 @@
             "Anmärkning: Hit verk om"
           ],
           "historyNote": [
-            "Anmärkning tillämpningshistorik"
+            ""
           ]
         }
       }
