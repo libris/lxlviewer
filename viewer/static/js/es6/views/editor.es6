@@ -120,7 +120,7 @@ export default class Editor extends View {
         combokeys: null,
         locked: true,
         showRecord: false,
-        relatedInstances: [],
+        relatedTitles: [],
       },
       events: {
         'toggle-record': function () {
@@ -247,22 +247,25 @@ export default class Editor extends View {
         },
       },
       methods: {
-        getRelatedInstances() {
+        getRelatedTitles() {
           if (VocabUtil.isSubClassOf(this.editorData.mainEntity['@type'], 'Work', this.vocab, this.settings.vocabPfx)) {
-            const getInstancesUrl = `/_dependencies?id=${this.editorData.record['@id']}&relation=instanceOf&reverse=true`;
-            httpUtil.get({ url: getInstancesUrl, accept: 'application/ld+json' }).then((response) => {
-              console.log(response);
+            RecordUtil.getRelatedPosts(this.editorData.record['@id'], 'instanceOf').then((response) => {
               _.each(response, (node) => {
                 console.log("Extracting title from", node);
                 this.extractTitle(node).then((titleArray) => {
                   console.log("Extracted", titleArray);
-                  this.relatedInstances = this.relatedInstances.concat(titleArray);
+                  const displayTitles = [];
+                  _.each(titleArray, (title) => {
+                    const chipObj = DisplayUtil.getChip(title, this.display, this.editorData.quoted, this.vocab, this.settings);
+                    displayTitles.push(StringUtil.extractStrings(chipObj));
+                  });
+                  this.relatedTitles = this.relatedTitles.concat(displayTitles);
                 }, (error) => {
                   console.log(error);
                 });
-              })
+              });
             }, (error) => {
-              console.log('Error checking for related instances');
+              console.log(error);
             });
           }
         },
@@ -396,7 +399,7 @@ export default class Editor extends View {
         this.changeStatus('showRecord', false);
         this.updateDocumentTitle(this.entityTitle);
 
-        this.getRelatedInstances();
+        this.getRelatedTitles();
 
         // add own mainentity to quoted graph so that we can self-reference
         this.$dispatch('add-linked', this.editorData.mainEntity);

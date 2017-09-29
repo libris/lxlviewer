@@ -22,10 +22,10 @@
   <header-component id="main-header" :full="true" v-if="initialized == true && !isItem"></header-component>
   <editor-controls v-if="initialized == true"></editor-controls>
   <form-component editing-object="mainEntity" :locked="!status.inEdit" v-if="initialized == true"></form-component>
-  <div v-if="relatedInstances.length > 0" class="relation-experiment">
-    <span>(experiment)</span> <h3 v-if="!editorData.mainEntity.hasOwnProperty('hasTitle')">Posten saknar titel, här är förslag</h3>
-    <ul v-for="title in relatedInstances">
-    <li v-for="(key, value) in title" v-show="key !== '@type'">{{value}}</li>
+  <div v-if="relatedTitles.length > 0 && !editorData.mainEntity.hasOwnProperty('hasTitle')" class="relation-experiment">
+    <span>(experiment)</span> <h3>Posten saknar titel, här är förslag</h3>
+    <ul>
+    <li v-for="title in relatedTitles">{{title}}</li>
   </ul></div>
   <notification v-if="initialized == true"></notification>
 </div>
