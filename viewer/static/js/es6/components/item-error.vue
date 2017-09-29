@@ -38,7 +38,7 @@ export default {
 </script>
 
 <template>
-  <div class="erroneous-object"><i class="fa fa-frown-o"></i> Unidentifiable object: {{itemAsJson}}</div>
+  <div class="erroneous-object"><i class="fa fa-frown-o"></i> Unhandled object structure<br><code>{{itemAsJson}}</code></div>
 </template>
 
 <style lang="less">
