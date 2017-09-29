@@ -124,12 +124,18 @@ export default {
         float: right;
         h1, h2, h3, h4 {
           font-weight: normal;
-          margin-top: 0px;
-          border: solid @gray;
+          margin-top: 0;
+          border: solid;
           border-width: 0px 0px 1px 0px;
         }
         p {
-          margin: 0.5em 0px 1.5em;
+          margin: 0.5em 0px 1em;
+        }
+        code {
+          padding: 4px;
+          font-size: 90%;
+          color: #000000;
+          background-color: #fbebef;
         }
       }
       .menu {
