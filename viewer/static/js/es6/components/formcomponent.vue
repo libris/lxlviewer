@@ -196,12 +196,12 @@ export default {
         newItem[key] = value;
         modified = Object.assign({}, this.formData, newItem);
       }
-      this.updateForm(this.editingObject, modified);
+      this.updateForm(this.editingObject, modified, this.formData);
     },
     'remove-field'(path) {
       const modifiedData = _.cloneDeep(this.formData);
       _.unset(modifiedData, path);
-      this.updateForm(this.editingObject, modifiedData);
+      this.updateForm(this.editingObject, modifiedData, this.formData);
     },
     'update-value'(path, value) {
       console.log("FormComp: - Updating " + path, 'to', JSON.stringify(value));
@@ -211,7 +211,7 @@ export default {
       console.log("New value recieved for", path, "=", value);
       console.log(modified);
       this.changeStatus('removing', false);
-      this.updateForm(this.editingObject, modified);
+      this.updateForm(this.editingObject, modified, this.formData);
     },
   },
   methods: {
@@ -219,7 +219,7 @@ export default {
       return (this.isLocked || key === '@id' || key === '@type');
     },
     updateFromTextarea(e) {
-      this.updateForm(this.editingObject, JSON.parse(e.target.value));
+      this.updateForm(this.editingObject, JSON.parse(e.target.value), this.formData);
     },
   },
   components: {

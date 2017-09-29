@@ -12,7 +12,7 @@ import * as StringUtil from '../utils/string';
 import * as RecordUtil from '../utils/record';
 import LensMixin from './mixins/lens-mixin';
 import { mixin as clickaway } from 'vue-clickaway';
-import { changeSavedStatus, changeStatus, changeNotification } from '../vuex/actions';
+import { changeSavedStatus, changeStatus, changeNotification, navigateChangeHistory } from '../vuex/actions';
 import { getSettings, getVocabulary, getVocabularyClasses, getDisplayDefinitions, getEditorData, getStatus } from '../vuex/getters';
 
 export default {
@@ -29,6 +29,7 @@ export default {
       changeSavedStatus,
       changeStatus,
       changeNotification,
+      navigateChangeHistory,
     },
   },
   mixins: [clickaway, LensMixin],
@@ -66,6 +67,9 @@ export default {
     duplicate() {
       this.duplicating = true;
       this.$dispatch('duplicate-item');
+    },
+    navigateFormChanges(direction) {
+      this.navigateChangeHistory(this.editingObject, direction);
     },
     openDuplicateWindow() {
       this.showDuplicateWindow = true;
@@ -157,6 +161,9 @@ export default {
       this.copyRecord = RecordUtil.splitJson(RecordUtil.getObjectAsRecord(mainEntity));
     },
   },
+  props: {
+    editingObject: '',
+  },
   data() {
     return {
       showAdminInfoDetails: false,
@@ -242,6 +249,10 @@ export default {
         </div>
         <div>
           <button class="removeButton" v-show="status.inEdit && !status.isNew" @click="removePost"><i class="fa fa-trash" aria-hidden="true"></i> {{"Remove" | translatePhrase}} post</button>
+          <button v-show="status.inEdit" @click="navigateFormChanges('back')">
+            <i class="fa fa-undo" aria-hidden="true"></i>
+            {{"Undo" | translatePhrase}}
+          </button>
           <button v-show="status.inEdit" @click="cancelEdit">
             <i class="fa fa-times" aria-hidden="true" v-show="!loadingCancel"></i>
             <i class="fa fa-fw fa-circle-o-notch fa-spin" aria-hidden="true" v-show="loadingCancel"></i>

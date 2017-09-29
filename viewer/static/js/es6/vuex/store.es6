@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import * as UserUtil from '../utils/user';
 import * as VocabUtil from '../utils/vocab';
+import _ from 'lodash';
 
 Vue.use(Vuex);
 
@@ -42,6 +43,10 @@ const state = {
       info: '',
     },
     removing: false,
+    changeHistory: {
+      mainEntity: [],
+      record: [],
+    },
   },
 };
 
@@ -49,8 +54,17 @@ const mutations = {
   SYNCPOST (state, data) {
     Vue.set(state.editor, 'data', data);
   },
-  UPDATE_FORM (state, form, data) {
+  UPDATE_FORM (state, form, data, oldData) {
+    state.status.changeHistory[form].unshift(_.cloneDeep(oldData));
     Vue.set(state.editor.data, form, data);
+  },
+  NAVIGATE_CHANGE_HISTORY (state, form, direction) {
+    if (state.status.changeHistory[form].length > 0) {
+      if (direction === 'back') {
+        const test = state.status.changeHistory[form].shift();
+        Vue.set(state.editor.data, form, test);
+      }
+    }
   },
   LOADVOCAB (state, data) {
     // state.vocabMap = new Map(data.map((entry) => [entry['@id'], entry]));

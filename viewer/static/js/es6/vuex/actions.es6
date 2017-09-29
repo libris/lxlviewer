@@ -1,8 +1,8 @@
 export const syncData = function ({ dispatch, state }, data) {
   dispatch('SYNCPOST', data);
 };
-export const updateForm = function ({ dispatch, state }, form, data) {
-  dispatch('UPDATE_FORM', form, data);
+export const updateForm = function ({ dispatch, state }, form, data, oldData) {
+  dispatch('UPDATE_FORM', form, data, oldData);
 };
 export const loadVocab = function ({ dispatch, state }, data) {
   dispatch('LOADVOCAB', data);
@@ -30,4 +30,7 @@ export const changeNotification = function ({ dispatch, state }, property, data)
 };
 export const changeResultListStatus = function ({ dispatch, state }, property, data) {
   dispatch('CHANGERESULTLISTSTATUS', property, data);
+};
+export const navigateChangeHistory = function ({ dispatch, state }, form, direction) {
+  dispatch('NAVIGATE_CHANGE_HISTORY', form, direction);
 };
