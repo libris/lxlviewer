@@ -28,7 +28,7 @@ export default {
   },
   computed: {
     getItemLabel() {
-      const label = StringUtil.getFormattedEntries(this.getSummary.header, this.vocab, this.settings);
+      const label = this.getLabel(this.focusData);
       return label;
     },
     getChip() {

@@ -63,23 +63,6 @@ export default {
     extractedItem() {
       return RecordUtil.getObjectAsRecord(this.focusData);
     },
-    collapsedLabel() {
-      const summary = this.getSummary;
-
-      const infoArray = [].concat(summary.header, summary.sub, summary.info, summary.identifiers);
-      const filteredArray =
-        [].concat(summary.header, summary.sub, summary.info, summary.identifiers)
-        .filter(item => {
-          return (item.property !== '@type' && item.property !== 'error');
-        });
-      let label = StringUtil.getFormattedEntries(filteredArray, this.vocab, this.settings).filter(value => {
-        return value !== '';
-      }).join(' | ');
-      if (this.isEmpty) {
-        label = `{${StringUtil.getUiPhraseByLang('Empty entity', this.settings.language)}}`;
-      }
-      return label;
-    },
     isExtractable() {
       const classId = `${this.settings.vocabPfx}${this.item['@type']}`;
       if (
@@ -328,7 +311,7 @@ export default {
       <span class="topbar">
         <i class="fa fa-chevron-right" :class="{'down': expanded}" @click="toggleExpanded()"></i>
         <span class="type" @click="toggleExpanded()" title="{{ item['@type'] }}">{{ item['@type'] | labelByLang | capitalize }}</span>
-        <span class="collapsed-label" @click="toggleExpanded()"><span v-show="!expanded || isEmpty">{{collapsedLabel}}</span><span class="placeholder">.</span></span>
+        <span class="collapsed-label" @click="toggleExpanded()"><span v-show="!expanded || isEmpty">{{getItemLabel}}</span><span class="placeholder">.</span></span>
         <span class="actions">
           <div class="confirm-remove-box" v-if="removeConfirmation" v-on-clickaway="removeConfirmation = false">
             <div v-on:click="removeThis(true)">

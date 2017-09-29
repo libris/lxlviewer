@@ -9,6 +9,7 @@ import ItemEntity from './item-entity';
 import ItemEnumeration from './item-enumeration';
 import ItemValue from './item-value';
 import ItemLocal from './item-local';
+import ItemError from './item-error';
 import { mixin as clickaway } from 'vue-clickaway';
 import * as VocabUtil from '../utils/vocab';
 import * as LayoutUtil from '../utils/layout';
@@ -63,6 +64,7 @@ export default {
     'item-value': ItemValue,
     'item-enumeration': ItemEnumeration,
     'item-local': ItemLocal,
+    'item-error': ItemError,
     'entity-adder': EntityAdder,
   },
   watch: {
@@ -361,7 +363,7 @@ export default {
     <pre class="path-code" v-show="status.isDev">{{getPath}}</pre>
     <ul v-if="isObjectArray">
       <li v-for="item in valueAsArray" :class="{ 'isChip': isChip(item)}" track-by="_uid">
-        <div class="erroneous-object" v-if="getDatatype(item) == 'error'"><i class="fa fa-frown-o"></i> {{item | json}}</div>
+        <item-error v-if="getDatatype(item) == 'error'" :item="item"></item-error>
         <item-enumeration v-if="getDatatype(item) == 'enumeration'" :is-locked="locked" :entity-type="entityType" :possible-values="possibleValues" :expanded="isExpandedType" :value="item" :key="key" :index="$index" :show-action-buttons="showActionButtons"></item-enumeration>
         <item-entity v-if="getDatatype(item) == 'entity'" :is-locked="locked" :expanded="isExpandedType" :item="item" :key="key" :index="$index"></item-entity>
         <item-local v-if="getDatatype(item) == 'local'" :is-locked="locked" :is-expanded-type="isExpandedType" :item="item" :key="key" :index="$index" :parent-path="getPath" :in-array="valueIsArray" :show-action-buttons="showActionButtons"></item-local>
@@ -407,13 +409,6 @@ export default {
     min-height: 0em;
     max-height: 0em;
     opacity: 0;
-  }
-  .erroneous-object {
-    line-height: 1.6;
-    display: inline-block;
-    padding: 3px;
-    border: 1px solid #ffa6a6;
-    background-color: #fff1f1;
   }
   .path-code {
     padding: 1px 3px;
