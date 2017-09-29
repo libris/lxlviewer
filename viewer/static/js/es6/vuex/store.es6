@@ -55,8 +55,10 @@ const mutations = {
     Vue.set(state.editor, 'data', data);
   },
   UPDATE_FORM (state, form, data, oldData) {
-    state.status.changeHistory[form].unshift(_.cloneDeep(oldData));
-    Vue.set(state.editor.data, form, data);
+    if (!_.isEqual(data, state.editor.data[form])) {
+      state.status.changeHistory[form].unshift(_.cloneDeep(oldData));
+      Vue.set(state.editor.data, form, data);
+    }
   },
   NAVIGATE_CHANGE_HISTORY (state, form, direction) {
     if (state.status.changeHistory[form].length > 0) {
