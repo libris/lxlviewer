@@ -1420,13 +1420,6 @@
               "@id": "https://id.kb.se/term/sao/%C3%96verordnad%20term"
             }
           ],
-          "narrower": [
-            {
-              "@type": "Topic",
-              "prefLabel": "Underordnad term",
-              "@id": "https://id.kb.se/term/sao/Underordnad%20term"
-            }
-          ],
           "related": [
             {
               "@type": "Topic",
