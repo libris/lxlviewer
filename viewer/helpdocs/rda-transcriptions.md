@@ -3,10 +3,13 @@ section: Redigering
 title: Allmänna anvisningar
 tags:
 - editor
+- rda
+- transcription
 ---
 
-
 # "Transcription" - RDA 1.7
+
+[MARC21-anpassad information](http://www.kb.se/rdakatalogisering/Anvisningar/Allmanna-anvisningar/Atergivning-av-element/)
 
 ## Återgivning av element så som de förekommer i källan
 
