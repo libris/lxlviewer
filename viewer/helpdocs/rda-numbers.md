@@ -1,10 +1,11 @@
 ---
 section: Redigering
-title: Allmänna anvisningar
+title: Tal angivna med siffror eller med bokstäver
 tags:
 - editor
 - rda
-- transcription
+- workflow
+- numbers
 ---
 
 # "Tal angivna med siffror eller med bokstäver - RDA 1.8
@@ -54,9 +55,11 @@ Librispraxis: Tillämpa grundregeln. Ersätt romerska siffror med arabiska. Alte
 
 **Tal angivna med bokstäver**
 
-Serieuppgift: `del 3`
+> Serieuppgift:
 
-*I källan: del III*
+> `del 3`
+
+I källan: _del III_
 
 Ersätt tal angivna med bokstäver med siffror (RDA 1.8.3).
 
@@ -70,7 +73,7 @@ När tid och andra tal med första och sista siffra anges, ange båda siffrorna 
 
 **Ordningstal**
 
-264		1	#c 1975-1999
+>264		1	#c 1975-1999
 I källan: 1975-99
 
 När ordningstal (uttryckta antingen med siffror eller med bokstäver) ska anges, ange dem med siffror enligt respektive språks skrivregler (RDA 1.8.5).

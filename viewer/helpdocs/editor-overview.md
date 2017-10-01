@@ -12,7 +12,7 @@ tags:
 
 ---
 
-Anvisningar för katalogisering innehåller anvisningar och riktlinjer för katalogisering och auktoritetsarbete i Libris samkatalog. Anvisningarna är baserade på Bibframe 2.0 som ersätter MARC21 och katalogiseringsstandarden RDA (Resource Description and Access, på svenska Resursbeskrivning och åtkomst), den standard som ersatt AACR2 (Anglo-American Cataloguing Rules, 2. ed.). 
+> 	Anvisningar för katalogisering innehåller anvisningar och riktlinjer för katalogisering och auktoritetsarbete i Libris samkatalog. Anvisningarna är baserade på Bibframe 2.0 som ersätter MARC21 och katalogiseringsstandarden RDA (Resource Description and Access, på svenska Resursbeskrivning och åtkomst), den standard som ersatt AACR2 (Anglo-American Cataloguing Rules, 2. ed.). 
 
 * Under rubriken Arbetsflöden finns anvisningar som gäller respektive materialtyp.
 
@@ -23,14 +23,14 @@ Anvisningar för katalogisering innehåller anvisningar och riktlinjer för kata
 Eftersom gränssnittet är datadrivet så har visningsvyn och redigeringsvyn för alla typer av resurser i stort sett samma disposition.
 
   * Administrativ metadata
-  * Sammanfattning
+  * Sammanfattning av resursen
   * Interaktionselement
-  * Beskrivning
+  * Deskriptiv metadata
 
 ### Administrativ metadata
 Överst visas en utfällbar sektion med Administrativ metadata som bland annat innehåller information om när beskrivningen skapades, vem som skapade den, vilka regler som den är beskriven med samt om den ingår i en bibliografi.
 
-### Sammanfattning
+### Sammanfattning av resursen
 En sammanfattning av resursen:
 
   * Typ (exempel: Text, Manuskript, Person, Ämne).
@@ -38,7 +38,7 @@ En sammanfattning av resursen:
   * Övrig information för särskiljning av resursen.
 
 
-### Beskrivning
+### Deskriptiv metadata
 Den detaljerade beskrivningen som ligger till grund för formuläret.
 
   * Fältordning

@@ -1,11 +1,68 @@
 ---
-section: Redigering
+section: Arbetsflöden
 title: Tryckta monografier
 tags:
 - editor
+- rda
+- workflow
+- print-monograph
 ---
 
 # Tryckta monografier
+
+## Innehåll
+
+**Postetikett och andra kodfält vid MARC 21-katalogisering:**
+
+TODO:administrativ metadata instead?
+
+* 000 Leader/Postetikett
+* 008 Mediespecifika koder
+* 040 Katalogiserande instans
+* 041 Språkkod
+
+**Element tillhörande manifestationen:**
+
+* Föredragen källa för beskrivningen
+* Huvudtitel
+* Parallell huvudtitel
+* Övrig titelinformation
+* Upphovsuppgift
+* Upplageuppgift
+* Utgivningsuppgifter
+* Distributionsuppgifter
+* Tillverkningsuppgifter
+* Copyrightår
+* Serieuppgift
+* Identifikator för manifestationen (t.ex. ISBN)
+* Anmärkningar om manifestationen
+* Medietyp
+* Bärartyp
+* Omfång
+* Mått
+* Teckenstorlek (t.ex. stor stil)
+
+
+**Element tillhörande verk och uttryck:**
+
+* Innehållstyp
+* Innehållets karaktär
+* Målgrupp
+* Akademisk avhandling och dylikt
+* Sammanfattning av innehåll
+* Innehållets språk
+* Typ av notation (t.ex. skriftart)
+* Illustrativt innehåll
+
+**Relationer:**
+
+* Ämnesord och klassifikation
+* Sökingångar för personer, familjer/släkter, institutioner
+* Sökingångar för verk och uttryck
+* Relaterade verk, uttryck m.m.
+
+
+
 
 exempeltext:
 
