@@ -394,7 +394,7 @@ export default {
     background-color: #fdfdfd;
     border: solid #d1d1d1;
     border-bottom-color: #b2b2b2;
-    border-top-width: 0;
+    border-width: 0px 1px 3px 1px;
     line-height: 1.6;
     max-height: 40px;
     overflow: hidden;
