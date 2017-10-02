@@ -319,7 +319,7 @@ export default {
             </div>
           </div>
           <i v-if="!isLocked" class="fa fa-trash-o chip-action" :class="{'show-icon': showActionButtons}" v-on:click="removeConfirmation = true"></i>
-          <field-adder v-if="!isLocked" :allowed="allowedProperties" :inner="true" :path="getPath"></field-adder>
+          <field-adder v-if="!isLocked && expanded" :allowed="allowedProperties" :inner="true" :path="getPath"></field-adder>
           <i v-if="isExtractable && !isLocked" :title="'Bryt ut entitet' | translatePhrase" class="chip-action fa fa-share-square-o" v-on:click="openExtractDialog" v-if="!isLocked" :class="{'show-icon': showActionButtons}"></i>
         </span>
       </span>
