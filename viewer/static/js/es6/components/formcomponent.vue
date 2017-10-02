@@ -40,6 +40,9 @@ export default {
     };
   },
   computed: {
+    isHolding() {
+      return this.editorData.mainEntity['@type'] === 'Item';
+    },
     isLocked() {
       if (this.locked) {
         return true;
@@ -233,6 +236,11 @@ export default {
 
 <template>
   <div class="form-component focused-form-component" :class="{ 'locked': isLocked }">
+    <div class="form-label" v-bind:class="{ 'bib-style': !isHolding, 'holding-style': isHolding }">
+      <span class="type-label">{{ editorData[editingObject]['@type'] | labelByLang }}</span>
+      <span v-if="!status.isNew" class="new-indicator">- {{ editorData[editingObject]['@id'] }}</span>
+      <span v-if="status.isNew" class="new-indicator">- [{{"new record" | translatePhrase}}]</span>
+    </div>
     <data-node v-for="k in specialProperties" :key="k" :value="editorData[editingObject][k]" :entity-type="editorData[editingObject]['@type']" is-locked="true"></data-node>
     <data-node v-for="(k,v) in sortedFormData" v-bind:class="{ 'locked': isLocked }" :entity-type="editorData[editingObject]['@type']" :is-inner="false" :is-removable="true" :is-locked="keyIsLocked(k)" :key="k" :value="v" :allow-local="true"></data-node>
     <field-adder v-if="!isLocked" :allowed="allowedProperties" :inner="false" :editing-object="editingObject"></field-adder>
@@ -257,6 +265,26 @@ export default {
 @import './_variables.less';
 
 .form-component {
+  .form-label {
+    color: @white;
+    text-align: center;
+    padding: 5px 7px;
+    .type-label {
+      font-size: 1.6em;
+      font-weight: bold;
+    }
+    .new-indicator {
+      font-size: 1em;
+    }
+    &.bib-style {
+      background-color: @bib-color;
+      border: 1px solid darken(@bib-color, 5%);
+    }
+    &.holding-style {
+      background-color: desaturate(darken(@holding-color, 10%), 10%);
+      border: 1px solid darken(desaturate(darken(@holding-color, 10%), 10%), 5%);
+    }
+  }
   border: solid #ccc;
   border-width: 1px;
   margin-bottom: 2em;

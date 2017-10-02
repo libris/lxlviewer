@@ -196,9 +196,6 @@ export default {
     focusData() {
       return this.editorData.record;
     },
-    isHolding() {
-      return this.editorData.mainEntity['@type'] === 'Item';
-    },
     inEdit() {
       return this.status.inEdit;
     },
@@ -214,7 +211,7 @@ export default {
 
 <template>
   <div class="container" id="editor-container">
-    <div class="editor-controls" v-bind:class="{ 'bib-style': !isHolding, 'holding-style': isHolding }">
+    <div class="editor-controls">
       <div class="admin-info">
         <div class="actions">
           <div class="action" v-on:click="toggleDev()" v-bind:class="{'active': status.isDev}">
@@ -242,10 +239,6 @@ export default {
               {{"Compiled" | translatePhrase}}
             </button>
           </a>
-        </div>
-        <div>
-          <span class="type-label">{{editorData.mainEntity['@type'] | labelByLang}}</span>
-          <span v-if="status.isNew" class="new-indicator">- [{{"new record" | translatePhrase}}]</span>
         </div>
         <div>
           <button class="removeButton" v-show="status.inEdit && !status.isNew" @click="removePost"><i class="fa fa-trash" aria-hidden="true"></i> {{"Remove" | translatePhrase}} post</button>
@@ -314,17 +307,9 @@ export default {
 @import './_variables.less';
 
 .container {
-  padding: 0px;
+  padding: 0.5em 0;
 
   .editor-controls {
-    &.bib-style {
-      background-color: @bib-color;
-      border: 1px solid darken(@bib-color, 5%);
-    }
-    &.holding-style {
-      background-color: desaturate(darken(@holding-color, 10%), 10%);
-      border: 1px solid darken(desaturate(darken(@holding-color, 10%), 10%), 5%);
-    }
     .data-selector {
       padding: 0 0.5em;
     }
@@ -356,20 +341,11 @@ export default {
       }
     }
     .admin-info {
-      color: @white;
       flex-direction: row;
       display: flex;
       align-items: center;
       justify-content: space-between;
       position: relative;
-      padding: 5px 7px;
-      .type-label {
-        font-size: 1.6em;
-        font-weight: bold;
-      }
-      .new-indicator {
-        font-size: 1.6em;
-      }
       .admin-node {
         flex-grow: 5;
         text-align: center;
