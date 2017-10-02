@@ -43,8 +43,17 @@ export default {
     isHolding() {
       return this.editorData[this.editingObject]['@type'] === 'Item';
     },
-    isInstance() {
-      return VocabUtil.isSubClassOf(this.editorData[this.editingObject]['@type'], 'Instance', this.vocab, this.settings.vocabPfx);
+    isBib() {
+      if (VocabUtil.isSubClassOf(this.editorData[this.editingObject]['@type'], 'Instance', this.vocab, this.settings.vocabPfx)) {
+        return true;
+      } else if (VocabUtil.isSubClassOf(this.editorData[this.editingObject]['@type'], 'Work', this.vocab, this.settings.vocabPfx)) {
+        return true;
+      } else if (VocabUtil.isSubClassOf(this.editorData[this.editingObject]['@type'], 'Agent', this.vocab, this.settings.vocabPfx)) {
+        return true;
+      } else if (VocabUtil.isSubClassOf(this.editorData[this.editingObject]['@type'], 'Concept', this.vocab, this.settings.vocabPfx)) {
+        return true;
+      }
+      return false;
     },
     isLocked() {
       if (this.locked) {
@@ -239,7 +248,7 @@ export default {
 
 <template>
   <div class="form-component focused-form-component" :class="{ 'locked': isLocked }">
-    <div class="form-label" v-bind:class="{ 'record-style': (!isInstance && !isHolding), 'bib-style': isInstance, 'holding-style': isHolding }">
+    <div class="form-label" v-bind:class="{ 'record-style': (!isBib && !isHolding), 'bib-style': isBib, 'holding-style': isHolding }">
       <span class="type-label">{{ editorData[editingObject]['@type'] | labelByLang }}</span>
       <span v-if="!status.isNew" class="new-indicator">- {{ editorData[editingObject]['@id'] }}</span>
       <span v-if="status.isNew" class="new-indicator">- [{{"new record" | translatePhrase}}]</span>
