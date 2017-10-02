@@ -138,6 +138,9 @@ export default {
     'selectedCreation': function(newVal) {
       this.getMaterials(newVal);
     },
+    'thingData': function() {
+      document.getElementById('thingDataForm').submit();
+    },
   },
   store,
   ready() { // Ready method is deprecated in 2.0, switch to "mounted"
@@ -162,9 +165,6 @@ export default {
         </div>
         <form action="/edit" method="POST" id="thingDataForm">
           <textarea id="copyItem" name="data" class="hidden">{{thingData | json}}</textarea>
-          <span class="submitter">
-            <button :class="{'disabled': !hasChosen}" :disabled="!hasChosen">Gå vidare <i class="fa fa-chevron-circle-right"></i></button>
-          </span>
         </form>
       </div>
     </div>
