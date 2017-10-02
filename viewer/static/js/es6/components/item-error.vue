@@ -46,6 +46,7 @@ export default {
 
 .erroneous-object {
   line-height: 1.6;
+  width: 100%;
   display: inline-block;
   padding: 3px;
   border: 1px solid #ffa6a6;
