@@ -24,6 +24,7 @@ export function loadUserSettings() {
   }
   const userObj = {
     resultListType: 'detailed',
+    showAppTech: false,
   };
   if (isLoggedIn(userInfo)) {
     userObj.currentSigel = userInfo.authorization[0].sigel;

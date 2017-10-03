@@ -214,7 +214,7 @@ export default {
     <div class="editor-controls">
       <div class="admin-info">
         <div class="actions">
-          <div class="action" v-on:click="toggleDev()" v-bind:class="{'active': status.isDev}">
+          <div class="action" v-if="settings.userSettings.showAppTech" v-on:click="toggleDev()" v-bind:class="{'active': status.isDev}">
             <i class="fa fa-wrench" aria-hidden="true"></i>
           </div>
           <div class="action" v-on:click="showHelp()">

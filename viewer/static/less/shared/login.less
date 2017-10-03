@@ -99,6 +99,29 @@ body#usersettings {
         float: right;
       }
     }
+    .apptech-option {
+      width: 100%;
+      border: 1px solid #b7b7b7;
+      margin: 0.5em 0px;
+      padding: 0.5em;
+      border-radius: 5px;
+      &.active {
+        background-color: rgba(202, 149, 67, 0.18);
+        .active-text {
+          display: inline;
+          font-weight: bold;
+        }
+        .apptech-button {
+          display: none;
+        }
+      }
+      .active-text {
+        display: none;
+      }
+      .apptech-button {
+        float: right;
+      }
+    }
 
 // User settings end
 

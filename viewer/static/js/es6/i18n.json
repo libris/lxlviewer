@@ -27,6 +27,9 @@
     "Unnamed entity": "Namnlös entitet",
     "Post": "Post",
     "Field": "Fält",
+    "Show technical application details": "Visa applikationstekniska detaljer",
+    "On": "På",
+    "Off": "Av",
     "Add" : "Lägg till",
     "Accept": "Godkänn",
     "Edit": "Redigera",
@@ -35,7 +38,6 @@
     "Search" : "Sök",
     "Searching": "Söker",
     "Cancel": "Avbryt",
-    "Undo": "Ångra",
     "Import": "Importera",
     "The post was saved": "Posten blev sparad",
     "Allowed types" : "Tillåtna typer",
@@ -57,15 +59,13 @@
     "Extraction was successful": "Utbrytning lyckades",
     "Extract entity": "Bryt ut entitet",
     "Extracting": "Bryter ut",
-    "Holding": "Bestånd",
-    "Add holding": "Lägg bestånd",
+    "Item": "Bestånd",
     "Missing label": "Etikett saknas",
     "Copy": "Kopiera",
     "Copy successful": "Kopiering lyckades",
     "Show admin metadata": "Visa administrativ metadata",
     "Hide admin metadata": "Dölj administrativ metadata",
     "Missing holding": "Saknar bestånd",
-    "Number of holdings": "Antal beståndsposter",
     "Has holding": "Har bestånd",
     "To holding": "Till beståndspost",
     "Use": "Använd",
@@ -73,6 +73,7 @@
     "Empty entity": "Tom entitet",
     "ID": "ID",
     "Type": "Typ",
-    "Release notes": "Versionsinfo"
+    "Release notes": "Versionsinfo",
+    "Unauthorized": "Obehörig"
   }
 }
