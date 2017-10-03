@@ -56,7 +56,7 @@ export default {
       extractDialogActive: false,
       extracting: false,
       expanded: this.status.isNew,
-      removeConfirmation: false,
+      removeHover: false,
     };
   },
   computed: {
@@ -307,18 +307,13 @@ export default {
 
 <template>
   <div class="item-local-container" v-bind:class="{'highlight': isNewlyAdded}">
-    <div v-if="!isExpandedType" class="item-local" :class="{'expanded': expanded}">
+    <div v-if="!isExpandedType" class="item-local" :class="{'expanded': expanded, 'distinguish-removal': removeHover}">
       <span class="topbar">
         <i class="fa fa-chevron-right" :class="{'down': expanded}" @click="toggleExpanded()"></i>
         <span class="type" @click="toggleExpanded()" title="{{ item['@type'] }}">{{ item['@type'] | labelByLang | capitalize }}</span>
         <span class="collapsed-label" @click="toggleExpanded()"><span v-show="!expanded || isEmpty">{{getItemLabel}}</span><span class="placeholder">.</span></span>
         <span class="actions">
-          <div class="confirm-remove-box" v-if="removeConfirmation" v-on-clickaway="removeConfirmation = false">
-            <div v-on:click="removeThis(true)">
-              {{"Remove" | translatePhrase}}
-            </div>
-          </div>
-          <i v-if="!isLocked" class="fa fa-trash-o chip-action" :class="{'show-icon': showActionButtons}" v-on:click="removeConfirmation = true"></i>
+          <i v-if="!isLocked" class="fa fa-trash-o chip-action" :class="{'show-icon': showActionButtons}" v-on:click="removeThis(true)" @mouseover="removeHover = true" @mouseout="removeHover = false"></i>
           <field-adder v-if="!isLocked && expanded" :allowed="allowedProperties" :inner="true" :path="getPath"></field-adder>
           <i v-if="isExtractable && !isLocked" :title="'Bryt ut entitet' | translatePhrase" class="chip-action fa fa-share-square-o" v-on:click="openExtractDialog" v-if="!isLocked" :class="{'show-icon': showActionButtons}"></i>
         </span>
@@ -394,7 +389,7 @@ export default {
     background-color: #fdfdfd;
     border: solid #d1d1d1;
     border-bottom-color: #b2b2b2;
-    border-width: 0px 1px 3px 1px;
+    border-width: 1px 1px 3px 1px;
     line-height: 1.6;
     max-height: 40px;
     overflow: hidden;
