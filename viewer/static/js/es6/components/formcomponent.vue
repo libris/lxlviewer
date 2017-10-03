@@ -249,11 +249,11 @@ export default {
 <template>
   <div class="form-component focused-form-component" :class="{ 'locked': isLocked }">
     <div class="form-label" v-bind:class="{ 'record-style': (!isBib && !isHolding), 'bib-style': isBib, 'holding-style': isHolding }">
-      <span class="type-label">{{ editorData[editingObject]['@type'] | labelByLang }}</span>
-      <span v-if="!status.isNew" class="new-indicator">- {{ editorData[editingObject]['@id'] }}</span>
-      <span v-if="status.isNew" class="new-indicator">- [{{"new record" | translatePhrase}}]</span>
+      <span class="left-column"></span>
+      <span class="middle-column type-label" title="{{editorData[editingObject]['@type']}}">{{ editorData[editingObject]['@type'] | labelByLang }}</span>
+      <span v-if="!status.isNew" class="right-column new-indicator"><code>{{ editorData[editingObject]['@id'] }}</code></span>
+      <span v-if="status.isNew" class="right-column new-indicator">[{{"new record" | translatePhrase}}]</span>
     </div>
-    <data-node v-for="k in specialProperties" :key="k" :value="editorData[editingObject][k]" :entity-type="editorData[editingObject]['@type']" is-locked="true"></data-node>
     <data-node v-for="(k,v) in sortedFormData" v-bind:class="{ 'locked': isLocked }" :entity-type="editorData[editingObject]['@type']" :is-inner="false" :is-removable="true" :is-locked="keyIsLocked(k)" :key="k" :value="v" :allow-local="true"></data-node>
     <field-adder v-if="!isLocked" :allowed="allowedProperties" :inner="false" :editing-object="editingObject"></field-adder>
     <div id="result" v-if="status.isDev && !isLocked">
@@ -279,8 +279,32 @@ export default {
 .form-component {
   .form-label {
     color: @white;
-    text-align: center;
-    padding: 5px 7px;
+    display: flex;
+    justify-content: space-between;
+    padding: 0;
+    > span {
+      flex: 0 0 30%;
+      &.left-column {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        padding: 0 1em;
+      }
+      &.middle-column {
+        text-align: center;
+      }
+      &.right-column {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        padding: 0 1em;
+        code {
+          color: #fff;
+          padding: 0.1em 0.5em;
+          background-color: rgba(0, 0, 0, 0.2);
+        }
+      }
+    }
     .type-label {
       font-size: 1.6em;
       font-weight: bold;
@@ -290,15 +314,18 @@ export default {
     }
     &.record-style {
       background-color: @gray;
-      border: 1px solid darken(@gray, 5%);
+      border: solid darken(@gray, 5%);
+      border-width: 0px 0px 1px 0px;
     }
     &.bib-style {
       background-color: @bib-color;
-      border: 1px solid darken(@bib-color, 5%);
+      border: solid darken(@bib-color, 5%);
+      border-width: 0px 0px 1px 0px;
     }
     &.holding-style {
       background-color: desaturate(darken(@holding-color, 10%), 10%);
-      border: 1px solid darken(desaturate(darken(@holding-color, 10%), 10%), 5%);
+      border: solid darken(desaturate(darken(@holding-color, 10%), 10%), 5%);
+      border-width: 0px 0px 1px 0px;
     }
   }
   border: solid #ccc;
