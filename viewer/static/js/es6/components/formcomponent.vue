@@ -283,17 +283,19 @@ export default {
     justify-content: space-between;
     padding: 0;
     > span {
-      flex: 0 0 30%;
       &.left-column {
+        flex: 0 0 40%;
         display: flex;
         align-items: center;
         justify-content: flex-start;
         padding: 0 1em;
       }
       &.middle-column {
+        flex: 0 0 20%;
         text-align: center;
       }
       &.right-column {
+        flex: 0 0 40%;
         display: flex;
         align-items: center;
         justify-content: flex-end;
