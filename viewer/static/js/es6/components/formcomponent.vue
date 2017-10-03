@@ -276,12 +276,45 @@ export default {
 <style lang="less">
 @import './_variables.less';
 
+.ribbon-mixin(@ribbon-color) {
+  padding: 0 10px 0 10px;
+  position: relative;
+  margin: 0 -10px 0 -10px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.4);
+  background-color: @ribbon-color;
+  border: solid darken(@ribbon-color, 3%);
+  border-width: 0px 0px 1px 0px;
+  border-radius: 0px 0px 2px 2px;
+  &:before {
+    content: ' ';
+    position: absolute;
+    width: 0;
+    height: 0;
+    right: 0px;
+    top: 100%;
+    border-width: 5px 5px;
+    border-style: solid;
+    border-color: darken(@ribbon-color, 10%) transparent transparent darken(@ribbon-color, 10%);
+  }
+  &:after {
+    content: ' ';
+    position: absolute;
+    width: 0;
+    height: 0;
+    left: 0px;
+    top: 100%;
+    border-width: 5px 5px;
+    border-style: solid;
+    border-color: darken(@ribbon-color, 10%) darken(@ribbon-color, 10%) transparent transparent;
+  }
+}
+
 .form-component {
   .form-label {
     color: @white;
     display: flex;
     justify-content: space-between;
-    padding: 0;
+    border-width: 0px 0px 1px 0px;
     > span {
       &.left-column {
         flex: 0 0 40%;
@@ -293,6 +326,7 @@ export default {
       &.middle-column {
         flex: 0 0 20%;
         text-align: center;
+        text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.4);
       }
       &.right-column {
         flex: 0 0 40%;
@@ -302,36 +336,30 @@ export default {
         padding: 0 1em;
         code {
           color: #fff;
-          padding: 0.1em 0.5em;
+          padding: 0em 0.5em;
           background-color: rgba(0, 0, 0, 0.2);
         }
       }
     }
     .type-label {
-      font-size: 1.6em;
+      font-size: 1.2em;
       font-weight: bold;
     }
     .new-indicator {
       font-size: 1em;
     }
     &.record-style {
-      background-color: @gray;
-      border: solid darken(@gray, 5%);
-      border-width: 0px 0px 1px 0px;
+      .ribbon-mixin(@gray);
     }
     &.bib-style {
-      background-color: @bib-color;
-      border: solid darken(@bib-color, 5%);
-      border-width: 0px 0px 1px 0px;
+      .ribbon-mixin(@bib-color);
     }
     &.holding-style {
-      background-color: desaturate(darken(@holding-color, 10%), 10%);
-      border: solid darken(desaturate(darken(@holding-color, 10%), 10%), 5%);
-      border-width: 0px 0px 1px 0px;
+      .ribbon-mixin(desaturate(darken(@holding-color, 10%), 10%));
     }
   }
   border: solid #ccc;
-  border-width: 1px;
+  border-width: 0px 1px 1px 1px;
   margin-bottom: 2em;
   &.locked {
     > ul > li {
