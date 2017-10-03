@@ -33,6 +33,7 @@ export default {
   props: {
     locked: false,
     editingObject: '',
+    collapsed: false,
   },
   data() {
     return {
@@ -254,22 +255,27 @@ export default {
       <span v-if="!status.isNew" class="right-column new-indicator"><code>{{ editorData[editingObject]['@id'] }}</code></span>
       <span v-if="status.isNew" class="right-column new-indicator">[{{"new record" | translatePhrase}}]</span>
     </div>
-    <hr>
-    <data-node v-for="(k,v) in sortedFormData" v-bind:class="{ 'locked': isLocked }" :entity-type="editorData[editingObject]['@type']" :is-inner="false" :is-removable="true" :is-locked="keyIsLocked(k)" :key="k" :value="v" :allow-local="true"></data-node>
-    <field-adder v-if="!isLocked" :allowed="allowedProperties" :inner="false" :editing-object="editingObject"></field-adder>
-    <div id="result" v-if="status.isDev && !isLocked">
-      <div class="row">
-      <pre class="col-md-6">
-        SORTED
+    <div class="data-node-container" v-bind:class="{'collapsed': collapsed }">
+      <data-node v-for="(k,v) in sortedFormData" v-bind:class="{ 'locked': isLocked }" :entity-type="editorData[editingObject]['@type']" :is-inner="false" :is-removable="true" :is-locked="keyIsLocked(k)" :key="k" :value="v" :allow-local="true"></data-node>
+      <field-adder v-if="!isLocked" :allowed="allowedProperties" :inner="false" :editing-object="editingObject"></field-adder>
+      <div id="result" v-if="status.isDev && !isLocked">
+        <div class="row">
+        <pre class="col-md-6">
+          SORTED
 
-        {{sortedFormData | json}}
-      </pre>
-      <pre class="col-md-6">
-        ORIGINAL
+          {{sortedFormData | json}}
+        </pre>
+        <pre class="col-md-6">
+          ORIGINAL
 
-        {{formData | json}}
-      </pre>
+          {{formData | json}}
+        </pre>
+        </div>
       </div>
+    </div>
+    <div class="data-node-container-toggle" v-on:click="collapsed = !collapsed">{{ collapsed ? 'Show' : 'Hide' | translatePhrase }}
+      <i class="fa fa-chevron-up" v-show="!collapsed"></i>
+      <i class="fa fa-chevron-down" v-show="collapsed"></i>
     </div>
   </div>
 </template>
@@ -280,8 +286,8 @@ export default {
 .ribbon-mixin(@ribbon-color) {
   padding: 0 10px 0 10px;
   position: relative;
-  margin: 0 -10px 1em -10px;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.4);
+  margin: 0 -10px 0 -10px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15);
   background-color: @ribbon-color;
   border: solid darken(@ribbon-color, 3%);
   border-width: 0px 0px 1px 0px;
@@ -359,10 +365,26 @@ export default {
       .ribbon-mixin(desaturate(darken(@holding-color, 10%), 10%));
     }
   }
-  hr {
+  .data-node-container {
     border: solid #d8d8d8;
     margin: 0px;
-    border-width: 0px 0px 1px 0px;
+    padding: 0px;
+    border-width: 1px 0px 0px 0px;
+    overflow: hidden;
+    max-height: 500vh;
+    transition: 2s ease max-height;
+    &.collapsed {
+      max-height: 0em;
+      transition: 1s ease max-height;
+    }
+  }
+  .data-node-container-toggle {
+    text-align: center;
+    font-weight: bold;
+    font-size: 85%;
+    text-transform: uppercase;
+    cursor: pointer;
+    padding: 0.5em;
   }
   border: solid #ccc;
   border-width: 0px 1px 1px 1px;
