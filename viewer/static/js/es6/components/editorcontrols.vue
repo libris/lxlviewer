@@ -221,7 +221,7 @@ export default {
             <i class="fa fa-question-circle action" aria-hidden="true"></i>
           </div>
           <div class="action">
-            <span class="data-selector" v-on:click="otherFormatMenu = true">RDF <i class="fa fa-caret-down" aria-hidden="true"></i></span>
+            <span class="data-selector" v-on:click="otherFormatMenu = true">Visa som <i class="fa fa-caret-down" aria-hidden="true"></i></span>
             <div class="other-format-menu" v-if="otherFormatMenu" v-on-clickaway="otherFormatMenu = false">
               <a :href="`${focusData['@id']}/data.jsonld`">JSON-LD</a>
               <a :href="`${focusData['@id']}/data.ttl`">Turtle</a>
@@ -315,7 +315,8 @@ export default {
     }
     .other-format-menu {
       position: absolute;
-      top: 1.5em;
+      top: 0.8em;
+      margin-left: 0.5em;
       line-height: 1.6;
       white-space: normal;
       a {
