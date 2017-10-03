@@ -94,12 +94,7 @@ export default {
         <span class="type" @click="toggleExpanded()" title="{{ focusData['@type'] }}" v-if="!expanded">{{ focusData['@type'] | labelByLang | capitalize }}</span>
         <span class="collapsed-label" @click="toggleExpanded()"><span v-if="!expanded">{{getItemLabel}}</span><span class="placeholder">.</span></span>
         <span class="actions" v-if="!isLocked">
-          <div class="confirm-remove-box" v-if="removeConfirmation" v-on-clickaway="removeConfirmation = false">
-            <div v-on:click="removeThis(true)">
-              {{"Remove" | translatePhrase}}
-            </div>
-          </div>
-          <i v-if="!isLocked" class="fa fa-trash-o chip-action" :class="{'show-icon': showActionButtons}" v-on:click="removeConfirmation = true"></i>
+          <i v-if="!isLocked" class="fa fa-trash-o chip-action" :class="{'show-icon': showActionButtons}" v-on:click="removeThis(true)" @mouseover="removeHover = true" @mouseout="removeHover = false"></i>
         </span>
       </div>
       <entity-summary v-if="expanded" :focus-data="focusData" :is-extractable="false" :add-link="true" :lines="5" :actions="false" :is-local="false"></entity-summary>

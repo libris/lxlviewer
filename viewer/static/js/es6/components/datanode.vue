@@ -41,7 +41,6 @@ export default {
       removeHover: false,
       foundChip: false,
       removed: false,
-      removeConfirmation: false,
       possibleValues: [],
       uniqueIds: [],
     };
@@ -267,7 +266,6 @@ export default {
       this.$dispatch('update-value', this.getPath, value);
     },
     removeThis() {
-      this.removeConfirmation = false;
       this.removed = true;
       setTimeout(() => {
         this.$dispatch('remove-field', this.getPath);
@@ -354,7 +352,7 @@ export default {
     </div>
     <div v-if="isInner" class="actions">
       <div class="action" v-show="!locked" :class="{'disabled': activeModal}">
-        <i v-on:click="removeThis()" @mouseover="removeHover = true" @mouseout="removeHover = false" class="fa fa-times action-button action-remove"></i>
+        <i v-on:click="removeThis(true)" @mouseover="removeHover = true" @mouseout="removeHover = false" class="fa fa-times action-button action-remove"></i>
       </div>
     </div>
     <!-- {{ key | labelByLang | capitalize }} -->
@@ -378,12 +376,7 @@ export default {
   </div>
   <div v-if="!isInner" class="actions">
     <div class="action" v-show="!locked" :class="{'disabled': activeModal}">
-      <i v-on:click="removeConfirmation = true" @mouseover="removeHover = true" @mouseout="removeHover = false" class="fa fa-trash-o action-button action-remove"></i>
-    </div>
-    <div class="confirm-remove-box" v-if="removeConfirmation" v-on-clickaway="removeConfirmation = false">
-      <div v-on:click="removeThis(true)">
-        {{"Remove" | translatePhrase}}
-      </div>
+      <i v-on:click="removeThis(true)" @mouseover="removeHover = true" @mouseout="removeHover = false" class="fa fa-trash-o action-button action-remove"></i>
     </div>
   </div>
 </div>
