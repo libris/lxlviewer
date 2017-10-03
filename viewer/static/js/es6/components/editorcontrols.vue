@@ -319,6 +319,7 @@ export default {
       margin-left: 0.5em;
       line-height: 1.6;
       white-space: normal;
+      z-index: @popover-z;
       a {
         background-color: @black;
         display: block;
