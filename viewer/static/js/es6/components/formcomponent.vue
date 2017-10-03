@@ -254,6 +254,7 @@ export default {
       <span v-if="!status.isNew" class="right-column new-indicator"><code>{{ editorData[editingObject]['@id'] }}</code></span>
       <span v-if="status.isNew" class="right-column new-indicator">[{{"new record" | translatePhrase}}]</span>
     </div>
+    <hr>
     <data-node v-for="(k,v) in sortedFormData" v-bind:class="{ 'locked': isLocked }" :entity-type="editorData[editingObject]['@type']" :is-inner="false" :is-removable="true" :is-locked="keyIsLocked(k)" :key="k" :value="v" :allow-local="true"></data-node>
     <field-adder v-if="!isLocked" :allowed="allowedProperties" :inner="false" :editing-object="editingObject"></field-adder>
     <div id="result" v-if="status.isDev && !isLocked">
@@ -279,7 +280,7 @@ export default {
 .ribbon-mixin(@ribbon-color) {
   padding: 0 10px 0 10px;
   position: relative;
-  margin: 0 -10px 0 -10px;
+  margin: 0 -10px 1em -10px;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.4);
   background-color: @ribbon-color;
   border: solid darken(@ribbon-color, 3%);
@@ -358,9 +359,15 @@ export default {
       .ribbon-mixin(desaturate(darken(@holding-color, 10%), 10%));
     }
   }
+  hr {
+    border: solid #d8d8d8;
+    margin: 0px;
+    border-width: 0px 0px 1px 0px;
+  }
   border: solid #ccc;
   border-width: 0px 1px 1px 1px;
   margin-bottom: 2em;
+  background-color: #ededed;
   &.locked {
     > ul > li {
       margin: 0px;
