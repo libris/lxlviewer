@@ -306,14 +306,14 @@ export default {
           <span>{{ "Search" | translatePhrase }}</span>
           <div class="search">
             <!--<input class="entity-search-keyword-input" v-model="keyword" @input="setSearching()"></input>-->
-            <div class="input-container">  
+            <div class="input-container">
               <input
                 list="allowedTypes"
                 v-model="keyword"
                 @input="setSearching()"
                 class="entity-search-keyword-input"
               >
-            </div>  
+            </div>
             <datalist id="allowedTypes">
               <option v-for="range in getFullRange" :value="`${range.replace(settings.vocabPfx, '')}:`">{{range | labelByLang}}:</option>
             </datalist>
@@ -410,7 +410,7 @@ export default {
         font-size: 12px;
       }
       .search-result {
-        padding-top: 50px;
+        padding-top: 80px;
         padding-bottom: 2em;
       }
       .search-header {
