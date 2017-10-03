@@ -633,7 +633,7 @@ export default {
       > ul {
         width: 100%;
         list-style: none;
-        padding: 0px;
+        padding: 0px 2% 0px 2%;
         > li {
           // &.isChip {
           //   display: inline-block;
