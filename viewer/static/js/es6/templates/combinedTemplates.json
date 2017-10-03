@@ -341,12 +341,11 @@
           "descriptionConventions": [{
             "@id": "marc:Aacr2"
           }],
-          "created": "2017-09-26T00:00:00.0+02:00",
           "marc:catalogingSource": {
             "@id": "marc:CooperativeCatalogingProgram"
           },
           "@type": "Record",
-          "controlNumber": "pwh2l6cqmpcmx08g",
+
           "_marcUncompleted": [{
             "752": {
               "ind1": " ",
@@ -357,7 +356,7 @@
                 "d": ""
               }]
             }
-          }],
+          }]
         },
         "mainEntity": {
           "issuanceType": "Monograph",
@@ -1317,9 +1316,61 @@
     }
   },
   "concept": {
+    "genreForm": {
+      "label": "Genre/form",
+      "description": "saogf",
+      "value": {
+        "record": {
+          "descriptionLanguage": [
+            {
+              "@id": "https://id.kb.se/language/swe",
+              "code": "swe"
+            }
+          ],
+          "marc:encLevel": {
+            "@id": "marc:CompleteAuthorityRecord"
+          },
+          "marc:kindOfRecord": {
+            "@id": "marc:EstablishedHeadingRecord"
+          },
+          "marc:recordUpdate": {
+          "@id": "marc:RecordCanBeUsed"
+          },
+          "marc:subjectHeading": {
+          "@id": "marc:Other"
+          }
+        },
+        "mainEntity":{
+          "@type": "GenreForm",
+          "closeMatch": [{
+            "@id": "https://id.kb.se/term/saogf/",
+            "@type": "GenreForm",
+            "inScheme": {
+              "@id": "https://id.kb.se/term/lcsh",
+              "@type": "ConceptScheme",
+              "code": "lcsh"
+            },
+            "prefLabel": "",
+            "termComponentList": [{
+              "@type": "GenreForm",
+              "prefLabel": ""
+            }]
+          }],
+          "inScheme": {
+            "@id": "https://id.kb.se/term/saogf",
+            "@type": "ConceptScheme",
+            "code": "saogf"
+            },
+          "prefLabel": "",
+          "scopeNote": [
+            "Genre/formterm."
+          ]
+        }
+      }
+    },
     "topic": {
       "label": "Ämnesord",
-      "description": "<Insert description>",
+      "description": "SAO",
       "value": {
         "record": {
           "marc:encLevel": {
