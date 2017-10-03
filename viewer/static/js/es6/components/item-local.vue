@@ -308,11 +308,11 @@ export default {
 <template>
   <div class="item-local-container" v-bind:class="{'highlight': isNewlyAdded}">
     <div v-if="!isExpandedType" class="item-local" :class="{'expanded': expanded}">
-      <span class="topbar">
+      <div class="topbar">
         <i class="fa fa-chevron-right" :class="{'down': expanded}" @click="toggleExpanded()"></i>
         <span class="type" @click="toggleExpanded()" title="{{ item['@type'] }}">{{ item['@type'] | labelByLang | capitalize }}</span>
-        <span class="collapsed-label" @click="toggleExpanded()"><span v-show="!expanded || isEmpty">{{getItemLabel}}</span><span class="placeholder">.</span></span>
-        <span class="actions">
+        <span class="collapsed-label" @click="toggleExpanded()"><span>{{getItemLabel}}</span><span class="placeholder">.</span></span>
+        <span class="actions" v-if="!isLocked">
           <div class="confirm-remove-box" v-if="removeConfirmation" v-on-clickaway="removeConfirmation = false">
             <div v-on:click="removeThis(true)">
               {{"Remove" | translatePhrase}}
@@ -322,7 +322,7 @@ export default {
           <field-adder v-if="!isLocked && expanded" :allowed="allowedProperties" :inner="true" :path="getPath"></field-adder>
           <i v-if="isExtractable && !isLocked" :title="'Bryt ut entitet' | translatePhrase" class="chip-action fa fa-share-square-o" v-on:click="openExtractDialog" v-if="!isLocked" :class="{'show-icon': showActionButtons}"></i>
         </span>
-      </span>
+      </div>
       <field-adder v-if="!isLocked && isEmpty" :allowed="allowedProperties" :inner="true" :path="getPath"></field-adder>
       <data-node v-show="expanded && k !== '_uid'" v-for="(k,v) in filteredItem" :parent-path="getPath" :entity-type="item['@type']" :is-inner="true" :is-locked="isLocked" :allow-local="true" :is-removable="false" :embedded="true" :parent-key="key" :parent-index="index" :key="k" :value="v" :focus="focus" :show-action-buttons="showActionButtons"></data-node>
     </div>
@@ -366,8 +366,8 @@ export default {
   margin: 0px 0px 5px 0px;
   box-shadow: 0px 0px 1em 0px transparent;
   outline: 2px solid transparent;
-  transition: 3s ease;
-  transition-property: outline, box-shadow;
+  // transition: 3s ease;
+  // transition-property: outline, box-shadow;
   &.highlight {
     outline: 2px solid @highlight-color;
     box-shadow: 0px 0px 1em 0px @highlight-color;
@@ -398,8 +398,9 @@ export default {
     line-height: 1.6;
     max-height: 40px;
     overflow: hidden;
+    transition: all 0.5s ease;
     &.expanded {
-      transition: all 0.5s ease;
+      margin: 0 0 2em 0;
       max-height: 200vh;
     }
     &.removed {
@@ -421,6 +422,7 @@ export default {
       cursor: pointer;
       > .actions {
         display: flex;
+        flex-basis: 4em;
         flex-direction: row-reverse;
         .confirm-remove-box {
           transform: translate(16px, 0px);
@@ -460,14 +462,15 @@ export default {
           overflow: hidden;
         }
       }
-    }
-    .type {
-      // text-transform: uppercase;
-      font-weight: bold;
-      a {
-        text-decoration: none;
-        cursor: help;
-        color: @black;
+      .type {
+        // text-transform: uppercase;
+        font-weight: bold;
+        font-size: 85%;
+        a {
+          text-decoration: none;
+          cursor: help;
+          color: @black;
+        }
       }
     }
 

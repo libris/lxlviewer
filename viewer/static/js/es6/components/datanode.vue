@@ -580,10 +580,10 @@ export default {
               text-align: center;
             }
           }
-          &.isChip {
-            display: inline-block;
-            float: left;
-          }
+          // &.isChip {
+          //   display: inline-block;
+          //   float: left;
+          // }
           .item-value {
             > textarea {
               width: 100%;
@@ -642,9 +642,9 @@ export default {
         list-style: none;
         padding: 0px;
         > li {
-          &.isChip {
-            display: inline-block;
-          }
+          // &.isChip {
+          //   display: inline-block;
+          // }
           .item-value {
             width: 100%;
             display: flex;
