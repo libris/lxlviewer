@@ -77,7 +77,7 @@ export default {
 
 .notification-container {
   position: fixed;
-  bottom: -30%;
+  bottom: -40%;
   left: 25%;
   width: 50%;
   z-index: @notification-z;
