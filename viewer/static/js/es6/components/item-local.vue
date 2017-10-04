@@ -372,6 +372,7 @@ export default {
     width: 100%;
     background-color: @color-local;
     box-shadow: @shadow-chip;
+    border: 1px solid rgba(0, 0, 0, 0.15);
     line-height: 1.6;
     max-height: 40px;
     overflow: hidden;

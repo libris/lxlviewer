@@ -126,7 +126,8 @@ export default {
       display: flex;
       align-items: center;
       background-color: @white;
-      box-shadow: inset 2em 0px 0px 0px @gray-darker;
+      border: 1px solid rgba(0, 0, 0, 0.15);
+      box-shadow: inset 2.1em 0px 0px 0px @gray-darker;
       white-space: nowrap;
       overflow: hidden;
       > .linked-indicator {
