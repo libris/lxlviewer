@@ -110,6 +110,7 @@ export default {
 .header-component-container {
   display: flex;
   background-color: @neutral-color;
+  box-shadow: @shadow-base;
   padding: 0px;
   margin-bottom: 2em;
   outline: solid #ccc;

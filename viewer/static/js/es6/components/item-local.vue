@@ -358,6 +358,7 @@ export default {
 <style lang="less">
 @import './_variables.less';
 .item-local-container {
+  padding: 5px 0px;
   margin: 0px 0px 5px 0px;
   box-shadow: 0px 0px 1em 0px transparent;
   outline: 2px solid transparent;
@@ -368,32 +369,13 @@ export default {
     box-shadow: 0px 0px 1em 0px @highlight-color;
   }
   .item-local {
-    .local-form {
-      width: @col-value - 20;
-      border: dashed #ababab;
-      border-bottom-color: #ccc;
-      border-bottom-style: solid;
-      border-width: 1px 1px 2px 1px;
-      padding: 5px;
-      background-color: #ececec;
-      .actions {
-        margin-top: 0.5em;
-        text-align: right;
-      }
-      &::before {
-        content: '\00000A';
-      }
-    }
     width: 100%;
-    background-color: #fdfdfd;
-    border: solid #d1d1d1;
-    border-bottom-color: #b2b2b2;
-    border-width: 1px 1px 3px 1px;
+    background-color: @color-local;
+    box-shadow: @shadow-chip;
     line-height: 1.6;
     max-height: 40px;
     overflow: hidden;
-    transition: 0.5s ease;
-    transition-property: margin, max-height;
+    transition: 0.5s ease margin, 0.5s ease max-height, 2.0s ease box-shadow;
     &.distinguish-removal {
       padding-bottom: 2px;
       > .topbar {
@@ -403,6 +385,7 @@ export default {
     &.expanded {
       margin: 0 0 2em 0;
       max-height: 200vh;
+      box-shadow: @shadow-chip-elevated;
     }
     &.removed {
       transition: all 0.5s ease;
