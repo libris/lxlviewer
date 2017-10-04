@@ -33,6 +33,7 @@ export default {
       searchDelay: 2,
       formObj: {},
       expanded: false,
+      showCardInfo: false,
     };
   },
   computed: {
@@ -87,25 +88,25 @@ export default {
 </script>
 
 <template>
-  <div class="item-entity-container">
-    <div class="item-entity" v-bind:class="{'expanded': expanded}">
+  <div class="item-entity-container" @mouseleave="showCardInfo=false">
+    <div class="item-entity" v-if="!expanded" :class="{ 'locked': isLocked, 'highlighted': showCardInfo }" @mouseenter="showCardInfo=true">
       <div class="topbar">
-        <i class="fa fa-chevron-right" :class="{'down': expanded}" @click="toggleExpanded()"></i>
-        <span class="type" @click="toggleExpanded()" title="{{ focusData['@type'] }}" v-if="!expanded">{{ focusData['@type'] | labelByLang | capitalize }}</span>
-        <span class="collapsed-label" @click="toggleExpanded()"><span v-if="!expanded">{{getItemLabel}}</span><span class="placeholder">.</span></span>
+        <i class="linked-indicator fa fa-chain"></i>
+        <span class="type" title="{{ focusData['@type'] }}" v-if="!expanded">{{ focusData['@type'] | labelByLang | capitalize }}</span>
+        <span class="collapsed-label"><span v-if="!expanded">{{getItemLabel}}</span><span class="placeholder">.</span></span>
         <span class="actions" v-if="!isLocked">
           <i v-if="!isLocked" class="fa fa-trash-o chip-action" :class="{'show-icon': showActionButtons}" v-on:click="removeThis(true)" @mouseover="removeHover = true" @mouseout="removeHover = false"></i>
         </span>
       </div>
-      <entity-summary v-if="expanded" :focus-data="focusData" :is-extractable="false" :add-link="true" :lines="5" :actions="false" :is-local="false"></entity-summary>
     </div>
+    <card-component :title="getItemLabel" :focus-data="item" :uri="item['@id']" :is-local="false" :is-locked="isLocked" :should-show="showCardInfo" :floating="!expanded" :key="key"></card-component>
   </div>
 </template>
 
 <style lang="less">
 @import './_variables.less';
 
-@linked-color: #c2d2d0;
+@linked-color: #daefec;
 
 .item-entity-container {
   margin: 0px 0px 5px 0px;
@@ -115,21 +116,24 @@ export default {
     }
     transition: all 0.5s ease;
     width: 100%;
-    border: solid @linked-color;
-    border-bottom-color: darken(@linked-color, 10%);
+    border: none;
+    box-shadow: @shadow-chip;
     background-color: #fdfdfd;
-    border-radius: 10px;
-    border-width: 0px 1px 3px 1px;
     overflow: hidden;
     line-height: 1.6;
     > .topbar {
+      padding: 5px;
       display: flex;
       align-items: center;
-      padding: 5px;
-      background-color: @linked-color;
+      background-color: @white;
+      box-shadow: inset 2em 0px 0px 0px @gray-darker;
       white-space: nowrap;
       overflow: hidden;
-      cursor: pointer;
+      > .linked-indicator {
+        color: @white;
+        margin-right: 1em;
+        margin-left: 0.25em;
+      }
       > .actions {
         display: flex;
         flex-basis: 4em;
@@ -138,22 +142,13 @@ export default {
           transform: translate(16px, 0px);
         }
       }
-      > i, > span > i {
-        transition: all 0.2s ease;
-        padding: 0 0.5em;
-        cursor: pointer;
-        &.down {
-          transform:rotate(90deg);
-        }
-        &::before {
-          vertical-align: sub;
-        }
+      > i.fa-chain {
+
       }
       .chip-action {
         cursor: pointer;
       }
       .collapsed-label {
-        cursor: pointer;
         flex-grow: 1;
         display: flex;
         justify-content: space-between;
