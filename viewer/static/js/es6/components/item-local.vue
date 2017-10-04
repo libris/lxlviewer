@@ -376,7 +376,7 @@ export default {
     line-height: 1.6;
     max-height: 40px;
     overflow: hidden;
-    transition: 0.5s ease margin, 0.5s ease max-height, 2.0s ease box-shadow;
+    transition: 0.5s ease margin, 0.5s ease max-height, 1.0s ease box-shadow;
     &.distinguish-removal {
       padding-bottom: 2px;
       > .topbar {
