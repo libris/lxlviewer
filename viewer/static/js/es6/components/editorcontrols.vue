@@ -298,6 +298,7 @@ export default {
               </li>
             </ul>
           </div>
+          <div class="toolbar-divider"></div>
           <button v-show="status.inEdit" @click="navigateFormChanges('back')">
             <i class="fa fa-undo" aria-hidden="true"></i>
             {{"Undo" | translatePhrase}}
@@ -393,6 +394,7 @@ export default {
           border: 1px solid rgba(27, 31, 35, 0);
         }
         li > a {
+          cursor: pointer;
           padding: 3px 5px;
         }
         .remove-option {
@@ -403,6 +405,10 @@ export default {
             }
           }
         }
+      }
+      .toolbar-divider {
+        display: inline-block;
+        width: 2em;
       }
       button {
         margin: 0 0.3em;
