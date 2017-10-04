@@ -382,6 +382,9 @@ export default {
       }
       .dropdown.tools, .dropdown.other-format {
         display: inline-block;
+        &.open .dropdown-toggle {
+          background-color: #cecece;
+        }
         > div {
           border-radius: 2px;
           font-weight: bold;
