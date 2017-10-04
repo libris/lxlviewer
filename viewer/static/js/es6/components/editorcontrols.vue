@@ -287,7 +287,7 @@ export default {
               <li>
                 <a @click="openMarc">
                 <i class="fa fa-fw fa-trash" aria-hidden="true"></i>
-                {{"Previw MARC21" | translatePhrase}}
+                {{"Preview MARC21" | translatePhrase}}
                 </a>
               </li>
               <li class="remove-option" v-show="!status.isNew">
