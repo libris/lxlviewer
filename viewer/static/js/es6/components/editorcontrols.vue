@@ -1,6 +1,5 @@
 <script>
 import * as _ from 'lodash';
-import HeaderComponent from './headercomponent';
 import MarcPreview from '../components/marc-preview';
 import * as DataUtil from '../utils/data';
 import * as DisplayUtil from '../utils/display';
@@ -10,6 +9,8 @@ import * as ModalUtil from '../utils/modals';
 import * as HttpUtil from '../utils/http';
 import * as StringUtil from '../utils/string';
 import * as RecordUtil from '../utils/record';
+import HeaderComponent from './headercomponent';
+import RecordSummary from './record-summary';
 import LensMixin from './mixins/lens-mixin';
 import { mixin as clickaway } from 'vue-clickaway';
 import { changeSavedStatus, changeStatus, changeNotification, navigateChangeHistory } from '../vuex/actions';
@@ -176,6 +177,20 @@ export default {
     };
   },
   computed: {
+    recordType() {
+      if (VocabUtil.isSubClassOf(this.editorData.mainEntity['@type'], 'Item', this.vocab, this.settings.vocabPfx)) {
+        return 'Item';
+      }
+      if (VocabUtil.isSubClassOf(this.editorData.mainEntity['@type'], 'Instance', this.vocab, this.settings.vocabPfx)) {
+        return 'Instance';
+      } else if (VocabUtil.isSubClassOf(this.editorData.mainEntity['@type'], 'Work', this.vocab, this.settings.vocabPfx)) {
+        return 'Work';
+      } else if (VocabUtil.isSubClassOf(this.editorData.mainEntity['@type'], 'Agent', this.vocab, this.settings.vocabPfx)) {
+        return 'Agent';
+      } else if (VocabUtil.isSubClassOf(this.editorData.mainEntity['@type'], 'Concept', this.vocab, this.settings.vocabPfx)) {
+        return 'Concept';
+      }
+    },
     downloadIsSupported() {
       const a = document.createElement('a');
       return typeof a.download != 'undefined';
@@ -205,6 +220,7 @@ export default {
   },
   components: {
     'marc-preview': MarcPreview,
+    'record-summary': RecordSummary,
   },
 };
 </script>
@@ -214,6 +230,7 @@ export default {
     <div class="editor-controls">
       <div class="admin-info">
         <div class="actions">
+          <h2 class="recordtype-label">{{recordType | labelByLang }}</h2>
           <div class="action" v-if="settings.userSettings.showAppTech" v-on:click="toggleDev()" v-bind:class="{'active': status.isDev}">
             <i class="fa fa-wrench" aria-hidden="true"></i>
           </div>
@@ -240,6 +257,7 @@ export default {
             </button>
           </a>
         </div>
+        <record-summary></record-summary>
         <div>
           <button class="removeButton" v-show="status.inEdit && !status.isNew" @click="removePost"><i class="fa fa-trash" aria-hidden="true"></i> {{"Remove" | translatePhrase}} post</button>
           <button v-show="status.inEdit" @click="navigateFormChanges('back')">
@@ -310,6 +328,9 @@ export default {
   padding: 0.5em 0;
 
   .editor-controls {
+    .recordtype-label {
+      margin: 0;
+    }
     .data-selector {
       padding: 0 0.5em;
     }
@@ -376,6 +397,7 @@ export default {
       }
       .actions {
         display: flex;
+        align-items: center;
         .action {
           display: inline-block;
           cursor: pointer;

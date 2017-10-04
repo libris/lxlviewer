@@ -75,7 +75,6 @@ export default {
 .record-summary-container {
   display: flex;
   flex-direction: row;
-  padding: 1em 1em;
   align-items: center;
   .show-record-toggle {
     cursor: pointer;

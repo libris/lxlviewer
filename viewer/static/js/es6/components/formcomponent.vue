@@ -249,12 +249,6 @@ export default {
 
 <template>
   <div class="form-component focused-form-component" :class="{ 'locked': isLocked }">
-    <div class="form-label" v-bind:class="{ 'record-style': (!isBib && !isHolding), 'bib-style': isBib, 'holding-style': isHolding }">
-      <span class="left-column"></span>
-      <span class="middle-column type-label" title="{{editorData[editingObject]['@type']}}">{{ editorData[editingObject]['@type'] | labelByLang }}</span>
-      <span v-if="!status.isNew" class="right-column new-indicator"><code>{{ editorData[editingObject]['@id'] }}</code></span>
-      <span v-if="status.isNew" class="right-column new-indicator">[{{"new record" | translatePhrase}}]</span>
-    </div>
     <div class="data-node-container" v-bind:class="{'collapsed': collapsed }">
       <data-node v-for="(k,v) in sortedFormData" v-bind:class="{ 'locked': isLocked }" :entity-type="editorData[editingObject]['@type']" :is-inner="false" :is-removable="true" :is-locked="keyIsLocked(k)" :key="k" :value="v" :allow-local="true"></data-node>
       <field-adder v-if="!isLocked" :allowed="allowedProperties" :inner="false" :editing-object="editingObject"></field-adder>
