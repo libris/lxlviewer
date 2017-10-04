@@ -129,16 +129,8 @@ export default {
     padding: 2px 5px;
     width: 95%;
 
-    background-color: transparent;
-    border: solid;
-    border-color: rgba(0,0,0, 0.2);;
-    border-width: 0px 0px 1px 0px;
-    box-shadow: none;
-    outline: none;
-    transition: 0.5s ease border-color;
-    &:focus {
-      border-color: #000;
-    }
+    border: 1px solid #d6d6d6;
+    box-shadow: inset 0px 2px 0px 0px rgba(204, 204, 204, 0.35);
   }
   .remover {
     font-size: 12px;
