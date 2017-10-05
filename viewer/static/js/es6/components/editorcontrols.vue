@@ -286,7 +286,7 @@ export default {
               </li>
               <li>
                 <a @click="openMarc">
-                <i class="fa fa-fw fa-trash" aria-hidden="true"></i>
+                <i class="fa fa-fw fa-eye" aria-hidden="true"></i>
                 {{"Preview MARC21" | translatePhrase}}
                 </a>
               </li>
