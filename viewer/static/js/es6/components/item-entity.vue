@@ -92,7 +92,6 @@ export default {
     <div class="item-entity" v-if="!expanded" :class="{ 'locked': isLocked, 'highlighted': showCardInfo }" @mouseenter="showCardInfo=true">
       <div class="topbar">
         <i class="linked-indicator fa fa-chain"></i>
-        <span class="type" title="{{ focusData['@type'] }}" v-if="!expanded">{{ focusData['@type'] | labelByLang | capitalize }}</span>
         <span class="collapsed-label"><span v-if="!expanded">{{getItemLabel}}</span><span class="placeholder">.</span></span>
         <span class="actions" v-if="!isLocked">
           <i v-if="!isLocked" class="fa fa-trash-o chip-action" :class="{'show-icon': showActionButtons}" v-on:click="removeThis(true)" @mouseover="removeHover = true" @mouseout="removeHover = false"></i>
@@ -161,21 +160,10 @@ export default {
           visibility: hidden;
         }
         > span {
-          padding-left: 1em;
           height: 1.6em;
           white-space: nowrap;
           text-overflow: ellipsis;
           overflow: hidden;
-        }
-      }
-      .type {
-        // text-transform: uppercase;
-        font-weight: bold;
-        font-size: 85%;
-        a {
-          text-decoration: none;
-          cursor: help;
-          color: @black;
         }
       }
     }
