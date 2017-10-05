@@ -11,6 +11,7 @@ import ProcessedLabel from './processedlabel';
 import ItemEntity from './item-entity';
 import DataNode from './datanode';
 import CardComponent from './card-component';
+import ToolTipComponent from './tooltip-component';
 import FieldAdder from './fieldadder';
 import ItemMixin from './mixins/item-mixin';
 import LensMixin from './mixins/lens-mixin';
@@ -57,6 +58,7 @@ export default {
       extracting: false,
       expanded: this.status.isNew,
       removeHover: false,
+      showToolTip: false,
     };
   },
   computed: {
@@ -301,6 +303,7 @@ export default {
     'item-entity': ItemEntity,
     'card-component': CardComponent,
     'field-adder': FieldAdder,
+    'tooltip-component': ToolTipComponent,
   },
 };
 </script>
@@ -315,7 +318,9 @@ export default {
         <span class="actions">
           <i v-if="!isLocked" class="fa fa-trash-o chip-action" :class="{'show-icon': showActionButtons}" v-on:click="removeThis(true)" @mouseover="removeHover = true" @mouseout="removeHover = false"></i>
           <field-adder v-if="!isLocked && expanded" :allowed="allowedProperties" :inner="true" :path="getPath"></field-adder>
-          <i v-if="isExtractable && !isLocked" :title="'Bryt ut entitet' | translatePhrase" class="chip-action fa fa-share-square-o" v-on:click="openExtractDialog" v-if="!isLocked" :class="{'show-icon': showActionButtons}"></i>
+          <i v-if="isExtractable && !isLocked" class="chip-action fa fa-share-square-o" v-on:click="openExtractDialog" v-if="!isLocked" @mouseover="showToolTip = true" @mouseout="showToolTip = false">
+            <tooltip-component :show-tooltip="showToolTip" tooltip-text="Extract entity" translation="translatePhrase"></tooltip-component>
+          </i>
         </span>
       </div>
       <field-adder v-if="!isLocked && isEmpty" :allowed="allowedProperties" :inner="true" :path="getPath"></field-adder>
