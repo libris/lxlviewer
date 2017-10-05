@@ -13,6 +13,7 @@ export default class UserSettings extends View {
 
     this.updateSigelButtons();
     this.updateLanguageButtons();
+    this.updateAppTechButtons();
 
     $('.sigel-button').click(function() {
       self.changeSigel($(this).val());
@@ -20,6 +21,10 @@ export default class UserSettings extends View {
 
     $('.language-button').click(function() {
       self.changeLanguage($(this).val());
+    });
+
+    $('.apptech-button').click(function() {
+      self.changeAppTech($(this).val());
     });
   }
 
@@ -42,12 +47,29 @@ export default class UserSettings extends View {
     });
   }
 
+  updateAppTechButtons() {
+    const appTech = this.getShowAppTech();
+    let appTechVal = 'off';
+    if (appTech) {
+      appTechVal = 'on';
+    }
+    $('.apptech-option').each(function () {
+      $(this).removeClass('active');
+      if ($(this).find('.apptech-button').val() === appTechVal) {
+        $(this).addClass('active');
+      }
+    });
+  }
+
   getLanguage() {
     return this.settings.userSettings.language || this.settings.language;
   }
 
   getSigel() {
     return this.settings.userSettings.currentSigel;
+  }
+  getShowAppTech() {
+    return this.settings.userSettings.showAppTech;
   }
 
   changeSigel(sigel) {
@@ -61,6 +83,18 @@ export default class UserSettings extends View {
     this.settings.userSettings.language = langCode;
     UserUtil.saveUserSettings(this.settings.userSettings);
     this.updateLanguageButtons();
+    this.translate();
+  }
+
+  changeAppTech(value) {
+    if (value === 'on') {
+      this.settings.userSettings.showAppTech = true;
+    }
+    if (value === 'off') {
+      this.settings.userSettings.showAppTech = false;
+    }
+    UserUtil.saveUserSettings(this.settings.userSettings);
+    this.updateAppTechButtons();
     this.translate();
   }
 }

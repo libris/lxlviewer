@@ -128,6 +128,7 @@ export default {
     color: #333333;
     padding: 2px 5px;
     width: 95%;
+
     border: 1px solid #d6d6d6;
     box-shadow: inset 0px 2px 0px 0px rgba(204, 204, 204, 0.35);
   }

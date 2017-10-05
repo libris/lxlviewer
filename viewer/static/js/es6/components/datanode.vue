@@ -573,10 +573,10 @@ export default {
               text-align: center;
             }
           }
-          &.isChip {
-            display: inline-block;
-            float: left;
-          }
+          // &.isChip {
+          //   display: inline-block;
+          //   float: left;
+          // }
           .item-value {
             > textarea {
               width: 100%;
@@ -606,8 +606,7 @@ export default {
   &.column {
     flex-wrap: wrap;
     border: solid;
-    border-color: rgba(0, 0, 0, 0.0) rgba(0, 0, 0, 0.0) rgba(196, 199, 202, 0.73) rgba(0, 0, 0, 0.0);
-    border-width: 1px;
+    border-width: 0px;
     padding-bottom: 4px;
     &:last-child {
       border-width: 0px;
@@ -633,16 +632,15 @@ export default {
       > ul {
         width: 100%;
         list-style: none;
-        padding: 0px;
+        padding: 0px 1% 0px 1%;
         > li {
-          &.isChip {
-            display: inline-block;
-          }
+          // &.isChip {
+          //   display: inline-block;
+          // }
           .item-value {
             width: 100%;
             display: flex;
             > textarea {
-              background-color: #f9f9f9;
               flex: 9 9 90%;
             }
             > .remover {

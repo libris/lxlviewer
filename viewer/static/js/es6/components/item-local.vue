@@ -311,7 +311,7 @@ export default {
 <template>
   <div class="item-local-container" v-bind:class="{'highlight': isNewlyAdded}">
     <div v-if="!isExpandedType" class="item-local" :class="{'expanded': expanded, 'distinguish-removal': removeHover}">
-      <span class="topbar">
+      <div class="topbar">
         <i class="fa fa-chevron-right" :class="{'down': expanded}" @click="toggleExpanded()"></i>
         <span class="type" @click="toggleExpanded()" title="{{ item['@type'] }}">{{ item['@type'] | labelByLang | capitalize }}</span>
         <span class="collapsed-label" @click="toggleExpanded()"><span v-show="!expanded || isEmpty">{{getItemLabel}}</span><span class="placeholder">.</span></span>
@@ -322,7 +322,7 @@ export default {
             <tooltip-component :show-tooltip="showToolTip" tooltip-text="Extract entity" translation="translatePhrase"></tooltip-component>
           </i>
         </span>
-      </span>
+      </div>
       <field-adder v-if="!isLocked && isEmpty" :allowed="allowedProperties" :inner="true" :path="getPath"></field-adder>
       <data-node v-show="expanded && k !== '_uid'" v-for="(k,v) in filteredItem" :parent-path="getPath" :entity-type="item['@type']" :is-inner="true" :is-locked="isLocked" :allow-local="true" :is-removable="false" :embedded="true" :parent-key="key" :parent-index="index" :key="k" :value="v" :focus="focus" :show-action-buttons="showActionButtons"></data-node>
     </div>
@@ -363,44 +363,35 @@ export default {
 <style lang="less">
 @import './_variables.less';
 .item-local-container {
+  padding: 5px 0px;
   margin: 0px 0px 5px 0px;
   box-shadow: 0px 0px 1em 0px transparent;
   outline: 2px solid transparent;
-  transition: 3s ease;
-  transition-property: outline, box-shadow;
+  // transition: 3s ease;
+  // transition-property: outline, box-shadow;
   &.highlight {
     outline: 2px solid @highlight-color;
     box-shadow: 0px 0px 1em 0px @highlight-color;
   }
   .item-local {
-    .local-form {
-      width: @col-value - 20;
-      border: dashed #ababab;
-      border-bottom-color: #ccc;
-      border-bottom-style: solid;
-      border-width: 1px 1px 2px 1px;
-      padding: 5px;
-      background-color: #ececec;
-      .actions {
-        margin-top: 0.5em;
-        text-align: right;
-      }
-      &::before {
-        content: '\00000A';
-      }
-    }
-
     width: 100%;
-    background-color: #fdfdfd;
-    border: solid #d1d1d1;
-    border-bottom-color: #b2b2b2;
-    border-width: 1px 1px 3px 1px;
+    background-color: @color-local;
+    box-shadow: @shadow-chip;
+    border: 1px solid rgba(0, 0, 0, 0.15);
     line-height: 1.6;
     max-height: 40px;
     overflow: hidden;
+    transition: 0.5s ease margin, 0.5s ease max-height, 1.0s ease box-shadow;
+    &.distinguish-removal {
+      padding-bottom: 2px;
+      > .topbar {
+        background-color: rgba(255,0,0,.1);
+      }
+    }
     &.expanded {
-      transition: all 0.5s ease;
+      margin: 0 0 2em 0;
       max-height: 200vh;
+      box-shadow: @shadow-chip-elevated;
     }
     &.removed {
       transition: all 0.5s ease;
@@ -421,6 +412,7 @@ export default {
       cursor: pointer;
       > .actions {
         display: flex;
+        flex-basis: 4em;
         flex-direction: row-reverse;
         .confirm-remove-box {
           transform: translate(16px, 0px);
@@ -460,14 +452,15 @@ export default {
           overflow: hidden;
         }
       }
-    }
-    .type {
-      // text-transform: uppercase;
-      font-weight: bold;
-      a {
-        text-decoration: none;
-        cursor: help;
-        color: @black;
+      .type {
+        // text-transform: uppercase;
+        font-weight: bold;
+        font-size: 85%;
+        a {
+          text-decoration: none;
+          cursor: help;
+          color: @black;
+        }
       }
     }
 

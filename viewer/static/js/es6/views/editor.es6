@@ -16,12 +16,12 @@ import * as DisplayUtil from '../utils/display';
 import * as RecordUtil from '../utils/record';
 import * as UserUtil from '../utils/user';
 import * as StringUtil from '../utils/string';
+import MarcPreview from '../components/marc-preview';
 import FormComponent from '../components/formcomponent';
 import HelpComponent from '../components/help-component';
 import EditorControls from '../components/editorcontrols';
 import HeaderComponent from '../components/headercomponent';
 import Notification from '../components/notification';
-import RecordSummary from '../components/record-summary';
 import { getSettings, getVocabulary, getVocabularyClasses, getVocabularyProperties, getDisplayDefinitions, getEditorData, getStatus, getKeybindState } from '../vuex/getters';
 import { changeSettings, changeNotification, loadVocab, loadVocabMap, loadForcedListTerms, loadDisplayDefs, syncData, changeSavedStatus, changeStatus } from '../vuex/actions';
 
@@ -167,6 +167,9 @@ export default class Editor extends View {
         },
         'save-item': function() {
           this.saveItem();
+        },
+        'show-marc': function() {
+          this.$broadcast('open-marc');
         },
         'show-help': function(value) {
           LayoutUtil.scrollLock(true);
@@ -425,7 +428,7 @@ export default class Editor extends View {
         'header-component': HeaderComponent,
         'help-component': HelpComponent,
         'notification': Notification,
-        'record-summary': RecordSummary,
+        'marc-preview': MarcPreview,
       },
       store,
     });

@@ -33,6 +33,7 @@ export default {
   props: {
     locked: false,
     editingObject: '',
+    collapsed: false,
   },
   data() {
     return {
@@ -248,27 +249,27 @@ export default {
 
 <template>
   <div class="form-component focused-form-component" :class="{ 'locked': isLocked }">
-    <div class="form-label" v-bind:class="{ 'record-style': (!isBib && !isHolding), 'bib-style': isBib, 'holding-style': isHolding }">
-      <span class="type-label">{{ editorData[editingObject]['@type'] | labelByLang }}</span>
-      <span v-if="!status.isNew" class="new-indicator">- {{ editorData[editingObject]['@id'] }}</span>
-      <span v-if="status.isNew" class="new-indicator">- [{{"new record" | translatePhrase}}]</span>
-    </div>
-    <data-node v-for="k in specialProperties" :key="k" :value="editorData[editingObject][k]" :entity-type="editorData[editingObject]['@type']" is-locked="true"></data-node>
-    <data-node v-for="(k,v) in sortedFormData" v-bind:class="{ 'locked': isLocked }" :entity-type="editorData[editingObject]['@type']" :is-inner="false" :is-removable="true" :is-locked="keyIsLocked(k)" :key="k" :value="v" :allow-local="true"></data-node>
-    <field-adder v-if="!isLocked" :allowed="allowedProperties" :inner="false" :editing-object="editingObject"></field-adder>
-    <div id="result" v-if="status.isDev && !isLocked">
-      <div class="row">
-      <pre class="col-md-6">
-        SORTED
+    <div class="data-node-container" v-bind:class="{'collapsed': collapsed }">
+      <data-node v-for="(k,v) in sortedFormData" v-bind:class="{ 'locked': isLocked }" :entity-type="editorData[editingObject]['@type']" :is-inner="false" :is-removable="true" :is-locked="keyIsLocked(k)" :key="k" :value="v" :allow-local="true"></data-node>
+      <field-adder v-if="!isLocked" :allowed="allowedProperties" :inner="false" :editing-object="editingObject"></field-adder>
+      <div id="result" v-if="status.isDev && !isLocked">
+        <div class="row">
+        <pre class="col-md-6">
+          SORTED
 
-        {{sortedFormData | json}}
-      </pre>
-      <pre class="col-md-6">
-        ORIGINAL
+          {{sortedFormData | json}}
+        </pre>
+        <pre class="col-md-6">
+          ORIGINAL
 
-        {{formData | json}}
-      </pre>
+          {{formData | json}}
+        </pre>
+        </div>
       </div>
+    </div>
+    <div class="data-node-container-toggle" v-on:click="collapsed = !collapsed">{{ collapsed ? 'Show' : 'Hide' | translatePhrase }}
+      <i class="fa fa-chevron-up" v-show="!collapsed"></i>
+      <i class="fa fa-chevron-down" v-show="collapsed"></i>
     </div>
   </div>
 </template>
@@ -276,34 +277,114 @@ export default {
 <style lang="less">
 @import './_variables.less';
 
+.ribbon-mixin(@ribbon-color) {
+  // padding: 0 10px 0 10px;
+  // position: relative;
+  // margin: 0 -10px 0 -10px;
+  // box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15);
+  background-color: @ribbon-color;
+  border: solid darken(@ribbon-color, 3%);
+  border-width: 0px 0px 1px 0px;
+  // border-radius: 0px 0px 2px 2px;
+  // &:before {
+  //   content: ' ';
+  //   position: absolute;
+  //   width: 0;
+  //   height: 0;
+  //   right: 0px;
+  //   top: 100%;
+  //   border-width: 5px 5px;
+  //   border-style: solid;
+  //   border-color: darken(@ribbon-color, 10%) transparent transparent darken(@ribbon-color, 10%);
+  // }
+  // &:after {
+  //   content: ' ';
+  //   position: absolute;
+  //   width: 0;
+  //   height: 0;
+  //   left: 0px;
+  //   top: 100%;
+  //   border-width: 5px 5px;
+  //   border-style: solid;
+  //   border-color: darken(@ribbon-color, 10%) darken(@ribbon-color, 10%) transparent transparent;
+  // }
+}
+
 .form-component {
   .form-label {
     color: @white;
-    text-align: center;
-    padding: 5px 7px;
+    display: flex;
+    justify-content: space-between;
+    border-width: 0px 0px 1px 0px;
+    > span {
+      &.left-column {
+        flex: 0 0 40%;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        padding: 0 1em;
+      }
+      &.middle-column {
+        flex: 0 0 20%;
+        text-align: center;
+        // text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.4);
+      }
+      &.right-column {
+        flex: 0 0 40%;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        padding: 0 1em;
+        code {
+          color: #fff;
+          padding: 0em 0.5em;
+          background-color: rgba(0, 0, 0, 0.2);
+        }
+      }
+    }
     .type-label {
-      font-size: 1.6em;
+      font-size: 1.2em;
       font-weight: bold;
     }
     .new-indicator {
       font-size: 1em;
     }
     &.record-style {
-      background-color: @gray;
-      border: 1px solid darken(@gray, 5%);
+      .ribbon-mixin(@gray);
     }
     &.bib-style {
-      background-color: @bib-color;
-      border: 1px solid darken(@bib-color, 5%);
+      .ribbon-mixin(@bib-color);
     }
     &.holding-style {
-      background-color: desaturate(darken(@holding-color, 10%), 10%);
-      border: 1px solid darken(desaturate(darken(@holding-color, 10%), 10%), 5%);
+      .ribbon-mixin(desaturate(darken(@holding-color, 10%), 10%));
     }
   }
+  .data-node-container {
+    border: solid #d8d8d8;
+    margin: 0px;
+    padding: 0px;
+    border-width: 1px 0px 0px 0px;
+    overflow: hidden;
+    max-height: 500vh;
+    transition: 2s ease max-height;
+    &.collapsed {
+      max-height: 0em;
+      transition: 1s ease max-height;
+    }
+  }
+  .data-node-container-toggle {
+    text-align: center;
+    font-weight: bold;
+    font-size: 85%;
+    text-transform: uppercase;
+    cursor: pointer;
+    padding: 0.5em;
+  }
+  box-shadow: @shadow-base;
   border: solid #ccc;
-  border-width: 1px;
+  border-width: 0px 1px 1px 1px;
   margin-bottom: 2em;
+  background-color: #ededed;
   &.locked {
     > ul > li {
       margin: 0px;

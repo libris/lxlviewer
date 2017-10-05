@@ -50,9 +50,9 @@ export default {
   <div class="record-summary-container">
     <div>
       <span class="record-chip-element">Skapad {{ getCard.created }} av {{ getCard.assigner || 'okänd' }}</span> |
-      <span class="record-chip-element">Ändrad {{ getCard.modified }} av {{ getCard.descriptionModifier || 'okänd' }}</span> |
-      <span class="show-record-toggle" v-show="!showRecord" v-on:click="toggleRecord">{{'Show admin metadata' | translatePhrase}}</span>
-      <span class="show-record-toggle" v-show="showRecord" v-on:click="toggleRecord">{{'Hide admin metadata' | translatePhrase}}</span>
+      <span class="record-chip-element">Ändrad {{ getCard.modified }} av {{ getCard.descriptionModifier || 'okänd' }}</span>
+      <!--| <span class="show-record-toggle" v-show="!showRecord" v-on:click="toggleRecord">{{'Show admin metadata' | translatePhrase}}</span>
+      <span class="show-record-toggle" v-show="showRecord" v-on:click="toggleRecord">{{'Hide admin metadata' | translatePhrase}}</span> -->
     </div>
     <!-- <div class="container-wrapper" v-if="showFull">
       <div class="full-info-container" v-on-clickaway="showFull = false">
@@ -75,7 +75,6 @@ export default {
 .record-summary-container {
   display: flex;
   flex-direction: row;
-  padding: 1em 1em;
   align-items: center;
   .show-record-toggle {
     cursor: pointer;

@@ -39,10 +39,13 @@ export default class View {
       ],
       specialProperties: [
         '@id',
-        'sameAs',
         '@type',
+        'created',
+        'modified',
+        'mainEntity'
       ],
       lockedProperties: [
+        'sameAs',
         'controlNumber',
         'systemNumber',
         'heldBy',

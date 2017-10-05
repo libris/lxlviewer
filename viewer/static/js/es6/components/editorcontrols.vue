@@ -1,7 +1,5 @@
 <script>
 import * as _ from 'lodash';
-import HeaderComponent from './headercomponent';
-import MarcPreview from '../components/marc-preview';
 import * as DataUtil from '../utils/data';
 import * as DisplayUtil from '../utils/display';
 import * as LayoutUtil from '../utils/layout';
@@ -10,6 +8,8 @@ import * as ModalUtil from '../utils/modals';
 import * as HttpUtil from '../utils/http';
 import * as StringUtil from '../utils/string';
 import * as RecordUtil from '../utils/record';
+import HeaderComponent from './headercomponent';
+import RecordSummary from './record-summary';
 import LensMixin from './mixins/lens-mixin';
 import { mixin as clickaway } from 'vue-clickaway';
 import { changeSavedStatus, changeStatus, changeNotification, navigateChangeHistory } from '../vuex/actions';
@@ -55,6 +55,9 @@ export default {
     },
   },
   methods: {
+    openMarc() {
+      this.$dispatch('show-marc');
+    },
     save() {
       this.changeSavedStatus('loading', true);
       this.buildCopiedRecord();
@@ -176,6 +179,20 @@ export default {
     };
   },
   computed: {
+    recordType() {
+      if (VocabUtil.isSubClassOf(this.editorData.mainEntity['@type'], 'Item', this.vocab, this.settings.vocabPfx)) {
+        return 'Item';
+      }
+      if (VocabUtil.isSubClassOf(this.editorData.mainEntity['@type'], 'Instance', this.vocab, this.settings.vocabPfx)) {
+        return 'Instance';
+      } else if (VocabUtil.isSubClassOf(this.editorData.mainEntity['@type'], 'Work', this.vocab, this.settings.vocabPfx)) {
+        return 'Work';
+      } else if (VocabUtil.isSubClassOf(this.editorData.mainEntity['@type'], 'Agent', this.vocab, this.settings.vocabPfx)) {
+        return 'Agent';
+      } else if (VocabUtil.isSubClassOf(this.editorData.mainEntity['@type'], 'Concept', this.vocab, this.settings.vocabPfx)) {
+        return 'Concept';
+      }
+    },
     downloadIsSupported() {
       const a = document.createElement('a');
       return typeof a.download != 'undefined';
@@ -204,7 +221,7 @@ export default {
     }
   },
   components: {
-    'marc-preview': MarcPreview,
+    'record-summary': RecordSummary,
   },
 };
 </script>
@@ -214,25 +231,13 @@ export default {
     <div class="editor-controls">
       <div class="admin-info">
         <div class="actions">
-          <div class="action" v-on:click="toggleDev()" v-bind:class="{'active': status.isDev}">
+          <h2 class="recordtype-label">{{recordType | labelByLang }}</h2>
+          <div class="action" v-if="settings.userSettings.showAppTech" v-on:click="toggleDev()" v-bind:class="{'active': status.isDev}">
             <i class="fa fa-wrench" aria-hidden="true"></i>
           </div>
           <div class="action" v-on:click="showHelp()">
             <i class="fa fa-question-circle action" aria-hidden="true"></i>
           </div>
-          <div class="action">
-            <span class="data-selector" v-on:click="otherFormatMenu = true">RDF <i class="fa fa-caret-down" aria-hidden="true"></i></span>
-            <div class="other-format-menu" v-if="otherFormatMenu" v-on-clickaway="otherFormatMenu = false">
-              <a :href="`${focusData['@id']}/data.jsonld`">JSON-LD</a>
-              <a :href="`${focusData['@id']}/data.ttl`">Turtle</a>
-              <a :href="`${focusData['@id']}/data.rdf`">RDF/XML</a>
-            </div>
-          </div>
-          <marc-preview v-show="status.inEdit"></marc-preview>
-          <button v-if="!status.inEdit && isSubClassOf('Instance') && downloadIsSupported && hasSigel" @click="getCompiledPost()">
-            <i class="fa fa-download" aria-hidden="true"></i>
-            {{"Compiled" | translatePhrase}}
-          </button>
           <a :href="compileMARCUrl" v-if="!status.inEdit && isSubClassOf('Instance') & !downloadIsSupported && hasSigel">
             <button>
               <i class="fa fa-download" aria-hidden="true"></i>
@@ -240,8 +245,60 @@ export default {
             </button>
           </a>
         </div>
+        <record-summary></record-summary>
         <div>
-          <button class="removeButton" v-show="status.inEdit && !status.isNew" @click="removePost"><i class="fa fa-trash" aria-hidden="true"></i> {{"Remove" | translatePhrase}} post</button>
+          <div class="dropdown other-format">
+            <div class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+              {{ 'Show as' | translatePhrase }}
+              <span class="caret"></span>
+            </div>
+            <ul class="dropdown-menu">
+              <li><a :href="`${focusData['@id']}/data.jsonld`">JSON-LD</a></li>
+              <li><a :href="`${focusData['@id']}/data.ttl`">Turtle</a></li>
+              <li><a :href="`${focusData['@id']}/data.rdf`">RDF/XML</a></li>
+            </ul>
+          </div>
+          <div class="dropdown tools">
+            <div class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+              {{ 'Tools' | translatePhrase }}
+            <span class="caret"></span>
+            </div>
+            <ul class="dropdown-menu">
+              <li>
+                <a @click="handleCopy">
+                <i class="fa fa-fw fa-files-o"></i>
+                {{ "Copy" | translatePhrase }}
+                </a>
+              </li>
+              <li v-if="isSubClassOf('Instance') && downloadIsSupported && hasSigel">
+                <a @click="getCompiledPost()">
+                <i class="fa fa-fw fa-download" aria-hidden="true"></i>
+                {{"Download compiled" | translatePhrase}}
+                </a>
+              </li>
+              <li v-if="isSubClassOf('Instance') & !downloadIsSupported && hasSigel">
+                <a :href="compileMARCUrl">
+                  <button>
+                    <i class="fa fa-fw fa-download" aria-hidden="true"></i>
+                    {{"Compiled" | translatePhrase}}
+                  </button>
+                </a>
+              </li>
+              <li>
+                <a @click="openMarc">
+                <i class="fa fa-fw fa-trash" aria-hidden="true"></i>
+                {{"Preview MARC21" | translatePhrase}}
+                </a>
+              </li>
+              <li class="remove-option" v-show="!status.isNew">
+                <a @click="removePost">
+                <i class="fa fa-fw fa-trash" aria-hidden="true"></i>
+                {{"Remove" | translatePhrase}} post
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div class="toolbar-divider"></div>
           <button v-show="status.inEdit" @click="navigateFormChanges('back')">
             <i class="fa fa-undo" aria-hidden="true"></i>
             {{"Undo" | translatePhrase}}
@@ -255,10 +312,6 @@ export default {
             <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="status.saved.loading"></i>
             <i class="fa fa-fw fa-save" v-show="!status.saved.loading"></i>
             {{ "Save" | translatePhrase }}
-          </button>
-          <button id="duplicateButton" @click="handleCopy" v-show="!status.inEdit">
-            <i class="fa fa-fw fa-files-o"></i>
-            {{ "Copy" | translatePhrase }}
           </button>
           <button id="editButton" v-on:click="edit()" v-show="!status.inEdit">
             <i class="fa fa-fw fa-pencil" v-show="!loadingEdit"></i>
@@ -310,35 +363,8 @@ export default {
   padding: 0.5em 0;
 
   .editor-controls {
-    .data-selector {
-      padding: 0 0.5em;
-    }
-    .other-format-menu {
-      position: absolute;
-      top: 1.5em;
-      line-height: 1.6;
-      white-space: normal;
-      a {
-        background-color: @black;
-        display: block;
-        padding: 0.1em 0.5em;
-        text-decoration: none;
-        color: white;
-        &:hover {
-          background-color: @gray-dark;
-        }
-      }
-      &::before {
-        content: "";
-        width: 0;
-        height: 0;
-        border-style: solid;
-        border-width: 0 5px 6px 5px;
-        border-color: transparent transparent @black transparent;
-        font-size: 0;
-	      line-height: 0;
-        margin-left: 29px;
-      }
+    .recordtype-label {
+      margin: 0;
     }
     .admin-info {
       flex-direction: row;
@@ -354,6 +380,39 @@ export default {
           vertical-align: middle;
         }
       }
+      .dropdown.tools, .dropdown.other-format {
+        display: inline-block;
+        &.open .dropdown-toggle {
+          background-color: #cecece;
+        }
+        > div {
+          border-radius: 2px;
+          font-weight: bold;
+          cursor: pointer;
+          margin: 0 0.3em;
+          padding: 3px 10px;
+          font-size: 12px;
+          line-height: 20px;
+          background-color: #efefef;
+          border: 1px solid rgba(27, 31, 35, 0);
+        }
+        li > a {
+          cursor: pointer;
+          padding: 3px 5px;
+        }
+        .remove-option {
+          a {
+            &:hover {
+              color: #e6e6e6;
+              background-color: #986e6e;
+            }
+          }
+        }
+      }
+      .toolbar-divider {
+        display: inline-block;
+        width: 2em;
+      }
       button {
         margin: 0 0.3em;
         padding: 3px 10px;
@@ -361,19 +420,10 @@ export default {
         line-height: 20px;
         background-color: #efefef;
         border: 1px solid rgba(27,31,35,0);
-        &.removeButton {
-          margin-right: 2em;
-          background-color: gray;
-          border: 1px solid #696969;
-          color: #e6e6e6;
-          transition: background-color 0.25s ease;
-          &:hover {
-            background-color: #986e6e;
-          }
-        }
       }
       .actions {
         display: flex;
+        align-items: center;
         .action {
           display: inline-block;
           cursor: pointer;

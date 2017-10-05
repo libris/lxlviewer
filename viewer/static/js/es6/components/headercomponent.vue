@@ -109,21 +109,20 @@ export default {
 @import './_variables.less';
 .header-component-container {
   display: flex;
-  background-color: @neutral-color;
+  background-color: @bib-color;
+  box-shadow: @shadow-base;
   padding: 0px;
-  margin-bottom: 2em;
-  outline: solid #ccc;
-  outline-width: 1px;
-  border-bottom: 1px solid #ccc;
   .header-component {
     flex: 8 8 100%;
     max-width: 100%;
     min-width: 0;
-    border-right: 1px solid #ccc;
     &.full {
       .entity-summary {
         border-width: 0;
         height: 100%;
+        * {
+          color: @white;
+        }
       }
     }
     &.compact {
@@ -178,6 +177,7 @@ export default {
 
   }
   .create-item-container {
+    background-color: @white;
     flex: 2 2 20%;
     display: flex;
     padding: 1em;

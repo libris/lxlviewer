@@ -80,6 +80,7 @@ export default {
     background-color: @white;
     &.floating {
       width: 600px;
+      margin: 0 0 0 2.1em;
       box-shadow: 0px 3px 5px 0px rgba(0, 0, 0, 0.3);
     }
     .entity-summary {

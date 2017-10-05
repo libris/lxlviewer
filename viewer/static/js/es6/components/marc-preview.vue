@@ -12,9 +12,11 @@ export default {
     return {
       marcObj: {},
       dataLoaded: false,
-      active: false,
       error: false,
     }
+  },
+  props: {
+    active: false,
   },
   vuex: {
     getters: {
@@ -30,23 +32,28 @@ export default {
   },
   events: {
     'close-modals'() {
-      this.hide();
+      this.hideMarc();
       return true;
+    },
+    'open-marc'() {
+      this.convertItemToMarc();
+      this.showMarc();
     },
   },
   methods: {
-    show() {
+    showMarc() {
       LayoutUtil.scrollLock(true);
-      this.convertItemToMarc();
-      this.active = true;
       this.changeStatus('keybindState', 'marc-preview');
+      this.changeStatus('showMarc', true);
+      this.active = true;
     },
-    hide() {
-      this.active = false;
+    hideMarc() {
+      this.changeStatus('showMarc', false);
       LayoutUtil.scrollLock(false);
       this.changeStatus('keybindState', 'overview');
       this.marcObj = {};
       this.dataLoaded = false;
+      this.active = false;
     },
     isObject(o) {
       return _.isObject(o);
@@ -85,6 +92,9 @@ export default {
     },
   },
   computed: {
+    isActive() {
+      return this.status.showMarc;
+    },
   },
   components: {
   },
@@ -97,12 +107,11 @@ export default {
 
 <template>
   <div class="marc-preview">
-    <button v-on:click="show()"><i class="fa fa-fw fa-eye"></i> {{ "MARC21" | translatePhrase }}</button>
     <div class="window" v-if="active">
       <div class="header">
-        <span class="title">{{ "View MARC21" | translatePhrase }}</span>
+        <span class="title">{{ "Preview MARC21" | translatePhrase }}</span>
         <span class="windowControl">
-          <i v-on:click="hide()" class="fa fa-close"></i>
+          <i v-on:click="hideMarc()" class="fa fa-close"></i>
         </span>
       </div>
       <div class="body">
