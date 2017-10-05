@@ -64,13 +64,14 @@ export function getTermObject(term, vocab, vocabPfx) {
   if (_.isObject(term)) {
     throw new Error('getTermObject was called with an object (should be a string).');
   }
-
   if (term.indexOf('@') !== -1) {
     return {};
   }
-
-  let cn = term.replace(vocabPfx, '');
-  cn = `${vocabPfx}${cn}`;
+  let cn = term;
+  if (term.indexOf('marc/') === -1) {
+    cn = term.replace(vocabPfx, '');
+    cn = `${vocabPfx}${cn}`;
+  }
   let _class = vocab.get(cn);
 
   if (!_class && cn.indexOf('marc:') !== -1) {
