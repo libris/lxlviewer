@@ -80,21 +80,21 @@ export default {
 
 <template>
 <div class="entity-summary">
-  <div class="categorization">
-    {{categorization.join(', ')}} {{ isLocal ? '(lokal entitet)' : '' }}
-  </div>
-  <div class="actions" v-if="actions">
-    <i class="fa fa-share-square-o" v-if="isLocal && isExtractable" v-on:click="extractEntity"></i> <i class="fa fa-trash-o" v-on:click="removeEntity"></i>
-  </div>
   <div class="main-info">
+    <div class="categorization">
+      {{categorization.join(', ')}} {{ isLocal ? '(lokal entitet)' : '' }}
+    </div>
     <h3 class="header">
       <span class="import-header" title="{{ header.join(', ') }}" v-on:click="importThis()" v-if="isImport">{{ header.join(', ') }}</span>
       <a v-if="!isImport && renderLink" :class="{'blue-link': settings.siteInfo.title === 'id.kb.se'}" title="{{ header.join(', ') }}" :href="focusData['@id']">{{ header.join(', ') }}</a>
       <span v-if="!isImport && !renderLink" title="{{ header.join(', ') }}">{{ header.join(', ') }}</span>
     </h3>
-    <ul class="info">
+    <div class="info">
+      {{ info.join(', ') }}
+    </div>
+    <!-- <ul class="info">
       <li v-for="v in info" track-by="$index">{{ v }}</li>
-    </ul>
+    </ul> -->
   </div>
   <div class="identifiers">
     <ul>
@@ -116,21 +116,20 @@ export default {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  .categorization {
-    color: #8a8a8a;
-    flex-basis: 85%;
-    padding: 3px;
-    flex-grow: 2;
-    display: block;
-    font-weight: bold;
-    margin-bottom: -0.4em;
-  }
   .actions {
     flex-basis: 3em;
     text-align: center;
   }
   .main-info {
-    flex-basis: 70%;
+    .categorization {
+      color: #8a8a8a;
+      flex-basis: 85%;
+      padding: 3px;
+      flex-grow: 2;
+      display: block;
+      font-weight: bold;
+      margin-bottom: -0.4em;
+    }
     max-width: 70%;
     padding: 0px 3px;
     a {
@@ -155,7 +154,6 @@ export default {
     }
   }
   .identifiers {
-    flex-basis: 27%;
     text-align: right;
     padding: 0px 0.5em;
     font-weight: bold;
