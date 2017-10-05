@@ -23,6 +23,7 @@ const state = {
   },
   status: {
     showHelp: false,
+    editorFocus: 'mainEntity',
     helpSection: 'none',
     lastAdded: '',
     lastSavedData: {},

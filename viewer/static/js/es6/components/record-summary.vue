@@ -19,18 +19,12 @@ export default {
       changeStatus,
     }
   },
-  props: {
-    showRecord: false,
-  },
   data() {
     return {
       showFull: false,
     }
   },
   methods: {
-    toggleRecord() {
-      this.$dispatch('toggle-record');
-    },
   },
   computed: {
     focusData() {
@@ -82,7 +76,6 @@ export default {
     text-decoration: underline;
   }
   > div {
-    margin: 0 0.5em;
     &.container-wrapper::before {
       content: '';
       width: 0;

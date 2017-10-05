@@ -41,6 +41,9 @@ export default {
     };
   },
   computed: {
+    isActive() {
+      return this.status.editorFocus === this.editingObject;
+    },
     isHolding() {
       return this.editorData[this.editingObject]['@type'] === 'Item';
     },
@@ -248,7 +251,7 @@ export default {
 </script>
 
 <template>
-  <div class="form-component focused-form-component" :class="{ 'locked': isLocked }">
+  <div class="form-component focused-form-component" :class="{ 'locked': isLocked }" v-show="isActive">
     <div class="data-node-container" v-bind:class="{'collapsed': collapsed }">
       <data-node v-for="(k,v) in sortedFormData" v-bind:class="{ 'locked': isLocked }" :entity-type="editorData[editingObject]['@type']" :is-inner="false" :is-removable="true" :is-locked="keyIsLocked(k)" :key="k" :value="v" :allow-local="true"></data-node>
       <field-adder v-if="!isLocked" :allowed="allowedProperties" :inner="false" :editing-object="editingObject"></field-adder>
@@ -266,10 +269,6 @@ export default {
         </pre>
         </div>
       </div>
-    </div>
-    <div class="data-node-container-toggle" v-on:click="collapsed = !collapsed">{{ collapsed ? 'Show' : 'Hide' | translatePhrase }}
-      <i class="fa fa-chevron-up" v-show="!collapsed"></i>
-      <i class="fa fa-chevron-down" v-show="collapsed"></i>
     </div>
   </div>
 </template>
@@ -367,10 +366,6 @@ export default {
     overflow: hidden;
     max-height: 500vh;
     transition: 2s ease max-height;
-    &.collapsed {
-      max-height: 0em;
-      transition: 1s ease max-height;
-    }
   }
   .data-node-container-toggle {
     text-align: center;

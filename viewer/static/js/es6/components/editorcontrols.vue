@@ -55,6 +55,13 @@ export default {
     },
   },
   methods: {
+    toggleEditorFocus() {
+      if (this.status.editorFocus === 'record') {
+        this.changeStatus('editorFocus', 'mainEntity');
+      } else {
+        this.changeStatus('editorFocus', 'record');
+      }
+    },
     openMarc() {
       this.$dispatch('show-marc');
     },
@@ -179,6 +186,9 @@ export default {
     };
   },
   computed: {
+    showRecord() {
+      return this.status.showRecord;
+    },
     recordType() {
       if (VocabUtil.isSubClassOf(this.editorData.mainEntity['@type'], 'Item', this.vocab, this.settings.vocabPfx)) {
         return 'Item';
@@ -231,12 +241,12 @@ export default {
     <div class="editor-controls">
       <div class="admin-info">
         <div class="actions">
-          <h2 class="recordtype-label">{{recordType | labelByLang }}</h2>
+          <div>
+            <h2 class="recordtype-label">{{recordType | labelByLang }}</h2>
+            <record-summary></record-summary>
+          </div>
           <div class="action" v-if="settings.userSettings.showAppTech" v-on:click="toggleDev()" v-bind:class="{'active': status.isDev}">
             <i class="fa fa-wrench" aria-hidden="true"></i>
-          </div>
-          <div class="action" v-on:click="showHelp()">
-            <i class="fa fa-question-circle action" aria-hidden="true"></i>
           </div>
           <a :href="compileMARCUrl" v-if="!status.inEdit && isSubClassOf('Instance') & !downloadIsSupported && hasSigel">
             <button>
@@ -245,8 +255,14 @@ export default {
             </button>
           </a>
         </div>
-        <record-summary></record-summary>
         <div>
+          <button v-on:click="toggleEditorFocus()" v-bind:class="{'active': status.editorFocus === 'record' }">
+            <span v-show="status.editorFocus === 'record'"><i class="fa fa-fw fa-toggle-on"></i> {{'Admin metadata' | translatePhrase}}</span>
+            <span v-show="status.editorFocus === 'mainEntity'"><i class="fa fa-fw fa-toggle-off"></i> {{'Admin metadata' | translatePhrase}}</span>
+          </button>
+          <button v-on:click="showHelp()">
+            {{'Help' | translatePhrase}}
+            </button>
           <div class="dropdown other-format">
             <div class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
               {{ 'Show as' | translatePhrase }}
@@ -359,6 +375,8 @@ export default {
 <style lang="less">
 @import './_variables.less';
 
+@button-active-color: #cecece;
+
 .container {
   padding: 0.5em 0;
 
@@ -369,7 +387,7 @@ export default {
     .admin-info {
       flex-direction: row;
       display: flex;
-      align-items: center;
+      align-items: flex-end;
       justify-content: space-between;
       position: relative;
       .admin-node {
@@ -380,10 +398,13 @@ export default {
           vertical-align: middle;
         }
       }
+      button.active {
+        background-color: @button-active-color;
+      }
       .dropdown.tools, .dropdown.other-format {
         display: inline-block;
         &.open .dropdown-toggle {
-          background-color: #cecece;
+          background-color: @button-active-color;
         }
         > div {
           border-radius: 2px;
