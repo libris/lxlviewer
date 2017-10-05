@@ -1,6 +1,7 @@
 <script>
 import { mixin as clickaway } from 'vue-clickaway';
 import * as _ from 'lodash';
+import ToolTipComponent from './tooltip-component';
 import * as LayoutUtil from '../utils/layout';
 import * as StringUtil from '../utils/string';
 import { getSettings, getVocabulary } from '../vuex/getters';
@@ -36,6 +37,7 @@ export default {
       buttonPos: -1,
       selectedIndex: -1,
       fieldListBottom: false,
+      showToolTip: false,
     };
   },
   beforeDestroy() {
@@ -221,6 +223,7 @@ export default {
     },
   },
   components: {
+    'tooltip-component': ToolTipComponent,
   },
 };
 </script>
@@ -232,13 +235,15 @@ export default {
         <i class="fa fa-plus-square-o plus-icon" aria-hidden="true"></i>
         {{ "Field" | translatePhrase }}
       </div>
-      <a v-if="!inner && !buttonFixed" class="add-button absolute" v-on:click="show">
-        <i class="fa fa-plus plus-icon" aria-hidden="true"></i>
-        <div>{{ "Add field" | translatePhrase }}</div>
+      <a v-if="!inner && !buttonFixed" class="add-button absolute" v-on:click="show" @mouseenter="showToolTip = true" @mouseleave="showToolTip = false">
+        <i class="fa fa-plus plus-icon" aria-hidden="true">
+          <tooltip-component :show-tooltip="showToolTip" tooltip-text="Add field" translation="translatePhrase"></tooltip-component>
+        </i>
       </a>
-      <a v-if="!inner && buttonFixed" class="add-button fixed" v-on:click="show">
-        <i class="fa fa-plus plus-icon" aria-hidden="true"></i>
-        <div>{{ "Add field" | translatePhrase }}</div>
+      <a v-if="!inner && buttonFixed" class="add-button fixed" v-on:click="show" @mouseenter="showToolTip = true" @mouseleave="showToolTip = false">
+        <i class="fa fa-plus plus-icon" aria-hidden="true">
+          <tooltip-component :show-tooltip="showToolTip" tooltip-text="Add field" translation="translatePhrase"></tooltip-component>
+        </i>
       </a>
       <div class="window"  v-if="active" :class="{'at-bottom': fieldListBottom}">
         <div class="header">
@@ -315,12 +320,6 @@ export default {
     }
     &:active {
       box-shadow: 0px 5px 10px 0px rgba(0,0,0,0.5);
-    }
-    > div {
-      font-size: 22px;
-      opacity: 0;
-      max-height: 0;
-      max-width: 0;
     }
   }
   >a {

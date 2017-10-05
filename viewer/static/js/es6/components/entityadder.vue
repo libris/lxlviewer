@@ -278,11 +278,18 @@ export default {
 
 <template>
 <div class="entity-adder" :class="{'inner-adder': isPlaceholder, 'fill-width': addEmbedded}">
-  <div v-if="isPlaceholder && !addEmbedded" v-on:click="add()">
-    <span class="chip-label"><i class="fa fa-fw fa-plus plus-icon" aria-hidden="true"></i></span>
+  <div v-if="isPlaceholder && !addEmbedded" v-on:click="add()" @mouseenter="showToolTip = true" @mouseleave="showToolTip = false">
+    <span class="chip-label">
+      <i class="fa fa-fw fa-plus plus-icon" aria-hidden="true">
+        <tooltip-component :show-tooltip="showToolTip" tooltip-text="Add" translation="translatePhrase"></tooltip-component>  
+      </i>
+    </span>
   </div>
   <div v-if="!isPlaceholder && !addEmbedded" class="action-button add-entity-button" v-on:click="add()">
-    <span class="chip-label"><i class="fa fa-fw fa-plus plus-icon" aria-hidden="true"></i><span class="label-text">{{ addLabel | labelByLang | capitalize }}</span></span>
+    <span class="chip-label">
+      <i class="fa fa-fw fa-plus plus-icon" aria-hidden="true">
+      </i>
+    <span class="label-text">{{ addLabel | labelByLang | capitalize }}</span></span>
   </div>
   <div class="type-chooser" v-if="addEmbedded" v-on-clickaway="dismissTypeChooser">
     <select v-model="selectedType" @change="addType(selectedType, true)">
@@ -290,7 +297,6 @@ export default {
       <option v-for="rangeType in getFullRange" value="{{rangeType}}">{{rangeType | labelByLang}}</option>
     </select>
   </div>
-  <!--<tooltip-component :show-tooltip="showToolTip" :tooltiptext="key"></tooltip-component>-->
   <div class="window" v-if="active">
     <div class="header">
       <span class="title">
