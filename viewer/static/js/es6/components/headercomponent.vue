@@ -30,6 +30,7 @@ export default {
       checkingHolding: false,
       holdingId: '',
       numberOfHoldings: '?',
+      showCompact: false,
     };
   },
   methods: {
@@ -59,6 +60,9 @@ export default {
         console.log('Error checking for holding');
       });
     },
+    handleScroll(e) {
+      e.target.scrollingElement.scrollTop > this.headerThreshold ? this.showCompact = true : this.showCompact = false;
+    }
   },
   computed: {
     state() {
@@ -75,12 +79,29 @@ export default {
     },
     libraryUrl() {
       return `https://libris.kb.se/library/${this.settings.userSettings.currentSigel}`;
-    }
+    },
+    headerThreshold() {
+      const headerContainer = document.getElementById('main-header');
+      return headerContainer.offsetTop + headerContainer.offsetHeight -20;
+    },
+    compactSummary() {
+      let summary = [];
+      _.each(this.getSummary, summaryArray => {
+        summary = summary.concat(summaryArray.map(obj => obj.value.join(' | ')));
+      });
+      return summary.join(' | ');
+    },
+  },
+  beforeDestroy() {
+    window.removeEventListener('scroll', this.handleScroll);
   },
   ready() { // Ready method is deprecated in 2.0, switch to "mounted"
-    if (!this.status.isNew && this.isSubClassOf('Instance')) {
-      this.getHoldingInfo();
-    }
+    this.$nextTick(() => {
+      if (!this.status.isNew && this.isSubClassOf('Instance')) {
+        this.getHoldingInfo();
+      }
+      window.addEventListener('scroll', this.handleScroll);
+    });
   },
   components: {
     'entity-summary': EntitySummary,
@@ -91,7 +112,7 @@ export default {
 
 <template>
   <div class="header-component-container">
-    <div class="header-component" v-bind:class="{ 'compact': !full, 'full': full }">
+    <div class="header-component full">
       <entity-summary :focus-data="focusData" :add-link="false" :lines="full ? 6 : 3"></entity-summary>
     </div>
     <div class="create-item-container" v-if="!status.isNew && isSubClassOf('Instance')">
@@ -101,6 +122,9 @@ export default {
       </div>
       <create-item-button :disabled="status.inEdit" :has-holding="hasHolding" :checking-holding="checkingHolding" :holding-id="holdingId"></create-item-button>
       <div class="holdings-number">{{ "Number of holdings" | translatePhrase }}: {{numberOfHoldings}}</div>
+    </div>
+    <div class="container compact-header" :class="{ 'show-compact': showCompact }">
+      {{ compactSummary }}
     </div>
   </div>
 </template>
@@ -125,56 +149,27 @@ export default {
         }
       }
     }
-    &.compact {
-      max-height: 74px;
-      overflow-y: hidden;
-      border: solid rgb(204, 204, 204);
-      border-width: 0px 0px 1px 0px;
-      box-shadow: 0px 5px 10px -5px rgba(0, 0, 0, 0.26);
-      &.collapsed {
-        max-height: 0px;
-      }
-      .entity-summary {
-        border-width: 0px 1px 0px 0px;
-        .main-info {
-          .header {
-            line-height: 1.2;
-          }
-          .info {
-            > li {
-              display: inline-block;
-              &:first-child {
-                margin-right: 0.3em;
-              }
-              &:not(:first-child):before {
-                content: "| ";
-              }
-            }
-          }
-        }
-        .identifiers {
-          //
-        }
-        .sub {
-          display: none;
-        }
-      }
+  }
+  .compact-header {
+    position: fixed;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    background: @bib-color;
+    color: @white;
+    padding: 1em;
+    z-index: @header-z;
+    top: 0;
+    box-shadow: 0 2px 5px rgba(0,0,0,.26);
+    max-height: 0px;
+    opacity: 0;
+    transition: all 0.3s ease;
+    line-height: 0;
+    &.show-compact {
+      max-height: 55px;
+      opacity: 1;
+      line-height: inherit;
     }
-
-    .container {
-      .row {
-        margin: 0px;
-      }
-      .fixed-header {
-        text-align: center;
-        padding: 5px;
-        width: inherit;
-        background-color: white;
-        color: black;
-        box-shadow: 0px 6px 10px -6px rgba(0, 0, 0, 0.6);
-      }
-    }
-
   }
   .create-item-container {
     background-color: @white;
