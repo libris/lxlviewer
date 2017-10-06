@@ -217,10 +217,6 @@ export default {
     hasSigel() {
       return typeof this.settings.userSettings.currentSigel !== 'undefined';
     },
-    headerThreshold() {
-      const editorContainer = document.getElementById('editor-container');
-      return editorContainer.offsetTop;
-    },
     focusData() {
       return this.editorData.record;
     },
