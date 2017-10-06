@@ -363,8 +363,8 @@ export default {
 <style lang="less">
 @import './_variables.less';
 .item-local-container {
-  padding: 5px 0px;
-  margin: 0px 0px 5px 0px;
+  padding: 2px 0px;
+  margin: 0px 0px 0px 0px;
   box-shadow: 0px 0px 1em 0px transparent;
   outline: 2px solid transparent;
   // transition: 3s ease;
