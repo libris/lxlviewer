@@ -157,7 +157,7 @@ export default {
     text-overflow: ellipsis;
     background: @bib-color;
     color: @white;
-    padding: 1em;
+    padding: 0.5em;
     z-index: @header-z;
     top: 0;
     box-shadow: 0 2px 5px rgba(0,0,0,.26);
