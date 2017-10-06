@@ -28,3 +28,6 @@ export function getKeybindState(state) {
 export function getNotification(state) {
   return state.notification;
 }
+export function getChangeHistory(state) {
+  return state.status.changeHistory;
+}
