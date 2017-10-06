@@ -439,7 +439,7 @@ export default {
       }
       .toolbar-divider {
         display: inline-block;
-        width: 2em;
+        width: 0.5em;
       }
       .actions {
         display: flex;
