@@ -18,7 +18,7 @@
 <div id="editorApp">
   <marc-preview v-if="initialized == true"></marc-preview>
   <help-component v-if="initialized == true" :open-all="true"></help-component>
-  <editor-controls v-if="initialized == true" editing-object="mainEntity"></editor-controls>
+  <editor-controls v-if="initialized == true"></editor-controls>
   <header-component id="main-header" :full="true" v-if="initialized == true && !isItem"></header-component>
   <form-component editing-object="mainEntity" :locked="!status.inEdit" v-if="initialized == true"></form-component>
   <form-component editing-object="record" :locked="!status.inEdit" v-if="initialized == true"></form-component>

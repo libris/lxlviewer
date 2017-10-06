@@ -13,7 +13,7 @@ import RecordSummary from './record-summary';
 import LensMixin from './mixins/lens-mixin';
 import { mixin as clickaway } from 'vue-clickaway';
 import { changeSavedStatus, changeStatus, changeNotification, navigateChangeHistory } from '../vuex/actions';
-import { getSettings, getVocabulary, getVocabularyClasses, getDisplayDefinitions, getEditorData, getStatus } from '../vuex/getters';
+import { getSettings, getVocabulary, getVocabularyClasses, getDisplayDefinitions, getEditorData, getStatus, getChangeHistory } from '../vuex/getters';
 
 export default {
   vuex: {
@@ -24,6 +24,7 @@ export default {
       settings: getSettings,
       editorData: getEditorData,
       status: getStatus,
+      changeHistory: getChangeHistory,
     },
     actions: {
       changeSavedStatus,
@@ -79,7 +80,7 @@ export default {
       this.$dispatch('duplicate-item');
     },
     navigateFormChanges(direction) {
-      this.navigateChangeHistory(this.editingObject, direction);
+      this.navigateChangeHistory(this.status.editorFocus, direction);
     },
     openDuplicateWindow() {
       this.showDuplicateWindow = true;
@@ -171,9 +172,6 @@ export default {
       this.copyRecord = RecordUtil.splitJson(RecordUtil.getObjectAsRecord(mainEntity));
     },
   },
-  props: {
-    editingObject: '',
-  },
   data() {
     return {
       showAdminInfoDetails: false,
@@ -186,6 +184,9 @@ export default {
     };
   },
   computed: {
+    activeChangeHistory() {
+      return this.changeHistory[this.status.editorFocus];
+    },
     showRecord() {
       return this.status.showRecord;
     },
@@ -311,7 +312,7 @@ export default {
             </ul>
           </div>
           <div class="toolbar-divider"></div>
-          <button class="toolbar-button" v-show="status.inEdit" @click="navigateFormChanges('back')">
+          <button class="toolbar-button" v-bind:class="{'disabled': activeChangeHistory.length === 0 }" v-show="status.inEdit" @click="navigateFormChanges('back')">
             <i class="fa fa-undo" aria-hidden="true"></i>
             {{"Undo" | translatePhrase}}
           </button>
@@ -407,6 +408,11 @@ export default {
         &.active, &.open {
           box-shadow: inset 0px 0em 2em 0em rgba(0, 0, 0, 0.1);
         }
+        &.disabled {
+          opacity: 0.5;
+          cursor: default;
+          border: 1px solid rgba(27, 31, 35, 0.1);
+        }
       }
       .dropdown.tools, .dropdown.other-format {
         display: inline-block;
@@ -435,7 +441,7 @@ export default {
       }
       .toolbar-divider {
         display: inline-block;
-        width: 2em;
+        width: 0.5em;
       }
       .actions {
         display: flex;
