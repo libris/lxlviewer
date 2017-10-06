@@ -256,14 +256,14 @@ export default {
           </a>
         </div>
         <div>
-          <button v-on:click="toggleEditorFocus()" v-bind:class="{'active': status.editorFocus === 'record' }">
+          <button class="toolbar-button" v-on:click="toggleEditorFocus()" v-bind:class="{'active': status.editorFocus === 'record' }">
             <span v-show="status.editorFocus === 'record'"><i class="fa fa-fw fa-toggle-on"></i> {{'Admin metadata' | translatePhrase}}</span>
             <span v-show="status.editorFocus === 'mainEntity'"><i class="fa fa-fw fa-toggle-off"></i> {{'Admin metadata' | translatePhrase}}</span>
           </button>
-          <button v-on:click="showHelp()">
+          <button class="toolbar-button" v-on:click="showHelp()">
             {{'Help' | translatePhrase}}
             </button>
-          <div class="dropdown other-format">
+          <div class="dropdown other-format toolbar-button">
             <div class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
               {{ 'Show as' | translatePhrase }}
               <span class="caret"></span>
@@ -274,7 +274,7 @@ export default {
               <li><a :href="`${focusData['@id']}/data.rdf`">RDF/XML</a></li>
             </ul>
           </div>
-          <div class="dropdown tools">
+          <div class="dropdown tools toolbar-button">
             <div class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
               {{ 'Tools' | translatePhrase }}
             <span class="caret"></span>
@@ -315,21 +315,21 @@ export default {
             </ul>
           </div>
           <div class="toolbar-divider"></div>
-          <button v-show="status.inEdit" @click="navigateFormChanges('back')">
+          <button class="toolbar-button" v-show="status.inEdit" @click="navigateFormChanges('back')">
             <i class="fa fa-undo" aria-hidden="true"></i>
             {{"Undo" | translatePhrase}}
           </button>
-          <button v-show="status.inEdit" @click="cancelEdit">
+          <button class="toolbar-button" v-show="status.inEdit" @click="cancelEdit">
             <i class="fa fa-times" aria-hidden="true" v-show="!loadingCancel"></i>
             <i class="fa fa-fw fa-circle-o-notch fa-spin" aria-hidden="true" v-show="loadingCancel"></i>
             {{"Cancel" | translatePhrase}}
           </button>
-          <button id="saveButton" v-on:click="save()" v-if="status.inEdit">
+          <button class="toolbar-button" id="saveButton" v-on:click="save()" v-if="status.inEdit">
             <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="status.saved.loading"></i>
             <i class="fa fa-fw fa-save" v-show="!status.saved.loading"></i>
             {{ "Save" | translatePhrase }}
           </button>
-          <button id="editButton" v-on:click="edit()" v-show="!status.inEdit">
+          <button class="toolbar-button edit-button" id="editButton" v-on:click="edit()" v-show="!status.inEdit">
             <i class="fa fa-fw fa-pencil" v-show="!loadingEdit"></i>
             <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="loadingEdit"></i>
             {{ "Edit" | translatePhrase }}
@@ -398,24 +398,31 @@ export default {
           vertical-align: middle;
         }
       }
-      button.active {
-        background-color: @button-active-color;
+      .toolbar-button {
+        border: 1px solid rgba(27, 31, 35, 0.1);
+        background-color: #efefef;
+        margin: 0 0.3em;
+        padding: 3px 10px;
+        font-size: 12px;
+        line-height: 20px;
+        &:hover {
+          border: 1px solid rgba(27, 31, 35, 0.2);
+        }
+        &.active, &.open {
+          box-shadow: inset 0px 0em 2em 0em rgba(0, 0, 0, 0.1);
+        }
       }
       .dropdown.tools, .dropdown.other-format {
         display: inline-block;
-        &.open .dropdown-toggle {
-          background-color: @button-active-color;
-        }
-        > div {
-          border-radius: 2px;
-          font-weight: bold;
-          cursor: pointer;
-          margin: 0 0.3em;
+        border-radius: 2px;
+        font-weight: bold;
+        cursor: pointer;
+        margin: 0 0.3em;
+        padding: 0;
+        font-size: 12px;
+        line-height: 20px;
+        .dropdown-toggle {
           padding: 3px 10px;
-          font-size: 12px;
-          line-height: 20px;
-          background-color: #efefef;
-          border: 1px solid rgba(27, 31, 35, 0);
         }
         li > a {
           cursor: pointer;
@@ -433,14 +440,6 @@ export default {
       .toolbar-divider {
         display: inline-block;
         width: 2em;
-      }
-      button {
-        margin: 0 0.3em;
-        padding: 3px 10px;
-        font-size: 12px;
-        line-height: 20px;
-        background-color: #efefef;
-        border: 1px solid rgba(27,31,35,0);
       }
       .actions {
         display: flex;
