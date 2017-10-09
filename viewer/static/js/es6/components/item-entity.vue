@@ -92,7 +92,7 @@ export default {
     <div class="item-entity" v-if="!expanded" :class="{ 'locked': isLocked, 'highlighted': showCardInfo }" @mouseenter="showCardInfo=true">
       <div class="topbar">
         <i class="linked-indicator fa fa-chain"></i>
-        <span class="collapsed-label"><span v-if="!expanded">{{getItemLabel}}</span><span class="placeholder">.</span></span>
+        <span class="collapsed-label"><span v-if="!expanded"><a :href="item['@id']">{{getItemLabel}}</a></span><span class="placeholder">.</span></span>
         <span class="actions" v-if="!isLocked">
           <i v-if="!isLocked" class="fa fa-trash-o chip-action" :class="{'show-icon': showActionButtons}" v-on:click="removeThis(true)" @mouseover="removeHover = true" @mouseout="removeHover = false"></i>
         </span>
@@ -156,6 +156,9 @@ export default {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        a {
+          text-decoration: underline;
+        }
         .placeholder {
           visibility: hidden;
         }
