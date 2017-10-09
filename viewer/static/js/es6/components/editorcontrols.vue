@@ -110,10 +110,12 @@ export default {
         sType: 'danger' }).then(() => {
           // accepted by user
           HttpUtil._delete({ url }).then((result) => {
-            console.log("post WAS deleted...", result);
-
+            this.changeNotification('color', 'green');
+            this.changeNotification('message', `${StringUtil.getUiPhraseByLang('The entity was removed', this.settings.language)}!`);
             // Force reload
-            window.location.reload();
+            setTimeout(() => {
+              window.location.reload();
+            }, 2000);
           }, (error) => {
             if (error.status === 403) {
               this.changeNotification('color', 'red');
