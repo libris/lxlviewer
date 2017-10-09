@@ -21,6 +21,22 @@ export function getForcedListTerms() {
   });
 }
 
+export function getRecordType(mainEntityType, vocab, settings) {
+  if (isSubClassOf(mainEntityType, 'Item', vocab, settings.vocabPfx)) {
+    return 'Item';
+  }
+  if (isSubClassOf(mainEntityType, 'Instance', vocab, settings.vocabPfx)) {
+    return 'Instance';
+  } else if (isSubClassOf(mainEntityType, 'Work', vocab, settings.vocabPfx)) {
+    return 'Work';
+  } else if (isSubClassOf(mainEntityType, 'Agent', vocab, settings.vocabPfx)) {
+    return 'Agent';
+  } else if (isSubClassOf(mainEntityType, 'Concept', vocab, settings.vocabPfx)) {
+    return 'Concept';
+  }
+  throw new Error(`Could not determine baseclass for this record. Connection is missing in vocab for class "${mainEntityType}".`);
+}
+
 export function getTermByType(type, vocab) {
   if (!vocab || typeof vocab === 'undefined') {
     throw new Error('getTermByType was called without a vocabulary.');
