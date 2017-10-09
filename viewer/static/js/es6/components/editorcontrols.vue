@@ -114,8 +114,14 @@ export default {
 
             // Force reload
             window.location.reload();
-          }, (result) => {
-            console.log("post was NOT deleted...", result);
+          }, (error) => {
+            if (error.status === 403) {
+              this.changeNotification('color', 'red');
+              this.changeNotification('message', `${StringUtil.getUiPhraseByLang('Forbidden', this.settings.language)} - ${StringUtil.getUiPhraseByLang('This entity may have active links', this.settings.language)} - ${error.statusText}`);
+            } else {
+              this.changeNotification('color', 'red');
+              this.changeNotification('message', `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error.statusText}`);
+            }
           });
         }, () => {
         // rejected by user

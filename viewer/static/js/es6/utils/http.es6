@@ -49,6 +49,8 @@ function request(options, data) {
         resolve (req);
       } else if (req.status === 304) {
         resolve(req);
+      } else if (req.status === 403) {
+        reject(req);
       } else {
         reject(Error(req.statusText));
       }
