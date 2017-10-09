@@ -58,7 +58,7 @@ export default class View {
         'instanceOf',
       ],
       expandKeys: [
-        'instanceOf',
+        // 'instanceOf',
         'itemOf',
       ],
       nonExtractableClasses: [
