@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import * as UserUtil from '../utils/user';
 import * as VocabUtil from '../utils/vocab';
+import * as RecordUtil from '../utils/record';
 import _ from 'lodash';
 
 Vue.use(Vuex);
@@ -53,7 +54,7 @@ const state = {
 
 const mutations = {
   SYNCPOST (state, data) {
-    Vue.set(state.editor, 'data', data);
+    Vue.set(state.editor, 'data', RecordUtil.insertWorkIntoLocal(data));
   },
   UPDATE_FORM (state, form, data, oldData) {
     if (!_.isEqual(data, state.editor.data[form])) {
