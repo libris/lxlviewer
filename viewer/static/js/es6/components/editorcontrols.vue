@@ -110,12 +110,20 @@ export default {
         sType: 'danger' }).then(() => {
           // accepted by user
           HttpUtil._delete({ url }).then((result) => {
-            console.log("post WAS deleted...", result);
-
+            this.changeNotification('color', 'green');
+            this.changeNotification('message', `${StringUtil.getUiPhraseByLang('The entity was removed', this.settings.language)}!`);
             // Force reload
-            window.location.reload();
-          }, (result) => {
-            console.log("post was NOT deleted...", result);
+            setTimeout(() => {
+              window.location.reload();
+            }, 2000);
+          }, (error) => {
+            if (error.status === 403) {
+              this.changeNotification('color', 'red');
+              this.changeNotification('message', `${StringUtil.getUiPhraseByLang('Forbidden', this.settings.language)} - ${StringUtil.getUiPhraseByLang('This entity may have active links', this.settings.language)} - ${error.statusText}`);
+            } else {
+              this.changeNotification('color', 'red');
+              this.changeNotification('message', `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error.statusText}`);
+            }
           });
         }, () => {
         // rejected by user
