@@ -174,7 +174,7 @@ export default {
       }
     },
     moveFieldAdderButton() {
-      const fieldAdderIndex = this.editingObject === 'mainEntity' ? 1 : 0;
+      const fieldAdderIndex = this.editingObject === 'mainEntity' ? 0 : 1;
       const topFormComponent = document.getElementsByClassName('focused-form-component')[fieldAdderIndex];
       const buttonHeight = document.getElementsByClassName('add-button')[fieldAdderIndex].offsetHeight;
       const buttonThreshold = topFormComponent.offsetTop + topFormComponent.offsetHeight - buttonHeight;
