@@ -170,13 +170,6 @@ export default {
     },
     buildCopiedRecord() {
       const mainEntity = _.cloneDeep(this.editorData.mainEntity);
-      if (mainEntity.hasOwnProperty('instanceOf') &&
-      mainEntity.instanceOf.hasOwnProperty('@id') &&
-      mainEntity.instanceOf['@id'].indexOf('#work') > -1) {
-        const work = _.cloneDeep(this.editorData.work);
-        _.unset(work, "['@id']");
-        mainEntity.instanceOf = work;
-      }
       this.copyRecord = RecordUtil.splitJson(RecordUtil.getObjectAsRecord(mainEntity));
     },
   },

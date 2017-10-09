@@ -191,6 +191,19 @@ export function getObjectAsRecord(data) {
   return newObj;
 }
 
+export function insertWorkIntoLocal(inputData) {
+  const data = _.cloneDeep(inputData);
+  if (data.hasOwnProperty('work') &&
+  data.mainEntity.hasOwnProperty('instanceOf') &&
+  data.mainEntity.instanceOf.hasOwnProperty('@id') &&
+  data.mainEntity.instanceOf['@id'].indexOf('#work') > -1) {
+    _.unset(data.work, "['@id']");
+    data.mainEntity.instanceOf = data.work;
+    _.unset(data, 'work');
+  }
+  return data;
+}
+
 export function getNewCopy(id) {
   let copyUrl = `${id}/data.jsonld`;
   if (copyUrl[0] !== '/') {
