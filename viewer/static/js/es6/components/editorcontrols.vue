@@ -192,18 +192,7 @@ export default {
       return this.status.showRecord;
     },
     recordType() {
-      if (VocabUtil.isSubClassOf(this.editorData.mainEntity['@type'], 'Item', this.vocab, this.settings.vocabPfx)) {
-        return 'Item';
-      }
-      if (VocabUtil.isSubClassOf(this.editorData.mainEntity['@type'], 'Instance', this.vocab, this.settings.vocabPfx)) {
-        return 'Instance';
-      } else if (VocabUtil.isSubClassOf(this.editorData.mainEntity['@type'], 'Work', this.vocab, this.settings.vocabPfx)) {
-        return 'Work';
-      } else if (VocabUtil.isSubClassOf(this.editorData.mainEntity['@type'], 'Agent', this.vocab, this.settings.vocabPfx)) {
-        return 'Agent';
-      } else if (VocabUtil.isSubClassOf(this.editorData.mainEntity['@type'], 'Concept', this.vocab, this.settings.vocabPfx)) {
-        return 'Concept';
-      }
+      return VocabUtil.getRecordType(this.editorData.mainEntity['@type'], this.vocab, this.settings);
     },
     downloadIsSupported() {
       const a = document.createElement('a');
@@ -240,7 +229,9 @@ export default {
       <div class="admin-info">
         <div class="actions">
           <div>
-            <h2 class="recordtype-label">{{recordType | labelByLang }}</h2>
+            <h2 class="recordtype-label" title="{{recordType}}">
+              {{ recordType | labelByLang }}
+            </h2>
             <record-summary></record-summary>
           </div>
           <div class="action" v-if="settings.userSettings.showAppTech" v-on:click="toggleDev()" v-bind:class="{'active': status.isDev}">

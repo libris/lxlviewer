@@ -69,9 +69,6 @@ export default class Editor extends View {
 
   initVue() {
     const self = this;
-    $('#loadingText').fadeOut('fast', function() {
-      $('#editorApp').fadeIn('fast');
-    });
 
     document.getElementById('body-blocker').addEventListener('click', function () {
       self.vm.$broadcast('close-modals');
@@ -246,6 +243,11 @@ export default class Editor extends View {
         },
       },
       methods: {
+        showEditor() {
+          $('#loadingText').fadeOut('fast', function() {
+            $('#editorApp').fadeIn();
+          });
+        },
         getRelatedTitles() {
           if (VocabUtil.isSubClassOf(this.editorData.mainEntity['@type'], 'Work', this.vocab, this.settings.vocabPfx)) {
             RecordUtil.getRelatedPosts(this.editorData.record['@id'], 'instanceOf').then((response) => {
@@ -416,6 +418,8 @@ export default class Editor extends View {
             return false;
           };
         }
+
+        this.showEditor();
       },
       components: {
         'form-component': FormComponent,
