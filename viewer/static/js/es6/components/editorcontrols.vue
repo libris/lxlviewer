@@ -255,7 +255,7 @@ export default {
           <button class="toolbar-button" v-on:click="showHelp()">
             {{'Help' | translatePhrase}}
             </button>
-          <div class="dropdown other-format toolbar-button">
+          <div v-if="!status.inEdit" class="dropdown other-format toolbar-button">
             <div class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
               {{ 'Show as' | translatePhrase }}
               <span class="caret"></span>
@@ -266,7 +266,7 @@ export default {
               <li><a :href="`${focusData['@id']}/data.rdf`">RDF/XML</a></li>
             </ul>
           </div>
-          <div class="dropdown tools toolbar-button">
+          <div v-if="!status.inEdit" class="dropdown tools toolbar-button">
             <div class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
               {{ 'Tools' | translatePhrase }}
             <span class="caret"></span>
