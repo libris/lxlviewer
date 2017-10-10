@@ -172,20 +172,28 @@ export function getItemObject(itemOf, heldBy, instance) {
   return itemObj;
 }
 
-export function getObjectAsRecord(data) {
-  const mainEntity = _.cloneDeep(data);
-  mainEntity['@id'] = '_:TEMP_ID#it';
+export function getObjectAsRecord(mainEntity, record = {}) {
+  const newMainEntity = _.cloneDeep(mainEntity);
+  newMainEntity['@id'] = '_:TEMP_ID#it';
+  const newRecord = _.cloneDeep(record);
+  // TODO: Exclude more fields?
+  _.unset(newRecord, 'assigner');
+  _.unset(newRecord, 'created');
+  _.unset(newRecord, 'modified');
+  _.unset(newRecord, 'controlNumber');
+  const blankRecord = {
+    '@type': 'Record',
+    '@id': '_:TEMP_ID',
+    'mainEntity': {
+      '@id': '_:TEMP_ID#it',
+    },
+  };
+  const mergedRecord = Object.assign(newRecord, blankRecord);
 
   const newObj = {
     '@graph': [
-      {
-        '@type': 'Record',
-        '@id': '_:TEMP_ID',
-        'mainEntity': {
-          '@id': '_:TEMP_ID#it',
-        },
-      },
-      mainEntity
+      mergedRecord,
+      newMainEntity,
     ],
   };
   return newObj;

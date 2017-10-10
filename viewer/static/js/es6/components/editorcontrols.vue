@@ -168,7 +168,7 @@ export default {
     },
     buildCopiedRecord() {
       const mainEntity = _.cloneDeep(this.editorData.mainEntity);
-      this.copyRecord = RecordUtil.splitJson(RecordUtil.getObjectAsRecord(mainEntity));
+      this.copyRecord = RecordUtil.splitJson(RecordUtil.getObjectAsRecord(mainEntity, this.editorData.record));
     },
   },
   data() {
