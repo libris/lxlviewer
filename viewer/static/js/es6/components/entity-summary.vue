@@ -102,7 +102,7 @@ export default {
     </ul>
   </div>
   <div class="sub">
-    <span>{{ sub.join(' | ') }}</span>
+    <span>{{ sub.join(' · ') }}</span>
   </div>
 </div>
 </template>
