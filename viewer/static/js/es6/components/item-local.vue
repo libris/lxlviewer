@@ -186,8 +186,8 @@ export default {
     doCreateRequest(requestMethod, obj, url) {
       requestMethod({ url, token: self.access_token }, obj).then((result) => {
         if (result.status === 201) {
-          const postUrl = `${result.getResponseHeader('Location')}/data.jsonld`;
-          httpUtil.get({ url: postUrl }).then((getResult) => {
+          const postUrl = `${result.getResponseHeader('Location')}`;
+          httpUtil.get({ url: postUrl, accept: 'application/ld+json' }).then((getResult) => {
             const recievedObj = {
               '@graph': getResult['@graph'],
             }
