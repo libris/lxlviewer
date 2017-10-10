@@ -114,7 +114,7 @@ export default {
             this.changeNotification('message', `${StringUtil.getUiPhraseByLang('The entity was removed', this.settings.language)}!`);
             // Force reload
             setTimeout(() => {
-              window.location.reload();
+              history.back();
             }, 2000);
           }, (error) => {
             if (error.status === 403) {
