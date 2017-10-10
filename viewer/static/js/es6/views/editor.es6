@@ -184,10 +184,10 @@ export default class Editor extends View {
           const atId = newData.record['@id'];
           if (!atId || atId === '_:TEMP_ID') {
             this.editItem();
-            self.vm.changeStatus('isNew', true);
           } else {
             self.vm.changeStatus('inEdit', false);
             self.vm.changeStatus('isNew', false);
+            self.vm.changeStatus('isCopy', false);
           }
           this.syncData(newData);
         },
@@ -397,6 +397,7 @@ export default class Editor extends View {
         this.changeStatus('lastSavedData', Object.assign({}, self.dataIn));
         this.initialized = true;
         this.changeStatus('keybindState', 'overview');
+        this.changeStatus('isNew', false);
         this.updateDocumentTitle(this.entityTitle);
 
         this.getRelatedTitles();

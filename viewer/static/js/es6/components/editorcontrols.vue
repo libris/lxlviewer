@@ -36,7 +36,7 @@ export default {
   mixins: [clickaway, LensMixin],
   ready() { // Ready method is deprecated in 2.0, switch to "mounted"
     this.$nextTick(() => {
-      if (!this.status.isNew) {
+      if (!this.status.isNew && !this.status.isCopy) {
         this.buildCopiedRecord();
       }
     });
@@ -114,7 +114,7 @@ export default {
             this.changeNotification('message', `${StringUtil.getUiPhraseByLang('The entity was removed', this.settings.language)}!`);
             // Force reload
             setTimeout(() => {
-              window.location.reload();
+              history.back();
             }, 2000);
           }, (error) => {
             if (error.status === 403) {
@@ -131,7 +131,7 @@ export default {
     },
     cancelEdit() {
       this.loadingCancel = true;
-      if (this.status.isNew) {
+      if (this.status.isNew || this.status.isCopy) {
         window.history.back();
       } else {
         setTimeout(() => this.$dispatch('cancel-edit'), 0);
@@ -164,6 +164,7 @@ export default {
       if (Modernizr.history) {
         history.pushState(this.copyRecord, 'unused', '/edit');
         this.$dispatch('new-editordata', this.copyRecord);
+        this.changeStatus('isCopy', true);
         this.changeNotification('color', 'green');
         this.changeNotification('message', `${StringUtil.getUiPhraseByLang('Copy successful', this.settings.language)}!`);
       }
@@ -230,7 +231,9 @@ export default {
         <div class="actions">
           <div>
             <h2 class="recordtype-label" title="{{recordType}}">
-              {{ recordType | labelByLang }}
+              <span>{{ recordType | labelByLang }}</span>
+              <span v-if="status.isCopy"> - [{{ "Copy" | translatePhrase }}]</span>
+              <span v-if="status.isNew"> - [{{ "New record" | translatePhrase }}]</span>
             </h2>
             <record-summary></record-summary>
           </div>
@@ -272,7 +275,7 @@ export default {
               <li>
                 <a @click="handleCopy">
                 <i class="fa fa-fw fa-files-o"></i>
-                {{ "Copy" | translatePhrase }}
+                {{ "Make copy" | translatePhrase }}
                 </a>
               </li>
               <li v-if="isSubClassOf('Instance') && downloadIsSupported && hasSigel">
@@ -295,7 +298,7 @@ export default {
                 {{"Preview MARC21" | translatePhrase}}
                 </a>
               </li>
-              <li class="remove-option" v-show="!status.isNew">
+              <li class="remove-option" v-show="!status.isNew && !status.isCopy">
                 <a @click="removePost">
                 <i class="fa fa-fw fa-trash" aria-hidden="true"></i>
                 {{"Remove" | translatePhrase}} post
