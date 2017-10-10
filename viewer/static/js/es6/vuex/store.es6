@@ -33,7 +33,8 @@ const state = {
     isDev: false,
     keybindState: '',
     inEdit: false,
-    isNew: false,
+    isNew: true,
+    isCopy: false,
     saved: {
       loading: false,
       error: false,
