@@ -86,9 +86,6 @@ export default {
       this.showDuplicateWindow = true;
       LayoutUtil.scrollLock(true);
     },
-    showHelp() {
-      this.$dispatch('show-help', '');
-    },
     toggleDev() {
       this.changeStatus('isDev', !this.status.isDev);
     },
@@ -252,9 +249,6 @@ export default {
             <span v-show="status.editorFocus === 'record'"><i class="fa fa-fw fa-toggle-on"></i> {{'Admin metadata' | translatePhrase}}</span>
             <span v-show="status.editorFocus === 'mainEntity'"><i class="fa fa-fw fa-toggle-off"></i> {{'Admin metadata' | translatePhrase}}</span>
           </button>
-          <button class="toolbar-button" v-on:click="showHelp()">
-            {{'Help' | translatePhrase}}
-            </button>
           <div v-if="!status.inEdit" class="dropdown other-format toolbar-button">
             <div class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
               {{ 'Show as' | translatePhrase }}

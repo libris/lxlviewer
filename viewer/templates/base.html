@@ -75,6 +75,12 @@
               class="fa fa-fw fa-${item.icon}"></i> ${item.title}</a></li>
         % endfor
         % if g.site.title == 'libris.kb.se'
+        % if current_user.is_authenticated
+        <li class="">
+          <a @click="showHelp()">
+            <i class="fa fa-question-circle" aria-hidden="true"></i> <span class="js-translateable" data-translateable="Hjälp">Help</a></a>
+        </li>
+        % endif
         <li class="">
           <a href="/">
             <i class="fa fa-search" aria-hidden="true"></i> <span class="js-translateable" data-translateable="Sök">Search</span></a>

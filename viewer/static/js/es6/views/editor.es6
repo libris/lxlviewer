@@ -87,7 +87,7 @@ export default class Editor extends View {
     Vue.use(Vuex);
 
     self.vm = new Vue({
-      el: '#editorApp',
+      el: '#editor',
       mixins: [LensMixin],
       vuex: {
         actions: {
@@ -247,6 +247,9 @@ export default class Editor extends View {
           $('#loadingText').fadeOut('fast', function() {
             $('#editorApp').fadeIn();
           });
+        },
+        showHelp() {
+          this.$dispatch('show-help', '');
         },
         getRelatedTitles() {
           if (VocabUtil.isSubClassOf(this.editorData.mainEntity['@type'], 'Work', this.vocab, this.settings.vocabPfx)) {
