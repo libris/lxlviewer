@@ -16,46 +16,10 @@
             <p>Vid frågor om rättigheter för sigel kontakta <a href="mailto:libris@kb.se">libris@kb.se</a>.
             </p>
           </div>
-        <div class="col-lg-7 col-lg-offset-1">
-          <span class="circle"><i class="icon fa fa-cogs" aria-hidden="true"></i></span>
-          <h3><span class="js-translateable" data-translateable="User name">User name</span></h3>
-          <div>${current_user.get().username}</div>
-          <div class="form-group">
-            <h3><span class="js-translateable" data-translateable="Active sigel">Active sigel</span></h3>
-            {% if current_user.get().authorization %}
-              {% for auth in current_user.get().authorization %}
-              <div class="sigel-option">
-                <span class="active-text"><i class="fa fa-check"></i></span> ${auth.sigel}
-                <button type="button" class="sigel-button js-translateable" value="${auth.sigel}" data-translateable="Choose">Choose</button>
-              </div>
-              {% endfor %}
-            {% endif %}
-          </div>
-          <div class="form-group">
-            <h3><span class="js-translateable" data-translateable="Language">Language</span></h3>
-             Experimentell inställning, svenska rekommenderas.
-            <div class="language-option">
-              <span class="active-text"><i class="fa fa-check"></i></span> Svenska
-              <button type="button" class="language-button js-translateable" value="sv" data-translateable="Choose">Choose</button>
-            </div>
-            <div class="language-option">
-              <span class="active-text"><i class="fa fa-check"></i></span> English
-              <button type="button" class="language-button js-translateable" value="en" data-translateable="Choose">Choose</button>
-            </div>
-          </div>
-          <div class="form-group">
-            <h3><span class="js-translateable" data-translateable="Show technical application details">Show technical application details</span></h3>
-            Hjälpmedel för utvecklare av tjänsten.
-            <div class="apptech-option">
-              <span class="active-text"><i class="fa fa-check"></i></span> <span class="js-translateable" data-translateable="On">On</span>
-              <button type="button" class="apptech-button js-translateable" value="on" data-translateable="Choose">Choose</button>
-            </div>
-            <div class="apptech-option">
-              <span class="active-text"><i class="fa fa-check"></i></span> <span data-translateable="Off" class="js-translateable">Off</span>
-              <button type="button" class="apptech-button js-translateable" value="off" data-translateable="Choose">Choose</button>
-            </div>
-          </div>
+          <user-settings v-if="initialized"></user-settings>
         </div>
+      </div>
+      <help-component v-if="initialized == true" :open-all="true"></help-component>
     </div>
   </div>
 </div>

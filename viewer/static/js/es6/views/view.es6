@@ -106,6 +106,28 @@ export default class View {
           'https://id.kb.se/vocab/Concept',
         ],
       },
+      availableUserSettings: {
+        languages: [
+          {
+            'label': 'Swedish',
+            'value': 'sv',
+          },
+          {
+            'label': 'English',
+            'value': 'en',
+          },
+        ],
+        appTechs: [
+          {
+            'label': 'On',
+            'value': 'on',
+          },
+          {
+            'label': 'Off',
+            'value': 'off',
+          },
+        ],
+      },
     };
   }
 

@@ -234,7 +234,7 @@ export default {
             </h2>
             <record-summary></record-summary>
           </div>
-          <div class="action" v-if="settings.userSettings.showAppTech" v-on:click="toggleDev()" v-bind:class="{'active': status.isDev}">
+          <div class="action" v-if="settings.userSettings.appTech === 'on'" v-on:click="toggleDev()" v-bind:class="{'active': status.isDev}">
             <i class="fa fa-wrench" aria-hidden="true"></i>
           </div>
           <a :href="compileMARCUrl" v-if="!status.inEdit && isSubClassOf('Instance') & !downloadIsSupported && hasSigel">
