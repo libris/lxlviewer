@@ -164,9 +164,11 @@ export default {
       }
     },
     openExtractDialog() {
-      this.changeStatus('keybindState', 'extraction-dialog');
-      LayoutUtil.scrollLock(true);
-      this.extractDialogActive = true;
+      if (this.status.inEdit) {
+        this.changeStatus('keybindState', 'extraction-dialog');
+        LayoutUtil.scrollLock(true);
+        this.extractDialogActive = true;
+      }
     },
     closeExtractDialog() {
       this.changeStatus('keybindState', 'overview');
