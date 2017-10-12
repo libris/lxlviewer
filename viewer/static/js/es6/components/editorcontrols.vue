@@ -260,25 +260,25 @@ export default {
               <li><a :href="`${focusData['@id']}/data.rdf`">RDF/XML</a></li>
             </ul>
           </div>
-          <div v-if="!status.inEdit" class="dropdown tools toolbar-button">
+          <div class="dropdown tools toolbar-button">
             <div class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
               {{ 'Tools' | translatePhrase }}
             <span class="caret"></span>
             </div>
             <ul class="dropdown-menu">
-              <li>
+              <li v-if="!status.inEdit">
                 <a @click="handleCopy">
                 <i class="fa fa-fw fa-files-o"></i>
                 {{ "Make copy" | translatePhrase }}
                 </a>
               </li>
-              <li v-if="isSubClassOf('Instance') && downloadIsSupported && hasSigel">
+              <li v-if="isSubClassOf('Instance') && downloadIsSupported && hasSigel && !status.inEdit">
                 <a @click="getCompiledPost()">
                 <i class="fa fa-fw fa-download" aria-hidden="true"></i>
                 {{"Download compiled" | translatePhrase}}
                 </a>
               </li>
-              <li v-if="isSubClassOf('Instance') & !downloadIsSupported && hasSigel">
+              <li v-if="isSubClassOf('Instance') & !downloadIsSupported && hasSigel && !status.inEdit">
                 <a :href="compileMARCUrl">
                   <button>
                     <i class="fa fa-fw fa-download" aria-hidden="true"></i>
