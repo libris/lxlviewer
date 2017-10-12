@@ -54,7 +54,7 @@ export function getLabelFromObject(object, language) {
 
 export function labelByLang(string, lang, vocab, vocabPfx) {
   if (!string) {
-    return '[FAILED LABEL]';
+    return '{FAILED LABEL}';
   }
   const pfx = vocabPfx;
   // Filter for fetching labels from vocab

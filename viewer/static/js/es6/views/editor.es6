@@ -235,7 +235,7 @@ export default class Editor extends View {
           if (typeof this.editorData.mainEntity !== 'undefined') {
             const headerList = DisplayUtil.getItemSummary(this.editorData.mainEntity, this.display, this.editorData.quoted, this.vocab, this.settings).header;
             const header = StringUtil.getFormattedEntries(headerList, this.vocab, this.settings).join(', ');
-            if (header.length > 0 && header !== '[Unknown]') {
+            if (header.length > 0 && header !== '{Unknown}') {
               return header;
             }
           }
