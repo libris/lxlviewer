@@ -154,11 +154,11 @@ export default {
   </form>
   <div class="panel panel-default remote-search-controls" v-show="databases.state == 'complete'">
     <form v-on:submit.prevent="searchRemote()">
-      <label for="search">SÖK (METAPROXY)</label>
+      <label for="search">{{"Search" | translatePhrase}}</label>
       <div>
         <div class="form-group search-field">
           <input type="text" class="form-control search-input" placeholder="Titel, författare, isbn..." id="search" v-model="remoteQuery">
-          <button v-bind:class="{'disabled': selectedDatabases.length === 0 || remoteResult.state === 'loading'}" v-on:click.prevent="searchRemote()" id="searchSubmit" class="search-button btn btn-primary"><i class="fa fa-search"></i> Sök</button>
+          <button v-bind:class="{'disabled': selectedDatabases.length === 0 || remoteResult.state === 'loading'}" v-on:click.prevent="searchRemote()" id="searchSubmit" class="search-button btn btn-primary"><i class="fa fa-search"></i> {{"Search" | translatePhrase}}</button>
         </div>
       </div>
       <div>
@@ -168,11 +168,11 @@ export default {
           <span v-for="db in selectedDatabases">{{db}}{{ $index === (selectedDatabases.length-1) ? '' : ', ' }}</span>
         </p>
         <p class="small" v-if="selectedDatabases.length == 0">
-          <span>Ingen källa vald...</span>
+          <span>{{"No sources chosen" | translatePhrase}}...</span>
         </p>
         <div class="form-group remote-sources">
           <label for="source" v-on:click="showList = !showList">
-            KÄLLOR
+            {{"Sources" | translatePhrase}}
             <i class="fa fa-fw fa-caret-right" v-show="!showList"></i>
             <i class="fa fa-fw fa-caret-down" v-show="showList"></i></label>
           <ul v-show="databases.state == 'complete' && showList" class="remoteDatabases">
@@ -181,17 +181,17 @@ export default {
               <i class="dbName" v-show="db.item.database !== db.item.name">{{db.item.name}}</i>
             </li>
           </ul>
-          <p v-show="databases.state == 'loading'"><i class="fa fa-circle-o-notch fa-spin"></i> Laddar externa databaser...</p>
-          <p v-show="databases.state == 'error'"><i class="fa fa-close"></i> Kunde inte hämta externa databaser. <a href="" v-on:click.prevent="loadRemoteDatabases()">Försök igen</a></p>
+          <p v-show="databases.state == 'loading'"><i class="fa fa-circle-o-notch fa-spin"></i> {{"Loading external databases" | translatePhrase}}...</p>
+          <p v-show="databases.state == 'error'"><i class="fa fa-close"></i> {{"Did not find any external databases" | translatePhrase}}. <a href="" v-on:click.prevent="loadRemoteDatabases()">{{"Try again" | translatePhrase}}</a></p>
         </div>
       </div>
     </form>
   </div>
   <p v-if="remoteResult.state === 'error'">
-    <i class="fa fa-close"></i> Något gick fel.
+    <i class="fa fa-close"></i> {{"Something went wrong" | translatePhrase}}
   </p>
   <p v-if="remoteResult.state === 'loading'">
-    <i class="fa fa-circle-o-notch fa-spin"></i> Söker...
+    <i class="fa fa-circle-o-notch fa-spin"></i> {{"Searching" | translatePhrase}}...
   </p>
   <search-result-component :result="convertedItems" :import-data="importData" v-if="convertedItems.totalItems > -1 || status.resultList.loading"></search-result-component>
 </div>
