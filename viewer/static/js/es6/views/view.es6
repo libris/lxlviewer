@@ -138,7 +138,7 @@ export default class View {
     this.settings.userSettings = UserUtil.loadUserSettings();
     this.settings.language = this.settings.userSettings.language || $('html').attr('lang');
     this.translate();
-    $('.sigelLabel').text(`(${this.settings.userSettings.currentSigel})`);
+    // $('.sigelLabel').text(`(${this.settings.userSettings.currentSigel})`);
     // console.log('Initialized view', this);
   }
 
