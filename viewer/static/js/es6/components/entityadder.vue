@@ -27,7 +27,7 @@ export default {
       showToolTip: false,
       rangeInfo: false,
       selectedType: '',
-      addEmbedded: (this.valueList.length === 0),
+      addEmbedded: false,
       searchMade: false,
       currentSearchTypes: this.allSearchTypes,
     };
@@ -75,7 +75,7 @@ export default {
   },
   watch: {
     valueList(newVal) {
-      if (newVal.length === 0) {
+      if (newVal.length === 0 && this.onlyEmbedded) {
         this.addEmbedded = true;
       } else {
         this.addEmbedded = false;
@@ -165,6 +165,7 @@ export default {
     },
   },
   ready() {
+    this.addEmbedded = (this.valueList.length === 0 && this.onlyEmbedded);
     this.searchOpen = false;
   },
   methods: {
