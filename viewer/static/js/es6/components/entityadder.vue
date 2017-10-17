@@ -6,6 +6,8 @@ import * as DisplayUtil from '../utils/display';
 import * as LayoutUtil from '../utils/layout';
 import * as RecordUtil from '../utils/record';
 import * as StringUtil from '../utils/string';
+import * as CombinedTemplates from '../templates/combinedTemplates.json';
+import * as StructuredValueTemplates from '../templates/structuredValueTemplates.json';
 import ProcessedLabel from './processedlabel';
 import ToolTipComponent from './tooltip-component';
 import EntitySearchList from './entity-search-list';
@@ -234,6 +236,9 @@ export default {
     addEmpty(type) {
       this.closeSearch();
       let obj = {'@type': type};
+      if (StructuredValueTemplates.hasOwnProperty(type)) {
+        obj = StructuredValueTemplates[type];
+      }
       this.$dispatch('add-item', obj);
     },
     addType(type) {
