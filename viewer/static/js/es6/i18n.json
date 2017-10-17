@@ -93,6 +93,9 @@
     "ID": "ID",
     "Type": "Typ",
     "Release notes": "Versionsinfo",
-    "Unauthorized": "Obehörig"
+    "Unauthorized": "Obehörig",
+    "Instantiations of this work": "Instansieringar av detta verk",
+    "Show instantiations": "Visa instansieringar",
+    "Number of instantiations": "Antal instansieringar" 
   }
 }

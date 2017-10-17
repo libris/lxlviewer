@@ -22,6 +22,7 @@ import HelpComponent from '../components/help-component';
 import EditorControls from '../components/editorcontrols';
 import HeaderComponent from '../components/headercomponent';
 import Notification from '../components/notification';
+import ReverseRelations from '../components/reverse-relations';
 import { getSettings, getVocabulary, getVocabularyClasses, getVocabularyProperties, getDisplayDefinitions, getEditorData, getStatus, getKeybindState } from '../vuex/getters';
 import { changeSettings, changeNotification, loadVocab, loadVocabMap, loadForcedListTerms, loadDisplayDefs, syncData, changeSavedStatus, changeStatus } from '../vuex/actions';
 
@@ -432,6 +433,7 @@ export default class Editor extends View {
         'help-component': HelpComponent,
         'notification': Notification,
         'marc-preview': MarcPreview,
+        'reverse-relations': ReverseRelations,
       },
       store,
     });
