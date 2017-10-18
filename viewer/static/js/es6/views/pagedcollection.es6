@@ -11,6 +11,7 @@ import * as DisplayUtil from '../utils/display';
 import * as httpUtil from '../utils/http';
 import ComboKeys from 'combokeys';
 import KeyBindings from '../keybindings.json';
+import ServiceWidgetSettings from '../serviceWidgetSettings.json';
 import MainSearchField from '../components/main-search-field';
 import FacetControls from '../components/facet-controls';
 import SearchResultComponent from '../components/search-result-component';
@@ -18,6 +19,8 @@ import EntitySearchList from '../components/entity-search-list';
 import SearchForm from '../components/search-form';
 import DatasetObservations from '../components/dataset-observations';
 import LandingBox from '../components/landing-box';
+import LinkCardComponent from '../components/link-card-component';
+import IntroComponent from '../components/intro-component';
 import HelpComponent from '../components/help-component';
 import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData, getKeybindState, getStatus } from '../vuex/getters';
 import { changeSettings, changeStatus, changeNotification, loadVocab, loadVocabMap, loadDisplayDefs, changeSavedStatus, changeResultListStatus } from '../vuex/actions';
@@ -125,10 +128,30 @@ export default class PagedCollection extends View {
         showHelp() {
           this.$dispatch('show-help', '');
         },
+        widgetShouldBeShown(id) {
+          if (!this.isLandingPage) {
+            return false;
+          }
+          const componentList = ServiceWidgetSettings[this.settings.siteInfo.title];
+          if (!componentList.hasOwnProperty(id)) {
+            return false;
+          }
+          if (
+            (componentList[id].hasOwnProperty('forced') && componentList[id].forced === true) ||
+            // TODO: Don't read standard here, read from user settings and init as active in user settings if standard
+            (componentList[id].hasOwnProperty('standard') && componentList[id].standard)
+          ) {
+            return true;
+          }
+          return false;
+        },
       },
       computed: {
         isLibris() {
           return this.settings.siteInfo.title === 'libris.kb.se';
+        },
+        isLandingPage() {
+          return typeof this.result.totalItems === 'undefined';
         },
       },
       beforeCompile() {
@@ -170,6 +193,8 @@ export default class PagedCollection extends View {
         'dataset-observations': DatasetObservations,
         'landing-box': LandingBox,
         'help-component': HelpComponent,
+        'intro-component': IntroComponent,
+        'link-card': LinkCardComponent,
       },
       store,
     });
