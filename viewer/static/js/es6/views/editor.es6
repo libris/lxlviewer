@@ -22,6 +22,7 @@ import HelpComponent from '../components/help-component';
 import EditorControls from '../components/editorcontrols';
 import HeaderComponent from '../components/headercomponent';
 import Notification from '../components/notification';
+import ReverseRelations from '../components/reverse-relations';
 import { getSettings, getVocabulary, getVocabularyClasses, getVocabularyProperties, getDisplayDefinitions, getEditorData, getStatus, getKeybindState } from '../vuex/getters';
 import { changeSettings, changeNotification, loadVocab, loadVocabMap, loadForcedListTerms, loadDisplayDefs, syncData, changeSavedStatus, changeStatus } from '../vuex/actions';
 
@@ -87,7 +88,7 @@ export default class Editor extends View {
     Vue.use(Vuex);
 
     self.vm = new Vue({
-      el: '#editorApp',
+      el: '#editor',
       mixins: [LensMixin],
       vuex: {
         actions: {
@@ -235,7 +236,7 @@ export default class Editor extends View {
           if (typeof this.editorData.mainEntity !== 'undefined') {
             const headerList = DisplayUtil.getItemSummary(this.editorData.mainEntity, this.display, this.editorData.quoted, this.vocab, this.settings).header;
             const header = StringUtil.getFormattedEntries(headerList, this.vocab, this.settings).join(', ');
-            if (header.length > 0 && header !== '[Unknown]') {
+            if (header.length > 0 && header !== '{Unknown}') {
               return header;
             }
           }
@@ -247,6 +248,9 @@ export default class Editor extends View {
           $('#loadingText').fadeOut('fast', function() {
             $('#editorApp').fadeIn();
           });
+        },
+        showHelp() {
+          this.$dispatch('show-help', '');
         },
         getRelatedTitles() {
           if (VocabUtil.isSubClassOf(this.editorData.mainEntity['@type'], 'Work', this.vocab, this.settings.vocabPfx)) {
@@ -429,6 +433,7 @@ export default class Editor extends View {
         'help-component': HelpComponent,
         'notification': Notification,
         'marc-preview': MarcPreview,
+        'reverse-relations': ReverseRelations,
       },
       store,
     });

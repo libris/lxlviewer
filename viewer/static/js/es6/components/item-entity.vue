@@ -91,7 +91,9 @@ export default {
   <div class="item-entity-container" @mouseleave="showCardInfo=false">
     <div class="item-entity" v-if="!expanded" :class="{ 'locked': isLocked, 'highlighted': showCardInfo }" @mouseenter="showCardInfo=true">
       <div class="topbar">
-        <i class="linked-indicator fa fa-chain"></i>
+        <a :href="item['@id']">
+          <i class="linked-indicator fa fa-chain"></i>
+        </a>
         <span class="collapsed-label"><span v-if="!expanded"><a :href="item['@id']">{{getItemLabel}}</a></span><span class="placeholder">.</span></span>
         <span class="actions" v-if="!isLocked">
           <i v-if="!isLocked" class="fa fa-trash-o chip-action" :class="{'show-icon': showActionButtons}" v-on:click="removeThis(true)" @mouseover="removeHover = true" @mouseout="removeHover = false"></i>
@@ -126,14 +128,9 @@ export default {
       align-items: center;
       background-color: @white;
       border: 1px solid rgba(0, 0, 0, 0.15);
-      box-shadow: inset 2.1em 0px 0px 0px @gray-darker;
+      box-shadow: inset 2.1em 0px 0px 0px @bib-color;
       white-space: nowrap;
       overflow: hidden;
-      > .linked-indicator {
-        color: @white;
-        margin-right: 1em;
-        margin-left: 0.25em;
-      }
       > .actions {
         display: flex;
         flex-basis: 4em;
@@ -142,9 +139,13 @@ export default {
           transform: translate(16px, 0px);
         }
       }
-      > i.fa-chain {
-
-      }
+      > a {
+        > .linked-indicator {
+          color: @white;
+          padding-right: 1em;
+          padding-left: 0.25em;
+        }
+      } 
       .chip-action {
         cursor: pointer;
       }
@@ -157,7 +158,7 @@ export default {
         overflow: hidden;
         text-overflow: ellipsis;
         a {
-          text-decoration: underline;
+          font-weight: bold;
         }
         .placeholder {
           visibility: hidden;

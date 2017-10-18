@@ -1,0 +1,32 @@
+{
+  "Title": {
+    "@type": "Title",
+    "mainTitle": "",
+    "subtitle": ""
+  },
+  "ParallelTitle": {
+    "@type": "ParallelTitle",
+    "mainTitle": ""
+  },
+  "ISBN": {
+    "@type": "ISBN",
+    "value": [""],
+    "note": [""]
+  },
+  "Publication": {
+    "@type": "Publication",
+    "agent": [
+      {
+        "@type": "Agent",
+        "label": [""]
+      }
+    ],
+    "date": [""],
+    "place": [
+      {
+        "@type": "Place",
+        "label": [""]
+      }
+    ]
+  }
+}

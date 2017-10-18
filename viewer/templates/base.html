@@ -75,6 +75,12 @@
               class="fa fa-fw fa-${item.icon}"></i> ${item.title}</a></li>
         % endfor
         % if g.site.title == 'libris.kb.se'
+        % if current_user.is_authenticated
+        <li class="">
+          <a @click="showHelp()">
+            <i class="fa fa-question-circle" aria-hidden="true"></i> <span class="js-translateable" data-translateable="Hjälp">Help</a></a>
+        </li>
+        % endif
         <li class="">
           <a href="/">
             <i class="fa fa-search" aria-hidden="true"></i> <span class="js-translateable" data-translateable="Sök">Search</span></a>
@@ -86,7 +92,7 @@
             </li>
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                <i class="fa fa-user"></i> ${current_user.get_username()} <span class="sigelLabel"></span> <i class="fa fa-angle-down" aria-hidden="true"></i>
+                <i class="fa fa-user"></i> ${current_user.get_username()} <span class="sigelLabel">({{settings.userSettings.currentSigel}})</span> <i class="fa fa-angle-down" aria-hidden="true"></i>
               </a>
               <ul class="dropdown-menu">
                 <li><a href="/usersettings"><i class="fa fa-cogs" aria-hidden="true"></i> <span class="js-translateable" data-translateable="Settings">Settings</span></a></li>

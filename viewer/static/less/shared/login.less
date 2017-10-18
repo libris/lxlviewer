@@ -53,73 +53,23 @@ body#usersettings {
         border-right:1px solid #dddddd;
       }
     }
-    .sigel-option {
+    .option {
       width: 100%;
       border: 1px solid #b7b7b7;
       margin: 0.5em 0px;
       padding: 0.5em;
       border-radius: 5px;
+      cursor: pointer;
       &.active {
         background-color: rgba(202, 149, 67, 0.18);
-        .active-text {
-          display: inline;
-          font-weight: bold;
-        }
-        .sigel-button {
-          display: none;
-        }
+        font-weight: bold;
       }
-      .active-text {
-        display: none;
+      .permissions {
+        padding-left: 1em;
+        font-weight: initial;
       }
-      .sigel-button {
-        float: right;
-      }
-    }
-    .language-option {
-      width: 100%;
-      border: 1px solid #b7b7b7;
-      margin: 0.5em 0px;
-      padding: 0.5em;
-      border-radius: 5px;
-      &.active {
-        background-color: rgba(202, 149, 67, 0.18);
-        .active-text {
-          display: inline;
-          font-weight: bold;
-        }
-        .language-button {
-          display: none;
-        }
-      }
-      .active-text {
-        display: none;
-      }
-      .language-button {
-        float: right;
-      }
-    }
-    .apptech-option {
-      width: 100%;
-      border: 1px solid #b7b7b7;
-      margin: 0.5em 0px;
-      padding: 0.5em;
-      border-radius: 5px;
-      &.active {
-        background-color: rgba(202, 149, 67, 0.18);
-        .active-text {
-          display: inline;
-          font-weight: bold;
-        }
-        .apptech-button {
-          display: none;
-        }
-      }
-      .active-text {
-        display: none;
-      }
-      .apptech-button {
-        float: right;
+      > input {
+        visibility: hidden;
       }
     }
 

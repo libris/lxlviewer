@@ -82,7 +82,7 @@ export default {
 <div class="entity-summary">
   <div class="main-info">
     <div class="categorization">
-      {{categorization.join(', ')}} {{ isLocal ? '(lokal entitet)' : '' }}
+      {{categorization.join(', ')}} {{ isLocal ? '{lokal entitet}' : '' }}
     </div>
     <h3 class="header">
       <span class="import-header" title="{{ header.join(', ') }}" v-on:click="importThis()" v-if="isImport">{{ header.join(', ') }}</span>

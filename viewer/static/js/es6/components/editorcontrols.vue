@@ -86,9 +86,6 @@ export default {
       this.showDuplicateWindow = true;
       LayoutUtil.scrollLock(true);
     },
-    showHelp() {
-      this.$dispatch('show-help', '');
-    },
     toggleDev() {
       this.changeStatus('isDev', !this.status.isDev);
     },
@@ -171,7 +168,7 @@ export default {
     },
     buildCopiedRecord() {
       const mainEntity = _.cloneDeep(this.editorData.mainEntity);
-      this.copyRecord = RecordUtil.splitJson(RecordUtil.getObjectAsRecord(mainEntity));
+      this.copyRecord = RecordUtil.splitJson(RecordUtil.getObjectAsRecord(mainEntity, this.editorData.record));
     },
   },
   data() {
@@ -237,7 +234,7 @@ export default {
             </h2>
             <record-summary></record-summary>
           </div>
-          <div class="action" v-if="settings.userSettings.showAppTech" v-on:click="toggleDev()" v-bind:class="{'active': status.isDev}">
+          <div class="action" v-if="settings.userSettings.appTech === 'on'" v-on:click="toggleDev()" v-bind:class="{'active': status.isDev}">
             <i class="fa fa-wrench" aria-hidden="true"></i>
           </div>
           <a :href="compileMARCUrl" v-if="!status.inEdit && isSubClassOf('Instance') & !downloadIsSupported && hasSigel">
@@ -252,9 +249,6 @@ export default {
             <span v-show="status.editorFocus === 'record'"><i class="fa fa-fw fa-toggle-on"></i> {{'Admin metadata' | translatePhrase}}</span>
             <span v-show="status.editorFocus === 'mainEntity'"><i class="fa fa-fw fa-toggle-off"></i> {{'Admin metadata' | translatePhrase}}</span>
           </button>
-          <button class="toolbar-button" v-on:click="showHelp()">
-            {{'Help' | translatePhrase}}
-            </button>
           <div v-if="!status.inEdit" class="dropdown other-format toolbar-button">
             <div class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
               {{ 'Show as' | translatePhrase }}
@@ -266,25 +260,25 @@ export default {
               <li><a :href="`${focusData['@id']}/data.rdf`">RDF/XML</a></li>
             </ul>
           </div>
-          <div v-if="!status.inEdit" class="dropdown tools toolbar-button">
+          <div class="dropdown tools toolbar-button">
             <div class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
               {{ 'Tools' | translatePhrase }}
             <span class="caret"></span>
             </div>
             <ul class="dropdown-menu">
-              <li>
+              <li v-if="!status.inEdit">
                 <a @click="handleCopy">
                 <i class="fa fa-fw fa-files-o"></i>
                 {{ "Make copy" | translatePhrase }}
                 </a>
               </li>
-              <li v-if="isSubClassOf('Instance') && downloadIsSupported && hasSigel">
+              <li v-if="isSubClassOf('Instance') && downloadIsSupported && hasSigel && !status.inEdit">
                 <a @click="getCompiledPost()">
                 <i class="fa fa-fw fa-download" aria-hidden="true"></i>
                 {{"Download compiled" | translatePhrase}}
                 </a>
               </li>
-              <li v-if="isSubClassOf('Instance') & !downloadIsSupported && hasSigel">
+              <li v-if="isSubClassOf('Instance') & !downloadIsSupported && hasSigel && !status.inEdit">
                 <a :href="compileMARCUrl">
                   <button>
                     <i class="fa fa-fw fa-download" aria-hidden="true"></i>

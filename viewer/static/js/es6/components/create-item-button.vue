@@ -43,6 +43,7 @@ export default {
         `https://libris.kb.se/library/${this.settings.userSettings.currentSigel}`,
         embellishedReference
       );
+      this.$dispatch('set-checking-relations', false);
     },
     fetchHolding() {
       HttpUtil.get({ url: this.holdingId[0], accept: 'application/ld+json' }).then((getResult) => {

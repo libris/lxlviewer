@@ -25,8 +25,9 @@
   <div v-if="relatedTitles.length > 0 && !editorData.mainEntity.hasOwnProperty('hasTitle')" class="relation-experiment">
     <span>(experiment)</span> <h3>Posten saknar titel, här är förslag</h3>
     <ul>
-    <li v-for="title in relatedTitles">{{title}}</li>
-  </ul></div>
+      <li v-for="title in relatedTitles">{{title}}</li>
+    </ul>
+  </div>
   <notification v-if="initialized == true"></notification>
 </div>
 </div>

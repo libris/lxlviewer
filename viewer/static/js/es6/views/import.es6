@@ -5,7 +5,9 @@ import store from '../vuex/store';
 import * as VocabUtil from '../utils/vocab';
 import * as DisplayUtil from '../utils/display';
 import * as StringUtil from '../utils/string';
+import * as LayoutUtil from '../utils/layout';
 import remoteSearch from '../components/remote-search';
+import HelpComponent from '../components/help-component';
 import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData, getKeybindState, getStatus } from '../vuex/getters';
 import { changeSettings, changeStatus, changeNotification, loadVocab, loadVocabMap, loadDisplayDefs, changeSavedStatus, changeResultListStatus } from '../vuex/actions';
 
@@ -35,10 +37,23 @@ export default class Import extends View {
   initVue(vocab, vocabPfx, params) {
     const self = this;
     Vue.use(Vuex);
+    
+    document.getElementById('body-blocker').addEventListener('click', function () {
+      self.vm.$broadcast('close-modals');
+    }, false);
+
     $('#app').show();
 
-    const vm = new Vue({
-      el: '#app',
+    Vue.filter('labelByLang', (label) => {
+      return StringUtil.labelByLang(label, self.settings.language, self.vocabMap, self.settings.vocabPfx);
+    });
+
+    Vue.filter('translatePhrase', (string) => {
+      return StringUtil.getUiPhraseByLang(string, self.settings.language);
+    });
+
+    self.vm = new Vue({
+      el: '#import',
       vuex: {
         actions: {
           loadVocab,
@@ -65,16 +80,26 @@ export default class Import extends View {
         result: {},
       },
       methods: {
+        showHelp() {
+          this.$dispatch('show-help', '');
+        },
       },
       events: {
         'set-results': function (value, oldvalue) {
           this.result = value;
+        },
+        'show-help': function(value) {
+          LayoutUtil.scrollLock(true);
+          this.changeStatus('keybindState', 'help-window');
+          this.changeStatus('showHelp', true);
+          this.changeStatus('helpSection', value);
         },
       },
       computed: {
       },
       components: {
         'remote-search': remoteSearch,
+        'help-component': HelpComponent,
       },
       store,
       ready() {

@@ -9,7 +9,7 @@
     <div id="app">
       <create-new-form v-if="initialized === true"></create-new-form>
     </div>
-
+    <help-component v-if="initialized == true" :open-all="true"></help-component>
   {% else %}
   <p>Du måste logga in.</p>
   {% endif %}

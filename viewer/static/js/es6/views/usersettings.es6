@@ -1,100 +1,83 @@
 import View from './view';
-import * as UserUtil from '../utils/user';
+import Vue from 'vue';
+import Vuex from 'vuex';
+import store from '../vuex/store';
 import * as StringUtil from '../utils/string';
+import * as LayoutUtil from '../utils/layout';
+import HelpComponent from '../components/help-component';
+import UserSettingsApp from '../components/user-settings';
+import { getSettings, getStatus } from '../vuex/getters';
+import { changeSettings, changeStatus } from '../vuex/actions';
+
 
 export default class UserSettings extends View {
 
   initialize() {
     super.initialize();
+    this.initVue();
+  }
+
+  initVue() {
     const self = this;
-    document.title = `${StringUtil.getUiPhraseByLang('Settings', this.getLanguage())} - ${this.settings.siteInfo.title}`;
 
-    $('#switchLocation').val(this.getSigel());
+    document.getElementById('body-blocker').addEventListener('click', function () {
+      self.vm.$broadcast('close-modals');
+    }, false);
 
-    this.updateSigelButtons();
-    this.updateLanguageButtons();
-    this.updateAppTechButtons();
-
-    $('.sigel-button').click(function() {
-      self.changeSigel($(this).val());
+    Vue.filter('labelByLang', (label) => {
+      return StringUtil.labelByLang(label, self.settings.language, self.vocabMap, self.settings.vocabPfx);
+    });
+    Vue.filter('removeDomain', (value) => {
+      return StringUtil.removeDomain(value, self.settings.removableBaseUris);
+    });
+    Vue.filter('translatePhrase', (string) => {
+      return StringUtil.getUiPhraseByLang(string, self.settings.language);
     });
 
-    $('.language-button').click(function() {
-      self.changeLanguage($(this).val());
+    Vue.use(Vuex);
+
+    self.vm = new Vue({
+      el: '#usersettings',
+      vuex: {
+        actions: {
+          changeSettings,
+          changeStatus,
+        },
+        getters: {
+          status: getStatus,
+          settings: getSettings,
+        },
+      },
+      data: {
+        initialized: false,
+      },
+      events: {
+        'show-help': function(value) {
+          LayoutUtil.scrollLock(true);
+          this.changeStatus('keybindState', 'help-window');
+          this.changeStatus('showHelp', true);
+          this.changeStatus('helpSection', value);
+        },
+      },
+      watch: {
+      },
+      methods: {
+        showHelp() {
+          this.$dispatch('show-help', '');
+        },
+      },
+      computed: {
+      },
+      ready() {
+        this.changeSettings(self.settings);
+        document.title = `${StringUtil.getUiPhraseByLang('Settings', this.settings.userSettings.language)} - ${this.settings.siteInfo.title}`;
+        this.initialized = true;
+      },
+      components: {
+        'help-component': HelpComponent,
+        'user-settings': UserSettingsApp,
+      },
+      store,
     });
-
-    $('.apptech-button').click(function() {
-      self.changeAppTech($(this).val());
-    });
-  }
-
-  updateSigelButtons() {
-    const sigel = this.getSigel();
-    $('.sigel-option').each(function () {
-      $(this).removeClass('active');
-      if ($(this).find('.sigel-button').val() === sigel) {
-        $(this).addClass('active');
-      }
-    });
-  }
-  updateLanguageButtons() {
-    const language = this.getLanguage();
-    $('.language-option').each(function () {
-      $(this).removeClass('active');
-      if ($(this).find('.language-button').val() === language) {
-        $(this).addClass('active');
-      }
-    });
-  }
-
-  updateAppTechButtons() {
-    const appTech = this.getShowAppTech();
-    let appTechVal = 'off';
-    if (appTech) {
-      appTechVal = 'on';
-    }
-    $('.apptech-option').each(function () {
-      $(this).removeClass('active');
-      if ($(this).find('.apptech-button').val() === appTechVal) {
-        $(this).addClass('active');
-      }
-    });
-  }
-
-  getLanguage() {
-    return this.settings.userSettings.language || this.settings.language;
-  }
-
-  getSigel() {
-    return this.settings.userSettings.currentSigel;
-  }
-  getShowAppTech() {
-    return this.settings.userSettings.showAppTech;
-  }
-
-  changeSigel(sigel) {
-    this.settings.userSettings.currentSigel = sigel;
-    UserUtil.saveUserSettings(this.settings.userSettings);
-    $('.sigelLabel').text(`(${this.settings.userSettings.currentSigel})`);
-    this.updateSigelButtons();
-  }
-
-  changeLanguage(langCode) {
-    this.settings.userSettings.language = langCode;
-    UserUtil.saveUserSettings(this.settings.userSettings);
-    this.updateLanguageButtons();
-    this.translate();
-  }
-
-  changeAppTech(value) {
-    if (value === 'on') {
-      this.settings.userSettings.showAppTech = true;
-    }
-    if (value === 'off') {
-      this.settings.userSettings.showAppTech = false;
-    }
-    UserUtil.saveUserSettings(this.settings.userSettings);
-    this.updateAppTechButtons();
-    this.translate();
   }
 }

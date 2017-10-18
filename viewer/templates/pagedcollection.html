@@ -16,7 +16,7 @@
     <div class="col-md-9">
       <div class="search-type-button-container" v-if="initialized && isLibris">
         <div class="search-type-button active"><i class="fa fa-leaf"></i> Libris</div>
-        <a href="/import"><div class="search-type-button"><i class="fa fa-download"></i> Metaproxy</div></a>
+        <a href="/import"><div class="search-type-button"><i class="fa fa-globe"></i> Andra källor</div></a>
       </div>
       <search-form v-if="initialized == true" :result="result" site-title="${g.site.title}" filter-param="${g.site.filter_param}"></search-form>
       <search-result-component :result="result" v-if="(initialized == true && result.totalItems > -1) || status.resultList.loading"></search-result-component>
@@ -28,6 +28,7 @@
       ></dataset-observations>
     </div>
   </div>
+  <help-component v-if="initialized == true" :open-all="true"></help-component>
 </div>
 <script id="data" type="application/json">${thing|tojson|safe}</script>
 % endblock

@@ -59,6 +59,7 @@ export default {
       expanded: this.status.isNew,
       removeHover: false,
       showToolTip: false,
+      showLinkAction: false,
     };
   },
   computed: {
@@ -163,9 +164,11 @@ export default {
       }
     },
     openExtractDialog() {
-      this.changeStatus('keybindState', 'extraction-dialog');
-      LayoutUtil.scrollLock(true);
-      this.extractDialogActive = true;
+      if (this.status.inEdit) {
+        this.changeStatus('keybindState', 'extraction-dialog');
+        LayoutUtil.scrollLock(true);
+        this.extractDialogActive = true;
+      }
     },
     closeExtractDialog() {
       this.changeStatus('keybindState', 'overview');
@@ -309,7 +312,11 @@ export default {
 </script>
 
 <template>
-  <div class="item-local-container" v-bind:class="{'highlight': isNewlyAdded}">
+  <div class="item-local-container" v-bind:class="{'highlight': isNewlyAdded, 'expanded': expanded}">
+    <div class="link-indicator" :class="{'active': showLinkAction && status.inEdit}" v-if="isExtractable" @click="openExtractDialog" @mouseover="showLinkAction = true" @mouseout="showLinkAction = false">
+      <i v-show="showLinkAction && status.inEdit" class="fa fa-link"><tooltip-component :show-tooltip="showLinkAction" tooltip-text="Link entity" translation="translatePhrase"></tooltip-component></i>
+      <i v-show="!showLinkAction || !status.inEdit" class="fa fa-unlink"></i>
+    </div>
     <div v-if="!isExpandedType" class="item-local" :class="{'expanded': expanded, 'distinguish-removal': removeHover}">
       <div class="topbar">
         <i class="fa fa-chevron-right" :class="{'down': expanded}" @click="toggleExpanded()"></i>
@@ -318,9 +325,6 @@ export default {
         <span class="actions">
           <i v-if="!isLocked" class="fa fa-trash-o chip-action" :class="{'show-icon': showActionButtons}" v-on:click="removeThis(true)" @mouseover="removeHover = true" @mouseout="removeHover = false"></i>
           <field-adder v-if="!isLocked && expanded" :allowed="allowedProperties" :inner="true" :path="getPath"></field-adder>
-          <i v-if="isExtractable && !isLocked" class="chip-action fa fa-share-square-o" v-on:click="openExtractDialog" v-if="!isLocked" @mouseover="showToolTip = true" @mouseout="showToolTip = false">
-            <tooltip-component :show-tooltip="showToolTip" tooltip-text="Extract entity" translation="translatePhrase"></tooltip-component>
-          </i>
         </span>
       </div>
       <field-adder v-if="!isLocked && isEmpty" :allowed="allowedProperties" :inner="true" :path="getPath"></field-adder>
@@ -330,7 +334,7 @@ export default {
     <div class="window" v-if="extractDialogActive">
       <div class="header">
         <span class="title">
-          {{ "Bryt ut entitet" | translatePhrase }}
+          {{ "Link entity" | translatePhrase }}
         </span>
         <span class="windowControl">
           <i v-on:click="closeExtractDialog" class="fa fa-close"></i>
@@ -367,11 +371,29 @@ export default {
   margin: 0px 0px 0px 0px;
   box-shadow: 0px 0px 1em 0px transparent;
   outline: 2px solid transparent;
+  transition: 0.5s ease margin;
+  display: flex;
+
+  .link-indicator {
+    padding: 0em 0.6em;
+    background: green;
+    display: flex;
+    align-items: center;
+    background: @gray-darker;
+    color: @white;
+    &.active {
+      background: lighten(@gray-darker, 15%);
+      cursor: pointer;
+    }
+  }
   // transition: 3s ease;
   // transition-property: outline, box-shadow;
   &.highlight {
     outline: 2px solid @highlight-color;
     box-shadow: 0px 0px 1em 0px @highlight-color;
+  }
+  &.expanded {
+    margin: 0 0 2em 0;
   }
   .item-local {
     width: 100%;
@@ -381,7 +403,7 @@ export default {
     line-height: 1.6;
     max-height: 40px;
     overflow: hidden;
-    transition: 0.5s ease margin, 0.5s ease max-height, 1.0s ease box-shadow;
+    transition: 0.5s ease max-height, 1.0s ease box-shadow;
     &.distinguish-removal {
       padding-bottom: 2px;
       > .topbar {
@@ -389,7 +411,6 @@ export default {
       }
     }
     &.expanded {
-      margin: 0 0 2em 0;
       max-height: 200vh;
       box-shadow: @shadow-chip-elevated;
     }
@@ -405,7 +426,7 @@ export default {
     > .topbar {
       display: flex;
       align-items: center;
-      padding: 5px;
+      padding: 5px 0;
       background: @topbar-color;
       white-space: nowrap;
       overflow: hidden;

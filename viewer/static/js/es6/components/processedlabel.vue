@@ -16,7 +16,7 @@ export default {
   methods: {
     formatId(id) {
       if (typeof id === 'undefined') {
-        return '[no id]';
+        return '{no id}';
       }
       // Strip domain and protocol from label
       let label = id;

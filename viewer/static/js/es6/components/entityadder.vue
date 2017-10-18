@@ -6,6 +6,8 @@ import * as DisplayUtil from '../utils/display';
 import * as LayoutUtil from '../utils/layout';
 import * as RecordUtil from '../utils/record';
 import * as StringUtil from '../utils/string';
+import * as CombinedTemplates from '../templates/combinedTemplates.json';
+import * as StructuredValueTemplates from '../templates/structuredValueTemplates.json';
 import ProcessedLabel from './processedlabel';
 import ToolTipComponent from './tooltip-component';
 import EntitySearchList from './entity-search-list';
@@ -27,7 +29,7 @@ export default {
       showToolTip: false,
       rangeInfo: false,
       selectedType: '',
-      addEmbedded: (this.valueList.length === 0),
+      addEmbedded: false,
       searchMade: false,
       currentSearchTypes: this.allSearchTypes,
     };
@@ -75,7 +77,7 @@ export default {
   },
   watch: {
     valueList(newVal) {
-      if (newVal.length === 0) {
+      if (newVal.length === 0 && this.onlyEmbedded) {
         this.addEmbedded = true;
       } else {
         this.addEmbedded = false;
@@ -165,6 +167,7 @@ export default {
     },
   },
   ready() {
+    this.addEmbedded = (this.valueList.length === 0 && this.onlyEmbedded);
     this.searchOpen = false;
   },
   methods: {
@@ -233,6 +236,9 @@ export default {
     addEmpty(type) {
       this.closeSearch();
       let obj = {'@type': type};
+      if (StructuredValueTemplates.hasOwnProperty(type)) {
+        obj = StructuredValueTemplates[type];
+      }
       this.$dispatch('add-item', obj);
     },
     addType(type) {

@@ -10,7 +10,9 @@ import * as VocabUtil from '../utils/vocab';
 import * as RecordUtil from '../utils/record';
 import * as DisplayUtil from '../utils/display';
 import * as StringUtil from '../utils/string';
+import * as LayoutUtil from '../utils/layout';
 import CreateNewForm from '../components/create-new-form';
+import HelpComponent from '../components/help-component';
 import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData, getStatus, getKeybindState } from '../vuex/getters';
 import { changeSettings, changeNotification, loadVocab, loadVocabMap, loadDisplayDefs, syncData, changeSavedStatus, changeStatus } from '../vuex/actions';
 
@@ -33,6 +35,11 @@ export default class CreateNew extends View {
   initVue() {
     const self = this;
     Vue.use(Vuex);
+    
+    document.getElementById('body-blocker').addEventListener('click', function () {
+      self.vm.$broadcast('close-modals');
+    }, false);
+
     $('#app').show();
 
     Vue.filter('labelByLang', (label) => {
@@ -44,7 +51,7 @@ export default class CreateNew extends View {
     });
 
     self.vm = new Vue({
-      el: '#app',
+      el: '#createnew',
       vuex: {
         actions: {
           syncData,
@@ -71,9 +78,21 @@ export default class CreateNew extends View {
       watch: {
       },
       methods: {
+        showHelp() {
+          this.$dispatch('show-help', '');
+        },
+      },
+      events: {
+        'show-help': function(value) {
+          LayoutUtil.scrollLock(true);
+          this.changeStatus('keybindState', 'help-window');
+          this.changeStatus('showHelp', true);
+          this.changeStatus('helpSection', value);
+        },
       },
       components: {
         'create-new-form': CreateNewForm,
+        'help-component': HelpComponent,
       },
       store,
       ready() {

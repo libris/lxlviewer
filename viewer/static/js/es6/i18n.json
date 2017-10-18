@@ -14,6 +14,8 @@
     "User name": "Användarnamn",
     "Active sigel": "Aktivt sigel",
     "Language": "Språk",
+    "Swedish": "Svenska",
+    "English": "Engelska",
     "Loading" : "Laddar",
     "Choose": "Välj",
     "Chosen": "Vald",
@@ -26,6 +28,7 @@
     "Add field" : "Lägg till fält",
     "Entity": "Entitet",
     "Unnamed entity": "Namnlös entitet",
+    "Link entity": "Länka entitet",
     "Post": "Post",
     "Field": "Fält",
     "Show technical application details": "Visa applikationstekniska detaljer",
@@ -55,8 +58,13 @@
     "total": "totalt",
     "type": "typ",
     "Did not find any fields": "Hittade inga fält",
+    "Sources": "Källor",
+    "Other sources": "Andra källor",
+    "No sources chosen": "Inga källor valda",
     "Something went wrong": "Något gick snett",
     "Try again": "Försök igen",
+    "Did not find any external databases": "Hittade inga externa databaser",
+    "Loading external databases": "Laddar externa databaser",
     "Undo": "Ångra",
     "Local entity": "Lokal entitet",
     "Forbidden": "Förbjuden",
@@ -85,6 +93,9 @@
     "ID": "ID",
     "Type": "Typ",
     "Release notes": "Versionsinfo",
-    "Unauthorized": "Obehörig"
+    "Unauthorized": "Obehörig",
+    "Instantiations of this work": "Instansieringar av detta verk",
+    "Show instantiations": "Visa instansieringar",
+    "Number of instantiations": "Antal instansieringar" 
   }
 }

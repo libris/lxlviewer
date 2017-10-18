@@ -106,6 +106,28 @@ export default class View {
           'https://id.kb.se/vocab/Concept',
         ],
       },
+      availableUserSettings: {
+        languages: [
+          {
+            'label': 'Swedish',
+            'value': 'sv',
+          },
+          {
+            'label': 'English',
+            'value': 'en',
+          },
+        ],
+        appTechs: [
+          {
+            'label': 'On',
+            'value': 'on',
+          },
+          {
+            'label': 'Off',
+            'value': 'off',
+          },
+        ],
+      },
     };
   }
 
@@ -116,7 +138,7 @@ export default class View {
     this.settings.userSettings = UserUtil.loadUserSettings();
     this.settings.language = this.settings.userSettings.language || $('html').attr('lang');
     this.translate();
-    $('.sigelLabel').text(`(${this.settings.userSettings.currentSigel})`);
+    // $('.sigelLabel').text(`(${this.settings.userSettings.currentSigel})`);
     // console.log('Initialized view', this);
   }
 

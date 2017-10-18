@@ -1,12 +1,10 @@
 <script>
 import * as _ from 'lodash';
 import * as DisplayUtil from '../utils/display';
-import * as VocabUtil from '../utils/vocab';
 import * as DataUtil from '../utils/data';
-import * as HttpUtil from '../utils/http';
 import EntitySummary from './entity-summary';
-import CreateItemButton from '../components/create-item-button';
 import LensMixin from './mixins/lens-mixin';
+import ReverseRelations from '../components/reverse-relations';
 import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData, getStatus } from '../vuex/getters';
 
 export default {
@@ -26,40 +24,10 @@ export default {
   },
   data() {
     return {
-      hasHolding: false,
-      checkingHolding: false,
-      holdingId: '',
-      numberOfHoldings: '?',
       showCompact: false,
     };
   },
   methods: {
-    isSubClassOf(type) {
-      const baseClasses = VocabUtil.getBaseClasses(this.editorData.mainEntity['@type'], this.vocab, this.settings.vocabPfx)
-        .map(id => id.replace(this.settings.vocabPfx, ''));
-      return baseClasses.indexOf(type) > -1;
-    },
-    getHoldingInfo() {
-      this.checkingHolding = true;
-      const numberOfHoldingsUrl = `/_dependencies?id=${this.editorData.record['@id']}&relation=itemOf&reverse=true`;
-      HttpUtil.get({ url: numberOfHoldingsUrl, accept: 'application/ld+json' }).then((response) => {
-        this.numberOfHoldings = response.length;
-      }, (error) => {
-        console.log('Error checking for holding');
-      });
-      const holdingCheckUrl = `/_findhold?library=${this.libraryUrl}&id=${this.editorData.record['@id']}`
-      HttpUtil.get({ url: holdingCheckUrl, accept: 'application/ld+json' }).then((response) => {
-        this.checkingHolding = false;
-        if (response.length > 0) {
-          this.hasHolding = true;
-          this.holdingId = response;
-        } else {
-          this.hasHolding = false;
-        }
-      }, (error) => {
-        console.log('Error checking for holding');
-      });
-    },
     handleScroll(e) {
       e.target.scrollingElement.scrollTop > this.headerThreshold ? this.showCompact = true : this.showCompact = false;
     }
@@ -76,9 +44,6 @@ export default {
     },
     focusData() {
       return this.editorData[this.status.level];
-    },
-    libraryUrl() {
-      return `https://libris.kb.se/library/${this.settings.userSettings.currentSigel}`;
     },
     headerThreshold() {
       const headerContainer = document.getElementById('main-header');
@@ -97,15 +62,12 @@ export default {
   },
   ready() { // Ready method is deprecated in 2.0, switch to "mounted"
     this.$nextTick(() => {
-      if (!this.status.isNew && this.isSubClassOf('Instance')) {
-        this.getHoldingInfo();
-      }
       window.addEventListener('scroll', this.handleScroll);
     });
   },
   components: {
     'entity-summary': EntitySummary,
-    'create-item-button': CreateItemButton,
+    'reverse-relations': ReverseRelations,
   },
 };
 </script>
@@ -115,14 +77,7 @@ export default {
     <div class="header-component full">
       <entity-summary :focus-data="focusData" :add-link="false" :lines="full ? 6 : 3"></entity-summary>
     </div>
-    <div class="create-item-container" v-if="!status.isNew && isSubClassOf('Instance')">
-      <div>
-        <span v-if="!hasHolding && !checkingHolding">{{'Missing holding' | translatePhrase}}</span>
-        <span v-if="hasHolding && !checkingHolding">{{'Has holding' | translatePhrase}}</span>
-      </div>
-      <create-item-button :disabled="status.inEdit" :has-holding="hasHolding" :checking-holding="checkingHolding" :holding-id="holdingId"></create-item-button>
-      <div class="holdings-number">{{ "Number of holdings" | translatePhrase }}: {{numberOfHoldings}}</div>
-    </div>
+    <reverse-relations v-if="!status.isNew"></reverse-relations>
     <div class="container compact-header" :class="{ 'show-compact': showCompact }">
       {{ compactSummary }}
     </div>
@@ -169,19 +124,6 @@ export default {
       max-height: 55px;
       opacity: 1;
       line-height: inherit;
-    }
-  }
-  .create-item-container {
-    background-color: @white;
-    flex: 2 2 20%;
-    display: flex;
-    padding: 1em;
-    text-align: center;
-    flex-direction: column;
-    justify-content: space-evenly;
-    align-items: center;
-    .holdings-number {
-      font-weight: bold;
     }
   }
 }

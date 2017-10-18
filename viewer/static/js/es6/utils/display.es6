@@ -171,13 +171,13 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
           vocab,
           settings.vocabPfx
         );
-        result[properties[i]] = `[${expectedClassName} saknas]`;
+        result[properties[i]] = `{${expectedClassName} saknas}`;
       }
     }
   }
   if (_.isEmpty(result)) {
     console.warn(`DisplayObject was empty. @type was ${trueItem['@type']}. Used lens: "${usedLensType}".`, 'Item data:', trueItem);
-    result = { 'label': '[Unknown]' };
+    result = { 'label': '{Unknown}' };
   }
   return result;
 }

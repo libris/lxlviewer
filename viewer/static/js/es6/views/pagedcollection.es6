@@ -5,6 +5,7 @@ import store from '../vuex/store';
 import * as _ from 'lodash';
 import * as StringUtil from '../utils/string';
 import * as SearchUtil from '../utils/search';
+import * as LayoutUtil from '../utils/layout';
 import * as VocabUtil from '../utils/vocab';
 import * as DisplayUtil from '../utils/display';
 import * as httpUtil from '../utils/http';
@@ -17,6 +18,7 @@ import EntitySearchList from '../components/entity-search-list';
 import SearchForm from '../components/search-form';
 import DatasetObservations from '../components/dataset-observations';
 import LandingBox from '../components/landing-box';
+import HelpComponent from '../components/help-component';
 import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData, getKeybindState, getStatus } from '../vuex/getters';
 import { changeSettings, changeStatus, changeNotification, loadVocab, loadVocabMap, loadDisplayDefs, changeSavedStatus, changeResultListStatus } from '../vuex/actions';
 
@@ -64,7 +66,7 @@ export default class PagedCollection extends View {
     Vue.use(Vuex);
 
     self.vm = new Vue({
-      el: '#PagedCollectionApp',
+      el: '#pagedcollection',
       vuex: {
         actions: {
           loadVocab,
@@ -103,6 +105,12 @@ export default class PagedCollection extends View {
             console.log(error);
           });
         },
+        'show-help': function(value) {
+          LayoutUtil.scrollLock(true);
+          this.changeStatus('keybindState', 'help-window');
+          this.changeStatus('showHelp', true);
+          this.changeStatus('helpSection', value);
+        },
       },
       watch: {
 
@@ -113,6 +121,9 @@ export default class PagedCollection extends View {
         },
         isPlainObject(o) {
           return _.isPlainObject(o);
+        },
+        showHelp() {
+          this.$dispatch('show-help', '');
         },
       },
       computed: {
@@ -158,6 +169,7 @@ export default class PagedCollection extends View {
         'search-form': SearchForm,
         'dataset-observations': DatasetObservations,
         'landing-box': LandingBox,
+        'help-component': HelpComponent,
       },
       store,
     });

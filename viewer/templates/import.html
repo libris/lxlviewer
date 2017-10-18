@@ -25,12 +25,13 @@
       <div class="col-md-9" v-if="initialized == true">
         <div class="search-type-button-container">
           <a href="/"><div class="search-type-button"><i class="fa fa-leaf"></i> Libris</div></a>
-          <div class="search-type-button active"><i class="fa fa-download"></i> Metaproxy</div>
+          <div class="search-type-button active"><i class="fa fa-globe"></i> Andra källor</div>
         </div>
         <remote-search></remote-search>
       </div>
     </div>
   </div>
+  <help-component v-if="initialized == true" :open-all="true"></help-component>
 
   {% else %}
   <p>Du måste logga in.</p>
