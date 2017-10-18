@@ -361,7 +361,7 @@ export default {
   .data-node-container {
     border: solid #d8d8d8;
     margin: 0px;
-    padding: 2em 0px 0px 0px;
+    padding: 0em 0px 0px 0px;
     border-width: 1px 0px 0px 0px;
     overflow: hidden;
     max-height: 500vh;
