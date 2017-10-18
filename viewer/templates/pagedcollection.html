@@ -20,7 +20,6 @@
       </div>
       <search-form v-if="initialized == true" :result="result" site-title="${g.site.title}" filter-param="${g.site.filter_param}"></search-form>
       <search-result-component :result="result" v-if="(initialized == true && result.totalItems > -1) || status.resultList.loading"></search-result-component>
-      <intro-component v-if="initialized == true && widgetShouldBeShown('intro-component')"></intro-component>
       <dataset-observations
       v-if="initialized == true && !result.totalItems && widgetShouldBeShown('dataset-observations')"
       :statistics="result.statistics"
@@ -32,6 +31,7 @@
         <link-card v-if="widgetShouldBeShown('link-blog')" image="/assets/img/white_tiles.png" header="Test 2" text="Lorem ipsum test" link-text="test" link-url=""></link-card>
         <link-card v-if="widgetShouldBeShown('link-instructional-videos')" image="/assets/img/white_tiles.png" header="Test... TRE!" text="ÄNNU .. MER ... TEXT" link-text="test" link-url=""></link-card>
       </div>
+      <intro-component v-if="initialized == true && widgetShouldBeShown('intro-component')"></intro-component>
     </div>
   </div>
   <help-component v-if="initialized == true" :open-all="true"></help-component>
