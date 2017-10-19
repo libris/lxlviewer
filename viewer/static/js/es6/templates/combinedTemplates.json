@@ -1,8 +1,8 @@
 {
   "instance": {
     "rdabook": {
-      "label": "Bok (RDA)",
-      "description": "Vanligaste fälten för en bok med RDA-regler.",
+      "label": "Bok",
+      "description": "Tryckt monografi - RDA",
       "value": {
         "record": {
           "marc:encLevel": {
@@ -36,6 +36,8 @@
             "value": "",
             "note": ""
           }],
+          "editionStatement": "",
+          "editionStatementRemainder": "",
           "publication": [{
             "@type": "Publication",
             "place": {
@@ -76,11 +78,7 @@
             "@type": "Dimensions",
             "label": "18 centimeter"
           },
-          "hasSeries": [{
-            "@type": "Serial",
-            "title": "",
-            "issn": ""
-          }],
+          "seriesStatement": "",
           "hasSeries": [{
             "@type": "Serial",
             "title": "",
@@ -129,7 +127,7 @@
                 "@type": "PrimaryContribution",
                 "agent": {
                   "@type": "Person",
-                  "name": ","
+                  "name": ""
                 },
                 "role": [{
                   "code": "aut"
@@ -139,12 +137,12 @@
                 "@type": "Contribution",
                 "agent": {
                   "@type": "Person",
-                  "name": ","
+                  "name": ""
                 }
               }
             ],
             "contentType": [{
-              "@type": "Class",
+              "@type": "Content",
               "code": "txt",
               "termGroup": "rdacontent"
             }],
