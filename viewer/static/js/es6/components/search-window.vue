@@ -28,7 +28,7 @@ export default {
       keyword: '',
       loading: false,
       debounceTimer: 500,
-      rangeInfo: false,
+      showHelp: false,
       searchMade: false,
       currentSearchTypes: this.allSearchTypes,
     };
@@ -98,6 +98,12 @@ export default {
         typeArray.push(type.replace(this.settings.vocabPfx, ''));
       }
       return typeArray;
+    },
+    displaySearchList() {
+      return !this.loading && !this.extracting && this.keyword.length > 0 && this.searchResult.length > 0;
+    },
+    foundNoResult() {
+      return !this.loading && this.searchResult.length === 0 && this.keyword.length > 0 && this.searchMade;
     },
   },
   ready() {
@@ -192,20 +198,37 @@ export default {
               <datalist id="allowedTypes">
                 <option v-for="range in getFullRange" :value="`${range.replace(settings.vocabPfx, '')}:`">{{range | labelByLang}}:</option>
               </datalist>
-              <div class="range-info-container" v-if="getFullRange.length > 0" @mouseleave="rangeInfo = false">
-                <i class="fa fa-info-circle" @mouseenter="rangeInfo = true"></i>
-                <div class="range-info" v-if="rangeInfo">
-                  {{ "Allowed types" | translatePhrase }}:
-                  <br>
-                  <span v-for="range in getFullRange" class="range">
-                    - {{range | labelByLang}}
-                  </span>
+              <div class="help-tooltip-container" @mouseleave="showHelp = false">
+                <i class="fa fa-question-circle-o" @mouseenter="showHelp = true"></i>
+                <div class="help-tooltip" v-if="showHelp">
+                  <div class="section">
+                    <div class="section-header">
+                      {{"Step" | translatePhrase}} 1: {{"Search for existing linked entities" | translatePhrase}}
+                    </div>
+                    <div class="section-content"></div>
+                  </div>
+                  <div class="section">
+                    <div class="section-header">
+                      {{"Step" | translatePhrase}} 2: {{"Identify and replace" | translatePhrase}}
+                    </div>
+                    <div class="section-content">
+                      {{"If you identify a matching linked entity, click it to replace the local entity with it" | translatePhrase}}
+                    </div>
+                  </div>
+                  <div class="section">
+                    <div class="section-header">
+                      {{"Create and link entity" | translatePhrase}}
+                    </div>
+                    <div class="section-content">
+                      {{"If no matching linked entity is found you can create and link. This will create a linked entity containing the information in the entity chosen for linking" | translatePhrase}}
+                    </div>
+                  </div>
                 </div>
               </div>
               <div class="controls">
                 <button class="acceptExtractButton" v-on:click="doExtract" v-show="!extracting">
-                  <i class="fa fa-share-square-o"></i>
-                  {{ "Extract entity" | translatePhrase }}
+                  <i class="fa fa-link"></i>
+                  {{ "Create and link entity" | translatePhrase }}
                 </button>
               </div>
             </div>
@@ -214,17 +237,17 @@ export default {
             </div>
           </div>
           <div class="result-list-container">
-            <div v-show="!extracting">
-              <div v-if="!loading && keyword.length === 0" class="search-status">{{ "Search for matching records" | translatePhrase }}...</div>
-              <div v-if="loading" class="search-status"><i class="fa fa-circle-o-notch fa-spin"></i><span>{{ "Searching" | translatePhrase }}...</span></div>
-              <div v-if="!loading && searchResult.length === 0 && keyword.length > 0 && searchMade" class="search-status">
-                <span>{{ "No results" | translatePhrase }}...</span>
-              </div>
-            </div>
-            <div v-show="extracting" class="search-status"><i class="fa fa-circle-o-notch fa-spin" aria-hidden="true"></i><span>{{ "Extracting" | translatePhrase }}</span></div>
-            <div v-show="!loading && keyword.length > 0" class="search-result">
+            <div v-show="displaySearchList" class="search-result">
               <div v-for="item in searchResult" class="search-item">
                 <entity-summary @click="replaceLocal(item)" :focus-data="item" :lines="4"></entity-summary>
+              </div>
+            </div>
+            <div v-show="extracting || keyword.length === 0 || loading || foundNoResult" class="search-status-container">
+              <div class="search-status">
+                <span v-show="keyword.length === 0"><span>{{ "Search for existing linked entities" | translatePhrase }}...</span></span>
+                <span v-show="loading"><i class="fa fa-circle-o-notch fa-spin"></i><span>{{ "Searching" | translatePhrase }}...</span></span>
+                <span v-show="foundNoResult"><span>{{ "No results" | translatePhrase }}<br>{{"Search again or" | translatePhrase}} {{"Create and link entity" | translatePhrase}}</span></span>
+                <span v-show="extracting"><i class="fa fa-circle-o-notch fa-spin" aria-hidden="true"></i><span>{{ "Extracting" | translatePhrase }}</span></span>
               </div>
             </div>
           </div>
@@ -271,19 +294,25 @@ export default {
               }
             }
           }
-          .search-status {
-            padding: 10px;
-            padding-top: 25%;
-            font-size: 2em;
-            text-align: center;
+          .search-status-container {
             display: flex;
             align-items: center;
             justify-content: center;
-            > span {
-              padding: 0 1em;
-            }
-            > i {
-              font-size: 8rem;
+            height: 100%;
+            .search-status {
+              font-size: 2em;
+              text-align: center;
+              > span {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                i {
+                  font-size: 8rem;
+                }
+                > span {
+                  margin: 0 0.5em;
+                }
+              }
             }
           }
         }
@@ -309,24 +338,32 @@ export default {
               border: 2px solid #aaa;
               border-radius: 0.2em;
               background: #fff;
+              flex: 40% 0 0;
               > input {
+                width: 100%;
                 border: none;
                 outline: none;
               }
             }
-            .range-info-container {
+            .help-tooltip-container {
               margin-left: 0.5em;
               display: inline-block;
-              .range-info {
+              .help-tooltip {
+                max-width: 40%;
                 position: absolute;
                 background-color: #fff;
                 border: 1px solid #ccc;
                 padding: 5px;
                 border-radius: 3px;
                 font-size: 1.2rem;
-                .range {
-                  display: block;
+                .section {
                   font-size: 1.4rem;
+                  .section-header {
+                    font-weight: bold;
+                  }
+                  .section-content {
+                    margin: 0 0 5px 5px;
+                  }
                 }
               }
             }
@@ -337,19 +374,17 @@ export default {
             justify-content: flex-end;
             button, select {
               &:hover {
-                background: lighten(#ccc, 5%);
-                color: lighten(#444, 5%);
+                background: lighten(@brand-primary, 5%);
               }
               &:active {
-                background: darken(#ccc, 5%);
-                color: darken(#444, 5%);
+                background: darken(@brand-primary, 5%);
               }
               cursor: pointer;
               padding: 0.5em 1em;
-              color: #444;
+              background: @brand-primary;
               border: none;
               border-radius: 2px;
-              background: #ccc;
+              color: @white;
               font-weight: bold;
               font-size: 12px;
             }
