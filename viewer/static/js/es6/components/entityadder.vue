@@ -189,7 +189,7 @@ export default {
       if (this.isEnumeration) {
         this.$dispatch('add-item', {'@id': ''});
       } else if (this.canRecieveObjects) {
-        const range = this.getFullRange;
+        const range = this.getFullRange.map(range => range.replace(this.settings.vocabPfx, ''));
         if (range.length < 2 && this.onlyEmbedded) {
           this.addEmpty(range[0]);
         } else if (this.onlyEmbedded) {
@@ -214,14 +214,6 @@ export default {
       this.active = false;
       LayoutUtil.scrollLock(false);
       this.changeStatus('keybindState', 'overview');
-    },
-    goLocal() {
-      const range = this.getFullRange;
-      if (range.length > 1) {
-        this.chooseLocalType = true;
-      } else {
-        this.addEmpty(range[0]);
-      }
     },
     openSearch() {
       this.keyword = '';
