@@ -15,7 +15,13 @@
               "@type": "DescriptionConventions",
               "code": "rda"
             }
-          ]
+          ],
+          "descriptionLanguage": [
+          {
+          "@id": "https://id.kb.se/language/swe",
+          "code": "swe"
+          }
+          ],
         },
         "mainEntity": {
           "@type": "Instance",
