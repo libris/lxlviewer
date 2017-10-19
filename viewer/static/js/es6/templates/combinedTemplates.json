@@ -18,25 +18,24 @@
           ]
         },
         "mainEntity": {
+          "@type": "Instance",
           "issuanceType": "Monograph",
-          "marc:publicationStatus": {
-            "@id": "marc:SingleKnownDateProbableDate"
-          },
-          "publicationCountry": [{
-            "@id": "https://id.kb.se/country/sw"
-          }],
+          "hasTitle": [{
+              "@type": "Title",
+              "mainTitle": "",
+              "subtitle": ""
+            },
+            {
+              "@type": "ParallelTitle",
+              "mainTitle": ""
+            }
+          ],
+          "responsibilityStatement": "",
           "identifiedBy": [{
             "@type": "ISBN",
             "value": "",
             "note": ""
           }],
-          "hasTitle": [{
-            "@type": "Title",
-            "mainTitle": "",
-            "subtitle": "",
-            "titleRemainder": ""
-          }],
-          "responsibilityStatement": "",
           "publication": [{
             "@type": "Publication",
             "place": {
@@ -46,20 +45,19 @@
             "agent": {
               "@type": "Agent",
               "label": ""
-            }
+            },
+            "date": ""
+          }],
+          "marc:publicationStatus": {
+            "@id": "marc:SingleKnownDateProbableDate"
+          },
+          "publicationCountry": [{
+            "@id": "https://id.kb.se/country/sw"
           }],
           "copyright": [{
             "@type": "Copyright",
             "date": "u00a9"
           }],
-          "extent": [{
-            "@type": "Extent",
-            "label": "(Antal) Sidor"
-          }],
-          "hasDimensions": {
-            "@type": "Dimensions",
-            "label": "18 centimeter"
-          },
           "mediaType": [{
             "@type": "MediaType",
             "code": "n",
@@ -70,12 +68,28 @@
             "code": "nc",
             "termGroup": "rdacarrier"
           }],
+          "extent": [{
+            "@type": "Extent",
+            "label": "(Antal) Sidor"
+          }],
+          "hasDimensions": {
+            "@type": "Dimensions",
+            "label": "18 centimeter"
+          },
           "hasSeries": [{
             "@type": "Serial",
             "title": "",
             "issn": ""
           }],
-          "@type": "Instance",
+          "hasSeries": [{
+            "@type": "Serial",
+            "title": "",
+            "issn": ""
+          }],
+          "hasNote": [{
+            "@type": "Note",
+            "label": ""
+          }],
           "instanceOf": {
             "@type": "Text",
             "language": [{
@@ -272,7 +286,7 @@
         }
       }
     },
-    "hpb": {
+    "handprinted": {
       "label": "Äldre tryck",
       "description": "<Insert description>",
       "value": {
@@ -1426,7 +1440,7 @@
           }],
           "label": "LCSH saknas",
           "scopeNote": [
-            "Anmärkning: Hit verk om"
+            ""
           ],
           "historyNote": [
             ""
