@@ -92,7 +92,7 @@ export default {
           searchPhrase = searchParts[1];
           this.currentSearchTypes = [searchParts[0]];
         } else {
-          this.currentSearchTypes = this.allSearchTypes;
+          this.currentSearchTypes = this.getRange;
         }
         setTimeout(() => {
           if (this.keyword === value) {
@@ -122,7 +122,8 @@ export default {
       return this.key;
     },
     getRange() {
-      const fetchedRange = VocabUtil.getRange(this.key, this.vocab, this.settings.vocabPfx);
+      const fetchedRange = VocabUtil.getRange(this.key, this.vocab, this.settings.vocabPfx)
+        .map(item => item.replace(this.settings.vocabPfx, ''));
       return fetchedRange;
     },
     getFullRange() {
