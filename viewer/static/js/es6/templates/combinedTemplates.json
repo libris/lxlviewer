@@ -364,7 +364,7 @@
                 "@type": "ConceptScheme",
                 "@id": "https://id.kb.se/term/sao",
                 "code": "sao"
-                }
+              }
             }]
           }
         }
@@ -571,6 +571,88 @@
                 "code": "gmgpc//swe"
               }
             }]
+          }
+        }
+      }
+    },
+    "collection": {
+      "label": "Samlingspost",
+      "description": "RDA",
+      "value": {
+        "record": {
+          "@type": "Record",
+          "marc:encLevel": {
+            "@id": "marc:AbbreviatedLevel"
+          },
+          "descriptionConventions": [{
+            "@id": "marc:Isbd",
+            "@type": "DescriptionConventions",
+            "code": "rda"
+          }],
+          "marc:catalogingSource": {
+            "@id": "marc:CooperativeCatalogingProgram"
+          },
+          "descriptionLanguage": [{
+            "@id": "https://id.kb.se/language/swe",
+            "code": "swe"
+          }]
+        },
+        "mainEntity": {
+          "issuanceType": "Collection",
+          "@type": "Instance",
+          "marc:otherYear": "9999",
+          "marc:publicationStatus": {
+            "@id": "marc:InclusiveDatesOfCollection"
+          },
+          "hasTitle": [{
+            "@type": "Title",
+            "mainTitle": ""
+          }],
+          "publicationCountry": [{
+            "@id": "https://id.kb.se/country/sw"
+          }],
+          "publication": [{
+            "@type": "Publication",
+            "agent": {
+              "@type": "Agent",
+              "label": ""
+            },
+            "place": {
+              "@type": "Place",
+              "label": ""
+            },
+            "date": ""
+          }],
+          "extent": [{
+            "@type": "Extent",
+            "label": ""
+          }],
+          "marc:otherPhysicalDetails": "",
+          "mediaType": [{
+            "@type": "MediaType",
+            "code": "n",
+            "termGroup": "rdamedia"
+          }],
+          "carrierType": [{
+            "@type": "CarrierType",
+            "code": "nb",
+            "termGroup": "rdacarrier"
+          }],
+          "hasNote": [{
+            "@type": "Note",
+            "label": ""
+          }],
+          "instanceOf": {
+            "@type": "Text",
+            "language": [],
+            "genreForm": [],
+            "contribution": [],
+            "contentType": [{
+              "@type": "Class",
+              "code": "txt",
+              "termGroup": "rdacontent"
+            }],
+            "subject": []
           }
         }
       }
@@ -1073,40 +1155,7 @@
             "genreForm": [{
               "@id": "marc:Periodical"
             }],
-            "classification": [{
-                "@type": "ClassificationDdc",
-                "inScheme": {
-                  "@type": "ConceptScheme",
-                  "@id": "http://dewey.info/scheme/edition/e23/swe/",
-                  "version": "23",
-                  "language": "swe"
-                }
-              },
-              {
-                "@type": "Classification",
-                "inScheme": {
-                  "@type": "ConceptScheme",
-                  "@id": "https://id.kb.se/term/kssb/8",
-                  "code": "kssb/8"
-                }
-              }
-            ],
-            "subject": [{
-              "@type": "Topic",
-              "inScheme": {
-                "@type": "ConceptScheme",
-                "@id": "https://id.kb.se/term/sao",
-                "code": "sao"
-              }
-            }],
-            "relatedTo": [{
-              "@type": "Organization",
-              "@id": "_:b-0",
-              "name": "."
-            }],
-            "generic:": [{
-              "@id": "_:b-0"
-            }]
+            "classification": []
           }
         }
       }

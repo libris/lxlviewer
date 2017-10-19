@@ -134,7 +134,7 @@ export default {
 </script>
 
 <template>
-  <div class="landing-box" :class="{'libris-color': settings.siteInfo.title === 'libris.kb.se', 'id-color': settings.siteInfo.title === 'id.kb.se'}">
+  <div class="panel panel-default landing-box">
     <p v-html="text">
     </p>
     <hr>

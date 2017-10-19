@@ -1,0 +1,29 @@
+{
+  "libris.kb.se": {
+    "landing-box": {
+      "forced": true
+    },
+    "link-about-xl": {
+      "forced": true
+    },
+    "link-blog": {
+      "forced": true
+    },
+    "link-instructional-videos": {
+      "forced": true
+    },
+    "intro-component": {
+      "forced": false,
+      "standard": true
+    }
+  },
+  "id.kb.se": {
+    "intro-component": {
+      "forced": false,
+      "standard": false
+    },
+    "dataset-observations": {
+      "forced": true
+    }
+  }
+}

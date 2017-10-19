@@ -10,7 +10,7 @@
 <div id="PagedCollectionApp">
   <div class="row">
     <div class="col-md-3">
-      <landing-box v-if="initialized == true && typeof result.totalItems === 'undefined'" :title="result.title" :text="result.summary.articleBody"></landing-box>
+      <landing-box v-if="initialized == true && widgetShouldBeShown('landing-box')" :title="result.title" :text="result.summary.articleBody"></landing-box>
       <facet-controls v-if="initialized == true" :result="result"></facet-controls>
     </div>
     <div class="col-md-9">
@@ -21,11 +21,17 @@
       <search-form v-if="initialized == true" :result="result" site-title="${g.site.title}" filter-param="${g.site.filter_param}"></search-form>
       <search-result-component :result="result" v-if="(initialized == true && result.totalItems > -1) || status.resultList.loading"></search-result-component>
       <dataset-observations
-      v-if="initialized == true && !result.totalItems && '${g.site.title}' === 'id.kb.se'"
+      v-if="initialized == true && !result.totalItems && widgetShouldBeShown('dataset-observations')"
       :statistics="result.statistics"
       :stats-index="${g.site.statsindex}"
       site-title="${g.site.title}"
       ></dataset-observations>
+      <div class="link-container">
+        <link-card v-if="widgetShouldBeShown('link-about-xl')" image="/assets/img/white_tiles.png" header="Test 1" text="Text text" link-text="test" link-url=""></link-card>
+        <link-card v-if="widgetShouldBeShown('link-blog')" image="/assets/img/white_tiles.png" header="Test 2" text="Lorem ipsum test" link-text="test" link-url=""></link-card>
+        <link-card v-if="widgetShouldBeShown('link-instructional-videos')" image="/assets/img/white_tiles.png" header="Test... TRE!" text="ÄNNU .. MER ... TEXT" link-text="test" link-url=""></link-card>
+      </div>
+      <intro-component v-if="initialized == true && widgetShouldBeShown('intro-component')"></intro-component>
     </div>
   </div>
   <help-component v-if="initialized == true" :open-all="true"></help-component>
