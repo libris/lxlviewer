@@ -16,12 +16,10 @@
               "code": "rda"
             }
           ],
-          "descriptionLanguage": [
-          {
-          "@id": "https://id.kb.se/language/swe",
-          "code": "swe"
-          }
-          ],
+          "descriptionLanguage": [{
+            "@id": "https://id.kb.se/language/swe",
+            "code": "swe"
+          }]
         },
         "mainEntity": {
           "@type": "Instance",
@@ -169,59 +167,69 @@
       "description": "<Insert description>",
       "value": {
         "record": {
+          "@type": "Record",
           "marc:encLevel": {
             "@id": "marc:MinimalLevel"
           },
           "descriptionConventions": [{
             "@id": "marc:Aacr2"
           }],
+          "descriptionLanguage": [{
+            "@id": "https://id.kb.se/language/swe",
+            "code": "swe"
+          }],
           "marc:catalogingSource": {
             "@id": "marc:CooperativeCatalogingProgram"
-          },
-          "@type": "Record"
+          }
         },
         "mainEntity": {
-          "issuanceType": "Monograph",
           "@type": "SoundRecording",
-          "carrierType": [{
-            "@id": "marc:SoundDisc"
-          }],
-          "marc:soundKindOfMaterial": {
-            "@id": "marc:PlasticWithMetal"
-          },
-          "marc:publicationStatus": {
-            "@id": "marc:SingleKnownDateProbableDate"
-          },
-          "publicationCountry": [{
-            "@id": "https://id.kb.se/country/sw"
-          }],
-          "identifiedBy": [{
-            "@type": "IssueNumber"
-          }],
+          "issuanceType": "Monograph",
           "hasTitle": [{
             "@type": "Title",
             "titleRemainder": ""
           }],
-          "marc:mediaTerm": "Ljudupptagning] :",
+          "responsibilityStatement": "",
+          "identifiedBy": [{
+            "@type": "IssueNumber"
+          }],
           "publication": [{
             "@type": "Publication",
             "place": {
               "@type": "Place",
-              "label": ":"
+              "label": ""
             },
             "agent": {
               "@type": "Agent",
-              "label": ","
-            }
+              "label": ""
+            },
+            "date": ""
+          }],
+          "publicationCountry": [{
+            "@id": "https://id.kb.se/country/sw"
+          }],
+          "marc:publicationStatus": {
+            "@id": "marc:SingleKnownDateProbableDate"
+          },
+          "carrierType": [{
+            "@id": "marc:SoundDisc"
           }],
           "extent": [{
             "@type": "Extent",
             "label": "CD"
           }],
+          "marc:soundKindOfMaterial": {
+            "@id": "marc:PlasticWithMetal"
+          },
+          "marc:mediaTerm": "Ljudupptagning",
           "hasSeries": [{
             "@type": "Serial",
             "title": ",",
             "issn": ";"
+          }],
+          "hasNote": [{
+            "@type": "Note",
+            "label": ""
           }],
           "tableOfContents": [{
             "@type": "TableOfContents"
@@ -253,14 +261,14 @@
                 "@type": "PrimaryContribution",
                 "agent": {
                   "@type": "Person",
-                  "name": ","
+                  "name": ""
                 }
               },
               {
                 "@type": "Contribution",
                 "agent": {
                   "@type": "Person",
-                  "name": ","
+                  "name": ""
                 }
               }
             ],
@@ -281,8 +289,8 @@
                 "@type": "PrimaryContribution",
                 "agent": {
                   "@type": "Person",
-                  "name": ",",
-                  "lifeSpan": "."
+                  "name": "",
+                  "lifeSpan": ""
                 }
               }]
             }]
@@ -292,40 +300,27 @@
     },
     "handprinted": {
       "label": "Äldre tryck",
-      "description": "<Insert description>",
+      "description": "Aacr2",
       "value": {
         "record": {
+          "@type": "Record",
           "marc:encLevel": {
             "@id": "marc:MinimalLevel"
           },
           "descriptionConventions": [{
             "@id": "marc:Aacr2"
           }],
+          "descriptionLanguage": [{
+            "@id": "https://id.kb.se/language/swe",
+            "code": "swe"
+          }],
           "marc:catalogingSource": {
             "@id": "marc:CooperativeCatalogingProgram"
-          },
-          "@type": "Record",
-
-          "_marcUncompleted": [{
-            "752": {
-              "ind1": " ",
-              "ind2": " ",
-              "subfields": [{
-                "a": ""
-              }, {
-                "d": ""
-              }]
-            }
-          }]
+          }
         },
         "mainEntity": {
+          "@type": "Instance",
           "issuanceType": "Monograph",
-          "marc:publicationStatus": {
-            "@id": "marc:SingleKnownDateProbableDate"
-          },
-          "publicationCountry": [{
-            "@id": "https://id.kb.se/country/sw"
-          }],
           "hasTitle": [{
             "@type": "Title",
             "mainTitle": ""
@@ -337,11 +332,23 @@
               "label": ""
             }
           }],
+          "marc:publicationStatus": {
+            "@id": "marc:SingleKnownDateProbableDate"
+          },
+          "publicationCountry": [{
+            "@id": "https://id.kb.se/country/sw"
+          }],
           "extent": [{
             "@type": "Extent",
             "label": ""
           }],
-          "@type": "Instance",
+          "hasNote": [{
+            "@type": "Note",
+            "label": ""
+          }],
+          "tableOfContents": [{
+            "@type": "TableOfContents"
+          }],
           "instanceOf": {
             "@type": "Text",
             "language": [{
@@ -393,49 +400,23 @@
       "description": "RDA",
       "value": {
         "record": {
-          "descriptionConventions": [{
-            "@id": "marc:Isbd"
-          }, {
-            "@type": "DescriptionConventions",
-            "code": "rda"
-          }],
-          "created": "2007-02-06T00:00:00.0+01:00",
           "@type": "Record",
-          "controlNumber": "pwgcsnn9mcbhk406",
-          "assigner": {
-            "@type": "Organization",
-            "name": "S"
-          },
+          "descriptionConventions": [{
+              "@id": "marc:Isbd"
+            },
+            {
+              "@type": "DescriptionConventions",
+              "code": "rda"
+            }
+          ],
           "descriptionLanguage": [{
             "@id": "https://id.kb.se/language/swe",
             "code": "swe"
-          }],
-          "_marcUncompleted": [{
-            "007": "aj can|n"
-          }, {
-            "651": {
-              "ind1": " ",
-              "ind2": "7",
-              "subfields": [{
-                "a": "Sverige"
-              }, {
-                "z": ""
-              }, {
-                "2": "sao"
-              }]
-            },
-            "_unhandled": ["z"]
-          }],
-          "_marcFailedFixedFields": {
-            "007": {
-              "5": "n",
-              "7": "n"
-            }
-          }
+          }]
         },
         "mainEntity": {
-          "issuanceType": "Monograph",
           "@type": "Map",
+          "issuanceType": "Monograph",
           "genreForm": [{
             "@id": "marc:MapATwoDimensionalMap"
           }, {
@@ -607,27 +588,20 @@
             "@type": "DescriptionConventions",
             "code": "rda"
           }],
-          "marc:catalogingSource": {
-            "@id": "marc:CooperativeCatalogingProgram"
-          },
           "descriptionLanguage": [{
             "@id": "https://id.kb.se/language/swe",
             "code": "swe"
-          }]
+          }],
+          "marc:catalogingSource": {
+            "@id": "marc:CooperativeCatalogingProgram"
+          }
         },
         "mainEntity": {
-          "issuanceType": "Collection",
           "@type": "Instance",
-          "marc:otherYear": "9999",
-          "marc:publicationStatus": {
-            "@id": "marc:InclusiveDatesOfCollection"
-          },
+          "issuanceType": "Collection",
           "hasTitle": [{
             "@type": "Title",
             "mainTitle": ""
-          }],
-          "publicationCountry": [{
-            "@id": "https://id.kb.se/country/sw"
           }],
           "publication": [{
             "@type": "Publication",
@@ -640,6 +614,13 @@
               "label": ""
             },
             "date": ""
+          }],
+          "marc:otherYear": "9999",
+          "marc:publicationStatus": {
+            "@id": "marc:InclusiveDatesOfCollection"
+          },
+          "publicationCountry": [{
+            "@id": "https://id.kb.se/country/sw"
           }],
           "extent": [{
             "@type": "Extent",
@@ -1063,7 +1044,7 @@
       }
     },
     "periodical": {
-      "label": "Tidsskrift",
+      "label": "Tidskrift",
       "description": "<Insert description>",
       "value": {
         "record": {
@@ -1182,13 +1163,13 @@
   "agent": {
     "person": {
       "label": "Person",
-      "description": "Person bas",
+      "description": "Person (Agent)",
       "value": {
         "record": {
+          "@type": "Record",
           "marc:encLevel": {
             "@id": "marc:CompleteAuthorityRecord"
           },
-          "created": "2016-12-08T00:00:00.0+01:00",
           "marc:romanization": {
             "@id": "marc:NationalStandard"
           },
@@ -1217,54 +1198,9 @@
             "@id": "marc:FullyEstablishedHeading"
           },
           "descriptionLanguage": [{
-            "@id": "https:\/\/id.kb.se\/language\/swe",
+            "@id": "https://id.kb.se/language/swe",
             "code": "swe"
-          }],
-          "_marcUncompleted": [{
-              "008": "161208nb az|nnaaba           n aaa      "
-            },
-            {
-              "046": {
-                "ind1": " ",
-                "ind2": " ",
-                "subfields": [{
-                    "f": "xxx"
-                  },
-                  {
-                    "g": "xxx"
-                  },
-                  {
-                    "q": "xxx"
-                  },
-                  {
-                    "r": "xxx"
-                  },
-                  {
-                    "s": "xxx"
-                  },
-                  {
-                    "t": "xxx"
-                  }
-                ]
-              },
-              "_unhandled": [
-                "q",
-                "r",
-                "s",
-                "t"
-              ]
-            }
-          ],
-          "_marcFailedFixedFields": {
-            "008": {
-              "6": "n",
-              "12": "n",
-              "13": "n",
-              "29": "n"
-            }
-          },
-          "@id": "https:\/\/libris.kb.se\/w3jcqbhstwzxcnq1",
-          "@type": "Record"
+          }]
         },
         "mainEntity": {
           "@type": "Person",
@@ -1300,6 +1236,7 @@
       "description": "saogf",
       "value": {
         "record": {
+          "@type": "Record",
           "descriptionLanguage": [{
             "@id": "https://id.kb.se/language/swe",
             "code": "swe"
@@ -1371,10 +1308,6 @@
           "marc:level": {
             "@id": "marc:FullyEstablishedHeading"
           },
-          "assigner": {
-            "@type": "Organization",
-            "name": "S"
-          },
           "descriptionLanguage": [{
             "@id": "https://id.kb.se/language/swe",
             "code": "swe"
@@ -1382,19 +1315,7 @@
           "source": [{
             "@type": "Instance",
             "label": "Källa"
-          }],
-          "_marcUncompleted": [{
-            "008": "160309nb acznnbab|           n ana      "
-          }],
-          "_marcFailedFixedFields": {
-            "008": {
-              "6": "n",
-              "12": "n",
-              "13": "n",
-              "29": "n",
-              "32": "n"
-            }
-          }
+          }]
         },
         "mainEntity": {
           "@type": "Topic",
