@@ -13,6 +13,7 @@ import DataNode from './datanode';
 import CardComponent from './card-component';
 import ToolTipComponent from './tooltip-component';
 import FieldAdder from './fieldadder';
+import SearchWindow from './search-window';
 import ItemMixin from './mixins/item-mixin';
 import LensMixin from './mixins/lens-mixin';
 import {mixin as clickaway} from 'vue-clickaway';
@@ -52,8 +53,6 @@ export default {
       inEdit: false,
       showCardInfo: false,
       isNewlyAdded: false,
-      searchResult: {},
-      searchDelay: 2,
       extractDialogActive: false,
       extracting: false,
       expanded: this.status.isNew,
@@ -190,7 +189,7 @@ export default {
       requestMethod({ url, token: self.access_token }, obj).then((result) => {
         if (result.status === 201) {
           const postUrl = `${result.getResponseHeader('Location')}`;
-          httpUtil.get({ url: postUrl, accept: 'application/ld+json' }).then((getResult) => {
+          httpUtil.get({ url: `${postUrl}/data.jsonld`, accept: 'application/ld+json' }).then((getResult) => {
             const recievedObj = {
               '@graph': getResult['@graph'],
             }
@@ -290,7 +289,8 @@ export default {
       this.collapse();
     },
     'extract-item'() {
-      this.openExtractDialog();
+      this.extracting = true;
+      this.doExtract();
     },
     'close-modals'() {
       this.closeExtractDialog();
@@ -307,6 +307,7 @@ export default {
     'card-component': CardComponent,
     'field-adder': FieldAdder,
     'tooltip-component': ToolTipComponent,
+    'search-window': SearchWindow,
   },
 };
 </script>
@@ -331,36 +332,7 @@ export default {
       <data-node v-show="expanded && k !== '_uid'" v-for="(k,v) in filteredItem" :parent-path="getPath" :entity-type="item['@type']" :is-inner="true" :is-locked="isLocked" :allow-local="true" :is-removable="false" :embedded="true" :parent-key="key" :parent-index="index" :key="k" :value="v" :focus="focus" :show-action-buttons="showActionButtons"></data-node>
     </div>
     <card-component v-if="isExpandedType" :title="getItemLabel" :focus-data="item" :uri="item['@id']" :is-local="true" :is-extractable="isExtractable" :is-locked="isLocked"></card-component>
-    <div class="window" v-if="extractDialogActive">
-      <div class="header">
-        <span class="title">
-          {{ "Link entity" | translatePhrase }}
-        </span>
-        <span class="windowControl">
-          <i v-on:click="closeExtractDialog" class="fa fa-close"></i>
-        </span>
-      </div>
-      <div class="body">
-        <p class="extractLeadingText">
-          Utbrytning av:<br><strong>"{{getItemLabel}}"</strong>
-        </p>
-        <p>
-          Den här operationen kommer att skapa en egen post utav den lokala entiteten. Detta gör att entiteten går att länka till från denna och andra poster (och på det sättet kunna återanvändas).
-        </p>
-        <p>
-          När den nya posten är skapad kommer den att ersätta den lokala versionen i den post du nu står i.
-        </p>
-        <hr>
-        <div class="button-container">
-          <p>
-            Vill du bryta ut entiteten till en egen post?
-          </p>
-          <button class="acceptExtractButton" v-on:click="doExtract" v-show="!extracting">{{ "Ja, bryt ut" | translatePhrase }}</button>
-          <button class="declineExtractButton" v-on:click="closeExtractDialog" v-show="!extracting">{{ "Nej, avbryt" | translatePhrase }}</button>
-          <div v-show="extracting"><i class="fa fa-circle-o-notch fa-spin" aria-hidden="true"></i> {{ "Extracting" | translatePhrase }}</div>
-        </div>
-      </div>
-    </div>
+    <search-window :active="extractDialogActive" :key="key" :extracting="extracting" :item-info="item" :index="index"></search-window>
   </div>
 </template>
 
@@ -487,27 +459,6 @@ export default {
 
     .item-label {
       display: block;
-    }
-  }
-  .window {
-    .window-mixin();
-    .body {
-      padding: 2em;
-      .extractLeadingText {
-        text-align: center;
-      }
-      .button-container {
-        text-align: center;
-        button {
-          padding: 0px 1em;
-        }
-        .acceptExtractButton {
-          margin-right: 2em;
-        }
-        .declineExtractButton {
-
-        }
-      }
     }
   }
 }

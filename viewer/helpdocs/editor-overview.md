@@ -5,6 +5,15 @@ tags:
 - editor
 ---
 
+### test
+[^1]Katalogisatören avgör om den valfria uteslutningen ska tillämpas.
+
+NB-praxis: Generellt, tillämpa inte den valfria uteslutningen.
+	(img)
+
+`Kiki Lundberg och Carina Trägårdh Tornhill ; faktagranskare: Eva Skoog, leg. dietist, Lisa Lundmark, leg. dietist och Elisabeth Nilsson, leg. sjuksköterska ; fotografi: Helén Sahlstrand, Härlig hälsa, Istock, Shutterstock`
+
+
 
 # Redigering
 
@@ -12,7 +21,7 @@ tags:
 
 ---
 
-> 	Anvisningar för katalogisering innehåller anvisningar och riktlinjer för katalogisering och auktoritetsarbete i Libris samkatalog. Anvisningarna är baserade på Bibframe 2.0 som ersätter MARC21 och katalogiseringsstandarden RDA (Resource Description and Access, på svenska Resursbeskrivning och åtkomst), den standard som ersatt AACR2 (Anglo-American Cataloguing Rules, 2. ed.). 
+>   Anvisningar för katalogisering innehåller anvisningar och riktlinjer för katalogisering och auktoritetsarbete i Libris samkatalog. Anvisningarna är baserade på Bibframe 2.0 som ersätter MARC21 och katalogiseringsstandarden RDA (Resource Description and Access, på svenska Resursbeskrivning och åtkomst), den standard som ersatt AACR2 (Anglo-American Cataloguing Rules, 2. ed.). 
 
 * Under rubriken Arbetsflöden finns anvisningar som gäller respektive materialtyp.
 
@@ -80,3 +89,5 @@ Från instanser kan man lägga till bestånd. Man når beståndsformuläret frå
 För att lägga till fält klicka på den gröna knappen med ett plus nere till höger.
 
 För att ta bort fält klicka på soptunnan längst till höger i ett fält eller en rad.
+
+[^1]:	librispraxis

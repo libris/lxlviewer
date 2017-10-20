@@ -34,6 +34,7 @@ export default {
       formObj: {},
       expanded: false,
       showCardInfo: false,
+      isNewlyAdded: false,
     };
   },
   computed: {
@@ -47,6 +48,16 @@ export default {
     },
   },
   ready() {
+  },
+  events: {
+    'focus-new-item'(index) {
+      if (index === this.index) {
+        this.isNewlyAdded = true;
+        setTimeout(() => {
+          this.isNewlyAdded = false;
+        }, 1500);
+      }
+    }
   },
   methods: {
     expand() {
@@ -88,7 +99,7 @@ export default {
 </script>
 
 <template>
-  <div class="item-entity-container" @mouseleave="showCardInfo=false">
+  <div class="item-entity-container" @mouseleave="showCardInfo=false" v-bind:class="{'highlight': isNewlyAdded}">
     <div class="item-entity" v-if="!expanded" :class="{ 'locked': isLocked, 'highlighted': showCardInfo }" @mouseenter="showCardInfo=true">
       <div class="topbar">
         <a :href="item['@id']">
@@ -111,6 +122,13 @@ export default {
 
 .item-entity-container {
   margin: 0px 0px 5px 0px;
+  box-shadow: 0px 0px 1em 0px transparent;
+  outline: 2px solid transparent;
+  transition: 2s ease all;
+  &.highlight {
+    outline: 2px solid @highlight-color;
+    box-shadow: 0px 0px 1em 0px @highlight-color;
+  }
   .item-entity {
     &.expanded {
       margin: 0 0 2em 0;

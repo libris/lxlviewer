@@ -41,8 +41,17 @@ export default class Editor extends View {
     super.initialize();
     VocabLoader.initVocabClicks();
     toolbarUtil.initToolbar(this);
-    this.dataIn = RecordUtil.splitJson(JSON.parse(document.getElementById('data').innerText));
     const self = this;
+
+    const textData = RecordUtil.splitJson(JSON.parse(document.getElementById('data').innerText));
+    if (Modernizr.history) {
+      if (history.state === null) {
+        history.replaceState(textData, 'unused');
+      }
+      this.dataIn = history.state;
+    } else {
+      this.dataIn = textData;
+    }
 
     $('#loadingText .fa-warning').hide();
     const loadingStr = `${StringUtil.getUiPhraseByLang("Loading", self.settings.language)} ${StringUtil.getUiPhraseByLang("Post", self.settings.language).toLowerCase()}`;
@@ -190,6 +199,7 @@ export default class Editor extends View {
             self.vm.changeStatus('isNew', false);
             self.vm.changeStatus('isCopy', false);
           }
+          history.replaceState(newData, 'unused', `${atId}/edit`);
           this.syncData(newData);
         },
       },
@@ -365,7 +375,6 @@ export default class Editor extends View {
               const newData = RecordUtil.splitJson(getResult);
               if (Modernizr.history) {
                 this.$dispatch('new-editordata', newData);
-                history.replaceState(newData, 'unused', `${postUrl}/edit`);
               } else if (result.status === 201) {
                 window.location = result.getResponseHeader('Location');
               } else {
@@ -415,7 +424,6 @@ export default class Editor extends View {
           this.changeStatus('isNew', true);
         }
         if (Modernizr.history) {
-          history.replaceState(this.editorData, 'unused');
           history.scrollRestoration = 'manual';
           window.onpopstate = e => {
             e.preventDefault();

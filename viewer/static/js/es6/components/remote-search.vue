@@ -157,7 +157,7 @@ export default {
       <label for="search">{{"Search" | translatePhrase}}</label>
       <div>
         <div class="form-group search-field">
-          <input type="text" class="form-control search-input" placeholder="Titel, författare, isbn..." id="search" v-model="remoteQuery">
+          <input type="text" class="form-control search-input" placeholder="ISBN eller valfria sökord" id="search" v-model="remoteQuery">
           <button v-bind:class="{'disabled': selectedDatabases.length === 0 || remoteResult.state === 'loading'}" v-on:click.prevent="searchRemote()" id="searchSubmit" class="search-button btn btn-primary"><i class="fa fa-search"></i> {{"Search" | translatePhrase}}</button>
         </div>
       </div>
