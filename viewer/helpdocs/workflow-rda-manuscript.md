@@ -1,5 +1,5 @@
 ---
-section: Arbetsflöden
+section: Anvisningar
 title: Handskrifter
 tags:
 - editor
