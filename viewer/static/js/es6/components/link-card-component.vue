@@ -44,7 +44,7 @@ export default {
     <img :src="image" />
     <span class="header">{{ header }}</span>
     <p>{{ text }}</p>
-    <a v-if="linkUrl" :href="linkUrl" class="btn btn-primary">{{ linkText }}</a>
+    <a v-if="linkUrl" :href="linkUrl" class="card-link">{{ linkText }}</a>
   </div>
 </template>
 
@@ -65,12 +65,20 @@ export default {
     margin-right:1em;
     margin-left:1em;
   }
+  .card-link {
+    text-transform: uppercase;
+    font-weight: bold;
+    padding: 0.5em;
+    margin: 0.25em;
+    border-radius: 0.25em;
+    transition: background-color 0.5s ease;
+    &:hover {
+      background-color: fadeout(@brand-primary, 75%);
+      text-decoration: none;
+    }
+  }
   img {
     width: 100%;
-  }
-  a {
-    width: 75%;
-    margin: 1em;
   }
   .header {
     font-weight: bold;
