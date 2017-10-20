@@ -12,6 +12,7 @@ import * as httpUtil from '../utils/http';
 import ComboKeys from 'combokeys';
 import KeyBindings from '../keybindings.json';
 import ServiceWidgetSettings from '../serviceWidgetSettings.json';
+import Copy from '../copy.json';
 import MainSearchField from '../components/main-search-field';
 import FacetControls from '../components/facet-controls';
 import SearchResultComponent from '../components/search-result-component';
@@ -152,6 +153,9 @@ export default class PagedCollection extends View {
         },
         isLandingPage() {
           return typeof this.result.totalItems === 'undefined';
+        },
+        copy() {
+          return Copy[this.settings.siteInfo.title];
         },
       },
       beforeCompile() {

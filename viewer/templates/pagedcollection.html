@@ -10,7 +10,7 @@
 <div id="PagedCollectionApp">
   <div class="row">
     <div class="col-md-3">
-      <landing-box v-if="initialized == true && widgetShouldBeShown('landing-box')" :title="result.title" :text="result.summary.articleBody"></landing-box>
+      <link-card v-if="initialized == true && widgetShouldBeShown('about-xl')" :image="copy['about-xl'].image" :header="copy['about-xl'].header" :text="copy['about-xl'].text" :link-text="copy['about-xl'].linkText" :link-url="copy['about-xl'].linkUrl"></link-card>
       <facet-controls v-if="initialized == true" :result="result"></facet-controls>
     </div>
     <div class="col-md-9">
@@ -27,9 +27,9 @@
       site-title="${g.site.title}"
       ></dataset-observations>
       <div class="link-container">
-        <link-card v-if="widgetShouldBeShown('link-about-xl')" image="/assets/img/white_tiles.png" header="Test 1" text="Text text" link-text="test" link-url=""></link-card>
-        <link-card v-if="widgetShouldBeShown('link-blog')" image="/assets/img/white_tiles.png" header="Test 2" text="Lorem ipsum test" link-text="test" link-url=""></link-card>
-        <link-card v-if="widgetShouldBeShown('link-instructional-videos')" image="/assets/img/white_tiles.png" header="Test... TRE!" text="ÄNNU .. MER ... TEXT" link-text="test" link-url=""></link-card>
+        <link-card v-if="initialized == true && widgetShouldBeShown('link-blog')" :image="copy['blog'].image" :header="copy['blog'].header" :text="copy['blog'].text" :link-text="copy['blog'].linkText" :link-url="copy['blog'].linkUrl"></link-card>
+        <link-card v-if="initialized == true && widgetShouldBeShown('link-studies')" :image="copy['studies'].image" :header="copy['studies'].header" :text="copy['studies'].text" :link-text="copy['studies'].linkText" :link-url="copy['studies'].linkUrl"></link-card>
+        <link-card v-if="initialized == true && widgetShouldBeShown('link-instructional-videos')"  :image="copy['instructional-videos'].image" :header="copy['instructional-videos'].header" :text="copy['instructional-videos'].text" :link-text="copy['instructional-videos'].linkText" :link-url="copy['instructional-videos'].linkUrl"></link-card>
       </div>
       <intro-component v-if="initialized == true && widgetShouldBeShown('intro-component')"></intro-component>
     </div>

@@ -40,11 +40,11 @@ export default {
 </script>
 
 <template>
-  <div class="panel panel-default link-card">
+  <div class="panel panel-default link-card" v-bind:class="{'no-link': !linkUrl}">
     <img :src="image" />
     <span class="header">{{ header }}</span>
     <p>{{ text }}</p>
-    <a :href="linkUrl" class="btn btn-primary">{{ linkText }}</a>
+    <a v-if="linkUrl" :href="linkUrl" class="btn btn-primary">{{ linkText }}</a>
   </div>
 </template>
 
@@ -57,6 +57,9 @@ export default {
   flex-direction: column;
   align-items: center;
   padding: 0;
+  &.no-link {
+    padding-bottom: 1em;
+  }
   &:not(:first-child,:last-child) {
     background-color: pink;
     margin-right:1em;
@@ -64,7 +67,6 @@ export default {
   }
   img {
     width: 100%;
-    height: 4em;
   }
   a {
     width: 75%;
@@ -77,6 +79,7 @@ export default {
   p {
     margin: 0px;
     flex-grow: 1;
+    font-size: 14px;
   }
   p, .header {
     padding: 0.5em 1em 0em 1em;
