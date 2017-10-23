@@ -287,7 +287,7 @@ export default class Editor extends View {
         extractTitle(id) {
           return new Promise((resolve, reject) => {
             console.log("Getting", id);
-            httpUtil.get({ url: id, accept: 'application/ld+json' }).then((response) => {
+            httpUtil.get({ url: `${id}/data.jsonld`, accept: 'application/ld+json' }).then((response) => {
               console.log("Found", id);
               const mainEntity = RecordUtil.getMainEntity(response['@graph']);
               console.log("mainEntity found", mainEntity);
@@ -413,7 +413,7 @@ export default class Editor extends View {
         this.changeStatus('isNew', false);
         this.updateDocumentTitle(this.entityTitle);
 
-        this.getRelatedTitles();
+        // this.getRelatedTitles();
 
         // add own mainentity to quoted graph so that we can self-reference
         this.$dispatch('add-linked', this.editorData.mainEntity);

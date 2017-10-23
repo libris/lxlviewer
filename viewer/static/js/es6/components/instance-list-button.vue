@@ -30,7 +30,7 @@ export default {
   methods: {
     buildEmbellishedInstanceList(instanceList) {
       const promiseArray = instanceList.map(instanceId => {
-        return HttpUtil.get({ url: instanceId, accept: 'application/ld+json' }).then(instanceInfo => {
+        return HttpUtil.get({ url: `${instanceId}/data.jsonld`, accept: 'application/ld+json' }).then(instanceInfo => {
           return RecordUtil.splitJson(instanceInfo);
         }, (error) => {
           console.log("Error fetching relation info");
