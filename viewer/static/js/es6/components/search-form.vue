@@ -202,10 +202,14 @@ export default {
 <template>
   <div>
     <div class="panel panel-default search-controls">
+      <div class="search-type-button-container" v-if="settings.siteInfo.title === 'libris.kb.se'">
+        <a class="card-link active">Libris</a>
+        <a class="card-link" href="/import">Andra källor</a>
+      </div>
         <form action="/find" method="GET" id="searchForm">
             <div class="form-inline">
                 <div class="form-group">
-                    <label class="search-label" id="searchlabel" for="q">
+                    <label class="search-label hidden" id="searchlabel" for="q">
                         {{"Search" | translatePhrase}}
                     </label>
                     <div id="searchFieldContainer">
@@ -244,5 +248,8 @@ export default {
 </template>
 
 <style>
+.search-type-button-container {
+  margin: 0.5em;
+}
 
 </style>
