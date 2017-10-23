@@ -175,12 +175,14 @@ export function getItemObject(itemOf, heldBy, instance) {
 export function getObjectAsRecord(mainEntity, record = {}) {
   const newMainEntity = _.cloneDeep(mainEntity);
   newMainEntity['@id'] = '_:TEMP_ID#it';
+  _.unset(newMainEntity, 'sameAs');
   const newRecord = _.cloneDeep(record);
   // TODO: Exclude more fields?
   _.unset(newRecord, 'assigner');
   _.unset(newRecord, 'created');
   _.unset(newRecord, 'modified');
   _.unset(newRecord, 'controlNumber');
+  _.unset(newRecord, 'sameAs');
   const blankRecord = {
     '@type': 'Record',
     '@id': '_:TEMP_ID',
