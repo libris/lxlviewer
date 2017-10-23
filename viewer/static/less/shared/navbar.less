@@ -8,6 +8,18 @@ body > .navbar {
   @media screen and (max-width: @screen-sm-min) {
     padding: 0 20px;
   }
+  .navbar-circle {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: @grey-lighter;
+    line-height: 2em;
+    text-align: center;
+    .user-gravatar {
+      border-radius: 50%;
+    }
+  }
   .container-fluid {
     padding: 0 30px 0 15px;
   }
@@ -19,7 +31,6 @@ body > .navbar {
       }
       i {
         color: @text-alt-navbar;
-        margin-right: 0.3em;
       }
     }
     text-transform: uppercase;
@@ -49,6 +60,7 @@ body > .navbar {
 
 .navbar-header {
   margin-left: 1em;
+  padding: 0.3em;
   .navbar-brand {
     color: @text-brand;
   }

@@ -222,7 +222,7 @@ export default {
 </script>
 
 <template>
-  <div class="container" id="editor-container">
+  <div class="container editor-container" id="editor-container">
     <div class="editor-controls">
       <div class="admin-info">
         <div class="actions">
@@ -363,7 +363,7 @@ export default {
 
 @button-active-color: #cecece;
 
-.container {
+.editor-container {
   padding: 0.5em 0;
 
   .editor-controls {

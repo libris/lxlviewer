@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import json
+import json, hashlib
 from flask import Blueprint, current_app as app, request, render_template, session, redirect
 from flask_login import LoginManager, UserMixin
 from flask_login import login_required, login_user, current_user, logout_user
@@ -23,6 +23,7 @@ class User(UserMixin):
         self.active = active
         self.authorization = authorization
         self.token = token
+        self.email = '' # TODO: Insert user email
 
     def __repr__(self):
         return '<User %r>' % (self.username)
@@ -38,6 +39,10 @@ class User(UserMixin):
 
     def get_username(self):
         return self.get_id()
+
+    def get_gravatar_url(self, size=32):
+        hashed_email = hashlib.md5(str(self.email).lower().encode()).hexdigest()
+        return 'https://www.gravatar.com/avatar/{}?d=mm&s={}'.format(hashed_email, size)
 
     def get_authorization(self):
         return self.authorization
