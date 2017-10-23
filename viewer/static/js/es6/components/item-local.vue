@@ -57,7 +57,6 @@ export default {
       extracting: false,
       expanded: this.status.isNew,
       removeHover: false,
-      showToolTip: false,
       showLinkAction: false,
     };
   },
@@ -324,7 +323,9 @@ export default {
         <span class="type" @click="toggleExpanded()" title="{{ item['@type'] }}">{{ item['@type'] | labelByLang | capitalize }}</span>
         <span class="collapsed-label" @click="toggleExpanded()"><span v-show="!expanded || isEmpty">{{getItemLabel}}</span><span class="placeholder">.</span></span>
         <span class="actions">
-          <i v-if="!isLocked" class="fa fa-trash-o chip-action" :class="{'show-icon': showActionButtons}" v-on:click="removeThis(true)" @mouseover="removeHover = true" @mouseout="removeHover = false"></i>
+          <i v-if="!isLocked" class="fa fa-trash-o chip-action" :class="{'show-icon': showActionButtons}" v-on:click="removeThis(true)" @mouseover="removeHover = true" @mouseout="removeHover = false">
+            <tooltip-component :show-tooltip="removeHover" tooltip-text="Remove" translation="translatePhrase"></tooltip-component>
+          </i>
           <field-adder v-if="!isLocked" :allowed="allowedProperties" :inner="true" :path="getPath"></field-adder>
         </span>
       </div>

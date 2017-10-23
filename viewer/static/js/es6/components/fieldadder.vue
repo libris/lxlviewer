@@ -231,8 +231,10 @@ export default {
 <template>
   <div :class="{'container': !inner}">
     <div class="field-adder">
-      <div v-if="inner" class="field-adder-bar" v-on:click="show">
-        <i class="fa fa-plus-square-o plus-icon" aria-hidden="true"></i>
+      <div v-if="inner" class="field-adder-bar" v-on:click="show" @mouseenter="showToolTip = true" @mouseleave="showToolTip = false">
+        <i class="fa fa-plus-square-o plus-icon" aria-hidden="true">
+          <tooltip-component :show-tooltip="showToolTip" tooltip-text="Add field" translation="translatePhrase"></tooltip-component>
+        </i>
         {{ "Field" | translatePhrase }}
       </div>
       <a v-if="!inner && !buttonFixed" class="add-button absolute" v-on:click="show" @mouseenter="showToolTip = true" @mouseleave="showToolTip = false">

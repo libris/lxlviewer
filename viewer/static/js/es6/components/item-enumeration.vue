@@ -4,6 +4,7 @@ import * as VocabUtil from '../utils/vocab';
 import * as DataUtil from '../utils/data';
 import * as StringUtil from '../utils/string';
 import ProcessedLabel from './processedlabel';
+import TooltipComponent from './tooltip-component';
 import ItemMixin from './mixins/item-mixin';
 import LensMixin from './mixins/lens-mixin';
 import { getVocabulary, getDisplayDefinitions, getSettings, getEditorData } from '../vuex/getters';
@@ -116,6 +117,7 @@ export default {
   },
   components: {
     'processed-label': ProcessedLabel,
+    'tooltip-component': TooltipComponent,
   },
 };
 </script>
@@ -136,7 +138,11 @@ export default {
         <option v-for="option in possibleValues" v-bind:value="option">{{ option.prefLabelByLang[this.settings.language] || option.prefLabelByLang['en'] }}{{ option.notation ? ` (${option.notation})` : '' }}</option>
       </select>
     </div>
-    <div class="remover" v-show="!isLocked" v-on:click="removeThis()" @mouseover="removeHover = true" @mouseout="removeHover = false"><i class="fa fa-trash-o"></i></div>
+    <div class="remover" v-show="!isLocked" v-on:click="removeThis()" @mouseover="removeHover = true" @mouseout="removeHover = false">
+      <i class="fa fa-trash-o">
+        <tooltip-component :show-tooltip="removeHover" tooltip-text="Remove" translation="translatePhrase"></tooltip-component>
+      </i>
+    </div>
   </div>
 </template>
 
