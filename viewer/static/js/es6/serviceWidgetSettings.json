@@ -1,9 +1,6 @@
 {
   "libris.kb.se": {
-    "landing-box": {
-      "forced": true
-    },
-    "link-about-xl": {
+    "about-xl": {
       "forced": true
     },
     "link-blog": {
@@ -12,9 +9,12 @@
     "link-instructional-videos": {
       "forced": true
     },
+    "link-studies": {
+      "forced": true
+    },
     "intro-component": {
       "forced": false,
-      "standard": true
+      "standard": false
     }
   },
   "id.kb.se": {

@@ -40,11 +40,11 @@ export default {
 </script>
 
 <template>
-  <div class="panel panel-default link-card">
+  <div class="panel panel-default link-card" v-bind:class="{'no-link': !linkUrl}">
     <img :src="image" />
     <span class="header">{{ header }}</span>
     <p>{{ text }}</p>
-    <a :href="linkUrl" class="btn btn-primary">{{ linkText }}</a>
+    <a v-if="linkUrl" :href="linkUrl" class="card-link">{{ linkText }}</a>
   </div>
 </template>
 
@@ -57,18 +57,28 @@ export default {
   flex-direction: column;
   align-items: center;
   padding: 0;
+  &.no-link {
+    padding-bottom: 1em;
+  }
   &:not(:first-child,:last-child) {
     background-color: pink;
     margin-right:1em;
     margin-left:1em;
   }
+  .card-link {
+    text-transform: uppercase;
+    font-weight: bold;
+    padding: 0.5em;
+    margin: 0.25em;
+    border-radius: 0.25em;
+    transition: background-color 0.5s ease;
+    &:hover {
+      background-color: fadeout(@brand-primary, 75%);
+      text-decoration: none;
+    }
+  }
   img {
     width: 100%;
-    height: 4em;
-  }
-  a {
-    width: 75%;
-    margin: 1em;
   }
   .header {
     font-weight: bold;
@@ -77,6 +87,7 @@ export default {
   p {
     margin: 0px;
     flex-grow: 1;
+    font-size: 14px;
   }
   p, .header {
     padding: 0.5em 1em 0em 1em;
