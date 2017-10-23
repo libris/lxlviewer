@@ -284,9 +284,10 @@ export default {
       </i>
     </span>
   </div>
-  <div v-if="!isPlaceholder && !addEmbedded" class="action-button add-entity-button" v-on:click="add()">
+  <div v-if="!isPlaceholder && !addEmbedded" class="action-button add-entity-button" v-on:click="add()" @mouseenter="showToolTip = true" @mouseleave="showToolTip = false">
     <span class="chip-label">
       <i class="fa fa-fw fa-plus plus-icon" aria-hidden="true">
+        <tooltip-component :show-tooltip="showToolTip" tooltip-text="Add" translation="translatePhrase"></tooltip-component>  
       </i>
     <span class="label-text">{{ addLabel | labelByLang | capitalize }}</span></span>
   </div>

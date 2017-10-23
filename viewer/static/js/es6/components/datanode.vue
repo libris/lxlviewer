@@ -10,6 +10,7 @@ import ItemEnumeration from './item-enumeration';
 import ItemValue from './item-value';
 import ItemLocal from './item-local';
 import ItemError from './item-error';
+import TooltipComponent from './tooltip-component';
 import { mixin as clickaway } from 'vue-clickaway';
 import * as VocabUtil from '../utils/vocab';
 import * as LayoutUtil from '../utils/layout';
@@ -65,6 +66,7 @@ export default {
     'item-local': ItemLocal,
     'item-error': ItemError,
     'entity-adder': EntityAdder,
+    'tooltip-component': TooltipComponent,
   },
   watch: {
     'arrayLength': function (newVal, oldVal) {
@@ -352,7 +354,9 @@ export default {
     </div>
     <div v-if="isInner" class="actions">
       <div class="action" v-show="!locked" :class="{'disabled': activeModal}">
-        <i v-on:click="removeThis(true)" @mouseover="removeHover = true" @mouseout="removeHover = false" class="fa fa-times action-button action-remove"></i>
+        <i v-on:click="removeThis(true)" @mouseover="removeHover = true" @mouseout="removeHover = false" class="fa fa-times action-button action-remove">
+          <tooltip-component :show-tooltip="removeHover" tooltip-text="Remove" translation="translatePhrase"></tooltip-component>
+        </i>
       </div>
     </div>
     <!-- {{ key | labelByLang | capitalize }} -->
@@ -376,7 +380,9 @@ export default {
   </div>
   <div v-if="!isInner" class="actions">
     <div class="action" v-show="!locked" :class="{'disabled': activeModal}">
-      <i v-on:click="removeThis(true)" @mouseover="removeHover = true" @mouseout="removeHover = false" class="fa fa-trash-o action-button action-remove"></i>
+      <i v-on:click="removeThis(true)" @mouseover="removeHover = true" @mouseout="removeHover = false" class="fa fa-trash-o action-button action-remove">
+        <tooltip-component :show-tooltip="removeHover" tooltip-text="Remove" translation="translatePhrase"></tooltip-component>
+      </i>
     </div>
   </div>
 </div>

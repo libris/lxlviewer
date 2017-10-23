@@ -89,11 +89,10 @@ export default {
         <!--<i v-if="!hasHolding && !checkingHolding" class="fa fa-plus"></i>-->
         <i v-if="checkingHolding" class="fa fa-fw fa-circle-o-notch fa-spin"></i>
         {{"Add holding" | translatePhrase}}
-        <span>({{settings.userSettings.currentSigel}})</span>
       </button>
       <button v-if="hasHolding" :class="{'green': hasHolding, 'disabled': disabled}" :disabled="disabled" @click.prevent="fetchHolding()">
         <i v-if="hasHolding && !checkingHolding" class="fa fa-check"></i> 
-        {{"Holding" | translatePhrase}}
+        {{"Has holding" | translatePhrase}}
         <span>({{settings.userSettings.currentSigel}})</span>
       </button>
     <!--</form>-->

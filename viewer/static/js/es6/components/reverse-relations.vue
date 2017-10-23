@@ -84,16 +84,15 @@ export default {
 <template>
   <div class="reverse-relations">
     <div v-if="recordType === 'Work'">
-      <div class="relations-number">{{ "Number of instantiations" | translatePhrase }}: {{numberOfRelations}}</div>
+      <div class="relations-number">{{ "Instantiations" | translatePhrase }}: {{numberOfRelations}}</div>
       <instance-list-button :checking-instances="checkingRelations" :instance-list="relationInfo"></instance-list-button>
     </div>
     <div v-if="recordType === 'Instance'">
-      <div v-show="!checkingRelations">
-        <span v-show="!hasRelation">{{'Missing holding' | translatePhrase}}</span>
-        <span v-show="hasRelation">{{'Has holding' | translatePhrase}}</span>
+      <div class="relations-number">
+        <i class="fa fa-home" aria-hidden="true"></i>
+        {{ "Libraries" | translatePhrase }}: {{numberOfRelations}}
       </div>
       <create-item-button :disabled="status.inEdit" :has-holding="hasRelation" :checking-holding="checkingRelations" :holding-id="relationPath"></create-item-button>
-      <div class="relations-number">{{ "Number of holdings" | translatePhrase }}: {{numberOfRelations}}</div>
     </div>
   </div>
 </template>
@@ -103,14 +102,20 @@ export default {
 .reverse-relations {
   background-color: @white;
   flex: 2 2 20%;
-  display: flex;
   padding: 1em;
-  text-align: center;
-  flex-direction: column;
-  justify-content: space-evenly;
-  align-items: center;
-  .relations-number {
-    font-weight: bold;
+  display: flex;
+  justify-content: center;
+  border: solid @gray-light;
+  border-width: 1px 1px 0px 0px;
+  > div {
+    text-align: center;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    display: flex;
+    .relations-number {
+      font-weight: bold;
+    }
   }
 }
 

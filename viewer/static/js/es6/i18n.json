@@ -97,9 +97,8 @@
     "Copy": "Kopia",
     "Copy successful": "Kopiering lyckades",
     "Admin metadata": "Adminmetadata",
-    "Missing holding": "Saknar bestånd",
     "Add holding": "Lägg bestånd",
-    "Number of holdings": "Antal bestånd",
+    "Libraries": "Bibliotek",
     "Has holding": "Har bestånd",
     "Holding": "Bestånd",
     "Use": "Använd",
@@ -111,6 +110,6 @@
     "Unauthorized": "Obehörig",
     "Instantiations of this work": "Instansieringar av detta verk",
     "Show instantiations": "Visa instansieringar",
-    "Number of instantiations": "Antal instansieringar" 
+    "Instantiations": "Instansieringar" 
   }
 }

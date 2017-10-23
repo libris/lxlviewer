@@ -3,6 +3,7 @@ import * as _ from 'lodash';
 import * as VocabUtil from '../utils/vocab';
 import * as DataUtil from '../utils/data';
 import CardComponent from './card-component';
+import TooltipComponent from './tooltip-component';
 import EntitySummary from './entity-summary';
 import ProcessedLabel from './processedlabel';
 import ItemMixin from './mixins/item-mixin';
@@ -35,6 +36,7 @@ export default {
       expanded: false,
       showCardInfo: false,
       isNewlyAdded: false,
+      removeHover: false,
     };
   },
   computed: {
@@ -94,6 +96,7 @@ export default {
     'processed-label': ProcessedLabel,
     'card-component': CardComponent,
     'entity-summary': EntitySummary,
+    'tooltip-component': TooltipComponent,
   },
 };
 </script>
@@ -107,7 +110,9 @@ export default {
         </a>
         <span class="collapsed-label"><span v-if="!expanded"><a :href="item['@id']">{{getItemLabel}}</a></span><span class="placeholder">.</span></span>
         <span class="actions" v-if="!isLocked">
-          <i v-if="!isLocked" class="fa fa-trash-o chip-action" :class="{'show-icon': showActionButtons}" v-on:click="removeThis(true)" @mouseover="removeHover = true" @mouseout="removeHover = false"></i>
+          <i v-if="!isLocked" class="fa fa-trash-o chip-action" :class="{'show-icon': showActionButtons}" v-on:click="removeThis(true)" @mouseover="removeHover = true" @mouseout="removeHover = false">
+            <tooltip-component :show-tooltip="removeHover" tooltip-text="Remove" translation="translatePhrase"></tooltip-component>
+          </i>
         </span>
       </div>
     </div>
