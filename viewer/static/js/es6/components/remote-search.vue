@@ -153,6 +153,10 @@ export default {
     <textarea name="data" class="hidden">{{importJson}}</textarea>
   </form>
   <div class="panel panel-default remote-search-controls" v-show="databases.state == 'complete'">
+    <div class="search-type-button-container" v-if="settings.siteInfo.title === 'libris.kb.se'">
+      <a class="card-link" href="/">Libris</a>
+      <a class="card-link active">Andra källor</a>
+    </div>
     <form v-on:submit.prevent="searchRemote()">
       <label for="search">{{"Search" | translatePhrase}}</label>
       <div>
