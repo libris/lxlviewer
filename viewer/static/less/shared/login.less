@@ -5,16 +5,6 @@ body#usersettings {
     margin-top: 30px;
     margin-bottom: 100px;
 
-    ul {
-      list-style-type: none;
-      padding: 30px;
-    }
-
-    li:before {
-      content: "■";
-      color: @happy-muted-magenta;
-      margin-right: 10px;
-    }
 
     .btn-login {
       background-color: @orange;
@@ -51,6 +41,15 @@ body#usersettings {
       }
       .info-box {
         border-right:1px solid #dddddd;
+      }
+      ul {
+        list-style-type: none;
+        padding: 30px;
+        li:before {
+          content: "■";
+          color: @happy-muted-magenta;
+          margin-right: 10px;
+        }
       }
     }
     .option {
