@@ -10,10 +10,9 @@
 <div id="PagedCollectionApp">
   <div class="row">
     <div class="col-md-3">
-      <link-card v-if="initialized == true && widgetShouldBeShown('about-xl')" :image="copy['about-xl'].image" :header="copy['about-xl'].header" :text="copy['about-xl'].text" :link-text="copy['about-xl'].linkText" :link-url="copy['about-xl'].linkUrl"></link-card>
       <facet-controls v-if="initialized == true" :result="result"></facet-controls>
     </div>
-    <div class="col-md-9">
+    <div v-bind:class="{'col-md-12': isLandingPage, 'col-md-9': !isLandingPage }">
       <div class="search-type-button-container" v-if="initialized && isLibris">
         <div class="search-type-button active"><i class="fa fa-leaf"></i> Libris</div>
         <a href="/import"><div class="search-type-button"><i class="fa fa-globe"></i> Andra källor</div></a>
@@ -27,11 +26,12 @@
       site-title="${g.site.title}"
       ></dataset-observations>
       <div class="link-container">
+        <link-card v-if="initialized == true && widgetShouldBeShown('about-xl')" :image="copy['about-xl'].image" :header="copy['about-xl'].header" :text="copy['about-xl'].text" :link-text="copy['about-xl'].linkText" :link-url="copy['about-xl'].linkUrl"></link-card>
         <link-card v-if="initialized == true && widgetShouldBeShown('link-blog')" :image="copy['blog'].image" :header="copy['blog'].header" :text="copy['blog'].text" :link-text="copy['blog'].linkText" :link-url="copy['blog'].linkUrl"></link-card>
         <link-card v-if="initialized == true && widgetShouldBeShown('link-studies')" :image="copy['studies'].image" :header="copy['studies'].header" :text="copy['studies'].text" :link-text="copy['studies'].linkText" :link-url="copy['studies'].linkUrl"></link-card>
-        <link-card v-if="initialized == true && widgetShouldBeShown('link-instructional-videos')"  :image="copy['instructional-videos'].image" :header="copy['instructional-videos'].header" :text="copy['instructional-videos'].text" :link-text="copy['instructional-videos'].linkText" :link-url="copy['instructional-videos'].linkUrl"></link-card>
+        <link-card v-if="initialized == true && widgetShouldBeShown('link-supportforum')"  :image="copy['supportforum'].image" :header="copy['supportforum'].header" :text="copy['supportforum'].text" :link-text="copy['supportforum'].linkText" :link-url="copy['supportforum'].linkUrl"></link-card>
       </div>
-      <intro-component v-if="initialized == true && widgetShouldBeShown('intro-component')"></intro-component>
+      <intro-component v-if="initialized == true && widgetShouldBeShown('intro-component')" :video-url="copy['instructional-videos'].video" :header="copy['instructional-videos'].header" :text="copy['instructional-videos'].text" :link-text="copy['instructional-videos'].linkText" :link-url="copy['instructional-videos'].linkUrl"></intro-component>
     </div>
   </div>
   <help-component v-if="initialized == true" :open-all="true"></help-component>
