@@ -12,9 +12,12 @@
     "link-studies": {
       "forced": true
     },
+    "link-supportforum": {
+      "forced": true
+    },
     "intro-component": {
-      "forced": false,
-      "standard": false
+      "forced": true,
+      "standard": true
     }
   },
   "id.kb.se": {

@@ -11,8 +11,13 @@ export default {
     actions: {
     },
   },
-  props: {
-  },
+  props: [
+    "videoUrl",
+    "linkUrl",
+    "linkText",
+    "header",
+    "text",
+  ],
   data() {
     return {
       keyword: '',
@@ -36,15 +41,17 @@ export default {
 
 <template>
   <div class="panel panel-default intro-component">
-    <div v-if="settings.siteInfo.title == 'libris.kb.se'" class="libris-intro-video-container">
+    <div class="libris-intro-video-container">
       <div class="libris-intro-video">
-        <iframe src="https://www.youtube-nocookie.com/embed/n5NOBPmIEf8?rel=0&amp;showinfo=0&html5=1" frameborder="0" allowfullscreen></iframe>
+        <iframe :src="videoUrl" frameborder="0" allowfullscreen></iframe>
       </div>
     </div>
-    <div v-if="settings.siteInfo.title == 'libris.kb.se'" class="libris-intro-text">
-      <span class="header">Text</span>
-      <p>Lorizzle ipsum dolizzle nizzle amizzle, shiznit adipiscing elit. Nullam sapizzle velizzle, bow wow wow volutpizzle, suscipizzle check it out, mammasay mammasa mamma oo sa vel, arcu. Crunk eros. Pizzle izzle dolizzle bling bling turpis tempizzle.</p>
-      <a class="btn btn-primary">Gå till...</a>
+    <div class="libris-intro-text">
+      <div class="content">
+        <span class="header">{{ header }}</span>
+        <p>{{ text }}</p>
+      </div>
+      <a v-if="linkUrl" :href="linkUrl" class="card-link">{{ linkText }}</a>
     </div>
   </div>
 </template>
@@ -75,6 +82,9 @@ export default {
     padding: 1em;
     flex-basis: 45%;
     flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     .header {
       font-size: 1.1em;
       font-weight: bold;

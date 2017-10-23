@@ -52,7 +52,7 @@ export default {
 @import './_variables.less';
 
 .link-card {
-  flex-basis: 32%; // To parent
+  flex-basis: 24%; // To parent
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -64,18 +64,6 @@ export default {
     background-color: pink;
     margin-right:1em;
     margin-left:1em;
-  }
-  .card-link {
-    text-transform: uppercase;
-    font-weight: bold;
-    padding: 0.5em;
-    margin: 0.25em;
-    border-radius: 0.25em;
-    transition: background-color 0.5s ease;
-    &:hover {
-      background-color: fadeout(@brand-primary, 75%);
-      text-decoration: none;
-    }
   }
   img {
     width: 100%;
