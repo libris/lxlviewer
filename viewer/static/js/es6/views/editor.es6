@@ -371,7 +371,7 @@ export default class Editor extends View {
         doSaveRequest(requestMethod, obj, url, ETag) {
           requestMethod({ url, token: self.access_token, ETag }, obj).then((result) => {
             const postUrl = `${result.getResponseHeader('Location')}`;
-            httpUtil.get({ url: postUrl, accept: 'application/ld+json' }).then((getResult) => {
+            httpUtil.get({ url: `${postUrl}/data.jsonld`, accept: 'application/ld+json' }).then((getResult) => {
               const newData = RecordUtil.splitJson(getResult);
               if (Modernizr.history) {
                 this.$dispatch('new-editordata', newData);
