@@ -6,6 +6,7 @@ import * as VocabUtil from '../utils/vocab';
 import * as DisplayUtil from '../utils/display';
 import * as RecordUtil from '../utils/record';
 import * as StringUtil from '../utils/string';
+import * as DataUtil from '../utils/data';
 import Vue from 'vue';
 import ProcessedLabel from './processedlabel';
 import ItemEntity from './item-entity';
@@ -62,7 +63,8 @@ export default {
   },
   computed: {
     extractedItem() {
-      return RecordUtil.getObjectAsRecord(this.focusData);
+      const cleanObj = DataUtil.removeNullValues(this.focusData);
+      return RecordUtil.getObjectAsRecord(cleanObj);
     },
     isExtractable() {
       const classId = `${this.settings.vocabPfx}${this.item['@type']}`;
