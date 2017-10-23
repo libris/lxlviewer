@@ -128,20 +128,51 @@ footer {
   border: 0px solid @border-footer;
   z-index: 999;
   color: @text-footer;
-  text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.2);
-  text-transform: uppercase;
-  .navbar-formats {
-    text-shadow: none;
-    font-size: 14px;
+  box-shadow: @shadow-footer;
+  // text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.2);
+
+  .content-container {
+    display: flex;
+    justify-content: center;
+    .header {
+      font-weight: bold;
+    }
+    .item {
+      font-size: 14px;
+    }
+    > div {
+      display: flex;
+      padding: 0 1em;
+    }
+    .service-name {
+      flex: 20% 1 1;
+      align-items: center;      
+      flex-direction: column;
+      justify-content: center;
+      font-weight: bold;
+      > a {
+        text-align: center;
+      }
+    }
+    .link-list {
+      flex: 25% 2 2;
+      flex-direction: column;
+    }
+    .social-media {
+      flex: 20% 1 1;
+      flex-direction: column;
+      align-items: center;
+      a {
+        margin: 0 5px;
+      }
+    }
   }
   a {
     color: @text-footer;
-    text-transform:none;;
-  }
-  .brand-text {
-    text-transform: uppercase;
-    display: inline-block;
-    width: 14em;
+    text-transform:none;
+    &:hover {
+      color: @text-footer;
+    }
   }
   i {
     color: @text-alt-footer;
