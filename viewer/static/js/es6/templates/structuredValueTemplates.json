@@ -15,19 +15,20 @@
   },
   "Publication": {
     "@type": "Publication",
+    "place": [
+      {
+        "@type": "Place",
+        "label": [""]
+      }
+    ],
     "agent": [
       {
         "@type": "Agent",
         "label": [""]
       }
     ],
-    "date": [""],
-    "place": [
-      {
-        "@type": "Place",
-        "label": [""]
-      }
-    ]
+    "date": [""]
+
   },
   "extent": {
     "@type": "Extent",
