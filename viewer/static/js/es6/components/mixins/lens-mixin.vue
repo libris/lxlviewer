@@ -1,6 +1,7 @@
 <script>
 import * as DisplayUtil from '../../utils/display';
 import * as StringUtil from '../../utils/string';
+import * as _ from 'lodash';
 import { getVocabularyClasses } from '../../vuex/getters';
 
 export default {
@@ -28,8 +29,10 @@ export default {
   },
   computed: {
     getItemLabel() {
-      const label = this.getLabel(this.focusData);
-      return label;
+      // const label = this.getLabel(this.focusData);
+      const labelArray = [];
+      _.each(this.getChip, value => labelArray.push(value));
+      return labelArray.join(' • ');
     },
     getChip() {
       const chip = DisplayUtil.getChip(
