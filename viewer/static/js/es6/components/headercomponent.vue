@@ -52,9 +52,9 @@ export default {
     compactSummary() {
       let summary = [];
       _.each(this.getSummary, summaryArray => {
-        summary = summary.concat(summaryArray.map(obj => obj.value.join(' | ')));
+        summary = summary.concat(summaryArray.map(obj => obj.value.join(' • ')));
       });
-      return summary.join(' | ');
+      return summary.join(' • ');
     },
   },
   beforeDestroy() {
