@@ -164,7 +164,7 @@
     },
     "music-cd": {
       "label": "Musik-CD",
-      "description": "Aacr2 Ljudinspelning",
+      "description": "Ljudinspelning",
       "value": {
         "record": {
           "@type": "Record",
@@ -300,7 +300,7 @@
     },
     "handprinted": {
       "label": "Äldre tryck",
-      "description": "Aacr2",
+      "description": "",
       "value": {
         "record": {
           "@type": "Record",
@@ -844,7 +844,7 @@
     },
     "movie": {
       "label": "Spelfilm",
-      "description": "Aacr2 Videoinspelning",
+      "description": "Videoinspelning",
       "value": {
         "record": {
           "@type": "Record",
@@ -1233,7 +1233,7 @@
     },
     "videogame": {
       "label": "Tv-spel",
-      "description": "Aacr2 Multimedia",
+      "description": "Multimedia",
       "value": {
         "record": {
           "@type": "Record",
