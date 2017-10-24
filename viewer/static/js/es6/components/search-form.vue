@@ -51,11 +51,7 @@ export default {
       updateField() {
         const validTags = this.validSearchTags;
         if (this.currentIsTag) {
-          if (validTags.indexOf(this.currentField.value.split(':')[0]) > -1) {
-          this.currentField.class = 'searchtag valid';
-          } else {
-          this.currentField.class = 'searchtag invalid';
-          }
+            this.currentField.class = 'searchtag valid';
         } else {
             this.currentField.class = 'searchphrase';
         }
@@ -158,7 +154,8 @@ export default {
           return this.observations;
       },
       currentIsTag() {
-          return this.currentField.value.indexOf(':') > -1;
+          const value = this.currentField.value;
+          return value.indexOf(':') > -1 && this.validSearchTags.indexOf(value.split(':')[0]) > -1;
       },
       currentField() {
           return this.inputData.textInput[this.inputData.currentInput];
