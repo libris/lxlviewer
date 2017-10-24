@@ -87,13 +87,14 @@ export default {
     <!--<form method="POST" action="/edit">-->
       <!--<textarea id="copyItem" name="data" class="hidden">{{itemData | json}}</textarea>-->
       <button v-if="!hasHolding || checkingHolding" @click="previewHolding()" :disabled="disabled" :class=" {'disabled': disabled} ">
-        <!--<i v-if="!hasHolding && !checkingHolding" class="fa fa-plus"></i>-->
+        <i v-if="!hasHolding && !checkingHolding" class="fa fa-plus"></i>
         <i v-if="checkingHolding" class="fa fa-fw fa-circle-o-notch fa-spin"></i>
-        {{"Add holding" | translatePhrase}}
+        {{"Holding" | translatePhrase}}
+        <span>({{settings.userSettings.currentSigel}})</span>
       </button>
       <button v-if="hasHolding" :class="{'green': hasHolding, 'disabled': disabled}" :disabled="disabled" @click.prevent="fetchHolding()">
         <i v-if="hasHolding && !checkingHolding" class="fa fa-check"></i> 
-        {{"Has holding" | translatePhrase}}
+        {{"Holding" | translatePhrase}}
         <span>({{settings.userSettings.currentSigel}})</span>
       </button>
     <!--</form>-->
@@ -106,7 +107,6 @@ export default {
   button {
     height: 2.2em;
     border-radius: 3px;
-    font-weight: normal;
     color: @white;
     background: @holding-color;
     &.green {
