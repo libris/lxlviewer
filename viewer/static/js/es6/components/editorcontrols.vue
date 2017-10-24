@@ -292,7 +292,7 @@ export default {
               <li class="remove-option" v-show="!status.isNew && !status.isCopy">
                 <a @click="removePost">
                 <i class="fa fa-fw fa-trash" aria-hidden="true"></i>
-                {{"Remove" | translatePhrase}} post
+                {{"Remove" | translatePhrase}} {{ recordType | labelByLang }}
                 </a>
               </li>
             </ul>
