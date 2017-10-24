@@ -266,7 +266,7 @@ export default {
             <span class="caret"></span>
             </div>
             <ul class="dropdown-menu">
-              <li v-if="!status.inEdit">
+              <li v-if="!status.inEdit && !isSubClassOf('Item')">
                 <a @click="handleCopy">
                 <i class="fa fa-fw fa-files-o"></i>
                 {{ "Make copy" | translatePhrase }}
