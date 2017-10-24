@@ -31,7 +31,7 @@ export default {
       selectedType: '',
       addEmbedded: false,
       searchMade: false,
-      currentSearchTypes: this.allSearchTypes,
+      currentSearchTypes: [],
     };
   },
   vuex: {
@@ -87,13 +87,6 @@ export default {
       this.searchMade = false;
       let searchPhrase = value;
       if (value) {
-        if (value.indexOf(':') > -1) {
-          const searchParts = value.split(':');
-          searchPhrase = searchParts[1];
-          this.currentSearchTypes = [searchParts[0]];
-        } else {
-          this.currentSearchTypes = this.getRange;
-        }
         setTimeout(() => {
           if (this.keyword === value) {
             this.search(searchPhrase);
@@ -170,6 +163,7 @@ export default {
   ready() {
     this.addEmbedded = (this.valueList.length === 0 && this.onlyEmbedded);
     this.searchOpen = false;
+    this.currentSearchTypes = this.getRange;
   },
   methods: {
     setSearching() {
@@ -242,7 +236,7 @@ export default {
     search(keyword) {
       const self = this;
       self.searchResult = {};
-      this.getItems(keyword, this.currentSearchTypes).then((result) => {
+      this.getItems(keyword, [].concat(this.currentSearchTypes)).then((result) => {
         setTimeout(() => {
           self.searchResult = result;
           self.loading = false;
@@ -262,7 +256,6 @@ export default {
         }
       }
       searchUrl += '&_limit=40';
-      // console.log(searchUrl);
       return new Promise((resolve, reject) => {
         httpUtil.get({ url: searchUrl, accept: 'application/ld+json' }).then((response) => {
           resolve(response.items);
@@ -313,16 +306,17 @@ export default {
           <div class="search">
             <!--<input class="entity-search-keyword-input" v-model="keyword" @input="setSearching()"></input>-->
             <div class="input-container">
+              <select v-model="currentSearchTypes">
+                <option :value="getRange">{{"All types" | translatePhrase}}</option>
+                <option v-for="range in getFullRange" :value="[range.replace(settings.vocabPfx, '')]">{{range | labelByLang}}</option>
+              </select>
               <input
-                list="allowedTypes"
                 v-model="keyword"
                 @input="setSearching()"
                 class="entity-search-keyword-input"
+                autofocus
               >
             </div>
-            <datalist id="allowedTypes">
-              <option v-for="range in getFullRange" :value="`${range.replace(settings.vocabPfx, '')}:`">{{range | labelByLang}}:</option>
-            </datalist>
             <div class="range-info-container" v-if="getFullRange.length > 0" @mouseleave="rangeInfo = false">
               <i class="fa fa-info-circle" @mouseenter="rangeInfo = true"></i>
               <div class="range-info" v-if="rangeInfo">
@@ -434,11 +428,23 @@ export default {
           display: flex;
           align-items: center;
           .input-container {
-            padding: 0.2em 0.5em;
-            border: 2px solid #aaa;
+            display: flex;
+            border: 2px solid @brand-primary;
             border-radius: 0.2em;
-            background: #fff;
+            flex: 60% 0 0;
+            > select {
+              padding: 5px 5px 5px 0px;
+              border: 0px;
+              outline: none;
+              background: @brand-primary;
+              color: @white;
+              cursor: pointer;
+              font-weight: bold;
+            }
             > input {
+              background: #fff;
+              padding: 5px;
+              width: 100%;
               border: none;
               outline: none;
             }

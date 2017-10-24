@@ -30,7 +30,7 @@ export default {
       debounceTimer: 500,
       showHelp: false,
       searchMade: false,
-      currentSearchTypes: this.allSearchTypes,
+      currentSearchTypes: [],
     };
   },
   vuex: {
@@ -65,13 +65,6 @@ export default {
       this.searchMade = false;
       let searchPhrase = value;
       if (value) {
-        if (value.indexOf(':') > -1) {
-          const searchParts = value.split(':');
-          searchPhrase = searchParts[1];
-          this.currentSearchTypes = [searchParts[0]];
-        } else {
-          this.currentSearchTypes = this.getRange;
-        }
         setTimeout(() => {
           if (this.keyword === value) {
             this.search(searchPhrase);
@@ -107,6 +100,7 @@ export default {
     },
   },
   ready() {
+    this.currentSearchTypes = this.getRange;
   },
   methods: {
     setSearching() {
@@ -133,7 +127,7 @@ export default {
     search(keyword) {
       const self = this;
       self.searchResult = {};
-      this.getItems(keyword, this.currentSearchTypes).then((result) => {
+      this.getItems(keyword, [].concat(this.currentSearchTypes)).then((result) => {
         setTimeout(() => {
           self.searchResult = result;
           self.loading = false;
@@ -187,17 +181,17 @@ export default {
             <div class="search">
               <!--<input class="entity-search-keyword-input" v-model="keyword" @input="setSearching()"></input>-->
               <div class="input-container">
+                <select v-model="currentSearchTypes">
+                  <option :value="getRange">{{"All types" | translatePhrase}}</option>
+                  <option v-for="range in getFullRange" :value="[range.replace(settings.vocabPfx, '')]">{{range | labelByLang}}</option>
+                </select>
                 <input
-                  list="allowedTypes"
                   v-model="keyword"
                   @input="setSearching()"
                   class="entity-search-keyword-input"
                   autofocus
                 >
               </div>
-              <datalist id="allowedTypes">
-                <option v-for="range in getFullRange" :value="`${range.replace(settings.vocabPfx, '')}:`">{{range | labelByLang}}:</option>
-              </datalist>
               <div class="help-tooltip-container" @mouseleave="showHelp = false">
                 <i class="fa fa-question-circle-o" @mouseenter="showHelp = true"></i>
                 <div class="help-tooltip" v-if="showHelp">
@@ -334,12 +328,22 @@ export default {
             display: flex;
             align-items: center;
             .input-container {
-              padding: 0.2em 0.5em;
-              border: 2px solid #aaa;
+              display: flex;
+              border: 2px solid @brand-primary;
               border-radius: 0.2em;
-              background: #fff;
-              flex: 40% 0 0;
+              flex: 60% 0 0;
+              > select {
+                padding: 5px 5px 5px 0px;
+                border: 0px;
+                outline: none;
+                background: @brand-primary;
+                color: @white;
+                cursor: pointer;
+                font-weight: bold;
+              }
               > input {
+                background: #fff;
+                padding: 5px;
                 width: 100%;
                 border: none;
                 outline: none;
