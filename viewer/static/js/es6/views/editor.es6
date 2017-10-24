@@ -192,17 +192,17 @@ export default class Editor extends View {
           this.syncData(Object.assign({}, this.status.lastSavedData));
         },
         'new-editordata'(newData) {
+          this.syncData(newData);
           const atId = newData.record['@id'];
           if (!atId || atId === '_:TEMP_ID') {
             this.editItem();
-            history.replaceState(newData, 'unused', '/edit');
+            history.pushState(newData, 'unused', '/edit');
           } else {
             history.replaceState(newData, 'unused', `${atId}/edit`);
             self.vm.changeStatus('inEdit', false);
             self.vm.changeStatus('isNew', false);
             self.vm.changeStatus('isCopy', false);
           }
-          this.syncData(newData);
         },
       },
       watch: {

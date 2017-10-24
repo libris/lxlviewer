@@ -49,8 +49,8 @@ export default {
       HttpUtil.get({ url: this.holdingId[0], accept: 'application/ld+json' }).then((getResult) => {
         const newData = RecordUtil.splitJson(getResult);
         if (Modernizr.history) {
-          this.$dispatch('new-editordata', newData);
           history.pushState(newData, 'unused', `${this.holdingId[0]}/edit`);
+          this.$dispatch('new-editordata', newData);
         } else if (result.status === 201) {
           window.location = result.getResponseHeader('Location');
         } else {
@@ -64,7 +64,6 @@ export default {
     },
     previewHolding() {
       if (Modernizr.history) {
-        history.pushState(this.itemData, 'unused', '/edit');
         this.changeStatus('isNew', true);
         this.$dispatch('new-editordata', this.itemData);
       }
