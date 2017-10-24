@@ -386,7 +386,7 @@ export default {
       }
     }
     &.expanded {
-      max-height: 200vh;
+      max-height: 400vh;
       box-shadow: @shadow-chip-elevated;
     }
     &.removed {

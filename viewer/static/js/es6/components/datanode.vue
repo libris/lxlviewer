@@ -400,7 +400,7 @@ export default {
   outline: 2px solid transparent;
   transition: 6s ease;
   transition-property: outline, box-shadow;
-  max-height: 200vh;
+  max-height: 400vh;
   overflow-y: auto;
   opacity: 1;
   &.removed {
