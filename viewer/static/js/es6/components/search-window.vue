@@ -62,17 +62,7 @@ export default {
   },
   watch: {
     keyword(value) {
-      this.searchMade = false;
-      let searchPhrase = value;
-      if (value) {
-        setTimeout(() => {
-          if (this.keyword === value) {
-            this.search(searchPhrase);
-          }
-        }, this.debounceTimer);
-      } else {
-        this.searchResult = {};
-      }
+      this.handleChange(value);
     },
   },
   computed: {
@@ -103,6 +93,20 @@ export default {
     this.currentSearchTypes = this.getRange;
   },
   methods: {
+    handleChange(value) {
+      this.setSearching();
+      this.searchMade = false;
+      let searchPhrase = value;
+      if (value) {
+        setTimeout(() => {
+          if (this.keyword === value) {
+            this.search(searchPhrase);
+          }
+        }, this.debounceTimer);
+      } else {
+        this.searchResult = {};
+      }
+    },
     setSearching() {
       if (this.keyword === '') {
         this.loading = false;
@@ -181,16 +185,15 @@ export default {
             <div class="search">
               <!--<input class="entity-search-keyword-input" v-model="keyword" @input="setSearching()"></input>-->
               <div class="input-container">
-                <select v-model="currentSearchTypes">
-                  <option :value="getRange">{{"All types" | translatePhrase}}</option>
-                  <option v-for="range in getFullRange" :value="[range.replace(settings.vocabPfx, '')]">{{range | labelByLang}}</option>
-                </select>
                 <input
                   v-model="keyword"
-                  @input="setSearching()"
                   class="entity-search-keyword-input"
                   autofocus
                 >
+                <select v-model="currentSearchTypes" @change="handleChange(keyword)">
+                  <option :value="getRange">{{"All types" | translatePhrase}}</option>
+                  <option v-for="range in getFullRange" :value="[range.replace(settings.vocabPfx, '')]">{{range | labelByLang}}</option>
+                </select>
               </div>
               <div class="help-tooltip-container" @mouseleave="showHelp = false">
                 <i class="fa fa-question-circle-o" @mouseenter="showHelp = true"></i>
@@ -329,11 +332,15 @@ export default {
             align-items: center;
             .input-container {
               display: flex;
-              border: 2px solid @brand-primary;
+              border: 2px solid @gray;
               border-radius: 0.2em;
               flex: 60% 0 0;
+              background: @white;
+              padding: 0.5em;
               > select {
-                padding: 5px 5px 5px 0px;
+                padding: 0.2em 0.5em;
+                margin: 0 0.3em;
+                border-radius: 0.3em;
                 border: 0px;
                 outline: none;
                 background: @brand-primary;
@@ -342,8 +349,6 @@ export default {
                 font-weight: bold;
               }
               > input {
-                background: #fff;
-                padding: 5px;
                 width: 100%;
                 border: none;
                 outline: none;
