@@ -65,6 +65,7 @@ export default {
     previewHolding() {
       if (Modernizr.history) {
         history.pushState(this.itemData, 'unused', '/edit');
+        this.changeStatus('isNew', true);
         this.$dispatch('new-editordata', this.itemData);
       }
     }

@@ -185,6 +185,7 @@ export default class Editor extends View {
         },
         'duplicate-item': function() {
           this.doCreate(RecordUtil.getObjectAsRecord(this.editorData.mainEntity));
+          self.vm.changeStatus('isCopy', true);
         },
         'cancel-edit': function() {
           this.changeStatus('inEdit', false);
@@ -194,12 +195,13 @@ export default class Editor extends View {
           const atId = newData.record['@id'];
           if (!atId || atId === '_:TEMP_ID') {
             this.editItem();
+            history.replaceState(newData, 'unused', '/edit');
           } else {
+            history.replaceState(newData, 'unused', `${atId}/edit`);
             self.vm.changeStatus('inEdit', false);
             self.vm.changeStatus('isNew', false);
             self.vm.changeStatus('isCopy', false);
           }
-          history.replaceState(newData, 'unused', `${atId}/edit`);
           this.syncData(newData);
         },
       },
