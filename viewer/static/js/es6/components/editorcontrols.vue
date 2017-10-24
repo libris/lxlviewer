@@ -36,9 +36,6 @@ export default {
   mixins: [clickaway, LensMixin],
   ready() { // Ready method is deprecated in 2.0, switch to "mounted"
     this.$nextTick(() => {
-      if (!this.status.isNew && !this.status.isCopy) {
-        this.buildCopiedRecord();
-      }
     });
   },
   events: {
@@ -68,7 +65,6 @@ export default {
     },
     save() {
       this.changeSavedStatus('loading', true);
-      this.buildCopiedRecord();
       this.$dispatch('save-item');
     },
     edit() {
@@ -158,6 +154,7 @@ export default {
       });
     },
     handleCopy() {
+      this.buildCopiedRecord();
       if (Modernizr.history) {
         history.pushState(this.copyRecord, 'unused', '/edit');
         this.$dispatch('new-editordata', this.copyRecord);

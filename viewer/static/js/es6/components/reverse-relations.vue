@@ -61,6 +61,9 @@ export default {
     recordType() {
       return VocabUtil.getRecordType(this.editorData.mainEntity['@type'], this.vocab, this.settings);
     },
+    recordId() {
+      return this.editorData.record['@id'];
+    }
   },
   events: {
     'set-checking-relations': function(newVal) {
@@ -72,6 +75,14 @@ export default {
     'instance-list-button': InstanceListButton,
   },
   watch: {
+    recordId(newVal) {
+      if (newVal !== '_:TEMP_ID') {
+        this.getRelationsInfo();
+      } else {
+        this.numberOfRelations = 0;
+        this.relationInfo = [];
+      }
+    },
   },
   ready() { // Ready method is deprecated in 2.0, switch to "mounted"
     this.$nextTick(() => {
