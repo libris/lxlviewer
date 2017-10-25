@@ -168,7 +168,6 @@ export default class PagedCollection extends View {
         this.loadDisplayDefs(self.display);
         this.result = self.dataIn;
         document.title = `${StringUtil.getUiPhraseByLang('Search', this.settings.language)} - ${this.settings.siteInfo.title}`;
-        this.initialized = true;
         if (Modernizr.history) {
           history.replaceState(this.result, 'unused');
           history.scrollRestoration = 'manual';
@@ -187,6 +186,7 @@ export default class PagedCollection extends View {
           };
         }
         this.changeResultListStatus('loading', false);
+        LayoutUtil.showPage(this);
       },
       components: {
         'main-search-field': MainSearchField,

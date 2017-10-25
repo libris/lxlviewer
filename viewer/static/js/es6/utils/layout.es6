@@ -103,3 +103,9 @@ export function scrollTo(position, duration = 200, easing = 'linear', callback) 
   }
   scroll();
 }
+
+export function showPage(vueInstance) {
+  setTimeout(() => {
+    vueInstance.initialized = true;
+  }, 0);
+}

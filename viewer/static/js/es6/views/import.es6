@@ -107,7 +107,7 @@ export default class Import extends View {
         this.loadVocab(self.vocab);
         this.loadVocabMap(self.vocabMap);
         this.loadDisplayDefs(self.display);
-        this.initialized = true;
+        LayoutUtil.showPage(this);
         document.title = `${StringUtil.getUiPhraseByLang('Import', this.settings.language)} - ${this.settings.siteInfo.title}`;
       },
     });

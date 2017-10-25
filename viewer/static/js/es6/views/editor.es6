@@ -53,9 +53,9 @@ export default class Editor extends View {
       this.dataIn = textData;
     }
 
-    $('#loadingText .fa-warning').hide();
-    const loadingStr = `${StringUtil.getUiPhraseByLang("Loading", self.settings.language)} ${StringUtil.getUiPhraseByLang("Post", self.settings.language).toLowerCase()}`;
-    $('#loadingText .mainStatus').text(loadingStr);
+    // $('#loadingText .fa-warning').hide();
+    // const loadingStr = `${StringUtil.getUiPhraseByLang("Loading", self.settings.language)} ${StringUtil.getUiPhraseByLang("Post", self.settings.language).toLowerCase()}`;
+    // $('#loadingText .mainStatus').text(loadingStr);
     // $('#loadingText .status').text('Hämtar vokabulär');
     VocabUtil.getVocab().then((vocab) => {
       self.vocabMap = new Map(vocab['@graph'].map((entry) => [entry['@id'], entry]));
@@ -256,11 +256,11 @@ export default class Editor extends View {
         },
       },
       methods: {
-        showEditor() {
-          $('#loadingText').fadeOut('fast', function() {
-            $('#editorApp').fadeIn();
-          });
-        },
+        // showEditor() {
+        //   $('#loadingText').fadeOut('fast', function() {
+        //     $('#editorApp').fadeIn();
+        //   });
+        // },
         showHelp() {
           this.$dispatch('show-help', '');
         },
@@ -410,7 +410,6 @@ export default class Editor extends View {
         this.loadDisplayDefs(self.display);
         this.syncData(self.dataIn);
         this.changeStatus('lastSavedData', Object.assign({}, self.dataIn));
-        this.initialized = true;
         this.changeStatus('keybindState', 'overview');
         this.changeStatus('isNew', false);
         this.updateDocumentTitle(this.entityTitle);
@@ -433,8 +432,8 @@ export default class Editor extends View {
             return false;
           };
         }
-
-        this.showEditor();
+        LayoutUtil.showPage(this);
+        // this.showEditor();
       },
       components: {
         'form-component': FormComponent,
