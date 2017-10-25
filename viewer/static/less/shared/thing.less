@@ -5,6 +5,13 @@
 @width-step-1: 645px;
 @width-step-2: 440px;
 /********/
+#page-content-wrapper {
+  opacity: 0;
+  transition: opacity ease-out 0.2s;
+  &.show-content {
+    opacity: 1;
+  }
+}
 
 div.thing {
   width: 100%;

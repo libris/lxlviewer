@@ -71,7 +71,7 @@ export default class UserSettings extends View {
       ready() {
         this.changeSettings(self.settings);
         document.title = `${StringUtil.getUiPhraseByLang('Settings', this.settings.userSettings.language)} - ${this.settings.siteInfo.title}`;
-        this.initialized = true;
+        LayoutUtil.showPage(this);
       },
       components: {
         'help-component': HelpComponent,
