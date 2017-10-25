@@ -53,6 +53,9 @@ export default {
     },
   },
   methods: {
+    formControl(control) {
+      this.$dispatch('form-control', control);
+    },
     toggleEditorFocus() {
       if (this.status.editorFocus === 'record') {
         this.changeStatus('editorFocus', 'mainEntity');
@@ -263,6 +266,18 @@ export default {
             <span class="caret"></span>
             </div>
             <ul class="dropdown-menu">
+              <li>
+                <a @click="formControl('expandAll')">
+                <i class="fa fa-fw fa-expand" aria-hidden="true"></i>
+                {{"Expand all" | translatePhrase}}
+                </a>
+              </li>
+              <li>
+                <a @click="formControl('collapseAll')">
+                <i class="fa fa-fw fa-compress" aria-hidden="true"></i>
+                {{"Collapse all" | translatePhrase}}
+                </a>
+              </li>
               <li v-if="!status.inEdit && !isSubClassOf('Item')">
                 <a @click="handleCopy">
                 <i class="fa fa-fw fa-files-o"></i>

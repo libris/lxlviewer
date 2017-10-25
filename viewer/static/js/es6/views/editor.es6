@@ -204,6 +204,13 @@ export default class Editor extends View {
             self.vm.changeStatus('isCopy', false);
           }
         },
+        'form-control'(control) {
+          if (control === 'expandAll') {
+            this.$broadcast('expand-item');
+          } else if (control === 'collapseAll') {
+            this.$broadcast('collapse-item');
+          }
+        },
       },
       watch: {
         copyId(value, oldval) {
