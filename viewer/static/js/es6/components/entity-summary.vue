@@ -128,6 +128,9 @@ export default {
       display: block;
       font-weight: bold;
       margin-bottom: -0.4em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     max-width: 70%;
     padding: 0px 3px;
