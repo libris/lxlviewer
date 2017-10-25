@@ -110,7 +110,6 @@ export default {
 <style lang="less">
 @import './_variables.less';
 .entity-summary {
-  width: 100%;
   font-size: 12px;
   display: flex;
   flex-wrap: wrap;
