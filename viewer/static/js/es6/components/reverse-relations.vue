@@ -100,7 +100,7 @@ export default {
     </div>
     <div v-if="recordType === 'Instance'">
       <div class="relations-number">
-        <i class="fa fa-home" aria-hidden="true"></i>
+        <i class="fa fa-university" aria-hidden="true"></i>
         {{ "Libraries" | translatePhrase }}: {{numberOfRelations}}
       </div>
       <create-item-button :disabled="status.inEdit" :has-holding="hasRelation" :checking-holding="checkingRelations" :holding-id="relationPath"></create-item-button>
