@@ -12,6 +12,7 @@ const state = {
     data: {},
   },
   vocab: {},
+  context: {},
   vocabClasses: [],
   vocabProperties: [],
   forcedListTerms: [],
@@ -85,6 +86,9 @@ const mutations = {
   },
   LOADVOCABMAP (state, data) {
     state.vocab = data;
+  },
+  LOADCONTEXT (state, data) {
+    state.context = data;
   },
   LOADFORCEDLISTTERMS(state, data) {
     state.forcedListTerms = data;

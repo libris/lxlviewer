@@ -23,8 +23,8 @@ import EditorControls from '../components/editorcontrols';
 import HeaderComponent from '../components/headercomponent';
 import Notification from '../components/notification';
 import ReverseRelations from '../components/reverse-relations';
-import { getSettings, getVocabulary, getVocabularyClasses, getVocabularyProperties, getDisplayDefinitions, getEditorData, getStatus, getKeybindState } from '../vuex/getters';
-import { changeSettings, changeNotification, loadVocab, loadVocabMap, loadForcedListTerms, loadDisplayDefs, syncData, changeSavedStatus, changeStatus } from '../vuex/actions';
+import { getSettings, getVocabulary, getContext, getVocabularyClasses, getVocabularyProperties, getDisplayDefinitions, getEditorData, getStatus, getKeybindState } from '../vuex/getters';
+import { changeSettings, changeNotification, loadVocab, loadContext, loadVocabMap, loadForcedListTerms, loadDisplayDefs, syncData, changeSavedStatus, changeStatus } from '../vuex/actions';
 
 function showError(error) {
   $('#loadingText .fa-circle-o-notch').fadeOut('fast', () => {
@@ -65,7 +65,12 @@ export default class Editor extends View {
         self.display = display;
         VocabUtil.getForcedListTerms().then((result) => {
           self.forcedListTerms = result;
-          self.initVue();
+          VocabUtil.getContext().then((context) => {
+            self.context = context['@context'];
+            self.initVue();
+          }, (error) => {
+            showError(error);
+          });
         }, (error) => {
           showError(error);
         });
@@ -103,6 +108,7 @@ export default class Editor extends View {
         actions: {
           syncData,
           loadVocab,
+          loadContext,
           loadVocabMap,
           loadForcedListTerms,
           loadDisplayDefs,
@@ -112,6 +118,7 @@ export default class Editor extends View {
           changeNotification,
         },
         getters: {
+          context: getContext,
           settings: getSettings,
           editorData: getEditorData,
           vocab: getVocabulary,
@@ -405,6 +412,7 @@ export default class Editor extends View {
       ready() {
         this.changeSettings(self.settings);
         this.loadVocab(self.vocab);
+        this.loadContext(self.context);
         this.loadVocabMap(self.vocabMap);
         this.loadForcedListTerms(self.forcedListTerms);
         this.loadDisplayDefs(self.display);

@@ -10,13 +10,14 @@ import ItemEnumeration from './item-enumeration';
 import ItemValue from './item-value';
 import ItemLocal from './item-local';
 import ItemError from './item-error';
+import ItemVocab from './item-vocab';
 import TooltipComponent from './tooltip-component';
 import { mixin as clickaway } from 'vue-clickaway';
 import * as VocabUtil from '../utils/vocab';
 import * as LayoutUtil from '../utils/layout';
 import * as MathUtil from '../utils/math';
 import LodashProxiesMixin from './mixins/lodash-proxies-mixin';
-import { getVocabulary, getVocabularyProperties, getForcedListTerms, getSettings, getStatus, getEditorData } from '../vuex/getters';
+import { getVocabulary, getVocabularyProperties, getForcedListTerms, getSettings, getContext, getStatus, getEditorData } from '../vuex/getters';
 import { changeStatus } from '../vuex/actions';
 
 export default {
@@ -51,6 +52,7 @@ export default {
       changeStatus,
     },
     getters: {
+      context: getContext,
       vocab: getVocabulary,
       vocabProperties: getVocabularyProperties,
       forcedListTerms: getForcedListTerms,
@@ -65,6 +67,7 @@ export default {
     'item-enumeration': ItemEnumeration,
     'item-local': ItemLocal,
     'item-error': ItemError,
+    'item-vocab': ItemVocab,
     'entity-adder': EntityAdder,
     'tooltip-component': TooltipComponent,
   },
@@ -280,6 +283,9 @@ export default {
       if (this.isPlainObject(o) && !o.hasOwnProperty('@id') && !o.hasOwnProperty('@type')) {
         return 'error';
       }
+      if (VocabUtil.hasValuesInVocab(this.key, this.context)) {
+        return 'vocab';
+      }
       if (this.hasRescriction) {
         return 'enumeration';
       }
@@ -366,6 +372,7 @@ export default {
     <ul v-if="isObjectArray">
       <li v-for="item in valueAsArray" :class="{ 'isChip': isChip(item)}" track-by="_uid">
         <item-error v-if="getDatatype(item) == 'error'" :item="item"></item-error>
+        <item-vocab v-if="getDatatype(item) == 'vocab'" :is-locked="locked" :key="key" :value="item" index="$index"></item-vocab>
         <item-enumeration v-if="getDatatype(item) == 'enumeration'" :is-locked="locked" :entity-type="entityType" :possible-values="possibleValues" :expanded="isExpandedType" :value="item" :key="key" :index="$index" :show-action-buttons="showActionButtons"></item-enumeration>
         <item-entity v-if="getDatatype(item) == 'entity'" :is-locked="locked" :expanded="isExpandedType" :item="item" :key="key" :index="$index"></item-entity>
         <item-local v-if="getDatatype(item) == 'local'" :is-locked="locked" :is-expanded-type="isExpandedType" :item="item" :key="key" :index="$index" :parent-path="getPath" :in-array="valueIsArray" :show-action-buttons="showActionButtons"></item-local>
@@ -373,6 +380,7 @@ export default {
     </ul>
     <ul v-if="!isObjectArray">
       <li v-for="item in valueAsArray" :class="{ 'isChip': isChip(item)}" track-by="$index">
+        <item-vocab v-if="getDatatype(item) == 'vocab'" :is-locked="locked" :key="key" :value="item" index="$index"></item-vocab>
         <item-value v-if="getDatatype(item) == 'value'" :is-removable="!hasSingleValue" :is-locked="locked" :value="item" :key="key" :index="$index" :show-action-buttons="showActionButtons"></item-value>
       </li>
     </ul>

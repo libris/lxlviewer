@@ -11,6 +11,16 @@ export function getVocab() {
   });
 }
 
+export function getContext() {
+  return new Promise((resolve, reject) => {
+    httpUtil.getResourceFromCache('/context.jsonld').then((result) => {
+      resolve(result);
+    }, (error) => {
+      reject(error);
+    });
+  });
+}
+
 export function getForcedListTerms() {
   return new Promise((resolve, reject) => {
     httpUtil.getResourceFromCache('/sys/forcedsetterms.json').then((result) => {
@@ -37,11 +47,11 @@ export function getRecordType(mainEntityType, vocab, settings) {
   throw new Error(`Could not determine baseclass for this record. Connection is missing in vocab for class "${mainEntityType}".`);
 }
 
-export function getTermByType(type, vocab) {
-  if (!vocab || typeof vocab === 'undefined') {
+export function getTermByType(type, list) {
+  if (!list || typeof list === 'undefined') {
     throw new Error('getTermByType was called without a vocabulary.');
   }
-  const termList = _.filter(vocab, (term) => {
+  const termList = _.filter(list, (term) => {
     if (_.isArray(term['@type'])) {
       return term['@type'].indexOf(type) > -1;
     } else {
@@ -313,6 +323,15 @@ export function getBaseClassesFromArray(typeArray, vocab, vocabPfx) {
   classes = _.uniq(classes);
   // console.log("getBaseClassesFromArray("+JSON.stringify(typeArray)+") ->", JSON.stringify(classes));
   return classes;
+}
+
+export function hasValuesInVocab(propertyId, context) {
+  if (context[1].hasOwnProperty(propertyId)) {
+    if (context[1][propertyId]['@type'] === '@vocab') {
+      return true;
+    }
+  }
+  return false;
 }
 
 export function isSubClassOf(classId, baseClassId, vocab, vocabPfx) {
