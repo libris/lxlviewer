@@ -24,6 +24,7 @@ export default {
     filterParam: '',
     useSubmit: false,
     formDataSupported: false,
+    isLandingPage: false,
   },
   data() {
     return {
@@ -197,7 +198,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div :class="{'is-landing-page': isLandingPage}">
     <div class="panel panel-default search-controls">
       <div class="search-type-button-container" v-if="settings.siteInfo.title === 'libris.kb.se'">
         <a class="card-link active">Libris</a>
@@ -246,7 +247,10 @@ export default {
 
 <style>
 .search-type-button-container {
-  margin: 0.5em;
+  margin: 1.5em 0 1em;
+}
+.is-landing-page {
+  margin-top: 20vh;
 }
 
 </style>
