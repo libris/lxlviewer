@@ -103,13 +103,6 @@ export function getTermObject(term, vocab, vocabPfx) {
   return _class;
 }
 
-export function getTermsByType(type, vocab, vocabPfx) {
-  if (!vocab || typeof vocab === 'undefined') {
-    throw new Error('getTermsByType was called without a vocabulary.');
-  }
-  return vocab.get(`${vocabPfx}${type}`);
-}
-
 export function getPropertyTypes(propertyId, vocab, vocabPfx) {
   if (propertyId.indexOf('@') !== -1) {
     return [];
