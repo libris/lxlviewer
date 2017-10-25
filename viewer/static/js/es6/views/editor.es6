@@ -348,7 +348,6 @@ export default class Editor extends View {
           return 'auth';
         },
         saveItem() {
-          const inputData = JSON.parse(document.getElementById('data').innerText);
           const ETag = this.editorData.record.modified;
           const RecordId = this.editorData.record['@id'];
           const obj = DataUtil.getMergedItems(
