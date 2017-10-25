@@ -403,7 +403,13 @@ export function getEnumerationKeys(entityType, property, vocab, vocabPfx) {
         if (subClassObject.hasOwnProperty('@type') && subClassObject['@type'] === 'Restriction') {
           if (subClassObject.onProperty['@id'] === `${vocabPfx}${property}`) {
             if (subClassObject.hasOwnProperty('someValuesFrom')) {
-              result = [subClassObject.someValuesFrom['@id']];
+              if (_.isArray(subClassObject.someValuesFrom)) {
+                _.each(subClassObject.someValuesFrom, (list) => {
+                  result.push(list['@id']);
+                });
+              } else {
+                result = [subClassObject.someValuesFrom['@id']];
+              }
             }
           }
         }
