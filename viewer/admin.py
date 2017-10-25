@@ -29,7 +29,7 @@ class User(UserMixin):
         return '<User %r>' % (self.username)
 
     def get(self):
-        return { "username": self.username, "authorization": self.authorization, "access_token": self.get_access_token() }
+        return { "username": self.username, "authorization": self.authorization, "access_token": self.get_access_token(), "email_hash": self.get_email_hash() }
 
     def get_as_json(self):
         return json.dumps(self.get())
@@ -40,9 +40,12 @@ class User(UserMixin):
     def get_username(self):
         return self.get_id()
 
+    def get_email_hash(self):
+        return hashlib.md5(str(self.email).lower().encode()).hexdigest()
+
     def get_gravatar_url(self, size=32):
         hashed_email = hashlib.md5(str(self.email).lower().encode()).hexdigest()
-        return 'https://www.gravatar.com/avatar/{}?d=mm&s={}'.format(hashed_email, size)
+        return 'https://www.gravatar.com/avatar/{}?d=mm&s={}'.format(self.get_email_hash(), size)
 
     def get_authorization(self):
         return self.authorization
