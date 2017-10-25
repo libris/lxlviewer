@@ -219,7 +219,7 @@ export default {
 </script>
 
 <template>
-  <div class="container editor-container" id="editor-container">
+  <div class="editor-container" id="editor-container">
     <div class="editor-controls">
       <div class="admin-info">
         <div class="actions">

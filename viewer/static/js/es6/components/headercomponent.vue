@@ -78,8 +78,10 @@ export default {
       <entity-summary :focus-data="focusData" :add-link="false" :lines="full ? 6 : 3"></entity-summary>
     </div>
     <reverse-relations v-if="!status.isNew"></reverse-relations>
-    <div class="container compact-header" :class="{ 'show-compact': showCompact }">
+    <div class="container">
+      <div class="compact-header" :class="{ 'show-compact': showCompact }">
       {{ compactSummary }}
+      </div>
     </div>
   </div>
 </template>
@@ -105,25 +107,28 @@ export default {
       }
     }
   }
-  .compact-header {
+  .container {
     position: fixed;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    background: @bib-color;
-    color: @white;
-    padding: 0.5em;
     z-index: @header-z;
     top: 0;
-    box-shadow: 0 2px 5px rgba(0,0,0,.26);
-    max-height: 0px;
-    opacity: 0;
-    transition: all 0.3s ease;
-    line-height: 0;
-    &.show-compact {
-      max-height: 55px;
-      opacity: 1;
-      line-height: inherit;
+    padding: 0px 30px 0px 0px;
+    .compact-header {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      background: @bib-color;
+      color: @white;
+      padding: 0.5em;
+      box-shadow: 0 2px 5px rgba(0,0,0,.26);
+      max-height: 0px;
+      opacity: 0;
+      transition: all 0.3s ease;
+      line-height: 0;
+      &.show-compact {
+        max-height: 55px;
+        opacity: 1;
+        line-height: inherit;
+      }
     }
   }
 }
