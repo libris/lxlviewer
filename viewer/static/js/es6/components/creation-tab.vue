@@ -50,21 +50,31 @@ export default {
   padding-left: 0.5em;
   font-size: 1em;
   > div {
-    padding: 0 0.5em;
-    color: @gray-light;
-    &.active {
-      color: @brand-primary;
+    color: @brand-primary;
+    transition: background 0.2s ease;
+    > label {
+      padding: 0.4em 1em;
+      width: 100%;
+      text-align: center;
+      text-transform: uppercase;
+      margin: 0;
+      cursor: pointer;
+      > input {
+        display: none;
+      }
+    }
+    &:hover {
       > label {
         text-decoration: underline;
       }
     }
-    > label {
-      cursor: pointer;
-      width: 100%;
-      text-align: center;
-      text-transform: uppercase;
-      > input {
-        display: none;
+    &.active {
+      color: @white;
+      background: @brand-primary;
+      &:hover {
+        > label {
+          text-decoration: none;
+        }
       }
     }
   }
