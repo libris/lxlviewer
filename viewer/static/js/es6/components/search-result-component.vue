@@ -61,9 +61,9 @@ export default {
       <span v-if="!status.resultList.error" class="status">{{"Fetching results" | translatePhrase}}</span>
       <span v-if="status.resultList.error" class="error">{{status.resultList.info}}</span>
     </div>
-    <search-pagination v-if="!status.resultList.loading && !status.resultList.error" :page-data="paginationData" :show-details="true" :has-pagination="hasPagination"></search-pagination>
+    <search-pagination v-if="!status.resultList.loading && !status.resultList.error" :page-data="paginationData" :show-details="true" :has-pagination="hasPagination" :show-pages="false"></search-pagination>
     <result-list v-if="!status.resultList.loading && !status.resultList.error" :results="result.items" :import-data="importData" :compact="settings.userSettings.resultListType === 'compact'"></result-list>
-    <search-pagination v-if="!status.resultList.loading && !status.resultList.error && hasPagination" :has-pagination="hasPagination" :page-data="paginationData" :show-details="false"></search-pagination>
+    <search-pagination v-if="!status.resultList.loading && !status.resultList.error && hasPagination" :has-pagination="hasPagination" :page-data="paginationData" :show-details="false" :show-pages="true"></search-pagination>
   </div>
 </template>
 

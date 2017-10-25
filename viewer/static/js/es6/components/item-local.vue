@@ -285,9 +285,11 @@ export default {
     },
     'expand-item'() {
       this.expand();
+      return true;
     },
     'collapse-item'() {
       this.collapse();
+      return true;
     },
     'extract-item'() {
       this.extracting = true;

@@ -202,8 +202,9 @@ export default {
     show() {
       LayoutUtil.scrollLock(true);
       this.active = true;
-      setTimeout(() => { // TODO: Solve this by setting focus after window has been rendered.
-        document.getElementById('test').focus();
+      setTimeout(() => {
+        const input = document.getElementById('field-adder-input');
+        input.focus();
         const fieldsWindow = document.getElementById('fields-window');
         fieldsWindow.addEventListener('scroll', this.toggleWindowFade);
       }, 1);
@@ -256,7 +257,7 @@ export default {
             <i v-on:click="hide" class="fa fa-close"></i>
           </span>
           <span class="filter">
-            {{ "Filter by" | translatePhrase }} <input id="test" class="filterInput mousetrap" @input="resetSelectIndex()" type="text" v-model="filterKey"></input>
+            {{ "Filter by" | translatePhrase }} <input id="field-adder-input" class="filterInput mousetrap" @input="resetSelectIndex()" type="text" v-model="filterKey"></input>
             <span class="filterInfo">{{ "Showing" | translatePhrase }} {{ filteredResults.length }} {{ "of" | translatePhrase }} {{allowed ? allowed.length : '0'}} {{ "total" | translatePhrase }}</span>
           </span>
         </div>

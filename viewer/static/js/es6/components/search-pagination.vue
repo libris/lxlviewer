@@ -20,6 +20,7 @@ export default {
   props: {
     pageData: {},
     showDetails: false,
+    showPages: false,
     hasPagination: true,
   },
   data() {
@@ -139,18 +140,18 @@ export default {
 <template>
   <div class="panel panel-default result-controls" v-if="!(!showDetails && pageData.totalItems < limit)">
     <div class="search-details" v-if="showDetails">
-      <span class="pull-left">Sökning på <strong>{{ queryText }}</strong>
+      <span>Sökning på <strong>{{ queryText }}</strong>
         <span v-if="filters.length > 0">
         (filtrerat på <span v-for="filter in filters" track-by="$index"><strong>{{filter.label}}{{ $index === filters.length - 1 ? '' : ', ' }}</strong></span>)
       </span>
       gav <strong>{{pageData.totalItems}}</strong> träffar.</span>
-      <span v-if="pageData.totalItems > limit" class="pull-right">Visar <strong>{{ limit }}</strong> träffar per sida.</span>
+      <span v-if="pageData.totalItems > limit">Visar <strong>{{ limit }}</strong> träffar per sida.</span>
     </div>
     <div class="list-type-buttons" v-if="showDetails">
       <button v-on:click="setFull()" v-bind:class="{'active': settings.userSettings.resultListType === 'detailed'}"><i class="fa fa-th-list"></i></button>
       <button v-on:click="setCompact()" v-bind:class="{'active': settings.userSettings.resultListType === 'compact'}"><i class="fa fa-list"></i></button>
     </div>
-    <div v-if="hasPagination" class="search-buttons">
+    <div v-if="hasPagination && showPages" class="search-buttons">
       <nav>
         <ul class="pagination">
           <li v-bind:class="{ 'disabled': !pageData.first || pageData['@id'] === pageData.first['@id'] }">
@@ -191,13 +192,15 @@ export default {
 @buttoncolor: darken(@neutral-color, 10%);
 
 .search-details {
-  height: 1em;
-  margin-bottom: 1em;
+  display: flex;
+  justify-content: space-between;
 }
 .list-type-buttons {
-  float: right;
+  display: flex;
+  flex-direction: row-reverse;
   button {
     background-color: @buttoncolor;
+    margin: 0 0 0 0.3em;
     &.active {
       background-color: @brand-primary;
       i {

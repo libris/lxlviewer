@@ -122,7 +122,7 @@ export default {
     .categorization {
       color: #8a8a8a;
       flex-basis: 85%;
-      padding: 3px;
+      padding: 3px 3px 0px 0px;
       flex-grow: 2;
       display: block;
       font-weight: bold;
@@ -132,7 +132,7 @@ export default {
       text-overflow: ellipsis;
     }
     max-width: 70%;
-    padding: 0px 3px;
+    padding: 3px 0px 0px 9px;
     a {
       color: @brand-primary;
       &.blue-link {
@@ -156,8 +156,9 @@ export default {
   }
   .identifiers {
     text-align: right;
-    padding: 0px 0.5em;
+    padding: 5px 8px 0px 0px;
     font-weight: bold;
+    max-width: 30%;
     ul {
       list-style-type: none;
       padding: 0px;
@@ -165,7 +166,7 @@ export default {
   }
   .sub {
     flex-basis: 100%;
-    padding: 3px;
+    padding: 3px 9px;
     background-color: rgba(0, 0, 0, 0.01);
     border: solid rgba(0, 0, 0, 0.1);
     border-width: 1px 0px 0px 0px;

@@ -641,7 +641,7 @@ export default {
     >.value {
       display: inline-block;
       flex: 1 1 100%;
-      max-height: 50vh;
+      max-height: 400vh;
       overflow-y: auto;
       > ul {
         width: 100%;
