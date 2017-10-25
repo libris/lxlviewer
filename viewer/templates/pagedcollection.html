@@ -13,8 +13,7 @@
       <facet-controls v-if="initialized == true" :result="result"></facet-controls>
     </div>
     <div v-bind:class="{'col-md-12': isLandingPage, 'col-md-9': !isLandingPage }">
-      <h3 class="landing-page-header" v-if="initialized == true && isLandingPage">Sök</h3>
-      <search-form v-if="initialized == true" :result="result" site-title="${g.site.title}" filter-param="${g.site.filter_param}"></search-form>
+      <search-form v-if="initialized == true" :result="result" site-title="${g.site.title}" filter-param="${g.site.filter_param}" :is-landing-page="isLandingPage"></search-form>
       <search-result-component :result="result" v-if="(initialized == true && result.totalItems > -1) || status.resultList.loading"></search-result-component>
       <dataset-observations
       v-if="initialized == true && !result.totalItems && widgetShouldBeShown('dataset-observations')"
@@ -22,7 +21,7 @@
       :stats-index="${g.site.statsindex}"
       site-title="${g.site.title}"
       ></dataset-observations>
-      <h3 class="landing-page-header" v-if="initialized == true && isLandingPage && isLibris">Introduktionshjälp i XL</h3>
+      <!-- <h3 class="landing-page-header" v-if="initialized == true && isLandingPage && isLibris">Introduktionshjälp i XL</h3> -->
       <div class="link-container">
         <link-card v-if="initialized == true && widgetShouldBeShown('about-xl')" :image="copy['about-xl'].image" :header="copy['about-xl'].header" :text="copy['about-xl'].text" :link-text="copy['about-xl'].linkText" :link-url="copy['about-xl'].linkUrl"></link-card>
         <link-card v-if="initialized == true && widgetShouldBeShown('link-blog')" :image="copy['blog'].image" :header="copy['blog'].header" :text="copy['blog'].text" :link-text="copy['blog'].linkText" :link-url="copy['blog'].linkUrl"></link-card>

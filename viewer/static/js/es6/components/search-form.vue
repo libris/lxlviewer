@@ -24,6 +24,7 @@ export default {
     filterParam: '',
     useSubmit: false,
     formDataSupported: false,
+    isLandingPage: false,
   },
   data() {
     return {
@@ -51,11 +52,7 @@ export default {
       updateField() {
         const validTags = this.validSearchTags;
         if (this.currentIsTag) {
-          if (validTags.indexOf(this.currentField.value.split(':')[0]) > -1) {
-          this.currentField.class = 'searchtag valid';
-          } else {
-          this.currentField.class = 'searchtag invalid';
-          }
+            this.currentField.class = 'searchtag valid';
         } else {
             this.currentField.class = 'searchphrase';
         }
@@ -158,7 +155,8 @@ export default {
           return this.observations;
       },
       currentIsTag() {
-          return this.currentField.value.indexOf(':') > -1;
+          const value = this.currentField.value;
+          return value.indexOf(':') > -1 && this.validSearchTags.indexOf(value.split(':')[0]) > -1;
       },
       currentField() {
           return this.inputData.textInput[this.inputData.currentInput];
@@ -200,7 +198,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div :class="{'is-landing-page': isLandingPage}">
     <div class="panel panel-default search-controls">
       <div class="search-type-button-container" v-if="settings.siteInfo.title === 'libris.kb.se'">
         <a class="card-link active">Libris</a>
@@ -249,7 +247,10 @@ export default {
 
 <style>
 .search-type-button-container {
-  margin: 0.5em;
+  margin: 1.5em 0 1em;
+}
+.is-landing-page {
+  margin-top: 20vh;
 }
 
 </style>

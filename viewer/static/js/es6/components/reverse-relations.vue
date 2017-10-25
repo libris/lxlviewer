@@ -61,6 +61,9 @@ export default {
     recordType() {
       return VocabUtil.getRecordType(this.editorData.mainEntity['@type'], this.vocab, this.settings);
     },
+    recordId() {
+      return this.editorData.record['@id'];
+    }
   },
   events: {
     'set-checking-relations': function(newVal) {
@@ -72,6 +75,14 @@ export default {
     'instance-list-button': InstanceListButton,
   },
   watch: {
+    recordId(newVal) {
+      if (newVal !== '_:TEMP_ID') {
+        this.getRelationsInfo();
+      } else {
+        this.numberOfRelations = 0;
+        this.relationInfo = [];
+      }
+    },
   },
   ready() { // Ready method is deprecated in 2.0, switch to "mounted"
     this.$nextTick(() => {
@@ -89,7 +100,7 @@ export default {
     </div>
     <div v-if="recordType === 'Instance'">
       <div class="relations-number">
-        <i class="fa fa-home" aria-hidden="true"></i>
+        <i class="fa fa-university" aria-hidden="true"></i>
         {{ "Libraries" | translatePhrase }}: {{numberOfRelations}}
       </div>
       <create-item-button :disabled="status.inEdit" :has-holding="hasRelation" :checking-holding="checkingRelations" :holding-id="relationPath"></create-item-button>

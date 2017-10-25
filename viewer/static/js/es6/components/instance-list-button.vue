@@ -104,7 +104,6 @@ export default {
   button {
     height: 2.2em;
     border-radius: 3px;
-    font-weight: normal;
     color: @white;
     background: @bib-color;
     &:hover {

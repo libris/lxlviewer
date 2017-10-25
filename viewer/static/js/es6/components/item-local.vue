@@ -197,7 +197,7 @@ export default {
             const mainEntity = RecordUtil.splitJson(recievedObj).mainEntity;
             this.$dispatch('add-item', mainEntity, this.index);
             this.changeNotification('color', 'green');
-            this.changeNotification('message', `${StringUtil.getUiPhraseByLang('Extraction was successful', this.settings.language)}`);
+            this.changeNotification('message', `${StringUtil.getUiPhraseByLang('Linking was successful', this.settings.language)}`);
             this.closeExtractDialog();
           }, (error) => {
             this.changeNotification('color', 'red');
@@ -386,7 +386,7 @@ export default {
       }
     }
     &.expanded {
-      max-height: 200vh;
+      max-height: 400vh;
       box-shadow: @shadow-chip-elevated;
     }
     &.removed {

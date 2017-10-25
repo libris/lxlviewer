@@ -30,7 +30,7 @@ export default {
       debounceTimer: 500,
       showHelp: false,
       searchMade: false,
-      currentSearchTypes: this.allSearchTypes,
+      currentSearchTypes: [],
     };
   },
   vuex: {
@@ -62,24 +62,7 @@ export default {
   },
   watch: {
     keyword(value) {
-      this.searchMade = false;
-      let searchPhrase = value;
-      if (value) {
-        if (value.indexOf(':') > -1) {
-          const searchParts = value.split(':');
-          searchPhrase = searchParts[1];
-          this.currentSearchTypes = [searchParts[0]];
-        } else {
-          this.currentSearchTypes = this.getRange;
-        }
-        setTimeout(() => {
-          if (this.keyword === value) {
-            this.search(searchPhrase);
-          }
-        }, this.debounceTimer);
-      } else {
-        this.searchResult = {};
-      }
+      this.handleChange(value);
     },
   },
   computed: {
@@ -107,8 +90,23 @@ export default {
     },
   },
   ready() {
+    this.currentSearchTypes = this.getRange;
   },
   methods: {
+    handleChange(value) {
+      this.setSearching();
+      this.searchMade = false;
+      let searchPhrase = value;
+      if (value) {
+        setTimeout(() => {
+          if (this.keyword === value) {
+            this.search(searchPhrase);
+          }
+        }, this.debounceTimer);
+      } else {
+        this.searchResult = {};
+      }
+    },
     setSearching() {
       if (this.keyword === '') {
         this.loading = false;
@@ -133,7 +131,7 @@ export default {
     search(keyword) {
       const self = this;
       self.searchResult = {};
-      this.getItems(keyword, this.currentSearchTypes).then((result) => {
+      this.getItems(keyword, [].concat(this.currentSearchTypes)).then((result) => {
         setTimeout(() => {
           self.searchResult = result;
           self.loading = false;
@@ -188,16 +186,15 @@ export default {
               <!--<input class="entity-search-keyword-input" v-model="keyword" @input="setSearching()"></input>-->
               <div class="input-container">
                 <input
-                  list="allowedTypes"
                   v-model="keyword"
-                  @input="setSearching()"
                   class="entity-search-keyword-input"
                   autofocus
                 >
+                <select v-model="currentSearchTypes" @change="handleChange(keyword)">
+                  <option :value="getRange">{{"All types" | translatePhrase}}</option>
+                  <option v-for="range in getFullRange" :value="[range.replace(settings.vocabPfx, '')]">{{range | labelByLang}}</option>
+                </select>
               </div>
-              <datalist id="allowedTypes">
-                <option v-for="range in getFullRange" :value="`${range.replace(settings.vocabPfx, '')}:`">{{range | labelByLang}}:</option>
-              </datalist>
               <div class="help-tooltip-container" @mouseleave="showHelp = false">
                 <i class="fa fa-question-circle-o" @mouseenter="showHelp = true"></i>
                 <div class="help-tooltip" v-if="showHelp">
@@ -334,11 +331,23 @@ export default {
             display: flex;
             align-items: center;
             .input-container {
-              padding: 0.2em 0.5em;
-              border: 2px solid #aaa;
+              display: flex;
+              border: 2px solid @gray;
               border-radius: 0.2em;
-              background: #fff;
-              flex: 40% 0 0;
+              flex: 60% 0 0;
+              background: @white;
+              padding: 0.5em;
+              > select {
+                padding: 0.2em 0.5em;
+                margin: 0 0.3em;
+                border-radius: 0.3em;
+                border: 0px;
+                outline: none;
+                background: @brand-primary;
+                color: @white;
+                cursor: pointer;
+                font-weight: bold;
+              }
               > input {
                 width: 100%;
                 border: none;
