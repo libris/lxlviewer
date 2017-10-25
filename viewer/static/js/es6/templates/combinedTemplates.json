@@ -187,11 +187,13 @@
           "issuanceType": "Monograph",
           "hasTitle": [{
             "@type": "Title",
-            "titleRemainder": ""
+            "mainTitle": "",
+            "subtitle": ""
           }],
           "responsibilityStatement": "",
           "identifiedBy": [{
-            "@type": "IssueNumber"
+            "@type": "AudioIssueNumber",
+            "value": ""
           }],
           "publication": [{
             "@type": "Publication",
@@ -218,6 +220,7 @@
             "@type": "Extent",
             "label": "CD"
           }],
+          "marc:otherPhysicalDetails": "",
           "marc:soundKindOfMaterial": {
             "@id": "marc:PlasticWithMetal"
           },
