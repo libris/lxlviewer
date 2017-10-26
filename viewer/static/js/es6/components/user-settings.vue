@@ -161,6 +161,8 @@ export default {
     img {
       border: 1px solid @gray;
       border-radius: 50%;
+      width: 150px;
+      height: 150px;
     }
   }
 }
