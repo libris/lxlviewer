@@ -41,7 +41,7 @@
         </p>
       </div>
     </div>
-    <div :class="{'show-content': initialized==true}" id="page-content-wrapper">
+    {% block wrapper %}<div :class="{'show-content': initialized==true}" id="page-content-wrapper"> {% endblock %}
       {% block navigation %}
       % if g.site.stylesheet
         <nav class="navbar navbar-inverse">
