@@ -20,6 +20,7 @@
     "Log in": "Logga in",
     "Log out": "Logga ut",
     "User name": "Användarnamn",
+    "Name": "Namn",
     "Active sigel": "Aktivt sigel",
     "Language": "Språk",
     "Swedish": "Svenska",
@@ -113,6 +114,6 @@
     "Unauthorized": "Obehörig",
     "Instantiations of this work": "Instansieringar av detta verk",
     "Show instantiations": "Visa instansieringar",
-    "Instantiations": "Instansieringar" 
+    "Instantiations": "Instansieringar"
   }
 }

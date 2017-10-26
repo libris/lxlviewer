@@ -62,47 +62,49 @@ export default {
 </script>
 
 <template>
-  <div class="panel-body container-fluid settings-container dash orange">
-    <div class="col-lg-4 info-box">
-      <span class="circle"><i class="icon fa fa-info" aria-hidden="true"></i></span>
-      <h2></h2>
+  <div class="panel-body container-fluid settings-container">
+    <div class="col-md-4 info-box">
       <div class="user-gravatar">
-        <img src="{{ `https://www.gravatar.com/avatar/${currentUser.email_hash}?d=mm&s=150` }}" /><br/>
-        <span class="gravatar-text">(bild från <a href="https://www.gravatar.com">gravatar</a>)</span>
+        <img v-bind:src="`https://www.gravatar.com/avatar/${currentUser.email_hash}?d=mm&s=150`" /><br/>
       </div>
-      <h3><span>{{"User name" | translatePhrase}}</span></h3>
+      <h3><span>{{"Name" | translatePhrase}}</span></h3>
       <div>{{currentUser.username}}</div>
       <h3><span>{{"E-post" | translatePhrase}}</span></h3>
       <div>{{currentUser.email || '-'}}</div>
       <hr>
-      <p>Användarnamn, e-post etc. ändrar du i <a href="https://biblioteksdatabasen.libris.kb.se">biblioteksdatabasen</a>.
+      <p>Din användarprofil är hämtad från <a href="https://login.libris.kb.se">Libris Login</a>.
       </p>
       <p>Vid frågor om rättigheter för sigel kontakta <a href="mailto:libris@kb.se">libris@kb.se</a>.
       </p>
+      <p>
+        Bild hämtad från <a href="https://www.gravatar.com">gravatar</a>.
+      </p>
     </div>
-    <div class="col-lg-7 col-lg-offset-1">
-      <span class="circle"><i class="icon fa fa-cogs" aria-hidden="true"></i></span>
-      <div class="form-group">
-        <h3><span>{{"Active sigel" | translatePhrase}}</span></h3>
-        <label v-for="auth in currentUser.authorization" class="option" :class="{'active': currentSigel === auth.sigel}">
-          <input type="radio" v-model="currentSigel" value="{{auth.sigel}}">{{auth.sigel}}</input>
-          <span class="permissions">{{getPermissions(auth)}}</span>
-        </label>
-      </div>
-      <div class="form-group">
-        <h3><span>{{"Language" | translatePhrase}}</span></h3>
-          Experimentell inställning, svenska rekommenderas.
-        <label v-for="language in settings.availableUserSettings.languages" class="option" :class="{'active': currentLanguage === language.value}">
-          <input type="radio" v-model="currentLanguage" value="{{language.value}}">{{language.label | translatePhrase}}</input>
-        </label>
-      </div>
-      <div class="form-group">
-        <h3><span>{{"Show technical application details" | translatePhrase}}</span></h3>
-        Hjälpmedel för utvecklare av tjänsten.
-        <label v-for="appTech in settings.availableUserSettings.appTechs" class="option" :class="{'active': currentAppTech === appTech.value }">
-          <input type="radio" v-model="currentAppTech" value="{{appTech.value}}">{{appTech.label | translatePhrase}}</input>
-        </label>
-      </div>
+    <div class="col-md-8">
+      <table>
+        <tr>
+          <td class="settings-label">{{"Active sigel" | translatePhrase}}</td>
+          <td class="settings-value">
+            <select v-model="currentSigel">
+              <option v-for="auth in currentUser.authorization" value="{{auth.sigel}}">{{ auth.sigel }}</option>
+            </select>
+          </td>
+        </tr>
+          <tr>
+            <td class="settings-label">{{"Language" | translatePhrase}}</td>
+            <td class="settings-value">
+              <select v-model="currentLanguage">
+                <option v-for="language in settings.availableUserSettings.languages" value="{{language.value}}">{{ language.label | translatePhrase }}</option>
+              </select>
+            </td>
+          </tr>
+            <tr>
+              <td class="settings-label">{{"Show technical application details" | translatePhrase}}</td>
+              <td class="settings-value">
+                <input type="checkbox" v-model="currentAppTech"></input>
+              </td>
+            </tr>
+      </table>
     </div>
   </div>
 </template>
@@ -110,17 +112,55 @@ export default {
 <style lang="less">
 @import './_variables.less';
 
+@sigel-selector-width: 200px;
+
 .settings-container {
+  padding: 1em;
+  margin: 0px;
+
+  .info-box {
+    background-color: #f9f9f9;
+    padding: 1em;
+    box-shadow: @shadow-panel;
+    p {
+      font-size: 12px;
+    }
+  }
+
+  table {
+    width: 100%;
+    tr {
+      border: solid @gray-lighter;
+      border-width: 0px 0px 1px 0px;
+    }
+    td {
+      padding: 0.5em;
+    }
+    td.settings-label {
+      width: 50%;
+      vertical-align: middle;
+    }
+    td.settings-value {
+      width: auto;
+    }
+  }
+
+  h2 {
+    padding-top:15px;
+  }
+  ul {
+    list-style-type: none;
+    padding: 30px;
+    li:before {
+      content: "■";
+      margin-right: 10px;
+    }
+  }
   .user-gravatar {
     text-align: center;
     img {
-      border: 1px solid @gray-light;
+      border: 1px solid @gray;
       border-radius: 50%;
-    }
-    .gravatar-text {
-      color: @gray;
-      font-size: 12px;
-      font-style: italic;
     }
   }
 }
