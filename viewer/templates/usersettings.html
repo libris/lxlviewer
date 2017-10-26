@@ -10,9 +10,7 @@
         <user-settings v-if="initialized"></user-settings>
       </div>
     </div>
-  </div>
   <help-component v-if="initialized == true" :open-all="true"></help-component>
-</div>
 {% else %}
 <p>Du måste logga in.</p>
 {% endif %}

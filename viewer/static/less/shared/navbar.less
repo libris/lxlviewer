@@ -1,10 +1,11 @@
-body > #page-content-wrapper > .navbar {
+body > .navbar {
   width: 100%;
   z-index: 900;
   border: solid @border-navbar;
   background-color: @bg-navbar;
   border-width: 0px 0px @border-navbar-width 0px;
   box-shadow: @shadow-navbar;
+  min-height: 62px;
   @media screen and (max-width: @screen-sm-min) {
     padding: 0 20px;
   }
@@ -62,6 +63,7 @@ body > #page-content-wrapper > .navbar {
   margin-left: 1em;
   padding: 0.3em;
   .navbar-brand {
+    font-size: 18px;
     color: @text-brand;
   }
   .environment-label {

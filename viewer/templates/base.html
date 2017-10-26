@@ -41,7 +41,6 @@
         </p>
       </div>
     </div>
-    {% block wrapper %}<div :class="{'show-content': initialized==true}" id="page-content-wrapper"> {% endblock %}
       {% block navigation %}
       % if g.site.stylesheet
         <nav class="navbar navbar-inverse">
@@ -51,13 +50,13 @@
         <div class="{% block navcontainerclass %}container{% endblock %}">
           <div class="navbar-header" role="banner">
             <div class="navbar-brand navbar-logo">
-                  <a href="/">
-                    % if g.site.stylesheet
-                      <img src="/assets/img/kb_logo_white.svg" alt="Kungliga Bibliotekets logotyp">
-                    % else
-                      <img src="/assets/img/kb_logo_black.svg" alt="Kungliga Bibliotekets logotyp">
-                    % endif
-                  </a>
+              <a href="/">
+                % if g.site.stylesheet
+                  <img src="/assets/img/kb_logo_white.svg" alt="Kungliga Bibliotekets logotyp">
+                % else
+                  <img src="/assets/img/kb_logo_black.svg" alt="Kungliga Bibliotekets logotyp">
+                % endif
+              </a>
             </div>
             <a class="navbar-brand" href="/" title="Version ${ config.VERSION }">${g.site.title}
               <span class="environment-label">
@@ -127,71 +126,99 @@
       </nav>
       {% endblock %}
       {% block jumbotron %}{% endblock %}
-      <main class="{% block containerclass %}container{% endblock %}">
-        {% block content %}{% endblock %}
-      </main>
-      <footer>
-        % block footer
-
-            <div class="footer-container">
-              <div class="">
-                <div class="content-container">
-                  <div class="service-name">
-                    % if g.site.title == 'libris.kb.se'
-                    <img src="/assets/img/kb_logo_black.svg" class="logo-medium" alt="" />
-                    % else
-                    <img src="/assets/img/kb_logo_white.svg" class="logo-medium" alt="" />
-                    % endif
-                    <a href="http://www.kb.se" alt="Länk till Kungliga bibliotekets webbplats">
-                      <span class="brand-text js-translateable" data-translateable="National Library of Sweden">National Library of Sweden</span>
-                    </a>
-                  </div>
-                  % if g.site.title == 'libris.kb.se'
-                  <div class="link-list">
-                    <div class="header" data-translateable="XL">XL</div>
-                    <div class="item"><a href="" class="js-translateable" data-translateable="About XL">About XL</a></div>
-                    <div class="item"><a href="https://goo.gl/forms/QLLfQZjgMX29trA82" class="js-translateable" data-translateable="Skicka feedback">Skicka feedback</a></div>
-                  </div>
-                  <div class="link-list">
-                    <div class="header" data-translateable="New Libris and XL">New Libris and XL</div>
-                    <div class="item"><a href="https://www.youtube.com/user/KunglBiblioteket/videos" class="js-translateable" data-translateable="Instruction videos">Instruction videos</a></div>
-                    <div class="item"><a href="http://librisbloggen.kb.se/" class="js-translateable" data-translateable="Librisbloggen">Librisbloggen</a></div>
-                    <div class="item"><a href="http://www.kb.se/libris/Om-LIBRIS/Introduktion-till-nya-Libris-och-XL2/" class="js-translateable" data-translateable="Study material">Study material</a></div>
-                    <div class="item"><a href="http://www.kb.se/libris/" class="js-translateable" data-translateable="kb.se/libris">kb.se/libris</a></div>
-                    <div class="item"><a href="https://libris.kb.se/" class="js-translateable" data-translateable="https://libris.kb.se/">libris.kb.se/</a></div>
-                  </div>
-                  <div class="link-list">
-                    <div class="header" data-translateable="Support">Support</div>
-                    <div class="item"><a class="js-translateable" href="https://kundo.se/org/librisxl/" data-translateable="Forum of support for new Libris">Forum of support for new Libris</a></div>
-                    <div class="item"><a class="js-translateable" href="http://www.kb.se/libris/kontakta/" data-translateable="Libris customer service">Libris customer service</a></div>
-                  </div>
-                  <div class="social-media">
-                    <div class="header js-translateable" data-translateable="Social media">Social media</div>
-                    <div>
-                      <a href="https://www.youtube.com/user/KunglBiblioteket/"><i class="fa fa-2x fa-youtube-play" aria-hidden="true"></i></a>
-                      <a href="https://twitter.com/librisnytt/"><i class="fa fa-2x fa-twitter-square" aria-hidden="true"></i></a>
-                      <a href="https://www.facebook.com/LibrisNytt/"><i class="fa fa-2x fa-facebook-square" aria-hidden="true"></i></a>
-                    </div>
-                  </div>
-                  % endif
-                  % if g.site.itemList
-                  <div class="link-list">
-                    <h1><span class="js-translateable" data-translateable="Resources">Resources</span></h1>
-                    <ul class="list-unstyled">
-                      % for item in g.site.itemList
-                        <li class=""><a href="${item[ID]}"><i
-                            class="fa fa-fw fa-${item.icon}"></i> ${item.title}</a></li>
-                      % endfor
-                    </ul>
-                  </div>
-                  % endif
-                </div>
+      {% block wrapper %} 
+      % if g.site.title == 'libris.kb.se'
+      <div class="skeleton-page" :class="{'hide-skeleton': initialized==true}">
+        <!-- <nav class="navbar skeleton-navbar">
+          <div class="container">
+            <div>
+              <div class="nav-logo">
+                <a href="/"><img src="/assets/img/kb_logo_black.svg" alt="Kungliga Bibliotekets logotyp">${g.site.title}</a>
+              </div>
+              <div class="nav-items">
+                % for counter in range(1, 5)
+                  <div></div>
+                % endfor
               </div>
             </div>
-
-        % endblock
-      </footer>
-    </div>
+          </div>
+        </nav> -->
+        <div class="container panel panel-default skeleton-container">
+          <div>
+            % for counter in range(1, 30)
+            <div style="border-right-width: ${range(1, 700) | random}px"></div>
+            % endfor
+          </div>
+        </div>
+      </div>
+      % endif
+      <div :class="{'show-content': initialized==true}" id="page-content-wrapper">
+      {% endblock %}
+        <main class="{% block containerclass %}container{% endblock %}">
+          {% block content %}{% endblock %}
+        </main>
+        <footer>
+          % block footer
+  
+              <div class="footer-container">
+                <div class="">
+                  <div class="content-container">
+                    <div class="service-name">
+                      % if g.site.title == 'libris.kb.se'
+                      <img src="/assets/img/kb_logo_black.svg" class="logo-medium" alt="" />
+                      % else
+                      <img src="/assets/img/kb_logo_white.svg" class="logo-medium" alt="" />
+                      % endif
+                      <a href="http://www.kb.se" alt="Länk till Kungliga bibliotekets webbplats">
+                        <span class="brand-text js-translateable" data-translateable="National Library of Sweden">National Library of Sweden</span>
+                      </a>
+                    </div>
+                    % if g.site.title == 'libris.kb.se'
+                    <div class="link-list">
+                      <div class="header" data-translateable="XL">XL</div>
+                      <div class="item"><a href="" class="js-translateable" data-translateable="About XL">About XL</a></div>
+                      <div class="item"><a href="https://goo.gl/forms/QLLfQZjgMX29trA82" class="js-translateable" data-translateable="Skicka feedback">Skicka feedback</a></div>
+                    </div>
+                    <div class="link-list">
+                      <div class="header" data-translateable="New Libris and XL">New Libris and XL</div>
+                      <div class="item"><a href="https://www.youtube.com/user/KunglBiblioteket/videos" class="js-translateable" data-translateable="Instruction videos">Instruction videos</a></div>
+                      <div class="item"><a href="http://librisbloggen.kb.se/" class="js-translateable" data-translateable="Librisbloggen">Librisbloggen</a></div>
+                      <div class="item"><a href="http://www.kb.se/libris/Om-LIBRIS/Introduktion-till-nya-Libris-och-XL2/" class="js-translateable" data-translateable="Study material">Study material</a></div>
+                      <div class="item"><a href="http://www.kb.se/libris/" class="js-translateable" data-translateable="kb.se/libris">kb.se/libris</a></div>
+                      <div class="item"><a href="https://libris.kb.se/" class="js-translateable" data-translateable="https://libris.kb.se/">libris.kb.se/</a></div>
+                    </div>
+                    <div class="link-list">
+                      <div class="header" data-translateable="Support">Support</div>
+                      <div class="item"><a class="js-translateable" href="https://kundo.se/org/librisxl/" data-translateable="Forum of support for new Libris">Forum of support for new Libris</a></div>
+                      <div class="item"><a class="js-translateable" href="http://www.kb.se/libris/kontakta/" data-translateable="Libris customer service">Libris customer service</a></div>
+                    </div>
+                    <div class="social-media">
+                      <div class="header js-translateable" data-translateable="Social media">Social media</div>
+                      <div>
+                        <a href="https://www.youtube.com/user/KunglBiblioteket/"><i class="fa fa-2x fa-youtube-play" aria-hidden="true"></i></a>
+                        <a href="https://twitter.com/librisnytt/"><i class="fa fa-2x fa-twitter-square" aria-hidden="true"></i></a>
+                        <a href="https://www.facebook.com/LibrisNytt/"><i class="fa fa-2x fa-facebook-square" aria-hidden="true"></i></a>
+                      </div>
+                    </div>
+                    % endif
+                    % if g.site.itemList
+                    <div class="link-list">
+                      <h1><span class="js-translateable" data-translateable="Resources">Resources</span></h1>
+                      <ul class="list-unstyled">
+                        % for item in g.site.itemList
+                          <li class=""><a href="${item[ID]}"><i
+                              class="fa fa-fw fa-${item.icon}"></i> ${item.title}</a></li>
+                        % endfor
+                      </ul>
+                    </div>
+                    % endif
+                  </div>
+                </div>
+              </div>
+  
+          % endblock
+        </footer>
+      </div>
     <script src="/assets/build/vendor.min.js" type="text/javascript"></script>
 
       <script type="text/javascript">
