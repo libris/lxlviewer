@@ -53,6 +53,8 @@ export default {
     extracting: false,
     itemInfo: {},
     index: 0,
+    copyTitle: false,
+    canCopyTitle: false,
   },
   events: {
   },
@@ -63,6 +65,14 @@ export default {
   watch: {
     keyword(value) {
       this.handleChange(value);
+    },
+    copyTitle(value) {
+      this.$dispatch('set-copy-title', value);
+    },
+    active(value, oldvalue) {
+      if (value && !oldvalue) {
+        this.resetWindow();
+      }
     },
   },
   computed: {
@@ -93,6 +103,9 @@ export default {
     this.currentSearchTypes = this.getRange;
   },
   methods: {
+    resetWindow() {
+      this.copyTitle = false;
+    },
     handleChange(value) {
       this.setSearching();
       this.searchMade = false;
@@ -229,6 +242,12 @@ export default {
                 </button>
               </div>
             </div>
+            <div class="extract-controls">
+              <span class="preview-entity-text">{{ "Your new entity" | translatePhrase }}:</span>
+              <div class="copy-title" v-if="canCopyTitle">
+                <label><input type="checkbox" name="copyTitle" v-model="copyTitle"></input> {{ "Copy title from" | translatePhrase }} {{this.editorData.mainEntity['@type'] | labelByLang}}</label>
+              </div>
+            </div>
             <div class="summary-container">
               <entity-summary :focus-data="itemInfo" :lines="4"></entity-summary>
             </div>
@@ -325,7 +344,20 @@ export default {
           .summary-container {
             border: 1px solid #888;
             background: @white;
-            margin: 0.5em 0;
+            margin: 0.2em 0;
+          }
+          .extract-controls {
+            padding: 0.5em 0 0 0;
+            .preview-entity-text {
+              font-weight: bold;
+            }
+            .copy-title {
+              float: right;
+              label {
+                margin: 0;
+                font-weight: normal;
+              }
+            }
           }
           .search {
             display: flex;
