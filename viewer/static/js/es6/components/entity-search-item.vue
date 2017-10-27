@@ -62,6 +62,9 @@ export default {
   border: solid #777;
   margin: 4px;
   border-width: 1px;
+  code {
+    color: @black;
+  }
   &.already-added {
     opacity: 0.5;
     cursor: default;

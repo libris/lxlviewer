@@ -52,7 +52,9 @@ export default {
   list-style: none;
   margin-bottom: 0.5em;
   .panel-mixin(@neutral-color);
-  
+  code {
+    color: @black;
+  }
   .label {
     color: @black;
     font-weight: bold;
