@@ -44,7 +44,7 @@ export function getRecordType(mainEntityType, vocab, settings) {
   } else if (isSubClassOf(mainEntityType, 'Concept', vocab, settings.vocabPfx)) {
     return 'Concept';
   }
-  throw new Error(`Could not determine baseclass for this record. Connection is missing in vocab for class "${mainEntityType}".`);
+  return 'Other';
 }
 
 export function getTermByType(type, list) {

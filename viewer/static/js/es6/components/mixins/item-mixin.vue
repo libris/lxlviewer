@@ -1,7 +1,8 @@
 <script>
 import * as DataUtil from '../../utils/data';
+import * as VocabUtil from '../../utils/vocab';
 import * as _ from 'lodash';
-import { getStatus } from '../../vuex/getters';
+import { getStatus, getVocabulary, getSettings } from '../../vuex/getters';
 import { changeStatus } from '../../vuex/actions';
 
 export default {
@@ -11,6 +12,8 @@ export default {
     },
     getters: {
       status: getStatus,
+      vocab: getVocabulary,
+      settings: getSettings,
     },
   },
   data(){
@@ -37,6 +40,9 @@ export default {
     },
   },
   computed: {
+    recordType() {
+      return VocabUtil.getRecordType(this.item['@type'], this.vocab, this.settings);
+    },
     focusData() {
       if (!this.item['@id']) {
         return this.item;
