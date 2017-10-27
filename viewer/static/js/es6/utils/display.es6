@@ -18,37 +18,16 @@ export function getDisplayDefinitions() {
   });
 }
 
-function getValueByLang(item, propertyId, displayDefs, langCode) {
+function getValueByLang(item, propertyId, displayDefs, langCode, context) {
   if (!langCode || typeof langCode === 'undefined') {
     throw new Error('getValueByLang was called with an undefined language code.');
   }
 
-  // TODO: REMOVE FAKED CONTEXT, SHOULD BE PICKED UP FROM DISPLAYDEFS (see next line)
-  // const context = displayDefs['@context'];
-  const context = {
-    "fresnel": "http://www.w3.org/2004/09/fresnel#",
-      "skos": "http://www.w3.org/2004/02/skos/core#",
-      "owl": "http://www.w3.org/2002/07/owl#",
-      "@base": "https://id.kb.se/vocab/display",
-      "@vocab": "https://id.kb.se/vocab/",
-      "marc": "https://id.kb.se/marc/",
-      "lensGroups": {"@id": "@graph", "@container": "@index"},
-      "lenses": {"@reverse": "fresnel:group", "@container": "@index"},
-      "showProperties": {"@id": "fresnel:showProperties", "@container": "@list", "@type": "@vocab"},
-      "classLensDomain": {"@reverse": "displayLens", "@type": "@vocab"},
-      "inverseOf": {"@id": "owl:inverseOf", "@type": "@vocab"},
-      "labelByLang": {"@id": "label", "@container": "@language"},
-      "commentByLang": {"@id": "comment", "@container": "@language"},
-      "prefLabelByLang": {"@id": "prefLabel", "@container": "@language"},
-      "altLabelByLang": {"@id": "altLabel", "@container": "@language"},
-      "noteByLang": {"@id": "note", "@container": "@language"},
-      "titleByLang": {"@id": "title", "@container": "@language"},
-      "descriptionByLang": {"@id": "description", "@container": "@language"}
-  };
+  const contextList = context[1];
   let translatedValue = item[propertyId];
   let byLangKey = '';
-  for (const key in context) {
-    if (context[key]['@id'] === propertyId) {
+  for (const key in contextList) {
+    if (contextList[key] !== null && contextList[key].hasOwnProperty('@id') && contextList[key]['@id'] === propertyId) {
       byLangKey = key;
     }
   }
@@ -88,7 +67,7 @@ export function getProperties(typeInput, level, displayDefs, settings) {
   return [];
 }
 
-export function getDisplayObject(item, level, displayDefs, quoted, vocab, settings) {
+export function getDisplayObject(item, level, displayDefs, quoted, vocab, settings, context) {
   if (!item || typeof item === 'undefined') {
     throw new Error('getDisplayObject was called with an undefined object.');
   }
@@ -142,18 +121,18 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
       if (properties[i] === 'created' || properties[i] === 'modified') {
         valueOnItem = moment(item[properties[i]]).format('lll');
       } else {
-        valueOnItem = getValueByLang(trueItem, properties[i], displayDefs, settings.language);
+        valueOnItem = getValueByLang(trueItem, properties[i], displayDefs, settings.language, context);
       }
       if (typeof valueOnItem !== 'undefined') {
         let value = valueOnItem;
         if (_.isObject(value) && !_.isArray(value)) {
-          value = getItemLabel(value, displayDefs, quoted, vocab, settings);
+          value = getItemLabel(value, displayDefs, quoted, vocab, settings, context);
           // value = getDisplayObject(value, 'chips', displayDefs, quoted, vocab, vocabPfx);
         } else if (_.isArray(value)) {
           const newArray = [];
           for (const arrayItem of value) {
             if (_.isObject(arrayItem) && (Object.keys(arrayItem).length > 1 || arrayItem[Object.keys(arrayItem)[0]] !== '')) {
-              newArray.push(getItemLabel(arrayItem, displayDefs, quoted, vocab, settings));
+              newArray.push(getItemLabel(arrayItem, displayDefs, quoted, vocab, settings, context));
             } else if (arrayItem.length > 0) {
               newArray.push(arrayItem);
             } else {
@@ -182,9 +161,8 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
   return result;
 }
 
-export function getItemSummary(item, displayDefs, quoted, vocab, settings) {
-
-  const card = getCard(item, displayDefs, quoted, vocab, settings);
+export function getItemSummary(item, displayDefs, quoted, vocab, settings, context) {
+  const card = getCard(item, displayDefs, quoted, vocab, settings, context);
   const summary = {
     categorization: [],
     header: [],
@@ -215,8 +193,8 @@ export function getItemSummary(item, displayDefs, quoted, vocab, settings) {
   return summary;
 }
 
-export function getItemLabel(item, displayDefs, quoted, vocab, settings) {
-  const displayObject = getChip(item, displayDefs, quoted, vocab, settings);
+export function getItemLabel(item, displayDefs, quoted, vocab, settings, context) {
+  const displayObject = getChip(item, displayDefs, quoted, vocab, settings, context);
   let rendered = StringUtil.extractStrings(displayObject).trim();
   if (item['@type'] && VocabUtil.isSubClassOf(item['@type'], 'Identifier', vocab, settings.vocabPfx)) {
     rendered = `${item['@type']} ${rendered}`;
@@ -224,10 +202,10 @@ export function getItemLabel(item, displayDefs, quoted, vocab, settings) {
   return rendered;
 }
 
-export function getChip(item, displayDefs, quoted, vocab, settings) {
-  return getDisplayObject(item, 'chips', displayDefs, quoted, vocab, settings);
+export function getChip(item, displayDefs, quoted, vocab, settings, context) {
+  return getDisplayObject(item, 'chips', displayDefs, quoted, vocab, settings, context);
 }
 
-export function getCard(item, displayDefs, quoted, vocab, settings) {
-  return getDisplayObject(item, 'cards', displayDefs, quoted, vocab, settings);
+export function getCard(item, displayDefs, quoted, vocab, settings, context) {
+  return getDisplayObject(item, 'cards', displayDefs, quoted, vocab, settings, context);
 }

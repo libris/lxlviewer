@@ -8,7 +8,7 @@ import EntitySummary from './entity-summary';
 import ProcessedLabel from './processedlabel';
 import ItemMixin from './mixins/item-mixin';
 import LensMixin from './mixins/lens-mixin';
-import { getVocabulary, getDisplayDefinitions, getSettings, getEditorData } from '../vuex/getters';
+import { getVocabulary, getDisplayDefinitions, getContext, getSettings, getEditorData } from '../vuex/getters';
 
 export default {
   name: 'item-entity',
@@ -21,6 +21,7 @@ export default {
   },
   vuex: {
     getters: {
+      context: getContext,
       vocab: getVocabulary,
       display: getDisplayDefinitions,
       settings: getSettings,

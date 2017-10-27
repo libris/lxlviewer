@@ -23,8 +23,8 @@ import LandingBox from '../components/landing-box';
 import LinkCardComponent from '../components/link-card-component';
 import IntroComponent from '../components/intro-component';
 import HelpComponent from '../components/help-component';
-import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData, getKeybindState, getStatus } from '../vuex/getters';
-import { changeSettings, changeStatus, changeNotification, loadVocab, loadVocabMap, loadDisplayDefs, changeSavedStatus, changeResultListStatus } from '../vuex/actions';
+import { getSettings, getVocabulary, getContext, getDisplayDefinitions, getEditorData, getKeybindState, getStatus } from '../vuex/getters';
+import { changeSettings, changeStatus, changeNotification, loadVocab, loadContext, loadVocabMap, loadDisplayDefs, changeSavedStatus, changeResultListStatus } from '../vuex/actions';
 
 export default class PagedCollection extends View {
 
@@ -36,17 +36,10 @@ export default class PagedCollection extends View {
     const self = this;
     this.dataIn = JSON.parse(document.getElementById('data').innerText);
 
-    VocabUtil.getVocab().then((vocab) => {
-      self.vocab = vocab['@graph'];
-      self.vocabMap = new Map(vocab['@graph'].map((entry) => [entry['@id'], entry]));
-      DisplayUtil.getDisplayDefinitions().then((display) => {
-        self.display = display;
-        self.initVue();
-      }, (error) => {
-        // showError(error);
-      });
+    self.getLdDepencendies().then(() => {
+      self.initVue();
     }, (error) => {
-      // showError(error);
+      console.log("Everything broke", error);
     });
   }
 
@@ -74,6 +67,7 @@ export default class PagedCollection extends View {
       vuex: {
         actions: {
           loadVocab,
+          loadContext,
           loadVocabMap,
           loadDisplayDefs,
           changeSettings,
@@ -84,6 +78,7 @@ export default class PagedCollection extends View {
         },
         getters: {
           status: getStatus,
+          context: getContext,
           settings: getSettings,
           editorData: getEditorData,
           vocab: getVocabulary,
@@ -164,6 +159,7 @@ export default class PagedCollection extends View {
       ready() {
         this.changeSettings(self.settings);
         this.loadVocab(self.vocab);
+        this.loadContext(self.context);
         this.loadVocabMap(self.vocabMap);
         this.loadDisplayDefs(self.display);
         this.result = self.dataIn;

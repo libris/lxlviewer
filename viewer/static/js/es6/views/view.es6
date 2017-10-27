@@ -1,5 +1,7 @@
 import * as UserUtil from '../utils/user';
 import * as StringUtil from '../utils/string';
+import * as VocabUtil from '../utils/vocab';
+import * as DisplayUtil from '../utils/display';
 
 export default class View {
 
@@ -140,6 +142,34 @@ export default class View {
     this.translate();
     // $('.sigelLabel').text(`(${this.settings.userSettings.currentSigel})`);
     // console.log('Initialized view', this);
+  }
+
+  getLdDepencendies() {
+    return new Promise((resolve, reject) => {
+      VocabUtil.getVocab().then((vocab) => {
+        this.vocabMap = new Map(vocab['@graph'].map((entry) => [entry['@id'], entry]));
+        this.vocab = vocab['@graph'];
+        // $('#loadingText .status').text('Hämtar visningsdefinitioner');
+        DisplayUtil.getDisplayDefinitions().then((display) => {
+          this.display = display;
+          VocabUtil.getForcedListTerms().then((result) => {
+            this.forcedListTerms = result;
+            VocabUtil.getContext().then((context) => {
+              this.context = context['@context'];
+              resolve();
+            }, (error) => {
+              reject(error);
+            });
+          }, (error) => {
+            reject(error);
+          });
+        }, (error) => {
+          reject(error);
+        });
+      }, (error) => {
+        reject(error);
+      });
+    });
   }
 
   translate() {

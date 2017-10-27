@@ -1,7 +1,7 @@
 <script>
 import LensMixin from './mixins/lens-mixin';
 import { mixin as clickaway } from 'vue-clickaway';
-import { getSettings, getStatus, getVocabulary, getDisplayDefinitions, getEditorData } from '../vuex/getters';
+import { getSettings, getStatus, getContext, getVocabulary, getDisplayDefinitions, getEditorData } from '../vuex/getters';
 import { changeStatus } from '../vuex/actions';
 
 export default {
@@ -13,6 +13,7 @@ export default {
       settings: getSettings,
       editorData: getEditorData,
       vocab: getVocabulary,
+      context: getContext,
       display: getDisplayDefinitions,
     },
     actions: {
