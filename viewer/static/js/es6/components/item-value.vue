@@ -47,8 +47,10 @@ export default {
   },
   ready() {
     this.$nextTick(() => {
+      if (!this.status.isNew && !this.status.isCopy) {
+        this.addFocus();
+      }
       this.initializeTextarea();
-      this.addFocus();
     });
   },
   methods: {

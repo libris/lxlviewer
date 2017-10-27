@@ -56,7 +56,7 @@ export default {
       isNewlyAdded: false,
       extractDialogActive: false,
       extracting: false,
-      expanded: this.status.isNew,
+      expanded: false,
       removeHover: false,
       showLinkAction: false,
     };
