@@ -1,4 +1,5 @@
 <script>
+import * as _ from 'lodash';
 import LensMixin from './mixins/lens-mixin';
 import EntitySummary from './entity-summary';
 import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData } from '../vuex/getters';
@@ -8,6 +9,7 @@ export default {
   mixins: [LensMixin],
   props: {
     focusData: {},
+    disabledIds: [],
   },
   vuex: {
     getters: {
@@ -20,11 +22,21 @@ export default {
   data() {
     return {
       keyword: '',
+      listItemSettings: {
+        text: 'Add',
+        styling: 'brand',
+        event: 'add-entity',
+        show: (this.disabledIds.indexOf(this.focusData['@id']) === -1),
+      },
     }
   },
   methods: {
   },
   computed: {
+    addPayload() {
+      const updatedListItemSettings = _.merge({payload: this.focusData}, _.cloneDeep(this.listItemSettings));
+      return updatedListItemSettings;
+    },
   },
   components: {
     'entity-summary': EntitySummary,
@@ -38,7 +50,7 @@ export default {
 
 <template>
   <div class="search-result-item">
-    <entity-summary :focus-data="focusData" :lines="4"></entity-summary>
+    <entity-summary :action-settings="addPayload" :focus-data="focusData" :lines="4" :add-link="true"></entity-summary>
   </div>
 </template>
 
@@ -47,8 +59,9 @@ export default {
 @import './_variables.less';
 
 .search-result-item {
-  border: 1px solid #ccc;
-  padding: 3px;
+  border: solid #777;
+  margin: 4px;
+  border-width: 1px;
   &.already-added {
     opacity: 0.5;
     cursor: default;
@@ -71,12 +84,6 @@ export default {
   }
   &:nth-child(even) {
     background-color: darken(@neutral-color, 2%);
-  }
-  cursor: pointer;
-  border: solid #ccc;
-  border-width: 0px 0px 1px 0px;
-  &:hover {
-    background-color: darken(white, 5%);
   }
 }
 
