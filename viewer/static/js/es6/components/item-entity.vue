@@ -169,7 +169,7 @@ export default {
           padding-right: 1em;
           padding-left: 0.25em;
         }
-      } 
+      }
       .chip-action {
         cursor: pointer;
       }

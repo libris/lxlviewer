@@ -93,7 +93,7 @@ export default {
         <span>({{settings.userSettings.currentSigel}})</span>
       </button>
       <button v-if="hasHolding" :class="{'green': hasHolding, 'disabled': disabled}" :disabled="disabled" @click.prevent="fetchHolding()">
-        <i v-if="hasHolding && !checkingHolding" class="fa fa-check"></i> 
+        <i v-if="hasHolding && !checkingHolding" class="fa fa-check"></i>
         {{"Holding" | translatePhrase}}
         <span>({{settings.userSettings.currentSigel}})</span>
       </button>
