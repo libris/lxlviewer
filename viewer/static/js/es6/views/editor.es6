@@ -26,6 +26,7 @@ import ReverseRelations from '../components/reverse-relations';
 import { getSettings, getVocabulary, getContext, getVocabularyClasses, getVocabularyProperties, getDisplayDefinitions, getEditorData, getStatus, getKeybindState } from '../vuex/getters';
 import { changeSettings, changeNotification, loadVocab, loadContext, loadVocabMap, loadForcedListTerms, loadDisplayDefs, syncData, changeSavedStatus, changeStatus } from '../vuex/actions';
 
+
 function showError(error) {
   $('#loadingText .fa-circle-o-notch').fadeOut('fast', () => {
     $('#loadingText .fa-warning').removeClass('hidden').fadeIn('fast');
@@ -53,30 +54,8 @@ export default class Editor extends View {
       this.dataIn = textData;
     }
 
-    // $('#loadingText .fa-warning').hide();
-    // const loadingStr = `${StringUtil.getUiPhraseByLang("Loading", self.settings.language)} ${StringUtil.getUiPhraseByLang("Post", self.settings.language).toLowerCase()}`;
-    // $('#loadingText .mainStatus').text(loadingStr);
-    // $('#loadingText .status').text('Hämtar vokabulär');
-    VocabUtil.getVocab().then((vocab) => {
-      self.vocabMap = new Map(vocab['@graph'].map((entry) => [entry['@id'], entry]));
-      self.vocab = vocab['@graph'];
-      // $('#loadingText .status').text('Hämtar visningsdefinitioner');
-      DisplayUtil.getDisplayDefinitions().then((display) => {
-        self.display = display;
-        VocabUtil.getForcedListTerms().then((result) => {
-          self.forcedListTerms = result;
-          VocabUtil.getContext().then((context) => {
-            self.context = context['@context'];
-            self.initVue();
-          }, (error) => {
-            showError(error);
-          });
-        }, (error) => {
-          showError(error);
-        });
-      }, (error) => {
-        showError(error);
-      });
+    self.getLdDepencendies().then(() => {
+      self.initVue();
     }, (error) => {
       showError(error);
     });
@@ -260,7 +239,7 @@ export default class Editor extends View {
         },
         entityTitle() {
           if (typeof this.editorData.mainEntity !== 'undefined') {
-            const headerList = DisplayUtil.getItemSummary(this.editorData.mainEntity, this.display, this.editorData.quoted, this.vocab, this.settings).header;
+            const headerList = DisplayUtil.getItemSummary(this.editorData.mainEntity, this.display, this.editorData.quoted, this.vocab, this.settings, this.context).header;
             const header = StringUtil.getFormattedEntries(headerList, this.vocab, this.settings).join(', ');
             if (header.length > 0 && header !== '{Unknown}') {
               return header;
@@ -287,7 +266,7 @@ export default class Editor extends View {
                   console.log("Extracted", titleArray);
                   const displayTitles = [];
                   _.each(titleArray, (title) => {
-                    const chipObj = DisplayUtil.getChip(title, this.display, this.editorData.quoted, this.vocab, this.settings);
+                    const chipObj = DisplayUtil.getChip(title, this.display, this.editorData.quoted, this.vocab, this.settings, this.context);
                     displayTitles.push(StringUtil.extractStrings(chipObj));
                   });
                   this.relatedTitles = this.relatedTitles.concat(displayTitles);

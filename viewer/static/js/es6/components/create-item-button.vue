@@ -1,5 +1,5 @@
 <script>
-import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData, getStatus } from '../vuex/getters';
+import { getSettings, getVocabulary, getContext, getDisplayDefinitions, getEditorData, getStatus } from '../vuex/getters';
 import { changeNotification, syncData, changeStatus } from '../vuex/actions';
 import * as DisplayUtil from '../utils/display';
 import * as StringUtil from '../utils/string';
@@ -21,6 +21,7 @@ export default {
   },
   vuex: {
     getters: {
+      context: getContext,
       vocab: getVocabulary,
       display: getDisplayDefinitions,
       settings: getSettings,
@@ -35,7 +36,7 @@ export default {
   },
   methods: {
     buildItem() {
-      const embellishedReference = DisplayUtil.getCard(this.editorData.mainEntity, this.display, this.editorData.quoted, this.vocab, this.settings);
+      const embellishedReference = DisplayUtil.getCard(this.editorData.mainEntity, this.display, this.editorData.quoted, this.vocab, this.settings, this.context);
       embellishedReference['@id'] = this.editorData.mainEntity['@id'];
 
       this.itemData = RecordUtil.getItemObject(
@@ -92,7 +93,7 @@ export default {
         <span>({{settings.userSettings.currentSigel}})</span>
       </button>
       <button v-if="hasHolding" :class="{'green': hasHolding, 'disabled': disabled}" :disabled="disabled" @click.prevent="fetchHolding()">
-        <i v-if="hasHolding && !checkingHolding" class="fa fa-check"></i> 
+        <i v-if="hasHolding && !checkingHolding" class="fa fa-check"></i>
         {{"Holding" | translatePhrase}}
         <span>({{settings.userSettings.currentSigel}})</span>
       </button>

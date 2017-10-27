@@ -2,7 +2,7 @@
 import SummaryActionButton from './summary-action-button';
 import LensMixin from './mixins/lens-mixin';
 import * as StringUtil from '../utils/string';
-import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData } from '../vuex/getters';
+import { getSettings, getVocabulary, getContext, getDisplayDefinitions, getEditorData } from '../vuex/getters';
 
 export default {
   mixins: [LensMixin],
@@ -20,6 +20,7 @@ export default {
   },
   vuex: {
     getters: {
+      context: getContext,
       vocab: getVocabulary,
       display: getDisplayDefinitions,
       settings: getSettings,

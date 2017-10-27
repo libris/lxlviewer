@@ -5,13 +5,14 @@ import * as DataUtil from '../utils/data';
 import EntitySummary from './entity-summary';
 import LensMixin from './mixins/lens-mixin';
 import ReverseRelations from '../components/reverse-relations';
-import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData, getStatus } from '../vuex/getters';
+import { getSettings, getVocabulary, getContext, getDisplayDefinitions, getEditorData, getStatus } from '../vuex/getters';
 
 export default {
   name: 'header-component',
   mixins: [LensMixin],
   vuex: {
     getters: {
+      context: getContext,
       vocab: getVocabulary,
       settings: getSettings,
       editorData: getEditorData,

@@ -20,24 +20,17 @@ export default class Import extends View {
     this.transition = false;
     this.params = window.urlArgs;
 
-    VocabUtil.getVocab().then((vocab) => {
-      self.vocab = vocab['@graph'];
-      self.vocabMap = new Map(vocab['@graph'].map((entry) => [entry['@id'], entry]));
-      DisplayUtil.getDisplayDefinitions().then((display) => {
-        self.display = display;
-        self.initVue();
-      }, (error) => {
-        // showError(error);
-      });
+    self.getLdDepencendies().then(() => {
+      self.initVue();
     }, (error) => {
-      // showError(error);
+      console.log("Everything broke", error);
     });
   }
 
   initVue(vocab, vocabPfx, params) {
     const self = this;
     Vue.use(Vuex);
-    
+
     document.getElementById('body-blocker').addEventListener('click', function () {
       self.vm.$broadcast('close-modals');
     }, false);
@@ -105,6 +98,7 @@ export default class Import extends View {
       ready() {
         this.changeSettings(self.settings);
         this.loadVocab(self.vocab);
+        this.loadContext(self.context);
         this.loadVocabMap(self.vocabMap);
         this.loadDisplayDefs(self.display);
         LayoutUtil.showPage(this);

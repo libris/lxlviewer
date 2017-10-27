@@ -13,8 +13,8 @@ import * as StringUtil from '../utils/string';
 import * as LayoutUtil from '../utils/layout';
 import CreateNewForm from '../components/create-new-form';
 import HelpComponent from '../components/help-component';
-import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData, getStatus, getKeybindState } from '../vuex/getters';
-import { changeSettings, changeNotification, loadVocab, loadVocabMap, loadDisplayDefs, syncData, changeSavedStatus, changeStatus } from '../vuex/actions';
+import { getSettings, getVocabulary, getContext, getDisplayDefinitions, getEditorData, getStatus, getKeybindState } from '../vuex/getters';
+import { changeSettings, changeNotification, loadVocab, loadContext, loadVocabMap, loadDisplayDefs, syncData, changeSavedStatus, changeStatus } from '../vuex/actions';
 
 export default class CreateNew extends View {
 
@@ -25,17 +25,17 @@ export default class CreateNew extends View {
     this.transition = false;
     this.language = 'sv';
 
-    VocabUtil.getVocab().then((vocab) => {
-      self.vocabMap = new Map(vocab['@graph'].map((entry) => [entry['@id'], entry]));
-      self.vocab = vocab['@graph'];
+    self.getLdDepencendies().then(() => {
       self.initVue();
+    }, (error) => {
+      console.log("Everything broke", error);
     });
   }
 
   initVue() {
     const self = this;
     Vue.use(Vuex);
-    
+
     document.getElementById('body-blocker').addEventListener('click', function () {
       self.vm.$broadcast('close-modals');
     }, false);
@@ -56,6 +56,7 @@ export default class CreateNew extends View {
         actions: {
           syncData,
           loadVocab,
+          loadContext,
           loadVocabMap,
           loadDisplayDefs,
           changeSettings,
@@ -67,6 +68,7 @@ export default class CreateNew extends View {
           settings: getSettings,
           editorData: getEditorData,
           vocab: getVocabulary,
+          context: getContext,
           display: getDisplayDefinitions,
           status: getStatus,
           keybindState: getKeybindState,
@@ -98,6 +100,7 @@ export default class CreateNew extends View {
       ready() {
         this.changeSettings(self.settings);
         this.loadVocab(self.vocab);
+        this.loadContext(self.context);
         this.loadVocabMap(self.vocabMap);
         LayoutUtil.showPage(this);
         document.title = `${StringUtil.getUiPhraseByLang('Create new', this.settings.language)} - ${this.settings.siteInfo.title}`;
