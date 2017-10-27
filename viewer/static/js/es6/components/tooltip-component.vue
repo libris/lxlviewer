@@ -19,6 +19,7 @@ export default {
     tooltipText: '',
     translation: '',
     showTooltip: false,
+    hoverTooltip: false,
   },
   components: {
   },
@@ -26,7 +27,7 @@ export default {
   },
   computed: {
     compShowTooltip() {
-      return this.showTooltip;
+      return !this.hoverTooltip && this.showTooltip;
     },
     translatedText() {
       if (this.translation === 'labelByLang') {
@@ -44,7 +45,7 @@ export default {
 </script>
 
 <template>
-  <div class="tooltip-container-outer" :class="{ 'show-tooltip': compShowTooltip }">
+  <div class="tooltip-container-outer" :class="{ 'show-tooltip': compShowTooltip }" @mouseover="hoverTooltip = true" @mouseleave="hoverTooltip = false">
     <div class="tooltip-container-inner" >
       {{translatedText | capitalize}}
     </div>
