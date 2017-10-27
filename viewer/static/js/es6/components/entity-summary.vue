@@ -1,4 +1,5 @@
 <script>
+import SummaryActionButton from './summary-action-button';
 import LensMixin from './mixins/lens-mixin';
 import * as StringUtil from '../utils/string';
 import { getSettings, getVocabulary, getContext, getDisplayDefinitions, getEditorData } from '../vuex/getters';
@@ -15,6 +16,7 @@ export default {
     isExtractable: false,
     importItem: '',
     isImport: false,
+    actionSettings: {},
   },
   vuex: {
     getters: {
@@ -27,7 +29,13 @@ export default {
   },
   data() {
     return {
-      keyword: '',
+      defaultSettings: {
+        show: false,
+        styling: 'gray',
+        text: '',
+        payload: {},
+        event: '',
+      },
     }
   },
   computed: {
@@ -71,6 +79,7 @@ export default {
     },
   },
   components: {
+    'summary-action-button': SummaryActionButton,
   },
   watch: {
   },
@@ -98,6 +107,7 @@ export default {
     </ul> -->
   </div>
   <div class="identifiers">
+    <summary-action-button :settings="actionSettings || defaultSettings"></summary-action-button>
     <ul>
       <li v-for="v in identifiers" track-by="$index">{{v}}</li>
     </ul>

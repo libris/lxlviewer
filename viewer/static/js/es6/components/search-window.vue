@@ -31,6 +31,18 @@ export default {
       showHelp: false,
       searchMade: false,
       currentSearchTypes: [],
+      localEntitySettings: {
+        text: 'Create and link entity',
+        styling: 'brand',
+        event: 'extract-item',
+        show: true,
+      },
+      listItemSettings: {
+        text: 'Replace local entity',
+        styling: 'brand',
+        event: 'replace-local',
+        show: true,
+      }
     };
   },
   vuex: {
@@ -57,6 +69,9 @@ export default {
     canCopyTitle: false,
   },
   events: {
+    'replace-local'(item) {
+      this.replaceLocal(item);
+    },
   },
   components: {
     'entity-search-list': EntitySearchList,
@@ -103,6 +118,10 @@ export default {
     this.currentSearchTypes = this.getRange;
   },
   methods: {
+    addPayload(item) {
+      const updatedListItemSettings = _.merge({payload: item}, _.cloneDeep(this.listItemSettings));
+      return updatedListItemSettings;
+    },
     resetWindow() {
       this.copyTitle = false;
     },
@@ -236,10 +255,6 @@ export default {
                 </div>
               </div>
               <div class="controls">
-                <button class="acceptExtractButton" v-on:click="doExtract" v-show="!extracting">
-                  <i class="fa fa-link"></i>
-                  {{ "Create and link entity" | translatePhrase }}
-                </button>
               </div>
             </div>
             <div class="extract-controls">
@@ -249,13 +264,13 @@ export default {
               </div>
             </div>
             <div class="summary-container">
-              <entity-summary :focus-data="itemInfo" :lines="4"></entity-summary>
+              <entity-summary v-show="!extracting" :action-settings="localEntitySettings" :focus-data="itemInfo" :lines="4"></entity-summary>
             </div>
           </div>
           <div class="result-list-container">
             <div v-show="displaySearchList" class="search-result">
               <div v-for="item in searchResult" class="search-item">
-                <entity-summary @click="replaceLocal(item)" :focus-data="item" :lines="4"></entity-summary>
+                <entity-summary :action-settings="addPayload(item)" :add-link="true" :focus-data="item" :lines="4"></entity-summary>
               </div>
             </div>
             <div v-show="extracting || keyword.length === 0 || loading || foundNoResult" class="search-status-container">
@@ -297,17 +312,17 @@ export default {
               border: solid #777;
               margin: 4px;
               border-width: 1px;
-              cursor: pointer;
-              transition: all 0.1s ease;
-              &:hover {
-                background: darken(@white, 5%);
-                .header {
-                  color: darken(@brand-primary, 5%);
-                }
-              }
-              .header {
-                color: @brand-primary;
-              }
+              // cursor: pointer;
+              // transition: all 0.1s ease;
+              // &:hover {
+              //   background: darken(@white, 5%);
+              //   .header {
+              //     color: darken(@brand-primary, 5%);
+              //   }
+              // }
+              // .header {
+              //   color: @brand-primary;
+              // }
             }
           }
           .search-status-container {
