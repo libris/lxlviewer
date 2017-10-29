@@ -1,6 +1,6 @@
 {
   "instance": {
-    "rdabook": {
+    "printedmonograph": {
       "label": "Bok",
       "description": "Tryckt monografi - RDA",
       "value": {
@@ -27,7 +27,8 @@
           "hasTitle": [{
               "@type": "Title",
               "mainTitle": "",
-              "subtitle": ""
+              "subtitle": "",
+              "marc:nonfilingChars": "0"
             },
             {
               "@type": "ParallelTitle",
@@ -162,6 +163,177 @@
         }
       }
     },
+    "electronicmonograph": {
+      "label": "E-Bok",
+      "description": "Elektronisk monografi - RDA",
+      "value": {
+        "record": {
+          "marc:encLevel": {
+            "@id": "marc:MinimalLevel"
+          },
+          "descriptionConventions": [{
+              "@id": "marc:Isbd"
+            },
+            {
+              "@type": "DescriptionConventions",
+              "code": "rda"
+            }
+          ],
+          "descriptionLanguage": [{
+            "@id": "https://id.kb.se/language/swe",
+            "code": "swe"
+          }]
+        },
+        "mainEntity": {
+          "@type": "Electronic",
+          "issuanceType": "Monograph",
+          "hasTitle": [{
+              "@type": "Title",
+              "mainTitle": "",
+              "subtitle": "",
+              "marc:nonfilingChars": "0"
+            },
+            {
+              "@type": "ParallelTitle",
+              "mainTitle": ""
+            }
+          ],
+          "responsibilityStatement": "",
+          "identifiedBy": [{
+            "@type": "ISBN",
+            "value": "",
+            "note": ""
+          }],
+          "editionStatement": "",
+          "editionStatementRemainder": "",
+          "publication": [{
+            "@type": "Publication",
+            "place": {
+              "@type": "Place",
+              "label": ""
+            },
+            "agent": {
+              "@type": "Agent",
+              "label": ""
+            },
+            "date": ""
+          }],
+          "marc:publicationStatus": {
+            "@id": "marc:SingleKnownDateProbableDate"
+          },
+          "publicationCountry": [{
+            "@id": "https://id.kb.se/country/sw"
+          }],
+          "copyrightDate": [{
+            "@type": "Copyright",
+            "date": ""
+          }],
+          "mediaType": [{
+            "@type": "MediaType",
+            "code": "n",
+            "termGroup": "rdamedia"
+          }],
+          "carrierType": [{
+            "@type": "CarrierType",
+            "code": "",
+            "termGroup": "rdacarrier"
+          }],
+          "extent": [{
+            "@type": "Extent",
+            "label": ""
+          }],
+          "digitalCharacteristic": {
+            "@type": "FileType",
+            "label": ""
+          },
+          "systemRequirement": [{
+            "@type": "SystemRequirement",
+            "marc:systemDetailsNote": ""
+          }],
+          "hasDimensions": {
+            "@type": "Dimensions",
+            "label": ""
+          },
+          "seriesStatement": "",
+          "hasSeries": [{
+            "@type": "Serial",
+            "title": "",
+            "issn": ""
+          }],
+          "hasNote": [{
+            "@type": "Note",
+            "label": ""
+          }],
+          "instanceOf": {
+            "@type": "Text",
+            "language": [{
+              "@id": "https://id.kb.se/language/swe"
+            }],
+            "genreForm": [{
+                "@id": "marc:NotFictionNotFurtherSpecified"
+              },
+              {
+                "@type": "GenreForm",
+                "inScheme": {
+                  "@type": "ConceptScheme",
+                  "@id": "https://id.kb.se/term/saogf",
+                  "code": "saogf"
+                }
+              }
+            ],
+            "classification": [{
+                "@type": "ClassificationDdc",
+                "inScheme": {
+                  "@type": "ConceptScheme",
+                  "@id": "http://dewey.info/scheme/edition/e23/swe/",
+                  "version": "23",
+                  "language": "swe"
+                }
+              },
+              {
+                "@type": "Classification",
+                "inScheme": {
+                  "@type": "ConceptScheme",
+                  "@id": "https://id.kb.se/term/kssb/8",
+                  "code": "kssb/8"
+                }
+              }
+            ],
+            "contribution": [{
+                "@type": "PrimaryContribution",
+                "agent": {
+                  "@type": "Person",
+                  "name": ""
+                },
+                "role": [{
+                  "code": "aut"
+                }]
+              },
+              {
+                "@type": "Contribution",
+                "agent": {
+                  "@type": "Person",
+                  "name": ""
+                }
+              }
+            ],
+            "contentType": [{
+              "@type": "Content",
+              "code": "txt",
+              "termGroup": "rdacontent"
+            }],
+            "subject": [{
+              "@type": "Topic",
+              "inScheme": {
+                "@type": "ConceptScheme",
+                "@id": "https://id.kb.se/term/sao",
+                "code": "sao"
+              }
+            }]
+          }
+        }
+      }
+    },
     "music-cd": {
       "label": "Musik-CD",
       "description": "Ljudinspelning",
@@ -188,13 +360,19 @@
           "hasTitle": [{
             "@type": "Title",
             "mainTitle": "",
-            "subtitle": ""
+            "subtitle": "",
+            "marc:nonfilingChars": "0"
           }],
           "responsibilityStatement": "",
           "identifiedBy": [{
-            "@type": "AudioIssueNumber",
-            "value": ""
-          }],
+              "@type": "AudioIssueNumber",
+              "value": ""
+            },
+            {
+              "@type": "EAN",
+              "value": ""
+            }
+          ],
           "publication": [{
             "@type": "Publication",
             "place": {
@@ -301,7 +479,7 @@
         }
       }
     },
-    "handprinted": {
+    "handPrintedBook": {
       "label": "Äldre tryck",
       "description": "",
       "value": {
@@ -1119,8 +1297,8 @@
       }
     },
     "periodical": {
-      "label": "Tidskrift",
-      "description": "RDA Seriell resurs",
+      "label": "Tryckt seriell resurs",
+      "description": "RDA",
       "value": {
         "record": {
           "marc:encLevel": {
@@ -1186,15 +1364,10 @@
           ]
         },
         "mainEntity": {
+          "@type": "Instance",
           "issuanceType": "Serial",
           "publicationCountry": [{
             "@id": "https://id.kb.se/country/sw"
-          }],
-          "marc:typeOfEntry": {
-            "@id": "marc:SuccessiveEntry"
-          },
-          "identifiedBy": [{
-            "@type": "ISSN"
           }],
           "hasTitle": [{
               "@type": "KeyTitle"
@@ -1205,6 +1378,12 @@
               "titleRemainder": ""
             }
           ],
+          "marc:typeOfEntry": {
+            "@id": "marc:SuccessiveEntry"
+          },
+          "identifiedBy": [{
+            "@type": "ISSN"
+          }],
           "publication": [{
             "@type": "Publication",
             "place": {
@@ -1220,7 +1399,6 @@
             "@type": "Serial"
           }],
           "temporalCoverage": "",
-          "@type": "Instance",
           "instanceOf": {
             "@type": "Text",
             "language": [{
@@ -1362,6 +1540,11 @@
           "name": "",
           "familyName": "",
           "givenName": "",
+          "identifiedBy": [{
+            "@type": "Identifier",
+            "typeNote": "isni",
+            "value": ""
+          }],
           "gender": "",
           "hasOccupation": [{
             "@type": "Occupation",
@@ -1383,7 +1566,7 @@
       }
     },
     "family": {
-      "label": "Family",
+      "label": "Släkt",
       "description": "Agent",
       "value": {
         "record": {
@@ -1418,7 +1601,11 @@
         },
         "mainEntity": {
           "@type": "Family",
-          "name": ""
+          "name": "",
+          "nationality": {
+            "@id": "https://id.kb.se/nationality/e-sw---",
+            "code": "e-sw---"
+          }
         }
       }
     },
