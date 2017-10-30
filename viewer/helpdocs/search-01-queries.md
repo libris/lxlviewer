@@ -32,13 +32,11 @@ Se även Booleska operatorer i elasticsearch dokumentationssidor
 
 https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html#_boolean_operators
 
-## Grupperingar
-
-Se även https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html#_grouping
 
 ## Reserverade tecken
 
 Om du behöver använda tecken i din sökfråga som innehåller en operator kan du undanta detta med ett omvänt snedstreck som skiftestecken.
+
 Exempel en sökning på `(1+1)=2`, så behöver sökfrågan utformas `\(1\+1\)\=2`.
 
 Lista på reserverade tecken: 
