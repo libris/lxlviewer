@@ -321,7 +321,6 @@ export default class Editor extends View {
         },
         initiateWarnBeforeUnload() {
           window.addEventListener("beforeunload", (e) => {
-            if (this.status.isNew) return false;
             if (!self.dirty) {
               return undefined;
             }
@@ -344,7 +343,6 @@ export default class Editor extends View {
         editItem() {
           if (UserUtil.isLoggedIn(window.userInfo)) {
             self.dirty = true;
-            this.initiateWarnBeforeUnload();
             this.changeStatus('inEdit', true);
           } else {
             window.location = '/login';
@@ -429,6 +427,7 @@ export default class Editor extends View {
         this.changeStatus('keybindState', 'overview');
         this.changeStatus('isNew', false);
         this.updateDocumentTitle(this.entityTitle);
+        this.initiateWarnBeforeUnload();
 
         // this.getRelatedTitles();
 
