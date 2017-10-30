@@ -9,7 +9,7 @@ import * as LayoutUtil from '../utils/layout';
 import remoteSearch from '../components/remote-search';
 import HelpComponent from '../components/help-component';
 import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData, getKeybindState, getStatus } from '../vuex/getters';
-import { changeSettings, changeStatus, changeNotification, loadVocab, loadVocabMap, loadDisplayDefs, changeSavedStatus, changeResultListStatus } from '../vuex/actions';
+import { changeSettings, changeStatus, changeNotification, loadVocab, loadVocabMap, loadContext, loadDisplayDefs, changeSavedStatus, changeResultListStatus } from '../vuex/actions';
 
 export default class Import extends View {
 
@@ -51,6 +51,7 @@ export default class Import extends View {
         actions: {
           loadVocab,
           loadVocabMap,
+          loadContext,
           loadDisplayDefs,
           changeSettings,
           changeStatus,
