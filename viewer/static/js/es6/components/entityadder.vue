@@ -181,6 +181,7 @@ export default {
       if (this.valueList.length > 0) {
         this.addEmbedded = false;
       }
+      this.showToolTip = false;
       this.selectedType = '';
     },
     add() {
