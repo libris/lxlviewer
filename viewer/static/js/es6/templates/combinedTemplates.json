@@ -510,6 +510,7 @@
           "marc:publicationStatus": {
             "@id": "marc:SingleKnownDateProbableDate"
           },
+          "marc:otherPhysicalDetails": "",
           "publicationCountry": [{
             "@id": "https://id.kb.se/country/sw"
           }],
