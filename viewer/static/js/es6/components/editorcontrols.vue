@@ -40,8 +40,10 @@ export default {
   },
   events: {
     'close-modals'() {
-      this.closeDuplicateDialog();
       return true;
+    },
+    'toggle-editor-focus'() {
+      this.toggleEditorFocus();
     },
   },
   watch: {
@@ -74,16 +76,8 @@ export default {
       this.loadingEdit = true;
       setTimeout(() => this.$dispatch('edit-item'), 0); // $nextTick doesn't work
     },
-    duplicate() {
-      this.duplicating = true;
-      this.$dispatch('duplicate-item');
-    },
     navigateFormChanges(direction) {
       this.navigateChangeHistory(this.status.editorFocus, direction);
-    },
-    openDuplicateWindow() {
-      this.showDuplicateWindow = true;
-      LayoutUtil.scrollLock(true);
     },
     toggleDev() {
       this.changeStatus('isDev', !this.status.isDev);
@@ -133,10 +127,6 @@ export default {
         setTimeout(() => this.$dispatch('cancel-edit'), 0);
       }
     },
-    closeDuplicateDialog() {
-      this.showDuplicateWindow = false;
-      LayoutUtil.scrollLock(false);
-    },
     download(text) {
       const element = document.createElement('a');
       element.setAttribute('href', 'data:application/octet-stream,' + encodeURIComponent(text));
@@ -157,29 +147,15 @@ export default {
       });
     },
     handleCopy() {
-      this.buildCopiedRecord();
-      if (Modernizr.history) {
-        history.pushState(this.copyRecord, 'unused', '/edit');
-        this.$dispatch('new-editordata', this.copyRecord);
-        this.changeStatus('isCopy', true);
-        this.changeNotification('color', 'green');
-        this.changeNotification('message', `${StringUtil.getUiPhraseByLang('Copy successful', this.settings.language)}!`);
-      }
-    },
-    buildCopiedRecord() {
-      const mainEntity = _.cloneDeep(this.editorData.mainEntity);
-      this.copyRecord = RecordUtil.splitJson(RecordUtil.getObjectAsRecord(mainEntity, this.editorData.record));
+      this.$dispatch('duplicate-item');
     },
   },
   data() {
     return {
       showAdminInfoDetails: false,
-      showDuplicateWindow: false,
-      duplicating: false,
       otherFormatMenu: false,
       loadingEdit: false,
       loadingCancel: false,
-      copyRecord: {},
     };
   },
   computed: {
@@ -267,13 +243,13 @@ export default {
             </div>
             <ul class="dropdown-menu">
               <li>
-                <a @click="formControl('expandAll')">
+                <a @click="formControl('expand-item')">
                 <i class="fa fa-fw fa-expand" aria-hidden="true"></i>
                 {{"Expand all" | translatePhrase}}
                 </a>
               </li>
               <li>
-                <a @click="formControl('collapseAll')">
+                <a @click="formControl('collapse-item')">
                 <i class="fa fa-fw fa-compress" aria-hidden="true"></i>
                 {{"Collapse all" | translatePhrase}}
                 </a>
@@ -333,38 +309,6 @@ export default {
             {{ "Edit" | translatePhrase }}
           </button>
         </div>
-      </div>
-    </div>
-    <div class="window duplicate-dialog" v-if="showDuplicateWindow">
-      <div class="header">
-        <span class="title">
-          {{ "Duplicera post" | translatePhrase }}
-        </span>
-        <span class="windowControl">
-          <i v-on:click="closeDuplicateDialog()" class="fa fa-close"></i>
-        </span>
-      </div>
-      <div v-if="!hasLocalWork" class="body">
-        <p class="duplicateLeadingText">
-          Detta kommer att skapa en kopia av denna posten med samma innehåll som vid senaste sparning. Sedan skickas du vidare till den skapade posten.
-        </p>
-        <hr>
-        <div class="button-container">
-          <p>
-            Vill du fortsätta?
-          </p>
-          <button class="acceptDuplicateButton" v-on:click="duplicate()" v-show="!duplicating">{{ "Ja" | translatePhrase }}</button>
-          <button class="declineDuplicateButton" v-on:click="closeDuplicateDialog()" v-show="!duplicating">{{ "Nej" | translatePhrase }}</button>
-          <div v-show="duplicating"><i class="fa fa-circle-o-notch fa-spin" aria-hidden="true"></i> {{ "Kopierar" | translatePhrase }}</div>
-        </div>
-      </div>
-      <div v-if="hasLocalWork" class="body">
-        <p class="duplicateLeadingText">
-          Denna post innehåller ett lokalt verk och kan därför inte kopieras.
-        </p>
-        <p class="duplicateLeadingText">
-          Bryt ut det lokala verket för att fortsätta.
-        </p>
       </div>
     </div>
   </div>
@@ -496,27 +440,6 @@ export default {
         columns: 2;
         column-fill: balance;
         overflow: hidden;
-      }
-    }
-  }
-  .duplicate-dialog {
-    .window-mixin();
-    .body {
-      padding: 2em;
-      .duplicateLeadingText {
-        text-align: center;
-      }
-      .button-container {
-        text-align: center;
-        button {
-          padding: 0px 1em;
-        }
-        .acceptDuplicateButton {
-          margin-right: 2em;
-        }
-        .declineDuplicateButton {
-
-        }
       }
     }
   }

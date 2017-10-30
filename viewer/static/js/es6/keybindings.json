@@ -1,6 +1,15 @@
 {
   "overview": {
-    "mod+shift+f": "open-add-field-window",
+    // "mod+shift+f": "open-add-field-window",
+    "mod+s": "save-item",
+    "mod+e": "edit-item",
+    "mod+q": "cancel-edit",
+    "mod+z": "navigate-change-history|back",
+    "mod+plus": "form-control|expand-item",
+    "mod+minus": "form-control|collapse-item",
+    "mod+shift+left": "form-control|toggle-editor-focus",
+    "mod+shift+right": "form-control|toggle-editor-focus",
+    "mod+shift+c": "duplicate-item",
   },
   "field-adder": {
     "esc": "close-modals",
