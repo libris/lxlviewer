@@ -70,7 +70,7 @@ Anvisningar för att beskriva en tryckt monografi i Libris XL
 
 ---
 
-### Föredragen källa (RDA 2.2)
+## Föredragen källa
 
 Börja med den information som finns på titelsidan (RDA 2.1.2.2 och RDA 2.2.2.2).
 
@@ -84,32 +84,19 @@ Om det finns flera titelsidor eller olika källor med olika datum, använd i fö
 
 Om resursen saknar titelsida eller annan källa med information som är nödvändig för att identifiera resursen, använd information som finns på (i denna ordning): medföljande material som inte är en del av resursen själv, annan publicerad beskrivning av resursen, en förpackning, annan tillgänglig källa. Klamra information som hämtats utanför resursen (RDA 2.2.4).
 
-### Utgivningssätt (RDA 2.13)
+Se RDA 2.2
+
+## Utgivningssätt
 
 Ange utgivningssätt för den beskrivna resursen. Elementet reflekterar om en resurs är utgiven i en eller flera delar, på vilket sätt den uppdateras, och dess tänkta avslutning. Tidigare kallad bibliografisk nivå.
 
-### Titelinformation
+Se RDA 2.13
 
-    TODO:
+## Titel
 
-I Libris XL så samlas alla titlar som är en del av den beskrivna resursens i en grupp kallad hasTitle (Har titel).
+> TODO: 
 
-Ur den kan man lägga till flera titeltyper bland annat huvudelementet Title och dess del mainTitle (Huvudtitel)
-
-För instansen/manifestationen
-
-Det finns x antal titeltyper
-
-Varje titelentitet kan delas in
-
-mainTitle
-subtitle
-partNumber
-etc etc...
-
-
-
-### Upphovsuppgift (RDA 2.4)
+## Upphovsuppgift
 
 Upphovsuppgift som hänför sig till huvudtiteln är ett kärnelement och anges i detta fält. Om det finns mer än en, är endast den första ett kärnelement.
 
@@ -124,13 +111,16 @@ Endast upphovsuppgifter som hämtas från en källa utanför resursen ska klamra
 Återge upphovsuppgiften som den förekommer i källan, RDA 2.4.1.4.
 I RDA 2.4.1.4 finns en valfri uteslutning som gör det möjligt att förkorta omfångsrika upphovsuppgifter men bara om det kan göras utan att värdefull information förloras. Librispraxis är att generellt inte förkorta upphovsuppgifter.
 
-`Kiki Lundberg och Carina Trägårdh Tornhill ; faktagranskare: Eva Skoog, leg. dietist, Lisa Lundmark, leg. dietist och Elisabeth Nilsson, leg. sjuksköterska ; fotografi: Helén Sahlstrand, Härlig hälsa, Istock, Shutterstock`
 
-#### Upphovsuppgift med mer än en namngiven agent
+> `Kiki Lundberg och Carina Trägårdh Tornhill ; faktagranskare: Eva Skoog, leg. dietist, Lisa Lundmark, leg. dietist och Elisabeth Nilsson, leg. sjuksköterska ; fotografi: Helén Sahlstrand, Härlig hälsa, Istock, Shutterstock`
+
+Se RDA 2.4
+
+### Upphovsuppgift med mer än en namngiven agent
 
 Återge varje enskild upphovsuppgift som ett element oavsett om två eller flera personer etc. som omnämns har samma eller olika funktioner, RDA 2.4.1.5.
 
-`Helena Rosén Andersson, Eva-Maj Mühlenbock, Henrik Willquist, Natalie Svensson`
+> `Helena Rosén Andersson, Eva-Maj Mühlenbock, Henrik Willquist, Natalie Svensson`
 
 **Valfri uteslutning:** Om en enskild upphovsuppgift namnger fler än tre personer, familjer/släkter eller institutioner, uteslut alla utom den första personen etc. Uteslutningen markeras med en klamrad summering av vad som uteslutits.
 
@@ -141,15 +131,15 @@ NB-praxis: Generellt, tillämpa inte den valfria uteslutningen.
 
 När kunskap finns, ska summeringen vara på resursens språk.
 
-`Knut Sydsæter [and three others]`
+> `Knut Sydsæter [and three others]`
 
-    TODO: återstående anvisningar
+> TODO: återstående anvisningar 
 
-### Identifikator för manifestationen, RDA 2.15
+## Identifikator
 
 Identifikatorn är en teckensträng som är knuten till en resurs och ska användas för att särskilja resursen från andra.
 
-    TODO: utöka anvisningar
+> TODO: utöka anvisningar
 
   * Lägg till Identifikator
   * Välj:  ISBN
@@ -161,30 +151,32 @@ Identifikatorn är en teckensträng som är knuten till en resurs och ska använ
 
 Bandtyper
 
-    inbunden	
-      board book
-      halvfranskt band
-      halvklotband
-      kartonnage
-      klotband
-    häftad	
-      danskt band
-      flipback-bok
-      flexband
-      pocket
-      storpocket
-    spiralhäftad	
-    spiralbunden	
+    inbunden  
+      board book  
+      halvfranskt band  
+      halvklotband  
+      kartonnage  
+      klotband  
+    häftad  
+      danskt band 
+      flipback-bok  
+      flexband  
+      pocket  
+      storpocket  
+    spiralhäftad  
+    spiralbunden  
 
 Om katalogisatören bedömer det viktigt att ange bandtyp, och resursen inte har ett ISBN, ska uppgiften om bandtyp anges i en vanlig anmärkning.
 
-    I ringpärm
+> `I ringpärm`
 
 Ange bestämningar som hämtas från resursen i den form de har där och bestämningar som hämtas utanför resursen i utskriven form. Ange till exempel kart. om det står så i resursen, och annars den utskrivna formen kartonnage.
 
-    TODO: ogiltiga isbn etc.
+> TODO: ogiltiga isbn etc.
 
-### Upplageuppgift, RDA 2.5
+Se RDA 2.15
+
+## Upplageuppgift
 
 Upplagebeteckning och påföljande upplagebeteckning är kärnelement. Övriga underelement är valfria.
 
@@ -194,50 +186,60 @@ Upplagebeteckning och påföljande upplagebeteckning är kärnelement. Övriga u
 
 Om en resurs saknar upplageuppgift men det är känt att betydliga ändringar från tidigare upplagor gjorts, tillämpa det valfria tillägget och lägg till en upplageuppgift, om det är viktigt för identifikation och åtkomst, RDA 2.5.1.2. Ange uppgiften inom klammer på huvudtitelns språk. För resurser med huvudtitel på svenska, följ Svenska skrivreglers rekommendation och använd termen "upplaga" för förändrat innehåll.
 
-`[Utökad upplaga]`
+> `[Utökad upplaga]`
 
-#### Upplagebeteckning
+Se RDA 2.5
+
+### Upplagebeteckning
 
 TODO: editionEnumeration?
 Upplagebeteckning är ett kärnelement och anges i delfält 250 #a. Hämta uppgiften från följande källor (i denna ordning): samma källa som huvudtiteln, en annan källa inom resursen, en annan av de källor som specificeras i RDA 2.2.4.
 
-- `Ny udgave`
-- `*** ed.`
-- `1st ed.`
-- `Svensk utgåva [när uppgiften utgör upplageuppgift]`
-- `Första upplagans första tryckning`
-- `Uppl. 1`
+> `Ny udgave`
+
+> `*** ed.`
+
+> `1st ed.`
+
+> `Svensk utgåva [när uppgiften utgör upplageuppgift]`
+
+> `Första upplagans första tryckning`
+
+> `Uppl. 1`
 
 
 **Upplagebeteckning på mer än ett språk eller i mer än en skriftart**
 
-Om upplagebeteckningen förekommer i källan på mer än ett språk eller i mer än en skriftart, återge den uppgift som är på huvudtitelns språk eller i dess skriftart. Om detta kriterium inte går att tillämpa, återge den upplagebeteckning som kommer först i källan, RDA 2.5.2.4.
+Om upplagebeteckningen förekommer i källan på mer än ett språk eller i mer än en skriftart, återge den uppgift som är på huvudtitelns språk eller i dess skriftart. Om detta kriterium inte går att tillämpa, återge den upplagebeteckning som kommer först i källan.
+
+Se RDA 2.5.2.4.
 
 **Upplagebeteckning som är en del av huvudtitel, etc.**
 
-- `Tenth anniversary edition of Economic justice for all`
-- `The compact edition of the Oxford English Dictionary`
+>`Tenth anniversary edition of Economic justice for all`
+
+> `The compact edition of the Oxford English Dictionary`
 
 Upplagebeteckning som är en integrerad del av huvudtitel, övrig titelinformation eller upphovsuppgift, eller grammatiskt sammanhängande med något av dessa element ska anges tillsammans med det element som det är en del av. 
 
 _Ange det inte igen som en upplagebeteckning, RDA 2.5.2.6._
 
-### Upplagespecifik upphovsuppgift
+## Upplagespecifik upphovsuppgift
 Ej kärnelement.
 
 NB-praxis: Obligatoriskt att ange upplagespecifik upphovsuppgift (RDA 2.5.4).
 
-    TODO:LibrisXL element
+    TODO:LibrisXL element 
 
 Upplagespecifika upphovsuppgifter består av en upplagebeteckning och en upphovsuppgift som båda finns i samma källa och relaterar till just den upplagan. Det är endast bidragsgivare (aldrig skapare) som kan vara upplagespecifika. Hämta alltid upplagespecifika upphovsuppgifter från samma källa som upplagebeteckningen.
 
-`Tredje upplagan / reviderad och korrigerad av Maja Lindblad`
+> `Tredje upplagan / reviderad och korrigerad av Maja Lindblad`
 
-_(I källan, på insidan av bakre omslag: ”Tredje upplagan, reviderad och korrigerad av Maja Lindblad”)_
+> _(I källan, på insidan av bakre omslag: ”Tredje upplagan, reviderad och korrigerad av Maja Lindblad”)_
 
-#### Påföljande upplagebeteckning
+### Påföljande upplagebeteckning
 
-    TODO: anvisningar
+    TODO: anvisningar 
 
 Påföljande upplagebeteckning är ett kärnelement.
 
@@ -248,28 +250,38 @@ RDA 2.2.4.
     TODO: example
     250			#a 6. upplagan, rättad och reviderad
 
-#### Påföljande upplagebeteckning på mer än ett språk eller i mer än en skriftart
+### Påföljande upplagebeteckning på mer än ett språk eller i mer än en skriftart
 
-Om påföljande upplagebeteckning förekommer i källan på mer än ett språk eller i mer än en skriftart, återge den uppgift som är på huvudtitelns språk eller i dess skriftart. Om detta kriterium inte går att tillämpa, återge den påföljande upplagebeteckning som kommer först i källan, RDA 2.5.6.4.
+Om påföljande upplagebeteckning förekommer i källan på mer än ett språk eller i mer än en skriftart, återge den uppgift som är på huvudtitelns språk eller i dess skriftart. Om detta kriterium inte går att tillämpa, återge den påföljande upplagebeteckning som kommer först i källan.
 
-#### Upphovsuppgifter som hänför sig till påföljande upplagebeteckning
+Se RDA 2.5.6.4.
+
+### Upphovsuppgifter som hänför sig till påföljande upplagebeteckning
 
 Ej kärnelement.
-NB-praxis: Obligatoriskt att ange upphovsuppgifter som hänför sig till påföljande upplagebeteckning (RDA 2.5.8).
+NB-praxis: Obligatoriskt att ange upphovsuppgifter som hänför sig till påföljande upplagebeteckning.
 
-### Utgivning (RDA 2.8)
+Se RDA 2.5.8
 
-    TODO:
+## Utgivning
 
-### Distributions (RDA 2.9)
+    TODO: 
 
-    TODO:
+Se RDA 2.8
 
-### Tillverkning (RDA 2.10)
+## Distributions
 
-    TODO:
+    TODO: 
 
-### Copyrightår (RDA 2.11)
+Se RDA 2.9
+
+## Tillverkning
+
+    TODO: 
+
+Se RDA 2.10
+
+## Copyrightår
 
 Copyrightår är inte ett kärnelement. 
 
@@ -277,13 +289,15 @@ Librispraxis är att ange copyrightår i elementet för copyrightår när uppgif
 
 Copyrightår ska föregås av symbolen © eller fonogramsymbolen ℗. Om symbolen inte kan återges ska tiden föregås av copyright eller phonogram copyright.
 
-### Medietyp, RDA 3.2 
+Se RDA 2.11
+
+## Medietyp
 
 Obligatoriskt enligt Librispraxis. 
 
 Medietyp anger vilken typ av enhet som behövs för att se, spela eller visa innehållet i resursen.
 
-    TODO: info om listan
+    TODO: info om listan 
 
 Källor för beskrivningen av medietyp är resursen, medföljande material eller förpackning/behållare. Uppgifter kan även hämtas utanför resursen.
 
@@ -294,8 +308,9 @@ Om resursen består av mer än en medietyp är Librispraxis att ange den mediety
 
 Om resursen består av flera likvärdiga delar (kombinerat material) ange medietyp för alla delarna.
 
+Se RDA 3.2 
 
-### Bärartyp, RDA 3.3
+## Bärartyp
 
 Bärartyp är ett kärnelement.
 
@@ -303,7 +318,7 @@ Bärartyp anger fysiskt medium för lagring samt den enhet som behövs för att 
 
 Källor för beskrivningen av bärare är resursen, medföljande material eller förpackning/behållare. Uppgifter kan även hämtas utanför resursen.
 
-    TODO: info om listan
+> TODO: info om listan
 
 Om ingen av termerna i listan är lämplig, välj "annan" (nz).
 Om bärartypen/bärartyperna inte lätt kan bestämmas, välj "ospecificerad" (zu).
@@ -314,7 +329,9 @@ Om resursen består av mer än en bärartyp är Librispraxis att ange den bärar
 - Librispraxis: Katalogisatören avgör om det valfria tillägget ska tillämpas.
 - NB-praxis: Tillämpa det valfria tillägget.
 
-### Omfång, RDA 3.4
+Se RDA 3.3
+
+## Omfång
 
 Omfång är ett kärnelement om resursen är komplett eller om det totala antalet fysiska enheter är känt. 
 
@@ -332,38 +349,52 @@ b) som ett alternativ till en term i listan
 * Librispraxis: Tillämpa alternativ a) och använd en vanligt förekommande term om bäraren inte finns i listan.
 För fysiska digitala resurser ska alternativ b) tillämpas. Använd t.ex. CD, CD-ROM, DVD, DVD-ROM och diskett i stället för term från listan.
 
-RDA har särskilda instruktioner för bland annat textresurser, se RDA 3.4.5 och nästa stycke.
+RDA har särskilda instruktioner för bland annat textresurser, 
 
-#### Omfång för text, RDA 3.4.5
+Se RDA 3.4, RDA 3.4.5 och nästa stycke.
 
-    TODO: 
+### Omfång för text
 
-### Mått, RDA 3.5
+    TODO:  
+
+Se RDA 3.4.5
+
+## Mått
 
 Enligt Librispraxis är det inte obligatoriskt att ange mått. Mått som är standard för bäraren anges inte.
 
 Om mått anges, och om instruktionerna inte säger något annat, ange mått i centimeter, avrundat uppåt till närmaste hela centimetertal. Ange måttet  i cm (om en volym mäter 17,2 cm, anges måttet som 18 cm).
 
-    25 cm
-    50 mm
-    21 x 37 cm`
-    27 cm i skyddskassett 28 x 25 x 5 cm
+> `25 cm`
 
+> `50 mm`
 
-### Serieuppgift (RDA 2.12)
+> `21 x 37 cm`
 
-    TODO:
+> `27 cm i skyddskassett 28 x 25 x 5 cm`
 
-### Anmärkningar (RDA 2.17)
+Se RDA 3.5
+
+## Serieuppgift
+
+> TODO:
+
+Se RDA 2.12
+ 
+## Anmärkningar
 
 Anmärkningar om manifestationen är inte ett kärnelement.
 
 Gör anmärkning när det bedöms viktigt för identifikation, urval eller åtkomst.
 
-### Teckengrad, RDA 3.13
+Se RDA 2.17
+
+## Teckengrad
 
 För resurser med typsnitt anpassat för personer med synnedsättning, ange storleken på typsnittet med termen stor stil.
 
-    TODO: example
+> `stor stil`
 
 Katalogisatören avgör om det valfria tillägget att ange storleken på typsnittet i antal punkter inom parentes ska tillämpas.
+
+Se RDA 3.13
