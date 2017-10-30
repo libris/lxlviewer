@@ -378,8 +378,8 @@ export default {
         .remove-option {
           a {
             &:hover {
-              color: #e6e6e6;
-              background-color: #986e6e;
+              color: @white;
+              background-color: #c55252;
             }
           }
         }
