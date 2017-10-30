@@ -113,8 +113,9 @@ export default {
 .help-component {
   .window {
     .window-mixin();
+    max-width: 1000px;
     .body {
-      padding: 0em 0em 0em 2em;
+      padding: 0em 0em 0em 1em;
       overflow-y: scroll;
       .content {
         padding: 2em 2em 3em 1em;
@@ -140,7 +141,7 @@ export default {
       }
       .menu {
         width: 20%;
-        margin: 2em 0em 0em 0em;
+        margin: 1em 0em 0em 0em;
         background-color: #e6e6e6;
         border-radius: 5px;
         float: left;
