@@ -2,6 +2,7 @@
 import * as _ from 'lodash';
 import * as DisplayUtil from '../utils/display';
 import * as DataUtil from '../utils/data';
+import * as StringUtil from '../utils/string';
 import EntitySummary from './entity-summary';
 import LensMixin from './mixins/lens-mixin';
 import ReverseRelations from '../components/reverse-relations';
@@ -53,7 +54,7 @@ export default {
     compactSummary() {
       let summary = [];
       _.each(this.getSummary, summaryArray => {
-        summary = summary.concat(summaryArray.map(obj => obj.value.join(' • ')));
+        summary = summary.concat(StringUtil.getFormattedEntries(summaryArray, this.vocab, this.settings));
       });
       return summary.join(' • ');
     },
