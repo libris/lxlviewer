@@ -104,7 +104,7 @@
                   <div class="navbar-circle">
                     <img class="user-gravatar" src="${current_user.get_gravatar_url()}" />
                   </div>
-                  ${current_user.get_username()} <span v-cloak class="sigelLabel">({{settings.userSettings.currentSigel}})</span> <i class="fa fa-angle-down" aria-hidden="true"></i>
+                  ${current_user.get_username()} <span v-cloak class="sigelLabel" v-if="initialized === true">({{settings.userSettings.currentSigel}})</span> <i class="fa fa-angle-down" aria-hidden="true"></i>
                 </a>
                 <ul class="dropdown-menu">
                   <li><a href="/usersettings"><i class="fa fa-cogs" aria-hidden="true"></i> <span class="js-translateable" data-translateable="Settings">Settings</span></a></li>
@@ -126,7 +126,7 @@
       </nav>
       {% endblock %}
       {% block jumbotron %}{% endblock %}
-      {% block wrapper %} 
+      {% block wrapper %}
       % if g.site.title == 'libris.kb.se'
       <div class="skeleton-page" :class="{'hide-skeleton': initialized==true}">
         <!-- <nav class="navbar skeleton-navbar">
@@ -159,7 +159,7 @@
         </main>
         <footer>
           % block footer
-  
+
               <div class="footer-container">
                 <div class="">
                   <div class="content-container">
@@ -215,7 +215,7 @@
                   </div>
                 </div>
               </div>
-  
+
           % endblock
         </footer>
       </div>
