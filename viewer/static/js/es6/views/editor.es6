@@ -25,7 +25,7 @@ import HeaderComponent from '../components/headercomponent';
 import Notification from '../components/notification';
 import ReverseRelations from '../components/reverse-relations';
 import { getSettings, getVocabulary, getContext, getVocabularyClasses, getVocabularyProperties, getDisplayDefinitions, getEditorData, getStatus, getKeybindState } from '../vuex/getters';
-import { changeSettings, changeNotification, loadVocab, loadContext, loadVocabMap, loadForcedListTerms, loadDisplayDefs, syncData, changeSavedStatus, changeStatus } from '../vuex/actions';
+import { changeSettings, changeNotification, loadVocab, loadContext, loadVocabMap, loadForcedListTerms, loadDisplayDefs, syncData, changeSavedStatus, changeStatus, navigateChangeHistory } from '../vuex/actions';
 
 
 function showError(error) {
@@ -96,6 +96,7 @@ export default class Editor extends View {
           changeSavedStatus,
           changeStatus,
           changeNotification,
+          navigateChangeHistory,
         },
         getters: {
           context: getContext,
@@ -114,6 +115,7 @@ export default class Editor extends View {
         combokeys: null,
         locked: true,
         relatedTitles: [],
+        copyRecord: {},
       },
       events: {
         'focus-update': function(value, oldValue) {
@@ -156,17 +158,29 @@ export default class Editor extends View {
           this.syncData(newData);
         },
         'save-item': function() {
-          this.saveItem();
+          if (this.status.inEdit) {
+            this.saveItem();
+          }
         },
         'show-marc': function() {
           this.$broadcast('open-marc');
         },
         'edit-item': function() {
-          this.editItem();
+          if (!this.status.inEdit) {
+            this.editItem();
+          }
         },
         'duplicate-item': function() {
-          this.doCreate(RecordUtil.getObjectAsRecord(this.editorData.mainEntity));
-          self.vm.changeStatus('isCopy', true);
+          if (!this.status.inEdit) {
+            this.buildCopiedRecord();
+            if (Modernizr.history) {
+              history.pushState(this.copyRecord, 'unused', '/edit');
+              this.$dispatch('new-editordata', this.copyRecord);
+              this.changeStatus('isCopy', true);
+              this.changeNotification('color', 'green');
+              this.changeNotification('message', `${StringUtil.getUiPhraseByLang('Copy successful', this.settings.language)}!`);
+            }
+          }
         },
         'cancel-edit': function() {
           this.changeStatus('inEdit', false);
@@ -186,11 +200,10 @@ export default class Editor extends View {
           }
         },
         'form-control'(control) {
-          if (control === 'expandAll') {
-            this.$broadcast('expand-item');
-          } else if (control === 'collapseAll') {
-            this.$broadcast('collapse-item');
-          }
+          this.$broadcast(control);
+        },
+        'navigate-change-history'(direction) {
+          this.navigateChangeHistory(this.status.editorFocus, direction);
         },
       },
       watch: {
@@ -215,7 +228,13 @@ export default class Editor extends View {
             _.each(stateSettings, (value, key) => {
               if (value !== null && value !== '') {
                 this.combokeys.bindGlobal(key.toString(), () => {
-                  this.$broadcast(value);
+                  const valueArray = value.split('|');
+                  if (state === 'overview') {
+                    this.$dispatch(valueArray[0], valueArray[1]);
+                  } else {
+                    this.$broadcast(valueArray[0], valueArray[1]);
+                  }
+                  return false;
                 });
               }
             });
@@ -244,6 +263,10 @@ export default class Editor extends View {
         },
       },
       methods: {
+        buildCopiedRecord() {
+          const mainEntity = _.cloneDeep(this.editorData.mainEntity);
+          this.copyRecord = RecordUtil.splitJson(RecordUtil.getObjectAsRecord(mainEntity, this.editorData.record));
+        },
         showHelp() {
           this.$dispatch('show-help', '');
         },
@@ -288,7 +311,6 @@ export default class Editor extends View {
         },
         initiateWarnBeforeUnload() {
           window.addEventListener("beforeunload", (e) => {
-            if (this.status.isNew) return false;
             if (!self.dirty) {
               return undefined;
             }
@@ -311,7 +333,6 @@ export default class Editor extends View {
         editItem() {
           if (UserUtil.isLoggedIn(window.userInfo)) {
             self.dirty = true;
-            this.initiateWarnBeforeUnload();
             this.changeStatus('inEdit', true);
           } else {
             window.location = '/login';
@@ -396,6 +417,7 @@ export default class Editor extends View {
         this.changeStatus('keybindState', 'overview');
         this.changeStatus('isNew', false);
         this.updateDocumentTitle(this.entityTitle);
+        this.initiateWarnBeforeUnload();
 
         // this.getRelatedTitles();
 

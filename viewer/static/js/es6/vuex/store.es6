@@ -65,7 +65,7 @@ const mutations = {
     }
   },
   NAVIGATE_CHANGE_HISTORY (state, form, direction) {
-    if (state.status.changeHistory[form].length > 0) {
+    if (state.status.changeHistory[form].length > 0 && state.status.inEdit) {
       if (direction === 'back') {
         const test = state.status.changeHistory[form].shift();
         Vue.set(state.editor.data, form, test);
