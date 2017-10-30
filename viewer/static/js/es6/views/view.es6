@@ -115,7 +115,7 @@ export default class View {
             'value': 'sv',
           },
           {
-            'label': 'English',
+            'label': 'English (experimental)',
             'value': 'en',
           },
         ],
