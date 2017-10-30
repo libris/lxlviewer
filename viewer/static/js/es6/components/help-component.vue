@@ -153,11 +153,11 @@ export default {
             ul.sections {
               // display: none; // SHOW ALL
               list-style: none;
-              padding: 5px 0px;
+              padding: 0;
               li {
                 font-weight: normal;
                 border-radius: 5px;
-                padding: 2px 5px;
+                padding: 0 0.3em;
                 cursor: pointer;
                 &:hover {
                   text-decoration: underline;
