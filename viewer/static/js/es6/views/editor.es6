@@ -174,7 +174,6 @@ export default class Editor extends View {
           if (!this.status.inEdit) {
             this.buildCopiedRecord();
             if (Modernizr.history) {
-              history.pushState(this.copyRecord, 'unused', '/edit');
               this.$dispatch('new-editordata', this.copyRecord);
               this.changeStatus('isCopy', true);
               this.changeNotification('color', 'green');
