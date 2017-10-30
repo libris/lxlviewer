@@ -56,7 +56,7 @@ export default class Loader {
       console.warn('No corresponding view script. Loading base.')
       this.currentView = this.baseView;
     } else {
-      console.log('Loading view script:', this.currentView.name);
+      // console.log('Loading view script:', this.currentView.name);
     }
 
     // Load the selected view

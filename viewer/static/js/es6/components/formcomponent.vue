@@ -223,12 +223,12 @@ export default {
       this.updateForm(this.editingObject, modifiedData, this.formData);
     },
     'update-value'(path, value) {
-      console.log("FormComp: - Updating " + path, 'to', JSON.stringify(value));
+      // console.log("FormComp: - Updating " + path, 'to', JSON.stringify(value));
       const modified = _.cloneDeep(this.formData);
 
       _.set(modified, path, value);
-      console.log("New value recieved for", path, "=", value);
-      console.log(modified);
+      // console.log("New value recieved for", path, "=", value);
+      // console.log(modified);
       this.changeStatus('removing', false);
       this.updateForm(this.editingObject, modified, this.formData);
     },
