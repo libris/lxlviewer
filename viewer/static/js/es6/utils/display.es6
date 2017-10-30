@@ -22,12 +22,18 @@ function getValueByLang(item, propertyId, displayDefs, langCode, context) {
   if (!langCode || typeof langCode === 'undefined') {
     throw new Error('getValueByLang was called with an undefined language code.');
   }
-
   const contextList = context[1];
-  let translatedValue = item[propertyId];
+  let contextProperty = propertyId;
+
+  let translatedValue = item[contextProperty]; // Set original value
+
+  if (contextList.hasOwnProperty(contextProperty) && !_.isPlainObject(contextList[contextProperty])) {
+    contextProperty = contextList[contextProperty];
+  }
+
   let byLangKey = '';
   for (const key in contextList) {
-    if (contextList[key] !== null && contextList[key].hasOwnProperty('@id') && contextList[key]['@id'] === propertyId) {
+    if (contextList[key] !== null && contextList[key].hasOwnProperty('@id') && contextList[key]['@id'] === contextProperty) {
       byLangKey = key;
     }
   }
