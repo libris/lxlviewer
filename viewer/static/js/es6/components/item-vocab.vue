@@ -105,6 +105,9 @@ export default {
       word-break: break-word;
     }
   }
+  select {
+    width: 100%;
+  }
 }
 
 </style>
