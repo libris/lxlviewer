@@ -64,6 +64,7 @@ export default {
   justify-content: space-between;
   .libris-intro-video-container {
     flex-basis: 45%;
+    padding-bottom: 1px;
     .libris-intro-video {
       position: relative;
       padding-bottom: 56.25%; /* 16:9 */
