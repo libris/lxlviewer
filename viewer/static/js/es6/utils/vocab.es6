@@ -150,6 +150,10 @@ export function getAllEnumerationTypesFor(onProp, vocab) {
 }
 
 export function getRange(propertyId, vocab, vocabPfx) {
+  if (typeof propertyId === 'undefined') {
+    throw new Error('getRange was called without a property Id.');
+  }
+
   const property = getTermObject(propertyId, vocab, vocabPfx);
   let range = [];
   if (!property) {
