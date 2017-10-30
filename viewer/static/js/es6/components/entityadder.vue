@@ -180,8 +180,8 @@ export default {
     dismissTypeChooser() {
       if (this.valueList.length > 0) {
         this.addEmbedded = false;
-        this.selectedType = '';
       }
+      this.selectedType = '';
     },
     add() {
       if (this.isEnumeration) {
