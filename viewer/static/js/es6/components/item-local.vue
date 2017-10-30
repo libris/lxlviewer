@@ -400,7 +400,6 @@ export default {
     overflow: hidden;
     transition: 0.5s ease max-height, 1.0s ease box-shadow;
     &.distinguish-removal {
-      padding-bottom: 2px;
       > .topbar {
         background-color: rgba(255,0,0,.1);
       }
@@ -417,6 +416,7 @@ export default {
     }
     > div {
       padding: 5px;
+      border: 1px solid transparent;
     }
     > .topbar {
       display: flex;
