@@ -76,7 +76,7 @@ export default {
   },
   methods: {
     setInitialValue() {
-      console.log("Setting init value");
+      // console.log("Setting init value");
       let matchId = this.value['@id'];
       if (typeof matchId !== 'undefined' && matchId !== '') {
         if (matchId.indexOf('marc:') > -1) {
