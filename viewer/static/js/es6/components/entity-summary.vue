@@ -178,7 +178,6 @@ export default {
   }
   .sub {
     flex-basis: 100%;
-    padding: 3px 9px;
     display: flex;
     background-color: rgba(0, 0, 0, 0.01);
     border: solid rgba(0, 0, 0, 0.1);
@@ -187,9 +186,13 @@ export default {
       flex: 1;
       height: 1.7em;
       overflow-y: hidden;
+      padding: 0px 9px;
     }
     > .id {
-      background: rgba(0, 0, 0, 0.1);
+      border-radius: 0px;
+      border: solid rgba(0, 0, 0, 0.1);
+      border-width: 0px 0px 0px 1px;
+      background: transparent;
     }
   }
 }
