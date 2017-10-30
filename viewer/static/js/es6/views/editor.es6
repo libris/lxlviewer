@@ -3,6 +3,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import store from '../vuex/store';
 import LensMixin from '../components/mixins/lens-mixin';
+import EventMixin from '../components/mixins/global-event-mixin';
 import ComboKeys from 'combokeys';
 import KeyBindings from '../keybindings.json';
 import * as DataUtil from '../utils/data';
@@ -82,7 +83,7 @@ export default class Editor extends View {
 
     self.vm = new Vue({
       el: '#editor',
-      mixins: [LensMixin],
+      mixins: [EventMixin, LensMixin],
       vuex: {
         actions: {
           syncData,
@@ -159,12 +160,6 @@ export default class Editor extends View {
         },
         'show-marc': function() {
           this.$broadcast('open-marc');
-        },
-        'show-help': function(value) {
-          LayoutUtil.scrollLock(true);
-          this.changeStatus('keybindState', 'help-window');
-          this.changeStatus('showHelp', true);
-          this.changeStatus('helpSection', value);
         },
         'edit-item': function() {
           this.editItem();
@@ -249,11 +244,6 @@ export default class Editor extends View {
         },
       },
       methods: {
-        // showEditor() {
-        //   $('#loadingText').fadeOut('fast', function() {
-        //     $('#editorApp').fadeIn();
-        //   });
-        // },
         showHelp() {
           this.$dispatch('show-help', '');
         },

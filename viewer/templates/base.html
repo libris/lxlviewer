@@ -232,35 +232,12 @@
         % if g.site
           window.siteInfo.title = "${g.site.title}"
           window.siteInfo.version = "${config.VERSION}"
+          window.siteInfo.piwikId = "${config.PIWIK_ID}"
         % endif
       </script>
     {% block scripts %}{% endblock %}
     <script id="serviceTitle" type="application/json">${g.site.title}</script>
     <script id="baseUriAlias" type="application/json">${config.BASE_URI_ALIAS|tojson|safe}</script>
     <script src="/assets/build/app.js"></script>
-
-
-    <!-- Piwik -->
-    {% if config.PIWIK_ID %}
-    <script type="text/javascript">
-      var siteId = ${config.PIWIK_ID};
-    </script>
-    {% endif %}
-    <script type="text/javascript">
-      if (typeof siteId !== 'undefined') {
-        var _paq = _paq || [];
-        _paq.push(['trackPageView']);
-        _paq.push(['enableLinkTracking']);
-        (function() {
-          var u="//analytics.kb.se/";
-          _paq.push(['setTrackerUrl', u+'piwik.php']);
-          _paq.push(['setSiteId', siteId]);
-          var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-          g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
-        })();
-      }
-
-    </script>
-    <!-- End Piwik Code -->
   </body>
 </html>

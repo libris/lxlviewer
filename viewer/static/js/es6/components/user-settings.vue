@@ -42,10 +42,12 @@ export default {
   },
   watch: {
     currentSigel(newSigel) {
+      this.$dispatch('track-event', 'change_sigel', newSigel);
       this.settings.userSettings.currentSigel = newSigel;
       UserUtil.saveUserSettings(this.settings.userSettings);
     },
     currentLanguage(newLanguage) {
+      this.$dispatch('track-event', 'change_language', newLanguage);
       this.settings.userSettings.language = newLanguage;
       UserUtil.saveUserSettings(this.settings.userSettings);
     },

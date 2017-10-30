@@ -2,6 +2,7 @@ import View from './view';
 import Vue from 'vue';
 import Vuex from 'vuex';
 import store from '../vuex/store';
+import EventMixin from '../components/mixins/global-event-mixin';
 import * as StringUtil from '../utils/string';
 import * as LayoutUtil from '../utils/layout';
 import HelpComponent from '../components/help-component';
@@ -38,6 +39,7 @@ export default class UserSettings extends View {
 
     self.vm = new Vue({
       el: '#usersettings',
+      mixins: [EventMixin],
       vuex: {
         actions: {
           changeSettings,
@@ -50,14 +52,6 @@ export default class UserSettings extends View {
       },
       data: {
         initialized: false,
-      },
-      events: {
-        'show-help': function(value) {
-          LayoutUtil.scrollLock(true);
-          this.changeStatus('keybindState', 'help-window');
-          this.changeStatus('showHelp', true);
-          this.changeStatus('helpSection', value);
-        },
       },
       watch: {
       },

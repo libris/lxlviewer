@@ -2,6 +2,7 @@ import View from './view';
 import Vue from 'vue';
 import Vuex from 'vuex';
 import store from '../vuex/store';
+import EventMixin from '../components/mixins/global-event-mixin';
 import * as _ from 'lodash';
 import * as StringUtil from '../utils/string';
 import * as SearchUtil from '../utils/search';
@@ -64,6 +65,7 @@ export default class PagedCollection extends View {
 
     self.vm = new Vue({
       el: '#pagedcollection',
+      mixins: [EventMixin],
       vuex: {
         actions: {
           loadVocab,
@@ -103,12 +105,6 @@ export default class PagedCollection extends View {
             this.changeResultListStatus('info', 'Could not find result');
             console.log(error);
           });
-        },
-        'show-help': function(value) {
-          LayoutUtil.scrollLock(true);
-          this.changeStatus('keybindState', 'help-window');
-          this.changeStatus('showHelp', true);
-          this.changeStatus('helpSection', value);
         },
       },
       watch: {

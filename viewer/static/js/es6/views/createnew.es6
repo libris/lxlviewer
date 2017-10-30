@@ -13,6 +13,7 @@ import * as StringUtil from '../utils/string';
 import * as LayoutUtil from '../utils/layout';
 import CreateNewForm from '../components/create-new-form';
 import HelpComponent from '../components/help-component';
+import EventMixin from '../components/mixins/global-event-mixin';
 import { getSettings, getVocabulary, getContext, getDisplayDefinitions, getEditorData, getStatus, getKeybindState } from '../vuex/getters';
 import { changeSettings, changeNotification, loadVocab, loadContext, loadVocabMap, loadDisplayDefs, syncData, changeSavedStatus, changeStatus } from '../vuex/actions';
 
@@ -52,6 +53,7 @@ export default class CreateNew extends View {
 
     self.vm = new Vue({
       el: '#createnew',
+      mixins: [EventMixin],
       vuex: {
         actions: {
           syncData,
@@ -82,14 +84,6 @@ export default class CreateNew extends View {
       methods: {
         showHelp() {
           this.$dispatch('show-help', '');
-        },
-      },
-      events: {
-        'show-help': function(value) {
-          LayoutUtil.scrollLock(true);
-          this.changeStatus('keybindState', 'help-window');
-          this.changeStatus('showHelp', true);
-          this.changeStatus('helpSection', value);
         },
       },
       components: {

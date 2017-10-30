@@ -134,6 +134,7 @@ export default class View {
   }
 
   initialize() {
+    this.initializeTracking();
     if (window.location.hash) {
       this.shiftWindow();
     }
@@ -187,4 +188,28 @@ export default class View {
       scrollBy(0, -navbarHeight);
     }
   }
+
+  trackEvent(category, action, name) {
+    if (typeof this._paq === 'undefined') {
+      this.initializeTracking();
+    }
+    this._paq.push(['trackEvent', category, action, name]);
+  }
+
+  initializeTracking() {
+    const self = this;
+    if (self.settings.siteInfo.piwikId) {
+      self._paq = self._paq || [];
+      self._paq.push(['trackPageView']);
+      self._paq.push(['enableLinkTracking']);
+      (function() {
+        var u="//analytics.kb.se/";
+        self._paq.push(['setTrackerUrl', u+'piwik.php']);
+        self._paq.push(['setSiteId', self.settings.siteInfo.piwikId]);
+        var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+        g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+      })();
+    }
+  }
+
 }
