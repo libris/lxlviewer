@@ -113,7 +113,8 @@ export default {
     </ul>
   </div>
   <div class="sub">
-    <span>{{ sub.join(' · ') }}</span>
+    <div class="other">{{ sub.join(' · ') }}</div>
+    <code class="id">{{focusData['@id']}}</code>
   </div>
 </div>
 </template>
@@ -178,13 +179,17 @@ export default {
   .sub {
     flex-basis: 100%;
     padding: 3px 9px;
+    display: flex;
     background-color: rgba(0, 0, 0, 0.01);
     border: solid rgba(0, 0, 0, 0.1);
     border-width: 1px 0px 0px 0px;
-    > span {
-      display: block;
+    > .other {
+      flex: 1;
       height: 1.7em;
       overflow-y: hidden;
+    }
+    > .id {
+      background: rgba(0, 0, 0, 0.1);
     }
   }
 }

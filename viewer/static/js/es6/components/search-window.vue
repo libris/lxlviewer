@@ -312,6 +312,9 @@ export default {
               border: solid #777;
               margin: 4px;
               border-width: 1px;
+              code {
+                color: @black;
+              }
               // cursor: pointer;
               // transition: all 0.1s ease;
               // &:hover {

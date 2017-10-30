@@ -8,10 +8,22 @@
     "@type": "ParallelTitle",
     "mainTitle": ""
   },
+  "EAN": {
+    "@type": "EAN",
+    "value": ""
+  },
   "ISBN": {
     "@type": "ISBN",
-    "value": [""],
+    "value": "",
     "note": [""]
+  },
+  "ISMN": {
+    "@type": "ISMN",
+    "value": ""
+  },
+  "ISSN": {
+    "@type": "ISSN",
+    "value": ""
   },
   "Publication": {
     "@type": "Publication",
