@@ -406,7 +406,7 @@ export default {
   flex-direction: row;
   box-shadow: inset 0px 0px 1em 0px transparent;
   outline: 2px solid transparent;
-  transition: 6s ease;
+  transition: 6s ease-in;
   transition-property: outline, box-shadow;
   max-height: 400vh;
   overflow-y: auto;
