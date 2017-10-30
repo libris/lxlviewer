@@ -193,7 +193,9 @@ export default class View {
     if (typeof this._paq === 'undefined') {
       this.initializeTracking();
     }
-    this._paq.push(['trackEvent', category, action, name]);
+    if (typeof this._paq !== 'undefined') {
+      this._paq.push(['trackEvent', category, action, name]);
+    }
   }
 
   initializeTracking() {
