@@ -545,12 +545,14 @@ export default {
       background-color: #ededed;
     }
     >.label {
+      white-space: normal;
+      padding: 5px 10px;
       order: 1;
       flex: 0 0 @col-label;
       text-align: right;
       align-items: flex-start;
       justify-content: flex-end;
-      line-height: 2.6;
+      // line-height: 2.6;
       border: 1px solid #e4e2e2;
       border-width: 0px 1px 0px 0px;
       border-radius: 0px;
