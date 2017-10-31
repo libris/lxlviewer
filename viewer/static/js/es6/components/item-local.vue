@@ -64,7 +64,7 @@ export default {
   },
   computed: {
     canCopyTitle() {
-      if (this.isExtractable && !this.item.hasOwnProperty('hasTitle') && this.recordType === 'Work') {
+      if (this.isExtractable && !this.item.hasOwnProperty('hasTitle') && this.key === 'instanceOf') {
         return true;
       }
       return false;
