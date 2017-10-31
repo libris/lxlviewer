@@ -216,6 +216,7 @@ export default class View {
   }
 
   initiateWarnBeforeUnload() {
+    this.dirty = false;
     window.addEventListener("beforeunload", (e) => {
       if (!this.dirty) {
         return undefined;

@@ -390,7 +390,6 @@ export default class Editor extends View {
         },
       },
       ready() {
-        this.$dispatch('set-dirty', false);
         this.changeSettings(self.settings);
         this.loadVocab(self.vocab);
         this.loadContext(self.context);
