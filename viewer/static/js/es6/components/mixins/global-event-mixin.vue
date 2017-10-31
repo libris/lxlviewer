@@ -14,6 +14,9 @@ export default {
       this.changeStatus('showHelp', true);
       this.changeStatus('helpSection', value);
     },
+    'set-dirty'(b) {
+      window.loadHandler.getCurrentView().dirty = b;
+    },
   },
 };
 </script>

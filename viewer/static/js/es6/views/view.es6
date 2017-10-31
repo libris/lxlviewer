@@ -135,6 +135,7 @@ export default class View {
 
   initialize() {
     this.initializeTracking();
+    this.initiateWarnBeforeUnload();
     if (window.location.hash) {
       this.shiftWindow();
     }
@@ -212,6 +213,18 @@ export default class View {
         g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
       })();
     }
+  }
+
+  initiateWarnBeforeUnload() {
+    window.addEventListener("beforeunload", (e) => {
+      if (!this.dirty) {
+        return undefined;
+      }
+      const confirmationMessage = 'You have unsaved changes. Do you want to leave the page?';
+
+      (e || window.event).returnValue = confirmationMessage; //Gecko + IE
+      return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
+    });
   }
 
 }

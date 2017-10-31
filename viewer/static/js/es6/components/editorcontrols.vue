@@ -121,6 +121,7 @@ export default {
     },
     cancelEdit() {
       this.loadingCancel = true;
+      this.$dispatch('set-dirty', false);
       if (this.status.isNew || this.status.isCopy) {
         window.history.back();
       } else {

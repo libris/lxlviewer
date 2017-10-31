@@ -30,7 +30,6 @@ const state = {
     lastAdded: '',
     lastSavedData: {},
     level: 'mainEntity',
-    dirty: true,
     isDev: false,
     keybindState: '',
     inEdit: false,

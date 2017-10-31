@@ -308,21 +308,6 @@ export default class Editor extends View {
           const pageTitle = `${recordTitle} - ${this.settings.siteInfo.title}`;
           document.title = pageTitle;
         },
-        initiateWarnBeforeUnload() {
-          window.addEventListener("beforeunload", (e) => {
-            if (!self.dirty) {
-              return undefined;
-            }
-            const confirmationMessage = StringUtil.getUiPhraseByLang('You have unsaved changes. Do you want to leave the page?', self.settings.language);
-
-            (e || window.event).returnValue = confirmationMessage; //Gecko + IE
-            return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
-          });
-        },
-        removeWarnBeforeUnload() {
-          self.dirty = false;
-          window.onbeforeunload = null;
-        },
         isArray(o) {
           return _.isArray(o);
         },
@@ -331,7 +316,7 @@ export default class Editor extends View {
         },
         editItem() {
           if (UserUtil.isLoggedIn(window.userInfo)) {
-            self.dirty = true;
+            this.$dispatch('set-dirty', true);
             this.changeStatus('inEdit', true);
           } else {
             window.location = '/login';
@@ -391,7 +376,7 @@ export default class Editor extends View {
               self.vm.changeNotification('color', 'green');
               self.vm.changeNotification('message', `${StringUtil.getUiPhraseByLang('The post was saved', this.settings.language)}!`);
               this.changeStatus('inEdit', false);
-              this.removeWarnBeforeUnload();
+              this.$dispatch('set-dirty', false);
             }, (error) => {
               self.vm.changeSavedStatus('loading', false);
               self.vm.changeNotification('color', 'red');
@@ -405,6 +390,7 @@ export default class Editor extends View {
         },
       },
       ready() {
+        this.$dispatch('set-dirty', false);
         this.changeSettings(self.settings);
         this.loadVocab(self.vocab);
         this.loadContext(self.context);
@@ -416,7 +402,6 @@ export default class Editor extends View {
         this.changeStatus('keybindState', 'overview');
         this.changeStatus('isNew', false);
         this.updateDocumentTitle(this.entityTitle);
-        this.initiateWarnBeforeUnload();
 
         // this.getRelatedTitles();
 
