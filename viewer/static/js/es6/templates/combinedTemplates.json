@@ -505,11 +505,9 @@
             "place": {
               "@type": "Place",
               "label": ""
-            }
+            },
+            "date": ""
           }],
-          "marc:publicationStatus": {
-            "@id": "marc:SingleKnownDateProbableDate"
-          },
           "marc:otherPhysicalDetails": "",
           "publicationCountry": [{
             "@id": "https://id.kb.se/country/sw"
@@ -518,6 +516,10 @@
             "@type": "Extent",
             "label": ""
           }],
+          "hasDimensions": {
+            "@type": "Dimensions",
+            "label": ""
+          },
           "hasNote": [{
             "@type": "Note",
             "label": ""
@@ -550,23 +552,16 @@
               "@type": "PrimaryContribution",
               "agent": {
                 "@type": "Person",
-                "name": ","
+                "name": ""
               }
             }, {
               "@type": "Contribution",
               "agent": {
                 "@type": "Person",
-                "name": ","
+                "name": ""
               }
             }],
-            "subject": [{
-              "@type": "Topic",
-              "inScheme": {
-                "@type": "ConceptScheme",
-                "@id": "https://id.kb.se/term/sao",
-                "code": "sao"
-              }
-            }]
+            "subject": []
           }
         }
       }
