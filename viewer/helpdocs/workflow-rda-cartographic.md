@@ -137,19 +137,19 @@ Ange utgivarens namn exakt såsom det är skrivet i källan. Om utgivaren är ok
 **Utgivningsår**
 Om utgivningsåret är osäkert utformas detta enligt instruktionerna i  RDA 1.9.2 . Observera att svenska fraser ska användas. Här är några exempel:
 
-> `[1939]`
+`[1939]`
 
-> `[1827?]`
+`[1827?]`
 
-> `[1971 eller 1972]`
+`[1971 eller 1972]`
 
-> `[ej före 1920]`
+`[ej före 1920]`
 
-> `ej efter 1709]`
+`ej efter 1709]`
 
-> `[ej efter 8 maj 1945]`
+`[ej efter 8 maj 1945]`
 
-> `[mellan 1860 och 1895?]`
+`[mellan 1860 och 1895?]`
 
 Se RDA 2.8
 
@@ -186,39 +186,39 @@ Se RDA 3.3
 ## Omfång
 Beskriv omfång genom att ange antalet fysiska enheter och lämplig term. Följande termer finns att välja på:
 
-```
-atlas
-diagram
-fjärranalysbild
-glob
-handritad karta
-karta
-kartsektion
-perspektivbild
-profil
-reliefmodell
-sjökort
-```
+>
+atlas  
+diagram  
+fjärranalysbild  
+glob  
+handritad karta  
+karta  
+kartsektion  
+perspektivbild  
+profil  
+reliefmodell  
+sjökort  
+
 
 Om ingen av ovan nämnda termer är lämplig så använd en annan koncis term. Använd då gärna termer avsedda för stillbilder eller tredimensionella former om tillämpligt. Om resursen består av flera olika typer av enheter så beskriv samtliga.
 
-> `1 sjökort`
+`1 sjökort`
 
 Om antalet kartografiska enheter, skiljer sig från antalet ark, ange antalet kartografiska enheter och antalet ark.
 
-> `2 kartor på 1 ark`
+`2 kartor på 1 ark`
 
 Om en karta är på ett eller flera ark i två eller flera segment konstruerade så att de kan fogas samman till en eller flera kartor så anges antalet fullständiga kartor och antalet segment om alla segment är på ett enstaka ark. Om segmenten är på fler än ett ark, så ange antalet kompletta kartografiska enheter följt av antalet ark. 
 
-> `1 karta i 4 segment`
+`1 karta i 4 segment`
 
-> `1 karta i på 4 ark`
+`1 karta i på 4 ark`
 
 Ange antalet volymer och/eller sidor osv, i en atlas enligt anvisningarna i RDA.
  
-> `1 atlas (456 sidor)`
+`1 atlas (456 sidor)`
 
-> `1 atlas (3 volymer)`
+`1 atlas (3 volymer)`
 
 Se RDA 3.4.2
 
@@ -269,15 +269,15 @@ Moderna atlaser beskrivs på samma sätt som andra böcker, dvs. i regel anges e
 
 Om resursen förvaras i en förpackning kan om så önskas även måtten på förpackningen anges. 
 
-> `136 x 105 cm, på ark 80 x 75 cm`
+`136 x 105 cm, på ark 80 x 75 cm`
 
-> `50 x 64 cm,  plåt 55 x 67 cm`
+`50 x 64 cm,  plåt 55 x 67 cm`
 
-> `10 x 10 cm, och 9 x 8 cm, på ark 21 x 30 cm`
+`10 x 10 cm, och 9 x 8 cm, på ark 21 x 30 cm`
 
-> `ark 60 x 60 cm, eller mindre`
+`ark 60 x 60 cm, eller mindre`
 
-> `66 x 94 cm, vikt i omslag till 24 x 14 cm`
+`66 x 94 cm, vikt i omslag till 24 x 14 cm`
 
 För mer information se RDA 3.5
 
