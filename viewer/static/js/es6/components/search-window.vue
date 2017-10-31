@@ -388,6 +388,7 @@ export default {
               background: @white;
               padding: 0.5em;
               > select {
+                max-width: 50%;
                 padding: 0.2em 0.5em;
                 margin: 0 0.3em;
                 border-radius: 0.3em;

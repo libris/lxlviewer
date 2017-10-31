@@ -42,10 +42,10 @@
     "date": [""]
 
   },
-  "extent": {
+  "extent": [{
     "@type": "Extent",
     "label": ""
-  },
+  }],
   "hasNote": {
     "@type": "Note",
     "label": ""

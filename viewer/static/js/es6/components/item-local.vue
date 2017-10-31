@@ -294,7 +294,7 @@ export default {
         LayoutUtil.scrollTo(scrollPos, 1000, 'easeInOutQuad', () => {
           setTimeout(() => {
             this.isNewlyAdded = false;
-          }, 1500);
+          }, 3000);
         });
       }
     },
@@ -366,7 +366,7 @@ export default {
   margin: 0px 0px 0px 0px;
   box-shadow: 0px 0px 1em 0px transparent;
   outline: 2px solid transparent;
-  transition: 0.5s ease margin;
+  transition: 0.5s ease margin, 3s ease-in box-shadow, 3s ease-in outline;
   display: flex;
 
   .link-indicator {
@@ -381,9 +381,9 @@ export default {
       cursor: pointer;
     }
   }
-  // transition: 3s ease;
-  // transition-property: outline, box-shadow;
   &.highlight {
+    transition: 0s ease;
+    transition-property: outline, box-shadow;
     outline: 2px solid @highlight-color;
     box-shadow: 0px 0px 1em 0px @highlight-color;
   }
