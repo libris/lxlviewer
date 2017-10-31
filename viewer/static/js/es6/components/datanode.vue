@@ -77,6 +77,11 @@ export default {
         this.$broadcast('focus-new-item', newVal-1);
       }
     },
+    isLocked(value, oldvalue) {
+      if (!value && oldvalue && this.possibleValues.length === 0) {
+        this.getPossibleValues();
+      }
+    },
   },
   computed: {
     arrayLength() {
@@ -96,13 +101,7 @@ export default {
     },
     hasRescriction() {
       if (this.restrictionOnProp && this.restrictionOnProp.length > 0) {
-         VocabUtil.getEnumerations(this.entityType, this.key, this.vocab, this.settings.vocabPfx).then((result) => {
-           for (const value of result) {
-             this.$dispatch('add-linked', value);
-             this.possibleValues.push(value);
-           }
-         });
-         return true;
+        return true;
       }
       return false;
     },
@@ -276,6 +275,16 @@ export default {
         this.$dispatch('remove-field', this.getPath);
       }, 500);
     },
+    getPossibleValues() {
+      VocabUtil.getEnumerations(this.entityType, this.key, this.vocab, this.settings.vocabPfx).then((result) => {
+        const values = [];
+        for (const value of result) {
+          this.$dispatch('add-linked', value);
+          values.push(value['@id']);
+        }
+        this.possibleValues = values;
+      });
+    },
     getDatatype(o) {
       if (typeof o === 'undefined') {
         throw new Error('Cannot check data type of undefined object.');
@@ -373,7 +382,7 @@ export default {
       <li v-for="item in valueAsArray" :class="{ 'isChip': isChip(item)}" track-by="_uid">
         <item-error v-if="getDatatype(item) == 'error'" :item="item"></item-error>
         <item-vocab v-if="getDatatype(item) == 'vocab'" :is-locked="locked" :key="key" :value="item" :index="$index"></item-vocab>
-        <item-enumeration v-if="getDatatype(item) == 'enumeration'" :is-locked="locked" :entity-type="entityType" :possible-values="possibleValues" :expanded="isExpandedType" :value="item" :key="key" :index="$index" :show-action-buttons="showActionButtons"></item-enumeration>
+        <item-enumeration v-if="getDatatype(item) == 'enumeration'" :is-locked="locked" :possible-values="possibleValues" :entity-type="entityType" :expanded="isExpandedType" :value="item" :key="key" :index="$index" :show-action-buttons="showActionButtons"></item-enumeration>
         <item-entity v-if="getDatatype(item) == 'entity'" :is-locked="locked" :expanded="isExpandedType" :item="item" :key="key" :index="$index"></item-entity>
         <item-local v-if="getDatatype(item) == 'local'" :is-locked="locked" :is-expanded-type="isExpandedType" :item="item" :key="key" :index="$index" :parent-path="getPath" :in-array="valueIsArray" :show-action-buttons="showActionButtons"></item-local>
       </li>

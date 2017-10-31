@@ -19,8 +19,8 @@ export default {
     isLocked: false,
     expanded: false,
     entityType: '',
-    possibleValues: [],
     showActionButtons: false,
+    possibleValues: [],
   },
   vuex: {
     getters: {
@@ -39,10 +39,22 @@ export default {
       removeHover: false,
       formObj: {},
       selected: '',
-      radioLimit: 2,
+      radioLimit: 0,
     };
   },
   computed: {
+    embellishedSelected() {
+      return StringUtil.getLabelFromObject(DataUtil.getLinked(this.selected, this.editorData.quoted), this.settings.language);
+    },
+    embellishedValues() {
+      const emb = {};
+      if (!this.isLocked) {
+        _.each(this.possibleValues, (id) => {
+          emb[id] = StringUtil.getLabelFromObject(DataUtil.getLinked(id, this.editorData.quoted), this.settings.language);
+        })
+      }
+      return emb;
+    },
     getRange() {
       const types = VocabUtil.getRange(
         this.key,
@@ -56,47 +68,20 @@ export default {
     },
   },
   ready() {
-
+    this.setInitialValue();
   },
   watch: {
     selected(val) {
       const enumObj = {
-        '@id': val['@id'],
+        '@id': val,
         '_uid': this.value._uid
       }
-      this.$dispatch('add-linked', val);
       this.$dispatch('update-item', this.index, enumObj);
-    },
-    possibleValues(collection) {
-      // Watch so that we can match against value when recieved
-      if (collection.length > 0) {
-        this.setInitialValue();
-      }
     },
   },
   methods: {
     setInitialValue() {
-      // console.log("Setting init value");
-      let matchId = this.value['@id'];
-      if (typeof matchId !== 'undefined' && matchId !== '') {
-        if (matchId.indexOf('marc:') > -1) {
-          matchId = matchId.replace(':', '/');
-        }
-        const match = _.find(this.possibleValues, (item) => {
-          return item['@id'].indexOf(matchId) > -1;
-        });
-        if (match) {
-          this.selected = match;
-        } else {
-          this.setEmptyValue();
-        }
-      } else {
-        this.setEmptyValue();
-      }
-    },
-    setEmptyValue() {
-      // console.log("setting to empty");
-      this.$dispatch('update-item', this.index, {'@id': ''});
+      this.selected = this.value['@id'];
     },
     isEmpty() {
       // TODO: Is the item empty?
@@ -125,17 +110,18 @@ export default {
 <template>
   <div class="item-enumeration" v-bind:class="{'distinguish-removal': removeHover}">
     <div class="item-value" v-if="isLocked && selected">
-      {{ selected.prefLabelByLang[this.settings.language] || selected.prefLabelByLang['en'] }}
+      {{ embellishedSelected }}
     </div>
-    <ul class="enumeration-input enumeration-radio" v-if="!isLocked && possibleValues.length < this.radioLimit+1">
-      <li v-for="option in possibleValues">
-        <input type="radio" v-model="selected" id="{{ this.key + '_' + this.index + '_' + option['@id'] }}" v-bind:value="option"><label for="{{ this.key + '_' + this.index + '_' + option['@id'] }}"> {{ option.prefLabelByLang[this.settings.language] || option.prefLabelByLang['en'] }}{{ option.notation ? ` (${option.notation})` : '' }}</label>
-      </li>
-    </ul>
-    <div class="enumeration-input enumeration-dropdown" v-if="!isLocked && possibleValues.length > this.radioLimit">
+    <div class="enumeration-input enumeration-dropdown" v-if="!isLocked && possibleValues.length === 0">
+      <select>
+        <option value="0">{{ embellishedSelected }}</option>
+        <option disabled value="">{{ 'Loading more values' | translatePhrase }}...</option>
+      </select>
+    </div>
+    <div class="enumeration-input enumeration-dropdown" v-if="!isLocked && possibleValues.length > 0">
       <select v-model="selected">
         <option v-if="selected === ''" disabled value="">{{disabledLabel}}</option>
-        <option v-for="option in possibleValues" v-bind:value="option">{{ option.prefLabelByLang[this.settings.language] || option.prefLabelByLang['en'] }}{{ option.notation ? ` (${option.notation})` : '' }}</option>
+        <option v-for="option in possibleValues" v-bind:value="option">{{ embellishedValues[option] }}</option>
       </select>
     </div>
     <div class="remover" v-show="!isLocked" v-on:click="removeThis()" @mouseover="removeHover = true" @mouseout="removeHover = false">
