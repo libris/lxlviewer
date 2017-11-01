@@ -588,7 +588,7 @@
           }]
         },
         "mainEntity": {
-          "@type": "Instance",
+          "@type": "Print",
           "issuanceType": "Monograph",
           "hasTitle": [{
               "@type": "Title",
@@ -640,14 +640,7 @@
             "@id": "https://id.kb.se/country/sw"
           }],
           "copyrightDate": [""],
-          "genreForm": [{
-              "@id": "marc:MapATwoDimensionalMap"
-            },
-            {
-              "@id": "marc:SingleMap"
-            }
-          ],
-          "marc:otherPhysicalDetails": "färg",
+          "marc:otherPhysicalDetails": "",
           "colorContent": {
             "@id": "marc:Multicolored"
           },
