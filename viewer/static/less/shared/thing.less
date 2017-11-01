@@ -455,6 +455,19 @@ body#thing, body#pagedcollection, body#import, body#createnew, body#editor {
     margin-top: 2em;
   }
 
+  .facet-container {
+    opacity: 1;
+    transition: 0.3s ease width 0s, 0.3s ease opacity 0.3s;
+    &.facet-hidden {
+      width: 0%;
+      opacity: 0;
+    }
+  }
+
+  .search-content-container {
+    transition: 0.3s ease width;
+  }
+
   .link-container {
     display: flex;
     justify-content: space-between;

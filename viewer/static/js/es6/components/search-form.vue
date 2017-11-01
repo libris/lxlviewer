@@ -198,7 +198,7 @@ export default {
 </script>
 
 <template>
-  <div :class="{'is-landing-page': isLandingPage}">
+  <div :class="{'is-landing-page': isLandingPage}" class="search-form-container">
     <div class="panel panel-default search-controls">
       <div class="search-type-button-container" v-if="settings.siteInfo.title === 'libris.kb.se'">
         <a class="card-link active">Libris</a>
@@ -245,12 +245,17 @@ export default {
   </div>
 </template>
 
-<style>
-.search-type-button-container {
-  margin: 1.5em 0 1em;
-}
-.is-landing-page {
-  margin-top: 20vh;
+<style lang="less">
+
+.search-form-container {
+    margin-top: 0vh;
+    transition: 0.3s ease margin-top;
+    .search-type-button-container {
+        margin: 1.5em 0 1em;
+    }
+    &.is-landing-page {
+        margin-top: 20vh;
+    }
 }
 
 </style>

@@ -9,10 +9,10 @@
 
 <div id="PagedCollectionApp">
   <div class="row">
-    <div class="col-md-3">
+    <div class="col-md-3 facet-container" :class="{'facet-hidden': isLandingPage}">
       <facet-controls v-if="initialized == true" :result="result"></facet-controls>
     </div>
-    <div v-bind:class="{'col-md-12': isLandingPage, 'col-md-9': !isLandingPage }">
+    <div v-bind:class="{'col-md-12': isLandingPage, 'col-md-9': !isLandingPage }" class="search-content-container">
       <search-form v-if="initialized == true" :result="result" site-title="${g.site.title}" filter-param="${g.site.filter_param}" :is-landing-page="isLandingPage"></search-form>
       <search-result-component :result="result" v-if="(initialized == true && result.totalItems > -1) || status.resultList.loading"></search-result-component>
       <dataset-observations

@@ -21,6 +21,7 @@ export default {
   data() {
     return {
       keyword: '',
+      showResult: false,
     }
   },
   methods: {
@@ -47,14 +48,16 @@ export default {
   },
   ready() { // Ready method is deprecated in 2.0, switch to "mounted"
     this.$nextTick(() => {
-      // Do stuff
+      setTimeout(() => {
+        this.showResult = true;
+      }, 1);
     });
   },
 };
 </script>
 
 <template>
-  <div class="search-result-component">
+  <div class="search-result-component" :class="{'show-result': showResult}">
     <div v-if="(status.resultList.loading || status.resultList.error)" class="loadingText panel panel-default">
       <h1 v-if="!status.resultList.error"><i class="fa fa-circle-o-notch fa-spin"></i></h1>
       <h1 v-if="status.resultList.error"><i class="fa fa-warning"></i></h1>
@@ -71,6 +74,11 @@ export default {
 @import './_variables.less';
 
 .search-result-component {
+  opacity: 0;
+  transition: 0.5s ease opacity;
+  &.show-result {
+    opacity: 1;
+  }
   .main-info {
     height: 7em;
   }
