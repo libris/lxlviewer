@@ -86,6 +86,12 @@ def first(value):
         return v
 
 ##
+# About XL
+@app.route("/about")
+def show_about():
+    return render_template('about.html')
+
+##
 # Setup Github rss
 @app.route('/releasefeed', methods=['GET'])
 def get_release_feed():
