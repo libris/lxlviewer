@@ -104,7 +104,7 @@
                   <div class="navbar-circle">
                     <img class="user-gravatar" src="${current_user.get_gravatar_url()}" />
                   </div>
-                  ${current_user.get_username()} <span v-cloak class="sigelLabel" v-if="initialized === true">({{settings.userSettings.currentSigel}})</span> <i class="fa fa-angle-down" aria-hidden="true"></i>
+                  ${current_user.get_username()} <span v-cloak class="sigelLabel" v-if="initialized === true">({{user.settings.activeSigel}})</span> <i class="fa fa-angle-down" aria-hidden="true"></i>
                 </a>
                 <ul class="dropdown-menu">
                   <li><a href="/usersettings"><i class="fa fa-cogs" aria-hidden="true"></i> <span class="js-translateable" data-translateable="Settings">Settings</span></a></li>

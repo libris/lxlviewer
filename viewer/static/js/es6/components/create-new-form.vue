@@ -12,7 +12,7 @@ import * as DisplayUtil from '../utils/display';
 import * as StringUtil from '../utils/string';
 import CreationCard from '../components/creation-card';
 import CreationTab from '../components/creation-tab';
-import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData, getStatus, getKeybindState } from '../vuex/getters';
+import { getUser, getSettings, getVocabulary, getDisplayDefinitions, getEditorData, getStatus, getKeybindState } from '../vuex/getters';
 import { changeSettings, changeNotification, loadVocab, loadVocabMap, loadDisplayDefs, syncData, changeSavedStatus, changeStatus } from '../vuex/actions';
 
 
@@ -30,6 +30,7 @@ export default {
       changeNotification,
     },
     getters: {
+      user: getUser,
       settings: getSettings,
       editorData: getEditorData,
       vocab: getVocabulary,
@@ -115,7 +116,7 @@ export default {
         '@type': 'Record',
         '@id': '_:TEMP_ID',
         'assigner': {
-          '@id': `https://libris.kb.se/library/${this.settings.userSettings.currentSigel}`,
+          '@id': `https://libris.kb.se/library/${this.user.settings.activeSigel}`,
         },
         'mainEntity': {
           '@id': '_:TEMP_ID#it',

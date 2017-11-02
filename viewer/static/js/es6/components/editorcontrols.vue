@@ -13,11 +13,12 @@ import RecordSummary from './record-summary';
 import LensMixin from './mixins/lens-mixin';
 import { mixin as clickaway } from 'vue-clickaway';
 import { changeSavedStatus, changeStatus, changeNotification, navigateChangeHistory } from '../vuex/actions';
-import { getSettings, getVocabulary, getVocabularyClasses, getDisplayDefinitions, getEditorData, getStatus, getChangeHistory } from '../vuex/getters';
+import { getUser, getSettings, getVocabulary, getVocabularyClasses, getDisplayDefinitions, getEditorData, getStatus, getChangeHistory } from '../vuex/getters';
 
 export default {
   vuex: {
     getters: {
+      user: getUser,
       vocab: getVocabulary,
       vocabClasses: getVocabularyClasses,
       display: getDisplayDefinitions,
@@ -160,6 +161,15 @@ export default {
     };
   },
   computed: {
+    canEditThisType() {
+      const permission = this.user.getPermission();
+      if (this.editorData.mainEntity['@type'] === 'Item' && permission.registrant === true) {
+        return true;
+      } else if (permission.cataloger === true) {
+        return true;
+      }
+      return false;
+    },
     activeChangeHistory() {
       return this.changeHistory[this.status.editorFocus];
     },
@@ -174,13 +184,13 @@ export default {
       return typeof a.download != 'undefined';
     },
     libraryUrl() {
-      return `https://libris.kb.se/library/${this.settings.userSettings.currentSigel}`;
+      return `https://libris.kb.se/library/${this.user.settings.activeSigel}`;
     },
     compileMARCUrl() {
       return `/_compilemarc?library=${this.libraryUrl}&id=${this.editorData.record['@id']}`;
     },
     hasSigel() {
-      return typeof this.settings.userSettings.currentSigel !== 'undefined';
+      return typeof this.user.settings.activeSigel !== 'undefined';
     },
     focusData() {
       return this.editorData.record;
@@ -211,7 +221,7 @@ export default {
             </h2>
             <record-summary></record-summary>
           </div>
-          <div class="action" v-if="settings.userSettings.appTech === 'on'" v-on:click="toggleDev()" v-bind:class="{'active': status.isDev}">
+          <div class="action" v-if="user.settings.appTech === 'on'" v-on:click="toggleDev()" v-bind:class="{'active': status.isDev}">
             <i class="fa fa-wrench" aria-hidden="true"></i>
           </div>
           <a :href="compileMARCUrl" v-if="!status.inEdit && isSubClassOf('Instance') & !downloadIsSupported && hasSigel">
@@ -304,7 +314,7 @@ export default {
             <i class="fa fa-fw fa-save" v-show="!status.saved.loading"></i>
             {{ "Save" | translatePhrase }}
           </button>
-          <button class="toolbar-button edit-button" id="editButton" v-on:click="edit()" v-show="!status.inEdit">
+          <button class="toolbar-button edit-button" id="editButton" v-on:click="edit()" v-show="!status.inEdit && canEditThisType">
             <i class="fa fa-fw fa-pencil" v-show="!loadingEdit"></i>
             <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="loadingEdit"></i>
             {{ "Edit" | translatePhrase }}

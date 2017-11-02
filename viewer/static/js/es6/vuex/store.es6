@@ -18,6 +18,7 @@ const state = {
   forcedListTerms: [],
   display: {},
   settings: {},
+  user: {},
   notification: {
     message: '',
     color: 'grey',
@@ -95,9 +96,12 @@ const mutations = {
   LOADDISPLAYDEFS (state, data) {
     state.display = data;
   },
+  UPDATE_USER (state, data) {
+    state.user = data;
+    state.user.saveSettings();
+  },
   CHANGESETTINGS (state, data) {
     state.settings = data;
-    UserUtil.saveUserSettings(data.userSettings);
   },
   CHANGESAVEDSTATUS (state, property, data) {
     state.status.saved[property] = data;

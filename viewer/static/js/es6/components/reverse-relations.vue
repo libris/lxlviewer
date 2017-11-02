@@ -4,12 +4,13 @@ import * as HttpUtil from '../utils/http';
 import * as RecordUtil from '../utils/record';
 import CreateItemButton from '../components/create-item-button';
 import InstanceListButton from '../components/instance-list-button';
-import { getStatus, getEditorData, getVocabulary, getSettings } from '../vuex/getters';
+import { getUser, getStatus, getEditorData, getVocabulary, getSettings } from '../vuex/getters';
 
 export default {
   name: 'reverse-relations',
   vuex: {
     getters: {
+      user: getUser,
       vocab: getVocabulary,
       settings: getSettings,
       editorData: getEditorData,
@@ -56,7 +57,7 @@ export default {
   },
   computed: {
     libraryUrl() {
-      return `https://libris.kb.se/library/${this.settings.userSettings.currentSigel}`;
+      return `https://libris.kb.se/library/${this.user.settings.activeSigel}`;
     },
     recordType() {
       return VocabUtil.getRecordType(this.editorData.mainEntity['@type'], this.vocab, this.settings);
@@ -103,7 +104,7 @@ export default {
         <i class="fa fa-university" aria-hidden="true"></i>
         {{ "Libraries" | translatePhrase }}: {{numberOfRelations}}
       </div>
-      <create-item-button :disabled="status.inEdit" :has-holding="hasRelation" :checking-holding="checkingRelations" :holding-id="relationPath"></create-item-button>
+      <create-item-button v-if="user.getPermission().registrant" :disabled="status.inEdit" :has-holding="hasRelation" :checking-holding="checkingRelations" :holding-id="relationPath"></create-item-button>
     </div>
   </div>
 </template>

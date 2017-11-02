@@ -92,6 +92,7 @@ export default class CreateNew extends View {
       },
       store,
       ready() {
+        this.updateUser(self.user);
         this.changeSettings(self.settings);
         this.loadVocab(self.vocab);
         this.loadContext(self.context);

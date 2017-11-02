@@ -244,6 +244,15 @@ export default class Editor extends View {
         },
       },
       computed: {
+        canEditThisType() {
+          const permission = this.user.getPermission();
+          if (this.editorData.mainEntity['@type'] === 'Item' && permission.registrant === true) {
+            return true;
+          } else if (permission.cataloger === true) {
+            return true;
+          }
+          return false;
+        },
         isItem() {
           return this.editorData.mainEntity['@type'] === 'Item';
         },
@@ -315,7 +324,7 @@ export default class Editor extends View {
           return _.isPlainObject(o);
         },
         editItem() {
-          if (UserUtil.isLoggedIn(window.userInfo)) {
+          if (this.canEditThisType) {
             this.$dispatch('set-dirty', true);
             this.changeStatus('inEdit', true);
           } else {
@@ -390,6 +399,7 @@ export default class Editor extends View {
         },
       },
       ready() {
+        this.updateUser(self.user);
         this.changeSettings(self.settings);
         this.loadVocab(self.vocab);
         this.loadContext(self.context);

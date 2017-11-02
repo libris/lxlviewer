@@ -34,3 +34,6 @@ export function getNotification(state) {
 export function getChangeHistory(state) {
   return state.status.changeHistory;
 }
+export function getUser(state) {
+  return state.user;
+}
