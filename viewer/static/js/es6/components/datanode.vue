@@ -276,7 +276,6 @@ export default {
       }, 500);
     },
     getPossibleValues() {
-      debugger;
       VocabUtil.getEnumerations(this.entityType, this.key, this.vocab, this.settings.vocabPfx).then((result) => {
         const values = [];
         for (const value of result) {
