@@ -30,8 +30,8 @@ export default {
     getSigelLabel(sigel, len) {
       let label = '';
       label += sigel.code;
-      if (sigel.name) {
-        label += ` - ${sigel.name}`;
+      if (sigel.friendly_name) {
+        label += ` - ${sigel.friendly_name}`;
       }
       return label.length > len ? `${label.substr(0,len-2)}...` : label;
     },

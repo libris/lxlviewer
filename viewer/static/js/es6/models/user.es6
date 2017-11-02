@@ -3,7 +3,7 @@ import * as _ from 'lodash';
 export class User {
   constructor(user) {
     this.fullName = user.full_name;
-    this.shortName = user.full_name.split(' ')[0];
+    this.shortName = user.short_name;
     this.email = user.email;
     this.emailHash = user.email_hash;
     this.permissions = user.permissions;

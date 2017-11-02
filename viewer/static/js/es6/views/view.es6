@@ -135,18 +135,7 @@ export default class View {
   }
 
   initialize() {
-    const fakeAuth = {
-      email: 'libris@kb.se',
-      full_name: 'Libris Kundservice',
-      email_hash: 'a7a5326b44e4047ebfb2b7994edd5eac',
-      permissions: [
-        { code: 'a', name: 'Some name A', cataloger: true, registrant: true },
-        { code: 'b', name: 'Some name B', cataloger: false, registrant: true },
-        { code: 'c', name: 'Some name C which is pretty long and this should probably be shortened in gui', cataloger: false, registrant: false },
-        { code: 'd' },
-      ],
-    };
-    this.user = User.getUserObject(JSON.stringify(fakeAuth));
+    this.user = User.getUserObject(JSON.stringify(window.userInfo));
     this.initializeTracking();
     this.initiateWarnBeforeUnload();
     if (window.location.hash) {
