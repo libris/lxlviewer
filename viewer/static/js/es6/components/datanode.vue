@@ -78,7 +78,7 @@ export default {
       }
     },
     isLocked(value, oldvalue) {
-      if (!value && oldvalue && this.possibleValues.length === 0) {
+      if (!value && oldvalue && this.possibleValues.length === 0 && this.hasRestriction) {
         this.getPossibleValues();
       }
     },
@@ -99,7 +99,7 @@ export default {
     isObjectArray() {
       return _.isPlainObject(this.valueAsArray[0]);
     },
-    hasRescriction() {
+    hasRestriction() {
       if (this.restrictionOnProp && this.restrictionOnProp.length > 0) {
         return true;
       }
@@ -276,6 +276,7 @@ export default {
       }, 500);
     },
     getPossibleValues() {
+      debugger;
       VocabUtil.getEnumerations(this.entityType, this.key, this.vocab, this.settings.vocabPfx).then((result) => {
         const values = [];
         for (const value of result) {
@@ -295,7 +296,7 @@ export default {
       if (VocabUtil.hasValuesInVocab(this.key, this.context)) {
         return 'vocab';
       }
-      if (this.hasRescriction) {
+      if (this.hasRestriction) {
         return 'enumeration';
       }
       if (this.isPlainObject(o) && this.isLinked(o)) {
@@ -365,7 +366,7 @@ export default {
         <i class="fa fa-question-circle"></i>
         <div class="comment">{{ propertyComment }}</div>
       </div>
-      <entity-adder v-if="!locked && isRepeatable && (isInner && !isEmptyObject)" :has-restriction="hasRescriction" :possible-values="possibleValues" :key="key" :already-added="linkedIds" :property-types="propertyTypes" :allow-local="allowLocal && propAllowsLocal" :show-action-buttons="showActionButtons" :active="activeModal" :is-placeholder="true" :value-list="valueAsArray"></entity-adder>
+      <entity-adder v-if="!locked && isRepeatable && (isInner && !isEmptyObject)" :has-restriction="hasRestriction" :possible-values="possibleValues" :key="key" :already-added="linkedIds" :property-types="propertyTypes" :allow-local="allowLocal && propAllowsLocal" :show-action-buttons="showActionButtons" :active="activeModal" :is-placeholder="true" :value-list="valueAsArray"></entity-adder>
     </div>
     <div v-if="isInner" class="actions">
       <div class="action" v-show="!locked" :class="{'disabled': activeModal}">
@@ -393,7 +394,7 @@ export default {
         <item-value v-if="getDatatype(item) == 'value'" :is-removable="!hasSingleValue" :is-locked="locked" :value="item" :key="key" :index="$index" :show-action-buttons="showActionButtons"></item-value>
       </li>
     </ul>
-    <entity-adder class="action" v-if="!locked && (isRepeatable || isEmptyObject) && (!isInner || (isInner && isEmptyObject))" :has-restriction="hasRescriction" :possible-values="possibleValues" :key="key" :already-added="linkedIds" :property-types="propertyTypes" :allow-local="allowLocal && propAllowsLocal" :show-action-buttons="showActionButtons" :active="activeModal" :is-placeholder="false" :value-list="valueAsArray"></entity-adder>
+    <entity-adder class="action" v-if="!locked && (isRepeatable || isEmptyObject) && (!isInner || (isInner && isEmptyObject))" :has-restriction="hasRestriction" :possible-values="possibleValues" :key="key" :already-added="linkedIds" :property-types="propertyTypes" :allow-local="allowLocal && propAllowsLocal" :show-action-buttons="showActionButtons" :active="activeModal" :is-placeholder="false" :value-list="valueAsArray"></entity-adder>
   </div>
   <div v-if="!isInner" class="actions">
     <div class="action" v-show="!locked" :class="{'disabled': activeModal}">
