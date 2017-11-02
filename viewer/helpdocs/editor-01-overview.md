@@ -5,16 +5,6 @@ tags:
 - editor
 ---
 
-### test
-[^1]Katalogisatören avgör om den valfria uteslutningen ska tillämpas.
-
-NB-praxis: Generellt, tillämpa inte den valfria uteslutningen.
-	(img)
-
-`Kiki Lundberg och Carina Trägårdh Tornhill ; faktagranskare: Eva Skoog, leg. dietist, Lisa Lundmark, leg. dietist och Elisabeth Nilsson, leg. sjuksköterska ; fotografi: Helén Sahlstrand, Härlig hälsa, Istock, Shutterstock`
-
-
-
 # Redigering
 
 > Denna hjälpfunktionalitet är under utveckling

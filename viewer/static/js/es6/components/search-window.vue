@@ -275,10 +275,10 @@ export default {
             </div>
             <div v-show="extracting || keyword.length === 0 || loading || foundNoResult" class="search-status-container">
               <div class="search-status">
-                <span v-show="keyword.length === 0"><span>{{ "Search for existing linked entities" | translatePhrase }}...</span></span>
+                <span v-show="keyword.length === 0 && !extracting"><span>{{ "Search for existing linked entities" | translatePhrase }}...</span></span>
                 <span v-show="loading"><i class="fa fa-circle-o-notch fa-spin"></i><span>{{ "Searching" | translatePhrase }}...</span></span>
                 <span v-show="foundNoResult"><span>{{ "No results" | translatePhrase }}<br>{{"Search again or" | translatePhrase}} {{"Create and link entity" | translatePhrase}}</span></span>
-                <span v-show="extracting"><i class="fa fa-circle-o-notch fa-spin" aria-hidden="true"></i><span>{{ "Extracting" | translatePhrase }}</span></span>
+                <span v-show="extracting"><i class="fa fa-circle-o-notch fa-spin" aria-hidden="true"></i><span>{{ "Creating link" | translatePhrase }}</span></span>
               </div>
             </div>
           </div>
