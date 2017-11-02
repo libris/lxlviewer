@@ -1699,11 +1699,79 @@
         },
         "mainEntity": {
           "@type": "Person",
-          "birthYear": "",
-          "deathYear": "",
-          "name": "",
           "familyName": "",
           "givenName": "",
+          "lifeSpan": "",
+          "identifiedBy": [{
+            "@type": "Identifier",
+            "typeNote": "isni",
+            "value": ""
+          }],
+          "gender": "",
+          "hasOccupation": [{
+            "@type": "Occupation",
+            "label": "",
+            "marc:sourceOfTerm": "sao"
+          }],
+          "nationality": {
+            "@id": "https://id.kb.se/nationality/e-sw---",
+            "code": "e-sw---"
+          },
+          "note": [
+            ""
+          ],
+          "numeration": "",
+          "qualifyingNote": [
+            ""
+          ]
+        }
+      }
+    },
+    "person-name": {
+      "label": "Person",
+      "description": "Agent (namn i rak ordföljd)",
+      "value": {
+        "record": {
+          "@type": "Record",
+          "marc:encLevel": {
+            "@id": "marc:CompleteAuthorityRecord"
+          },
+          "marc:romanization": {
+            "@id": "marc:NationalStandard"
+          },
+          "marc:kindOfRecord": {
+            "@id": "marc:EstablishedHeadingRecord"
+          },
+          "descriptionConventions": [{
+              "@id": "marc:Other"
+            },
+            {
+              "@type": "DescriptionConventions",
+              "code": "rda"
+            }
+          ],
+          "marc:headingMain": true,
+          "marc:subjectSubdivision": {
+            "@id": "marc:Topical"
+          },
+          "marc:recordUpdate": {
+            "@id": "marc:RecordCanBeUsed"
+          },
+          "marc:personalName": {
+            "@id": "marc:DifferentiatedPersonalName"
+          },
+          "marc:level": {
+            "@id": "marc:FullyEstablishedHeading"
+          },
+          "descriptionLanguage": [{
+            "@id": "https://id.kb.se/language/swe",
+            "code": "swe"
+          }]
+        },
+        "mainEntity": {
+          "@type": "Person",
+          "name": "",
+          "lifeSpan": "",
           "identifiedBy": [{
             "@type": "Identifier",
             "typeNote": "isni",

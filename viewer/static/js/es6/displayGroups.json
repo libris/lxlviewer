@@ -16,8 +16,7 @@
     "name",
     "numeration",
     "qualifyingNote",
-    "birthYear",
-    "deathYear"
+    "lifeSpan"
   ],
   "info": ["responsibilityStatement", "instanceOf", "contribution", "broader", "date", "note"],
   "identifiers": ["identifiedBy", "sameAs"]
