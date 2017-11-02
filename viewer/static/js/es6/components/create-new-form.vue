@@ -160,7 +160,7 @@ export default {
         <div class="app-heading">{{'Create new' | translatePhrase}}</div>
         <creation-tab :creation-list="creationList"></creation-tab>
         <div class="creation-cards-container">
-          <creation-card :is-base="true" :material-list="materialList" :index="0" :active-index="activeIndex"></creation-card>
+          <creation-card v-show="selectedCreation !== 'Agent' && selectedCreation !== 'Concept'" :is-base="true" :material-list="materialList" :index="0" :active-index="activeIndex"></creation-card>
           <creation-card v-for="template in combinedTemplates" :is-base="false" :template="template" :index="$index + 1" :active-index="activeIndex"></creation-card>
         </div>
         <form action="/edit" method="POST" id="thingDataForm">
