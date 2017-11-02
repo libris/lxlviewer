@@ -7,14 +7,20 @@ tags:
 
 # Sökindex
 
-I grunden för Libris XL ligger sökmotorn [elasticsearch](https://www.elastic.co/)
+I Libris XL används [elasticsearch](https://www.elastic.co/), en sökmotor för fulltext och analys.
 
-## "Query string syntax"
-
-https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html#query-string-syntax
+Vi frågespråket som de kallar Simple Query String Syntax och är en teckenvariant av boolska operatorer och andra tecken för att specificera sin sökfråga.
 
 
-## Booleska operatorer
+## Operatorer för frågespråk
+
+`+` betyder AND
+`|` betyder OR
+`-` innebär uteslutning
+`"` wraps a number of tokens to signify a phrase for searching
+`*` at the end of a term signifies a prefix query
+`( word )` signify precedence
+
 
 Standard är att sökmotorn ger träff på valfri sökterm så länge en av de matchar. En sökning på `Astrid Lindgren` kommer matcha poster som innehåller antingen (1) `Astrid Lindgren` eller (2) `Astrid` eller (3) `Lindgren`.
 
