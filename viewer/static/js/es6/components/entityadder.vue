@@ -253,7 +253,7 @@ export default {
     },
     getItems(keyword, typeArray) {
       // TODO: Support asking for more items
-      const searchKey = `${keyword}*`;
+      const searchKey = keyword !== '*' ? `${keyword}*` : keyword;
       let searchUrl = `/find?q=${searchKey}`;
       if (typeof typeArray !== 'undefined' && typeArray.length > 0) {
         for (const type of typeArray) {
