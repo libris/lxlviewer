@@ -1,0 +1,11 @@
+% extends "base.html"
+
+{% block bodyattrs %}id="about"{% endblock %}
+
+{% block title %}Om XL{% endblock %}
+
+{% block wrapper %}<div class="show-content" id="page-content-wrapper"> {% endblock %}
+
+% block content
+  <about-component v-if="initialized === true"></about-component>
+% endblock

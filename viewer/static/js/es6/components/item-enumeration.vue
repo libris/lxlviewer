@@ -81,7 +81,16 @@ export default {
   },
   methods: {
     setInitialValue() {
-      this.selected = this.value['@id'];
+      if (typeof this.value['@id'] === 'undefined') {
+        console.error(`Enumeration on ${this.key} is missing @id.`);
+      } else {
+        if (this.value['@id'].indexOf('marc:') > -1) {
+          const replacedPrefix = this.value['@id'].replace('marc:', 'https://id.kb.se/marc/');
+          this.selected = replacedPrefix;
+        } else {
+          this.selected = this.value['@id'];
+        }
+      }
     },
     isEmpty() {
       // TODO: Is the item empty?

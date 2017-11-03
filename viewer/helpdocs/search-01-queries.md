@@ -7,16 +7,20 @@ tags:
 
 # Sökindex
 
-I grunden för Libris XL ligger sökmotorn [elasticsearch](https://www.elastic.co/)
-
-## "Query string syntax"
-
-https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html#query-string-syntax
+I Libris XL används [elasticsearch](https://www.elastic.co/), en sökmotor för fulltext och analys.
 
 
-## Booleska operatorer
+## Operatorer för frågespråk
 
-Standard är att sökmotorn ger träff på valfri sökterm så länge en av de matchar. En sökning på `Astrid Lindgren` kommer matcha poster som innehåller antingen (1) `Astrid Lindgren` eller (2) `Astrid` eller (3) `Lindgren`.
+`+` betyder AND
+`|` betyder OR
+`-` innebär uteslutning
+`"` wraps a number of tokens to signify a phrase for searching
+`*` innebär trunkering av en term
+`( word )` ökar relevans
+
+
+Standardfunktionalitet är att sökmotorn ger träff på valfri sökterm med en `|` . En sökning på `Astrid Lindgren` kommer matcha poster som innehåller antingen (1) `Astrid` eller (2) `Lindgren`, ger även träff på (3) `Astrid Lindgren`.
 
 De föredragna operatorerna är `+` (termen måste vara inkluderad) och `-` (denna term får ej vara inkluderad) Alla andra termer är valfria.
 
@@ -28,18 +32,4 @@ betyder att:
 `news` får inte vara med i träffen
 `quick` and `brown` är valfria — men ökar relevans
 
-Se även Booleska operatorer i elasticsearch dokumentationssidor
-
-https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html#_boolean_operators
-
-
-## Reserverade tecken
-
-Om du behöver använda tecken i din sökfråga som innehåller en operator kan du undanta detta med ett omvänt snedstreck som skiftestecken.
-
-Exempel en sökning på `(1+1)=2`, så behöver sökfrågan utformas `\(1\+1\)\=2`.
-
-Lista på reserverade tecken: 
->`+ - = && || > < ! ( ) { } [ ] ^ " ~ * ? : \ /`
-
-Om man inte använder skiftestecken i sökfrågan kan det leda till felaktiga söksträngar.
+`"quick brown fox news"` innebär att hela frasen måste vara med.
