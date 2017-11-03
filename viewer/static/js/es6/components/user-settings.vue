@@ -1,5 +1,4 @@
 <script>
-import * as UserUtil from '../utils/user';
 import * as StringUtil from '../utils/string';
 import * as _ from 'lodash';
 import { getSettings, getUser } from '../vuex/getters';

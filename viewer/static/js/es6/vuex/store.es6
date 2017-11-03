@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import * as UserUtil from '../utils/user';
 import * as VocabUtil from '../utils/vocab';
 import * as RecordUtil from '../utils/record';
 import _ from 'lodash';

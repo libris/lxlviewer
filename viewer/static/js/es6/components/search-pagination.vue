@@ -1,7 +1,6 @@
 <script>
 import * as StringUtil from '../utils/string';
 import * as httpUtil from '../utils/http';
-import * as UserUtil from '../utils/user';
 import { updateUser, changeResultListStatus, changeSettings } from '../vuex/actions';
 import { getUser, getSettings, getVocabulary } from '../vuex/getters';
 

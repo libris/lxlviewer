@@ -15,7 +15,6 @@ import * as VocabLoader from '../utils/vocabloader';
 import * as VocabUtil from '../utils/vocab';
 import * as DisplayUtil from '../utils/display';
 import * as RecordUtil from '../utils/record';
-import * as UserUtil from '../utils/user';
 import * as StringUtil from '../utils/string';
 import MarcPreview from '../components/marc-preview';
 import FormComponent from '../components/formcomponent';
