@@ -92,7 +92,7 @@ export default {
           <td class="settings-label">{{"Active sigel" | translatePhrase}}</td>
           <td class="settings-value">
             <select v-model="activeSigel">
-              <option v-for="sigel in user.permissions" value="{{sigel.code}}">{{ getSigelLabel(sigel, 50) }}</option>
+              <option v-for="sigel in user.collections" value="{{sigel.code}}">{{ getSigelLabel(sigel, 50) }}</option>
             </select>
           </td>
         </tr>

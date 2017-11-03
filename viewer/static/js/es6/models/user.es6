@@ -1,22 +1,22 @@
 import * as _ from 'lodash';
 
 export class User {
-  constructor(user) {
-    this.fullName = user.full_name;
-    this.shortName = user.short_name;
-    this.email = user.email;
-    this.emailHash = user.email_hash;
-    this.permissions = user.permissions;
+  constructor(fullName = '', shortName = '', email = '', emailHash = '', collections = []) {
+    this.fullName = fullName;
+    this.shortName = shortName;
+    this.email = email;
+    this.emailHash = emailHash;
+    this.collections = collections;
     this.settings = {
       resultListType: 'detailed',
       appTech: 'off',
       activeSigel: '',
       language: 'sv',
-    }
+    };
   }
 
-  hasAnyPermissions() {
-    if (this.permissions && this.permissions.length > 0) {
+  hasAnyCollections() {
+    if (this.collections && this.collections.length > 0) {
       return true;
     }
     return false;
@@ -36,39 +36,18 @@ export class User {
               this.settings[key] = savedUserSettings[key];
             } else {
               console.warn('Saved sigel not present in permissions list. Switching to first available.');
-              this.settings[key] = this.permissions[0].code;
+              this.settings[key] = this.collections[0].code;
             }
           } else {
             this.settings[key] = savedUserSettings[key];
           }
         }
         if (this.settings.activeSigel === '') {
-          this.settings.activeSigel = this.permissions[0].code;
+          this.settings.activeSigel = this.collections[0].code;
         }
       });
     }
     this.saveSettings();
-  }
-
-  getPermissions() {
-    const active = this.settings.activeSigel;
-    const permissions = this.permissions;
-    return _.find(permissions, (o) => {
-      return o.code === active;
-    });
-  }
-
-  verifySigel(sigelCode) {
-    // Check if the chosen sigel is in list of permissions.
-    let verified = false;
-    if (sigelCode.length > 0) {
-      _.each(this.permissions, (sigel) => {
-        if (sigel.code === sigelCode) {
-          verified = true;
-        }
-      });
-    }
-    return verified;
   }
 
   saveSettings() {
@@ -79,10 +58,37 @@ export class User {
     savedSettings[this.emailHash] = this.settings;
     localStorage.setItem('userSettings', JSON.stringify(savedSettings));
   }
+
+  getPermissions() {
+    return _.find(this.collections, (o) => {
+      return o.code === this.settings.activeSigel;
+    });
+  }
+
+  verifySigel(sigelCode) {
+    // Check if the chosen sigel is in list of permissions.
+    let verified = false;
+    if (sigelCode.length > 0) {
+      _.each(this.collections, (sigel) => {
+        if (sigel.code === sigelCode) {
+          verified = true;
+        }
+      });
+    }
+    return verified;
+  }
 }
 
-export function getUserObject(userJson) {
-  const user = new User(JSON.parse(userJson));
-  user.loadSettings();
+export function getUserObject(userObj) {
+  const user = new User(
+    userObj.full_name,
+    userObj.short_name,
+    userObj.email,
+    userObj.email_hash,
+    userObj.permissions
+  );
+  if (user.fullName !== '') {
+    user.loadSettings();
+  }
   return user;
 }

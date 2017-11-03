@@ -135,13 +135,16 @@ export default class View {
   }
 
   initialize() {
-    this.user = User.getUserObject(JSON.stringify(window.userInfo));
+    this.user = User.getUserObject(window.userInfo);
     this.initializeTracking();
     this.initiateWarnBeforeUnload();
     if (window.location.hash) {
       this.shiftWindow();
     }
-    this.settings.language = this.user.settings.language || $('html').attr('lang');
+    this.settings.language = $('html').attr('lang');
+    if (this.user) {
+      this.settings.language = this.user.settings.language;
+    }
     this.translate();
   }
 
