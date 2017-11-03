@@ -322,21 +322,21 @@ describe('Utility: vocab', function () {
     });
   });
 
-  describe('getRestrictionType()', function() {
-    let result = VocabUtil.getRestrictionType('Electronic', 'carrierType', vocabMap, vocabPfx);
+  describe('getEnumerationKeys()', function() {
+    let result = VocabUtil.getEnumerationKeys('Electronic', 'carrierType', vocabMap, vocabPfx);
 
-    it('returns type as string', function() {
-      expect(result).to.be.a('string');
+    it('returns types as array', function() {
+      expect(result).to.be.an('array');
     });
 
     it('returns the restriction type for the specified property and entityType', function() {
-      expect(result).to.eql('https://id.kb.se/marc/ComputerMaterialType');
+      expect(result).to.eql(['https://id.kb.se/marc/ComputerMaterialType']);
     });
 
 
-    it('returns an empty string if no restriction type is found', function() {
-      result = VocabUtil.getRestrictionType('Electronic', 'kalle', vocabMap, vocabPfx);
-      expect(result).to.be.a('string');
+    it('returns an empty array if no restriction type is found', function() {
+      result = VocabUtil.getEnumerationKeys('Electronic', 'kalle', vocabMap, vocabPfx);
+      expect(result).to.be.an('array');
       expect(result.length).to.eql(0);
     });
   });
