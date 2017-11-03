@@ -71,8 +71,8 @@
     "Showing": "Visar",
     "Tools": "Verktyg",
     "Show as": "Visa som",
-    "Expand all": "Fäll ut allt",
-    "Collapse all": "Stäng allt",
+    "Expand all": "Expandera alla",
+    "Collapse all": "Minimera alla",
     "of": "av",
     "Show": "Visa",
     "Hide": "Dölj",
@@ -117,8 +117,8 @@
     "Type": "Typ",
     "Release notes": "Versionsinfo",
     "Unauthorized": "Obehörig",
-    "Instantiations of this work": "Instansieringar av detta verk",
-    "Show instantiations": "Visa instansieringar",
-    "Instantiations": "Instansieringar"
+    "Instantiations of this work": "Instanser av detta verk",
+    "Show instantiations": "Visa instanser",
+    "Instantiations": "Instanser"
   }
 }

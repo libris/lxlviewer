@@ -1260,8 +1260,8 @@
       }
     },
     "photo": {
-      "label": "Fotografi (Svart/vitt)",
-      "description": "RDA Bild",
+      "label": "Fotografi",
+      "description": "Bild - RDA",
       "value": {
         "record": {
           "marc:encLevel": {
@@ -1284,9 +1284,7 @@
           "genreForm": [{
             "@id": "marc:Photoprint"
           }],
-          "colorContent": {
-            "@id": "marc:BlackAndWhite"
-          },
+          "colorContent": {},
           "baseMaterial": [{
             "@id": "marc:NonProjectedType-o"
           }, {
