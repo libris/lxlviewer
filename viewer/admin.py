@@ -18,18 +18,23 @@ def on_load(state):
 
 
 class User(UserMixin):
-    def __init__(self, username, active = True, authorization = None, token = None):
+    def __init__(self, username, active = True, permissions = None, token = None, email = ''):
         self.username = unicode(username)
         self.active = active
-        self.authorization = authorization
+        self.permissions = permissions
         self.token = token
-        self.email = '' # TODO: Insert user email
+        self.email = email
 
     def __repr__(self):
         return '<User %r>' % (self.username)
 
     def get(self):
-        return { "username": self.username, "authorization": self.authorization, "access_token": self.get_access_token(), "email_hash": self.get_email_hash() }
+        return {"full_name": self.username,
+                "short_name": self.username.split()[0],
+                "email": self.email,
+                "permissions": self.permissions,
+                "access_token": self.get_access_token(),
+                "email_hash": self.get_email_hash()}
 
     def get_as_json(self):
         return json.dumps(self.get())
@@ -47,8 +52,8 @@ class User(UserMixin):
         hashed_email = hashlib.md5(str(self.email).lower().encode()).hexdigest()
         return 'https://www.gravatar.com/avatar/{}?d=mm&s={}'.format(self.get_email_hash(), size)
 
-    def get_authorization(self):
-        return self.authorization
+    def get_permissions(self):
+        return self.permissions
 
     def is_active(self):
         return self.active
@@ -65,9 +70,10 @@ class User(UserMixin):
 
 @login_manager.user_loader
 def _load_user(uid):
-    if not 'authorization' in session:
+    if not 'permissions' in session:
         return None
-    return User(uid, authorization=session.get('authorization'), token=_get_token())
+    return User(uid, permissions=session.get('permissions'),
+                token=_get_token(), email=session.get('user_email'))
 
 
 @login_manager.unauthorized_handler
@@ -110,7 +116,11 @@ def authorized():
             app.logger.info('[%s] Trying to get access token from %s', request.remote_addr, token_url)
             requests_oauth = _get_requests_oauth()
             # On authorized fetch token
-            session['oauth_token'] = requests_oauth.fetch_token(token_url, client_secret=app.config['OAUTH_CLIENT_SECRET'], authorization_response=request.url)
+            session['oauth_token'] = requests_oauth.fetch_token(token_url,
+                                                                # TODO Use POST here
+                                                                method='GET',
+                                                                client_secret=app.config['OAUTH_CLIENT_SECRET'],
+                                                                authorization_response=request.url)
             app.logger.debug('OAuth token received %s ', json.dumps(_get_token()))
         except Exception, e:
             raise Exception('Failed to get token, %s response: %s. Try login again' % (token_url, str(e)))
@@ -142,7 +152,8 @@ def authorized():
 def logout():
     app.logger.info('[%s] Trying to sign out.', request.remote_addr)
     logout_user()
-    session.pop('authorization', None)
+    session.pop('permissions', None)
+    session.pop('user_email', None)
     session.pop('oauth_token', None)
     return render_template('logout.html')
 
@@ -203,42 +214,44 @@ def refresh_token():
 def _fake_login():
     fake_user_login = app.config.get('FAKE_LOGIN')
     if app.config.get('FAKE_LOGIN'):
-        user = User(fake_user_login.get('name'), authorization=fake_user_login.get('authorization'))
-        app.logger.debug("Faking login %s %s", user.get_id(), json.dumps(user.get_authorization()))
+        user = User(fake_user_login.get('name'), permissions=fake_user_login.get('permissions'))
+        app.logger.debug("Faking login %s %s", user.get_id(), json.dumps(user.get_permissions()))
         login_user(user, True)
-        session['authorization'] = user.authorization
+        session['permissions'] = user.permissions
         return True
     else:
         return False
 
 
-def _filter_authorization(authorization, authorization_roles):
-    if not authorization or not authorization_roles:
+def _filter_permissions(permissions, permission_roles):
+    if not permissions or not permission_roles:
         return []
     def f(auth):
         # filter out auth without specified roles
-        return filter(lambda role: auth.get(role), authorization_roles)
+        return filter(lambda role: auth.get(role), permission_roles)
 
-    return list(filter(f, authorization))
+    return list(filter(f, permissions))
 
 
 def _login_user(verified_user):
-    authorization = verified_user.get('authorization')
-    username = verified_user.get('username')
-    if authorization and username:
+    permissions = verified_user.get('permissions')
+    username = verified_user.get('full_name')
+    email = verified_user.get('email')
+    if permissions and username:
         # For debugging, allow force xlreg rights
         if(app.config.get('ALWAYS_ALLOW_XLREG')):
-            for auth in authorization:
+            for auth in permissions:
                 auth['xlreg'] = True;
 
-        # Filter authorization to make sure user got correct role rights
-        authorization = _filter_authorization(authorization, app.config.get('AUTHORIZED_ROLES'))
-        if not authorization:
+        # Filter permissions to make sure user got correct role rights
+        permissions = _filter_permissions(permissions, app.config.get('AUTHORIZED_ROLES'))
+        if not permissions:
             raise Exception('You insufficient rights to access this service. Contact support to gain access.')
 
         # Create Flask user
-        user = User(username, authorization=authorization, token=_get_token())
-        session['authorization'] = authorization
+        user = User(username, permissions=permissions, token=_get_token(), email=email)
+        session['permissions'] = permissions
+        session['user_email'] = email
         return login_user(user, True)
     return False
 
