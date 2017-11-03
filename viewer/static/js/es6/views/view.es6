@@ -140,9 +140,9 @@ export default class View {
       full_name: 'Libris Kundservice',
       email_hash: 'a7a5326b44e4047ebfb2b7994edd5eac',
       permissions: [
-        { code: 'a', cataloger: true, registrant: true },
-        { code: 'b', cataloger: false, registrant: true },
-        { code: 'c', cataloger: false, registrant: false },
+        { code: 'a', name: 'Some name A', cataloger: true, registrant: true },
+        { code: 'b', name: 'Some name B', cataloger: false, registrant: true },
+        { code: 'c', name: 'Some name C which is pretty long and this should probably be shortened in gui', cataloger: false, registrant: false },
         { code: 'd' },
       ],
     };

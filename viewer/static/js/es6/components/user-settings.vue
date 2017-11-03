@@ -27,6 +27,14 @@ export default {
     save() {
       this.updateUser(this.user);
     },
+    getSigelLabel(sigel, len) {
+      let label = '';
+      label += sigel.code;
+      if (sigel.name) {
+        label += ` - ${sigel.name}`;
+      }
+      return label.length > len ? `${label.substr(0,len-2)}...` : label;
+    },
   },
   computed: {
     currentUser() {
@@ -84,7 +92,7 @@ export default {
           <td class="settings-label">{{"Active sigel" | translatePhrase}}</td>
           <td class="settings-value">
             <select v-model="activeSigel">
-              <option v-for="sigel in user.permissions" value="{{sigel.code}}">{{ sigel.code }}</option>
+              <option v-for="sigel in user.permissions" value="{{sigel.code}}">{{ getSigelLabel(sigel, 50) }}</option>
             </select>
           </td>
         </tr>
@@ -135,11 +143,14 @@ export default {
       padding: 0.5em;
     }
     td.settings-label {
-      width: 50%;
+      width: 40%;
       vertical-align: middle;
     }
     td.settings-value {
-      width: auto;
+      width: 60%;
+      select {
+        width: 100%;
+      }
     }
   }
 
