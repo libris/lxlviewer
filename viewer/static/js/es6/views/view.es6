@@ -15,7 +15,7 @@ export default class View {
     this.settings = {
       // vocabPfx: 'kbv:',
       vocabPfx: 'https://id.kb.se/vocab/',
-      siteInfo: window.siteInfo,
+      siteInfo: window.siteInfo || {},
       embeddedTypes: [
         'StructuredValue',
         'ProvisionActivity',
@@ -135,7 +135,7 @@ export default class View {
   }
 
   initialize() {
-    this.user = User.getUserObject(window.userInfo);
+    this.user = User.getUserObject(window.userInfo || {});
     this.initializeTracking();
     this.initiateWarnBeforeUnload();
     if (window.location.hash) {
