@@ -57,7 +57,7 @@ export default class View {
         'modified',
       ],
       disallowLocal: [
-        'instanceOf',
+        // 'instanceOf',
       ],
       expandKeys: [
         // 'instanceOf',
