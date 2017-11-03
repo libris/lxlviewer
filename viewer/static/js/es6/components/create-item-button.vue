@@ -1,5 +1,5 @@
 <script>
-import { getSettings, getVocabulary, getContext, getDisplayDefinitions, getEditorData, getStatus } from '../vuex/getters';
+import { getUser, getSettings, getVocabulary, getContext, getDisplayDefinitions, getEditorData, getStatus } from '../vuex/getters';
 import { changeNotification, syncData, changeStatus } from '../vuex/actions';
 import * as DisplayUtil from '../utils/display';
 import * as StringUtil from '../utils/string';
@@ -21,6 +21,7 @@ export default {
   },
   vuex: {
     getters: {
+      user: getUser,
       context: getContext,
       vocab: getVocabulary,
       display: getDisplayDefinitions,
@@ -41,7 +42,7 @@ export default {
 
       this.itemData = RecordUtil.getItemObject(
         this.editorData.mainEntity['@id'],
-        `https://libris.kb.se/library/${this.settings.userSettings.currentSigel}`,
+        `https://libris.kb.se/library/${this.user.settings.activeSigel}`,
         embellishedReference
       );
       this.$dispatch('set-checking-relations', false);
@@ -90,12 +91,12 @@ export default {
         <i v-if="!hasHolding && !checkingHolding" class="fa fa-plus"></i>
         <i v-if="checkingHolding" class="fa fa-fw fa-circle-o-notch fa-spin"></i>
         {{"Holding" | translatePhrase}}
-        <span>({{settings.userSettings.currentSigel}})</span>
+        <span>({{user.settings.activeSigel}})</span>
       </button>
       <button v-if="hasHolding" :class="{'green': hasHolding, 'disabled': disabled}" :disabled="disabled" @click.prevent="fetchHolding()">
         <i v-if="hasHolding && !checkingHolding" class="fa fa-check"></i>
         {{"Holding" | translatePhrase}}
-        <span>({{settings.userSettings.currentSigel}})</span>
+        <span>({{user.settings.activeSigel}})</span>
       </button>
     <!--</form>-->
   </div>

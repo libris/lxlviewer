@@ -1,4 +1,5 @@
-import * as UserUtil from '../utils/user';
+
+import * as User from '../models/user';
 import * as StringUtil from '../utils/string';
 import * as VocabUtil from '../utils/vocab';
 import * as DisplayUtil from '../utils/display';
@@ -134,16 +135,25 @@ export default class View {
   }
 
   initialize() {
+    const fakeAuth = {
+      email: 'libris@kb.se',
+      full_name: 'Libris Kundservice',
+      email_hash: 'a7a5326b44e4047ebfb2b7994edd5eac',
+      permissions: [
+        { code: 'a', cataloger: true, registrant: true },
+        { code: 'b', cataloger: false, registrant: true },
+        { code: 'c', cataloger: false, registrant: false },
+        { code: 'd' },
+      ],
+    };
+    this.user = User.getUserObject(JSON.stringify(fakeAuth));
     this.initializeTracking();
     this.initiateWarnBeforeUnload();
     if (window.location.hash) {
       this.shiftWindow();
     }
-    this.settings.userSettings = UserUtil.loadUserSettings();
-    this.settings.language = this.settings.userSettings.language || $('html').attr('lang');
+    this.settings.language = this.user.settings.language || $('html').attr('lang');
     this.translate();
-    // $('.sigelLabel').text(`(${this.settings.userSettings.currentSigel})`);
-    // console.log('Initialized view', this);
   }
 
   getLdDepencendies() {
@@ -175,7 +185,7 @@ export default class View {
   }
 
   translate() {
-    const langCode = this.settings.userSettings.language || this.settings.language;
+    const langCode = this.settings.language;
     $('.js-translateable').each(function () {
       const originalText = $(this).attr('data-translateable');
       const newText = StringUtil.getUiPhraseByLang(originalText, langCode);

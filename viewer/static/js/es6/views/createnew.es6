@@ -5,7 +5,6 @@ import Vuex from 'vuex';
 import store from '../vuex/store';
 import * as CombinedTemplates from '../templates/combinedTemplates.json';
 import * as BaseTemplates from '../templates/baseTemplates.json';
-import * as UserUtil from '../utils/user';
 import * as VocabUtil from '../utils/vocab';
 import * as RecordUtil from '../utils/record';
 import * as DisplayUtil from '../utils/display';
@@ -92,6 +91,7 @@ export default class CreateNew extends View {
       },
       store,
       ready() {
+        this.updateUser(self.user);
         this.changeSettings(self.settings);
         this.loadVocab(self.vocab);
         this.loadContext(self.context);

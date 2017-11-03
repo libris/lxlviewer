@@ -154,6 +154,7 @@ export default class PagedCollection extends View {
       },
       ready() {
         this.changeSettings(self.settings);
+        this.updateUser(self.user);
         this.loadVocab(self.vocab);
         this.loadContext(self.context);
         this.loadVocabMap(self.vocabMap);

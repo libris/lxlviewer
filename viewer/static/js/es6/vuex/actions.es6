@@ -37,3 +37,6 @@ export const changeResultListStatus = function ({ dispatch, state }, property, d
 export const navigateChangeHistory = function ({ dispatch, state }, form, direction) {
   dispatch('NAVIGATE_CHANGE_HISTORY', form, direction);
 };
+export const updateUser = function ({ dispatch, state }, data) {
+  dispatch('UPDATE_USER', data);
+};

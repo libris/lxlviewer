@@ -220,7 +220,6 @@ export function getFullRange(key, vocab, vocabPfx) {
   return allTypes;
 }
 
-
 export function getDomainList(property, vocab, vocabPfx) {
   if (property['@type'] === 'Class') {
     return false;

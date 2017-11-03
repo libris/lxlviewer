@@ -1,9 +1,8 @@
 <script>
 import * as StringUtil from '../utils/string';
 import * as httpUtil from '../utils/http';
-import * as UserUtil from '../utils/user';
-import { changeResultListStatus, changeSettings } from '../vuex/actions';
-import { getSettings, getVocabulary } from '../vuex/getters';
+import { updateUser, changeResultListStatus, changeSettings } from '../vuex/actions';
+import { getUser, getSettings, getVocabulary } from '../vuex/getters';
 
 export default {
   name: 'search-pagination',
@@ -11,8 +10,10 @@ export default {
     actions: {
       changeResultListStatus,
       changeSettings,
+      updateUser,
     },
     getters: {
+      user: getUser,
       settings: getSettings,
       vocab: getVocabulary,
     },
@@ -111,14 +112,14 @@ export default {
   },
   methods: {
     setCompact() {
-      const settings = this.settings;
-      settings.userSettings.resultListType = 'compact';
-      this.changeSettings(settings);
+      const user = this.user;
+      user.settings.resultListType = 'compact';
+      this.updateUser(user);
     },
     setFull() {
-      const settings = this.settings;
-      settings.userSettings.resultListType = 'detailed';
-      this.changeSettings(settings);
+      const user = this.user;
+      user.settings.resultListType = 'detailed';
+      this.updateUser(user);
     },
     getNewResult(url) {
       this.changeResultListStatus('loading', true);
@@ -148,8 +149,8 @@ export default {
       <span v-if="pageData.totalItems > limit">Visar <strong>{{ limit }}</strong> träffar per sida.</span>
     </div>
     <div class="list-type-buttons" v-if="showDetails">
-      <button v-on:click="setFull()" v-bind:class="{'active': settings.userSettings.resultListType === 'detailed'}"><i class="fa fa-th-list"></i></button>
-      <button v-on:click="setCompact()" v-bind:class="{'active': settings.userSettings.resultListType === 'compact'}"><i class="fa fa-list"></i></button>
+      <button v-on:click="setFull()" v-bind:class="{'active': user.settings.resultListType === 'detailed'}"><i class="fa fa-th-list"></i></button>
+      <button v-on:click="setCompact()" v-bind:class="{'active': user.settings.resultListType === 'compact'}"><i class="fa fa-list"></i></button>
     </div>
     <div v-if="hasPagination && showPages" class="search-buttons">
       <nav>
