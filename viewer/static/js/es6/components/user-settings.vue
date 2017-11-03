@@ -25,15 +25,6 @@ export default {
     }
   },
   methods: {
-    getPermissions(auth) {
-      const permissions = [];
-      _.each(auth, (active, permission) => {
-        if (active === true) { // Strict equality to avoid non-empty strings
-          permissions.push(permission);
-        }
-      });
-      return permissions.join(', ')
-    },
     save() {
       this.updateUser(this.user);
     },

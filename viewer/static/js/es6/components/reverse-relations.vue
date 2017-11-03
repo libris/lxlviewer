@@ -104,7 +104,7 @@ export default {
         <i class="fa fa-university" aria-hidden="true"></i>
         {{ "Libraries" | translatePhrase }}: {{numberOfRelations}}
       </div>
-      <create-item-button v-if="user.getPermission().registrant" :disabled="status.inEdit" :has-holding="hasRelation" :checking-holding="checkingRelations" :holding-id="relationPath"></create-item-button>
+      <create-item-button v-if="user.getPermissions().registrant" :disabled="status.inEdit" :has-holding="hasRelation" :checking-holding="checkingRelations" :holding-id="relationPath"></create-item-button>
     </div>
   </div>
 </template>

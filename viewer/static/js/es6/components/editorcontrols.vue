@@ -162,7 +162,7 @@ export default {
   },
   computed: {
     canEditThisType() {
-      const permission = this.user.getPermission();
+      const permission = this.user.getPermissions();
       if (this.editorData.mainEntity['@type'] === 'Item' && permission.registrant === true) {
         return true;
       } else if (permission.cataloger === true) {

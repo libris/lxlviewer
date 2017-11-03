@@ -50,7 +50,7 @@ export class User {
     this.saveSettings();
   }
 
-  getPermission() {
+  getPermissions() {
     const active = this.settings.activeSigel;
     const permissions = this.permissions;
     return _.find(permissions, (o) => {

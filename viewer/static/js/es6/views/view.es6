@@ -1,4 +1,5 @@
-import * as UserUtil from '../utils/user';
+
+import * as User from '../models/user';
 import * as StringUtil from '../utils/string';
 import * as VocabUtil from '../utils/vocab';
 import * as DisplayUtil from '../utils/display';
@@ -145,7 +146,7 @@ export default class View {
         { code: 'd' },
       ],
     };
-    this.user = UserUtil.getUserObject(JSON.stringify(fakeAuth));
+    this.user = User.getUserObject(JSON.stringify(fakeAuth));
     this.initializeTracking();
     this.initiateWarnBeforeUnload();
     if (window.location.hash) {
