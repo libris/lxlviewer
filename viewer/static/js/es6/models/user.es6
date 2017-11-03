@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 
 export class User {
-  constructor(fullName = '', shortName = '', email = '', emailHash = '', collections = []) {
+  constructor(fullName = '', shortName = '', email = '', emailHash = '', collections = [{ code: '?', friendly_name: 'Inga samlingar. Kontakta katalogiseringsadmin.' }]) {
     this.fullName = fullName;
     this.shortName = shortName;
     this.email = email;
@@ -42,10 +42,10 @@ export class User {
             this.settings[key] = savedUserSettings[key];
           }
         }
-        if (this.settings.activeSigel === '') {
-          this.settings.activeSigel = this.collections[0].code;
-        }
       });
+    }
+    if (this.settings.activeSigel === '') {
+      this.settings.activeSigel = this.collections[0].code;
     }
     this.saveSettings();
   }
