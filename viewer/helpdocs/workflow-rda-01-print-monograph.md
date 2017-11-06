@@ -10,16 +10,9 @@ tags:
 
 # Tryckt monografi RDA
 
-
 [Extern länk till MARC21-anpassad information](http://www.kb.se/rdakatalogisering/Anvisningar/Arbetsfloden/Tryckta-monografier/)
 
-Anvisningar för att beskriva en tryckt monografi i Libris XL
-
-**Administrativ metadata**
-
-* Katalogiseringsregler
-* Katalogiserande instans
-* Beskrivningens språk
+**OBS! Detta arbetsflöde är under arbete**
 
 **Element tillhörande instans/manifestation:**
 
@@ -50,7 +43,7 @@ Anvisningar för att beskriva en tryckt monografi i Libris XL
 
 (Datum från 008 återstår)
 
-**Element tillhörande verk och uttryck:**
+**Element tillhörande verk/uttryck**
 
 * Innehållstyp
 * Innehållets karaktär

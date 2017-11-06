@@ -10,13 +10,11 @@ tags:
 
 # Handskrifter
 
+[Extern länk till MARC21-anpassad information](http://www.kb.se/rdakatalogisering/Anvisningar/Arbetsfloden/Handskrifter/)
+
+**OBS! Detta arbetsflöde är under arbete**
+
 ## Innehåll
-
-**Postetikett och andra kodfält vid MARC 21- katalogisering:**
-
-* 000 Leader/Postetikett
-* 008 Mediespecifika koder
-* 040 Katalogiserande instans
 
 **Element tillhörande manifestationen:**
 
@@ -44,7 +42,7 @@ tags:
 * Sökingång för verket eller uttrycket
 * Relationer till andra verk och uttryck m.m.
 
-**Exemplar**
+**Bestånd**
 
 ---
 

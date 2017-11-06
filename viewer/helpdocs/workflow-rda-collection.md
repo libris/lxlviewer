@@ -10,18 +10,13 @@ tags:
 
 #Samlingsposter
 
-Länk till MARC21 material?
+[Extern länk till MARC21-anpassad information](http://www.kb.se/rdakatalogisering/Anvisningar/Arbetsfloden/Samlingsposter/)
+
+**OBS! Detta arbetsflöde är under arbete**
 
 ##Innehåll
 
-**Postetikett och andra kodfält vid MARC 21- katalogisering:**
-
-* 000 Postetikett
-* 007 Koder för fysiska egenskaper
-* 008 Mediespecifika koder
-* 040 Katalogiserande instans
-
-**Element tillhörande manifestationen:**
+**Element tillhörande instans/manifestation**
 
 * Konstruerad titel
 * Utgivningsuppgifter
@@ -30,7 +25,7 @@ Länk till MARC21 material?
 * Bärartyp
 * Anmärkningar om manifestationen
 
-**Element tillhörande verk och uttryck:**
+**Element tillhörande verk/uttryck:**
 
 * Innehållstyp
 * Sammanfattning av innehåll
@@ -38,7 +33,7 @@ Länk till MARC21 material?
 * Ämnesord
 * Sökingångar för institutioner
 
-**Exemplar**
+**Bestånd**
 
 ---
 

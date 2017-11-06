@@ -12,12 +12,11 @@ I Libris XL används [elasticsearch](https://www.elastic.co/), en sökmotor för
 
 ## Operatorer för frågespråk
 
-`+` betyder AND
-`|` betyder OR
-`-` innebär uteslutning
-`"` wraps a number of tokens to signify a phrase for searching
-`*` innebär trunkering av en term
-`( word )` ökar relevans
+`+` betyder AND  
+`|` betyder OR  
+`-` innebär uteslutning  
+`"` används för frassökning  
+`*` innebär trunkering av en term  
 
 
 Standardfunktionalitet är att sökmotorn ger träff på valfri sökterm med en `|` . En sökning på `Astrid Lindgren` kommer matcha poster som innehåller antingen (1) `Astrid` eller (2) `Lindgren`, ger även träff på (3) `Astrid Lindgren`.
@@ -32,4 +31,4 @@ betyder att:
 `news` får inte vara med i träffen
 `quick` and `brown` är valfria — men ökar relevans
 
-`"quick brown fox news"` innebär att hela frasen måste vara med.
+`"quick brown fox"` innebär att hela frasen måste vara med.
