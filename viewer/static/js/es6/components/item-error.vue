@@ -38,7 +38,7 @@ export default {
 </script>
 
 <template>
-  <div class="erroneous-object"><i class="fa fa-frown-o"></i> Unhandled object structure<br><code>{{itemAsJson}}</code></div>
+  <div class="erroneous-object"><i class="fa fa-frown-o"></i> Oh noes! I don't understand this object!<br><code>{{itemAsJson}}</code><br><small>Object is propably missing both <b>id</b> and <b>type</b> (one of them is needed)</small></div>
 </template>
 
 <style lang="less">
