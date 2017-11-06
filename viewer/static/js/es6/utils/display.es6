@@ -150,9 +150,13 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
         result[properties[i]] = value;
       } else if (properties.length < 3 && i === 0) {
         const rangeOfMissingProp = VocabUtil.getRange(properties[i], vocab, settings.vocabPfx);
+        let propMissing = properties[i];
+        if (rangeOfMissingProp.length > 0) {
+          propMissing = rangeOfMissingProp[0];
+        }
         const expectedClassName = StringUtil.labelByLang(
-          rangeOfMissingProp[0], // Get the first one just to show something
-          settings.lang,
+          propMissing, // Get the first one just to show something
+          settings.language,
           vocab,
           settings.vocabPfx
         );
