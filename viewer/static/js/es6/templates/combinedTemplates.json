@@ -74,11 +74,11 @@
           }],
           "extent": [{
             "@type": "Extent",
-            "label": "(Antal) Sidor"
+            "label": "(antal) sidor"
           }],
           "hasDimensions": {
             "@type": "Dimensions",
-            "label": "18 centimeter"
+            "label": "(antal) cm"
           },
           "seriesStatement": "",
           "hasSeries": [{
@@ -119,6 +119,7 @@
               },
               {
                 "@type": "Classification",
+                "code": "",
                 "inScheme": {
                   "@type": "ConceptScheme",
                   "@id": "https://id.kb.se/term/kssb/8",
