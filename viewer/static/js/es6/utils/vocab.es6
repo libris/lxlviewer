@@ -410,7 +410,6 @@ export function getEnumerationKeys(entityType, property, vocab, vocabPfx) {
   if (_.isPlainObject(property)) {
     throw new Error('getEnumerationKeys was called with an object as property id (should be a string)');
   }
-
   let result = [];
   const baseClasses = getBaseClasses(`${vocabPfx}${entityType}`, vocab, vocabPfx);
   baseClasses.forEach(baseClass => {
@@ -434,7 +433,8 @@ export function getEnumerationKeys(entityType, property, vocab, vocabPfx) {
     }
   });
   if (result.length === 0) {
-    const propObj = vocab.get(property);
+    const propId = property.indexOf('marc:') > -1 ? property.replace('marc:', 'https://id.kb.se/marc/') : property;
+    const propObj = vocab.get(propId);
     if (propObj && propObj.hasOwnProperty('rangeIncludes')) {
       result = propObj.rangeIncludes.map(item => item['@id']);
     }
