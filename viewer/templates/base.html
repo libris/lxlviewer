@@ -71,12 +71,12 @@
           </div>
           <ul class="nav navbar-nav pull-right">
           % for item in g.site.itemList
-            <li class=""><a href="${item[ID]}"><i
+            <li class="navbar-item"><a href="${item[ID]}"><i
                 class="fa fa-fw fa-${item.icon}"></i> ${item.title}</a></li>
           % endfor
           % if g.site.title == 'libris.kb.se'
           % if current_user.is_authenticated
-          <li class="">
+          <li class="navbar-item">
             <a @click="showHelp()">
               <div class="navbar-circle">
                 <i class="fa fa-question-circle" aria-hidden="true"></i>
@@ -84,7 +84,7 @@
               <span class="js-translateable" data-translateable="Hjälp">Help</a></a>
           </li>
           % endif
-          <li class="">
+          <li class="navbar-item">
             <a href="/">
               <div class="navbar-circle">
                 <i class="fa fa-search" aria-hidden="true"></i>
@@ -92,7 +92,7 @@
               <span class="js-translateable" data-translateable="Sök">Search</span></a>
             </li>
             % if current_user.is_authenticated
-              <li class="">
+              <li class="navbar-item">
                 <a href="/createnew">
                   <div class="navbar-circle">
                     <i class="fa fa-file-text" aria-hidden="true"></i>
