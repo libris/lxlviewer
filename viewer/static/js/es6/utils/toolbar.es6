@@ -19,7 +19,7 @@ export function initToolbar(_context) {
       sReject: 'Avbryt',
       sType: 'danger' }).then(() => {
         // accepted by user
-        httpUtil._delete({ url, token: context.access_token }).then((result) => {
+        httpUtil._delete({ url }).then((result) => {
           console.log("post WAS deleted...", result);
 
           // Force reload

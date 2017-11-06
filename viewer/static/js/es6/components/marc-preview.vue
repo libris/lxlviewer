@@ -79,7 +79,6 @@ export default {
       );
       httpUtil.post({
         url: '/_convert',
-        token: self.access_token,
         accept: 'application/x-marc-json',
       }, editorObj).then((result) => {
         this.marcObj = result;
