@@ -27,10 +27,10 @@ export function getLinked(id, linked) {
     }
   }
   if (!obj.hasOwnProperty('@type') && Object.keys(obj).length === 1) {
-    console.warn(`Couldn\'t find entity: ${graphId} (${id})`);
+    window.lxlWarning(`Couldn\'t find entity: ${graphId} (${id})`);
   }
   if (!obj.hasOwnProperty('@type') && Object.keys(obj).length > 1) {
-    console.warn('Embellished entity has an unknown type (missing @type). ID:', graphId);
+    window.lxlWarning('Embellished entity has an unknown type (missing @type). ID:', graphId);
   }
   return obj;
 }

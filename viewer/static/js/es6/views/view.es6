@@ -12,6 +12,7 @@ export default class View {
 
   constructor(name) {
     this.name = name;
+    this.lxlDebug = true;
     this.settings = {
       // vocabPfx: 'kbv:',
       vocabPfx: 'https://id.kb.se/vocab/',
@@ -146,6 +147,7 @@ export default class View {
       this.settings.language = this.user.settings.language;
     }
     this.translate();
+    this.initWarningFunc();
   }
 
   getLdDepencendies() {
@@ -215,6 +217,22 @@ export default class View {
         g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
       })();
     }
+  }
+
+  initWarningFunc() {
+    if (!this.lxlDebug) {
+      window.lxlWarning = function (...strings) {
+        return;
+      }
+      return;
+    }
+    window.lxlWarnStack = [];
+    window.lxlWarning = function (...strings) {
+      if (window.lxlWarnStack.indexOf(JSON.stringify(strings.join())) === -1) {
+        window.lxlWarnStack.push(JSON.stringify(strings.join()));
+        return console.log('%c LXL ', 'background: #009788; color: #fff;', ...strings);
+      }
+    };
   }
 
   initiateWarnBeforeUnload() {

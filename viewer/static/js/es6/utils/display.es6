@@ -165,7 +165,7 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
     }
   }
   if (_.isEmpty(result)) {
-    console.warn(`DisplayObject was empty. @type was ${trueItem['@type']}. Used lens: "${usedLensType}".`, 'Item data:', trueItem);
+    window.lxlWarning(`DisplayObject was empty. @type was ${trueItem['@type']}. Used lens: "${usedLensType}".`, 'Item data:', trueItem);
     result = { 'label': '{Unknown}' };
   }
   return result;
