@@ -9,7 +9,7 @@ export class User {
     this.collections = collections;
     this.settings = {
       resultListType: 'detailed',
-      appTech: 'off',
+      appTech: false,
       activeSigel: '',
       language: 'sv',
     };
