@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 
 export class User {
-  constructor(fullName = '', shortName = '', email = '', emailHash = '', collections = [{ code: '?', friendly_name: 'Inga samlingar. Kontakta katalogiseringsadmin.' }]) {
+  constructor(fullName = '', shortName = '', email = '', emailHash = '', collections = [{ code: '?', friendly_name: 'Inga samlingar. Kontakta katalogiseringsadmin.', cataloger: false, registrant: false }]) {
     this.fullName = fullName;
     this.shortName = shortName;
     this.email = email;
@@ -16,8 +16,12 @@ export class User {
   }
 
   hasAnyCollections() {
-    if (this.collections && this.collections.length > 0) {
-      return true;
+    if (this.collections.length > 0) {
+      if (this.collections[0].code === '?') {
+        return false;
+      } else {
+        return true;
+      }
     }
     return false;
   }
@@ -60,6 +64,9 @@ export class User {
   }
 
   getPermissions() {
+    if (!this.settings.activeSigel) {
+      return this.collections[0];
+    }
     return _.find(this.collections, (o) => {
       return o.code === this.settings.activeSigel;
     });
@@ -85,7 +92,7 @@ export function getUserObject(userObj) {
     userObj.short_name,
     userObj.email,
     userObj.email_hash,
-    userObj.permissions
+    userObj.permissions,
   );
   if (user.fullName !== '') {
     user.loadSettings();

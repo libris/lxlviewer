@@ -162,6 +162,9 @@ export default {
   },
   computed: {
     canEditThisType() {
+      if (this.user.hasAnyCollections() === false) {
+        return false;
+      }
       const permission = this.user.getPermissions();
       if (this.editorData.mainEntity['@type'] === 'Item' && permission.registrant === true) {
         return true;
