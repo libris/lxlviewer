@@ -117,8 +117,6 @@ def authorized():
             requests_oauth = _get_requests_oauth()
             # On authorized fetch token
             session['oauth_token'] = requests_oauth.fetch_token(token_url,
-                                                                # TODO Use POST here
-                                                                method='GET',
                                                                 client_secret=app.config['OAUTH_CLIENT_SECRET'],
                                                                 authorization_response=request.url)
             app.logger.debug('OAuth token received %s ', json.dumps(_get_token()))
@@ -127,13 +125,13 @@ def authorized():
 
         # Get user from verify
         try:
-            varify_url = app.config['OAUTH_VERIFY_URL']
-            verify_response = requests_oauth.get(varify_url).json()
+            verify_url = app.config['OAUTH_VERIFY_URL']
+            verify_response = requests_oauth.get(verify_url).json()
             verified_user = verify_response.get('user')
             app.logger.info('[%s] User received from verify %s, %s', request.remote_addr, verified_user.get('username'), json.dumps(verified_user))
 
         except Exception, e:
-            raise Exception('Failed to verify user. %s response: %s ' % (varify_url, str(e)))
+            raise Exception('Failed to verify user. %s response: %s ' % (verify_url, str(e)))
 
         if _login_user(verified_user):
             return redirect(_next_route())
@@ -203,8 +201,7 @@ def refresh_token():
     }
 
     app.logger.debug("Refreshing OAuth2 token")
-    requests_oauth = OAuth2Session(app.config['OAUTH_CLIENT_ID'],
-                                   token=_get_token())
+    requests_oauth = _get_requests_oauth()
     token = requests_oauth.refresh_token(
         app.config['OAUTH_TOKEN_URL'],
         **extra)
@@ -238,10 +235,10 @@ def _login_user(verified_user):
     username = verified_user.get('full_name')
     email = verified_user.get('email')
     if permissions and username:
-        # For debugging, allow force xlreg rights
+        # For debugging, allow force registrant rights
         if(app.config.get('ALWAYS_ALLOW_XLREG')):
             for auth in permissions:
-                auth['xlreg'] = True;
+                auth['registrant'] = True;
 
         # Filter permissions to make sure user got correct role rights
         permissions = _filter_permissions(permissions, app.config.get('AUTHORIZED_ROLES'))
@@ -257,6 +254,9 @@ def _login_user(verified_user):
 
 
 def _next_route():
-    next = session['next']
-    session.pop('next')
-    return next or '/'
+    if 'next' in session:
+        next = session['next']
+        session.pop('next')
+        return next
+    else:
+        return '/'
