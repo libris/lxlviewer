@@ -10,8 +10,11 @@ tags:
 
 # Kartor
 
+[Extern länk till MARC21-anpassad information](http://www.kb.se/rdakatalogisering/Anvisningar/Arbetsfloden/Kartor/)
 
-**Element tillhörande manifestationen:**
+**OBS! Detta arbetsflöde är under arbete**
+
+**Element tillhörande instans/manifestation**
  
 * Källa för beskrivningen 
 * Titel 
@@ -31,7 +34,7 @@ tags:
 *  Mått 
 * Digitala filer 
 
-**Element tillhörande verk och uttryck:**
+**Element tillhörande verk/uttryck:**
 
 * Innehållstyp
 * Innehållsanmärkning

@@ -8,17 +8,13 @@ tags:
 - images
 ---
 
-# Bilder
+#Bilder
 
-Länk till MARC21 material?
+[Extern länk till MARC21-anpassad information](http://www.kb.se/rdakatalogisering/Anvisningar/Arbetsfloden/Bilder/)
 
-## Innehåll
+**OBS! Detta arbetsflöde är under arbete**
 
-**Administrativ metadata**
-
-* Katalogiseringsregler
-* Katalogiserande instans
-* Beskrivningens språk
+##Innehåll
 
 **Element tillhörande instans/manifestation**
 
@@ -49,7 +45,7 @@ Länk till MARC21 material?
 * Sökingång för verket
 * Relationer till andra verk och uttryck m.m.
 
-**Exemplar**
+**Bestånd**
 
 ---
 
