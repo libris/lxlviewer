@@ -206,13 +206,13 @@ export default class View {
   initializeTracking() {
     const self = this;
     if (self.settings.siteInfo.piwikId) {
-      self._paq = self._paq || [];
-      self._paq.push(['trackPageView']);
-      self._paq.push(['enableLinkTracking']);
+      const _paq = _paq || [];
+      _paq.push(['trackPageView']);
+      _paq.push(['enableLinkTracking']);
       (function() {
         var u="//analytics.kb.se/";
-        self._paq.push(['setTrackerUrl', u+'piwik.php']);
-        self._paq.push(['setSiteId', self.settings.siteInfo.piwikId]);
+        _paq.push(['setTrackerUrl', u+'piwik.php']);
+        _paq.push(['setSiteId', self.settings.siteInfo.piwikId]);
         var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
         g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
       })();
