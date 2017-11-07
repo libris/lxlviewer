@@ -230,7 +230,7 @@ export default class View {
     window.lxlWarning = function (...strings) {
       if (window.lxlWarnStack.indexOf(JSON.stringify(strings.join())) === -1) {
         window.lxlWarnStack.push(JSON.stringify(strings.join()));
-        return console.log('%c LXL ', 'background: #009788; color: #fff;', ...strings);
+        return console.warn('%c LXL ', 'background: #009788; color: #fff;', ...strings);
       }
     };
   }
