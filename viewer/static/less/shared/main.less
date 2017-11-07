@@ -39,6 +39,12 @@ html {
   overflow-y: scroll;
 }
 
+html.ie11 {
+  main {
+    margin-bottom: 75vh;
+  }
+}
+
 [v-cloak] {
   display: none;
 }
@@ -78,7 +84,7 @@ body {
   position: relative;
   background-color: @bg-site;
   background-image: @bg-img;
-  min-height: 100vh;
+  height: 100vh;
   display: flex;
   flex-direction: column;
    /********/
