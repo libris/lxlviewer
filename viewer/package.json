@@ -32,11 +32,11 @@
     "vue-clickaway": "1.2.0",
     "vueify": "^8.5.4",
     "gulp-markdown-to-json": "^1.0.3",
-    "vuex": "^1.0.0-rc.2"
+    "vuex": "^1.0.0-rc.2",
+    "concat-cli": "^4.0.0"
   },
   "devDependencies": {
     "chai": "^3.5.0",
-    "concat-cli": "^4.0.0",
     "eslint": "^3.16.1",
     "eslint-config-airbnb": "^7.0.0",
     "eslint-plugin-html": "^1.7.0",
