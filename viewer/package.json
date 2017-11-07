@@ -32,7 +32,8 @@
     "vue-clickaway": "1.2.0",
     "vueify": "^8.5.4",
     "gulp-markdown-to-json": "^1.0.3",
-    "vuex": "^1.0.0-rc.2"
+    "vuex": "^1.0.0-rc.2",
+    "concat-cli": "^4.0.0"
   },
   "devDependencies": {
     "chai": "^3.5.0",
@@ -58,7 +59,7 @@
     ]
   },
   "scripts": {
-    "modernizr": "modernizr -c modernizr-config.json -d static/vendor/modernizr/js/ -u",
+    "modernizr": "modernizr -c static/modernizr/modernizr-config.json -d static/modernizr/ -u && concat-cli -f static/modernizr/modernizr.js static/modernizr/modernizr-plugins.js -o static/vendor/modernizr/js/modernizr.js",
     "generatehelp": "gulp markdown",
     "postinstall": "mkdir -p static/build && npm run vendor && npm run app",
     "vendor": "npm run vendor:fetch && npm run modernizr && parallelshell 'npm run vendor:js'",
