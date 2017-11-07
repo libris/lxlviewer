@@ -28,7 +28,7 @@ export default class CreateNew extends View {
     self.getLdDepencendies().then(() => {
       self.initVue();
     }, (error) => {
-      console.log("Everything broke", error);
+      window.lxlError(error);
     });
   }
 

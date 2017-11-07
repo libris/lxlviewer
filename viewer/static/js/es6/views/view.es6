@@ -164,16 +164,16 @@ export default class View {
               this.context = context['@context'];
               resolve();
             }, (error) => {
-              reject(error);
+              reject('getContext', error);
             });
           }, (error) => {
-            reject(error);
+            reject('getForcedListTerms', error);
           });
         }, (error) => {
-          reject(error);
+          reject('getDisplayDefinitions', error);
         });
       }, (error) => {
-        reject(error);
+        reject('getVocab', error);
       });
     });
   }
@@ -224,6 +224,9 @@ export default class View {
       window.lxlWarning = function (...strings) {
         return;
       }
+      window.lxlError = function (...strings) {
+        return;
+      }
       return;
     }
     window.lxlWarnStack = [];
@@ -231,6 +234,13 @@ export default class View {
       if (window.lxlWarnStack.indexOf(JSON.stringify(strings.join())) === -1) {
         window.lxlWarnStack.push(JSON.stringify(strings.join()));
         return console.warn('%c LXL ', 'background: #009788; color: #fff;', ...strings);
+      }
+    };
+    window.lxlErrorStack = [];
+    window.lxlError = function (...strings) {
+      if (window.lxlErrorStack.indexOf(JSON.stringify(strings.join())) === -1) {
+        window.lxlErrorStack.push(JSON.stringify(strings.join()));
+        return console.error('%c LXL ERROR ', 'background: #a50000; color: #fff;', ...strings);
       }
     };
   }

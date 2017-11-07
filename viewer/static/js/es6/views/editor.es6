@@ -57,7 +57,7 @@ export default class Editor extends View {
     self.getLdDepencendies().then(() => {
       self.initVue();
     }, (error) => {
-      showError(error);
+      window.lxlError(error);
     });
   }
 
