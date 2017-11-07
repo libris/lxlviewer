@@ -227,12 +227,6 @@ export default {
           <div class="action" v-if="user.settings.appTech === 'on'" v-on:click="toggleDev()" v-bind:class="{'active': status.isDev}">
             <i class="fa fa-wrench" aria-hidden="true"></i>
           </div>
-          <a :href="compileMARCUrl" v-if="!status.inEdit && isSubClassOf('Instance') & !downloadIsSupported && hasSigel">
-            <button>
-              <i class="fa fa-download" aria-hidden="true"></i>
-              {{"Compiled" | translatePhrase}}
-            </button>
-          </a>
         </div>
         <div>
           <button class="toolbar-button" v-on:click="toggleEditorFocus()" v-bind:class="{'active': status.editorFocus === 'record' }">
@@ -274,18 +268,11 @@ export default {
                 {{ "Make copy" | translatePhrase }}
                 </a>
               </li>
-              <li v-if="isSubClassOf('Instance') && downloadIsSupported && hasSigel && !status.inEdit">
-                <a @click="getCompiledPost()">
+              <li v-if="isSubClassOf('Instance') && hasSigel && !status.inEdit && user.email !== ''">
+                <a v-if="downloadIsSupported" @click="getCompiledPost()">
+                <a v-if="!downloadIsSupported" :href="compileMARCUrl">
                 <i class="fa fa-fw fa-download" aria-hidden="true"></i>
                 {{"Download compiled" | translatePhrase}}
-                </a>
-              </li>
-              <li v-if="isSubClassOf('Instance') & !downloadIsSupported && hasSigel && !status.inEdit">
-                <a :href="compileMARCUrl">
-                  <button>
-                    <i class="fa fa-fw fa-download" aria-hidden="true"></i>
-                    {{"Compiled" | translatePhrase}}
-                  </button>
                 </a>
               </li>
               <li>
