@@ -268,7 +268,7 @@ export function getProperties(className, vocab, vocabPfx, vocabProperties) {
   const valueProperty = getTermObject('value', vocab, vocabPfx);
   props.push(valueProperty);
   const codeProperty = getTermObject('code', vocab, vocabPfx);
-  props.push(valueProperty);
+  props.push(codeProperty);
   // end HARDCODED
 
   return props;
