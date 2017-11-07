@@ -80,9 +80,6 @@ export default {
   &.show-result {
     opacity: 1;
   }
-  .main-info {
-    height: 7em;
-  }
   .loadingText {
     box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.1);
     // margin: 120px 0;
