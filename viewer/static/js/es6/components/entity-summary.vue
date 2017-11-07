@@ -144,7 +144,7 @@ export default {
       text-overflow: ellipsis;
     }
     height: 7.5em;
-    max-width: 70%;
+    width: 70%;
     padding: 3px 0px 0px 9px;
     a {
       color: @brand-primary;
