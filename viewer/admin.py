@@ -20,6 +20,7 @@ def on_load(state):
 class User(UserMixin):
     def __init__(self, username, active = True, permissions = None, token = None, email = ''):
         self.username = unicode(username)
+        self.short_name = unicode(username).split()[0]
         self.active = active
         self.permissions = permissions
         self.token = token
@@ -30,7 +31,7 @@ class User(UserMixin):
 
     def get(self):
         return {"full_name": self.username,
-                "short_name": self.username.split()[0],
+                "short_name": self.short_name,
                 "email": self.email,
                 "permissions": self.permissions,
                 "access_token": self.get_access_token(),
@@ -44,6 +45,9 @@ class User(UserMixin):
 
     def get_username(self):
         return self.get_id()
+
+    def get_short_name(self):
+        return self.short_name
 
     def get_email_hash(self):
         return hashlib.md5(str(self.email).lower().encode()).hexdigest()
