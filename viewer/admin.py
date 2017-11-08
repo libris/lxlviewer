@@ -261,6 +261,6 @@ def _next_route():
     if 'next' in session:
         next = session['next']
         session.pop('next')
-        return next
+        return next if next else '/'
     else:
         return '/'
