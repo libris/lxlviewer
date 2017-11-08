@@ -108,7 +108,7 @@ export function getTermObject(term, vocab, vocabPfx) {
   }
 
   if (!_class) {
-    // console.warn('Not found in vocab:', cn);
+    window.lxlWarning('Term not present in vocab:', cn);
   }
   return _class;
 }
@@ -270,7 +270,6 @@ export function getProperties(className, vocab, vocabPfx, vocabProperties) {
   const codeProperty = getTermObject('code', vocab, vocabPfx);
   props.push(codeProperty);
   // end HARDCODED
-
   return props;
 }
 
