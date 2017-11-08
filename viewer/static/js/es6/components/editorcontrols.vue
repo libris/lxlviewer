@@ -56,6 +56,9 @@ export default {
     },
   },
   methods: {
+    getOtherDataFormat(suffix) {
+      return `${this.focusData['@id']}/data.${suffix}`
+    },
     formControl(control) {
       this.$dispatch('form-control', control);
     },
@@ -239,9 +242,9 @@ export default {
               <span class="caret"></span>
             </div>
             <ul class="dropdown-menu">
-              <li><a :href="`${focusData['@id']}/data.jsonld`">JSON-LD</a></li>
-              <li><a :href="`${focusData['@id']}/data.ttl`">Turtle</a></li>
-              <li><a :href="`${focusData['@id']}/data.rdf`">RDF/XML</a></li>
+              <li><a :href="getOtherDataFormat('jsonld')">JSON-LD</a></li>
+              <li><a :href="getOtherDataFormat('ttl')">Turtle</a></li>
+              <li><a :href="getOtherDataFormat('rdf')">RDF/XML</a></li>
             </ul>
           </div>
           <div class="dropdown tools toolbar-button">
