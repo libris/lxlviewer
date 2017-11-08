@@ -1522,7 +1522,17 @@
           "@type": "Person",
           "familyName": "",
           "givenName": "",
+          "name": "",
+          "numeration": "",
+          "marc:titleOther": "",
           "lifeSpan": "",
+          "exactMatch": [{
+            "@type": "Person",
+            "familyName": "",
+            "givenName": "",
+            "name": "",
+            "lifeSpan": ""
+          }],
           "identifiedBy": [{
             "@type": "Identifier",
             "typeNote": "isni",
@@ -1534,15 +1544,12 @@
             "label": "",
             "marc:sourceOfTerm": "sao"
           }],
+          "language": {},
           "nationality": {
             "@id": "https://id.kb.se/nationality/e-sw---",
             "code": "e-sw---"
           },
           "note": [
-            ""
-          ],
-          "numeration": "",
-          "qualifyingNote": [
             ""
           ]
         }
