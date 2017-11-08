@@ -59,9 +59,9 @@
     ]
   },
   "scripts": {
-    "modernizr": "modernizr -c static/modernizr/modernizr-config.json -d static/modernizr/ -u && concat-cli -f static/modernizr/modernizr.js static/modernizr/modernizr-plugins.js -o static/vendor/modernizr/js/modernizr.js",
+    "modernizr": "modernizr -c static/modernizr/modernizr-config.json -d static/modernizr/ -u && mkdir -p static/vendor/modernizr/js && concat-cli -f static/modernizr/modernizr.js static/modernizr/modernizr-plugins.js -o static/vendor/modernizr/js/modernizr.js",
     "generatehelp": "gulp markdown",
-    "postinstall": "mkdir -p static/build && npm run vendor && npm run app",
+    "postinstall": "mkdir -p static/build && npm run modernizr && npm run vendor && npm run app",
     "vendor": "npm run vendor:fetch && npm run modernizr && parallelshell 'npm run vendor:js'",
     "vendor:fetch": "bower-installer",
     "vendor:js": "uglifyjs static/vendor/{jquery,bootstrap,modernizr}/js/*.js -o static/build/vendor.min.js --source-map static/build/vendor.min.js.map --source-map-url ./vendor.min.js.map --source-map-root /",
