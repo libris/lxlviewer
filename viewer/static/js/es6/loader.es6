@@ -2,7 +2,6 @@ import View from './views/view';
 import Thing from './views/thing';
 import Editor from './views/editor';
 import Vocab from './views/vocab';
-import Website from './views/website';
 import PagedCollection from './views/pagedcollection';
 import UserSettings from './views/usersettings';
 import CreateNew from './views/createnew';
@@ -26,7 +25,6 @@ export default class Loader {
     this.createView(new Thing('Thing'));
     this.createView(new Editor('Editor'));
     this.createView(new Vocab('Vocab'));
-    this.createView(new Website('Website'));
     this.createView(new PagedCollection('PagedCollection'));
     this.createView(new UserSettings('UserSettings'));
     this.createView(new CreateNew('CreateNew'));

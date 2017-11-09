@@ -33,17 +33,6 @@ body#pagedcollection, body#import {
   }
 }
 
-body#website {
-  .search-controls {
-    .search-button {
-      width: 24%;
-    }
-    .search-input {
-      width: 100%;
-    }
-  }
-}
-
 .search-controls {
   padding: 20px;
   .search-input {
@@ -100,12 +89,6 @@ body#website {
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      #searchphrase-0[contenteditable=true]:empty:before{
-        content: attr(placeholder);
-        display: block; /* For Firefox */
-        color: #777;
-        font-style: italic;
-      }
 
       .searchphrase {
         flex-grow: 1;
@@ -122,9 +105,6 @@ body#website {
       }
       .valid {
         background-color: #E0F2F1;
-      }
-      .invalid {
-        background-color: #EF9A9A;
       }
       input {
         border: 0px;
@@ -191,17 +171,6 @@ body#website {
         }
       }
     }
-  }
-}
-.result-list {
-  >div:first-of-type {
-    border-radius: 4px 4px 0px 0px !important;
-  }
-  >div:last-of-type {
-    border-radius: 0px 0px 4px 4px !important;
-  }
-  >div>header {
-    padding: 10px 15px 0px 15px;
   }
 }
 .no-hits {
