@@ -7,4 +7,4 @@ tags:
 
 # Entitetssök
 
-Söka och stöka med
+Söka och stöka med.
