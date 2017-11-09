@@ -87,7 +87,7 @@ Se RDA 2.13
 
 ## Titel
 
-> TODO: 
+**OBS! Detta arbetsflöde är under arbete**
 
 ## Upphovsuppgift
 
@@ -105,7 +105,7 @@ Endast upphovsuppgifter som hämtas från en källa utanför resursen ska klamra
 I RDA 2.4.1.4 finns en valfri uteslutning som gör det möjligt att förkorta omfångsrika upphovsuppgifter men bara om det kan göras utan att värdefull information förloras. Librispraxis är att generellt inte förkorta upphovsuppgifter.
 
 
-> `Kiki Lundberg och Carina Trägårdh Tornhill ; faktagranskare: Eva Skoog, leg. dietist, Lisa Lundmark, leg. dietist och Elisabeth Nilsson, leg. sjuksköterska ; fotografi: Helén Sahlstrand, Härlig hälsa, Istock, Shutterstock`
+`Kiki Lundberg och Carina Trägårdh Tornhill ; faktagranskare: Eva Skoog, leg. dietist, Lisa Lundmark, leg. dietist och Elisabeth Nilsson, leg. sjuksköterska ; fotografi: Helén Sahlstrand, Härlig hälsa, Istock, Shutterstock`
 
 Se RDA 2.4
 
@@ -113,7 +113,7 @@ Se RDA 2.4
 
 Återge varje enskild upphovsuppgift som ett element oavsett om två eller flera personer etc. som omnämns har samma eller olika funktioner, RDA 2.4.1.5.
 
-> `Helena Rosén Andersson, Eva-Maj Mühlenbock, Henrik Willquist, Natalie Svensson`
+`Helena Rosén Andersson, Eva-Maj Mühlenbock, Henrik Willquist, Natalie Svensson`
 
 **Valfri uteslutning:** Om en enskild upphovsuppgift namnger fler än tre personer, familjer/släkter eller institutioner, uteslut alla utom den första personen etc. Uteslutningen markeras med en klamrad summering av vad som uteslutits.
 
@@ -124,15 +124,15 @@ NB-praxis: Generellt, tillämpa inte den valfria uteslutningen.
 
 När kunskap finns, ska summeringen vara på resursens språk.
 
-> `Knut Sydsæter [and three others]`
+`Knut Sydsæter [and three others]`
 
-> TODO: återstående anvisningar 
+**OBS! Detta arbetsflöde är under arbete**
 
 ## Identifikator
 
 Identifikatorn är en teckensträng som är knuten till en resurs och ska användas för att särskilja resursen från andra.
 
-> TODO: utöka anvisningar
+**OBS! Detta arbetsflöde är under arbete**
 
   * Lägg till Identifikator
   * Välj:  ISBN
@@ -161,11 +161,11 @@ Bandtyper
 
 Om katalogisatören bedömer det viktigt att ange bandtyp, och resursen inte har ett ISBN, ska uppgiften om bandtyp anges i en vanlig anmärkning.
 
-> `I ringpärm`
+`I ringpärm`
 
 Ange bestämningar som hämtas från resursen i den form de har där och bestämningar som hämtas utanför resursen i utskriven form. Ange till exempel kart. om det står så i resursen, och annars den utskrivna formen kartonnage.
 
-> TODO: ogiltiga isbn etc.
+**OBS! Detta arbetsflöde är under arbete**
 
 Se RDA 2.15
 
@@ -179,7 +179,7 @@ Upplagebeteckning och påföljande upplagebeteckning är kärnelement. Övriga u
 
 Om en resurs saknar upplageuppgift men det är känt att betydliga ändringar från tidigare upplagor gjorts, tillämpa det valfria tillägget och lägg till en upplageuppgift, om det är viktigt för identifikation och åtkomst, RDA 2.5.1.2. Ange uppgiften inom klammer på huvudtitelns språk. För resurser med huvudtitel på svenska, följ Svenska skrivreglers rekommendation och använd termen "upplaga" för förändrat innehåll.
 
-> `[Utökad upplaga]`
+`[Utökad upplaga]`
 
 Se RDA 2.5
 
@@ -188,17 +188,17 @@ Se RDA 2.5
 TODO: editionEnumeration?
 Upplagebeteckning är ett kärnelement och anges i delfält 250 #a. Hämta uppgiften från följande källor (i denna ordning): samma källa som huvudtiteln, en annan källa inom resursen, en annan av de källor som specificeras i RDA 2.2.4.
 
-> `Ny udgave`
+`Ny udgave`
 
-> `*** ed.`
+`*** ed.`
 
-> `1st ed.`
+`1st ed.`
 
-> `Svensk utgåva [när uppgiften utgör upplageuppgift]`
+`Svensk utgåva [när uppgiften utgör upplageuppgift]`
 
-> `Första upplagans första tryckning`
+`Första upplagans första tryckning`
 
-> `Uppl. 1`
+`Uppl. 1`
 
 
 **Upplagebeteckning på mer än ett språk eller i mer än en skriftart**
@@ -209,9 +209,9 @@ Se RDA 2.5.2.4.
 
 **Upplagebeteckning som är en del av huvudtitel, etc.**
 
->`Tenth anniversary edition of Economic justice for all`
+`Tenth anniversary edition of Economic justice for all`
 
-> `The compact edition of the Oxford English Dictionary`
+`The compact edition of the Oxford English Dictionary`
 
 Upplagebeteckning som är en integrerad del av huvudtitel, övrig titelinformation eller upphovsuppgift, eller grammatiskt sammanhängande med något av dessa element ska anges tillsammans med det element som det är en del av. 
 
@@ -226,13 +226,13 @@ NB-praxis: Obligatoriskt att ange upplagespecifik upphovsuppgift (RDA 2.5.4).
 
 Upplagespecifika upphovsuppgifter består av en upplagebeteckning och en upphovsuppgift som båda finns i samma källa och relaterar till just den upplagan. Det är endast bidragsgivare (aldrig skapare) som kan vara upplagespecifika. Hämta alltid upplagespecifika upphovsuppgifter från samma källa som upplagebeteckningen.
 
-> `Tredje upplagan / reviderad och korrigerad av Maja Lindblad`
+`Tredje upplagan / reviderad och korrigerad av Maja Lindblad`
 
-> _(I källan, på insidan av bakre omslag: ”Tredje upplagan, reviderad och korrigerad av Maja Lindblad”)_
+_(I källan, på insidan av bakre omslag: ”Tredje upplagan, reviderad och korrigerad av Maja Lindblad”)_
 
 ### Påföljande upplagebeteckning
 
-    TODO: anvisningar 
+**OBS! Detta arbetsflöde är under arbete**
 
 Påföljande upplagebeteckning är ett kärnelement.
 
@@ -240,8 +240,8 @@ Om en resurs betecknas som en återutgivning som innehåller förändringar i f�
 Hämta påföljande upplagebeteckning från följande källor (i denna ordning): samma källa som upplagebeteckningen, en annan källa inom resursen, en annan av de källor som specificeras i 
 RDA 2.2.4.
 
-    TODO: example
-    250			#a 6. upplagan, rättad och reviderad
+
+6. upplagan, rättad och reviderad
 
 ### Påföljande upplagebeteckning på mer än ett språk eller i mer än en skriftart
 
@@ -258,19 +258,19 @@ Se RDA 2.5.8
 
 ## Utgivning
 
-    TODO: 
+**OBS! Detta arbetsflöde är under arbete**
 
 Se RDA 2.8
 
 ## Distributions
 
-    TODO: 
+**OBS! Detta arbetsflöde är under arbete**
 
 Se RDA 2.9
 
 ## Tillverkning
 
-    TODO: 
+**OBS! Detta arbetsflöde är under arbete**
 
 Se RDA 2.10
 
@@ -290,7 +290,7 @@ Obligatoriskt enligt Librispraxis.
 
 Medietyp anger vilken typ av enhet som behövs för att se, spela eller visa innehållet i resursen.
 
-    TODO: info om listan 
+**OBS! Detta arbetsflöde är under arbete**
 
 Källor för beskrivningen av medietyp är resursen, medföljande material eller förpackning/behållare. Uppgifter kan även hämtas utanför resursen.
 
@@ -311,7 +311,7 @@ Bärartyp anger fysiskt medium för lagring samt den enhet som behövs för att 
 
 Källor för beskrivningen av bärare är resursen, medföljande material eller förpackning/behållare. Uppgifter kan även hämtas utanför resursen.
 
-> TODO: info om listan
+**OBS! Detta arbetsflöde är under arbete**
 
 Om ingen av termerna i listan är lämplig, välj "annan" (nz).
 Om bärartypen/bärartyperna inte lätt kan bestämmas, välj "ospecificerad" (zu).
@@ -348,7 +348,7 @@ Se RDA 3.4, RDA 3.4.5 och nästa stycke.
 
 ### Omfång för text
 
-    TODO:  
+**OBS! Detta arbetsflöde är under arbete**
 
 Se RDA 3.4.5
 
@@ -358,19 +358,19 @@ Enligt Librispraxis är det inte obligatoriskt att ange mått. Mått som är sta
 
 Om mått anges, och om instruktionerna inte säger något annat, ange mått i centimeter, avrundat uppåt till närmaste hela centimetertal. Ange måttet  i cm (om en volym mäter 17,2 cm, anges måttet som 18 cm).
 
-> `25 cm`
+`25 cm`
 
-> `50 mm`
+`50 mm`
 
-> `21 x 37 cm`
+`21 x 37 cm`
 
-> `27 cm i skyddskassett 28 x 25 x 5 cm`
+`27 cm i skyddskassett 28 x 25 x 5 cm`
 
 Se RDA 3.5
 
 ## Serieuppgift
 
-> TODO:
+**OBS! Detta arbetsflöde är under arbete**
 
 Se RDA 2.12
  
@@ -386,7 +386,7 @@ Se RDA 2.17
 
 För resurser med typsnitt anpassat för personer med synnedsättning, ange storleken på typsnittet med termen stor stil.
 
-> `stor stil`
+`stor stil`
 
 Katalogisatören avgör om det valfria tillägget att ange storleken på typsnittet i antal punkter inom parentes ska tillämpas.
 
