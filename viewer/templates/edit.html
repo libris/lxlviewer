@@ -7,7 +7,7 @@
 <!DOCTYPE html>
 <meta charset="utf-8" />
 
-<div id="appContainer" class="panel panel-default">
+<div id="appContainer">
 <!-- <div id="loadingText">
   <h1><i class="fa fa-circle-o-notch fa-spin"></i></h1>
   <h1><i class="fa fa-warning hidden"></i></h1>
@@ -15,7 +15,7 @@
   <span class="status"></span>
   <span class="error hidden"></span>
 </div> -->
-<div id="editorApp">
+<div id="editorApp" class="panel panel-default">
   <marc-preview v-if="initialized == true"></marc-preview>
   <help-component v-if="initialized == true" :open-all="true"></help-component>
   <editor-controls v-if="initialized == true"></editor-controls>
