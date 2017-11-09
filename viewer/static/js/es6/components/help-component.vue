@@ -97,8 +97,16 @@ export default {
             <div v-show="helpSection == ''">
               <h1>Hjälp</h1>
               <p>
-                Här kan du få hjälp. Välj avsnitt till vänster.
+                Den här hjälpen omfattar instruktioner för gränssnittet och materialtyper, välj avsnitt till vänster för att läsa mer.
               </p>
+              <h2>Nyttiga länkar</h2>
+              <ul>
+                <li>Om du vill läsa om Formatet (mappning och basvokabulär) så har du det <a href="https://id-qa.kb.se/">här</a>.</li>
+                <li>Är du ute efter instruktionsmaterial hittar du det <a href="http://librisbloggen.kb.se/2017/10/31/sjalvstudier-infor-overgangen-till-nya-libris-och-xl/">här</a>.</li>
+                <li>Vill du komma i kontakt med kundservice gör du det <a href="http://www.kb.se/libris/kontakta/">här</a>.</li>
+                <li><a href="https://goo.gl/forms/3mL7jTlEpbU3BQM13">Här</a> kan du rapportera fel.</li>
+                <li><a href="https://goo.gl/forms/dPxkhMqE10RvKQFE2">Här</a> kan du ge ändringsförslag</a>.</li>
+              </ul>
             </div>
             <div v-for="section in docs" v-html="section.body" v-show="section.title == helpSection"></div>
           </div>
