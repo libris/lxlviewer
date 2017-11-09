@@ -12,4 +12,4 @@ argp = argparse.ArgumentParser()
 argp.add_argument('--port', '-p', type=int)
 args = argp.parse_args()
 
-app.run(port=args.port,host='0.0.0.0')
+app.run(port=args.port)

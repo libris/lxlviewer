@@ -46,8 +46,8 @@
     "@type": "Extent",
     "label": ""
   }],
-  "hasNote": {
+  "Note": {
     "@type": "Note",
     "label": ""
-  } 
+  }
 }

@@ -60,11 +60,6 @@ export default {
   &.no-link {
     padding-bottom: 1em;
   }
-  &:not(:first-child,:last-child) {
-    background-color: pink;
-    margin-right:1em;
-    margin-left:1em;
-  }
   img {
     width: 100%;
   }
