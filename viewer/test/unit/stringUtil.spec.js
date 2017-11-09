@@ -9,7 +9,8 @@ import * as vocab from './vocab.json';
 // Suite
 describe('Utility: string', function () {
 
-  let vocabPfx = 'kbv:';
+  const vocabPfx = 'kbv:';
+  const vocabMap = new Map(vocab['@graph'].map((entry) => [entry['@id'], entry]));
 
   beforeEach(function() {
 
@@ -20,11 +21,17 @@ describe('Utility: string', function () {
     expect(stringUtil).not.to.be.null;
   });
   describe('labelByLang()', function () {
-    it('returns a label in the specified language', function () {
-      expect(stringUtil.labelByLang('audience', 'sv', vocab, vocabPfx)).to.equal('målgrupp');
+    it('returns a translation of the label in the specified language', function () {
+      expect(stringUtil.labelByLang('Instance', 'sv', vocabMap, vocabPfx)).to.equal('Instans');
     });
-    it('if no match: return input string', function () {
-      expect(stringUtil.labelByLang('latjolajban', 'sv', vocab, vocabPfx)).to.equal('latjolajban');
+    it('returns the label of a term referenced by id in the specified language', function () {
+      expect(stringUtil.labelByLang(`${vocabPfx}Instance`, 'sv', vocabMap, vocabPfx)).to.equal('Instans');
+    });
+    it('if no match: return input string with info about the term being unhandled', function () {
+      expect(stringUtil.labelByLang('latjolajban', 'sv', vocabMap, vocabPfx)).to.equal('latjolajban (unhandled term)');
+    });
+    it('returns english label if specified language is not found', function () {
+      expect(stringUtil.labelByLang('Instance', 'invalidCode', vocabMap, vocabPfx)).to.equal('Instance');
     });
   });
   describe('removeDomain()', function () {

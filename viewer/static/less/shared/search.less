@@ -1,4 +1,28 @@
-body#pagedcollection {
+body#pagedcollection, body#import {
+  .landing-page-header {
+    margin-top: 20vh;
+  }
+  .search-type-button-container {
+    .search-type-button {
+      display: inline-block;
+      border: solid @gray;
+      color: @gray-darker;
+      font-size: 85%;
+      line-height: 2em;
+      font-weight: bold;
+      text-transform: uppercase;
+      border-width: 1px 1px 0px 1px;
+      border-radius: 0.3em 0.3em 0px 0px;
+      padding: 0px 10px;
+      background-color: @gray-lighter;
+      box-shadow: inset 0px -0.1em 0.1em rgba(0, 0, 0, 0.15);
+      &.active {
+        color: darken(@brand-primary, 15%);
+        border-color: @brand-primary;
+        background-color: desaturate(lighten(@brand-primary, 30%), 50%);
+      }
+    }
+  }
   .search-controls {
     .search-button {
       min-width: 20%;
@@ -62,27 +86,60 @@ body#website {
   }
 }
 
-#searchQsmart {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  line-height: 2em;
-  .searchphrase {
-    flex-grow: 1;
-    margin-right: 5px;
-    outline: none;
-  }
-  .searchtag {
-    outline: none;
-    margin-right: 5px;
-    border-radius: 3px;
-    padding: 0px 5px;
-  }
-  .valid {
-    background-color: #E0F2F1;
-  }
-  .invalid {
-    background-color: #EF9A9A;
+#searchFieldContainer {
+
+  > div {
+    display: flex;
+    justify-content: space-between;
+    #searchQsmart {
+      display: flex;
+      flex: 8 8 98%;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      line-height: 2em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      #searchphrase-0[contenteditable=true]:empty:before{
+        content: attr(placeholder);
+        display: block; /* For Firefox */
+        color: #777;
+        font-style: italic;
+      }
+
+      .searchphrase {
+        flex-grow: 1;
+        margin-right: 5px;
+        outline: none;
+        cursor: text;
+      }
+      .searchtag {
+        margin-right: 5px;
+        border-radius: 3px;
+        padding: 0px 5px;
+        outline: none;
+        cursor: text;
+      }
+      .valid {
+        background-color: #E0F2F1;
+      }
+      .invalid {
+        background-color: #EF9A9A;
+      }
+      input {
+        border: 0px;
+        outline: none;
+        display: inline-block;
+      }
+    }
+    > .field-clearer {
+      cursor: pointer;
+      align-self: center;
+      flex: 1 1 2%;
+      &:hover {
+        color: #555;
+      }
+    }
   }
 }
 
@@ -91,10 +148,7 @@ body#website {
   padding: 20px;
   margin: 10px 0px;
   .search-details {
-    margin-bottom: 1em;
     color: @gray-darker;
-    border-bottom: 1px solid #f5f5f5;
-    padding-bottom: 5px;
     .query {
       font-weight:600;
       &:before {
@@ -107,25 +161,33 @@ body#website {
       }
     }
   }
-  .pagination {
-    margin: 0px;
-    li {
-      a {
-        border-radius: 0px !important;
-        font-size: 12px;
-        text-transform: uppercase;
-        font-weight: bold;
-        opacity: 0.7;
-        //background-color:#f5f5f5; TODO: test visual unity
-        .disabled {
-          border: none;
-        }
-        &:hover {
-          opacity:1;
-
-        }
-        i {
-          padding: 0 5px 0 5px;
+  .search-buttons {
+    &:first-child {
+      margin-top: 0;
+    }
+    margin-top: 1em;
+    .pagination {
+      margin: 0px;
+      li {
+        a {
+          border-radius: 0px !important;
+          font-size: 12px;
+          text-transform: uppercase;
+          font-weight: bold;
+          opacity: 0.7;
+          //background-color:#f5f5f5; TODO: test visual unity
+          .disabled {
+            border: none;
+          }
+          &:hover {
+            opacity:1;
+          }
+          &.pointer {
+            cursor: pointer;
+          }
+          i {
+            padding: 0 5px 0 5px;
+          }
         }
       }
     }
@@ -165,9 +227,20 @@ body#website {
     padding: 0px;
     li {
       padding: 2px 0px;
+      width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
       a {
         color: @gray-darker;
         font-size: 14px;
+      }
+      span {
+        cursor: pointer;
+        span {
+          color: @gray-darker;
+          font-size: 14px;
+        }
       }
       i {
 

@@ -1,4 +1,6 @@
 <script>
+import * as StringUtil from '../utils/string';
+import { getVocabulary, getSettings } from '../vuex/getters';
 
 export default {
   data() {
@@ -7,13 +9,17 @@ export default {
   },
   vuex: {
     getters: {
+      vocab: getVocabulary,
+      settings: getSettings,
     },
     actions: {
     },
   },
   props: {
-    tooltiptext: '',
+    tooltipText: '',
+    translation: '',
     showTooltip: false,
+    hoverTooltip: false,
   },
   components: {
   },
@@ -21,7 +27,14 @@ export default {
   },
   computed: {
     compShowTooltip() {
-      return this.showTooltip;
+      return !this.hoverTooltip && this.showTooltip;
+    },
+    translatedText() {
+      if (this.translation === 'labelByLang') {
+        return StringUtil.labelByLang(this.tooltipText, this.settings.language, this.vocab, this.settings.vocabPfx);
+      } else if (this.translation === 'translatePhrase') {
+        return StringUtil.getUiPhraseByLang(this.tooltipText, this.settings.language);
+      }
     },
   },
   ready() {
@@ -32,9 +45,9 @@ export default {
 </script>
 
 <template>
-  <div class="tooltip-container-outer" :class="{ 'show-tooltip': compShowTooltip }">
+  <div class="tooltip-container-outer" :class="{ 'show-tooltip': compShowTooltip }" @mouseover="hoverTooltip = true" @mouseleave="hoverTooltip = false">
     <div class="tooltip-container-inner" >
-      Lägg till {{ tooltiptext | labelByLang }}
+      {{translatedText | capitalize}}
     </div>
   </div>
 </template>
@@ -44,25 +57,23 @@ export default {
 
 .tooltip-container-outer {
   position: absolute;
-  padding-left: 18px;
-  transform: translate(-50%, -100%) scale(0.1);
+  transform: translate(-50%, -50px);
   visibility: hidden;
   opacity: 0;
-  transition: all 0.2s ease;
-  transition-delay: 0s;
+  transition: all 0.1s ease;
   .tooltip-container-inner {
-    background-color: @brand-primary;
-    color: #fff;
-    margin-bottom: 0.2em;
-    padding: 0px 5px;
-    line-height: 1.8em;
+    background-color: @black;
+    white-space: nowrap;
+    color: @white;
+    padding: 5px 7px;
     border-radius: 3px;
     text-align: center;
-    font-size: 0.8em;
-    font-weight: 600;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    -webkit-text-stroke: 0;
   }
   &::after {
-    top: 1.4em;
     left: 50%;
     border: solid transparent;
     content: " ";
@@ -71,14 +82,13 @@ export default {
     position: absolute;
     pointer-events: none;
     border-color: rgba(136, 183, 213, 0);
-    border-top-color: @brand-primary;
+    border-top-color: @black;
     border-width: 6px;
     margin-left: 3px;
   }
   &.show-tooltip {
     opacity: 1;
-    transform: translate(-50%, -210%) scale(1);
-    transition-delay: 0.5s;
+    transition-delay: 0.2s;
     visibility: visible;
   }
 }

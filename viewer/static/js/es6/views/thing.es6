@@ -7,10 +7,11 @@ export default class Thing extends View {
 
   initialize() {
     super.initialize();
-
-    VocabLoader.initVocabClicks();
-    thingutil.initializeHoverCards($('.thing-full'), 500);
-    toolbarUtil.initToolbar(this);
+    const postId = window.location.toString().split('#')[0];
+    window.location = `${postId}/edit`;
+    // VocabLoader.initVocabClicks();
+    // thingutil.initializeHoverCards($('.thing-full'), 500);
+    // toolbarUtil.initToolbar(this);
   }
 
 }

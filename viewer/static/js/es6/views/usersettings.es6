@@ -1,25 +1,78 @@
 import View from './view';
-import * as UserUtil from '../utils/user';
+import Vue from 'vue';
+import Vuex from 'vuex';
+import store from '../vuex/store';
+import EventMixin from '../components/mixins/global-event-mixin';
+import * as StringUtil from '../utils/string';
+import * as LayoutUtil from '../utils/layout';
+import HelpComponent from '../components/help-component';
+import UserSettingsApp from '../components/user-settings';
+import { getSettings, getStatus } from '../vuex/getters';
+import { changeSettings, changeStatus } from '../vuex/actions';
+
 
 export default class UserSettings extends View {
 
   initialize() {
     super.initialize();
+    this.initVue();
+  }
 
-    $('#switchLocation').val(this.getSigel());
+  initVue() {
+    const self = this;
 
-    $('#sigelSubmit').click((e) => {
-      e.preventDefault();
-      this.changeSigel($('#switchLocation').val());
+    document.getElementById('body-blocker').addEventListener('click', function () {
+      self.vm.$broadcast('close-modals');
+    }, false);
+
+    Vue.filter('labelByLang', (label) => {
+      return StringUtil.labelByLang(label, self.settings.language, self.vocabMap, self.settings.vocabPfx);
     });
-  }
+    Vue.filter('removeDomain', (value) => {
+      return StringUtil.removeDomain(value, self.settings.removableBaseUris);
+    });
+    Vue.filter('translatePhrase', (string) => {
+      return StringUtil.getUiPhraseByLang(string, self.settings.language);
+    });
 
-  getSigel() {
-    return UserUtil.get('sigel');
-  }
+    Vue.use(Vuex);
 
-  changeSigel(sigel) {
-    UserUtil.set('sigel', sigel);
-    $('.sigelLabel').text(`(${sigel})`);
+    self.vm = new Vue({
+      el: '#usersettings',
+      mixins: [EventMixin],
+      vuex: {
+        actions: {
+          changeSettings,
+          changeStatus,
+        },
+        getters: {
+          status: getStatus,
+          settings: getSettings,
+        },
+      },
+      data: {
+        initialized: false,
+      },
+      watch: {
+      },
+      methods: {
+        showHelp() {
+          this.$dispatch('show-help', '');
+        },
+      },
+      computed: {
+      },
+      ready() {
+        this.updateUser(self.user);
+        this.changeSettings(self.settings);
+        document.title = `${StringUtil.getUiPhraseByLang('Settings', this.settings.language)} - ${this.settings.siteInfo.title}`;
+        LayoutUtil.showPage(this);
+      },
+      components: {
+        'help-component': HelpComponent,
+        'user-settings': UserSettingsApp,
+      },
+      store,
+    });
   }
 }

@@ -1,11 +1,13 @@
 # -*- coding: UTF-8 -*-
 from __future__ import absolute_import, unicode_literals, print_function
-import os
-import operator
 import json
+import operator
+import os
 import random
 import re
 import string
+import time
+import requests
 from urlparse import urljoin
 from datetime import datetime, timedelta
 
@@ -15,6 +17,8 @@ from flask.helpers import NotFound
 from flask_cors import CORS
 from werkzeug.urls import url_quote
 from werkzeug.datastructures import MultiDict
+
+from oauthlib.oauth2.rfc6749.errors import InvalidGrantError
 
 from rdflib import ConjunctiveGraph
 
@@ -31,12 +35,12 @@ JSONLD_MIMETYPE = 'application/ld+json'
 RDF_MIMETYPES = {'text/turtle', JSONLD_MIMETYPE, 'application/rdf+xml', 'text/xml'}
 MIMETYPE_FORMATS = ['text/html', 'application/xhtml+xml'] + list(RDF_MIMETYPES)
 
-KEEP_HEADERS = ['ETag', 'Location']
+KEEP_HEADERS = ['ETag', 'Location', 'Content-Location', 'Document', 'Link']
 
 CONTEXT_PATH = '/context.jsonld'
 
 TYPE_TEMPLATES = {
-    'DataCatalog': 'website.html',
+    'DataCatalog': 'pagedcollection.html',
     'PartialCollectionView': 'pagedcollection.html',
     'Article': 'article.html'
 }
@@ -82,6 +86,18 @@ def first(value):
         return v
 
 ##
+# About XL
+@app.route("/about")
+def show_about():
+    return render_template('about.html')
+
+##
+# Setup Github rss
+@app.route('/releasefeed', methods=['GET'])
+def get_release_feed():
+    return requests.get('https://github.com/libris/lxlviewer/releases.atom').content
+
+##
 # Setup basic views
 
 @app.route('/assets/<path:path>.<suffix>')
@@ -114,6 +130,10 @@ def _get_served_uri(url, path):
     url_base = url_quote(url)
     path = url_quote(path)
     mapped_base = daccess.urimap.to_canonical_uri(url_base)
+    # NOTE: Needed since some proxies lose one slash from paths that represent
+    # full URIs (through seemingly incorrect path normalization).
+    if re.match(r'^https?:/[^/]', path):
+        path = path.replace(':/', '://', 1)
     return urljoin(mapped_base, path)
 
 
@@ -134,7 +154,7 @@ app.jinja_env.globals.update({
 @app.before_request
 def handle_base():
     canonical_site_id = daccess.urimap.to_canonical_uri(request.url_root)
-    g.site = daccess.get_site(canonical_site_id) or daccess.get_site(LIBRIS)
+    g.site = daccess.get_site(canonical_site_id) or daccess.get_site(LIBRIS) or daccess.get_site(IDKBSE)
 
 @app.route(CONTEXT_PATH)
 def jsonld_context():
@@ -153,7 +173,7 @@ def handle_delete(path):
 
 @app.route('/<path:path>', methods=['PUT'])
 def handle_put(path):
-    response = _write_data(request, query_params={'collection': 'xl'})
+    response = _write_data(request, query_params=MultiDict([]))
     return response
 
 
@@ -192,13 +212,6 @@ def _get_view_data_accept_header(request, suffix):
 @app.route('/find.<suffix>', methods=R_METHODS)
 def find(suffix=None):
     arguments = request.args.copy()
-    # TODO: HACK (to be removed!) for old ES-style searches:
-    q = arguments.get('q')
-    if q:
-        for term in re.findall(r'^(\w+):', q):
-            arguments[term] = q[len(term) +1:]
-            del arguments['q']
-            del q
 
     if not arguments.get('_statsrepr') and g.site.get('statsfind'):
         arguments.add('_statsrepr', g.site['statsfind'])
@@ -249,6 +262,9 @@ def rendered_response(path, suffix, data, mimetype=None):
 
     charset = 'charset=UTF-8' # technically redundant, but for e.g. JSONView
 
+    # return if result is a rendered page
+    # we might want to add (some) headers here in the future
+    # (e.g. Content-Location, Document, and Link)
     if isinstance(result, unicode):
         return result
 
@@ -258,11 +274,11 @@ def rendered_response(path, suffix, data, mimetype=None):
         for header in KEEP_HEADERS:
             value = resp.headers.get(header)
             if value:
-                new_resp.headers[header] = value
+                new_resp.headers.add(header, value)
 
     if mimetype == 'application/json':
         context_link = '<%s>; rel="http://www.w3.org/ns/json-ld#context"' % CONTEXT_PATH
-        new_resp.headers['Link'] = context_link
+        new_resp.headers.add('Link', context_link)
 
     return new_resp
 
@@ -384,12 +400,29 @@ def thingnew(item_type):
 @app.route('/edit', methods=['POST'])
 @admin.login_required
 def thingnewp():
-    record = json.loads(request.form['item'])
+    record = json.loads(request.form['data'])
+    app.logger.debug('Posting data to editor:\n %s',
+                     record)
     return render_template('edit.html', record=record, model={})
 
 
+@app.route('/sys/forcedsetterms.json')
+def forcedsetterms():
+    return _proxy_request(request, session, None)
+
+@app.route('/_compilemarc')
+def _compilemarc():
+    return _proxy_request(request, session, query_params=['id', 'library'])
+
+@app.route('/_findhold')
+def _findhold():
+    return _proxy_request(request, session, query_params=['id', 'library'])
+
+@app.route('/_dependencies')
+def _dependencies():
+    return _proxy_request(request, session, query_params=['id', 'relation', 'reverse'])
+
 @app.route('/<path:path>/edit')
-@admin.login_required
 def thingedit(path):
     r = _proxy_request(request, session, url_path="/{0}".format(path))
 
@@ -403,10 +436,10 @@ def thingedit(path):
         return abort(r.status_code)
 
 
-@app.route('/create', methods=['POST'])
+@app.route('/', methods=['POST'])
 def create():
     request.path = '/'
-    return _write_data(request, query_params={'collection': 'xl'})
+    return _write_data(request, query_params=MultiDict([]))
 
 
 @app.route('/_convert', methods=['POST'])
@@ -456,10 +489,43 @@ def _proxy_request(request, session, json_data=None, query_params=[],
     app.logger.debug('Sending proxy %s request to: %s with headers:\n%r\nand body:\n %s',
                      request.method, url_path, headers, json_data)
 
-    response = daccess.api_request(url_path, request.method, headers,
-                              json_data=json_data, query_params=params)
+    response = _request_with_refresh(request.method, url_path, headers,
+                                     json_data, params)
 
     return _map_response(response)
+
+
+def _request_with_refresh(method, url_path, headers, json_data, query_params):
+    response = daccess.api_request(url_path, request.method, headers,
+                                   json_data=json_data,
+                                   query_params=query_params)
+
+    now = time.time()
+
+    if (response.status_code == 401 and
+            ('oauth_token' in session) and
+            (session['oauth_token']['expires_at'] < now)):
+        app.logger.debug("Unauthorized, w/ existing token. Refreshing...")
+
+        refreshed = False
+
+        try:
+            admin.refresh_token()
+            refreshed = True
+        except InvalidGrantError:
+            app.logger.debug("Failed to refresh access token")
+
+        if refreshed:
+            auth_token = _get_authorization_token(session)
+            if auth_token:
+                headers['Authorization'] = auth_token
+            return daccess.api_request(url_path, request.method, headers,
+                                       json_data=json_data,
+                                       query_params=query_params)
+        else:
+            return response
+
+    return response
 
 
 def _map_response(response):
@@ -484,7 +550,7 @@ def _map_response(response):
 
 def _write_data(request, query_params=[]):
     json_data = request.get_json(force=True)
-    return _proxy_request(request, json_data, query_params)
+    return _proxy_request(request, session, json_data, query_params)
 
 
 ##

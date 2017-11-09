@@ -9,14 +9,14 @@ export default {
   vuex: {
     getters: {
       lang(state) {
-        return state.settings.lang;
+        return state.settings.language;
       },
     },
   },
   methods: {
     formatId(id) {
       if (typeof id === 'undefined') {
-        return '[no id]';
+        return '{no id}';
       }
       // Strip domain and protocol from label
       let label = id;

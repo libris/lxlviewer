@@ -5,31 +5,11 @@
 % block content
 {% if current_user.is_authenticated %}
 
-  <div id="app">
-  <h1>Skapa ny</h1>
-
     <!-- Create new form -->
-    <div class="panel panel-default form-container" id="create_new_post">
-      <div class="panel-body container-fluid">
-        <div class="row">
-          <form>
-            <div class="col-md-4" v-for="(index, materialList) in materialLists" track-by="$index">
-              <h1>{{materialList.id | labelByLang}}</h1>
-              <div class="radio" v-for="material in materialList.list">
-                <label v-on:click="setMaterial(index, material['@id'])">
-                  <input name="{{materialList.id}}" type="radio" value="{{material['@id']}}">{{material['@id'] | labelByLang}}</input>
-                </label>
-              </div>
-            </div>
-            <div class="col-md-4 submitter">
-              <button v-bind:disabled="!hasChosenMaterials" @click.prevent="createNew()">Skapa formulär</button>
-            </div>
-          </form>
-        </div>
-      </div>
+    <div id="app">
+      <create-new-form v-if="initialized === true"></create-new-form>
     </div>
-
-  </div>
+    <help-component v-if="initialized == true" :open-all="true"></help-component>
   {% else %}
   <p>Du måste logga in.</p>
   {% endif %}

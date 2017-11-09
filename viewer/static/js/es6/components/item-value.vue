@@ -1,10 +1,12 @@
 <script>
+import AutoSize from 'autosize';
 import * as _ from 'lodash';
 import * as httpUtil from '../utils/http';
 import * as VocabUtil from '../utils/vocab';
 import * as DisplayUtil from '../utils/display';
-import * as EditUtil from '../utils/edit';
+import * as DataUtil from '../utils/data';
 import ProcessedLabel from './processedlabel';
+import TooltipComponent from './tooltip-component';
 import ItemMixin from './mixins/item-mixin';
 import LensMixin from './mixins/lens-mixin';
 import { getVocabulary, getDisplayDefinitions, getSettings, getEditorData } from '../vuex/getters';
@@ -18,6 +20,7 @@ export default {
     index: Number,
     isLocked: false,
     isRemovable: false,
+    showActionButtons: false,
   },
   vuex: {
     getters: {
@@ -27,42 +30,84 @@ export default {
       editorData: getEditorData,
     },
   },
+  watch: {
+    isLocked(val) {
+      if (!val) {
+        this.initializeTextarea();
+      }
+    },
+  },
   data() {
     return {
       inEdit: false,
+      removeHover: false,
     };
   },
   computed: {
   },
   ready() {
+    this.$nextTick(() => {
+      if (!this.status.isNew && !this.status.isCopy) {
+        this.addFocus();
+      }
+      this.initializeTextarea();
+    });
   },
   methods: {
-    valueChanged() {
+    valueChanged: _.debounce(function () {
       this.$dispatch('update-item', this.index, this.value);
+    }, 1000),
+    updateValue() {
+      this.$dispatch('update-item', this.index, this.value);
+    },
+    handleEnter(e) {
+      if (e.keyCode === 13) {
+        e.target.blur();
+        e.preventDefault();
+        return false;
+      }
+    },
+    initializeTextarea() {
+      AutoSize(this.$el.querySelector('textarea'));
+      AutoSize.update(this.$el.querySelector('textarea'));
     },
     isEmpty() {
       // TODO: Is the item empty?
       return false;
     },
     addFocus() {
-      this.focused = true;
+      const children = this.$el.children;
+      _.each(children, child => {
+        if (child.className.indexOf('item-value-textarea') > -1) {
+          child.focus();
+        }
+      });
     },
     removeFocus() {
-      this.focused = false;
+      const children = this.$el.children;
+      _.each(children, child => {
+        if (child.className.indexOf('item-value-textarea') > -1) {
+          child.blur();
+        }
+      });
     },
   },
   components: {
     'processed-label': ProcessedLabel,
+    'tooltip-component': TooltipComponent,
   },
 };
 </script>
 
 <template>
-  <div class="item-value" v-bind:class="{'locked': isLocked}">
-  <!-- TODO: @input or @change? -->
-    <input v-model="value" @change="valueChanged()" v-show="!isLocked"></input>
-    <span v-show="isLocked">{{value}}</span>
-    <div class="remover" v-show="!isLocked && isRemovable" v-on:click="removeThis()"><i class="fa fa-trash"></i></div>
+  <div class="item-value" v-bind:class="{'locked': isLocked, 'unlocked': !isLocked, 'distinguish-removal': removeHover, 'removed': removed}">
+    <textarea class="item-value-textarea" rows="1" v-model="value" @input="valueChanged()" @keydown="handleEnter" @blur="updateValue()" v-if="!isLocked"></textarea>
+    <span v-if="isLocked">{{value}}</span>
+    <div class="remover" v-show="!isLocked && isRemovable" v-on:click="removeThis()" @mouseover="removeHover = true" @mouseout="removeHover = false">
+      <i class="fa fa-minus">
+        <tooltip-component :show-tooltip="removeHover" tooltip-text="Remove" translation="translatePhrase"></tooltip-component>
+      </i>
+    </div>
   </div>
 </template>
 
@@ -70,29 +115,40 @@ export default {
 @import './_variables.less';
 
 .item-value {
-  width: 480px;
+  border: solid 1px transparent;
   line-height: 1.6;
   &.locked {
     line-height: 2;
+    padding-left: 5px;
+    span {
+      word-break: break-word;
+    }
   }
-  input {
-    color: @black;
+  &.removed {
+    transition: all 0.5s ease;
+    max-height: 0px;
+    margin: 0px;
+    border: none;
+    overflow: hidden;
+  }
+  textarea {
+    resize: none;
+    color: #333333;
     padding: 2px 5px;
-    width: 90%;
-    border-radius: 5px;
-    border: 1px solid #ccc;
+    width: 95%;
+
+    border: 1px solid #d6d6d6;
+    box-shadow: inset 0px 2px 0px 0px rgba(204, 204, 204, 0.35);
   }
   .remover {
-    margin-left: 1em;
+    font-size: 12px;
+    float: right;
     display: inline-block;
-    opacity: 0;
+    padding: 3px;
     cursor: pointer;
-    transition: opacity 0.5s ease;
   }
-  &:hover {
-    .remover {
-      opacity: 1;
-    }
+  &.unlocked {
+
   }
 }
 

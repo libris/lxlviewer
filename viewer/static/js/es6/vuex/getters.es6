@@ -4,6 +4,18 @@ export function getEditorData(state) {
 export function getVocabulary(state) {
   return state.vocab;
 }
+export function getContext(state) {
+  return state.context;
+}
+export function getVocabularyClasses(state) {
+  return state.vocabClasses;
+}
+export function getForcedListTerms(state) {
+  return state.forcedListTerms;
+}
+export function getVocabularyProperties(state) {
+  return state.vocabProperties;
+}
 export function getDisplayDefinitions(state) {
   return state.display;
 }
@@ -18,4 +30,10 @@ export function getKeybindState(state) {
 }
 export function getNotification(state) {
   return state.notification;
+}
+export function getChangeHistory(state) {
+  return state.status.changeHistory;
+}
+export function getUser(state) {
+  return state.user;
 }

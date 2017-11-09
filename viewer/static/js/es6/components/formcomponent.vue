@@ -12,7 +12,7 @@ import * as ModalUtil from '../utils/modals';
 import * as VocabUtil from '../utils/vocab';
 import * as DisplayUtil from '../utils/display';
 import { updateForm, changeStatus } from '../vuex/actions';
-import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData, getStatus } from '../vuex/getters';
+import { getSettings, getVocabulary, getForcedListTerms, getVocabularyProperties, getDisplayDefinitions, getEditorData, getStatus } from '../vuex/getters';
 
 export default {
   vuex: {
@@ -22,6 +22,8 @@ export default {
     },
     getters: {
       vocab: getVocabulary,
+      vocabProperties: getVocabularyProperties,
+      forcedListTerms: getForcedListTerms,
       settings: getSettings,
       editorData: getEditorData,
       display: getDisplayDefinitions,
@@ -29,8 +31,9 @@ export default {
     },
   },
   props: {
-    focus: '',
     locked: false,
+    editingObject: '',
+    collapsed: false,
   },
   data() {
     return {
@@ -38,17 +41,38 @@ export default {
     };
   },
   computed: {
-    isWork() {
-      return this.focus === 'work';
+    isActive() {
+      return this.status.editorFocus === this.editingObject;
     },
-    isInstance() {
-      return this.focus === 'it';
+    isHolding() {
+      return this.editorData[this.editingObject]['@type'] === 'Item';
     },
-    isLocked() {
-      if (this.locked || this.status.level !== this.focus) {
+    isBib() {
+      if (VocabUtil.isSubClassOf(this.editorData[this.editingObject]['@type'], 'Instance', this.vocab, this.settings.vocabPfx)) {
+        return true;
+      } else if (VocabUtil.isSubClassOf(this.editorData[this.editingObject]['@type'], 'Work', this.vocab, this.settings.vocabPfx)) {
+        return true;
+      } else if (VocabUtil.isSubClassOf(this.editorData[this.editingObject]['@type'], 'Agent', this.vocab, this.settings.vocabPfx)) {
+        return true;
+      } else if (VocabUtil.isSubClassOf(this.editorData[this.editingObject]['@type'], 'Concept', this.vocab, this.settings.vocabPfx)) {
         return true;
       }
       return false;
+    },
+    isLocked() {
+      if (this.locked) {
+        return true;
+      }
+      return false;
+    },
+    specialProperties() {
+      const props = [];
+      for (const prop of this.settings.specialProperties) {
+        if (this.editorData[this.editingObject][prop]) {
+          props.push(prop);
+        }
+      }
+      return props;
     },
     allowedProperties() {
       const settings = this.settings;
@@ -56,19 +80,58 @@ export default {
       const allowed = VocabUtil.getPropertiesFromArray(
         formObj['@type'],
         this.vocab,
-        this.settings.vocabPfx
+        this.settings.vocabPfx, // LÄGG TILL LABEL I ALLOWED
+        this.vocabProperties
       );
-
       // Add the "added" property
       for (const element of allowed) {
         const oId = element.item['@id'].replace(settings.vocabPfx, '');
         element.added = (formObj.hasOwnProperty(oId) && formObj[oId] !== null);
       }
 
-      return allowed;
+      const extendedAllowed = allowed.map(property => {
+        const labelByLang = property.item.labelByLang;
+        const prefLabelByLang = property.item.prefLabelByLang;
+        if (typeof labelByLang !== 'undefined') {
+          // Try to get the label in the preferred language
+          let label = ((typeof labelByLang[this.settings.language] !== 'undefined') ? labelByLang[this.settings.language] : labelByLang.en);
+          // If several labels are present, use the first one
+          if (_.isArray(label)) {
+            label = label[0];
+          }
+          return {
+            added: property.added,
+            item: property.item,
+            label: label
+          };
+        } else if (typeof prefLabelByLang !== 'undefined') {
+          // Try to get the label in the preferred language
+          let label = ((typeof prefLabelByLang[this.settings.language] !== 'undefined') ? prefLabelByLang[this.settings.language] : prefLabelByLang.en);
+          // If several labels are present, use the first one
+          if (_.isArray(label)) {
+            label = label[0];
+          }
+          return {
+            added: property.added,
+            item: property.item,
+            label: label
+          };
+        } else {
+          // If no label, use @id as label
+          return {
+            added: property.added,
+            item: property.item,
+            label: property.item['@id']
+          };
+        }
+      });
+      sortedAllowed = _.sortBy(extendedAllowed, (prop) => {
+        return prop.label.toLowerCase();
+      });
+      return sortedAllowed;
     },
     formData() {
-      return this.editorData[this.focus];
+      return this.editorData[this.editingObject];
     },
     sortedFormData() {
       const sortedForm = {};
@@ -118,46 +181,56 @@ export default {
         }
       }
       _.each(formObj, (v, k) => {
-        if (!propertyList.includes(k)) {
+        if (!_.includes(propertyList, k)) {
           propertyList.push(k);
         }
       });
+
+      _.remove(propertyList, (k) => {
+        return (this.settings.specialProperties.indexOf(k) !== -1);
+      });
+
       return propertyList;
     },
-    dummyInstance() {
-      return DisplayUtil.getItemLabel(
-        this.editorData.it,
-        this.display,
-        this.editorData.linked,
-        this.vocab,
-        this.settings
-      );
-    },
+  },
+  watch: {
   },
   events: {
-    'add-field'(prop) {
-      const newItem = {};
+    'add-field'(prop, path) {
       const key = prop['@id'].replace(this.settings.vocabPfx, '');
-      if (prop['@type'] && prop['@type'].indexOf('ObjectProperty') !== -1) {
-        newItem[key] = [];
-      } else {
-        newItem[key] = '';
+      let value = [];
+      if (prop['@type'] === 'DatatypeProperty') {
+        if (this.forcedListTerms.indexOf(key) > -1) {
+          value = [''];
+        } else {
+          value = '';
+        }
       }
-      const merged = Object.assign({}, this.formData, newItem);
-      this.updateForm(this.focus, merged);
+      let modified = _.cloneDeep(this.formData);
+      if (typeof path !== 'undefined') {
+
+        _.set(modified, `${path}.${key}`, value);
+      } else {
+        const newItem = {};
+        newItem[key] = value;
+        modified = Object.assign({}, this.formData, newItem);
+      }
+      this.updateForm(this.editingObject, modified, this.formData);
     },
-    'remove-field'(prop) {
-      const modifiedData = Object.assign({}, this.formData);
-      delete modifiedData[prop];
-      this.updateForm(this.focus, modifiedData);
+    'remove-field'(path) {
+      const modifiedData = _.cloneDeep(this.formData);
+      _.unset(modifiedData, path);
+      this.updateForm(this.editingObject, modifiedData, this.formData);
     },
     'update-value'(path, value) {
-      console.log("FormComp:"+this.focus+" - Updating " + path, 'to', JSON.stringify(value));
+      // console.log("FormComp: - Updating " + path, 'to', JSON.stringify(value));
       const modified = _.cloneDeep(this.formData);
+
       _.set(modified, path, value);
-      console.log("New value recieved for", path, "=", value);
-      console.log(modified);
-      this.updateForm(this.focus, modified);
+      // console.log("New value recieved for", path, "=", value);
+      // console.log(modified);
+      this.changeStatus('removing', false);
+      this.updateForm(this.editingObject, modified, this.formData);
     },
   },
   methods: {
@@ -165,46 +238,36 @@ export default {
       return (this.isLocked || key === '@id' || key === '@type');
     },
     updateFromTextarea(e) {
-      this.updateForm(this.focus, JSON.parse(e.target.value));
+      this.updateForm(this.editingObject, JSON.parse(e.target.value), this.formData);
     },
   },
   components: {
     'data-node': DataNode,
     'field-adder': FieldAdder,
   },
+  ready() {
+  }
 };
 </script>
 
 <template>
-  <div class="form-component" :class="{ 'locked': isLocked, 'work-state': isWork, 'instance-state': isInstance, 'focused-form-component': status.level === this.focus }">
-    <data-node v-for="(k,v) in sortedFormData" v-bind:class="{ 'locked': isLocked }" :is-removable="true" :is-locked="keyIsLocked(k)" :key="k" :value="v" :focus="focus" :allow-local="true"></data-node>
-    <div v-if="focus == 'work'" class="dummy-reverse">
-      <div class="label" v-bind:class="{ 'locked': isLocked }">
-        Har instanser
-      </div>
-      <div class="value">
-        <div class="chip dummy-chip" v-on:click="changeStatus('level' ,'it')" :class="{ 'locked': isLocked }" @mouseenter="showCardInfo=true">
-          <span class="chip-label">
-            {{ dummyInstance }}
-          </span>
+  <div class="form-component focused-form-component" :class="{ 'locked': isLocked }" v-show="isActive">
+    <div class="data-node-container" v-bind:class="{'collapsed': collapsed }">
+      <data-node v-for="(k,v) in sortedFormData" v-bind:class="{ 'locked': isLocked }" :entity-type="editorData[editingObject]['@type']" :is-inner="false" :is-removable="true" :is-locked="keyIsLocked(k)" :key="k" :value="v" :allow-local="true"></data-node>
+      <field-adder v-if="!isLocked" :allowed="allowedProperties" :inner="false" :editing-object="editingObject"></field-adder>
+      <div id="result" v-if="status.isDev && !isLocked">
+        <div class="row">
+        <pre class="col-md-6">
+          SORTED
+
+          {{sortedFormData | json}}
+        </pre>
+        <pre class="col-md-6">
+          ORIGINAL
+
+          {{formData | json}}
+        </pre>
         </div>
-      </div>
-      <div class="actions" v-if="!isLocked">
-      </div>
-    </div>
-    <field-adder v-if="!isLocked" :allowed="allowedProperties" :focus="focus"></field-adder>
-    <div id="result" v-if="status.isDev && !isLocked">
-      <div class="row">
-      <pre class="col-md-6">
-        SORTED
-
-        {{sortedFormData | json}}
-      </pre>
-      <pre class="col-md-6">
-        ORIGINAL
-
-        {{formData | json}}
-      </pre>
       </div>
     </div>
   </div>
@@ -213,11 +276,111 @@ export default {
 <style lang="less">
 @import './_variables.less';
 
+.ribbon-mixin(@ribbon-color) {
+  // padding: 0 10px 0 10px;
+  // position: relative;
+  // margin: 0 -10px 0 -10px;
+  // box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15);
+  background-color: @ribbon-color;
+  border: solid darken(@ribbon-color, 3%);
+  border-width: 0px 0px 1px 0px;
+  // border-radius: 0px 0px 2px 2px;
+  // &:before {
+  //   content: ' ';
+  //   position: absolute;
+  //   width: 0;
+  //   height: 0;
+  //   right: 0px;
+  //   top: 100%;
+  //   border-width: 5px 5px;
+  //   border-style: solid;
+  //   border-color: darken(@ribbon-color, 10%) transparent transparent darken(@ribbon-color, 10%);
+  // }
+  // &:after {
+  //   content: ' ';
+  //   position: absolute;
+  //   width: 0;
+  //   height: 0;
+  //   left: 0px;
+  //   top: 100%;
+  //   border-width: 5px 5px;
+  //   border-style: solid;
+  //   border-color: darken(@ribbon-color, 10%) darken(@ribbon-color, 10%) transparent transparent;
+  // }
+}
+
 .form-component {
-  margin: 0px 10px  80px 10px;
-  border: 1px solid #ccc;
+  .form-label {
+    color: @white;
+    display: flex;
+    justify-content: space-between;
+    border-width: 0px 0px 1px 0px;
+    > span {
+      &.left-column {
+        flex: 0 0 40%;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        padding: 0 1em;
+      }
+      &.middle-column {
+        flex: 0 0 20%;
+        text-align: center;
+        // text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.4);
+      }
+      &.right-column {
+        flex: 0 0 40%;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        padding: 0 1em;
+        code {
+          color: #fff;
+          padding: 0em 0.5em;
+          background-color: rgba(0, 0, 0, 0.2);
+        }
+      }
+    }
+    .type-label {
+      font-size: 1.2em;
+      font-weight: bold;
+    }
+    .new-indicator {
+      font-size: 1em;
+    }
+    &.record-style {
+      .ribbon-mixin(@gray);
+    }
+    &.bib-style {
+      .ribbon-mixin(@bib-color);
+    }
+    &.holding-style {
+      .ribbon-mixin(desaturate(darken(@holding-color, 10%), 10%));
+    }
+  }
+  .data-node-container {
+    border: solid #d8d8d8;
+    margin: 0px;
+    padding: 0em 0px 0px 0px;
+    border-width: 1px 0px 0px 0px;
+    overflow: hidden;
+    max-height: 500vh;
+    transition: 2s ease max-height;
+  }
+  .data-node-container-toggle {
+    text-align: center;
+    font-weight: bold;
+    font-size: 85%;
+    text-transform: uppercase;
+    cursor: pointer;
+    padding: 0.5em;
+  }
+  box-shadow: @shadow-base;
+  border: solid #ccc;
+  border-width: 0px 1px 1px 1px;
+  margin-bottom: 2em;
+  background-color: #ededed;
   &.locked {
-    border-radius: 10px;
     > ul > li {
       margin: 0px;
     }
@@ -243,11 +406,6 @@ export default {
         }
       }
 
-    }
-  }
-  .node-linked {
-    > div.expanded {
-      width: @col-value;
     }
   }
   .node-local {

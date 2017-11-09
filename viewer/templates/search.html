@@ -12,6 +12,8 @@
 
 % endif
 
+% set vocab_url = 'https://id.kb.se/vocab/'
+
 <div class="panel panel-default search-controls">
     <form action="/find" method="GET" id="searchForm">
 
@@ -31,6 +33,7 @@
           <div class="tagInputContainer">
             <input class="tagInput" name="identifiedBy.value">
             <input class="tagInput" name="identifiedBy.@type">
+            <input class="tagInput" name="_limit" value="20">
           </div>
 
           <div id="searchFieldContainer">
@@ -50,13 +53,15 @@
           % for value in result.statistics.sliceByDimension.values()
             % for obs in value.observation
               <label class="">
-                <input name="${filter_param}" value="${obs.object['curie'] or obs.object['@id']}" type="radio">
+                <input name="${filter_param}" value="${obs.object['curie'] or obs.object['@id'].replace(vocab_url, '')}" type="radio">
                 % if obs.object.titleByLang
                   ${obs.object.titleByLang['sv']}
                 % elif obs.object.label
                   ${obs.object.label}
                 % elif obs.object.notation
                   ${obs.object.notation|join(', ')}
+                % else
+                  ${obs.object['@id'].replace(vocab_url, '')}
                 % endif
               </label>
             % endfor

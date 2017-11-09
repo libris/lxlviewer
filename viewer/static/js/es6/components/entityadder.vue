@@ -1,15 +1,20 @@
 <script>
+import * as _ from 'lodash';
 import * as httpUtil from '../utils/http';
 import * as VocabUtil from '../utils/vocab';
 import * as DisplayUtil from '../utils/display';
 import * as LayoutUtil from '../utils/layout';
+import * as RecordUtil from '../utils/record';
+import * as StringUtil from '../utils/string';
+import * as CombinedTemplates from '../templates/combinedTemplates.json';
+import * as StructuredValueTemplates from '../templates/structuredValueTemplates.json';
 import ProcessedLabel from './processedlabel';
 import ToolTipComponent from './tooltip-component';
 import EntitySearchList from './entity-search-list';
 import LensMixin from './mixins/lens-mixin';
 import { mixin as clickaway } from 'vue-clickaway';
 import { changeStatus, changeNotification } from '../vuex/actions';
-import { getVocabulary, getSettings, getDisplayDefinitions, getEditorData } from '../vuex/getters';
+import { getVocabulary, getVocabularyClasses, getVocabularyProperties, getSettings, getDisplayDefinitions, getEditorData } from '../vuex/getters';
 
 export default {
   mixins: [clickaway, LensMixin],
@@ -23,11 +28,17 @@ export default {
       chooseLocalType: false,
       showToolTip: false,
       rangeInfo: false,
+      selectedType: '',
+      addEmbedded: false,
+      searchMade: false,
+      currentSearchTypes: [],
     };
   },
   vuex: {
     getters: {
       vocab: getVocabulary,
+      vocabClasses: getVocabularyClasses,
+      vocabProperties: getVocabularyProperties,
       display: getDisplayDefinitions,
       settings: getSettings,
       editorData: getEditorData,
@@ -39,20 +50,24 @@ export default {
   },
   props: {
     key: '',
-    focus: '',
     allowLocal: true,
     propertyTypes: [],
     showActionButtons: false,
     active: false,
+    isPlaceholder: false,
+    isChip: false,
+    alreadyAdded: [],
+    valueList: [],
+    possibleValues: [],
+    hasRescriction: false,
   },
   events: {
     'close-modals'() {
       this.closeSearch();
+      return true;
     },
     'add-entity'(item) {
       this.$dispatch('add-item', item);
-      this.changeNotification('color', 'green');
-      this.changeNotification('message', `Lade till "${this.getLabel(item)}"`);
       this.closeSearch();
     },
   },
@@ -61,33 +76,52 @@ export default {
     'entity-search-list': EntitySearchList,
   },
   watch: {
-    keyword(value) {
-      if (value) {
-        setTimeout(() => {
-          if (this.keyword === value) {
-            this.search(value);
-          }
-        }, this.debounceTimer);
+    valueList(newVal) {
+      if (newVal.length === 0 && this.onlyEmbedded) {
+        this.addEmbedded = true;
       } else {
-        this.searchResult = {};
+        this.addEmbedded = false;
       }
+    },
+    keyword(value) {
+      this.handleChange(value);
     },
     active(value) {
       this.$dispatch('toggle-modal', value);
     }
   },
   computed: {
-    isWork() {
-      return this.focus === 'work';
+    hasSingleRange() {
+      return this.getFullRange.length === 1;
     },
-    isInstance() {
-      return this.focus === 'it';
+    addLabel() {
+      if (this.isLiteral) {
+        return this.key;
+      } else if (this.getRange.length === 1) {
+        return this.getRange[0];
+      } else if (this.getRange.length > 1) {
+        return StringUtil.getUiPhraseByLang('entity', this.settings.language);
+      }
+      return this.key;
     },
     getRange() {
-      return VocabUtil.getRange(this.key, this.vocab, this.settings.vocabPfx);
+      const fetchedRange = VocabUtil.getRange(this.key, this.vocab, this.settings.vocabPfx)
+        .map(item => item.replace(this.settings.vocabPfx, ''));
+      return fetchedRange;
+    },
+    getFullRange() {
+      return VocabUtil.getFullRange(this.key, this.vocab, this.settings.vocabPfx);
+    },
+    allSearchTypes() {
+      const types = this.getFullRange;
+      const typeArray = [];
+      for (const type of types) {
+        typeArray.push(type.replace(this.settings.vocabPfx, ''));
+      }
+      return typeArray;
     },
     onlyEmbedded() {
-      const range = this.getRange;
+      const range = this.getFullRange;
       for (const prop of range) {
         if (!VocabUtil.isEmbedded(prop, this.vocab, this.settings)) {
           return false;
@@ -95,13 +129,19 @@ export default {
       }
       return true;
     },
+    isEnumeration() {
+      if (this.possibleValues && this.possibleValues.length > 0) {
+        return true;
+      }
+      return false;
+    },
     canRecieveObjects() {
       return (this.propertyTypes.indexOf('DatatypeProperty') === -1);
     },
     isLiteral() {
       // TODO: Verify usage
-      if (this.getRange.length > 0) {
-        for (const rangeElement of this.getRange) {
+      if (this.getFullRange.length > 0) {
+        for (const rangeElement of this.getFullRange) {
           if (rangeElement.indexOf('Literal') > -1) {
             return true;
           }
@@ -111,12 +151,51 @@ export default {
     },
   },
   ready() {
+    this.addEmbedded = (this.valueList.length === 0 && this.onlyEmbedded);
     this.searchOpen = false;
+    this.currentSearchTypes = this.getRange;
   },
   methods: {
+    handleChange(value) {
+      this.setSearching();
+      this.searchMade = false;
+      let searchPhrase = value;
+      if (value) {
+        setTimeout(() => {
+          if (this.keyword === value) {
+            this.search(searchPhrase);
+          }
+        }, this.debounceTimer);
+      } else {
+        this.searchResult = {};
+      }
+    },
+    setSearching() {
+      if (this.keyword === '') {
+        this.loading = false;
+      } else {
+        this.loading = true;
+      }
+    },
+    dismissTypeChooser() {
+      if (this.valueList.length > 0) {
+        this.addEmbedded = false;
+      }
+      this.showToolTip = false;
+      this.selectedType = '';
+    },
     add() {
-      if (this.canRecieveObjects) {
-        this.show();
+      if (this.isEnumeration) {
+        this.$dispatch('add-item', {'@id': ''});
+      } else if (this.canRecieveObjects) {
+        const range = this.getFullRange.map(range => range.replace(this.settings.vocabPfx, ''));
+        if (range.length < 2 && this.onlyEmbedded) {
+          this.addEmpty(range[0]);
+        } else if (this.onlyEmbedded) {
+          this.addEmbedded = true;
+        } else {
+          this.show();
+        }
       } else {
         this.$dispatch('add-item', '');
       }
@@ -124,9 +203,9 @@ export default {
     show() {
       LayoutUtil.scrollLock(true);
       this.active = true;
-      setTimeout(() => { // TODO: Solve this by setting focus after window has been rendered.
-        document.getElementById('test').focus();
-      }, 1);
+      this.$nextTick(() => {
+        this.$el.querySelector('.entity-search-keyword-input').focus();
+      });
       this.changeStatus('keybindState', 'entity-adder');
     },
     hide() {
@@ -134,14 +213,6 @@ export default {
       this.active = false;
       LayoutUtil.scrollLock(false);
       this.changeStatus('keybindState', 'overview');
-    },
-    goLocal() {
-      const range = this.getRange;
-      if (range.length > 1) {
-        this.chooseLocalType = true;
-      } else {
-        this.addEmpty(range[0]);
-      }
     },
     openSearch() {
       this.keyword = '';
@@ -156,71 +227,40 @@ export default {
     },
     addEmpty(type) {
       this.closeSearch();
-      const obj = this.getEmptyForm(type);
+      let obj = {'@type': type};
+      if (StructuredValueTemplates.hasOwnProperty(type)) {
+        obj = StructuredValueTemplates[type];
+      }
       this.$dispatch('add-item', obj);
+    },
+    addType(type) {
+      const idArray = type.split('/');
+      this.addEmpty(idArray[idArray.length - 1]);
+      this.dismissTypeChooser();
     },
     search(keyword) {
       const self = this;
       self.searchResult = {};
-      self.loading = true;
-      this.getItems(keyword, this.getRange).then((result) => {
+      this.getItems(keyword, [].concat(this.currentSearchTypes)).then((result) => {
         setTimeout(() => {
           self.searchResult = result;
           self.loading = false;
+          self.searchMade = true;
         }, 500);
       }, (error) => {
         self.loading = false;
       });
     },
-    getEmptyForm(type) {
-      console.log('Type', type);
-      const formObj = { '@type': type };
-      let inputKeys = DisplayUtil.getProperties(type, 'cards', this.display, this.settings);
-      if (inputKeys.length === 0) {
-        const baseClasses = VocabUtil.getBaseClassesFromArray(
-          type,
-          this.vocab,
-          this.settings.vocabPfx
-        );
-        console.log('baseClasses for', type, 'is', JSON.stringify(baseClasses));
-        for (const baseClass of baseClasses) {
-          inputKeys = DisplayUtil.getProperties(
-            baseClass.replace(this.settings.vocabPfx, ''),
-            'cards',
-            this.display,
-            this.settings
-          );
-          if (inputKeys.length > 0) {
-            break;
-          }
-        }
-        if (inputKeys.length === 0) {
-          inputKeys = DisplayUtil.getProperties('Resource', 'cards', this.display, this.settings);
-        }
-        console.log(inputKeys);
-      }
-      inputKeys = ['@type'].concat(inputKeys);
-      for (const inputKey of inputKeys) {
-        if (inputKey === '@type') {
-          formObj[inputKey] = type;
-        } else {
-          formObj[inputKey] = '';
-        }
-      }
-      console.log('Form obj', JSON.stringify(formObj));
-      return formObj;
-    },
     getItems(keyword, typeArray) {
       // TODO: Support asking for more items
-      const searchKey = `${keyword}*`;
+      const searchKey = keyword !== '*' ? `${keyword}*` : keyword;
       let searchUrl = `/find?q=${searchKey}`;
       if (typeof typeArray !== 'undefined' && typeArray.length > 0) {
         for (const type of typeArray) {
           searchUrl += `&@type=${type}`;
         }
       }
-      searchUrl += '&_limit=10';
-      // console.log(searchUrl);
+      searchUrl += '&_limit=40';
       return new Promise((resolve, reject) => {
         httpUtil.get({ url: searchUrl, accept: 'application/ld+json' }).then((response) => {
           resolve(response.items);
@@ -234,61 +274,130 @@ export default {
 </script>
 
 <template>
-<span class="entity-adder">
-  <a class="action-button add-entity-button" :class="{'shown-button': showActionButtons, 'hidden-button': !showActionButtons, 'disabled': active}" v-on:click="add()" @mouseenter="showToolTip=true" @mouseleave="showToolTip=false">
-    <i class="fa fa-plus plus-icon" aria-hidden="true"></i>
-  </a>
-  <tooltip-component :show-tooltip="showToolTip" :tooltiptext="key"></tooltip-component>
+<div class="entity-adder" :class="{'inner-adder': isPlaceholder, 'fill-width': addEmbedded}">
+  <div v-if="isPlaceholder && !addEmbedded" v-on:click="add()" @mouseenter="showToolTip = true" @mouseleave="showToolTip = false">
+    <span class="chip-label">
+      <i class="fa fa-fw fa-plus plus-icon" aria-hidden="true">
+        <tooltip-component :show-tooltip="showToolTip" tooltip-text="Add" translation="translatePhrase"></tooltip-component>
+      </i>
+    </span>
+  </div>
+  <div v-if="!isPlaceholder && !addEmbedded" class="action-button add-entity-button" v-on:click="add()" @mouseenter="showToolTip = true" @mouseleave="showToolTip = false">
+    <span class="chip-label">
+      <i class="fa fa-fw fa-plus plus-icon" aria-hidden="true">
+        <tooltip-component :show-tooltip="showToolTip" tooltip-text="Add" translation="translatePhrase"></tooltip-component>
+      </i>
+    <span class="label-text">{{ addLabel | labelByLang | capitalize }}</span></span>
+  </div>
+  <div class="type-chooser" v-if="addEmbedded" v-on-clickaway="dismissTypeChooser">
+    <select v-model="selectedType" @change="addType(selectedType, true)">
+      <option disabled value="">{{"Choose type" | translatePhrase}}</option>
+      <option v-for="rangeType in getFullRange" value="{{rangeType}}">{{rangeType | labelByLang}}</option>
+    </select>
+  </div>
   <div class="window" v-if="active">
     <div class="header">
       <span class="title">
-        Lägg till entitet
+        {{ "Add entity" | translatePhrase }} | {{ addLabel | labelByLang }}
       </span>
       <span class="windowControl">
         <i v-on:click="hide" class="fa fa-close"></i>
       </span>
     </div>
     <div class="body">
-      <div class="stage-0" v-show="!chooseLocalType">
+      <div class="stage-0">
         <div class="search-header">
+          <span>{{ "Search" | translatePhrase }}</span>
           <div class="search">
-            Sök:
-            <input v-model="keyword"></input>
-            <div class="range-info-container" v-if="getRange.length > 0" @mouseleave="rangeInfo = false">
+            <!--<input class="entity-search-keyword-input" v-model="keyword" @input="setSearching()"></input>-->
+            <div class="input-container">
+              <input
+                v-model="keyword"
+                class="entity-search-keyword-input"
+                autofocus
+              >
+              <select v-model="currentSearchTypes" @change="handleChange(keyword)">
+                <option :value="getRange">{{"All types" | translatePhrase}}</option>
+                <option v-for="range in getFullRange" :value="[range.replace(settings.vocabPfx, '')]">{{range | labelByLang}}</option>
+              </select>
+            </div>
+            <div class="range-info-container" v-if="getFullRange.length > 0" @mouseleave="rangeInfo = false">
               <i class="fa fa-info-circle" @mouseenter="rangeInfo = true"></i>
               <div class="range-info" v-if="rangeInfo">
-                Tillåtna typer:
+                {{ "Allowed types" | translatePhrase }}:
                 <br>
-                <span v-for="range in getRange" class="range">
+                <span v-for="range in getFullRange" class="range">
                   - {{range | labelByLang}}
                 </span>
               </div>
             </div>
-          </div>
-          <div class="local" v-show="allowLocal">
-            <button v-on:click="goLocal">Skapa lokal entitet</button>
+            <div class="controls">
+              <button v-if="allowLocal && hasSingleRange" v-on:click="addEmpty(getFullRange[0])">{{ "Create local entity" | translatePhrase }} ({{ addLabel | labelByLang }})</button>
+              <select v-model="selectedType" @change="addType(selectedType)" v-if="allowLocal && !hasSingleRange">
+                <option disabled value="">{{ "Create local entity" | translatePhrase }} ({{ addLabel | labelByLang }})</option>
+                <option v-for="rangeType in getFullRange" value="{{rangeType}}" label="{{rangeType | labelByLang}}">
+              </select>
+            </div>
           </div>
         </div>
-        <div v-if="!loading && keyword.length === 0" class="search-status">Skriv för att börja söka...</div>
-        <div v-if="loading" class="search-status">Söker...</div>
-        <div v-if="!loading && searchResult.length === 0 && keyword.length > 0" class="search-status">Inga resultat...</div>
-        <entity-search-list v-if="!loading && keyword.length > 0" :results="searchResult"></entity-search-list>
-      </div>
-      <div class="stage-1" v-show="chooseLocalType">
-        <button v-on:click="addEmpty(type)" v-for="type in getRange">{{ type }}</button>
+        <div v-if="!loading && keyword.length === 0" class="search-status">{{ "Start writing to begin search" | translatePhrase }}...</div>
+        <div v-if="loading" class="search-status">{{ "Searching" | translatePhrase }}...<br><i class="fa fa-circle-o-notch fa-spin"></i></div>
+        <div v-if="!loading && searchResult.length === 0 && keyword.length > 0 && searchMade" class="search-status">
+          {{ "No results" | translatePhrase }}...
+        </div>
+        <entity-search-list v-if="!loading && keyword.length > 0" :results="searchResult" :disabled-ids="alreadyAdded"></entity-search-list>
       </div>
     </div>
   </div>
-</span>
+</div>
 </template>
 
 <style lang="less">
 @import './_variables.less';
 
 .entity-adder {
-  opacity: 1;
   .disabled {
     visibility: hidden;
+  }
+  &.fill-width {
+    width: 100%;
+  }
+  &.inner-adder {
+    cursor: pointer;
+  }
+  > .chip {
+    .chip-mixin(transparent, @gray-darker);
+    .label-text {
+      display: inline-block;
+    }
+  }
+  .type-chooser {
+    text-align: center;
+    padding: 5px;
+    border: 2px solid #b2b2b2;
+    > select {
+      width: 100%;
+    }
+  }
+  .add-entity-button {
+    padding: 0.3em 0;
+    opacity: 1;
+    transition: opacity 0.5s ease;
+    &.fade {
+      opacity: 0;
+    }
+    cursor: pointer;
+    .chip-label {
+      color: @gray-dark;
+    }
+    &:hover {
+      .chip-label {
+        color: @gray-dark;
+      }
+    }
+    .chip-action {
+
+    }
   }
   .window {
     .window-mixin();
@@ -297,24 +406,56 @@ export default {
       background-color: white;
       border: 1px solid #ccc;
       padding: 0px;
+      overflow-y: scroll;
+      .stage-1 {
+        text-align: center;
+      }
       button {
         font-size: 12px;
       }
+      .search-result {
+        padding-top: 80px;
+        padding-bottom: 2em;
+      }
       .search-header {
+        position: absolute;
         width: 100%;
-        height: 40px;
-        padding: 5px;
+        padding: 0.5em 1em;
         border: solid #ccc;
         border-width: 0px 0px 1px 0px;
         background-color: darken(@neutral-color, 4%);
-        .local {
-          float: left;
-          width: 50%;
-          text-align: right;
+        z-index: @modal-z;
+        > span {
+         font-weight: bold;
         }
         .search {
-          float: left;
-          width: 50%;
+          display: flex;
+          align-items: center;
+          .input-container {
+            display: flex;
+            border: 2px solid @gray;
+            border-radius: 0.2em;
+            flex: 60% 0 0;
+            background: @white;
+            padding: 0.5em;
+            > select {
+              max-width: 50%;
+              padding: 0.2em 0.5em;
+              margin: 0 0.3em;
+              border-radius: 0.3em;
+              border: 0px;
+              outline: none;
+              background: @brand-primary;
+              color: @white;
+              cursor: pointer;
+              font-weight: bold;
+            }
+            > input {
+              width: 100%;
+              border: none;
+              outline: none;
+            }
+          }
           .range-info-container {
             margin-left: 0.5em;
             display: inline-block;
@@ -332,58 +473,34 @@ export default {
             }
           }
         }
+        .controls {
+          display: flex;
+          flex-grow: 1;
+          justify-content: flex-end;
+          button, select {
+            cursor: pointer;
+            padding: 0.5em 1em;
+            color: #444;
+            border: none;
+            border-radius: 2px;
+            background: #ccc;
+            font-weight: bold;
+            font-size: 12px;
+          }
+        }
       }
       .search-status {
         padding: 10px;
-      }
-      .search-result {
-        overflow-y: scroll;
-        height: 328px;
-        margin-top: 10px;
-        .search-result-list {
-          width: 100%;
-          padding: 0px;
-          list-style-type: none;
-          li {
-            padding: 5px;
-          }
-          .search-result-item {
-            &:nth-child(even) {
-              background-color: darken(@neutral-color, 2%);
-            }
-            cursor: pointer;
-            border: solid #ccc;
-            border-width: 0px 0px 1px 0px;
-            &:hover {
-              background-color: darken(white, 5%);
-            }
-          }
+        padding-top: 30%;
+        font-size: 2em;
+        text-align: center;
+        > i {
+          font-size: 8rem;
         }
       }
     }
   }
-  .add-entity-button {
-    background-color: @brand-primary;
-    color: @white;
-    border-radius:28px;
-    display:inline-block;
-    cursor:pointer;
-    font-family:Arial;
-    font-size:10px;
-    padding-right: 5px;
-    padding-left: 5px;
-    text-decoration:none;
-    .plus-icon {
-      vertical-align: middle;
-    }
-    &:hover {
-      background-color: lighten(@brand-primary, 5%);
-    }
-    &:active {
-      position:relative;
-      top:1px;
-    }
-  }
+
 }
 
 </style>

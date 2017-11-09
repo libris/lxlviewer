@@ -5,16 +5,6 @@ body#usersettings {
     margin-top: 30px;
     margin-bottom: 100px;
 
-    ul {
-      list-style-type: none;
-      padding: 30px;
-    }
-
-    li:before {
-      content: "■";
-      color: @happy-muted-magenta;
-      margin-right: 10px;
-    }
 
     .btn-login {
       background-color: @orange;
@@ -29,26 +19,15 @@ body#usersettings {
     font-size: 16px;
     text-transform: uppercase;
     }
+    h3 {
+      font-size: 16px;
+    }
     .label {
       color:@gray;
       font-weight:normal;
       font-size: 12px;
       padding: 0;
       display: inline-block;
-    }
-
-    select {
-      margin-bottom:20px;
-    }
-    .settings-container {
-      padding: 0 15px 15px;
-      margin: 0px;
-      h2 {
-        padding-top:15px;
-      }
-      .info-box {
-        border-right:1px solid #dddddd;
-      }
     }
 
 // User settings end
@@ -62,6 +41,11 @@ body#usersettings {
 
     .logout-message {
       padding-top: 30px;
+    }
+    .login-info-panel {
+      ul {
+        padding: 30px;
+      }
     }
     #oauth-login-buttons {
       width: 100%;

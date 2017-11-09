@@ -46,6 +46,7 @@ sites = {
         "summary": {ID: "/doc/summary"},
         "stylesheet": {"name": "id.css"},
         "statsindex": '{"inScheme.@id":{"inCollection.@id":["@type"], "@type":[]}}',
+        "statsfind": '{"inScheme.@id":{"inCollection.@id":["@type"], "@type":[]}}',
         "filter_param": "inScheme.@id",
         "itemList": [
             {ID: "/doc/about", "title": "Om id.kb.se", "icon": "info-circle"},
@@ -57,17 +58,52 @@ sites = {
         ID: LIBRIS,
         TYPE: "DataCatalog",
         "title": "libris.kb.se",
-        "description": "<p>Data på <b>LIBRIS.KB.SE</b>.</p>",
-        "statsindex": '{"instanceOf.@type": {"@type": []}}',
-        "filter_param": "instanceOf.@type",
+        "summary": {"articleBody": "<p>Data på <b>LIBRIS.KB.SE</b>.</p>"},
+        "statsindex": '{"@type": []}',
+        "filter_param": "@type",
             # TODO: + @reverse.itemOf.heldBy.@id (and/or count)?
         #"stats": {"@type":{"meta.bibliography.@id":{"publication.providerDate":[]}}}
-        "statsfind": '{"instanceOf.language.@id":{},"carrierType":{},"instanceOf.@type":{},"instanceOf.contentType.@id":{},"publication.date":{},"@type":{}}',
+        "statsfind":
+        """
+            {
+                "instanceOf.language.@id":{
+                    "sort":"value",
+                    "sortOrder":"desc",
+                    "size":10
+                },
+                "carrierType":{
+                    "sort":"value",
+                    "sortOrder":"desc",
+                    "size":10
+                },
+                "instanceOf.@type":{
+                    "sort":"key",
+                    "sortOrder":"asc",
+                    "size":100
+                },
+                "publication.date":{
+                    "sort":"key",
+                    "sortOrder":"desc",
+                    "size":50
+                },
+                "@type":{
+                    "sort":"key",
+                    "sortOrder":"asc",
+                    "size":100
+                }
+            }
+        """,
         "itemList": [
         #    {ID: "/doc/about#", "title": "Om libris.kb.se", "icon": "info-circle"},
         ]
     }
 }
+
+# "instanceOf.contentType.@id":{
+#                     "sort":"key",
+#                     "sortOrder":"asc",
+#                     "size":100
+#                 },
 
 
 class DataAccess(object):
@@ -92,9 +128,13 @@ class DataAccess(object):
         url = self._get_api_url(url_path)
         json_data = json.dumps(json_data)
         return requests.request(method, url, data=json_data, headers=headers,
-                            params=query_params.to_dict(flat=False))
+                            params=query_params.to_dict(flat=False),
+                            allow_redirects=False)
 
     def _get_api_url(self, url_path):
+        if url_path.startswith(self._api_base):
+            return url_path
+
         if url_path.startswith('/'):
             url_path = url_path[1:]
         return '%s/%s' % (self._api_base, url_path)
@@ -179,12 +219,14 @@ class DataAccess(object):
         return VocabView(vocab, context, display, lang=self.lang)
 
     def _load_required(self, uri):
-        data = self.load_from_whelk(uri)
         resp = self.api_request(uri)
-        data = resp.json()
-        etag = resp.headers.get('ETag')
-        assert data, 'Failed to get {} from whelk'.format(uri)
-        return ApiResource(uri, data, etag)
+        if resp.status_code == 302:
+            return self._load_required(resp.headers.get('Location'))
+        else:
+            data = resp.json()
+            etag = resp.headers.get('ETag')
+            assert data, 'Failed to get {} from whelk'.format(uri)
+            return ApiResource(uri, data, etag)
 
 
 ApiResource = namedtuple('ApiResource', 'uri, data, etag')

@@ -1,21 +1,36 @@
 
+.relation-experiment {
+  border: 1px solid #ccc;
+  padding: 1em;
+  h3 {
+    font-size: 14pt;
+    display: inline-block;
+  }
+  ul {
+    padding-left: 0;
+    li {
+      display: inline-block;
+      border: 1px solid #ccc;
+      border-radius: 0.5em;
+      padding: 0.3em;
+      margin: 0.3em;
+    }
+  }
+}
 
 #appContainer {
-  margin-top: 30px;
-  margin-bottom: 100px;
-  box-shadow: 0px 0px 16px 2px rgba(220,220,220,1);
-  background-color: fadeout(@neutral-color,25%);
-  min-height: 50vh;
   display: flex;
-  align-items: center;
   justify-content: center;
+  padding: 1em;
 
   #loadingText {
     // margin: 120px 0;
     padding: 20px 0px;
     width: 100%;
+    min-height: 50vh;
     vertical-align: middle;
     text-align: center;
+    background-color: transparent;
     .status {
       display: block;
       font-size: 0.7em;
@@ -34,8 +49,7 @@
 
 #editorApp {
   width: 100%;
-  padding-bottom: 5px;
-  display: none;
+  // display: none;
   font-size: 14px;
 
   .linked-items {
@@ -50,12 +64,13 @@
     }
   }
 
-  .unknown {
-    color: #bd2323;
+  .distinguish-removal {
+    border: 1px dashed @gray-dark;
+    background-color: rgba(255,0,0,.1);
   }
 
-  .panel.main-item {
-    border: 0px;
+  .unknown {
+    color: #bd2323;
   }
 
   .field-controls {
@@ -84,5 +99,19 @@
   textarea {
     width: 100%;
     height: 500px;
+  }
+}
+
+footer {
+  bottom: 0px;
+  width: 100%;
+  .nav > li > a {
+    padding: 15px 15px;
+  }
+  .footer-container {
+    margin-top: 0px;
+  }
+  h1 {
+    font-size: 16px;
   }
 }

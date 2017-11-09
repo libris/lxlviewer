@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% block bodyattrs %}id="logout"{% endblock %}
+{% block wrapper %}<div class="show-content" id="page-content-wrapper"> {% endblock %}
 
 {% block content %}
 
@@ -11,10 +12,10 @@
         <div class="logout-message">
         <p class="well">Du är nu utloggad ur Libris Katalogisering</p>
         </div>
-        <div class="panel panel-default dash orange">
+        <div class="panel panel-default dash orange login-info-panel">
           <span class="circle"><i class="icon fa fa-exclamation-triangle" aria-hidden="true"></i></span>
           <ul>
-            <li>Glöm inte att du fortfarande är inloggad i <a href="http://biblioteksdatabasen.libris.kb.se">biblioteksdatabasen.</a></li>
+            <li>Glöm inte att du fortfarande är inloggad i <a href="https://login.libris.kb.se">Libris Login</a></li>
             <li>Du kan ta bort autentiseringen genom att logga ut därifrån.</li>
           </ul>
         </div>

@@ -1,3 +1,4 @@
+import View from './views/view';
 import Thing from './views/thing';
 import Editor from './views/editor';
 import Vocab from './views/vocab';
@@ -6,6 +7,7 @@ import PagedCollection from './views/pagedcollection';
 import UserSettings from './views/usersettings';
 import CreateNew from './views/createnew';
 import Import from './views/import';
+import About from './views/about';
 
 export default class Loader {
 
@@ -20,6 +22,7 @@ export default class Loader {
   createViews() {
     // Creates instances of our different classes.
     // TODO: Should probably be done on demand.
+    this.baseView = new View('Base');
     this.createView(new Thing('Thing'));
     this.createView(new Editor('Editor'));
     this.createView(new Vocab('Vocab'));
@@ -28,6 +31,7 @@ export default class Loader {
     this.createView(new UserSettings('UserSettings'));
     this.createView(new CreateNew('CreateNew'));
     this.createView(new Import('Import'));
+    this.createView(new About('About'));
   }
 
   createView(view) {
@@ -40,20 +44,25 @@ export default class Loader {
 
   initPage(id) {
     // This method should be called on page load.
-    const bodyId = id;
 
+    // Find the corresponding view script and select it
+    const bodyId = id;
     for (let i = 0; i < this.views.length; i++) {
       if (this.views[i].name.toLowerCase() === bodyId.toLowerCase()) {
         this.currentView = this.views[i];
-        this.views[i].initialize();
-        return true;
       }
     }
-    if (typeof bodyId === 'undefined' || bodyId.length === 0) {
-      console.warn('No view script loaded: No ID on body');
+
+    // If none found, select base
+    if (!this.currentView) {
+      console.warn('No corresponding view script. Loading base.')
+      this.currentView = this.baseView;
     } else {
-      console.warn('No view script loaded: None found for "#' + bodyId + '"');
+      // console.log('Loading view script:', this.currentView.name);
     }
-    return false;
+
+    // Load the selected view
+    this.currentView.initialize();
+    return true;
   }
 }

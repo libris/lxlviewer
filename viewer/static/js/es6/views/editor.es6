@@ -2,9 +2,12 @@ import View from './view';
 import Vue from 'vue';
 import Vuex from 'vuex';
 import store from '../vuex/store';
+import LensMixin from '../components/mixins/lens-mixin';
+import EventMixin from '../components/mixins/global-event-mixin';
 import ComboKeys from 'combokeys';
 import KeyBindings from '../keybindings.json';
-import * as editUtil from '../utils/edit';
+import * as DataUtil from '../utils/data';
+import * as LayoutUtil from '../utils/layout';
 import * as httpUtil from '../utils/http';
 import * as toolbarUtil from '../utils/toolbar';
 import * as _ from 'lodash';
@@ -12,19 +15,22 @@ import * as VocabLoader from '../utils/vocabloader';
 import * as VocabUtil from '../utils/vocab';
 import * as DisplayUtil from '../utils/display';
 import * as RecordUtil from '../utils/record';
-import * as UserUtil from '../utils/user';
 import * as StringUtil from '../utils/string';
+import MarcPreview from '../components/marc-preview';
 import FormComponent from '../components/formcomponent';
+import HelpComponent from '../components/help-component';
 import EditorControls from '../components/editorcontrols';
 import HeaderComponent from '../components/headercomponent';
 import Notification from '../components/notification';
-import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData, getStatus, getKeybindState } from '../vuex/getters';
-import { changeSettings, changeNotification, loadVocab, loadDisplayDefs, syncData, changeSavedStatus, changeStatus } from '../vuex/actions';
+import ReverseRelations from '../components/reverse-relations';
+import { getSettings, getVocabulary, getContext, getVocabularyClasses, getVocabularyProperties, getDisplayDefinitions, getEditorData, getStatus, getKeybindState } from '../vuex/getters';
+import { changeSettings, changeNotification, loadVocab, loadContext, loadVocabMap, loadForcedListTerms, loadDisplayDefs, syncData, changeSavedStatus, changeStatus, navigateChangeHistory } from '../vuex/actions';
+
 
 function showError(error) {
-  $('#loadingText .fa-cog').fadeOut('fast', () => {
+  $('#loadingText .fa-circle-o-notch').fadeOut('fast', () => {
     $('#loadingText .fa-warning').removeClass('hidden').fadeIn('fast');
-    $('#loadingText .mainStatus').text('').append('Något gick fel...');
+    $('#loadingText .mainStatus').text('').append(StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language));
     $('#loadingText .status').text('');
     $('#loadingText .error').text('').append(error).removeClass('hidden').fadeIn('slow');
   });
@@ -36,77 +42,68 @@ export default class Editor extends View {
     super.initialize();
     VocabLoader.initVocabClicks();
     toolbarUtil.initToolbar(this);
-    this.dataIn = RecordUtil.splitJson(JSON.parse(document.getElementById('data').innerText));
     const self = this;
 
-    self.settings = {
-      lang: 'sv',
-      vocabPfx: self.vocabPfx,
-      embeddedTypes: ['StructuredValue', 'ProvisionActivity', 'Contribution'],
-      removableBaseUris: [
-        'http://libris.kb.se/',
-        'https://libris.kb.se/',
-        'http://id.kb.se/',
-        'https://id.kb.se/',
-      ],
-    };
-    $('#loadingText .fa-warning').hide();
-    $('#loadingText .mainStatus').text('Laddar redigeringen...');
-    $('#loadingText .status').text('Hämtar vokabulär');
-    VocabUtil.getVocab().then((vocab) => {
-      self.vocab = vocab['@graph'][0]['@graph'];
-      $('#loadingText .status').text('Hämtar visningsdefinitioner');
-      DisplayUtil.getDisplayDefinitions().then((display) => {
-        self.display = display;
-        self.initVue();
-      }, (error) => {
-        showError(error);
-      });
-    }, (error) => {
-      showError(error);
-    });
-  }
+    const textData = RecordUtil.splitJson(JSON.parse(document.getElementById('data').innerText));
+    if (Modernizr.history) {
+      if (history.state === null) {
+        history.replaceState(textData, 'unused');
+      }
+      this.dataIn = history.state;
+    } else {
+      this.dataIn = textData;
+    }
 
-  populateHolding(meta, thing) {
-    const emptyHolding = JSON.stringify(RecordUtil.getEmptyHolding(thing['@id'], UserUtil.get('sigel')));
-    $('#holdingItem').text(emptyHolding);
+    self.getLdDepencendies().then(() => {
+      self.initVue();
+    }, (error) => {
+      window.lxlError(error);
+    });
   }
 
   initVue() {
     const self = this;
-    $('#loadingText').fadeOut('slow', function() {
-      $('#editorApp').fadeIn('slow');
-    });
 
     document.getElementById('body-blocker').addEventListener('click', function () {
       self.vm.$broadcast('close-modals');
     }, false);
 
     Vue.filter('labelByLang', (label) => {
-      return StringUtil.labelByLang(label, self.settings.lang, self.vocab, self.vocabPfx);
+      return StringUtil.labelByLang(label, self.settings.language, self.vocabMap, self.settings.vocabPfx);
     });
     Vue.filter('removeDomain', (value) => {
       return StringUtil.removeDomain(value, self.settings.removableBaseUris);
+    });
+    Vue.filter('translatePhrase', (string) => {
+      return StringUtil.getUiPhraseByLang(string, self.settings.language);
     });
 
     Vue.use(Vuex);
 
     self.vm = new Vue({
-      el: '#editorApp',
+      el: '#editor',
+      mixins: [EventMixin, LensMixin],
       vuex: {
         actions: {
           syncData,
           loadVocab,
+          loadContext,
+          loadVocabMap,
+          loadForcedListTerms,
           loadDisplayDefs,
           changeSettings,
           changeSavedStatus,
           changeStatus,
           changeNotification,
+          navigateChangeHistory,
         },
         getters: {
+          context: getContext,
           settings: getSettings,
           editorData: getEditorData,
           vocab: getVocabulary,
+          vocabClasses: getVocabularyClasses,
+          vocabProperties: getVocabularyProperties,
           display: getDisplayDefinitions,
           status: getStatus,
           keybindState: getKeybindState,
@@ -115,6 +112,9 @@ export default class Editor extends View {
       data: {
         initialized: false,
         combokeys: null,
+        locked: true,
+        relatedTitles: [],
+        copyRecord: {},
       },
       events: {
         'focus-update': function(value, oldValue) {
@@ -122,10 +122,8 @@ export default class Editor extends View {
           console.log("Update");
           if (oldValue === this.editorData.meta) {
             newData.meta = value;
-            // this.$set('meta', value);
           } else if (oldValue === this.editorData.thing) {
             newData.thing = value;
-            // this.$set('thing', value);
           } else {
             console.warn('Something went wrong trying to update a focused object.');
           }
@@ -133,11 +131,77 @@ export default class Editor extends View {
         },
         'add-linked': function(item) {
           const newData = this.editorData;
-          newData.linked.push(item);
+          const graphId = RecordUtil.extractFnurgel(item['@id']) || item['@id'];
+          const graphObj = {
+            '@id': graphId,
+            '@graph': [item],
+          };
+          let found = false;
+          _.each(newData.quoted, (node) => {
+            if (node['@id'] === graphId) {
+              let subnodefound = false;
+              _.each(node['@graph'], (subnode) => {
+                if (subnode['@id'] === item['@id']) {
+                  subnodefound = true;
+                }
+              });
+              if (!subnodefound) {
+                node['@graph'].push(item);
+              }
+              found = true;
+            }
+          });
+          if (!found) {
+            newData.quoted.push(graphObj);
+          }
           this.syncData(newData);
         },
         'save-item': function() {
-          this.saveItem();
+          if (this.status.inEdit) {
+            this.saveItem();
+          }
+        },
+        'show-marc': function() {
+          this.$broadcast('open-marc');
+        },
+        'edit-item': function() {
+          if (!this.status.inEdit) {
+            this.editItem();
+          }
+        },
+        'duplicate-item': function() {
+          if (!this.status.inEdit) {
+            this.buildCopiedRecord();
+            if (Modernizr.history) {
+              this.$dispatch('new-editordata', this.copyRecord);
+              this.changeStatus('isCopy', true);
+              this.changeNotification('color', 'green');
+              this.changeNotification('message', `${StringUtil.getUiPhraseByLang('Copy successful', this.settings.language)}!`);
+            }
+          }
+        },
+        'cancel-edit': function() {
+          this.changeStatus('inEdit', false);
+          this.syncData(Object.assign({}, this.status.lastSavedData));
+        },
+        'new-editordata'(newData) {
+          this.syncData(newData);
+          const atId = newData.record['@id'];
+          if (!atId || atId === '_:TEMP_ID') {
+            this.editItem();
+            history.pushState(newData, 'unused', '/edit');
+          } else {
+            history.replaceState(newData, 'unused', `${atId}/edit`);
+            self.vm.changeStatus('inEdit', false);
+            self.vm.changeStatus('isNew', false);
+            self.vm.changeStatus('isCopy', false);
+          }
+        },
+        'form-control'(control) {
+          this.$broadcast(control);
+        },
+        'navigate-change-history'(direction) {
+          this.navigateChangeHistory(this.status.editorFocus, direction);
         },
       },
       watch: {
@@ -158,96 +222,227 @@ export default class Editor extends View {
           this.combokeys = new ComboKeys(document.documentElement);
           require('combokeys/plugins/global-bind')(this.combokeys); // TODO: Solve with ES6 syntax
           const stateSettings = KeyBindings[state];
-          console.log(stateSettings);
           if (typeof stateSettings !== 'undefined') {
             _.each(stateSettings, (value, key) => {
               if (value !== null && value !== '') {
                 this.combokeys.bindGlobal(key.toString(), () => {
-                  this.$broadcast(value);
+                  const valueArray = value.split('|');
+                  if (state === 'overview') {
+                    this.$dispatch(valueArray[0], valueArray[1]);
+                  } else {
+                    this.$broadcast(valueArray[0], valueArray[1]);
+                  }
+                  return false;
                 });
               }
             });
           }
         },
+        entityTitle(val) {
+          this.updateDocumentTitle(val);
+        },
+      },
+      computed: {
+        canEditThisType() {
+          if (this.user.hasAnyCollections() === false) {
+            return false;
+          }
+          const permission = this.user.getPermissions();
+          if (this.editorData.mainEntity['@type'] === 'Item' && permission.registrant === true) {
+            return true;
+          } else if (permission.cataloger === true) {
+            return true;
+          }
+          return false;
+        },
+        isItem() {
+          return this.editorData.mainEntity['@type'] === 'Item';
+        },
+        focusData() {
+          return this.editorData[this.status.level];
+        },
+        entityTitle() {
+          if (typeof this.editorData.mainEntity !== 'undefined') {
+            const headerList = DisplayUtil.getItemSummary(this.editorData.mainEntity, this.display, this.editorData.quoted, this.vocab, this.settings, this.context).header;
+            const header = StringUtil.getFormattedEntries(headerList, this.vocab, this.settings).join(', ');
+            if (header.length > 0 && header !== '{Unknown}') {
+              return header;
+            }
+          }
+          return `{${StringUtil.getUiPhraseByLang('Unnamed entity', self.settings.language)}}`;
+        },
       },
       methods: {
+        buildCopiedRecord() {
+          const mainEntity = _.cloneDeep(this.editorData.mainEntity);
+          this.copyRecord = RecordUtil.splitJson(RecordUtil.getObjectAsRecord(mainEntity, this.editorData.record));
+        },
+        showHelp() {
+          this.$dispatch('show-help', '');
+        },
+        getRelatedTitles() {
+          if (VocabUtil.isSubClassOf(this.editorData.mainEntity['@type'], 'Work', this.vocab, this.settings.vocabPfx)) {
+            RecordUtil.getRelatedPosts(this.editorData.record['@id'], 'instanceOf').then((response) => {
+              _.each(response, (node) => {
+                console.log("Extracting title from", node);
+                this.extractTitle(node).then((titleArray) => {
+                  console.log("Extracted", titleArray);
+                  const displayTitles = [];
+                  _.each(titleArray, (title) => {
+                    const chipObj = DisplayUtil.getChip(title, this.display, this.editorData.quoted, this.vocab, this.settings, this.context);
+                    displayTitles.push(StringUtil.extractStrings(chipObj));
+                  });
+                  this.relatedTitles = this.relatedTitles.concat(displayTitles);
+                }, (error) => {
+                  console.log(error);
+                });
+              });
+            }, (error) => {
+              console.log(error);
+            });
+          }
+        },
+        extractTitle(id) {
+          return new Promise((resolve, reject) => {
+            console.log("Getting", id);
+            httpUtil.get({ url: `${id}/data.jsonld`, accept: 'application/ld+json' }).then((response) => {
+              console.log("Found", id);
+              const mainEntity = RecordUtil.getMainEntity(response['@graph']);
+              console.log("mainEntity found", mainEntity);
+              resolve(mainEntity.hasTitle);
+            }, (error) => {
+              reject(Error('Something failed', error));
+            });
+          });
+        },
+        updateDocumentTitle(recordTitle) {
+          const pageTitle = `${recordTitle} - ${this.settings.siteInfo.title}`;
+          document.title = pageTitle;
+        },
         isArray(o) {
           return _.isArray(o);
         },
         isPlainObject(o) {
           return _.isPlainObject(o);
         },
-        convertItemToMarc() {
-          return httpUtil.post({
-            url: '/_convert',
-            token: self.access_token,
-          },
-            // Use clean method on args
-            editUtil.getMergedItems(
-              this.editorData.record,
-              this.editorData.it,
-              this.editorData.work,
-              this.editorData.linked
-            )
-          );
+        editItem() {
+          if (this.canEditThisType) {
+            this.$dispatch('set-dirty', true);
+            this.changeStatus('inEdit', true);
+          } else {
+            window.location = '/login';
+          }
+        },
+        getCollectionName(entity) {
+          const vocabPfx = this.settings.vocabPfx;
+          const baseClasses = VocabUtil.getBaseClasses(entity['@type'], this.vocab, vocabPfx);
+          const classList = [entity['@type']].concat(baseClasses);
+          for (const cn of classList) {
+            if (cn === 'Instance' || cn === `${vocabPfx}Instance`) {
+              return 'bib';
+            } else if (cn === 'Item' || cn === `${vocabPfx}Item`) {
+              return 'hold';
+            }
+          }
+          return 'auth';
         },
         saveItem() {
-          const inputData = JSON.parse(document.getElementById('data').innerText);
-          const obj = editUtil.getMergedItems(
-            editUtil.removeNullValues(this.editorData.record),
-            editUtil.removeNullValues(this.editorData.it),
-            editUtil.removeNullValues(this.editorData.work),
-            this.editorData.linked
+          const ETag = this.editorData.record.modified;
+          const RecordId = this.editorData.record['@id'];
+          const obj = DataUtil.getMergedItems(
+            DataUtil.removeNullValues(this.editorData.record),
+            DataUtil.removeNullValues(this.editorData.mainEntity),
+            DataUtil.removeNullValues(this.editorData.work),
+            this.editorData.quoted
           );
 
-          // if (JSON.stringify(obj) === JSON.stringify(inputData)) {
-          //   console.warn("No changes done, skipping to save. Time to tell the user?");
-          // } else {
-          const atId = this.editorData.record['@id'];
-          if (atId) {
-            this.doSave(atId, obj);
-          } else {
+          if (!RecordId || RecordId === '_:TEMP_ID') { // No ID -> create new
             this.doCreate(obj);
+          } else { // ID exists -> update
+            this.doUpdate(RecordId, obj, ETag);
           }
-          // }
         },
-        doSave(url, obj) {
-          this.doRequest(httpUtil.put, obj, url);
+        doUpdate(url, obj, ETag) {
+          this.doSaveRequest(httpUtil.put, obj, url, ETag);
         },
         doCreate(obj) {
-          this.doRequest(httpUtil.post, obj, '/create');
+          this.doSaveRequest(httpUtil.post, obj, '/');
         },
-        doRequest(requestMethod, obj, url) {
-          requestMethod({ url, token: self.access_token }, obj).then((result) => {
-            console.log('Success was had');
-            self.vm.syncData(RecordUtil.splitJson(result));
-            self.vm.changeSavedStatus('loading', false);
-            self.vm.changeSavedStatus('error', false);
-            self.vm.changeSavedStatus('info', '');
-            self.vm.changeNotification('color', 'green');
-            self.vm.changeNotification('message', 'Posten blev sparad!');
+        doSaveRequest(requestMethod, obj, url, ETag) {
+          requestMethod({ url, ETag }, obj).then((result) => {
+            const postUrl = `${result.getResponseHeader('Location')}`;
+            httpUtil.get({ url: `${postUrl}/data.jsonld`, accept: 'application/ld+json' }).then((getResult) => {
+              const newData = RecordUtil.splitJson(getResult);
+              if (Modernizr.history) {
+                this.$dispatch('new-editordata', newData);
+              } else if (result.status === 201) {
+                window.location = result.getResponseHeader('Location');
+              } else {
+                self.vm.syncData(newData);
+              }
+              self.vm.changeStatus('lastSavedData', Object.assign({}, newData));
+              self.vm.changeSavedStatus('loading', false);
+              self.vm.changeSavedStatus('error', false);
+              self.vm.changeSavedStatus('info', '');
+              self.vm.changeNotification('color', 'green');
+              self.vm.changeNotification('message', `${StringUtil.getUiPhraseByLang('The post was saved', this.settings.language)}!`);
+              this.changeStatus('inEdit', false);
+              this.$dispatch('set-dirty', false);
+            }, (error) => {
+              self.vm.changeSavedStatus('loading', false);
+              self.vm.changeNotification('color', 'red');
+              self.vm.changeNotification('message', `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error}`);
+            });
           }, (error) => {
             self.vm.changeSavedStatus('loading', false);
-            // self.vm.changeSavedStatus('error', true);
-            // self.vm.changeSavedStatus('info', error);
             self.vm.changeNotification('color', 'red');
-            self.vm.changeNotification('message', 'Något gick fel!');
+            self.vm.changeNotification('message', `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error}`);
           });
         },
       },
       ready() {
+        this.updateUser(self.user);
         this.changeSettings(self.settings);
         this.loadVocab(self.vocab);
+        this.loadContext(self.context);
+        this.loadVocabMap(self.vocabMap);
+        this.loadForcedListTerms(self.forcedListTerms);
         this.loadDisplayDefs(self.display);
         this.syncData(self.dataIn);
-        this.initialized = true;
+        this.changeStatus('lastSavedData', Object.assign({}, self.dataIn));
         this.changeStatus('keybindState', 'overview');
+        this.changeStatus('isNew', false);
+        this.updateDocumentTitle(this.entityTitle);
+
+        // this.getRelatedTitles();
+
+        // add own mainentity to quoted graph so that we can self-reference
+        this.$dispatch('add-linked', this.editorData.mainEntity);
+
+        const atId = this.editorData.record['@id'];
+        if (!atId || atId === '_:TEMP_ID') {
+          this.editItem();
+          this.changeStatus('isNew', true);
+        }
+        if (Modernizr.history) {
+          history.scrollRestoration = 'manual';
+          window.onpopstate = e => {
+            e.preventDefault();
+            this.$dispatch('new-editordata', e.state);
+            return false;
+          };
+        }
+        LayoutUtil.showPage(this);
+        // this.showEditor();
       },
       components: {
         'form-component': FormComponent,
         'editor-controls': EditorControls,
         'header-component': HeaderComponent,
+        'help-component': HelpComponent,
         'notification': Notification,
+        'marc-preview': MarcPreview,
+        'reverse-relations': ReverseRelations,
       },
       store,
     });

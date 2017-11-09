@@ -8,12 +8,18 @@ export function scrollLock(bool) {
     } else {
       e.classList += c;
     }
+    $('#body-blocker').fadeIn();
   } else {
     e.classList.remove(c);
+    $('#body-blocker').fadeOut();
   }
 }
 
 export function scrollTo(position, duration = 200, easing = 'linear', callback) {
+  let properPosition = Math.floor(position);
+  if (properPosition < 0) {
+    properPosition = 0;
+  }
   // define timing functions
   const easings = {
     linear(t) {
@@ -82,18 +88,24 @@ export function scrollTo(position, duration = 200, easing = 'linear', callback) 
   );
 
   const windowHeight = window.innerHeight || document.documentElement.clientHeight || document.getElementsByTagName('body')[0].clientHeight;
-  const destination = documentHeight - position < windowHeight ? documentHeight - windowHeight : position;
+  const destination = documentHeight - properPosition < windowHeight ? documentHeight - windowHeight : properPosition;
 
   function scroll() {
     const now = Date.now();
     const time = Math.min(1, ((now - startTime) / duration));
     const timeFunction = easings[easing](time);
     body.scrollTop = (timeFunction * (destination - start)) + start;
-    if (Math.round(body.scrollTop) === destination) {
+    if (Math.floor(body.scrollTop) > destination - 10 && Math.floor(body.scrollTop) < destination + 10) {
       callback();
       return;
     }
     requestAnimationFrame(scroll);
   }
   scroll();
+}
+
+export function showPage(vueInstance) {
+  setTimeout(() => {
+    vueInstance.initialized = true;
+  }, 0);
 }

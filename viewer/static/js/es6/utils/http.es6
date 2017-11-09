@@ -7,7 +7,9 @@ function request(options, data) {
   const baseUriJson = document.getElementById('baseUriAlias').innerHTML;
   const baseUriAlias = JSON.parse(baseUriJson);
   for (const key in baseUriAlias) {
-    options.url = options.url.replace(key, baseUriAlias[key]);
+    if (options.url[0] !== '/') {
+      options.url = options.url.replace(key, baseUriAlias[key]);
+    }
   }
 
   return new Promise((resolve, reject) => {
@@ -30,8 +32,8 @@ function request(options, data) {
     }
 
     req.onload = () => {
-      if (req.status === 200 || req.status === 201) {
-        let resp = req.response;
+      if (req.status === 200) {
+        let resp = req.responseText;
         if (req.getResponseHeader('Content-Type').indexOf('json') !== -1) {
           try {
             resp = JSON.parse(resp);
@@ -43,14 +45,22 @@ function request(options, data) {
           }
         }
         resolve(resp, req);
-      } else if (req.status === 204 || req.status === 304) {
+      } else if (req.status === 201 || req.status === 204) {
+        resolve (req);
+      } else if (req.status === 304) {
         resolve(req);
+      } else if (req.status === 403) {
+        reject(req);
       } else {
         reject(Error(req.statusText));
       }
     };
     req.onerror = () => {
-      reject(Error('Network error'));
+      if (req.status === 401) {
+        reject(Error('Authentication error'));
+      } else {
+        reject(Error('Network error'));
+      }
     };
 
     if (options.method === 'DELETE' || options.method === 'GET') {
@@ -62,6 +72,7 @@ function request(options, data) {
 }
 
 export function get(options) {
+  options.method = 'GET';
   return request(options);
 }
 

@@ -1,10 +1,20 @@
 import * as _ from 'lodash';
 import View from './view';
 import Vue from 'vue';
-import * as UserUtil from '../utils/user';
+import Vuex from 'vuex';
+import store from '../vuex/store';
+import * as CombinedTemplates from '../templates/combinedTemplates.json';
+import * as BaseTemplates from '../templates/baseTemplates.json';
 import * as VocabUtil from '../utils/vocab';
-import * as httpUtil from '../utils/http';
 import * as RecordUtil from '../utils/record';
+import * as DisplayUtil from '../utils/display';
+import * as StringUtil from '../utils/string';
+import * as LayoutUtil from '../utils/layout';
+import CreateNewForm from '../components/create-new-form';
+import HelpComponent from '../components/help-component';
+import EventMixin from '../components/mixins/global-event-mixin';
+import { getSettings, getVocabulary, getContext, getDisplayDefinitions, getEditorData, getStatus, getKeybindState } from '../vuex/getters';
+import { changeSettings, changeNotification, loadVocab, loadContext, loadVocabMap, loadDisplayDefs, syncData, changeSavedStatus, changeStatus } from '../vuex/actions';
 
 export default class CreateNew extends View {
 
@@ -13,85 +23,81 @@ export default class CreateNew extends View {
     const self = this;
     this.activeForm = '';
     this.transition = false;
+    this.language = 'sv';
 
-    const baseMaterials = [
-      'CreativeWork',
-      'Aggregate',
-    ];
-
-    VocabUtil.getVocab().then((vocab) => {
-      self.initVue(vocab, self.vocabPfx, baseMaterials);
+    self.getLdDepencendies().then(() => {
+      self.initVue();
+    }, (error) => {
+      window.lxlError(error);
     });
   }
 
-  getMaterials(baseMaterials, vocab) {
+  initVue() {
     const self = this;
-    const materialLists = [];
-    for (let i = 0; i < baseMaterials.length; i++) {
-      const materialList = {
-        id: baseMaterials[i],
-        list: VocabUtil.getSubClasses(baseMaterials[i], vocab, self.vocabPfx),
-      };
-      materialLists[i] = materialList;
-    }
-    return materialLists;
-  }
+    Vue.use(Vuex);
 
-  initVue(vocab, vocabPfx, baseMaterials) {
-    const self = this;
-    const materialLists = self.getMaterials(baseMaterials, vocab);
+    document.getElementById('body-blocker').addEventListener('click', function () {
+      self.vm.$broadcast('close-modals');
+    }, false);
+
     $('#app').show();
 
     Vue.filter('labelByLang', (label) => {
-      // Filter for fetching labels from vocab
-      let lbl = label;
-      if (lbl && lbl.indexOf(vocabPfx) !== -1) {
-        lbl = lbl.replace(vocabPfx, '');
-      }
-      const item = _.find(vocab, (d) => { return d['@id'] === `${vocabPfx}${lbl}` });
-      if(!item) { console.warn(`${vocabPfx}${lbl} not found`); }
-      let labelByLang = '';
-      if (typeof item !== 'undefined' && item.labelByLang) {
-        labelByLang = item.labelByLang[self.language];
-      }
-      // Check if we have something of value
-      if (labelByLang.length > 0) {
-        return labelByLang;
-      }
-      return lbl;
+      return StringUtil.labelByLang(label, self.settings.language, self.vocabMap, self.settings.vocabPfx);
     });
 
-    const vm = new Vue({
-      el: '#app',
+    Vue.filter('translatePhrase', (string) => {
+      return StringUtil.getUiPhraseByLang(string, self.settings.language);
+    });
+
+    self.vm = new Vue({
+      el: '#createnew',
+      mixins: [EventMixin],
+      vuex: {
+        actions: {
+          syncData,
+          loadVocab,
+          loadContext,
+          loadVocabMap,
+          loadDisplayDefs,
+          changeSettings,
+          changeSavedStatus,
+          changeStatus,
+          changeNotification,
+        },
+        getters: {
+          settings: getSettings,
+          editorData: getEditorData,
+          vocab: getVocabulary,
+          context: getContext,
+          display: getDisplayDefinitions,
+          status: getStatus,
+          keybindState: getKeybindState,
+        },
+      },
       data: {
-        materialLists,
-        chosenMaterials: [],
-        vocabPfx: self.vocabPfx,
-        language: self.language,
-        vocab,
+        initialized: false,
       },
       watch: {
       },
       methods: {
-        createNew() {
-          if (this.chosenMaterials.length === 0) return;
-          const m = _.filter(this.chosenMaterials, (o) => {
-            return o && o.length > 0;
-          });
-          const params = '@type=' + JSON.stringify(m);
-          window.location.href = '/new/record?' + params;
-        },
-        setMaterial(index, material) {
-          const m = material.replace(vocabPfx, '');
-          this.chosenMaterials.$set(index, m);
-        },
-      },
-      computed: {
-        hasChosenMaterials() {
-          return (this.chosenMaterials.length !== 0);
+        showHelp() {
+          this.$dispatch('show-help', '');
         },
       },
       components: {
+        'create-new-form': CreateNewForm,
+        'help-component': HelpComponent,
+      },
+      store,
+      ready() {
+        this.updateUser(self.user);
+        this.changeSettings(self.settings);
+        this.loadVocab(self.vocab);
+        this.loadContext(self.context);
+        this.loadVocabMap(self.vocabMap);
+        LayoutUtil.showPage(this);
+        document.title = `${StringUtil.getUiPhraseByLang('Create new', this.settings.language)} - ${this.settings.siteInfo.title}`;
       },
     });
   }

@@ -1,4 +1,5 @@
 import View from './view';
+import * as StringUtil from '../utils/string';
 
 function setActive(item) {
   let itemOrg = item;
@@ -19,6 +20,7 @@ export default class Vocab extends View {
 
   initialize() {
     super.initialize();
+    document.title = `Vocabulary - ${this.settings.siteInfo.title}`;
 
     function accept(id) { return id.indexOf(':') === -1; }
 

@@ -13,6 +13,7 @@
 @import '../shared/navbar.less';
 @import '../shared/login.less';
 @import '../shared/createnew.less';
+@import '../shared/button-and-links.less';
 
 // ----------- BASE STYLES ----------
 
@@ -20,16 +21,15 @@
 @green: #009788;
 @grey-very-dark: #191913; // font-color
 
-@modal-z: 950;
+@modal-z: 999;
 @active-component-z: 99;
-@backdrop-z: 900;
+@backdrop-z: 950;
 
 
 // Column widths
 @col-label: 200px;
 @col-value: 620px;
 @col-action: 250px;
-
 
 html {
   height: 100%;
@@ -39,28 +39,65 @@ html {
   overflow-y: scroll;
 }
 
+html {
+  &.ie11 {
+    main {
+      margin-bottom: 75vh;
+    }
+  }
+  &.no-flexbox {
+    .container {
+      display: none;
+    }
+    #oldbrowsermsg {
+      padding: 25px;
+      display: block !important;
+    }
+  }
+}
+
+[v-cloak] {
+  display: none;
+}
+
+main {
+  margin-bottom: 100px;
+}
+
+#oldbrowsermsg {
+  width: 100%;
+  padding: 3em 0em;
+  div {
+    border: 1px solid @gray;
+    background-color: @gray-lighter;
+    padding: 25px;
+    width: 800px;
+    margin: auto;
+    box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.15);
+  }
+}
+
 #body-blocker {
   display: none;
+  z-index: @backdrop-z;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.3);
 }
 html.scroll-lock {
   overflow: hidden;
-  #body-blocker {
-    display: block;
-    z-index: @backdrop-z;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.1);
-  }
 }
 
 body {
   position: relative;
   background-color: @bg-site;
   background-image: @bg-img;
-
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
    /********/
   /* Main-item
   /* An item shown on its own page
@@ -111,17 +148,52 @@ h2 {
 footer {
   background-color: @bg-footer;
   border: 0px solid @border-footer;
-  z-index: 999;
   color: @text-footer;
-  text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.2);
-  text-transform: uppercase;
-  .navbar-formats {
-    text-shadow: none;
-    font-size: 14px;
+  box-shadow: @shadow-footer;
+  // text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.2);
+
+  .content-container {
+    display: flex;
+    justify-content: center;
+    .header {
+      font-weight: bold;
+    }
+    .item {
+      font-size: 14px;
+    }
+    > div {
+      display: flex;
+      padding: 0 1em;
+    }
+    .service-name {
+      flex: 20% 1 1;
+      align-items: center;
+      flex-direction: column;
+      justify-content: center;
+      font-weight: bold;
+      > a {
+        text-align: center;
+      }
+    }
+    .link-list {
+      flex: 25% 2 2;
+      flex-direction: column;
+    }
+    .social-media {
+      flex: 20% 1 1;
+      flex-direction: column;
+      align-items: center;
+      a {
+        margin: 0 5px;
+      }
+    }
   }
   a {
     color: @text-footer;
-    text-transform:none;;
+    text-transform:none;
+    &:hover {
+      color: @text-footer;
+    }
   }
   i {
     color: @text-alt-footer;
@@ -159,14 +231,6 @@ footer {
       line-height: 1.7;
     }
   }
-}
-
-.search-controls,
-.result-controls,
-.hit-item,
-.main-item,
-.scheme-item {
-  box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.1);
 }
 
 a {
@@ -216,3 +280,25 @@ a {
 .dash.green .circle {
   background-color: @green;
 }
+
+// ----------- BUTTONS ----------------
+button, .btn-primary, .btn-primary:hover, .btn-primary:focus {
+    color: #ffffff;
+}
+
+button {
+  color:#444;
+  border:none;
+  border-radius: 2px;
+  background:#ccc;
+  padding: 0 0.4em;
+  font-weight:bold;
+  &:hover {
+  background: #ddd;
+  color:#222;
+  }
+  &:focus {
+  background:#bbb;
+  }
+}
+// ----------- VARIOUS ----------------

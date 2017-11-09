@@ -114,13 +114,26 @@ export function updateStyle(event, state) {
   }
 }
 
+export function handlePaste(event) {
+  event.stopPropagation();
+  event.preventDefault();
+  const clipboardData = event.clipboardData || window.clipboardData;
+  const pastedData = clipboardData.getData('Text');
+  const currentPhrase = document.activeElement;
+  currentPhrase.innerHTML += pastedData;
+}
+
 export function addSearchPhrase(state, searchField) {
   const newSearchTag = document.createElement('div');
   newSearchTag.setAttribute('id', `searchphrase-${parseInt(state.counter, 10) + 1}`);
   newSearchTag.setAttribute('class', 'searchphrase');
   newSearchTag.setAttribute('contenteditable', 'true');
+  if (state.counter === -1 && document.getElementById('serviceTitle').innerText === 'libris.kb.se') {
+    newSearchTag.setAttribute('placeholder', '"Mumintrollen", "ISBN:123456789"');
+  }
   newSearchTag.addEventListener('input', event => updateStyle(event, state));
   newSearchTag.addEventListener('focus', event => searchPhraseFocus(event, state));
+  newSearchTag.addEventListener('paste', event => handlePaste(event));
   searchField.appendChild(newSearchTag);
   newSearchTag.focus();
 }

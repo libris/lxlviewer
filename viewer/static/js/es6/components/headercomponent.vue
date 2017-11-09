@@ -1,16 +1,19 @@
 <script>
 import * as _ from 'lodash';
 import * as DisplayUtil from '../utils/display';
-import * as VocabUtil from '../utils/vocab';
-import * as EditUtil from '../utils/edit';
+import * as DataUtil from '../utils/data';
+import * as StringUtil from '../utils/string';
+import EntitySummary from './entity-summary';
 import LensMixin from './mixins/lens-mixin';
-import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData, getStatus } from '../vuex/getters';
+import ReverseRelations from '../components/reverse-relations';
+import { getSettings, getVocabulary, getContext, getDisplayDefinitions, getEditorData, getStatus } from '../vuex/getters';
 
 export default {
   name: 'header-component',
   mixins: [LensMixin],
   vuex: {
     getters: {
+      context: getContext,
       vocab: getVocabulary,
       settings: getSettings,
       editorData: getEditorData,
@@ -23,46 +26,18 @@ export default {
   },
   data() {
     return {
-      showChipHeader: false,
-      inlineKeys: [
-        '@type',
-        'issuanceType',
-        'extent',
-        'dimensions',
-        'marc:otherPhysicalDetails',
-      ],
+      showCompact: false,
     };
   },
-  ready() { // Ready method is deprecated in 2.0, switch to "mounted"
-    this.$nextTick(() => {
-      window.addEventListener('scroll', (e) => {
-        const cardHeader = document.getElementById('card-header');
-        const chipHeaderThreshold = cardHeader.offsetTop + (cardHeader.offsetHeight / 2);
-        const scrollPosition = e.target.body.scrollTop;
-        if (chipHeaderThreshold < scrollPosition) {
-          this.showChipHeader = true;
-        } else {
-          this.showChipHeader = false;
-        }
-      });
-      const expandableAdminInfo = document.getElementsByClassName('admin-info-container')[0];
-      expandableAdminInfo.onresize = this.resize;
-    });
-  },
   methods: {
-    isTitle(key) {
-      const k = key.toLowerCase();
-      return ~k.indexOf('title');
-    },
-    showKey(k) {
-      const listOfKeys = ['ISBN']; // TODO: Fix list of keys to show.
-      return _.indexOf(listOfKeys, k) > -1;
-    },
+    handleScroll(e) {
+      e.target.scrollingElement.scrollTop > this.headerThreshold ? this.showCompact = true : this.showCompact = false;
+    }
   },
   computed: {
     state() {
       const state = this.status.level;
-      if (state === 'it') {
+      if (state === 'mainEntity') {
         return 'Instance';
       } else if (state === 'work') {
         return 'Work';
@@ -72,32 +47,42 @@ export default {
     focusData() {
       return this.editorData[this.status.level];
     },
+    headerThreshold() {
+      const headerContainer = document.getElementById('main-header');
+      return headerContainer.offsetTop + headerContainer.offsetHeight -20;
+    },
+    compactSummary() {
+      let summary = [];
+      _.each(this.getSummary, summaryArray => {
+        summary = summary.concat(StringUtil.getFormattedEntries(summaryArray, this.vocab, this.settings));
+      });
+      return summary.join(' • ');
+    },
+  },
+  beforeDestroy() {
+    window.removeEventListener('scroll', this.handleScroll);
+  },
+  ready() { // Ready method is deprecated in 2.0, switch to "mounted"
+    this.$nextTick(() => {
+      window.addEventListener('scroll', this.handleScroll);
+    });
   },
   components: {
+    'entity-summary': EntitySummary,
+    'reverse-relations': ReverseRelations,
   },
 };
 </script>
 
 <template>
-  <div class="header-component">
-    <div v-if="full" class="main-header" id="card-header">
-      <ul>
-        <li v-for="(k, v) in getCard" v-bind:class="{'large-title': isTitle(k), 'inline': (inlineKeys.indexOf(k) !== -1) }">{{v}}</li>
-      </ul>
+  <div class="header-component-container">
+    <div class="header-component full">
+      <entity-summary :focus-data="focusData" :add-link="false" :lines="full ? 6 : 3"></entity-summary>
     </div>
-    <div v-if="full == false && showChipHeader" class="container fixed-header-container">
-      <div class="row">
-        <div class="fixed-header">
-          <span v-for="(k, v) in getCard">
-            <span v-if="isTitle(k)">
-              <span class="small-title">{{v}}</span>
-            </span>
-            <span v-if="!isTitle(k)" class="minimum-text">
-              <span v-if="showKey(k)">{{k}}: {{v}}</span>
-              <span v-if="!showKey(k)">{{v}}</span>
-            </span>
-          </span>
-        </div>
+    <reverse-relations v-if="!status.isNew"></reverse-relations>
+    <div class="container">
+      <div class="compact-header" :class="{ 'show-compact': showCompact }">
+      {{ compactSummary }}
       </div>
     </div>
   </div>
@@ -105,69 +90,48 @@ export default {
 
 <style lang="less">
 @import './_variables.less';
-
-.header-component {
+.header-component-container {
+  display: flex;
+  background-color: @bib-color;
+  box-shadow: @shadow-base;
   padding: 0px;
-
-  .container {
-    .row {
-      margin: 0px;
-    }
-    .fixed-header {
-      text-align: center;
-      padding: 5px;
-      width: inherit;
-      background-color: white;
-      color: black;
-      box-shadow: 0px 6px 10px -6px rgba(0, 0, 0, 0.6);
-    }
-  }
-
-  .main-header {
-    ul {
-      padding: 20px;
-      .inline {
-        display: inline;
-        &::after {
-          content: ", ";
+  .header-component {
+    flex: 8 8 100%;
+    max-width: 100%;
+    min-width: 0;
+    &.full {
+      .entity-summary {
+        border-width: 0;
+        height: 100%;
+        * {
+          color: @white;
         }
       }
     }
   }
-
-  ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-
-
-  .large-title {
-    font-size: 20px;
-    font-weight: bold;
-  }
-
-  .work-title {
-    font-size: 22px;
-    border-bottom: 1px solid white;
-  }
-
-  .small-title {
-    font-size: 16px;
-    font-weight: bold;
-  }
-
-  .medium-text {
-    font-size: 14px;
-  }
-
-  .small-text {
-    font-size: 12px;
-  }
-
-  .minimum-text {
-    font-size: 10px;
-    font-style: italic;
+  .container {
+    position: fixed;
+    z-index: @header-z;
+    top: 0;
+    padding: 0px 30px 0px 0px;
+    .compact-header {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      background: @bib-color;
+      color: @white;
+      padding: 0.5em;
+      box-shadow: 0 2px 5px rgba(0,0,0,.26);
+      max-height: 0px;
+      opacity: 0;
+      transition: all 0.3s ease;
+      line-height: 0;
+      &.show-compact {
+        max-height: 55px;
+        opacity: 1;
+        line-height: inherit;
+      }
+    }
   }
 }
 

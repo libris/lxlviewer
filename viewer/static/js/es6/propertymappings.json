@@ -1,9 +1,10 @@
-{
-  "isbn": {
-    "range": "ISBN",
-    "propertyChain": [
-      "identifiedBy",
-      "value"
-    ]
-  },
-}
+[
+  {
+    "key": "ISBN",
+    "mappings": {
+      "identifiedBy.value": "",
+      "identifiedBy.@type": "ISBN"
+    }
+  }
+]
+
