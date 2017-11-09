@@ -26,6 +26,12 @@ export default {
   methods: {
   },
   computed: {
+    getImage() {
+      if (Modernizr.webp) {
+        return this.image.replace('.png', '.webp');
+      }
+      return this.image;
+    },
   },
   components: {
   },
@@ -41,7 +47,7 @@ export default {
 
 <template>
   <div class="panel panel-default link-card" v-bind:class="{'no-link': !linkUrl}">
-    <img :src="image" />
+    <img :src="getImage" />
     <span class="header">{{ header }}</span>
     <p>{{ text }}</p>
     <a v-if="linkUrl" :href="linkUrl" class="card-link">{{ linkText }}</a>
