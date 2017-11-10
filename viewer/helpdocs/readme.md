@@ -21,7 +21,7 @@ Kategori på dokumentet. Används till exempel för att lägga dokumenten bredvi
 Titel på dokumentet. Används till menyn. **Används inte till rubriker i dokumentet.**  
 
 **Order:**  
-Ordning inom kategorin i menyn. Högre siffra -> Längre ner inom kategorin.
+Ordning inom kategorin i menyn. Högre siffra -> Längre ner inom kategorin. Avsnitt som saknar order-attributet hamnar alltid längre ner än de som har attributet.
 
 **Tags:**  
 Etiketter på dokumentet som eventuellt skulle kunna användas till sökning.  
