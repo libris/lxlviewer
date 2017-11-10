@@ -129,29 +129,4 @@ Antalet träffar som visas är förinställt till 20 träffar per sida och kan v
 
 I vänsterspalten finns ytterligare möjligheter till filtreringar såsom: Typ, verkstyp, verksspråk och utgivningsdatum.
 
-## Lokal hjälp på startsidan
-Libris Söktips/Hjälp
-+ betyder AND 
-| betyder OR 
-- innebär uteslutning 
-" wraps a number of tokens to signify a phrase for searching 
-* innebär trunkering av en term ( word ) ökar relevans.
-
-Standardfunktionalitet är att sökmotorn ger träff på valfri sökterm med en | . En sökning på Astrid Lindgren kommer matcha poster som innehåller antingen:
-  (1) Astrid eller 
-  (2) Lindgren, ger även träff på 
-  (3) Astrid Lindgren. 
-
-De föredragna operatorerna är + (termen måste vara inkluderad) och - (denna term får ej vara inkluderad) Alla andra termer är valfria.
-
-### Andra källor Söktips/Hjälp
-Det är viktigt att sökfrågan alltid är så tydlig och unik som möjligt.
-
-Försök att i så stor utsträckning som möjligt lägga till ett årtal när du söker på titel. Gör sökfrågan så precis som möjligt. En stor sökfråga med för många träffar kan från värdserverns sida uppfattas som spam. Det kan i sin tur leda till att vi blir blockerade från värdservern vilket vi naturligtvis vill undvika.
-
-ISBN:Sök alltid på ISBN i första hand. (Skrivs utan bindestreck.)
-
-Om du inte får träff kan du prova att skriva ISBN i fältet för Valfria sökord istället för i fältet för ISBN. Eftersom ISBN inte alltid ligger i 020-fältet kan en sökning i hela posten ge träff.
-
-
 [^1]:	librispraxis
