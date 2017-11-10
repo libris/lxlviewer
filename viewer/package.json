@@ -26,6 +26,7 @@
     "moment": "^2.14.1",
     "parallelshell": "~1.0.4",
     "uglify-js": "~2.4.16",
+    "uglifyify": "^4.0.4",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0",
     "vue": "^1.0.21",
@@ -55,7 +56,8 @@
   "browserify": {
     "transform": [
       "vueify",
-      "babelify"
+      "babelify",
+      ["uglifyify", {"mangle": true, "compress": true}]
     ]
   },
   "scripts": {
