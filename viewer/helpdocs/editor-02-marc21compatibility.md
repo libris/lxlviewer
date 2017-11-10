@@ -3,6 +3,7 @@ section: Redigering
 title: Fält för MARC21-kompatibilitet
 tags:
 - editor
+order: 3
 ---
 
 Fält som av systemtekniska skäl och kompatibilitet med MARC21 är inkluderade i formatet.
