@@ -3,9 +3,8 @@ section: Redigering
 title: Interaktionselement
 order: 2
 tags:
-- search
+- editor
 ---
-
 
 # Interaktionselement
 
@@ -72,3 +71,6 @@ För att ta bort fält, klicka på soptunnan längst till höger i ett delfält 
 
 ### Hjälp
 På vissa fält i posten finns det kontextuell hjälp att tillgå som nås via frågetecken-ikonen.
+
+[^1]:	librispraxis
+
