@@ -1,9 +1,9 @@
 ---
 section: Redigering
 title: Entiteter
-order: 22
 tags:
 - editor
+order: 3
 ---
 
 # Entiteter
@@ -18,10 +18,10 @@ Sök i typer: Välj en “typ” i listan i kombination med en fritextsökning. 
 ### Lägg till entitet eller Skapa lokal entitet
 När du gjort din sökning finns det två scenarion: 
 
-1) Lägg till entitet: 
+**1)Lägg till entitet**  
 Att du fått fram ett sökresultat där du identifierat en entitet att lägga till via “Lägg till entitet”. Om du fått fram ett önskat sökresultat kan du lägga till den relevanta entiteten genom att klicka på “Lägg till”. Entiteten lägger sig då i posten som en länk.  
 
-2) Skapa lokal entitet:
+**2)Skapa lokal entitet**
 Om du inte identifierar en relevant entitet att lägga till i ditt sökresultat. Då kan du istället “Skapa en lokal entitet”. Om du inte hittar en lämplig länkad entitet genom sökning att lägga till kan du Skapa lokal entitet. Då skapas en lokal entitet som du kan redigera och göra länkbar. 
 
 ## Länka entiteter
@@ -32,10 +32,10 @@ För att länka en entitet klickar du på den gråa länk-symbolen. Du får då 
 ### Ersätt lokal entitet eller Skapa och länka entitet
 När du gjort din sökning finns det två scenarion: 
 
-1) Ersätt lokal entitet:
+**1) Ersätt lokal entitet**
 Om du får fram ett sökresultat där du identifierar en entitet att ersätta den lokala entiteten med, kan du välja “Ersätt lokal entitet” Det betyder att du ersätter all entitetsinformation som finns lokalt i entiteten med informationen i den länkade entiteten. Om du vill se den länkade posten i sin helhet, innan du avgör om du vill ersätta till den, kan du högerklicka på den och välja “Öppna i ny flik”. 
 
-2) Skapa och länka entitet: 
+**2) Skapa och länka entitet** 
 Om du inte identifierar relevant entitet att ersätta med, kan du istället “Skapa och länka entitet”. Det betyder att du skapar en länk av din lokala entitet. All information från denne följer då med och blir till en egen post med ett eget ID. Efter att ha sparat posten kan du gå in i länken och redigera den i den nyskapade posten.
 
 
