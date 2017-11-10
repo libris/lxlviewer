@@ -1,6 +1,7 @@
 ---
 section: Redigering
 title: Tidsangivelser
+order: 23
 tags:
 - editor
 - rda
