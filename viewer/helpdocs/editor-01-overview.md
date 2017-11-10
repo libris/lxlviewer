@@ -1,9 +1,9 @@
 ---
 section: Redigering
 title: Redigering
+order: 20
 tags:
 - editor
-order: 1
 ---
 
 # Redigering
