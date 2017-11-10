@@ -15,6 +15,7 @@
   </head>
   <body {% block bodyattrs %}{% endblock %}>
     <div id="body-blocker"></div>
+    <div id="editor-backdrop"></div>
     <div id="oldbrowsermsg" style="display:none">
       <div>
         <h2>${g.site.title}</h2>
@@ -89,18 +90,13 @@
                   </div>
                   <span class="js-translateable" data-translateable="Create new">Create new</a></a>
               </li>
-              <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+              <li class="navbar-item user-settings">
+                <a href="/usersettings">
                   <div class="navbar-circle">
                     <img class="user-gravatar" src="${current_user.get_gravatar_url()}" />
                   </div>
-                  ${current_user.get_short_name()} <span v-cloak class="sigelLabel" v-if="initialized === true">({{user.settings.activeSigel}})</span> <i class="fa fa-angle-down" aria-hidden="true"></i>
+                  ${current_user.get_short_name()} <span v-cloak class="sigelLabel" v-if="initialized === true">({{user.settings.activeSigel}})</span>
                 </a>
-                <ul class="dropdown-menu">
-                  <li><a href="/usersettings"><i class="fa fa-cogs" aria-hidden="true"></i> <span class="js-translateable" data-translateable="Settings">Settings</span></a></li>
-                  <li role="separator" class="divider"></li>
-                  <li><a href="/logout"><i class="fa fa-sign-out" aria-hidden="true"></i> <span class="js-translateable" data-translateable="Log out">Log out</span></a></li>
-                </ul>
               </li>
             % else
                 <li class=""><a href="/login">

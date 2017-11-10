@@ -214,6 +214,11 @@ export default class Editor extends View {
             this.copy.state = 'invalid';
           }
         },
+        inEdit(val, oldval) {
+          if (val !== oldval) {
+            LayoutUtil.toggleEditorBackdrop(val, 1000); // toggle backdrop on/off
+          }
+        },
         keybindState(state) {
           // Bindings are defined in keybindings.json
           if (this.combokeys) {
@@ -270,6 +275,9 @@ export default class Editor extends View {
             }
           }
           return `{${StringUtil.getUiPhraseByLang('Unnamed entity', self.settings.language)}}`;
+        },
+        inEdit() {
+          return this.status.inEdit;
         },
       },
       methods: {

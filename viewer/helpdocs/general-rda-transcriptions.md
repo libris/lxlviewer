@@ -1,6 +1,7 @@
 ---
 section: Redigering
 title: Allmänna anvisningar
+order: 25
 tags:
 - editor
 - rda

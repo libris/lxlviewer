@@ -1,6 +1,7 @@
 ---
 section: Anvisningar
 title: Samlingsposter
+order: 32
 tags:
 - editor
 - rda
@@ -8,13 +9,13 @@ tags:
 - collection
 ---
 
-#Samlingsposter
+# Samlingsposter
 
 [Extern länk till MARC21-anpassad information](http://www.kb.se/rdakatalogisering/Anvisningar/Arbetsfloden/Samlingsposter/)
 
 **OBS! Detta arbetsflöde är under arbete**
 
-##Innehåll
+## Innehåll
 
 **Element tillhörande instans/manifestation**
 

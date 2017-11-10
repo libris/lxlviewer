@@ -1,16 +1,17 @@
 ---
 section: Sök
 title: Träfflista
+order: 11
 tags:
 - search
 ---
 
 # Träfflista
 
-Träfflistan i Libris XL sorteras enligt relevansranking som konfigureras i den underliggande sökmotorn elasticsearch.
+Träfflistan i Libris XL sorteras enligt relevansordning som konfigureras i den underliggande sökmotorn Elasticsearch.
 
-Per default  är facettering inställd på instanser, men dennna kan utökas att även söka i andra typer. Observera att man då söker direkt efter dessa och inte efter förekomst bibliografiska poster.
+Facetteringen är automatiskt inställd på typen instans, men sökningen kan utökas till att även söka i typerna Verk, Agent och Koncept genom att kryssa i lådorna för dessa. Observera att du då söker direkt efter dessa typer av poster och inte efter förekomst i bibliografiska poster.
 
-Antalet träffar som visas är förinställt till 20 per sida och kan visas antingen som utökade eller minimerade.
+Antalet träffar som visas är förinställt till 20 träffar per sida och kan visas antingen som en utökad eller en komprimerad lista.
 
-I vänsterspalten finns ytterligare möjligheter till filtreringar såsom verkstyper etc.
+I vänsterspalten finns ytterligare möjligheter till filtreringar såsom: Typ, verkstyp, verksspråk och utgivningsdatum.
