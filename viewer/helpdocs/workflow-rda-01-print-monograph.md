@@ -1,6 +1,7 @@
 ---
 section: Anvisningar
 title: Tryckta monografier
+order: 30
 tags:
 - editor
 - rda
