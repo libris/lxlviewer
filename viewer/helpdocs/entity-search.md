@@ -8,6 +8,7 @@ order: 3
 
 # Entiteter
 
+
 ## Söka fram entiteter
 När du ska lägga till en entitet är första steget att göra en sökning för att se om entiteten redan finns eller inte. Sökningen görs antingen via:
 
