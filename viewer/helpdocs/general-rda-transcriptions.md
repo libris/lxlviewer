@@ -1,5 +1,5 @@
 ---
-section: Redigering
+section: Anvisningar
 title: Transcription
 order: 25
 tags:
