@@ -22,6 +22,7 @@ MAC: Alt, + (Expandera)
 Du skapar en kopia av en post från visningsvyn genom att hålla in:
 
 PC: Control, Shift, C
+
 MAC: Command, Shift, C
 
 Då skapas en exakt kopia av den kopierade posten. Dock existerar inte posten i systemet förrän du har sparat kopian.
@@ -30,6 +31,7 @@ Då skapas en exakt kopia av den kopierade posten. Dock existerar inte posten i 
 För att komma åt redigeringvyn i posten kan du trycka kommandot: 
 
 PC: Control, E (edit)
+
 MAC: Command, E (edit) 
 
 
@@ -37,12 +39,14 @@ MAC: Command, E (edit)
 Du kan ångra dina senaste ändringar när du fortfarande är i redigeringsläge. Du kan dels ångra text du skrivit i ett inputfält. Men även om du t.ex. lagt till ett felaktigt fält i formuläret. Kortkommandot är för ångra är:
 
 PC: Control, Z
+
 MAC: Command, Z
 
 ## Spara
 Du kan spara posten genom att hålla in:
 
 PC: Control, S (save)
+
 MAC: Command, S (save)
 
 Som tar dig tillbaka till visningsvyn.
@@ -73,6 +77,7 @@ För att välja ett element i pop up-fönster trycker du:
 ## För att välja/markera fler element i en pop up använder du:
 
 PC: Control, Enter
+
 MAC: Command, Enter 
 
 ## Övrigt
