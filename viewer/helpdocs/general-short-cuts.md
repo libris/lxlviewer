@@ -17,6 +17,7 @@ För att fälla ut/fälla ihop alla fält i posten samtisigt kan du  använda ko
 PC
   * Alt, + (Expandera) 
   * Alt,  - (Kollapsa)
+
 MAC
   * Alt, + (Expandera) 
   * Alt, - (Kollapsa)
@@ -26,6 +27,7 @@ Du skapar en kopia av en post från visningsvyn genom att hålla in:
 
 PC	
   * Control, Shift, C
+
 MAC
   * Command, Shift, C
 
@@ -36,6 +38,7 @@ För att komma åt redigeringvyn i posten kan du trycka kommandot:
 
 PC
   * Control, E (edit)
+
 MAC
   * Command, E (edit) 
 
@@ -45,6 +48,7 @@ Du kan ångra dina senaste ändringar när du fortfarande är i redigeringsläge
 
 PC
   * Control, Z
+
 MAC
   * Command, Z
 
@@ -53,6 +57,7 @@ Du kan spara posten genom att hålla in:
 
 PC
   * Control, S (save)
+
 MAC
   * Command, S (save)
 
@@ -64,6 +69,7 @@ Och om du vill avbryta hela redigeringen och inte spara dina ändringar kan du a
 
 PC
   * Alt, Q
+
 MAC
   * Alt, Q
 
@@ -72,6 +78,7 @@ Om du vill gå mellan postens visningsvy och adminmetadatavy kan du hålla in:
 
 PC
   * Control, Shift, höger/vänster pil
+
 MAC
   * Command, Shift, höger/vänster pil 
 
@@ -87,6 +94,7 @@ För att välja ett element i pop up-fönster trycker du:
 
 PC
   * Control, Enter
+
 MAC
   * Command, Enter 
 
