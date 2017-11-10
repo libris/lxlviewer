@@ -8,6 +8,7 @@ tags:
 
 # Interaktionselement
 
+
 ## Visningsvy
 
 ### Lägg bestånd (endast från typen instans)
@@ -52,7 +53,7 @@ Klicka redigera för att göra ändringar i posten.
 
 
 
-## Interaktionselement i redigeringsvy
+## Redigeringsvy
 
 ### Verktyg
 (se visningsvy ovan)
