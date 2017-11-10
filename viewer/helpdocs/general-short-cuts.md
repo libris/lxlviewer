@@ -4,7 +4,8 @@ title: Kortkommandon
 tags:
 ---
 
-# Kortkommandon och tangenbordsinteraktion - för PC och MAC
+# Kortkommandon och tangenbordsinteraktion
+- för PC och MAC
 
 ## Introduktion:
 För att underlätta arbetet något i XL har vi integrerat ett antal kortkommandon att använda i posterna i XL. 
@@ -34,7 +35,7 @@ Då skapas en exakt kopia av den kopierade posten. Dock existerar inte posten i 
 För att komma åt redigeringvyn i posten kan du trycka kommandot: 
 
 PC
-  * Control, E (edit) 
+  * Control, E (edit)
 MAC
   * Command, E (edit) 
 
@@ -78,6 +79,7 @@ MAC
 
 Pop up-fönster stängs med: 
   * Esc, eller att trycka utanför dom eller på krysset.
+
 För att välja ett element i pop up-fönster trycker du:
   * Enter 
 
