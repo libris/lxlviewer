@@ -1,9 +1,9 @@
 ---
 section: Redigering
 title: Entiteter
+order: 22
 tags:
 - editor
-order: 3
 ---
 
 # Entiteter
