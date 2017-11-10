@@ -1,6 +1,7 @@
 ---
 section: Anvisningar
 title: Agenter och auktoritetsarbete
+order: 35
 tags:
 - editor
 - rda
