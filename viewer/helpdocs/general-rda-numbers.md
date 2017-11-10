@@ -1,5 +1,5 @@
 ---
-section: Redigering
+section: Anvisningar
 title: Tal angivna med siffror eller med bokstäver
 order: 24
 tags:

@@ -1,5 +1,5 @@
 ---
-section: Redigering
+section: Anvisningar
 title: Tidsangivelser
 order: 23
 tags:
@@ -9,7 +9,7 @@ tags:
 - chronology
 ---
 
-# "Tidsangivelser - RDA 1.9
+# Tidsangivelser - RDA 1.9
 
 [MARC21-anpassad information](http://www.kb.se/rdakatalogisering/Anvisningar/Allmanna-anvisningar/Tidsangivelser---RDA-19/)
 
