@@ -1,4 +1,5 @@
 <script>
+import * as _ from 'lodash';
 import * as LayoutUtil from '../utils/layout';
 import { getStatus } from '../vuex/getters';
 import { changeStatus } from '../vuex/actions';
@@ -42,13 +43,14 @@ export default {
     },
     helpCategories() {
       const json = this.docs;
+      const sortedJson = _.orderBy(json, ['order'],['asc']);
       const categories = {};
-      for (const section in json) {
-        const cat = json[section].section;
+      for (const section in sortedJson) {
+        const cat = sortedJson[section].section;
         if (categories.hasOwnProperty(cat) === false) {
           categories[cat] = [];
         }
-        categories[cat].push(json[section]);
+        categories[cat].push(sortedJson[section]);
       }
       return categories;
     },
