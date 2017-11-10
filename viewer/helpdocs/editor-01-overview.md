@@ -3,6 +3,7 @@ section: Redigering
 title: Redigering
 tags:
 - editor
+order: 1
 ---
 
 # Redigering
