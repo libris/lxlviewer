@@ -1,6 +1,7 @@
 ---
 section: Anvisningar
 title: Samlingsposter
+order: 32
 tags:
 - editor
 - rda
