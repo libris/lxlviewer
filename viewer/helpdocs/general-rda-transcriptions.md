@@ -1,6 +1,6 @@
 ---
 section: Redigering
-title: Allmänna anvisningar
+title: Transcription
 order: 25
 tags:
 - editor
