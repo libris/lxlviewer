@@ -39,6 +39,7 @@ export default {
   },
   computed: {
     helpSection() {
+
       return this.status.helpSection;
     },
     helpCategories() {
@@ -136,8 +137,6 @@ export default {
         h1, h2, h3, h4 {
           font-weight: normal;
           margin-top: 0;
-          border: solid;
-          border-width: 0px 0px 1px 0px;
         }
         p {
           margin: 0.5em 0px 1em;
