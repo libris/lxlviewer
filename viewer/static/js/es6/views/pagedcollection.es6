@@ -37,7 +37,7 @@ export default class PagedCollection extends View {
     const self = this;
     this.dataIn = JSON.parse(document.getElementById('data').innerText);
 
-    self.getLdDepencendies().then(() => {
+    Promise.all(self.getLdDependencies()).then(() => {
       self.initVue();
     }, (error) => {
       window.lxlError(error);

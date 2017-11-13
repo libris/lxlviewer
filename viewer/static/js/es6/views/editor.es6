@@ -54,7 +54,7 @@ export default class Editor extends View {
       this.dataIn = textData;
     }
 
-    self.getLdDepencendies().then(() => {
+    Promise.all(self.getLdDependencies()).then(() => {
       self.initVue();
     }, (error) => {
       window.lxlError(error);

@@ -20,12 +20,14 @@
     "gulp": "^3.9.1",
     "gulp-sourcemaps": "^1.6.0",
     "less": "~2.3.1",
+    "less-plugin-clean-css": "^1.5.1",
     "lodash": "~4.16.4",
     "marked": "^0.3.6",
     "modernizr": "^3.5.0",
     "moment": "^2.14.1",
     "parallelshell": "~1.0.4",
     "uglify-js": "~2.4.16",
+    "uglifyify": "^4.0.4",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0",
     "vue": "^1.0.21",
@@ -55,7 +57,8 @@
   "browserify": {
     "transform": [
       "vueify",
-      "babelify"
+      "babelify",
+      ["uglifyify", {"mangle": true, "compress": true}]
     ]
   },
   "scripts": {
@@ -73,8 +76,8 @@
     "watch:js": "parallelshell gulp",
     "watch:id:less": "watch 'npm run app:id:less' static/less/",
     "watch:libris:less": "watch 'npm run app:libris:less' static/less/",
-    "app:id:less": "lessc static/less/main_id.less static/build/id.css --source-map=static/build/id.css.map",
-    "app:libris:less": "lessc static/less/main_libris.less static/build/libris.css --source-map=static/build/libris.css.map",
+    "app:id:less": "lessc --clean-css='--advanced' static/less/main_id.less static/build/id.css --source-map=static/build/id.css.map",
+    "app:libris:less": "lessc --clean-css='--advanced' static/less/main_libris.less static/build/libris.css --source-map=static/build/libris.css.map",
     "test:e2e": "cd test && cd e2e && nightwatch --test specs/viewer.js",
     "test:e2e:chrome": "cd test && cd e2e && nightwatch --test specs/viewer.js -e chrome",
     "test:unit": "./node_modules/karma/bin/karma start karma.conf.js --single-run --browsers PhantomJS"
