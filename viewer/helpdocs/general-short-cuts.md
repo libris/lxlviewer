@@ -74,7 +74,7 @@ Pop up-fönster stängs med (gäller för både PC och MAC):
 För att välja ett element i pop up-fönster trycker du:
   * Enter 
 
-## För att välja/markera fler element i en pop up använder du:
+## För att välja/markera fler element i en pop up:
 
 PC: Control, Enter
 
