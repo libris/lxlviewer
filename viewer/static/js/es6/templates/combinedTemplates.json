@@ -1514,8 +1514,7 @@
             "@id": "marc:FullyEstablishedHeading"
           },
           "descriptionLanguage": [{
-            "@id": "https://id.kb.se/language/swe",
-            "code": "swe"
+            "@id": "https://id.kb.se/language/swe"
           }]
         },
         "mainEntity": {
@@ -1745,8 +1744,7 @@
         "record": {
           "@type": "Record",
           "descriptionLanguage": [{
-            "@id": "https://id.kb.se/language/swe",
-            "code": "swe"
+            "@id": "https://id.kb.se/language/swe"
           }],
           "marc:encLevel": {
             "@id": "marc:CompleteAuthorityRecord"
@@ -1778,9 +1776,7 @@
             }]
           }],
           "inScheme": {
-            "@id": "https://id.kb.se/term/saogf",
-            "@type": "ConceptScheme",
-            "code": "saogf"
+            "@id": "https://id.kb.se/term/saogf"
           },
           "prefLabel": "",
           "scopeNote": [
@@ -1852,8 +1848,7 @@
             "@id": "marc:FullyEstablishedHeading"
           },
           "descriptionLanguage": [{
-            "@id": "https://id.kb.se/language/swe",
-            "code": "swe"
+            "@id": "https://id.kb.se/language/swe"
           }],
           "source": [{
             "@type": "Instance",
@@ -1863,11 +1858,9 @@
         "mainEntity": {
           "@type": "Topic",
           "inScheme": {
-            "@type": "ConceptScheme",
             "@id": "https://id.kb.se/term/sao"
           },
           "inCollection": [{
-            "@type": "TermCollection",
             "@id": "https://id.kb.se/term/Fack"
           }],
           "prefLabel": "",
@@ -1888,7 +1881,7 @@
                 "@id": "https://id.kb.se/term/lcsh",
                 "code": "lcsh"
               },
-              "prefLabel": "LCSH",
+              "prefLabel": "",
               "@id": "http://id.loc.gov/authorities/label/LCSH"
             }
           ],
@@ -1917,8 +1910,7 @@
             "@id": "marc:CatalogingRulesType-c"
           },
           "descriptionLanguage": [{
-            "@id": "https://id.kb.se/language/swe",
-            "code": "swe"
+            "@id": "https://id.kb.se/language/swe"
           }],
           "marc:encLevel": {
             "@id": "marc:CompleteAuthorityRecord"
@@ -1942,9 +1934,7 @@
           "broadMatch": [],
           "closeMatch": [],
           "inScheme": {
-            "@id": "https://id.kb.se/term/sao",
-            "@type": "ConceptScheme",
-            "notation": "sao"
+            "@id": "https://id.kb.se/term/sao"
           },
           "scopeNote": [""]
         }
