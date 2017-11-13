@@ -21,7 +21,7 @@ export default class Import extends View {
     this.transition = false;
     this.params = window.urlArgs;
 
-    self.getLdDepencendies().then(() => {
+    Promise.all(self.getLdDependencies()).then(() => {
       self.initVue();
     }, (error) => {
       window.lxlError(error);

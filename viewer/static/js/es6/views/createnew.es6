@@ -25,7 +25,7 @@ export default class CreateNew extends View {
     this.transition = false;
     this.language = 'sv';
 
-    self.getLdDepencendies().then(() => {
+    Promise.all(self.getLdDependencies()).then(() => {
       self.initVue();
     }, (error) => {
       window.lxlError(error);
