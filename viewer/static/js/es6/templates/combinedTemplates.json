@@ -1826,7 +1826,7 @@
       }
     },
     "topic": {
-      "label": "Ämnesord",
+      "label": "Allmänt ämnesord",
       "description": "sao",
       "value": {
         "record": {
@@ -1864,17 +1864,16 @@
           "@type": "Topic",
           "inScheme": {
             "@type": "ConceptScheme",
-            "@id": "https://id.kb.se/term/sao",
-            "code": "sao"
+            "@id": "https://id.kb.se/term/sao"
           },
           "inCollection": [{
             "@type": "TermCollection",
-            "@id": "https://id.kb.se/term/Fack",
-            "code": "Fack"
+            "@id": "https://id.kb.se/term/Fack"
           }],
           "prefLabel": "",
           "closeMatch": [{
               "@type": "ClassificationDdc",
+              "code": "",
               "inScheme": {
                 "@type": "ConceptScheme",
                 "@id": "http://dewey.info/scheme/edition/e23/swe/",
@@ -1896,17 +1895,9 @@
           "altLabel": [
             ""
           ],
-          "broader": [{
-            "@type": "Topic",
-            "prefLabel": "Överordnad term",
-            "@id": "https://id.kb.se/term/sao/%C3%96verordnad%20term"
-          }],
-          "related": [{
-            "@type": "Topic",
-            "prefLabel": "Relaterad term",
-            "@id": "https://id.kb.se/term/sao/Relaterad%20term"
-          }],
-          "label": "LCSH saknas",
+          "broader": [],
+          "related": [],
+          "label": "",
           "scopeNote": [
             ""
           ],
