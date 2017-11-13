@@ -58,7 +58,13 @@
     "transform": [
       "vueify",
       "babelify",
-      ["uglifyify", {"mangle": true, "compress": true}]
+      [
+        "uglifyify",
+        {
+          "mangle": true,
+          "compress": true
+        }
+      ]
     ]
   },
   "scripts": {

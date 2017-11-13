@@ -5,6 +5,7 @@
 // Module
 import * as VocabUtil from '../../static/js/es6/utils/vocab';
 import * as vocab from './vocab.json';
+import * as context from './context.json';
 
 // Suite
 describe('Utility: vocab', function () {
@@ -142,6 +143,46 @@ describe('Utility: vocab', function () {
   it('is available', function () {
     expect(VocabUtil).not.to.be.null;
   });
+
+  describe('getContextProperty()', function () {
+    const originalPrefLabelProperty = 'prefLabel';
+    const finalPrefLabelProperty = 'skos:prefLabel';
+    const originalMainTitleProperty = 'mainTitle';
+    let fetchedPrefLabelProperty = '';
+    let fetchedMainTitleProperty = '';
+
+    before(function() {
+      fetchedPrefLabelProperty = VocabUtil.getContextProperty(originalPrefLabelProperty, context['@context']);
+      fetchedMainTitleProperty = VocabUtil.getContextProperty(originalMainTitleProperty, context['@context']);
+    });
+
+    it('should get the property from context', function() {
+      expect(fetchedPrefLabelProperty).to.equal(finalPrefLabelProperty);
+      expect(fetchedMainTitleProperty).to.equal(originalMainTitleProperty);
+    });
+  });
+
+  describe('getContextContainer()', function () {
+    const originalProp = 'skos:prefLabel';
+    const expectedObject = { '@id': 'prefLabelByLang', '@container': '@language' };
+    let fetchedObject;
+    let undefinedObject = {};
+    const undefinedContainerProp = 'prefLabel';
+
+    before(function() {
+      fetchedObject = VocabUtil.getContextWithContainer(originalProp, context['@context']);
+      undefinedObject = VocabUtil.getContextWithContainer(undefinedContainerProp, context['@context']);
+    });
+
+    it('should return an object with prop and container if available', function () {
+      expect(JSON.stringify(fetchedObject)).to.equal(JSON.stringify(expectedObject));
+    });
+
+    it('should return undefined if none is available', function () {
+      expect(typeof undefinedObject).to.equal('undefined');
+    });
+  });
+
   describe('getTermObject()', function() {
     let fetchedClass = {};
 

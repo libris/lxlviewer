@@ -406,6 +406,36 @@ export function getInstances(className, vocab, vocabPfx) {
   return instances;
 }
 
+export function getContextProperty(propertyId, context) {
+  const originalKey = propertyId;
+  const contextProperty = originalKey;
+  const contextList = context[1];
+  let resultProp = originalKey;
+
+  if (contextList.hasOwnProperty(contextProperty)) {
+    if (!_.isPlainObject(contextList[contextProperty])) {
+      resultProp = originalKey;
+    } else {
+      resultProp = contextList[contextProperty]['@id'];
+    }
+  }
+  return resultProp;
+}
+
+export function getContextWithContainer(propertyId, context) {
+  const contextList = context[1];
+
+  let contextObj = undefined;
+  _.forOwn(contextList, (value, key) => {
+    if (typeof value !== 'undefined' && value !== null) {
+      if (value.hasOwnProperty('@id') && value['@id'] === propertyId && value.hasOwnProperty('@container')) {
+        contextObj = { '@id': key, '@container': value['@container'] };
+      }
+    }
+  });
+  return contextObj;
+}
+
 export function getEnumerationKeys(entityType, property, vocab, vocabPfx) {
 
   if (_.isPlainObject(property)) {
