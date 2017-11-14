@@ -3,29 +3,26 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import store from '../vuex/store';
 import EventMixin from '../components/mixins/global-event-mixin';
-import * as VocabUtil from '../utils/vocab';
-import * as DisplayUtil from '../utils/display';
 import * as StringUtil from '../utils/string';
 import * as LayoutUtil from '../utils/layout';
 import remoteSearch from '../components/remote-search';
 import HelpComponent from '../components/help-component';
-import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData, getKeybindState, getStatus } from '../vuex/getters';
-import { changeSettings, changeStatus, changeNotification, loadVocab, loadVocabMap, loadContext, loadDisplayDefs, changeSavedStatus, changeResultListStatus } from '../vuex/actions';
+import { getSettings } from '../vuex/getters';
+import { changeSettings, changeStatus, changeNotification, loadVocabMap, loadContext, loadDisplayDefs } from '../vuex/actions';
 
 export default class Import extends View {
 
   initialize() {
-    super.initialize();
     const self = this;
-    this.activeForm = '';
-    this.transition = false;
-    this.params = window.urlArgs;
-
     Promise.all(self.getLdDependencies()).then(() => {
       self.initVue();
     }, (error) => {
       window.lxlError(error);
     });
+    super.initialize();
+    this.activeForm = '';
+    this.transition = false;
+    this.params = window.urlArgs;
   }
 
   initVue(vocab, vocabPfx, params) {
@@ -35,8 +32,6 @@ export default class Import extends View {
     document.getElementById('body-blocker').addEventListener('click', function () {
       self.vm.$broadcast('close-modals');
     }, false);
-
-    $('#app').show();
 
     Vue.filter('labelByLang', (label) => {
       return StringUtil.labelByLang(label, self.settings.language, self.vocabMap, self.settings.vocabPfx);
@@ -51,23 +46,15 @@ export default class Import extends View {
       mixins: [EventMixin],
       vuex: {
         actions: {
-          loadVocab,
           loadVocabMap,
           loadContext,
           loadDisplayDefs,
           changeSettings,
           changeStatus,
-          changeSavedStatus,
           changeNotification,
-          changeResultListStatus,
         },
         getters: {
-          status: getStatus,
           settings: getSettings,
-          editorData: getEditorData,
-          vocab: getVocabulary,
-          display: getDisplayDefinitions,
-          keybindState: getKeybindState,
         },
       },
       data: {
@@ -95,7 +82,6 @@ export default class Import extends View {
       ready() {
         this.updateUser(self.user);
         this.changeSettings(self.settings);
-        this.loadVocab(self.vocab);
         this.loadContext(self.context);
         this.loadVocabMap(self.vocabMap);
         this.loadDisplayDefs(self.display);

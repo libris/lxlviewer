@@ -1,35 +1,28 @@
-import * as _ from 'lodash';
 import View from './view';
 import Vue from 'vue';
 import Vuex from 'vuex';
 import store from '../vuex/store';
-import * as CombinedTemplates from '../templates/combinedTemplates.json';
-import * as BaseTemplates from '../templates/baseTemplates.json';
-import * as VocabUtil from '../utils/vocab';
-import * as RecordUtil from '../utils/record';
-import * as DisplayUtil from '../utils/display';
 import * as StringUtil from '../utils/string';
 import * as LayoutUtil from '../utils/layout';
 import CreateNewForm from '../components/create-new-form';
 import HelpComponent from '../components/help-component';
 import EventMixin from '../components/mixins/global-event-mixin';
-import { getSettings, getVocabulary, getContext, getDisplayDefinitions, getEditorData, getStatus, getKeybindState } from '../vuex/getters';
-import { changeSettings, changeNotification, loadVocab, loadContext, loadVocabMap, loadDisplayDefs, syncData, changeSavedStatus, changeStatus } from '../vuex/actions';
+import { getSettings, getVocabulary, getKeybindState } from '../vuex/getters';
+import { changeSettings, loadVocabMap, changeStatus } from '../vuex/actions';
 
 export default class CreateNew extends View {
 
   initialize() {
-    super.initialize();
     const self = this;
-    this.activeForm = '';
-    this.transition = false;
-    this.language = 'sv';
-
     Promise.all(self.getLdDependencies()).then(() => {
       self.initVue();
     }, (error) => {
       window.lxlError(error);
     });
+    super.initialize();
+    this.activeForm = '';
+    this.transition = false;
+    this.language = 'sv';
   }
 
   initVue() {
@@ -39,8 +32,6 @@ export default class CreateNew extends View {
     document.getElementById('body-blocker').addEventListener('click', function () {
       self.vm.$broadcast('close-modals');
     }, false);
-
-    $('#app').show();
 
     Vue.filter('labelByLang', (label) => {
       return StringUtil.labelByLang(label, self.settings.language, self.vocabMap, self.settings.vocabPfx);
@@ -55,23 +46,13 @@ export default class CreateNew extends View {
       mixins: [EventMixin],
       vuex: {
         actions: {
-          syncData,
-          loadVocab,
-          loadContext,
           loadVocabMap,
-          loadDisplayDefs,
-          changeSettings,
-          changeSavedStatus,
           changeStatus,
-          changeNotification,
+          changeSettings,
         },
         getters: {
           settings: getSettings,
-          editorData: getEditorData,
           vocab: getVocabulary,
-          context: getContext,
-          display: getDisplayDefinitions,
-          status: getStatus,
           keybindState: getKeybindState,
         },
       },
@@ -93,8 +74,6 @@ export default class CreateNew extends View {
       ready() {
         this.updateUser(self.user);
         this.changeSettings(self.settings);
-        this.loadVocab(self.vocab);
-        this.loadContext(self.context);
         this.loadVocabMap(self.vocabMap);
         LayoutUtil.showPage(this);
         document.title = `${StringUtil.getUiPhraseByLang('Create new', this.settings.language)} - ${this.settings.siteInfo.title}`;
