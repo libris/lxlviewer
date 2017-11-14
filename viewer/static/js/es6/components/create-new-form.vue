@@ -154,7 +154,7 @@ export default {
 </script>
 
 <template>
-  <div class="panel panel-default form-container" id="create_new_post">
+  <div class="panel panel-default form-container" id="create-new-post">
     <div class="panel-body">
       <div class="createnew-form">
         <div class="app-heading">{{'Create new' | translatePhrase}}</div>
@@ -173,5 +173,16 @@ export default {
 
 <style lang="less">
 @import './_variables.less';
+
+#create-new-post {
+  .app-heading {
+    font-size: 1.5em;
+    margin: 0 0 0.3em 0.7em;
+  }
+  .creation-cards-container {
+    display: flex;
+    flex-wrap: wrap;
+  }
+}
 
 </style>

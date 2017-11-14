@@ -38,52 +38,12 @@
   }
 }
 
-#appContainer {
-  display: flex;
-  justify-content: center;
-
-  #loadingText {
-    // margin: 120px 0;
-    padding: 20px 0px;
-    width: 100%;
-    min-height: 50vh;
-    vertical-align: middle;
-    text-align: center;
-    background-color: transparent;
-    .status {
-      display: block;
-      font-size: 0.7em;
-    }
-    .error {
-      display: inline-block;
-      font-family: monospace;
-      border: 1px solid maroon;
-      margin-top: 30px;
-      padding: 5px;
-      max-width: 50%;
-      color: maroon;
-    }
-  }
-}
-
 #editorApp {
   width: 100%;
   padding: 1em 2em;
   font-size: 14px;
   position: relative;
   z-index: @active-editor-z; 
-
-  .linked-items {
-    >li {
-      max-width: 700px;
-      border: 1px solid #ccc;
-      margin-bottom: 10px;
-      ul {
-        list-style-type: none;
-        padding: 5px;
-      }
-    }
-  }
 
   .distinguish-removal {
     border: 1px dashed @gray-dark;
@@ -92,47 +52,5 @@
 
   .unknown {
     color: #bd2323;
-  }
-
-  .field-controls {
-    margin: 5px 0px 0px 0px;
-    .link-adder {
-      float: left;
-      width: 200px;
-      .add {
-        display: block;
-        font-size: 0.8em;
-        cursor: pointer;
-        &:hover {
-          color: @brand-primary;
-        }
-      }
-    }
-  }
-}
-
-#result {
-  padding: 20px;
-  h2 {
-    display: inline-block;
-    cursor: pointer;
-  }
-  textarea {
-    width: 100%;
-    height: 500px;
-  }
-}
-
-footer {
-  bottom: 0px;
-  width: 100%;
-  .nav > li > a {
-    padding: 15px 15px;
-  }
-  .footer-container {
-    margin-top: 0px;
-  }
-  h1 {
-    font-size: 16px;
   }
 }
