@@ -1,5 +1,6 @@
 import * as _ from 'lodash';
 import * as translationsFile from '../i18n';
+import * as VocabUtil from './vocab';
 
 export function removeDomain(string, removableBaseUriArray) {
   const removable = removableBaseUriArray;
@@ -9,6 +10,15 @@ export function removeDomain(string, removableBaseUriArray) {
   }
   return newValue;
 }
+
+export function convertToBaseUri(str, context) {
+  const contextList = context[0];
+  const prefix = str.split(':')[0];
+  const uri = str.replace(`${prefix}:`, '');
+  const baseUri = VocabUtil.getBaseUriFromPrefix(prefix, context);
+  const withBaseUri = `${baseUri}${uri}`;
+  return withBaseUri;
+};
 
 export function getUiPhraseByLang(phrase, langcode) {
   if (translationsFile[langcode] && translationsFile[langcode][phrase]) {
