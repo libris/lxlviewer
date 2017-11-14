@@ -436,6 +436,34 @@ export function getContextWithContainer(propertyId, context) {
   return contextObj;
 }
 
+export function getBaseUriFromPrefix(prefix, context) {
+  // Returns a baseUri as a string that corresponds to the provided prefix.
+  const contextList = context[0];
+  let baseUri = '';
+  if (contextList.hasOwnProperty(prefix) && !_.isPlainObject(contextList[prefix])) {
+    baseUri = contextList[prefix];
+  }
+  if (baseUri === '') {
+    window.lxlWarning('Couldn\'t get baseUri from prefix:', prefix);
+  }
+  return baseUri;
+}
+
+export function getPrefixesFromBaseUri(baseUri, context) {
+  // Returns an ARRAY of prefixe that correspond to the provided baseUri.
+  const contextList = context[0];
+  const prefixes = [];
+  _.forOwn(contextList, (value, key) => {
+    if (value === baseUri) {
+      prefixes.push(key);
+    }
+  });
+  if (prefixes.length === 0) {
+    window.lxlWarning('Couldn\'t get prefixes from baseUri:', baseUri);
+  }
+  return prefixes;
+}
+
 export function getEnumerationKeys(entityType, property, vocab, vocabPfx) {
 
   if (_.isPlainObject(property)) {

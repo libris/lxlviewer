@@ -144,6 +144,47 @@ describe('Utility: vocab', function () {
     expect(VocabUtil).not.to.be.null;
   });
 
+  describe('getBaseUriFromPrefix()', function() {
+    const prefix = 'kbv';
+    const expectedBaseUri = 'https://id.kb.se/vocab/';
+    const nonePrefix = 'lolprefix';
+    const expectedNoneBaseUri = '';
+    let fetchedBaseUri = '';
+    let fetchedNoneBaseUri = '';
+
+    before(function() {
+      fetchedBaseUri = VocabUtil.getBaseUriFromPrefix(prefix, context['@context']);
+      fetchedNoneBaseUri = VocabUtil.getBaseUriFromPrefix(nonePrefix, context['@context']);
+    });
+
+    it('should return the corresponding baseUri as a string', function() {
+      expect(fetchedBaseUri).to.equal(expectedBaseUri);
+    });
+    it('should return an empty string if no baseUri was found', function() {
+      expect(fetchedNoneBaseUri).to.equal(expectedNoneBaseUri);
+    });
+  });
+
+  describe('getPrefixesFromBaseUri()', function() {
+    const baseUri = 'https://id.kb.se/vocab/';
+    const expectedPrefixes = ['kbv', '@vocab'];
+    let fetchedPrefixes;
+    let fetchedNonePrefixes;
+    const noneBaseURi = 'https://a.non.existing';
+
+    before(function() {
+      fetchedPrefixes = VocabUtil.getPrefixesFromBaseUri(baseUri, context['@context']);
+      fetchedNonePrefixes = VocabUtil.getPrefixesFromBaseUri(noneBaseURi, context['@context']);
+    });
+
+    it('should return the correspoding prefixes as array of strings', function() {
+      expect(fetchedPrefixes.length).to.equal(2);
+    });
+    it('should return an empty array if no prefixes found', function() {
+      expect(fetchedNonePrefixes.length).to.equal(0);
+    });
+  });
+
   describe('getContextProperty()', function () {
     const originalPrefLabelProperty = 'prefLabel';
     const finalPrefLabelProperty = 'skos:prefLabel';

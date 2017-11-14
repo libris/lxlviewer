@@ -217,7 +217,7 @@ export default class View {
   }
 
   initWarningFunc() {
-    if (!this.lxlDebug) {
+    if (!this.lxlDebug || navigator.userAgent.indexOf('PhantomJS') > -1) {
       window.lxlWarning = function (...strings) {
         return;
       }
