@@ -14,7 +14,7 @@ export default class CreateNew extends View {
 
   initialize() {
     const self = this;
-    Promise.all(self.getLdDependencies()).then(() => {
+    Promise.all(self.getLdDependencies('vocab')).then(() => {
       self.initVue();
     }, (error) => {
       window.lxlError(error);

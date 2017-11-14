@@ -14,7 +14,7 @@ export default class Import extends View {
 
   initialize() {
     const self = this;
-    Promise.all(self.getLdDependencies()).then(() => {
+    Promise.all(self.getLdDependencies('vocab display context')).then(() => {
       self.initVue();
     }, (error) => {
       window.lxlError(error);
