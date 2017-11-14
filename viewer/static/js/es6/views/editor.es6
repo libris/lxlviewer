@@ -26,16 +26,6 @@ import ReverseRelations from '../components/reverse-relations';
 import { getSettings, getVocabulary, getContext, getVocabularyClasses, getVocabularyProperties, getDisplayDefinitions, getEditorData, getStatus, getKeybindState } from '../vuex/getters';
 import { changeSettings, changeNotification, loadVocab, loadContext, loadVocabMap, loadForcedListTerms, loadDisplayDefs, syncData, changeSavedStatus, changeStatus, navigateChangeHistory } from '../vuex/actions';
 
-
-function showError(error) {
-  $('#loadingText .fa-circle-o-notch').fadeOut('fast', () => {
-    $('#loadingText .fa-warning').removeClass('hidden').fadeIn('fast');
-    $('#loadingText .mainStatus').text('').append(StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language));
-    $('#loadingText .status').text('');
-    $('#loadingText .error').text('').append(error).removeClass('hidden').fadeIn('slow');
-  });
-}
-
 export default class Editor extends View {
 
   initialize() {

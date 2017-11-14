@@ -67,5 +67,49 @@ export default {
 
 <style lang="less">
 @import './_variables.less';
+.facet-controls {
+  padding: 15px 5px 15px 15px;
+  label {
+    text-transform: uppercase;
+  }
+  .dimension-header {
+    margin-top: 10px;
+    margin-bottom: 2px;
+    padding: 0px;
+    font-weight: bold;
+  }
+  div {
+    padding: 5px;
+  }
+  ul {
+    list-style: none;
+    padding: 0px;
+    li {
+      padding: 2px 0px;
+      width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      a {
+        color: @gray-darker;
+        font-size: 14px;
+      }
+      span {
+        cursor: pointer;
+        span {
+          color: @gray-darker;
+          font-size: 14px;
+        }
+      }
+      i {
 
+        margin-right: 0.4em;
+      }
+      .quantity {
+        color: @gray;
+        font-size: 0.8em;
+      }
+    }
+  }
+}
 </style>

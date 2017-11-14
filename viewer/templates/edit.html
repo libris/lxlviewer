@@ -7,29 +7,22 @@
 <!DOCTYPE html>
 <meta charset="utf-8" />
 
-<div id="appContainer">
-<!-- <div id="loadingText">
-  <h1><i class="fa fa-circle-o-notch fa-spin"></i></h1>
-  <h1><i class="fa fa-warning hidden"></i></h1>
-  <span class="mainStatus"></span>
-  <span class="status"></span>
-  <span class="error hidden"></span>
-</div> -->
-<div id="editorApp" class="panel panel-default">
-  <marc-preview v-if="initialized == true"></marc-preview>
-  <help-component v-if="initialized == true" :open-all="true"></help-component>
-  <editor-controls v-if="initialized == true"></editor-controls>
-  <header-component id="main-header" :full="true" v-if="initialized == true && !isItem"></header-component>
-  <form-component editing-object="mainEntity" :locked="!status.inEdit" v-if="initialized == true"></form-component>
-  <form-component editing-object="record" :locked="!status.inEdit" v-if="initialized == true"></form-component>
-  <div v-if="relatedTitles.length > 0 && !editorData.mainEntity.hasOwnProperty('hasTitle')" class="relation-experiment">
-    <span>(experiment)</span> <h3>Posten saknar titel, här är förslag</h3>
-    <ul>
-      <li v-for="title in relatedTitles">{{title}}</li>
-    </ul>
+<div>
+  <div id="editorApp" class="panel panel-default">
+    <marc-preview v-if="initialized == true"></marc-preview>
+    <help-component v-if="initialized == true" :open-all="true"></help-component>
+    <editor-controls v-if="initialized == true"></editor-controls>
+    <header-component id="main-header" :full="true" v-if="initialized == true && !isItem"></header-component>
+    <form-component editing-object="mainEntity" :locked="!status.inEdit" v-if="initialized == true"></form-component>
+    <form-component editing-object="record" :locked="!status.inEdit" v-if="initialized == true"></form-component>
+    <div v-if="relatedTitles.length > 0 && !editorData.mainEntity.hasOwnProperty('hasTitle')" class="relation-experiment">
+      <span>(experiment)</span> <h3>Posten saknar titel, här är förslag</h3>
+      <ul>
+        <li v-for="title in relatedTitles">{{title}}</li>
+      </ul>
+    </div>
+    <notification v-if="initialized == true"></notification>
   </div>
-  <notification v-if="initialized == true"></notification>
-</div>
 </div>
 
 
