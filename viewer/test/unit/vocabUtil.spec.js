@@ -229,7 +229,7 @@ describe('Utility: vocab', function () {
 
     before(function() {
       // runs before all tests in this block
-      fetchedClass = VocabUtil.getTermObject('Text', vocabMap, vocabPfx);
+      fetchedClass = VocabUtil.getTermObject('Text', vocabMap, vocabPfx, context['@context']);
     });
 
     it('should return a vocab class as an object', function() {
@@ -247,7 +247,7 @@ describe('Utility: vocab', function () {
 
     before(function() {
       // runs before all tests in this block
-      fetchedClasses = VocabUtil.getSubClasses('Creation', vocabMap, vocabPfx);
+      fetchedClasses = VocabUtil.getSubClasses('Creation', vocabMap, vocabPfx, context['@context']);
     });
 
     it('should return a list of vocab classes as an array of strings', function() {
@@ -268,7 +268,7 @@ describe('Utility: vocab', function () {
 
     before(function() {
       // runs before all tests in this block
-      fetchedClasses = VocabUtil.getAllSubClasses('Creation', vocabMap, vocabPfx);
+      fetchedClasses = VocabUtil.getAllSubClasses('Creation', vocabMap, vocabPfx, context['@context']);
     });
 
     it('should return a list of vocab classes as an array of strings', function() {
@@ -291,7 +291,7 @@ describe('Utility: vocab', function () {
 
     before(function() {
       // runs before all tests in this block
-      baseClasses = VocabUtil.getBaseClasses(audioClass['@id'], vocabMap, vocabPfx);
+      baseClasses = VocabUtil.getBaseClasses(audioClass['@id'], vocabMap, vocabPfx, context['@context']);
     });
 
     it('should return an array', function() {
@@ -313,7 +313,7 @@ describe('Utility: vocab', function () {
 
     before(function() {
       // runs before all tests in this block
-      baseClasses = VocabUtil.getBaseClassesFromArray(classList, vocabMap, vocabPfx);
+      baseClasses = VocabUtil.getBaseClassesFromArray(classList, vocabMap, vocabPfx, context['@context']);
     });
 
     it('should return an array', function() {
@@ -338,22 +338,22 @@ describe('Utility: vocab', function () {
   describe('getRange()', function() {
     it('should return a list of class IDs which is in range of the property provided', function() {
       let propertyId = 'place';
-      let range = VocabUtil.getRange(propertyId, vocabMap, vocabPfx);
+      let range = VocabUtil.getRange(propertyId, vocabMap, vocabPfx, context['@context']);
       expect(range.indexOf(`${vocabPfx}Place`)).to.not.eql(-1);
 
       propertyId = 'mergedToForm';
-      range = VocabUtil.getRange(propertyId, vocabMap, vocabPfx);
+      range = VocabUtil.getRange(propertyId, vocabMap, vocabPfx, context['@context']);
       expect(range.indexOf(`${vocabPfx}Creation`)).to.not.eql(-1);
 
       propertyId = 'gobbledygook'; // Invalid
-      range = VocabUtil.getRange(propertyId, vocabMap, vocabPfx);
+      range = VocabUtil.getRange(propertyId, vocabMap, vocabPfx, context['@context']);
       expect(range.length).to.eql(0);
       expect(range.indexOf(`${vocabPfx}gobbledygook`)).to.eql(-1);
     });
 
     it('should return a list of class IDs which is in range of the baseProperty provided', function() {
       let propertyId = 'findingAid';
-      let range = VocabUtil.getRange(propertyId, vocabMap, vocabPfx);
+      let range = VocabUtil.getRange(propertyId, vocabMap, vocabPfx, context['@context']);
       expect(range.indexOf(`${vocabPfx}Endeavour`)).to.not.eql(-1);
       expect(range.indexOf(`${vocabPfx}Creation`)).to.not.eql(-1);
     });
@@ -367,18 +367,18 @@ describe('Utility: vocab', function () {
     it('Should return an array of property types', function() {
 
       let propertyId = 'place';
-      let types = VocabUtil.getPropertyTypes(propertyId, vocabMap, vocabPfx);
+      let types = VocabUtil.getPropertyTypes(propertyId, vocabMap, vocabPfx, context['@context']);
       let expectedResult = ['ObjectProperty'];
       expect(types).to.be.an('array');
       expect(types).to.eql(expectedResult);
 
       propertyId = 'sameAs';
-      types = VocabUtil.getPropertyTypes(propertyId, vocabMap, vocabPfx);
+      types = VocabUtil.getPropertyTypes(propertyId, vocabMap, vocabPfx, context['@context']);
       expectedResult = ['ObjectProperty'];
       expect(types).to.eql(expectedResult);
 
       propertyId = 'availability';
-      types = VocabUtil.getPropertyTypes(propertyId, vocabMap, vocabPfx);
+      types = VocabUtil.getPropertyTypes(propertyId, vocabMap, vocabPfx, context['@context']);
       expectedResult = ['Property'];
       expect(types).to.eql(expectedResult);
     });
@@ -389,7 +389,7 @@ describe('Utility: vocab', function () {
     let result = [];
     before(function() {
       // runs before all tests in this block
-      result = VocabUtil.getInstances('IssuanceType', vocabMap, vocabPfx);
+      result = VocabUtil.getInstances('IssuanceType', vocabMap, vocabPfx, context['@context']);
     });
 
     it('returns instances', function() {
@@ -405,7 +405,7 @@ describe('Utility: vocab', function () {
   });
 
   describe('getEnumerationKeys()', function() {
-    let result = VocabUtil.getEnumerationKeys('Electronic', 'carrierType', vocabMap, vocabPfx);
+    let result = VocabUtil.getEnumerationKeys('Electronic', 'carrierType', vocabMap, vocabPfx, context['@context']);
 
     it('returns types as array', function() {
       expect(result).to.be.an('array');
@@ -417,7 +417,7 @@ describe('Utility: vocab', function () {
 
 
     it('returns an empty array if no restriction type is found', function() {
-      result = VocabUtil.getEnumerationKeys('Electronic', 'kalle', vocabMap, vocabPfx);
+      result = VocabUtil.getEnumerationKeys('Electronic', 'kalle', vocabMap, vocabPfx, context['@context']);
       expect(result).to.be.an('array');
       expect(result.length).to.eql(0);
     });

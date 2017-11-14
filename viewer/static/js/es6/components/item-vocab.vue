@@ -7,7 +7,7 @@ import ProcessedLabel from './processedlabel';
 import TooltipComponent from './tooltip-component';
 import ItemMixin from './mixins/item-mixin';
 import LensMixin from './mixins/lens-mixin';
-import { getVocabulary, getVocabularyClasses, getDisplayDefinitions, getSettings, getEditorData } from '../vuex/getters';
+import { getVocabulary, getContext, getVocabularyClasses, getDisplayDefinitions, getSettings, getEditorData } from '../vuex/getters';
 
 export default {
   name: 'item-vocab',
@@ -21,6 +21,7 @@ export default {
   },
   vuex: {
     getters: {
+      context: getContext,
       vocab: getVocabulary,
       vocabClasses: getVocabularyClasses,
       display: getDisplayDefinitions,
@@ -44,7 +45,8 @@ export default {
       const types = VocabUtil.getRange(
         this.key,
         this.vocab,
-        this.settings.vocabPfx
+        this.settings.vocabPfx,
+        this.context
       );
       return types;
     },

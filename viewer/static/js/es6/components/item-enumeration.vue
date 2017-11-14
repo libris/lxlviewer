@@ -59,7 +59,8 @@ export default {
       const types = VocabUtil.getRange(
         this.key,
         this.vocab,
-        this.settings.vocabPfx
+        this.settings.vocabPfx,
+        this.context
       );
       return types;
     },

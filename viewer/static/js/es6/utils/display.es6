@@ -25,7 +25,6 @@ function getValueByLang(item, propertyId, displayDefs, langCode, context) {
   let translatedValue = item[propertyId]; // Set original value
 
   const contextKey = VocabUtil.getContextProperty(propertyId, context);
-  const contextList = context[1];
   const langPropObject = VocabUtil.getContextWithContainer(contextKey, context);
   let byLangKey = '';
   if (typeof langPropObject !== 'undefined' && langPropObject['@container'] === '@language') {
@@ -93,7 +92,7 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
   }
   let usedLensType;
   if (properties.length === 0) { // If none were found, traverse up inheritance tree
-    const baseClasses = VocabUtil.getBaseClassesFromArray(trueItem['@type'], vocab, settings.vocabPfx);
+    const baseClasses = VocabUtil.getBaseClassesFromArray(trueItem['@type'], vocab, settings.vocabPfx, context);
     for (let i = 0; i < baseClasses.length; i++) {
       if (typeof baseClasses[i] !== 'undefined') {
         properties = getProperties(baseClasses[i].replace(settings.vocabPfx, ''), level, displayDefs, settings);
@@ -143,7 +142,7 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
         }
         result[properties[i]] = value;
       } else if (properties.length < 3 && i === 0) {
-        const rangeOfMissingProp = VocabUtil.getRange(properties[i], vocab, settings.vocabPfx);
+        const rangeOfMissingProp = VocabUtil.getRange(properties[i], vocab, settings.vocabPfx, context);
         let propMissing = properties[i];
         if (rangeOfMissingProp.length > 0) {
           propMissing = rangeOfMissingProp[0];
@@ -200,7 +199,7 @@ export function getItemSummary(item, displayDefs, quoted, vocab, settings, conte
 export function getItemLabel(item, displayDefs, quoted, vocab, settings, context) {
   const displayObject = getChip(item, displayDefs, quoted, vocab, settings, context);
   let rendered = StringUtil.extractStrings(displayObject).trim();
-  if (item['@type'] && VocabUtil.isSubClassOf(item['@type'], 'Identifier', vocab, settings.vocabPfx)) {
+  if (item['@type'] && VocabUtil.isSubClassOf(item['@type'], 'Identifier', vocab, settings.vocabPfx, context)) {
     rendered = `${item['@type']} ${rendered}`;
   }
   return rendered;

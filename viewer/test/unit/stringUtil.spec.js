@@ -54,15 +54,22 @@ describe('Utility: string', function () {
     const withRdfsPrefix = 'rdfs:subPropertyOf';
     const withRdfsBaseUri = 'http://www.w3.org/2000/01/rdf-schema#subPropertyOf';
     let fetchedRdfsString = '';
+    const protocolString = 'https://id.kb.se';
+    let fetchedProtocolString = '';
 
-    before(function() {
+    before(function () {
       fetchedKbvString = stringUtil.convertToBaseUri(withKbvPrefix, context['@context']);
       fetchedRdfsString = stringUtil.convertToBaseUri(withRdfsPrefix, context['@context']);
+      fetchedProtocolString = stringUtil.convertToBaseUri(protocolString, context['@context']);
     });
 
     it('should convert a term id with prefix to a term id with baseUri', function() {
       expect(fetchedKbvString).to.equal(withKbvBaseUri);
       expect(fetchedRdfsString).to.equal(withRdfsBaseUri);
+    });
+
+    it('should not convert protocol prefixes', function() {
+      expect(fetchedProtocolString).to.equal(protocolString);
     });
   });
 });

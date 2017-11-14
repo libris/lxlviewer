@@ -12,13 +12,18 @@ export function removeDomain(string, removableBaseUriArray) {
 }
 
 export function convertToBaseUri(str, context) {
-  const contextList = context[0];
+  if (typeof context === 'undefined') {
+    throw new Error('convertToBaseUri was called without context.');
+  }
+  if (str.indexOf('://') > -1) {
+    return str;
+  }
   const prefix = str.split(':')[0];
   const uri = str.replace(`${prefix}:`, '');
   const baseUri = VocabUtil.getBaseUriFromPrefix(prefix, context);
   const withBaseUri = `${baseUri}${uri}`;
   return withBaseUri;
-};
+}
 
 export function getUiPhraseByLang(phrase, langcode) {
   if (translationsFile[langcode] && translationsFile[langcode][phrase]) {

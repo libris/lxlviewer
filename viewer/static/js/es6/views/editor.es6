@@ -289,7 +289,7 @@ export default class Editor extends View {
           this.$dispatch('show-help', '');
         },
         getRelatedTitles() {
-          if (VocabUtil.isSubClassOf(this.editorData.mainEntity['@type'], 'Work', this.vocab, this.settings.vocabPfx)) {
+          if (VocabUtil.isSubClassOf(this.editorData.mainEntity['@type'], 'Work', this.vocab, this.settings.vocabPfx, this.context)) {
             RecordUtil.getRelatedPosts(this.editorData.record['@id'], 'instanceOf').then((response) => {
               _.each(response, (node) => {
                 console.log("Extracting title from", node);

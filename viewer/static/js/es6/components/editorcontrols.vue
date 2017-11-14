@@ -13,12 +13,13 @@ import RecordSummary from './record-summary';
 import LensMixin from './mixins/lens-mixin';
 import { mixin as clickaway } from 'vue-clickaway';
 import { changeSavedStatus, changeStatus, changeNotification, navigateChangeHistory } from '../vuex/actions';
-import { getUser, getSettings, getVocabulary, getVocabularyClasses, getDisplayDefinitions, getEditorData, getStatus, getChangeHistory } from '../vuex/getters';
+import { getUser, getContext, getSettings, getVocabulary, getVocabularyClasses, getDisplayDefinitions, getEditorData, getStatus, getChangeHistory } from '../vuex/getters';
 
 export default {
   vuex: {
     getters: {
       user: getUser,
+      context: getContext,
       vocab: getVocabulary,
       vocabClasses: getVocabularyClasses,
       display: getDisplayDefinitions,
@@ -90,7 +91,7 @@ export default {
       this.showAdminInfoDetails = !this.showAdminInfoDetails;
     },
     isSubClassOf(type) {
-      const baseClasses = VocabUtil.getBaseClasses(this.editorData.mainEntity['@type'], this.vocab, this.settings.vocabPfx)
+      const baseClasses = VocabUtil.getBaseClasses(this.editorData.mainEntity['@type'], this.vocab, this.settings.vocabPfx, this.context)
         .map(id => id.replace(this.settings.vocabPfx, ''));
       return baseClasses.indexOf(type) > -1;
     },
@@ -183,7 +184,7 @@ export default {
       return this.status.showRecord;
     },
     recordType() {
-      return VocabUtil.getRecordType(this.editorData.mainEntity['@type'], this.vocab, this.settings);
+      return VocabUtil.getRecordType(this.editorData.mainEntity['@type'], this.vocab, this.settings, this.context);
     },
     downloadIsSupported() {
       const a = document.createElement('a');

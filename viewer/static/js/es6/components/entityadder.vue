@@ -14,7 +14,7 @@ import EntitySearchList from './entity-search-list';
 import LensMixin from './mixins/lens-mixin';
 import { mixin as clickaway } from 'vue-clickaway';
 import { changeStatus, changeNotification } from '../vuex/actions';
-import { getVocabulary, getVocabularyClasses, getVocabularyProperties, getSettings, getDisplayDefinitions, getEditorData } from '../vuex/getters';
+import { getVocabulary, getContext, getVocabularyClasses, getVocabularyProperties, getSettings, getDisplayDefinitions, getEditorData } from '../vuex/getters';
 
 export default {
   mixins: [clickaway, LensMixin],
@@ -36,6 +36,7 @@ export default {
   },
   vuex: {
     getters: {
+      context: getContext,
       vocab: getVocabulary,
       vocabClasses: getVocabularyClasses,
       vocabProperties: getVocabularyProperties,
@@ -105,12 +106,12 @@ export default {
       return this.key;
     },
     getRange() {
-      const fetchedRange = VocabUtil.getRange(this.key, this.vocab, this.settings.vocabPfx)
+      const fetchedRange = VocabUtil.getRange(this.key, this.vocab, this.settings.vocabPfx, this.context)
         .map(item => item.replace(this.settings.vocabPfx, ''));
       return fetchedRange;
     },
     getFullRange() {
-      return VocabUtil.getFullRange(this.key, this.vocab, this.settings.vocabPfx);
+      return VocabUtil.getFullRange(this.key, this.vocab, this.settings.vocabPfx, this.context);
     },
     allSearchTypes() {
       const types = this.getFullRange;
@@ -123,7 +124,7 @@ export default {
     onlyEmbedded() {
       const range = this.getFullRange;
       for (const prop of range) {
-        if (!VocabUtil.isEmbedded(prop, this.vocab, this.settings)) {
+        if (!VocabUtil.isEmbedded(prop, this.vocab, this.settings, this.context)) {
           return false;
         }
       }

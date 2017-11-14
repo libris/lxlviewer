@@ -106,7 +106,7 @@ export default {
       return false;
     },
     restrictionOnProp() {
-      const restr = VocabUtil.getEnumerationKeys(this.entityType, this.key, this.vocab, this.settings.vocabPfx);
+      const restr = VocabUtil.getEnumerationKeys(this.entityType, this.key, this.vocab, this.settings.vocabPfx, this.context);
       return restr;
     },
     propAllowsLocal() {
@@ -125,7 +125,10 @@ export default {
       return ids;
     },
     keyAsVocabProperty() {
-      return VocabUtil.getTermObject(this.key, this.vocab, this.settings.vocabPfx);
+      if (this.key === '_uid') {
+        return null;
+      }
+      return VocabUtil.getTermObject(this.key, this.vocab, this.settings.vocabPfx, this.context);
     },
     propertyComment() {
       if (this.keyAsVocabProperty && this.keyAsVocabProperty.commentByLang) {
@@ -163,7 +166,8 @@ export default {
       return VocabUtil.getPropertyTypes(
         this.key,
         this.vocab,
-        this.settings.vocabPfx
+        this.settings.vocabPfx,
+        this.context
       );
     },
     isExpandedType() {
@@ -276,7 +280,7 @@ export default {
       }, 500);
     },
     getPossibleValues() {
-      VocabUtil.getEnumerations(this.entityType, this.key, this.vocab, this.settings.vocabPfx).then((result) => {
+      VocabUtil.getEnumerations(this.entityType, this.key, this.vocab, this.settings.vocabPfx, this.context).then((result) => {
         const values = [];
         for (const value of result) {
           this.$dispatch('add-linked', value);

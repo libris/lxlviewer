@@ -4,12 +4,13 @@ import * as HttpUtil from '../utils/http';
 import * as RecordUtil from '../utils/record';
 import CreateItemButton from '../components/create-item-button';
 import InstanceListButton from '../components/instance-list-button';
-import { getUser, getStatus, getEditorData, getVocabulary, getSettings } from '../vuex/getters';
+import { getUser, getStatus, getContext, getEditorData, getVocabulary, getSettings } from '../vuex/getters';
 
 export default {
   name: 'reverse-relations',
   vuex: {
     getters: {
+      context: getContext,
       user: getUser,
       vocab: getVocabulary,
       settings: getSettings,
@@ -60,7 +61,7 @@ export default {
       return `https://libris.kb.se/library/${this.user.settings.activeSigel}`;
     },
     recordType() {
-      return VocabUtil.getRecordType(this.editorData.mainEntity['@type'], this.vocab, this.settings);
+      return VocabUtil.getRecordType(this.editorData.mainEntity['@type'], this.vocab, this.settings, this.context);
     },
     recordId() {
       return this.editorData.record['@id'];

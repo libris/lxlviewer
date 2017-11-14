@@ -12,7 +12,7 @@ import * as ModalUtil from '../utils/modals';
 import * as VocabUtil from '../utils/vocab';
 import * as DisplayUtil from '../utils/display';
 import { updateForm, changeStatus } from '../vuex/actions';
-import { getSettings, getVocabulary, getForcedListTerms, getVocabularyProperties, getDisplayDefinitions, getEditorData, getStatus } from '../vuex/getters';
+import { getSettings, getContext, getVocabulary, getForcedListTerms, getVocabularyProperties, getDisplayDefinitions, getEditorData, getStatus } from '../vuex/getters';
 
 export default {
   vuex: {
@@ -21,6 +21,7 @@ export default {
       changeStatus,
     },
     getters: {
+      context: getContext,
       vocab: getVocabulary,
       vocabProperties: getVocabularyProperties,
       forcedListTerms: getForcedListTerms,
@@ -48,13 +49,13 @@ export default {
       return this.editorData[this.editingObject]['@type'] === 'Item';
     },
     isBib() {
-      if (VocabUtil.isSubClassOf(this.editorData[this.editingObject]['@type'], 'Instance', this.vocab, this.settings.vocabPfx)) {
+      if (VocabUtil.isSubClassOf(this.editorData[this.editingObject]['@type'], 'Instance', this.vocab, this.settings.vocabPfx, this.context)) {
         return true;
-      } else if (VocabUtil.isSubClassOf(this.editorData[this.editingObject]['@type'], 'Work', this.vocab, this.settings.vocabPfx)) {
+      } else if (VocabUtil.isSubClassOf(this.editorData[this.editingObject]['@type'], 'Work', this.vocab, this.settings.vocabPfx, this.context)) {
         return true;
-      } else if (VocabUtil.isSubClassOf(this.editorData[this.editingObject]['@type'], 'Agent', this.vocab, this.settings.vocabPfx)) {
+      } else if (VocabUtil.isSubClassOf(this.editorData[this.editingObject]['@type'], 'Agent', this.vocab, this.settings.vocabPfx, this.context)) {
         return true;
-      } else if (VocabUtil.isSubClassOf(this.editorData[this.editingObject]['@type'], 'Concept', this.vocab, this.settings.vocabPfx)) {
+      } else if (VocabUtil.isSubClassOf(this.editorData[this.editingObject]['@type'], 'Concept', this.vocab, this.settings.vocabPfx, this.context)) {
         return true;
       }
       return false;
@@ -80,8 +81,9 @@ export default {
       const allowed = VocabUtil.getPropertiesFromArray(
         formObj['@type'],
         this.vocab,
-        this.settings.vocabPfx, // LÄGG TILL LABEL I ALLOWED
-        this.vocabProperties
+        this.settings.vocabPfx,
+        this.vocabProperties,
+        this.context
       );
       // Add the "added" property
       for (const element of allowed) {
@@ -158,7 +160,8 @@ export default {
         const baseClasses = VocabUtil.getBaseClassesFromArray(
           formObj['@type'],
           this.vocab,
-          this.settings.vocabPfx
+          this.settings.vocabPfx,
+          this.context
         );
         for (const baseClass of baseClasses) {
           propertyList = DisplayUtil.getProperties(
