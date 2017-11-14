@@ -15,19 +15,6 @@ export function scrollLock(bool) {
   }
 }
 
-export function toggleEditorBackdrop(bool, ms) {
-  if (bool) {
-    $('#editor-backdrop').addClass('editor-backdrop-on');
-  } else {
-    $('#editor-backdrop').addClass('editor-backdrop-to-be-off');
-    $('#editor-backdrop').removeClass('editor-backdrop-on');
-    setTimeout(() => {
-      $('#editor-backdrop').removeClass('editor-backdrop-to-be-off');
-    }, ms);
-  }
-}
- 
-
 export function scrollTo(position, duration = 200, easing = 'linear', callback) {
   let properPosition = Math.floor(position);
   if (properPosition < 0) {

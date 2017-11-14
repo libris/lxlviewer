@@ -206,7 +206,7 @@ export default class Editor extends View {
         },
         inEdit(val, oldval) {
           if (val !== oldval) {
-            LayoutUtil.toggleEditorBackdrop(val, 1000); // toggle backdrop on/off
+            // Do something when inEdit is changed...
           }
         },
         keybindState(state) {
