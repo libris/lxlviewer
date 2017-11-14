@@ -405,6 +405,9 @@ def thingnewp():
                      record)
     return render_template('edit.html', record=record, model={})
 
+@app.route('/sys/starttime.json')
+def starttime():
+    return _proxy_request(request, session, None)
 
 @app.route('/sys/forcedsetterms.json')
 def forcedsetterms():
