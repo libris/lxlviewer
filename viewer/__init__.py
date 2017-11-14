@@ -35,7 +35,7 @@ JSONLD_MIMETYPE = 'application/ld+json'
 RDF_MIMETYPES = {'text/turtle', JSONLD_MIMETYPE, 'application/rdf+xml', 'text/xml'}
 MIMETYPE_FORMATS = ['text/html', 'application/xhtml+xml'] + list(RDF_MIMETYPES)
 
-KEEP_HEADERS = ['ETag', 'Location', 'Content-Location', 'Document', 'Link']
+KEEP_HEADERS = ['ETag', 'Location', 'Content-Location', 'Document', 'Link', 'Server-Start-Time']
 
 CONTEXT_PATH = '/context.jsonld'
 
