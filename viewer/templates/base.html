@@ -5,7 +5,6 @@
     <meta charset="utf-8" />
     <title>${g.site.title} - {% block title %}{% endblock %}</title>
     <link rel="shortcut icon" href="/assets/img/favicon.ico">
-    <link rel="stylesheet" href="/assets/vendor/font-awesome/css/font-awesome.min.css">
     % if g.site.stylesheet
       <link rel="stylesheet" href="/assets/build/${g.site.stylesheet.name}" />
     % else
@@ -225,6 +224,15 @@
     {% block scripts %}{% endblock %}
     <script id="serviceTitle" type="application/json">${g.site.title}</script>
     <script id="baseUriAlias" type="application/json">${config.BASE_URI_ALIAS|tojson|safe}</script>
+    <script type="text/javascript">
+      (function() {
+        var css = document.createElement('link');
+        css.href = '/assets/vendor/font-awesome/css/font-awesome.min.css';
+        css.rel = 'stylesheet';
+        css.type = 'text/css';
+        document.getElementsByTagName('head')[0].appendChild(css);
+      })();
+    </script>
     <script src="/assets/build/app.js"></script>
   </body>
 </html>
