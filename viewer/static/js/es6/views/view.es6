@@ -150,29 +150,42 @@ export default class View {
     this.initWarningFunc();
   }
 
-  getLdDependencies() {
-    const vocabPromise = VocabUtil.getVocab().then((vocab) => {
-      this.vocabMap = new Map(vocab['@graph'].map((entry) => [entry['@id'], entry]));
-      this.vocab = vocab['@graph'];
-    }, (error) => {
-      console.log('getVocab', error);
-    });
-    const displayPromise = DisplayUtil.getDisplayDefinitions().then((display) => {
-      this.display = display;
-    }, (error) => {
-      console.log('getDisplayDefinitions', error);
-    });
-    const repeatablePromise = VocabUtil.getForcedListTerms().then((result) => {
-      this.forcedListTerms = result;
-    }, (error) => {
-      console.log('getForcedListTerms', error);
-    });
-    const contextPromise = VocabUtil.getContext().then((context) => {
-      this.context = context['@context'];
-    }, (error) => {
-      console.log('getContext', error);
-    });
-    return [vocabPromise, displayPromise, repeatablePromise, contextPromise];
+  getLdDependencies(fetchIndicator) {
+    const promiseArray = [];
+    if (fetchIndicator.indexOf('vocab') > -1) {
+      const vocabPromise = VocabUtil.getVocab().then((vocab) => {
+        this.vocabMap = new Map(vocab['@graph'].map((entry) => [entry['@id'], entry]));
+        this.vocab = vocab['@graph'];
+      }, (error) => {
+        console.log('getVocab', error);
+      });
+      promiseArray.push(vocabPromise);
+    }
+    if (fetchIndicator.indexOf('display') > -1) {
+      const displayPromise = DisplayUtil.getDisplayDefinitions().then((display) => {
+        this.display = display;
+      }, (error) => {
+        console.log('getDisplayDefinitions', error);
+      });
+      promiseArray.push(displayPromise);
+    }
+    if (fetchIndicator.indexOf('listTerms') > -1) {
+      const repeatablePromise = VocabUtil.getForcedListTerms().then((result) => {
+        this.forcedListTerms = result;
+      }, (error) => {
+        console.log('getForcedListTerms', error);
+      });
+      promiseArray.push(repeatablePromise);
+    }
+    if (fetchIndicator.indexOf('context') > -1) {
+      const contextPromise = VocabUtil.getContext().then((context) => {
+        this.context = context['@context'];
+      }, (error) => {
+        console.log('getContext', error);
+      });
+      promiseArray.push(contextPromise);
+    }
+    return promiseArray;
   }
 
   translate() {

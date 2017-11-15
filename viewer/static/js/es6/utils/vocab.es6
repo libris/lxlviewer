@@ -159,6 +159,11 @@ export function getRange(propertyId, vocab, vocabPfx, context) {
       range.push(property.range[i]['@id']);
     }
   }
+  if (property.rangeIncludes) {
+    for (let i = 0; i < property.rangeIncludes.length; i++) {
+      range.push(property.rangeIncludes[i]['@id']);
+    }
+  }
   if (property.hasOwnProperty('subPropertyOf')) {
     _.each(property.subPropertyOf, (prop) => {
       if (prop.hasOwnProperty('@id')) {

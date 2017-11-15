@@ -5,13 +5,7 @@ import store from '../vuex/store';
 import EventMixin from '../components/mixins/global-event-mixin';
 import * as _ from 'lodash';
 import * as StringUtil from '../utils/string';
-import * as SearchUtil from '../utils/search';
 import * as LayoutUtil from '../utils/layout';
-import * as VocabUtil from '../utils/vocab';
-import * as DisplayUtil from '../utils/display';
-import * as httpUtil from '../utils/http';
-import ComboKeys from 'combokeys';
-import KeyBindings from '../keybindings.json';
 import ServiceWidgetSettings from '../serviceWidgetSettings.json';
 import Copy from '../copy.json';
 import MainSearchField from '../components/main-search-field';
@@ -24,24 +18,20 @@ import LandingBox from '../components/landing-box';
 import LinkCardComponent from '../components/link-card-component';
 import IntroComponent from '../components/intro-component';
 import HelpComponent from '../components/help-component';
-import { getSettings, getVocabulary, getContext, getDisplayDefinitions, getEditorData, getKeybindState, getStatus } from '../vuex/getters';
-import { changeSettings, changeStatus, changeNotification, loadVocab, loadContext, loadVocabMap, loadDisplayDefs, changeSavedStatus, changeResultListStatus } from '../vuex/actions';
+import { getSettings, getStatus } from '../vuex/getters';
+import { changeSettings, changeNotification, loadContext, loadVocabMap, loadDisplayDefs, changeResultListStatus, changeStatus } from '../vuex/actions';
 
 export default class PagedCollection extends View {
 
   initialize() {
-    super.initialize();
-    // SearchUtil.initTypeButtons();
-    // SearchUtil.initializeSearch();
-
     const self = this;
-    this.dataIn = JSON.parse(document.getElementById('data').innerText);
-
-    Promise.all(self.getLdDependencies()).then(() => {
+    Promise.all(self.getLdDependencies('vocab display context')).then(() => {
       self.initVue();
     }, (error) => {
       window.lxlError(error);
     });
+    super.initialize();
+    this.dataIn = JSON.parse(document.getElementById('data').innerText);
   }
 
   initVue() {
@@ -68,24 +58,17 @@ export default class PagedCollection extends View {
       mixins: [EventMixin],
       vuex: {
         actions: {
-          loadVocab,
           loadContext,
           loadVocabMap,
           loadDisplayDefs,
           changeSettings,
           changeStatus,
-          changeSavedStatus,
           changeNotification,
           changeResultListStatus,
         },
         getters: {
-          status: getStatus,
-          context: getContext,
           settings: getSettings,
-          editorData: getEditorData,
-          vocab: getVocabulary,
-          display: getDisplayDefinitions,
-          keybindState: getKeybindState,
+          status: getStatus,
         },
       },
       data: {
@@ -155,11 +138,12 @@ export default class PagedCollection extends View {
       ready() {
         this.changeSettings(self.settings);
         this.updateUser(self.user);
-        this.loadVocab(self.vocab);
         this.loadContext(self.context);
         this.loadVocabMap(self.vocabMap);
         this.loadDisplayDefs(self.display);
         this.result = self.dataIn;
+        this.changeResultListStatus('loading', false);
+        LayoutUtil.showPage(this);
         document.title = `${StringUtil.getUiPhraseByLang('Search', this.settings.language)} - ${this.settings.siteInfo.title}`;
         if (Modernizr.history) {
           history.replaceState(this.result, 'unused');
@@ -178,8 +162,6 @@ export default class PagedCollection extends View {
             return false;
           };
         }
-        this.changeResultListStatus('loading', false);
-        LayoutUtil.showPage(this);
       },
       components: {
         'main-search-field': MainSearchField,

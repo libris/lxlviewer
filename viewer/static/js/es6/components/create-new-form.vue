@@ -1,45 +1,24 @@
 <script>
 import * as _ from 'lodash';
-import Vue from 'vue';
-import Vuex from 'vuex';
-import store from '../vuex/store';
 import * as CombinedTemplates from '../templates/combinedTemplates.json';
 import * as BaseTemplates from '../templates/baseTemplates.json';
 import * as VocabUtil from '../utils/vocab';
-import * as RecordUtil from '../utils/record';
-import * as DisplayUtil from '../utils/display';
 import * as StringUtil from '../utils/string';
 import CreationCard from '../components/creation-card';
 import CreationTab from '../components/creation-tab';
-import { getUser, getSettings, getVocabulary, getDisplayDefinitions, getEditorData, getStatus, getKeybindState } from '../vuex/getters';
-import { changeSettings, changeNotification, loadVocab, loadVocabMap, loadDisplayDefs, syncData, changeSavedStatus, changeStatus } from '../vuex/actions';
+import { getUser, getSettings, getVocabulary } from '../vuex/getters';
 
 
 export default {
   name: 'create-new-form',
   vuex: {
-    actions: {
-      syncData,
-      loadVocab,
-      loadVocabMap,
-      loadDisplayDefs,
-      changeSettings,
-      changeSavedStatus,
-      changeStatus,
-      changeNotification,
-    },
     getters: {
       user: getUser,
       settings: getSettings,
-      editorData: getEditorData,
       vocab: getVocabulary,
-      display: getDisplayDefinitions,
-      status: getStatus,
-      keybindState: getKeybindState,
     },
   },
   props: {
-    title: 'test',
   },
   data() {
     return {
@@ -142,7 +121,6 @@ export default {
       document.getElementById('thingDataForm').submit();
     },
   },
-  store,
   ready() { // Ready method is deprecated in 2.0, switch to "mounted"
     this.$nextTick(() => {
       this.activeForm = '';

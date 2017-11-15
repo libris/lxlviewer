@@ -11,7 +11,7 @@ import * as LayoutUtil from '../utils/layout';
 import * as httpUtil from '../utils/http';
 import * as toolbarUtil from '../utils/toolbar';
 import * as _ from 'lodash';
-import * as VocabLoader from '../utils/vocabloader';
+// import * as VocabLoader from '../utils/vocabloader';
 import * as VocabUtil from '../utils/vocab';
 import * as DisplayUtil from '../utils/display';
 import * as RecordUtil from '../utils/record';
@@ -29,10 +29,15 @@ import { changeSettings, changeNotification, loadVocab, loadContext, loadVocabMa
 export default class Editor extends View {
 
   initialize() {
-    super.initialize();
-    VocabLoader.initVocabClicks();
-    toolbarUtil.initToolbar(this);
     const self = this;
+    Promise.all(self.getLdDependencies('vocab display context listTerms')).then(() => {
+      self.initVue();
+    }, (error) => {
+      window.lxlError(error);
+    });
+    super.initialize();
+    // VocabLoader.initVocabClicks();
+    // toolbarUtil.initToolbar(this);
 
     const textData = RecordUtil.splitJson(JSON.parse(document.getElementById('data').innerText));
     if (Modernizr.history) {
@@ -44,11 +49,6 @@ export default class Editor extends View {
       this.dataIn = textData;
     }
 
-    Promise.all(self.getLdDependencies()).then(() => {
-      self.initVue();
-    }, (error) => {
-      window.lxlError(error);
-    });
   }
 
   initVue() {

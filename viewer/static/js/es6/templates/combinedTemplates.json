@@ -150,14 +150,7 @@
               "code": "txt",
               "termGroup": "rdacontent"
             }],
-            "subject": [{
-              "@type": "Topic",
-              "inScheme": {
-                "@type": "ConceptScheme",
-                "@id": "https://id.kb.se/term/sao",
-                "code": "sao"
-              }
-            }]
+            "subject": []
           }
         }
       }
@@ -1522,9 +1515,13 @@
           "familyName": "",
           "givenName": "",
           "name": "",
-          "numeration": "",
+          "marc:numeration": "",
           "marc:titleOther": "",
+          "marc:fullerFormName": "",
           "lifeSpan": "",
+          "marc:attributionQualifier": "",
+          "birthDate": "",
+          "deathDate": "",
           "exactMatch": [{
             "@type": "Person",
             "familyName": "",
@@ -1548,13 +1545,10 @@
             "marc:sourceOfTerm": "sao"
           }],
           "language": [],
-          "nationality": {
+          "nationality": [{
             "@id": "https://id.kb.se/nationality/e-sw---",
             "code": "e-sw---"
-          },
-          "note": [
-            ""
-          ]
+          }]
         }
       }
     },
@@ -1890,7 +1884,6 @@
           ],
           "broader": [],
           "related": [],
-          "label": "",
           "scopeNote": [
             ""
           ],
