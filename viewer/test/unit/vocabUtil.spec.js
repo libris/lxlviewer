@@ -404,8 +404,8 @@ describe('Utility: vocab', function () {
     });
   });
 
-  describe('getEnumerationKeys()', function() {
-    let result = VocabUtil.getEnumerationKeys('Electronic', 'carrierType', vocabMap, vocabPfx, context['@context']);
+  describe('getValuesFrom()', function() {
+    let result = VocabUtil.getValuesFrom('Electronic', 'carrierType', vocabMap, vocabPfx, context['@context']);
 
     it('returns types as array', function() {
       expect(result).to.be.an('array');
@@ -417,9 +417,28 @@ describe('Utility: vocab', function () {
 
 
     it('returns an empty array if no restriction type is found', function() {
-      result = VocabUtil.getEnumerationKeys('Electronic', 'kalle', vocabMap, vocabPfx, context['@context']);
+      result = VocabUtil.getValuesFrom('Electronic', 'kalle', vocabMap, vocabPfx, context['@context']);
       expect(result).to.be.an('array');
       expect(result.length).to.eql(0);
+    });
+  });
+
+  describe('processRestrictions()', function() {
+    let result = VocabUtil.processRestrictions(['Work'], 'SoundRecording', 'instanceOf', vocabMap, vocabPfx, context['@context']);
+
+    it('returns types as array', function() {
+      expect(result).to.be.an('array');
+    });
+
+    it('returns overridden range when restriction is present', function() {
+    result = VocabUtil.processRestrictions(['Work'], 'SoundRecording', 'instanceOf', vocabMap, vocabPfx, context['@context']);
+      expect(result).to.eql(['Audio']);
+    });
+
+
+    it('returns range when restriction is not present', function() {
+      result = VocabUtil.processRestrictions(['Work'], 'Instance', 'instanceOf', vocabMap, vocabPfx, context['@context']);
+      expect(result).to.eql(['Work']);
     });
   });
 
