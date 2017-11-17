@@ -264,7 +264,7 @@ export function getEmptyForm(type, vocab, display, settings) {
     if (inputKey === '@type') {
       formObj[inputKey] = type;
     } else {
-      const keyRange = VocabUtil.getRange(inputKey, vocab, settings.vocabPfx, context);
+      const keyRange = VocabUtil.getRange(type, inputKey, vocab, settings.vocabPfx, context);
       if (keyRange.length === 0 || keyRange[0].split(':')[1] === 'Literal') {
         formObj[inputKey] = '';
       } else {

@@ -6,7 +6,6 @@
 import * as _ from 'lodash';
 import EntityAdder from './entityadder';
 import ItemEntity from './item-entity';
-import ItemEnumeration from './item-enumeration';
 import ItemValue from './item-value';
 import ItemLocal from './item-local';
 import ItemError from './item-error';
@@ -43,7 +42,6 @@ export default {
       removeHover: false,
       foundChip: false,
       removed: false,
-      possibleValues: [],
       uniqueIds: [],
     };
   },
@@ -64,7 +62,6 @@ export default {
   components: {
     'item-entity': ItemEntity,
     'item-value': ItemValue,
-    'item-enumeration': ItemEnumeration,
     'item-local': ItemLocal,
     'item-error': ItemError,
     'item-vocab': ItemVocab,
@@ -75,11 +72,6 @@ export default {
     'arrayLength': function (newVal, oldVal) {
       if (newVal > oldVal) {
         this.$broadcast('focus-new-item', newVal-1);
-      }
-    },
-    isLocked(value, oldvalue) {
-      if (!value && oldvalue && this.possibleValues.length === 0 && this.hasRestriction) {
-        this.getPossibleValues();
       }
     },
   },
@@ -98,16 +90,6 @@ export default {
     },
     isObjectArray() {
       return _.isPlainObject(this.valueAsArray[0]);
-    },
-    hasRestriction() {
-      if (this.restrictionOnProp && this.restrictionOnProp.length > 0) {
-        return true;
-      }
-      return false;
-    },
-    restrictionOnProp() {
-      const restr = VocabUtil.getEnumerationKeys(this.entityType, this.key, this.vocab, this.settings.vocabPfx, this.context);
-      return restr;
     },
     propAllowsLocal() {
       if (this.settings.disallowLocal.indexOf(this.key) === -1) {
@@ -279,16 +261,6 @@ export default {
         this.$dispatch('remove-field', this.getPath);
       }, 500);
     },
-    getPossibleValues() {
-      VocabUtil.getEnumerations(this.entityType, this.key, this.vocab, this.settings.vocabPfx, this.context).then((result) => {
-        const values = [];
-        for (const value of result) {
-          this.$dispatch('add-linked', value);
-          values.push(value['@id']);
-        }
-        this.possibleValues = values;
-      });
-    },
     getDatatype(o) {
       if (typeof o === 'undefined') {
         throw new Error('Cannot check data type of undefined object.');
@@ -298,9 +270,6 @@ export default {
       }
       if (VocabUtil.hasValuesInVocab(this.key, this.context)) {
         return 'vocab';
-      }
-      if (this.hasRestriction) {
-        return 'enumeration';
       }
       if (this.isPlainObject(o) && this.isLinked(o)) {
       // if (this.isPlainObject(o) && this.isLinked(o) && o['@id'].indexOf(this.editorData.record['@id']) === -1) {
@@ -369,7 +338,7 @@ export default {
         <i class="fa fa-question-circle"></i>
         <div class="comment">{{ propertyComment }}</div>
       </div>
-      <entity-adder v-if="!locked && isRepeatable && (isInner && !isEmptyObject)" :has-restriction="hasRestriction" :possible-values="possibleValues" :key="key" :already-added="linkedIds" :property-types="propertyTypes" :allow-local="allowLocal && propAllowsLocal" :show-action-buttons="showActionButtons" :active="activeModal" :is-placeholder="true" :value-list="valueAsArray"></entity-adder>
+      <entity-adder v-if="!locked && isRepeatable && (isInner && !isEmptyObject)" :key="key" :already-added="linkedIds" :entity-type="entityType" :property-types="propertyTypes" :allow-local="allowLocal && propAllowsLocal" :show-action-buttons="showActionButtons" :active="activeModal" :is-placeholder="true" :value-list="valueAsArray"></entity-adder>
     </div>
     <div v-if="isInner" class="actions">
       <div class="action" v-show="!locked" :class="{'disabled': activeModal}">
@@ -385,19 +354,18 @@ export default {
     <ul v-if="isObjectArray">
       <li v-for="item in valueAsArray" :class="{ 'isChip': isChip(item)}" track-by="_uid">
         <item-error v-if="getDatatype(item) == 'error'" :item="item"></item-error>
-        <item-vocab v-if="getDatatype(item) == 'vocab'" :is-locked="locked" :key="key" :value="item" :index="$index"></item-vocab>
-        <item-enumeration v-if="getDatatype(item) == 'enumeration'" :is-locked="locked" :possible-values="possibleValues" :entity-type="entityType" :expanded="isExpandedType" :value="item" :key="key" :index="$index" :show-action-buttons="showActionButtons"></item-enumeration>
+        <item-vocab v-if="getDatatype(item) == 'vocab'" :is-locked="locked" :key="key" :value="item" :entity-type="entityType" :index="$index"></item-vocab>
         <item-entity v-if="getDatatype(item) == 'entity'" :is-locked="locked" :expanded="isExpandedType" :item="item" :key="key" :index="$index"></item-entity>
-        <item-local v-if="getDatatype(item) == 'local'" :is-locked="locked" :is-expanded-type="isExpandedType" :item="item" :key="key" :index="$index" :parent-path="getPath" :in-array="valueIsArray" :show-action-buttons="showActionButtons"></item-local>
+        <item-local v-if="getDatatype(item) == 'local'" :is-locked="locked" :is-expanded-type="isExpandedType" :entity-type="entityType" :item="item" :key="key" :index="$index" :parent-path="getPath" :in-array="valueIsArray" :show-action-buttons="showActionButtons"></item-local>
       </li>
     </ul>
     <ul v-if="!isObjectArray">
       <li v-for="item in valueAsArray" :class="{ 'isChip': isChip(item)}" track-by="$index">
-        <item-vocab v-if="getDatatype(item) == 'vocab'" :is-locked="locked" :key="key" :value="item" :index="$index"></item-vocab>
+        <item-vocab v-if="getDatatype(item) == 'vocab'" :is-locked="locked" :key="key" :value="item" :entity-type="entityType" :index="$index"></item-vocab>
         <item-value v-if="getDatatype(item) == 'value'" :is-removable="!hasSingleValue" :is-locked="locked" :value="item" :key="key" :index="$index" :show-action-buttons="showActionButtons"></item-value>
       </li>
     </ul>
-    <entity-adder class="action" v-if="!locked && (isRepeatable || isEmptyObject) && (!isInner || (isInner && isEmptyObject))" :has-restriction="hasRestriction" :possible-values="possibleValues" :key="key" :already-added="linkedIds" :property-types="propertyTypes" :allow-local="allowLocal && propAllowsLocal" :show-action-buttons="showActionButtons" :active="activeModal" :is-placeholder="false" :value-list="valueAsArray"></entity-adder>
+    <entity-adder class="action" v-if="!locked && (isRepeatable || isEmptyObject) && (!isInner || (isInner && isEmptyObject))" :key="key" :already-added="linkedIds" :entity-type="entityType" :property-types="propertyTypes" :allow-local="allowLocal && propAllowsLocal" :show-action-buttons="showActionButtons" :active="activeModal" :is-placeholder="false" :value-list="valueAsArray"></entity-adder>
   </div>
   <div v-if="!isInner" class="actions">
     <div class="action" v-show="!locked" :class="{'disabled': activeModal}">

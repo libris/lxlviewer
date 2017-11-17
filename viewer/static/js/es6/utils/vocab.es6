@@ -147,7 +147,54 @@ export function getAllEnumerationTypesFor(onProp, vocab) {
   return enumerationTypes;
 }
 
-export function getRange(propertyId, vocab, vocabPfx, context) {
+export function getValuesFrom(entityType, property, vocab, vocabPfx, context) {
+  if (_.isPlainObject(property)) {
+    throw new Error('getValuesFrom was called with an object as property id (should be a string)');
+  }
+  let result = [];
+  const baseClasses = getBaseClasses(`${vocabPfx}${entityType}`, vocab, vocabPfx, context);
+  baseClasses.forEach(baseClass => {
+    const vocabEntry = vocab.get(baseClass);
+    if (vocabEntry.hasOwnProperty('subClassOf')) {
+      vocabEntry.subClassOf.forEach(subClassObject => {
+        let embellishedObj = _.cloneDeep(subClassObject);
+        if (Object.keys(embellishedObj).length === 1 &&
+        embellishedObj.hasOwnProperty('@id') &&
+        embellishedObj['@id'].indexOf('_:') > -1) {
+          embellishedObj = getTermObject(embellishedObj['@id'], vocab, vocabPfx, context);
+        }
+        if (embellishedObj.hasOwnProperty('@type') &&
+        embellishedObj['@type'] === 'Restriction' &&
+        embellishedObj.onProperty['@id'] === `${vocabPfx}${property}`) {
+          let key = '';
+          if (embellishedObj.hasOwnProperty('someValuesFrom')) {
+            key = 'someValuesFrom';
+          } else if (embellishedObj.hasOwnProperty('allValuesFrom')) {
+            key = 'allValuesFrom';
+          }
+          if (_.isArray(embellishedObj[key])) {
+            _.each(embellishedObj[key], (list) => {
+              result.push(list['@id']);
+            });
+          } else {
+            result = [embellishedObj[key]['@id']];
+          }
+        }
+      });
+    }
+  });
+  return result.map(item => item.replace(vocabPfx, ''));
+}
+
+export function processRestrictions(range, entityType, property, vocab, vocabPfx, context) {
+  const someAndAllValuesFrom = getValuesFrom(entityType, property, vocab, vocabPfx, context);
+  if (someAndAllValuesFrom.length > 0) {
+    return someAndAllValuesFrom;
+  }
+  return range;
+}
+
+export function getUnrestrictedRange(propertyId, vocab, vocabPfx, context) {
   if (typeof propertyId === 'undefined') {
     throw new Error('getRange was called without a property Id.');
   }
@@ -170,12 +217,18 @@ export function getRange(propertyId, vocab, vocabPfx, context) {
   if (property.hasOwnProperty('subPropertyOf')) {
     _.each(property.subPropertyOf, (prop) => {
       if (prop.hasOwnProperty('@id')) {
-        range = range.concat(getRange(prop['@id'], vocab, vocabPfx, context));
+        range = range.concat(getUnrestrictedRange(prop['@id'], vocab, vocabPfx, context));
       }
     });
   }
   range = _.uniq(range);
+
   return range;
+}
+
+export function getRange(entityType, propertyId, vocab, vocabPfx, context) {
+  const unrestrictedRange = getUnrestrictedRange(propertyId, vocab, vocabPfx, context);
+  return processRestrictions(unrestrictedRange, entityType, propertyId, vocab, vocabPfx, context);
 }
 
 export function getSubClasses(classname, vocab, vocabPfx, context) {
@@ -189,7 +242,7 @@ export function getSubClasses(classname, vocab, vocabPfx, context) {
       }
     }
   });
-  if(!subClasses && subClasses.length === 0) {
+  if (!subClasses && subClasses.length === 0) {
     console.warn('subclasses for', vocabPfx + classname, 'not found in vocab');
   }
   return subClasses;
@@ -212,8 +265,8 @@ export function getAllSubClasses(classArray, vocab, vocabPfx, context) {
   return inputSubClasses;
 }
 
-export function getFullRange(key, vocab, vocabPfx, context) {
-  const types = [].concat(getRange(key, vocab, vocabPfx, context));
+export function getFullRange(entityType, key, vocab, vocabPfx, context) {
+  const types = [].concat(getRange(entityType, key, vocab, vocabPfx, context));
   let allTypes = [];
   _.each(types, type => {
     const typeInArray = [].concat(type);
@@ -467,45 +520,6 @@ export function getPrefixesFromBaseUri(baseUri, context) {
   return prefixes;
 }
 
-export function getValuesFrom(entityType, property, vocab, vocabPfx, context) {
-  if (_.isPlainObject(property)) {
-    throw new Error('getValuesFrom was called with an object as property id (should be a string)');
-  }
-  let result = [];
-  const baseClasses = getBaseClasses(`${vocabPfx}${entityType}`, vocab, vocabPfx, context);
-  baseClasses.forEach(baseClass => {
-    const vocabEntry = vocab.get(baseClass);
-    if (vocabEntry.hasOwnProperty('subClassOf')) {
-      vocabEntry.subClassOf.forEach(subClassObject => {
-        let embellishedObj = _.cloneDeep(subClassObject);
-        if (Object.keys(embellishedObj).length === 1 &&
-        embellishedObj.hasOwnProperty('@id') &&
-        embellishedObj['@id'].indexOf('_:') > -1) {
-          embellishedObj = getTermObject(embellishedObj['@id'], vocab, vocabPfx, context);
-        }
-        if (embellishedObj.hasOwnProperty('@type') &&
-        embellishedObj['@type'] === 'Restriction' &&
-        embellishedObj.onProperty['@id'] === `${vocabPfx}${property}`) {
-          let key = '';
-          if (embellishedObj.hasOwnProperty('someValuesFrom')) {
-            key = 'someValuesFrom';
-          } else if (embellishedObj.hasOwnProperty('allValuesFrom')) {
-            key = 'allValuesFrom';
-          }
-          if (_.isArray(embellishedObj[key])) {
-            _.each(embellishedObj[key], (list) => {
-              result.push(list['@id']);
-            });
-          } else {
-            result = [embellishedObj[key]['@id']];
-          }
-        }
-      });
-    }
-  });
-  return result.map(item => item.replace(vocabPfx, ''));
-}
-
 export function getEnumerations(entityType, property, vocab, vocabPfx, context) {
   const enumerationKeys = getValuesFrom(entityType, property, vocab, vocabPfx, context)
   .map(enumerationKey => `@type=${enumerationKey}`);
@@ -529,12 +543,4 @@ export function getEnumerations(entityType, property, vocab, vocabPfx, context) 
       reject('Error searching...', error);
     });
   });
-}
-
-export function processRestrictions(range, entityType, property, vocab, vocabPfx, context) {
-  const someAndAllValuesFrom = getValuesFrom(entityType, property, vocab, vocabPfx, context);
-  if (someAndAllValuesFrom.length > 0) {
-    return someAndAllValuesFrom;
-  }
-  return range;
 }

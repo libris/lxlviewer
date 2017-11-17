@@ -18,6 +18,7 @@ export default {
     index: Number,
     isLocked: false,
     expanded: false,
+    entityType: '',
   },
   vuex: {
     getters: {
@@ -43,6 +44,7 @@ export default {
   computed: {
     range() {
       const types = VocabUtil.getRange(
+        this.entityType,
         this.key,
         this.vocab,
         this.settings.vocabPfx,

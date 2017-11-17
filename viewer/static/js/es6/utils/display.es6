@@ -142,7 +142,7 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
         }
         result[properties[i]] = value;
       } else if (properties.length < 3 && i === 0) {
-        const rangeOfMissingProp = VocabUtil.getRange(properties[i], vocab, settings.vocabPfx, context);
+        const rangeOfMissingProp = VocabUtil.getRange(item['@type'], properties[i], vocab, settings.vocabPfx, context);
         let propMissing = properties[i];
         if (rangeOfMissingProp.length > 0) {
           propMissing = rangeOfMissingProp[0];

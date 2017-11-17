@@ -338,29 +338,37 @@ describe('Utility: vocab', function () {
   describe('getRange()', function() {
     it('should return a list of class IDs which is in range of the property provided', function() {
       let propertyId = 'place';
-      let range = VocabUtil.getRange(propertyId, vocabMap, vocabPfx, context['@context']);
+      const entityType = 'Instance';
+      let range = VocabUtil.getRange(entityType, propertyId, vocabMap, vocabPfx, context['@context']);
       expect(range.indexOf(`${vocabPfx}Place`)).to.not.eql(-1);
 
       propertyId = 'mergedToForm';
-      range = VocabUtil.getRange(propertyId, vocabMap, vocabPfx, context['@context']);
+      range = VocabUtil.getRange(entityType, propertyId, vocabMap, vocabPfx, context['@context']);
       expect(range.indexOf(`${vocabPfx}Creation`)).to.not.eql(-1);
 
       propertyId = 'gobbledygook'; // Invalid
-      range = VocabUtil.getRange(propertyId, vocabMap, vocabPfx, context['@context']);
+      range = VocabUtil.getRange(entityType, propertyId, vocabMap, vocabPfx, context['@context']);
       expect(range.length).to.eql(0);
       expect(range.indexOf(`${vocabPfx}gobbledygook`)).to.eql(-1);
     });
 
     it('should return a list of class IDs which is in range of the baseProperty provided', function() {
       let propertyId = 'findingAid';
-      let range = VocabUtil.getRange(propertyId, vocabMap, vocabPfx, context['@context']);
+      const entityType = 'Instance';
+      let range = VocabUtil.getRange(entityType, propertyId, vocabMap, vocabPfx, context['@context']);
       expect(range.indexOf(`${vocabPfx}Endeavour`)).to.not.eql(-1);
       expect(range.indexOf(`${vocabPfx}Creation`)).to.not.eql(-1);
     });
   });
 
   describe('getFullRange()', function() {
-
+    it('should return a list of all sub types of the provided entity type and property pair', function() {
+      let propertyId = 'findingAid';
+      const entityType = 'Work';
+      let range = VocabUtil.getFullRange(entityType, propertyId, vocabMap, vocabPfx, context['@context']);
+      expect(range.indexOf(`${vocabPfx}Text`)).to.not.eql(-1);
+      expect(range.indexOf(`${vocabPfx}Audio`)).to.not.eql(-1);
+    });
   });
 
   describe('getPropertyTypes()', function() {
