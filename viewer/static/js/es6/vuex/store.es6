@@ -88,7 +88,6 @@ const mutations = {
         });
       }
     });
-    debugger;
     state.vocabClasses = classes;
 
     let props = [];
