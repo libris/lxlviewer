@@ -57,6 +57,7 @@ export default class View {
         'mainEntity',
         'created',
         'modified',
+        'technicalNote',
       ],
       disallowLocal: [
         // 'instanceOf',
