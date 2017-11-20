@@ -282,12 +282,12 @@ export function getDomainList(property, vocab, vocabPfx, context) {
   }
   let domainList = [];
   if (property.hasOwnProperty('domain')) {
-    domainList = domainList.concat(property.domain);
+    domainList = domainList.concat(property.domain.map(obj => obj['@id']));
   }
   if (property.hasOwnProperty('domainIncludes')) {
-    domainList = domainList.concat(property.domainIncludes);
+    domainList = domainList.concat(property.domainIncludes.map(obj => obj['@id']));
   }
-  if (property.hasOwnProperty('subPropertyOf')) {
+  if (property.hasOwnProperty('subPropertyOf') && domainList.length === 0) {
     for (const superPropNode of property.subPropertyOf) {
       if (superPropNode['@id'] && superPropNode['@id'].indexOf(vocabPfx) !== -1) {
         const superProp = getTermObject(superPropNode['@id'], vocab, vocabPfx, context);
@@ -306,15 +306,14 @@ export function getProperties(className, vocab, vocabPfx, vocabProperties, conte
   const cn = className.replace(vocabPfx, '');
   // console.log("Getting props for", className);
   vocabProperties.forEach(prop => {
-    const domainList = getDomainList(prop, vocab, vocabPfx, context);
+    const domainList = getAllSubClasses(getDomainList(prop, vocab, vocabPfx, context), vocab, vocabPfx, context);
     const classId = vocabPfx + cn;
     for (const domain of domainList) {
-      if (domain['@id'] === classId) {
+      if (domain === classId) {
         props.push(prop);
       }
     }
   });
-
   // HARDCODED INCLUDE OF GENERAL PROPERTIES
   // TODO: Remove when label has a domain
   const labelProperty = getTermObject('label', vocab, vocabPfx, context);
