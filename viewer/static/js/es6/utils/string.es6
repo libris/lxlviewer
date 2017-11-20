@@ -25,6 +25,27 @@ export function convertToBaseUri(str, context) {
   return withBaseUri;
 }
 
+export function convertToPrefix(uri, context) {
+  if (typeof context === 'undefined') {
+    throw new Error('convertToPrefix was called without context');
+  }
+  let hashParts = uri.split('#');
+  let suffix = '';
+  let baseUri = '';
+  if (hashParts.length > 1) {
+    suffix = hashParts[1];
+    baseUri = hashParts[0] + '#';
+  } else {
+    const uriParts = uri.split('/');
+    suffix = uriParts[uriParts.length-1];
+    uriParts.splice(uriParts.length-1, 1);
+    baseUri = uriParts.join('/') + '/';
+  }
+  const prefix = VocabUtil.getPrefixFromBaseUri(baseUri, context);
+  const withPrefix = `${prefix}:${suffix}`;
+  return withPrefix;
+}
+
 export function getUiPhraseByLang(phrase, langcode) {
   if (translationsFile[langcode] && translationsFile[langcode][phrase]) {
     return translationsFile[langcode][phrase];
