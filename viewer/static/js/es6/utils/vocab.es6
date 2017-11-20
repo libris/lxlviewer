@@ -94,19 +94,34 @@ export function getTermObject(term, vocab, vocabPfx, context) {
   if (term.indexOf('@') !== -1) {
     return {};
   }
+  const tries = [];
   let cn = term;
   let _class = vocab.get(cn);
+  tries.push(cn);
 
-  if (!_class) {
-    _class = vocab.get(`${vocabPfx}${cn}`);
-  }
-  if (!_class) {
-    cn = StringUtil.convertToBaseUri(cn, context);
+  if (!_class && term.indexOf('://') === -1) {
+    cn = `${vocabPfx}${term}`;
     _class = vocab.get(cn);
+    tries.push(cn);
+  }
+  if (!_class && term.indexOf('://') > -1) {
+    // Try to get with Prefix
+    cn = StringUtil.convertToPrefix(term, context);
+    if (cn[0] !== ':') {
+      _class = vocab.get(cn);
+      tries.push(cn);
+    }
+  } else if (!_class && term.indexOf(':') > -1) {
+    // Try to get with baseUri
+    cn = StringUtil.convertToBaseUri(term, context);
+    if (cn[0] !== ':') {
+      _class = vocab.get(cn);
+      tries.push(cn);
+    }
   }
 
   if (!_class) {
-    window.lxlWarning('Term object not found:', cn);
+    window.lxlWarning('Term object not found:', term, '| Tried the following:', tries);
   }
   return _class;
 }
