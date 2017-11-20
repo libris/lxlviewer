@@ -27,6 +27,7 @@ export default {
   props: {
     item: {},
     key: '',
+    entityType: '',
     index: Number,
     isLocked: false,
     showActionButtons: false,
@@ -357,7 +358,7 @@ export default {
       <data-node v-show="expanded && k !== '_uid'" v-for="(k,v) in filteredItem" :parent-path="getPath" :entity-type="item['@type']" :is-inner="true" :is-locked="isLocked" :allow-local="true" :is-removable="false" :embedded="true" :parent-key="key" :parent-index="index" :key="k" :value="v" :focus="focus" :show-action-buttons="showActionButtons"></data-node>
     </div>
     <card-component v-if="isExpandedType" :title="getItemLabel" :focus-data="item" :uri="item['@id']" :is-local="true" :is-extractable="isExtractable" :is-locked="isLocked"></card-component>
-    <search-window :active="extractDialogActive" :can-copy-title="canCopyTitle" :copy-title="copyTitle" :key="key" :extracting="extracting" :item-info="extractedMainEntity" :index="index"></search-window>
+    <search-window :active="extractDialogActive" :can-copy-title="canCopyTitle" :copy-title="copyTitle" :entity-type="entityType" :key="key" :extracting="extracting" :item-info="extractedMainEntity" :index="index"></search-window>
   </div>
 </template>
 

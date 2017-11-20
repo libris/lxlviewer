@@ -93,12 +93,12 @@ export default {
   },
   computed: {
     getRange() {
-      const fetchedRange = VocabUtil.getRange(this.key, this.vocab, this.settings.vocabPfx, this.context)
+      const fetchedRange = VocabUtil.getRange(this.entityType, this.key, this.vocab, this.settings.vocabPfx, this.context)
         .map(item => item.replace(this.settings.vocabPfx, ''));
       return fetchedRange;
     },
     getFullRange() {
-      return VocabUtil.getFullRange(this.key, this.vocab, this.settings.vocabPfx);
+      return VocabUtil.getFullRange(this.entityType, this.key, this.vocab, this.settings.vocabPfx, this.context);
     },
     allSearchTypes() {
       const types = this.getFullRange;

@@ -1,5 +1,5 @@
 ---
-section: Anvisningar
+section: Allmänna Anvisningar
 title: Transcription
 order: 25
 tags:

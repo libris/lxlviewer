@@ -61,6 +61,7 @@ export default {
     valueList: [],
     possibleValues: [],
     hasRescriction: false,
+    entityType: '',
   },
   events: {
     'close-modals'() {
@@ -106,12 +107,12 @@ export default {
       return this.key;
     },
     getRange() {
-      const fetchedRange = VocabUtil.getRange(this.key, this.vocab, this.settings.vocabPfx, this.context)
+      const fetchedRange = VocabUtil.getRange(this.entityType, this.key, this.vocab, this.settings.vocabPfx, this.context)
         .map(item => item.replace(this.settings.vocabPfx, ''));
       return fetchedRange;
     },
     getFullRange() {
-      return VocabUtil.getFullRange(this.key, this.vocab, this.settings.vocabPfx, this.context);
+      return VocabUtil.getFullRange(this.entityType, this.key, this.vocab, this.settings.vocabPfx, this.context);
     },
     allSearchTypes() {
       const types = this.getFullRange;
