@@ -274,9 +274,12 @@ export default {
               </li>
               <li v-if="isSubClassOf('Instance') && hasSigel && !status.inEdit && user.email !== ''">
                 <a v-if="downloadIsSupported" @click="getCompiledPost()">
+                  <i class="fa fa-fw fa-download" aria-hidden="true"></i>
+                  {{"Download compiled" | translatePhrase}}
+                </a>
                 <a v-if="!downloadIsSupported" :href="compileMARCUrl">
-                <i class="fa fa-fw fa-download" aria-hidden="true"></i>
-                {{"Download compiled" | translatePhrase}}
+                  <i class="fa fa-fw fa-download" aria-hidden="true"></i>
+                  {{"Download compiled" | translatePhrase}}
                 </a>
               </li>
               <li>
