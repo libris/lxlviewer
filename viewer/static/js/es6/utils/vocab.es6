@@ -504,19 +504,19 @@ export function getBaseUriFromPrefix(prefix, context) {
   return baseUri;
 }
 
-export function getPrefixesFromBaseUri(baseUri, context) {
-  // Returns an ARRAY of prefixe that correspond to the provided baseUri.
+export function getPrefixFromBaseUri(baseUri, context) {
+  // Returns prefix that corresponds to the provided baseUri.
   const contextList = context[0];
-  const prefixes = [];
+  let prefix = '';
   _.forOwn(contextList, (value, key) => {
     if (value === baseUri) {
-      prefixes.push(key);
+      prefix = key;
     }
   });
-  if (prefixes.length === 0) {
-    window.lxlWarning('Couldn\'t get prefixes from baseUri:', baseUri);
+  if (prefix === 'kbv' || prefix === '@vocab') {
+    prefix = '';
   }
-  return prefixes;
+  return prefix;
 }
 
 export function getEnumerations(entityType, property, vocab, vocabPfx, context) {

@@ -1,29 +1,27 @@
 {
   "@context": [
     {
+      "foaf": "http:\/\/xmlns.com\/foaf\/0.1\/",
       "owl": "http:\/\/www.w3.org\/2002\/07\/owl#",
-      "fresnel": "http:\/\/www.w3.org\/2004\/09\/fresnel#",
       "skos": "http:\/\/www.w3.org\/2004\/02\/skos\/core#",
-      "edtf": "http:\/\/id.loc.gov\/datatypes\/edtf\/",
-      "kbv": "https:\/\/id.kb.se\/vocab\/",
       "@vocab": "https:\/\/id.kb.se\/vocab\/",
+      "bibo": "http:\/\/purl.org\/ontology\/bibo\/",
       "marc": "https:\/\/id.kb.se\/marc\/",
       "prov": "http:\/\/www.w3.org\/ns\/prov#",
-      "hydra": "http:\/\/www.w3.org\/ns\/hydra\/core#",
-      "madsrdf": "http:\/\/www.loc.gov\/mads\/rdf\/v1#",
-      "default1": "https:\/\/id.kb.se\/marc\/",
-      "foaf": "http:\/\/xmlns.com\/foaf\/0.1\/",
-      "bf": "http:\/\/bibframe.org\/vocab\/",
-      "bibo": "http:\/\/purl.org\/ontology\/bibo\/",
       "void": "http:\/\/rdfs.org\/ns\/void#",
-      "dc": "http:\/\/purl.org\/dc\/terms\/",
-      "dctype": "http:\/\/purl.org\/dc\/dcmitype\/",
-      "sdo": "http:\/\/schema.org\/",
       "rdfs": "http:\/\/www.w3.org\/2000\/01\/rdf-schema#",
+      "fresnel": "http:\/\/www.w3.org\/2004\/09\/fresnel#",
       "l": "http:\/\/w3id.org\/libris\/logic\/",
+      "dc": "http:\/\/purl.org\/dc\/terms\/",
+      "hydra": "http:\/\/www.w3.org\/ns\/hydra\/core#",
       "bf2": "http:\/\/id.loc.gov\/ontologies\/bibframe\/",
       "rdf": "http:\/\/www.w3.org\/1999\/02\/22-rdf-syntax-ns#",
-      "xsd": "http:\/\/www.w3.org\/2001\/XMLSchema#"
+      "madsrdf": "http:\/\/www.loc.gov\/mads\/rdf\/v1#",
+      "xsd": "http:\/\/www.w3.org\/2001\/XMLSchema#",
+      "dctype": "http:\/\/purl.org\/dc\/dcmitype\/",
+      "sdo": "http:\/\/schema.org\/",
+      "kbv": "https:\/\/id.kb.se\/vocab\/",
+      "edtf": "http:\/\/id.loc.gov\/datatypes\/edtf\/"
     },
     {
       "code": "bf2:code",
@@ -31,7 +29,7 @@
       "focus": "madsrdf:identifiesRWO",
       "DateTime": "xsd:dateTime",
       "supplement": "bf2:supplement",
-      "IssueNumber": "bf2:IssueNumber",
+      "copyrightRegistration": "bf2:copyrightRegistration",
       "broader": {
         "@id": "madsrdf:hasBroaderAuthority",
         "@container": "@set"
@@ -43,6 +41,7 @@
       "acquisitionTerms": "bf2:acquisitionTerms",
       "LCCN": "bf2:Lccn",
       "marc:data": {
+        "@id": "marc:data",
         "@container": "@list"
       },
       "Object": "bf2:Object",
@@ -64,13 +63,13 @@
       "gender": "madsrdf:gender",
       "Text": "bf2:Text",
       "relation": "prov:hadRole",
-      "givenName": "sdo:givenName",
+      "givenName": "foaf:givenName",
       "enumerationAndChronology": "bf2:enumerationAndChronology",
       "Occupation": "madsrdf:Occupation",
       "MatrixNumber": "bf2:MusicDistributorNumber",
       "natureOfContent": "bf2:natureOfContent",
       "heldBy": "bf2:heldBy",
-      "Enumeration": "bf2:Enumeration",
+      "Enumeration": "bf2:EnumerationAndChronology",
       "MonographicComponentPart": "bibo:DocumentPart",
       "absorbedBy": "bf2:absorbedBy",
       "UsePolicy": "bf2:UsePolicy",
@@ -97,13 +96,12 @@
       "versionOf": "dc:isVersionOf",
       "Distribution": "bf2:Distribution",
       "VideoFormat": "bf2:VideoFormat",
-      "publisher": "bf:publisher",
+      "publisher": "dc:publisher",
       "DigitalCharacteristic": "bf2:DigitalCharacteristic",
       "Concept": "skos:Concept",
       "reductionRatio": "bf2:reductionRatio",
       "cartographicAttributes": "bf2:cartographicAttributes",
       "ConceptCollection": "skos:Collection",
-      "Serial": "bf:Serial",
       "TrackConfig": "bf2:TrackConfig",
       "seriesEnumeration": "bf2:seriesEnumeration",
       "MusicMedium": "bf2:MusicMedium",
@@ -117,11 +115,12 @@
       "DissertationIdentifier": "bf2:DissertationIdentifier",
       "usageAndAccessPolicy": "bf2:usageAndAccessPolicy",
       "legalDate": "bf2:legalDate",
-      "mainEntity": "sdo:mainEntity",
-      "custodialHistory": "bf2:custodialHistory",
+      "MonthDay": "xsd:gMonthDay",
       "CODEN": "bf2:Coden",
       "Status": "bf2:Status",
-      "componentOf": "bf:componentOf",
+      "componentOf": {
+        "@reverse": "kbv:hasComponent"
+      },
       "collectionItem": "madsrdf:hasMADSCollectionMember",
       "_marcUncompleted": null,
       "ensembleType": "bf2:ensembleType",
@@ -130,12 +129,10 @@
       "descriptionModifier": "bf2:descriptionModifier",
       "Summary": "bf2:Summary",
       "Person": "bf2:Person",
-      "systemRequirements": "bf2:systemRequirements",
       "ClassificationNlm": "bf2:ClassificationNlm",
       "Time": "xsd:time",
       "electronicLocator": "bf2:electronicLocator",
       "succeededBy": "bf2:succeededBy",
-      "matrixNumber": "bf:matrixNumber",
       "musicThematicNumber": "bf2:musicThematicNumber",
       "copyrightDate": "bf2:copyrightDate",
       "Family": "bf2:Family",
@@ -149,7 +146,6 @@
         "@id": "bf2:changeDate",
         "@type": "xsd:dateTime"
       },
-      "Library": "sdo:Library",
       "VideoRecordingNumber": "bf2:VideoRecordingNumber",
       "altLabelByLang": {
         "@id": "skos:altLabel",
@@ -161,7 +157,6 @@
         "@container": "@set"
       },
       "FunctionalProperty": "owl:FunctionalProperty",
-      "languageNote": "bf:languageNote",
       "Polarity": "bf2:Polarity",
       "ColorContent": "bf2:ColorContent",
       "agent": "bf2:agent",
@@ -200,7 +195,6 @@
       "hasAffiliation": "madsrdf:hasAffiliation",
       "coordinates": "bf2:coordinates",
       "CoverArt": "bf2:CoverArt",
-      "production": "bf:production",
       "hasSeries": "bf2:hasSeries",
       "supplementaryContent": "bf2:supplementaryContent",
       "qualifier": "bf2:qualifier",
@@ -211,7 +205,6 @@
       "isVersionOf": {
         "@id": "dc:isVersionOf"
       },
-      "GrooveCharacteristics": "bf2:GrooveCharacteristics",
       "name": "foaf:name",
       "precededBy": "bf2:precededBy",
       "UsageAndAccessPolicy": "bf2:UsageAndAccessPolicy",
@@ -244,9 +237,7 @@
       "frequency": "bf2:frequency",
       "Print": "bf2:Print",
       "appliedMaterial": "bf2:appliedMaterial",
-      "category": {
-        "@id": "sdo:category"
-      },
+      "category": "https:\/\/id.kb.se\/vocab\/category",
       "hasExpression": "bf2:hasExpression",
       "focusOf": {
         "@reverse": "kbv:focus"
@@ -260,11 +251,7 @@
       },
       "ISWC": "bf2:Iswc",
       "PlaybackChannels": "bf2:PlaybackChannels",
-      "SomeItems": "bf:HeldMaterial",
-      "default1:value": {
-        "@id": "default1:value",
-        "@type": "xsd:string"
-      },
+      "editionEnumeration": "bf2:editionEnumeration",
       "musicSerialNumber": "bf2:musicSerialNumber",
       "SICI": "bf2:Sici",
       "isPartOf": "bf2:partOf",
@@ -272,7 +259,7 @@
       "continuedBy": "bf2:continuedBy",
       "Work": "bf2:Work",
       "inDataset": "void:inDataset",
-      "hasDataset": "sdo:dataset",
+      "custodialHistory": "bf2:custodialHistory",
       "originalVersionOf": "bf2:originalVersionOf",
       "coverArtMidsize": {
         "@id": "coverArt"
@@ -287,7 +274,6 @@
         "@type": "xsd:dateTime"
       },
       "outerGRing": "bf2:outerGRing",
-      "CartographicDataType": "bf2:CartographicDataType",
       "RegionalEncoding": "bf2:RegionalEncoding",
       "VideoCharacteristic": "bf2:VideoCharacteristic",
       "place": "bf2:place",
@@ -305,14 +291,13 @@
       "Review": "bf2:Review",
       "TermCollection": "madsrdf:MADSCollection",
       "ISO": "bf2:Iso",
-      "Illustration": "bf2:Illustration",
+      "Collection": "bf2:Collection",
       "genreForm": "bf2:genreForm",
       "TactileNotation": "bf2:TactileNotation",
       "Local": "bf2:Local",
       "recordPriority": null,
-      "publication": "bf:publication",
       "SoundCharacteristic": "bf2:SoundCharacteristic",
-      "continuedInPartBy": "bf2:continuedInPartBy",
+      "CartographicDataType": "bf2:CartographicDataType",
       "descriptionByLang": {
         "@id": "description",
         "@container": "@language"
@@ -320,10 +305,7 @@
       "soundCharacteristic": "bf2:soundCharacteristic",
       "creator": "dc:creator",
       "TableOfContents": "bf2:TableOfContents",
-      "default1:data": {
-        "@id": "default1:data",
-        "@container": "@list"
-      },
+      "continuedInPartBy": "bf2:continuedInPartBy",
       "propertyChainAxiom": {
         "@id": "owl:propertyChainAxiom",
         "@container": "@list"
@@ -346,23 +328,21 @@
         "@container": "@list"
       },
       "keyword": {
-        "@id": "sdo:keywords",
+        "@id": "keyword",
         "@type": "xsd:string"
       },
       "edition": "bf2:edition",
       "firstIssue": "bf2:firstIssue",
       "Frequency": "bf2:Frequency",
-      "keyTitle": "bf:keyTitle",
-      "DataCatalog": "sdo:DataCatalog",
       "ProjectionSpeed": "bf2:ProjectionSpeed",
-      "additionalName": "sdo:additionalName",
-      "controlledLabel": "bf:authorizedAccessPoint",
+      "controlledLabel": "madsrdf:authoritativeLabel",
       "BaseMaterial": "bf2:BaseMaterial",
       "Emulsion": "bf2:Emulsion",
       "ShelfMarkLcc": "bf2:ShelfMarkLcc",
+      "sublocation": "bf2:sublocation",
       "ISBN": "bf2:Isbn",
       "historyNote": "skos:historyNote",
-      "personTitle": "sdo:jobTitle",
+      "personTitle": "foaf:title",
       "imports": {
         "@id": "owl:imports",
         "@container": "@set"
@@ -375,11 +355,10 @@
         "@id": "rdfs:isDefinedBy"
       },
       "additionalType": {
-        "@id": "sdo:additionalType",
         "@type": "@vocab"
       },
       "deathYear": {
-        "@id": "sdo:deathYear",
+        "@id": "deathDate",
         "@type": "Year"
       },
       "prefLabel": {
@@ -399,16 +378,14 @@
       "ShelfMarkNlm": "bf2:ShelfMarkNlm",
       "dissertation": "bf2:dissertation",
       "accompaniedBy": "bf2:accompaniedBy",
-      "price": "sdo:price",
-      "translator": "sdo:translator",
       "mainTitle": "bf2:mainTitle",
       "MusicPlate": "bf2:MusicPlate",
-      "contentsNote": "bf:contentsNote",
       "organizationOfMaterial": "bf2:organization",
       "termGroup": "http:\/\/purl.org\/vocab\/vann\/termGroup",
-      "url": "sdo:url",
+      "GenerationProcess": "bf2:GenerationProcess",
       "ObjectProperty": "owl:ObjectProperty",
-      "Chronology": "bf2:Chronology",
+      "Barcode": "bf2:Barcode",
+      "Chronology": "bf2:EnumerationAndChronology",
       "extractedFrom": "describedBy",
       "equivalentClass": {
         "@id": "owl:equivalentClass",
@@ -420,29 +397,21 @@
         "@container": "@set"
       },
       "MusicEnsemble": "bf2:MusicEnsemble",
-      "editionEnumeration": "bf2:editionEnumeration",
       "ReductionRatio": "bf2:ReductionRatio",
       "relatedTo": "bf2:relatedTo",
       "ShelfMarkDdc": "bf2:ShelfMarkDdc",
       "systemRequirement": "bf2:systemRequirement",
-      "VariantTitle": "bf2:VariantTitle",
       "Role": "bf2:Role",
       "closeMatch": {
         "@id": "madsrdf:hasCloseExternalAuthority",
         "@container": "@set"
       },
-      "IndividualItem": "bf:HeldItem",
-      "StructuredValue": "sdo:StructuredValue",
-      "availability": "sdo:availability",
       "emulsion": "bf2:emulsion",
       "term_status": "http:\/\/www.w3.org\/2003\/06\/sw-vocab-status\/ns#term_status",
       "layout": "bf2:layout",
       "ApproxDateTime": "edtf:EDTF-level1",
-      "title": {
-        "@id": "dc:title"
-      },
+      "title": "dc:title",
       "isPrimaryTopicOf": "foaf:isPrimaryTopicOf",
-      "projectionChracteristic": "bf2:projectionChracteristic",
       "adminMetadata": "bf2:adminMetadata",
       "Extent": "bf2:Extent",
       "titleByLang": {
@@ -457,7 +426,6 @@
         "@id": "bf2:notation",
         "@container": "@set"
       },
-      "Integrating": "bf:Integrating",
       "ObjectCount": "bf2:ObjectCount",
       "fieldOfActivity": "madsrdf:fieldOfActivity",
       "provisionActivityStatement": "bf2:provisionActivityStatement",
@@ -485,9 +453,7 @@
       "derivativeOf": "bf2:derivativeOf",
       "pattern": "bf2:pattern",
       "review": "bf2:review",
-      "label": {
-        "@id": "rdfs:label"
-      },
+      "label": "rdfs:label",
       "RetentionPolicy": "bf2:RetentionPolicy",
       "fontSize": "bf2:fontSize",
       "classificationPortion": "bf2:classificationPortion",
@@ -506,11 +472,11 @@
       "marc:parts": {
         "@container": "@list"
       },
-      "narrowMatch": {
-        "@id": "madsrdf:hasNarrowerExternalAuthority",
-        "@container": "@set"
+      "Identifier": "bf2:Identifier",
+      "sliceByDimension": {
+        "@id": "slice",
+        "@container": "@index"
       },
-      "QualifiedRole": "sdo:Role",
       "eventContent": "bf2:eventContent",
       "SupplementaryContent": "bf2:SupplementaryContent",
       "license": "dc:license",
@@ -524,7 +490,7 @@
       "quotedFromGraph": {
         "@reverse": "_:graph"
       },
-      "subtitle": "bf2:subtitle",
+      "subtitle": "bf2:subTitle",
       "scopeNote": {
         "@id": "skos:scopeNote"
       },
@@ -532,16 +498,21 @@
         "@id": "madsrdf:hasNarrowerAuthority",
         "@container": "@set"
       },
-      "birthDate": "sdo:birthDate",
       "Note": "bf2:Note",
       "table": "bf2:table",
       "ClassificationUdc": "bf2:ClassificationUdc",
       "separatedFrom": "bf2:separatedFrom",
-      "Identifier": "bf2:Identifier",
+      "narrowMatch": {
+        "@id": "madsrdf:hasNarrowerExternalAuthority",
+        "@container": "@set"
+      },
       "associatedLocale": "madsrdf:hasAssociatedLocale",
       "hasDerivative": "bf2:hasDerivative",
       "instrument": "bf2:instrument",
-      "schedulePart": "bf2:schedulePart",
+      "marc:value": {
+        "@id": "marc:value",
+        "@type": "xsd:string"
+      },
       "hasSubseries": "bf2:hasSubseries",
       "Ansi": "bf2:Ansi",
       "musicKey": "bf2:musicKey",
@@ -562,8 +533,6 @@
       "bookFormat": "bf2:bookFormat",
       "value": "rdf:value",
       "ascensionAndDeclination": "bf2:ascensionAndDeclination",
-      "legalName": "sdo:legalName",
-      "abbreviatedTitle": "bf:abbreviatedTitle",
       "voice": "bf2:voice",
       "domainIncludes": {
         "@id": "sdo:domainIncludes",
@@ -576,7 +545,6 @@
       "Temporal": "bf2:Temporal",
       "Arrangement": "bf2:Arrangement",
       "capture": "bf2:capture",
-      "author": "sdo:author",
       "generic": "https:\/\/id.kb.se\/some?type=Property&label=",
       "lensGroup": "fresnel:group",
       "expressionOf": "bf2:expressionOf",
@@ -589,12 +557,9 @@
       "status": "bf2:status",
       "ContentAccessibility": "bf2:ContentAccessibility",
       "mergedToForm": "bf2:mergedToForm",
-      "illustrationNote": "bf:illustrationNote",
       "FileType": "bf2:FileType",
-      "familyName": "sdo:familyName",
+      "familyName": "foaf:familyName",
       "Item": "bf2:Item",
-      "deathDate": "sdo:deathDate",
-      "Monograph": "bf:Monograph",
       "ContentType": "bf2:Content",
       "allValuesFrom": {
         "@id": "owl:allValuesFrom"
@@ -612,13 +577,12 @@
         "@type": "@vocab"
       },
       "WorkTitle": "bf2:WorkTitle",
-      "Barcode": "bf2:Barcode",
+      "VariantTitle": "bf2:VariantTitle",
       "assigner": "bf2:assigner",
       "subseriesEnumeration": "bf2:subseriesEnumeration",
       "itemOf": "bf2:itemOf",
       "carrierType": "bf2:carrier",
       "AbbreviatedTitle": "bf2:AbbreviatedTitle",
-      "subLocation": "bf2:subLocation",
       "note": {
         "@id": "bf2:note"
       },
@@ -632,11 +596,9 @@
       "CopyrightRegistration": "bf2:CopyrightRegistration",
       "LcOverseasAcq": "bf2:LcOverseasAcq",
       "otherPhysicalFormat": "bf2:otherPhysicalFormat",
-      "copyrightRegistration": "bf2:copyrightRegistration",
       "hasOccupation": "madsrdf:occupation",
       "ClassificationDdc": "bf2:ClassificationDdc",
       "format": "dc:format",
-      "holdingFor": "bf:holdingFor",
       "ComplexTerm": "madsrdf:ComplexSubject",
       "hasFormat": "dc:hasFormat",
       "StockNumber": "bf2:StockNumber",
@@ -646,7 +608,6 @@
       },
       "intendedAudience": "bf2:intendedAudience",
       "ParallelTitle": "bf2:ParallelTitle",
-      "PartialCollectionView": "sdo:CollectionPage",
       "Manuscript": "bf2:Manuscript",
       "MovementNotation": "bf2:MovementNotation",
       "AudioIssueNumber": "bf2:AudioIssueNumber",
@@ -670,7 +631,7 @@
       "scale": "bf2:scale",
       "dimensions": "bf2:dimensions",
       "Affiliation": "madsrdf:Affiliation",
-      "MonthDay": "xsd:gMonthDay",
+      "mainEntity": "foaf:primaryTopic",
       "eventContentOf": "bf2:eventContentOf",
       "acquisitionSource": "bf2:acquisitionSource",
       "generationProcess": "bf2:generationProcess",
@@ -683,7 +644,6 @@
       "MusicFormat": "bf2:MusicFormat",
       "indexOf": "bf2:indexOf",
       "responsibilityStatement": "bf2:responsibilityStatement",
-      "barcode": "bf2:barcode",
       "UPC": "bf2:Upc",
       "AcquisitionSource": "bf2:AcquisitionSource",
       "Place": "bf2:Place",
@@ -695,6 +655,7 @@
       "_marcFailedFixedFields": null,
       "Generation": "bf2:Generation",
       "Image": "dctype:Image",
+      "schedulePart": "bf2:schedulePart",
       "range": {
         "@id": "rdfs:range",
         "@container": "@set"
@@ -704,21 +665,14 @@
       "PhysicalObject": "dctype:PhysicalObject",
       "Dissertation": "bf2:Dissertation",
       "MusicNotation": "bf2:MusicNotation",
-      "MultipartMonograph": "bf:MultipartMonograph",
-      "VisualArtwork": "sdo:VisualArtwork",
-      "sliceByDimension": {
-        "@id": "slice",
-        "@container": "@index"
-      },
       "descriptionAuthentication": "bf2:descriptionAuthentication",
       "references": "bf2:references",
       "contributor": "bf2:contributor",
       "ProjectionCharacteristic": "bf2:ProjectionCharacteristic",
       "Meeting": "bf2:Meeting",
-      "VideorecordingNumber": "bf2:VideorecordingNumber",
       "variantType": "bf2:variantType",
       "editorialNote": "skos:editorialNote",
-      "Collection": "bf2:Collection",
+      "Illustration": "bf2:Illustration",
       "immediateAcquisition": "bf2:immediateAcquisition",
       "NBN": "bf2:Nbn",
       "ShelfMark": "bf2:ShelfMark",
@@ -728,9 +682,8 @@
         "@container": "@set"
       },
       "MixedMaterial": "bf2:MixedMaterial",
-      "manufacture": "bf:manufacture",
       "awardsNote": "bf2:awards",
-      "videoCharacteristic": "bf2:videoCharacteristic",
+      "videoCharacteristic": "bf2:VideoCharacteristic",
       "exactMatch": {
         "@id": "madsrdf:hasExactExternalAuthority",
         "@container": "@set"
@@ -745,18 +698,14 @@
       "physicalLocation": "bf2:physicalLocation",
       "Projection": "bf2:Projection",
       "productionMethod": "bf2:productionMethod",
-      "GenerationProcess": "bf2:GenerationProcess",
       "meta": "bf2:adminMetadata",
       "soundContent": "bf2:soundContent",
-      "Periodical": "bf:Serial",
       "highlight": null,
-      "distribution": "bf:distribution",
       "Electronic": "bf2:Electronic",
       "Layout": "bf2:Layout",
       "CopyrightNumber": "bf2:CopyrightNumber",
       "seriesOf": "bf2:seriesOf",
       "abstract": "http:\/\/protege.stanford.edu\/plugins\/owl\/protege#abstract",
-      "citation": "sdo:citation",
       "otherEdition": "bf2:otherEdition",
       "identifiedBy": "bf2:identifiedBy",
       "Production": "bf2:Production",
@@ -809,9 +758,9 @@
           "@id": "https:\/\/id.kb.se\/vocab\/context"
         }
       ],
-      "@id": "http:\/\/10.50.38.33:5000\/00nj5pg324pd3kjp",
-      "modified": "2017-11-08T11:09:28.247+01:00",
-      "created": "2017-11-08T11:09:28.247+01:00"
+      "@id": "https:\/\/libris-dev.kb.se\/00nj5pg324pd3kjp",
+      "modified": "2017-11-14T15:31:39.59+01:00",
+      "created": "2017-11-14T15:31:39.59+01:00"
     }
   ]
 }

@@ -1,5 +1,5 @@
 ---
-section: Anvisningar
+section: Allmänna Anvisningar
 title: Tidsangivelser
 order: 23
 tags:
