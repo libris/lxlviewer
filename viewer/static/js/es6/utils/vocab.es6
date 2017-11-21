@@ -52,14 +52,20 @@ export function getTermByType(type, list) {
   if (!list || typeof list === 'undefined') {
     throw new Error('getTermByType was called without a vocabulary.');
   }
-  const termList = _.filter(list, (term) => {
+  const terms = [];
+
+  list.forEach((term) => {
     if (_.isArray(term['@type'])) {
-      return term['@type'].indexOf(type) > -1;
+      if (term['@type'].indexOf(type) > -1) {
+        terms.push(term);
+      }
     } else {
-      return term['@type'] === type;
+      if (term['@type'] === type) {
+        terms.push(term);
+      }
     }
   });
-  return termList;
+  return terms;
 }
 
 export function getTermFromLabel(label, language, vocab) {
