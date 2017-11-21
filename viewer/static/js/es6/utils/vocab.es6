@@ -213,7 +213,7 @@ export function getUnrestrictedRange(propertyId, vocab, vocabPfx, context) {
   if (typeof propertyId === 'undefined') {
     throw new Error('getRange was called without a property Id.');
   }
-  
+
   const property = getTermObject(propertyId, vocab, vocabPfx, context);
   let range = [];
   if (!property) {
@@ -246,32 +246,24 @@ export function getRange(entityType, propertyId, vocab, vocabPfx, context) {
   return processRestrictions(unrestrictedRange, entityType, propertyId, vocab, vocabPfx, context);
 }
 
-export function getSubClasses(classname, vocab, vocabPfx, context) {
-  const subClasses = [];
-  vocab.forEach((o) => {
-    if (o.subClassOf) {
-      for (let i = 0; i < o.subClassOf.length; i++) {
-        if (o.subClassOf[i].hasOwnProperty('@id') && o.subClassOf[i]['@id'] === vocabPfx + classname) {
-          subClasses.push(o['@id']);
-        }
-      }
-    }
-  });
-  if (!subClasses && subClasses.length === 0) {
-    console.warn('subclasses for', vocabPfx + classname, 'not found in vocab');
+export function getSubClasses(classname, vocabClasses, vocabPfx, context) {
+  const classObj = getTermObject(classname, vocabClasses, vocabPfx, context);
+  let subClasses = [];
+  if (typeof classObj !== 'undefined' && classObj.hasOwnProperty('baseClassOf')) {
+    subClasses = classObj.baseClassOf;
   }
   return subClasses;
 }
 
-export function getAllSubClasses(classArray, vocab, vocabPfx, context) {
+export function getAllSubClasses(classArray, vocabClasses, vocabPfx, context) {
   let inputSubClasses = [].concat(classArray);
   let newSubClasses = [];
   if (inputSubClasses.length > 0) {
     _.each(inputSubClasses, classId => {
       const className = classId.replace(vocabPfx, '');
-      const subClasses = getSubClasses(className, vocab, vocabPfx, context);
+      const subClasses = getSubClasses(className, vocabClasses, vocabPfx, context);
       if (subClasses.length > 0) {
-        newSubClasses = newSubClasses.concat(getAllSubClasses(subClasses, vocab, vocabPfx, context));
+        newSubClasses = newSubClasses.concat(getAllSubClasses(subClasses, vocabClasses, vocabPfx, context));
       }
     });
   }
@@ -280,12 +272,12 @@ export function getAllSubClasses(classArray, vocab, vocabPfx, context) {
   return inputSubClasses;
 }
 
-export function getFullRange(entityType, key, vocab, vocabPfx, context) {
+export function getFullRange(entityType, key, vocab, vocabPfx, context, vocabClasses) {
   const types = [].concat(getRange(entityType, key, vocab, vocabPfx, context));
   let allTypes = [];
   _.each(types, type => {
     const typeInArray = [].concat(type);
-    allTypes = allTypes.concat(getAllSubClasses(typeInArray, vocab, vocabPfx, context));
+    allTypes = allTypes.concat(getAllSubClasses(typeInArray, vocabClasses, vocabPfx, context));
   });
   allTypes = _.uniq(allTypes);
   return allTypes;
@@ -315,13 +307,13 @@ export function getDomainList(property, vocab, vocabPfx, context) {
   return domainList;
 }
 
-export function getProperties(className, vocab, vocabPfx, vocabProperties, context) {
+export function getProperties(className, vocabClasses, vocabPfx, vocabProperties, context) {
   // Get all properties which has the domain of the className
   const props = [];
   const cn = className.replace(vocabPfx, '');
   // console.log("Getting props for", className);
   vocabProperties.forEach(prop => {
-    const domainList = getAllSubClasses(getDomainList(prop, vocab, vocabPfx, context), vocab, vocabPfx, context);
+    const domainList = getAllSubClasses(getDomainList(prop, vocabProperties, vocabPfx, context), vocabClasses, vocabPfx, context);
     const classId = vocabPfx + cn;
     for (const domain of domainList) {
       if (domain === classId) {
@@ -331,13 +323,13 @@ export function getProperties(className, vocab, vocabPfx, vocabProperties, conte
   });
   // HARDCODED INCLUDE OF GENERAL PROPERTIES
   // TODO: Remove when label has a domain
-  const labelProperty = getTermObject('label', vocab, vocabPfx, context);
+  const labelProperty = getTermObject('label', vocabProperties, vocabPfx, context);
   props.push(labelProperty);
-  const noteProperty = getTermObject('note', vocab, vocabPfx, context);
+  const noteProperty = getTermObject('note', vocabProperties, vocabPfx, context);
   props.push(noteProperty);
-  const valueProperty = getTermObject('value', vocab, vocabPfx, context);
+  const valueProperty = getTermObject('value', vocabProperties, vocabPfx, context);
   props.push(valueProperty);
-  const codeProperty = getTermObject('code', vocab, vocabPfx, context);
+  const codeProperty = getTermObject('code', vocabProperties, vocabPfx, context);
   props.push(codeProperty);
   // end HARDCODED
   return props;
@@ -430,12 +422,12 @@ export function isSubClassOf(classId, baseClassId, vocab, vocabPfx, context) {
   return false;
 }
 
-export function getPropertiesFromArray(typeArray, vocab, vocabPfx, vocabProperties, context) {
+export function getPropertiesFromArray(typeArray, vocabClasses, vocabPfx, vocabProperties, context) {
   let props = [];
-  const classNames = getBaseClassesFromArray(typeArray, vocab, vocabPfx, context);
+  const classNames = getBaseClassesFromArray(typeArray, vocabClasses, vocabPfx, context);
 
   for (let i = 0; i < classNames.length; i++) {
-    const properties = getProperties(classNames[i], vocab, vocabPfx, vocabProperties, context);
+    const properties = getProperties(classNames[i], vocabClasses, vocabPfx, vocabProperties, context);
     for (let x = 0; x < properties.length; x++) {
       const p = {
         item: properties[x],

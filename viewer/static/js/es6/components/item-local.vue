@@ -124,7 +124,7 @@ export default {
       const formObj = this.item;
       const allowed = VocabUtil.getPropertiesFromArray(
         formObj['@type'],
-        this.vocab,
+        this.vocabClasses,
         this.settings.vocabPfx,
         this.vocabProperties,
         this.context

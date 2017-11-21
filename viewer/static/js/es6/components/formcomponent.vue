@@ -12,7 +12,7 @@ import * as ModalUtil from '../utils/modals';
 import * as VocabUtil from '../utils/vocab';
 import * as DisplayUtil from '../utils/display';
 import { updateForm, changeStatus } from '../vuex/actions';
-import { getSettings, getContext, getVocabulary, getForcedListTerms, getVocabularyProperties, getDisplayDefinitions, getEditorData, getStatus } from '../vuex/getters';
+import { getSettings, getContext, getVocabulary, getForcedListTerms, getVocabularyProperties, getVocabularyClasses, getDisplayDefinitions, getEditorData, getStatus } from '../vuex/getters';
 
 export default {
   vuex: {
@@ -24,6 +24,7 @@ export default {
       context: getContext,
       vocab: getVocabulary,
       vocabProperties: getVocabularyProperties,
+      vocabClasses: getVocabularyClasses,
       forcedListTerms: getForcedListTerms,
       settings: getSettings,
       editorData: getEditorData,
@@ -80,7 +81,7 @@ export default {
       const formObj = this.formData;
       const allowed = VocabUtil.getPropertiesFromArray(
         formObj['@type'],
-        this.vocab,
+        this.vocabClasses,
         this.settings.vocabPfx,
         this.vocabProperties,
         this.context

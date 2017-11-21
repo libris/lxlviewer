@@ -47,6 +47,7 @@ export default class CreateNew extends View {
       vuex: {
         actions: {
           loadVocabMap,
+          loadVocab,
           changeStatus,
           changeSettings,
         },
@@ -75,6 +76,7 @@ export default class CreateNew extends View {
         this.updateUser(self.user);
         this.changeSettings(self.settings);
         this.loadVocabMap(self.vocabMap);
+        this.loadVocab(self.vocab);
         LayoutUtil.showPage(this);
         document.title = `${StringUtil.getUiPhraseByLang('Create new', this.settings.language)} - ${this.settings.siteInfo.title}`;
       },

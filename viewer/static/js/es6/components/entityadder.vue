@@ -112,7 +112,7 @@ export default {
       return fetchedRange;
     },
     getFullRange() {
-      return VocabUtil.getFullRange(this.entityType, this.key, this.vocab, this.settings.vocabPfx, this.context);
+      return VocabUtil.getFullRange(this.entityType, this.key, this.vocab, this.settings.vocabPfx, this.context, this.vocabClasses);
     },
     allSearchTypes() {
       const types = this.getFullRange;
