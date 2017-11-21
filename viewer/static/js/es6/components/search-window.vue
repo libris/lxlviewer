@@ -307,7 +307,7 @@ export default {
         height: 100%;
         .result-list-container {
           overflow-y: auto;
-          height: 70%;
+          height: 60%;
           .search-result {
             .search-item {
               border: solid #777;
