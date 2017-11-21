@@ -159,7 +159,7 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
   }
   if (_.isEmpty(result)) {
     window.lxlWarning(`DisplayObject was empty. @type was ${trueItem['@type']}. Used lens: "${usedLensType}".`, 'Item data:', trueItem);
-    result = { 'label': '{Unknown}' };
+    result = { 'label': `{${StringUtil.getUiPhraseByLang('Unknown', settings.language)}}` };
   }
   return result;
 }
