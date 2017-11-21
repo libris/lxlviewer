@@ -69,6 +69,14 @@ export default class View {
       nonExtractableClasses: [
         'Place',
         'Library',
+        'CarrierType',
+        'MediaType',
+        'ContentType',
+        'Language',
+        'Country',
+        'Nationality',
+        'GenreForm',
+        'Topic',
       ],
       propertyChains: {
         '@type': {
