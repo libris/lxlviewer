@@ -475,22 +475,12 @@ export default {
         position: absolute;
         background-color: @white;
         max-width: 200px;
-        transform: translate(-183px, 0px);
+        transform: translate(-89%, 5px);
         line-height: 1.6;
         white-space: normal;
         padding: 0.5em;
         text-align: left;
         box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
-        &::before {
-          content: "";
-          width: 0;
-          height: 0;
-          border-style: solid;
-          border-width: 0 6px 7px 6px;
-          border-color: transparent transparent @white transparent;
-          position: absolute;
-          transform: translate(176px, -13px);
-        }
       }
       &:hover {
         .comment {
