@@ -417,7 +417,7 @@ export default {
       }
       .search-result {
         padding-top: 80px;
-        padding-bottom: 2em;
+        margin-bottom: 100px;
       }
       .search-header {
         position: absolute;
