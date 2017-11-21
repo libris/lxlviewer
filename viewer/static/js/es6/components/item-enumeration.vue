@@ -7,7 +7,7 @@ import ProcessedLabel from './processedlabel';
 import TooltipComponent from './tooltip-component';
 import ItemMixin from './mixins/item-mixin';
 import LensMixin from './mixins/lens-mixin';
-import { getVocabulary, getDisplayDefinitions, getSettings, getEditorData } from '../vuex/getters';
+import { getVocabulary, getDisplayDefinitions, getContext, getSettings, getEditorData } from '../vuex/getters';
 
 export default {
   name: 'item-enumeration',
@@ -26,6 +26,7 @@ export default {
     getters: {
       vocab: getVocabulary,
       display: getDisplayDefinitions,
+      context: getContext,
       settings: getSettings,
       editorData: getEditorData,
     },
@@ -65,7 +66,7 @@ export default {
       return types;
     },
     disabledLabel() {
-      return `${StringUtil.getUiPhraseByLang('Choose', this.settings.language)} ${StringUtil.labelByLang(this.key, this.settings.language, this.vocab, this.settings.vocabPfx)}`;
+      return `${StringUtil.getUiPhraseByLang('Choose', this.settings.language)} ${StringUtil.labelByLang(this.key, this.settings.language, this.vocab, this.settings.vocabPfx, this.context)}`;
     },
   },
   ready() {

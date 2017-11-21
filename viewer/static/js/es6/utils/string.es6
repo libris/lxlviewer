@@ -88,27 +88,11 @@ export function getLabelFromObject(object, language) {
   return label;
 }
 
-export function labelByLang(string, lang, vocab, vocabPfx) {
+export function getLabelByLang(string, lang, vocab, vocabPfx, context) {
   if (!string) {
     return '{FAILED LABEL}';
   }
-  const pfx = vocabPfx;
-  // Filter for fetching labels from vocab
-  let lbl = string.toString();
-  if (lbl && lbl.indexOf(pfx) !== -1) {
-    lbl = lbl.replace(pfx, '');
-  }
-  let item = vocab.get(`${pfx}${lbl}`);
-
-  // Handle marc:
-  if (typeof item === 'undefined') {
-    if (lbl.indexOf('marc/') !== -1) {
-      item = vocab.get(lbl);
-    } else {
-      item = vocab.get(`https://id.kb.se/${lbl.replace('marc:', 'marc/')}`);
-    }
-  }
-
+  let item = VocabUtil.getTermObject(string, vocab, vocabPfx, context);
   let note = '';
   let labelByLang = '';
   if (typeof item !== 'undefined' && item.labelByLang) {
@@ -129,7 +113,7 @@ export function labelByLang(string, lang, vocab, vocabPfx) {
   if (labelByLang && labelByLang.length > 0) {
     return labelByLang;
   }
-  return `${lbl}${note}`;
+  return `${string}${note}`;
 }
 
 function translateable(type) {
@@ -152,12 +136,12 @@ export function extractStrings(obj) {
   return label;
 }
 
-export function getFormattedEntries(list, vocab, settings) {
+export function getFormattedEntries(list, vocab, settings, context) {
   let formatted = [];
   for (const entry of list) {
     if (translateable(entry.property)) {
       formatted = formatted.concat(entry.value.map((obj) => {
-        return labelByLang(obj, settings.language, vocab, settings.vocabPfx);
+        return getLabelByLang(obj, settings.language, vocab, settings.vocabPfx, context);
       }));
     } else {
       formatted = formatted.concat(entry.value);

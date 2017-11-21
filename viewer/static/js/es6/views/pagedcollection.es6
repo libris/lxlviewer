@@ -42,7 +42,7 @@ export default class PagedCollection extends View {
     }, false);
 
     Vue.filter('labelByLang', (label) => {
-      return StringUtil.labelByLang(label, self.settings.language, self.vocabMap, self.settings.vocabPfx);
+      return StringUtil.getLabelByLang(label, self.settings.language, self.vocabMap, self.settings.vocabPfx, self.context);
     });
     Vue.filter('removeDomain', (value) => {
       return StringUtil.removeDomain(value, self.settings.removableBaseUris);

@@ -4,7 +4,7 @@ import * as _ from 'lodash';
 import ToolTipComponent from './tooltip-component';
 import * as LayoutUtil from '../utils/layout';
 import * as StringUtil from '../utils/string';
-import { getSettings, getVocabulary } from '../vuex/getters';
+import { getSettings, getVocabulary, getContext } from '../vuex/getters';
 import { changeStatus, changeNotification } from '../vuex/actions';
 import ComboKeys from 'combokeys';
 
@@ -25,6 +25,7 @@ export default {
     getters: {
       settings: getSettings,
       vocab: getVocabulary,
+      context: getContext,
     },
     actions: {
       changeStatus,
@@ -191,7 +192,7 @@ export default {
         const propLastPart = splitProp[splitProp.length-1];
         const fieldName = prop.item['@id'].split(':')[1];
         this.$dispatch('add-field', prop.item, this.path);
-        const translatedProp = StringUtil.labelByLang(propLastPart, this.settings.language, this.vocab, this.settings.vocabPfx);
+        const translatedProp = StringUtil.getLabelByLang(propLastPart, this.settings.language, this.vocab, this.settings.vocabPfx, this.context);
         if (close) {
           this.hide();
           this.changeStatus('lastAdded', propLastPart);

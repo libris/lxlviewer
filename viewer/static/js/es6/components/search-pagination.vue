@@ -2,7 +2,7 @@
 import * as StringUtil from '../utils/string';
 import * as httpUtil from '../utils/http';
 import { updateUser, changeResultListStatus, changeSettings } from '../vuex/actions';
-import { getUser, getSettings, getVocabulary } from '../vuex/getters';
+import { getUser, getSettings, getVocabulary, getContext } from '../vuex/getters';
 
 export default {
   name: 'search-pagination',
@@ -41,7 +41,7 @@ export default {
                 };
                 if (typeof item.object !== 'undefined') {
                   if (item.variable === '@type') {
-                    filterObj.label = StringUtil.labelByLang(item.object['@id'], this.settings.language, this.vocab, this.settings.vocabPfx);
+                    filterObj.label = StringUtil.getLabelByLang(item.object['@id'], this.settings.language, this.vocab, this.settings.vocabPfx, this.context);
                   } else {
                     filterObj.label = item.object['@id'].replace('https://id.kb.se/', '');
                   }

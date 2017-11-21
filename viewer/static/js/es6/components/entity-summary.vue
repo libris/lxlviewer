@@ -46,13 +46,13 @@ export default {
       return false;
     },
     categorization() {
-      return StringUtil.getFormattedEntries(this.getSummary.categorization, this.vocab, this.settings);
+      return StringUtil.getFormattedEntries(this.getSummary.categorization, this.vocab, this.settings, this.context);
     },
     header() {
-      return StringUtil.getFormattedEntries(this.getSummary.header, this.vocab, this.settings);
+      return StringUtil.getFormattedEntries(this.getSummary.header, this.vocab, this.settings, this.context);
     },
     identifiers() {
-      let identifiersList = StringUtil.getFormattedEntries(this.getSummary.identifiers, this.vocab, this.settings);
+      let identifiersList = StringUtil.getFormattedEntries(this.getSummary.identifiers, this.vocab, this.settings, this.context);
       if (identifiersList.length > this.lines) {
         const diff = identifiersList.length - this.lines;
         identifiersList.splice((this.lines - 1), diff+1);
@@ -61,10 +61,10 @@ export default {
       return identifiersList;
     },
     info() {
-      return StringUtil.getFormattedEntries(this.getSummary.info, this.vocab, this.settings);
+      return StringUtil.getFormattedEntries(this.getSummary.info, this.vocab, this.settings, this.context);
     },
     sub() {
-      return StringUtil.getFormattedEntries(this.getSummary.sub, this.vocab, this.settings);
+      return StringUtil.getFormattedEntries(this.getSummary.sub, this.vocab, this.settings, this.context);
     },
   },
   methods: {

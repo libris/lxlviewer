@@ -6,7 +6,7 @@ import * as VocabUtil from '../utils/vocab';
 import * as StringUtil from '../utils/string';
 import CreationCard from '../components/creation-card';
 import CreationTab from '../components/creation-tab';
-import { getUser, getSettings, getVocabulary, getVocabularyClasses } from '../vuex/getters';
+import { getUser, getSettings, getContext, getVocabulary, getVocabularyClasses } from '../vuex/getters';
 
 
 export default {
@@ -14,6 +14,7 @@ export default {
   vuex: {
     getters: {
       user: getUser,
+      context: getContext,
       settings: getSettings,
       vocab: getVocabulary,
       vocabClasses: getVocabularyClasses,
@@ -44,7 +45,7 @@ export default {
       let allMaterials = [];
       allMaterials = allMaterials.concat(VocabUtil.getAllSubClasses([`${this.settings.vocabPfx}${creation}`], this.vocabClasses, this.settings.vocabPfx)
         .map(subClassId => subClassId.replace(this.settings.vocabPfx, '')));
-      this.materialList = _.sortBy(allMaterials, label => StringUtil.labelByLang(label, this.settings.language, this.vocab, this.settings.vocabPfx));
+      this.materialList = _.sortBy(allMaterials, label => StringUtil.getLabelByLang(label, this.settings.language, this.vocab, this.settings.vocabPfx, this.context));
     },
   },
   events: {

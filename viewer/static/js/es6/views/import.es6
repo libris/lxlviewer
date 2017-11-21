@@ -34,7 +34,7 @@ export default class Import extends View {
     }, false);
 
     Vue.filter('labelByLang', (label) => {
-      return StringUtil.labelByLang(label, self.settings.language, self.vocabMap, self.settings.vocabPfx);
+      return StringUtil.getLabelByLang(label, self.settings.language, self.vocabMap, self.settings.vocabPfx, self.context);
     });
 
     Vue.filter('translatePhrase', (string) => {

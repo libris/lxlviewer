@@ -4,7 +4,7 @@ import PropertyMappings from '../propertymappings.json';
 import * as httpUtil from '../utils/http';
 import * as StringUtil from '../utils/string';
 import { changeResultListStatus, changeStatus } from '../vuex/actions';
-import { getSettings, getStatus, getVocabulary } from '../vuex/getters';
+import { getSettings, getStatus, getVocabulary, getContext } from '../vuex/getters';
 export default {
   name: 'search-form',
   vuex: {
@@ -12,6 +12,7 @@ export default {
       settings: getSettings,
       status: getStatus,
       vocab: getVocabulary,
+      context: getContext,
     },
     actions: {
       changeStatus,
@@ -148,7 +149,7 @@ export default {
             return this.settings.dataSetFilters.libris.map(term => {
               return {
                 '@id': term.replace(this.settings.vocabPfx, ''),
-                'label': StringUtil.labelByLang(term, this.settings.language, this.vocab, this.settings.vocabPfx)
+                'label': StringUtil.getLabelByLang(term, this.settings.language, this.vocab, this.settings.vocabPfx, this.context)
               };
             });
           }
@@ -308,7 +309,7 @@ export default {
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
-            
+
                 .searchphrase {
                     flex-grow: 1;
                     margin-right: 5px;

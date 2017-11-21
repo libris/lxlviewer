@@ -147,11 +147,12 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
         if (rangeOfMissingProp.length > 0) {
           propMissing = rangeOfMissingProp[0];
         }
-        const expectedClassName = StringUtil.labelByLang(
+        const expectedClassName = StringUtil.getLabelByLang(
           propMissing, // Get the first one just to show something
           settings.language,
           vocab,
-          settings.vocabPfx
+          settings.vocabPfx,
+          context
         );
         result[properties[i]] = `{${expectedClassName} saknas}`;
       }
