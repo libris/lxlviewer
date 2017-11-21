@@ -19,8 +19,7 @@ export default class View {
       siteInfo: window.siteInfo || {},
       embeddedTypes: [
         'StructuredValue',
-        'ProvisionActivity',
-        'Contribution',
+        'QualifiedRole',
       ],
       baseMaterials: [
         'https://id.kb.se/vocab/Instance',
