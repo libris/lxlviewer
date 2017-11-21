@@ -8,7 +8,7 @@ import CreateNewForm from '../components/create-new-form';
 import HelpComponent from '../components/help-component';
 import EventMixin from '../components/mixins/global-event-mixin';
 import { getSettings, getVocabulary, getKeybindState } from '../vuex/getters';
-import { changeSettings, loadVocabMap, changeStatus } from '../vuex/actions';
+import { changeSettings, loadVocabMap, loadVocab, changeStatus } from '../vuex/actions';
 
 export default class CreateNew extends View {
 

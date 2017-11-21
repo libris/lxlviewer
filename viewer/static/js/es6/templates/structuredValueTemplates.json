@@ -42,6 +42,23 @@
     "date": [""]
 
   },
+  "Manufacture": {
+    "@type": "Manufacture",
+    "place": [
+      {
+        "@type": "Place",
+        "label": [""]
+      }
+    ],
+    "agent": [
+      {
+        "@type": "Agent",
+        "label": [""]
+      }
+    ],
+    "date": [""]
+
+  },
   "extent": [{
     "@type": "Extent",
     "label": ""
