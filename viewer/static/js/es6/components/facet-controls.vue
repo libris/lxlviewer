@@ -1,6 +1,6 @@
 <script>
 import * as StringUtil from '../utils/string';
-import { getSettings, getVocabulary } from '../vuex/getters';
+import { getSettings, getVocabulary, getContext } from '../vuex/getters';
 import RangeInput from './range-input.vue';
 import Facet from './facet.vue';
 export default {
@@ -11,6 +11,7 @@ export default {
   vuex: {
     getters: {
       settings: getSettings,
+      context: getContext,
       vocab: getVocabulary,
     },
   },
@@ -23,7 +24,7 @@ export default {
       return dimensionKey === 'publication.date';
     },
     facetLabelByLang(facetType) {
-      const typeByLang = StringUtil.labelByLang(facetType, this.settings.language, this.vocab, this.settings.vocabPfx);
+      const typeByLang = StringUtil.getLabelByLang(facetType, this.settings.language, this.vocab, this.settings.vocabPfx, this.context);
       if (typeByLang.indexOf('unhandled term') < 0) {
         return typeByLang;
       }
