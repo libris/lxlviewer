@@ -147,5 +147,6 @@ export function getFormattedEntries(list, vocab, settings, context) {
       formatted = formatted.concat(entry.value);
     }
   }
+  _.remove(formatted, value => value === ''); // Remove empty strings
   return formatted;
 }
