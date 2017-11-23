@@ -53,7 +53,7 @@ export default {
 
 <template>
   <div class="search-result-item">
-    <entity-summary :focus-data="focusData" :lines="4" :add-link="true"></entity-summary>
+    <entity-summary :focus-data="focusData" :lines="4"></entity-summary>
     <summary-action-button v-show="listItemSettings.show" :settings="addPayload"></summary-action-button>
   </div>
 </template>

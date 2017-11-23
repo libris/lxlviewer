@@ -276,7 +276,7 @@ export default {
           <div class="result-list-container">
             <div v-show="displaySearchList" class="search-result">
               <div v-for="item in searchResult" class="search-item">
-                <entity-summary :add-link="true" :focus-data="item" :lines="4"></entity-summary>
+                <entity-summary :focus-data="item" :lines="4"></entity-summary>
                 <summary-action-button :settings="addPayload(item)"></summary-action-button>
               </div>
             </div>
