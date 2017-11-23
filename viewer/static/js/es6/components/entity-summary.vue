@@ -64,7 +64,9 @@ export default {
       return StringUtil.getFormattedEntries(this.getSummary.info, this.vocab, this.settings, this.context);
     },
     sub() {
-      return StringUtil.getFormattedEntries(this.getSummary.sub, this.vocab, this.settings, this.context);
+      let allThings = StringUtil.getFormattedEntries(this.getSummary.info, this.vocab, this.settings, this.context);
+      allThings = allThings.concat(StringUtil.getFormattedEntries(this.getSummary.sub, this.vocab, this.settings, this.context));
+      return allThings;
     },
   },
   methods: {
@@ -90,31 +92,21 @@ export default {
 
 <template>
 <div class="entity-summary">
-  <div class="main-info">
+  <div class="sub">
     <div class="categorization">
       {{categorization.join(', ')}} {{ isLocal ? '{lokal entitet}' : '' }}
     </div>
+    <div class="id">{{focusData['@id']}}</div>
+  </div>
+  <div class="main-info">
     <h3 class="header">
       <span class="import-header" title="{{ header.join(', ') }}" v-on:click="importThis()" v-if="isImport">{{ header.join(', ') }}</span>
       <a v-if="!isImport && renderLink" :class="{'blue-link': settings.siteInfo.title === 'id.kb.se'}" title="{{ header.join(', ') }}" :href="focusData['@id']">{{ header.join(', ') }}</a>
       <span v-if="!isImport && !renderLink" title="{{ header.join(', ') }}">{{ header.join(', ') }}</span>
     </h3>
     <div class="info">
-      {{ info.join(', ') }}
+      {{ sub.join(' · ') }}
     </div>
-    <!-- <ul class="info">
-      <li v-for="v in info" track-by="$index">{{ v }}</li>
-    </ul> -->
-  </div>
-  <div class="identifiers">
-    <summary-action-button :settings="actionSettings || defaultSettings"></summary-action-button>
-    <ul>
-      <li v-for="v in identifiers" track-by="$index">{{v}}</li>
-    </ul>
-  </div>
-  <div class="sub">
-    <div class="other">{{ sub.join(' · ') }}</div>
-    <code class="id">{{focusData['@id']}}</code>
   </div>
 </div>
 </template>
@@ -123,6 +115,7 @@ export default {
 @import './_variables.less';
 .entity-summary {
   font-size: 12px;
+  padding: 0.5em 1em;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
@@ -131,21 +124,8 @@ export default {
     text-align: center;
   }
   .main-info {
-    .categorization {
-      color: #8a8a8a;
-      flex-basis: 85%;
-      padding: 3px 3px 0px 0px;
-      flex-grow: 2;
-      display: block;
-      font-weight: bold;
-      margin-bottom: -0.4em;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
     height: 7.5em;
-    width: 70%;
-    padding: 3px 0px 0px 9px;
+    width: 100%;
     a {
       color: @brand-primary;
       &.blue-link {
@@ -180,20 +160,20 @@ export default {
   .sub {
     flex-basis: 100%;
     display: flex;
-    background-color: rgba(0, 0, 0, 0.01);
-    border: solid rgba(0, 0, 0, 0.1);
-    border-width: 1px 0px 0px 0px;
-    > .other {
-      flex: 1;
-      height: 1.7em;
-      overflow-y: hidden;
-      padding: 0px 9px;
+    border-width: 0px;
+    .categorization {
+      color: #8a8a8a;
+      flex-basis: 85%;
+      flex-grow: 2;
+      display: block;
+      font-weight: bold;
+      margin-bottom: -0.4em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
-    > .id {
-      border-radius: 0px;
-      border: solid rgba(0, 0, 0, 0.1);
-      border-width: 0px 0px 0px 1px;
-      background: transparent;
+    .id {
+      
     }
   }
 }
