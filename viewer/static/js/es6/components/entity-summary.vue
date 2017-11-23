@@ -103,7 +103,7 @@ export default {
       <a v-if="!isImport && renderLink" :class="{'blue-link': settings.siteInfo.title === 'id.kb.se'}" title="{{ header.join(', ') }}" :href="focusData['@id']">{{ header.join(', ') }}</a>
       <span v-if="!isImport && !renderLink" title="{{ header.join(', ') }}">{{ header.join(', ') }}</span>
     </h3>
-    <div class="id" v-if="identifiers.length > 0">{{ identifiers[0] }}</div>
+    <div class="id" v-if="identifiers.length > 0">{{ identifiers[0] }} <span class="id-info" v-if="identifiers.length > 1">(+{{ identifiers.length-1 }})</span></div>
     <div class="info">
       {{ sub.join(' · ') }}
     </div>
@@ -148,6 +148,9 @@ export default {
       font-weight: bold;
       margin-top: -0.3em;
       margin-bottom: 0.5em;
+      .id-info {
+        font-weight: normal;
+      }
     }
     ul.info {
       list-style-type: none;
