@@ -126,6 +126,7 @@ export default {
       opacity: 0;
       transition: all 0.3s ease;
       line-height: 0;
+      transform: translateX(-28px);
       &.show-compact {
         max-height: 55px;
         opacity: 1;

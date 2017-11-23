@@ -158,7 +158,7 @@ export default {
       <a class="card-link active">Andra källor</a>
     </div>
     <form v-on:submit.prevent="searchRemote()">
-      <label for="search">{{"Search" | translatePhrase}}</label>
+      <label class="hidden" for="search">{{"Search" | translatePhrase}}</label>
       <div>
         <div class="form-group search-field">
           <input type="text" class="form-control search-input" placeholder="ISBN eller valfria sökord" id="search" v-model="remoteQuery">
@@ -207,6 +207,12 @@ export default {
   .remote-search {
     .remote-search-controls {
       padding: 20px;
+      .search-type-button-container {
+        margin: 1.5em 0 1em;
+      }
+      .hidden {
+        display: none;
+      }
       .search-field {
         display: flex;
         .search-input {
