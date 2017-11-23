@@ -12,6 +12,7 @@ import ProcessedLabel from './processedlabel';
 import ToolTipComponent from './tooltip-component';
 import EntitySearchList from './entity-search-list';
 import EntitySummary from './entity-summary';
+import SummaryActionButton from './summary-action-button';
 import LensMixin from './mixins/lens-mixin';
 import { mixin as clickaway } from 'vue-clickaway';
 import { changeStatus, changeNotification } from '../vuex/actions';
@@ -36,12 +37,14 @@ export default {
         styling: 'brand',
         event: 'extract-item',
         show: true,
+        inspectAction: false,
       },
       listItemSettings: {
         text: 'Replace local entity',
         styling: 'brand',
         event: 'replace-local',
         show: true,
+        inspectAction: true,
       }
     };
   },
@@ -77,6 +80,7 @@ export default {
   components: {
     'entity-search-list': EntitySearchList,
     'entity-summary': EntitySummary,
+    'summary-action-button': SummaryActionButton,
   },
   watch: {
     keyword(value) {
@@ -265,13 +269,15 @@ export default {
               </div>
             </div>
             <div class="summary-container">
-              <entity-summary v-show="!extracting" :action-settings="localEntitySettings" :focus-data="itemInfo" :lines="4"></entity-summary>
+              <entity-summary :action-settings="localEntitySettings" :focus-data="itemInfo" :lines="4"></entity-summary>
+              <summary-action-button v-show="!extracting" :settings="localEntitySettings"></summary-action-button>
             </div>
           </div>
           <div class="result-list-container">
             <div v-show="displaySearchList" class="search-result">
               <div v-for="item in searchResult" class="search-item">
-                <entity-summary :action-settings="addPayload(item)" :add-link="true" :focus-data="item" :lines="4"></entity-summary>
+                <entity-summary :focus-data="item" :lines="4"></entity-summary>
+                <summary-action-button :settings="addPayload(item)"></summary-action-button>
               </div>
             </div>
             <div v-show="extracting || keyword.length === 0 || loading || foundNoResult" class="search-status-container">
@@ -313,20 +319,9 @@ export default {
               border: solid #777;
               margin: 4px;
               border-width: 1px;
-              code {
-                color: @black;
-              }
-              // cursor: pointer;
-              // transition: all 0.1s ease;
-              // &:hover {
-              //   background: darken(@white, 5%);
-              //   .header {
-              //     color: darken(@brand-primary, 5%);
-              //   }
-              // }
-              // .header {
-              //   color: @brand-primary;
-              // }
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
             }
           }
           .search-status-container {
@@ -364,6 +359,9 @@ export default {
             border: 1px solid #888;
             background: @white;
             margin: 0.2em 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
           }
           .extract-controls {
             padding: 0.5em 0 0 0;

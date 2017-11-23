@@ -2,6 +2,7 @@
 import * as _ from 'lodash';
 import LensMixin from './mixins/lens-mixin';
 import EntitySummary from './entity-summary';
+import SummaryActionButton from './summary-action-button';
 import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData } from '../vuex/getters';
 
 export default {
@@ -27,6 +28,7 @@ export default {
         styling: 'brand',
         event: 'add-entity',
         show: (this.disabledIds.indexOf(this.focusData['@id']) === -1),
+        inspectAction: true,
       },
     }
   },
@@ -40,6 +42,7 @@ export default {
   },
   components: {
     'entity-summary': EntitySummary,
+    'summary-action-button': SummaryActionButton,
   },
   watch: {
   },
@@ -50,7 +53,8 @@ export default {
 
 <template>
   <div class="search-result-item">
-    <entity-summary :action-settings="addPayload" :focus-data="focusData" :lines="4" :add-link="true"></entity-summary>
+    <entity-summary :focus-data="focusData" :lines="4"></entity-summary>
+    <summary-action-button v-show="listItemSettings.show" :settings="addPayload"></summary-action-button>
   </div>
 </template>
 
@@ -62,6 +66,9 @@ export default {
   border: solid #777;
   margin: 4px;
   border-width: 1px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   code {
     color: @black;
   }
