@@ -96,7 +96,6 @@ export default {
     <div class="categorization">
       {{categorization.join(', ')}} {{ isLocal ? '{lokal entitet}' : '' }}
     </div>
-    <div class="id">{{focusData['@id']}}</div>
   </div>
   <div class="main-info">
     <h3 class="header">
@@ -104,6 +103,7 @@ export default {
       <a v-if="!isImport && renderLink" :class="{'blue-link': settings.siteInfo.title === 'id.kb.se'}" title="{{ header.join(', ') }}" :href="focusData['@id']">{{ header.join(', ') }}</a>
       <span v-if="!isImport && !renderLink" title="{{ header.join(', ') }}">{{ header.join(', ') }}</span>
     </h3>
+    <div class="id" v-if="identifiers.length > 0">{{ identifiers[0] }}</div>
     <div class="info">
       {{ sub.join(' · ') }}
     </div>
@@ -142,17 +142,13 @@ export default {
       min-height: 1.2em;
       margin: 0px;
     }
-    ul.info {
-      list-style-type: none;
-      padding: 0px;
+    .id {
+      color: #333;
+      font-weight: bold;
+      margin-top: -0.3em;
+      margin-bottom: 0.5em;
     }
-  }
-  .identifiers {
-    text-align: right;
-    padding: 5px 8px 0px 0px;
-    font-weight: bold;
-    max-width: 30%;
-    ul {
+    ul.info {
       list-style-type: none;
       padding: 0px;
     }
@@ -171,9 +167,6 @@ export default {
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-    }
-    .id {
-      
     }
   }
 }
