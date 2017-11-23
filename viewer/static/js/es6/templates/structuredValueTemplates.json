@@ -59,10 +59,10 @@
     "date": [""]
 
   },
-  "extent": [{
+  "Extent": {
     "@type": "Extent",
     "label": ""
-  }],
+  },
   "Note": {
     "@type": "Note",
     "label": ""
