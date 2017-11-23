@@ -125,6 +125,7 @@ export default {
   }
   .main-info {
     height: 7.5em;
+    overflow: hidden;
     width: 100%;
     a {
       color: @brand-primary;
