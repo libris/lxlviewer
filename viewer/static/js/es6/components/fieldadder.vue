@@ -164,6 +164,25 @@ export default {
     },
   },
   methods: {
+    getPropClassInfo(termObj) {
+      if (_.isArray(termObj['@type'])) {
+        if (termObj['@type'].indexOf('DatatypeProperty') > -1 && termObj['@type'].indexOf('DatatypeProperty') > -1) {
+          return StringUtil.getUiPhraseByLang('Literals and entities', this.settings.language);
+        } else if (termObj['@type'].indexOf('DatatypeProperty') > -1) {
+          return StringUtil.getUiPhraseByLang('Literals', this.settings.language);
+        } else if (termObj['@type'].indexOf('ObjectProperty') > -1) {
+          return StringUtil.getUiPhraseByLang('Entities', this.settings.language);
+        } else {
+          return '';
+        }
+      } else {
+        if (termObj['@type'] === 'DatatypeProperty') {
+          return StringUtil.getUiPhraseByLang('Literals', this.settings.language);
+        } else if (termObj['@type'] === 'ObjectProperty') {
+          return StringUtil.getUiPhraseByLang('Entities', this.settings.language);
+        }
+      }
+    },
     toggleWindowFade(e) {
       const targetElement = e.target;
       const threshold = targetElement.scrollHeight;
@@ -262,6 +281,14 @@ export default {
             <span class="filterInfo">{{ "Showing" | translatePhrase }} {{ filteredResults.length }} {{ "of" | translatePhrase }} {{allowed ? allowed.length : '0'}} {{ "total" | translatePhrase }}</span>
           </span>
         </div>
+        <div class="column-titles">
+          <span class="fieldLabel">
+            {{ "Field label" | translatePhrase }}
+          </span>
+          <span class="classInfo">
+            {{ "Recieves" | translatePhrase }}
+          </span>
+        </div>
         <ul v-if="active" id="fields-window" class="field-list">
           <li v-on:mouseover="selectedIndex = $index" v-bind:class="{ 'added': prop.added, 'available': !prop.added, 'selected': $index == selectedIndex }" v-for="prop in filteredResults" track-by="$index" @click="addField(prop, true)">
             <span class="addControl">
@@ -270,8 +297,11 @@ export default {
             </span>
             <span class="fieldLabel" title="{{prop.label | capitalize }}">
               {{prop.label | capitalize }}
+              <span class="typeLabel">{{ prop.item['@id'] | removeDomain }}</span>
             </span>
-            <span class="typeLabel">{{ prop.item['@id'] | removeDomain }}</span>
+            <span class="classInfo">
+              {{ getPropClassInfo(prop.item) }}
+            </span>
           </li>
           <li v-if="filteredResults.length === 0"><i>{{ "Did not find any fields" | translatePhrase }}...</i></li>
         </ul>
@@ -402,9 +432,22 @@ export default {
         }
       }
     }
-    ul {
+    .column-titles {
+      background-color: @white;
       border: solid @gray;
-      border-width: 1px 0px 0px 0px;
+      border-width: 0px 0px 1px 0px;
+      > * {
+        display: inline-block;
+      }
+      .fieldLabel {
+        margin-left: 8%;
+        width: 45%;
+      }
+      .classInfo {
+        width: 40%;
+      }
+    }
+    ul {
       border-radius: 0px 0px 3px 3px;
       width: 100%;
       height: 95%;
@@ -435,27 +478,29 @@ export default {
         align-items: center;
         .fieldLabel {
           display: inline-block;
-          padding-left: 1em;
           width: 45%;
           font-size: 16px;
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
+          .typeLabel {
+            display: block;
+            font-size: 85%;
+            font-family: monospace;
+          }
         }
-        .typeLabel {
+        .classInfo {
           display: inline-block;
           width: 40%;
-          margin-left: 1em;
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
           font-size: 85%;
-          font-family: monospace;
         }
         .addControl {
           float: left;
-          margin-left: 1em;
-          margin-right: 1em;
+          width: 8%;
+          text-align: center;
           a {
             cursor: pointer;
           }

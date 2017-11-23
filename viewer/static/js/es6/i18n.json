@@ -121,6 +121,11 @@
     "Instantiations of this work": "Instanser av detta verk",
     "Show instantiations": "Visa instanser",
     "Instantiations": "Instanser",
-    "View": "Granska"
+    "View": "Granska",
+    "Literals and entities": "Literaler och entiteter",
+    "Literals": "Literaler",
+    "Entities": "Entiteter",
+    "Recieves": "Tar emot",
+    "Field label": "Fältetikett"
   }
 }
