@@ -37,12 +37,14 @@ export default {
         styling: 'brand',
         event: 'extract-item',
         show: true,
+        inspectAction: false,
       },
       listItemSettings: {
         text: 'Replace local entity',
         styling: 'brand',
         event: 'replace-local',
         show: true,
+        inspectAction: true,
       }
     };
   },

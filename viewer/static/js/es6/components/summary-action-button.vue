@@ -8,6 +8,7 @@ export default {
       text: 'button',
       event: '',
       payload: {},
+      inspectAction: false,
     },
   },
   data() {
@@ -41,6 +42,10 @@ export default {
       >
       {{settings.text | translatePhrase}}
     </button>
+    <a v-if="settings.inspectAction" :href="settings.payload['@id']" target="_blank" class="inspect-link">
+      <i class="fa fa-external-link" aria-hidden="true"></i>
+      {{"View" | translatePhrase}}
+    </a>
   </div>
 </template>
 
@@ -50,9 +55,12 @@ export default {
 .action-container {
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: center;
   margin-bottom: 4px;
   padding: 0.5em;
+  > a {
+    margin-top: 0.8em;
+  }
   > button {
     min-width: 90px;
     padding: 3px 10px;

@@ -28,6 +28,7 @@ export default {
         styling: 'brand',
         event: 'add-entity',
         show: (this.disabledIds.indexOf(this.focusData['@id']) === -1),
+        inspectAction: true,
       },
     }
   },
