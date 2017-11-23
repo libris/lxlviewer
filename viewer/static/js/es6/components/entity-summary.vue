@@ -1,5 +1,4 @@
 <script>
-import SummaryActionButton from './summary-action-button';
 import LensMixin from './mixins/lens-mixin';
 import * as StringUtil from '../utils/string';
 import { getSettings, getVocabulary, getContext, getDisplayDefinitions, getEditorData } from '../vuex/getters';
@@ -81,7 +80,6 @@ export default {
     },
   },
   components: {
-    'summary-action-button': SummaryActionButton,
   },
   watch: {
   },

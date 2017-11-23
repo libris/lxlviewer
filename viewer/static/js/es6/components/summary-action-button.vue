@@ -34,7 +34,7 @@ export default {
 </script>
 
 <template>
-  <div v-if="settings.show" class="action-container">
+  <div class="action-container">
     <button
       @click="triggerAction()"
       :class="settings.styling"
@@ -52,6 +52,7 @@ export default {
   flex-direction: column;
   align-items: flex-end;
   margin-bottom: 4px;
+  padding: 0.5em;
   > button {
     min-width: 90px;
     padding: 3px 10px;
