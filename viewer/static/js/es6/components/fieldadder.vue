@@ -20,6 +20,7 @@ export default {
     path: '',
     index: Number,
     editingObject: '',
+    entityType: '',
   },
   vuex: {
     getters: {
@@ -271,7 +272,7 @@ export default {
       <div class="window"  v-if="active" :class="{'at-bottom': fieldListBottom}">
         <div class="header">
           <span class="title">
-            {{ "Add field" | translatePhrase }}
+            {{ "Add field" | translatePhrase }}: {{ entityType | labelByLang }}
           </span>
           <span class="windowControl">
             <i v-on:click="hide" class="fa fa-close"></i>
