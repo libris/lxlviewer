@@ -287,7 +287,7 @@ export default {
             {{ "Field label" | translatePhrase }}
           </span>
           <span class="classInfo">
-            {{ "Recieves" | translatePhrase }}
+            {{ "Can contain" | translatePhrase }}
           </span>
         </div>
         <ul v-if="active" id="fields-window" class="field-list">
