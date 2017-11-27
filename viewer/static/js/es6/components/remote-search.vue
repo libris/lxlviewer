@@ -30,6 +30,7 @@ export default {
       importData: [],
       showList: true,
       importJson: '',
+      selectedDatabases: [],
     };
   },
   components: {
@@ -43,6 +44,23 @@ export default {
       this.$nextTick(() => {
         document.getElementById("importForm").submit();
       });
+    },
+  },
+  watch: {
+    databases: {
+      handler: function() {
+        const selected = [];
+        const dbs = _.filter(this.databases.list, function (o) {
+          return o.active;
+        });
+        if (dbs.length > 0) {
+          for (let i = 0; i < dbs.length; i++) {
+            selected.push(dbs[i].item.database);
+          }
+          this.selectedDatabases = selected;
+        }
+      },
+      deep: true,
     },
   },
   methods: {
@@ -62,6 +80,11 @@ export default {
         }
         vself.databases.list = newDbList;
         vself.databases.state = 'complete';
+        if (history.state !== null) {
+          vself.selectedDatabases = history.state.selectedDatabases;
+          vself.attachResult(history.state);
+          this.showList = false;
+        }
         // if (vself.q.length > 0) {
         //   vself.searchRemote();
         // }
@@ -89,10 +112,11 @@ export default {
       vself.remoteResult.state = 'loading';
       this.remoteSearch(q, databases)
       .then((response) => {
+        const clonedResponse = _.cloneDeep(response);
+        clonedResponse.selectedDatabases = this.selectedDatabases;
         vself.remoteResult = response;
-        vself.convertedItems = this.convertResult(response);
-        vself.importData = response.items;
-        vself.remoteResult.state = 'complete';
+        history.pushState(clonedResponse, 'unused');
+        this.attachResult(clonedResponse);
       }, () => {
         vself.remoteResult.state = 'error';
       });
@@ -127,22 +151,18 @@ export default {
         this.databases.list[index].active = !this.databases.list[index].active;
       }
     },
+    attachResult(response) {
+      const convertedResult = this.convertResult(response);
+      this.convertedItems = convertedResult;
+      this.importData = response.items;
+      this.remoteResult.state = 'complete';
+    },
   },
   ready() {
     this.remoteQuery = this.q;
     this.loadRemoteDatabases();
   },
   computed: {
-    selectedDatabases() {
-      const selected = [];
-      const dbs = _.filter(this.databases.list, function (o) {
-        return o.active;
-      });
-      for (let i = 0; i < dbs.length; i++) {
-        selected.push(dbs[i].item.database);
-      }
-      return selected;
-    },
   },
 };
 </script>
