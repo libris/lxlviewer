@@ -169,7 +169,7 @@ export default {
 
 <template>
 <div class="remote-search">
-  <form id="importForm" method="POST" action="/edit">
+  <form id="importForm" method="POST" action="/edit" target="_blank">
     <textarea name="data" class="hidden">{{importJson}}</textarea>
   </form>
   <div class="panel panel-default remote-search-controls" v-show="databases.state == 'complete'">
