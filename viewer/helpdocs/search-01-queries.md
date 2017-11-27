@@ -8,7 +8,7 @@ tags:
 
 # Sökindex
 
-I Libris XL används [elasticsearch](https://www.elastic.co/), en sökmotor för fulltext och analys.
+I Libris XL används en sökmotor för fulltext och analys.
 
 
 ## Operatorer för frågespråk
