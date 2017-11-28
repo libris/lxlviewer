@@ -112,10 +112,11 @@ export default {
 <style lang="less">
 @import './_variables.less';
 .entity-summary {
-  font-size: 12px;
+  width: 100%;
+  font-size: 13px;
   padding: 0.5em 1em;
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   justify-content: space-between;
   .actions {
     flex-basis: 3em;
@@ -124,7 +125,6 @@ export default {
   .main-info {
     height: 7.5em;
     overflow: hidden;
-    width: 100%;
     a {
       color: @brand-primary;
       &.blue-link {
@@ -156,8 +156,6 @@ export default {
     }
   }
   .sub {
-    flex-basis: 100%;
-    display: flex;
     border-width: 0px;
     .categorization {
       color: #8a8a8a;

@@ -276,7 +276,9 @@ export default {
           <div class="result-list-container">
             <div v-show="displaySearchList" class="search-result">
               <div v-for="item in searchResult" class="search-item">
-                <entity-summary :focus-data="item" :lines="4"></entity-summary>
+                <div class="entity-summary-container">
+                  <entity-summary :focus-data="item" :lines="4"></entity-summary>
+                </div>
                 <summary-action-button :settings="addPayload(item)"></summary-action-button>
               </div>
             </div>
@@ -322,6 +324,9 @@ export default {
               display: flex;
               justify-content: space-between;
               align-items: center;
+              .entity-summary-container {
+                max-width: 80%;
+              }
             }
           }
           .search-status-container {

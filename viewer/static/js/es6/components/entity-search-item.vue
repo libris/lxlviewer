@@ -53,7 +53,9 @@ export default {
 
 <template>
   <div class="search-result-item">
-    <entity-summary :focus-data="focusData" :lines="4"></entity-summary>
+    <div class="search-item-entity-summary-container">
+      <entity-summary :focus-data="focusData" :lines="4"></entity-summary>
+    </div>
     <summary-action-button v-show="listItemSettings.show" :settings="addPayload"></summary-action-button>
   </div>
 </template>
@@ -63,6 +65,9 @@ export default {
 @import './_variables.less';
 
 .search-result-item {
+  .search-item-entity-summary-container {
+    max-width: 85%;
+  }
   border: solid #777;
   margin: 4px;
   border-width: 1px;
