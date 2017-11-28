@@ -126,10 +126,10 @@ export function getImportObject(graph) {
   const recordId = newRecord['@id'];
   const mainEntityId = newMainEntity['@id'];
 
-  newRecord['@id'] = newRecord['@id'].replace(recordId, '_:TEMP_ID');
-  newRecord.mainEntity['@id'] = newRecord.mainEntity['@id'].replace(mainEntityId, '_:TEMP_ID#it');
+  newRecord['@id'] = newRecord['@id'].replace(recordId, 'https://id.kb.se/TEMPID');
+  newRecord.mainEntity['@id'] = newRecord.mainEntity['@id'].replace(mainEntityId, 'https://id.kb.se/TEMPID#it');
 
-  newMainEntity['@id'] = newMainEntity['@id'].replace(mainEntityId, '_:TEMP_ID#it');
+  newMainEntity['@id'] = newMainEntity['@id'].replace(mainEntityId, 'https://id.kb.se/TEMPID#it');
 
   itemGraph.push(newRecord);
   itemGraph.push(newMainEntity);
@@ -143,13 +143,13 @@ export function getItemObject(itemOf, heldBy, instance) {
   const itemObj = {
     record: {
       '@type': 'Record',
-      '@id': '_:TEMP_ID',
+      '@id': 'https://id.kb.se/TEMPID',
       'mainEntity': {
-        '@id': '_:TEMP_ID#it',
+        '@id': 'https://id.kb.se/TEMPID#it',
       },
     },
     mainEntity: {
-      '@id': '_:TEMP_ID#it',
+      '@id': 'https://id.kb.se/TEMPID#it',
       '@type': 'Item',
       'itemOf': {
         '@id': itemOf,
@@ -174,7 +174,7 @@ export function getItemObject(itemOf, heldBy, instance) {
 
 export function getObjectAsRecord(mainEntity, record = {}) {
   const newMainEntity = _.cloneDeep(mainEntity);
-  newMainEntity['@id'] = '_:TEMP_ID#it';
+  newMainEntity['@id'] = 'https://id.kb.se/TEMPID#it';
   _.unset(newMainEntity, 'sameAs');
   const newRecord = _.cloneDeep(record);
   // TODO: Exclude more fields?
@@ -185,9 +185,9 @@ export function getObjectAsRecord(mainEntity, record = {}) {
   _.unset(newRecord, 'sameAs');
   const blankRecord = {
     '@type': 'Record',
-    '@id': '_:TEMP_ID',
+    '@id': 'https://id.kb.se/TEMPID',
     'mainEntity': {
-      '@id': '_:TEMP_ID#it',
+      '@id': 'https://id.kb.se/TEMPID#it',
     },
   };
   const mergedRecord = Object.assign(newRecord, blankRecord);

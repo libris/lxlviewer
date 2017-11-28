@@ -65,8 +65,8 @@ export default {
       const templateMainEntity = Object.assign(this.baseMainEntity, templateValue.mainEntity);
 
       // CLEAN IDS
-      templateRecord['@id'] = '_:TEMP_ID';
-      templateMainEntity['@id'] = '_:TEMP_ID#it';
+      templateRecord['@id'] = 'https://id.kb.se/TEMPID';
+      templateMainEntity['@id'] = 'https://id.kb.se/TEMPID#it';
 
       this.thingData = {
         '@graph': [
@@ -86,7 +86,7 @@ export default {
   computed: {
     baseMainEntity() {
       const baseMainEntity = {
-        '@id': '_:TEMP_ID#it',
+        '@id': 'https://id.kb.se/TEMPID#it',
         '@type': this.chosenType,
       };
       return baseMainEntity;
@@ -94,12 +94,12 @@ export default {
     baseRecord() {
       const baseRecord = {
         '@type': 'Record',
-        '@id': '_:TEMP_ID',
+        '@id': 'https://id.kb.se/TEMPID',
         'assigner': {
           '@id': `https://libris.kb.se/library/${this.user.settings.activeSigel}`,
         },
         'mainEntity': {
-          '@id': '_:TEMP_ID#it',
+          '@id': 'https://id.kb.se/TEMPID#it',
         },
       };
       return baseRecord;

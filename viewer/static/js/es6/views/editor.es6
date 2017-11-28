@@ -177,7 +177,7 @@ export default class Editor extends View {
         'new-editordata'(newData) {
           this.syncData(newData);
           const atId = newData.record['@id'];
-          if (!atId || atId === '_:TEMP_ID') {
+          if (!atId || atId === 'https://id.kb.se/TEMPID') {
             this.editItem();
             history.pushState(newData, 'unused', '/edit');
           } else {
@@ -354,7 +354,7 @@ export default class Editor extends View {
             this.editorData.quoted
           );
 
-          if (!RecordId || RecordId === '_:TEMP_ID') { // No ID -> create new
+          if (!RecordId || RecordId === 'https://id.kb.se/TEMPID') { // No ID -> create new
             this.doCreate(obj);
           } else { // ID exists -> update
             this.doUpdate(RecordId, obj, ETag);
@@ -418,7 +418,7 @@ export default class Editor extends View {
         this.$dispatch('add-linked', this.editorData.mainEntity);
 
         const atId = this.editorData.record['@id'];
-        if (!atId || atId === '_:TEMP_ID') {
+        if (!atId || atId === 'https://id.kb.se/TEMPID') {
           this.editItem();
           this.changeStatus('isNew', true);
         }

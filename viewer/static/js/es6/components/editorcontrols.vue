@@ -282,7 +282,7 @@ export default {
                   {{"Download compiled" | translatePhrase}}
                 </a>
               </li>
-              <li v-if="!(status.isNew || status.isCopy)">
+              <li>
                 <a @click="openMarc">
                 <i class="fa fa-fw fa-eye" aria-hidden="true"></i>
                 {{"Preview MARC21" | translatePhrase}}

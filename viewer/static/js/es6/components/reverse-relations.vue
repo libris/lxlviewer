@@ -78,7 +78,7 @@ export default {
   },
   watch: {
     recordId(newVal) {
-      if (newVal !== '_:TEMP_ID') {
+      if (newVal !== 'https://id.kb.se/TEMPID') {
         this.getRelationsInfo();
       } else {
         this.numberOfRelations = 0;
