@@ -274,7 +274,7 @@ export default {
         }
     }
     &.is-landing-page {
-        margin-top: 20vh;
+        margin-top: 10vh;
     }
     .search-controls {
         padding: 20px;
