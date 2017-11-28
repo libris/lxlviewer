@@ -6,10 +6,10 @@
       "value": {
         "record": {
           "marc:encLevel": {
-            "@id": "marc:MinimalLevel"
+            "@id": "https://id.kb.se/marc/MinimalLevel"
           },
           "descriptionConventions": [{
-              "@id": "marc:Isbd"
+              "@id": "https://id.kb.se/marc/Isbd"
             },
             {
               "@type": "DescriptionConventions",
@@ -56,7 +56,7 @@
             "date": ""
           }],
           "marc:publicationStatus": {
-            "@id": "marc:SingleKnownDateProbableDate"
+            "@id": "https://id.kb.se/marc/SingleKnownDateProbableDate"
           },
           "publicationCountry": [{
             "@id": "https://id.kb.se/country/sw"
@@ -96,7 +96,7 @@
               "@id": "https://id.kb.se/language/swe"
             }],
             "genreForm": [{
-                "@id": "marc:NotFictionNotFurtherSpecified"
+                "@id": "https://id.kb.se/marc/NotFictionNotFurtherSpecified"
               },
               {
                 "@type": "GenreForm",
@@ -161,10 +161,10 @@
       "value": {
         "record": {
           "marc:encLevel": {
-            "@id": "marc:MinimalLevel"
+            "@id": "https://id.kb.se/marc/MinimalLevel"
           },
           "descriptionConventions": [{
-              "@id": "marc:Isbd"
+              "@id": "https://id.kb.se/marc/Isbd"
             },
             {
               "@type": "DescriptionConventions",
@@ -211,7 +211,7 @@
             "date": ""
           }],
           "marc:publicationStatus": {
-            "@id": "marc:SingleKnownDateProbableDate"
+            "@id": "https://id.kb.se/marc/SingleKnownDateProbableDate"
           },
           "publicationCountry": [{
             "@id": "https://id.kb.se/country/sw"
@@ -259,7 +259,7 @@
               "@id": "https://id.kb.se/language/swe"
             }],
             "genreForm": [{
-                "@id": "marc:NotFictionNotFurtherSpecified"
+                "@id": "https://id.kb.se/marc/NotFictionNotFurtherSpecified"
               },
               {
                 "@type": "GenreForm",
@@ -330,17 +330,17 @@
         "record": {
           "@type": "Record",
           "marc:encLevel": {
-            "@id": "marc:MinimalLevel"
+            "@id": "https://id.kb.se/marc/MinimalLevel"
           },
           "descriptionConventions": [{
-            "@id": "marc:Aacr2"
+            "@id": "https://id.kb.se/marc/Aacr2"
           }],
           "descriptionLanguage": [{
             "@id": "https://id.kb.se/language/swe",
             "code": "swe"
           }],
           "marc:catalogingSource": {
-            "@id": "marc:CooperativeCatalogingProgram"
+            "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
           }
         },
         "mainEntity": {
@@ -378,10 +378,10 @@
             "@id": "https://id.kb.se/country/sw"
           }],
           "marc:publicationStatus": {
-            "@id": "marc:SingleKnownDateProbableDate"
+            "@id": "https://id.kb.se/marc/SingleKnownDateProbableDate"
           },
           "carrierType": [{
-            "@id": "marc:SoundDisc"
+            "@id": "https://id.kb.se/marc/SoundDisc"
           }],
           "extent": [{
             "@type": "Extent",
@@ -389,7 +389,7 @@
           }],
           "marc:otherPhysicalDetails": "",
           "marc:soundKindOfMaterial": {
-            "@id": "marc:PlasticWithMetal"
+            "@id": "https://id.kb.se/marc/PlasticWithMetal"
           },
           "marc:mediaTerm": "Ljudupptagning",
           "hasSeries": [{
@@ -475,7 +475,7 @@
         "record": {
           "@type": "Record",
           "marc:encLevel": {
-            "@id": "marc:MinimalLevel"
+            "@id": "https://id.kb.se/marc/MinimalLevel"
           },
           "descriptionConventions": [{
             "@id": "https://id.kb.se/marc/Aacr2"
@@ -485,7 +485,7 @@
             "code": "swe"
           }],
           "marc:catalogingSource": {
-            "@id": "marc:CooperativeCatalogingProgram"
+            "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
           }
         },
         "mainEntity": {
@@ -567,10 +567,10 @@
       "value": {
         "record": {
           "marc:encLevel": {
-            "@id": "marc:MinimalLevel"
+            "@id": "https://id.kb.se/marc/MinimalLevel"
           },
           "descriptionConventions": [{
-              "@id": "marc:Isbd"
+              "@id": "https://id.kb.se/marc/Isbd"
             },
             {
               "@type": "DescriptionConventions",
@@ -629,7 +629,7 @@
             "date": ""
           }],
           "marc:publicationStatus": {
-            "@id": "marc:SingleKnownDateProbableDate"
+            "@id": "https://id.kb.se/marc/SingleKnownDateProbableDate"
           },
           "publicationCountry": [{
             "@id": "https://id.kb.se/country/sw"
@@ -637,10 +637,10 @@
           "copyrightDate": [""],
           "marc:otherPhysicalDetails": "",
           "colorContent": {
-            "@id": "marc:Multicolored"
+            "@id": "https://id.kb.se/marc/Multicolored"
           },
           "baseMaterial": {
-            "@id": "marc:Paper"
+            "@id": "https://id.kb.se/marc/Paper"
           },
           "mediaType": [{
             "@type": "MediaType",
@@ -676,10 +676,10 @@
               "@id": "https://id.kb.se/language/swe"
             }],
             "genreForm": [{
-                "@id": "marc:MapATwoDimensionalMap"
+                "@id": "https://id.kb.se/marc/MapATwoDimensionalMap"
               },
               {
-                "@id": "marc:SingleMap"
+                "@id": "https://id.kb.se/marc/SingleMap"
               }
             ],
             "classification": [{
@@ -742,10 +742,10 @@
         "record": {
           "@type": "Record",
           "marc:encLevel": {
-            "@id": "marc:AbbreviatedLevel"
+            "@id": "https://id.kb.se/marc/AbbreviatedLevel"
           },
           "descriptionConventions": [{
-            "@id": "marc:Isbd",
+            "@id": "https://id.kb.se/marc/Isbd",
             "@type": "DescriptionConventions",
             "code": "rda"
           }],
@@ -754,7 +754,7 @@
             "code": "swe"
           }],
           "marc:catalogingSource": {
-            "@id": "marc:CooperativeCatalogingProgram"
+            "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
           }
         },
         "mainEntity": {
@@ -778,7 +778,7 @@
           }],
           "marc:otherYear": "9999",
           "marc:publicationStatus": {
-            "@id": "marc:InclusiveDatesOfCollection"
+            "@id": "https://id.kb.se/marc/InclusiveDatesOfCollection"
           },
           "publicationCountry": [{
             "@id": "https://id.kb.se/country/sw"
@@ -823,17 +823,16 @@
       "value": {
         "record": {
           "marc:encLevel": {
-            "@id": "marc:MinimalLevel"
+            "@id": "https://id.kb.se/marc/MinimalLevel"
           },
           "descriptionConventions": [{
-            "@id": "marc:Isbd"
+            "@id": "https://id.kb.se/marc/Isbd"
           }, {
             "@type": "DescriptionConventions",
             "code": "rda"
           }],
-          "created": "2017-08-28T00:00:00.0+02:00",
           "marc:catalogingSource": {
-            "@id": "marc:CooperativeCatalogingProgram"
+            "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
           },
           "@type": "Record",
           "controlNumber": "8g1xc9nw6d9bp8rt",
@@ -866,19 +865,19 @@
           "issuanceType": "Monograph",
           "@type": "StillImage",
           "genreForm": [{
-            "@id": "marc:Drawing"
+            "@id": "https://id.kb.se/marc/Drawing"
           }],
           "colorContent": {
             "@id": "https://id.kb.se/marc/BlackAndWhiteOrMonochrome"
           },
           "baseMaterial": [{
-            "@id": "marc:NonProjectedType-o"
+            "@id": "https://id.kb.se/marc/NonProjectedType-o"
           }, {
             "@type": "BaseMaterial",
             "label": "papper"
           }],
           "marc:publicationStatus": {
-            "@id": "marc:SingleKnownDateProbableDate"
+            "@id": "https://id.kb.se/marc/SingleKnownDateProbableDate"
           },
           "publicationCountry": [{
             "@id": "https://id.kb.se/country/sw"
@@ -931,7 +930,7 @@
               "@id": "https://id.kb.se/language/zxx"
             }],
             "genreForm": [{
-              "@id": "marc:Picture"
+              "@id": "https://id.kb.se/marc/Picture"
             }, {
               "@type": "GenreForm",
               "inScheme": {
@@ -1010,7 +1009,7 @@
         "record": {
           "@type": "Record",
           "marc:encLevel": {
-            "@id": "marc:MinimalLevel"
+            "@id": "https://id.kb.se/marc/MinimalLevel"
           },
           "descriptionConventions": [{
             "@id": "https://id.kb.se/marc/Aacr2"
@@ -1020,7 +1019,7 @@
             "code": "swe"
           }],
           "marc:catalogingSource": {
-            "@id": "marc:CooperativeCatalogingProgram"
+            "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
           }
         },
         "mainEntity": {
@@ -1043,7 +1042,7 @@
             "date": ""
           }],
           "marc:publicationStatus": {
-            "@id": "marc:SingleKnownDateProbableDate"
+            "@id": "https://id.kb.se/marc/SingleKnownDateProbableDate"
           },
           "publicationCountry": [{
             "@id": "https://id.kb.se/country/sw"
@@ -1081,16 +1080,16 @@
       "value": {
         "record": {
           "marc:encLevel": {
-            "@id": "marc:MinimalLevel"
+            "@id": "https://id.kb.se/marc/MinimalLevel"
           },
           "descriptionConventions": [{
-            "@id": "marc:Isbd"
+            "@id": "https://id.kb.se/marc/Isbd"
           }, {
             "@type": "DescriptionConventions",
             "code": "rda"
           }],
           "marc:catalogingSource": {
-            "@id": "marc:CooperativeCatalogingProgram"
+            "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
           },
           "@type": "Record"
         },
@@ -1098,17 +1097,17 @@
           "issuanceType": "Monograph",
           "@type": "StillImage",
           "genreForm": [{
-            "@id": "marc:Photoprint"
+            "@id": "https://id.kb.se/marc/Photoprint"
           }],
           "colorContent": {},
           "baseMaterial": [{
-            "@id": "marc:NonProjectedType-o"
+            "@id": "https://id.kb.se/marc/NonProjectedType-o"
           }, {
             "@type": "BaseMaterial",
             "label": "papper"
           }],
           "marc:publicationStatus": {
-            "@id": "marc:SingleKnownDateProbableDate"
+            "@id": "https://id.kb.se/marc/SingleKnownDateProbableDate"
           },
           "publicationCountry": [{
             "@id": "https://id.kb.se/country/sw"
@@ -1203,7 +1202,7 @@
               "@type": "Title"
             },
             "genreForm": [{
-              "@id": "marc:Picture"
+              "@id": "https://id.kb.se/marc/Picture"
             }, {
               "@type": "GenreForm",
               "prefLabel": "Porträtt",
@@ -1280,13 +1279,13 @@
       "value": {
         "record": {
           "marc:encLevel": {
-            "@id": "marc:MinimalLevel"
+            "@id": "https://id.kb.se/marc/MinimalLevel"
           },
           "descriptionConventions": [{
-            "@id": "marc:Aacr2"
+            "@id": "https://id.kb.se/marc/Aacr2"
           }],
           "marc:catalogingSource": {
-            "@id": "marc:CooperativeCatalogingProgram"
+            "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
           },
           "@type": "Record",
           "_marcUncompleted": [{
@@ -1357,7 +1356,7 @@
             }
           ],
           "marc:typeOfEntry": {
-            "@id": "marc:SuccessiveEntry"
+            "@id": "https://id.kb.se/marc/SuccessiveEntry"
           },
           "identifiedBy": [{
             "@type": "ISSN"
@@ -1383,7 +1382,7 @@
               "@id": "https://id.kb.se/language/swe"
             }],
             "genreForm": [{
-              "@id": "marc:Periodical"
+              "@id": "https://id.kb.se/marc/Periodical"
             }],
             "classification": []
           }
@@ -1397,17 +1396,17 @@
         "record": {
           "@type": "Record",
           "marc:encLevel": {
-            "@id": "marc:MinimalLevel"
+            "@id": "https://id.kb.se/marc/MinimalLevel"
           },
           "descriptionConventions": [{
-            "@id": "marc:Aacr2"
+            "@id": "https://id.kb.se/marc/Aacr2"
           }],
           "descriptionLanguage": [{
             "@id": "https://id.kb.se/language/swe",
             "code": "swe"
           }],
           "marc:catalogingSource": {
-            "@id": "marc:CooperativeCatalogingProgram"
+            "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
           }
         },
         "mainEntity": {
@@ -1434,7 +1433,7 @@
             "date": ""
           }],
           "marc:publicationStatus": {
-            "@id": "marc:SingleKnownDateProbableDate"
+            "@id": "https://id.kb.se/marc/SingleKnownDateProbableDate"
           },
           "publicationCountry": [{
             "@id": "https://id.kb.se/country/sw"
@@ -1477,16 +1476,16 @@
         "record": {
           "@type": "Record",
           "marc:encLevel": {
-            "@id": "marc:CompleteAuthorityRecord"
+            "@id": "https://id.kb.se/marc/CompleteAuthorityRecord"
           },
           "marc:romanization": {
-            "@id": "marc:NationalStandard"
+            "@id": "https://id.kb.se/marc/NationalStandard"
           },
           "marc:kindOfRecord": {
-            "@id": "marc:EstablishedHeadingRecord"
+            "@id": "https://id.kb.se/marc/EstablishedHeadingRecord"
           },
           "descriptionConventions": [{
-              "@id": "marc:Other"
+              "@id": "https://id.kb.se/marc/Other"
             },
             {
               "@type": "DescriptionConventions",
@@ -1495,16 +1494,16 @@
           ],
           "marc:headingMain": true,
           "marc:subjectSubdivision": {
-            "@id": "marc:Topical"
+            "@id": "https://id.kb.se/marc/Topical"
           },
           "marc:recordUpdate": {
-            "@id": "marc:RecordCanBeUsed"
+            "@id": "https://id.kb.se/marc/RecordCanBeUsed"
           },
           "marc:personalName": {
-            "@id": "marc:DifferentiatedPersonalName"
+            "@id": "https://id.kb.se/marc/DifferentiatedPersonalName"
           },
           "marc:level": {
-            "@id": "marc:FullyEstablishedHeading"
+            "@id": "https://id.kb.se/marc/FullyEstablishedHeading"
           },
           "descriptionLanguage": [{
             "@id": "https://id.kb.se/language/swe"
@@ -1559,7 +1558,7 @@
         "record": {
           "@type": "Record",
           "descriptionConventions": [{
-              "@id": "marc:Other"
+              "@id": "https://id.kb.se/marc/Other"
             },
             {
               "@type": "DescriptionConventions",
@@ -1571,19 +1570,19 @@
             "code": "swe"
           }],
           "marc:encLevel": {
-            "@id": "marc:CompleteAuthorityRecord"
+            "@id": "https://id.kb.se/marc/CompleteAuthorityRecord"
           },
           "marc:romanization": {
-            "@id": "marc:NationalStandard"
+            "@id": "https://id.kb.se/marc/NationalStandard"
           },
           "marc:recordUpdate": {
-            "@id": "marc:RecordCanBeUsed"
+            "@id": "https://id.kb.se/marc/RecordCanBeUsed"
           },
           "marc:personalName": {
-            "@id": "marc:DifferentiatedPersonalName"
+            "@id": "https://id.kb.se/marc/DifferentiatedPersonalName"
           },
           "marc:level": {
-            "@id": "marc:FullyEstablishedHeading"
+            "@id": "https://id.kb.se/marc/FullyEstablishedHeading"
           }
         },
         "mainEntity": {
@@ -1616,7 +1615,7 @@
         "record": {
           "@type": "Record",
           "descriptionConventions": [{
-              "@id": "marc:Other"
+              "@id": "https://id.kb.se/marc/Other"
             },
             {
               "@type": "DescriptionConventions",
@@ -1628,19 +1627,19 @@
             "code": "swe"
           }],
           "marc:encLevel": {
-            "@id": "marc:CompleteAuthorityRecord"
+            "@id": "https://id.kb.se/marc/CompleteAuthorityRecord"
           },
           "marc:romanization": {
-            "@id": "marc:NationalStandard"
+            "@id": "https://id.kb.se/marc/NationalStandard"
           },
           "marc:recordUpdate": {
-            "@id": "marc:RecordCanBeUsed"
+            "@id": "https://id.kb.se/marc/RecordCanBeUsed"
           },
           "marc:personalName": {
-            "@id": "marc:DifferentiatedPersonalName"
+            "@id": "https://id.kb.se/marc/DifferentiatedPersonalName"
           },
           "marc:level": {
-            "@id": "marc:FullyEstablishedHeading"
+            "@id": "https://id.kb.se/marc/FullyEstablishedHeading"
           }
         },
         "mainEntity": {
@@ -1656,7 +1655,7 @@
         "record": {
           "@type": "Record",
           "descriptionConventions": [{
-              "@id": "marc:Other"
+              "@id": "https://id.kb.se/marc/Other"
             },
             {
               "@type": "DescriptionConventions",
@@ -1668,19 +1667,19 @@
             "code": "swe"
           }],
           "marc:encLevel": {
-            "@id": "marc:CompleteAuthorityRecord"
+            "@id": "https://id.kb.se/marc/CompleteAuthorityRecord"
           },
           "marc:romanization": {
-            "@id": "marc:NationalStandard"
+            "@id": "https://id.kb.se/marc/NationalStandard"
           },
           "marc:recordUpdate": {
-            "@id": "marc:RecordCanBeUsed"
+            "@id": "https://id.kb.se/marc/RecordCanBeUsed"
           },
           "marc:personalName": {
-            "@id": "marc:DifferentiatedPersonalName"
+            "@id": "https://id.kb.se/marc/DifferentiatedPersonalName"
           },
           "marc:level": {
-            "@id": "marc:FullyEstablishedHeading"
+            "@id": "https://id.kb.se/marc/FullyEstablishedHeading"
           }
         },
         "mainEntity": {
@@ -1696,7 +1695,7 @@
         "record": {
           "@type": "Record",
           "descriptionConventions": [{
-              "@id": "marc:Other"
+              "@id": "https://id.kb.se/marc/Other"
             },
             {
               "@type": "DescriptionConventions",
@@ -1708,19 +1707,19 @@
             "code": "swe"
           }],
           "marc:encLevel": {
-            "@id": "marc:CompleteAuthorityRecord"
+            "@id": "https://id.kb.se/marc/CompleteAuthorityRecord"
           },
           "marc:romanization": {
-            "@id": "marc:NationalStandard"
+            "@id": "https://id.kb.se/marc/NationalStandard"
           },
           "marc:recordUpdate": {
-            "@id": "marc:RecordCanBeUsed"
+            "@id": "https://id.kb.se/marc/RecordCanBeUsed"
           },
           "marc:personalName": {
-            "@id": "marc:DifferentiatedPersonalName"
+            "@id": "https://id.kb.se/marc/DifferentiatedPersonalName"
           },
           "marc:level": {
-            "@id": "marc:FullyEstablishedHeading"
+            "@id": "https://id.kb.se/marc/FullyEstablishedHeading"
           }
         },
         "mainEntity": {
@@ -1741,16 +1740,16 @@
             "@id": "https://id.kb.se/language/swe"
           }],
           "marc:encLevel": {
-            "@id": "marc:CompleteAuthorityRecord"
+            "@id": "https://id.kb.se/marc/CompleteAuthorityRecord"
           },
           "marc:kindOfRecord": {
-            "@id": "marc:EstablishedHeadingRecord"
+            "@id": "https://id.kb.se/marc/EstablishedHeadingRecord"
           },
           "marc:recordUpdate": {
-            "@id": "marc:RecordCanBeUsed"
+            "@id": "https://id.kb.se/marc/RecordCanBeUsed"
           },
           "marc:subjectHeading": {
-            "@id": "marc:Other"
+            "@id": "https://id.kb.se/marc/Other"
           }
         },
         "mainEntity": {
@@ -1790,16 +1789,16 @@
             "code": "swe"
           }],
           "marc:encLevel": {
-            "@id": "marc:CompleteAuthorityRecord"
+            "@id": "https://id.kb.se/marc/CompleteAuthorityRecord"
           },
           "marc:kindOfRecord": {
-            "@id": "marc:EstablishedHeadingRecord"
+            "@id": "https://id.kb.se/marc/EstablishedHeadingRecord"
           },
           "marc:recordUpdate": {
-            "@id": "marc:RecordCanBeUsed"
+            "@id": "https://id.kb.se/marc/RecordCanBeUsed"
           },
           "marc:subjectHeading": {
-            "@id": "marc:Other"
+            "@id": "https://id.kb.se/marc/Other"
           }
         },
         "mainEntity": {
@@ -1821,25 +1820,25 @@
       "value": {
         "record": {
           "marc:encLevel": {
-            "@id": "marc:CompleteAuthorityRecord"
+            "@id": "https://id.kb.se/marc/CompleteAuthorityRecord"
           },
           "marc:romanization": {
-            "@id": "marc:NationalStandard"
+            "@id": "https://id.kb.se/marc/NationalStandard"
           },
           "marc:kindOfRecord": {
-            "@id": "marc:EstablishedHeadingRecord"
+            "@id": "https://id.kb.se/marc/EstablishedHeadingRecord"
           },
           "descriptionConventions": {
-            "@id": "marc:CatalogingRulesType-c"
+            "@id": "https://id.kb.se/marc/CatalogingRulesType-c"
           },
           "marc:subjectHeading": {
-            "@id": "marc:Other"
+            "@id": "https://id.kb.se/marc/Other"
           },
           "marc:recordUpdate": {
-            "@id": "marc:RecordCanBeUsed"
+            "@id": "https://id.kb.se/marc/RecordCanBeUsed"
           },
           "marc:level": {
-            "@id": "marc:FullyEstablishedHeading"
+            "@id": "https://id.kb.se/marc/FullyEstablishedHeading"
           },
           "descriptionLanguage": [{
             "@id": "https://id.kb.se/language/swe"
@@ -1900,25 +1899,25 @@
         "record": {
           "@type": "Record",
           "descriptionConventions": {
-            "@id": "marc:CatalogingRulesType-c"
+            "@id": "https://id.kb.se/marc/CatalogingRulesType-c"
           },
           "descriptionLanguage": [{
             "@id": "https://id.kb.se/language/swe"
           }],
           "marc:encLevel": {
-            "@id": "marc:CompleteAuthorityRecord"
+            "@id": "https://id.kb.se/marc/CompleteAuthorityRecord"
           },
           "marc:subjectSubdivision": {
-            "@id": "marc:Topical"
+            "@id": "https://id.kb.se/marc/Topical"
           },
           "marc:kindOfRecord": {
-            "@id": "marc:EstablishedHeadingRecord"
+            "@id": "https://id.kb.se/marc/EstablishedHeadingRecord"
           },
           "marc:recordUpdate": {
-            "@id": "marc:RecordCanBeUsed"
+            "@id": "https://id.kb.se/marc/RecordCanBeUsed"
           },
           "marc:subjectHeading": {
-            "@id": "marc:Other"
+            "@id": "https://id.kb.se/marc/Other"
           }
         },
         "mainEntity": {

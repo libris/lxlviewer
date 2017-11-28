@@ -2,7 +2,7 @@
   "instance": {
     "record": {
       "marc:catalogingSource": {
-        "@id": "marc:CooperativeCatalogingProgram"
+        "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
       }
     },
     "mainEntity": {
@@ -15,7 +15,7 @@
   "work": {
     "record": {
       "marc:catalogingSource": {
-        "@id": "marc:CooperativeCatalogingProgram"
+        "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
       }
     },
     "mainEntity": {
@@ -30,7 +30,7 @@
   "agent": {
     "record": {
       "marc:catalogingSource": {
-        "@id": "marc:CooperativeCatalogingProgram"
+        "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
       }
     },
     "mainEntity": {
@@ -40,7 +40,7 @@
   "concept": {
     "record": {
       "marc:catalogingSource": {
-        "@id": "marc:CooperativeCatalogingProgram"
+        "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
       }
     },
     "mainEntity": {
