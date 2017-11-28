@@ -301,7 +301,7 @@ export default {
             <i class="fa fa-undo" aria-hidden="true"></i>
             {{"Undo" | translatePhrase}}
           </button>
-          <button class="toolbar-button" v-show="status.inEdit" @click="cancelEdit">
+          <button class="toolbar-button" v-show="status.inEdit && !(status.isNew || status.isCopy)" @click="cancelEdit">
             <i class="fa fa-times" aria-hidden="true" v-show="!loadingCancel"></i>
             <i class="fa fa-fw fa-circle-o-notch fa-spin" aria-hidden="true" v-show="loadingCancel"></i>
             {{"Cancel" | translatePhrase}}
