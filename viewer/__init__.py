@@ -188,10 +188,11 @@ def thingview(path, suffix=None):
     #    path, suffix = path.rsplit('.')
 
     whelk_accept_header = _get_view_data_accept_header(request, suffix)
+    query_params = _filter_query_params(request.args)
 
     resource_id = _get_served_uri(request.url_root, path)
     resp = _proxy_request(request, session, accept_header=whelk_accept_header,
-            url_path=resource_id)
+            url_path=resource_id, query_params=query_params)
 
     if resp.status_code > 200:
         return resp
@@ -206,6 +207,15 @@ def _get_view_data_accept_header(request, suffix):
         return 'application/json'
     else:
         return None
+
+
+def _filter_query_params(request_args):
+    params = MultiDict([])
+    version = request_args.get('version')
+    if version:
+        params.add('version', version)
+
+    return params
 
 
 @app.route('/find', methods=R_METHODS)
