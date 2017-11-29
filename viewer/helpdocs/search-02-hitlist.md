@@ -1,7 +1,7 @@
 ---
 section: Sök
 title: Träfflista
-order: 110
+order: 2
 tags:
 - search
 ---
