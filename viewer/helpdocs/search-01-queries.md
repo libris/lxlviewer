@@ -1,7 +1,7 @@
 ---
 section: Sök
 title: Utforma sökfrågor
-order: 10
+order: 100
 tags:
 - search
 ---
