@@ -3,7 +3,7 @@ section: Redigering
 title: Entiteter
 tags:
 - editor
-order: 3
+order: 13
 ---
 
 # Entiteter
