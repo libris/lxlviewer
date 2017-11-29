@@ -19,10 +19,10 @@ När du ska lägga till en entitet är första steget att göra en sökning för
 ### Lägg till entitet eller, skapa lokal entitet
 När du gjort en entitetssökning kan du: 
 
-**Lägga till entitet**  
+**Lägga till entitet:**  
 Att du fått fram ett sökresultat där du identifierat en entitet att lägga till via “Lägg till entitet”. Om du fått fram ett önskat sökresultat kan du lägga till den relevanta entiteten genom att klicka på “Lägg till”. Entiteten lägger sig då i posten som en länk.  
 
-**Skapa lokal entitet**
+**Skapa lokal entitet:**
 Om du inte identifierar en relevant entitet att lägga till i ditt sökresultat. Då kan du istället “Skapa en lokal entitet”. Om du inte hittar en lämplig länkad entitet genom sökning att lägga till kan du Skapa lokal entitet. Då skapas en lokal entitet som du kan redigera och göra länkbar. 
 
 
@@ -32,10 +32,10 @@ Eftersom det nya katalogiseringsverktyget bygger på Länkad data finns det möj
 ### Ersätt lokal entitet eller, skapa och länka entitet
 När du gjort din sökning kan du: 
 
-**Ersätta lokal entitet**
+**Ersätta lokal entitet:**
 Om du får fram ett sökresultat där du identifierar en entitet att ersätta den lokala entiteten med, kan du välja “Ersätt lokal entitet” Det betyder att du ersätter all entitetsinformation som finns lokalt i entiteten med informationen i den länkade entiteten. Om du vill se den länkade posten i sin helhet, innan du avgör om du vill ersätta till den, kan du högerklicka på den och välja “Öppna i ny flik”. 
 
-**Skapa och länka entitet** 
+**Skapa och länka entitet:** 
 Om du inte identifierar relevant entitet att ersätta med, kan du istället “Skapa och länka entitet”. Det betyder att du skapar en länk av din lokala entitet. All information från denne följer då med och blir till en egen post med ett eget ID. Efter att ha sparat posten kan du gå in i länken och redigera den i den nyskapade posten.
 
 
