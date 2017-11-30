@@ -95,7 +95,7 @@ export default {
       const baseRecord = {
         '@type': 'Record',
         '@id': 'https://id.kb.se/TEMPID',
-        'assigner': {
+        'descriptionCreator': {
           '@id': `https://libris.kb.se/library/${this.user.settings.activeSigel}`,
         },
         'mainEntity': {

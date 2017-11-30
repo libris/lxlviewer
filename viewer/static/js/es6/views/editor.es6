@@ -273,7 +273,9 @@ export default class Editor extends View {
       methods: {
         buildCopiedRecord() {
           const mainEntity = _.cloneDeep(this.editorData.mainEntity);
-          this.copyRecord = RecordUtil.splitJson(RecordUtil.getObjectAsRecord(mainEntity, this.editorData.record));
+          const newRecord = _.cloneDeep(this.editorData.record);
+          newRecord.descriptionCreator = { '@id': `https://libris.kb.se/library/${this.user.settings.activeSigel}` };
+          this.copyRecord = RecordUtil.splitJson(RecordUtil.getObjectAsRecord(mainEntity, newRecord));
         },
         showHelp() {
           this.$dispatch('show-help', '');
@@ -347,8 +349,16 @@ export default class Editor extends View {
         saveItem() {
           const ETag = this.editorData.record.modified;
           const RecordId = this.editorData.record['@id'];
+          const recordCopy = _.cloneDeep(this.editorData.record);
+
+          if (!RecordId || RecordId === 'https://id.kb.se/TEMPID') { // No ID -> create new
+            recordCopy.descriptionCreator = { '@id': `https://libris.kb.se/library/${this.user.settings.activeSigel}` };
+          } else { // ID exists -> update
+            recordCopy.descriptionLastModifier = { '@id': `https://libris.kb.se/library/${this.user.settings.activeSigel}` };
+          }
+
           const obj = DataUtil.getMergedItems(
-            DataUtil.removeNullValues(this.editorData.record),
+            DataUtil.removeNullValues(recordCopy),
             DataUtil.removeNullValues(this.editorData.mainEntity),
             DataUtil.removeNullValues(this.editorData.work),
             this.editorData.quoted

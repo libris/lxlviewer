@@ -44,8 +44,8 @@ export default {
 <template>
   <div class="record-summary-container">
     <div>
-      <span class="record-chip-element">Skapad {{ getCard.created }} av {{ getCard.assigner || 'okänd' }}</span> |
-      <span class="record-chip-element">Ändrad {{ getCard.modified }} av {{ getCard.descriptionModifier || 'okänd' }}</span>
+      <span class="record-chip-element">Skapad {{ getCard.created }} av {{ getCard.descriptionCreator || 'okänd' }}</span> |
+      <span class="record-chip-element">Ändrad {{ getCard.modified }} av {{ getCard.descriptionLastModifier || 'okänd' }}</span>
       <!--| <span class="show-record-toggle" v-show="!showRecord" v-on:click="toggleRecord">{{'Show admin metadata' | translatePhrase}}</span>
       <span class="show-record-toggle" v-show="showRecord" v-on:click="toggleRecord">{{'Hide admin metadata' | translatePhrase}}</span> -->
     </div>

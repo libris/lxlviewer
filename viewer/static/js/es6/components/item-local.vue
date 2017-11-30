@@ -19,7 +19,7 @@ import ItemMixin from './mixins/item-mixin';
 import LensMixin from './mixins/lens-mixin';
 import {mixin as clickaway} from 'vue-clickaway';
 import { changeNotification, changeStatus } from '../vuex/actions';
-import { getSettings, getContext, getVocabulary, getVocabularyClasses, getVocabularyProperties, getDisplayDefinitions, getEditorData, getStatus } from '../vuex/getters';
+import { getUser, getSettings, getContext, getVocabulary, getVocabularyClasses, getVocabularyProperties, getDisplayDefinitions, getEditorData, getStatus } from '../vuex/getters';
 
 export default {
   name: 'item-local',
@@ -45,6 +45,7 @@ export default {
       settings: getSettings,
       editorData: getEditorData,
       status: getStatus,
+      user: getUser,
     },
     actions: {
       changeStatus,
@@ -72,7 +73,9 @@ export default {
       return false;
     },
     extractedItem() {
-      const objAsRecord = RecordUtil.getObjectAsRecord(this.extractedMainEntity);
+      const newRecord = {};
+      newRecord.descriptionCreator = { '@id': `https://libris.kb.se/library/${this.user.settings.activeSigel}` };
+      const objAsRecord = RecordUtil.getObjectAsRecord(this.extractedMainEntity, newRecord);
       return objAsRecord;
     },
     extractedMainEntity() {

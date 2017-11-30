@@ -836,7 +836,7 @@
           },
           "@type": "Record",
           "controlNumber": "8g1xc9nw6d9bp8rt",
-          "assigner": {
+          "descriptionCreator": {
             "@type": "Organization",
             "name": "S"
           },
