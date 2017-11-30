@@ -1,7 +1,7 @@
 ---
 section: Redigering
 title: Kortkommandon
-order: 26
+order: 12
 tags:
 ---
 

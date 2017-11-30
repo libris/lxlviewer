@@ -5,6 +5,11 @@
       "identifiedBy.value": "",
       "identifiedBy.@type": "ISBN"
     }
+  },
+  {
+    "key": "title",
+    "mappings": {
+      "hasTitle.mainTitle": ""
+    }
   }
 ]
-

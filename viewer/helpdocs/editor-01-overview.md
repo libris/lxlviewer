@@ -1,7 +1,7 @@
 ---
 section: Redigering
 title: Översikt
-order: 1
+order: 10
 tags:
 - editor
 ---
