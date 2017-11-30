@@ -126,14 +126,14 @@ export default {
     .window-mixin();
     max-width: 1000px;
     .body {
-      padding: 0em 0em 0em 1em;
+      display: flex;
+      padding: 1em;
       overflow-y: scroll;
+      align-items: flex-start;
       .content {
-        padding: 2em 2em 3em 1em;
+        padding: 0 0 0 1em;
         height: 100%;
-        overflow-y: scroll;
-        width: 80%;
-        float: right;
+        flex: 70% 3 3;
         h1, h2, h3, h4 {
           font-weight: normal;
           margin-top: 0;
@@ -149,11 +149,9 @@ export default {
         }
       }
       .menu {
-        width: 20%;
-        margin: 1em 0em 0em 0em;
+        flex: 25% 1 1;
         background-color: #e6e6e6;
         border-radius: 5px;
-        float: left;
         ul.categories {
           list-style: none;
           padding: 5px 10px;
