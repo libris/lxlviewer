@@ -451,7 +451,7 @@ export default {
     ul {
       border-radius: 0px 0px 3px 3px;
       width: 100%;
-      height: 95%;
+      height: 90%;
       overflow-y: auto;
       margin: 0px;
       list-style-type: none;

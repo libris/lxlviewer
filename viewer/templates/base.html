@@ -81,12 +81,13 @@
               <span class="js-translateable" data-translateable="Sök">Search</span></a>
             </li>
             % if current_user.is_authenticated
-              <li class="navbar-item">
+              <li v-if="initialized == true && user.getPermissions().cataloger == true" class="navbar-item">
                 <a href="/createnew">
                   <div class="navbar-circle">
                     <i class="fa fa-file-text" aria-hidden="true"></i>
                   </div>
-                  <span class="js-translateable" data-translateable="Create new">Create new</a></a>
+                  <span class="js-translateable" data-translateable="Create new">Create new</span>
+                </a>
               </li>
               <li class="navbar-item user-settings">
                 <a href="/usersettings">
