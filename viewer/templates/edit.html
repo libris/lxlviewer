@@ -15,6 +15,9 @@
     <header-component id="main-header" :full="true" v-if="initialized == true && !isItem"></header-component>
     <form-component editing-object="mainEntity" :locked="!status.inEdit" v-if="initialized == true"></form-component>
     <form-component editing-object="record" :locked="!status.inEdit" v-if="initialized == true"></form-component>
+    <form action="/edit" method="POST" id="post-edit-form" target="_blank">
+      <textarea name="data">{{newData | json}}</textarea>
+    </form>
     <div v-if="relatedTitles.length > 0 && !editorData.mainEntity.hasOwnProperty('hasTitle')" class="relation-experiment">
       <span>(experiment)</span> <h3>Posten saknar titel, här är förslag</h3>
       <ul>

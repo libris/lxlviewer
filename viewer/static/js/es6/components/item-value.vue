@@ -47,7 +47,7 @@ export default {
   },
   ready() {
     this.$nextTick(() => {
-      if (!this.status.isNew && !this.status.isCopy) {
+      if (!this.status.isNew) {
         this.addFocus();
       }
       this.initializeTextarea();

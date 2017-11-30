@@ -104,7 +104,7 @@ export default class Editor extends View {
         combokeys: null,
         locked: true,
         relatedTitles: [],
-        copyRecord: {},
+        newData: {},
       },
       events: {
         'focus-update': function(value, oldValue) {
@@ -162,12 +162,8 @@ export default class Editor extends View {
         'duplicate-item': function() {
           if (!this.status.inEdit) {
             this.buildCopiedRecord();
-            if (Modernizr.history) {
-              this.$dispatch('new-editordata', this.copyRecord);
-              this.changeStatus('isCopy', true);
-              this.changeNotification('color', 'green');
-              this.changeNotification('message', `${StringUtil.getUiPhraseByLang('Copy successful', this.settings.language)}!`);
-            }
+            this.changeNotification('color', 'green');
+            this.changeNotification('message', `${StringUtil.getUiPhraseByLang('Copy successful', this.settings.language)}!`);
           }
         },
         'cancel-edit': function() {
@@ -184,7 +180,6 @@ export default class Editor extends View {
             history.replaceState(newData, 'unused', `${atId}/edit`);
             self.vm.changeStatus('inEdit', false);
             self.vm.changeStatus('isNew', false);
-            self.vm.changeStatus('isCopy', false);
           }
         },
         'form-control'(control) {
@@ -236,6 +231,9 @@ export default class Editor extends View {
         entityTitle(val) {
           this.updateDocumentTitle(val);
         },
+        newData() {
+          document.getElementById('post-edit-form').submit();
+        },
       },
       computed: {
         canEditThisType() {
@@ -275,7 +273,7 @@ export default class Editor extends View {
           const mainEntity = _.cloneDeep(this.editorData.mainEntity);
           const newRecord = _.cloneDeep(this.editorData.record);
           newRecord.descriptionCreator = { '@id': `https://libris.kb.se/library/${this.user.settings.activeSigel}` };
-          this.copyRecord = RecordUtil.splitJson(RecordUtil.getObjectAsRecord(mainEntity, newRecord));
+          this.newData = RecordUtil.getObjectAsRecord(mainEntity, newRecord);
         },
         showHelp() {
           this.$dispatch('show-help', '');

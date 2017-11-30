@@ -127,7 +127,7 @@ export default {
     cancelEdit() {
       this.loadingCancel = true;
       this.$dispatch('set-dirty', false);
-      if (this.status.isNew || this.status.isCopy) {
+      if (this.status.isNew) {
         window.history.back();
       } else {
         setTimeout(() => this.$dispatch('cancel-edit'), 0);
@@ -223,7 +223,6 @@ export default {
           <div>
             <h2 class="recordtype-label" title="{{recordType}}">
               <span>{{ recordType | labelByLang }}</span>
-              <span v-if="status.isCopy"> - [{{ "Copy" | translatePhrase }}]</span>
               <span v-if="status.isNew"> - [{{ "New record" | translatePhrase }}]</span>
             </h2>
             <record-summary></record-summary>
@@ -288,7 +287,7 @@ export default {
                 {{"Preview MARC21" | translatePhrase}}
                 </a>
               </li>
-              <li class="remove-option" v-show="!status.isNew && !status.isCopy">
+              <li class="remove-option" v-show="!status.isNew">
                 <a @click="removePost">
                 <i class="fa fa-fw fa-trash" aria-hidden="true"></i>
                 {{"Remove" | translatePhrase}} {{ recordType | labelByLang }}
@@ -301,7 +300,7 @@ export default {
             <i class="fa fa-undo" aria-hidden="true"></i>
             {{"Undo" | translatePhrase}}
           </button>
-          <button class="toolbar-button" v-show="status.inEdit && !(status.isNew || status.isCopy)" @click="cancelEdit">
+          <button class="toolbar-button" v-show="status.inEdit && !status.isNew" @click="cancelEdit">
             <i class="fa fa-times" aria-hidden="true" v-show="!loadingCancel"></i>
             <i class="fa fa-fw fa-circle-o-notch fa-spin" aria-hidden="true" v-show="loadingCancel"></i>
             {{"Cancel" | translatePhrase}}

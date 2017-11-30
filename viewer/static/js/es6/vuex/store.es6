@@ -34,7 +34,6 @@ const state = {
     keybindState: '',
     inEdit: false,
     isNew: true,
-    isCopy: false,
     saved: {
       loading: false,
       error: false,
