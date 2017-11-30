@@ -188,6 +188,9 @@ export default class Editor extends View {
         'navigate-change-history'(direction) {
           this.navigateChangeHistory(this.status.editorFocus, direction);
         },
+        'preview-holding'(holdingData) {
+          this.newData = RecordUtil.getObjectAsRecord(holdingData.mainEntity, holdingData.record);
+        },
       },
       watch: {
         copyId(value, oldval) {
