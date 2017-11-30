@@ -367,8 +367,6 @@ export default {
     margin: 0px;
     padding: 0em 0px 0px 0px;
     border-width: 1px 0px 0px 0px;
-    overflow: hidden;
-    max-height: 500vh;
     transition: 2s ease max-height;
   }
   .data-node-container-toggle {
