@@ -10,7 +10,7 @@ tags:
 
 I ett första steg inkluderar vi här ett antal vanligt förekommande specialtecken.
 
-
+|   |   |   |   |   |   |   |   |   |   |
 |---|---|---|---|---|---|---|---|---|---|
 | ă | ā | ą | æ | ć | ç | č | ď | đ | ě |
 | ē | ę | ė | ŋ | ð | ʒ | ğ | ģ | ĭ | ī |
