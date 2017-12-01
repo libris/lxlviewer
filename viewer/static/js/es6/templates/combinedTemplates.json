@@ -1724,7 +1724,20 @@
         },
         "mainEntity": {
           "@type": "Organization",
-          "name": ""
+          "name": "",
+          "establishDate": "",
+          "terminateDate": "",
+          "activityStartDate": "",
+          "activityEndDate": "",
+          "identifiedBy": [{
+            "@type": "Identifier",
+            "typeNote": "isni",
+            "value": ""
+          }],
+          "nationality": [{
+            "@id": "https://id.kb.se/nationality/e-sw---",
+            "code": "e-sw---"
+          }]
         }
       }
     }
