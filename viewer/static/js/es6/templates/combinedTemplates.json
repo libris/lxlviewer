@@ -1729,6 +1729,10 @@
           "terminateDate": "",
           "activityStartDate": "",
           "activityEndDate": "",
+          "hasHistoricalData": [{
+            "@type": "AdministrativeHistoryNote",
+            "label": ""
+          }],
           "identifiedBy": [{
             "@type": "Identifier",
             "typeNote": "isni",
