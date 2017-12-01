@@ -22,20 +22,13 @@ function getValueByLang(item, propertyId, displayDefs, langCode, context) {
   if (!langCode || typeof langCode === 'undefined') {
     throw new Error('getValueByLang was called with an undefined language code.');
   }
-  const contextList = context[1];
-  let contextProperty = propertyId;
+  let translatedValue = item[propertyId]; // Set original value
 
-  let translatedValue = item[contextProperty]; // Set original value
-
-  if (contextList.hasOwnProperty(contextProperty) && !_.isPlainObject(contextList[contextProperty])) {
-    contextProperty = contextList[contextProperty];
-  }
-
+  const contextKey = VocabUtil.getContextProperty(propertyId, context);
+  const langPropObject = VocabUtil.getContextWithContainer(contextKey, context);
   let byLangKey = '';
-  for (const key in contextList) {
-    if (contextList[key] !== null && contextList[key].hasOwnProperty('@id') && contextList[key]['@id'] === contextProperty) {
-      byLangKey = key;
-    }
+  if (typeof langPropObject !== 'undefined' && langPropObject['@container'] === '@language') {
+    byLangKey = langPropObject['@id'];
   }
   if (item[byLangKey] && item[byLangKey][langCode]) {
     translatedValue = item[byLangKey][langCode];
@@ -99,7 +92,7 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
   }
   let usedLensType;
   if (properties.length === 0) { // If none were found, traverse up inheritance tree
-    const baseClasses = VocabUtil.getBaseClassesFromArray(trueItem['@type'], vocab, settings.vocabPfx);
+    const baseClasses = VocabUtil.getBaseClassesFromArray(trueItem['@type'], vocab, settings.vocabPfx, context);
     for (let i = 0; i < baseClasses.length; i++) {
       if (typeof baseClasses[i] !== 'undefined') {
         properties = getProperties(baseClasses[i].replace(settings.vocabPfx, ''), level, displayDefs, settings);
@@ -149,16 +142,17 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
         }
         result[properties[i]] = value;
       } else if (properties.length < 3 && i === 0) {
-        const rangeOfMissingProp = VocabUtil.getRange(properties[i], vocab, settings.vocabPfx);
+        const rangeOfMissingProp = VocabUtil.getRange(item['@type'], properties[i], vocab, settings.vocabPfx, context);
         let propMissing = properties[i];
         if (rangeOfMissingProp.length > 0) {
           propMissing = rangeOfMissingProp[0];
         }
-        const expectedClassName = StringUtil.labelByLang(
+        const expectedClassName = StringUtil.getLabelByLang(
           propMissing, // Get the first one just to show something
           settings.language,
           vocab,
-          settings.vocabPfx
+          settings.vocabPfx,
+          context
         );
         result[properties[i]] = `{${expectedClassName} saknas}`;
       }
@@ -166,7 +160,7 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
   }
   if (_.isEmpty(result)) {
     window.lxlWarning(`DisplayObject was empty. @type was ${trueItem['@type']}. Used lens: "${usedLensType}".`, 'Item data:', trueItem);
-    result = { 'label': '{Unknown}' };
+    result = { 'label': `{${StringUtil.getUiPhraseByLang('Unknown', settings.language)}}` };
   }
   return result;
 }
@@ -206,7 +200,7 @@ export function getItemSummary(item, displayDefs, quoted, vocab, settings, conte
 export function getItemLabel(item, displayDefs, quoted, vocab, settings, context) {
   const displayObject = getChip(item, displayDefs, quoted, vocab, settings, context);
   let rendered = StringUtil.extractStrings(displayObject).trim();
-  if (item['@type'] && VocabUtil.isSubClassOf(item['@type'], 'Identifier', vocab, settings.vocabPfx)) {
+  if (item['@type'] && VocabUtil.isSubClassOf(item['@type'], 'Identifier', vocab, settings.vocabPfx, context)) {
     rendered = `${item['@type']} ${rendered}`;
   }
   return rendered;

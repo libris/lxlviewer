@@ -14,9 +14,12 @@
     "familyName",
     "givenName",
     "name",
-    "numeration",
+    "marc:numeration",
+    "marc:titleOther",
     "qualifyingNote",
-    "lifeSpan"
+    "marc:fullerFormName",
+    "lifeSpan",
+    "marc:attributionQualifier"
   ],
   "info": ["responsibilityStatement", "instanceOf", "contribution", "broader", "date", "note"],
   "identifiers": ["identifiedBy", "sameAs"]

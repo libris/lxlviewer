@@ -12,10 +12,11 @@ import ProcessedLabel from './processedlabel';
 import ToolTipComponent from './tooltip-component';
 import EntitySearchList from './entity-search-list';
 import EntitySummary from './entity-summary';
+import SummaryActionButton from './summary-action-button';
 import LensMixin from './mixins/lens-mixin';
 import { mixin as clickaway } from 'vue-clickaway';
 import { changeStatus, changeNotification } from '../vuex/actions';
-import { getVocabulary, getVocabularyClasses, getVocabularyProperties, getSettings, getDisplayDefinitions, getEditorData } from '../vuex/getters';
+import { getVocabulary, getContext, getVocabularyClasses, getVocabularyProperties, getSettings, getDisplayDefinitions, getEditorData } from '../vuex/getters';
 
 export default {
   name: 'search-window',
@@ -36,17 +37,20 @@ export default {
         styling: 'brand',
         event: 'extract-item',
         show: true,
+        inspectAction: false,
       },
       listItemSettings: {
         text: 'Replace local entity',
         styling: 'brand',
         event: 'replace-local',
         show: true,
+        inspectAction: true,
       }
     };
   },
   vuex: {
     getters: {
+      context: getContext,
       vocab: getVocabulary,
       vocabClasses: getVocabularyClasses,
       vocabProperties: getVocabularyProperties,
@@ -76,6 +80,7 @@ export default {
   components: {
     'entity-search-list': EntitySearchList,
     'entity-summary': EntitySummary,
+    'summary-action-button': SummaryActionButton,
   },
   watch: {
     keyword(value) {
@@ -92,12 +97,12 @@ export default {
   },
   computed: {
     getRange() {
-      const fetchedRange = VocabUtil.getRange(this.key, this.vocab, this.settings.vocabPfx)
+      const fetchedRange = VocabUtil.getRange(this.entityType, this.key, this.vocab, this.settings.vocabPfx, this.context)
         .map(item => item.replace(this.settings.vocabPfx, ''));
       return fetchedRange;
     },
     getFullRange() {
-      return VocabUtil.getFullRange(this.key, this.vocab, this.settings.vocabPfx);
+      return VocabUtil.getFullRange(this.entityType, this.key, this.vocab, this.settings.vocabPfx, this.context, this.vocabClasses);
     },
     allSearchTypes() {
       const types = this.getFullRange;
@@ -264,13 +269,17 @@ export default {
               </div>
             </div>
             <div class="summary-container">
-              <entity-summary v-show="!extracting" :action-settings="localEntitySettings" :focus-data="itemInfo" :lines="4"></entity-summary>
+              <entity-summary :action-settings="localEntitySettings" :focus-data="itemInfo" :lines="4"></entity-summary>
+              <summary-action-button v-show="!extracting" :settings="localEntitySettings"></summary-action-button>
             </div>
           </div>
           <div class="result-list-container">
             <div v-show="displaySearchList" class="search-result">
               <div v-for="item in searchResult" class="search-item">
-                <entity-summary :action-settings="addPayload(item)" :add-link="true" :focus-data="item" :lines="4"></entity-summary>
+                <div class="entity-summary-container">
+                  <entity-summary :focus-data="item" :lines="4"></entity-summary>
+                </div>
+                <summary-action-button :settings="addPayload(item)"></summary-action-button>
               </div>
             </div>
             <div v-show="extracting || keyword.length === 0 || loading || foundNoResult" class="search-status-container">
@@ -306,26 +315,18 @@ export default {
         height: 100%;
         .result-list-container {
           overflow-y: auto;
-          height: 70%;
+          height: 60%;
           .search-result {
             .search-item {
               border: solid #777;
               margin: 4px;
               border-width: 1px;
-              code {
-                color: @black;
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              .entity-summary-container {
+                max-width: 80%;
               }
-              // cursor: pointer;
-              // transition: all 0.1s ease;
-              // &:hover {
-              //   background: darken(@white, 5%);
-              //   .header {
-              //     color: darken(@brand-primary, 5%);
-              //   }
-              // }
-              // .header {
-              //   color: @brand-primary;
-              // }
             }
           }
           .search-status-container {
@@ -363,6 +364,9 @@ export default {
             border: 1px solid #888;
             background: @white;
             margin: 0.2em 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
           }
           .extract-controls {
             padding: 0.5em 0 0 0;

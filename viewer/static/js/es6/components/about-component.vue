@@ -28,6 +28,9 @@ export default {
       return this.copy.header;
     },
     image() {
+      if (Modernizr.webp) {
+        return this.copy.image.replace('.png', '.webp');
+      }
       return this.copy.image;
     },
     text() {

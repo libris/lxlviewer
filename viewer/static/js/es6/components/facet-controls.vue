@@ -1,6 +1,6 @@
 <script>
 import * as StringUtil from '../utils/string';
-import { getSettings, getVocabulary } from '../vuex/getters';
+import { getSettings, getVocabulary, getContext } from '../vuex/getters';
 import RangeInput from './range-input.vue';
 import Facet from './facet.vue';
 export default {
@@ -11,6 +11,7 @@ export default {
   vuex: {
     getters: {
       settings: getSettings,
+      context: getContext,
       vocab: getVocabulary,
     },
   },
@@ -23,7 +24,7 @@ export default {
       return dimensionKey === 'publication.date';
     },
     facetLabelByLang(facetType) {
-      const typeByLang = StringUtil.labelByLang(facetType, this.settings.language, this.vocab, this.settings.vocabPfx);
+      const typeByLang = StringUtil.getLabelByLang(facetType, this.settings.language, this.vocab, this.settings.vocabPfx, this.context);
       if (typeByLang.indexOf('unhandled term') < 0) {
         return typeByLang;
       }
@@ -67,5 +68,49 @@ export default {
 
 <style lang="less">
 @import './_variables.less';
+.facet-controls {
+  padding: 15px 5px 15px 15px;
+  label {
+    text-transform: uppercase;
+  }
+  .dimension-header {
+    margin-top: 10px;
+    margin-bottom: 2px;
+    padding: 0px;
+    font-weight: bold;
+  }
+  div {
+    padding: 5px;
+  }
+  ul {
+    list-style: none;
+    padding: 0px;
+    li {
+      padding: 2px 0px;
+      width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      a {
+        color: @gray-darker;
+        font-size: 14px;
+      }
+      span {
+        cursor: pointer;
+        span {
+          color: @gray-darker;
+          font-size: 14px;
+        }
+      }
+      i {
 
+        margin-right: 0.4em;
+      }
+      .quantity {
+        color: @gray;
+        font-size: 0.8em;
+      }
+    }
+  }
+}
 </style>

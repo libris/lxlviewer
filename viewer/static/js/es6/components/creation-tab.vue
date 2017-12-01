@@ -47,7 +47,7 @@ export default {
 
 .creation-tab {
   display: flex;
-  padding-left: 0.5em;
+  padding-left: 1em;
   font-size: 1em;
   > div {
     color: @brand-primary;

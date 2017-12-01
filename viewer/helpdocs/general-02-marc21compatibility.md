@@ -1,6 +1,7 @@
 ---
-section: Redigering
+section: Allmänna Anvisningar
 title: Fält för MARC21-kompatibilitet
+order: 21
 tags:
 - editor
 ---

@@ -1,45 +1,26 @@
 <script>
 import * as _ from 'lodash';
-import Vue from 'vue';
-import Vuex from 'vuex';
-import store from '../vuex/store';
 import * as CombinedTemplates from '../templates/combinedTemplates.json';
 import * as BaseTemplates from '../templates/baseTemplates.json';
 import * as VocabUtil from '../utils/vocab';
-import * as RecordUtil from '../utils/record';
-import * as DisplayUtil from '../utils/display';
 import * as StringUtil from '../utils/string';
 import CreationCard from '../components/creation-card';
 import CreationTab from '../components/creation-tab';
-import { getUser, getSettings, getVocabulary, getDisplayDefinitions, getEditorData, getStatus, getKeybindState } from '../vuex/getters';
-import { changeSettings, changeNotification, loadVocab, loadVocabMap, loadDisplayDefs, syncData, changeSavedStatus, changeStatus } from '../vuex/actions';
+import { getUser, getSettings, getContext, getVocabulary, getVocabularyClasses } from '../vuex/getters';
 
 
 export default {
   name: 'create-new-form',
   vuex: {
-    actions: {
-      syncData,
-      loadVocab,
-      loadVocabMap,
-      loadDisplayDefs,
-      changeSettings,
-      changeSavedStatus,
-      changeStatus,
-      changeNotification,
-    },
     getters: {
       user: getUser,
+      context: getContext,
       settings: getSettings,
-      editorData: getEditorData,
       vocab: getVocabulary,
-      display: getDisplayDefinitions,
-      status: getStatus,
-      keybindState: getKeybindState,
+      vocabClasses: getVocabularyClasses,
     },
   },
   props: {
-    title: 'test',
   },
   data() {
     return {
@@ -62,9 +43,9 @@ export default {
     },
     getMaterials(creation) {
       let allMaterials = [];
-      allMaterials = allMaterials.concat(VocabUtil.getAllSubClasses([`${this.settings.vocabPfx}${creation}`], this.vocab, this.settings.vocabPfx)
+      allMaterials = allMaterials.concat(VocabUtil.getAllSubClasses([`${this.settings.vocabPfx}${creation}`], this.vocabClasses, this.settings.vocabPfx)
         .map(subClassId => subClassId.replace(this.settings.vocabPfx, '')));
-      this.materialList = _.sortBy(allMaterials, label => StringUtil.labelByLang(label, this.settings.language, this.vocab, this.settings.vocabPfx));
+      this.materialList = _.sortBy(allMaterials, label => StringUtil.getLabelByLang(label, this.settings.language, this.vocab, this.settings.vocabPfx, this.context));
     },
   },
   events: {
@@ -84,8 +65,8 @@ export default {
       const templateMainEntity = Object.assign(this.baseMainEntity, templateValue.mainEntity);
 
       // CLEAN IDS
-      templateRecord['@id'] = '_:TEMP_ID';
-      templateMainEntity['@id'] = '_:TEMP_ID#it';
+      templateRecord['@id'] = 'https://id.kb.se/TEMPID';
+      templateMainEntity['@id'] = 'https://id.kb.se/TEMPID#it';
 
       this.thingData = {
         '@graph': [
@@ -105,7 +86,7 @@ export default {
   computed: {
     baseMainEntity() {
       const baseMainEntity = {
-        '@id': '_:TEMP_ID#it',
+        '@id': 'https://id.kb.se/TEMPID#it',
         '@type': this.chosenType,
       };
       return baseMainEntity;
@@ -113,12 +94,12 @@ export default {
     baseRecord() {
       const baseRecord = {
         '@type': 'Record',
-        '@id': '_:TEMP_ID',
-        'assigner': {
+        '@id': 'https://id.kb.se/TEMPID',
+        'descriptionCreator': {
           '@id': `https://libris.kb.se/library/${this.user.settings.activeSigel}`,
         },
         'mainEntity': {
-          '@id': '_:TEMP_ID#it',
+          '@id': 'https://id.kb.se/TEMPID#it',
         },
       };
       return baseRecord;
@@ -142,7 +123,6 @@ export default {
       document.getElementById('thingDataForm').submit();
     },
   },
-  store,
   ready() { // Ready method is deprecated in 2.0, switch to "mounted"
     this.$nextTick(() => {
       this.activeForm = '';
@@ -154,7 +134,7 @@ export default {
 </script>
 
 <template>
-  <div class="panel panel-default form-container" id="create_new_post">
+  <div class="panel panel-default form-container" id="create-new-post">
     <div class="panel-body">
       <div class="createnew-form">
         <div class="app-heading">{{'Create new' | translatePhrase}}</div>
@@ -173,5 +153,16 @@ export default {
 
 <style lang="less">
 @import './_variables.less';
+
+#create-new-post {
+  .app-heading {
+    font-size: 1.5em;
+    margin: 0 0 0.3em 0.7em;
+  }
+  .creation-cards-container {
+    display: flex;
+    flex-wrap: wrap;
+  }
+}
 
 </style>

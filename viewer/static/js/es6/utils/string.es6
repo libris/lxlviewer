@@ -1,5 +1,6 @@
 import * as _ from 'lodash';
 import * as translationsFile from '../i18n';
+import * as VocabUtil from './vocab';
 
 export function removeDomain(string, removableBaseUriArray) {
   const removable = removableBaseUriArray;
@@ -8,6 +9,41 @@ export function removeDomain(string, removableBaseUriArray) {
     newValue = newValue.replace(removable[i], '');
   }
   return newValue;
+}
+
+export function convertToBaseUri(str, context) {
+  if (typeof context === 'undefined') {
+    throw new Error('convertToBaseUri was called without context.');
+  }
+  if (str.indexOf('://') > -1) {
+    return str;
+  }
+  const prefix = str.split(':')[0];
+  const uri = str.replace(`${prefix}:`, '');
+  const baseUri = VocabUtil.getBaseUriFromPrefix(prefix, context);
+  const withBaseUri = `${baseUri}${uri}`;
+  return withBaseUri;
+}
+
+export function convertToPrefix(uri, context) {
+  if (typeof context === 'undefined') {
+    throw new Error('convertToPrefix was called without context');
+  }
+  let hashParts = uri.split('#');
+  let suffix = '';
+  let baseUri = '';
+  if (hashParts.length > 1) {
+    suffix = hashParts[1];
+    baseUri = hashParts[0] + '#';
+  } else {
+    const uriParts = uri.split('/');
+    suffix = uriParts[uriParts.length-1];
+    uriParts.splice(uriParts.length-1, 1);
+    baseUri = uriParts.join('/') + '/';
+  }
+  const prefix = VocabUtil.getPrefixFromBaseUri(baseUri, context);
+  const withPrefix = `${prefix}:${suffix}`;
+  return withPrefix;
 }
 
 export function getUiPhraseByLang(phrase, langcode) {
@@ -52,27 +88,11 @@ export function getLabelFromObject(object, language) {
   return label;
 }
 
-export function labelByLang(string, lang, vocab, vocabPfx) {
+export function getLabelByLang(string, lang, vocab, vocabPfx, context) {
   if (!string) {
     return '{FAILED LABEL}';
   }
-  const pfx = vocabPfx;
-  // Filter for fetching labels from vocab
-  let lbl = string.toString();
-  if (lbl && lbl.indexOf(pfx) !== -1) {
-    lbl = lbl.replace(pfx, '');
-  }
-  let item = vocab.get(`${pfx}${lbl}`);
-
-  // Handle marc:
-  if (typeof item === 'undefined') {
-    if (lbl.indexOf('marc/') !== -1) {
-      item = vocab.get(lbl);
-    } else {
-      item = vocab.get(`https://id.kb.se/${lbl.replace('marc:', 'marc/')}`);
-    }
-  }
-
+  let item = VocabUtil.getTermObject(string, vocab, vocabPfx, context);
   let note = '';
   let labelByLang = '';
   if (typeof item !== 'undefined' && item.labelByLang) {
@@ -93,7 +113,7 @@ export function labelByLang(string, lang, vocab, vocabPfx) {
   if (labelByLang && labelByLang.length > 0) {
     return labelByLang;
   }
-  return `${lbl}${note}`;
+  return `${string}${note}`;
 }
 
 function translateable(type) {
@@ -116,16 +136,17 @@ export function extractStrings(obj) {
   return label;
 }
 
-export function getFormattedEntries(list, vocab, settings) {
+export function getFormattedEntries(list, vocab, settings, context) {
   let formatted = [];
   for (const entry of list) {
     if (translateable(entry.property)) {
       formatted = formatted.concat(entry.value.map((obj) => {
-        return labelByLang(obj, settings.language, vocab, settings.vocabPfx);
+        return getLabelByLang(obj, settings.language, vocab, settings.vocabPfx, context);
       }));
     } else {
       formatted = formatted.concat(entry.value);
     }
   }
+  _.remove(formatted, value => value === ''); // Remove empty strings
   return formatted;
 }

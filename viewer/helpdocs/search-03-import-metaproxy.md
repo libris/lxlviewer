@@ -1,6 +1,7 @@
 ---
 section: Sök
 title: Andra källor
+order: 3
 tags:
 - search
 - import

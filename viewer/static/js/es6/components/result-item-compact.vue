@@ -29,10 +29,10 @@ export default {
   },
   computed: {
     categorization() {
-      return StringUtil.getFormattedEntries(this.getSummary.categorization, this.vocab, this.settings);
+      return StringUtil.getFormattedEntries(this.getSummary.categorization, this.vocab, this.settings, this.context);
     },
     header() {
-      return StringUtil.getFormattedEntries(this.getSummary.header, this.vocab, this.settings);
+      return StringUtil.getFormattedEntries(this.getSummary.header, this.vocab, this.settings, this.context);
     },
   },
   components: {

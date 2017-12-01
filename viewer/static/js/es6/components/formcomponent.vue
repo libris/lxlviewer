@@ -12,7 +12,7 @@ import * as ModalUtil from '../utils/modals';
 import * as VocabUtil from '../utils/vocab';
 import * as DisplayUtil from '../utils/display';
 import { updateForm, changeStatus } from '../vuex/actions';
-import { getSettings, getVocabulary, getForcedListTerms, getVocabularyProperties, getDisplayDefinitions, getEditorData, getStatus } from '../vuex/getters';
+import { getSettings, getContext, getVocabulary, getForcedListTerms, getVocabularyProperties, getVocabularyClasses, getDisplayDefinitions, getEditorData, getStatus } from '../vuex/getters';
 
 export default {
   vuex: {
@@ -21,8 +21,10 @@ export default {
       changeStatus,
     },
     getters: {
+      context: getContext,
       vocab: getVocabulary,
       vocabProperties: getVocabularyProperties,
+      vocabClasses: getVocabularyClasses,
       forcedListTerms: getForcedListTerms,
       settings: getSettings,
       editorData: getEditorData,
@@ -48,13 +50,13 @@ export default {
       return this.editorData[this.editingObject]['@type'] === 'Item';
     },
     isBib() {
-      if (VocabUtil.isSubClassOf(this.editorData[this.editingObject]['@type'], 'Instance', this.vocab, this.settings.vocabPfx)) {
+      if (VocabUtil.isSubClassOf(this.editorData[this.editingObject]['@type'], 'Instance', this.vocab, this.settings.vocabPfx, this.context)) {
         return true;
-      } else if (VocabUtil.isSubClassOf(this.editorData[this.editingObject]['@type'], 'Work', this.vocab, this.settings.vocabPfx)) {
+      } else if (VocabUtil.isSubClassOf(this.editorData[this.editingObject]['@type'], 'Work', this.vocab, this.settings.vocabPfx, this.context)) {
         return true;
-      } else if (VocabUtil.isSubClassOf(this.editorData[this.editingObject]['@type'], 'Agent', this.vocab, this.settings.vocabPfx)) {
+      } else if (VocabUtil.isSubClassOf(this.editorData[this.editingObject]['@type'], 'Agent', this.vocab, this.settings.vocabPfx, this.context)) {
         return true;
-      } else if (VocabUtil.isSubClassOf(this.editorData[this.editingObject]['@type'], 'Concept', this.vocab, this.settings.vocabPfx)) {
+      } else if (VocabUtil.isSubClassOf(this.editorData[this.editingObject]['@type'], 'Concept', this.vocab, this.settings.vocabPfx, this.context)) {
         return true;
       }
       return false;
@@ -79,9 +81,10 @@ export default {
       const formObj = this.formData;
       const allowed = VocabUtil.getPropertiesFromArray(
         formObj['@type'],
-        this.vocab,
-        this.settings.vocabPfx, // LÄGG TILL LABEL I ALLOWED
-        this.vocabProperties
+        this.vocabClasses,
+        this.settings.vocabPfx,
+        this.vocabProperties,
+        this.context
       );
       // Add the "added" property
       for (const element of allowed) {
@@ -158,7 +161,8 @@ export default {
         const baseClasses = VocabUtil.getBaseClassesFromArray(
           formObj['@type'],
           this.vocab,
-          this.settings.vocabPfx
+          this.settings.vocabPfx,
+          this.context
         );
         for (const baseClass of baseClasses) {
           propertyList = DisplayUtil.getProperties(
@@ -254,7 +258,7 @@ export default {
   <div class="form-component focused-form-component" :class="{ 'locked': isLocked }" v-show="isActive">
     <div class="data-node-container" v-bind:class="{'collapsed': collapsed }">
       <data-node v-for="(k,v) in sortedFormData" v-bind:class="{ 'locked': isLocked }" :entity-type="editorData[editingObject]['@type']" :is-inner="false" :is-removable="true" :is-locked="keyIsLocked(k)" :key="k" :value="v" :allow-local="true"></data-node>
-      <field-adder v-if="!isLocked" :allowed="allowedProperties" :inner="false" :editing-object="editingObject"></field-adder>
+      <field-adder v-if="!isLocked" :entity-type="formData['@type']" :allowed="allowedProperties" :inner="false" :editing-object="editingObject"></field-adder>
       <div id="result" v-if="status.isDev && !isLocked">
         <div class="row">
         <pre class="col-md-6">
@@ -363,8 +367,6 @@ export default {
     margin: 0px;
     padding: 0em 0px 0px 0px;
     border-width: 1px 0px 0px 0px;
-    overflow: hidden;
-    max-height: 500vh;
     transition: 2s ease max-height;
   }
   .data-node-container-toggle {

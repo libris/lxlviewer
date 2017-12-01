@@ -1,6 +1,7 @@
 ---
-section: Redigering
+section: Allmänna Anvisningar
 title: Tidsangivelser
+order: 23
 tags:
 - editor
 - rda
@@ -8,11 +9,11 @@ tags:
 - chronology
 ---
 
-# "Tidsangivelser - RDA 1.9
+# Tidsangivelser - RDA 1.9
 
 [MARC21-anpassad information](http://www.kb.se/rdakatalogisering/Anvisningar/Allmanna-anvisningar/Tidsangivelser---RDA-19/)
 
-##Generella riktlinjer (RDA 1.9.1)
+## Generella riktlinjer (RDA 1.9.1)
 
 När tidsuppgift anges som den förekommer i källan, tillämpa riktlinjerna i RDA 1.8.
 
@@ -26,7 +27,7 @@ Tillämpa riktlinjerna i RDA 1.9.2 när tidsuppgift suppleras för följande ele
 
 När tal angivna med siffror eller med bokstäver ska återges för andra element än de som förtecknas ovan, återge dem som de förekommer i källan. Tillämpa de allmänna riktlinjerna i dokumentet "Transcription" - RDA 1.7.
 
-##Tidsangivelser hämtade från en källa utanför resursen (RDA 1.9.2)
+## Tidsangivelser hämtade från en källa utanför resursen (RDA 1.9.2)
 
 Ange en supplerad tidsuppgift för produktionstid, utgivningstid, distributionstid och trycktid enligt instruktionerna nedan. Klamra uppgiften.
 

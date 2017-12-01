@@ -19,8 +19,7 @@ export default class View {
       siteInfo: window.siteInfo || {},
       embeddedTypes: [
         'StructuredValue',
-        'ProvisionActivity',
-        'Contribution',
+        'QualifiedRole',
       ],
       baseMaterials: [
         'https://id.kb.se/vocab/Instance',
@@ -57,6 +56,7 @@ export default class View {
         'mainEntity',
         'created',
         'modified',
+        'technicalNote',
       ],
       disallowLocal: [
         // 'instanceOf',
@@ -68,6 +68,14 @@ export default class View {
       nonExtractableClasses: [
         'Place',
         'Library',
+        'CarrierType',
+        'MediaType',
+        'ContentType',
+        'Language',
+        'Country',
+        'Nationality',
+        'GenreForm',
+        'Topic',
       ],
       propertyChains: {
         '@type': {
@@ -150,32 +158,42 @@ export default class View {
     this.initWarningFunc();
   }
 
-  getLdDepencendies() {
-    return new Promise((resolve, reject) => {
-      VocabUtil.getVocab().then((vocab) => {
+  getLdDependencies(fetchIndicator) {
+    const promiseArray = [];
+    if (fetchIndicator.indexOf('vocab') > -1) {
+      const vocabPromise = VocabUtil.getVocab().then((vocab) => {
         this.vocabMap = new Map(vocab['@graph'].map((entry) => [entry['@id'], entry]));
         this.vocab = vocab['@graph'];
-        // $('#loadingText .status').text('Hämtar visningsdefinitioner');
-        DisplayUtil.getDisplayDefinitions().then((display) => {
-          this.display = display;
-          VocabUtil.getForcedListTerms().then((result) => {
-            this.forcedListTerms = result;
-            VocabUtil.getContext().then((context) => {
-              this.context = context['@context'];
-              resolve();
-            }, (error) => {
-              reject('getContext', error);
-            });
-          }, (error) => {
-            reject('getForcedListTerms', error);
-          });
-        }, (error) => {
-          reject('getDisplayDefinitions', error);
-        });
       }, (error) => {
-        reject('getVocab', error);
+        console.log('getVocab', error);
       });
-    });
+      promiseArray.push(vocabPromise);
+    }
+    if (fetchIndicator.indexOf('display') > -1) {
+      const displayPromise = DisplayUtil.getDisplayDefinitions().then((display) => {
+        this.display = display;
+      }, (error) => {
+        console.log('getDisplayDefinitions', error);
+      });
+      promiseArray.push(displayPromise);
+    }
+    if (fetchIndicator.indexOf('listTerms') > -1) {
+      const repeatablePromise = VocabUtil.getForcedListTerms().then((result) => {
+        this.forcedListTerms = result;
+      }, (error) => {
+        console.log('getForcedListTerms', error);
+      });
+      promiseArray.push(repeatablePromise);
+    }
+    if (fetchIndicator.indexOf('context') > -1) {
+      const contextPromise = VocabUtil.getContext().then((context) => {
+        this.context = context['@context'];
+      }, (error) => {
+        console.log('getContext', error);
+      });
+      promiseArray.push(contextPromise);
+    }
+    return promiseArray;
   }
 
   translate() {
@@ -220,7 +238,7 @@ export default class View {
   }
 
   initWarningFunc() {
-    if (!this.lxlDebug) {
+    if (!this.lxlDebug || navigator.userAgent.indexOf('PhantomJS') > -1) {
       window.lxlWarning = function (...strings) {
         return;
       }

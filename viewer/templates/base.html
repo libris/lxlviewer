@@ -5,7 +5,6 @@
     <meta charset="utf-8" />
     <title>${g.site.title} - {% block title %}{% endblock %}</title>
     <link rel="shortcut icon" href="/assets/img/favicon.ico">
-    <link rel="stylesheet" href="/assets/vendor/font-awesome/css/font-awesome.min.css">
     % if g.site.stylesheet
       <link rel="stylesheet" href="/assets/build/${g.site.stylesheet.name}" />
     % else
@@ -82,25 +81,21 @@
               <span class="js-translateable" data-translateable="Sök">Search</span></a>
             </li>
             % if current_user.is_authenticated
-              <li class="navbar-item">
+              <li v-if="initialized == true && user.getPermissions().cataloger == true" class="navbar-item">
                 <a href="/createnew">
                   <div class="navbar-circle">
                     <i class="fa fa-file-text" aria-hidden="true"></i>
                   </div>
-                  <span class="js-translateable" data-translateable="Create new">Create new</a></a>
+                  <span class="js-translateable" data-translateable="Create new">Create new</span>
+                </a>
               </li>
-              <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+              <li class="navbar-item user-settings">
+                <a href="/usersettings">
                   <div class="navbar-circle">
                     <img class="user-gravatar" src="${current_user.get_gravatar_url()}" />
                   </div>
-                  ${current_user.get_short_name()} <span v-cloak class="sigelLabel" v-if="initialized === true">({{user.settings.activeSigel}})</span> <i class="fa fa-angle-down" aria-hidden="true"></i>
+                  ${current_user.get_short_name()} <span v-cloak class="sigelLabel" v-if="initialized === true">({{user.settings.activeSigel}})</span>
                 </a>
-                <ul class="dropdown-menu">
-                  <li><a href="/usersettings"><i class="fa fa-cogs" aria-hidden="true"></i> <span class="js-translateable" data-translateable="Settings">Settings</span></a></li>
-                  <li role="separator" class="divider"></li>
-                  <li><a href="/logout"><i class="fa fa-sign-out" aria-hidden="true"></i> <span class="js-translateable" data-translateable="Log out">Log out</span></a></li>
-                </ul>
               </li>
             % else
                 <li class=""><a href="/login">
@@ -174,7 +169,7 @@
                       <div class="header js-translateable" data-translateable="New Libris and XL">New Libris and XL</div>
                       <div class="item"><a href="https://www.youtube.com/watch?v=p2vcgoTfNpw&list=PLZVkEICvA5-GRT2oJQmLgq_2Pksx6zYPy" class="js-translateable" data-translateable="Instruction videos">Instruction videos</a></div>
                       <div class="item"><a href="http://librisbloggen.kb.se/" class="js-translateable" data-translateable="Librisbloggen">Librisbloggen</a></div>
-                      <div class="item"><a href="http://www.kb.se/libris/Om-LIBRIS/Introduktion-till-nya-Libris-och-XL2/" class="js-translateable" data-translateable="Study material">Study material</a></div>
+                      <div class="item"><a href="http://www.kb.se/libris/Om-LIBRIS/Introduktion-till-nya-Libris-och-XL2/" class="js-translateable" data-translateable="Introduction material">Introduktionsmaterial</a></div>
                       <div class="item"><a href="http://www.kb.se/libris/" class="js-translateable">kb.se/libris</a></div>
                       <div class="item"><a href="https://libris.kb.se/" class="js-translateable">libris.kb.se</a></div>
                     </div>
@@ -229,6 +224,15 @@
     {% block scripts %}{% endblock %}
     <script id="serviceTitle" type="application/json">${g.site.title}</script>
     <script id="baseUriAlias" type="application/json">${config.BASE_URI_ALIAS|tojson|safe}</script>
+    <script type="text/javascript">
+      (function() {
+        var css = document.createElement('link');
+        css.href = '/assets/vendor/font-awesome/css/font-awesome.min.css';
+        css.rel = 'stylesheet';
+        css.type = 'text/css';
+        document.getElementsByTagName('head')[0].appendChild(css);
+      })();
+    </script>
     <script src="/assets/build/app.js"></script>
   </body>
 </html>

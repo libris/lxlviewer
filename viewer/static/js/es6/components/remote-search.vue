@@ -30,6 +30,7 @@ export default {
       importData: [],
       showList: true,
       importJson: '',
+      selectedDatabases: [],
     };
   },
   components: {
@@ -43,6 +44,23 @@ export default {
       this.$nextTick(() => {
         document.getElementById("importForm").submit();
       });
+    },
+  },
+  watch: {
+    databases: {
+      handler: function() {
+        const selected = [];
+        const dbs = _.filter(this.databases.list, function (o) {
+          return o.active;
+        });
+        if (dbs.length > 0) {
+          for (let i = 0; i < dbs.length; i++) {
+            selected.push(dbs[i].item.database);
+          }
+          this.selectedDatabases = selected;
+        }
+      },
+      deep: true,
     },
   },
   methods: {
@@ -62,6 +80,11 @@ export default {
         }
         vself.databases.list = newDbList;
         vself.databases.state = 'complete';
+        if (history.state !== null) {
+          vself.selectedDatabases = history.state.selectedDatabases;
+          vself.attachResult(history.state);
+          this.showList = false;
+        }
         // if (vself.q.length > 0) {
         //   vself.searchRemote();
         // }
@@ -89,10 +112,11 @@ export default {
       vself.remoteResult.state = 'loading';
       this.remoteSearch(q, databases)
       .then((response) => {
+        const clonedResponse = _.cloneDeep(response);
+        clonedResponse.selectedDatabases = this.selectedDatabases;
         vself.remoteResult = response;
-        vself.convertedItems = this.convertResult(response);
-        vself.importData = response.items;
-        vself.remoteResult.state = 'complete';
+        history.pushState(clonedResponse, 'unused');
+        this.attachResult(clonedResponse);
       }, () => {
         vself.remoteResult.state = 'error';
       });
@@ -127,29 +151,25 @@ export default {
         this.databases.list[index].active = !this.databases.list[index].active;
       }
     },
+    attachResult(response) {
+      const convertedResult = this.convertResult(response);
+      this.convertedItems = convertedResult;
+      this.importData = response.items;
+      this.remoteResult.state = 'complete';
+    },
   },
   ready() {
     this.remoteQuery = this.q;
     this.loadRemoteDatabases();
   },
   computed: {
-    selectedDatabases() {
-      const selected = [];
-      const dbs = _.filter(this.databases.list, function (o) {
-        return o.active;
-      });
-      for (let i = 0; i < dbs.length; i++) {
-        selected.push(dbs[i].item.database);
-      }
-      return selected;
-    },
   },
 };
 </script>
 
 <template>
 <div class="remote-search">
-  <form id="importForm" method="POST" action="/edit">
+  <form id="importForm" method="POST" action="/edit" target="_blank">
     <textarea name="data" class="hidden">{{importJson}}</textarea>
   </form>
   <div class="panel panel-default remote-search-controls" v-show="databases.state == 'complete'">
@@ -158,7 +178,7 @@ export default {
       <a class="card-link active">Andra källor</a>
     </div>
     <form v-on:submit.prevent="searchRemote()">
-      <label for="search">{{"Search" | translatePhrase}}</label>
+      <label class="hidden" for="search">{{"Search" | translatePhrase}}</label>
       <div>
         <div class="form-group search-field">
           <input type="text" class="form-control search-input" placeholder="ISBN eller valfria sökord" id="search" v-model="remoteQuery">
@@ -207,6 +227,12 @@ export default {
   .remote-search {
     .remote-search-controls {
       padding: 20px;
+      .search-type-button-container {
+        margin: 1.5em 0 1em;
+      }
+      .hidden {
+        display: none;
+      }
       .search-field {
         display: flex;
         .search-input {

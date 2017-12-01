@@ -41,14 +41,6 @@ export default {
     };
   },
   computed: {
-    getRange() {
-      const types = VocabUtil.getRange(
-        this.key,
-        this.vocab,
-        this.settings.vocabPfx
-      );
-      return types;
-    },
   },
   ready() {
   },

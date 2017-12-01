@@ -77,6 +77,11 @@ export default {
       <div>{{user.fullName}}</div>
       <h3><span>{{"E-post" | translatePhrase}}</span></h3>
       <div>{{user.email || '-'}}</div>
+      <div class="text-center">
+        <a class="card-link" href="/logout">
+          Logga ut
+        </a>
+      </div>
       <hr>
       <p>Din användarprofil är hämtad från <a href="https://login.libris.kb.se">Libris Login</a>.
       </p>

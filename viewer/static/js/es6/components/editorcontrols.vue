@@ -13,12 +13,13 @@ import RecordSummary from './record-summary';
 import LensMixin from './mixins/lens-mixin';
 import { mixin as clickaway } from 'vue-clickaway';
 import { changeSavedStatus, changeStatus, changeNotification, navigateChangeHistory } from '../vuex/actions';
-import { getUser, getSettings, getVocabulary, getVocabularyClasses, getDisplayDefinitions, getEditorData, getStatus, getChangeHistory } from '../vuex/getters';
+import { getUser, getContext, getSettings, getVocabulary, getVocabularyClasses, getDisplayDefinitions, getEditorData, getStatus, getChangeHistory } from '../vuex/getters';
 
 export default {
   vuex: {
     getters: {
       user: getUser,
+      context: getContext,
       vocab: getVocabulary,
       vocabClasses: getVocabularyClasses,
       display: getDisplayDefinitions,
@@ -90,7 +91,7 @@ export default {
       this.showAdminInfoDetails = !this.showAdminInfoDetails;
     },
     isSubClassOf(type) {
-      const baseClasses = VocabUtil.getBaseClasses(this.editorData.mainEntity['@type'], this.vocab, this.settings.vocabPfx)
+      const baseClasses = VocabUtil.getBaseClasses(this.editorData.mainEntity['@type'], this.vocab, this.settings.vocabPfx, this.context)
         .map(id => id.replace(this.settings.vocabPfx, ''));
       return baseClasses.indexOf(type) > -1;
     },
@@ -126,7 +127,7 @@ export default {
     cancelEdit() {
       this.loadingCancel = true;
       this.$dispatch('set-dirty', false);
-      if (this.status.isNew || this.status.isCopy) {
+      if (this.status.isNew) {
         window.history.back();
       } else {
         setTimeout(() => this.$dispatch('cancel-edit'), 0);
@@ -183,7 +184,7 @@ export default {
       return this.status.showRecord;
     },
     recordType() {
-      return VocabUtil.getRecordType(this.editorData.mainEntity['@type'], this.vocab, this.settings);
+      return VocabUtil.getRecordType(this.editorData.mainEntity['@type'], this.vocab, this.settings, this.context);
     },
     downloadIsSupported() {
       const a = document.createElement('a');
@@ -222,7 +223,6 @@ export default {
           <div>
             <h2 class="recordtype-label" title="{{recordType}}">
               <span>{{ recordType | labelByLang }}</span>
-              <span v-if="status.isCopy"> - [{{ "Copy" | translatePhrase }}]</span>
               <span v-if="status.isNew"> - [{{ "New record" | translatePhrase }}]</span>
             </h2>
             <record-summary></record-summary>
@@ -273,9 +273,12 @@ export default {
               </li>
               <li v-if="isSubClassOf('Instance') && hasSigel && !status.inEdit && user.email !== ''">
                 <a v-if="downloadIsSupported" @click="getCompiledPost()">
+                  <i class="fa fa-fw fa-download" aria-hidden="true"></i>
+                  {{"Download compiled" | translatePhrase}}
+                </a>
                 <a v-if="!downloadIsSupported" :href="compileMARCUrl">
-                <i class="fa fa-fw fa-download" aria-hidden="true"></i>
-                {{"Download compiled" | translatePhrase}}
+                  <i class="fa fa-fw fa-download" aria-hidden="true"></i>
+                  {{"Download compiled" | translatePhrase}}
                 </a>
               </li>
               <li>
@@ -284,7 +287,7 @@ export default {
                 {{"Preview MARC21" | translatePhrase}}
                 </a>
               </li>
-              <li class="remove-option" v-show="!status.isNew && !status.isCopy">
+              <li class="remove-option" v-show="!status.isNew">
                 <a @click="removePost">
                 <i class="fa fa-fw fa-trash" aria-hidden="true"></i>
                 {{"Remove" | translatePhrase}} {{ recordType | labelByLang }}
@@ -297,7 +300,7 @@ export default {
             <i class="fa fa-undo" aria-hidden="true"></i>
             {{"Undo" | translatePhrase}}
           </button>
-          <button class="toolbar-button" v-show="status.inEdit" @click="cancelEdit">
+          <button class="toolbar-button" v-show="status.inEdit && !status.isNew" @click="cancelEdit">
             <i class="fa fa-times" aria-hidden="true" v-show="!loadingCancel"></i>
             <i class="fa fa-fw fa-circle-o-notch fa-spin" aria-hidden="true" v-show="loadingCancel"></i>
             {{"Cancel" | translatePhrase}}

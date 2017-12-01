@@ -11,7 +11,7 @@ import * as LayoutUtil from '../utils/layout';
 import * as httpUtil from '../utils/http';
 import * as toolbarUtil from '../utils/toolbar';
 import * as _ from 'lodash';
-import * as VocabLoader from '../utils/vocabloader';
+// import * as VocabLoader from '../utils/vocabloader';
 import * as VocabUtil from '../utils/vocab';
 import * as DisplayUtil from '../utils/display';
 import * as RecordUtil from '../utils/record';
@@ -26,23 +26,18 @@ import ReverseRelations from '../components/reverse-relations';
 import { getSettings, getVocabulary, getContext, getVocabularyClasses, getVocabularyProperties, getDisplayDefinitions, getEditorData, getStatus, getKeybindState } from '../vuex/getters';
 import { changeSettings, changeNotification, loadVocab, loadContext, loadVocabMap, loadForcedListTerms, loadDisplayDefs, syncData, changeSavedStatus, changeStatus, navigateChangeHistory } from '../vuex/actions';
 
-
-function showError(error) {
-  $('#loadingText .fa-circle-o-notch').fadeOut('fast', () => {
-    $('#loadingText .fa-warning').removeClass('hidden').fadeIn('fast');
-    $('#loadingText .mainStatus').text('').append(StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language));
-    $('#loadingText .status').text('');
-    $('#loadingText .error').text('').append(error).removeClass('hidden').fadeIn('slow');
-  });
-}
-
 export default class Editor extends View {
 
   initialize() {
-    super.initialize();
-    VocabLoader.initVocabClicks();
-    toolbarUtil.initToolbar(this);
     const self = this;
+    Promise.all(self.getLdDependencies('vocab display context listTerms')).then(() => {
+      self.initVue();
+    }, (error) => {
+      window.lxlError(error);
+    });
+    super.initialize();
+    // VocabLoader.initVocabClicks();
+    // toolbarUtil.initToolbar(this);
 
     const textData = RecordUtil.splitJson(JSON.parse(document.getElementById('data').innerText));
     if (Modernizr.history) {
@@ -54,11 +49,6 @@ export default class Editor extends View {
       this.dataIn = textData;
     }
 
-    self.getLdDepencendies().then(() => {
-      self.initVue();
-    }, (error) => {
-      window.lxlError(error);
-    });
   }
 
   initVue() {
@@ -69,7 +59,7 @@ export default class Editor extends View {
     }, false);
 
     Vue.filter('labelByLang', (label) => {
-      return StringUtil.labelByLang(label, self.settings.language, self.vocabMap, self.settings.vocabPfx);
+      return StringUtil.getLabelByLang(label, self.settings.language, self.vocabMap, self.settings.vocabPfx, self.context);
     });
     Vue.filter('removeDomain', (value) => {
       return StringUtil.removeDomain(value, self.settings.removableBaseUris);
@@ -114,7 +104,7 @@ export default class Editor extends View {
         combokeys: null,
         locked: true,
         relatedTitles: [],
-        copyRecord: {},
+        newData: {},
       },
       events: {
         'focus-update': function(value, oldValue) {
@@ -172,12 +162,8 @@ export default class Editor extends View {
         'duplicate-item': function() {
           if (!this.status.inEdit) {
             this.buildCopiedRecord();
-            if (Modernizr.history) {
-              this.$dispatch('new-editordata', this.copyRecord);
-              this.changeStatus('isCopy', true);
-              this.changeNotification('color', 'green');
-              this.changeNotification('message', `${StringUtil.getUiPhraseByLang('Copy successful', this.settings.language)}!`);
-            }
+            this.changeNotification('color', 'green');
+            this.changeNotification('message', `${StringUtil.getUiPhraseByLang('Copy successful', this.settings.language)}!`);
           }
         },
         'cancel-edit': function() {
@@ -187,14 +173,13 @@ export default class Editor extends View {
         'new-editordata'(newData) {
           this.syncData(newData);
           const atId = newData.record['@id'];
-          if (!atId || atId === '_:TEMP_ID') {
+          if (!atId || atId === 'https://id.kb.se/TEMPID') {
             this.editItem();
             history.pushState(newData, 'unused', '/edit');
           } else {
             history.replaceState(newData, 'unused', `${atId}/edit`);
             self.vm.changeStatus('inEdit', false);
             self.vm.changeStatus('isNew', false);
-            self.vm.changeStatus('isCopy', false);
           }
         },
         'form-control'(control) {
@@ -202,6 +187,9 @@ export default class Editor extends View {
         },
         'navigate-change-history'(direction) {
           this.navigateChangeHistory(this.status.editorFocus, direction);
+        },
+        'preview-holding'(holdingData) {
+          this.newData = RecordUtil.getObjectAsRecord(holdingData.mainEntity, holdingData.record);
         },
       },
       watch: {
@@ -212,6 +200,11 @@ export default class Editor extends View {
             this.getCopyItem(value);
           } else {
             this.copy.state = 'invalid';
+          }
+        },
+        inEdit(val, oldval) {
+          if (val !== oldval) {
+            // Do something when inEdit is changed...
           }
         },
         keybindState(state) {
@@ -241,6 +234,9 @@ export default class Editor extends View {
         entityTitle(val) {
           this.updateDocumentTitle(val);
         },
+        newData() {
+          document.getElementById('post-edit-form').submit();
+        },
       },
       computed: {
         canEditThisType() {
@@ -264,24 +260,29 @@ export default class Editor extends View {
         entityTitle() {
           if (typeof this.editorData.mainEntity !== 'undefined') {
             const headerList = DisplayUtil.getItemSummary(this.editorData.mainEntity, this.display, this.editorData.quoted, this.vocab, this.settings, this.context).header;
-            const header = StringUtil.getFormattedEntries(headerList, this.vocab, this.settings).join(', ');
+            const header = StringUtil.getFormattedEntries(headerList, this.vocab, this.settings, this.context).join(', ');
             if (header.length > 0 && header !== '{Unknown}') {
               return header;
             }
           }
           return `{${StringUtil.getUiPhraseByLang('Unnamed entity', self.settings.language)}}`;
         },
+        inEdit() {
+          return this.status.inEdit;
+        },
       },
       methods: {
         buildCopiedRecord() {
           const mainEntity = _.cloneDeep(this.editorData.mainEntity);
-          this.copyRecord = RecordUtil.splitJson(RecordUtil.getObjectAsRecord(mainEntity, this.editorData.record));
+          const newRecord = _.cloneDeep(this.editorData.record);
+          newRecord.descriptionCreator = { '@id': `https://libris.kb.se/library/${this.user.settings.activeSigel}` };
+          this.newData = RecordUtil.getObjectAsRecord(mainEntity, newRecord);
         },
         showHelp() {
           this.$dispatch('show-help', '');
         },
         getRelatedTitles() {
-          if (VocabUtil.isSubClassOf(this.editorData.mainEntity['@type'], 'Work', this.vocab, this.settings.vocabPfx)) {
+          if (VocabUtil.isSubClassOf(this.editorData.mainEntity['@type'], 'Work', this.vocab, this.settings.vocabPfx, this.context)) {
             RecordUtil.getRelatedPosts(this.editorData.record['@id'], 'instanceOf').then((response) => {
               _.each(response, (node) => {
                 console.log("Extracting title from", node);
@@ -349,14 +350,22 @@ export default class Editor extends View {
         saveItem() {
           const ETag = this.editorData.record.modified;
           const RecordId = this.editorData.record['@id'];
+          const recordCopy = _.cloneDeep(this.editorData.record);
+
+          if (!RecordId || RecordId === 'https://id.kb.se/TEMPID') { // No ID -> create new
+            recordCopy.descriptionCreator = { '@id': `https://libris.kb.se/library/${this.user.settings.activeSigel}` };
+          } else { // ID exists -> update
+            recordCopy.descriptionLastModifier = { '@id': `https://libris.kb.se/library/${this.user.settings.activeSigel}` };
+          }
+
           const obj = DataUtil.getMergedItems(
-            DataUtil.removeNullValues(this.editorData.record),
+            DataUtil.removeNullValues(recordCopy),
             DataUtil.removeNullValues(this.editorData.mainEntity),
             DataUtil.removeNullValues(this.editorData.work),
             this.editorData.quoted
           );
 
-          if (!RecordId || RecordId === '_:TEMP_ID') { // No ID -> create new
+          if (!RecordId || RecordId === 'https://id.kb.se/TEMPID') { // No ID -> create new
             this.doCreate(obj);
           } else { // ID exists -> update
             this.doUpdate(RecordId, obj, ETag);
@@ -420,7 +429,7 @@ export default class Editor extends View {
         this.$dispatch('add-linked', this.editorData.mainEntity);
 
         const atId = this.editorData.record['@id'];
-        if (!atId || atId === '_:TEMP_ID') {
+        if (!atId || atId === 'https://id.kb.se/TEMPID') {
           this.editItem();
           this.changeStatus('isNew', true);
         }

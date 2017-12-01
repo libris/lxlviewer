@@ -42,10 +42,27 @@
     "date": [""]
 
   },
-  "extent": [{
+  "Manufacture": {
+    "@type": "Manufacture",
+    "place": [
+      {
+        "@type": "Place",
+        "label": [""]
+      }
+    ],
+    "agent": [
+      {
+        "@type": "Agent",
+        "label": [""]
+      }
+    ],
+    "date": [""]
+
+  },
+  "Extent": {
     "@type": "Extent",
     "label": ""
-  }],
+  },
   "Note": {
     "@type": "Note",
     "label": ""

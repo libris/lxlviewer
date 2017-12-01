@@ -55,7 +55,7 @@ export function removeNullValues(obj) {
     cleanObj = [];
     for (let i = 0; i < obj.length; i++) {
       const item = removeNullValues(obj[i]);
-      if (typeof item !== 'undefined' && item !== '' && item !== null) {
+      if (typeof item !== 'undefined' && item !== null) {
         cleanObj.push(item);
       }
     }
@@ -67,13 +67,13 @@ export function removeNullValues(obj) {
           delete obj[key];
         } else {
           const cleanValue = removeNullValues(obj[key]);
-          if (!(_.isArray(cleanValue) && cleanValue.length === 0)) {
-            cleanObj[key] = cleanValue;
-          }
+          // if (!(_.isArray(cleanValue) && cleanValue.length === 0)) {
+          cleanObj[key] = cleanValue;
+          // }
         }
       }
     }
-  } else if (typeof obj !== 'undefined' && obj !== '' && obj !== null) {
+  } else if (typeof obj !== 'undefined' && obj !== null) {
     cleanObj = obj;
   }
   return cleanObj;

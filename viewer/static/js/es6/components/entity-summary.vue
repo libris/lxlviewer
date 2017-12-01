@@ -1,5 +1,4 @@
 <script>
-import SummaryActionButton from './summary-action-button';
 import LensMixin from './mixins/lens-mixin';
 import * as StringUtil from '../utils/string';
 import { getSettings, getVocabulary, getContext, getDisplayDefinitions, getEditorData } from '../vuex/getters';
@@ -46,13 +45,13 @@ export default {
       return false;
     },
     categorization() {
-      return StringUtil.getFormattedEntries(this.getSummary.categorization, this.vocab, this.settings);
+      return StringUtil.getFormattedEntries(this.getSummary.categorization, this.vocab, this.settings, this.context);
     },
     header() {
-      return StringUtil.getFormattedEntries(this.getSummary.header, this.vocab, this.settings);
+      return StringUtil.getFormattedEntries(this.getSummary.header, this.vocab, this.settings, this.context);
     },
     identifiers() {
-      let identifiersList = StringUtil.getFormattedEntries(this.getSummary.identifiers, this.vocab, this.settings);
+      let identifiersList = StringUtil.getFormattedEntries(this.getSummary.identifiers, this.vocab, this.settings, this.context);
       if (identifiersList.length > this.lines) {
         const diff = identifiersList.length - this.lines;
         identifiersList.splice((this.lines - 1), diff+1);
@@ -61,10 +60,12 @@ export default {
       return identifiersList;
     },
     info() {
-      return StringUtil.getFormattedEntries(this.getSummary.info, this.vocab, this.settings);
+      return StringUtil.getFormattedEntries(this.getSummary.info, this.vocab, this.settings, this.context);
     },
     sub() {
-      return StringUtil.getFormattedEntries(this.getSummary.sub, this.vocab, this.settings);
+      let allThings = StringUtil.getFormattedEntries(this.getSummary.info, this.vocab, this.settings, this.context);
+      allThings = allThings.concat(StringUtil.getFormattedEntries(this.getSummary.sub, this.vocab, this.settings, this.context));
+      return allThings;
     },
   },
   methods: {
@@ -79,7 +80,6 @@ export default {
     },
   },
   components: {
-    'summary-action-button': SummaryActionButton,
   },
   watch: {
   },
@@ -90,31 +90,21 @@ export default {
 
 <template>
 <div class="entity-summary">
-  <div class="main-info">
+  <div class="sub">
     <div class="categorization">
       {{categorization.join(', ')}} {{ isLocal ? '{lokal entitet}' : '' }}
     </div>
+  </div>
+  <div class="main-info">
     <h3 class="header">
       <span class="import-header" title="{{ header.join(', ') }}" v-on:click="importThis()" v-if="isImport">{{ header.join(', ') }}</span>
       <a v-if="!isImport && renderLink" :class="{'blue-link': settings.siteInfo.title === 'id.kb.se'}" title="{{ header.join(', ') }}" :href="focusData['@id']">{{ header.join(', ') }}</a>
       <span v-if="!isImport && !renderLink" title="{{ header.join(', ') }}">{{ header.join(', ') }}</span>
     </h3>
+    <div class="id" v-if="identifiers.length > 0">{{ identifiers[0] }} <span class="id-info" v-if="identifiers.length > 1">(+{{ identifiers.length-1 }})</span></div>
     <div class="info">
-      {{ info.join(', ') }}
+      {{ sub.join(' · ') }}
     </div>
-    <!-- <ul class="info">
-      <li v-for="v in info" track-by="$index">{{ v }}</li>
-    </ul> -->
-  </div>
-  <div class="identifiers">
-    <summary-action-button :settings="actionSettings || defaultSettings"></summary-action-button>
-    <ul>
-      <li v-for="v in identifiers" track-by="$index">{{v}}</li>
-    </ul>
-  </div>
-  <div class="sub">
-    <div class="other">{{ sub.join(' · ') }}</div>
-    <code class="id">{{focusData['@id']}}</code>
   </div>
 </div>
 </template>
@@ -122,30 +112,19 @@ export default {
 <style lang="less">
 @import './_variables.less';
 .entity-summary {
-  font-size: 12px;
+  width: 100%;
+  font-size: 13px;
+  padding: 0.5em 1em;
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   justify-content: space-between;
   .actions {
     flex-basis: 3em;
     text-align: center;
   }
   .main-info {
-    .categorization {
-      color: #8a8a8a;
-      flex-basis: 85%;
-      padding: 3px 3px 0px 0px;
-      flex-grow: 2;
-      display: block;
-      font-weight: bold;
-      margin-bottom: -0.4em;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
     height: 7.5em;
-    width: 70%;
-    padding: 3px 0px 0px 9px;
+    overflow: hidden;
     a {
       color: @brand-primary;
       &.blue-link {
@@ -162,38 +141,32 @@ export default {
       min-height: 1.2em;
       margin: 0px;
     }
+    .id {
+      color: #333;
+      font-weight: bold;
+      margin-top: -0.3em;
+      margin-bottom: 0.5em;
+      .id-info {
+        font-weight: normal;
+      }
+    }
     ul.info {
       list-style-type: none;
       padding: 0px;
     }
   }
-  .identifiers {
-    text-align: right;
-    padding: 5px 8px 0px 0px;
-    font-weight: bold;
-    max-width: 30%;
-    ul {
-      list-style-type: none;
-      padding: 0px;
-    }
-  }
   .sub {
-    flex-basis: 100%;
-    display: flex;
-    background-color: rgba(0, 0, 0, 0.01);
-    border: solid rgba(0, 0, 0, 0.1);
-    border-width: 1px 0px 0px 0px;
-    > .other {
-      flex: 1;
-      height: 1.7em;
-      overflow-y: hidden;
-      padding: 0px 9px;
-    }
-    > .id {
-      border-radius: 0px;
-      border: solid rgba(0, 0, 0, 0.1);
-      border-width: 0px 0px 0px 1px;
-      background: transparent;
+    border-width: 0px;
+    .categorization {
+      color: #8a8a8a;
+      flex-basis: 85%;
+      flex-grow: 2;
+      display: block;
+      font-weight: bold;
+      margin-bottom: -0.4em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
   }
 }

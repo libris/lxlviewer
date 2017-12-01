@@ -54,7 +54,7 @@ export default {
     compactSummary() {
       let summary = [];
       _.each(this.getSummary, summaryArray => {
-        summary = summary.concat(StringUtil.getFormattedEntries(summaryArray, this.vocab, this.settings));
+        summary = summary.concat(StringUtil.getFormattedEntries(summaryArray, this.vocab, this.settings, this.context));
       });
       return summary.join(' • ');
     },
@@ -126,6 +126,7 @@ export default {
       opacity: 0;
       transition: all 0.3s ease;
       line-height: 0;
+      transform: translateX(-28px);
       &.show-compact {
         max-height: 55px;
         opacity: 1;

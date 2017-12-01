@@ -2,7 +2,7 @@
 import * as StringUtil from '../utils/string';
 import * as httpUtil from '../utils/http';
 import { updateUser, changeResultListStatus, changeSettings } from '../vuex/actions';
-import { getUser, getSettings, getVocabulary } from '../vuex/getters';
+import { getUser, getSettings, getVocabulary, getContext } from '../vuex/getters';
 
 export default {
   name: 'search-pagination',
@@ -41,7 +41,7 @@ export default {
                 };
                 if (typeof item.object !== 'undefined') {
                   if (item.variable === '@type') {
-                    filterObj.label = StringUtil.labelByLang(item.object['@id'], this.settings.language, this.vocab, this.settings.vocabPfx);
+                    filterObj.label = StringUtil.getLabelByLang(item.object['@id'], this.settings.language, this.vocab, this.settings.vocabPfx, this.context);
                   } else {
                     filterObj.label = item.object['@id'].replace('https://id.kb.se/', '');
                   }
@@ -223,5 +223,55 @@ export default {
   }
 }
 
+// PAGED COLLECTION
+.result-controls {
+  padding: 20px;
+  margin: 10px 0px;
+  .search-details {
+    color: @gray-darker;
+    .query {
+      font-weight:600;
+      &:before {
+        content: open-quote;
+        padding-right: 1px;
+      }
+      &:after {
+        content: close-quote;
+        padding-left: 1px;
+      }
+    }
+  }
+  .search-buttons {
+    &:first-child {
+      margin-top: 0;
+    }
+    margin-top: 1em;
+    .pagination {
+      margin: 0px;
+      li {
+        a {
+          border-radius: 0px !important;
+          font-size: 12px;
+          text-transform: uppercase;
+          font-weight: bold;
+          opacity: 0.7;
+          //background-color:#f5f5f5; TODO: test visual unity
+          .disabled {
+            border: none;
+          }
+          &:hover {
+            opacity:1;
+          }
+          &.pointer {
+            cursor: pointer;
+          }
+          i {
+            padding: 0 5px 0 5px;
+          }
+        }
+      }
+    }
+  }
+}
 
 </style>

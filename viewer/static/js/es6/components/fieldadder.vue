@@ -4,7 +4,7 @@ import * as _ from 'lodash';
 import ToolTipComponent from './tooltip-component';
 import * as LayoutUtil from '../utils/layout';
 import * as StringUtil from '../utils/string';
-import { getSettings, getVocabulary } from '../vuex/getters';
+import { getSettings, getVocabulary, getContext } from '../vuex/getters';
 import { changeStatus, changeNotification } from '../vuex/actions';
 import ComboKeys from 'combokeys';
 
@@ -20,11 +20,13 @@ export default {
     path: '',
     index: Number,
     editingObject: '',
+    entityType: '',
   },
   vuex: {
     getters: {
       settings: getSettings,
       vocab: getVocabulary,
+      context: getContext,
     },
     actions: {
       changeStatus,
@@ -163,6 +165,25 @@ export default {
     },
   },
   methods: {
+    getPropClassInfo(termObj) {
+      if (_.isArray(termObj['@type'])) {
+        if (termObj['@type'].indexOf('DatatypeProperty') > -1 && termObj['@type'].indexOf('DatatypeProperty') > -1) {
+          return StringUtil.getUiPhraseByLang('Literals and entities', this.settings.language);
+        } else if (termObj['@type'].indexOf('DatatypeProperty') > -1) {
+          return StringUtil.getUiPhraseByLang('Literals', this.settings.language);
+        } else if (termObj['@type'].indexOf('ObjectProperty') > -1) {
+          return StringUtil.getUiPhraseByLang('Entities', this.settings.language);
+        } else {
+          return '';
+        }
+      } else {
+        if (termObj['@type'] === 'DatatypeProperty') {
+          return StringUtil.getUiPhraseByLang('Literals', this.settings.language);
+        } else if (termObj['@type'] === 'ObjectProperty') {
+          return StringUtil.getUiPhraseByLang('Entities', this.settings.language);
+        }
+      }
+    },
     toggleWindowFade(e) {
       const targetElement = e.target;
       const threshold = targetElement.scrollHeight;
@@ -191,7 +212,7 @@ export default {
         const propLastPart = splitProp[splitProp.length-1];
         const fieldName = prop.item['@id'].split(':')[1];
         this.$dispatch('add-field', prop.item, this.path);
-        const translatedProp = StringUtil.labelByLang(propLastPart, this.settings.language, this.vocab, this.settings.vocabPfx);
+        const translatedProp = StringUtil.getLabelByLang(propLastPart, this.settings.language, this.vocab, this.settings.vocabPfx, this.context);
         if (close) {
           this.hide();
           this.changeStatus('lastAdded', propLastPart);
@@ -251,7 +272,7 @@ export default {
       <div class="window"  v-if="active" :class="{'at-bottom': fieldListBottom}">
         <div class="header">
           <span class="title">
-            {{ "Add field" | translatePhrase }}
+            {{ "Add field" | translatePhrase }}: {{ entityType | labelByLang }}
           </span>
           <span class="windowControl">
             <i v-on:click="hide" class="fa fa-close"></i>
@@ -259,6 +280,14 @@ export default {
           <span class="filter">
             {{ "Filter by" | translatePhrase }} <input id="field-adder-input" class="filterInput mousetrap" @input="resetSelectIndex()" type="text" v-model="filterKey"></input>
             <span class="filterInfo">{{ "Showing" | translatePhrase }} {{ filteredResults.length }} {{ "of" | translatePhrase }} {{allowed ? allowed.length : '0'}} {{ "total" | translatePhrase }}</span>
+          </span>
+        </div>
+        <div class="column-titles">
+          <span class="fieldLabel">
+            {{ "Field label" | translatePhrase }}
+          </span>
+          <span class="classInfo">
+            {{ "Can contain" | translatePhrase }}
           </span>
         </div>
         <ul v-if="active" id="fields-window" class="field-list">
@@ -269,8 +298,11 @@ export default {
             </span>
             <span class="fieldLabel" title="{{prop.label | capitalize }}">
               {{prop.label | capitalize }}
+              <span class="typeLabel">{{ prop.item['@id'] | removeDomain }}</span>
             </span>
-            <span class="typeLabel">{{ prop.item['@id'] | removeDomain }}</span>
+            <span class="classInfo">
+              {{ getPropClassInfo(prop.item) }}
+            </span>
           </li>
           <li v-if="filteredResults.length === 0"><i>{{ "Did not find any fields" | translatePhrase }}...</i></li>
         </ul>
@@ -401,12 +433,25 @@ export default {
         }
       }
     }
-    ul {
+    .column-titles {
+      background-color: @white;
       border: solid @gray;
-      border-width: 1px 0px 0px 0px;
+      border-width: 0px 0px 1px 0px;
+      > * {
+        display: inline-block;
+      }
+      .fieldLabel {
+        margin-left: 8%;
+        width: 45%;
+      }
+      .classInfo {
+        width: 40%;
+      }
+    }
+    ul {
       border-radius: 0px 0px 3px 3px;
       width: 100%;
-      height: 95%;
+      height: 90%;
       overflow-y: auto;
       margin: 0px;
       list-style-type: none;
@@ -434,27 +479,29 @@ export default {
         align-items: center;
         .fieldLabel {
           display: inline-block;
-          padding-left: 1em;
           width: 45%;
           font-size: 16px;
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
+          .typeLabel {
+            display: block;
+            font-size: 85%;
+            font-family: monospace;
+          }
         }
-        .typeLabel {
+        .classInfo {
           display: inline-block;
           width: 40%;
-          margin-left: 1em;
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
           font-size: 85%;
-          font-family: monospace;
         }
         .addControl {
           float: left;
-          margin-left: 1em;
-          margin-right: 1em;
+          width: 8%;
+          text-align: center;
           a {
             cursor: pointer;
           }

@@ -1,6 +1,7 @@
 ---
-section: Redigering
-title: Allmänna anvisningar
+section: Allmänna Anvisningar
+title: Transcription
+order: 25
 tags:
 - editor
 - rda

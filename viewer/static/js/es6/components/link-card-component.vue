@@ -26,6 +26,12 @@ export default {
   methods: {
   },
   computed: {
+    getImage() {
+      if (Modernizr.webp) {
+        return this.image.replace('.png', '.webp');
+      }
+      return this.image;
+    },
   },
   components: {
   },
@@ -41,10 +47,14 @@ export default {
 
 <template>
   <div class="panel panel-default link-card" v-bind:class="{'no-link': !linkUrl}">
-    <img :src="image" />
-    <span class="header">{{ header }}</span>
-    <p>{{ text }}</p>
-    <a v-if="linkUrl" :href="linkUrl" class="card-link">{{ linkText }}</a>
+    <img :src="getImage" />
+    <div>
+      <div class="content">
+        <span class="header">{{ header }}</span>
+        <div class="body">{{ text }}</div>
+      </div>
+      <a v-if="linkUrl" :href="linkUrl" class="card-link">{{ linkText }}</a>
+    </div>
   </div>
 </template>
 
@@ -63,19 +73,31 @@ export default {
   img {
     width: 100%;
   }
-  .header {
-    font-weight: bold;
-    font-size: 1.1em;
-  }
-  p {
-    margin: 0px;
-    flex-grow: 1;
-    font-size: 14px;
-  }
-  p, .header {
+  > div {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: space-between;
     padding: 0.5em 1em 0em 1em;
-    width: 100%;
-    text-align: left;
+    flex-grow: 1;
+    .content {
+      display: flex;
+      flex-direction: column;
+      .header {
+        font-weight: bold;
+        font-size: 1.1em;
+      }
+      .body {
+        font-size: 14px;
+      }
+      .body, .header {
+        width: 100%;
+        text-align: left;
+      }
+    }
+    > a {
+      text-align: center;
+    }
   }
 }
 

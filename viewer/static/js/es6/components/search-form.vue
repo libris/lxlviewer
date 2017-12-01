@@ -4,7 +4,7 @@ import PropertyMappings from '../propertymappings.json';
 import * as httpUtil from '../utils/http';
 import * as StringUtil from '../utils/string';
 import { changeResultListStatus, changeStatus } from '../vuex/actions';
-import { getSettings, getStatus, getVocabulary } from '../vuex/getters';
+import { getSettings, getStatus, getVocabulary, getContext } from '../vuex/getters';
 export default {
   name: 'search-form',
   vuex: {
@@ -12,6 +12,7 @@ export default {
       settings: getSettings,
       status: getStatus,
       vocab: getVocabulary,
+      context: getContext,
     },
     actions: {
       changeStatus,
@@ -148,7 +149,7 @@ export default {
             return this.settings.dataSetFilters.libris.map(term => {
               return {
                 '@id': term.replace(this.settings.vocabPfx, ''),
-                'label': StringUtil.labelByLang(term, this.settings.language, this.vocab, this.settings.vocabPfx)
+                'label': StringUtil.getLabelByLang(term, this.settings.language, this.vocab, this.settings.vocabPfx, this.context)
               };
             });
           }
@@ -246,15 +247,121 @@ export default {
 </template>
 
 <style lang="less">
-
+@import './_variables.less';
 .search-form-container {
     margin-top: 0vh;
     transition: 0.3s ease margin-top;
     .search-type-button-container {
         margin: 1.5em 0 1em;
+        .search-type-button {
+            display: inline-block;
+            border: solid @gray;
+            color: @gray-darker;
+            font-size: 85%;
+            line-height: 2em;
+            font-weight: bold;
+            text-transform: uppercase;
+            border-width: 1px 1px 0px 1px;
+            border-radius: 0.3em 0.3em 0px 0px;
+            padding: 0px 10px;
+            background-color: @gray-lighter;
+            box-shadow: inset 0px -0.1em 0.1em rgba(0, 0, 0, 0.15);
+            &.active {
+                color: darken(@brand-primary, 15%);
+                border-color: @brand-primary;
+                background-color: desaturate(lighten(@brand-primary, 30%), 50%);
+            }
+        }
     }
     &.is-landing-page {
-        margin-top: 20vh;
+        margin-top: 10vh;
+    }
+    .search-controls {
+        padding: 20px;
+        .search-input {
+            height: 44px;
+        }
+        .search-button {
+            height: 42px;
+        }
+        .form-group {
+            width: 100%;
+            input {
+            display:none;
+            }
+            > div {
+            display: flex;
+            > div {
+                flex-grow: 1;
+                margin-right: 5px;
+            }
+            }
+            #searchFieldContainer {
+            > div {
+                display: flex;
+                justify-content: space-between;
+                #searchQsmart {
+                display: flex;
+                flex: 8 8 98%;
+                flex-direction: row;
+                flex-wrap: nowrap;
+                line-height: 2em;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+
+                .searchphrase {
+                    flex-grow: 1;
+                    margin-right: 5px;
+                    outline: none;
+                    cursor: text;
+                }
+                .searchtag {
+                    margin-right: 5px;
+                    border-radius: 3px;
+                    padding: 0px 5px;
+                    outline: none;
+                    cursor: text;
+                }
+                .valid {
+                    background-color: #E0F2F1;
+                }
+                input {
+                    border: 0px;
+                    outline: none;
+                    display: inline-block;
+                }
+                }
+                > .field-clearer {
+                cursor: pointer;
+                align-self: center;
+                flex: 1 1 2%;
+                &:hover {
+                    color: #555;
+                }
+                }
+            }
+            }
+        }
+        .search-label {
+            display: block;
+            text-transform: uppercase;
+        }
+
+        .type-label {
+            display: block;
+        }
+        .type-buttons {
+            label {
+            padding: 3px 10px;
+            font-weight: normal;
+            font-size: 12px;
+            input {
+                margin-right: 0.2em;
+            }
+            }
+            margin-top: 1em;
+        }
     }
 }
 

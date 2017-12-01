@@ -1,4 +1,5 @@
 <script>
+import * as _ from 'lodash';
 import * as LayoutUtil from '../utils/layout';
 import { getStatus } from '../vuex/getters';
 import { changeStatus } from '../vuex/actions';
@@ -38,17 +39,19 @@ export default {
   },
   computed: {
     helpSection() {
+
       return this.status.helpSection;
     },
     helpCategories() {
       const json = this.docs;
+      const sortedJson = _.orderBy(json, ['order'],['asc']);
       const categories = {};
-      for (const section in json) {
-        const cat = json[section].section;
+      for (const section in sortedJson) {
+        const cat = sortedJson[section].section;
         if (categories.hasOwnProperty(cat) === false) {
           categories[cat] = [];
         }
-        categories[cat].push(json[section]);
+        categories[cat].push(sortedJson[section]);
       }
       return categories;
     },
@@ -97,8 +100,16 @@ export default {
             <div v-show="helpSection == ''">
               <h1>Hjälp</h1>
               <p>
-                Här kan du få hjälp. Välj avsnitt till vänster.
+                Den här hjälpen omfattar instruktioner för gränssnittet och materialtyper, välj avsnitt till vänster för att läsa mer.
               </p>
+              <h2>Nyttiga länkar</h2>
+              <ul>
+                <li>Om du vill läsa om Formatet (mappning och basvokabulär) så har du det <a href="https://id-qa.kb.se/">här</a>.</li>
+                <li>Är du ute efter instruktionsmaterial hittar du det <a href="http://librisbloggen.kb.se/2017/10/31/sjalvstudier-infor-overgangen-till-nya-libris-och-xl/">här</a>.</li>
+                <li>Vill du komma i kontakt med kundservice gör du det <a href="http://www.kb.se/libris/kontakta/">här</a>.</li>
+                <li><a href="https://goo.gl/forms/3mL7jTlEpbU3BQM13">Här</a> kan du rapportera fel.</li>
+                <li><a href="https://goo.gl/forms/dPxkhMqE10RvKQFE2">Här</a> kan du ge ändringsförslag</a>.</li>
+              </ul>
             </div>
             <div v-for="section in docs" v-html="section.body" v-show="section.title == helpSection"></div>
           </div>
@@ -115,19 +126,17 @@ export default {
     .window-mixin();
     max-width: 1000px;
     .body {
-      padding: 0em 0em 0em 1em;
+      display: flex;
+      padding: 1em;
       overflow-y: scroll;
+      align-items: flex-start;
       .content {
-        padding: 2em 2em 3em 1em;
+        padding: 0 0 0 1em;
         height: 100%;
-        overflow-y: scroll;
-        width: 80%;
-        float: right;
+        flex: 70% 3 3;
         h1, h2, h3, h4 {
           font-weight: normal;
           margin-top: 0;
-          border: solid;
-          border-width: 0px 0px 1px 0px;
         }
         p {
           margin: 0.5em 0px 1em;
@@ -140,11 +149,9 @@ export default {
         }
       }
       .menu {
-        width: 20%;
-        margin: 1em 0em 0em 0em;
+        flex: 25% 1 1;
         background-color: #e6e6e6;
         border-radius: 5px;
-        float: left;
         ul.categories {
           list-style: none;
           padding: 5px 10px;

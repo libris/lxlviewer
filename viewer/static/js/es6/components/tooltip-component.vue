@@ -1,6 +1,6 @@
 <script>
 import * as StringUtil from '../utils/string';
-import { getVocabulary, getSettings } from '../vuex/getters';
+import { getVocabulary, getSettings, getContext } from '../vuex/getters';
 
 export default {
   data() {
@@ -11,6 +11,7 @@ export default {
     getters: {
       vocab: getVocabulary,
       settings: getSettings,
+      context: getContext
     },
     actions: {
     },
@@ -31,7 +32,7 @@ export default {
     },
     translatedText() {
       if (this.translation === 'labelByLang') {
-        return StringUtil.labelByLang(this.tooltipText, this.settings.language, this.vocab, this.settings.vocabPfx);
+        return StringUtil.getLabelByLang(this.tooltipText, this.settings.language, this.vocab, this.settings.vocabPfx, this.context);
       } else if (this.translation === 'translatePhrase') {
         return StringUtil.getUiPhraseByLang(this.tooltipText, this.settings.language);
       }

@@ -34,7 +34,6 @@ const state = {
     keybindState: '',
     inEdit: false,
     isNew: true,
-    isCopy: false,
     saved: {
       loading: false,
       error: false,
@@ -73,8 +72,22 @@ const mutations = {
   },
   LOADVOCAB (state, data) {
     // state.vocabMap = new Map(data.map((entry) => [entry['@id'], entry]));
-
-    state.vocabClasses = VocabUtil.getTermByType('Class', data);
+    const classes = new Map(VocabUtil.getTermByType('Class', data).map(entry => [entry['@id'], entry]));
+    classes.forEach(classObj => {
+      if (classObj.hasOwnProperty('subClassOf')) {
+        _.each(classObj.subClassOf, baseClass => {
+          const baseClassObj = classes.get(baseClass['@id']);
+          if (typeof baseClassObj !== 'undefined') {
+            if (baseClassObj.hasOwnProperty('baseClassOf')) {
+              baseClassObj.baseClassOf.push(classObj['@id']);
+            } else {
+              baseClassObj.baseClassOf = [classObj['@id']];
+            }
+          }
+        });
+      }
+    });
+    state.vocabClasses = classes;
 
     let props = [];
     props = props.concat(VocabUtil.getTermByType('Property', data));

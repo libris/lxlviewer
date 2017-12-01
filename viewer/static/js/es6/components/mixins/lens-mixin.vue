@@ -24,7 +24,7 @@ export default {
         this.editorData.quoted,
         this.vocab,
         this.settings,
-        this.context,
+        this.context
       );
       return label;
     },
@@ -43,7 +43,7 @@ export default {
         this.editorData.quoted,
         this.vocab,
         this.settings,
-        this.context,
+        this.context
       );
       return chip;
     },
@@ -54,7 +54,7 @@ export default {
         this.editorData.quoted,
         this.vocab,
         this.settings,
-        this.context,
+        this.context
       );
       return card;
     },
@@ -65,7 +65,7 @@ export default {
         this.editorData.quoted,
         this.vocab,
         this.settings,
-        this.context,
+        this.context
       );
       return summary;
     },

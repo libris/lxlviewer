@@ -19,7 +19,7 @@ import ItemMixin from './mixins/item-mixin';
 import LensMixin from './mixins/lens-mixin';
 import {mixin as clickaway} from 'vue-clickaway';
 import { changeNotification, changeStatus } from '../vuex/actions';
-import { getSettings, getVocabulary, getVocabularyClasses, getVocabularyProperties, getDisplayDefinitions, getEditorData, getStatus } from '../vuex/getters';
+import { getUser, getSettings, getContext, getVocabulary, getVocabularyClasses, getVocabularyProperties, getDisplayDefinitions, getEditorData, getStatus } from '../vuex/getters';
 
 export default {
   name: 'item-local',
@@ -27,6 +27,7 @@ export default {
   props: {
     item: {},
     key: '',
+    entityType: '',
     index: Number,
     isLocked: false,
     showActionButtons: false,
@@ -36,6 +37,7 @@ export default {
   },
   vuex: {
     getters: {
+      context: getContext,
       vocab: getVocabulary,
       vocabClasses: getVocabularyClasses,
       vocabProperties: getVocabularyProperties,
@@ -43,6 +45,7 @@ export default {
       settings: getSettings,
       editorData: getEditorData,
       status: getStatus,
+      user: getUser,
     },
     actions: {
       changeStatus,
@@ -70,7 +73,9 @@ export default {
       return false;
     },
     extractedItem() {
-      const objAsRecord = RecordUtil.getObjectAsRecord(this.extractedMainEntity);
+      const newRecord = {};
+      newRecord.descriptionCreator = { '@id': `https://libris.kb.se/library/${this.user.settings.activeSigel}` };
+      const objAsRecord = RecordUtil.getObjectAsRecord(this.extractedMainEntity, newRecord);
       return objAsRecord;
     },
     extractedMainEntity() {
@@ -85,7 +90,7 @@ export default {
       const classId = `${this.settings.vocabPfx}${this.item['@type']}`;
       if (
         this.settings.nonExtractableClasses.indexOf(this.item['@type']) === -1 &&
-        !VocabUtil.isEmbedded(classId, this.vocab, this.settings)
+        !VocabUtil.isEmbedded(classId, this.vocab, this.settings, this.context)
       ) {
         return true;
       }
@@ -122,9 +127,10 @@ export default {
       const formObj = this.item;
       const allowed = VocabUtil.getPropertiesFromArray(
         formObj['@type'],
-        this.vocab,
+        this.vocabClasses,
         this.settings.vocabPfx,
-        this.vocabProperties
+        this.vocabProperties,
+        this.context
       );
       // Add the "added" property
       for (const element of allowed) {
@@ -348,14 +354,14 @@ export default {
           <i v-if="!isLocked" class="fa fa-trash-o chip-action" :class="{'show-icon': showActionButtons}" v-on:click="removeThis(true)" @mouseover="removeHover = true" @mouseout="removeHover = false">
             <tooltip-component :show-tooltip="removeHover" tooltip-text="Remove" translation="translatePhrase"></tooltip-component>
           </i>
-          <field-adder v-if="!isLocked" :allowed="allowedProperties" :inner="true" :path="getPath"></field-adder>
+          <field-adder v-if="!isLocked" :entity-type="item['@type']" :allowed="allowedProperties" :inner="true" :path="getPath"></field-adder>
         </span>
       </div>
-      <field-adder v-if="!isLocked && isEmpty" :allowed="allowedProperties" :inner="true" :path="getPath"></field-adder>
+      <field-adder v-if="!isLocked && isEmpty" :entity-type="item['@type']" :allowed="allowedProperties" :inner="true" :path="getPath"></field-adder>
       <data-node v-show="expanded && k !== '_uid'" v-for="(k,v) in filteredItem" :parent-path="getPath" :entity-type="item['@type']" :is-inner="true" :is-locked="isLocked" :allow-local="true" :is-removable="false" :embedded="true" :parent-key="key" :parent-index="index" :key="k" :value="v" :focus="focus" :show-action-buttons="showActionButtons"></data-node>
     </div>
     <card-component v-if="isExpandedType" :title="getItemLabel" :focus-data="item" :uri="item['@id']" :is-local="true" :is-extractable="isExtractable" :is-locked="isLocked"></card-component>
-    <search-window :active="extractDialogActive" :can-copy-title="canCopyTitle" :copy-title="copyTitle" :key="key" :extracting="extracting" :item-info="extractedMainEntity" :index="index"></search-window>
+    <search-window :active="extractDialogActive" :can-copy-title="canCopyTitle" :copy-title="copyTitle" :entity-type="entityType" :key="key" :extracting="extracting" :item-info="extractedMainEntity" :index="index"></search-window>
   </div>
 </template>
 

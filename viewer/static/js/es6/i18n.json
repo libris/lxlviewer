@@ -8,7 +8,7 @@
     "Report error": "Felrapportering",
     "New Libris and XL": "Nya Libris och XL",
     "Instruction videos": "Instruktionsfilmer",
-    "Study material": "Studiematerial",
+    "Introduction material": "Introduktionsmaterial",
     "Forum of support for new Libris": "Supportforum för nya Libris",
     "Libris customer service": "Libris kundservice",
     "Social media": "Sociala medier",
@@ -40,6 +40,7 @@
     "Unnamed entity": "Namnlös entitet",
     "Link entity": "Länka entitet",
     "Post": "Post",
+    "Unknown": "Okänd",
     "Field": "Fält",
     "Show technical application details": "Visa applikationstekniska detaljer",
     "On": "På",
@@ -119,6 +120,12 @@
     "Unauthorized": "Obehörig",
     "Instantiations of this work": "Instanser av detta verk",
     "Show instantiations": "Visa instanser",
-    "Instantiations": "Instanser"
+    "Instantiations": "Instanser",
+    "View": "Granska",
+    "Literals and entities": "Literaler och entiteter",
+    "Literals": "Literaler",
+    "Entities": "Entiteter",
+    "Can contain": "Kan innehålla",
+    "Field label": "Fältetikett"
   }
 }
