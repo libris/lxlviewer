@@ -37,5 +37,3 @@ Om du får fram ett sökresultat där du identifierar en entitet att ersätta de
 
 **Skapa och länka entitet:** 
 Om du inte identifierar relevant entitet att ersätta med, kan du istället “Skapa och länka entitet”. Det betyder att du skapar en länk av din lokala entitet. All information från denne följer då med och blir till en egen post med ett eget ID. Efter att ha sparat posten kan du gå in i länken och redigera den i den nyskapade posten.
-
-
