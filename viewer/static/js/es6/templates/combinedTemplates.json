@@ -1372,6 +1372,16 @@
               "label": ""
             }
           }],
+          "carrierType": [{
+            "@type": "CarrierType",
+            "code": "nc",
+            "termGroup": "rdacarrier"
+          }],
+          "mediaType": [{
+            "@type": "MediaType",
+            "code": "n",
+            "termGroup": "rdamedia"
+          }],
           "succeededBy": [{
             "@type": "Serial"
           }],
@@ -1380,6 +1390,11 @@
             "@type": "Text",
             "language": [{
               "@id": "https://id.kb.se/language/swe"
+            }],
+            "contentType": [{
+              "@type": "Content",
+              "code": "txt",
+              "termGroup": "rdacontent"
             }],
             "genreForm": [{
               "@id": "https://id.kb.se/marc/Periodical"
