@@ -55,6 +55,24 @@
             },
             "date": ""
           }],
+          "manufacture": [{
+            "@type": "Manufacture",
+            "agent": [{
+              "@type": "Agent",
+              "label": [
+                ""
+              ]
+            }],
+            "date": [
+              ""
+            ],
+            "place": [{
+              "@type": "Place",
+              "label": [
+                ""
+              ]
+            }]
+          }],
           "marc:publicationStatus": {
             "@id": "https://id.kb.se/marc/SingleKnownDateProbableDate"
           },
