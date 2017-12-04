@@ -47,7 +47,12 @@
                 % endif
               </a>
             </div>
-            <a class="navbar-brand" href="/" title="Version ${ config.VERSION }">${g.site.title}
+            <a class="navbar-brand" href="/" title="Version ${ config.VERSION }">
+              % if g.site.title == 'libris.kb.se'
+                Libris Katalogisering
+              % else
+                ${g.site.title}
+              % endif
               <span class="environment-label">
                 {% if config.ENVIRONMENT == 'prod' %}
                 {% elif config.ENVIRONMENT %}
