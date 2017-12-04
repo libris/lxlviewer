@@ -334,9 +334,9 @@ export default {
               </div>
             </div>
             <div class="controls">
-              <button v-if="allowLocal && hasSingleRange" v-on:click="addEmpty(getFullRange[0])">{{ "Create local entity" | translatePhrase }} ({{ addLabel | labelByLang }})</button>
+              <button v-if="allowLocal && hasSingleRange" v-on:click="addEmpty(getFullRange[0])">{{ "Create local entity" | translatePhrase }}</button>
               <select v-model="selectedType" @change="addType(selectedType)" v-if="allowLocal && !hasSingleRange">
-                <option disabled value="">{{ "Create local entity" | translatePhrase }} ({{ addLabel | labelByLang }})</option>
+                <option disabled value="">{{ "Create local entity" | translatePhrase }}</option>
                 <option v-for="rangeType in getFullRange" value="{{rangeType}}" label="{{rangeType | labelByLang}}">
               </select>
             </div>
