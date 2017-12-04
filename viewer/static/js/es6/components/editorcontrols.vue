@@ -9,11 +9,13 @@ import * as HttpUtil from '../utils/http';
 import * as StringUtil from '../utils/string';
 import * as RecordUtil from '../utils/record';
 import HeaderComponent from './headercomponent';
+import FieldAdder from './fieldadder';
 import RecordSummary from './record-summary';
+import TooltipComponent from './tooltip-component';
 import LensMixin from './mixins/lens-mixin';
 import { mixin as clickaway } from 'vue-clickaway';
 import { changeSavedStatus, changeStatus, changeNotification, navigateChangeHistory } from '../vuex/actions';
-import { getUser, getContext, getSettings, getVocabulary, getVocabularyClasses, getDisplayDefinitions, getEditorData, getStatus, getChangeHistory } from '../vuex/getters';
+import { getUser, getContext, getSettings, getVocabulary, getVocabularyClasses, getVocabularyProperties, getDisplayDefinitions, getEditorData, getStatus, getChangeHistory } from '../vuex/getters';
 
 export default {
   vuex: {
@@ -22,6 +24,7 @@ export default {
       context: getContext,
       vocab: getVocabulary,
       vocabClasses: getVocabularyClasses,
+      vocabProperties: getVocabularyProperties,
       display: getDisplayDefinitions,
       settings: getSettings,
       editorData: getEditorData,
@@ -52,7 +55,6 @@ export default {
     inEdit(state) {
       if (state) {
         this.loadingEdit = false;
-        this.loadingCancel = false;
       }
     },
   },
@@ -73,9 +75,9 @@ export default {
     openMarc() {
       this.$dispatch('show-marc');
     },
-    save() {
+    save(cancelEdit) {
       this.changeSavedStatus('loading', true);
-      this.$dispatch('save-item');
+      this.$dispatch('save-item', cancelEdit);
     },
     edit() {
       this.loadingEdit = true;
@@ -124,15 +126,6 @@ export default {
         // rejected by user
       });
     },
-    cancelEdit() {
-      this.loadingCancel = true;
-      this.$dispatch('set-dirty', false);
-      if (this.status.isNew) {
-        window.history.back();
-      } else {
-        setTimeout(() => this.$dispatch('cancel-edit'), 0);
-      }
-    },
     download(text) {
       const element = document.createElement('a');
       element.setAttribute('href', 'data:application/octet-stream,' + encodeURIComponent(text));
@@ -161,7 +154,12 @@ export default {
       showAdminInfoDetails: false,
       otherFormatMenu: false,
       loadingEdit: false,
-      loadingCancel: false,
+      showEdit: false,
+      showTools: false,
+      showDisplayAs: false,
+      showUndo: false,
+      showSave: false,
+      showFieldAdderTooltip: false,
     };
   },
   computed: {
@@ -207,10 +205,56 @@ export default {
     },
     hasLocalWork() {
       return (typeof this.editorData.work !== 'undefined') ? true : false;
-    }
+    },
+    allowedProperties() {
+      const settings = this.settings;
+      const formObj = this.editorData[this.status.editorFocus];
+      const allowed = VocabUtil.getPropertiesFromArray(
+        formObj['@type'],
+        this.vocabClasses,
+        this.settings.vocabPfx,
+        this.vocabProperties,
+        this.context
+      );
+      // Add the "added" property
+      for (const element of allowed) {
+        const oId = element.item['@id'].replace(settings.vocabPfx, '');
+        element.added = (formObj.hasOwnProperty(oId) && formObj[oId] !== null);
+      }
+
+      const extendedAllowed = allowed.map(property => {
+        const labelByLang = property.item.labelByLang;
+        if (typeof labelByLang !== 'undefined') {
+          // Try to get the label in the preferred language
+          let label = ((typeof labelByLang[this.settings.language] !== 'undefined') ? labelByLang[this.settings.language] : labelByLang.en);
+          // If several labels are present, use the first one
+          if (_.isArray(label)) {
+            label = label[0];
+          }
+          return {
+            added: property.added,
+            item: property.item,
+            label: label
+          };
+        } else {
+          // If no label, use @id as label
+          return {
+            added: property.added,
+            item: property.item,
+            label: property.item['@id']
+          };
+        }
+      });
+      sortedAllowed = _.sortBy(extendedAllowed, (prop) => {
+        return prop.label.toLowerCase();
+      });
+      return sortedAllowed;
+    },
   },
   components: {
     'record-summary': RecordSummary,
+    'field-adder': FieldAdder,
+    'tooltip-component': TooltipComponent,
   },
 };
 </script>
@@ -232,13 +276,15 @@ export default {
           </div>
         </div>
         <div>
-          <button class="toolbar-button" v-on:click="toggleEditorFocus()" v-bind:class="{'active': status.editorFocus === 'record' }">
+          <button class="btn btn-default toolbar-button" v-on:click="toggleEditorFocus()" v-bind:class="{'active': status.editorFocus === 'record' }">
             <span v-show="status.editorFocus === 'record'"><i class="fa fa-fw fa-toggle-on"></i> {{'Admin metadata' | translatePhrase}}</span>
             <span v-show="status.editorFocus === 'mainEntity'"><i class="fa fa-fw fa-toggle-off"></i> {{'Admin metadata' | translatePhrase}}</span>
           </button>
-          <div v-if="!status.inEdit" class="dropdown other-format toolbar-button">
+          <button v-if="!status.inEdit" class="btn btn-default dropdown other-format toolbar-button" @mouseover="showDisplayAs = true" @mouseout="showDisplayAs = false">
             <div class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-              {{ 'Show as' | translatePhrase }}
+              <i class="fa fa-eye" aria-hidden="true">
+                <tooltip-component :show-tooltip="showDisplayAs" tooltip-text="Show as" translation="translatePhrase"></tooltip-component>
+              </i>
               <span class="caret"></span>
             </div>
             <ul class="dropdown-menu">
@@ -246,11 +292,13 @@ export default {
               <li><a :href="getOtherDataFormat('ttl')">Turtle</a></li>
               <li><a :href="getOtherDataFormat('rdf')">RDF/XML</a></li>
             </ul>
-          </div>
-          <div class="dropdown tools toolbar-button">
-            <div class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-              {{ 'Tools' | translatePhrase }}
-            <span class="caret"></span>
+          </button>
+          <button class="btn btn-default dropdown tools toolbar-button">
+            <div class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" @mouseover="showTools = true" @mouseout="showTools = false">
+              <i class="fa fa-wrench" aria-hidden="true">
+                <tooltip-component :show-tooltip="showTools" tooltip-text="Tools" translation="translatePhrase"></tooltip-component>
+              </i>
+              <span class="caret"></span>
             </div>
             <ul class="dropdown-menu">
               <li>
@@ -294,26 +342,29 @@ export default {
                 </a>
               </li>
             </ul>
-          </div>
+          </button>
           <div class="toolbar-divider"></div>
-          <button class="toolbar-button" v-bind:class="{'disabled': activeChangeHistory.length === 0 }" v-show="status.inEdit" @click="navigateFormChanges('back')">
-            <i class="fa fa-undo" aria-hidden="true"></i>
-            {{"Undo" | translatePhrase}}
+          <field-adder v-if="status.inEdit" :entity-type="editorData[status.editorFocus]['@type']" :inner="false" :allowed="allowedProperties" :editing-object="status.editorFocus"></field-adder>
+          <button class="btn btn-default toolbar-button" :disabled="activeChangeHistory.length === 0" v-show="status.inEdit" @click="navigateFormChanges('back')" @mouseover="showUndo = true" @mouseout="showUndo = false">
+            <i class="fa fa-undo" aria-hidden="true">
+              <tooltip-component :show-tooltip="showUndo" tooltip-text="Undo" translation="translatePhrase"></tooltip-component>
+            </i>
           </button>
-          <button class="toolbar-button" v-show="status.inEdit && !status.isNew" @click="cancelEdit">
-            <i class="fa fa-times" aria-hidden="true" v-show="!loadingCancel"></i>
-            <i class="fa fa-fw fa-circle-o-notch fa-spin" aria-hidden="true" v-show="loadingCancel"></i>
-            {{"Cancel" | translatePhrase}}
-          </button>
-          <button class="toolbar-button" id="saveButton" v-on:click="save()" v-if="status.inEdit">
+          <button class="btn btn-info toolbar-button" id="saveButton" v-on:click="save(false)" v-if="status.inEdit && !status.isNew" @mouseover="showSave = true" @mouseout="showSave = false">
             <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="status.saved.loading"></i>
-            <i class="fa fa-fw fa-save" v-show="!status.saved.loading"></i>
-            {{ "Save" | translatePhrase }}
+            <i class="fa fa-fw fa-save" v-show="!status.saved.loading">
+              <tooltip-component :show-tooltip="showSave" tooltip-text="Save" translation="translatePhrase"></tooltip-component>
+            </i>
           </button>
-          <button class="toolbar-button edit-button" id="editButton" v-on:click="edit()" v-show="!status.inEdit && canEditThisType">
+          <button class="btn btn-lg btn-success toolbar-button" id="saveButton" v-on:click="save(true)" v-if="status.inEdit">
+            <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="status.saved.loading"></i>
+            <i class="fa fa-fw fa-check" v-show="!status.saved.loading"></i>
+            {{"Done" | translatePhrase}}
+          </button>
+          <button class="btn btn-lg btn-info toolbar-button edit-button" id="editButton" v-on:click="edit()" v-show="!status.inEdit && canEditThisType" @mouseover="showEdit = true" @mouseout="showEdit = false">
             <i class="fa fa-fw fa-pencil" v-show="!loadingEdit"></i>
             <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="loadingEdit"></i>
-            {{ "Edit" | translatePhrase }}
+            {{"Edit" | translatePhrase}}
           </button>
         </div>
       </div>
@@ -348,27 +399,14 @@ export default {
         }
       }
       .toolbar-button {
-        border: 1px solid rgba(27, 31, 35, 0.1);
-        background-color: #efefef;
-        margin: 0 0.3em;
-        padding: 3px 10px;
-        font-size: 12px;
+        margin: 0.2em 0.3em;
+        padding: 8px 15px;
+        font-size: 13px;
         line-height: 20px;
-        &:hover {
-          border: 1px solid rgba(27, 31, 35, 0.2);
-        }
-        &.active, &.open {
-          box-shadow: inset 0px 0em 2em 0em rgba(0, 0, 0, 0.1);
-        }
-        &.disabled {
-          opacity: 0.5;
-          cursor: default;
-          border: 1px solid rgba(27, 31, 35, 0.1);
-        }
+        font-weight: bold;
       }
       .dropdown.tools, .dropdown.other-format {
         display: inline-block;
-        border-radius: 2px;
         font-weight: bold;
         cursor: pointer;
         margin: 0 0.3em;
@@ -376,7 +414,7 @@ export default {
         font-size: 12px;
         line-height: 20px;
         .dropdown-toggle {
-          padding: 3px 10px;
+          padding: 8px 15px;
         }
         li > a {
           cursor: pointer;

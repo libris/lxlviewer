@@ -6,7 +6,6 @@
 */
 
 import * as _ from 'lodash';
-import FieldAdder from './fieldadder';
 import DataNode from './datanode';
 import * as ModalUtil from '../utils/modals';
 import * as VocabUtil from '../utils/vocab';
@@ -200,27 +199,6 @@ export default {
   watch: {
   },
   events: {
-    'add-field'(prop, path) {
-      const key = prop['@id'].replace(this.settings.vocabPfx, '');
-      let value = [];
-      if (prop['@type'] === 'DatatypeProperty') {
-        if (this.forcedListTerms.indexOf(key) > -1) {
-          value = [''];
-        } else {
-          value = '';
-        }
-      }
-      let modified = _.cloneDeep(this.formData);
-      if (typeof path !== 'undefined') {
-
-        _.set(modified, `${path}.${key}`, value);
-      } else {
-        const newItem = {};
-        newItem[key] = value;
-        modified = Object.assign({}, this.formData, newItem);
-      }
-      this.updateForm(this.editingObject, modified, this.formData);
-    },
     'remove-field'(path) {
       const modifiedData = _.cloneDeep(this.formData);
       _.unset(modifiedData, path);
@@ -247,7 +225,6 @@ export default {
   },
   components: {
     'data-node': DataNode,
-    'field-adder': FieldAdder,
   },
   ready() {
   }
@@ -258,7 +235,6 @@ export default {
   <div class="form-component focused-form-component" :class="{ 'locked': isLocked }" v-show="isActive">
     <div class="data-node-container" v-bind:class="{'collapsed': collapsed }">
       <data-node v-for="(k,v) in sortedFormData" v-bind:class="{ 'locked': isLocked }" :entity-type="editorData[editingObject]['@type']" :is-inner="false" :is-removable="true" :is-locked="keyIsLocked(k)" :key="k" :value="v" :allow-local="true"></data-node>
-      <field-adder v-if="!isLocked" :entity-type="formData['@type']" :allowed="allowedProperties" :inner="false" :editing-object="editingObject"></field-adder>
       <div id="result" v-if="status.isDev && !isLocked">
         <div class="row">
         <pre class="col-md-6">

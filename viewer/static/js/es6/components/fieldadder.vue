@@ -186,7 +186,7 @@ export default {
     },
     toggleWindowFade(e) {
       const targetElement = e.target;
-      const threshold = targetElement.scrollHeight;
+      const threshold = targetElement.scrollHeight - 20;
       const position = targetElement.offsetHeight + targetElement.scrollTop;
       if (threshold > position) {
         this.fieldListBottom = false;
@@ -251,137 +251,78 @@ export default {
 </script>
 
 <template>
-  <div :class="{'container': !inner}">
-    <div class="field-adder">
-      <div v-if="inner" class="field-adder-bar" v-on:click="show" @mouseenter="showToolTip = true" @mouseleave="showToolTip = false">
-        <i class="fa fa-plus-square-o plus-icon" aria-hidden="true">
-          <tooltip-component :show-tooltip="showToolTip" tooltip-text="Add field" translation="translatePhrase"></tooltip-component>
-        </i>
-        {{ "Field" | translatePhrase }}
+  <span class="field-adder">
+    <span v-if="inner" class="field-adder-bar" v-on:click="show" @mouseenter="showToolTip = true" @mouseleave="showToolTip = false">
+      <i class="fa fa-plus-square-o plus-icon" aria-hidden="true">
+        <tooltip-component :show-tooltip="showToolTip" tooltip-text="Add field" translation="translatePhrase"></tooltip-component>
+      </i>
+      {{ "Field" | translatePhrase }}
+    </span>
+    <button v-if="!inner" class="btn btn-primary add-button" v-on:click="show" @mouseenter="showToolTip = true" @mouseleave="showToolTip = false">
+      <i class="fa fa-plus plus-icon" aria-hidden="true">
+        <tooltip-component :show-tooltip="showToolTip" tooltip-text="Add field" translation="translatePhrase"></tooltip-component>
+      </i>
+      {{ "Field" | translatePhrase }}
+    </button>
+    <div class="window"  v-if="active" :class="{'at-bottom': fieldListBottom}">
+      <div class="header">
+        <span class="title">
+          {{ "Add field" | translatePhrase }}: {{ entityType | labelByLang }}
+        </span>
+        <span class="windowControl">
+          <i v-on:click="hide" class="fa fa-close"></i>
+        </span>
+        <span class="filter">
+          {{ "Filter by" | translatePhrase }} <input id="field-adder-input" class="filterInput mousetrap" @input="resetSelectIndex()" type="text" v-model="filterKey"></input>
+          <span class="filterInfo">{{ "Showing" | translatePhrase }} {{ filteredResults.length }} {{ "of" | translatePhrase }} {{allowed ? allowed.length : '0'}} {{ "total" | translatePhrase }}</span>
+        </span>
       </div>
-      <a v-if="!inner && !buttonFixed" class="add-button absolute" v-on:click="show" @mouseenter="showToolTip = true" @mouseleave="showToolTip = false">
-        <i class="fa fa-plus plus-icon" aria-hidden="true">
-          <tooltip-component :show-tooltip="showToolTip" tooltip-text="Add field" translation="translatePhrase"></tooltip-component>
-        </i>
-      </a>
-      <a v-if="!inner && buttonFixed" class="add-button fixed" v-on:click="show" @mouseenter="showToolTip = true" @mouseleave="showToolTip = false">
-        <i class="fa fa-plus plus-icon" aria-hidden="true">
-          <tooltip-component :show-tooltip="showToolTip" tooltip-text="Add field" translation="translatePhrase"></tooltip-component>
-        </i>
-      </a>
-      <div class="window"  v-if="active" :class="{'at-bottom': fieldListBottom}">
-        <div class="header">
-          <span class="title">
-            {{ "Add field" | translatePhrase }}: {{ entityType | labelByLang }}
+      <div class="column-titles">
+        <span class="fieldLabel">
+          {{ "Field label" | translatePhrase }}
+        </span>
+        <span class="classInfo">
+          {{ "Can contain" | translatePhrase }}
+        </span>
+      </div>
+      <ul v-if="active" id="fields-window" class="field-list">
+        <li v-on:mouseover="selectedIndex = $index" v-bind:class="{ 'added': prop.added, 'available': !prop.added, 'selected': $index == selectedIndex }" v-for="prop in filteredResults" track-by="$index" @click="addField(prop, true)">
+          <span class="addControl">
+            <a v-on:click.prevent="addField(prop, false)"><i class="fa fa-fw fa-2x fa-plus-circle"></i></a>
+            <span><i class="fa fa-fw fa-check fa-2x"></i></span>
           </span>
-          <span class="windowControl">
-            <i v-on:click="hide" class="fa fa-close"></i>
-          </span>
-          <span class="filter">
-            {{ "Filter by" | translatePhrase }} <input id="field-adder-input" class="filterInput mousetrap" @input="resetSelectIndex()" type="text" v-model="filterKey"></input>
-            <span class="filterInfo">{{ "Showing" | translatePhrase }} {{ filteredResults.length }} {{ "of" | translatePhrase }} {{allowed ? allowed.length : '0'}} {{ "total" | translatePhrase }}</span>
-          </span>
-        </div>
-        <div class="column-titles">
-          <span class="fieldLabel">
-            {{ "Field label" | translatePhrase }}
+          <span class="fieldLabel" title="{{prop.label | capitalize }}">
+            {{prop.label | capitalize }}
+            <span class="typeLabel">{{ prop.item['@id'] | removeDomain }}</span>
           </span>
           <span class="classInfo">
-            {{ "Can contain" | translatePhrase }}
+            {{ getPropClassInfo(prop.item) }}
           </span>
-        </div>
-        <ul v-if="active" id="fields-window" class="field-list">
-          <li v-on:mouseover="selectedIndex = $index" v-bind:class="{ 'added': prop.added, 'available': !prop.added, 'selected': $index == selectedIndex }" v-for="prop in filteredResults" track-by="$index" @click="addField(prop, true)">
-            <span class="addControl">
-              <a v-on:click.prevent="addField(prop, false)"><i class="fa fa-fw fa-2x fa-plus-circle"></i></a>
-              <span><i class="fa fa-fw fa-check fa-2x"></i></span>
-            </span>
-            <span class="fieldLabel" title="{{prop.label | capitalize }}">
-              {{prop.label | capitalize }}
-              <span class="typeLabel">{{ prop.item['@id'] | removeDomain }}</span>
-            </span>
-            <span class="classInfo">
-              {{ getPropClassInfo(prop.item) }}
-            </span>
-          </li>
-          <li v-if="filteredResults.length === 0"><i>{{ "Did not find any fields" | translatePhrase }}...</i></li>
-        </ul>
-      </div>
+        </li>
+        <li v-if="filteredResults.length === 0"><i>{{ "Did not find any fields" | translatePhrase }}...</i></li>
+      </ul>
     </div>
-  </div>
+  </span>
 </template>
 
 <style lang="less">
 @import './_variables.less';
 
 .field-adder {
-  text-align: right;
   .field-adder-bar {
     cursor: pointer;
     text-align: center;
     padding: 0 0.5em;
   }
-  display: block; // So that the clickaway plugin triggers nicely
   .add-button {
-    margin-left: 100%;
-    background-color: @brand-primary;
-    transition: bottom 0.25s cubic-bezier(0.4, 0, 1, 1);
-    color: @white;
-    position: fixed;
-    margin-left: 0.5em;
-    border-radius:2em;
-    box-shadow: 0px 7px 10px 0px rgba(0,0,0,0.7);
-    cursor: pointer;
-    font-size: 1.5em;
-    padding: 1em 1.2em;
-    line-height: 1.2em;
-    text-decoration: none;
-    &.fixed {
-      position: fixed;
-      bottom: 12px;
-    }
-    &.absolute {
-      position: absolute;
-      transform: translateY(-67px);
-    }
-    .plus-icon {
-      -webkit-text-stroke: 0.12em @brand-primary;
-    }
-    &:hover {
-      background-color: lighten(@brand-primary, 5%);
-      .plus-icon {
-        -webkit-text-stroke: 0.12em lighten(@brand-primary, 5%);
-      }
-    }
-    &:active {
-      box-shadow: 0px 5px 10px 0px rgba(0,0,0,0.5);
-    }
+    margin: 0.2em 0.3em;
+    padding: 8px 15px;
+    font-size: 13px;
+    line-height: 20px;
+    font-weight: bold;
   }
   >a {
     cursor: pointer;
-  }
-  .list-scroller {
-    color: @gray-darker;
-    font-size: 39px;
-    width: 0;
-    position: fixed;
-    left: 0;
-    right: 0;
-    cursor: pointer;
-    bottom: 5%;
-    margin: 0 auto;
-    z-index: 1000;
-    opacity: 1;
-    transition: all 0.2s ease;
-    &:hover {
-      color: @black;
-      font-size: 40px;
-    }
-    &.at-bottom {
-      opacity: 0;
-      bottom: 2%;
-      transition: all 0.2s ease;
-    }
   }
   .at-bottom {
     &:after {

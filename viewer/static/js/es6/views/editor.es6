@@ -24,7 +24,7 @@ import HeaderComponent from '../components/headercomponent';
 import Notification from '../components/notification';
 import ReverseRelations from '../components/reverse-relations';
 import { getSettings, getVocabulary, getContext, getVocabularyClasses, getVocabularyProperties, getDisplayDefinitions, getEditorData, getStatus, getKeybindState } from '../vuex/getters';
-import { changeSettings, changeNotification, loadVocab, loadContext, loadVocabMap, loadForcedListTerms, loadDisplayDefs, syncData, changeSavedStatus, changeStatus, navigateChangeHistory } from '../vuex/actions';
+import { updateForm, changeSettings, changeNotification, loadVocab, loadContext, loadVocabMap, loadForcedListTerms, loadDisplayDefs, syncData, changeSavedStatus, changeStatus, navigateChangeHistory } from '../vuex/actions';
 
 export default class Editor extends View {
 
@@ -86,6 +86,7 @@ export default class Editor extends View {
           changeStatus,
           changeNotification,
           navigateChangeHistory,
+          updateForm,
         },
         getters: {
           context: getContext,
@@ -146,9 +147,30 @@ export default class Editor extends View {
           }
           this.syncData(newData);
         },
-        'save-item': function() {
+        'add-field'(prop, path) {
+          const key = prop['@id'].replace(this.settings.vocabPfx, '');
+          let value = [];
+          if (prop['@type'] === 'DatatypeProperty') {
+            if (this.forcedListTerms.indexOf(key) > -1) {
+              value = [''];
+            } else {
+              value = '';
+            }
+          }
+          const formData = _.cloneDeep(this.editorData[this.status.editorFocus]);
+          let modified = _.cloneDeep(this.formData);
+          if (typeof path !== 'undefined') {
+            _.set(modified, `${path}.${key}`, value);
+          } else {
+            const newItem = {};
+            newItem[key] = value;
+            modified = Object.assign({}, formData, newItem);
+          }
+          this.updateForm(this.status.editorFocus, modified, formData);
+        },
+        'save-item': function(cancelEdit) {
           if (this.status.inEdit) {
-            this.saveItem();
+            this.saveItem(cancelEdit);
           }
         },
         'show-marc': function() {
@@ -347,7 +369,7 @@ export default class Editor extends View {
           }
           return 'auth';
         },
-        saveItem() {
+        saveItem(cancelEdit) {
           const ETag = this.editorData.record.modified;
           const RecordId = this.editorData.record['@id'];
           const recordCopy = _.cloneDeep(this.editorData.record);
@@ -368,16 +390,16 @@ export default class Editor extends View {
           if (!RecordId || RecordId === 'https://id.kb.se/TEMPID') { // No ID -> create new
             this.doCreate(obj);
           } else { // ID exists -> update
-            this.doUpdate(RecordId, obj, ETag);
+            this.doUpdate(RecordId, obj, ETag, cancelEdit);
           }
         },
-        doUpdate(url, obj, ETag) {
-          this.doSaveRequest(httpUtil.put, obj, url, ETag);
+        doUpdate(url, obj, ETag, cancelEdit) {
+          this.doSaveRequest(httpUtil.put, obj, url, ETag, cancelEdit);
         },
         doCreate(obj) {
           this.doSaveRequest(httpUtil.post, obj, '/');
         },
-        doSaveRequest(requestMethod, obj, url, ETag) {
+        doSaveRequest(requestMethod, obj, url, ETag, cancelEdit = true) {
           requestMethod({ url, ETag }, obj).then((result) => {
             const postUrl = `${result.getResponseHeader('Location')}`;
             httpUtil.get({ url: `${postUrl}/data.jsonld`, accept: 'application/ld+json' }).then((getResult) => {
@@ -395,7 +417,7 @@ export default class Editor extends View {
               self.vm.changeSavedStatus('info', '');
               self.vm.changeNotification('color', 'green');
               self.vm.changeNotification('message', `${StringUtil.getUiPhraseByLang('The post was saved', this.settings.language)}!`);
-              this.changeStatus('inEdit', false);
+              this.changeStatus('inEdit', !cancelEdit);
               this.$dispatch('set-dirty', false);
             }, (error) => {
               self.vm.changeSavedStatus('loading', false);
