@@ -70,13 +70,13 @@ export default {
   <div class="create-item-button-container">
     <!--<form method="POST" action="/edit">-->
       <!--<textarea id="copyItem" name="data" class="hidden">{{itemData | json}}</textarea>-->
-      <button v-if="!hasHolding || checkingHolding" @click="previewHolding()" :disabled="disabled" :class=" {'disabled': disabled} ">
+      <button v-if="!hasHolding || checkingHolding" @click="previewHolding()" :disabled="disabled" class="btn" :class=" {'disabled': disabled} ">
         <i v-if="!hasHolding && !checkingHolding" class="fa fa-plus"></i>
         <i v-if="checkingHolding" class="fa fa-fw fa-circle-o-notch fa-spin"></i>
         {{"Holding" | translatePhrase}}
         <span>({{user.settings.activeSigel}})</span>
       </button>
-      <button v-if="hasHolding" :class="{'green': hasHolding, 'disabled': disabled}" :disabled="disabled" @click.prevent="fetchHolding()">
+      <button v-if="hasHolding" :class="{'green': hasHolding, 'disabled': disabled}" class="btn" :disabled="disabled" @click.prevent="fetchHolding()">
         <i v-if="hasHolding && !checkingHolding" class="fa fa-check"></i>
         {{"Holding" | translatePhrase}}
         <span>({{user.settings.activeSigel}})</span>
@@ -90,12 +90,11 @@ export default {
 .create-item-button-container{
   button {
     height: 2.2em;
-    border-radius: 3px;
-    color: @white;
+    color: @white !important;
     background: @holding-color;
     &.green {
       background: #4cba2a;
-      &:hover, :active {
+      &:hover, &:active {
         background: #4cba2a;
       }
     }

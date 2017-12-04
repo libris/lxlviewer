@@ -76,7 +76,7 @@ export default {
 
 <template>
   <div class="instances-button-container">
-    <button @click="show()">
+    <button class="btn btn-primary" @click="show()">
       <i v-if="checkingHolding" class="fa fa-fw fa-circle-o-notch fa-spin"></i>
       {{"Show instantiations" | translatePhrase}}
     </button>
@@ -102,16 +102,7 @@ export default {
 @import './_variables.less';
 .instances-button-container {
   button {
-    height: 2.2em;
-    border-radius: 3px;
-    color: @white;
-    background: @bib-color;
-    &:hover {
-      background: lighten(@bib-color, 5%);
-    }
-    &:active {
-      background: darken(@bib-color, 5%);
-    }
+    font-weight: bold;
   }
   .window {
     .window-mixin();
