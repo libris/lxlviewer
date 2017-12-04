@@ -202,7 +202,7 @@ export default {
           <ul v-show="databases.state == 'complete' && showList" class="remoteDatabases">
             <li class="databaseItem" v-bind:class="{'active': db.active}" v-for="db in databases.list" track-by="$index" v-on:click="toggleDatabase($index)">
               <span class="dbLabel">{{db.item.database}}</span>
-              <i class="dbName" v-show="db.item.database !== db.item.name">{{db.item.name}}</i>
+              <i class="dbName" v-show="db.item.database !== db.item.name" :title="db.item.name">{{db.item.name}}</i>
             </li>
           </ul>
           <p v-show="databases.state == 'loading'"><i class="fa fa-circle-o-notch fa-spin"></i> {{"Loading external databases" | translatePhrase}}...</p>
