@@ -23,7 +23,7 @@ import EditorControls from '../components/editorcontrols';
 import HeaderComponent from '../components/headercomponent';
 import Notification from '../components/notification';
 import ReverseRelations from '../components/reverse-relations';
-import { getSettings, getVocabulary, getContext, getVocabularyClasses, getVocabularyProperties, getDisplayDefinitions, getEditorData, getStatus, getKeybindState } from '../vuex/getters';
+import { getSettings, getVocabulary, getContext, getForcedListTerms, getVocabularyClasses, getVocabularyProperties, getDisplayDefinitions, getEditorData, getStatus, getKeybindState } from '../vuex/getters';
 import { updateForm, changeSettings, changeNotification, loadVocab, loadContext, loadVocabMap, loadForcedListTerms, loadDisplayDefs, syncData, changeSavedStatus, changeStatus, navigateChangeHistory } from '../vuex/actions';
 
 export default class Editor extends View {
@@ -98,6 +98,7 @@ export default class Editor extends View {
           display: getDisplayDefinitions,
           status: getStatus,
           keybindState: getKeybindState,
+          forcedListTerms: getForcedListTerms,
         },
       },
       data: {
