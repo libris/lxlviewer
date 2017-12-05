@@ -618,7 +618,7 @@ def vocabview(suffix=None):
         resp = Response(json.dumps(vocab_data),
                 content_type='%s; charset=UTF-8' % mimetype)
 
-    if mimetype in RDF_MIMETYPES:
+    elif mimetype in RDF_MIMETYPES:
         resp = Response(voc.graph.serialize(format=
                 'json-ld' if mimetype == JSONLD_MIMETYPE else mimetype,
                 #context_id=CONTEXT_PATH,
