@@ -417,7 +417,7 @@ export default class Editor extends View {
               self.vm.changeSavedStatus('info', '');
               self.vm.changeNotification('color', 'green');
               self.vm.changeNotification('message', `${StringUtil.getUiPhraseByLang('The post was saved', this.settings.language)}!`);
-              this.changeStatus('inEdit', !cancelEdit);
+              this.changeStatus('inEdit', !(cancelEdit === true));
               this.$dispatch('set-dirty', false);
             }, (error) => {
               self.vm.changeSavedStatus('loading', false);

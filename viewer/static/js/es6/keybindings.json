@@ -1,7 +1,7 @@
 {
   "overview": {
     // "mod+shift+f": "open-add-field-window",
-    "mod+s": "save-item",
+    "mod+s": "save-item|false",
     "mod+e": "edit-item",
     "alt+q": "cancel-edit",
     "mod+z": "navigate-change-history|back",
