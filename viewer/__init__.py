@@ -434,7 +434,8 @@ def _dependencies():
 
 @app.route('/<path:path>/edit')
 def thingedit(path):
-    r = _proxy_request(request, session, url_path="/{0}".format(path))
+    resource_id = _get_served_uri(request.url_root, path)
+    r = _proxy_request(request, session, url_path="/{0}".format(resource_id))
 
     if r.status_code == 200:
         model = {}
