@@ -159,7 +159,7 @@ export default class Editor extends View {
             }
           }
           const formData = _.cloneDeep(this.editorData[this.status.editorFocus]);
-          let modified = _.cloneDeep(this.formData);
+          let modified = _.cloneDeep(formData);
           if (typeof path !== 'undefined') {
             _.set(modified, `${path}.${key}`, value);
           } else {
