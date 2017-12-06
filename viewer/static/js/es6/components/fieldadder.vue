@@ -42,17 +42,8 @@ export default {
       showToolTip: false,
     };
   },
-  beforeDestroy() {
-    window.removeEventListener('scroll', this.moveFieldAdderButton);
-    // const fieldsWindow = document.getElementById('fields-window');
-    // fieldsWindow.removeEventListener('scroll', this.toggleWindowFade);
-  },
   ready() { // Ready method is deprecated in 2.0, switch to "mounted"
     this.$nextTick(() => { // TODO: Fix proper scroll tracking. This is just an ugly solution using document.onscroll here and window.scroll in editorcontrols.vue
-      if (!this.inner) {
-        window.addEventListener('scroll', this.moveFieldAdderButton);
-        this.moveFieldAdderButton();
-      }
     });
   },
   computed: {
@@ -192,18 +183,6 @@ export default {
         this.fieldListBottom = false;
       } else {
         this.fieldListBottom = true;
-      }
-    },
-    moveFieldAdderButton() {
-      const fieldAdderIndex = this.editingObject === 'mainEntity' ? 0 : 1;
-      const topFormComponent = document.getElementsByClassName('focused-form-component')[fieldAdderIndex];
-      const buttonHeight = document.getElementsByClassName('add-button')[fieldAdderIndex].offsetHeight;
-      const buttonThreshold = topFormComponent.offsetTop + topFormComponent.offsetHeight - buttonHeight;
-      const buttonPos = window.pageYOffset + window.innerHeight - 80;
-      if ((buttonThreshold > buttonPos) && buttonPos > topFormComponent.offsetTop) {
-        this.buttonFixed = true;
-      } else {
-        this.buttonFixed = false;
       }
     },
     addField(prop, close) {
