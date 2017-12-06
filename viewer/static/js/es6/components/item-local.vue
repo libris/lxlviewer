@@ -208,7 +208,7 @@ export default {
       // this.doCreateRequest(httpUtil.post, this.extracted, '/');
     },
     doCreateRequest(requestMethod, obj, url) {
-      requestMethod({ url, token: self.access_token }, obj).then((result) => {
+      requestMethod({ url, token: self.access_token, activeSigel: this.user.settings.activeSigel }, obj).then((result) => {
         if (result.status === 201) {
           const postUrl = `${result.getResponseHeader('Location')}`;
           httpUtil.get({ url: `${postUrl}/data.jsonld`, accept: 'application/ld+json' }).then((getResult) => {

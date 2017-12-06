@@ -401,7 +401,7 @@ export default class Editor extends View {
           this.doSaveRequest(httpUtil.post, obj, '/');
         },
         doSaveRequest(requestMethod, obj, url, ETag, cancelEdit = true) {
-          requestMethod({ url, ETag }, obj).then((result) => {
+          requestMethod({ url, ETag, activeSigel: this.user.settings.activeSigel }, obj).then((result) => {
             const postUrl = `${result.getResponseHeader('Location')}`;
             httpUtil.get({ url: `${postUrl}/data.jsonld`, accept: 'application/ld+json' }).then((getResult) => {
               const newData = RecordUtil.splitJson(getResult);

@@ -23,6 +23,9 @@ function request(options, data) {
     if (options.accept) {
       req.setRequestHeader('Accept', options.accept);
     }
+    if (options.activeSigel) {
+      req.setRequestHeader('XL-Active-Sigel', options.activeSigel);
+    }
     if (options.ETag) {
       if (options.method === 'GET') {
         req.setRequestHeader('If-None-Match', options.ETag);

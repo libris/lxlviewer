@@ -106,7 +106,7 @@ export default {
         sReject: 'Avbryt',
         sType: 'danger' }).then(() => {
           // accepted by user
-          HttpUtil._delete({ url }).then((result) => {
+          HttpUtil._delete({ url, activeSigel: this.user.settings.activeSigel }).then((result) => {
             this.changeNotification('color', 'green');
             this.changeNotification('message', `${StringUtil.getUiPhraseByLang('The entity was removed', this.settings.language)}!`);
             // Force reload
