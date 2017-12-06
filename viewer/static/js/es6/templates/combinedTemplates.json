@@ -1686,9 +1686,10 @@
           "marc:titleOther": "",
           "marc:fullerFormName": "",
           "lifeSpan": "",
-          "marc:attributionQualifier": "",
           "birthDate": "",
           "deathDate": "",
+          "activityStartDate": "",
+          "activityEndDate": "",
           "exactMatch": [{
             "@type": "Person",
             "familyName": "",
@@ -1701,17 +1702,6 @@
             "typeNote": "isni",
             "value": ""
           }],
-          "gender": "",
-          "hasNote": [{
-            "@type": "marc:BiographicalOrHistoricalData",
-            "label": ""
-          }],
-          "hasOccupation": [{
-            "@type": "Occupation",
-            "label": "",
-            "marc:sourceOfTerm": "sao"
-          }],
-          "language": [],
           "nationality": [{
             "@id": "https://id.kb.se/nationality/e-sw---",
             "code": "e-sw---"
