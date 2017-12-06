@@ -229,7 +229,7 @@ export default {
     },
     addEmpty(typeId) {
       this.closeSearch();
-      const shortenedType = VocabUtil.shortenExpandedUri(typeId, this.context);
+      const shortenedType = StringUtil.convertToPrefix(typeId, this.context);
       let obj = {'@type': shortenedType};
       if (StructuredValueTemplates.hasOwnProperty(shortenedType)) {
         obj = StructuredValueTemplates[shortenedType];
@@ -237,7 +237,7 @@ export default {
       this.$dispatch('add-item', obj);
     },
     addType(typeId) {
-      const shortenedType = VocabUtil.shortenExpandedUri(typeId, this.context);
+      const shortenedType = StringUtil.convertToPrefix(typeId, this.context);
       this.addEmpty(shortenedType);
       this.dismissTypeChooser();
     },

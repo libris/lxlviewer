@@ -42,7 +42,7 @@ export function convertToPrefix(uri, context) {
     baseUri = uriParts.join('/') + '/';
   }
   const prefix = VocabUtil.getPrefixFromBaseUri(baseUri, context);
-  const withPrefix = `${prefix}:${suffix}`;
+  const withPrefix = prefix !== '' ? `${prefix}:${suffix}` : suffix;
   return withPrefix;
 }
 
