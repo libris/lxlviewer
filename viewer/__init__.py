@@ -203,8 +203,10 @@ def thingview(path, suffix=None):
 # FIXME make this less sketcy
 def _get_view_data_accept_header(request, suffix):
     mimetype, _ = negotiator.negotiate(request, suffix)
-    if mimetype in ('application/json', 'text/html', 'application/xhtml+xml'):
+    if mimetype in ('application/json'):
         return 'application/json'
+    elif mimetype in ('text/html', 'application/xhtml+xml'):
+        return 'application/ld+json'
     else:
         return None
 
@@ -358,7 +360,7 @@ def _get_template_for(data):
         template = TYPE_TEMPLATES.get(rtype)
         if template:
             return template
-    return 'thing.html'
+    return 'edit.html'
 
 
 ##
@@ -384,25 +386,6 @@ def createpost():
 def import_post():
     return render_template('import.html')
 
-# Mocking edit/create new record with passed types
-@app.route('/new/<item_type>')
-@admin.login_required
-def thingnew(item_type):
-    ITEM_TYPES = {'record': 'Record'}
-    item_type = ITEM_TYPES.get(item_type) or ITEM_TYPES.get('record')
-    at_type = request.args.get(TYPE)
-    if not at_type:
-        return Response('Missing @type parameter', status=422)
-    else:
-        return render_template('edit.html',
-                record={
-                        GRAPH: [
-                            {TYPE: item_type},
-                            {TYPE: json.loads(at_type)}
-                        ]
-                    },
-                model={})
-
 
 # !TODO this is stupid and should be solved a less dangerous way
 # So rethink the flow for new records
@@ -413,7 +396,7 @@ def thingnewp():
     record = json.loads(request.form['data'])
     app.logger.debug('Posting data to editor:\n %s',
                      record)
-    return render_template('edit.html', record=record, model={})
+    return render_template('edit.html', thing=record, model={})
 
 
 @app.route('/sys/forcedsetterms.json')
@@ -431,20 +414,6 @@ def _findhold():
 @app.route('/_dependencies')
 def _dependencies():
     return _proxy_request(request, session, query_params=['id', 'relation', 'reverse'])
-
-@app.route('/<path:path>/edit')
-def thingedit(path):
-    resource_id = _get_served_uri(request.url_root, path)
-    r = _proxy_request(request, session, url_path="/{0}".format(resource_id))
-
-    if r.status_code == 200:
-        model = {}
-        data = json.loads(r.get_data())
-        return render_template('edit.html', record=data, model=model)
-    else:
-        # TODO handle this better. GET /<path> *should* return 200,
-        # but treating everything else as an error isn't awesome.
-        return abort(r.status_code)
 
 
 @app.route('/', methods=['POST'])

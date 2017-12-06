@@ -200,7 +200,7 @@ export default class Editor extends View {
             this.editItem();
             history.pushState(newData, 'unused', '/edit');
           } else {
-            history.replaceState(newData, 'unused', `${atId}/edit`);
+            history.replaceState(newData, 'unused', atId);
             self.vm.changeStatus('inEdit', false);
             self.vm.changeStatus('isNew', false);
           }
