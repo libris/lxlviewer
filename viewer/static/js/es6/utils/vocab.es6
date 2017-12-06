@@ -532,6 +532,14 @@ export function getPrefixFromBaseUri(baseUri, context) {
   return prefix;
 }
 
+export function shortenExpandedUri(typeId, context) {
+  const fullUri = typeId.substring(0, typeId.lastIndexOf('/') + 1);
+  const prefix = getPrefixFromBaseUri(
+    fullUri,
+    context);
+  return typeId.replace(fullUri, prefix === '' ? prefix : `${prefix}:`);
+}
+
 export function getEnumerations(entityType, property, vocab, vocabPfx, context) {
   const enumerationKeys = getValuesFrom(entityType, property, vocab, vocabPfx, context)
   .map(enumerationKey => `@type=${enumerationKey}`);

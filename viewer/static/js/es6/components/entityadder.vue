@@ -190,7 +190,7 @@ export default {
       if (this.isEnumeration) {
         this.$dispatch('add-item', {'@id': ''});
       } else if (this.canRecieveObjects) {
-        const range = this.getFullRange.map(range => range.replace(this.settings.vocabPfx, ''));
+        const range = this.getFullRange;
         if (range.length < 2 && this.onlyEmbedded) {
           this.addEmpty(range[0]);
         } else if (this.onlyEmbedded) {
@@ -227,17 +227,18 @@ export default {
       this.chooseLocalType = false;
       this.hide();
     },
-    addEmpty(type) {
+    addEmpty(typeId) {
       this.closeSearch();
-      let obj = {'@type': type};
-      if (StructuredValueTemplates.hasOwnProperty(type)) {
-        obj = StructuredValueTemplates[type];
+      const shortenedType = VocabUtil.shortenExpandedUri(typeId, this.context);
+      let obj = {'@type': shortenedType};
+      if (StructuredValueTemplates.hasOwnProperty(shortenedType)) {
+        obj = StructuredValueTemplates[shortenedType];
       }
       this.$dispatch('add-item', obj);
     },
-    addType(type) {
-      const idArray = type.split('/');
-      this.addEmpty(idArray[idArray.length - 1]);
+    addType(typeId) {
+      const shortenedType = VocabUtil.shortenExpandedUri(typeId, this.context);
+      this.addEmpty(shortenedType);
       this.dismissTypeChooser();
     },
     search(keyword) {

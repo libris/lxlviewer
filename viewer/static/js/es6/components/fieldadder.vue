@@ -210,9 +210,7 @@ export default {
       if (!prop.added) {
         const splitProp = prop.item['@id'].split('/');
         const propLastPart = splitProp[splitProp.length-1];
-        const fieldName = prop.item['@id'].split(':')[1];
         this.$dispatch('add-field', prop.item, this.path);
-        const translatedProp = StringUtil.getLabelByLang(propLastPart, this.settings.language, this.vocab, this.settings.vocabPfx, this.context);
         if (close) {
           this.hide();
           this.changeStatus('lastAdded', propLastPart);

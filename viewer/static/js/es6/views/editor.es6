@@ -149,7 +149,7 @@ export default class Editor extends View {
           this.syncData(newData);
         },
         'add-field'(prop, path) {
-          const key = prop['@id'].replace(this.settings.vocabPfx, '');
+          const key = VocabUtil.shortenExpandedUri(prop['@id'], this.context);
           let value = [];
           if (prop['@type'] === 'DatatypeProperty') {
             if (this.forcedListTerms.indexOf(key) > -1) {
