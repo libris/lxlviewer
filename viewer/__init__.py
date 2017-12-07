@@ -361,8 +361,8 @@ def _to_graph(data, base=None):
     return cg
 
 def _get_template_for(data):
-    for rtype in as_iterable(data.get(TYPE)):
-        template = TYPE_TEMPLATES.get(rtype)
+    for rtype in as_iterable(data.get(GRAPH)):
+        template = TYPE_TEMPLATES.get(rtype.get(TYPE))
         if template:
             return template
     return 'edit.html'
