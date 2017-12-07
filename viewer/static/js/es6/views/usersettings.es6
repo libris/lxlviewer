@@ -5,7 +5,6 @@ import store from '../vuex/store';
 import EventMixin from '../components/mixins/global-event-mixin';
 import * as StringUtil from '../utils/string';
 import * as LayoutUtil from '../utils/layout';
-import HelpComponent from '../components/help-component';
 import UserSettingsApp from '../components/user-settings';
 import { getSettings, getStatus } from '../vuex/getters';
 import { changeSettings, changeStatus } from '../vuex/actions';
@@ -69,7 +68,6 @@ export default class UserSettings extends View {
         LayoutUtil.showPage(this);
       },
       components: {
-        'help-component': HelpComponent,
         'user-settings': UserSettingsApp,
       },
       store,

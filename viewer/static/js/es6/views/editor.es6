@@ -18,7 +18,6 @@ import * as RecordUtil from '../utils/record';
 import * as StringUtil from '../utils/string';
 import MarcPreview from '../components/marc-preview';
 import FormComponent from '../components/formcomponent';
-import HelpComponent from '../components/help-component';
 import EditorControls from '../components/editorcontrols';
 import HeaderComponent from '../components/headercomponent';
 import Notification from '../components/notification';
@@ -471,7 +470,6 @@ export default class Editor extends View {
         'form-component': FormComponent,
         'editor-controls': EditorControls,
         'header-component': HeaderComponent,
-        'help-component': HelpComponent,
         'notification': Notification,
         'marc-preview': MarcPreview,
         'reverse-relations': ReverseRelations,

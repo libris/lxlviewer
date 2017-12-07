@@ -6,7 +6,6 @@ import EventMixin from '../components/mixins/global-event-mixin';
 import * as StringUtil from '../utils/string';
 import * as LayoutUtil from '../utils/layout';
 import remoteSearch from '../components/remote-search';
-import HelpComponent from '../components/help-component';
 import { getSettings } from '../vuex/getters';
 import { changeSettings, changeStatus, changeNotification, loadVocabMap, loadContext, loadDisplayDefs } from '../vuex/actions';
 
@@ -76,7 +75,7 @@ export default class Import extends View {
       },
       components: {
         'remote-search': remoteSearch,
-        'help-component': HelpComponent,
+      
       },
       store,
       ready() {

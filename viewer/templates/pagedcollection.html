@@ -30,7 +30,6 @@
       <intro-component v-if="initialized == true && widgetShouldBeShown('intro-component')" :video-url="copy['instructional-videos'].video" :header="copy['instructional-videos'].header" :text="copy['instructional-videos'].text" :link-text="copy['instructional-videos'].linkText" :link-url="copy['instructional-videos'].linkUrl"></intro-component>
     </div>
   </div>
-  <help-component v-if="initialized == true" :open-all="true"></help-component>
 </div>
 <script id="data" type="application/json">${thing|tojson|safe}</script>
 % endblock

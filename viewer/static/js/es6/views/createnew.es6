@@ -5,7 +5,6 @@ import store from '../vuex/store';
 import * as StringUtil from '../utils/string';
 import * as LayoutUtil from '../utils/layout';
 import CreateNewForm from '../components/create-new-form';
-import HelpComponent from '../components/help-component';
 import EventMixin from '../components/mixins/global-event-mixin';
 import { getSettings, getVocabulary, getKeybindState } from '../vuex/getters';
 import { changeSettings, loadVocabMap, loadVocab, changeStatus } from '../vuex/actions';
@@ -69,7 +68,6 @@ export default class CreateNew extends View {
       },
       components: {
         'create-new-form': CreateNewForm,
-        'help-component': HelpComponent,
       },
       store,
       ready() {

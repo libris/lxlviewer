@@ -17,7 +17,6 @@ import DatasetObservations from '../components/dataset-observations';
 import LandingBox from '../components/landing-box';
 import LinkCardComponent from '../components/link-card-component';
 import IntroComponent from '../components/intro-component';
-import HelpComponent from '../components/help-component';
 import { getSettings, getStatus } from '../vuex/getters';
 import { changeSettings, changeNotification, loadContext, loadVocabMap, loadDisplayDefs, changeResultListStatus, changeStatus } from '../vuex/actions';
 
@@ -171,7 +170,6 @@ export default class PagedCollection extends View {
         'search-form': SearchForm,
         'dataset-observations': DatasetObservations,
         'landing-box': LandingBox,
-        'help-component': HelpComponent,
         'intro-component': IntroComponent,
         'link-card': LinkCardComponent,
       },
