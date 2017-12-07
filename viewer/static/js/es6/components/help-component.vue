@@ -23,19 +23,11 @@ export default {
     },
   },
   methods: {
-    hide() {
-      this.changeStatus('showHelp', false);
-      LayoutUtil.scrollLock(false);
-      this.changeStatus('keybindState', 'overview');
-    },
     setSection(value) {
       this.changeStatus('helpSection', value);
     },
   },
   events: {
-    'close-modals'() {
-      this.hide();
-    },
   },
   computed: {
     helpSection() {
@@ -76,45 +68,39 @@ export default {
 
 <template>
   <div class="help-component">
-      <div class="window"  v-show="status.showHelp">
-        <div class="header">
-          <span class="title">
-            {{ "Help" | translatePhrase }}
-          </span>
-          <span class="windowControl">
-            <i v-on:click="hide" class="fa fa-close"></i>
-          </span>
-        </div>
-        <div class="body">
-          <div class="menu">
-            <ul class="categories">
-              <li v-for="(key, value) in helpCategories" v-bind:class="{'active': key == activeCategory }" v-on:click="activeCategory = key">
-                {{key}}
-                <ul class="sections">
-                  <li v-for="section in value" v-bind:class="{'active': section.title == helpSection }" v-on:click="setSection(section.title)">{{section.title}}</li>
-                </ul>
-              </li>
-            </ul>
-          </div>
-          <div class="content">
-            <div v-show="helpSection == ''">
-              <h1>Hjälp</h1>
-              <p>
-                Den här hjälpen omfattar instruktioner för gränssnittet och materialtyper, välj avsnitt till vänster för att läsa mer.
-              </p>
-              <h2>Nyttiga länkar</h2>
-              <ul>
-                <li>Om du vill läsa om Formatet (mappning och basvokabulär) så har du det <a href="https://id-qa.kb.se/">här</a>.</li>
-                <li>Är du ute efter instruktionsmaterial hittar du det <a href="http://librisbloggen.kb.se/2017/10/31/sjalvstudier-infor-overgangen-till-nya-libris-och-xl/">här</a>.</li>
-                <li>Vill du komma i kontakt med kundservice gör du det <a href="http://www.kb.se/libris/kontakta/">här</a>.</li>
-                <li><a href="https://goo.gl/forms/3mL7jTlEpbU3BQM13">Här</a> kan du rapportera fel.</li>
-                <li><a href="https://goo.gl/forms/dPxkhMqE10RvKQFE2">Här</a> kan du ge ändringsförslag</a>.</li>
+    <div class="row">
+      <div class="col-md-3">
+        <div class="menu panel panel-default">
+          <ul class="categories">
+            <li v-for="(key, value) in helpCategories" v-bind:class="{'active': key == activeCategory }" v-on:click="activeCategory = key">
+              {{key}}
+              <ul class="sections">
+                <li v-for="section in value" v-bind:class="{'active': section.title == helpSection }" v-on:click="setSection(section.title)">{{section.title}}</li>
               </ul>
-            </div>
-            <div v-for="section in docs" v-html="section.body" v-show="section.title == helpSection"></div>
-          </div>
+            </li>
+          </ul>
         </div>
       </div>
+      <div class="col-md-9">
+        <div class="content panel panel-default">
+          <div v-show="helpSection == 'none'">
+            <h1>Hjälp</h1>
+            <p>
+              Den här hjälpen omfattar instruktioner för gränssnittet och materialtyper, välj avsnitt till vänster för att läsa mer.
+            </p>
+            <h2>Nyttiga länkar</h2>
+            <ul>
+              <li>Om du vill läsa om Formatet (mappning och basvokabulär) så har du det <a href="https://id-qa.kb.se/">här</a>.</li>
+              <li>Är du ute efter instruktionsmaterial hittar du det <a href="http://librisbloggen.kb.se/2017/10/31/sjalvstudier-infor-overgangen-till-nya-libris-och-xl/">här</a>.</li>
+              <li>Vill du komma i kontakt med kundservice gör du det <a href="http://www.kb.se/libris/kontakta/">här</a>.</li>
+              <li><a href="https://goo.gl/forms/3mL7jTlEpbU3BQM13">Här</a> kan du rapportera fel.</li>
+              <li><a href="https://goo.gl/forms/dPxkhMqE10RvKQFE2">Här</a> kan du ge ändringsförslag</a>.</li>
+            </ul>
+          </div>
+          <div v-for="section in docs" v-html="section.body" v-show="section.title == helpSection"></div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -122,64 +108,50 @@ export default {
 @import './_variables.less';
 
 .help-component {
-  .window {
-    .window-mixin();
-    max-width: 1000px;
-    .body {
-      display: flex;
-      padding: 1em;
-      overflow-y: scroll;
-      align-items: flex-start;
-      .content {
-        padding: 0 0 0 1em;
-        height: 100%;
-        flex: 70% 3 3;
-        h1, h2, h3, h4 {
-          font-weight: normal;
-          margin-top: 0;
-        }
-        p {
-          margin: 0.5em 0px 1em;
-        }
-        code {
-          padding: 4px;
-          font-size: 90%;
-          color: #000000;
-          background-color: #fbebef;
-        }
-      }
-      .menu {
-        flex: 25% 1 1;
-        background-color: #e6e6e6;
-        border-radius: 5px;
-        ul.categories {
+  .content {
+    padding: 1em;
+    height: 100%;
+    h1, h2, h3, h4 {
+      font-weight: normal;
+      margin-top: 0;
+    }
+    p {
+      margin: 0.5em 0px 1em;
+    }
+    code {
+      padding: 4px;
+      font-size: 90%;
+      color: #000000;
+      background-color: #fbebef;
+    }
+  }
+  .menu {
+    ul.categories {
+      list-style: none;
+      padding: 5px 10px;
+      > li {
+        font-weight: bold;
+        // cursor: pointer;
+        ul.sections {
+          // display: none; // SHOW ALL
           list-style: none;
-          padding: 5px 10px;
-          > li {
-            font-weight: bold;
-            // cursor: pointer;
-            ul.sections {
-              // display: none; // SHOW ALL
-              list-style: none;
-              padding: 0;
-              li {
-                font-weight: normal;
-                border-radius: 5px;
-                padding: 0 0.3em;
-                cursor: pointer;
-                &:hover {
-                  text-decoration: underline;
-                }
-                &.active {
-                  background-color: #ccc;
-                }
-              }
+          padding: 0;
+          li {
+            font-weight: normal;
+            border-radius: 5px;
+            padding: 0 0.3em;
+            cursor: pointer;
+            &:hover {
+              text-decoration: underline;
             }
             &.active {
-              > ul {
-                display: block;
-              }
+              background-color: @gray-lighter;
             }
+          }
+        }
+        &.active {
+          > ul {
+            display: block;
           }
         }
       }

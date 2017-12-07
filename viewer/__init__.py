@@ -91,6 +91,11 @@ def first(value):
 def show_about():
     return render_template('about.html')
 
+# Help page
+@app.route("/help")
+def show_help():
+    return render_template('help.html')
+
 ##
 # Setup Github rss
 @app.route('/releasefeed', methods=['GET'])

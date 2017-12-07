@@ -7,6 +7,7 @@ import UserSettings from './views/usersettings';
 import CreateNew from './views/createnew';
 import Import from './views/import';
 import About from './views/about';
+import Help from './views/help';
 
 export default class Loader {
 
@@ -30,6 +31,7 @@ export default class Loader {
     this.createView(new CreateNew('CreateNew'));
     this.createView(new Import('Import'));
     this.createView(new About('About'));
+    this.createView(new Help('Help'));
   }
 
   createView(view) {

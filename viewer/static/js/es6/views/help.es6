@@ -5,7 +5,7 @@ import store from '../vuex/store';
 import EventMixin from '../components/mixins/global-event-mixin';
 import * as StringUtil from '../utils/string';
 import * as LayoutUtil from '../utils/layout';
-import AboutComponent from '../components/about-component';
+import HelpComponent from '../components/help-component';
 import { getSettings } from '../vuex/getters';
 import { changeSettings, updateUser, changeStatus } from '../vuex/actions';
 
@@ -27,7 +27,7 @@ export default class About extends View {
     });
 
     self.vm = new Vue({
-      el: '#about',
+      el: '#help',
       mixins: [EventMixin],
       vuex: {
         getters: {
@@ -56,12 +56,11 @@ export default class About extends View {
       ready() {
         this.updateUser(self.user);
         this.changeSettings(self.settings);
-        document.title = `${StringUtil.getUiPhraseByLang('About XL', this.settings.language)} - ${this.settings.siteInfo.title}`;
+        document.title = `${StringUtil.getUiPhraseByLang('Help', this.settings.language)} - ${this.settings.siteInfo.title}`;
         LayoutUtil.showPage(this);
-        this.initialized = true;
       },
       components: {
-        'about-component': AboutComponent,
+        'help-component': HelpComponent,
       },
       store,
     });
