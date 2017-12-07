@@ -46,6 +46,16 @@ export function convertToPrefix(uri, context) {
   return withPrefix;
 }
 
+export function convertToVocabKey(str, context) {
+  if (typeof context === 'undefined') {
+    throw new Error('convertVocabGettableId was called without context');
+  }
+  if (str.indexOf('://') > -1) {
+    return str;
+  }
+  return `${context[0]['@vocab']}${str}`;
+}
+
 export function getUiPhraseByLang(phrase, langcode) {
   if (translationsFile[langcode] && translationsFile[langcode][phrase]) {
     return translationsFile[langcode][phrase];
