@@ -354,10 +354,7 @@ export default {
     padding: 0.5em;
   }
   box-shadow: @shadow-base;
-  border: solid #ccc;
-  border-width: 0px 1px 1px 1px;
   margin-bottom: 2em;
-  background-color: #ededed;
   &.locked {
     > ul > li {
       margin: 0px;

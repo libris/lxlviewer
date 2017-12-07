@@ -511,10 +511,7 @@ export default {
     border-bottom-color: #d8d8d8;
     border-top-color: #f3f3f3;
     border-width: 1px;
-    background-color: #f2f2f2;
-    &:nth-child(odd) {
-      background-color: #ededed;
-    }
+    padding: 0.5em 0;
     >.label {
       white-space: normal;
       padding: 5px 10px;
@@ -524,9 +521,6 @@ export default {
       align-items: flex-start;
       justify-content: flex-end;
       // line-height: 2.6;
-      border: 1px solid #e4e2e2;
-      border-width: 0px 1px 0px 0px;
-      border-radius: 0px;
       overflow: hidden;
       a {
         overflow: hidden;
@@ -537,8 +531,6 @@ export default {
       order: 2;
       flex: 1 1 0px;
       padding: 5px;
-      border: 1px solid #e4e2e2;
-      border-width: 0px 1px 0px 0px;
       overflow: hidden; // This is important because of the flex rules of entities
       > * {
         display: inline-block;
