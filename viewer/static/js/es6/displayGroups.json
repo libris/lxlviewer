@@ -15,7 +15,7 @@
     "givenName",
     "name",
     "marc:numeration",
-    "marc:titleOther",
+    "marc:titlesAndOtherWordsAssociatedWithAName",
     "qualifyingNote",
     "marc:fullerFormName",
     "lifeSpan",
