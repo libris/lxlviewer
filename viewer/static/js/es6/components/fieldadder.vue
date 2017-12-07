@@ -333,6 +333,7 @@ export default {
     .window-mixin();
     .header {
       display: flex;
+      justify-content: space-between;
       .filter {
         font-size: 85%;
         .filterInput {
