@@ -160,8 +160,17 @@ export function getItemObject(itemOf, heldBy, instance) {
       'heldBy': {
         '@id': heldBy,
       },
-      'shelfMark': [],
-      'note': [],
+      'hasComponent': [
+        {
+          '@type': "Item",
+          'shelfMark': {
+            '@type': 'ShelfMark',
+            'label': [''],
+          },
+          'physicalLocation': [''],
+          'shelfControlNumber': '',
+        },
+      ],
     },
     quoted: [
       {
