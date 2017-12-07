@@ -15,7 +15,7 @@ export function convertToBaseUri(str, context) {
   if (typeof context === 'undefined') {
     throw new Error('convertToBaseUri was called without context.');
   }
-  if (str.indexOf('://') > -1) {
+  if (str.indexOf('://') > -1 || str.indexOf(':') === -1) {
     return str;
   }
   const prefix = str.split(':')[0];
