@@ -30,6 +30,9 @@ export default {
     }
   },
   computed: {
+    isKbSe() {
+      return this.settings.siteInfo.title === 'id.kb.se';
+    },
     filters() {
         const filters = [];
         if (typeof this.pageData.search !== 'undefined') {
@@ -149,8 +152,8 @@ export default {
       <span v-if="pageData.totalItems > limit">Visar <strong>{{ limit }}</strong> träffar per sida.</span>
     </div>
     <div class="list-type-buttons" v-if="showDetails">
-      <button v-on:click="setFull()" v-bind:class="{'active': user.settings.resultListType === 'detailed'}"><i class="fa fa-th-list"></i></button>
-      <button v-on:click="setCompact()" v-bind:class="{'active': user.settings.resultListType === 'compact'}"><i class="fa fa-list"></i></button>
+      <button v-on:click="setFull()" v-bind:class="{'active': user.settings.resultListType === 'detailed', 'blue': isKbSe}"><i class="fa fa-th-list"></i></button>
+      <button v-on:click="setCompact()" v-bind:class="{'active': user.settings.resultListType === 'compact', 'blue': isKbSe}"><i class="fa fa-list"></i></button>
     </div>
     <div v-if="hasPagination && showPages" class="search-buttons">
       <nav>
@@ -203,6 +206,9 @@ export default {
     background-color: @buttoncolor;
     margin: 0 0 0 0.3em;
     &.active {
+      &.blue {
+        background-color: @brand-id;
+      }
       background-color: @brand-primary;
       i {
         color: @neutral-color;

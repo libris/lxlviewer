@@ -75,13 +75,13 @@ export default {
 </script>
 
 <template>
-  <div class="header-component-container">
+  <div class="header-component-container" :class="{'blue': settings.siteInfo.title === 'id.kb.se'}">
     <div class="header-component full">
       <entity-summary :focus-data="focusData" :add-link="false" :lines="full ? 6 : 3"></entity-summary>
     </div>
     <reverse-relations v-if="!status.isNew"></reverse-relations>
     <div class="container">
-      <div class="compact-header" :class="{ 'show-compact': showCompact }">
+      <div class="compact-header" :class="{ 'show-compact': showCompact, 'blue': settings.siteInfo.title === 'id.kb.se' }">
       {{ compactSummary }}
       </div>
     </div>
@@ -92,9 +92,12 @@ export default {
 @import './_variables.less';
 .header-component-container {
   display: flex;
-  background-color: @bib-color;
+  background-color: @brand-primary;
   box-shadow: @shadow-base;
   padding: 0px;
+  &.blue {
+    background-color: @brand-id;
+  }
   .header-component {
     flex: 8 8 100%;
     max-width: 100%;
@@ -118,7 +121,7 @@ export default {
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      background: @bib-color;
+      background: @brand-primary;
       color: @white;
       padding: 0.5em;
       box-shadow: 0 2px 5px rgba(0,0,0,.26);
@@ -127,6 +130,9 @@ export default {
       transition: all 0.3s ease;
       line-height: 0;
       transform: translateX(-28px);
+      &.blue {
+        background: @brand-id;
+      }
       &.show-compact {
         max-height: 55px;
         opacity: 1;

@@ -41,6 +41,9 @@ export default {
     };
   },
   computed: {
+    isKbSe() {
+      return this.item['@id'].indexOf('id.kb.se') > -1;
+    },
   },
   ready() {
   },
@@ -95,9 +98,9 @@ export default {
 </script>
 
 <template>
-  <div class="item-entity-container" @mouseleave="showCardInfo=false" v-bind:class="{'highlight': isNewlyAdded}">
+  <div class="item-entity-container" @mouseleave="showCardInfo=false" v-bind:class="{'highlight': isNewlyAdded, 'blue': isKbSe, 'libris': !isKbSe}">
     <div class="item-entity" v-if="!expanded" :class="{ 'locked': isLocked, 'highlighted': showCardInfo }" @mouseenter="showCardInfo=true">
-      <div class="topbar">
+      <div class="topbar" :class="{'blue': isKbSe}">
         <a :href="item['@id']">
           <i class="linked-indicator fa fa-chain"></i>
         </a>
@@ -123,6 +126,16 @@ export default {
   box-shadow: 0px 0px 1em 0px transparent;
   outline: 2px solid transparent;
   transition: 2s ease all;
+  &.blue {
+    a {
+      color: @brand-id;
+    }
+  }
+  &.libris {
+    a {
+      color: @brand-primary;
+    }
+  }
   &.highlight {
     outline: 2px solid @highlight-color;
     box-shadow: 0px 0px 1em 0px @highlight-color;
@@ -145,6 +158,9 @@ export default {
       background-color: @white;
       border: 1px solid rgba(0, 0, 0, 0.15);
       box-shadow: inset 2.1em 0px 0px 0px @bib-color;
+      &.blue {
+        box-shadow: inset 2.1em 0px 0px 0px @brand-id;
+      }
       white-space: nowrap;
       overflow: hidden;
       > .actions {
