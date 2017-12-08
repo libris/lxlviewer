@@ -82,12 +82,12 @@ export default {
 <template>
   <li class="facet-item">
     <a v-if="!historySupported" href="{{observation.view['@id']}}" title="{{determinedLabel | capitalize}}">{{determinedLabel | capitalize}}</a>
-    <span v-if="historySupported" @click="toggleActive">
+    <a v-if="historySupported" @click.prevent="toggleActive" href="{{observation.view['@id']}}" title="{{determinedLabel | capitalize}}">
       <input type="checkbox" v-model="active">
       <span title="{{determinedLabel | capitalize}}">
         {{determinedLabel | capitalize}}
       </span>
-    </span>
+    </a>
     <span class="quantity">({{observation.totalItems}})</span>
   </li>
 </template>
