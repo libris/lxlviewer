@@ -75,7 +75,7 @@ export default {
 </script>
 
 <template>
-  <div class="header-component-container" :class="{'blue': settings.siteInfo.title === 'id.kb.se'}">
+  <div class="header-component-container" :class="{'blue': settings.siteInfo.title === 'id.kb.se', 'is-new': status.isNew}">
     <div class="header-component full">
       <entity-summary :focus-data="focusData" :add-link="false" :lines="full ? 6 : 3"></entity-summary>
     </div>
@@ -95,6 +95,12 @@ export default {
   background-color: @brand-primary;
   box-shadow: @shadow-base;
   padding: 0px;
+  &.is-new {
+    background-color: #6f767b;
+    > div > .compact-header {
+      background: #6f767b;
+    }
+  }
   &.blue {
     background-color: @brand-id;
   }
