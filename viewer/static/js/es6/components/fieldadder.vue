@@ -94,7 +94,9 @@ export default {
   },
   events: {
     'open-add-field-window'() {
-      this.show();
+      if (!this.inner) {
+        this.show();
+      }
     },
     'select-next'() {
       if (this.active) {
