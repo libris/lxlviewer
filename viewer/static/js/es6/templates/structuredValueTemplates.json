@@ -80,5 +80,14 @@
   "Note": {
     "@type": "Note",
     "label": ""
+  },
+  "SourceData": {
+    "@type": "SourceData",
+    "citationSource": "",
+    "citationNote": ""
+  },
+  "SourceDataNotFound": {
+    "@type": "SourceDataNotFound",
+    "citationSource": ""
   }
 }
