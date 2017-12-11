@@ -152,7 +152,7 @@ export default {
       // If none found, try baseClasses
       let propertyList = DisplayUtil.getProperties(
         formObj['@type'],
-        'cards',
+        'full',
         this.display,
         this.settings
       );
@@ -177,7 +177,7 @@ export default {
         if (propertyList.length === 0) {
           propertyList = DisplayUtil.getProperties(
             'Resource',
-            'chips',
+            'cards',
             this.display,
             this.settings
           );

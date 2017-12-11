@@ -11,7 +11,20 @@ moment.locale('sv');
 export function getDisplayDefinitions() {
   return new Promise((resolve, reject) => {
     httpUtil.getResourceFromCache('/https://id.kb.se/vocab/display').then((result) => {
-      resolve(result);
+      const clonedResult = _.cloneDeep(result);
+      _.each(clonedResult.lensGroups, lensGroup => {
+        _.each(lensGroup.lenses, lens => {
+          if (lens.hasOwnProperty('fresnel:extends')) {
+            const [extendLens, extendLevel] = lens['fresnel:extends']['@id'].split('-');
+            lens.showProperties.splice(
+              lens.showProperties.indexOf('fresnel:super'),
+              1,
+              ...result.lensGroups[extendLevel].lenses[extendLens].showProperties
+            );
+          }
+        });
+      });
+      resolve(clonedResult);
     }, (error) => {
       reject(error);
     });
