@@ -313,14 +313,12 @@ export function getDomainList(property, vocab, vocabPfx, context) {
   return domainList;
 }
 
-export function getProperties(className, vocabClasses, vocabPfx, vocabProperties, context) {
+export function getProperties(classId, vocabClasses, vocabPfx, vocabProperties, context) {
   // Get all properties which has the domain of the className
   const props = [];
-  const cn = className.replace(vocabPfx, '');
   // console.log("Getting props for", className);
   vocabProperties.forEach(prop => {
     const domainList = getAllSubClasses(getDomainList(prop, vocabProperties, vocabPfx, context), vocabClasses, vocabPfx, context);
-    const classId = vocabPfx + cn;
     for (const domain of domainList) {
       if (domain === classId) {
         props.push(prop);

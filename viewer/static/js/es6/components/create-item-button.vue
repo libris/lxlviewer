@@ -48,10 +48,27 @@ export default {
       this.$dispatch('set-checking-relations', false);
     },
     fetchHolding() {
-      window.open(this.holdingId[0], '_blank');
+      HttpUtil.get({ url: this.holdingId[0], accept: 'application/ld+json' }).then((getResult) => {
+        const newData = RecordUtil.splitJson(getResult);
+        if (Modernizr.history) {
+          history.pushState(newData, 'unused', `${this.holdingId[0]}/edit`);
+          this.$dispatch('new-editordata', newData);
+        } else if (result.status === 201) {
+          window.location = result.getResponseHeader('Location');
+        } else {
+          this.syncData(newData);
+        }
+        this.changeStatus('inEdit', false);
+      }, (error) => {
+        this.changeNotification('color', 'red');
+        this.changeNotification('message', `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error}`);
+      });
     },
     previewHolding() {
-      this.$dispatch('preview-holding', this.itemData);
+      if (Modernizr.history) {
+        this.changeStatus('isNew', true);
+        this.$dispatch('new-editordata', this.itemData);
+      }
     }
   },
   computed: {

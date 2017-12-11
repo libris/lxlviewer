@@ -126,7 +126,7 @@ export default {
       const settings = this.settings;
       const formObj = this.item;
       const allowed = VocabUtil.getPropertiesFromArray(
-        formObj['@type'],
+        [StringUtil.convertToVocabKey(StringUtil.convertToBaseUri(formObj['@type'], this.context), this.context)],
         this.vocabClasses,
         this.settings.vocabPfx,
         this.vocabProperties,

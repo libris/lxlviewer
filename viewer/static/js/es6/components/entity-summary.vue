@@ -38,6 +38,9 @@ export default {
     }
   },
   computed: {
+    isKbSe() {
+      return this.focusData['@id'].indexOf('id.kb.se') > -1;
+    },
     renderLink() {
       if (this.addLink === true && !this.isLocal) {
         return true;
@@ -98,7 +101,7 @@ export default {
   <div class="main-info">
     <h3 class="header">
       <span class="import-header" title="{{ header.join(', ') }}" v-on:click="importThis()" v-if="isImport">{{ header.join(', ') }}</span>
-      <a v-if="!isImport && renderLink" :class="{'blue-link': settings.siteInfo.title === 'id.kb.se'}" title="{{ header.join(', ') }}" :href="focusData['@id']">{{ header.join(', ') }}</a>
+      <a v-if="!isImport && renderLink" :class="{'blue-link': isKbSe}" title="{{ header.join(', ') }}" :href="focusData['@id']">{{ header.join(', ') }}</a>
       <span v-if="!isImport && !renderLink" title="{{ header.join(', ') }}">{{ header.join(', ') }}</span>
     </h3>
     <div class="id" v-if="identifiers.length > 0">{{ identifiers[0] }} <span class="id-info" v-if="identifiers.length > 1">(+{{ identifiers.length-1 }})</span></div>

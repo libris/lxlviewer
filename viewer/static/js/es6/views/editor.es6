@@ -213,6 +213,9 @@ export default class Editor extends View {
         'preview-holding'(holdingData) {
           this.newData = RecordUtil.getObjectAsRecord(holdingData.mainEntity, holdingData.record);
         },
+        'open-field-adder'() {
+          this.$broadcast('open-add-field-window');
+        },
       },
       watch: {
         copyId(value, oldval) {

@@ -15,12 +15,11 @@ tags:
 Från instanser kan man lägga bestånd. Detta görs i postens visningsvy, där man når beståndsposten via beståndsknappen i sammanfattningen. På beståndsknappen ser du vilket sigel beståndet läggs på. Från instanser kan du även se hur många andra bibliotek som har bestånd på instansen.
 
 
-
 ### Visa som
-Under rubriken “Visa som” kan man, utöver den grafiska vyn även granska informationen i formaten:
-  * Json-LD (RDF anpassad för webbapplikationer) 
-  * Turtle (RDF anpassad för läsning)
-  * RDF/XML
+Under rubriken “Visa som” kan man, utöver den grafiska vyn även granska informationen i olika RDF format:
+  * [Json-LD](https://www.w3.org/TR/json-ld/) (RDF anpassad för webbapplikationer) 
+  * [Turtle](https://www.w3.org/TR/turtle/) (Den mest kompakta läsbara formen av RDF)
+  * [RDF/XML](https://www.w3.org/TR/rdf-syntax-grammar/) (RDF i XML format)
 
 
 
@@ -86,4 +85,3 @@ För att ta bort fält, klicka på soptunnan längst till höger i ett delfält 
 På vissa fält i posten finns det kontextuell hjälp att tillgå som nås via frågetecken-ikonen.
 
 [^1]:	librispraxis
-

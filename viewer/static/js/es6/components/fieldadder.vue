@@ -94,7 +94,9 @@ export default {
   },
   events: {
     'open-add-field-window'() {
-      this.show();
+      if (!this.inner) {
+        this.show();
+      }
     },
     'select-next'() {
       if (this.active) {
@@ -246,12 +248,12 @@ export default {
         <span class="title">
           {{ "Add field" | translatePhrase }}: {{ entityType | labelByLang }}
         </span>
-        <span class="windowControl">
-          <i v-on:click="hide" class="fa fa-close"></i>
-        </span>
         <span class="filter">
           {{ "Filter by" | translatePhrase }} <input id="field-adder-input" class="filterInput mousetrap" @input="resetSelectIndex()" type="text" v-model="filterKey"></input>
           <span class="filterInfo">{{ "Showing" | translatePhrase }} {{ filteredResults.length }} {{ "of" | translatePhrase }} {{allowed ? allowed.length : '0'}} {{ "total" | translatePhrase }}</span>
+        </span>
+        <span class="windowControl">
+          <i v-on:click="hide" class="fa fa-close"></i>
         </span>
       </div>
       <div class="column-titles">
@@ -332,9 +334,10 @@ export default {
     }
     .window-mixin();
     .header {
+      display: flex;
+      justify-content: space-between;
       .filter {
         font-size: 85%;
-        float: right;
         .filterInput {
           border-radius: 3px;
           border: 0px;
@@ -344,11 +347,14 @@ export default {
           display: inline-block;
         }
         .filterInfo {
-          display: inline-block;
-          width: 170px;
-          text-align: right;
           padding: 3px 10px 3px 3px;
         }
+      }
+      .title {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 45%;
       }
     }
     .column-titles {
