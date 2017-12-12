@@ -89,6 +89,31 @@ export function getTermFromLabel(label, language, vocab) {
   return classObject;
 }
 
+export function getTree(term, vocab, vocabPfx, context) {
+  const treeNode = {
+    id: term,
+    sub: []
+  };
+  const subs =  getTermObject(term, vocab, vocabPfx, context).baseClassOf;
+  _.each(subs, (sub) => {
+    treeNode.sub.push(getTree(sub, vocab, vocabPfx, context));
+  });
+  return treeNode;
+}
+
+export function printTree(term, vocab, vocabPfx, context) {
+  function printNode(node, indent, isLast) {
+    const branch = isLast ? '└─ ' : '├─ ';
+    const nodeStr = indent.length > 0 ? (indent + branch) : 'Class tree: ';
+    console.log(nodeStr + StringUtil.convertToPrefix(node.id, context));
+    indent += isLast ? '   ' : '│  ';
+    for (let i = 0; i < node.sub.length; i ++) {
+      printNode(node.sub[i], indent, i === node.sub.length - 1);
+    }
+  }
+  printNode(getTree(term, vocab, vocabPfx, context), '', true);
+}
+
 export function getTermObject(term, vocab, vocabPfx, context) {
   // Returns a class object
   if (!term || typeof term === 'undefined') {

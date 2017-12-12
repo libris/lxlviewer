@@ -29,10 +29,6 @@
               "mainTitle": "",
               "subtitle": "",
               "marc:nonfilingChars": "0"
-            },
-            {
-              "@type": "ParallelTitle",
-              "mainTitle": ""
             }
           ],
           "responsibilityStatement": "",
