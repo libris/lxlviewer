@@ -124,12 +124,7 @@
             "classification": [{
                 "@type": "ClassificationDdc",
                 "code": "",
-                "inScheme": {
-                  "@type": "ConceptScheme",
-                  "@id": "http://dewey.info/scheme/edition/e23/swe/",
-                  "version": "23",
-                  "language": "swe"
-                }
+                "edition": ""
               },
               {
                 "@type": "Classification",
