@@ -58,6 +58,22 @@
     ],
     "date": [""]
   },
+  "Distribution": {
+    "@type": "Distribution",
+    "place": [
+      {
+        "@type": "Place",
+        "label": [""]
+      }
+    ],
+    "agent": [
+      {
+        "@type": "Agent",
+        "label": [""]
+      }
+    ],
+    "date": [""]
+  },
   "Classification": {
     "@type": "Classification",
     "code": "",
