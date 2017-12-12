@@ -57,28 +57,25 @@ Klicka redigera för att göra ändringar i posten.
 ### Verktyg
 (se visningsvy ovan)
 
-
-
-### Spara
-Spara-knappen sparar posten direkt till Libris databas och tar dig tillbaka till visningsvyn. Vid sparning uppdateras uppgifter för tidpunk och användare som utfört sparningen.
-
-
-
-### Avbryt
-Vid avbryt sparas inga ändringar i posten och den behålls som den var innan du gick in i redigeringsläge.
-
+### Lägg till fält
++ Fält-knappen lägger till ett huvudfält.
 
 
 ### Ångra
 Du kan ångra text du skrivit i ett fält, men även ångra om du till exempel lagt till ett felaktigt fält i formuläret.
 
 
+### Spara
+Spara-knappen sparar posten direkt till Libris databas, utan att ta dig ur redigeringsläget. Vid sparning uppdateras uppgifter för tidpunk och användare som utfört sparningen.
 
-### Lägg till och ta bort fält/delfält
-För att lägga till ett nytt fält, klicka på den gröna runda knappen med ett plus nere i högra hörnet. 
+
+### Klar
+Klar tar dig ur redigeringsläget och sparar dina ändringar. 
+
+
+### Lägg till och ta bort delfält
 För att lägga till ett delfält, klicka på +Fält ikonen som finns i anslutning till delfältet.
 För att ta bort fält, klicka på soptunnan längst till höger i ett delfält eller på en rad. 
-
 
 
 ### Hjälp
