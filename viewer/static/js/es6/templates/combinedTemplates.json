@@ -155,7 +155,7 @@
               }
             ],
             "contentType": [{
-              "@type": "Content",
+              "@type": "ContentType",
               "code": "txt",
               "termGroup": "rdacontent"
             }],
@@ -1526,6 +1526,10 @@
             "@type": "MediaType",
             "code": "n",
             "termGroup": "rdamedia"
+          }],
+          "hasNote": [{
+            "@type": "Note",
+            "label": ""
           }],
           "succeededBy": [{
             "@type": "Serial"
