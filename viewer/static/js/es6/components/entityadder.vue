@@ -232,7 +232,7 @@ export default {
       const shortenedType = StringUtil.convertToPrefix(typeId, this.context);
       let obj = {'@type': shortenedType};
       if (StructuredValueTemplates.hasOwnProperty(shortenedType)) {
-        obj = StructuredValueTemplates[shortenedType];
+        obj = _.cloneDeep(StructuredValueTemplates[shortenedType]);
       }
       this.$dispatch('add-item', obj);
     },
