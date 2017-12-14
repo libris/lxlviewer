@@ -408,6 +408,9 @@ def thingnewp():
                      record)
     return render_template('edit.html', thing=record, model={})
 
+@app.route('/maintenance.html')
+def maintenance():
+    return app.send_static_file('maintenance.html')
 
 @app.route('/sys/forcedsetterms.json')
 def forcedsetterms():
