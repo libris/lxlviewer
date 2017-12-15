@@ -118,11 +118,20 @@ export default {
     foundNoResult() {
       return !this.loading && this.searchResult.length === 0 && this.keyword.length > 0 && this.searchMade;
     },
+    getClassTree() {
+      const tree = this.getRange.map(type => {
+        return VocabUtil.getTree(type, this.vocab, this.settings.vocabPfx, this.context);
+      });
+      return VocabUtil.flattenTree(tree);
+    },
   },
   ready() {
     this.currentSearchTypes = this.getRange;
   },
   methods: {
+    getFormattedSelectOption(term, settings, vocab, context) {
+      return DisplayUtil.getFormattedSelectOption(term, settings, vocab, context);
+    },
     addPayload(item) {
       const updatedListItemSettings = _.merge({payload: item}, _.cloneDeep(this.listItemSettings));
       return updatedListItemSettings;
@@ -229,7 +238,7 @@ export default {
                 >
                 <select v-model="currentSearchTypes" @change="handleChange(keyword)">
                   <option :value="getRange">{{"All types" | translatePhrase}}</option>
-                  <option v-for="range in getFullRange" :value="[range.replace(settings.vocabPfx, '')]">{{range | labelByLang}}</option>
+                  <option v-for="term in getClassTree" :value="[term.id]" v-html="getFormattedSelectOption(term, settings, vocab, context)"></option>
                 </select>
               </div>
               <div class="help-tooltip-container" @mouseleave="showHelp = false">

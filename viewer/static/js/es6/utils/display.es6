@@ -226,3 +226,10 @@ export function getChip(item, displayDefs, quoted, vocab, settings, context) {
 export function getCard(item, displayDefs, quoted, vocab, settings, context) {
   return getDisplayObject(item, 'cards', displayDefs, quoted, vocab, settings, context);
 }
+
+export function getFormattedSelectOption(term, settings, vocab, context) {
+  const labelByLang = StringUtil.getLabelByLang(term.id, settings.language, vocab, settings.vocabPfx, context);
+  const abstractIndicator = ` {${StringUtil.getUiPhraseByLang('Abstract', settings.language)}}`;
+  const prefix = Array((term.depth) + 1).join(' •');
+  return `${prefix} ${labelByLang} ${term.abstract ? abstractIndicator : ''}`;
+}

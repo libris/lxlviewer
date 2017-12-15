@@ -1,6 +1,17 @@
 <script>
+import * as VocabUtil from '../utils/vocab';
+import * as DisplayUtil from '../utils/display';
+import { getVocabulary, getContext, getSettings } from '../vuex/getters';
+
 export default {
   name: 'creation-card',
+  vuex: {
+    getters: {
+      context: getContext,
+      vocab: getVocabulary,
+      settings: getSettings,
+    },
+  },
   props: {
     materialList: [],
     template: {},
@@ -22,12 +33,21 @@ export default {
     },
     setIndex() {
       this.$dispatch('set-active-index', this.index);
-    }
+    },
+    getFormattedSelectOption(term, settings, vocab, context) {
+      return DisplayUtil.getFormattedSelectOption(term, settings, vocab, context);
+    },
   },
   computed: {
     isActive() {
       return this.activeIndex === this.index;
-    }
+    },
+    getClassTree() {
+      const tree = this.getRange.map(type => {
+        return VocabUtil.getTree(type, this.vocab, this.settings.vocabPfx, this.context);
+      });
+      return VocabUtil.flattenTree(tree);
+    },
   },
   components: {
   },
@@ -50,6 +70,7 @@ export default {
         <select class="creation-dropdown" @change="useBase()">
           <option selected disabled>{{'Choose type' | translatePhrase}}</option>
           <option v-for="material in materialList" value="{{material}}">{{material | labelByLang}}</option>
+          <option v-for="term in getClassTree" :value="[term.id]" v-html="getFormattedSelectOption(term, settings, vocab, context)"></option>
         </select>
       </div>
       <div v-if="!isBase" class="creation-card" @click="useTemplate(template.value)">

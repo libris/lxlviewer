@@ -89,31 +89,6 @@ export function getTermFromLabel(label, language, vocab) {
   return classObject;
 }
 
-export function getTree(term, vocab, vocabPfx, context) {
-  const treeNode = {
-    id: term,
-    sub: []
-  };
-  const subs =  getTermObject(term, vocab, vocabPfx, context).baseClassOf;
-  _.each(subs, (sub) => {
-    treeNode.sub.push(getTree(sub, vocab, vocabPfx, context));
-  });
-  return treeNode;
-}
-
-export function printTree(term, vocab, vocabPfx, context) {
-  function printNode(node, indent, isLast) {
-    const branch = isLast ? '└─ ' : '├─ ';
-    const nodeStr = indent.length > 0 ? (indent + branch) : 'Class tree: ';
-    console.log(nodeStr + StringUtil.convertToPrefix(node.id, context));
-    indent += isLast ? '   ' : '│  ';
-    for (let i = 0; i < node.sub.length; i ++) {
-      printNode(node.sub[i], indent, i === node.sub.length - 1);
-    }
-  }
-  printNode(getTree(term, vocab, vocabPfx, context), '', true);
-}
-
 export function getTermObject(term, vocab, vocabPfx, context) {
   // Returns a class object
   if (!term || typeof term === 'undefined') {
@@ -578,4 +553,41 @@ export function getEnumerations(entityType, property, vocab, vocabPfx, context) 
       reject('Error searching...', error);
     });
   });
+}
+
+export function isAbstract(itemId, vocab, vocabPfx, context) {
+  const vocabKey = StringUtil.convertToVocabKey(StringUtil.convertToBaseUri(itemId, context), context);
+  const termObject = getTermObject(vocabKey, vocab, vocabPfx, context);
+  return (termObject.hasOwnProperty('abstract') && termObject.abstract === true);
+}
+
+export function getTree(term, vocab, vocabPfx, context, counter = 0) {
+  const treeNode = {
+    id: term,
+    sub: [],
+    abstract: isAbstract(term, vocab, vocabPfx, context),
+    depth: counter,
+  };
+  const subs = getTermObject(term, vocab, vocabPfx, context).baseClassOf;
+  _.each(subs, (sub) => {
+    treeNode.sub.push(getTree(sub, vocab, vocabPfx, context, counter + 1));
+  });
+  return treeNode;
+}
+
+export function flattenTree(termArray) {
+  return termArray.reduce((acc, current) => acc.concat([current], flattenTree(current.sub)), []);
+}
+
+export function printTree(term, vocab, vocabPfx, context) {
+  function printNode(node, indent, isLast) {
+    const branch = isLast ? '└─ ' : '├─ ';
+    const nodeStr = indent.length > 0 ? (indent + branch) : 'Class tree: ';
+    console.log(nodeStr + StringUtil.convertToPrefix(node.id, context));
+    indent += isLast ? '   ' : '│  ';
+    for (let i = 0; i < node.sub.length; i ++) {
+      printNode(node.sub[i], indent, i === node.sub.length - 1);
+    }
+  }
+  printNode(getTree(term, vocab, vocabPfx, context), '', true);
 }

@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import * as VocabUtil from '../utils/vocab';
+import * as StringUtil from '../utils/string';
 import * as RecordUtil from '../utils/record';
 import _ from 'lodash';
 
@@ -79,9 +80,9 @@ const mutations = {
           const baseClassObj = classes.get(baseClass['@id']);
           if (typeof baseClassObj !== 'undefined') {
             if (baseClassObj.hasOwnProperty('baseClassOf')) {
-              baseClassObj.baseClassOf.push(classObj['@id']);
+              baseClassObj.baseClassOf.push(StringUtil.convertToPrefix(classObj['@id'], state.context));
             } else {
-              baseClassObj.baseClassOf = [classObj['@id']];
+              baseClassObj.baseClassOf = [StringUtil.convertToPrefix(classObj['@id'], state.context)];
             }
           }
         });

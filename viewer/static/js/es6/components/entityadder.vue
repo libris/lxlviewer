@@ -93,6 +93,12 @@ export default {
     }
   },
   computed: {
+    getClassTree() {
+      const tree = this.getRange.map(type => {
+        return VocabUtil.getTree(type, this.vocab, this.settings.vocabPfx, this.context);
+      });
+      return VocabUtil.flattenTree(tree);
+    },
     hasSingleRange() {
       return this.getFullRange.length === 1;
     },
@@ -158,6 +164,9 @@ export default {
     this.currentSearchTypes = this.getRange;
   },
   methods: {
+    getFormattedSelectOption(term, settings, vocab, context) {
+      return DisplayUtil.getFormattedSelectOption(term, settings, vocab, context);
+    },
     handleChange(value) {
       this.setSearching();
       this.searchMade = false;
@@ -295,7 +304,7 @@ export default {
   <div class="type-chooser" v-if="addEmbedded" v-on-clickaway="dismissTypeChooser">
     <select v-model="selectedType" @change="addType(selectedType, true)">
       <option disabled value="">{{"Choose type" | translatePhrase}}</option>
-      <option v-for="rangeType in getFullRange" value="{{rangeType}}">{{rangeType | labelByLang}}</option>
+      <option v-for="term in getClassTree" :disabled="term.abstract" :value="[term.id]" v-html="getFormattedSelectOption(term, settings, vocab, context)"></option>
     </select>
   </div>
   <div class="window" v-if="active">
@@ -321,7 +330,7 @@ export default {
               >
               <select v-model="currentSearchTypes" @change="handleChange(keyword)">
                 <option :value="getRange">{{"All types" | translatePhrase}}</option>
-                <option v-for="range in getFullRange" :value="[range.replace(settings.vocabPfx, '')]">{{range | labelByLang}}</option>
+                <option v-for="term in getClassTree" :value="[term.id]" v-html="getFormattedSelectOption(term, settings, vocab, context)"></option>
               </select>
             </div>
             <div class="range-info-container" v-if="getFullRange.length > 0" @mouseleave="rangeInfo = false">
@@ -338,7 +347,7 @@ export default {
               <button v-if="allowLocal && hasSingleRange" v-on:click="addEmpty(getFullRange[0])">{{ "Create local entity" | translatePhrase }}</button>
               <select v-model="selectedType" @change="addType(selectedType)" v-if="allowLocal && !hasSingleRange">
                 <option disabled value="">{{ "Create local entity" | translatePhrase }}</option>
-                <option v-for="rangeType in getFullRange" value="{{rangeType}}" label="{{rangeType | labelByLang}}">
+                <option v-for="term in getClassTree" :disabled="term.abstract" :value="[term.id]" v-html="getFormattedSelectOption(term, settings, vocab, context)"></option>
               </select>
             </div>
           </div>
