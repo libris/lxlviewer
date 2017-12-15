@@ -5,9 +5,6 @@
       "description": "Tryckt monografi - RDA",
       "value": {
         "record": {
-          "encodingLevel": {
-            "@id": "https://id.kb.se/marc/MinimalLevel"
-          },
           "descriptionConventions": [{
               "@id": "https://id.kb.se/marc/Isbd"
             },
@@ -109,18 +106,7 @@
             "language": [{
               "@id": "https://id.kb.se/language/swe"
             }],
-            "genreForm": [{
-                "@id": "https://id.kb.se/marc/NotFictionNotFurtherSpecified"
-              },
-              {
-                "@type": "GenreForm",
-                "inScheme": {
-                  "@type": "ConceptScheme",
-                  "@id": "https://id.kb.se/term/saogf",
-                  "code": "saogf"
-                }
-              }
-            ],
+            "genreForm": [],
             "classification": [{
                 "@type": "ClassificationDdc",
                 "code": "",
