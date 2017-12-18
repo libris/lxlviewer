@@ -263,7 +263,7 @@ export default {
   <div class="editor-container" id="editor-container">
     <div class="editor-controls">
       <div class="admin-info">
-        <div class="actions">
+        <div>
           <div>
             <h2 class="recordtype-label" title="{{recordType}}">
               <span>{{ recordType | labelByLang }}</span>
@@ -275,31 +275,31 @@ export default {
             <i class="fa fa-wrench" aria-hidden="true"></i>
           </div>
         </div>
-        <div>
-          <button class="btn btn-default toolbar-button" v-on:click="toggleEditorFocus()" v-bind:class="{'active': status.editorFocus === 'record' }">
+        <div class="actions">
+          <button class="btn btn-default toolbar-button" v-on:click="toggleEditorFocus()">
             <span v-show="status.editorFocus === 'record'"><i class="fa fa-fw fa-toggle-on"></i> {{'Admin metadata' | translatePhrase}}</span>
             <span v-show="status.editorFocus === 'mainEntity'"><i class="fa fa-fw fa-toggle-off"></i> {{'Admin metadata' | translatePhrase}}</span>
           </button>
-          <button v-if="!status.inEdit" class="btn btn-default dropdown other-format toolbar-button" @mouseover="showDisplayAs = true" @mouseout="showDisplayAs = false">
-            <div class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+          <div v-if="!status.inEdit" class="dropdown other-format" @mouseover="showDisplayAs = true" @mouseout="showDisplayAs = false">
+            <button class="btn btn-default toolbar-button dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
               <i class="fa fa-eye" aria-hidden="true">
                 <tooltip-component :show-tooltip="showDisplayAs" tooltip-text="Show as" translation="translatePhrase"></tooltip-component>
               </i>
               <span class="caret"></span>
-            </div>
+            </button>
             <ul class="dropdown-menu">
               <li><a :href="getOtherDataFormat('jsonld')">JSON-LD</a></li>
               <li><a :href="getOtherDataFormat('ttl')">Turtle</a></li>
               <li><a :href="getOtherDataFormat('rdf')">RDF/XML</a></li>
             </ul>
-          </button>
-          <button class="btn btn-default dropdown tools toolbar-button">
-            <div class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" @mouseover="showTools = true" @mouseout="showTools = false">
+          </div>
+          <div class="dropdown tools">
+            <button class="btn btn-default toolbar-button dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" @mouseover="showTools = true" @mouseout="showTools = false">
               <i class="fa fa-wrench" aria-hidden="true">
                 <tooltip-component :show-tooltip="showTools" tooltip-text="Tools" translation="translatePhrase"></tooltip-component>
               </i>
               <span class="caret"></span>
-            </div>
+            </button>
             <ul class="dropdown-menu">
               <li>
                 <a @click="formControl('expand-item')">
@@ -342,7 +342,7 @@ export default {
                 </a>
               </li>
             </ul>
-          </button>
+          </div>
           <div class="toolbar-divider"></div>
           <field-adder v-if="status.inEdit" :entity-type="editorData[status.editorFocus]['@type']" :inner="false" :allowed="allowedProperties" :editing-object="status.editorFocus"></field-adder>
           <button class="btn btn-default toolbar-button" :disabled="activeChangeHistory.length === 0" v-show="status.inEdit" @click="navigateFormChanges('back')" @mouseover="showUndo = true" @mouseout="showUndo = false">
@@ -406,16 +406,6 @@ export default {
         font-weight: bold;
       }
       .dropdown.tools, .dropdown.other-format {
-        display: inline-block;
-        font-weight: bold;
-        cursor: pointer;
-        margin: 0 0.3em;
-        padding: 0;
-        font-size: 12px;
-        line-height: 20px;
-        .dropdown-toggle {
-          padding: 8px 15px;
-        }
         li > a {
           cursor: pointer;
           padding: 3px 5px;

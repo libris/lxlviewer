@@ -237,7 +237,7 @@ export default {
       </i>
       {{ "Field" | translatePhrase }}
     </span>
-    <button v-if="!inner" class="btn btn-primary add-button" v-on:click="show" @mouseenter="showToolTip = true" @mouseleave="showToolTip = false">
+    <button v-if="!inner" class="btn btn-primary toolbar-button" v-on:click="show" @mouseenter="showToolTip = true" @mouseleave="showToolTip = false">
       <i class="fa fa-plus plus-icon" aria-hidden="true">
         <tooltip-component :show-tooltip="showToolTip" tooltip-text="Add field" translation="translatePhrase"></tooltip-component>
       </i>
@@ -292,13 +292,6 @@ export default {
     cursor: pointer;
     text-align: center;
     padding: 0 0.5em;
-  }
-  .add-button {
-    margin: 0.2em 0.3em;
-    padding: 8px 15px;
-    font-size: 13px;
-    line-height: 20px;
-    font-weight: bold;
   }
   >a {
     cursor: pointer;
