@@ -24,10 +24,6 @@ export default {
       return dimensionKey === 'publication.date';
     },
     facetLabelByLang(facetType) {
-      const typeByLang = StringUtil.getLabelByLang(facetType, this.settings.language, this.vocab, this.settings.vocabPfx, this.context);
-      if (typeByLang.indexOf('unhandled term') < 0) {
-        return typeByLang;
-      }
       return this.settings.propertyChains[facetType][this.settings.language];
     }
   },
