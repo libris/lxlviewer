@@ -6,14 +6,14 @@ import * as StringUtil from '../utils/string';
 import * as LayoutUtil from '../utils/layout';
 import CreateNewForm from '../components/create-new-form';
 import EventMixin from '../components/mixins/global-event-mixin';
-import { getSettings, getVocabulary, getKeybindState } from '../vuex/getters';
-import { changeSettings, loadVocabMap, loadVocab, changeStatus } from '../vuex/actions';
+import { getSettings, getVocabulary, getContext, getKeybindState } from '../vuex/getters';
+import { changeSettings, loadVocabMap, loadVocab, loadContext, changeStatus } from '../vuex/actions';
 
 export default class CreateNew extends View {
 
   initialize() {
     const self = this;
-    Promise.all(self.getLdDependencies('vocab')).then(() => {
+    Promise.all(self.getLdDependencies('vocab context')).then(() => {
       self.initVue();
     }, (error) => {
       window.lxlError(error);
@@ -47,12 +47,14 @@ export default class CreateNew extends View {
         actions: {
           loadVocabMap,
           loadVocab,
+          loadContext,
           changeStatus,
           changeSettings,
         },
         getters: {
           settings: getSettings,
           vocab: getVocabulary,
+          context: getContext,
           keybindState: getKeybindState,
         },
       },
@@ -73,6 +75,7 @@ export default class CreateNew extends View {
       ready() {
         this.updateUser(self.user);
         this.changeSettings(self.settings);
+        this.loadContext(self.context);
         this.loadVocabMap(self.vocabMap);
         this.loadVocab(self.vocab);
         LayoutUtil.showPage(this);

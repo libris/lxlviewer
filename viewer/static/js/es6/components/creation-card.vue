@@ -13,7 +13,7 @@ export default {
     },
   },
   props: {
-    materialList: [],
+    creation: '',
     template: {},
     isBase: false,
     index: 0,
@@ -43,7 +43,7 @@ export default {
       return this.activeIndex === this.index;
     },
     getClassTree() {
-      const tree = this.getRange.map(type => {
+      const tree = [this.creation].map(type => {
         return VocabUtil.getTree(type, this.vocab, this.settings.vocabPfx, this.context);
       });
       return VocabUtil.flattenTree(tree);
@@ -69,7 +69,6 @@ export default {
         <div class="description">Innehåller de vanligaste fälten för vald typ.</div>
         <select class="creation-dropdown" @change="useBase()">
           <option selected disabled>{{'Choose type' | translatePhrase}}</option>
-          <option v-for="material in materialList" value="{{material}}">{{material | labelByLang}}</option>
           <option v-for="term in getClassTree" :value="[term.id]" v-html="getFormattedSelectOption(term, settings, vocab, context)"></option>
         </select>
       </div>
