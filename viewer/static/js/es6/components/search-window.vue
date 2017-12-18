@@ -238,7 +238,7 @@ export default {
                 >
                 <select v-model="currentSearchTypes" @change="handleChange(keyword)">
                   <option :value="getRange">{{"All types" | translatePhrase}}</option>
-                  <option v-for="term in getClassTree" :value="[term.id]" v-html="getFormattedSelectOption(term, settings, vocab, context)"></option>
+                  <option v-for="term in getClassTree" :value="term.id" v-html="getFormattedSelectOption(term, settings, vocab, context)"></option>
                 </select>
               </div>
               <div class="help-tooltip-container" @mouseleave="showHelp = false">

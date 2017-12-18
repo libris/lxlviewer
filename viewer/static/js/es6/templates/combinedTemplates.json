@@ -24,8 +24,7 @@
           "hasTitle": [{
               "@type": "Title",
               "mainTitle": "",
-              "subtitle": "",
-              "marc:nonfilingChars": "0"
+              "subtitle": ""
             }
           ],
           "responsibilityStatement": "",
@@ -177,8 +176,7 @@
           "hasTitle": [{
               "@type": "Title",
               "mainTitle": "",
-              "subtitle": "",
-              "marc:nonfilingChars": "0"
+              "subtitle": ""
             },
             {
               "@type": "ParallelTitle",
@@ -344,8 +342,7 @@
           "hasTitle": [{
             "@type": "Title",
             "mainTitle": "",
-            "subtitle": "",
-            "marc:nonfilingChars": "0"
+            "subtitle": ""
           }],
           "responsibilityStatement": "",
           "identifiedBy": [{
@@ -583,8 +580,7 @@
           "hasTitle": [{
               "@type": "Title",
               "mainTitle": "",
-              "subtitle": "",
-              "marc:nonfilingChars": "0"
+              "subtitle": ""
             },
             {
               "@type": "ParallelTitle",

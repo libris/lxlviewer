@@ -69,7 +69,7 @@ export default {
         <div class="description">Innehåller de vanligaste fälten för vald typ.</div>
         <select class="creation-dropdown" @change="useBase()">
           <option selected disabled>{{'Choose type' | translatePhrase}}</option>
-          <option v-for="term in getClassTree" :value="[term.id]" v-html="getFormattedSelectOption(term, settings, vocab, context)"></option>
+          <option v-for="term in getClassTree" :value="term.id" v-html="getFormattedSelectOption(term, settings, vocab, context)"></option>
         </select>
       </div>
       <div v-if="!isBase" class="creation-card" @click="useTemplate(template.value)">
