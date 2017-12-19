@@ -69,7 +69,6 @@
                 class="fa fa-fw fa-${item.icon}"></i> ${item.title}</a></li>
           % endfor
           % if g.site.title == 'libris.kb.se'
-          % if current_user.is_authenticated
           <li class="navbar-item">
             <a href="/help">
               <div class="navbar-circle">
@@ -77,7 +76,6 @@
               </div>
               <span class="js-translateable" data-translateable="Hjälp">Help</a></a>
           </li>
-          % endif
           <li class="navbar-item">
             <a href="/">
               <div class="navbar-circle">
