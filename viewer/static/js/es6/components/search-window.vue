@@ -122,7 +122,7 @@ export default {
       const tree = this.getRange.map(type => {
         return VocabUtil.getTree(type, this.vocab, this.settings.vocabPfx, this.context);
       });
-      return VocabUtil.flattenTree(tree);
+      return VocabUtil.flattenTree(tree, this.vocab, this.settings.vocabPfx, this.context, this.settings.language);
     },
   },
   ready() {

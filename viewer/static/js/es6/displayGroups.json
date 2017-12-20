@@ -19,7 +19,8 @@
     "qualifyingNote",
     "marc:fullerFormName",
     "lifeSpan",
-    "marc:attributionQualifier"
+    "marc:attributionQualifier",
+    "code",
   ],
   "info": ["responsibilityStatement", "instanceOf", "contribution", "broader", "date", "note"],
   "identifiers": ["identifiedBy", "sameAs"]
