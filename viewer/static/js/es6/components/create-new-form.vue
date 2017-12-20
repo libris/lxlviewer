@@ -98,7 +98,7 @@ export default {
       return baseRecord;
     },
     combinedTemplates() {
-      return CombinedTemplates[this.selectedCreation.toLowerCase()];
+      return _.sortBy(CombinedTemplates[this.selectedCreation.toLowerCase()], template => template.label);
     },
     hasChosen() {
       return this.activeIndex > 0 || (this.activeIndex === 0 && this.chosenType);
