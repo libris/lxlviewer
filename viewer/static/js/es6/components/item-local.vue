@@ -88,10 +88,7 @@ export default {
     },
     isExtractable() {
       const classId = `${this.settings.vocabPfx}${this.item['@type']}`;
-      if (
-        this.settings.nonExtractableClasses.indexOf(this.item['@type']) === -1 &&
-        !VocabUtil.isEmbedded(classId, this.vocab, this.settings, this.context)
-      ) {
+      if (!VocabUtil.isEmbedded(classId, this.vocab, this.settings, this.context)) {
         return true;
       }
       return false;
