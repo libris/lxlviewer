@@ -575,8 +575,9 @@ export function getTree(term, vocab, vocabPfx, context, counter = 0) {
   return treeNode;
 }
 
-export function flattenTree(termArray) {
-  return termArray.reduce((acc, current) => acc.concat([current], flattenTree(current.sub)), []);
+export function flattenTree(termArray, vocab, vocabPfx, context, language) {
+  const sortedArray = _.sortBy(termArray, term => StringUtil.getLabelByLang(term.id, language, vocab, vocabPfx, context));
+  return sortedArray.reduce((acc, current) => acc.concat([current], flattenTree(current.sub, vocab, vocabPfx, context, language)), []);
 }
 
 export function printTree(term, vocab, vocabPfx, context) {
