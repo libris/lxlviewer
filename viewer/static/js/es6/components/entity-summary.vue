@@ -1,4 +1,5 @@
 <script>
+import * as _ from 'lodash';
 import LensMixin from './mixins/lens-mixin';
 import * as StringUtil from '../utils/string';
 import { getSettings, getVocabulary, getContext, getDisplayDefinitions, getEditorData } from '../vuex/getters';
@@ -40,7 +41,11 @@ export default {
   computed: {
     infoWithKeys() {
       const info = this.getSummary.info.concat(this.getSummary.sub);
-      return info;
+      const infoObj = {};
+      _.each(info, (node) => {
+        infoObj[node.property] = node.value.join(', ');
+      });
+      return infoObj;
     },
     isKbSe() {
       return this.focusData['@id'].indexOf('id.kb.se') > -1;
@@ -110,8 +115,8 @@ export default {
     </h3>
     <div class="id" v-if="identifiers.length > 0">{{ identifiers[0] }} <span class="id-info" v-if="identifiers.length > 1">(+{{ identifiers.length-1 }})</span></div>
     <div class="info">
-      <span class="key-value-pair" v-for="infoNode in infoWithKeys">
-        <span class="key">{{ infoNode.property | labelByLang }}:</span>&nbsp<span class="value">{{ infoNode.value.join(', ') }}</span>
+      <span class="key-value-pair" v-show="v.length !== 0" v-for="(k,v) in infoWithKeys">
+        <span class="key">{{ k | labelByLang }}:</span>&nbsp<span class="value">{{ v }}</span>
       </span>
     </div>
   </div>
