@@ -73,7 +73,7 @@ export default {
         <div class="menu panel panel-default">
           <ul class="categories">
             <li v-for="(key, value) in helpCategories" v-bind:class="{'active': key == activeCategory }" v-on:click="activeCategory = key">
-              {{key}}
+              <span class="label">{{key}}</span>
               <ul class="sections">
                 <li v-for="section in value" v-bind:class="{'active': section.title == helpSection }" v-on:click="setSection(section.title)">{{section.title}}</li>
               </ul>
@@ -132,6 +132,11 @@ export default {
       > li {
         font-weight: bold;
         // cursor: pointer;
+        .label {
+          color: @black;
+          text-transform: uppercase;
+          padding: 0;
+        }
         ul.sections {
           // display: none; // SHOW ALL
           list-style: none;
@@ -140,12 +145,14 @@ export default {
             font-weight: normal;
             border-radius: 5px;
             padding: 0 0.3em;
+            margin: 3px 0px;
             cursor: pointer;
             &:hover {
-              text-decoration: underline;
+              background-color: @gray-lighter;
             }
             &.active {
-              background-color: @gray-lighter;
+              background-color: @brand-primary;
+              color: @neutral-color;
             }
           }
         }

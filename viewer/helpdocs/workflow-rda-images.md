@@ -1,5 +1,5 @@
 ---
-section: Anvisningar
+section: Arbetsflöden
 title: Bilder
 order: 33
 tags:

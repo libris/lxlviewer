@@ -71,7 +71,10 @@
           "publicationCountry": [{
             "@id": "https://id.kb.se/country/sw"
           }],
-          "copyrightDate": [""],
+          "copyright": [{
+            "@type": "Copyright",
+            "date": ""
+          }],
           "mediaType": [{
             "@type": "MediaType",
             "code": "n",
@@ -209,7 +212,10 @@
           "publicationCountry": [{
             "@id": "https://id.kb.se/country/sw"
           }],
-          "copyrightDate": [""],
+          "copyright": [{
+            "@type": "Copyright",
+            "date": ""
+          }],
           "mediaType": [{
             "@type": "MediaType",
             "code": "n",
@@ -619,13 +625,16 @@
             },
             "date": ""
           }],
+          "copyright": [{
+            "@type": "Copyright",
+            "date": ""
+          }],
           "marc:publicationStatus": {
             "@id": "https://id.kb.se/marc/SingleKnownDateProbableDate"
           },
           "publicationCountry": [{
             "@id": "https://id.kb.se/country/sw"
           }],
-          "copyrightDate": [""],
           "marc:otherPhysicalDetails": "",
           "colorContent": {
             "@id": "https://id.kb.se/marc/Multicolored"
