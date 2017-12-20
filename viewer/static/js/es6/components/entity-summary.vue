@@ -38,6 +38,10 @@ export default {
     }
   },
   computed: {
+    infoWithKeys() {
+      const info = this.getSummary.info.concat(this.getSummary.sub);
+      return info;
+    },
     isKbSe() {
       return this.focusData['@id'].indexOf('id.kb.se') > -1;
     },
@@ -106,7 +110,9 @@ export default {
     </h3>
     <div class="id" v-if="identifiers.length > 0">{{ identifiers[0] }} <span class="id-info" v-if="identifiers.length > 1">(+{{ identifiers.length-1 }})</span></div>
     <div class="info">
-      {{ sub.join(' · ') }}
+      <span class="key-value-pair" v-for="infoNode in infoWithKeys">
+        <span class="key">{{ infoNode.property | labelByLang }}:</span>&nbsp<span class="value">{{ infoNode.value.join(', ') }}</span>
+      </span>
     </div>
   </div>
 </div>
@@ -143,6 +149,18 @@ export default {
       line-height: 1.6em;
       min-height: 1.2em;
       margin: 0px;
+    }
+    .info {
+      .key-value-pair {
+        .key {
+          text-transform: uppercase;
+          font-weight: bold;
+          font-size: 85%;
+        }
+        .value {
+          margin-right: 0.5em;
+        }
+      }
     }
     .id {
       color: #333;
