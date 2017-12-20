@@ -1,5 +1,5 @@
 ---
-section: Anvisningar
+section: Arbetsflöden
 title: Samlingsposter
 order: 32
 tags:
