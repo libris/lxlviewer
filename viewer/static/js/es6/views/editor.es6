@@ -437,8 +437,8 @@ export default class Editor extends View {
       ready() {
         this.updateUser(self.user);
         this.changeSettings(self.settings);
-        this.loadVocab(self.vocab);
         this.loadContext(self.context);
+        this.loadVocab(self.vocab);
         this.loadVocabMap(self.vocabMap);
         this.loadForcedListTerms(self.forcedListTerms);
         this.loadDisplayDefs(self.display);

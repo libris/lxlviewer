@@ -105,10 +105,14 @@ export function getLabelByLang(string, lang, vocab, vocabPfx, context) {
   let item = VocabUtil.getTermObject(string, vocab, vocabPfx, context);
   let note = '';
   let labelByLang = '';
-  if (typeof item !== 'undefined' && item.labelByLang) {
-    labelByLang = item.labelByLang[lang];
-  } else if (typeof item !== 'undefined' && item.prefLabelByLang) {
-    labelByLang = item.prefLabelByLang[lang];
+  if (typeof item !== 'undefined') {
+    if (item.labelByLang) {
+      labelByLang = item.labelByLang[lang];
+    } else if (item.prefLabelByLang) {
+      labelByLang = item.prefLabelByLang[lang];
+    } else if (item.label) {
+      labelByLang = item.label;
+    }
   } else {
     note = ' (unhandled term)';
   }

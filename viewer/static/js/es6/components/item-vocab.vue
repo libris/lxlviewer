@@ -72,7 +72,7 @@ export default {
       _.each(values, (value) => {
         possibleValues.push(value['@id'].replace(this.settings.vocabPfx, ''));
       });
-      return possibleValues;
+      return _.sortBy(possibleValues, value => StringUtil.getLabelByLang(value, this.settings.language, this.vocab, this.settings.vocabPfx, this.context));
     },
     setInitialValue() {
       if (this.possibleValues.indexOf(this.value) > -1) {

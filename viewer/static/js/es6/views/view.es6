@@ -65,18 +65,6 @@ export default class View {
         // 'instanceOf',
         'itemOf',
       ],
-      nonExtractableClasses: [
-        'Place',
-        'Library',
-        'CarrierType',
-        'MediaType',
-        'ContentType',
-        'Language',
-        'Country',
-        'Nationality',
-        'GenreForm',
-        'Topic',
-      ],
       propertyChains: {
         '@type': {
           sv: 'Typ',

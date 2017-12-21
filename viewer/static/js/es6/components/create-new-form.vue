@@ -24,7 +24,6 @@ export default {
   },
   data() {
     return {
-      materialList: [],
       creationList: ['Instance', 'Work', 'Agent', 'Concept'],
       vocabPfx: this.settings.vocabPfx,
       chosenType: '',
@@ -40,12 +39,6 @@ export default {
         return label;
       }
       return label.join(', ');
-    },
-    getMaterials(creation) {
-      let allMaterials = [];
-      allMaterials = allMaterials.concat(VocabUtil.getAllSubClasses([`${this.settings.vocabPfx}${creation}`], this.vocabClasses, this.settings.vocabPfx)
-        .map(subClassId => subClassId.replace(this.settings.vocabPfx, '')));
-      this.materialList = _.sortBy(allMaterials, label => StringUtil.getLabelByLang(label, this.settings.language, this.vocab, this.settings.vocabPfx, this.context));
     },
   },
   events: {
@@ -105,7 +98,7 @@ export default {
       return baseRecord;
     },
     combinedTemplates() {
-      return CombinedTemplates[this.selectedCreation.toLowerCase()];
+      return _.sortBy(CombinedTemplates[this.selectedCreation.toLowerCase()], template => template.label);
     },
     hasChosen() {
       return this.activeIndex > 0 || (this.activeIndex === 0 && this.chosenType);
@@ -116,9 +109,6 @@ export default {
     'creation-tab': CreationTab,
   },
   watch: {
-    'selectedCreation': function(newVal) {
-      this.getMaterials(newVal);
-    },
     'thingData': function() {
       document.getElementById('thingDataForm').submit();
     },
@@ -127,7 +117,6 @@ export default {
     this.$nextTick(() => {
       this.activeForm = '';
       this.transition = false;
-      this.getMaterials('Instance');
     });
   },
 };
@@ -140,7 +129,7 @@ export default {
         <div class="app-heading">{{'Create new' | translatePhrase}}</div>
         <creation-tab :creation-list="creationList"></creation-tab>
         <div class="creation-cards-container">
-          <creation-card :is-base="true" :material-list="materialList" :index="0" :active-index="activeIndex"></creation-card>
+          <creation-card :is-base="true" :creation="selectedCreation" :index="0" :active-index="activeIndex"></creation-card>
           <creation-card v-for="template in combinedTemplates" :is-base="false" :template="template" :index="$index + 1" :active-index="activeIndex"></creation-card>
         </div>
         <form action="/edit" method="POST" id="thingDataForm">

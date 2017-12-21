@@ -1,8 +1,19 @@
 <script>
+import * as VocabUtil from '../utils/vocab';
+import * as DisplayUtil from '../utils/display';
+import { getVocabulary, getContext, getSettings } from '../vuex/getters';
+
 export default {
   name: 'creation-card',
+  vuex: {
+    getters: {
+      context: getContext,
+      vocab: getVocabulary,
+      settings: getSettings,
+    },
+  },
   props: {
-    materialList: [],
+    creation: '',
     template: {},
     isBase: false,
     index: 0,
@@ -13,7 +24,7 @@ export default {
     }
   },
   methods: {
-    useBase() {
+    useBase(event) {
       this.$dispatch('use-base', event.target.value);
     },
     useTemplate(templateValue) {
@@ -22,12 +33,21 @@ export default {
     },
     setIndex() {
       this.$dispatch('set-active-index', this.index);
-    }
+    },
+    getFormattedSelectOption(term, settings, vocab, context) {
+      return DisplayUtil.getFormattedSelectOption(term, settings, vocab, context);
+    },
   },
   computed: {
     isActive() {
       return this.activeIndex === this.index;
-    }
+    },
+    getClassTree() {
+      const tree = [this.creation].map(type => {
+        return VocabUtil.getTree(type, this.vocab, this.settings.vocabPfx, this.context);
+      });
+      return VocabUtil.flattenTree(tree, this.vocab, this.settings.vocabPfx, this.context, this.settings.language);
+    },
   },
   components: {
   },
@@ -47,9 +67,9 @@ export default {
       <div v-if="isBase" class="creation-card" @click="setIndex()">
         <div>{{'Baspost'}}</div>
         <div class="description">Innehåller de vanligaste fälten för vald typ.</div>
-        <select class="creation-dropdown" @change="useBase()">
+        <select class="creation-dropdown" @change="useBase($event)">
           <option selected disabled>{{'Choose type' | translatePhrase}}</option>
-          <option v-for="material in materialList" value="{{material}}">{{material | labelByLang}}</option>
+          <option v-for="term in getClassTree" :value="term.id" v-html="getFormattedSelectOption(term, settings, vocab, context)"></option>
         </select>
       </div>
       <div v-if="!isBase" class="creation-card" @click="useTemplate(template.value)">
