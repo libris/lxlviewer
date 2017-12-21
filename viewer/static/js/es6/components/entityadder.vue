@@ -79,7 +79,7 @@ export default {
   },
   watch: {
     valueList(newVal) {
-      if (newVal.length === 0 && this.onlyEmbedded) {
+      if (newVal.length === 0 && this.onlyEmbedded && this.getFullRange.length > 1) {
         this.addEmbedded = true;
       } else {
         this.addEmbedded = false;
@@ -159,7 +159,7 @@ export default {
     },
   },
   ready() {
-    this.addEmbedded = (this.valueList.length === 0 && this.onlyEmbedded);
+    this.addEmbedded = (this.valueList.length === 0 && this.onlyEmbedded && this.getFullRange.length > 1);
     this.searchOpen = false;
     this.currentSearchTypes = this.getRange;
   },
@@ -200,7 +200,7 @@ export default {
         this.$dispatch('add-item', {'@id': ''});
       } else if (this.canRecieveObjects) {
         const range = this.getFullRange;
-        if (range.length < 2 && this.onlyEmbedded) {
+        if (range.length === 1 && this.onlyEmbedded) {
           this.addEmpty(range[0]);
         } else if (this.onlyEmbedded) {
           this.addEmbedded = true;
