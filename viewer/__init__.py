@@ -435,6 +435,11 @@ def create():
     return _write_data(request, query_params=MultiDict([]))
 
 
+@app.route('/_merge')
+def _merge():
+    return _proxy_request(request, session, query_params=['id1', 'id2', 'promote_id2', 'commit'])
+
+
 @app.route('/_convert', methods=['POST'])
 def convert():
     return _write_data(request, query_params={'to': 'application/x-marc-json'})
