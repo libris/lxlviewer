@@ -69,7 +69,7 @@ export default {
 
 <template>
   <div class="panel-body container-fluid settings-container">
-    <div class="col-md-4 info-box">
+    <div class="info-box">
       <div class="user-gravatar">
         <img v-bind:src="`https://www.gravatar.com/avatar/${user.emailHash}?d=mm&s=150`" /><br/>
       </div>
@@ -77,11 +77,6 @@ export default {
       <div>{{user.fullName}}</div>
       <h3><span>{{"E-post" | translatePhrase}}</span></h3>
       <div>{{user.email || '-'}}</div>
-      <div class="text-center">
-        <a class="card-link" href="/logout">
-          Logga ut
-        </a>
-      </div>
       <hr>
       <p>Din användarprofil är hämtad från <a href="https://login.libris.kb.se">Libris Login</a>.
       </p>
@@ -91,7 +86,7 @@ export default {
         Bild hämtad från <a href="https://www.gravatar.com">gravatar</a>.
       </p>
     </div>
-    <div class="col-md-8">
+    <div class="settings-content">
       <table>
         <tr>
           <td class="settings-label">{{"Active sigel" | translatePhrase}}</td>
@@ -116,6 +111,9 @@ export default {
               </td>
             </tr>
       </table>
+      <a class="btn btn-block btn-info" href="/logout">
+        Logga ut
+      </a>
     </div>
   </div>
 </template>
@@ -128,8 +126,13 @@ export default {
 .settings-container {
   padding: 1em;
   margin: 0px;
-
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: space-between;
   .info-box {
+    flex-grow: 1;
+    min-width: 250px;
     background-color: #f9f9f9;
     padding: 1em;
     box-shadow: @shadow-panel;
@@ -137,27 +140,34 @@ export default {
       font-size: 12px;
     }
   }
-
-  table {
-    width: 100%;
-    tr {
-      border: solid @gray-lighter;
-      border-width: 0px 0px 1px 0px;
-    }
-    td {
-      padding: 0.5em;
-    }
-    td.settings-label {
-      width: 40%;
-      vertical-align: middle;
-    }
-    td.settings-value {
-      width: 60%;
-      select {
-        width: 100%;
+  .settings-content {
+    display: flex;
+    flex-grow: 1;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 0em 1em;
+    table {
+      width: 100%;
+      tr {
+        border: solid @gray-lighter;
+        border-width: 0px 0px 1px 0px;
+      }
+      td {
+        padding: 0.5em;
+      }
+      td.settings-label {
+        width: 40%;
+        vertical-align: middle;
+      }
+      td.settings-value {
+        width: 60%;
+        select {
+          width: 100%;
+        }
       }
     }
   }
+
 
   h2 {
     padding-top:15px;
