@@ -235,7 +235,7 @@ export function getUnrestrictedRange(propertyId, vocab, vocabPfx, context) {
       range.push(property.rangeIncludes[i]['@id']);
     }
   }
-  if (property.hasOwnProperty('subPropertyOf')) {
+  if (range.length === 0 && property.hasOwnProperty('subPropertyOf')) {
     _.each(property.subPropertyOf, (prop) => {
       if (prop.hasOwnProperty('@id')) {
         range = range.concat(getUnrestrictedRange(prop['@id'], vocab, vocabPfx, context));

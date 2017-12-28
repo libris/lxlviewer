@@ -24,7 +24,7 @@ export default {
     }
   },
   methods: {
-    useBase() {
+    useBase(event) {
       this.$dispatch('use-base', event.target.value);
     },
     useTemplate(templateValue) {
@@ -67,7 +67,7 @@ export default {
       <div v-if="isBase" class="creation-card" @click="setIndex()">
         <div>{{'Baspost'}}</div>
         <div class="description">Innehåller de vanligaste fälten för vald typ.</div>
-        <select class="creation-dropdown" @change="useBase()">
+        <select class="creation-dropdown" @change="useBase($event)">
           <option selected disabled>{{'Choose type' | translatePhrase}}</option>
           <option v-for="term in getClassTree" :value="term.id" v-html="getFormattedSelectOption(term, settings, vocab, context)"></option>
         </select>
