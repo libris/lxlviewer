@@ -14,7 +14,9 @@ The different initalization methods are driven by a small loader (``loader.es6``
 
 ### VueJS
 
-Some views contain sub-applications written in VueJS. They are initialized by their corresponding view class (see above) and are built up by components defined in ``es6/components``.
+The views contain sub-applications written in VueJS. They are initialized by their corresponding view class (see above) and are built up by components defined in ``es6/components``.
+
+For easy component inspection in the browser, install the [vue-devtools](https://github.com/vuejs/vue-devtools) (available for Chrome and Firefox).
 
 ### Utility library
 
