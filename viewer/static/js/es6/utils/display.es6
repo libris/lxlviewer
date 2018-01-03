@@ -98,12 +98,13 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
 
   // Get the list of properties we want to show
   let properties = [];
+  let usedLensType;
   if (trueItem['@type'] && typeof trueItem['@type'] !== 'undefined') {
+    usedLensType = trueItem['@type'];
     properties = getProperties(trueItem['@type'], level, displayDefs, settings);
   } else {
     return {};
   }
-  let usedLensType;
   if (properties.length === 0) { // If none were found, traverse up inheritance tree
     const baseClasses = VocabUtil.getBaseClassesFromArray(trueItem['@type'], vocab, settings.vocabPfx, context);
     for (let i = 0; i < baseClasses.length; i++) {
