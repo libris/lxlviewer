@@ -241,6 +241,9 @@ export default {
   ready() {
     this.$nextTick(() => {
       setTimeout(() => {
+        if (this.key === '_uid') {
+          throw new Error('A datanode component has been added for a _uid key, which should never happen.');
+        }
         if (this.isLastAdded) {
           const windowHeight = window.innerHeight || document.documentElement.clientHeight || document.getElementsByTagName('body')[0].clientHeight;
           const scrollPos = this.$el.offsetTop - (windowHeight * 0.2);

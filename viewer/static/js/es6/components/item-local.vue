@@ -102,6 +102,7 @@ export default {
     filteredItem() {
       const fItem = Object.assign({}, this.item);
       delete fItem['@type'];
+      delete fItem['_uid'];
       return fItem;
     },
     formObj() {
