@@ -412,7 +412,8 @@ export function isSubClassOf(classId, baseClassId, vocab, vocabPfx, context) {
   } else {
     baseClasses = getBaseClasses(classId, vocab, vocabPfx, context);
   }
-  if (baseClasses.indexOf(`${vocabPfx}${baseClassId}`) > -1) {
+  const prefixBaseClassId = StringUtil.convertToVocabKey(StringUtil.convertToBaseUri(baseClassId, context), context);
+  if (baseClasses.indexOf(prefixBaseClassId) > -1) {
     return true;
   }
   return false;
