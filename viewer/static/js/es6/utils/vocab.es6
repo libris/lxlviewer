@@ -173,7 +173,7 @@ export function getValuesFrom(entityType, property, vocab, vocabPfx, context) {
     throw new Error('getValuesFrom was called with an object as property id (should be a string)');
   }
   let result = [];
-  const baseClasses = getBaseClasses(`${vocabPfx}${entityType}`, vocab, vocabPfx, context);
+  const baseClasses = getBaseClasses(StringUtil.convertToVocabKey(StringUtil.convertToBaseUri(entityType, context), context), vocab, vocabPfx, context);
   baseClasses.forEach(baseClass => {
     const vocabEntry = vocab.get(baseClass);
     if (vocabEntry.hasOwnProperty('subClassOf')) {
@@ -186,7 +186,7 @@ export function getValuesFrom(entityType, property, vocab, vocabPfx, context) {
         }
         if (embellishedObj.hasOwnProperty('@type') &&
         embellishedObj['@type'] === 'Restriction' &&
-        embellishedObj.onProperty['@id'] === `${vocabPfx}${property}`) {
+        embellishedObj.onProperty['@id'] === StringUtil.convertToVocabKey(StringUtil.convertToBaseUri(property, context), context)) {
           let key = '';
           if (embellishedObj.hasOwnProperty('someValuesFrom')) {
             key = 'someValuesFrom';

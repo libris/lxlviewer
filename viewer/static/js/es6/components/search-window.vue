@@ -71,6 +71,7 @@ export default {
     index: 0,
     copyTitle: false,
     canCopyTitle: false,
+    entityType: '',
   },
   events: {
     'replace-local'(item) {
