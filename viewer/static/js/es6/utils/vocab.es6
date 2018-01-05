@@ -353,23 +353,17 @@ export function getBaseClasses(classId, vocab, vocabPfx, context) {
   }
   classList.push(termObj['@id']);
   if (termObj && termObj.hasOwnProperty('subClassOf')) {
-    for (let i = 0; i < termObj.subClassOf.length; i++) {
-      const baseClassId = termObj.subClassOf[i]['@id'];
-      let baseClass = {};
-      if (baseClassId) {
-        baseClass = getTermObject(baseClassId, vocab, vocabPfx, context);
+    termObj.subClassOf.forEach(obj => {
+      if (typeof obj['@type'] === 'undefined') {
+        if (obj['@id']) {
+          const baseClass = getTermObject(obj['@id'], vocab, vocabPfx, context);
+          if (baseClass) {
+            classList = classList.concat(getBaseClasses(baseClass['@id'], vocab, vocabPfx, context));
+            classList.push(baseClass['@id']);
+          }
+        }
       }
-      if (
-        baseClass &&
-        baseClass.isDefinedBy &&
-        baseClass.isDefinedBy['@id'] === vocabPfx
-      ) {
-        classList = classList.concat(getBaseClasses(baseClassId, vocab, vocabPfx, context));
-        classList.push(baseClassId);
-      } else {
-        //
-      }
-    }
+    });
   }
   // console.log("getBaseClasses(" + JSON.stringify(classId) + ")", JSON.stringify(classList));
   return _.uniq(classList);
@@ -384,12 +378,10 @@ export function getBaseClassesFromArray(typeArray, vocab, vocabPfx, context) {
 
   let classes = [];
   for (let t = 0; t < types.length; t++) {
-    if (types[t].indexOf('marc:') === -1) {
-      const c = getTermObject(types[t], vocab, vocabPfx, context);
-      if (typeof c !== 'undefined') {
-        classes.push(c['@id']);
-        classes = classes.concat(getBaseClasses(c['@id'], vocab, vocabPfx, context));
-      }
+    const c = getTermObject(types[t], vocab, vocabPfx, context);
+    if (typeof c !== 'undefined') {
+      classes.push(c['@id']);
+      classes = classes.concat(getBaseClasses(c['@id'], vocab, vocabPfx, context));
     }
   }
   classes = _.uniq(classes);
