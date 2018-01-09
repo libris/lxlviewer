@@ -7,7 +7,9 @@ tags:
 
 # Kortkommandon för PC och MAC
 För att underlätta arbetet har vi integrerat ett antal kortkommandon för PC respektive MAC. 
-  
+ 
+ 
+ 
 # PC 
     
 | Åtgärd 					    	| Kortkommando 																   	  |
@@ -23,6 +25,7 @@ För att underlätta arbetet har vi integrerat ett antal kortkommandon för PC r
 | Stäng ner pop up-fönster | Escape |
 | Välj ett element i pop up-fönster | Enter |
 | Välj/markera fler element i pop up-fönster | Control, Enter |
+
 
 
 # MAC 
