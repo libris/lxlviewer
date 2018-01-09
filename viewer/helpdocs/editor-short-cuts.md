@@ -10,9 +10,10 @@ För att underlätta arbetet har vi integrerat ett antal kortkommandon för PC r
  
  
  
+ 
 # PC 
     
-| Åtgärd 					    	| Kortkommando 																   	  |
+| Åtgärd 					    	|         Kortkommando 																   	             |
 |	 ------------- 						| 				------------- 																    |
 | Kopiera, skapa identisk kopia av post 				|Control, Shift, C  								    |
 | Redigera, gå till postens redigeringsvy 						|Control, E  				  							    |
@@ -21,12 +22,13 @@ För att underlätta arbetet har vi integrerat ett antal kortkommandon för PC r
 | Spara, spara post utan att lämna redigeringsläget   | Control, S |
 | Klar, spara post och gå till visningsläge | Control, D |
 | Expandera/minimera alla fält i post 		|						Alt, + (Expandera) Alt, - (Kollapsa)  										  |
-| Adminmetadata, växla mellan postens visnings-/adminmetadatavy  |Control, Shift, höger/vänster pil   	  |
+| Adminmetadata, växla mellan postens visnings-/adminmetadatavy    |Control, Shift, höger/vänster pil   	  |
 | Stäng ner pop up-fönster | Escape |
 | Välj ett element i pop up-fönster | Enter |
 | Välj/markera fler element i pop up-fönster | Control, Enter |
 
-
+ 
+ 
 
 # MAC 
     
@@ -39,10 +41,11 @@ För att underlätta arbetet har vi integrerat ett antal kortkommandon för PC r
 | Spara, spara post utan att lämna redigeringsläget   | Command, S  |
 | Klar, spara post och gå till visningsläge | Command, D |
 | Expandera/minimera alla fält i post | Alt, + (Expandera) Alt, - (Kollapsa) |
-| Adminmetadata, växla mellan postens visnings-/adminmetadatavy  | Command, Shift, höger/vänster pil |
+| Adminmetadata, växla mellan postens visnings-/adminmetadatavy       | Command, Shift, höger/vänster pil |
 | Stäng ner pop up-fönster | Escape |
 | Välj ett element i pop up-fönster | Enter |
 | Välj/markera fler element i pop up-fönster | Command, Enter |
+
 
 
 
