@@ -10,18 +10,18 @@ tags:
 Då gränssnittet är datadrivet så har posternas visningsvy och en redigeringsvy för alla olika typer av resurser i stort sett samma disposition. 
 De övergripande element en post innehåller är: 
 
-  * Administrativ metadata (Adminmetadata)
+  * Administrativ metadata (adminmetadata)
   * Sammanfattning av resursen
   * Deskriptiv metadata
-  * Interaktionselement (i visning- och redigeringsvyn)
+  * Interaktionselement i visning- och redigeringsvyn
 
 
 ### Administrativ metadata
-För att se postens administrativa metadatan klickar man på Adminmetadata-knappen som visas i postvyn. Där visas en utfällbar sektion med Administrativ metadata som bland annat innehåller information om när beskrivningen skapades, vem som skapade den, vilka regler som den är beskriven med, samt om den ingår i en bibliografi.
+För att se postens administrativa metadata klickar man på adminmetadata-knappen som visas i postvyn. Där visas en utfällbar sektion med administrativ metadata som bland annat innehåller information om när beskrivningen skapades, vem som skapade den, vilka regler som den är beskriven med, samt om den ingår i en bibliografi.
 
 
 ### Sammanfattning av resursen
-För att snabbt kunna avläsa den viktigaste informationen i en post har alla poster en sammanfattning. Sammanfattningen innehåller resursens:
+För att snabbt kunna avläsa den viktigaste informationen i en post, har alla poster en sammanfattning. Sammanfattningen innehåller resursens:
 
   * Typ, exempelvis: Text, Manuskript, Person, Ämne.
   * Titel, namn eller annan föredragen benämning.

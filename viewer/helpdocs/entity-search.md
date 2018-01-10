@@ -33,7 +33,7 @@ Eftersom det nya katalogiseringsverktyget bygger på Länkad data finns det möj
 När du gjort din sökning kan du: 
 
 **Ersätta lokal entitet:**
-Om du får fram ett sökresultat där du identifierar en entitet att ersätta den lokala entiteten med, kan du välja “Ersätt lokal entitet” Det betyder att du ersätter all entitetsinformation som finns lokalt i entiteten med informationen i den länkade entiteten. Om du vill se den länkade posten i sin helhet, innan du avgör om du vill ersätta till den, kan du högerklicka på den och välja “Öppna i ny flik”. 
+Om du får fram ett sökresultat där du identifierar en entitet att ersätta den lokala entiteten med, kan du välja “Ersätt lokal entitet” Det betyder att du ersätter all entitetsinformation som finns lokalt i entiteten med informationen i den länkade entiteten. Om du vill se den länkade posten i sin helhet, innan du avgör om du vill ersätta till den, kan du  välja “Granska”. Posten öppnas då i ny flik. 
 
 **Skapa och länka entitet:** 
 Om du inte identifierar relevant entitet att ersätta med, kan du istället “Skapa och länka entitet”. Det betyder att du skapar en länk av din lokala entitet. All information från denne följer då med och blir till en egen post med ett eget ID. Efter att ha sparat posten kan du gå in i länken och redigera den i den nyskapade posten.
