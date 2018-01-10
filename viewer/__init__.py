@@ -412,7 +412,7 @@ def thingnewp():
 
 @app.route('/maintenance.html')
 def maintenance():
-    return app.send_static_file('maintenance.html')
+    return render_template('maintenance.html')
 
 @app.route('/sys/forcedsetterms.json')
 def forcedsetterms():
