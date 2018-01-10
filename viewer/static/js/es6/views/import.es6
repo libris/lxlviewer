@@ -5,7 +5,7 @@ import store from '../vuex/store';
 import EventMixin from '../components/mixins/global-event-mixin';
 import * as StringUtil from '../utils/string';
 import * as LayoutUtil from '../utils/layout';
-import remoteSearch from '../components/remote-search';
+import remoteSearch from '../components/search/remote-search';
 import { getSettings } from '../vuex/getters';
 import { changeSettings, changeStatus, changeNotification, loadVocabMap, loadContext, loadDisplayDefs } from '../vuex/actions';
 

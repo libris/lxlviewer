@@ -3,7 +3,7 @@ import * as httpUtil from './http';
 import * as DataUtil from './data';
 import * as VocabUtil from './vocab';
 import * as StringUtil from './string';
-import * as displayGroups from '../displayGroups.json';
+import * as displayGroups from '../../../resources/json/displayGroups.json';
 import moment from 'moment';
 import 'moment/locale/sv';
 moment.locale('sv');

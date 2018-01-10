@@ -5,7 +5,7 @@ import store from '../vuex/store';
 import EventMixin from '../components/mixins/global-event-mixin';
 import * as StringUtil from '../utils/string';
 import * as LayoutUtil from '../utils/layout';
-import UserSettingsApp from '../components/user-settings';
+import UserSettingsApp from '../components/usersettings/user-settings';
 import { getSettings, getStatus } from '../vuex/getters';
 import { changeSettings, changeStatus } from '../vuex/actions';
 

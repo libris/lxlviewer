@@ -1,4 +1,4 @@
-import PropertyMappings from '../propertymappings.json';
+import PropertyMappings from '../resources/json/propertymappings.json';
 import * as _ from 'lodash';
 
 export function getParameters() {

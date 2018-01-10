@@ -4,7 +4,7 @@ import Vuex from 'vuex';
 import store from '../vuex/store';
 import * as StringUtil from '../utils/string';
 import * as LayoutUtil from '../utils/layout';
-import CreateNewForm from '../components/create-new-form';
+import CreateNewForm from '../components/createnew/create-new-form';
 import EventMixin from '../components/mixins/global-event-mixin';
 import { getSettings, getVocabulary, getContext, getKeybindState } from '../vuex/getters';
 import { changeSettings, loadVocabMap, loadVocab, loadContext, changeStatus } from '../vuex/actions';
