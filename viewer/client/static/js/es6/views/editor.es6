@@ -9,9 +9,7 @@ import KeyBindings from '../../../resources/json/keybindings.json';
 import * as DataUtil from '../utils/data';
 import * as LayoutUtil from '../utils/layout';
 import * as httpUtil from '../utils/http';
-import * as toolbarUtil from '../utils/toolbar';
 import * as _ from 'lodash';
-// import * as VocabLoader from '../utils/vocabloader';
 import * as VocabUtil from '../utils/vocab';
 import * as DisplayUtil from '../utils/display';
 import * as RecordUtil from '../utils/record';
@@ -21,7 +19,6 @@ import FormComponent from '../components/editorcomponents/formcomponent';
 import EditorControls from '../components/editorcomponents/editorcontrols';
 import HeaderComponent from '../components/editorcomponents/headercomponent';
 import Notification from '../components/shared/notification';
-import ReverseRelations from '../components/editorcomponents/reverse-relations';
 import { getSettings, getVocabulary, getContext, getForcedListTerms, getVocabularyClasses, getVocabularyProperties, getDisplayDefinitions, getEditorData, getStatus, getKeybindState } from '../vuex/getters';
 import { updateForm, changeSettings, changeNotification, loadVocab, loadContext, loadVocabMap, loadForcedListTerms, loadDisplayDefs, syncData, changeSavedStatus, changeStatus, navigateChangeHistory } from '../vuex/actions';
 
@@ -47,13 +44,12 @@ export default class Editor extends View {
     } else {
       this.dataIn = textData;
     }
-
   }
 
   initVue() {
     const self = this;
 
-    document.getElementById('body-blocker').addEventListener('click', function () {
+    document.getElementById('body-blocker').addEventListener('click', () => {
       self.vm.$broadcast('close-modals');
     }, false);
 
@@ -108,9 +104,9 @@ export default class Editor extends View {
         newData: {},
       },
       events: {
-        'focus-update': function(value, oldValue) {
+        'focus-update'(value, oldValue) {
           const newData = this.editorData;
-          console.log("Update");
+          console.log('Update');
           if (oldValue === this.editorData.meta) {
             newData.meta = value;
           } else if (oldValue === this.editorData.thing) {
@@ -120,7 +116,7 @@ export default class Editor extends View {
           }
           this.syncData(newData);
         },
-        'add-linked': function(item) {
+        'add-linked'(item) {
           const newData = this.editorData;
           const graphId = RecordUtil.extractFnurgel(item['@id']) || item['@id'];
           const graphObj = {
@@ -168,27 +164,27 @@ export default class Editor extends View {
           }
           this.updateForm(this.status.editorFocus, modified, formData);
         },
-        'save-item': function(cancelEdit) {
+        'save-item'(cancelEdit) {
           if (this.status.inEdit) {
             this.saveItem(cancelEdit);
           }
         },
-        'show-marc': function() {
+        'show-marc'() {
           this.$broadcast('open-marc');
         },
-        'edit-item': function() {
+        'edit-item'() {
           if (!this.status.inEdit) {
             this.editItem();
           }
         },
-        'duplicate-item': function() {
+        'duplicate-item'() {
           if (!this.status.inEdit) {
             this.buildCopiedRecord();
             this.changeNotification('color', 'green');
             this.changeNotification('message', `${StringUtil.getUiPhraseByLang('Copy successful', this.settings.language)}!`);
           }
         },
-        'cancel-edit': function() {
+        'cancel-edit'() {
           this.changeStatus('inEdit', false);
           this.syncData(Object.assign({}, this.status.lastSavedData));
         },
@@ -310,9 +306,9 @@ export default class Editor extends View {
           if (VocabUtil.isSubClassOf(this.editorData.mainEntity['@type'], 'Work', this.vocab, this.settings.vocabPfx, this.context)) {
             RecordUtil.getRelatedPosts(this.editorData.record['@id'], 'instanceOf').then((response) => {
               _.each(response, (node) => {
-                console.log("Extracting title from", node);
+                console.log('Extracting title from', node);
                 this.extractTitle(node).then((titleArray) => {
-                  console.log("Extracted", titleArray);
+                  console.log('Extracted', titleArray);
                   const displayTitles = [];
                   _.each(titleArray, (title) => {
                     const chipObj = DisplayUtil.getChip(title, this.display, this.editorData.quoted, this.vocab, this.settings, this.context);
@@ -330,14 +326,11 @@ export default class Editor extends View {
         },
         extractTitle(id) {
           return new Promise((resolve, reject) => {
-            console.log("Getting", id);
             httpUtil.get({ url: `${id}/data.jsonld`, accept: 'application/ld+json' }).then((response) => {
-              console.log("Found", id);
               const mainEntity = RecordUtil.getMainEntity(response['@graph']);
-              console.log("mainEntity found", mainEntity);
               resolve(mainEntity.hasTitle);
             }, (error) => {
-              reject(Error('Something failed', error));
+              reject(error);
             });
           });
         },
@@ -475,7 +468,6 @@ export default class Editor extends View {
         'header-component': HeaderComponent,
         'notification': Notification,
         'marc-preview': MarcPreview,
-        'reverse-relations': ReverseRelations,
       },
       store,
     });

@@ -8,13 +8,10 @@ import * as StringUtil from '../utils/string';
 import * as LayoutUtil from '../utils/layout';
 import ServiceWidgetSettings from '../../../resources/json/serviceWidgetSettings.json';
 import Copy from '../../../resources/json/copy.json';
-import MainSearchField from '../components/search/main-search-field';
 import FacetControls from '../components/search/facet-controls';
 import SearchResultComponent from '../components/search/search-result-component';
-import EntitySearchList from '../components/search/entity-search-list';
 import SearchForm from '../components/search/search-form';
 import DatasetObservations from '../components/search/dataset-observations';
-import LandingBox from '../components/search/landing-box';
 import LinkCardComponent from '../components/search/link-card-component';
 import IntroComponent from '../components/search/intro-component';
 import { getSettings, getStatus } from '../vuex/getters';
@@ -163,13 +160,10 @@ export default class PagedCollection extends View {
         }
       },
       components: {
-        'main-search-field': MainSearchField,
         'facet-controls': FacetControls,
         'search-result-component': SearchResultComponent,
-        'entity-search-list': EntitySearchList,
         'search-form': SearchForm,
         'dataset-observations': DatasetObservations,
-        'landing-box': LandingBox,
         'intro-component': IntroComponent,
         'link-card': LinkCardComponent,
       },

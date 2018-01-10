@@ -8,7 +8,7 @@ import * as StringUtil from '../../utils/string';
 import * as _ from 'lodash';
 
 export default {
-  name: 'landing-box',
+  name: 'release-feed',
   vuex: {
     getters: {
       settings: getSettings,

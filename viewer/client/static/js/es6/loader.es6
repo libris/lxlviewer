@@ -1,5 +1,4 @@
 import View from './views/view';
-import Thing from './views/thing';
 import Editor from './views/editor';
 import Vocab from './views/vocab';
 import PagedCollection from './views/pagedcollection';
@@ -23,7 +22,6 @@ export default class Loader {
     // Creates instances of our different classes.
     // TODO: Should probably be done on demand.
     this.baseView = new View('Base');
-    this.createView(new Thing('Thing'));
     this.createView(new Editor('Editor'));
     this.createView(new Vocab('Vocab'));
     this.createView(new PagedCollection('PagedCollection'));

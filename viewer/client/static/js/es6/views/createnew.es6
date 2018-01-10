@@ -20,8 +20,6 @@ export default class CreateNew extends View {
     });
     super.initialize();
     this.activeForm = '';
-    this.transition = false;
-    this.language = 'sv';
   }
 
   initVue() {

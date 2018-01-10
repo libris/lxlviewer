@@ -20,10 +20,6 @@ export default class UserSettings extends View {
   initVue() {
     const self = this;
 
-    document.getElementById('body-blocker').addEventListener('click', function () {
-      self.vm.$broadcast('close-modals');
-    }, false);
-
     Vue.filter('labelByLang', (label) => {
       return StringUtil.getLabelByLang(label, self.settings.language, self.vocabMap, self.settings.vocabPfx, self.context);
     });
@@ -55,9 +51,6 @@ export default class UserSettings extends View {
       watch: {
       },
       methods: {
-        showHelp() {
-          this.$dispatch('show-help', '');
-        },
       },
       computed: {
       },

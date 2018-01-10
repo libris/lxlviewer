@@ -19,9 +19,6 @@ export default class Import extends View {
       window.lxlError(error);
     });
     super.initialize();
-    this.activeForm = '';
-    this.transition = false;
-    this.params = window.urlArgs;
   }
 
   initVue(vocab, vocabPfx, params) {
@@ -75,7 +72,7 @@ export default class Import extends View {
       },
       components: {
         'remote-search': remoteSearch,
-      
+
       },
       store,
       ready() {

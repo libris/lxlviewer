@@ -22,10 +22,6 @@ export default class About extends View {
 
     Vue.use(Vuex);
 
-    Vue.filter('translatePhrase', (string) => {
-      return StringUtil.getUiPhraseByLang(string, self.settings.language);
-    });
-
     self.vm = new Vue({
       el: '#help',
       mixins: [EventMixin],

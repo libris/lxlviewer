@@ -234,7 +234,7 @@ export default {
 <template>
   <div class="form-component focused-form-component" :class="{ 'locked': isLocked }" v-show="isActive">
     <div class="data-node-container" v-bind:class="{'collapsed': collapsed }">
-      <data-node v-for="(k,v) in sortedFormData" v-bind:class="{ 'locked': isLocked }" :entity-type="editorData[editingObject]['@type']" :is-inner="false" :is-removable="true" :is-locked="keyIsLocked(k)" :key="k" :value="v" :allow-local="true"></data-node>
+      <data-node v-for="(k,v) in sortedFormData" v-bind:class="{ 'locked': isLocked }" :entity-type="editorData[editingObject]['@type']" :is-inner="false" :is-removable="true" :is-locked="keyIsLocked(k)" :key="k" :value="v"></data-node>
       <div id="result" v-if="status.isDev && !isLocked">
         <div class="row">
         <pre class="col-md-6">

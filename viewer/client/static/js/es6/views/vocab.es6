@@ -1,5 +1,4 @@
 import View from './view';
-import * as StringUtil from '../utils/string';
 
 function setActive(item) {
   let itemOrg = item;
@@ -14,7 +13,6 @@ function setActive(item) {
   $('body').scrollTop($(itemNew).offset().top - 100);
   $(itemNew).addClass('active-item');
 }
-
 
 export default class Vocab extends View {
 

@@ -29,7 +29,6 @@ export default {
     'key',
     'value',
     'isLocked',
-    'allow-local',
     'embedded',
     'is-removable',
     'isInner',
@@ -91,12 +90,6 @@ export default {
     isObjectArray() {
       return _.isPlainObject(this.valueAsArray[0]);
     },
-    propAllowsLocal() {
-      if (this.settings.disallowLocal.indexOf(this.key) === -1) {
-        return true;
-      }
-      return false;
-    },
     linkedIds() {
       const ids = [];
       for (const obj of this.valueAsArray) {
@@ -151,10 +144,6 @@ export default {
         this.settings.vocabPfx,
         this.context
       );
-    },
-    isExpandedType() {
-      const expandKeys = this.settings.expandKeys;
-      return expandKeys.indexOf(this.key) !== -1;
     },
     hasSingleValue() {
       if (!_.isArray(this.value) || this.value.length === 1) {
@@ -315,7 +304,7 @@ export default {
       return VocabUtil.isEmbedded(type, this.vocab, this.settings);
     },
     isChip(item) {
-      if (((this.getDatatype(item) == 'entity') && !this.isExpandedType)) {
+      if (((this.getDatatype(item) == 'entity'))) {
         this.foundChip = true;
         return true;
       }
@@ -341,7 +330,7 @@ export default {
         <i class="fa fa-question-circle"></i>
         <div class="comment">{{ propertyComment }}</div>
       </div>
-      <entity-adder v-show="!locked && isRepeatable && (isInner && !isEmptyObject)" :key="key" :already-added="linkedIds" :entity-type="entityType" :property-types="propertyTypes" :allow-local="allowLocal && propAllowsLocal" :show-action-buttons="showActionButtons" :active="activeModal" :is-placeholder="true" :value-list="valueAsArray"></entity-adder>
+      <entity-adder v-show="!locked && isRepeatable && (isInner && !isEmptyObject)" :key="key" :already-added="linkedIds" :entity-type="entityType" :property-types="propertyTypes" :show-action-buttons="showActionButtons" :active="activeModal" :is-placeholder="true" :value-list="valueAsArray"></entity-adder>
     </div>
     <div v-if="isInner" class="actions">
       <div class="action" v-show="!locked" :class="{'disabled': activeModal}">
@@ -358,8 +347,8 @@ export default {
       <li v-for="item in valueAsArray" :class="{ 'isChip': isChip(item)}" track-by="_uid">
         <item-error v-if="getDatatype(item) == 'error'" :item="item"></item-error>
         <item-vocab v-if="getDatatype(item) == 'vocab'" :is-locked="locked" :key="key" :value="item" :entity-type="entityType" :index="$index"></item-vocab>
-        <item-entity v-if="getDatatype(item) == 'entity'" :is-locked="locked" :expanded="isExpandedType" :item="item" :key="key" :index="$index"></item-entity>
-        <item-local v-if="getDatatype(item) == 'local'" :is-locked="locked" :is-expanded-type="isExpandedType" :entity-type="entityType" :item="item" :key="key" :index="$index" :parent-path="getPath" :in-array="valueIsArray" :show-action-buttons="showActionButtons"></item-local>
+        <item-entity v-if="getDatatype(item) == 'entity'" :is-locked="locked" :item="item" :key="key" :index="$index"></item-entity>
+        <item-local v-if="getDatatype(item) == 'local'" :is-locked="locked" :entity-type="entityType" :item="item" :key="key" :index="$index" :parent-path="getPath" :in-array="valueIsArray" :show-action-buttons="showActionButtons"></item-local>
       </li>
     </ul>
     <ul v-if="!isObjectArray">
@@ -368,7 +357,7 @@ export default {
         <item-value v-if="getDatatype(item) == 'value'" :is-removable="!hasSingleValue" :is-locked="locked" :value="item" :key="key" :index="$index" :show-action-buttons="showActionButtons"></item-value>
       </li>
     </ul>
-    <entity-adder class="action" v-show="!locked && (isRepeatable || isEmptyObject) && (!isInner || (isInner && isEmptyObject))" :key="key" :already-added="linkedIds" :entity-type="entityType" :property-types="propertyTypes" :allow-local="allowLocal && propAllowsLocal" :show-action-buttons="showActionButtons" :active="activeModal" :is-placeholder="false" :value-list="valueAsArray"></entity-adder>
+    <entity-adder class="action" v-show="!locked && (isRepeatable || isEmptyObject) && (!isInner || (isInner && isEmptyObject))" :key="key" :already-added="linkedIds" :entity-type="entityType" :property-types="propertyTypes" :show-action-buttons="showActionButtons" :active="activeModal" :is-placeholder="false" :value-list="valueAsArray"></entity-adder>
   </div>
   <div v-if="!isInner" class="actions">
     <div class="action" v-show="!locked" :class="{'disabled': activeModal}">
