@@ -3,7 +3,7 @@ import * as _ from 'lodash';
 import * as LayoutUtil from '../../utils/layout';
 import { getStatus } from '../../vuex/getters';
 import { changeStatus } from '../../vuex/actions';
-import * as helpdocsJson from '../../../../../helpdocs/helpdocs';
+import * as helpdocsJson from '../../../../../../helpdocs/helpdocs';
 
 export default {
   name: 'help-component',

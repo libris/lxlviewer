@@ -1,13 +1,13 @@
 # Cached Data and Packages
 /cache
-/viewer/node_modules
-/viewer/bower_components
+/viewer/client/node_modules
+/viewer/client/bower_components
 
 # Generated Files
 /build
-/viewer/static/build
+/viewer/client/static/build
 /viewer/test/e2e/bin
-/viewer/static/vendor
+/viewer/client/static/vendor
 
 # Local App Config
 /instance/config.cfg

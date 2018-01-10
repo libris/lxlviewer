@@ -54,10 +54,10 @@ function timestamp() {
 };
 
 function markdown() {
-  gulp.src('./helpdocs/**/*.md')
+  gulp.src('../helpdocs/**/*.md')
     .pipe(gutil.buffer())
     .pipe(markdownToJSON(marked, 'helpdocs.json'))
-    .pipe(gulp.dest('./helpdocs/'))
+    .pipe(gulp.dest('../helpdocs/'))
 }
 
 function watch() {
