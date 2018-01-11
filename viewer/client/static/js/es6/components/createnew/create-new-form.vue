@@ -1,7 +1,7 @@
 <script>
 import * as _ from 'lodash';
-import * as CombinedTemplates from '../../templates/combinedTemplates.json';
-import * as BaseTemplates from '../../templates/baseTemplates.json';
+import * as CombinedTemplates from '../../../../resources/json/combinedTemplates.json';
+import * as BaseTemplates from '../../../../resources/json/baseTemplates.json'; 
 import * as VocabUtil from '../../utils/vocab';
 import * as StringUtil from '../../utils/string';
 import CreationCard from './creation-card';
