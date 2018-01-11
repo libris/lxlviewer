@@ -11,14 +11,13 @@ tags:
 
 # Tryckt monografi RDA
 
-[Extern länk till MARC21-anpassad information](http://www.kb.se/rdakatalogisering/Anvisningar/Arbetsfloden/Tryckta-monografier/)
-
 _Arbetsflödet är under arbete._
 
-**Element tillhörande instans/manifestation:**
+[Extern länk till MARC21-anpassad information](http://www.kb.se/rdakatalogisering/Anvisningar/Arbetsfloden/Tryckta-monografier/)
+
+**Element tillhörande instans/manifestation**
 
 * Föredragen källa för beskrivningen
-
 * Utgivningssätt
 * Har titel
   * Titel
@@ -61,7 +60,7 @@ _Arbetsflödet är under arbete._
 
 ---
 
-## Föredragen källa
+## Föredragen källa för beskrivningen
 
 Börja med den information som finns på titelsidan (RDA 2.1.2.2 och RDA 2.2.2.2).
 
