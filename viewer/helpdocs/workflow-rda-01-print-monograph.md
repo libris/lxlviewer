@@ -42,8 +42,6 @@ tags:
 * Anmärkning
 * Teckengrad
 
-(Datum från 008 återstår)
-
 **Element tillhörande verk/uttryck**
 
 * Innehållstyp
