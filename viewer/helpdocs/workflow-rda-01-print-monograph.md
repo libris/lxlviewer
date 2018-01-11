@@ -86,7 +86,7 @@ Se RDA 2.13
 
 ## Titel
 
-**OBS! Detta arbetsflöde är under arbete**
+_Arbetsflödet är under arbete._
 
 ## Upphovsuppgift
 
