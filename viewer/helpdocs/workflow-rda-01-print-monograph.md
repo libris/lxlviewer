@@ -125,7 +125,7 @@ När kunskap finns, ska summeringen vara på resursens språk.
 
 `Knut Sydsæter [and three others]`
 
-**OBS! Detta arbetsflöde är under arbete**
+_Arbetsflödet är under arbete._
 
 ## Identifikator
 
