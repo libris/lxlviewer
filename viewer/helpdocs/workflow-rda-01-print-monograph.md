@@ -13,12 +13,11 @@ tags:
 
 [Extern länk till MARC21-anpassad information](http://www.kb.se/rdakatalogisering/Anvisningar/Arbetsfloden/Tryckta-monografier/)
 
-**OBS! Detta arbetsflöde är under arbete**
+_Arbetsflödet är under arbete._
 
 **Element tillhörande instans/manifestation:**
 
 * Föredragen källa för beskrivningen
-
 
 * Utgivningssätt
 * Har titel
@@ -53,7 +52,7 @@ tags:
 * Typ av notation (t.ex. skriftart)
 * Illustrativt innehåll
 
-**Relationer:**
+**Relationer**
 
 * Ämnesord och klassifikation
 * Sökingångar för personer, familjer/släkter, institutioner
@@ -103,12 +102,13 @@ Endast upphovsuppgifter som hämtas från en källa utanför resursen ska klamra
 Återge upphovsuppgiften som den förekommer i källan, RDA 2.4.1.4.
 I RDA 2.4.1.4 finns en valfri uteslutning som gör det möjligt att förkorta omfångsrika upphovsuppgifter men bara om det kan göras utan att värdefull information förloras. Librispraxis är att generellt inte förkorta upphovsuppgifter.
 
-
 `Kiki Lundberg och Carina Trägårdh Tornhill ; faktagranskare: Eva Skoog, leg. dietist, Lisa Lundmark, leg. dietist och Elisabeth Nilsson, leg. sjuksköterska ; fotografi: Helén Sahlstrand, Härlig hälsa, Istock, Shutterstock`
 
 Se RDA 2.4
 
 ### Upphovsuppgift med mer än en namngiven agent
+
+_Arbetsflödet är under arbete._
 
 Återge varje enskild upphovsuppgift som ett element oavsett om två eller flera personer etc. som omnämns har samma eller olika funktioner, RDA 2.4.1.5.
 
@@ -125,13 +125,11 @@ När kunskap finns, ska summeringen vara på resursens språk.
 
 `Knut Sydsæter [and three others]`
 
-_Arbetsflödet är under arbete._
-
 ## Identifikator
 
-Identifikatorn är en teckensträng som är knuten till en resurs och ska användas för att särskilja resursen från andra.
+_Arbetsflödet är under arbete._
 
-**OBS! Detta arbetsflöde är under arbete**
+Identifikatorn är en teckensträng som är knuten till en resurs och ska användas för att särskilja resursen från andra.
 
   * Lägg till Identifikator
   * Välj:  ISBN
