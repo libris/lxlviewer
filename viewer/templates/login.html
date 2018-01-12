@@ -5,20 +5,20 @@
 <div class="panel panel-default">
   <div class="panel-body container-fluid">
     <div class="row">
-      <div class="col-md-8 col-md-offset-2">
+      <div class="col-md-10 col-md-offset-1">
+        <h1>Logga in</h1>
+        <div class="login-info-panel">
+          <ul class="">
+            <li>- För att logga in i Libris katalogiseringstjänst måste du godkänna autentiseringen i <a href="https://login.libris.kb.se/">Libris Login</a></li>
+            <li>- När kopplingen är genomförd skickas du tillbaka till Libris katalogiseringstjänst.</li>
+            <li>- Om du saknar inloggningsrättigheter kan du kontakta <a href="mailto:libris@kb.se">Libris kundservice</a>.</li>
+          </ul>
+        </div>
         <div id="oauth-login-buttons">
             {% if msg %}
               <div class="well status-text error"><i class="icon fa fa-lg fa-warning" aria-hidden="true"></i> ${ msg }</div>
             {% endif %}
-            <a href="/login/authorize" href="_target" class="btn btn-login">Logga in med Libris Login</a>
-        </div>
-        <div class="panel panel-default dash orange login-info-panel">
-          <span class="circle"><i class="icon fa fa-key" aria-hidden="true"></i></span>
-          <ul class="">
-            <li>Godkänn autentiseringen till Libris Login när du loggar in.</li>
-            <li>När kopplingen är genomförd skickas du tillbaka till tjänsten.</li>
-            <li>Om du saknar inloggningsrättigheter kan du kontakta <a href="mailto:libris@kb.se">Libris kundservice</a>.</li>
-          </ul>
+            <a href="/login/authorize" href="_target" class="btn btn-info btn-login">Logga in med Libris Login</a>
         </div>
       </div>
     </div>
