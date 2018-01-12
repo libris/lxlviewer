@@ -19,6 +19,7 @@ export default class CreateNew extends View {
       window.lxlError(error);
     });
     super.initialize();
+    window.currentView = this;
     this.activeForm = '';
   }
 

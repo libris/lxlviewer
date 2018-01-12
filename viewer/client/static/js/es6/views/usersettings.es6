@@ -14,6 +14,7 @@ export default class UserSettings extends View {
 
   initialize() {
     super.initialize();
+    window.currentView = this;
     this.initVue();
   }
 

@@ -14,8 +14,8 @@ export default {
   },
   events: {
     'track-event'(action, name) {
-      const category = window.loadHandler.getCurrentView().name;
-      window.loadHandler.getCurrentView().trackEvent(category, action, name);
+      const category = document.body.id;
+      window.currentView.trackEvent(category, action, name);
     },
     'show-help': function(value) {
       this.$dispatch('track-event', 'click', 'help');
@@ -25,7 +25,7 @@ export default {
       this.changeStatus('helpSection', value);
     },
     'set-dirty'(b) {
-      window.loadHandler.getCurrentView().dirty = b;
+      this.dirty = b;
     },
   },
 };

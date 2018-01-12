@@ -13,6 +13,7 @@ export default class About extends View {
 
   initialize() {
     super.initialize();
+    window.currentView = this;
     const self = this;
     self.initVue();
   }

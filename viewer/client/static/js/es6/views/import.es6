@@ -19,6 +19,7 @@ export default class Import extends View {
       window.lxlError(error);
     });
     super.initialize();
+    window.currentView = this;
   }
 
   initVue(vocab, vocabPfx, params) {

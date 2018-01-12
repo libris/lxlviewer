@@ -13,6 +13,7 @@ export default class View {
   constructor(name) {
     this.name = name;
     this.lxlDebug = true;
+    window.currentView = this;
     this.settings = {
       // vocabPfx: 'kbv:',
       vocabPfx: 'https://id.kb.se/vocab/',

@@ -32,6 +32,7 @@ export default class Editor extends View {
       window.lxlError(error);
     });
     super.initialize();
+    window.currentView = this;
     // VocabLoader.initVocabClicks();
     // toolbarUtil.initToolbar(this);
 

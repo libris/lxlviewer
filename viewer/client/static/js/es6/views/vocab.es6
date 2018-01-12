@@ -18,6 +18,7 @@ export default class Vocab extends View {
 
   initialize() {
     super.initialize();
+    window.currentView = this;
     document.title = `Vocabulary - ${this.settings.siteInfo.title}`;
 
     function accept(id) { return id.indexOf(':') === -1; }

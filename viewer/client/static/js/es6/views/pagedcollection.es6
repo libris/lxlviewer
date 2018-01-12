@@ -27,6 +27,7 @@ export default class PagedCollection extends View {
       window.lxlError(error);
     });
     super.initialize();
+    window.currentView = this;
     this.dataIn = JSON.parse(document.getElementById('data').innerText);
   }
 
