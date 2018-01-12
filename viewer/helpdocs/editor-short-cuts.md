@@ -21,7 +21,8 @@ För att underlätta arbetet har vi integrerat ett antal kortkommandon för PC r
 | Ångra, ångra dina senaste ändringar i redigeringsläge	| 			Control + Z		  |  
 | Spara, spara post utan att lämna redigeringsläget   | Control + S |
 | Klar, spara post och gå till visningsläge | Control + D |
-| Expandera/minimera alla fält i post 		|						Alt (+) + (Expandera) Alt (+) - (Minimera)  										  |
+| Expandera alla fält i post 		|						Alt (+) +                 |
+| Kollapsa alla fält i post | Alt (+) -   										  |
 | Adminmetadata, växla mellan postens visnings-/adminmetadatavy    |Control + Shift + höger/vänster pil   	  |
 | Stäng ner pop up-fönster | Escape |
 | Välj ett element i pop up-fönster | Enter |
@@ -40,7 +41,8 @@ För att underlätta arbetet har vi integrerat ett antal kortkommandon för PC r
 | Ångra, ångra dina senaste ändringar i redigeringsläge | Command + Z |
 | Spara, spara post utan att lämna redigeringsläget   | Command + S  |
 | Klar, spara post och gå till visningsläge | Command + D |
-| Expandera/minimera alla fält i post | Alt (+) + (Expandera) Alt (+) - (Minimera) |
+| Expandera alla fält i post 		|						Alt (+) +                 |
+| Kollapsa alla fält i post | Alt (+) -   										  |
 | Adminmetadata, växla mellan postens visnings-/adminmetadatavy       | Command + Shift + höger/vänster pil |
 | Stäng ner pop up-fönster | Escape |
 | Välj ett element i pop up-fönster | Enter |
