@@ -51,6 +51,6 @@ För att underlätta arbetet har vi integrerat ett antal kortkommandon för PC r
 
 
 
-## Övrigt
+# Övrigt
 I övrigt kan du som alltid använda upp och ner-piltangenterna för att scrolla i posten. Du kan även tabba för att gå emellan alla fälten i en post, dock måste alla fält då vara utfällda. 
   
