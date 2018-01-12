@@ -183,6 +183,9 @@ export default {
             }
           }
         }
+        tbody td, tbody th {
+          vertical-align: top;
+        }
       }
     }
   }

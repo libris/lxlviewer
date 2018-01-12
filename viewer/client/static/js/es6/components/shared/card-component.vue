@@ -78,6 +78,7 @@ export default {
   .card-info-container {
     width: 100%;
     background-color: @white;
+    .card-mixin(@brand-primary, @white);
     &.floating {
       width: 600px;
       margin: 0 0 0 2.1em;

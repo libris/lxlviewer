@@ -2,15 +2,13 @@
 @import '../shared/vocab.less';
 @import '../shared/edit.less';
 @import '../shared/graph.less';
-@import '../shared/thing.less';
 @import '../shared/items.less';
 @import '../shared/marcframe.less';
-@import '../shared/search.less';
-@import '../shared/article.less';
 @import '../shared/panel.less';
 @import '../shared/navbar.less';
 @import '../shared/login.less';
 @import '../shared/button-and-links.less';
+@import '../../js/es6/components/shared/_variables.less';
 
 // ----------- BASE STYLES ----------
 
@@ -34,9 +32,6 @@ html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-y: scroll;
-}
-
-html {
   &.ie11 {
     main {
       margin-bottom: 75vh;
@@ -58,6 +53,7 @@ html {
 }
 
 main {
+  margin-top: 30px;
   margin-bottom: 100px;
 }
 
@@ -95,29 +91,24 @@ body {
   height: 100vh;
   display: flex;
   flex-direction: column;
-}
+  .facet-container {
+    opacity: 1;
+    transition: 0.3s ease width 0s, 0.3s ease opacity 0.3s;
+    &.facet-hidden {
+      width: 0%;
+      opacity: 0;
+    }
+  }
 
-body.loading * {
-  cursor: progress;
-}
+  .search-content-container {
+    transition: 0.3s ease width;
+  }
 
-
-.dropdown-menu.list-inline {
-  width: 42em;
-}
-.dropdown-menu.list-inline > li > a {
-  padding: 2px 8px;
-}
-
-tbody td, tbody th {
-  vertical-align: top;
-}
-
-.has-navbar [id]:before {
-  display: block;
-  content: " ";
-  height: 50px;
-  margin-top: -50px;
+  .link-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15vh;
+  }
 }
 
 h2 {
@@ -179,38 +170,73 @@ footer {
   }
 }
 
-.popover.state-active {
-  display: block;
-  width: 460px;
-  max-width: 460px;
-  z-index: 990;
-  .panel-body {
-    max-height: 400px;
-    overflow: hidden;
-    overflow-y: auto;
+
+#page-content-wrapper {
+  opacity: 0;
+  transition: opacity 0.3s ease-out 0.3s;
+  &.show-content {
+    opacity: 1;
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
   }
-}
-.badge {
-  background-color: fadeout(@brand-primary, 30%);
-  font-weight: 300;
 }
 
-.rdf-class, .rdf-property {
-  margin: 0 1.0em 0.6em 0;
-  float: left;
+@sweep-color: #ddd;
+@skeleton-z: 1111;
+
+.skeleton-page {
+  position: fixed;
   width: 100%;
-  max-width: 800px;
-  .loc {
-    .chip-prop {
-      display: inline;
-      line-height: 1.7;
+  z-index: @skeleton-z;
+  opacity: 1;
+  transition: opacity 0.3s ease 0s, width 0s ease 0.3s;
+  &.hide-skeleton {
+    opacity: 0;
+    width: 0%;
+    > .skeleton-container {
+      width: 0;
+      padding: 0;
     }
-    .chip-class {
-      display: inline;
-      line-height: 1.7;
+  }
+  .skeleton-container {
+    transition: width 0s ease 0.3s, padding 0s ease 0.3s;
+    margin-top: 15vh;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    background: @white;
+    > div {
+      height: 75vh;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      background-color: @sweep-color;
+      background-image: linear-gradient(100deg , @sweep-color 40%, #eee 50%, @sweep-color 60%);
+      background-size: 200px 1000px;
+      background-repeat: no-repeat;
+      animation: shine 1.5s infinite;
+      background-position: -200px 0;
+      overflow: hidden;
+      > div {
+        border-color: @white;
+        border-style: solid;
+        background: transparent;
+        border-width: 8px 0;
+        min-height: 40px;
+      }
     }
   }
 }
+
+// keyframe for skeleton animation
+@keyframes shine {
+  to {
+    background-position:
+      1200px 0;
+  }
+}
+
 
 a {
   color: @link-color;
@@ -222,43 +248,6 @@ a {
   }
 }
 
-.dash {
-  border-top: 5px solid @grey-dark;
-  position:relative;
-  margin-bottom: 30px;
-}
-.dash .circle {
-  width:38px;
-  height:38px;
-  display:block;
-  position:absolute;
-  left:50%;
-  margin-left:-19px;
-  top:-21px;
-  border-radius: 19px;
-  -moz-border-radius: 19px;
-  -webkit-border-radius: 19px;
-  .icon {
-    display:block;
-    text-align:center;
-    line-height:38px;
-    color:@white;
-    font-size:20px;
-    padding-left:1px;
-  }
-}
-.dash.orange {
-  border-top-color: @orange;
-}
-.dash.orange .circle {
-  background-color: @orange;
-}
-.dash.green {
-  border-top-color: @green;
-}
-.dash.green .circle {
-  background-color: @green;
-}
 
 // ----------- BUTTONS ----------------
 button, .btn-primary, .btn-primary:hover, .btn-primary:focus {

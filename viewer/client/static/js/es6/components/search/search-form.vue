@@ -280,8 +280,10 @@ export default {
         padding: 20px;
         .search-input {
             height: 44px;
+            min-width: 75%;
         }
         .search-button {
+            min-width: 20%;
             height: 42px;
         }
         .form-group {
