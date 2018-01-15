@@ -23,7 +23,7 @@ För att underlätta arbetet har vi integrerat ett antal kortkommandon för PC r
 | Klar, spara post och gå till visningsläge | Control + D |
 | Expandera alla fält i post 		|						Alt (+) +                 |
 | Kollapsa alla fält i post | Alt (+) -   										  |
-| Adminmetadata, växla mellan postens visnings-/adminmetadatavy    |Control + Shift + höger/vänster pil   	  |
+| Adminmetadata, gå mellan postens visnings-/adminmetadatavy    |Control + Shift + höger/vänster pil   	  |
 | Stäng ner pop up-fönster | Escape |
 | Välj ett element i pop up-fönster | Enter |
 | Välj/markera fler element i pop up-fönster | Control + Enter |
@@ -43,7 +43,7 @@ För att underlätta arbetet har vi integrerat ett antal kortkommandon för PC r
 | Klar, spara post och gå till visningsläge | Command + D |
 | Expandera alla fält i post 		|						Alt (+) +                 |
 | Kollapsa alla fält i post | Alt (+) -   										  |
-| Adminmetadata, växla mellan postens visnings-/adminmetadatavy       | Command + Shift + höger/vänster pil |
+| Adminmetadata, gå mellan postens visnings-/adminmetadatavy       | Command + Shift + höger/vänster pil |
 | Stäng ner pop up-fönster | Escape |
 | Välj ett element i pop up-fönster | Enter |
 | Välj/markera fler element i pop up-fönster | Command + Enter |
