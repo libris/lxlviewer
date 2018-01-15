@@ -69,6 +69,7 @@ export default {
 
 <template>
   <div class="panel-body container-fluid settings-container">
+    <h1>{{'Settings' | translatePhrase}}</h1>
     <div class="info-box">
       <div class="user-gravatar">
         <img v-bind:src="`https://www.gravatar.com/avatar/${user.emailHash}?d=mm&s=150`" /><br/>
@@ -130,6 +131,15 @@ export default {
   flex-wrap: wrap;
   flex-direction: row;
   justify-content: space-between;
+  h1 {
+    flex: 100% 1 1;
+    font-weight: 400;
+    font-size: 30px;
+    margin-top: 0;
+  }
+  h3 {
+    font-size: 16px;
+  }
   .info-box {
     flex-grow: 1;
     min-width: 250px;
