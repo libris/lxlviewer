@@ -15,7 +15,7 @@
   "ISBN": {
     "@type": "ISBN",
     "value": "",
-    "note": [""]
+    "qualifier": [""]
   },
   "ISMN": {
     "@type": "ISMN",

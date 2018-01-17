@@ -31,7 +31,7 @@
           "identifiedBy": [{
             "@type": "ISBN",
             "value": "",
-            "note": ""
+            "qualifier": ""
           }],
           "editionStatement": "",
           "editionStatementRemainder": "",
@@ -190,7 +190,7 @@
           "identifiedBy": [{
             "@type": "ISBN",
             "value": "",
-            "note": ""
+            "qualifier": ""
           }],
           "editionStatement": "",
           "editionStatementRemainder": "",
@@ -597,7 +597,7 @@
           "identifiedBy": [{
             "@type": "ISBN",
             "value": "",
-            "note": ""
+            "qualifier": ""
           }],
           "editionStatement": "",
           "editionStatementRemainder": "",
