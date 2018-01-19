@@ -8,7 +8,7 @@ Requires the following to be installed on the host machine:
 * [Pip](https://pip.pypa.io/) (commonly installed along with Python on modern distros)
 
 (It is recommended to create a virtualenv for hosting self-contained Python
-environments.)
+environments)
 
 Run:
 
