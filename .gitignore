@@ -13,6 +13,7 @@
 /instance/config.cfg
 
 # Common OS, Tool and Editor Files
+.vscode/*
 .*.sw*
 .DS_Store
 npm-debug.log
