@@ -32,6 +32,121 @@ export function getForcedListTerms() {
   });
 }
 
+export function getTermObject(term, vocab, vocabPfx, context) {
+  // Returns a class object
+  if (!term || typeof term === 'undefined') {
+    throw new Error('getTermObject was called with an undefined Id.');
+  }
+  if (_.isObject(term)) {
+    throw new Error('getTermObject was called with an object (should be a string).');
+  }
+  if (term.indexOf('@') !== -1) {
+    return {};
+  }
+  const tries = [];
+  let cn = term;
+  let _class = vocab.get(cn);
+  tries.push(cn);
+
+  if (!_class && term.indexOf('://') === -1) {
+    cn = `${vocabPfx}${term}`;
+    _class = vocab.get(cn);
+    tries.push(cn);
+  }
+  if (!_class && term.indexOf('://') > -1) {
+    // Try to get with Prefix
+    cn = StringUtil.convertToPrefix(term, context);
+    if (cn[0] !== ':') {
+      _class = vocab.get(cn);
+      tries.push(cn);
+    }
+  } else if (!_class && term.indexOf(':') > -1) {
+    // Try to get with baseUri
+    cn = StringUtil.convertToBaseUri(term, context);
+    if (cn[0] !== ':') {
+      _class = vocab.get(cn);
+      tries.push(cn);
+    }
+  }
+
+  if (!_class) {
+    window.lxlWarning('Term object not found:', term, '| Tried the following:', tries);
+  }
+  return _class;
+}
+
+
+export function getBaseClasses(classId, vocab, vocabPfx, context) {
+  // Traverses up subClassOf properties and returns a list of all classes found
+
+  if (!classId || typeof classId === 'undefined') {
+    throw new Error('getBaseClasses was called with an undefined Id.');
+  }
+
+  let classList = [];
+  const termObj = getTermObject(classId, vocab, vocabPfx, context);
+  if (typeof termObj === 'undefined') {
+    return _.uniq(classList);
+  }
+  classList.push(termObj['@id']);
+  if (termObj && termObj.hasOwnProperty('subClassOf')) {
+    termObj.subClassOf.forEach(obj => {
+      if (typeof obj['@type'] === 'undefined') {
+        if (obj['@id']) {
+          const baseClass = getTermObject(obj['@id'], vocab, vocabPfx, context);
+          if (baseClass) {
+            classList = classList.concat(getBaseClasses(baseClass['@id'], vocab, vocabPfx, context));
+            classList.push(baseClass['@id']);
+          }
+        }
+      }
+    });
+  }
+  // console.log("getBaseClasses(" + JSON.stringify(classId) + ")", JSON.stringify(classList));
+  return _.uniq(classList);
+}
+
+export function getBaseClassesFromArray(typeArray, vocab, vocabPfx, context) {
+  // Find the base classes from the types in typeArray and return a list of IDs.
+  if (!typeArray || typeArray.length === 0) {
+    throw new Error('getBaseClassesFromArray was called without types');
+  }
+  const types = [].concat(typeArray);
+
+  let classes = [];
+  for (let t = 0; t < types.length; t++) {
+    const c = getTermObject(types[t], vocab, vocabPfx, context);
+    if (typeof c !== 'undefined') {
+      classes.push(c['@id']);
+      classes = classes.concat(getBaseClasses(c['@id'], vocab, vocabPfx, context));
+    }
+  }
+  classes = _.uniq(classes);
+  // console.log("getBaseClassesFromArray("+JSON.stringify(typeArray)+") ->", JSON.stringify(classes));
+  return classes;
+}
+
+export function isSubClassOf(classId, baseClassId, vocab, vocabPfx, context) {
+  if (!classId || typeof classId === 'undefined') {
+    throw new Error('isSubClassOf was called without a classId or classId array');
+  }
+  if (!baseClassId || typeof baseClassId === 'undefined') {
+    throw new Error('isSubClassOf was called without a baseClassId');
+  }
+
+  let baseClasses;
+  if (_.isArray(classId)) {
+    baseClasses = getBaseClassesFromArray(classId, vocab, vocabPfx, context);
+  } else {
+    baseClasses = getBaseClasses(classId, vocab, vocabPfx, context);
+  }
+  const prefixBaseClassId = StringUtil.convertToVocabKey(StringUtil.convertToBaseUri(baseClassId, context), context);
+  if (baseClasses.indexOf(prefixBaseClassId) > -1) {
+    return true;
+  }
+  return false;
+}
+
 export function getRecordType(mainEntityType, vocab, settings, context) {
   if (isSubClassOf(mainEntityType, 'Item', vocab, settings.vocabPfx, context)) {
     return 'Item';
@@ -87,49 +202,6 @@ export function getTermFromLabel(label, language, vocab) {
     }
   });
   return classObject;
-}
-
-export function getTermObject(term, vocab, vocabPfx, context) {
-  // Returns a class object
-  if (!term || typeof term === 'undefined') {
-    throw new Error('getTermObject was called with an undefined Id.');
-  }
-  if (_.isObject(term)) {
-    throw new Error('getTermObject was called with an object (should be a string).');
-  }
-  if (term.indexOf('@') !== -1) {
-    return {};
-  }
-  const tries = [];
-  let cn = term;
-  let _class = vocab.get(cn);
-  tries.push(cn);
-
-  if (!_class && term.indexOf('://') === -1) {
-    cn = `${vocabPfx}${term}`;
-    _class = vocab.get(cn);
-    tries.push(cn);
-  }
-  if (!_class && term.indexOf('://') > -1) {
-    // Try to get with Prefix
-    cn = StringUtil.convertToPrefix(term, context);
-    if (cn[0] !== ':') {
-      _class = vocab.get(cn);
-      tries.push(cn);
-    }
-  } else if (!_class && term.indexOf(':') > -1) {
-    // Try to get with baseUri
-    cn = StringUtil.convertToBaseUri(term, context);
-    if (cn[0] !== ':') {
-      _class = vocab.get(cn);
-      tries.push(cn);
-    }
-  }
-
-  if (!_class) {
-    window.lxlWarning('Term object not found:', term, '| Tried the following:', tries);
-  }
-  return _class;
 }
 
 export function getPropertyTypes(propertyId, vocab, vocabPfx, context) {
@@ -339,82 +411,11 @@ export function getProperties(classId, vocabClasses, vocabPfx, vocabProperties, 
   return props;
 }
 
-export function getBaseClasses(classId, vocab, vocabPfx, context) {
-  // Traverses up subClassOf properties and returns a list of all classes found
-
-  if (!classId || typeof classId === 'undefined') {
-    throw new Error('getBaseClasses was called with an undefined Id.');
-  }
-
-  let classList = [];
-  const termObj = getTermObject(classId, vocab, vocabPfx, context);
-  if (typeof termObj === 'undefined') {
-    return _.uniq(classList);
-  }
-  classList.push(termObj['@id']);
-  if (termObj && termObj.hasOwnProperty('subClassOf')) {
-    termObj.subClassOf.forEach(obj => {
-      if (typeof obj['@type'] === 'undefined') {
-        if (obj['@id']) {
-          const baseClass = getTermObject(obj['@id'], vocab, vocabPfx, context);
-          if (baseClass) {
-            classList = classList.concat(getBaseClasses(baseClass['@id'], vocab, vocabPfx, context));
-            classList.push(baseClass['@id']);
-          }
-        }
-      }
-    });
-  }
-  // console.log("getBaseClasses(" + JSON.stringify(classId) + ")", JSON.stringify(classList));
-  return _.uniq(classList);
-}
-
-export function getBaseClassesFromArray(typeArray, vocab, vocabPfx, context) {
-  // Find the base classes from the types in typeArray and return a list of IDs.
-  if (!typeArray || typeArray.length === 0) {
-    throw new Error('getBaseClassesFromArray was called without types');
-  }
-  const types = [].concat(typeArray);
-
-  let classes = [];
-  for (let t = 0; t < types.length; t++) {
-    const c = getTermObject(types[t], vocab, vocabPfx, context);
-    if (typeof c !== 'undefined') {
-      classes.push(c['@id']);
-      classes = classes.concat(getBaseClasses(c['@id'], vocab, vocabPfx, context));
-    }
-  }
-  classes = _.uniq(classes);
-  // console.log("getBaseClassesFromArray("+JSON.stringify(typeArray)+") ->", JSON.stringify(classes));
-  return classes;
-}
-
 export function hasValuesInVocab(propertyId, context) {
   if (context[1].hasOwnProperty(propertyId)) {
     if (context[1][propertyId]['@type'] === '@vocab') {
       return true;
     }
-  }
-  return false;
-}
-
-export function isSubClassOf(classId, baseClassId, vocab, vocabPfx, context) {
-  if (!classId || typeof classId === 'undefined') {
-    throw new Error('isSubClassOf was called without a classId or classId array');
-  }
-  if (!baseClassId || typeof baseClassId === 'undefined') {
-    throw new Error('isSubClassOf was called without a baseClassId');
-  }
-
-  let baseClasses;
-  if (_.isArray(classId)) {
-    baseClasses = getBaseClassesFromArray(classId, vocab, vocabPfx, context);
-  } else {
-    baseClasses = getBaseClasses(classId, vocab, vocabPfx, context);
-  }
-  const prefixBaseClassId = StringUtil.convertToVocabKey(StringUtil.convertToBaseUri(baseClassId, context), context);
-  if (baseClasses.indexOf(prefixBaseClassId) > -1) {
-    return true;
   }
   return false;
 }
