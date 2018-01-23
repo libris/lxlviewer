@@ -19,5 +19,6 @@
 npm-debug.log
 *.pyc
 selenium-debug.log
+*venv/
 
 viewer/helpdocs/helpdocs\.json
