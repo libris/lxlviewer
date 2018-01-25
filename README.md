@@ -4,8 +4,10 @@
 
 Requires the following to be installed on the host machine:
 
-* [Python 2.7+](http://python.org/)
+* [Python 2.7](http://python.org/)
 * [Pip](https://pip.pypa.io/) (commonly installed along with Python on modern distros)
+* [Node](http://nodejs.org/) and [NPM](https://www.npmjs.com/)
+
 
 (It is recommended to create a virtualenv for hosting self-contained Python
 environments)
@@ -14,41 +16,44 @@ Run:
 
     $ pip install -r requirements.txt
 
-## Runtime Dependencies
-
-Requires a PostgreSQL instance containing a DB setup based on the needs of the
-external module `lxltools.lddb`. To run that locally, you'll need:
-
-* [PostgreSQL 9.4+](http://www.postgresql.org/) (you need the JSON support of 9.4 or greater)
 
 ## Building
 
 Initially and whenever the repo is updated, build the web assets:
 
-    $ (cd viewer/client && npm i)
+    $ cd viewer/client && npm i
 
 ## Running
 
-Just call:
+### Libris XL Infrastructure Needed for Local Development
+
+Requires PostgreSQL and Elasticsearch containing "Definitions" data, and the LibrisXL REST API.
+
+Get it all in place by spinning up the [`xl_vagrant_up`](https://github.com/libris/xl_vagrant_up/)
+Vagrant box.
+
+
+For authenticating using [login.libris.kb.se](https://login.libris.kb.se), add
+the client secret to `instance/config.cfg` and insert the following record in `/etc/hosts` file:
+
+    127.0.0.1       localhost.tech
+
+
+## Starting the Flask Application
 
     $ python serve.py
 
-And go to <http://localhost:5000/>
+This will serve:
 
-If you want to change settings for database access or Flask, create a config
-file and edit to your liking (e.g. add `DEBUG = True`):
-
-    $ cp instance/config.cfg.in instance/config.cfg
+* Libris Katalogiseringsverktyg on <http://localhost.tech:5000/>
+* `id.kb.se` on <http://localhost:5000/>  
 
 
 ## Managing CSS and JS Resources
 
-Requires an installation of [Node](http://nodejs.org/) (including
-[NPM](https://www.npmjs.com/)).
-
 Go to the viewer subdirectory:
 
-    $ cd viewer/
+    $ cd viewer/client/
 
 Initial setup:
 
@@ -70,11 +75,11 @@ Updating vendor dependencies:
 
     $ npm run app:eslint
 
-  Or just lint with your plugin of choice, as long as it uses the config defined in ``.eslintrc``.
+Or just lint with your plugin of choice, as long as it uses the config defined in ``.eslintrc``.
 
-  Make sure to activate linting of ``.html`` files so that eslint will lint your ``.vue`` files.
+Make sure to activate linting of ``.html`` files so that eslint will lint your ``.vue`` files.
 
-  Read more about the eslint-config at [airbnb/javascript](https://github.com/airbnb/javascript).
+Read more about the eslint-config at [airbnb/javascript](https://github.com/airbnb/javascript).
 
 ## Tests
 
