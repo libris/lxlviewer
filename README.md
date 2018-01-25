@@ -30,8 +30,8 @@ Initially and whenever the repo is updated, build the web assets:
 Requires PostgreSQL and Elasticsearch containing "Definitions" data, and the LibrisXL REST API.
 
 Get it all in place by spinning up the [`xl_vagrant_up`](https://github.com/libris/xl_vagrant_up/)
-Vagrant box.
-
+Vagrant box. If rolling your own server environment, update `DBHOST`, `DBUSER`, `ESHOST`, and
+`WHELK_REST_API_URL` config settings accordingly.
 
 For authenticating using [login.libris.kb.se](https://login.libris.kb.se), add
 the client secret to `instance/config.cfg` and insert the following record in `/etc/hosts` file:
