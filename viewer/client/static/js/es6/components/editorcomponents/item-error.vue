@@ -38,7 +38,7 @@ export default {
 </script>
 
 <template>
-  <div class="erroneous-object"><i class="fa fa-frown-o"></i> Oh noes! I don't understand this object!<br><code>{{itemAsJson}}</code><br><small>Object is propably missing both <b>id</b> and <b>type</b> (one of them is needed)</small></div>
+  <div class="erroneous-object"><code>{{itemAsJson}}</code></div>
 </template>
 
 <style lang="less">
@@ -49,8 +49,11 @@ export default {
   width: 100%;
   display: inline-block;
   padding: 3px;
-  border: 1px solid #ffa6a6;
-  background-color: #fff1f1;
+  border: 1px solid #d9d9d9;
+  code {
+    color: #000;
+    background-color: none;
+  }
 }
 
 </style>
