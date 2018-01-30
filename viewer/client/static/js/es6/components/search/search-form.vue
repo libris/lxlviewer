@@ -127,6 +127,9 @@ export default {
         this.inputData.textInput.splice(1, this.inputData.textInput.length);
         this.inputData.textInput[0].value = '';
         this.inputData.textInput[0].class = 'searchphrase';
+      },
+      searchHelpOpen() {
+        console.log('show help');
       }
   },
   computed: {
@@ -205,14 +208,17 @@ export default {
         <a class="card-link active">Libris</a>
         <a class="card-link" href="/import">Andra källor</a>
       </div>
-        <form action="/find" method="GET" id="searchForm">
+        <form action="/find" method="GET" id="searchForm" class="searchForm">
             <div class="form-inline">
                 <div class="form-group">
+
                     <label class="search-label hidden" id="searchlabel" for="q">
                         {{"Search" | translatePhrase}}
                     </label>
                     <div id="searchFieldContainer">
+
                         <div class="form-control search-input">
+                            <span tabindex="0" class="search-help-icon" @keyup.enter="searchHelpOpen()"><i class="fa fa-fw fa-question-circle"></i></span>
                             <div aria-labelledby="searchlabel" id="searchQsmart">
                                 <input
                                     list="matchingParameters"
@@ -227,6 +233,7 @@ export default {
                                 <datalist id="matchingParameters">
                                     <option v-for="matchingParameter in validSearchTags" :value="`${matchingParameter}:`">{{matchingParameter}}:</option>
                                 </datalist>
+
                             </div>
                             <span v-show="hasInput" class="field-clearer" @click="clearInputs()"><i class="fa fa-fw fa-close"></i></span>
                         </div>
@@ -248,6 +255,16 @@ export default {
 
 <style lang="less">
 @import '../shared/_variables.less';
+
+.search-help-icon {
+    float: right;
+    font-size: 18px;
+    margin-top: -35px;
+    position: absolute;
+    right: 0;
+    width: 1em;
+}
+
 .search-form-container {
     margin-top: 0vh;
     transition: 0.3s ease margin-top;
@@ -302,45 +319,47 @@ export default {
             > div {
                 display: flex;
                 justify-content: space-between;
-                #searchQsmart {
-                display: flex;
-                flex: 8 8 98%;
-                flex-direction: row;
-                flex-wrap: nowrap;
-                line-height: 2em;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
+                position: relative;
 
-                .searchphrase {
-                    flex-grow: 1;
-                    margin-right: 5px;
-                    outline: none;
-                    cursor: text;
+                #searchQsmart {
+                    display: flex;
+                    flex: 8 8 98%;
+                    flex-direction: row;
+                    flex-wrap: nowrap;
+                    line-height: 2em;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+
+                    .searchphrase {
+                        flex-grow: 1;
+                        margin-right: 5px;
+                        outline: none;
+                        cursor: text;
+                    }
+                    .searchtag {
+                        margin-right: 5px;
+                        border-radius: 3px;
+                        padding: 0px 5px;
+                        outline: none;
+                        cursor: text;
+                    }
+                    .valid {
+                        background-color: #E0F2F1;
+                    }
+                    input {
+                        border: 0px;
+                        outline: none;
+                        display: inline-block;
+                    }
                 }
-                .searchtag {
-                    margin-right: 5px;
-                    border-radius: 3px;
-                    padding: 0px 5px;
-                    outline: none;
-                    cursor: text;
-                }
-                .valid {
-                    background-color: #E0F2F1;
-                }
-                input {
-                    border: 0px;
-                    outline: none;
-                    display: inline-block;
-                }
-                }
-                > .field-clearer {
-                cursor: pointer;
-                align-self: center;
-                flex: 1 1 2%;
-                &:hover {
-                    color: #555;
-                }
+                    > .field-clearer {
+                    cursor: pointer;
+                    align-self: center;
+                    flex: 1 1 2%;
+                    &:hover {
+                        color: #555;
+                    }
                 }
             }
             }
