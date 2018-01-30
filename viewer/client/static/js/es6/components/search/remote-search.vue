@@ -200,7 +200,7 @@ export default {
             <i class="fa fa-fw fa-caret-right" v-show="!showList"></i>
             <i class="fa fa-fw fa-caret-down" v-show="showList"></i></label>
           <ul v-show="databases.state == 'complete' && showList" class="remoteDatabases">
-            <li class="databaseItem" v-bind:class="{'active': db.active}" v-for="db in databases.list" track-by="$index" v-on:click="toggleDatabase($index)">
+            <li class="databaseItem" :tabindex="0" v-bind:class="{'active': db.active}" v-for="db in databases.list" track-by="$index" v-on:click="toggleDatabase($index)" v-on:keyup.enter="toggleDatabase($index)">
               <span class="dbLabel">{{db.item.database}}</span>
               <i class="dbName" v-show="db.item.database !== db.item.name" :title="db.item.name">{{db.item.name}}</i>
             </li>
