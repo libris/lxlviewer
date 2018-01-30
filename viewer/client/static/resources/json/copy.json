@@ -62,5 +62,15 @@
       "linkUrl": "http://www.kb.se/libris/Om-LIBRIS/Introduktion-till-nya-Libris-och-XL2/",
       "linkText": "Öppna",
     },
+    "search-form-help": {
+      "header": "Operatorer för frågespråk",
+      "text": {
+        "paragraphs": {
+          "paragraph1": "<mark>+</mark> betyder AND<br><mark>|</mark> betyder OR<br><mark>-</mark> innebär uteslutning<br><mark>\"</mark> används för frassökning<br><mark>*</mark> innebär trunkering av en term",
+          "paragraph2": "Standardfunktionalitet är att sökmotorn ger träff på valfri sökterm med en <mark>|</mark> . En sökning på Astrid Lindgren kommer matcha poster som innehåller antingen (1) Astrid eller (2) Lindgren, ger även träff på (3) Astrid Lindgren.",
+          "paragraph3": "De föredragna operatorerna är <mark>+</mark> (termen måste vara inkluderad) och <mark>-</mark> (denna term får ej vara inkluderad) Alla andra termer är valfria.",
+        }
+      }
+    }
   }
 }

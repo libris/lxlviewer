@@ -4,7 +4,9 @@ import PropertyMappings from '../../../../resources/json/propertymappings.json';
 import * as httpUtil from '../../utils/http';
 import * as StringUtil from '../../utils/string';
 import { changeResultListStatus, changeStatus } from '../../vuex/actions';
-import { getSettings, getStatus, getVocabulary, getContext } from '../../vuex/getters';
+import Copy from '../../../../resources/json/copy.json';
+import { getSettings, getVocabulary, getStatus, getContext } from '../../vuex/getters';
+
 export default {
   name: 'search-form',
   vuex: {
@@ -38,7 +40,7 @@ export default {
             },
         ],
         currentInput: 0,
-        ids: [],
+        ids: []
       },
     }
   },
@@ -127,12 +129,19 @@ export default {
         this.inputData.textInput.splice(1, this.inputData.textInput.length);
         this.inputData.textInput[0].value = '';
         this.inputData.textInput[0].class = 'searchphrase';
-      },
-      searchHelpOpen() {
-        console.log('show help');
       }
   },
   computed: {
+    copy() {
+        return Copy[this.settings.siteInfo.title]['search-form-help'];
+    },
+    header() {
+        return this.copy.header;
+    },
+    text() {
+      return this.copy.text;
+    },
+    
       observations() {
           const observations = [];
           const statistics = this.result.statistics || this.result.stats;
@@ -208,9 +217,9 @@ export default {
         <a class="card-link active">Libris</a>
         <a class="card-link" href="/import">Andra källor</a>
       </div>
-        <form action="/find" method="GET" id="searchForm" class="searchForm">
+        <form action="/find" method="GET" id="searchForm" class="search-form">
             <div class="form-inline">
-                <div class="form-group">
+                <div class="form-group">    
 
                     <label class="search-label hidden" id="searchlabel" for="q">
                         {{"Search" | translatePhrase}}
@@ -218,7 +227,21 @@ export default {
                     <div id="searchFieldContainer">
 
                         <div class="form-control search-input">
-                            <span tabindex="0" class="search-help-icon" @keyup.enter="searchHelpOpen()"><i class="fa fa-fw fa-question-circle"></i></span>
+                          
+                            <div class="search-help dropdown">
+                                <span tabindex="0" class="search-help-icon dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" >
+                                    <i class="fa fa-fw fa-question-circle"></i>
+                                </span>
+                                
+                                <div class="search-help-dropdown dropdown-menu"> 
+                                    <h6 class="search-help-header">{{ header }}</h6>
+  
+                                    <p v-for="paragraph in text.paragraphs"  v-html="paragraph">
+                                    
+                                    </p>
+                                </div>
+                            </div>
+                          
                             <div aria-labelledby="searchlabel" id="searchQsmart">
                                 <input
                                     list="matchingParameters"
@@ -256,13 +279,29 @@ export default {
 <style lang="less">
 @import '../shared/_variables.less';
 
-.search-help-icon {
+/* Search help */
+.search-help {
     float: right;
     font-size: 18px;
     margin-top: -35px;
     position: absolute;
     right: 0;
     width: 1em;
+
+    &-icon {
+        cursor: pointer;
+    }
+
+    &-dropdown {
+        padding: 10px;
+        left: 0;
+        right: -200px;
+        font-size: 12px;
+    }
+
+    &-header {
+        font-weight: 700;
+    }
 }
 
 .search-form-container {
