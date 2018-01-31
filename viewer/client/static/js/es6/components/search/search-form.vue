@@ -40,11 +40,25 @@ export default {
             },
         ],
         currentInput: 0,
-        ids: []
+        ids: [],
       },
+      activeClass: 'is-active'
     }
   },
   methods: {
+      showHelp() {
+        let helpText = document.querySelector('.js-searchHelpText');
+        helpText.classList.add(this.activeClass);
+      },
+      hideHelp() {
+        let helpText = document.querySelector('.js-searchHelpText');
+        helpText.classList.remove(this.activeClass);
+      },
+    toggleHelp() {
+        let helpText = document.querySelector('.js-searchHelpText');
+        helpText.classList.toggle(this.activeClass);
+      },
+   
       addSearchField() {
           const newobj = {};
           newobj.value='';
@@ -229,16 +243,13 @@ export default {
                         <div class="form-control search-input">
                           
                             <div class="search-help dropdown">
-                                <span tabindex="0" class="search-help-icon dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" >
-                                    <i class="fa fa-fw fa-question-circle"></i>
+                                <span tabindex="0" class="search-help-icon" aria-haspopup="true" @keyup.enter="toggleHelp()" @mouseover="showHelp()" @mouseout="hideHelp()">
+                                    <i class="fa fa-fw fa-question-circle-o"></i>
                                 </span>
                                 
-                                <div class="search-help-dropdown dropdown-menu"> 
+                                <div class="search-help-popup dropdown-menu js-searchHelpText"> 
                                     <h6 class="search-help-header">{{ header }}</h6>
-  
-                                    <p v-for="paragraph in text.paragraphs"  v-html="paragraph">
-                                    
-                                    </p>
+                                    <p v-for="paragraph in text.paragraphs" v-html="paragraph"></p>
                                 </div>
                             </div>
                           
@@ -290,13 +301,24 @@ export default {
 
     &-icon {
         cursor: pointer;
+
+        &:focus {
+            outline: auto 5px;
+        }
     }
 
-    &-dropdown {
+    &-popup {
+        background: @white;
+        font-size: 12px;
+        display: none;
         padding: 10px;
         left: 0;
         right: -200px;
-        font-size: 12px;
+        min-width: 230px;
+
+        &.is-active {
+            display: block;
+        }
     }
 
     &-header {
