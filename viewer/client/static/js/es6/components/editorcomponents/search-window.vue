@@ -25,7 +25,6 @@ export default {
     return {
       searchResult: {},
       searchDelay: 2,
-      extractDialogActive: false,
       keyword: '',
       loading: false,
       debounceTimer: 500,
@@ -164,16 +163,9 @@ export default {
     doExtract() {
       this.$dispatch('extract-item');
     },
-    show() {
-      LayoutUtil.scrollLock(true);
-      this.active = true;
-      this.changeStatus('keybindState', 'entity-adder');
-    },
     hide() {
-      if (!this.active) return;
-      this.active = false;
-      LayoutUtil.scrollLock(false);
-      this.changeStatus('keybindState', 'overview');
+      this.keyword = '';
+      this.$dispatch('close-modals');
     },
     search(keyword) {
       const self = this;
