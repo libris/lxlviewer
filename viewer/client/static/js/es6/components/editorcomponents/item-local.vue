@@ -189,6 +189,7 @@ export default {
       }
     },
     closeExtractDialog() {
+      if (!this.extractDialogActive) return;
       this.changeStatus('keybindState', 'overview');
       LayoutUtil.scrollLock(false);
       this.extractDialogActive = false;
