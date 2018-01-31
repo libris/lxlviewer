@@ -290,6 +290,9 @@ export default {
 
     &-icon {
         cursor: pointer;
+        &:focus {
+            outline: auto 5px;
+        }
     }
 
     &-dropdown {
