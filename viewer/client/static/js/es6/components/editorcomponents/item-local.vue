@@ -400,7 +400,7 @@ export default {
     box-shadow: @shadow-chip;
     border: 1px solid rgba(0, 0, 0, 0.15);
     line-height: 1.6;
-    max-height: 40px;
+    max-height: 2.6em;
     overflow: hidden;
     transition: 0.5s ease max-height, 1.0s ease box-shadow;
     &.distinguish-removal {
