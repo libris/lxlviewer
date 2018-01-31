@@ -48,17 +48,18 @@ export default {
   methods: {
       showHelp() {
         let helpText = document.querySelector('.js-searchHelpText');
-        helpText.classList.add(this.activeClass);
+        helpText.parentElement.classList.add(this.activeClass);
       },
       hideHelp() {
         let helpText = document.querySelector('.js-searchHelpText');
-        helpText.classList.remove(this.activeClass);
+        if (helpText.parentElement.classList.contains(this.activeClass)) {
+            helpText.parentElement.classList.remove(this.activeClass);
+        } 
       },
     toggleHelp() {
         let helpText = document.querySelector('.js-searchHelpText');
-        helpText.classList.toggle(this.activeClass);
+        helpText.parentElement.classList.toggle(this.activeClass);
       },
-   
       addSearchField() {
           const newobj = {};
           newobj.value='';
@@ -231,27 +232,30 @@ export default {
         <a class="card-link active">Libris</a>
         <a class="card-link" href="/import">Andra källor</a>
       </div>
+        <div class="search-help">
+            <div class="search-help-dropdown dropdown" @mouseleave="hideHelp()">
+                <span class="search-help-icon">
+                    <i class="fa fa-fw fa-question-circle-o"  @mouseover="showHelp()"  tabindex="0" aria-haspopup="true" @keyup.enter="toggleHelp()"></i>
+                </span>
+                <div class="search-help-popup dropdown-menu js-searchHelpText"> 
+                    <h6 class="search-help-header">{{ header }}</h6>
+                    <p v-for="paragraph in text.paragraphs" v-html="paragraph"></p>
+                </div>
+            </div>
+        </div> 
+     
         <form action="/find" method="GET" id="searchForm" class="search-form">
             <div class="form-inline">
-                <div class="form-group">    
+                <div class="form-group">   
 
                     <label class="search-label hidden" id="searchlabel" for="q">
                         {{"Search" | translatePhrase}}
                     </label>
                     <div id="searchFieldContainer">
+                        
 
                         <div class="form-control search-input">
-                          
-                            <div class="search-help dropdown">
-                                <span tabindex="0" class="search-help-icon" aria-haspopup="true" @keyup.enter="toggleHelp()" @mouseover="showHelp()" @mouseout="hideHelp()">
-                                    <i class="fa fa-fw fa-question-circle-o"></i>
-                                </span>
-                                
-                                <div class="search-help-popup dropdown-menu js-searchHelpText"> 
-                                    <h6 class="search-help-header">{{ header }}</h6>
-                                    <p v-for="paragraph in text.paragraphs" v-html="paragraph"></p>
-                                </div>
-                            </div>
+                            
                           
                             <div aria-labelledby="searchlabel" id="searchQsmart">
                                 <input
@@ -292,19 +296,23 @@ export default {
 
 /* Search help */
 .search-help {
-    float: right;
-    font-size: 18px;
     margin-top: -35px;
-    position: absolute;
-    right: 0;
-    width: 1em;
 
     &-icon {
         cursor: pointer;
+        font-size: 18px;
+        float: right;
+        width: 20%;
+        margin-right: 24px;
+        clear: right;
 
         &:focus {
             outline: auto 5px;
         }
+    }
+
+    &-dropdown {
+        float: none;
     }
 
     &-popup {
@@ -312,11 +320,13 @@ export default {
         font-size: 12px;
         display: none;
         padding: 10px;
-        left: 0;
-        right: -200px;
-        min-width: 230px;
+        left: auto;
+        right: 0;
+        top: 2.5em;
+        width: 30%;
+        max-width: 300px;
 
-        &.is-active {
+        .is-active & {
             display: block;
         }
     }
