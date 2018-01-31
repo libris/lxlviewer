@@ -577,11 +577,8 @@ export default {
   &.column {
     flex-wrap: wrap;
     border: solid;
-    border-width: 0px;
+    border-width: 1px;
     padding-bottom: 4px;
-    &:last-child {
-      border-width: 0px;
-    }
     >.label {
       min-width: 100%;
       justify-content: space-between;
