@@ -1,6 +1,7 @@
 <script>
 import * as _ from 'lodash';
 import * as httpUtil from '../../utils/http';
+import * as LayoutUtil from '../../utils/layout';
 import * as RecordUtil from '../../utils/record';
 import ResultItem from './resultitem';
 import ResultList from './result-list';
@@ -11,7 +12,7 @@ export default {
   name: 'remote-search',
   props: {
     db: [],
-    q: '',
+    q: ''
   },
   vuex: {
     actions: {
@@ -71,6 +72,7 @@ export default {
       const vself = this;
 
       this.databases.state = 'loading';
+
       this.databases.debug = '';
       this.fetchDatabases().then((dbs) => {
         const newDbList = [];
@@ -80,6 +82,7 @@ export default {
         }
         vself.databases.list = newDbList;
         vself.databases.state = 'complete';
+
         if (history.state !== null) {
           vself.selectedDatabases = history.state.selectedDatabases;
           vself.attachResult(history.state);
