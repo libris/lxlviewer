@@ -1,16 +1,16 @@
 # Cached Data and Packages
-/cache
-/viewer/client/node_modules
-/viewer/client/bower_components
+cache/
+viewer/client/node_modules/
+viewer/client/bower_components/
 
 # Generated Files
 /build
 /viewer/client/static/build
-/viewer/test/e2e/bin
+/viewer/client/test/e2e/bin
 /viewer/client/static/vendor
 
 # Local App Config
-/instance/config.cfg
+instance/config.cfg
 
 # Common OS, Tool and Editor Files
 .vscode/*
