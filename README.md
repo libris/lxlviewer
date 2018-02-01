@@ -33,8 +33,9 @@ Get it all in place by spinning up the [`xl_vagrant_up`](https://github.com/libr
 Vagrant box. If rolling your own server environment, update `DBHOST`, `DBUSER`, `ESHOST`, and
 `WHELK_REST_API_URL` config settings accordingly.
 
-For authenticating using [login.libris.kb.se](https://login.libris.kb.se), add
-the client secret to `instance/config.cfg` and insert the following record in `/etc/hosts` file:
+For authenticating using [login.libris.kb.se](https://login.libris.kb.se),
+copy `instance/config.cfg.local -> config.cfg`, add the client secret to `instance/config.cfg` and
+insert the following record in `/etc/hosts` file:
 
     127.0.0.1       localhost.tech
 
