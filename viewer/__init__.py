@@ -252,6 +252,10 @@ def some(suffix=None):
 
 
 @app.route('/', methods=R_METHODS)
+def show_base():
+    return render_template('base.html')
+
+
 @app.route('/data', methods=R_METHODS)
 @app.route('/data.<suffix>', methods=R_METHODS)
 def dataindexview(suffix=None):
