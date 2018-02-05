@@ -99,11 +99,12 @@ export default {
     },
     removePost() {
       const url = this.focusData['@id'];
+      const translatedType = StringUtil.getLabelByLang(this.recordType, this.settings.language, this.vocab, this.settings.vocabPfx, this.context);
       ModalUtil.confirmDialog({
-        sTitle: 'Ta bort?',
-        sContent: 'Du kan inte ångra detta val.',
-        sAccept: 'OK',
-        sReject: 'Avbryt',
+        sTitle: `${StringUtil.getUiPhraseByLang('Remove', this.settings.language)} ${translatedType}?`,
+        sContent: `${StringUtil.getUiPhraseByLang('You can\'t undo this action', this.settings.language)}.`,
+        sAccept: StringUtil.getUiPhraseByLang('Yes, remove', this.settings.language),
+        sReject: StringUtil.getUiPhraseByLang('Cancel', this.settings.language),
         sType: 'danger' }).then(() => {
           // accepted by user
           HttpUtil._delete({ url, activeSigel: this.user.settings.activeSigel }).then((result) => {

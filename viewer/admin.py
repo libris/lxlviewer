@@ -104,7 +104,7 @@ def login_authorize():
         app.logger.info('[%s] Trying to authorize user, redirecting to %s ', request.remote_addr, authorization_url)
         # Redirect to oauth authorization
         return redirect(authorization_url)
-    except Exception, e:
+    except Exception as e:
         app.logger.error('Failed to create authorization url,  %s ', str(e))
         return _render_login(str(e))
 
@@ -124,7 +124,7 @@ def authorized():
                                                                 client_secret=app.config['OAUTH_CLIENT_SECRET'],
                                                                 authorization_response=request.url)
             app.logger.debug('OAuth token received %s ', json.dumps(_get_token()))
-        except Exception, e:
+        except Exception as e:
             raise Exception('Failed to get token, %s response: %s. Try login again' % (token_url, str(e)))
 
         # Get user from verify
@@ -134,7 +134,7 @@ def authorized():
             verified_user = verify_response.get('user')
             app.logger.info('[%s] User received from verify %s, %s', request.remote_addr, verified_user.get('username'), json.dumps(verified_user))
 
-        except Exception, e:
+        except Exception as e:
             raise Exception('Failed to verify user. %s response: %s ' % (verify_url, str(e)))
 
         if _login_user(verified_user):
@@ -142,7 +142,7 @@ def authorized():
         else:
             raise Exception('Failed to login.')
 
-    except Exception, e:
+    except Exception as e:
         msg = str(e)
         app.logger.error(msg)
         return _render_login(msg)
