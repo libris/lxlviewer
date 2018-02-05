@@ -52,12 +52,12 @@ export default {
 </script>
 
 <template>
-  <div class="search-result-item">
+  <li class="search-result-item">
     <div class="search-item-entity-summary-container">
       <entity-summary :focus-data="focusData" :lines="4"></entity-summary>
     </div>
     <summary-action-button v-show="listItemSettings.show" :settings="addPayload"></summary-action-button>
-  </div>
+  </li>
 </template>
 
 
@@ -65,22 +65,22 @@ export default {
 @import '../shared/_variables.less';
 
 .search-result-item {
-  .search-item-entity-summary-container {
-    max-width: 85%;
-  }
   border: solid #777;
   margin: 4px;
   border-width: 1px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+
   code {
     color: @black;
   }
+
   &.already-added {
     opacity: 0.5;
     cursor: default;
   }
+
   .label {
     color: @black;
     font-weight: bold;
@@ -92,13 +92,24 @@ export default {
     overflow: hidden;
     text-overflow: ellipsis;
   }
+
   .type {
     width: 24%;
     display: inline-block;
     text-align: right;
   }
+
   &:nth-child(even) {
     background-color: darken(@neutral-color, 2%);
+  }
+  
+  .search-item-entity-summary-container {
+    max-width: 85%;
+  }
+
+  &.selected {
+    outline: solid 1px @brand-primary;
+    background-color: fadeout(@brand-primary, 70%);
   }
 }
 
