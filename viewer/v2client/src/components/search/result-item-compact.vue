@@ -48,7 +48,6 @@ export default {
 
 
 <style lang="less">
-@import '../shared/_variables.less';
 
 .result-item-compact {
   display: flex;

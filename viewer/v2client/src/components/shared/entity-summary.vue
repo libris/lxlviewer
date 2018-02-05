@@ -114,7 +114,7 @@ export default {
 </template>
 
 <style lang="less">
-@import '../shared/_variables.less';
+
 .entity-summary {
   width: 100%;
   font-size: 13px;

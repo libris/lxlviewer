@@ -50,7 +50,6 @@ export default {
 </template>
 
 <style lang="less">
-@import '../shared/_variables.less';
 
 .link-card {
   flex-basis: 24%; // To parent

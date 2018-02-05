@@ -1,6 +1,9 @@
 <template>
   <div id="app">
-    <router-view v-if="resourcesLoaded" />
+    <navbar-component />
+    <main class="container">
+      <router-view v-if="resourcesLoaded" />
+    </main>
     <div v-if="!resourcesLoaded">
       stuff is loading
     </div>
@@ -8,6 +11,7 @@
 </template>
 
 <script>
+import Navbar from '@/components/layout/navbar';
 
 export default {
   name: 'App',
@@ -15,17 +19,16 @@ export default {
     resourcesLoaded() {
       return this.$store.getters.resources.resourcesLoaded;
     }
-  }
+  },
+  components: {
+    'navbar-component': Navbar
+   },
 }
 </script>
 
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+<style lang="less">
+@import "~bootstrap/less/bootstrap";
+@import "~kungbib-styles/dist/less/kb-style";
+@import "./less/main";
+
 </style>

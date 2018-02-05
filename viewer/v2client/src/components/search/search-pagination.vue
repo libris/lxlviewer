@@ -172,7 +172,6 @@ export default {
 </template>
 
 <style lang="less">
-@import '../shared/_variables.less';
 
 @buttoncolor: darken(@neutral-color, 10%);
 

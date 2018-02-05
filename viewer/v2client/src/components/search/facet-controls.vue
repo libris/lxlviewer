@@ -56,7 +56,7 @@ export default {
 </template>
 
 <style lang="less">
-@import '../shared/_variables.less';
+
 .facet-controls {
   padding: 15px 5px 15px 15px;
   label {

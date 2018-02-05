@@ -48,7 +48,6 @@ export default {
 </template>
 
 <style lang="less">
-@import '../shared/_variables.less';
 
 .intro-component {
   display: flex;

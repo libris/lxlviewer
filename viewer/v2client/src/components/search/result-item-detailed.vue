@@ -37,7 +37,6 @@ export default {
 
 
 <style lang="less">
-@import '../shared/_variables.less';
 
 .result-item-detailed {
   list-style: none;

@@ -53,7 +53,6 @@ export default {
 
 
 <style lang="less">
-@import '../shared/_variables.less';
 
 .search-result-item {
   .search-item-entity-summary-container {

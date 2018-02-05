@@ -235,7 +235,7 @@ export default {
 </template>
 
 <style lang="less">
-@import '../shared/_variables.less';
+
 .search-form-container {
     margin-top: 0vh;
     transition: 0.3s ease margin-top;

@@ -44,7 +44,6 @@ export default {
 </template>
 
 <style lang="less">
-@import '../shared/_variables.less';
 
 .range-input {
   .limit-input-container {

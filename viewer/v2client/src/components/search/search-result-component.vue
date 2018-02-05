@@ -68,7 +68,6 @@ export default {
 </template>
 
 <style lang="less">
-@import '../shared/_variables.less';
 
 .search-result-component {
   opacity: 0;

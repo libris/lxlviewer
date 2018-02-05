@@ -1,4 +1,56 @@
-@import '../mixins/_mixins.less';
+// Import kb-styles colors
+@import "~kungbib-styles/dist/less/colors";
+@import "~kungbib-styles/dist/less/colors-deprecated";
+@import "~kungbib-styles/dist/less/mixins/colors";
+
+// ----------- VARIABLES ------------
+@brand-primary: #009788;
+@bg-site: #F9F9F9;
+@test-color: pink;
+@bg-img: none;
+//@bg-img: url('/assets/img/bg_libris.png');
+@bg-content: @black;
+@bg-content-alt: @black;
+@bg-navbar: #ffffff;
+@bg-navbar-hover: rgba(199, 226, 224, 0.27);
+@shadow-navbar: none;
+@text-navbar: #505050;
+@text-brand: #505050;
+@text-brand-env: @brand-primary;
+@text-alt-navbar: #505050;
+@text-toolbar: fade(@white, 55%);
+@bg-sidebars: darken(@white, 5%);
+@border-navbar: @gray-light;
+@border-navbar-width: 1px;
+@bg-footer: @white;
+@shadow-footer: inset 0px 1px 0px 0px @gray;
+@text-footer: @black;
+@text-alt-footer: @black;
+@bg-jumbotron: transparent;
+@bg-jumbotron-image: none;
+@border-footer: @gray-light;
+@color-class: @gray;
+@color-prop: @happy-magenta;
+@color-prop-list: @gray;
+@color-ext: #d51;
+@color-id: #c7254e;
+@link-color: @brand-primary;
+@link-hover-color: darken(@link-color,15%);
+@panel-border-radius: 3px;
+@thing-header-bg: @brand-primary;
+@thing-header-text: @white;
+
+@color-headers: @brand-primary;
+@color-headers-text: #fff;
+
+// --------- EDITOR SPECIFIC --------
+
+// Variables
+@chipColor: @gray-lighter;
+// @chipColorLinked: rgb(131, 197, 191);
+@chipColorLinked: #b2d2cf;
+@chipTextColor: #000000;
+@chipTextColorLinked: #000000;
 
 // ----------- VARIABLES ------------
 
@@ -10,7 +62,7 @@
 @active-component-z: 99;
 @backdrop-z: 950;
 
-// ---- Greyscale ----
+// ---- grayscale ----
 @white: #ffffff;
 @gray-lighter: #E0E6E9;
 @gray-light: #C4C7CA;
@@ -90,6 +142,23 @@
 @node-bg: #fafafa;
 
 @highlight-color: @brand-primary;
+
+// Column widths
+@col-label: 200px;
+@col-value: 620px;
+@col-action: 250px;
+
+
+// ----------- BASE STYLES ----------
+
+@orange: #CA9543;
+@green: #009788;
+@gray-very-dark: #191913; // font-color
+
+@modal-z: 999;
+@active-component-z: 99;
+@backdrop-z: 950;
+
 
 // Column widths
 @col-label: 200px;
