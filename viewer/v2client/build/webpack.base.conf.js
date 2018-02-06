@@ -97,10 +97,6 @@ module.exports = {
         }
       },
       {
-        test: /\.(ttf|eot|svg)(\?[\s\S]+)?$/,
-        use: 'file-loader'
-      },
-      {
         loader: "webpack-modernizr-loader",
         test: /\.modernizrrc\.js$/
       }
