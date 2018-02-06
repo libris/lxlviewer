@@ -1,5 +1,5 @@
 <template>
-  <div class="hello">
+  <div class="find">
     <div class="row">
       <div class="col-md-3 facet-container" :class="{'facet-hidden': isLandingPage}">
         <!-- <facet-controls v-if="initialized == true" :result="result"></facet-controls> -->

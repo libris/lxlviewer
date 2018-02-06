@@ -70,11 +70,6 @@ export default {
 <style lang="less">
 
 .search-result-component {
-  opacity: 0;
-  transition: 0.5s ease opacity;
-  &.show-result {
-    opacity: 1;
-  }
   .loadingText {
     box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.1);
     // margin: 120px 0;
