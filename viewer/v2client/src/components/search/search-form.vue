@@ -8,7 +8,6 @@ export default {
   name: 'search-form',
   props: {
     siteTitle: '',
-    result: {},
     filterParam: '',
     useSubmit: false,
     formDataSupported: false,
@@ -93,6 +92,9 @@ export default {
                 queryText.push(`q=${inputElement.value}`);
             }
         }
+        if (queryText.length === 0) {
+          return;
+        }
         queryText.push('_limit=20');
         _.each(this.inputData.ids, id => queryText.push(`@type=${id}`));
         // _.each(this.inputData.ids, type => queryText.push(`@type=${type}`));
@@ -156,7 +158,7 @@ export default {
           document.getElementById('searchQsmart').children[newValue].focus();
       },
   },
-  ready() { // Ready method is deprecated in 2.0, switch to "mounted"
+  mounted() { // Ready method is deprecated in 2.0, switch to "mounted"
     this.$nextTick(() => {
       document.getElementById('searchQsmart').children[this.inputData.currentInput].focus();
     });

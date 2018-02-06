@@ -65,20 +65,16 @@ export default {
       console.warn('Search details is missing limit parameter');
       return '';
     },
-    pageDataFixed() {
-      return this.getPageDataWithRouteIds(this.pageData);
-    },
     pageList() {
       const list = [];
       if (!this.pageData || !this.pageData.first) {
         console.warn('Search failed in getting pagination data');
         return list;
       }
-      const pageData = this.pageDataFixed;
-      const first = pageData.first['@id'];
-      const limit = StringUtil.getParamValueFromUrl(first, '_limit');
-      const offset = pageData.itemOffset;
-      const noOfPages = parseInt(pageData.totalItems / this.limit) + 1 || 1;
+      const first = this.pageData.first['@id'];
+      const limit = 20;
+      const offset = this.pageData.itemOffset;
+      const noOfPages = parseInt(this.pageData.totalItems / this.limit) + 1 || 1;
       const currentPage = parseInt(offset/this.limit);
       let paddedPages = 3;
       if (currentPage < paddedPages) {
@@ -104,21 +100,6 @@ export default {
     }
   },
   methods: {
-    getPageDataWithRouteIds(pageData) {
-      const mutatedPageData = {};
-      for (const key in pageData) {
-        if (pageData.hasOwnProperty(key)) {
-          if (pageData[key]['@id']) {
-            const newPage = {'@id': pageData[key]['@id'].replace('/find?', '/search/') };
-            mutatedPageData[key] = newPage;
-          } else {
-            mutatedPageData[key] = pageData[key];
-          }
-        }
-      }
-      mutatedPageData['@id'] = mutatedPageData['@id'].replace('/find?', '/search/');
-      return mutatedPageData;
-    },
     setCompact() {
       const user = this.user;
       user.settings.resultListType = 'compact';
@@ -147,14 +128,14 @@ export default {
 </script>
 
 <template>
-  <div class="panel panel-default result-controls" v-if="!(!showDetails && pageDataFixed.totalItems < limit)">
+  <div class="panel panel-default result-controls" v-if="!(!showDetails && pageData.totalItems < limit)">
     <div class="search-details" v-if="showDetails">
       <span>Sökning på <strong>{{ queryText }}</strong>
         <span v-if="filters.length > 0">
         (filtrerat på <span v-for="filter in filters" :key="filter.label"><strong>{{filter.label}}</strong></span>)
       </span>
-      gav <strong>{{pageDataFixed.totalItems}}</strong> träffar.</span>
-      <span v-if="pageDataFixed.totalItems > limit">Visar <strong>{{ limit }}</strong> träffar per sida.</span>
+      gav <strong>{{pageData.totalItems}}</strong> träffar.</span>
+      <span v-if="pageData.totalItems > limit">Visar <strong>{{ limit }}</strong> träffar per sida.</span>
     </div>
     <div class="list-type-buttons" v-if="showDetails">
       <button v-on:click="setFull()" v-bind:class="{'active': user.settings.resultListType === 'detailed' }"><i class="fa fa-th-list"></i></button>
@@ -163,26 +144,26 @@ export default {
     <div v-if="hasPagination && showPages" class="search-buttons">
       <nav>
         <ul class="pagination">
-          <li v-bind:class="{ 'disabled': !pageDataFixed.first || pageDataFixed['@id'] === pageDataFixed.first['@id'] }">
-            <router-link v-if="pageDataFixed.first" :to="pageDataFixed.first['@id']">Första</router-link>
-            <a v-if="!pageDataFixed.first">Första</a>
+          <li v-bind:class="{ 'disabled': !pageData.first || pageData['@id'] === pageData.first['@id'] }">
+            <router-link v-if="pageData.first" :to="pageData.first['@id'] | asAppPath">Första</router-link>
+            <a v-if="!pageData.first">Första</a>
           </li>
-          <li v-bind:class="{ 'disabled': !pageDataFixed.previous }">
-            <router-link v-if="pageDataFixed.previous" :to="pageDataFixed.previous['@id']">Föregående</router-link>
-            <a v-if="!pageDataFixed.previous">Föregående</a>
+          <li v-bind:class="{ 'disabled': !pageData.previous }">
+            <router-link v-if="pageData.previous" :to="pageData.previous['@id'] | asAppPath">Föregående</router-link>
+            <a v-if="!pageData.previous">Föregående</a>
           </li>
           <li v-bind:class="{ 'active': page.active }" v-for="page in pageList" :key="page.link">
             <span class="decorative" v-if="!page.link">...</span>
-            <router-link :to="page.link" v-if="!page.active && page.link">{{page.pageLabel}}</router-link>
+            <router-link :to="page.link | asAppPath" v-if="!page.active && page.link">{{page.pageLabel}}</router-link>
             <a v-if="page.active">{{page.pageLabel}}</a>
           </li>
-          <li v-bind:class="{ 'disabled': !pageDataFixed.next }">
-            <router-link v-if="pageDataFixed.next" :to="pageDataFixed.next['@id']">Nästa</router-link>
-            <a v-if="!pageDataFixed.next">Nästa</a>
+          <li v-bind:class="{ 'disabled': !pageData.next }">
+            <router-link v-if="pageData.next" :to="pageData.next['@id'] | asAppPath">Nästa</router-link>
+            <a v-if="!pageData.next">Nästa</a>
           </li>
-          <li v-bind:class="{ 'disabled': !pageDataFixed.last || pageDataFixed['@id'] === pageDataFixed.last['@id'] }">
-            <router-link v-if="pageDataFixed.last" :to="pageDataFixed.last['@id']">Sista</router-link>
-            <a v-if="!pageDataFixed.last">Sista</a>
+          <li v-bind:class="{ 'disabled': !pageData.last || pageData['@id'] === pageData.last['@id'] }">
+            <router-link v-if="pageData.last" :to="pageData.last['@id'] | asAppPath">Sista</router-link>
+            <a v-if="!pageData.last">Sista</a>
           </li>
         </ul>
       </nav>

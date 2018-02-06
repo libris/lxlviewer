@@ -1,8 +1,8 @@
 <template>
   <div class="find">
     <div class="row">
-      <div class="col-md-3 facet-container" :class="{'facet-hidden': isLandingPage}">
-        <!-- <facet-controls v-if="initialized == true" :result="result"></facet-controls> -->
+      <div class="col-md-3 facet-container">
+        <facet-controls :result="result"></facet-controls>
       </div>
       <div v-bind:class="{'col-md-12': isLandingPage, 'col-md-9': !isLandingPage }" class="search-content-container">
         <search-form :result="result"></search-form>
@@ -27,8 +27,6 @@ import LinkCardComponent from '@/components/search/link-card-component';
 import IntroComponent from '@/components/search/intro-component';
 import Modernizr from '@/../.modernizrrc.js';
 
-import MockResult from '@/resources/json/mockResult.json';
-
 export default {
   data: function () {
     return {
@@ -51,13 +49,10 @@ export default {
       fetch(fetchUrl).then((response) => {
         return response.json();
       }, (error) => {
-        console.log("everything broke");
+        console.warn("Search failed...");
       }).then((result) => {
-        console.log(result);
         this.result = result;
       });
-
-      // this.result = MockResult;
     },
     isArray(o) {
       return _.isArray(o);
@@ -104,25 +99,12 @@ export default {
       this.getResult();
       this.initialized = true;
     })
-
-    // this.changeSettings(self.settings);
-    // this.updateUser(self.user);
-    // this.loadContext(self.context);
-    // this.loadVocabMap(self.vocabMap);
-    // this.loadDisplayDefs(self.display);
-    // this.result = self.dataIn;
-    // this.changeResultListStatus('loading', false);
-    // LayoutUtil.showPage(this);
-    // document.title = `${StringUtil.getUiPhraseByLang('Search', this.settings.language)} - ${this.settings.siteInfo.title}`;
-
   },
   components: {
     'facet-controls': FacetControls,
     'search-result-component': SearchResultComponent,
     'search-form': SearchForm,
     'dataset-observations': DatasetObservations,
-    'intro-component': IntroComponent,
-    'link-card': LinkCardComponent,
   },
 };
 

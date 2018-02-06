@@ -17,10 +17,16 @@ export default {
       return dimensionKey === 'publication.date';
     },
     facetLabelByLang(facetType) {
-      return this.settings.propertyChains[facetType][this.settings.language];
+      return this.settings.propertyChains[facetType][this.user.settings.language];
     }
   },
   computed: {
+    user() {
+      return this.$store.getters.user;
+    },
+    settings() {
+      return this.$store.getters.settings;
+    },
   },
   events: {
   },
@@ -39,11 +45,11 @@ export default {
 </script>
 
 <template>
-  <div v-if="result.totalItems > 0" class="panel panel-default">
+  <div class="panel panel-default">
     <div class="panel-body facet-controls">
       <label>Filtrera</label>
-      <div>
-        <div v-for="(dimensionKey, dimensionValue) in result.stats.sliceByDimension" :key="dimensionKey">
+      <div v-if="result.totalItems > 0">
+        <div v-for="(dimensionValue, dimensionKey) in result.stats.sliceByDimension" :key="dimensionKey">
           <div class="dimension-header">{{facetLabelByLang(dimensionValue.dimension) | capitalize}}</div>
           <!--<range-input v-if="isRangeFacet(dimensionKey)"></range-input>-->
           <ul>

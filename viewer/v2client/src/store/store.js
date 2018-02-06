@@ -27,8 +27,12 @@ const store = new Vuex.Store({
       }
     },
     settings: {
+      title: 'Libris Katalogisering',
       language: 'sv',
       vocabPfx: 'https://id.kb.se/vocab/',
+      appPaths: {
+        '/find?': '/search/'
+      },
       removableBaseUris: [
         'http://libris.kb.se/',
         'https://libris.kb.se/',
@@ -44,6 +48,36 @@ const store = new Vuex.Store({
           'https://id.kb.se/vocab/Agent',
           'https://id.kb.se/vocab/Concept',
         ],
+      },
+      propertyChains: {
+        '@type': {
+          sv: 'Typ',
+          en: 'Type',
+        },
+        'carrierType': {
+          sv: 'Bärartyp',
+          en: 'Carrier type',
+        },
+        'issuanceType': {
+          sv: 'Utgivningssätt',
+          en: 'Issuance type',
+        },
+        'instanceOf.@type': {
+          sv: 'Verkstyp',
+          en: 'Type of work',
+        },
+        'instanceOf.contentType': {
+          sv: 'Verksinnehållstyp',
+          en: 'Content type of work',
+        },
+        'instanceOf.language': {
+          sv: 'Verksspråk',
+          en: 'Language of work',
+        },
+        'publication.date': {
+          sv: 'Utgivningsdatum',
+          en: 'Publication date',
+        },
       },
     }
   },

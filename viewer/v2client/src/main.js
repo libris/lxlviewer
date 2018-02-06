@@ -16,6 +16,16 @@ Vue.use(Vuex);
 Vue.filter('labelByLang', (label) => {
   return StringUtil.getLabelByLang(label, store.getters.user.settings.language, store.getters.resources.vocab, store.getters.settings.vocabPfx, store.getters.resources.context);
 });
+
+Vue.filter('asAppPath', (path) => {
+  const appPaths = store.getters.settings.appPaths;
+  let newPath = '';
+  for (const key of Object.keys(appPaths)) {
+    newPath = path.replace(key, appPaths[key]);
+  }
+  return newPath;
+});
+
 Vue.filter('removeDomain', (value) => {
   return StringUtil.removeDomain(value, store.getters.settings.removableBaseUris);
 });
@@ -46,11 +56,30 @@ new Vue({
   },
   watch: {
     '$route'(route) {
-      let title = StringUtil.getUiPhraseByLang(route.name, this.$store.getters.user.settings.language);
-      document.title = title;
+      this.updateTitle(route);
     },
   },
+  mounted() {
+    this.$nextTick(() => {
+      this.updateTitle(this.$route);
+    })
+  },
   methods: {
+    updateTitle(route) {
+      let title = '';
+      if (route.params.query) {
+        const queryParts = route.params.query.split('&');
+        for (const param of queryParts) {
+          if (param[0] === 'q' && param[1] === '=') {
+            title += `"${param.substr(2, param.length -2)}"`;
+          }
+        }
+      } else {
+        title += StringUtil.getUiPhraseByLang(route.name, this.$store.getters.user.settings.language)
+      }
+      title += ` | ${this.$store.getters.settings.title}`;
+      document.title = title;
+    },
     initWarningFunc() {
       if (!this.lxlDebug || navigator.userAgent.indexOf('PhantomJS') > -1) {
         window.lxlWarning = function (...strings) {

@@ -33,6 +33,12 @@ export default {
     }
   },
   computed: {
+    user() {
+      return this.$store.getters.user;
+    },
+    settings() {
+      return this.$store.getters.settings;
+    },
     determinedLabel() {
       let object = this.observation.object;
       if (object.hasOwnProperty('mainEntity')) {
@@ -40,20 +46,13 @@ export default {
       }
       if (typeof object.label !== 'undefined') {
         return object.label;
-      } else if (typeof object.prefLabelByLang !== 'undefined' && typeof object.prefLabelByLang[this.settings.language] !== 'undefined') {
-        return object.prefLabelByLang[this.settings.language];
-      } else if (typeof object.labelByLang !== 'undefined' && typeof object.labelByLang[this.settings.language] !== 'undefined') {
-        return object.labelByLang[this.settings.language];
+      } else if (typeof object.prefLabelByLang !== 'undefined' && typeof object.prefLabelByLang[this.user.settings.language] !== 'undefined') {
+        return object.prefLabelByLang[this.user.settings.language];
+      } else if (typeof object.labelByLang !== 'undefined' && typeof object.labelByLang[this.user.settings.language] !== 'undefined') {
+        return object.labelByLang[this.user.settings.language];
       } else {
         const idArray = object['@id'].split('/');
         return `${idArray[idArray.length - 1]} (has no label)`;
-      }
-    },
-    historySupported() {
-      if (Modernizr.history) {
-        return true;
-      } else {
-        return false;
       }
     },
   },
@@ -72,8 +71,7 @@ export default {
 
 <template>
   <li class="facet-item">
-    <a v-if="!historySupported" :href="observation.view['@id']" :title="determinedLabel | capitalize">{{determinedLabel | capitalize}}</a>
-    <a v-if="historySupported" @click.prevent="toggleActive" :href="observation.view['@id']" :title="determinedLabel | capitalize">
+    <a @click.prevent="toggleActive" :href="observation.view['@id']" :title="determinedLabel | capitalize">
       <input type="checkbox" v-model="active">
       <span :title="determinedLabel | capitalize">
         {{determinedLabel | capitalize}}

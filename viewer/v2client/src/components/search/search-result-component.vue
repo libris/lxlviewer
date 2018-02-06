@@ -84,7 +84,7 @@ export default {
     .error {
       display: inline-block;
       font-family: monospace;
-      border: 1px solid maroon;
+      border: 1px solid rgb(94, 39, 39);
       margin-top: 30px;
       padding: 5px;
       max-width: 50%;
