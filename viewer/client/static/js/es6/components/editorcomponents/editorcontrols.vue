@@ -323,11 +323,11 @@ export default {
               <li v-if="isSubClassOf('Instance') && hasSigel && !status.inEdit && user.email !== ''">
                 <a v-if="downloadIsSupported" @click="getCompiledPost()">
                   <i class="fa fa-fw fa-download" aria-hidden="true"></i>
-                  {{"Download compiled" | translatePhrase}}
+                  {{"Download compiled MARC21" | translatePhrase}}
                 </a>
                 <a v-if="!downloadIsSupported" :href="compileMARCUrl">
                   <i class="fa fa-fw fa-download" aria-hidden="true"></i>
-                  {{"Download compiled" | translatePhrase}}
+                  {{"Download compiled MARC21" | translatePhrase}}
                 </a>
               </li>
               <li>
