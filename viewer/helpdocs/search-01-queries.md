@@ -13,14 +13,13 @@ I Libris XL används en sökmotor för fulltext och analys.
 
 ## Operatorer för frågespråk
 
-`+` betyder AND  
-`|` betyder OR  
-`-` innebär uteslutning  
-`"` används för frassökning  
-`*` innebär trunkering av en term  
+   `+` betyder AND  
+   `|` betyder OR  
+   `-` innebär uteslutning  
+   `"` används för frassökning  
+   `*` innebär trunkering av en term  
 
-
-Standardfunktionalitet är att sökmotorn ger träff på valfri sökterm med en `|` . En sökning på `Astrid Lindgren` kommer matcha poster som innehåller antingen (1) `Astrid` eller (2) `Lindgren`, ger även träff på (3) `Astrid Lindgren`.
+Standardfunktionaliteten i sökmotorn ger träff på sammanslagen sökterm, `+`. En sökning på `Astrid Lindgren` kommer matcha poster innehållandes `Astrid` och `Lindgren`, `Astrid Lindgren`.
 
 De föredragna operatorerna är `+` (termen måste vara inkluderad) och `-` (denna term får ej vara inkluderad) Alla andra termer är valfria.
 
