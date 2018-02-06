@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import * as translationsFile from '@/resources/json/i18n';
+import translationsFile from '@/resources/json/i18n.json';
 import * as VocabUtil from './vocab';
 
 export function removeDomain(string, removableBaseUriArray) {

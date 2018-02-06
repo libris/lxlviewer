@@ -20,14 +20,14 @@
               <div class="navbar-circle">
                 <i class="fa fa-question-circle" aria-hidden="true"></i>
               </div>
-              <span class="js-translateable" data-translateable="Hjälp">Help</span></a>
+              <span>{{"Help" | translatePhrase}}</span></a>
           </li>
           <li class="navbar-item">
           <router-link to="/FindTest">
             <div class="navbar-circle">
               <i class="fa fa-search" aria-hidden="true"></i>
             </div>
-            <span class="js-translateable" data-translateable="Sök">Search</span>
+            <span>{{"Search" | translatePhrase}}</span>
             </router-link>
           </li>
           <li class="navbar-item">
@@ -35,7 +35,7 @@
               <div class="navbar-circle">
                 <i class="fa fa-file-text" aria-hidden="true"></i>
               </div>
-              <span class="js-translateable" data-translateable="Create new">Create new</span>
+              <span>{{"Create new" | translatePhrase}}</span>
             </a>
           </li>
           <li class="navbar-item user-settings">
@@ -50,7 +50,7 @@
             <div class="navbar-circle">
               <i class="fa fa-fw fa-sign-in"></i>
             </div>
-            <span class="js-translateable" data-translateable="Log in">Log in</span></a>
+            <span>{{"Log in" | translatePhrase}}</span></a>
           </li>
         </ul>
     </div>

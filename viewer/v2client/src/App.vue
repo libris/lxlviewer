@@ -2,11 +2,12 @@
   <div id="app">
     <navbar-component />
     <main class="container">
+      <div v-if="!resourcesLoaded" class="text-center">
+        <i class="fa fa-circle-o-notch fa-4x fa-spin"></i><br/>
+        <h3>{{ 'Loading' | translatePhrase | capitalize }}</h3>
+      </div>
       <router-view v-if="resourcesLoaded" />
     </main>
-    <div v-if="!resourcesLoaded">
-      stuff is loading
-    </div>
   </div>
 </template>
 
