@@ -36,7 +36,15 @@ const store = new Vuex.Store({
         'https://id.kb.se/vocab/',
         'http://id.kb.se/',
         'https://id.kb.se/',
-      ]
+      ],
+      dataSetFilters: {
+        libris: [
+          'https://id.kb.se/vocab/Instance',
+          'https://id.kb.se/vocab/Work',
+          'https://id.kb.se/vocab/Agent',
+          'https://id.kb.se/vocab/Concept',
+        ],
+      },
     }
   },
   mutations: {

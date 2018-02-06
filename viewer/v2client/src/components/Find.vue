@@ -5,8 +5,8 @@
         <!-- <facet-controls v-if="initialized == true" :result="result"></facet-controls> -->
       </div>
       <div v-bind:class="{'col-md-12': isLandingPage, 'col-md-9': !isLandingPage }" class="search-content-container">
-        <!-- <search-form v-if="initialized == true" :result="result" site-title="${g.site.title}" filter-param="${g.site.filter_param}" :is-landing-page="isLandingPage"></search-form> -->
-        <search-result-component :result="result" v-if="(initialized == true && result.totalItems > -1)"></search-result-component>
+        <search-form :result="result"></search-form>
+        <search-result-component :result="result" v-if="result.totalItems > -1"></search-result-component>
       </div>
     </div>
   </div>
@@ -38,25 +38,26 @@ export default {
     }
   },
   events: {
-    newresult(resultPromise) {
-      this.changeResultListStatus('error', false);
-      resultPromise.then((result) => {
-        this.result = result;
-        this.changeResultListStatus('loading', false);
-      }, (error) => {
-        this.changeResultListStatus('error', true);
-        this.changeResultListStatus('loading', false);
-        this.changeResultListStatus('info', 'Could not find result');
-        console.log(error);
-      });
-    },
   },
   watch: {
-
+    '$route.params.query'(value) {
+      this.getResult();
+    },
   },
   methods: {
-    mockResult() {
-      this.result = MockResult;
+    getResult() {
+      const fetchUrl = `http://librisxl.local.tech:5000/find.json?${this.$route.params.query}`;
+
+      fetch(fetchUrl).then((response) => {
+        return response.json();
+      }, (error) => {
+        console.log("everything broke");
+      }).then((result) => {
+        console.log(result);
+        this.result = result;
+      });
+
+      // this.result = MockResult;
     },
     isArray(o) {
       return _.isArray(o);
@@ -98,12 +99,9 @@ export default {
   },
   beforeCreate() {
   },
-  beforeCompile() {
-    this.changeResultListStatus('loading', true);
-  },
   mounted() {
     this.$nextTick(() => {
-      this.mockResult();
+      this.getResult();
       this.initialized = true;
     })
 
@@ -116,23 +114,7 @@ export default {
     // this.changeResultListStatus('loading', false);
     // LayoutUtil.showPage(this);
     // document.title = `${StringUtil.getUiPhraseByLang('Search', this.settings.language)} - ${this.settings.siteInfo.title}`;
-    if (Modernizr.history) {
-      history.replaceState(this.result, 'unused');
-      history.scrollRestoration = 'manual';
-      window.onpopstate = e => {
-        e.preventDefault();
-        this.changeResultListStatus('loading', true);
-        const resultPromise = new Promise((resolve, reject) => {
-          if (e.state !== null) {
-            resolve(e.state);
-          } else {
-            reject(Error('State error'));
-          }
-        });
-        this.$dispatch('newresult', resultPromise);
-        return false;
-      };
-    }
+
   },
   components: {
     'facet-controls': FacetControls,

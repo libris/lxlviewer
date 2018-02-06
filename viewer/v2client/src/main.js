@@ -44,6 +44,12 @@ new Vue({
     });
     this.initWarningFunc();
   },
+  watch: {
+    '$route'(route) {
+      let title = StringUtil.getUiPhraseByLang(route.name, this.$store.getters.user.settings.language);
+      document.title = title;
+    },
+  },
   methods: {
     initWarningFunc() {
       if (!this.lxlDebug || navigator.userAgent.indexOf('PhantomJS') > -1) {

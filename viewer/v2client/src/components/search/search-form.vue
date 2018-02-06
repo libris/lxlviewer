@@ -94,20 +94,10 @@ export default {
             }
         }
         queryText.push('_limit=20');
-        _.each(this.inputData.ids, id => queryText.push(`${this.filterParam}=${id}`));
+        _.each(this.inputData.ids, id => queryText.push(`@type=${id}`));
         // _.each(this.inputData.ids, type => queryText.push(`@type=${type}`));
-        const url = `/find?${queryText.join('&')}`;
-        const resultPromise = new Promise((resolve, reject) => {
-            httpUtil.get({ url: url, accept: 'application/ld+json' })
-            .then((response) => {
-                history.pushState(response, 'unused', response['@id']);
-                resolve(response);
-            }, (error) => {
-                history.pushState({}, 'unused', url);
-                reject('Error searching...', error);
-            });
-        });
-        this.$dispatch('newresult', resultPromise);
+        const query = queryText.join('&');
+        this.$router.push({ path: `/search/${query}` })
       },
       clearInputs() {
         this.inputData.currentInput = 0;
@@ -117,30 +107,19 @@ export default {
       }
   },
   computed: {
-      observations() {
-          const observations = [];
-          const statistics = this.result.statistics || this.result.stats;
-          const dimensionObservations = statistics.sliceByDimension; //this.result.stats.sliceByDimension
-          _.each(dimensionObservations, dimensionObservation => {
-            _.each(dimensionObservation.observation, observation => {
-              const obs = {};
-              obs['@id'] = observation.object['@id'].replace(this.vocabUrl, '');
-              obs.label = StringUtil.getLabelFromObject(observation.object, this.settings.language);
-              observations.push(obs);
-            });
-          });
-          return observations;
+      settings() {
+          return this.$store.getters.settings;
+      },
+      resources() {
+          return this.$store.getters.resources;
       },
       dataSetFilters() {
-          if (this.settings.siteInfo.title === 'libris.kb.se') {
-            return this.settings.dataSetFilters.libris.map(term => {
-              return {
-                '@id': term.replace(this.settings.vocabPfx, ''),
-                'label': StringUtil.getLabelByLang(term, this.settings.language, this.vocab, this.settings.vocabPfx, this.context)
-              };
-            });
-          }
-          return this.observations;
+        return this.settings.dataSetFilters.libris.map(term => {
+            return {
+            '@id': term.replace(this.settings.vocabPfx, ''),
+            'label': StringUtil.getLabelByLang(term, this.settings.language, this.resources.vocab, this.settings.vocabPfx, this.resources.context)
+            };
+        });
       },
       currentIsTag() {
           const value = this.currentField.value;
@@ -186,13 +165,13 @@ export default {
 </script>
 
 <template>
-  <div :class="{'is-landing-page': isLandingPage}" class="search-form-container">
+  <div class="search-form-container">
     <div class="panel panel-default search-controls">
-      <div class="search-type-button-container" v-if="settings.siteInfo.title === 'libris.kb.se'">
+      <div class="search-type-button-container">
         <a class="card-link active">Libris</a>
         <a class="card-link" href="/import">Andra källor</a>
       </div>
-        <form action="/find" method="GET" id="searchForm">
+        <form id="searchForm">
             <div class="form-inline">
                 <div class="form-group">
                     <label class="search-label hidden" id="searchlabel" for="q">
@@ -203,9 +182,9 @@ export default {
                             <div aria-labelledby="searchlabel" id="searchQsmart">
                                 <input
                                     list="matchingParameters"
-                                    v-for="input in inputData.textInput"
-                                    :key="input"
-                                    @focus="handleFocus($index)"
+                                    v-for="(input, index) in inputData.textInput"
+                                    :key="index"
+                                    @focus="handleFocus(index)"
                                     @input="updateField"
                                     @keydown="handleInput"
                                     v-model="input.value"
@@ -223,7 +202,7 @@ export default {
                 </div>
             </div>
 
-            <div class="type-buttons" aria-label="Välj typ" v-if="!result.totalItems || settings.siteInfo.title === 'libris.kb.se'">
+            <div class="type-buttons" aria-label="Välj typ">
                 <label v-for="filter in dataSetFilters" :key="filter['@id']">
                     <input :value="filter['@id']" type="checkbox" :checked="filter['@id'] === 'Instance'" v-model="inputData.ids">
                     {{ filter.label }}
