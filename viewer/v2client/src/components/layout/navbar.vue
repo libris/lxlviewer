@@ -3,16 +3,16 @@
     <div class="container">
       <div class="navbar-header" role="banner">
           <div class="navbar-brand navbar-logo">
-            <a href="/">
-                <img src="/assets/img/kb_logo_black.svg" alt="Kungliga Bibliotekets logotyp">
-            </a>
+            <router-link to="/">
+              <img src="~kungbib-styles/dist/assets/kb_logo_black.svg" alt="Kungliga Bibliotekets logotyp">
+            </router-link>
           </div>
-          <a class="navbar-brand" href="/" title="Version ???">
+          <router-link to="/" class="navbar-brand" title="Version ???">
               Libris katalogisering
             <span class="environment-label">
               ???
             </span>
-          </a>
+          </router-link>
         </div>
         <ul class="nav navbar-nav pull-right">
           <li class="navbar-item">
@@ -23,11 +23,12 @@
               <span class="js-translateable" data-translateable="Hjälp">Help</span></a>
           </li>
           <li class="navbar-item">
-          <a href="/">
+          <router-link to="/FindTest">
             <div class="navbar-circle">
               <i class="fa fa-search" aria-hidden="true"></i>
             </div>
-            <span class="js-translateable" data-translateable="Sök">Search</span></a>
+            <span class="js-translateable" data-translateable="Sök">Search</span>
+            </router-link>
           </li>
           <li class="navbar-item">
             <a href="/createnew">
@@ -47,7 +48,7 @@
           </li>
           <li class="navbar-item"><a href="/login">
             <div class="navbar-circle">
-            <i class="fa fa-fw fa-sign-in"></i>
+              <i class="fa fa-fw fa-sign-in"></i>
             </div>
             <span class="js-translateable" data-translateable="Log in">Log in</span></a>
           </li>
