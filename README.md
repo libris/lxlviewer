@@ -34,10 +34,11 @@ Vagrant box. If rolling your own server environment, update `DBHOST`, `DBUSER`, 
 `WHELK_REST_API_URL` config settings accordingly.
 
 For authenticating using [login.libris.kb.se](https://login.libris.kb.se),
-copy `instance/config.cfg.local -> config.cfg`, add the client secret to `instance/config.cfg` and
-insert the following record in `/etc/hosts` file:
+copy `instance/config.cfg.local -> config.cfg` and add the client secret to `instance/config.cfg`.
 
-    127.0.0.1       localhost.tech
+If you're not connected to KB internal DNS, you need to add the following record to `/etc/hosts`:
+
+    127.0.0.1       kblocalhost.kb.se
 
 
 ## Starting the Flask Application
@@ -46,7 +47,7 @@ insert the following record in `/etc/hosts` file:
 
 This will serve:
 
-* Libris Katalogiseringsverktyg on <http://localhost.tech:5000/>
+* Libris Katalogiseringsverktyg on <http://kblocalhost.kb.se:5000/>
 * `id.kb.se` on <http://localhost:5000/>  
 
 
