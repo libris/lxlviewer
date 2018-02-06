@@ -7,19 +7,20 @@ import router from './router'
 import store from '@/store/store';
 import * as VocabUtil from '@/utils/vocab';
 import * as DisplayUtil from '@/utils/display';
+import * as StringUtil from '@/utils/string';
 import FakedDisplayJson from '@/resources/json/fakedisplay.json';
 
 Vue.config.productionTip = false
 Vue.use(Vuex);
 
 Vue.filter('labelByLang', (label) => {
-  return StringUtil.getLabelByLang(label, self.settings.language, self.vocabMap, self.settings.vocabPfx, self.context);
+  return StringUtil.getLabelByLang(label, store.getters.user.settings.language, store.getters.resources.vocab, store.getters.settings.vocabPfx, store.getters.resources.context);
 });
 Vue.filter('removeDomain', (value) => {
-  return StringUtil.removeDomain(value, self.settings.removableBaseUris);
+  return StringUtil.removeDomain(value, store.getters.settings.removableBaseUris);
 });
 Vue.filter('translatePhrase', (string) => {
-  return StringUtil.getUiPhraseByLang(string, self.settings.language);
+  return StringUtil.getUiPhraseByLang(string, store.getters.user.settings.language);
 });
 
 /* eslint-disable no-new */

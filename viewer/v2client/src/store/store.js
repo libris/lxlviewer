@@ -23,11 +23,20 @@ const store = new Vuex.Store({
     },
     user: {
       settings: {
-        vocabPfx: 'https://id.kb.se/vocab/'
+        language: 'sv'
       }
     },
     settings: {
-      language: 'sv'
+      language: 'sv',
+      vocabPfx: 'https://id.kb.se/vocab/',
+      removableBaseUris: [
+        'http://libris.kb.se/',
+        'https://libris.kb.se/',
+        'http://id.kb.se/vocab/',
+        'https://id.kb.se/vocab/',
+        'http://id.kb.se/',
+        'https://id.kb.se/',
+      ]
     }
   },
   mutations: {

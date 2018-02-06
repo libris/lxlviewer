@@ -105,7 +105,7 @@ export default {
     </h3>
     <div class="id" v-if="identifiers.length > 0">{{ identifiers[0] }} <span class="id-info" v-if="identifiers.length > 1">(+{{ identifiers.length-1 }})</span></div>
     <div class="info">
-      <span class="key-value-pair" v-show="v.length !== 0" v-for="(k,v) in infoWithKeys" :key="k">
+      <span class="key-value-pair" v-show="v.length !== 0" v-for="(v, k) in infoWithKeys" :key="k">
         <span class="key">{{ k | labelByLang }}:</span>&nbsp;<span class="value">{{ v }}</span>
       </span>
     </div>
