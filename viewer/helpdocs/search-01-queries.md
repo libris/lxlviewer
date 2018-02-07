@@ -16,6 +16,8 @@ tags:
    `"` används för frassökning  
    `*` innebär trunkering av en term  
 
+---
+
 ### Standardsökning
 
 En standardsökning ger träff på sammanslagen sökterm. En sökning på Astrid Lindgren kommer matcha poster innehållandes Astrid och Lindgren, oavsett ordning och oavsett var i posten orden finns. Sökningen kommer alltså även matcha `Lindgren Astrid`, `Astrid heter i efternamn Lindgren` och liknande.
