@@ -19,7 +19,8 @@ const store = new Vuex.Store({
     status: {
       resultList: {
         loading: false
-      }
+      },
+      notifications: [],
     },
     user: {
       settings: {
@@ -82,6 +83,18 @@ const store = new Vuex.Store({
     }
   },
   mutations: {
+    pushNotification(state, content) {
+      const date = new Date();
+      content['id'] = StringUtil.getHash(`${date.getSeconds()}${date.getMilliseconds()}`);
+      state.status.notifications.push(content);
+    },
+    removeNotification(state, id) {
+      for (let i = 0; i < state.status.notifications.length; i++) {
+        if (state.status.notifications[i].id === id) {
+          state.status.notifications.splice(i, 1);
+        }
+      }
+    },
     changeResourcesStatus(state, status) {
       state.resources.resourcesLoaded = status;
     },
@@ -134,6 +147,12 @@ const store = new Vuex.Store({
     }
   },
   actions: {
+    removeNotification({ commit }, index) {
+      commit('removeNotification', index);
+    },
+    pushNotification( { commit }, content ) {
+      commit('pushNotification', content);
+    },
     changeResourcesStatus( { commit }, status ) {
       commit('changeResourcesStatus', status);
     },

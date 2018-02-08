@@ -4,9 +4,9 @@
       <div class="col-md-3 facet-container">
         <facet-controls :result="result"></facet-controls>
       </div>
-      <div v-bind:class="{'col-md-12': isLandingPage, 'col-md-9': !isLandingPage }" class="search-content-container">
-        <search-form :result="result"></search-form>
-        <search-result-component :result="result" v-if="result.totalItems > -1"></search-result-component>
+      <div class="search-content-container">
+        <search-form></search-form>
+        <search-result-component :result="result" v-if="result.totalItems && result.totalItems > -1"></search-result-component>
       </div>
     </div>
   </div>
@@ -49,7 +49,7 @@ export default {
       fetch(fetchUrl).then((response) => {
         return response.json();
       }, (error) => {
-        console.warn("Search failed...");
+        this.$store.dispatch('pushNotification', { color: 'red', message: StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language) });
       }).then((result) => {
         this.result = result;
       });
@@ -82,11 +82,8 @@ export default {
     },
   },
   computed: {
-    isLibris() {
-      return this.settings.siteInfo.title === 'libris.kb.se';
-    },
-    isLandingPage() {
-      return typeof this.result.totalItems === 'undefined';
+    user() {
+      return this.$store.getters.user;
     },
     copy() {
       return Copy[this.settings.siteInfo.title];

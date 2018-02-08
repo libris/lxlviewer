@@ -8,11 +8,13 @@
       </div>
       <router-view v-if="resourcesLoaded" />
     </main>
+    <notification-list></notification-list>
   </div>
 </template>
 
 <script>
 import Navbar from '@/components/layout/navbar';
+import NotificationList from '@/components/shared/notification-list';
 
 export default {
   name: 'App',
@@ -21,8 +23,13 @@ export default {
       return this.$store.getters.resources.resourcesLoaded;
     }
   },
+  mounted() {
+    this.$nextTick(() => {
+    });
+  },
   components: {
-    'navbar-component': Navbar
+    'navbar-component': Navbar,
+    'notification-list': NotificationList,
    },
 }
 </script>
