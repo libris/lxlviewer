@@ -60,7 +60,7 @@
 <script>
 
 export default {
-  name: 'Navbar',
+  name: 'navbar-component',
   computed: {
   }
 }
