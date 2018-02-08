@@ -37,9 +37,6 @@ export default {
       });
       return infoObj;
     },
-    isKbSe() {
-      return this.focusData['@id'].indexOf('id.kb.se') > -1;
-    },
     renderLink() {
       if (this.addLink === true && !this.isLocal) {
         return true;
@@ -74,6 +71,10 @@ export default {
     importThis() {
       this.$dispatch('import-this');
     },
+    openThis() {
+      const fnurgel = this.focusData['@id'].replace('http://127.0.0.1:5000/', '').replace('#it', '');
+      this.$router.push({ path: `/${fnurgel}` })
+    },
     removeEntity() {
       this.$dispatch('remove-entity');
     },
@@ -100,7 +101,7 @@ export default {
   <div class="main-info">
     <h3 class="header">
       <span class="import-header" :title="header.join(', ')" v-on:click="importThis()" v-if="isImport">{{ header.join(', ') }}</span>
-      <a v-if="!isImport && renderLink" :class="{'blue-link': isKbSe}" :title="header.join(', ')" :href="focusData['@id']">{{ header.join(', ') }}</a>
+      <a v-if="!isImport && renderLink" :title="header.join(', ')" v-on:click="openThis()">{{ header.join(', ') }}</a>
       <span v-if="!isImport && !renderLink" :title="header.join(', ')">{{ header.join(', ') }}</span>
     </h3>
     <div class="id" v-if="identifiers.length > 0">{{ identifiers[0] }} <span class="id-info" v-if="identifiers.length > 1">(+{{ identifiers.length-1 }})</span></div>

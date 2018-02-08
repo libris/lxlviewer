@@ -6,7 +6,9 @@
         <i class="fa fa-circle-o-notch fa-4x fa-spin"></i><br/>
         <h3>{{ 'Loading' | translatePhrase | capitalize }}</h3>
       </div>
-      <router-view v-if="resourcesLoaded" />
+      <transition name="fade">
+        <router-view v-if="resourcesLoaded" />
+      </transition>
     </main>
     <footer-component></footer-component>
     <notification-list></notification-list>
@@ -48,6 +50,18 @@ export default {
   flex-direction: column;
   main {
     flex-grow: 1;
+  }
+  .fade-enter-active, .fade-leave-active {
+    transition-property: opacity;
+    transition-duration: .25s;
+  }
+
+  .fade-enter-active {
+    transition-delay: .25s;
+  }
+
+  .fade-enter, .fade-leave-active {
+    opacity: 0
   }
 }
 
