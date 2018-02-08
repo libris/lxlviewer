@@ -4,7 +4,7 @@
       <div class="col-md-3 facet-container">
         <facet-controls :result="result"></facet-controls>
       </div>
-      <div class="search-content-container">
+      <div class="col-md-9 search-content-container">
         <search-form></search-form>
         <search-result-component :result="result" v-if="result.totalItems && result.totalItems > -1"></search-result-component>
       </div>
@@ -44,7 +44,7 @@ export default {
   },
   methods: {
     getResult() {
-      const fetchUrl = `http://librisxl.local.tech:5000/find.json?${this.$route.params.query}`;
+      const fetchUrl = `http://vagrant12.kb.se:5000/find.json?${this.$route.params.query}`;
 
       fetch(fetchUrl).then((response) => {
         return response.json();
