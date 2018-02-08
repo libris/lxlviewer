@@ -4,7 +4,7 @@ import * as _ from 'lodash';
 
 export function getVocab() {
   return new Promise((resolve, reject) => {
-    httpUtil.getResourceFromCache('http://vagrant12.kb.se:5000/vocab/data.jsonld').then((result) => {
+    httpUtil.getResourceFromCache('http://kblocalhost.kb.se:5000/vocab/data.jsonld').then((result) => {
       resolve(result);
     }, (error) => {
       reject(error);
@@ -14,7 +14,7 @@ export function getVocab() {
 
 export function getContext() {
   return new Promise((resolve, reject) => {
-    httpUtil.getResourceFromCache('http://vagrant12.kb.se:5000/context.jsonld').then((result) => {
+    httpUtil.getResourceFromCache('http://kblocalhost.kb.se:5000/context.jsonld').then((result) => {
       resolve(result);
     }, (error) => {
       reject(error);
@@ -24,7 +24,7 @@ export function getContext() {
 
 export function getForcedListTerms() {
   return new Promise((resolve, reject) => {
-    httpUtil.getResourceFromCache('http://vagrant12.kb.se:5000/sys/forcedsetterms.json').then((result) => {
+    httpUtil.getResourceFromCache('http://kblocalhost.kb.se:5000/sys/forcedsetterms.json').then((result) => {
       resolve(result);
     }, (error) => {
       reject(error);

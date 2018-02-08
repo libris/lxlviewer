@@ -72,7 +72,7 @@ export default {
       this.$dispatch('import-this');
     },
     openThis() {
-      const fnurgel = this.focusData['@id'].replace('http://127.0.0.1:5000/', '').replace('#it', '');
+      const fnurgel = this.focusData['@id'].replace('http://kblocalhost.kb.se:5000/', '');
       this.$router.push({ path: `/${fnurgel}` })
     },
     removeEntity() {
@@ -141,6 +141,7 @@ export default {
       overflow: hidden;
       text-overflow: ellipsis;
       width: 100%;
+      cursor: pointer;
       font-size: 1.6em;
       line-height: 1.6em;
       min-height: 1.2em;

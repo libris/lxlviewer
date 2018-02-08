@@ -36,7 +36,7 @@ export default {
 
 <template>
   <div class="panel panel-default LinkCard" v-bind:class="{'no-link': !linkUrl}">
-    <img :src="getImage" class="LinkCard-img"/>
+    <img :src="resolvedImage" class="LinkCard-img"/>
     <div class="LinkCard-content">
       <div class="LinkCard-text">
         <span class="LinkCard-title">{{ header }}</span>
@@ -48,5 +48,5 @@ export default {
 </template>
 
 <style lang="less">
-  @import '../../../../less/components/_linkcard.less';
+  // @import '../../../../less/components/_linkcard.less';
 </style>

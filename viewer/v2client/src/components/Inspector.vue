@@ -35,12 +35,9 @@ export default {
   },
   methods: {
     fetchDocument() {
-      const fetchUrl = this.documentId;
+      const fetchUrl = `http://kblocalhost.kb.se:5000/${this.documentId}/data.jsonld`;
 
-      const headers = new Headers();
-      headers.append('Content-Type', 'application/ld+json');
-
-      fetch(fetchUrl, { headers }).then((response) => {
+      fetch(fetchUrl).then((response) => {
         if (response.status === 200) {
           return response.json();
         } else {
