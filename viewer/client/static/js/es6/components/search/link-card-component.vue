@@ -46,59 +46,19 @@ export default {
 </script>
 
 <template>
-  <div class="panel panel-default link-card" v-bind:class="{'no-link': !linkUrl}">
-    <img :src="getImage" />
-    <div>
-      <div class="content">
-        <span class="header">{{ header }}</span>
-        <div class="body">{{ text }}</div>
+  <div class="panel panel-default LinkCard" v-bind:class="{'no-link': !linkUrl}">
+    <img :src="getImage" class="LinkCard-img"/>
+    <div class="LinkCard-content">
+      <div class="LinkCard-text">
+        <span class="LinkCard-title">{{ header }}</span>
+        <div class="LinkCard-descr">{{ text }}</div>
       </div>
-      <a v-if="linkUrl" :href="linkUrl" class="card-link">{{ linkText }}</a>
+      <a v-if="linkUrl" :href="linkUrl" class="card-link LinkCard-link">{{ linkText }}</a>
     </div>
   </div>
 </template>
 
 <style lang="less">
-@import '../shared/_variables.less';
-
-.link-card {
-  flex-basis: 24%; // To parent
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 0;
-  &.no-link {
-    padding-bottom: 1em;
-  }
-  img {
-    width: 100%;
-  }
-  > div {
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 0.5em 1em 0em 1em;
-    flex-grow: 1;
-    .content {
-      display: flex;
-      flex-direction: column;
-      .header {
-        font-weight: bold;
-        font-size: 1.1em;
-      }
-      .body {
-        font-size: 14px;
-      }
-      .body, .header {
-        width: 100%;
-        text-align: left;
-      }
-    }
-    > a {
-      text-align: center;
-    }
-  }
-}
-
+  @import '../shared/_variables.less';
+  @import '../../../../less/components/_linkcard.less';
 </style>
