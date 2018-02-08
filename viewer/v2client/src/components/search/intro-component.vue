@@ -49,6 +49,7 @@ export default {
 </template>
 
 <style lang="less">
+  @import '../shared/_variables.less';
   @import '../../../../less/components/_linkcard.less';
   @import '../../../../less/components/_video.less';
 </style>
