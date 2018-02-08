@@ -30,61 +30,26 @@ export default {
 };
 </script>
 
+
 <template>
-  <div class="panel panel-default intro-component">
-    <div class="libris-intro-video-container">
-      <div class="libris-intro-video">
+  <div class="panel panel-default LinkCard LinkCard--large">
+    <div class="LinkCard-videoWrap">
+      <div class="LinkCard-video Video">
         <iframe :src="videoUrl" frameborder="0" allowfullscreen></iframe>
       </div>
     </div>
-    <div class="libris-intro-text">
-      <div class="content">
-        <span class="header">{{ header }}</span>
-        <p>{{ text }}</p>
+     <div class="LinkCard-content">
+      <div class="LinkCard-text">
+        <span class="LinkCard-title">{{ header }}</span>
+        <div class="LinkCard-descr">{{ text }}</div>
       </div>
-      <a v-if="linkUrl" :href="linkUrl" class="card-link">{{ linkText }}</a>
+      <a v-if="linkUrl" :href="linkUrl" class="card-link LinkCard-link">{{ linkText }}</a>
     </div>
   </div>
 </template>
 
 <style lang="less">
-
-.intro-component {
-  display: flex;
-  justify-content: space-between;
-  .libris-intro-video-container {
-    flex-basis: 45%;
-    padding-bottom: 1px;
-    .libris-intro-video {
-      position: relative;
-      padding-bottom: 56.25%; /* 16:9 */
-      padding-top: 25px;
-      height: 0;
-      iframe {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-      }
-    }
-  }
-  .libris-intro-text {
-    padding: 1em;
-    flex-basis: 45%;
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    .header {
-      font-size: 1.1em;
-      font-weight: bold;
-    }
-    a {
-      text-align: center;
-    }
-  }
-
-}
-
+  @import '../../../../less/components/_linkcard.less';
+  @import '../../../../less/components/_video.less';
 </style>
+
