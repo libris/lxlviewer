@@ -33,7 +33,7 @@ export default class PagedCollection extends View {
 
   initVue() {
     const self = this;
-
+    
     document.getElementById('body-blocker').addEventListener('click', function () {
       self.vm.$broadcast('close-modals');
     }, false);

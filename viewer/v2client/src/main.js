@@ -64,6 +64,11 @@ new Vue({
       this.updateTitle(this.$route);
     })
   },
+  computed: {
+    user() {
+      return this.$store.getters.user;
+    }
+  },
   methods: {
     updateTitle(route) {
       let title = '';
@@ -110,7 +115,8 @@ new Vue({
       const vocabPromise = VocabUtil.getVocab().then((vocab) => {
         this.vocab = vocab['@graph'];
       }, (error) => {
-        console.log('getVocab', error);
+        console.log('getVocab resulted in', error);
+        this.$store.dispatch('pushNotification', { color: 'red', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)}. ${error}` });
       });
       promiseArray.push(vocabPromise);
       // const displayPromise = DisplayUtil.getDisplayDefinitions().then((display) => {
@@ -122,13 +128,15 @@ new Vue({
       const repeatablePromise = VocabUtil.getForcedListTerms().then((result) => {
         this.forcedListTerms = result;
       }, (error) => {
-        console.log('getForcedListTerms', error);
+        console.log('getForcedListTerms resulted in', error);
+        this.$store.dispatch('pushNotification', { color: 'red', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)}. ${error}` });
       });
       promiseArray.push(repeatablePromise);
       const contextPromise = VocabUtil.getContext().then((context) => {
         this.context = context['@context'];
       }, (error) => {
-        console.log('getContext', error);
+        console.log('getContext resulted in', error);
+        this.$store.dispatch('pushNotification', { color: 'red', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)}. ${error}` });
       });
       promiseArray.push(contextPromise);
       return promiseArray;

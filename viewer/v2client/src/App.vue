@@ -8,11 +8,15 @@
       </div>
       <router-view v-if="resourcesLoaded" />
     </main>
+    <footer-component></footer-component>
+    <notification-list></notification-list>
   </div>
 </template>
 
 <script>
 import Navbar from '@/components/layout/navbar';
+import Footer from '@/components/layout/footer';
+import NotificationList from '@/components/shared/notification-list';
 
 export default {
   name: 'App',
@@ -21,8 +25,14 @@ export default {
       return this.$store.getters.resources.resourcesLoaded;
     }
   },
+  mounted() {
+    this.$nextTick(() => {
+    });
+  },
   components: {
-    'navbar-component': Navbar
+    'navbar-component': Navbar,
+    'footer-component': Footer,
+    'notification-list': NotificationList,
    },
 }
 </script>
@@ -31,5 +41,14 @@ export default {
 @import "~bootstrap/less/bootstrap";
 @import "~kungbib-styles/dist/less/kb-style";
 @import "./less/main";
+
+#app {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+  main {
+    flex-grow: 1;
+  }
+}
 
 </style>
