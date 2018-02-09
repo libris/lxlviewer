@@ -7,10 +7,10 @@
               <img src="~kungbib-styles/dist/assets/kb_logo_black.svg" alt="Kungliga Bibliotekets logotyp">
             </router-link>
           </div>
-          <router-link to="/" class="navbar-brand" title="Version ???">
+          <router-link to="/" class="navbar-brand" :title="`Version ${settings.version}`">
               Libris katalogisering
             <span class="environment-label">
-              ???
+              {{ environmentLabel }}
             </span>
           </router-link>
         </div>
@@ -62,6 +62,30 @@
 export default {
   name: 'navbar-component',
   computed: {
+    settings() {
+      return this.$store.getters.settings;
+    },
+    environmentLabel() {
+      let label = '';
+      switch(this.settings.environment) {
+        case 'development':
+          label += 'DEV ';
+        break;
+        case 'production':
+        break;
+        case 'staging':
+          label += 'STG '
+        break;
+        case 'qa':
+          label += 'QA '
+        break;
+        case 'testing':
+          label += 'TEST ';
+        break;
+      }
+      label += this.settings.version;
+      return label;
+    }
   }
 }
 </script>

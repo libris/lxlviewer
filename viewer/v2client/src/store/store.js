@@ -31,6 +31,8 @@ const store = new Vuex.Store({
       title: 'Libris Katalogisering',
       language: 'sv',
       vocabPfx: 'https://id.kb.se/vocab/',
+      environment: process.env.NODE_ENV,
+      version: process.env.VERSION,
       apiPath: process.env.API_PATH,
       appPaths: {
         '/find?': '/search/',
