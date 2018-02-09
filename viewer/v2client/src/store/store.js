@@ -31,8 +31,9 @@ const store = new Vuex.Store({
       title: 'Libris Katalogisering',
       language: 'sv',
       vocabPfx: 'https://id.kb.se/vocab/',
+      apiPath: process.env.API_PATH,
       appPaths: {
-        '/find?': '/search/'
+        '/find?': '/search/',
       },
       removableBaseUris: [
         'http://libris.kb.se/',

@@ -31,7 +31,7 @@ export default {
 
 <template>
   <div class="result-item-detailed">
-    <entity-summary :focus-data="focusData" :is-import="isImport" :import-item="importItem" :add-link="true" :lines="4"></entity-summary>
+    <entity-summary :focus-data="focusData" :router-path="focusData['@id'] | asFnurgelLink" :is-import="isImport" :import-item="importItem" :add-link="true" :lines="4"></entity-summary>
   </div>
 </template>
 

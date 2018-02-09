@@ -1,5 +1,7 @@
 # LXL Viewer
 
+For instructions on how to run the v2 client, scroll further down.
+
 ## Requirements
 
 Requires the following to be installed on the host machine:
@@ -15,7 +17,6 @@ environments)
 Run:
 
     $ pip install -r requirements.txt
-
 
 ## Building
 
@@ -97,3 +98,43 @@ Run nightwatch e2e tests with Chrome
 Run unit tests
 
     $ npm run test:unit
+
+
+# v2 client
+
+The v2 client is a static standalone single page application built with Webpack 3 and VueJS 2 (based on [this template](http://vuejs-templates.github.io/webpack/)).
+
+## Requirements for development
+
+* [Node](http://nodejs.org/) and [NPM](https://www.npmjs.com/)
+* A functional REST-API for the resources (check out [xl_vagrant_up](https://github.com/libris/xl_vagrant_up))
+
+## Setup
+
+    $ cd viewer/v2client && npm install
+
+    $ cp config/api_config.json.ln config/api_config.json
+
+In `api_config.json`, input the path to your REST-API (if not standard).
+
+## Building
+
+```
+# serve with hot reload at localhost:8080
+npm run dev
+
+# build for production with minification
+npm run build
+
+# build for production and view the bundle analyzer report
+npm run build --report
+
+# run unit tests
+npm run unit
+
+# run e2e tests
+npm run e2e
+
+# run all tests
+npm test
+```

@@ -14,8 +14,7 @@ export default {
     isLocal: false,
     isExtractable: false,
     importItem: '',
-    isImport: false,
-    actionSettings: {},
+    routerPath: String,
   },
   data() {
     return {
@@ -29,6 +28,12 @@ export default {
     }
   },
   computed: {
+    settings() {
+      return this.$store.getters.settings;
+    },
+    isLibrisResource() {
+      return this.focusData['@id'].startsWith(this.settings.apiPath);
+    },
     infoWithKeys() {
       const info = this.getSummary.info.concat(this.getSummary.sub);
       const infoObj = {};
@@ -71,10 +76,6 @@ export default {
     importThis() {
       this.$dispatch('import-this');
     },
-    openThis() {
-      const fnurgel = this.focusData['@id'].replace('http://kblocalhost.kb.se:5000/', '');
-      this.$router.push({ path: `/${fnurgel}` })
-    },
     removeEntity() {
       this.$dispatch('remove-entity');
     },
@@ -100,9 +101,8 @@ export default {
   </div>
   <div class="main-info">
     <h3 class="header">
-      <span class="import-header" :title="header.join(', ')" v-on:click="importThis()" v-if="isImport">{{ header.join(', ') }}</span>
-      <a v-if="!isImport && renderLink" :title="header.join(', ')" v-on:click="openThis()">{{ header.join(', ') }}</a>
-      <span v-if="!isImport && !renderLink" :title="header.join(', ')">{{ header.join(', ') }}</span>
+      <router-link v-if="isLibrisResource" :to="routerPath" :title="header.join(', ')">{{ header.join(', ') }}</router-link>
+      <a v-if="!isLibrisResource" :href="focusData['@id']" :title="header.join(', ')">{{ header.join(', ') }}</a>
     </h3>
     <div class="id" v-if="identifiers.length > 0">{{ identifiers[0] }} <span class="id-info" v-if="identifiers.length > 1">(+{{ identifiers.length-1 }})</span></div>
     <div class="info">

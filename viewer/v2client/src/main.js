@@ -26,6 +26,13 @@ Vue.filter('asAppPath', (path) => {
   return newPath;
 });
 
+Vue.filter('asFnurgelLink', (id) => {
+  console.log(id);
+  const parts = id.split('/');
+  const fnurgel = '/' + parts[parts.length-1];
+  return fnurgel;
+});
+
 Vue.filter('removeDomain', (value) => {
   return StringUtil.removeDomain(value, store.getters.settings.removableBaseUris);
 });
@@ -65,6 +72,9 @@ new Vue({
     })
   },
   computed: {
+    settings() {
+      return this.$store.getters.settings;
+    },
     user() {
       return this.$store.getters.user;
     }
@@ -112,7 +122,7 @@ new Vue({
     },
     getLdDependencies(fetchIndicator) {
       const promiseArray = [];
-      const vocabPromise = VocabUtil.getVocab().then((vocab) => {
+      const vocabPromise = VocabUtil.getVocab(this.settings.apiPath).then((vocab) => {
         this.vocab = vocab['@graph'];
       }, (error) => {
         console.log('getVocab resulted in', error);
@@ -125,14 +135,14 @@ new Vue({
       //   console.log('getDisplayDefinitions', error);
       // });
       // promiseArray.push(displayPromise);
-      const repeatablePromise = VocabUtil.getForcedListTerms().then((result) => {
+      const repeatablePromise = VocabUtil.getForcedListTerms(this.settings.apiPath).then((result) => {
         this.forcedListTerms = result;
       }, (error) => {
         console.log('getForcedListTerms resulted in', error);
         this.$store.dispatch('pushNotification', { color: 'red', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)}. ${error}` });
       });
       promiseArray.push(repeatablePromise);
-      const contextPromise = VocabUtil.getContext().then((context) => {
+      const contextPromise = VocabUtil.getContext(this.settings.apiPath).then((context) => {
         this.context = context['@context'];
       }, (error) => {
         console.log('getContext resulted in', error);
