@@ -14,8 +14,7 @@ export default {
     isLocal: false,
     isExtractable: false,
     importItem: '',
-    isImport: false,
-    actionSettings: {},
+    routerPath: String,
   },
   data() {
     return {
@@ -29,6 +28,12 @@ export default {
     }
   },
   computed: {
+    settings() {
+      return this.$store.getters.settings;
+    },
+    isLibrisResource() {
+      return this.focusData['@id'].startsWith(this.settings.apiPath);
+    },
     infoWithKeys() {
       const info = this.getSummary.info.concat(this.getSummary.sub);
       const infoObj = {};
@@ -36,9 +41,6 @@ export default {
         infoObj[node.property] = node.value.join(', ');
       });
       return infoObj;
-    },
-    isKbSe() {
-      return this.focusData['@id'].indexOf('id.kb.se') > -1;
     },
     renderLink() {
       if (this.addLink === true && !this.isLocal) {
@@ -99,9 +101,8 @@ export default {
   </div>
   <div class="main-info">
     <h3 class="header">
-      <span class="import-header" :title="header.join(', ')" v-on:click="importThis()" v-if="isImport">{{ header.join(', ') }}</span>
-      <a v-if="!isImport && renderLink" :class="{'blue-link': isKbSe}" :title="header.join(', ')" :href="focusData['@id']">{{ header.join(', ') }}</a>
-      <span v-if="!isImport && !renderLink" :title="header.join(', ')">{{ header.join(', ') }}</span>
+      <router-link v-if="isLibrisResource" :to="routerPath" :title="header.join(', ')">{{ header.join(', ') }}</router-link>
+      <a v-if="!isLibrisResource" :href="focusData['@id']" :title="header.join(', ')">{{ header.join(', ') }}</a>
     </h3>
     <div class="id" v-if="identifiers.length > 0">{{ identifiers[0] }} <span class="id-info" v-if="identifiers.length > 1">(+{{ identifiers.length-1 }})</span></div>
     <div class="info">
@@ -140,6 +141,7 @@ export default {
       overflow: hidden;
       text-overflow: ellipsis;
       width: 100%;
+      cursor: pointer;
       font-size: 1.6em;
       line-height: 1.6em;
       min-height: 1.2em;

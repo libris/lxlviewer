@@ -1,7 +1,7 @@
 {
   "name": "v2client",
-  "version": "1.0.0",
-  "description": "A Vue.js project",
+  "version": "0.1.0",
+  "description": "LIBRIS cataloguing client",
   "author": "Ola Blissing <ola.blissing@gmail.com>",
   "private": true,
   "scripts": {

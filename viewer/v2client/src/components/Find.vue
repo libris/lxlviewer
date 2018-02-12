@@ -44,7 +44,7 @@ export default {
   },
   methods: {
     getResult() {
-      const fetchUrl = `http://vagrant12.kb.se:5000/find.json?${this.$route.params.query}`;
+      const fetchUrl = `http://kblocalhost.kb.se:5000/find.json?${this.$route.params.query}`;
 
       fetch(fetchUrl).then((response) => {
         return response.json();

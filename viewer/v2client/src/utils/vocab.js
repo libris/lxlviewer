@@ -2,9 +2,9 @@ import * as httpUtil from './http';
 import * as StringUtil from './string';
 import * as _ from 'lodash';
 
-export function getVocab() {
+export function getVocab(apiPath) {
   return new Promise((resolve, reject) => {
-    httpUtil.getResourceFromCache('http://vagrant12.kb.se:5000/vocab/data.jsonld').then((result) => {
+    httpUtil.getResourceFromCache(`${apiPath}/vocab/data.jsonld`).then((result) => {
       resolve(result);
     }, (error) => {
       reject(error);
@@ -12,9 +12,9 @@ export function getVocab() {
   });
 }
 
-export function getContext() {
+export function getContext(apiPath) {
   return new Promise((resolve, reject) => {
-    httpUtil.getResourceFromCache('http://vagrant12.kb.se:5000/context.jsonld').then((result) => {
+    httpUtil.getResourceFromCache(`${apiPath}/context.jsonld`).then((result) => {
       resolve(result);
     }, (error) => {
       reject(error);
@@ -22,9 +22,9 @@ export function getContext() {
   });
 }
 
-export function getForcedListTerms() {
+export function getForcedListTerms(apiPath) {
   return new Promise((resolve, reject) => {
-    httpUtil.getResourceFromCache('http://vagrant12.kb.se:5000/sys/forcedsetterms.json').then((result) => {
+    httpUtil.getResourceFromCache(`${apiPath}/sys/forcedsetterms.json`).then((result) => {
       resolve(result);
     }, (error) => {
       reject(error);

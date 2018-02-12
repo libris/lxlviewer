@@ -46,7 +46,7 @@ export default {
   },
   computed: {
     copy() {
-      return Copy['libris.kb.se'];
+      return Copy;
     },
   },
   components: {

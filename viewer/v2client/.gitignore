@@ -7,6 +7,10 @@ yarn-error.log*
 /test/unit/coverage/
 /test/e2e/reports/
 selenium-debug.log
+package-lock.json
+
+# Config
+/config/api_config.json
 
 # Editor directories and files
 .idea
