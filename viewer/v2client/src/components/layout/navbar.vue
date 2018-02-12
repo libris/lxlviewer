@@ -38,15 +38,15 @@
               <span>{{"Create new" | translatePhrase}}</span>
             </a>
           </li>
-          <li class="navbar-item user-settings">
-            <a href="/usersettings">
+          <li class="navbar-item user-settings" v-if="user">
+            <router-link to="/user">
               <div class="navbar-circle">
-                <img class="user-gravatar" src="" />
+                <img class="user-gravatar" :src="`https://www.gravatar.com/avatar/${user.emailHash}?d=mm&s=32`" />
               </div>
-              USER_NAME <span v-cloak class="sigelLabel">(ACTIVE_SIGEL)</span>
-            </a>
+              {{ user.fullName }} <span v-cloak class="sigelLabel">({{ user.settings.activeSigel }})</span>
+            </router-link>
           </li>
-          <li class="navbar-item"><a href="/login">
+          <li class="navbar-item" v-if="!user"><a href="/login">
             <div class="navbar-circle">
               <i class="fa fa-fw fa-sign-in"></i>
             </div>
@@ -62,6 +62,9 @@
 export default {
   name: 'navbar-component',
   computed: {
+    user() {
+      return this.$store.getters.user;
+    },
     settings() {
       return this.$store.getters.settings;
     },

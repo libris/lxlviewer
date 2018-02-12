@@ -8,6 +8,7 @@ import store from '@/store/store';
 import * as VocabUtil from '@/utils/vocab';
 import * as DisplayUtil from '@/utils/display';
 import * as StringUtil from '@/utils/string';
+import * as User from '@/models/user';
 import FakedDisplayJson from '@/resources/json/fakedisplay.json';
 
 Vue.config.productionTip = false
@@ -27,7 +28,6 @@ Vue.filter('asAppPath', (path) => {
 });
 
 Vue.filter('asFnurgelLink', (id) => {
-  console.log(id);
   const parts = id.split('/');
   const fnurgel = '/' + parts[parts.length-1];
   return fnurgel;
@@ -52,6 +52,7 @@ new Vue({
   components: { App },
   template: '<App/>',
   created() {
+    this.initializeUser();
     Promise.all(this.getLdDependencies()).then(() => {
       store.dispatch('setContext', this.context);
       store.dispatch('setupVocab', this.vocab);
@@ -80,6 +81,10 @@ new Vue({
     }
   },
   methods: {
+    initializeUser() {
+      const userObj = User.getUserObject(window.userInfo || {});
+      store.dispatch('setUser', userObj);
+    },
     updateTitle(route) {
       let title = '';
       if (route.params.query) {

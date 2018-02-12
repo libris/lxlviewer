@@ -19,11 +19,20 @@ export default {
   methods: {
   },
   computed: {
+    settings() {
+      return this.$store.getters.settings;
+    },
+    user() {
+      return this.$store.getters.user;
+    },
     categorization() {
-      return StringUtil.getFormattedEntries(this.getSummary.categorization, this.vocab, this.settings, this.context);
+      return StringUtil.getFormattedEntries(this.getSummary.categorization, this.resources.vocab, this.settings, this.resources.context);
     },
     header() {
-      return StringUtil.getFormattedEntries(this.getSummary.header, this.vocab, this.settings, this.context);
+      return StringUtil.getFormattedEntries(this.getSummary.header, this.resources.vocab, this.settings, this.resources.context);
+    },
+    isLibrisResource() {
+      return this.focusData['@id'].startsWith(this.settings.apiPath);
     },
   },
   components: {
@@ -38,8 +47,8 @@ export default {
 
 <template>
   <div class="result-item-compact">
-    <span class="import-header header" :title="header.join(', ')" v-on:click="importThis()" v-if="isImport">{{ header.join(', ') }}</span>
-    <a v-if="!isImport" class="header" :class="{'blue-link': settings.siteInfo.title === 'id.kb.se'}" :title="header.join(', ')" :href="focusData['@id']">{{ header.join(', ') }}</a>
+    <router-link v-if="isLibrisResource" class="header" :title="header.join(', ')" :to="focusData['@id'] | asFnurgelLink">{{ header.join(', ') }}</router-link>
+    <a v-if="!isLibrisResource" class="header" :title="header.join(', ')" :href="focusData['@id']">{{ header.join(', ') }}</a>
     <span class="categorization" :title="categorization.join(', ')">
       {{categorization.join(', ')}}
     </span>
@@ -58,6 +67,7 @@ export default {
   padding: 0.4em 1em;
   line-height: 1.2em;
   .header {
+    color: @brand-primary;
     margin: 0px;
     display: inline-block;
     flex-basis: 50%;

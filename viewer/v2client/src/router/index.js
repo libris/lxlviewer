@@ -4,6 +4,7 @@ import LandingPage from '@/components/LandingPage'
 import Find from '@/components/Find'
 import Inspector from '@/components/Inspector'
 import About from '@/components/About'
+import UserPage from '@/components/UserPage'
 
 Vue.use(Router)
 
@@ -24,6 +25,11 @@ export default new Router({
       path: '/about',
       name: 'About',
       component: About
+    },
+    {
+      path: '/user',
+      name: 'User',
+      component: UserPage
     },
     {
       path: '/:fnurgel',
