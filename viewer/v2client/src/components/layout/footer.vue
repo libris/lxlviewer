@@ -39,7 +39,7 @@ export default {
         </div>
         <div class="link-list">
           <div class="header" data-translateable="XL">XL</div>
-          <div class="item"><a href="/about" class="js-translateable" data-translateable="About XL">About XL</a></div>
+          <div class="item"><router-link to="/about">{{ "About XL" | translatePhrase }}</router-link></div>
           <div class="item"><a href="https://goo.gl/forms/dPxkhMqE10RvKQFE2" class="js-translateable" data-translateable="Suggest change">Suggest change</a></div>
           <div class="item"><a href="https://goo.gl/forms/3mL7jTlEpbU3BQM13" class="js-translateable" data-translateable="Report error">Report error</a></div>
         </div>

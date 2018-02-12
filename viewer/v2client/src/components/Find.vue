@@ -44,7 +44,7 @@ export default {
   },
   methods: {
     getResult() {
-      const fetchUrl = `http://kblocalhost.kb.se:5000/find.json?${this.$route.params.query}`;
+      const fetchUrl = `${this.settings.apiPath}/find.json?${this.$route.params.query}`;
 
       fetch(fetchUrl).then((response) => {
         return response.json();
@@ -84,6 +84,9 @@ export default {
   computed: {
     user() {
       return this.$store.getters.user;
+    },
+    settings() {
+      return this.$store.getters.settings;
     },
     copy() {
       return Copy[this.settings.siteInfo.title];
