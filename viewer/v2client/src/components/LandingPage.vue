@@ -8,7 +8,7 @@
         <link-card v-if="widgetShouldBeShown('link-studies')" :image="copy['studies'].image" :header="copy['studies'].header" :text="copy['studies'].text" :link-text="copy['studies'].linkText" :link-url="copy['studies'].linkUrl"></link-card>
         <link-card v-if="widgetShouldBeShown('link-supportforum')"  :image="copy['supportforum'].image" :header="copy['supportforum'].header" :text="copy['supportforum'].text" :link-text="copy['supportforum'].linkText" :link-url="copy['supportforum'].linkUrl"></link-card>
       </div>
-      <intro-component v-if="widgetShouldBeShown('intro-component')" :video-url="copy['instructional-videos'].video" :header="copy['instructional-videos'].header" :text="copy['instructional-videos'].text" :link-text="copy['instructional-videos'].linkText" :link-url="copy['instructional-videos'].linkUrl"></intro-component>
+      <link-card v-if="widgetShouldBeShown('intro-component')" :video-url="copy['instructional-videos'].video" :header="copy['instructional-videos'].header" :text="copy['instructional-videos'].text" :link-text="copy['instructional-videos'].linkText" :link-url="copy['instructional-videos'].linkUrl"></link-card>
     </div>
   </div>
 </template>
@@ -17,8 +17,7 @@
 import ServiceWidgetSettings from '@/resources/json/serviceWidgetSettings.json';
 import SearchForm from '@/components/search/search-form';
 import DatasetObservations from '@/components/search/dataset-observations';
-import LinkCardComponent from '@/components/search/link-card-component';
-import IntroComponent from '@/components/search/intro-component';
+import LinkCardComponent from '@/components/search/link-card';
 import Copy from '@/resources/json/copy.json';
 
 export default {
@@ -52,7 +51,7 @@ export default {
   components: {
     'search-form': SearchForm,
     'dataset-observations': DatasetObservations,
-    'intro-component': IntroComponent,
+    'intro-component': LinkCardComponent,
     'link-card': LinkCardComponent,
   },
 }

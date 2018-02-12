@@ -18,6 +18,7 @@ export default {
   },
   computed: {
     resolvedImage() {
+      console.log(require(`@/assets/img/${this.image}`))
       return require(`@/assets/img/${this.image}`)
     }
   },
@@ -35,8 +36,15 @@ export default {
 
 
 <template>
-  <div class="panel panel-default LinkCard" v-bind:class="{'no-link': !linkUrl}">
-    <img :src="resolvedImage" class="LinkCard-img"/>
+  <div class="panel panel-default LinkCard" v-bind:class="{'no-link': !linkUrl, 'LinkCard--large': videoUrl}">
+    <img v-if="image" :src="resolvedImage" class="LinkCard-img"/>
+
+    <div v-else-if="videoUrl" class="LinkCard-videoWrap">
+      <div class="LinkCard-video Video">
+        <iframe :src="videoUrl" frameborder="0" allowfullscreen></iframe>
+      </div>
+    </div> 
+     
     <div class="LinkCard-content">
       <div class="LinkCard-text">
         <span class="LinkCard-title">{{ header }}</span>
