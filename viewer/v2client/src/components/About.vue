@@ -27,9 +27,9 @@ export default {
       <div>
         <div class="header">{{ header }}</div>
         <div class="abstract">{{ text.abstract }}</div>
-        <div class="section" v-for="section in text.sections">
+        <div class="section" v-for="section in text.sections" :key="section.title">
           <div class="section-header">{{ section.header }}</div>
-          <div v-html="section.text"class="section-text"></div>
+          <div v-html="section.text" class="section-text"></div>
         </div>
       </div>
     </div>
