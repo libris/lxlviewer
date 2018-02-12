@@ -18,7 +18,6 @@ export default {
   },
   computed: {
     resolvedImage() {
-      console.log(require(`@/assets/img/${this.image}`))
       return require(`@/assets/img/${this.image}`)
     }
   },
