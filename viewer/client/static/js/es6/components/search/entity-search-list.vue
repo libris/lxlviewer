@@ -83,7 +83,7 @@ export default {
 <template>
   <div class="search-result">
     <ul class="search-result-list field-list" v-show="results.length > 0">
-      <entity-search-item :tabindex="0" v-on:mouseover="selectedIndex = $index" :class="{'selected': $index == selectedIndex }" :focus-data="item" :disabled-ids="disabledIds" :add-link="false" v-for="item in results" track-by="$index"></entity-search-item>
+      <entity-search-item :tabindex="0" :class="{'already-added': (disabledIds.indexOf(item['@id']) !== -1) }" :focus-data="item" :disabled-ids="disabledIds" :add-link="false" v-for="item in results" track-by="$index"></entity-search-item>
     </ul>
   </div>
 </template>
