@@ -1,49 +1,21 @@
 <script>
-import Copy from '../../resources/json/copy.json';
-import { getSettings } from '../../vuex/getters';
+import Copy from '@/resources/json/copy.json';
 
 export default {
   name: 'about-component',
-  vuex: {
-    getters: {
-      settings: getSettings,
-    },
-  },
-  props: {
-  },
-  data() {
-    return {
-    }
-  },
-  methods: {
-  },
   computed: {
-    isLibris() {
-      return this.settings.siteInfo.title === 'libris.kb.se';
-    },
     copy() {
-      return Copy[this.settings.siteInfo.title]['about-xl-full'];
+      return Copy['about-xl-full'];
     },
     header() {
       return this.copy.header;
     },
     image() {
-      if (Modernizr.webp) {
-        return this.copy.image.replace('.png', '.webp');
-      }
-      return this.copy.image;
+      return require(`@/assets/img/${this.copy.image}`);
     },
     text() {
       return this.copy.text;
     },
-  },
-  components: {
-  },
-  watch: {
-  },
-  ready() { // Ready method is deprecated in 2.0, switch to "mounted"
-    this.$nextTick(() => {
-    });
   },
 };
 </script>
@@ -65,7 +37,6 @@ export default {
 </template>
 
 <style lang="less">
-@import '../shared/_variables.less';
 
 .about-content {
   margin-top: 15vh;
