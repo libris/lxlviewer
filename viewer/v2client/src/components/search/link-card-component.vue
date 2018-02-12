@@ -48,5 +48,5 @@ export default {
 </template>
 
 <style lang="less">
-  @import '../../../../less/components/_linkcard.less';
+  @import '../less/components/_linkcard.less';
 </style>
