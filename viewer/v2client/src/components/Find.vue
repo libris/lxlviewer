@@ -24,8 +24,8 @@ import FacetControls from '@/components/search/facet-controls';
 import SearchResultComponent from '@/components/search/search-result-component';
 import SearchForm from '@/components/search/search-form';
 import DatasetObservations from '@/components/search/dataset-observations';
-import LinkCardComponent from '@/components/search/link-card-component';
-import IntroComponent from '@/components/search/intro-component';
+import LinkCardComponent from '@/components/search/link-card';
+import IntroComponent from '@/components/search/link-card';
 import Modernizr from '@/../.modernizrrc.js';
 
 import MockRemoteResult from '@/resources/json/mockRemoteResult.json';
