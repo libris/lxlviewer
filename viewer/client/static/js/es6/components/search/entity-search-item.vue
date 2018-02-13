@@ -4,7 +4,6 @@ import LensMixin from '../mixins/lens-mixin';
 import EntitySummary from '../shared/entity-summary';
 import SummaryActionButton from '../editorcomponents/summary-action-button';
 import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData } from '../../vuex/getters';
-
 export default {
   name: 'entity-search-item',
   mixins: [LensMixin],
@@ -63,7 +62,6 @@ export default {
 
 <style lang="less">
 @import '../shared/_variables.less';
-
 .search-result-item {
   border: solid #777;
   margin: 4px;
@@ -71,16 +69,13 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-
   code {
     color: @black;
   }
-
   &.already-added {
     opacity: 0.5;
     cursor: default;
   }
-
   .label {
     color: @black;
     font-weight: bold;
@@ -92,13 +87,11 @@ export default {
     overflow: hidden;
     text-overflow: ellipsis;
   }
-
   .type {
     width: 24%;
     display: inline-block;
     text-align: right;
   }
-
   &:nth-child(even) {
     background-color: darken(@neutral-color, 2%);
   }
@@ -106,11 +99,9 @@ export default {
   .search-item-entity-summary-container {
     max-width: 85%;
   }
-
   &.selected {
     outline: solid 1px @brand-primary;
     background-color: fadeout(@brand-primary, 70%);
   }
 }
-
 </style>
