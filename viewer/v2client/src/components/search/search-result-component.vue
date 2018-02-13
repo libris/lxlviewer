@@ -7,7 +7,7 @@ export default {
   name: 'search-result-component',
   props: {
     result: {},
-    importData: [],
+    importData: Array,
   },
   data() {
     return {

@@ -9,6 +9,7 @@ export default {
   props: {
     focusData: {},
     importItem: {},
+    database: '',
   },
   data() {
     return {
@@ -31,7 +32,7 @@ export default {
 
 <template>
   <div class="result-item-detailed">
-    <entity-summary :focus-data="focusData" :router-path="focusData['@id'] | asFnurgelLink" :is-import="isImport" :import-item="importItem" :add-link="true" :lines="4"></entity-summary>
+    <entity-summary :focus-data="focusData" :database="database" :router-path="focusData['@id'] | asFnurgelLink" :is-import="isImport" :import-item="importItem" :add-link="true" :lines="4"></entity-summary>
   </div>
 </template>
 

@@ -48,7 +48,7 @@ export default {
   <div class="panel panel-default">
     <div class="panel-body facet-controls">
       <label>Filtrera</label>
-      <div v-if="result.totalItems > 0">
+      <div v-if="result.totalItems > 0 && result.stats">
         <div v-for="(dimensionValue, dimensionKey) in result.stats.sliceByDimension" :key="dimensionKey">
           <div class="dimension-header">{{facetLabelByLang(dimensionValue.dimension) | capitalize}}</div>
           <!--<range-input v-if="isRangeFacet(dimensionKey)"></range-input>-->

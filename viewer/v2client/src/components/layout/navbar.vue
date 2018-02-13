@@ -23,7 +23,7 @@
               <span>{{"Help" | translatePhrase}}</span></a>
           </li>
           <li class="navbar-item">
-          <router-link to="/search">
+          <router-link to="/search/Libris">
             <div class="navbar-circle">
               <i class="fa fa-search" aria-hidden="true"></i>
             </div>

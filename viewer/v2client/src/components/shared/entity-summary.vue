@@ -13,8 +13,10 @@ export default {
     actions: false,
     isLocal: false,
     isExtractable: false,
+    isImport: false,
     importItem: '',
     routerPath: String,
+    database: '',
   },
   data() {
     return {
@@ -74,7 +76,7 @@ export default {
   },
   methods: {
     importThis() {
-      this.$dispatch('import-this');
+      this.$store.dispatch('pushNotification', { color: 'grey', message: StringUtil.getUiPhraseByLang('This action is not yet functional. We\'re working on it!', this.settings.language) });
     },
     removeEntity() {
       this.$dispatch('remove-entity');
@@ -96,13 +98,14 @@ export default {
 <div class="entity-summary">
   <div class="sub">
     <div class="categorization">
-      {{categorization.join(', ')}} {{ isLocal ? '{lokal entitet}' : '' }}
+      {{categorization.join(', ')}} {{ isLocal ? '{lokal entitet}' : '' }} <span class="database" v-if="database">{{ database }}</span>
     </div>
   </div>
   <div class="main-info">
     <h3 class="header">
-      <router-link v-if="isLibrisResource" :to="routerPath" :title="header.join(', ')">{{ header.join(', ') }}</router-link>
-      <a v-if="!isLibrisResource" :href="focusData['@id']" :title="header.join(', ')">{{ header.join(', ') }}</a>
+      <span class="import-header" :title="header.join(', ')" v-on:click="importThis()" v-if="isImport"><i class="fa fa-download" aria-hidden="true"></i> {{ header.join(', ') }}</span>
+      <router-link v-if="isLibrisResource && !isImport" :to="routerPath" :title="header.join(', ')">{{ header.join(', ') }}</router-link>
+      <a v-if="!isLibrisResource && !isImport" :href="focusData['@id']" :title="header.join(', ')">{{ header.join(', ') }}</a>
     </h3>
     <div class="id" v-if="identifiers.length > 0">{{ identifiers[0] }} <span class="id-info" v-if="identifiers.length > 1">(+{{ identifiers.length-1 }})</span></div>
     <div class="info">
@@ -185,6 +188,13 @@ export default {
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      .database {
+        float: right;
+        border: 1px solid @gray;
+        border-radius: 0.3em;
+        padding: 3px;
+        line-height: 1;
+      }
     }
   }
 }

@@ -47,8 +47,9 @@ export default {
 
 <template>
   <div class="result-item-compact">
-    <router-link v-if="isLibrisResource" class="header" :title="header.join(', ')" :to="focusData['@id'] | asFnurgelLink">{{ header.join(', ') }}</router-link>
-    <a v-if="!isLibrisResource" class="header" :title="header.join(', ')" :href="focusData['@id']">{{ header.join(', ') }}</a>
+    <span class="import-header header" :title="header.join(', ')" v-on:click="importThis()" v-if="isImport"><i class="fa fa-download" aria-hidden="true"></i> {{ header.join(', ') }}</span>
+    <router-link v-if="isLibrisResource && !isImport" class="header" :title="header.join(', ')" :to="focusData['@id'] | asFnurgelLink">{{ header.join(', ') }}</router-link>
+    <a v-if="!isLibrisResource && !isImport" class="header" :title="header.join(', ')" :href="focusData['@id']">{{ header.join(', ') }}</a>
     <span class="categorization" :title="categorization.join(', ')">
       {{categorization.join(', ')}}
     </span>

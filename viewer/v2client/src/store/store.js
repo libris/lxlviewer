@@ -35,7 +35,7 @@ const store = new Vuex.Store({
       version: process.env.VERSION,
       apiPath: process.env.API_PATH,
       appPaths: {
-        '/find?': '/search/',
+        '/find?': '/search/Libris/',
       },
       removableBaseUris: [
         'http://libris.kb.se/',
@@ -124,6 +124,9 @@ const store = new Vuex.Store({
       state.user = userObj;
       state.user.saveSettings();
     },
+    setSettings(state, settingsObj) {
+      state.settings = settingsObj;
+    },
     changeResourcesStatus(state, status) {
       state.resources.resourcesLoaded = status;
     },
@@ -178,6 +181,9 @@ const store = new Vuex.Store({
   actions: {
     setUser({ commit }, userObj) {
       commit('setUser', userObj);
+    },
+    setSettings({ commit }, settingsObj) {
+      commit('setSettings', settingsObj);
     },
     removeNotification({ commit }, index) {
       commit('removeNotification', index);

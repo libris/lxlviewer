@@ -5,8 +5,8 @@
         <facet-controls :result="result"></facet-controls>
       </div>
       <div class="col-md-9 search-content-container">
-        <search-form></search-form>
-        <search-result-component :result="result" v-if="result.totalItems && result.totalItems > -1"></search-result-component>
+        <search-form :perimeter="searchPerimeter"></search-form>
+        <search-result-component :import-data="importData" :result="result" v-if="result.totalItems && result.totalItems > -1"></search-result-component>
       </div>
     </div>
   </div>
@@ -14,6 +14,7 @@
 
 <script>
 import * as _ from 'lodash';
+import * as RecordUtil from '@/utils/record';
 import * as StringUtil from '@/utils/string';
 import * as LayoutUtil from '@/utils/layout';
 import * as HttpUtil from '@/utils/http';
@@ -27,23 +28,38 @@ import LinkCardComponent from '@/components/search/link-card-component';
 import IntroComponent from '@/components/search/intro-component';
 import Modernizr from '@/../.modernizrrc.js';
 
+import MockRemoteResult from '@/resources/json/mockRemoteResult.json';
+
 export default {
   data: function () {
     return {
       initialized: false,
       combokeys: null,
       result: {},
+      importData: [],
     }
   },
   events: {
   },
   watch: {
+    '$route.name'(value) {
+      this.getResult();
+    },
     '$route.params.query'(value) {
       this.getResult();
     },
   },
   methods: {
     getResult() {
+      this.result = {};
+      this.importData = [];
+      if (this.searchPerimeter === 'Libris') {
+        this.getLocalResult();
+      } else {
+        this.getRemoteResult();
+      }
+    },
+    getLocalResult() {
       const fetchUrl = `${this.settings.apiPath}/find.json?${this.$route.params.query}`;
 
       fetch(fetchUrl).then((response) => {
@@ -53,6 +69,33 @@ export default {
       }).then((result) => {
         this.result = result;
       });
+    },
+    getRemoteResult() {
+      // const fetchUrl = `${this.settings.apiPath}/_remotesearch?${this.$route.params.query}`;
+      
+      // fetch(fetchUrl).then((response) => {
+      //   return response.json();
+      // }, (error) => {
+      //   this.$store.dispatch('pushNotification', { color: 'red', message: StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language) });
+      // }).then((result) => {
+        const response = MockRemoteResult;
+        this.result = this.convertRemoteResult(response);
+        this.importData = response.items;
+      // });
+    },
+    convertRemoteResult(result) {
+      let totalResults = 0;
+      for (const db in result.totalResults) {
+        if (result.totalResults.hasOwnProperty(db)) {
+           totalResults += result.totalResults[db];
+        }
+      }
+      const convertedList = { totalItems: totalResults, items: []};
+      _.each(result.items, (item) => {
+        const convertedItem = RecordUtil.getMainEntity(item.data['@graph']);
+        convertedList.items.push(convertedItem);
+      })
+      return convertedList;
     },
     isArray(o) {
       return _.isArray(o);
@@ -82,6 +125,19 @@ export default {
     },
   },
   computed: {
+    searchPerimeter() {
+      switch(this.$route.name) {
+        case 'SearchRemote':
+          return 'Remote';
+        break;
+        case 'SearchLibris':
+          return 'Libris';
+        break;
+        default:
+          return 'Libris';
+        break;
+      }
+    },
     user() {
       return this.$store.getters.user;
     },
@@ -98,6 +154,7 @@ export default {
     this.$nextTick(() => {
       this.getResult();
       this.initialized = true;
+      console.log(this.$route);
     })
   },
   components: {
