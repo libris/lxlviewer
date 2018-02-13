@@ -47,7 +47,7 @@ export default {
 
 <template>
   <div class="result-item-compact">
-    <span class="import-header header" title="{{ header.join(', ') }}" v-on:click="importThis()" v-if="isImport">{{ header.join(', ') }}</span>
+    <span class="import-header header" title="{{ header.join(', ') }}" v-on:click="importThis()" v-if="isImport"><i class="fa fa-external-link" aria-hidden="true"></i>{{ header.join(', ') }}</span>
     <a v-if="!isImport" class="header" :class="{'blue-link': settings.siteInfo.title === 'id.kb.se'}" title="{{ header.join(', ') }}" :href="focusData['@id']">{{ header.join(', ') }}</a>
     <span class="categorization" title="{{categorization.join(', ')}}">
       {{categorization.join(', ')}}
@@ -77,6 +77,11 @@ export default {
     text-overflow: ellipsis;
     font-size: 16px;
     font-weight: normal;
+  }
+
+  .import-header .fa-external-link {
+    margin: 4px 6px 0 0;
+    font-size: 14px;
   }
   .categorization {
     display: inline-block;
