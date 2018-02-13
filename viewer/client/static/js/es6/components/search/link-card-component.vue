@@ -60,14 +60,14 @@ export default {
 
 <style lang="less">
 .LinkCard {
-  flex-basis: 24%; // To parent
   display: flex;
+  flex-basis: 24%; // To parent
   flex-direction: column;
   align-items: center;
-  padding: 0;
 
   &-img {
     width: 100%;
+    flex-shrink: 0; // Prevent weird image sizing behaviour in IE11
   }
 
   &-videoWrap {
