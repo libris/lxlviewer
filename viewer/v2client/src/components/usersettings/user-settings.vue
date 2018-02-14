@@ -57,7 +57,7 @@ export default {
     <div class="UserSettings-content">
       <div class="UserSettings-info UserInfo">
         <div class="UserInfo-avatar">
-          <img :src="`https://www.gravatar.com/avatar/${user.emailHash}?d=mm&s=150`" class="UserInfo-img" title="Avatar"/>
+          <img :src="`https://www.gravatar.com/avatar/${user.emailHash}?d=mm&s=150`" class="UserInfo-img" alt="Avatar"/>
           <br/>
         </div>
         <p class="UserInfo-name">
