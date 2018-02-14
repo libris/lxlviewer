@@ -21,6 +21,7 @@ const store = new Vuex.Store({
         loading: false
       },
       notifications: [],
+      helpSection: 'none',
     },
     user: {
       settings: {
@@ -148,6 +149,9 @@ const store = new Vuex.Store({
     setDisplay(state, data) {
       state.resources.display = data;
     },
+    setStatus(state, { property, value }) {
+      state.status[property] = value;
+    }
   },
   getters: {
     editor: state => {
@@ -239,6 +243,9 @@ const store = new Vuex.Store({
       const vocabProperties = new Map(props.map((entry) => [entry['@id'], entry]));
 
       commit('setVocabProperties', vocabProperties)
+    },
+    setStatus({commit}, { property, value }) {
+      commit('setStatus', { property, value });
     }
   }
 })

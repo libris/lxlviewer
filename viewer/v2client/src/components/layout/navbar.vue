@@ -16,11 +16,12 @@
         </div>
         <ul class="nav navbar-nav pull-right">
           <li class="navbar-item">
-            <a href="/help">
+            <router-link to="/help">
               <div class="navbar-circle">
                 <i class="fa fa-question-circle" aria-hidden="true"></i>
               </div>
-              <span>{{"Help" | translatePhrase}}</span></a>
+              <span>{{"Help" | translatePhrase}}</span>
+            </router-link>
           </li>
           <li class="navbar-item">
           <router-link to="/search/Libris">

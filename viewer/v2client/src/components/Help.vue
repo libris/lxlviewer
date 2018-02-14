@@ -1,37 +1,32 @@
 <script>
 import * as _ from 'lodash';
-import * as LayoutUtil from '../../utils/layout';
-import { getStatus } from '../../vuex/getters';
-import { changeStatus } from '../../vuex/actions';
-import * as helpdocsJson from '../../../../../../helpdocs/helpdocs';
+import * as LayoutUtil from '@/utils/layout';
+import helpdocsJson from '@/resources/json/help.json';
+import marked from 'marked';
 
 export default {
   name: 'help-component',
   data() {
     return {
       openAll: 'open-all',
-      activeSection: '',
       activeCategory: '',
     }
   },
-  vuex: {
-    actions: {
-      changeStatus,
-    },
-    getters: {
-      status: getStatus,
-    },
-  },
   methods: {
     setSection(value) {
-      this.changeStatus('helpSection', value);
+      this.$store.dispatch('setStatus', { property: 'helpSection', value });
     },
+    transformMarkdownToHTML(markdown) {
+      return marked(markdown);
+    }
   },
   events: {
   },
   computed: {
+    status() {
+      return this.$store.getters.status;
+    },
     helpSection() {
-
       return this.status.helpSection;
     },
     helpCategories() {
@@ -52,16 +47,7 @@ export default {
       delete json.default;
       delete json.readme;
       return json;
-    }
-  },
-  components: {
-  },
-  watch: {
-  },
-  ready() { // Ready method is deprecated in 2.0, switch to "mounted"
-    this.$nextTick(() => {
-      // Do stuff
-    });
+    },
   },
 };
 </script>
@@ -72,10 +58,10 @@ export default {
       <div class="col-md-3">
         <div class="menu panel panel-default">
           <ul class="categories">
-            <li v-for="(key, value) in helpCategories" v-bind:class="{'active': key == activeCategory }" v-on:click="activeCategory = key">
+            <li v-for="(value, key) in helpCategories" :key="key" v-bind:class="{'active': key == activeCategory }" v-on:click="activeCategory = key">
               <span class="label">{{key}}</span>
               <ul class="sections">
-                <li v-for="section in value" v-bind:class="{'active': section.title == helpSection }" v-on:click="setSection(section.title)">{{section.title}}</li>
+                <li v-for="(section, index) in value" :key="index" v-bind:class="{'active': section.title == helpSection }" v-on:click="setSection(section.title)">{{section.title}}</li>
               </ul>
             </li>
           </ul>
@@ -94,10 +80,12 @@ export default {
               <li>Är du ute efter instruktionsmaterial hittar du det <a href="http://librisbloggen.kb.se/2017/10/31/sjalvstudier-infor-overgangen-till-nya-libris-och-xl/" target="_blank">här</a>.</li>
               <li>Vill du komma i kontakt med kundservice gör du det <a href="http://www.kb.se/libris/kontakta/" target="_blank">här</a>.</li>
               <li><a href="https://goo.gl/forms/3mL7jTlEpbU3BQM13" target="_blank">Här</a> kan du rapportera fel.</li>
-              <li><a href="https://goo.gl/forms/dPxkhMqE10RvKQFE2" target="_blank">Här</a> kan du ge ändringsförslag</a>.</li>
+              <li><a href="https://goo.gl/forms/dPxkhMqE10RvKQFE2" target="_blank">Här</a> kan du ge ändringsförslag.</li>
             </ul>
           </div>
-          <div v-for="section in docs" v-html="section.body" v-show="section.title == helpSection"></div>
+          <div v-for="(sectionValue, sectionKey) in docs" :key="sectionKey" v-show="sectionValue.title == helpSection">
+            <span v-html="transformMarkdownToHTML(docs[sectionKey].content)"></span>
+          </div>
         </div>
       </div>
     </div>
@@ -105,7 +93,6 @@ export default {
 </template>
 
 <style lang="less">
-@import '../shared/_variables.less';
 
 .help-component {
   .content {
