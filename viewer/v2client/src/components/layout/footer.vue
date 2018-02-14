@@ -38,8 +38,8 @@ export default {
         </div>
         <ul class="Footer-contentList">
           <li class="Footer-contentItem">
-            <h4 id="XL-links" class="Footer-listTitle" data-translateable="XL">XL</h4>
-            <ul class="Footer-linkList" aria-labelledby="XL-links">
+            <h4 id="XLLinks" class="Footer-listTitle" data-translateable="XL">XL</h4>
+            <ul class="Footer-linkList" aria-labelledby="XLLinks">
               <li class="item" role="listitem">
                 <router-link class="Footer-link" to="/about" role="link">{{ "About XL" | translatePhrase }}</router-link>
               </li>
@@ -53,8 +53,8 @@ export default {
           </li>
 
           <li class="Footer-contentItem">
-            <h4 id="libris-and-xl-links" class="Footer-listTitle js-translateable" data-translateable="New Libris and XL">New Libris and XL</h4>
-            <ul class="Footer-linkList" aria-labelledby="libris-and-xl-links">
+            <h4 id="LibrisLinks" class="Footer-listTitle js-translateable" data-translateable="New Libris and XL">New Libris and XL</h4>
+            <ul class="Footer-linkList" aria-labelledby="LibrisLinks">
               <li class="item">
                 <a href="https://www.youtube.com/watch?v=p2vcgoTfNpw&list=PLZVkEICvA5-GRT2oJQmLgq_2Pksx6zYPy" class="Footer-link js-translateable" data-translateable="Instruction videos" role="link" alt="Instruction videos">Instruction videos</a>
               </li>
@@ -74,8 +74,8 @@ export default {
           </li>
 
           <li class="Footer-contentItem">
-            <h4 id="support-list" class="Footer-listTitle" data-translateable="Support">Support</h4>
-            <ul class="Footer-linkList" aria-labelledby="support-list">
+            <h4 id="SupportList" class="Footer-listTitle" data-translateable="Support">Support</h4>
+            <ul class="Footer-linkList" aria-labelledby="SupportList">
               <li class="item">
                 <a class="Footer-link js-translateable" href="https://kundo.se/org/librisxl/" data-translateable="Forum of support for new Libris" role="link" alt="Forum">Forum of support for new Libris</a>
               </li>
@@ -86,8 +86,8 @@ export default {
           </li>
 
           <li class="social-media Footer-contentItem">
-            <h4 id="social-media-list" class="Footer-listTitle js-translateable" data-translateable="Social media">Social media</h4>
-            <ul class="Footer-linkList Footer-linkList--socialMedia" aria-labelledby="social-media-list">
+            <h4 id="SocialMediaList" class="Footer-listTitle js-translateable" data-translateable="Social media">Social media</h4>
+            <ul class="Footer-linkList Footer-linkList--socialMedia" aria-labelledby="SocialMediaList">
               <li class="Footer-linkItem">
                 <a class="Footer-link" href="https://www.youtube.com/user/KunglBiblioteket/" alt="National Library of Sweden on Youtube" role="link">
                   <i class="fa fa-2x fa-youtube-play" aria-hidden="true"></i>
