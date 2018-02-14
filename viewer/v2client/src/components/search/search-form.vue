@@ -12,7 +12,10 @@ export default {
     useSubmit: false,
     formDataSupported: false,
     isLandingPage: false,
-    perimeter: '',
+    searchPerimeter: {
+        default: 'libris',
+        type: String,
+    },
   },
   data() {
     return {
@@ -30,7 +33,8 @@ export default {
       remoteSearch: {
         q: '',
         activeDatabases: ['OCLC']
-      }
+      },
+      query: '',
     }
   },
   methods: {
@@ -72,45 +76,48 @@ export default {
             this.inputData.currentInput -= 1;
         }
       },
-      doRemoteSearch() {
-        const databases = this.remoteSearch.activeDatabases.join();
-        const keywords = this.remoteSearch.q;
-        const query = `q=${keywords}&databases=${databases}`;
-        this.$router.push({ path: `/search/Remote/${query}` })
+      composeQuery() {
+        let query = '';
+        if (this.searchPerimeter === 'libris') {
+            const validTags = this.validSearchTags;
+            let queryText = [];
+            for (const inputElement of this.inputData.textInput) {
+                if (inputElement.class.indexOf('searchtag') > -1) {
+                    const tag = inputElement.value.split(':');
+                    const tagKey = tag[0];
+                    const tagValue = tag[1];
+                    if (validTags.indexOf(tagKey) > -1) {
+                        _.each(PropertyMappings, obj => {
+                            if (obj.key === tagKey) {
+                                _.each(obj.mappings, (mappingValue, mappingKey) => {
+                                    if (mappingValue === '') {
+                                        queryText.push(`${mappingKey}=${tagValue}`);
+                                    } else {
+                                        queryText.push(`${mappingKey}=${mappingValue}`);
+                                    }
+                                });
+                            }
+                        });
+                    }
+                } else if (inputElement.value !== '') {
+                    queryText.push(`q=${inputElement.value}`);
+                }
+            }
+            if (queryText.length === 0) {
+            return;
+            }
+            queryText.push('_limit=20');
+            _.each(this.inputData.ids, id => queryText.push(`@type=${id}`));
+            query = queryText.join('&');
+        } else {
+            const databases = this.remoteSearch.activeDatabases.join();
+            const keywords = this.remoteSearch.q;
+            query = `q=${keywords}&databases=${databases}`;
+        }
+        return query;
       },
       doSearch() {
-        const validTags = this.validSearchTags;
-        let queryText = [];
-        for (const inputElement of this.inputData.textInput) {
-            if (inputElement.class.indexOf('searchtag') > -1) {
-                const tag = inputElement.value.split(':');
-                const tagKey = tag[0];
-                const tagValue = tag[1];
-                if (validTags.indexOf(tagKey) > -1) {
-                    _.each(PropertyMappings, obj => {
-                        if (obj.key === tagKey) {
-                            _.each(obj.mappings, (mappingValue, mappingKey) => {
-                                if (mappingValue === '') {
-                                    queryText.push(`${mappingKey}=${tagValue}`);
-                                } else {
-                                    queryText.push(`${mappingKey}=${mappingValue}`);
-                                }
-                            });
-                        }
-                    });
-                }
-            } else if (inputElement.value !== '') {
-                queryText.push(`q=${inputElement.value}`);
-            }
-        }
-        if (queryText.length === 0) {
-          return;
-        }
-        queryText.push('_limit=20');
-        _.each(this.inputData.ids, id => queryText.push(`@type=${id}`));
-        // _.each(this.inputData.ids, type => queryText.push(`@type=${type}`));
-        const query = queryText.join('&');
-        this.$router.push({ path: `/search/Libris/${query}` })
+        this.$router.push({ path: `/search/${this.searchPerimeter}/${this.composeQuery()}` })
       },
       clearInputs() {
         this.inputData.currentInput = 0;
@@ -120,12 +127,6 @@ export default {
       }
   },
   computed: {
-      searchPerimeter() {
-        if (this.perimeter) {
-            return this.perimeter;
-        }
-        return 'Libris';
-      },
       settings() {
           return this.$store.getters.settings;
       },
@@ -177,7 +178,7 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      if (this.searchPerimeter === 'Libris') {
+      if (this.searchPerimeter === 'libris') {
         document.getElementById('searchQsmart').children[this.inputData.currentInput].focus();
       }
     });
@@ -189,11 +190,11 @@ export default {
   <div class="search-form-container">
     <div class="panel panel-default search-controls">
       <div class="search-type-button-container">
-        <router-link to="/search/Libris" class="card-link" :class="{'active': searchPerimeter === 'Libris' }">Libris</router-link>
-        <router-link to="/search/Remote" class="card-link" :class="{'active': searchPerimeter === 'Remote' }">Andra källor</router-link>
+        <router-link to="/search/libris" class="card-link" :class="{'active': searchPerimeter === 'libris' }">Libris</router-link>
+        <router-link to="/search/remote" class="card-link" :class="{'active': searchPerimeter === 'remote' }">Andra källor</router-link>
       </div>
         <form id="searchForm">
-            <div class="form-inline libris-search" v-if="searchPerimeter === 'Libris'">
+            <div class="form-inline libris-search" v-if="searchPerimeter === 'libris'">
                 <div class="form-group">
                     <label class="search-label hidden" id="searchlabel" for="q">
                         {{"Search" | translatePhrase}}
@@ -222,14 +223,14 @@ export default {
                     </div>
                 </div>
             </div>
-            <div class="form-inline remote-search" v-if="searchPerimeter === 'Remote'">
+            <div class="form-inline remote-search" v-if="searchPerimeter === 'remote'">
                 <div class="form-group search-field">
                     <input type="text" class="form-control search-input" placeholder="ISBN eller valfria sökord" v-model="remoteSearch.q">
-                    <button v-bind:class="{'disabled': remoteSearch.activeDatabases.length === 0}" v-on:click.prevent="doRemoteSearch()" class="search-button btn btn-primary"><i class="fa fa-search"></i> {{"Search" | translatePhrase}}</button>
+                    <button v-bind:class="{'disabled': remoteSearch.activeDatabases.length === 0}" v-on:click.prevent="doSearch" class="search-button btn btn-primary"><i class="fa fa-search"></i> {{"Search" | translatePhrase}}</button>
                 </div>
             </div>
 
-            <div class="type-buttons" aria-label="Välj typ" v-if="searchPerimeter === 'Libris'">
+            <div class="type-buttons" aria-label="Välj typ" v-if="searchPerimeter === 'libris'">
                 <label v-for="filter in dataSetFilters" :key="filter['@id']">
                     <input :value="filter['@id']" type="checkbox" :checked="filter['@id'] === 'Instance'" v-model="inputData.ids">
                     {{ filter.label }}
