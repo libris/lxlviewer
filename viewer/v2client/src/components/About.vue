@@ -21,7 +21,7 @@ export default {
 </script>
 
 <template>
-  <article class="panel panel-default about-content Article">
+  <article class="panel panel-default Article">
     <img :src="image" class="Article-featuredImg" title="Abstract XL Graphics"/>
     <div class="Article-content">
       <header class="Article-header">
