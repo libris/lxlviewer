@@ -1,7 +1,7 @@
 <script>
 import * as _ from 'lodash';
 import * as LayoutUtil from '@/utils/layout';
-import helpdocsJson from '@/resources/json/help.json';
+//import helpdocsJson from '@/resources/json/help.json';
 import marked from 'marked';
 
 export default {
