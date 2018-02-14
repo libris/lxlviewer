@@ -12,6 +12,9 @@ package-lock.json
 # Config
 /config/api_config.json
 
+# Resources
+/src/resources/json/help.json
+
 # Editor directories and files
 .idea
 .vscode
