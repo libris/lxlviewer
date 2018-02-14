@@ -38,67 +38,68 @@ export default {
         </div>
         <ul class="Footer-contentList">
           <li class="Footer-contentItem">
-            <h4 class="Footer-listTitle" data-translateable="XL">XL</h4>
-            <ul class="Footer-linkList">
-              <li class="item">
-                <router-link class="Footer-link" to="/about">{{ "About XL" | translatePhrase }}</router-link>
+            <h4 id="XL-links" class="Footer-listTitle" data-translateable="XL">XL</h4>
+            <ul class="Footer-linkList" aria-labelledby="XL-links">
+              <li class="item" role="listitem">
+                <router-link class="Footer-link" to="/about" role="link">{{ "About XL" | translatePhrase }}</router-link>
               </li>
-              <li class="item">
-                <a href="https://goo.gl/forms/dPxkhMqE10RvKQFE2" class="Footer-link js-translateable" data-translateable="Suggest change">Suggest change</a>
+              <li class="item" role="listitem">
+                <a href="https://goo.gl/forms/dPxkhMqE10RvKQFE2" class="Footer-link js-translateable" data-translateable="Suggest change" role="link" alt="Suggest change">Suggest change</a>
               </li>
-              <li class="item">
-                <a href="https://goo.gl/forms/3mL7jTlEpbU3BQM13" class="Footer-link js-translateable" data-translateable="Report error">Report error</a>
-              </li>
-            </ul>
-          </li>
-          <li class="Footer-contentItem">
-            <h4 class="Footer-listTitle js-translateable" data-translateable="New Libris and XL">New Libris and XL</h4>
-            <ul class="Footer-linkList">
-              <li class="item">
-                <a href="https://www.youtube.com/watch?v=p2vcgoTfNpw&list=PLZVkEICvA5-GRT2oJQmLgq_2Pksx6zYPy" class="Footer-link js-translateable" data-translateable="Instruction videos">Instruction videos</a>
-              </li>
-              <li class="item">
-                <a href="http://librisbloggen.kb.se/" class="Footer-link js-translateable" data-translateable="Librisbloggen">Librisbloggen</a>
-              </li>
-              <li class="item">
-                <a href="http://www.kb.se/libris/Om-LIBRIS/Introduktion-till-nya-Libris-och-XL2/" class="Footer-link js-translateable" data-translateable="Introduction material">Introduktionsmaterial</a>
-              </li>
-              <li class="item">
-                <a href="http://www.kb.se/libris/" class="Footer-link js-translateable">kb.se/libris</a>
-              </li>
-              <li class="item">
-                <a href="https://libris.kb.se/" class="Footer-link js-translateable">libris.kb.se</a>
+              <li class="item" role="listitem">
+                <a href="https://goo.gl/forms/3mL7jTlEpbU3BQM13" class="Footer-link js-translateable" data-translateable="Report error" role="link" alt="Report error">Report error</a>
               </li>
             </ul>
           </li>
 
           <li class="Footer-contentItem">
-            <h4 class="Footer-listTitle" data-translateable="Support">Support</h4>
-            <ul class="Footer-linkList">
+            <h4 id="libris-and-xl-links" class="Footer-listTitle js-translateable" data-translateable="New Libris and XL">New Libris and XL</h4>
+            <ul class="Footer-linkList" aria-labelledby="libris-and-xl-links">
               <li class="item">
-                <a class="Footer-link js-translateable" href="https://kundo.se/org/librisxl/" data-translateable="Forum of support for new Libris">Forum of support for new Libris</a>
+                <a href="https://www.youtube.com/watch?v=p2vcgoTfNpw&list=PLZVkEICvA5-GRT2oJQmLgq_2Pksx6zYPy" class="Footer-link js-translateable" data-translateable="Instruction videos" role="link" alt="Instruction videos">Instruction videos</a>
               </li>
               <li class="item">
-                <a class="Footer-link js-translateable" href="http://www.kb.se/libris/kontakta/" data-translateable="Libris customer service">Libris customer service</a>
+                <a href="http://librisbloggen.kb.se/" class="Footer-link js-translateable" data-translateable="Librisbloggen" role="link" alt="Libris blog">Librisbloggen</a>
+              </li>
+              <li class="item">
+                <a href="http://www.kb.se/libris/Om-LIBRIS/Introduktion-till-nya-Libris-och-XL2/" class="Footer-link js-translateable" data-translateable="Introduction material" role="link" alt="Introduction material">Introduktionsmaterial</a>
+              </li>
+              <li class="item">
+                <a href="http://www.kb.se/libris/" class="Footer-link js-translateable" role="link">kb.se/libris</a>
+              </li>
+              <li class="item">
+                <a href="https://libris.kb.se/" class="Footer-link js-translateable" role="link">libris.kb.se</a>
+              </li>
+            </ul>
+          </li>
+
+          <li class="Footer-contentItem">
+            <h4 id="support-list" class="Footer-listTitle" data-translateable="Support">Support</h4>
+            <ul class="Footer-linkList" aria-labelledby="support-list">
+              <li class="item">
+                <a class="Footer-link js-translateable" href="https://kundo.se/org/librisxl/" data-translateable="Forum of support for new Libris" role="link" alt="Forum">Forum of support for new Libris</a>
+              </li>
+              <li class="item">
+                <a class="Footer-link js-translateable" href="http://www.kb.se/libris/kontakta/" data-translateable="Libris customer service" role="link" alt="Libris customer service">Libris customer service</a>
               </li>
             </ul>
           </li>
 
           <li class="social-media Footer-contentItem">
-            <h4 class="Footer-listTitle js-translateable" data-translateable="Social media">Social media</h4>
-            <ul class="Footer-linkList Footer-linkList--socialMedia">
+            <h4 id="social-media-list" class="Footer-listTitle js-translateable" data-translateable="Social media">Social media</h4>
+            <ul class="Footer-linkList Footer-linkList--socialMedia" aria-labelledby="social-media-list">
               <li class="Footer-linkItem">
-                <a class="Footer-link" href="https://www.youtube.com/user/KunglBiblioteket/" alt="National Library of Sweden on Youtube">
+                <a class="Footer-link" href="https://www.youtube.com/user/KunglBiblioteket/" alt="National Library of Sweden on Youtube" role="link">
                   <i class="fa fa-2x fa-youtube-play" aria-hidden="true"></i>
                 </a>
               </li>
               <li class="Footer-linkItem">
-                <a class="Footer-link" href="https://twitter.com/librisnytt/" alt="LibrisNytt on Twitter">
+                <a class="Footer-link" href="https://twitter.com/librisnytt/" alt="LibrisNytt on Twitter" role="link">
                   <i class="fa fa-2x fa-twitter-square" aria-hidden="true"></i>
                 </a>
               </li>
               <li class="Footer-linkItem">
-                <a class="Footer-link" href="https://www.facebook.com/LibrisNytt/" alt="LibrisNytt on Facebook">
+                <a class="Footer-link" href="https://www.facebook.com/LibrisNytt/" alt="LibrisNytt on Facebook" role="link">
                   <i class="fa fa-2x fa-facebook-square" aria-hidden="true"></i>
                 </a>
               </li>
