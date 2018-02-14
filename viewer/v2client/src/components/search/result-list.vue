@@ -17,13 +17,19 @@ export default {
   },
   methods: {
     getImportItem(index) {
-      if (typeof this.importData !== 'undefined') {
+      if (this.importData.length !== 0) {
         const node = this.importData[index].data;
         const importItem = RecordUtil.getImportObject(node['@graph']);
         return importItem;
       }
       return {};
     },
+    getDatabase(index) {
+      if (this.importData.length !== 0) {
+        return this.importData[index].database;
+      }
+      return '';
+    }
   },
   computed: {
   },
@@ -41,10 +47,10 @@ export default {
 <template>
   <div class="result">
     <ul class="result-list" v-if="!compact && results.length > 0">
-      <result-item-detailed :focus-data="item" :import-item="getImportItem(index)" v-for="(item, index) in results" :key="item['@id']"></result-item-detailed>
+      <result-item-detailed :database="getDatabase(index)" :focus-data="item" :import-item="getImportItem(index)" v-for="(item, index) in results" :key="item['@id']"></result-item-detailed>
     </ul>
     <ul class="result-list" v-if="compact && results.length > 0">
-      <result-item-compact :focus-data="item" :import-item="getImportItem(index)"  v-for="(item, index) in results" :key="item['@id']"></result-item-compact>
+      <result-item-compact :database="getDatabase(index)" :focus-data="item" :import-item="getImportItem(index)"  v-for="(item, index) in results" :key="item['@id']"></result-item-compact>
     </ul>
   </div>
 </template>

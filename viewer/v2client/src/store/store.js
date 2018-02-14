@@ -36,7 +36,7 @@ const store = new Vuex.Store({
       version: process.env.VERSION,
       apiPath: process.env.API_PATH,
       appPaths: {
-        '/find?': '/search/',
+        '/find?': '/search/Libris/',
       },
       removableBaseUris: [
         'http://libris.kb.se/',
@@ -84,6 +84,28 @@ const store = new Vuex.Store({
           en: 'Publication date',
         },
       },
+      availableUserSettings: {
+        languages: [
+          {
+            'label': 'Swedish',
+            'value': 'sv',
+          },
+          {
+            'label': 'English (experimental)',
+            'value': 'en',
+          },
+        ],
+        appTechs: [
+          {
+            'label': 'On',
+            'value': 'on',
+          },
+          {
+            'label': 'Off',
+            'value': 'off',
+          },
+        ],
+      }
     }
   },
   mutations: {
@@ -98,6 +120,13 @@ const store = new Vuex.Store({
           state.status.notifications.splice(i, 1);
         }
       }
+    },
+    setUser(state, userObj) {
+      state.user = userObj;
+      state.user.saveSettings();
+    },
+    setSettings(state, settingsObj) {
+      state.settings = settingsObj;
     },
     changeResourcesStatus(state, status) {
       state.resources.resourcesLoaded = status;
@@ -154,6 +183,12 @@ const store = new Vuex.Store({
     }
   },
   actions: {
+    setUser({ commit }, userObj) {
+      commit('setUser', userObj);
+    },
+    setSettings({ commit }, settingsObj) {
+      commit('setSettings', settingsObj);
+    },
     removeNotification({ commit }, index) {
       commit('removeNotification', index);
     },

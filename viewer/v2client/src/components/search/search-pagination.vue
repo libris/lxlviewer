@@ -103,12 +103,12 @@ export default {
     setCompact() {
       const user = this.user;
       user.settings.resultListType = 'compact';
-      this.updateUser(user);
+      this.$store.dispatch('setUser', user);
     },
     setFull() {
       const user = this.user;
       user.settings.resultListType = 'detailed';
-      this.updateUser(user);
+      this.$store.dispatch('setUser', user);
     },
     getNewResult(url) {
       this.changeResultListStatus('loading', true);

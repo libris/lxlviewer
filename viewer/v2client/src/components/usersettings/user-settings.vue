@@ -1,31 +1,12 @@
 <script>
-import * as StringUtil from '../../utils/string';
+import * as StringUtil from '@/utils/string';
 import * as _ from 'lodash';
-import { getSettings, getUser } from '../../vuex/getters';
-import { changeSettings, updateUser } from '../../vuex/actions';
 
 export default {
   name: 'user-settings',
-  vuex: {
-    actions: {
-      changeSettings,
-      updateUser,
-    },
-    getters: {
-      user: getUser,
-      settings: getSettings,
-    },
-  },
-  data() {
-    return {
-      activeSigel: this.user.settings.activeSigel,
-      activeLanguage: this.user.settings.language,
-      activeAppTech: this.user.settings.appTech,
-    }
-  },
   methods: {
-    save() {
-      this.updateUser(this.user);
+    setUser(userObj) {
+      this.$store.dispatch('setUser', userObj);
     },
     getSigelLabel(sigel, len) {
       let label = '';
@@ -35,30 +16,33 @@ export default {
       }
       return label.length > len ? `${label.substr(0,len-2)}...` : label;
     },
+    updateSigel (e) {
+      const userObj = this.user;
+      userObj.settings.activeSigel = e.target.value;
+      this.setUser(userObj);
+    },
+    updateLanguage (e) {
+      const userObj = this.user;
+      userObj.settings.language = e.target.value;
+      this.setUser(userObj);
+    },
+    updateAppTech (e) {
+      const userObj = this.user;
+      userObj.settings.appTech = e.target.checked;
+      this.setUser(userObj);
+    }
   },
   computed: {
-    currentUser() {
-      return window.userInfo;
+    user() {
+      return this.$store.getters.user;
+    },
+    settings() {
+      return this.$store.getters.settings;
     },
   },
   components: {
   },
   watch: {
-    activeSigel(newSigel) {
-      this.$dispatch('track-event', 'change_sigel', newSigel);
-      this.user.settings.activeSigel = newSigel;
-      this.save();
-    },
-    activeLanguage(newLanguage) {
-      this.$dispatch('track-event', 'change_language', newLanguage);
-      this.user.settings.language = newLanguage;
-      this.save();
-    },
-    activeAppTech(newAppTech) {
-      this.$dispatch('track-event', 'change_apptech', newAppTech);
-      this.user.settings.appTech = newAppTech;
-      this.save();
-    },
   },
   ready() { // Ready method is deprecated in 2.0, switch to "mounted"
     this.$nextTick(() => {
@@ -72,11 +56,11 @@ export default {
     <h1>{{'Settings' | translatePhrase}}</h1>
     <div class="info-box">
       <div class="user-gravatar">
-        <img v-bind:src="`https://www.gravatar.com/avatar/${user.emailHash}?d=mm&s=150`" /><br/>
+        <img :src="`https://www.gravatar.com/avatar/${user.emailHash}?d=mm&s=150`" /><br/>
       </div>
       <h3><span>{{"Name" | translatePhrase}}</span></h3>
       <div>{{user.fullName}}</div>
-      <h3><span>{{"E-post" | translatePhrase}}</span></h3>
+      <h3><span>{{"E-mail" | translatePhrase}}</span></h3>
       <div>{{user.email || '-'}}</div>
       <hr>
       <p>Din användarprofil är hämtad från <a href="https://login.libris.kb.se">Libris Login</a>.
@@ -92,23 +76,23 @@ export default {
         <tr>
           <td class="settings-label">{{"Active sigel" | translatePhrase}}</td>
           <td class="settings-value">
-            <select v-model="activeSigel">
-              <option v-for="sigel in user.collections" value="{{sigel.code}}">{{ getSigelLabel(sigel, 50) }}</option>
+            <select :value="user.settings.activeSigel" @change="updateSigel">
+              <option v-for="sigel in user.collections" :key="sigel.code" :value="sigel.code">{{ getSigelLabel(sigel, 50) }}</option>
             </select>
           </td>
         </tr>
           <tr>
             <td class="settings-label">{{"Language" | translatePhrase}}</td>
             <td class="settings-value">
-              <select v-model="activeLanguage">
-                <option v-for="language in settings.availableUserSettings.languages" value="{{language.value}}">{{ language.label | translatePhrase }}</option>
+              <select :value="user.settings.language" @change="updateLanguage">
+                <option v-for="language in settings.availableUserSettings.languages" :key="language.value" :value="language.value">{{ language.label | translatePhrase }}</option>
               </select>
             </td>
           </tr>
             <tr>
               <td class="settings-label">{{"Show technical application details" | translatePhrase}}</td>
               <td class="settings-value">
-                <input type="checkbox" v-model="activeAppTech"></input>
+                <input type="checkbox" @change="updateAppTech" :checked="user.settings.appTech">
               </td>
             </tr>
       </table>
@@ -120,7 +104,6 @@ export default {
 </template>
 
 <style lang="less">
-@import '../shared/_variables.less';
 
 @sigel-selector-width: 200px;
 

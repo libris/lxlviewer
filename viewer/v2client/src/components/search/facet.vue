@@ -12,25 +12,6 @@ export default {
     }
   },
   methods: {
-    activeChanged() {
-      if (this.active) {
-        this.changeResultListStatus('loading', true);
-        const resultPromise = new Promise((resolve, reject) => {
-          httpUtil.get({ url: `${location.origin}${this.observation.view['@id']}`, accept: 'application/ld+json' }).then((response) => {
-            history.pushState(response, 'unused', response['@id']);
-            console.log(response);
-            resolve(response);
-          }, (error) => {
-            history.pushState({}, 'unused', this.observation.view['@id']);
-            reject('Error searching...', error);
-          });
-        });
-        this.$dispatch('newresult', resultPromise);
-      }
-    },
-    toggleActive() {
-      this.active = !this.active;
-    }
   },
   computed: {
     user() {
@@ -58,9 +39,6 @@ export default {
   },
   components: {
   },
-  watch: {
-    'active': function() {this.activeChanged();},
-  },
   ready() { // Ready method is deprecated in 2.0, switch to "mounted"
     this.$nextTick(() => {
       
@@ -71,12 +49,11 @@ export default {
 
 <template>
   <li class="facet-item">
-    <a @click.prevent="toggleActive" :href="observation.view['@id']" :title="determinedLabel | capitalize">
-      <input type="checkbox" v-model="active">
+    <router-link :to="observation.view['@id'] | asAppPath" :title="determinedLabel | capitalize">
       <span :title="determinedLabel | capitalize">
         {{determinedLabel | capitalize}}
       </span>
-    </a>
+    </router-link>
     <span class="quantity">({{observation.totalItems}})</span>
   </li>
 </template>
@@ -84,9 +61,7 @@ export default {
 <style lang="less">
 
 .facet-item {
-  input[type=checkbox] {
-    visibility: hidden;
-  }
+
 }
 
 </style>

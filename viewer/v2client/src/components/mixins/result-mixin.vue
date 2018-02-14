@@ -11,8 +11,9 @@ export default {
   },
   methods: {
     importThis() {
-      const json = JSON.stringify(this.importItem);
-      this.$dispatch('set-import', json);
+      this.$store.dispatch('pushNotification', { color: 'grey', message: StringUtil.getUiPhraseByLang('Not implemented', this.settings.language) });
+    //   const json = JSON.stringify(this.importItem);
+    //   this.$dispatch('set-import', json);
     },
   },
   events: {

@@ -5,6 +5,7 @@ import Find from '@/components/Find'
 import Inspector from '@/components/Inspector'
 import About from '@/components/About'
 import Help from '@/components/Help'
+import UserPage from '@/components/UserPage'
 
 Vue.use(Router)
 
@@ -17,8 +18,13 @@ export default new Router({
       component: LandingPage
     },
     {
-      path: '/search/:query?',
-      name: 'Search',
+      path: '/search/remote/:query?',
+      name: 'SearchRemote',
+      component: Find
+    },
+    {
+      path: '/search/libris/:query?',
+      name: 'SearchLibris',
       component: Find
     },
     {
@@ -30,6 +36,11 @@ export default new Router({
       path: '/help',
       name: 'Help',
       component: Help
+    },
+    {
+      path: '/user',
+      name: 'User',
+      component: UserPage
     },
     {
       path: '/:fnurgel',

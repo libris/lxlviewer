@@ -12,6 +12,7 @@ export default {
     useSubmit: false,
     formDataSupported: false,
     isLandingPage: false,
+    perimeter: '',
   },
   data() {
     return {
@@ -26,6 +27,10 @@ export default {
         currentInput: 0,
         ids: []
       },
+      remoteSearch: {
+        q: '',
+        activeDatabases: ['OCLC']
+      }
     }
   },
   methods: {
@@ -67,6 +72,12 @@ export default {
             this.inputData.currentInput -= 1;
         }
       },
+      doRemoteSearch() {
+        const databases = this.remoteSearch.activeDatabases.join();
+        const keywords = this.remoteSearch.q;
+        const query = `q=${keywords}&databases=${databases}`;
+        this.$router.push({ path: `/search/Remote/${query}` })
+      },
       doSearch() {
         const validTags = this.validSearchTags;
         let queryText = [];
@@ -99,7 +110,7 @@ export default {
         _.each(this.inputData.ids, id => queryText.push(`@type=${id}`));
         // _.each(this.inputData.ids, type => queryText.push(`@type=${type}`));
         const query = queryText.join('&');
-        this.$router.push({ path: `/search/${query}` })
+        this.$router.push({ path: `/search/Libris/${query}` })
       },
       clearInputs() {
         this.inputData.currentInput = 0;
@@ -109,6 +120,12 @@ export default {
       }
   },
   computed: {
+      searchPerimeter() {
+        if (this.perimeter) {
+            return this.perimeter;
+        }
+        return 'Libris';
+      },
       settings() {
           return this.$store.getters.settings;
       },
@@ -154,13 +171,15 @@ export default {
   components: {
   },
   watch: {
-      currentComputedInput(newValue) {
-          document.getElementById('searchQsmart').children[newValue].focus();
-      },
+    currentComputedInput(newValue) {
+      document.getElementById('searchQsmart').children[newValue].focus();
+    },
   },
-  mounted() { // Ready method is deprecated in 2.0, switch to "mounted"
+  mounted() {
     this.$nextTick(() => {
-      document.getElementById('searchQsmart').children[this.inputData.currentInput].focus();
+      if (this.searchPerimeter === 'Libris') {
+        document.getElementById('searchQsmart').children[this.inputData.currentInput].focus();
+      }
     });
   },
 };
@@ -170,11 +189,11 @@ export default {
   <div class="search-form-container">
     <div class="panel panel-default search-controls">
       <div class="search-type-button-container">
-        <a class="card-link active">Libris</a>
-        <a class="card-link" href="/import">Andra källor</a>
+        <router-link to="/search/Libris" class="card-link" :class="{'active': searchPerimeter === 'Libris' }">Libris</router-link>
+        <router-link to="/search/Remote" class="card-link" :class="{'active': searchPerimeter === 'Remote' }">Andra källor</router-link>
       </div>
         <form id="searchForm">
-            <div class="form-inline">
+            <div class="form-inline libris-search" v-if="searchPerimeter === 'Libris'">
                 <div class="form-group">
                     <label class="search-label hidden" id="searchlabel" for="q">
                         {{"Search" | translatePhrase}}
@@ -199,12 +218,18 @@ export default {
                             </div>
                             <span v-show="hasInput" class="field-clearer" @click="clearInputs()"><i class="fa fa-fw fa-close"></i></span>
                         </div>
-                        <button id="searchSubmit" class="search-button btn btn-primary" @click.prevent="doSearch"><i class="fa fa-search"></i> {{"Search" | translatePhrase}}</button>
+                        <button class="search-button btn btn-primary" @click.prevent="doSearch"><i class="fa fa-search"></i> {{"Search" | translatePhrase}}</button>
                     </div>
                 </div>
             </div>
+            <div class="form-inline remote-search" v-if="searchPerimeter === 'Remote'">
+                <div class="form-group search-field">
+                    <input type="text" class="form-control search-input" placeholder="ISBN eller valfria sökord" v-model="remoteSearch.q">
+                    <button v-bind:class="{'disabled': remoteSearch.activeDatabases.length === 0}" v-on:click.prevent="doRemoteSearch()" class="search-button btn btn-primary"><i class="fa fa-search"></i> {{"Search" | translatePhrase}}</button>
+                </div>
+            </div>
 
-            <div class="type-buttons" aria-label="Välj typ">
+            <div class="type-buttons" aria-label="Välj typ" v-if="searchPerimeter === 'Libris'">
                 <label v-for="filter in dataSetFilters" :key="filter['@id']">
                     <input :value="filter['@id']" type="checkbox" :checked="filter['@id'] === 'Instance'" v-model="inputData.ids">
                     {{ filter.label }}
@@ -246,6 +271,16 @@ export default {
         margin-top: 10vh;
     }
     .search-controls {
+        .libris-search {
+            .form-group {
+                input {
+                    display: none;
+                }
+            }
+        }
+        .remote-search {
+            
+        }
         padding: 20px;
         .search-input {
             height: 44px;
@@ -257,62 +292,59 @@ export default {
         }
         .form-group {
             width: 100%;
-            input {
-            display:none;
-            }
             > div {
-            display: flex;
+                display: flex;
             > div {
                 flex-grow: 1;
                 margin-right: 5px;
             }
-            }
-            #searchFieldContainer {
+        }
+        #searchFieldContainer {
             > div {
                 display: flex;
                 justify-content: space-between;
                 #searchQsmart {
-                display: flex;
-                flex: 8 8 98%;
-                flex-direction: row;
-                flex-wrap: nowrap;
-                line-height: 2em;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
+                    display: flex;
+                    flex: 8 8 98%;
+                    flex-direction: row;
+                    flex-wrap: nowrap;
+                    line-height: 2em;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
 
-                .searchphrase {
-                    flex-grow: 1;
-                    margin-right: 5px;
-                    outline: none;
-                    cursor: text;
-                }
-                .searchtag {
-                    margin-right: 5px;
-                    border-radius: 3px;
-                    padding: 0px 5px;
-                    outline: none;
-                    cursor: text;
-                }
-                .valid {
-                    background-color: #E0F2F1;
-                }
-                input {
-                    border: 0px;
-                    outline: none;
-                    display: inline-block;
-                }
+                    .searchphrase {
+                        flex-grow: 1;
+                        margin-right: 5px;
+                        outline: none;
+                        cursor: text;
+                    }
+                    .searchtag {
+                        margin-right: 5px;
+                        border-radius: 3px;
+                        padding: 0px 5px;
+                        outline: none;
+                        cursor: text;
+                    }
+                    .valid {
+                        background-color: #E0F2F1;
+                    }
+                    input {
+                        border: 0px;
+                        outline: none;
+                        display: inline-block;
+                    }
                 }
                 > .field-clearer {
-                cursor: pointer;
-                align-self: center;
-                flex: 1 1 2%;
-                &:hover {
-                    color: #555;
-                }
+                    cursor: pointer;
+                    align-self: center;
+                    flex: 1 1 2%;
+                    &:hover {
+                        color: #555;
+                    }
                 }
             }
-            }
+        }
         }
         .search-label {
             display: block;
