@@ -11,12 +11,13 @@
     "e2e": "node test/e2e/runner.js",
     "test": "npm run unit && npm run e2e",
     "lint": "eslint --ext .js,.vue src test/unit test/e2e/specs",
-    "build": "node build/build.js",
+    "build": "npm run generatehelp && node build/build.js",
     "generatehelp": "m2j ../helpdocs/*.md -c -o src/resources/json/help.json"
   },
   "dependencies": {
     "font-awesome": "^4.7.0",
     "markdown-to-json": "^0.5.1",
+    "marked": "^0.3.12",
     "md5": "^2.2.1",
     "moment": "^2.20.1",
     "vue": "^2.5.2",
@@ -65,7 +66,6 @@
     "kungbib-styles": "^1.2.4",
     "less": "^2.7.3",
     "less-loader": "^4.0.5",
-    "marked": "^0.3.12",
     "mocha": "^3.2.0",
     "modernizr": "^3.5.0",
     "nightwatch": "^0.9.12",

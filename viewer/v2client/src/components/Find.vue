@@ -5,8 +5,8 @@
         <facet-controls :result="result"></facet-controls>
       </div>
       <div class="col-md-9 search-content-container">
-        <search-form :perimeter="searchPerimeter"></search-form>
-        <search-result-component :import-data="importData" :result="result" v-if="result.totalItems && result.totalItems > -1"></search-result-component>
+        <search-form :search-perimeter="$route.params.perimeter"></search-form>
+        <search-result-component :import-data="importData" :result="result" v-if="result.totalItems > -1"></search-result-component>
       </div>
     </div>
   </div>
@@ -42,7 +42,7 @@ export default {
   events: {
   },
   watch: {
-    '$route.name'(value) {
+    '$route.params.perimeter'(value) {
       this.getResult();
     },
     '$route.params.query'(value) {
@@ -51,13 +51,18 @@ export default {
   },
   methods: {
     getResult() {
+      this.emptyResults();
+      if (typeof this.$route.params.query !== 'undefined') {
+        if (this.$route.params.perimeter === 'libris') {
+          this.getLocalResult();
+        } else {
+          this.getRemoteResult();
+        }
+      }
+    },
+    emptyResults() {
       this.result = {};
       this.importData = [];
-      if (this.searchPerimeter === 'Libris') {
-        this.getLocalResult();
-      } else {
-        this.getRemoteResult();
-      }
     },
     getLocalResult() {
       const fetchUrl = `${this.settings.apiPath}/find.json?${this.$route.params.query}`;
@@ -71,17 +76,15 @@ export default {
       });
     },
     getRemoteResult() {
-      // const fetchUrl = `${this.settings.apiPath}/_remotesearch?${this.$route.params.query}`;
-      
-      // fetch(fetchUrl).then((response) => {
-      //   return response.json();
-      // }, (error) => {
-      //   this.$store.dispatch('pushNotification', { color: 'red', message: StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language) });
-      // }).then((result) => {
-        const response = MockRemoteResult;
-        this.result = this.convertRemoteResult(response);
-        this.importData = response.items;
-      // });
+      const fetchUrl = `${this.settings.apiPath}/_remotesearch?${this.$route.params.query}`;
+      fetch(fetchUrl).then((response) => {
+        return response.json();
+      }, (error) => {
+        this.$store.dispatch('pushNotification', { color: 'red', message: StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language) });
+      }).then((result) => {
+        this.result = this.convertRemoteResult(result);
+        this.importData = result.items;
+      });
     },
     convertRemoteResult(result) {
       let totalResults = 0;
@@ -125,19 +128,6 @@ export default {
     },
   },
   computed: {
-    searchPerimeter() {
-      switch(this.$route.name) {
-        case 'SearchRemote':
-          return 'Remote';
-        break;
-        case 'SearchLibris':
-          return 'Libris';
-        break;
-        default:
-          return 'Libris';
-        break;
-      }
-    },
     user() {
       return this.$store.getters.user;
     },
@@ -152,9 +142,11 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
+      if (this.$route.params.perimeter !== 'libris' && this.$route.params.perimeter !== 'remote') {
+        this.$router.push({ path: `/search/` });
+      }
       this.getResult();
       this.initialized = true;
-      console.log(this.$route);
     })
   },
   components: {
