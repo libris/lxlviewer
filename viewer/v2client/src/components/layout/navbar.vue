@@ -1,19 +1,20 @@
 <template>
-  <nav class="navbar">
+  <nav class="navbar NavBar" aria-labelledby="service-name">
     <div class="container">
-      <div class="navbar-header" role="banner">
-          <div class="navbar-brand navbar-logo">
-            <router-link to="/">
-              <img src="~kungbib-styles/dist/assets/kb_logo_black.svg" alt="Kungliga Bibliotekets logotyp">
-            </router-link>
-          </div>
-          <router-link to="/" class="navbar-brand" :title="`Version ${settings.version}`">
-              Libris katalogisering
-            <span class="environment-label">
-              {{ environmentLabel }}
-            </span>
+      <div class="navbar-header NavBar-header" role="banner">
+        <div class="navbar-brand navbar-logo NavBar-logo">
+          <router-link to="/" class="NavBar-logoLink">
+            <img class="NavBar-logoImg" src="~kungbib-styles/dist/assets/kb_logo_black.svg" alt="Kungliga Bibliotekets logotyp">
           </router-link>
         </div>
+        <router-link to="/" class="navbar-brand NavBar-titleLink" :title="`Version ${settings.version}`">
+          <span id="service-name">Libris katalogisering</span>
+          <span class="environment-label NavBar-serviceLabel">
+          {{ environmentLabel }}
+          </span>
+        </router-link>
+      </div>
+
         <ul class="nav navbar-nav pull-right">
           <li class="navbar-item">
             <router-link to="/help">
