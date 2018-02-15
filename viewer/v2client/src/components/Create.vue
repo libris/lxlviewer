@@ -1,31 +1,17 @@
 <script>
 import * as _ from 'lodash';
-import * as CombinedTemplates from '../../../../resources/json/combinedTemplates.json';
-import * as BaseTemplates from '../../../../resources/json/baseTemplates.json'; 
+import * as CombinedTemplates from '@/resources/json/combinedTemplates.json';
+import * as BaseTemplates from '@/resources/json/baseTemplates.json'; 
 import * as VocabUtil from '@/utils/vocab';
 import * as StringUtil from '@/utils/string';
-import CreationCard from './creation-card';
-import CreationTab from './creation-tab';
-import { getUser, getSettings, getContext, getVocabulary, getVocabularyClasses } from '../../vuex/getters';
-
+import CreationCard from '@/components/createnew/creation-card';
+import CreationTab from '@/components/createnew/creation-tab';
 
 export default {
   name: 'create-new-form',
-  vuex: {
-    getters: {
-      user: getUser,
-      context: getContext,
-      settings: getSettings,
-      vocab: getVocabulary,
-      vocabClasses: getVocabularyClasses,
-    },
-  },
-  props: {
-  },
-  data() {
+  data () {
     return {
       creationList: ['Instance', 'Work', 'Agent', 'Concept'],
-      vocabPfx: this.settings.vocabPfx,
       chosenType: '',
       selectedCreation: 'Instance',
       thingData: {},
@@ -40,9 +26,7 @@ export default {
       }
       return label.join(', ');
     },
-  },
-  events: {
-    'use-base'(type) {
+    useBase(type) {
       this.chosenType = type;
       const baseRecord = Object.assign(this.baseRecord, BaseTemplates[this.selectedCreation.toLowerCase()].record);
       const baseMainEntity = Object.assign(this.baseMainEntity, BaseTemplates[this.selectedCreation.toLowerCase()].mainEntity);
@@ -53,7 +37,7 @@ export default {
         ],
       };
     },
-    'use-template'(templateValue) {
+    useTemplate(templateValue) {
       const templateRecord = Object.assign(this.baseRecord, templateValue.record);
       const templateMainEntity = Object.assign(this.baseMainEntity, templateValue.mainEntity);
 
@@ -68,15 +52,23 @@ export default {
         ],
       };
     },
-    'set-creation'(creation) {
+    setCreation(creation) {
       this.selectedCreation = creation;
       this.activeIndex = -1;
     },
-    'set-active-index'(index) {
+    setActiveIndex(index) {
       this.activeIndex = index;
     },
   },
+  events: {
+  },
   computed: {
+    user() {
+      return this.$store.getters.user;
+    },
+    settings() {
+      return this.$store.getters.settings;
+    },
     baseMainEntity() {
       const baseMainEntity = {
         '@id': 'https://id.kb.se/TEMPID#it',
@@ -110,13 +102,14 @@ export default {
   },
   watch: {
     'thingData': function() {
-      document.getElementById('thingDataForm').submit();
+      this.$store.dispatch('pushNotification', { color: 'grey', message: StringUtil.getUiPhraseByLang('This action is not yet functional. We\'re working on it!', this.settings.language) });
     },
   },
-  ready() { // Ready method is deprecated in 2.0, switch to "mounted"
+  mounted() { // Ready method is deprecated in 2.0, switch to "mounted"
     this.$nextTick(() => {
       this.activeForm = '';
       this.transition = false;
+      this.initialized = true;
     });
   },
 };
@@ -127,21 +120,33 @@ export default {
     <div class="panel-body">
       <div class="createnew-form">
         <div class="app-heading">{{'Create new' | translatePhrase}}</div>
-        <creation-tab :creation-list="creationList"></creation-tab>
+        <creation-tab
+          :creation-list="creationList"
+          @set-creation="setCreation" />
         <div class="creation-cards-container">
-          <creation-card :is-base="true" :creation="selectedCreation" :index="0" :active-index="activeIndex"></creation-card>
-          <creation-card v-for="template in combinedTemplates" :is-base="false" :template="template" :index="$index + 1" :active-index="activeIndex"></creation-card>
+          <creation-card
+            :is-base="true"
+            :creation="selectedCreation"
+            :index="0"
+            :active-index="activeIndex"
+            @use-base="useBase"
+            @set-active-index="setActiveIndex" />
+          <creation-card
+            v-for="(template, index) in combinedTemplates"
+            :key="index"
+            :is-base="false"
+            :template="template"
+            :index="index + 1"
+            :active-index="activeIndex"
+            @use-template="useTemplate"
+            @set-active-index="setActiveIndex" />
         </div>
-        <form action="/edit" method="POST" id="thingDataForm">
-          <textarea id="copyItem" name="data" class="hidden">{{thingData | json}}</textarea>
-        </form>
       </div>
     </div>
   </div>
 </template>
 
 <style lang="less">
-@import '../shared/_variables.less';
 
 #create-new-post {
   .app-heading {

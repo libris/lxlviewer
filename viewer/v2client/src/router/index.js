@@ -6,6 +6,7 @@ import Inspector from '@/components/Inspector'
 import About from '@/components/About'
 import Help from '@/components/Help'
 import UserPage from '@/components/UserPage'
+import Create from '@/components/Create'
 
 Vue.use(Router)
 
@@ -41,6 +42,11 @@ export default new Router({
       path: '/user',
       name: 'User',
       component: UserPage
+    },
+    {
+      path: '/create',
+      name: 'Create',
+      component: Create
     },
     {
       path: '/:fnurgel',

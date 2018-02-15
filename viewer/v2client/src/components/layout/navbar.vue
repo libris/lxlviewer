@@ -32,12 +32,12 @@
             </router-link>
           </li>
           <li class="navbar-item">
-            <a href="/createnew">
+            <router-link to="/create">
               <div class="navbar-circle">
                 <i class="fa fa-file-text" aria-hidden="true"></i>
               </div>
               <span>{{"Create new" | translatePhrase}}</span>
-            </a>
+            </router-link>
           </li>
           <li class="navbar-item user-settings" v-if="user">
             <router-link to="/user">
