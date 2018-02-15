@@ -4,8 +4,6 @@ import * as _ from 'lodash';
 import ToolTipComponent from '../shared/tooltip-component';
 import * as LayoutUtil from '../../utils/layout';
 import * as StringUtil from '../../utils/string';
-import { getSettings, getVocabulary, getContext } from '../../vuex/getters';
-import { changeStatus, changeNotification } from '../../vuex/actions';
 import ComboKeys from 'combokeys';
 
 
@@ -21,17 +19,6 @@ export default {
     index: Number,
     editingObject: '',
     entityType: '',
-  },
-  vuex: {
-    getters: {
-      settings: getSettings,
-      vocab: getVocabulary,
-      context: getContext,
-    },
-    actions: {
-      changeStatus,
-      changeNotification,
-    },
   },
   data() {
     return {
@@ -270,7 +257,7 @@ export default {
             <a v-on:click.prevent="addField(prop, false)"><i class="fa fa-fw fa-2x fa-plus-circle"></i></a>
             <span><i class="fa fa-fw fa-check fa-2x"></i></span>
           </span>
-          <span class="fieldLabel" title="{{prop.label | capitalize }}">
+          <span class="fieldLabel" :title="prop.label | capitalize">
             {{prop.label | capitalize }}
             <span class="typeLabel">{{ prop.item['@id'] | removeDomain }}</span>
           </span>
@@ -285,7 +272,6 @@ export default {
 </template>
 
 <style lang="less">
-@import '../shared/_variables.less';
 
 .field-adder {
   .field-adder-bar {

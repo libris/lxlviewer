@@ -16,8 +16,6 @@ import * as VocabUtil from '../../utils/vocab';
 import * as LayoutUtil from '../../utils/layout';
 import * as MathUtil from '../../utils/math';
 import LodashProxiesMixin from '../mixins/lodash-proxies-mixin';
-import { getVocabulary, getVocabularyProperties, getForcedListTerms, getSettings, getContext, getStatus, getEditorData } from '../../vuex/getters';
-import { changeStatus } from '../../vuex/actions';
 
 export default {
   name: 'data-node',
@@ -43,20 +41,6 @@ export default {
       removed: false,
       uniqueIds: [],
     };
-  },
-  vuex: {
-    actions: {
-      changeStatus,
-    },
-    getters: {
-      context: getContext,
-      vocab: getVocabulary,
-      vocabProperties: getVocabularyProperties,
-      forcedListTerms: getForcedListTerms,
-      settings: getSettings,
-      status: getStatus,
-      editorData: getEditorData,
-    },
   },
   components: {
     'item-entity': ItemEntity,
@@ -325,7 +309,7 @@ export default {
     <div>
       <span v-show="key === '@id'">{{ 'ID' | translatePhrase | capitalize }}</span>
       <span v-show="key === '@type'">{{ 'Type' | translatePhrase | capitalize }}</span>
-      <span v-show="key !== '@id' && key !== '@type'" title="{{ key }}">{{ key | labelByLang | capitalize }}</span>
+      <span v-show="key !== '@id' && key !== '@type'" :title="key">{{ key | labelByLang | capitalize }}</span>
       <div v-if="propertyComment && !locked" class="comment-icon">
         <i class="fa fa-question-circle"></i>
         <div class="comment">{{ propertyComment }}</div>
@@ -370,7 +354,6 @@ export default {
 </template>
 
 <style lang="less">
-@import '../shared/_variables.less';
 
 .data-node {
   width: 100%;

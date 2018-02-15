@@ -345,7 +345,7 @@ export default {
     <div v-if="!isExpandedType" class="item-local" :class="{'expanded': expanded, 'distinguish-removal': removeHover}">
       <div class="topbar">
         <i class="fa fa-chevron-right" :class="{'down': expanded}" @click="toggleExpanded()"></i>
-        <span class="type" @click="toggleExpanded()" title="{{ item['@type'] }}">{{ item['@type'] | labelByLang | capitalize }}</span>
+        <span class="type" @click="toggleExpanded()" :title="item['@type']">{{ item['@type'] | labelByLang | capitalize }}</span>
         <span class="collapsed-label" @click="toggleExpanded()"><span v-show="!expanded || isEmpty">{{getItemLabel}}</span><span class="placeholder">.</span></span>
         <span class="actions">
           <i v-if="!isLocked" class="fa fa-trash-o chip-action" :class="{'show-icon': showActionButtons}" v-on:click="removeThis(true)" @mouseover="removeHover = true" @mouseout="removeHover = false">
@@ -363,7 +363,7 @@ export default {
 </template>
 
 <style lang="less">
-@import '../shared/_variables.less';
+
 .item-local-container {
   padding: 2px 0px;
   margin: 0px 0px 0px 0px;

@@ -112,7 +112,6 @@ export default {
 </template>
 
 <style lang="less">
-@import '../shared/_variables.less';
 
 .item-value {
   border: solid 1px transparent;
