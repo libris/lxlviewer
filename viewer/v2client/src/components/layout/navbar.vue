@@ -1,64 +1,3 @@
-<template>
-  <nav class="navbar NavBar" aria-labelledby="service-name">
-    <div class="container">
-      <div class="navbar-header NavBar-header" role="banner">
-        <div class="navbar-brand navbar-logo NavBar-logo">
-          <router-link to="/" class="NavBar-logoLink">
-            <img class="NavBar-logoImg" src="~kungbib-styles/dist/assets/kb_logo_black.svg" alt="Kungliga Bibliotekets logotyp">
-          </router-link>
-        </div>
-        <router-link to="/" class="navbar-brand NavBar-titleLink" :title="`Version ${settings.version}`">
-          <span id="service-name">Libris katalogisering</span>
-          <span class="environment-label NavBar-serviceLabel">
-          {{ environmentLabel }}
-          </span>
-        </router-link>
-      </div>
-
-        <ul class="nav navbar-nav pull-right">
-          <li class="navbar-item">
-            <router-link to="/help">
-              <div class="navbar-circle">
-                <i class="fa fa-question-circle" aria-hidden="true"></i>
-              </div>
-              <span>{{"Help" | translatePhrase}}</span>
-            </router-link>
-          </li>
-          <li class="navbar-item">
-          <router-link to="/search/Libris">
-            <div class="navbar-circle">
-              <i class="fa fa-search" aria-hidden="true"></i>
-            </div>
-            <span>{{"Search" | translatePhrase}}</span>
-            </router-link>
-          </li>
-          <li class="navbar-item">
-            <a href="/createnew">
-              <div class="navbar-circle">
-                <i class="fa fa-file-text" aria-hidden="true"></i>
-              </div>
-              <span>{{"Create new" | translatePhrase}}</span>
-            </a>
-          </li>
-          <li class="navbar-item user-settings" v-if="user">
-            <router-link to="/user">
-              <div class="navbar-circle">
-                <img class="user-gravatar" :src="`https://www.gravatar.com/avatar/${user.emailHash}?d=mm&s=32`" />
-              </div>
-              {{ user.fullName }} <span v-cloak class="sigelLabel">({{ user.settings.activeSigel }})</span>
-            </router-link>
-          </li>
-          <li class="navbar-item" v-if="!user"><a href="/login">
-            <div class="navbar-circle">
-              <i class="fa fa-fw fa-sign-in"></i>
-            </div>
-            <span>{{"Log in" | translatePhrase}}</span></a>
-          </li>
-        </ul>
-    </div>
-  </nav>
-</template>
-
 <script>
 
 export default {
@@ -95,9 +34,70 @@ export default {
 }
 </script>
 
-<style lang="less">
+<template>
+  <nav class="NavBar" aria-labelledby="service-name">
+    <div class="container">
+      <div class="NavBar-brand" role="banner">
+        <router-link to="/" class="NavBar-brandLink">
+          <img class="NavBar-brandLogo" src="~kungbib-styles/dist/assets/kb_logo_black.svg" alt="Kungliga Bibliotekets logotyp">
+        </router-link>
+        <router-link to="/" class="NavBar-brandTitle" :title="`Version ${settings.version}`">
+          <span id="service-name">Libris katalogisering</span>
+          <span class="NavBar-envLabel">
+          {{ environmentLabel }}
+          </span>
+        </router-link>
+      </div>
 
-.navbar {
+      <ul class="nav navbar-nav pull-right MainNav">
+        <li class="MainNav-item">
+          <router-link to="/help" class="MainNav-link">
+            <div class="MainNav-iconWrap" aria-hidden="true">
+              <i class="fa fa-question-circle"></i>
+            </div>
+            <span>{{"Help" | translatePhrase}}</span>
+          </router-link>
+        </li>
+        <li class="MainNav-item">
+          <router-link to="/search/Libris" class="MainNav-link">
+            <div class="MainNav-iconWrap" aria-hidden="true">
+              <i class="fa fa-search"></i>
+            </div>
+            <span>{{"Search" | translatePhrase}}</span>
+          </router-link>
+        </li>
+          <li class="MainNav-item">
+          <a href="/createnew" class="MainNav-link">
+            <div class="MainNav-iconWrap" aria-hidden="true">
+              <i class="fa fa-file-text"></i>
+            </div>
+            <span>{{"Create new" | translatePhrase}}</span>
+          </a>
+        </li>
+        <li class="MainNav-item" v-if="user">
+          <router-link to="/user" class="MainNav-link">
+            <div class="MainNav-iconWrap MainNav-iconWrap--userSettings">
+              <img class="MainNav-gravatar" :src="`https://www.gravatar.com/avatar/${user.emailHash}?d=mm&s=32`" />
+            </div>
+            {{ user.fullName }} <span v-cloak class="sigelLabel">({{ user.settings.activeSigel }})</span>
+          </router-link>
+        </li>
+        <li class="MainNav-item" v-if="!user">
+          <a href="/login" class="MainNav-link">
+            <div class="MainNav-iconWrap" aria-hidden="true">
+              <i class="fa fa-fw fa-sign-in"></i>
+            </div>
+            <span>{{"Log in" | translatePhrase}}</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+</template>
+
+
+<style lang="less">
+.NavBar {
   width: 100%;
   z-index: 900;
   border: solid @border-navbar;
@@ -105,90 +105,101 @@ export default {
   border-width: 0px 0px @border-navbar-width 0px;
   box-shadow: @shadow-navbar;
   min-height: 62px;
+
   @media screen and (max-width: @screen-sm-min) {
     padding: 0 20px;
   }
-  .navbar-circle {
+
+  &-brand {
+    float: left;
+    margin-left: 1em;
+    padding: 0.3em;
+  }
+
+  &-brandLogo {
+    display: inline-block;
+    margin: 4px 0 0;
+    vertical-align: middle;
+    width: 80%;
+  }
+
+  &-brandLink {
+    display: inline-block;
+    width: 50px;
+  }
+
+  &-brandTitle {
+    color: @text-brand;
+    cursor: pointer;
+    height: 50px;
+    float: right;
+    font-size: 18px;
+    font-size: 1.8rem;
+    line-height: 20px;
+    padding: 15px 5px;
+
+    &:hover {
+      text-decoration: none;
+    }
+
+    .container-fluid {
+      padding: 0 30px 0 15px;
+    }
+  }
+
+  &-envLabel {
+    display: block;
+    color: @text-brand-env;
+    font-size: 0.5em;
+    font-weight: bold;
+    float: right;
+    margin: -0.5em 0px 0px 0.5em;
+    text-transform: uppercase;
+  }
+}
+
+.MainNav {
+  &-item {
+    text-transform: none;
+  }
+
+  &-iconWrap {
     display: inline-block;
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    background-color: @grey-lighter;
     line-height: 2em;
-    margin-right: 0.25em;
+    margin-right: .25em;
     text-align: center;
-    .user-gravatar {
-      border-radius: 50%;
+    width: .8em;
+
+    &--userSettings {
+      height: 32px;   
+      width: 32px;
+      line-height: 20px;
     }
   }
-  .container-fluid {
-    padding: 0 30px 0 15px;
+
+  &-gravatar {
+    border-radius: 80%;
   }
-  .navbar-nav {
-    .navbar-item {
-      text-transform: none;
-      &.user-settings {
-        .navbar-circle {
-          width: 2.2em;
-        }
-      }
-      .navbar-circle {
-        width: 0.8em;
-        background-color: transparent;
-      }
-    }
-    a {
-      cursor: pointer;
-      &:hover, &:focus {
-        background-color: @bg-navbar-hover;
-      }
-      i {
-        color: @text-alt-navbar;
-      }
-    }
-    text-transform: uppercase;
-    font-weight: 600;
+
+  &-link {
+    color: #333;
+    cursor: pointer;
+    font-weight: 700;
     font-size: 14px;
-    .dropdown {
-      text-shadow: none;
-      .dropdown-menu {
-        li {
-          a {
-            color: @text-alt-navbar;
-            i {
-              color: @green;
-            }
-          }
-        }
-        font-size: 12px;
-      }
-      li:hover {
-        a {
-          color: @text-alt-navbar;
-        }
-      }
+    font-size: 1.4rem;
+
+    &:hover, 
+    &:focus {
+      background-color: @bg-navbar-hover;
+    }
+
+    i {
+      color: @text-alt-navbar;
     }
   }
 }
-
-.navbar-header {
-  margin-left: 1em;
-  padding: 0.3em;
-  .navbar-brand {
-    font-size: 18px;
-    color: @text-brand;
-  }
-  .environment-label {
-    text-transform: uppercase;
-    font-size: 0.5em;
-    color: @text-brand-env;
-    font-weight: bold;
-    display: block;
-    margin: -0.5em 0px 0px 0.5em;
-    float: right;
-  }
-}
-
-
 
 </style>
