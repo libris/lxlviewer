@@ -1,62 +1,47 @@
 <script>
-import * as VocabUtil from '../../utils/vocab';
-import * as DisplayUtil from '../../utils/display';
-import { getVocabulary, getContext, getSettings } from '../../vuex/getters';
+import * as VocabUtil from '@/utils/vocab';
+import * as DisplayUtil from '@/utils/display';
 
 export default {
   name: 'creation-card',
-  vuex: {
-    getters: {
-      context: getContext,
-      vocab: getVocabulary,
-      settings: getSettings,
-    },
-  },
   props: {
-    creation: '',
-    template: {},
-    isBase: false,
-    index: 0,
-    activeIndex: 0,
-  },
-  data() {
-    return {
-    }
+    creation: String,
+    template: Object,
+    isBase: Boolean,
+    index: Number,
+    activeIndex: Number,
   },
   methods: {
     useBase(event) {
-      this.$dispatch('use-base', event.target.value);
+      this.$emit('use-base', event.target.value);
     },
     useTemplate(templateValue) {
       this.setIndex();
-      this.$dispatch('use-template', templateValue);
+      this.$emit('use-template', templateValue);
     },
     setIndex() {
-      this.$dispatch('set-active-index', this.index);
+      this.$emit('set-active-index', this.index);
     },
     getFormattedSelectOption(term, settings, vocab, context) {
       return DisplayUtil.getFormattedSelectOption(term, settings, vocab, context);
     },
   },
   computed: {
+    settings() {
+      return this.$store.getters.settings;
+    },
+    resources() {
+      return this.$store.getters.resources;
+    },
     isActive() {
       return this.activeIndex === this.index;
     },
     getClassTree() {
       const tree = [this.creation].map(type => {
-        return VocabUtil.getTree(type, this.vocab, this.settings.vocabPfx, this.context);
+        return VocabUtil.getTree(type, this.resources.vocab, this.settings.vocabPfx, this.resources.context);
       });
-      return VocabUtil.flattenTree(tree, this.vocab, this.settings.vocabPfx, this.context, this.settings.language);
+      return VocabUtil.flattenTree(tree, this.resources.vocab, this.settings.vocabPfx, this.resources.context, this.settings.language);
     },
-  },
-  components: {
-  },
-  watch: {
-  },
-  ready() { // Ready method is deprecated in 2.0, switch to "mounted"
-    this.$nextTick(() => {
-      // Do stuff
-    });
   },
 };
 </script>
@@ -69,7 +54,7 @@ export default {
         <div class="description">Innehåller de vanligaste fälten för vald typ.</div>
         <select class="creation-dropdown" @change="useBase($event)">
           <option selected disabled>{{'Choose type' | translatePhrase}}</option>
-          <option v-for="term in getClassTree" :value="term.id" v-html="getFormattedSelectOption(term, settings, vocab, context)"></option>
+          <option v-for="(term, index) in getClassTree" :value="term.id" :key="index" v-html="getFormattedSelectOption(term, settings, resources.vocab, resources.context)"></option>
         </select>
       </div>
       <div v-if="!isBase" class="creation-card" @click="useTemplate(template.value)">
@@ -83,8 +68,6 @@ export default {
 </template>
 
 <style lang="less">
-@import '../shared/_variables.less';
-
 .creation-container {
   flex: 1 1 33%;
   padding: 1em;
