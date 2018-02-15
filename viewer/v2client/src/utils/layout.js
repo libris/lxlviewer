@@ -8,10 +8,8 @@ export function scrollLock(bool) {
     } else {
       e.classList += c;
     }
-    $('#body-blocker').fadeIn();
   } else {
     e.classList.remove(c);
-    $('#body-blocker').fadeOut();
   }
 }
 
