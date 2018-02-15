@@ -19,13 +19,12 @@ export default new Router({
       component: LandingPage
     },
     {
-      path: '/search/remote/:query?',
-      name: 'SearchRemote',
-      component: Find
+      path: '/search',
+      redirect: '/search/libris'
     },
     {
-      path: '/search/libris/:query?',
-      name: 'SearchLibris',
+      path: '/search/:perimeter/:query?',
+      name: 'Search',
       component: Find
     },
     {

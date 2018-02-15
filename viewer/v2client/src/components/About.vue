@@ -21,47 +21,52 @@ export default {
 </script>
 
 <template>
-  <div class="panel panel-default about-content">
-    <img :src="image" />
-    <div class="panel-body container-fluid">
-      <div>
-        <div class="header">{{ header }}</div>
-        <div class="abstract">{{ text.abstract }}</div>
-
-        <div class="section" v-for="section in text.sections" :key="section.title">
-          <div class="section-header">{{ section.header }}</div>
-          <div v-html="section.text" class="section-text"></div>
-        </div>
-      </div>
+  <article class="panel panel-default Article">
+    <img :src="image" class="Article-featuredImg" title="Abstract XL Graphics"/>
+    <div class="Article-content">
+      <header class="Article-header">
+        <h1 class="Article-title">{{ header }}</h1>
+        <div class="abstract Article-abstract">{{ text.abstract }}</div>
+      </header>
+    
+      <section class="Article-section" v-for="section in text.sections" :key="section.title">
+        <h2 class="Article-sectionTitle">{{ section.header }}</h2>
+        <div v-html="section.text" class="section-text Article-sectionText"></div>
+      </section>
     </div>
-  </div>
+  </article>
 </template>
 
 <style lang="less">
 
-.about-content {
+.Article {
   margin-top: 15vh;
-  > img {
+
+  &-featuredImg {
     width: 100%;
   }
-  > div > div {
-    padding: 0 4em 4em 4em;
-    .header {
-      font-size: 3em;
-    }
-    .abstract {
-      font-weight: bold;
-    }
-    .section {
-      margin: 2em 0 0 0;
-      .section-header {
-        font-size: 1.2em;
-      }
-      .section-text {
-        font-size: 1em;
-      }
-    }
+
+  &-title {
+    font-size: 48px;
+    font-size: 4.8rem;
+    font-weight: 500;
+  }
+
+  &-abstract {
+    font-weight: 700;
+  }
+
+  &-content {
+    padding: 2em 5em 4em;
+  }
+
+  &-section {
+    margin: 0 0 2em;
+  }
+
+  &-sectionTitle {
+    font-size: 20px;
+    font-size: 2.0rem;
   }
 }
-
 </style>

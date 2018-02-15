@@ -36,7 +36,7 @@ const store = new Vuex.Store({
       version: process.env.VERSION,
       apiPath: process.env.API_PATH,
       appPaths: {
-        '/find?': '/search/Libris/',
+        '/find?': '/search/libris/',
       },
       removableBaseUris: [
         'http://libris.kb.se/',
