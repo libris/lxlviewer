@@ -2,6 +2,7 @@
 import * as _ from 'lodash';
 import PropertyMappings from '@/resources/json/propertymappings.json';
 import * as httpUtil from '@/utils/http';
+import Copy from '@/resources/json/copy.json';
 import * as StringUtil from '@/utils/string';
 
 export default {
@@ -35,47 +36,62 @@ export default {
         activeDatabases: ['OCLC']
       },
       query: '',
+      activeClass: 'is-active',
     }
   },
   methods: {
-      addSearchField() {
-          const newobj = {};
-          newobj.value='';
-          newobj.class='searchphrase';
-          this.inputData.textInput.push(newobj);
-          this.inputData.currentInput += 1;
-      },
-      updateField() {
-        const validTags = this.validSearchTags;
-        if (this.currentIsTag) {
-            this.currentField.class = 'searchtag valid';
-        } else {
-            this.currentField.class = 'searchphrase';
-        }
-      },
-      handleFocus(focusedIndex) {
-        this.inputData.currentInput = focusedIndex;
-      },
-      handleInput: function(e) {
-        const currentElement = document.getElementById('searchQsmart').children[this.inputData.currentInput];
-        if (e.keyCode === 13) { // Enter
-            e.preventDefault();
-            if (!this.currentIsTag) {
-                this.doSearch();
-            } else if (this.inputData.currentInput === this.inputData.textInput.length-1) {
-                this.addSearchField();
-            } else {
-                this.inputData.currentInput += 1;
-            }
-        } else if (e.keyCode === 8 && // Backspace
-        !this.currentIsTag &&
-        currentElement.value.slice(0, currentElement.selectionStart).length === 0 &&
-        this.inputData.textInput.length >= 2) {
-            e.preventDefault();
-            this.inputData.textInput.splice(this.inputData.currentInput-1, 1);
-            this.inputData.currentInput -= 1;
-        }
-      },
+    showHelp() {
+      let helpText = document.querySelector('.js-searchHelpText');
+      helpText.parentElement.classList.add(this.activeClass);
+    },
+    hideHelp() {
+      let helpText = document.querySelector('.js-searchHelpText');
+      if (helpText.parentElement.classList.contains(this.activeClass)) {
+        helpText.parentElement.classList.remove(this.activeClass);
+      } 
+    },
+    toggleHelp() {
+      let helpText = document.querySelector('.js-searchHelpText');
+      helpText.parentElement.classList.toggle(this.activeClass);
+    },
+    addSearchField() {
+        const newobj = {};
+        newobj.value='';
+        newobj.class='searchphrase';
+        this.inputData.textInput.push(newobj);
+        this.inputData.currentInput += 1;
+    },
+    updateField() {
+      const validTags = this.validSearchTags;
+      if (this.currentIsTag) {
+          this.currentField.class = 'searchtag valid';
+      } else {
+          this.currentField.class = 'searchphrase';
+      }
+    },
+    handleFocus(focusedIndex) {
+      this.inputData.currentInput = focusedIndex;
+    },
+    handleInput: function(e) {
+      const currentElement = document.getElementById('searchQsmart').children[this.inputData.currentInput];
+      if (e.keyCode === 13) { // Enter
+          e.preventDefault();
+          if (!this.currentIsTag) {
+              this.doSearch();
+          } else if (this.inputData.currentInput === this.inputData.textInput.length-1) {
+              this.addSearchField();
+          } else {
+              this.inputData.currentInput += 1;
+          }
+      } else if (e.keyCode === 8 && // Backspace
+      !this.currentIsTag &&
+      currentElement.value.slice(0, currentElement.selectionStart).length === 0 &&
+      this.inputData.textInput.length >= 2) {
+          e.preventDefault();
+          this.inputData.textInput.splice(this.inputData.currentInput-1, 1);
+          this.inputData.currentInput -= 1;
+      }
+    },
       composeQuery() {
         let query = '';
         if (this.searchPerimeter === 'libris') {
@@ -127,6 +143,15 @@ export default {
       }
   },
   computed: {
+      copy() {
+        return Copy['search-form-help'];
+      },
+      header() {
+          return this.copy.header;
+      },
+      text() {
+        return this.copy.text;
+      },
       settings() {
           return this.$store.getters.settings;
       },
@@ -187,186 +212,265 @@ export default {
 </script>
 
 <template>
-  <div class="search-form-container">
-    <div class="panel panel-default search-controls">
-      <div class="search-type-button-container">
-        <router-link to="/search/libris" class="card-link" :class="{'active': searchPerimeter === 'libris' }">Libris</router-link>
-        <router-link to="/search/remote" class="card-link" :class="{'active': searchPerimeter === 'remote' }">Andra källor</router-link>
+  <div class="SearchBar">
+    <div class="panel panel-default SearchBar-controls">
+      <div class="SearchBar-sources">
+        <router-link to="/search/libris" class="card-link SearchBar-source" 
+          :class="{'is-active': searchPerimeter === 'libris' }">Libris
+        </router-link>
+        <router-link to="/search/remote" class="card-link SearchBar-source" 
+          :class="{'is-active': searchPerimeter === 'remote' }">Andra källor
+        </router-link>
       </div>
-        <form id="searchForm">
-            <div class="form-inline libris-search" v-if="searchPerimeter === 'libris'">
-                <div class="form-group">
-                    <label class="search-label hidden" id="searchlabel" for="q">
-                        {{"Search" | translatePhrase}}
-                    </label>
-                    <div id="searchFieldContainer">
-                        <div class="form-control search-input">
-                            <div aria-labelledby="searchlabel" id="searchQsmart">
-                                <input
-                                    list="matchingParameters"
-                                    v-for="(input, index) in inputData.textInput"
-                                    :key="index"
-                                    @focus="handleFocus(index)"
-                                    @input="updateField"
-                                    @keydown="handleInput"
-                                    v-model="input.value"
-                                    class="smartInput"
-                                    :class="input.class"
-                                >
-                                <datalist id="matchingParameters">
-                                    <option v-for="matchingParameter in validSearchTags" :key="matchingParameter" :value="`${matchingParameter}:`">{{matchingParameter}}:</option>
-                                </datalist>
-                            </div>
-                            <span v-show="hasInput" class="field-clearer" @click="clearInputs()"><i class="fa fa-fw fa-close"></i></span>
-                        </div>
-                        <button class="search-button btn btn-primary" @click.prevent="doSearch"><i class="fa fa-search"></i> {{"Search" | translatePhrase}}</button>
-                    </div>
+      <div class="SearchBar-help">
+        <div class="dropdown SearchBar-helpBox" @mouseleave="hideHelp()">
+          <span class="SearchBar-helpIcon">
+            <i class="fa fa-fw fa-question-circle-o" tabindex="0" aria-haspopup="true"
+              @mouseover="showHelp()"
+              @keyup.enter="toggleHelp()"></i>
+          </span>
+          <div class="dropdown-menu js-searchHelpText SearchBar-helpContent"> 
+            <h6 class="SearchBar-helpTitle">{{ header }}</h6>
+            <p v-for="(paragraph, index) in text.paragraphs" v-html="paragraph" :key='index'></p>
+          </div>
+        </div>
+      </div>       
+      <form id="searchForm" class="SearchBar-form">
+        <div class="form-inline is-librisSearch" v-if="searchPerimeter === 'libris'">
+          <div class="form-group SearchBar-formGroup">
+            <label class="search-label hidden SearchBar-inputLabel" id="searchlabel" for="q">
+              {{"Search" | translatePhrase}}
+            </label>
+            <div id="searchFieldContainer">
+              <div class="form-control search-input SearchBar-input">
+                <div aria-labelledby="searchlabel" id="searchQsmart">
+                  <input
+                      list="matchingParameters"
+                      v-for="(input, index) in inputData.textInput"
+                      :key="index"
+                      @focus="handleFocus(index)"
+                      @input="updateField"
+                      @keydown="handleInput"
+                      v-model="input.value"
+                      class="smartInput"
+                      :class="input.class">
+                  <datalist id="matchingParameters">
+                    <option v-for="matchingParameter in validSearchTags" 
+                      :key="matchingParameter" 
+                      :value="`${matchingParameter}:`">
+                      {{matchingParameter}}:
+                    </option>
+                  </datalist>
                 </div>
+                <span v-show="hasInput" class="field-clearer SearchBar-clear" @click="clearInputs()">
+                  <i class="fa fa-fw fa-close"></i>
+                </span>
+              </div>
+              <button class="search-button btn btn-primary SearchBar-submit" @click.prevent="doSearch">
+                <i class="fa fa-search"></i> {{"Search" | translatePhrase}}
+                </button>
             </div>
-            <div class="form-inline remote-search" v-if="searchPerimeter === 'remote'">
-                <div class="form-group search-field">
-                    <input type="text" class="form-control search-input" placeholder="ISBN eller valfria sökord" v-model="remoteSearch.q">
-                    <button v-bind:class="{'disabled': remoteSearch.activeDatabases.length === 0}" v-on:click.prevent="doSearch" class="search-button btn btn-primary"><i class="fa fa-search"></i> {{"Search" | translatePhrase}}</button>
-                </div>
-            </div>
-
-            <div class="type-buttons" aria-label="Välj typ" v-if="searchPerimeter === 'libris'">
-                <label v-for="filter in dataSetFilters" :key="filter['@id']">
-                    <input :value="filter['@id']" type="checkbox" :checked="filter['@id'] === 'Instance'" v-model="inputData.ids">
-                    {{ filter.label }}
-                </label>
-            </div>
-        </form>
+          </div>
+        </div>
+        <div class="form-inline is-remoteSearch" v-if="searchPerimeter === 'remote'">
+          <div class="form-group search-field SearchBar-formGroup">
+            <input type="text" class="form-control search-input SearchBar-input" placeholder="ISBN eller valfria sökord" 
+              v-model="remoteSearch.q">
+            <button class="SearchBar-submit search-button btn btn-primary"
+              v-bind:class="{'disabled': 
+              remoteSearch.activeDatabases.length === 0}" 
+              v-on:click.prevent="doSearch">
+              <i class="fa fa-search"></i> {{"Search" | translatePhrase}}
+            </button>
+          </div>
+        </div>
+        <div class="SearchBar-typeButtons" aria-label="Välj typ" v-if="searchPerimeter === 'libris'">
+          <label v-for="filter in dataSetFilters" :key="filter['@id']">
+            <input type="checkbox" 
+              :checked="filter['@id'] === 'Instance'" 
+              v-model="inputData.ids"
+              :value="filter['@id']" >
+            {{ filter.label }}
+           </label>
+        </div>
+      </form>
     </div>
   </div>
 </template>
 
 <style lang="less">
 
-.search-form-container {
+.SearchBar {
     margin-top: 0vh;
     transition: 0.3s ease margin-top;
-    .search-type-button-container {
-        margin: 1.5em 0 1em;
-        .search-type-button {
+
+  &-controls {
+    padding: 20px;
+
+    .is-librisSearch {
+      .form-group {
+        input {
+            display: none;
+        }
+      }
+    }
+    .is-remoteSearch {
+        
+    }
+  }
+
+  &-sources {
+    margin: 1.5em 0 1em;
+  }
+
+  &-source {
+    color: @brand-primary;
+
+    &.is-active {
+        color: #fff;
+        background-color: @brand-primary;
+    }
+  }
+
+  &.is-landing-page {
+    margin-top: 10vh;
+  }
+
+  &-help {
+    margin-top: -35px;
+  }
+
+  &-helpIcon {
+    cursor: pointer;
+    font-size: 18px;
+    float: right;
+    width: 20%;
+    margin-right: 24px;
+    clear: right;
+    &:focus {
+        outline: auto 5px;
+    }
+  }
+
+  &-helpBox {
+    float: none;
+  }
+
+  &-helpContent {
+    background: @white;
+    font-size: 12px;
+    display: none;
+    padding: 10px;
+    left: auto;
+    right: 0;
+    top: 2.5em;
+    width: 30%;
+    max-width: 300px;
+
+    .is-active & {
+      display: block;
+    }
+  }
+
+  &-helpTitle {
+    font-weight: 700;
+  }
+
+  &.is-landingPage {
+    margin-top: 10vh;
+  }
+
+  &-input {
+    height: 44px;
+    min-width: 75%;
+  }
+
+  &-inputLabel {
+    display: block;
+    text-transform: uppercase;
+  }
+
+  &-submit {
+    min-width: 20%;
+    height: 42px;   
+  }
+
+  &-formGroup {
+    width: 100%;
+    > div {
+      display: flex;
+      
+      > div {
+        flex-grow: 1;
+        margin-right: 5px;
+      }
+    }
+
+    #searchFieldContainer {
+      > div {
+        display: flex;
+        justify-content: space-between;
+        
+        #searchQsmart {
+          display: flex;
+          flex: 8 8 98%;
+          flex-direction: row;
+          flex-wrap: nowrap;
+          line-height: 2em;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+
+          .searchphrase {
+            flex-grow: 1;
+            margin-right: 5px;
+            outline: none;
+            cursor: text;
+          }
+          
+          .searchtag {
+            margin-right: 5px;
+            border-radius: 3px;
+            padding: 0px 5px;
+            outline: none;
+            cursor: text;
+          }
+          
+          .valid {
+            background-color: #E0F2F1;
+          }
+
+          input {
+            border: 0px;
+            outline: none;
             display: inline-block;
-            border: solid @gray;
-            color: @gray-darker;
-            font-size: 85%;
-            line-height: 2em;
-            font-weight: bold;
-            text-transform: uppercase;
-            border-width: 1px 1px 0px 1px;
-            border-radius: 0.3em 0.3em 0px 0px;
-            padding: 0px 10px;
-            background-color: @gray-lighter;
-            box-shadow: inset 0px -0.1em 0.1em rgba(0, 0, 0, 0.15);
-            &.active {
-                color: darken(@brand-primary, 15%);
-                border-color: @brand-primary;
-                background-color: desaturate(lighten(@brand-primary, 30%), 50%);
-            }
-        }
-    }
-    &.is-landing-page {
-        margin-top: 10vh;
-    }
-    .search-controls {
-        .libris-search {
-            .form-group {
-                input {
-                    display: none;
-                }
-            }
-        }
-        .remote-search {
-            
-        }
-        padding: 20px;
-        .search-input {
-            height: 44px;
-            min-width: 75%;
-        }
-        .search-button {
-            min-width: 20%;
-            height: 42px;
-        }
-        .form-group {
-            width: 100%;
-            > div {
-                display: flex;
-            > div {
-                flex-grow: 1;
-                margin-right: 5px;
-            }
-        }
-        #searchFieldContainer {
-            > div {
-                display: flex;
-                justify-content: space-between;
-                #searchQsmart {
-                    display: flex;
-                    flex: 8 8 98%;
-                    flex-direction: row;
-                    flex-wrap: nowrap;
-                    line-height: 2em;
-                    white-space: nowrap;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-
-                    .searchphrase {
-                        flex-grow: 1;
-                        margin-right: 5px;
-                        outline: none;
-                        cursor: text;
-                    }
-                    .searchtag {
-                        margin-right: 5px;
-                        border-radius: 3px;
-                        padding: 0px 5px;
-                        outline: none;
-                        cursor: text;
-                    }
-                    .valid {
-                        background-color: #E0F2F1;
-                    }
-                    input {
-                        border: 0px;
-                        outline: none;
-                        display: inline-block;
-                    }
-                }
-                > .field-clearer {
-                    cursor: pointer;
-                    align-self: center;
-                    flex: 1 1 2%;
-                    &:hover {
-                        color: #555;
-                    }
-                }
-            }
-        }
-        }
-        .search-label {
-            display: block;
-            text-transform: uppercase;
+          }
         }
 
-        .type-label {
-            display: block;
+        > .field-clearer {
+          cursor: pointer;
+          align-self: center;
+          flex: 1 1 2%;
+          &:hover {
+              color: #555;
+          }
         }
-        .type-buttons {
-            label {
-            padding: 3px 10px;
-            font-weight: normal;
-            font-size: 12px;
-            input {
-                margin-right: 0.2em;
-            }
-            }
-            margin-top: 1em;
-        }
+      }
     }
+  }
+
+  &-typeButtons {
+    margin-top: 1em;  
+
+    label {
+      padding: 3px 10px;
+      font-weight: normal;
+      font-size: 12px;
+
+      input {
+         margin-right: 0.2em;
+      }
+    }
+  }
 }
-
 </style>
