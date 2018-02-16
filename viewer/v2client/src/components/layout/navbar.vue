@@ -24,7 +24,7 @@
             </router-link>
           </li>
           <li class="navbar-item">
-          <router-link to="/search/Libris">
+          <router-link to="/search/libris">
             <div class="navbar-circle">
               <i class="fa fa-search" aria-hidden="true"></i>
             </div>
