@@ -1,50 +1,40 @@
+
 <script>
 export default {
   name: 'creation-tab',
-  props: {
-    creationList: [],
-  },
-  data() {
+  data () {
     return {
       selectedCreation: 'Instance',
     }
+  },
+  props: {
+    creationList: Array,
   },
   methods: {
     isActive(creation) {
       return this.selectedCreation === creation;
     }
   },
-  computed: {
-  },
-  components: {
-  },
   watch: {
     selectedCreation(newVal) {
-      this.$dispatch('set-creation', newVal);
+      this.$emit('set-creation', newVal);
     },
-  },
-  ready() { // Ready method is deprecated in 2.0, switch to "mounted"
-    this.$nextTick(() => {
-      // Do stuff
-    });
   },
 };
 </script>
 
 <template>
   <div class="creation-tab">
-    <div v-for="creation in creationList" :class="{'active': isActive(creation)}">
+    <div v-for="creation in creationList" :key="creation" :class="{'active': isActive(creation)}">
       <label>
-        <input type="radio" v-model="selectedCreation" :value="creation"></input>
+        <input type="radio" v-model="selectedCreation" :value="creation">
         {{creation | labelByLang}}
-      </label  
+      </label>
     </div>
   </div>
 </template>
 
 <style lang="less">
-@import '../shared/_variables.less';
-
 .creation-tab {
   display: flex;
   padding-left: 1em;
