@@ -73,7 +73,6 @@ export default {
 </template>
 
 <style lang="less">
-@import '../shared/_variables.less';
 
   .card-info-container {
     width: 100%;

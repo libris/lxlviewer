@@ -10,27 +10,8 @@ import DataNode from './datanode';
 import * as ModalUtil from '../../utils/modals';
 import * as VocabUtil from '../../utils/vocab';
 import * as DisplayUtil from '../../utils/display';
-import { updateForm, changeStatus } from '../../vuex/actions';
-import { getSettings, getContext, getVocabulary, getForcedListTerms, getVocabularyProperties, getVocabularyClasses, getDisplayDefinitions, getEditorData, getStatus } from '../../vuex/getters';
 
 export default {
-  vuex: {
-    actions: {
-      updateForm,
-      changeStatus,
-    },
-    getters: {
-      context: getContext,
-      vocab: getVocabulary,
-      vocabProperties: getVocabularyProperties,
-      vocabClasses: getVocabularyClasses,
-      forcedListTerms: getForcedListTerms,
-      settings: getSettings,
-      editorData: getEditorData,
-      display: getDisplayDefinitions,
-      status: getStatus,
-    },
-  },
   props: {
     locked: false,
     editingObject: '',
@@ -254,7 +235,6 @@ export default {
 </template>
 
 <style lang="less">
-@import '../shared/_variables.less';
 
 .ribbon-mixin(@ribbon-color) {
   // padding: 0 10px 0 10px;
@@ -386,33 +366,6 @@ export default {
   .node-local {
     width: 420px;
     clear: left;
-  }
-
-  .dummy-reverse {
-    display: flex;
-    width: 100%;
-    flex-direction: row;
-    background-color: #f2f2f2;
-    .label {
-      color: black;
-      order: 1;
-      flex-basis: @col-label;
-      display: flex;
-      text-align: right;
-      align-items: center;
-      justify-content: flex-end;
-      font-size: 1.2rem;
-      color: #333333;
-      font-weight: normal;
-    }
-    .value {
-      order: 2;
-      flex-basis: @col-value;
-      padding: 5px;
-      .dummy-chip {
-        .chip-mixin(@brand-primary, #fff);
-      }
-    }
   }
 }
 

@@ -42,7 +42,6 @@ export default {
 </template>
 
 <style lang="less">
-@import '../shared/_variables.less';
 
 .erroneous-object {
   line-height: 1.6;
