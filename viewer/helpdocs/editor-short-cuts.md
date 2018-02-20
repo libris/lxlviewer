@@ -15,18 +15,18 @@ För att underlätta arbetet har vi integrerat ett antal kortkommandon för PC r
     
 | Åtgärd 					    	|         Kortkommando 																   	             |
 |	 ------------- 						| 				------------- 																    |
-| Kopiera, skapa identisk kopia av post 				|Control + Shift + C  								    |
-| Redigera, gå till postens redigeringsvy 						|Control + E  				  							    |
+| Kopiera, skapa identisk kopia av post 				|Ctrl + Shift + C  								    |
+| Redigera, gå till postens redigeringsvy 						|Ctrl + E  				  							    |
 | Lägg till nytt fält							|  																  Alt + F 														  |
-| Ångra, ångra dina senaste ändringar i redigeringsläge	| 			Control + Z		  |  
-| Spara, spara post utan att lämna redigeringsläget   | Control + S |
-| Klar, spara post och gå till visningsläge | Control + D |
+| Ångra, ångra dina senaste ändringar i redigeringsläge	| 			Ctrl + Z		  |  
+| Spara, spara post utan att lämna redigeringsläget   | Ctrl + S |
+| Klar, spara post och gå till visningsläge | Ctrl + D |
 | Expandera alla fält i post 		|						Alt (+) +                 |
 | Kollapsa alla fält i post | Alt (+) -   										  |
-| Adminmetadata, gå mellan postens visnings-/adminmetadatavy    |Control + Shift + höger/vänster pil   	  |
+| Adminmetadata, gå mellan postens visnings-/adminmetadatavy    |Ctrl + Shift + höger/vänster pil   	  |
 | Stäng ner pop up-fönster | Escape |
 | Välj ett element i pop up-fönster | Enter |
-| Välj/markera fler element i pop up-fönster | Control + Enter |
+| Välj/markera fler element i pop up-fönster | Ctrl + Enter |
 
  
  
@@ -35,18 +35,18 @@ För att underlätta arbetet har vi integrerat ett antal kortkommandon för PC r
     
 |               Åtgärd 					    	| 										Kortkommando 																	|
 |						 ------------- 						| 										------------- 																|
-| Kopiera, skapa identisk kopia av post  				| Command + Shift + C  								|
-| Redigera, gå till postens redigeringsvy  | Command + E   |
+| Kopiera, skapa identisk kopia av post  				| Cmd + Shift + C  								|
+| Redigera, gå till postens redigeringsvy  | Cmd + E   |
 | Lägg till nytt fält | Alt + F  |
-| Ångra, ångra dina senaste ändringar i redigeringsläge | Command + Z |
-| Spara, spara post utan att lämna redigeringsläget   | Command + S  |
-| Klar, spara post och gå till visningsläge | Command + D |
+| Ångra, ångra dina senaste ändringar i redigeringsläge | Cmd + Z |
+| Spara, spara post utan att lämna redigeringsläget   | Cmd + S  |
+| Klar, spara post och gå till visningsläge | Cmd + D |
 | Expandera alla fält i post 		|						Alt (+) +                 |
 | Kollapsa alla fält i post | Alt (+) -   										  |
-| Adminmetadata, gå mellan postens visnings-/adminmetadatavy       | Command + Shift + höger/vänster pil |
+| Adminmetadata, gå mellan postens visnings-/adminmetadatavy       | Cmd + Shift + höger/vänster pil |
 | Stäng ner pop up-fönster | Escape |
 | Välj ett element i pop up-fönster | Enter |
-| Välj/markera fler element i pop up-fönster | Command + Enter |
+| Välj/markera fler element i pop up-fönster | Cmd + Enter |
 
 
 
