@@ -41,7 +41,7 @@ Infogar tecken för tecken.
 ### Chrome 
 * Installera Chrome för MAC/ WINDOWS/ LINUX [här](https://www.google.com/inputtools/try/)
 * Installera Google input tools plugin. 
-### PC 
+### Windows 
 * Läs mer och ladda ner [här](https://www.google.com/inputtools/windows/)
 
 ## Övriga webbsidor
