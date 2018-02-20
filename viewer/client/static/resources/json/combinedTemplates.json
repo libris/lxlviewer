@@ -291,10 +291,11 @@
                 "@type": "PrimaryContribution",
                 "agent": {
                   "@type": "Person",
-                  "name": ""
+                  "familyName": "",
+                  "givenName": ""
                 },
                 "role": [{
-                  "code": "aut"
+                  "@id": "https://id.kb.se/relator/author"
                 }]
               },
               {
