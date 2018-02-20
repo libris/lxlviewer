@@ -44,8 +44,5 @@ Infogar tecken för tecken.
 ### Windows 
 * Läs mer och ladda ner [här](https://www.google.com/inputtools/windows/)
 
-## Övriga webbsidor
-https://www.howtogeek.com/210824/how-to-quickly-type-special-characters-on-any-computer-smartphone-or-tablet/
-
 
 
