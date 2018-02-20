@@ -32,18 +32,17 @@ Sök på teckenuppsättning i “Sök i windows” och öppna programmet. Mata i
 
 ### Emoji och symboler.
 Infogar tecken för tecken. 	
-* Redigera > Emoji och symboler/kortkommandot ^⌘Mellanslag
+* Redigera > Emoji och symboler (^+⌘Mellanslag)
 
 ### Få fram specialtecken via tangentbordet
 * Håll in en tangent och specialtecken visas då på vissa tangenter.
 
-## Google Input Tools för webben (Chrome), PC och Android  
-### Chrome webbläsare 
-* Installera Chrome för 
-MAC/ WINDOWS/ LINUX [här](https://www.google.com/inputtools/try/)
+## Google Input Tools för webben (Chrome) och Windows 
+### Chrome 
+* Installera Chrome för MAC/ WINDOWS/ LINUX [här](https://www.google.com/inputtools/try/)
 * Installera Google input tools plugin. 
 ### PC 
-https://www.google.com/inputtools/windows/)
+* Läs mer och ladda ner [här](https://www.google.com/inputtools/windows/)
 
 ## Övriga webbsidor
 https://www.howtogeek.com/210824/how-to-quickly-type-special-characters-on-any-computer-smartphone-or-tablet/
