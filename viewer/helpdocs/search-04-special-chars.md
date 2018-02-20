@@ -43,7 +43,8 @@ Infogar tecken för tecken.
 * Installera Chrome för 
 MAC/ WINDOWS/ LINUX[här](https://www.google.com/inputtools/try/)
 * Installera Google input tools plugin. 
-### PC (https://www.google.com/inputtools/windows/)
+### PC 
+https://www.google.com/inputtools/windows/)
 
 ## Övriga webbsidor
 https://www.howtogeek.com/210824/how-to-quickly-type-special-characters-on-any-computer-smartphone-or-tablet/
