@@ -13,18 +13,17 @@ För att komma åt specialtecken, samt tecken på olika språk rekommenderar vi 
 
 ## Windows 
 Uppdatera till Windows 10 (eller senare version)
-Installera flera språk/tangentbord 
-Installera flera språk/tangentbord i inställningar 
+### Installera flera språk/tangentbord 
 * Inställningar > Tid och språk > Region och språk > Språk/lägg till ett språk > Klicka på tillagt språk > Alternativ > + Lägg till tangentbord 
 
-För att aktivera tangentbord aktivitetsfältet
+### För att aktivera tangentbord aktivitetsfältet
 * Högerklicka på Aktivitetsfältet > aktivera Visa knappen Pektangentbord, eller
 Inställningar > Anpassning > Aktivitetsfältet > Aktivera och inaktivera systemikoner > aktivera Pektangentbordet 
 
-För att komma åt specialtecken på det virtuella tangentbordet (gäller även för olika språk) 
+### För att komma åt specialtecken på det virtuella tangentbordet (gäller även för olika språk) 
 * Håll in relevant knapp för att se olika variationer av det tecknet.
 
-Teckenuppsättning
+### Teckenuppsättning
 Sök på teckenuppsättning i “Sök i windows” och öppna programmet. Mata in tecken för tecken när du står i ett inmatningsfält. 
 
 ## MAC OS
@@ -41,7 +40,7 @@ Infogar tecken för tecken.
 ## Google Input Tools för webben (Chrome), PC och Android  
 ### Chrome webbläsare 
 * Installera Chrome för 
-MAC/ WINDOWS/ LINUX[här](https://www.google.com/inputtools/try/)
+MAC/ WINDOWS/ LINUX [här](https://www.google.com/inputtools/try/)
 * Installera Google input tools plugin. 
 ### PC 
 https://www.google.com/inputtools/windows/)
