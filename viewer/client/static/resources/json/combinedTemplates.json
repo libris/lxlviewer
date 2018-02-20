@@ -292,7 +292,8 @@
                 "agent": {
                   "@type": "Person",
                   "familyName": "",
-                  "givenName": ""
+                  "givenName": "",
+                  "lifeSpan": ""
                 },
                 "role": [{
                   "@id": "https://id.kb.se/relator/author"
@@ -302,7 +303,9 @@
                 "@type": "Contribution",
                 "agent": {
                   "@type": "Person",
-                  "name": ""
+                  "familyName": "",
+                  "givenName": "",
+                  "lifeSpan": ""
                 }
               }
             ],
