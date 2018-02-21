@@ -23,7 +23,7 @@ För att underlätta arbetet har vi integrerat ett antal kortkommandon för PC r
 | Klar, spara post och gå till visningsläge | Ctrl+D |
 | Expandera alla fält i post 		|						Alt(+)+                 |
 | Kollapsa alla fält i post | Alt(+)-   										  |
-| Adminmetadata, gå mellan postens visnings-/adminmetadatavy    |Ctrl+Shift+höger/vänsterpil   	  |
+| Gå mellan postens visnings-/adminmetadatavy    |Ctrl+Shift+höger/vänsterpil   	  |
 | Stäng ner pop up-fönster | Escape |
 | Välj ett element i pop up-fönster | Enter |
 | Välj/markera fler element i pop up-fönster | Ctrl+Enter |
