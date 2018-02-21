@@ -13,7 +13,7 @@ För att komma åt specialtecken, samt tecken på olika språk rekommenderar vi 
 
 ## Windows 
 Uppdatera till Windows 10 (eller senare version)
-### Installera flera språk/tangentbord 
+#### Installera flera språk/tangentbord 
 * Inställningar > Tid och språk > Region och språk > Språk/lägg till ett språk > Klicka på tillagt språk > Alternativ > + Lägg till tangentbord 
 
 #### För att aktivera tangentbord aktivitetsfältet
