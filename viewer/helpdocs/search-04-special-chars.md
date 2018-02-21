@@ -18,7 +18,7 @@ Uppdatera till Windows 10 (eller senare version)
 
 #### För att aktivera tangentbord aktivitetsfältet
 * Högerklicka på Aktivitetsfältet > aktivera Visa knappen Pektangentbord, eller
-Inställningar > Anpassning > Aktivitetsfältet > Aktivera och inaktivera systemikoner > aktivera Pektangentbordet 
+* Inställningar > Anpassning > Aktivitetsfältet > Aktivera och inaktivera systemikoner > aktivera Pektangentbordet 
 
 #### För att komma åt specialtecken på det virtuella tangentbordet (gäller även för olika språk) 
 * Håll in relevant knapp för att se olika variationer av det tecknet.
