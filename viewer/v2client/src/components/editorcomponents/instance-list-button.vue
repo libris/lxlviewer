@@ -4,7 +4,6 @@ import * as StringUtil from '../../utils/string';
 import * as RecordUtil from '../../utils/record';
 import * as LayoutUtil from '../../utils/layout';
 import * as HttpUtil from '../../utils/http';
-import { getSettings, getVocabulary, getEditorData, getStatus } from '../../vuex/getters';
 
 export default {
   name: 'instance-list-button',
@@ -18,14 +17,6 @@ export default {
       embellishedInstanceList: [],
       showInstances: false,
     }
-  },
-  vuex: {
-    getters: {
-      vocab: getVocabulary,
-      settings: getSettings,
-      editorData: getEditorData,
-      status: getStatus,
-    },
   },
   methods: {
     buildEmbellishedInstanceList(instanceList) {
@@ -90,7 +81,7 @@ export default {
         </span>
       </div>
       <div class="body">
-        <a v-for="instance in embellishedInstanceList" :href="instance.record['@id']">
+        <a v-for="(instance, index) in embellishedInstanceList" :href="instance.record['@id']" :key="index">
           <entity-summary :focus-data="instance.mainEntity" :add-link="true" :lines="4"></entity-summary>
         </a>
       </div>
@@ -99,13 +90,12 @@ export default {
 </template>
 
 <style lang="less">
-@import '../shared/_variables.less';
+
 .instances-button-container {
   button {
     font-weight: bold;
   }
   .window {
-    .window-mixin();
     .body {
       width: 100%;
       background-color: white;

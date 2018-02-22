@@ -4,20 +4,9 @@ import * as HttpUtil from '../../utils/http';
 import * as RecordUtil from '../../utils/record';
 import CreateItemButton from './create-item-button';
 import InstanceListButton from './instance-list-button';
-import { getUser, getStatus, getContext, getEditorData, getVocabulary, getSettings } from '../../vuex/getters';
 
 export default {
   name: 'reverse-relations',
-  vuex: {
-    getters: {
-      context: getContext,
-      user: getUser,
-      vocab: getVocabulary,
-      settings: getSettings,
-      editorData: getEditorData,
-      status: getStatus,
-    },
-  },
   props: {
   },
   data() {
@@ -34,7 +23,7 @@ export default {
       let property = '';
       if (this.recordType === 'Instance') {
         property = 'itemOf';
-        const holdingUrl = `/_findhold?library=${this.libraryUrl}&id=${this.editorData.record['@id']}`
+        const holdingUrl = `/_findhold?library=${this.libraryUrl}&id=${this.inspector.data.record['@id']}`
         HttpUtil.get({ url: holdingUrl, accept: 'application/ld+json' }).then((response) => {
           if (response.length > 0) {
             this.hasRelation = true;
@@ -48,7 +37,7 @@ export default {
       } else if (this.recordType === 'Work') {
         property = 'instanceOf';
       }
-      RecordUtil.getRelatedPosts(this.editorData.record['@id'], property).then((response) => {
+      RecordUtil.getRelatedPosts(this.inspector.data.record['@id'], property).then((response) => {
         this.relationInfo = response;
         this.numberOfRelations = response.length;
       }, (error) => {
@@ -60,11 +49,23 @@ export default {
     libraryUrl() {
       return `https://libris.kb.se/library/${this.user.settings.activeSigel}`;
     },
+    inspector() {
+      return this.$store.getters.inspector;
+    },
+    user() {
+      return this.$store.getters.user;
+    },
+    resources() {
+      return this.$store.getters.resources;
+    },
+    settings() {
+      return this.$store.getters.settings;
+    },
     recordType() {
-      return VocabUtil.getRecordType(this.editorData.mainEntity['@type'], this.vocab, this.settings, this.context);
+      return VocabUtil.getRecordType(this.inspector.data.mainEntity['@type'], this.resources.vocab, this.settings, this.resources.context);
     },
     recordId() {
-      return this.editorData.record['@id'];
+      return this.inspector.data.record['@id'];
     }
   },
   events: {
@@ -111,7 +112,7 @@ export default {
 </template>
 
 <style lang="less">
-@import '../shared/_variables.less';
+
 .reverse-relations {
   background-color: @white;
   flex: 2 2 20%;

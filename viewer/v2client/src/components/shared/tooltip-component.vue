@@ -1,20 +1,10 @@
 <script>
 import * as StringUtil from '../../utils/string';
-import { getVocabulary, getSettings, getContext } from '../../vuex/getters';
 
 export default {
   data() {
     return {
     };
-  },
-  vuex: {
-    getters: {
-      vocab: getVocabulary,
-      settings: getSettings,
-      context: getContext
-    },
-    actions: {
-    },
   },
   props: {
     tooltipText: '',
@@ -27,12 +17,18 @@ export default {
   watch: {
   },
   computed: {
+    settings() {
+      return this.$store.getters.settings;
+    },
+    resources() {
+      return this.$store.getters.resources;
+    },
     compShowTooltip() {
       return !this.hoverTooltip && this.showTooltip;
     },
     translatedText() {
       if (this.translation === 'labelByLang') {
-        return StringUtil.getLabelByLang(this.tooltipText, this.settings.language, this.vocab, this.settings.vocabPfx, this.context);
+        return StringUtil.getLabelByLang(this.tooltipText, this.settings.language, this.resources.vocab, this.settings.vocabPfx, this.resources.context);
       } else if (this.translation === 'translatePhrase') {
         return StringUtil.getUiPhraseByLang(this.tooltipText, this.settings.language);
       }

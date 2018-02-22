@@ -8,6 +8,7 @@ const store = new Vuex.Store({
   state: {
     resources: {
       resourcesLoaded: false,
+      loadingError: false,
       vocab: {},
       display: {},
       forcedSetTerms: {},
@@ -131,6 +132,9 @@ const store = new Vuex.Store({
     changeResourcesStatus(state, status) {
       state.resources.resourcesLoaded = status;
     },
+    changeResourcesLoadingError(state, bool) {
+      state.resources.loadingError = bool;
+    },
     setVocab(state, data) {
       state.resources.vocab = data;
     },
@@ -197,6 +201,9 @@ const store = new Vuex.Store({
     },
     changeResourcesStatus( { commit }, status ) {
       commit('changeResourcesStatus', status);
+    },
+    changeResourcesLoadingError( { commit }, bool) {
+      commit('changeResourcesLoadingError', bool);
     },
     setContext( { commit }, contextJson) {
       commit('setContext', contextJson);

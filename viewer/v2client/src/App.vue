@@ -10,6 +10,18 @@
         <router-view v-if="resourcesLoaded" />
       </transition>
     </main>
+    <modal-component title="Error" modal-type="danger" :closeable="false" v-if="resourcesLoadingError" class="ResourceLoadingErrorModal">
+      <div slot="modal-header" class="ResourceLoadingErrorModal-header">
+        <header>
+          Error
+        </header>
+      </div>
+      <div slot="modal-body" class="ResourceLoadingErrorModal-body">
+        Couldn't fetch the resources needed for this application.<br><br>
+        Try reloading the page.<br><br>
+        If the error persists, please contact <a href="mailto:libris@kb.se">libris@kb.se</a>.
+      </div>
+    </modal-component>
     <footer-component></footer-component>
     <notification-list></notification-list>
   </div>
@@ -19,12 +31,19 @@
 import Navbar from '@/components/layout/navbar';
 import Footer from '@/components/layout/footer';
 import NotificationList from '@/components/shared/notification-list';
+import ModalComponent from '@/components/shared/modal-component';
 
 export default {
   name: 'App',
   computed: {
+    status() {
+      return this.$store.getters.resources.loadingError;
+    },
     resourcesLoaded() {
       return this.$store.getters.resources.resourcesLoaded;
+    },
+    resourcesLoadingError() {
+      return this.$store.getters.resources.loadingError;
     }
   },
   mounted() {
@@ -35,6 +54,7 @@ export default {
     'navbar-component': Navbar,
     'footer-component': Footer,
     'notification-list': NotificationList,
+    'modal-component': ModalComponent,
    },
 }
 </script>
@@ -62,6 +82,12 @@ export default {
 
   .fade-enter, .fade-leave-active {
     opacity: 0
+  }
+  .ResourceLoadingErrorModal {
+    &-body {
+      text-align: center;
+      padding: 2em;
+    }
   }
 }
 

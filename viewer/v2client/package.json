@@ -6,21 +6,25 @@
   "private": true,
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
-    "start": "npm run generatehelp && npm run dev",
+    "start": "npm run buildresources && npm run dev",
     "unit": "cross-env BABEL_ENV=test karma start test/unit/karma.conf.js --single-run",
     "e2e": "node test/e2e/runner.js",
+    "buildresources": "npm run generatehelp",
     "test": "npm run unit && npm run e2e",
     "lint": "eslint --ext .js,.vue src test/unit test/e2e/specs",
-    "build": "npm run generatehelp && node build/build.js",
+    "build": "npm run buildresources && node build/build.js",
     "generatehelp": "m2j ../helpdocs/*.md -c -o src/resources/json/help.json"
   },
   "dependencies": {
+    "autosize": "^4.0.0",
+    "combokeys": "^3.0.0",
     "font-awesome": "^4.7.0",
     "markdown-to-json": "^0.5.1",
     "marked": "^0.3.12",
     "md5": "^2.2.1",
     "moment": "^2.20.1",
     "vue": "^2.5.2",
+    "vue-clickaway": "^2.1.0",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1"
   },

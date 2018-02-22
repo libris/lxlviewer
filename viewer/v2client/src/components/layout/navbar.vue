@@ -1,4 +1,3 @@
-
 <script>
 
 export default {
@@ -60,7 +59,7 @@ export default {
           </router-link>
         </li>
         <li class="MainNav-item">
-          <router-link to="/search/Libris" class="MainNav-link">
+          <router-link to="/search/libris" class="MainNav-link">
             <div class="MainNav-iconWrap" aria-hidden="true">
               <i class="fa fa-search"></i>
             </div>

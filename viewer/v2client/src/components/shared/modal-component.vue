@@ -25,6 +25,14 @@ export default {
       default: 'Untitled modal',
       type: String,
     },
+    modalType: {
+      default: 'normal',
+      type: String,
+    },
+    closeable: {
+      default: true,
+      type: Boolean,
+    },
   },
   data() {
     return {
@@ -34,10 +42,12 @@ export default {
   },
   methods: {
     close() {
-      this.fadedIn = false;
-      setTimeout(() => {
-        this.$emit('close');
-      }, this.fadeTime);
+      if (this.closeable) {
+        this.fadedIn = false;
+        setTimeout(() => {
+          this.$emit('close');
+        }, this.fadeTime);
+      }
     },
   },
   computed: {
@@ -61,7 +71,7 @@ export default {
 </script>
 
 <template>
-  <div class="ModalComponent" :class="{'is-fadedIn': fadedIn}">
+  <div class="ModalComponent" :class="{'is-fadedIn': fadedIn, 'is-danger': modalType === 'danger'}">
     <div class="ModalComponent-backdrop" @click="close"></div>
     <div class="ModalComponent-container">
       <div class="ModalComponent-header">
@@ -125,6 +135,9 @@ export default {
     line-height: 1.6;
   }
   &-header {
+    .is-danger & {
+      background-color: @brand-danger;
+    }
     background-color: @brand-primary;
     color: @neutral-color;
     padding: 0.5em;
