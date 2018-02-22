@@ -52,12 +52,13 @@ new Vue({
   components: { App },
   template: '<App/>',
   created() {
+    this.initWarningFunc();
     this.initializeUser();
-    Promise.all(this.getLdDependencies()).then(() => {
-      store.dispatch('setContext', this.context);
-      store.dispatch('setupVocab', this.vocab);
+    Promise.all(this.getLdDependencies()).then((resources) => {
+      store.dispatch('setContext', resources[2]['@context']);
+      store.dispatch('setupVocab', resources[0]['@graph']);
       store.dispatch('setDisplay', FakedDisplayJson);
-      store.dispatch('setForcedSetTerms', this.forcedSetTerms);
+      store.dispatch('setForcedListTerms', resources[1]);
       store.dispatch('changeResourcesStatus', true);
     }, (error) => {
       console.warn(`The API (at ${this.settings.apiPath}) might be offline!`);
