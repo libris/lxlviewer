@@ -31,12 +31,19 @@
 import Navbar from '@/components/layout/navbar';
 import Footer from '@/components/layout/footer';
 import NotificationList from '@/components/shared/notification-list';
+import ModalComponent from '@/components/shared/modal-component';
 
 export default {
   name: 'App',
   computed: {
+    status() {
+      return this.$store.getters.resources.loadingError;
+    },
     resourcesLoaded() {
       return this.$store.getters.resources.resourcesLoaded;
+    },
+    resourcesLoadingError() {
+      return this.$store.getters.resources.loadingError;
     }
   },
   mounted() {
@@ -47,6 +54,7 @@ export default {
     'navbar-component': Navbar,
     'footer-component': Footer,
     'notification-list': NotificationList,
+    'modal-component': ModalComponent,
    },
 }
 </script>
@@ -74,6 +82,12 @@ export default {
 
   .fade-enter, .fade-leave-active {
     opacity: 0
+  }
+  .ResourceLoadingErrorModal {
+    &-body {
+      text-align: center;
+      padding: 2em;
+    }
   }
 }
 
