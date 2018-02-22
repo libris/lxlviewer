@@ -25,7 +25,7 @@ export default {
         textInput: [
             {
             value: '',
-            class: 'searchphrase',
+            class: 'has-searchPhrase',
             }
         ],
         currentInput: 0,
@@ -57,16 +57,16 @@ export default {
     addSearchField() {
         const newobj = {};
         newobj.value='';
-        newobj.class='searchphrase';
+        newobj.class='has-searchPhrase';
         this.inputData.textInput.push(newobj);
         this.inputData.currentInput += 1;
     },
     updateField() {
       const validTags = this.validSearchTags;
       if (this.currentIsTag) {
-          this.currentField.class = 'searchtag valid';
+          this.currentField.class = 'is-searchTag is-valid';
       } else {
-          this.currentField.class = 'searchphrase';
+          this.currentField.class = 'has-searchPhrase';
       }
     },
     handleFocus(focusedIndex) {
@@ -98,7 +98,7 @@ export default {
             const validTags = this.validSearchTags;
             let queryText = [];
             for (const inputElement of this.inputData.textInput) {
-                if (inputElement.class.indexOf('searchtag') > -1) {
+                if (inputElement.class.indexOf('is-searchTag') > -1) {
                     const tag = inputElement.value.split(':');
                     const tagKey = tag[0];
                     const tagValue = tag[1];
@@ -139,7 +139,7 @@ export default {
         this.inputData.currentInput = 0;
         this.inputData.textInput.splice(1, this.inputData.textInput.length);
         this.inputData.textInput[0].value = '';
-        this.inputData.textInput[0].class = 'searchphrase';
+        this.inputData.textInput[0].class = 'has-searchPhrase';
       }
   },
   computed: {
@@ -236,14 +236,14 @@ export default {
         </div>
       </div>       
       <form id="searchForm" class="SearchBar-form">
-        <div class="form-inline is-librisSearch" v-if="searchPerimeter === 'libris'">
+        <div class="is-librisSearch" v-if="searchPerimeter === 'libris'">
           <div class="form-group SearchBar-formGroup">
-            <label class="search-label hidden SearchBar-inputLabel" id="searchlabel" for="q">
+            <label class="hidden SearchBar-inputLabel" id="searchlabel" for="q">
               {{"Search" | translatePhrase}}
             </label>
-            <div id="searchFieldContainer">
-              <div class="form-control search-input SearchBar-input">
-                <div aria-labelledby="searchlabel" id="searchQsmart">
+            <div id="searchFieldContainer" class="SearchBar-inputWrap">
+              <div class="form-control SearchBar-input">
+                <div aria-labelledby="searchlabel" id="searchQsmart" class="SearchBar-qsmart">
                   <input
                       list="matchingParameters"
                       v-for="(input, index) in inputData.textInput"
@@ -252,7 +252,7 @@ export default {
                       @input="updateField"
                       @keydown="handleInput"
                       v-model="input.value"
-                      class="smartInput"
+                      class="smartInput SearchBar-qsmartInput"
                       :class="input.class">
                   <datalist id="matchingParameters">
                     <option v-for="matchingParameter in validSearchTags" 
@@ -262,21 +262,21 @@ export default {
                     </option>
                   </datalist>
                 </div>
-                <span v-show="hasInput" class="field-clearer SearchBar-clear" @click="clearInputs()">
+                <span v-show="hasInput" class="SearchBar-clear" @click="clearInputs()">
                   <i class="fa fa-fw fa-close"></i>
                 </span>
               </div>
-              <button class="search-button btn btn-primary SearchBar-submit" @click.prevent="doSearch">
+              <button class="btn btn-primary SearchBar-submit" @click.prevent="doSearch">
                 <i class="fa fa-search"></i> {{"Search" | translatePhrase}}
                 </button>
             </div>
           </div>
         </div>
-        <div class="form-inline is-remoteSearch" v-if="searchPerimeter === 'remote'">
+        <div class="is-remoteSearch" v-if="searchPerimeter === 'remote'">
           <div class="form-group search-field SearchBar-formGroup">
-            <input type="text" class="form-control search-input SearchBar-input" placeholder="ISBN eller valfria sökord" 
+            <input type="text" class="form-control SearchBar-input" placeholder="ISBN eller valfria sökord" 
               v-model="remoteSearch.q">
-            <button class="SearchBar-submit search-button btn btn-primary"
+            <button class="SearchBar-submit btn btn-primary"
               v-bind:class="{'disabled': 
               remoteSearch.activeDatabases.length === 0}" 
               v-on:click.prevent="doSearch">
@@ -285,12 +285,12 @@ export default {
           </div>
         </div>
         <div class="SearchBar-typeButtons" aria-label="Välj typ" v-if="searchPerimeter === 'libris'">
-          <label v-for="filter in dataSetFilters" :key="filter['@id']">
-            <input type="checkbox" 
+          <label v-for="filter in dataSetFilters" :key="filter['@id']" class="SearchBar-typeLabel">
+            <input type="checkbox" class="Searchbar-typeInput"
               :checked="filter['@id'] === 'Instance'" 
               v-model="inputData.ids"
-              :value="filter['@id']" >
-            {{ filter.label }}
+              :value="filter['@id']">
+              {{ filter.label }}
            </label>
         </div>
       </form>
@@ -301,22 +301,11 @@ export default {
 <style lang="less">
 
 .SearchBar {
-    margin-top: 0vh;
-    transition: 0.3s ease margin-top;
+  margin-top: 0vh;
+  transition: 0.3s ease margin-top;
 
   &-controls {
     padding: 20px;
-
-    .is-librisSearch {
-      .form-group {
-        input {
-            display: none;
-        }
-      }
-    }
-    .is-remoteSearch {
-        
-    }
   }
 
   &-sources {
@@ -327,8 +316,8 @@ export default {
     color: @brand-primary;
 
     &.is-active {
-        color: #fff;
-        background-color: @brand-primary;
+      background-color: @brand-primary;
+      color: #fff;
     }
   }
 
@@ -341,14 +330,15 @@ export default {
   }
 
   &-helpIcon {
+    clear: right;
     cursor: pointer;
     font-size: 18px;
     float: right;
-    width: 20%;
     margin-right: 24px;
-    clear: right;
+    width: 20%;
+
     &:focus {
-        outline: auto 5px;
+      outline: auto 5px;
     }
   }
 
@@ -360,12 +350,12 @@ export default {
     background: @white;
     font-size: 12px;
     display: none;
-    padding: 10px;
     left: auto;
-    right: 0;
-    top: 2.5em;
-    width: 30%;
     max-width: 300px;
+    padding: 10px;
+    right: 0;
+    top: 2em;
+    width: 30%;
 
     .is-active & {
       display: block;
@@ -383,11 +373,76 @@ export default {
   &-input {
     height: 44px;
     min-width: 75%;
+    margin: 0 5px 0 0;
+    flex-grow: 1;
+    display: flex;
+    justify-content: space-between;
+
+    .is-remoteSearch & {
+      width: 100%;
+    }
+  }
+
+  &-inputWrap {
+    display: flex;
   }
 
   &-inputLabel {
     display: block;
     text-transform: uppercase;
+  }
+
+  &-qsmart {
+    display: flex;
+    flex: 8 8 98%;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    line-height: 2em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &-qsmartInput {
+    border: 0px;
+    outline: none;
+    display: inline-block;
+
+    &.has-searchPhrase {
+      flex-grow: 1;
+      margin-right: 5px;
+      outline: none;
+      cursor: text;
+    }
+
+    &.has-searchPhrase {
+      flex-grow: 1;
+      margin-right: 5px;
+      outline: none;
+      cursor: text;
+    }
+          
+    &.is-searchTag {
+      margin-right: 5px;
+      border-radius: 3px;
+      padding: 0px 5px;
+      outline: none;
+      cursor: text;
+    }
+          
+    &.is-valid {
+      background-color: #E0F2F1;
+    }
+  }
+
+  &-clear {
+    cursor: pointer;
+    align-self: center;
+    flex: 1 1 2%;
+
+    &:hover {
+        color: #555;
+    }
   }
 
   &-submit {
@@ -397,80 +452,25 @@ export default {
 
   &-formGroup {
     width: 100%;
-    > div {
+    display: inline-block;
+
+    .is-remoteSearch & {
       display: flex;
-      
-      > div {
-        flex-grow: 1;
-        margin-right: 5px;
-      }
-    }
-
-    #searchFieldContainer {
-      > div {
-        display: flex;
-        justify-content: space-between;
-        
-        #searchQsmart {
-          display: flex;
-          flex: 8 8 98%;
-          flex-direction: row;
-          flex-wrap: nowrap;
-          line-height: 2em;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-
-          .searchphrase {
-            flex-grow: 1;
-            margin-right: 5px;
-            outline: none;
-            cursor: text;
-          }
-          
-          .searchtag {
-            margin-right: 5px;
-            border-radius: 3px;
-            padding: 0px 5px;
-            outline: none;
-            cursor: text;
-          }
-          
-          .valid {
-            background-color: #E0F2F1;
-          }
-
-          input {
-            border: 0px;
-            outline: none;
-            display: inline-block;
-          }
-        }
-
-        > .field-clearer {
-          cursor: pointer;
-          align-self: center;
-          flex: 1 1 2%;
-          &:hover {
-              color: #555;
-          }
-        }
-      }
     }
   }
 
   &-typeButtons {
     margin-top: 1em;  
+  }
 
-    label {
-      padding: 3px 10px;
-      font-weight: normal;
-      font-size: 12px;
+  &-typeLabel {
+    padding: 3px 10px;
+    font-weight: normal;
+    font-size: 12px;   
+  }
 
-      input {
-         margin-right: 0.2em;
-      }
-    }
+  &-typeInput {
+    margin-right: 0.2em;   
   }
 }
 </style>
