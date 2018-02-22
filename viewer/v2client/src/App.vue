@@ -10,6 +10,18 @@
         <router-view v-if="resourcesLoaded" />
       </transition>
     </main>
+    <modal-component title="Error" modal-type="danger" :closeable="false" v-if="resourcesLoadingError" class="ResourceLoadingErrorModal">
+      <div slot="modal-header" class="ResourceLoadingErrorModal-header">
+        <header>
+          Error
+        </header>
+      </div>
+      <div slot="modal-body" class="ResourceLoadingErrorModal-body">
+        Couldn't fetch the resources needed for this application.<br><br>
+        Try reloading the page.<br><br>
+        If the error persists, please contact <a href="mailto:libris@kb.se">libris@kb.se</a>.
+      </div>
+    </modal-component>
     <footer-component></footer-component>
     <notification-list></notification-list>
   </div>

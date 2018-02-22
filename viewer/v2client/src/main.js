@@ -59,6 +59,9 @@ new Vue({
       store.dispatch('setDisplay', FakedDisplayJson);
       store.dispatch('setForcedSetTerms', this.forcedSetTerms);
       store.dispatch('changeResourcesStatus', true);
+    }, (error) => {
+      console.warn(`The API (at ${this.settings.apiPath}) might be offline!`);
+      store.dispatch('changeResourcesLoadingError', true);
     });
     this.initWarningFunc();
   },
@@ -127,12 +130,7 @@ new Vue({
     },
     getLdDependencies(fetchIndicator) {
       const promiseArray = [];
-      const vocabPromise = VocabUtil.getVocab(this.settings.apiPath).then((vocab) => {
-        this.vocab = vocab['@graph'];
-      }, (error) => {
-        console.log('getVocab resulted in', error);
-        this.$store.dispatch('pushNotification', { color: 'red', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)}. ${error}` });
-      });
+      const vocabPromise = VocabUtil.getVocab(this.settings.apiPath);
       promiseArray.push(vocabPromise);
       // const displayPromise = DisplayUtil.getDisplayDefinitions().then((display) => {
       //   this.display = display;
@@ -140,19 +138,9 @@ new Vue({
       //   console.log('getDisplayDefinitions', error);
       // });
       // promiseArray.push(displayPromise);
-      const repeatablePromise = VocabUtil.getForcedListTerms(this.settings.apiPath).then((result) => {
-        this.forcedListTerms = result;
-      }, (error) => {
-        console.log('getForcedListTerms resulted in', error);
-        this.$store.dispatch('pushNotification', { color: 'red', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)}. ${error}` });
-      });
+      const repeatablePromise = VocabUtil.getForcedListTerms(this.settings.apiPath);
       promiseArray.push(repeatablePromise);
-      const contextPromise = VocabUtil.getContext(this.settings.apiPath).then((context) => {
-        this.context = context['@context'];
-      }, (error) => {
-        console.log('getContext resulted in', error);
-        this.$store.dispatch('pushNotification', { color: 'red', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)}. ${error}` });
-      });
+      const contextPromise = VocabUtil.getContext(this.settings.apiPath);
       promiseArray.push(contextPromise);
       return promiseArray;
     }
