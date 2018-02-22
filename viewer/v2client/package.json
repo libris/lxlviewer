@@ -16,12 +16,15 @@
     "generatehelp": "m2j ../helpdocs/*.md -c -o src/resources/json/help.json"
   },
   "dependencies": {
+    "autosize": "^4.0.0",
+    "combokeys": "^3.0.0",
     "font-awesome": "^4.7.0",
     "markdown-to-json": "^0.5.1",
     "marked": "^0.3.12",
     "md5": "^2.2.1",
     "moment": "^2.20.1",
     "vue": "^2.5.2",
+    "vue-clickaway": "^2.1.0",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1"
   },
