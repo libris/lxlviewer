@@ -1,25 +1,11 @@
 <script>
-import LensMixin from '../mixins/lens-mixin';
+import LensMixin from '@/components/mixins/lens-mixin';
 import { mixin as clickaway } from 'vue-clickaway';
-import { getSettings, getStatus, getContext, getVocabulary, getDisplayDefinitions, getEditorData } from '../../vuex/getters';
-import { changeStatus } from '../../vuex/actions';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'record-summary',
   mixins: [clickaway, LensMixin],
-  vuex: {
-    getters: {
-      status: getStatus,
-      settings: getSettings,
-      editorData: getEditorData,
-      vocab: getVocabulary,
-      context: getContext,
-      display: getDisplayDefinitions,
-    },
-    actions: {
-      changeStatus,
-    }
-  },
   data() {
     return {
       showFull: false,
@@ -29,8 +15,11 @@ export default {
   },
   computed: {
     focusData() {
-      return this.editorData.record;
+      return this.inspector.data.record;
     },
+    ...mapGetters([
+      'inspector',
+    ]),
   },
   components: {
   },
@@ -65,7 +54,6 @@ export default {
 </template>
 
 <style lang="less">
-@import '../shared/_variables.less';
 
 .record-summary-container {
   display: flex;

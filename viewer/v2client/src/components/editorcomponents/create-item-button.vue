@@ -1,6 +1,4 @@
 <script>
-import { getUser, getSettings, getVocabulary, getContext, getDisplayDefinitions, getEditorData, getStatus } from '../../vuex/getters';
-import { changeNotification, syncData, changeStatus } from '../../vuex/actions';
 import * as DisplayUtil from '../../utils/display';
 import * as StringUtil from '../../utils/string';
 import * as RecordUtil from '../../utils/record';
@@ -18,22 +16,6 @@ export default {
     return {
       itemData: {},
     }
-  },
-  vuex: {
-    getters: {
-      user: getUser,
-      context: getContext,
-      vocab: getVocabulary,
-      display: getDisplayDefinitions,
-      settings: getSettings,
-      editorData: getEditorData,
-      status: getStatus,
-    },
-    actions: {
-      syncData,
-      changeStatus,
-      changeNotification,
-    },
   },
   methods: {
     buildItem() {
@@ -103,7 +85,6 @@ export default {
 </template>
 
 <style lang="less">
-@import '../shared/_variables.less';
 .create-item-button-container{
   button {
     height: 2.2em;
