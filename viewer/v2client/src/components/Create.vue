@@ -116,14 +116,13 @@ export default {
 </script>
 
 <template>
-  <div class="panel panel-default form-container" id="create-new-post">
+  <div class="panel panel-default form-container Create" id="create-new-post">
     <div class="panel-body">
-      <div class="createnew-form">
-        <div class="app-heading">{{'Create new' | translatePhrase}}</div>
+      <h1 class="Create-title">{{'Create new' | translatePhrase}}</h1>
         <creation-tab
           :creation-list="creationList"
           @set-creation="setCreation" />
-        <div class="creation-cards-container">
+        <div class="Create-cardCont">
           <creation-card
             :is-base="true"
             :creation="selectedCreation"
@@ -141,19 +140,19 @@ export default {
             @use-template="useTemplate"
             @set-active-index="setActiveIndex" />
         </div>
-      </div>
     </div>
   </div>
 </template>
 
 <style lang="less">
 
-#create-new-post {
-  .app-heading {
+.Create {
+  &-title {
     font-size: 1.5em;
-    margin: 0 0 0.3em 0.7em;
+    margin: 0 0 0.3em 0.7em;  
   }
-  .creation-cards-container {
+
+  &-cardCont {
     display: flex;
     flex-wrap: wrap;
   }
