@@ -212,89 +212,98 @@ export default {
 </script>
 
 <template>
-  <div class="SearchBar">
-    <div class="panel panel-default SearchBar-controls">
-      <div class="SearchBar-sources">
-        <router-link to="/search/libris" class="card-link SearchBar-source" 
-          :class="{'is-active': searchPerimeter === 'libris' }">Libris
-        </router-link>
-        <router-link to="/search/remote" class="card-link SearchBar-source" 
-          :class="{'is-active': searchPerimeter === 'remote' }">Andra källor
-        </router-link>
+  <div class="SearchBar panel panel-default">
+    <ul class="SearchBar-sourceTabs" role="tablist">
+      <router-link to="/search/libris" class="SearchBar-sourceTab" role="tab"
+        aria-controls="librisPanel" 
+        aria-selected="true"
+        :class="{'is-active': searchPerimeter === 'libris' }">Libris
+      </router-link>
+      <router-link to="/search/remote" class="SearchBar-sourceTab" role="tab"
+        aria-controls="remotePanel" 
+        aria-selected="false"
+        :class="{'is-active': searchPerimeter === 'remote' }">Andra källor
+      </router-link>
+    </ul>
+    <div class="SearchBar-help">
+      <div class="SearchBar-helpBox dropdown" @mouseleave="hideHelp()">
+        <span class="SearchBar-helpIcon">
+          <i class="fa fa-fw fa-question-circle-o" tabindex="0" aria-haspopup="true"
+            @mouseover="showHelp()"
+            @keyup.enter="toggleHelp()"></i>
+        </span>
+        <div class="SearchBar-helpContent js-searchHelpText dropdown-menu"> 
+          <strong class="SearchBar-helpTitle">{{ header }}</strong>
+          <p v-for="(paragraph, index) in text.paragraphs" v-html="paragraph" :key='index'></p>
+        </div>
       </div>
-      <div class="SearchBar-help">
-        <div class="dropdown SearchBar-helpBox" @mouseleave="hideHelp()">
-          <span class="SearchBar-helpIcon">
-            <i class="fa fa-fw fa-question-circle-o" tabindex="0" aria-haspopup="true"
-              @mouseover="showHelp()"
-              @keyup.enter="toggleHelp()"></i>
-          </span>
-          <div class="dropdown-menu js-searchHelpText SearchBar-helpContent"> 
-            <h6 class="SearchBar-helpTitle">{{ header }}</h6>
-            <p v-for="(paragraph, index) in text.paragraphs" v-html="paragraph" :key='index'></p>
-          </div>
-        </div>
-      </div>       
-      <form id="searchForm" class="SearchBar-form">
-        <div class="is-librisSearch" v-if="searchPerimeter === 'libris'">
-          <div class="form-group SearchBar-formGroup">
-            <label class="hidden SearchBar-inputLabel" id="searchlabel" for="q">
-              {{"Search" | translatePhrase}}
-            </label>
-            <div id="searchFieldContainer" class="SearchBar-inputWrap">
-              <div class="form-control SearchBar-input">
-                <div aria-labelledby="searchlabel" id="searchQsmart" class="SearchBar-qsmart">
-                  <input
-                      list="matchingParameters"
-                      v-for="(input, index) in inputData.textInput"
-                      :key="index"
-                      @focus="handleFocus(index)"
-                      @input="updateField"
-                      @keydown="handleInput"
-                      v-model="input.value"
-                      class="smartInput SearchBar-qsmartInput"
-                      :class="input.class">
-                  <datalist id="matchingParameters">
-                    <option v-for="matchingParameter in validSearchTags" 
-                      :key="matchingParameter" 
-                      :value="`${matchingParameter}:`">
-                      {{matchingParameter}}:
-                    </option>
-                  </datalist>
-                </div>
-                <span v-show="hasInput" class="SearchBar-clear" @click="clearInputs()">
-                  <i class="fa fa-fw fa-close"></i>
-                </span>
+    </div>       
+    <form id="searchForm" class="SearchBar-form">
+      <div class="is-librisSearch" id="librisPanel" role="tabpanel" 
+        aria-labelledby="librisTab"
+        v-if="searchPerimeter === 'libris'" 
+        aria-hidden="false">
+        <div class="SearchBar-formGroup form-group ">
+          <label class="SearchBar-inputLabel hidden" id="searchlabel" for="q">
+            {{"Search" | translatePhrase}}
+          </label>
+          <div class="SearchBar-inputWrap" id="searchFieldContainer">
+            <div class="SearchBar-input form-control">
+              <div class="SearchBar-qsmart" id="searchQsmart" aria-labelledby="searchlabel">
+                <input
+                    list="matchingParameters"
+                    v-for="(input, index) in inputData.textInput"
+                    :key="index"
+                    @focus="handleFocus(index)"
+                    @input="updateField"
+                    @keydown="handleInput"
+                    v-model="input.value"
+                    class="SearchBar-qsmartInput smartInput"
+                    :class="input.class">
+                <datalist id="matchingParameters">
+                  <option v-for="matchingParameter in validSearchTags" 
+                    :key="matchingParameter" 
+                    :value="`${matchingParameter}:`">
+                    {{matchingParameter}}:
+                  </option>
+                </datalist>
               </div>
-              <button class="btn btn-primary SearchBar-submit" @click.prevent="doSearch">
-                <i class="fa fa-search"></i> {{"Search" | translatePhrase}}
-                </button>
+              <span class="SearchBar-clear" v-show="hasInput" @click="clearInputs()">
+                <i class="fa fa-fw fa-close"></i>
+              </span>
             </div>
-          </div>
-        </div>
-        <div class="is-remoteSearch" v-if="searchPerimeter === 'remote'">
-          <div class="form-group search-field SearchBar-formGroup">
-            <input type="text" class="form-control SearchBar-input" placeholder="ISBN eller valfria sökord" 
-              v-model="remoteSearch.q">
-            <button class="SearchBar-submit btn btn-primary"
-              v-bind:class="{'disabled': 
-              remoteSearch.activeDatabases.length === 0}" 
-              v-on:click.prevent="doSearch">
+            <button class="SearchBar-submit btn btn-primary" @click.prevent="doSearch">
               <i class="fa fa-search"></i> {{"Search" | translatePhrase}}
-            </button>
+              </button>
           </div>
         </div>
-        <div class="SearchBar-typeButtons" aria-label="Välj typ" v-if="searchPerimeter === 'libris'">
-          <label v-for="filter in dataSetFilters" :key="filter['@id']" class="SearchBar-typeLabel">
-            <input type="checkbox" class="Searchbar-typeInput"
-              :checked="filter['@id'] === 'Instance'" 
-              v-model="inputData.ids"
-              :value="filter['@id']">
-              {{ filter.label }}
-           </label>
+      </div>
+      <div class="is-remoteSearch" id="remotePanel" role="tabpanel" 
+        aria-labelledby="remoteTab"
+        v-if="searchPerimeter === 'remote'" 
+        aria-hidden="true">
+        <div class="SearchBar-formGroup form-group search-field">
+          <input type="text" class="SearchBar-input form-control" placeholder="ISBN eller valfria sökord" 
+            v-model="remoteSearch.q">
+          <button class="SearchBar-submit btn btn-primary"
+            v-bind:class="{
+              'disabled': remoteSearch.activeDatabases.length === 0
+            }" 
+            v-on:click.prevent="doSearch">
+            <i class="fa fa-search"></i> {{"Search" | translatePhrase}}
+          </button>
         </div>
-      </form>
-    </div>
+      </div>
+      <div class="SearchBar-typeButtons" aria-label="Välj typ" v-if="searchPerimeter === 'libris'">
+        <label v-for="filter in dataSetFilters" :key="filter['@id']" class="SearchBar-typeLabel">
+          <input type="checkbox" class="Searchbar-typeInput"
+            :checked="filter['@id'] === 'Instance'" 
+            v-model="inputData.ids"
+            :value="filter['@id']">
+            {{ filter.label }}
+          </label>
+      </div>
+    </form>
   </div>
 </template>
 
@@ -302,18 +311,25 @@ export default {
 
 .SearchBar {
   margin-top: 0vh;
+  padding: 20px;
   transition: 0.3s ease margin-top;
 
   &-controls {
     padding: 20px;
   }
 
-  &-sources {
+  &-sourceTabs {
     margin: 1.5em 0 1em;
+    padding: 0;
   }
 
-  &-source {
+  &-sourceTab {
     color: @brand-primary;
+    font-weight: 700;
+    margin: 0.25em 0;
+    padding: 0.4em 1em;
+    text-transform: uppercase;
+    transition: color 0.5s ease;
 
     &.is-active {
       background-color: @brand-primary;
