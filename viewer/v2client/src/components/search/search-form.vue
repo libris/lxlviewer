@@ -73,7 +73,7 @@ export default {
       this.inputData.currentInput = focusedIndex;
     },
     handleInput: function(e) {
-      const currentElement = document.getElementById('searchQsmart').children[this.inputData.currentInput];
+      const currentElement = document.querySelector('.js-qsmartInput').children[this.inputData.currentInput];
       if (e.keyCode === 13) { // Enter
           e.preventDefault();
           if (!this.currentIsTag) {
@@ -174,7 +174,7 @@ export default {
           return this.inputData.textInput[this.inputData.currentInput];
       },
       caretIsAtStart() {
-          const currentElement = document.getElementById('searchQsmart').children[this.inputData.currentInput];
+          const currentElement = document.querySelector('.js-qsmartInput').children[this.inputData.currentInput];
           return currentElement.value.slice(0, currentElement.selectionStart).length === 0;
       },
       validSearchTags() {
@@ -198,13 +198,13 @@ export default {
   },
   watch: {
     currentComputedInput(newValue) {
-      document.getElementById('searchQsmart').children[newValue].focus();
+      document.querySelector('.js-qsmartInput').children[newValue].focus();
     },
   },
   mounted() {
     this.$nextTick(() => {
       if (this.searchPerimeter === 'libris') {
-        document.getElementById('searchQsmart').children[this.inputData.currentInput].focus();
+        document.querySelector('.js-qsmartInput').children[this.inputData.currentInput].focus();
       }
     });
   },
@@ -249,7 +249,7 @@ export default {
           </label>
           <div class="SearchBar-inputWrap" id="searchFieldContainer">
             <div class="SearchBar-input form-control">
-              <div class="SearchBar-qsmart" id="searchQsmart" aria-labelledby="searchlabel">
+              <div class="SearchBar-qsmart js-qsmartInput" aria-labelledby="searchlabel">
                 <input
                     list="matchingParameters"
                     v-for="(input, index) in inputData.textInput"
@@ -258,7 +258,7 @@ export default {
                     @input="updateField"
                     @keydown="handleInput"
                     v-model="input.value"
-                    class="SearchBar-qsmartInput smartInput"
+                    class="SearchBar-qsmartInput"
                     :class="input.class">
                 <datalist id="matchingParameters">
                   <option v-for="matchingParameter in validSearchTags" 
@@ -282,7 +282,7 @@ export default {
         aria-labelledby="remoteTab"
         v-if="searchPerimeter === 'remote'" 
         aria-hidden="true">
-        <div class="SearchBar-formGroup form-group search-field">
+        <div class="SearchBar-formGroup form-group">
           <input type="text" class="SearchBar-input form-control" placeholder="ISBN eller valfria sökord" 
             v-model="remoteSearch.q">
           <button class="SearchBar-submit btn btn-primary"
@@ -313,10 +313,6 @@ export default {
   margin-top: 0vh;
   padding: 20px;
   transition: 0.3s ease margin-top;
-
-  &-controls {
-    padding: 20px;
-  }
 
   &-sourceTabs {
     margin: 1.5em 0 1em;
@@ -380,10 +376,6 @@ export default {
 
   &-helpTitle {
     font-weight: 700;
-  }
-
-  &.is-landingPage {
-    margin-top: 10vh;
   }
 
   &-input {
