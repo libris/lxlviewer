@@ -274,7 +274,7 @@ export default {
             </div>
             <button class="SearchBar-submit btn btn-primary" @click.prevent="doSearch">
               <i class="fa fa-search"></i> {{"Search" | translatePhrase}}
-              </button>
+            </button>
           </div>
         </div>
       </div>
@@ -301,7 +301,7 @@ export default {
             v-model="inputData.ids"
             :value="filter['@id']">
             {{ filter.label }}
-          </label>
+        </label>
       </div>
     </form>
   </div>

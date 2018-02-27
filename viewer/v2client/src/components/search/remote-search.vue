@@ -4,7 +4,7 @@ import * as httpUtil from '../../utils/http';
 import * as RecordUtil from '../../utils/record';
 import ResultItem from './resultitem';
 import ResultList from './result-list';
-import SearchResultComponent from './search-result-component';
+import SearchResult from './search-result';
 import { getSettings, getStatus } from '../../vuex/getters';
 
 export default {
@@ -36,7 +36,7 @@ export default {
   components: {
     'result-item': ResultItem,
     'result-list': ResultList,
-    'search-result-component': SearchResultComponent,
+    'search-result': SearchResult,
   },
   events: {
     'set-import'(data){
@@ -217,7 +217,7 @@ export default {
   <p v-if="remoteResult.state === 'loading'">
     <i class="fa fa-circle-o-notch fa-spin"></i> {{"Searching" | translatePhrase}}...
   </p>
-  <search-result-component :result="convertedItems" :import-data="importData" v-if="convertedItems.totalItems > -1 || status.resultList.loading"></search-result-component>
+  <search-result :result="convertedItems" :import-data="importData" v-if="convertedItems.totalItems > -1 || status.resultList.loading"></search-result>
 </div>
 </template>
 
