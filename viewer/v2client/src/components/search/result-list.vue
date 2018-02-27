@@ -45,24 +45,30 @@ export default {
 </script>
 
 <template>
-  <div class="result">
-    <ul class="result-list" v-if="!compact && results.length > 0">
-      <result-item-detailed :database="getDatabase(index)" :focus-data="item" :import-item="getImportItem(index)" v-for="(item, index) in results" :key="item['@id']"></result-item-detailed>
+    <ul class="ResultList">
+      <div v-if="!compact && results.length > 0">
+        <result-item-detailed class="ResultList-item"
+          :database="getDatabase(index)" 
+          :focus-data="item" 
+          :import-item="getImportItem(index)" v-for="(item, index) in results" 
+          :key="item['@id']"></result-item-detailed>
+      </div>
+      <div v-if="compact && results.length > 0">
+        <result-item-compact class="ResultList-item"
+          :database="getDatabase(index)" 
+          :focus-data="item" 
+          :import-item="getImportItem(index)" v-for="(item, index) in results" 
+          :key="item['@id']"></result-item-compact>
+      </div>
     </ul>
-    <ul class="result-list" v-if="compact && results.length > 0">
-      <result-item-compact :database="getDatabase(index)" :focus-data="item" :import-item="getImportItem(index)"  v-for="(item, index) in results" :key="item['@id']"></result-item-compact>
-    </ul>
-  </div>
 </template>
 
 <style lang="less">
 
-.result {
-  .result-list {
-    width: 100%;
-    padding: 0px;
-    list-style-type: none;
-  }
+.ResultList {
+  width: 100%;
+  padding: 0px;
+  list-style-type: none;
 }
 
 </style>
