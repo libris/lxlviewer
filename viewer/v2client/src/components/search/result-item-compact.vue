@@ -46,29 +46,45 @@ export default {
 </script>
 
 <template>
-  <div class="result-item-compact">
-    <span class="import-header header" :title="header.join(', ')" v-on:click="importThis()" v-if="isImport"><i class="fa fa-download" aria-hidden="true"></i> {{ header.join(', ') }}</span>
-    <router-link v-if="isLibrisResource && !isImport" class="header" :title="header.join(', ')" :to="focusData['@id'] | asFnurgelLink">{{ header.join(', ') }}</router-link>
-    <a v-if="!isLibrisResource && !isImport" class="header" :title="header.join(', ')" :href="focusData['@id']">{{ header.join(', ') }}</a>
-    <span class="categorization" :title="categorization.join(', ')">
+  <li class="ResultItem ResultItem--compact">
+    <h2 class="ResultItem-title" 
+      :title="header.join(', ')" 
+      v-on:click="importThis()" 
+      v-if="isImport">
+      <i class="fa fa-download" aria-hidden="true"></i> {{ header.join(', ') }}
+    </h2>
+    <h2 class="ResultItem-title header">
+      <router-link class="ResultItem-link"
+        v-if="isLibrisResource && !isImport"  
+        :title="header.join(', ')" 
+        :to="focusData['@id'] | asFnurgelLink">{{ header.join(', ') }}
+      </router-link>
+      <a class="ResultItem-link"
+        v-if="!isLibrisResource && !isImport" 
+        :title="header.join(', ')" 
+        :href="focusData['@id']">{{ header.join(', ') }}
+      </a>
+    </h2>
+    <span class="ResultItem-category" :title="categorization.join(', ')">
       {{categorization.join(', ')}}
     </span>
-  </div>
+  </li>
 </template>
-
 
 <style lang="less">
 
-.result-item-compact {
-  display: flex;
-  margin-bottom: 0;
-  margin-top: -1px;
-  background-color: @white;
-  border: 1px solid #ccc;
-  padding: 0.4em 1em;
-  line-height: 1.2em;
-  .header {
-    color: @brand-primary;
+.ResultItem {
+  &--compact {
+    display: flex;
+    margin-bottom: 0;
+    margin-top: -1px;
+    background-color: @white;
+    border: 1px solid #ccc;
+    padding: 0.4em 1em;
+    line-height: 1.2em;
+  }
+
+  &-title {
     margin: 0px;
     display: inline-block;
     flex-basis: 50%;
@@ -79,7 +95,12 @@ export default {
     font-size: 16px;
     font-weight: normal;
   }
-  .categorization {
+
+  &-link {
+    color: @brand-primary;
+  }
+
+  &-category {
     display: inline-block;
     flex-basis: 30%;
     font-size: 14px;
