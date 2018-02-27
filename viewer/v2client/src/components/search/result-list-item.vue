@@ -5,11 +5,13 @@ import EntitySummary from '../shared/entity-summary';
 import * as StringUtil from '@/utils/string';
 
 export default {
-  name: 'result-item-compact',
+  name: 'result-list-item',
   mixins: [LensMixin, ResultMixin],
   props: {
     focusData: {},
+    showDetailed: false,
     importItem: {},
+    database: '',
   },
   data() {
     return {
@@ -46,38 +48,53 @@ export default {
 </script>
 
 <template>
-  <li class="ResultItem ResultItem--compact">
-    <h2 class="ResultItem-title" 
-      :title="header.join(', ')" 
-      v-on:click="importThis()" 
-      v-if="isImport">
-      <i class="fa fa-download" aria-hidden="true"></i> {{ header.join(', ') }}
-    </h2>
-    <h2 class="ResultItem-title header">
-      <router-link class="ResultItem-link"
-        v-if="isLibrisResource && !isImport"  
+    <li class="ResultItem ResultItem--detailed" v-if="showDetailed">
+      <entity-summary 
+        :focus-data="focusData" 
+        :database="database" 
+        :router-path="focusData['@id'] | asFnurgelLink" 
+        :is-import="isImport" 
+        :import-item="importItem" 
+        :add-link="true" 
+        :lines="4"></entity-summary>
+    </li>
+    <li class="ResultItem ResultItem--compact" v-else-if="!showDetailed">
+      <h3 class="ResultItem-title" 
         :title="header.join(', ')" 
-        :to="focusData['@id'] | asFnurgelLink">{{ header.join(', ') }}
-      </router-link>
-      <a class="ResultItem-link"
-        v-if="!isLibrisResource && !isImport" 
-        :title="header.join(', ')" 
-        :href="focusData['@id']">{{ header.join(', ') }}
-      </a>
-    </h2>
-    <span class="ResultItem-category" :title="categorization.join(', ')">
-      {{categorization.join(', ')}}
-    </span>
-  </li>
+        v-on:click="importThis()" 
+        v-if="isImport">
+        <i class="fa fa-download" aria-hidden="true"></i> {{ header.join(', ') }}
+      </h3>
+      <h3 class="ResultItem-title header">
+        <router-link class="ResultItem-link"
+          v-if="isLibrisResource && !isImport"  
+          :title="header.join(', ')" 
+          :to="focusData['@id'] | asFnurgelLink">{{ header.join(', ') }}
+        </router-link>
+        <a class="ResultItem-link"
+          v-if="!isLibrisResource && !isImport" 
+          :title="header.join(', ')" 
+          :href="focusData['@id']">{{ header.join(', ') }}
+        </a>
+      </h3>
+      <span class="ResultItem-category" :title="categorization.join(', ')">
+        {{categorization.join(', ')}}
+      </span>
+    </li>
 </template>
 
 <style lang="less">
 
 .ResultItem {
+  &--detailed {
+    list-style: none;
+    margin-bottom: 0.5em;
+    .panel-mixin(@neutral-color);
+  }
+
   &--compact {
     display: flex;
-    margin-bottom: 0;
-    margin-top: -1px;
+    margin: -1px 0 0 0;
     background-color: @white;
     border: 1px solid #ccc;
     padding: 0.4em 1em;

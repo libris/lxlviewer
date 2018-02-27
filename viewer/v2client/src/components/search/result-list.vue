@@ -1,6 +1,5 @@
 <script>
-import ResultItemCompact from './result-item-compact';
-import ResultItemDetailed from './result-item-detailed';
+import ResultListItem from './result-list-item';
 import * as RecordUtil from '@/utils/record';
 
 export default {
@@ -34,8 +33,7 @@ export default {
   computed: {
   },
   components: {
-    'result-item-compact': ResultItemCompact,
-    'result-item-detailed': ResultItemDetailed,
+    'result-list-item': ResultListItem,
   },
   watch: {
   },
@@ -47,18 +45,20 @@ export default {
 <template>
   <ol class="ResultList">
     <div v-if="!compact && results.length > 0">
-      <result-item-detailed class="ResultList-item"
+      <result-list-item class="ResultList-item"
         :database="getDatabase(index)" 
+        :show-detailed="true"
         :focus-data="item" 
         :import-item="getImportItem(index)" v-for="(item, index) in results" 
-        :key="item['@id']"></result-item-detailed>
+        :key="item['@id']"></result-list-item>
     </div>
     <div v-if="compact && results.length > 0">
-      <result-item-compact class="ResultList-item"
+      <result-list-item class="ResultList-item"
         :database="getDatabase(index)" 
+        :show-detailed="false"
         :focus-data="item" 
         :import-item="getImportItem(index)" v-for="(item, index) in results" 
-        :key="item['@id']"></result-item-compact>
+        :key="item['@id']"></result-list-item>
     </div>
   </ol>
 </template>
