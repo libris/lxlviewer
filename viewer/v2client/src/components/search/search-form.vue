@@ -25,7 +25,7 @@ export default {
         textInput: [
             {
             value: '',
-            class: 'has-searchPhrase',
+            class: 'is-searchPhrase',
             }
         ],
         currentInput: 0,
@@ -57,7 +57,7 @@ export default {
     addSearchField() {
         const newobj = {};
         newobj.value='';
-        newobj.class='has-searchPhrase';
+        newobj.class='is-searchPhrase';
         this.inputData.textInput.push(newobj);
         this.inputData.currentInput += 1;
     },
@@ -66,7 +66,7 @@ export default {
       if (this.currentIsTag) {
           this.currentField.class = 'is-searchTag is-valid';
       } else {
-          this.currentField.class = 'has-searchPhrase';
+          this.currentField.class = 'is-searchPhrase';
       }
     },
     handleFocus(focusedIndex) {
@@ -139,7 +139,7 @@ export default {
         this.inputData.currentInput = 0;
         this.inputData.textInput.splice(1, this.inputData.textInput.length);
         this.inputData.textInput[0].value = '';
-        this.inputData.textInput[0].class = 'has-searchPhrase';
+        this.inputData.textInput[0].class = 'is-searchPhrase';
       }
   },
   computed: {
@@ -416,20 +416,13 @@ export default {
     outline: none;
     display: inline-block;
 
-    &.has-searchPhrase {
+    &.is-searchPhrase {
       flex-grow: 1;
       margin-right: 5px;
       outline: none;
       cursor: text;
     }
 
-    &.has-searchPhrase {
-      flex-grow: 1;
-      margin-right: 5px;
-      outline: none;
-      cursor: text;
-    }
-          
     &.is-searchTag {
       margin-right: 5px;
       border-radius: 3px;

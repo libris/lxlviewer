@@ -1,7 +1,7 @@
 <script>
 import ResultList from './result-list';
 import EntitySearchList from './entity-search-list';
-import SearchPagination from './search-pagination';
+import ResultControls from './result-controls';
 
 export default {
   name: 'search-result',
@@ -35,7 +35,7 @@ export default {
   },
   components: {
     'entity-search-list': EntitySearchList,
-    'search-pagination': SearchPagination,
+    'result-controls': ResultControls,
     'result-list': ResultList,
   },
   watch: {
@@ -65,26 +65,26 @@ export default {
       <span v-if="!status.resultList.error" class="is-status">{{"Fetching results" | translatePhrase}}</span>
       <span v-if="status.resultList.error" class="is-error">{{status.resultList.info}}</span>
     </div>
-    <search-pagination class="SearchResult-pag" 
+    <result-controls class="SearchResult-controls" 
       v-if="!status.resultList.loading && !status.resultList.error" 
       :page-data="paginationData" 
       :show-details="true" 
       :has-pagination="hasPagination" 
       :show-pages="false">
-    </search-pagination>
+    </result-controls>
     <result-list class="SearchResult-list" 
       v-if="!status.resultList.loading && !status.resultList.error" 
       :results="result.items" 
       :import-data="importData" 
       :compact="user.settings.resultListType === 'compact'">
     </result-list>
-    <search-pagination class="SearchResult-pag" 
+    <result-controls class="SearchResult-controls" 
       v-if="!status.resultList.loading && !status.resultList.error && hasPagination" 
       :has-pagination="hasPagination" 
       :page-data="paginationData" 
       :show-details="false" 
       :show-pages="true">
-    </search-pagination>
+    </result-controls>
   </div>
 </template>
 
