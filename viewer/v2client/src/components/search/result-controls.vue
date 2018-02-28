@@ -130,7 +130,7 @@ export default {
 <template>
   <div class="ResultControls panel panel-default" v-if="!(!showDetails && pageData.totalItems < limit)">
     <div class="ResultControls-searchDetails" v-if="showDetails">
-      <p>Sökning på <strong>{{ queryText }}</strong>
+      <p class="ResultControls-resultDescr" id="resultDescr">Sökning på <strong>{{ queryText }}</strong>
         <span v-if="filters.length > 0">(filtrerat på <span v-for="filter in filters" :key="filter.label"><strong>{{filter.label}}</strong></span>)</span>
       gav <strong>{{pageData.totalItems}}</strong> träffar.
       </p>

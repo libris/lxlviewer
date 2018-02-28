@@ -1,17 +1,3 @@
-<template>
-  <div class="find">
-    <div class="row">
-      <div class="col-md-3 facet-container">
-        <facet-controls :result="result"></facet-controls>
-      </div>
-      <div class="col-md-9 search-content-container">
-        <search-form :search-perimeter="$route.params.perimeter"></search-form>
-        <search-result :import-data="importData" :result="result" v-if="result.totalItems > -1"></search-result>
-      </div>
-    </div>
-  </div>
-</template>
-
 <script>
 import * as _ from 'lodash';
 import * as RecordUtil from '@/utils/record';
@@ -158,6 +144,20 @@ export default {
 };
 
 </script>
+
+<template>
+  <div class="find">
+    <div class="row">
+      <div class="col-md-3">
+        <facet-controls :result="result"></facet-controls>
+      </div>
+      <div class="col-md-9 Find-content">
+        <search-form :search-perimeter="$route.params.perimeter"></search-form>
+        <search-result :import-data="importData" :result="result" v-if="result.totalItems > -1"></search-result>
+      </div>
+    </div>
+  </div>
+</template>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>

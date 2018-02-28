@@ -43,7 +43,7 @@ export default {
 </script>
 
 <template>
-  <ol class="ResultList">
+  <ol class="ResultList" aria-labelledby="resultDescr">
     <div v-if="!compact && results.length > 0">
       <result-list-item class="ResultList-item"
         :database="getDatabase(index)" 
