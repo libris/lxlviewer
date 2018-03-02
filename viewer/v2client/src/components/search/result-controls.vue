@@ -275,7 +275,7 @@ export default {
 
       &:hover {
         border-color: #009788;
-        color: #009788;
+        color: #fff;
       }
     }
 

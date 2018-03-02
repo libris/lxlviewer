@@ -5,7 +5,7 @@ import * as BaseTemplates from '@/resources/json/baseTemplates.json';
 import * as VocabUtil from '@/utils/vocab';
 import * as StringUtil from '@/utils/string';
 import CreationCard from '@/components/createnew/creation-card';
-import CreationTab from '@/components/createnew/creation-tab';
+import CreateOptions from '@/components/createnew/create-options';
 
 export default {
   name: 'create-new-form',
@@ -98,7 +98,7 @@ export default {
   },
   components: {
     'creation-card': CreationCard,
-    'creation-tab': CreationTab,
+    'create-options': CreateOptions,
   },
   watch: {
     'thingData': function() {
@@ -116,13 +116,13 @@ export default {
 </script>
 
 <template>
-  <div class="panel panel-default form-container Create" id="create-new-post">
+  <div class="Create panel panel-default" id="create-new-post">
     <div class="panel-body">
       <h1 class="Create-title">{{'Create new' | translatePhrase}}</h1>
-        <creation-tab
+        <create-options
           :creation-list="creationList"
           @set-creation="setCreation" />
-        <div class="Create-cardCont">
+        <div class="Create-cards">
           <creation-card
             :is-base="true"
             :creation="selectedCreation"
@@ -145,17 +145,17 @@ export default {
 </template>
 
 <style lang="less">
-
 .Create {
   &-title {
-    font-size: 1.5em;
-    margin: 0 0 0.3em 0.7em;  
+    font-size: 24px;
+    font-size: 2.4rem;
+    font-weight: 500;
   }
 
-  &-cardCont {
+  &-cards {
     display: flex;
     flex-wrap: wrap;
+    margin: 0 -1em;
   }
 }
-
 </style>

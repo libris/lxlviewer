@@ -89,7 +89,7 @@ export default {
 </template>
 
 <style lang="less">
-@import '../shared/_variables.less';
+// @import '../shared/_variables.less';
 .header-component-container {
   display: flex;
   background-color: @brand-primary;
