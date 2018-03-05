@@ -13,6 +13,9 @@ export default {
   methods: {
     isActive(creation) {
       return this.selectedCreation === creation;
+    },
+    setActive(creation) {
+      this.selectedCreation = document.getElementById(creation.toLowerCase()+"Option").value;
     }
   },
   watch: {
@@ -30,8 +33,11 @@ export default {
       :key="creation" 
       :class="{'is-active': isActive(creation)}"
       :aria-selected="isActive(creation)">
-      <label class="Create-optionName" :for="creation.toLowerCase()+'Option'">
-        <input class="Create-optionInput" type="radio" :id="creation.toLowerCase()+'Option'"
+      <label class="Create-optionName" tabindex="0"
+        :for="creation.toLowerCase()+'Option'"
+        @keyup.enter="setActive(creation)">
+        <input class="Create-optionInput" type="radio"
+          :id="creation.toLowerCase()+'Option'"
           :name="creation.toLowerCase()+'Option'"
           v-model="selectedCreation" 
           :value="creation">
