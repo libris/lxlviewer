@@ -1,7 +1,7 @@
 <template>
-  <div id="app">
+  <div id="app" class="App">
     <navbar-component />
-    <main class="container">
+    <main class="MainContent container " role="main">
       <div v-if="!resourcesLoaded" class="text-center">
         <i class="fa fa-circle-o-notch fa-4x fa-spin"></i><br/>
         <h3>{{ 'Loading' | translatePhrase | capitalize }}</h3>
@@ -10,7 +10,9 @@
         <router-view v-if="resourcesLoaded" />
       </transition>
     </main>
-    <modal-component title="Error" modal-type="danger" :closeable="false" v-if="resourcesLoadingError" class="ResourceLoadingErrorModal">
+    <modal-component title="Error" modal-type="danger" class="ResourceLoadingErrorModal"
+      :closeable="false" 
+      v-if="resourcesLoadingError">
       <div slot="modal-header" class="ResourceLoadingErrorModal-header">
         <header>
           Error
@@ -63,6 +65,8 @@ export default {
 @import "~bootstrap/less/bootstrap";
 @import "~kungbib-styles/dist/less/kb-style";
 @import "./less/main";
+
+
 
 #app {
   display: flex;

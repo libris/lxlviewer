@@ -45,8 +45,8 @@ export default {
 <template>
   <div class="row">
     <div class="col-md-12">
-      <search-form></search-form>
-      <div class="link-container">
+      <search-form class="LandingPage-searchBar"></search-form>
+      <div class="LandingPage-linkCards">
         <link-card v-if="widgetShouldBeShown('about-xl')" :image="copy['about-xl'].image" :header="copy['about-xl'].header" :text="copy['about-xl'].text" :link-text="copy['about-xl'].linkText" :link-url="copy['about-xl'].linkUrl"></link-card>
         <link-card v-if="widgetShouldBeShown('link-blog')" :image="copy['blog'].image" :header="copy['blog'].header" :text="copy['blog'].text" :link-text="copy['blog'].linkText" :link-url="copy['blog'].linkUrl"></link-card>
         <link-card v-if="widgetShouldBeShown('link-studies')" :image="copy['studies'].image" :header="copy['studies'].header" :text="copy['studies'].text" :link-text="copy['studies'].linkText" :link-url="copy['studies'].linkUrl"></link-card>
@@ -60,4 +60,9 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 
+.LandingPage-linkCards {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15vh;
+}
 </style>
