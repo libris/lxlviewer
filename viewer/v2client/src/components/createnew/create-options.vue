@@ -24,14 +24,15 @@ export default {
 </script>
 
 <template>
-  <div class="Create-options">
-    <div class="Create-option"
+  <div class="Create-options" role="tablist" aria-label="Categories">
+    <div class="Create-option" role="tab" aria-controls="creationCardPanel"
       v-for="creation in creationList" 
       :key="creation" 
-      :class="{'is-active': isActive(creation)}">
-      <label class="Create-optionName">
-        <input class="Create-optionInput" type="radio"
-          :name="creation"
+      :class="{'is-active': isActive(creation)}"
+      :aria-selected="isActive(creation)">
+      <label class="Create-optionName" :for="creation.toLowerCase()+'Option'">
+        <input class="Create-optionInput" type="radio" :id="creation.toLowerCase()+'Option'"
+          :name="creation.toLowerCase()+'Option'"
           v-model="selectedCreation" 
           :value="creation">
           {{creation | labelByLang}}

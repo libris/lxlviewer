@@ -122,7 +122,7 @@ export default {
         <create-options
           :creation-list="creationList"
           @set-creation="setCreation" />
-        <div class="Create-cards">
+        <div class="Create-cards" id="creationCardPanel">
           <creation-card
             :is-base="true"
             :creation="selectedCreation"
