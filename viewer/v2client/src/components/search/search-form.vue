@@ -213,18 +213,18 @@ export default {
 
 <template>
   <div class="SearchBar panel panel-default">
-    <ul class="SearchBar-sourceTabs" role="tablist">
+    <div class="SearchBar-sourceTabs" role="tablist">
       <router-link to="/search/libris" class="SearchBar-sourceTab" role="tab"
         aria-controls="librisPanel" 
-        aria-selected="true"
+        :aria-selected="searchPerimeter === 'libris'"
         :class="{'is-active': searchPerimeter === 'libris' }">Libris
       </router-link>
       <router-link to="/search/remote" class="SearchBar-sourceTab" role="tab"
         aria-controls="remotePanel" 
-        aria-selected="false"
+        :aria-selected="searchPerimeter === 'remote'"
         :class="{'is-active': searchPerimeter === 'remote' }">Andra källor
       </router-link>
-    </ul>
+    </div>
     <div class="SearchBar-help">
       <div class="SearchBar-helpBox dropdown" @mouseleave="hideHelp()">
         <span class="SearchBar-helpIcon">
@@ -326,11 +326,19 @@ export default {
     padding: 0.4em 1em;
     text-transform: uppercase;
     transition: color 0.5s ease;
+    border: 1px dashed #fff;
 
     &.is-active {
       background-color: @brand-primary;
+      border: 1px solid @brand-primary;
       color: #fff;
     }
+
+    &:focus {
+      outline: 0px dashed @brand-primary;
+      border: 1px dashed @brand-primary;
+    }
+
   }
 
   &.is-landing-page {

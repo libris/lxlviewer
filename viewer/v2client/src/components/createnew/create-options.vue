@@ -81,9 +81,19 @@ export default {
     text-align: center;
     text-transform: uppercase;
     margin: 0;  
+    border: 1px solid #fff;
 
     &:hover {
       text-decoration: underline;
+    }
+
+    .is-active & {
+      border: 1px solid @brand-primary;
+    }
+
+    &:focus {
+      outline: 0px dashed @brand-primary;
+      border: 1px dashed @brand-primary;
     }
   }
 
