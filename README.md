@@ -1,7 +1,7 @@
 # LXL Viewer
 The frontend of Libris XL project. The v2 client is a static standalone single page application built with Webpack 3 and VueJS 2 (based on [this template](http://vuejs-templates.github.io/webpack/)).
 
-####Requirements
+#### Requirements
 
 Requires the following to be installed on the host machine:
 
