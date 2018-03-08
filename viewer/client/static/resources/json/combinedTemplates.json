@@ -129,7 +129,8 @@
                 "agent": {
                   "@type": "Person",
                   "familyName": "",
-                  "primaryName": ""
+                  "givenName": "",
+                  "lifeSpan": ""
                 },
                 "role": [{
                   "@id": "https://id.kb.se/relator/author"
@@ -140,7 +141,8 @@
                 "agent": {
                   "@type": "Person",
                   "familyName": "",
-                  "primaryName": ""
+                  "givenName": "",
+                  "lifeSpan": ""
                 }
               }
             ],
