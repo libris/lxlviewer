@@ -2,19 +2,11 @@
 import * as DataUtil from '@/utils/data';
 import * as VocabUtil from '@/utils/vocab';
 import * as _ from 'lodash';
-import { getStatus, getVocabulary, getSettings } from '../../vuex/getters';
-import { changeStatus } from '../../vuex/actions';
+import { mapGetters } from 'vuex';
 
 export default {
-  vuex: {
-    actions: {
-      changeStatus,
-    },
-    getters: {
-      status: getStatus,
-      vocab: getVocabulary,
-      settings: getSettings,
-    },
+  props: {
+    parentPath: '',
   },
   data(){
     return {
@@ -23,14 +15,22 @@ export default {
   },
   methods: {
     removeThis(animate = false) {
+      const parentValue = _.cloneDeep(_.get(this.inspector.data, this.parentPath));
+      parentValue.splice(this.index, 1);
       if (animate) {
         this.changeStatus('removing', true);
         this.removed = true;
         setTimeout(() => {
-          this.$dispatch('remove-item', this.index);
+          this.$store.dispatch('updateInspectorData', {
+            path: `${this.parentPath}`,
+            value: parentValue
+          });
         }, 500);
       } else {
-        this.$dispatch('remove-item', this.index);
+        this.$store.dispatch('updateInspectorData', {
+            path: `${this.parentPath}`,
+            value: parentValue
+        });
       }
     },
   },
@@ -40,6 +40,16 @@ export default {
     },
   },
   computed: {
+    ...mapGetters([
+      'inspector',
+      'resources',
+      'user',
+      'settings',
+      'status',
+    ]),
+    path() {
+      return `${this.parentPath}[${this.index}]`;
+    },
     recordType() {
       return VocabUtil.getRecordType(this.item['@type'], this.vocab, this.settings);
     },

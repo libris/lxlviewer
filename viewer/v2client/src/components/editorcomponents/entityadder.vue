@@ -1,20 +1,19 @@
 <script>
 import * as _ from 'lodash';
-import * as httpUtil from '../../utils/http';
-import * as VocabUtil from '../../utils/vocab';
-import * as DisplayUtil from '../../utils/display';
-import * as LayoutUtil from '../../utils/layout';
-import * as RecordUtil from '../../utils/record';
-import * as StringUtil from '../../utils/string';
-import * as CombinedTemplates from '../../../../resources/json/combinedTemplates.json';
-import * as StructuredValueTemplates from '../../../../resources/json/structuredValueTemplates.json';
+import * as httpUtil from '@/utils/http';
+import * as VocabUtil from '@/utils/vocab';
+import * as DisplayUtil from '@/utils/display';
+import * as LayoutUtil from '@/utils/layout';
+import * as RecordUtil from '@/utils/record';
+import * as StringUtil from '@/utils/string';
+import * as CombinedTemplates from '@/resources/json/combinedTemplates.json';
+import * as StructuredValueTemplates from '@/resources/json/structuredValueTemplates.json';
 import ProcessedLabel from '../shared/processedlabel';
 import ToolTipComponent from '../shared/tooltip-component';
 import EntitySearchList from '../search/entity-search-list';
+import ModalComponent from '@/components/shared/modal-component.vue';
 import LensMixin from '../mixins/lens-mixin';
 import { mixin as clickaway } from 'vue-clickaway';
-import { changeStatus, changeNotification } from '../../vuex/actions';
-import { getVocabulary, getContext, getVocabularyClasses, getVocabularyProperties, getSettings, getDisplayDefinitions, getEditorData } from '../../vuex/getters';
 
 export default {
   mixins: [clickaway, LensMixin],
@@ -34,31 +33,26 @@ export default {
       currentSearchTypes: [],
     };
   },
-  vuex: {
-    getters: {
-      context: getContext,
-      vocab: getVocabulary,
-      vocabClasses: getVocabularyClasses,
-      vocabProperties: getVocabularyProperties,
-      display: getDisplayDefinitions,
-      settings: getSettings,
-      editorData: getEditorData,
-    },
-    actions: {
-      changeStatus,
-      changeNotification,
-    },
-  },
   props: {
-    key: '',
+    fieldKey: '',
     allowLocal: true,
-    propertyTypes: [],
+    propertyTypes: {
+      type: Array,
+      default: () => [],
+    },
     showActionButtons: false,
     active: false,
     isPlaceholder: false,
     isChip: false,
-    alreadyAdded: [],
-    valueList: [],
+    path: '',
+    alreadyAdded: {
+      type: Array,
+      default: () => [],
+    },
+    valueList: {
+      type: Array,
+      default: () => [],
+    },
     possibleValues: [],
     hasRescriction: false,
     entityType: '',
@@ -74,6 +68,7 @@ export default {
     },
   },
   components: {
+    'modal-component': ModalComponent,
     'tooltip-component': ToolTipComponent,
     'entity-search-list': EntitySearchList,
   },
@@ -88,37 +83,46 @@ export default {
     keyword(value) {
       this.handleChange(value);
     },
-    active(value) {
-      this.$dispatch('toggle-modal', value);
-    }
   },
   computed: {
+    settings() {
+      return this.$store.getters.settings;
+    },
+    user() {
+      return this.$store.getters.user;
+    },
+    resources() {
+      return this.$store.getters.resources;
+    },
+    inspector() {
+      return this.$store.getters.inspector;
+    },
     getClassTree() {
       const tree = this.getRange.map(type => {
-        return VocabUtil.getTree(type, this.vocab, this.settings.vocabPfx, this.context);
+        return VocabUtil.getTree(type, this.resources.vocab, this.settings.vocabPfx, this.resources.context);
       });
-      return VocabUtil.flattenTree(tree, this.vocab, this.settings.vocabPfx, this.context, this.settings.language);
+      return VocabUtil.flattenTree(tree, this.resources.vocab, this.settings.vocabPfx, this.resources.context, this.settings.language);
     },
     hasSingleRange() {
       return this.getFullRange.length === 1;
     },
     addLabel() {
       if (this.isLiteral) {
-        return this.key;
+        return this.fieldKey;
       } else if (this.getRange.length === 1) {
         return this.getRange[0];
       } else if (this.getRange.length > 1) {
         return StringUtil.getUiPhraseByLang('entity', this.settings.language);
       }
-      return this.key;
+      return this.fieldKey;
     },
     getRange() {
-      const fetchedRange = VocabUtil.getRange(this.entityType, this.key, this.vocab, this.settings.vocabPfx, this.context)
+      const fetchedRange = VocabUtil.getRange(this.entityType, this.fieldKey, this.resources.vocab, this.settings.vocabPfx, this.resources.context)
         .map(item => item.replace(this.settings.vocabPfx, ''));
       return fetchedRange;
     },
     getFullRange() {
-      return VocabUtil.getFullRange(this.entityType, this.key, this.vocab, this.settings.vocabPfx, this.context, this.vocabClasses);
+      return VocabUtil.getFullRange(this.entityType, this.fieldKey, this.resources.vocab, this.settings.vocabPfx, this.resources.context, this.resources.vocabClasses);
     },
     allSearchTypes() {
       const types = this.getFullRange;
@@ -131,7 +135,7 @@ export default {
     onlyEmbedded() {
       const range = this.getFullRange;
       for (const prop of range) {
-        if (!VocabUtil.isEmbedded(prop, this.vocab, this.settings, this.context)) {
+        if (!VocabUtil.isEmbedded(prop, this.resources.vocab, this.settings, this.resources.context)) {
           return false;
         }
       }
@@ -164,8 +168,8 @@ export default {
     this.currentSearchTypes = this.getRange;
   },
   methods: {
-    getFormattedSelectOption(term, settings, vocab, context) {
-      return DisplayUtil.getFormattedSelectOption(term, settings, vocab, context);
+    getFormattedSelectOption(term) {
+      return DisplayUtil.getFormattedSelectOption(term, this.settings, this.resources.vocab, this.resources.context);
     },
     handleChange(value) {
       this.setSearching();
@@ -197,7 +201,7 @@ export default {
     },
     add() {
       if (this.isEnumeration) {
-        this.$dispatch('add-item', {'@id': ''});
+        this.addItem({'@id': ''});
       } else if (this.canRecieveObjects) {
         const range = this.getFullRange;
         if (range.length === 1 && this.onlyEmbedded) {
@@ -208,22 +212,20 @@ export default {
           this.show();
         }
       } else {
-        this.$dispatch('add-item', '');
+        this.addItem('');
       }
     },
     show() {
-      LayoutUtil.scrollLock(true);
       this.active = true;
       this.$nextTick(() => {
         this.$el.querySelector('.entity-search-keyword-input').focus();
       });
-      this.changeStatus('keybindState', 'entity-adder');
+      this.$store.dispatch('setStatusValue', { property: 'keybindState', value: 'entity-adder' });
     },
     hide() {
       if (!this.active) return;
       this.active = false;
-      LayoutUtil.scrollLock(false);
-      this.changeStatus('keybindState', 'overview');
+      this.$store.dispatch('setStatusValue', { property: 'keybindState', value: 'overview' });
     },
     openSearch() {
       this.keyword = '';
@@ -236,17 +238,28 @@ export default {
       this.chooseLocalType = false;
       this.hide();
     },
+    addItem(obj) {
+      let currentValue = _.get(this.inspector.data, this.path);
+      if (!_.isArray(currentValue)) {
+        currentValue = [currentValue];
+      }
+      currentValue.push(obj);
+      this.$store.dispatch('updateInspectorData', {
+          path: `${this.path}`,
+          value: currentValue
+      });
+    },
     addEmpty(typeId) {
       this.closeSearch();
-      const shortenedType = StringUtil.convertToPrefix(typeId, this.context);
+      const shortenedType = StringUtil.convertToPrefix(typeId, this.resources.context);
       let obj = {'@type': shortenedType};
       if (StructuredValueTemplates.hasOwnProperty(shortenedType)) {
         obj = _.cloneDeep(StructuredValueTemplates[shortenedType]);
       }
-      this.$dispatch('add-item', obj);
+      this.addItem(obj);
     },
     addType(typeId) {
-      const shortenedType = StringUtil.convertToPrefix(typeId, this.context);
+      const shortenedType = StringUtil.convertToPrefix(typeId, this.resources.context);
       this.addEmpty(shortenedType);
       this.dismissTypeChooser();
     },
@@ -266,7 +279,7 @@ export default {
     getItems(keyword, typeArray) {
       // TODO: Support asking for more items
       const searchKey = keyword !== '*' ? `${keyword}*` : keyword;
-      let searchUrl = `/find?q=${searchKey}`;
+      let searchUrl = `${this.settings.apiPath}/find.json?q=${searchKey}`;
       if (typeof typeArray !== 'undefined' && typeArray.length > 0) {
         for (const type of typeArray) {
           searchUrl += `&@type=${type}`;
@@ -304,19 +317,17 @@ export default {
   <div class="type-chooser" v-if="addEmbedded" v-on-clickaway="dismissTypeChooser">
     <select v-model="selectedType" @change="addType(selectedType, true)">
       <option disabled value="">{{"Choose type" | translatePhrase}}</option>
-      <option v-for="term in getClassTree" :disabled="term.abstract" :value="term.id" v-html="getFormattedSelectOption(term, settings, vocab, context)"></option>
+      <option v-for="term in getClassTree" :disabled="term.abstract" :key="term.id" :value="term.id" v-html="getFormattedSelectOption(term, settings, resources.vocab, resources.context)"></option>
     </select>
   </div>
-  <div class="window" v-if="active">
-    <div class="header">
-      <span class="title">
-        {{ "Add entity" | translatePhrase }} | {{ addLabel | labelByLang }}
+  <modal-component v-if="active" class="EntityAdderModal">
+    <template slot="modal-header">
+      {{ "Add entity" | translatePhrase }} | {{ addLabel | labelByLang }}
+      <span class="ModalComponent-windowControl">
+        <i @click="hide" class="fa fa-close"></i>
       </span>
-      <span class="windowControl">
-        <i v-on:click="hide" class="fa fa-close"></i>
-      </span>
-    </div>
-    <div class="body">
+    </template>
+    <template slot="modal-body">
       <div class="stage-0">
         <div class="search-header">
           <span>{{ "Search" | translatePhrase }}</span>
@@ -330,7 +341,7 @@ export default {
               >
               <select v-model="currentSearchTypes" @change="handleChange(keyword)">
                 <option :value="getRange">{{"All types" | translatePhrase}}</option>
-                <option v-for="term in getClassTree" :value="term.id" v-html="getFormattedSelectOption(term, settings, vocab, context)"></option>
+                <option v-for="(term, index) in getClassTree" :key="`${term.id}-${index}`" :value="term.id" v-html="getFormattedSelectOption(term, settings, vocab, context)"></option>
               </select>
             </div>
             <div class="range-info-container" v-if="getFullRange.length > 0" @mouseleave="rangeInfo = false">
@@ -338,7 +349,7 @@ export default {
               <div class="range-info" v-if="rangeInfo">
                 {{ "Allowed types" | translatePhrase }}:
                 <br>
-                <span v-for="range in getFullRange" class="range">
+                <span v-for="(range, index) in getFullRange" :key="index" class="range">
                   - {{range | labelByLang}}
                 </span>
               </div>
@@ -347,7 +358,7 @@ export default {
               <button v-if="hasSingleRange" v-on:click="addEmpty(getFullRange[0])">{{ "Create local entity" | translatePhrase }}</button>
               <select v-model="selectedType" @change="addType(selectedType)" v-if="!hasSingleRange">
                 <option disabled value="">{{ "Create local entity" | translatePhrase }}</option>
-                <option v-for="term in getClassTree" :disabled="term.abstract" :value="term.id" v-html="getFormattedSelectOption(term, settings, vocab, context)"></option>
+                <option v-for="(term, index) in getClassTree" :disabled="term.abstract" :value="term.id" :key="`${term.id}-${index}`" v-html="getFormattedSelectOption(term, settings, vocab, context)"></option>
               </select>
             </div>
           </div>
@@ -359,8 +370,8 @@ export default {
         </div>
         <entity-search-list v-if="!loading && keyword.length > 0" :results="searchResult" :disabled-ids="alreadyAdded"></entity-search-list>
       </div>
-    </div>
-  </div>
+    </template>
+  </modal-component>
 </div>
 </template>
 
@@ -377,7 +388,6 @@ export default {
     cursor: pointer;
   }
   > .chip {
-    .chip-mixin(transparent, @gray-darker);
     .label-text {
       display: inline-block;
     }
@@ -411,7 +421,6 @@ export default {
     }
   }
   .window {
-    .window-mixin();
     .body {
       width: 100%;
       background-color: white;

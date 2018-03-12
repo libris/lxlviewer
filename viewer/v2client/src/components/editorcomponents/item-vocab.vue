@@ -7,28 +7,17 @@ import ProcessedLabel from '../shared/processedlabel';
 import TooltipComponent from '../shared/tooltip-component';
 import ItemMixin from '../mixins/item-mixin';
 import LensMixin from '../mixins/lens-mixin';
-import { getVocabulary, getContext, getVocabularyClasses, getDisplayDefinitions, getSettings, getEditorData } from '../../vuex/getters';
 
 export default {
   name: 'item-vocab',
   mixins: [ItemMixin],
   props: {
     value: '',
-    key: '',
+    fieldKey: '',
     index: Number,
     isLocked: false,
     expanded: false,
     entityType: '',
-  },
-  vuex: {
-    getters: {
-      context: getContext,
-      vocab: getVocabulary,
-      vocabClasses: getVocabularyClasses,
-      display: getDisplayDefinitions,
-      settings: getSettings,
-      editorData: getEditorData,
-    },
   },
   data() {
     return {
@@ -91,7 +80,7 @@ export default {
   <div class="item-vocab" v-bind:class="{'locked': isLocked, 'unlocked': !isLocked, 'distinguish-removal': removeHover, 'removed': removed}">
     <div v-if="!isLocked">
       <select v-model="selected">
-        <option v-for="option in possibleValues" v-bind:value="option">{{ option | labelByLang }}</option>
+        <option v-for="option in possibleValues" :key="option" v-bind:value="option">{{ option | labelByLang }}</option>
       </select>
     </div>
     <span v-if="isLocked">{{value | labelByLang}}</span>

@@ -1,26 +1,16 @@
 <script>
 import * as _ from 'lodash';
-import * as DisplayUtil from '../../utils/display';
-import * as DataUtil from '../../utils/data';
-import * as StringUtil from '../../utils/string';
-import EntitySummary from '../shared/entity-summary';
-import LensMixin from '../mixins/lens-mixin';
+import * as DisplayUtil from '@/utils/display';
+import * as DataUtil from '@/utils/data';
+import * as StringUtil from '@/utils/string';
+import EntitySummary from '@/components/shared/entity-summary';
+import LensMixin from '@/components/mixins/lens-mixin';
 import ReverseRelations from './reverse-relations';
-import { getSettings, getVocabulary, getContext, getDisplayDefinitions, getEditorData, getStatus } from '../../vuex/getters';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'header-component',
   mixins: [LensMixin],
-  vuex: {
-    getters: {
-      context: getContext,
-      vocab: getVocabulary,
-      settings: getSettings,
-      editorData: getEditorData,
-      display: getDisplayDefinitions,
-      status: getStatus,
-    },
-  },
   props: {
     full: false,
   },
@@ -35,8 +25,12 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'inspector',
+      'resources',
+    ]),
     state() {
-      const state = this.status.level;
+      const state = this.inspector.status.level;
       if (state === 'mainEntity') {
         return 'Instance';
       } else if (state === 'work') {
@@ -45,7 +39,7 @@ export default {
       return 'Unknown';
     },
     focusData() {
-      return this.editorData[this.status.level];
+      return this.inspector.data['mainEntity'];
     },
     headerThreshold() {
       const headerContainer = document.getElementById('main-header');
@@ -54,7 +48,7 @@ export default {
     compactSummary() {
       let summary = [];
       _.each(this.getSummary, summaryArray => {
-        summary = summary.concat(StringUtil.getFormattedEntries(summaryArray, this.vocab, this.settings, this.context));
+        summary = summary.concat(StringUtil.getFormattedEntries(summaryArray, this.resources.vocab, this.settings, this.resources.context));
       });
       return summary.join(' • ');
     },
@@ -62,7 +56,7 @@ export default {
   beforeDestroy() {
     window.removeEventListener('scroll', this.handleScroll);
   },
-  ready() { // Ready method is deprecated in 2.0, switch to "mounted"
+  mounted() {
     this.$nextTick(() => {
       window.addEventListener('scroll', this.handleScroll);
     });
@@ -75,13 +69,13 @@ export default {
 </script>
 
 <template>
-  <div class="header-component-container" :class="{'blue': settings.siteInfo.title === 'id.kb.se', 'is-new': status.isNew}">
-    <div class="header-component full">
-      <entity-summary :focus-data="focusData" :add-link="false" :lines="full ? 6 : 3"></entity-summary>
+  <div class="HeaderComponent" :class="{'is-new': inspector.status.isNew}">
+    <div class="HeaderComponent-body is-full">
+      <entity-summary :focus-data="focusData" :should-link="false" :lines="full ? 6 : 3"></entity-summary>
     </div>
-    <reverse-relations v-if="!status.isNew"></reverse-relations>
-    <div class="container">
-      <div class="compact-header" :class="{ 'show-compact': showCompact, 'blue': settings.siteInfo.title === 'id.kb.se' }">
+    <reverse-relations v-if="!inspector.status.isNew"></reverse-relations>
+    <div class="HeaderComponent-body is-compact">
+      <div class="compact-header" :class="{ 'show-compact': showCompact }">
       {{ compactSummary }}
       </div>
     </div>
@@ -89,8 +83,8 @@ export default {
 </template>
 
 <style lang="less">
-@import '../shared/_variables.less';
-.header-component-container {
+
+.HeaderComponent {
   display: flex;
   background-color: @brand-primary;
   box-shadow: @shadow-base;
@@ -101,14 +95,11 @@ export default {
       background: #6f767b;
     }
   }
-  &.blue {
-    background-color: @brand-id;
-  }
-  .header-component {
-    flex: 8 8 100%;
-    max-width: 100%;
-    min-width: 0;
-    &.full {
+  &-body {
+    &.is-full {
+      flex: 8 8 100%;
+      max-width: 100%;
+      min-width: 0;
       .entity-summary {
         border-width: 0;
         height: 100%;
@@ -117,32 +108,29 @@ export default {
         }
       }
     }
-  }
-  .container {
-    position: fixed;
-    z-index: @header-z;
-    top: 0;
-    padding: 0px 30px 0px 0px;
-    .compact-header {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      background: @brand-primary;
-      color: @white;
-      padding: 0.5em;
-      box-shadow: 0 2px 5px rgba(0,0,0,.26);
-      max-height: 0px;
-      opacity: 0;
-      transition: all 0.3s ease;
-      line-height: 0;
-      transform: translateX(-28px);
-      &.blue {
-        background: @brand-id;
-      }
-      &.show-compact {
-        max-height: 55px;
-        opacity: 1;
-        line-height: inherit;
+    &.is-compact {
+      position: fixed;
+      z-index: @header-z;
+      top: 0;
+      left: 0;
+      width: 100%;
+      .compact-header {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        background: @brand-primary;
+        color: @white;
+        padding: 0.5em;
+        box-shadow: 0 2px 5px rgba(0,0,0,.26);
+        max-height: 0px;
+        opacity: 0;
+        transition: all 0.3s ease;
+        line-height: 0;
+        &.show-compact {
+          max-height: 55px;
+          opacity: 1;
+          line-height: inherit;
+        }
       }
     }
   }

@@ -28,7 +28,7 @@ export default {
       return this.$store.getters.resources;
     },
     editorData() {
-      return this.$store.getters.editor.data;
+      return this.$store.getters.inspector.data;
     },
     getItemLabel() {
       // const label = this.getLabel(this.focusData);

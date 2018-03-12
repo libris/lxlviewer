@@ -3,6 +3,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import App from './App'
+import ComboKeys from 'combokeys';
 import router from './router'
 import store from '@/store/store';
 import * as VocabUtil from '@/utils/vocab';
@@ -10,9 +11,12 @@ import * as DisplayUtil from '@/utils/display';
 import * as StringUtil from '@/utils/string';
 import * as User from '@/models/user';
 import FakedDisplayJson from '@/resources/json/fakedisplay.json';
+import FieldComponent from '@/components/editorcomponents/field-component';
+import KeyBindings from '@/resources/json/keybindings.json';
 
 Vue.config.productionTip = false
 Vue.use(Vuex);
+Vue.component('field', FieldComponent);
 
 Vue.filter('labelByLang', (label) => {
   return StringUtil.getLabelByLang(label, store.getters.user.settings.language, store.getters.resources.vocab, store.getters.settings.vocabPfx, store.getters.resources.context);
@@ -64,11 +68,37 @@ new Vue({
       console.warn(`The API (at ${this.settings.apiPath}) might be offline!`);
       store.dispatch('changeResourcesLoadingError', true);
     });
-    this.initWarningFunc();
   },
   watch: {
-    '$route'(route) {
-      this.updateTitle(route);
+    '$route'() {
+      this.updateTitle();
+    },
+    'inspector.title'() {
+      this.updateTitle();
+    },
+    'status.keybindState'(state) {
+      // Bindings are defined in keybindings.json
+      if (this.combokeys) {
+        this.combokeys.detach();
+      }
+      this.combokeys = new ComboKeys(document.documentElement);
+      require('combokeys/plugins/global-bind')(this.combokeys); // TODO: Solve with ES6 syntax
+      const stateSettings = KeyBindings[state];
+      if (typeof stateSettings !== 'undefined') {
+        _.each(stateSettings, (value, key) => {
+          if (value !== null && value !== '') {
+            this.combokeys.bindGlobal(key.toString(), () => {
+              const valueArray = value.split('|');
+              if (state === 'overview') {
+                this.$dispatch(valueArray[0], valueArray[1]);
+              } else {
+                this.$broadcast(valueArray[0], valueArray[1]);
+              }
+              return false;
+            });
+          }
+        });
+      }
     },
   },
   mounted() {
@@ -82,14 +112,18 @@ new Vue({
     },
     user() {
       return this.$store.getters.user;
-    }
+    },
+    inspector() {
+      return this.$store.getters.inspector;
+    },
   },
   methods: {
     initializeUser() {
       const userObj = User.getUserObject(window.userInfo || {});
       store.dispatch('setUser', userObj);
     },
-    updateTitle(route) {
+    updateTitle() {
+      const route = this.$route;
       let title = '';
       if (route.params.query) {
         const queryParts = route.params.query.split('&');
@@ -98,6 +132,8 @@ new Vue({
             title += `"${param.substr(2, param.length -2)}"`;
           }
         }
+      } else if (route.name === 'Inspector') {
+        title += this.inspector.title;
       } else {
         title += StringUtil.getUiPhraseByLang(route.name, this.$store.getters.user.settings.language)
       }

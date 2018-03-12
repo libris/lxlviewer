@@ -8,7 +8,6 @@ export default {
   name: 'entity-summary',
   props: {
     focusData: {},
-    addLink: false,
     lines: Number,
     actions: false,
     isLocal: false,
@@ -17,6 +16,10 @@ export default {
     importItem: '',
     routerPath: String,
     database: '',
+    shouldLink: {
+      default: true,
+      type: Boolean,
+    }
   },
   data() {
     return {
@@ -34,6 +37,9 @@ export default {
       return this.$store.getters.settings;
     },
     isLibrisResource() {
+      if (!this.focusData.hasOwnProperty('@id')) {
+        return true;
+      }
       return this.focusData['@id'].startsWith(this.settings.apiPath);
     },
     infoWithKeys() {
@@ -103,9 +109,10 @@ export default {
   </div>
   <div class="main-info">
     <h3 class="header">
-      <span class="import-header" :title="header.join(', ')" v-on:click="importThis()" v-if="isImport"><i class="fa fa-download" aria-hidden="true"></i> {{ header.join(', ') }}</span>
-      <router-link v-if="isLibrisResource && !isImport" :to="routerPath" :title="header.join(', ')">{{ header.join(', ') }}</router-link>
-      <a v-if="!isLibrisResource && !isImport" :href="focusData['@id']" :title="header.join(', ')">{{ header.join(', ') }}</a>
+      <span v-if="!shouldLink" :title="header.join(', ')">{{ header.join(', ') }}</span>
+      <span v-if="isImport && shouldLink" class="import-header" :title="header.join(', ')" v-on:click="importThis()"><i class="fa fa-download" aria-hidden="true"></i> {{ header.join(', ') }}</span>
+      <router-link v-if="isLibrisResource && !isImport && shouldLink" :to="routerPath" :title="header.join(', ')">{{ header.join(', ') }}</router-link>
+      <a v-if="!isLibrisResource && !isImport && shouldLink" :href="focusData['@id']" :title="header.join(', ')">{{ header.join(', ') }}</a>
     </h3>
     <div class="id" v-if="identifiers.length > 0">{{ identifiers[0] }} <span class="id-info" v-if="identifiers.length > 1">(+{{ identifiers.length-1 }})</span></div>
     <div class="info">
@@ -144,11 +151,13 @@ export default {
       overflow: hidden;
       text-overflow: ellipsis;
       width: 100%;
-      cursor: pointer;
       font-size: 1.6em;
       line-height: 1.6em;
       min-height: 1.2em;
       margin: 0px;
+      &.import-header {
+        cursor: pointer;
+      }
     }
     .info {
       .key-value-pair {
@@ -163,7 +172,6 @@ export default {
       }
     }
     .id {
-      color: #333;
       font-weight: bold;
       margin-top: -0.3em;
       margin-bottom: 0.5em;
@@ -179,7 +187,6 @@ export default {
   .sub {
     border-width: 0px;
     .categorization {
-      color: #8a8a8a;
       flex-basis: 85%;
       flex-grow: 2;
       display: block;
