@@ -54,9 +54,8 @@ export default {
     openMarc() {
       this.$dispatch('show-marc');
     },
-    save(cancelEdit) {
-      this.changeSavedStatus('loading', true);
-      this.$dispatch('save-item', cancelEdit);
+    save() {
+      this.$emit('save');
     },
     edit() {
       this.loadingEdit = true;
@@ -331,7 +330,7 @@ export default {
               <tooltip-component :show-tooltip="showUndo" tooltip-text="Undo" translation="translatePhrase"></tooltip-component>
             </i>
           </button>
-          <button class="btn btn-info toolbar-button" id="saveButton" v-on:click="save(false)" v-if="inspector.status.editing && !status.isNew" @mouseover="showSave = true" @mouseout="showSave = false">
+          <button class="btn btn-info toolbar-button" id="saveButton" @click="save" v-if="inspector.status.editing && !status.isNew" @mouseover="showSave = true" @mouseout="showSave = false">
             <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="inspector.status.saving"></i>
             <i class="fa fa-fw fa-save" v-show="!inspector.status.saving">
               <tooltip-component :show-tooltip="showSave" tooltip-text="Save" translation="translatePhrase"></tooltip-component>

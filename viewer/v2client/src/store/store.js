@@ -20,6 +20,7 @@ const store = new Vuex.Store({
       data: {},
       title: '',
       status: {
+        dirty: false,
         saving: false,
         opening: false,
         lastAdded: '',

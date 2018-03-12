@@ -6,7 +6,7 @@
     </div>
     <div class="row">
       <div v-if="postLoaded" class="InspectorView-panel panel panel-default col-md-12">
-        <editor-controls></editor-controls>
+        <editor-controls @save="saveItem()"></editor-controls>
         <header-component id="main-header" :full="true" v-if="!isItem"></header-component>
         <form-component :editing-object="inspector.status.focus" :locked="!inspector.status.editing"></form-component>
         <hr>
@@ -20,9 +20,9 @@
 
 <script>
 import * as StringUtil from '@/utils/string';
-// import * as DataUtil from '@/utils/data';
+import * as DataUtil from '@/utils/data';
 // import * as LayoutUtil from '@/utils/layout';
-// import * as httpUtil from '@/utils/http';
+import * as httpUtil from '@/utils/http';
 // import * as _ from 'lodash';
 // import * as VocabUtil from '@/utils/vocab';
 import * as DisplayUtil from '@/utils/display';
@@ -74,6 +74,59 @@ export default {
           this.$store.dispatch('setInspectorTitle', title);
         }
       }
+    },
+    saveItem() {
+      this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: true });
+      const ETag = this.inspector.data.record.modified;
+      const RecordId = this.inspector.data.record['@id'];
+      const recordCopy = _.cloneDeep(this.inspector.data.record);
+
+      if (!RecordId || RecordId === 'https://id.kb.se/TEMPID') { // No ID -> create new
+        recordCopy.descriptionCreator = { '@id': `https://libris.kb.se/library/${this.user.settings.activeSigel}` };
+      } else { // ID exists -> update
+        recordCopy.descriptionLastModifier = { '@id': `https://libris.kb.se/library/${this.user.settings.activeSigel}` };
+      }
+
+      const obj = DataUtil.getMergedItems(
+        DataUtil.removeNullValues(recordCopy),
+        DataUtil.removeNullValues(this.inspector.data.mainEntity),
+        DataUtil.removeNullValues(this.inspector.data.work),
+        this.inspector.data.quoted
+      );
+
+      if (!RecordId || RecordId === 'https://id.kb.se/TEMPID') { // No ID -> create new
+        this.doCreate(obj);
+      } else { // ID exists -> update
+        this.doUpdate(RecordId, obj, ETag);
+      }
+    },
+    doUpdate(url, obj, ETag) {
+      this.doSaveRequest(httpUtil.put, obj, url, ETag);
+    },
+    doCreate(obj) {
+      this.doSaveRequest(httpUtil.post, obj, '/');
+    },
+    doSaveRequest(requestMethod, obj, url, ETag) {
+      requestMethod({ url, ETag, activeSigel: this.user.settings.activeSigel }, obj).then((result) => {
+        const postUrl = `${result.getResponseHeader('Location')}`;
+        httpUtil.get({ url: `${postUrl}/data.jsonld`, accept: 'application/ld+json' }).then((getResult) => {
+          const newData = RecordUtil.splitJson(getResult);
+          if (result.status === 201) {
+            window.location = result.getResponseHeader('Location');
+          } else {
+            this.$store.dispatch('setInspectorData', newData);
+          }
+          this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
+          this.$store.dispatch('pushNotification', { color: 'green', message: `${StringUtil.getUiPhraseByLang('The post was saved', this.settings.language)}!` });
+          this.$store.dispatch('setInspectorStatusValue', { property: 'dirty', value: false });
+        }, (error) => {
+          this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
+          this.$store.dispatch('pushNotification', { color: 'red', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error}` });
+        });
+      }, (error) => {
+        this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
+        this.$store.dispatch('pushNotification', { color: 'red', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error}` });
+      });
     },
   },
   watch: {
