@@ -360,7 +360,7 @@ export default {
         <item-value v-if="getDatatype(item) == 'value'" :is-removable="!hasSingleValue" :is-locked="locked" :field-value="item" :field-key="fieldKey" :index="index" :parent-path="getPath" :show-action-buttons="actionButtonsShown"></item-value>
       </li>
     </ul>
-    <entity-adder class="action" v-show="!locked && (isRepeatable || isEmptyObject) && (!isInner || (isInner && isEmptyObject))" :field-key="fieldKey" :already-added="linkedIds" :entity-type="entityType" :property-types="propertyTypes" :show-action-buttons="actionButtonsShown" :active="activeModal" :is-placeholder="false" :value-list="valueAsArray"></entity-adder>
+    <entity-adder class="action" v-show="!locked && (isRepeatable || isEmptyObject) && (!isInner || (isInner && isEmptyObject))" :field-key="fieldKey" :already-added="linkedIds" :entity-type="entityType" :property-types="propertyTypes" :show-action-buttons="actionButtonsShown" :active="activeModal" :is-placeholder="false" :value-list="valueAsArray" :path="getPath"></entity-adder>
   </div>
   <div v-if="!isInner" class="actions">
     <div class="action" v-show="!locked" :class="{'disabled': activeModal}">

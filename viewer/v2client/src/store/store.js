@@ -26,6 +26,7 @@ const store = new Vuex.Store({
         lastAdded: '',
         editing: false,
         focus: 'mainEntity',
+        removing: false,
       },
       changeHistory: {
         mainEntity: [],

@@ -317,7 +317,7 @@ export default {
   <div class="type-chooser" v-if="addEmbedded" v-on-clickaway="dismissTypeChooser">
     <select v-model="selectedType" @change="addType(selectedType, true)">
       <option disabled value="">{{"Choose type" | translatePhrase}}</option>
-      <option v-for="term in getClassTree" :disabled="term.abstract" :key="term.id" :value="term.id" v-html="getFormattedSelectOption(term, settings, resources.vocab, resources.context)"></option>
+      <option v-for="(term, index) in getClassTree" :disabled="term.abstract" :key="`${term.id}-${index}`" :value="term.id" v-html="getFormattedSelectOption(term, settings, resources.vocab, resources.context)"></option>
     </select>
   </div>
   <modal-component v-if="active" class="EntityAdderModal">

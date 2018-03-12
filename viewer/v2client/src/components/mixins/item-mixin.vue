@@ -18,7 +18,7 @@ export default {
       const parentValue = _.cloneDeep(_.get(this.inspector.data, this.parentPath));
       parentValue.splice(this.index, 1);
       if (animate) {
-        this.changeStatus('removing', true);
+        this.$store.dispatch('setInspectorStatusValue', { property: 'removing', value: true });
         this.removed = true;
         setTimeout(() => {
           this.$store.dispatch('updateInspectorData', {
