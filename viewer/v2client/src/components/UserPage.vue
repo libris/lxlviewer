@@ -1,7 +1,6 @@
 <script>
 import UserSettings from '@/components/usersettings/user-settings';
 
-
 export default {
   name: 'user-page-component',
   computed: {

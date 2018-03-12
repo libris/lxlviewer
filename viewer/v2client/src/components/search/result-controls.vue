@@ -4,7 +4,7 @@ import * as httpUtil from '@/utils/http';
 import Modernizr from '@/../.modernizrrc.js';
 
 export default {
-  name: 'search-pagination',
+  name: 'result-controls',
   props: {
     pageData: {},
     showDetails: false,
@@ -128,134 +128,170 @@ export default {
 </script>
 
 <template>
-  <div class="panel panel-default result-controls" v-if="!(!showDetails && pageData.totalItems < limit)">
-    <div class="search-details" v-if="showDetails">
-      <span>Sökning på <strong>{{ queryText }}</strong>
-        <span v-if="filters.length > 0">
-        (filtrerat på <span v-for="filter in filters" :key="filter.label"><strong>{{filter.label}}</strong></span>)
-      </span>
-      gav <strong>{{pageData.totalItems}}</strong> träffar.</span>
-      <span v-if="pageData.totalItems > limit">Visar <strong>{{ limit }}</strong> träffar per sida.</span>
+  <div class="ResultControls panel panel-default" v-if="!(!showDetails && pageData.totalItems < limit)">
+    <div class="ResultControls-searchDetails" v-if="showDetails">
+      <p class="ResultControls-resultDescr" id="resultDescr">Sökning på <strong>{{ queryText }}</strong>
+        <span v-if="filters.length > 0">(filtrerat på <span v-for="filter in filters" :key="filter.label"><strong>{{filter.label}}</strong></span>)</span>
+      gav <strong>{{pageData.totalItems}}</strong> träffar.
+      </p>
+      <p v-if="pageData.totalItems > limit">Visar <strong>{{ limit }}</strong> träffar per sida.</p>
     </div>
-    <div class="list-type-buttons" v-if="showDetails">
-      <button v-on:click="setFull()" v-bind:class="{'active': user.settings.resultListType === 'detailed' }"><i class="fa fa-th-list"></i></button>
-      <button v-on:click="setCompact()" v-bind:class="{'active': user.settings.resultListType === 'compact' }"><i class="fa fa-list"></i></button>
+    <div class="ResultControls-listTypes" v-if="showDetails">
+      <button class="ResultControls-listType"
+        v-on:click="setFull()" 
+        v-bind:class="{'is-active': user.settings.resultListType === 'detailed' }">
+        <i class="fa fa-th-list"></i>
+      </button>
+      <button class="ResultControls-listType" 
+        v-on:click="setCompact()" 
+        v-bind:class="{'is-active': user.settings.resultListType === 'compact' }">
+        <i class="fa fa-list"></i>
+      </button>
     </div>
-    <div v-if="hasPagination && showPages" class="search-buttons">
-      <nav>
-        <ul class="pagination">
-          <li v-bind:class="{ 'disabled': !pageData.first || pageData['@id'] === pageData.first['@id'] }">
-            <router-link v-if="pageData.first" :to="pageData.first['@id'] | asAppPath">Första</router-link>
-            <a v-if="!pageData.first">Första</a>
-          </li>
-          <li v-bind:class="{ 'disabled': !pageData.previous }">
-            <router-link v-if="pageData.previous" :to="pageData.previous['@id'] | asAppPath">Föregående</router-link>
-            <a v-if="!pageData.previous">Föregående</a>
-          </li>
-          <li v-bind:class="{ 'active': page.active }" v-for="page in pageList" :key="page.link">
-            <span class="decorative" v-if="!page.link">...</span>
-            <router-link :to="page.link | asAppPath" v-if="!page.active && page.link">{{page.pageLabel}}</router-link>
-            <a v-if="page.active">{{page.pageLabel}}</a>
-          </li>
-          <li v-bind:class="{ 'disabled': !pageData.next }">
-            <router-link v-if="pageData.next" :to="pageData.next['@id'] | asAppPath">Nästa</router-link>
-            <a v-if="!pageData.next">Nästa</a>
-          </li>
-          <li v-bind:class="{ 'disabled': !pageData.last || pageData['@id'] === pageData.last['@id'] }">
-            <router-link v-if="pageData.last" :to="pageData.last['@id'] | asAppPath">Sista</router-link>
-            <a v-if="!pageData.last">Sista</a>
-          </li>
-        </ul>
-      </nav>
-    </div>
+    <nav v-if="hasPagination && showPages" class="ResultControls-pag">
+      <ul class="ResultControls-pagList">
+        <li class="ResultControls-pagItem" 
+          v-bind:class="{ 'is-disabled': !pageData.first || pageData['@id'] === pageData.first['@id'] }">
+          <router-link class="ResultControls-pagLink"  v-if="pageData.first" :to="pageData.first['@id'] | asAppPath">Första</router-link>
+          <a class="ResultControls-pagLink" v-if="!pageData.first">Första</a>
+        </li>
+        <li class="ResultControls-pagItem" 
+          v-bind:class="{ 'is-disabled': !pageData.previous }">
+          <router-link class="ResultControls-pagLink" 
+            v-if="pageData.previous" 
+            :to="pageData.previous['@id'] | asAppPath">Föregående</router-link>
+          <a class="ResultControls-pagLink" v-if="!pageData.previous">Föregående</a>
+        </li>
+        <li class="ResultControls-pagItem" 
+          v-bind:class="{ 'is-active': page.active }" v-for="page in pageList" :key="page.link">
+          <span class="ResultControls-pagDecor" v-if="!page.link">...</span>
+          <router-link class="ResultControls-pagLink" 
+            :to="page.link | asAppPath" v-if="!page.active && page.link">{{page.pageLabel}}</router-link>
+          <a class="ResultControls-pagLink" v-if="page.active">{{page.pageLabel}}</a>
+        </li>
+        <li class="ResultControls-pagItem" 
+          v-bind:class="{ 'is-disabled': !pageData.next }">
+          <router-link class="ResultControls-pagLink" 
+            v-if="pageData.next" :to="pageData.next['@id'] | asAppPath">Nästa</router-link>
+          <a class="ResultControls-pagLink" v-if="!pageData.next">Nästa</a>
+        </li>
+        <li class="ResultControls-pagItem" 
+          v-bind:class="{ 'is-disabled': !pageData.last || pageData['@id'] === pageData.last['@id'] }">
+          <router-link class="ResultControls-pagLink" 
+            v-if="pageData.last" :to="pageData.last['@id'] | asAppPath">Sista</router-link>
+          <a class="ResultControls-pagLink" v-if="!pageData.last">Sista</a>
+        </li>
+      </ul>
+    </nav>
   </div>
 </template>
 
 <style lang="less">
-
 @buttoncolor: darken(@neutral-color, 10%);
 
-.search-details {
-  display: flex;
-  justify-content: space-between;
-}
-.list-type-buttons {
-  display: flex;
-  flex-direction: row-reverse;
-  button {
+.ResultControls {
+  margin: 10px 0px;
+  padding: 20px;
+
+  &-searchDetails {
+    color: @gray-darker;
+    display: flex;
+    justify-content: space-between;  
+  }
+
+  &-listTypes {
+    display: flex;
+    flex-direction: row-reverse;
+  }
+
+  &-listType {
     background-color: @buttoncolor;
     margin: 0 0 0 0.3em;
-    &.active {
+
+    &.is-active {
       &.blue {
         background-color: @brand-id;
       }
+
       background-color: @brand-primary;
       i {
         color: @neutral-color;
       }
     }
   }
-}
-.search-buttons {
-  .decorative {
+
+  &-pagDecor {
     font-size: 12px;
     border: none;
     line-height: 1;
     color: @black;
     background-color: @neutral-color;
+
     &:hover {
       background-color: @neutral-color;
     }
   }
-}
 
-// PAGED COLLECTION
-.result-controls {
-  padding: 20px;
-  margin: 10px 0px;
-  .search-details {
-    color: @gray-darker;
-    .query {
-      font-weight:600;
-      &:before {
-        content: open-quote;
-        padding-right: 1px;
-      }
-      &:after {
-        content: close-quote;
-        padding-left: 1px;
-      }
-    }
+  &-pagList {
+    display: inline-block;
+    list-style-type: none;
+    font-size: 12px;
+    font-size: 1.2rem;
+    margin: 0px;
+    padding: 0;
   }
-  .search-buttons {
-    &:first-child {
-      margin-top: 0;
-    }
-    margin-top: 1em;
-    .pagination {
-      margin: 0px;
-      li {
-        a {
-          border-radius: 0px !important;
-          font-size: 12px;
-          text-transform: uppercase;
-          font-weight: bold;
-          opacity: 0.7;
-          //background-color:#f5f5f5; TODO: test visual unity
-          .disabled {
-            border: none;
-          }
-          &:hover {
-            opacity:1;
-          }
-          &.pointer {
-            cursor: pointer;
-          }
-          i {
-            padding: 0 5px 0 5px;
-          }
-        }
+
+  &-pagItem {
+    display: inline;
+    line-height: 1;
+  }
+
+  &-pagLink {
+    border: 1px solid #fff;
+    color: #009788;
+    float: left;
+    font-weight: bold;
+    position: relative;
+    padding: 6px 12px;
+    text-transform: uppercase;
+    opacity: 0.7;
+
+    .is-disabled & {
+      background-color: #fff;
+      border: 1px solid #ddd;
+      color: #c4c7ca;
+
+      &:hover {
+        border-color: #ddd;
+        color: #c4c7ca;
       }
+    }
+
+    .is-active & {
+      background-color: #009788;
+      border-color: #009788;
+      color: #fff;
+      z-index: 3;
+
+      &:hover {
+        border-color: #009788;
+        color: #fff;
+      }
+    }
+
+    &:hover {
+      border-color: #009788;
+      color: #009788;
+      opacity: 1;
+      text-decoration: none;
+    }
+
+    &.pointer {
+      cursor: pointer;
+    }
+
+    i {
+      padding: 0 5px 0 5px;
     }
   }
 }

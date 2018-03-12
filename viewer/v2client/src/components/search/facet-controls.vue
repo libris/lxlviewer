@@ -45,67 +45,52 @@ export default {
 </script>
 
 <template>
-  <div class="panel panel-default">
-    <div class="panel-body facet-controls">
-      <label>Filtrera</label>
+  <div class="FacetControls panel panel-default">
+    <div class="panel-body">
+      <h3 class="FacetControls-title">Filtrera</h3>
       <div v-if="result.totalItems > 0 && result.stats">
-        <div v-for="(dimensionValue, dimensionKey) in result.stats.sliceByDimension" :key="dimensionKey">
-          <div class="dimension-header">{{facetLabelByLang(dimensionValue.dimension) | capitalize}}</div>
+        <nav class="FacetControls-listNav" aria-labelledby=""
+        v-for="(dimensionValue, dimensionKey) in result.stats.sliceByDimension" 
+        :key="dimensionKey">
+          <h4 class="FacetControls-listTitle" id="">{{facetLabelByLang(dimensionValue.dimension) | capitalize}}</h4>
           <!--<range-input v-if="isRangeFacet(dimensionKey)"></range-input>-->
-          <ul>
-            <facet v-for="observation in dimensionValue.observation" :observation="observation" :key="observation.label"></facet>
+          <ul class="FacetControls-list">
+            <facet class="FacetControls-listItem"
+            v-for="observation in dimensionValue.observation" 
+            :observation="observation" 
+            :key="observation.label"></facet>
           </ul>
-        </div>
+        </nav>
       </div>
     </div>
   </div>
 </template>
 
 <style lang="less">
-
-.facet-controls {
+.FacetControls {
   padding: 15px 5px 15px 15px;
-  label {
-    text-transform: uppercase;
-  }
-  .dimension-header {
-    margin-top: 10px;
-    margin-bottom: 2px;
-    padding: 0px;
-    font-weight: bold;
-  }
-  div {
-    padding: 5px;
-  }
-  ul {
-    list-style: none;
-    padding: 0px;
-    li {
-      padding: 2px 0px;
-      width: 100%;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      a {
-        color: @gray-darker;
-        font-size: 14px;
-      }
-      span {
-        cursor: pointer;
-        span {
-          color: @gray-darker;
-          font-size: 14px;
-        }
-      }
-      i {
 
-        margin-right: 0.4em;
-      }
-      .quantity {
-        color: @gray;
-        font-size: 0.8em;
-      }
-    }
+  &-title {
+    text-transform: uppercase;
+    font-size: 16px;
+    font-size: 1.6rem;
+  }
+
+  &-listTitle {
+    margin: 10px 0 2px 0;
+    padding: 0px;
+    font-size: 16px;
+    font-size: 1.6rem;
+    font-weight: 700;
+  }
+
+  &-listNav {
+    margin: 20px 0 0;
+  }
+
+  &-list {
+    list-style: none;
+    padding: 0px 0 0 15px;
   }
 }
 </style>

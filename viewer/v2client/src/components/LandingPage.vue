@@ -1,18 +1,3 @@
-<template>
-  <div class="row">
-    <div class="col-md-12">
-      <search-form></search-form>
-      <div class="link-container">
-        <link-card v-if="widgetShouldBeShown('about-xl')" :image="copy['about-xl'].image" :header="copy['about-xl'].header" :text="copy['about-xl'].text" :link-text="copy['about-xl'].linkText" :link-url="copy['about-xl'].linkUrl"></link-card>
-        <link-card v-if="widgetShouldBeShown('link-blog')" :image="copy['blog'].image" :header="copy['blog'].header" :text="copy['blog'].text" :link-text="copy['blog'].linkText" :link-url="copy['blog'].linkUrl"></link-card>
-        <link-card v-if="widgetShouldBeShown('link-studies')" :image="copy['studies'].image" :header="copy['studies'].header" :text="copy['studies'].text" :link-text="copy['studies'].linkText" :link-url="copy['studies'].linkUrl"></link-card>
-        <link-card v-if="widgetShouldBeShown('link-supportforum')"  :image="copy['supportforum'].image" :header="copy['supportforum'].header" :text="copy['supportforum'].text" :link-text="copy['supportforum'].linkText" :link-url="copy['supportforum'].linkUrl"></link-card>
-      </div>
-      <link-card v-if="widgetShouldBeShown('intro-component')" :video-url="copy['instructional-videos'].video" :header="copy['instructional-videos'].header" :text="copy['instructional-videos'].text" :link-text="copy['instructional-videos'].linkText" :link-url="copy['instructional-videos'].linkUrl"></link-card>
-    </div>
-  </div>
-</template>
-
 <script>
 import ServiceWidgetSettings from '@/resources/json/serviceWidgetSettings.json';
 import SearchForm from '@/components/search/search-form';
@@ -57,7 +42,27 @@ export default {
 }
 </script>
 
+<template>
+  <div class="row">
+    <div class="col-md-12">
+      <search-form class="LandingPage-searchBar"></search-form>
+      <div class="LandingPage-linkCards">
+        <link-card v-if="widgetShouldBeShown('about-xl')" :image="copy['about-xl'].image" :header="copy['about-xl'].header" :text="copy['about-xl'].text" :link-text="copy['about-xl'].linkText" :link-url="copy['about-xl'].linkUrl"></link-card>
+        <link-card v-if="widgetShouldBeShown('link-blog')" :image="copy['blog'].image" :header="copy['blog'].header" :text="copy['blog'].text" :link-text="copy['blog'].linkText" :link-url="copy['blog'].linkUrl"></link-card>
+        <link-card v-if="widgetShouldBeShown('link-studies')" :image="copy['studies'].image" :header="copy['studies'].header" :text="copy['studies'].text" :link-text="copy['studies'].linkText" :link-url="copy['studies'].linkUrl"></link-card>
+        <link-card v-if="widgetShouldBeShown('link-supportforum')"  :image="copy['supportforum'].image" :header="copy['supportforum'].header" :text="copy['supportforum'].text" :link-text="copy['supportforum'].linkText" :link-url="copy['supportforum'].linkUrl"></link-card>
+      </div>
+      <link-card v-if="widgetShouldBeShown('intro-component')" :video-url="copy['instructional-videos'].video" :header="copy['instructional-videos'].header" :text="copy['instructional-videos'].text" :link-text="copy['instructional-videos'].linkText" :link-url="copy['instructional-videos'].linkUrl"></link-card>
+    </div>
+  </div>
+</template>
+
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 
+.LandingPage-linkCards {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15vh;
+}
 </style>

@@ -33,24 +33,23 @@ export default {
 </script>
 
 <template>
-  <div class="notification-component" @click="remove" :class="{
-    'red': content.color === 'red',
-    'grey': content.color === 'grey',
-    'green': content.color === 'green',
+  <div class="Notification " @click="remove" role="alert" :class="{
+    'Notification--error': content.color === 'red',
+    'Notification--success': content.color === 'green',
     'is-showing': shouldShow
       }">
 
-      <span v-if="content.color === 'red'" class="fa-stack fa-lg notification-icon-container">
+      <span v-if="content.color === 'red'" class="fa-stack fa-lg Notification-iconCont">
         <i class="fa fa-circle fa-stack-2x fa-inverse"></i>
-        <i class="fa fa-times fa-stack-1x notification-icon"></i>
+        <i class="fa fa-times fa-stack-1x Notification-icon"></i>
       </span>
-      <span v-if="content.color === 'green'" class="fa-stack fa-lg notification-icon-container">
+      <span v-if="content.color === 'green'" class="fa-stack fa-lg Notification-iconCont">
         <i class="fa fa-circle fa-stack-2x fa-inverse"></i>
-        <i class="fa fa-check fa-stack-1x notification-icon"></i>
+        <i class="fa fa-check fa-stack-1x Notification-icon"></i>
       </span>
-      <span v-if="content.color === 'grey'" class="fa-stack fa-lg notification-icon-container">
+      <span v-if="content.color === 'grey'" class="fa-stack fa-lg Notification-iconCont">
         <i class="fa fa-circle fa-stack-2x fa-inverse"></i>
-        <i class="fa fa-info fa-stack-1x notification-icon"></i>
+        <i class="fa fa-info fa-stack-1x Notification-icon"></i>
       </span>
     {{ content.message }}
   </div>
@@ -62,7 +61,8 @@ export default {
 @success-color: @brand-primary;
 @info-color: #757575;
 
-.notification-component {
+.Notification {
+  background-color: @info-color;
   opacity: 0;
   transition: opacity 0.5s ease;
   width: 100%;
@@ -72,31 +72,37 @@ export default {
   font-weight: bold;
   box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.6);
   color: white;
-  .notification-icon-container {
-    margin-right: 0.5em;
-  }
-  &.is-showing {
-    opacity: 1;
-  }
-  &.red {
+
+  &--error {
     background-color: @error-color;
     .notification-icon {
       color: @error-color;
     }
   }
-  &.grey {
-    background-color: @info-color;
-    .notification-icon {
-      color: @info-color;
-    }
-  }
-  &.green {
+
+  &--success {
     background-color: @success-color;
-    .notification-icon {
+  }
+
+  &-icon {
+    color: @info-color;
+
+    .Notification--error & {
+      color: @error-color;
+    }
+
+    .Notification--success & {
       color: @success-color;
     }
   }
-}
 
+  &-iconCont {
+    margin-right: 0.5em;
+  }
+
+  &.is-showing {
+    opacity: 1;
+  }
+}
 
 </style>

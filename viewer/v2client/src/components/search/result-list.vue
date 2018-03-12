@@ -1,6 +1,5 @@
 <script>
-import ResultItemCompact from './result-item-compact';
-import ResultItemDetailed from './result-item-detailed';
+import ResultListItem from './result-list-item';
 import * as RecordUtil from '@/utils/record';
 
 export default {
@@ -34,8 +33,7 @@ export default {
   computed: {
   },
   components: {
-    'result-item-compact': ResultItemCompact,
-    'result-item-detailed': ResultItemDetailed,
+    'result-list-item': ResultListItem,
   },
   watch: {
   },
@@ -45,24 +43,30 @@ export default {
 </script>
 
 <template>
-  <div class="result">
-    <ul class="result-list" v-if="!compact && results.length > 0">
-      <result-item-detailed :database="getDatabase(index)" :focus-data="item" :import-item="getImportItem(index)" v-for="(item, index) in results" :key="item['@id']"></result-item-detailed>
-    </ul>
-    <ul class="result-list" v-if="compact && results.length > 0">
-      <result-item-compact :database="getDatabase(index)" :focus-data="item" :import-item="getImportItem(index)"  v-for="(item, index) in results" :key="item['@id']"></result-item-compact>
-    </ul>
-  </div>
+  <ol class="ResultList" aria-labelledby="resultDescr">
+    <div v-if="!compact && results.length > 0">
+      <result-list-item class="ResultList-item"
+        :database="getDatabase(index)" 
+        :show-detailed="true"
+        :focus-data="item" 
+        :import-item="getImportItem(index)" v-for="(item, index) in results" 
+        :key="item['@id']"></result-list-item>
+    </div>
+    <div v-if="compact && results.length > 0">
+      <result-list-item class="ResultList-item"
+        :database="getDatabase(index)" 
+        :show-detailed="false"
+        :focus-data="item" 
+        :import-item="getImportItem(index)" v-for="(item, index) in results" 
+        :key="item['@id']"></result-list-item>
+    </div>
+  </ol>
 </template>
 
 <style lang="less">
-
-.result {
-  .result-list {
-    width: 100%;
-    padding: 0px;
-    list-style-type: none;
-  }
+.ResultList {
+  width: 100%;
+  padding: 0px;
+  list-style-type: none;
 }
-
 </style>

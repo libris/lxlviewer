@@ -118,9 +118,6 @@ export default {
     font-size: 1.4rem;
   }
 
-  &-link {
-  }
-
   &.no-link {
     padding-bottom: 1em;
   }

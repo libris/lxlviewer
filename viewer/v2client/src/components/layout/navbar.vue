@@ -67,7 +67,7 @@ export default {
           </router-link>
         </li>
           <li class="MainNav-item">
-          <a href="/createnew" class="MainNav-link">
+          <a href="/create" class="MainNav-link">
             <div class="MainNav-iconWrap" aria-hidden="true">
               <i class="fa fa-file-text"></i>
             </div>

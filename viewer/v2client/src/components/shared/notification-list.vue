@@ -22,14 +22,14 @@ export default {
 </script>
 
 <template>
-  <div class="notification-list">
-    <notification v-for="notification in notifications" :content="notification" :key="notification.id"></notification>
+  <div class="NotificationList">
+    <notification v-for="notification in notifications" :content="notification" :key="notification.id" class="NotificationList-item"></notification>
   </div>
 </template>
 
 <style lang="less">
 
-.notification-list {
+.NotificationList {
   position: fixed;
   bottom: 0;
   padding: 0px;

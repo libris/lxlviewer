@@ -1,0 +1,131 @@
+<script>
+import LensMixin from '../mixins/lens-mixin';
+import ResultMixin from '../mixins/result-mixin';
+import EntitySummary from '../shared/entity-summary';
+import * as StringUtil from '@/utils/string';
+
+export default {
+  name: 'result-list-item',
+  mixins: [LensMixin, ResultMixin],
+  props: {
+    focusData: {},
+    showDetailed: false,
+    importItem: {},
+    database: '',
+  },
+  data() {
+    return {
+      keyword: '',
+    }
+  },
+  methods: {
+  },
+  computed: {
+    settings() {
+      return this.$store.getters.settings;
+    },
+    user() {
+      return this.$store.getters.user;
+    },
+    categorization() {
+      return StringUtil.getFormattedEntries(this.getSummary.categorization, this.resources.vocab, this.settings, this.resources.context);
+    },
+    header() {
+      return StringUtil.getFormattedEntries(this.getSummary.header, this.resources.vocab, this.settings, this.resources.context);
+    },
+    isLibrisResource() {
+      return this.focusData['@id'].startsWith(this.settings.apiPath);
+    },
+  },
+  components: {
+    'entity-summary': EntitySummary,
+  },
+  watch: {
+  },
+  ready() { // Ready method is deprecated in 2.0, switch to "mounted"
+  },
+};
+</script>
+
+<template>
+    <li class="ResultItem ResultItem--detailed" v-if="showDetailed">
+      <entity-summary 
+        :focus-data="focusData" 
+        :database="database" 
+        :router-path="focusData['@id'] | asFnurgelLink" 
+        :is-import="isImport" 
+        :import-item="importItem" 
+        :add-link="true" 
+        :lines="4"></entity-summary>
+    </li>
+    <li class="ResultItem ResultItem--compact" v-else-if="!showDetailed">
+      <h3 class="ResultItem-title" 
+        :title="header.join(', ')" 
+        v-on:click="importThis()" 
+        v-if="isImport">
+        <i class="fa fa-download" aria-hidden="true"></i> {{ header.join(', ') }}
+      </h3>
+      <h3 class="ResultItem-title header">
+        <router-link class="ResultItem-link"
+          v-if="isLibrisResource && !isImport"  
+          :title="header.join(', ')" 
+          :to="focusData['@id'] | asFnurgelLink">{{ header.join(', ') }}
+        </router-link>
+        <a class="ResultItem-link"
+          v-if="!isLibrisResource && !isImport" 
+          :title="header.join(', ')" 
+          :href="focusData['@id']">{{ header.join(', ') }}
+        </a>
+      </h3>
+      <span class="ResultItem-category" :title="categorization.join(', ')">
+        {{categorization.join(', ')}}
+      </span>
+    </li>
+</template>
+
+<style lang="less">
+
+.ResultItem {
+  &--detailed {
+    list-style: none;
+    margin-bottom: 0.5em;
+    .panel-mixin(@neutral-color);
+  }
+
+  &--compact {
+    display: flex;
+    margin: -1px 0 0 0;
+    background-color: @white;
+    border: 1px solid #ccc;
+    padding: 0.4em 1em;
+    line-height: 1.2em;
+  }
+
+  &-title {
+    margin: 0px;
+    display: inline-block;
+    flex-basis: 50%;
+    flex-grow: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 16px;
+    font-weight: normal;
+  }
+
+  &-link {
+    color: @brand-primary;
+  }
+
+  &-category {
+    display: inline-block;
+    flex-basis: 30%;
+    font-size: 14px;
+    text-align: right;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+</style>

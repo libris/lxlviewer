@@ -72,12 +72,12 @@ export default {
       <button v-if="!hasHolding || checkingHolding" @click="previewHolding()" :disabled="disabled" class="btn" :class=" {'disabled': disabled} ">
         <i v-if="!hasHolding && !checkingHolding" class="fa fa-plus"></i>
         <i v-if="checkingHolding" class="fa fa-fw fa-circle-o-notch fa-spin"></i>
-        {{"Holding" | translatePhrase}}
+        {{"Add holding" | translatePhrase}}
         <span>({{user.settings.activeSigel}})</span>
       </button>
       <button v-if="hasHolding" :class="{'green': hasHolding, 'disabled': disabled}" class="btn" :disabled="disabled" @click.prevent="fetchHolding()">
         <i v-if="hasHolding && !checkingHolding" class="fa fa-check"></i>
-        {{"Holding" | translatePhrase}}
+        {{"Show holding" | translatePhrase}}
         <span>({{user.settings.activeSigel}})</span>
       </button>
     <!--</form>-->

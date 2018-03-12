@@ -1,17 +1,3 @@
-<template>
-  <div class="find">
-    <div class="row">
-      <div class="col-md-3 facet-container">
-        <facet-controls :result="result"></facet-controls>
-      </div>
-      <div class="col-md-9 search-content-container">
-        <search-form :search-perimeter="$route.params.perimeter"></search-form>
-        <search-result-component :import-data="importData" :result="result" v-if="result.totalItems > -1"></search-result-component>
-      </div>
-    </div>
-  </div>
-</template>
-
 <script>
 import * as _ from 'lodash';
 import * as RecordUtil from '@/utils/record';
@@ -21,7 +7,7 @@ import * as HttpUtil from '@/utils/http';
 import ServiceWidgetSettings from '@/resources/json/serviceWidgetSettings.json';
 import Copy from '@/resources/json/copy.json';
 import FacetControls from '@/components/search/facet-controls';
-import SearchResultComponent from '@/components/search/search-result-component';
+import SearchResult from '@/components/search/search-result';
 import SearchForm from '@/components/search/search-form';
 import DatasetObservations from '@/components/search/dataset-observations';
 import LinkCardComponent from '@/components/search/link-card';
@@ -151,13 +137,27 @@ export default {
   },
   components: {
     'facet-controls': FacetControls,
-    'search-result-component': SearchResultComponent,
+    'search-result': SearchResult,
     'search-form': SearchForm,
     'dataset-observations': DatasetObservations,
   },
 };
 
 </script>
+
+<template>
+  <div class="find">
+    <div class="row">
+      <div class="col-md-3">
+        <facet-controls :result="result"></facet-controls>
+      </div>
+      <div class="col-md-9 Find-content">
+        <search-form :search-perimeter="$route.params.perimeter"></search-form>
+        <search-result :import-data="importData" :result="result" v-if="result.totalItems > -1"></search-result>
+      </div>
+    </div>
+  </div>
+</template>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
