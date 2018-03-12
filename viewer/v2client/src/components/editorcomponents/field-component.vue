@@ -246,8 +246,13 @@ export default {
     },
     removeThis() {
       this.removed = true;
+      const parentData = _.cloneDeep(_.get(this.inspector.data, this.parentPath));
+      delete parentData[this.fieldKey];
       setTimeout(() => {
-        this.$dispatch('remove-field', this.getPath);
+        this.$store.dispatch('updateInspectorData', {
+          path: this.parentPath,
+          value: parentData,
+        });
       }, 500);
     },
     getDatatype(o) {
@@ -333,7 +338,7 @@ export default {
         <i class="fa fa-question-circle"></i>
         <div class="comment">{{ propertyComment }}</div>
       </div>
-      <entity-adder v-show="!locked && isRepeatable && (isInner && !isEmptyObject)" :key="fieldKey" :path="getPath" :already-added="linkedIds" :entity-type="entityType" :property-types="propertyTypes" :show-action-buttons="actionButtonsShown" :active="activeModal" :is-placeholder="true" :value-list="valueAsArray"></entity-adder>
+      <entity-adder v-show="!locked && isRepeatable && (isInner && !isEmptyObject)" :field-key="fieldKey" :path="getPath" :already-added="linkedIds" :entity-type="entityType" :property-types="propertyTypes" :show-action-buttons="actionButtonsShown" :active="activeModal" :is-placeholder="true" :value-list="valueAsArray"></entity-adder>
     </div>
     <div v-if="isInner" class="actions">
       <div class="action" v-show="!locked" :class="{'disabled': activeModal}">
