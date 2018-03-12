@@ -4,7 +4,7 @@
     <main class="container">
       <div v-if="!resourcesLoaded" class="text-center">
         <i class="fa fa-circle-o-notch fa-4x fa-spin"></i><br/>
-        <h3>{{ 'Loading' | translatePhrase | capitalize }}</h3>
+        <h3>{{ 'Loading application' | translatePhrase | capitalize }}</h3>
       </div>
       <transition name="fade">
         <router-view v-if="resourcesLoaded" />
