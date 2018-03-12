@@ -1,6 +1,6 @@
 ---
 section: Terminologi
-title: xxx
+title: BIBFRAME svensk terminologi
 order: 41
 tags:
 - bibframe
