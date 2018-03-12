@@ -21,7 +21,6 @@
 <script>
 import * as StringUtil from '@/utils/string';
 import * as DataUtil from '@/utils/data';
-// import * as LayoutUtil from '@/utils/layout';
 import * as httpUtil from '@/utils/http';
 // import * as _ from 'lodash';
 // import * as VocabUtil from '@/utils/vocab';

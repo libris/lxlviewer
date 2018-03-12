@@ -213,7 +213,7 @@ export default {
         });
         if (close) {
           this.hide();
-          this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: propLastPart });
+          this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: `${this.path}.${key}` });
         }
       }
     },

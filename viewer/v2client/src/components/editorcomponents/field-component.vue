@@ -224,7 +224,7 @@ export default {
       this.activeModal = active;
     },
   },
-  ready() {
+  mounted() {
     this.$nextTick(() => {
       setTimeout(() => {
         if (this.fieldKey === '_uid') {
@@ -234,7 +234,7 @@ export default {
           const windowHeight = window.innerHeight || document.documentElement.clientHeight || document.getElementsByTagName('body')[0].clientHeight;
           const scrollPos = this.$el.offsetTop - (windowHeight * 0.2);
           LayoutUtil.scrollTo(scrollPos, 1000, 'easeInOutQuad', () => {
-            this.changeStatus('lastAdded', '');
+            this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
           });
         }
       }, 300);
@@ -328,7 +328,7 @@ export default {
 </script>
 
 <template>
-<div class="field" v-bind:class="{'columns': asColumns, 'rows': !asColumns, 'highlight': isLastAdded, 'distinguish-removal': removeHover, 'removed': removed }" @mouseover="handleMouseEnter()" @mouseleave="handleMouseLeave()">
+<div class="field" :id="`field-${getPath}`" v-bind:class="{'columns': asColumns, 'rows': !asColumns, 'highlight': isLastAdded, 'distinguish-removal': removeHover, 'removed': removed }" @mouseover="handleMouseEnter()" @mouseleave="handleMouseLeave()">
   <div class="label" v-bind:class="{ 'locked': locked }">
     <div>
       <span v-show="fieldKey === '@id'">{{ 'ID' | translatePhrase | capitalize }}</span>
