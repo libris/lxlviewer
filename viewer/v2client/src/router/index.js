@@ -12,6 +12,13 @@ Vue.use(Router)
 
 export default new Router({
   mode: "history",
+  scrollBehavior (to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition
+    } else {
+      return { x: 0, y: 0 }
+    }
+  },
   routes: [
     {
       path: '/',
@@ -33,7 +40,7 @@ export default new Router({
       component: About
     },
     {
-      path: '/help',
+      path: '/help/:section?',
       name: 'Help',
       component: Help
     },

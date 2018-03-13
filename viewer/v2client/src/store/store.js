@@ -1,8 +1,10 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 Vue.use(Vuex);
+import * as _ from 'lodash';
 import * as VocabUtil from '@/utils/vocab';
 import * as StringUtil from '@/utils/string';
+import { navigateChangeHistory } from '../../../client/static/js/es6/vuex/actions.es6';
 
 const store = new Vuex.Store({
   state: {
@@ -11,13 +13,25 @@ const store = new Vuex.Store({
       loadingError: false,
       vocab: {},
       display: {},
-      forcedSetTerms: {},
+      forcedListTerms: {},
       context: {},
     },
-    editor: {
-      data: {}
+    inspector: {
+      data: {},
+      title: '',
+      status: {
+        dirty: false,
+        saving: false,
+        opening: false,
+        lastAdded: '',
+        editing: false,
+        focus: 'mainEntity',
+        removing: false,
+      },
+      changeHistory: [],
     },
     status: {
+      keybindState: '',
       resultList: {
         loading: false
       },
@@ -39,6 +53,10 @@ const store = new Vuex.Store({
       appPaths: {
         '/find?': '/search/libris/',
       },
+      embeddedTypes: [
+        'StructuredValue',
+        'QualifiedRole',
+      ],
       removableBaseUris: [
         'http://libris.kb.se/',
         'https://libris.kb.se/',
@@ -46,6 +64,24 @@ const store = new Vuex.Store({
         'https://id.kb.se/vocab/',
         'http://id.kb.se/',
         'https://id.kb.se/',
+      ],
+      specialProperties: [
+        '@id',
+        '@type',
+        'created',
+        'modified',
+        'mainEntity'
+      ],
+      lockedProperties: [
+        'sameAs',
+        'controlNumber',
+        'systemNumber',
+        'heldBy',
+        'itemOf',
+        'mainEntity',
+        'created',
+        'modified',
+        'technicalNote',
       ],
       dataSetFilters: {
         libris: [
@@ -110,6 +146,14 @@ const store = new Vuex.Store({
     }
   },
   mutations: {
+    // navigateChangeHistory(state, form, direction) {
+    //   if (state.inspector.changeHistory[form].length > 0 && state.inspector.status.inEdit) {
+    //     if (direction === 'back') {
+    //       const test = state.inspector.changeHistory[form].shift();
+    //       Vue.set(state.inspector.data, form, test);
+    //     }
+    //   }
+    // },
     pushNotification(state, content) {
       const date = new Date();
       content['id'] = StringUtil.getHash(`${date.getSeconds()}${date.getMilliseconds()}`);
@@ -120,6 +164,43 @@ const store = new Vuex.Store({
         if (state.status.notifications[i].id === id) {
           state.status.notifications.splice(i, 1);
         }
+      }
+    },
+    setInspectorData(state, data) {
+      state.inspector.data = data;
+    },
+    updateInspectorData(state, payload) {
+      console.log("DATA_UPDATE:", payload);
+
+      // Clone inspectorData so we can manipulate it before setting it
+      const inspectorData = _.cloneDeep(state.inspector.data);
+
+      // Push old value to history
+      if (payload.addToHistory) {
+        const oldValue = _.cloneDeep(_.get(inspectorData, payload.path));
+        const historyNode = { path: payload.path, value: oldValue };
+        state.inspector.changeHistory.push(historyNode);
+      }
+      
+      // Set the new value
+      _.set(inspectorData, payload.path, payload.value);
+      state.inspector.data = inspectorData;
+    },
+    setInspectorTitle(state, str) {
+      state.inspector.title = str;
+    },
+    setStatusValue(state, payload) {
+      if (state.status.hasOwnProperty(payload.property)) {
+        state.status[payload.property] = payload.value;
+      } else {
+        throw new Error(`Trying to set unknown status property "${payload.property}". Is it defined in the store?`);
+      }
+    },
+    setInspectorStatusValue(state, payload) {
+      if (state.inspector.status.hasOwnProperty(payload.property)) {
+        state.inspector.status[payload.property] = payload.value;
+      } else {
+        throw new Error(`Trying to set unknown status property "${payload.property}" on inspector. Is it defined in the store?`);
       }
     },
     setUser(state, userObj) {
@@ -147,19 +228,16 @@ const store = new Vuex.Store({
     setContext(state, data) {
       state.resources.context = data;
     },
-    setForcedSetTerms(state, data) {
-      state.resources.forcedSetTerms = data;
+    setForcedListTerms(state, data) {
+      state.resources.forcedListTerms = data;
     },
     setDisplay(state, data) {
       state.resources.display = data;
     },
-    setStatus(state, { property, value }) {
-      state.status[property] = value;
-    }
   },
   getters: {
-    editor: state => {
-      return state.editor;
+    inspector: state => {
+      return state.inspector;
     },
     resources: state => {
       return state.resources;
@@ -187,11 +265,54 @@ const store = new Vuex.Store({
     }
   },
   actions: {
+    undoInspectorChange({ commit, state }) {
+      const history = state.inspector.changeHistory;
+      const lastNode = history[history.length-1];
+      let payload = {};
+      if (lastNode.value) {
+        // It had a value
+        payload = {
+          path: lastNode.path,
+          value: lastNode.value,
+          addToHistory: false,
+        }
+      } else {
+        // It did not have a value (ie key did not exist)
+        const pathParts = lastNode.path.split('.');
+        const key = pathParts[pathParts.length-1];
+        pathParts.splice(pathParts.length-1, 1);
+        const path = pathParts.join('.');
+        const data = _.cloneDeep(_.get(state.inspector.data, path));
+        delete data[key];
+        payload = {
+          path: path,
+          value: data,
+          addToHistory: false,
+        }
+      }
+      history.splice(history.length-1, 1);
+      commit('updateInspectorData', payload);
+    },
     setUser({ commit }, userObj) {
       commit('setUser', userObj);
     },
     setSettings({ commit }, settingsObj) {
       commit('setSettings', settingsObj);
+    },
+    setInspectorData({ commit }, data) {
+      commit('setInspectorData', data);
+    },
+    updateInspectorData({ commit }, payload) {
+      commit('updateInspectorData', payload);
+    },
+    setInspectorStatusValue({ commit }, payload) {
+      commit('setInspectorStatusValue', payload);
+    },
+    setStatusValue({ commit }, payload) {
+      commit('setStatusValue', payload);
+    },
+    setInspectorTitle({ commit }, str) {
+      commit('setInspectorTitle', str);
     },
     removeNotification({ commit }, index) {
       commit('removeNotification', index);
@@ -211,8 +332,8 @@ const store = new Vuex.Store({
     setDisplay( { commit }, displayJson) {
       commit('setDisplay', displayJson);
     },
-    setForcedSetTerms( { commit }, forcedSetTermsJson) {
-      commit('setForcedSetTerms', forcedSetTermsJson);
+    setForcedListTerms( { commit }, forcedSetTermsJson) {
+      commit('setForcedListTerms', forcedSetTermsJson);
     },
     setupVocab( { dispatch }, vocabJson) {
       dispatch('setVocab', vocabJson)
@@ -251,9 +372,6 @@ const store = new Vuex.Store({
 
       commit('setVocabProperties', vocabProperties)
     },
-    setStatus({commit}, { property, value }) {
-      commit('setStatus', { property, value });
-    }
   }
 })
 

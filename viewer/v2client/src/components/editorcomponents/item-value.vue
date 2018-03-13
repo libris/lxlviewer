@@ -9,26 +9,17 @@ import ProcessedLabel from '../shared/processedlabel';
 import TooltipComponent from '../shared/tooltip-component';
 import ItemMixin from '../mixins/item-mixin';
 import LensMixin from '../mixins/lens-mixin';
-import { getVocabulary, getDisplayDefinitions, getSettings, getEditorData } from '../../vuex/getters';
 
 export default {
   name: 'item-value',
   mixins: [ItemMixin, LensMixin],
   props: {
-    value: '',
-    key: '',
+    fieldValue: '',
+    fieldKey: '',
     index: Number,
     isLocked: false,
     isRemovable: false,
     showActionButtons: false,
-  },
-  vuex: {
-    getters: {
-      vocab: getVocabulary,
-      display: getDisplayDefinitions,
-      settings: getSettings,
-      editorData: getEditorData,
-    },
   },
   watch: {
     isLocked(val) {
@@ -44,6 +35,18 @@ export default {
     };
   },
   computed: {
+    value: {
+      get() {
+        return this.fieldValue;
+      },
+      set: _.debounce(function(newValue) {
+        this.$store.dispatch('updateInspectorData', {
+          path: this.path,
+          value: newValue,
+          addToHistory: true,
+        });
+      }, 1000)
+    }
   },
   ready() {
     this.$nextTick(() => {
@@ -54,12 +57,6 @@ export default {
     });
   },
   methods: {
-    valueChanged: _.debounce(function () {
-      this.$dispatch('update-item', this.index, this.value);
-    }, 1000),
-    updateValue() {
-      this.$dispatch('update-item', this.index, this.value);
-    },
     handleEnter(e) {
       if (e.keyCode === 13) {
         e.target.blur();
@@ -101,8 +98,8 @@ export default {
 
 <template>
   <div class="item-value" v-bind:class="{'locked': isLocked, 'unlocked': !isLocked, 'distinguish-removal': removeHover, 'removed': removed}">
-    <textarea class="item-value-textarea" rows="1" v-model="value" @input="valueChanged()" @keydown="handleEnter" @blur="updateValue()" v-if="!isLocked"></textarea>
-    <span v-if="isLocked">{{value}}</span>
+    <textarea class="item-value-textarea" rows="1" v-model="value" @keydown="handleEnter" v-if="!isLocked"></textarea>
+    <span v-if="isLocked">{{fieldValue}}</span>
     <div class="remover" v-show="!isLocked && isRemovable" v-on:click="removeThis()" @mouseover="removeHover = true" @mouseout="removeHover = false">
       <i class="fa fa-minus">
         <tooltip-component :show-tooltip="removeHover" tooltip-text="Remove" translation="translatePhrase"></tooltip-component>
@@ -135,7 +132,6 @@ export default {
     color: #333333;
     padding: 2px 5px;
     width: 95%;
-
     border: 1px solid #d6d6d6;
     box-shadow: inset 0px 2px 0px 0px rgba(204, 204, 204, 0.35);
   }

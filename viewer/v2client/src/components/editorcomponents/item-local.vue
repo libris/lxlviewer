@@ -10,46 +10,27 @@ import * as DataUtil from '../../utils/data';
 import Vue from 'vue';
 import ProcessedLabel from '../shared/processedlabel';
 import ItemEntity from './item-entity';
-import DataNode from './datanode';
 import CardComponent from '../shared/card-component';
 import ToolTipComponent from '../shared/tooltip-component';
-import FieldAdder from './fieldadder';
+import FieldAdder from '@/components/editorcomponents/field-adder';
 import SearchWindow from './search-window';
 import ItemMixin from '../mixins/item-mixin';
 import LensMixin from '../mixins/lens-mixin';
 import {mixin as clickaway} from 'vue-clickaway';
-import { changeNotification, changeStatus } from '../../vuex/actions';
-import { getUser, getSettings, getContext, getVocabulary, getVocabularyClasses, getVocabularyProperties, getDisplayDefinitions, getEditorData, getStatus } from '../../vuex/getters';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'item-local',
   mixins: [ItemMixin, LensMixin, clickaway],
   props: {
     item: {},
-    key: '',
+    fieldKey: '',
     entityType: '',
     index: Number,
     isLocked: false,
     showActionButtons: false,
     parentPath: '',
     inArray: false,
-  },
-  vuex: {
-    getters: {
-      context: getContext,
-      vocab: getVocabulary,
-      vocabClasses: getVocabularyClasses,
-      vocabProperties: getVocabularyProperties,
-      display: getDisplayDefinitions,
-      settings: getSettings,
-      editorData: getEditorData,
-      status: getStatus,
-      user: getUser,
-    },
-    actions: {
-      changeStatus,
-      changeNotification,
-    },
   },
   data() {
     return {
@@ -65,6 +46,13 @@ export default {
     };
   },
   computed: {
+    ...mapGetters([
+      'inspector',
+      'resources',
+      'settings',
+      'user',
+      'status',
+    ]),
     canCopyTitle() {
       if (this.isExtractable && !this.item.hasOwnProperty('hasTitle') && this.key === 'instanceOf') {
         return true;
@@ -87,7 +75,7 @@ export default {
     },
     isExtractable() {
       const classId = `${this.settings.vocabPfx}${this.item['@type']}`;
-      if (!VocabUtil.isEmbedded(classId, this.vocab, this.settings, this.context)) {
+      if (!VocabUtil.isEmbedded(classId, this.resources.vocab, this.settings, this.resources.context)) {
         return true;
       }
       return false;
@@ -101,6 +89,7 @@ export default {
     filteredItem() {
       const fItem = Object.assign({}, this.item);
       delete fItem['@type'];
+      delete fItem['@id'];
       delete fItem['_uid'];
       return fItem;
     },
@@ -123,11 +112,11 @@ export default {
       const settings = this.settings;
       const formObj = this.item;
       const allowed = VocabUtil.getPropertiesFromArray(
-        [StringUtil.convertToVocabKey(StringUtil.convertToBaseUri(formObj['@type'], this.context), this.context)],
-        this.vocabClasses,
+        [StringUtil.convertToVocabKey(StringUtil.convertToBaseUri(formObj['@type'], this.resources.context), this.resources.context)],
+        this.resources.vocabClasses,
         this.settings.vocabPfx,
-        this.vocabProperties,
-        this.context
+        this.resources.vocabProperties,
+        this.resources.context
       );
       // Add the "added" property
       for (const element of allowed) {
@@ -158,14 +147,14 @@ export default {
           };
         }
       });
-      sortedAllowed = _.sortBy(extendedAllowed, (prop) => {
+      const sortedAllowed = _.sortBy(extendedAllowed, (prop) => {
         return prop.label.toLowerCase();
       });
       return sortedAllowed;
     },
   },
   created() {
-    this.$options.components['data-node'] = Vue.extend(DataNode);
+    // this.$options.components['field-component'] = Vue.extend(FieldComponent);
   },
   methods: {
     expand() {
@@ -241,20 +230,20 @@ export default {
       let inputKeys = DisplayUtil.getProperties(
         item['@type'],
         'cards',
-        this.display,
+        this.resources.display,
         this.settings
       );
       if (inputKeys.length === 0) {
         const baseClasses = VocabUtil.getBaseClassesFromArray(
           item['@type'],
-          this.vocab,
+          this.resources.vocab,
           this.settings.vocabPfx
         );
         for (const className of baseClasses) {
           inputKeys = DisplayUtil.getProperties(
             className.replace(this.settings.vocabPfx, ''),
             'cards',
-            this.display,
+            this.resources.display,
             this.settings
           );
           if (inputKeys.length > 0) {
@@ -338,11 +327,11 @@ export default {
 
 <template>
   <div class="item-local-container" v-bind:class="{'highlight': isNewlyAdded, 'expanded': expanded}">
-    <div class="link-indicator" :class="{'active': showLinkAction && status.inEdit}" v-if="isExtractable" @click="openExtractDialog" @mouseover="showLinkAction = true" @mouseout="showLinkAction = false">
+    <div class="link-indicator" :class="{'active': showLinkAction && inspector.status.inEdit}" v-if="isExtractable" @click="openExtractDialog" @mouseover="showLinkAction = true" @mouseout="showLinkAction = false">
       <i v-show="showLinkAction && status.inEdit" class="fa fa-link"><tooltip-component :show-tooltip="showLinkAction" tooltip-text="Link entity" translation="translatePhrase"></tooltip-component></i>
       <i v-show="!showLinkAction || !status.inEdit" class="fa fa-unlink"></i>
     </div>
-    <div v-if="!isExpandedType" class="item-local" :class="{'expanded': expanded, 'distinguish-removal': removeHover}">
+    <div class="item-local" :class="{'expanded': expanded, 'distinguish-removal': removeHover}">
       <div class="topbar">
         <i class="fa fa-chevron-right" :class="{'down': expanded}" @click="toggleExpanded()"></i>
         <span class="type" @click="toggleExpanded()" :title="item['@type']">{{ item['@type'] | labelByLang | capitalize }}</span>
@@ -355,10 +344,9 @@ export default {
         </span>
       </div>
       <field-adder v-if="!isLocked && isEmpty" :entity-type="item['@type']" :allowed="allowedProperties" :inner="true" :path="getPath"></field-adder>
-      <data-node v-show="expanded && k !== '_uid'" v-for="(k,v) in filteredItem" :parent-path="getPath" :entity-type="item['@type']" :is-inner="true" :is-locked="isLocked" :is-removable="false" :embedded="true" :parent-key="key" :parent-index="index" :key="k" :value="v" :focus="focus" :show-action-buttons="showActionButtons"></data-node>
+      <field v-show="expanded && k !== '_uid'" v-for="(v, k) in filteredItem" :parent-path="getPath" :entity-type="item['@type']" :is-inner="true" :is-locked="isLocked" :is-removable="false" :as-columns="false" :parent-key="fieldKey" :parent-index="index" :field-key="k" :field-value="v" :key="k" :show-action-buttons="showActionButtons"></field>
     </div>
-    <card-component v-if="isExpandedType" :title="getItemLabel" :focus-data="item" :uri="item['@id']" :is-local="true" :is-extractable="isExtractable" :is-locked="isLocked"></card-component>
-    <search-window :active="extractDialogActive" :can-copy-title="canCopyTitle" :copy-title="copyTitle" :entity-type="entityType" :key="key" :extracting="extracting" :item-info="extractedMainEntity" :index="index"></search-window>
+    <search-window :active="extractDialogActive" :can-copy-title="canCopyTitle" :copy-title="copyTitle" :entity-type="entityType" :field-key="fieldKey" :extracting="extracting" :item-info="extractedMainEntity" :index="index"></search-window>
   </div>
 </template>
 

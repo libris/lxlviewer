@@ -1,7 +1,7 @@
 <script>
 import * as _ from 'lodash';
 import * as LayoutUtil from '@/utils/layout';
-// import helpdocsJson from '@/resources/json/help.json';
+import helpdocsJson from '@/resources/json/help.json';
 import marked from 'marked';
 
 export default {
@@ -13,16 +13,24 @@ export default {
     }
   },
   methods: {
-    setSection(value) {
-      this.$store.dispatch('setStatus', { property: 'helpSection', value });
-    },
     transformMarkdownToHTML(markdown) {
-      return marked(markdown);
-    }
+      const html = marked(markdown);
+      return html;
+    },
+    changeSection(value) {
+      this.$router.push({ path: `/help/${value}` });
+    },
+  },
+  mounted() {
+  },
+  watch: {
   },
   events: {
   },
   computed: {
+    activeSection() {
+      return this.$route.params.section || '';
+    },
     status() {
       return this.$store.getters.status;
     },
@@ -62,7 +70,7 @@ export default {
             <li v-for="(value, key) in helpCategories" :key="key" v-bind:class="{'active': key == activeCategory }" v-on:click="activeCategory = key">
               <span class="label">{{key}}</span>
               <ul class="sections">
-                <li v-for="(section, index) in value" :key="index" v-bind:class="{'active': section.title == helpSection }" v-on:click="setSection(section.title)">{{section.title}}</li>
+                <li v-for="(section, index) in value" :key="index" v-bind:class="{'active': section.basename == activeSection }" v-on:click="changeSection(section.basename)">{{section.title}}</li>
               </ul>
             </li>
           </ul>
@@ -70,7 +78,7 @@ export default {
       </div>
       <div class="col-md-9">
         <div class="content panel panel-default">
-          <div v-show="helpSection == 'none'">
+          <div v-show="activeSection == ''">
             <h1>Hjälp</h1>
             <p>
               Den här hjälpen omfattar instruktioner för gränssnittet och materialtyper, välj avsnitt till vänster för att läsa mer.
@@ -84,7 +92,7 @@ export default {
               <li><a href="https://goo.gl/forms/dPxkhMqE10RvKQFE2" target="_blank">Här</a> kan du ge ändringsförslag.</li>
             </ul>
           </div>
-          <div v-for="(sectionValue, sectionKey) in docs" :key="sectionKey" v-show="sectionValue.title == helpSection">
+          <div v-for="(sectionValue, sectionKey) in docs" :key="sectionKey" v-show="sectionValue.basename == activeSection">
             <span v-html="transformMarkdownToHTML(docs[sectionKey].content)"></span>
           </div>
         </div>

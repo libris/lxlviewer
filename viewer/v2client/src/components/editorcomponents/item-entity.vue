@@ -8,25 +8,15 @@ import EntitySummary from '../shared/entity-summary';
 import ProcessedLabel from '../shared/processedlabel';
 import ItemMixin from '../mixins/item-mixin';
 import LensMixin from '../mixins/lens-mixin';
-import { getVocabulary, getDisplayDefinitions, getContext, getSettings, getEditorData } from '../../vuex/getters';
 
 export default {
   name: 'item-entity',
   mixins: [ItemMixin, LensMixin],
   props: {
     item: {},
-    key: '',
+    fieldKey: '',
     index: Number,
     isLocked: false,
-  },
-  vuex: {
-    getters: {
-      context: getContext,
-      vocab: getVocabulary,
-      display: getDisplayDefinitions,
-      settings: getSettings,
-      editorData: getEditorData,
-    },
   },
   data() {
     return {
@@ -35,15 +25,15 @@ export default {
       searchDelay: 2,
       formObj: {},
       expanded: false,
-      showCardInfo: false,
+      showCardInfo: {
+        default: false,
+        type: Boolean,
+      },
       isNewlyAdded: false,
       removeHover: false,
     };
   },
   computed: {
-    isKbSe() {
-      return this.item['@id'].indexOf('id.kb.se') > -1;
-    },
   },
   ready() {
   },
@@ -98,21 +88,21 @@ export default {
 </script>
 
 <template>
-  <div class="item-entity-container" @mouseleave="showCardInfo=false" v-bind:class="{'highlight': isNewlyAdded, 'blue': isKbSe, 'libris': !isKbSe}">
+  <div class="item-entity-container" @mouseleave="showCardInfo=false" v-bind:class="{'highlight': isNewlyAdded }">
     <div class="item-entity" v-if="!expanded" :class="{ 'locked': isLocked, 'highlighted': showCardInfo }" @mouseenter="showCardInfo=true">
-      <div class="topbar" :class="{'blue': isKbSe}">
+      <div class="topbar">
         <a :href="item['@id']">
           <i class="linked-indicator fa fa-chain"></i>
         </a>
         <span class="collapsed-label"><span v-if="!expanded"><a :href="item['@id']">{{getItemLabel}}</a></span><span class="placeholder">.</span></span>
         <span class="actions" v-if="!isLocked">
-          <i v-if="!isLocked" class="fa fa-trash-o chip-action" :class="{'show-icon': showActionButtons}" v-on:click="removeThis(true)" @mouseover="removeHover = true" @mouseout="removeHover = false">
+          <i v-if="!isLocked" class="fa fa-trash-o chip-action" v-on:click="removeThis(true)" @mouseover="removeHover = true" @mouseout="removeHover = false">
             <tooltip-component :show-tooltip="removeHover" tooltip-text="Remove" translation="translatePhrase"></tooltip-component>
           </i>
         </span>
       </div>
     </div>
-    <card-component :title="getItemLabel" :focus-data="item" :uri="item['@id']" :is-local="false" :is-locked="isLocked" :should-show="showCardInfo" :floating="!expanded" :key="key"></card-component>
+    <card-component :title="getItemLabel" :focus-data="item" :uri="item['@id']" :is-local="false" :is-locked="isLocked" :should-show="showCardInfo" :floating="!expanded" :field-key="fieldKey"></card-component>
   </div>
 </template>
 

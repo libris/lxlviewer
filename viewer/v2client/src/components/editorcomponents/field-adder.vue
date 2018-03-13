@@ -5,15 +5,17 @@ import ToolTipComponent from '../shared/tooltip-component';
 import * as LayoutUtil from '../../utils/layout';
 import * as StringUtil from '../../utils/string';
 import ComboKeys from 'combokeys';
-
+import ModalComponent from '@/components/shared/modal-component.vue';
+import { mapGetters } from 'vuex';
 
 export default {
   mixins: [clickaway],
   name: 'field-adder',
   props: {
-    allowed: [],
-    active: false,
-    filterKey: '',
+    allowed: {
+      type: Array,
+      default: () => [],
+    },
     inner: false,
     path: '',
     index: Number,
@@ -22,8 +24,10 @@ export default {
   },
   data() {
     return {
+      active: false,
       buttonFixed: true,
       buttonPos: -1,
+      filterKey: '',
       selectedIndex: -1,
       fieldListBottom: false,
       showToolTip: false,
@@ -34,6 +38,18 @@ export default {
     });
   },
   computed: {
+    ...mapGetters([
+      'inspector',
+      'resources',
+      'user',
+      'settings',
+      'status',
+    ]),
+    modalTitle() {
+      const title = StringUtil.getUiPhraseByLang('Add field', this.settings.language);
+      const contextString = StringUtil.getLabelByLang(this.entityType, this.settings.language, this.resources.vocab, this.settings.vocabPfx, this.resources.context);
+      return `${title}: ${contextString}`;
+    },
     filteredResults() {
       const lang = this.settings.language;
       if (!this.allowed || this.allowed.length === 0) {
@@ -174,20 +190,35 @@ export default {
         this.fieldListBottom = true;
       }
     },
+    getEmptyFieldValue(key, prop) {
+      let value = [];
+      if (prop['@type'] === 'DatatypeProperty') {
+        if (this.resources.forcedListTerms.indexOf(key) > -1) {
+          value = [''];
+        } else {
+          value = '';
+        }
+      }
+      return value;
+    },
     addField(prop, close) {
+      console.log(prop);
       if (!prop.added) {
         const splitProp = prop.item['@id'].split('/');
         const propLastPart = splitProp[splitProp.length-1];
-        this.$dispatch('add-field', prop.item, this.path);
+        const key = StringUtil.convertToPrefix(prop.item['@id'], this.resources.context);
+        this.$store.dispatch('updateInspectorData', {
+          path: `${this.path}.${key}`,
+          value: this.getEmptyFieldValue(key, prop.item),
+          addToHistory: true,
+        });
         if (close) {
           this.hide();
-          this.changeStatus('lastAdded', propLastPart);
+          this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: `${this.path}.${key}` });
         }
-        this.$dispatch('expand-item');
       }
     },
     show() {
-      LayoutUtil.scrollLock(true);
       this.active = true;
       setTimeout(() => {
         const input = document.getElementById('field-adder-input');
@@ -195,14 +226,13 @@ export default {
         const fieldsWindow = document.getElementById('fields-window');
         fieldsWindow.addEventListener('scroll', this.toggleWindowFade);
       }, 1);
-      this.changeStatus('keybindState', 'field-adder');
+      this.$store.dispatch('setStatusValue', { property: 'keybindState', value: 'field-adder' });
     },
     hide() {
       if (!this.active) return;
       this.active = false;
-      LayoutUtil.scrollLock(false);
       this.filterKey = '';
-      this.changeStatus('keybindState', 'overview');
+      this.$store.dispatch('setStatusValue', { property: 'keybindState', value: 'overview' });
       this.resetSelectIndex();
     },
     resetSelectIndex() {
@@ -211,6 +241,7 @@ export default {
     },
   },
   components: {
+    'modal-component': ModalComponent,
     'tooltip-component': ToolTipComponent,
   },
 };
@@ -230,44 +261,52 @@ export default {
       </i>
       {{ "Field" | translatePhrase }}
     </button>
-    <div class="window"  v-if="active" :class="{'at-bottom': fieldListBottom}">
-      <div class="header">
-        <span class="title">
-          {{ "Add field" | translatePhrase }}: {{ entityType | labelByLang }}
-        </span>
-        <span class="filter">
+
+    <modal-component v-if="active" class="FieldAdderModal">
+      <template slot="modal-header">
+        <header>
+          {{ modalTitle }}
+        </header>
+        <span class="FieldAdderModal-filter">
           {{ "Filter by" | translatePhrase }} <input id="field-adder-input" class="filterInput mousetrap" @input="resetSelectIndex()" type="text" v-model="filterKey"></input>
           <span class="filterInfo">{{ "Showing" | translatePhrase }} {{ filteredResults.length }} {{ "of" | translatePhrase }} {{allowed ? allowed.length : '0'}} {{ "total" | translatePhrase }}</span>
         </span>
-        <span class="windowControl">
-          <i v-on:click="hide" class="fa fa-close"></i>
+        <span class="ModalComponent-windowControl">
+          <i @click="hide" class="fa fa-close"></i>
         </span>
-      </div>
-      <div class="column-titles">
-        <span class="fieldLabel">
-          {{ "Field label" | translatePhrase }}
-        </span>
-        <span class="classInfo">
-          {{ "Can contain" | translatePhrase }}
-        </span>
-      </div>
-      <ul v-if="active" id="fields-window" class="field-list">
-        <li v-on:mouseover="selectedIndex = $index" v-bind:class="{ 'added': prop.added, 'available': !prop.added, 'selected': $index == selectedIndex }" v-for="prop in filteredResults" track-by="$index" @click="addField(prop, true)">
-          <span class="addControl">
-            <a v-on:click.prevent="addField(prop, false)"><i class="fa fa-fw fa-2x fa-plus-circle"></i></a>
-            <span><i class="fa fa-fw fa-check fa-2x"></i></span>
+      </template>
+      <template slot="modal-body">
+        <div class="FieldAdderModal-columnHeaders">
+          <span class="FieldAdderModal-addControl">
+            &nbsp;
           </span>
-          <span class="fieldLabel" :title="prop.label | capitalize">
-            {{prop.label | capitalize }}
-            <span class="typeLabel">{{ prop.item['@id'] | removeDomain }}</span>
+          <span class="FieldAdderModal-fieldLabel">
+            {{ "Field label" | translatePhrase }}
           </span>
-          <span class="classInfo">
-            {{ getPropClassInfo(prop.item) }}
+          <span class="FieldAdderModal-classInfo">
+            {{ "Can contain" | translatePhrase }}
           </span>
-        </li>
-        <li v-if="filteredResults.length === 0"><i>{{ "Did not find any fields" | translatePhrase }}...</i></li>
-      </ul>
-    </div>
+        </div>
+        <div class="FieldAdderModal-fieldList">
+          <ul id="fields-window">
+            <li v-on:mouseover="selectedIndex = index" v-bind:class="{ 'added': prop.added, 'available': !prop.added, 'selected': index == selectedIndex }" v-for="(prop, index) in filteredResults" :key="prop['@id']" @click="addField(prop, true)">
+              <span class="FieldAdderModal-addControl">
+                <a v-on:click.prevent="addField(prop, false)"><i class="fa fa-fw fa-2x fa-plus-circle"></i></a>
+                <span><i class="fa fa-fw fa-check fa-2x"></i></span>
+              </span>
+              <span class="FieldAdderModal-fieldLabel" :title="prop.label | capitalize">
+                {{prop.label | capitalize }}
+                <span class="typeLabel">{{ prop.item['@id'] | removeDomain }}</span>
+              </span>
+              <span class="FieldAdderModal-classInfo">
+                {{ getPropClassInfo(prop.item) }}
+              </span>
+            </li>
+            <li v-if="filteredResults.length === 0"><i>{{ "Did not find any fields" | translatePhrase }}...</i></li>
+          </ul>
+        </div>
+      </template>
+    </modal-component>
   </span>
 </template>
 
@@ -289,139 +328,104 @@ export default {
     }
   }
 
-  .window {
-    &:after {
-      transition: all 0.5s ease;
-      position: absolute;
-      bottom: 0;
-      height: 100%;
-      width: 100%;
-      content: "";
-      opacity: 0;
-      background: linear-gradient(to top,
-        rgba(255,255,255, 1) 0%,
-        rgba(255,255,255, 0) 12%
-      );
-      pointer-events: none; /* so the text is still selectable */
-
-    }
-    &:not(.at-bottom) {
-      &:after {
-        opacity: 1;
-        transition: all 0.5s ease;
+  .FieldAdderModal {
+    &-filter {
+      input {
+        height: 100%;
+        color: #333;
+        border-radius: 3px;
+        border: none;
       }
     }
-    .window-mixin();
-    .header {
+    &-body {
       display: flex;
-      justify-content: space-between;
-      .filter {
-        font-size: 85%;
-        .filterInput {
-          border-radius: 3px;
-          border: 0px;
-          padding: 3px 5px;
-          margin: 0px 10px 0px 10px;
-          color: @black;
-          display: inline-block;
-        }
-        .filterInfo {
-          padding: 3px 10px 3px 3px;
-        }
-      }
-      .title {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-width: 45%;
-      }
+      flex-direction: column;
     }
-    .column-titles {
+    &-columnHeaders {
       background-color: @white;
+      position: fixed;
+      z-index: 1;
+      width: 100%;
       border: solid @gray;
       border-width: 0px 0px 1px 0px;
       > * {
         display: inline-block;
       }
-      .fieldLabel {
-        margin-left: 8%;
-        width: 45%;
-      }
-      .classInfo {
-        width: 40%;
+    }
+    &-fieldLabel {
+      display: inline-block;
+      width: 45%;
+      font-size: 16px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      .typeLabel {
+        display: block;
+        font-size: 85%;
+        font-family: monospace;
       }
     }
-    ul {
-      border-radius: 0px 0px 3px 3px;
-      width: 100%;
-      height: 90%;
-      overflow-y: auto;
-      margin: 0px;
-      list-style-type: none;
-      padding: 0;
-      li {
-        &:nth-child(odd) {
-          background-color: darken(@neutral-color, 5%);
-        }
-        &.available {
-          cursor: pointer;
-          &.selected {
-            outline: solid 1px @brand-primary;
-            background-color: fadeout(@brand-primary, 70%);
-          }
-        }
-        &.added {
-          &.selected {
-            background-color: @gray-light;
-          }
-        }
+    &-classInfo {
+      display: inline-block;
+      width: 40%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-size: 85%;
+    }
+    &-addControl {
+      display: inline-block;
+      float: left;
+      width: 8%;
+      text-align: center;
+      a {
+        cursor: pointer;
+      }
+      span {
+        display: none;
+      }
+    }
+    &-fieldList {
+      padding-top: 2em;
+      padding-bottom: 3em;
+      ul {
+        border-radius: 0px 0px 3px 3px;
+        padding-left: 0px;
+        width: 100%;
         margin: 0px;
-        padding: 1em 0;
-        line-height: 1.3;
-        display: flex;
-        align-items: center;
-        .fieldLabel {
-          display: inline-block;
-          width: 45%;
-          font-size: 16px;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          .typeLabel {
-            display: block;
-            font-size: 85%;
-            font-family: monospace;
+        list-style-type: none;
+        li {
+          &:nth-child(odd) {
+            background-color: darken(@neutral-color, 5%);
           }
-        }
-        .classInfo {
-          display: inline-block;
-          width: 40%;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          font-size: 85%;
-        }
-        .addControl {
-          float: left;
-          width: 8%;
-          text-align: center;
-          a {
+          &.available {
             cursor: pointer;
-          }
-          span {
-            display: none;
-          }
-        }
-        &.added {
-          span {
-            opacity: 0.6;
-          }
-          .addControl {
-            a {
-              display: none;
+            &.selected {
+              outline: solid 1px @brand-primary;
+              background-color: fadeout(@brand-primary, 70%);
             }
+          }
+          &.added {
+            &.selected {
+              background-color: @gray-light;
+            }
+          }
+          margin: 0px;
+          padding: 1em 0;
+          line-height: 1.3;
+          display: flex;
+          align-items: center;
+          &.added {
             span {
-              display: block;
+              opacity: 0.6;
+            }
+            .addControl {
+              a {
+                display: none;
+              }
+              span {
+                display: block;
+              }
             }
           }
         }

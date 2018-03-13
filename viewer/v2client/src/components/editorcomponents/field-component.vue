@@ -1,6 +1,6 @@
 <script>
 /*
-  The datanode component is responsible for a specific key value pair.
+  The field component is responsible for a specific key value pair.
   It's responsible for its own data, and dispatches all changes to the form component.
 */
 import * as _ from 'lodash';
@@ -16,26 +16,31 @@ import * as VocabUtil from '../../utils/vocab';
 import * as LayoutUtil from '../../utils/layout';
 import * as MathUtil from '../../utils/math';
 import LodashProxiesMixin from '../mixins/lodash-proxies-mixin';
+import { mapGetters } from 'vuex';
 
 export default {
-  name: 'data-node',
+  name: 'field',
   mixins: [clickaway, LodashProxiesMixin],
-  props: [
-    'parentKey',
-    'parentIndex',
-    'parentPath',
-    'key',
-    'value',
-    'isLocked',
-    'embedded',
-    'is-removable',
-    'isInner',
-    'showActionButtons',
-    'entityType',
-  ],
+  props: {
+    parentKey: '',
+    parentIndex: '',
+    parentPath: '',
+    fieldKey: '',
+    fieldValue: '',
+    isLocked: '',
+    asColumns: {
+      default: true,
+      type: Boolean,
+    },
+    isRemovable: '',
+    isInner: '',
+    entityType: '',
+    showActionButtons: '',
+  },
   data() {
     return {
       activeModal: false,
+      shouldShowActionButtons: false,
       removeHover: false,
       foundChip: false,
       removed: false,
@@ -52,21 +57,35 @@ export default {
     'tooltip-component': TooltipComponent,
   },
   watch: {
-    'arrayLength': function (newVal, oldVal) {
-      if (newVal > oldVal) {
-        this.$broadcast('focus-new-item', newVal-1);
-      }
-    },
+    // 'arrayLength': function (newVal, oldVal) {
+    //   if (newVal > oldVal) {
+    //     this.$broadcast('focus-new-item', newVal-1);
+    //   }
+    // },
   },
   computed: {
+    actionButtonsShown() {
+      if (this.shouldShowActionButtons || this.showActionButtons) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    ...mapGetters([
+      'inspector',
+      'resources',
+      'user',
+      'settings',
+      'status',
+    ]),
     arrayLength() {
       return this.valueAsArray.length;
     },
     valueIsArray() {
-      return _.isArray(this.value);
+      return _.isArray(this.fieldValue);
     },
     locked() {
-      if (this.settings.lockedProperties.indexOf(this.key) !== -1) {
+      if (this.settings.lockedProperties.indexOf(this.fieldKey) !== -1) {
         return true;
       }
       return this.isLocked;
@@ -87,7 +106,7 @@ export default {
       if (this.key === '_uid') {
         return null;
       }
-      return VocabUtil.getTermObject(this.key, this.vocab, this.settings.vocabPfx, this.context);
+      return VocabUtil.getTermObject(this.fieldKey, this.resources.vocab, this.settings.vocabPfx, this.resources.context);
     },
     propertyComment() {
       if (this.keyAsVocabProperty && this.keyAsVocabProperty.commentByLang) {
@@ -101,36 +120,30 @@ export default {
       }
     },
     valueAsArray() {
-      let valueArray = this.value;
-      if (!_.isArray(this.value)) {
-        valueArray = [this.value];
-      }
-      for (let i = 0; i < valueArray.length; i++) {
-        if (_.isPlainObject(valueArray[i]) && !valueArray[i].hasOwnProperty('_uid')) {
-          this.uniqueIds.push(MathUtil.getNewRandom(this.uniqueIds));
-          valueArray[i]._uid = this.uniqueIds[this.uniqueIds.length-1];
-        }
+      let valueArray = this.fieldValue;
+      if (!_.isArray(this.fieldValue)) {
+        valueArray = [this.fieldValue];
       }
       return valueArray;
     },
     getPath() {
       if (typeof this.parentPath !== 'undefined') {
         if (typeof this.parentKey !== 'undefined' && typeof this.parentIndex !== 'undefined') {
-          return `${this.parentPath}.${this.key}`;
+          return `${this.parentPath}.${this.fieldKey}`;
         }
       }
-      return `${this.key}`;
+      return `${this.parentPath}.${this.fieldKey}`;
     },
     propertyTypes() {
       return VocabUtil.getPropertyTypes(
-        this.key,
-        this.vocab,
+        this.fieldKey,
+        this.resources.vocab,
         this.settings.vocabPfx,
-        this.context
+        this.resources.context
       );
     },
     hasSingleValue() {
-      if (!_.isArray(this.value) || this.value.length === 1) {
+      if (!_.isArray(this.fieldValue) || this.fieldValue.length === 1) {
         return true;
       }
       return false;
@@ -139,10 +152,10 @@ export default {
       return (this.propertyTypes.indexOf('DatatypeProperty') === -1);
     },
     isRepeatable() {
-      return this.forcedListTerms.indexOf(this.key) > -1;
+      return this.resources.forcedListTerms.indexOf(this.fieldKey) > -1;
     },
     isEmptyObject() {
-      const value = this.value;
+      const value = this.fieldValue;
       if (typeof value === 'undefined') {
         return true;
       }
@@ -153,18 +166,18 @@ export default {
       return bEmpty;
     },
     isLastAdded() {
-      if (this.status.lastAdded === this.getPath) {
+      if (this.inspector.status.lastAdded === this.getPath) {
         return true;
       }
       return false;
     },
     forcedToArray() {
-      return this.forcedListTerms.indexOf(this.key) > -1;
+      return this.forcedListTerms.indexOf(this.fieldKey) > -1;
     },
   },
   events: {
     'update-item'(index, value) {
-      let modified = _.cloneDeep(this.value);
+      let modified = _.cloneDeep(this.fieldValue);
       if (_.isArray(modified)) {
         modified[index] = value;
       } else {
@@ -174,7 +187,7 @@ export default {
     },
     'remove-item'(index) {
       console.log("Remove item with index", index);
-      let modified = _.cloneDeep(this.value);
+      let modified = _.cloneDeep(this.fieldValue);
       if (!_.isArray(modified)) {
         modified = [modified];
       }
@@ -197,7 +210,7 @@ export default {
       } else {
         insertedValue = value;
       }
-      let modified = [].concat(_.cloneDeep(this.value));
+      let modified = [].concat(_.cloneDeep(this.fieldValue));
       if (typeof replaces !== 'undefined') {
         modified.splice(replaces, 1);
       }
@@ -211,17 +224,17 @@ export default {
       this.activeModal = active;
     },
   },
-  ready() {
+  mounted() {
     this.$nextTick(() => {
       setTimeout(() => {
-        if (this.key === '_uid') {
+        if (this.fieldKey === '_uid') {
           throw new Error('A datanode component has been added for a _uid key, which should never happen.');
         }
         if (this.isLastAdded) {
           const windowHeight = window.innerHeight || document.documentElement.clientHeight || document.getElementsByTagName('body')[0].clientHeight;
           const scrollPos = this.$el.offsetTop - (windowHeight * 0.2);
           LayoutUtil.scrollTo(scrollPos, 1000, 'easeInOutQuad', () => {
-            this.changeStatus('lastAdded', '');
+            this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
           });
         }
       }, 300);
@@ -233,8 +246,14 @@ export default {
     },
     removeThis() {
       this.removed = true;
+      const parentData = _.cloneDeep(_.get(this.inspector.data, this.parentPath));
+      delete parentData[this.fieldKey];
       setTimeout(() => {
-        this.$dispatch('remove-field', this.getPath);
+        this.$store.dispatch('updateInspectorData', {
+          path: this.parentPath,
+          value: parentData,
+          addToHistory: true,
+        });
       }, 500);
     },
     getDatatype(o) {
@@ -244,7 +263,10 @@ export default {
       if (this.isPlainObject(o) && !o.hasOwnProperty('@id') && !o.hasOwnProperty('@type')) {
         return 'error';
       }
-      if (VocabUtil.hasValuesInVocab(this.key, this.context)) {
+      if (this.isPlainObject(o) && o['@id'] && o['@id'].indexOf('#work') > -1) {
+        return 'error';
+      }
+      if (VocabUtil.hasValuesInVocab(this.fieldKey, this.resources.context)) {
         return 'vocab';
       }
       if (this.isPlainObject(o) && this.isLinked(o)) {
@@ -268,9 +290,9 @@ export default {
       if (typeof o === 'undefined') {
         throw new Error('Cannot check link status of undefined object.');
       }
-      const recordId = this.editorData.record['@id'];
+      const recordId = this.inspector.data.record['@id'];
       if (o.hasOwnProperty('@id') && !o.hasOwnProperty('@type')) {
-        if (o['@id'] === this.editorData.mainEntity['@id']) {
+        if (o['@id'] === this.inspector.data.mainEntity['@id']) {
           return true;
         }
         if (o['@id'].indexOf(recordId) > -1) {
@@ -285,18 +307,21 @@ export default {
       if (!type || typeof type === 'undefined') {
         return false;
       }
-      return VocabUtil.isEmbedded(type, this.vocab, this.settings);
+      return VocabUtil.isEmbedded(type, this.resources.vocab, this.settings);
     },
     isChip(item) {
-      if (((this.getDatatype(item) == 'entity'))) {
+      if (this.getDatatype(item) == 'entity') {
         this.foundChip = true;
         return true;
       }
       return false;
     },
+    handleMouseEnter() {
+      this.shouldShowActionButtons = true;
+    },
     handleMouseLeave() {
       if (!this.isInner) {
-        this.showActionButtons=false
+        this.shouldShowActionButtons=false
       }
     },
   },
@@ -304,17 +329,17 @@ export default {
 </script>
 
 <template>
-<div class="data-node" v-bind:class="{'column': embedded, 'rows': !embedded, 'highlight': isLastAdded, 'distinguish-removal': removeHover, 'removed': removed }" @mouseover="showActionButtons=true" @mouseleave="handleMouseLeave()">
+<div class="field" :id="`field-${getPath}`" v-bind:class="{'columns': asColumns, 'rows': !asColumns, 'highlight': isLastAdded, 'distinguish-removal': removeHover, 'removed': removed }" @mouseover="handleMouseEnter()" @mouseleave="handleMouseLeave()">
   <div class="label" v-bind:class="{ 'locked': locked }">
     <div>
-      <span v-show="key === '@id'">{{ 'ID' | translatePhrase | capitalize }}</span>
-      <span v-show="key === '@type'">{{ 'Type' | translatePhrase | capitalize }}</span>
-      <span v-show="key !== '@id' && key !== '@type'" :title="key">{{ key | labelByLang | capitalize }}</span>
+      <span v-show="fieldKey === '@id'">{{ 'ID' | translatePhrase | capitalize }}</span>
+      <span v-show="fieldKey === '@type'">{{ 'Type' | translatePhrase | capitalize }}</span>
+      <span v-show="fieldKey !== '@id' && fieldKey !== '@type'" :title="fieldKey">{{ fieldKey | labelByLang | capitalize }}</span>
       <div v-if="propertyComment && !locked" class="comment-icon">
         <i class="fa fa-question-circle"></i>
         <div class="comment">{{ propertyComment }}</div>
       </div>
-      <entity-adder v-show="!locked && isRepeatable && (isInner && !isEmptyObject)" :key="key" :already-added="linkedIds" :entity-type="entityType" :property-types="propertyTypes" :show-action-buttons="showActionButtons" :active="activeModal" :is-placeholder="true" :value-list="valueAsArray"></entity-adder>
+      <entity-adder v-show="!locked && isRepeatable && (isInner && !isEmptyObject)" :field-key="fieldKey" :path="getPath" :already-added="linkedIds" :entity-type="entityType" :property-types="propertyTypes" :show-action-buttons="actionButtonsShown" :active="activeModal" :is-placeholder="true" :value-list="valueAsArray"></entity-adder>
     </div>
     <div v-if="isInner" class="actions">
       <div class="action" v-show="!locked" :class="{'disabled': activeModal}">
@@ -326,22 +351,22 @@ export default {
     <!-- {{ key | labelByLang | capitalize }} -->
   </div>
   <div class="value node-list">
-    <pre class="path-code" v-show="status.isDev">{{getPath}}</pre>
+    <pre class="path-code" v-show="user.settings.appTech">{{getPath}}</pre>
     <ul v-if="isObjectArray">
-      <li v-for="item in valueAsArray" :class="{ 'isChip': isChip(item)}" track-by="_uid">
+      <li v-for="(item, index) in valueAsArray" :key="index">
         <item-error v-if="getDatatype(item) == 'error'" :item="item"></item-error>
-        <item-vocab v-if="getDatatype(item) == 'vocab'" :is-locked="locked" :key="key" :value="item" :entity-type="entityType" :index="$index"></item-vocab>
-        <item-entity v-if="getDatatype(item) == 'entity'" :is-locked="locked" :item="item" :key="key" :index="$index"></item-entity>
-        <item-local v-if="getDatatype(item) == 'local'" :is-locked="locked" :entity-type="entityType" :item="item" :key="key" :index="$index" :parent-path="getPath" :in-array="valueIsArray" :show-action-buttons="showActionButtons"></item-local>
+        <item-vocab v-if="getDatatype(item) == 'vocab'" :is-locked="locked" :field-key="fieldKey" :value="item" :entity-type="entityType" :index="index" :parent-path="getPath"></item-vocab>
+        <item-entity v-if="getDatatype(item) == 'entity'" :is-locked="locked" :item="item" :field-key="fieldKey" :index="index" :parent-path="getPath"></item-entity>
+        <item-local v-if="getDatatype(item) == 'local'" :is-locked="locked" :entity-type="entityType" :item="item" :field-key="fieldKey" :index="index" :parent-path="getPath" :in-array="valueIsArray" :show-action-buttons="actionButtonsShown"></item-local>
       </li>
     </ul>
     <ul v-if="!isObjectArray">
-      <li v-for="item in valueAsArray" :class="{ 'isChip': isChip(item)}" track-by="$index">
-        <item-vocab v-if="getDatatype(item) == 'vocab'" :is-locked="locked" :key="key" :value="item" :entity-type="entityType" :index="$index"></item-vocab>
-        <item-value v-if="getDatatype(item) == 'value'" :is-removable="!hasSingleValue" :is-locked="locked" :value="item" :key="key" :index="$index" :show-action-buttons="showActionButtons"></item-value>
+      <li v-for="(item, index) in valueAsArray" :key="index">
+        <item-vocab v-if="getDatatype(item) == 'vocab'" :is-locked="locked" :field-key="fieldKey" :value="item" :entity-type="entityType" :index="index"></item-vocab>
+        <item-value v-if="getDatatype(item) == 'value'" :is-removable="!hasSingleValue" :is-locked="locked" :field-value="item" :field-key="fieldKey" :index="index" :parent-path="getPath" :show-action-buttons="actionButtonsShown"></item-value>
       </li>
     </ul>
-    <entity-adder class="action" v-show="!locked && (isRepeatable || isEmptyObject) && (!isInner || (isInner && isEmptyObject))" :key="key" :already-added="linkedIds" :entity-type="entityType" :property-types="propertyTypes" :show-action-buttons="showActionButtons" :active="activeModal" :is-placeholder="false" :value-list="valueAsArray"></entity-adder>
+    <entity-adder class="action" v-show="!locked && (isRepeatable || isEmptyObject) && (!isInner || (isInner && isEmptyObject))" :field-key="fieldKey" :already-added="linkedIds" :entity-type="entityType" :property-types="propertyTypes" :show-action-buttons="actionButtonsShown" :active="activeModal" :is-placeholder="false" :value-list="valueAsArray" :path="getPath"></entity-adder>
   </div>
   <div v-if="!isInner" class="actions">
     <div class="action" v-show="!locked" :class="{'disabled': activeModal}">
@@ -355,7 +380,7 @@ export default {
 
 <style lang="less">
 
-.data-node {
+.field {
   width: 100%;
   min-height: 3em;
   display: flex;
@@ -480,7 +505,7 @@ export default {
       cursor: pointer;
     }
   }
-  &.rows {
+  &.columns {
     border: solid;
     border-color: transparent;
     border-bottom-color: #d8d8d8;
@@ -527,10 +552,6 @@ export default {
               text-align: center;
             }
           }
-          // &.isChip {
-          //   display: inline-block;
-          //   float: left;
-          // }
           .item-value {
             > textarea {
               width: 100%;
@@ -557,7 +578,7 @@ export default {
       }
     }
   }
-  &.column {
+  &.rows {
     flex-wrap: wrap;
     border: solid;
     border-width: 0px;
@@ -588,9 +609,6 @@ export default {
         list-style: none;
         padding: 0px 1% 0px 1%;
         > li {
-          // &.isChip {
-          //   display: inline-block;
-          // }
           .item-value {
             width: 100%;
             display: flex;

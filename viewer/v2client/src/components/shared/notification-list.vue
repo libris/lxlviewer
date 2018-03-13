@@ -32,7 +32,7 @@ export default {
 .NotificationList {
   position: fixed;
   bottom: 0;
-  padding: 0px 0px 3em 0px;
+  padding: 0px;
   left: 25%;
   width: 50%;
   z-index: @notification-z;

@@ -8,9 +8,7 @@
     "alt+plus": "form-control|expand-item",
     "alt+minus": "form-control|collapse-item",
     "alt+f": "open-field-adder",
-    "mod+shift+c": "duplicate-item",
-    // "mod+shift+left": "form-control|toggle-editor-focus",
-    // "mod+shift+right": "form-control|toggle-editor-focus",
+    "mod+shift+c": "duplicate-item"
   },
   "field-adder": {
     "esc": "close-modals",
@@ -20,18 +18,18 @@
     "mod+enter": "add-field-multiple"
   },
   "entity-adder": {
-    "esc": "close-modals",
+    "esc": "close-modals"
   },
   "release-notes": {
-    "esc": "close-modals",
+    "esc": "close-modals"
   },
   "extraction-dialog": {
-    "esc": "close-modals",
+    "esc": "close-modals"
   },
   "marc-preview": {
-    "esc": "close-modals",
+    "esc": "close-modals"
   },
   "help-window": {
-    "esc": "close-modals",
+    "esc": "close-modals"
   }
 }

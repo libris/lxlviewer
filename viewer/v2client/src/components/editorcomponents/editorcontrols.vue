@@ -3,43 +3,22 @@ import * as _ from 'lodash';
 import * as DataUtil from '../../utils/data';
 import * as DisplayUtil from '../../utils/display';
 import * as LayoutUtil from '../../utils/layout';
-import * as VocabUtil from '../../utils/vocab';
-import * as ModalUtil from '../../utils/modals';
-import * as HttpUtil from '../../utils/http';
-import * as StringUtil from '../../utils/string';
-import * as RecordUtil from '../../utils/record';
-import HeaderComponent from './headercomponent';
-import FieldAdder from './fieldadder';
-import RecordSummary from './record-summary';
-import TooltipComponent from '../shared/tooltip-component';
-import LensMixin from '../mixins/lens-mixin';
+import * as VocabUtil from '@/utils/vocab';
+import * as ModalUtil from '@/utils/modals';
+import * as HttpUtil from '@/utils/http';
+import * as StringUtil from '@/utils/string';
+import * as RecordUtil from '@/utils/record';
+import HeaderComponent from '@/components/editorcomponents/headercomponent';
+import FieldAdder from '@/components/editorcomponents/field-adder';
+import RecordSummary from '@/components/editorcomponents/record-summary';
+import TooltipComponent from '@/components/shared/tooltip-component';
+import LensMixin from '@/components/mixins/lens-mixin';
 import { mixin as clickaway } from 'vue-clickaway';
-import { changeSavedStatus, changeStatus, changeNotification, navigateChangeHistory } from '../../vuex/actions';
-import { getUser, getContext, getSettings, getVocabulary, getVocabularyClasses, getVocabularyProperties, getDisplayDefinitions, getEditorData, getStatus, getChangeHistory } from '../../vuex/getters';
+import { mapGetters } from 'vuex';
 
 export default {
-  vuex: {
-    getters: {
-      user: getUser,
-      context: getContext,
-      vocab: getVocabulary,
-      vocabClasses: getVocabularyClasses,
-      vocabProperties: getVocabularyProperties,
-      display: getDisplayDefinitions,
-      settings: getSettings,
-      editorData: getEditorData,
-      status: getStatus,
-      changeHistory: getChangeHistory,
-    },
-    actions: {
-      changeSavedStatus,
-      changeStatus,
-      changeNotification,
-      navigateChangeHistory,
-    },
-  },
   mixins: [clickaway, LensMixin],
-  ready() { // Ready method is deprecated in 2.0, switch to "mounted"
+  mounted() {
     this.$nextTick(() => {
     });
   },
@@ -52,13 +31,25 @@ export default {
     },
   },
   watch: {
-    inEdit(state) {
+    'inspector.status.editing'(state) {
       if (state) {
         this.loadingEdit = false;
       }
     },
   },
   methods: {
+    showOtherFormatMenu() {
+      this.otherFormatMenuActive = true;
+    },
+    hideOtherFormatMenu() {
+      this.otherFormatMenuActive = false;
+    },
+    hideToolsMenu() {
+      this.toolsMenuActive = false;
+    },
+    showToolsMenu() {
+      this.toolsMenuActive = true;
+    },
     getOtherDataFormat(suffix) {
       return `${this.focusData['@id']}/data.${suffix}`
     },
@@ -66,34 +57,33 @@ export default {
       this.$dispatch('form-control', control);
     },
     toggleEditorFocus() {
-      if (this.status.editorFocus === 'record') {
-        this.changeStatus('editorFocus', 'mainEntity');
+      if (this.inspector.status.focus === 'record') {
+        this.$store.dispatch('setInspectorStatusValue', { property: 'focus', value: 'mainEntity' });
       } else {
-        this.changeStatus('editorFocus', 'record');
+        this.$store.dispatch('setInspectorStatusValue', { property: 'focus', value: 'record' });
       }
     },
     openMarc() {
       this.$dispatch('show-marc');
     },
-    save(cancelEdit) {
-      this.changeSavedStatus('loading', true);
-      this.$dispatch('save-item', cancelEdit);
+    save() {
+      this.$emit('save');
+    },
+    undo() {
+      this.$store.dispatch('undoInspectorChange');
     },
     edit() {
       this.loadingEdit = true;
-      setTimeout(() => this.$dispatch('edit-item'), 0); // $nextTick doesn't work
+      this.$store.dispatch('setInspectorStatusValue', { property: 'editing', value: true });
     },
     navigateFormChanges(direction) {
-      this.navigateChangeHistory(this.status.editorFocus, direction);
-    },
-    toggleDev() {
-      this.changeStatus('isDev', !this.status.isDev);
+      this.navigateChangeHistory(this.inspector.status.focus, direction);
     },
     toggleAdminData() {
       this.showAdminInfoDetails = !this.showAdminInfoDetails;
     },
     isSubClassOf(type) {
-      const baseClasses = VocabUtil.getBaseClasses(this.editorData.mainEntity['@type'], this.vocab, this.settings.vocabPfx, this.context)
+      const baseClasses = VocabUtil.getBaseClasses(this.inspector.data.mainEntity['@type'], this.resources.vocab, this.settings.vocabPfx, this.resources.context)
         .map(id => id.replace(this.settings.vocabPfx, ''));
       return baseClasses.indexOf(type) > -1;
     },
@@ -152,7 +142,8 @@ export default {
   data() {
     return {
       showAdminInfoDetails: false,
-      otherFormatMenu: false,
+      otherFormatMenuActive: false,
+      toolsMenuActive: false,
       loadingEdit: false,
       showEdit: false,
       showTools: false,
@@ -163,7 +154,15 @@ export default {
     };
   },
   computed: {
+    ...mapGetters([
+      'inspector',
+      'resources',
+      'user',
+      'settings',
+      'status',
+    ]),
     canEditThisType() {
+      return true;
       if (this.user.hasAnyCollections() === false) {
         return false;
       }
@@ -175,14 +174,11 @@ export default {
       }
       return false;
     },
-    activeChangeHistory() {
-      return this.changeHistory[this.status.editorFocus];
-    },
     showRecord() {
       return this.status.showRecord;
     },
     recordType() {
-      return VocabUtil.getRecordType(this.editorData.mainEntity['@type'], this.vocab, this.settings, this.context);
+      return VocabUtil.getRecordType(this.editorData.mainEntity['@type'], this.resources.vocab, this.settings, this.resources.context);
     },
     downloadIsSupported() {
       const a = document.createElement('a');
@@ -192,29 +188,29 @@ export default {
       return `https://libris.kb.se/library/${this.user.settings.activeSigel}`;
     },
     compileMARCUrl() {
-      return `/_compilemarc?library=${this.libraryUrl}&id=${this.editorData.record['@id']}`;
+      return `/_compilemarc?library=${this.libraryUrl}&id=${this.inspector.data.record['@id']}`;
     },
     hasSigel() {
       return typeof this.user.settings.activeSigel !== 'undefined';
     },
     focusData() {
-      return this.editorData.record;
+      return this.inspector.data.record;
     },
-    inEdit() {
-      return this.status.inEdit;
+    editing() {
+      return this.inspector.status.editing;
     },
     hasLocalWork() {
-      return (typeof this.editorData.work !== 'undefined') ? true : false;
+      return (typeof this.inspector.data.work !== 'undefined') ? true : false;
     },
     allowedProperties() {
       const settings = this.settings;
-      const formObj = this.editorData[this.status.editorFocus];
+      const formObj = this.inspector.data[this.inspector.status.focus];
       const allowed = VocabUtil.getPropertiesFromArray(
-        [StringUtil.convertToVocabKey(StringUtil.convertToBaseUri(formObj['@type'], this.context), this.context)],
-        this.vocabClasses,
+        [StringUtil.convertToVocabKey(StringUtil.convertToBaseUri(formObj['@type'], this.resources.context), this.resources.context)],
+        this.resources.vocabClasses,
         this.settings.vocabPfx,
-        this.vocabProperties,
-        this.context
+        this.resources.vocabProperties,
+        this.resources.context
       );
       // Add the "added" property
       for (const element of allowed) {
@@ -245,7 +241,7 @@ export default {
           };
         }
       });
-      sortedAllowed = _.sortBy(extendedAllowed, (prop) => {
+      const sortedAllowed = _.sortBy(extendedAllowed, (prop) => {
         return prop.label.toLowerCase();
       });
       return sortedAllowed;
@@ -265,42 +261,39 @@ export default {
       <div class="admin-info">
         <div>
           <div>
-            <h2 class="recordtype-label" title="{{recordType}}">
+            <h2 class="recordtype-label" :title="recordType">
               <span>{{ recordType | labelByLang }}</span>
               <span v-if="status.isNew"> - [{{ "New record" | translatePhrase }}]</span>
             </h2>
             <record-summary></record-summary>
           </div>
-          <div class="action" v-if="user.settings.appTech === 'on'" v-on:click="toggleDev()" v-bind:class="{'active': status.isDev}">
-            <i class="fa fa-wrench" aria-hidden="true"></i>
-          </div>
         </div>
         <div class="actions">
           <button class="btn btn-default toolbar-button" v-on:click="toggleEditorFocus()">
-            <span v-show="status.editorFocus === 'record'"><i class="fa fa-fw fa-toggle-on"></i> {{'Admin metadata' | translatePhrase}}</span>
-            <span v-show="status.editorFocus === 'mainEntity'"><i class="fa fa-fw fa-toggle-off"></i> {{'Admin metadata' | translatePhrase}}</span>
+            <span v-show="inspector.status.focus === 'record'"><i class="fa fa-fw fa-toggle-on"></i> {{'Admin metadata' | translatePhrase}}</span>
+            <span v-show="inspector.status.focus === 'mainEntity'"><i class="fa fa-fw fa-toggle-off"></i> {{'Admin metadata' | translatePhrase}}</span>
           </button>
-          <div v-if="!status.inEdit" class="dropdown other-format" @mouseover="showDisplayAs = true" @mouseout="showDisplayAs = false">
-            <button class="btn btn-default toolbar-button dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+          <div v-if="!inspector.status.editing" v-on-clickaway="hideOtherFormatMenu" class="dropdown OtherFormatMenu">
+            <button class="btn btn-default toolbar-button OtherFormatMenu-button" @click="showOtherFormatMenu" aria-haspopup="true" aria-expanded="true" @mouseover="showDisplayAs = true" @mouseout="showDisplayAs = false">
               <i class="fa fa-eye" aria-hidden="true">
                 <tooltip-component :show-tooltip="showDisplayAs" tooltip-text="Show as" translation="translatePhrase"></tooltip-component>
               </i>
               <span class="caret"></span>
             </button>
-            <ul class="dropdown-menu">
+            <ul class="dropdown-menu OtherFormatMenu-menu" v-show="otherFormatMenuActive">
               <li><a :href="getOtherDataFormat('jsonld')">JSON-LD</a></li>
               <li><a :href="getOtherDataFormat('ttl')">Turtle</a></li>
               <li><a :href="getOtherDataFormat('rdf')">RDF/XML</a></li>
             </ul>
           </div>
-          <div class="dropdown tools">
-            <button class="btn btn-default toolbar-button dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" @mouseover="showTools = true" @mouseout="showTools = false">
+          <div class="dropdown ToolsMenu" v-on-clickaway="hideToolsMenu">
+            <button class="btn btn-default toolbar-button ToolsMenu-button" @click="showToolsMenu" aria-haspopup="true" aria-expanded="true" @mouseover="showTools = true" @mouseout="showTools = false">
               <i class="fa fa-wrench" aria-hidden="true">
                 <tooltip-component :show-tooltip="showTools" tooltip-text="Tools" translation="translatePhrase"></tooltip-component>
               </i>
               <span class="caret"></span>
             </button>
-            <ul class="dropdown-menu">
+            <ul class="dropdown-menu ToolsMenu-menu" v-show="toolsMenuActive">
               <li>
                 <a @click="formControl('expand-item')">
                 <i class="fa fa-fw fa-expand" aria-hidden="true"></i>
@@ -313,13 +306,13 @@ export default {
                 {{"Collapse all" | translatePhrase}}
                 </a>
               </li>
-              <li v-if="!status.inEdit && !isSubClassOf('Item')">
+              <li v-if="!inspector.status.editing && !isSubClassOf('Item')">
                 <a @click="handleCopy">
                 <i class="fa fa-fw fa-files-o"></i>
                 {{ "Make copy" | translatePhrase }}
                 </a>
               </li>
-              <li v-if="isSubClassOf('Instance') && hasSigel && !status.inEdit && user.email !== ''">
+              <li v-if="isSubClassOf('Instance') && hasSigel && !inspector.status.editing && user.email !== ''">
                 <a v-if="downloadIsSupported" @click="getCompiledPost()">
                   <i class="fa fa-fw fa-download" aria-hidden="true"></i>
                   {{"Download compiled" | translatePhrase}}
@@ -344,26 +337,26 @@ export default {
             </ul>
           </div>
           <div class="toolbar-divider"></div>
-          <field-adder v-if="status.inEdit" :entity-type="editorData[status.editorFocus]['@type']" :inner="false" :allowed="allowedProperties" :editing-object="status.editorFocus"></field-adder>
-          <button class="btn btn-default toolbar-button" :disabled="activeChangeHistory.length === 0" v-show="status.inEdit" @click="navigateFormChanges('back')" @mouseover="showUndo = true" @mouseout="showUndo = false">
+          <field-adder v-if="inspector.status.editing" :entity-type="editorData[inspector.status.focus]['@type']" :inner="false" :allowed="allowedProperties" :path="inspector.status.focus" :editing-object="inspector.status.focus"></field-adder>
+          <button class="btn btn-default toolbar-button" :disabled="inspector.changeHistory.length === 0" v-show="inspector.status.editing" @click="undo" @mouseover="showUndo = true" @mouseout="showUndo = false">
             <i class="fa fa-undo" aria-hidden="true">
               <tooltip-component :show-tooltip="showUndo" tooltip-text="Undo" translation="translatePhrase"></tooltip-component>
             </i>
           </button>
-          <button class="btn btn-info toolbar-button" id="saveButton" v-on:click="save(false)" v-if="status.inEdit && !status.isNew" @mouseover="showSave = true" @mouseout="showSave = false">
-            <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="status.saved.loading"></i>
-            <i class="fa fa-fw fa-save" v-show="!status.saved.loading">
+          <button class="btn btn-info toolbar-button" id="saveButton" @click="save" v-if="inspector.status.editing && !status.isNew" @mouseover="showSave = true" @mouseout="showSave = false">
+            <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="inspector.status.saving"></i>
+            <i class="fa fa-fw fa-save" v-show="!inspector.status.saving">
               <tooltip-component :show-tooltip="showSave" tooltip-text="Save" translation="translatePhrase"></tooltip-component>
             </i>
           </button>
-          <button class="btn btn-lg btn-success toolbar-button" id="saveButton" v-on:click="save(true)" v-if="status.inEdit">
-            <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="status.saved.loading"></i>
-            <i class="fa fa-fw fa-check" v-show="!status.saved.loading"></i>
+          <button class="btn btn-lg btn-success toolbar-button" id="saveButton" v-on:click="save(true)" v-if="inspector.status.editing">
+            <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="inspector.status.saving"></i>
+            <i class="fa fa-fw fa-check" v-show="!inspector.status.saving"></i>
             {{"Done" | translatePhrase}}
           </button>
-          <button class="btn btn-lg btn-info toolbar-button edit-button" id="editButton" v-on:click="edit()" v-show="!status.inEdit && canEditThisType" @mouseover="showEdit = true" @mouseout="showEdit = false">
-            <i class="fa fa-fw fa-pencil" v-show="!loadingEdit"></i>
-            <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="loadingEdit"></i>
+          <button class="btn btn-lg btn-info toolbar-button edit-button" id="editButton" v-on:click="edit()" v-show="!inspector.status.editing && canEditThisType" @mouseover="showEdit = true" @mouseout="showEdit = false">
+            <i class="fa fa-fw fa-pencil" v-show="!inspector.status.opening"></i>
+            <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="inspector.status.opening"></i>
             {{"Edit" | translatePhrase}}
           </button>
         </div>
@@ -373,7 +366,6 @@ export default {
 </template>
 
 <style lang="less">
-@import '../shared/_variables.less';
 
 @button-active-color: #cecece;
 
@@ -404,6 +396,14 @@ export default {
         font-size: 13px;
         line-height: 20px;
         font-weight: bold;
+      }
+      .ToolsMenu, .OtherFormatMenu {
+        &-button {
+
+        }
+        &-menu {
+          display: block;
+        }
       }
       .dropdown.tools, .dropdown.other-format {
         li > a {

@@ -2,19 +2,13 @@
 import * as _ from 'lodash';
 import LodashProxiesMixin from '../mixins/lodash-proxies-mixin';
 import EntitySummary from './entity-summary';
-import { changeStatus } from '../../vuex/actions';
 
 export default {
   name: 'card-component',
   mixins: [LodashProxiesMixin],
-  vuex: {
-    actions: {
-      changeStatus,
-    },
-  },
   props: {
     focusData: {},
-    key: '',
+    fieldKey: '',
     title: {},
     shouldShow: false,
     uri: '',
@@ -77,7 +71,16 @@ export default {
   .card-info-container {
     width: 100%;
     background-color: @white;
-    .card-mixin(@brand-primary, @white);
+    display: none;
+    position: absolute;
+    transition: opacity 0.5s ease;
+    &.to-be-active {
+      display: block;
+      opacity: 0;
+    }
+    &.active {
+      opacity: 1;
+    }
     &.floating {
       width: 600px;
       margin: 0 0 0 2.1em;

@@ -6,10 +6,11 @@
 */
 
 import * as _ from 'lodash';
-import DataNode from './datanode';
-import * as ModalUtil from '../../utils/modals';
-import * as VocabUtil from '../../utils/vocab';
-import * as DisplayUtil from '../../utils/display';
+import * as ModalUtil from '@/utils/modals';
+import * as VocabUtil from '@/utils/vocab';
+import * as DisplayUtil from '@/utils/display';
+import * as StringUtil from '@/utils/string';
+import { mapGetters } from 'vuex';
 
 export default {
   props: {
@@ -23,20 +24,27 @@ export default {
     };
   },
   computed: {
+    ...mapGetters([
+      'inspector',
+      'resources',
+      'user',
+      'settings',
+      'status',
+    ]),
     isActive() {
-      return this.status.editorFocus === this.editingObject;
+      return this.inspector.status.focus === this.editingObject;
     },
     isHolding() {
-      return this.editorData[this.editingObject]['@type'] === 'Item';
+      return this.inspector.data[this.editingObject]['@type'] === 'Item';
     },
     isBib() {
-      if (VocabUtil.isSubClassOf(this.editorData[this.editingObject]['@type'], 'Instance', this.vocab, this.settings.vocabPfx, this.context)) {
+      if (VocabUtil.isSubClassOf(this.inspector.data[this.editingObject]['@type'], 'Instance', this.resources.vocab, this.settings.vocabPfx, this.resources.context)) {
         return true;
-      } else if (VocabUtil.isSubClassOf(this.editorData[this.editingObject]['@type'], 'Work', this.vocab, this.settings.vocabPfx, this.context)) {
+      } else if (VocabUtil.isSubClassOf(this.inspector.data[this.editingObject]['@type'], 'Work', this.resources.vocab, this.settings.vocabPfx, this.resources.context)) {
         return true;
-      } else if (VocabUtil.isSubClassOf(this.editorData[this.editingObject]['@type'], 'Agent', this.vocab, this.settings.vocabPfx, this.context)) {
+      } else if (VocabUtil.isSubClassOf(this.inspector.data[this.editingObject]['@type'], 'Agent', this.resources.vocab, this.settings.vocabPfx, this.resources.context)) {
         return true;
-      } else if (VocabUtil.isSubClassOf(this.editorData[this.editingObject]['@type'], 'Concept', this.vocab, this.settings.vocabPfx, this.context)) {
+      } else if (VocabUtil.isSubClassOf(this.inspector.data[this.editingObject]['@type'], 'Concept', this.resources.vocab, this.settings.vocabPfx, this.resources.context)) {
         return true;
       }
       return false;
@@ -50,7 +58,7 @@ export default {
     specialProperties() {
       const props = [];
       for (const prop of this.settings.specialProperties) {
-        if (this.editorData[this.editingObject][prop]) {
+        if (this.inspector.data[this.editingObject][prop]) {
           props.push(prop);
         }
       }
@@ -60,11 +68,11 @@ export default {
       const settings = this.settings;
       const formObj = this.formData;
       const allowed = VocabUtil.getPropertiesFromArray(
-        [StringUtil.convertToVocabKey(StringUtil.convertToBaseUri(formObj['@type'], this.context), this.context)],
-        this.vocabClasses,
+        [StringUtil.convertToVocabKey(StringUtil.convertToBaseUri(formObj['@type'], this.resources.context), this.resources.context)],
+        this.resources.vocabClasses,
         this.settings.vocabPfx,
-        this.vocabProperties,
-        this.context
+        this.resources.vocabProperties,
+        this.resources.context
       );
       // Add the "added" property
       for (const element of allowed) {
@@ -108,13 +116,13 @@ export default {
           };
         }
       });
-      sortedAllowed = _.sortBy(extendedAllowed, (prop) => {
+      const sortedAllowed = _.sortBy(extendedAllowed, (prop) => {
         return prop.label.toLowerCase();
       });
       return sortedAllowed;
     },
     formData() {
-      return this.editorData[this.editingObject];
+      return this.inspector.data[this.editingObject];
     },
     sortedFormData() {
       const sortedForm = {};
@@ -134,21 +142,21 @@ export default {
       let propertyList = DisplayUtil.getProperties(
         formObj['@type'],
         'full',
-        this.display,
+        this.resources.display,
         this.settings
       );
       if (propertyList.length === 0) { // If none were found, traverse up inheritance tree
         const baseClasses = VocabUtil.getBaseClassesFromArray(
           formObj['@type'],
-          this.vocab,
+          this.resources.vocab,
           this.settings.vocabPfx,
-          this.context
+          this.resources.context
         );
         for (const baseClass of baseClasses) {
           propertyList = DisplayUtil.getProperties(
             baseClass.replace(this.settings.vocabPfx, ''),
             'cards',
-            this.display,
+            this.resources.display,
             this.settings
           );
           if (propertyList.length > 0) {
@@ -159,7 +167,7 @@ export default {
           propertyList = DisplayUtil.getProperties(
             'Resource',
             'cards',
-            this.display,
+            this.resources.display,
             this.settings
           );
         }
@@ -169,7 +177,6 @@ export default {
           propertyList.push(k);
         }
       });
-
       _.remove(propertyList, (k) => {
         return (this.settings.specialProperties.indexOf(k) !== -1);
       });
@@ -205,7 +212,6 @@ export default {
     },
   },
   components: {
-    'data-node': DataNode,
   },
   ready() {
   }
@@ -214,18 +220,16 @@ export default {
 
 <template>
   <div class="form-component focused-form-component" :class="{ 'locked': isLocked }" v-show="isActive">
-    <div class="data-node-container" v-bind:class="{'collapsed': collapsed }">
-      <data-node v-for="(k,v) in sortedFormData" v-bind:class="{ 'locked': isLocked }" :entity-type="editorData[editingObject]['@type']" :is-inner="false" :is-removable="true" :is-locked="keyIsLocked(k)" :key="k" :value="v"></data-node>
-      <div id="result" v-if="status.isDev && !isLocked">
+    <div class="field-container" v-bind:class="{'collapsed': collapsed }">
+      <field v-for="(v,k) in sortedFormData" v-bind:class="{ 'locked': isLocked }" :entity-type="inspector.data[editingObject]['@type']" :is-inner="false" :is-removable="true" :is-locked="keyIsLocked(k)" :key="k" :field-key="k" :field-value="v" :parent-path="inspector.status.focus"></field>
+      <div id="result" v-if="user.settings.appTech && !isLocked">
         <div class="row">
         <pre class="col-md-6">
           SORTED
-
           {{sortedFormData | json}}
         </pre>
         <pre class="col-md-6">
           ORIGINAL
-
           {{formData | json}}
         </pre>
         </div>
@@ -318,14 +322,14 @@ export default {
       .ribbon-mixin(desaturate(darken(@holding-color, 10%), 10%));
     }
   }
-  .data-node-container {
+  .field-container {
     border: solid #d8d8d8;
     margin: 0px;
     padding: 0em 0px 0px 0px;
     border-width: 1px 0px 0px 0px;
     transition: 2s ease max-height;
   }
-  .data-node-container-toggle {
+  .field-container-toggle {
     text-align: center;
     font-weight: bold;
     font-size: 85%;

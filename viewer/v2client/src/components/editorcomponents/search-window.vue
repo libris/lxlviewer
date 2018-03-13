@@ -6,8 +6,8 @@ import * as DisplayUtil from '../../utils/display';
 import * as LayoutUtil from '../../utils/layout';
 import * as RecordUtil from '../../utils/record';
 import * as StringUtil from '../../utils/string';
-import * as CombinedTemplates from '../../../../resources/json/combinedTemplates.json';
-import * as StructuredValueTemplates from '../../../../resources/json/structuredValueTemplates.json';
+import * as CombinedTemplates from '@/resources/json/combinedTemplates.json';
+import * as StructuredValueTemplates from '@/resources/json/structuredValueTemplates.json';
 import ProcessedLabel from '../shared/processedlabel';
 import ToolTipComponent from '../shared/tooltip-component';
 import EntitySearchList from '../search/entity-search-list';
@@ -15,8 +15,6 @@ import EntitySummary from '../shared/entity-summary';
 import SummaryActionButton from './summary-action-button';
 import LensMixin from '../mixins/lens-mixin';
 import { mixin as clickaway } from 'vue-clickaway';
-import { changeStatus, changeNotification } from '../../vuex/actions';
-import { getVocabulary, getContext, getVocabularyClasses, getVocabularyProperties, getSettings, getDisplayDefinitions, getEditorData } from '../../vuex/getters';
 
 export default {
   name: 'search-window',
@@ -48,24 +46,9 @@ export default {
       }
     };
   },
-  vuex: {
-    getters: {
-      context: getContext,
-      vocab: getVocabulary,
-      vocabClasses: getVocabularyClasses,
-      vocabProperties: getVocabularyProperties,
-      display: getDisplayDefinitions,
-      settings: getSettings,
-      editorData: getEditorData,
-    },
-    actions: {
-      changeStatus,
-      changeNotification,
-    },
-  },
   props: {
     active: false,
-    key: '',
+    fieldKey: '',
     extracting: false,
     itemInfo: {},
     index: 0,
@@ -98,12 +81,12 @@ export default {
   },
   computed: {
     getRange() {
-      const fetchedRange = VocabUtil.getRange(this.entityType, this.key, this.vocab, this.settings.vocabPfx, this.context)
+      const fetchedRange = VocabUtil.getRange(this.entityType, this.fieldKey, this.vocab, this.settings.vocabPfx, this.context)
         .map(item => item.replace(this.settings.vocabPfx, ''));
       return fetchedRange;
     },
     getFullRange() {
-      return VocabUtil.getFullRange(this.entityType, this.key, this.vocab, this.settings.vocabPfx, this.context, this.vocabClasses);
+      return VocabUtil.getFullRange(this.entityType, this.fieldKey, this.vocab, this.settings.vocabPfx, this.context, this.vocabClasses);
     },
     allSearchTypes() {
       const types = this.getFullRange;
@@ -239,7 +222,7 @@ export default {
                 >
                 <select v-model="currentSearchTypes" @change="handleChange(keyword)">
                   <option :value="getRange">{{"All types" | translatePhrase}}</option>
-                  <option v-for="term in getClassTree" :value="term.id" v-html="getFormattedSelectOption(term, settings, vocab, context)"></option>
+                  <option v-for="term in getClassTree" :key="term.id" :value="term.id" v-html="getFormattedSelectOption(term, settings, vocab, context)"></option>
                 </select>
               </div>
               <div class="help-tooltip-container" @mouseleave="showHelp = false">
@@ -275,7 +258,7 @@ export default {
             <div class="extract-controls">
               <span class="preview-entity-text">{{ "Your new entity" | translatePhrase }}:</span>
               <div class="copy-title" v-if="canCopyTitle">
-                <label><input type="checkbox" name="copyTitle" v-model="copyTitle"></input> {{ "Copy title from" | translatePhrase }} {{this.editorData.mainEntity['@type'] | labelByLang}}</label>
+                <label><input type="checkbox" name="copyTitle" v-model="copyTitle" /> {{ "Copy title from" | translatePhrase }} {{this.editorData.mainEntity['@type'] | labelByLang}}</label>
               </div>
             </div>
             <div class="summary-container">
@@ -285,7 +268,7 @@ export default {
           </div>
           <div class="result-list-container">
             <div v-show="displaySearchList" class="search-result">
-              <div v-for="item in searchResult" class="search-item">
+              <div v-for="item in searchResult" :key="item['@id']" class="search-item">
                 <div class="entity-summary-container">
                   <entity-summary :focus-data="item" :lines="4"></entity-summary>
                 </div>
@@ -311,7 +294,6 @@ export default {
 
 .search-window {
   .window {
-    .window-mixin();
     .body {
       width: 100%;
       background-color: white;

@@ -84,9 +84,11 @@ export default {
           </span>
         </slot>
       </div>
-      <slot name="modal-body">
-        <code>No content recieved from parent</code>
-      </slot>
+      <div class="ModalComponent-body">
+        <slot name="modal-body">
+          <code>No content recieved from parent</code>
+        </slot>
+      </div>
     </div>
   </div>
 </template>
@@ -94,6 +96,7 @@ export default {
 <style lang="less">
 
 .ModalComponent {
+  cursor: auto;
   &-backdrop {
     .is-fadedIn & {
       opacity: 1;
@@ -101,7 +104,7 @@ export default {
     opacity: 0;
     transition: opacity 0.5s ease;
     z-index: @backdrop-z;
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
@@ -117,16 +120,14 @@ export default {
     z-index: @modal-z;
     box-shadow: 0px 5px 15px 0px rgba(0,0,0,0.4);
     position: fixed;
-    display: flex;
-    flex-direction: column;
-    width: 80%;
-    max-width: 900px;
-    top: 10%;
-    left: 0;
-    right: 0;
-    margin: 0 auto;
-    min-width: 600px;
-    height: 85%;
+    // display: flex;
+    // flex-direction: column;
+    width: 900px;
+    max-width: 100%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: 85vh;
     text-align: left;
     border: 1px solid darken(@brand-primary, 5%);
     border-radius: 3px;
@@ -138,20 +139,24 @@ export default {
     .is-danger & {
       background-color: @brand-danger;
     }
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    justify-content: space-between;
     background-color: @brand-primary;
     color: @neutral-color;
     padding: 0.5em;
     header {
-      font-weight: bold;
       display: inline-block;
-      margin: 2px 0px 0px 5px;
+      font-weight: bold;
       text-transform: uppercase;
     }
   }
+  &-body {
+    overflow-y: auto;
+    height: 100%;
+  }
   &-windowControl {
-    float: right;
-    padding: 1px 8px 0px 30px;
-    display: inline-block;
     i:hover {
       cursor: pointer;
       color: darken(@neutral-color, 25%);
