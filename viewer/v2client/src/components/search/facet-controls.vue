@@ -74,6 +74,7 @@ export default {
     text-transform: uppercase;
     font-size: 16px;
     font-size: 1.6rem;
+    margin: 5px 0;
   }
 
   &-listTitle {
