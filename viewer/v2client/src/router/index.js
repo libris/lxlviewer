@@ -55,6 +55,11 @@ export default new Router({
       component: Create
     },
     {
+      path: '/new',
+      name: 'NewDocument',
+      component: Inspector
+    },
+    {
       path: '/:fnurgel',
       name: 'Inspector',
       component: Inspector
