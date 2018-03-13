@@ -139,12 +139,14 @@ export default {
     <div class="ResultControls-listTypes" v-if="showDetails">
       <button class="ResultControls-listType"
         v-on:click="setFull()" 
-        v-bind:class="{'is-active': user.settings.resultListType === 'detailed' }">
+        v-bind:class="{'is-active': user.settings.resultListType === 'detailed' }"
+        title="Detailed">
         <i class="fa fa-th-list"></i>
       </button>
       <button class="ResultControls-listType" 
         v-on:click="setCompact()" 
-        v-bind:class="{'is-active': user.settings.resultListType === 'compact' }">
+        v-bind:class="{'is-active': user.settings.resultListType === 'compact' }"
+        title="Compact">
         <i class="fa fa-list"></i>
       </button>
     </div>

@@ -49,10 +49,10 @@ export default {
     <div class="panel-body">
       <h3 class="FacetControls-title">Filtrera</h3>
       <div v-if="result.totalItems > 0 && result.stats">
-        <nav class="FacetControls-listNav" aria-labelledby=""
+        <nav class="FacetControls-listNav" :aria-labelledby="facetLabelByLang(dimensionValue.dimension)"
         v-for="(dimensionValue, dimensionKey) in result.stats.sliceByDimension" 
         :key="dimensionKey">
-          <h4 class="FacetControls-listTitle" id="">{{facetLabelByLang(dimensionValue.dimension) | capitalize}}</h4>
+          <h4 class="FacetControls-listTitle" :id="facetLabelByLang(dimensionValue.dimension)">{{facetLabelByLang(dimensionValue.dimension) | capitalize}}</h4>
           <!--<range-input v-if="isRangeFacet(dimensionKey)"></range-input>-->
           <ul class="FacetControls-list">
             <facet class="FacetControls-listItem"

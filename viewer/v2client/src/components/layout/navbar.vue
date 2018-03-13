@@ -77,7 +77,7 @@ export default {
         <li class="MainNav-item" v-if="user">
           <router-link to="/user" class="MainNav-link">
             <div class="MainNav-iconWrap MainNav-iconWrap--userSettings">
-              <img class="MainNav-gravatar" :src="`https://www.gravatar.com/avatar/${user.emailHash}?d=mm&s=32`" />
+              <img class="MainNav-gravatar" :src="`https://www.gravatar.com/avatar/${user.emailHash}?d=mm&s=32`" alt="Avatar"/>
             </div>
             {{ user.fullName }} <span v-cloak class="sigelLabel">({{ user.settings.activeSigel }})</span>
           </router-link>

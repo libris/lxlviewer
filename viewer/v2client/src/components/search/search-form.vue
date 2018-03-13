@@ -238,13 +238,14 @@ export default {
       <div class="is-librisSearch" id="librisPanel" 
         v-if="searchPerimeter === 'libris'">
         <div class="SearchBar-formGroup form-group ">
-          <label class="SearchBar-inputLabel hidden" id="searchlabel" for="q">
+          <label class="SearchBar-inputLabel hidden" id="searchlabel" for="q" aria-hidden="false">
             {{"Search" | translatePhrase}}
           </label>
           <div class="SearchBar-inputWrap" id="searchFieldContainer">
             <div class="SearchBar-input form-control">
               <div class="SearchBar-qsmart js-qsmartInput" aria-labelledby="searchlabel">
-                <input
+                <input name="q"
+                    aria-labelledby="searchlabel"
                     list="matchingParameters"
                     v-for="(input, index) in inputData.textInput"
                     :key="index"
