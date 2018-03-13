@@ -283,7 +283,7 @@ export default {
             <ul class="dropdown-menu OtherFormatMenu-menu" v-show="otherFormatMenuActive">
               <li><a :href="getOtherDataFormat('jsonld')">JSON-LD</a></li>
               <li><a :href="getOtherDataFormat('ttl')">Turtle</a></li>
-              <li><a :href="getOtherDataFormat('rdf')">RDF/XML</a></li>
+              <li><a :href="getOtherDataFormat('rdf')"><i class="fa fa-fw fa-download" aria-hidden="true"></i>RDF/XML</a></li>
             </ul>
           </div>
           <div class="dropdown ToolsMenu" v-on-clickaway="hideToolsMenu">

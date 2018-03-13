@@ -116,7 +116,7 @@ export default {
         v-if="isImport && shouldLink" 
         :title="header.join(', ')" 
         v-on:click="importThis()">
-        <i class="fa fa-download" aria-hidden="true"></i> 
+        <i class="fa fa-external-link" aria-hidden="true"></i>
         {{ header.join(', ') }}
       </span>
       <router-link class="EntrySummary-titleLink"
@@ -136,7 +136,7 @@ export default {
       {{ identifiers[0] }} 
       <span class="EntrySummary-idInfo" v-if="identifiers.length > 1">(+{{ identifiers.length-1 }})</span>
     </span>
-    <ul class="info EntrySummary-details">
+    <ul class="EntrySummary-details">
       <li class="EntrySummary-detailsItem" 
         v-show="v.length !== 0" 
         v-for="(v, k) in infoWithKeys" 
