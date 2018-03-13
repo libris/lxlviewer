@@ -101,109 +101,155 @@ export default {
 </script>
 
 <template>
-<div class="entity-summary">
-  <div class="sub">
-    <div class="categorization">
-      {{categorization.join(', ')}} {{ isLocal ? '{lokal entitet}' : '' }} <span class="database" v-if="database">{{ database }}</span>
+<section class="EntrySummary">
+  <div class="EntrySummary-meta">
+    <div class="EntrySummary-type">
+      {{categorization.join(', ')}} {{ isLocal ? '{lokal entitet}' : '' }} 
+      <span class="EntrySummary-sourceLabel" v-if="database">{{ database }}</span>
     </div>
   </div>
-  <div class="main-info">
-    <h3 class="header">
+
+  <div class="EntrySummary-info">
+    <h3 class="EntrySummary-title" v-bind:class="{ 'EntrySummary-title--imported': isImport && shouldLink }">
       <span v-if="!shouldLink" :title="header.join(', ')">{{ header.join(', ') }}</span>
-      <span v-if="isImport && shouldLink" class="import-header" :title="header.join(', ')" v-on:click="importThis()"><i class="fa fa-download" aria-hidden="true"></i> {{ header.join(', ') }}</span>
-      <router-link v-if="isLibrisResource && !isImport && shouldLink" :to="routerPath" :title="header.join(', ')">{{ header.join(', ') }}</router-link>
-      <a v-if="!isLibrisResource && !isImport && shouldLink" :href="focusData['@id']" :title="header.join(', ')">{{ header.join(', ') }}</a>
-    </h3>
-    <div class="id" v-if="identifiers.length > 0">{{ identifiers[0] }} <span class="id-info" v-if="identifiers.length > 1">(+{{ identifiers.length-1 }})</span></div>
-    <div class="info">
-      <span class="key-value-pair" v-show="v.length !== 0" v-for="(v, k) in infoWithKeys" :key="k">
-        <span class="key">{{ k | labelByLang }}:</span>&nbsp;<span class="value">{{ v }}</span>
+      <span
+        v-if="isImport && shouldLink" 
+        :title="header.join(', ')" 
+        v-on:click="importThis()">
+        <i class="fa fa-download" aria-hidden="true"></i> 
+        {{ header.join(', ') }}
       </span>
-    </div>
+      <router-link class="EntrySummary-titleLink"
+        v-if="isLibrisResource && !isImport && shouldLink" 
+        :to="routerPath" 
+        :title="header.join(', ')">
+        {{ header.join(', ') }}
+      </router-link>
+      <a v-if="!isLibrisResource && !isImport && shouldLink" 
+        :href="focusData['@id']" 
+        :title="header.join(', ')">
+        {{ header.join(', ') }}
+      </a>
+    </h3>
+    <span class="EntrySummary-id" 
+      v-if="identifiers.length > 0">
+      {{ identifiers[0] }} 
+      <span class="EntrySummary-idInfo" v-if="identifiers.length > 1">(+{{ identifiers.length-1 }})</span>
+    </span>
+    <ul class="info EntrySummary-details">
+      <li class="EntrySummary-detailsItem" 
+        v-show="v.length !== 0" 
+        v-for="(v, k) in infoWithKeys" 
+        :key="k">
+        <span class="EntrySummary-detailsKey">{{ k | labelByLang }}:</span>
+        &nbsp;
+        <span class="EntrySummary-detailsValue">{{ v }}</span>
+      </li>
+    </ul>
   </div>
-</div>
+</section>
 </template>
 
 <style lang="less">
 
-.entity-summary {
-  width: 100%;
-  font-size: 13px;
-  padding: 0.5em 1em;
+.EntrySummary {
   display: flex;
   flex-direction: column;
+  font-size: 12px;
+  font-size: 1.2rem;
   justify-content: space-between;
-  .actions {
-    flex-basis: 3em;
-    text-align: center;
+  padding: 10px;
+  width: 100%;
+
+  .HeaderComponent & {
+    color: #fff;
   }
-  .main-info {
+
+  &-meta {
+    border-width: 0px;
+
+    .ResultList & {
+      color: #8a8a8a;
+    }
+  }
+
+  &-type {
+    display: block;
+    flex-basis: 85%;
+    flex-grow: 2;
+    font-weight: bold;
+    margin-bottom: -0.4em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    .database {
+      border: 1px solid @gray;
+      border-radius: 0.3em;
+      float: right;
+      line-height: 1;
+      padding: 3px;
+    }
+  }
+
+  &-info {
     height: 7.5em;
     overflow: hidden;
-    a {
-      color: @brand-primary;
-      &.blue-link {
-        color: @brand-id;
-      }
-    }
-    .header {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      width: 100%;
-      font-size: 1.6em;
-      line-height: 1.6em;
-      min-height: 1.2em;
-      margin: 0px;
-      &.import-header {
-        cursor: pointer;
-      }
-    }
-    .info {
-      .key-value-pair {
-        .key {
-          text-transform: uppercase;
-          font-weight: bold;
-          font-size: 85%;
-        }
-        .value {
-          margin-right: 0.5em;
-        }
-      }
-    }
-    .id {
-      font-weight: bold;
-      margin-top: -0.3em;
-      margin-bottom: 0.5em;
-      .id-info {
-        font-weight: normal;
-      }
-    }
-    ul.info {
-      list-style-type: none;
-      padding: 0px;
+  }
+
+  &-title {
+    font-size: 20px;
+    font-size: 2.0rem;
+    margin: 5px 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+    white-space: nowrap;
+
+    &--imported {
+      cursor: pointer;
     }
   }
-  .sub {
-    border-width: 0px;
-    .categorization {
-      flex-basis: 85%;
-      flex-grow: 2;
-      display: block;
-      font-weight: bold;
-      margin-bottom: -0.4em;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      .database {
-        float: right;
-        border: 1px solid @gray;
-        border-radius: 0.3em;
-        padding: 3px;
-        line-height: 1;
-      }
+
+  &-titleLink {
+    color: @brand-primary;
+    
+    &.blue-link {
+      color: @brand-id;
     }
+  }
+
+  &-details {
+    line-height: 1.4;
+    list-style-type: none;
+    margin: 0;
+    padding: 0px;
+  }
+
+  &-detailsItem {
+    display: inline-block;
+  }
+
+  &-detailsKey {
+    font-size: 12px;
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+
+  &-detailsValue {
+    margin-right: 10px;
+  }
+
+  &-id {
+    display: block;
+    font-weight: 700;
+    margin-top: -0.3em;
+    margin-bottom: 5px;
+  }
+
+  &-idInfo {
+    font-weight: normal;
   }
 }
-
 </style>
