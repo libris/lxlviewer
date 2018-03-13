@@ -67,12 +67,12 @@ export default {
           </router-link>
         </li>
           <li class="MainNav-item">
-          <a href="/create" class="MainNav-link">
+          <router-link to="/create" class="MainNav-link">
             <div class="MainNav-iconWrap" aria-hidden="true">
               <i class="fa fa-file-text"></i>
             </div>
             <span>{{"Create new" | translatePhrase}}</span>
-          </a>
+          </router-link>
         </li>
         <li class="MainNav-item" v-if="user">
           <router-link to="/user" class="MainNav-link">

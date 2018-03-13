@@ -18,6 +18,7 @@ const store = new Vuex.Store({
     },
     inspector: {
       data: {},
+      insertData: {},
       title: '',
       status: {
         dirty: false,
@@ -169,6 +170,9 @@ const store = new Vuex.Store({
     setInspectorData(state, data) {
       state.inspector.data = data;
     },
+    setInsertData(state, data) {
+      state.inspector.insertData = data;
+    },
     updateInspectorData(state, payload) {
       console.log("DATA_UPDATE:", payload);
 
@@ -301,6 +305,9 @@ const store = new Vuex.Store({
     },
     setInspectorData({ commit }, data) {
       commit('setInspectorData', data);
+    },
+    setInsertData({ commit }, data) {
+      commit('setInsertData', data);
     },
     updateInspectorData({ commit }, payload) {
       commit('updateInspectorData', payload);

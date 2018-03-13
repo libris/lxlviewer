@@ -64,6 +64,17 @@ export default {
       this.documentId = this.$route.params.fnurgel;
       this.fetchDocument();
     },
+    loadNewDocument() {
+      const insertData = this.inspector.insertData;
+      if (!insertData.hasOwnProperty('@graph')) {
+        this.$store.dispatch('pushNotification', { color: 'red', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)}!` });
+        this.$router.push({ path: `/` });
+      } else {
+        this.$store.dispatch('setInspectorData', RecordUtil.splitJson(insertData));
+        this.$store.dispatch('setInspectorStatusValue', { property: 'editing', value: true });
+        this.postLoaded = true;
+      }
+    },
     setTitle() {
       if (typeof this.inspector.data.mainEntity !== 'undefined') {
         const headerList = DisplayUtil.getItemSummary(this.inspector.data.mainEntity, this.resources.display, this.inspector.data.quoted, this.resources.vocab, this.settings, this.resources.context).header;
@@ -137,7 +148,11 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      this.loadDocument();
+      if (this.$route.name === 'Inspector') {
+        this.loadDocument();
+      } else {
+        this.loadNewDocument();
+      }
     });
   },
   computed: {

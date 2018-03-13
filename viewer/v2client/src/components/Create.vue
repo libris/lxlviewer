@@ -102,7 +102,8 @@ export default {
   },
   watch: {
     'thingData': function() {
-      this.$store.dispatch('pushNotification', { color: 'grey', message: StringUtil.getUiPhraseByLang('This action is not yet functional. We\'re working on it!', this.settings.language) });
+      this.$store.dispatch('setInsertData', this.thingData);
+      this.$router.push({ path: `/new` });
     },
   },
   mounted() { // Ready method is deprecated in 2.0, switch to "mounted"
