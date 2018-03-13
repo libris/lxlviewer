@@ -213,15 +213,11 @@ export default {
 
 <template>
   <div class="SearchBar panel panel-default">
-    <div class="SearchBar-sourceTabs" role="tablist">
-      <router-link to="/search/libris" class="SearchBar-sourceTab" role="tab"
-        aria-controls="librisPanel" 
-        :aria-selected="searchPerimeter === 'libris'"
+    <div class="SearchBar-sourceTabs">
+      <router-link to="/search/libris" class="SearchBar-sourceTab"
         :class="{'is-active': searchPerimeter === 'libris' }">Libris
       </router-link>
-      <router-link to="/search/remote" class="SearchBar-sourceTab" role="tab"
-        aria-controls="remotePanel" 
-        :aria-selected="searchPerimeter === 'remote'"
+      <router-link to="/search/remote" class="SearchBar-sourceTab"
         :class="{'is-active': searchPerimeter === 'remote' }">Andra källor
       </router-link>
     </div>
@@ -239,10 +235,8 @@ export default {
       </div>
     </div>       
     <form id="searchForm" class="SearchBar-form">
-      <div class="is-librisSearch" id="librisPanel" role="tabpanel" 
-        aria-labelledby="librisTab"
-        v-if="searchPerimeter === 'libris'" 
-        aria-hidden="false">
+      <div class="is-librisSearch" id="librisPanel" 
+        v-if="searchPerimeter === 'libris'">
         <div class="SearchBar-formGroup form-group ">
           <label class="SearchBar-inputLabel hidden" id="searchlabel" for="q">
             {{"Search" | translatePhrase}}
@@ -278,10 +272,8 @@ export default {
           </div>
         </div>
       </div>
-      <div class="is-remoteSearch" id="remotePanel" role="tabpanel" 
-        aria-labelledby="remoteTab"
-        v-if="searchPerimeter === 'remote'" 
-        aria-hidden="true">
+      <div class="is-remoteSearch" id="remotePanel" 
+        v-if="searchPerimeter === 'remote'">
         <div class="SearchBar-formGroup form-group">
           <input type="text" class="SearchBar-input form-control" placeholder="ISBN eller valfria sökord" 
             v-model="remoteSearch.q">
