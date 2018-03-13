@@ -3,13 +3,18 @@ import * as _ from 'lodash';
 import LensMixin from '../mixins/lens-mixin';
 import EntitySummary from '../shared/entity-summary';
 import SummaryActionButton from '../editorcomponents/summary-action-button';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'entity-search-item',
   mixins: [LensMixin],
   props: {
     focusData: {},
-    disabledIds: [],
+    disabledIds: {
+      type: Array,
+      default: () => [],
+    },
+    path: '',
   },
   data() {
     return {
@@ -20,12 +25,32 @@ export default {
         event: 'add-entity',
         show: (this.disabledIds.indexOf(this.focusData['@id']) === -1),
         inspectAction: true,
+        path: this.path,
       },
     }
   },
   methods: {
+    addItem() {
+      let currentValue = _.get(this.inspector.data, this.path);
+      const obj = { '@id': this.focusData['@id'] };
+      if (!_.isArray(currentValue)) {
+        currentValue = [currentValue];
+      }
+      currentValue.push(obj);
+      this.$store.dispatch('updateInspectorData', {
+          path: `${this.path}`,
+          value: currentValue
+      });
+    },
   },
   computed: {
+    ...mapGetters([
+      'inspector',
+      'resources',
+      'user',
+      'settings',
+      'status',
+    ]),
     addPayload() {
       const updatedListItemSettings = _.merge({payload: this.focusData}, _.cloneDeep(this.listItemSettings));
       return updatedListItemSettings;
@@ -45,9 +70,9 @@ export default {
 <template>
   <div class="search-result-item">
     <div class="search-item-entity-summary-container">
-      <entity-summary :focus-data="focusData" :lines="4"></entity-summary>
+      <entity-summary :focus-data="focusData" :should-link="false" :lines="4"></entity-summary>
     </div>
-    <summary-action-button v-show="listItemSettings.show" :settings="addPayload"></summary-action-button>
+    <summary-action-button v-show="listItemSettings.show" :settings="addPayload" @action="addItem()"></summary-action-button>
   </div>
 </template>
 

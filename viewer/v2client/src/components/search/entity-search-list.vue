@@ -4,8 +4,15 @@ import EntitySearchItem from './entity-search-item';
 export default {
   name: 'entity-search-list',
   props: {
-    results: [],
-    disabledIds: [],
+    results: {
+      type: Array,
+      default: () => [],
+    },
+    disabledIds: {
+      type: Array,
+      default: () => [],
+    },
+    path: '',
   },
   data() {
     return {
@@ -29,7 +36,7 @@ export default {
 <template>
   <div class="search-result">
     <ul class="search-result-list" v-show="results.length > 0">
-      <entity-search-item  :class="{'already-added': (disabledIds.indexOf(item['@id']) !== -1) }" :focus-data="item" :disabled-ids="disabledIds" :add-link="false" v-for="item in results" :key="item['@id']"></entity-search-item>
+      <entity-search-item :path="path" :class="{'already-added': (disabledIds.indexOf(item['@id']) !== -1) }" :focus-data="item" :disabled-ids="disabledIds" :add-link="false" v-for="item in results" :key="item['@id']"></entity-search-item>
     </ul>
   </div>
 </template>

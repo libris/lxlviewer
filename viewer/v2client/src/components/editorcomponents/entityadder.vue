@@ -31,6 +31,7 @@ export default {
       addEmbedded: false,
       searchMade: false,
       currentSearchTypes: [],
+      active: false,
     };
   },
   props: {
@@ -41,7 +42,6 @@ export default {
       default: () => [],
     },
     showActionButtons: false,
-    active: false,
     isPlaceholder: false,
     isChip: false,
     path: '',
@@ -268,7 +268,7 @@ export default {
       self.searchResult = {};
       this.getItems(keyword, [].concat(this.currentSearchTypes)).then((result) => {
         setTimeout(() => {
-          self.searchResult = result;
+          self.searchResult = result.items;
           self.loading = false;
           self.searchMade = true;
         }, 500);
@@ -287,8 +287,8 @@ export default {
       }
       searchUrl += '&_limit=40';
       return new Promise((resolve, reject) => {
-        httpUtil.get({ url: searchUrl, accept: 'application/ld+json' }).then((response) => {
-          resolve(response.items);
+        fetch(searchUrl).then((response) => {
+          resolve(response.json());
         }, (error) => {
           reject('Error searching...', error);
         });
@@ -341,7 +341,7 @@ export default {
               >
               <select v-model="currentSearchTypes" @change="handleChange(keyword)">
                 <option :value="getRange">{{"All types" | translatePhrase}}</option>
-                <option v-for="(term, index) in getClassTree" :key="`${term.id}-${index}`" :value="term.id" v-html="getFormattedSelectOption(term, settings, vocab, context)"></option>
+                <option v-for="(term, index) in getClassTree" :key="`${term.id}-${index}`" :value="term.id" v-html="getFormattedSelectOption(term, settings, resources.vocab, resources.context)"></option>
               </select>
             </div>
             <div class="range-info-container" v-if="getFullRange.length > 0" @mouseleave="rangeInfo = false">
@@ -368,7 +368,7 @@ export default {
         <div v-if="!loading && searchResult.length === 0 && keyword.length > 0 && searchMade" class="search-status">
           {{ "No results" | translatePhrase }}...
         </div>
-        <entity-search-list v-if="!loading && keyword.length > 0" :results="searchResult" :disabled-ids="alreadyAdded"></entity-search-list>
+        <entity-search-list v-if="!loading && keyword.length > 0" :path="path" :results="searchResult" :disabled-ids="alreadyAdded"></entity-search-list>
       </div>
     </template>
   </modal-component>

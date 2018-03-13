@@ -6,8 +6,6 @@ export default {
       show: false,
       styling: 'gray',
       text: 'button',
-      event: '',
-      payload: {},
       inspectAction: false,
     },
   },
@@ -16,9 +14,9 @@ export default {
     }
   },
   methods: {
-    triggerAction() {
-      this.$dispatch(this.settings.event, this.settings.payload);
-    }
+    action() {
+      this.$emit('action');
+    },
   },
   computed: {
   },
@@ -37,7 +35,7 @@ export default {
 <template>
   <div class="action-container">
     <button
-      @click="triggerAction()"
+      @click="action()"
       :class="settings.styling"
       >
       {{settings.text | translatePhrase}}

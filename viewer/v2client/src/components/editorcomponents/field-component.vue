@@ -354,8 +354,8 @@ export default {
     <ul v-if="isObjectArray">
       <li v-for="(item, index) in valueAsArray" :key="index">
         <item-error v-if="getDatatype(item) == 'error'" :item="item"></item-error>
-        <item-vocab v-if="getDatatype(item) == 'vocab'" :is-locked="locked" :field-key="fieldKey" :value="item" :entity-type="entityType" :index="index"></item-vocab>
-        <item-entity v-if="getDatatype(item) == 'entity'" :is-locked="locked" :item="item" :field-key="fieldKey" :index="index"></item-entity>
+        <item-vocab v-if="getDatatype(item) == 'vocab'" :is-locked="locked" :field-key="fieldKey" :value="item" :entity-type="entityType" :index="index" :parent-path="getPath"></item-vocab>
+        <item-entity v-if="getDatatype(item) == 'entity'" :is-locked="locked" :item="item" :field-key="fieldKey" :index="index" :parent-path="getPath"></item-entity>
         <item-local v-if="getDatatype(item) == 'local'" :is-locked="locked" :entity-type="entityType" :item="item" :field-key="fieldKey" :index="index" :parent-path="getPath" :in-array="valueIsArray" :show-action-buttons="actionButtonsShown"></item-local>
       </li>
     </ul>
