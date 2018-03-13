@@ -268,10 +268,27 @@ const store = new Vuex.Store({
     undoInspectorChange({ commit, state }) {
       const history = state.inspector.changeHistory;
       const lastNode = history[history.length-1];
-      const payload = {
-        path: lastNode.path,
-        value: lastNode.value,
-        addToHistory: false,
+      let payload = {};
+      if (lastNode.value) {
+        // It had a value
+        payload = {
+          path: lastNode.path,
+          value: lastNode.value,
+          addToHistory: false,
+        }
+      } else {
+        // It did not have a value (ie key did not exist)
+        const pathParts = lastNode.path.split('.');
+        const key = pathParts[pathParts.length-1];
+        pathParts.splice(pathParts.length-1, 1);
+        const path = pathParts.join('.');
+        const data = _.cloneDeep(_.get(state.inspector.data, path));
+        delete data[key];
+        payload = {
+          path: path,
+          value: data,
+          addToHistory: false,
+        }
       }
       history.splice(history.length-1, 1);
       commit('updateInspectorData', payload);
