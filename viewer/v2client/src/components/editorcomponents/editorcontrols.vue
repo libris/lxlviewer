@@ -38,6 +38,18 @@ export default {
     },
   },
   methods: {
+    showOtherFormatMenu() {
+      this.otherFormatMenuActive = true;
+    },
+    hideOtherFormatMenu() {
+      this.otherFormatMenuActive = false;
+    },
+    hideToolsMenu() {
+      this.toolsMenuActive = false;
+    },
+    showToolsMenu() {
+      this.toolsMenuActive = true;
+    },
     getOtherDataFormat(suffix) {
       return `${this.focusData['@id']}/data.${suffix}`
     },
@@ -130,7 +142,8 @@ export default {
   data() {
     return {
       showAdminInfoDetails: false,
-      otherFormatMenu: false,
+      otherFormatMenuActive: false,
+      toolsMenuActive: false,
       loadingEdit: false,
       showEdit: false,
       showTools: false,
@@ -260,27 +273,27 @@ export default {
             <span v-show="inspector.status.focus === 'record'"><i class="fa fa-fw fa-toggle-on"></i> {{'Admin metadata' | translatePhrase}}</span>
             <span v-show="inspector.status.focus === 'mainEntity'"><i class="fa fa-fw fa-toggle-off"></i> {{'Admin metadata' | translatePhrase}}</span>
           </button>
-          <div v-if="!inspector.status.editing" class="dropdown other-format" @mouseover="showDisplayAs = true" @mouseout="showDisplayAs = false">
-            <button class="btn btn-default toolbar-button dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+          <div v-if="!inspector.status.editing" v-on-clickaway="hideOtherFormatMenu" class="dropdown OtherFormatMenu">
+            <button class="btn btn-default toolbar-button OtherFormatMenu-button" @click="showOtherFormatMenu" aria-haspopup="true" aria-expanded="true" @mouseover="showDisplayAs = true" @mouseout="showDisplayAs = false">
               <i class="fa fa-eye" aria-hidden="true">
                 <tooltip-component :show-tooltip="showDisplayAs" tooltip-text="Show as" translation="translatePhrase"></tooltip-component>
               </i>
               <span class="caret"></span>
             </button>
-            <ul class="dropdown-menu">
+            <ul class="dropdown-menu OtherFormatMenu-menu" v-show="otherFormatMenuActive">
               <li><a :href="getOtherDataFormat('jsonld')">JSON-LD</a></li>
               <li><a :href="getOtherDataFormat('ttl')">Turtle</a></li>
               <li><a :href="getOtherDataFormat('rdf')">RDF/XML</a></li>
             </ul>
           </div>
-          <div class="dropdown tools">
-            <button class="btn btn-default toolbar-button dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" @mouseover="showTools = true" @mouseout="showTools = false">
+          <div class="dropdown ToolsMenu" v-on-clickaway="hideToolsMenu">
+            <button class="btn btn-default toolbar-button ToolsMenu-button" @click="showToolsMenu" aria-haspopup="true" aria-expanded="true" @mouseover="showTools = true" @mouseout="showTools = false">
               <i class="fa fa-wrench" aria-hidden="true">
                 <tooltip-component :show-tooltip="showTools" tooltip-text="Tools" translation="translatePhrase"></tooltip-component>
               </i>
               <span class="caret"></span>
             </button>
-            <ul class="dropdown-menu">
+            <ul class="dropdown-menu ToolsMenu-menu" v-show="toolsMenuActive">
               <li>
                 <a @click="formControl('expand-item')">
                 <i class="fa fa-fw fa-expand" aria-hidden="true"></i>
@@ -383,6 +396,14 @@ export default {
         font-size: 13px;
         line-height: 20px;
         font-weight: bold;
+      }
+      .ToolsMenu, .OtherFormatMenu {
+        &-button {
+
+        }
+        &-menu {
+          display: block;
+        }
       }
       .dropdown.tools, .dropdown.other-format {
         li > a {
