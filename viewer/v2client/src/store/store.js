@@ -28,10 +28,7 @@ const store = new Vuex.Store({
         focus: 'mainEntity',
         removing: false,
       },
-      changeHistory: {
-        mainEntity: [],
-        record: [],
-      },
+      changeHistory: [],
     },
     status: {
       keybindState: '',
@@ -149,14 +146,14 @@ const store = new Vuex.Store({
     }
   },
   mutations: {
-    navigateChangeHistory(state, form, direction) {
-      if (state.inspector.changeHistory[form].length > 0 && state.inspector.status.inEdit) {
-        if (direction === 'back') {
-          const test = state.inspector.changeHistory[form].shift();
-          Vue.set(state.inspector.data, form, test);
-        }
-      }
-    },
+    // navigateChangeHistory(state, form, direction) {
+    //   if (state.inspector.changeHistory[form].length > 0 && state.inspector.status.inEdit) {
+    //     if (direction === 'back') {
+    //       const test = state.inspector.changeHistory[form].shift();
+    //       Vue.set(state.inspector.data, form, test);
+    //     }
+    //   }
+    // },
     pushNotification(state, content) {
       const date = new Date();
       content['id'] = StringUtil.getHash(`${date.getSeconds()}${date.getMilliseconds()}`);
@@ -174,23 +171,20 @@ const store = new Vuex.Store({
     },
     updateInspectorData(state, payload) {
       console.log("DATA_UPDATE:", payload);
-      const inspectorData = _.cloneDeep(state.inspector.data);
-      // const formData = _.cloneDeep(state.inspector.data[payload.focus]);
-      const modified = _.cloneDeep(inspectorData);
-      _.set(modified, payload.path, payload.value);
-      state.inspector.data = modified;
 
-      // if (typeof payload.path !== 'undefined' && typeof payload.key !== 'undefined') {
-      //   _.set(modified, `${payload.path}.${payload.key}`, payload.value);
-      // } else if (typeof payload.path !== 'undefined') {
-      //   _.set(modified, payload.path, payload.value);
-      // } else {
-      //   const newItem = {};
-      //   newItem[payload.key] = payload.value;
-      //   modified = Object.assign({}, formData, newItem);
-      // }
-      // console.log("Modified is", modified);
-      // state.inspector.data[payload.focus] = modified;
+      // Clone inspectorData so we can manipulate it before setting it
+      const inspectorData = _.cloneDeep(state.inspector.data);
+
+      // Push old value to history
+      if (payload.addToHistory) {
+        const oldValue = _.cloneDeep(_.get(inspectorData, payload.path));
+        const historyNode = { path: payload.path, value: oldValue };
+        state.inspector.changeHistory.push(historyNode);
+      }
+      
+      // Set the new value
+      _.set(inspectorData, payload.path, payload.value);
+      state.inspector.data = inspectorData;
     },
     setInspectorTitle(state, str) {
       state.inspector.title = str;
@@ -271,8 +265,16 @@ const store = new Vuex.Store({
     }
   },
   actions: {
-    navigateChangeHistory({ commit }, form, direction) {
-      commit('navigateChangeHistory', form, direction);
+    undoInspectorChange({ commit, state }) {
+      const history = state.inspector.changeHistory;
+      const lastNode = history[history.length-1];
+      const payload = {
+        path: lastNode.path,
+        value: lastNode.value,
+        addToHistory: false,
+      }
+      history.splice(history.length-1, 1);
+      commit('updateInspectorData', payload);
     },
     setUser({ commit }, userObj) {
       commit('setUser', userObj);

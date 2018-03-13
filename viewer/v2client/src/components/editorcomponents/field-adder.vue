@@ -209,7 +209,8 @@ export default {
         const key = StringUtil.convertToPrefix(prop.item['@id'], this.resources.context);
         this.$store.dispatch('updateInspectorData', {
           path: `${this.path}.${key}`,
-          value: this.getEmptyFieldValue(key, prop.item)
+          value: this.getEmptyFieldValue(key, prop.item),
+          addToHistory: true,
         });
         if (close) {
           this.hide();

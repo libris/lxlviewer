@@ -252,6 +252,7 @@ export default {
         this.$store.dispatch('updateInspectorData', {
           path: this.parentPath,
           value: parentData,
+          addToHistory: true,
         });
       }, 500);
     },

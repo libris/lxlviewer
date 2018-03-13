@@ -43,6 +43,7 @@ export default {
         this.$store.dispatch('updateInspectorData', {
           path: this.path,
           value: newValue,
+          addToHistory: true,
         });
       }, 1000)
     }

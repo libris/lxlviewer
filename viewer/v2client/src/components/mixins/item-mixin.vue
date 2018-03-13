@@ -23,13 +23,15 @@ export default {
         setTimeout(() => {
           this.$store.dispatch('updateInspectorData', {
             path: `${this.parentPath}`,
-            value: parentValue
+            value: parentValue,
+            addToHistory: true,
           });
         }, 500);
       } else {
         this.$store.dispatch('updateInspectorData', {
-            path: `${this.parentPath}`,
-            value: parentValue
+          path: `${this.parentPath}`,
+          value: parentValue,
+          addToHistory: true,
         });
       }
     },
@@ -48,7 +50,12 @@ export default {
       'status',
     ]),
     path() {
-      return `${this.parentPath}[${this.index}]`;
+      const parentValue = _.get(this.inspector.data, this.parentPath);
+      if (_.isArray(parentValue)) {
+        return `${this.parentPath}[${this.index}]`;
+      } else {
+        return this.parentPath;
+      }
     },
     recordType() {
       return VocabUtil.getRecordType(this.item['@type'], this.vocab, this.settings);

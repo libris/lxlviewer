@@ -39,7 +39,8 @@ export default {
       currentValue.push(obj);
       this.$store.dispatch('updateInspectorData', {
           path: `${this.path}`,
-          value: currentValue
+          value: currentValue,
+          addToHistory: true,
       });
     },
   },

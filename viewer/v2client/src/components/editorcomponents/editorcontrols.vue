@@ -57,6 +57,9 @@ export default {
     save() {
       this.$emit('save');
     },
+    undo() {
+      this.$store.dispatch('undoInspectorChange');
+    },
     edit() {
       this.loadingEdit = true;
       this.$store.dispatch('setInspectorStatusValue', { property: 'editing', value: true });
@@ -157,9 +160,6 @@ export default {
         return true;
       }
       return false;
-    },
-    activeChangeHistory() {
-      return this.inspector.changeHistory[this.inspector.status.focus];
     },
     showRecord() {
       return this.status.showRecord;
@@ -325,7 +325,7 @@ export default {
           </div>
           <div class="toolbar-divider"></div>
           <field-adder v-if="inspector.status.editing" :entity-type="editorData[inspector.status.focus]['@type']" :inner="false" :allowed="allowedProperties" :path="inspector.status.focus" :editing-object="inspector.status.focus"></field-adder>
-          <button class="btn btn-default toolbar-button" :disabled="activeChangeHistory.length === 0" v-show="inspector.status.editing" @click="navigateFormChanges('back')" @mouseover="showUndo = true" @mouseout="showUndo = false">
+          <button class="btn btn-default toolbar-button" :disabled="inspector.changeHistory.length === 0" v-show="inspector.status.editing" @click="undo" @mouseover="showUndo = true" @mouseout="showUndo = false">
             <i class="fa fa-undo" aria-hidden="true">
               <tooltip-component :show-tooltip="showUndo" tooltip-text="Undo" translation="translatePhrase"></tooltip-component>
             </i>
