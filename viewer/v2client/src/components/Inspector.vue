@@ -1,11 +1,11 @@
 <template>
-  <div class="InspectorView">
+  <div class="InspectorView" ref="Inspector">
     <div v-if="!postLoaded" class="text-center">
       <i class="fa fa-circle-o-notch fa-4x fa-spin"></i><br/>
       <h3>{{ 'Loading document' | translatePhrase | capitalize }}</h3>
     </div>
     <div class="row">
-      <div v-if="postLoaded" class="InspectorView-panel panel panel-default col-md-12">
+      <div v-if="postLoaded" class="InspectorView-panel panel panel-default col-md-11">
         <editor-controls @save="saveItem()"></editor-controls>
         <header-component id="main-header" :full="true" v-if="!isItem"></header-component>
         <form-component :editing-object="inspector.status.focus" :locked="!inspector.status.editing"></form-component>
@@ -13,6 +13,16 @@
         <code v-if="user.settings.appTech">
           {{result}}
         </code>
+      </div>
+      <div v-if="postLoaded" class="col-md-1 Toolbar-column">
+        <!-- SLOT FOR TOOLBAR -->
+        <div class="Toolbar-placeholder" ref="ToolbarPlaceholder">
+        </div>
+        <div class="Toolbar-container" ref="ToolbarTest">
+          <button>A</button>
+          <button>B</button>
+          <button>C</button>
+        </div>
       </div>
     </div>
   </div>
@@ -31,6 +41,7 @@ import FormComponent from '@/components/editorcomponents/formcomponent';
 import EditorControls from '@/components/editorcomponents/editorcontrols';
 import HeaderComponent from '@/components/editorcomponents/headercomponent';
 import ModalComponent from '@/components/shared/modal-component';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'Inspector',
@@ -43,6 +54,13 @@ export default {
     }
   },
   methods: {
+    initToolbarFloat() {
+      const toolbarPlaceholderEl = this.$refs.ToolbarPlaceholder;
+      const toolbarTestEl = this.$refs.ToolbarTest;
+      const width = toolbarPlaceholderEl.clientWidth;
+      console.log(toolbarTestEl);
+      toolbarTestEl.style.width = `${toolbarPlaceholderEl.clientWidth}px`;
+    },
     fetchDocument() {
       const fetchUrl = `http://kblocalhost.kb.se:5000/${this.documentId}/data.jsonld`;
 
@@ -146,6 +164,13 @@ export default {
         this.setTitle();
       }
     },
+    'postLoaded'(val) {
+      if (val === true) {
+        setTimeout(() => {
+          this.initToolbarFloat();
+        }, 500);
+      }
+    }
   },
   mounted() {
     this.$nextTick(() => {
@@ -157,18 +182,13 @@ export default {
     });
   },
   computed: {
-    settings() {
-      return this.$store.getters.settings;
-    },
-    user() {
-      return this.$store.getters.user;
-    },
-    resources() {
-      return this.$store.getters.resources;
-    },
-    inspector() {
-      return this.$store.getters.inspector;
-    },
+    ...mapGetters([
+      'inspector',
+      'resources',
+      'user',
+      'settings',
+      'status',
+    ]),
     isItem() {
       return this.inspector.data.mainEntity['@type'] === 'Item';
     },
@@ -197,6 +217,21 @@ export default {
   &-searchList {
     height: 100%;
     overflow-y: scroll;
+  }
+}
+.Toolbar {
+  &-placeholder {
+    width: 100%;
+  }
+  &-container {
+    position: fixed;
+    border: 1px solid #ccc;
+    background-color: #eee;
+    padding: 0.5em;
+    button {
+      margin: 0.1em 0;
+      width: 100%;
+    }
   }
 }
 
