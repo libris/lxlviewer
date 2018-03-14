@@ -63,7 +63,7 @@ export default {
         :title="header.join(', ')" 
         v-on:click="importThis()" 
         v-if="isImport">
-        <i class="fa fa-download" aria-hidden="true"></i> {{ header.join(', ') }}
+        <i class="fa fa-external-link" aria-hidden="true"></i> {{ header.join(', ') }}
       </h3>
       <h3 class="ResultItem-title header">
         <router-link class="ResultItem-link"
@@ -99,6 +99,11 @@ export default {
     border: 1px solid #ccc;
     padding: 0.4em 1em;
     line-height: 1.2em;
+
+    & .fa-external-link {
+      margin: 4px 6px 0 0;
+      font-size: 14px;
+    }
   }
 
   &-title {

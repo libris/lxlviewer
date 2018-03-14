@@ -10,9 +10,11 @@ Requires the following to be installed on the host machine:
 
 * A functional REST-API for the resources (check out [xl_vagrant_up](https://github.com/libris/xl_vagrant_up))
 
-
-#### Frameworks and standards
+##### Tools and Frameworks
 * [VueJS](https://vuejs.org/)
+* [Webpack](https://webpack.js.org/)
+
+##### Coding Standard
 * [SUIT CSS](https://suitcss.github.io/)
 
 ## Setup

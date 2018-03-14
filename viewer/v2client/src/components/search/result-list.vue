@@ -44,22 +44,19 @@ export default {
 
 <template>
   <ol class="ResultList" aria-labelledby="resultDescr">
-    <div v-if="!compact && results.length > 0">
-      <result-list-item class="ResultList-item"
-        :database="getDatabase(index)" 
-        :show-detailed="true"
-        :focus-data="item" 
-        :import-item="getImportItem(index)" v-for="(item, index) in results" 
-        :key="item['@id']"></result-list-item>
-    </div>
-    <div v-if="compact && results.length > 0">
-      <result-list-item class="ResultList-item"
-        :database="getDatabase(index)" 
-        :show-detailed="false"
-        :focus-data="item" 
-        :import-item="getImportItem(index)" v-for="(item, index) in results" 
-        :key="item['@id']"></result-list-item>
-    </div>
+    <result-list-item  v-if="!compact && results.length > 0" class="ResultList-item"
+      :database="getDatabase(index)" 
+      :show-detailed="true"
+      :focus-data="item" 
+      :import-item="getImportItem(index)" v-for="(item, index) in results" 
+      :key="item['@id']"></result-list-item>
+
+    <result-list-item v-if="compact && results.length > 0" class="ResultList-item"
+      :database="getDatabase(index)" 
+      :show-detailed="false"
+      :focus-data="item" 
+      :import-item="getImportItem(index)" v-for="(item, index) in results" 
+      :key="item['@id']"></result-list-item>
   </ol>
 </template>
 

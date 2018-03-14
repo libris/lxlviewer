@@ -1,6 +1,7 @@
 # Cached Data and Packages
 cache/
 viewer/client/node_modules/
+node_modules/
 viewer/client/bower_components/
 
 # Generated Files

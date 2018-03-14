@@ -63,7 +63,7 @@ export default {
                 <a href="http://librisbloggen.kb.se/" class="Footer-link js-translateable" data-translateable="Librisbloggen" >Librisbloggen</a>
               </li>
               <li>
-                <a href="http://www.kb.se/libris/Om-LIBRIS/Introduktion-till-nya-Libris-och-XL2/" class="Footer-link js-translateable" data-translateable="Introduction material" >Introduktionsmaterial</a>
+                <a href="http://kb.se/libris/Om-LIBRIS/Introduktion-till-nya-Libris-och-XL/" class="Footer-link js-translateable" data-translateable="Introduction material" >Introduktionsmaterial</a>
               </li>
               <li>
                 <a href="http://www.kb.se/libris/" class="Footer-link js-translateable" >kb.se/libris</a>
