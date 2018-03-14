@@ -132,10 +132,12 @@ new Vue({
             title += `"${param.substr(2, param.length -2)}"`;
           }
         }
+      } else if (route.name === 'NewDocument') {
+        title += StringUtil.getUiPhraseByLang('New record', this.$store.getters.user.settings.language);
       } else if (route.name === 'Inspector') {
         title += this.inspector.title;
       } else {
-        title += StringUtil.getUiPhraseByLang(route.name, this.$store.getters.user.settings.language)
+        title += StringUtil.getUiPhraseByLang(route.name, this.$store.getters.user.settings.language);
       }
       title += ` | ${this.$store.getters.settings.title}`;
       document.title = title;
