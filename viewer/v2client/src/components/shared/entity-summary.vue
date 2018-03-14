@@ -57,13 +57,28 @@ export default {
       return false;
     },
     categorization() {
-      return StringUtil.getFormattedEntries(this.getSummary.categorization, this.resources.vocab, this.settings, this.resources.context);
+      return StringUtil.getFormattedEntries(
+        this.getSummary.categorization, 
+        this.resources.vocab, 
+        this.settings, 
+        this.resources.context
+      );
     },
     header() {
-      return StringUtil.getFormattedEntries(this.getSummary.header, this.resources.vocab, this.settings, this.resources.context);
+      return StringUtil.getFormattedEntries(
+        this.getSummary.header, 
+        this.resources.vocab, 
+        this.settings, 
+        this.resources.context
+      );
     },
     identifiers() {
-      let identifiersList = StringUtil.getFormattedEntries(this.getSummary.identifiers, this.resources.vocab, this.settings, this.resources.context);
+      let identifiersList = StringUtil.getFormattedEntries(
+        this.getSummary.identifiers, 
+        this.resources.vocab, 
+        this.settings, 
+        this.resources.context
+      );
       if (identifiersList.length > this.lines) {
         const diff = identifiersList.length - this.lines;
         identifiersList.splice((this.lines - 1), diff+1);
@@ -72,17 +87,38 @@ export default {
       return identifiersList;
     },
     info() {
-      return StringUtil.getFormattedEntries(this.getSummary.info, this.resources.vocab, this.settings, this.resources.context);
+      return StringUtil.getFormattedEntries(
+        this.getSummary.info, 
+        this.resources.vocab, 
+        this.settings, 
+        this.resources.context
+      );
     },
     sub() {
-      let allThings = StringUtil.getFormattedEntries(this.getSummary.info, this.resources.vocab, this.settings, this.resources.context);
-      allThings = allThings.concat(StringUtil.getFormattedEntries(this.getSummary.sub, this.resources.vocab, this.settings, this.resources.context));
+      let allThings = StringUtil.getFormattedEntries(
+        this.getSummary.info, 
+        this.resources.vocab, 
+        this.settings, 
+        this.resources.context
+      );
+      allThings = allThings.concat(StringUtil.getFormattedEntries(
+        this.getSummary.sub, 
+        this.resources.vocab, 
+        this.settings, 
+        this.resources.context
+      ));
       return allThings;
     },
   },
   methods: {
     importThis() {
-      this.$store.dispatch('pushNotification', { color: 'grey', message: StringUtil.getUiPhraseByLang('This action is not yet functional. We\'re working on it!', this.settings.language) });
+      this.$store.dispatch('pushNotification', { 
+        color: 'grey', 
+        message: StringUtil.getUiPhraseByLang(
+          'This action is not yet functional. We\'re working on it!', 
+          this.settings.language
+        ) 
+      });
     },
     removeEntity() {
       this.$dispatch('remove-entity');
@@ -101,16 +137,16 @@ export default {
 </script>
 
 <template>
-<section class="EntrySummary">
-  <div class="EntrySummary-meta">
-    <div class="EntrySummary-type">
+<section class="EntitySummary">
+  <div class="EntitySummary-meta">
+    <div class="EntitySummary-type">
       {{categorization.join(', ')}} {{ isLocal ? '{lokal entitet}' : '' }} 
-      <span class="EntrySummary-sourceLabel" v-if="database">{{ database }}</span>
+      <span class="EntitySummary-sourceLabel" v-if="database">{{ database }}</span>
     </div>
   </div>
 
-  <div class="EntrySummary-info">
-    <h3 class="EntrySummary-title" v-bind:class="{ 'EntrySummary-title--imported': isImport && shouldLink }">
+  <div class="EntitySummary-info">
+    <h3 class="EntitySummary-title" v-bind:class="{ 'EntitySummary-title--imported': isImport && shouldLink }">
       <span v-if="!shouldLink" :title="header.join(', ')">{{ header.join(', ') }}</span>
       <span
         v-if="isImport && shouldLink" 
@@ -119,7 +155,7 @@ export default {
         <i class="fa fa-external-link" aria-hidden="true"></i>
         {{ header.join(', ') }}
       </span>
-      <router-link class="EntrySummary-titleLink"
+      <router-link class="EntitySummary-titleLink"
         v-if="isLibrisResource && !isImport && shouldLink" 
         :to="routerPath" 
         :title="header.join(', ')">
@@ -131,19 +167,19 @@ export default {
         {{ header.join(', ') }}
       </a>
     </h3>
-    <span class="EntrySummary-id" 
+    <span class="EntitySummary-id" 
       v-if="identifiers.length > 0">
       {{ identifiers[0] }} 
-      <span class="EntrySummary-idInfo" v-if="identifiers.length > 1">(+{{ identifiers.length-1 }})</span>
+      <span class="EntitySummary-idInfo" v-if="identifiers.length > 1">(+{{ identifiers.length-1 }})</span>
     </span>
-    <ul class="EntrySummary-details">
-      <li class="EntrySummary-detailsItem" 
+    <ul class="EntitySummary-details">
+      <li class="EntitySummary-detailsItem" 
         v-show="v.length !== 0" 
         v-for="(v, k) in infoWithKeys" 
         :key="k">
-        <span class="EntrySummary-detailsKey">{{ k | labelByLang }}:</span>
+        <span class="EntitySummary-detailsKey">{{ k | labelByLang }}:</span>
         &nbsp;
-        <span class="EntrySummary-detailsValue">{{ v }}</span>
+        <span class="EntitySummary-detailsValue">{{ v }}</span>
       </li>
     </ul>
   </div>
@@ -152,7 +188,7 @@ export default {
 
 <style lang="less">
 
-.EntrySummary {
+.EntitySummary {
   display: flex;
   flex-direction: column;
   font-size: 12px;
