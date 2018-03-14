@@ -61,6 +61,7 @@ export default {
       });
     },
     loadDocument() {
+      this.$store.dispatch('setInspectorStatusValue', { property: 'editing', value: false });
       this.documentId = this.$route.params.fnurgel;
       this.fetchDocument();
     },
