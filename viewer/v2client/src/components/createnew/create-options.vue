@@ -41,7 +41,8 @@ export default {
           :name="creation.toLowerCase()+'Option'"
           v-model="selectedCreation" 
           :value="creation">
-          {{creation | labelByLang}}
+          <span v-if="creation !== 'File'">{{creation | labelByLang}}</span>
+          <span v-if="creation === 'File'">{{ 'From file' | translatePhrase}}</span>
       </label>
     </div>
   </div>
