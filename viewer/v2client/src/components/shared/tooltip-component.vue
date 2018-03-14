@@ -4,13 +4,13 @@ import * as StringUtil from '../../utils/string';
 export default {
   data() {
     return {
+      hoverTooltip: false,
     };
   },
   props: {
     tooltipText: '',
     translation: '',
     showTooltip: false,
-    hoverTooltip: false,
   },
   components: {
   },
