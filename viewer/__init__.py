@@ -442,7 +442,7 @@ def _merge():
     return _proxy_request(request, session, query_params=['id1', 'id2', 'promote_id2'])
 
 
-@app.route('/_convert', methods=['POST'])
+@app.route('/_convert', methods=['GET','POST'])
 def convert():
     return _write_data(request, query_params={'to': 'application/x-marc-json'})
 
