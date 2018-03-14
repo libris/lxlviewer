@@ -147,14 +147,6 @@ const store = new Vuex.Store({
     }
   },
   mutations: {
-    // navigateChangeHistory(state, form, direction) {
-    //   if (state.inspector.changeHistory[form].length > 0 && state.inspector.status.inEdit) {
-    //     if (direction === 'back') {
-    //       const test = state.inspector.changeHistory[form].shift();
-    //       Vue.set(state.inspector.data, form, test);
-    //     }
-    //   }
-    // },
     pushNotification(state, content) {
       const date = new Date();
       content['id'] = StringUtil.getHash(`${date.getSeconds()}${date.getMilliseconds()}`);
@@ -174,19 +166,19 @@ const store = new Vuex.Store({
       state.inspector.insertData = data;
     },
     updateInspectorData(state, payload) {
-      console.log("DATA_UPDATE:", payload);
-
       // Clone inspectorData so we can manipulate it before setting it
       const inspectorData = _.cloneDeep(state.inspector.data);
-
+      
       // Push old value to history
       if (payload.addToHistory) {
         const oldValue = _.cloneDeep(_.get(inspectorData, payload.path));
         const historyNode = { path: payload.path, value: oldValue };
+        console.log(JSON.stringify(historyNode));
         state.inspector.changeHistory.push(historyNode);
       }
       
       // Set the new value
+      console.log("DATA_UPDATE:", payload);
       _.set(inspectorData, payload.path, payload.value);
       state.inspector.data = inspectorData;
     },
