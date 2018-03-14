@@ -58,7 +58,6 @@ export default {
       const toolbarPlaceholderEl = this.$refs.ToolbarPlaceholder;
       const toolbarTestEl = this.$refs.ToolbarTest;
       const width = toolbarPlaceholderEl.clientWidth;
-      console.log(toolbarTestEl);
       toolbarTestEl.style.width = `${toolbarPlaceholderEl.clientWidth}px`;
     },
     fetchDocument() {
