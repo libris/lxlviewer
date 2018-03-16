@@ -54,6 +54,15 @@ export default {
     }
   },
   methods: {
+    initJsonOutput() {
+      window.getJsonOutput = () => {
+      const obj = this.getPackagedItem();
+        console.log('%c ------------ JSON START --------------- ', 'background: #009788; color: #fff;');
+        console.log(JSON.stringify(obj));
+        console.log('%c ------------- JSON END ---------------- ', 'background: #009788; color: #fff;', new Date());
+      };
+      return true;
+    },
     initToolbarFloat() {
       const toolbarPlaceholderEl = this.$refs.ToolbarPlaceholder;
       const toolbarTestEl = this.$refs.ToolbarTest;
@@ -103,9 +112,7 @@ export default {
         }
       }
     },
-    saveItem() {
-      this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: true });
-      const ETag = this.inspector.data.record.modified;
+    getPackagedItem() {
       const RecordId = this.inspector.data.record['@id'];
       const recordCopy = _.cloneDeep(this.inspector.data.record);
 
@@ -121,6 +128,13 @@ export default {
         DataUtil.removeNullValues(this.inspector.data.work),
         this.inspector.data.quoted
       );
+      return obj;
+    },
+    saveItem() {
+      this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: true });
+      const RecordId = this.inspector.data.record['@id'];
+      const obj = this.getPackagedItem();
+      const ETag = this.inspector.data.record.modified;
 
       if (!RecordId || RecordId === 'https://id.kb.se/TEMPID') { // No ID -> create new
         this.doCreate(obj);
