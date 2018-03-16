@@ -29,7 +29,7 @@ from . import admin
 from . import conneg
 
 
-R_METHODS = ['GET', 'HEAD', 'OPTIONS']
+R_METHODS = ['GET', 'HEAD', 'OPTIONS', 'PUT', 'DELETE']
 
 JSONLD_MIMETYPE = 'application/ld+json'
 RDF_MIMETYPES = {'text/turtle', JSONLD_MIMETYPE, 'application/rdf+xml', 'text/xml'}
