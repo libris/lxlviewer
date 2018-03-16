@@ -262,7 +262,7 @@ export default {
       {{ "Field" | translatePhrase }}
     </button>
 
-    <modal-component v-if="active" class="FieldAdderModal">
+    <modal-component @close="hide" v-if="active" class="FieldAdderModal">
       <template slot="modal-header">
         <header>
           {{ modalTitle }}
