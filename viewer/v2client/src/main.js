@@ -11,7 +11,7 @@ import * as DisplayUtil from '@/utils/display';
 import * as StringUtil from '@/utils/string';
 import * as User from '@/models/user';
 import FakedDisplayJson from '@/resources/json/fakedisplay.json';
-import FieldComponent from '@/components/editorcomponents/field-component';
+import FieldComponent from '@/components/inspector/field-component';
 import KeyBindings from '@/resources/json/keybindings.json';
 
 Vue.config.productionTip = false

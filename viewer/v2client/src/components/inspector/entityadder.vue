@@ -308,7 +308,10 @@ export default {
       </i>
     </span>
   </div>
-  <div v-if="!isPlaceholder && !addEmbedded" class="action-button add-entity-button" v-on:click="add()" @mouseenter="showToolTip = true" @mouseleave="showToolTip = false">
+  <div class="action-button add-entity-button" 
+    v-if="!isPlaceholder && !addEmbedded" 
+    v-on:click="add()" @mouseenter="showToolTip = true" 
+    @mouseleave="showToolTip = false">
     <span class="chip-label">
       <i class="fa fa-fw fa-plus plus-icon" aria-hidden="true">
         <tooltip-component :show-tooltip="showToolTip" tooltip-text="Add" translation="translatePhrase"></tooltip-component>
@@ -318,7 +321,11 @@ export default {
   <div class="type-chooser" v-if="addEmbedded" v-on-clickaway="dismissTypeChooser">
     <select v-model="selectedType" @change="addType(selectedType, true)">
       <option disabled value="">{{"Choose type" | translatePhrase}}</option>
-      <option v-for="(term, index) in getClassTree" :disabled="term.abstract" :key="`${term.id}-${index}`" :value="term.id" v-html="getFormattedSelectOption(term, settings, resources.vocab, resources.context)"></option>
+      <option v-html="getFormattedSelectOption(term, settings, resources.vocab, resources.context)"
+        v-for="(term, index) in getClassTree" 
+        :disabled="term.abstract" 
+        :key="`${term.id}-${index}`" 
+        :value="term.id"></option>
     </select>
   </div>
   <modal-component v-if="active" class="EntityAdderModal">
@@ -329,47 +336,77 @@ export default {
       </span>
     </template>
     <template slot="modal-body">
-      <div class="stage-0">
-        <div class="search-header">
-          <span>{{ "Search" | translatePhrase }}</span>
-          <div class="search">
+      <div class="AddEntity">
+        <div class="AddEntity-controls">
+          <form class="AddEntity-controlForm">
             <!--<input class="entity-search-keyword-input" v-model="keyword" @input="setSearching()"></input>-->
-            <div class="input-container">
-              <input
-                v-model="keyword"
-                class="entity-search-keyword-input"
-                autofocus
-              >
-              <select v-model="currentSearchTypes" @change="handleChange(keyword)">
-                <option :value="getRange">{{"All types" | translatePhrase}}</option>
-                <option v-for="(term, index) in getClassTree" :key="`${term.id}-${index}`" :value="term.id" v-html="getFormattedSelectOption(term, settings, resources.vocab, resources.context)"></option>
-              </select>
-            </div>
-            <div class="range-info-container" v-if="getFullRange.length > 0" @mouseleave="rangeInfo = false">
+              <div class="AddEntity-search">
+                <label for="entityKeywordInput" class="AddEntity-searchLabel">{{ "Search" | translatePhrase }}</label>
+                <div class="AddEntity-searchInputContainer">
+                  <input class="AddEntity-searchInput entity-search-keyword-input"
+                    name="entityKeywordInput"
+                    v-model="keyword"
+                    autofocus />
+                  <select class="AddEntity-searchSelect"
+                    v-model="currentSearchTypes" 
+                    @change="handleChange(keyword)">
+                    <option :value="getRange">{{"All types" | translatePhrase}}</option>
+                    <option 
+                      v-for="(term, index) in getClassTree" 
+                      :key="`${term.id}-${index}`" 
+                      :value="term.id" 
+                      v-html="getFormattedSelectOption(term, settings, resources.vocab, resources.context)"></option>
+                  </select>
+                </div>
+              </div>
+            <div class="AddEntity-info" 
+              v-if="getFullRange.length > 0" 
+              @mouseleave="rangeInfo = false">
               <i class="fa fa-info-circle" @mouseenter="rangeInfo = true"></i>
-              <div class="range-info" v-if="rangeInfo">
+              <div class="AddEntity-infoText" v-if="rangeInfo">
                 {{ "Allowed types" | translatePhrase }}:
                 <br>
-                <span v-for="(range, index) in getFullRange" :key="index" class="range">
+                <span v-for="(range, index) in getFullRange" :key="index" class="AddEntity-infoRange">
                   - {{range | labelByLang}}
                 </span>
               </div>
             </div>
-            <div class="controls">
-              <button v-if="hasSingleRange" v-on:click="addEmpty(getFullRange[0])">{{ "Create local entity" | translatePhrase }}</button>
-              <select v-model="selectedType" @change="addType(selectedType)" v-if="!hasSingleRange">
+            <div class="AddEntity-create">
+              <button class="AddEntity-createBtn"
+                v-if="hasSingleRange" 
+                v-on:click="addEmpty(getFullRange[0])">{{ "Create local entity" | translatePhrase }}
+              </button>
+              <select class="AddEntity-createSelect"
+                v-model="selectedType" 
+                @change="addType(selectedType)" 
+                v-if="!hasSingleRange">
                 <option disabled value="">{{ "Create local entity" | translatePhrase }}</option>
-                <option v-for="(term, index) in getClassTree" :disabled="term.abstract" :value="term.id" :key="`${term.id}-${index}`" v-html="getFormattedSelectOption(term, settings, vocab, context)"></option>
+                <option 
+                  v-for="(term, index) in getClassTree" 
+                  :disabled="term.abstract" 
+                  :value="term.id" 
+                  :key="`${term.id}-${index}`" 
+                  v-html="getFormattedSelectOption(term, settings, vocab, context)"></option>
               </select>
             </div>
-          </div>
+          </form>
         </div>
-        <div v-if="!loading && keyword.length === 0" class="search-status">{{ "Start writing to begin search" | translatePhrase }}...</div>
-        <div v-if="loading" class="search-status">{{ "Searching" | translatePhrase }}...<br><i class="fa fa-circle-o-notch fa-spin"></i></div>
-        <div v-if="!loading && searchResult.length === 0 && keyword.length > 0 && searchMade" class="search-status">
+        <div class="AddEntity-searchStatus search-status"
+          v-if="!loading && keyword.length === 0" >{{ "Start writing to begin search" | translatePhrase }}...</div>
+        <div class="AddEntity-searchStatus search-status"
+          v-if="loading">
+          {{ "Searching" | translatePhrase }}...
+          <br><i class="AddEntity-searchStatusIcon fa fa-circle-o-notch fa-spin"></i>
+        </div>
+        <div class="AddEntity-searchStatussearch-status"
+          v-if="!loading && searchResult.length === 0 && keyword.length > 0 && searchMade">
           {{ "No results" | translatePhrase }}...
         </div>
-        <entity-search-list v-if="!loading && keyword.length > 0" :path="path" :results="searchResult" :disabled-ids="alreadyAdded"></entity-search-list>
+        <entity-search-list class="AddEntity-searchResult"
+          v-if="!loading && keyword.length > 0" 
+          :path="path" 
+          :results="searchResult" 
+          :disabled-ids="alreadyAdded"></entity-search-list>
       </div>
     </template>
   </modal-component>
@@ -377,6 +414,130 @@ export default {
 </template>
 
 <style lang="less">
+
+.AddEntity {
+  &-controls {
+    border: solid #ccc;
+    border-top-width: medium;
+    border-right-width: medium;
+    border-bottom-width: medium;
+    border-left-width: medium;
+    border-width: 0 0 1px;
+    background-color: darken(@neutral-color, 4%);
+    line-height: 1.2;
+    position: absolute;
+    padding: 10px;
+    width: 100%;
+    z-index: @modal-z;
+  }
+
+  &-controlForm {
+    align-items: center;
+    display: flex;
+  }
+
+  &-searchLabel {
+    font-size: 14px;
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin: 0;
+  }
+
+  &-search {
+    flex: 60% 0 0;
+  }
+
+  &-searchInputContainer {
+    font-size: 14px;
+    font-size: 1.4rem;
+    display: flex;
+    border: 2px solid #949a9e;
+    border-radius: .2em;
+    flex: 100% 0 0;
+    background: #fff;
+    padding: .5em; 
+  }
+
+  &-searchInput {
+    width: 100%;
+    border: none;
+    outline: none;
+  }
+
+  &-searchSelect {
+    max-width: 50%;
+    padding: .2em .5em;
+    margin: 0 .3em;
+    border-radius: .3em;
+    border: 0;
+    outline: none;
+    background: #009788;
+    color: #fff;
+    cursor: pointer;
+    font-weight: 700;
+  }
+
+  &-info {
+    display: inline-block;
+    margin: 15px 0 0 10px;
+  }
+
+  &-infoRange {
+    display: block;
+    font-size: 14px;
+    font-size: 1.4rem;
+  }
+
+  &-infoText {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    font-size: 12px;
+    font-size: 1.2rem;
+    padding: 5px;
+    position: absolute;
+  }
+
+  &-create {
+    display: flex;
+    flex-grow: 1;
+    justify-content: flex-end;
+    margin: 15px 0 0 10px;
+  }
+
+  &-createBtn,
+  &-createSelect {
+    cursor: pointer;
+    padding: 5px 10px;
+    color: #444;
+    border: none;
+    border-radius: 2px;
+    background: #ccc;
+    font-weight: 700;
+    font-size: 12px;
+    font-size: 1.2rem;
+  }
+
+  &-searchStatus {
+    font-size: 20px;
+    font-size: 2rem;
+    padding: 30% 10px 10px;
+    text-align: center;
+  }
+
+  &-searchStatusIcon {
+    font-size: 80px; 
+    font-size: 8rem; 
+    margin: 10px 0 0;
+  }
+
+  &-searchResult {
+    padding: 85px 0 0 0;
+    margin: 0 0 100px;
+  }
+}
+
+
 
 .entity-adder {
   .disabled {
@@ -417,109 +578,7 @@ export default {
         color: @gray-dark;
       }
     }
-    .chip-action {
-
-    }
-  }
-  .window {
-    .body {
-      width: 100%;
-      background-color: white;
-      border: 1px solid #ccc;
-      padding: 0px;
-      overflow-y: scroll;
-      .stage-1 {
-        text-align: center;
-      }
-      button {
-        font-size: 12px;
-      }
-      .search-result {
-        padding-top: 80px;
-        margin-bottom: 100px;
-      }
-      .search-header {
-        position: absolute;
-        width: 100%;
-        padding: 0.5em 1em;
-        border: solid #ccc;
-        border-width: 0px 0px 1px 0px;
-        background-color: darken(@neutral-color, 4%);
-        z-index: @modal-z;
-        > span {
-         font-weight: bold;
-        }
-        .search {
-          display: flex;
-          align-items: center;
-          .input-container {
-            display: flex;
-            border: 2px solid @gray;
-            border-radius: 0.2em;
-            flex: 60% 0 0;
-            background: @white;
-            padding: 0.5em;
-            > select {
-              max-width: 50%;
-              padding: 0.2em 0.5em;
-              margin: 0 0.3em;
-              border-radius: 0.3em;
-              border: 0px;
-              outline: none;
-              background: @brand-primary;
-              color: @white;
-              cursor: pointer;
-              font-weight: bold;
-            }
-            > input {
-              width: 100%;
-              border: none;
-              outline: none;
-            }
-          }
-          .range-info-container {
-            margin-left: 0.5em;
-            display: inline-block;
-            .range-info {
-              position: absolute;
-              background-color: #fff;
-              border: 1px solid #ccc;
-              padding: 5px;
-              border-radius: 3px;
-              font-size: 1.2rem;
-              .range {
-                display: block;
-                font-size: 1.4rem;
-              }
-            }
-          }
-        }
-        .controls {
-          display: flex;
-          flex-grow: 1;
-          justify-content: flex-end;
-          button, select {
-            cursor: pointer;
-            padding: 0.5em 1em;
-            color: #444;
-            border: none;
-            border-radius: 2px;
-            background: #ccc;
-            font-weight: bold;
-            font-size: 12px;
-          }
-        }
-      }
-      .search-status {
-        padding: 10px;
-        padding-top: 30%;
-        font-size: 2em;
-        text-align: center;
-        > i {
-          font-size: 8rem;
-        }
-      }
-    }
+  
   }
 
 }

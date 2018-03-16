@@ -1,5 +1,6 @@
 <script>
 import EntitySearchItem from './entity-search-item';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'entity-search-list',
@@ -17,16 +18,41 @@ export default {
   data() {
     return {
       keyword: '',
+      active: false,
     }
   },
   methods: {
+    loadStatus() {
+      this.active = true;
+      this.$store.dispatch('setStatusValue', { 
+        property: 'keybindState', 
+        value: 'entity-search-list' 
+      });
+    },
+    test() {
+      console.log('hello');
+    }
   },
   computed: {
+    ...mapGetters([
+      'inspector',
+      'resources',
+      'user',
+      'settings',
+      'status',
+    ]),
   },
   components: {
     'entity-search-item': EntitySearchItem,
   },
   watch: {
+  },
+  events: {
+  },
+  mounted: function () {
+    this.$nextTick(function () {
+      this.loadStatus();
+    });
   },
   ready() { // Ready method is deprecated in 2.0, switch to "mounted"
   },
@@ -34,31 +60,27 @@ export default {
 </script>
 
 <template>
-  <div class="search-result">
-    <ul class="search-result-list" v-show="results.length > 0">
-      <entity-search-item tabindex="0" track-by="$index"
-        :path="path" 
-        v-on:mouseover="selectedIndex = $index" 
-        :class="{'selected': $index == selectedIndex, 'already-added': (disabledIds.indexOf(item['@id']) !== -1) }" 
+  <div class="EntitySearchResult">
+    <ul class="EntitySearchResult-list" v-show="results.length > 0" >
+      <entity-search-item
         :focus-data="item" 
         :disabled-ids="disabledIds" 
         :add-link="false" 
-        v-for="item in results" 
-        :key="item['@id']"></entity-search-item>
+        v-for="(item, index) in results" 
+        :key='index'></entity-search-item>
     </ul>
   </div>
 </template>
 
 <style lang="less">
 
-.search-result {
-  .search-result-list {
+.EntitySearchResult {
+  &-list {
     width: 100%;
     padding: 0px;
     list-style-type: none;
     border: solid #ccc;
-    border-width: 1px 0px 0px 0px;
+    border-width: 1px 0px 0px 0px;   
   }
 }
-
 </style>

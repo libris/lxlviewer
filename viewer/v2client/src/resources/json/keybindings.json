@@ -31,5 +31,9 @@
   },
   "help-window": {
     "esc": "close-modals"
+  },
+  "entity-search-list": {
+    "down": "select-next",
+    "up": "select-prev"
   }
 }

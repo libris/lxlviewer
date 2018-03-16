@@ -2,7 +2,7 @@
 import * as _ from 'lodash';
 import LensMixin from '../mixins/lens-mixin';
 import EntitySummary from '../shared/entity-summary';
-import SummaryActionButton from '../editorcomponents/summary-action-button';
+import SummaryActionButton from '../inspector/summary-action-button';
 import { mapGetters } from 'vuex';
 
 export default {
@@ -63,18 +63,57 @@ export default {
   },
   watch: {
   },
+  events: {
+    'select-next'() {
+      if (this.active) {
+        console.log('active');
+        if (this.selectedIndex >= 0) {
+          const fieldList = document.getElementsByClassName('field-list')[0];
+          const threshold =
+            fieldList.getBoundingClientRect().top +
+            fieldList.getBoundingClientRect().height;
+          
+          const selectedElement = document.getElementsByClassName('selected')[0];
+          const selectedPosition =
+            selectedElement.getBoundingClientRect().top +
+            selectedElement.getBoundingClientRect().height * 2;
+          if (selectedPosition > threshold) {
+            fieldList.scrollTop += selectedElement.getBoundingClientRect().height * 2;
+          }
+        } 
+        this.selectedIndex += 1;
+        console.log(this.selectedIndex);
+      }
+    },
+    'select-prev'() {
+      if (this.active) {
+        if (this.selectedIndex > 0) {
+          this.selectedIndex -= 1;
+          const fieldList = document.getElementsByClassName('field-list')[0];
+          const threshold = fieldList.getBoundingClientRect().top;
+          const selectedElement = document.getElementsByClassName('selected')[0];
+          const selectedPosition =
+            selectedElement.getBoundingClientRect().top -
+            selectedElement.getBoundingClientRect().height;
+          if (selectedPosition < threshold) {
+            fieldList.scrollTop -= selectedElement.getBoundingClientRect().height * 2;
+          }
+        }
+      }
+    }
+  },
   ready() { // Ready method is deprecated in 2.0, switch to "mounted"
   },
 };
 </script>
 
 <template>
-  <div class="search-result-item">
+  <li class="search-result-item" >
     <div class="search-item-entity-summary-container">
       <entity-summary :focus-data="focusData" :should-link="false" :lines="4"></entity-summary>
     </div>
     <summary-action-button v-show="listItemSettings.show" :settings="addPayload" @action="addItem()"></summary-action-button>
-  </div>
+  </li>
 </template>
 
 

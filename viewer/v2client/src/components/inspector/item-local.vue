@@ -12,7 +12,7 @@ import ProcessedLabel from '../shared/processedlabel';
 import ItemEntity from './item-entity';
 import CardComponent from '../shared/card-component';
 import ToolTipComponent from '../shared/tooltip-component';
-import FieldAdder from '@/components/editorcomponents/field-adder';
+import FieldAdder from '@/components/inspector/field-adder';
 import SearchWindow from './search-window';
 import ItemMixin from '../mixins/item-mixin';
 import LensMixin from '../mixins/lens-mixin';

@@ -1,23 +1,3 @@
-<template>
-  <div class="InspectorView">
-    <div v-if="!postLoaded" class="text-center">
-      <i class="fa fa-circle-o-notch fa-4x fa-spin"></i><br/>
-      <h3>{{ 'Loading document' | translatePhrase | capitalize }}</h3>
-    </div>
-    <div class="row">
-      <div v-if="postLoaded" class="InspectorView-panel panel panel-default col-md-12">
-        <editor-controls @save="saveItem()"></editor-controls>
-        <header-component id="main-header" :full="true" v-if="!isItem"></header-component>
-        <form-component :editing-object="inspector.status.focus" :locked="!inspector.status.editing"></form-component>
-        <hr>
-        <code v-if="user.settings.appTech">
-          {{result}}
-        </code>
-      </div>
-    </div>
-  </div>
-</template>
-
 <script>
 import * as StringUtil from '@/utils/string';
 import * as DataUtil from '@/utils/data';
@@ -26,10 +6,10 @@ import * as httpUtil from '@/utils/http';
 // import * as VocabUtil from '@/utils/vocab';
 import * as DisplayUtil from '@/utils/display';
 import * as RecordUtil from '@/utils/record';
-// import MarcPreview from '@/components/editorcomponents/marc-preview';
-import FormComponent from '@/components/editorcomponents/formcomponent';
-import EditorControls from '@/components/editorcomponents/editorcontrols';
-import HeaderComponent from '@/components/editorcomponents/headercomponent';
+// import MarcPreview from '@/components/inspector/marc-preview';
+import FormComponent from '@/components/inspector/formcomponent';
+import EditorControls from '@/components/inspector/editorcontrols';
+import HeaderComponent from '@/components/inspector/headercomponent';
 import ModalComponent from '@/components/shared/modal-component';
 
 export default {
@@ -180,6 +160,27 @@ export default {
   },
 }
 </script>
+<template>
+  <div class="InspectorView">
+    <div v-if="!postLoaded" class="text-center">
+      <i class="fa fa-circle-o-notch fa-4x fa-spin"></i><br/>
+      <h3>{{ 'Loading document' | translatePhrase | capitalize }}</h3>
+    </div>
+    <div class="row">
+      <div v-if="postLoaded" class="InspectorView-panel panel panel-default col-md-12">
+        <editor-controls @save="saveItem()"></editor-controls>
+        <header-component id="main-header" :full="true" v-if="!isItem"></header-component>
+        <form-component 
+          :editing-object="inspector.status.focus" 
+          :locked="!inspector.status.editing"></form-component>
+        <hr>
+        <code v-if="user.settings.appTech">
+          {{result}}
+        </code>
+      </div>
+    </div>
+  </div>
+</template>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="less">

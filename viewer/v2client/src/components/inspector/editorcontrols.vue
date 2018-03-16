@@ -8,9 +8,9 @@ import * as ModalUtil from '@/utils/modals';
 import * as HttpUtil from '@/utils/http';
 import * as StringUtil from '@/utils/string';
 import * as RecordUtil from '@/utils/record';
-import HeaderComponent from '@/components/editorcomponents/headercomponent';
-import FieldAdder from '@/components/editorcomponents/field-adder';
-import RecordSummary from '@/components/editorcomponents/record-summary';
+import HeaderComponent from '@/components/inspector/headercomponent';
+import FieldAdder from '@/components/inspector/field-adder';
+import RecordSummary from '@/components/inspector/record-summary';
 import TooltipComponent from '@/components/shared/tooltip-component';
 import LensMixin from '@/components/mixins/lens-mixin';
 import { mixin as clickaway } from 'vue-clickaway';
@@ -398,9 +398,7 @@ export default {
         font-weight: bold;
       }
       .ToolsMenu, .OtherFormatMenu {
-        &-button {
 
-        }
         &-menu {
           display: block;
         }
