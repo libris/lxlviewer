@@ -21,7 +21,7 @@ Requires the following to be installed on the host machine:
 
     $ cd viewer/v2client && npm install
 
-    $ cp config/api_config.json.ln config/api_config.json
+    $ cp config/api_config.json.in config/api_config.json
 
 In `api_config.json`, input the path to your REST-API (if not standard).
 
