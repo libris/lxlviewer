@@ -61,7 +61,7 @@ export default {
       toolbarTestEl.style.width = `${toolbarPlaceholderEl.clientWidth}px`;
     },
     fetchDocument() {
-      const fetchUrl = `http://kblocalhost.kb.se:5000/${this.documentId}/data.jsonld`;
+      const fetchUrl = `${this.settings.apiPath}/${this.documentId}/data.jsonld`;
 
       fetch(fetchUrl).then((response) => {
         if (response.status === 200) {
