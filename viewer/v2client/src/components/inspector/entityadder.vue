@@ -330,7 +330,7 @@ export default {
         :value="term.id"></option>
     </select>
   </div>
-  <modal-component v-if="active" class="EntityAdderModal">
+  <modal-component v-if="active" class="EntityAdderModal" @close="hide">
     <template slot="modal-header">
       {{ "Add entity" | translatePhrase }} | {{ addLabel | labelByLang }}
       <span class="ModalComponent-windowControl">
