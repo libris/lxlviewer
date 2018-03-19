@@ -96,10 +96,11 @@ export default {
     justify-content: space-between;
     padding: 0.5em 1em 0em 1em;
     flex-grow: 1;
+    width: 100%;
 
     .LinkCard--large & {
-    padding: 1em;
-    flex-basis: 45%;
+      padding: 1em;
+      flex-basis: 45%;
     }
   }
 

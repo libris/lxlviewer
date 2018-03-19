@@ -167,7 +167,6 @@ export default {
         v-if="!isLibrisResource && !isImport && shouldLink" 
         :href="focusData['@id']" 
         :title="header.join(', ')">
-        <i class="fa fa-external-link" aria-hidden="true"></i>
         {{ header.join(', ') }}
       </a>
     </h3>

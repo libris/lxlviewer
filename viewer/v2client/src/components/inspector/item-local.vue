@@ -327,9 +327,8 @@ export default {
 
 <template>
   <div class="item-local-container" v-bind:class="{'highlight': isNewlyAdded, 'expanded': expanded}">
-    <div class="link-indicator" :class="{'active': showLinkAction && inspector.status.inEdit}" v-if="isExtractable" @click="openExtractDialog" @mouseover="showLinkAction = true" @mouseout="showLinkAction = false">
-      <i v-show="showLinkAction && status.inEdit" class="fa fa-link"><tooltip-component :show-tooltip="showLinkAction" tooltip-text="Link entity" translation="translatePhrase"></tooltip-component></i>
-      <i v-show="!showLinkAction || !status.inEdit" class="fa fa-unlink"></i>
+    <div class="link-indicator" v-if="isExtractable">
+      <i class="fa fa-unlink"></i>
     </div>
     <div class="item-local" :class="{'expanded': expanded, 'distinguish-removal': removeHover}">
       <div class="topbar">
@@ -340,9 +339,17 @@ export default {
           <i v-if="!isLocked" class="fa fa-trash-o chip-action" :class="{'show-icon': showActionButtons}" v-on:click="removeThis(true)" @mouseover="removeHover = true" @mouseout="removeHover = false">
             <tooltip-component :show-tooltip="removeHover" tooltip-text="Remove" translation="translatePhrase"></tooltip-component>
           </i>
+          <i class="fa fa-link"
+            v-if="!isLocked"  
+            @click="openExtractDialog()" 
+            @mouseover="showLinkAction = true" 
+            @mouseout="showLinkAction = false">
+            <tooltip-component :show-tooltip="showLinkAction" tooltip-text="Link entity" translation="translatePhrase"></tooltip-component>
+          </i>
           <field-adder v-if="!isLocked" :entity-type="item['@type']" :allowed="allowedProperties" :inner="true" :path="getPath"></field-adder>
         </span>
       </div>
+      
       <field-adder v-if="!isLocked && isEmpty" :entity-type="item['@type']" :allowed="allowedProperties" :inner="true" :path="getPath"></field-adder>
       <field v-show="expanded && k !== '_uid'" v-for="(v, k) in filteredItem" :parent-path="getPath" :entity-type="item['@type']" :is-inner="true" :is-locked="isLocked" :is-removable="false" :as-columns="false" :parent-key="fieldKey" :parent-index="index" :field-key="k" :field-value="v" :key="k" :show-action-buttons="showActionButtons"></field>
     </div>
