@@ -29,9 +29,7 @@ export default {
       this.selectedIndex = index;
     },
     selectNext() {
-      console.log('next');
       if (this.active) {
-        console.log('active');
         if (this.selectedIndex >= 0) {
           const fieldList = document.getElementsByClassName('js-field-list')[0];
           const threshold =
@@ -47,11 +45,9 @@ export default {
           }
         } 
         this.selectedIndex += 1;
-        console.log(this.selectedIndex);
       }
     },
     selectPrev() {
-      console.log('prev');
       if (this.active) {
         if (this.selectedIndex > 0) {
           this.selectedIndex -= 1;
@@ -93,8 +89,8 @@ export default {
       property: 'keybindState', 
       value: 'entity-search-list' 
     });
-    this.$on('select-next', this.selectNext());
-    this.$on('select-prev', this.selectPrev());
+    this.$on('select-next', () => this.selectNext());
+    this.$on('select-prev', () => this.selectPrev());
   }
 };
 </script>
