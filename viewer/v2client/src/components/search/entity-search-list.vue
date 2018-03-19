@@ -20,7 +20,7 @@ export default {
     return {
       keyword: '',
       active: false,
-      selectedIndex: 0,
+      selectedIndex: -1,
       fieldListBottom: false,
     }
   },
@@ -104,7 +104,6 @@ export default {
         :disabled-ids="disabledIds" 
         :add-link="false" 
         v-for="(item, index) in results" 
-        :track-by="index"
         :key="index"></entity-search-item>
     </ul>
   </div>
