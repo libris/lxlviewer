@@ -118,7 +118,7 @@ export default {
   &:nth-child(even) {
     background-color: darken(@neutral-color, 2%);
   }
-  &.selected {
+  &.is-selected {
     outline: solid 1px @brand-primary;
     background-color: fadeout(@brand-primary, 70%);
   } 

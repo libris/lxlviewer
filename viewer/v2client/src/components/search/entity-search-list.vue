@@ -36,7 +36,7 @@ export default {
             fieldList.getBoundingClientRect().top +
             fieldList.getBoundingClientRect().height;
           
-          const selectedElement = document.getElementsByClassName('selected')[0];
+          const selectedElement = document.getElementsByClassName('is-selected')[0];
           const selectedPosition =
             selectedElement.getBoundingClientRect().top +
             selectedElement.getBoundingClientRect().height * 2;
@@ -53,7 +53,7 @@ export default {
           this.selectedIndex -= 1;
           const fieldList = document.getElementsByClassName('js-field-list')[0];
           const threshold = fieldList.getBoundingClientRect().top;
-          const selectedElement = document.getElementsByClassName('selected')[0];
+          const selectedElement = document.getElementsByClassName('is-selected')[0];
           const selectedPosition =
             selectedElement.getBoundingClientRect().top -
             selectedElement.getBoundingClientRect().height;
@@ -99,8 +99,9 @@ export default {
   <div class="EntitySearchResult">
     <ul class="EntitySearchResult-list js-field-list" v-show="results.length > 0" >
       <entity-search-item tabindex="0"
-        :class="{'selected': index == selectedIndex }" 
+        :class="{'is-selected': index == selectedIndex }" 
         @mouseover.native="select(index)"
+        @focus.native="select(index)"
         :focus-data="item" 
         :disabled-ids="disabledIds" 
         :add-link="false" 
