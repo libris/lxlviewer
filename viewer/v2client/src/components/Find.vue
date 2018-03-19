@@ -39,8 +39,8 @@ export default {
   methods: {
     getResult() {
       this.emptyResults();
-      this.searchInProgress = true;
       if (typeof this.$route.params.query !== 'undefined') {
+        this.searchInProgress = true;
         if (this.$route.params.perimeter === 'libris') {
           this.getLocalResult();
         } else {
