@@ -89,11 +89,13 @@ new Vue({
           if (value !== null && value !== '') {
             this.combokeys.bindGlobal(key.toString(), () => {
               const valueArray = value.split('|');
-              if (state === 'overview') {
-                this.$dispatch(valueArray[0], valueArray[1]);
-              } else {
-                this.$broadcast(valueArray[0], valueArray[1]);
-              }
+              // if (state === 'overview') {
+              //   this.$dispatch(valueArray[0], valueArray[1]);
+              // } else {
+              //   console.log(valueArray[0], valueArray[1]);
+              //   this.$dispatch(valueArray[0], valueArray[1]);
+              // }
+              this.$store.dispatch('pushKeyAction', valueArray[0]);
               return false;
             });
           }
@@ -116,6 +118,9 @@ new Vue({
     inspector() {
       return this.$store.getters.inspector;
     },
+    status() {
+      return this.$store.getters.status;
+    }
   },
   methods: {
     initializeUser() {

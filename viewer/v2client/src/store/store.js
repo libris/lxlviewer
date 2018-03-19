@@ -33,6 +33,7 @@ const store = new Vuex.Store({
     },
     status: {
       keybindState: '',
+      keyActions: [],
       resultList: {
         loading: false
       },
@@ -147,6 +148,9 @@ const store = new Vuex.Store({
     }
   },
   mutations: {
+    pushKeyAction(state, keyAction) {
+      state.status.keyActions.push(keyAction);
+    },
     pushNotification(state, content) {
       const date = new Date();
       content['id'] = StringUtil.getHash(`${date.getSeconds()}${date.getMilliseconds()}`);
@@ -261,6 +265,7 @@ const store = new Vuex.Store({
     }
   },
   actions: {
+
     undoInspectorChange({ commit, state }) {
       const history = state.inspector.changeHistory;
       const lastNode = history[history.length-1];
@@ -288,6 +293,9 @@ const store = new Vuex.Store({
       }
       history.splice(history.length-1, 1);
       commit('updateInspectorData', payload);
+    },
+    pushKeyAction({ commit }, keyAction) {
+      commit('pushKeyAction', keyAction);
     },
     setUser({ commit }, userObj) {
       commit('setUser', userObj);

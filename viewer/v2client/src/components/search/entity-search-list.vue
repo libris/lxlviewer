@@ -27,24 +27,8 @@ export default {
   methods: {
     select(index) {
       this.selectedIndex = index;
-    }
-  },
-  computed: {
-    ...mapGetters([
-      'inspector',
-      'resources',
-      'user',
-      'settings',
-      'status',
-    ]),
-  },
-  components: {
-    'entity-search-item': EntitySearchItem,
-  },
-  watch: {
-  },
-  events: {
-    'select-next'() {
+    },
+    selectNext() {
       console.log('next');
       if (this.active) {
         console.log('active');
@@ -66,7 +50,7 @@ export default {
         console.log(this.selectedIndex);
       }
     },
-    'select-prev'() {
+    selectPrev() {
       console.log('prev');
       if (this.active) {
         if (this.selectedIndex > 0) {
@@ -82,7 +66,26 @@ export default {
           }
         }
       }
+    },
+  },
+  computed: {
+    ...mapGetters([
+      'inspector',
+      'resources',
+      'user',
+      'settings',
+      'status',
+    ]),
+  },
+  components: {
+    'entity-search-item': EntitySearchItem,
+  },
+  watch: {
+    'status.keyActions'(value) {
+      this.$emit(value[value.length-1]);
     }
+  },
+  events: {
   },
   mounted: function () {
     this.active = true;
@@ -90,6 +93,8 @@ export default {
       property: 'keybindState', 
       value: 'entity-search-list' 
     });
+    this.$on('select-next', this.selectNext());
+    this.$on('select-prev', this.selectPrev());
   }
 };
 </script>

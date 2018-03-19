@@ -109,7 +109,7 @@ export default {
     justify-content: space-between;
     cursor: pointer;
 
-    &:hover {
+    .CreationCard:hover & {
       outline: 2px dashed fadeout(@brand-primary, 70%);
     }
 
