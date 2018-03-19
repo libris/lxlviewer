@@ -23,6 +23,7 @@ export default {
       combokeys: null,
       result: {},
       importData: [],
+      searchInProgress: false,
     }
   },
   events: {
@@ -38,6 +39,7 @@ export default {
   methods: {
     getResult() {
       this.emptyResults();
+      this.searchInProgress = true;
       if (typeof this.$route.params.query !== 'undefined') {
         if (this.$route.params.perimeter === 'libris') {
           this.getLocalResult();
@@ -57,8 +59,10 @@ export default {
         return response.json();
       }, (error) => {
         this.$store.dispatch('pushNotification', { color: 'red', message: StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language) });
+        this.searchInProgress = false;
       }).then((result) => {
         this.result = result;
+        this.searchInProgress = false;
       });
     },
     getRemoteResult() {
@@ -67,9 +71,11 @@ export default {
         return response.json();
       }, (error) => {
         this.$store.dispatch('pushNotification', { color: 'red', message: StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language) });
+        this.searchInProgress = false;
       }).then((result) => {
         this.result = this.convertRemoteResult(result);
         this.importData = result.items;
+        this.searchInProgress = false;
       });
     },
     convertRemoteResult(result) {
@@ -153,13 +159,23 @@ export default {
       </div>
       <div class="col-md-9 Find-content">
         <search-form :search-perimeter="$route.params.perimeter"></search-form>
-        <search-result :import-data="importData" :result="result" v-if="result.totalItems > -1"></search-result>
+        <div v-show="searchInProgress" class="panel panel-default">
+          <div class="Find-progressText">
+            {{ 'Searching' | translatePhrase }} <i class="fa fa-circle-o-notch fa-spin"></i>
+          </div>
+        </div>
+        <search-result :import-data="importData" :result="result" v-show="result.totalItems > -1 && !searchInProgress"></search-result>
       </div>
     </div>
   </div>
 </template>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style lang="less">
+
+.Find {
+  &-progressText {
+    padding: 20px;
+  }
+}
 
 </style>
