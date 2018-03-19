@@ -93,8 +93,8 @@ export default {
       property: 'keybindState', 
       value: 'entity-search-list' 
     });
-    this.$on('select-next', this.selectNext());
-    this.$on('select-prev', this.selectPrev());
+    this.$on('select-next', () => this.selectNext());
+    this.$on('select-prev', () => this.selectPrev());
   }
 };
 </script>
