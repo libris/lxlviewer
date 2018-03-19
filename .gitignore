@@ -11,7 +11,7 @@ viewer/client/bower_components/
 /viewer/client/static/vendor
 
 # Local App Config
-/instance/config.cfg
+instance/config.cfg
 
 # Common OS, Tool and Editor Files
 .vscode/*

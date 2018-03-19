@@ -4,7 +4,9 @@ import PropertyMappings from '../../../../resources/json/propertymappings.json';
 import * as httpUtil from '../../utils/http';
 import * as StringUtil from '../../utils/string';
 import { changeResultListStatus, changeStatus } from '../../vuex/actions';
-import { getSettings, getStatus, getVocabulary, getContext } from '../../vuex/getters';
+import Copy from '../../../../resources/json/copy.json';
+import { getSettings, getVocabulary, getStatus, getContext } from '../../vuex/getters';
+
 export default {
   name: 'search-form',
   vuex: {
@@ -40,9 +42,25 @@ export default {
         currentInput: 0,
         ids: [],
       },
+      activeClass: 'is-active'
     }
   },
   methods: {
+      showHelp() {
+        let helpText = document.querySelector('.js-searchHelpText');
+        helpText.parentElement.classList.add(this.activeClass);
+        
+      },
+      hideHelp() {
+        let helpText = document.querySelector('.js-searchHelpText');
+        if (helpText.parentElement.classList.contains(this.activeClass)) {
+            helpText.parentElement.classList.remove(this.activeClass);
+        } 
+      },
+    toggleHelp() {
+        let helpText = document.querySelector('.js-searchHelpText');
+        helpText.parentElement.classList.toggle(this.activeClass);
+      },
       addSearchField() {
           const newobj = {};
           newobj.value='';
@@ -130,6 +148,16 @@ export default {
       }
   },
   computed: {
+    copy() {
+        return Copy[this.settings.siteInfo.title]['search-form-help'];
+    },
+    header() {
+        return this.copy.header;
+    },
+    text() {
+      return this.copy.text;
+    },
+    
       observations() {
           const observations = [];
           const statistics = this.result.statistics || this.result.stats;
@@ -205,14 +233,31 @@ export default {
         <a class="card-link active">Libris</a>
         <a class="card-link" href="/import">Andra källor</a>
       </div>
-        <form action="/find" method="GET" id="searchForm">
+        <div class="search-help">
+            <div class="search-help-dropdown dropdown" @mouseleave="hideHelp()">
+                <span class="search-help-icon">
+                    <i class="fa fa-fw fa-question-circle-o"  @mouseover="showHelp()"  tabindex="0" aria-haspopup="true" @keyup.enter="toggleHelp()"></i>
+                </span>
+                <div class="search-help-popup dropdown-menu js-searchHelpText"> 
+                    <h6 class="search-help-header">{{ header }}</h6>
+                    <p v-for="paragraph in text.paragraphs" v-html="paragraph"></p>
+                </div>
+            </div>
+        </div> 
+     
+        <form action="/find" method="GET" id="searchForm" class="search-form">
             <div class="form-inline">
-                <div class="form-group">
+                <div class="form-group">   
+
                     <label class="search-label hidden" id="searchlabel" for="q">
                         {{"Search" | translatePhrase}}
                     </label>
                     <div id="searchFieldContainer">
+                        
+
                         <div class="form-control search-input">
+                            
+                          
                             <div aria-labelledby="searchlabel" id="searchQsmart">
                                 <input
                                     list="matchingParameters"
@@ -227,6 +272,7 @@ export default {
                                 <datalist id="matchingParameters">
                                     <option v-for="matchingParameter in validSearchTags" :value="`${matchingParameter}:`">{{matchingParameter}}:</option>
                                 </datalist>
+
                             </div>
                             <span v-show="hasInput" class="field-clearer" @click="clearInputs()"><i class="fa fa-fw fa-close"></i></span>
                         </div>
@@ -248,6 +294,49 @@ export default {
 
 <style lang="less">
 @import '../shared/_variables.less';
+
+/* Search help */
+.search-help {
+    margin-top: -35px;
+
+    &-icon {
+        cursor: pointer;
+        font-size: 18px;
+        float: right;
+        width: 20%;
+        margin-right: 24px;
+        clear: right;
+
+        &:focus {
+            outline: auto 5px;
+        }
+    }
+
+    &-dropdown {
+        float: none;
+    }
+
+    &-popup {
+        background: @white;
+        font-size: 12px;
+        display: none;
+        padding: 10px;
+        left: auto;
+        right: 0;
+        top: 2em;
+        width: 30%;
+        max-width: 300px;
+
+        .is-active & {
+            display: block;
+        }
+    }
+
+    &-header {
+        font-weight: 700;
+    }
+}
+
 .search-form-container {
     margin-top: 0vh;
     transition: 0.3s ease margin-top;
@@ -302,45 +391,47 @@ export default {
             > div {
                 display: flex;
                 justify-content: space-between;
-                #searchQsmart {
-                display: flex;
-                flex: 8 8 98%;
-                flex-direction: row;
-                flex-wrap: nowrap;
-                line-height: 2em;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
+                position: relative;
 
-                .searchphrase {
-                    flex-grow: 1;
-                    margin-right: 5px;
-                    outline: none;
-                    cursor: text;
+                #searchQsmart {
+                    display: flex;
+                    flex: 8 8 98%;
+                    flex-direction: row;
+                    flex-wrap: nowrap;
+                    line-height: 2em;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+
+                    .searchphrase {
+                        flex-grow: 1;
+                        margin-right: 5px;
+                        outline: none;
+                        cursor: text;
+                    }
+                    .searchtag {
+                        margin-right: 5px;
+                        border-radius: 3px;
+                        padding: 0px 5px;
+                        outline: none;
+                        cursor: text;
+                    }
+                    .valid {
+                        background-color: #E0F2F1;
+                    }
+                    input {
+                        border: 0px;
+                        outline: none;
+                        display: inline-block;
+                    }
                 }
-                .searchtag {
-                    margin-right: 5px;
-                    border-radius: 3px;
-                    padding: 0px 5px;
-                    outline: none;
-                    cursor: text;
-                }
-                .valid {
-                    background-color: #E0F2F1;
-                }
-                input {
-                    border: 0px;
-                    outline: none;
-                    display: inline-block;
-                }
-                }
-                > .field-clearer {
-                cursor: pointer;
-                align-self: center;
-                flex: 1 1 2%;
-                &:hover {
-                    color: #555;
-                }
+                    > .field-clearer {
+                    cursor: pointer;
+                    align-self: center;
+                    flex: 1 1 2%;
+                    &:hover {
+                        color: #555;
+                    }
                 }
             }
             }

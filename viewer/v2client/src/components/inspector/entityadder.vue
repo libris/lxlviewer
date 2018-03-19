@@ -216,6 +216,7 @@ export default {
       }
     },
     show() {
+      LayoutUtil.scrollLock(true);
       this.active = true;
       this.$nextTick(() => {
         this.$el.querySelector('.entity-search-keyword-input').focus();
@@ -225,6 +226,7 @@ export default {
     hide() {
       if (!this.active) return;
       this.active = false;
+      LayoutUtil.scrollLock(false);
       this.$store.dispatch('setStatusValue', { property: 'keybindState', value: 'overview' });
     },
     openSearch() {

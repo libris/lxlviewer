@@ -109,7 +109,7 @@ export default {
   </div>
   <div class="main-info">
     <h3 class="header">
-      <span class="import-header" title="{{ header.join(', ') }}" v-on:click="importThis()" v-if="isImport">{{ header.join(', ') }}</span>
+      <span class="import-header" title="{{ header.join(', ') }}" v-on:click="importThis()" v-if="isImport"><i class="fa fa-external-link" aria-hidden="true"></i>{{ header.join(', ') }}</span>
       <a v-if="!isImport && renderLink" :class="{'blue-link': isKbSe}" title="{{ header.join(', ') }}" :href="focusData['@id']">{{ header.join(', ') }}</a>
       <span v-if="!isImport && !renderLink" title="{{ header.join(', ') }}">{{ header.join(', ') }}</span>
     </h3>
@@ -155,6 +155,11 @@ export default {
       min-height: 1.2em;
       margin: 0px;
     }
+
+  .import-header .fa-external-link {
+    margin: 4px 6px 0 0;
+    font-size: 18px;
+  }
     .info {
       .key-value-pair {
         .key {

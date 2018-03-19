@@ -14,23 +14,19 @@ export default {
       default: () => [],
     },
     path: '',
+    index: Number,
   },
   data() {
     return {
       keyword: '',
       active: false,
+      selectedIndex: 0,
+      fieldListBottom: false,
     }
   },
   methods: {
-    loadStatus() {
-      this.active = true;
-      this.$store.dispatch('setStatusValue', { 
-        property: 'keybindState', 
-        value: 'entity-search-list' 
-      });
-    },
-    test() {
-      console.log('hello');
+    select(index) {
+      this.selectedIndex = index;
     }
   },
   computed: {
@@ -48,26 +44,68 @@ export default {
   watch: {
   },
   events: {
+    'select-next'() {
+      console.log('next');
+      if (this.active) {
+        console.log('active');
+        if (this.selectedIndex >= 0) {
+          const fieldList = document.getElementsByClassName('js-field-list')[0];
+          const threshold =
+            fieldList.getBoundingClientRect().top +
+            fieldList.getBoundingClientRect().height;
+          
+          const selectedElement = document.getElementsByClassName('selected')[0];
+          const selectedPosition =
+            selectedElement.getBoundingClientRect().top +
+            selectedElement.getBoundingClientRect().height * 2;
+          if (selectedPosition > threshold) {
+            fieldList.scrollTop += selectedElement.getBoundingClientRect().height * 2;
+          }
+        } 
+        this.selectedIndex += 1;
+        console.log(this.selectedIndex);
+      }
+    },
+    'select-prev'() {
+      console.log('prev');
+      if (this.active) {
+        if (this.selectedIndex > 0) {
+          this.selectedIndex -= 1;
+          const fieldList = document.getElementsByClassName('js-field-list')[0];
+          const threshold = fieldList.getBoundingClientRect().top;
+          const selectedElement = document.getElementsByClassName('selected')[0];
+          const selectedPosition =
+            selectedElement.getBoundingClientRect().top -
+            selectedElement.getBoundingClientRect().height;
+          if (selectedPosition < threshold) {
+            fieldList.scrollTop -= selectedElement.getBoundingClientRect().height * 2;
+          }
+        }
+      }
+    }
   },
   mounted: function () {
-    this.$nextTick(function () {
-      this.loadStatus();
+    this.active = true;
+    this.$store.dispatch('setStatusValue', { 
+      property: 'keybindState', 
+      value: 'entity-search-list' 
     });
-  },
-  ready() { // Ready method is deprecated in 2.0, switch to "mounted"
-  },
+  }
 };
 </script>
 
 <template>
   <div class="EntitySearchResult">
-    <ul class="EntitySearchResult-list" v-show="results.length > 0" >
-      <entity-search-item
+    <ul class="EntitySearchResult-list js-field-list" v-show="results.length > 0" >
+      <entity-search-item tabindex="0"
+        :class="{'selected': index == selectedIndex }" 
+        @mouseover.native="select(index)"
         :focus-data="item" 
         :disabled-ids="disabledIds" 
         :add-link="false" 
         v-for="(item, index) in results" 
-        :key='index'></entity-search-item>
+        :track-by="index"
+        :key="index"></entity-search-item>
     </ul>
   </div>
 </template>

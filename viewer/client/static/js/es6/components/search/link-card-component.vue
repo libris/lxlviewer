@@ -46,7 +46,7 @@ export default {
 </script>
 
 <template>
-  <div class="panel panel-default LinkCard" v-bind:class="{'no-link': !linkUrl}">
+  <div class="panel panel-default link-card LinkCard" v-bind:class="{'no-link': !linkUrl}">
     <img :src="getImage" class="LinkCard-img"/>
     <div class="LinkCard-content">
       <div class="LinkCard-text">
@@ -59,6 +59,82 @@ export default {
 </template>
 
 <style lang="less">
-  @import '../shared/_variables.less';
-  @import '../../../../less/components/_linkcard.less';
+.LinkCard {
+  display: flex;
+  flex-basis: 24%; // To parent
+  flex-direction: column;
+  align-items: center;
+
+  &-img {
+    width: 100%;
+    flex-shrink: 0; // Prevent weird image sizing behaviour in IE11
+  }
+
+  &-videoWrap {
+    flex-basis: 45%;
+    padding-bottom: 1px;
+  }
+
+  &-video {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 */
+    padding-top: 25px;
+    height: 0;
+  
+    &-iframe,
+    & iframe,
+    & embed {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  &-content {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 0.5em 1em 0em 1em;
+    flex-grow: 1;
+    width: 100%;
+
+    .LinkCard--large & {
+    padding: 1em;
+    flex-basis: 45%;
+    }
+  }
+
+  &-text {
+    width: 100%;
+  }
+
+  &-title {
+    font-size: 18px;
+    font-size: 1.8rem;
+    font-weight: 700;
+    display: block;
+  }
+
+  &-descr {
+    font-size: 14px;
+    font-size: 1.4rem;
+  }
+
+  &-link {
+  }
+
+  &.no-link {
+    padding-bottom: 1em;
+  }
+
+  &--large {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: unset;
+    align-items: inherit;
+  }
+}
 </style>

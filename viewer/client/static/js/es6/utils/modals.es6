@@ -11,7 +11,7 @@ function createModal(id, options) {
   }
 
   const template =
-      `<div class="modal fade in" id="${id}" tabindex="-1" role="dialog" aria-labelledby="${id}-label">
+      `<div class="modal fade in ${options.sType}" id="${id}" tabindex="-1" role="dialog" aria-labelledby="${id}-label">
         <div class="modal-dialog" role="document">
           <div class="modal-content">
             <div class="modal-header">
