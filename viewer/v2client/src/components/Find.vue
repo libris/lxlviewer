@@ -153,7 +153,10 @@ export default {
       </div>
       <div class="col-md-9 Find-content">
         <search-form :search-perimeter="$route.params.perimeter"></search-form>
-        <search-result :import-data="importData" :result="result" v-if="result.totalItems > -1"></search-result>
+        <search-result 
+          :import-data="importData" 
+          :result="result" 
+          v-if="result.totalItems > -1"></search-result>
       </div>
     </div>
   </div>

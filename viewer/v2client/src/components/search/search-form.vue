@@ -4,6 +4,7 @@ import PropertyMappings from '@/resources/json/propertymappings.json';
 import * as httpUtil from '@/utils/http';
 import Copy from '@/resources/json/copy.json';
 import * as StringUtil from '@/utils/string';
+import RemoteDatabases from '@/components/search/remote-databases';
 
 export default {
   name: 'search-form',
@@ -195,6 +196,7 @@ export default {
       }
   },
   components: {
+    'remote-databases': RemoteDatabases,
   },
   watch: {
     currentComputedInput(newValue) {
@@ -235,7 +237,7 @@ export default {
       </div>
     </div>       
     <form id="searchForm" class="SearchBar-form">
-      <div class="is-librisSearch" id="librisPanel" 
+      <div class="SearchBar-formContent is-librisSearch" id="librisPanel" 
         v-if="searchPerimeter === 'libris'">
         <div class="SearchBar-formGroup form-group ">
           <label class="SearchBar-inputLabel hidden" id="searchlabel" for="q" aria-hidden="false">
@@ -273,7 +275,7 @@ export default {
           </div>
         </div>
       </div>
-      <div class="is-remoteSearch" id="remotePanel" 
+      <div class="SearchBar-formContent is-remoteSearch" id="remotePanel" 
         v-if="searchPerimeter === 'remote'">
         <div class="SearchBar-formGroup form-group">
           <input type="text" class="SearchBar-input form-control" placeholder="ISBN eller valfria sökord" 
@@ -296,6 +298,7 @@ export default {
             {{ filter.label }}
         </label>
       </div>
+      <remote-databases v-if="searchPerimeter === 'remote'" :remoteSearch="remoteSearch"></remote-databases>
     </form>
   </div>
 </template>
