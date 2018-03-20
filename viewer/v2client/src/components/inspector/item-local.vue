@@ -340,7 +340,7 @@ export default {
             <tooltip-component :show-tooltip="removeHover" tooltip-text="Remove" translation="translatePhrase"></tooltip-component>
           </i>
           <i class="fa fa-link"
-            v-if="!isLocked"  
+            v-if="inspector.status.editing"  
             @click="openExtractDialog()" 
             @mouseover="showLinkAction = true" 
             @mouseout="showLinkAction = false">

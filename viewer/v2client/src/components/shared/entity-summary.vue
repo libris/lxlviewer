@@ -159,7 +159,7 @@ export default {
       </span>
       <router-link class="EntitySummary-titleLink"
         v-if="isLibrisResource && !isImport && shouldLink" 
-        :to="routerPath" 
+        :to="this.routerPath" 
         :title="header.join(', ')">
         {{ header.join(', ') }}
       </router-link>

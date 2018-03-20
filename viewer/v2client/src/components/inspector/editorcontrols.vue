@@ -18,6 +18,21 @@ import { mapGetters } from 'vuex';
 
 export default {
   mixins: [clickaway, LensMixin],
+  data() {
+    return {
+      showAdminInfoDetails: false,
+      otherFormatMenuActive: false,
+      toolsMenuActive: false,
+      loadingEdit: false,
+      showEdit: false,
+      showTools: false,
+      showDisplayAs: false,
+      showUndo: false,
+      showSave: false,
+      showFieldAdderTooltip: false,
+      showClarifySave: false,
+    };
+  },
   mounted() {
     this.$nextTick(() => {
     });
@@ -139,20 +154,6 @@ export default {
       this.$dispatch('duplicate-item');
     },
   },
-  data() {
-    return {
-      showAdminInfoDetails: false,
-      otherFormatMenuActive: false,
-      toolsMenuActive: false,
-      loadingEdit: false,
-      showEdit: false,
-      showTools: false,
-      showDisplayAs: false,
-      showUndo: false,
-      showSave: false,
-      showFieldAdderTooltip: false,
-    };
-  },
   computed: {
     ...mapGetters([
       'inspector',
@@ -270,11 +271,23 @@ export default {
         </div>
         <div class="actions">
           <button class="btn btn-default toolbar-button" v-on:click="toggleEditorFocus()">
-            <span v-show="inspector.status.focus === 'record'"><i class="fa fa-fw fa-toggle-on"></i> {{'Admin metadata' | translatePhrase}}</span>
-            <span v-show="inspector.status.focus === 'mainEntity'"><i class="fa fa-fw fa-toggle-off"></i> {{'Admin metadata' | translatePhrase}}</span>
+            <span v-show="inspector.status.focus === 'record'">
+              <i class="fa fa-fw fa-toggle-on"></i> {{'Admin metadata' | translatePhrase}}
+            </span>
+            <span v-show="inspector.status.focus === 'mainEntity'">
+              <i class="fa fa-fw fa-toggle-off"></i> {{'Admin metadata' | translatePhrase}}
+            </span>
           </button>
-          <div v-if="!inspector.status.editing" v-on-clickaway="hideOtherFormatMenu" class="dropdown OtherFormatMenu">
-            <button class="btn btn-default toolbar-button OtherFormatMenu-button" @click="showOtherFormatMenu" aria-haspopup="true" aria-expanded="true" @mouseover="showDisplayAs = true" @mouseout="showDisplayAs = false">
+          <div 
+            v-if="!inspector.status.editing" 
+            v-on-clickaway="hideOtherFormatMenu" 
+            class="dropdown OtherFormatMenu">
+            <button class="btn btn-default toolbar-button OtherFormatMenu-button" 
+              @click="showOtherFormatMenu" 
+              aria-haspopup="true" 
+              aria-expanded="true" 
+              @mouseover="showDisplayAs = true" 
+              @mouseout="showDisplayAs = false">
               <i class="fa fa-eye" aria-hidden="true">
                 <tooltip-component :show-tooltip="showDisplayAs" tooltip-text="Show as" translation="translatePhrase"></tooltip-component>
               </i>
@@ -287,7 +300,12 @@ export default {
             </ul>
           </div>
           <div class="dropdown ToolsMenu" v-on-clickaway="hideToolsMenu">
-            <button class="btn btn-default toolbar-button ToolsMenu-button" @click="showToolsMenu" aria-haspopup="true" aria-expanded="true" @mouseover="showTools = true" @mouseout="showTools = false">
+            <button class="btn btn-default toolbar-button ToolsMenu-button" 
+              @click="showToolsMenu" 
+              aria-haspopup="true" 
+              aria-expanded="true" 
+              @mouseover="showTools = true" 
+              mouseout="showTools = false">
               <i class="fa fa-wrench" aria-hidden="true">
                 <tooltip-component :show-tooltip="showTools" tooltip-text="Tools" translation="translatePhrase"></tooltip-component>
               </i>
@@ -315,11 +333,11 @@ export default {
               <li v-if="isSubClassOf('Instance') && hasSigel && !inspector.status.editing && user.email !== ''">
                 <a v-if="downloadIsSupported" @click="getCompiledPost()">
                   <i class="fa fa-fw fa-download" aria-hidden="true"></i>
-                  {{"Download compiled" | translatePhrase}}
+                   {{"Download compiled MARC21" | translatePhrase}}
                 </a>
                 <a v-if="!downloadIsSupported" :href="compileMARCUrl">
                   <i class="fa fa-fw fa-download" aria-hidden="true"></i>
-                  {{"Download compiled" | translatePhrase}}
+                   {{"Download compiled MARC21" | translatePhrase}}
                 </a>
               </li>
               <li>
@@ -337,24 +355,49 @@ export default {
             </ul>
           </div>
           <div class="toolbar-divider"></div>
-          <field-adder v-if="inspector.status.editing" :entity-type="editorData[inspector.status.focus]['@type']" :inner="false" :allowed="allowedProperties" :path="inspector.status.focus" :editing-object="inspector.status.focus"></field-adder>
-          <button class="btn btn-default toolbar-button" :disabled="inspector.changeHistory.length === 0" v-show="inspector.status.editing" @click="undo" @mouseover="showUndo = true" @mouseout="showUndo = false">
+          <field-adder 
+            v-if="inspector.status.editing" 
+            :entity-type="editorData[inspector.status.focus]['@type']" 
+            :inner="false" 
+            :allowed="allowedProperties" 
+            :path="inspector.status.focus" 
+            :editing-object="inspector.status.focus"></field-adder>
+          <button class="btn btn-default toolbar-button" 
+            :disabled="inspector.changeHistory.length === 0" 
+            v-show="inspector.status.editing" 
+            @click="undo" 
+            @mouseover="showUndo = true" 
+            @mouseout="showUndo = false">
             <i class="fa fa-undo" aria-hidden="true">
               <tooltip-component :show-tooltip="showUndo" tooltip-text="Undo" translation="translatePhrase"></tooltip-component>
             </i>
           </button>
-          <button class="btn btn-info toolbar-button" id="saveButton" @click="save" v-if="inspector.status.editing && !status.isNew" @mouseover="showSave = true" @mouseout="showSave = false">
+          <button class="btn btn-info toolbar-button" id="saveButton" 
+            @click="save" 
+            v-if="inspector.status.editing && !status.isNew" 
+            @mouseover="showSave = true" @mouseout="showSave = false">
             <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="inspector.status.saving"></i>
             <i class="fa fa-fw fa-save" v-show="!inspector.status.saving">
               <tooltip-component :show-tooltip="showSave" tooltip-text="Save" translation="translatePhrase"></tooltip-component>
             </i>
           </button>
-          <button class="btn btn-lg btn-success toolbar-button" id="saveButton" v-on:click="save(true)" v-if="inspector.status.editing">
+          <button class="btn btn-lg btn-success toolbar-button" id="saveButton" 
+            @click="save(true)" 
+            v-if="inspector.status.editing"
+            @mouseover="showClarifySave = true"
+            @mouseout="showClarifySave = false">
             <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="inspector.status.saving"></i>
-            <i class="fa fa-fw fa-check" v-show="!inspector.status.saving"></i>
+            <i class="fa fa-fw fa-check" v-show="!inspector.status.saving">
+              <tooltip-component tooltip-text="Save and stop editing" translation="translatePhrase"
+                :show-tooltip="showClarifySave"></tooltip-component>
+            </i>
             {{"Done" | translatePhrase}}
           </button>
-          <button class="btn btn-lg btn-info toolbar-button edit-button" id="editButton" v-on:click="edit()" v-show="!inspector.status.editing && canEditThisType" @mouseover="showEdit = true" @mouseout="showEdit = false">
+          <button class="btn btn-lg btn-info toolbar-button edit-button" id="editButton" 
+            v-on:click="edit()" 
+            v-show="!inspector.status.editing && canEditThisType" 
+            @mouseover="showEdit = true" 
+            @mouseout="showEdit = false">
             <i class="fa fa-fw fa-pencil" v-show="!inspector.status.opening"></i>
             <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="inspector.status.opening"></i>
             {{"Edit" | translatePhrase}}
