@@ -43,9 +43,9 @@ export default {
   },
   methods: {
     removeTags(html) {
-      var html = html.replace(/<h1.*>.*?<\/h1>/ig,'').replace(/<h2.*>.*?<\/h2>/ig,'');
-      html = html.replace(/(<\/?(?:code|br|p)[^>]*>)|<[^>]+>/ig, '$1');
-      return html;
+      let regexHtml = html.replace(/<h1.*>.*?<\/h1>/ig,'').replace(/<h2.*>.*?<\/h2>/ig,'');
+      regexHtml = regexHtml.replace(/(<\/?(?:code|br|p)[^>]*>)|<[^>]+>/ig, '$1');
+      return regexHtml;
     },
     transformMarkdownToHTML(markdown) {
       let html = marked(markdown);
