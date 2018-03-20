@@ -2,9 +2,10 @@
 import * as _ from 'lodash';
 import PropertyMappings from '@/resources/json/propertymappings.json';
 import * as httpUtil from '@/utils/http';
-import Copy from '@/resources/json/copy.json';
+import helpdocsJson from '@/resources/json/help.json';
 import * as StringUtil from '@/utils/string';
 import RemoteDatabases from '@/components/search/remote-databases';
+import marked from 'marked';
 
 export default {
   name: 'search-form',
@@ -41,6 +42,16 @@ export default {
     }
   },
   methods: {
+    removeTags(html) {
+      var html = html.replace(/<h1.*>.*?<\/h1>/ig,'').replace(/<h2.*>.*?<\/h2>/ig,'');
+      html = html.replace(/(<\/?(?:code|br|p)[^>]*>)|<[^>]+>/ig, '$1');
+      return html;
+    },
+    transformMarkdownToHTML(markdown) {
+      let html = marked(markdown);
+      html = this.removeTags(html);
+      return html;
+    },
     showHelp() {
       let helpText = document.querySelector('.js-searchHelpText');
       helpText.parentElement.classList.add(this.activeClass);
@@ -144,14 +155,11 @@ export default {
       }
   },
   computed: {
-      copy() {
-        return Copy['search-form-help'];
-      },
-      header() {
-          return this.copy.header;
-      },
-      text() {
-        return this.copy.text;
+      docs() {
+        const json = helpdocsJson;
+        delete json.default;
+        delete json.readme;
+        return json;
       },
       settings() {
           return this.$store.getters.settings;
@@ -223,16 +231,16 @@ export default {
         :class="{'is-active': searchPerimeter === 'remote' }">Andra källor
       </router-link>
     </div>
-    <div class="SearchBar-help">
-      <div class="SearchBar-helpBox dropdown" @mouseleave="hideHelp()">
+    <div class="SearchBar-help" @mouseleave="hideHelp()">
+      <div class="SearchBar-helpBox dropdown" >
         <span class="SearchBar-helpIcon">
           <i class="fa fa-fw fa-question-circle-o" tabindex="0" aria-haspopup="true"
             @mouseover="showHelp()"
             @keyup.enter="toggleHelp()"></i>
         </span>
         <div class="SearchBar-helpContent js-searchHelpText dropdown-menu"> 
-          <strong class="SearchBar-helpTitle">{{ header }}</strong>
-          <p v-for="(paragraph, index) in text.paragraphs" v-html="paragraph" :key='index'></p>
+          <strong class="SearchBar-helpTitle">Operatorer för frågespråk</strong>
+          <div v-html="transformMarkdownToHTML(docs['search-01-queries'].content)"></div>
         </div>
       </div>
     </div>       
