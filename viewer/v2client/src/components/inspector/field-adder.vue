@@ -263,7 +263,7 @@ export default {
       {{ "Field" | translatePhrase }}
     </span>
 
-    <button v-if="!inner" class="btn btn-primary toolbar-button" 
+    <button v-if="!inner" class="FieldAdder-add btn btn-primary toolbar-button" 
       v-on:click="show" 
       @mouseenter="showToolTip = true" 
       @mouseleave="showToolTip = false">
@@ -335,6 +335,12 @@ export default {
 
 <style lang="less">
 
+.FieldAdder {
+  &-add {
+    font-size: 14px;
+    font-size: 1.4rem;
+  }
+}
 .field-adder {
   .field-adder-bar {
     cursor: pointer;
