@@ -1,4 +1,8 @@
 <script>
+/*
+  Controls add new field button and add field modal with it's content
+*/
+
 import { mixin as clickaway } from 'vue-clickaway';
 import * as _ from 'lodash';
 import ToolTipComponent from '../shared/tooltip-component';
@@ -248,21 +252,30 @@ export default {
 </script>
 
 <template>
-  <span class="field-adder">
-    <span v-if="inner" class="field-adder-bar" v-on:click="show" @mouseenter="showToolTip = true" @mouseleave="showToolTip = false">
+  <span class="FieldAdder field-adder">
+    <span v-if="inner" class="field-adder-bar" 
+      v-on:click="show" 
+      @mouseenter="showToolTip = true" 
+      @mouseleave="showToolTip = false">
       <i class="fa fa-plus-square-o plus-icon" aria-hidden="true">
         <tooltip-component :show-tooltip="showToolTip" tooltip-text="Add field" translation="translatePhrase"></tooltip-component>
       </i>
       {{ "Field" | translatePhrase }}
     </span>
-    <button v-if="!inner" class="btn btn-primary toolbar-button" v-on:click="show" @mouseenter="showToolTip = true" @mouseleave="showToolTip = false">
+
+    <button v-if="!inner" class="btn btn-primary toolbar-button" 
+      v-on:click="show" 
+      @mouseenter="showToolTip = true" 
+      @mouseleave="showToolTip = false">
       <i class="fa fa-plus plus-icon" aria-hidden="true">
-        <tooltip-component :show-tooltip="showToolTip" tooltip-text="Add field" translation="translatePhrase"></tooltip-component>
+        <tooltip-component tooltip-text="Add field"
+          :show-tooltip="showToolTip" 
+          translation="translatePhrase"></tooltip-component>
       </i>
       {{ "Field" | translatePhrase }}
     </button>
 
-    <modal-component @close="hide" v-if="active" class="FieldAdderModal">
+    <modal-component @close="hide" v-if="active" class="FieldAdder-modal FieldAdderModal">
       <template slot="modal-header">
         <header>
           {{ modalTitle }}
@@ -289,9 +302,17 @@ export default {
         </div>
         <div class="FieldAdderModal-fieldList">
           <ul id="fields-window">
-            <li v-on:mouseover="selectedIndex = index" v-bind:class="{ 'added': prop.added, 'available': !prop.added, 'selected': index == selectedIndex }" v-for="(prop, index) in filteredResults" :key="prop['@id']" @click="addField(prop, true)">
+            <li tabindex="0"
+              @focus="selectedIndex = index"
+              @mouseover="selectedIndex = index" 
+              v-bind:class="{ 'added': prop.added, 'available': !prop.added, 'selected': index == selectedIndex }" 
+              v-for="(prop, index) in filteredResults" 
+              :key="prop['@id']" 
+              @click="addField(prop, true)">
               <span class="FieldAdderModal-addControl">
-                <a v-on:click.prevent="addField(prop, false)"><i class="fa fa-fw fa-2x fa-plus-circle"></i></a>
+                <a v-on:click.prevent="addField(prop, false)">
+                  <i class="fa fa-fw fa-2x fa-plus-circle"></i>
+                </a>
                 <span><i class="fa fa-fw fa-check fa-2x"></i></span>
               </span>
               <span class="FieldAdderModal-fieldLabel" :title="prop.label | capitalize">
@@ -302,7 +323,9 @@ export default {
                 {{ getPropClassInfo(prop.item) }}
               </span>
             </li>
-            <li v-if="filteredResults.length === 0"><i>{{ "Did not find any fields" | translatePhrase }}...</i></li>
+            <li v-if="filteredResults.length === 0">
+              <i>{{ "Did not find any fields" | translatePhrase }}...</i>
+            </li>
           </ul>
         </div>
       </template>
@@ -374,7 +397,6 @@ export default {
       font-size: 85%;
     }
     &-addControl {
-      display: inline-block;
       float: left;
       width: 8%;
       text-align: center;

@@ -154,7 +154,7 @@ export default {
     },
   },
   created() {
-    // this.$options.components['field-component'] = Vue.extend(FieldComponent);
+    // this.$options.components['field'] = Vue.extend(Field);
   },
   methods: {
     expand() {

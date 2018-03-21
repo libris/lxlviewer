@@ -11,12 +11,12 @@ import * as DisplayUtil from '@/utils/display';
 import * as StringUtil from '@/utils/string';
 import * as User from '@/models/user';
 import FakedDisplayJson from '@/resources/json/fakedisplay.json';
-import FieldComponent from '@/components/inspector/field-component';
+import Field from '@/components/inspector/field';
 import KeyBindings from '@/resources/json/keybindings.json';
 
 Vue.config.productionTip = false
 Vue.use(Vuex);
-Vue.component('field', FieldComponent);
+Vue.component('field', Field);
 
 Vue.filter('labelByLang', (label) => {
   return StringUtil.getLabelByLang(label, store.getters.user.settings.language, store.getters.resources.vocab, store.getters.settings.vocabPfx, store.getters.resources.context);
