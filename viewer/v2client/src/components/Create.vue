@@ -210,9 +210,7 @@ export default {
 <style lang="less">
 .Create {
   &-title {
-    font-size: 24px;
-    font-size: 2.4rem;
-    font-weight: 500;
+    margin: 10px 0 20px;
   }
 
   &-cards {

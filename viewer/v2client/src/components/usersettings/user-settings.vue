@@ -123,10 +123,6 @@ export default {
 
   &-title {
     flex: 100% 1 1;
-    font-weight: 500;
-    font-size: 30px;
-    font-size: 3.0rem;
-    margin-top: 0;
   }
 
   &-content {

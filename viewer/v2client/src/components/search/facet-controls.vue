@@ -72,8 +72,7 @@ export default {
 
   &-title {
     text-transform: uppercase;
-    font-size: 16px;
-    font-size: 1.6rem;
+    font-weight: normal;
     margin: 5px 0;
   }
 
@@ -91,7 +90,11 @@ export default {
 
   &-list {
     list-style: none;
-    padding: 0px 0 0 15px;
+    padding: 5px 0 0 15px;
+  }
+
+  &-listItem {
+    line-height: 1.3;
   }
 }
 </style>

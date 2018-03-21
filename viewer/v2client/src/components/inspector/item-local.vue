@@ -171,14 +171,20 @@ export default {
       }
     },
     openExtractDialog() {
-      if (this.status.inEdit) {
-        this.changeStatus('keybindState', 'extraction-dialog');
+      if (this.inspector.status.editing) {
+        this.$store.dispatch('setStatusValue', { 
+          property: 'keybindState', 
+          value: 'extraction-dialog' 
+        });
         LayoutUtil.scrollLock(true);
         this.extractDialogActive = true;
       }
     },
     closeExtractDialog() {
-      this.changeStatus('keybindState', 'overview');
+      this.$store.dispatch('setStatusValue', { 
+        property: 'keybindState', 
+        value: 'overview' 
+      });
       LayoutUtil.scrollLock(false);
       this.extractDialogActive = false;
       this.extracting = false;

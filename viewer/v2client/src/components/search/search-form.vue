@@ -327,7 +327,7 @@ export default {
     color: @brand-primary;
     font-weight: 700;
     margin: 0.25em 0;
-    padding: 0.4em 1em;
+    padding: 5px 10px;
     text-transform: uppercase;
     transition: color 0.5s ease;
     border: 1px dashed #fff;
@@ -373,6 +373,7 @@ export default {
   &-helpContent {
     background: @white;
     font-size: 12px;
+    font-size: 1.2rem;
     display: none;
     left: auto;
     max-width: 300px;
@@ -388,6 +389,8 @@ export default {
 
   &-helpTitle {
     font-weight: 700;
+    font-size: 16px;
+    font-size: 1.6rem;
   }
 
   &-input {
@@ -479,7 +482,8 @@ export default {
   &-typeLabel {
     padding: 3px 10px;
     font-weight: normal;
-    font-size: 12px;   
+    font-size: 14px;   
+    font-size: 1.4rem;
   }
 
   &-typeInput {

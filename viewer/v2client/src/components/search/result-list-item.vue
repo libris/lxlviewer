@@ -114,7 +114,8 @@ export default {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    font-size: 16px;
+    font-size: 20px;
+    font-size: 2.0rem;
     font-weight: normal;
   }
 

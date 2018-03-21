@@ -77,7 +77,7 @@ export default {
 
   &-optionName {
     cursor: pointer;
-    padding: 0.4em 1em;
+    padding: 5px 10px;
     width: 100%;
     text-align: center;
     text-transform: uppercase;

@@ -216,19 +216,22 @@ export default {
       <h3>{{ 'Loading document' | translatePhrase | capitalize }}</h3>
     </div>
     <div class="row">
-      <div v-if="postLoaded" class="Inspector-entity panel panel-default col-md-11">
-        <entity-controls @save="saveItem()"></entity-controls>
-        <entity-header id="main-header" :full="true" v-if="!isItem"></entity-header>
-        <entity-form :editing-object="inspector.status.focus" :locked="!inspector.status.editing"></entity-form>
-        <hr>
-        <code v-if="user.settings.appTech">
-          {{result}}
-        </code>
+      <div class="col-md-11">
+        <div v-if="postLoaded" class="Inspector-entity panel panel-default">
+          <div class="panel-body">
+            <entity-controls @save="saveItem()"></entity-controls>
+            <entity-header id="main-header" :full="true" v-if="!isItem"></entity-header>
+            <entity-form :editing-object="inspector.status.focus" :locked="!inspector.status.editing"></entity-form>
+            <hr>
+            <code v-if="user.settings.appTech">
+              {{result}}
+            </code>
+          </div>
+        </div>
       </div>
       <div v-if="postLoaded" class="col-md-1 Toolbar">
         <!-- SLOT FOR TOOLBAR -->
-        <div class="Toolbar-placeholder" ref="ToolbarPlaceholder">
-        </div>
+        <div class="Toolbar-placeholder" ref="ToolbarPlaceholder"></div>
         <div class="Toolbar-container" ref="ToolbarTest">
           <button>A</button>
           <button>B</button>

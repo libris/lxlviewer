@@ -110,14 +110,9 @@ export default {
   }
 
   &-title {
-    font-size: 18px;
-    font-size: 1.8rem;
+    font-size: 20px;
+    font-size: 2rem;
     font-weight: 700;
-  }
-
-  &-descr {
-    font-size: 14px;
-    font-size: 1.4rem;
   }
 
   &.no-link {
