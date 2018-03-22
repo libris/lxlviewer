@@ -44,6 +44,7 @@ export default {
         setTimeout(() => {
           if (this.toBeActive) {
             this.active = true;
+            this.toBeActive = false;
           }
         }, 500);
       } else {
@@ -52,7 +53,7 @@ export default {
       }
     },
   },
-  ready() { // Ready method is deprecated in 2.0, switch to "mounted"
+  mounted() { // Ready method is deprecated in 2.0, switch to "mounted"
     this.$nextTick(() => {
       // Do stuff
     });
@@ -75,15 +76,16 @@ export default {
     position: absolute;
     transition: opacity 0.5s ease;
     &.to-be-active {
+      pointer-events: none;
       display: block;
       opacity: 0;
     }
     &.active {
+      display: block;
       opacity: 1;
     }
     &.floating {
       width: 600px;
-      margin: 0 0 0 2.1em;
       border-radius: 0.5em;
       box-shadow: @shadow-card-elevated;
     }

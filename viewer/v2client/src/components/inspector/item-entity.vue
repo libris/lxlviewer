@@ -88,18 +88,13 @@ export default {
 </script>
 
 <template>
-  <div class="item-entity-container" @mouseleave="showCardInfo=false" v-bind:class="{'highlight': isNewlyAdded }">
-    <div class="item-entity" v-if="!expanded" :class="{ 'locked': isLocked, 'highlighted': showCardInfo }" @mouseenter="showCardInfo=true">
-      <div class="topbar">
-        <a :href="item['@id']">
-          <i class="linked-indicator fa fa-chain"></i>
-        </a>
-        <span class="collapsed-label"><span v-if="!expanded"><a :href="item['@id']">{{getItemLabel}}</a></span><span class="placeholder">.</span></span>
-        <span class="actions" v-if="!isLocked">
-          <i v-if="!isLocked" class="fa fa-trash-o chip-action" v-on:click="removeThis(true)" @mouseover="removeHover = true" @mouseout="removeHover = false">
-            <tooltip-component :show-tooltip="removeHover" tooltip-text="Remove" translation="translatePhrase"></tooltip-component>
-          </i>
-        </span>
+  <div class="ItemEntity-container" @mouseleave="showCardInfo=false" v-bind:class="{'highlight': isNewlyAdded }">
+    <div class="ItemEntity" v-if="!expanded" :class="{ 'locked': isLocked, 'highlighted': showCardInfo }" @mouseenter="showCardInfo=true">
+      <span class="ItemEntity-label"><span v-if="!expanded">{{getItemLabel}}</span><span class="placeholder"></span></span>
+      <div class="ItemEntity-removeButton" v-if="!isLocked">
+        <i v-if="!isLocked" class="fa fa-times chip-action" v-on:click="removeThis(true)" @mouseover="removeHover = true" @mouseout="removeHover = false">
+          <tooltip-component :show-tooltip="removeHover" tooltip-text="Remove" translation="translatePhrase"></tooltip-component>
+        </i>
       </div>
     </div>
     <card-component :title="getItemLabel" :focus-data="item" :uri="item['@id']" :is-local="false" :is-locked="isLocked" :should-show="showCardInfo" :floating="!expanded" :field-key="fieldKey"></card-component>
@@ -110,88 +105,55 @@ export default {
 
 @linked-color: #daefec;
 
-.item-entity-container {
-  margin: 0px 0px 5px 0px;
-  box-shadow: 0px 0px 1em 0px transparent;
-  outline: 2px solid transparent;
-  transition: 2s ease all;
-  &.blue {
-    a {
-      color: @brand-id;
+.ItemEntity {
+  &-container {
+    margin: 0px 0.5em 0px 0px;
+  }
+  &-removeButton {
+    display: inline-block;
+    width: 1.2em;
+    height: 1.2em;
+    line-height: 1.2em;
+    cursor: pointer;
+    background-color: rgba(255, 255, 255, 0.25);
+    i {
+      color: fadeout(white, 35%);
+    }
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.35);
+      i {
+        color: white;
+      }
+    }
+    display: inline-block;
+    border-radius: 1em;
+    text-align: center;
+  }
+  &.expanded {
+    margin: 0 0 2em 0;
+  }
+  background-color: lighten(@bib-color, 2%);
+  width: 100%;
+  border: none;
+  border-radius: 2em;
+  overflow: hidden;
+  line-height: 1.6;
+  padding: 3px 0.3em 3px 0.5em;
+  &.locked {
+    padding: 3px 0.5em 3px 0.5em;
+  }
+  &:hover {
+    background-color: darken(@bib-color, 2%);
+  }
+  a {
+    color: white;
+    &:hover {
+      text-decoration: none;
     }
   }
-  &.libris {
-    a {
-      color: @brand-primary;
-    }
-  }
-  &.highlight {
-    outline: 2px solid @highlight-color;
-    box-shadow: 0px 0px 1em 0px @highlight-color;
-  }
-  .item-entity {
-    &.expanded {
-      margin: 0 0 2em 0;
-    }
-    transition: all 0.5s ease;
-    width: 100%;
-    border: none;
-    box-shadow: @shadow-chip;
-    background-color: #fdfdfd;
-    overflow: hidden;
-    line-height: 1.6;
-    > .topbar {
-      padding: 5px;
-      display: flex;
-      align-items: center;
-      background-color: @white;
-      border: 1px solid rgba(0, 0, 0, 0.15);
-      box-shadow: inset 2.1em 0px 0px 0px @bib-color;
-      &.blue {
-        box-shadow: inset 2.1em 0px 0px 0px @brand-id;
-      }
-      white-space: nowrap;
-      overflow: hidden;
-      > .actions {
-        display: flex;
-        flex-basis: 4em;
-        flex-direction: row-reverse;
-        .confirm-remove-box {
-          transform: translate(16px, 0px);
-        }
-      }
-      > a {
-        > .linked-indicator {
-          color: @white;
-          padding-right: 1em;
-          padding-left: 0.25em;
-        }
-      }
-      .chip-action {
-        cursor: pointer;
-      }
-      .collapsed-label {
-        flex-grow: 1;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        a {
-          font-weight: bold;
-        }
-        .placeholder {
-          visibility: hidden;
-        }
-        > span {
-          height: 1.6em;
-          white-space: nowrap;
-          text-overflow: ellipsis;
-          overflow: hidden;
-        }
-      }
-    }
+  &-label {
+    color: white;
+    cursor: default;
   }
 }
 

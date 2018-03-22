@@ -353,7 +353,7 @@ export default {
   <div class="value node-list">
     <pre class="path-code" v-show="user.settings.appTech">{{getPath}}</pre>
     <ul v-if="isObjectArray">
-      <li v-for="(item, index) in valueAsArray" :key="index">
+      <li v-for="(item, index) in valueAsArray" :key="index" :class="{'inline': getDatatype(item) == 'entity'}">
         <item-error v-if="getDatatype(item) == 'error'" :item="item"></item-error>
         <item-vocab v-if="getDatatype(item) == 'vocab'" :is-locked="locked" :field-key="fieldKey" :value="item" :entity-type="entityType" :index="index" :parent-path="getPath"></item-vocab>
         <item-entity v-if="getDatatype(item) == 'entity'" :is-locked="locked" :item="item" :field-key="fieldKey" :index="index" :parent-path="getPath"></item-entity>
@@ -541,6 +541,9 @@ export default {
         padding: 0px;
         > li {
           display: block;
+          &.inline {
+            display: inline-block;
+          }
           .item-value {
             width: 100%;
             display: flex;
@@ -623,6 +626,9 @@ export default {
         }
         > li {
           display: block;
+          &.inline {
+            display: inline-block;
+          }
           .item-value {
             > textarea {
               width: 100%;
