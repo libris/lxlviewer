@@ -237,8 +237,8 @@ export default {
   &-pagList {
     display: inline-block;
     list-style-type: none;
-    font-size: 12px;
-    font-size: 1.2rem;
+    font-size: 16px;
+    font-size: 1.6rem;
     margin: 0px;
     padding: 0;
   }

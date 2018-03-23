@@ -326,6 +326,8 @@ export default {
   &-sourceTab {
     color: @brand-primary;
     font-weight: 700;
+    font-size: 20px;
+    font-size: 2rem;
     margin: 0.25em 0;
     padding: 5px 10px;
     text-transform: uppercase;
@@ -336,6 +338,14 @@ export default {
       background-color: @brand-primary;
       border: 1px solid @brand-primary;
       color: #fff;
+
+      &:hover {
+        color: #fff;
+      }
+    }
+
+    &:hover {
+      color: @brand-primary;
     }
 
     &:focus {
@@ -394,6 +404,8 @@ export default {
   }
 
   &-input {
+    font-size: 20px;
+    font-size: 2rem;
     height: 44px;
     min-width: 75%;
     margin: 0 5px 0 0;
@@ -462,6 +474,9 @@ export default {
   }
 
   &-submit {
+    font-size: 20px;
+    font-size: 2rem;
+    font-weight: 700;
     min-width: 20%;
     height: 42px;   
   }
