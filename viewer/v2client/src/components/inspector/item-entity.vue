@@ -115,12 +115,12 @@ export default {
     height: 1.2em;
     line-height: 1.2em;
     cursor: pointer;
-    background-color: rgba(255, 255, 255, 0.25);
+    // background-color: rgba(255, 255, 255, 0.25);
     i {
       color: fadeout(white, 35%);
     }
     &:hover {
-      background-color: rgba(255, 255, 255, 0.35);
+      // background-color: rgba(255, 255, 255, 0.35);
       i {
         color: white;
       }
