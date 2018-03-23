@@ -1,4 +1,7 @@
 <script>
+/*
+  Controls add new entity button and add entity modal with it's content
+*/
 import * as _ from 'lodash';
 import * as httpUtil from '@/utils/http';
 import * as VocabUtil from '@/utils/vocab';
@@ -99,9 +102,20 @@ export default {
     },
     getClassTree() {
       const tree = this.getRange.map(type => {
-        return VocabUtil.getTree(type, this.resources.vocab, this.settings.vocabPfx, this.resources.context);
+        return VocabUtil.getTree(
+          type, 
+          this.resources.vocab, 
+          this.settings.vocabPfx, 
+          this.resources.context
+        );
       });
-      return VocabUtil.flattenTree(tree, this.resources.vocab, this.settings.vocabPfx, this.resources.context, this.settings.language);
+      return VocabUtil.flattenTree(
+        tree, 
+        this.resources.vocab, 
+        this.settings.vocabPfx, 
+        this.resources.context, 
+        this.settings.language
+      );
     },
     hasSingleRange() {
       return this.getFullRange.length === 1;
@@ -117,12 +131,24 @@ export default {
       return this.fieldKey;
     },
     getRange() {
-      const fetchedRange = VocabUtil.getRange(this.entityType, this.fieldKey, this.resources.vocab, this.settings.vocabPfx, this.resources.context)
+      const fetchedRange = VocabUtil.getRange(
+        this.entityType, 
+        this.fieldKey, 
+        this.resources.vocab, 
+        this.settings.vocabPfx, 
+        this.resources.context)
         .map(item => item.replace(this.settings.vocabPfx, ''));
       return fetchedRange;
     },
     getFullRange() {
-      return VocabUtil.getFullRange(this.entityType, this.fieldKey, this.resources.vocab, this.settings.vocabPfx, this.resources.context, this.resources.vocabClasses);
+      return VocabUtil.getFullRange(
+        this.entityType, 
+        this.fieldKey, 
+        this.resources.vocab, 
+        this.settings.vocabPfx, 
+        this.resources.context, 
+        this.resources.vocabClasses
+      );
     },
     allSearchTypes() {
       const types = this.getFullRange;
@@ -135,7 +161,12 @@ export default {
     onlyEmbedded() {
       const range = this.getFullRange;
       for (const prop of range) {
-        if (!VocabUtil.isEmbedded(prop, this.resources.vocab, this.settings, this.resources.context)) {
+        if (!VocabUtil.isEmbedded(
+          prop, this.
+          resources.vocab, 
+          this.settings, 
+          this.resources.context
+        )) {
           return false;
         }
       }
@@ -169,7 +200,12 @@ export default {
   },
   methods: {
     getFormattedSelectOption(term) {
-      return DisplayUtil.getFormattedSelectOption(term, this.settings, this.resources.vocab, this.resources.context);
+      return DisplayUtil.getFormattedSelectOption(
+        term, 
+        this.settings, 
+        this.resources.vocab, 
+        this.resources.context
+      );
     },
     handleChange(value) {
       this.setSearching();
@@ -221,13 +257,19 @@ export default {
       this.$nextTick(() => {
         this.$el.querySelector('.entity-search-keyword-input').focus();
       });
-      this.$store.dispatch('setStatusValue', { property: 'keybindState', value: 'entity-adder' });
+      this.$store.dispatch('setStatusValue', { 
+        property: 'keybindState', 
+        value: 'entity-adder' 
+      });
     },
     hide() {
       if (!this.active) return;
       this.active = false;
       LayoutUtil.scrollLock(false);
-      this.$store.dispatch('setStatusValue', { property: 'keybindState', value: 'overview' });
+      this.$store.dispatch('setStatusValue', { 
+        property: 'keybindState', 
+        value: 'overview' 
+      });
     },
     openSearch() {
       this.keyword = '';
@@ -302,54 +344,74 @@ export default {
 </script>
 
 <template>
-<div class="entity-adder" :class="{'inner-adder': isPlaceholder, 'fill-width': addEmbedded}">
-  <div v-if="isPlaceholder && !addEmbedded" v-on:click="add()" @mouseenter="showToolTip = true" @mouseleave="showToolTip = false">
-    <span class="chip-label">
-      <i class="fa fa-fw fa-plus plus-icon" aria-hidden="true">
-        <tooltip-component :show-tooltip="showToolTip" tooltip-text="Add" translation="translatePhrase"></tooltip-component>
-      </i>
-    </span>
-  </div>
-  <div class="action-button add-entity-button" 
-    v-if="!isPlaceholder && !addEmbedded" 
-    v-on:click="add()" @mouseenter="showToolTip = true" 
-    @mouseleave="showToolTip = false">
-    <span class="chip-label">
-      <i class="fa fa-fw fa-plus plus-icon" aria-hidden="true">
-        <tooltip-component :show-tooltip="showToolTip" tooltip-text="Add" translation="translatePhrase"></tooltip-component>
-      </i>
-    <span class="label-text">{{ addLabel | labelByLang | capitalize }}</span></span>
-  </div>
-  <div class="type-chooser" v-if="addEmbedded" v-on-clickaway="dismissTypeChooser">
-    <select v-model="selectedType" @change="addType(selectedType, true)">
-      <option disabled value="">{{"Choose type" | translatePhrase}}</option>
-      <option v-html="getFormattedSelectOption(term, settings, resources.vocab, resources.context)"
-        v-for="(term, index) in getClassTree" 
-        :disabled="term.abstract" 
-        :key="`${term.id}-${index}`" 
-        :value="term.id"></option>
-    </select>
-  </div>
-  <modal-component v-if="active" class="EntityAdderModal" @close="hide">
-    <template slot="modal-header">
-      {{ "Add entity" | translatePhrase }} | {{ addLabel | labelByLang }}
-      <span class="ModalComponent-windowControl">
-        <i @click="hide" class="fa fa-close"></i>
+  <div class="EntityAdder" :class="{'is-innerAdder': isPlaceholder, 'is-fillWidth': addEmbedded}">
+    <div class="EntityAdder-add"
+      v-if="isPlaceholder && !addEmbedded" 
+      v-on:click="add()" 
+      @mouseenter="showToolTip = true" 
+      @mouseleave="showToolTip = false">
+      <span>
+        <i class="fa fa-fw fa-plus plus-icon" aria-hidden="true">
+          <tooltip-component 
+            :show-tooltip="showToolTip" 
+            tooltip-text="Add" 
+            translation="translatePhrase"></tooltip-component>
+        </i>
       </span>
-    </template>
+    </div>
+
+    <div class="EntityAdder-add action-button" 
+      v-if="!isPlaceholder && !addEmbedded" 
+      v-on:click="add()" 
+      @mouseenter="showToolTip = true" 
+      @mouseleave="showToolTip = false">
+      <span>
+        <i class="fa fa-fw fa-plus plus-icon" aria-hidden="true">
+          <tooltip-component 
+            :show-tooltip="showToolTip" 
+            tooltip-text="Add" 
+            translation="translatePhrase"></tooltip-component>
+        </i>
+        <span class="EntityAdder-addLabel label-text">{{ addLabel | labelByLang | capitalize }}</span>
+      </span>
+    </div>
+
+    <div class="EntityAdder-typeChooser" 
+      v-if="addEmbedded" 
+      v-on-clickaway="dismissTypeChooser">
+      <select class="EntityAdder-typeSelect" 
+        v-model="selectedType" 
+        @change="addType(selectedType, true)">
+        <option disabled value="">{{"Choose type" | translatePhrase}}</option>
+        <option v-for="(term, index) in getClassTree"  
+          v-html="getFormattedSelectOption(term, settings, resources.vocab, resources.context)"
+          :disabled="term.abstract" 
+          :key="`${term.id}-${index}`" 
+          :value="term.id"></option>
+      </select>
+    </div>
+
+    <modal-component v-if="active" class="EntityAdder-modal EntityAdderModal" @close="hide">
+      <template slot="modal-header">
+        {{ "Add entity" | translatePhrase }} | {{ addLabel | labelByLang }}
+        <span class="ModalComponent-windowControl">
+          <i @click="hide" class="fa fa-close"></i>
+        </span>
+      </template>
+
     <template slot="modal-body">
-      <div class="AddEntity">
-        <div class="AddEntity-controls">
-          <form class="AddEntity-controlForm">
+      <div class="EntityAdder-modalBody">
+        <div class="EntityAdder-controls">
+          <form class="EntityAdder-controlForm">
             <!--<input class="entity-search-keyword-input" v-model="keyword" @input="setSearching()"></input>-->
-              <div class="AddEntity-search">
-                <label for="entityKeywordInput" class="AddEntity-searchLabel">{{ "Search" | translatePhrase }}</label>
-                <div class="AddEntity-searchInputContainer">
-                  <input class="AddEntity-searchInput entity-search-keyword-input"
+              <div class="EntityAdder-search">
+                <label for="entityKeywordInput" class="EntityAdder-searchLabel">{{ "Search" | translatePhrase }}</label>
+                <div class="EntityAdder-searchInputContainer">
+                  <input class="EntityAdder-searchInput entity-search-keyword-input"
                     name="entityKeywordInput"
                     v-model="keyword"
                     autofocus />
-                  <select class="AddEntity-searchSelect"
+                  <select class="EntityAdder-searchSelect"
                     v-model="currentSearchTypes" 
                     @change="handleChange(keyword)">
                     <option :value="getRange">{{"All types" | translatePhrase}}</option>
@@ -361,24 +423,24 @@ export default {
                   </select>
                 </div>
               </div>
-            <div class="AddEntity-info" 
+            <div class="EntityAdder-info" 
               v-if="getFullRange.length > 0" 
               @mouseleave="rangeInfo = false">
               <i class="fa fa-info-circle" @mouseenter="rangeInfo = true"></i>
-              <div class="AddEntity-infoText" v-if="rangeInfo">
+              <div class="EntityAdder-infoText" v-if="rangeInfo">
                 {{ "Allowed types" | translatePhrase }}:
                 <br>
-                <span v-for="(range, index) in getFullRange" :key="index" class="AddEntity-infoRange">
+                <span v-for="(range, index) in getFullRange" :key="index" class="EntityAdder-infoRange">
                   - {{range | labelByLang}}
                 </span>
               </div>
             </div>
-            <div class="AddEntity-create">
-              <button class="AddEntity-createBtn"
+            <div class="EntityAdder-create">
+              <button class="EntityAdder-createBtn"
                 v-if="hasSingleRange" 
                 v-on:click="addEmpty(getFullRange[0])">{{ "Create local entity" | translatePhrase }}
               </button>
-              <select class="AddEntity-createSelect"
+              <select class="EntityAdder-createSelect"
                 v-model="selectedType" 
                 @change="addType(selectedType)" 
                 v-if="!hasSingleRange">
@@ -393,18 +455,18 @@ export default {
             </div>
           </form>
         </div>
-        <div class="AddEntity-searchStatus search-status"
+        <div class="EntityAdder-searchStatus search-status"
           v-if="!loading && keyword.length === 0" >{{ "Start writing to begin search" | translatePhrase }}...</div>
-        <div class="AddEntity-searchStatus search-status"
+        <div class="EntityAdder-searchStatus search-status"
           v-if="loading">
           {{ "Searching" | translatePhrase }}...
-          <br><i class="AddEntity-searchStatusIcon fa fa-circle-o-notch fa-spin"></i>
+          <br><i class="EntityAdder-searchStatusIcon fa fa-circle-o-notch fa-spin"></i>
         </div>
-        <div class="AddEntity-searchStatussearch-status"
+        <div class="EntityAdder-searchStatussearch-status"
           v-if="!loading && searchResult.length === 0 && keyword.length > 0 && searchMade">
           {{ "No results" | translatePhrase }}...
         </div>
-        <entity-search-list class="AddEntity-searchResult"
+        <entity-search-list class="EntityAdder-searchResult"
           v-if="!loading && keyword.length > 0" 
           :path="path" 
           :results="searchResult" 
@@ -417,7 +479,42 @@ export default {
 
 <style lang="less">
 
-.AddEntity {
+.EntityAdder {
+  &.disabled {
+    visibility: hidden;
+  }
+  &.is-fillWidth {
+    width: 100%;
+  }
+  &.is-innerAdder {
+    cursor: pointer;
+  }
+
+  &-add {
+    opacity: 1;
+    color: @gray-dark;
+    cursor: pointer;
+    padding: 5px 0;
+    transition: opacity 0.5s ease;
+    &:hover {
+      color: @gray-dark;
+    }
+  }
+
+  &-addLabel {
+    display: inline-block;
+  }
+
+  &-typeChooser {
+    text-align: center;
+    padding: 5px;
+    border: 2px solid #b2b2b2;
+  }
+
+  &-typeSelect {
+    width: 100%;
+  }
+
   &-controls {
     border: solid #ccc;
     border-top-width: medium;
@@ -536,51 +633,6 @@ export default {
   &-searchResult {
     padding: 85px 0 0 0;
     margin: 0 0 100px;
-  }
-}
-
-
-
-.entity-adder {
-  .disabled {
-    visibility: hidden;
-  }
-  &.fill-width {
-    width: 100%;
-  }
-  &.inner-adder {
-    cursor: pointer;
-  }
-  > .chip {
-    .label-text {
-      display: inline-block;
-    }
-  }
-  .type-chooser {
-    text-align: center;
-    padding: 5px;
-    border: 2px solid #b2b2b2;
-    > select {
-      width: 100%;
-    }
-  }
-  .add-entity-button {
-    padding: 0.3em 0;
-    opacity: 1;
-    transition: opacity 0.5s ease;
-    &.fade {
-      opacity: 0;
-    }
-    cursor: pointer;
-    .chip-label {
-      color: @gray-dark;
-    }
-    &:hover {
-      .chip-label {
-        color: @gray-dark;
-      }
-    }
-  
   }
 
 }

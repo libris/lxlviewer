@@ -64,6 +64,7 @@ export default {
 
   &-img {
     width: 100%;
+    flex-shrink: 0; // Prevent weird image sizing behaviour in IE11
   }
 
   &-videoWrap {
@@ -95,10 +96,11 @@ export default {
     justify-content: space-between;
     padding: 0.5em 1em 0em 1em;
     flex-grow: 1;
+    width: 100%;
 
     .LinkCard--large & {
-    padding: 1em;
-    flex-basis: 45%;
+      padding: 1em;
+      flex-basis: 45%;
     }
   }
 
@@ -108,14 +110,9 @@ export default {
   }
 
   &-title {
-    font-size: 18px;
-    font-size: 1.8rem;
+    font-size: 20px;
+    font-size: 2rem;
     font-weight: 700;
-  }
-
-  &-descr {
-    font-size: 14px;
-    font-size: 1.4rem;
   }
 
   &.no-link {

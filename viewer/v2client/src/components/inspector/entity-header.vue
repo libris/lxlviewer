@@ -1,4 +1,9 @@
 <script>
+/*
+  Entity summary is presented from this component, either within Inspector 
+  header or in fixed bar at top of window.
+*/
+
 import * as _ from 'lodash';
 import * as DisplayUtil from '@/utils/display';
 import * as DataUtil from '@/utils/data';
@@ -9,7 +14,7 @@ import ReverseRelations from './reverse-relations';
 import { mapGetters } from 'vuex';
 
 export default {
-  name: 'header-component',
+  name: 'entity-header',
   mixins: [LensMixin],
   props: {
     full: false,
@@ -69,12 +74,12 @@ export default {
 </script>
 
 <template>
-  <div class="HeaderComponent" :class="{'is-new': inspector.status.isNew}">
-    <div class="HeaderComponent-body is-full">
+  <div class="EntityHeader HeaderComponent" :class="{'is-new': inspector.status.isNew}">
+    <div class="EntityHeader-body HeaderComponent-body is-full">
       <entity-summary :focus-data="focusData" :should-link="false" :lines="full ? 6 : 3"></entity-summary>
     </div>
     <reverse-relations v-if="!inspector.status.isNew"></reverse-relations>
-    <div class="HeaderComponent-body is-compact">
+    <div class="EntityHeader-body HeaderComponent-body is-compact">
       <div class="compact-header" :class="{ 'show-compact': showCompact }">
       {{ compactSummary }}
       </div>

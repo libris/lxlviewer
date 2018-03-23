@@ -4,7 +4,7 @@
   It's responsible for its own data, and dispatches all changes to the form component.
 */
 import * as _ from 'lodash';
-import EntityAdder from './entityadder';
+import EntityAdder from './entity-adder';
 import ItemEntity from './item-entity';
 import ItemValue from './item-value';
 import ItemLocal from './item-local';
@@ -489,8 +489,7 @@ export default {
       }
     }
   }
-  .value {
-  }
+
   .shown-button {
     opacity: 1;
   }

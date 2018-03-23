@@ -133,8 +133,8 @@ export default {
     cursor: pointer;
     height: 50px;
     float: right;
-    font-size: 18px;
-    font-size: 1.8rem;
+    font-size: 20px;
+    font-size: 2rem;
     line-height: 20px;
     padding: 15px 5px;
 
@@ -188,8 +188,8 @@ export default {
     color: #333;
     cursor: pointer;
     font-weight: 700;
-    font-size: 14px;
-    font-size: 1.4rem;
+    font-size: 16px;
+    font-size: 1.6rem;
 
     &:hover, 
     &:focus {

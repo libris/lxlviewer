@@ -140,14 +140,16 @@ export default {
 <section class="EntitySummary">
   <div class="EntitySummary-meta">
     <div class="EntitySummary-type">
-      {{categorization.join(', ')}} {{ isLocal ? '{lokal entitet}' : '' }} 
+      {{categorization.join(', ')}} {{ isLocal ? '{lokal entitet}' : '' }}
       <span class="EntitySummary-sourceLabel" v-if="database">{{ database }}</span>
     </div>
   </div>
 
   <div class="EntitySummary-info">
     <h3 class="EntitySummary-title" v-bind:class="{ 'EntitySummary-title--imported': isImport && shouldLink }">
-      <span v-if="!shouldLink" :title="header.join(', ')">{{ header.join(', ') }}</span>
+      <span 
+        v-if="!shouldLink" 
+        :title="header.join(', ')">{{ header.join(', ') }}</span>
       <span
         v-if="isImport && shouldLink" 
         :title="header.join(', ')" 
@@ -157,11 +159,12 @@ export default {
       </span>
       <router-link class="EntitySummary-titleLink"
         v-if="isLibrisResource && !isImport && shouldLink" 
-        :to="routerPath" 
+        :to="this.routerPath" 
         :title="header.join(', ')">
         {{ header.join(', ') }}
       </router-link>
-      <a v-if="!isLibrisResource && !isImport && shouldLink" 
+      <a class="EntitySummary-titleLink"
+        v-if="!isLibrisResource && !isImport && shouldLink" 
         :href="focusData['@id']" 
         :title="header.join(', ')">
         {{ header.join(', ') }}

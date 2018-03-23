@@ -38,13 +38,40 @@ export default {
       return this.inspector.data[this.editingObject]['@type'] === 'Item';
     },
     isBib() {
-      if (VocabUtil.isSubClassOf(this.inspector.data[this.editingObject]['@type'], 'Instance', this.resources.vocab, this.settings.vocabPfx, this.resources.context)) {
+      if (VocabUtil.isSubClassOf(
+          this.inspector.data[this.editingObject]['@type'], 
+          'Instance', 
+          this.resources.vocab, 
+          this.settings.vocabPfx, 
+          this.resources.context
+        )
+      ) {
         return true;
-      } else if (VocabUtil.isSubClassOf(this.inspector.data[this.editingObject]['@type'], 'Work', this.resources.vocab, this.settings.vocabPfx, this.resources.context)) {
+      } else if (VocabUtil.isSubClassOf(
+          this.inspector.data[this.editingObject]['@type'], 
+          'Work', 
+          this.resources.vocab, 
+          this.settings.vocabPfx, 
+          this.resources.context
+          )
+        ) {
         return true;
-      } else if (VocabUtil.isSubClassOf(this.inspector.data[this.editingObject]['@type'], 'Agent', this.resources.vocab, this.settings.vocabPfx, this.resources.context)) {
+      } else if (VocabUtil.isSubClassOf(
+          this.inspector.data[this.editingObject]['@type'], 
+          'Agent', this.resources.vocab, 
+          this.settings.vocabPfx, 
+          this.resources.context
+          )
+        ) {
         return true;
-      } else if (VocabUtil.isSubClassOf(this.inspector.data[this.editingObject]['@type'], 'Concept', this.resources.vocab, this.settings.vocabPfx, this.resources.context)) {
+      } else if (VocabUtil.isSubClassOf(
+          this.inspector.data[this.editingObject]['@type'], 
+          'Concept', 
+          this.resources.vocab, 
+          this.settings.vocabPfx, 
+          this.resources.context
+        )
+      ) {
         return true;
       }
       return false;
@@ -68,7 +95,10 @@ export default {
       const settings = this.settings;
       const formObj = this.formData;
       const allowed = VocabUtil.getPropertiesFromArray(
-        [StringUtil.convertToVocabKey(StringUtil.convertToBaseUri(formObj['@type'], this.resources.context), this.resources.context)],
+        [StringUtil.convertToVocabKey(
+          StringUtil.convertToBaseUri(formObj['@type'], 
+          this.resources.context), 
+          this.resources.context)],
         this.resources.vocabClasses,
         this.settings.vocabPfx,
         this.resources.vocabProperties,
@@ -219,9 +249,22 @@ export default {
 </script>
 
 <template>
-  <div class="form-component focused-form-component" :class="{ 'locked': isLocked }" v-show="isActive">
-    <div class="field-container" v-bind:class="{'collapsed': collapsed }">
-      <field v-for="(v,k) in sortedFormData" v-bind:class="{ 'locked': isLocked }" :entity-type="inspector.data[editingObject]['@type']" :is-inner="false" :is-removable="true" :is-locked="keyIsLocked(k)" :key="k" :field-key="k" :field-value="v" :parent-path="inspector.status.focus"></field>
+  <div class="EntityForm form-component focused-form-component" 
+    :class="{ 'locked is-locked': isLocked }" 
+    v-show="isActive">
+    <div class="EntityForm-container field-container" 
+      v-bind:class="{'collapsed': collapsed }">
+      <field
+        v-for="(v,k) in sortedFormData" 
+        v-bind:class="{ 'locked': isLocked }" 
+        :entity-type="inspector.data[editingObject]['@type']" 
+        :is-inner="false" 
+        :is-removable="true" 
+        :is-locked="keyIsLocked(k)" 
+        :key="k" 
+        :field-key="k" 
+        :field-value="v" 
+        :parent-path="inspector.status.focus"></field>
       <div id="result" v-if="user.settings.appTech && !isLocked">
         <div class="row">
         <pre class="col-md-6">
@@ -273,6 +316,16 @@ export default {
   // }
 }
 
+.EntityForm {
+  &-container {
+    border: solid #d8d8d8;
+    margin: 0px;
+    padding: 0;
+    border-width: 1px 0px 0px 0px;
+    transition: 2s ease max-height;
+  }
+}
+
 .form-component {
   .form-label {
     color: @white;
@@ -321,13 +374,6 @@ export default {
     &.holding-style {
       .ribbon-mixin(desaturate(darken(@holding-color, 10%), 10%));
     }
-  }
-  .field-container {
-    border: solid #d8d8d8;
-    margin: 0px;
-    padding: 0em 0px 0px 0px;
-    border-width: 1px 0px 0px 0px;
-    transition: 2s ease max-height;
   }
   .field-container-toggle {
     text-align: center;

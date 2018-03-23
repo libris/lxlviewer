@@ -8,9 +8,9 @@ import * as httpUtil from '@/utils/http';
 import * as DisplayUtil from '@/utils/display';
 import * as RecordUtil from '@/utils/record';
 // import MarcPreview from '@/components/inspector/marc-preview';
-import FormComponent from '@/components/inspector/formcomponent';
-import EditorControls from '@/components/inspector/editorcontrols';
-import HeaderComponent from '@/components/inspector/headercomponent';
+import EntityForm from '@/components/inspector/entity-form';
+import EntityControls from '@/components/inspector/entity-controls';
+import EntityHeader from '@/components/inspector/entity-header';
 import ModalComponent from '@/components/shared/modal-component';
 import { mapGetters } from 'vuex';
 
@@ -47,10 +47,16 @@ export default {
         if (response.status === 200) {
           return response.json();
         } else {
-          this.$store.dispatch('pushNotification', { color: 'red', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)}. ${response.status} ${response.statusText}` });
+          this.$store.dispatch('pushNotification', { 
+            color: 'red', 
+            message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)}. ${response.status} ${response.statusText}` 
+          });
         }
       }, (error) => {
-        this.$store.dispatch('pushNotification', { color: 'red', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)}. ${error}` });
+        this.$store.dispatch('pushNotification', { 
+          color: 'red', 
+          message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)}. ${error}` 
+        });
       }).then((result) => {
         this.result = result;
         this.$store.dispatch('setInspectorData', RecordUtil.splitJson(result));
@@ -65,18 +71,36 @@ export default {
     loadNewDocument() {
       const insertData = this.inspector.insertData;
       if (!insertData.hasOwnProperty('@graph')) {
-        this.$store.dispatch('pushNotification', { color: 'red', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)}!` });
+        this.$store.dispatch('pushNotification', { 
+          color: 'red', 
+          message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)}!` 
+        });
         this.$router.push({ path: `/` });
       } else {
         this.$store.dispatch('setInspectorData', RecordUtil.splitJson(insertData));
-        this.$store.dispatch('setInspectorStatusValue', { property: 'editing', value: true });
+        this.$store.dispatch('setInspectorStatusValue', { 
+          property: 'editing', 
+          value: true 
+        });
         this.postLoaded = true;
       }
     },
     setTitle() {
       if (typeof this.inspector.data.mainEntity !== 'undefined') {
-        const headerList = DisplayUtil.getItemSummary(this.inspector.data.mainEntity, this.resources.display, this.inspector.data.quoted, this.resources.vocab, this.settings, this.resources.context).header;
-        const header = StringUtil.getFormattedEntries(headerList, this.resources.vocab, this.settings, this.resources.context).join(', ');
+        const headerList = DisplayUtil.getItemSummary(
+          this.inspector.data.mainEntity, 
+          this.resources.display, 
+          this.inspector.data.quoted, 
+          this.resources.vocab, 
+          this.settings, 
+          this.resources.context
+        ).header;
+        const header = StringUtil.getFormattedEntries(
+          headerList, 
+          this.resources.vocab, 
+          this.settings, 
+          this.resources.context
+        ).join(', ');
         if (header.length > 0 && header !== '{Unknown}') {
           const title = header;
           this.$store.dispatch('setInspectorTitle', title);
@@ -178,33 +202,36 @@ export default {
     },
   },
   components: {
-    'header-component': HeaderComponent,
-    'form-component': FormComponent,
+    'entity-header': EntityHeader,
+    'entity-form': EntityForm,
     'modal-component': ModalComponent,
-    'editor-controls': EditorControls,
+    'entity-controls': EntityControls,
   },
 }
 </script>
 <template>
-  <div class="InspectorView" ref="Inspector">
+  <div class="Inspector" ref="Inspector">
     <div v-if="!postLoaded" class="text-center">
       <i class="fa fa-circle-o-notch fa-4x fa-spin"></i><br/>
       <h3>{{ 'Loading document' | translatePhrase | capitalize }}</h3>
     </div>
     <div class="row">
-      <div v-if="postLoaded" class="InspectorView-panel panel panel-default col-md-11">
-        <editor-controls @save="saveItem()"></editor-controls>
-        <header-component id="main-header" :full="true" v-if="!isItem"></header-component>
-        <form-component :editing-object="inspector.status.focus" :locked="!inspector.status.editing"></form-component>
-        <hr>
-        <code v-if="user.settings.appTech">
-          {{result}}
-        </code>
-      </div>
-      <div v-if="postLoaded" class="col-md-1 Toolbar-column">
-        <!-- SLOT FOR TOOLBAR -->
-        <div class="Toolbar-placeholder" ref="ToolbarPlaceholder">
+      <div class="col-md-11">
+        <div v-if="postLoaded" class="Inspector-entity panel panel-default">
+          <div class="panel-body">
+            <entity-controls @save="saveItem()"></entity-controls>
+            <entity-header id="main-header" :full="true" v-if="!isItem"></entity-header>
+            <entity-form :editing-object="inspector.status.focus" :locked="!inspector.status.editing"></entity-form>
+            <hr>
+            <code v-if="user.settings.appTech">
+              {{result}}
+            </code>
+          </div>
         </div>
+      </div>
+      <div v-if="postLoaded" class="col-md-1 Toolbar">
+        <!-- SLOT FOR TOOLBAR -->
+        <div class="Toolbar-placeholder" ref="ToolbarPlaceholder"></div>
         <div class="Toolbar-container" ref="ToolbarTest">
           <button>A</button>
           <button>B</button>
@@ -232,6 +259,7 @@ export default {
     overflow-y: scroll;
   }
 }
+
 .Toolbar {
   &-placeholder {
     width: 100%;

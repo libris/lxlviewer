@@ -90,8 +90,8 @@ export default {
   }
 
   &-descr {
-    font-size: 14px;
-    font-size: 1.4rem;
+    font-size: 16px;
+    font-size: 1.6rem;
     margin-bottom: 0.1em;
     flex-grow: 1;
   }
