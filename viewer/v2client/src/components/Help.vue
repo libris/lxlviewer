@@ -109,7 +109,7 @@ export default {
     height: 100%;
     h1, h2, h3, h4 {
       font-weight: normal;
-      margin-top: 0;
+      margin: 10px 0 10px;
     }
     p {
       margin: 0.5em 0px 1em;
