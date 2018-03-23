@@ -159,8 +159,13 @@ export default {
       </div>
       <div class="col-md-9 Find-content">
         <search-form :search-perimeter="$route.params.perimeter"></search-form>
+        <div v-show="searchInProgress" class="panel panel-default">
+          <div class="Find-progressText">
+            {{ 'Searching' | translatePhrase }} <i class="fa fa-circle-o-notch fa-spin"></i>
+          </div>
+        </div>
         <search-result
-          v-show="searchInProgress"
+          v-show="!searchInProgress"
           :import-data="importData" 
           :result="result" 
           v-if="result.totalItems > -1"></search-result>
