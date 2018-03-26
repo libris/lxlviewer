@@ -397,17 +397,6 @@ export function getProperties(classId, vocabClasses, vocabPfx, vocabProperties, 
       }
     }
   });
-  // HARDCODED INCLUDE OF GENERAL PROPERTIES
-  // TODO: Remove when label has a domain
-  const labelProperty = getTermObject('label', vocabProperties, vocabPfx, context);
-  props.push(labelProperty);
-  const noteProperty = getTermObject('note', vocabProperties, vocabPfx, context);
-  props.push(noteProperty);
-  const valueProperty = getTermObject('value', vocabProperties, vocabPfx, context);
-  props.push(valueProperty);
-  const codeProperty = getTermObject('code', vocabProperties, vocabPfx, context);
-  props.push(codeProperty);
-  // end HARDCODED
   return props;
 }
 
