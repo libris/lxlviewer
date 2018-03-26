@@ -12,6 +12,7 @@ Vue.use(Router)
 
 export default new Router({
   mode: "history",
+  base: "/katalogisering/",
   scrollBehavior (to, from, savedPosition) {
     if (savedPosition) {
       return savedPosition
