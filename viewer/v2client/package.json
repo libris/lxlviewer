@@ -107,7 +107,7 @@
   "devDependencies": {
   },
   "engines": {
-    "node": ">= 6.0.0",
+    "node": ">= 8.9.4",
     "npm": ">= 3.0.0"
   },
   "browserslist": [
