@@ -7,12 +7,13 @@ import ProcessedLabel from '../shared/processedlabel';
 import TooltipComponent from '../shared/tooltip-component';
 import ItemMixin from '../mixins/item-mixin';
 import LensMixin from '../mixins/lens-mixin';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'item-vocab',
   mixins: [ItemMixin],
   props: {
-    value: '',
+    fieldValue: '',
     fieldKey: '',
     index: Number,
     isLocked: false,
@@ -28,27 +29,48 @@ export default {
       removeHover: false,
       possibleValues: [],
       selected: '',
+      disableDataSync: false, // Used to prevent data sync when setting dropdown selected state from code
     };
   },
   computed: {
+    ...mapGetters([
+      'inspector',
+      'resources',
+      'user',
+      'settings',
+      'status',
+    ]),
     range() {
       const types = VocabUtil.getRange(
         this.entityType,
-        this.key,
-        this.vocab,
+        this.fieldKey,
+        this.resources.vocab,
         this.settings.vocabPfx,
-        this.context
+        this.resources.context
       );
       return types;
     },
   },
-  ready() {
-    this.possibleValues = this.getPossibleValues();
-    this.setInitialValue();
+  mounted() {
+    this.$nextTick(() => {
+      this.possibleValues = this.getPossibleValues();
+      this.setInitialValue();
+    });
   },
   watch: {
+    fieldValue(value) {
+      this.disableDataSync = true;
+      this.selected = this.fieldValue;
+    },
     selected(value) {
-      this.$dispatch('update-item', this.index, value);
+      if (this.disableDataSync === false) {
+        this.$store.dispatch('updateInspectorData', {
+          path: this.path,
+          value: value,
+          addToHistory: true,
+        });
+      }
+      this.disableDataSync = false;
     },
   },
   methods: {
@@ -56,16 +78,17 @@ export default {
       let values = [];
       const possibleValues = [];
       _.each(this.range, (item) => {
-        values = values.concat(VocabUtil.getTermByType(item, this.vocabClasses));
+        values = values.concat(VocabUtil.getTermByType(item, this.resources.vocabClasses));
       });
       _.each(values, (value) => {
         possibleValues.push(value['@id'].replace(this.settings.vocabPfx, ''));
       });
-      return _.sortBy(possibleValues, value => StringUtil.getLabelByLang(value, this.settings.language, this.vocab, this.settings.vocabPfx, this.context));
+      return _.sortBy(possibleValues, value => StringUtil.getLabelByLang(value, this.settings.language, this.resources.vocab, this.settings.vocabPfx, this.resources.context));
     },
     setInitialValue() {
-      if (this.possibleValues.indexOf(this.value) > -1) {
-        this.selected = this.value;
+      if (this.possibleValues.indexOf(this.fieldValue) > -1) {
+        this.disableDataSync = true;
+        this.selected = this.fieldValue;
       }
     },
   },
@@ -83,7 +106,7 @@ export default {
         <option v-for="option in possibleValues" :key="option" v-bind:value="option">{{ option | labelByLang }}</option>
       </select>
     </div>
-    <span v-if="isLocked">{{value | labelByLang}}</span>
+    <span v-if="isLocked">{{fieldValue | labelByLang}}</span>
   </div>
 </template>
 
