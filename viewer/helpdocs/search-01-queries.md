@@ -6,30 +6,38 @@ tags:
 - search
 ---
 
-# Sökindex
-
-I Libris XL används en sökmotor för fulltext och analys.
-
+# Sök
 
 ## Operatorer för frågespråk
 
-`+` betyder AND  
-`|` betyder OR  
-`-` innebär uteslutning  
-`"` används för frassökning  
-`*` innebär trunkering av en term  
+   `+` betyder AND  
+   `|` betyder OR  
+   `-` innebär uteslutning  
+   `"` används för frassökning  
+   `*` innebär trunkering av en term  
 
+---
 
-Standardfunktionalitet är att sökmotorn ger träff på valfri sökterm med en `|` . En sökning på `Astrid Lindgren` kommer matcha poster som innehåller antingen (1) `Astrid` eller (2) `Lindgren`, ger även träff på (3) `Astrid Lindgren`.
+### Standardsökning
 
-De föredragna operatorerna är `+` (termen måste vara inkluderad) och `-` (denna term får ej vara inkluderad) Alla andra termer är valfria.
+En standardsökning ger träff på sammanslagen sökterm. En sökning på Astrid Lindgren kommer matcha poster innehållandes Astrid och Lindgren, oavsett ordning och oavsett var i posten orden finns. Sökningen kommer alltså även matcha `Lindgren Astrid`, `Astrid heter i efternamn Lindgren` och liknande.
 
-`quick brown +fox -news`
+### Exakt sökning
 
-betyder att:
+Om du vill söka på en exakt fras, använd `"`. En sökning på `"Emil i Lönneberga"` ger träff på fras i angiven ordning. Sökningen kommer alltså inte matcha till exempel `Emil som bor i Lönneberga`.
 
-`fox` måste vara med i träffen
-`news` får inte vara med i träffen
-`quick` and `brown` är valfria — men ökar relevans
+### Eller
 
-`"quick brown fox"` innebär att hela frasen måste vara med.
+Om du vill söka på eller, använd `"|"`. Exempelvis ger `"Tove Jansson" | "Astrid Lindgren"` träff på `Tove Jansson` eller `Astrid Lindgren`.
+
+### Exkludera termer
+
+Om du vill exkludera en term, använder `-`. Exempelvis ger `Astrid -Lindgren` träff på alla träffar som innehåller `Astrid` men inte `Lindgren`.
+
+### Gruppering av termer 
+
+Om du vill gruppera termer och operatorer, använd `(` och `)`. Exempelvis ger en sökning på `(Tove | Lars) Jansson`träff på Tove eller Lars Jansson. Utan parenteserna söker du efter `Tove` eller `Lars Jansson`, men med parenteserna söker du på `Tove Jansson` eller `Lars Jansson`
+
+### Trunkering
+
+Om du vill trunkera, använd `*`. Trunkering ger träff på alla ändelser efter prefixet. Exempelvis ger `sol*` träff på bland andra `solros` , `sola` och `solig`.

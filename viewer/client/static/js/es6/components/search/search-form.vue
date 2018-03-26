@@ -49,6 +49,7 @@ export default {
       showHelp() {
         let helpText = document.querySelector('.js-searchHelpText');
         helpText.parentElement.classList.add(this.activeClass);
+        
       },
       hideHelp() {
         let helpText = document.querySelector('.js-searchHelpText');
@@ -322,7 +323,7 @@ export default {
         padding: 10px;
         left: auto;
         right: 0;
-        top: 2.5em;
+        top: 2em;
         width: 30%;
         max-width: 300px;
 

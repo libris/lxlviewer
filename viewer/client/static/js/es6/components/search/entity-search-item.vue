@@ -4,7 +4,6 @@ import LensMixin from '../mixins/lens-mixin';
 import EntitySummary from '../shared/entity-summary';
 import SummaryActionButton from '../editorcomponents/summary-action-button';
 import { getSettings, getVocabulary, getDisplayDefinitions, getEditorData } from '../../vuex/getters';
-
 export default {
   name: 'entity-search-item',
   mixins: [LensMixin],
@@ -52,22 +51,18 @@ export default {
 </script>
 
 <template>
-  <div class="search-result-item">
+  <li class="search-result-item">
     <div class="search-item-entity-summary-container">
       <entity-summary :focus-data="focusData" :lines="4"></entity-summary>
     </div>
     <summary-action-button v-show="listItemSettings.show" :settings="addPayload"></summary-action-button>
-  </div>
+  </li>
 </template>
 
 
 <style lang="less">
 @import '../shared/_variables.less';
-
 .search-result-item {
-  .search-item-entity-summary-container {
-    max-width: 85%;
-  }
   border: solid #777;
   margin: 4px;
   border-width: 1px;
@@ -100,6 +95,13 @@ export default {
   &:nth-child(even) {
     background-color: darken(@neutral-color, 2%);
   }
+  
+  .search-item-entity-summary-container {
+    max-width: 85%;
+  }
+  &.selected {
+    outline: solid 1px @brand-primary;
+    background-color: fadeout(@brand-primary, 70%);
+  }
 }
-
 </style>

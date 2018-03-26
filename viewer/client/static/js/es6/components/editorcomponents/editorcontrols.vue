@@ -161,6 +161,7 @@ export default {
       showUndo: false,
       showSave: false,
       showFieldAdderTooltip: false,
+      showClarifySave: false,
     };
   },
   computed: {
@@ -291,7 +292,7 @@ export default {
             <ul class="dropdown-menu">
               <li><a :href="getOtherDataFormat('jsonld')">JSON-LD</a></li>
               <li><a :href="getOtherDataFormat('ttl')">Turtle</a></li>
-              <li><a :href="getOtherDataFormat('rdf')">RDF/XML</a></li>
+              <li><a :href="getOtherDataFormat('rdf')"><i class="fa fa-fw fa-download" aria-hidden="true"></i>RDF/XML</a></li>
             </ul>
           </div>
           <div class="dropdown tools">
@@ -323,11 +324,11 @@ export default {
               <li v-if="isSubClassOf('Instance') && hasSigel && !status.inEdit && user.email !== ''">
                 <a v-if="downloadIsSupported" @click="getCompiledPost()">
                   <i class="fa fa-fw fa-download" aria-hidden="true"></i>
-                  {{"Download compiled" | translatePhrase}}
+                  {{"Download compiled MARC21" | translatePhrase}}
                 </a>
                 <a v-if="!downloadIsSupported" :href="compileMARCUrl">
                   <i class="fa fa-fw fa-download" aria-hidden="true"></i>
-                  {{"Download compiled" | translatePhrase}}
+                  {{"Download compiled MARC21" | translatePhrase}}
                 </a>
               </li>
               <li>
@@ -357,10 +358,17 @@ export default {
               <tooltip-component :show-tooltip="showSave" tooltip-text="Save" translation="translatePhrase"></tooltip-component>
             </i>
           </button>
-          <button class="btn btn-lg btn-success toolbar-button" id="saveButton" v-on:click="save(true)" v-if="status.inEdit">
+          <button class="btn btn-lg btn-success toolbar-button" id="saveButton" 
+          @mouseover="showClarifySave = true" 
+          @mouseout="showClarifySave = false"
+          @click="save(true)" 
+          v-if="status.inEdit">
             <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="status.saved.loading"></i>
-            <i class="fa fa-fw fa-check" v-show="!status.saved.loading"></i>
+            <i class="fa fa-fw fa-check" v-show="!status.saved.loading">
+              <tooltip-component :show-tooltip="showClarifySave" tooltip-text="Save and stop editing" translation="translatePhrase"></tooltip-component>
+            </i>
             {{"Done" | translatePhrase}}
+
           </button>
           <button class="btn btn-lg btn-info toolbar-button edit-button" id="editButton" v-on:click="edit()" v-show="!status.inEdit && canEditThisType" @mouseover="showEdit = true" @mouseout="showEdit = false">
             <i class="fa fa-fw fa-pencil" v-show="!loadingEdit"></i>

@@ -186,7 +186,12 @@ export default {
         this.changeStatus('keybindState', 'extraction-dialog');
         LayoutUtil.scrollLock(true);
         this.extractDialogActive = true;
+      } else {
+        this.openSendToEditDialog();
       }
+    },
+    openSendToEditDialog() {
+      console.log('clicked!');
     },
     closeExtractDialog() {
       if (!this.extractDialogActive) return;
@@ -339,18 +344,24 @@ export default {
 
 <template>
   <div class="item-local-container" v-bind:class="{'highlight': isNewlyAdded, 'expanded': expanded}">
-    <div class="link-indicator" :class="{'active': showLinkAction && status.inEdit}" v-if="isExtractable" @click="openExtractDialog" @mouseover="showLinkAction = true" @mouseout="showLinkAction = false">
-      <i v-show="showLinkAction && status.inEdit" class="fa fa-link"><tooltip-component :show-tooltip="showLinkAction" tooltip-text="Link entity" translation="translatePhrase"></tooltip-component></i>
-      <i v-show="!showLinkAction || !status.inEdit" class="fa fa-unlink"></i>
+    <div class="link-indicator" v-if="isExtractable">
+      <i class="fa fa-unlink"></i>
     </div>
     <div v-if="!isExpandedType" class="item-local" :class="{'expanded': expanded, 'distinguish-removal': removeHover}">
       <div class="topbar">
         <i class="fa fa-chevron-right" :class="{'down': expanded}" @click="toggleExpanded()"></i>
         <span class="type" @click="toggleExpanded()" title="{{ item['@type'] }}">{{ item['@type'] | labelByLang | capitalize }}</span>
-        <span class="collapsed-label" @click="toggleExpanded()"><span v-show="!expanded || isEmpty">{{getItemLabel}}</span><span class="placeholder">.</span></span>
+        <span class="collapsed-label" @click="toggleExpanded()">
+          <span v-show="!expanded || isEmpty">{{getItemLabel}}</span>
+          <span class="placeholder">.</span>
+        </span>
         <span class="actions">
           <i v-if="!isLocked" class="fa fa-trash-o chip-action" :class="{'show-icon': showActionButtons}" v-on:click="removeThis(true)" @mouseover="removeHover = true" @mouseout="removeHover = false">
             <tooltip-component :show-tooltip="removeHover" tooltip-text="Remove" translation="translatePhrase"></tooltip-component>
+          </i>
+          <i v-show="status.inEdit" class="fa fa-link"
+          @click="openExtractDialog" @mouseover="showLinkAction = true" @mouseout="showLinkAction = false">
+            <tooltip-component :show-tooltip="showLinkAction" tooltip-text="Link entity" translation="translatePhrase"></tooltip-component>
           </i>
           <field-adder v-if="!isLocked" :entity-type="item['@type']" :allowed="allowedProperties" :inner="true" :path="getPath"></field-adder>
         </span>
@@ -367,7 +378,7 @@ export default {
 @import '../shared/_variables.less';
 .item-local-container {
   padding: 2px 0px;
-  margin: 0px 0px 0px 0px;
+  margin: 0;
   box-shadow: 0px 0px 1em 0px transparent;
   outline: 2px solid transparent;
   transition: 0.5s ease margin, 3s ease-in box-shadow, 3s ease-in outline;
@@ -380,10 +391,6 @@ export default {
     align-items: center;
     background: @gray-darker;
     color: @white;
-    &.active {
-      background: lighten(@gray-darker, 15%);
-      cursor: pointer;
-    }
   }
   &.highlight {
     transition: 0s ease;
@@ -391,6 +398,7 @@ export default {
     outline: 2px solid @highlight-color;
     box-shadow: 0px 0px 1em 0px @highlight-color;
   }
+
   &.expanded {
     margin: 0 0 2em 0;
   }
