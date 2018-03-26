@@ -53,6 +53,8 @@ export default {
   }
 
   &-abstract {
+    font-size: 2px;
+    font-size: 2rem;
     font-weight: 700;
   }
 
@@ -65,8 +67,8 @@ export default {
   }
 
   &-sectionTitle {
-    font-size: 20px;
-    font-size: 2.0rem;
+    // font-size: 20px;
+    // font-size: 2.0rem;
   }
 }
 </style>

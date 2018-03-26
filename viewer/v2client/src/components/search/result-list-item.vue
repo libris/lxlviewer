@@ -111,12 +111,13 @@ export default {
     display: inline-block;
     flex-basis: 50%;
     flex-grow: 1;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
     font-size: 20px;
     font-size: 2.0rem;
     font-weight: normal;
+    line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   &-link {
