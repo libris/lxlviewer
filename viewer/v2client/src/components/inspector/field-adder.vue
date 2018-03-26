@@ -388,6 +388,7 @@ export default {
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      margin: 5px 0 0;
       .typeLabel {
         display: block;
         font-size: 85%;
