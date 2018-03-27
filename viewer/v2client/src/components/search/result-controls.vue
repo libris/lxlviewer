@@ -133,7 +133,9 @@ export default {
       <p class="ResultControls-resultDescr" id="resultDescr">Sökning på <strong>{{ queryText }}</strong>
         <span v-if="filters.length > 0">(filtrerat på <span v-for="filter in filters" :key="filter.label"><strong>{{filter.label}}</strong></span>)</span>
       gav <strong>{{pageData.totalItems}}</strong> träffar.
+       <em v-if="pageData.totalItems > limit && $route.params.perimeter === 'remote'">Du har fått fler träffar än vad som kan visas, testa att göra en mer detaljerad sökning om du inte kan hitta det du letar efter.</em>
       </p>
+     
       <p v-if="pageData.totalItems > limit">Visar <strong>{{ limit }}</strong> träffar per sida.</p>
     </div>
     <div class="ResultControls-listTypes" v-if="showDetails">
