@@ -15,13 +15,13 @@
       v-if="resourcesLoadingError">
       <div slot="modal-header" class="ResourceLoadingErrorModal-header">
         <header>
-          Error
+          {{ 'Error' | translatePhrase }}
         </header>
       </div>
       <div slot="modal-body" class="ResourceLoadingErrorModal-body">
-        Couldn't fetch the resources needed for this application.<br><br>
-        Try reloading the page.<br><br>
-        If the error persists, please contact <a href="mailto:libris@kb.se">libris@kb.se</a>.
+        Kunde inte hämta nödvändiga resurser.<br><br>
+        Testa att ladda om sidan.<br><br>
+        Om felet kvarstår, kontakta <a href="mailto:libris@kb.se">libris@kb.se</a>.
       </div>
     </modal-component>
     <footer-component></footer-component>

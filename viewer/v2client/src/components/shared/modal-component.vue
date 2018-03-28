@@ -130,6 +130,9 @@ export default {
     height: 85vh;
     text-align: left;
     border: 1px solid darken(@brand-primary, 5%);
+    .is-danger & {
+      border-color: darken(@brand-danger, 5%);
+    }
     border-radius: 3px;
     background-color: @neutral-color;
     overflow: hidden;
