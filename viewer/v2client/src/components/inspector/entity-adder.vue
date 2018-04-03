@@ -283,7 +283,7 @@ export default {
       this.hide();
     },
     addItem(obj) {
-      let currentValue = _.get(this.inspector.data, this.path);
+      let currentValue = _.cloneDeep(_.get(this.inspector.data, this.path));
       if (!_.isArray(currentValue)) {
         currentValue = [currentValue];
       }

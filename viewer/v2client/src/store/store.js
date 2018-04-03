@@ -270,7 +270,7 @@ const store = new Vuex.Store({
       const history = state.inspector.changeHistory;
       const lastNode = history[history.length-1];
       let payload = {};
-      if (lastNode.value) {
+      if (typeof lastNode.value !== 'undefined') {
         // It had a value
         payload = {
           path: lastNode.path,
