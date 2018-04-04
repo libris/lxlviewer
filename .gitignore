@@ -6,6 +6,7 @@ viewer/client/bower_components/
 # Generated Files
 /build
 /viewer/v2client/dist
+/viewer/v2client/src/resources/help.json
 /viewer/client/static/build
 /viewer/client/test/e2e/bin
 /viewer/client/static/vendor
