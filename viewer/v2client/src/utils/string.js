@@ -113,6 +113,12 @@ export function getLabelByLang(string, lang, vocab, vocabPfx, context) {
   if (!string) {
     return '{FAILED LABEL}';
   }
+  if (_.isObject(string)) {
+    throw new Error(
+      'getLabelByLang was called with an object (should be a string).',
+      JSON.stringify(string)
+    );
+  }
   let item = VocabUtil.getTermObject(string, vocab, vocabPfx, context);
   let note = '';
   let labelByLang = '';
