@@ -265,7 +265,6 @@ const store = new Vuex.Store({
     }
   },
   actions: {
-
     undoInspectorChange({ commit, state }) {
       const history = state.inspector.changeHistory;
       const lastNode = history[history.length-1];

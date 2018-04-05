@@ -66,7 +66,7 @@ export default {
             <span>{{"Search" | translatePhrase}}</span>
           </router-link>
         </li>
-          <li class="MainNav-item">
+          <li class="MainNav-item" v-if="user.fullName">
           <router-link to="/create" class="MainNav-link">
             <div class="MainNav-iconWrap" aria-hidden="true">
               <i class="fa fa-file-text"></i>
@@ -74,7 +74,7 @@ export default {
             <span>{{"Create new" | translatePhrase}}</span>
           </router-link>
         </li>
-        <li class="MainNav-item" v-if="user">
+        <li class="MainNav-item" v-if="user.fullName">
           <router-link to="/user" class="MainNav-link">
             <div class="MainNav-iconWrap MainNav-iconWrap--userSettings">
               <img class="MainNav-gravatar" :src="`https://www.gravatar.com/avatar/${user.emailHash}?d=mm&s=32`" alt="Avatar"/>
@@ -82,8 +82,8 @@ export default {
             {{ user.fullName }} <span v-cloak class="sigelLabel">({{ user.settings.activeSigel }})</span>
           </router-link>
         </li>
-        <li class="MainNav-item" v-if="!user">
-          <a href="/login" class="MainNav-link">
+        <li class="MainNav-item" v-if="!user.fullName">
+          <a :href="`${settings.apiPath}/login/authorize`" class="MainNav-link">
             <div class="MainNav-iconWrap" aria-hidden="true">
               <i class="fa fa-fw fa-sign-in"></i>
             </div>
