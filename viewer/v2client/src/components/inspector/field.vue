@@ -329,8 +329,8 @@ export default {
 </script>
 
 <template>
-<div class="field" :id="`field-${getPath}`" v-bind:class="{'columns': asColumns, 'rows': !asColumns, 'highlight': isLastAdded, 'distinguish-removal': removeHover, 'removed': removed }" @mouseover="handleMouseEnter()" @mouseleave="handleMouseLeave()">
-  <div class="label" v-bind:class="{ 'locked': locked }">
+<div class="field Field" :id="`field-${getPath}`" v-bind:class="{'columns': asColumns, 'rows': !asColumns, 'highlight': isLastAdded, 'distinguish-removal': removeHover, 'removed': removed }" @mouseover="handleMouseEnter()" @mouseleave="handleMouseLeave()">
+  <div class="label Field-label" v-bind:class="{ 'locked': locked }">
     <div>
       <span v-show="fieldKey === '@id'">{{ 'ID' | translatePhrase | capitalize }}</span>
       <span v-show="fieldKey === '@type'">{{ 'Type' | translatePhrase | capitalize }}</span>
@@ -380,18 +380,35 @@ export default {
 
 <style lang="less">
 
-.field {
+.Field {
   width: 100%;
-  min-height: 3em;
   display: flex;
   flex-direction: row;
-  box-shadow: inset 0px 0px 1em 0px transparent;
-  outline: 2px solid transparent;
   transition: 6s ease-in;
   transition-property: outline, box-shadow;
   max-height: 400vh;
   overflow-y: auto;
   opacity: 1;
+
+  &.columns {
+    border-bottom: 1px solid #d8d8d8;
+  }
+
+  &-label {
+    padding: 20px;
+    flex: 0 0 @col-label;
+    text-align: right;
+    align-items: flex-start;
+    justify-content: flex-end;
+    // line-height: 2.6;
+    overflow: hidden;
+    font-size: 16px;
+    font-size: 1.6rem;
+  }
+}
+
+.field {
+
   &.removed {
     transition: 0.5s all ease;
     min-height: 0em;
@@ -416,17 +433,7 @@ export default {
         background-color: @gray-dark;
       }
     }
-    &::before {
-      content: "";
-      width: 0;
-      height: 0;
-      border-style: solid;
-      border-width: 0 5px 6px 5px;
-      border-color: transparent transparent @black transparent;
-      font-size: 0;
-      line-height: 0;
-      margin-left: 27px;
-    }
+
   }
   .node-list {
     line-height: 0;
@@ -462,7 +469,6 @@ export default {
         cursor: help;
       }
     }
-    font-size: 1.2rem;
     color: @black;
     font-weight: normal;
     .comment-icon {
@@ -505,27 +511,8 @@ export default {
     }
   }
   &.columns {
-    border: solid;
-    border-color: transparent;
-    border-bottom-color: #d8d8d8;
-    border-top-color: #f3f3f3;
-    border-width: 1px;
-    padding: 0.5em 0;
-    >.label {
-      white-space: normal;
-      padding: 5px 10px;
-      order: 1;
-      flex: 0 0 @col-label;
-      text-align: right;
-      align-items: flex-start;
-      justify-content: flex-end;
-      // line-height: 2.6;
-      overflow: hidden;
-      a {
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-    }
+   
+  
     >.value {
       order: 2;
       flex: 1 1 0px;
