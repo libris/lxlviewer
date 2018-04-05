@@ -37,60 +37,67 @@ export default {
 <template>
   <nav class="NavBar" aria-labelledby="service-name">
     <div class="container">
-      <div class="NavBar-brand" role="banner">
-        <router-link to="/" class="NavBar-brandLink">
-          <img class="NavBar-brandLogo" src="~kungbib-styles/dist/assets/kb_logo_black.svg" alt="Kungliga Bibliotekets logotyp">
-        </router-link>
-        <router-link to="/" class="NavBar-brandTitle" :title="`Version ${settings.version}`">
-          <span id="service-name">Libris katalogisering</span>
-          <span class="NavBar-envLabel">
-          {{ environmentLabel }}
-          </span>
-        </router-link>
-      </div>
+      <div class="row">
+        <div class="col-xs-12 col-md-5">
+          <div class="NavBar-brand" role="banner">
+            <router-link to="/" class="NavBar-brandLink">
+              <img class="NavBar-brandLogo" src="~kungbib-styles/dist/assets/kb_logo_black.svg" alt="Kungliga Bibliotekets logotyp">
+            </router-link>
+            <router-link to="/" class="NavBar-brandTitle" :title="`Version ${settings.version}`">
+              <span id="service-name">Libris katalogisering</span>
+              <span class="NavBar-envLabel">
+              {{ environmentLabel }}
+              </span>
+            </router-link>
+          </div>
+        </div>
 
-      <ul class="nav navbar-nav pull-right MainNav">
-        <li class="MainNav-item">
-          <router-link to="/help" class="MainNav-link">
-            <div class="MainNav-iconWrap" aria-hidden="true">
-              <i class="fa fa-question-circle"></i>
-            </div>
-            <span>{{"Help" | translatePhrase}}</span>
-          </router-link>
-        </li>
-        <li class="MainNav-item">
-          <router-link to="/search/libris" class="MainNav-link">
-            <div class="MainNav-iconWrap" aria-hidden="true">
-              <i class="fa fa-search"></i>
-            </div>
-            <span>{{"Search" | translatePhrase}}</span>
-          </router-link>
-        </li>
-          <li class="MainNav-item">
-          <router-link to="/create" class="MainNav-link">
-            <div class="MainNav-iconWrap" aria-hidden="true">
-              <i class="fa fa-file-text"></i>
-            </div>
-            <span>{{"Create new" | translatePhrase}}</span>
-          </router-link>
-        </li>
-        <li class="MainNav-item" v-if="user">
-          <router-link to="/user" class="MainNav-link">
-            <div class="MainNav-iconWrap MainNav-iconWrap--userSettings">
-              <img class="MainNav-gravatar" :src="`https://www.gravatar.com/avatar/${user.emailHash}?d=mm&s=32`" alt="Avatar"/>
-            </div>
-            {{ user.fullName }} <span v-cloak class="sigelLabel">({{ user.settings.activeSigel }})</span>
-          </router-link>
-        </li>
-        <li class="MainNav-item" v-if="!user">
-          <a href="/login" class="MainNav-link">
-            <div class="MainNav-iconWrap" aria-hidden="true">
-              <i class="fa fa-fw fa-sign-in"></i>
-            </div>
-            <span>{{"Log in" | translatePhrase}}</span>
-          </a>
-        </li>
-      </ul>
+        <div class="col-xs-12 col-md-7">
+              <ul class="nav navbar-nav  MainNav">
+                <li class="MainNav-item">
+                  <router-link to="/help" class="MainNav-link">
+                    <div class="MainNav-iconWrap" aria-hidden="true">
+                      <i class="fa fa-question-circle"></i>
+                    </div>
+                    <span>{{"Help" | translatePhrase}}</span>
+                  </router-link>
+                </li>
+                <li class="MainNav-item">
+                  <router-link to="/search/libris" class="MainNav-link">
+                    <div class="MainNav-iconWrap" aria-hidden="true">
+                      <i class="fa fa-search"></i>
+                    </div>
+                    <span>{{"Search" | translatePhrase}}</span>
+                  </router-link>
+                </li>
+                  <li class="MainNav-item">
+                  <router-link to="/create" class="MainNav-link">
+                    <div class="MainNav-iconWrap" aria-hidden="true">
+                      <i class="fa fa-file-text"></i>
+                    </div>
+                    <span>{{"Create new" | translatePhrase}}</span>
+                  </router-link>
+                </li>
+                <li class="MainNav-item" v-if="user">
+                  <router-link to="/user" class="MainNav-link">
+                    <div class="MainNav-iconWrap MainNav-iconWrap--userSettings">
+                      <img class="MainNav-gravatar" :src="`https://www.gravatar.com/avatar/${user.emailHash}?d=mm&s=32`" alt="Avatar"/>
+                    </div>
+                    {{ user.fullName }} <span v-cloak class="sigelLabel">({{ user.settings.activeSigel }})</span>
+                  </router-link>
+                </li>
+                <li class="MainNav-item" v-if="!user">
+                  <a href="/login" class="MainNav-link">
+                    <div class="MainNav-iconWrap" aria-hidden="true">
+                      <i class="fa fa-fw fa-sign-in"></i>
+                    </div>
+                    <span>{{"Log in" | translatePhrase}}</span>
+                  </a>
+                </li>
+              </ul>
+           
+        </div>
+      </div>
     </div>
   </nav>
 </template>
@@ -104,7 +111,7 @@ export default {
   background-color: @bg-navbar;
   border-width: 0px 0px @border-navbar-width 0px;
   box-shadow: @shadow-navbar;
-  min-height: 62px;
+  height: auto;
 
   @media screen and (max-width: @screen-sm-min) {
     padding: 0 20px;
@@ -112,8 +119,7 @@ export default {
 
   &-brand {
     float: left;
-    margin-left: 1em;
-    padding: 0.3em;
+    margin: 5px 10px 5px 0;
   }
 
   &-brandLogo {
@@ -159,8 +165,14 @@ export default {
 }
 
 .MainNav {
+  float: right;
+
   &-item {
     text-transform: none;
+      
+    @media screen and (max-width: @screen-sm-min) {
+      display: inline;
+    }
   }
 
   &-iconWrap {
@@ -199,6 +211,10 @@ export default {
     i {
       color: @text-alt-navbar;
     }
+  }
+
+  @media screen and (max-width: @screen-sm-min) {
+    float: left;
   }
 }
 

@@ -332,11 +332,11 @@ export default {
 </script>
 
 <template>
-  <div class="item-local-container" v-bind:class="{'highlight': isNewlyAdded, 'expanded': expanded}">
+  <div class="item-local-container ItemLocal" v-bind:class="{'highlight': isNewlyAdded, 'is-expanded': expanded}">
     <div class="link-indicator" v-if="isExtractable">
       <i class="fa fa-unlink"></i>
     </div>
-    <div class="item-local" :class="{'expanded': expanded, 'distinguish-removal': removeHover}">
+    <div class="item-local" :class="{'is-expanded': expanded, 'distinguish-removal': removeHover}">
       <div class="topbar">
         <i class="fa fa-chevron-right" :class="{'down': expanded}" @click="toggleExpanded()"></i>
         <span class="type" @click="toggleExpanded()" :title="item['@type']">{{ item['@type'] | labelByLang | capitalize }}</span>
@@ -365,7 +365,27 @@ export default {
 
 <style lang="less">
 
+.ItemLocal {
+  position: relative;
+
+  &:before {
+    background: #000;
+    content: " ";
+    display: block;
+    width: 20px;
+    height: 1px;
+    position: absolute;
+    left: 0;
+    top: 50%;
+  }
+
+  &.is-expanded:before {
+    top: 20px;
+  }
+}
+
 .item-local-container {
+
   padding: 2px 0px;
   margin: 0px 0px 0px 0px;
   box-shadow: 0px 0px 1em 0px transparent;
@@ -391,7 +411,7 @@ export default {
     outline: 2px solid @highlight-color;
     box-shadow: 0px 0px 1em 0px @highlight-color;
   }
-  &.expanded {
+  &.is-expanded {
     margin: 0 0 2em 0;
   }
   .item-local {
@@ -408,7 +428,7 @@ export default {
         background-color: rgba(255,0,0,.1);
       }
     }
-    &.expanded {
+    &.is-expanded {
       max-height: 400vh;
       box-shadow: @shadow-chip-elevated;
     }
