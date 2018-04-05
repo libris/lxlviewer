@@ -249,7 +249,7 @@ export default {
 </script>
 
 <template>
-  <div class="EntityForm form-component focused-form-component" 
+  <div class="EntityForm well form-component focused-form-component" 
     :class="{ 'locked is-locked': isLocked }" 
     v-show="isActive">
     <div class="EntityForm-container field-container" 
@@ -317,9 +317,10 @@ export default {
 }
 
 .EntityForm {
+  margin: 20px 0 0;
+  padding: 0;
+
   &-container {
-    border: solid #d8d8d8;
-    margin: 0px;
     padding: 0;
     border-width: 1px 0px 0px 0px;
     transition: 2s ease max-height;

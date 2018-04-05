@@ -13,6 +13,7 @@ import * as ModalUtil from '@/utils/modals';
 import * as HttpUtil from '@/utils/http';
 import * as StringUtil from '@/utils/string';
 import * as RecordUtil from '@/utils/record';
+import MarcPreview from '@/components/inspector/marc-preview';
 import EntityHeader from '@/components/inspector/entity-header';
 import FieldAdder from '@/components/inspector/field-adder';
 import EntityChangelog from '@/components/inspector/entity-changelog';
@@ -36,6 +37,7 @@ export default {
       showSave: false,
       showFieldAdderTooltip: false,
       showClarifySave: false,
+      showMarcPreview: false
     };
   },
   events: {
@@ -80,7 +82,10 @@ export default {
       }
     },
     openMarc() {
-      this.$dispatch('show-marc');
+      this.showMarcPreview = true;
+    },
+    closeMarc() {
+      this.showMarcPreview = false;
     },
     save() {
       this.$emit('save');
@@ -253,6 +258,7 @@ export default {
     'entity-changelog': EntityChangelog,
     'field-adder': FieldAdder,
     'tooltip-component': TooltipComponent,
+    'marc-preview': MarcPreview,
   },
   mounted() {
     this.$nextTick(() => {
@@ -344,7 +350,8 @@ export default {
             </a>
           </li>
           <li>
-            <a @click="openMarc">
+            <marc-preview :openPreview="showMarcPreview" v-on:close-marc="closeMarc()"></marc-preview>
+            <a @click="openMarc" >
             <i class="fa fa-fw fa-eye" aria-hidden="true"></i>
             {{"Preview MARC21" | translatePhrase}}
             </a>

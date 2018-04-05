@@ -7,7 +7,6 @@ import * as httpUtil from '@/utils/http';
 // import * as VocabUtil from '@/utils/vocab';
 import * as DisplayUtil from '@/utils/display';
 import * as RecordUtil from '@/utils/record';
-// import MarcPreview from '@/components/inspector/marc-preview';
 import EntityForm from '@/components/inspector/entity-form';
 import EntityControls from '@/components/inspector/entity-controls';
 import EntityHeader from '@/components/inspector/entity-header';

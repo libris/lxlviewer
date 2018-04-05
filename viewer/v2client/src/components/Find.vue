@@ -14,8 +14,6 @@ import LinkCardComponent from '@/components/search/link-card';
 import IntroComponent from '@/components/search/link-card';
 import Modernizr from '@/../.modernizrrc.js';
 
-import MockRemoteResult from '@/resources/json/mockRemoteResult.json';
-
 export default {
   data: function () {
     return {
