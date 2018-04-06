@@ -13,6 +13,32 @@ export default {
     }
   },
   methods: {
+    getImagePath(imgName) {
+      const pathParts = imgName.split('/');
+      const fileName = pathParts[pathParts.length-1];
+      let fetchedFileName = '';
+      try {
+        fetchedFileName = require(`@/assets/img/generated/${fileName}`);
+      }
+      catch(error) {
+        console.warn(`Could not resolve path for image "${fileName}"`);
+      }
+      return fetchedFileName;
+    },
+    resolveImages(html) {
+      const parser=new DOMParser();
+      const htmldoc=parser.parseFromString(html, "text/html");
+      const images = htmldoc.getElementsByTagName('img');
+      for (let img of images) {
+        img.src = this.getImagePath(img.src);
+      }
+      return htmldoc.body.innerHTML;
+    },
+    getHTML(markdown) {
+      const html = this.transformMarkdownToHTML(markdown);
+      const htmlFixedImages = this.resolveImages(html);
+      return htmlFixedImages;
+    },
     transformMarkdownToHTML(markdown) {
       const html = marked(markdown);
       return html;
@@ -92,8 +118,8 @@ export default {
               <li><a href="https://goo.gl/forms/dPxkhMqE10RvKQFE2" target="_blank">Här</a> kan du ge ändringsförslag.</li>
             </ul>
           </div>
-          <div v-for="(sectionValue, sectionKey) in docs" :key="sectionKey" v-show="sectionValue.basename == activeSection">
-            <span v-html="transformMarkdownToHTML(docs[sectionKey].content)"></span>
+          <div v-for="(sectionValue, sectionKey) in docs" :key="sectionKey" v-if="sectionValue.basename == activeSection">
+            <span v-html="getHTML(docs[sectionKey].content)"></span>
           </div>
         </div>
       </div>
@@ -119,6 +145,9 @@ export default {
       font-size: 90%;
       color: #000000;
       background-color: #fbebef;
+    }
+    img {
+      max-width: 100%;
     }
   }
   .menu {
