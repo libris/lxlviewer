@@ -15,7 +15,7 @@ export default {
   },
   watch: {
     token(val, oldVal) {
-      if (val !== oldVal) {
+      if (val && val !== oldVal) {
         this.verify();
       }
     }
