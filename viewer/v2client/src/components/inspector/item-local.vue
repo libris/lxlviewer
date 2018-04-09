@@ -163,7 +163,7 @@ export default {
     collapse() {
       this.expanded = false;
     },
-    toggleExpanded() {
+    toggleExpanded(event) {
       if (this.expanded === true) {
         this.collapse();
       } else {
@@ -318,7 +318,7 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-    
+     
     });
   },
  
@@ -339,11 +339,11 @@ export default {
       :class="{'highlight': isNewlyAdded, 'is-expanded': expanded, 'distinguish-removal': removeHover}">
       <div class="ItemLocal-topbar topbar">
         <i class="ItemLocal-arrow fa fa-chevron-right " 
-          :class="{'down': expanded}" @click="toggleExpanded()"></i>
+          :class="{'down': expanded}" @click="toggleExpanded($event)"></i>
         <span class="type" 
-          @click="toggleExpanded()" 
+          @click="toggleExpanded($event)" 
           :title="item['@type']">{{ item['@type'] | labelByLang | capitalize }}:</span>
-        <span class="collapsed-label" @click="toggleExpanded()">
+        <span class="collapsed-label" @click="toggleExpanded($event)">
           <span v-show="!expanded || isEmpty">{{getItemLabel}}</span>
           <span class="placeholder"> </span>
         </span>
@@ -370,14 +370,14 @@ export default {
         </span>
       </div>
   
-      <div class="js-itemLocalFields">      
+      <div class="js-itemLocalFields ItemLocal-fieldContainer">      
         <field-adder 
           v-if="!isLocked && isEmpty" 
           :entity-type="item['@type']" 
           :allowed="allowedProperties" 
           :inner="true" 
           :path="getPath"></field-adder>
-        <field 
+        <field class="js-field"
           v-show="expanded && k !== '_uid'" 
           v-for="(v, k) in filteredItem" 
           :parent-path="getPath" 
@@ -414,11 +414,8 @@ export default {
   padding: 0 0 0 0px;
   position: relative;
 
-  &.is-expanded {
-  }
-
   &:after {
-    background: #000;
+    background: silver;
     content: "";
     display: block;
     width: 1px;
@@ -429,20 +426,39 @@ export default {
     transition: height .1s linear;
   }
 
+  &-topbar {
+    position: relative;
+
+    // &:before {
+    //   background: #333;
+    //   content: "";
+    //   display: block;
+    //   height: 100%;
+    //   left: -10px;
+    //   position: absolute;
+    //   top: 12px;
+    //   width: 1px;
+    // }
+  }
+
   &-arrow {
     transition: all 0.2s ease;
     padding: 0 5px;
     cursor: pointer;
-
-    .is-expanded & {
-      transform:rotate(90deg);
-
-      &::before {
-        vertical-align: sub;
-      }
-    }
   }
 
+  &-fieldContainer {
+    position: relative;
+  }
+
+}
+
+.is-expanded > .ItemLocal-topbar > .ItemLocal-arrow {
+  transform:rotate(90deg);
+
+  &::before {
+    vertical-align: sub;
+  }
 }
 
 .item-local-container {

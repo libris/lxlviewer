@@ -233,6 +233,7 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
+      
       setTimeout(() => {
         if (this.fieldKey === '_uid') {
           throw new Error('A datanode component has been added for a _uid key, which should never happen.');
@@ -489,6 +490,18 @@ export default {
       text-align: left;
       font-weight: 700;
 
+      &:before {
+        background: #333;
+        content: "";
+        display: block;
+        height: 5px;
+        left: -23px;
+        position: absolute;
+        top: 10px;
+        width: 5px;
+        border-radius: 100%;
+      }
+
     }
   }
 
@@ -500,7 +513,7 @@ export default {
     overflow: visible;
 
     &:before {
-      background: #000;
+      background: silver;
       content: "";
       display: block;
       width: 11px;
@@ -560,7 +573,7 @@ export default {
     position: relative;
 
     &:before {
-      background: #000;
+      background: silver;
       content: "";
       display: block;
       height: 1px;
@@ -571,7 +584,7 @@ export default {
     }
 
     &:after {
-      background: #000;
+      background: silver;
       content: "";
       display: block;
       width: 1px;
