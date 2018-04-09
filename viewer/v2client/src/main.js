@@ -104,7 +104,7 @@ new Vue({
   },
   mounted() {
     this.$nextTick(() => {
-      this.updateTitle(this.$route);
+      this.updateTitle();
     })
   },
   computed: {
