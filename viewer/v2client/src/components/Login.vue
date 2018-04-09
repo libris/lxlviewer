@@ -31,7 +31,7 @@ export default {
   },
   methods: {
     verify() {
-      HttpUtil.get({ url: 'https://login.libris.kb.se/oauth/verify', token: this.token }).then((result) => {
+      HttpUtil.get({ url: `${this.settings.authPath}/oauth/verify`, token: this.token }).then((result) => {
         const userObj = User.getUserObject(result.user)
         this.$store.dispatch('setUser', userObj);
         this.$router.push({ path: `/` });
