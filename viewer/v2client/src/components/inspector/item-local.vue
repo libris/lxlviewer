@@ -414,10 +414,8 @@ export default {
   padding: 0 0 0 0px;
   position: relative;
 
-  
-
   &:after {
-    background: #333;
+    background: silver;
     content: "";
     display: block;
     width: 1px;

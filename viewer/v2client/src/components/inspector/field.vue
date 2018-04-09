@@ -513,7 +513,7 @@ export default {
     overflow: visible;
 
     &:before {
-      background: #000;
+      background: silver;
       content: "";
       display: block;
       width: 11px;
@@ -573,7 +573,7 @@ export default {
     position: relative;
 
     &:before {
-      background: #000;
+      background: silver;
       content: "";
       display: block;
       height: 1px;
@@ -584,7 +584,7 @@ export default {
     }
 
     &:after {
-      background: #000;
+      background: silver;
       content: "";
       display: block;
       width: 1px;
