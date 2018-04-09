@@ -19,6 +19,7 @@ import FieldAdder from '@/components/inspector/field-adder';
 import EntityChangelog from '@/components/inspector/entity-changelog';
 import TooltipComponent from '@/components/shared/tooltip-component';
 import LensMixin from '@/components/mixins/lens-mixin';
+import ReverseRelations from './reverse-relations';
 import { mixin as clickaway } from 'vue-clickaway';
 import { mapGetters } from 'vuex';
 
@@ -259,6 +260,8 @@ export default {
     'field-adder': FieldAdder,
     'tooltip-component': TooltipComponent,
     'marc-preview': MarcPreview,
+    'reverse-relations': ReverseRelations,
+
   },
   mounted() {
     this.$nextTick(() => {
@@ -413,6 +416,10 @@ export default {
         {{"Edit" | translatePhrase}}
       </button>
     </div>
+
+    <reverse-relations class="EditorControls-reverse" 
+      v-if="!inspector.status.isNew"></reverse-relations>
+
   </div>
 </template>
 

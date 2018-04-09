@@ -221,7 +221,6 @@ export default {
             <entity-controls @save="saveItem()"></entity-controls>
             <entity-header id="main-header" :full="true" v-if="!isItem"></entity-header>
             <entity-form :editing-object="inspector.status.focus" :locked="!inspector.status.editing"></entity-form>
-            <hr>
             <code v-if="user.settings.appTech">
               {{result}}
             </code>

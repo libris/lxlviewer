@@ -115,18 +115,9 @@ export default {
 
 .reverse-relations {
   background-color: @white;
-  flex: 2 2 20%;
-  padding: 1em;
   display: flex;
-  justify-content: center;
-  border: solid @gray-light;
-  border-width: 1px 1px 0px 0px;
   > div {
-    text-align: center;
-    flex-direction: column;
-    justify-content: space-evenly;
-    align-items: center;
-    display: flex;
+    float: right;
     .relations-number {
       font-weight: bold;
     }
