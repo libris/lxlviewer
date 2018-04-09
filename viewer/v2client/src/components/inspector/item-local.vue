@@ -316,10 +316,12 @@ export default {
       return true;
     },
   },
-  ready() {
+  mounted() {
     this.$nextTick(() => {
+    
     });
   },
+ 
   components: {
     'processed-label': ProcessedLabel,
     'item-entity': ItemEntity,
@@ -332,18 +334,30 @@ export default {
 </script>
 
 <template>
-  <div class="item-local-container ItemLocal" v-bind:class="{'highlight': isNewlyAdded, 'is-expanded': expanded}">
-    <div class="link-indicator" v-if="isExtractable">
-      <i class="fa fa-unlink"></i>
-    </div>
-    <div class="item-local" :class="{'is-expanded': expanded, 'distinguish-removal': removeHover}">
-      <div class="topbar">
-        <i class="fa fa-chevron-right" :class="{'down': expanded}" @click="toggleExpanded()"></i>
-        <span class="type" @click="toggleExpanded()" :title="item['@type']">{{ item['@type'] | labelByLang | capitalize }}</span>
-        <span class="collapsed-label" @click="toggleExpanded()"><span v-show="!expanded || isEmpty">{{getItemLabel}}</span><span class="placeholder">.</span></span>
-        <span class="actions">
-          <i v-if="!isLocked" class="fa fa-trash-o chip-action" :class="{'show-icon': showActionButtons}" v-on:click="removeThis(true)" @mouseover="removeHover = true" @mouseout="removeHover = false">
-            <tooltip-component :show-tooltip="removeHover" tooltip-text="Remove" translation="translatePhrase"></tooltip-component>
+  <div>
+    <div class="item-local ItemLocal js-itemLocal" 
+      :class="{'highlight': isNewlyAdded, 'is-expanded': expanded, 'distinguish-removal': removeHover}">
+      <div class="ItemLocal-topbar topbar">
+        <i class="ItemLocal-arrow fa fa-chevron-right " 
+          :class="{'down': expanded}" @click="toggleExpanded()"></i>
+        <span class="type" 
+          @click="toggleExpanded()" 
+          :title="item['@type']">{{ item['@type'] | labelByLang | capitalize }}:</span>
+        <span class="collapsed-label" @click="toggleExpanded()">
+          <span v-show="!expanded || isEmpty">{{getItemLabel}}</span>
+          <span class="placeholder"> </span>
+        </span>
+        <span class="ItemLocal-actions actions">
+          <i v-if="!isLocked" 
+            class="fa fa-trash-o chip-action" 
+            :class="{'show-icon': showActionButtons}" 
+            v-on:click="removeThis(true)" 
+            @mouseover="removeHover = true" 
+            @mouseout="removeHover = false">
+            <tooltip-component 
+              :show-tooltip="removeHover" 
+              tooltip-text="Remove" 
+              translation="translatePhrase"></tooltip-component>
           </i>
           <i class="fa fa-link"
             v-if="inspector.status.editing"  
@@ -355,33 +369,80 @@ export default {
           <field-adder v-if="!isLocked" :entity-type="item['@type']" :allowed="allowedProperties" :inner="true" :path="getPath"></field-adder>
         </span>
       </div>
-      
-      <field-adder v-if="!isLocked && isEmpty" :entity-type="item['@type']" :allowed="allowedProperties" :inner="true" :path="getPath"></field-adder>
-      <field v-show="expanded && k !== '_uid'" v-for="(v, k) in filteredItem" :parent-path="getPath" :entity-type="item['@type']" :is-inner="true" :is-locked="isLocked" :is-removable="false" :as-columns="false" :parent-key="fieldKey" :parent-index="index" :field-key="k" :field-value="v" :key="k" :show-action-buttons="showActionButtons"></field>
+  
+      <div class="js-itemLocalFields">      
+        <field-adder 
+          v-if="!isLocked && isEmpty" 
+          :entity-type="item['@type']" 
+          :allowed="allowedProperties" 
+          :inner="true" 
+          :path="getPath"></field-adder>
+        <field 
+          v-show="expanded && k !== '_uid'" 
+          v-for="(v, k) in filteredItem" 
+          :parent-path="getPath" 
+          :entity-type="item['@type']" 
+          :is-inner="true" 
+          :is-locked="isLocked" 
+          :is-removable="false" 
+          :as-columns="false" 
+          :parent-key="fieldKey" 
+          :parent-index="index" 
+          :field-key="k" 
+          :field-value="v" 
+          :key="k" 
+          :show-action-buttons="showActionButtons"></field>
+      </div>
+       
     </div>
-    <search-window :active="extractDialogActive" :can-copy-title="canCopyTitle" :copy-title="copyTitle" :entity-type="entityType" :field-key="fieldKey" :extracting="extracting" :item-info="extractedMainEntity" :index="index"></search-window>
-  </div>
+
+    <search-window 
+      :active="extractDialogActive" 
+      :can-copy-title="canCopyTitle" 
+      :copy-title="copyTitle" 
+      :entity-type="entityType" 
+      :field-key="fieldKey" 
+      :extracting="extracting" 
+      item-info="extractedMainEntity" 
+      :index="index"></search-window>
+    </div>
 </template>
 
 <style lang="less">
 
 .ItemLocal {
+  padding: 0 0 0 0px;
   position: relative;
 
-  &:before {
-    background: #000;
-    content: " ";
-    display: block;
-    width: 20px;
-    height: 1px;
-    position: absolute;
-    left: 0;
-    top: 50%;
+  &.is-expanded {
   }
 
-  &.is-expanded:before {
-    top: 20px;
+  &:after {
+    background: #000;
+    content: "";
+    display: block;
+    width: 1px;
+    height: 1px;
+    position: absolute;
+    left: -10px;
+    top: 12px; 
+    transition: height .1s linear;
   }
+
+  &-arrow {
+    transition: all 0.2s ease;
+    padding: 0 5px;
+    cursor: pointer;
+
+    .is-expanded & {
+      transform:rotate(90deg);
+
+      &::before {
+        vertical-align: sub;
+      }
+    }
+  }
+
 }
 
 .item-local-container {
@@ -415,9 +476,6 @@ export default {
     margin: 0 0 2em 0;
   }
   .item-local {
-    width: 100%;
-    background-color: @color-local;
-    box-shadow: @shadow-chip;
     border: 1px solid rgba(0, 0, 0, 0.15);
     line-height: 1.6;
     max-height: 40px;
@@ -458,17 +516,7 @@ export default {
           transform: translate(16px, 0px);
         }
       }
-      > i, > span > i {
-        transition: all 0.2s ease;
-        padding: 0 0.5em;
-        cursor: pointer;
-        &.down {
-          transform:rotate(90deg);
-        }
-        &::before {
-          vertical-align: sub;
-        }
-      }
+
       .chip-action {
         cursor: pointer;
       }

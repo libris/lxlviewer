@@ -134,6 +134,13 @@ export default {
       }
       return `${this.parentPath}.${this.fieldKey}`;
     },
+    isChild() {
+     if (this.parentPath !== 'mainEntity') {
+       return true;
+     }
+
+     return false;
+    },
     propertyTypes() {
       return VocabUtil.getPropertyTypes(
         this.fieldKey,
@@ -329,20 +336,29 @@ export default {
 </script>
 
 <template>
-<div class="field Field" :id="`field-${getPath}`" v-bind:class="{'columns': asColumns, 'rows': !asColumns, 'highlight': isLastAdded, 'distinguish-removal': removeHover, 'removed': removed }" @mouseover="handleMouseEnter()" @mouseleave="handleMouseLeave()">
-  <div class="label Field-label" v-bind:class="{ 'locked': locked }">
-    <div>
+
+<div class="field Field" 
+  :id="`field-${getPath}`" 
+  v-bind:class="{'Field--child': !asColumns, 'highlight': isLastAdded, 'distinguish-removal': removeHover, 'removed': removed }" 
+  @mouseover="handleMouseEnter()" 
+  @mouseleave="handleMouseLeave()">
+  
+  <div class="Field-label" v-bind:class="{ 'locked': locked }">
       <span v-show="fieldKey === '@id'">{{ 'ID' | translatePhrase | capitalize }}</span>
       <span v-show="fieldKey === '@type'">{{ 'Type' | translatePhrase | capitalize }}</span>
-      <span v-show="fieldKey !== '@id' && fieldKey !== '@type'" :title="fieldKey">{{ fieldKey | labelByLang | capitalize }}</span>
+      <span v-show="fieldKey !== '@id' && fieldKey !== '@type'" 
+        :title="fieldKey">{{ fieldKey | labelByLang | capitalize }}</span>
       <div v-if="propertyComment && !locked" class="comment-icon">
         <i class="fa fa-question-circle"></i>
         <div class="comment">{{ propertyComment }}</div>
       </div>
+
       <entity-adder v-show="!locked && isRepeatable && (isInner && !isEmptyObject)" :field-key="fieldKey" :path="getPath" :already-added="linkedIds" :entity-type="entityType" :property-types="propertyTypes" :show-action-buttons="actionButtonsShown" :active="activeModal" :is-placeholder="true" :value-list="valueAsArray"></entity-adder>
-    </div>
-    <div v-if="isInner" class="actions">
-      <div class="action" v-show="!locked" :class="{'disabled': activeModal}">
+  
+    <div v-if="isInner" class="Field-actions actions">
+      <div class="action" 
+        v-show="!locked" 
+        :class="{'disabled': activeModal}">
         <i v-on:click="removeThis(true)" @mouseover="removeHover = true" @mouseout="removeHover = false" class="fa fa-times action-button action-remove">
           <tooltip-component :show-tooltip="removeHover" tooltip-text="Remove" translation="translatePhrase"></tooltip-component>
         </i>
@@ -350,28 +366,91 @@ export default {
     </div>
     <!-- {{ key | labelByLang | capitalize }} -->
   </div>
-  <div class="value node-list">
     <pre class="path-code" v-show="user.settings.appTech">{{getPath}}</pre>
-    <ul v-if="isObjectArray">
-      <li v-for="(item, index) in valueAsArray" :key="index" :class="{'inline': getDatatype(item) == 'entity'}">
-        <item-error v-if="getDatatype(item) == 'error'" :item="item"></item-error>
-        <item-vocab v-if="getDatatype(item) == 'vocab'" :is-locked="locked" :field-key="fieldKey" :value="item" :entity-type="entityType" :index="index" :parent-path="getPath"></item-vocab>
-        <item-entity v-if="getDatatype(item) == 'entity'" :is-locked="locked" :item="item" :field-key="fieldKey" :index="index" :parent-path="getPath"></item-entity>
-        <item-local v-if="getDatatype(item) == 'local'" :is-locked="locked" :entity-type="entityType" :item="item" :field-key="fieldKey" :index="index" :parent-path="getPath" :in-array="valueIsArray" :show-action-buttons="actionButtonsShown"></item-local>
+    <ul class="Field-list FieldList value" 
+      v-if="isObjectArray"
+      :class="{'FieldList--child': isChild}">
+      <li class="Field-listItem" 
+        v-for="(item, index) in valueAsArray" 
+        :key="index" 
+        :class="{'is-inline': getDatatype(item) == 'entity'}">
+        <item-error 
+          v-if="getDatatype(item) == 'error'" 
+          :item="item"></item-error>
+        <item-vocab 
+          v-if="getDatatype(item) == 'vocab'" 
+          :is-locked="locked" 
+          :field-key="fieldKey" 
+          :value="item" 
+          :entity-type="entityType" 
+          :index="index" 
+          :parent-path="getPath"></item-vocab>
+        <item-entity 
+          v-if="getDatatype(item) == 'entity'" 
+          :is-locked="locked" 
+          :item="item" 
+          :field-key="fieldKey" 
+          :index="index" 
+          :parent-path="getPath"></item-entity>
+        <item-local :data-parent="getPath"
+          v-if="getDatatype(item) == 'local'" 
+          :is-locked="locked" 
+          :entity-type="entityType" 
+          :item="item" 
+          :field-key="fieldKey" 
+          :index="index" 
+          :parent-path="getPath" 
+          :in-array="valueIsArray" 
+          :show-action-buttons="actionButtonsShown"></item-local>
       </li>
     </ul>
-    <ul v-if="!isObjectArray">
-      <li v-for="(item, index) in valueAsArray" :key="index">
-        <item-vocab v-if="getDatatype(item) == 'vocab'" :is-locked="locked" :field-key="fieldKey" :field-value="item" :entity-type="entityType" :index="index" :parent-path="getPath"></item-vocab>
-        <item-value v-if="getDatatype(item) == 'value'" :is-removable="!hasSingleValue" :is-locked="locked" :field-value="item" :field-key="fieldKey" :index="index" :parent-path="getPath" :show-action-buttons="actionButtonsShown"></item-value>
+
+    <ul class="Field-list FieldList value" 
+      v-if="!isObjectArray" 
+      :class="{'FieldList--child': isChild}">
+      <li class="Field-listItem" 
+        v-for="(item, index) in valueAsArray" 
+        :key="index">
+        <item-vocab 
+          v-if="getDatatype(item) == 'vocab'" 
+          :is-locked="locked" :field-key="fieldKey" 
+          :field-value="item" 
+          :entity-type="entityType" 
+          :index="index" 
+          :parent-path="getPath"></item-vocab>
+        <item-value 
+          v-if="getDatatype(item) == 'value'" 
+          :is-removable="!hasSingleValue" 
+          :is-locked="locked" 
+          :field-value="item" 
+          :field-key="fieldKey" 
+          :index="index" 
+          :parent-path="getPath" 
+          :show-action-buttons="actionButtonsShown"></item-value>
       </li>
     </ul>
-    <entity-adder class="action" v-show="!locked && (isRepeatable || isEmptyObject) && (!isInner || (isInner && isEmptyObject))" :field-key="fieldKey" :already-added="linkedIds" :entity-type="entityType" :property-types="propertyTypes" :show-action-buttons="actionButtonsShown" :active="activeModal" :is-placeholder="false" :value-list="valueAsArray" :path="getPath"></entity-adder>
-  </div>
-  <div v-if="!isInner" class="actions">
+    <entity-adder class="action" 
+      v-show="!locked && (isRepeatable || isEmptyObject) && (!isInner || (isInner && isEmptyObject))" 
+      :field-key="fieldKey" 
+      :already-added="linkedIds" 
+      :entity-type="entityType" 
+      :property-types="propertyTypes" 
+      :show-action-buttons="actionButtonsShown" 
+      :active="activeModal" 
+      :is-placeholder="false" 
+      :value-list="valueAsArray" 
+      :path="getPath"></entity-adder>
+
+  <div v-if="!isInner" class="Field-actions actions">
     <div class="action" v-show="!locked" :class="{'disabled': activeModal}">
-      <i v-on:click="removeThis(true)" @mouseover="removeHover = true" @mouseout="removeHover = false" class="fa fa-trash-o action-button action-remove">
-        <tooltip-component :show-tooltip="removeHover" tooltip-text="Remove" translation="translatePhrase"></tooltip-component>
+      <i class="fa fa-trash-o action-button action-remove"
+        v-on:click="removeThis(true)" 
+        @mouseover="removeHover = true" 
+        @mouseout="removeHover = false">
+        <tooltip-component 
+          :show-tooltip="removeHover" 
+          tooltip-text="Remove" 
+          translation="translatePhrase"></tooltip-component>
       </i>
     </div>
   </div>
@@ -381,6 +460,7 @@ export default {
 <style lang="less">
 
 .Field {
+  border-bottom: 1px solid #d8d8d8;
   width: 100%;
   display: flex;
   flex-direction: row;
@@ -389,10 +469,6 @@ export default {
   max-height: 400vh;
   overflow-y: auto;
   opacity: 1;
-
-  &.columns {
-    border-bottom: 1px solid #d8d8d8;
-  }
 
   &-label {
     padding: 20px;
@@ -404,6 +480,106 @@ export default {
     overflow: hidden;
     font-size: 16px;
     font-size: 1.6rem;
+
+    .Field--child & {
+      flex: none;
+      display: block;
+      width: 100%;
+      padding: 0;
+      text-align: left;
+      font-weight: 700;
+
+    }
+  }
+
+  &--child {
+    border: 0;
+    display: block;
+    margin: 10px 0 10px 30px;
+    position: relative;
+    overflow: visible;
+
+    &:before {
+      background: #000;
+      content: "";
+      display: block;
+      width: 11px;
+      height: 1px;
+      position: absolute;
+      left: -20px;
+      top: 12px;
+    }
+  }
+
+  &-list {
+    border-left: 1px solid #d8d8d8;
+    order: 2;
+    flex: 1 1 0px;
+    padding: 20px;
+    margin: 0;
+    overflow: hidden; 
+
+    .Field--child & {
+      border: 0;
+      padding: 0 0 0 20px;
+    }
+  }
+
+  &-listItem {
+    display: block;
+
+    &.is-inline {
+      display: inline-block;
+    }
+  }
+
+  &-actions {
+    order: 3;
+    flex: 0 0 @col-action;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-left: -5px;
+    .disabled {
+      visibility: hidden;
+    }
+    .action-remove {
+      padding: 10px;
+    }
+    .confirm-remove-box {
+      transform: translate(12px, 18px);
+    }
+  }
+}
+
+.FieldList {
+
+  &--child {
+    list-style-type: disc;
+    overflow: visible;
+    position: relative;
+
+    &:before {
+      background: #000;
+      content: "";
+      display: block;
+      height: 1px;
+      left: -10px;
+      position: absolute;
+      top: 12px;
+      width: 20px;
+    }
+
+    &:after {
+      background: #000;
+      content: "";
+      display: block;
+      width: 1px;
+      height: 26px;
+      position: absolute;
+      left: -10px;
+      top: -13px; 
+    }
   }
 }
 
@@ -531,8 +707,7 @@ export default {
             display: inline-block;
           }
           .item-value {
-            width: 100%;
-            display: flex;
+
             > textarea {
               flex: 9 9 90%;
             }
@@ -547,23 +722,6 @@ export default {
             }
           }
         }
-      }
-    }
-    >.actions {
-      order: 3;
-      flex: 0 0 @col-action;
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-      margin-left: -5px;
-      .disabled {
-        visibility: hidden;
-      }
-      .action-remove {
-        padding: 10px;
-      }
-      .confirm-remove-box {
-        transform: translate(12px, 18px);
       }
     }
   }

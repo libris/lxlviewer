@@ -10,7 +10,6 @@ import * as DataUtil from '@/utils/data';
 import * as StringUtil from '@/utils/string';
 import EntitySummary from '@/components/shared/entity-summary';
 import LensMixin from '@/components/mixins/lens-mixin';
-import ReverseRelations from './reverse-relations';
 import { mapGetters } from 'vuex';
 
 export default {
@@ -68,7 +67,6 @@ export default {
   },
   components: {
     'entity-summary': EntitySummary,
-    'reverse-relations': ReverseRelations,
   },
 };
 </script>
@@ -78,7 +76,6 @@ export default {
     <div class="EntityHeader-body HeaderComponent-body is-full">
       <entity-summary :focus-data="focusData" :should-link="false" :lines="full ? 6 : 3"></entity-summary>
     </div>
-    <reverse-relations v-if="!inspector.status.isNew"></reverse-relations>
     <div class="EntityHeader-body HeaderComponent-body is-compact">
       <div class="compact-header" :class="{ 'show-compact': showCompact }">
       {{ compactSummary }}

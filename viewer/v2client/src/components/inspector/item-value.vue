@@ -97,7 +97,7 @@ export default {
 </script>
 
 <template>
-  <div class="item-value" v-bind:class="{'locked': isLocked, 'unlocked': !isLocked, 'distinguish-removal': removeHover, 'removed': removed}">
+  <div class="ItemValue" v-bind:class="{'locked': isLocked, 'unlocked': !isLocked, 'distinguish-removal': removeHover, 'removed': removed}">
     <textarea class="item-value-textarea" rows="1" v-model="value" @keydown="handleEnter" v-if="!isLocked"></textarea>
     <span v-if="isLocked">{{fieldValue}}</span>
     <div class="remover" v-show="!isLocked && isRemovable" v-on:click="removeThis()" @mouseover="removeHover = true" @mouseout="removeHover = false">

@@ -106,6 +106,14 @@ export default {
 @linked-color: #daefec;
 
 .ItemEntity {
+  display: inline-block;
+  background-color: lighten(@bib-color, 2%);
+  border: none;
+  border-radius: 2em;
+  overflow: hidden;
+  line-height: 1.6;
+  padding: 3px 0.3em 3px 0.5em;
+
   &-container {
     margin: 0px 0.5em 0px 0px;
   }
@@ -132,13 +140,7 @@ export default {
   &.expanded {
     margin: 0 0 2em 0;
   }
-  background-color: lighten(@bib-color, 2%);
-  width: 100%;
-  border: none;
-  border-radius: 2em;
-  overflow: hidden;
-  line-height: 1.6;
-  padding: 3px 0.3em 3px 0.5em;
+
   &.locked {
     padding: 3px 0.5em 3px 0.5em;
   }
