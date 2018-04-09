@@ -57,7 +57,6 @@ new Vue({
   template: '<App/>',
   created() {
     this.initWarningFunc();
-    this.initializeUser();
     Promise.all(this.getLdDependencies()).then((resources) => {
       store.dispatch('setContext', resources[2]['@context']);
       store.dispatch('setupVocab', resources[0]['@graph']);
@@ -105,7 +104,7 @@ new Vue({
   },
   mounted() {
     this.$nextTick(() => {
-      this.updateTitle(this.$route);
+      this.updateTitle();
     })
   },
   computed: {
@@ -123,10 +122,6 @@ new Vue({
     }
   },
   methods: {
-    initializeUser() {
-      const userObj = User.getUserObject(window.userInfo || {});
-      store.dispatch('setUser', userObj);
-    },
     updateTitle() {
       const route = this.$route;
       let title = '';

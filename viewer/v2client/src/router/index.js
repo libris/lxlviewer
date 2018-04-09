@@ -7,6 +7,7 @@ import About from '@/components/About'
 import Help from '@/components/Help'
 import UserPage from '@/components/UserPage'
 import Create from '@/components/Create'
+import Login from '@/components/Login'
 
 Vue.use(Router)
 
@@ -25,6 +26,16 @@ export default new Router({
       path: '/',
       name: 'Home',
       component: LandingPage
+    },
+    {
+      path: '/login/authorized',
+      name: 'LoggedIn',
+      component: Login
+    },
+    {
+      path: '/login',
+      name: 'Login',
+      component: Login
     },
     {
       path: '/search',

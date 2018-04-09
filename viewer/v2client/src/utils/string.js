@@ -64,6 +64,10 @@ export function getUiPhraseByLang(phrase, langcode) {
 }
 
 export function getParamValueFromUrl(url, param) {
+  if (!url || url.length === 0) {
+    return null;
+  }
+
   const splitUrl = url.split('&');
   let paramString;
   for (let i = 0; i < splitUrl.length; i++) {

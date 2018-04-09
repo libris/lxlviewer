@@ -13,7 +13,7 @@
     "test": "npm run unit && npm run e2e",
     "lint": "eslint --ext .js,.vue src test/unit test/e2e/specs",
     "build": "npm run buildresources && node build/build.js",
-    "generatehelp": "m2j ../helpdocs/*.md -c -o src/resources/json/help.json",
+    "generatehelp": "rm -rf src/assets/img/generated/* && m2j ../helpdocs/*.md -c -o src/resources/json/help.json && cp ../helpdocs/*.png src/assets/img/generated/",
     "axe": "mocha test/axe/test.js"
   },
   "dependencies": {
