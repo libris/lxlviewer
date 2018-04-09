@@ -7,5 +7,6 @@ const apiConf = require('./api_config.json')
 module.exports = merge(prodEnv, {
   NODE_ENV: '"development"',
   API_PATH: JSON.stringify(apiConf.path),
+  AUTH_PATH: JSON.stringify(apiConf.auth),
   VERSION: JSON.stringify(packageJson.version)
 })

@@ -52,6 +52,7 @@ const store = new Vuex.Store({
       environment: process.env.NODE_ENV,
       version: process.env.VERSION,
       apiPath: process.env.API_PATH,
+      authPath: process.env.AUTH_PATH,
       appPaths: {
         '/find?': '/search/libris/',
       },
