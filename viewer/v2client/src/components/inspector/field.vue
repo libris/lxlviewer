@@ -233,6 +233,7 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
+      
       setTimeout(() => {
         if (this.fieldKey === '_uid') {
           throw new Error('A datanode component has been added for a _uid key, which should never happen.');
@@ -488,6 +489,18 @@ export default {
       padding: 0;
       text-align: left;
       font-weight: 700;
+
+      &:before {
+        background: #333;
+        content: "";
+        display: block;
+        height: 5px;
+        left: -23px;
+        position: absolute;
+        top: 10px;
+        width: 5px;
+        border-radius: 100%;
+      }
 
     }
   }
