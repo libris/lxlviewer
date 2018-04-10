@@ -89,12 +89,15 @@ export class User {
 }
 
 export function getUserObject(userObj) {
-  const user = new User(
-    userObj.full_name,
-    userObj.short_name,
-    userObj.email,
-    userObj.permissions,
-  );
+  let user = new User();
+  if (userObj) {
+    user = new User(
+      userObj.full_name,
+      userObj.short_name,
+      userObj.email,
+      userObj.permissions,
+    );
+  }
   if (user.fullName !== '') {
     user.loadSettings();
   }

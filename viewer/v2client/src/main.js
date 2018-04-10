@@ -105,6 +105,9 @@ new Vue({
   },
   mounted() {
     this.$nextTick(() => {
+      if (this.$route.name === 'LoggedIn') {
+        localStorage.setItem('at', StringUtil.getParamValueFromUrl(this.$route.hash, 'access_token'));
+      }
       const token = localStorage.getItem('at');
       if (token) {
         this.verifyUser(token);
@@ -134,6 +137,7 @@ new Vue({
         store.dispatch('setUser', userObj);
       }, (error) => {
         store.dispatch('setUser', userObj);
+        localStorage.removeItem('at');
       });
     },
     updateTitle() {

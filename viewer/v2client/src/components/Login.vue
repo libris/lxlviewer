@@ -8,7 +8,6 @@ export default {
   name: 'Login',
   data() {
     return {
-      token: '',
       showButton: false,
       failedLogin: false,
     }
@@ -28,9 +27,6 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      if (this.$route.name === 'LoggedIn') {
-        localStorage.setItem('at', StringUtil.getParamValueFromUrl(this.$route.hash, 'access_token'));
-      }
     });
   }
 };
