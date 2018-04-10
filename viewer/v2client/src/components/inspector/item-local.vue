@@ -157,6 +157,16 @@ export default {
     // this.$options.components['field'] = Vue.extend(Field);
   },
   methods: {
+    highlightItem(event) {
+      let item = event.target;
+      while ((item = item.parentElement) && !item.classList.contains('js-itemLocal'));
+      item.classList.add('is-highlighted');
+    },
+    unHighlightItem(event) {
+      let item = event.target;
+      while ((item = item.parentElement) && !item.classList.contains('js-itemLocal'));
+      item.classList.remove('is-highlighted');
+    },
     expand() {
       this.expanded = true;
     },
@@ -336,7 +346,7 @@ export default {
 <template>
   <div>
     <div class="item-local ItemLocal js-itemLocal" 
-      :class="{'highlight': isNewlyAdded, 'is-expanded': expanded, 'distinguish-removal': removeHover}">
+      :class="{'highlight': isNewlyAdded, 'is-expanded': expanded}">
       <div class="ItemLocal-topbar topbar">
         <i class="ItemLocal-arrow fa fa-chevron-right " 
           :class="{'down': expanded}" @click="toggleExpanded($event)"></i>
@@ -347,9 +357,28 @@ export default {
           <span v-show="!expanded || isEmpty">{{getItemLabel}}</span>
           <span class="placeholder"> </span>
         </span>
-        <span class="ItemLocal-actions actions">
-          <i v-if="!isLocked" 
-            class="fa fa-trash-o chip-action" 
+        <div class="ItemLocal-actions actions"
+          @mouseover="highlightItem($event)"
+          @mouseout="unHighlightItem($event)">
+          <field-adder class="ItemLocal-action"
+            v-if="!isLocked" 
+            :entity-type="item['@type']" 
+            :allowed="allowedProperties" 
+            :inner="true" 
+            :path="getPath"></field-adder>
+         
+          <i class="ItemLocal-action fa fa-link"
+            v-if="inspector.status.editing"  
+            @click="openExtractDialog()" 
+            @mouseover="showLinkAction = true" 
+            @mouseout="showLinkAction = false">
+            <tooltip-component 
+              :show-tooltip="showLinkAction" 
+              tooltip-text="Link entity" 
+              translation="translatePhrase"></tooltip-component>
+          </i>
+          <i class="ItemLocal-action fa fa-trash-o chip-action" 
+            v-if="!isLocked" 
             :class="{'show-icon': showActionButtons}" 
             v-on:click="removeThis(true)" 
             @mouseover="removeHover = true" 
@@ -359,15 +388,7 @@ export default {
               tooltip-text="Remove" 
               translation="translatePhrase"></tooltip-component>
           </i>
-          <i class="fa fa-link"
-            v-if="inspector.status.editing"  
-            @click="openExtractDialog()" 
-            @mouseover="showLinkAction = true" 
-            @mouseout="showLinkAction = false">
-            <tooltip-component :show-tooltip="showLinkAction" tooltip-text="Link entity" translation="translatePhrase"></tooltip-component>
-          </i>
-          <field-adder v-if="!isLocked" :entity-type="item['@type']" :allowed="allowedProperties" :inner="true" :path="getPath"></field-adder>
-        </span>
+        </div>
       </div>
   
       <div class="js-itemLocalFields ItemLocal-fieldContainer">      
@@ -413,8 +434,9 @@ export default {
 .ItemLocal {
   padding: 0 0 0 0px;
   position: relative;
+  transition: background .2s ease-in-out;
 
-  &:after {
+  &:before {
     background: silver;
     content: "";
     display: block;
@@ -424,6 +446,20 @@ export default {
     left: -10px;
     top: 12px; 
     transition: height .1s linear;
+  }
+
+  &:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    width: 100%;
+    bottom: -2px;
+    background: #333;
+    height: 0px;
+    transition-property: height;
+    transition-duration: 0.25s;
+    transition-timing-function: ease-out;
   }
 
   &-topbar {
@@ -449,6 +485,28 @@ export default {
 
   &-fieldContainer {
     position: relative;
+  }
+
+  &-actions {
+    float: right;
+  }
+
+  &-action {
+    display: inline-block;
+    color: @gray-dark;
+    cursor: pointer;
+    display: inline-block;
+    margin: 0 5px 0 0;
+    opacity: 1;
+    transition: opacity 0.5s ease;
+
+    &:hover {
+      color: @black;
+    }
+  }
+
+  &.is-highlighted:after {
+    height: 2px;
   }
 
 }

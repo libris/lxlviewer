@@ -252,27 +252,27 @@ export default {
 </script>
 
 <template>
-  <span class="FieldAdder field-adder">
-    <span v-if="inner" class="field-adder-bar" 
+  <div class="FieldAdder">
+    <span v-if="inner" class="FieldAdder-innerAdd"
       v-on:click="show" 
       @mouseenter="showToolTip = true" 
       @mouseleave="showToolTip = false">
-      <i class="fa fa-plus-square-o plus-icon" aria-hidden="true">
+      <i class="FieldAdder-innerIcon fa fa-plus plus-icon" aria-hidden="true">
         <tooltip-component :show-tooltip="showToolTip" tooltip-text="Add field" translation="translatePhrase"></tooltip-component>
       </i>
-      {{ "Field" | translatePhrase }}
+      <span class="FieldAdder-innerLabel">{{ "Field" | translatePhrase }}</span>
     </span>
 
     <button v-if="!inner" class="FieldAdder-add btn btn-primary toolbar-button" 
       v-on:click="show" 
       @mouseenter="showToolTip = true" 
       @mouseleave="showToolTip = false">
-      <i class="fa fa-plus plus-icon" aria-hidden="true">
+      <i class="FieldAdder-icon fa fa-plus plus-icon" aria-hidden="true">
         <tooltip-component tooltip-text="Add field"
           :show-tooltip="showToolTip" 
           translation="translatePhrase"></tooltip-component>
       </i>
-      {{ "Field" | translatePhrase }}
+      <span class="FieldAdder-label"> {{ "Field" | translatePhrase }}</span>
     </button>
 
     <modal-component @close="hide" v-if="active" class="FieldAdder-modal FieldAdderModal">
@@ -330,7 +330,7 @@ export default {
         </div>
       </template>
     </modal-component>
-  </span>
+  </div>
 </template>
 
 <style lang="less">
@@ -339,6 +339,14 @@ export default {
   &-add {
     font-size: 14px;
     font-size: 1.4rem;
+  }
+
+  &-innerLabel {
+    display: none;
+  }
+
+  &-inner {
+
   }
 }
 .field-adder {

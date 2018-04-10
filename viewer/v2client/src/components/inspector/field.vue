@@ -345,17 +345,55 @@ export default {
   @mouseleave="handleMouseLeave()">
   
   <div class="Field-label" v-bind:class="{ 'locked': locked }">
-      <span v-show="fieldKey === '@id'">{{ 'ID' | translatePhrase | capitalize }}</span>
-      <span v-show="fieldKey === '@type'">{{ 'Type' | translatePhrase | capitalize }}</span>
-      <span v-show="fieldKey !== '@id' && fieldKey !== '@type'" 
-        :title="fieldKey">{{ fieldKey | labelByLang | capitalize }}</span>
-      <div v-if="propertyComment && !locked" class="comment-icon">
-        <i class="fa fa-question-circle"></i>
-        <div class="comment">{{ propertyComment }}</div>
+    <span v-show="fieldKey === '@id'">{{ 'ID' | translatePhrase | capitalize }}</span>
+    <span v-show="fieldKey === '@type'">{{ 'Type' | translatePhrase | capitalize }}</span>
+    <span v-show="fieldKey !== '@id' && fieldKey !== '@type'" 
+      :title="fieldKey">{{ fieldKey | labelByLang | capitalize }}</span>
+    <div class="Field-comment" v-if="propertyComment && !locked" >
+      <i class="fa fa-question-circle Field-commentIcon"></i>
+      <div class="Field-commentText">{{ propertyComment }}</div>
+    </div>
+  
+    <div v-if="!isInner" class="Field-actions">
+      <entity-adder  class="Field-entityAdder Field-action"
+        v-show="!locked && (isRepeatable || isEmptyObject) && (!isInner || (isInner && isEmptyObject))" 
+        :field-key="fieldKey" 
+        :already-added="linkedIds" 
+        :entity-type="entityType" 
+        :property-types="propertyTypes" 
+        :show-action-buttons="actionButtonsShown" 
+        :active="activeModal" 
+        :is-placeholder="false" 
+        :value-list="valueAsArray" 
+        :path="getPath"></entity-adder>
+
+        <div class="Field-action Field-remove" v-show="!locked" :class="{'disabled': activeModal}">
+          <i class="fa fa-trash-o action-button"
+            v-on:click="removeThis(true)" 
+            @mouseover="removeHover = true" 
+            @mouseout="removeHover = false">
+            <tooltip-component 
+              :show-tooltip="removeHover" 
+              tooltip-text="Remove" 
+              translation="translatePhrase"></tooltip-component>
+          </i>
+        </div>
       </div>
 
-      <entity-adder v-show="!locked && isRepeatable && (isInner && !isEmptyObject)" :field-key="fieldKey" :path="getPath" :already-added="linkedIds" :entity-type="entityType" :property-types="propertyTypes" :show-action-buttons="actionButtonsShown" :active="activeModal" :is-placeholder="true" :value-list="valueAsArray"></entity-adder>
-  
+    <!-- Is inner -->
+
+    <entity-adder
+      v-show="!locked && isRepeatable && (isInner && !isEmptyObject)" 
+      :field-key="fieldKey" 
+      :path="getPath" 
+      :already-added="linkedIds" 
+      :entity-type="entityType" 
+      :property-types="propertyTypes" 
+      :show-action-buttons="actionButtonsShown" 
+      :active="activeModal" 
+      :is-placeholder="true" 
+      :value-list="valueAsArray"></entity-adder>
+    
     <div v-if="isInner" class="Field-actions actions">
       <div class="action" 
         v-show="!locked" 
@@ -367,7 +405,9 @@ export default {
     </div>
     <!-- {{ key | labelByLang | capitalize }} -->
   </div>
-    <pre class="path-code" v-show="user.settings.appTech">{{getPath}}</pre>
+
+  <pre class="path-code" v-show="user.settings.appTech">{{getPath}}</pre>
+    
     <ul class="Field-list FieldList value" 
       v-if="isObjectArray"
       :class="{'FieldList--child': isChild}">
@@ -430,31 +470,8 @@ export default {
           :show-action-buttons="actionButtonsShown"></item-value>
       </li>
     </ul>
-    <entity-adder class="action" 
-      v-show="!locked && (isRepeatable || isEmptyObject) && (!isInner || (isInner && isEmptyObject))" 
-      :field-key="fieldKey" 
-      :already-added="linkedIds" 
-      :entity-type="entityType" 
-      :property-types="propertyTypes" 
-      :show-action-buttons="actionButtonsShown" 
-      :active="activeModal" 
-      :is-placeholder="false" 
-      :value-list="valueAsArray" 
-      :path="getPath"></entity-adder>
 
-  <div v-if="!isInner" class="Field-actions actions">
-    <div class="action" v-show="!locked" :class="{'disabled': activeModal}">
-      <i class="fa fa-trash-o action-button action-remove"
-        v-on:click="removeThis(true)" 
-        @mouseover="removeHover = true" 
-        @mouseout="removeHover = false">
-        <tooltip-component 
-          :show-tooltip="removeHover" 
-          tooltip-text="Remove" 
-          translation="translatePhrase"></tooltip-component>
-      </i>
-    </div>
-  </div>
+    
 </div>
 </template>
 
@@ -468,7 +485,7 @@ export default {
   transition: 6s ease-in;
   transition-property: outline, box-shadow;
   max-height: 400vh;
-  overflow-y: auto;
+  overflow-x: hidden;
   opacity: 1;
 
   &-label {
@@ -481,6 +498,7 @@ export default {
     overflow: hidden;
     font-size: 16px;
     font-size: 1.6rem;
+    line-height: 1.4;
 
     .Field--child & {
       flex: none;
@@ -490,18 +508,34 @@ export default {
       text-align: left;
       font-weight: 700;
 
-      &:before {
-        background: #333;
-        content: "";
-        display: block;
-        height: 5px;
-        left: -23px;
-        position: absolute;
-        top: 10px;
-        width: 5px;
-        border-radius: 100%;
-      }
+    }
+  }
 
+  &-commentText {
+    z-index: @active-component-z;
+    display: none;
+    border-radius: 4px;
+    position: absolute;
+    background-color: @white;
+    font-size: 12px;
+    font-size: 1.2rem;
+    max-width: 200px;
+    transform: translate(-89%, 5px);
+    line-height: 1.6;
+    white-space: normal;
+    padding: 5px;
+    text-align: left;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+  }
+
+  &-comment {
+    display: inline-block;
+    margin-left: 2px;
+
+    &:hover {
+      .Field-commentText {
+        display: block;
+      }
     }
   }
 
@@ -530,7 +564,6 @@ export default {
     flex: 1 1 0px;
     padding: 20px;
     margin: 0;
-    overflow: hidden; 
 
     .Field--child & {
       border: 0;
@@ -547,12 +580,11 @@ export default {
   }
 
   &-actions {
-    order: 3;
-    flex: 0 0 @col-action;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    margin-left: -5px;
+    font-size: 20px;
+    font-size: 2.0rem;
+    line-height: 1;
+    margin: 10px 0 0;
+
     .disabled {
       visibility: hidden;
     }
@@ -562,6 +594,26 @@ export default {
     .confirm-remove-box {
       transform: translate(12px, 18px);
     }
+  }
+
+  &-action {
+    display: inline-block;
+    margin: 0 0 0 5px;
+    transition: opacity 0.25s ease;
+    transition-delay: 0.1s;
+    cursor: pointer;
+    color: @gray-dark;
+
+    &.hover,
+    .distinguish-removal & {
+      color: @black;
+    }
+  }
+
+  &-entityAdder {
+  }
+
+  &-remove {
   }
 }
 
@@ -660,29 +712,7 @@ export default {
     }
     color: @black;
     font-weight: normal;
-    .comment-icon {
-      display: inline-block;
-      margin-left: 0.25em;
-      .comment {
-        z-index: @active-component-z;
-        display: none;
-        border-radius: 4px;
-        position: absolute;
-        background-color: @white;
-        max-width: 200px;
-        transform: translate(-89%, 5px);
-        line-height: 1.6;
-        white-space: normal;
-        padding: 0.5em;
-        text-align: left;
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
-      }
-      &:hover {
-        .comment {
-          display: block;
-        }
-      }
-    }
+   
   }
 
   .shown-button {

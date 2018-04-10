@@ -5,13 +5,15 @@ import * as DataUtil from '@/utils/data';
 import * as VocabUtil from '@/utils/vocab';
 import * as httpUtil from '@/utils/http';
 // import * as _ from 'lodash';
-// import * as VocabUtil from '@/utils/vocab';
+import * as VocabUtil from '@/utils/vocab';
 import * as DisplayUtil from '@/utils/display';
 import * as RecordUtil from '@/utils/record';
 import EntityForm from '@/components/inspector/entity-form';
 import EntityControls from '@/components/inspector/entity-controls';
+import EntityChangelog from '@/components/inspector/entity-changelog';
 import EntityHeader from '@/components/inspector/entity-header';
 import ModalComponent from '@/components/shared/modal-component';
+import ReverseRelations from '@/components/inspector/reverse-relations';
 import { mapGetters } from 'vuex';
 
 export default {
@@ -107,6 +109,13 @@ export default {
         }
       }
     },
+    toggleEditorFocus() {
+      if (this.inspector.status.focus === 'record') {
+        this.$store.dispatch('setInspectorStatusValue', { property: 'focus', value: 'mainEntity' });
+      } else {
+        this.$store.dispatch('setInspectorStatusValue', { property: 'focus', value: 'record' });
+      }
+    },
     getPackagedItem() {
       const RecordId = this.inspector.data.record['@id'];
       const recordCopy = _.cloneDeep(this.inspector.data.record);
@@ -180,14 +189,10 @@ export default {
       }
     }
   },
-  mounted() {
-    this.$nextTick(() => {
-      if (this.$route.name === 'Inspector') {
-        this.loadDocument();
-      } else {
-        this.loadNewDocument();
-      }
-    });
+  events: {
+    'toggle-editor-focus'() {
+      this.toggleEditorFocus();
+    },
   },
   computed: {
     ...mapGetters([
@@ -200,12 +205,30 @@ export default {
     isItem() {
       return this.inspector.data.mainEntity['@type'] === 'Item';
     },
+    recordType() {
+      return VocabUtil.getRecordType(
+        this.inspector.data.mainEntity['@type'], 
+        this.resources.vocab, 
+        this.settings, 
+        this.resources.context);
+    },
   },
   components: {
     'entity-header': EntityHeader,
     'entity-form': EntityForm,
     'modal-component': ModalComponent,
     'entity-controls': EntityControls,
+    'entity-changelog': EntityChangelog,
+    'reverse-relations': ReverseRelations,
+  },
+  mounted() {
+    this.$nextTick(() => {
+      if (this.$route.name === 'Inspector') {
+        this.loadDocument();
+      } else {
+        this.loadNewDocument();
+      }
+    });
   },
 }
 </script>
@@ -219,7 +242,28 @@ export default {
       <div class="col-md-11">
         <div v-if="postLoaded" class="Inspector-entity panel panel-default">
           <div class="panel-body">
-            <entity-controls @save="saveItem()"></entity-controls>
+            <h1 class="Inspector-title" :title="recordType">
+              <span>{{ recordType | labelByLang }}</span>
+              <span v-if="status.isNew"> - [{{ "New record" | translatePhrase }}]</span>
+            </h1>
+            <entity-changelog></entity-changelog>
+
+            <div class="Inspector-adminMeta">
+              <a class="Inspector-adminMetaLink" 
+                v-show="inspector.status.focus === 'record'" 
+                v-on:click="toggleEditorFocus()">
+                <i class="fa fa-fw fa-toggle-on"></i> {{'Admin metadata' | translatePhrase}}
+              </a>
+              <a class="Inspector-adminMetaLink" 
+                v-show="inspector.status.focus === 'mainEntity'" 
+                v-on:click="toggleEditorFocus()">
+                <i class="fa fa-fw fa-toggle-off"></i> {{'Admin metadata' | translatePhrase}}
+              </a>
+            </div>
+
+            <reverse-relations class="EditorControls-reverse" 
+      v-if="!inspector.status.isNew"></reverse-relations>
+            
             <entity-header id="main-header" :full="true" v-if="!isItem"></entity-header>
             <entity-form :editing-object="inspector.status.focus" :locked="!inspector.status.editing"></entity-form>
             <code v-if="user.settings.appTech">
@@ -230,6 +274,7 @@ export default {
       </div>
       <div v-if="postLoaded" class="col-md-1 Toolbar">
         <!-- SLOT FOR TOOLBAR -->
+        <entity-controls @save="saveItem()"></entity-controls>
         <div class="Toolbar-placeholder" ref="ToolbarPlaceholder"></div>
         <div class="Toolbar-container" ref="ToolbarTest">
           <button>A</button>
@@ -244,6 +289,17 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="less">
 
+.Inspector {
+
+  &-adminMeta {
+    margin: 10px 0;
+  }
+  
+  &-adminMetaLink {
+    cursor: pointer;
+    color: @brand-primary;
+  }
+}
 .InspectorModal {
   &-body {
     display: flex;

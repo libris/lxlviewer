@@ -60,8 +60,8 @@ export default {
 .Entity-changelog {
   display: flex;
   flex-direction: row;
-  font-size: 12px;
-  font-size: 1.2rem;
+  font-size: 14px;
+  font-size: 1.4rem;
   align-items: center;
 }
 // .record-summary-container {
