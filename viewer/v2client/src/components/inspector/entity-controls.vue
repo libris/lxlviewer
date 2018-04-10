@@ -336,7 +336,7 @@ export default {
             {{"Collapse all" | translatePhrase}}
             </a>
           </li>
-          <li v-if="!inspector.status.editing && !isSubClassOf('Item')">
+          <li v-if="user.isLoggedIn && !inspector.status.editing && !isSubClassOf('Item')">
             <a @click="handleCopy">
             <i class="fa fa-fw fa-files-o"></i>
             {{ "Make copy" | translatePhrase }}
@@ -359,7 +359,7 @@ export default {
             {{"Preview MARC21" | translatePhrase}}
             </a>
           </li>
-          <li class="remove-option" v-show="!status.isNew">
+          <li class="remove-option" v-show="user.isLoggedIn && !status.isNew">
             <a @click="removePost">
             <i class="fa fa-fw fa-trash" aria-hidden="true"></i>
             {{"Remove" | translatePhrase}} {{ recordType | labelByLang }}
@@ -408,7 +408,7 @@ export default {
       </button>
       <button class="EntityControls-btn btn btn-info edit-button" id="editButton" 
         v-on:click="edit()" 
-        v-show="!inspector.status.editing && canEditThisType" 
+        v-show="user.isLoggedIn && !inspector.status.editing && canEditThisType" 
         @mouseover="showEdit = true" 
         @mouseout="showEdit = false">
         <i class="fa fa-fw fa-pencil" v-show="!inspector.status.opening"></i>

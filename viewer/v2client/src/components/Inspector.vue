@@ -2,6 +2,7 @@
 <script>
 import * as StringUtil from '@/utils/string';
 import * as DataUtil from '@/utils/data';
+import * as VocabUtil from '@/utils/vocab';
 import * as httpUtil from '@/utils/http';
 // import * as _ from 'lodash';
 // import * as VocabUtil from '@/utils/vocab';

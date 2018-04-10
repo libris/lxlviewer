@@ -70,7 +70,7 @@ export default {
                 <span>{{"Search" | translatePhrase}}</span>
               </router-link>
             </li>
-              <li class="MainNav-item" v-if="user.fullName">
+              <li class="MainNav-item" v-if="user.isLoggedIn">
               <router-link to="/create" class="MainNav-link">
                 <div class="MainNav-iconWrap" aria-hidden="true">
                   <i class="fa fa-file-text"></i>
@@ -78,7 +78,7 @@ export default {
                 <span>{{"Create new" | translatePhrase}}</span>
               </router-link>
             </li>
-            <li class="MainNav-item" v-if="user.fullName">
+            <li class="MainNav-item" v-if="user.isLoggedIn">
               <router-link to="/user" class="MainNav-link">
                 <div class="MainNav-iconWrap MainNav-iconWrap--userSettings">
                   <img class="MainNav-gravatar" :src="`https://www.gravatar.com/avatar/${user.emailHash}?d=mm&s=32`" alt="Avatar"/>
@@ -86,7 +86,7 @@ export default {
                 {{ user.fullName }} <span v-cloak class="sigelLabel">({{ user.settings.activeSigel }})</span>
               </router-link>
             </li>
-            <li class="MainNav-item" v-if="!user.fullName">
+            <li class="MainNav-item" v-if="!user.isLoggedIn">
               <a :href="`${settings.apiPath}/login/authorize`" class="MainNav-link">
                 <div class="MainNav-iconWrap" aria-hidden="true">
                   <i class="fa fa-fw fa-sign-in"></i>
@@ -127,7 +127,6 @@ export default {
     vertical-align: middle;
     width: 80%;
   }
-
   &-brandLink {
     display: inline-block;
     width: 50px;

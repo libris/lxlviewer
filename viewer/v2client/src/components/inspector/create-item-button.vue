@@ -3,6 +3,7 @@ import * as DisplayUtil from '../../utils/display';
 import * as StringUtil from '../../utils/string';
 import * as RecordUtil from '../../utils/record';
 import * as HttpUtil from '../../utils/http';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'create-item-button',
@@ -54,6 +55,13 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'inspector',
+      'resources',
+      'user',
+      'settings',
+      'status',
+    ]),
   },
   components: {
   },
