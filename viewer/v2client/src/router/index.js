@@ -8,6 +8,7 @@ import Help from '@/components/Help'
 import UserPage from '@/components/UserPage'
 import Create from '@/components/Create'
 import Login from '@/components/Login'
+import NotFound from '@/components/NotFound'
 
 Vue.use(Router)
 
@@ -75,6 +76,11 @@ export default new Router({
       path: '/:fnurgel([a-zA-Z0-9]{14,15})',
       name: 'Inspector',
       component: Inspector
+    },
+    {
+      path: '*',
+      name: 'NotFound',
+      component: NotFound
     },
   ]
 })
