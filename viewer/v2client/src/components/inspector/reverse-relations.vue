@@ -93,7 +93,6 @@ export default {
 
 <template>
   <div class="ReverseRelations">
-
     <div v-if="recordType === 'Work'" class="ReverseRelations-number">
       {{ "Instantiations" | translatePhrase }}: {{numberOfRelations}}
       <instance-list-button 
@@ -117,7 +116,6 @@ export default {
 <style lang="less">
 
 .ReverseRelations {
-
   &-number {
     float: right;
     font-weight: 700;

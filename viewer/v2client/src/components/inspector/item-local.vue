@@ -173,7 +173,7 @@ export default {
     collapse() {
       this.expanded = false;
     },
-    toggleExpanded(event) {
+    toggleExpanded() {
       if (this.expanded === true) {
         this.collapse();
       } else {
@@ -345,14 +345,16 @@ export default {
 
 <template>
     <div class="item-local ItemLocal js-itemLocal" 
+      tabindex="0"
+      @keyup.enter="toggleExpanded()"
       :class="{'highlight': isNewlyAdded, 'is-expanded': expanded}">
       <div class="ItemLocal-topbar topbar">
         <i class="ItemLocal-arrow fa fa-chevron-right " 
-          :class="{'down': expanded}" @click="toggleExpanded($event)"></i>
+          :class="{'down': expanded}" @click="toggleExpanded()"></i>
         <span class="type" 
           @click="toggleExpanded($event)" 
           :title="item['@type']">{{ item['@type'] | labelByLang | capitalize }}:</span>
-        <span class="collapsed-label" @click="toggleExpanded($event)">
+        <span class="collapsed-label" @click="toggleExpanded()">
           <span v-show="!expanded || isEmpty">{{getItemLabel}}</span>
           <span class="placeholder"> </span>
         </span>
