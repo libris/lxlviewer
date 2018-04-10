@@ -245,23 +245,29 @@ export default {
               <span>{{ recordType | labelByLang }}</span>
               <span v-if="status.isNew"> - [{{ "New record" | translatePhrase }}]</span>
             </h1>
-            <entity-changelog></entity-changelog>
 
-            <div class="Inspector-adminMeta">
-              <a class="Inspector-adminMetaLink" 
-                v-show="inspector.status.focus === 'record'" 
-                v-on:click="toggleEditorFocus()">
-                <i class="fa fa-fw fa-toggle-on"></i> {{'Admin metadata' | translatePhrase}}
-              </a>
-              <a class="Inspector-adminMetaLink" 
-                v-show="inspector.status.focus === 'mainEntity'" 
-                v-on:click="toggleEditorFocus()">
-                <i class="fa fa-fw fa-toggle-off"></i> {{'Admin metadata' | translatePhrase}}
-              </a>
+            <div class="Inspector-header">
+
+              <div class="Inspector-admin">
+                <entity-changelog></entity-changelog>
+
+                <div class="Inspector-adminMeta">
+                  <a class="Inspector-adminMetaLink" 
+                    v-show="inspector.status.focus === 'record'" 
+                    v-on:click="toggleEditorFocus()">
+                    <i class="fa fa-fw fa-toggle-on"></i> {{'Admin metadata' | translatePhrase}}
+                  </a>
+                  <a class="Inspector-adminMetaLink" 
+                    v-show="inspector.status.focus === 'mainEntity'" 
+                    v-on:click="toggleEditorFocus()">
+                    <i class="fa fa-fw fa-toggle-off"></i> {{'Admin metadata' | translatePhrase}}
+                  </a>
+                </div>
+              </div>
+
+              <reverse-relations class="Inspector-reverse" 
+        v-if="!inspector.status.isNew"></reverse-relations>
             </div>
-
-            <reverse-relations class="EditorControls-reverse" 
-      v-if="!inspector.status.isNew"></reverse-relations>
             
             <entity-header id="main-header" :full="true" v-if="!isItem"></entity-header>
             <entity-form :editing-object="inspector.status.focus" :locked="!inspector.status.editing"></entity-form>
@@ -289,6 +295,19 @@ export default {
 <style lang="less">
 
 .Inspector {
+
+  &-header {
+    display: flex;
+    flex-direction: row
+  }
+
+  &-admin {
+    flex: 3;
+  }
+
+  &-reverse {
+    flex: 1;
+  }
 
   &-adminMeta {
     margin: 10px 0;

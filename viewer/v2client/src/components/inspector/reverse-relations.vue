@@ -92,30 +92,35 @@ export default {
 </script>
 
 <template>
-  <div class="reverse-relations">
-    <div v-if="recordType === 'Work'">
-      <div class="relations-number">{{ "Instantiations" | translatePhrase }}: {{numberOfRelations}}</div>
-      <instance-list-button :checking-instances="checkingRelations" :instance-list="relationInfo"></instance-list-button>
+  <div class="ReverseRelations">
+
+    <div v-if="recordType === 'Work'" class="ReverseRelations-number">
+      {{ "Instantiations" | translatePhrase }}: {{numberOfRelations}}
+      <instance-list-button 
+        :checking-instances="checkingRelations" 
+        :instance-list="relationInfo"></instance-list-button>
     </div>
-    <div v-if="recordType === 'Instance'">
-      <div class="relations-number">
-        <i class="fa fa-university" aria-hidden="true"></i>
-        {{ "Libraries" | translatePhrase }}: {{numberOfRelations}}
-      </div>
-      <create-item-button v-if="user.isLoggedIn && user.getPermissions().registrant" :disabled="inspector.status.editing" :has-holding="hasRelation" :checking-holding="checkingRelations" :holding-id="relationPath"></create-item-button>
+      
+    <div class="relations-number ReverseRelations-number" v-if="recordType === 'Instance'">
+      <i class="fa fa-university" aria-hidden="true"></i>
+      {{ "Libraries" | translatePhrase }}: {{numberOfRelations}}
+      <create-item-button 
+        v-if="user.isLoggedIn && user.getPermissions().registrant" 
+        :disabled="inspector.status.editing" 
+        :has-holding="hasRelation" 
+        :checking-holding="checkingRelations" 
+        :holding-id="relationPath"></create-item-button>
     </div>
   </div>
 </template>
 
 <style lang="less">
-.reverse-relations {
-  background-color: @white;
-  display: flex;
-  > div {
+
+.ReverseRelations {
+
+  &-number {
     float: right;
-    .relations-number {
-      font-weight: bold;
-    }
+    font-weight: 700;
   }
 }
 
