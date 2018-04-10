@@ -218,7 +218,6 @@ export default {
       <div class="col-md-11">
         <div v-if="postLoaded" class="Inspector-entity panel panel-default">
           <div class="panel-body">
-            <entity-controls @save="saveItem()"></entity-controls>
             <entity-header id="main-header" :full="true" v-if="!isItem"></entity-header>
             <entity-form :editing-object="inspector.status.focus" :locked="!inspector.status.editing"></entity-form>
             <code v-if="user.settings.appTech">
@@ -229,6 +228,8 @@ export default {
       </div>
       <div v-if="postLoaded" class="col-md-1 Toolbar">
         <!-- SLOT FOR TOOLBAR -->
+                    <entity-controls @save="saveItem()"></entity-controls>
+
         <div class="Toolbar-placeholder" ref="ToolbarPlaceholder"></div>
         <div class="Toolbar-container" ref="ToolbarTest">
           <button>A</button>

@@ -490,18 +490,6 @@ export default {
       text-align: left;
       font-weight: 700;
 
-      &:before {
-        background: #333;
-        content: "";
-        display: block;
-        height: 5px;
-        left: -23px;
-        position: absolute;
-        top: 10px;
-        width: 5px;
-        border-radius: 100%;
-      }
-
     }
   }
 
