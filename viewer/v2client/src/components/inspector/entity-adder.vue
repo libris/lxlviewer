@@ -365,15 +365,13 @@ export default {
       v-on:click="add()" 
       @mouseenter="showToolTip = true" 
       @mouseleave="showToolTip = false">
-      <span>
-        <i class="fa fa-fw fa-plus plus-icon" aria-hidden="true">
-          <tooltip-component 
-            :show-tooltip="showToolTip" 
-            tooltip-text="Add" 
-            translation="translatePhrase"></tooltip-component>
-        </i>
-        <span class="EntityAdder-addLabel label-text">{{ addLabel | labelByLang | capitalize }}</span>
-      </span>
+      <i class="EntityAdder-addIcon fa fa-fw fa-plus plus-icon" aria-hidden="true">
+        <tooltip-component 
+          :show-tooltip="showToolTip" 
+          tooltip-text="Add" 
+          translation="translatePhrase"></tooltip-component>
+      </i>
+      <span class="EntityAdder-addLabel label-text">{{ addLabel | labelByLang | capitalize }}</span>
     </div>
 
     <div class="EntityAdder-typeChooser" 
@@ -480,6 +478,7 @@ export default {
 <style lang="less">
 
 .EntityAdder {
+
   &.disabled {
     visibility: hidden;
   }
@@ -491,18 +490,23 @@ export default {
   }
 
   &-add {
-    opacity: 1;
     color: @gray-dark;
     cursor: pointer;
-    padding: 5px 0;
+    display: inline-block;
+    opacity: 1;
     transition: opacity 0.5s ease;
+
     &:hover {
-      color: @gray-dark;
+      color: @black;
     }
   }
 
+  &-addIcon {
+    width: 16px;
+  }
+
   &-addLabel {
-    display: inline-block;
+    display: none;
   }
 
   &-typeChooser {

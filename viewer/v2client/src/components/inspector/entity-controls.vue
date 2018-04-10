@@ -14,12 +14,9 @@ import * as HttpUtil from '@/utils/http';
 import * as StringUtil from '@/utils/string';
 import * as RecordUtil from '@/utils/record';
 import MarcPreview from '@/components/inspector/marc-preview';
-import EntityHeader from '@/components/inspector/entity-header';
 import FieldAdder from '@/components/inspector/field-adder';
-import EntityChangelog from '@/components/inspector/entity-changelog';
 import TooltipComponent from '@/components/shared/tooltip-component';
 import LensMixin from '@/components/mixins/lens-mixin';
-import ReverseRelations from './reverse-relations';
 import { mixin as clickaway } from 'vue-clickaway';
 import { mapGetters } from 'vuex';
 
@@ -169,6 +166,13 @@ export default {
       'settings',
       'status',
     ]),
+    recordType() {
+      return VocabUtil.getRecordType(
+        this.inspector.data.mainEntity['@type'], 
+        this.resources.vocab, 
+        this.settings, 
+        this.resources.context);
+    },
     canEditThisType() {
       return true;
       if (this.user.hasAnyCollections() === false) {
@@ -184,9 +188,6 @@ export default {
     },
     showRecord() {
       return this.status.showRecord;
-    },
-    recordType() {
-      return VocabUtil.getRecordType(this.editorData.mainEntity['@type'], this.resources.vocab, this.settings, this.resources.context);
     },
     downloadIsSupported() {
       const a = document.createElement('a');
@@ -256,12 +257,9 @@ export default {
     },
   },
   components: {
-    'entity-changelog': EntityChangelog,
     'field-adder': FieldAdder,
     'tooltip-component': TooltipComponent,
     'marc-preview': MarcPreview,
-    'reverse-relations': ReverseRelations,
-
   },
   mounted() {
     this.$nextTick(() => {
@@ -272,23 +270,6 @@ export default {
 
 <template>
   <div class="EntityControls" id="editor-container">
-    <div class="EntityControls-meta">
-      <h1 class="EntityControls-typeLabel" :title="recordType">
-        <span>{{ recordType | labelByLang }}</span>
-        <span v-if="status.isNew"> - [{{ "New record" | translatePhrase }}]</span>
-      </h1>
-      <entity-changelog></entity-changelog>
-    </div>
-
-    <div class="EntityControls-btns">
-      <button class="EntityControls-btn btn btn-default " v-on:click="toggleEditorFocus()">
-        <span v-show="inspector.status.focus === 'record'">
-          <i class="fa fa-fw fa-toggle-on"></i> {{'Admin metadata' | translatePhrase}}
-        </span>
-        <span v-show="inspector.status.focus === 'mainEntity'">
-          <i class="fa fa-fw fa-toggle-off"></i> {{'Admin metadata' | translatePhrase}}
-        </span>
-      </button>
       
       <div 
         v-if="!inspector.status.editing" 
@@ -368,6 +349,7 @@ export default {
         </ul>
       </div>
       <div class="EntityControls-divider"></div>
+      
       <field-adder class="EntityControls-btn"
         v-if="inspector.status.editing" 
         :entity-type="editorData[inspector.status.focus]['@type']" 
@@ -415,10 +397,6 @@ export default {
         <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="inspector.status.opening"></i>
         {{"Edit" | translatePhrase}}
       </button>
-    </div>
-
-    <reverse-relations class="EditorControls-reverse" 
-      v-if="!inspector.status.isNew"></reverse-relations>
 
   </div>
 </template>
