@@ -399,8 +399,6 @@
         "mainEntity": {
           "@type": "Organization",
           "name": "",
-          "establishDate": "",
-          "terminateDate": "",
           "activityStartDate": "",
           "activityEndDate": "",
           "hasHistoricalData": [{
