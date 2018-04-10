@@ -458,7 +458,7 @@ export default {
     background: #333;
     height: 0px;
     transition-property: height;
-    transition-duration: 0.25s;
+    transition-duration: 0.1s;
     transition-timing-function: ease-out;
   }
 
