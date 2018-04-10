@@ -2,7 +2,8 @@ import * as _ from 'lodash';
 import * as md5 from 'md5';
 
 export class User {
-  constructor(fullName = 'unknown', shortName = '', email = '', collections = [{ code: '?', friendly_name: 'Inga samlingar. Kontakta katalogiseringsadmin.', cataloger: false, registrant: false }]) {
+  constructor(fullName = 'anonymous', shortName = '', email = '', collections = []) {
+    this.isLoggedIn = (fullName !== 'anonymous');
     this.fullName = fullName;
     this.shortName = shortName;
     this.email = email;
@@ -36,7 +37,7 @@ export class User {
       const savedUserSettings = savedSettings[this.emailHash];
       _.each(this.settings, (value, key) => {
         if (savedUserSettings.hasOwnProperty(key)) {
-          if (key === 'activeSigel') {
+          if (key === 'activeSigel' && this.isLoggedIn) {
             if (this.verifySigel(savedUserSettings[key])) {
               this.settings[key] = savedUserSettings[key];
             } else {
@@ -49,7 +50,7 @@ export class User {
         }
       });
     }
-    if (this.settings.activeSigel === '') {
+    if (this.settings.activeSigel === '' && this.isLoggedIn) {
       this.settings.activeSigel = this.collections[0].code;
     }
     this.saveSettings();
@@ -88,12 +89,15 @@ export class User {
 }
 
 export function getUserObject(userObj) {
-  const user = new User(
-    userObj.full_name,
-    userObj.short_name,
-    userObj.email,
-    userObj.permissions,
-  );
+  let user = new User();
+  if (userObj) {
+    user = new User(
+      userObj.full_name,
+      userObj.short_name,
+      userObj.email,
+      userObj.permissions,
+    );
+  }
   if (user.fullName !== '') {
     user.loadSettings();
   }

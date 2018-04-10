@@ -9,6 +9,7 @@ import store from '@/store/store';
 import * as VocabUtil from '@/utils/vocab';
 import * as DisplayUtil from '@/utils/display';
 import * as StringUtil from '@/utils/string';
+import * as HttpUtil from '@/utils/http';
 import * as User from '@/models/user';
 import FakedDisplayJson from '@/resources/json/fakedisplay.json';
 import Field from '@/components/inspector/field';
@@ -104,6 +105,13 @@ new Vue({
   },
   mounted() {
     this.$nextTick(() => {
+      if (this.$route.name === 'LoggedIn') {
+        localStorage.setItem('at', StringUtil.getParamValueFromUrl(this.$route.hash, 'access_token'));
+      }
+      const token = localStorage.getItem('at');
+      if (token) {
+        this.verifyUser(token);
+      }
       this.updateTitle();
     })
   },
@@ -122,6 +130,16 @@ new Vue({
     }
   },
   methods: {
+    verifyUser(token) {
+      let userObj = User.getUserObject()
+      HttpUtil.get({ url: `${this.settings.authPath}/oauth/verify`, token }).then((result) => {
+        userObj = User.getUserObject(result.user);
+        store.dispatch('setUser', userObj);
+      }, (error) => {
+        store.dispatch('setUser', userObj);
+        localStorage.removeItem('at');
+      });
+    },
     updateTitle() {
       const route = this.$route;
       let title = '';

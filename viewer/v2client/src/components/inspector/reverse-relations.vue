@@ -4,6 +4,7 @@ import * as HttpUtil from '../../utils/http';
 import * as RecordUtil from '../../utils/record';
 import CreateItemButton from './create-item-button';
 import InstanceListButton from './instance-list-button';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'reverse-relations',
@@ -46,20 +47,15 @@ export default {
     },
   },
   computed: {
+    ...mapGetters([
+      'inspector',
+      'resources',
+      'user',
+      'settings',
+      'status',
+    ]),
     libraryUrl() {
       return `https://libris.kb.se/library/${this.user.settings.activeSigel}`;
-    },
-    inspector() {
-      return this.$store.getters.inspector;
-    },
-    user() {
-      return this.$store.getters.user;
-    },
-    resources() {
-      return this.$store.getters.resources;
-    },
-    settings() {
-      return this.$store.getters.settings;
     },
     recordType() {
       return VocabUtil.getRecordType(this.inspector.data.mainEntity['@type'], this.resources.vocab, this.settings, this.resources.context);
@@ -104,15 +100,14 @@ export default {
     <div v-if="recordType === 'Instance'">
       <div class="relations-number">
         <i class="fa fa-university" aria-hidden="true"></i>
-        {{numberOfRelations}} {{ "Libraries" | translatePhrase }}
+        {{ "Libraries" | translatePhrase }}: {{numberOfRelations}}
       </div>
-      <create-item-button v-if="user.getPermissions().registrant" :disabled="status.inEdit" :has-holding="hasRelation" :checking-holding="checkingRelations" :holding-id="relationPath"></create-item-button>
+      <create-item-button v-if="user.isLoggedIn && user.getPermissions().registrant" :disabled="inspector.status.editing" :has-holding="hasRelation" :checking-holding="checkingRelations" :holding-id="relationPath"></create-item-button>
     </div>
   </div>
 </template>
 
 <style lang="less">
-
 .reverse-relations {
   background-color: @white;
   display: flex;
