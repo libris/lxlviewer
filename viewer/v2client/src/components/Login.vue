@@ -14,11 +14,6 @@ export default {
     }
   },
   watch: {
-    token(val, oldVal) {
-      if (val && val !== oldVal) {
-        this.verify();
-      }
-    }
   },
   computed: {
     ...mapGetters([
@@ -30,20 +25,11 @@ export default {
     ]),
   },
   methods: {
-    verify() {
-      HttpUtil.get({ url: `${this.settings.authPath}/oauth/verify`, token: this.token }).then((result) => {
-        const userObj = User.getUserObject(result.user)
-        this.$store.dispatch('setUser', userObj);
-        this.$router.push({ path: `/` });
-      }, (error) => {
-        this.failedLogin = true;
-      });
-    },
   },
   mounted() {
     this.$nextTick(() => {
       if (this.$route.name === 'LoggedIn') {
-        this.token = StringUtil.getParamValueFromUrl(this.$route.hash, 'access_token');
+        localStorage.setItem('at', StringUtil.getParamValueFromUrl(this.$route.hash, 'access_token'));
       }
     });
   }
