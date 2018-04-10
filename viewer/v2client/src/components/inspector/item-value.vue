@@ -98,7 +98,7 @@ export default {
 
 <template>
   <div class="ItemValue" v-bind:class="{'locked': isLocked, 'unlocked': !isLocked, 'distinguish-removal': removeHover, 'removed': removed}">
-    <textarea class="item-value-textarea" rows="1" v-model="value" @keydown="handleEnter" v-if="!isLocked"></textarea>
+    <textarea class="ItemValue-input item-value-textarea" rows="1" v-model="value" @keydown="handleEnter" v-if="!isLocked"></textarea>
     <span v-if="isLocked">{{fieldValue}}</span>
     <div class="remover" v-show="!isLocked && isRemovable" v-on:click="removeThis()" @mouseover="removeHover = true" @mouseout="removeHover = false">
       <i class="fa fa-minus">
@@ -110,16 +110,34 @@ export default {
 
 <style lang="less">
 
-.item-value {
-  border: solid 1px transparent;
-  line-height: 1.6;
+.ItemValue {
+  flex: 1;
+  flex-shrink: 0;
+  margin: 0 0 10px 0;
+
+  &-input {
+    display: block;
+    width: 100%;
+    border: 1px solid @gray-dark;
+    border-radius: 2px;
+    padding: 2px 10px;
+    resize: none;
+    transition: border .25s ease-out;
+
+    &:focus {
+      border: 1px solid @black;
+    }
+  }
+
   &.locked {
     line-height: 2;
-    padding-left: 5px;
+    padding: 0 0 0 20px;
+
     span {
       word-break: break-word;
     }
   }
+
   &.removed {
     transition: all 0.5s ease;
     max-height: 0px;
@@ -127,14 +145,7 @@ export default {
     border: none;
     overflow: hidden;
   }
-  textarea {
-    resize: none;
-    color: #333333;
-    padding: 2px 5px;
-    width: 95%;
-    border: 1px solid #d6d6d6;
-    box-shadow: inset 0px 2px 0px 0px rgba(204, 204, 204, 0.35);
-  }
+
   .remover {
     font-size: 12px;
     float: right;
