@@ -38,6 +38,7 @@ export function getTermObject(term, vocab, vocabPfx, context) {
     throw new Error('getTermObject was called with an undefined Id.');
   }
   if (_.isObject(term)) {
+    console.warn('getLabelByLang "term" parameter is', JSON.stringify(term));
     throw new Error('getTermObject was called with an object (should be a string).');
   }
   if (term.indexOf('@') !== -1) {

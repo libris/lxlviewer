@@ -4,7 +4,6 @@ import * as HttpUtil from '../../utils/http';
 import * as RecordUtil from '../../utils/record';
 import CreateItemButton from './create-item-button';
 import InstanceListButton from './instance-list-button';
-import { mapGetters } from 'vuex';
 
 export default {
   name: 'reverse-relations',
@@ -47,13 +46,6 @@ export default {
     },
   },
   computed: {
-    ...mapGetters([
-      'inspector',
-      'resources',
-      'user',
-      'settings',
-      'status',
-    ]),
     libraryUrl() {
       return `https://libris.kb.se/library/${this.user.settings.activeSigel}`;
     },

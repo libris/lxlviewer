@@ -141,8 +141,9 @@ new Vue({
     },
     verifyUser(token) {
       let userObj = User.getUserObject()
-      HttpUtil.get({ url: `${this.settings.authPath}/oauth/verify`, token }).then((result) => {
+      HttpUtil.get({ url: this.settings.authPath, token }).then((result) => {
         userObj = User.getUserObject(result.user);
+        userObj.token = token;
         store.dispatch('setUser', userObj);
       }, (error) => {
         store.dispatch('setUser', userObj);
