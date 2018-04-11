@@ -153,8 +153,8 @@ export default {
     padding: 3px;
     cursor: pointer;
   }
-  &.unlocked {
 
+  &.unlocked {
   }
 }
 

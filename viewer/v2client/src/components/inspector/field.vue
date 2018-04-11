@@ -361,7 +361,7 @@ export default {
       :title="fieldKey">{{ fieldKey | labelByLang | capitalize }}</span>
     <div class="Field-comment" v-if="propertyComment && !locked" >
       <i class="fa fa-question-circle Field-commentIcon"></i>
-      <div class="Field-commentText">{{ propertyComment }}</div>
+      <span class="Field-commentText">{{ propertyComment }}</span>
     </div>
   
     <div v-if="!isInner" class="Field-actions"
@@ -575,29 +575,32 @@ export default {
   }
 
   &-commentText {
-    z-index: @active-component-z;
-    display: none;
-    border-radius: 4px;
-    position: absolute;
     background-color: @white;
+    border-radius: 4px;
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+    display: none;
     font-size: 12px;
     font-size: 1.2rem;
-    max-width: 200px;
-    transform: translate(-89%, 5px);
+    width: 200px;
     line-height: 1.6;
-    white-space: normal;
+    left: 185%;
+    transform: translate(-89%, 5px);
     padding: 5px;
+    position: absolute;
     text-align: left;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+    top: 0;
+    white-space: normal;
+    z-index: 3;
   }
 
   &-comment {
-    display: inline-block;
+    display: inline;
     margin-left: 2px;
+    z-index: 3;
 
     &:hover {
       .Field-commentText {
-        display: block;
+        display: inline;
       }
     }
   }
@@ -628,6 +631,8 @@ export default {
     font-size: 2.0rem;
     line-height: 1;
     margin: 10px 0 0;
+    position: relative;
+    z-index: 2;
 
     .disabled {
       visibility: hidden;
@@ -643,7 +648,6 @@ export default {
       font-size: 1.6rem;
       margin: 0 0 0 5px;
       line-height: 1.4;
-      z-index: ;
     }
   }
 
@@ -659,34 +663,13 @@ export default {
       color: @black;
     }
   }
-
-  &-entityAdder {
-  }
-
-  &-remove {
-  }
 }
 
 .FieldList {
-
   &--child {
     overflow: visible;
     position: relative;
-
-    // &:before {
-    //   background: silver;
-    //   content: "";
-    //   display: block;
-    //   height: 1px;
-    //   left: -10px;
-    //   position: absolute;
-    //   top: 12px;
-    //   width: 20px;
-    // }
-
   }
-
-
 }
 
 .field {
