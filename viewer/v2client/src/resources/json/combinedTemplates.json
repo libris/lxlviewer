@@ -342,8 +342,6 @@
           "lifeSpan": "",
           "birthDate": "",
           "deathDate": "",
-          "activityStartDate": "",
-          "activityEndDate": "",
           "exactMatch": [{
             "@type": "Person",
             "familyName": "",
@@ -360,146 +358,6 @@
             "@id": "https://id.kb.se/nationality/e-sw---",
             "code": "e-sw---"
           }]
-        }
-      }
-    },
-    "family": {
-      "label": "Släkt",
-      "description": "Agent",
-      "value": {
-        "record": {
-          "@type": "Record",
-          "descriptionConventions": [{
-              "code": "z"
-            },
-            {
-              "@type": "DescriptionConventions",
-              "code": "rda"
-            }
-          ],
-          "descriptionLanguage": [{
-            "@id": "https://id.kb.se/language/swe",
-            "code": "swe"
-          }],
-          "encodingLevel": {
-            "@id": "https://id.kb.se/marc/CompleteAuthorityRecord"
-          },
-          "marc:romanization": {
-            "@id": "https://id.kb.se/marc/NationalStandard"
-          },
-          "recordStatus": "marc:CorrectedOrRevised",
-          "marc:recordUpdate": {
-            "@id": "https://id.kb.se/marc/RecordCanBeUsed"
-          },
-          "marc:personalName": {
-            "@id": "https://id.kb.se/marc/DifferentiatedPersonalName"
-          },
-          "marc:level": {
-            "@id": "https://id.kb.se/marc/FullyEstablishedHeading"
-          }
-        },
-        "mainEntity": {
-          "@type": "Family",
-          "name": "",
-          "marc:titleOther": [""],
-          "exactMatch": [{
-            "@type": "Family",
-            "marc:titleOther": [
-              ""
-            ],
-            "name": ""
-          }],
-          "language": [],
-          "hasNote": [{
-            "@type": "marc:BiographicalOrHistoricalData",
-            "label": ""
-          }],
-          "nationality": {
-            "@id": "https://id.kb.se/nationality/e-sw---",
-            "code": "e-sw---"
-          }
-        }
-      }
-    },
-    "jurisdiction": {
-      "label": "Jurisdiktion",
-      "description": "Agent",
-      "value": {
-        "record": {
-          "@type": "Record",
-          "descriptionConventions": [{
-              "code": "z"
-            },
-            {
-              "@type": "DescriptionConventions",
-              "code": "rda"
-            }
-          ],
-          "descriptionLanguage": [{
-            "@id": "https://id.kb.se/language/swe",
-            "code": "swe"
-          }],
-          "encodingLevel": {
-            "@id": "https://id.kb.se/marc/CompleteAuthorityRecord"
-          },
-          "marc:romanization": {
-            "@id": "https://id.kb.se/marc/NationalStandard"
-          },
-          "recordStatus": "marc:CorrectedOrRevised",
-          "marc:recordUpdate": {
-            "@id": "https://id.kb.se/marc/RecordCanBeUsed"
-          },
-          "marc:personalName": {
-            "@id": "https://id.kb.se/marc/DifferentiatedPersonalName"
-          },
-          "marc:level": {
-            "@id": "https://id.kb.se/marc/FullyEstablishedHeading"
-          }
-        },
-        "mainEntity": {
-          "@type": "Jurisdiction",
-          "name": ""
-        }
-      }
-    },
-    "meeting": {
-      "label": "Möte",
-      "description": "Agent",
-      "value": {
-        "record": {
-          "@type": "Record",
-          "descriptionConventions": [{
-              "code": "z"
-            },
-            {
-              "@type": "DescriptionConventions",
-              "code": "rda"
-            }
-          ],
-          "descriptionLanguage": [{
-            "@id": "https://id.kb.se/language/swe",
-            "code": "swe"
-          }],
-          "encodingLevel": {
-            "@id": "https://id.kb.se/marc/CompleteAuthorityRecord"
-          },
-          "marc:romanization": {
-            "@id": "https://id.kb.se/marc/NationalStandard"
-          },
-          "recordStatus": "marc:CorrectedOrRevised",
-          "marc:recordUpdate": {
-            "@id": "https://id.kb.se/marc/RecordCanBeUsed"
-          },
-          "marc:personalName": {
-            "@id": "https://id.kb.se/marc/DifferentiatedPersonalName"
-          },
-          "marc:level": {
-            "@id": "https://id.kb.se/marc/FullyEstablishedHeading"
-          }
-        },
-        "mainEntity": {
-          "@type": "Meeting",
-          "name": ""
         }
       }
     },
@@ -541,8 +399,6 @@
         "mainEntity": {
           "@type": "Organization",
           "name": "",
-          "establishDate": "",
-          "terminateDate": "",
           "activityStartDate": "",
           "activityEndDate": "",
           "hasHistoricalData": [{
