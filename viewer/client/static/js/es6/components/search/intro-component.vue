@@ -40,7 +40,7 @@ export default {
 </script>
 
 <template>
-  <div class="panel panel-default intro-component">
+  <div class="panel panel-default LinkCard LinkCard--large">
     <div class="libris-intro-video-container">
       <div class="libris-intro-video">
         <iframe :src="videoUrl" frameborder="0" allowfullscreen></iframe>
@@ -57,11 +57,12 @@ export default {
 </template>
 
 <style lang="less">
-@import '../shared/_variables.less';
+  @import '../../../../less/components/_linkcard.less';
 
 .intro-component {
   display: flex;
   justify-content: space-between;
+}
   .libris-intro-video-container {
     flex-basis: 45%;
     padding-bottom: 1px;
@@ -94,7 +95,5 @@ export default {
       text-align: center;
     }
   }
-
-}
 
 </style>

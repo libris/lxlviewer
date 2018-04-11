@@ -29,7 +29,7 @@ from . import admin
 from . import conneg
 
 
-R_METHODS = ['GET', 'HEAD', 'OPTIONS']
+R_METHODS = ['GET', 'HEAD', 'OPTIONS', 'PUT', 'DELETE']
 
 JSONLD_MIMETYPE = 'application/ld+json'
 RDF_MIMETYPES = {'text/turtle', JSONLD_MIMETYPE, 'application/rdf+xml', 'text/xml'}
@@ -252,6 +252,10 @@ def some(suffix=None):
 
 
 @app.route('/', methods=R_METHODS)
+def show_base():
+    return render_template('base.html')
+
+
 @app.route('/data', methods=R_METHODS)
 @app.route('/data.<suffix>', methods=R_METHODS)
 def dataindexview(suffix=None):
@@ -442,7 +446,7 @@ def _merge():
     return _proxy_request(request, session, query_params=['id1', 'id2', 'promote_id2'])
 
 
-@app.route('/_convert', methods=['POST'])
+@app.route('/_convert', methods=['GET','POST'])
 def convert():
     return _write_data(request, query_params={'to': 'application/x-marc-json'})
 
