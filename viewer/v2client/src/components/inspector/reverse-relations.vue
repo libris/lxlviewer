@@ -94,16 +94,20 @@ export default {
 <template>
   <div class="ReverseRelations">
     <div v-if="recordType === 'Work'" class="ReverseRelations-number">
-      {{ "Instantiations" | translatePhrase }}: {{numberOfRelations}}
-      <instance-list-button 
+      <span class="ReverseRelations-label">
+        {{ "Instantiations" | translatePhrase }}: {{numberOfRelations}}
+      </span>
+      <instance-list-button class="ReverseRelations-button"
         :checking-instances="checkingRelations" 
         :instance-list="relationInfo"></instance-list-button>
     </div>
       
-    <div class="relations-number ReverseRelations-number" v-if="recordType === 'Instance'">
+    <div class="ReverseRelations-number" v-if="recordType === 'Instance'">
       <i class="fa fa-university" aria-hidden="true"></i>
-      {{ "Libraries" | translatePhrase }}: {{numberOfRelations}}
-      <create-item-button 
+      <span class="ReverseRelations-label">
+        {{ "Libraries" | translatePhrase }}: {{numberOfRelations}}
+      </span>
+      <create-item-button class="ReverseRelations-button"
         v-if="user.isLoggedIn && user.getPermissions().registrant" 
         :disabled="inspector.status.editing" 
         :has-holding="hasRelation" 
@@ -119,6 +123,7 @@ export default {
   &-number {
     float: right;
     font-weight: 700;
+    text-align: right;
   }
 }
 
