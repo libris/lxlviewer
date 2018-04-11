@@ -160,12 +160,12 @@ export default {
     highlightItem(event) {
       let item = event.target;
       while ((item = item.parentElement) && !item.classList.contains('js-itemLocal'));
-      item.classList.add('is-highlighted');
+      item.classList.add('is-affected');
     },
     unHighlightItem(event) {
       let item = event.target;
       while ((item = item.parentElement) && !item.classList.contains('js-itemLocal'));
-      item.classList.remove('is-highlighted');
+      item.classList.remove('is-affected');
     },
     expand() {
       this.expanded = true;
@@ -173,7 +173,7 @@ export default {
     collapse() {
       this.expanded = false;
     },
-    toggleExpanded(event) {
+    toggleExpanded() {
       if (this.expanded === true) {
         this.collapse();
       } else {
@@ -344,20 +344,21 @@ export default {
 </script>
 
 <template>
-  <div>
     <div class="item-local ItemLocal js-itemLocal" 
+      tabindex="0"
+      @keyup.enter="toggleExpanded()"
       :class="{'highlight': isNewlyAdded, 'is-expanded': expanded}">
       <div class="ItemLocal-topbar topbar">
         <i class="ItemLocal-arrow fa fa-chevron-right " 
-          :class="{'down': expanded}" @click="toggleExpanded($event)"></i>
+          :class="{'down': expanded}" @click="toggleExpanded()"></i>
         <span class="type" 
           @click="toggleExpanded($event)" 
           :title="item['@type']">{{ item['@type'] | labelByLang | capitalize }}:</span>
-        <span class="collapsed-label" @click="toggleExpanded($event)">
+        <span class="collapsed-label" @click="toggleExpanded()">
           <span v-show="!expanded || isEmpty">{{getItemLabel}}</span>
           <span class="placeholder"> </span>
         </span>
-        <div class="ItemLocal-actions actions"
+        <div class="ItemLocal-actions "
           @mouseover="highlightItem($event)"
           @mouseout="unHighlightItem($event)">
           <field-adder class="ItemLocal-action"
@@ -415,8 +416,6 @@ export default {
           :show-action-buttons="showActionButtons"></field>
       </div>
        
-    </div>
-
     <search-window 
       :active="extractDialogActive" 
       :can-copy-title="canCopyTitle" 
@@ -427,6 +426,8 @@ export default {
       item-info="extractedMainEntity" 
       :index="index"></search-window>
     </div>
+
+
 </template>
 
 <style lang="less">
@@ -434,47 +435,26 @@ export default {
 .ItemLocal {
   padding: 0 0 0 0px;
   position: relative;
-  transition: background .2s ease-in-out;
-
-  &:before {
-    background: silver;
-    content: "";
-    display: block;
-    width: 1px;
-    height: 1px;
-    position: absolute;
-    left: -10px;
-    top: 12px; 
-    transition: height .1s linear;
-  }
+  flex: 1 100%;
 
   &:after {
     content: "";
     position: absolute;
-    left: 0;
-    right: 0;
-    width: 100%;
-    bottom: -2px;
-    background: #333;
-    height: 0px;
-    transition-property: height;
+    left: -5px;
+    right: -10px;
+    width: 0;
+    bottom: 0;
+    background: fade(@brand-primary, 50%);
+    height: 100%;
+    transition-property: width;
     transition-duration: 0.25s;
     transition-timing-function: ease-out;
+    z-index: 1;
   }
 
   &-topbar {
     position: relative;
-
-    // &:before {
-    //   background: #333;
-    //   content: "";
-    //   display: block;
-    //   height: 100%;
-    //   left: -10px;
-    //   position: absolute;
-    //   top: 12px;
-    //   width: 1px;
-    // }
+    flex: 1 100%;
   }
 
   &-arrow {
@@ -484,11 +464,15 @@ export default {
   }
 
   &-fieldContainer {
+    flex: 1 100%;
     position: relative;
+    padding: 0 0 0 25px;
   }
 
   &-actions {
     float: right;
+    position: relative;
+    z-index: 2;
   }
 
   &-action {
@@ -505,8 +489,8 @@ export default {
     }
   }
 
-  &.is-highlighted:after {
-    height: 2px;
+  &.is-affected:after {
+    width: 101.5%;
   }
 
 }
@@ -520,13 +504,6 @@ export default {
 }
 
 .item-local-container {
-
-  padding: 2px 0px;
-  margin: 0px 0px 0px 0px;
-  box-shadow: 0px 0px 1em 0px transparent;
-  outline: 2px solid transparent;
-  transition: 0.5s ease margin, 3s ease-in box-shadow, 3s ease-in outline;
-  display: flex;
 
   .link-indicator {
     padding: 0em 0.6em;
@@ -624,10 +601,6 @@ export default {
           color: @black;
         }
       }
-    }
-
-    .item-label {
-      display: block;
     }
   }
 }

@@ -249,6 +249,16 @@ export default {
     });
   },
   methods: {
+    highlightItem(event) {
+      let item = event.target;
+      while ((item = item.parentElement) && !item.classList.contains('js-field'));
+       item.classList.add('is-affected');
+    },
+    unHighlightItem(event) {
+      let item = event.target;
+      while ((item = item.parentElement) && !item.classList.contains('js-field'));
+      item.classList.remove('is-affected');
+    },
     updateValue(value) {
       this.$dispatch('update-value', this.getPath, value);
     },
@@ -338,9 +348,9 @@ export default {
 
 <template>
 
-<div class="field Field" 
+<div class="Field js-field" 
   :id="`field-${getPath}`" 
-  v-bind:class="{'Field--child': !asColumns, 'highlight': isLastAdded, 'distinguish-removal': removeHover, 'removed': removed }" 
+  v-bind:class="{'Field--child': !asColumns, 'highlight': isLastAdded, 'removed': removed}" 
   @mouseover="handleMouseEnter()" 
   @mouseleave="handleMouseLeave()">
   
@@ -354,7 +364,9 @@ export default {
       <div class="Field-commentText">{{ propertyComment }}</div>
     </div>
   
-    <div v-if="!isInner" class="Field-actions">
+    <div v-if="!isInner" class="Field-actions"
+      @mouseover="highlightItem($event)"
+      @mouseout="unHighlightItem($event)">
       <entity-adder  class="Field-entityAdder Field-action"
         v-show="!locked && (isRepeatable || isEmptyObject) && (!isInner || (isInner && isEmptyObject))" 
         :field-key="fieldKey" 
@@ -365,12 +377,10 @@ export default {
         :active="activeModal" 
         :is-placeholder="false" 
         :value-list="valueAsArray" 
-        :path="getPath"></entity-adder>
-
-        <div class="Field-action Field-remove" v-show="!locked" :class="{'disabled': activeModal}">
+        :path="getPath"></entity-adder><div class="Field-action Field-remove" v-show="!locked" :class="{'disabled': activeModal}">
           <i class="fa fa-trash-o action-button"
-            v-on:click="removeThis(true)" 
-            @mouseover="removeHover = true" 
+            v-on:click="removeThis(true)"
+             @mouseover="removeHover = true" 
             @mouseout="removeHover = false">
             <tooltip-component 
               :show-tooltip="removeHover" 
@@ -381,24 +391,28 @@ export default {
       </div>
 
     <!-- Is inner -->
-
-    <entity-adder
-      v-show="!locked && isRepeatable && (isInner && !isEmptyObject)" 
-      :field-key="fieldKey" 
-      :path="getPath" 
-      :already-added="linkedIds" 
-      :entity-type="entityType" 
-      :property-types="propertyTypes" 
-      :show-action-buttons="actionButtonsShown" 
-      :active="activeModal" 
-      :is-placeholder="true" 
-      :value-list="valueAsArray"></entity-adder>
     
-    <div v-if="isInner" class="Field-actions actions">
-      <div class="action" 
+    <div v-if="isInner" class="Field-actions"
+      @mouseover="highlightItem($event)"
+      @mouseout="unHighlightItem($event)">
+      <entity-adder class="Field-action Field-entityAdder"
+        v-show="!locked && isRepeatable && (isInner && !isEmptyObject)" 
+        :field-key="fieldKey" 
+        :path="getPath" 
+        :already-added="linkedIds" 
+        :entity-type="entityType" 
+        :property-types="propertyTypes" 
+        :show-action-buttons="actionButtonsShown" 
+        :active="activeModal" 
+        :is-placeholder="true" 
+        :value-list="valueAsArray"></entity-adder>
+      <div class="Field-action Field-remove" 
         v-show="!locked" 
         :class="{'disabled': activeModal}">
-        <i v-on:click="removeThis(true)" @mouseover="removeHover = true" @mouseout="removeHover = false" class="fa fa-times action-button action-remove">
+        <i class="fa fa-trash-o action-button"
+          v-on:click="removeThis(true)"
+           @mouseover="removeHover = true" 
+            @mouseout="removeHover = false"  >
           <tooltip-component :show-tooltip="removeHover" tooltip-text="Remove" translation="translatePhrase"></tooltip-component>
         </i>
       </div>
@@ -408,7 +422,7 @@ export default {
 
   <pre class="path-code" v-show="user.settings.appTech">{{getPath}}</pre>
     
-    <ul class="Field-list FieldList value" 
+    <ul class="Field-list FieldList is-value" 
       v-if="isObjectArray"
       :class="{'FieldList--child': isChild}">
       <li class="Field-listItem" 
@@ -446,7 +460,7 @@ export default {
       </li>
     </ul>
 
-    <ul class="Field-list FieldList value" 
+    <ul class="Field-list FieldList is-value" 
       v-if="!isObjectArray" 
       :class="{'FieldList--child': isChild}">
       <li class="Field-listItem" 
@@ -485,8 +499,56 @@ export default {
   transition: 6s ease-in;
   transition-property: outline, box-shadow;
   max-height: 400vh;
-  overflow-x: hidden;
   opacity: 1;
+  position: relative;
+
+  &:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    width: 0;
+    bottom: 0;
+    background: fade(@brand-primary, 50%);
+    height: 100%;
+    transition-property: width;
+    transition-duration: 0.25s;
+    transition-timing-function: ease-out;
+    z-index: 1;
+  }
+
+  &.is-affected:before {
+    width: 100%;
+  }
+
+  &--child {
+    border: 0;
+    flex: 1 100%;
+    margin: 10px 0;
+    overflow: visible;
+    max-height: auto;
+    display: inline-block;
+    z-index: 0;
+
+    &:before {
+      content: "";
+      position: absolute;
+      left: -5px;
+      right: -10px;
+      width: 0;
+      bottom: 0;
+      background: fade(@brand-primary, 50%);
+      height: 100%;
+      transition-property: width;
+      transition-duration: 0.25s;
+      transition-timing-function: ease-out;
+      z-index: 1;
+    }
+
+    &.is-affected:before {
+      width: 101.5%;
+    }
+  }
 
   &-label {
     padding: 20px;
@@ -495,19 +557,20 @@ export default {
     align-items: flex-start;
     justify-content: flex-end;
     // line-height: 2.6;
-    overflow: hidden;
     font-size: 16px;
     font-size: 1.6rem;
     line-height: 1.4;
+    position: relative;
+    z-index: 1;
 
     .Field--child & {
-      flex: none;
-      display: block;
-      width: 100%;
+      flex: 1 100%;
       padding: 0;
       text-align: left;
       font-weight: 700;
-
+      justify-content: flex-start;
+      display: flex;
+      margin: 10px 0;
     }
   }
 
@@ -539,40 +602,21 @@ export default {
     }
   }
 
-  &--child {
-    border: 0;
-    display: block;
-    margin: 10px 0 10px 30px;
-    position: relative;
-    overflow: visible;
-
-    &:before {
-      background: silver;
-      content: "";
-      display: block;
-      width: 11px;
-      height: 1px;
-      position: absolute;
-      left: -20px;
-      top: 12px;
-    }
-  }
-
   &-list {
     border-left: 1px solid #d8d8d8;
-    order: 2;
-    flex: 1 1 0px;
-    padding: 20px;
+    flex: 1 100%;
     margin: 0;
+    padding: 20px;
 
     .Field--child & {
       border: 0;
-      padding: 0 0 0 20px;
+      padding: 0;
     }
   }
 
   &-listItem {
-    display: block;
+    display: flex;
+    flex: 1;
 
     &.is-inline {
       display: inline-block;
@@ -588,11 +632,18 @@ export default {
     .disabled {
       visibility: hidden;
     }
-    .action-remove {
-      padding: 10px;
-    }
+
     .confirm-remove-box {
       transform: translate(12px, 18px);
+    }
+
+    .Field--child & {
+      display: inline-block;
+      font-size: 16px;
+      font-size: 1.6rem;
+      margin: 0 0 0 5px;
+      line-height: 1.4;
+      z-index: ;
     }
   }
 
@@ -604,8 +655,7 @@ export default {
     cursor: pointer;
     color: @gray-dark;
 
-    &.hover,
-    .distinguish-removal & {
+    &:hover {
       color: @black;
     }
   }
@@ -620,32 +670,23 @@ export default {
 .FieldList {
 
   &--child {
-    list-style-type: disc;
     overflow: visible;
     position: relative;
 
-    &:before {
-      background: silver;
-      content: "";
-      display: block;
-      height: 1px;
-      left: -10px;
-      position: absolute;
-      top: 12px;
-      width: 20px;
-    }
+    // &:before {
+    //   background: silver;
+    //   content: "";
+    //   display: block;
+    //   height: 1px;
+    //   left: -10px;
+    //   position: absolute;
+    //   top: 12px;
+    //   width: 20px;
+    // }
 
-    &:after {
-      background: silver;
-      content: "";
-      display: block;
-      width: 1px;
-      height: 26px;
-      position: absolute;
-      left: -10px;
-      top: -13px; 
-    }
   }
+
+
 }
 
 .field {
@@ -698,76 +739,12 @@ export default {
       }
     }
   }
-  &.highlight {
-    outline: 2px solid @highlight-color;
-    box-shadow: inset 0px 0px 1em 0px @highlight-color;
-  }
-  .label {
-    a {
-      color: @black;
-      text-decoration: none;
-      &:hover {
-        cursor: help;
-      }
-    }
-    color: @black;
-    font-weight: normal;
-   
-  }
 
   .shown-button {
     opacity: 1;
   }
-  .hidden-button {
-    opacity: 0;
-  }
-  >.actions .action-button {
-    transition: opacity 0.25s ease;
-    transition-delay: 0.1s;
-    cursor: pointer;
-    .action {
-      cursor: pointer;
-    }
-  }
-  &.columns {
-   
-  
-    >.value {
-      order: 2;
-      flex: 1 1 0px;
-      padding: 5px;
-      overflow: hidden; // This is important because of the flex rules of entities
-      > * {
-        display: inline-block;
-      }
-      > ul {
-        width: 100%;
-        list-style: none;
-        padding: 0px;
-        > li {
-          display: block;
-          &.inline {
-            display: inline-block;
-          }
-          .item-value {
+ 
 
-            > textarea {
-              flex: 9 9 90%;
-            }
-            > .remover {
-              flex: 1 1 2em;
-              text-align: center;
-            }
-          }
-          .item-value {
-            > textarea {
-              width: 100%;
-            }
-          }
-        }
-      }
-    }
-  }
   &.rows {
     flex-wrap: wrap;
     border: solid;
@@ -793,7 +770,6 @@ export default {
       display: inline-block;
       flex: 1 1 100%;
       max-height: 400vh;
-      overflow-y: auto;
       > ul {
         width: 100%;
         list-style: none;
