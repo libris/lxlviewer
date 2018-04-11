@@ -81,8 +81,7 @@ export default {
         this.inspector.data.quoted
       );
       const apiPath = this.settings.apiPath;
-      console.log(editorObj);
-      httpUtil.get({ 
+      httpUtil.post({ 
         url: `${apiPath}/_convert`,
         accept: 'application/x-marc-json',
       }, editorObj).then((result) => {
