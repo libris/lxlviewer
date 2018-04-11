@@ -105,6 +105,7 @@ new Vue({
   },
   mounted() {
     this.$nextTick(() => {
+      this.verifyConfig();
       if (this.$route.name === 'LoggedIn') {
         localStorage.setItem('at', StringUtil.getParamValueFromUrl(this.$route.hash, 'access_token'));
       }
@@ -130,6 +131,14 @@ new Vue({
     }
   },
   methods: {
+    verifyConfig() {
+      if (!this.settings.apiPath || typeof this.settings.apiPath === 'undefined') {
+        throw new Error('Missing API path in app-config');
+      }
+      if (!this.settings.authPath || typeof this.settings.authPath === 'undefined') {
+        throw new Error('Missing AUTH path in app-config');
+      }
+    },
     verifyUser(token) {
       let userObj = User.getUserObject()
       HttpUtil.get({ url: `${this.settings.authPath}/oauth/verify`, token }).then((result) => {
