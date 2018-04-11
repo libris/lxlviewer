@@ -152,22 +152,11 @@ export default {
       this.doSaveRequest(httpUtil.post, obj, '/');
     },
     doSaveRequest(requestMethod, obj, url, ETag) {
-      requestMethod({ url, ETag, activeSigel: this.user.settings.activeSigel }, obj).then((result) => {
-        const postUrl = `${result.getResponseHeader('Location')}`;
-        httpUtil.get({ url: `${postUrl}/data.jsonld`, accept: 'application/ld+json' }).then((getResult) => {
-          const newData = RecordUtil.splitJson(getResult);
-          if (result.status === 201) {
-            window.location = result.getResponseHeader('Location');
-          } else {
-            this.$store.dispatch('setInspectorData', newData);
-          }
-          this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
-          this.$store.dispatch('pushNotification', { color: 'green', message: `${StringUtil.getUiPhraseByLang('The post was saved', this.settings.language)}!` });
-          this.$store.dispatch('setInspectorStatusValue', { property: 'dirty', value: false });
-        }, (error) => {
-          this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
-          this.$store.dispatch('pushNotification', { color: 'red', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error}` });
-        });
+      requestMethod({ url, ETag, activeSigel: this.user.settings.activeSigel, token: this.user.token }, obj).then((result) => {
+        this.fetchDocument();
+        this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
+        this.$store.dispatch('pushNotification', { color: 'green', message: `${StringUtil.getUiPhraseByLang('The post was saved', this.settings.language)}!` });
+        this.$store.dispatch('setInspectorStatusValue', { property: 'dirty', value: false });
       }, (error) => {
         this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
         this.$store.dispatch('pushNotification', { color: 'red', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error}` });
