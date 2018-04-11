@@ -7,6 +7,7 @@ import CreateNew from './views/createnew';
 import Import from './views/import';
 import About from './views/about';
 import Help from './views/help';
+import Base from './views/base';
 
 function initPage(id) {
   let view = {};
@@ -27,7 +28,7 @@ function initPage(id) {
   } else if (id === 'help') {
     view = new Help('Help');
   } else {
-    view = new View('Base');
+    view = new Base('Base');
     console.warn('No corresponding view script. Loading base.');
   }
   view.initialize();

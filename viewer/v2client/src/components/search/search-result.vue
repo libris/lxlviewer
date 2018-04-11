@@ -1,0 +1,116 @@
+<script>
+import ResultList from './result-list';
+import EntitySearchList from './entity-search-list';
+import ResultControls from './result-controls';
+
+export default {
+  name: 'search-result',
+  props: {
+    result: {},
+    importData: Array,
+  },
+  data() {
+    return {
+      keyword: '',
+      showResult: false,
+    }
+  },
+  methods: {
+  },
+  computed: {
+    status() {
+      return this.$store.getters.status;
+    },
+    user() {
+      return this.$store.getters.user;
+    },
+    paginationData() {
+      const page = Object.assign({}, this.result);
+      delete page.items;
+      return page;
+    },
+    hasPagination() {
+      return (typeof this.paginationData.first !== 'undefined');
+    },
+  },
+  components: {
+    'entity-search-list': EntitySearchList,
+    'result-controls': ResultControls,
+    'result-list': ResultList,
+  },
+  watch: {
+    keyword(value, oldval) {
+      console.log("keyword changed", value, oldval);
+    },
+  },
+  ready() { // Ready method is deprecated in 2.0, switch to "mounted"
+    this.$nextTick(() => {
+      setTimeout(() => {
+        this.showResult = true;
+      }, 1);
+    });
+  },
+};
+</script>
+
+<template>
+  <div class="SearchResult" :class="{'is-showResult': showResult}">
+    <div v-if="(status.resultList.loading || status.resultList.error)" class="SearchResult-loadingText panel panel-default">
+      <span v-if="!status.resultList.error">
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+      </span>
+      <span v-if="status.resultList.error">
+        <i class="fa fa-warning"></i>
+      </span>
+      <span v-if="!status.resultList.error" class="is-status">{{"Fetching results" | translatePhrase}}</span>
+      <span v-if="status.resultList.error" class="is-error">{{status.resultList.info}}</span>
+    </div>
+    <result-controls class="SearchResult-controls" 
+      v-if="!status.resultList.loading && !status.resultList.error" 
+      :page-data="paginationData" 
+      :show-details="true" 
+      :has-pagination="hasPagination" 
+      :show-pages="false">
+    </result-controls>
+    <result-list class="SearchResult-list" 
+      v-if="!status.resultList.loading && !status.resultList.error" 
+      :results="result.items" 
+      :import-data="importData" 
+      :compact="user.settings.resultListType === 'compact'">
+    </result-list>
+    <result-controls class="SearchResult-controls" 
+      v-if="!status.resultList.loading && !status.resultList.error && hasPagination" 
+      :has-pagination="hasPagination" 
+      :page-data="paginationData" 
+      :show-details="false" 
+      :show-pages="true">
+    </result-controls>
+  </div>
+</template>
+
+<style lang="less">
+.SearchResult {
+  &-loadingText {
+    box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.1);
+    padding: 20px 0px;
+    min-height: 50vh;
+    vertical-align: middle;
+    text-align: center;
+
+    & .is-status {
+      display: block;
+      font-size: 0.7em;
+    }
+
+    & .is-error {
+      display: inline-block;
+      font-family: monospace;
+      border: 1px solid rgb(94, 39, 39);
+      margin-top: 30px;
+      padding: 5px;
+      max-width: 50%;
+      color: maroon;
+    }
+  }
+}
+</style>

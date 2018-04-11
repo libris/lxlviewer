@@ -29,7 +29,7 @@ from . import admin
 from . import conneg
 
 
-R_METHODS = ['GET', 'HEAD', 'OPTIONS']
+R_METHODS = ['GET', 'HEAD', 'OPTIONS', 'PUT', 'DELETE']
 
 JSONLD_MIMETYPE = 'application/ld+json'
 RDF_MIMETYPES = {'text/turtle', JSONLD_MIMETYPE, 'application/rdf+xml', 'text/xml'}
@@ -252,6 +252,10 @@ def some(suffix=None):
 
 
 @app.route('/', methods=R_METHODS)
+def show_base():
+    return render_template('base.html')
+
+
 @app.route('/data', methods=R_METHODS)
 @app.route('/data.<suffix>', methods=R_METHODS)
 def dataindexview(suffix=None):

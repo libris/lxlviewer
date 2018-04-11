@@ -1,0 +1,128 @@
+<script>
+import * as _ from 'lodash';
+import * as VocabUtil from '../../utils/vocab';
+import * as DataUtil from '../../utils/data';
+import * as StringUtil from '../../utils/string';
+import ProcessedLabel from '../shared/processedlabel';
+import TooltipComponent from '../shared/tooltip-component';
+import ItemMixin from '../mixins/item-mixin';
+import LensMixin from '../mixins/lens-mixin';
+import { mapGetters } from 'vuex';
+
+export default {
+  name: 'item-vocab',
+  mixins: [ItemMixin],
+  props: {
+    fieldValue: '',
+    fieldKey: '',
+    index: Number,
+    isLocked: false,
+    expanded: false,
+    entityType: '',
+  },
+  data() {
+    return {
+      inEdit: false,
+      showCardInfo: false,
+      searchResult: {},
+      searchDelay: 2,
+      removeHover: false,
+      possibleValues: [],
+      selected: '',
+      disableDataSync: false, // Used to prevent data sync when setting dropdown selected state from code
+    };
+  },
+  computed: {
+    ...mapGetters([
+      'inspector',
+      'resources',
+      'user',
+      'settings',
+      'status',
+    ]),
+    range() {
+      const types = VocabUtil.getRange(
+        this.entityType,
+        this.fieldKey,
+        this.resources.vocab,
+        this.settings.vocabPfx,
+        this.resources.context
+      );
+      return types;
+    },
+  },
+  mounted() {
+    this.$nextTick(() => {
+      this.possibleValues = this.getPossibleValues();
+      this.setInitialValue();
+    });
+  },
+  watch: {
+    fieldValue(value) {
+      this.disableDataSync = true;
+      this.selected = this.fieldValue;
+    },
+    selected(value) {
+      if (this.disableDataSync === false) {
+        this.$store.dispatch('updateInspectorData', {
+          path: this.path,
+          value: value,
+          addToHistory: true,
+        });
+      }
+      this.disableDataSync = false;
+    },
+  },
+  methods: {
+    getPossibleValues() {
+      let values = [];
+      const possibleValues = [];
+      _.each(this.range, (item) => {
+        values = values.concat(VocabUtil.getTermByType(item, this.resources.vocabClasses));
+      });
+      _.each(values, (value) => {
+        possibleValues.push(value['@id'].replace(this.settings.vocabPfx, ''));
+      });
+      return _.sortBy(possibleValues, value => StringUtil.getLabelByLang(value, this.settings.language, this.resources.vocab, this.settings.vocabPfx, this.resources.context));
+    },
+    setInitialValue() {
+      if (this.possibleValues.indexOf(this.fieldValue) > -1) {
+        this.disableDataSync = true;
+        this.selected = this.fieldValue;
+      }
+    },
+  },
+  components: {
+    'processed-label': ProcessedLabel,
+    'tooltip-component': TooltipComponent,
+  },
+};
+</script>
+
+<template>
+  <div class="item-vocab" v-bind:class="{'locked': isLocked, 'unlocked': !isLocked, 'distinguish-removal': removeHover, 'removed': removed}">
+    <div v-if="!isLocked">
+      <select v-model="selected">
+        <option v-for="option in possibleValues" :key="option" v-bind:value="option">{{ option | labelByLang }}</option>
+      </select>
+    </div>
+    <span v-if="isLocked">{{fieldValue | labelByLang}}</span>
+  </div>
+</template>
+
+<style lang="less">
+
+.item-vocab {
+  &.locked {
+    line-height: 2;
+    padding-left: 5px;
+    span {
+      word-break: break-word;
+    }
+  }
+  select {
+    width: 100%;
+  }
+}
+
+</style>

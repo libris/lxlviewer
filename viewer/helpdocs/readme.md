@@ -30,3 +30,9 @@ Etiketter på dokumentet som eventuellt skulle kunna användas till sökning.
 ## Innehåll
 
 Under egenskaperna följer sedan själva innehållet i avsnittet. Man använder sig av [markdown](https://daringfireball.net/projects/markdown/) för att strukturera rubriker, länkar, bilder etc.
+
+### Bilder
+
+För att bilderna ska kunna paketeras och visas korrekt, lägg bilden i samma mapp som din markdown och lägg till bilden i dokumentet med följande kod
+
+    ![Förklaring av bilden](Bildnamn.png) 
