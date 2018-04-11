@@ -130,7 +130,6 @@ export default {
   }
 
   &.locked {
-    line-height: 2;
     padding: 0 0 0 20px;
 
     span {

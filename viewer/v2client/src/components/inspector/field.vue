@@ -348,7 +348,7 @@ export default {
 
 <template>
 
-<div class="Field js-field" 
+<li class="Field js-field" 
   :id="`field-${getPath}`" 
   v-bind:class="{'Field--child': !asColumns, 'highlight': isLastAdded, 'removed': removed}" 
   @mouseover="handleMouseEnter()" 
@@ -422,16 +422,18 @@ export default {
 
   <pre class="path-code" v-show="user.settings.appTech">{{getPath}}</pre>
     
-    <ul class="Field-list FieldList is-value" 
+    <ul class="Field-list FieldList FieldList--nested is-value" 
       v-if="isObjectArray"
-      :class="{'FieldList--child': isChild}">
-      <li class="Field-listItem" 
+      :class="{'FieldList--nestedX': isChild}">
+      <li class="Field-listItem FieldList-item" 
         v-for="(item, index) in valueAsArray" 
         :key="index" 
         :class="{'is-inline': getDatatype(item) == 'entity'}">
         <item-error 
           v-if="getDatatype(item) == 'error'" 
           :item="item"></item-error>
+
+        <!-- Other linked resources -->
         <item-vocab 
           v-if="getDatatype(item) == 'vocab'" 
           :is-locked="locked" 
@@ -440,6 +442,8 @@ export default {
           :entity-type="entityType" 
           :index="index" 
           :parent-path="getPath"></item-vocab>
+
+        <!-- Other linked entities -->
         <item-entity 
           v-if="getDatatype(item) == 'entity'" 
           :is-locked="locked" 
@@ -447,7 +451,10 @@ export default {
           :field-key="fieldKey" 
           :index="index" 
           :parent-path="getPath"></item-entity>
-        <item-local :data-parent="getPath"
+
+        <!-- Not linked, local child objects -->
+        <item-local 
+          :data-parent="getPath"
           v-if="getDatatype(item) == 'local'" 
           :is-locked="locked" 
           :entity-type="entityType" 
@@ -466,6 +473,8 @@ export default {
       <li class="Field-listItem" 
         v-for="(item, index) in valueAsArray" 
         :key="index">
+
+        <!-- Other linked resources -->
         <item-vocab 
           v-if="getDatatype(item) == 'vocab'" 
           :is-locked="locked" :field-key="fieldKey" 
@@ -473,6 +482,8 @@ export default {
           :entity-type="entityType" 
           :index="index" 
           :parent-path="getPath"></item-vocab>
+
+        <!-- Not linked, local child strings -->
         <item-value 
           v-if="getDatatype(item) == 'value'" 
           :is-removable="!hasSingleValue" 
@@ -484,9 +495,7 @@ export default {
           :show-action-buttons="actionButtonsShown"></item-value>
       </li>
     </ul>
-
-    
-</div>
+  </li>
 </template>
 
 <style lang="less">
