@@ -178,7 +178,7 @@ new Vue({
       document.title = title;
     },
     initWarningFunc() {
-      if (!this.lxlDebug || navigator.userAgent.indexOf('PhantomJS') > -1) {
+      if (!this.settings.environment === 'development' || navigator.userAgent.indexOf('PhantomJS') > -1) {
         window.lxlWarning = function (...strings) {
           return;
         }

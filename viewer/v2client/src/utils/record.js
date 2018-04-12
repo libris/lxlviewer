@@ -29,7 +29,7 @@ export function splitJson(json) {
   }
   const original = json['@graph'];
   const dataObj = {};
-  dataObj.quoted = [];
+  dataObj.quoted = {};
 
   // TODO: Relying on order here... tsk tsk tsk.
   dataObj.record = original[0];
@@ -53,8 +53,7 @@ export function splitJson(json) {
         dataObj.work = original[i];
         // pushing work to quoted list so that references to it will work for now.
         // TODO: do something else
-        const graphId = extractFnurgel(original[i]['@id']);
-        dataObj.quoted.push({ '@id': graphId, '@graph': [original[i]] });
+        dataObj.quoted[dataObj.work['@id']] = dataObj.work;
         original.splice(i, 1);
         break;
       }
@@ -64,7 +63,11 @@ export function splitJson(json) {
   // Find quoted and put them in a separate list
   for (let i = 0; i < original.length; i++) {
     if (original[i].hasOwnProperty('@graph')) {
-      dataObj.quoted.push({ '@id': original[i]['@id'], '@graph': original[i]['@graph'] });
+      for (const obj of original[i]['@graph']) {
+        if (obj['@id']) {
+          dataObj.quoted[obj['@id']] = obj;
+        }
+      }
     }
   }
   return dataObj;

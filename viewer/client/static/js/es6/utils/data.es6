@@ -1,38 +1,26 @@
 import * as _ from 'lodash';
 import * as RecordUtil from './record';
 
-export function getLinked(id, linked) {
+export function getLinked(id, quotedIndex) {
   if (typeof id === 'undefined' || id === '') {
     throw new Error('getLinked was called with an undefined or empty Id.');
   }
-  let obj = { '@id': id };
-  let graphId = id;
-  if (id.indexOf('#') > -1) {
-    graphId = RecordUtil.extractFnurgel(id);
+  if (typeof quotedIndex === 'undefined') {
+    throw new Error('getLinked was called without a quotedIndex.');
   }
-  if (id.indexOf('marc:') !== -1) {
-    graphId = id.replace('marc:', 'https://id.kb.se/marc/');
-    // console.warn('Tried to find embellished from marc-id. Returning', JSON.stringify(obj));
+  // if (id.indexOf('marc:') !== -1) {
+  //   graphId = id.replace('marc:', 'https://id.kb.se/marc/');
+  //   // console.warn('Tried to find embellished from marc-id. Returning', JSON.stringify(obj));
+  // }
+  const obj = quotedIndex[id];
+
+  if (obj == null) {
+    window.lxlWarning(`Couldn\'t find entity: ${id}`);
   }
-  if (typeof linked !== 'undefined') {
-    for (const graph of linked) {
-      if (graph['@id'] === graphId) {
-        for (const entity of graph['@graph']) {
-          if (entity['@id'] === id || (id.indexOf('marc:') !== -1 && entity['@id'] === graphId)) {
-            obj = Object.assign({}, entity);
-            return obj;
-          }
-        }
-      }
-    }
+  if (obj != null && !obj.hasOwnProperty('@type')) {
+    window.lxlWarning('Embellished entity has an unknown type (missing @type). ID:', id);
   }
-  if (!obj.hasOwnProperty('@type') && Object.keys(obj).length === 1) {
-    window.lxlWarning(`Couldn\'t find entity: ${graphId} (${id})`);
-  }
-  if (!obj.hasOwnProperty('@type') && Object.keys(obj).length > 1) {
-    window.lxlWarning('Embellished entity has an unknown type (missing @type). ID:', graphId);
-  }
-  return obj;
+  return _.cloneDeep(obj);
 }
 
 export function getMergedItems(record, mainEntity, work, quoted) {
