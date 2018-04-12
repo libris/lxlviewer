@@ -456,19 +456,6 @@ def _remotesearch():
     return _proxy_request(request, session, query_params=['q', 'databases'])
 
 
-def _get_authorization_token(session):
-    oauth_token = session['oauth_token'] if 'oauth_token' in session else None
-
-    if oauth_token:
-        token = oauth_token['access_token']
-        token_type = oauth_token['token_type']
-        # FIXME handle different tokens (or verify that we only
-        # ever see Bearer)
-        return "{0} {1}".format(token_type, token)
-    else:
-        return None
-
-
 def _proxy_request(request, session, json_data=None, query_params=[],
                    accept_header=None, url_path=None):
     params = MultiDict([])
@@ -486,50 +473,15 @@ def _proxy_request(request, session, json_data=None, query_params=[],
     headers = dict(request.headers)
     if accept_header:
         headers['Accept'] = accept_header
-    auth_token = _get_authorization_token(session)
-    if auth_token:
-        headers['Authorization'] = auth_token
 
     app.logger.debug('Sending proxy %s request to: %s with headers:\n%r\nand body:\n %s',
                      request.method, url_path, headers, json_data)
 
-    response = _request_with_refresh(request.method, url_path, headers,
-                                     json_data, params)
-
-    return _map_response(response)
-
-
-def _request_with_refresh(method, url_path, headers, json_data, query_params):
     response = daccess.api_request(url_path, request.method, headers,
                                    json_data=json_data,
-                                   query_params=query_params)
+                                   query_params=params)
 
-    now = time.time()
-
-    if (response.status_code == 401 and
-            ('oauth_token' in session) and
-            (session['oauth_token']['expires_at'] < now)):
-        app.logger.debug("Unauthorized, w/ existing token. Refreshing...")
-
-        refreshed = False
-
-        try:
-            admin.refresh_token()
-            refreshed = True
-        except InvalidGrantError:
-            app.logger.debug("Failed to refresh access token")
-
-        if refreshed:
-            auth_token = _get_authorization_token(session)
-            if auth_token:
-                headers['Authorization'] = auth_token
-            return daccess.api_request(url_path, request.method, headers,
-                                       json_data=json_data,
-                                       query_params=query_params)
-        else:
-            return response
-
-    return response
+    return _map_response(response)
 
 
 def _map_response(response):
