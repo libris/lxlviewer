@@ -67,6 +67,10 @@ export default {
       if (_.isArray(this.item) || !_.isObject(this.item)) {
         throw new Error('Item is not an object.');
       }
+      // If items have more than one key, consider them already embellished
+      if (Object.keys(this.item).length > 1) {
+        return this.item;
+      }
       return DataUtil.getEmbellished(
         this.item['@id'],
         this.editorData.quoted
