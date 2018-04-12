@@ -97,7 +97,7 @@ export default {
       <span class="ReverseRelations-label">
         {{ "Instantiations" | translatePhrase }}: {{numberOfRelations}}
       </span>
-      <instance-list-button class="ReverseRelations-button"
+      <instance-list-button v-if="!inspector.status.editing" class="ReverseRelations-button"
         :checking-instances="checkingRelations" 
         :instance-list="relationInfo"></instance-list-button>
     </div>
