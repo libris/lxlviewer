@@ -38,12 +38,14 @@ export default {
 </script>
 
 <template>
-  <div class="erroneous-object"><code>{{itemAsJson}}</code></div>
+  <div class="ItemError">
+    <code>{{itemAsJson}}</code>
+  </div>
 </template>
 
 <style lang="less">
 
-.erroneous-object {
+.ItemError {
   line-height: 1.6;
   width: 100%;
   display: inline-block;

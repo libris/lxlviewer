@@ -348,39 +348,42 @@ export default {
 
 <template>
 
-<li class="Field js-field" 
-  :id="`field-${getPath}`" 
-  v-bind:class="{'Field--child': !asColumns, 'highlight': isLastAdded, 'removed': removed}" 
-  @mouseover="handleMouseEnter()" 
-  @mouseleave="handleMouseLeave()">
-  
-  <div class="Field-label" v-bind:class="{ 'locked': locked }">
-    <span v-show="fieldKey === '@id'">{{ 'ID' | translatePhrase | capitalize }}</span>
-    <span v-show="fieldKey === '@type'">{{ 'Type' | translatePhrase | capitalize }}</span>
-    <span v-show="fieldKey !== '@id' && fieldKey !== '@type'" 
-      :title="fieldKey">{{ fieldKey | labelByLang | capitalize }}</span>
-    <div class="Field-comment" v-if="propertyComment && !locked" >
-      <i class="fa fa-question-circle Field-commentIcon"></i>
-      <span class="Field-commentText">{{ propertyComment }}</span>
-    </div>
-  
-    <div v-if="!isInner" class="Field-actions"
-      @mouseover="highlightItem($event)"
-      @mouseout="unHighlightItem($event)">
-      <entity-adder  class="Field-entityAdder Field-action"
-        v-show="!locked && (isRepeatable || isEmptyObject) && (!isInner || (isInner && isEmptyObject))" 
-        :field-key="fieldKey" 
-        :already-added="linkedIds" 
-        :entity-type="entityType" 
-        :property-types="propertyTypes" 
-        :show-action-buttons="actionButtonsShown" 
-        :active="activeModal" 
-        :is-placeholder="false" 
-        :value-list="valueAsArray" 
-        :path="getPath"></entity-adder><div class="Field-action Field-remove" v-show="!locked" :class="{'disabled': activeModal}">
+  <li class="Field js-field" 
+    :id="`field-${getPath}`" 
+    v-bind:class="{'Field--inner': !asColumns, 'highlight': isLastAdded, 'removed': removed}" 
+    @mouseover="handleMouseEnter()" 
+    @mouseleave="handleMouseLeave()">
+    
+    <div class="Field-label" v-bind:class="{ 'is-locked': locked }">
+      <span v-show="fieldKey === '@id'">{{ 'ID' | translatePhrase | capitalize }}</span>
+      <span v-show="fieldKey === '@type'">{{ 'Type' | translatePhrase | capitalize }}</span>
+      <span v-show="fieldKey !== '@id' && fieldKey !== '@type'" 
+        :title="fieldKey">{{ fieldKey | labelByLang | capitalize }}</span>
+      <div class="Field-comment" v-if="propertyComment && !locked" >
+        <i class="fa fa-question-circle Field-commentIcon"></i>
+        <span class="Field-commentText">{{ propertyComment }}</span>
+      </div>
+    
+      <div v-if="!isInner" class="Field-actions"
+        @mouseover="highlightItem($event)"
+        @mouseout="unHighlightItem($event)">
+        <entity-adder  class="Field-entityAdder Field-action"
+          v-show="!locked && (isRepeatable || isEmptyObject) && (!isInner || (isInner && isEmptyObject))" 
+          :field-key="fieldKey" 
+          :already-added="linkedIds" 
+          :entity-type="entityType" 
+          :property-types="propertyTypes" 
+          :show-action-buttons="actionButtonsShown" 
+          :active="activeModal" 
+          :is-placeholder="false" 
+          :value-list="valueAsArray" 
+          :path="getPath"></entity-adder>
+        <div class="Field-action Field-remove" 
+          v-show="!locked" 
+          :class="{'disabled': activeModal}">
           <i class="fa fa-trash-o action-button"
             v-on:click="removeThis(true)"
-             @mouseover="removeHover = true" 
+              @mouseover="removeHover = true" 
             @mouseout="removeHover = false">
             <tooltip-component 
               :show-tooltip="removeHover" 
@@ -390,51 +393,49 @@ export default {
         </div>
       </div>
 
-    <!-- Is inner -->
-    
-    <div v-if="isInner" class="Field-actions"
-      @mouseover="highlightItem($event)"
-      @mouseout="unHighlightItem($event)">
-      <entity-adder class="Field-action Field-entityAdder"
-        v-show="!locked && isRepeatable && (isInner && !isEmptyObject)" 
-        :field-key="fieldKey" 
-        :path="getPath" 
-        :already-added="linkedIds" 
-        :entity-type="entityType" 
-        :property-types="propertyTypes" 
-        :show-action-buttons="actionButtonsShown" 
-        :active="activeModal" 
-        :is-placeholder="true" 
-        :value-list="valueAsArray"></entity-adder>
-      <div class="Field-action Field-remove" 
-        v-show="!locked" 
-        :class="{'disabled': activeModal}">
-        <i class="fa fa-trash-o action-button"
-          v-on:click="removeThis(true)"
-           @mouseover="removeHover = true" 
-            @mouseout="removeHover = false"  >
-          <tooltip-component :show-tooltip="removeHover" tooltip-text="Remove" translation="translatePhrase"></tooltip-component>
-        </i>
+      <!-- Is inner -->
+      <div v-if="isInner" class="Field-actions is-nested"
+        @mouseover="highlightItem($event)"
+        @mouseout="unHighlightItem($event)">
+        <entity-adder class="Field-action Field-entityAdder"
+          v-show="!locked && isRepeatable && (isInner && !isEmptyObject)" 
+          :field-key="fieldKey" 
+          :path="getPath" 
+          :already-added="linkedIds" 
+          :entity-type="entityType" 
+          :property-types="propertyTypes" 
+          :show-action-buttons="actionButtonsShown" 
+          :active="activeModal" 
+          :is-placeholder="true" 
+          :value-list="valueAsArray"></entity-adder>
+        <div class="Field-action Field-remove" 
+          v-show="!locked" 
+          :class="{'disabled': activeModal}">
+          <i class="fa fa-trash-o action-button"
+            v-on:click="removeThis(true)"
+            @mouseover="removeHover = true" 
+              @mouseout="removeHover = false"  >
+            <tooltip-component :show-tooltip="removeHover" tooltip-text="Remove" translation="translatePhrase"></tooltip-component>
+          </i>
+        </div>
       </div>
+      <!-- {{ key | labelByLang | capitalize }} -->
     </div>
-    <!-- {{ key | labelByLang | capitalize }} -->
-  </div>
 
-  <pre class="path-code" v-show="user.settings.appTech">{{getPath}}</pre>
-    
-    <ul class="Field-list FieldList FieldList--nested is-value" 
-      v-if="isObjectArray"
-      :class="{'FieldList--nestedX': isChild}">
-      <li class="Field-listItem FieldList-item" 
+    <pre class="path-code" v-show="user.settings.appTech">{{getPath}}</pre>
+      
+    <div class="Field-content FieldContent is-value" 
+      v-bind:class="{ 'is-locked': locked }"
+      v-if="isObjectArray">
+      <div class="Field-contentItem" 
         v-for="(item, index) in valueAsArray" 
-        :key="index" 
-        :class="{'is-inline': getDatatype(item) == 'entity'}">
+        :key="index" >
         <item-error 
           v-if="getDatatype(item) == 'error'" 
           :item="item"></item-error>
 
         <!-- Other linked resources -->
-        <item-vocab 
+        <item-vocab
           v-if="getDatatype(item) == 'vocab'" 
           :is-locked="locked" 
           :field-key="fieldKey" 
@@ -464,13 +465,14 @@ export default {
           :parent-path="getPath" 
           :in-array="valueIsArray" 
           :show-action-buttons="actionButtonsShown"></item-local>
-      </li>
-    </ul>
 
-    <ul class="Field-list FieldList is-value" 
-      v-if="!isObjectArray" 
-      :class="{'FieldList--child': isChild}">
-      <li class="Field-listItem" 
+      </div>
+    </div>
+
+    <div class="Field-content is-value is-endOfTree js-endOfTree" 
+      v-bind:class="{ 'is-locked': locked }"
+      v-if="!isObjectArray">
+      <div class="Field-contentItem" 
         v-for="(item, index) in valueAsArray" 
         :key="index">
 
@@ -493,8 +495,8 @@ export default {
           :index="index" 
           :parent-path="getPath" 
           :show-action-buttons="actionButtonsShown"></item-value>
-      </li>
-    </ul>
+      </div>
+    </div>
   </li>
 </template>
 
@@ -530,14 +532,13 @@ export default {
     width: 100%;
   }
 
-  &--child {
+  &--inner {
     border: 0;
     flex: 1 100%;
     margin: 10px 0;
     overflow: visible;
     max-height: auto;
     display: inline-block;
-    z-index: 0;
 
     &:before {
       content: "";
@@ -572,7 +573,7 @@ export default {
     position: relative;
     z-index: 1;
 
-    .Field--child & {
+    .Field--inner & {
       flex: 1 100%;
       padding: 0;
       text-align: left;
@@ -580,7 +581,24 @@ export default {
       justify-content: flex-start;
       display: flex;
       margin: 10px 0;
+
+      .is-locked & {
+        padding: 0 0 0 20px;
+      }
     }
+
+    &:before {
+      content: "";
+    }
+
+    &.is-locked:before {
+      .Field--inner & {
+        content: " ● ";
+        position: absolute;
+        left: 0px;
+        top: -2px;
+      }
+    } 
   }
 
   &-commentText {
@@ -614,25 +632,27 @@ export default {
     }
   }
 
-  &-list {
+  &-content {
     border-left: 1px solid #d8d8d8;
     flex: 1 100%;
     margin: 0;
     padding: 20px;
 
-    .Field--child & {
+    .Field--inner & {
       border: 0;
       padding: 0;
     }
+
+    &.is-locked {
+      .Field--inner & {
+        padding: 0 0 0 20px;
+      }   
+    }
   }
 
-  &-listItem {
+  &-contentItem {
     display: flex;
     flex: 1;
-
-    &.is-inline {
-      display: inline-block;
-    }
   }
 
   &-actions {
@@ -651,7 +671,7 @@ export default {
       transform: translate(12px, 18px);
     }
 
-    .Field--child & {
+    .Field--inner & {
       display: inline-block;
       font-size: 16px;
       font-size: 1.6rem;
@@ -671,13 +691,6 @@ export default {
     &:hover {
       color: @black;
     }
-  }
-}
-
-.FieldList {
-  &--child {
-    overflow: visible;
-    position: relative;
   }
 }
 

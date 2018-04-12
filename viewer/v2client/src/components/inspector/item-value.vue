@@ -75,7 +75,7 @@ export default {
     addFocus() {
       const children = this.$el.children;
       _.each(children, child => {
-        if (child.className.indexOf('item-value-textarea') > -1) {
+        if (child.className.indexOf('js-itemValueInput') > -1) {
           child.focus();
         }
       });
@@ -83,7 +83,7 @@ export default {
     removeFocus() {
       const children = this.$el.children;
       _.each(children, child => {
-        if (child.className.indexOf('item-value-textarea') > -1) {
+        if (child.className.indexOf('js-itemValueInput') > -1) {
           child.blur();
         }
       });
@@ -97,12 +97,24 @@ export default {
 </script>
 
 <template>
-  <div class="ItemValue" v-bind:class="{'locked': isLocked, 'unlocked': !isLocked, 'distinguish-removal': removeHover, 'removed': removed}">
-    <textarea class="ItemValue-input item-value-textarea" rows="1" v-model="value" @keydown="handleEnter" v-if="!isLocked"></textarea>
-    <span v-if="isLocked">{{fieldValue}}</span>
-    <div class="remover" v-show="!isLocked && isRemovable" v-on:click="removeThis()" @mouseover="removeHover = true" @mouseout="removeHover = false">
+  <div class="ItemValue" v-bind:class="{'is-locked': isLocked, 'unlocked': !isLocked, 'removed': removed}">
+    <textarea class="ItemValue-input js-itemValueInput" 
+      rows="1" 
+      v-model="value" 
+      @keydown="handleEnter" 
+      v-if="!isLocked"></textarea>
+    <span class="ItemValue-text" 
+      v-if="isLocked">{{fieldValue}}</span>
+    <div class="remover" 
+      v-show="!isLocked && isRemovable" 
+      v-on:click="removeThis()" 
+      @mouseover="removeHover = true" 
+      @mouseout="removeHover = false">
       <i class="fa fa-minus">
-        <tooltip-component :show-tooltip="removeHover" tooltip-text="Remove" translation="translatePhrase"></tooltip-component>
+        <tooltip-component 
+          :show-tooltip="removeHover" 
+          tooltip-text="Remove" 
+          translation="translatePhrase"></tooltip-component>
       </i>
     </div>
   </div>
@@ -129,12 +141,9 @@ export default {
     }
   }
 
-  &.locked {
-    padding: 0 0 0 20px;
-
-    span {
-      word-break: break-word;
-    }
+  &-text {
+    word-break: break-word;
+    position: relative;
   }
 
   &.removed {

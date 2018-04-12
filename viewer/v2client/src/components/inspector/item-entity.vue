@@ -88,20 +88,39 @@ export default {
 </script>
 
 <template>
-  <div class="ItemEntity-container" @mouseleave="showCardInfo=false" v-bind:class="{'highlight': isNewlyAdded }">
+  <div class="ItemEntity-container" 
+    @mouseleave="showCardInfo=false" 
+    v-bind:class="{'highlight': isNewlyAdded }">
     <div class="ItemEntity" 
       tabindex="0"
       v-if="!expanded" 
       :class="{ 'locked': isLocked, 'highlighted': showCardInfo }" 
       @mouseenter="showCardInfo=true">
-      <span class="ItemEntity-label"><span v-if="!expanded">{{getItemLabel}}</span><span class="placeholder"></span></span>
+      <span class="ItemEntity-label">
+        <span v-if="!expanded">{{getItemLabel}}</span>
+        <span class="placeholder"></span></span>
       <div class="ItemEntity-removeButton" v-if="!isLocked">
-        <i v-if="!isLocked" class="fa fa-times chip-action" v-on:click="removeThis(true)" @mouseover="removeHover = true" @mouseout="removeHover = false">
-          <tooltip-component :show-tooltip="removeHover" tooltip-text="Remove" translation="translatePhrase"></tooltip-component>
+        <i class="fa fa-times chip-action" 
+          v-if="!isLocked" 
+          v-on:click="removeThis(true)" 
+          @mouseover="removeHover = true" 
+          @mouseout="removeHover = false">
+          <tooltip-component 
+            :show-tooltip="removeHover" 
+            tooltip-text="Remove" 
+            translation="translatePhrase"></tooltip-component>
         </i>
       </div>
     </div>
-    <card-component :title="getItemLabel" :focus-data="item" :uri="item['@id']" :is-local="false" :is-locked="isLocked" :should-show="showCardInfo" :floating="!expanded" :field-key="fieldKey"></card-component>
+    <card-component 
+      :title="getItemLabel" 
+      :focus-data="item" 
+      :uri="item['@id']" 
+      :is-local="false" 
+      :is-locked="isLocked" 
+      :should-show="showCardInfo" 
+      :floating="!expanded" 
+      :field-key="fieldKey"></card-component>
   </div>
 </template>
 
