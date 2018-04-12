@@ -6,13 +6,13 @@ import * as _ from 'lodash';
 export default {
   methods: {
     getLabel(item) {
-      if (!this.display || !this.editorData || !this.vocab || !this.settings || !this.context) {
+      if (!this.display || !this.inspector.data || !this.resources.vocab || !this.settings || !this.resources.context) {
         throw new Error('Missing display/vocab/settings or similar. Did you set up Vuex getters for this component?');
       }
       const label = DisplayUtil.getItemLabel(
         item,
         this.resources.display,
-        this.editorData.quoted,
+        this.inspector.data.quoted,
         this.resources.vocab,
         this.settings,
         this.resources.context
@@ -27,8 +27,8 @@ export default {
     resources() {
       return this.$store.getters.resources;
     },
-    editorData() {
-      return this.$store.getters.inspector.data;
+    inspector() {
+      return this.$store.getters.inspector;
     },
     getItemLabel() {
       // const label = this.getLabel(this.focusData);
@@ -42,7 +42,7 @@ export default {
       const chip = DisplayUtil.getChip(
         this.focusData,
         this.resources.display,
-        this.editorData.quoted,
+        this.inspector.data.quoted,
         this.resources.vocab,
         this.settings,
         this.resources.context
@@ -53,7 +53,7 @@ export default {
       const card = DisplayUtil.getCard(
         this.focusData,
         this.resources.display,
-        this.editorData.quoted,
+        this.inspector.data.quoted,
         this.resources.vocab,
         this.settings,
         this.resources.context
@@ -64,7 +64,7 @@ export default {
       const summary = DisplayUtil.getItemSummary(
         this.focusData,
         this.resources.display,
-        this.editorData.quoted,
+        this.inspector.data.quoted,
         this.resources.vocab,
         this.settings,
         this.resources.context
