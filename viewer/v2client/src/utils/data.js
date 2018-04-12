@@ -2,12 +2,9 @@ import * as _ from 'lodash';
 import * as RecordUtil from './record';
 import * as VocabUtil from './vocab';
 
-export function getEmbellished(id, quotedIndex) {
+export function getEmbellished(id, quotedIndex = {}) {
   if (typeof id === 'undefined' || id === '') {
     throw new Error('getEmbellished was called with an undefined or empty Id.');
-  }
-  if (typeof quotedIndex === 'undefined') {
-    throw new Error('getEmbellished was called without a quotedIndex.');
   }
   // if (id.indexOf('marc:') !== -1) {
   //   graphId = id.replace('marc:', 'https://id.kb.se/marc/');
