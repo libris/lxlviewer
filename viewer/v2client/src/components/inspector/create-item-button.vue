@@ -1,8 +1,9 @@
 <script>
-import * as DisplayUtil from '../../utils/display';
-import * as StringUtil from '../../utils/string';
-import * as RecordUtil from '../../utils/record';
-import * as HttpUtil from '../../utils/http';
+import * as DisplayUtil from '@/utils/display';
+import * as StringUtil from '@/utils/string';
+import * as RecordUtil from '@/utils/record';
+import * as DataUtil from '@/utils/data';
+import * as HttpUtil from '@/utils/http';
 import { mapGetters } from 'vuex';
 import Modernizr from '@/../.modernizrrc.js';
 
@@ -70,17 +71,8 @@ export default {
       });
     },
     previewHolding() {
-      if (Modernizr.history) {
-        this.$store.dispatch('setStatusValue', { 
-          property: 'isNew', 
-          value: true 
-        });
-        this.$store.dispatch('updateInspectorData', { 
-          property: 'new-editordata', 
-          value: newData
-        });
-        //this.$dispatch('new-editordata', this.itemData);
-      }
+      this.$store.dispatch('setInsertData', DataUtil.getMergedItems(this.itemData.record, this.itemData.mainEntity, null, this.itemData.quoted));
+      this.$router.push({ path: '/new' });
     }
   },
   computed: {
