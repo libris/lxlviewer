@@ -46,7 +46,7 @@ export default {
             this.active = true;
             this.toBeActive = false;
           }
-        }, 500);
+        }, 200);
       } else {
         this.toBeActive = false;
         this.active = false;
@@ -62,32 +62,44 @@ export default {
 </script>
 
 <template>
-  <div class="card-info-container" :class="{ 'active': active, 'to-be-active': toBeActive, 'floating': floating }">
-    <entity-summary :focus-data="focusData" :is-extractable="isExtractable" :add-link="hasUri" :lines="5" :actions="!floating && !isLocked" :is-local="isLocal"></entity-summary>
+  <div class="Card" 
+    :class="{ 'active': active, 'to-be-active': toBeActive, 'floating': floating }">
+    <entity-summary 
+      :focus-data="focusData" 
+      :is-extractable="isExtractable" 
+      :add-link="hasUri" 
+      :lines="5" 
+      :actions="!floating && !isLocked" 
+      :is-local="isLocal"></entity-summary>
   </div>
 </template>
 
 <style lang="less">
 
-  .card-info-container {
-    width: 100%;
-    background-color: @white;
-    display: none;
-    position: absolute;
-    transition: opacity 0.5s ease;
-    &.to-be-active {
-      pointer-events: none;
-      display: block;
-      opacity: 0;
-    }
-    &.active {
-      display: block;
-      opacity: 1;
-    }
-    &.floating {
-      width: 600px;
-      border-radius: 0.5em;
-      box-shadow: @shadow-card-elevated;
-    }
+.Card {
+  width: 100%;
+  background-color: @white;
+  display: none;
+  position: absolute;
+  transition: opacity 0.4s ease;
+
+  &.to-be-active {
+    pointer-events: none;
+    display: block;
+    opacity: 0;
+    z-index: 2;
   }
+
+  &.active {
+    display: block;
+    opacity: 1;
+    z-index: 3;
+  }
+
+  &.floating {
+    width: 600px;
+    border-radius: 0.5em;
+    box-shadow: @shadow-card-elevated;
+  }
+}
 </style>

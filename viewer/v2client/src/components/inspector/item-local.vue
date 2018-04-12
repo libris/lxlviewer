@@ -344,77 +344,80 @@ export default {
 </script>
 
 <template>
-    <div class="item-local ItemLocal js-itemLocal" 
-      tabindex="0"
-      @keyup.enter="toggleExpanded()"
-      :class="{'highlight': isNewlyAdded, 'is-expanded': expanded}">
-      <div class="ItemLocal-topbar topbar">
-        <i class="ItemLocal-arrow fa fa-chevron-right " 
-          :class="{'down': expanded}" @click="toggleExpanded()"></i>
-        <span class="type" 
-          @click="toggleExpanded($event)" 
-          :title="item['@type']">{{ item['@type'] | labelByLang | capitalize }}:</span>
-        <span class="collapsed-label" @click="toggleExpanded()">
-          <span v-show="!expanded || isEmpty">{{getItemLabel}}</span>
-          <span class="placeholder"> </span>
-        </span>
-        <div class="ItemLocal-actions "
-          @mouseover="highlightItem($event)"
-          @mouseout="unHighlightItem($event)">
-          <field-adder class="ItemLocal-action"
-            v-if="!isLocked" 
-            :entity-type="item['@type']" 
-            :allowed="allowedProperties" 
-            :inner="true" 
-            :path="getPath"></field-adder>
-         
-          <i class="ItemLocal-action fa fa-link"
-            v-if="inspector.status.editing"  
-            @click="openExtractDialog()" 
-            @mouseover="showLinkAction = true" 
-            @mouseout="showLinkAction = false">
-            <tooltip-component 
-              :show-tooltip="showLinkAction" 
-              tooltip-text="Link entity" 
-              translation="translatePhrase"></tooltip-component>
-          </i>
-          <i class="ItemLocal-action fa fa-trash-o chip-action" 
-            v-if="!isLocked" 
-            :class="{'show-icon': showActionButtons}" 
-            v-on:click="removeThis(true)" 
-            @mouseover="removeHover = true" 
-            @mouseout="removeHover = false">
-            <tooltip-component 
-              :show-tooltip="removeHover" 
-              tooltip-text="Remove" 
-              translation="translatePhrase"></tooltip-component>
-          </i>
-        </div>
-      </div>
-  
-      <ul class="js-itemLocalFields ItemLocal-fieldContainer">      
-        <field-adder 
-          v-if="!isLocked && isEmpty" 
+  <div class="ItemLocal js-itemLocal" 
+    tabindex="0"
+    @keyup.enter="toggleExpanded()"
+    :class="{'highlight': isNewlyAdded, 'is-expanded': expanded}">
+   
+   <strong class="ItemLocal-heading">
+      <i class="ItemLocal-arrow fa fa-chevron-right " 
+        :class="{'down': expanded}" @click="toggleExpanded()"></i>
+      <span class="type" 
+        @click="toggleExpanded($event)" 
+        :title="item['@type']">{{ item['@type'] | labelByLang | capitalize }}:</span>
+      <span class="collapsed-label" @click="toggleExpanded()">
+        <span v-show="!expanded || isEmpty">{{getItemLabel}}</span>
+        <span class="placeholder"> </span>
+      </span>
+      
+      <div class="ItemLocal-actions"
+        @mouseover="highlightItem($event)"
+        @mouseout="unHighlightItem($event)">
+
+        <field-adder class="ItemLocal-action"
+          v-if="!isLocked" 
           :entity-type="item['@type']" 
           :allowed="allowedProperties" 
           :inner="true" 
           :path="getPath"></field-adder>
-        <field class="js-field"
-          v-show="expanded && k !== '_uid'" 
-          v-for="(v, k) in filteredItem" 
-          :parent-path="getPath" 
-          :entity-type="item['@type']" 
-          :is-inner="true" 
-          :is-locked="isLocked" 
-          :is-removable="false" 
-          :as-columns="false" 
-          :parent-key="fieldKey" 
-          :parent-index="index" 
-          :field-key="k" 
-          :field-value="v" 
-          :key="k" 
-          :show-action-buttons="showActionButtons"></field>
-      </ul>
+         
+        <i class="ItemLocal-action fa fa-link"
+          v-if="inspector.status.editing"  
+          @click="openExtractDialog()" 
+          @mouseover="showLinkAction = true" 
+          @mouseout="showLinkAction = false">
+          <tooltip-component 
+            :show-tooltip="showLinkAction" 
+            tooltip-text="Link entity" 
+            translation="translatePhrase"></tooltip-component>
+        </i>
+        <i class="ItemLocal-action fa fa-trash-o chip-action" 
+          v-if="!isLocked" 
+          :class="{'show-icon': showActionButtons}" 
+          v-on:click="removeThis(true)" 
+          @mouseover="removeHover = true" 
+          @mouseout="removeHover = false">
+          <tooltip-component 
+            :show-tooltip="removeHover" 
+            tooltip-text="Remove" 
+            translation="translatePhrase"></tooltip-component>
+        </i>
+      </div>
+    </strong>
+  
+    <ul class="ItemLocal-list js-itemLocalFields">      
+      <field-adder 
+        v-if="!isLocked && isEmpty" 
+        :entity-type="item['@type']" 
+        :allowed="allowedProperties" 
+        :inner="true" 
+        :path="getPath"></field-adder>
+      <field
+        v-show="expanded && k !== '_uid'" 
+        v-for="(v, k) in filteredItem" 
+        :parent-path="getPath" 
+        :entity-type="item['@type']" 
+        :is-inner="true" 
+        :is-locked="isLocked" 
+        :is-removable="false" 
+        :as-columns="false" 
+        :parent-key="fieldKey" 
+        :parent-index="index" 
+        :field-key="k" 
+        :field-value="v" 
+        :key="k" 
+        :show-action-buttons="showActionButtons"></field>
+    </ul>
        
     <search-window 
       :active="extractDialogActive" 
@@ -452,21 +455,27 @@ export default {
     z-index: 1;
   }
 
-  &-topbar {
+  &-heading {
     position: relative;
     flex: 1 100%;
+    font-weight: normal;
   }
 
   &-arrow {
     transition: all 0.2s ease;
-    padding: 0 5px;
+    padding: 0 2px;
+    margin: 0 0 0 1px;
     cursor: pointer;
   }
 
-  &-fieldContainer {
+  &-list {
     flex: 1 100%;
     position: relative;
-    padding: 0 0 0 25px;
+    padding: 0 0 0 20px;
+
+    .locked & {
+      padding: 0 0 0 20px;
+    }
   }
 
   &-actions {
@@ -495,7 +504,7 @@ export default {
 
 }
 
-.is-expanded > .ItemLocal-topbar > .ItemLocal-arrow {
+.is-expanded > .ItemLocal-heading > .ItemLocal-arrow {
   transform:rotate(90deg);
 
   &::before {
@@ -527,16 +536,7 @@ export default {
     margin: 0 0 2em 0;
   }
   .item-local {
-    border: 1px solid rgba(0, 0, 0, 0.15);
-    line-height: 1.6;
-    max-height: 40px;
-    overflow: hidden;
-    transition: 0.5s ease max-height, 1.0s ease box-shadow;
-    &.distinguish-removal {
-      > .topbar {
-        background-color: rgba(255,0,0,.1);
-      }
-    }
+
     &.is-expanded {
       max-height: 400vh;
       box-shadow: @shadow-chip-elevated;

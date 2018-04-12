@@ -100,27 +100,33 @@ export default {
 </script>
 
 <template>
-  <div class="item-vocab" v-bind:class="{'locked': isLocked, 'unlocked': !isLocked, 'distinguish-removal': removeHover, 'removed': removed}">
+  <div class="ItemVocab" v-bind:class="{'is-locked': isLocked, 'is-unlocked': !isLocked, 'distinguish-removal': removeHover, 'removed': removed}">
     <div v-if="!isLocked">
-      <select v-model="selected">
-        <option v-for="option in possibleValues" :key="option" v-bind:value="option">{{ option | labelByLang }}</option>
+      <select v-model="selected" class="ItemVocab-select">
+        <option 
+          v-for="option in possibleValues" 
+          :key="option" 
+          v-bind:value="option">{{ option | labelByLang }}</option>
       </select>
     </div>
-    <span v-if="isLocked">{{fieldValue | labelByLang}}</span>
+    <span class="ItemVocab-text" 
+      v-if="isLocked">{{fieldValue | labelByLang}}</span>
   </div>
 </template>
 
 <style lang="less">
 
-.item-vocab {
-  &.locked {
+.ItemVocab {
+  &.is-locked {
     line-height: 2;
     padding-left: 5px;
-    span {
-      word-break: break-word;
-    }
   }
-  select {
+
+  &-text {
+    word-break: break-word;
+  }
+
+  &-select {
     width: 100%;
   }
 }
