@@ -11,7 +11,13 @@ export default {
   name: 'create-new-form',
   data () {
     return {
-      creationList: ['Instance', 'Work', 'Agent', 'Concept', 'File'],
+      creationList: [
+        'Instance',
+        'Work',
+        'Agent',
+        // 'Concept',
+        'File',
+      ],
       chosenType: '',
       selectedCreation: 'Instance',
       thingData: {},
