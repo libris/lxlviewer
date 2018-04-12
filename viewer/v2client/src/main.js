@@ -106,12 +106,15 @@ new Vue({
   mounted() {
     this.$nextTick(() => {
       this.verifyConfig();
-      if (this.$route.name === 'LoggedIn') {
-        localStorage.setItem('at', StringUtil.getParamValueFromUrl(this.$route.hash, 'access_token'));
-      }
-      const token = localStorage.getItem('at');
-      if (token) {
-        this.verifyUser(token);
+      if (this.$route.name === 'Authenticating') {
+        const token = StringUtil.getParamValueFromUrl(this.$route.hash, 'access_token');
+        localStorage.setItem('at', token);
+        this.verifyUser(token, true);
+      } else {
+        const token = localStorage.getItem('at');
+        if (token) {
+          this.verifyUser(token, false);
+        }
       }
       this.updateTitle();
     })
@@ -139,12 +142,16 @@ new Vue({
         throw new Error('Missing AUTH path in app-config');
       }
     },
-    verifyUser(token) {
+    verifyUser(token, initial) {
       let userObj = User.getUserObject()
       HttpUtil.get({ url: this.settings.authPath, token }).then((result) => {
         userObj = User.getUserObject(result.user);
         userObj.token = token;
         store.dispatch('setUser', userObj);
+        if (initial) {
+          this.$store.dispatch('pushNotification', { color: 'green', message: `${StringUtil.getUiPhraseByLang('You were logged in', this.settings.language)}!` });
+          this.$router.push({ path: '/' });
+        }
       }, (error) => {
         store.dispatch('setUser', userObj);
         localStorage.removeItem('at');
@@ -171,7 +178,7 @@ new Vue({
       document.title = title;
     },
     initWarningFunc() {
-      if (!this.lxlDebug || navigator.userAgent.indexOf('PhantomJS') > -1) {
+      if (!this.settings.environment === 'development' || navigator.userAgent.indexOf('PhantomJS') > -1) {
         window.lxlWarning = function (...strings) {
           return;
         }

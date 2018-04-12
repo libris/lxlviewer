@@ -30,7 +30,7 @@ export default new Router({
     },
     {
       path: '/login/authorized',
-      name: 'LoggedIn',
+      name: 'Authenticating',
       component: Login
     },
     {
