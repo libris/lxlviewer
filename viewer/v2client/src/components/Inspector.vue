@@ -8,7 +8,7 @@ import * as httpUtil from '@/utils/http';
 import * as DisplayUtil from '@/utils/display';
 import * as RecordUtil from '@/utils/record';
 import EntityForm from '@/components/inspector/entity-form';
-import EntityControls from '@/components/inspector/entity-controls';
+import Toolbar from '@/components/inspector/toolbar';
 import EntityChangelog from '@/components/inspector/entity-changelog';
 import EntityHeader from '@/components/inspector/entity-header';
 import ModalComponent from '@/components/shared/modal-component';
@@ -205,7 +205,7 @@ export default {
     'entity-header': EntityHeader,
     'entity-form': EntityForm,
     'modal-component': ModalComponent,
-    'entity-controls': EntityControls,
+    'toolbar': Toolbar,
     'entity-changelog': EntityChangelog,
     'reverse-relations': ReverseRelations,
   },
@@ -266,12 +266,12 @@ export default {
           </div>
         </div>
       </div>
-      <div v-if="postLoaded" class="col-md-1 Toolbar">
+      <div v-if="postLoaded" class="col-md-1">
         <!-- SLOT FOR TOOLBAR -->
         
         <div class="Toolbar-placeholder" ref="ToolbarPlaceholder"></div>
         <div class="Toolbar-container" ref="ToolbarTest">
-          <entity-controls @save="saveItem()"></entity-controls>
+          <toolbar @save="saveItem()"></toolbar>
         </div>
       </div>
     </div>

@@ -269,141 +269,142 @@ export default {
 </script>
 
 <template>
-  <div class="EntityControls" id="editor-container">
-      
-      <div 
-        v-if="!inspector.status.editing" 
-        v-on-clickaway="hideOtherFormatMenu" 
-        class="dropdown OtherFormatMenu">
-        <button class="EntityControls-btn btn btn-default OtherFormatMenu-button" 
-          @click="showOtherFormatMenu" 
-          aria-haspopup="true" 
-          aria-expanded="true" 
-          @mouseover="showDisplayAs = true" 
-          @mouseout="showDisplayAs = false">
-          <i class="fa fa-eye" aria-hidden="true">
-            <tooltip-component :show-tooltip="showDisplayAs" tooltip-text="Show as" translation="translatePhrase"></tooltip-component>
-          </i>
-          <span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu OtherFormatMenu-menu" v-show="otherFormatMenuActive">
-          <li><a :href="getOtherDataFormat('jsonld')">JSON-LD</a></li>
-          <li><a :href="getOtherDataFormat('ttl')">Turtle</a></li>
-          <li><a :href="getOtherDataFormat('rdf')"><i class="fa fa-fw fa-download" aria-hidden="true"></i>RDF/XML</a></li>
-        </ul>
-      </div>
-      <div class="dropdown ToolsMenu" v-on-clickaway="hideToolsMenu">
-        <button class="EntityControls-btn btn btn-default ToolsMenu-button" 
-          @click="showToolsMenu" 
-          aria-haspopup="true" 
-          aria-expanded="true" 
-          @mouseover="showTools = true" 
-          @mouseout="showTools = false">
-          <i class="fa fa-wrench" aria-hidden="true">
-            <tooltip-component :show-tooltip="showTools" tooltip-text="Tools" translation="translatePhrase"></tooltip-component>
-          </i>
-          <span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu ToolsMenu-menu" v-show="toolsMenuActive">
-          <li>
-            <a @click="formControl('expand-item')">
-            <i class="fa fa-fw fa-expand" aria-hidden="true"></i>
-            {{"Expand all" | translatePhrase}}
-            </a>
-          </li>
-          <li>
-            <a @click="formControl('collapse-item')">
-            <i class="fa fa-fw fa-compress" aria-hidden="true"></i>
-            {{"Collapse all" | translatePhrase}}
-            </a>
-          </li>
-          <li v-if="user.isLoggedIn && !inspector.status.editing && !isSubClassOf('Item')">
-            <a @click="handleCopy">
-            <i class="fa fa-fw fa-files-o"></i>
-            {{ "Make copy" | translatePhrase }}
-            </a>
-          </li>
-          <li v-if="isSubClassOf('Instance') && hasSigel && !inspector.status.editing && user.email !== ''">
-            <a v-if="downloadIsSupported" @click="getCompiledPost()">
-              <i class="fa fa-fw fa-download" aria-hidden="true"></i>
-                {{"Download compiled MARC21" | translatePhrase}}
-            </a>
-            <a v-if="!downloadIsSupported" :href="compileMARCUrl">
-              <i class="fa fa-fw fa-download" aria-hidden="true"></i>
-                {{"Download compiled MARC21" | translatePhrase}}
-            </a>
-          </li>
-          <li>
-            <marc-preview :openPreview="showMarcPreview" v-on:close-marc="closeMarc()"></marc-preview>
-            <a @click="openMarc" >
-            <i class="fa fa-fw fa-eye" aria-hidden="true"></i>
-            {{"Preview MARC21" | translatePhrase}}
-            </a>
-          </li>
-          <li class="remove-option" v-show="user.isLoggedIn && !status.isNew">
-            <a @click="removePost">
-            <i class="fa fa-fw fa-trash" aria-hidden="true"></i>
-            {{"Remove" | translatePhrase}} {{ recordType | labelByLang }}
-            </a>
-          </li>
-        </ul>
-      </div>
-      <div class="EntityControls-divider"></div>
-      
-      <field-adder class="EntityControls-btn"
-        v-if="inspector.status.editing" 
-        :entity-type="editorData[inspector.status.focus]['@type']" 
-        :inner="false" 
-        :allowed="allowedProperties" 
-        :path="inspector.status.focus" 
-        :editing-object="inspector.status.focus"></field-adder>
-      <button class="EntityControls-btn btn btn-default toolbar-button" 
-        :disabled="inspector.changeHistory.length === 0" 
-        v-show="inspector.status.editing" 
-        @click="undo" 
-        @mouseover="showUndo = true" 
-        @mouseout="showUndo = false">
-        <i class="fa fa-undo" aria-hidden="true">
-          <tooltip-component :show-tooltip="showUndo" tooltip-text="Undo" translation="translatePhrase"></tooltip-component>
+  <div class="Toolbar" id="editor-container">
+
+    <div class="dropdown Toolbar-menu OtherFormatMenu"
+      v-if="!inspector.status.editing" 
+      v-on-clickaway="hideOtherFormatMenu">
+      <button class="EntityControls-btn btn btn-default OtherFormatMenu-button" 
+        @click="showOtherFormatMenu" 
+        aria-haspopup="true" 
+        aria-expanded="true" 
+        @mouseover="showDisplayAs = true" 
+        @mouseout="showDisplayAs = false">
+        <i class="fa fa-eye" aria-hidden="true">
+          <tooltip-component :show-tooltip="showDisplayAs" tooltip-text="Show as" translation="translatePhrase"></tooltip-component>
         </i>
+        <span class="caret"></span>
       </button>
-      <button class="EntityControls-btn btn btn-info" id="saveButton" 
-        @click="save" 
-        v-if="inspector.status.editing && !status.isNew" 
-        @mouseover="showSave = true" @mouseout="showSave = false">
-        <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="inspector.status.saving"></i>
-        <i class="fa fa-fw fa-save" v-show="!inspector.status.saving">
-          <tooltip-component :show-tooltip="showSave" tooltip-text="Save" translation="translatePhrase"></tooltip-component>
+      <ul class="dropdown-menu OtherFormatMenu-menu" v-show="otherFormatMenuActive">
+        <li><a :href="getOtherDataFormat('jsonld')">JSON-LD</a></li>
+        <li><a :href="getOtherDataFormat('ttl')">Turtle</a></li>
+        <li><a :href="getOtherDataFormat('rdf')"><i class="fa fa-fw fa-download" aria-hidden="true"></i>RDF/XML</a></li>
+      </ul>
+    </div>
+
+    <div class="dropdown Toolbar-menu" v-on-clickaway="hideToolsMenu">
+      <button class="EntityControls-btn btn btn-default ToolsMenu-button" 
+        @click="showToolsMenu" 
+        aria-haspopup="true" 
+        aria-expanded="true" 
+        @mouseover="showTools = true" 
+        @mouseout="showTools = false">
+        <i class="fa fa-wrench" aria-hidden="true">
+          <tooltip-component :show-tooltip="showTools" tooltip-text="Tools" translation="translatePhrase"></tooltip-component>
         </i>
+        <span class="caret"></span>
       </button>
-      <button class="EntityControls-btn btn btn-success" id="saveButton" 
-        @click="save(true)" 
-        v-if="inspector.status.editing"
-        @mouseover="showClarifySave = true"
-        @mouseout="showClarifySave = false">
-        <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="inspector.status.saving"></i>
-        <i class="fa fa-fw fa-check" v-show="!inspector.status.saving">
-          <tooltip-component tooltip-text="Save and stop editing" translation="translatePhrase"
-            :show-tooltip="showClarifySave"></tooltip-component>
-        </i>
-        {{"Done" | translatePhrase}}
-      </button>
-      <button class="EntityControls-btn btn btn-info edit-button" id="editButton" 
-        v-on:click="edit()" 
-        v-show="user.isLoggedIn && !inspector.status.editing && canEditThisType" 
-        @mouseover="showEdit = true" 
-        @mouseout="showEdit = false">
-        <i class="fa fa-fw fa-pencil" v-show="!inspector.status.opening"></i>
-        <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="inspector.status.opening"></i>
-        {{"Edit" | translatePhrase}}
-      </button>
+      <ul class="dropdown-menu Toolbar-menuList" v-show="toolsMenuActive">
+        <li>
+          <a @click="formControl('expand-item')">
+          <i class="fa fa-fw fa-expand" aria-hidden="true"></i>
+          {{"Expand all" | translatePhrase}}
+          </a>
+        </li>
+        <li>
+          <a @click="formControl('collapse-item')">
+          <i class="fa fa-fw fa-compress" aria-hidden="true"></i>
+          {{"Collapse all" | translatePhrase}}
+          </a>
+        </li>
+        <li v-if="user.isLoggedIn && !inspector.status.editing && !isSubClassOf('Item')">
+          <a @click="handleCopy">
+          <i class="fa fa-fw fa-files-o"></i>
+          {{ "Make copy" | translatePhrase }}
+          </a>
+        </li>
+        <li v-if="isSubClassOf('Instance') && hasSigel && !inspector.status.editing && user.email !== ''">
+          <a v-if="downloadIsSupported" @click="getCompiledPost()">
+            <i class="fa fa-fw fa-download" aria-hidden="true"></i>
+              {{"Download compiled MARC21" | translatePhrase}}
+          </a>
+          <a v-if="!downloadIsSupported" :href="compileMARCUrl">
+            <i class="fa fa-fw fa-download" aria-hidden="true"></i>
+              {{"Download compiled MARC21" | translatePhrase}}
+          </a>
+        </li>
+        <li>
+          <marc-preview :openPreview="showMarcPreview" v-on:close-marc="closeMarc()"></marc-preview>
+          <a @click="openMarc" >
+          <i class="fa fa-fw fa-eye" aria-hidden="true"></i>
+          {{"Preview MARC21" | translatePhrase}}
+          </a>
+        </li>
+        <li class="remove-option" v-show="user.isLoggedIn && !status.isNew">
+          <a @click="removePost">
+          <i class="fa fa-fw fa-trash" aria-hidden="true"></i>
+          {{"Remove" | translatePhrase}} {{ recordType | labelByLang }}
+          </a>
+        </li>
+      </ul>
+    </div>
+    
+    <field-adder class="Toolbar-btn"
+      v-if="inspector.status.editing" 
+      :entity-type="editorData[inspector.status.focus]['@type']" 
+      :inner="false" 
+      :allowed="allowedProperties" 
+      :path="inspector.status.focus" 
+      :editing-object="inspector.status.focus"></field-adder>
+    <button class="Toolbar-btn btn btn-default toolbar-button" 
+      :disabled="inspector.changeHistory.length === 0" 
+      v-show="inspector.status.editing" 
+      @click="undo" 
+      @mouseover="showUndo = true" 
+      @mouseout="showUndo = false">
+      <i class="fa fa-undo" aria-hidden="true">
+        <tooltip-component :show-tooltip="showUndo" tooltip-text="Undo" translation="translatePhrase"></tooltip-component>
+      </i>
+    </button>
+    <button class="Toolbar-btn btn btn-info" id="saveButton" 
+      @click="save" 
+      v-if="inspector.status.editing && !status.isNew" 
+      @mouseover="showSave = true" @mouseout="showSave = false">
+      <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="inspector.status.saving"></i>
+      <i class="fa fa-fw fa-save" v-show="!inspector.status.saving">
+        <tooltip-component :show-tooltip="showSave" tooltip-text="Save" translation="translatePhrase"></tooltip-component>
+      </i>
+    </button>
+    <button class="Toolbar-btn btn btn-success" id="saveButton" 
+      @click="save(true)" 
+      v-if="inspector.status.editing"
+      @mouseover="showClarifySave = true"
+      @mouseout="showClarifySave = false">
+      <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="inspector.status.saving"></i>
+      <i class="fa fa-fw fa-check" v-show="!inspector.status.saving">
+        <tooltip-component tooltip-text="Save and stop editing" translation="translatePhrase"
+          :show-tooltip="showClarifySave"></tooltip-component>
+      </i>
+      {{"Done" | translatePhrase}}
+    </button>
+    <button class="EntityControls-btn btn btn-info edit-button" id="editButton" 
+      v-on:click="edit()" 
+      v-show="user.isLoggedIn && !inspector.status.editing && canEditThisType" 
+      @mouseover="showEdit = true" 
+      @mouseout="showEdit = false">
+      <i class="fa fa-fw fa-pencil" v-show="!inspector.status.opening"></i>
+      <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="inspector.status.opening"></i>
+      {{"Edit" | translatePhrase}}
+    </button>
 
   </div>
 </template>
 
 <style lang="less">
 
-@button-active-color: #cecece;
+.Toolbar {
+
+}
 
 .EntityControls {
   flex-direction: row;
@@ -418,9 +419,6 @@ export default {
   }
 
   &-btns {
-    display: flex;
-    align-items: center;
-
     .action {
       display: inline-block;
       cursor: pointer;
