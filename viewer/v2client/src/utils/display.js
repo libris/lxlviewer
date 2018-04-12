@@ -90,7 +90,7 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
   let trueItem = Object.assign({}, item);
 
   if (trueItem.hasOwnProperty('@id') && !trueItem.hasOwnProperty('@type')) {
-    trueItem = DataUtil.getLinked(trueItem['@id'], quoted);
+    trueItem = DataUtil.getEmbellished(trueItem['@id'], quoted);
     if (!trueItem.hasOwnProperty('@type') && trueItem.hasOwnProperty('@id')) {
       return { 'label': StringUtil.removeDomain(trueItem['@id'], settings.removableBaseUris) };
     }

@@ -2,21 +2,22 @@ import * as _ from 'lodash';
 import * as RecordUtil from './record';
 import * as VocabUtil from './vocab';
 
-export function getLinked(id, quotedIndex) {
+export function getEmbellished(id, quotedIndex) {
   if (typeof id === 'undefined' || id === '') {
-    throw new Error('getLinked was called with an undefined or empty Id.');
+    throw new Error('getEmbellished was called with an undefined or empty Id.');
   }
   if (typeof quotedIndex === 'undefined') {
-    throw new Error('getLinked was called without a quotedIndex.');
+    throw new Error('getEmbellished was called without a quotedIndex.');
   }
   // if (id.indexOf('marc:') !== -1) {
   //   graphId = id.replace('marc:', 'https://id.kb.se/marc/');
   //   // console.warn('Tried to find embellished from marc-id. Returning', JSON.stringify(obj));
   // }
-  const obj = quotedIndex[id];
+  let obj = quotedIndex[id];
 
   if (obj == null) {
     window.lxlWarning(`Couldn\'t find entity: ${id}`);
+    obj = {'@id': id};
   }
   if (obj != null && !obj.hasOwnProperty('@type')) {
     window.lxlWarning('Embellished entity has an unknown type (missing @type). ID:', id);

@@ -45,13 +45,13 @@ export default {
   },
   computed: {
     embellishedSelected() {
-      return StringUtil.getLabelFromObject(DataUtil.getLinked(this.selected, this.editorData.quoted), this.settings.language);
+      return StringUtil.getLabelFromObject(DataUtil.getEmbellished(this.selected, this.editorData.quoted), this.settings.language);
     },
     embellishedValues() {
       const emb = {};
       if (!this.isLocked) {
         _.each(this.possibleValues, (id) => {
-          emb[id] = StringUtil.getLabelFromObject(DataUtil.getLinked(id, this.editorData.quoted), this.settings.language);
+          emb[id] = StringUtil.getLabelFromObject(DataUtil.getEmbellished(id, this.editorData.quoted), this.settings.language);
         })
       }
       return emb;

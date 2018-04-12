@@ -67,7 +67,7 @@ export default {
       if (_.isArray(this.item) || !_.isObject(this.item)) {
         throw new Error('Item is not an object.');
       }
-      return DataUtil.getLinked(
+      return DataUtil.getEmbellished(
         this.item['@id'],
         this.editorData.quoted
       );
