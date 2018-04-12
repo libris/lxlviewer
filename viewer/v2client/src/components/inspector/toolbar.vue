@@ -404,6 +404,9 @@ export default {
 
 .Toolbar {
 
+  &-container {
+    z-index: 3;
+  }
 }
 
 .EntityControls {

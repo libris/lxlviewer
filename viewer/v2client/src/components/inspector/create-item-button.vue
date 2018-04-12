@@ -95,10 +95,10 @@ export default {
 </script>
 
 <template>
-  <div class="HoldingActions create-item-button-container">
+  <div class="CreateItem create-item-button-container">
     <!--<form method="POST" action="/edit">-->
       <!--<textarea id="copyItem" name="data" class="hidden">{{itemData | json}}</textarea>-->
-      <button class="btn btn-default HoldingActions-btn"
+      <button class="btn btn-default CreateItem-btn"
         v-if="!hasHolding || checkingHolding" 
         @click="previewHolding()" 
         :disabled="disabled" 
@@ -110,7 +110,7 @@ export default {
         {{"Add holding" | translatePhrase}}
         <span>({{user.settings.activeSigel}})</span>
       </button>
-      <button class="btn btn-default HoldingActions-btn"
+      <button class="btn btn-default CreateItem-btn"
         v-if="hasHolding" 
         :class="{'green': hasHolding, 'disabled': disabled}"  
         :disabled="disabled" 
@@ -126,7 +126,7 @@ export default {
 
 <style lang="less">
 
-.HoldingActions {
+.CreateItem {
   &-btn {
 
   }

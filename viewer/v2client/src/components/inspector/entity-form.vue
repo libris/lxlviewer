@@ -350,8 +350,6 @@ export default {
     cursor: pointer;
     padding: 0.5em;
   }
-  box-shadow: @shadow-base;
-  margin-bottom: 2em;
 
   >ul {
     padding-left: 0px;
@@ -361,7 +359,7 @@ export default {
       display: flex;
       flex-direction: row;
       align-items: center;
-      padding: 5px 0px;
+      padding:  5px 0;
       list-style: none;
       width: 100%;
       box-shadow: none;
