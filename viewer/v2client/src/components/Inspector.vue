@@ -64,6 +64,13 @@ export default {
         this.postLoaded = true;
       });
     },
+    initializeRecord() {
+      if (this.$route.name === 'Inspector') {
+        this.loadDocument();
+      } else {
+        this.loadNewDocument();
+      }
+    },
     loadDocument() {
       this.$store.dispatch('setInspectorStatusValue', { property: 'editing', value: false });
       this.documentId = this.$route.params.fnurgel;
@@ -76,7 +83,7 @@ export default {
           color: 'red', 
           message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)}!` 
         });
-        this.$router.push({ path: `/` });
+        this.$router.push({ path: '/' });
       } else {
         this.$store.dispatch('setInspectorData', RecordUtil.splitJson(insertData));
         this.$store.dispatch('setInspectorStatusValue', { 
@@ -169,6 +176,11 @@ export default {
         this.setTitle();
       }
     },
+    '$route.name'(val, oldVal) {
+      if (val !== oldVal) {
+        this.initializeRecord();
+      }
+    },
     'postLoaded'(val) {
       if (val === true) {
         setTimeout(() => {
@@ -211,11 +223,7 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      if (this.$route.name === 'Inspector') {
-        this.loadDocument();
-      } else {
-        this.loadNewDocument();
-      }
+      this.initializeRecord();
     });
   },
 }

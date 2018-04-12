@@ -178,10 +178,15 @@ export function getItemObject(itemOf, heldBy, instance) {
     quoted: [
       {
         '@graph': [
+          {
+            '@id': itemOf,
+            'mainEntity': {
+              '@id': instance['@id']
+            }
+          },
           instance,
         ],
-        '@id': extractFnurgel(itemOf),
-      },
+      }
     ],
   };
   return itemObj;
