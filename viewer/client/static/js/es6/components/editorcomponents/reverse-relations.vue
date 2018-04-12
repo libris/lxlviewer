@@ -19,6 +19,10 @@ export default {
     }
   },
   methods: {
+    setCheckingRelations(newVal) {
+      console.log('it is working');
+      this.checkingRelations = newVal;
+    },
     getRelationsInfo() {
       let property = '';
       if (this.recordType === 'Instance') {
@@ -57,8 +61,20 @@ export default {
     }
   },
   events: {
-    'set-checking-relations': function(newVal) {
-      this.checkingRelations = newVal;
+    'set-checking-relations'(newData) {
+      console.log('test test');
+    },
+    'new-editordata'(newData) {
+      this.syncData(newData);
+      const atId = newData.record['@id'];
+      if (!atId || atId === 'https://id.kb.se/TEMPID') {
+        this.editItem();
+        history.pushState(newData, 'unused', '/edit');
+      } else {
+        history.replaceState(newData, 'unused', atId);
+        self.vm.changeStatus('inEdit', false);
+        self.vm.changeStatus('isNew', false);
+      }
     },
   },
   components: {
@@ -75,9 +91,10 @@ export default {
       }
     },
   },
-  ready() { // Ready method is deprecated in 2.0, switch to "mounted"
+  mounted() { // Ready method is deprecated in 2.0, switch to "mounted"
     this.$nextTick(() => {
       this.getRelationsInfo();
+      
     });
   },
 };
@@ -86,15 +103,24 @@ export default {
 <template>
   <div class="reverse-relations">
     <div v-if="recordType === 'Work'">
-      <div class="relations-number">{{ "Instantiations" | translatePhrase }}: {{numberOfRelations}}</div>
-      <instance-list-button :checking-instances="checkingRelations" :instance-list="relationInfo"></instance-list-button>
+      <div class="relations-number">
+        {{ "Instantiations" | translatePhrase }}: {{numberOfRelations}}
+      </div>
+      <instance-list-button 
+        :checking-instances="checkingRelations" 
+        :instance-list="relationInfo"></instance-list-button>
     </div>
     <div v-if="recordType === 'Instance'">
       <div class="relations-number">
         <i class="fa fa-university" aria-hidden="true"></i>
         {{ "Libraries" | translatePhrase }}: {{numberOfRelations}}
       </div>
-      <create-item-button v-if="user.getPermissions().registrant" :disabled="inspector.status.editing" :has-holding="hasRelation" :checking-holding="checkingRelations" :holding-id="relationPath"></create-item-button>
+      <create-item-button 
+        v-if="user.getPermissions().registrant" 
+        :disabled="inspector.status.editing" 
+        :has-holding="hasRelation" 
+        :checking-holding="checkingRelations" 
+        :holding-id="relationPath"></create-item-button>
     </div>
   </div>
 </template>

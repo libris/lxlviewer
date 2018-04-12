@@ -4,6 +4,7 @@ import * as StringUtil from '../../utils/string';
 import * as RecordUtil from '../../utils/record';
 import * as HttpUtil from '../../utils/http';
 import { mapGetters } from 'vuex';
+import Modernizr from '@/../.modernizrrc.js';
 
 export default {
   name: 'create-item-button',
@@ -18,30 +19,51 @@ export default {
       itemData: {},
     }
   },
+  events: {
+  },
   methods: {
     buildItem() {
-      const embellishedReference = DisplayUtil.getCard(this.editorData.mainEntity, this.display, this.editorData.quoted, this.vocab, this.settings, this.context);
-      embellishedReference['@id'] = this.editorData.mainEntity['@id'];
+      const embellishedReference = DisplayUtil.getCard(
+        this.inspector.data.mainEntity, 
+        this.resources.display, 
+        this.inspector.data.quoted, 
+        this.resources.vocab, 
+        this.settings, 
+        this.resources.context);
+      embellishedReference['@id'] = this.inspector.data.mainEntity['@id'];
 
       this.itemData = RecordUtil.getItemObject(
-        this.editorData.mainEntity['@id'],
+        this.inspector.data.mainEntity['@id'],
         `https://libris.kb.se/library/${this.user.settings.activeSigel}`,
         embellishedReference
       );
-      this.$dispatch('set-checking-relations', false);
+
+      this.$parent.setCheckingRelations(false);
     },
     fetchHolding() {
-      HttpUtil.get({ url: this.holdingId[0], accept: 'application/ld+json' }).then((getResult) => {
+      HttpUtil.get({ 
+        url: this.holdingId[0], 
+        accept: 'application/ld+json' }).then((getResult) => {
         const newData = RecordUtil.splitJson(getResult);
         if (Modernizr.history) {
           history.pushState(newData, 'unused', `${this.holdingId[0]}/edit`);
-          this.$dispatch('new-editordata', newData);
+          
+          this.$store.dispatch('updateInspectorData', { 
+            property: 'new-editordata', 
+            value: newData
+          });
+          //this.$dispatch('new-editordata', newData);
         } else if (result.status === 201) {
           window.location = result.getResponseHeader('Location');
         } else {
           this.syncData(newData);
         }
-        this.changeStatus('inEdit', false);
+
+        this.$store.dispatch('setStatusValue', { 
+          property: 'inEdit', 
+          value: false
+        });
+
       }, (error) => {
         this.changeNotification('color', 'red');
         this.changeNotification('message', `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error}`);
@@ -49,8 +71,15 @@ export default {
     },
     previewHolding() {
       if (Modernizr.history) {
-        this.changeStatus('isNew', true);
-        this.$dispatch('new-editordata', this.itemData);
+        this.$store.dispatch('setStatusValue', { 
+          property: 'isNew', 
+          value: true 
+        });
+        this.$store.dispatch('updateInspectorData', { 
+          property: 'new-editordata', 
+          value: newData
+        });
+        //this.$dispatch('new-editordata', this.itemData);
       }
     }
   },
@@ -65,7 +94,7 @@ export default {
   },
   components: {
   },
-  ready() { // Ready method is deprecated in 2.0, switch to "mounted"
+  mounted() { // Ready method is deprecated in 2.0, switch to "mounted"
     this.$nextTick(() => {
       this.buildItem();
     });
@@ -74,17 +103,28 @@ export default {
 </script>
 
 <template>
-  <div class="create-item-button-container">
+  <div class="HoldingActions create-item-button-container">
     <!--<form method="POST" action="/edit">-->
       <!--<textarea id="copyItem" name="data" class="hidden">{{itemData | json}}</textarea>-->
-      <button v-if="!hasHolding || checkingHolding" @click="previewHolding()" :disabled="disabled" class="btn" :class=" {'disabled': disabled} ">
-        <i v-if="!hasHolding && !checkingHolding" class="fa fa-plus"></i>
-        <i v-if="checkingHolding" class="fa fa-fw fa-circle-o-notch fa-spin"></i>
+      <button class="btn btn-default HoldingActions-btn"
+        v-if="!hasHolding || checkingHolding" 
+        @click="previewHolding()" 
+        :disabled="disabled" 
+        :class=" {'disabled': disabled} ">
+        <i class="fa fa-plus"
+          v-if="!hasHolding && !checkingHolding"></i>
+        <i class="fa fa-fw fa-circle-o-notch fa-spin"
+          v-if="checkingHolding"></i>
         {{"Add holding" | translatePhrase}}
         <span>({{user.settings.activeSigel}})</span>
       </button>
-      <button v-if="hasHolding" :class="{'green': hasHolding, 'disabled': disabled}" class="btn" :disabled="disabled" @click.prevent="fetchHolding()">
-        <i v-if="hasHolding && !checkingHolding" class="fa fa-check"></i>
+      <button class="btn btn-default HoldingActions-btn"
+        v-if="hasHolding" 
+        :class="{'green': hasHolding, 'disabled': disabled}"  
+        :disabled="disabled" 
+        @click.prevent="fetchHolding()">
+        <i class="fa fa-check"
+          v-if="hasHolding && !checkingHolding"></i>
         {{"Show holding" | translatePhrase}}
         <span>({{user.settings.activeSigel}})</span>
       </button>
@@ -93,27 +133,11 @@ export default {
 </template>
 
 <style lang="less">
-.create-item-button-container{
-  button {
-    height: 2.2em;
-    color: @white !important;
-    background: @holding-color;
-    &.green {
-      background: #4cba2a;
-      &:hover, &:active {
-        background: #4cba2a;
-      }
-    }
-    &:hover {
-      background: lighten(@holding-color, 5%);
-    }
-    &:active {
-      background: darken(@holding-color, 5%);
-    }
-    &.disabled {
-      opacity: 0.5;
-    }
-  }
 
+.HoldingActions {
+  &-btn {
+
+  }
 }
+
 </style>

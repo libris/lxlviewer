@@ -20,6 +20,9 @@ export default {
     }
   },
   methods: {
+    setCheckingRelations(newVal) {
+      this.checkingRelations = newVal;
+    },
     getRelationsInfo() {
       let property = '';
       if (this.recordType === 'Instance') {
@@ -65,9 +68,6 @@ export default {
     }
   },
   events: {
-    'set-checking-relations': function(newVal) {
-      this.checkingRelations = newVal;
-    },
   },
   components: {
     'create-item-button': CreateItemButton,
@@ -83,7 +83,7 @@ export default {
       }
     },
   },
-  ready() { // Ready method is deprecated in 2.0, switch to "mounted"
+  mounted() { // Ready method is deprecated in 2.0, switch to "mounted"
     this.$nextTick(() => {
       this.getRelationsInfo();
     });
@@ -92,7 +92,7 @@ export default {
 </script>
 
 <template>
-  <div class="ReverseRelations">
+  <div class="ReverseRelations" v-on:set-checking-relations="setCheckingRelations()">
     <div v-if="recordType === 'Work'" class="ReverseRelations-number">
       <span class="ReverseRelations-label">
         {{ "Instantiations" | translatePhrase }}: {{numberOfRelations}}
@@ -124,6 +124,10 @@ export default {
     float: right;
     font-weight: 700;
     text-align: right;
+  }
+
+  &-button {
+    margin: 5px 0 10px;
   }
 }
 
