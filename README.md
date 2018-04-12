@@ -19,16 +19,24 @@ Requires the following to be installed on the host machine:
 
 ## Setup
 
+    $ cp instance/config.cfg.in instance/config.cfg
+
+Get variables from a developer at KB for `config.cfg`.
+
     $ cd viewer/v2client && npm install
 
     $ cp config/api_config.json.in config/api_config.json
 
-In `api_config.json`, input the path to your REST-API (if not standard).
+
+In `api_config.json`, input the path to your REST-API (if not standard) and auth URL.
 
 
 ## Building
 
 ```
+# run build and then serve with hot reload at localhost:8080
+$ npm run start
+
 # serve with hot reload at localhost:8080
 $ npm run dev
 

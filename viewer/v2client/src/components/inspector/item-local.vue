@@ -392,7 +392,7 @@ export default {
         </div>
       </div>
   
-      <div class="js-itemLocalFields ItemLocal-fieldContainer">      
+      <ul class="js-itemLocalFields ItemLocal-fieldContainer">      
         <field-adder 
           v-if="!isLocked && isEmpty" 
           :entity-type="item['@type']" 
@@ -414,7 +414,7 @@ export default {
           :field-value="v" 
           :key="k" 
           :show-action-buttons="showActionButtons"></field>
-      </div>
+      </ul>
        
     <search-window 
       :active="extractDialogActive" 

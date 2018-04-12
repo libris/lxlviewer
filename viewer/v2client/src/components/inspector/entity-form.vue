@@ -252,9 +252,9 @@ export default {
   <div class="EntityForm well form-component focused-form-component" 
     :class="{ 'locked is-locked': isLocked }" 
     v-show="isActive">
-    <div class="EntityForm-container field-container" 
+    <ul class="FieldList" 
       v-bind:class="{'collapsed': collapsed }">
-      <field
+      <field class="FieldList-item"
         v-for="(v,k) in sortedFormData" 
         v-bind:class="{ 'locked': isLocked }" 
         :entity-type="inspector.data[editingObject]['@type']" 
@@ -277,7 +277,7 @@ export default {
         </pre>
         </div>
       </div>
-    </div>
+    </ul>
   </div>
 </template>
 
@@ -320,7 +320,7 @@ export default {
   margin: 20px 0 0;
   padding: 0;
 
-  &-container {
+  &-fieldList {
     padding: 0;
     border-width: 1px 0px 0px 0px;
     transition: 2s ease max-height;
@@ -329,40 +329,6 @@ export default {
 
 .form-component {
   .form-label {
-    color: @white;
-    display: flex;
-    justify-content: space-between;
-    border-width: 0px 0px 1px 0px;
-    > span {
-      &.left-column {
-        flex: 0 0 40%;
-        display: flex;
-        align-items: center;
-        justify-content: flex-start;
-        padding: 0 1em;
-      }
-      &.middle-column {
-        flex: 0 0 20%;
-        text-align: center;
-        // text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.4);
-      }
-      &.right-column {
-        flex: 0 0 40%;
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-        padding: 0 1em;
-        code {
-          color: #fff;
-          padding: 0em 0.5em;
-          background-color: rgba(0, 0, 0, 0.2);
-        }
-      }
-    }
-    .type-label {
-      font-size: 1.2em;
-      font-weight: bold;
-    }
     .new-indicator {
       font-size: 1em;
     }
@@ -386,11 +352,6 @@ export default {
   }
   box-shadow: @shadow-base;
   margin-bottom: 2em;
-  &.locked {
-    > ul > li {
-      margin: 0px;
-    }
-  }
 
   >ul {
     padding-left: 0px;
@@ -413,10 +374,6 @@ export default {
       }
 
     }
-  }
-  .node-local {
-    width: 420px;
-    clear: left;
   }
 }
 
