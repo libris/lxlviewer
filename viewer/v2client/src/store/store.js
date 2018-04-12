@@ -4,6 +4,7 @@ Vue.use(Vuex);
 import * as _ from 'lodash';
 import * as VocabUtil from '@/utils/vocab';
 import * as StringUtil from '@/utils/string';
+import * as User from '@/models/user';
 import { navigateChangeHistory } from '../../../client/static/js/es6/vuex/actions.es6';
 
 const store = new Vuex.Store({
@@ -208,6 +209,10 @@ const store = new Vuex.Store({
       state.user = userObj;
       state.user.saveSettings();
     },
+    logoutUser(state) {
+      localStorage.removeItem('at');
+      state.user = User.getUserObject();
+    },
     setSettings(state, settingsObj) {
       state.settings = settingsObj;
     },
@@ -299,6 +304,9 @@ const store = new Vuex.Store({
     },
     setUser({ commit }, userObj) {
       commit('setUser', userObj);
+    },
+    logoutUser({ commit }) {
+      commit('logoutUser');
     },
     setSettings({ commit }, settingsObj) {
       commit('setSettings', settingsObj);

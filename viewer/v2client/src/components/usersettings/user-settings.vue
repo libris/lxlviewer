@@ -30,7 +30,12 @@ export default {
       const userObj = this.user;
       userObj.settings.appTech = e.target.checked;
       this.setUser(userObj);
-    }
+    },
+    logout() {
+      this.$store.dispatch('logoutUser');
+      this.$store.dispatch('pushNotification', { color: 'green', message: `${StringUtil.getUiPhraseByLang('You were logged out', this.settings.language)}!` });
+      this.$router.push({ path: '/' });
+    },
   },
   computed: {
     user() {
@@ -109,7 +114,7 @@ export default {
           </div>
 
         </form>
-        <a class="btn btn-block btn-info UserSettings-logout" href="/logout">Logga ut</a>
+        <button class="btn btn-block btn-info UserSettings-logout" @click="logout">Logga ut</button>
       </div>
     </div>
   </section>
