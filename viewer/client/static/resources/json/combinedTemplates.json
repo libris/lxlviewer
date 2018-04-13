@@ -342,18 +342,15 @@
           "lifeSpan": "",
           "birthDate": "",
           "deathDate": "",
-          "exactMatch": [{
-            "@type": "Person",
-            "familyName": "",
-            "givenName": "",
-            "name": "",
-            "lifeSpan": ""
-          }],
           "identifiedBy": [{
             "@type": "Identifier",
             "typeNote": "isni",
             "value": ""
           }],
+          "hasVariant": [],
+          "seeAlso": [],
+          "fieldOfActivity": [],
+          "hasOccupation": [],
           "nationality": [{
             "@id": "https://id.kb.se/nationality/e-sw---",
             "code": "e-sw---"
@@ -364,7 +361,7 @@
     "organization": {
       "label": "Organisation",
       "description": "Agent",
-      "value": {
+      "value":  {
         "record": {
           "@type": "Record",
           "descriptionConventions": [{
@@ -401,15 +398,17 @@
           "name": "",
           "activityStartDate": "",
           "activityEndDate": "",
-          "hasHistoricalData": [{
-            "@type": "AdministrativeHistoryNote",
-            "label": ""
-          }],
           "identifiedBy": [{
             "@type": "Identifier",
             "typeNote": "isni",
             "value": ""
           }],
+          "hasHistoricalData": [{
+            "@type": "AdministrativeHistoryNote",
+            "label": ""
+          }],
+          "hasVariant": [],
+          "seeAlso": [],
           "nationality": [{
             "@id": "https://id.kb.se/nationality/e-sw---",
             "code": "e-sw---"
