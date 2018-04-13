@@ -503,60 +503,31 @@ export default {
 <style lang="less">
 
 .Field {
-  border-bottom: 1px solid #d8d8d8;
+  border: 2px solid transparent;
+  border-bottom: 2px solid #d8d8d8;
   width: 100%;
   display: flex;
   flex-direction: row;
-  transition: 6s ease-in;
-  transition-property: outline, box-shadow;
   max-height: 400vh;
   opacity: 1;
   position: relative;
 
-  &:before {
-    content: "";
-    position: absolute;
-    left: 0;
-    right: 0;
-    width: 0;
-    bottom: 0;
-    background: fade(@brand-primary, 50%);
-    height: 100%;
-    transition-property: width;
-    transition-duration: 0.25s;
-    transition-timing-function: ease-out;
-    z-index: 1;
-  }
-
-  &.is-affected:before {
-    width: 100%;
+  &.is-affected {
+    border: 2px solid @brand-primary;
   }
 
   &--inner {
-    border: 0;
+    border: 2px solid transparent;
     flex: 1 100%;
     margin: 10px 0;
     overflow: visible;
     max-height: auto;
     display: inline-block;
 
-    &:before {
-      content: "";
-      position: absolute;
-      left: -5px;
-      right: -10px;
-      width: 0;
-      bottom: 0;
-      background: fade(@brand-primary, 50%);
-      height: 100%;
-      transition-property: width;
-      transition-duration: 0.25s;
-      transition-timing-function: ease-out;
-      z-index: 1;
-    }
-
-    &.is-affected:before {
-      width: 101.5%;
+    &.is-affected {
+      border: 2px solid @brand-primary;
+      padding: 5px;
+      margin: 5px -5px 5px -5px;
     }
   }
 
@@ -571,7 +542,6 @@ export default {
     font-size: 1.6rem;
     line-height: 1.4;
     position: relative;
-    z-index: 1;
 
     .Field--inner & {
       flex: 1 100%;
@@ -661,7 +631,6 @@ export default {
     line-height: 1;
     margin: 10px 0 0;
     position: relative;
-    z-index: 2;
 
     .disabled {
       visibility: hidden;

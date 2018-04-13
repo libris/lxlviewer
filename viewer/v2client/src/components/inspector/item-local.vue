@@ -436,24 +436,11 @@ export default {
 <style lang="less">
 
 .ItemLocal {
-  padding: 0 0 0 0px;
+  padding: 5px;
   position: relative;
   flex: 1 100%;
+  border: 2px solid transparent;
 
-  &:after {
-    content: "";
-    position: absolute;
-    left: -5px;
-    right: -10px;
-    width: 0;
-    bottom: 0;
-    background: fade(@brand-primary, 50%);
-    height: 100%;
-    transition-property: width;
-    transition-duration: 0.25s;
-    transition-timing-function: ease-out;
-    z-index: 1;
-  }
 
   &-heading {
     position: relative;
@@ -481,7 +468,6 @@ export default {
   &-actions {
     float: right;
     position: relative;
-    z-index: 2;
   }
 
   &-action {
@@ -498,8 +484,9 @@ export default {
     }
   }
 
-  &.is-affected:after {
-    width: 101.5%;
+  &.is-affected {
+    border: 2px solid @brand-primary;
+
   }
 
 }

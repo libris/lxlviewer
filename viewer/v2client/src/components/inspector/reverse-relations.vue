@@ -92,12 +92,12 @@ export default {
 </script>
 
 <template>
-  <div class="ReverseRelations" v-on:set-checking-relations="setCheckingRelations()">
+  <div class="ReverseRelations">
     <div v-if="recordType === 'Work'" class="ReverseRelations-number">
       <span class="ReverseRelations-label">
         {{ "Instantiations" | translatePhrase }}: {{numberOfRelations}}
       </span>
-      <instance-list-button v-if="!inspector.status.editing" class="ReverseRelations-button"
+      <instance-list-button v-if="!inspector.status.editing && this.numberOfRelations > 0" class="ReverseRelations-button"
         :checking-instances="checkingRelations" 
         :instance-list="relationInfo"></instance-list-button>
     </div>

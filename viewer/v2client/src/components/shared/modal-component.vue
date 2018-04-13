@@ -158,6 +158,7 @@ export default {
   &-body {
     overflow-y: auto;
     height: 100%;
+    z-index: 5;
   }
   &-windowControl {
     i:hover {

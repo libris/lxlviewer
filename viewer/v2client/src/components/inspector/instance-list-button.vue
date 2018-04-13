@@ -58,17 +58,17 @@ export default {
       return true;
     },
   },
-  ready() { // Ready method is deprecated in 2.0, switch to "mounted"
+  mounted() { // Ready method is deprecated in 2.0, switch to "mounted"
     this.$nextTick(() => {
+      console.log(this.instanceList);
     });
   },
 };
 </script>
 
 <template>
-  <div class="instances-button-container">
-    <button class="btn btn-primary" @click="show()">
-      <i v-if="checkingHolding" class="fa fa-fw fa-circle-o-notch fa-spin"></i>
+  <div class="InstancesList instances-button-container">
+    <button class="InstancesList-btn btn btn-primary" @click="show()">
       {{"Show instantiations" | translatePhrase}}
     </button>
     <div class="window" v-if="showInstances">
@@ -81,8 +81,14 @@ export default {
         </span>
       </div>
       <div class="body">
-        <a v-for="(instance, index) in embellishedInstanceList" :href="instance.record['@id']" :key="index">
-          <entity-summary :focus-data="instance.mainEntity" :add-link="true" :lines="4"></entity-summary>
+        <a 
+          v-for="(instance, index) in embellishedInstanceList" 
+          :href="instance.record['@id']" 
+          :key="index">
+          <entity-summary 
+            :focus-data="instance.mainEntity" 
+            :add-link="true" 
+            :lines="4"></entity-summary>
         </a>
       </div>
     </div>
@@ -91,10 +97,11 @@ export default {
 
 <style lang="less">
 
+.InstancesList {
+
+}
 .instances-button-container {
-  button {
-    font-weight: bold;
-  }
+
   .window {
     .body {
       width: 100%;

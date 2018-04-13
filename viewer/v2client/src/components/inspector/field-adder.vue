@@ -349,120 +349,105 @@ export default {
 
   }
 }
-.field-adder {
-  .field-adder-bar {
-    cursor: pointer;
-    text-align: center;
-    padding: 0 0.5em;
-  }
-  >a {
-    cursor: pointer;
-  }
-  .at-bottom {
-    &:after {
-      opacity: 0;
-      transition: all 0.5s ease;
+
+.FieldAdderModal {
+  &-filter {
+    input {
+      height: 100%;
+      color: #333;
+      border-radius: 3px;
+      border: none;
     }
   }
 
-  .FieldAdderModal {
-    &-filter {
-      input {
-        height: 100%;
-        color: #333;
-        border-radius: 3px;
-        border: none;
-      }
-    }
-    &-body {
-      display: flex;
-      flex-direction: column;
-    }
-    &-columnHeaders {
-      background-color: @white;
-      position: fixed;
-      z-index: 1;
-      width: 100%;
-      border: solid @gray;
-      border-width: 0px 0px 1px 0px;
-      > * {
-        display: inline-block;
-      }
-    }
-    &-fieldLabel {
+  &-body {
+    display: flex;
+    flex-direction: column;
+  }
+  &-columnHeaders {
+    background-color: @white;
+    position: fixed;
+    z-index: 1;
+    width: 100%;
+    border: solid @gray;
+    border-width: 0px 0px 1px 0px;
+    > * {
       display: inline-block;
-      width: 45%;
-      font-size: 16px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      margin: 5px 0 0;
-      .typeLabel {
-        display: block;
-        font-size: 85%;
-        font-family: monospace;
-      }
     }
-    &-classInfo {
-      display: inline-block;
-      width: 40%;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+  }
+  &-fieldLabel {
+    display: inline-block;
+    width: 45%;
+    font-size: 16px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 5px 0 0;
+    .typeLabel {
+      display: block;
       font-size: 85%;
+      font-family: monospace;
     }
-    &-addControl {
-      float: left;
-      width: 8%;
-      text-align: center;
-      a {
-        cursor: pointer;
-      }
-      span {
-        display: none;
-      }
+  }
+  &-classInfo {
+    display: inline-block;
+    width: 40%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 85%;
+  }
+  &-addControl {
+    float: left;
+    width: 8%;
+    text-align: center;
+    a {
+      cursor: pointer;
     }
-    &-fieldList {
-      padding-top: 2em;
-      padding-bottom: 3em;
-      ul {
-        border-radius: 0px 0px 3px 3px;
-        padding-left: 0px;
-        width: 100%;
+    span {
+      display: none;
+    }
+  }
+  &-fieldList {
+    padding-top: 2em;
+    padding-bottom: 3em;
+    ul {
+      border-radius: 0px 0px 3px 3px;
+      padding-left: 0px;
+      width: 100%;
+      margin: 0px;
+      list-style-type: none;
+      li {
+        &:nth-child(odd) {
+          background-color: darken(@neutral-color, 5%);
+        }
+        &.available {
+          cursor: pointer;
+          &.selected {
+            outline: solid 1px @brand-primary;
+            background-color: fadeout(@brand-primary, 70%);
+          }
+        }
+        &.added {
+          &.selected {
+            background-color: @gray-light;
+          }
+        }
         margin: 0px;
-        list-style-type: none;
-        li {
-          &:nth-child(odd) {
-            background-color: darken(@neutral-color, 5%);
+        padding: 1em 0;
+        line-height: 1.3;
+        display: flex;
+        align-items: center;
+        &.added {
+          span {
+            opacity: 0.6;
           }
-          &.available {
-            cursor: pointer;
-            &.selected {
-              outline: solid 1px @brand-primary;
-              background-color: fadeout(@brand-primary, 70%);
+          .addControl {
+            a {
+              display: none;
             }
-          }
-          &.added {
-            &.selected {
-              background-color: @gray-light;
-            }
-          }
-          margin: 0px;
-          padding: 1em 0;
-          line-height: 1.3;
-          display: flex;
-          align-items: center;
-          &.added {
             span {
-              opacity: 0.6;
-            }
-            .addControl {
-              a {
-                display: none;
-              }
-              span {
-                display: block;
-              }
+              display: block;
             }
           }
         }
@@ -470,5 +455,4 @@ export default {
     }
   }
 }
-
 </style>
