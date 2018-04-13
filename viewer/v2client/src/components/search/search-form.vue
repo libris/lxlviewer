@@ -215,9 +215,11 @@ export default {
     this.$nextTick(() => {
       if (this.searchPerimeter === 'libris') {
         document.querySelector('.js-qsmartInput').children[this.inputData.currentInput].focus();
+        if (this.$route.fullPath === '/') {
+          this.inputData.ids = ["Instance"];
+        }
       }
-
-      console.log(this.inputData.ids);
+    
     });
   },
 };
@@ -307,7 +309,6 @@ export default {
           :key="filter['@id']">{{ filter.label }}
           <input type="checkbox" class="Searchbar-typeInput"
             :id="filter['@id']"
-            :checked="filter['@id'] === 'Instance'" 
             v-model="inputData.ids"
             :value="filter['@id']">
         </label>        
