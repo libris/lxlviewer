@@ -73,7 +73,7 @@ export default {
       }
       return DataUtil.getEmbellished(
         this.item['@id'],
-        this.editorData.quoted
+        this.inspector.data.quoted
       );
     },
   },

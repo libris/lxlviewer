@@ -29,9 +29,9 @@ export function getMergedItems(record, mainEntity, work, quoted) {
   if (!_.isEmpty(work)) {
     obj['@graph'].push(work);
   }
-  for (const graph of quoted) {
-    obj['@graph'].push(graph);
-  }
+  // for (const graph in quoted) {
+  //   obj['@graph'].push(quoted[graph]);
+  // }
   return obj;
 }
 

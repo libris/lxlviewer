@@ -84,6 +84,7 @@ export default {
       httpUtil.post({ 
         url: `${apiPath}/_convert`,
         accept: 'application/x-marc-json',
+        token: this.user.token,
       }, editorObj).then((result) => {
         this.marcObj = result;
         this.dataLoaded = true;
@@ -129,8 +130,8 @@ export default {
     <template slot="modal-body">
       <div class="MarcPreview">
         <div class="MarcPreview-body">
-          <div class="MarcPreview-status">
-            <p v-show="!dataLoaded && !error" >
+          <div class="MarcPreview-status" v-show="!dataLoaded">
+            <p v-show="!error" >
               {{ "Loading marc" | translatePhrase }}...<br>
               <i class="fa fa-circle-o-notch fa-spin"></i>
             </p>
@@ -147,6 +148,12 @@ export default {
               <th>Subfield data</th>
             </thead>
             <tbody>
+              <tr>
+                <td>000</td>
+                <td></td>
+                <td></td>
+                <td>{{ marcObj.leader }}</td>
+              </tr>
               <tr v-for="(field, index) in marcObj.fields" :key="index">
                 <td>{{ getKeys(field)[0] }}</td>
                 <td>{{ getValue(field)['ind1'] }}</td>
