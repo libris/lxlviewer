@@ -1,0 +1,54 @@
+<script>
+
+export default {
+  name: 'global-message',
+  computed: {
+    user() {
+      return this.$store.getters.user;
+    },
+    settings() {
+      return this.$store.getters.settings;
+    },
+    message() {
+      let message = '';
+      switch(this.settings.environment) {
+        case 'dev':
+          message = 'Du befinner dig nu i vår utvecklingsmiljö. Använd <a href="https://libris-qa.kb.se/katalogisering">libris-qa.kb.se/katalogisering</a> om du vill testa funktionalitet i en stabilare miljö';
+        break;
+        case '':
+        break;
+        case 'stg':
+        break;
+        case 'qa':
+        break;
+        case 'local':
+        break;
+      }
+      return message;
+    },
+  }
+}
+</script>
+
+<template>
+  <div class="GlobalMessage" v-html="message" v-if="message && message.length > 0">
+  </div>
+</template>
+
+
+<style lang="less">
+.GlobalMessage {
+  text-align: center;
+  color: white;
+  text-shadow: 0px 1px 1px #00000054;
+  font-weight: bold;
+  background-color: @bib-color;
+  border: 1px solid darken(@bib-color, 5%);
+  border-width: 0px 0px 1px 0px;
+  a {
+    color: white;
+  }
+}
+
+
+</style>

@@ -7,6 +7,21 @@ import * as StringUtil from '@/utils/string';
 import * as User from '@/models/user';
 import { navigateChangeHistory } from '../../../client/static/js/es6/vuex/actions.es6';
 
+function getEnvironment() {
+  switch(window.location.host.split('.')[0]) {
+    case 'libris-dev':
+      return 'dev';
+    case 'localhost:8080':
+      return 'local'
+    case 'libris-qa':
+      return 'qa';
+    case 'libris-stg':
+      return 'stg';
+    default:
+      return ''
+  }
+}
+
 const store = new Vuex.Store({
   state: {
     resources: {
@@ -50,7 +65,7 @@ const store = new Vuex.Store({
       title: 'Libris Katalogisering',
       language: 'sv',
       vocabPfx: 'https://id.kb.se/vocab/',
-      environment: process.env.NODE_ENV,
+      environment: getEnvironment(),
       version: process.env.VERSION,
       apiPath: process.env.API_PATH,
       authPath: process.env.AUTH_PATH,
