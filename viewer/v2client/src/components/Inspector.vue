@@ -266,8 +266,12 @@ export default {
                 v-if="!inspector.status.isNew"></reverse-relations>
             </div>
             
-            <entity-header id="main-header" :full="true" v-if="!isItem"></entity-header>
-            <entity-form :editing-object="inspector.status.focus" :locked="!inspector.status.editing"></entity-form>
+            <entity-header id="main-header" 
+              :full="true" 
+              v-if="!isItem"></entity-header>
+            <entity-form 
+              :editing-object="inspector.status.focus" 
+              :locked="!inspector.status.editing"></entity-form>
             <code v-if="user.settings.appTech">
               {{result}}
             </code>

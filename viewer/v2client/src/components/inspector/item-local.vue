@@ -153,9 +153,6 @@ export default {
       return sortedAllowed;
     },
   },
-  created() {
-    // this.$options.components['field'] = Vue.extend(Field);
-  },
   methods: {
     highlightItem(event) {
       let item = event.target;
@@ -290,6 +287,15 @@ export default {
       this.focused = false;
     },
   },
+  watch: {
+    'inspector.event'(val, oldVal) {
+      this.$emit(`${val.value}`);
+    }
+  },
+  created: function () {
+    this.$on('collapse-item', this.collapse);
+    this.$on('expand-item', this.expand);
+  },
   events: {
     'focus-new-item'(index) {
       if (this.index === index) {
@@ -309,14 +315,6 @@ export default {
     'set-copy-title'(bool) {
       this.copyTitle = bool;
     },
-    'expand-item'() {
-      this.expand();
-      return true;
-    },
-    'collapse-item'() {
-      this.collapse();
-      return true;
-    },
     'extract-item'() {
       this.extracting = true;
       this.doExtract();
@@ -328,7 +326,6 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-     
     });
   },
  
@@ -344,7 +341,7 @@ export default {
 </script>
 
 <template>
-  <div class="ItemLocal js-itemLocal" 
+  <div class="ItemLocal js-itemLocal"
     tabindex="0"
     @keyup.enter="toggleExpanded()"
     :class="{'highlight': isNewlyAdded, 'is-expanded': expanded}">
@@ -437,10 +434,10 @@ export default {
 
 .ItemLocal {
   padding: 5px;
+  margin: -5px;
   position: relative;
   flex: 1 100%;
   border: 2px solid transparent;
-
 
   &-heading {
     position: relative;

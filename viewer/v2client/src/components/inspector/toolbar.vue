@@ -65,13 +65,15 @@ export default {
     },
     showToolsMenu() {
       this.toolsMenuActive = true;
-      console.log(this.toolsMenuActive);
     },
     getOtherDataFormat(suffix) {
       return `${this.focusData['@id']}/data.${suffix}`
     },
     formControl(control) {
-      this.$dispatch('form-control', control);
+      this.$store.dispatch('pushInspectorEvent', { 
+        name: 'form-control', 
+        value: control 
+      });
     },
     toggleEditorFocus() {
       if (this.inspector.status.focus === 'record') {
@@ -307,42 +309,42 @@ export default {
       </button>
       <ul class="dropdown-menu Toolbar-menuList ToolsMenu-menu" v-show="toolsMenuActive">
         <li>
-          <a @click="formControl('expand-item')">
+          <a class="Toolbar-menuLink" @click="formControl('expand-item')">
           <i class="fa fa-fw fa-expand" aria-hidden="true"></i>
           {{"Expand all" | translatePhrase}}
           </a>
         </li>
         <li>
-          <a @click="formControl('collapse-item')">
+          <a class="Toolbar-menuLink"  @click="formControl('collapse-item')">
           <i class="fa fa-fw fa-compress" aria-hidden="true"></i>
           {{"Collapse all" | translatePhrase}}
           </a>
         </li>
         <li v-if="user.isLoggedIn && !inspector.status.editing && !isSubClassOf('Item')">
-          <a @click="handleCopy">
+          <a class="Toolbar-menuLink"   @click="handleCopy">
           <i class="fa fa-fw fa-files-o"></i>
           {{ "Make copy" | translatePhrase }}
           </a>
         </li>
         <li v-if="isSubClassOf('Instance') && hasSigel && !inspector.status.editing && user.email !== ''">
-          <a v-if="downloadIsSupported" @click="getCompiledPost()">
+          <a class="Toolbar-menuLink"  v-if="downloadIsSupported" @click="getCompiledPost()">
             <i class="fa fa-fw fa-download" aria-hidden="true"></i>
               {{"Download compiled MARC21" | translatePhrase}}
           </a>
-          <a v-if="!downloadIsSupported" :href="compileMARCUrl">
+          <a class="Toolbar-menuLink"  v-if="!downloadIsSupported" :href="compileMARCUrl">
             <i class="fa fa-fw fa-download" aria-hidden="true"></i>
               {{"Download compiled MARC21" | translatePhrase}}
           </a>
         </li>
         <li>
           <marc-preview :openPreview="showMarcPreview" v-on:close-marc="closeMarc()"></marc-preview>
-          <a @click="openMarc" >
+          <a class="Toolbar-menuLink"   @click="openMarc" >
           <i class="fa fa-fw fa-eye" aria-hidden="true"></i>
           {{"Preview MARC21" | translatePhrase}}
           </a>
         </li>
         <li class="remove-option" v-show="user.isLoggedIn && !status.isNew">
-          <a @click="removePost">
+          <a class="Toolbar-menuLink"   @click="removePost">
           <i class="fa fa-fw fa-trash" aria-hidden="true"></i>
           {{"Remove" | translatePhrase}} {{ recordType | labelByLang }}
           </a>
@@ -395,7 +397,8 @@ export default {
       @mouseout="showEdit = false">
       <i class="fa fa-fw fa-pencil" v-show="!inspector.status.opening"></i>
       <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="inspector.status.opening"></i>
-      {{"Edit" | translatePhrase}}
+      <tooltip-component tooltip-text="Edit" translation="translatePhrase"
+          :show-tooltip="showEdit"></tooltip-component>
     </button>
 
   </div>
@@ -407,6 +410,10 @@ export default {
 
   &-container {
     z-index: 3;
+  }
+
+  &-menuLink {
+    cursor: pointer;
   }
 }
 
@@ -483,33 +490,4 @@ export default {
   }
 }
 
-// .admin-info-container {
-//   color: white;
-//   overflow: hidden;
-//   padding: 0px;
-//   max-height: 0px;
-//   transition: all ease 1s;
-//   &.show-admin-info-details {
-//     max-height: 120px;
-//   }
-//   .admin-info-details {
-//     > div > div{
-//       display: inline-block;
-//       &.admin-key {
-//         color: #c7c7c7;
-//         width: 50%;
-//         text-align: right;
-//       }
-//       &.admin-value {
-//         font-weight: bold;
-//       }
-//     }
-//     cursor: auto;
-//     font-size: 0.8em;
-//     padding: 5px 0px;
-//     columns: 2;
-//     column-fill: balance;
-//     overflow: hidden;
-//   }
-// }
 </style>

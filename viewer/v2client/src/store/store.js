@@ -31,6 +31,7 @@ const store = new Vuex.Store({
         removing: false,
       },
       changeHistory: [],
+      event: [],
     },
     status: {
       keybindState: '',
@@ -152,6 +153,9 @@ const store = new Vuex.Store({
   mutations: {
     pushKeyAction(state, keyAction) {
       state.status.keyActions.push(keyAction);
+    },
+    pushInspectorEvent(state, payload) {
+      state.inspector.event = payload;
     },
     pushNotification(state, content) {
       const date = new Date();
@@ -301,6 +305,9 @@ const store = new Vuex.Store({
     },
     pushKeyAction({ commit }, keyAction) {
       commit('pushKeyAction', keyAction);
+    },
+    pushInspectorEvent({ commit }, payload) {
+      commit('pushInspectorEvent', payload);
     },
     setUser({ commit }, userObj) {
       commit('setUser', userObj);
