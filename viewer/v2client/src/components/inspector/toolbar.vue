@@ -65,6 +65,7 @@ export default {
     },
     showToolsMenu() {
       this.toolsMenuActive = true;
+      console.log(this.toolsMenuActive);
     },
     getOtherDataFormat(suffix) {
       return `${this.focusData['@id']}/data.${suffix}`
@@ -292,7 +293,7 @@ export default {
       </ul>
     </div>
 
-    <div class="dropdown Toolbar-menu" v-on-clickaway="hideToolsMenu">
+    <div class="dropdown Toolbar-menu ToolsMenu" v-on-clickaway="hideToolsMenu">
       <button class="EntityControls-btn btn btn-default ToolsMenu-button" 
         @click="showToolsMenu" 
         aria-haspopup="true" 
@@ -304,7 +305,7 @@ export default {
         </i>
         <span class="caret"></span>
       </button>
-      <ul class="dropdown-menu Toolbar-menuList" v-show="toolsMenuActive">
+      <ul class="dropdown-menu Toolbar-menuList ToolsMenu-menu" v-show="toolsMenuActive">
         <li>
           <a @click="formControl('expand-item')">
           <i class="fa fa-fw fa-expand" aria-hidden="true"></i>

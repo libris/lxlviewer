@@ -104,7 +104,7 @@ export default {
           this.inputData.currentInput -= 1;
       }
     },
-      composeQuery() {
+    composeQuery() {
         let query = '';
         if (this.searchPerimeter === 'libris') {
             const validTags = this.validSearchTags;
@@ -216,6 +216,8 @@ export default {
       if (this.searchPerimeter === 'libris') {
         document.querySelector('.js-qsmartInput').children[this.inputData.currentInput].focus();
       }
+
+      console.log(this.inputData.ids);
     });
   },
 };
@@ -297,14 +299,18 @@ export default {
           </button>
         </div>
       </div>
-      <div class="SearchBar-typeButtons" aria-label="Välj typ" v-if="searchPerimeter === 'libris'">
-        <label v-for="filter in dataSetFilters" :key="filter['@id']" class="SearchBar-typeLabel">
+      <div class="SearchBar-typeButtons" aria-label="Välj typ" 
+        v-if="searchPerimeter === 'libris'">
+        <label class="SearchBar-typeLabel" 
+          :for="filter['@id']"
+          v-for="filter in dataSetFilters" 
+          :key="filter['@id']">{{ filter.label }}
           <input type="checkbox" class="Searchbar-typeInput"
+            :id="filter['@id']"
             :checked="filter['@id'] === 'Instance'" 
             v-model="inputData.ids"
             :value="filter['@id']">
-            {{ filter.label }}
-        </label>
+        </label>        
       </div>
       <remote-databases v-if="searchPerimeter === 'remote'" :remoteSearch="remoteSearch"></remote-databases>
     </form>
