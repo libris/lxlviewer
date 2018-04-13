@@ -115,36 +115,18 @@
       {% endblock %}
       {% block jumbotron %}{% endblock %}
       {% block wrapper %}
-      % if g.site.title == 'libris.kb.se'
-      <div class="skeleton-page" :class="{'hide-skeleton': initialized==true}">
-        <!-- <nav class="navbar skeleton-navbar">
-          <div class="container">
-            <div>
-              <div class="nav-logo">
-                <a href="/"><img src="/assets/img/kb_logo_black.svg" alt="Kungliga Bibliotekets logotyp">${g.site.title}</a>
-              </div>
-              <div class="nav-items">
-                % for counter in range(1, 5)
-                  <div></div>
-                % endfor
-              </div>
-            </div>
-          </div>
-        </nav> -->
-        <div class="container panel panel-default skeleton-container">
-          <div>
-            % for counter in range(1, 30)
-            <div style="border-right-width: ${range(1, 700) | random}px"></div>
-            % endfor
-          </div>
-        </div>
-      </div>
-      % endif
       <div :class="{'show-content': initialized==true}" id="page-content-wrapper">
       {% endblock %}
+      % if g.site.title == 'libris.kb.se'
+        <main class="container">
+          <h1>Letar du efter katalogiseringen?</h1>
+          <p>Gå till <a href="/katalogisering/">libris-${config.ENVIRONMENT}.kb.se/katalogisering/</a></p>
+        </main>
+      % else
         <main class="{% block containerclass %}container{% endblock %}">
           {% block content %}{% endblock %}
         </main>
+      % endif
         <footer>
           % block footer
 
