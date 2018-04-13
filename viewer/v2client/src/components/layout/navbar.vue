@@ -12,19 +12,19 @@ export default {
     environmentLabel() {
       let label = '';
       switch(this.settings.environment) {
-        case 'development':
+        case 'dev':
           label += 'DEV ';
         break;
-        case 'production':
+        case '':
         break;
-        case 'staging':
+        case 'stg':
           label += 'STG '
         break;
         case 'qa':
           label += 'QA '
         break;
-        case 'testing':
-          label += 'TEST ';
+        case 'local':
+          label += 'LOCAL ';
         break;
       }
       label += this.settings.version;
