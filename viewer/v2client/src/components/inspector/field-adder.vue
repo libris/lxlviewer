@@ -25,6 +25,7 @@ export default {
     index: Number,
     editingObject: '',
     entityType: '',
+    inToolbar: false,
   },
   data() {
     return {
@@ -272,7 +273,7 @@ export default {
           :show-tooltip="showToolTip" 
           translation="translatePhrase"></tooltip-component>
       </i>
-      <span class="FieldAdder-label"> {{ "Field" | translatePhrase }}</span>
+      <span v-if="!inToolbar" class="FieldAdder-label"> {{ "Field" | translatePhrase }}</span>
     </button>
 
     <modal-component @close="hide" v-if="active" class="FieldAdder-modal FieldAdderModal">
@@ -336,17 +337,23 @@ export default {
 <style lang="less">
 
 .FieldAdder {
+
   &-add {
     font-size: 14px;
     font-size: 1.4rem;
+
+    .FieldAdder--inToolbar & {
+      border-radius: 100%;
+      font-size: 22px;
+      font-size: 2.2rem;
+      width: 50px;
+      height: 50px;
+      line-height: 1;
+    }
   }
 
   &-innerLabel {
     display: none;
-  }
-
-  &-inner {
-
   }
 }
 

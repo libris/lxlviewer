@@ -141,7 +141,7 @@ export default {
     download(text) {
       const element = document.createElement('a');
       element.setAttribute('href', 'data:application/octet-stream,' + encodeURIComponent(text));
-      const splitIdParts = this.editorData.record['@id'].split('/');
+      const splitIdParts = this.inspector.data.record['@id'].split('/');
       const id = splitIdParts[splitIdParts.length-1];
       element.setAttribute('download', id);
       element.style.display = 'none';
@@ -182,7 +182,7 @@ export default {
         return false;
       }
       const permission = this.user.getPermissions();
-      if (this.editorData.mainEntity['@type'] === 'Item' && permission.registrant === true) {
+      if (this.inspector.data.mainEntity['@type'] === 'Item' && permission.registrant === true) {
         return true;
       } else if (permission.cataloger === true) {
         return true;
@@ -277,7 +277,7 @@ export default {
     <div class="dropdown Toolbar-menu OtherFormatMenu"
       v-if="!inspector.status.editing" 
       v-on-clickaway="hideOtherFormatMenu">
-      <button class="EntityControls-btn btn btn-default OtherFormatMenu-button" 
+      <button class="Toolbar-btn btn btn-default OtherFormatMenu-button" 
         @click="showOtherFormatMenu" 
         aria-haspopup="true" 
         aria-expanded="true" 
@@ -286,7 +286,7 @@ export default {
         <i class="fa fa-eye" aria-hidden="true">
           <tooltip-component :show-tooltip="showDisplayAs" tooltip-text="Show as" translation="translatePhrase"></tooltip-component>
         </i>
-        <span class="caret"></span>
+        <span class="Toolbar-caret caret"></span>
       </button>
       <ul class="dropdown-menu OtherFormatMenu-menu" v-show="otherFormatMenuActive">
         <li><a :href="getOtherDataFormat('jsonld')">JSON-LD</a></li>
@@ -296,16 +296,19 @@ export default {
     </div>
 
     <div class="dropdown Toolbar-menu ToolsMenu" v-on-clickaway="hideToolsMenu">
-      <button class="EntityControls-btn btn btn-default ToolsMenu-button" 
+      <button class="Toolbar-btn btn btn-default ToolsMenu-button" 
         @click="showToolsMenu" 
         aria-haspopup="true" 
         aria-expanded="true" 
         @mouseover="showTools = true" 
         @mouseout="showTools = false">
         <i class="fa fa-wrench" aria-hidden="true">
-          <tooltip-component :show-tooltip="showTools" tooltip-text="Tools" translation="translatePhrase"></tooltip-component>
+          <tooltip-component 
+            :show-tooltip="showTools" 
+            tooltip-text="Tools" 
+            translation="translatePhrase"></tooltip-component>
         </i>
-        <span class="caret"></span>
+        <span class="Toolbar-caret caret"></span>
       </button>
       <ul class="dropdown-menu Toolbar-menuList ToolsMenu-menu" v-show="toolsMenuActive">
         <li>
@@ -352,13 +355,15 @@ export default {
       </ul>
     </div>
     
-    <field-adder class="Toolbar-btn"
+    <field-adder class="FieldAdder--inToolbar"
       v-if="inspector.status.editing" 
-      :entity-type="editorData[inspector.status.focus]['@type']" 
+      :entity-type="inspector.data[inspector.status.focus]['@type']" 
       :inner="false" 
       :allowed="allowedProperties" 
       :path="inspector.status.focus" 
-      :editing-object="inspector.status.focus"></field-adder>
+      :editing-object="inspector.status.focus"
+      :in-toolbar="true"></field-adder>
+
     <button class="Toolbar-btn btn btn-default toolbar-button" 
       :disabled="inspector.changeHistory.length === 0" 
       v-show="inspector.status.editing" 
@@ -366,7 +371,10 @@ export default {
       @mouseover="showUndo = true" 
       @mouseout="showUndo = false">
       <i class="fa fa-undo" aria-hidden="true">
-        <tooltip-component :show-tooltip="showUndo" tooltip-text="Undo" translation="translatePhrase"></tooltip-component>
+        <tooltip-component 
+          :show-tooltip="showUndo" 
+          tooltip-text="Undo" 
+          translation="translatePhrase"></tooltip-component>
       </i>
     </button>
     <button class="Toolbar-btn btn btn-info" id="saveButton" 
@@ -375,7 +383,10 @@ export default {
       @mouseover="showSave = true" @mouseout="showSave = false">
       <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="inspector.status.saving"></i>
       <i class="fa fa-fw fa-save" v-show="!inspector.status.saving">
-        <tooltip-component :show-tooltip="showSave" tooltip-text="Save" translation="translatePhrase"></tooltip-component>
+        <tooltip-component 
+          :show-tooltip="showSave" 
+          tooltip-text="Save" 
+          translation="translatePhrase"></tooltip-component>
       </i>
     </button>
     <button class="Toolbar-btn btn btn-success" id="saveButton" 
@@ -388,9 +399,8 @@ export default {
         <tooltip-component tooltip-text="Save and stop editing" translation="translatePhrase"
           :show-tooltip="showClarifySave"></tooltip-component>
       </i>
-      {{"Done" | translatePhrase}}
     </button>
-    <button class="EntityControls-btn btn btn-info edit-button" id="editButton" 
+    <button class="Toolbar-btn btn btn-info edit-button" id="editButton" 
       v-on:click="edit()" 
       v-show="user.isLoggedIn && !inspector.status.editing && canEditThisType" 
       @mouseover="showEdit = true" 
@@ -412,23 +422,27 @@ export default {
     z-index: 3;
   }
 
+  &-btn {
+    border-radius: 100%;
+    font-size: 22px;
+    font-size: 2.2rem;
+    width: 50px;
+    height: 50px;
+    line-height: 1;
+  }
+
   &-menuLink {
     cursor: pointer;
+  }
+
+  &-caret {
+    position: absolute;
+    right: 0;
+    bottom: 12px;
   }
 }
 
 .EntityControls {
-  flex-direction: row;
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  padding: 0 0 15px;
-  position: relative;
-
-  &-typeLabel {
-    margin: 10px 0 5px;
-  }
-
   &-btns {
     .action {
       display: inline-block;
@@ -450,19 +464,6 @@ export default {
         }
       }
     }
-  }
-
-  &-divider {
-    display: inline-block;
-    width: 10px;
-  }
-
-  &-btn {
-    margin: 3px 4px;
-    font-size: 12px;
-    font-size: 1.2rem;
-    line-height: 20px;
-    font-weight: 700;
   }
 }
 
