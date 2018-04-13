@@ -436,9 +436,11 @@ export default {
 <style lang="less">
 
 .ItemLocal {
-  padding: 0 0 0 0px;
+  padding: 5px;
   position: relative;
   flex: 1 100%;
+  border: 2px solid transparent;
+
 
   &-heading {
     position: relative;
@@ -483,8 +485,8 @@ export default {
   }
 
   &.is-affected {
-    outline: 2px solid @brand-primary;
-    outline-offset: 5px;
+    border: 2px solid @brand-primary;
+
   }
 
 }

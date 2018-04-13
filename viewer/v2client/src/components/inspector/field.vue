@@ -503,8 +503,8 @@ export default {
 <style lang="less">
 
 .Field {
-  border-bottom: 1px solid #d8d8d8;
-  outline: 2px solid transparent;
+  border: 2px solid transparent;
+  border-bottom: 2px solid #d8d8d8;
   width: 100%;
   display: flex;
   flex-direction: row;
@@ -513,17 +513,22 @@ export default {
   position: relative;
 
   &.is-affected {
-    outline: 2px solid @brand-primary;
+    border: 2px solid @brand-primary;
   }
 
   &--inner {
-    border: 0;
+    border: 2px solid transparent;
     flex: 1 100%;
     margin: 10px 0;
     overflow: visible;
     max-height: auto;
     display: inline-block;
-    outline-offset: 5px;
+
+    &.is-affected {
+      border: 2px solid @brand-primary;
+      padding: 5px;
+      margin: 5px -5px 5px -5px;
+    }
   }
 
   &-label {
