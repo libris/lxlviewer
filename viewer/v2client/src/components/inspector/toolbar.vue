@@ -288,7 +288,7 @@ export default {
         </i>
         <span class="Toolbar-caret caret"></span>
       </button>
-      <ul class="dropdown-menu OtherFormatMenu-menu" v-show="otherFormatMenuActive">
+      <ul class="dropdown-menu Toolbar-menuList OtherFormatMenu-menu" v-show="otherFormatMenuActive">
         <li><a :href="getOtherDataFormat('jsonld')">JSON-LD</a></li>
         <li><a :href="getOtherDataFormat('ttl')">Turtle</a></li>
         <li><a :href="getOtherDataFormat('rdf')"><i class="fa fa-fw fa-download" aria-hidden="true"></i>RDF/XML</a></li>
@@ -437,40 +437,12 @@ export default {
 
   &-caret {
     position: absolute;
-    right: 0;
+    right: 8px;
     bottom: 12px;
   }
-}
 
-.EntityControls {
-  &-btns {
-    .action {
-      display: inline-block;
-      cursor: pointer;
-      margin: 0 0.5em;
-      > a {
-        color: #fff;
-        font-size: 11px;
-      }
-      &.active {
-        i {
-          color: @brand-primary;
-        }
-      }
-      i {
-        transition: all 0.5s ease;
-        &.up {
-          transform:rotate(-180deg);
-        }
-      }
-    }
-  }
-}
 
-.ToolsMenu, 
-.OtherFormatMenu {
-
-  &-menu {
+  &-menuList {
     display: block;
   }
 }
