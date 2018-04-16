@@ -129,6 +129,8 @@ export default {
                     }
                 } else if (inputElement.value !== '') {
                     queryText.push(`q=${inputElement.value}`);
+                } else {
+                  queryText.push('q=*');
                 }
             }
             if (queryText.length === 0) {
