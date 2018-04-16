@@ -73,14 +73,9 @@ export default new Router({
       component: Inspector
     },
     {
-      path: '/:fnurgel([a-zA-Z0-9]{14,15})',
+      path: '/:fnurgel',
       name: 'Inspector',
       component: Inspector
-    },
-    {
-      path: '*',
-      name: 'NotFound',
-      component: NotFound
-    },
+    }
   ]
 })
