@@ -29,7 +29,9 @@ from . import admin
 from . import conneg
 
 
-R_METHODS = ['GET', 'HEAD', 'OPTIONS', 'PUT', 'POST', 'DELETE']
+R_METHODS = ['GET', 'HEAD', 'OPTIONS']
+HTTP_METHODS = R_METHODS + ['PUT', 'POST', 'DELETE']
+
 
 JSONLD_MIMETYPE = 'application/ld+json'
 RDF_MIMETYPES = {'text/turtle', JSONLD_MIMETYPE, 'application/rdf+xml', 'text/xml'}
@@ -63,7 +65,7 @@ app.config.from_object('viewer.configdefaults')
 app.config.from_envvar('DEFVIEW_SETTINGS', silent=True)
 app.config.from_pyfile('config.cfg', silent=True)
 
-CORS(app, methods=R_METHODS, expose_headers=['ETag'])
+CORS(app, methods=HTTP_METHODS, expose_headers=['ETag', 'Location'])
 
 
 import __builtin__
