@@ -41,34 +41,10 @@ export default {
 
       this.$parent.setCheckingRelations(false);
     },
-    fetchHolding() {
-      HttpUtil.get({ 
-        url: this.holdingId[0], 
-        accept: 'application/ld+json' }).then((getResult) => {
-        const newData = RecordUtil.splitJson(getResult);
-        if (Modernizr.history) {
-          history.pushState(newData, 'unused', `${this.holdingId[0]}/edit`);
-          
-          this.$store.dispatch('updateInspectorData', { 
-            property: 'new-editordata', 
-            value: newData
-          });
-          //this.$dispatch('new-editordata', newData);
-        } else if (result.status === 201) {
-          window.location = result.getResponseHeader('Location');
-        } else {
-          this.syncData(newData);
-        }
-
-        this.$store.dispatch('setStatusValue', { 
-          property: 'inEdit', 
-          value: false
-        });
-
-      }, (error) => {
-        this.changeNotification('color', 'red');
-        this.changeNotification('message', `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error}`);
-      });
+    gotoHolding() {
+      const locationParts = this.holdingId[0].split('/');
+      const fnurgel = locationParts[locationParts.length-1];
+      this.$router.push({ path: `/${fnurgel}` });
     },
     previewHolding() {
       this.$store.dispatch('setInsertData', DataUtil.getMergedItems(this.itemData.record, this.itemData.mainEntity, null, this.itemData.quoted));
@@ -114,7 +90,7 @@ export default {
         v-if="hasHolding" 
         :class="{'green': hasHolding, 'disabled': disabled}"  
         :disabled="disabled" 
-        @click.prevent="fetchHolding()">
+        @click.prevent="gotoHolding()">
         <i class="fa fa-check"
           v-if="hasHolding && !checkingHolding"></i>
         {{"Show holding" | translatePhrase}}

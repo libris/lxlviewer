@@ -65,6 +65,7 @@ export default {
       });
     },
     initializeRecord() {
+      this.postLoaded = false;
       if (this.$route.name === 'Inspector') {
         this.loadDocument();
       } else {
@@ -185,6 +186,11 @@ export default {
       }
     },
     '$route.name'(val, oldVal) {
+      if (val !== oldVal) {
+        this.initializeRecord();
+      }
+    },
+    '$route.params.fnurgel'(val, oldVal) {
       if (val !== oldVal) {
         this.initializeRecord();
       }

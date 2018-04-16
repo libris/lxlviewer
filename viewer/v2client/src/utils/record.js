@@ -11,18 +11,6 @@ export function getMarc(json) {
   });
 }
 
-export function getRelatedPosts(id, property) {
-  // Returns a list of posts that links to <id> with <property>
-  return new Promise((resolve, reject) => {
-    const getInstancesUrl = `/_dependencies?id=${id}&relation=${property}&reverse=true`;
-    httpUtil.get({ url: getInstancesUrl, accept: 'application/ld+json' }).then((response) => {
-      resolve(response);
-    }, (error) => {
-      reject('getRelatedPosts failed - ', error);
-    });
-  });
-}
-
 export function splitJson(json) {
   if (!json || json.length === 0) {
     throw new Error('Trying to split empty JSON data.');

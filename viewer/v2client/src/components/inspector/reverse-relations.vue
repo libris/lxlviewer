@@ -23,11 +23,22 @@ export default {
     setCheckingRelations(newVal) {
       this.checkingRelations = newVal;
     },
+    getRelatedPosts(id, property) {
+      // Returns a list of posts that links to <id> with <property>
+      return new Promise((resolve, reject) => {
+        const getInstancesUrl = `${this.settings.apiPath}/_dependencies?id=${id}&relation=${property}&reverse=true`;
+        httpUtil.get({ url: getInstancesUrl, accept: 'application/ld+json' }).then((response) => {
+          resolve(response);
+        }, (error) => {
+          reject('getRelatedPosts failed - ', error);
+        });
+      });
+    },
     getRelationsInfo() {
       let property = '';
       if (this.recordType === 'Instance') {
         property = 'itemOf';
-        const holdingUrl = `/_findhold?library=${this.libraryUrl}&id=${this.inspector.data.record['@id']}`
+        const holdingUrl = `${this.settings.apiPath}/_findhold?library=${this.libraryUrl}&id=${this.inspector.data.record['@id']}`
         HttpUtil.get({ url: holdingUrl, accept: 'application/ld+json' }).then((response) => {
           if (response.length > 0) {
             this.hasRelation = true;
@@ -41,7 +52,7 @@ export default {
       } else if (this.recordType === 'Work') {
         property = 'instanceOf';
       }
-      RecordUtil.getRelatedPosts(this.inspector.data.record['@id'], property).then((response) => {
+      this.getRelatedPosts(this.inspector.data.record['@id'], property).then((response) => {
         this.relationInfo = response;
         this.numberOfRelations = response.length;
       }, (error) => {
