@@ -232,6 +232,7 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.initializeRecord();
+      this.initJsonOutput();
     });
   },
 }
