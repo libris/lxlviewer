@@ -168,10 +168,10 @@ export default {
           this.$router.push({ path: `/${fnurgel}` });
         } else {
           this.fetchDocument();
-          this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
           this.$store.dispatch('pushNotification', { color: 'green', message: `${StringUtil.getUiPhraseByLang('The post was saved', this.settings.language)}!` });
-          this.$store.dispatch('setInspectorStatusValue', { property: 'dirty', value: false });
         }
+        this.$store.dispatch('setInspectorStatusValue', { property: 'dirty', value: false });
+        this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
       }, (error) => {
         this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
         this.$store.dispatch('pushNotification', { color: 'red', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error}` });
