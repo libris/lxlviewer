@@ -1,6 +1,6 @@
 ---
 section: Terminologi
-title: Parlör
+title: Kort parlör
 order: 40
 tags:
 - bibframe
