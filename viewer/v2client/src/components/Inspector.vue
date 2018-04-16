@@ -67,14 +67,16 @@ export default {
     initializeRecord() {
       this.postLoaded = false;
       if (this.$route.name === 'Inspector') {
+        console.log("Initializing view for existing document");
+        this.documentId = this.$route.params.fnurgel;
         this.loadDocument();
       } else {
+        console.log("Initializing view for new document");
         this.loadNewDocument();
       }
     },
     loadDocument() {
       this.$store.dispatch('setInspectorStatusValue', { property: 'editing', value: false });
-      this.documentId = this.$route.params.fnurgel;
       this.fetchDocument();
     },
     loadNewDocument() {
@@ -185,13 +187,9 @@ export default {
         this.setTitle();
       }
     },
-    '$route.name'(val, oldVal) {
-      if (val !== oldVal) {
-        this.initializeRecord();
-      }
-    },
     '$route.params.fnurgel'(val, oldVal) {
       if (val !== oldVal) {
+        this.documentId = val;
         this.initializeRecord();
       }
     },
@@ -237,7 +235,9 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      this.initializeRecord();
+      if (!this.postLoaded) {
+        this.initializeRecord();
+      }
       this.initJsonOutput();
     });
   },
