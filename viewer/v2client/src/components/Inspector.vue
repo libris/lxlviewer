@@ -156,14 +156,22 @@ export default {
       this.doSaveRequest(httpUtil.put, obj, url, ETag);
     },
     doCreate(obj) {
-      this.doSaveRequest(httpUtil.post, obj, '/');
+      this.doSaveRequest(httpUtil.post, obj, this.settings.apiPath);
     },
     doSaveRequest(requestMethod, obj, url, ETag) {
       requestMethod({ url, ETag, activeSigel: this.user.settings.activeSigel, token: this.user.token }, obj).then((result) => {
-        this.fetchDocument();
-        this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
-        this.$store.dispatch('pushNotification', { color: 'green', message: `${StringUtil.getUiPhraseByLang('The post was saved', this.settings.language)}!` });
-        this.$store.dispatch('setInspectorStatusValue', { property: 'dirty', value: false });
+        if (!this.documentId) {
+          const location = `${result.getResponseHeader('Location')}`;
+          const locationParts = location.split('/');
+          const fnurgel = locationParts[locationParts.length-1];
+          this.$store.dispatch('pushNotification', { color: 'green', message: `${StringUtil.getUiPhraseByLang('The post was created', this.settings.language)}!` });
+          this.$router.push({ path: `/${fnurgel}` });
+        } else {
+          this.fetchDocument();
+          this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
+          this.$store.dispatch('pushNotification', { color: 'green', message: `${StringUtil.getUiPhraseByLang('The post was saved', this.settings.language)}!` });
+          this.$store.dispatch('setInspectorStatusValue', { property: 'dirty', value: false });
+        }
       }, (error) => {
         this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
         this.$store.dispatch('pushNotification', { color: 'red', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error}` });
