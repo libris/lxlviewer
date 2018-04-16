@@ -156,7 +156,7 @@
         }
       }
     },
-    "periodical": {
+    "printedperiodical": {
       "label": "Tryckt seriell resurs",
       "description": "RDA",
       "value": {
@@ -321,6 +321,7 @@
             "@id": "https://id.kb.se/marc/Topical"
           },
           "recordStatus": "marc:CorrectedOrRevised",
+          "cataloguersNote": [""],
           "marc:recordUpdate": {
             "@id": "https://id.kb.se/marc/RecordCanBeUsed"
           },
@@ -383,6 +384,7 @@
             "@id": "https://id.kb.se/marc/NationalStandard"
           },
           "recordStatus": "marc:CorrectedOrRevised",
+          "cataloguersNote": [""],
           "marc:recordUpdate": {
             "@id": "https://id.kb.se/marc/RecordCanBeUsed"
           },
