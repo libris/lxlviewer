@@ -1,11 +1,9 @@
 ---
 section: Allmänna Anvisningar
-title: Transcription
+title: Anvisningar under arbete
 order: 25
 tags:
 - editor
-- rda
-- transcription
 ---
 
 *Anvisningar under arbete.*
