@@ -340,13 +340,16 @@ export default {
       v-if="removeInProgress">
       <div slot="modal-header" class="RemovePostModal-header">
         <header>
-          {{ 'Ta bort' | translatePhrase }}?
+          {{ 'Remove' | translatePhrase }} {{ this.recordType | labelByLang }}?
         </header>
       </div>
       <div slot="modal-body" class="RemovePostModal-body">
+        <p>
+          {{ 'This operation can\'t be reverted' | translatePhrase }}
+        </p>
         <div class="RemovePostModal-buttonContainer">
-          <button class="btn btn-danger" @click="doRemovePost()">Ja, radera posten</button>
-          <button class="btn btn-default" @click="closeRemoveModal()">Nej, avbryt</button>
+          <button class="btn btn-danger" @click="doRemovePost()">{{ 'Yes, remove the record' | translatePhrase }}</button>
+          <button class="btn btn-default" @click="closeRemoveModal()">{{ 'No, cancel' | translatePhrase }}</button>
         </div>
       </div>
     </modal-component>
@@ -402,7 +405,8 @@ export default {
   &-body {
     height: 80%;
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    text-align: center;
     justify-content: center;
   }
   &-buttonContainer {
