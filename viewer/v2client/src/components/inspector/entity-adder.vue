@@ -401,7 +401,7 @@ export default {
     <template slot="modal-body">
       <div class="EntityAdder-modalBody">
         <div class="EntityAdder-controls">
-          <form class="EntityAdder-controlForm">
+          <div class="EntityAdder-controlForm">
             <!--<input class="entity-search-keyword-input" v-model="keyword" @input="setSearching()"></input>-->
               <div class="EntityAdder-search">
                 <label for="entityKeywordInput" class="EntityAdder-searchLabel">{{ "Search" | translatePhrase }}</label>
@@ -452,7 +452,7 @@ export default {
                   v-html="getFormattedSelectOption(term, settings, vocab, context)"></option>
               </select>
             </div>
-          </form>
+          </div>
         </div>
         <div class="EntityAdder-searchStatus search-status"
           v-if="!loading && keyword.length === 0" >{{ "Start writing to begin search" | translatePhrase }}...</div>
