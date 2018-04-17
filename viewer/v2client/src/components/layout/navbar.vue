@@ -105,7 +105,6 @@ export default {
 <style lang="less">
 .NavBar {
   width: 100%;
-  z-index: 900;
   border: solid @border-navbar;
   background-color: @bg-navbar;
   border-width: 0px 0px @border-navbar-width 0px;
