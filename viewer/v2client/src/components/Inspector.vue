@@ -420,9 +420,11 @@ export default {
   }
   &-container {
     position: fixed;
-    border: 1px solid #ccc;
-    background-color: #eee;
+    border: 1px solid #cccccc75;
+    background-color: #ecececd1;
     padding: 0.5em;
+    border-radius: 0.5em;
+    box-shadow: 0px 0px 15px 0px #0000001f;
     button {
       margin: 0.1em 0;
       width: 100%;
