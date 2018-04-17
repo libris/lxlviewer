@@ -31,7 +31,7 @@ export default {
   },
   methods: {
     addItem() {
-      let currentValue = _.get(this.inspector.data, this.path);
+      let currentValue = _.cloneDeep(_.get(this.inspector.data, this.path));
       const obj = { '@id': this.focusData['@id'] };
       if (!_.isArray(currentValue)) {
         currentValue = [currentValue];
