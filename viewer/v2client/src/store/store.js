@@ -190,6 +190,11 @@ const store = new Vuex.Store({
     setInsertData(state, data) {
       state.inspector.insertData = data;
     },
+    addToQuoted(state, data) {
+      const quoted = _.cloneDeep(state.inspector.data.quoted);
+      quoted[data['@id']] = data;
+      state.inspector.data.quoted = quoted;
+    },
     updateInspectorData(state, payload) {
       // Clone inspectorData so we can manipulate it before setting it
       const inspectorData = _.cloneDeep(state.inspector.data);
@@ -341,6 +346,9 @@ const store = new Vuex.Store({
     },
     updateInspectorData({ commit }, payload) {
       commit('updateInspectorData', payload);
+    },
+    addToQuoted({ commit }, data) {
+      commit('addToQuoted', data);
     },
     setInspectorStatusValue({ commit }, payload) {
       commit('setInspectorStatusValue', payload);

@@ -37,10 +37,15 @@ export default {
         currentValue = [currentValue];
       }
       currentValue.push(obj);
+      this.$store.dispatch('addToQuoted', this.focusData);
       this.$store.dispatch('updateInspectorData', {
           path: `${this.path}`,
           value: currentValue,
           addToHistory: true,
+      });
+      this.$store.dispatch('pushInspectorEvent', { 
+        name: 'modal-control', 
+        value: 'close-entity-adder'
       });
     },
   },

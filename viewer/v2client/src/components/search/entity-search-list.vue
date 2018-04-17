@@ -104,7 +104,8 @@ export default {
         @focus.native="select(index)"
         :focus-data="item" 
         :disabled-ids="disabledIds" 
-        :add-link="false" 
+        :add-link="false"
+        :path="path"
         v-for="(item, index) in results" 
         :key="index"></entity-search-item>
     </ul>

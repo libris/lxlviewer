@@ -60,22 +60,23 @@ export default {
     hasRescriction: false,
     entityType: '',
   },
-  events: {
-    'close-modals'() {
-      this.closeSearch();
-      return true;
-    },
-    'add-entity'(item) {
-      this.$dispatch('add-item', item);
-      this.closeSearch();
-    },
-  },
   components: {
     'modal-component': ModalComponent,
     'tooltip-component': ToolTipComponent,
     'entity-search-list': EntitySearchList,
   },
   watch: {
+    'inspector.event'(val, oldVal) {
+      if (val.name === 'modal-control') {
+        switch(val.value) {
+          case 'close-entity-adder':
+          this.closeSearch();
+            break;
+          default:
+            return;
+        }
+      }
+    },
     valueList(newVal) {
       if (newVal.length === 0 && this.onlyEmbedded && this.getFullRange.length > 1) {
         this.addEmbedded = true;
@@ -389,7 +390,7 @@ export default {
       </select>
     </div>
 
-    <modal-component v-if="active" class="EntityAdder-modal EntityAdderModal" @close="hide">
+    <modal-component v-if="active" class="EntityAdder-modal EntityAdderModal" @close="closeSearch">
       <template slot="modal-header">
         {{ "Add entity" | translatePhrase }} | {{ addLabel | labelByLang }}
         <span class="ModalComponent-windowControl">
