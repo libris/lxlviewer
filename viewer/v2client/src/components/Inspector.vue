@@ -67,7 +67,7 @@ export default {
     },
     initializeRecord() {
       this.postLoaded = false;
-      this.focus = 'mainEntity';
+      this.$store.dispatch('setInspectorStatusValue', { property: 'focus', value: 'mainEntity' });
       if (this.$route.name === 'Inspector') {
         console.log("Initializing view for existing document");
         this.documentId = this.$route.params.fnurgel;
