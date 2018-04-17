@@ -3,7 +3,7 @@
 import * as StringUtil from '@/utils/string';
 import * as DataUtil from '@/utils/data';
 import * as VocabUtil from '@/utils/vocab';
-import * as httpUtil from '@/utils/http';
+import * as HttpUtil from '@/utils/http';
 // import * as _ from 'lodash';
 import * as DisplayUtil from '@/utils/display';
 import * as RecordUtil from '@/utils/record';
@@ -23,6 +23,7 @@ export default {
       result: {},
       postLoaded: false,
       modalOpen: false,
+      removeInProgress: false,
     }
   },
   methods: {
@@ -74,6 +75,27 @@ export default {
         console.log("Initializing view for new document");
         this.loadNewDocument();
       }
+    },
+    openRemoveModal() {
+      this.removeInProgress = true;
+    },
+    closeRemoveModal() {
+      this.removeInProgress = false;
+    },
+    doRemovePost() {
+      this.closeRemoveModal();
+      const url = `${this.settings.apiPath}/${this.documentId}`;
+      HttpUtil._delete({ url, activeSigel: this.user.settings.activeSigel, token: this.user.token }).then((result) => {
+        this.$store.dispatch('pushNotification', { color: 'green', message: `${StringUtil.getUiPhraseByLang('The post was deleted', this.settings.language)}!` });
+        // Force reload
+        this.$router.push({ path: '/' });
+      }, (error) => {
+        if (error.status === 403) {
+          this.$store.dispatch('pushNotification', { color: 'red', message: `${StringUtil.getUiPhraseByLang('Forbidden', this.settings.language)} - ${StringUtil.getUiPhraseByLang('This entity may have active links', this.settings.language)} - ${error.statusText}` });
+        } else {
+          this.$store.dispatch('pushNotification', { color: 'red', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error.statusText}` });
+        }
+      });
     },
     loadDocument() {
       this.$store.dispatch('setInspectorStatusValue', { property: 'editing', value: false });
@@ -156,10 +178,10 @@ export default {
       }
     },
     doUpdate(url, obj, ETag) {
-      this.doSaveRequest(httpUtil.put, obj, url, ETag);
+      this.doSaveRequest(HttpUtil.put, obj, url, ETag);
     },
     doCreate(obj) {
-      this.doSaveRequest(httpUtil.post, obj, this.settings.apiPath);
+      this.doSaveRequest(HttpUtil.post, obj, this.settings.apiPath);
     },
     doSaveRequest(requestMethod, obj, url, ETag) {
       requestMethod({ url, ETag, activeSigel: this.user.settings.activeSigel, token: this.user.token }, obj).then((result) => {
@@ -198,6 +220,17 @@ export default {
         setTimeout(() => {
           this.initToolbarFloat();
         }, 500);
+      }
+    },
+    'inspector.event'(val, oldVal) {
+      if (val.name === 'post-control') {
+        switch(val.value) {
+          case 'remove-post':
+          this.openRemoveModal();
+            break;
+          default:
+            return;
+        }
       }
     }
   },
@@ -302,6 +335,20 @@ export default {
         </div>
       </div>
     </div>
+    <modal-component title="Error" modal-type="danger" @close="closeRemoveModal" class="RemovePostModal" 
+      v-if="removeInProgress">
+      <div slot="modal-header" class="RemovePostModal-header">
+        <header>
+          {{ 'Ta bort' | translatePhrase }}?
+        </header>
+      </div>
+      <div slot="modal-body" class="RemovePostModal-body">
+        <div class="RemovePostModal-buttonContainer">
+          <button class="btn btn-danger" @click="doRemovePost()">Ja, radera posten</button>
+          <button class="btn btn-default" @click="closeRemoveModal()">Nej, avbryt</button>
+        </div>
+      </div>
+    </modal-component>
   </div>
 </template>
 
@@ -344,6 +391,21 @@ export default {
   &-searchList {
     height: 100%;
     overflow-y: scroll;
+  }
+}
+.RemovePostModal .ModalComponent-container {
+  width: 600px;
+  height: 250px;
+}
+.RemovePostModal {
+  &-body {
+    height: 80%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  &-buttonContainer {
+    text-align: center;
   }
 }
 

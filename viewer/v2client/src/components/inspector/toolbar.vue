@@ -75,6 +75,12 @@ export default {
         value: control 
       });
     },
+    postControl(control) {
+      this.$store.dispatch('pushInspectorEvent', { 
+        name: 'post-control', 
+        value: control 
+      });
+    },
     toggleEditorFocus() {
       if (this.inspector.status.focus === 'record') {
         this.$store.dispatch('setInspectorStatusValue', { property: 'focus', value: 'mainEntity' });
@@ -108,35 +114,6 @@ export default {
       const baseClasses = VocabUtil.getBaseClasses(this.inspector.data.mainEntity['@type'], this.resources.vocab, this.settings.vocabPfx, this.resources.context)
         .map(id => id.replace(this.settings.vocabPfx, ''));
       return baseClasses.indexOf(type) > -1;
-    },
-    removePost() {
-      const url = this.focusData['@id'];
-      ModalUtil.confirmDialog({
-        sTitle: 'Ta bort?',
-        sContent: 'Du kan inte ångra detta val.',
-        sAccept: 'OK',
-        sReject: 'Avbryt',
-        sType: 'danger' }).then(() => {
-          // accepted by user
-          HttpUtil._delete({ url, activeSigel: this.user.settings.activeSigel }).then((result) => {
-            this.changeNotification('color', 'green');
-            this.changeNotification('message', `${StringUtil.getUiPhraseByLang('The entity was removed', this.settings.language)}!`);
-            // Force reload
-            setTimeout(() => {
-              history.back();
-            }, 2000);
-          }, (error) => {
-            if (error.status === 403) {
-              this.changeNotification('color', 'red');
-              this.changeNotification('message', `${StringUtil.getUiPhraseByLang('Forbidden', this.settings.language)} - ${StringUtil.getUiPhraseByLang('This entity may have active links', this.settings.language)} - ${error.statusText}`);
-            } else {
-              this.changeNotification('color', 'red');
-              this.changeNotification('message', `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error.statusText}`);
-            }
-          });
-        }, () => {
-        // rejected by user
-      });
     },
     download(text) {
       const element = document.createElement('a');
@@ -347,7 +324,7 @@ export default {
           </a>
         </li>
         <li class="remove-option" v-show="user.isLoggedIn && !status.isNew">
-          <a class="Toolbar-menuLink"   @click="removePost">
+          <a class="Toolbar-menuLink"  @click="postControl('remove-post')">
           <i class="fa fa-fw fa-trash" aria-hidden="true"></i>
           {{"Remove" | translatePhrase}} {{ recordType | labelByLang }}
           </a>
@@ -410,7 +387,6 @@ export default {
       <tooltip-component tooltip-text="Edit" translation="translatePhrase"
           :show-tooltip="showEdit"></tooltip-component>
     </button>
-
   </div>
 </template>
 
