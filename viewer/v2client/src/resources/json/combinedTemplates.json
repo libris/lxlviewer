@@ -319,9 +319,6 @@
           "marc:headingMain": true,
           "cataloguersNote": [""],
           "sourceConsulted": [],
-          "marc:subjectSubdivision": {
-            "@id": "https://id.kb.se/marc/Topical"
-          },
           "recordStatus": "marc:CorrectedOrRevised",
           "marc:recordUpdate": {
             "@id": "https://id.kb.se/marc/RecordCanBeUsed"
