@@ -16,11 +16,11 @@ function request(options, data) {
     const req = new XMLHttpRequest();
 
     req.open(options.method, options.url);
-    // if (options.contentType) {
-    //   req.setRequestHeader('Content-Type', options.contentType);
-    // } else {
+    if (options.contentType) {
+      req.setRequestHeader('Content-Type', options.contentType);
+    } else {
       req.setRequestHeader('Content-Type', 'application/ld+json');
-    // }
+    }
     if (options.token) {
       req.setRequestHeader('Authorization', `Bearer ${options.token}`);
     }

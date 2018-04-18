@@ -202,36 +202,37 @@ export default {
       // TODO: Remove this when Summary isn't broken
       const hackedObject = this.extractedItem;
       delete hackedObject['@graph'][1].summary;
-      this.doCreateRequest(httpUtil.post, hackedObject, '/');
-
-      // this.doCreateRequest(httpUtil.post, this.extracted, '/');
+      this.doCreateRequest(httpUtil.post, hackedObject, this.settings.apiPath);
     },
     doCreateRequest(requestMethod, obj, url) {
-      requestMethod({ url, token: self.access_token, activeSigel: this.user.settings.activeSigel }, obj).then((result) => {
+      requestMethod({ url, token: this.user.token, activeSigel: this.user.settings.activeSigel }, obj).then((result) => {
         if (result.status === 201) {
           const postUrl = `${result.getResponseHeader('Location')}`;
-          httpUtil.get({ url: `${postUrl}/data.jsonld`, accept: 'application/ld+json' }).then((getResult) => {
+          httpUtil.get({ url: `${postUrl}/data.jsonld`, contentType: 'text/plain' }).then((getResult) => {
             const recievedObj = {
               '@graph': getResult['@graph'],
             }
             const mainEntity = RecordUtil.splitJson(recievedObj).mainEntity;
-            this.$dispatch('add-item', mainEntity, this.index);
-            this.changeNotification('color', 'green');
-            this.changeNotification('message', `${StringUtil.getUiPhraseByLang('Linking was successful', this.settings.language)}`);
+            const newValue = { '@id': mainEntity['@id'] };
+
+            this.$store.dispatch('addToQuoted', mainEntity);
+            this.$store.dispatch('updateInspectorData', {
+              path: `${this.path}`,
+              value: newValue,
+              addToHistory: true,
+            });
+            this.$store.dispatch('pushNotification', { color: 'green', message: `${StringUtil.getUiPhraseByLang('Linking was successful', this.settings.language)}` });
             this.closeExtractDialog();
           }, (error) => {
-            this.changeNotification('color', 'red');
-            this.changeNotification('message', `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${StringUtil.getUiPhraseByLang(error, this.settings.language)}`);
+            this.$store.dispatch('pushNotification', { color: 'red', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error}` });
             this.closeExtractDialog();
           });
         } else {
-          this.changeNotification('color', 'red');
-          this.changeNotification('message', `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${StringUtil.getUiPhraseByLang(error, this.settings.language)}`);
+          this.$store.dispatch('pushNotification', { color: 'red', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error}` });
           this.closeExtractDialog();
         }
       }, (error) => {
-        this.changeNotification('color', 'red');
-        this.changeNotification('message', `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${StringUtil.getUiPhraseByLang(error, this.settings.language)}`);
+        this.$store.dispatch('pushNotification', { color: 'red', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error}` });
         this.closeExtractDialog();
       });
     },
@@ -286,6 +287,21 @@ export default {
     removeFocus() {
       this.focused = false;
     },
+    extract() {
+      this.extracting = true;
+      this.doExtract();
+    },
+    replaceWith(value) {
+      const newValue = { '@id': value['@id'] };
+      this.$store.dispatch('addToQuoted', value);
+      this.$store.dispatch('updateInspectorData', {
+        path: `${this.path}`,
+        value: newValue,
+        addToHistory: true,
+      });
+      this.$store.dispatch('pushNotification', { color: 'green', message: `${StringUtil.getUiPhraseByLang('Linking was successful', this.settings.language)}` });
+      this.closeExtractDialog();
+    },
   },
   watch: {
     'inspector.event'(val, oldVal) {
@@ -314,14 +330,6 @@ export default {
     },
     'set-copy-title'(bool) {
       this.copyTitle = bool;
-    },
-    'extract-item'() {
-      this.extracting = true;
-      this.doExtract();
-    },
-    'close-modals'() {
-      this.closeExtractDialog();
-      return true;
     },
   },
   mounted() {
@@ -423,8 +431,11 @@ export default {
       :entity-type="entityType" 
       :field-key="fieldKey" 
       :extracting="extracting" 
-      item-info="extractedMainEntity" 
-      :index="index"></search-window>
+      :item-info="extractedMainEntity"
+      :index="index"
+      @extract="extract"
+      @replace-with="replaceWith"
+      ></search-window>
     </div>
 
 
