@@ -53,8 +53,8 @@ export default {
     },
   },
   methods: {
-    showOtherFormatMenu() {
-      this.otherFormatMenuActive = true;
+    toggleOtherFormatMenu() {
+      this.otherFormatMenuActive = !this.otherFormatMenuActive;
     },
     hideOtherFormatMenu() {
       this.otherFormatMenuActive = false;
@@ -62,8 +62,8 @@ export default {
     hideToolsMenu() {
       this.toolsMenuActive = false;
     },
-    showToolsMenu() {
-      this.toolsMenuActive = true;
+    toggleToolsMenu() {
+      this.toolsMenuActive = !this.toolsMenuActive;
     },
     getOtherDataFormat(suffix) {
       return `${this.focusData['@id']}/data.${suffix}`
@@ -254,7 +254,7 @@ export default {
       v-if="!inspector.status.editing" 
       v-on-clickaway="hideOtherFormatMenu">
       <button class="Toolbar-btn btn btn-default OtherFormatMenu-button" 
-        @click="showOtherFormatMenu" 
+        @click="toggleOtherFormatMenu" 
         aria-haspopup="true" 
         aria-expanded="true" 
         @mouseover="showDisplayAs = true" 
@@ -273,7 +273,7 @@ export default {
 
     <div class="dropdown Toolbar-menu ToolsMenu" v-on-clickaway="hideToolsMenu">
       <button class="Toolbar-btn btn btn-default ToolsMenu-button" 
-        @click="showToolsMenu" 
+        @click="toggleToolsMenu" 
         aria-haspopup="true" 
         aria-expanded="true" 
         @mouseover="showTools = true" 
