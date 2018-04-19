@@ -104,12 +104,9 @@ export default {
     },
     loadNewDocument() {
       const insertData = this.inspector.insertData;
-      if (!insertData.hasOwnProperty('@graph')) {
-        this.$store.dispatch('pushNotification', { 
-          color: 'red', 
-          message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)}!` 
-        });
-        this.$router.push({ path: '/' });
+      if (!insertData.hasOwnProperty('@graph') || insertData['@graph'].length === 0) {
+        this.$router.go(-1);
+        console.warn('New document called without input data, routing user back.')
       } else {
         this.$store.dispatch('setInspectorData', RecordUtil.splitJson(insertData));
         this.$store.dispatch('setInspectorStatusValue', { 
