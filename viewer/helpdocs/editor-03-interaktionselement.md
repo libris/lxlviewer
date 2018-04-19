@@ -57,7 +57,7 @@ Klicka redigera för att göra ändringar i posten.
 (se visningsvy ovan)
 
 ### Lägg till huvudfält/egenskap
-+ Fält-knappen lägger till ett huvudfält/ny egenskap.
++Fält-knappen lägger till ett nytt huvudfält/egenskap.
 
 
 ### Ångra
