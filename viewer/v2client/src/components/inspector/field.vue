@@ -238,12 +238,18 @@ export default {
         if (this.fieldKey === '_uid') {
           throw new Error('A datanode component has been added for a _uid key, which should never happen.');
         }
-        if (this.isLastAdded) {
-          const windowHeight = window.innerHeight || document.documentElement.clientHeight || document.getElementsByTagName('body')[0].clientHeight;
-          const scrollPos = this.$el.offsetTop - (windowHeight * 0.2);
-          LayoutUtil.scrollTo(scrollPos, 1000, 'easeInOutQuad', () => {
+        if (this.isLastAdded === true) {
+          let element = this.$el;
+          let topOfElement = LayoutUtil.getPosition(element).y;
+          if (topOfElement > 0) {
+            const windowHeight = window.innerHeight || document.documentElement.clientHeight || document.getElementsByTagName('body')[0].clientHeight;
+            const scrollPos = LayoutUtil.getPosition(this.$el).y - (windowHeight * 0.2);
+            LayoutUtil.scrollTo(scrollPos, 1000, 'easeInOutQuad', () => {
+              this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
+            });
+          } else {
             this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
-          });
+          }
         }
       }, 300);
     });
