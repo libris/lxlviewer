@@ -65,7 +65,7 @@ new Vue({
       store.dispatch('setForcedListTerms', resources[1]);
       store.dispatch('changeResourcesStatus', true);
     }, (error) => {
-      console.warn(`The API (at ${this.settings.apiPath}) might be offline!`);
+      window.lxlWarning(`🔌 The API (at ${this.settings.apiPath}) might be offline!`);
       store.dispatch('changeResourcesLoadingError', true);
     });
   },

@@ -14,10 +14,6 @@ export default {
     isExtractable: false,
     isImport: false,
     importItem: '',
-    routerPath: {
-      default: '',
-      type: String,
-    },
     database: '',
     shouldLink: {
       default: true,
@@ -36,6 +32,11 @@ export default {
     }
   },
   computed: {
+    routerPath() {
+      const uriParts = this.focusData['@id'].split('/');
+      const fnurgel = uriParts[uriParts.length-1];
+      return `/${fnurgel}`;
+    },
     settings() {
       return this.$store.getters.settings;
     },

@@ -13,11 +13,11 @@ export function getEmbellished(id, quotedIndex = {}) {
   let obj = quotedIndex[id];
 
   if (obj == null) {
-    window.lxlWarning(`Couldn\'t find entity: ${id}`);
+    window.lxlWarning(`🔍 Couldn\'t find embellished data for: ${id}`);
     obj = {'@id': id};
   }
   if (obj != null && !obj.hasOwnProperty('@type')) {
-    window.lxlWarning('Embellished entity has an unknown type (missing @type). ID:', id);
+    window.lxlWarning('👽 Embellished entity has an unknown type (missing @type). ID:', id);
   }
   return _.cloneDeep(obj);
 }
