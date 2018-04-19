@@ -365,6 +365,7 @@ export default {
       <span v-show="fieldKey === '@type'">{{ 'Type' | translatePhrase | capitalize }}</span>
       <span v-show="fieldKey !== '@id' && fieldKey !== '@type'" 
         :title="fieldKey">{{ fieldKey | labelByLang | capitalize }}</span>
+
       <div class="Field-comment" v-if="propertyComment && !locked" >
         <i class="fa fa-question-circle Field-commentIcon"></i>
         <span class="Field-commentText">{{ propertyComment }}</span>
@@ -586,12 +587,13 @@ export default {
     font-size: 1.2rem;
     width: 200px;
     line-height: 1.6;
-    left: 185%;
     transform: translate(-89%, 5px);
     padding: 5px;
     position: absolute;
     text-align: left;
-    top: 0;
+    top: 20px;
+    right: 0;
+    left: 0;
     white-space: normal;
     z-index: 3;
   }
@@ -600,10 +602,12 @@ export default {
     display: inline;
     margin-left: 2px;
     z-index: 3;
+    position: relative;
 
     &:hover {
       .Field-commentText {
         display: inline;
+        font-weight: normal;
       }
     }
   }

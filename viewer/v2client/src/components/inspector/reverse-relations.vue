@@ -72,7 +72,12 @@ export default {
       return `https://libris.kb.se/library/${this.user.settings.activeSigel}`;
     },
     recordType() {
-      return VocabUtil.getRecordType(this.inspector.data.mainEntity['@type'], this.resources.vocab, this.settings, this.resources.context);
+      return VocabUtil.getRecordType(
+        this.inspector.data.mainEntity['@type'], 
+        this.resources.vocab, 
+        this.settings, 
+        this.resources.context
+      );
     },
     recordId() {
       return this.inspector.data.record['@id'];
@@ -93,6 +98,9 @@ export default {
         this.relationInfo = [];
       }
     },
+    numberOfRelations(newVal) {
+      console.log(newVal);
+    }
   },
   mounted() { // Ready method is deprecated in 2.0, switch to "mounted"
     this.$nextTick(() => {
@@ -106,7 +114,7 @@ export default {
   <div class="ReverseRelations">
     <div v-if="recordType === 'Work'" class="ReverseRelations-number">
       <span class="ReverseRelations-label">
-        {{ "Instantiations" | translatePhrase }}: {{numberOfRelations || 'Error' | translatePhrase}}
+        {{ "Instantiations" | translatePhrase }}: {{numberOfRelations | translatePhrase}}
       </span>
       <instance-list-button v-if="!inspector.status.editing && this.numberOfRelations > 0" class="ReverseRelations-button"
         :checking-instances="checkingRelations" 
