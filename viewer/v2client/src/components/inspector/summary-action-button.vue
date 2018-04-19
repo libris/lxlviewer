@@ -1,8 +1,10 @@
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
   name: 'summary-action-button',
   props: {
-    settings: {
+    options: {
       show: false,
       styling: 'gray',
       text: 'button',
@@ -19,6 +21,20 @@ export default {
     },
   },
   computed: {
+    ...mapGetters([
+      'settings',
+    ]),
+    inspectUrl() {
+      const uriParts = this.options.payload['@id'].split('/');
+      const fnurgel = uriParts[uriParts.length-1];
+      return `/katalogisering/${fnurgel}`;
+    },
+    isLibrisResource() {
+      if (this.options.payload['@id'].indexOf(this.settings.apiPath) > -1) {
+        return true;
+      }
+      return false;
+    }
   },
   components: {
   },
@@ -36,11 +52,15 @@ export default {
   <div class="action-container">
     <button
       @click="action()"
-      :class="settings.styling"
+      :class="options.styling"
       >
-      {{settings.text | translatePhrase}}
+      {{options.text | translatePhrase}}
     </button>
-    <a v-if="settings.inspectAction" :href="settings.payload['@id']" target="_blank" class="inspect-link">
+    <a v-if="options.inspectAction && isLibrisResource" :href="inspectUrl" target="_blank" class="inspect-link">
+      <i class="fa fa-external-link" aria-hidden="true"></i>
+      {{"View" | translatePhrase}}
+    </a>
+    <a v-if="options.inspectAction && !isLibrisResource" :href="options.payload['@id']" target="_blank" class="inspect-link">
       <i class="fa fa-external-link" aria-hidden="true"></i>
       {{"View" | translatePhrase}}
     </a>

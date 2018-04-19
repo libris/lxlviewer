@@ -449,7 +449,7 @@ export default {
                   :disabled="term.abstract" 
                   :value="term.id" 
                   :key="`${term.id}-${index}`" 
-                  v-html="getFormattedSelectOption(term, settings, vocab, context)"></option>
+                  v-html="getFormattedSelectOption(term, settings, resources.vocab, resources.context)"></option>
               </select>
             </div>
           </div>

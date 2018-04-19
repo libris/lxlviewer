@@ -264,7 +264,7 @@ export default {
             </div>
             <div class="summary-container">
               <entity-summary :action-settings="localEntitySettings" :focus-data="itemInfo" :lines="4"></entity-summary>
-              <summary-action-button v-show="!extracting" :settings="localEntitySettings" @action="extract()"></summary-action-button>
+              <summary-action-button v-show="!extracting" :options="localEntitySettings" @action="extract()"></summary-action-button>
             </div>
           </div>
           <div class="result-list-container">
@@ -273,7 +273,7 @@ export default {
                 <div class="entity-summary-container">
                   <entity-summary :focus-data="item" :lines="4"></entity-summary>
                 </div>
-                <summary-action-button :settings="addPayload(item)" @action="replaceWith(item)"></summary-action-button>
+                <summary-action-button :options="addPayload(item)" @action="replaceWith(item)"></summary-action-button>
               </div>
             </div>
             <div v-show="extracting || keyword.length === 0 || loading || foundNoResult" class="search-status-container">

@@ -80,7 +80,7 @@ export default {
     <div class="search-item-entity-summary-container">
       <entity-summary :focus-data="focusData" :should-link="false" :lines="4"></entity-summary>
     </div>
-    <summary-action-button v-show="listItemSettings.show" :settings="addPayload" @action="addItem()"></summary-action-button>
+    <summary-action-button v-show="listItemSettings.show" :options="addPayload" @action="addItem()"></summary-action-button>
   </li>
 </template>
 
