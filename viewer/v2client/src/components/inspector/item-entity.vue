@@ -35,8 +35,6 @@ export default {
   },
   computed: {
   },
-  ready() {
-  },
   events: {
     'focus-new-item'(index) {
       if (index === this.index) {

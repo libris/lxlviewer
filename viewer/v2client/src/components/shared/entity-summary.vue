@@ -54,6 +54,8 @@ export default {
       if (this.addLink === true && !this.isLocal) {
         return true;
       }
+
+      console.log('IS NOT LOCAL');
       return false;
     },
     categorization() {

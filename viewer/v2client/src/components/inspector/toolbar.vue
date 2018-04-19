@@ -1,7 +1,6 @@
 <script>
 /*
-  Upper most part of entity in Inspector, builds tools/buttons section and 
-  entity changelog component.
+  Fixed toolbar
 */
 
 import * as _ from 'lodash';
@@ -135,7 +134,7 @@ export default {
       });
     },
     handleCopy() {
-      this.$dispatch('duplicate-item');
+      this.$parent.$emit('duplicate-item');
     },
   },
   computed: {

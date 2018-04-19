@@ -28,6 +28,7 @@ export default {
   },
   computed: {
     hasUri() {
+      console.log(this.uri);
       if (typeof this.uri !== 'undefined' && this.uri.length > 0) {
         return true;
       }

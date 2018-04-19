@@ -161,11 +161,33 @@ export default {
       const obj = DataUtil.getMergedItems(
         DataUtil.removeNullValues(recordCopy),
         DataUtil.removeNullValues(this.inspector.data.mainEntity),
-        DataUtil.removeNullValues(this.inspector.data.work),
-        this.inspector.data.quoted
+        DataUtil.removeNullValues(this.inspector.data.work)
       );
       return obj;
     },
+    duplicateItem() {
+      if (!this.status.inEdit) {
+        const newData = _.cloneDeep(this.inspector.data);
+        newData.record.descriptionCreator = { '@id': `https://libris.kb.se/library/${this.user.settings.activeSigel}` };
+       
+        newData.record['@id'] =  `https://id.kb.se/TEMPID`;
+        newData.record.mainEntity['@id'] = `https://id.kb.se/TEMPID#it`;
+        newData.mainEntity['@id'] =  `https://id.kb.se/TEMPID#it`; 
+       
+        this.$store.dispatch('setInsertData', DataUtil.getMergedItems(
+          newData.record, 
+          newData.mainEntity, 
+          newData.work, 
+          newData.quoted)
+        );
+
+        this.$router.push({ path: '/new' });
+        this.$store.dispatch('pushNotification', { 
+          color: 'green', 
+          message: `${StringUtil.getUiPhraseByLang('Copy successful', this.settings.language)}!` 
+        });
+      }
+    },   
     saveItem() {
       this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: true });
       const RecordId = this.inspector.data.record['@id'];
@@ -239,6 +261,9 @@ export default {
     'toggle-editor-focus'() {
       this.toggleEditorFocus();
     },
+  },
+  created: function () {
+    this.$on('duplicate-item', this.duplicateItem);
   },
   computed: {
     ...mapGetters([
