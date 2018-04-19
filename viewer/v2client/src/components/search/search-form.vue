@@ -236,12 +236,12 @@ export default {
     currentComputedInput(newValue) {
       document.querySelector('.js-qsmartInput').children[newValue].focus();
     },
-    usedFilters() {
-       if (typeof this.resultData !== 'undefined') {
-          if (this.usedFilters !== '') {
-            this.inputData.ids = this.usedFilters;
-          }
+    resultData: function(newVal, oldVal) {
+      if (typeof newVal !== 'undefined') {
+        if (this.usedFilters !== '') {
+          this.inputData.ids = this.usedFilters;
         }
+      }
     },
   },
   mounted() {
