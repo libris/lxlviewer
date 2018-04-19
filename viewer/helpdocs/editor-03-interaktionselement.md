@@ -6,9 +6,6 @@ tags:
 - editor
 ---
 
-# Interaktionselement
-
-
 ## Visningsvy
 
 ### Lägg bestånd (endast från typen instans)
