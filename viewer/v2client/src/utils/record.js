@@ -56,6 +56,10 @@ export function splitJson(json) {
           dataObj.quoted[obj['@id']] = obj;
         }
       }
+    } else {
+      if (original[i]['@id']) {
+        dataObj.quoted[original[i]['@id']] = original[i];
+      }
     }
   }
   return dataObj;
