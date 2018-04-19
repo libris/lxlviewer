@@ -35,7 +35,7 @@ export default {
     routerPath() {
       const uriParts = this.focusData['@id'].split('/');
       const fnurgel = uriParts[uriParts.length-1];
-      return fnurgel;
+      return `/${fnurgel}`;
     },
     settings() {
       return this.$store.getters.settings;
