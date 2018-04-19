@@ -73,7 +73,7 @@ export function getTermObject(term, vocab, vocabPfx, context) {
   }
 
   if (!_class) {
-    window.lxlWarning('Term object not found:', term, '| Tried the following:', tries);
+    window.lxlWarning('📘 Term lookup failed:', term, '| Tried the following:', tries);
   }
   return _class;
 }
@@ -496,7 +496,7 @@ export function getBaseUriFromPrefix(prefix, context) {
     baseUri = contextList[prefix];
   }
   if (baseUri === '') {
-    window.lxlWarning('Couldn\'t get baseUri from prefix:', prefix);
+    window.lxlWarning('❓ Couldn\'t get baseUri from prefix:', prefix);
   }
   return baseUri;
 }
