@@ -6,10 +6,7 @@ tags:
 order: 13
 ---
 
-# Entiteter
-
-
-## Söka fram entiteter att lägga till
+## Söka fram entiteter
 När du ska lägga till en entitet är första steget att göra en sökning för att se om entiteten redan finns eller ej. Sökningen görs antingen via:
 
 **Fritextsök:** Gör en bred sökning genom att skriva in text i sökfältet och få fram ett sök resultat.
@@ -19,7 +16,7 @@ När du ska lägga till en entitet är första steget att göra en sökning för
 ### Lägg till entitet eller, skapa lokal entitet
 När du gjort en entitetssökning kan du: 
 
-**Lägga till entitet:**  
+**Lägga till entitet:**
 Om du fått fram ett önskat sökresultat kan du lägga till den relevanta entiteten genom att klicka på “Lägg till”. Entiteten lägger sig då i posten som en länk. Du kan även välja att granska entiteten innan då väljer att lägga till den. Posten öppnas då i ny flik.  
 
 **Skapa lokal entitet:**
