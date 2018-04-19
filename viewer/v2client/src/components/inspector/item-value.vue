@@ -39,13 +39,20 @@ export default {
       get() {
         return this.fieldValue;
       },
-      set: _.debounce(function(newValue) {
+      // set: _.debounce(function(newValue) {
+      //   this.$store.dispatch('updateInspectorData', {
+      //     path: this.path,
+      //     value: newValue,
+      //     addToHistory: true,
+      //   });
+      // }, 1000)
+      set(newValue) {
         this.$store.dispatch('updateInspectorData', {
           path: this.path,
           value: newValue,
           addToHistory: true,
         });
-      }, 1000)
+      }
     }
   },
   ready() {
@@ -57,8 +64,9 @@ export default {
     });
   },
   methods: {
-    handleEnter(e) {
-      if (e.keyCode === 13) {
+    handleKeys(e) {
+      this.$store.dispatch('setInspectorStatusValue', { property: 'updating', value: true });
+      if (e.keyCode === 13) { // Handle enter
         e.target.blur();
         e.preventDefault();
         return false;
@@ -100,8 +108,8 @@ export default {
   <div class="ItemValue" v-bind:class="{'is-locked': isLocked, 'unlocked': !isLocked, 'removed': removed}">
     <textarea class="ItemValue-input js-itemValueInput" 
       rows="1" 
-      v-model="value" 
-      @keydown="handleEnter" 
+      v-model.lazy="value" 
+      @keydown="handleKeys" 
       v-if="!isLocked"></textarea>
     <span class="ItemValue-text" 
       v-if="isLocked">{{fieldValue}}</span>

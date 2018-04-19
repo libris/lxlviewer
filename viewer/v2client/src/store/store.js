@@ -44,6 +44,7 @@ const store = new Vuex.Store({
         editing: false,
         focus: 'mainEntity',
         removing: false,
+        updating: false,
       },
       changeHistory: [],
       event: [],
@@ -196,6 +197,7 @@ const store = new Vuex.Store({
       state.inspector.data.quoted = quoted;
     },
     updateInspectorData(state, payload) {
+      state.inspector.status.updating = true;
       // Clone inspectorData so we can manipulate it before setting it
       const inspectorData = _.cloneDeep(state.inspector.data);
       

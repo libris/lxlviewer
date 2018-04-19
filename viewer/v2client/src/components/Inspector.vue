@@ -230,6 +230,7 @@ export default {
     'inspector.data'(val, oldVal) {
       if (val !== oldVal) {
         this.setTitle();
+        this.$store.dispatch('setInspectorStatusValue', { property: 'updating', value: false });
       }
     },
     '$route.params.fnurgel'(val, oldVal) {

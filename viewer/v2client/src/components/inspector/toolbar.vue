@@ -75,10 +75,12 @@ export default {
       });
     },
     postControl(control) {
-      this.$store.dispatch('pushInspectorEvent', { 
-        name: 'post-control', 
-        value: control 
-      });
+      if (!this.inspector.status.updating) {
+        this.$store.dispatch('pushInspectorEvent', { 
+          name: 'post-control', 
+          value: control 
+        });
+      }
     },
     toggleEditorFocus() {
       if (this.inspector.status.focus === 'record') {
@@ -353,7 +355,7 @@ export default {
           translation="translatePhrase"></tooltip-component>
       </i>
     </button>
-    <button class="Toolbar-btn btn btn-info" id="saveButton" 
+    <button class="Toolbar-btn btn btn-info" :disabled="inspector.status.updating" id="saveButton" 
       @click="postControl('save-record')"
       v-if="inspector.status.editing && !isNewRecord" 
       @mouseover="showSave = true" @mouseout="showSave = false">
@@ -365,7 +367,7 @@ export default {
           translation="translatePhrase"></tooltip-component>
       </i>
     </button>
-    <button class="Toolbar-btn btn btn-success" id="saveButton" 
+    <button class="Toolbar-btn btn btn-success" :disabled="inspector.status.updating" id="saveButton" 
       @click="postControl('save-record-done')"
       v-if="inspector.status.editing"
       @mouseover="showClarifySave = true"
