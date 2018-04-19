@@ -166,26 +166,26 @@ export default {
       );
       return obj;
     },
-    saveItem() {
+    saveItem(done=false) {
       this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: true });
       const RecordId = this.inspector.data.record['@id'];
       const obj = this.getPackagedItem();
       const ETag = this.inspector.data.record.modified;
 
       if (!RecordId || RecordId === 'https://id.kb.se/TEMPID') { // No ID -> create new
-        this.doCreate(obj);
+        this.doCreate(obj, done);
       } else { // ID exists -> update
-        this.doUpdate(RecordId, obj, ETag);
+        this.doUpdate(RecordId, obj, ETag, done);
       }
     },
-    doUpdate(url, obj, ETag) {
-      this.doSaveRequest(HttpUtil.put, obj, url, ETag);
+    doUpdate(url, obj, ETag, done) {
+      this.doSaveRequest(HttpUtil.put, obj, { url, ETag }, done);
     },
-    doCreate(obj) {
-      this.doSaveRequest(HttpUtil.post, obj, this.settings.apiPath);
+    doCreate(obj, done) {
+      this.doSaveRequest(HttpUtil.post, obj, { url: this.settings.apiPath }, done);
     },
-    doSaveRequest(requestMethod, obj, url, ETag) {
-      requestMethod({ url, ETag, activeSigel: this.user.settings.activeSigel, token: this.user.token }, obj).then((result) => {
+    doSaveRequest(requestMethod, obj, opts, done) {
+      requestMethod({ url: opts.url, ETag: opts.ETag, activeSigel: this.user.settings.activeSigel, token: this.user.token }, obj).then((result) => {
         if (!this.documentId) {
           const location = `${result.getResponseHeader('Location')}`;
           const locationParts = location.split('/');
@@ -195,6 +195,9 @@ export default {
         } else {
           this.fetchDocument();
           this.$store.dispatch('pushNotification', { color: 'green', message: `${StringUtil.getUiPhraseByLang('The post was saved', this.settings.language)}!` });
+          if (done) {
+            this.$store.dispatch('setInspectorStatusValue', { property: 'editing', value: false });
+          }
         }
         this.$store.dispatch('setInspectorStatusValue', { property: 'dirty', value: false });
         this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
@@ -227,8 +230,13 @@ export default {
       if (val.name === 'post-control') {
         switch(val.value) {
           case 'remove-post':
-          this.openRemoveModal();
+            this.openRemoveModal();
             break;
+          case 'save-record':
+            this.saveItem();
+            break;
+          case 'save-record-done':
+            this.saveItem(true);
           default:
             return;
         }
@@ -332,7 +340,7 @@ export default {
         
         <div class="Toolbar-placeholder" ref="ToolbarPlaceholder"></div>
         <div class="Toolbar-container" ref="ToolbarTest">
-          <toolbar @save="saveItem()"></toolbar>
+          <toolbar></toolbar>
         </div>
       </div>
     </div>
