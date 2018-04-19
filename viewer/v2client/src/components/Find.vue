@@ -156,7 +156,9 @@ export default {
         <facet-controls :result="result"></facet-controls>
       </div>
       <div class="col-md-9 Find-content">
-        <search-form :search-perimeter="$route.params.perimeter"></search-form>
+        <search-form 
+          :search-perimeter="$route.params.perimeter"
+          :result-data="result"></search-form>
         <div v-show="searchInProgress" class="panel panel-default">
           <div class="Find-progressText">
             {{ 'Searching' | translatePhrase }} <i class="fa fa-circle-o-notch fa-spin"></i>

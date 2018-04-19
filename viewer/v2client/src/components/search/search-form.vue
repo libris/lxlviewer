@@ -14,14 +14,15 @@ export default {
     filterParam: '',
     useSubmit: false,
     formDataSupported: false,
-    isLandingPage: false,
     searchPerimeter: {
         default: 'libris',
         type: String,
     },
+    resultData: {},
   },
   data() {
     return {
+      isLandingPage: true,
       vocabUrl: 'https://id.kb.se/vocab/',
       inputData: {
         textInput: [
@@ -31,7 +32,7 @@ export default {
             }
         ],
         currentInput: 0,
-        ids: []
+        ids: ['Instance']
       },
       remoteSearch: {
         q: '',
@@ -109,7 +110,7 @@ export default {
         if (this.searchPerimeter === 'libris') {
             const validTags = this.validSearchTags;
             let queryText = [];
-            for (const inputElement of this.inputData.textInput) {
+            for (const inputElement of this.inputData.textInput) {     
                 if (inputElement.class.indexOf('is-searchTag') > -1) {
                     const tag = inputElement.value.split(':');
                     const tagKey = tag[0];
@@ -138,6 +139,8 @@ export default {
             }
             queryText.push('_limit=20');
             _.each(this.inputData.ids, id => queryText.push(`@type=${id}`));
+            
+            this.inputData.ids = this.inputData.ids;
             query = queryText.join('&');
         } else {
             const databases = this.remoteSearch.activeDatabases.join();
@@ -147,7 +150,7 @@ export default {
         return query;
       },
       doSearch() {
-        this.$router.push({ path: `/search/${this.searchPerimeter}/${this.composeQuery()}` })
+        this.$router.push({ path: `/search/${this.searchPerimeter}/${this.composeQuery()}` });
       },
       clearInputs() {
         this.inputData.currentInput = 0;
@@ -176,6 +179,27 @@ export default {
             'label': StringUtil.getLabelByLang(term, this.settings.language, this.resources.vocab, this.settings.vocabPfx, this.resources.context)
             };
         });
+      },
+      usedFilters() {
+        const filters = [];
+        if (typeof this.resultData.search !== 'undefined') {
+            this.resultData.search.mapping.forEach(item => {
+            if (item.variable !== 'q') {
+                let filter = '';
+                if (typeof item.object !== 'undefined') {
+                  if (item.variable === '@type') {
+                    filter = item.object['@id'];
+                  } else {
+                    filter = item.object['@id'].replace('https://id.kb.se/', '');
+                  }
+                } else {
+                  filter = item.value;
+                }
+                filters.push(filter);
+            }
+          });
+        }
+        return filters;
       },
       currentIsTag() {
           const value = this.currentField.value;
@@ -212,14 +236,18 @@ export default {
     currentComputedInput(newValue) {
       document.querySelector('.js-qsmartInput').children[newValue].focus();
     },
+    usedFilters() {
+       if (typeof this.resultData !== 'undefined') {
+          if (this.usedFilters !== '') {
+            this.inputData.ids = this.usedFilters;
+          }
+        }
+    },
   },
   mounted() {
     this.$nextTick(() => {
       if (this.searchPerimeter === 'libris') {
         document.querySelector('.js-qsmartInput').children[this.inputData.currentInput].focus();
-        if (this.$route.fullPath === '/') {
-          this.inputData.ids = ["Instance"];
-        }
       }
     
     });
