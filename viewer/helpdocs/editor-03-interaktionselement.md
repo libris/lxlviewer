@@ -51,7 +51,7 @@ Klicka redigera för att göra ändringar i posten.
 
 
 
-## Redigeringsvy
+## Redigeringsvy - toolbar (till höger)
 
 ### Verktyg
 (se visningsvy ovan)
@@ -71,15 +71,20 @@ Spara-knappen sparar posten direkt till Libris databas, utan att ta dig ur redig
 ### Klar
 Klar tar dig ur redigeringsläget och sparar dina ändringar. 
 
+## Redigeringsvy - funktioner i posten
 
 ### Lägg till entitet i ett huvudfält/egenskap
-Längst till vänster finns postens huvudfälts-/egenskapsrubriker. För att lägga till en entitet under respektive huvudfält/egenskap klickar du på plusset under rubriken. Entiteten läggs då till i posten. 
+Längst till vänster finns postens huvudfälts-/egenskapsrubriker. För att lägga till en entitet under respektive huvudfält/egenskap klickar du på plusset under huvudfältsrubriken. Entiteten läggs då till i posten. 
 
 ### Ta bort huvudfält/egenskap
 För att ta bort ett huvudfält/egenskap klickar du på soptunnan i anslutning under huvudfälts-/egenskapsrubriken. Markören visar vilken data som då raderas.   
 
-### Lägg till och ta bort delfält
+### Entitetsfunktioner
+Till höger om varje lokal entitet finns tre funktioner där du kan lägga till delfält i entiteten, länka den (se avsnittet om entiteter), eller ta bort den.
+
+## Ta bort delfält i entitet
 För att lägga till ett delfält, klicka på +ikonen som finns i anslutning till entiteten till höger i vilken du vill lägga till delfältet. För att ta bort delfält, klicka på soptunnan till höger om delfältet du vill radera. 
+
 
 ### Kontextuell hjälp
 På vissa fält i posten finns det kontextuell hjälp att tillgå som nås via mouse over på frågetecken-ikonen.
