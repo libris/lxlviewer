@@ -6,10 +6,7 @@ tags:
 order: 13
 ---
 
-# Entiteter
-
-
-## Söka fram entiteter att lägga till
+## Söka fram entiteter
 När du ska lägga till en entitet är första steget att göra en sökning för att se om entiteten redan finns eller ej. Sökningen görs antingen via:
 
 **Fritextsök:** Gör en bred sökning genom att skriva in text i sökfältet och få fram ett sök resultat.
