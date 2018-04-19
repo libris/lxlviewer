@@ -405,6 +405,7 @@ export default {
     border-radius: 100%;
     font-size: 22px;
     font-size: 2.2rem;
+    margin: 2px 0;
     width: 50px;
     height: 50px;
     line-height: 1;
@@ -423,6 +424,8 @@ export default {
 
   &-menuList {
     display: block;
+    left: auto;
+    right: 0;
   }
 }
 
