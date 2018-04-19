@@ -12,7 +12,7 @@ tags:
 ## Visningsvy
 
 ### Lägg bestånd (endast från typen instans)
-Från instanser kan man lägga bestånd. Detta görs i postens visningsvy, där man når beståndsposten via beståndsknappen i sammanfattningen. På beståndsknappen ser du vilket sigel beståndet läggs på. Från instanser kan du även se hur många andra bibliotek som har bestånd på instansen.
+Från instanser kan man lägga bestånd. Detta görs i postens visningsvy, där man når beståndsposten via beståndsknappen högst upp i posten. På beståndsknappen ser du vilket sigel beståndet läggs på. Från instansposten kan du även se hur många andra bibliotek som har bestånd på instansen.
 
 
 ### Visa som
@@ -35,19 +35,18 @@ För att skapa en bättre översikt på posten, samt för att enklare se vad pos
 Knappen för att kopiera duplicerar all beskrivning in i en ny post. Det står då [Kopia] i postens rubrik. 
 OBS! Dock har ingen post skapats förrän postens sparats. När posten sparats får den ett nytt ID. Om man avbryter utan att spara försvinner posten.
 
-
+#### Download compiled MARC21
+När du trycker på compiled MARC21 så laddar du ner en fil som du kan importera till ditt lokala bibliotekssystem. 
 
 #### Förhandsgranska i MARC21
 Som ett ytterligare stöd finns också möjlighet att granska sitt arbete genom att förhandsgranska det i MARC21-format. MARC21-vyn konverterar posten vid öppning och är inte editerbar.
 
-
-
 #### Ta bort post 
-En post går att radera om den inte har obrytbra relationer.
+En post går endast att radera om den inte har obrytbra relationer.
 
 
 
-### Redigering
+### Redigera post
 Klicka redigera för att göra ändringar i posten. 
 
 
@@ -57,8 +56,8 @@ Klicka redigera för att göra ändringar i posten.
 ### Verktyg
 (se visningsvy ovan)
 
-### Lägg till fält
-+ Fält-knappen lägger till ett huvudfält.
+### Lägg till huvudfält/egenskap
++Fält-knappen lägger till ett nytt huvudfält/egenskap.
 
 
 ### Ångra
@@ -73,12 +72,16 @@ Spara-knappen sparar posten direkt till Libris databas, utan att ta dig ur redig
 Klar tar dig ur redigeringsläget och sparar dina ändringar. 
 
 
+### Lägg till entitet i ett huvudfält/egenskap
+Längst till vänster finns postens huvudfälts-/egenskapsrubriker. För att lägga till en entitet under respektive huvudfält/egenskap klickar du på plusset under rubriken. Entiteten läggs då till i posten. 
+
+### Ta bort huvudfält/egenskap
+För att ta bort ett huvudfält/egenskap klickar du på soptunnan i anslutning under huvudfälts-/egenskapsrubriken. Markören visar vilken data som då raderas.   
+
 ### Lägg till och ta bort delfält
-För att lägga till ett delfält, klicka på +Fält ikonen som finns i anslutning till delfältet.
-För att ta bort fält, klicka på soptunnan längst till höger i ett delfält eller på en rad. 
+För att lägga till ett delfält, klicka på +ikonen som finns i anslutning till entiteten till höger i vilken du vill lägga till delfältet. För att ta bort delfält, klicka på soptunnan till höger om delfältet du vill radera. 
 
-
-### Hjälp
-På vissa fält i posten finns det kontextuell hjälp att tillgå som nås via frågetecken-ikonen.
+### Kontextuell hjälp
+På vissa fält i posten finns det kontextuell hjälp att tillgå som nås via mouse over på frågetecken-ikonen.
 
 [^1]:	librispraxis

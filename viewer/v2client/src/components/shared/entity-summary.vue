@@ -14,7 +14,10 @@ export default {
     isExtractable: false,
     isImport: false,
     importItem: '',
-    routerPath: String,
+    routerPath: {
+      default: '',
+      type: String,
+    },
     database: '',
     shouldLink: {
       default: true,

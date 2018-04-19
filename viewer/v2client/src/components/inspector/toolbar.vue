@@ -93,9 +93,6 @@ export default {
     closeMarc() {
       this.showMarcPreview = false;
     },
-    save() {
-      this.$emit('save');
-    },
     undo() {
       this.$store.dispatch('undoInspectorChange');
     },
@@ -186,6 +183,9 @@ export default {
     },
     editing() {
       return this.inspector.status.editing;
+    },
+    isNewRecord() {
+      return this.inspector.data.record['@id'] === 'https://id.kb.se/TEMPID';
     },
     hasLocalWork() {
       return (typeof this.inspector.data.work !== 'undefined') ? true : false;
@@ -354,8 +354,8 @@ export default {
       </i>
     </button>
     <button class="Toolbar-btn btn btn-info" id="saveButton" 
-      @click="save" 
-      v-if="inspector.status.editing && !status.isNew" 
+      @click="postControl('save-record')"
+      v-if="inspector.status.editing && !isNewRecord" 
       @mouseover="showSave = true" @mouseout="showSave = false">
       <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="inspector.status.saving"></i>
       <i class="fa fa-fw fa-save" v-show="!inspector.status.saving">
@@ -366,13 +366,17 @@ export default {
       </i>
     </button>
     <button class="Toolbar-btn btn btn-success" id="saveButton" 
-      @click="save(true)" 
+      @click="postControl('save-record-done')"
       v-if="inspector.status.editing"
       @mouseover="showClarifySave = true"
       @mouseout="showClarifySave = false">
       <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="inspector.status.saving"></i>
       <i class="fa fa-fw fa-check" v-show="!inspector.status.saving">
         <tooltip-component tooltip-text="Save and stop editing" translation="translatePhrase"
+          v-if="!isNewRecord"
+          :show-tooltip="showClarifySave"></tooltip-component>
+        <tooltip-component tooltip-text="Create record" translation="translatePhrase"
+          v-if="isNewRecord"
           :show-tooltip="showClarifySave"></tooltip-component>
       </i>
     </button>

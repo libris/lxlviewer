@@ -185,7 +185,6 @@ const store = new Vuex.Store({
       }
     },
     setInspectorData(state, data) {
-      debugger;
       state.inspector.data = data;
     },
     setInsertData(state, data) {
