@@ -81,7 +81,7 @@ För att ta bort ett huvudfält/egenskap klickar du på soptunnan i anslutning u
 ### Lägg till och ta bort delfält
 För att lägga till ett delfält, klicka på +ikonen som finns i anslutning till entiteten till höger i vilken du vill lägga till delfältet. För att ta bort delfält, klicka på soptunnan till höger om delfältet du vill radera. 
 
-### Hjälp
+### Kontextuell hjälp
 På vissa fält i posten finns det kontextuell hjälp att tillgå som nås via mouse over på frågetecken-ikonen.
 
 [^1]:	librispraxis
