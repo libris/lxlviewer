@@ -139,8 +139,6 @@ export default {
             }
             queryText.push('_limit=20');
             _.each(this.inputData.ids, id => queryText.push(`@type=${id}`));
-            
-            this.inputData.ids = this.inputData.ids;
             query = queryText.join('&');
         } else {
             const databases = this.remoteSearch.activeDatabases.join();
@@ -201,6 +199,17 @@ export default {
         }
         return filters;
       },
+      usedTextInput() {
+        let textInput = '';
+        if (typeof this.resultData.search !== 'undefined') {
+            this.resultData.search.mapping.forEach(item => {
+            if (item.variable === 'q') {
+              textInput = item.value;
+            } 
+          });
+        }
+        return textInput;
+      },
       currentIsTag() {
           const value = this.currentField.value;
           return value.indexOf(':') > -1 && this.validSearchTags.indexOf(value.split(':')[0]) > -1;
@@ -237,10 +246,20 @@ export default {
       document.querySelector('.js-qsmartInput').children[newValue].focus();
     },
     resultData: function(newVal, oldVal) {
-      if (typeof newVal !== 'undefined') {
+      if (typeof newVal !== 'undefined' && Object.keys(newVal).length) {
         if (this.usedFilters !== '') {
           this.inputData.ids = this.usedFilters;
         }
+
+        if (this.usedTextInput !== '') {
+          const newObj = {};
+          const usedTextInput = [];
+          newObj.value = this.usedTextInput;
+          newObj.class='is-searchPhrase';
+          usedTextInput.push(newObj);
+          
+          this.inputData.textInput = usedTextInput;
+        } 
       }
     },
   },
@@ -249,7 +268,6 @@ export default {
       if (this.searchPerimeter === 'libris') {
         document.querySelector('.js-qsmartInput').children[this.inputData.currentInput].focus();
       }
-    
     });
   },
 };
@@ -289,16 +307,16 @@ export default {
             <div class="SearchBar-input form-control">
               <div class="SearchBar-qsmart js-qsmartInput" aria-labelledby="searchlabel">
                 <input name="q"
-                    aria-labelledby="searchlabel"
-                    list="matchingParameters"
-                    v-for="(input, index) in inputData.textInput"
-                    :key="index"
-                    @focus="handleFocus(index)"
-                    @input="updateField"
-                    @keydown="handleInput"
-                    v-model="input.value"
-                    class="SearchBar-qsmartInput"
-                    :class="input.class">
+                  aria-labelledby="searchlabel"
+                  list="matchingParameters"
+                  v-for="(input, index) in inputData.textInput"
+                  :key="index"
+                  @focus="handleFocus(index)"
+                  @input="updateField"
+                  @keydown="handleInput"
+                  v-model="input.value"
+                  class="SearchBar-qsmartInput"
+                  :class="input.class">
                 <datalist id="matchingParameters">
                   <option v-for="matchingParameter in validSearchTags" 
                     :key="matchingParameter" 
