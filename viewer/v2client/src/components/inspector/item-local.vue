@@ -377,7 +377,7 @@ export default {
           :path="getPath"></field-adder>
          
         <i class="ItemLocal-action fa fa-link"
-          v-if="inspector.status.editing"  
+          v-if="inspector.status.editing && isExtractable"
           @click="openExtractDialog()" 
           @mouseover="showLinkAction = true" 
           @mouseout="showLinkAction = false">
