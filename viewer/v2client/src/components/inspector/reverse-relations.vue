@@ -27,7 +27,7 @@ export default {
       // Returns a list of posts that links to <id> with <property>
       return new Promise((resolve, reject) => {
         const getInstancesUrl = `${this.settings.apiPath}/_dependencies?id=${id}&relation=${property}&reverse=true`;
-        httpUtil.get({ url: getInstancesUrl, accept: 'application/ld+json' }).then((response) => {
+        HttpUtil.get({ url: getInstancesUrl, accept: 'application/ld+json' }).then((response) => {
           resolve(response);
         }, (error) => {
           reject('getRelatedPosts failed - ', error);
@@ -47,7 +47,7 @@ export default {
             this.hasRelation = false;
           }
         }, (error) => {
-          console.log('Error checking for relations');
+          console.log('Error checking for relations', error);
         });
       } else if (this.recordType === 'Work') {
         property = 'instanceOf';
@@ -56,7 +56,7 @@ export default {
         this.relationInfo = response;
         this.numberOfRelations = response.length;
       }, (error) => {
-        console.log('Error checking for relations');
+        console.log('Error checking for relations', error);
       });
     },
   },
