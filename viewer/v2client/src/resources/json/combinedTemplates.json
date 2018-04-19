@@ -156,7 +156,7 @@
         }
       }
     },
-    "periodical": {
+    "printedperiodical": {
       "label": "Tryckt seriell resurs",
       "description": "RDA",
       "value": {
@@ -317,9 +317,8 @@
             }
           ],
           "marc:headingMain": true,
-          "marc:subjectSubdivision": {
-            "@id": "https://id.kb.se/marc/Topical"
-          },
+          "cataloguersNote": [""],
+          "sourceConsulted": [],
           "recordStatus": "marc:CorrectedOrRevised",
           "marc:recordUpdate": {
             "@id": "https://id.kb.se/marc/RecordCanBeUsed"
@@ -338,17 +337,25 @@
           "@type": "Person",
           "familyName": "",
           "givenName": "",
-          "marc:titlesAndOtherWordsAssociatedWithAName": "",
           "lifeSpan": "",
           "birthDate": "",
           "deathDate": "",
-          "exactMatch": [{
+          "hasVariant": [{
             "@type": "Person",
             "familyName": "",
             "givenName": "",
             "name": "",
             "lifeSpan": ""
           }],
+          "seeAlso": [{
+            "@type": "Person",
+            "familyName": "",
+            "givenName": "",
+            "name": "",
+            "lifeSpan": ""
+          }],
+          "fieldOfActivity": [],
+          "hasOccupation": [],
           "identifiedBy": [{
             "@type": "Identifier",
             "typeNote": "isni",
@@ -386,6 +393,8 @@
             "@id": "https://id.kb.se/marc/NationalStandard"
           },
           "recordStatus": "marc:CorrectedOrRevised",
+          "cataloguersNote": [""],
+          "sourceConsulted": [],
           "marc:recordUpdate": {
             "@id": "https://id.kb.se/marc/RecordCanBeUsed"
           },
@@ -404,6 +413,14 @@
           "hasHistoricalData": [{
             "@type": "AdministrativeHistoryNote",
             "label": ""
+          }],
+          "hasVariant": [{
+            "@type": "Organization",
+            "name": ""
+          }],
+          "seeAlso": [{
+            "@type": "Organization",
+            "name": ""
           }],
           "identifiedBy": [{
             "@type": "Identifier",

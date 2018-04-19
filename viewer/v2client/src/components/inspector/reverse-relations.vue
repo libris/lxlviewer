@@ -16,7 +16,7 @@ export default {
       checkingRelations: true,
       relationPath: '',
       relationInfo: [],
-      numberOfRelations: 0,
+      numberOfRelations: null,
     }
   },
   methods: {
@@ -106,7 +106,7 @@ export default {
   <div class="ReverseRelations">
     <div v-if="recordType === 'Work'" class="ReverseRelations-number">
       <span class="ReverseRelations-label">
-        {{ "Instantiations" | translatePhrase }}: {{numberOfRelations}}
+        {{ "Instantiations" | translatePhrase }}: {{numberOfRelations || 'Error' | translatePhrase}}
       </span>
       <instance-list-button v-if="!inspector.status.editing && this.numberOfRelations > 0" class="ReverseRelations-button"
         :checking-instances="checkingRelations" 
@@ -116,7 +116,7 @@ export default {
     <div class="ReverseRelations-number" v-if="recordType === 'Instance'">
       <i class="fa fa-university" aria-hidden="true"></i>
       <span class="ReverseRelations-label">
-        {{ "Libraries" | translatePhrase }}: {{numberOfRelations}}
+        {{ "Libraries" | translatePhrase }}: {{numberOfRelations || 'Error' | translatePhrase}}
       </span>
       <create-item-button class="ReverseRelations-button"
         v-if="user.isLoggedIn && user.getPermissions().registrant" 
