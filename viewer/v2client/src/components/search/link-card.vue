@@ -107,9 +107,11 @@ export default {
   &-text {
     display: flex;
     flex-direction: column;
+    width: 100%;
   }
 
   &-title {
+    display: block;
     font-size: 20px;
     font-size: 2rem;
     font-weight: 700;
@@ -122,7 +124,7 @@ export default {
   &--large {
     display: flex;
     justify-content: space-between;
-    flex-direction: unset;
+    flex-direction: row;
     align-items: inherit;
   }
 }

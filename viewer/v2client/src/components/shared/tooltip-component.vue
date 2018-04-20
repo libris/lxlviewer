@@ -53,10 +53,12 @@ export default {
 
 .tooltip-container-outer {
   position: absolute;
-  transform: translate(-50%, -50px);
   visibility: hidden;
   opacity: 0;
+  transform: translate(-50%, -50px);
   transition: all 0.1s ease;
+  display: none;
+
   .tooltip-container-inner {
     background-color: @black;
     white-space: nowrap;
@@ -86,6 +88,7 @@ export default {
     opacity: 1;
     transition-delay: 0.2s;
     visibility: visible;
+    display:block;
   }
 }
 

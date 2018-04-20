@@ -1,4 +1,5 @@
 'use strict'
+require('babel-polyfill')
 const path = require('path')
 const utils = require('./utils')
 const config = require('../config')
@@ -23,6 +24,7 @@ module.exports = {
   context: path.resolve(__dirname, '../'),
   entry: [
     'font-awesome/scss/font-awesome.scss',
+    'babel-polyfill',
     './src/main.js'
   ],
   output: {
