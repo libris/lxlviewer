@@ -85,13 +85,16 @@ export function getBaseClasses(classId, vocab, vocabPfx, context) {
   if (!classId || typeof classId === 'undefined') {
     throw new Error('getBaseClasses was called with an undefined Id.');
   }
-
   let classList = [];
   const termObj = getTermObject(classId, vocab, vocabPfx, context);
   if (typeof termObj === 'undefined') {
     return _.uniq(classList);
   }
   classList.push(termObj['@id']);
+  if (termObj.baseClassChain) { // Alredy calculated
+    classList = classList.concat(termObj.baseClassChain);
+    return _.uniq(classList);
+  }
   if (termObj && termObj.hasOwnProperty('subClassOf')) {
     termObj.subClassOf.forEach(obj => {
       if (typeof obj['@type'] === 'undefined') {
@@ -105,6 +108,7 @@ export function getBaseClasses(classId, vocab, vocabPfx, context) {
       }
     });
   }
+  termObj.baseClassChain = _.uniq(classList);
   // console.log("getBaseClasses(" + JSON.stringify(classId) + ")", JSON.stringify(classList));
   return _.uniq(classList);
 }
@@ -392,6 +396,10 @@ export function getProperties(classId, vocabClasses, vocabPfx, vocabProperties, 
   // Get all properties which has the domain of the className
   const props = [];
   // console.log("Getting props for", className);
+  const termObj = getTermObject(classId, vocabClasses, vocabPfx, context);
+  if (termObj.allowedProperties) {
+    return termObj.allowedProperties;
+  }
   vocabProperties.forEach(prop => {
     const domainList = getAllSubClasses(getDomainList(prop, vocabProperties, vocabPfx, context), vocabClasses, vocabPfx, context);
     for (const domain of domainList) {
@@ -400,6 +408,7 @@ export function getProperties(classId, vocabClasses, vocabPfx, vocabProperties, 
       }
     }
   });
+  termObj.allowedProperties = props;
   return props;
 }
 
