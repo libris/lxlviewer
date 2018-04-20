@@ -124,7 +124,7 @@ export default {
   &--large {
     display: flex;
     justify-content: space-between;
-    flex-direction: unset;
+    flex-direction: row;
     align-items: inherit;
   }
 }
