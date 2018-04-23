@@ -83,7 +83,13 @@ export default {
       _.each(values, (value) => {
         possibleValues.push(value['@id'].replace(this.settings.vocabPfx, ''));
       });
-      return _.sortBy(possibleValues, value => StringUtil.getLabelByLang(value, this.settings.language, this.resources.vocab, this.settings.vocabPfx, this.resources.context));
+      return _.sortBy(possibleValues, value => StringUtil.getLabelByLang(
+        value, 
+        this.settings.language, 
+        this.resources.vocab, 
+        this.settings.vocabPfx, 
+        this.resources.context)
+      );
     },
     setInitialValue() {
       if (this.possibleValues.indexOf(this.fieldValue) > -1) {

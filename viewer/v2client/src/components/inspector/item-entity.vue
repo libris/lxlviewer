@@ -136,7 +136,8 @@ export default {
   padding: 3px 0.3em 3px 0.5em;
 
   &-container {
-    margin: 0px 0.5em 0px 0px;
+    display: flex;
+    margin: 0px 5px 5px 0px;
   }
   &-removeButton {
     display: inline-block;
