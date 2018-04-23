@@ -461,6 +461,7 @@ export default {
   &-input {
     font-size: 20px;
     font-size: 2rem;
+    line-height: 1.2;
     height: 44px;
     min-width: 75%;
     margin: 0 5px 0 0;
@@ -487,7 +488,6 @@ export default {
     flex: 8 8 98%;
     flex-direction: row;
     flex-wrap: nowrap;
-    line-height: 2em;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
