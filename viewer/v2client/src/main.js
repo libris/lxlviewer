@@ -59,10 +59,9 @@ new Vue({
   created() {
     this.initWarningFunc();
     Promise.all(this.getLdDependencies()).then((resources) => {
-      store.dispatch('setContext', resources[2]['@context']);
+      store.dispatch('setContext', resources[1]['@context']);
       store.dispatch('setupVocab', resources[0]['@graph']);
       store.dispatch('setDisplay', FakedDisplayJson);
-      store.dispatch('setForcedListTerms', resources[1]);
       store.dispatch('changeResourcesStatus', true);
     }, (error) => {
       window.lxlWarning(`🔌 The API (at ${this.settings.apiPath}) might be offline!`);
@@ -212,8 +211,6 @@ new Vue({
       //   console.log('getDisplayDefinitions', error);
       // });
       // promiseArray.push(displayPromise);
-      const repeatablePromise = VocabUtil.getForcedListTerms(this.settings.apiPath);
-      promiseArray.push(repeatablePromise);
       const contextPromise = VocabUtil.getContext(this.settings.apiPath);
       promiseArray.push(contextPromise);
       return promiseArray;

@@ -412,11 +412,19 @@ export function getProperties(classId, vocabClasses, vocabPfx, vocabProperties, 
   return props;
 }
 
-export function hasValuesInVocab(propertyId, context) {
+export function getContextValue(propertyId, key, context) {
   if (context[1].hasOwnProperty(propertyId)) {
-    if (context[1][propertyId]['@type'] === '@vocab') {
-      return true;
+    if (context[1][propertyId].hasOwnProperty(key)) {
+      return context[1][propertyId][key];
     }
+  }
+  return null;
+}
+
+export function propIsRepeatable(propertyId, context) {
+  const contextContainer = getContextValue(this.fieldKey, '@container', context);
+  if (contextContainer === '@set' || contextContainer === '@list') {
+    return true;
   }
   return false;
 }

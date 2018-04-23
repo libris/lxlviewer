@@ -159,7 +159,7 @@ export default {
       return (this.propertyTypes.indexOf('DatatypeProperty') === -1);
     },
     isRepeatable() {
-      return this.resources.forcedListTerms.indexOf(this.fieldKey) > -1;
+      return VocabUtil.propIsRepeatable(this.fieldKey, this.resources.context);
     },
     isEmptyObject() {
       const value = this.fieldValue;
@@ -287,10 +287,10 @@ export default {
       if (this.isPlainObject(o) && !o.hasOwnProperty('@id') && !o.hasOwnProperty('@type')) {
         return 'error';
       }
-      if (this.isPlainObject(o) && o['@id'] && o['@id'].indexOf('#work') > -1) {
-        return 'error';
-      }
-      if (VocabUtil.hasValuesInVocab(this.fieldKey, this.resources.context)) {
+      // if (this.isPlainObject(o) && o['@id'] && o['@id'].indexOf('#work') > -1) {
+      //   return 'error';
+      // }
+      if (VocabUtil.getContextValue(this.fieldKey, '@type', this.resources.context) === '@vocab') {
         return 'vocab';
       }
       if (this.isPlainObject(o) && this.isLinked(o)) {

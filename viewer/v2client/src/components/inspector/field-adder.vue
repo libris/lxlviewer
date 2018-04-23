@@ -6,8 +6,9 @@
 import { mixin as clickaway } from 'vue-clickaway';
 import * as _ from 'lodash';
 import ToolTipComponent from '../shared/tooltip-component';
-import * as LayoutUtil from '../../utils/layout';
-import * as StringUtil from '../../utils/string';
+import * as LayoutUtil from '@/utils/layout';
+import * as StringUtil from '@/utils/string';
+import * as VocabUtil from '@/utils/vocab';
 import ComboKeys from 'combokeys';
 import ModalComponent from '@/components/shared/modal-component.vue';
 import { mapGetters } from 'vuex';
@@ -198,7 +199,7 @@ export default {
     getEmptyFieldValue(key, prop) {
       let value = [];
       if (prop['@type'] === 'DatatypeProperty') {
-        if (this.resources.forcedListTerms.indexOf(key) > -1) {
+        if (VocabUtil.propIsRepeatable(key, this.resources.context)) {
           value = [''];
         } else {
           value = '';
