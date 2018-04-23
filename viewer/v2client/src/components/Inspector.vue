@@ -170,6 +170,10 @@ export default {
         newData.record['@id'] =  `https://id.kb.se/TEMPID`;
         newData.record.mainEntity['@id'] = `https://id.kb.se/TEMPID#it`;
         newData.mainEntity['@id'] =  `https://id.kb.se/TEMPID#it`; 
+        
+        delete newData.mainEntity.sameAs;
+        delete newData.record.sameAs;
+        delete newData.work.sameAs;
        
         this.$store.dispatch('setInsertData', DataUtil.getMergedItems(
           newData.record, 
