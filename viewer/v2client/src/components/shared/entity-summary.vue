@@ -238,7 +238,7 @@ export default {
   }
 
   &-info {
-    height: 7.5em;
+    min-height: 7.5em;
     overflow: hidden;
   }
 
