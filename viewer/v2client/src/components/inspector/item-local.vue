@@ -444,11 +444,10 @@ export default {
 <style lang="less">
 
 .ItemLocal {
-  padding: 5px;
+  padding: 10px 5px;
   margin: -5px;
   position: relative;
   flex: 1 100%;
-  border: 2px solid transparent;
 
   &-heading {
     position: relative;
@@ -468,8 +467,8 @@ export default {
     position: relative;
     padding: 0 0 0 20px;
 
-    .locked & {
-      padding: 0 0 0 20px;
+    > .is-expanded & {
+      margin: 10px 0 0;
     }
   }
 
@@ -493,8 +492,7 @@ export default {
   }
 
   &.is-affected {
-    border: 2px solid @brand-primary;
-
+    outline: 2px solid @brand-primary;
   }
 
 }
@@ -547,21 +545,6 @@ export default {
       border: 1px solid transparent;
     }
     > .topbar {
-      display: flex;
-      align-items: center;
-      padding: 5px 0;
-      background: @topbar-color;
-      white-space: nowrap;
-      overflow: hidden;
-      cursor: pointer;
-      > .actions {
-        display: flex;
-        flex-basis: 4em;
-        flex-direction: row-reverse;
-        .confirm-remove-box {
-          transform: translate(16px, 0px);
-        }
-      }
 
       .chip-action {
         cursor: pointer;
