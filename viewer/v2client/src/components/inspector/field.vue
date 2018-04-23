@@ -540,7 +540,7 @@ export default {
     &:after {
       content: "";
       position: absolute;
-      left: -14px;
+      left: -13px;
     }
 
     &:before {
