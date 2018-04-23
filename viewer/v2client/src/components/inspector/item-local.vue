@@ -450,9 +450,11 @@ export default {
   flex: 1 100%;
 
   &-heading {
-    position: relative;
+    display: block;
     flex: 1 100%;
     font-weight: normal;
+    margin: 0 0 5px;
+    position: relative;
   }
 
   &-arrow {
