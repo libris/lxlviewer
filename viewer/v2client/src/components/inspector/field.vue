@@ -619,7 +619,6 @@ export default {
   &-comment {
     display: inline;
     margin-left: 2px;
-    z-index: 3;
     position: relative;
 
     &:hover {
