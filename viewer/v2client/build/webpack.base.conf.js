@@ -23,6 +23,7 @@ const createLintingRule = () => ({
 module.exports = {
   context: path.resolve(__dirname, '../'),
   entry: [
+    'whatwg-fetch',
     'font-awesome/scss/font-awesome.scss',
     'babel-polyfill',
     './src/main.js'

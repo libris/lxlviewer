@@ -266,14 +266,17 @@ export default {
         </i>
         <span class="Toolbar-caret caret"></span>
       </button>
-      <ul class="dropdown-menu Toolbar-menuList OtherFormatMenu-menu" v-show="otherFormatMenuActive">
+      <ul class="dropdown-menu Toolbar-menuList OtherFormatMenu-menu" 
+        v-show="otherFormatMenuActive"
+        @click="hideOtherFormatMenu" >
         <li><a :href="getOtherDataFormat('jsonld')">JSON-LD</a></li>
         <li><a :href="getOtherDataFormat('ttl')">Turtle</a></li>
         <li><a :href="getOtherDataFormat('rdf')"><i class="fa fa-fw fa-download" aria-hidden="true"></i>RDF/XML</a></li>
       </ul>
     </div>
 
-    <div class="dropdown Toolbar-menu ToolsMenu" v-on-clickaway="hideToolsMenu">
+    <div class="dropdown Toolbar-menu ToolsMenu" 
+      v-on-clickaway="hideToolsMenu">
       <button class="Toolbar-btn btn btn-default ToolsMenu-button" 
         @click="toggleToolsMenu" 
         aria-haspopup="true" 
@@ -288,7 +291,9 @@ export default {
         </i>
         <span class="Toolbar-caret caret"></span>
       </button>
-      <ul class="dropdown-menu Toolbar-menuList ToolsMenu-menu" v-show="toolsMenuActive">
+      <ul class="dropdown-menu Toolbar-menuList ToolsMenu-menu" 
+      v-show="toolsMenuActive"   
+      @click="hideToolsMenu">
         <li>
           <a class="Toolbar-menuLink" @click="formControl('expand-item')">
           <i class="fa fa-fw fa-expand" aria-hidden="true"></i>
@@ -302,7 +307,7 @@ export default {
           </a>
         </li>
         <li v-if="user.isLoggedIn && !inspector.status.editing && !isSubClassOf('Item')">
-          <a class="Toolbar-menuLink"   @click="handleCopy">
+          <a class="Toolbar-menuLink"  @click="handleCopy">
           <i class="fa fa-fw fa-files-o"></i>
           {{ "Make copy" | translatePhrase }}
           </a>
