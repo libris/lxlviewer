@@ -434,7 +434,9 @@ export default {
           v-show="!locked" 
           :class="{'disabled': activeModal}">
           <i class="fa fa-trash-o action-button"
+            tabindex="0"
             v-on:click="removeThis(true)"
+            @keyup.enter="removeThis(true)"
             @mouseover="removeHover = true" 
               @mouseout="removeHover = false"  >
             <tooltip-component :show-tooltip="removeHover" tooltip-text="Remove" translation="translatePhrase"></tooltip-component>
@@ -487,7 +489,6 @@ export default {
           :parent-path="getPath" 
           :in-array="valueIsArray" 
           :show-action-buttons="actionButtonsShown"></item-local>
-
 
         <item-sibling
           v-if="getDatatype(item) == 'sibling'"

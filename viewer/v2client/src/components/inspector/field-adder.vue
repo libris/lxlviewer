@@ -263,16 +263,22 @@ export default {
   <div class="FieldAdder">
     <span v-if="inner" class="FieldAdder-innerAdd"
       v-on:click="show" 
+      tabindex="0"
+      @keyup.enter="show"
       @mouseenter="showToolTip = true" 
       @mouseleave="showToolTip = false">
       <i class="FieldAdder-innerIcon fa fa-plus plus-icon" aria-hidden="true">
-        <tooltip-component :show-tooltip="showToolTip" tooltip-text="Add field" translation="translatePhrase"></tooltip-component>
+        <tooltip-component 
+          :show-tooltip="showToolTip" 
+          tooltip-text="Add field" 
+          translation="translatePhrase"></tooltip-component>
       </i>
       <span class="FieldAdder-innerLabel">{{ "Field" | translatePhrase }}</span>
     </span>
 
     <button v-if="!inner" class="FieldAdder-add btn btn-primary toolbar-button" 
       v-on:click="show" 
+      @keyup.enter="show"
       @mouseenter="showToolTip = true" 
       @mouseleave="showToolTip = false">
       <i class="FieldAdder-icon fa fa-plus plus-icon" aria-hidden="true">
@@ -293,7 +299,7 @@ export default {
           <span class="filterInfo">{{ "Showing" | translatePhrase }} {{ filteredResults.length }} {{ "of" | translatePhrase }} {{allowed ? allowed.length : '0'}} {{ "total" | translatePhrase }}</span>
         </span>
         <span class="ModalComponent-windowControl">
-          <i @click="hide" class="fa fa-close"></i>
+          <i @click="hide" @keyup.enter="hide" tabindex="0" class="fa fa-close"></i>
         </span>
       </template>
       <template slot="modal-body">

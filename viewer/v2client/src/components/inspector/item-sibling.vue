@@ -317,12 +317,13 @@ export default {
 <template>
   <div class="ItemSibling js-itemLocal"
     tabindex="0"
-    @keyup.enter="toggleExpanded()"
     :class="{'highlight': isNewlyAdded, 'is-expanded': expanded}">
    
    <strong class="ItemSibling-heading">
       <i class="ItemSibling-arrow fa fa-chevron-right " 
-        :class="{'down': expanded}" @click="toggleExpanded()"></i>
+        :class="{'down': expanded}" @click="toggleExpanded()"
+        tabindex="0"
+        @keyup.enter="toggleExpanded()"></i>
       <span class="type" 
         @click="toggleExpanded($event)" 
         :title="item['@type']">{{ item['@type'] | labelByLang | capitalize }}:</span>
@@ -345,6 +346,8 @@ export default {
         <i class="ItemSibling-action fa fa-link"
           v-if="inspector.status.editing && isExtractable"
           @click="openExtractDialog()" 
+          tabindex="0"
+          @keyup.enter="openExtractDialog()"
           @mouseover="showLinkAction = true" 
           @mouseout="showLinkAction = false">
           <tooltip-component 
@@ -355,7 +358,9 @@ export default {
         <i class="ItemSibling-action fa fa-trash-o chip-action" 
           v-if="!isLocked" 
           :class="{'show-icon': showActionButtons}" 
-          v-on:click="removeThis(true)" 
+          v-on:click="removeThis(true)"
+          @keyup.enter="removeThis(true)"
+          tabindex="0"
           @mouseover="removeHover = true" 
           @mouseout="removeHover = false">
           <tooltip-component 

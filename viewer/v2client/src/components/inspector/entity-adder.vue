@@ -350,6 +350,8 @@ export default {
     <div class="EntityAdder-add"
       v-if="isPlaceholder && !addEmbedded" 
       v-on:click="add()" 
+      tabindex="0"
+      @keyup.enter="add()"
       @mouseenter="showToolTip = true" 
       @mouseleave="showToolTip = false">
       <span>
@@ -364,7 +366,9 @@ export default {
 
     <div class="EntityAdder-add action-button" 
       v-if="!isPlaceholder && !addEmbedded" 
+      tabindex="0"
       v-on:click="add()" 
+      @keyup.enter="add()"
       @mouseenter="showToolTip = true" 
       @mouseleave="showToolTip = false">
       <i class="EntityAdder-addIcon fa fa-fw fa-plus plus-icon" aria-hidden="true">
@@ -395,7 +399,7 @@ export default {
       <template slot="modal-header">
         {{ "Add entity" | translatePhrase }} | {{ addLabel | labelByLang }}
         <span class="ModalComponent-windowControl">
-          <i @click="hide" class="fa fa-close"></i>
+          <i @click="hide" tabindex="0" @keyup.enter="hide" class="fa fa-close"></i>
         </span>
       </template>
 
