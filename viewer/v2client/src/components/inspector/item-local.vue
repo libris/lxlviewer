@@ -342,13 +342,14 @@ export default {
 
 <template>
   <div class="ItemLocal js-itemLocal"
-    tabindex="0"
-    @keyup.enter="toggleExpanded()"
     :class="{'highlight': isNewlyAdded, 'is-expanded': expanded}">
    
-   <strong class="ItemLocal-heading">
+   <strong class="ItemLocal-heading" tabindex="0"
+      @keyup.enter="toggleExpanded()">
       <i class="ItemLocal-arrow fa fa-chevron-right " 
-        :class="{'down': expanded}" @click="toggleExpanded()"></i>
+        :class="{'down': expanded}" 
+        @click="toggleExpanded()"
+        ></i>
       <span class="type" 
         @click="toggleExpanded($event)" 
         :title="item['@type']">{{ item['@type'] | labelByLang | capitalize }}:</span>
@@ -452,7 +453,7 @@ export default {
   &-arrow {
     transition: all 0.2s ease;
     padding: 0 2px;
-    margin: 0 0 0 1px;
+    margin: 0 0 0 2px;
     cursor: pointer;
   }
 
