@@ -21,8 +21,7 @@
             }
           ],
           "descriptionLanguage": [{
-            "@id": "https://id.kb.se/language/swe",
-            "code": "swe"
+            "@id": "https://id.kb.se/language/swe"
           }],
           "recordStatus": "",
           "marc:catalogingSource": {
@@ -102,7 +101,7 @@
           }],
           "hasDimensions": {
             "@type": "Dimensions",
-            "label": "(antal) cm"
+            "label": ""
           },
           "seriesStatement": "",
           "hasSeries": [{
@@ -188,6 +187,9 @@
               "code": "rda"
             }
           ],
+          "descriptionLanguage": [{
+            "@id": "https://id.kb.se/language/swe"
+          }],
           "recordStatus": "",
           "marc:catalogingSource": {
             "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
@@ -196,6 +198,7 @@
         "mainEntity": {
           "@type": "Instance",
           "issuanceType": "Serial",
+          "frequency": [],
           "publicationCountry": [{
             "@id": "https://id.kb.se/country/sw"
           }],
@@ -208,11 +211,15 @@
               "titleRemainder": ""
             }
           ],
+          "marc:alphabet": {
+            "@id": "https://id.kb.se/marc/SerialsAlphabetType-b"
+          },
           "marc:typeOfEntry": {
-            "@id": "https://id.kb.se/marc/SuccessiveEntry"
+            "@id": "https://id.kb.se/marc/SerialsTypeOfEntryType-0"
           },
           "identifiedBy": [{
-            "@type": "ISSN"
+            "@type": "ISSN",
+            "value": ""
           }],
           "publication": [{
             "@type": "Publication",
@@ -235,6 +242,10 @@
             "code": "n",
             "termGroup": "rdamedia"
           }],
+          "hasDimensions": {
+            "@type": "Dimensions",
+            "label": ""
+          },
           "hasNote": [{
             "@type": "Note",
             "label": ""
@@ -248,6 +259,17 @@
             "language": [{
               "@id": "https://id.kb.se/language/swe"
             }],
+            "contribution": [
+              {
+                "@type": "Contribution",
+                "agent": {
+                  "@type": "Person",
+                  "familyName": "",
+                  "givenName": "",
+                  "lifeSpan": ""
+                }
+              }
+            ],
             "contentType": [{
               "@type": "Content",
               "code": "txt",
@@ -256,7 +278,8 @@
             "genreForm": [{
               "@id": "https://id.kb.se/marc/Periodical"
             }],
-            "classification": []
+            "classification": [],
+            "subject": []
           }
         }
       }
