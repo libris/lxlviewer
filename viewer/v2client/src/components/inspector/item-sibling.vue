@@ -372,12 +372,12 @@ export default {
     </strong>
   
     <ul class="ItemSibling-list js-itemLocalFields">      
-      <field-adder 
+      <!-- <field-adder 
         v-if="!isLocked && isEmpty" 
         :entity-type="item['@type']" 
         :allowed="allowedProperties" 
         :inner="true" 
-        :path="getPath"></field-adder>
+        :path="getPath"></field-adder> -->
       <field
         v-show="expanded && k !== '_uid'" 
         v-for="(v, k) in filteredItem" 

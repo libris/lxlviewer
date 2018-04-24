@@ -400,12 +400,12 @@ export default {
     </strong>
   
     <ul class="ItemLocal-list js-itemLocalFields">      
-      <field-adder 
+      <!-- <field-adder 
         v-if="!isLocked && isEmpty" 
         :entity-type="item['@type']" 
         :allowed="allowedProperties" 
         :inner="true" 
-        :path="getPath"></field-adder>
+        :path="getPath"></field-adder> -->
       <field
         v-show="expanded && k !== '_uid'" 
         v-for="(v, k) in filteredItem" 
@@ -420,7 +420,7 @@ export default {
         :field-key="k" 
         :field-value="v" 
         :key="k" 
-        :show-action-buttons="showActionButtons"></field>
+        :show-action-buttons="showActionButtons"></field> 
     </ul>
        
     <search-window 
