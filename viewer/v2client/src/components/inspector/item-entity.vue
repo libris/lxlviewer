@@ -93,6 +93,7 @@ export default {
       tabindex="0"
       v-if="!expanded" 
       :class="{ 'is-locked': isLocked, 'highlighted': showCardInfo }" 
+      @keyup.enter="showCardInfo=true"
       @mouseenter="showCardInfo=true">
       <span class="ItemEntity-label">
         <span v-if="!expanded">{{getItemLabel}}</span>

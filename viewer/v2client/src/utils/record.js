@@ -118,8 +118,6 @@ export function getImportObject(graph) {
   const newMainEntity = _.cloneDeep(getMainEntity(graph));
 
   const recordId = newRecord['@id'];
-
-  if(!recordId) return;
   const mainEntityId = newMainEntity['@id'];
 
   newRecord['@id'] = newRecord['@id'].replace(recordId, 'https://id.kb.se/TEMPID');
