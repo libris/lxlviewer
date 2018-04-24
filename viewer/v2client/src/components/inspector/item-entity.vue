@@ -92,7 +92,7 @@ export default {
     <div class="ItemEntity" 
       tabindex="0"
       v-if="!expanded" 
-      :class="{ 'locked': isLocked, 'highlighted': showCardInfo }" 
+      :class="{ 'is-locked': isLocked, 'highlighted': showCardInfo }" 
       @mouseenter="showCardInfo=true">
       <span class="ItemEntity-label">
         <span v-if="!expanded">{{getItemLabel}}</span>
@@ -138,7 +138,9 @@ export default {
   &-container {
     display: flex;
     margin: 0px 5px 5px 0px;
+    position: relative;
   }
+
   &-removeButton {
     display: inline-block;
     width: 1.2em;
@@ -163,7 +165,7 @@ export default {
     margin: 0 0 2em 0;
   }
 
-  &.locked {
+  &.is-locked {
     padding: 3px 0.5em 3px 0.5em;
   }
   &:hover {

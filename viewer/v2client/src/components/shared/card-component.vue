@@ -63,7 +63,7 @@ export default {
 
 <template>
   <div class="Card" 
-    :class="{ 'active': active, 'to-be-active': toBeActive, 'floating': floating }">
+    :class="{ 'is-active': active, 'to-be-active': toBeActive, 'is-floating': floating }">
     <entity-summary 
       :focus-data="focusData" 
       :is-extractable="isExtractable" 
@@ -80,6 +80,7 @@ export default {
   width: 100%;
   background-color: @white;
   display: none;
+  top: 32px;
   position: absolute;
   transition: opacity 0.4s ease;
 
@@ -90,13 +91,13 @@ export default {
     z-index: 2;
   }
 
-  &.active {
+  &.is-active {
     display: block;
     opacity: 1;
     z-index: 3;
   }
 
-  &.floating {
+  &.is-floating {
     width: 600px;
     border-radius: 0.5em;
     box-shadow: @shadow-card-elevated;
