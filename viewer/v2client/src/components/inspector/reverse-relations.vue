@@ -99,7 +99,7 @@ export default {
       }
     },
     numberOfRelations(newVal) {
-      console.log(newVal);
+      // console.log(newVal);
     }
   },
   mounted() { // Ready method is deprecated in 2.0, switch to "mounted"
