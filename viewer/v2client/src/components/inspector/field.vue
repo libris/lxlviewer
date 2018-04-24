@@ -544,14 +544,14 @@ export default {
     }
 
     &:before {
-      border-top: 1px solid @gray;
-      top: 15px;
+      border-top: 1px solid #666666;
+      top: 16px;
       width: 15px;
       height: 0;
     }
 
     &:after {
-      border-left: 1px solid @gray;
+      border-left: 1px solid #666666;
       height: 100%;
       width: 0px;
       top: 0px;
@@ -559,7 +559,7 @@ export default {
 
     &:last-child {
       &:after {
-        height: 15px;
+        height: 16px;
       }
     }
   }
@@ -588,10 +588,10 @@ export default {
     &:before {
       .Field--inner & {
         content: " ● ";
-        color: @gray;
+        color: #666666;
         position: absolute;
         left: 0px;
-        top: -2px;
+        top: -1px;
       }
     } 
   }
