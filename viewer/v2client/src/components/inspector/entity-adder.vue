@@ -283,6 +283,22 @@ export default {
       this.chooseLocalType = false;
       this.hide();
     },
+    addLinkedItem(obj) {
+      let currentValue = _.cloneDeep(_.get(this.inspector.data, this.path));
+      const linkObj = { '@id': obj['@id'] };
+      if (!_.isArray(currentValue)) {
+        currentValue = linkObj;
+      } else {
+        currentValue.push(linkObj);
+      }
+      this.$store.dispatch('addToQuoted', obj);
+      this.$store.dispatch('updateInspectorData', {
+          path: `${this.path}`,
+          value: currentValue,
+          addToHistory: true,
+      });
+      this.hide();
+    },
     addItem(obj) {
       let currentValue = _.cloneDeep(_.get(this.inspector.data, this.path));
       if (!_.isArray(currentValue)) {
@@ -470,7 +486,9 @@ export default {
           v-if="!loading && keyword.length > 0" 
           :path="path" 
           :results="searchResult" 
-          :disabled-ids="alreadyAdded"></entity-search-list>
+          :disabled-ids="alreadyAdded"
+          @add-item="addLinkedItem"
+          ></entity-search-list>
       </div>
     </template>
   </modal-component>

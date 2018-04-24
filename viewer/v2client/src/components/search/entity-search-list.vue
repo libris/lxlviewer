@@ -25,6 +25,9 @@ export default {
     }
   },
   methods: {
+    addItem(item) {
+      this.$emit('add-item', item);
+    },
     select(index) {
       this.selectedIndex = index;
     },
@@ -107,7 +110,9 @@ export default {
         :add-link="false"
         :path="path"
         v-for="(item, index) in results" 
-        :key="index"></entity-search-item>
+        :key="index"
+        @add-item="addItem(item)"
+        ></entity-search-item>
     </ul>
   </div>
 </template>

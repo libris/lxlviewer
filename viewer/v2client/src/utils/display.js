@@ -144,6 +144,9 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
         } else if (_.isArray(value)) {
           const newArray = [];
           for (const arrayItem of value) {
+            if (typeof arrayItem === 'undefined' || arrayItem === null) {
+              throw new Error('getDisplayObject encountered an undefined or null item in an array.');
+            }
             if (_.isObject(arrayItem) && (Object.keys(arrayItem).length > 1 || arrayItem[Object.keys(arrayItem)[0]] !== '')) {
               newArray.push(getItemLabel(arrayItem, displayDefs, quoted, vocab, settings, context));
             } else if (arrayItem.length > 0) {
