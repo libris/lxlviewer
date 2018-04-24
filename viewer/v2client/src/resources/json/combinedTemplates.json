@@ -23,6 +23,7 @@
           "descriptionLanguage": [{
             "@id": "https://id.kb.se/language/swe"
           }],
+          "encodingLevel": "",
           "recordStatus": "",
           "marc:catalogingSource": {
             "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
@@ -45,18 +46,25 @@
           }],
           "editionStatement": "",
           "editionStatementRemainder": "",
-          "publication": [{
-            "@type": "Publication",
-            "place": {
-              "@type": "Place",
-              "label": ""
+          "publication": [
+            {
+              "@type": "PrimaryPublication",
+              "date": "",
+              "country": [ {"@id": "https://id.kb.se/country/sw"} ]
             },
-            "agent": {
-              "@type": "Agent",
-              "label": ""
-            },
-            "date": ""
-          }],
+            {
+              "@type": "Publication",
+              "place": {
+                "@type": "Place",
+                "label": ""
+              },
+              "agent": {
+                "@type": "Agent",
+                "label": ""
+              },
+              "date": ""
+            }
+          ],
           "manufacture": [{
             "@type": "Manufacture",
             "agent": [{
@@ -75,12 +83,6 @@
               ]
             }]
           }],
-          "marc:publicationStatus": {
-            "@id": "https://id.kb.se/marc/SingleKnownDateProbableDate"
-          },
-          "publicationCountry": [{
-            "@id": "https://id.kb.se/country/sw"
-          }],
           "copyright": [{
             "@type": "Copyright",
             "date": ""
@@ -97,7 +99,7 @@
           }],
           "extent": [{
             "@type": "Extent",
-            "label": "(antal) sidor"
+            "label": ""
           }],
           "hasDimensions": {
             "@type": "Dimensions",
@@ -178,7 +180,6 @@
               "sigel": [""]
             }
           ],
-          "encodingLevel": "",
           "descriptionConventions": [{
               "@id": "https://id.kb.se/marc/Isbd"
             },
@@ -190,6 +191,7 @@
           "descriptionLanguage": [{
             "@id": "https://id.kb.se/language/swe"
           }],
+          "encodingLevel": "",
           "recordStatus": "",
           "marc:catalogingSource": {
             "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
@@ -199,9 +201,6 @@
           "@type": "Instance",
           "issuanceType": "Serial",
           "frequency": [],
-          "publicationCountry": [{
-            "@id": "https://id.kb.se/country/sw"
-          }],
           "hasTitle": [{
               "@type": "KeyTitle"
             },
@@ -221,17 +220,25 @@
             "@type": "ISSN",
             "value": ""
           }],
-          "publication": [{
-            "@type": "Publication",
-            "place": {
-              "@type": "Place",
-              "label": ""
+          "publication": [
+            {
+              "@type": "PrimaryPublication",
+              "date": "",
+              "country": [ {"@id": "https://id.kb.se/country/sw"} ]
             },
-            "agent": {
-              "@type": "Agent",
-              "label": ""
+            {
+              "@type": "Publication",
+              "place": {
+                "@type": "Place",
+                "label": ""
+              },
+              "agent": {
+                "@type": "Agent",
+                "label": ""
+              },
+              "date": ""
             }
-          }],
+          ],
           "carrierType": [{
             "@type": "CarrierType",
             "code": "nc",
@@ -250,10 +257,15 @@
             "@type": "Note",
             "label": ""
           }],
+          "hasNumberingOfSerials": [
+            {
+              "@type": "NumberingOfSerials",
+              "label": ""
+            }
+          ],
           "succeededBy": [{
             "@type": "Serial"
           }],
-          "temporalCoverage": "",
           "instanceOf": {
             "@type": "Text",
             "language": [{
@@ -271,14 +283,28 @@
               }
             ],
             "contentType": [{
-              "@type": "Content",
+              "@type": "ContentType",
               "code": "txt",
               "termGroup": "rdacontent"
             }],
             "genreForm": [{
               "@id": "https://id.kb.se/marc/Periodical"
             }],
-            "classification": [],
+            "classification": [{
+                "@type": "ClassificationDdc",
+                "code": "",
+                "edition": ""
+              },
+              {
+                "@type": "Classification",
+                "code": "",
+                "inScheme": {
+                  "@type": "ConceptScheme",
+                  "@id": "https://id.kb.se/term/kssb/8",
+                  "code": "kssb/8"
+                }
+              }
+            ],
             "subject": []
           }
         }
