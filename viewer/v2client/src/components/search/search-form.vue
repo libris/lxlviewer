@@ -31,7 +31,7 @@ export default {
       },
       remoteSearch: {
         q: '',
-        activeDatabases: ['OCLC']
+        activeDatabases: ['']
       },
       query: '',
       activeClass: 'is-active',
