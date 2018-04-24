@@ -10,10 +10,6 @@ import marked from 'marked';
 export default {
   name: 'search-form',
   props: {
-    siteTitle: '',
-    filterParam: '',
-    useSubmit: false,
-    formDataSupported: false,
     searchPerimeter: {
         default: 'libris',
         type: String,
@@ -22,7 +18,6 @@ export default {
   },
   data() {
     return {
-      isLandingPage: true,
       vocabUrl: 'https://id.kb.se/vocab/',
       inputData: {
         textInput: [
