@@ -45,6 +45,7 @@ const store = new Vuex.Store({
         focus: 'mainEntity',
         removing: false,
         updating: false,
+        isNew: false,
       },
       changeHistory: [],
       event: [],

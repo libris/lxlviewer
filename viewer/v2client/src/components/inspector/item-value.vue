@@ -105,7 +105,7 @@ export default {
 </script>
 
 <template>
-  <div class="ItemValue" v-bind:class="{'is-locked': isLocked, 'unlocked': !isLocked, 'removed': removed}">
+  <div class="ItemValue" v-bind:class="{'is-locked': isLocked, 'unlocked': !isLocked, 'is-removed': removed}">
     <textarea class="ItemValue-input js-itemValueInput" 
       rows="1" 
       v-model="value" 
@@ -154,7 +154,7 @@ export default {
     position: relative;
   }
 
-  &.removed {
+  &.is-removed {
     transition: all 0.5s ease;
     max-height: 0px;
     margin: 0px;
@@ -168,9 +168,6 @@ export default {
     display: inline-block;
     padding: 3px;
     cursor: pointer;
-  }
-
-  &.unlocked {
   }
 }
 
