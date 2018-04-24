@@ -5,6 +5,13 @@
       "description": "Tryckt monografi - RDA",
       "value": {
         "record": {
+          "@type": "Record",
+          "bibliography": [
+            {
+              "@type": "Library",
+              "sigel": [""]
+            }
+          ],
           "descriptionConventions": [{
               "@id": "https://id.kb.se/marc/Isbd"
             },
@@ -16,7 +23,11 @@
           "descriptionLanguage": [{
             "@id": "https://id.kb.se/language/swe",
             "code": "swe"
-          }]
+          }],
+          "recordStatus": "",
+          "marc:catalogingSource": {
+            "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
+          }
         },
         "mainEntity": {
           "@type": "Instance",
@@ -161,67 +172,26 @@
       "description": "RDA",
       "value": {
         "record": {
-          "encodingLevel": {
-            "@id": "https://id.kb.se/marc/MinimalLevel"
-          },
-          "descriptionConventions": [{
-            "@id": "https://id.kb.se/marc/Aacr2"
-          }],
-          "marc:catalogingSource": {
-            "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
-          },
           "@type": "Record",
-          "_marcUncompleted": [{
-              "710": {
-                "ind1": "2",
-                "ind2": " ",
-                "subfields": [{
-                    "a": "."
-                  },
-                  {
-                    "b": ""
-                  },
-                  {
-                    "4": ""
-                  }
-                ]
-              },
-              "_unhandled": [
-                "b"
-              ]
+          "bibliography": [
+            {
+              "@type": "Library",
+              "sigel": [""]
+            }
+          ],
+          "encodingLevel": "",
+          "descriptionConventions": [{
+              "@id": "https://id.kb.se/marc/Isbd"
             },
             {
-              "785": {
-                "ind1": "0",
-                "ind2": "0",
-                "subfields": [{
-                    "t": ""
-                  },
-                  {
-                    "<": "222a>"
-                  },
-                  {
-                    "<": "222b>"
-                  },
-                  {
-                    "x": ""
-                  },
-                  {
-                    "<": "022a>"
-                  },
-                  {
-                    "w": ""
-                  },
-                  {
-                    "<": "VRID>"
-                  }
-                ]
-              },
-              "_unhandled": [
-                "<"
-              ]
+              "@type": "DescriptionConventions",
+              "code": "rda"
             }
-          ]
+          ],
+          "recordStatus": "",
+          "marc:catalogingSource": {
+            "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
+          }
         },
         "mainEntity": {
           "@type": "Instance",
