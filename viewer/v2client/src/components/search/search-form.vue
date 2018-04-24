@@ -6,6 +6,7 @@ import helpdocsJson from '@/resources/json/help.json';
 import * as StringUtil from '@/utils/string';
 import RemoteDatabases from '@/components/search/remote-databases';
 import marked from 'marked';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'search-form',
@@ -31,7 +32,6 @@ export default {
       },
       remoteSearch: {
         q: '',
-        activeDatabases: ['']
       },
       query: '',
       activeClass: 'is-active',
@@ -136,7 +136,7 @@ export default {
             _.each(this.inputData.ids, id => queryText.push(`@type=${id}`));
             query = queryText.join('&');
         } else {
-            const databases = this.remoteSearch.activeDatabases.join();
+            const databases = this.status.remoteDatabases.join();
             const keywords = this.remoteSearch.q;
             query = `q=${keywords}&databases=${databases}`;
         }
@@ -159,12 +159,11 @@ export default {
         delete json.readme;
         return json;
       },
-      settings() {
-          return this.$store.getters.settings;
-      },
-      resources() {
-          return this.$store.getters.resources;
-      },
+    ...mapGetters([
+      'resources',
+      'settings',
+      'status',
+    ]),
       dataSetFilters() {
         return this.settings.dataSetFilters.libris.map(term => {
             return {
@@ -337,7 +336,7 @@ export default {
             v-model="remoteSearch.q">
           <button class="SearchBar-submit btn btn-primary"
             v-bind:class="{
-              'disabled': remoteSearch.activeDatabases.length === 0
+              'disabled': status.remoteDatabases.length === 0
             }" 
             v-on:click.prevent="doSearch">
             <i class="fa fa-search"></i> {{"Search" | translatePhrase}}

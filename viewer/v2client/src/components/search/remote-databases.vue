@@ -9,20 +9,22 @@ import { mapGetters } from 'vuex';
 export default {
   name: 'remote-databases',
   props: {
-    db: [],
     remoteSearch: {
       q: '',
-      activeDatabases: []
     },
   },
   data() {
     return {
-      databases: { state: '', list: [] },
       remoteResult: { state: '', totalResults: {}, items: [] },
       convertedItems: {},
       importData: [],
       showList: true,
       importJson: '',
+      remoteDatabases: {
+        state: '',
+        list: [],
+        debug: '',
+      },
     };
   },
   computed: {
@@ -33,13 +35,17 @@ export default {
       'settings',
       'status',
     ]),
-    activeDatabases: {
-      get: function () { 
-        return this.remoteSearch.activeDatabases;
-      },
-      set: function(newValue) {
-        return this.remoteSearch.activeDatabases = newValue;
+    activeDatabases() {
+      const selected = [];
+      const dbs = _.filter(this.remoteDatabases.list, function (o) {
+        return o.active;
+      });
+      if (dbs.length > 0) {
+        for (let i = 0; i < dbs.length; i++) {
+          selected.push(dbs[i].item.database);
+        }
       }
+      return selected;
     },
     q() {
       return this.remoteSearch.q;
@@ -54,20 +60,13 @@ export default {
     },
   },
   watch: {
-    databases: {
-      handler: function() {
-        const selected = [];
-        const dbs = _.filter(this.databases.list, function (o) {
-          return o.active;
+    activeDatabases(val, oldVal) {
+      if (val !== oldVal) {
+        this.$store.dispatch('setStatusValue', { 
+          property: 'remoteDatabases', 
+          value: val
         });
-        if (dbs.length > 0) {
-          for (let i = 0; i < dbs.length; i++) {
-            selected.push(dbs[i].item.database);
-          }
-          this.activeDatabases = selected;
-        }
-      },
-      deep: true,
+      }
     },
   },
   methods: {
@@ -75,25 +74,18 @@ export default {
       return _.isPlainObject(o);
     },
     loadRemoteDatabases() {
-      const vself = this;
-
-      this.databases.state = 'loading';
-      this.databases.debug = '';
+      this.remoteDatabases.state = 'loading';
+      this.remoteDatabases.debug = '';
       this.fetchDatabases().then((dbs) => {
         const newDbList = [];
         for (let i = 0; i < dbs.length; i++) {
           const obj = { item: dbs[i], active: false };
           newDbList.push(obj);
         }
-        vself.databases.list = newDbList;
-        vself.databases.state = 'complete';
-        if (history.state !== null) {
-          //vself.activeDatabases = history.state.activeDatabases;
-          vself.attachResult(history.state);
-          this.showList = false;
-        }
+        this.remoteDatabases.list = newDbList;
+        this.remoteDatabases.state = 'complete';
       }, () => {
-        vself.databases.state = 'error';
+        this.remoteDatabases.state = 'error';
       });
     },
     fetchDatabases() {
@@ -106,36 +98,6 @@ export default {
         });
       });
     },
-    // searchRemote() {
-    //   if (activeDatabases.length === 0 || this.remoteQuery === '') return;
-    //   const vself = this;
-    //   const q = this.remoteQuery;
-    //   this.showList = false;
-    //   const databases = activeDatabases.join();
-    //   vself.remoteResult = {};
-    //   vself.remoteResult.state = 'loading';
-    //   this.remoteSearch(q, databases)
-    //   .then((response) => {
-    //     const clonedResponse = _.cloneDeep(response);
-    //     clonedResponse.activeDatabases = activeDatabases;
-    //     vself.remoteResult = response;
-    //     history.pushState(clonedResponse, 'unused');
-    //     this.attachResult(clonedResponse);
-    //   }, () => {
-    //     vself.remoteResult.state = 'error';
-    //   });
-    // },
-    // remoteSearch(q, databases) {
-    //   return new Promise((resolve, reject) => {
-    //     const url = `/_remotesearch?q=${q}&databases=${databases}`;
-    //     httpUtil.get({ url })
-    //     .then((response) => {
-    //       resolve(response);
-    //     }, (error) => {
-    //       reject('Error loading databases...', error);
-    //     });
-    //   });
-    // },
     convertResult(result) {
       let totalResults = 0;
       for (const db in result.totalResults) {
@@ -151,8 +113,8 @@ export default {
       return convertedList;
     },
     toggleDatabase(index) {
-      if (this.databases.list[index]) {
-        this.databases.list[index].active = !this.databases.list[index].active;
+      if (this.remoteDatabases.list[index]) {
+        this.remoteDatabases.list[index].active = !this.remoteDatabases.list[index].active;
       }
     },
     attachResult(response) {
@@ -163,7 +125,6 @@ export default {
     },
   },
   components: {
-    //'result-item': ResultItem,
     'result-list': ResultList,
     'search-result': SearchResult,
   },
@@ -175,7 +136,7 @@ export default {
 </script>
 
 <template>
-  <div class="RemoteDatabases" v-show="databases.state == 'complete'">
+  <div class="RemoteDatabases" v-show="remoteDatabases.state == 'complete'">
     <div class="RemoteDatabases-activeInfo">
       <p v-if="activeDatabases.length > 0">
         <span v-if="activeDatabases.length == 1">Vald databas:</span>
@@ -194,10 +155,10 @@ export default {
         <i class="fa fa-fw fa-caret-down" v-show="showList"></i>
       </h4>
       <ol class="RemoteDatabases-list" aria-labelledby="remoteDbListLabel"
-        v-show="databases.state == 'complete' && showList">
+        v-show="remoteDatabases.state == 'complete' && showList">
         <li class="RemoteDatabases-listItem" tabindex="0"
           :class="{'is-active': db.active}" 
-          v-for="(db, index) in databases.list" 
+          v-for="(db, index) in remoteDatabases.list" 
           @click="toggleDatabase(index)"
           @keyup.enter="toggleDatabase(index)"
           :key="index">
@@ -207,11 +168,11 @@ export default {
             :title="db.item.name">{{db.item.name}}</em>
         </li>
       </ol>
-      <p class="RemoteDatabases-statusText" v-show="databases.state == 'loading'" >
+      <p class="RemoteDatabases-statusText" v-show="remoteDatabases.state == 'loading'" >
         <i class="fa fa-circle-o-notch fa-spin"></i> 
         {{"Loading external databases" | translatePhrase}}...
       </p>
-      <p class="RemoteDatabases-statusText" v-show="databases.state == 'error'">
+      <p class="RemoteDatabases-statusText" v-show="remoteDatabases.state == 'error'">
         <i class="fa fa-close"></i> 
         {{"Did not find any external databases" | translatePhrase}}. 
         <a href="" v-on:click.prevent="loadRemoteDatabases()">
