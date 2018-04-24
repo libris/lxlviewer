@@ -113,7 +113,6 @@ export function getMainEntity(graph) {
 
 export function getImportObject(graph) {
   // Replaces the @id with temporary ones.
-
   const itemGraph = [];
   const newRecord = _.cloneDeep(graph[0]);
   const newMainEntity = _.cloneDeep(getMainEntity(graph));

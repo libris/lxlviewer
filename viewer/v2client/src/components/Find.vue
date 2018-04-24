@@ -65,12 +65,14 @@ export default {
     },
     getRemoteResult() {
       const fetchUrl = `${this.settings.apiPath}/_remotesearch?${this.$route.params.query}`;
+      
       fetch(fetchUrl).then((response) => {
         return response.json();
       }, (error) => {
         this.$store.dispatch('pushNotification', { color: 'red', message: StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language) });
         this.searchInProgress = false;
       }).then((result) => {
+        console.log(result);
         this.result = this.convertRemoteResult(result);
         this.importData = result.items;
         this.searchInProgress = false;
