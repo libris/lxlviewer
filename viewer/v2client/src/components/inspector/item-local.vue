@@ -342,13 +342,15 @@ export default {
 
 <template>
   <div class="ItemLocal js-itemLocal"
-    :class="{'highlight': isNewlyAdded, 'is-expanded': expanded}">
+    :class="{'highlight': isNewlyAdded, 'is-expanded': expanded}"
+    tabindex="0">
    
-   <strong class="ItemLocal-heading" tabindex="0"
-      @keyup.enter="toggleExpanded()">
+   <strong class="ItemLocal-heading">
       <i class="ItemLocal-arrow fa fa-chevron-right " 
         :class="{'down': expanded}" 
         @click="toggleExpanded()"
+        tabindex="0"
+        @keyup.enter="toggleExpanded()"
         ></i>
       <span class="type" 
         @click="toggleExpanded($event)" 
@@ -373,7 +375,9 @@ export default {
           v-if="inspector.status.editing && isExtractable"
           @click="openExtractDialog()" 
           @mouseover="showLinkAction = true" 
-          @mouseout="showLinkAction = false">
+          @mouseout="showLinkAction = false"
+          @keyup.enter="openExtractDialog()"
+          tabindex="0">
           <tooltip-component 
             :show-tooltip="showLinkAction" 
             tooltip-text="Link entity" 
@@ -383,6 +387,8 @@ export default {
           v-if="!isLocked" 
           :class="{'show-icon': showActionButtons}" 
           v-on:click="removeThis(true)" 
+          @keyup.enter="removeThis(true)"
+          tabindex="0"
           @mouseover="removeHover = true" 
           @mouseout="removeHover = false">
           <tooltip-component 
@@ -394,12 +400,12 @@ export default {
     </strong>
   
     <ul class="ItemLocal-list js-itemLocalFields">      
-      <field-adder 
+      <!-- <field-adder 
         v-if="!isLocked && isEmpty" 
         :entity-type="item['@type']" 
         :allowed="allowedProperties" 
         :inner="true" 
-        :path="getPath"></field-adder>
+        :path="getPath"></field-adder> -->
       <field
         v-show="expanded && k !== '_uid'" 
         v-for="(v, k) in filteredItem" 
@@ -414,7 +420,7 @@ export default {
         :field-key="k" 
         :field-value="v" 
         :key="k" 
-        :show-action-buttons="showActionButtons"></field>
+        :show-action-buttons="showActionButtons"></field> 
     </ul>
        
     <search-window 
@@ -430,12 +436,9 @@ export default {
       @replace-with="replaceWith"
       ></search-window>
     </div>
-
-
 </template>
 
 <style lang="less">
-
 .ItemLocal {
   padding: 10px 5px;
   margin: -5px;
