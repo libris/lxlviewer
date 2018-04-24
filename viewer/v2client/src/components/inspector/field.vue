@@ -390,7 +390,7 @@ export default {
         @mouseover="highlightItem($event)"
         @mouseout="unHighlightItem($event)">
         <entity-adder  class="Field-entityAdder Field-action"
-          v-show="!locked && (isRepeatable || isEmptyObject) && (!isInner || (isInner && isEmptyObject))" 
+          v-show="!locked && (isRepeatable || isEmptyObject)" 
           :field-key="fieldKey" 
           :already-added="linkedIds" 
           :entity-type="entityType" 
@@ -420,7 +420,7 @@ export default {
         @mouseover="highlightItem($event)"
         @mouseout="unHighlightItem($event)">
         <entity-adder class="Field-action Field-entityAdder"
-          v-show="!locked && isRepeatable && (isInner && !isEmptyObject)" 
+          v-show="!locked && (isRepeatable || isEmptyObject)" 
           :field-key="fieldKey" 
           :path="getPath" 
           :already-added="linkedIds" 

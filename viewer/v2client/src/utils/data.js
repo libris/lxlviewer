@@ -50,7 +50,7 @@ export function removeNullValues(obj) {
     cleanObj = {};
     for (const key in obj) {
       if (obj.hasOwnProperty(key) && key !== '_uid') {
-        if (obj[key] === null || typeof obj[key] === 'undefined') {
+        if (obj[key] === null || typeof obj[key] === 'undefined' || obj[key].length === 0) {
           delete obj[key];
         } else {
           const cleanValue = removeNullValues(obj[key]);

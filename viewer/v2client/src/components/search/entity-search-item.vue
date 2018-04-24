@@ -31,22 +31,7 @@ export default {
   },
   methods: {
     addItem() {
-      let currentValue = _.cloneDeep(_.get(this.inspector.data, this.path));
-      const obj = { '@id': this.focusData['@id'] };
-      if (!_.isArray(currentValue)) {
-        currentValue = [currentValue];
-      }
-      currentValue.push(obj);
-      this.$store.dispatch('addToQuoted', this.focusData);
-      this.$store.dispatch('updateInspectorData', {
-          path: `${this.path}`,
-          value: currentValue,
-          addToHistory: true,
-      });
-      this.$store.dispatch('pushInspectorEvent', { 
-        name: 'modal-control', 
-        value: 'close-entity-adder'
-      });
+      this.$emit('add-item');
     },
   },
   computed: {
