@@ -106,7 +106,8 @@
             "birthYear",
             "deathYear",
             "notation",
-            "personTitle"
+            "personTitle",
+            "lifeSpan"
           ]
         },
         "Record": {

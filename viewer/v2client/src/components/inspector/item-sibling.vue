@@ -463,9 +463,21 @@ export default {
     }
   }
 
+  &-collapsedLabel {
+    cursor: pointer;
+    justify-content: space-between;
+    align-items: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    & .placeholder {
+      visibility: hidden;
+    }
+  }
+
   &.is-affected {
     border: 2px solid @brand-primary;
-
   }
 
 }
@@ -537,26 +549,7 @@ export default {
       .chip-action {
         cursor: pointer;
       }
-      .collapsed-label {
-        cursor: pointer;
-        flex-grow: 1;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        .placeholder {
-          visibility: hidden;
-        }
-        > span {
-          padding-left: 1em;
-          height: 1.6em;
-          white-space: nowrap;
-          text-overflow: ellipsis;
-          overflow: hidden;
-        }
-      }
+
       .type {
         // text-transform: uppercase;
         font-weight: bold;

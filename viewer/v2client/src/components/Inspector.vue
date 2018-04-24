@@ -191,6 +191,8 @@ export default {
     },   
     saveItem(done=false) {
       this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: true });
+      this.$store.dispatch('setInspectorStatusValue', { property: 'isNew', value: false });
+
       const RecordId = this.inspector.data.record['@id'];
       const obj = this.getPackagedItem();
       const ETag = this.inspector.data.record.modified;
@@ -205,8 +207,7 @@ export default {
       this.doSaveRequest(HttpUtil.put, obj, { url, ETag }, done);
     },
     doCreate(obj, done) {
-      this.doSaveRequest(HttpUtil.post, obj, { url: this.settings.apiPath }, done);
-    },
+      this.doSaveRequest(HttpUtil.post, obj, { url: this.settings.apiPath }, done);    },
     doSaveRequest(requestMethod, obj, opts, done) {
       requestMethod({ url: opts.url, ETag: opts.ETag, activeSigel: this.user.settings.activeSigel, token: this.user.token }, obj).then((result) => {
         if (!this.documentId) {
@@ -324,7 +325,7 @@ export default {
           <div class="panel-body">
             <h1 class="Inspector-title" :title="recordType">
               <span>{{ recordType | labelByLang }}</span>
-              <span v-if="status.isNew"> - [{{ "New record" | translatePhrase }}]</span>
+              <span v-if="this.inspector.status.isNew"> - [{{ "New record" | translatePhrase }}]</span>
             </h1>
 
             <div class="Inspector-header">

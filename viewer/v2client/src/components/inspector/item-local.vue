@@ -352,10 +352,10 @@ export default {
         tabindex="0"
         @keyup.enter="toggleExpanded()"
         ></i>
-      <span class="type" 
+      <span class="ItemLocal-type" 
         @click="toggleExpanded($event)" 
         :title="item['@type']">{{ item['@type'] | labelByLang | capitalize }}:</span>
-      <span class="collapsed-label" @click="toggleExpanded()">
+      <span class="ItemLocal-collapsedLabel" @click="toggleExpanded()">
         <span v-show="!expanded || isEmpty">{{getItemLabel}}</span>
         <span class="placeholder"> </span>
       </span>
@@ -470,6 +470,7 @@ export default {
     }
   }
 
+
   &-actions {
     float: right;
     position: relative;
@@ -493,6 +494,18 @@ export default {
     outline: 2px solid @brand-primary;
   }
 
+  &-collapsedLabel {
+    cursor: pointer;
+    justify-content: space-between;
+    align-items: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    & .placeholder {
+      visibility: hidden;
+    }
+  }
 }
 
 .is-expanded > .ItemLocal-heading > .ItemLocal-arrow {
@@ -547,36 +560,7 @@ export default {
       .chip-action {
         cursor: pointer;
       }
-      .collapsed-label {
-        cursor: pointer;
-        flex-grow: 1;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        .placeholder {
-          visibility: hidden;
-        }
-        > span {
-          padding-left: 1em;
-          height: 1.6em;
-          white-space: nowrap;
-          text-overflow: ellipsis;
-          overflow: hidden;
-        }
-      }
-      .type {
-        // text-transform: uppercase;
-        font-weight: bold;
-        font-size: 85%;
-        a {
-          text-decoration: none;
-          cursor: help;
-          color: @black;
-        }
-      }
+     
     }
   }
 }
