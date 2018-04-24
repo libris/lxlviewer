@@ -33,8 +33,13 @@ export default {
       'settings',
       'status',
     ]),
-    activeDatabases() {
-      return this.remoteSearch.activeDatabases;
+    activeDatabases: {
+      get: function () { 
+        return this.remoteSearch.activeDatabases;
+      },
+      set: function(newValue) {
+        return this.remoteSearch.activeDatabases = newValue;
+      }
     },
     q() {
       return this.remoteSearch.q;
@@ -93,9 +98,10 @@ export default {
     },
     fetchDatabases() {
       return new Promise((resolve, reject) => {
-        httpUtil.get({ url: '/_remotesearch?databases=list' })
+        httpUtil.get({ url: `${this.settings.apiPath}/_remotesearch?databases=list` })
         .then((response) => {
           resolve(response);
+          console.log(response);
         }, (error) => {
           reject('Error loading databases...', error);
         });

@@ -52,6 +52,7 @@ export default {
       } else if (this.recordType === 'Work') {
         property = 'instanceOf';
       }
+
       this.getRelatedPosts(this.inspector.data.record['@id'], property).then((response) => {
         this.relationInfo = response;
         this.numberOfRelations = response.length;
@@ -98,8 +99,8 @@ export default {
         this.relationInfo = [];
       }
     },
-    numberOfRelations(newVal) {
-      console.log(newVal);
+    numberOfRelations(newVal, oldVal) {
+      //console.log(newVal, oldVal);
     }
   },
   mounted() { // Ready method is deprecated in 2.0, switch to "mounted"

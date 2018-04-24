@@ -24,7 +24,6 @@ export default {
   },
   watch: {
     openPreview: function () {
-      console.log(this.openPreview);
       if (this.openPreview) {
         this.active = true;
         this.$emit('open-marc');
