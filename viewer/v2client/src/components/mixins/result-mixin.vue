@@ -1,7 +1,9 @@
 <script>
 import * as DataUtil from '@/utils/data';
 import * as httpUtil from '@/utils/http';
+import * as StringUtil from '@/utils/string';
 import * as _ from 'lodash';
+import { mapGetters } from 'vuex';
 
 export default {
   data(){
@@ -11,9 +13,15 @@ export default {
   },
   methods: {
     importThis() {
-      this.$store.dispatch('pushNotification', { color: 'grey', message: StringUtil.getUiPhraseByLang('Not implemented, we\'re working on it!', this.settings.language) });
     //   const json = JSON.stringify(this.importItem);
     //   this.$dispatch('set-import', json);
+      this.$store.dispatch('pushNotification', { 
+        color: 'grey', 
+        message: StringUtil.getUiPhraseByLang(
+          'This action is not yet functional. We\'re working on it!', 
+          this.settings.language
+        ) 
+      });
     },
   },
   events: {
@@ -22,6 +30,9 @@ export default {
     },
   },
   computed: {
+    ...mapGetters([
+      'settings',
+    ]),
     isImport() {
       if (typeof this.importItem !== undefined && this.importItem['@graph'] && this.importItem['@graph'].length > 0 && this.importItem['@graph'][0].hasOwnProperty('@id')) {
         return true;

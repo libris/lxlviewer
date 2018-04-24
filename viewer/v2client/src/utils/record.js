@@ -117,13 +117,9 @@ export function getImportObject(graph) {
   const newRecord = _.cloneDeep(graph[0]);
   const newMainEntity = _.cloneDeep(getMainEntity(graph));
 
-  const recordId = newRecord['@id'];
-  const mainEntityId = newMainEntity['@id'];
-
-  newRecord['@id'] = newRecord['@id'].replace(recordId, 'https://id.kb.se/TEMPID');
-  newRecord.mainEntity['@id'] = newRecord.mainEntity['@id'].replace(mainEntityId, 'https://id.kb.se/TEMPID#it');
-
-  newMainEntity['@id'] = newMainEntity['@id'].replace(mainEntityId, 'https://id.kb.se/TEMPID#it');
+  newRecord['@id'] = 'https://id.kb.se/TEMPID';
+  newRecord.mainEntity['@id'] = 'https://id.kb.se/TEMPID#it';
+  newMainEntity['@id'] = 'https://id.kb.se/TEMPID#it';
 
   itemGraph.push(newRecord);
   itemGraph.push(newMainEntity);

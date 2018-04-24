@@ -34,7 +34,10 @@ export default {
       return StringUtil.getFormattedEntries(this.getSummary.header, this.resources.vocab, this.settings, this.resources.context);
     },
     isLibrisResource() {
-      return this.focusData['@id'].startsWith(this.settings.apiPath);
+      if (this.focusData && this.focusData['@id']) {
+        return this.focusData['@id'].startsWith(this.settings.apiPath);
+      }
+      return false;
     },
   },
   components: {
@@ -56,6 +59,7 @@ export default {
         :is-import="isImport" 
         :import-item="importItem" 
         :add-link="true" 
+        @import-this="importThis()"
         :lines="4"></entity-summary>
     </li>
     <li class="ResultItem ResultItem--compact" v-else-if="!showDetailed">

@@ -33,6 +33,9 @@ Vue.filter('asAppPath', (path) => {
 });
 
 Vue.filter('asFnurgelLink', (id) => {
+  if (!id || typeof id === undefined) {
+    return '';
+  }
   const parts = id.split('/');
   const fnurgel = '/' + parts[parts.length-1];
   return fnurgel;

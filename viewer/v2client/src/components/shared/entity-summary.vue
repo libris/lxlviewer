@@ -118,13 +118,7 @@ export default {
   },
   methods: {
     importThis() {
-      this.$store.dispatch('pushNotification', { 
-        color: 'grey', 
-        message: StringUtil.getUiPhraseByLang(
-          'This action is not yet functional. We\'re working on it!', 
-          this.settings.language
-        ) 
-      });
+      this.$emit('import-this');
     },
     removeEntity() {
       this.$dispatch('remove-entity');
