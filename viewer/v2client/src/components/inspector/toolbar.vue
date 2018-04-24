@@ -53,8 +53,8 @@ export default {
     },
   },
   methods: {
-    toggleOtherFormatMenu() {
-      this.otherFormatMenuActive = !this.otherFormatMenuActive;
+    showOtherFormatMenu() {
+      this.otherFormatMenuActive = true;
     },
     hideOtherFormatMenu() {
       this.otherFormatMenuActive = false;
@@ -62,8 +62,8 @@ export default {
     hideToolsMenu() {
       this.toolsMenuActive = false;
     },
-    toggleToolsMenu() {
-      this.toolsMenuActive = !this.toolsMenuActive;
+    showToolsMenu() {
+      this.toolsMenuActive = true;
     },
     getOtherDataFormat(suffix) {
       return `${this.focusData['@id']}/data.${suffix}`
@@ -134,6 +134,7 @@ export default {
     },
     handleCopy() {
       this.$parent.$emit('duplicate-item');
+      this.hideToolsMenu();
     },
   },
   computed: {
@@ -256,7 +257,7 @@ export default {
       v-if="!inspector.status.editing" 
       v-on-clickaway="hideOtherFormatMenu">
       <button class="Toolbar-btn btn btn-default OtherFormatMenu-button" 
-        @click="toggleOtherFormatMenu" 
+        @click="showOtherFormatMenu" 
         aria-haspopup="true" 
         aria-expanded="true" 
         @mouseover="showDisplayAs = true" 
@@ -266,16 +267,19 @@ export default {
         </i>
         <span class="Toolbar-caret caret"></span>
       </button>
-      <ul class="dropdown-menu Toolbar-menuList OtherFormatMenu-menu" v-show="otherFormatMenuActive">
+      <ul class="dropdown-menu Toolbar-menuList OtherFormatMenu-menu" 
+        v-show="otherFormatMenuActive"
+        @click="hideOtherFormatMenu" >
         <li><a :href="getOtherDataFormat('jsonld')">JSON-LD</a></li>
         <li><a :href="getOtherDataFormat('ttl')">Turtle</a></li>
         <li><a :href="getOtherDataFormat('rdf')"><i class="fa fa-fw fa-download" aria-hidden="true"></i>RDF/XML</a></li>
       </ul>
     </div>
 
-    <div class="dropdown Toolbar-menu ToolsMenu" v-on-clickaway="hideToolsMenu">
+    <div class="dropdown Toolbar-menu ToolsMenu" 
+      v-on-clickaway="hideToolsMenu">
       <button class="Toolbar-btn btn btn-default ToolsMenu-button" 
-        @click="toggleToolsMenu" 
+        @click="showToolsMenu" 
         aria-haspopup="true" 
         aria-expanded="true" 
         @mouseover="showTools = true" 
@@ -288,7 +292,8 @@ export default {
         </i>
         <span class="Toolbar-caret caret"></span>
       </button>
-      <ul class="dropdown-menu Toolbar-menuList ToolsMenu-menu" v-show="toolsMenuActive">
+      <ul class="dropdown-menu Toolbar-menuList ToolsMenu-menu" 
+      v-show="toolsMenuActive">
         <li>
           <a class="Toolbar-menuLink" @click="formControl('expand-item')">
           <i class="fa fa-fw fa-expand" aria-hidden="true"></i>
@@ -302,7 +307,7 @@ export default {
           </a>
         </li>
         <li v-if="user.isLoggedIn && !inspector.status.editing && !isSubClassOf('Item')">
-          <a class="Toolbar-menuLink"   @click="handleCopy">
+          <a class="Toolbar-menuLink"  @click="handleCopy">
           <i class="fa fa-fw fa-files-o"></i>
           {{ "Make copy" | translatePhrase }}
           </a>

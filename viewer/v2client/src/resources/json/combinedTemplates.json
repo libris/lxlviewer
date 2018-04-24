@@ -5,6 +5,13 @@
       "description": "Tryckt monografi - RDA",
       "value": {
         "record": {
+          "@type": "Record",
+          "bibliography": [
+            {
+              "@type": "Library",
+              "sigel": [""]
+            }
+          ],
           "descriptionConventions": [{
               "@id": "https://id.kb.se/marc/Isbd"
             },
@@ -14,9 +21,13 @@
             }
           ],
           "descriptionLanguage": [{
-            "@id": "https://id.kb.se/language/swe",
-            "code": "swe"
-          }]
+            "@id": "https://id.kb.se/language/swe"
+          }],
+          "encodingLevel": "",
+          "recordStatus": "",
+          "marc:catalogingSource": {
+            "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
+          }
         },
         "mainEntity": {
           "@type": "Instance",
@@ -35,18 +46,25 @@
           }],
           "editionStatement": "",
           "editionStatementRemainder": "",
-          "publication": [{
-            "@type": "Publication",
-            "place": {
-              "@type": "Place",
-              "label": ""
+          "publication": [
+            {
+              "@type": "PrimaryPublication",
+              "date": "",
+              "country": [ {"@id": "https://id.kb.se/country/sw"} ]
             },
-            "agent": {
-              "@type": "Agent",
-              "label": ""
-            },
-            "date": ""
-          }],
+            {
+              "@type": "Publication",
+              "place": {
+                "@type": "Place",
+                "label": ""
+              },
+              "agent": {
+                "@type": "Agent",
+                "label": ""
+              },
+              "date": ""
+            }
+          ],
           "manufacture": [{
             "@type": "Manufacture",
             "agent": [{
@@ -85,11 +103,11 @@
           }],
           "extent": [{
             "@type": "Extent",
-            "label": "(antal) sidor"
+            "label": ""
           }],
           "hasDimensions": {
             "@type": "Dimensions",
-            "label": "(antal) cm"
+            "label": ""
           },
           "seriesStatement": "",
           "hasSeries": [{
@@ -159,74 +177,34 @@
       "description": "RDA",
       "value": {
         "record": {
-          "encodingLevel": {
-            "@id": "https://id.kb.se/marc/MinimalLevel"
-          },
-          "descriptionConventions": [{
-            "@id": "https://id.kb.se/marc/Aacr2"
-          }],
-          "marc:catalogingSource": {
-            "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
-          },
           "@type": "Record",
-          "_marcUncompleted": [{
-              "710": {
-                "ind1": "2",
-                "ind2": " ",
-                "subfields": [{
-                    "a": "."
-                  },
-                  {
-                    "b": ""
-                  },
-                  {
-                    "4": ""
-                  }
-                ]
-              },
-              "_unhandled": [
-                "b"
-              ]
+          "bibliography": [
+            {
+              "@type": "Library",
+              "sigel": [""]
+            }
+          ],
+          "descriptionConventions": [{
+              "@id": "https://id.kb.se/marc/Isbd"
             },
             {
-              "785": {
-                "ind1": "0",
-                "ind2": "0",
-                "subfields": [{
-                    "t": ""
-                  },
-                  {
-                    "<": "222a>"
-                  },
-                  {
-                    "<": "222b>"
-                  },
-                  {
-                    "x": ""
-                  },
-                  {
-                    "<": "022a>"
-                  },
-                  {
-                    "w": ""
-                  },
-                  {
-                    "<": "VRID>"
-                  }
-                ]
-              },
-              "_unhandled": [
-                "<"
-              ]
+              "@type": "DescriptionConventions",
+              "code": "rda"
             }
-          ]
+          ],
+          "descriptionLanguage": [{
+            "@id": "https://id.kb.se/language/swe"
+          }],
+          "encodingLevel": "",
+          "recordStatus": "",
+          "marc:catalogingSource": {
+            "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
+          }
         },
         "mainEntity": {
           "@type": "Instance",
           "issuanceType": "Serial",
-          "publicationCountry": [{
-            "@id": "https://id.kb.se/country/sw"
-          }],
+          "frequency": [],
           "hasTitle": [{
               "@type": "KeyTitle"
             },
@@ -236,23 +214,35 @@
               "titleRemainder": ""
             }
           ],
+          "marc:alphabet": {
+            "@id": "https://id.kb.se/marc/SerialsAlphabetType-b"
+          },
           "marc:typeOfEntry": {
-            "@id": "https://id.kb.se/marc/SuccessiveEntry"
+            "@id": "https://id.kb.se/marc/SerialsTypeOfEntryType-0"
           },
           "identifiedBy": [{
-            "@type": "ISSN"
+            "@type": "ISSN",
+            "value": ""
           }],
-          "publication": [{
-            "@type": "Publication",
-            "place": {
-              "@type": "Place",
-              "label": ""
+          "publication": [
+            {
+              "@type": "PrimaryPublication",
+              "date": "",
+              "country": [ {"@id": "https://id.kb.se/country/sw"} ]
             },
-            "agent": {
-              "@type": "Agent",
-              "label": ""
+            {
+              "@type": "Publication",
+              "place": {
+                "@type": "Place",
+                "label": ""
+              },
+              "agent": {
+                "@type": "Agent",
+                "label": ""
+              },
+              "date": ""
             }
-          }],
+          ],
           "carrierType": [{
             "@type": "CarrierType",
             "code": "nc",
@@ -263,28 +253,63 @@
             "code": "n",
             "termGroup": "rdamedia"
           }],
+          "hasDimensions": {
+            "@type": "Dimensions",
+            "label": ""
+          },
           "hasNote": [{
             "@type": "Note",
             "label": ""
           }],
+          "hasNumberingOfSerials": [
+            {
+              "@type": "NumberingOfSerials",
+              "label": ""
+            }
+          ],
           "succeededBy": [{
             "@type": "Serial"
           }],
-          "temporalCoverage": "",
           "instanceOf": {
             "@type": "Text",
             "language": [{
               "@id": "https://id.kb.se/language/swe"
             }],
+            "contribution": [
+              {
+                "@type": "Contribution",
+                "agent": {
+                  "@type": "Person",
+                  "familyName": "",
+                  "givenName": "",
+                  "lifeSpan": ""
+                }
+              }
+            ],
             "contentType": [{
-              "@type": "Content",
+              "@type": "ContentType",
               "code": "txt",
               "termGroup": "rdacontent"
             }],
             "genreForm": [{
               "@id": "https://id.kb.se/marc/Periodical"
             }],
-            "classification": []
+            "classification": [{
+                "@type": "ClassificationDdc",
+                "code": "",
+                "edition": ""
+              },
+              {
+                "@type": "Classification",
+                "code": "",
+                "inScheme": {
+                  "@type": "ConceptScheme",
+                  "@id": "https://id.kb.se/term/kssb/8",
+                  "code": "kssb/8"
+                }
+              }
+            ],
+            "subject": []
           }
         }
       }

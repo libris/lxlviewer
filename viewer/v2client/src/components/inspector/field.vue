@@ -536,8 +536,7 @@ export default {
 <style lang="less">
 
 .Field {
-  border: 2px solid transparent;
-  border-bottom: 2px solid #d8d8d8;
+  border-bottom: 1px solid #d8d8d8;
   width: 100%;
   display: flex;
   flex-direction: row;
@@ -546,21 +545,48 @@ export default {
   position: relative;
 
   &.is-affected {
-    border: 2px solid @brand-primary;
+    outline: 2px solid @brand-primary;
   }
 
   &--inner {
-    border: 2px solid transparent;
+    border: 0;
     flex: 1 100%;
-    margin: 10px 0;
+    margin: 0;
+    padding: 5px 0;
     overflow: visible;
     max-height: auto;
     display: inline-block;
 
     &.is-affected {
-      border: 2px solid @brand-primary;
-      padding: 5px;
-      margin: 5px -5px 5px -5px;
+      //border: 2px solid @brand-primary;
+      outline: 2px solid @brand-primary;
+    }
+
+    &:before, 
+    &:after {
+      content: "";
+      position: absolute;
+      left: -13px;
+    }
+
+    &:before {
+      border-top: 1px solid #666666;
+      top: 16px;
+      width: 15px;
+      height: 0;
+    }
+
+    &:after {
+      border-left: 1px solid #666666;
+      height: 100%;
+      width: 0px;
+      top: 0px;
+    }
+
+    &:last-child {
+      &:after {
+        height: 16px;
+      }
     }
   }
 
@@ -578,28 +604,20 @@ export default {
 
     .Field--inner & {
       flex: 1 100%;
-      padding: 0;
+      padding: 0 0 0 20px;
       text-align: left;
       font-weight: 700;
       justify-content: flex-start;
       display: flex;
-      margin: 10px 0;
-
-      .is-locked & {
-        padding: 0 0 0 20px;
-      }
     }
 
     &:before {
-      content: "";
-    }
-
-    &.is-locked:before {
       .Field--inner & {
         content: " ● ";
+        color: #666666;
         position: absolute;
         left: 0px;
-        top: -2px;
+        top: -1px;
       }
     } 
   }
@@ -627,7 +645,6 @@ export default {
   &-comment {
     display: inline;
     margin-left: 2px;
-    z-index: 3;
     position: relative;
 
     &:hover {
@@ -646,13 +663,7 @@ export default {
 
     .Field--inner & {
       border: 0;
-      padding: 0;
-    }
-
-    &.is-locked {
-      .Field--inner & {
-        padding: 0 0 0 20px;
-      }   
+      padding: 0 0 0 20px;
     }
   }
 

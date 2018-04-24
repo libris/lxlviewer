@@ -112,7 +112,7 @@ export default {
     }
     &.is-compact {
       position: fixed;
-      z-index: @header-z;
+      z-index: 2;
       top: 0;
       left: 0;
       width: 100%;

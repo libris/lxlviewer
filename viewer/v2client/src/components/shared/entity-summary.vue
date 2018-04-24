@@ -238,13 +238,14 @@ export default {
   }
 
   &-info {
-    height: 7.5em;
+    min-height: 7.5em;
     overflow: hidden;
   }
 
   &-title {
     font-size: 20px;
     font-size: 2.0rem;
+    line-height: 1.2;
     margin: 5px 0;
     overflow: hidden;
     text-overflow: ellipsis;

@@ -98,8 +98,8 @@ export default {
         this.relationInfo = [];
       }
     },
-    numberOfRelations(newVal) {
-      // console.log(newVal);
+    numberOfRelations(newVal, oldVal) {
+      //console.log(newVal, oldVal);
     }
   },
   mounted() { // Ready method is deprecated in 2.0, switch to "mounted"
