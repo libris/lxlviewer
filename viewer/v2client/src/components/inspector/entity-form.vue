@@ -107,7 +107,7 @@ export default {
       // Add the "added" property
       for (const element of allowed) {
         const oId = element.item['@id'].replace(settings.vocabPfx, '');
-        element.added = (formObj.hasOwnProperty(oId) && formObj[oId] !== null);
+        element.added = (formObj.hasOwnProperty(oId));
       }
 
       const extendedAllowed = allowed.map(property => {
@@ -158,7 +158,7 @@ export default {
       const sortedForm = {};
       for (const property of this.sortedProperties) {
         const k = property;
-        if (this.formData[k] || this.formData[k] === '') {
+        if (typeof this.formData[k] !== 'undefined' || this.formData[k] === '') {
           sortedForm[k] = this.formData[k];
         }
       }

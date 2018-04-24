@@ -1,4 +1,11 @@
 <script>
+/*
+  This component is used for the special case for when we want to show a sibling (ie a work in an instance)
+  as an item-local in mainEntity. Most of the functionality is similar to those in item-local, but with some
+  important differences. Examples of this is the path-variables as they are pointing to one place for what data to show,
+  and to another for what data to edit.
+*/
+
 import * as _ from 'lodash';
 import * as httpUtil from '../../utils/http';
 import * as LayoutUtil from '../../utils/layout';
@@ -20,10 +27,10 @@ import {mixin as clickaway} from 'vue-clickaway';
 import { mapGetters } from 'vuex';
 
 export default {
-  name: 'item-local',
+  name: 'item-sibling',
   mixins: [ItemMixin, LensMixin, clickaway],
   props: {
-    item: {},
+    id: '',
     fieldKey: '',
     entityType: '',
     index: Number,
@@ -53,6 +60,12 @@ export default {
       'user',
       'status',
     ]),
+    item() {
+      return this.inspector.data[this.suffix];
+    },
+    suffix() {
+      return this.id.split('#')[1];
+    },
     canCopyTitle() {
       if (this.isExtractable && !this.item.hasOwnProperty('hasTitle') && this.key === 'instanceOf') {
         return true;
@@ -81,10 +94,7 @@ export default {
       return false;
     },
     getPath() {
-      if (this.inArray) {
-        return `${this.parentPath}[${this.index}]`;
-      }
-      return this.parentPath;
+      return this.suffix;
     },
     filteredItem() {
       const fItem = Object.assign({}, this.item);
@@ -92,9 +102,6 @@ export default {
       delete fItem['@id'];
       delete fItem['_uid'];
       return fItem;
-    },
-    formObj() {
-      return this.getForm(this.item);
     },
     isEmpty() {
       let bEmpty = true;
@@ -121,7 +128,7 @@ export default {
       // Add the "added" property
       for (const element of allowed) {
         const oId = element.item['@id'].replace(settings.vocabPfx, '');
-        element.added = (formObj.hasOwnProperty(oId));
+        element.added = (formObj.hasOwnProperty(oId) && formObj[oId] !== null);
       }
 
       const extendedAllowed = allowed.map(property => {
@@ -228,45 +235,6 @@ export default {
         this.closeExtractDialog();
       });
     },
-    getForm(item) {
-      const formObj = {};
-      if (!item['@type']) {
-        return formObj;
-      }
-      let inputKeys = DisplayUtil.getProperties(
-        item['@type'],
-        'cards',
-        this.resources.display,
-        this.settings
-      );
-      if (inputKeys.length === 0) {
-        const baseClasses = VocabUtil.getBaseClassesFromArray(
-          item['@type'],
-          this.resources.vocab,
-          this.settings.vocabPfx
-        );
-        for (const className of baseClasses) {
-          inputKeys = DisplayUtil.getProperties(
-            className.replace(this.settings.vocabPfx, ''),
-            'cards',
-            this.resources.display,
-            this.settings
-          );
-          if (inputKeys.length > 0) {
-            break;
-          }
-        }
-      }
-      inputKeys = ['@type'].concat(inputKeys);
-      for (const key of inputKeys) {
-        if (item[key]) {
-          formObj[key] = item[key];
-        } else {
-          formObj[key] = [];
-        }
-      }
-      return formObj;
-    },
     openForm() {
       this.inEdit = true;
     },
@@ -287,8 +255,14 @@ export default {
       const newValue = { '@id': value['@id'] };
       this.$store.dispatch('addToQuoted', value);
       this.$store.dispatch('updateInspectorData', {
-        path: `${this.path}`,
+        path: `${this.parentPath}`,
         value: newValue,
+        addToHistory: false,
+      });
+      // Remove the #work
+      this.$store.dispatch('updateInspectorData', {
+        path: `${this.getPath}`,
+        value: null,
         addToHistory: false,
       });
       this.$store.dispatch('pushNotification', { color: 'green', message: `${StringUtil.getUiPhraseByLang('Linking was successful', this.settings.language)}` });
@@ -341,13 +315,13 @@ export default {
 </script>
 
 <template>
-  <div class="ItemLocal js-itemLocal"
+  <div class="ItemSibling js-itemLocal"
     tabindex="0"
     @keyup.enter="toggleExpanded()"
     :class="{'highlight': isNewlyAdded, 'is-expanded': expanded}">
    
-   <strong class="ItemLocal-heading">
-      <i class="ItemLocal-arrow fa fa-chevron-right " 
+   <strong class="ItemSibling-heading">
+      <i class="ItemSibling-arrow fa fa-chevron-right " 
         :class="{'down': expanded}" @click="toggleExpanded()"></i>
       <span class="type" 
         @click="toggleExpanded($event)" 
@@ -357,18 +331,18 @@ export default {
         <span class="placeholder"> </span>
       </span>
       
-      <div class="ItemLocal-actions"
+      <div class="ItemSibling-actions"
         @mouseover="highlightItem($event)"
         @mouseout="unHighlightItem($event)">
 
-        <field-adder class="ItemLocal-action"
+        <field-adder class="ItemSibling-action"
           v-if="!isLocked" 
           :entity-type="item['@type']" 
           :allowed="allowedProperties" 
           :inner="true" 
           :path="getPath"></field-adder>
          
-        <i class="ItemLocal-action fa fa-link"
+        <i class="ItemSibling-action fa fa-link"
           v-if="inspector.status.editing && isExtractable"
           @click="openExtractDialog()" 
           @mouseover="showLinkAction = true" 
@@ -378,7 +352,7 @@ export default {
             tooltip-text="Link entity" 
             translation="translatePhrase"></tooltip-component>
         </i>
-        <i class="ItemLocal-action fa fa-trash-o chip-action" 
+        <i class="ItemSibling-action fa fa-trash-o chip-action" 
           v-if="!isLocked" 
           :class="{'show-icon': showActionButtons}" 
           v-on:click="removeThis(true)" 
@@ -392,7 +366,7 @@ export default {
       </div>
     </strong>
   
-    <ul class="ItemLocal-list js-itemLocalFields">      
+    <ul class="ItemSibling-list js-itemLocalFields">      
       <field-adder 
         v-if="!isLocked && isEmpty" 
         :entity-type="item['@type']" 
@@ -435,7 +409,7 @@ export default {
 
 <style lang="less">
 
-.ItemLocal {
+.ItemSibling {
   padding: 5px;
   margin: -5px;
   position: relative;
@@ -491,7 +465,7 @@ export default {
 
 }
 
-.is-expanded > .ItemLocal-heading > .ItemLocal-arrow {
+.is-expanded > .ItemSibling-heading > .ItemSibling-arrow {
   transform:rotate(90deg);
 
   &::before {

@@ -10,6 +10,7 @@ import ItemValue from './item-value';
 import ItemLocal from './item-local';
 import ItemError from './item-error';
 import ItemVocab from './item-vocab';
+import ItemSibling from './item-sibling';
 import TooltipComponent from '../shared/tooltip-component';
 import { mixin as clickaway } from 'vue-clickaway';
 import * as VocabUtil from '../../utils/vocab';
@@ -51,6 +52,7 @@ export default {
     'item-entity': ItemEntity,
     'item-value': ItemValue,
     'item-local': ItemLocal,
+    'item-sibling': ItemSibling,
     'item-error': ItemError,
     'item-vocab': ItemVocab,
     'entity-adder': EntityAdder,
@@ -96,7 +98,7 @@ export default {
     linkedIds() {
       const ids = [];
       for (const obj of this.valueAsArray) {
-        if (obj['@id']) {
+        if (obj && obj['@id']) {
           ids.push(obj['@id']);
         }
       }
@@ -120,6 +122,9 @@ export default {
       }
     },
     valueAsArray() {
+      if (this.fieldValue === null) {
+        return [];
+      }
       let valueArray = this.fieldValue;
       if (!_.isArray(this.fieldValue)) {
         valueArray = [this.fieldValue];
@@ -138,7 +143,6 @@ export default {
      if (this.parentPath !== 'mainEntity') {
        return true;
      }
-
      return false;
     },
     propertyTypes() {
@@ -163,6 +167,9 @@ export default {
     },
     isEmptyObject() {
       const value = this.fieldValue;
+      if (value === null) {
+        return true;
+      }
       if (typeof value === 'undefined') {
         return true;
       }
@@ -298,6 +305,11 @@ export default {
         return 'entity';
       }
       if (
+        this.isPlainObject(o) && o.hasOwnProperty('@id') && o['@id'].indexOf(this.inspector.data.record['@id'] > -1)
+      ) {
+        return 'sibling';
+      }
+      if (
         this.isPlainObject(o) &&
         (
         !this.isLinked(o)
@@ -311,6 +323,9 @@ export default {
       }
     },
     isLinked(o) {
+      if (o === null) {
+        return false;
+      }
       if (typeof o === 'undefined') {
         throw new Error('Cannot check link status of undefined object.');
       }
@@ -473,6 +488,17 @@ export default {
           :in-array="valueIsArray" 
           :show-action-buttons="actionButtonsShown"></item-local>
 
+
+        <item-sibling
+          v-if="getDatatype(item) == 'sibling'"
+          :id="item['@id']"
+          :is-locked="locked"
+          :field-key="fieldKey"
+          :entity-type="entityType"
+          :index="index"
+          :in-array="valueIsArray"
+          :show-action-buttons="actionButtonsShown"
+          :parent-path="getPath"></item-sibling>
       </div>
     </div>
 

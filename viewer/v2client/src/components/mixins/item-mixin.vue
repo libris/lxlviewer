@@ -15,8 +15,12 @@ export default {
   },
   methods: {
     removeThis(animate = false) {
-      const parentValue = _.cloneDeep(_.get(this.inspector.data, this.parentPath));
-      parentValue.splice(this.index, 1);
+      let parentValue = _.cloneDeep(_.get(this.inspector.data, this.parentPath));
+      if (_.isArray(parentValue)) {
+        parentValue.splice(this.index, 1);
+      } else {
+        parentValue = null;
+      }
       if (animate) {
         this.$store.dispatch('setInspectorStatusValue', { property: 'removing', value: true });
         this.removed = true;

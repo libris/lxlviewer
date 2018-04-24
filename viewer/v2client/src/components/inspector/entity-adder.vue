@@ -286,9 +286,10 @@ export default {
     addItem(obj) {
       let currentValue = _.cloneDeep(_.get(this.inspector.data, this.path));
       if (!_.isArray(currentValue)) {
-        currentValue = [currentValue];
+        currentValue = obj;
+      } else {
+        currentValue.push(obj);
       }
-      currentValue.push(obj);
       this.$store.dispatch('updateInspectorData', {
           path: `${this.path}`,
           value: currentValue,

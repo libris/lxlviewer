@@ -204,6 +204,12 @@ export default {
         } else {
           value = '';
         }
+      } else {
+        if (VocabUtil.propIsRepeatable(key, this.resources.context)) {
+          value = [];
+        } else {
+          value = null;
+        }
       }
       return value;
     },
