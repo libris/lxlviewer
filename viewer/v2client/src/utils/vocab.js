@@ -73,7 +73,7 @@ export function getTermObject(term, vocab, vocabPfx, context) {
   }
 
   if (!_class) {
-    window.lxlWarning('📘 Term lookup failed:', term, '| Tried the following:', tries);
+    window.lxlWarning('📘 Term lookup failed:', term, '| Tried :', tries.join(', '));
   }
   return _class;
 }
