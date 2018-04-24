@@ -101,7 +101,6 @@ export default {
         httpUtil.get({ url: `${this.settings.apiPath}/_remotesearch?databases=list` })
         .then((response) => {
           resolve(response);
-          console.log(response);
         }, (error) => {
           reject('Error loading databases...', error);
         });
