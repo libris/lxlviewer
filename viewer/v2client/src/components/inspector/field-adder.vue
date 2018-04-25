@@ -39,10 +39,6 @@ export default {
       showToolTip: false,
     };
   },
-  ready() { // Ready method is deprecated in 2.0, switch to "mounted"
-    this.$nextTick(() => { // TODO: Fix proper scroll tracking. This is just an ugly solution using document.onscroll here and window.scroll in editorcontrols.vue
-    });
-  },
   computed: {
     ...mapGetters([
       'inspector',
@@ -53,7 +49,13 @@ export default {
     ]),
     modalTitle() {
       const title = StringUtil.getUiPhraseByLang('Add field', this.settings.language);
-      const contextString = StringUtil.getLabelByLang(this.entityType, this.settings.language, this.resources.vocab, this.settings.vocabPfx, this.resources.context);
+      const contextString = StringUtil.getLabelByLang(
+        this.entityType, 
+        this.settings.language, 
+        this.resources.vocab, 
+        this.settings.vocabPfx, 
+        this.resources.context
+      );
       return `${title}: ${contextString}`;
     },
     filteredResults() {
@@ -213,8 +215,7 @@ export default {
       }
       return value;
     },
-    addField(prop, close) {
-      console.log(prop);
+    addField(prop, close) {  
       if (!prop.added) {
         const splitProp = prop.item['@id'].split('/');
         const propLastPart = splitProp[splitProp.length-1];
@@ -226,9 +227,13 @@ export default {
         });
         if (close) {
           this.hide();
-          this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: `${this.path}.${key}` });
+          this.$store.dispatch('setInspectorStatusValue', { 
+            property: 'lastAdded', 
+            value: `${this.path}.${key}` 
+          });
         }
       }
+      this.$parent.$emit('expand-item', true);
     },
     show() {
       this.active = true;
@@ -238,7 +243,10 @@ export default {
         const fieldsWindow = document.getElementById('fields-window');
         fieldsWindow.addEventListener('scroll', this.toggleWindowFade);
       }, 1);
-      this.$store.dispatch('setStatusValue', { property: 'keybindState', value: 'field-adder' });
+      this.$store.dispatch('setStatusValue', { 
+        property: 'keybindState', 
+        value: 'field-adder' 
+      });
     },
     hide() {
       if (!this.active) return;
@@ -251,6 +259,10 @@ export default {
       this.fieldListBottom = false;
       this.selectedIndex = -1;
     },
+  },
+  mounted() {
+    this.$nextTick(() => { // TODO: Fix proper scroll tracking. This is just an ugly solution using document.onscroll here and window.scroll in editorcontrols.vue
+    });
   },
   components: {
     'modal-component': ModalComponent,
@@ -295,7 +307,12 @@ export default {
           {{ modalTitle }}
         </header>
         <span class="FieldAdderModal-filter">
-          {{ "Filter by" | translatePhrase }} <input id="field-adder-input" class="filterInput mousetrap" @input="resetSelectIndex()" type="text" v-model="filterKey">
+          {{ "Filter by" | translatePhrase }} 
+          <input id="field-adder-input" 
+            class="filterInput mousetrap" 
+            @input="resetSelectIndex()" 
+            type="text" 
+            v-model="filterKey">
           <span class="filterInfo">{{ "Showing" | translatePhrase }} {{ filteredResults.length }} {{ "of" | translatePhrase }} {{allowed ? allowed.length : '0'}} {{ "total" | translatePhrase }}</span>
         </span>
         <span class="ModalComponent-windowControl">
@@ -350,7 +367,6 @@ export default {
 <style lang="less">
 
 .FieldAdder {
-
   &-add {
     font-size: 14px;
     font-size: 1.4rem;
@@ -384,6 +400,7 @@ export default {
     display: flex;
     flex-direction: column;
   }
+
   &-columnHeaders {
     background-color: @white;
     position: fixed;
