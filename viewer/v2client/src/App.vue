@@ -69,8 +69,6 @@ export default {
 @import "~kungbib-styles/dist/less/kb-style";
 @import "./less/main";
 
-
-
 #app {
   display: flex;
   min-height: 100vh;
