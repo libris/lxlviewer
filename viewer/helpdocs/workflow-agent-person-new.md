@@ -1,6 +1,6 @@
 ---
 section: Arbetsflöden
-title: Skapa ny agent, person
+title: Skapa ny Agent -Person
 order: 45
 tags:
 - editor
