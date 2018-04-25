@@ -74,6 +74,15 @@
     ],
     "date": [""]
   },
+  "HasComponent": {
+    "@type": "Item",
+    "physicalLocation": [""],
+    "shelfControlNumber": "",
+    "shelfMark": {
+      "@type": "ShelfMark",
+      "label": [""]
+    }
+  },
   "Classification": {
     "@type": "Classification",
     "code": "",

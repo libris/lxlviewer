@@ -161,6 +161,14 @@ export function getItemObject(itemOf, heldBy, instance) {
           'shelfControlNumber': '',
         },
       ],
+      "marc:hasTextualHoldingsBasicBibliographicUnit": [
+        {
+          "@type": "marc:TextualHoldingsBasicBibliographicUnit",
+          "label": [
+            ""
+          ]
+        }
+      ]
     },
     quoted: [
       {
