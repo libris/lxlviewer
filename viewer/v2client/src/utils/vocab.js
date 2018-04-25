@@ -422,7 +422,7 @@ export function getContextValue(propertyId, key, context) {
 }
 
 export function propIsRepeatable(propertyId, context) {
-  const contextContainer = getContextValue(this.fieldKey, '@container', context);
+  const contextContainer = getContextValue(propertyId, '@container', context);
   if (contextContainer === '@set' || contextContainer === '@list') {
     return true;
   }
