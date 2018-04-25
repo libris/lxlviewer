@@ -426,16 +426,19 @@ export default {
   &-container {
     width: 100%;
     bottom: 10px;
-    min-width: 60px;
+    min-width: 65px;
     position: fixed;
     border: 1px solid #cccccc75;
     background-color: #ecececd1;
-    padding: 4px;
+    padding: 6px;
     border-radius: 0.5em;
     box-shadow: 0px 0px 15px 0px #0000001f;
 
     @media (min-width: 992px) {
       bottom: auto;
+    }
+    @media (min-width: 1200px) {
+      padding: 8px;
     }
   }
 
