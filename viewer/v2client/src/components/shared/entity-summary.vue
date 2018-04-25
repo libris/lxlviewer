@@ -231,6 +231,14 @@ export default {
     }
   }
 
+  &-sourceLabel {
+    border: 1px solid;
+    border-radius: 0.5em;
+    padding: 0px 0.5em;
+    float: right;
+    margin-right: 0.5em;
+  }
+
   &-info {
     min-height: 7.5em;
     overflow: hidden;

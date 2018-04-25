@@ -58,6 +58,7 @@ const store = new Vuex.Store({
       },
       notifications: [],
       helpSection: 'none',
+      remoteDatabases: [],
     },
     user: {
       settings: {
