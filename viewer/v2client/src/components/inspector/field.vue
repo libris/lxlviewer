@@ -305,7 +305,7 @@ export default {
         return 'entity';
       }
       if (
-        this.isPlainObject(o) && o.hasOwnProperty('@id') && o['@id'].indexOf(this.inspector.data.record['@id'] > -1)
+        this.isPlainObject(o) && o.hasOwnProperty('@id') && o['@id'].indexOf(this.inspector.data.record['@id']) > -1
       ) {
         return 'sibling';
       }
