@@ -350,8 +350,7 @@ export default {
         :class="{'down': expanded}" 
         @click="toggleExpanded()"
         tabindex="0"
-        @keyup.enter="toggleExpanded()"
-        ></i>
+        @keyup.enter="toggleExpanded()"></i>
       <span class="ItemLocal-type" 
         @click="toggleExpanded($event)" 
         :title="item['@type']">{{ item['@type'] | labelByLang | capitalize }}:</span>
@@ -498,7 +497,6 @@ export default {
     cursor: pointer;
     justify-content: space-between;
     align-items: center;
-    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 
