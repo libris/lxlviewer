@@ -38,7 +38,7 @@ export default {
   <nav class="NavBar" aria-labelledby="service-name">
     <div class="container">
       <div class="row">
-        <div class="col-xs-12 col-md-5">
+        <div class="col-xs-12 col-md-4 col-lg-5">
           <div class="NavBar-brand" role="banner">
             <router-link to="/" class="NavBar-brandLink">
               <img class="NavBar-brandLogo" src="~kungbib-styles/dist/assets/kb_logo_black.svg" alt="Kungliga Bibliotekets logotyp">
@@ -52,8 +52,8 @@ export default {
           </div>
         </div>
 
-        <div class="col-xs-12 col-md-7">
-          <ul class="nav navbar-nav pull-right MainNav">
+        <div class="col-xs-12 col-md-8 col-lg-7">
+          <ul class="MainNav">
             <li class="MainNav-item">
               <router-link to="/help" class="MainNav-link">
                 <div class="MainNav-iconWrap" aria-hidden="true">
@@ -117,7 +117,7 @@ export default {
 
   &-brand {
     float: left;
-    margin: 5px 10px 5px 0;
+    margin: 5px 0;
   }
 
   &-brandLogo {
@@ -126,20 +126,33 @@ export default {
     vertical-align: middle;
     width: 80%;
   }
+
   &-brandLink {
     display: inline-block;
-    width: 50px;
+    width: 30px;
+    @media (min-width: 768px) {
+      width: 50px;
+    }
   }
 
   &-brandTitle {
     color: @text-brand;
     cursor: pointer;
-    height: 50px;
     float: right;
-    font-size: 20px;
-    font-size: 2rem;
     line-height: 20px;
-    padding: 15px 5px;
+    padding: 5px;
+
+    @media (min-width: 768px) {
+      font-size: 18px;
+      font-size: 1.8rem;
+      padding: 15px 5px;
+      height: 50px;
+    }
+
+    @media (min-width: 1200px) {
+      font-size: 20px;
+      font-size: 2rem;
+    }
 
     &:hover {
       text-decoration: none;
@@ -162,10 +175,23 @@ export default {
 }
 
 .MainNav {
-  float: right;
+  float: left;
+  border-top: 1px solid @black;
+  width: 100%;
+  list-style: none;
+  padding: 0;
+  margin: 10px 0 0;
+
+  @media (min-width: 992px) {
+    float: right;
+    border-top: 1px solid @white;
+    margin: 0;
+    text-align: right;
+  }
 
   &-item {
     text-transform: none;
+    display: inline-block;
       
     @media screen and (max-width: @screen-sm-min) {
       display: inline;
@@ -199,6 +225,8 @@ export default {
     font-weight: 700;
     font-size: 16px;
     font-size: 1.6rem;
+    padding: 10px;
+    display: block;
 
     &:hover, 
     &:focus {
@@ -207,6 +235,10 @@ export default {
 
     i {
       color: @text-alt-navbar;
+    }
+
+    @media (min-width: 992px) {
+      padding: 15px;
     }
   }
 
