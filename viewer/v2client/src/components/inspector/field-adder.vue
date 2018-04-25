@@ -381,6 +381,10 @@ export default {
     }
   }
 
+  &--inToolbar {
+    display: inline-block;
+  }
+
   &-innerLabel {
     display: none;
   }
