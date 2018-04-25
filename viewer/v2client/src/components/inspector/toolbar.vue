@@ -84,9 +84,15 @@ export default {
     },
     toggleEditorFocus() {
       if (this.inspector.status.focus === 'record') {
-        this.$store.dispatch('setInspectorStatusValue', { property: 'focus', value: 'mainEntity' });
+        this.$store.dispatch('setInspectorStatusValue', { 
+          property: 'focus', 
+          value: 'mainEntity' 
+        });
       } else {
-        this.$store.dispatch('setInspectorStatusValue', { property: 'focus', value: 'record' });
+        this.$store.dispatch('setInspectorStatusValue', { 
+          property: 'focus', 
+          value: 'record' 
+        });
       }
     },
     openMarc() {
@@ -100,7 +106,10 @@ export default {
     },
     edit() {
       this.loadingEdit = true;
-      this.$store.dispatch('setInspectorStatusValue', { property: 'editing', value: true });
+      this.$store.dispatch('setInspectorStatusValue', { 
+        property: 'editing', 
+        value: true 
+      });
     },
     navigateFormChanges(direction) {
       this.navigateChangeHistory(this.inspector.status.focus, direction);
@@ -109,7 +118,12 @@ export default {
       this.showAdminInfoDetails = !this.showAdminInfoDetails;
     },
     isSubClassOf(type) {
-      const baseClasses = VocabUtil.getBaseClasses(this.inspector.data.mainEntity['@type'], this.resources.vocab, this.settings.vocabPfx, this.resources.context)
+      const baseClasses = VocabUtil.getBaseClasses(
+        this.inspector.data.mainEntity['@type'], 
+        this.resources.vocab, 
+        this.settings.vocabPfx, 
+        this.resources.context
+      )
         .map(id => id.replace(this.settings.vocabPfx, ''));
       return baseClasses.indexOf(type) > -1;
     },
@@ -246,6 +260,7 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
+    
     });
   },
 };
@@ -253,7 +268,6 @@ export default {
 
 <template>
   <div class="Toolbar" id="editor-container">
-
     <div class="dropdown Toolbar-menu OtherFormatMenu"
       v-if="!inspector.status.editing" 
       v-on-clickaway="hideOtherFormatMenu">
@@ -405,8 +419,32 @@ export default {
 
 .Toolbar {
 
+  &-placeholder {
+    width: 100%;
+  }
+
+  &-container {
+    width: 100%;
+    bottom: 10px;
+    min-width: 60px;
+    position: fixed;
+    border: 1px solid #cccccc75;
+    background-color: #ecececd1;
+    padding: 4px;
+    border-radius: 0.5em;
+    box-shadow: 0px 0px 15px 0px #0000001f;
+
+    @media (min-width: 992px) {
+      bottom: auto;
+    }
+  }
+
   &-container {
     z-index: 3;
+  }
+
+  &-menu {
+    display: inline-block;
   }
 
   &-btn {
@@ -429,11 +467,18 @@ export default {
     bottom: 12px;
   }
 
-
   &-menuList {
     display: block;
-    left: auto;
-    right: 0;
+    top: -250%;
+    left: 50px;
+    bottom: 0;
+
+    @media (min-width: 992px) {
+      top: auto;
+      left: auto;
+      bottom: auto;
+      right: 0;
+    }
   }
 }
 

@@ -62,6 +62,7 @@ export default {
   flex-direction: row;
   font-size: 14px;
   font-size: 1.4rem;
+  line-height: 1.2;
   align-items: center;
 }
 // .record-summary-container {
