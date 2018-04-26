@@ -50,10 +50,7 @@
             {
               "@type": "PrimaryPublication",
               "date": "",
-              "country": [ {"@id": "https://id.kb.se/country/sw"} ]
-            },
-            {
-              "@type": "Publication",
+              "country": [ {"@id": "https://id.kb.se/country/sw"} ],
               "place": {
                 "@type": "Place",
                 "label": ""
@@ -61,8 +58,7 @@
               "agent": {
                 "@type": "Agent",
                 "label": ""
-              },
-              "date": ""
+              }
             }
           ],
           "manufacture": [{
@@ -82,10 +78,6 @@
                 ""
               ]
             }]
-          }],
-          "marc:publicationStatus": "marc:SingleKnownDateProbableDate",
-          "publicationCountry": [{
-            "@id": "https://id.kb.se/country/sw"
           }],
           "copyright": [{
             "@type": "Copyright",
@@ -246,12 +238,11 @@
           }],
           "publication": [
             {
-              "@type": "PrimaryPublication",
+              "@type": "CurrentPublicationPeriod",
               "date": "",
-              "country": [ {"@id": "https://id.kb.se/country/sw"} ]
-            },
-            {
-              "@type": "Publication",
+              "startDate": "",
+              "endDate": "",
+              "country": [ {"@id": "https://id.kb.se/country/sw"} ],
               "place": {
                 "@type": "Place",
                 "label": ""
@@ -259,8 +250,7 @@
               "agent": {
                 "@type": "Agent",
                 "label": ""
-              },
-              "date": ""
+              }
             }
           ],
           "carrierType": [{
