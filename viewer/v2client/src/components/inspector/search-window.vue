@@ -267,17 +267,20 @@ export default {
               <summary-action-button v-show="!extracting" :options="localEntitySettings" @action="extract()"></summary-action-button>
             </div>
           </div>
-          <div class="result-list-container">
-            <div v-show="displaySearchList" class="search-result">
+          <div class="SearchWindow-resultListContainer result-list-container">
+            <div v-show="displaySearchList" class="SearchWIndow-searchResult search-result">
               <div v-for="item in searchResult" :key="item['@id']" class="search-item">
-                <div class="entity-summary-container">
-                  <entity-summary :focus-data="item" :lines="4"></entity-summary>
+                <div class="SearchWindow-entitySummaryContainer entity-summary-container">
+                  <entity-summary 
+                    :focus-data="item" 
+                    :lines="4" 
+                    :navigate-new="true"></entity-summary>
                 </div>
                 <summary-action-button :options="addPayload(item)" @action="replaceWith(item)"></summary-action-button>
               </div>
             </div>
             <div v-show="extracting || keyword.length === 0 || loading || foundNoResult" class="search-status-container">
-              <div class="search-status">
+              <div class="SearchWindow-searchStatus search-status">
                 <span v-show="keyword.length === 0 && !extracting"><span>{{ "Search for existing linked entities" | translatePhrase }}...</span></span>
                 <span v-show="loading"><i class="fa fa-circle-o-notch fa-spin"></i><span>{{ "Searching" | translatePhrase }}...</span></span>
                 <span v-show="foundNoResult"><span>{{ "No results" | translatePhrase }}<br>{{"Search again or" | translatePhrase}} {{"Create and link entity" | translatePhrase}}</span></span>

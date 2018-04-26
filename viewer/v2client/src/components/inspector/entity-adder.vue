@@ -502,7 +502,6 @@ export default {
 <style lang="less">
 
 .EntityAdder {
-
   &.disabled {
     visibility: hidden;
   }

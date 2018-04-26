@@ -52,18 +52,17 @@ export default {
   <div class="action-container">
     <button
       @click="action()"
-      :class="options.styling"
-      >
+      :class="options.styling">
       {{options.text | translatePhrase}}
     </button>
-    <a v-if="options.inspectAction && isLibrisResource" :href="inspectUrl" target="_blank" class="inspect-link">
+    <!-- <a v-if="options.inspectAction && isLibrisResource" :href="inspectUrl" target="_blank" class="inspect-link">
       <i class="fa fa-external-link" aria-hidden="true"></i>
       {{"View" | translatePhrase}}
     </a>
     <a v-if="options.inspectAction && !isLibrisResource" :href="options.payload['@id']" target="_blank" class="inspect-link">
       <i class="fa fa-external-link" aria-hidden="true"></i>
       {{"View" | translatePhrase}}
-    </a>
+    </a> -->
   </div>
 </template>
 
