@@ -198,7 +198,6 @@ export default {
     this.addEmbedded = (this.valueList.length === 0 && this.onlyEmbedded && this.getFullRange.length > 1);
     this.searchOpen = false;
     this.currentSearchTypes = this.getRange;
-    console.log(this.currentSearchTypes);
   },
   methods: {
     getFormattedSelectOption(term) {
