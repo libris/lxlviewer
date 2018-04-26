@@ -109,12 +109,32 @@
             "@type": "Dimensions",
             "label": ""
           },
-          "seriesStatement": "",
-          "hasSeries": [{
-            "@type": "Serial",
-            "title": "",
-            "issn": ""
-          }],
+          "seriesMembership": [
+            {
+              "@type": "SeriesMembership",
+              "inSeries": {
+                "@type": "Instance",
+                "identifiedBy": [
+                  {
+                    "@type": "ISSN",
+                    "value": ""
+                  }
+                ],
+                "instanceOf": {
+                  "@type": "Work",
+                  "hasTitle": [
+                    {
+                      "@type": "Title",
+                      "mainTitle": ""
+                    }
+                  ]
+                }
+              },
+              "marc:seriesTracingPolicy": "",
+              "seriesEnumeration": "",
+              "seriesStatement": [""]
+            }
+          ],
           "hasNote": [{
             "@type": "Note",
             "label": ""
@@ -265,32 +285,6 @@
             {
               "@type": "NumberingOfSerials",
               "label": ""
-            }
-          ],
-          "seriesMembership": [
-            {
-              "@type": "SeriesMembership",
-              "inSeries": {
-                "@type": "Instance",
-                "identifiedBy": [
-                  {
-                    "@type": "ISSN",
-                    "value": ""
-                  }
-                ],
-                "instanceOf": {
-                  "@type": "Work",
-                  "hasTitle": [
-                    {
-                      "@type": "Title",
-                      "mainTitle": ""
-                    }
-                  ]
-                }
-              },
-              "marc:seriesTracingPolicy": "",
-              "seriesEnumeration": "",
-              "seriesStatement": [""]
             }
           ],
           "succeededBy": [{
