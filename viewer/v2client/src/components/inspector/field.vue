@@ -386,9 +386,7 @@ export default {
         <span class="Field-commentText">{{ propertyComment }}</span>
       </div>
     
-      <div v-if="!isInner" class="Field-actions"
-        @mouseover="highlightItem($event)"
-        @mouseout="unHighlightItem($event)">
+      <div v-if="!isInner" class="Field-actions">
         <entity-adder  class="Field-entityAdder Field-action"
           v-show="!locked && (isRepeatable || isEmptyObject)" 
           :field-key="fieldKey" 
@@ -405,8 +403,8 @@ export default {
           :class="{'disabled': activeModal}">
           <i class="fa fa-trash-o action-button"
             v-on:click="removeThis(true)"
-              @mouseover="removeHover = true" 
-            @mouseout="removeHover = false">
+            @mouseover="removeHover = true, highlightItem($event)" 
+            @mouseout="removeHover = false, unHighlightItem($event)">
             <tooltip-component 
               :show-tooltip="removeHover" 
               tooltip-text="Remove" 
@@ -416,9 +414,7 @@ export default {
       </div>
 
       <!-- Is inner -->
-      <div v-if="isInner" class="Field-actions is-nested"
-        @mouseover="highlightItem($event)"
-        @mouseout="unHighlightItem($event)">
+      <div v-if="isInner" class="Field-actions is-nested">
         <entity-adder class="Field-action Field-entityAdder"
           v-show="!locked && (isRepeatable || isEmptyObject)" 
           :field-key="fieldKey" 
@@ -437,8 +433,8 @@ export default {
             tabindex="0"
             v-on:click="removeThis(true)"
             @keyup.enter="removeThis(true)"
-            @mouseover="removeHover = true" 
-              @mouseout="removeHover = false"  >
+            @mouseover="removeHover = true, highlightItem($event)" 
+              @mouseout="removeHover = false, unHighlightItem($event)"  >
             <tooltip-component :show-tooltip="removeHover" tooltip-text="Remove" translation="translatePhrase"></tooltip-component>
           </i>
         </div>
