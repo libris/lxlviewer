@@ -194,10 +194,11 @@ export default {
       return false;
     },
   },
-  ready() {
+  mounted() {
     this.addEmbedded = (this.valueList.length === 0 && this.onlyEmbedded && this.getFullRange.length > 1);
     this.searchOpen = false;
     this.currentSearchTypes = this.getRange;
+    console.log(this.currentSearchTypes);
   },
   methods: {
     getFormattedSelectOption(term) {
@@ -434,7 +435,7 @@ export default {
                   <select class="EntityAdder-searchSelect"
                     v-model="currentSearchTypes" 
                     @change="handleChange(keyword)">
-                    <option :value="getRange">{{"All types" | translatePhrase}}</option>
+                    <option :value="getRange" selected>{{"All types" | translatePhrase}}</option>
                     <option 
                       v-for="(term, index) in getClassTree" 
                       :key="`${term.id}-${index}`" 
