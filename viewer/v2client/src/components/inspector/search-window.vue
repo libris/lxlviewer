@@ -13,7 +13,7 @@ import ModalComponent from '@/components/shared/modal-component';
 import ToolTipComponent from '../shared/tooltip-component';
 import EntitySearchList from '../search/entity-search-list';
 import EntitySummary from '../shared/entity-summary';
-import SummaryActionButton from './summary-action-button';
+import SummaryAction from './summary-action';
 import LensMixin from '../mixins/lens-mixin';
 import { mixin as clickaway } from 'vue-clickaway';
 import { mapGetters } from 'vuex';
@@ -61,7 +61,7 @@ export default {
   components: {
     'entity-search-list': EntitySearchList,
     'entity-summary': EntitySummary,
-    'summary-action-button': SummaryActionButton,
+    'summary-action': SummaryAction,
     'modal-component': ModalComponent,
   },
   watch: {
@@ -208,10 +208,9 @@ export default {
       :title="'Link entity' | translatePhrase"
       v-if="active"
       @close="hide()"
-      class="SearchWindow-modal"
-    >
+      class="SearchWindow-modal">
       <template slot="modal-body">
-          <div class="search-header">
+          <div class="SearchWindow-header search-header">
             <span>{{ "Search" | translatePhrase }}</span>
             <div class="search">
               <!--<input class="entity-search-keyword-input" v-model="keyword" @input="setSearching()"></input>-->
@@ -219,8 +218,7 @@ export default {
                 <input
                   v-model="keyword"
                   class="entity-search-keyword-input"
-                  autofocus
-                >
+                  autofocus>
                 <select v-model="currentSearchTypes" @change="handleChange(keyword)">
                   <option :value="getRange">{{"All types" | translatePhrase}}</option>
                   <option v-for="term in getClassTree" :key="term.id" :value="term.id" v-html="getFormattedSelectOption(term, settings, resources.vocab, resources.context)"></option>
@@ -267,24 +265,36 @@ export default {
               <summary-action-button v-show="!extracting" :options="localEntitySettings" @action="extract()"></summary-action-button>
             </div>
           </div>
-          <div class="SearchWindow-resultListContainer result-list-container">
-            <div v-show="displaySearchList" class="SearchWIndow-searchResult search-result">
-              <div v-for="item in searchResult" :key="item['@id']" class="search-item">
-                <div class="SearchWindow-entitySummaryContainer entity-summary-container">
-                  <entity-summary 
-                    :focus-data="item" 
-                    :lines="4" 
-                    :navigate-new="true"></entity-summary>
-                </div>
-                <summary-action-button :options="addPayload(item)" @action="replaceWith(item)"></summary-action-button>
-              </div>
-            </div>
-            <div v-show="extracting || keyword.length === 0 || loading || foundNoResult" class="search-status-container">
-              <div class="SearchWindow-searchStatus search-status">
-                <span v-show="keyword.length === 0 && !extracting"><span>{{ "Search for existing linked entities" | translatePhrase }}...</span></span>
-                <span v-show="loading"><i class="fa fa-circle-o-notch fa-spin"></i><span>{{ "Searching" | translatePhrase }}...</span></span>
-                <span v-show="foundNoResult"><span>{{ "No results" | translatePhrase }}<br>{{"Search again or" | translatePhrase}} {{"Create and link entity" | translatePhrase}}</span></span>
-                <span v-show="extracting"><i class="fa fa-circle-o-notch fa-spin" aria-hidden="true"></i><span>{{ "Creating link" | translatePhrase }}</span></span>
+          <div class="SearchWindow-resultListContainer">
+            <ul v-show="displaySearchList" class="SearchWindow-resultList">
+              <li class="SearchWindow-resultItem"
+                v-for="item in searchResult" 
+                :key="item['@id']" >
+                <entity-summary class="SearchWindow-entitySummary"
+                  :focus-data="item" 
+                  :lines="4" 
+                  :should-open-tab="true"></entity-summary>
+                <summary-action :options="addPayload(item)" @action="replaceWith(item)"></summary-action>
+              </li>
+            </ul>
+            <div class="SearchWindow-searchStatusContainer"
+              v-show="extracting || keyword.length === 0 || loading || foundNoResult">
+              <div class="SearchWindow-searchStatus">
+                <span v-show="keyword.length === 0 && !extracting">
+                  {{ "Search for existing linked entities" | translatePhrase }}...
+                </span>
+                <span v-show="loading">
+                  <i class="fa fa-circle-o-notch fa-spin"></i>
+                  {{ "Searching" | translatePhrase }}...
+                </span>
+                <span v-show="foundNoResult">
+                  <strong>{{ "No results" | translatePhrase }}</strong>
+                  <br>{{"Search again or" | translatePhrase}} {{"Create and link entity" | translatePhrase}}
+                </span>
+                <span v-show="extracting">
+                  <i class="fa fa-circle-o-notch fa-spin" aria-hidden="true"></i>
+                  {{ "Creating link" | translatePhrase }}
+                </span>
               </div>
             </div>
           </div>
@@ -296,59 +306,69 @@ export default {
 <style lang="less">
 
 .SearchWindow {
+  &-entitySummary {
+    max-width: 80%;
+  }
+
+  &-resultListContainer {
+    overflow-y: scroll;
+    flex: 1 1 auto;
+  }
+
+  &-searchStatusContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
+
+  &-resultList {
+    padding: 0 0 50px 0; // Make sure last item is fully visible
+  }
+
+  &-resultItem {
+    border: solid #777;
+    margin: 4px;
+    border-width: 1px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &-searchStatus {
+    font-size: 20px;
+    font-size: 2.0rem;
+    text-align: center;
+    margin: 20px;
+  }
+
+  &-header {
+    width: 100%;
+    flex: 0 1 auto;
+    padding: 10px 20px;
+    border: solid #ccc;
+    border-width: 0px 0px 1px 0px;
+    background-color: darken(@neutral-color, 4%);
+  }
+
   &-modal {
     .ModalComponent-body {
       width: 100%;
       background-color: white;
       border: 1px solid #ccc;
       padding: 0px;
+      overflow: hidden;
+      height: 100%;
+      display: flex;
+      flex-flow: column;
+
       button {
         font-size: 12px;
+        font-size: 1.2rem;
       }
-      .result-list-container {
-        overflow-y: auto;
-        height: 60%;
-        .search-result {
-          .search-item {
-            border: solid #777;
-            margin: 4px;
-            border-width: 1px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            .entity-summary-container {
-              max-width: 80%;
-            }
-          }
-        }
-        .search-status-container {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          height: 100%;
-          .search-status {
-            font-size: 2em;
-            text-align: center;
-            > span {
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              i {
-                font-size: 8rem;
-              }
-              > span {
-                margin: 0 0.5em;
-              }
-            }
-          }
-        }
-      }
+      
       .search-header {
-        width: 100%;
-        padding: 0.5em 1em;
-        border: solid #ccc;
-        border-width: 0px 0px 1px 0px;
-        background-color: darken(@neutral-color, 4%);
+      
         > span {
         font-weight: bold;
         }

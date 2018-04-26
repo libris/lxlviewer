@@ -2,7 +2,7 @@
 import * as _ from 'lodash';
 import LensMixin from '../mixins/lens-mixin';
 import EntitySummary from '../shared/entity-summary';
-import SummaryActionButton from '../inspector/summary-action-button';
+import SummaryAction from '../inspector/summary-action';
 import { mapGetters } from 'vuex';
 
 export default {
@@ -49,7 +49,7 @@ export default {
   },
   components: {
     'entity-summary': EntitySummary,
-    'summary-action-button': SummaryActionButton,
+    'summary-action': SummaryAction,
   },
   watch: {
   },
@@ -68,10 +68,10 @@ export default {
         :should-link="false" 
         :lines="4"></entity-summary>
     </div>
-    <summary-action-button 
+    <summary-action 
       v-show="listItemSettings.show" 
       :options="addPayload" 
-      @action="addItem()"></summary-action-button>
+      @action="addItem()"></summary-action>
   </li>
 </template>
 

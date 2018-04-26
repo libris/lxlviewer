@@ -18,7 +18,8 @@ export default {
     shouldLink: {
       default: true,
       type: Boolean,
-    }
+    },
+    shouldOpenTab: false,
   },
   data() {
     return {
@@ -160,15 +161,18 @@ export default {
       <router-link class="EntitySummary-titleLink"
         v-if="isLibrisResource && !isImport && shouldLink" 
         :to="this.routerPath" 
-        :title="header.join(', ')">
+        :title="header.join(', ')"
+        :target="shouldOpenTab ? '_blank' : '' ">
         {{ header.join(', ') }}
       </router-link>
       <a class="EntitySummary-titleLink"
         v-if="!isLibrisResource && !isImport && shouldLink" 
         :href="focusData['@id']" 
-        :title="header.join(', ')">
+        :title="header.join(', ')"
+        :target="shouldOpenTab ? '_blank' : '' ">
         {{ header.join(', ') }}
       </a>
+      
     </h3>
     <span class="EntitySummary-id" 
       v-if="identifiers.length > 0">

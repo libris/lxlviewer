@@ -49,10 +49,10 @@ export default {
 </script>
 
 <template>
-  <div class="action-container">
-    <button
+  <div class="SummaryAction action-container">
+    <button class="SummaryAction-button"
       @click="action()"
-      :class="options.styling">
+      :class="'SummaryAction-button--'+options.styling">
       {{options.text | translatePhrase}}
     </button>
     <!-- <a v-if="options.inspectAction && isLibrisResource" :href="inspectUrl" target="_blank" class="inspect-link">
@@ -68,20 +68,18 @@ export default {
 
 <style lang="less">
 
-
-.action-container {
+.SummaryAction {
   display: flex;
   flex-direction: column;
   align-items: center;
   margin-bottom: 4px;
   padding: 0.5em;
-  > a {
-    margin-top: 0.8em;
-  }
-  > button {
+
+  &-button {
     min-width: 90px;
     padding: 3px 10px;
-    &.brand {
+
+    &--brand {
       color: @white;
       background: @brand-primary;
       &:hover {
@@ -91,7 +89,8 @@ export default {
         background: darken(@brand-primary, 5%);
       }
     }
-    &.gray {
+
+    &--gray {
       color: @black;
       background: @gray-light;
       &:hover {
