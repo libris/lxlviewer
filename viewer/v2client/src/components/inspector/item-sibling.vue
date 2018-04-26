@@ -332,9 +332,7 @@ export default {
         <span class="placeholder"> </span>
       </span>
       
-      <div class="ItemSibling-actions"
-        @mouseover="highlightItem($event)"
-        @mouseout="unHighlightItem($event)">
+      <div class="ItemSibling-actions">
 
         <field-adder class="ItemSibling-action"
           v-if="!isLocked" 
@@ -361,8 +359,8 @@ export default {
           v-on:click="removeThis(true)"
           @keyup.enter="removeThis(true)"
           tabindex="0"
-          @mouseover="removeHover = true" 
-          @mouseout="removeHover = false">
+          @mouseover="removeHover = true, highlightItem($event)" 
+          @mouseout="removeHover = false, unHighlightItem($event)">
           <tooltip-component 
             :show-tooltip="removeHover" 
             tooltip-text="Remove" 

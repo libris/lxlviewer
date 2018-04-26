@@ -359,9 +359,7 @@ export default {
         <span class="placeholder"> </span>
       </span>
       
-      <div class="ItemLocal-actions"
-        @mouseover="highlightItem($event)"
-        @mouseout="unHighlightItem($event)">
+      <div class="ItemLocal-actions">
 
         <field-adder class="ItemLocal-action"
           v-if="!isLocked" 
@@ -382,14 +380,15 @@ export default {
             tooltip-text="Link entity" 
             translation="translatePhrase"></tooltip-component>
         </i>
+
         <i class="ItemLocal-action fa fa-trash-o chip-action" 
           v-if="!isLocked" 
           :class="{'show-icon': showActionButtons}" 
           v-on:click="removeThis(true)" 
           @keyup.enter="removeThis(true)"
           tabindex="0"
-          @mouseover="removeHover = true" 
-          @mouseout="removeHover = false">
+          @mouseover="removeHover = true, highlightItem($event)"
+          @mouseout="removeHover = false, unHighlightItem($event)">
           <tooltip-component 
             :show-tooltip="removeHover" 
             tooltip-text="Remove" 
