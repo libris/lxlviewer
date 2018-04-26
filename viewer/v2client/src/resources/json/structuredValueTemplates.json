@@ -74,7 +74,7 @@
     ],
     "date": [""]
   },
-  "HasComponent": {
+  "Item": {
     "@type": "Item",
     "physicalLocation": [""],
     "shelfControlNumber": "",
@@ -83,6 +83,12 @@
       "label": [""]
     }
   },
+  "marc:TextualHoldingsBasicBibliographicUnit": [ 
+    { 
+      "@type": "marc:TextualHoldingsBasicBibliographicUnit", 
+      "label": [""] 
+    } 
+  ],
   "Classification": {
     "@type": "Classification",
     "code": "",
