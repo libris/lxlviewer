@@ -54,23 +54,24 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.possibleValues = this.getPossibleValues();
-      this.setInitialValue();
+      this.selected = this.fieldValue;
+      // this.setInitialValue();
     });
   },
   watch: {
-    fieldValue(value) {
-      this.disableDataSync = true;
-      this.selected = this.fieldValue;
+    fieldValue(value, oldValue) {
+      if (value !== this.selected) {
+        this.selected = this.fieldValue;
+      }
     },
-    selected(value) {
-      if (this.disableDataSync === false) {
+    selected(value, oldValue) {
+      if (value !== oldValue) {
         this.$store.dispatch('updateInspectorData', {
           path: this.path,
           value: value,
           addToHistory: true,
         });
       }
-      this.disableDataSync = false;
     },
   },
   methods: {
@@ -107,7 +108,7 @@ export default {
 
 <template>
   <div class="ItemVocab" v-bind:class="{'is-locked': isLocked, 'is-unlocked': !isLocked, 'distinguish-removal': removeHover, 'removed': removed}">
-    <div v-if="!isLocked">
+    <div v-if="!isLocked && possibleValues.length > 0">
       <select v-model="selected" class="ItemVocab-select">
         <option 
           v-for="option in possibleValues" 

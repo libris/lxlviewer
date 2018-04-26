@@ -121,6 +121,9 @@ export default {
     hasSingleRange() {
       return this.getFullRange.length === 1;
     },
+    isVocabField() {
+      return VocabUtil.getContextValue(this.fieldKey, '@type', this.resources.context) === '@vocab';
+    },
     addLabel() {
       if (this.isLiteral) {
         return this.fieldKey;
@@ -239,6 +242,8 @@ export default {
     add() {
       if (this.isEnumeration) {
         this.addItem({'@id': ''});
+      } else if (this.isVocabField) {
+        this.addItem('');
       } else if (this.canRecieveObjects) {
         const range = this.getFullRange;
         if (range.length === 1 && this.onlyEmbedded) {

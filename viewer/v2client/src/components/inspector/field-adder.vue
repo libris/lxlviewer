@@ -200,7 +200,7 @@ export default {
     },
     getEmptyFieldValue(key, prop) {
       let value = [];
-      if (prop['@type'] === 'DatatypeProperty') {
+      if (prop['@type'] === 'DatatypeProperty' || VocabUtil.getContextValue(key, '@type', this.resources.context) === '@vocab') {
         if (VocabUtil.propIsRepeatable(key, this.resources.context)) {
           value = [''];
         } else {
