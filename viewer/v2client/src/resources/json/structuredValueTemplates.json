@@ -89,6 +89,32 @@
       "label": [""] 
     } 
   ],
+  "SeriesMembership": [
+    {
+      "@type": "SeriesMembership",
+      "inSeries": {
+        "@type": "Instance",
+        "identifiedBy": [
+          {
+            "@type": "ISSN",
+            "value": ""
+          }
+        ],
+        "instanceOf": {
+          "@type": "Work",
+          "hasTitle": [
+            {
+              "@type": "Title",
+              "mainTitle": ""
+            }
+          ]
+        }
+      },
+      "marc:seriesTracingPolicy": "",
+      "seriesEnumeration": "",
+      "seriesStatement": [""]
+    }
+  ],
   "Classification": {
     "@type": "Classification",
     "code": "",
