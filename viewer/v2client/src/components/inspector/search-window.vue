@@ -262,7 +262,7 @@ export default {
             </div>
             <div class="summary-container">
               <entity-summary :action-settings="localEntitySettings" :focus-data="itemInfo" :lines="4"></entity-summary>
-              <summary-action-button v-show="!extracting" :options="localEntitySettings" @action="extract()"></summary-action-button>
+              <summary-action v-show="!extracting" :options="localEntitySettings" @action="extract()"></summary-action>
             </div>
           </div>
           <div class="SearchWindow-resultListContainer">
