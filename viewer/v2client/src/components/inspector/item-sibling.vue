@@ -332,9 +332,7 @@ export default {
         <span class="placeholder"> </span>
       </span>
       
-      <div class="ItemSibling-actions"
-        @mouseover="highlightItem($event)"
-        @mouseout="unHighlightItem($event)">
+      <div class="ItemSibling-actions">
 
         <field-adder class="ItemSibling-action"
           v-if="!isLocked" 
@@ -343,26 +341,26 @@ export default {
           :inner="true" 
           :path="getPath"></field-adder>
          
-        <i class="ItemSibling-action fa fa-link"
-          v-if="inspector.status.editing && isExtractable"
-          @click="openExtractDialog()" 
-          tabindex="0"
-          @keyup.enter="openExtractDialog()"
-          @mouseover="showLinkAction = true" 
-          @mouseout="showLinkAction = false">
-          <tooltip-component 
-            :show-tooltip="showLinkAction" 
-            tooltip-text="Link entity" 
-            translation="translatePhrase"></tooltip-component>
-        </i>
+          <i class="ItemSibling-action fa fa-link"
+            v-if="inspector.status.editing && isExtractable"
+            @click="openExtractDialog()" 
+            tabindex="0"
+            @keyup.enter="openExtractDialog()"
+            @mouseover="showLinkAction = true" 
+            @mouseout="showLinkAction = false">
+            <tooltip-component 
+              :show-tooltip="showLinkAction" 
+              tooltip-text="Link entity" 
+              translation="translatePhrase"></tooltip-component>
+          </i>
         <i class="ItemSibling-action fa fa-trash-o chip-action" 
           v-if="!isLocked" 
           :class="{'show-icon': showActionButtons}" 
           v-on:click="removeThis(true)"
           @keyup.enter="removeThis(true)"
           tabindex="0"
-          @mouseover="removeHover = true" 
-          @mouseout="removeHover = false">
+          @mouseover="removeHover = true, highlightItem($event)" 
+          @mouseout="removeHover = false, unHighlightItem($event)">
           <tooltip-component 
             :show-tooltip="removeHover" 
             tooltip-text="Remove" 
@@ -396,7 +394,7 @@ export default {
     </ul>
        
     <search-window 
-      :active="extractDialogActive" 
+      :isActive="extractDialogActive" 
       :can-copy-title="canCopyTitle" 
       :copy-title="copyTitle" 
       :entity-type="entityType" 
@@ -467,7 +465,6 @@ export default {
     cursor: pointer;
     justify-content: space-between;
     align-items: center;
-    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 

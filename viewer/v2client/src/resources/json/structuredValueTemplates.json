@@ -74,7 +74,7 @@
     ],
     "date": [""]
   },
-  "HasComponent": {
+  "Item": {
     "@type": "Item",
     "physicalLocation": [""],
     "shelfControlNumber": "",
@@ -83,6 +83,38 @@
       "label": [""]
     }
   },
+  "marc:TextualHoldingsBasicBibliographicUnit": [ 
+    { 
+      "@type": "marc:TextualHoldingsBasicBibliographicUnit", 
+      "label": [""] 
+    } 
+  ],
+  "SeriesMembership": [
+    {
+      "@type": "SeriesMembership",
+      "inSeries": {
+        "@type": "Instance",
+        "identifiedBy": [
+          {
+            "@type": "ISSN",
+            "value": ""
+          }
+        ],
+        "instanceOf": {
+          "@type": "Work",
+          "hasTitle": [
+            {
+              "@type": "Title",
+              "mainTitle": ""
+            }
+          ]
+        }
+      },
+      "marc:seriesTracingPolicy": "",
+      "seriesEnumeration": "",
+      "seriesStatement": [""]
+    }
+  ],
   "Classification": {
     "@type": "Classification",
     "code": "",

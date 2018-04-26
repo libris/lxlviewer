@@ -194,6 +194,9 @@ export default {
 
   &-table {
     width: 100%;
+    height: 100%;
+    overflow: scroll;
+    margin: 0 0 20px 0; // Make sure last field is fully visible
     font-family: monospace;
     border: 1px solid #a1a1a1;
 

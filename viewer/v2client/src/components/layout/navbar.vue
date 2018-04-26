@@ -180,7 +180,7 @@ export default {
   width: 100%;
   list-style: none;
   padding: 0;
-  margin: 10px 0 0;
+  margin: 5px 0 0;
 
   @media (min-width: 992px) {
     float: right;

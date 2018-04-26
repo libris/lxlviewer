@@ -350,8 +350,7 @@ export default {
         :class="{'down': expanded}" 
         @click="toggleExpanded()"
         tabindex="0"
-        @keyup.enter="toggleExpanded()"
-        ></i>
+        @keyup.enter="toggleExpanded()"></i>
       <span class="ItemLocal-type" 
         @click="toggleExpanded($event)" 
         :title="item['@type']">{{ item['@type'] | labelByLang | capitalize }}:</span>
@@ -360,9 +359,7 @@ export default {
         <span class="placeholder"> </span>
       </span>
       
-      <div class="ItemLocal-actions"
-        @mouseover="highlightItem($event)"
-        @mouseout="unHighlightItem($event)">
+      <div class="ItemLocal-actions">
 
         <field-adder class="ItemLocal-action"
           v-if="!isLocked" 
@@ -383,14 +380,15 @@ export default {
             tooltip-text="Link entity" 
             translation="translatePhrase"></tooltip-component>
         </i>
+
         <i class="ItemLocal-action fa fa-trash-o chip-action" 
           v-if="!isLocked" 
           :class="{'show-icon': showActionButtons}" 
           v-on:click="removeThis(true)" 
           @keyup.enter="removeThis(true)"
           tabindex="0"
-          @mouseover="removeHover = true" 
-          @mouseout="removeHover = false">
+          @mouseover="removeHover = true, highlightItem($event)"
+          @mouseout="removeHover = false, unHighlightItem($event)">
           <tooltip-component 
             :show-tooltip="removeHover" 
             tooltip-text="Remove" 
@@ -424,7 +422,7 @@ export default {
     </ul>
        
     <search-window 
-      :active="extractDialogActive" 
+      :isActive="extractDialogActive" 
       :can-copy-title="canCopyTitle" 
       :copy-title="copyTitle" 
       :entity-type="entityType" 
@@ -498,7 +496,6 @@ export default {
     cursor: pointer;
     justify-content: space-between;
     align-items: center;
-    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 

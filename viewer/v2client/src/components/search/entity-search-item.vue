@@ -2,7 +2,7 @@
 import * as _ from 'lodash';
 import LensMixin from '../mixins/lens-mixin';
 import EntitySummary from '../shared/entity-summary';
-import SummaryActionButton from '../inspector/summary-action-button';
+import SummaryAction from '../inspector/summary-action';
 import { mapGetters } from 'vuex';
 
 export default {
@@ -49,7 +49,7 @@ export default {
   },
   components: {
     'entity-summary': EntitySummary,
-    'summary-action-button': SummaryActionButton,
+    'summary-action': SummaryAction,
   },
   watch: {
   },
@@ -61,57 +61,73 @@ export default {
 </script>
 
 <template>
-  <li class="search-result-item" >
-    <div class="search-item-entity-summary-container">
-      <entity-summary :focus-data="focusData" :should-link="false" :lines="4"></entity-summary>
+  <li class="EntitySearch-item" >
+    <div class="EntitySearch-itemContainer">
+      <entity-summary 
+        :focus-data="focusData" 
+        :should-link="false" 
+        :lines="4"></entity-summary>
     </div>
-    <summary-action-button v-show="listItemSettings.show" :options="addPayload" @action="addItem()"></summary-action-button>
+    <summary-action 
+      v-show="listItemSettings.show" 
+      :options="addPayload" 
+      @action="addItem()"></summary-action>
   </li>
 </template>
 
 
 <style lang="less">
 
-.search-result-item {
-  .search-item-entity-summary-container {
-    max-width: 85%;
+.EntitySearch{
+
+  &-item {
+    border: solid #777;
+    margin: 4px;
+    border-width: 1px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    code {
+      color: @black;
+    }
+
+    &.already-added {
+      opacity: 0.5;
+      cursor: default;
+    }
+
+    .label {
+      color: @black;
+      font-weight: bold;
+      font-size: 16px;
+      display: inline-block;
+      width: 74%;
+      text-align: left;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .type {
+      width: 24%;
+      display: inline-block;
+      text-align: right;
+    }
+
+    &:nth-child(even) {
+      background-color: darken(@neutral-color, 2%);
+    }
+
+    &.is-selected {
+      outline: solid 1px @brand-primary;
+      background-color: fadeout(@brand-primary, 70%);
+    } 
   }
-  border: solid #777;
-  margin: 4px;
-  border-width: 1px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  code {
-    color: @black;
+
+  &-itemContainer {
+    max-width: 85%;    
   }
-  &.already-added {
-    opacity: 0.5;
-    cursor: default;
-  }
-  .label {
-    color: @black;
-    font-weight: bold;
-    font-size: 16px;
-    display: inline-block;
-    width: 74%;
-    text-align: left;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .type {
-    width: 24%;
-    display: inline-block;
-    text-align: right;
-  }
-  &:nth-child(even) {
-    background-color: darken(@neutral-color, 2%);
-  }
-  &.is-selected {
-    outline: solid 1px @brand-primary;
-    background-color: fadeout(@brand-primary, 70%);
-  } 
 }
 
 </style>

@@ -197,7 +197,7 @@ export default {
       return false;
     },
   },
-  ready() {
+  mounted() {
     this.addEmbedded = (this.valueList.length === 0 && this.onlyEmbedded && this.getFullRange.length > 1);
     this.searchOpen = false;
     this.currentSearchTypes = this.getRange;
@@ -307,7 +307,7 @@ export default {
     addItem(obj) {
       let currentValue = _.cloneDeep(_.get(this.inspector.data, this.path));
       if (!_.isArray(currentValue)) {
-        currentValue = obj;
+        //currentValue = obj;
       } else {
         currentValue.push(obj);
       }
@@ -439,7 +439,7 @@ export default {
                   <select class="EntityAdder-searchSelect"
                     v-model="currentSearchTypes" 
                     @change="handleChange(keyword)">
-                    <option :value="getRange">{{"All types" | translatePhrase}}</option>
+                    <option :value="getRange" selected>{{"All types" | translatePhrase}}</option>
                     <option 
                       v-for="(term, index) in getClassTree" 
                       :key="`${term.id}-${index}`" 
@@ -507,7 +507,6 @@ export default {
 <style lang="less">
 
 .EntityAdder {
-
   &.disabled {
     visibility: hidden;
   }
