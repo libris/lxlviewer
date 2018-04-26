@@ -45,11 +45,11 @@ export default {
         event: 'replace-local',
         show: true,
         inspectAction: true,
-      }
+      },
+      active: false,
     };
   },
   props: {
-    active: false,
     fieldKey: '',
     extracting: false,
     itemInfo: {},
@@ -57,6 +57,7 @@ export default {
     copyTitle: false,
     canCopyTitle: false,
     entityType: '',
+    isActive: false,
   },
   components: {
     'entity-search-list': EntitySearchList,
@@ -71,9 +72,11 @@ export default {
     copyTitle(value) {
       this.$dispatch('set-copy-title', value);
     },
-    active(value, oldvalue) {
-      if (value && !oldvalue) {
-        this.resetWindow();
+    isActive(value, oldvalue) {
+      if(value) {
+        this.show();
+      } else {
+        this.hide();
       }
     },
   },
@@ -114,7 +117,7 @@ export default {
       return VocabUtil.flattenTree(tree, this.resources.vocab, this.settings.vocabPfx, this.resources.context, this.settings.language);
     },
   },
-  ready() {
+  mounted() {
     this.currentSearchTypes = this.getRange;
   },
   methods: {
@@ -158,13 +161,20 @@ export default {
     show() {
       LayoutUtil.scrollLock(true);
       this.active = true;
-      this.changeStatus('keybindState', 'entity-adder');
+       this.$store.dispatch('setStatusValue', { 
+        property: 'keybindState', 
+        value: 'entity-adder' 
+      });
     },
     hide() {
       if (!this.active) return;
       this.active = false;
+      this.$parent.closeExtractDialog();
       LayoutUtil.scrollLock(false);
-      this.changeStatus('keybindState', 'overview');
+      this.$store.dispatch('setStatusValue', { 
+        property: 'keybindState', 
+        value: 'overview' 
+      });
     },
     search(keyword) {
       const self = this;
@@ -215,13 +225,16 @@ export default {
             <div class="search">
               <!--<input class="entity-search-keyword-input" v-model="keyword" @input="setSearching()"></input>-->
               <div class="input-container">
-                <input
+                <input class="entity-search-keyword-input"
                   v-model="keyword"
-                  class="entity-search-keyword-input"
                   autofocus>
                 <select v-model="currentSearchTypes" @change="handleChange(keyword)">
                   <option :value="getRange">{{"All types" | translatePhrase}}</option>
-                  <option v-for="term in getClassTree" :key="term.id" :value="term.id" v-html="getFormattedSelectOption(term, settings, resources.vocab, resources.context)"></option>
+                  <option 
+                    v-for="term in getClassTree" 
+                    :key="term.id" 
+                    :value="term.id" 
+                    v-html="getFormattedSelectOption(term, settings, resources.vocab, resources.context)"></option>
                 </select>
               </div>
               <div class="help-tooltip-container" @mouseleave="showHelp = false">
@@ -257,12 +270,21 @@ export default {
             <div class="extract-controls">
               <span class="preview-entity-text">{{ "Your new entity" | translatePhrase }}:</span>
               <div class="copy-title" v-if="canCopyTitle">
-                <label><input type="checkbox" name="copyTitle" v-model="copyTitle" /> {{ "Copy title from" | translatePhrase }} {{this.editorData.mainEntity['@type'] | labelByLang}}</label>
+                <label>
+                  <input type="checkbox" name="copyTitle" v-model="copyTitle" /> 
+                  {{ "Copy title from" | translatePhrase }} {{this.editorData.mainEntity['@type'] | labelByLang}}
+                </label>
               </div>
             </div>
             <div class="summary-container">
-              <entity-summary :action-settings="localEntitySettings" :focus-data="itemInfo" :lines="4"></entity-summary>
-              <summary-action v-show="!extracting" :options="localEntitySettings" @action="extract()"></summary-action>
+              <entity-summary 
+                :action-settings="localEntitySettings" 
+                :focus-data="itemInfo" 
+                :lines="4"></entity-summary>
+              <summary-action 
+                v-show="!extracting" 
+                :options="localEntitySettings" 
+                @action="extract()"></summary-action>
             </div>
           </div>
           <div class="SearchWindow-resultListContainer">
@@ -361,11 +383,6 @@ export default {
       height: 100%;
       display: flex;
       flex-flow: column;
-
-      button {
-        font-size: 12px;
-        font-size: 1.2rem;
-      }
       
       .search-header {
       

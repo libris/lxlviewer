@@ -541,7 +541,6 @@ export default {
   width: 100%;
   display: flex;
   flex-direction: row;
-  max-height: 400vh;
   opacity: 1;
   position: relative;
 

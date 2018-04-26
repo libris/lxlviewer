@@ -423,7 +423,7 @@ export default {
     </ul>
        
     <search-window 
-      :active="extractDialogActive" 
+      :isActive="extractDialogActive" 
       :can-copy-title="canCopyTitle" 
       :copy-title="copyTitle" 
       :entity-type="entityType" 
