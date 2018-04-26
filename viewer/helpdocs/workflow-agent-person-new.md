@@ -7,7 +7,6 @@ tags:
 ---
 *UNDER ARBETE - UPPDATERAS KONTINUERLIGT*
 
-## Skapa ny Agent - Person
 Exemplet nedan baseras på Lagerlöf, Selma, 1858-1940 (i de fall det är möjligt och relevant)
 
 
