@@ -43,7 +43,7 @@ export default new Router({
       redirect: '/search/libris'
     },
     {
-      path: '/search/:perimeter/:query?',
+      path: '/search/:perimeter',
       name: 'Search',
       component: Find
     },
