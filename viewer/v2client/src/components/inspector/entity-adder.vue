@@ -310,7 +310,15 @@ export default {
         currentValue = [currentValue];
         currentValue.push(obj);
       } else {
-        currentValue.push(obj);
+        if(typeof obj.length !== "undefined" && _.isArray(obj) ) {
+          obj.forEach(function(subObj) {
+            currentValue.push(subObj);
+          });
+        } else {
+          currentValue.push(obj);
+        }
+        
+
       }
       this.$store.dispatch('updateInspectorData', {
           path: `${this.path}`,
