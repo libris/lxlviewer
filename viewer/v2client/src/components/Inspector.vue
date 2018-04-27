@@ -39,7 +39,7 @@ export default {
     initToolbarFloat() {
       const toolbarPlaceholderEl = this.$refs.ToolbarPlaceholder;
       const toolbarTestEl = this.$refs.ToolbarTest;
-      const width = toolbarPlaceholderEl.clientWidth;
+      const width = toolbarPlaceholderEl.clientWidth || 65;
       toolbarTestEl.style.width = `${width}px`;
     },
     fetchDocument() {
