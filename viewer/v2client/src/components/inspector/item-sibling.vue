@@ -61,7 +61,7 @@ export default {
       'status',
     ]),
     item() {
-      return this.inspector.data[this.suffix];
+      return _.cloneDeep(this.inspector.data[this.suffix]);
     },
     suffix() {
       return this.id.split('#')[1];
