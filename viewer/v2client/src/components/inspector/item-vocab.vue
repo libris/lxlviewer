@@ -41,12 +41,13 @@ export default {
       'status',
     ]),
     range() {
-      const types = VocabUtil.getRange(
+      const types = VocabUtil.getFullRange(
         this.entityType,
         this.fieldKey,
         this.resources.vocab,
         this.settings.vocabPfx,
-        this.resources.context
+        this.resources.context,
+        this.resources.vocabClasses,
       );
       return types;
     },
@@ -79,10 +80,10 @@ export default {
       let values = [];
       const possibleValues = [];
       _.each(this.range, (item) => {
-        values = values.concat(VocabUtil.getTermByType(item, this.resources.vocabClasses));
+        values = values.concat(VocabUtil.getTermByType(item, this.resources.vocab));
       });
       _.each(values, (value) => {
-        possibleValues.push(value['@id'].replace(this.settings.vocabPfx, ''));
+        possibleValues.push(StringUtil.getCompactUri(value['@id'], this.resources.context));
       });
       return _.sortBy(possibleValues, value => StringUtil.getLabelByLang(
         value, 
@@ -93,10 +94,9 @@ export default {
       );
     },
     setInitialValue() {
-      if (this.possibleValues.indexOf(this.fieldValue) > -1) {
-        this.disableDataSync = true;
-        this.selected = this.fieldValue;
-      }
+      // if (this.possibleValues.indexOf(this.fieldValue) > -1) {
+      //   this.selected = this.fieldValue;
+      // }
     },
   },
   components: {

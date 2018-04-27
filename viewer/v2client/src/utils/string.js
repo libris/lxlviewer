@@ -11,6 +11,17 @@ export function removeDomain(string, removableBaseUriArray) {
   return newValue;
 }
 
+export function getCompactUri(uri, context) {
+  let compactUri = '';
+  const vocabBase = context[0]['@vocab'];
+  if (uri.startsWith(vocabBase)) {
+    compactUri = uri.replace(vocabBase, '');
+  } else {
+    compactUri = convertToPrefix(uri, context);
+  }
+  return compactUri;
+}
+
 export function convertToBaseUri(str, context) {
   if (typeof context === 'undefined') {
     throw new Error('convertToBaseUri was called without context.');

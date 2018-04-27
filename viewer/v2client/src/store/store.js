@@ -394,7 +394,11 @@ const store = new Vuex.Store({
       commit('setVocab', vocabMap)
     },
     setVocabClasses({ commit, state }, vocabJson) {
-      const classes = new Map(VocabUtil.getTermByType('Class', vocabJson).map(entry => [entry['@id'], entry]));
+      let classTerms = [].concat(
+            VocabUtil.getTermByType('Class', vocabJson),
+            VocabUtil.getTermByType('marc:CollectionClass', vocabJson)
+          );
+      const classes = new Map(classTerms.map(entry => [entry['@id'], entry]));
       classes.forEach(classObj => {
         if (classObj.hasOwnProperty('subClassOf')) {
           _.each(classObj.subClassOf, baseClass => {
