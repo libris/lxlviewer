@@ -202,7 +202,6 @@ const store = new Vuex.Store({
       state.inspector.status.updating = true;
       // Clone inspectorData so we can manipulate it before setting it
       const inspectorData = _.cloneDeep(state.inspector.data);
-      
       // Push old value to history
       if (payload.addToHistory) {
         const oldValue = _.cloneDeep(_.get(inspectorData, payload.path));
