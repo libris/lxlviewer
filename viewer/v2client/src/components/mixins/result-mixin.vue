@@ -1,5 +1,6 @@
 <script>
 import * as DataUtil from '@/utils/data';
+import * as RecordUtil from '@/utils/record';
 import * as httpUtil from '@/utils/http';
 import * as StringUtil from '@/utils/string';
 import * as _ from 'lodash';
@@ -13,14 +14,13 @@ export default {
   },
   methods: {
     importThis() {
-    //   const json = JSON.stringify(this.importItem);
-    //   this.$dispatch('set-import', json);
-      this.$store.dispatch('pushNotification', { 
-        color: 'grey', 
-        message: StringUtil.getUiPhraseByLang(
-          'This action is not yet functional. We\'re working on it!', 
-          this.settings.language
-        ) 
+      const original = RecordUtil.splitJson(this.importItem);
+      const duplicate = RecordUtil.prepareDuplicateFor(original, this.user);
+      this.$store.dispatch('setInsertData', duplicate);
+      this.$router.push({ path: '/new' });
+      this.$store.dispatch('pushNotification', {
+        color: 'green', 
+        message: `${StringUtil.getUiPhraseByLang('Copy successful', this.settings.language)}!` 
       });
     },
   },
@@ -32,6 +32,7 @@ export default {
   computed: {
     ...mapGetters([
       'settings',
+      'user',
     ]),
     isImport() {
       if (typeof this.importItem !== undefined && this.importItem['@graph'] && this.importItem['@graph'].length > 0 && this.importItem['@graph'][0].hasOwnProperty('@id')) {
