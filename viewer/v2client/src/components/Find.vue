@@ -22,22 +22,23 @@ export default {
       result: {},
       importData: [],
       searchInProgress: false,
+      query: '',
     }
   },
   events: {
   },
   watch: {
-    '$route.params.perimeter'(value) {
-      this.getResult();
-    },
-    '$route.params.query'(value) {
-      this.getResult();
+    '$route.fullPath'(value, oldValue) {
+      if (value !== oldValue) {
+        this.query = this.$route.fullPath.split('?')[1];
+        this.getResult();
+      }
     },
   },
   methods: {
     getResult() {
       this.emptyResults();
-      if (typeof this.$route.params.query !== 'undefined') {
+      if (typeof this.query !== 'undefined') {
         this.searchInProgress = true;
         if (this.$route.params.perimeter === 'libris') {
           this.getLocalResult();
@@ -51,7 +52,7 @@ export default {
       this.importData = [];
     },
     getLocalResult() {
-      const fetchUrl = `${this.settings.apiPath}/find.json?${this.$route.params.query}`;
+      const fetchUrl = `${this.settings.apiPath}/find.json?${this.query}`;
 
       fetch(fetchUrl).then((response) => {
         return response.json();
@@ -64,7 +65,7 @@ export default {
       });
     },
     getRemoteResult() {
-      const fetchUrl = `${this.settings.apiPath}/_remotesearch?${this.$route.params.query}`;
+      const fetchUrl = `${this.settings.apiPath}/_remotesearch?${this.query}`;
       
       fetch(fetchUrl).then((response) => {
         return response.json();
@@ -137,6 +138,7 @@ export default {
       if (this.$route.params.perimeter !== 'libris' && this.$route.params.perimeter !== 'remote') {
         this.$router.push({ path: `/search/` });
       }
+      this.query = this.$route.fullPath.split('?')[1];
       this.getResult();
       this.initialized = true;
     })

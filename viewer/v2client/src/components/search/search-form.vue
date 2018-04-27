@@ -143,7 +143,7 @@ export default {
         return query;
       },
       doSearch() {
-        this.$router.push({ path: `/search/${this.searchPerimeter}/${this.composeQuery()}` });
+        this.$router.push({ path: `/search/${this.searchPerimeter}?${this.composeQuery()}` });
       },
       clearInputs() {
         this.inputData.currentInput = 0;
