@@ -20,7 +20,7 @@ Exemplet nedan är baserat på Arbetslivscentrum. Tillägg kan vara fiktiva och 
 Beskrivning av agenten som ska auktoriseras.
 
 * Namn (name) (110 ‡a)
-  <br/>Föredragen namnform som utgör den auktoriserade namnformen. Om underordnad enhet finns anges den i fältet Namn på underordnat enhet som finns som valbart fält.
+  <br/>Föredragen namnform som utgör den auktoriserade namnformen. För namn som består av underordnad eller relaterad organisation används istället fälten Är del av/namn tillsammans med Namn på underordnad enhet. Dessa fält beskrivs under rubriken Valbara fält som inte ingår i mallen.
   <br/>```Exempel: Arbetslivscentrum```
 
 * Verksamhetens starttid/Startdatum för aktivitetsperiod (activityStartDate = 046 ‡s)
@@ -97,15 +97,18 @@ Information av administrativ karaktär som inte är direkt förknippad med den a
 
 * Auktoritetskontrollnivå (marc:level = 008/33)
   <br/>Ändras ej.
-  
-   
+    
   
 ### Valbara fält som inte ingår i mallen
 Följande fält är möjliga att lägga till för organisation. Nya fält läggs till med hjälp av +Fält-ikonen.
 
-* Namn på underordnad enhet (marc/subordinateUnit =110 ‡b?)
+* Är del av/namn (isPartOf/name = 110 ‡a första indikator 2)
+  <br/>Överordnat namn i en auktoriserad namnform som består av underordnad enhet. Fältet används tillsammans med Namn på underordnad enhet.
+  <br/>```Exempel: Handelshögskolan i Stockholm```
+  
+* Namn på underordnad enhet (marc/subordinateUnit =110 ‡b)
   <br/>Underordnade och relaterade organisationer som ska anges som underavdelning. Kännetecknande kan vara att namnet är osjälvständigt och det överordnade begreppet behövs för att man med säkerhet ska kunna identifiera organisationen. Namn på underordnad enhet ingår i den auktoriserade namnformen.
-  <br/>```Exempel: Gjuteriavdelningen```
+  <br/>```Exempel: Biblioteket```
 
 * Tid för grundande/Startdatum (establishDate = 046 ‡q)
   <br/>```Exempel: 1965```
