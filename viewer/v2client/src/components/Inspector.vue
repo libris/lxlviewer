@@ -40,7 +40,7 @@ export default {
       const toolbarPlaceholderEl = this.$refs.ToolbarPlaceholder;
       const toolbarTestEl = this.$refs.ToolbarTest;
       const width = toolbarPlaceholderEl.clientWidth;
-      toolbarTestEl.style.width = `${toolbarPlaceholderEl.clientWidth}px`;
+      toolbarTestEl.style.width = `${width}px`;
     },
     fetchDocument() {
       const fetchUrl = `${this.settings.apiPath}/${this.documentId}/data.jsonld`;
@@ -195,7 +195,13 @@ export default {
     doCreate(obj, done) {
       this.doSaveRequest(HttpUtil.post, obj, { url: this.settings.apiPath }, done);    },
     doSaveRequest(requestMethod, obj, opts, done) {
-      requestMethod({ url: opts.url, ETag: opts.ETag, activeSigel: this.user.settings.activeSigel, token: this.user.token }, obj).then((result) => {
+      requestMethod({ 
+        url: opts.url, 
+        ETag: opts.ETag, 
+        activeSigel: 
+        this.user.settings.activeSigel, 
+        token: this.user.token 
+      }, obj).then((result) => {
         if (!this.documentId) {
           const location = `${result.getResponseHeader('Location')}`;
           const locationParts = location.split('/');

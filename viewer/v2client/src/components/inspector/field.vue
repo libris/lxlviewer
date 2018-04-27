@@ -240,7 +240,6 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      
       setTimeout(() => {
         if (this.fieldKey === '_uid') {
           throw new Error('A datanode component has been added for a _uid key, which should never happen.');
@@ -368,7 +367,6 @@ export default {
 </script>
 
 <template>
-
   <li class="Field js-field" 
     :id="`field-${getPath}`" 
     v-bind:class="{'Field--inner': !asColumns, 'highlight': isLastAdded, 'removed': removed}" 
@@ -434,8 +432,10 @@ export default {
             v-on:click="removeThis(true)"
             @keyup.enter="removeThis(true)"
             @mouseover="removeHover = true, highlightItem($event)" 
-              @mouseout="removeHover = false, unHighlightItem($event)"  >
-            <tooltip-component :show-tooltip="removeHover" tooltip-text="Remove" translation="translatePhrase"></tooltip-component>
+            @mouseout="removeHover = false, unHighlightItem($event)"  >
+            <tooltip-component translation="translatePhrase"
+              :show-tooltip="removeHover" 
+              tooltip-text="Remove"></tooltip-component>
           </i>
         </div>
       </div>

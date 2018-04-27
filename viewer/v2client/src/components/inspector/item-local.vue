@@ -415,8 +415,9 @@ export default {
         :as-columns="false" 
         :parent-key="fieldKey" 
         :parent-index="index" 
-        :field-key="k" 
-        :field-value="v" 
+        :field-key="k"
+        :field-value="v"
+        :field-orig-value="v" 
         :key="k" 
         :show-action-buttons="showActionButtons"></field> 
     </ul>

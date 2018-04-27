@@ -1,4 +1,4 @@
---- 
+---
 section: Arbetsflöden
 title: Tryckt seriell resurs
 order: 25

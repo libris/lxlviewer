@@ -140,7 +140,7 @@
   },
   "SourceData": {
     "@type": "SourceData",
-    "citationSource": "",
+    "label": "",
     "citationNote": ""
   },
   "SourceDataNotFound": {
