@@ -37,7 +37,14 @@ export default {
   computed: {
     value: {
       get() {
-        return this.fieldValue;
+        if (this.fieldValue === null) {
+          return [];
+        }
+        let valueArray = this.fieldValue;
+        if (!_.isArray(this.fieldValue)) {
+          valueArray = [this.fieldValue];
+        }
+        return valueArray;
       },
       set: _.debounce(function(newValue) {
         this.$store.dispatch('updateInspectorData', {
@@ -55,7 +62,7 @@ export default {
       // }
     }
   },
-  ready() {
+  mounted() {
     this.$nextTick(() => {
       if (!this.status.isNew) {
         this.addFocus();

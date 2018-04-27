@@ -243,7 +243,8 @@ export default {
   },
   components: {
   },
-  ready() {
+  mounted() {
+    console.log(this.sortedFormData);
   }
 };
 </script>
