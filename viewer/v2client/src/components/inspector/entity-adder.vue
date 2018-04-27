@@ -307,7 +307,8 @@ export default {
     addItem(obj) {
       let currentValue = _.cloneDeep(_.get(this.inspector.data, this.path));
       if (!_.isArray(currentValue)) {
-        //currentValue = obj;
+        currentValue = [currentValue];
+        currentValue.push(obj);
       } else {
         currentValue.push(obj);
       }

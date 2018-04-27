@@ -1,6 +1,6 @@
 ---
 section: Terminologi
-title: Kort parlör
+title: BIBFRAME kort parlör
 order: 40
 tags:
 - bibframe
