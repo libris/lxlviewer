@@ -99,11 +99,13 @@ export default {
       });
     },
     loadDocument() {
+      this.$store.dispatch('setInspectorStatusValue', { property: 'isNew', value: false });
       this.$store.dispatch('setInspectorStatusValue', { property: 'editing', value: false });
       this.fetchDocument();
     },
     loadNewDocument() {
       const insertData = this.inspector.insertData;
+      this.$store.dispatch('setInspectorStatusValue', { property: 'isNew', value: true });
       if (!insertData.hasOwnProperty('@graph') || insertData['@graph'].length === 0) {
         this.$router.go(-1);
         console.warn('New document called without input data, routing user back.')
@@ -164,24 +166,8 @@ export default {
     },
     duplicateItem() {
       if (!this.status.inEdit) {
-        const newData = _.cloneDeep(this.inspector.data);
-        newData.record.descriptionCreator = { '@id': `https://libris.kb.se/library/${this.user.settings.activeSigel}` };
-       
-        newData.record['@id'] =  `https://id.kb.se/TEMPID`;
-        newData.record.mainEntity['@id'] = `https://id.kb.se/TEMPID#it`;
-        newData.mainEntity['@id'] =  `https://id.kb.se/TEMPID#it`; 
-        
-        delete newData.mainEntity.sameAs;
-        delete newData.record.sameAs;
-        delete newData.work.sameAs;
-       
-        this.$store.dispatch('setInsertData', DataUtil.getMergedItems(
-          newData.record, 
-          newData.mainEntity, 
-          newData.work, 
-          newData.quoted)
-        );
-
+        const duplicate = RecordUtil.prepareDuplicateFor(this.inspector.data, this.user);
+        this.$store.dispatch('setInsertData', duplicate);
         this.$router.push({ path: '/new' });
         this.$store.dispatch('pushNotification', { 
           color: 'green', 

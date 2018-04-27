@@ -148,7 +148,6 @@ export default {
     },
     handleCopy() {
       this.$parent.$emit('duplicate-item');
-      this.$store.dispatch('setInspectorStatusValue', { property: 'isNew', value: true });
       this.hideToolsMenu();
     },
   },

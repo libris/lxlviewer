@@ -7,15 +7,15 @@ tags:
 --- 
 *UNDER ARBETE - UPPDATERAS KONTINUERLIGT*
 
-OBS! Var noggrann vid sökning/testlänkning för att säkerställa att auktoriserad namnform inte redan finns.
-
 ## Redigera befintlig Agent - Person
-Lathunden beskriver de fält som finns i den befintliga auktoritetsposten och vilka fält som bör läggas till. Ett urval av fält kopplade till person som är möjliga att lägga till men som inte finns i mallen beskrivs i slutet av lathunden.
+Lathunden beskriver de fält som finns i den befintliga auktoritetsposten och vilka fält som bör läggas till. Ett urval av fält relevanta för person som är möjliga att lägga till men som inte finns i mallen beskrivs i slutet av lathunden. 
+
+OBS! Var noggrann vid sökning/testlänkning för att säkerställa att auktoriserad namnform inte redan finns. Glöm inte att redigera Adminmetadata och spara innan vidare navigation i verktyget.
 
 Exemplet nedan baseras på Jansson, Erik, f. 1848. Tillägg är fiktiva, enbart för att exemplifiera.
 
 ### Befintliga fält i beskrivningen
-Beskrivning av agenten som ska auktoriseras. 
+Beskrivning av den auktoriserade agenten. 
 
 * Efternamn (FamilyName = 100 i1=1 ‡a)
   <br/>```Exempel: Jansson```
@@ -32,7 +32,7 @@ Beskrivning av agenten som ska auktoriseras.
 
 * Nationalitet/verksamhetsland (Nationality = 043 ‡a)
   <br/>Nationalitet/verksamhetsland förknippat med personen. Vid behov kan denna ändras eller raderas.
-  <br/>[Länk till Att länka entitet]
+  <br/>För att lägga till fält: Klicka på +ikonen under egenskapen Nationalitet/verksamhetsland. Välj Nationalitet som typ och sök i rutan till vänster. Välj önskad nationalitet och klicka på den gröna Lägg till-rutan till höger. (Skapa lokal entitet används endast då det inte finns auktoriserad entitet att länka till.)
 
 * Samma sak som (SameAs)
   <br/>```Exempel: resource/auth/247521```
@@ -51,7 +51,7 @@ Beskrivning av agenten som ska auktoriseras.
   <br/>I detta fält anges variantnamn och alternativa namnformer. Här anges stavningsvaranter, förkortningar, ändringar till följd av namnbyten, hänvisning från det andra ledet av sammansatt efternamn etc. Variantnamn kan t.ex. finnas i referenskällor eller i de bibliografiska posterna. Fältet upprepas om flera variantnamn behöver läggas till.
   <br/>```Exempel: Efternamn: Jansson ; Förnamn: Eric```
   <br/>```Exempel: Namn: Janzon ; Förnamn: Erik Gustaf```
-  <br/>För att lägga till fält: Klicka på +-ikonen under Variant, välj Person under Skapa lokal entitet. Klicka på +-ikonen inom det tillagda Person-fältet, sök efter och lägg till fältet Efternamn. Upprepa för Förnamn och Födelse- och/eller dödstid (ELLER Namn och Födelse- och/eller dödstid)
+  <br/>För att lägga till ytterligare fält: Klicka på +ikonen under Variant, välj Person under Skapa lokal entitet. Klicka på +ikonen inom det tillagda Person-fältet, sök efter och lägg till Efternamn. Upprepa för Förnamn och Födelse- och/eller dödstid (ELLER Namn och Födelse- och/eller dödstid). OBS! Variant ska ej göras till länkbara entiteter!
   
 * Identifikator (identifiedBy = 024 ‡a)
   <br/>ISNI som identifikator är valfri uppgift men önskvärt om tillgänglig. 
@@ -62,7 +62,12 @@ Beskrivning av agenten som ska auktoriseras.
    <br/>Ange yrke eller sysselsättning om det behövs för att skilja en person från en annan, t.ex. när en persons födelsetid eller dödstid inte är tillgängligt. Hämta i första hand termen från en kontrollerad vokabulär som Svenska ämnesord.
    <br/>```Exempel: Romanförfattare ```
    <br/>```Exempel: Översättare```
-   <br/>[Länk till Att länka entitet]
+   <br/>För att lägga till fält: Klicka på +ikonen under egenskapen Har yrke eller sysselsättning, välj Allmänt ämnesord som typ och sök i rutan till vänster, välj önskad term och klicka på den gröna Lägg till-rutan till höger. (Skapa lokal entitet används endast då det inte finns auktoriserad entitet att länka till.)
+
+* Biografiska uppgifter (hasBiographicalInformation = 678)
+  <br/>Används för att ange biografisk information är information om personens liv eller historia.
+  <br/>```Exempel: Skönlitterär författare, nobelpristagare 1909, första kvinnliga ledamot av Svenska akademien 1914.```
+  <br/>Lägg till fält genom att klicka på +ikonen. Klicka på +ikonen inom det tillagda fältet och välj Benämning där uppgifterna anges.
 
 ### Befintliga fält i Adminmetadata
 Information av administrativ karaktär som är väsentlig för auktoritetsposten i sig och inte är direkt förknippad med den auktoriserade namnformen.
@@ -124,18 +129,24 @@ Information av administrativ karaktär som är väsentlig för auktoritetsposten
   <br/>Anmärkningar tänkta för kollegor inom Libriskollektivet. Det kan till exempel vara uppgifter som rör ändring av den auktoriserade namnformen. Motivera gärna ändringen och komplettera alltid med datum/sigel/signatur.
 <br/>```Exempel: Ändrat auktoriserad namnform från Xxx till Yyy 2010-01-03/S/marjan```
 
-### Valbara fält som inte ingår i mallen
+### Valbara fält relevanta för Agent - Person
 Vid behov är det möjligt att lägga till fält som inte ingår i mallen. Nya fält läggs till med hjälp av den runda +ikonen i verktygsmenyn.
 
 * Namn (name = 100 0/- ‡a)
   <br/>Används för namn i rak följd istället för fälten Förnamn och Efternamn. Kan användas i kombination med fälten Förnamn och Efternamn endast för att ange variantnamn.
   <br/>```Exempel: Namn: Bang``` Som variantnamn till den auktoriserade namnformen Alving, Barbro, 1909-1987
+  <br/>För att lägga till fält: Klicka på +ikonen under egenskapen Se även, välj typen Person i sökrutan till vänster. Sök efter auktoriserad namnform och klicka på Lägg till-rutan till höger. (Finns ingen länkbar entitet behöver en skapas, dvs. Skapa ny Agent med länkning till den första. Avsluta och spara den ursprungliga först.)
 
 * Fullständigare namnform (fullerFormOfName = 100 ‡q och 378)
   <br/>Används för att ange fullständig namnform i de fall då fortkortning används i den auktoriserade namnformen.
   <br/>```Exempel: Efternamn: Smith ```
   <br/>```Exempel: Förnamn: A. D. ```
   <br/>```Exempel: Fullständigare namnform: Adam David```
+
+* Verksamhetsområde (fieldOfActivity = 372)
+  <br/>Personens verksamhetsområde beskriver vad personen är intresserad av eller ägnar sig åt och det behöver inte ha med yrkesutövning att göra. Hämta i första hand termen från en kontrollerad vokabulär som Svenska ämnesord.
+   <br/>```Exempel: Fågelskådning```
+   <br/>För att lägga till fält: Klicka på +ikonen under egenskapen Har yrke eller sysselsättning, välj Allmänt ämnesord som typ och sök i rutan till vänster, välj önskad term och klicka på den gröna Lägg till-rutan till höger. (Skapa lokal entitet används endast då det inte finns auktoriserad entitet att länka till.)
 
 * Titel eller övrig beteckning (marc:titlesAndOtherWordsAssociatedWithAName = 100 ‡c ‡d)
   <br/>Används vid behov som särskiljande tillägg till den auktoriserade namnformen.
@@ -145,3 +156,4 @@ Vid behov är det möjligt att lägga till fält som inte ingår i mallen. Nya f
   <br/>Används för att ange akademiska titlar, kyrkliga ämbeten, militära tjänstegrader (till exempel kapten), hederstitlar etc.
   <br/>```Exempel: Kapten```
   
+#### Glöm inte att redigera Adminmetadata och spara entiteten innan vidare navigation i verktyget!

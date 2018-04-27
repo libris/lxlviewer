@@ -1,5 +1,6 @@
 import * as httpUtil from '../utils/http';
 import * as DisplayUtil from '../utils/display';
+import * as DataUtil from '../utils/data';
 import * as VocabUtil from '../utils/vocab';
 import * as _ from 'lodash';
 
@@ -226,6 +227,34 @@ export function insertWorkIntoLocal(inputData) {
     _.unset(data, 'work');
   }
   return data;
+}
+
+export function prepareDuplicateFor(inspectorData, user) {
+  // Removes fields that we do not want to import or copy
+  const newData = _.cloneDeep(inspectorData);
+  newData.record.descriptionCreator = { '@id': `https://libris.kb.se/library/${user.settings.activeSigel}` };
+  
+  if (newData.mainEntity) {
+    newData.mainEntity['@id'] =  `https://id.kb.se/TEMPID#it`;
+    delete newData.mainEntity.sameAs;
+  }
+  if (newData.record) {
+    newData.record['@id'] =  `https://id.kb.se/TEMPID`;
+    newData.record.mainEntity['@id'] = `https://id.kb.se/TEMPID#it`;
+    delete newData.record.sameAs;
+  }
+  if (newData.work) {
+    newData.work['@id'] = `https://id.kb.se/TEMPID#work`;
+    delete newData.work.sameAs;
+  }
+
+  const merged = DataUtil.getMergedItems(
+    newData.record, 
+    newData.mainEntity, 
+    newData.work, 
+    newData.quoted
+  );
+  return merged;
 }
 
 export function getNewCopy(id) {
