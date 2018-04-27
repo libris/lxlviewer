@@ -244,7 +244,6 @@ export default {
   components: {
   },
   mounted() {
-    console.log(this.sortedFormData);
   }
 };
 </script>

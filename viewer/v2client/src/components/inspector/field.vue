@@ -59,11 +59,6 @@ export default {
     'tooltip-component': TooltipComponent,
   },
   watch: {
-    // 'arrayLength': function (newVal, oldVal) {
-    //   if (newVal > oldVal) {
-    //     this.$broadcast('focus-new-item', newVal-1);
-    //   }
-    // },
   },
   computed: {
     actionButtonsShown() {
