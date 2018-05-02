@@ -112,12 +112,7 @@ export default {
     allowedProperties() {
       const settings = this.settings;
       const formObj = this.item;
-      const allowed = VocabUtil.getPropertiesFromArray(
-        [StringUtil.convertToVocabKey(
-          StringUtil.convertToBaseUri(formObj['@type'], 
-          this.resources.context), 
-          this.resources.context
-        )],
+      const allowed = VocabUtil.getPropertiesFromArray([StringUtil.convertToVocabKey(StringUtil.convertToBaseUri(formObj['@type'], this.resources.context), this.resources.context)],
         this.resources.vocabClasses,
         this.settings.vocabPfx,
         this.resources.vocabProperties,
@@ -312,7 +307,7 @@ export default {
   watch: {
     'inspector.event'(val, oldVal) {
       this.$emit(`${val.value}`);
-    },
+    }
   },
   created: function () {
     this.$on('collapse-item', this.collapse);

@@ -451,7 +451,6 @@ export default {
           :item="item"></item-error>
 
         <!-- Other linked resources -->
-    
         <item-vocab
           v-if="getDatatype(item) == 'vocab'" 
           :is-locked="locked" 

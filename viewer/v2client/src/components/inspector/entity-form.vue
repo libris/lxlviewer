@@ -264,7 +264,6 @@ export default {
         :key="k" 
         :field-key="k" 
         :field-value="v" 
-        
         :parent-path="inspector.status.focus"></field>
       <div id="result" v-if="user.settings.appTech && !isLocked">
         <div class="row">
