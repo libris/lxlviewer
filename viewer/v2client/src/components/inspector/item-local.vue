@@ -418,7 +418,7 @@ export default {
         :allowed="allowedProperties" 
         :inner="true" 
         :path="getPath"></field-adder> -->
-      <field :data-value="v"
+      <field
         v-show="expanded && k !== '_uid'" 
         v-for="(v, k) in filteredItem" 
         :parent-path="getPath" 

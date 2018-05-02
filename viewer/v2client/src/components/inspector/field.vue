@@ -285,7 +285,6 @@ export default {
     getDatatype(o) {
       if (typeof o === 'undefined') {
         throw new Error('Cannot check data type of undefined object.');
-        return 'undefined';
       }
       if (this.isPlainObject(o) && !o.hasOwnProperty('@id') && !o.hasOwnProperty('@type')) {
         return 'error';
