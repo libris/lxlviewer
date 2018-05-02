@@ -124,6 +124,7 @@ export default {
       if (!_.isArray(this.fieldValue)) {
         valueArray = [this.fieldValue];
       }
+
       return valueArray;
     },
     getPath() {
@@ -284,6 +285,7 @@ export default {
     getDatatype(o) {
       if (typeof o === 'undefined') {
         throw new Error('Cannot check data type of undefined object.');
+        return 'undefined';
       }
       if (this.isPlainObject(o) && !o.hasOwnProperty('@id') && !o.hasOwnProperty('@type')) {
         return 'error';
@@ -450,6 +452,7 @@ export default {
           :item="item"></item-error>
 
         <!-- Other linked resources -->
+    
         <item-vocab
           v-if="getDatatype(item) == 'vocab'" 
           :is-locked="locked" 
@@ -469,7 +472,7 @@ export default {
           :parent-path="getPath"></item-entity>
 
         <!-- Not linked, local child objects -->
-        <item-local 
+        <item-local
           :data-parent="getPath"
           v-if="getDatatype(item) == 'local'" 
           :is-locked="locked" 

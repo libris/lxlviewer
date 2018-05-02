@@ -254,7 +254,7 @@ export default {
     v-show="isActive">
     <ul class="FieldList" 
       v-bind:class="{'collapsed': collapsed }">
-      <field class="FieldList-item"
+      <field class="FieldList-item" :data-value="v"
         v-for="(v,k) in sortedFormData" 
         v-bind:class="{ 'locked': isLocked }" 
         :entity-type="inspector.data[editingObject]['@type']" 
@@ -264,6 +264,7 @@ export default {
         :key="k" 
         :field-key="k" 
         :field-value="v" 
+        
         :parent-path="inspector.status.focus"></field>
       <div id="result" v-if="user.settings.appTech && !isLocked">
         <div class="row">

@@ -87,7 +87,8 @@ export default {
       return this.parentPath;
     },
     filteredItem() {
-      const fItem = Object.assign({}, this.item);
+      //const fItem = Object.assign({}, this.item);
+      const fItem = _.cloneDeep(this.item);
       delete fItem['@type'];
       delete fItem['@id'];
       delete fItem['_uid'];
@@ -112,7 +113,11 @@ export default {
       const settings = this.settings;
       const formObj = this.item;
       const allowed = VocabUtil.getPropertiesFromArray(
-        [StringUtil.convertToVocabKey(StringUtil.convertToBaseUri(formObj['@type'], this.resources.context), this.resources.context)],
+        [StringUtil.convertToVocabKey(
+          StringUtil.convertToBaseUri(formObj['@type'], 
+          this.resources.context), 
+          this.resources.context
+        )],
         this.resources.vocabClasses,
         this.settings.vocabPfx,
         this.resources.vocabProperties,
@@ -216,15 +221,24 @@ export default {
             this.replaceWith(mainEntity);
             this.closeExtractDialog();
           }, (error) => {
-            this.$store.dispatch('pushNotification', { color: 'red', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error}` });
+            this.$store.dispatch('pushNotification', { 
+              color: 'red', 
+              message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error}`
+            });
             this.closeExtractDialog();
           });
         } else {
-          this.$store.dispatch('pushNotification', { color: 'red', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error}` });
+          this.$store.dispatch('pushNotification', { 
+            color: 'red', 
+            message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error}`
+          });
           this.closeExtractDialog();
         }
       }, (error) => {
-        this.$store.dispatch('pushNotification', { color: 'red', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error}` });
+        this.$store.dispatch('pushNotification', { 
+          color: 'red', 
+          message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error}`
+        });
         this.closeExtractDialog();
       });
     },
@@ -298,7 +312,7 @@ export default {
   watch: {
     'inspector.event'(val, oldVal) {
       this.$emit(`${val.value}`);
-    }
+    },
   },
   created: function () {
     this.$on('collapse-item', this.collapse);
@@ -404,7 +418,7 @@ export default {
         :allowed="allowedProperties" 
         :inner="true" 
         :path="getPath"></field-adder> -->
-      <field
+      <field :data-value="v"
         v-show="expanded && k !== '_uid'" 
         v-for="(v, k) in filteredItem" 
         :parent-path="getPath" 
@@ -417,7 +431,6 @@ export default {
         :parent-index="index" 
         :field-key="k"
         :field-value="v"
-        :field-orig-value="v" 
         :key="k" 
         :show-action-buttons="showActionButtons"></field> 
     </ul>
