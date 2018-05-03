@@ -97,7 +97,7 @@ export default {
       return this.suffix;
     },
     filteredItem() {
-      const fItem = Object.assign({}, this.item);
+      const fItem = _.cloneDeep(this.item);
       delete fItem['@type'];
       delete fItem['@id'];
       delete fItem['_uid'];

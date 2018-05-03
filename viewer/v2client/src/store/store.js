@@ -74,7 +74,7 @@ const store = new Vuex.Store({
       apiPath: process.env.API_PATH,
       authPath: process.env.AUTH_PATH,
       appPaths: {
-        '/find?': '/search/libris/',
+        '/find?': '/search/libris?',
       },
       embeddedTypes: [
         'StructuredValue',

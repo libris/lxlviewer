@@ -185,33 +185,11 @@ def _token_updater(token):
 
 def _get_requests_oauth():
     # Create new oAuth 2 session
-    # requests_oauth = OAuth2Session(app.config['OAUTH_CLIENT_ID'],
-    #            redirect_uri=app.config['OAUTH_REDIRECT_URI'],
-    #            auto_refresh_kwargs={ 'client_id': app.config['OAUTH_CLIENT_ID'], 'client_secret': app.config['OAUTH_CLIENT_SECRET'] },
-    #            auto_refresh_url=app.config['OAUTH_TOKEN_URL'],
-    #            token = _get_token(),
-    #            token_updater=_token_updater
-    #            )
-    requests_oauth = OAuth2Session(client=MobileApplicationClient(client_id=app.config['OAUTH_CLIENT_ID']))
+    client_id = app.config['OAUTH_CLIENT_ID']
+    scopes = app.config['OAUTH_SCOPES']
+    mobile_client = MobileApplicationClient(client_id=client_id)
+    requests_oauth = OAuth2Session(client=mobile_client, scope=scopes)
     return requests_oauth
-
-
-def refresh_token():
-    """Refresh access token.
-
-    Raises InvalidGrantError if refresh token not recognized by provider.
-    """
-    extra = {
-        'client_id': app.config['OAUTH_CLIENT_ID'],
-        'client_secret': app.config['OAUTH_CLIENT_SECRET']
-    }
-
-    app.logger.debug("Refreshing OAuth2 token")
-    requests_oauth = _get_requests_oauth()
-    token = requests_oauth.refresh_token(
-        app.config['OAUTH_TOKEN_URL'],
-        **extra)
-    _token_updater(token)
 
 
 def _fake_login():
