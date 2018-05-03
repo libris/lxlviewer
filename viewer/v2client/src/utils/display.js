@@ -10,7 +10,7 @@ moment.locale('sv');
 
 export function getDisplayDefinitions(baseUri) {
   return new Promise((resolve, reject) => {
-    httpUtil.getResourceFromCache(`${baseUri}/vocab/display`).then((result) => {
+    httpUtil.getResourceFromCache(`${baseUri}/vocab/display/data.jsonld`).then((result) => {
       const clonedResult = _.cloneDeep(result);
       _.each(clonedResult.lensGroups, lensGroup => {
         _.each(lensGroup.lenses, lens => {
