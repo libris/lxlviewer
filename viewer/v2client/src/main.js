@@ -11,7 +11,6 @@ import * as DisplayUtil from '@/utils/display';
 import * as StringUtil from '@/utils/string';
 import * as HttpUtil from '@/utils/http';
 import * as User from '@/models/user';
-import FakedDisplayJson from '@/resources/json/fakedisplay.json';
 import Field from '@/components/inspector/field';
 import KeyBindings from '@/resources/json/keybindings.json';
 
@@ -62,9 +61,9 @@ new Vue({
   created() {
     this.initWarningFunc();
     Promise.all(this.getLdDependencies()).then((resources) => {
-      store.dispatch('setContext', resources[1]['@context']);
+      store.dispatch('setContext', resources[2]['@context']);
       store.dispatch('setupVocab', resources[0]['@graph']);
-      store.dispatch('setDisplay', FakedDisplayJson);
+      store.dispatch('setDisplay', resources[1]);
       store.dispatch('changeResourcesStatus', true);
     }, (error) => {
       window.lxlWarning(`🔌 The API (at ${this.settings.apiPath}) might be offline!`);
@@ -211,12 +210,8 @@ new Vue({
       const promiseArray = [];
       const vocabPromise = VocabUtil.getVocab(this.settings.apiPath);
       promiseArray.push(vocabPromise);
-      // const displayPromise = DisplayUtil.getDisplayDefinitions().then((display) => {
-      //   this.display = display;
-      // }, (error) => {
-      //   console.log('getDisplayDefinitions', error);
-      // });
-      // promiseArray.push(displayPromise);
+      const displayPromise = DisplayUtil.getDisplayDefinitions(this.settings.idPath);
+      promiseArray.push(displayPromise);
       const contextPromise = VocabUtil.getContext(this.settings.apiPath);
       promiseArray.push(contextPromise);
       return promiseArray;
