@@ -87,7 +87,6 @@ export default {
       return this.parentPath;
     },
     filteredItem() {
-      //const fItem = Object.assign({}, this.item);
       const fItem = _.cloneDeep(this.item);
       delete fItem['@type'];
       delete fItem['@id'];
