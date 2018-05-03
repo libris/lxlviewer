@@ -8,9 +8,9 @@ import moment from 'moment';
 import 'moment/locale/sv';
 moment.locale('sv');
 
-export function getDisplayDefinitions() {
+export function getDisplayDefinitions(baseUri) {
   return new Promise((resolve, reject) => {
-    httpUtil.getResourceFromCache('/https://id.kb.se/vocab/display').then((result) => {
+    httpUtil.getResourceFromCache(`${baseUri}/vocab/display`).then((result) => {
       const clonedResult = _.cloneDeep(result);
       _.each(clonedResult.lensGroups, lensGroup => {
         _.each(lensGroup.lenses, lens => {
