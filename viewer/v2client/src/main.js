@@ -143,6 +143,9 @@ new Vue({
       if (!this.settings.authPath || typeof this.settings.authPath === 'undefined') {
         throw new Error('Missing AUTH path in app-config');
       }
+      if (!this.settings.idPath || typeof this.settings.idPath === 'undefined') {
+        throw new Error('Missing ID path in app-config');
+      }
     },
     verifyUser(token, initial) {
       let userObj = User.getUserObject()
