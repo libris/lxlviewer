@@ -32,6 +32,7 @@ export default {
       showDisplayAs: false,
       showUndo: false,
       showSave: false,
+      showCancel: false,
       showFieldAdderTooltip: false,
       showClarifySave: false,
       showMarcPreview: false
@@ -100,6 +101,16 @@ export default {
     },
     closeMarc() {
       this.showMarcPreview = false;
+    },
+    cancel() {
+      if (!this.inspector.status.isNew) {
+        this.$store.dispatch('setInspectorStatusValue', { 
+          property: 'editing', 
+          value: false 
+        });
+      } else {
+        this.$router.go(-1);
+      }
     },
     undo() {
       this.$store.dispatch('undoInspectorChange');
@@ -374,6 +385,20 @@ export default {
           translation="translatePhrase"></tooltip-component>
       </i>
     </button>
+
+    <button class="Toolbar-btn btn btn-default toolbar-button" 
+      v-show="inspector.status.editing" 
+      @click="cancel" 
+      @mouseover="showCancel = true" 
+      @mouseout="showCancel = false">
+      <i class="fa fa-close" aria-hidden="true">
+        <tooltip-component 
+          :show-tooltip="showCancel" 
+          tooltip-text="Cancel" 
+          translation="translatePhrase"></tooltip-component>
+      </i>
+    </button>
+
     <button class="Toolbar-btn btn btn-info" id="saveButton" 
       @click="postControl('save-record')"
       v-if="inspector.status.editing && !isNewRecord" 
