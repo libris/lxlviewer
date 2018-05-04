@@ -168,6 +168,7 @@ export default {
       return true;
     },
   },
+  // en kommentar
   methods: {
     getPropClassInfo(termObj) {
       if (_.isArray(termObj['@type'])) {
