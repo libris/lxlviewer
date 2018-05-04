@@ -17,6 +17,19 @@ import { mapGetters } from 'vuex';
 
 export default {
   name: 'Inspector',
+  beforeRouteLeave (to, from , next) {
+    if (this.inspector.status.editing) {
+      const confString = StringUtil.getUiPhraseByLang('You have unsaved changes. Do you want to leave the page?', this.settings.language);
+      const answer = window.confirm(confString);
+      if (answer) {
+        next();
+      } else {
+        next(false);
+      }
+    } else {
+      next();
+    }
+  },
   data () {
     return {
       documentId: null,
@@ -27,6 +40,17 @@ export default {
     }
   },
   methods: {
+    initializeWarnBeforeUnload() {
+      window.addEventListener("beforeunload", (e) => {
+        if (!this.inspector.status.editing) {
+          return undefined;
+        }
+        const confirmationMessage = StringUtil.getUiPhraseByLang('You have unsaved changes. Do you want to leave the page?', this.settings.language);
+
+        (e || window.event).returnValue = confirmationMessage; //Gecko + IE
+        return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
+      });
+    },
     initJsonOutput() {
       window.getJsonOutput = () => {
       const obj = this.getPackagedItem();
@@ -300,6 +324,7 @@ export default {
       if (!this.postLoaded) {
         this.initializeRecord();
       }
+      this.initializeWarnBeforeUnload();
       this.initJsonOutput();
       let self = this;
       window.addEventListener('resize', function() {
