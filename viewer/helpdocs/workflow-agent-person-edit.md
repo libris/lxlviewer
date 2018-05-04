@@ -23,12 +23,12 @@ Beskrivning av den auktoriserade agenten.
 * Förnamn (GivenName = = 100 ‡a)
   <br/>```Exempel: Erik```
 
-* Biografiska uppgifter (hasBiographicalInformation = 678)
-  <br/>```Exempel: Väckelsepredikant i Österbotten```
-  
 * Födelse- och/eller dödstid (lifeSpan = 100 ‡d)
   <br/>Årtal används i första hand som särskiljande tillägg för personer. Redigera om det behövs.
   <br/>```Exempel: 1848-1920```
+
+* Biografiska uppgifter (hasBiographicalInformation = 678)
+  <br/>```Exempel: Väckelsepredikant i Österbotten```
 
 * Nationalitet/verksamhetsland (Nationality = 043 ‡a)
   <br/>Nationalitet/verksamhetsland förknippat med personen. Vid behov kan denna ändras eller raderas.
@@ -116,12 +116,13 @@ Information av administrativ karaktär som är väsentlig för auktoritetsposten
 * Samma sak som 
   <br/>Ändras ej.
   
-* Konsulterad källa (sourceConsulted = 670 ‡a) samt Uppgift från källa (citationNote = 670 ‡b)
-  <br/>Källa vid belagd uppgift. 
-  <br/>Välj typ av konsulterad källa i rullgardinsmenyn till vänster. Vid val av "Källa vid belagd uppgift" finns möjlighet att ange såväl källa som uppgift hämtad från källa. 
+* Konsulterad källa (sourceConsulted) innehåller Benämning (label = 670 ‡a) samt Uppgift från källa (citationNote = 670 ‡b)
+  <br/>Ange källa och vid behov vilken uppgift som hämtats från källan. Den resurs som föranleder auktoriseringen är obligatorisk källa. 
+  <br/>```Exempel: Jerusalem / Selma Lagerlöf, 1901```
   <br/>```Exempel: Källa: NE 2018-04-12. Uppgift från källa: Levnadstid: 1848-1920```
-  <br/>Den resurs som föranleder auktoriseringen är obligatorisk källa.
-  <br/>```Exempel: Källor i tåredalen, 1999```
+  <br/>```Exempel: Wikipedia (svenska) 2018-04-12```
+  <br/>För att lägga till fält: Klicka på +ikonen under Konsulterad källa. Välj typ av konsulterad källa i rullmenyn. 
+Vid val av "Källa vid belagd uppgift" finns möjlighet att ange såväl Benämning (källa) som Uppgift hämtad från källa.
   
 ### Fält att lägga till i adminmetadata
 
@@ -147,13 +148,18 @@ Vid behov är det möjligt att lägga till fält som inte ingår i mallen. Nya f
   <br/>Personens verksamhetsområde beskriver vad personen är intresserad av eller ägnar sig åt och det behöver inte ha med yrkesutövning att göra. Hämta i första hand termen från en kontrollerad vokabulär som Svenska ämnesord.
    <br/>```Exempel: Fågelskådning```
    <br/>För att lägga till fält: Klicka på +ikonen under egenskapen Har yrke eller sysselsättning, välj Allmänt ämnesord som typ och sök i rutan till vänster, välj önskad term och klicka på den gröna Lägg till-rutan till höger. (Skapa lokal entitet används endast då det inte finns auktoriserad entitet att länka till.)
-
+  
 * Titel eller övrig beteckning (marc:titlesAndOtherWordsAssociatedWithAName = 100 ‡c ‡d)
-  <br/>Används vid behov som särskiljande tillägg till den auktoriserade namnformen.
-  <br/>```Exempel: Påve```
+  <br/>Används vid behov som särskiljande tillägg till den auktoriserade namnformen. 
+  <br/>```Exempel: påve```
   
 * Andra attribut för person- och organisationsnamn (hasOtherAttributes = 368)
-  <br/>Används för att ange akademiska titlar, kyrkliga ämbeten, militära tjänstegrader (till exempel kapten), hederstitlar etc.
-  <br/>```Exempel: Kapten```
+  <br/>Används vid behov som särskiljande tillägg för att ange akademiska titlar, kyrkliga ämbeten, militära tjänstegrader (till exempel kapten), hederstitlar etc. Hämta i första hand termen från en kontrollerad vokabulär som Svenska ämnesord.
+  <br/>```Exempel: Professorer```
+
+* Ordningstal (marc:numeration = 100 ‡b)
+  <br/>Används som särskiljande tillägg till den auktoriserade namnformen för kungligheter samt för påvar, biskopar och andra personer med religiösa yrken.
+  <br/>```Exempel: XXII```
+  <br/>```Exempel: 2```
   
 #### Glöm inte att redigera Adminmetadata och spara entiteten innan vidare navigation i verktyget!
