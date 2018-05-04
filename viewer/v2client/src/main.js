@@ -208,7 +208,7 @@ new Vue({
     },
     getLdDependencies(fetchIndicator) {
       const promiseArray = [];
-      const vocabPromise = VocabUtil.getVocab(this.settings.idPath);
+      const vocabPromise = VocabUtil.getVocab(this.settings.apiPath);
       promiseArray.push(vocabPromise);
       const displayPromise = DisplayUtil.getDisplayDefinitions(this.settings.idPath);
       promiseArray.push(displayPromise);
