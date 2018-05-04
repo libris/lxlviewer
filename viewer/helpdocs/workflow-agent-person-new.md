@@ -7,7 +7,7 @@ tags:
 ---
 *UNDER ARBETE - UPPDATERAS KONTINUERLIGT*
 
-## Skapa ny Agent - Person
+## Skapa ny: Agent - Person
 Lathunden beskriver de fält som finns representerade i mallen. Om något av fälten i mallen inte behövs kan de raderas genom ett klick på papperskorgsikonen intill fältet. Ett urval av fält relevanta för person som är möjliga att lägga till men som inte finns i mallen beskrivs i slutet av lathunden. 
 
 OBS! Var noggrann vid sökning/testlänkning för att säkerställa att auktoriserad namnform inte redan finns. Glöm inte att redigera Adminmetadata och spara innan vidare navigation i verktyget.
@@ -105,12 +105,13 @@ Information av administrativ karaktär som är väsentlig för auktoritetsposten
   <br/>Anmärkningar tänkta för kollegor inom Libriskollektivet. Det kan till exempel vara uppgifter som rör ändring av den auktoriserade namnformen. Motivera gärna ändringen och komplettera alltid med datum/sigel/signatur.
   <br/>```Exempel: Författaren vill inte ha sitt födelseår i auktoritetsposten. Enligt e-post 2017-05-12, S/NB/annbjo```
 
-* Konsulterad källa (sourceConsulted = 670)
-  <br/>Välj typ av källa. Ange källa och vid behov vilken uppgift som hämtats från källan. Den resurs som föranleder auktoriseringen är obligatorisk källa i auktoritetsposten. 
+* Konsulterad källa (sourceConsulted) innehåller Benämning (label = 670 ‡a) samt Uppgift från källa (citationNote = 670 ‡b)
+  <br/>Ange källa och vid behov vilken uppgift som hämtats från källan. Den resurs som föranleder auktoriseringen är obligatorisk källa. 
   <br/>```Exempel: Jerusalem / Selma Lagerlöf, 1901```
-  <br/>```Exempel: NE 2018-04-12```
+  <br/>```Exempel: Källa: NE 2018-04-12. Uppgift från källa: Levnadstid: 1848-1920```
   <br/>```Exempel: Wikipedia (svenska) 2018-04-12```
-  <br/>Lägg till ytterligare källa genom att klicka på +-ikonen under Konsulterad källa, välj typ och ange uppgifterna.
+  <br/>För att lägga till fält: Klicka på +ikonen under Konsulterad källa. Välj typ av konsulterad källa i rullmenyn. 
+Vid val av "Källa vid belagd uppgift" finns möjlighet att ange såväl Benämning (källa) som Uppgift hämtad från källa.
   
 * Poststatus (recordStatus = 000/Leader/?)
   <br/>Val i meny?/Ändras ej?
@@ -138,16 +139,21 @@ Vid behov är det möjligt att lägga till fält som inte ingår i mallen. Nya f
 
 * Fullständigare namnform (fullerFormOfName = 100 ‡q och 378)
   <br/>Används för att ange fullständig namnform i de fall då fortkortning används i den auktoriserade namnformen.
-  <br/>```Exempel: Efternamn: Smith ```
-  <br/>```Exempel: Förnamn: A. D. ```
+  <br/>```Exempel: Efternamn: Smith```
+  <br/>```Exempel: Förnamn: A. D.```
   <br/>```Exempel: Fullständigare namnform: Adam David```
 
 * Titel eller övrig beteckning (marc:titlesAndOtherWordsAssociatedWithAName = 100 ‡c ‡d)
-  <br/>Används vid behov som särskiljande tillägg till den auktoriserade namnformen.
-  <br/>```Exempel: Påve```
+  <br/>Används vid behov som särskiljande tillägg till den auktoriserade namnformen. 
+  <br/>```Exempel: påve```
   
 * Andra attribut för person- och organisationsnamn (hasOtherAttributes = 368)
-  <br/>Används för att ange akademiska titlar, kyrkliga ämbeten, militära tjänstegrader (till exempel kapten), hederstitlar etc.
-  <br/>```Exempel: Kapten```
+  <br/>Används vid behov som särskiljande tillägg för att ange akademiska titlar, kyrkliga ämbeten, militära tjänstegrader (till exempel kapten), hederstitlar etc. Hämta i första hand termen från en kontrollerad vokabulär som Svenska ämnesord.
+  <br/>```Exempel: Professorer```
 
+* Ordningstal (marc:numeration = 100 ‡b)
+  <br/>Används som särskiljande tillägg till den auktoriserade namnformen för kungligheter samt för påvar, biskopar och andra personer med religiösa yrken.
+  <br/>```Exempel: XXII```
+  <br/>```Exempel: 2```
+  
 #### Glöm inte att redigera Adminmetadata och spara entiteten innan vidare navigation i verktyget!
