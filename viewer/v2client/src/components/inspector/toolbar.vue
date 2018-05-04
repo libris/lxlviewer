@@ -399,7 +399,7 @@ export default {
       </i>
     </button>
 
-    <button class="Toolbar-btn btn btn-info" id="saveButton" 
+    <button class="Toolbar-btn btn btn-default" id="saveButton" 
       @click="postControl('save-record')"
       v-if="inspector.status.editing && !isNewRecord" 
       @mouseover="showSave = true" @mouseout="showSave = false">
