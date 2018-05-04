@@ -7,7 +7,7 @@ tags:
 --- 
 *UNDER ARBETE - UPPDATERAS KONTINUERLIGT*
 
-## Tryckt seriell resurs
+# Tryckt seriell resurs
 
 Denna hjälptext beskriver ett antal vanligt förekommande fält, med utgångspunkt från exempel. För instruktioner om att länka till entitet, skapa lokal entitet och om hur formuläret fungerar i övrigt, se Redigering i vänstermenyn. För information om katalogregler, skrivregler och övriga katalogiseringsanvisningar, se [Anvisningar för katalogisering - RDA](http://www.kb.se/rdakatalogisering/ "Anvisningar för katalogisering - RDA").
 
