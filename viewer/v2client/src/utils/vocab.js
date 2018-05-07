@@ -248,6 +248,9 @@ export function getAllEnumerationTypesFor(onProp, vocab) {
 }
 
 export function getValuesFrom(entityType, property, vocab, vocabPfx, context) {
+  if (typeof entityType === 'undefined') {
+    throw new Error('getValuesFrom was called without an entityType');
+  }
   if (_.isPlainObject(property)) {
     throw new Error('getValuesFrom was called with an object as property id (should be a string)');
   }
@@ -458,6 +461,29 @@ export function isEmbedded(classId, vocab, settings, context) {
   if (typeChain.length > 0) {
     for (const item of embeddedTypes) {
       if (~typeChain.indexOf(`${settings.vocabPfx}${item}`)) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+export function isExtractable(classId, vocab, settings, context) {
+  if (!classId || typeof classId === 'undefined') {
+    throw new Error('isExtractable was called with an undedfined class id');
+  }
+  if (_.isObject(classId)) {
+    throw new Error('isExtractable was called with an object as class id (should be a string)');
+  }
+  const extractableTypes = settings.extractableTypes;
+  const typeChain = getBaseClasses(classId, vocab, settings.vocabPfx, context);
+  let curieChain = [];
+  for (let i = 0; i < typeChain.length; i++) {
+    curieChain.push(StringUtil.getCompactUri(typeChain[i], context));
+  }
+  if (curieChain.length > 0) {
+    for (let i = 0; i < extractableTypes.length; i++) {
+      if (curieChain.indexOf(extractableTypes[i]) > -1) {
         return true;
       }
     }

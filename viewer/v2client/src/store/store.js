@@ -82,6 +82,11 @@ const store = new Vuex.Store({
         'StructuredValue',
         'QualifiedRole',
       ],
+      extractableTypes: [
+        'Item',
+        'Instance',
+        'Identity',
+      ],
       removableBaseUris: [
         'http://libris.kb.se/',
         'https://libris.kb.se/',
