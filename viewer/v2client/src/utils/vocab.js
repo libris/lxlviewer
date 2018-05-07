@@ -564,16 +564,17 @@ export function isAbstract(itemId, vocab, vocabPfx, context) {
   return (termObject.hasOwnProperty('abstract') && termObject.abstract === true);
 }
 
-export function getTree(term, vocab, vocabPfx, context, counter = 0) {
+export function getTree(term, vocab, vocabPfx, context, counter = 0, parentChainString = '') {
   const treeNode = {
     id: term,
     sub: [],
     abstract: isAbstract(term, vocab, vocabPfx, context),
     depth: counter,
+    parentChainString: parentChainString+term,
   };
   const subs = getTermObject(term, vocab, vocabPfx, context).baseClassOf;
   _.each(subs, (sub) => {
-    treeNode.sub.push(getTree(sub, vocab, vocabPfx, context, counter + 1));
+    treeNode.sub.push(getTree(sub, vocab, vocabPfx, context, counter + 1, parentChainString+term));
   });
   return treeNode;
 }
