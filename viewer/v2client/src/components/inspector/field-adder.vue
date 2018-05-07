@@ -226,6 +226,7 @@ export default {
           value: this.getEmptyFieldValue(key, prop.item),
           addToHistory: true,
         });
+        this.$store.dispatch('setInspectorStatusValue', { property: 'unsavedChanges', value: true });
         if (close) {
           this.hide();
           this.$store.dispatch('setInspectorStatusValue', { 

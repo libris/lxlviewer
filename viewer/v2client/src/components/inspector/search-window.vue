@@ -220,106 +220,109 @@ export default {
       @close="hide()"
       class="SearchWindow-modal">
       <template slot="modal-body">
-          <div class="SearchWindow-header search-header">
-            <span>{{ "Search" | translatePhrase }}</span>
-            <div class="search">
-              <!--<input class="entity-search-keyword-input" v-model="keyword" @input="setSearching()"></input>-->
-              <div class="input-container">
-                <input class="entity-search-keyword-input"
-                  v-model="keyword"
-                  autofocus>
-                <select v-model="currentSearchTypes" @change="handleChange(keyword)">
-                  <option :value="getRange">{{"All types" | translatePhrase}}</option>
-                  <option 
-                    v-for="term in getClassTree" 
-                    :key="term.id" 
-                    :value="term.id" 
-                    v-html="getFormattedSelectOption(term, settings, resources.vocab, resources.context)"></option>
-                </select>
-              </div>
-              <div class="help-tooltip-container" @mouseleave="showHelp = false">
-                <i class="fa fa-question-circle-o" @mouseenter="showHelp = true"></i>
-                <div class="help-tooltip" v-if="showHelp">
-                  <div class="section">
-                    <div class="section-header">
-                      {{"Step" | translatePhrase}} 1: {{"Search for existing linked entities" | translatePhrase}}
-                    </div>
-                    <div class="section-content"></div>
+        <div class="SearchWindow-header search-header">
+          <span>{{ "Search" | translatePhrase }}</span>
+          <div class="SearchWindow-search search">
+            <div class="SearchWindow-inputContainer input-container">
+              <input class="SearchWindow-input SearchWindowentity-search-keyword-input"
+                v-model="keyword"
+                autofocus>
+              <select v-model="currentSearchTypes" @change="handleChange(keyword)">
+                <option :value="getRange">{{"All types" | translatePhrase}}</option>
+                <option 
+                  v-for="term in getClassTree" 
+                  :key="term.id" 
+                  :value="term.id" 
+                  v-html="getFormattedSelectOption(term, settings, resources.vocab, resources.context)"></option>
+              </select>
+            </div>
+            <div class="SearchWindow-help help-tooltip-container" 
+              @mouseleave="showHelp = false">
+              <i class="fa fa-question-circle-o" 
+                @mouseenter="showHelp = true"></i>
+              <div class="SearchWindow-helpText help-tooltip" v-if="showHelp">
+                <div class="section">
+                  <div class="section-header">
+                    {{"Step" | translatePhrase}} 1: {{"Search for existing linked entities" | translatePhrase}}
                   </div>
-                  <div class="section">
-                    <div class="section-header">
-                      {{"Step" | translatePhrase}} 2: {{"Identify and replace" | translatePhrase}}
-                    </div>
-                    <div class="section-content">
-                      {{"If you identify a matching linked entity, click it to replace the local entity with it" | translatePhrase}}
-                    </div>
+                  <div class="section-content"></div>
+                </div>
+                <div class="section">
+                  <div class="section-header">
+                    {{"Step" | translatePhrase}} 2: {{"Identify and replace" | translatePhrase}}
                   </div>
-                  <div class="section">
-                    <div class="section-header">
-                      {{"Create and link entity" | translatePhrase}}
-                    </div>
-                    <div class="section-content">
-                      {{"If no matching linked entity is found you can create and link. This will create a linked entity containing the information in the entity chosen for linking" | translatePhrase}}
-                    </div>
+                  <div class="section-content">
+                    {{"If you identify a matching linked entity, click it to replace the local entity with it" | translatePhrase}}
+                  </div>
+                </div>
+                <div class="section">
+                  <div class="section-header">
+                    {{"Create and link entity" | translatePhrase}}
+                  </div>
+                  <div class="section-content">
+                    {{"If no matching linked entity is found you can create and link. This will create a linked entity containing the information in the entity chosen for linking" | translatePhrase}}
                   </div>
                 </div>
               </div>
-              <div class="controls">
-              </div>
             </div>
-            <div class="extract-controls">
-              <span class="preview-entity-text">{{ "Your new entity" | translatePhrase }}:</span>
-              <div class="copy-title" v-if="canCopyTitle">
-                <label>
-                  <input type="checkbox" name="copyTitle" v-model="copyTitle" /> 
-                  {{ "Copy title from" | translatePhrase }} {{this.editorData.mainEntity['@type'] | labelByLang}}
-                </label>
-              </div>
-            </div>
-            <div class="summary-container">
-              <entity-summary 
-                :action-settings="localEntitySettings" 
-                :focus-data="itemInfo" 
-                :lines="4"></entity-summary>
-              <summary-action 
-                v-show="!extracting" 
-                :options="localEntitySettings" 
-                @action="extract()"></summary-action>
+            <div class="SearchWindow-controls"></div>
+          </div>
+          <div class="SearchWindow-extractControls">
+            <span class="preview-entity-text">{{ "Your new entity" | translatePhrase }}:</span>
+            <div class="copy-title" v-if="canCopyTitle">
+              <label>
+                <input type="checkbox" name="copyTitle" v-model="copyTitle" /> 
+                {{ "Copy title from" | translatePhrase }} {{this.editorData.mainEntity['@type'] | labelByLang}}
+              </label>
             </div>
           </div>
-          <div class="SearchWindow-resultListContainer">
-            <ul v-show="displaySearchList" class="SearchWindow-resultList">
-              <li class="SearchWindow-resultItem"
-                v-for="item in searchResult" 
-                :key="item['@id']" >
-                <entity-summary class="SearchWindow-entitySummary"
-                  :focus-data="item" 
-                  :lines="4" 
-                  :should-open-tab="true"></entity-summary>
-                <summary-action :options="addPayload(item)" @action="replaceWith(item)"></summary-action>
-              </li>
-            </ul>
-            <div class="SearchWindow-searchStatusContainer"
-              v-show="extracting || keyword.length === 0 || loading || foundNoResult">
-              <div class="SearchWindow-searchStatus">
-                <span v-show="keyword.length === 0 && !extracting">
-                  {{ "Search for existing linked entities" | translatePhrase }}...
-                </span>
-                <span v-show="loading">
-                  <i class="fa fa-circle-o-notch fa-spin"></i>
-                  {{ "Searching" | translatePhrase }}...
-                </span>
-                <span v-show="foundNoResult">
-                  <strong>{{ "No results" | translatePhrase }}</strong>
-                  <br>{{"Search again or" | translatePhrase}} {{"Create and link entity" | translatePhrase}}
-                </span>
-                <span v-show="extracting">
-                  <i class="fa fa-circle-o-notch fa-spin" aria-hidden="true"></i>
-                  {{ "Creating link" | translatePhrase }}
-                </span>
-              </div>
+
+          <div class="SearchWindow-summaryContainer">
+            <entity-summary 
+              :action-settings="localEntitySettings" 
+              :focus-data="itemInfo" 
+              :lines="4"
+              :should-link="false"></entity-summary>
+            <summary-action 
+              v-show="!extracting" 
+              :options="localEntitySettings" 
+              @action="extract()"></summary-action>
+          </div>
+        </div>
+
+        <div class="SearchWindow-resultListContainer">
+          <ul v-show="displaySearchList" class="SearchWindow-resultList">
+            <li class="SearchWindow-resultItem"
+              v-for="item in searchResult" 
+              :key="item['@id']" >
+              <entity-summary class="SearchWindow-entitySummary"
+                :focus-data="item" 
+                :lines="4" 
+                :should-open-tab="true"></entity-summary>
+              <summary-action :options="addPayload(item)" @action="replaceWith(item)"></summary-action>
+            </li>
+          </ul>
+          <div class="SearchWindow-searchStatusContainer"
+            v-show="extracting || keyword.length === 0 || loading || foundNoResult">
+            <div class="SearchWindow-searchStatus">
+              <span v-show="keyword.length === 0 && !extracting">
+                {{ "Search for existing linked entities" | translatePhrase }}...
+              </span>
+              <span v-show="loading">
+                <i class="fa fa-circle-o-notch fa-spin"></i>
+                {{ "Searching" | translatePhrase }}...
+              </span>
+              <span v-show="foundNoResult">
+                <strong>{{ "No results" | translatePhrase }}</strong>
+                <br>{{"Search again or" | translatePhrase}} {{"Create and link entity" | translatePhrase}}
+              </span>
+              <span v-show="extracting">
+                <i class="fa fa-circle-o-notch fa-spin" aria-hidden="true"></i>
+                {{ "Creating link" | translatePhrase }}
+              </span>
             </div>
           </div>
+        </div>
       </template>
     </modal-component>
   </div>
@@ -365,12 +368,123 @@ export default {
   }
 
   &-header {
-    width: 100%;
-    flex: 0 1 auto;
-    padding: 10px 20px;
     border: solid #ccc;
     border-width: 0px 0px 1px 0px;
     background-color: darken(@neutral-color, 4%);
+    flex: 0 1 auto;
+    font-weight: 700;
+    padding: 10px 20px;
+    width: 100%;
+  }
+
+  &-search {
+    align-items: center;
+    display: flex;
+  }
+
+  &-extractControls {
+    padding: 10px 0 0 0;
+
+    .preview-entity-text {
+      font-weight: bold;
+    }
+
+    .copy-title {
+      float: right;
+      label {
+        margin: 0;
+        font-weight: normal;
+      }
+    }
+  }
+
+  &-summaryContainer {
+    border: 1px solid #888;
+    background: @white;
+    margin: 0.2em 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &-inputContainer {
+    display: flex;
+    border: 2px solid @gray;
+    border-radius: 0.2em;
+    font-size: 14px;
+    font-size: 1.4rem;
+    flex: 60% 0 0;
+    background: @white;
+    padding: 10px;
+
+    > select {
+      max-width: 50%;
+      padding: 0.2em 0.5em;
+      margin: 0 0.3em;
+      border-radius: 0.3em;
+      border: 0px;
+      outline: none;
+      background: @brand-primary;
+      color: @white;
+      cursor: pointer;
+      font-weight: bold;
+    }
+  }
+
+  &-input {
+    font-weight: normal;
+    width: 100%;
+    border: none;
+    outline: none;
+  }
+
+  &-controls {
+    display: flex;
+    flex-grow: 1;
+    justify-content: flex-end;
+
+    button, select {
+      &:hover {
+        background: lighten(@brand-primary, 5%);
+      }
+      &:active {
+        background: darken(@brand-primary, 5%);
+      }
+      cursor: pointer;
+      padding: 0.5em 1em;
+      background: @brand-primary;
+      border: none;
+      border-radius: 2px;
+      color: @white;
+      font-weight: bold;
+      font-size: 12px;
+    }
+  }
+
+  &-help {
+    margin-left: 10px;
+    display: inline-block;
+  }
+
+  &-helpText {
+    max-width: 40%;
+    position: absolute;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 5px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-size: 1.2rem;
+    
+    .section {
+      .section-header {
+        font-weight: 700;
+      }
+      .section-content {
+        margin: 0 0 5px 5px;
+        font-weight: normal;
+      }
+    }
   }
 
   &-modal {
@@ -383,106 +497,6 @@ export default {
       height: 100%;
       display: flex;
       flex-flow: column;
-      
-      .search-header {
-      
-        > span {
-        font-weight: bold;
-        }
-        .summary-container {
-          border: 1px solid #888;
-          background: @white;
-          margin: 0.2em 0;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-        }
-        .extract-controls {
-          padding: 0.5em 0 0 0;
-          .preview-entity-text {
-            font-weight: bold;
-          }
-          .copy-title {
-            float: right;
-            label {
-              margin: 0;
-              font-weight: normal;
-            }
-          }
-        }
-        .search {
-          display: flex;
-          align-items: center;
-          .input-container {
-            display: flex;
-            border: 2px solid @gray;
-            border-radius: 0.2em;
-            flex: 60% 0 0;
-            background: @white;
-            padding: 0.5em;
-            > select {
-              max-width: 50%;
-              padding: 0.2em 0.5em;
-              margin: 0 0.3em;
-              border-radius: 0.3em;
-              border: 0px;
-              outline: none;
-              background: @brand-primary;
-              color: @white;
-              cursor: pointer;
-              font-weight: bold;
-            }
-            > input {
-              width: 100%;
-              border: none;
-              outline: none;
-            }
-          }
-          .help-tooltip-container {
-            margin-left: 0.5em;
-            display: inline-block;
-            .help-tooltip {
-              max-width: 40%;
-              position: absolute;
-              background-color: #fff;
-              border: 1px solid #ccc;
-              padding: 5px;
-              border-radius: 3px;
-              font-size: 1.2rem;
-              .section {
-                font-size: 1.4rem;
-                .section-header {
-                  font-weight: bold;
-                }
-                .section-content {
-                  margin: 0 0 5px 5px;
-                }
-              }
-            }
-          }
-        }
-        .controls {
-          display: flex;
-          flex-grow: 1;
-          justify-content: flex-end;
-          button, select {
-            &:hover {
-              background: lighten(@brand-primary, 5%);
-            }
-            &:active {
-              background: darken(@brand-primary, 5%);
-            }
-            cursor: pointer;
-            padding: 0.5em 1em;
-            background: @brand-primary;
-            border: none;
-            border-radius: 2px;
-            color: @white;
-            font-weight: bold;
-            font-size: 12px;
-          }
-        }
-      }
     }
   }
 }

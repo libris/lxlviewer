@@ -18,7 +18,7 @@ import { mapGetters } from 'vuex';
 export default {
   name: 'Inspector',
   beforeRouteLeave (to, from , next) {
-    if (this.inspector.status.editing) {
+    if (this.inspector.status.editing && this.inspector.status.unsavedChanges) {
       const confString = StringUtil.getUiPhraseByLang('You have unsaved changes. Do you want to leave the page?', this.settings.language);
       const answer = window.confirm(confString);
       if (answer) {
@@ -202,6 +202,7 @@ export default {
     saveItem(done=false) {
       this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: true });
       this.$store.dispatch('setInspectorStatusValue', { property: 'isNew', value: false });
+      this.$store.dispatch('setInspectorStatusValue', { property: 'unsavedChanges', value: false });
 
       const RecordId = this.inspector.data.record['@id'];
       const obj = this.getPackagedItem();

@@ -658,6 +658,11 @@ export default {
     font-size: 1.2rem;
   }
 
+  &-createSelect {
+    display: block;
+    width: 100%;
+  }
+
   &-searchStatus {
     font-size: 20px;
     font-size: 2rem;

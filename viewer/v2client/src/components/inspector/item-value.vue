@@ -52,6 +52,7 @@ export default {
           value: newValue,
           addToHistory: true,
         });
+        this.$store.dispatch('setInspectorStatusValue', { property: 'unsavedChanges', value: true });
       }, 1000)
       // set(newValue) {
       //   this.$store.dispatch('updateInspectorData', {
