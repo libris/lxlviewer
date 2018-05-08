@@ -46,6 +46,7 @@ const store = new Vuex.Store({
         removing: false,
         updating: false,
         isNew: false,
+        unsavedChanges: false,
       },
       changeHistory: [],
       event: [],
@@ -73,12 +74,18 @@ const store = new Vuex.Store({
       version: process.env.VERSION,
       apiPath: process.env.API_PATH,
       authPath: process.env.AUTH_PATH,
+      idPath: process.env.ID_PATH,
       appPaths: {
         '/find?': '/search/libris?',
       },
       embeddedTypes: [
         'StructuredValue',
         'QualifiedRole',
+      ],
+      extractableTypes: [
+        'Item',
+        'Instance',
+        'Identity',
       ],
       removableBaseUris: [
         'http://libris.kb.se/',

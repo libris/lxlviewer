@@ -45,10 +45,10 @@ export default {
                 <router-link class="Footer-link" to="/about" >{{ "About XL" | translatePhrase }}</router-link>
               </li>
               <li>
-                <a href="https://goo.gl/forms/dPxkhMqE10RvKQFE2" class="Footer-link js-translateable" data-translateable="Suggest change">Suggest change</a>
+                <a href="https://goo.gl/forms/TSCafatX9qKyMqK02" class="Footer-link js-translateable" data-translateable="Suggest change">Suggest change</a>
               </li>
               <li>
-                <a href="https://goo.gl/forms/3mL7jTlEpbU3BQM13" class="Footer-link js-translateable" data-translateable="Report error" >Report error</a>
+                <a href="https://goo.gl/forms/xJ837GVLmG6IHwsu2" class="Footer-link js-translateable" data-translateable="Report error" >Report error</a>
               </li>
             </ul>
           </nav>

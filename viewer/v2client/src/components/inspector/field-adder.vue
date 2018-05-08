@@ -226,6 +226,7 @@ export default {
           value: this.getEmptyFieldValue(key, prop.item),
           addToHistory: true,
         });
+        this.$store.dispatch('setInspectorStatusValue', { property: 'unsavedChanges', value: true });
         if (close) {
           this.hide();
           this.$store.dispatch('setInspectorStatusValue', { 
@@ -289,7 +290,7 @@ export default {
       <span class="FieldAdder-innerLabel">{{ "Field" | translatePhrase }}</span>
     </span>
 
-    <button v-if="!inner" class="FieldAdder-add btn btn-primary toolbar-button" 
+    <button v-if="!inner" class="FieldAdder-add btn btn-default toolbar-button" 
       v-on:click="show" 
       @keyup.enter="show"
       @mouseenter="showToolTip = true" 

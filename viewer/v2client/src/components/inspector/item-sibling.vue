@@ -87,8 +87,8 @@ export default {
       return cleanObj;
     },
     isExtractable() {
-      const classId = `${this.settings.vocabPfx}${this.item['@type']}`;
-      if (!VocabUtil.isEmbedded(classId, this.resources.vocab, this.settings, this.resources.context)) {
+      const classId = StringUtil.getCompactUri(this.item['@type'], this.resources.context);
+      if (VocabUtil.isExtractable(classId, this.resources.vocab, this.settings, this.resources.context)) {
         return true;
       }
       return false;

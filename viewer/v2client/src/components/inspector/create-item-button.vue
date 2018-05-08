@@ -39,7 +39,7 @@ export default {
         embellishedReference
       );
 
-      this.$parent.setCheckingRelations(false);
+      this.$emit('done');
     },
     gotoHolding() {
       const locationParts = this.holdingId[0].split('/');

@@ -17,6 +17,19 @@ import { mapGetters } from 'vuex';
 
 export default {
   name: 'Inspector',
+  beforeRouteLeave (to, from , next) {
+    if (this.inspector.status.editing && this.inspector.status.unsavedChanges) {
+      const confString = StringUtil.getUiPhraseByLang('You have unsaved changes. Do you want to leave the page?', this.settings.language);
+      const answer = window.confirm(confString);
+      if (answer) {
+        next();
+      } else {
+        next(false);
+      }
+    } else {
+      next();
+    }
+  },
   data () {
     return {
       documentId: null,
@@ -27,6 +40,17 @@ export default {
     }
   },
   methods: {
+    initializeWarnBeforeUnload() {
+      window.addEventListener("beforeunload", (e) => {
+        if (!this.inspector.status.editing) {
+          return undefined;
+        }
+        const confirmationMessage = StringUtil.getUiPhraseByLang('You have unsaved changes. Do you want to leave the page?', this.settings.language);
+
+        (e || window.event).returnValue = confirmationMessage; //Gecko + IE
+        return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
+      });
+    },
     initJsonOutput() {
       window.getJsonOutput = () => {
       const obj = this.getPackagedItem();
@@ -39,7 +63,7 @@ export default {
     initToolbarFloat() {
       const toolbarPlaceholderEl = this.$refs.ToolbarPlaceholder;
       const toolbarTestEl = this.$refs.ToolbarTest;
-      const width = toolbarPlaceholderEl.clientWidth || 65;
+      const width = typeof toolbarPlaceholderEl !== 'undefined' ? toolbarPlaceholderEl.clientWidth : 65;
       toolbarTestEl.style.width = `${width}px`;
     },
     fetchDocument() {
@@ -178,6 +202,7 @@ export default {
     saveItem(done=false) {
       this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: true });
       this.$store.dispatch('setInspectorStatusValue', { property: 'isNew', value: false });
+      this.$store.dispatch('setInspectorStatusValue', { property: 'unsavedChanges', value: false });
 
       const RecordId = this.inspector.data.record['@id'];
       const obj = this.getPackagedItem();
@@ -300,6 +325,7 @@ export default {
       if (!this.postLoaded) {
         this.initializeRecord();
       }
+      this.initializeWarnBeforeUnload();
       this.initJsonOutput();
       let self = this;
       window.addEventListener('resize', function() {

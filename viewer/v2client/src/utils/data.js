@@ -35,7 +35,8 @@ export function getMergedItems(record, mainEntity, work, quoted) {
   return obj;
 }
 
-export function removeNullValues(obj) {
+export function removeNullValues(inputObj) {
+  const obj = _.cloneDeep(inputObj);
   // Strips away all null value keys
   let cleanObj;
   if (_.isArray(obj)) {
