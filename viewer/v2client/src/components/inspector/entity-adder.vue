@@ -516,12 +516,7 @@ export default {
 <style lang="less">
 
 .EntityAdder {
-  &.disabled {
-    visibility: hidden;
-  }
-  &.is-fillWidth {
-    width: 100%;
-  }
+
   &.is-innerAdder {
     cursor: pointer;
   }
@@ -548,11 +543,17 @@ export default {
 
   &-typeChooser {
     text-align: center;
-    padding: 5px;
-    border: 2px solid #b2b2b2;
   }
 
   &-typeSelect {
+    background: @white;
+    color: @black;
+    margin: 0 0 5px 0;
+    border: 1px solid #6F767B;
+    border-radius: 2px;
+    font-size: 14px;
+    font-size: 1.4rem;
+    font-weight: normal;
     width: 100%;
   }
 
