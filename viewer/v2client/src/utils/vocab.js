@@ -325,7 +325,6 @@ export function getUnrestrictedRange(propertyId, vocab, vocabPfx, context) {
     });
   }
   range = _.uniq(range);
-
   return range;
 }
 
