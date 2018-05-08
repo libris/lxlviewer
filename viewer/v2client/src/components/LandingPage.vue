@@ -64,5 +64,6 @@ export default {
   display: flex;
   justify-content: space-between;
   margin-top: 15vh;
+  flex-wrap: wrap;
 }
 </style>
