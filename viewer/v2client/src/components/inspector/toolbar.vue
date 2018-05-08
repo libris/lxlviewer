@@ -38,14 +38,6 @@ export default {
       showMarcPreview: false
     };
   },
-  events: {
-    'close-modals'() {
-      return true;
-    },
-    'toggle-editor-focus'() {
-      this.toggleEditorFocus();
-    },
-  },
   watch: {
     'inspector.status.editing'(state) {
       if (state) {
