@@ -432,8 +432,12 @@ export function propIsRepeatable(propertyId, context) {
 }
 
 export function getPropertiesFromArray(typeArray, vocabClasses, vocabPfx, vocabProperties, context) {
+  let types = typeArray;
+  if (!_.isArray(types)) {
+    types = [types];
+  }
   let props = [];
-  const classNames = getBaseClassesFromArray(typeArray, vocabClasses, vocabPfx, context);
+  const classNames = getBaseClassesFromArray(types, vocabClasses, vocabPfx, context);
 
   for (let i = 0; i < classNames.length; i++) {
     const properties = getProperties(classNames[i], vocabClasses, vocabPfx, vocabProperties, context);
