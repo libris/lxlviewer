@@ -496,7 +496,7 @@ export default {
           {{ "Searching" | translatePhrase }}...
           <br><i class="EntityAdder-searchStatusIcon fa fa-circle-o-notch fa-spin"></i>
         </div>
-        <div class="EntityAdder-searchStatussearch-status"
+        <div class="EntityAdder-searchStatus search-status"
           v-if="!loading && searchResult.length === 0 && keyword.length > 0 && searchMade">
           {{ "No results" | translatePhrase }}...
         </div>
