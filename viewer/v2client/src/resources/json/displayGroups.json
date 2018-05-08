@@ -20,7 +20,9 @@
     "marc:fullerFormName",
     "lifeSpan",
     "marc:attributionQualifier",
-    "code"
+    "code",
+    "isPartOf",
+    "marc:subordinateUnit"
   ],
   "info": ["responsibilityStatement", "instanceOf", "contribution", "broader", "date", "note"],
   "identifiers": ["identifiedBy", "sameAs"]
