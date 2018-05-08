@@ -20,7 +20,8 @@ Här lägger du uppställning efter klassifikation eller annan hyllkod
 
   ```Exempel: 158.1```
 
-* Om ytterligare information om placering utöver Hyllkod behöver läggas till.
+* Hyllplacering (Avdelning,samling) (852 ‡c)
+Om ytterligare information om placering utöver Hyllkod behöver läggas till.
 
   ```Exempel: Institution 140```
 
