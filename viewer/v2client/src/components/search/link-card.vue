@@ -58,9 +58,14 @@ export default {
 .LinkCard {
   flex-basis: 24%; // To parent
   display: flex;
+  min-width: 200px;
   flex-direction: column;
   align-items: center;
   padding: 0;
+
+  @media (min-width: 992px) {
+      flex-basis: 24%; 
+    }
 
   &-img {
     width: 100%;
@@ -104,6 +109,10 @@ export default {
     }
   }
 
+  &-link {
+    padding: 10px 0;
+  }
+
   &-text {
     display: flex;
     flex-direction: column;
@@ -115,6 +124,8 @@ export default {
     font-size: 20px;
     font-size: 2rem;
     font-weight: 700;
+    line-height: 1.2;
+    margin: 0 0 10px 0;
   }
 
   &.no-link {
