@@ -463,6 +463,7 @@ export default {
 
     @media (min-width: 992px) {
       bottom: auto;
+      width: 65px;
     }
     @media (min-width: 1200px) {
       padding: 8px;
