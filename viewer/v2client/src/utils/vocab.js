@@ -325,7 +325,6 @@ export function getUnrestrictedRange(propertyId, vocab, vocabPfx, context) {
     });
   }
   range = _.uniq(range);
-
   return range;
 }
 
@@ -341,6 +340,24 @@ export function getSubClasses(classname, vocabClasses, vocabPfx, context) {
     subClasses = classObj.baseClassOf;
   }
   return subClasses;
+}
+
+export function getSubClassChain(classname, vocabClasses, vocabPfx, context) {
+  const classObj = getTermObject(classname, vocabClasses, vocabPfx, context);
+  if (typeof classObj === 'undefined') {
+    return [];
+  }
+  if (classObj.hasOwnProperty('subClassChain')) {
+    return classObj.subClassChain;
+  }
+  const subClassChain = [classname].concat(getAllSubClasses(
+    getSubClasses(classname, vocabClasses, vocabPfx, context),
+    vocabClasses,
+    vocabPfx,
+    context,
+  ));
+  classObj.subClassChain = subClassChain;
+  return subClassChain;
 }
 
 export function getAllSubClasses(classArray, vocabClasses, vocabPfx, context) {
@@ -364,8 +381,7 @@ export function getFullRange(entityType, key, vocab, vocabPfx, context, vocabCla
   const types = [].concat(getRange(entityType, key, vocab, vocabPfx, context));
   let allTypes = [];
   _.each(types, type => {
-    const typeInArray = [].concat(type);
-    allTypes = allTypes.concat(getAllSubClasses(typeInArray, vocabClasses, vocabPfx, context));
+    allTypes = allTypes.concat(getSubClassChain(type, vocabClasses, vocabPfx, context));
   });
   allTypes = _.uniq(allTypes);
   return allTypes;
@@ -404,8 +420,14 @@ export function getProperties(classId, vocabClasses, vocabPfx, vocabProperties, 
     return termObj.allowedProperties;
   }
   vocabProperties.forEach(prop => {
-    const domainList = getAllSubClasses(getDomainList(prop, vocabProperties, vocabPfx, context), vocabClasses, vocabPfx, context);
-    for (const domain of domainList) {
+    let domainList = getDomainList(prop, vocabProperties, vocabPfx, context);
+    let domainListWithSubClasses = [];
+    for (let i = 0; i < domainList.length; i++) {
+      domainListWithSubClasses = domainListWithSubClasses.concat(
+        getSubClassChain(domainList[i], vocabClasses, vocabPfx, context)
+      );
+    }
+    for (const domain of domainListWithSubClasses) {
       if (domain === classId) {
         props.push(prop);
       }
@@ -433,8 +455,12 @@ export function propIsRepeatable(propertyId, context) {
 }
 
 export function getPropertiesFromArray(typeArray, vocabClasses, vocabPfx, vocabProperties, context) {
+  let types = typeArray;
+  if (!_.isArray(types)) {
+    types = [types];
+  }
   let props = [];
-  const classNames = getBaseClassesFromArray(typeArray, vocabClasses, vocabPfx, context);
+  const classNames = getBaseClassesFromArray(types, vocabClasses, vocabPfx, context);
 
   for (let i = 0; i < classNames.length; i++) {
     const properties = getProperties(classNames[i], vocabClasses, vocabPfx, vocabProperties, context);

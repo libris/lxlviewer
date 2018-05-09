@@ -29,7 +29,6 @@ const store = new Vuex.Store({
       loadingError: false,
       vocab: {},
       display: {},
-      forcedListTerms: {},
       context: {},
     },
     inspector: {

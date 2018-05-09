@@ -141,18 +141,19 @@ export default {
         this.resources.vocab, 
         this.settings.vocabPfx, 
         this.resources.context)
-        .map(item => item.replace(this.settings.vocabPfx, ''));
+        .map(item => StringUtil.getCompactUri(item, this.resources.context));
       return fetchedRange;
     },
     getFullRange() {
-      return VocabUtil.getFullRange(
+      const fetchedRange = VocabUtil.getFullRange(
         this.entityType, 
         this.fieldKey, 
         this.resources.vocab, 
         this.settings.vocabPfx, 
         this.resources.context, 
         this.resources.vocabClasses
-      );
+      ).map(item => StringUtil.getCompactUri(item, this.resources.context));;
+      return fetchedRange;
     },
     allSearchTypes() {
       const types = this.getFullRange;
