@@ -23,6 +23,10 @@ export default {
       }
       if (animate) {
         this.$store.dispatch('setInspectorStatusValue', { property: 'removing', value: true });
+        this.$store.dispatch('setInspectorStatusValue', { 
+          property: 'unsavedChanges', 
+          value: true 
+        });
         this.removed = true;
         setTimeout(() => {
           this.$store.dispatch('updateInspectorData', {

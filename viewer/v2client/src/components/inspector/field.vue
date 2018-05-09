@@ -280,6 +280,10 @@ export default {
           value: parentData,
           addToHistory: true,
         });
+        this.$store.dispatch('setInspectorStatusValue', { 
+          property: 'unsavedChanges', 
+          value: true 
+        });
       }, 500);
     },
     getDatatype(o) {
