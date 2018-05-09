@@ -103,10 +103,9 @@ export default {
       );
       // Add the "added" property
       for (const element of allowed) {
-        const oId = element.item['@id'].replace(settings.vocabPfx, '');
+        const oId = StringUtil.getCompactUri(element.item['@id'], this.resources.context);
         element.added = (formObj.hasOwnProperty(oId));
       }
-
       const extendedAllowed = allowed.map(property => {
         const labelByLang = property.item.labelByLang;
         const prefLabelByLang = property.item.prefLabelByLang;
