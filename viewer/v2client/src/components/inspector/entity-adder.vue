@@ -606,7 +606,7 @@ export default {
   }
 
   &-searchSelect {
-    max-width: 50%;
+    max-width: 200px;
     padding: .2em .5em;
     margin: 0 .3em;
     border-radius: .3em;
