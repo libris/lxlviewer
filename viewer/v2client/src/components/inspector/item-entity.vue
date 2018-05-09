@@ -59,10 +59,6 @@ export default {
         this.expand();
       }
     },
-    isEmpty() {
-      // TODO: Is the item empty?
-      return false;
-    },
     size(obj) {
       return _.size(obj);
     },
@@ -88,11 +84,11 @@ export default {
 <template>
   <div class="ItemEntity-container" 
     @mouseleave="showCardInfo=false" 
-    v-bind:class="{'highlight': isNewlyAdded }">
+    v-bind:class="{'is-highlighted': isNewlyAdded }">
     <div class="ItemEntity" 
       tabindex="0"
       v-if="!expanded" 
-      :class="{ 'is-locked': isLocked, 'highlighted': showCardInfo }" 
+      :class="{ 'is-locked': isLocked, 'is-highlighted': showCardInfo }" 
       @keyup.enter="showCardInfo=true"
       @mouseenter="showCardInfo=true">
       <span class="ItemEntity-label">
