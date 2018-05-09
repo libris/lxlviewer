@@ -38,14 +38,6 @@ export default {
       showMarcPreview: false
     };
   },
-  events: {
-    'close-modals'() {
-      return true;
-    },
-    'toggle-editor-focus'() {
-      this.toggleEditorFocus();
-    },
-  },
   watch: {
     'inspector.status.editing'(state) {
       if (state) {
@@ -103,11 +95,22 @@ export default {
       this.showMarcPreview = false;
     },
     cancel() {
-      if (!this.inspector.status.isNew) {
-        this.$store.dispatch('setInspectorStatusValue', { 
-          property: 'editing', 
-          value: false 
-        });
+     if (!this.inspector.status.isNew) {
+        if (this.inspector.status.editing && this.inspector.status.unsavedChanges) {
+          const confString = StringUtil.getUiPhraseByLang('You have unsaved changes. Do you want to cancel?', this.settings.language);
+          const answer = window.confirm(confString);
+          if (answer) {
+            this.$store.dispatch('setInspectorStatusValue', { 
+              property: 'editing', 
+              value: false 
+            });
+          } 
+        } else {
+          this.$store.dispatch('setInspectorStatusValue', { 
+            property: 'editing', 
+            value: false 
+          });
+        }
       } else {
         this.$router.go(-1);
       }
@@ -460,6 +463,7 @@ export default {
 
     @media (min-width: 992px) {
       bottom: auto;
+      width: 65px;
     }
     @media (min-width: 1200px) {
       padding: 8px;

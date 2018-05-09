@@ -306,7 +306,9 @@ export default {
     },
     addItem(obj) {
       let currentValue = _.cloneDeep(_.get(this.inspector.data, this.path));
-      if (!_.isArray(currentValue)) {
+      if (currentValue === null) {
+        currentValue = [obj];
+      } else if (!_.isArray(currentValue)) {
         currentValue = [currentValue];
         currentValue.push(obj);
       } else {
@@ -496,7 +498,7 @@ export default {
           {{ "Searching" | translatePhrase }}...
           <br><i class="EntityAdder-searchStatusIcon fa fa-circle-o-notch fa-spin"></i>
         </div>
-        <div class="EntityAdder-searchStatussearch-status"
+        <div class="EntityAdder-searchStatus search-status"
           v-if="!loading && searchResult.length === 0 && keyword.length > 0 && searchMade">
           {{ "No results" | translatePhrase }}...
         </div>
