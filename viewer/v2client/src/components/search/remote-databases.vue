@@ -74,12 +74,42 @@ export default {
       return _.isPlainObject(o);
     },
     loadRemoteDatabases() {
+      const disabled = [
+        'GRE', 
+        'NLI', 
+        'NLL',
+        'OCLC',
+        'POR',
+        'POLEN',
+        'RERO',
+        'RUM', 
+        'SBN',
+        'SWB',
+        'AGRALIN',
+        'ARM',
+        'BNF',
+        'IRN', 
+        'KNYGOS',
+        'LIBISNET',
+        'LIBRIS',
+        'MELINDA', 
+        'NORBOK', 
+        'NOSP', 
+        'NYPL', 
+        'NY',
+        'WHOLIS', 
+        'YALE'
+      ];
+
       this.remoteDatabases.state = 'loading';
       this.remoteDatabases.debug = '';
       this.fetchDatabases().then((dbs) => {
         const newDbList = [];
         for (let i = 0; i < dbs.length; i++) {
-          const obj = { item: dbs[i], active: false };
+          const obj = { item: dbs[i], active: false, disabled: false };
+          if (disabled.includes(dbs[i].database)) {
+            obj.disabled = true;
+          }
           newDbList.push(obj);
         }
         this.remoteDatabases.list = newDbList;
@@ -157,7 +187,7 @@ export default {
       <ol class="RemoteDatabases-list" aria-labelledby="remoteDbListLabel"
         v-show="remoteDatabases.state == 'complete' && showList">
         <li class="RemoteDatabases-listItem" tabindex="0"
-          :class="{'is-active': db.active}" 
+          :class="{'is-active': db.active, 'is-disabled': db.disabled }" 
           v-for="(db, index) in remoteDatabases.list" 
           @click="toggleDatabase(index)"
           @keyup.enter="toggleDatabase(index)"
@@ -213,6 +243,11 @@ export default {
 
     &.is-active {
       background-color: desaturate(lighten(@brand-primary, 30%), 50%);
+    }
+
+    &.is-disabled {
+      opacity: 0.2;
+      pointer-events: none;
     }
 
     &:focus {
