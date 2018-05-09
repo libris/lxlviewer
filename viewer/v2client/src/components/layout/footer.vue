@@ -17,7 +17,6 @@ export default {
       let translationEls = document.querySelectorAll('.js-translateable');
 
       _.each(translationEls, function (translationEl) {
-        console.log(translationEl);
         const originalText = translationEl.getAttribute('data-translateable');
         const newText = StringUtil.getUiPhraseByLang(originalText, langCode);
         translationEl.innerHTML = newText;
@@ -26,9 +25,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'resources',
       'settings',
-      'status',
     ]),
   },
   components: {
