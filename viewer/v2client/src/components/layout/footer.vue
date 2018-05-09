@@ -1,4 +1,7 @@
 <script>
+import { mapGetters } from 'vuex';
+import * as StringUtil from '@/utils/string';
+
 export default {
   name: 'footer-component',
   props: {
@@ -9,19 +12,29 @@ export default {
     }
   },
   methods: {
+    translate() {
+      const langCode = this.settings.language;
+      let translationEls = document.querySelectorAll('.js-translateable');
+
+      _.each(translationEls, function (translationEl) {
+        const originalText = translationEl.getAttribute('data-translateable');
+        const newText = StringUtil.getUiPhraseByLang(originalText, langCode);
+        translationEl.innerHTML = newText;
+      });
+    }
   },
   computed: {
+    ...mapGetters([
+      'settings',
+    ]),
   },
   components: {
   },
   watch: {
-    keyword(value, oldval) {
-      console.log("keyword changed", value, oldval);
-    },
   },
-  ready() { // Ready method is deprecated in 2.0, switch to "mounted"
+  mounted() { 
     this.$nextTick(() => {
-      // Do stuff
+      this.translate();
     });
   },
 };
