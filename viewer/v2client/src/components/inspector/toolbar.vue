@@ -135,10 +135,9 @@ export default {
       const baseClasses = VocabUtil.getBaseClasses(
         this.inspector.data.mainEntity['@type'], 
         this.resources.vocab, 
-        this.settings.vocabPfx, 
         this.resources.context
       )
-        .map(id => id.replace(this.settings.vocabPfx, ''));
+        .map(id => StringUtil.getCompactUri(id, this.resources.context));
       return baseClasses.indexOf(type) > -1;
     },
     download(text) {
@@ -177,7 +176,6 @@ export default {
       return VocabUtil.getRecordType(
         this.inspector.data.mainEntity['@type'], 
         this.resources.vocab, 
-        this.settings, 
         this.resources.context);
     },
     canEditThisType() {
@@ -227,13 +225,12 @@ export default {
       const allowed = VocabUtil.getPropertiesFromArray(
         [StringUtil.convertToVocabKey(StringUtil.convertToBaseUri(formObj['@type'], this.resources.context), this.resources.context)],
         this.resources.vocabClasses,
-        this.settings.vocabPfx,
         this.resources.vocabProperties,
         this.resources.context
       );
       // Add the "added" property
       for (const element of allowed) {
-        const oId = element.item['@id'].replace(settings.vocabPfx, '');
+        const oId = StringUtil.getCompactUri(element.item['@id'], this.resources.context);
         element.added = (formObj.hasOwnProperty(oId) && formObj[oId] !== null);
       }
 

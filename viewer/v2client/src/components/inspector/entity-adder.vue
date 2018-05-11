@@ -106,14 +106,12 @@ export default {
         return VocabUtil.getTree(
           type, 
           this.resources.vocab, 
-          this.settings.vocabPfx, 
           this.resources.context
         );
       });
       return VocabUtil.flattenTree(
         tree, 
         this.resources.vocab, 
-        this.settings.vocabPfx, 
         this.resources.context, 
         this.settings.language
       );
@@ -139,7 +137,6 @@ export default {
         this.entityType, 
         this.fieldKey, 
         this.resources.vocab, 
-        this.settings.vocabPfx, 
         this.resources.context)
         .map(item => StringUtil.getCompactUri(item, this.resources.context));
       return fetchedRange;
@@ -149,7 +146,6 @@ export default {
         this.entityType, 
         this.fieldKey, 
         this.resources.vocab, 
-        this.settings.vocabPfx, 
         this.resources.context, 
         this.resources.vocabClasses
       ).map(item => StringUtil.getCompactUri(item, this.resources.context));;
@@ -159,7 +155,7 @@ export default {
       const types = this.getFullRange;
       const typeArray = [];
       for (const type of types) {
-        typeArray.push(type.replace(this.settings.vocabPfx, ''));
+        typeArray.push(StringUtil.getCompactUri(type, this.resources.context));
       }
       return typeArray;
     },

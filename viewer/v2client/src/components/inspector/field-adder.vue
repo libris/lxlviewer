@@ -53,7 +53,6 @@ export default {
         this.entityType, 
         this.settings.language, 
         this.resources.vocab, 
-        this.settings.vocabPfx, 
         this.resources.context
       );
       return `${title}: ${contextString}`;

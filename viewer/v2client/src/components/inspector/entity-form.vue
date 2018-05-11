@@ -41,8 +41,7 @@ export default {
       if (VocabUtil.isSubClassOf(
           this.inspector.data[this.editingObject]['@type'], 
           'Instance', 
-          this.resources.vocab, 
-          this.settings.vocabPfx, 
+          this.resources.vocab,  
           this.resources.context
         )
       ) {
@@ -51,7 +50,6 @@ export default {
           this.inspector.data[this.editingObject]['@type'], 
           'Work', 
           this.resources.vocab, 
-          this.settings.vocabPfx, 
           this.resources.context
           )
         ) {
@@ -59,7 +57,6 @@ export default {
       } else if (VocabUtil.isSubClassOf(
           this.inspector.data[this.editingObject]['@type'], 
           'Agent', this.resources.vocab, 
-          this.settings.vocabPfx, 
           this.resources.context
           )
         ) {
@@ -68,7 +65,6 @@ export default {
           this.inspector.data[this.editingObject]['@type'], 
           'Concept', 
           this.resources.vocab, 
-          this.settings.vocabPfx, 
           this.resources.context
         )
       ) {
@@ -97,7 +93,6 @@ export default {
       const allowed = VocabUtil.getPropertiesFromArray(
         formObj['@type'],
         this.resources.vocabClasses,
-        this.settings.vocabPfx,
         this.resources.vocabProperties,
         this.resources.context
       );
@@ -175,12 +170,11 @@ export default {
         const baseClasses = VocabUtil.getBaseClassesFromArray(
           formObj['@type'],
           this.resources.vocab,
-          this.settings.vocabPfx,
           this.resources.context
         );
         for (const baseClass of baseClasses) {
           propertyList = DisplayUtil.getProperties(
-            baseClass.replace(this.settings.vocabPfx, ''),
+            StringUtil.getCompactUri(baseClass, this.resources.context),
             'cards',
             this.resources.display,
             this.settings

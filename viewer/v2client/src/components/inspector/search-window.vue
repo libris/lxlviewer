@@ -89,18 +89,18 @@ export default {
       'status',
     ]),
     getRange() {
-      const fetchedRange = VocabUtil.getRange(this.entityType, this.fieldKey, this.resources.vocab, this.settings.vocabPfx, this.resources.context)
-        .map(item => item.replace(this.settings.vocabPfx, ''));
+      const fetchedRange = VocabUtil.getRange(this.entityType, this.fieldKey, this.resources.vocab, this.resources.context)
+        .map(item => StringUtil.getCompactUri(item, this.resources.context));
       return fetchedRange;
     },
     getFullRange() {
-      return VocabUtil.getFullRange(this.entityType, this.fieldKey, this.resources.vocab, this.settings.vocabPfx, this.resources.context, this.resources.vocabClasses);
+      return VocabUtil.getFullRange(this.entityType, this.fieldKey, this.resources.vocab, this.resources.context, this.resources.vocabClasses);
     },
     allSearchTypes() {
       const types = this.getFullRange;
       const typeArray = [];
       for (const type of types) {
-        typeArray.push(type.replace(this.settings.vocabPfx, ''));
+        typeArray.push(StringUtil.getCompactUri(type, this.resources.context));
       }
       return typeArray;
     },
@@ -112,9 +112,9 @@ export default {
     },
     getClassTree() {
       const tree = this.getRange.map(type => {
-        return VocabUtil.getTree(type, this.resources.vocab, this.settings.vocabPfx, this.resources.context);
+        return VocabUtil.getTree(type, this.resources.vocab, this.resources.context);
       });
-      return VocabUtil.flattenTree(tree, this.resources.vocab, this.settings.vocabPfx, this.resources.context, this.settings.language);
+      return VocabUtil.flattenTree(tree, this.resources.vocab, this.resources.context, this.settings.language);
     },
   },
   mounted() {

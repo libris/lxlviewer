@@ -19,7 +19,7 @@ Vue.use(Vuex);
 Vue.component('field', Field);
 
 Vue.filter('labelByLang', (label) => {
-  return StringUtil.getLabelByLang(label, store.getters.user.settings.language, store.getters.resources.vocab, store.getters.settings.vocabPfx, store.getters.resources.context);
+  return StringUtil.getLabelByLang(label, store.getters.user.settings.language, store.getters.resources.vocab, store.getters.resources.context);
 });
 
 Vue.filter('asAppPath', (path) => {

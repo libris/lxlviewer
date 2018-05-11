@@ -113,13 +113,12 @@ export default {
       const formObj = this.item;
       const allowed = VocabUtil.getPropertiesFromArray([StringUtil.convertToVocabKey(StringUtil.convertToBaseUri(formObj['@type'], this.resources.context), this.resources.context)],
         this.resources.vocabClasses,
-        this.settings.vocabPfx,
         this.resources.vocabProperties,
         this.resources.context
       );
       // Add the "added" property
       for (const element of allowed) {
-        const oId = element.item['@id'].replace(settings.vocabPfx, '');
+        const oId = StringUtil.getCompactUri(element.item['@id'], this.resources.context);
         element.added = (formObj.hasOwnProperty(oId));
       }
 
@@ -251,11 +250,10 @@ export default {
         const baseClasses = VocabUtil.getBaseClassesFromArray(
           item['@type'],
           this.resources.vocab,
-          this.settings.vocabPfx
         );
         for (const className of baseClasses) {
           inputKeys = DisplayUtil.getProperties(
-            className.replace(this.settings.vocabPfx, ''),
+            StringUtil.getCompactUri(className, this.resources.context),
             'cards',
             this.resources.display,
             this.settings

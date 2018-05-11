@@ -51,7 +51,7 @@ function getValueByLang(item, propertyId, displayDefs, langCode, context) {
   return translatedValue;
 }
 
-export function getProperties(typeInput, level, displayDefs, settings) {
+export function getProperties(typeInput, level, displayDefs) {
   if (!typeInput || typeof typeInput === 'undefined') {
     throw new Error('getProperties was called with an undefined type.');
   }
@@ -72,7 +72,7 @@ export function getProperties(typeInput, level, displayDefs, settings) {
     if (props.length > 0) {
       return props;
     } else if (level === 'cards') { // Try fallback to chip level
-      props = getProperties(type, 'chips', displayDefs, settings);
+      props = getProperties(type, 'chips', displayDefs);
       if (props.length > 0) {
         return props;
       }
@@ -108,10 +108,10 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
     return {};
   }
   if (properties.length === 0) { // If none were found, traverse up inheritance tree
-    const baseClasses = VocabUtil.getBaseClassesFromArray(trueItem['@type'], vocab, settings.vocabPfx, context);
+    const baseClasses = VocabUtil.getBaseClassesFromArray(trueItem['@type'], vocab, context);
     for (let i = 0; i < baseClasses.length; i++) {
       if (typeof baseClasses[i] !== 'undefined') {
-        properties = getProperties(baseClasses[i].replace(settings.vocabPfx, ''), level, displayDefs, settings);
+        properties = getProperties(StringUtil.getCompactUri(baseClasses[i], context), level, displayDefs, settings);
         if (properties.length > 0) {
           usedLensType = baseClasses[i];
           break;
@@ -142,7 +142,6 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
         let value = valueOnItem;
         if (_.isObject(value) && !_.isArray(value)) {
           value = getItemLabel(value, displayDefs, quoted, vocab, settings, context);
-          // value = getDisplayObject(value, 'chips', displayDefs, quoted, vocab, vocabPfx);
         } else if (_.isArray(value)) {
           const newArray = [];
           for (const arrayItem of value) {
@@ -161,7 +160,7 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
         }
         result[properties[i]] = value;
       } else if (properties.length < 3 && i === 0) {
-        const rangeOfMissingProp = VocabUtil.getRange(trueItem['@type'], properties[i], vocab, settings.vocabPfx, context);
+        const rangeOfMissingProp = VocabUtil.getRange(trueItem['@type'], properties[i], vocab, context);
         let propMissing = properties[i];
         if (rangeOfMissingProp.length > 0) {
           propMissing = rangeOfMissingProp[0];
@@ -170,7 +169,6 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
           propMissing, // Get the first one just to show something
           settings.language,
           vocab,
-          settings.vocabPfx,
           context
         );
         result[properties[i]] = `{${expectedClassName} saknas}`;
@@ -219,7 +217,7 @@ export function getItemSummary(item, displayDefs, quoted, vocab, settings, conte
 export function getItemLabel(item, displayDefs, quoted, vocab, settings, context) {
   const displayObject = getChip(item, displayDefs, quoted, vocab, settings, context);
   let rendered = StringUtil.extractStrings(displayObject).trim();
-  if (item['@type'] && VocabUtil.isSubClassOf(item['@type'], 'Identifier', vocab, settings.vocabPfx, context)) {
+  if (item['@type'] && VocabUtil.isSubClassOf(item['@type'], 'Identifier', vocab, context)) {
     rendered = `${item['@type']} ${rendered}`;
   }
   return rendered;
@@ -234,7 +232,7 @@ export function getCard(item, displayDefs, quoted, vocab, settings, context) {
 }
 
 export function getFormattedSelectOption(term, settings, vocab, context) {
-  const labelByLang = StringUtil.getLabelByLang(term.id, settings.language, vocab, settings.vocabPfx, context);
+  const labelByLang = StringUtil.getLabelByLang(term.id, settings.language, vocab, context);
   const abstractIndicator = ` {${StringUtil.getUiPhraseByLang('Abstract', settings.language)}}`;
   const prefix = Array((term.depth) + 1).join(' •');
   return `${prefix} ${labelByLang} ${term.abstract ? abstractIndicator : ''}`;
