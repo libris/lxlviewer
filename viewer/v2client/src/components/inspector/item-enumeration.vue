@@ -60,13 +60,12 @@ export default {
       const types = VocabUtil.getRange(
         this.key,
         this.vocab,
-        this.settings.vocabPfx,
         this.context
       );
       return types;
     },
     disabledLabel() {
-      return `${StringUtil.getUiPhraseByLang('Choose', this.settings.language)} ${StringUtil.labelByLang(this.key, this.settings.language, this.vocab, this.settings.vocabPfx, this.context)}`;
+      return `${StringUtil.getUiPhraseByLang('Choose', this.settings.language)} ${StringUtil.labelByLang(this.key, this.settings.language, this.vocab, this.context)}`;
     },
   },
   ready() {

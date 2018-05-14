@@ -308,7 +308,6 @@ export default {
       return VocabUtil.getRecordType(
         this.inspector.data.mainEntity['@type'], 
         this.resources.vocab, 
-        this.settings, 
         this.resources.context);
     },
   },

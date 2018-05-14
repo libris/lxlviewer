@@ -103,7 +103,7 @@ export default {
       if (this.key === '_uid') {
         return null;
       }
-      return VocabUtil.getTermObject(this.fieldKey, this.resources.vocab, this.settings.vocabPfx, this.resources.context);
+      return VocabUtil.getTermObject(this.fieldKey, this.resources.vocab, this.resources.context);
     },
     propertyComment() {
       if (this.keyAsVocabProperty && this.keyAsVocabProperty.commentByLang) {
@@ -145,7 +145,6 @@ export default {
       return VocabUtil.getPropertyTypes(
         this.fieldKey,
         this.resources.vocab,
-        this.settings.vocabPfx,
         this.resources.context
       );
     },

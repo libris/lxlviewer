@@ -121,13 +121,12 @@ export default {
       const allowed = VocabUtil.getPropertiesFromArray(
         [StringUtil.convertToVocabKey(StringUtil.convertToBaseUri(formObj['@type'], this.resources.context), this.resources.context)],
         this.resources.vocabClasses,
-        this.settings.vocabPfx,
         this.resources.vocabProperties,
         this.resources.context
       );
       // Add the "added" property
       for (const element of allowed) {
-        const oId = element.item['@id'].replace(settings.vocabPfx, '');
+        const oId = StringUtil.getCompactUri(element.item['@id'], this.resources.context);
         element.added = (formObj.hasOwnProperty(oId) && formObj[oId] !== null);
       }
 

@@ -45,7 +45,6 @@ export default {
         this.entityType,
         this.fieldKey,
         this.resources.vocab,
-        this.settings.vocabPfx,
         this.resources.context,
         this.resources.vocabClasses,
       );
@@ -93,7 +92,6 @@ export default {
         value, 
         this.settings.language, 
         this.resources.vocab, 
-        this.settings.vocabPfx, 
         this.resources.context)
       );
     },

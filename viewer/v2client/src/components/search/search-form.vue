@@ -167,8 +167,8 @@ export default {
       dataSetFilters() {
         return this.settings.dataSetFilters.libris.map(term => {
             return {
-            '@id': term.replace(this.settings.vocabPfx, ''),
-            'label': StringUtil.getLabelByLang(term, this.settings.language, this.resources.vocab, this.settings.vocabPfx, this.resources.context)
+            '@id': StringUtil.getCompactUri(term, this.resources.context),
+            'label': StringUtil.getLabelByLang(term, this.settings.language, this.resources.vocab, this.resources.context)
             };
         });
       },

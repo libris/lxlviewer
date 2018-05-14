@@ -124,7 +124,7 @@ export function getLabelFromObject(object, language) {
   return label;
 }
 
-export function getLabelByLang(string, lang, vocab, vocabPfx, context) {
+export function getLabelByLang(string, lang, vocab, context) {
   if (!string) {
     return '{FAILED LABEL}';
   }
@@ -134,7 +134,7 @@ export function getLabelByLang(string, lang, vocab, vocabPfx, context) {
       JSON.stringify(string)
     );
   }
-  let item = VocabUtil.getTermObject(string, vocab, vocabPfx, context);
+  let item = VocabUtil.getTermObject(string, vocab, context);
   let note = '';
   let labelByLang = '';
   if (typeof item !== 'undefined') {
@@ -187,7 +187,7 @@ export function getFormattedEntries(list, vocab, settings, context) {
   for (const entry of list) {
     if (translateable(entry.property)) {
       formatted = formatted.concat(entry.value.map((obj) => {
-        return getLabelByLang(obj, settings.language, vocab, settings.vocabPfx, context);
+        return getLabelByLang(obj, settings.language, vocab, context);
       }));
     } else {
       formatted = formatted.concat(entry.value);
