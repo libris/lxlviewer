@@ -111,10 +111,6 @@ export default {
   box-shadow: @shadow-navbar;
   height: auto;
 
-  @media screen and (max-width: @screen-sm-min) {
-    padding: 0 20px;
-  }
-
   &-brand {
     float: left;
     margin: 5px 0;
@@ -130,6 +126,7 @@ export default {
   &-brandLink {
     display: inline-block;
     width: 30px;
+    
     @media (min-width: 768px) {
       width: 50px;
     }
@@ -139,12 +136,12 @@ export default {
     color: @text-brand;
     cursor: pointer;
     float: right;
+    font-size: 18px;
+    font-size: 1.8rem;
     line-height: 20px;
     padding: 5px;
 
     @media (min-width: 768px) {
-      font-size: 18px;
-      font-size: 1.8rem;
       padding: 15px 5px;
       height: 50px;
     }
@@ -180,7 +177,7 @@ export default {
   width: 100%;
   list-style: none;
   padding: 0;
-  margin: 5px 0 0;
+  margin: 5px 0 5px;
 
   @media (min-width: 992px) {
     float: right;
@@ -222,10 +219,9 @@ export default {
   &-link {
     color: #333;
     cursor: pointer;
-    font-weight: 700;
     font-size: 16px;
     font-size: 1.6rem;
-    padding: 10px;
+    padding: 5px;
     display: block;
 
     &:hover, 
@@ -244,6 +240,7 @@ export default {
 
   @media screen and (max-width: @screen-sm-min) {
     float: left;
+    padding: 5px 0px;
   }
 }
 

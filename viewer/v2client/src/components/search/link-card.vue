@@ -56,16 +56,19 @@ export default {
 
 <style lang="less">
 .LinkCard {
-  flex-basis: 24%; // To parent
+  flex-basis: 100%; // To parent
   display: flex;
-  min-width: 200px;
   flex-direction: column;
   align-items: center;
   padding: 0;
 
+  @media (min-width: 768px) {
+    flex-basis: 49%; 
+  }
+
   @media (min-width: 992px) {
-      flex-basis: 24%; 
-    }
+    flex-basis: 24%; 
+  }
 
   &-img {
     width: 100%;
@@ -73,8 +76,12 @@ export default {
   }
 
   &-videoWrap {
-    flex-basis: 45%;
+    flex-basis: 100%;
     padding-bottom: 1px;
+
+    @media (min-width: 768px) {
+      flex-basis: 45%;
+    }
   }
 
   &-video {
@@ -105,12 +112,18 @@ export default {
 
     .LinkCard--large & {
       padding: 1em;
-      flex-basis: 45%;
+      @media (min-width: 768px) {
+        flex-basis: 45%;
+      }
     }
   }
 
   &-link {
     padding: 10px 0;
+    font-size: 16px;
+    font-size: 1.6rem;
+    line-height: 1.2;
+    text-align: center;
   }
 
   &-text {
@@ -119,13 +132,24 @@ export default {
     width: 100%;
   }
 
+  &-descr {
+    font-size: 16px;
+    font-size: 1.6rem;
+
+    @media (min-width: 768px) {
+      display: flex;
+      font-size: 18px;
+      font-size: 1.8rem;
+    }
+  }
+
   &-title {
     display: block;
     font-size: 20px;
     font-size: 2rem;
     font-weight: 700;
     line-height: 1.2;
-    margin: 0 0 10px 0;
+    margin: 10px 0 10px 0;
   }
 
   &.no-link {
@@ -133,10 +157,14 @@ export default {
   }
 
   &--large {
-    display: flex;
+    display: block;
     justify-content: space-between;
     flex-direction: row;
     align-items: inherit;
+
+    @media (min-width: 768px) {
+      display: flex;
+    }
   }
 }
 </style>

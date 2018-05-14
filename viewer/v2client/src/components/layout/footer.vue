@@ -139,29 +139,54 @@ export default {
   }
 
   &-serviceName {
-    display: flex;
     padding: 0 1em;
     flex: 20% 1 1;
+    font-size: 14px;
+    font-size: 1.4rem;
+    line-height: 1.2;
     align-items: center;
     flex-direction: column;
     justify-content: center;
-    font-weight: bold;
+    font-weight: 700;
+    display: block;
+
+   @media (min-width: 768px) {
+      display: flex;
+      text-align: center;
+      font-size: 16px;
+      font-size: 1.6rem;
+    }
   }
 
   &-serviceLogo {
     height: 75px;
+    margin: 0 30px 10px 0;
     width: auto;
+
+    @media (min-width: 768px) {
+      display: inline-block;
+      margin: 0 0 10px;
+    }
+
+    @media (min-width: 998px) {
+      margin: 0 0 10px;
+    }
   }
 
   &-navGroup {
-    display: flex;
+    display: block;
     list-style-type: none;
     flex: 80% 2 2;
+
+    @media (min-width: 998px) {
+      display: flex;
+    }
   }
 
   &-nav {
     flex: 25% 2 2;
     flex-direction: column;
+    margin: 0 0 20px 0;
   }
 
   &-navList {
@@ -173,7 +198,6 @@ export default {
   }
 
   &-navItem {
-
     .Footer-navList--socialMedia & {
        display: inline;
        margin: 0 5px;
