@@ -567,32 +567,6 @@ export function getPrefixFromBaseUri(baseUri, context) {
   return prefix;
 }
 
-export function getEnumerations(entityType, property, vocab, context) {
-  const enumerationKeys = getValuesFrom(entityType, property, vocab, context)
-  .map(enumerationKey => `@type=${enumerationKey}`);
-  if (enumerationKeys.length > 0) {
-    const enumerationUrl = enumerationKeys.join('&');
-    return new Promise((resolve, reject) => {
-      httpUtil.get({ url: `/find?${enumerationUrl}`, accept: 'application/ld+json' }).then((response) => {
-        resolve(response.items);
-      }, (error) => {
-        reject('Error searching...', error);
-      });
-    });
-  }
-  const vocabPfx = context[0]['@vocab'];
-  const enumerationTypesUrl = getAllEnumerationTypesFor(`${vocabPfx}${property}`, vocab)
-    .map(enumerationType => `@type=${enumerationType}`)
-    .join('&');
-  return new Promise((resolve, reject) => {
-    httpUtil.get({ url: `/find?@type=${enumerationTypesUrl}`, accept: 'application/ld+json' }).then((response) => {
-      resolve(response.items);
-    }, (error) => {
-      reject('Error searching...', error);
-    });
-  });
-}
-
 export function isAbstract(itemId, vocab, context) {
   const vocabKey = StringUtil.convertToVocabKey(StringUtil.convertToBaseUri(itemId, context), context);
   const termObject = getTermObject(vocabKey, vocab, context);
