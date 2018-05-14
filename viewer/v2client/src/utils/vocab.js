@@ -81,7 +81,7 @@ export function getBaseClasses(classId, vocab, context) {
   if (typeof termObj === 'undefined') {
     return _.uniq(classList);
   }
-  classList.push(termObj['@id']);
+  classList.push(StringUtil.getCompactUri(termObj['@id'], context));
   if (termObj.baseClassChain) { // Alredy calculated
     classList = classList.concat(termObj.baseClassChain);
     return _.uniq(classList);
@@ -93,7 +93,7 @@ export function getBaseClasses(classId, vocab, context) {
           const baseClass = getTermObject(obj['@id'], vocab, context);
           if (baseClass) {
             classList = classList.concat(getBaseClasses(baseClass['@id'], vocab, context));
-            classList.push(baseClass['@id']);
+            classList.push(StringUtil.getCompactUri(baseClass['@id'], context));
           }
         }
       }
@@ -115,7 +115,7 @@ export function getBaseClassesFromArray(typeArray, vocab, context) {
   for (let t = 0; t < types.length; t++) {
     const c = getTermObject(types[t], vocab, context);
     if (typeof c !== 'undefined') {
-      classes.push(c['@id']);
+      classes.push(StringUtil.getCompactUri(c['@id'], context));
       classes = classes.concat(getBaseClasses(c['@id'], vocab, context));
     }
   }
@@ -138,8 +138,7 @@ export function isSubClassOf(classId, baseClassId, vocab, context) {
   } else {
     baseClasses = getBaseClasses(classId, vocab, context);
   }
-  const prefixBaseClassId = StringUtil.convertToVocabKey(StringUtil.convertToBaseUri(baseClassId, context), context);
-  if (baseClasses.indexOf(prefixBaseClassId) > -1) {
+  if (baseClasses.indexOf(baseClassId) > -1) {
     return true;
   }
   return false;
@@ -238,40 +237,82 @@ export function getAllEnumerationTypesFor(onProp, vocab) {
   return enumerationTypes;
 }
 
-export function getValuesFrom(entityType, property, vocab, context) {
+export function getAllValuesFrom(entityType, property, vocab, context) {
   if (typeof entityType === 'undefined') {
-    throw new Error('getValuesFrom was called without an entityType');
+    throw new Error('getAllValuesFrom was called without an entityType');
   }
   if (_.isPlainObject(property)) {
-    throw new Error('getValuesFrom was called with an object as property id (should be a string)');
+    throw new Error('getAllValuesFrom was called with an object as property id (should be a string)');
   }
   let result = [];
-  const baseClasses = getBaseClasses(StringUtil.getCompactUri(entityType, context), vocab, context);
+  const baseClasses = getBaseClasses(entityType, vocab, context);
   baseClasses.forEach(baseClass => {
-    const vocabEntry = vocab.get(baseClass);
+    const vocabEntry = getTermObject(baseClass, vocab, context);
     if (vocabEntry.hasOwnProperty('subClassOf')) {
       vocabEntry.subClassOf.forEach(subClassObject => {
         let embellishedObj = _.cloneDeep(subClassObject);
-        if (Object.keys(embellishedObj).length === 1 &&
-        embellishedObj.hasOwnProperty('@id') &&
-        embellishedObj['@id'].indexOf('_:') > -1) {
+        if (
+          Object.keys(embellishedObj).length === 1 &&
+          embellishedObj.hasOwnProperty('@id') &&
+          embellishedObj['@id'].indexOf('_:') > -1
+        ) {
           embellishedObj = getTermObject(embellishedObj['@id'], vocab, context);
         }
-        if (embellishedObj.hasOwnProperty('@type') &&
-        embellishedObj['@type'] === 'Restriction' &&
-        embellishedObj.onProperty['@id'] === StringUtil.getCompactUri(property, context)) {
-          let key = '';
-          if (embellishedObj.hasOwnProperty('someValuesFrom')) {
-            key = 'someValuesFrom';
-          } else if (embellishedObj.hasOwnProperty('allValuesFrom')) {
-            key = 'allValuesFrom';
+        if (
+          embellishedObj.hasOwnProperty('@type') &&
+          embellishedObj['@type'] === 'Restriction' &&
+          StringUtil.getCompactUri(embellishedObj.onProperty['@id'], context) === StringUtil.getCompactUri(property, context)
+        ) {
+          if (embellishedObj.hasOwnProperty('allValuesFrom')) {
+            if (_.isArray(embellishedObj.allValuesFrom)) {
+              _.each(embellishedObj.allValuesFrom, (list) => {
+                result.push(list['@id']);
+              });
+            } else {
+              result = [embellishedObj.allValuesFrom['@id']];
+            }
           }
-          if (_.isArray(embellishedObj[key])) {
-            _.each(embellishedObj[key], (list) => {
-              result.push(list['@id']);
-            });
-          } else {
-            result = [embellishedObj[key]['@id']];
+        }
+      });
+    }
+  });
+  return result.map(item => StringUtil.getCompactUri(item, context));
+}
+
+export function getSomeValuesFrom(entityType, property, vocab, context) {
+  if (typeof entityType === 'undefined') {
+    throw new Error('getSomeValuesFrom was called without an entityType');
+  }
+  if (_.isPlainObject(property)) {
+    throw new Error('getSomeValuesFrom was called with an object as property id (should be a string)');
+  }
+  let result = [];
+  const baseClasses = getBaseClasses(entityType, vocab, context);
+  baseClasses.forEach(baseClass => {
+    const vocabEntry = getTermObject(baseClass, vocab, context);
+    if (vocabEntry.hasOwnProperty('subClassOf')) {
+      vocabEntry.subClassOf.forEach(subClassObject => {
+        let embellishedObj = _.cloneDeep(subClassObject);
+        if (
+          Object.keys(embellishedObj).length === 1 &&
+          embellishedObj.hasOwnProperty('@id') &&
+          embellishedObj['@id'].indexOf('_:') > -1
+        ) {
+          embellishedObj = getTermObject(embellishedObj['@id'], vocab, context);
+        }
+        if (
+          embellishedObj.hasOwnProperty('@type') &&
+          embellishedObj['@type'] === 'Restriction' &&
+          StringUtil.getCompactUri(embellishedObj.onProperty['@id'], context) === StringUtil.getCompactUri(property, context)
+        ) {
+          if (embellishedObj.hasOwnProperty('someValuesFrom')) {
+            if (_.isArray(embellishedObj.someValuesFrom)) {
+              _.each(embellishedObj.someValuesFrom, (list) => {
+                result.push(list['@id']);
+              });
+            } else {
+              result = [embellishedObj.someValuesFrom['@id']];
+            }
           }
         }
       });
@@ -281,11 +322,11 @@ export function getValuesFrom(entityType, property, vocab, context) {
 }
 
 export function processRestrictions(range, entityType, property, vocab, context) {
-  const someAndAllValuesFrom = getValuesFrom(entityType, property, vocab, context);
-  if (someAndAllValuesFrom.length > 0) {
-    return someAndAllValuesFrom;
+  const allValuesFrom = getAllValuesFrom(entityType, property, vocab, context);
+  if (allValuesFrom.length > 0) {
+    return allValuesFrom;
   }
-  return range;
+  return range.concat(getSomeValuesFrom(entityType, property, vocab, context));
 }
 
 export function getUnrestrictedRange(propertyId, vocab, context) {
@@ -478,7 +519,7 @@ export function isEmbedded(classId, vocab, settings, context) {
   const typeChain = getBaseClasses(classId, vocab, context);
   if (typeChain.length > 0) {
     for (const item of embeddedTypes) {
-      if (typeChain.indexOf(`${vocabPfx}${item}`) > -1) {
+      if (typeChain.indexOf(item) > -1) {
         return true;
       }
     }
