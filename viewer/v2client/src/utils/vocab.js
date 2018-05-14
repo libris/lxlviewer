@@ -22,16 +22,6 @@ export function getContext(apiPath) {
   });
 }
 
-export function getForcedListTerms(apiPath) {
-  return new Promise((resolve, reject) => {
-    httpUtil.getResourceFromCache(`${apiPath}/sys/forcedsetterms.json`).then((result) => {
-      resolve(result);
-    }, (error) => {
-      reject(error);
-    });
-  });
-}
-
 export function getTermObject(term, vocab, context) {
   // Returns a class object
   if (!term || typeof term === 'undefined') {
