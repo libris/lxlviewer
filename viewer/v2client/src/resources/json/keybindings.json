@@ -34,6 +34,7 @@
   },
   "entity-search-list": {
     "down": "select-next",
-    "up": "select-prev"
+    "up": "select-prev",
+    "enter": "add-entity"
   }
 }

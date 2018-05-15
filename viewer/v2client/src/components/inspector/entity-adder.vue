@@ -70,7 +70,18 @@ export default {
       if (val.name === 'modal-control') {
         switch(val.value) {
           case 'close-entity-adder':
-          this.closeSearch();
+            this.closeSearch();
+            return true;
+            break;
+          default:
+            return;
+        }
+      }
+      if (val.name === 'form-control') {
+        switch(val.value) {
+          case 'close-modals':
+            this.closeSearch();
+            return true;
             break;
           default:
             return;
@@ -403,7 +414,7 @@ export default {
       <i class="EntityAdder-addIcon fa fa-fw fa-plus plus-icon" aria-hidden="true">
         <tooltip-component 
           :show-tooltip="showToolTip" 
-          :tooltip-text="'Add'" 
+          tooltip-text="Add" 
           translation="translatePhrase"></tooltip-component>
       </i>
       <span class="EntityAdder-addLabel label-text">{{ addLabel | labelByLang | capitalize }}</span>
@@ -515,7 +526,6 @@ export default {
 <style lang="less">
 
 .EntityAdder {
-
   &.is-innerAdder {
     cursor: pointer;
   }

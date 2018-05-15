@@ -263,7 +263,7 @@ export default {
     },
     'inspector.event'(val, oldVal) {
       if (val.name === 'form-control') {
-        switch(val.value) { 
+        switch (val.value) { 
           case 'select-next':
             this.selectNext();
             break;
