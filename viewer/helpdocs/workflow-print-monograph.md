@@ -28,11 +28,12 @@ samt exempel hämtade från andra poster.
   ```Exempel: BOKR```
 
 * Uppgraderad eller importerad av/Organisation/Namn (descriptionUpgrader/Organization/name = 040 ‡d)  
-  Skriv in sigel som har uppgraderat (ändrat nivå) eller importerat posten. För att söka fram sigel, se [Biblioteksdatabasen](https://biblioteksdatabasen.libris.kb.se/ "Biblioteksdatabasen")  
+  Länka till entitet.  
   ```Exempel: S```
 
 * Bibliografi/Bibliotek/Sigel (bibliography/Library/sigel = 042 ‡9)  
-  Ange bibliografikod genom att skriva in sigel. För att söka fram sigel, se [Biblioteksdatabasen](https://biblioteksdatabasen.libris.kb.se/ "Biblioteksdatabasen")
+  Länka till entitet.  
+  ```Exempel: NB```
 
 * Identifikator/Systemnummer/Värde (identifiedBy/SystemNumber/value = 035 ‡a)  
   Om ett systemnummer finns i förhandspost, till exempel Bokinfos systemnummer, låt det vara kvar oförändrat.  
@@ -91,7 +92,7 @@ samt exempel hämtade från andra poster.
   Skriv in uppgiften.  
   ```Exempel: inbunden```
   
- * Identifikator/Ogiltigt värde (identifiedBy/marc:hiddenValue = 020 ‡z)  
+* Identifikator/Ogiltigt värde (identifiedBy/marc:hiddenValue = 020 ‡z)  
   Skriv in uppgiften.  
   ```Exempel: 97891881072```
 
@@ -177,10 +178,10 @@ samt exempel hämtade från andra poster.
 * Medverkan och funktion/Primär medverkan/Agent/Person (contribution/PrimaryContribution/agent/Person = 100 1/- ‡a)  
   Länka till entitet.
   I undantagsfall, skapa lokal entitet och skriv in uppgiften. 
-* Medverkan och funktion/Primär medverkan/Agent/Person/Familjenamn (contribution/PrimaryContribution/agent/Person/familyName)
+* Medverkan och funktion/Primär medverkan/Agent/Person/Familjenamn (contribution/PrimaryContribution/agent/Person/familyName)  
   ```Exempel: Marcus```
 
-* Medverkan och funktion/Primär medverkan/Agent/Person/Förnamn  (contribution/PrimaryContribution/agent/Person/givenName)
+* Medverkan och funktion/Primär medverkan/Agent/Person/Förnamn  (contribution/PrimaryContribution/agent/Person/givenName)  
   ```Exempel: Tom```
 
 * Medverkan och funktion/Primär medverkan/Agent/Funktion (contribution/PrimaryContribution/agent/role = 100 ‡4)  
