@@ -42,7 +42,7 @@ export default {
   methods: {
     initializeWarnBeforeUnload() {
       window.addEventListener("beforeunload", (e) => {
-        if (!this.inspector.status.editing) {
+        if (!this.inspector.status.editing || !this.inspector.status.unsavedChanges) {
           return undefined;
         }
         const confirmationMessage = StringUtil.getUiPhraseByLang('You have unsaved changes. Do you want to leave the page?', this.settings.language);
@@ -125,6 +125,7 @@ export default {
     loadDocument() {
       this.$store.dispatch('setInspectorStatusValue', { property: 'isNew', value: false });
       this.$store.dispatch('setInspectorStatusValue', { property: 'editing', value: false });
+      this.$store.dispatch('setInspectorStatusValue', { property: 'unsavedChanges', value: false });
       this.fetchDocument();
     },
     loadNewDocument() {
@@ -134,6 +135,7 @@ export default {
         this.$router.go(-1);
         console.warn('New document called without input data, routing user back.')
       } else {
+        this.$store.dispatch('setInspectorStatusValue', { property: 'unsavedChanges', value: false });
         this.$store.dispatch('setInspectorData', RecordUtil.splitJson(insertData));
         this.$store.dispatch('setInspectorStatusValue', { 
           property: 'editing', 
@@ -201,8 +203,6 @@ export default {
     },   
     saveItem(done=false) {
       this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: true });
-      this.$store.dispatch('setInspectorStatusValue', { property: 'isNew', value: false });
-      this.$store.dispatch('setInspectorStatusValue', { property: 'unsavedChanges', value: false });
 
       const RecordId = this.inspector.data.record['@id'];
       const obj = this.getPackagedItem();
@@ -240,8 +240,9 @@ export default {
             this.$store.dispatch('setInspectorStatusValue', { property: 'editing', value: false });
           }
         }
-        this.$store.dispatch('setInspectorStatusValue', { property: 'dirty', value: false });
         this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
+        this.$store.dispatch('setInspectorStatusValue', { property: 'unsavedChanges', value: false });
+        this.$store.dispatch('setInspectorStatusValue', { property: 'isNew', value: false });
       }, (error) => {
         this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
         this.$store.dispatch('pushNotification', { color: 'red', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error}` });
