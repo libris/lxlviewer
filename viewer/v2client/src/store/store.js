@@ -36,7 +36,6 @@ const store = new Vuex.Store({
       insertData: {},
       title: '',
       status: {
-        dirty: false,
         saving: false,
         opening: false,
         lastAdded: '',

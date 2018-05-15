@@ -240,7 +240,6 @@ export default {
             this.$store.dispatch('setInspectorStatusValue', { property: 'editing', value: false });
           }
         }
-        this.$store.dispatch('setInspectorStatusValue', { property: 'dirty', value: false });
         this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
       }, (error) => {
         this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
