@@ -332,6 +332,7 @@ const store = new Vuex.Store({
       commit('updateInspectorData', payload);
     },
     pushKeyAction({ commit }, keyAction) {
+      console.log(keyAction);
       commit('pushKeyAction', keyAction);
     },
     pushInspectorEvent({ commit }, payload) {

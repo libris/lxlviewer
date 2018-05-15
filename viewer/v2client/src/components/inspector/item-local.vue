@@ -310,26 +310,6 @@ export default {
     this.$on('collapse-item', this.collapse);
     this.$on('expand-item', this.expand);
   },
-  events: {
-    'focus-new-item'(index) {
-      if (this.index === index) {
-        this.expand();
-        this.isNewlyAdded = true;
-
-        // Scroll to item
-        const windowHeight = window.innerHeight || document.documentElement.clientHeight || document.getElementsByTagName('body')[0].clientHeight;
-        const scrollPos = this.$el.offsetTop - (windowHeight * 0.2);
-        LayoutUtil.scrollTo(scrollPos, 1000, 'easeInOutQuad', () => {
-          setTimeout(() => {
-            this.isNewlyAdded = false;
-          }, 3000);
-        });
-      }
-    },
-    'set-copy-title'(bool) {
-      this.copyTitle = bool;
-    },
-  },
   mounted() {
     this.$nextTick(() => {
     });
@@ -348,7 +328,7 @@ export default {
 
 <template>
   <div class="ItemLocal js-itemLocal"
-    :class="{'highlight': isNewlyAdded, 'is-expanded': expanded}"
+    :class="{'is-highlighted': isNewlyAdded, 'is-expanded': expanded}"
     tabindex="0">
    
    <strong class="ItemLocal-heading">

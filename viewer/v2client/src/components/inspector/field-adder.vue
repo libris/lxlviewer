@@ -27,6 +27,7 @@ export default {
     editingObject: '',
     entityType: '',
     inToolbar: false,
+    forceActive: false
   },
   data() {
     return {
@@ -149,7 +150,7 @@ export default {
         if (!this.filteredResults[this.selectedIndex].added) {
           this.addField(this.filteredResults[this.selectedIndex], false);
         } else {
-          console.warn("already added, should be handled");
+          console.warn("Already added, should be handled");
         }
       }
     },
@@ -158,7 +159,7 @@ export default {
         if (!this.filteredResults[this.selectedIndex].added) {
           this.addField(this.filteredResults[this.selectedIndex], true);
         } else {
-          console.warn("already added, should be handled");
+          console.warn("Already added, should be handled");
         }
       }
     },
@@ -261,6 +262,13 @@ export default {
       this.selectedIndex = -1;
     },
   },
+  watch: {
+    forceActive: function(newVal, oldVal) {
+      if (newVal != oldVal) {
+        this.active = true;
+      }
+    } 
+  },
   mounted() {
     this.$nextTick(() => { // TODO: Fix proper scroll tracking. This is just an ugly solution using document.onscroll here and window.scroll in editorcontrols.vue
     });
@@ -296,7 +304,7 @@ export default {
       @mouseleave="showToolTip = false">
       <i class="FieldAdder-icon fa fa-plus plus-icon" aria-hidden="true">
         <tooltip-component 
-          :tooltip-text="modalTitle"
+          tooltip-text="Add field"
           :show-tooltip="showToolTip" 
           translation="translatePhrase"></tooltip-component>
       </i>
