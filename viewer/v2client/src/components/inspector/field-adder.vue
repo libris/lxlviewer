@@ -103,17 +103,12 @@ export default {
       return filtered;
     },
   },
-  events: {
-    'open-add-field-window'() {
-      if (!this.inner) {
-        this.show();
-      }
-    },
-    'select-next'() {
+  methods: {
+    selectNext() {
       if (this.active) {
         if (this.selectedIndex < this.filteredResults.length - 1) {
           if (this.selectedIndex >= 0) {
-            const fieldList = document.getElementsByClassName('field-list')[0];
+            const fieldList = document.getElementsByClassName('js-fieldlist')[0];
             const threshold =
               fieldList.getBoundingClientRect().top +
               fieldList.getBoundingClientRect().height;
@@ -129,11 +124,11 @@ export default {
         }
       }
     },
-    'select-prev'() {
+    selectPrev() {
       if (this.active) {
         if (this.selectedIndex > 0) {
           this.selectedIndex -= 1;
-          const fieldList = document.getElementsByClassName('field-list')[0];
+          const fieldList = document.getElementsByClassName('js-fieldlist')[0];
           const threshold = fieldList.getBoundingClientRect().top;
           const selectedElement = document.getElementsByClassName('selected')[0];
           const selectedPosition =
@@ -145,7 +140,7 @@ export default {
         }
       }
     },
-    'add-field-multiple'() {
+    addFieldMultiple() {
       if (this.active) {
         if (!this.filteredResults[this.selectedIndex].added) {
           this.addField(this.filteredResults[this.selectedIndex], false);
@@ -154,7 +149,7 @@ export default {
         }
       }
     },
-    'add-field-single'() {
+    addFieldSingle() {
       if (this.active) {
         if (!this.filteredResults[this.selectedIndex].added) {
           this.addField(this.filteredResults[this.selectedIndex], true);
@@ -163,12 +158,10 @@ export default {
         }
       }
     },
-    'close-modals'() {
+    closeModals() {
       this.hide();
       return true;
     },
-  },
-  methods: {
     getPropClassInfo(termObj) {
       if (_.isArray(termObj['@type'])) {
         if (termObj['@type'].indexOf('DatatypeProperty') > -1 && termObj['@type'].indexOf('DatatypeProperty') > -1) {
@@ -265,9 +258,32 @@ export default {
   watch: {
     forceActive: function(newVal, oldVal) {
       if (newVal != oldVal) {
-        this.active = true;
+        this.show();
       }
-    } 
+    },
+    'inspector.event'(val, oldVal) {
+      if (val.name === 'form-control') {
+        switch(val.value) { 
+          case 'select-next':
+            this.selectNext();
+            break;
+          case 'select-prev':
+            this.selectPrev();
+            break;
+          case 'close-modals':
+            this.hide();
+            break;
+          case 'add-field-single':
+            this.addFieldSingle();
+            break;
+          case 'add-field-multiple':
+            this.addFieldMultiple();
+            break;
+          default:
+            return;
+        }
+      }
+    }, 
   },
   mounted() {
     this.$nextTick(() => { // TODO: Fix proper scroll tracking. This is just an ugly solution using document.onscroll here and window.scroll in editorcontrols.vue
@@ -342,7 +358,7 @@ export default {
           </span>
         </div>
         <div class="FieldAdderModal-fieldList">
-          <ul id="fields-window">
+          <ul id="fields-window" class="js-fieldlist">
             <li tabindex="0"
               @focus="selectedIndex = index"
               @mouseover="selectedIndex = index" 
