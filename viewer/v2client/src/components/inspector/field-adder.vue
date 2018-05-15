@@ -200,13 +200,18 @@ export default {
     getEmptyFieldValue(key, prop) {
       let value = [];
       const contextValue = VocabUtil.getContextValue(key, '@type', this.resources.context);
-      if (prop['@type'] === 'DatatypeProperty' || contextValue === '@vocab') {
+      if (prop['@type'] === 'DatatypeProperty' && prop.range.some(e => e['@id'] === 'http://www.w3.org/2001/XMLSchema#boolean')) {
+        // Boolean
+        value = true;
+      } else if (prop['@type'] === 'DatatypeProperty' || contextValue === '@vocab') {
+        // String value (first as array and as single item)
         if (VocabUtil.propIsRepeatable(key, this.resources.context)) {
           value = [''];
         } else {
           value = '';
         }
       } else {
+        // Object value (first as array and as single item)
         if (VocabUtil.propIsRepeatable(key, this.resources.context)) {
           value = [];
         } else {
