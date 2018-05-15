@@ -60,14 +60,18 @@ export default {
           case 'open-field-adder':
             this.openFieldAdder();
             break;
-          case 'navigate-change-history':
+          case 'undo':
             this.undo();
+            break;
           case 'cancel-edit':
             this.cancel();
+            break;
           case 'save-item':
             this.postControl('save-record');
+            break;
           case 'save-item-done':
             this.postControl('save-record-done');
+            break;
           default:
             return;
         }

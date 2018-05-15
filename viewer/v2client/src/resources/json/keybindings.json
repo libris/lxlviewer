@@ -4,7 +4,7 @@
     "mod+d": "save-item-done",
     "mod+e": "edit-item",
     "alt+q": "cancel-edit",
-    "alt+z": "navigate-change-history",
+    "alt+z": "undo",
     "alt+plus": "expand-item",
     "alt+minus": "collapse-item",
     "alt+f": "open-field-adder",
