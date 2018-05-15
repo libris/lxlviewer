@@ -568,13 +568,13 @@ export default {
       border-top: 1px solid #666666;
       top: 16px;
       width: 15px;
-      height: 0;
+      height: 2px;
     }
 
     &:after {
       border-left: 1px solid #666666;
       height: 100%;
-      width: 0px;
+      width: 2px;
       top: 0px;
     }
 

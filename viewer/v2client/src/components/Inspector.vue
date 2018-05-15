@@ -284,11 +284,6 @@ export default {
             return;
         }
       }
-    }
-  },
-  events: {
-    'toggle-editor-focus'() {
-      this.toggleEditorFocus();
     },
   },
   created: function () {
@@ -322,6 +317,10 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
+      this.$store.dispatch('setStatusValue', { 
+        property: 'keybindState', 
+        value: 'overview' 
+      });
       if (!this.postLoaded) {
         this.initializeRecord();
       }

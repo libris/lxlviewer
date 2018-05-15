@@ -21,6 +21,9 @@ import { mapGetters } from 'vuex';
 
 export default {
   mixins: [clickaway, LensMixin],
+  props: {
+    fieldAdderOpen: false,
+  },
   data() {
     return {
       showAdminInfoDetails: false,
@@ -35,7 +38,8 @@ export default {
       showCancel: false,
       showFieldAdderTooltip: false,
       showClarifySave: false,
-      showMarcPreview: false
+      showMarcPreview: false,
+      fieldAdderActive: false
     };
   },
   watch: {
@@ -44,8 +48,43 @@ export default {
         this.loadingEdit = false;
       }
     },
+    'inspector.event'(val, oldVal) {
+      if (val.name === 'form-control') {
+        switch(val.value) {
+          case 'duplicate-item':
+            this.handleCopy();
+            break;
+          case 'edit-item':
+            this.edit();
+            break;
+          case 'open-field-adder':
+            this.openFieldAdder();
+            break;
+          case 'navigate-change-history':
+            this.undo();
+          case 'cancel-edit':
+            this.cancel();
+          case 'save-item':
+            this.postControl('save-record');
+          case 'save-item-done':
+            this.postControl('save-record-done');
+          default:
+            return;
+        }
+      }
+    },
+    'status.keyActions'(value) {
+      this.formControl(value[value.length-1]);
+    },
   },
   methods: {
+    openFieldAdder() {
+      if (!this.fieldAdderActive) {
+        this.fieldAdderActive = true;
+      } else {
+        this.fieldAdderActive = false;
+      }
+    },
     showOtherFormatMenu() {
       this.otherFormatMenuActive = true;
     },
@@ -370,7 +409,8 @@ export default {
       :allowed="allowedProperties" 
       :path="inspector.status.focus" 
       :editing-object="inspector.status.focus"
-      :in-toolbar="true"></field-adder>
+      :in-toolbar="true"
+      :force-active="fieldAdderActive"></field-adder>
 
     <button class="Toolbar-btn btn btn-default toolbar-button" 
       :disabled="inspector.changeHistory.length === 0" 

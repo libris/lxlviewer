@@ -27,6 +27,7 @@ export default {
     editingObject: '',
     entityType: '',
     inToolbar: false,
+    forceActive: false
   },
   data() {
     return {
@@ -48,7 +49,7 @@ export default {
       'status',
     ]),
     modalTitle() {
-      const title = StringUtil.getUiPhraseByLang('Add field', this.settings.language);
+      const title = StringUtil.getUiPhraseByLang('Add field in', this.settings.language);
       const contextString = StringUtil.getLabelByLang(
         this.entityType, 
         this.settings.language, 
@@ -149,7 +150,7 @@ export default {
         if (!this.filteredResults[this.selectedIndex].added) {
           this.addField(this.filteredResults[this.selectedIndex], false);
         } else {
-          console.warn("already added, should be handled");
+          console.warn("Already added, should be handled");
         }
       }
     },
@@ -158,7 +159,7 @@ export default {
         if (!this.filteredResults[this.selectedIndex].added) {
           this.addField(this.filteredResults[this.selectedIndex], true);
         } else {
-          console.warn("already added, should be handled");
+          console.warn("Already added, should be handled");
         }
       }
     },
@@ -261,6 +262,13 @@ export default {
       this.selectedIndex = -1;
     },
   },
+  watch: {
+    forceActive: function(newVal, oldVal) {
+      if (newVal != oldVal) {
+        this.active = true;
+      }
+    } 
+  },
   mounted() {
     this.$nextTick(() => { // TODO: Fix proper scroll tracking. This is just an ugly solution using document.onscroll here and window.scroll in editorcontrols.vue
     });
@@ -283,10 +291,10 @@ export default {
       <i class="FieldAdder-innerIcon fa fa-plus plus-icon" aria-hidden="true">
         <tooltip-component 
           :show-tooltip="showToolTip" 
-          tooltip-text="Add field" 
+          :tooltip-text="modalTitle" 
           translation="translatePhrase"></tooltip-component>
       </i>
-      <span class="FieldAdder-innerLabel">{{ "Field" | translatePhrase }}</span>
+      <span class="FieldAdder-innerLabel">{{ "Add field" | translatePhrase }}</span>
     </span>
 
     <button v-if="!inner" class="FieldAdder-add btn btn-default toolbar-button" 
@@ -295,11 +303,12 @@ export default {
       @mouseenter="showToolTip = true" 
       @mouseleave="showToolTip = false">
       <i class="FieldAdder-icon fa fa-plus plus-icon" aria-hidden="true">
-        <tooltip-component tooltip-text="Add field"
+        <tooltip-component 
+          tooltip-text="Add field"
           :show-tooltip="showToolTip" 
           translation="translatePhrase"></tooltip-component>
       </i>
-      <span v-if="!inToolbar" class="FieldAdder-label"> {{ "Field" | translatePhrase }}</span>
+      <span v-if="!inToolbar" class="FieldAdder-label"> {{ "Add field" | translatePhrase }}</span>
     </button>
 
     <modal-component @close="hide" v-if="active" class="FieldAdder-modal FieldAdderModal">
