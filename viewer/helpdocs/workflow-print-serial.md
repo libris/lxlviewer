@@ -23,12 +23,13 @@ samt andra poster.
   ```Exempel: S```  
   
 * Uppgraderad eller importerad av/Organisation/Namn (descriptionUpgrader/Organization/name = 040 ‡d)  
-  Skriv in sigel som har uppgraderat (ändrat nivå) eller importerat posten. För att söka fram sigel, se [Biblioteksdatabasen](https://biblioteksdatabasen.libris.kb.se/ "Biblioteksdatabasen")  
-  ```Exempel: U```
+  Länka till entitet.  
+  ```Exempel: S```
 
-* Bibliografi/Bibliotek/Sigel (bibliography/Library/sigel = 042 ‡9)   
-  Ange bibliografikod genom att skriva in sigel. För att söka fram sigel, se [Biblioteksdatabasen](https://biblioteksdatabasen.libris.kb.se/ "Biblioteksdatabasen")
-
+* Bibliografi/Bibliotek/Sigel (bibliography/Library/sigel = 042 ‡9)  
+  Länka till entitet.  
+  ```Exempel: NB```
+  
 * Katalogiseringsspråk (descriptionLanguage = 040 ‡b)   
   Länka till entitet.  
   ```Exempel: svenska (swe)```  
@@ -193,11 +194,11 @@ samt andra poster.
   I undantagsfall, skapa lokal entitet och skriv in uppgiften.   
   ```Exempel: Riksförbundet Sveriges kammarmusikarrangörer``` 
   
- * Ämne/Sao-term (subject = 650 -/7 ‡a, ‡2 sao)   
+* Ämne/Sao-term (subject = 650 -/7 ‡a, ‡2 sao)   
    Länka till entitet.  
    ```Exempel: Kammarmusik```  
    
- * Geografiskt ämnesord (subjcect = 651 -/4 ‡a)  
+* Geografiskt ämnesord (subjcect = 651 -/4 ‡a)  
    Länka till entitet.  
    I undantagsfall, skapa lokal entitet och skriv in uppgiften.   
     ```Exempel: Sverige```
