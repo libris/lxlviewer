@@ -484,6 +484,12 @@ export default {
       width: 100%;
     }
 
+    &:focus {
+      border: 1px solid @brand-primary;
+      outline: 0;
+      box-shadow: none;
+    }
+
     @media (min-width: 768px) {
       margin: 0 5px 0 0;
     }
