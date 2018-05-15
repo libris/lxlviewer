@@ -373,7 +373,7 @@ export default {
   }
 
   &-sourceTabs {
-    margin: 20px 0 8px;
+    margin: 20px 0 10px;
     padding: 0;
   }
 
@@ -394,7 +394,7 @@ export default {
       background-color: @brand-primary;
       border: 1px solid @brand-primary;
       color: #fff;
-          text-decoration: none;
+      text-decoration: none;
 
       &:hover {
         color: #fff;
@@ -469,10 +469,11 @@ export default {
   }
 
   &-input {
+    border-width: 1px;
     font-size: 20px;
     font-size: 2rem;
     line-height: 1.2;
-    height: 44px;
+    height: 42px;
     min-width: 75%;
     margin: 0 0 10px 0;
     flex-grow: 1;
