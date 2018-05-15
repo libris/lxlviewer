@@ -373,7 +373,7 @@ export default {
   }
 
   &-sourceTabs {
-    margin: 20px 0 8px;
+    margin: 20px 0 10px;
     padding: 0;
   }
 
@@ -383,7 +383,7 @@ export default {
     font-size: 16px;
     font-size: 1.6rem;
     margin: 5px 0;
-    padding: 5px 10px;
+    padding: 5px 10px 8px;
     text-transform: uppercase;
     transition: color 0.5s ease;
     border: 1px dashed #fff;
