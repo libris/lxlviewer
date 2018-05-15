@@ -42,7 +42,7 @@ export default {
   methods: {
     initializeWarnBeforeUnload() {
       window.addEventListener("beforeunload", (e) => {
-        if (!this.inspector.status.editing) {
+        if (!this.inspector.status.editing || !this.inspector.status.unsavedChanges) {
           return undefined;
         }
         const confirmationMessage = StringUtil.getUiPhraseByLang('You have unsaved changes. Do you want to leave the page?', this.settings.language);
