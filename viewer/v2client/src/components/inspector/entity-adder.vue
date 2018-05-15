@@ -316,8 +316,6 @@ export default {
         } else {
           currentValue.push(obj);
         }
-        
-
       }
       this.$store.dispatch('updateInspectorData', {
           path: `${this.path}`,
@@ -376,6 +374,7 @@ export default {
 
 <template>
   <div class="EntityAdder" :class="{'is-innerAdder': isPlaceholder, 'is-fillWidth': addEmbedded}">
+    <!-- Adds another empty field of the same type -->
     <div class="EntityAdder-add"
       v-if="isPlaceholder && !addEmbedded" 
       v-on:click="add()" 
@@ -393,6 +392,7 @@ export default {
       </span>
     </div>
 
+    <!-- Add entity within field -->
     <div class="EntityAdder-add action-button" 
       v-if="!isPlaceholder && !addEmbedded" 
       tabindex="0"
@@ -403,7 +403,7 @@ export default {
       <i class="EntityAdder-addIcon fa fa-fw fa-plus plus-icon" aria-hidden="true">
         <tooltip-component 
           :show-tooltip="showToolTip" 
-          tooltip-text="Add" 
+          :tooltip-text="'Add'" 
           translation="translatePhrase"></tooltip-component>
       </i>
       <span class="EntityAdder-addLabel label-text">{{ addLabel | labelByLang | capitalize }}</span>

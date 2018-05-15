@@ -48,7 +48,7 @@ export default {
       'status',
     ]),
     modalTitle() {
-      const title = StringUtil.getUiPhraseByLang('Add field', this.settings.language);
+      const title = StringUtil.getUiPhraseByLang('Add field in', this.settings.language);
       const contextString = StringUtil.getLabelByLang(
         this.entityType, 
         this.settings.language, 
@@ -283,10 +283,10 @@ export default {
       <i class="FieldAdder-innerIcon fa fa-plus plus-icon" aria-hidden="true">
         <tooltip-component 
           :show-tooltip="showToolTip" 
-          tooltip-text="Add field" 
+          :tooltip-text="modalTitle" 
           translation="translatePhrase"></tooltip-component>
       </i>
-      <span class="FieldAdder-innerLabel">{{ "Field" | translatePhrase }}</span>
+      <span class="FieldAdder-innerLabel">{{ "Add field" | translatePhrase }}</span>
     </span>
 
     <button v-if="!inner" class="FieldAdder-add btn btn-default toolbar-button" 
@@ -295,11 +295,12 @@ export default {
       @mouseenter="showToolTip = true" 
       @mouseleave="showToolTip = false">
       <i class="FieldAdder-icon fa fa-plus plus-icon" aria-hidden="true">
-        <tooltip-component tooltip-text="Add field"
+        <tooltip-component 
+          :tooltip-text="modalTitle"
           :show-tooltip="showToolTip" 
           translation="translatePhrase"></tooltip-component>
       </i>
-      <span v-if="!inToolbar" class="FieldAdder-label"> {{ "Field" | translatePhrase }}</span>
+      <span v-if="!inToolbar" class="FieldAdder-label"> {{ "Add field" | translatePhrase }}</span>
     </button>
 
     <modal-component @close="hide" v-if="active" class="FieldAdder-modal FieldAdderModal">
