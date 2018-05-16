@@ -176,7 +176,6 @@ export function getTermByType(type, list) {
     throw new Error('getTermByType was called without a vocabulary.');
   }
   const terms = [];
-
   list.forEach((term) => {
     if (_.isArray(term['@type'])) {
       if (term['@type'].indexOf(type) > -1) {
