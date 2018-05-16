@@ -83,8 +83,10 @@ export default {
       let values = [];
       const possibleValues = [];
       _.each(this.range, (item) => {
-        values = values.concat(VocabUtil.getTermByType(item, this.resources.vocab));
+        const type = StringUtil.getCompactUri(item, this.resources.context);
+        values = values.concat(VocabUtil.getTermByType(type, this.resources.vocab));
       });
+      values = _.uniq(values);
       _.each(values, (value) => {
         possibleValues.push(StringUtil.getCompactUri(value['@id'], this.resources.context));
       });
