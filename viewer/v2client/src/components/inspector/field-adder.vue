@@ -194,7 +194,11 @@ export default {
     getEmptyFieldValue(key, prop) {
       let value = [];
       const contextValue = VocabUtil.getContextValue(key, '@type', this.resources.context);
-      if (prop['@type'] === 'DatatypeProperty' && prop.range.some(e => e['@id'] === 'http://www.w3.org/2001/XMLSchema#boolean')) {
+      if (
+        prop['@type'] === 'DatatypeProperty' &&
+        prop.hasOwnProperty('range') &&
+        prop.range.some(e => e['@id'] === 'http://www.w3.org/2001/XMLSchema#boolean')
+      ) {
         // Boolean
         value = true;
       } else if (prop['@type'] === 'DatatypeProperty' || contextValue === '@vocab') {
