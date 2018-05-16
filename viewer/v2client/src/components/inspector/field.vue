@@ -11,6 +11,7 @@ import ItemLocal from './item-local';
 import ItemError from './item-error';
 import ItemVocab from './item-vocab';
 import ItemSibling from './item-sibling';
+import ItemBoolean from './item-boolean';
 import TooltipComponent from '../shared/tooltip-component';
 import { mixin as clickaway } from 'vue-clickaway';
 import * as VocabUtil from '../../utils/vocab';
@@ -55,6 +56,7 @@ export default {
     'item-sibling': ItemSibling,
     'item-error': ItemError,
     'item-vocab': ItemVocab,
+    'item-boolean': ItemBoolean,
     'entity-adder': EntityAdder,
     'tooltip-component': TooltipComponent,
   },
@@ -292,9 +294,9 @@ export default {
       if (this.isPlainObject(o) && !o.hasOwnProperty('@id') && !o.hasOwnProperty('@type')) {
         return 'error';
       }
-      // if (this.isPlainObject(o) && o['@id'] && o['@id'].indexOf('#work') > -1) {
-      //   return 'error';
-      // }
+      if (typeof o === 'boolean') {
+        return 'boolean';
+      }
       if (VocabUtil.getContextValue(this.fieldKey, '@type', this.resources.context) === '@vocab') {
         return 'vocab';
       }
@@ -513,6 +515,16 @@ export default {
           :entity-type="entityType" 
           :index="index" 
           :parent-path="getPath"></item-vocab>
+
+        <!-- Boolean value -->
+        <item-boolean
+          v-if="getDatatype(item) == 'boolean'" 
+          :is-locked="locked" 
+          :field-key="fieldKey" 
+          :field-value="item" 
+          :entity-type="entityType" 
+          :index="index" 
+          :parent-path="getPath"></item-boolean>
 
         <!-- Not linked, local child strings -->
         <item-value 
