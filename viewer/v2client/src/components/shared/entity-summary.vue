@@ -253,10 +253,13 @@ export default {
     overflow: hidden;
     text-overflow: ellipsis;
     width: 100%;
-    white-space: nowrap;
 
     &--imported {
       cursor: pointer;
+    }
+
+   @media (min-width: 992px) {
+      white-space: nowrap;
     }
   }
 
