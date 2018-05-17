@@ -294,5 +294,5 @@ samt andra poster.
   ```Exempel:  2001-6921```  
   
 * Relaterade verk/Fortsättes av/Verk/Har instans/Instans/Beskriven av/Post/Kontrollnummer  (continuedBy/Work/hasInstance/Instance/describedBy/record/controlNumber = 785 0/0 ‡w)  
-  Skriv in uppgiften.  
+  Skriv in uppgiften. 
   ```Exempel: 14697501```
