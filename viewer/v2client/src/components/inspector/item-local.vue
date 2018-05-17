@@ -16,12 +16,13 @@ import FieldAdder from '@/components/inspector/field-adder';
 import SearchWindow from './search-window';
 import ItemMixin from '../mixins/item-mixin';
 import LensMixin from '../mixins/lens-mixin';
+import FormMixin from '../mixins/form-mixin';
 import {mixin as clickaway} from 'vue-clickaway';
 import { mapGetters } from 'vuex';
 
 export default {
   name: 'item-local',
-  mixins: [ItemMixin, LensMixin, clickaway],
+  mixins: [ItemMixin, LensMixin, FormMixin, clickaway],
   props: {
     item: {},
     fieldKey: '',
@@ -53,6 +54,14 @@ export default {
       'user',
       'status',
     ]),
+    allowed() {
+      return VocabUtil.getPropertiesFromArray(
+        [StringUtil.convertToVocabKey(StringUtil.convertToBaseUri(this.formObj['@type'], this.resources.context), this.resources.context)],
+        this.resources.vocabClasses,
+        this.resources.vocabProperties,
+        this.resources.context
+      );
+    },
     canCopyTitle() {
       if (this.isExtractable && !this.item.hasOwnProperty('hasTitle') && this.key === 'instanceOf') {
         return true;
@@ -107,48 +116,6 @@ export default {
         }
       });
       return bEmpty;
-    },
-    allowedProperties() {
-      const settings = this.settings;
-      const formObj = this.item;
-      const allowed = VocabUtil.getPropertiesFromArray([StringUtil.convertToVocabKey(StringUtil.convertToBaseUri(formObj['@type'], this.resources.context), this.resources.context)],
-        this.resources.vocabClasses,
-        this.resources.vocabProperties,
-        this.resources.context
-      );
-      // Add the "added" property
-      for (const element of allowed) {
-        const oId = StringUtil.getCompactUri(element.item['@id'], this.resources.context);
-        element.added = (formObj.hasOwnProperty(oId));
-      }
-
-      const extendedAllowed = allowed.map(property => {
-        const labelByLang = property.item.labelByLang;
-        if (typeof labelByLang !== 'undefined') {
-          // Try to get the label in the preferred language
-          let label = ((typeof labelByLang[this.settings.language] !== 'undefined') ? labelByLang[this.settings.language] : labelByLang.en);
-          // If several labels are present, use the first one
-          if (_.isArray(label)) {
-            label = label[0];
-          }
-          return {
-            added: property.added,
-            item: property.item,
-            label: label
-          };
-        } else {
-          // If no label, use @id as label
-          return {
-            added: property.added,
-            item: property.item,
-            label: property.item['@id']
-          };
-        }
-      });
-      const sortedAllowed = _.sortBy(extendedAllowed, (prop) => {
-        return prop.label.toLowerCase();
-      });
-      return sortedAllowed;
     },
   },
   methods: {
@@ -250,6 +217,7 @@ export default {
         const baseClasses = VocabUtil.getBaseClassesFromArray(
           item['@type'],
           this.resources.vocab,
+          this.resources.context
         );
         for (const className of baseClasses) {
           inputKeys = DisplayUtil.getProperties(
