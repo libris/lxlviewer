@@ -7,7 +7,7 @@ tags:
 --- 
 *UNDER ARBETE - UPPDATERAS KONTINUERLIGT*
 
-# Beståndsregistrering
+## Beståndsregistrering
 
 Det är endast bibliotekskod/sigel som är obligatorisk och den sätts automatiskt när du väljer att lägga bestånd. (852 ‡b)
 
@@ -131,14 +131,14 @@ För information om vilka delfält som kan läggas till planeras en särskild hj
 
 ### Elektronisk Adress (856)
 * Elektronisk adress / Dokument (val vid Skapa lokal entitet) (856 _/_)
-* Tillhörande resurs (856 _/0)
+* Tillhörande media (856 _/0)
 * Annan relaterad resurs (856 _/1)
-* Annan relaterad resurs (856 _/2)
+* Relaterad till (856 _/2)
 * Är huvudämne för (856 _/8)
   * Värddator (856 ‡a)
   * Elektroniskt namn (856 ‡f)
   * URI (856 ‡u)
-  * Katalogisatörens anmärkning (865 ‡x)
+  * Katalogisatörens anmärkning (856 ‡x)
   * Länktext (856 ‡y)
   * Publik anmärkning (856 ‡z)
 
