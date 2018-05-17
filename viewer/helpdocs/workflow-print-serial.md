@@ -13,9 +13,10 @@ Denna hjälptext beskriver ett antal vanligt förekommande fält, med utgångspu
 
 I de flesta fall ska informationen delas upp i olika fält och delfält. I några undantagsfall är det nödvändigt att använda ISBD-interpunktion inom fält, för att separera uppgifter. Dessa fall visas genom exempel nedan. Använd vid behov också klamrar inom fält, enligt Anvisningar för katalogisering - RDA.
 
+I vissa fall fungerar det ännu inte fullt ut att lägga till alla uppgifter som beskrivs i denna hjälptext. Arbete pågår med förbättra gränssnittet. För att anmäla fel, använd detta [formulär](https://docs.google.com/forms/d/e/1FAIpQLSfOChJOGDoHUQguSF83F5XyTZiQL-yU47nvcqb6qwNT9GX7Aw/viewform). För att lämna synpunkter, använd detta [formulär](https://docs.google.com/forms/d/e/1FAIpQLSfOChJOGDoHUQguSF83F5XyTZiQL-yU47nvcqb6qwNT9GX7Aw/viewform).  
+
 Exempel hämtade från: Kammarmusik-nytt, ISSN 2001-2721, Voyager BibID 12683491  
 samt andra poster.
-
 
 ### Adminmetadata  
 * Skapad av/Organisation/Namn (descriptionCreator/Organization/name = 040 ‡a)  
@@ -23,12 +24,13 @@ samt andra poster.
   ```Exempel: S```  
   
 * Uppgraderad eller importerad av/Organisation/Namn (descriptionUpgrader/Organization/name = 040 ‡d)  
-  Skriv in sigel som har uppgraderat (ändrat nivå) eller importerat posten. För att söka fram sigel, se [Biblioteksdatabasen](https://biblioteksdatabasen.libris.kb.se/ "Biblioteksdatabasen")  
-  ```Exempel: U```
+  Länka till entitet.  
+  ```Exempel: S```
 
-* Bibliografi/Bibliotek/Sigel (bibliography/Library/sigel = 042 ‡9)   
-  Ange bibliografikod genom att skriva in sigel. För att söka fram sigel, se [Biblioteksdatabasen](https://biblioteksdatabasen.libris.kb.se/ "Biblioteksdatabasen")
-
+* Bibliografi/Bibliotek/Sigel (bibliography/Library/sigel = 042 ‡9)  
+  Länka till entitet.  
+  ```Exempel: NB```
+  
 * Katalogiseringsspråk (descriptionLanguage = 040 ‡b)   
   Länka till entitet.  
   ```Exempel: svenska (swe)```  
@@ -193,11 +195,11 @@ samt andra poster.
   I undantagsfall, skapa lokal entitet och skriv in uppgiften.   
   ```Exempel: Riksförbundet Sveriges kammarmusikarrangörer``` 
   
- * Ämne/Sao-term (subject = 650 -/7 ‡a, ‡2 sao)   
+* Ämne/Sao-term (subject = 650 -/7 ‡a, ‡2 sao)   
    Länka till entitet.  
    ```Exempel: Kammarmusik```  
    
- * Geografiskt ämnesord (subjcect = 651 -/4 ‡a)  
+* Geografiskt ämnesord (subjcect = 651 -/4 ‡a)  
    Länka till entitet.  
    I undantagsfall, skapa lokal entitet och skriv in uppgiften.   
     ```Exempel: Sverige```
@@ -292,5 +294,5 @@ samt andra poster.
   ```Exempel:  2001-6921```  
   
 * Relaterade verk/Fortsättes av/Verk/Har instans/Instans/Beskriven av/Post/Kontrollnummer  (continuedBy/Work/hasInstance/Instance/describedBy/record/controlNumber = 785 0/0 ‡w)  
-  Skriv in uppgiften.  
+  Skriv in uppgiften. 
   ```Exempel: 14697501```
