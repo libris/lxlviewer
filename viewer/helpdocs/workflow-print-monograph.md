@@ -13,6 +13,8 @@ Denna hjälptext beskriver ett antal vanligt förekommande fält, med utgångspu
 
 I de flesta fall ska informationen delas upp i olika fält och delfält. I några undantagsfall är det nödvändigt att använda ISBD-interpunktion inom fält, för att separera uppgifter. Dessa fall visas genom exempel nedan. Använd vid behov också klamrar inom fält, enligt Anvisningar för katalogisering - RDA.
 
+I vissa fall fungerar det ännu inte fullt ut att lägga till alla uppgifter som beskrivs i denna hjälptext. Arbete pågår med förbättra gränssnittet. För att anmäla fel, använd detta [formulär](https://docs.google.com/forms/d/e/1FAIpQLSfOChJOGDoHUQguSF83F5XyTZiQL-yU47nvcqb6qwNT9GX7Aw/viewform). För att lämna synpunkter, använd detta [formulär](https://docs.google.com/forms/d/e/1FAIpQLScgz_0enebhBn6uB8xvowkDBB4ax_dbvaobLSFfqFMoty6eQg/viewform).  
+
 Exempel hämtade från: Under cover, ISBN 9789188107213, Voyager BibID 19775078 samt  
 30 år med Fredrika Bremer i forskning och idédebatt, Voyager BibID 22431305
 samt exempel hämtade från andra poster.
@@ -158,7 +160,11 @@ samt exempel hämtade från andra poster.
 
 * Omfång/Omfång/Benämning (extent/Extent/label = 300 ‡a)  
   Skriv in uppgiften.  
-  ```Exempel: 319 sidor```
+  ```Exempel: 319 sidor```  
+  
+* Övriga fysiska detaljer (other physical details = 300 ‡b)  
+  Skriv in uppgiften.  
+  ```Exempel: illustrationer```
 
 * Mått/Mått/Benämning (hasDimensions/Dimensions/label = 300 ‡c)  
   Skriv in uppgiften.  
@@ -178,13 +184,13 @@ samt exempel hämtade från andra poster.
 * Medverkan och funktion/Primär medverkan/Agent/Person (contribution/PrimaryContribution/agent/Person = 100 1/- ‡a)  
   Länka till entitet.
   I undantagsfall, skapa lokal entitet och skriv in uppgiften. 
-* Medverkan och funktion/Primär medverkan/Agent/Person/Familjenamn (contribution/PrimaryContribution/agent/Person/familyName)  
+* Medverkan och funktion/Primär medverkan/Agent/Person/Efternamn (contribution/PrimaryContribution/agent/Person/familyName)  
   ```Exempel: Marcus```
 
 * Medverkan och funktion/Primär medverkan/Agent/Person/Förnamn  (contribution/PrimaryContribution/agent/Person/givenName)  
   ```Exempel: Tom```
 
-* Medverkan och funktion/Primär medverkan/Agent/Funktion (contribution/PrimaryContribution/agent/role = 100 ‡4)  
+* Medverkan och funktion/Primär medverkan/Funktion (contribution/PrimaryContribution/role = 100 ‡4)  
   Länka till entitet.  
   ```Exempel: relator/author (= författare)```
 
@@ -193,7 +199,7 @@ samt exempel hämtade från andra poster.
   I undantagsfall, skapa lokal entitet och skriv in uppgiften.  
   ```Exempel: Skoglund, Svante, 1960-```
 
-* Medverkan och funktion/Medverkan/Agent/Funktion (contribution/agent/role = 700 ‡4)  
+* Medverkan och funktion/Medverkan/Funktion (contribution/role = 700 ‡4)  
   Länka till entitet.  
   ```Exempel: relator/trl (= översättare)```
 
@@ -258,7 +264,11 @@ samt exempel hämtade från andra poster.
 
 * Genre/form – biografiskt material (genreForm = 008/34)  
   Länka till entitet.  
-  ```Exempel: a (= självbiografi)```
+  ```Exempel: a (= självbiografi)```  
+  
+ * Målgrupp (intendedAudience = 008/22)  
+  Länka till entitet.  
+  ```Exempel: j (= barn- och ungdom, 0-16 år)```  
 
 * Språk (language = 008/35-37)  
   Länka till entitet.  
