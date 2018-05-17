@@ -13,9 +13,10 @@ Denna hjälptext beskriver ett antal vanligt förekommande fält, med utgångspu
 
 I de flesta fall ska informationen delas upp i olika fält och delfält. I några undantagsfall är det nödvändigt att använda ISBD-interpunktion inom fält, för att separera uppgifter. Dessa fall visas genom exempel nedan. Använd vid behov också klamrar inom fält, enligt Anvisningar för katalogisering - RDA.
 
+I vissa fall fungerar det ännu inte fullt ut att lägga till alla uppgifter som beskrivs i denna hjälptext. Arbete pågår med förbättra gränssnittet. För att anmäla fel, använd detta [formulär](https://docs.google.com/forms/d/e/1FAIpQLSfOChJOGDoHUQguSF83F5XyTZiQL-yU47nvcqb6qwNT9GX7Aw/viewform). För att lämna synpunkter, använd detta [formulär](https://docs.google.com/forms/d/e/1FAIpQLSfOChJOGDoHUQguSF83F5XyTZiQL-yU47nvcqb6qwNT9GX7Aw/viewform).  
+
 Exempel hämtade från: Kammarmusik-nytt, ISSN 2001-2721, Voyager BibID 12683491  
 samt andra poster.
-
 
 ### Adminmetadata  
 * Skapad av/Organisation/Namn (descriptionCreator/Organization/name = 040 ‡a)  
