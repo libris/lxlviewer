@@ -237,12 +237,12 @@ export function getAllEnumerationTypesFor(onProp, vocab) {
   return enumerationTypes;
 }
 
-export function getAllValuesFrom(entityType, property, vocab, context) {
+export function getValuesFrom(restrictionProperty, entityType, property, vocab, context) {
   if (typeof entityType === 'undefined') {
-    throw new Error('getAllValuesFrom was called without an entityType');
+    throw new Error('getValuesFrom was called without an entityType');
   }
   if (_.isPlainObject(property)) {
-    throw new Error('getAllValuesFrom was called with an object as property id (should be a string)');
+    throw new Error('getValuesFrom was called with an object as property id (should be a string)');
   }
   let result = [];
   const baseClasses = getBaseClasses(entityType, vocab, context);
@@ -263,55 +263,13 @@ export function getAllValuesFrom(entityType, property, vocab, context) {
           embellishedObj['@type'] === 'Restriction' &&
           StringUtil.getCompactUri(embellishedObj.onProperty['@id'], context) === StringUtil.getCompactUri(property, context)
         ) {
-          if (embellishedObj.hasOwnProperty('allValuesFrom')) {
-            if (_.isArray(embellishedObj.allValuesFrom)) {
-              _.each(embellishedObj.allValuesFrom, (list) => {
+          if (embellishedObj.hasOwnProperty(restrictionProperty)) {
+            if (_.isArray(embellishedObj[restrictionProperty])) {
+              _.each(embellishedObj[restrictionProperty], (list) => {
                 result.push(list['@id']);
               });
             } else {
-              result = [embellishedObj.allValuesFrom['@id']];
-            }
-          }
-        }
-      });
-    }
-  });
-  return result.map(item => StringUtil.getCompactUri(item, context));
-}
-
-export function getSomeValuesFrom(entityType, property, vocab, context) {
-  if (typeof entityType === 'undefined') {
-    throw new Error('getSomeValuesFrom was called without an entityType');
-  }
-  if (_.isPlainObject(property)) {
-    throw new Error('getSomeValuesFrom was called with an object as property id (should be a string)');
-  }
-  let result = [];
-  const baseClasses = getBaseClasses(entityType, vocab, context);
-  baseClasses.forEach(baseClass => {
-    const vocabEntry = getTermObject(baseClass, vocab, context);
-    if (vocabEntry.hasOwnProperty('subClassOf')) {
-      vocabEntry.subClassOf.forEach(subClassObject => {
-        let embellishedObj = _.cloneDeep(subClassObject);
-        if (
-          Object.keys(embellishedObj).length === 1 &&
-          embellishedObj.hasOwnProperty('@id') &&
-          embellishedObj['@id'].indexOf('_:') > -1
-        ) {
-          embellishedObj = getTermObject(embellishedObj['@id'], vocab, context);
-        }
-        if (
-          embellishedObj.hasOwnProperty('@type') &&
-          embellishedObj['@type'] === 'Restriction' &&
-          StringUtil.getCompactUri(embellishedObj.onProperty['@id'], context) === StringUtil.getCompactUri(property, context)
-        ) {
-          if (embellishedObj.hasOwnProperty('someValuesFrom')) {
-            if (_.isArray(embellishedObj.someValuesFrom)) {
-              _.each(embellishedObj.someValuesFrom, (list) => {
-                result.push(list['@id']);
-              });
-            } else {
-              result = [embellishedObj.someValuesFrom['@id']];
+              result = [embellishedObj[restrictionProperty]['@id']];
             }
           }
         }
@@ -322,11 +280,11 @@ export function getSomeValuesFrom(entityType, property, vocab, context) {
 }
 
 export function processRestrictions(range, entityType, property, vocab, context) {
-  const allValuesFrom = getAllValuesFrom(entityType, property, vocab, context);
+  const allValuesFrom = getValuesFrom('allValuesFrom', entityType, property, vocab, context);
   if (allValuesFrom.length > 0) {
     return allValuesFrom;
   }
-  return range.concat(getSomeValuesFrom(entityType, property, vocab, context));
+  return range.concat(getValuesFrom('someValuesFrom', entityType, property, vocab, context));
 }
 
 export function getUnrestrictedRange(propertyId, vocab, context) {
