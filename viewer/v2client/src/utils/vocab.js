@@ -397,7 +397,7 @@ export function getDomainList(property, vocab, context) {
       }
     }
   }
-  return domainList;
+  return domainList.map((item) => StringUtil.getCompactUri(item, context));
 }
 
 export function getProperties(classId, vocabClasses, vocabProperties, context) {
