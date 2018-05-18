@@ -64,7 +64,9 @@ export default {
       const toolbarPlaceholderEl = this.$refs.ToolbarPlaceholder;
       const toolbarTestEl = this.$refs.ToolbarTest;
       const width = typeof toolbarPlaceholderEl !== 'undefined' ? toolbarPlaceholderEl.clientWidth : 65;
-      toolbarTestEl.style.width = `${width}px`;
+      if (typeof toolbarTestEl !== 'undefined') {
+        toolbarTestEl.style.width = `${width}px`;
+      }
     },
     fetchDocument() {
       const fetchUrl = `${this.settings.apiPath}/${this.documentId}/data.jsonld`;
