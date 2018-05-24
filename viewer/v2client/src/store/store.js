@@ -398,8 +398,8 @@ const store = new Vuex.Store({
     },
     setVocabClasses({ commit, state }, vocabJson) {
       let classTerms = [].concat(
-            VocabUtil.getTermByType('Class', vocabJson),
-            VocabUtil.getTermByType('marc:CollectionClass', vocabJson)
+            VocabUtil.getTermByType('Class', vocabJson, state.resources.context),
+            VocabUtil.getTermByType('marc:CollectionClass', vocabJson, state.resources.context)
           );
       const classes = new Map(classTerms.map(entry => [entry['@id'], entry]));
       classes.forEach(classObj => {
@@ -418,12 +418,12 @@ const store = new Vuex.Store({
       });
       commit('setVocabClasses', classes)
     },
-    setVocabProperties({ commit }, vocabJson) {
+    setVocabProperties({ commit, state }, vocabJson) {
       let props = [];
-      props = props.concat(VocabUtil.getTermByType('Property', vocabJson));
-      props = props.concat(VocabUtil.getTermByType('DatatypeProperty', vocabJson));
-      props = props.concat(VocabUtil.getTermByType('ObjectProperty', vocabJson));
-      props = props.concat(VocabUtil.getTermByType('owl:SymmetricProperty', vocabJson));
+      props = props.concat(VocabUtil.getTermByType('Property', vocabJson, state.resources.context));
+      props = props.concat(VocabUtil.getTermByType('DatatypeProperty', vocabJson, state.resources.context));
+      props = props.concat(VocabUtil.getTermByType('ObjectProperty', vocabJson, state.resources.context));
+      props = props.concat(VocabUtil.getTermByType('owl:SymmetricProperty', vocabJson, state.resources.context));
       const vocabProperties = new Map(props.map((entry) => [entry['@id'], entry]));
 
       commit('setVocabProperties', vocabProperties)

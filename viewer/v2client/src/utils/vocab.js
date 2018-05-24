@@ -160,18 +160,19 @@ export function getRecordType(mainEntityType, vocab, context) {
   return 'Other';
 }
 
-export function getTermByType(type, list) {
+export function getTermByType(type, list, context) {
   if (!list || typeof list === 'undefined') {
     throw new Error('getTermByType was called without a vocabulary.');
   }
+  const expandedType = StringUtil.convertToBaseUri(type, context);
   const terms = [];
   list.forEach((term) => {
     if (_.isArray(term['@type'])) {
-      if (term['@type'].indexOf(type) > -1) {
+      if (term['@type'].indexOf(type) > -1 || term['@type'].indexOf(expandedType) > -1) {
         terms.push(term);
       }
     } else {
-      if (term['@type'] === type) {
+      if (term['@type'] === type || term['@type'] === expandedType) {
         terms.push(term);
       }
     }
