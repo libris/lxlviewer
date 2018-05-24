@@ -17,7 +17,7 @@ import { mapGetters } from 'vuex';
 export default {
   name: 'Inspector',
   beforeRouteLeave (to, from , next) {
-    if (this.inspector.status.editing && this.inspector.status.unsavedChanges) {
+    if (this.inspector.status.editing && this.inspector.status.unsavedChanges && !this.inspector.status.saving) {
       const confString = StringUtil.getUiPhraseByLang('You have unsaved changes. Do you want to leave the page?', this.settings.language);
       const answer = window.confirm(confString);
       if (answer) {
@@ -41,7 +41,7 @@ export default {
   methods: {
     initializeWarnBeforeUnload() {
       window.addEventListener("beforeunload", (e) => {
-        if (!this.inspector.status.editing || !this.inspector.status.unsavedChanges) {
+        if (!this.inspector.status.editing || !this.inspector.status.unsavedChanges || this.inspector.status.saving) {
           return undefined;
         }
         const confirmationMessage = StringUtil.getUiPhraseByLang('You have unsaved changes. Do you want to leave the page?', this.settings.language);
