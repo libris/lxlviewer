@@ -8,7 +8,9 @@
     "alt+plus": "form-control|expand-item",
     "alt+minus": "form-control|collapse-item",
     "alt+f": "open-field-adder",
-    "mod+shift+c": "duplicate-item"
+    "mod+shift+c": "duplicate-item",
+    "ctrl+shift+right": "admin-data-on",
+    "ctrl+shift+left": "admin-data-off"
   },
   "field-adder": {
     "esc": "close-modals",
