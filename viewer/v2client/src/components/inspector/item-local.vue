@@ -103,7 +103,7 @@ export default {
       return fItem;
     },
     formObj() {
-      return this.getForm(this.item);
+      return this.item;
     },
     isEmpty() {
       let bEmpty = true;
@@ -201,45 +201,6 @@ export default {
         });
         this.closeExtractDialog();
       });
-    },
-    getForm(item) {
-      const formObj = {};
-      if (!item['@type']) {
-        return formObj;
-      }
-      let inputKeys = DisplayUtil.getProperties(
-        item['@type'],
-        'cards',
-        this.resources.display,
-        this.settings
-      );
-      if (inputKeys.length === 0) {
-        const baseClasses = VocabUtil.getBaseClassesFromArray(
-          item['@type'],
-          this.resources.vocab,
-          this.resources.context
-        );
-        for (const className of baseClasses) {
-          inputKeys = DisplayUtil.getProperties(
-            StringUtil.getCompactUri(className, this.resources.context),
-            'cards',
-            this.resources.display,
-            this.settings
-          );
-          if (inputKeys.length > 0) {
-            break;
-          }
-        }
-      }
-      inputKeys = ['@type'].concat(inputKeys);
-      for (const key of inputKeys) {
-        if (item[key]) {
-          formObj[key] = item[key];
-        } else {
-          formObj[key] = [];
-        }
-      }
-      return formObj;
     },
     openForm() {
       this.inEdit = true;
