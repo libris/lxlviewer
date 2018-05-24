@@ -534,13 +534,16 @@ export default {
 .Field {
   border-bottom: 1px solid #d8d8d8;
   width: 100%;
-  display: flex;
   flex-direction: row;
   opacity: 1;
   position: relative;
 
   &.is-affected {
     outline: 2px solid @brand-primary;
+  }
+
+  @media (min-width: 768px) {
+    display: flex;
   }
 
   &--inner {
@@ -586,15 +589,41 @@ export default {
   }
 
   &-label {
-    padding: 20px;
     flex: 0 0 @col-label;
-    text-align: right;
     align-items: flex-start;
     justify-content: flex-end;
     // line-height: 2.6;
-    font-size: 16px;
-    font-size: 1.6rem;
+    font-size: 20px;
+    font-size: 2.0rem;
+    font-weight: 700;
     line-height: 1.4;
+    padding: 20px;
+    position: relative;
+
+    &:after {
+      border-left: 1px solid #666666;
+      height: 100%;
+      width: 0px;
+      top: 0px;
+    }
+
+    &:last-child {
+      &:after {
+        height: 16px;
+      }
+    }
+  }
+
+  &-label {
+    flex: 0 0 @col-label;
+    align-items: flex-start;
+    justify-content: flex-end;
+    // line-height: 2.6;
+    font-size: 20px;
+    font-size: 2.0rem;
+    font-weight: 700;
+    line-height: 1.4;
+    padding: 20px;
     position: relative;
 
     .Field--inner & {
@@ -602,6 +631,8 @@ export default {
       padding: 0 0 0 20px;
       text-align: left;
       font-weight: 700;
+      font-size: 16px;
+      font-size: 1.6rem;
       justify-content: flex-start;
       display: flex;
     }
@@ -615,6 +646,14 @@ export default {
         top: -1px;
       }
     } 
+
+    @media (min-width: 768px) {
+      font-weight: normal;
+      font-size: 16px;
+      font-size: 1.6rem;
+      text-align: right;
+      padding: 20px;
+    }
   }
 
   &-commentText {
@@ -651,7 +690,6 @@ export default {
   }
 
   &-content {
-    border-left: 1px solid #d8d8d8;
     flex: 1 100%;
     margin: 0;
     padding: 20px;
@@ -659,6 +697,10 @@ export default {
     .Field--inner & {
       border: 0;
       padding: 0 0 0 20px;
+    }
+
+     @media (min-width: 768px) {
+      border-left: 1px solid #d8d8d8;
     }
   }
 
