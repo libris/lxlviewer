@@ -73,6 +73,8 @@ export default {
   &-img {
     width: 100%;
     flex-shrink: 0; // Prevent weird image sizing behaviour in IE11
+    border: solid #f1f1f1;
+    border-width: 0px 0px 1px 0px;
   }
 
   &-videoWrap {
