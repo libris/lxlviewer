@@ -8,6 +8,7 @@ export default {
     "linkText",
     "header",
     "text",
+    "html",
   ],
   data() {
     return {
@@ -25,9 +26,8 @@ export default {
   },
   watch: {
   },
-  ready() { // Ready method is deprecated in 2.0, switch to "mounted"
+  mounted() { 
     this.$nextTick(() => {
-      // Do stuff
     });
   },
 };
@@ -47,6 +47,7 @@ export default {
     <div class="LinkCard-content">
       <div class="LinkCard-text">
         <span class="LinkCard-title">{{ header }}</span>
+        <div v-if="html" class="LinkCard-html" v-html="html">{{ html }}</div>
         <div class="LinkCard-descr">{{ text }}</div>
       </div>
       <a v-if="linkUrl" :href="linkUrl" class="card-link LinkCard-link">{{ linkText }}</a>
@@ -132,7 +133,8 @@ export default {
     width: 100%;
   }
 
-  &-descr {
+  &-descr,
+  &-html {
     font-size: 16px;
     font-size: 1.6rem;
 
@@ -141,6 +143,10 @@ export default {
       font-size: 18px;
       font-size: 1.8rem;
     }
+  }
+
+  &-html {
+    display: block;
   }
 
   &-title {
