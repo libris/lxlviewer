@@ -199,8 +199,13 @@ export default {
 
   &-searchDetails {
     color: @gray-darker;
-    display: flex;
     justify-content: space-between;  
+    display: block;
+    width: 100%;
+
+    @media (min-width: 992px) {
+      display: flex;
+    }
   }
 
   &-listTypes {

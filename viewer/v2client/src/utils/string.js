@@ -12,6 +12,9 @@ export function removeDomain(string, removableBaseUriArray) {
 }
 
 export function getCompactUri(uri, context) {
+  if (typeof context === 'undefined') {
+    throw new Error('getCompactUri was called without context.');
+  }
   let compactUri = '';
   const vocabBase = context[0]['@vocab'];
   if (uri.startsWith(vocabBase)) {
@@ -26,10 +29,15 @@ export function convertToBaseUri(str, context) {
   if (typeof context === 'undefined') {
     throw new Error('convertToBaseUri was called without context.');
   }
-  if (str.indexOf('://') > -1 || str.indexOf(':') === -1) {
+  if (str.indexOf('://') > -1) {
     return str;
   }
-  const prefix = str.split(':')[0];
+  let prefix = '';
+  if (str.indexOf(':') > -1) {
+    prefix = str.split(':')[0];
+  } else {
+    prefix = 'kbv';
+  }
   const uri = str.replace(`${prefix}:`, '');
   const baseUri = VocabUtil.getBaseUriFromPrefix(prefix, context);
   const withBaseUri = `${baseUri}${uri}`;

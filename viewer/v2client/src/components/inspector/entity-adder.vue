@@ -70,7 +70,18 @@ export default {
       if (val.name === 'modal-control') {
         switch(val.value) {
           case 'close-entity-adder':
-          this.closeSearch();
+            this.closeSearch();
+            return true;
+            break;
+          default:
+            return;
+        }
+      }
+      if (val.name === 'form-control') {
+        switch(val.value) {
+          case 'close-modals':
+            this.closeSearch();
+            return true;
             break;
           default:
             return;
@@ -316,8 +327,6 @@ export default {
         } else {
           currentValue.push(obj);
         }
-        
-
       }
       this.$store.dispatch('updateInspectorData', {
           path: `${this.path}`,
@@ -376,6 +385,7 @@ export default {
 
 <template>
   <div class="EntityAdder" :class="{'is-innerAdder': isPlaceholder, 'is-fillWidth': addEmbedded}">
+    <!-- Adds another empty field of the same type -->
     <div class="EntityAdder-add"
       v-if="isPlaceholder && !addEmbedded" 
       v-on:click="add()" 
@@ -393,6 +403,7 @@ export default {
       </span>
     </div>
 
+    <!-- Add entity within field -->
     <div class="EntityAdder-add action-button" 
       v-if="!isPlaceholder && !addEmbedded" 
       tabindex="0"
@@ -515,7 +526,6 @@ export default {
 <style lang="less">
 
 .EntityAdder {
-
   &.is-innerAdder {
     cursor: pointer;
   }

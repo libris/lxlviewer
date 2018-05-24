@@ -18,6 +18,11 @@ export default {
     },
     facetLabelByLang(facetType) {
       return this.settings.propertyChains[facetType][this.user.settings.language];
+    },
+    expandFacets($event) {
+      let el = $event.target;
+      let list = el.nextSibling.nextSibling;
+      list.classList.toggle('is-open');
     }
   },
   computed: {
@@ -49,12 +54,17 @@ export default {
     <div class="panel-body">
       <h3 class="FacetControls-title">Filtrera</h3>
       <div v-if="result.totalItems > 0 && result.stats">
-        <nav class="FacetControls-listNav" :aria-labelledby="facetLabelByLang(dimensionValue.dimension)"
-        v-for="(dimensionValue, dimensionKey) in result.stats.sliceByDimension" 
-        :key="dimensionKey">
-          <h4 class="FacetControls-listTitle" :id="facetLabelByLang(dimensionValue.dimension)">{{facetLabelByLang(dimensionValue.dimension) | capitalize}}</h4>
+        <nav class="FacetControls-listNav" 
+          :aria-labelledby="facetLabelByLang(dimensionValue.dimension)"
+          v-for="(dimensionValue, dimensionKey) in result.stats.sliceByDimension" 
+          :key="dimensionKey">
+          <h4 class="FacetControls-listTitle js-listTitle" 
+            @click="expandFacets($event)"
+            :id="facetLabelByLang(dimensionValue.dimension)">
+            {{facetLabelByLang(dimensionValue.dimension) | capitalize}}
+          </h4>
           <!--<range-input v-if="isRangeFacet(dimensionKey)"></range-input>-->
-          <ul class="FacetControls-list">
+          <ul class="FacetControls-list js-list">
             <facet class="FacetControls-listItem"
             v-for="observation in dimensionValue.observation" 
             :observation="observation" 
@@ -82,15 +92,40 @@ export default {
     font-size: 16px;
     font-size: 1.6rem;
     font-weight: 700;
+    cursor: pointer;
+    display: inline-block;
+
+
+    &:hover {
+      text-decoration: underline;
+    }
+
+    @media (min-width: 992px) {
+      cursor: default;
+      pointer-events: none;
+
+      &:hover {
+        text-decoration: none;
+      }
+    }
   }
 
   &-listNav {
-    margin: 20px 0 0;
+    margin: 0px 0 0;
   }
 
   &-list {
     list-style: none;
     padding: 5px 0 0 15px;
+    display: none;
+
+    @media (min-width: 992px) {
+      display: block;
+    }
+
+    &.is-open {
+      display: block;     
+    }
   }
 
   &-listItem {

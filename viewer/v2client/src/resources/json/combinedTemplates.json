@@ -277,9 +277,6 @@
               "label": ""
             }
           ],
-          "succeededBy": [{
-            "@type": "Serial"
-          }],
           "instanceOf": {
             "@type": "Text",
             "language": [{

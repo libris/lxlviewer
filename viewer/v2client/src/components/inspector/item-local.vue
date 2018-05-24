@@ -16,12 +16,13 @@ import FieldAdder from '@/components/inspector/field-adder';
 import SearchWindow from './search-window';
 import ItemMixin from '../mixins/item-mixin';
 import LensMixin from '../mixins/lens-mixin';
+import FormMixin from '../mixins/form-mixin';
 import {mixin as clickaway} from 'vue-clickaway';
 import { mapGetters } from 'vuex';
 
 export default {
   name: 'item-local',
-  mixins: [ItemMixin, LensMixin, clickaway],
+  mixins: [ItemMixin, LensMixin, FormMixin, clickaway],
   props: {
     item: {},
     fieldKey: '',
@@ -53,6 +54,14 @@ export default {
       'user',
       'status',
     ]),
+    allowed() {
+      return VocabUtil.getPropertiesFromArray(
+        [StringUtil.convertToVocabKey(StringUtil.convertToBaseUri(this.formObj['@type'], this.resources.context), this.resources.context)],
+        this.resources.vocabClasses,
+        this.resources.vocabProperties,
+        this.resources.context
+      );
+    },
     canCopyTitle() {
       if (this.isExtractable && !this.item.hasOwnProperty('hasTitle') && this.key === 'instanceOf') {
         return true;
@@ -94,7 +103,7 @@ export default {
       return fItem;
     },
     formObj() {
-      return this.getForm(this.item);
+      return this.item;
     },
     isEmpty() {
       let bEmpty = true;
@@ -107,48 +116,6 @@ export default {
         }
       });
       return bEmpty;
-    },
-    allowedProperties() {
-      const settings = this.settings;
-      const formObj = this.item;
-      const allowed = VocabUtil.getPropertiesFromArray([StringUtil.convertToVocabKey(StringUtil.convertToBaseUri(formObj['@type'], this.resources.context), this.resources.context)],
-        this.resources.vocabClasses,
-        this.resources.vocabProperties,
-        this.resources.context
-      );
-      // Add the "added" property
-      for (const element of allowed) {
-        const oId = StringUtil.getCompactUri(element.item['@id'], this.resources.context);
-        element.added = (formObj.hasOwnProperty(oId));
-      }
-
-      const extendedAllowed = allowed.map(property => {
-        const labelByLang = property.item.labelByLang;
-        if (typeof labelByLang !== 'undefined') {
-          // Try to get the label in the preferred language
-          let label = ((typeof labelByLang[this.settings.language] !== 'undefined') ? labelByLang[this.settings.language] : labelByLang.en);
-          // If several labels are present, use the first one
-          if (_.isArray(label)) {
-            label = label[0];
-          }
-          return {
-            added: property.added,
-            item: property.item,
-            label: label
-          };
-        } else {
-          // If no label, use @id as label
-          return {
-            added: property.added,
-            item: property.item,
-            label: property.item['@id']
-          };
-        }
-      });
-      const sortedAllowed = _.sortBy(extendedAllowed, (prop) => {
-        return prop.label.toLowerCase();
-      });
-      return sortedAllowed;
     },
   },
   methods: {
@@ -235,44 +202,6 @@ export default {
         this.closeExtractDialog();
       });
     },
-    getForm(item) {
-      const formObj = {};
-      if (!item['@type']) {
-        return formObj;
-      }
-      let inputKeys = DisplayUtil.getProperties(
-        item['@type'],
-        'cards',
-        this.resources.display,
-        this.settings
-      );
-      if (inputKeys.length === 0) {
-        const baseClasses = VocabUtil.getBaseClassesFromArray(
-          item['@type'],
-          this.resources.vocab,
-        );
-        for (const className of baseClasses) {
-          inputKeys = DisplayUtil.getProperties(
-            StringUtil.getCompactUri(className, this.resources.context),
-            'cards',
-            this.resources.display,
-            this.settings
-          );
-          if (inputKeys.length > 0) {
-            break;
-          }
-        }
-      }
-      inputKeys = ['@type'].concat(inputKeys);
-      for (const key of inputKeys) {
-        if (item[key]) {
-          formObj[key] = item[key];
-        } else {
-          formObj[key] = [];
-        }
-      }
-      return formObj;
-    },
     openForm() {
       this.inEdit = true;
     },
@@ -310,26 +239,6 @@ export default {
     this.$on('collapse-item', this.collapse);
     this.$on('expand-item', this.expand);
   },
-  events: {
-    'focus-new-item'(index) {
-      if (this.index === index) {
-        this.expand();
-        this.isNewlyAdded = true;
-
-        // Scroll to item
-        const windowHeight = window.innerHeight || document.documentElement.clientHeight || document.getElementsByTagName('body')[0].clientHeight;
-        const scrollPos = this.$el.offsetTop - (windowHeight * 0.2);
-        LayoutUtil.scrollTo(scrollPos, 1000, 'easeInOutQuad', () => {
-          setTimeout(() => {
-            this.isNewlyAdded = false;
-          }, 3000);
-        });
-      }
-    },
-    'set-copy-title'(bool) {
-      this.copyTitle = bool;
-    },
-  },
   mounted() {
     this.$nextTick(() => {
     });
@@ -348,7 +257,7 @@ export default {
 
 <template>
   <div class="ItemLocal js-itemLocal"
-    :class="{'highlight': isNewlyAdded, 'is-expanded': expanded}"
+    :class="{'is-highlighted': isNewlyAdded, 'is-expanded': expanded}"
     tabindex="0">
    
    <strong class="ItemLocal-heading">

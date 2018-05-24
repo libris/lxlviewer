@@ -10,9 +10,11 @@ import * as ModalUtil from '@/utils/modals';
 import * as VocabUtil from '@/utils/vocab';
 import * as DisplayUtil from '@/utils/display';
 import * as StringUtil from '@/utils/string';
+import FormMixin from '@/components/mixins/form-mixin';
 import { mapGetters } from 'vuex';
 
 export default {
+  mixins: [FormMixin],
   props: {
     locked: false,
     editingObject: '',
@@ -87,60 +89,16 @@ export default {
       }
       return props;
     },
-    allowedProperties() {
-      const settings = this.settings;
-      const formObj = this.formData;
-      const allowed = VocabUtil.getPropertiesFromArray(
+    formObj() {
+      return this.formData;
+    },
+    allowed() {
+      return VocabUtil.getPropertiesFromArray(
         formObj['@type'],
         this.resources.vocabClasses,
         this.resources.vocabProperties,
         this.resources.context
       );
-      // Add the "added" property
-      for (const element of allowed) {
-        const oId = StringUtil.getCompactUri(element.item['@id'], this.resources.context);
-        element.added = (formObj.hasOwnProperty(oId));
-      }
-      const extendedAllowed = allowed.map(property => {
-        const labelByLang = property.item.labelByLang;
-        const prefLabelByLang = property.item.prefLabelByLang;
-        if (typeof labelByLang !== 'undefined') {
-          // Try to get the label in the preferred language
-          let label = ((typeof labelByLang[this.settings.language] !== 'undefined') ? labelByLang[this.settings.language] : labelByLang.en);
-          // If several labels are present, use the first one
-          if (_.isArray(label)) {
-            label = label[0];
-          }
-          return {
-            added: property.added,
-            item: property.item,
-            label: label
-          };
-        } else if (typeof prefLabelByLang !== 'undefined') {
-          // Try to get the label in the preferred language
-          let label = ((typeof prefLabelByLang[this.settings.language] !== 'undefined') ? prefLabelByLang[this.settings.language] : prefLabelByLang.en);
-          // If several labels are present, use the first one
-          if (_.isArray(label)) {
-            label = label[0];
-          }
-          return {
-            added: property.added,
-            item: property.item,
-            label: label
-          };
-        } else {
-          // If no label, use @id as label
-          return {
-            added: property.added,
-            item: property.item,
-            label: property.item['@id']
-          };
-        }
-      });
-      const sortedAllowed = _.sortBy(extendedAllowed, (prop) => {
-        return prop.label.toLowerCase();
-      });
-      return sortedAllowed;
     },
     formData() {
       return this.inspector.data[this.editingObject];

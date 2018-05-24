@@ -4,7 +4,6 @@ import * as StringUtil from '@/utils/string';
 import * as DataUtil from '@/utils/data';
 import * as VocabUtil from '@/utils/vocab';
 import * as HttpUtil from '@/utils/http';
-// import * as _ from 'lodash';
 import * as DisplayUtil from '@/utils/display';
 import * as RecordUtil from '@/utils/record';
 import EntityForm from '@/components/inspector/entity-form';
@@ -18,7 +17,7 @@ import { mapGetters } from 'vuex';
 export default {
   name: 'Inspector',
   beforeRouteLeave (to, from , next) {
-    if (this.inspector.status.editing && this.inspector.status.unsavedChanges) {
+    if (this.inspector.status.editing && this.inspector.status.unsavedChanges && !this.inspector.status.saving) {
       const confString = StringUtil.getUiPhraseByLang('You have unsaved changes. Do you want to leave the page?', this.settings.language);
       const answer = window.confirm(confString);
       if (answer) {
@@ -42,7 +41,7 @@ export default {
   methods: {
     initializeWarnBeforeUnload() {
       window.addEventListener("beforeunload", (e) => {
-        if (!this.inspector.status.editing || !this.inspector.status.unsavedChanges) {
+        if (!this.inspector.status.editing || !this.inspector.status.unsavedChanges || this.inspector.status.saving) {
           return undefined;
         }
         const confirmationMessage = StringUtil.getUiPhraseByLang('You have unsaved changes. Do you want to leave the page?', this.settings.language);
@@ -64,7 +63,9 @@ export default {
       const toolbarPlaceholderEl = this.$refs.ToolbarPlaceholder;
       const toolbarTestEl = this.$refs.ToolbarTest;
       const width = typeof toolbarPlaceholderEl !== 'undefined' ? toolbarPlaceholderEl.clientWidth : 65;
-      toolbarTestEl.style.width = `${width}px`;
+      if (typeof toolbarTestEl !== 'undefined') {
+        toolbarTestEl.style.width = `${width}px`;
+      }
     },
     fetchDocument() {
       const fetchUrl = `${this.settings.apiPath}/${this.documentId}/data.jsonld`;
@@ -284,11 +285,6 @@ export default {
             return;
         }
       }
-    }
-  },
-  events: {
-    'toggle-editor-focus'() {
-      this.toggleEditorFocus();
     },
   },
   created: function () {
@@ -322,6 +318,10 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
+      this.$store.dispatch('setStatusValue', { 
+        property: 'keybindState', 
+        value: 'overview' 
+      });
       if (!this.postLoaded) {
         this.initializeRecord();
       }

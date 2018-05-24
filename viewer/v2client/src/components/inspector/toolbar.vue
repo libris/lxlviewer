@@ -16,11 +16,15 @@ import MarcPreview from '@/components/inspector/marc-preview';
 import FieldAdder from '@/components/inspector/field-adder';
 import TooltipComponent from '@/components/shared/tooltip-component';
 import LensMixin from '@/components/mixins/lens-mixin';
+import FormMixin from '@/components/mixins/form-mixin';
 import { mixin as clickaway } from 'vue-clickaway';
 import { mapGetters } from 'vuex';
 
 export default {
-  mixins: [clickaway, LensMixin],
+  mixins: [clickaway, LensMixin, FormMixin],
+  props: {
+    fieldAdderOpen: false,
+  },
   data() {
     return {
       showAdminInfoDetails: false,
@@ -35,7 +39,8 @@ export default {
       showCancel: false,
       showFieldAdderTooltip: false,
       showClarifySave: false,
-      showMarcPreview: false
+      showMarcPreview: false,
+      fieldAdderActive: false
     };
   },
   watch: {
@@ -44,8 +49,53 @@ export default {
         this.loadingEdit = false;
       }
     },
+    'inspector.event'(val, oldVal) {
+      if (val.name === 'form-control') {
+        switch(val.value) {
+          case 'duplicate-item':
+            this.handleCopy();
+            break;
+          case 'edit-item':
+            this.edit();
+            break;
+          case 'open-field-adder':
+            this.openFieldAdder();
+            break;
+          case 'undo':
+            this.undo();
+            break;
+          case 'cancel-edit':
+            this.cancel();
+            break;
+          case 'save-item':
+            this.postControl('save-record');
+            break;
+          case 'save-item-done':
+            this.postControl('save-record-done');
+            break;
+          case 'admin-data-on':
+            this.toggleEditorFocus(true);
+            break;
+          case 'admin-data-off':
+            this.toggleEditorFocus();
+            break;
+          default:
+            return;
+        }
+      }
+    },
+    'status.keyActions'(value) {
+      this.formControl(value[value.length-1]);
+    },
   },
   methods: {
+    openFieldAdder() {
+      if (!this.fieldAdderActive) {
+        this.fieldAdderActive = true;
+      } else {
+        this.fieldAdderActive = false;
+      }
+    },
     showOtherFormatMenu() {
       this.otherFormatMenuActive = true;
     },
@@ -75,7 +125,11 @@ export default {
         });
       // }
     },
-    toggleEditorFocus() {
+    toggleEditorFocus(on = false) {
+      if (on) {
+        this.inspector.status.focus === 'record';
+      } 
+
       if (this.inspector.status.focus === 'record') {
         this.$store.dispatch('setInspectorStatusValue', { 
           property: 'focus', 
@@ -172,6 +226,17 @@ export default {
       'settings',
       'status',
     ]),
+    formObj() {
+      return this.inspector.data[this.inspector.status.focus];
+    },
+    allowed() {
+      return VocabUtil.getPropertiesFromArray(
+        this.formObj['@type'],
+        this.resources.vocabClasses,
+        this.resources.vocabProperties,
+        this.resources.context
+      );
+    },
     recordType() {
       return VocabUtil.getRecordType(
         this.inspector.data.mainEntity['@type'], 
@@ -218,49 +283,6 @@ export default {
     },
     hasLocalWork() {
       return (typeof this.inspector.data.work !== 'undefined') ? true : false;
-    },
-    allowedProperties() {
-      const settings = this.settings;
-      const formObj = this.inspector.data[this.inspector.status.focus];
-      const allowed = VocabUtil.getPropertiesFromArray(
-        [StringUtil.convertToVocabKey(StringUtil.convertToBaseUri(formObj['@type'], this.resources.context), this.resources.context)],
-        this.resources.vocabClasses,
-        this.resources.vocabProperties,
-        this.resources.context
-      );
-      // Add the "added" property
-      for (const element of allowed) {
-        const oId = StringUtil.getCompactUri(element.item['@id'], this.resources.context);
-        element.added = (formObj.hasOwnProperty(oId) && formObj[oId] !== null);
-      }
-
-      const extendedAllowed = allowed.map(property => {
-        const labelByLang = property.item.labelByLang;
-        if (typeof labelByLang !== 'undefined') {
-          // Try to get the label in the preferred language
-          let label = ((typeof labelByLang[this.settings.language] !== 'undefined') ? labelByLang[this.settings.language] : labelByLang.en);
-          // If several labels are present, use the first one
-          if (_.isArray(label)) {
-            label = label[0];
-          }
-          return {
-            added: property.added,
-            item: property.item,
-            label: label
-          };
-        } else {
-          // If no label, use @id as label
-          return {
-            added: property.added,
-            item: property.item,
-            label: property.item['@id']
-          };
-        }
-      });
-      const sortedAllowed = _.sortBy(extendedAllowed, (prop) => {
-        return prop.label.toLowerCase();
-      });
-      return sortedAllowed;
     },
   },
   components: {
@@ -370,7 +392,8 @@ export default {
       :allowed="allowedProperties" 
       :path="inspector.status.focus" 
       :editing-object="inspector.status.focus"
-      :in-toolbar="true"></field-adder>
+      :in-toolbar="true"
+      :force-active="fieldAdderActive"></field-adder>
 
     <button class="Toolbar-btn btn btn-default toolbar-button" 
       :disabled="inspector.changeHistory.length === 0" 
