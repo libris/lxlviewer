@@ -41,3 +41,9 @@ Om du vill gruppera termer och operatorer, använd `(` och `)`. Exempelvis ger e
 ### Trunkering
 
 Om du vill trunkera, använd `*`. Trunkering ger träff på alla ändelser efter prefixet. Exempelvis ger `sol*` träff på bland andra `solros` , `sola` och `solig`.
+
+### ISBN
+
+Ett ISBN innefattar fem delar som åtskiljs med bindestreck eller mellanrum. I nya Libris sparas konsekvent ISBN utan bindestreck och mellanrum vilket underlättar hantering av data och möjliggör därmed bland annat dubblettkontroll.
+
+Det går att söka på ISBN både med och utan tecken. För att optimera och rikta sökning på ISBN, ange sökkoden `ISBN:` i direkt anslutning till numret. Det riktar sökningen till att endast söka i postens fält för ISBN vilket ger träff på ISBN – oavsett om numret är sparat med eller utan streck. Om koden används resulterar sökningen i en garanterad träff, oavsett hur ISBN är katalogiserat. 
