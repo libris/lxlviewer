@@ -75,16 +75,7 @@ export default {
     },
     loadRemoteDatabases() {
       const disabled = [
-        'GRE', 
-        'NLI', 
-        'NLL',
-        'OCLC',
-        'POR',
-        'POLEN',
-        'RERO',
-        'RUM', 
-        'SBN',
-        'SWB',
+        'NLI',
         'AGRALIN',
         'ARM',
         'BNF',
