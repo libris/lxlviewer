@@ -6,6 +6,7 @@
     "alt+q": "cancel-edit",
     "alt+z": "undo",
     "alt+plus": "expand-item",
+    "±": "expand-item", 
     "alt+minus": "collapse-item",
     "alt+f": "open-field-adder",
     "mod+shift+c": "duplicate-item",
