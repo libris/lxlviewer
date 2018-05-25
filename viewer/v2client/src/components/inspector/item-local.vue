@@ -222,8 +222,12 @@ export default {
       const newValue = { '@id': value['@id'] };
       this.$store.dispatch('addToQuoted', value);
       this.$store.dispatch('updateInspectorData', {
-        path: `${this.path}`,
-        value: newValue,
+        changeList: [
+          {
+            path: `${this.path}`,
+            value: newValue,
+          }
+        ],
         addToHistory: false,
       });
       this.$store.dispatch('pushNotification', { color: 'green', message: `${StringUtil.getUiPhraseByLang('Linking was successful', this.settings.language)}` });

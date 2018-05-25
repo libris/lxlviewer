@@ -48,19 +48,16 @@ export default {
       },
       set: _.debounce(function(newValue) {
         this.$store.dispatch('updateInspectorData', {
-          path: this.path,
-          value: newValue,
+          changeList: [
+            {
+              path: this.path,
+              value: newValue,
+            }
+          ],
           addToHistory: true,
         });
         this.$store.dispatch('setInspectorStatusValue', { property: 'unsavedChanges', value: true });
       }, 1000)
-      // set(newValue) {
-      //   this.$store.dispatch('updateInspectorData', {
-      //     path: this.path,
-      //     value: newValue,
-      //     addToHistory: true,
-      //   });
-      // }
     }
   },
   mounted() {

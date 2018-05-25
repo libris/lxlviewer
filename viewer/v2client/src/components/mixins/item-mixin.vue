@@ -30,15 +30,23 @@ export default {
         this.removed = true;
         setTimeout(() => {
           this.$store.dispatch('updateInspectorData', {
-            path: `${this.parentPath}`,
-            value: parentValue,
+            changeList: [
+              {
+                path: `${this.parentPath}`,
+                value: parentValue,
+              }
+            ],
             addToHistory: true,
           });
         }, 500);
       } else {
         this.$store.dispatch('updateInspectorData', {
-          path: `${this.parentPath}`,
-          value: parentValue,
+          changeList: [
+            {
+              path: `${this.parentPath}`,
+              value: parentValue,
+            }
+          ],
           addToHistory: true,
         });
       }

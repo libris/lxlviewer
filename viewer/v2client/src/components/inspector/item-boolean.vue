@@ -64,8 +64,12 @@ export default {
     selected(value, oldValue) {
       if (value !== oldValue) {
         this.$store.dispatch('updateInspectorData', {
-          path: this.path,
-          value: value,
+          changeList: [
+            {
+              path: this.path,
+              value: value,
+            }
+          ],
           addToHistory: true,
         });
         this.$store.dispatch('setInspectorStatusValue', { 

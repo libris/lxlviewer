@@ -306,9 +306,13 @@ export default {
       }
       this.$store.dispatch('addToQuoted', obj);
       this.$store.dispatch('updateInspectorData', {
-          path: `${this.path}`,
-          value: currentValue,
-          addToHistory: true,
+        changeList: [
+          {
+            path: `${this.path}`,
+            value: currentValue,
+          }
+        ],
+        addToHistory: true,
       });
       this.hide();
     },
@@ -329,9 +333,31 @@ export default {
         }
       }
       this.$store.dispatch('updateInspectorData', {
-          path: `${this.path}`,
-          value: currentValue,
-          addToHistory: true,
+        changeList: [
+          {
+            path: `${this.path}`,
+            value: currentValue,
+          }
+        ],
+        addToHistory: true,
+      });
+    },
+    addSibling(obj) {
+      const linkObj = { '@id': `${this.inspector.data.record['@id']}#work` };
+      const workObj = obj;
+      workObj['@id'] = linkObj['@id'];
+      this.$store.dispatch('updateInspectorData', {
+        changeList: [
+          {
+            path: `${this.path}`,
+            value: linkObj,
+          },
+          {
+            path: 'work',
+            value: workObj,
+          }
+        ],
+        addToHistory: true,
       });
     },
     addEmpty(typeId) {
@@ -341,7 +367,11 @@ export default {
       if (StructuredValueTemplates.hasOwnProperty(shortenedType)) {
         obj = _.cloneDeep(StructuredValueTemplates[shortenedType]);
       }
-      this.addItem(obj);
+      if (this.fieldKey === 'instanceOf') {
+        this.addSibling(obj);
+      } else {
+        this.addItem(obj);
+      }
     },
     addType(typeId) {
       const shortenedType = StringUtil.convertToPrefix(typeId, this.resources.context);

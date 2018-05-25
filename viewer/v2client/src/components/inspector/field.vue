@@ -277,8 +277,12 @@ export default {
       delete parentData[this.fieldKey];
       setTimeout(() => {
         this.$store.dispatch('updateInspectorData', {
-          path: this.parentPath,
-          value: parentData,
+          changeList: [
+            {
+              path: this.parentPath,
+              value: parentData,
+            }
+          ],
           addToHistory: true,
         });
         this.$store.dispatch('setInspectorStatusValue', { 

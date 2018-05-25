@@ -160,6 +160,24 @@ export default {
     },
   },
   methods: {
+    removeThis() {
+      const changeList = [
+        {
+          path: `${this.parentPath}`,
+          value: null,
+        }
+      ];
+      if (this.fieldKey === 'instanceOf') {
+        changeList.push({
+          path: 'work',
+          value: null,
+        });
+      }
+      this.$store.dispatch('updateInspectorData', {
+        addToHistory: true,
+        changeList: changeList,
+      });
+    },
     highlightItem(event) {
       let item = event.target;
       while ((item = item.parentElement) && !item.classList.contains('js-itemLocal'));
@@ -253,16 +271,21 @@ export default {
     replaceWith(value) {
       const newValue = { '@id': value['@id'] };
       this.$store.dispatch('addToQuoted', value);
+      const changeList = [
+        {
+          // Remove the link
+          path: `${this.parentPath}`,
+          value: newValue,
+        },
+        {
+          // Remove the #work
+          path: `${this.getPath}`,
+          value: null,
+        }
+      ];
       this.$store.dispatch('updateInspectorData', {
-        path: `${this.parentPath}`,
-        value: newValue,
-        addToHistory: false,
-      });
-      // Remove the #work
-      this.$store.dispatch('updateInspectorData', {
-        path: `${this.getPath}`,
-        value: null,
-        addToHistory: false,
+        addToHistory: true,
+        changeList: changeList,
       });
       this.$store.dispatch('pushNotification', { color: 'green', message: `${StringUtil.getUiPhraseByLang('Linking was successful', this.settings.language)}` });
       this.closeExtractDialog();
