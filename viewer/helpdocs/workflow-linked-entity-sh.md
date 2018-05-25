@@ -17,7 +17,7 @@ Det beskrivna tillvägagångssättet nedan gäller för allmänna ämnesord, kro
 
 #### Ämne (subject)
 Utgår katalogiseringen från en mall finns egenskapen Ämne i mallen. 
-<br/>För att lägga till egenskapen Ämne: Klicka på +ikonen högst upp till höger inom fältet för Instans av Verk, sök efter och lägg till Ämne (subject).
+<br/>För att lägga till egenskapen Ämne: Klicka på +ikonen högst upp till höger inom avsnittet för Instans av Verk, sök efter och lägg till Ämne (subject).
 
 ##### Länka entitet
 
