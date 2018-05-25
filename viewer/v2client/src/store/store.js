@@ -206,17 +206,23 @@ const store = new Vuex.Store({
       state.inspector.status.updating = true;
       // Clone inspectorData so we can manipulate it before setting it
       const inspectorData = _.cloneDeep(state.inspector.data);
+
       // Push old value to history
       if (payload.addToHistory) {
-        const oldValue = _.cloneDeep(_.get(inspectorData, payload.path));
-        const historyNode = { path: payload.path, value: oldValue };
-        console.log(JSON.stringify(historyNode));
-        state.inspector.changeHistory.push(historyNode);
+        const changes = [];
+        _.each(payload.changeList, (node) => {
+          const oldValue = _.cloneDeep(_.get(inspectorData, node.path));
+          const historyNode = { path: node.path, value: oldValue };
+          changes.push(historyNode);
+        });
+        state.inspector.changeHistory.push(changes);
       }
-      
-      // Set the new value
-      console.log("DATA_UPDATE:", payload);
-      _.set(inspectorData, payload.path, payload.value);
+
+      // Set the new values
+      _.each(payload.changeList, (node) => {
+        console.log("DATA_UPDATE:", JSON.stringify(node));
+        _.set(inspectorData, node.path, node.value);
+      });
       state.inspector.data = inspectorData;
     },
     setInspectorTitle(state, str) {
@@ -305,28 +311,28 @@ const store = new Vuex.Store({
     undoInspectorChange({ commit, state }) {
       const history = state.inspector.changeHistory;
       const lastNode = history[history.length-1];
-      let payload = {};
-      if (typeof lastNode.value !== 'undefined') {
-        // It had a value
-        payload = {
-          path: lastNode.path,
-          value: lastNode.value,
-          addToHistory: false,
+      let payload = { addToHistory: false, changeList: [] };
+      _.each(lastNode, (node) => {
+        if (typeof node.value !== 'undefined') {
+          // It had a value
+          payload.changeList.push({
+            path: node.path,
+            value: node.value,
+          });
+        } else {
+          // It did not have a value (ie key did not exist)
+          const pathParts = node.path.split('.');
+          const key = pathParts[pathParts.length-1];
+          pathParts.splice(pathParts.length-1, 1);
+          const path = pathParts.join('.');
+          const data = _.cloneDeep(_.get(state.inspector.data, path));
+          delete data[key];
+          payload.changeList.push({
+            path: path,
+            value: data,
+          });
         }
-      } else {
-        // It did not have a value (ie key did not exist)
-        const pathParts = lastNode.path.split('.');
-        const key = pathParts[pathParts.length-1];
-        pathParts.splice(pathParts.length-1, 1);
-        const path = pathParts.join('.');
-        const data = _.cloneDeep(_.get(state.inspector.data, path));
-        delete data[key];
-        payload = {
-          path: path,
-          value: data,
-          addToHistory: false,
-        }
-      }
+      });
       history.splice(history.length-1, 1);
       commit('updateInspectorData', payload);
     },

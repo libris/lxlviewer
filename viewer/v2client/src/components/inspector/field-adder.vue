@@ -224,8 +224,12 @@ export default {
         const propLastPart = splitProp[splitProp.length-1];
         const key = StringUtil.convertToPrefix(prop.item['@id'], this.resources.context);
         this.$store.dispatch('updateInspectorData', {
-          path: `${this.path}.${key}`,
-          value: this.getEmptyFieldValue(key, prop.item),
+          changeList: [
+            {
+              path: `${this.path}.${key}`,
+              value: this.getEmptyFieldValue(key, prop.item),
+            }
+          ],
           addToHistory: true,
         });
         this.$store.dispatch('setInspectorStatusValue', { property: 'unsavedChanges', value: true });
