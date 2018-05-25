@@ -4,6 +4,7 @@ const packageJson = require('../package.json')
 
 module.exports = {
   NODE_ENV: '"production"',
+  PIWIK_ID: JSON.stringify(apiConf.piwik_id),
   API_PATH: JSON.stringify(apiConf.path),
   AUTH_PATH: JSON.stringify(apiConf.auth),
   ID_PATH: JSON.stringify(apiConf.id),
