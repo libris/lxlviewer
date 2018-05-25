@@ -233,7 +233,6 @@ export function prepareDuplicateFor(inspectorData, user) {
   // Removes fields that we do not want to import or copy
   const newData = _.cloneDeep(inspectorData);
   newData.record.descriptionCreator = { '@id': `https://libris.kb.se/library/${user.settings.activeSigel}` };
-  
   if (newData.mainEntity) {
     newData.mainEntity['@id'] =  `https://id.kb.se/TEMPID#it`;
     delete newData.mainEntity.sameAs;
@@ -245,6 +244,7 @@ export function prepareDuplicateFor(inspectorData, user) {
   }
   if (newData.work) {
     newData.work['@id'] = `https://id.kb.se/TEMPID#work`;
+    newData.mainEntity.instanceOf = { '@id': newData.work['@id'] };
     delete newData.work.sameAs;
   }
 
