@@ -239,29 +239,6 @@ export default {
   background-color: @ribbon-color;
   border: solid darken(@ribbon-color, 3%);
   border-width: 0px 0px 1px 0px;
-  // border-radius: 0px 0px 2px 2px;
-  // &:before {
-  //   content: ' ';
-  //   position: absolute;
-  //   width: 0;
-  //   height: 0;
-  //   right: 0px;
-  //   top: 100%;
-  //   border-width: 5px 5px;
-  //   border-style: solid;
-  //   border-color: darken(@ribbon-color, 10%) transparent transparent darken(@ribbon-color, 10%);
-  // }
-  // &:after {
-  //   content: ' ';
-  //   position: absolute;
-  //   width: 0;
-  //   height: 0;
-  //   left: 0px;
-  //   top: 100%;
-  //   border-width: 5px 5px;
-  //   border-style: solid;
-  //   border-color: darken(@ribbon-color, 10%) darken(@ribbon-color, 10%) transparent transparent;
-  // }
 }
 
 .EntityForm {
@@ -298,28 +275,27 @@ export default {
     cursor: pointer;
     padding: 0.5em;
   }
+}
 
-  >ul {
-    padding-left: 0px;
-    margin: 0px;
-    >li {
-      color: black;
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      padding:  5px 0;
-      list-style: none;
-      width: 100%;
-      box-shadow: none;
-      transition: box-shadow ease-out 0.2s;
+.FieldList {
+  padding-left: 0px;
+  margin: 0px;
+  &-item {
+    color: black;
+    flex-direction: row;
+    align-items: center;
+    padding:  5px 0;
+    list-style: none;
+    width: 100%;
+    box-shadow: none;
+    transition: box-shadow ease-out 0.2s;
 
-      &:hover:not(.locked) {
-        >.actions {
-          opacity: 1;
-        }
+    &:hover:not(.locked) {
+      >.actions {
+        opacity: 1;
       }
-
     }
+
   }
 }
 

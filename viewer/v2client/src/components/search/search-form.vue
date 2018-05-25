@@ -394,7 +394,7 @@ export default {
       background-color: @brand-primary;
       border: 1px solid @brand-primary;
       color: #fff;
-          text-decoration: none;
+      text-decoration: none;
 
       &:hover {
         color: #fff;
@@ -469,10 +469,11 @@ export default {
   }
 
   &-input {
+    border-width: 1px;
     font-size: 20px;
     font-size: 2rem;
     line-height: 1.2;
-    height: 44px;
+    height: 42px;
     min-width: 75%;
     margin: 0 0 10px 0;
     flex-grow: 1;
@@ -481,6 +482,12 @@ export default {
 
     .is-remoteSearch & {
       width: 100%;
+    }
+
+    &:focus {
+      border: 1px solid @brand-primary;
+      outline: 0;
+      box-shadow: none;
     }
 
     @media (min-width: 768px) {

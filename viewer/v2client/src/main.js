@@ -82,21 +82,16 @@ new Vue({
       if (this.combokeys) {
         this.combokeys.detach();
       }
+
       this.combokeys = new ComboKeys(document.documentElement);
       require('combokeys/plugins/global-bind')(this.combokeys); // TODO: Solve with ES6 syntax
       const stateSettings = KeyBindings[state];
+        
       if (typeof stateSettings !== 'undefined') {
         _.each(stateSettings, (value, key) => {
           if (value !== null && value !== '') {
-            this.combokeys.bindGlobal(key.toString(), () => {
-              const valueArray = value.split('|');
-              // if (state === 'overview') {
-              //   this.$dispatch(valueArray[0], valueArray[1]);
-              // } else {
-              //   console.log(valueArray[0], valueArray[1]);
-              //   this.$dispatch(valueArray[0], valueArray[1]);
-              // }
-              this.$store.dispatch('pushKeyAction', valueArray[0]);
+            this.combokeys.bindGlobal(key.toString(), (e) => {
+              this.$store.dispatch('pushKeyAction', value);
               return false;
             });
           }

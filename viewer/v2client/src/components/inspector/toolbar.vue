@@ -73,6 +73,12 @@ export default {
           case 'save-item-done':
             this.postControl('save-record-done');
             break;
+          case 'admin-data-on':
+            this.toggleEditorFocus(true);
+            break;
+          case 'admin-data-off':
+            this.toggleEditorFocus();
+            break;
           default:
             return;
         }
@@ -119,7 +125,11 @@ export default {
         });
       // }
     },
-    toggleEditorFocus() {
+    toggleEditorFocus(on = false) {
+      if (on) {
+        this.inspector.status.focus === 'record';
+      } 
+
       if (this.inspector.status.focus === 'record') {
         this.$store.dispatch('setInspectorStatusValue', { 
           property: 'focus', 

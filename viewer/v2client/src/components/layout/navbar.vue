@@ -115,7 +115,7 @@ export default {
 
   &-brand {
     float: left;
-    margin: 5px 0;
+    margin: 10px 0 5px;
   }
 
   &-brandLogo {

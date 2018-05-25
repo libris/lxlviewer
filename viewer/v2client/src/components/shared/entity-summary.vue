@@ -251,20 +251,23 @@ export default {
     line-height: 1.2;
     margin: 5px 0;
     overflow: hidden;
-    text-overflow: ellipsis;
-    width: 100%;
+    width: 100%; 
+    position: relative;
 
     &--imported {
       cursor: pointer;
     }
 
-   @media (min-width: 992px) {
+    @media (min-width: 768px) {
+      text-overflow: ellipsis;
       white-space: nowrap;
+      height: auto;
     }
   }
 
   &-titleLink {
     color: @brand-primary;
+    display: inline;
     
     &.blue-link {
       color: @brand-id;
