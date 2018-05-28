@@ -147,11 +147,20 @@ export default {
   &-number {
     float: right;
     font-weight: 700;
+    margin: 0 0 20px;
     text-align: right;
+  }
+
+  &-label {
+    font-size: 12px;
+    font-size: 1.2rem;
   }
 
   &-button {
     margin: 5px 0 10px;
+    font-size: 20px;
+    font-size: 2.0rem;
+    font-weight: 700;
   }
 }
 
