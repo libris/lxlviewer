@@ -239,7 +239,7 @@ export default {
     }
 
     @media (min-width: 992px) {
-      padding: 20px 15px 12px;
+      padding: 20px 15px;
     }
   }
 

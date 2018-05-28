@@ -16,7 +16,7 @@ export function splitJson(json) {
   if (!json || json.length === 0) {
     throw new Error('Trying to split empty JSON data.');
   }
-  const original = json['@graph'];
+  const original = _.cloneDeep(json['@graph']);
   const dataObj = {};
   dataObj.quoted = {};
 
