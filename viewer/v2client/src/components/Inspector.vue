@@ -136,6 +136,7 @@ export default {
         this.$router.go(-1);
         console.warn('New document called without input data, routing user back.')
       } else {
+
         this.$store.dispatch('setInspectorStatusValue', { property: 'unsavedChanges', value: false });
         this.$store.dispatch('setInspectorData', RecordUtil.splitJson(insertData));
         this.$store.dispatch('setInspectorStatusValue', { 
@@ -143,6 +144,8 @@ export default {
           value: true 
         });
         this.postLoaded = true;
+        this.$store.dispatch('setInsertData', '' );
+
       }
     },
     setTitle() {
@@ -212,6 +215,7 @@ export default {
       if (!RecordId || RecordId === 'https://id.kb.se/TEMPID') { // No ID -> create new
         this.doCreate(obj, done);
       } else { // ID exists -> update
+        console.log('ETag ', ETag);
         this.doUpdate(RecordId, obj, ETag, done);
       }
     },
@@ -224,8 +228,7 @@ export default {
       requestMethod({ 
         url: opts.url, 
         ETag: opts.ETag, 
-        activeSigel: 
-        this.user.settings.activeSigel, 
+        activeSigel: this.user.settings.activeSigel, 
         token: this.user.token 
       }, obj).then((result) => {
         if (!this.documentId) {
