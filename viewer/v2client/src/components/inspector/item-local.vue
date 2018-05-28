@@ -142,6 +142,14 @@ export default {
         this.expand();
       }
     },
+    isHolding() {
+      return this.inspector.data.mainEntity['@type'] === 'Item';
+    },
+    expandOnNew() {
+      if (this.isHolding() && this.inspector.status.isNew) {
+        this.toggleExpanded();
+      }
+    },
     openExtractDialog() {
       if (this.inspector.status.editing) {
         this.$store.dispatch('setStatusValue', { 
@@ -245,6 +253,7 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
+      this.expandOnNew();
     });
   },
  
