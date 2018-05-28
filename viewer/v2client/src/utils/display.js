@@ -51,6 +51,24 @@ function getValueByLang(item, propertyId, displayDefs, langCode, context) {
   return translatedValue;
 }
 
+export function getLensById(id, displayDefs) {
+  if (!displayDefs) {
+    throw new Error('getLensById was called without display resource');
+  }
+  if (!id) {
+    throw new Error('getLensById was called without lens id');
+  }
+  for (const collection in displayDefs.lensGroups) {
+    for (const lens in displayDefs.lensGroups[collection].lenses) {
+      const obj = displayDefs.lensGroups[collection].lenses[lens];
+      if (obj.hasOwnProperty('@id') && obj['@id'] === id) {
+        return obj;
+      }
+    }
+  }
+  return {};
+}
+
 export function getProperties(typeInput, level, displayDefs) {
   if (!typeInput || typeof typeInput === 'undefined') {
     throw new Error('getProperties was called with an undefined type.');
@@ -68,7 +86,18 @@ export function getProperties(typeInput, level, displayDefs) {
       props = lenses[type].showProperties;
     }
     props = [].concat(props);
+    
+    let extension = [];
+    for (let i = 0;i < props.length; i++) {
+      if (props[i] === 'fresnel:super') {
+        extension = getLensById(lenses[type]['fresnel:extends']['@id'], displayDefs).showProperties;
+        props.splice(i, 1, ...extension);
+        break;
+      }
+    }
+    props = _.uniq(props);
     _.remove(props, (x) => _.isObject(x));
+
     if (props.length > 0) {
       return props;
     } else if (level === 'cards') { // Try fallback to chip level

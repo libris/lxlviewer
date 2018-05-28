@@ -121,8 +121,7 @@ export default {
       let propertyList = DisplayUtil.getProperties(
         formObj['@type'],
         'full',
-        this.resources.display,
-        this.settings
+        this.resources.display
       );
       if (propertyList.length === 0) { // If none were found, traverse up inheritance tree
         const baseClasses = VocabUtil.getBaseClassesFromArray(
@@ -133,9 +132,8 @@ export default {
         for (const baseClass of baseClasses) {
           propertyList = DisplayUtil.getProperties(
             StringUtil.getCompactUri(baseClass, this.resources.context),
-            'cards',
-            this.resources.display,
-            this.settings
+            'full',
+            this.resources.display
           );
           if (propertyList.length > 0) {
             break;
@@ -144,9 +142,8 @@ export default {
         if (propertyList.length === 0) {
           propertyList = DisplayUtil.getProperties(
             'Resource',
-            'cards',
-            this.resources.display,
-            this.settings
+            'full',
+            this.resources.display
           );
         }
       }
@@ -158,7 +155,6 @@ export default {
       _.remove(propertyList, (k) => {
         return (this.settings.specialProperties.indexOf(k) !== -1);
       });
-
       return propertyList;
     },
   },

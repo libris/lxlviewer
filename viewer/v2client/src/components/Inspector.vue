@@ -330,6 +330,7 @@ export default {
       }
       this.initializeWarnBeforeUnload();
       this.initJsonOutput();
+
       let self = this;
       window.addEventListener('resize', function() {
         self.initToolbarFloat();
