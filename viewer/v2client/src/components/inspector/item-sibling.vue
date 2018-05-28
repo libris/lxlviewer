@@ -420,7 +420,6 @@ export default {
   position: relative;
   flex: 1 100%;
   border: 2px solid transparent;
-  transition: background-color .2s ease-in;
 
   &-heading {
     position: relative;
@@ -476,10 +475,8 @@ export default {
     }
   }
 
-  &.is-indicated {
-    background: @sec;
-    margin-right: -5px;
-    padding-right: 5px;
+  &.is-affected {
+    border: 2px solid @brand-primary;
   }
 
 }

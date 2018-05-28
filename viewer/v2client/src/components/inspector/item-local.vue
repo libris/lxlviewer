@@ -122,12 +122,12 @@ export default {
     highlightItem(event) {
       let item = event.target;
       while ((item = item.parentElement) && !item.classList.contains('js-itemLocal'));
-      item.classList.add('is-indicated');
+      item.classList.add('is-affected');
     },
     unHighlightItem(event) {
       let item = event.target;
       while ((item = item.parentElement) && !item.classList.contains('js-itemLocal'));
-      item.classList.remove('is-indicated');
+      item.classList.remove('is-affected');
     },
     expand() {
       this.expanded = true;
@@ -370,7 +370,6 @@ export default {
   margin: -5px;
   position: relative;
   flex: 1 100%;
-  transition: background-color .2s ease-in;
 
   &-heading {
     display: block;
@@ -417,10 +416,8 @@ export default {
     }
   }
 
-  &.is-indicated {
-    background: @sec;
-    margin-right: -5px;
-    padding-right: 5px;
+  &.is-affected {
+    outline: 2px solid @brand-primary;
   }
 
   &-collapsedLabel {

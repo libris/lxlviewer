@@ -164,6 +164,23 @@ export default {
   },
   watch: {
   },
+  events: {
+    'remove-field'(path) {
+      const modifiedData = _.cloneDeep(this.formData);
+      _.unset(modifiedData, path);
+      this.updateForm(this.editingObject, modifiedData, this.formData);
+    },
+    'update-value'(path, value) {
+      // console.log("FormComp: - Updating " + path, 'to', JSON.stringify(value));
+      const modified = _.cloneDeep(this.formData);
+
+      _.set(modified, path, value);
+      // console.log("New value recieved for", path, "=", value);
+      // console.log(modified);
+      this.changeStatus('removing', false);
+      this.updateForm(this.editingObject, modified, this.formData);
+    },
+  },
   methods: {
     keyIsLocked(key) {
       return (this.isLocked || key === '@id' || key === '@type');
