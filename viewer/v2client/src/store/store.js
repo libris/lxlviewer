@@ -206,7 +206,6 @@ const store = new Vuex.Store({
       state.inspector.status.updating = true;
       // Clone inspectorData so we can manipulate it before setting it
       const inspectorData = _.cloneDeep(state.inspector.data);
-
       // Push old value to history
       if (payload.addToHistory) {
         const changes = [];
@@ -311,6 +310,7 @@ const store = new Vuex.Store({
     undoInspectorChange({ commit, state }) {
       const history = state.inspector.changeHistory;
       const lastNode = history[history.length-1];
+
       let payload = { addToHistory: false, changeList: [] };
       _.each(lastNode, (node) => {
         if (typeof node.value !== 'undefined') {

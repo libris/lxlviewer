@@ -47,16 +47,7 @@ export default {
         return valueArray;
       },
       set: _.debounce(function(newValue) {
-        this.$store.dispatch('updateInspectorData', {
-          changeList: [
-            {
-              path: this.path,
-              value: newValue,
-            }
-          ],
-          addToHistory: true,
-        });
-        this.$store.dispatch('setInspectorStatusValue', { property: 'unsavedChanges', value: true });
+        this.update(newValue);
       }, 1000)
     }
   },
@@ -75,6 +66,21 @@ export default {
         e.target.blur();
         e.preventDefault();
         return false;
+      }
+    },
+    update(newValue) {
+      const oldValue = _.cloneDeep(_.get(this.inspector.data, this.path));
+      if (newValue !== oldValue) {
+        this.$store.dispatch('updateInspectorData', {
+          changeList: [
+            {
+              path: this.path,
+              value: newValue,
+            }
+          ],
+          addToHistory: true,
+        });
+        this.$store.dispatch('setInspectorStatusValue', { property: 'unsavedChanges', value: true });
       }
     },
     initializeTextarea() {
@@ -114,6 +120,7 @@ export default {
     <textarea class="ItemValue-input js-itemValueInput" 
       rows="1" 
       v-model="value" 
+      @blur="update($event.target.value)"
       @keydown="handleKeys" 
       v-if="!isLocked"></textarea>
     <span class="ItemValue-text" 
