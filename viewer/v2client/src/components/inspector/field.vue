@@ -261,12 +261,12 @@ export default {
     highlightItem(event) {
       let item = event.target;
       while ((item = item.parentElement) && !item.classList.contains('js-field'));
-       item.classList.add('is-affected');
+       item.classList.add('is-indicated');
     },
     unHighlightItem(event) {
       let item = event.target;
       while ((item = item.parentElement) && !item.classList.contains('js-field'));
-      item.classList.remove('is-affected');
+      item.classList.remove('is-indicated');
     },
     updateValue(value) {
       this.$dispatch('update-value', this.getPath, value);
@@ -553,9 +553,10 @@ export default {
   flex-direction: row;
   opacity: 1;
   position: relative;
+  transition: background-color .2s ease-in;
 
-  &.is-affected {
-    outline: 2px solid @brand-primary;
+  &.is-indicated {
+    background: @sec;
   }
 
   @media (min-width: 768px) {
@@ -570,10 +571,12 @@ export default {
     overflow: visible;
     max-height: auto;
     display: inline-block;
+    transition: background-color .2s ease-in;
 
-    &.is-affected {
-      //border: 2px solid @brand-primary;
-      outline: 2px solid @brand-primary;
+    &.is-indicated {
+      background: @sec;
+      margin-right: -5px;
+      padding-right: 5px;
     }
 
     &:before, 
