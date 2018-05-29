@@ -19,17 +19,26 @@ Exemplet nedan är baserat på Arbetslivscentrum. Tillägg kan vara fiktiva och 
 
 Beskrivning av agenten som ska auktoriseras.
 
-* Namn (name) (110 ‡a)
-  <br/>Föredragen namnform som utgör den auktoriserade namnformen.
-  <br/>```Exempel: Arbetslivscentrum```
-  <br/>För namnformer som består av överordnad och underordnad enhet används istället fälten Är del av/namn tillsammans med Namn på underordnad enhet. Dessa fält beskrivs under rubriken Valbara fält för Agent - Organisation. Om dessa två fält används måste fältet namn tas bort. Klicka i så fall på papperskorgsikonen under egenskapen Namn. 
-
 * Verksamhetens starttid/Startdatum för aktivitetsperiod (activityStartDate = 046 ‡s)
   <br/>```Exempel: 1977```
     
 * Verksamhetens sluttid/Slutdatum för aktivitetsperiod (activityEndDate = 046 ‡t)
   <br/>```Exempel: 1994``` 
    
+* Namn (name) (110 ‡a)
+  <br/>Föredragen namnform som utgör den auktoriserade namnformen.
+  <br/>```Exempel: Arbetslivscentrum```
+  <br/>För namnformer som består av överordnad och underordnad enhet används istället fälten Är del av/namn tillsammans med Namn på underordnad enhet. Om dessa två fält används måste fältet Namn raderas. Klicka i så fall på papperskorgsikonen under egenskapen Namn. 
+  
+* Är del av/Namn (isPartOf/name = 110 2/- ‡a)
+  <br/>Överordnat namn i en auktoriserad namnform som består av underordnad enhet. Fältet används endast tillsammans med Namn på underordnad enhet.
+  <br/>```Exempel: Stockholms universitet```
+  <br/>För att lägga till fält: Klicka på +ikonen under egenskapen Är del av, och skapa lokal entitet organisation. Lägg sedan till fältet Namn.
+  
+* Namn på underordnad enhet (marc/subordinateUnit =110 2/- ‡b)
+  <br/>Underordnade och relaterade organisationer som ska anges som underavdelning. Kännetecknande kan vara att namnet är osjälvständigt och det överordnade begreppet behövs för att man med säkerhet ska kunna identifiera organisationen. Namn på underordnad enhet ingår i den auktoriserade namnformen. Fältet används endast tillsammans med Är del av.
+  <br/>```Exempel: Centrum för medeltidsstudier```  
+
 * Administativ historik (hasHistoricalData = 678 ‡a)
   <br/>Anmärkning om administrativ historik.
   <br/>```Exempel: Statligt forskningsinstitut inom arbetslivsområdet. 1994 ändrades namnet till Institutet för arbetslivsforskning```
@@ -113,15 +122,6 @@ Nya fält läggs till med hjälp av den runda +ikonen i verktygsmenyn.
 * Tid för upphörande/Slutdatum (terminateDate = 046 ‡r)
   <br/>```Exempel: 2003```
   
-* Är del av/Namn (isPartOf/name = 110 2/- ‡a)
-  <br/>Överordnat namn i en auktoriserad namnform som består av underordnad enhet. Fältet används endast tillsammans med Namn på underordnad enhet.
-  <br/>```Exempel: Stockholms universitet```
-  <br/>För att lägga till fält: Klicka på +ikonen under egenskapen Är del av, och skapa lokal entitet organisation. Lägg sedan till fältet Namn.
-  
-* Namn på underordnad enhet (marc/subordinateUnit =110 2/- ‡b)
-  <br/>Underordnade och relaterade organisationer som ska anges som underavdelning. Kännetecknande kan vara att namnet är osjälvständigt och det överordnade begreppet behövs för att man med säkerhet ska kunna identifiera organisationen. Namn på underordnad enhet ingår i den auktoriserade namnformen. Fältet används endast tillsammans med Är del av.
-  <br/>```Exempel: Centrum för medeltidsstudier```  
-  
 * Verksamhetsområde (fieldOfActivity = 372 ‡a ‡2)
   <br/>Ange verksamhetsområde för en organisation vid behov.
   <br/>```Exempel: Design```
@@ -143,3 +143,5 @@ För att lägga till fält: Klicka på +ikonen under egenskapen Andra attribut f
   <br/>Här är det möjligt att ange en samhörande institution.
   <br/>```Exempel: Uppsala universitet``` 
   <br/>För att lägga till fält: Klicka på +ikonen under egenskapen Organisatorisk tillhörighet, och skapa lokal entitet t ex organisation. Lägg sedan till det fält som behövs t ex namn. OBS! Organisatorisk tillhörighet ska inte göras till sökbar länk.
+
+ 
