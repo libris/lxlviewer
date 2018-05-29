@@ -72,6 +72,7 @@ const store = new Vuex.Store({
       apiPath: process.env.API_PATH,
       authPath: process.env.AUTH_PATH,
       idPath: process.env.ID_PATH,
+      piwikID: process.env.PIWIK_ID,
       appPaths: {
         '/find?': '/search/libris?',
       },
