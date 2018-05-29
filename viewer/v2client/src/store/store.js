@@ -93,7 +93,7 @@ const store = new Vuex.Store({
         'http://id.kb.se/',
         'https://id.kb.se/',
       ],
-      specialProperties: [
+      hiddenProperties: [
         '@id',
         '@type',
         'created',
