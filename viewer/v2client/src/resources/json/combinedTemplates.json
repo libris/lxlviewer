@@ -226,10 +226,10 @@
           }],
           "publication": [
             {
-              "@type": "CurrentPublicationPeriod",
+              "@type": "PrimaryPublication",
               "date": "",
-              "startDate": "",
-              "endDate": "",
+              "startYear": "",
+              "endYear": "",
               "country": [ {"@id": "https://id.kb.se/country/sw"} ],
               "place": {
                 "@type": "Place",
