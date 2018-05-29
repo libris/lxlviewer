@@ -247,6 +247,9 @@ const store = new Vuex.Store({
       state.user = userObj;
       state.user.saveSettings();
     },
+    flushChangeHistory(state) {
+      state.inspector.changeHistory = [];
+    },
     logoutUser(state) {
       localStorage.removeItem('at');
       state.user = User.getUserObject();
@@ -309,6 +312,9 @@ const store = new Vuex.Store({
     }
   },
   actions: {
+    flushChangeHistory({commit}) {
+      commit('flushChangeHistory');
+    },
     undoInspectorChange({ commit, state }) {
       const history = state.inspector.changeHistory;
       const lastNode = history[history.length-1];
