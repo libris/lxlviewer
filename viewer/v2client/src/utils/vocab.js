@@ -345,7 +345,10 @@ export function getSubClassChain(classname, vocabClasses, context) {
     vocabClasses,
     context,
   ));
-  classObj.subClassChain = subClassChain;
+  const curieChain = subClassChain.map((subClass) => {
+    return StringUtil.getCompactUri(subClass, context);
+  });
+  classObj.subClassChain = curieChain;
   return subClassChain;
 }
 
