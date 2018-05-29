@@ -9,7 +9,7 @@ tags:
 
 ## Skapa ny: Agent - Organisation
 
-Lathunden beskriver de fält som finns representerade i mallen. Om något av fälten i mallen inte behövs kan de raderas genom ett klick på papperskorgsikonen intill fältet. Ett urval av fält kopplade till organisation som är möjliga att lägga till, men som inte finns i mallen, beskrivs i slutet av lathunden.
+Lathunden beskriver de fält som finns representerade i mallen. Om något av fälten i mallen inte behövs kan de raderas genom ett klick på papperskorgsikonen intill fältet. Fält relevanta för organisation som är möjliga att lägga till, men som inte finns i mallen, beskrivs i slutet av lathunden.
 
 OBS! Var noggrann vid sökning/testlänkning för att säkerställa att auktoriserad namnform inte redan finns. Glöm inte att redigera Adminmetadata och spara innan vidare navigation i verktyget.
 
@@ -19,27 +19,40 @@ Exemplet nedan är baserat på Arbetslivscentrum. Tillägg kan vara fiktiva och 
 
 Beskrivning av agenten som ska auktoriseras.
 
-* Namn (name) (110 ‡a)
-  <br/>Föredragen namnform som utgör den auktoriserade namnformen. För namnformer som består av överordnad och underordnad enhet används istället andra fält. Beskrivning av vilka fält är under arbete.
-  <br/>```Exempel: Arbetslivscentrum```
-
 * Verksamhetens starttid/Startdatum för aktivitetsperiod (activityStartDate = 046 ‡s)
   <br/>```Exempel: 1977```
     
 * Verksamhetens sluttid/Slutdatum för aktivitetsperiod (activityEndDate = 046 ‡t)
   <br/>```Exempel: 1994``` 
    
+* Namn (name) (110 ‡a)
+  <br/>Föredragen namnform som utgör den auktoriserade namnformen.
+  <br/>```Exempel: Arbetslivscentrum```
+  <br/>För namnformer som består av överordnad och underordnad enhet används istället fälten Är del av/namn tillsammans med Namn på underordnad enhet. Om dessa två fält används måste fältet Namn raderas. Klicka i så fall på papperskorgsikonen under egenskapen Namn. 
+  
+* Är del av/Namn (isPartOf/name = 110 2/- ‡a)
+  <br/>Överordnat namn i en auktoriserad namnform som består av underordnad enhet. Fältet används endast tillsammans med Namn på underordnad enhet.
+  <br/>```Exempel: Stockholms universitet```
+  <br/>För att lägga till fält: Klicka på +ikonen under egenskapen Är del av, och skapa lokal entitet organisation. Lägg sedan till fältet Namn.
+  
+* Namn på underordnad enhet (marc/subordinateUnit =110 2/- ‡b)
+  <br/>Underordnade och relaterade organisationer som ska anges som underavdelning. Kännetecknande kan vara att namnet är osjälvständigt och det överordnade begreppet behövs för att man med säkerhet ska kunna identifiera organisationen. Namn på underordnad enhet ingår i den auktoriserade namnformen. Fältet används endast tillsammans med Är del av.
+  <br/>```Exempel: Centrum för medeltidsstudier```  
+
 * Administativ historik (hasHistoricalData = 678 ‡a)
   <br/>Anmärkning om administrativ historik.
   <br/>```Exempel: Statligt forskningsinstitut inom arbetslivsområdet. 1994 ändrades namnet till Institutet för arbetslivsforskning```
   <br/>Lägg till fält genom att klicka på +ikonen. Klicka på +ikonen inom det tillagda fältet och välj Benämning där uppgifterna anges.
   
-* Variant (hasVariant = 410 ‡a)
+* Variant (hasVariant = 410 ‡a ‡b)
   <br/>I detta fält anges variantnamn och alternativa namnformer som stavningsvarianter, förkortningar etc. Fältet upprepas om flera variantnamn behöver läggas till.
   <br/>```Exempel: ALC```
   <br/>```Exempel: Swedish Centre for Working Life```
-  <br/>För att lägga till fält: Klicka på +ikonen under egenskapen variant, och skapa lokal entitet t ex organisation. Lägg sedan till det fält som behövs t ex namn. OBS! Varianter ska inte göras till sökbara länkar.
-  
+  <br/>För att lägga till fält: Klicka på +ikonen under egenskapen variant, och skapa lokal entitet t ex organisation. Lägg sedan till de fält som behövs t ex namn. 
+  <br/>För att ange auktoriserad namnform som består av underordnad enhet: Klicka på +ikonen under egenskapen variant, och skapa lokal entitet organisation. Till organisation läggs, genom att klicka på +ikonen längst ut till höger vid organisation, fälten Är del av samt Namn på underordnad enhet. Vid Är del av skapas lokal entitet Organisation och fältet Namn läggs till.
+  <br/>```Exempel: Är del av/Organisation /Namn: Stockholm University samt Namn på underordnad enhet: Centre for Medieval Studies```
+  <br/>OBS! Varianter ska inte göras till sökbara länkar.
+    
 * Se även (seeAlso = 510)
   <br/>I detta fält länkas mot annan agent som hör ihop med organisationen. Det kan t ex vara föregångare eller efterföljare.
   <br/>```Exempel: Institutet för arbetslivsforskning```
@@ -77,7 +90,7 @@ Information av administrativ karaktär som inte är direkt förknippad med den a
  <br/>Ändras ej.
 
 * Poststatus (recordStatus = = 000)
-  <br/>Ändras ej.
+  <br/>Val i meny. Välj Ny post vid skapande av ny auktoriserad agent. Vid uppdatering ändras status automatiskt.
 
 * Katalogisatörens anmärkning (cataloguersNote = 667 ‡a)
   <br/>Anmärkningar tänkta för kollegor inom Libriskollektivet. Det kan till exempel vara uppgifter som rör ändring av den auktoriserade namnformen. Motivera gärna ändringen och komplettera alltid med datum/sigel/signatur.
@@ -100,8 +113,8 @@ Information av administrativ karaktär som inte är direkt förknippad med den a
   <br/>Ändras ej.
     
   
-### Ett urval valbara fält för Agent- Organisation
-Följande fält är möjliga att lägga till för organisation. Nya fält läggs till med hjälp av +Fält-ikonen.
+### Valbara fält för Agent- Organisation
+Nya fält läggs till med hjälp av den runda +ikonen i verktygsmenyn.
 
 * Tid för grundande/Startdatum (establishDate = 046 ‡q)
   <br/>```Exempel: 1965```
@@ -125,4 +138,10 @@ För att lägga till fält: Klicka på +ikonen under egenskapen Verksamhetsområ
   <br/>```Exempel: Herrgårdar```
   <br/>Länka i första hand termen från en kontrollerad vokabulär som Svenska ämnesord. 
 För att lägga till fält: Klicka på +ikonen under egenskapen Andra attribut för person- och organisationsnamn, välj Allmänt ämnesord som typ och sök i rutan till vänster, välj önskad term och klicka på den gröna Lägg till-rutan till höger. (Skapa lokal entitet används endast då det inte finns auktoriserad entitet att länka till).
+
+* Organisatorisk tillhörighet (hasAffiliation = 373 ‡a)
+  <br/>Här är det möjligt att ange en samhörande institution.
+  <br/>```Exempel: Uppsala universitet``` 
+  <br/>För att lägga till fält: Klicka på +ikonen under egenskapen Organisatorisk tillhörighet, och skapa lokal entitet t ex organisation. Lägg sedan till det fält som behövs t ex namn. OBS! Organisatorisk tillhörighet ska inte göras till sökbar länk.
+
  
