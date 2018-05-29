@@ -377,13 +377,7 @@
             "name": "",
             "lifeSpan": ""
           }],
-          "seeAlso": [{
-            "@type": "Person",
-            "familyName": "",
-            "givenName": "",
-            "name": "",
-            "lifeSpan": ""
-          }],
+          "seeAlso": [],
           "fieldOfActivity": [],
           "hasOccupation": [],
           "identifiedBy": [{
@@ -451,12 +445,14 @@
           }],
           "hasVariant": [{
             "@type": "Organization",
-            "name": ""
+            "name": "",
+            "isPartOf": {
+              "@type": "Organization",
+              "name": ""
+            },
+            "marc:subordinateUnit": [ "" ]
           }],
-          "seeAlso": [{
-            "@type": "Organization",
-            "name": ""
-          }],
+          "seeAlso": [],
           "identifiedBy": [{
             "@type": "Identifier",
             "typeNote": "isni",
