@@ -100,6 +100,14 @@ export function getProperties(typeInput, level, displayDefs) {
 
     if (props.length > 0) {
       return props;
+    } else if (level === 'full') { // Try fallback to card level
+      props = getProperties(type, 'cards', displayDefs);
+      if (props.length > 0) {
+        return props;
+      }
+    }
+    if (props.length > 0) {
+      return props;
     } else if (level === 'cards') { // Try fallback to chip level
       props = getProperties(type, 'chips', displayDefs);
       if (props.length > 0) {
