@@ -461,7 +461,21 @@ export function getPropertiesFromArray(typeArray, vocabClasses, vocabProperties,
       const p = {
         item: properties[x],
       };
-      props.push(p);
+      // TODO: Handle shorthand when format is ready
+      if (
+        p.item.hasOwnProperty('category') &&
+        (
+          p.item.category['@id'] === 'https://id.kb.se/vocab/shorthand' ||
+          p.item.category['@id'] === 'https://id.kb.se/vocab/unstable'
+        )
+      ) {
+        // Dont add (is shorthand/unstable)
+      } else if (p.item.hasOwnProperty('abstract') && p.item.abstract === true) {
+        // Dont add (is abstract)
+      } else {
+        // Do add
+        props.push(p);
+      }
     }
   }
   props = _.uniqBy(props, 'item.@id');
