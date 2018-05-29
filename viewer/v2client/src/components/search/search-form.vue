@@ -167,8 +167,8 @@ export default {
       dataSetFilters() {
         return this.settings.dataSetFilters.libris.map(term => {
             return {
-            '@id': term.replace(this.settings.vocabPfx, ''),
-            'label': StringUtil.getLabelByLang(term, this.settings.language, this.resources.vocab, this.settings.vocabPfx, this.resources.context)
+            '@id': StringUtil.getCompactUri(term, this.resources.context),
+            'label': StringUtil.getLabelByLang(term, this.settings.language, this.resources.vocab, this.resources.context)
             };
         });
       },
@@ -348,11 +348,12 @@ export default {
         <label class="SearchBar-typeLabel" 
           :for="filter['@id']"
           v-for="filter in dataSetFilters" 
-          :key="filter['@id']">{{ filter.label }}
+          :key="filter['@id']">
           <input type="checkbox" class="Searchbar-typeInput"
             :id="filter['@id']"
             v-model="inputData.ids"
             :value="filter['@id']">
+          {{ filter.label }}
         </label>        
       </div>
       <remote-databases v-if="searchPerimeter === 'remote'" :remoteSearch="remoteSearch"></remote-databases>
@@ -364,29 +365,36 @@ export default {
 
 .SearchBar {
   margin-top: 0vh;
-  padding: 20px;
+  padding: 10px;
   transition: 0.3s ease margin-top;
 
+  @media (min-width: 768px) {
+    padding: 20px;
+  }
+
   &-sourceTabs {
-    margin: 1.5em 0 1em;
+    margin: 20px 0 10px;
     padding: 0;
   }
 
   &-sourceTab {
     color: @brand-primary;
     font-weight: 700;
-    font-size: 20px;
-    font-size: 2rem;
-    margin: 0.25em 0;
-    padding: 5px 10px;
+    font-size: 16px;
+    font-size: 1.6rem;
+    margin: 5px 0;
+    padding: 5px 10px 8px;
     text-transform: uppercase;
     transition: color 0.5s ease;
     border: 1px dashed #fff;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
 
     &.is-active {
       background-color: @brand-primary;
       border: 1px solid @brand-primary;
       color: #fff;
+      text-decoration: none;
 
       &:hover {
         color: #fff;
@@ -400,6 +408,11 @@ export default {
     &:focus {
       outline: 0px dashed @brand-primary;
       border: 1px dashed @brand-primary;
+    }
+
+    @media (min-width: 768px) {
+      font-size: 20px;
+      font-size: 2rem;
     }
 
   }
@@ -417,11 +430,14 @@ export default {
     cursor: pointer;
     font-size: 18px;
     float: right;
-    margin-right: 24px;
     width: 20%;
 
     &:focus {
       outline: auto 5px;
+    }
+
+    @media (min-width: 768px) {
+      margin-right: 24px;
     }
   }
 
@@ -453,12 +469,13 @@ export default {
   }
 
   &-input {
+    border-width: 1px;
     font-size: 20px;
     font-size: 2rem;
     line-height: 1.2;
-    height: 44px;
+    height: 42px;
     min-width: 75%;
-    margin: 0 5px 0 0;
+    margin: 0 0 10px 0;
     flex-grow: 1;
     display: flex;
     justify-content: space-between;
@@ -466,10 +483,24 @@ export default {
     .is-remoteSearch & {
       width: 100%;
     }
+
+    &:focus {
+      border: 1px solid @brand-primary;
+      outline: 0;
+      box-shadow: none;
+    }
+
+    @media (min-width: 768px) {
+      margin: 0 5px 0 0;
+    }
   }
 
   &-inputWrap {
-    display: flex;
+    display: block;
+
+    @media (min-width: 768px) {
+      display: flex;
+    }
   }
 
   &-inputLabel {
@@ -523,11 +554,18 @@ export default {
   }
 
   &-submit {
-    font-size: 20px;
-    font-size: 2rem;
+    font-size: 16px;
+    font-size: 1.6rem;
     font-weight: 700;
-    min-width: 20%;
     height: 42px;   
+    width: 100%;
+
+    @media (min-width: 768px) {
+      min-width: 20%;
+      width: auto;
+      font-size: 20px;
+      font-size: 2rem;
+    }
   }
 
   &-formGroup {
@@ -537,10 +575,6 @@ export default {
     .is-remoteSearch & {
       display: flex;
     }
-  }
-
-  &-typeButtons {
-    margin-top: 1em;  
   }
 
   &-typeLabel {

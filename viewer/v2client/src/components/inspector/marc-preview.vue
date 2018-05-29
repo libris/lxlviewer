@@ -30,12 +30,18 @@ export default {
         this.convertItemToMarc();
         this.showMarc();
       }
-    }
-  },
-  events: {
-    'close-modals'() {
-      this.hideMarc();
-      return true;
+    },
+    'inspector.event'(val, oldVal) {
+      if (val.name === 'form-control') {
+        switch(val.value) {
+          case 'close-modals':
+            this.hide();
+            return true;
+            break;
+          default:
+            return;
+        }
+      }
     },
   },
   methods: {
@@ -110,7 +116,7 @@ export default {
   components: {
     'modal-component': ModalComponent,
   },
-  ready() { // Ready method is deprecated in 2.0, switch to "mounted"
+  mounted() { 
     this.$nextTick(() => {
     });
   },
@@ -176,7 +182,6 @@ export default {
 </template>
 
 <style lang="less">
-//@import '../shared/_variables.less';
 
 .MarcPreview {
 

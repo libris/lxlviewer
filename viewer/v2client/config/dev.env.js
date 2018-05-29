@@ -8,5 +8,6 @@ module.exports = merge(prodEnv, {
   NODE_ENV: '"development"',
   API_PATH: JSON.stringify(apiConf.path),
   AUTH_PATH: JSON.stringify(apiConf.auth),
+  ID_PATH: JSON.stringify(apiConf.id),
   VERSION: JSON.stringify(packageJson.version)
 })

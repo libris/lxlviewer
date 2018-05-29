@@ -4,7 +4,6 @@ import * as StringUtil from '@/utils/string';
 import * as DataUtil from '@/utils/data';
 import * as VocabUtil from '@/utils/vocab';
 import * as HttpUtil from '@/utils/http';
-// import * as _ from 'lodash';
 import * as DisplayUtil from '@/utils/display';
 import * as RecordUtil from '@/utils/record';
 import EntityForm from '@/components/inspector/entity-form';
@@ -17,6 +16,19 @@ import { mapGetters } from 'vuex';
 
 export default {
   name: 'Inspector',
+  beforeRouteLeave (to, from , next) {
+    if (this.inspector.status.editing && this.inspector.status.unsavedChanges && !this.inspector.status.saving) {
+      const confString = StringUtil.getUiPhraseByLang('You have unsaved changes. Do you want to leave the page?', this.settings.language);
+      const answer = window.confirm(confString);
+      if (answer) {
+        next();
+      } else {
+        next(false);
+      }
+    } else {
+      next();
+    }
+  },
   data () {
     return {
       documentId: null,
@@ -27,6 +39,17 @@ export default {
     }
   },
   methods: {
+    initializeWarnBeforeUnload() {
+      window.addEventListener("beforeunload", (e) => {
+        if (!this.inspector.status.editing || !this.inspector.status.unsavedChanges || this.inspector.status.saving) {
+          return undefined;
+        }
+        const confirmationMessage = StringUtil.getUiPhraseByLang('You have unsaved changes. Do you want to leave the page?', this.settings.language);
+
+        (e || window.event).returnValue = confirmationMessage; //Gecko + IE
+        return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
+      });
+    },
     initJsonOutput() {
       window.getJsonOutput = () => {
       const obj = this.getPackagedItem();
@@ -39,8 +62,10 @@ export default {
     initToolbarFloat() {
       const toolbarPlaceholderEl = this.$refs.ToolbarPlaceholder;
       const toolbarTestEl = this.$refs.ToolbarTest;
-      const width = toolbarPlaceholderEl.clientWidth || 65;
-      toolbarTestEl.style.width = `${width}px`;
+      const width = typeof toolbarPlaceholderEl !== 'undefined' ? toolbarPlaceholderEl.clientWidth : 65;
+      if (typeof toolbarTestEl !== 'undefined') {
+        toolbarTestEl.style.width = `${width}px`;
+      }
     },
     fetchDocument() {
       const fetchUrl = `${this.settings.apiPath}/${this.documentId}/data.jsonld`;
@@ -101,6 +126,7 @@ export default {
     loadDocument() {
       this.$store.dispatch('setInspectorStatusValue', { property: 'isNew', value: false });
       this.$store.dispatch('setInspectorStatusValue', { property: 'editing', value: false });
+      this.$store.dispatch('setInspectorStatusValue', { property: 'unsavedChanges', value: false });
       this.fetchDocument();
     },
     loadNewDocument() {
@@ -110,6 +136,7 @@ export default {
         this.$router.go(-1);
         console.warn('New document called without input data, routing user back.')
       } else {
+        this.$store.dispatch('setInspectorStatusValue', { property: 'unsavedChanges', value: false });
         this.$store.dispatch('setInspectorData', RecordUtil.splitJson(insertData));
         this.$store.dispatch('setInspectorStatusValue', { 
           property: 'editing', 
@@ -177,7 +204,6 @@ export default {
     },   
     saveItem(done=false) {
       this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: true });
-      this.$store.dispatch('setInspectorStatusValue', { property: 'isNew', value: false });
 
       const RecordId = this.inspector.data.record['@id'];
       const obj = this.getPackagedItem();
@@ -215,8 +241,9 @@ export default {
             this.$store.dispatch('setInspectorStatusValue', { property: 'editing', value: false });
           }
         }
-        this.$store.dispatch('setInspectorStatusValue', { property: 'dirty', value: false });
         this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
+        this.$store.dispatch('setInspectorStatusValue', { property: 'unsavedChanges', value: false });
+        this.$store.dispatch('setInspectorStatusValue', { property: 'isNew', value: false });
       }, (error) => {
         this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
         this.$store.dispatch('pushNotification', { color: 'red', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error}` });
@@ -258,11 +285,6 @@ export default {
             return;
         }
       }
-    }
-  },
-  events: {
-    'toggle-editor-focus'() {
-      this.toggleEditorFocus();
     },
   },
   created: function () {
@@ -283,7 +305,6 @@ export default {
       return VocabUtil.getRecordType(
         this.inspector.data.mainEntity['@type'], 
         this.resources.vocab, 
-        this.settings, 
         this.resources.context);
     },
   },
@@ -297,9 +318,14 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
+      this.$store.dispatch('setStatusValue', { 
+        property: 'keybindState', 
+        value: 'overview' 
+      });
       if (!this.postLoaded) {
         this.initializeRecord();
       }
+      this.initializeWarnBeforeUnload();
       this.initJsonOutput();
       let self = this;
       window.addEventListener('resize', function() {

@@ -48,18 +48,16 @@ export default {
       },
       set: _.debounce(function(newValue) {
         this.$store.dispatch('updateInspectorData', {
-          path: this.path,
-          value: newValue,
+          changeList: [
+            {
+              path: this.path,
+              value: newValue,
+            }
+          ],
           addToHistory: true,
         });
+        this.$store.dispatch('setInspectorStatusValue', { property: 'unsavedChanges', value: true });
       }, 1000)
-      // set(newValue) {
-      //   this.$store.dispatch('updateInspectorData', {
-      //     path: this.path,
-      //     value: newValue,
-      //     addToHistory: true,
-      //   });
-      // }
     }
   },
   mounted() {
@@ -120,7 +118,7 @@ export default {
       v-if="!isLocked"></textarea>
     <span class="ItemValue-text" 
       v-if="isLocked">{{fieldValue}}</span>
-    <div class="remover" 
+    <div class="ItemValue-remover" 
       v-show="!isLocked && isRemovable" 
       v-on:click="removeThis()" 
       @mouseover="removeHover = true" 
@@ -138,9 +136,10 @@ export default {
 <style lang="less">
 
 .ItemValue {
+  display: flex;
   flex: 1;
   flex-shrink: 0;
-  margin: 0 0 10px 0;
+  margin: 5px 0 5px 0;
 
   &-input {
     display: block;
@@ -169,12 +168,19 @@ export default {
     overflow: hidden;
   }
 
-  .remover {
-    font-size: 12px;
+  &-remover {
+    font-size: 16px;
+    font-size: 1.6rem;
     float: right;
     display: inline-block;
     padding: 3px;
+    margin-left: 5px;
     cursor: pointer;
+    color: @gray;
+
+    &:hover {
+      color: @black;
+    }
   }
 }
 

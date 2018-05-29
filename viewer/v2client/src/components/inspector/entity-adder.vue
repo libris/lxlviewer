@@ -70,7 +70,18 @@ export default {
       if (val.name === 'modal-control') {
         switch(val.value) {
           case 'close-entity-adder':
-          this.closeSearch();
+            this.closeSearch();
+            return true;
+            break;
+          default:
+            return;
+        }
+      }
+      if (val.name === 'form-control') {
+        switch(val.value) {
+          case 'close-modals':
+            this.closeSearch();
+            return true;
             break;
           default:
             return;
@@ -106,14 +117,12 @@ export default {
         return VocabUtil.getTree(
           type, 
           this.resources.vocab, 
-          this.settings.vocabPfx, 
           this.resources.context
         );
       });
       return VocabUtil.flattenTree(
         tree, 
         this.resources.vocab, 
-        this.settings.vocabPfx, 
         this.resources.context, 
         this.settings.language
       );
@@ -139,26 +148,25 @@ export default {
         this.entityType, 
         this.fieldKey, 
         this.resources.vocab, 
-        this.settings.vocabPfx, 
         this.resources.context)
-        .map(item => item.replace(this.settings.vocabPfx, ''));
+        .map(item => StringUtil.getCompactUri(item, this.resources.context));
       return fetchedRange;
     },
     getFullRange() {
-      return VocabUtil.getFullRange(
+      const fetchedRange = VocabUtil.getFullRange(
         this.entityType, 
         this.fieldKey, 
         this.resources.vocab, 
-        this.settings.vocabPfx, 
         this.resources.context, 
         this.resources.vocabClasses
-      );
+      ).map(item => StringUtil.getCompactUri(item, this.resources.context));;
+      return fetchedRange;
     },
     allSearchTypes() {
       const types = this.getFullRange;
       const typeArray = [];
       for (const type of types) {
-        typeArray.push(type.replace(this.settings.vocabPfx, ''));
+        typeArray.push(StringUtil.getCompactUri(type, this.resources.context));
       }
       return typeArray;
     },
@@ -298,15 +306,21 @@ export default {
       }
       this.$store.dispatch('addToQuoted', obj);
       this.$store.dispatch('updateInspectorData', {
-          path: `${this.path}`,
-          value: currentValue,
-          addToHistory: true,
+        changeList: [
+          {
+            path: `${this.path}`,
+            value: currentValue,
+          }
+        ],
+        addToHistory: true,
       });
       this.hide();
     },
     addItem(obj) {
       let currentValue = _.cloneDeep(_.get(this.inspector.data, this.path));
-      if (!_.isArray(currentValue)) {
+      if (currentValue === null) {
+        currentValue = [obj];
+      } else if (!_.isArray(currentValue)) {
         currentValue = [currentValue];
         currentValue.push(obj);
       } else {
@@ -317,13 +331,33 @@ export default {
         } else {
           currentValue.push(obj);
         }
-        
-
       }
       this.$store.dispatch('updateInspectorData', {
-          path: `${this.path}`,
-          value: currentValue,
-          addToHistory: true,
+        changeList: [
+          {
+            path: `${this.path}`,
+            value: currentValue,
+          }
+        ],
+        addToHistory: true,
+      });
+    },
+    addSibling(obj) {
+      const linkObj = { '@id': `${this.inspector.data.record['@id']}#work` };
+      const workObj = obj;
+      workObj['@id'] = linkObj['@id'];
+      this.$store.dispatch('updateInspectorData', {
+        changeList: [
+          {
+            path: `${this.path}`,
+            value: linkObj,
+          },
+          {
+            path: 'work',
+            value: workObj,
+          }
+        ],
+        addToHistory: true,
       });
     },
     addEmpty(typeId) {
@@ -333,7 +367,11 @@ export default {
       if (StructuredValueTemplates.hasOwnProperty(shortenedType)) {
         obj = _.cloneDeep(StructuredValueTemplates[shortenedType]);
       }
-      this.addItem(obj);
+      if (this.fieldKey === 'instanceOf') {
+        this.addSibling(obj);
+      } else {
+        this.addItem(obj);
+      }
     },
     addType(typeId) {
       const shortenedType = StringUtil.convertToPrefix(typeId, this.resources.context);
@@ -377,6 +415,7 @@ export default {
 
 <template>
   <div class="EntityAdder" :class="{'is-innerAdder': isPlaceholder, 'is-fillWidth': addEmbedded}">
+    <!-- Adds another empty field of the same type -->
     <div class="EntityAdder-add"
       v-if="isPlaceholder && !addEmbedded" 
       v-on:click="add()" 
@@ -394,6 +433,7 @@ export default {
       </span>
     </div>
 
+    <!-- Add entity within field -->
     <div class="EntityAdder-add action-button" 
       v-if="!isPlaceholder && !addEmbedded" 
       tabindex="0"
@@ -496,7 +536,7 @@ export default {
           {{ "Searching" | translatePhrase }}...
           <br><i class="EntityAdder-searchStatusIcon fa fa-circle-o-notch fa-spin"></i>
         </div>
-        <div class="EntityAdder-searchStatussearch-status"
+        <div class="EntityAdder-searchStatus search-status"
           v-if="!loading && searchResult.length === 0 && keyword.length > 0 && searchMade">
           {{ "No results" | translatePhrase }}...
         </div>
@@ -516,12 +556,6 @@ export default {
 <style lang="less">
 
 .EntityAdder {
-  &.disabled {
-    visibility: hidden;
-  }
-  &.is-fillWidth {
-    width: 100%;
-  }
   &.is-innerAdder {
     cursor: pointer;
   }
@@ -548,11 +582,17 @@ export default {
 
   &-typeChooser {
     text-align: center;
-    padding: 5px;
-    border: 2px solid #b2b2b2;
   }
 
   &-typeSelect {
+    background: @white;
+    color: @black;
+    margin: 0 0 5px 0;
+    border: 1px solid #6F767B;
+    border-radius: 2px;
+    font-size: 14px;
+    font-size: 1.4rem;
+    font-weight: normal;
     width: 100%;
   }
 
@@ -605,7 +645,7 @@ export default {
   }
 
   &-searchSelect {
-    max-width: 50%;
+    max-width: 200px;
     padding: .2em .5em;
     margin: 0 .3em;
     border-radius: .3em;
@@ -656,6 +696,11 @@ export default {
     font-weight: 700;
     font-size: 12px;
     font-size: 1.2rem;
+  }
+
+  &-createSelect {
+    display: block;
+    width: 100%;
   }
 
   &-searchStatus {

@@ -1,14 +1,17 @@
 {
   "overview": {
-    "mod+s": "save-item|false",
-    "mod+d": "save-item",
+    "mod+s": "save-item",
+    "mod+d": "save-item-done",
     "mod+e": "edit-item",
     "alt+q": "cancel-edit",
-    "mod+z": "navigate-change-history|back",
-    "alt+plus": "form-control|expand-item",
-    "alt+minus": "form-control|collapse-item",
+    "alt+z": "undo",
+    "alt+plus": "expand-item",
+    "±": "expand-item", 
+    "alt+minus": "collapse-item",
     "alt+f": "open-field-adder",
-    "mod+shift+c": "duplicate-item"
+    "mod+shift+c": "duplicate-item",
+    "ctrl+shift+right": "admin-data-on",
+    "ctrl+shift+left": "admin-data-off"
   },
   "field-adder": {
     "esc": "close-modals",
@@ -34,6 +37,7 @@
   },
   "entity-search-list": {
     "down": "select-next",
-    "up": "select-prev"
+    "up": "select-prev",
+    "enter": "add-entity"
   }
 }

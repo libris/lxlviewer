@@ -233,7 +233,6 @@ export function prepareDuplicateFor(inspectorData, user) {
   // Removes fields that we do not want to import or copy
   const newData = _.cloneDeep(inspectorData);
   newData.record.descriptionCreator = { '@id': `https://libris.kb.se/library/${user.settings.activeSigel}` };
-  
   if (newData.mainEntity) {
     newData.mainEntity['@id'] =  `https://id.kb.se/TEMPID#it`;
     delete newData.mainEntity.sameAs;
@@ -245,6 +244,7 @@ export function prepareDuplicateFor(inspectorData, user) {
   }
   if (newData.work) {
     newData.work['@id'] = `https://id.kb.se/TEMPID#work`;
+    newData.mainEntity.instanceOf = { '@id': newData.work['@id'] };
     delete newData.work.sameAs;
   }
 
@@ -276,30 +276,29 @@ export function getNewCopy(id) {
   });
 }
 
-export function getEmptyForm(type, vocab, display, settings) {
+export function getEmptyForm(type, vocab, display, context) {
+  // TODO: Is this used?
   console.log('Type', type);
   const formObj = { '@type': type };
-  let inputKeys = DisplayUtil.getProperties(type, 'cards', display, settings);
+  let inputKeys = DisplayUtil.getProperties(type, 'cards', display);
   if (inputKeys.length === 0) {
     const baseClasses = VocabUtil.getBaseClassesFromArray(
       type,
       vocab,
-      settings.vocabPfx
     );
     console.log('baseClasses for', type, 'is', JSON.stringify(baseClasses));
     for (const baseClass of baseClasses) {
       inputKeys = DisplayUtil.getProperties(
-        baseClass.replace(settings.vocabPfx, ''),
+        StringUtil.getCompactUri(baseClass, context),
         'cards',
         display,
-        settings
       );
       if (inputKeys.length > 0) {
         break;
       }
     }
     if (inputKeys.length === 0) {
-      inputKeys = DisplayUtil.getProperties('Resource', 'cards', display, settings);
+      inputKeys = DisplayUtil.getProperties('Resource', 'cards', display);
     }
   }
   inputKeys = ['@type'].concat(inputKeys);
@@ -307,7 +306,7 @@ export function getEmptyForm(type, vocab, display, settings) {
     if (inputKey === '@type') {
       formObj[inputKey] = type;
     } else {
-      const keyRange = VocabUtil.getRange(type, inputKey, vocab, settings.vocabPfx, context);
+      const keyRange = VocabUtil.getRange(type, inputKey, vocab, context);
       if (keyRange.length === 0 || keyRange[0].split(':')[1] === 'Literal') {
         formObj[inputKey] = '';
       } else {

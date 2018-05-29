@@ -10,7 +10,7 @@ import LensMixin from '../mixins/lens-mixin';
 import { mapGetters } from 'vuex';
 
 export default {
-  name: 'item-vocab',
+  name: 'item-boolean',
   mixins: [ItemMixin],
   props: {
     fieldValue: '',
@@ -27,9 +27,8 @@ export default {
       searchResult: {},
       searchDelay: 2,
       removeHover: false,
-      possibleValues: [],
       selected: '',
-      disableDataSync: false, // Used to prevent data sync when setting dropdown selected state from code
+      disableDataSync: false, // Used to prevent data sync when setting state from code
     };
   },
   computed: {
@@ -53,9 +52,7 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      this.possibleValues = this.getPossibleValues();
       this.selected = this.fieldValue;
-      // this.setInitialValue();
     });
   },
   watch: {
@@ -83,29 +80,6 @@ export default {
     },
   },
   methods: {
-    getPossibleValues() {
-      let values = [];
-      const possibleValues = [];
-      _.each(this.range, (item) => {
-        const type = StringUtil.getCompactUri(item, this.resources.context);
-        values = values.concat(VocabUtil.getTermByType(type, this.resources.vocab, this.resources.context));
-      });
-      values = _.uniq(values);
-      _.each(values, (value) => {
-        possibleValues.push(StringUtil.getCompactUri(value['@id'], this.resources.context));
-      });
-      return _.sortBy(possibleValues, value => StringUtil.getLabelByLang(
-        value, 
-        this.settings.language, 
-        this.resources.vocab, 
-        this.resources.context)
-      );
-    },
-    setInitialValue() {
-      // if (this.possibleValues.indexOf(this.fieldValue) > -1) {
-      //   this.selected = this.fieldValue;
-      // }
-    },
   },
   components: {
     'processed-label': ProcessedLabel,
@@ -115,34 +89,24 @@ export default {
 </script>
 
 <template>
-  <div class="ItemVocab" v-bind:class="{'is-locked': isLocked, 'is-unlocked': !isLocked, 'distinguish-removal': removeHover, 'removed': removed}">
-    <div v-if="!isLocked && possibleValues.length > 0">
-      <select v-model="selected" class="ItemVocab-select">
-        <option 
-          v-for="option in possibleValues" 
-          :key="option" 
-          v-bind:value="option">{{ option | labelByLang }}</option>
-      </select>
+  <div class="ItemBoolean" v-bind:class="{'is-locked': isLocked, 'is-unlocked': !isLocked, 'distinguish-removal': removeHover, 'removed': removed}">
+    <div v-if="!isLocked">
+      <input type="checkbox" v-model="selected" :disabled="isLocked" />
     </div>
     <span class="ItemVocab-text" 
-      v-if="isLocked">{{fieldValue | labelByLang}}</span>
+      v-if="isLocked">{{fieldValue ? 'Yes' : 'No' | translatePhrase}}</span>
   </div>
 </template>
 
 <style lang="less">
 
-.ItemVocab {
+.ItemBoolean {
   &.is-locked {
     line-height: 2;
-    padding-left: 5px;
   }
 
   &-text {
     word-break: break-word;
-  }
-
-  &-select {
-    width: 100%;
   }
 }
 

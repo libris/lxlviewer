@@ -40,9 +40,8 @@ export default {
   },
   watch: {
   },
-  ready() { // Ready method is deprecated in 2.0, switch to "mounted"
+  mounted() { // Ready method is deprecated in 2.0, switch to "mounted"
     this.$nextTick(() => {
-      // Do stuff
     });
   },
 };
@@ -55,14 +54,6 @@ export default {
       :class="'SummaryAction-button--'+options.styling">
       {{options.text | translatePhrase}}
     </button>
-    <!-- <a v-if="options.inspectAction && isLibrisResource" :href="inspectUrl" target="_blank" class="inspect-link">
-      <i class="fa fa-external-link" aria-hidden="true"></i>
-      {{"View" | translatePhrase}}
-    </a>
-    <a v-if="options.inspectAction && !isLibrisResource" :href="options.payload['@id']" target="_blank" class="inspect-link">
-      <i class="fa fa-external-link" aria-hidden="true"></i>
-      {{"View" | translatePhrase}}
-    </a> -->
   </div>
 </template>
 
@@ -78,13 +69,18 @@ export default {
   &-button {
     min-width: 90px;
     padding: 3px 10px;
+    font-size: 12px;
+    font-size: 1.2rem;
+    line-height: 1.2;
 
     &--brand {
       color: @white;
       background: @brand-primary;
+
       &:hover {
         background: lighten(@brand-primary, 5%);
       }
+
       &:active {
         background: darken(@brand-primary, 5%);
       }
@@ -93,9 +89,11 @@ export default {
     &--gray {
       color: @black;
       background: @gray-light;
+
       &:hover {
         background: lighten(@gray-light, 5%);
       }
+
       &:active {
         background: darken(@gray-light, 5%);
       }

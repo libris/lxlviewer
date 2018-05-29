@@ -34,9 +34,13 @@ export default {
   },
   computed: {
     routerPath() {
-      const uriParts = this.focusData['@id'].split('/');
-      const fnurgel = uriParts[uriParts.length-1];
-      return `/${fnurgel}`;
+      if (this.focusData.hasOwnProperty('@id')) {
+        const uriParts = this.focusData['@id'].split('/');
+        const fnurgel = uriParts[uriParts.length-1];
+        return `/${fnurgel}`;
+      }
+
+      return '';
     },
     settings() {
       return this.$store.getters.settings;
@@ -54,14 +58,6 @@ export default {
         infoObj[node.property] = node.value.join(', ');
       });
       return infoObj;
-    },
-    renderLink() {
-      if (this.addLink === true && !this.isLocal) {
-        return true;
-      }
-
-      console.log('IS NOT LOCAL');
-      return false;
     },
     categorization() {
       return StringUtil.getFormattedEntries(
@@ -132,7 +128,7 @@ export default {
   },
   watch: {
   },
-  ready() { // Ready method is deprecated in 2.0, switch to "mounted"
+  mounted() { 
   },
 };
 </script>
@@ -148,6 +144,7 @@ export default {
 
   <div class="EntitySummary-info">
     <h3 class="EntitySummary-title" v-bind:class="{ 'EntitySummary-title--imported': isImport && shouldLink }">
+      
       <span 
         v-if="!shouldLink" 
         :title="header.join(', ')">{{ header.join(', ') }}</span>
@@ -254,17 +251,23 @@ export default {
     line-height: 1.2;
     margin: 5px 0;
     overflow: hidden;
-    text-overflow: ellipsis;
-    width: 100%;
-    white-space: nowrap;
+    width: 100%; 
+    position: relative;
 
     &--imported {
       cursor: pointer;
+    }
+
+    @media (min-width: 768px) {
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      height: auto;
     }
   }
 
   &-titleLink {
     color: @brand-primary;
+    display: inline;
     
     &.blue-link {
       color: @brand-id;

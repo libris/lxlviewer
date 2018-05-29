@@ -39,7 +39,7 @@ export default {
         embellishedReference
       );
 
-      this.$parent.setCheckingRelations(false);
+      this.$emit('done');
     },
     gotoHolding() {
       const locationParts = this.holdingId[0].split('/');
@@ -78,7 +78,7 @@ export default {
         v-if="!hasHolding || checkingHolding" 
         @click="previewHolding()" 
         :disabled="disabled" 
-        :class=" {'disabled': disabled} ">
+        :class=" {'is-disabled': disabled} ">
         <i class="fa fa-plus"
           v-if="!hasHolding && !checkingHolding"></i>
         <i class="fa fa-fw fa-circle-o-notch fa-spin"
@@ -88,7 +88,7 @@ export default {
       </button>
       <button class="btn btn-default CreateItem-btn"
         v-if="hasHolding" 
-        :class="{'green': hasHolding, 'disabled': disabled}"  
+        :class="{'CreateItem-btn--hasHolding': hasHolding, 'is-disabled': disabled}"  
         :disabled="disabled" 
         @click.prevent="gotoHolding()">
         <i class="fa fa-check"
@@ -104,7 +104,19 @@ export default {
 
 .CreateItem {
   &-btn {
+    font-weight: 700;
 
+    &--hasHolding {
+      background: @sec;
+      border-color: @sec-contrast;
+      color: @white;
+
+      &:hover {
+        background: @sec-alter;
+        border-color: @sec-alter-contrast;
+        color: @white;
+      }
+    }
   }
 }
 

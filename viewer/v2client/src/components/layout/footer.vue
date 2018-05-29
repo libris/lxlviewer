@@ -1,4 +1,7 @@
 <script>
+import { mapGetters } from 'vuex';
+import * as StringUtil from '@/utils/string';
+
 export default {
   name: 'footer-component',
   props: {
@@ -9,19 +12,29 @@ export default {
     }
   },
   methods: {
+    translate() {
+      const langCode = this.settings.language;
+      let translationEls = document.querySelectorAll('.js-translateable');
+
+      _.each(translationEls, function (translationEl) {
+        const originalText = translationEl.getAttribute('data-translateable');
+        const newText = StringUtil.getUiPhraseByLang(originalText, langCode);
+        translationEl.innerHTML = newText;
+      });
+    }
   },
   computed: {
+    ...mapGetters([
+      'settings',
+    ]),
   },
   components: {
   },
   watch: {
-    keyword(value, oldval) {
-      console.log("keyword changed", value, oldval);
-    },
   },
-  ready() { // Ready method is deprecated in 2.0, switch to "mounted"
+  mounted() { 
     this.$nextTick(() => {
-      // Do stuff
+      this.translate();
     });
   },
 };
@@ -45,10 +58,10 @@ export default {
                 <router-link class="Footer-link" to="/about" >{{ "About XL" | translatePhrase }}</router-link>
               </li>
               <li>
-                <a href="https://goo.gl/forms/dPxkhMqE10RvKQFE2" class="Footer-link js-translateable" data-translateable="Suggest change">Suggest change</a>
+                <a href="https://goo.gl/forms/TSCafatX9qKyMqK02" class="Footer-link js-translateable" data-translateable="Suggest change">Suggest change</a>
               </li>
               <li>
-                <a href="https://goo.gl/forms/3mL7jTlEpbU3BQM13" class="Footer-link js-translateable" data-translateable="Report error" >Report error</a>
+                <a href="https://goo.gl/forms/xJ837GVLmG6IHwsu2" class="Footer-link js-translateable" data-translateable="Report error" >Report error</a>
               </li>
             </ul>
           </nav>
@@ -126,29 +139,54 @@ export default {
   }
 
   &-serviceName {
-    display: flex;
     padding: 0 1em;
     flex: 20% 1 1;
+    font-size: 14px;
+    font-size: 1.4rem;
+    line-height: 1.2;
     align-items: center;
     flex-direction: column;
     justify-content: center;
-    font-weight: bold;
+    font-weight: 700;
+    display: block;
+
+   @media (min-width: 768px) {
+      display: flex;
+      text-align: center;
+      font-size: 16px;
+      font-size: 1.6rem;
+    }
   }
 
   &-serviceLogo {
     height: 75px;
+    margin: 0 30px 10px 0;
     width: auto;
+
+    @media (min-width: 768px) {
+      display: inline-block;
+      margin: 0 0 10px;
+    }
+
+    @media (min-width: 998px) {
+      margin: 0 0 10px;
+    }
   }
 
   &-navGroup {
-    display: flex;
+    display: block;
     list-style-type: none;
     flex: 80% 2 2;
+
+    @media (min-width: 998px) {
+      display: flex;
+    }
   }
 
   &-nav {
     flex: 25% 2 2;
     flex-direction: column;
+    margin: 0 0 20px 0;
   }
 
   &-navList {
@@ -160,7 +198,6 @@ export default {
   }
 
   &-navItem {
-
     .Footer-navList--socialMedia & {
        display: inline;
        margin: 0 5px;

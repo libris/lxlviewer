@@ -37,7 +37,7 @@ export default {
                 };
                 if (typeof item.object !== 'undefined') {
                   if (item.variable === '@type') {
-                    filterObj.label = StringUtil.getLabelByLang(item.object['@id'], this.settings.language, this.resources.vocab, this.settings.vocabPfx, this.resources.context);
+                    filterObj.label = StringUtil.getLabelByLang(item.object['@id'], this.settings.language, this.resources.vocab, this.resources.context);
                   } else {
                     filterObj.label = item.object['@id'].replace('https://id.kb.se/', '');
                   }
@@ -199,8 +199,13 @@ export default {
 
   &-searchDetails {
     color: @gray-darker;
-    display: flex;
     justify-content: space-between;  
+    display: block;
+    width: 100%;
+
+    @media (min-width: 992px) {
+      display: flex;
+    }
   }
 
   &-listTypes {

@@ -1,5 +1,8 @@
 {
   "libris.kb.se": {
+    "gdpr": {
+      "forced": true
+    },
     "about-xl": {
       "forced": true
     },

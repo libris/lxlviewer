@@ -11,6 +11,7 @@ import ItemLocal from './item-local';
 import ItemError from './item-error';
 import ItemVocab from './item-vocab';
 import ItemSibling from './item-sibling';
+import ItemBoolean from './item-boolean';
 import TooltipComponent from '../shared/tooltip-component';
 import { mixin as clickaway } from 'vue-clickaway';
 import * as VocabUtil from '../../utils/vocab';
@@ -55,6 +56,7 @@ export default {
     'item-sibling': ItemSibling,
     'item-error': ItemError,
     'item-vocab': ItemVocab,
+    'item-boolean': ItemBoolean,
     'entity-adder': EntityAdder,
     'tooltip-component': TooltipComponent,
   },
@@ -103,7 +105,7 @@ export default {
       if (this.key === '_uid') {
         return null;
       }
-      return VocabUtil.getTermObject(this.fieldKey, this.resources.vocab, this.settings.vocabPfx, this.resources.context);
+      return VocabUtil.getTermObject(this.fieldKey, this.resources.vocab, this.resources.context);
     },
     propertyComment() {
       if (this.keyAsVocabProperty && this.keyAsVocabProperty.commentByLang) {
@@ -145,7 +147,6 @@ export default {
       return VocabUtil.getPropertyTypes(
         this.fieldKey,
         this.resources.vocab,
-        this.settings.vocabPfx,
         this.resources.context
       );
     },
@@ -276,9 +277,17 @@ export default {
       delete parentData[this.fieldKey];
       setTimeout(() => {
         this.$store.dispatch('updateInspectorData', {
-          path: this.parentPath,
-          value: parentData,
+          changeList: [
+            {
+              path: this.parentPath,
+              value: parentData,
+            }
+          ],
           addToHistory: true,
+        });
+        this.$store.dispatch('setInspectorStatusValue', { 
+          property: 'unsavedChanges', 
+          value: true 
         });
       }, 500);
     },
@@ -289,9 +298,9 @@ export default {
       if (this.isPlainObject(o) && !o.hasOwnProperty('@id') && !o.hasOwnProperty('@type')) {
         return 'error';
       }
-      // if (this.isPlainObject(o) && o['@id'] && o['@id'].indexOf('#work') > -1) {
-      //   return 'error';
-      // }
+      if (typeof o === 'boolean') {
+        return 'boolean';
+      }
       if (VocabUtil.getContextValue(this.fieldKey, '@type', this.resources.context) === '@vocab') {
         return 'vocab';
       }
@@ -511,6 +520,16 @@ export default {
           :index="index" 
           :parent-path="getPath"></item-vocab>
 
+        <!-- Boolean value -->
+        <item-boolean
+          v-if="getDatatype(item) == 'boolean'" 
+          :is-locked="locked" 
+          :field-key="fieldKey" 
+          :field-value="item" 
+          :entity-type="entityType" 
+          :index="index" 
+          :parent-path="getPath"></item-boolean>
+
         <!-- Not linked, local child strings -->
         <item-value 
           v-if="getDatatype(item) == 'value'" 
@@ -531,13 +550,16 @@ export default {
 .Field {
   border-bottom: 1px solid #d8d8d8;
   width: 100%;
-  display: flex;
   flex-direction: row;
   opacity: 1;
   position: relative;
 
   &.is-affected {
     outline: 2px solid @brand-primary;
+  }
+
+  @media (min-width: 768px) {
+    display: flex;
   }
 
   &--inner {
@@ -565,8 +587,34 @@ export default {
       border-top: 1px solid #666666;
       top: 16px;
       width: 15px;
-      height: 0;
+      height: 2px;
     }
+
+    &:after {
+      border-left: 1px solid #666666;
+      height: 100%;
+      width: 2px;
+      top: 0px;
+    }
+
+    &:last-child {
+      &:after {
+        height: 16px;
+      }
+    }
+  }
+
+  &-label {
+    flex: 0 0 @col-label;
+    align-items: flex-start;
+    justify-content: flex-end;
+    // line-height: 2.6;
+    font-size: 20px;
+    font-size: 2.0rem;
+    font-weight: 700;
+    line-height: 1.4;
+    padding: 20px;
+    position: relative;
 
     &:after {
       border-left: 1px solid #666666;
@@ -583,15 +631,15 @@ export default {
   }
 
   &-label {
-    padding: 20px;
     flex: 0 0 @col-label;
-    text-align: right;
     align-items: flex-start;
     justify-content: flex-end;
     // line-height: 2.6;
-    font-size: 16px;
-    font-size: 1.6rem;
+    font-size: 20px;
+    font-size: 2.0rem;
+    font-weight: 700;
     line-height: 1.4;
+    padding: 20px;
     position: relative;
 
     .Field--inner & {
@@ -599,6 +647,8 @@ export default {
       padding: 0 0 0 20px;
       text-align: left;
       font-weight: 700;
+      font-size: 16px;
+      font-size: 1.6rem;
       justify-content: flex-start;
       display: flex;
     }
@@ -612,6 +662,14 @@ export default {
         top: -1px;
       }
     } 
+
+    @media (min-width: 768px) {
+      font-weight: normal;
+      font-size: 16px;
+      font-size: 1.6rem;
+      text-align: right;
+      padding: 20px;
+    }
   }
 
   &-commentText {
@@ -648,7 +706,6 @@ export default {
   }
 
   &-content {
-    border-left: 1px solid #d8d8d8;
     flex: 1 100%;
     margin: 0;
     padding: 20px;
@@ -656,6 +713,10 @@ export default {
     .Field--inner & {
       border: 0;
       padding: 0 0 0 20px;
+    }
+
+     @media (min-width: 768px) {
+      border-left: 1px solid #d8d8d8;
     }
   }
 

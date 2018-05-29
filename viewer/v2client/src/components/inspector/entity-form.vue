@@ -10,9 +10,11 @@ import * as ModalUtil from '@/utils/modals';
 import * as VocabUtil from '@/utils/vocab';
 import * as DisplayUtil from '@/utils/display';
 import * as StringUtil from '@/utils/string';
+import FormMixin from '@/components/mixins/form-mixin';
 import { mapGetters } from 'vuex';
 
 export default {
+  mixins: [FormMixin],
   props: {
     locked: false,
     editingObject: '',
@@ -41,8 +43,7 @@ export default {
       if (VocabUtil.isSubClassOf(
           this.inspector.data[this.editingObject]['@type'], 
           'Instance', 
-          this.resources.vocab, 
-          this.settings.vocabPfx, 
+          this.resources.vocab,  
           this.resources.context
         )
       ) {
@@ -51,7 +52,6 @@ export default {
           this.inspector.data[this.editingObject]['@type'], 
           'Work', 
           this.resources.vocab, 
-          this.settings.vocabPfx, 
           this.resources.context
           )
         ) {
@@ -59,7 +59,6 @@ export default {
       } else if (VocabUtil.isSubClassOf(
           this.inspector.data[this.editingObject]['@type'], 
           'Agent', this.resources.vocab, 
-          this.settings.vocabPfx, 
           this.resources.context
           )
         ) {
@@ -68,7 +67,6 @@ export default {
           this.inspector.data[this.editingObject]['@type'], 
           'Concept', 
           this.resources.vocab, 
-          this.settings.vocabPfx, 
           this.resources.context
         )
       ) {
@@ -91,65 +89,16 @@ export default {
       }
       return props;
     },
-    allowedProperties() {
-      const settings = this.settings;
-      const formObj = this.formData;
-      const allowed = VocabUtil.getPropertiesFromArray(
-        [StringUtil.convertToVocabKey(
-          StringUtil.convertToBaseUri(formObj['@type'], 
-          this.resources.context), 
-          this.resources.context)],
+    formObj() {
+      return this.formData;
+    },
+    allowed() {
+      return VocabUtil.getPropertiesFromArray(
+        formObj['@type'],
         this.resources.vocabClasses,
-        this.settings.vocabPfx,
         this.resources.vocabProperties,
         this.resources.context
       );
-      // Add the "added" property
-      for (const element of allowed) {
-        const oId = element.item['@id'].replace(settings.vocabPfx, '');
-        element.added = (formObj.hasOwnProperty(oId));
-      }
-
-      const extendedAllowed = allowed.map(property => {
-        const labelByLang = property.item.labelByLang;
-        const prefLabelByLang = property.item.prefLabelByLang;
-        if (typeof labelByLang !== 'undefined') {
-          // Try to get the label in the preferred language
-          let label = ((typeof labelByLang[this.settings.language] !== 'undefined') ? labelByLang[this.settings.language] : labelByLang.en);
-          // If several labels are present, use the first one
-          if (_.isArray(label)) {
-            label = label[0];
-          }
-          return {
-            added: property.added,
-            item: property.item,
-            label: label
-          };
-        } else if (typeof prefLabelByLang !== 'undefined') {
-          // Try to get the label in the preferred language
-          let label = ((typeof prefLabelByLang[this.settings.language] !== 'undefined') ? prefLabelByLang[this.settings.language] : prefLabelByLang.en);
-          // If several labels are present, use the first one
-          if (_.isArray(label)) {
-            label = label[0];
-          }
-          return {
-            added: property.added,
-            item: property.item,
-            label: label
-          };
-        } else {
-          // If no label, use @id as label
-          return {
-            added: property.added,
-            item: property.item,
-            label: property.item['@id']
-          };
-        }
-      });
-      const sortedAllowed = _.sortBy(extendedAllowed, (prop) => {
-        return prop.label.toLowerCase();
-      });
-      return sortedAllowed;
     },
     formData() {
       return this.inspector.data[this.editingObject];
@@ -179,12 +128,11 @@ export default {
         const baseClasses = VocabUtil.getBaseClassesFromArray(
           formObj['@type'],
           this.resources.vocab,
-          this.settings.vocabPfx,
           this.resources.context
         );
         for (const baseClass of baseClasses) {
           propertyList = DisplayUtil.getProperties(
-            baseClass.replace(this.settings.vocabPfx, ''),
+            StringUtil.getCompactUri(baseClass, this.resources.context),
             'cards',
             this.resources.display,
             this.settings
@@ -291,29 +239,6 @@ export default {
   background-color: @ribbon-color;
   border: solid darken(@ribbon-color, 3%);
   border-width: 0px 0px 1px 0px;
-  // border-radius: 0px 0px 2px 2px;
-  // &:before {
-  //   content: ' ';
-  //   position: absolute;
-  //   width: 0;
-  //   height: 0;
-  //   right: 0px;
-  //   top: 100%;
-  //   border-width: 5px 5px;
-  //   border-style: solid;
-  //   border-color: darken(@ribbon-color, 10%) transparent transparent darken(@ribbon-color, 10%);
-  // }
-  // &:after {
-  //   content: ' ';
-  //   position: absolute;
-  //   width: 0;
-  //   height: 0;
-  //   left: 0px;
-  //   top: 100%;
-  //   border-width: 5px 5px;
-  //   border-style: solid;
-  //   border-color: darken(@ribbon-color, 10%) darken(@ribbon-color, 10%) transparent transparent;
-  // }
 }
 
 .EntityForm {
@@ -350,28 +275,27 @@ export default {
     cursor: pointer;
     padding: 0.5em;
   }
+}
 
-  >ul {
-    padding-left: 0px;
-    margin: 0px;
-    >li {
-      color: black;
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      padding:  5px 0;
-      list-style: none;
-      width: 100%;
-      box-shadow: none;
-      transition: box-shadow ease-out 0.2s;
+.FieldList {
+  padding-left: 0px;
+  margin: 0px;
+  &-item {
+    color: black;
+    flex-direction: row;
+    align-items: center;
+    padding:  5px 0;
+    list-style: none;
+    width: 100%;
+    box-shadow: none;
+    transition: box-shadow ease-out 0.2s;
 
-      &:hover:not(.locked) {
-        >.actions {
-          opacity: 1;
-        }
+    &:hover:not(.locked) {
+      >.actions {
+        opacity: 1;
       }
-
     }
+
   }
 }
 
