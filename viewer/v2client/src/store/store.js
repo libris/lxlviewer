@@ -110,6 +110,7 @@ const store = new Vuex.Store({
         'created',
         'modified',
         'technicalNote',
+        'descriptionCreator'
       ],
       dataSetFilters: {
         libris: [
