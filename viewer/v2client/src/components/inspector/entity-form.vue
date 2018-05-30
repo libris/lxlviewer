@@ -80,86 +80,11 @@ export default {
       }
       return false;
     },
-    specialProperties() {
-      const props = [];
-      for (const prop of this.settings.specialProperties) {
-        if (this.inspector.data[this.editingObject][prop]) {
-          props.push(prop);
-        }
-      }
-      return props;
-    },
     formObj() {
       return this.formData;
     },
-    allowed() {
-      return VocabUtil.getPropertiesFromArray(
-        formObj['@type'],
-        this.resources.vocabClasses,
-        this.resources.vocabProperties,
-        this.resources.context
-      );
-    },
     formData() {
       return this.inspector.data[this.editingObject];
-    },
-    sortedFormData() {
-      const sortedForm = {};
-      for (const property of this.sortedProperties) {
-        const k = property;
-        if (typeof this.formData[k] !== 'undefined' || this.formData[k] === '') {
-          sortedForm[k] = this.formData[k];
-        }
-      }
-      return sortedForm;
-    },
-    sortedProperties() {
-      const formObj = this.formData;
-
-      // Try to get properties from type of object
-      // If none found, try baseClasses
-      let propertyList = DisplayUtil.getProperties(
-        formObj['@type'],
-        'full',
-        this.resources.display,
-        this.settings
-      );
-      if (propertyList.length === 0) { // If none were found, traverse up inheritance tree
-        const baseClasses = VocabUtil.getBaseClassesFromArray(
-          formObj['@type'],
-          this.resources.vocab,
-          this.resources.context
-        );
-        for (const baseClass of baseClasses) {
-          propertyList = DisplayUtil.getProperties(
-            StringUtil.getCompactUri(baseClass, this.resources.context),
-            'cards',
-            this.resources.display,
-            this.settings
-          );
-          if (propertyList.length > 0) {
-            break;
-          }
-        }
-        if (propertyList.length === 0) {
-          propertyList = DisplayUtil.getProperties(
-            'Resource',
-            'cards',
-            this.resources.display,
-            this.settings
-          );
-        }
-      }
-      _.each(formObj, (v, k) => {
-        if (!_.includes(propertyList, k)) {
-          propertyList.push(k);
-        }
-      });
-      _.remove(propertyList, (k) => {
-        return (this.settings.specialProperties.indexOf(k) !== -1);
-      });
-
-      return propertyList;
     },
   },
   watch: {
@@ -203,7 +128,7 @@ export default {
     <ul class="FieldList" 
       v-bind:class="{'collapsed': collapsed }">
       <field class="FieldList-item"
-        v-for="(v,k) in sortedFormData" 
+        v-for="(v,k) in filteredItem" 
         v-bind:class="{ 'locked': isLocked }" 
         :entity-type="inspector.data[editingObject]['@type']" 
         :is-inner="false" 

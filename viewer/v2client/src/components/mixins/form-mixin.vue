@@ -1,5 +1,6 @@
 <script>
 import * as DataUtil from '@/utils/data';
+import * as DisplayUtil from '@/utils/display';
 import * as VocabUtil from '@/utils/vocab';
 import * as StringUtil from '@/utils/string';
 import * as _ from 'lodash';
@@ -24,6 +25,78 @@ export default {
       'settings',
       'status',
     ]),
+    formType() {
+      return this.formObj['@type'];
+    },
+    filteredItem() {
+      const fItem = _.cloneDeep(this.sortedFormData);
+      delete fItem['@type'];
+      delete fItem['@id'];
+      delete fItem['_uid'];
+      return fItem;
+    },
+    sortedFormData() {
+      const sortedForm = {};
+      for (const property of this.sortedProperties) {
+        const k = property;
+        if (typeof this.formObj[k] !== 'undefined' || this.formObj[k] === '') {
+          sortedForm[k] = this.formObj[k];
+        }
+      }
+      return sortedForm;
+    },
+    sortedProperties() {
+      const formObj = this.formObj;
+
+      // Try to get properties from type of object
+      // If none found, try baseClasses
+      let propertyList = DisplayUtil.getProperties(
+        this.formType,
+        'full',
+        this.resources.display
+      );
+      if (propertyList.length === 0) { // If none were found, traverse up inheritance tree
+        const baseClasses = VocabUtil.getBaseClassesFromArray(
+          this.formType,
+          this.resources.vocab,
+          this.resources.context
+        );
+        for (const baseClass of baseClasses) {
+          propertyList = DisplayUtil.getProperties(
+            StringUtil.getCompactUri(baseClass, this.resources.context),
+            'full',
+            this.resources.display
+          );
+          if (propertyList.length > 0) {
+            break;
+          }
+        }
+        if (propertyList.length === 0) {
+          propertyList = DisplayUtil.getProperties(
+            'Resource',
+            'full',
+            this.resources.display
+          );
+        }
+      }
+      _.each(formObj, (v, k) => {
+        if (!_.includes(propertyList, k)) {
+          propertyList.push(k);
+        }
+      });
+      _.remove(propertyList, (k) => {
+        return (this.settings.hiddenProperties.indexOf(k) !== -1);
+      });
+      return propertyList;
+    },
+    allowed() {
+      return VocabUtil.getPropertiesFromArray(
+        this.formObj['@type'],
+        this.resources.vocabClasses,
+        this.resources.vocabProperties,
+        this.resources.context
+      );
+    },
     allowedProperties() {
       const settings = this.settings;
       const formObj = this.formObj;
@@ -32,7 +105,7 @@ export default {
       // Add the "added" property
       for (const element of allowed) {
         const oId = StringUtil.getCompactUri(element.item['@id'], this.resources.context);
-        element.added = (formObj.hasOwnProperty(oId));
+        element.added = (formObj.hasOwnProperty(oId) && formObj[oId] !== null);
       }
       const extendedAllowed = allowed.map(property => {
         const labelByLang = property.item.labelByLang;

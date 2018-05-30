@@ -92,6 +92,7 @@ export default {
     },
     initializeRecord() {
       this.postLoaded = false;
+      this.$store.dispatch('flushChangeHistory');
       this.$store.dispatch('setInspectorStatusValue', { property: 'focus', value: 'mainEntity' });
       if (this.$route.name === 'Inspector') {
         console.log("Initializing view for existing document");
@@ -330,6 +331,7 @@ export default {
       }
       this.initializeWarnBeforeUnload();
       this.initJsonOutput();
+
       let self = this;
       window.addEventListener('resize', function() {
         self.initToolbarFloat();

@@ -54,14 +54,6 @@ export default {
       'user',
       'status',
     ]),
-    allowed() {
-      return VocabUtil.getPropertiesFromArray(
-        [StringUtil.convertToVocabKey(StringUtil.convertToBaseUri(this.formObj['@type'], this.resources.context), this.resources.context)],
-        this.resources.vocabClasses,
-        this.resources.vocabProperties,
-        this.resources.context
-      );
-    },
     canCopyTitle() {
       if (this.isExtractable && !this.item.hasOwnProperty('hasTitle') && this.key === 'instanceOf') {
         return true;
@@ -94,13 +86,6 @@ export default {
         return `${this.parentPath}[${this.index}]`;
       }
       return this.parentPath;
-    },
-    filteredItem() {
-      const fItem = _.cloneDeep(this.item);
-      delete fItem['@type'];
-      delete fItem['@id'];
-      delete fItem['_uid'];
-      return fItem;
     },
     formObj() {
       return this.item;

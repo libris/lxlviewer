@@ -23,12 +23,13 @@ import FieldAdder from '@/components/inspector/field-adder';
 import SearchWindow from './search-window';
 import ItemMixin from '../mixins/item-mixin';
 import LensMixin from '../mixins/lens-mixin';
+import FormMixin from '../mixins/form-mixin';
 import {mixin as clickaway} from 'vue-clickaway';
 import { mapGetters } from 'vuex';
 
 export default {
   name: 'item-sibling',
-  mixins: [ItemMixin, LensMixin, clickaway],
+  mixins: [FormMixin, ItemMixin, LensMixin, clickaway],
   props: {
     id: '',
     fieldKey: '',
@@ -96,13 +97,6 @@ export default {
     getPath() {
       return this.suffix;
     },
-    filteredItem() {
-      const fItem = _.cloneDeep(this.item);
-      delete fItem['@type'];
-      delete fItem['@id'];
-      delete fItem['_uid'];
-      return fItem;
-    },
     isEmpty() {
       let bEmpty = true;
       // Check if item has any keys besides @type and _uid. If not, we'll consider it empty.
@@ -115,48 +109,8 @@ export default {
       });
       return bEmpty;
     },
-    allowedProperties() {
-      const settings = this.settings;
-      const formObj = this.item;
-      const allowed = VocabUtil.getPropertiesFromArray(
-        [StringUtil.convertToVocabKey(StringUtil.convertToBaseUri(formObj['@type'], this.resources.context), this.resources.context)],
-        this.resources.vocabClasses,
-        this.resources.vocabProperties,
-        this.resources.context
-      );
-      // Add the "added" property
-      for (const element of allowed) {
-        const oId = StringUtil.getCompactUri(element.item['@id'], this.resources.context);
-        element.added = (formObj.hasOwnProperty(oId) && formObj[oId] !== null);
-      }
-
-      const extendedAllowed = allowed.map(property => {
-        const labelByLang = property.item.labelByLang;
-        if (typeof labelByLang !== 'undefined') {
-          // Try to get the label in the preferred language
-          let label = ((typeof labelByLang[this.settings.language] !== 'undefined') ? labelByLang[this.settings.language] : labelByLang.en);
-          // If several labels are present, use the first one
-          if (_.isArray(label)) {
-            label = label[0];
-          }
-          return {
-            added: property.added,
-            item: property.item,
-            label: label
-          };
-        } else {
-          // If no label, use @id as label
-          return {
-            added: property.added,
-            item: property.item,
-            label: property.item['@id']
-          };
-        }
-      });
-      const sortedAllowed = _.sortBy(extendedAllowed, (prop) => {
-        return prop.label.toLowerCase();
-      });
-      return sortedAllowed;
+    formObj() {
+      return this.item;
     },
   },
   methods: {
