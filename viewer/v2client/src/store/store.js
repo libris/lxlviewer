@@ -34,6 +34,7 @@ const store = new Vuex.Store({
     inspector: {
       data: {},
       insertData: {},
+      originalData: {},
       title: '',
       status: {
         saving: false,
@@ -192,6 +193,9 @@ const store = new Vuex.Store({
           state.status.notifications.splice(i, 1);
         }
       }
+    },
+    setOriginalData(state, data) {
+      state.inspector.originalData = data;
     },
     setInspectorData(state, data) {
       state.inspector.data = data;
@@ -358,6 +362,9 @@ const store = new Vuex.Store({
     },
     setSettings({ commit }, settingsObj) {
       commit('setSettings', settingsObj);
+    },
+    setOriginalData({ commit }, data) {
+      commit('setOriginalData', data);
     },
     setInspectorData({ commit }, data) {
       commit('setInspectorData', data);

@@ -86,8 +86,9 @@ export default {
         });
       }).then((result) => {
         this.result = result;
-        this.$store.dispatch('setInspectorData', RecordUtil.splitJson(result));
-        this.postLoaded = true;
+        const splitFetched = RecordUtil.splitJson(result);
+        this.$store.dispatch('setInspectorData', splitFetched);
+        this.onPostLoaded();
       });
     },
     initializeRecord() {
@@ -127,7 +128,6 @@ export default {
     loadDocument() {
       this.$store.dispatch('setInspectorStatusValue', { property: 'isNew', value: false });
       this.$store.dispatch('setInspectorStatusValue', { property: 'editing', value: false });
-      this.$store.dispatch('setInspectorStatusValue', { property: 'unsavedChanges', value: false });
       this.fetchDocument();
     },
     loadNewDocument() {
@@ -137,16 +137,43 @@ export default {
         this.$router.go(-1);
         console.warn('New document called without input data, routing user back.')
       } else {
-
-        this.$store.dispatch('setInspectorStatusValue', { property: 'unsavedChanges', value: false });
         this.$store.dispatch('setInspectorData', RecordUtil.splitJson(insertData));
         this.$store.dispatch('setInspectorStatusValue', { 
           property: 'editing', 
           value: true 
         });
-        this.postLoaded = true;
-        this.$store.dispatch('setInsertData', '' );
-
+        this.onPostLoaded();
+      }
+    },
+    onPostLoaded() {
+      this.$store.dispatch('setInsertData', '');
+      this.$store.dispatch('setOriginalData', this.inspector.data);
+      this.$store.dispatch('setInspectorStatusValue', { property: 'unsavedChanges', value: false });
+      this.$store.dispatch('flushChangeHistory');
+      this.postLoaded = true;
+    },
+    doCancel() {
+      this.$store.dispatch('setInspectorStatusValue', { 
+        property: 'editing', 
+        value: false 
+      });
+      // Restore post
+      this.$store.dispatch('setInspectorData', this.inspector.originalData);
+      this.$store.dispatch('flushChangeHistory');
+    },
+    cancelEditing() {
+      if (!this.inspector.status.isNew) {
+        if (this.inspector.status.editing && this.inspector.status.unsavedChanges) {
+          const confString = StringUtil.getUiPhraseByLang('You have unsaved changes. Do you want to cancel?', this.settings.language);
+          const answer = window.confirm(confString);
+          if (answer) {
+            this.doCancel();
+          } 
+        } else {
+          this.doCancel();
+        }
+      } else {
+        this.$router.go(-1);
       }
     },
     setTitle() {
@@ -247,6 +274,7 @@ export default {
         }
         this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
         this.$store.dispatch('setInspectorStatusValue', { property: 'unsavedChanges', value: false });
+        this.$store.dispatch('flushChangeHistory');
         this.$store.dispatch('setInspectorStatusValue', { property: 'isNew', value: false });
       }, (error) => {
         this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
@@ -277,6 +305,9 @@ export default {
     'inspector.event'(val, oldVal) {
       if (val.name === 'post-control') {
         switch(val.value) {
+          case 'cancel':
+            this.cancelEditing();
+          break;
           case 'remove-post':
             this.openRemoveModal();
             break;
