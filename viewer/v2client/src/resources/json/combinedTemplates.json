@@ -419,15 +419,20 @@
             "@type": "AdministrativeHistoryNote",
             "label": ""
           }],
-          "hasVariant": [{
+          "hasVariant": [
+            {
             "@type": "Organization",
-            "name": "",
-            "isPartOf": {
-              "@type": "Organization",
-              "name": ""
-            },
-            "marc:subordinateUnit": [ "" ]
-          }],
+            "name": ""
+          },
+          {
+          "@type": "Organization",
+          "isPartOf": {
+            "@type": "Organization",
+            "name": ""
+          },
+          "marc:subordinateUnit": [ "" ]
+        }
+        ],
           "seeAlso": [],
           "identifiedBy": [{
             "@type": "Identifier",
