@@ -102,9 +102,6 @@ export function getProperties(typeInput, level, displayDefs) {
       return props;
     } else if (level === 'full') { // Try fallback to card level
       props = getProperties(type, 'cards', displayDefs);
-      if (props.length > 0) {
-        return props;
-      }
     }
     if (props.length > 0) {
       return props;
