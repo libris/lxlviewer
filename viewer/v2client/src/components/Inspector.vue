@@ -274,7 +274,6 @@ export default {
         }
         this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
         this.$store.dispatch('setInspectorStatusValue', { property: 'unsavedChanges', value: false });
-        this.$store.dispatch('flushChangeHistory');
         this.$store.dispatch('setInspectorStatusValue', { property: 'isNew', value: false });
       }, (error) => {
         this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
