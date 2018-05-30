@@ -38,9 +38,9 @@ samt exempel hämtade från andra poster.
   ```Exempel: NB```
 
 * Identifikator/Systemnummer/Värde (identifiedBy/SystemNumber/value = 035 ‡a)  
-  Om ett systemnummer finns i förhandspost, till exempel Bokinfos systemnummer, låt det vara kvar oförändrat.  
-   ```Exempel: (BOKR)9789188107213```
-
+  Om ett systemnummer finns i förhandspost, till exempel Bokinfos systemnummer, låt det vara kvar oförändrat.    
+   ```Exempel: (BOKR)9789188107213```  
+ 
 * Katalogiseringsspråk (descriptionLanguage = 040 ‡b)  
   Länka till entitet.  
   ```Exempel: svenska (swe)```
@@ -49,9 +49,14 @@ samt exempel hämtade från andra poster.
   För post katalogiserad enligt RDA, länka till entitet: marc/Isbd samt skapa lokal entitet med Kod: rda    
   ```Exempel: marc/Isbd (länkad entitet) + lokal entitet, Kod: rda```
 
-* Beskrivningsnivå (000/05)  
+* Beskrivningsnivå (000/17)  
   Länka till entitet.  
   ```Exempel: CIP-post, ändra till biblioteksnivå```
+  
+* Poststatus (000/05)  
+  Uppdateras automatiskt. Ändra inte.   
+  ```Exempel: Ny post```  
+  ```Exempel: Rättad eller reviderad post```
 
 ### Instans
 * Utgivningssätt (issuanceType)  
@@ -59,16 +64,18 @@ samt exempel hämtade från andra poster.
   ```Exempel: Monografisk resurs```
   
 * Har titel/Titel/Huvudtitel (hasTitle/Title/mainTitle = 245 ‡a)  
-  Skriv in uppgiften.  
+  Återge huvudtiteln från titelsidan eller annan föredragen källa så som den förekommer i källan. se [Anvisningar för katalogisering - RDA](http://www.kb.se/rdakatalogisering/Anvisningar/Arbetsfloden/Tryckta-monografier/#huvudtitel "Anvisningar för katalogisering - RDA").  
+  Skriv in uppgiften.    
   ```Exempel: Under cover```  
   ```Exempel: En arbetsdag i skriftsamhället```  
     För en titel som börjar med bestämd eller obestämd artikel, ska artikeln fileras bort. Ange fileringsvärde genom att lägga till delfältet fileringsvärde och ange en siffra. Exempel: Huvudtitel: En arbetsdag i skriftsamhället, fileringsvärde: 3   
     
-    
 * Har titel/Titel/Övrig titelinformation (= Undertitel) (hasTitle/Title/subTitle = 245 ‡b)  
-  Skriv in uppgiften. Om det finns flera undertitlar, skriv in dessa efter varandra i samma fält, åtskilda av mellanslag, kolon, mellanslag.  
+  Skriv in uppgiften. Om det finns flera undertitlar, skriv in dessa efter varandra i samma fält, åtskilda av mellanslag, kolon, mellanslag.    
   ```Exempel: livet som underrättelseagent åt MI5```  
   ```Exempel: ett etnografiskt perspektiv på skriftanvändning i vanliga yrken : småskrift utarbetad av Språkrådet```
+  
+  För att ange originaltitel, se Verk/Har titel/Titel/Huvudtitel.  
     
 * Har titel/Varianttitel/Huvudtitel (hasTitle/VariantTitle/mainTitle = 246 ‡a)  
   Skriv in uppgiften.
@@ -77,13 +84,14 @@ samt exempel hämtade från andra poster.
   Skriv in uppgiften.    
   
 * Omslagstitel, Ryggtitel, Rubriktitel etc - lägg till Har titel och välj typ. För typ av varianttitel som saknas i listan, välj Varianttitel och lägg därefter till Typanmärkning (= 246 ‡i). Lägg därefter till Huvudtitel och eventuell Övrig titelinformation.  
+  Skriv in uppgiften.  
    
 * Upphovsuppgift (responsibilityStatement = 245 ‡c)  
   Skriv in uppgiften.  
   ```Exempel: Tom Marcus ; översättning: Svante Skoglund```
 
-* Identifikator/Typ (identifiedBy)
-  Välj från lista.    
+* Identifikator/Typ (identifiedBy)  
+  Välj från lista.  
   ```Exempel: ISBN```
 
 * Identifikator/ISBN/Värde (identifiedBy/Isbn/value = 020 ‡a)  
@@ -114,16 +122,27 @@ samt exempel hämtade från andra poster.
   * Agent/Benämning (= Utgivarnamn) (agent/label = 264 -/1 ‡b)  
   Skriv in uppgiften.  Utgivarnamn ska inte länkas som entitet.  
   ```Exempel: NoNa```  
-  * Datum (= Utgivningstid) (date = 008/07-10, 264 -/1 ‡c)  
-  Skriv in uppgiften.  
+   * År (= Utgivningstid) (date = 008/07-10, 264 -/1 ‡c)  
+ Ange utgivningsår, utan klamrar eller andra tecken, endast fyra positioner. Skriv in uppgiften.  
+För att ange ett år utan klamrar eller andra tecken, ange det endast här. För att ange klamrar eller andra tecken utöver fyra positioner, använd Datum.  
   ```Exempel: 2017```  
+  * Datum (= Utgivningstid) (date = 264 -/1 ‡c)  
+ Om du behöver ange ett utgivningsdatum med fler än fyra positioner, skriv in det här. Skriv in uppgiften.  
+Om du bara vill ange ett år utan klamrar eller andra tecken, använd endast År.   
+  Skriv in uppgiften.  
+  ```Exempel: [2017]```  
+  ```Exempel: [mellan 1863 och 1866?]```  
 
 * Tillverkning (manufacture)  
   * Plats/Benämning (place/label = 264 -/3 ‡a)  
   ```Exempel: Falun```  
   * Agent/Benämning (agent/label = 264 -/3 ‡b)  
   Skriv in uppgiften.   
-  ```Exempel: Scandbook```
+  ```Exempel: Scandbook```  
+  
+* Copyright/Copyright/Datum (copyright/Copyright/date = 264 -/4 ‡c)  
+  Skriv in uppgiften. För att få fram copyrighttecknet, se [Specialtecken](https://libris-dev.kb.se/katalogisering/help/search-04-special-chars). Du kan t ex söka på teckenuppsättning i “Sök i windows” och öppna programmet, markera och kopiera tecknet och sedan klistra in det.  
+  ```Exempel: ©2017``` 
   
 * Seriemedlemskap/Ingår i serie (seriesMembership)  
   Länka till entitet.  
@@ -173,13 +192,38 @@ samt exempel hämtade från andra poster.
 * Anmärkning/Anmärkning/Benämning (hasNote/Note/label = 500 ‡a)  
   Skriv in uppgiften.  
   Skriv in allmänna anmärkningar här. Anmärkningar om specifika fält skrivs in i Kommentar (note) under respektive fält, när sådana specifika anmärkningsfält finns. 
+  
+* Målgrupp/Målgrupp/Benämning (intendedAudience/IntendedAudience/label = 521 ‡a)   
+  Skriv in uppgiften.    
+  ```Exempel: För årskurs 1```   
 
 ### Verk
+
 * Instans av Verk/Text (instanceOf/Work/Text)
 
+Skapa verket som lokal entitet eller bryt ut verket till en länkbar entitet. Vi rekommenderar att du skapar verket som lokal entitet under den första tiden som Nya Libris är i drift. Vi återkommer med anvisningar för att skapa verk som länkbara entiteter. Denna hjälptext beskriver exempel på verk som lokal entitet. Det betyder att du anger de uppgifter som listas här nedan, under Instans av Verk, utan att klicka på länksymbolen (Länka entitet) vid Instans av Verk.
+
 * Har titel/Titel/Huvudtitel (hasTitle/Title/mainTitle = 240 1-/0 ‡a)  
+  Ange den föredragna titeln för verket här, vid behov. Följ [Anvisningar för katalogisering - RDA](http://www.kb.se/rdakatalogisering/Anvisningar/Allmanna-anvisningar/Sokingangar-for-verk-och-uttryck "Anvisningar för katalogisering - RDA").
+  För översättningar och för verk som har givits ut under olika titlar på samma språk eller när samma titel har använts för olika verk, ska den föredragna titeln för verket anges. För övriga verk, hoppa över detta fält.  
+  "Originaltitel" anger du här.  
   Skriv in uppgiften.  
   ```Exempel:  Soldier spy```
+  
+* Språk (language = 008/35-37)  
+  Här anger du det språk som den text du beskriver är skriven på. För en text på svenska, ange svenska. För att ange      originalspråk för ett översatt verk, se Översättning av/Verk/Språk.  
+  Länka till entitet.  
+  ```Exempel: svenska (swe)```
+  
+  För en översättning, ange även:
+* Språk/Benämning (Language/label = 240 ‡l)  
+  Skriv in språket i klartext. Det du skriver här - verkets (översättningens) språk - visas som ett tillägg till verkets titel i marcpostens 240 ‡l.  
+  ```Exempel: Svenska```  
+
+* Översättning av/Verk/Språk (translationOf/Work/language = 041 ‡h)  
+  Här anger du det språk som en översatt text är översatt från. För en text som är översatt från engelska till svenska, ange   engelska här.  
+  Länka till entitet.  
+  ```Exempel: engelska (eng)```
 
 * Medverkan och funktion/Primär medverkan/Agent/Person (contribution/PrimaryContribution/agent/Person = 100 1/- ‡a)  
   Länka till entitet.
@@ -269,15 +313,7 @@ samt exempel hämtade från andra poster.
  * Målgrupp (intendedAudience = 008/22)  
   Länka till entitet.  
   ```Exempel: j (= barn- och ungdom, 0-16 år)```  
-
-* Språk (language = 008/35-37)  
-  Länka till entitet.  
-  ```Exempel: svenska (swe)```
-
-* Översättning av/Verk/Språk (translationOf/Work/language = 041 ‡h)  
-  Länka till entitet.  
-  ```Exempel: engelska (eng)```
-
+  
 * Innehållstyp (contentType/ContentType = 336 ‡b)  
   Länka till entitet.  
   ```Exempel: text (txt)```
