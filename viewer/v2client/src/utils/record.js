@@ -16,7 +16,7 @@ export function splitJson(json) {
   if (!json || json.length === 0) {
     throw new Error('Trying to split empty JSON data.');
   }
-  const original = json['@graph'];
+  const original = _.cloneDeep(json['@graph']);
   const dataObj = {};
   dataObj.quoted = {};
 
@@ -112,24 +112,6 @@ export function getMainEntity(graph) {
   return mainEntity;
 };
 
-export function getImportObject(graph) {
-  // Replaces the @id with temporary ones.
-  const itemGraph = [];
-  const newRecord = _.cloneDeep(graph[0]);
-  const newMainEntity = _.cloneDeep(getMainEntity(graph));
-
-  newRecord['@id'] = 'https://id.kb.se/TEMPID';
-  newRecord.mainEntity['@id'] = 'https://id.kb.se/TEMPID#it';
-  newMainEntity['@id'] = 'https://id.kb.se/TEMPID#it';
-
-  itemGraph.push(newRecord);
-  itemGraph.push(newMainEntity);
-
-  const itemObj = { '@graph': itemGraph };
-
-  return itemObj;
-}
-
 export function getItemObject(itemOf, heldBy, instance) {
   const itemObj = {
     record: {
@@ -216,36 +198,26 @@ export function getObjectAsRecord(mainEntity, record = {}) {
   return newObj;
 }
 
-export function insertWorkIntoLocal(inputData) {
-  const data = _.cloneDeep(inputData);
-  if (data.hasOwnProperty('work') &&
-  data.mainEntity.hasOwnProperty('instanceOf') &&
-  data.mainEntity.instanceOf.hasOwnProperty('@id') &&
-  data.mainEntity.instanceOf['@id'].indexOf('#work') > -1) {
-    _.unset(data.work, "['@id']");
-    data.mainEntity.instanceOf = data.work;
-    _.unset(data, 'work');
-  }
-  return data;
-}
-
 export function prepareDuplicateFor(inspectorData, user) {
   // Removes fields that we do not want to import or copy
   const newData = _.cloneDeep(inspectorData);
+  const oldBaseId = inspectorData.record['@id'];
+  const newBaseId = 'https://id.kb.se/TEMPID';
   newData.record.descriptionCreator = { '@id': `https://libris.kb.se/library/${user.settings.activeSigel}` };
   if (newData.mainEntity) {
-    newData.mainEntity['@id'] =  `https://id.kb.se/TEMPID#it`;
+    newData.mainEntity['@id'] =  newData.mainEntity['@id'].replace(oldBaseId, newBaseId);
     delete newData.mainEntity.sameAs;
   }
   if (newData.record) {
-    newData.record['@id'] =  `https://id.kb.se/TEMPID`;
-    newData.record.mainEntity['@id'] = `https://id.kb.se/TEMPID#it`;
+    newData.record['@id'] =  newData.record['@id'].replace(oldBaseId, newBaseId);
+    newData.record.mainEntity['@id'] = newData.record.mainEntity['@id'].replace(oldBaseId, newBaseId);
     delete newData.record.sameAs;
   }
   if (newData.work) {
-    newData.work['@id'] = `https://id.kb.se/TEMPID#work`;
+    newData.work['@id'] = newData.work['@id'].replace(oldBaseId, newBaseId);
     newData.mainEntity.instanceOf = { '@id': newData.work['@id'] };
     delete newData.work.sameAs;
+    newData.quoted[newData.work['@id']] = newData.work;
   }
 
   const merged = DataUtil.getMergedItems(
