@@ -135,12 +135,12 @@ export default {
     highlightItem(event) {
       let item = event.target;
       while ((item = item.parentElement) && !item.classList.contains('js-itemLocal'));
-      item.classList.add('is-affected');
+      item.classList.add('is-marked');
     },
     unHighlightItem(event) {
       let item = event.target;
       while ((item = item.parentElement) && !item.classList.contains('js-itemLocal'));
-      item.classList.remove('is-affected');
+      item.classList.remove('is-marked');
     },
     expand() {
       this.expanded = true;
@@ -289,7 +289,6 @@ export default {
       </span>
       
       <div class="ItemSibling-actions">
-
         <field-adder class="ItemSibling-action"
           v-if="!isLocked" 
           :entity-type="item['@type']" 
@@ -373,7 +372,7 @@ export default {
   margin: -5px;
   position: relative;
   flex: 1 100%;
-  border: 2px solid transparent;
+  transition: background-color .2s ease;
 
   &-heading {
     position: relative;
@@ -429,8 +428,10 @@ export default {
     }
   }
 
-  &.is-affected {
-    border: 2px solid @brand-primary;
+  &.is-marked {
+    background-color: @sec;
+    margin-right: -5px;
+    padding-right: 5px;
   }
 
 }

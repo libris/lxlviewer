@@ -31,6 +31,8 @@ export default {
         return StringUtil.getLabelByLang(this.tooltipText, this.settings.language, this.resources.vocab, this.resources.context);
       } else if (this.translation === 'translatePhrase') {
         return StringUtil.getUiPhraseByLang(this.tooltipText, this.settings.language);
+      } else {
+        return this.tooltipText;
       }
     },
   },

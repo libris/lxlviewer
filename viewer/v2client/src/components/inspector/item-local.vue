@@ -107,12 +107,12 @@ export default {
     highlightItem(event) {
       let item = event.target;
       while ((item = item.parentElement) && !item.classList.contains('js-itemLocal'));
-      item.classList.add('is-affected');
+      item.classList.add('is-marked');
     },
     unHighlightItem(event) {
       let item = event.target;
       while ((item = item.parentElement) && !item.classList.contains('js-itemLocal'));
-      item.classList.remove('is-affected');
+      item.classList.remove('is-marked');
     },
     expand() {
       this.expanded = true;
@@ -259,21 +259,22 @@ export default {
     tabindex="0">
    
    <strong class="ItemLocal-heading">
-      <i class="ItemLocal-arrow fa fa-chevron-right " 
-        :class="{'down': expanded}" 
-        @click="toggleExpanded()"
-        tabindex="0"
-        @keyup.enter="toggleExpanded()"></i>
-      <span class="ItemLocal-type" 
-        @click="toggleExpanded($event)" 
-        :title="item['@type']">{{ item['@type'] | labelByLang | capitalize }}:</span>
-      <span class="ItemLocal-collapsedLabel" @click="toggleExpanded()">
-        <span v-show="!expanded || isEmpty">{{getItemLabel}}</span>
-        <span class="placeholder"> </span>
-      </span>
+     <div class="ItemLocal-label">
+        <i class="ItemLocal-arrow fa fa-chevron-right " 
+          :class="{'down': expanded}" 
+          @click="toggleExpanded()"
+          tabindex="0"
+          @keyup.enter="toggleExpanded()"></i>
+        <span class="ItemLocal-type" 
+          @click="toggleExpanded($event)" 
+          :title="item['@type']">{{ item['@type'] | labelByLang | capitalize }}:</span>
+        <span class="ItemLocal-collapsedLabel" @click="toggleExpanded()">
+          <span class="ItemLocal-collapsedText" v-show="!expanded || isEmpty">{{getItemLabel}}</span>
+          <span class="placeholder"> </span>
+        </span>
+      </div>
       
       <div class="ItemLocal-actions">
-
         <field-adder class="ItemLocal-action"
           v-if="!isLocked" 
           :entity-type="item['@type']" 
@@ -297,7 +298,7 @@ export default {
         <i class="ItemLocal-action fa fa-trash-o chip-action" 
           v-if="!isLocked" 
           :class="{'show-icon': showActionButtons}" 
-          v-on:click="removeThis(true)" 
+          v-on:click="removeThis(true),  unHighlightItem($event)" 
           @keyup.enter="removeThis(true)"
           tabindex="0"
           @mouseover="removeHover = true, highlightItem($event)"
@@ -344,8 +345,7 @@ export default {
       :item-info="extractedMainEntity"
       :index="index"
       @extract="extract"
-      @replace-with="replaceWith"
-      ></search-window>
+      @replace-with="replaceWith"></search-window>
     </div>
 </template>
 
@@ -355,6 +355,7 @@ export default {
   margin: -5px;
   position: relative;
   flex: 1 100%;
+  transition: background-color .2s ease;
 
   &-heading {
     display: block;
@@ -362,6 +363,10 @@ export default {
     font-weight: normal;
     margin: 0 0 5px;
     position: relative;
+  }
+
+  &-label {
+    margin-right: 40px;
   }
 
   &-arrow {
@@ -383,8 +388,9 @@ export default {
 
 
   &-actions {
-    float: right;
-    position: relative;
+    top: 0;
+    right: 0;
+    position: absolute;
   }
 
   &-action {
@@ -401,8 +407,10 @@ export default {
     }
   }
 
-  &.is-affected {
-    outline: 2px solid @brand-primary;
+  &.is-marked {
+    background-color: @sec;
+    margin-right: -5px;
+    padding-right: 5px;
   }
 
   &-collapsedLabel {
@@ -411,10 +419,15 @@ export default {
     align-items: center;
     overflow: hidden;
     text-overflow: ellipsis;
+    padding-right: 40px;
 
     & .placeholder {
       visibility: hidden;
     }
+  }
+
+  &-collapsedText {
+    display: inline;
   }
 }
 

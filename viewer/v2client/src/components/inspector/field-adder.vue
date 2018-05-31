@@ -333,9 +333,8 @@ export default {
       @mouseleave="showToolTip = false">
       <i class="FieldAdder-icon fa fa-plus plus-icon" aria-hidden="true">
         <tooltip-component 
-          tooltip-text="Add field"
-          :show-tooltip="showToolTip" 
-          translation="translatePhrase"></tooltip-component>
+          :tooltip-text="modalTitle"
+          :show-tooltip="showToolTip"></tooltip-component>
       </i>
       <span v-if="!inToolbar" class="FieldAdder-label"> {{ "Add field" | translatePhrase }}</span>
     </button>
