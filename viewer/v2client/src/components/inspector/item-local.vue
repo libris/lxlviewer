@@ -298,7 +298,7 @@ export default {
         <i class="ItemLocal-action fa fa-trash-o chip-action" 
           v-if="!isLocked" 
           :class="{'show-icon': showActionButtons}" 
-          v-on:click="removeThis(true),  unHighlightItem($event)" 
+          v-on:click="removeThis(true)" 
           @keyup.enter="removeThis(true)"
           tabindex="0"
           @mouseover="removeHover = true, highlightItem($event)"
