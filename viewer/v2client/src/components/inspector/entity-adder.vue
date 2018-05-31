@@ -319,7 +319,7 @@ export default {
     addItem(obj) {
       let currentValue = _.cloneDeep(_.get(this.inspector.data, this.path));
       if (currentValue === null) {
-        currentValue = [obj];
+        currentValue = obj;
       } else if (!_.isArray(currentValue)) {
         currentValue = [currentValue];
         currentValue.push(obj);
@@ -362,7 +362,7 @@ export default {
     },
     addEmpty(typeId) {
       this.closeSearch();
-      const shortenedType = StringUtil.convertToPrefix(typeId, this.resources.context);
+      const shortenedType = StringUtil.getCompactUri(typeId, this.resources.context);
       let obj = {'@type': shortenedType};
       if (StructuredValueTemplates.hasOwnProperty(shortenedType)) {
         obj = _.cloneDeep(StructuredValueTemplates[shortenedType]);
