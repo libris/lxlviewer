@@ -15,6 +15,7 @@ import ProcessedLabel from '../shared/processedlabel';
 import ToolTipComponent from '../shared/tooltip-component';
 import EntitySearchList from '../search/entity-search-list';
 import ModalComponent from '@/components/shared/modal-component.vue';
+import ModalPagination from '@/components/inspector/modal-pagination';
 import LensMixin from '../mixins/lens-mixin';
 import { mixin as clickaway } from 'vue-clickaway';
 
@@ -23,7 +24,7 @@ export default {
   data() {
     return {
       searchOpen: false,
-      searchResult: {},
+      searchResult: [],
       keyword: '',
       loading: false,
       debounceTimer: 500,
@@ -35,6 +36,9 @@ export default {
       searchMade: false,
       currentSearchTypes: [],
       active: false,
+      currentPage: 0,
+      numberOfPages: 0,
+      maxResults: 20,
     };
   },
   props: {
@@ -64,6 +68,7 @@ export default {
     'modal-component': ModalComponent,
     'tooltip-component': ToolTipComponent,
     'entity-search-list': EntitySearchList,
+    'modal-pagination': ModalPagination,
   },
   watch: {
     'inspector.event'(val, oldVal) {
@@ -222,15 +227,14 @@ export default {
     handleChange(value) {
       this.setSearching();
       this.searchMade = false;
-      let searchPhrase = value;
       if (value) {
         setTimeout(() => {
           if (this.keyword === value) {
-            this.search(searchPhrase);
+            this.search();
           }
         }, this.debounceTimer);
       } else {
-        this.searchResult = {};
+        this.searchResult = [];
       }
     },
     setSearching() {
@@ -292,7 +296,9 @@ export default {
     closeSearch() {
       this.searchOpen = false;
       this.keyword = '';
-      this.searchResult = {};
+      this.searchResult = [];
+      this.pagesFetched = 0;
+      this.allFetched = false;
       this.chooseLocalType = false;
       this.hide();
     },
@@ -378,21 +384,38 @@ export default {
       this.addEmpty(shortenedType);
       this.dismissTypeChooser();
     },
-    search(keyword) {
+    loadResults(result) {
+      this.searchResult = result.items;
+      this.numberOfPages = Math.floor(result.totalItems/this.maxResults);
+      this.loading = false;
+    },
+    go(n) {
+      if (n >= 0 && n <= this.numberOfPages && n !== this.currentPage) {
+        this.fetch(n);
+      }
+    },
+    fetch(pageNumber) {
       const self = this;
-      self.searchResult = {};
-      this.getItems(keyword, [].concat(this.currentSearchTypes)).then((result) => {
-        setTimeout(() => {
-          self.searchResult = result.items;
-          self.loading = false;
-          self.searchMade = true;
-        }, 500);
+      const totalItems = self.searchResult.length;
+      self.currentPage = pageNumber;
+      self.loading = true;
+      console.log('fetching page', this.currentPage);
+      this.getItems(this.keyword).then((result) => {
+        self.loadResults(result);
       }, (error) => {
         self.loading = false;
       });
     },
-    getItems(keyword, typeArray) {
+    search() {
+      const self = this;
+      this.typeArray = [].concat(this.currentSearchTypes);
+      self.searchResult = [];
+      self.searchMade = true;
+      this.fetch(0);
+    },
+    getItems(keyword) {
       // TODO: Support asking for more items
+      const typeArray = this.typeArray;
       const searchKey = keyword !== '*' ? `${keyword}*` : keyword;
       let searchUrl = `${this.settings.apiPath}/find.json?q=${searchKey}`;
       if (typeof typeArray !== 'undefined' && typeArray.length > 0) {
@@ -400,7 +423,8 @@ export default {
           searchUrl += `&@type=${type}`;
         }
       }
-      searchUrl += '&_limit=40';
+      const offset = this.currentPage * this.maxResults;
+      searchUrl += `&_limit=${this.maxResults}&_offset=${offset}`;
       return new Promise((resolve, reject) => {
         fetch(searchUrl).then((response) => {
           resolve(response.json());
@@ -469,11 +493,11 @@ export default {
       <template slot="modal-header">
         {{ "Add entity" | translatePhrase }} | {{ addLabel | labelByLang }}
         <span class="ModalComponent-windowControl">
-          <i @click="hide" tabindex="0" @keyup.enter="hide" class="fa fa-close"></i>
+          <i @click="closeSearch" tabindex="0" @keyup.enter="closeSearch" class="fa fa-close"></i>
         </span>
       </template>
 
-    <template slot="modal-body">
+    <template slot="modal-body" class="ScrollContainer">
       <div class="EntityAdder-modalBody">
         <div class="EntityAdder-controls">
           <div class="EntityAdder-controlForm">
@@ -540,6 +564,7 @@ export default {
           v-if="!loading && searchResult.length === 0 && keyword.length > 0 && searchMade">
           {{ "No results" | translatePhrase }}...
         </div>
+        <modal-pagination class="ScrollMarginTop" v-if="!loading && searchResult.length > 0" @go="go" :numberOfPages="numberOfPages" :currentPage="currentPage"></modal-pagination>
         <entity-search-list class="EntityAdder-searchResult"
           v-if="!loading && keyword.length > 0" 
           :path="path" 
@@ -547,6 +572,7 @@ export default {
           :disabled-ids="alreadyAdded"
           @add-item="addLinkedItem"
           ></entity-search-list>
+        <modal-pagination v-if="!loading && searchResult.length > 0" @go="go" :numberOfPages="numberOfPages" :currentPage="currentPage"></modal-pagination>
       </div>
     </template>
   </modal-component>
@@ -556,6 +582,9 @@ export default {
 <style lang="less">
 
 .EntityAdder {
+  &-modalBody {
+    margin-bottom: 100px;
+  }
   &.is-innerAdder {
     cursor: pointer;
   }
@@ -717,10 +746,20 @@ export default {
   }
 
   &-searchResult {
-    padding: 85px 0 0 0;
-    margin: 0 0 100px;
+    padding: 0 0 0 0;
   }
 
+}
+.EntitySearchResult {
+  &-fetchMore {
+    text-align: center;
+  }
+}
+
+.ScrollMarginTop {
+  padding-top: 95px !important;
+  // If you question this, feel free to rewrite the layout of this modal.
+  // search-window.vue is a much better implementation.
 }
 
 </style>
