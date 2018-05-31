@@ -149,25 +149,10 @@ export default {
       this.showMarcPreview = false;
     },
     cancel() {
-     if (!this.inspector.status.isNew) {
-        if (this.inspector.status.editing && this.inspector.status.unsavedChanges) {
-          const confString = StringUtil.getUiPhraseByLang('You have unsaved changes. Do you want to cancel?', this.settings.language);
-          const answer = window.confirm(confString);
-          if (answer) {
-            this.$store.dispatch('setInspectorStatusValue', { 
-              property: 'editing', 
-              value: false 
-            });
-          } 
-        } else {
-          this.$store.dispatch('setInspectorStatusValue', { 
-            property: 'editing', 
-            value: false 
-          });
-        }
-      } else {
-        this.$router.go(-1);
-      }
+      this.$store.dispatch('pushInspectorEvent', { 
+        name: 'post-control', 
+        value: 'cancel'
+      });
     },
     undo() {
       this.$store.dispatch('undoInspectorChange');
