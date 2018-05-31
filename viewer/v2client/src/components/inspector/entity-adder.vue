@@ -362,7 +362,7 @@ export default {
     },
     addEmpty(typeId) {
       this.closeSearch();
-      const shortenedType = StringUtil.convertToPrefix(typeId, this.resources.context);
+      const shortenedType = StringUtil.getCompactUri(typeId, this.resources.context);
       let obj = {'@type': shortenedType};
       if (StructuredValueTemplates.hasOwnProperty(shortenedType)) {
         obj = _.cloneDeep(StructuredValueTemplates[shortenedType]);
