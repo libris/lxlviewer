@@ -8,13 +8,14 @@ tags:
 
 *UNDER ARBETE - UPPDATERAS KONTINUERLIGT*
 
-OBS! Vi arbetar med Katalogisatörens anmärkning /Intern anmärkning och Offentlig anmärkning/Publik anmärkning - hittar du inte det som beskrivs nedan så prova det andra alternativet.
+OBS! Vi arbetar med Katalogisatörens anmärkning /Intern anmärkning och Publik anmärkning/Offentlig anmärkning - hittar du inte det som beskrivs nedan så prova det andra alternativet. 
 
 ## Beståndsregistrering
 
 Det är endast bibliotekskod/sigel som är obligatorisk och den sätts automatiskt när du väljer att lägga bestånd. (852 ‡b)
 
 De mest vanliga fälten finns färdiga att fylla i. Det motsvarar vad som kunde göras i Libris webbregistrering. Övriga fält läggs till via plusstecknet för bestånd.
+
 
 ### Har komponent (852)
 Klicka på pilen för *Bestånd*. Du kan då lägga till
@@ -29,7 +30,8 @@ Om ytterligare information om placering utöver Hyllkod behöver läggas till.
 * Hyllsignum: Löpnummer (852 ‡j)
   ```Exempel: 2694```
 
-Många ytterligare fält kan läggas till *Har komponent* - gå till plusstecknet vid bestånd.
+
+Många ytterligare fält kan läggas till *Har komponent* - gå till plusstecknet vid som finns vid beståndet under Har komponent. Där kan du söka upp följande:
 * Tidigare hylluppställning (852 ‡d)
 * Precisering av hyllplacering (852 ‡g)
 * Exemplarstatus (852 ‡i)
@@ -41,20 +43,25 @@ Många ytterligare fält kan läggas till *Har komponent* - gå till plussteckne
 * Exemplarnummer (852 ‡t)
 * URI (852 ‡u)
 * Katalogisatörens anmärkning (852 ‡x)
-* Publik anmärkning (852 ‡z)
+* Anmärkning (hasNote) / Klicka på pluss-tecknet direkt vid Anmärkning (Note) / Klicka på pilen. Du får då fram fältet Benämning. Skriv in din publika anmärkning (852 ‡z)
 * Del av materialet som avses / Resurs (val vid Skapa lokal entitet) / Benämning (852 ‡3)
 * Underordnad institution/enhet (852 ‡9)
 
 För att lägga till ytterligare ett bestånd (motsvarande flera 852) klickar du på plusstecknet vid *Har komponent*.
 
+
 ### Adminmetadata
 För enkla monografier behöver vanligen inte Adminmetadata läggas till eller ändras. Information om fält som kan läggas till kommer i en senare version av hjälpen.
 
+För att lägga till information nedan behöver man använda rätt pluss-tecken. Pluss-tecknet i högermenyn lägger till  t.ex.  Identifikator. Från pluss-tecknet till höger om den identifikatortyp som valts väljer man det som motsvarar delfält. 
+
 ### Identifierare
-* IdentifiedBy / Välj från lista (024 indikator 1)
+* Identifikator (IdentifiedBy) / Välj från lista (024 indikator 1)
   * Värde (024 ‡a)
   * Ogiltigt värde (024 ‡z)
   * Typanmärkning, bestämning till indikator 1=7 (024 ‡2)
+
+
 
 ### Anmärkningar
 * Anmärkning/hasNote. Klicka på plusstecknet vid Anmärkning för att lägga till en allmän anmärkning. (500 ‡a)
@@ -93,6 +100,7 @@ För enkla monografier behöver vanligen inte Adminmetadata läggas till eller �
   * Antal exemplar (562 ‡e)
   * Del av materialet som avses / Resurs (val vid Skapa lokal entitet) / Benämning (562 ‡3)
 
+
 * Har lokal anmärkning: Bokband (563)
   * Benämning (563 ‡a)
 
@@ -100,11 +108,12 @@ För enkla monografier behöver vanligen inte Adminmetadata läggas till eller �
   * Benämning (583 ‡a)
   * Del av materialet som avses / Resurs (val vid Skapa lokal entitet) / Benämning (583 ‡3)
 
+
 * Katalogisatörens anmärkning (599 ‡a)
 
 ### Lokala ämnesord och klassifikation
 Lägg i första hand ämnesord och klassifikation till det beskrivna verket.
-Hjälp planeras för att skapa ämnesord och genre/form.
+För att lägga till lokalt, se hjälp för att skapa ämnesord och genre/form.
 
 * Lokala ämnesor/rubriker (övriga) (698)
   * Kod (698 ‡a)
@@ -148,13 +157,15 @@ Ospecificerad relation
   * URI (856 ‡u)
   * Katalogisatörens anmärkning (856 ‡x)
   * Länktext (856 ‡y)
-  * Offentlig anmärkning (856 ‡z)
+  * Publik anmärkning (856 ‡z)
   * Del av materialet som avses / Resurs (val vid Skapa lokal entitet) / Benämning (856 ‡3)
+
+
 
 ### Oformaterad beståndsuppgift - huvudpublikation (866)
 * Benämning (866 ‡a)
-* Intern anmärkning (866 ‡x)
-* Offentlig anmärkning (866 ‡z)
+* Katalogisatörens anmärkning (866 ‡x)
+* Publik anmärkning (866 ‡z)
 * Underordnad institution/enhet (866 ‡9)
 
 ### Exemplarinformation (876-877)
@@ -168,8 +179,8 @@ Ospecificerad relation
   * Tillfällig placering (876 ‡l)
   * Unik exemplarbeteckning (streckkod) (876 ‡p)
   * Exemplarnummer (876 ‡t)
-  * Intern anmärkning (876 ‡x)
-  * Offentlig anmärkning (876 ‡z)
+  * Katalogisatörens anmärkning (876 ‡x)
+  * Publik anmärkning (876 ‡z)
   * Del av materialet som avses / Resurs (val vid Skapa lokal entitet) / Benämning (876 ‡3)
   * Underordnad institution/enhet (876 ‡9)
 
@@ -183,10 +194,11 @@ Ospecificerad relation
   * Tillfällig placering (876 ‡l)
   * Unik exemplarbeteckning (streckkod) (876 ‡p)
   * Exemplarnummer (876 ‡t)
-  * Intern anmärkning (876 ‡x)
-  * Offentlig anmärkning (876 ‡z)
+  * Katalogisatörens anmärkning (876 ‡x)
+  * Publik anmärkning (876 ‡z)
   * Del av materialet som avses / Resurs (val vid Skapa lokal entitet) / Benämning (876 3)
   * Underordnad institution/enhet (876 ‡9)
+
 
 ### Lokalt definierade beståndsfält
 * Lokalt definierat beståndsfält (beståndsfält 948)
