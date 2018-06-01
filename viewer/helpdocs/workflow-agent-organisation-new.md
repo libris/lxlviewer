@@ -71,21 +71,18 @@ Beskrivning av agenten som ska auktoriseras.
 ### Adminmetadata
 
 Information av administrativ karaktär som inte är direkt förknippad med den auktoriserade namnformen.
+
+* Skapad av (descriptionCreator = 040 ‡a)
+ <br/>Förval: Sigel för skapare av agenten. Ändras ej.
+ <br/>```Exempel: library/S```
       
 * Katalogiseringsregler (descriptionConventions = 040 ‡e)
  <br/>Förval: rda. Ändra vid behov.
  <br/>```Exempel: Kod: rda```
   
- * Skapad av (descriptionCreator = 040 ‡a)
- <br/>Förval: Sigel för skapare av agenten. Ändras ej.
- <br/>```Exempel: library/S```
-  
 * Katalogiseringsspråk (descriptionLanguage = 040 ‡b)
  <br/>Förval: language/swe. Ändras ej.
   
-* Beskrivningsnivå (encodingLevel = 000)
- <br/>Ändras ej.
-
 * Translitterering (marc:romanization = 008/07)
  <br/>Ändras ej.
 
@@ -143,5 +140,3 @@ För att lägga till fält: Klicka på +ikonen under egenskapen Andra attribut f
   <br/>Här är det möjligt att ange en samhörande institution.
   <br/>```Exempel: Uppsala universitet``` 
   <br/>För att lägga till fält: Klicka på +ikonen under egenskapen Organisatorisk tillhörighet, och skapa lokal entitet t ex organisation. Lägg sedan till det fält som behövs t ex namn. OBS! Organisatorisk tillhörighet ska inte göras till sökbar länk.
-
- 
