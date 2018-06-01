@@ -132,6 +132,16 @@ export default {
         this.settings.language
       );
     },
+    tooltipText() {
+      const addText = StringUtil.getUiPhraseByLang('Add', this.settings.language);
+      const label = StringUtil.getLabelByLang(
+        this.addLabel, 
+        this.settings.language, 
+        this.resources.vocab, 
+        this.resources.context).toLowerCase();
+
+      return addText+' '+label;
+    },
     hasSingleRange() {
       return this.getFullRange.length === 1;
     },
@@ -451,8 +461,7 @@ export default {
         <i class="fa fa-fw fa-plus plus-icon" aria-hidden="true">
           <tooltip-component 
             :show-tooltip="showToolTip" 
-            tooltip-text="Add" 
-            translation="translatePhrase"></tooltip-component>
+            :tooltip-text="tooltipText"></tooltip-component>
         </i>
       </span>
     </div>
@@ -468,8 +477,7 @@ export default {
       <i class="EntityAdder-addIcon fa fa-fw fa-plus plus-icon" aria-hidden="true">
         <tooltip-component 
           :show-tooltip="showToolTip" 
-          tooltip-text="Add" 
-          translation="translatePhrase"></tooltip-component>
+          :tooltip-text="tooltipText"></tooltip-component>
       </i>
       <span class="EntityAdder-addLabel label-text">{{ addLabel | labelByLang | capitalize }}</span>
     </div>
