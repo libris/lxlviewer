@@ -29,11 +29,5 @@ Samlingarna är benämnda enligt följande: Anglosax 1-4, Metasök Asien, Metas�
 * Metasök Norden
 * Metasök Mellaneuropa
 
-**Sök**
->Det är viktigt att sökfrågan alltid är så tydlig och unik som möjligt.
-
-**ISBN**
->Sök alltid på ISBN i första hand.
-
 ## Allmänt
 Importen rensar och rättar posten men kräver en noggran kontroll innan beståndsregistrering.
