@@ -10,6 +10,7 @@ import * as CombinedTemplates from '@/resources/json/combinedTemplates.json';
 import * as StructuredValueTemplates from '@/resources/json/structuredValueTemplates.json';
 import ProcessedLabel from '../shared/processedlabel';
 import ModalComponent from '@/components/shared/modal-component';
+import ModalPagination from '@/components/inspector/modal-pagination';
 import ToolTipComponent from '../shared/tooltip-component';
 import EntitySearchList from '../search/entity-search-list';
 import EntitySummary from '../shared/entity-summary';
@@ -47,6 +48,9 @@ export default {
         inspectAction: true,
       },
       active: false,
+      currentPage: 0,
+      numberOfPages: 0,
+      maxResults: 20,
     };
   },
   props: {
@@ -64,6 +68,7 @@ export default {
     'entity-summary': EntitySummary,
     'summary-action': SummaryAction,
     'modal-component': ModalComponent,
+    'modal-pagination': ModalPagination,
   },
   watch: {
     keyword(value) {
@@ -76,7 +81,7 @@ export default {
       if(value) {
         this.show();
       } else {
-        this.hide();
+        this.closeSearch();
       }
     },
   },
@@ -134,21 +139,17 @@ export default {
       const updatedListItemSettings = _.merge({payload: item}, _.cloneDeep(this.listItemSettings));
       return updatedListItemSettings;
     },
-    resetWindow() {
-      this.copyTitle = false;
-    },
     handleChange(value) {
       this.setSearching();
       this.searchMade = false;
-      let searchPhrase = value;
       if (value) {
         setTimeout(() => {
           if (this.keyword === value) {
-            this.search(searchPhrase);
+            this.search();
           }
         }, this.debounceTimer);
       } else {
-        this.searchResult = {};
+        this.searchResult = [];
       }
     },
     setSearching() {
@@ -161,7 +162,10 @@ export default {
     show() {
       LayoutUtil.scrollLock(true);
       this.active = true;
-       this.$store.dispatch('setStatusValue', { 
+      this.$nextTick(() => {
+        this.$el.querySelector('.SearchWindowentity-search-keyword-input').focus();
+      });
+      this.$store.dispatch('setStatusValue', { 
         property: 'keybindState', 
         value: 'entity-adder' 
       });
@@ -176,21 +180,45 @@ export default {
         value: 'overview' 
       });
     },
-    search(keyword) {
+    closeSearch() {
+      this.keyword = '';
+      this.searchResult = [];
+      this.pagesFetched = 0;
+      this.allFetched = false;
+      this.hide();
+    },
+    loadResults(result) {
+      this.searchResult = result.items;
+      this.numberOfPages = Math.floor(result.totalItems/this.maxResults);
+      this.loading = false;
+    },
+    go(n) {
+      if (n >= 0 && n <= this.numberOfPages && n !== this.currentPage) {
+        this.fetch(n);
+      }
+    },
+    fetch(pageNumber) {
       const self = this;
-      self.searchResult = {};
-      this.getItems(keyword, [].concat(this.currentSearchTypes)).then((result) => {
-        setTimeout(() => {
-          self.searchResult = result;
-          self.loading = false;
-          self.searchMade = true;
-        }, 500);
+      const totalItems = self.searchResult.length;
+      self.currentPage = pageNumber;
+      self.loading = true;
+      console.log('fetching page', this.currentPage);
+      this.getItems(this.keyword).then((result) => {
+        self.loadResults(result);
       }, (error) => {
         self.loading = false;
       });
     },
-    getItems(keyword, typeArray) {
+    search() {
+      const self = this;
+      this.typeArray = [].concat(this.currentSearchTypes);
+      self.searchResult = [];
+      self.searchMade = true;
+      this.fetch(0);
+    },
+    getItems(keyword) {
       // TODO: Support asking for more items
+      const typeArray = this.typeArray;
       const searchKey = keyword !== '*' ? `${keyword}*` : keyword;
       let searchUrl = `${this.settings.apiPath}/find.json?q=${searchKey}`;
       if (typeof typeArray !== 'undefined' && typeArray.length > 0) {
@@ -198,11 +226,11 @@ export default {
           searchUrl += `&@type=${type}`;
         }
       }
-      searchUrl += '&_limit=40';
-
+      const offset = this.currentPage * this.maxResults;
+      searchUrl += `&_limit=${this.maxResults}&_offset=${offset}`;
       return new Promise((resolve, reject) => {
-        HttpUtil.get({ url: searchUrl, contentType: 'text/plain' }).then((response) => {
-          resolve(response.items);
+        fetch(searchUrl).then((response) => {
+          resolve(response.json());
         }, (error) => {
           reject('Error searching...', error);
         });
@@ -217,7 +245,7 @@ export default {
     <modal-component
       :title="'Link entity' | translatePhrase"
       v-if="active"
-      @close="hide()"
+      @close="closeSearch()"
       class="SearchWindow-modal">
       <template slot="modal-body">
         <div class="SearchWindow-header search-header">
@@ -291,6 +319,7 @@ export default {
         </div>
 
         <div class="SearchWindow-resultListContainer">
+          <modal-pagination v-if="!loading && searchResult.length > 0" @go="go" :numberOfPages="numberOfPages" :currentPage="currentPage"></modal-pagination>
           <ul v-show="displaySearchList" class="SearchWindow-resultList">
             <li class="SearchWindow-resultItem"
               v-for="item in searchResult" 
@@ -302,8 +331,9 @@ export default {
               <summary-action :options="addPayload(item)" @action="replaceWith(item)"></summary-action>
             </li>
           </ul>
+          <modal-pagination v-if="!loading && searchResult.length > 0" @go="go" :numberOfPages="numberOfPages" :currentPage="currentPage"></modal-pagination>
           <div class="SearchWindow-searchStatusContainer"
-            v-show="extracting || keyword.length === 0 || loading || foundNoResult">
+            v-show="extracting || keyword.length === 0 || loading || foundNoResult || fetchingMore || allFetched">
             <div class="SearchWindow-searchStatus">
               <span v-show="keyword.length === 0 && !extracting">
                 {{ "Search for existing linked entities" | translatePhrase }}...
@@ -311,6 +341,12 @@ export default {
               <span v-show="loading">
                 <i class="fa fa-circle-o-notch fa-spin"></i>
                 {{ "Searching" | translatePhrase }}...
+              </span>
+              <span class="EntitySearchResult-fetchMore" v-show="fetchingMore">
+                {{"Fetching more results" | translatePhrase }} <i class="fa fa-circle-o-notch fa-spin"></i><br/>
+              </span>
+              <span class="EntitySearchResult-fetchMore" v-show="allFetched && searchResult.length > 0">
+                {{'No more results found' | translatePhrase }}
               </span>
               <span v-show="foundNoResult">
                 <strong>{{ "No results" | translatePhrase }}</strong>
@@ -338,6 +374,7 @@ export default {
   &-resultListContainer {
     overflow-y: scroll;
     flex: 1 1 auto;
+    padding-bottom: 50px;
   }
 
   &-searchStatusContainer {
@@ -348,7 +385,7 @@ export default {
   }
 
   &-resultList {
-    padding: 0 0 50px 0; // Make sure last item is fully visible
+    padding: 0; // Make sure last item is fully visible
   }
 
   &-resultItem {
