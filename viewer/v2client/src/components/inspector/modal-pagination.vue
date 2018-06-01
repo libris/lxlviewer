@@ -35,9 +35,11 @@ export default {
 <template>
   <div class="ModalPagination">
     <ul>
+      <li @click="go(0)" :class="{'disabled': currentPage-1 < 0 }">{{'First' | translatePhrase}}</li>
       <li @click="go(currentPage-1)" :class="{'disabled': currentPage-1 < 0 }">{{'Previous' | translatePhrase}}</li>
       <li @click="go(n-1)" :key="n" v-for="(n, index) in numberOfPages+1" :class="{'active': index === currentPage}">{{n}}</li>
       <li @click="go(currentPage+1)" :class="{'disabled': currentPage+1 > numberOfPages }">{{'Next' | translatePhrase}}</li>
+      <li @click="go(numberOfPages)" :class="{'disabled': currentPage+1 > numberOfPages }">{{'Last' | translatePhrase}}</li>
     </ul>
   </div>
 </template>
