@@ -6,6 +6,7 @@ import * as VocabUtil from '@/utils/vocab';
 import * as HttpUtil from '@/utils/http';
 import * as DisplayUtil from '@/utils/display';
 import * as RecordUtil from '@/utils/record';
+import * as md5 from 'md5';
 import EntityForm from '@/components/inspector/entity-form';
 import Toolbar from '@/components/inspector/toolbar';
 import EntityChangelog from '@/components/inspector/entity-changelog';
@@ -68,8 +69,8 @@ export default {
       }
     },
     fetchDocument() {
-      const fetchUrl = `${this.settings.apiPath}/${this.documentId}/data.jsonld`;
-
+      const randomHash = md5(new Date());
+      const fetchUrl = `${this.settings.apiPath}/${this.documentId}/data.jsonld?${randomHash}`;
       fetch(fetchUrl).then((response) => {
         if (response.status === 200) {
           return response.json();
