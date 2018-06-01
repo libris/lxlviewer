@@ -64,6 +64,10 @@ Information av administrativ karaktär som inte är direkt förknippad med den a
 
 * Kontrollnummer (controllNumber = 001)
   <br/>LibrisID. Ändras ej.
+  
+* Skapad av (descriptionCreator = 040 ‡a)
+ <br/>Förval: Sigel för skapare av agenten. Ändras ej.
+ <br/>```Exempel: Organisation S```
       
 * Katalogiseringsregler (descriptionConventions = 040 ‡e)
  <br/>Förval: rda. Ändra vid behov.
@@ -72,10 +76,6 @@ Information av administrativ karaktär som inte är direkt förknippad med den a
  * Katalogisatörens anmärkning (cataloguersNote = 667 ‡a)
   <br/>Anmärkningar tänkta för kollegor inom Libriskollektivet. Det kan till exempel vara uppgifter som rör ändring av den auktoriserade namnformen. Motivera gärna ändringen och komplettera alltid med datum/sigel/signatur.
   <br/>```Exempel: Ändrat auktoriserad namnform från Xxx till Yyy /2010-01-03/S/UL/marjan```
-
- * Skapad av (descriptionCreator = 040 ‡a)
- <br/>Förval: Sigel för skapare av agenten. Ändras ej.
- <br/>```Exempel: Organisation S```
   
 * Katalogiseringsspråk (descriptionLanguage = 040 ‡b)
  <br/>Förval: Svenska. Ändras ej.
@@ -84,6 +84,12 @@ Information av administrativ karaktär som inte är direkt förknippad med den a
  <br/>Förval: Sigel som gjort senaste ändring. Ändras ej.
   
 * Beskrivningsnivå (encodingLevel = 000)
+ <br/>Ändras ej.
+ 
+ * Konverteringsdatum (generationDate = 000)
+ <br/>Ändras ej.
+ 
+ * Beskrivningsprocess (generationProcess = 000)
  <br/>Ändras ej.
  
 * Marc:headingMain (marc:headingMain = 008/14)
