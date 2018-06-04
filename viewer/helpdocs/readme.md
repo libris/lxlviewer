@@ -9,6 +9,7 @@ Filerna i den här mappen (``helpdocs``) utgör hjälpdokumentationen för grän
     ---
     section: Sök
     title: Träfflista
+    order: 1
     tags:
     - search
     ---
@@ -19,6 +20,9 @@ Kategori på dokumentet. Används till exempel för att lägga dokumenten bredvi
 **Title:**  
 Titel på dokumentet. Används till menyn. **Används inte till rubriker i dokumentet.**  
 
+**Order:**  
+Ordning inom kategorin i menyn. Högre siffra -> Längre ner inom kategorin. Avsnitt som saknar order-attributet hamnar alltid längre ner än de som har attributet.
+
 **Tags:**  
 Etiketter på dokumentet som eventuellt skulle kunna användas till sökning.  
 
@@ -26,3 +30,9 @@ Etiketter på dokumentet som eventuellt skulle kunna användas till sökning.
 ## Innehåll
 
 Under egenskaperna följer sedan själva innehållet i avsnittet. Man använder sig av [markdown](https://daringfireball.net/projects/markdown/) för att strukturera rubriker, länkar, bilder etc.
+
+### Bilder
+
+För att bilderna ska kunna paketeras och visas korrekt, lägg bilden i samma mapp som din markdown och lägg till bilden i dokumentet med följande kod
+
+    ![Förklaring av bilden](Bildnamn.png) 

@@ -5,21 +5,17 @@
 
 {% block content %}
 
-<div class="panel panel-default ">
-  <div class="panel body container-fluid">
-    <div class="row">
-      <div class="col-md-8 col-md-offset-2">
-        <div class="logout-message">
-        <p class="well">Du är nu utloggad ur Libris Katalogisering</p>
-        </div>
-        <div class="panel panel-default dash orange login-info-panel">
-          <span class="circle"><i class="icon fa fa-exclamation-triangle" aria-hidden="true"></i></span>
-          <ul>
-            <li>Glöm inte att du fortfarande är inloggad i <a href="https://login.libris.kb.se">Libris Login</a></li>
-            <li>Du kan ta bort autentiseringen genom att logga ut därifrån.</li>
-          </ul>
-        </div>
-      </div>
+<div class="auth-container panel panel-default col-sm-8 col-sm-offset-2">
+  <h1>Du är nu utloggad från Libris katalogisering</h1>
+  <p>
+    Glöm inte att du fortfarande är inloggad i Libris Login. Du kan ta bort autentiseringen genom att logga ut från Libris Login.
+  </p>
+  <div class="login-actions">
+    <div id="oauth-login-buttons">
+        {% if msg %}
+          <div class="well status-text error"><i class="icon fa fa-lg fa-warning" aria-hidden="true"></i> ${ msg }</div>
+        {% endif %}
+        <a href="https://login.libris.kb.se/" class="btn btn-info btn-login">Till Libris Login</a>
     </div>
   </div>
 </div>

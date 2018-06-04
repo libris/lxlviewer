@@ -1,0 +1,541 @@
+<script>
+import * as _ from 'lodash';
+import * as HttpUtil from '@/utils/http';
+import * as VocabUtil from '@/utils/vocab';
+import * as DisplayUtil from '@/utils/display';
+import * as LayoutUtil from '@/utils/layout';
+import * as RecordUtil from '@/utils/record';
+import * as StringUtil from '@/utils/string';
+import * as CombinedTemplates from '@/resources/json/combinedTemplates.json';
+import * as StructuredValueTemplates from '@/resources/json/structuredValueTemplates.json';
+import ProcessedLabel from '../shared/processedlabel';
+import ModalComponent from '@/components/shared/modal-component';
+import ModalPagination from '@/components/inspector/modal-pagination';
+import ToolTipComponent from '../shared/tooltip-component';
+import EntitySearchList from '../search/entity-search-list';
+import EntitySummary from '../shared/entity-summary';
+import SummaryAction from './summary-action';
+import LensMixin from '../mixins/lens-mixin';
+import { mixin as clickaway } from 'vue-clickaway';
+import { mapGetters } from 'vuex';
+
+export default {
+  name: 'search-window',
+  mixins: [clickaway, LensMixin],
+  data() {
+    return {
+      searchResult: {},
+      searchDelay: 2,
+      extractDialogActive: false,
+      keyword: '',
+      loading: false,
+      debounceTimer: 500,
+      showHelp: false,
+      searchMade: false,
+      currentSearchTypes: [],
+      localEntitySettings: {
+        text: 'Create and link entity',
+        styling: 'brand',
+        event: 'extract-item',
+        show: true,
+        inspectAction: false,
+      },
+      listItemSettings: {
+        text: 'Replace local entity',
+        styling: 'brand',
+        event: 'replace-local',
+        show: true,
+        inspectAction: true,
+      },
+      active: false,
+      currentPage: 0,
+      numberOfPages: 0,
+      maxResults: 20,
+    };
+  },
+  props: {
+    fieldKey: '',
+    extracting: false,
+    itemInfo: {},
+    index: 0,
+    copyTitle: false,
+    canCopyTitle: false,
+    entityType: '',
+    isActive: false,
+  },
+  components: {
+    'entity-search-list': EntitySearchList,
+    'entity-summary': EntitySummary,
+    'summary-action': SummaryAction,
+    'modal-component': ModalComponent,
+    'modal-pagination': ModalPagination,
+  },
+  watch: {
+    keyword(value) {
+      this.handleChange(value);
+    },
+    copyTitle(value) {
+      this.$dispatch('set-copy-title', value);
+    },
+    isActive(value, oldvalue) {
+      if(value) {
+        this.show();
+      } else {
+        this.closeSearch();
+      }
+    },
+  },
+  computed: {
+    ...mapGetters([
+      'inspector',
+      'resources',
+      'user',
+      'settings',
+      'status',
+    ]),
+    getRange() {
+      const fetchedRange = VocabUtil.getRange(this.entityType, this.fieldKey, this.resources.vocab, this.resources.context)
+        .map(item => StringUtil.getCompactUri(item, this.resources.context));
+      return fetchedRange;
+    },
+    getFullRange() {
+      return VocabUtil.getFullRange(this.entityType, this.fieldKey, this.resources.vocab, this.resources.context, this.resources.vocabClasses);
+    },
+    allSearchTypes() {
+      const types = this.getFullRange;
+      const typeArray = [];
+      for (const type of types) {
+        typeArray.push(StringUtil.getCompactUri(type, this.resources.context));
+      }
+      return typeArray;
+    },
+    displaySearchList() {
+      return !this.loading && !this.extracting && this.keyword.length > 0 && this.searchResult.length > 0;
+    },
+    foundNoResult() {
+      return !this.loading && this.searchResult.length === 0 && this.keyword.length > 0 && this.searchMade;
+    },
+    getClassTree() {
+      const tree = this.getRange.map(type => {
+        return VocabUtil.getTree(type, this.resources.vocab, this.resources.context);
+      });
+      return VocabUtil.flattenTree(tree, this.resources.vocab, this.resources.context, this.settings.language);
+    },
+  },
+  mounted() {
+    this.currentSearchTypes = this.getRange;
+  },
+  methods: {
+    replaceWith(obj) {
+      this.$emit('replace-with', obj);
+    },
+    extract() {
+      this.$emit('extract');
+    },
+    getFormattedSelectOption(term, settings, vocab, context) {
+      return DisplayUtil.getFormattedSelectOption(term, settings, vocab, context);
+    },
+    addPayload(item) {
+      const updatedListItemSettings = _.merge({payload: item}, _.cloneDeep(this.listItemSettings));
+      return updatedListItemSettings;
+    },
+    handleChange(value) {
+      this.setSearching();
+      this.searchMade = false;
+      if (value) {
+        setTimeout(() => {
+          if (this.keyword === value) {
+            this.search();
+          }
+        }, this.debounceTimer);
+      } else {
+        this.searchResult = [];
+      }
+    },
+    setSearching() {
+      if (this.keyword === '') {
+        this.loading = false;
+      } else {
+        this.loading = true;
+      }
+    },
+    show() {
+      LayoutUtil.scrollLock(true);
+      this.active = true;
+      this.$nextTick(() => {
+        this.$el.querySelector('.SearchWindowentity-search-keyword-input').focus();
+      });
+      this.$store.dispatch('setStatusValue', { 
+        property: 'keybindState', 
+        value: 'entity-adder' 
+      });
+    },
+    hide() {
+      if (!this.active) return;
+      this.active = false;
+      this.$parent.closeExtractDialog();
+      LayoutUtil.scrollLock(false);
+      this.$store.dispatch('setStatusValue', { 
+        property: 'keybindState', 
+        value: 'overview' 
+      });
+    },
+    closeSearch() {
+      this.keyword = '';
+      this.searchResult = [];
+      this.pagesFetched = 0;
+      this.allFetched = false;
+      this.hide();
+    },
+    loadResults(result) {
+      this.searchResult = result.items;
+      this.numberOfPages = Math.floor(result.totalItems/this.maxResults);
+      this.loading = false;
+    },
+    go(n) {
+      if (n >= 0 && n <= this.numberOfPages && n !== this.currentPage) {
+        this.fetch(n);
+      }
+    },
+    fetch(pageNumber) {
+      const self = this;
+      const totalItems = self.searchResult.length;
+      self.currentPage = pageNumber;
+      self.loading = true;
+      console.log('fetching page', this.currentPage);
+      this.getItems(this.keyword).then((result) => {
+        self.loadResults(result);
+      }, (error) => {
+        self.loading = false;
+      });
+    },
+    search() {
+      const self = this;
+      this.typeArray = [].concat(this.currentSearchTypes);
+      self.searchResult = [];
+      self.searchMade = true;
+      this.fetch(0);
+    },
+    getItems(keyword) {
+      // TODO: Support asking for more items
+      const typeArray = this.typeArray;
+      const searchKey = keyword !== '*' ? `${keyword}*` : keyword;
+      let searchUrl = `${this.settings.apiPath}/find.json?q=${searchKey}`;
+      if (typeof typeArray !== 'undefined' && typeArray.length > 0) {
+        for (const type of typeArray) {
+          searchUrl += `&@type=${type}`;
+        }
+      }
+      const offset = this.currentPage * this.maxResults;
+      searchUrl += `&_limit=${this.maxResults}&_offset=${offset}`;
+      return new Promise((resolve, reject) => {
+        fetch(searchUrl).then((response) => {
+          resolve(response.json());
+        }, (error) => {
+          reject('Error searching...', error);
+        });
+      });
+    },
+  },
+};
+</script>
+
+<template>
+  <div class="SearchWindow">
+    <modal-component
+      :title="'Link entity' | translatePhrase"
+      v-if="active"
+      @close="closeSearch()"
+      class="SearchWindow-modal">
+      <template slot="modal-body">
+        <div class="SearchWindow-header search-header">
+          <span>{{ "Search" | translatePhrase }}</span>
+          <div class="SearchWindow-search search">
+            <div class="SearchWindow-inputContainer input-container">
+              <input class="SearchWindow-input SearchWindowentity-search-keyword-input"
+                v-model="keyword"
+                autofocus>
+              <select v-model="currentSearchTypes" @change="handleChange(keyword)">
+                <option :value="getRange">{{"All types" | translatePhrase}}</option>
+                <option 
+                  v-for="term in getClassTree" 
+                  :key="term.parentChainString" 
+                  :value="term.id" 
+                  v-html="getFormattedSelectOption(term, settings, resources.vocab, resources.context)"></option>
+              </select>
+            </div>
+            <div class="SearchWindow-help help-tooltip-container" 
+              @mouseleave="showHelp = false">
+              <i class="fa fa-question-circle-o" 
+                @mouseenter="showHelp = true"></i>
+              <div class="SearchWindow-helpText help-tooltip" v-if="showHelp">
+                <div class="section">
+                  <div class="section-header">
+                    {{"Step" | translatePhrase}} 1: {{"Search for existing linked entities" | translatePhrase}}
+                  </div>
+                  <div class="section-content"></div>
+                </div>
+                <div class="section">
+                  <div class="section-header">
+                    {{"Step" | translatePhrase}} 2: {{"Identify and replace" | translatePhrase}}
+                  </div>
+                  <div class="section-content">
+                    {{"If you identify a matching linked entity, click it to replace the local entity with it" | translatePhrase}}
+                  </div>
+                </div>
+                <div class="section">
+                  <div class="section-header">
+                    {{"Create and link entity" | translatePhrase}}
+                  </div>
+                  <div class="section-content">
+                    {{"If no matching linked entity is found you can create and link. This will create a linked entity containing the information in the entity chosen for linking" | translatePhrase}}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="SearchWindow-controls"></div>
+          </div>
+          <div class="SearchWindow-extractControls">
+            <span class="preview-entity-text">{{ "Your new entity" | translatePhrase }}:</span>
+            <div class="copy-title" v-if="canCopyTitle">
+              <label>
+                <input type="checkbox" name="copyTitle" v-model="copyTitle" /> 
+                {{ "Copy title from" | translatePhrase }} {{this.editorData.mainEntity['@type'] | labelByLang}}
+              </label>
+            </div>
+          </div>
+
+          <div class="SearchWindow-summaryContainer">
+            <entity-summary 
+              :action-settings="localEntitySettings" 
+              :focus-data="itemInfo" 
+              :lines="4"
+              :should-link="false"></entity-summary>
+            <summary-action 
+              v-show="!extracting" 
+              :options="localEntitySettings" 
+              @action="extract()"></summary-action>
+          </div>
+        </div>
+
+        <div class="SearchWindow-resultListContainer">
+          <modal-pagination v-if="!loading && searchResult.length > 0" @go="go" :numberOfPages="numberOfPages" :currentPage="currentPage"></modal-pagination>
+          <ul v-show="displaySearchList" class="SearchWindow-resultList">
+            <li class="SearchWindow-resultItem"
+              v-for="item in searchResult" 
+              :key="item['@id']" >
+              <entity-summary class="SearchWindow-entitySummary"
+                :focus-data="item" 
+                :lines="4" 
+                :should-open-tab="true"></entity-summary>
+              <summary-action :options="addPayload(item)" @action="replaceWith(item)"></summary-action>
+            </li>
+          </ul>
+          <modal-pagination v-if="!loading && searchResult.length > 0" @go="go" :numberOfPages="numberOfPages" :currentPage="currentPage"></modal-pagination>
+          <div class="SearchWindow-searchStatusContainer"
+            v-show="extracting || keyword.length === 0 || loading || foundNoResult || fetchingMore || allFetched">
+            <div class="SearchWindow-searchStatus">
+              <span v-show="keyword.length === 0 && !extracting">
+                {{ "Search for existing linked entities" | translatePhrase }}...
+              </span>
+              <span v-show="loading">
+                <i class="fa fa-circle-o-notch fa-spin"></i>
+                {{ "Searching" | translatePhrase }}...
+              </span>
+              <span class="EntitySearchResult-fetchMore" v-show="fetchingMore">
+                {{"Fetching more results" | translatePhrase }} <i class="fa fa-circle-o-notch fa-spin"></i><br/>
+              </span>
+              <span class="EntitySearchResult-fetchMore" v-show="allFetched && searchResult.length > 0">
+                {{'No more results found' | translatePhrase }}
+              </span>
+              <span v-show="foundNoResult">
+                <strong>{{ "No results" | translatePhrase }}</strong>
+                <br>{{"Search again or" | translatePhrase}} {{"Create and link entity" | translatePhrase}}
+              </span>
+              <span v-show="extracting">
+                <i class="fa fa-circle-o-notch fa-spin" aria-hidden="true"></i>
+                {{ "Creating link" | translatePhrase }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </template>
+    </modal-component>
+  </div>
+</template>
+
+<style lang="less">
+
+.SearchWindow {
+  &-entitySummary {
+    max-width: 80%;
+  }
+
+  &-resultListContainer {
+    overflow-y: scroll;
+    flex: 1 1 auto;
+    padding-bottom: 50px;
+  }
+
+  &-searchStatusContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
+
+  &-resultList {
+    padding: 0; // Make sure last item is fully visible
+  }
+
+  &-resultItem {
+    border: solid #777;
+    margin: 4px;
+    border-width: 1px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &-searchStatus {
+    font-size: 20px;
+    font-size: 2.0rem;
+    text-align: center;
+    margin: 20px;
+  }
+
+  &-header {
+    border: solid #ccc;
+    border-width: 0px 0px 1px 0px;
+    background-color: darken(@neutral-color, 4%);
+    flex: 0 1 auto;
+    font-weight: 700;
+    padding: 10px 20px;
+    width: 100%;
+  }
+
+  &-search {
+    align-items: center;
+    display: flex;
+  }
+
+  &-extractControls {
+    padding: 10px 0 0 0;
+
+    .preview-entity-text {
+      font-weight: bold;
+    }
+
+    .copy-title {
+      float: right;
+      label {
+        margin: 0;
+        font-weight: normal;
+      }
+    }
+  }
+
+  &-summaryContainer {
+    border: 1px solid #888;
+    background: @white;
+    margin: 0.2em 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &-inputContainer {
+    display: flex;
+    border: 2px solid @gray;
+    border-radius: 0.2em;
+    font-size: 14px;
+    font-size: 1.4rem;
+    flex: 60% 0 0;
+    background: @white;
+    padding: 10px;
+
+    > select {
+      max-width: 50%;
+      padding: 0.2em 0.5em;
+      margin: 0 0.3em;
+      border-radius: 0.3em;
+      border: 0px;
+      outline: none;
+      background: @brand-primary;
+      color: @white;
+      cursor: pointer;
+      font-weight: bold;
+    }
+  }
+
+  &-input {
+    font-weight: normal;
+    width: 100%;
+    border: none;
+    outline: none;
+  }
+
+  &-controls {
+    display: flex;
+    flex-grow: 1;
+    justify-content: flex-end;
+
+    button, select {
+      &:hover {
+        background: lighten(@brand-primary, 5%);
+      }
+      &:active {
+        background: darken(@brand-primary, 5%);
+      }
+      cursor: pointer;
+      padding: 0.5em 1em;
+      background: @brand-primary;
+      border: none;
+      border-radius: 2px;
+      color: @white;
+      font-weight: bold;
+      font-size: 12px;
+    }
+  }
+
+  &-help {
+    margin-left: 10px;
+    display: inline-block;
+  }
+
+  &-helpText {
+    max-width: 40%;
+    position: absolute;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 5px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-size: 1.2rem;
+    
+    .section {
+      .section-header {
+        font-weight: 700;
+      }
+      .section-content {
+        margin: 0 0 5px 5px;
+        font-weight: normal;
+      }
+    }
+  }
+
+  &-modal {
+    .ModalComponent-body {
+      width: 100%;
+      background-color: white;
+      border: 1px solid #ccc;
+      padding: 0px;
+      overflow: hidden;
+      height: 100%;
+      display: flex;
+      flex-flow: column;
+    }
+  }
+}
+
+</style>

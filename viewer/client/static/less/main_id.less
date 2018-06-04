@@ -1,0 +1,52 @@
+// ----------- IMPORT CORES ---------
+// Import standard bootstrap
+@import '../vendor/bootstrap/less/bootstrap.less';
+// Import KB styles
+@import '../vendor/kungbib-styles/less/kb-style.less';
+
+// ----------- IMPORT SHARED COMPONENTS ----
+@import '../less/shared/main.less';
+
+// ----------- VARIABLES ------------
+@brand-primary: @happy-muted-denim;
+@bg-site: #E5E5E5;
+@bg-img: none;
+@bg-content: @white;
+@bg-content-alt: @happy-muted-light-blue;
+@bg-navbar: @happy-muted-denim;
+@bg-navbar-hover: darken(@bg-navbar, 10%);
+@shadow-navbar: none;
+@text-navbar: @white;
+@text-brand: @white;
+@text-brand-env: @white;
+@text-alt-navbar: fade(@white, 55%);
+@bg-sidebars: darken(@white, 5%);
+@border-navbar: fadeout(#fff, 100%);
+@border-navbar-width: 0px;
+@bg-footer: @bg-navbar;
+@shadow-footer: 0px;
+@text-footer: @text-navbar;
+@text-alt-footer: @text-alt-navbar;
+@bg-jumbotron: transparent;
+@bg-jumbotron-image: none;
+@border-footer: @grey-light;
+@color-class: @happy-blue;
+@color-prop: @happy-magenta;
+@color-prop-list: @grey;
+@color-ext: #d51;
+@color-id: #c7254e;
+@link-color: #288DC1;
+@link-hover-color: darken(@link-color,15%);
+@panel-border-radius: 0px;
+@thing-header-bg: lighten(@bg-navbar,15%);
+@thing-header-text: @white;
+
+@color-headers: #555;
+@color-headers-text: #fff;
+
+// ----------- FONTS ----------------
+@font-face {
+  font-family: 'Glyphicons Halflings';
+  src: url('../vendor/bootstrap/fonts/glyphicons-halflings-regular.eot');
+  src: url('../vendor/bootstrap/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('../vendor/bootstrap/fonts/glyphicons-halflings-regular.woff2') format('woff2'), url('../vendor/bootstrap/fonts/glyphicons-halflings-regular.woff') format('woff'), url('../vendor/bootstrap/fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('../vendor/bootstrap/fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
+}

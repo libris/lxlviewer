@@ -1,0 +1,43 @@
+{
+  "overview": {
+    "mod+s": "save-item",
+    "mod+d": "save-item-done",
+    "mod+e": "edit-item",
+    "alt+q": "cancel-edit",
+    "alt+z": "undo",
+    "alt+plus": "expand-item",
+    "±": "expand-item", 
+    "alt+minus": "collapse-item",
+    "alt+f": "open-field-adder",
+    "mod+shift+c": "duplicate-item",
+    "ctrl+shift+right": "admin-data-on",
+    "ctrl+shift+left": "admin-data-off"
+  },
+  "field-adder": {
+    "esc": "close-modals",
+    "down": "select-next",
+    "up": "select-prev",
+    "enter": "add-field-single",
+    "mod+enter": "add-field-multiple"
+  },
+  "entity-adder": {
+    "esc": "close-modals"
+  },
+  "release-notes": {
+    "esc": "close-modals"
+  },
+  "extraction-dialog": {
+    "esc": "close-modals"
+  },
+  "marc-preview": {
+    "esc": "close-modals"
+  },
+  "help-window": {
+    "esc": "close-modals"
+  },
+  "entity-search-list": {
+    "down": "select-next",
+    "up": "select-prev",
+    "enter": "add-entity"
+  }
+}

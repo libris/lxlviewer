@@ -14,7 +14,9 @@ The different initalization methods are driven by a small loader (``loader.es6``
 
 ### VueJS
 
-Some views contain sub-applications written in VueJS. They are initialized by their corresponding view class (see above) and are built up by components defined in ``es6/components``.
+The views contain sub-applications written in VueJS. They are initialized by their corresponding view class (see above) and are built up by components defined in ``es6/components``.
+
+For easy component inspection in the browser, install the [vue-devtools](https://github.com/vuejs/vue-devtools) (available for Chrome and Firefox).
 
 ### Utility library
 
@@ -22,9 +24,9 @@ All utility functions can be found in ``es6/utils/``.
 
 ## Stylesheets
 
-The styles are written in [less](http://lesscss.org/). Most of the styles are defined in the ``static/less/`` folder (the exception being some VueJS components which have their styles defined in their own ``.vue`` file).
+The styles are written in [less](http://lesscss.org/). The base styles are defined in the ``static/less/`` folder, and most of the VueJS components have their own styles in the corresponding ``.vue`` file).
 
-The sheets are split up into 2 separate main-files (``main_id.less`` and ``main_libris.less``) which will build one packaged ``.css`` file **each**. Which css file that is loaded depends on conditions defined in the jinja template ``base.html``.
+The base stylesheets are split up into 2 separate main-files (``main_id.less`` and ``main_libris.less``) which will build one packaged ``.css`` file **each**. Which css file that is loaded depends on conditions defined in the jinja template ``base.html``.
 
 Each one of these main files include:
 * Importing of style libraries (vendor packages handled by bower).

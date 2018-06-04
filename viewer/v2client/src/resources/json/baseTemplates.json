@@ -1,0 +1,78 @@
+{
+  "instance": {
+    "record": {
+      "bibliography": [
+        {
+          "@type": "Library",
+          "sigel": [""]
+        }
+      ],
+      "descriptionConventions": [{
+          "@id": "https://id.kb.se/marc/Isbd"
+        },
+        {
+          "@type": "DescriptionConventions",
+          "code": "rda"
+        }
+      ],
+      "descriptionLanguage": [{
+        "@id": "https://id.kb.se/language/swe"
+      }],
+      "encodingLevel": "",
+      "recordStatus": "",
+      "marc:catalogingSource": {
+        "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
+      }
+    },
+    "mainEntity": {
+      "identifiedBy": [],
+      "hasTitle": [],
+      "publication": []
+    }
+  },
+  "work": {
+    "record": {
+      "marc:catalogingSource": {
+        "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
+      }
+    },
+    "mainEntity": {
+      "language": [],
+      "genreForm": [],
+      "classification": [],
+      "contribution": [],
+      "contentType": [],
+      "subject": []
+    }
+  },
+  "agent": {
+    "record": {
+      "marc:catalogingSource": {
+        "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
+      }
+    },
+    "mainEntity": {
+      "name": ""
+    }
+  },
+  "concept": {
+    "record": {
+      "marc:catalogingSource": {
+        "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
+      }
+    },
+    "mainEntity": {
+      "inScheme": {},
+      "inCollection": [],
+      "prefLabel": [],
+      "closeMatch": [],
+      "altLabel": [],
+      "broader": [],
+      "narrower": [],
+      "related": [],
+      "label": [],
+      "scopeNote": [],
+      "historyNote": []
+    }
+  }
+}

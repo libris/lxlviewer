@@ -4,6 +4,7 @@ import json, hashlib
 from flask import Blueprint, current_app as app, request, render_template, session, redirect
 from flask_login import LoginManager, UserMixin
 from flask_login import login_required, login_user, current_user, logout_user
+from oauthlib.oauth2 import MobileApplicationClient
 from requests_oauthlib import OAuth2Session
 
 
@@ -104,7 +105,7 @@ def login_authorize():
         app.logger.info('[%s] Trying to authorize user, redirecting to %s ', request.remote_addr, authorization_url)
         # Redirect to oauth authorization
         return redirect(authorization_url)
-    except Exception, e:
+    except Exception as e:
         app.logger.error('Failed to create authorization url,  %s ', str(e))
         return _render_login(str(e))
 
@@ -124,7 +125,7 @@ def authorized():
                                                                 client_secret=app.config['OAUTH_CLIENT_SECRET'],
                                                                 authorization_response=request.url)
             app.logger.debug('OAuth token received %s ', json.dumps(_get_token()))
-        except Exception, e:
+        except Exception as e:
             raise Exception('Failed to get token, %s response: %s. Try login again' % (token_url, str(e)))
 
         # Get user from verify
@@ -134,7 +135,7 @@ def authorized():
             verified_user = verify_response.get('user')
             app.logger.info('[%s] User received from verify %s, %s', request.remote_addr, verified_user.get('username'), json.dumps(verified_user))
 
-        except Exception, e:
+        except Exception as e:
             raise Exception('Failed to verify user. %s response: %s ' % (verify_url, str(e)))
 
         if _login_user(verified_user):
@@ -142,7 +143,7 @@ def authorized():
         else:
             raise Exception('Failed to login.')
 
-    except Exception, e:
+    except Exception as e:
         msg = str(e)
         app.logger.error(msg)
         return _render_login(msg)
@@ -184,32 +185,11 @@ def _token_updater(token):
 
 def _get_requests_oauth():
     # Create new oAuth 2 session
-    requests_oauth = OAuth2Session(app.config['OAUTH_CLIENT_ID'],
-               redirect_uri=app.config['OAUTH_REDIRECT_URI'],
-               auto_refresh_kwargs={ 'client_id': app.config['OAUTH_CLIENT_ID'], 'client_secret': app.config['OAUTH_CLIENT_SECRET'] },
-               auto_refresh_url=app.config['OAUTH_TOKEN_URL'],
-               token = _get_token(),
-               token_updater=_token_updater
-               )
+    client_id = app.config['OAUTH_CLIENT_ID']
+    scopes = app.config['OAUTH_SCOPES']
+    mobile_client = MobileApplicationClient(client_id=client_id)
+    requests_oauth = OAuth2Session(client=mobile_client, scope=scopes)
     return requests_oauth
-
-
-def refresh_token():
-    """Refresh access token.
-
-    Raises InvalidGrantError if refresh token not recognized by provider.
-    """
-    extra = {
-        'client_id': app.config['OAUTH_CLIENT_ID'],
-        'client_secret': app.config['OAUTH_CLIENT_SECRET']
-    }
-
-    app.logger.debug("Refreshing OAuth2 token")
-    requests_oauth = _get_requests_oauth()
-    token = requests_oauth.refresh_token(
-        app.config['OAUTH_TOKEN_URL'],
-        **extra)
-    _token_updater(token)
 
 
 def _fake_login():

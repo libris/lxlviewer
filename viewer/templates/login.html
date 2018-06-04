@@ -2,26 +2,19 @@
 {% block bodyattrs %}id="login"{% endblock %}
 {% block wrapper %}<div class="show-content" id="page-content-wrapper"> {% endblock %}
 {% block content %}
-<div class="panel panel-default">
-  <div class="panel-body container-fluid">
-    <div class="row">
-      <div class="col-md-8 col-md-offset-2">
-        <div id="oauth-login-buttons">
-            {% if msg %}
-              <div class="well status-text error"><i class="icon fa fa-lg fa-warning" aria-hidden="true"></i> ${ msg }</div>
-            {% endif %}
-            <a href="/login/authorize" href="_target" class="btn btn-login">Logga in med Libris Login</a>
-        </div>
-        <div class="panel panel-default dash orange login-info-panel">
-          <span class="circle"><i class="icon fa fa-key" aria-hidden="true"></i></span>
-          <ul class="">
-            <li>Godkänn autentiseringen till Libris Login när du loggar in.</li>
-            <li>När kopplingen är genomförd skickas du tillbaka till tjänsten.</li>
-            <li>Om du saknar inloggningsrättigheter kan du kontakta <a href="mailto:libris@kb.se">Libris kundservice</a>.</li>
-          </ul>
-        </div>
-      </div>
+<div class="auth-container panel panel-default col-sm-8 col-sm-offset-2">
+  <h1>Logga in</h1>
+  <p>
+    För att logga in i Libris katalogiseringstjänst måste du godkänna autentiseringen i Libris Login. När kopplingen är genomförd skickas du tillbaka till Libris katalogiseringstjänst.
+  </p>
+  <div class="login-actions">
+    <div id="oauth-login-buttons">
+      {% if msg %}
+      <div class="well status-text error"><i class="icon fa fa-lg fa-warning" aria-hidden="true"></i> ${ msg }</div>
+      {% endif %}
+      <a href="/login/authorize" href="_target" class="btn btn-info btn-login">Logga in</a>
     </div>
+    <p>Saknar du inloggningsrättigheter?<br/><a href="http://www.kb.se/libris/kontakta/">Kontakta Libris kundservice</a>.</p>
   </div>
 </div>
 

@@ -4,13 +4,11 @@
 
 {% block content %}
 {% if current_user.is_authenticated %}
-<h1><span class="js-translateable" data-translateable="Settings">Settings</span></h1>
     <div class="row">
       <div class="panel panel-default">
         <user-settings v-if="initialized"></user-settings>
       </div>
     </div>
-  <help-component v-if="initialized == true" :open-all="true"></help-component>
 {% else %}
 <p>Du måste logga in.</p>
 {% endif %}

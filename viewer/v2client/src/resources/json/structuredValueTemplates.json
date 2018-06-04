@@ -1,0 +1,150 @@
+{
+  "Title": {
+    "@type": "Title",
+    "mainTitle": "",
+    "subtitle": ""
+  },
+  "ParallelTitle": {
+    "@type": "ParallelTitle",
+    "mainTitle": ""
+  },
+  "EAN": {
+    "@type": "EAN",
+    "value": ""
+  },
+  "ISBN": {
+    "@type": "ISBN",
+    "value": "",
+    "qualifier": [""]
+  },
+  "ISMN": {
+    "@type": "ISMN",
+    "value": ""
+  },
+  "ISSN": {
+    "@type": "ISSN",
+    "value": ""
+  },
+  "Publication": {
+    "@type": "Publication",
+    "place": [
+      {
+        "@type": "Place",
+        "label": [""]
+      }
+    ],
+    "agent": [
+      {
+        "@type": "Agent",
+        "label": [""]
+      }
+    ],
+    "date": [""]
+
+  },
+  "Manufacture": {
+    "@type": "Manufacture",
+    "place": [
+      {
+        "@type": "Place",
+        "label": [""]
+      }
+    ],
+    "agent": [
+      {
+        "@type": "Agent",
+        "label": [""]
+      }
+    ],
+    "date": [""]
+  },
+  "Distribution": {
+    "@type": "Distribution",
+    "place": [
+      {
+        "@type": "Place",
+        "label": [""]
+      }
+    ],
+    "agent": [
+      {
+        "@type": "Agent",
+        "label": [""]
+      }
+    ],
+    "date": [""]
+  },
+  "Item": {
+    "@type": "Item",
+    "physicalLocation": [""],
+    "shelfControlNumber": "",
+    "shelfMark": {
+      "@type": "ShelfMark",
+      "label": [""]
+    }
+  },
+  "marc:TextualHoldingsBasicBibliographicUnit": [ 
+    { 
+      "@type": "marc:TextualHoldingsBasicBibliographicUnit", 
+      "label": [""] 
+    } 
+  ],
+  "SeriesMembership": [
+    {
+      "@type": "SeriesMembership",
+      "inSeries": {
+        "@type": "Instance",
+        "identifiedBy": [
+          {
+            "@type": "ISSN",
+            "value": ""
+          }
+        ],
+        "instanceOf": {
+          "@type": "Work",
+          "hasTitle": [
+            {
+              "@type": "Title",
+              "mainTitle": ""
+            }
+          ]
+        }
+      },
+      "marc:seriesTracingPolicy": "",
+      "seriesEnumeration": "",
+      "seriesStatement": [""]
+    }
+  ],
+  "Classification": {
+    "@type": "Classification",
+    "code": "",
+    "inScheme": {
+      "@id": "https://id.kb.se/term/kssb/8/",
+      "@type": "ConceptScheme",
+      "code": "kssb",
+      "version": "8"
+    }
+  },
+  "ClassificationDdc": {
+    "@type": "ClassificationDdc",
+    "code": "",
+    "edition": ""
+  },
+  "Extent": {
+    "@type": "Extent",
+    "label": ""
+  },
+  "Note": {
+    "@type": "Note",
+    "label": ""
+  },
+  "SourceData": {
+    "@type": "SourceData",
+    "label": "",
+    "citationNote": ""
+  },
+  "SourceDataNotFound": {
+    "@type": "SourceDataNotFound",
+    "citationSource": ""
+  }
+}

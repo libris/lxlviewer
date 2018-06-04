@@ -1,0 +1,654 @@
+{
+  "instance": {
+    "printedmonograph": {
+      "label": "Bok",
+      "description": "Tryckt monografi - RDA",
+      "value": {
+        "record": {
+          "@type": "Record",
+          "bibliography": [
+            {
+              "@type": "Library",
+              "sigel": [""]
+            }
+          ],
+          "descriptionConventions": [{
+              "@id": "https://id.kb.se/marc/Isbd"
+            },
+            {
+              "@type": "DescriptionConventions",
+              "code": "rda"
+            }
+          ],
+          "descriptionLanguage": [{
+            "@id": "https://id.kb.se/language/swe"
+          }],
+          "encodingLevel": "",
+          "recordStatus": "",
+          "marc:catalogingSource": {
+            "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
+          }
+        },
+        "mainEntity": {
+          "@type": "Instance",
+          "issuanceType": "Monograph",
+          "hasTitle": [{
+              "@type": "Title",
+              "mainTitle": "",
+              "subtitle": ""
+            }
+          ],
+          "responsibilityStatement": "",
+          "identifiedBy": [{
+            "@type": "ISBN",
+            "value": "",
+            "qualifier": ""
+          }],
+          "editionStatement": "",
+          "editionStatementRemainder": "",
+          "publication": [
+            {
+              "@type": "PrimaryPublication",
+              "date": "",
+              "country": [ {"@id": "https://id.kb.se/country/sw"} ],
+              "place": {
+                "@type": "Place",
+                "label": ""
+              },
+              "agent": {
+                "@type": "Agent",
+                "label": ""
+              }
+            }
+          ],
+          "manufacture": [{
+            "@type": "Manufacture",
+            "agent": [{
+              "@type": "Agent",
+              "label": [
+                ""
+              ]
+            }],
+            "date": [
+              ""
+            ],
+            "place": [{
+              "@type": "Place",
+              "label": [
+                ""
+              ]
+            }]
+          }],
+          "copyright": [{
+            "@type": "Copyright",
+            "date": ""
+          }],
+          "mediaType": [{"@id": "https://id.kb.se/term/rda/Unmediated"}],
+          "carrierType": [{"@id": "https://id.kb.se/term/rda/Volume"}],
+          "extent": [{
+            "@type": "Extent",
+            "label": ""
+          }],
+          "hasDimensions": {
+            "@type": "Dimensions",
+            "label": ""
+          },
+          "seriesMembership": [
+            {
+              "@type": "SeriesMembership",
+              "inSeries": {
+                "@type": "Instance",
+                "identifiedBy": [
+                  {
+                    "@type": "ISSN",
+                    "value": ""
+                  }
+                ],
+                "instanceOf": {
+                  "@type": "Work",
+                  "hasTitle": [
+                    {
+                      "@type": "Title",
+                      "mainTitle": ""
+                    }
+                  ]
+                }
+              },
+              "marc:seriesTracingPolicy": "",
+              "seriesEnumeration": "",
+              "seriesStatement": [""]
+            }
+          ],
+          "hasNote": [{
+            "@type": "Note",
+            "label": ""
+          }],
+          "instanceOf": {
+            "@type": "Text",
+            "language": [{
+              "@id": "https://id.kb.se/language/swe"
+            }],
+            "genreForm": [],
+            "classification": [{
+                "@type": "ClassificationDdc",
+                "code": "",
+                "edition": ""
+              },
+              {
+                "@type": "Classification",
+                "code": "",
+                "inScheme": {
+                  "@type": "ConceptScheme",
+                  "@id": "https://id.kb.se/term/kssb/8",
+                  "code": "kssb/8"
+                }
+              }
+            ],
+            "contribution": [{
+                "@type": "PrimaryContribution",
+                "agent": {
+                  "@type": "Person",
+                  "familyName": "",
+                  "givenName": "",
+                  "lifeSpan": ""
+                },
+                "role": [{
+                  "@id": "https://id.kb.se/relator/author"
+                }]
+              },
+              {
+                "@type": "Contribution",
+                "agent": {
+                  "@type": "Person",
+                  "familyName": "",
+                  "givenName": "",
+                  "lifeSpan": ""
+                }
+              }
+            ],
+            "contentType": [{"@id": "https://id.kb.se/term/rda/Text"}],
+            "subject": []
+          }
+        }
+      }
+    },
+    "printedperiodical": {
+      "label": "Tryckt seriell resurs",
+      "description": "RDA",
+      "value": {
+        "record": {
+          "@type": "Record",
+          "bibliography": [
+            {
+              "@type": "Library",
+              "sigel": [""]
+            }
+          ],
+          "descriptionConventions": [{
+              "@id": "https://id.kb.se/marc/Isbd"
+            },
+            {
+              "@type": "DescriptionConventions",
+              "code": "rda"
+            }
+          ],
+          "descriptionLanguage": [{
+            "@id": "https://id.kb.se/language/swe"
+          }],
+          "encodingLevel": "",
+          "recordStatus": "",
+          "marc:catalogingSource": {
+            "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
+          }
+        },
+        "mainEntity": {
+          "@type": "Instance",
+          "issuanceType": "Serial",
+          "frequency": [],
+          "hasTitle": [{
+              "@type": "KeyTitle"
+            },
+            {
+              "@type": "Title",
+              "mainTitle": "",
+              "titleRemainder": ""
+            }
+          ],
+          "marc:alphabet": {
+            "@id": "https://id.kb.se/marc/SerialsAlphabetType-b"
+          },
+          "marc:typeOfEntry": {
+            "@id": "https://id.kb.se/marc/SerialsTypeOfEntryType-0"
+          },
+          "identifiedBy": [{
+            "@type": "ISSN",
+            "value": ""
+          }],
+          "publication": [
+            {
+              "@type": "PrimaryPublication",
+              "date": "",
+              "startYear": "",
+              "endYear": "",
+              "country": [ {"@id": "https://id.kb.se/country/sw"} ],
+              "place": {
+                "@type": "Place",
+                "label": ""
+              },
+              "agent": {
+                "@type": "Agent",
+                "label": ""
+              }
+            }
+          ],
+          "carrierType": [{"@id": "https://id.kb.se/term/rda/Volume"}],
+          "mediaType": [{"@id": "https://id.kb.se/term/rda/Unmediated"}],
+          "hasDimensions": {
+            "@type": "Dimensions",
+            "label": ""
+          },
+          "hasNote": [{
+            "@type": "Note",
+            "label": ""
+          }],
+          "hasNumberingOfSerials": [
+            {
+              "@type": "NumberingOfSerials",
+              "label": ""
+            }
+          ],
+          "instanceOf": {
+            "@type": "Text",
+            "language": [{
+              "@id": "https://id.kb.se/language/swe"
+            }],
+            "contribution": [
+              {
+                "@type": "Contribution",
+                "agent": {
+                  "@type": "Person",
+                  "familyName": "",
+                  "givenName": "",
+                  "lifeSpan": ""
+                }
+              }
+            ],
+            "contentType": [{"@id": "https://id.kb.se/term/rda/Text"}],
+            "genreForm": [{
+              "@id": "https://id.kb.se/marc/Periodical"
+            }],
+            "classification": [{
+                "@type": "ClassificationDdc",
+                "code": "",
+                "edition": ""
+              },
+              {
+                "@type": "Classification",
+                "code": "",
+                "inScheme": {
+                  "@type": "ConceptScheme",
+                  "@id": "https://id.kb.se/term/kssb/8",
+                  "code": "kssb/8"
+                }
+              }
+            ],
+            "subject": []
+          }
+        }
+      }
+    }
+  },
+  "agent": {
+    "person": {
+      "label": "Person",
+      "description": "Agent",
+      "value": {
+        "record": {
+          "@type": "Record",
+          "encodingLevel": {
+            "@id": "https://id.kb.se/marc/CompleteAuthorityRecord"
+          },
+          "marc:romanization": {
+            "@id": "https://id.kb.se/marc/NationalStandard"
+          },
+          "marc:kindOfRecord": {
+            "@id": "https://id.kb.se/marc/EstablishedHeadingRecord"
+          },
+          "descriptionConventions": [{
+              "code": "z"
+            },
+            {
+              "@type": "DescriptionConventions",
+              "code": "rda"
+            }
+          ],
+          "marc:headingMain": true,
+          "cataloguersNote": [""],
+          "sourceConsulted": [],
+          "recordStatus": "marc:CorrectedOrRevised",
+          "marc:recordUpdate": {
+            "@id": "https://id.kb.se/marc/RecordCanBeUsed"
+          },
+          "marc:personalName": {
+            "@id": "https://id.kb.se/marc/DifferentiatedPersonalName"
+          },
+          "marc:level": {
+            "@id": "https://id.kb.se/marc/FullyEstablishedHeading"
+          },
+          "descriptionLanguage": [{
+            "@id": "https://id.kb.se/language/swe"
+          }]
+        },
+        "mainEntity": {
+          "@type": "Person",
+          "familyName": "",
+          "givenName": "",
+          "lifeSpan": "",
+          "birthDate": "",
+          "deathDate": "",
+          "hasVariant": [{
+            "@type": "Person",
+            "familyName": "",
+            "givenName": "",
+            "name": "",
+            "lifeSpan": ""
+          }],
+          "seeAlso": [],
+          "fieldOfActivity": [],
+          "hasOccupation": [],
+          "identifiedBy": [{
+            "@type": "Identifier",
+            "typeNote": "isni",
+            "value": ""
+          }],
+          "nationality": [{
+            "@id": "https://id.kb.se/nationality/e-sw---",
+            "code": "e-sw---"
+          }]
+        }
+      }
+    },
+    "organization": {
+      "label": "Organisation",
+      "description": "Agent",
+      "value": {
+        "record": {
+          "@type": "Record",
+          "descriptionConventions": [{
+              "code": "z"
+            },
+            {
+              "@type": "DescriptionConventions",
+              "code": "rda"
+            }
+          ],
+          "descriptionLanguage": [{
+            "@id": "https://id.kb.se/language/swe",
+            "code": "swe"
+          }],
+          "encodingLevel": {
+            "@id": "https://id.kb.se/marc/CompleteAuthorityRecord"
+          },
+          "marc:romanization": {
+            "@id": "https://id.kb.se/marc/NationalStandard"
+          },
+          "recordStatus": "marc:CorrectedOrRevised",
+          "cataloguersNote": [""],
+          "sourceConsulted": [],
+          "marc:recordUpdate": {
+            "@id": "https://id.kb.se/marc/RecordCanBeUsed"
+          },
+          "marc:personalName": {
+            "@id": "https://id.kb.se/marc/DifferentiatedPersonalName"
+          },
+          "marc:level": {
+            "@id": "https://id.kb.se/marc/FullyEstablishedHeading"
+          }
+        },
+        "mainEntity": {
+          "@type": "Organization",
+          "name": "",
+          "isPartOf": {
+            "@type": "Organization",
+            "name": ""
+          },
+          "marc:subordinateUnit": [ "" ],
+          "activityStartDate": "",
+          "activityEndDate": "",
+          "hasHistoricalData": [{
+            "@type": "AdministrativeHistoryNote",
+            "label": ""
+          }],
+          "hasVariant": [
+            {
+            "@type": "Organization",
+            "name": ""
+          },
+          {
+          "@type": "Organization",
+          "isPartOf": {
+            "@type": "Organization",
+            "name": ""
+          },
+          "marc:subordinateUnit": [ "" ]
+        }
+        ],
+          "seeAlso": [],
+          "identifiedBy": [{
+            "@type": "Identifier",
+            "typeNote": "isni",
+            "value": ""
+          }],
+          "nationality": [{
+            "@id": "https://id.kb.se/nationality/e-sw---",
+            "code": "e-sw---"
+          }]
+        }
+      }
+    }
+  },
+  "concept": {
+    "genreForm": {
+      "label": "Genre/form",
+      "description": "saogf",
+      "value": {
+        "record": {
+          "@type": "Record",
+          "descriptionLanguage": [{
+            "@id": "https://id.kb.se/language/swe"
+          }],
+          "encodingLevel": {
+            "@id": "https://id.kb.se/marc/CompleteAuthorityRecord"
+          },
+          "marc:kindOfRecord": {
+            "@id": "https://id.kb.se/marc/EstablishedHeadingRecord"
+          },
+          "marc:recordUpdate": {
+            "@id": "https://id.kb.se/marc/RecordCanBeUsed"
+          },
+          "marc:subjectHeading": {
+            "@id": "https://id.kb.se/marc/Other"
+          }
+        },
+        "mainEntity": {
+          "@type": "GenreForm",
+          "closeMatch": [{
+            "@id": "https://id.kb.se/term/saogf/",
+            "@type": "GenreForm",
+            "inScheme": {
+              "@id": "https://id.kb.se/term/lcsh",
+              "@type": "ConceptScheme",
+              "code": "lcsh"
+            },
+            "prefLabel": "",
+            "termComponentList": [{
+              "@type": "GenreForm",
+              "prefLabel": ""
+            }]
+          }],
+          "inScheme": {
+            "@id": "https://id.kb.se/term/saogf"
+          },
+          "prefLabel": "",
+          "scopeNote": [
+            "Genre/formterm."
+          ]
+        }
+      }
+    },
+    "geographic": {
+      "label": "Geografiskt ämnesord",
+      "description": "sao",
+      "value": {
+        "record": {
+          "@type": "Record",
+          "descriptionLanguage": [{
+            "@id": "https://id.kb.se/language/swe",
+            "code": "swe"
+          }],
+          "encodingLevel": {
+            "@id": "https://id.kb.se/marc/CompleteAuthorityRecord"
+          },
+          "marc:kindOfRecord": {
+            "@id": "https://id.kb.se/marc/EstablishedHeadingRecord"
+          },
+          "marc:recordUpdate": {
+            "@id": "https://id.kb.se/marc/RecordCanBeUsed"
+          },
+          "marc:subjectHeading": {
+            "@id": "https://id.kb.se/marc/Other"
+          }
+        },
+        "mainEntity": {
+          "@type": "Geographic",
+          "prefLabel": "",
+          "closeMatch": [],
+          "inScheme": {
+            "@id": "https://id.kb.se/term/sao",
+            "@type": "ConceptScheme",
+            "notation": "sao"
+          },
+          "scopeNote": [""]
+        }
+      }
+    },
+    "topic": {
+      "label": "Allmänt ämnesord",
+      "description": "sao",
+      "value": {
+        "record": {
+          "encodingLevel": {
+            "@id": "https://id.kb.se/marc/CompleteAuthorityRecord"
+          },
+          "marc:romanization": {
+            "@id": "https://id.kb.se/marc/NationalStandard"
+          },
+          "marc:kindOfRecord": {
+            "@id": "https://id.kb.se/marc/EstablishedHeadingRecord"
+          },
+          "descriptionConventions": {
+            "@id": "https://id.kb.se/marc/CatalogingRulesType-c"
+          },
+          "marc:subjectHeading": {
+            "@id": "https://id.kb.se/marc/Other"
+          },
+          "marc:recordUpdate": {
+            "@id": "https://id.kb.se/marc/RecordCanBeUsed"
+          },
+          "marc:level": {
+            "@id": "https://id.kb.se/marc/FullyEstablishedHeading"
+          },
+          "descriptionLanguage": [{
+            "@id": "https://id.kb.se/language/swe"
+          }],
+          "source": [{
+            "@type": "Instance",
+            "label": "Källa"
+          }]
+        },
+        "mainEntity": {
+          "@type": "Topic",
+          "inScheme": {
+            "@id": "https://id.kb.se/term/sao"
+          },
+          "inCollection": [{
+            "@id": "https://id.kb.se/term/Fack"
+          }],
+          "prefLabel": "",
+          "closeMatch": [{
+              "@type": "ClassificationDdc",
+              "code": "",
+              "inScheme": {
+                "@type": "ConceptScheme",
+                "@id": "http://dewey.info/scheme/edition/e23/swe/",
+                "version": "23",
+                "language": "swe"
+              }
+            },
+            {
+              "@type": "Topic",
+              "inScheme": {
+                "@type": "ConceptScheme",
+                "@id": "https://id.kb.se/term/lcsh",
+                "code": "lcsh"
+              },
+              "prefLabel": "",
+              "@id": "http://id.loc.gov/authorities/label/LCSH"
+            }
+          ],
+          "altLabel": [
+            ""
+          ],
+          "broader": [],
+          "related": [],
+          "scopeNote": [
+            ""
+          ],
+          "historyNote": [
+            ""
+          ]
+        }
+      }
+    },
+    "chronologicalTerm": {
+      "label": "Kronologiskt ämnesord",
+      "description": "saogf",
+      "value": {
+        "record": {
+          "@type": "Record",
+          "descriptionConventions": {
+            "@id": "https://id.kb.se/marc/CatalogingRulesType-c"
+          },
+          "descriptionLanguage": [{
+            "@id": "https://id.kb.se/language/swe"
+          }],
+          "encodingLevel": {
+            "@id": "https://id.kb.se/marc/CompleteAuthorityRecord"
+          },
+          "marc:subjectSubdivision": {
+            "@id": "https://id.kb.se/marc/Topical"
+          },
+          "marc:kindOfRecord": {
+            "@id": "https://id.kb.se/marc/EstablishedHeadingRecord"
+          },
+          "marc:recordUpdate": {
+            "@id": "https://id.kb.se/marc/RecordCanBeUsed"
+          },
+          "marc:subjectHeading": {
+            "@id": "https://id.kb.se/marc/Other"
+          }
+        },
+        "mainEntity": {
+          "@type": "Temporal",
+          "prefLabel": "",
+          "broadMatch": [],
+          "closeMatch": [],
+          "inScheme": {
+            "@id": "https://id.kb.se/term/sao"
+          },
+          "scopeNote": [""]
+        }
+      }
+    }
+  }
+}

@@ -30,12 +30,14 @@ from . import conneg
 
 
 R_METHODS = ['GET', 'HEAD', 'OPTIONS']
+HTTP_METHODS = R_METHODS + ['PUT', 'POST', 'DELETE']
+
 
 JSONLD_MIMETYPE = 'application/ld+json'
 RDF_MIMETYPES = {'text/turtle', JSONLD_MIMETYPE, 'application/rdf+xml', 'text/xml'}
 MIMETYPE_FORMATS = ['text/html', 'application/xhtml+xml'] + list(RDF_MIMETYPES)
 
-KEEP_HEADERS = ['ETag', 'Location', 'Content-Location', 'Document', 'Link']
+KEEP_HEADERS = ['ETag', 'Location', 'Content-Location', 'Document', 'Link', 'Server-Start-Time']
 
 CONTEXT_PATH = '/context.jsonld'
 
@@ -54,14 +56,16 @@ class MyFlask(Flask):
             variable_start_string='${', variable_end_string='}',
             line_statement_prefix='%')
 
-app = MyFlask(__name__, #static_url_path='/assets', static_folder='static',
+app = MyFlask(__name__,
+    static_folder=os.path.join(
+        os.path.dirname(__file__), 'client', 'static'),
         instance_relative_config=True)
 
 app.config.from_object('viewer.configdefaults')
 app.config.from_envvar('DEFVIEW_SETTINGS', silent=True)
 app.config.from_pyfile('config.cfg', silent=True)
 
-CORS(app, methods=R_METHODS, expose_headers=['ETag'])
+CORS(app, methods=HTTP_METHODS, expose_headers=['ETag', 'Location'])
 
 
 import __builtin__
@@ -90,6 +94,11 @@ def first(value):
 @app.route("/about")
 def show_about():
     return render_template('about.html')
+
+# Help page
+@app.route("/help")
+def show_help():
+    return render_template('help.html')
 
 ##
 # Setup Github rss
@@ -129,7 +138,12 @@ def _get_served_uri(url, path):
     # TODO: why is Flask unquoting url and path values?
     url_base = url_quote(url)
     path = url_quote(path)
+    # we need to do this to handle e.g. gmgpc//swe, since flask is a bit heavy
+    # handed when it comes to slashes in paths
+    # TODO: https://jira.kb.se/browse/LXL-1469
+    path = re.sub(r"([^:])//", r"\1%2F%2F", path)
     mapped_base = daccess.urimap.to_canonical_uri(url_base)
+
     # NOTE: Needed since some proxies lose one slash from paths that represent
     # full URIs (through seemingly incorrect path normalization).
     if re.match(r'^https?:/[^/]', path):
@@ -188,10 +202,11 @@ def thingview(path, suffix=None):
     #    path, suffix = path.rsplit('.')
 
     whelk_accept_header = _get_view_data_accept_header(request, suffix)
+    query_params = _filter_query_params(request.args)
 
     resource_id = _get_served_uri(request.url_root, path)
     resp = _proxy_request(request, session, accept_header=whelk_accept_header,
-            url_path=resource_id)
+            url_path=resource_id, query_params=query_params)
 
     if resp.status_code > 200:
         return resp
@@ -202,10 +217,21 @@ def thingview(path, suffix=None):
 # FIXME make this less sketcy
 def _get_view_data_accept_header(request, suffix):
     mimetype, _ = negotiator.negotiate(request, suffix)
-    if mimetype in ('application/json', 'text/html', 'application/xhtml+xml'):
+    if mimetype in ('application/json'):
         return 'application/json'
+    elif mimetype in ('text/html', 'application/xhtml+xml'):
+        return 'application/ld+json'
     else:
         return None
+
+
+def _filter_query_params(request_args):
+    params = MultiDict([])
+    version = request_args.get('version')
+    if version:
+        params.add('version', version)
+
+    return params
 
 
 @app.route('/find', methods=R_METHODS)
@@ -233,6 +259,10 @@ def some(suffix=None):
 
 
 @app.route('/', methods=R_METHODS)
+def show_base():
+    return render_template('base.html')
+
+
 @app.route('/data', methods=R_METHODS)
 @app.route('/data.<suffix>', methods=R_METHODS)
 def dataindexview(suffix=None):
@@ -344,11 +374,16 @@ def _to_graph(data, base=None):
     return cg
 
 def _get_template_for(data):
-    for rtype in as_iterable(data.get(TYPE)):
+    type_key = ""
+    if not data.get(TYPE):
+        type_key = data.get(GRAPH)[1].get(TYPE)
+    else:
+        type_key = data.get(TYPE)
+    for rtype in as_iterable(type_key):
         template = TYPE_TEMPLATES.get(rtype)
         if template:
             return template
-    return 'thing.html'
+    return 'edit.html'
 
 
 ##
@@ -374,25 +409,6 @@ def createpost():
 def import_post():
     return render_template('import.html')
 
-# Mocking edit/create new record with passed types
-@app.route('/new/<item_type>')
-@admin.login_required
-def thingnew(item_type):
-    ITEM_TYPES = {'record': 'Record'}
-    item_type = ITEM_TYPES.get(item_type) or ITEM_TYPES.get('record')
-    at_type = request.args.get(TYPE)
-    if not at_type:
-        return Response('Missing @type parameter', status=422)
-    else:
-        return render_template('edit.html',
-                record={
-                        GRAPH: [
-                            {TYPE: item_type},
-                            {TYPE: json.loads(at_type)}
-                        ]
-                    },
-                model={})
-
 
 # !TODO this is stupid and should be solved a less dangerous way
 # So rethink the flow for new records
@@ -403,8 +419,11 @@ def thingnewp():
     record = json.loads(request.form['data'])
     app.logger.debug('Posting data to editor:\n %s',
                      record)
-    return render_template('edit.html', record=record, model={})
+    return render_template('edit.html', thing=record, model={})
 
+@app.route('/maintenance.html')
+def maintenance():
+    return render_template('maintenance.html')
 
 @app.route('/sys/forcedsetterms.json')
 def forcedsetterms():
@@ -422,19 +441,6 @@ def _findhold():
 def _dependencies():
     return _proxy_request(request, session, query_params=['id', 'relation', 'reverse'])
 
-@app.route('/<path:path>/edit')
-def thingedit(path):
-    r = _proxy_request(request, session, url_path="/{0}".format(path))
-
-    if r.status_code == 200:
-        model = {}
-        data = json.loads(r.get_data())
-        return render_template('edit.html', record=data, model=model)
-    else:
-        # TODO handle this better. GET /<path> *should* return 200,
-        # but treating everything else as an error isn't awesome.
-        return abort(r.status_code)
-
 
 @app.route('/', methods=['POST'])
 def create():
@@ -442,7 +448,12 @@ def create():
     return _write_data(request, query_params=MultiDict([]))
 
 
-@app.route('/_convert', methods=['POST'])
+@app.route('/_merge', methods=['GET','POST'])
+def _merge():
+    return _proxy_request(request, session, query_params=['id1', 'id2', 'promote_id2'])
+
+
+@app.route('/_convert', methods=['GET','POST'])
 def convert():
     return _write_data(request, query_params={'to': 'application/x-marc-json'})
 
@@ -450,19 +461,6 @@ def convert():
 @app.route('/_remotesearch')
 def _remotesearch():
     return _proxy_request(request, session, query_params=['q', 'databases'])
-
-
-def _get_authorization_token(session):
-    oauth_token = session['oauth_token'] if 'oauth_token' in session else None
-
-    if oauth_token:
-        token = oauth_token['access_token']
-        token_type = oauth_token['token_type']
-        # FIXME handle different tokens (or verify that we only
-        # ever see Bearer)
-        return "{0} {1}".format(token_type, token)
-    else:
-        return None
 
 
 def _proxy_request(request, session, json_data=None, query_params=[],
@@ -482,50 +480,15 @@ def _proxy_request(request, session, json_data=None, query_params=[],
     headers = dict(request.headers)
     if accept_header:
         headers['Accept'] = accept_header
-    auth_token = _get_authorization_token(session)
-    if auth_token:
-        headers['Authorization'] = auth_token
 
     app.logger.debug('Sending proxy %s request to: %s with headers:\n%r\nand body:\n %s',
                      request.method, url_path, headers, json_data)
 
-    response = _request_with_refresh(request.method, url_path, headers,
-                                     json_data, params)
-
-    return _map_response(response)
-
-
-def _request_with_refresh(method, url_path, headers, json_data, query_params):
     response = daccess.api_request(url_path, request.method, headers,
                                    json_data=json_data,
-                                   query_params=query_params)
+                                   query_params=params)
 
-    now = time.time()
-
-    if (response.status_code == 401 and
-            ('oauth_token' in session) and
-            (session['oauth_token']['expires_at'] < now)):
-        app.logger.debug("Unauthorized, w/ existing token. Refreshing...")
-
-        refreshed = False
-
-        try:
-            admin.refresh_token()
-            refreshed = True
-        except InvalidGrantError:
-            app.logger.debug("Failed to refresh access token")
-
-        if refreshed:
-            auth_token = _get_authorization_token(session)
-            if auth_token:
-                headers['Authorization'] = auth_token
-            return daccess.api_request(url_path, request.method, headers,
-                                       json_data=json_data,
-                                       query_params=query_params)
-        else:
-            return response
-
-    return response
+    return _map_response(response)
 
 
 def _map_response(response):
@@ -607,7 +570,7 @@ def vocabview(suffix=None):
         resp = Response(json.dumps(vocab_data),
                 content_type='%s; charset=UTF-8' % mimetype)
 
-    if mimetype in RDF_MIMETYPES:
+    elif mimetype in RDF_MIMETYPES:
         resp = Response(voc.graph.serialize(format=
                 'json-ld' if mimetype == JSONLD_MIMETYPE else mimetype,
                 #context_id=CONTEXT_PATH,
