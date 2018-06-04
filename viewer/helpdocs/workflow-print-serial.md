@@ -39,9 +39,14 @@ samt andra poster.
   För post katalogiserad enligt RDA, länka till entitet: marc/Isbd samt skapa lokal entitet med Kod: rda    
   ```Exempel: marc/Isbd (länkad entitet) + lokal entitet, Kod: rda```
 
-* Beskrivningsnivå (000/05)  
+* Beskrivningsnivå (000/17)  
   Välj från lista.    
   ```Exempel: nationalbibliografisk/fullständig nivå```
+  
+* Poststatus (000/05)  
+  Uppdateras automatiskt. Ändra inte.   
+  ```Exempel: Ny post```  
+  ```Exempel: Rättad eller reviderad post```
 
 ### Instans
 * Utgivningssätt (issuanceType)  
@@ -94,8 +99,9 @@ samt andra poster.
   ```Exempel: 1653-2945```
 
 * Utgivning  
-  Välj typ från lista. För seriell resurs, välj Pågående utgivningsperiod eller Avslutad utgivningsperiod.  
+  Välj typ från lista. För seriell resurs, välj Primär utgivningsperiod.  
   (= Typ av utgivningsdatum/utgivningsstatus) (008/06)    
+  Begreppet "Primär utgivning" har infört i Libris, främst för seriella resurser, där det ibland finns upprepade utgivningsavsnitt. Primär utgivning är då det första och sammanfattande utgivningsavsnittet.  
    
   * Land (country = 008/15-17)  
   Länka till entitet.  
@@ -109,12 +115,16 @@ samt andra poster.
   * Datum (date = 264 -/1 ‡c)  
   Skriv in uppgiften.  
   ```Exempel: 2011-2013```  
-  * Startdatum (startDate = 008/7-10)  
+  * Startår (startYear = 008/7-10)  
   Skriv in uppgiften.  
-  ```Exempel: 2011```  
-  * Slutdatum (endDate = 008/11-14)  
+    ```Exempel: 2011```  
+  * Slutår (endYear = 008/11-14)  
+  Om slutår inte anges, sätts utgivningsstatus (008/06) automatiskt till "c = Utgivning pågår".  
+  Om slutår anges, sätts utgivningsstatus (008/06) automatiskt till "d = Utgivning avslutad".  
   Skriv in uppgiften.  
   ```Exempel: 2013```  
+  För att ange slutår för senaste utgivningsperiod (264 -/3 ‡c), notera först vilket startåret för utgivningsperioden är, ta bort Startår och lägg till Datum. Skriv in hela datumangivelsen med startår och slutår.  
+ ```Exempel: 2012-2013```   
  
 * Frekvens (frequency)  
   * Frekvensterm (008/18)  
@@ -206,6 +216,7 @@ samt andra poster.
    
 * Genre/form – saogf-termer (genreForm = 655 -/7 ‡a, ‡2 saogf)  
   Länka till entitet.  
+  Under Genre/form, välj Genre/form i listan över typer.  
   ```Exempel: Organisationspress```  
   ```Exempel: Musiktidskrifter```  
    
@@ -242,8 +253,7 @@ samt andra poster.
   ```Exempel: Musikant (Stockholm. 2011)```  
   
 * Utgiven med/Verk/Identifikator/Typ   
-  Välj från lista.    
-  I undantagsfall, skapa lokal entitet och skriv in uppgiften.  
+  Välj från lista.   
   ```Exempel:  ISSN```  
   
 * Utgiven med/Verk/Identifikator/ISSN/Värde (issuedWith/Work/identifiedBy/Issn/value = 777 ‡x)  
@@ -255,44 +265,42 @@ samt andra poster.
   Skriv in uppgiften.  
   ```Exempel: 12683514```  
 
-* Relaterade verk/Fortsätter delvis/Verk (continuesInPart/Work = 780)  
+* Fortsätter delvis/Verk (continuesInPart/Work = 780)  
   Länka till entitet.  
   I undantagsfall, skapa lokal entitet och skriv in uppgiften.  
 
-* Relaterade verk/Fortsätter delvis/Verk/Har instans/Instans/Har titel/Titel/Huvudtitel          (continuesInPart/Work/hasInstance/Instance/title/Title/mainTitle = 780 ‡t)  
+* Fortsätter delvis/Verk/Har instans/Instans/Har titel/Titel/Huvudtitel          (continuesInPart/Work/hasInstance/Instance/title/Title/mainTitle = 780 ‡t)  
   Skriv in uppgiften.  
   ```Exempel: Musikant och kammarmusik-nytt```  
   
-* Relaterade verk/Fortsätter delvis/Verk/Har instans/Instans/Identifikator/Typ  
-  Välj från lista.    
-  I undantagsfall, skapa lokal entitet och skriv in uppgiften.  
+* Fortsätter delvis/Verk/Har instans/Instans/Identifikator/Typ  
+  Välj från lista.  
   ```Exempel:  ISSN```  
   
-* Relaterade verk/Fortsätter delvis/Verk/Har instans/Instans/Identifikator/ISSN/Värde    (continesInPart/Work/hasInstance/Instance/identifiedBy/Issn/value = 780 ‡x)  
+* Fortsätter delvis/Verk/Har instans/Instans/Identifikator/ISSN/Värde    (continesInPart/Work/hasInstance/Instance/identifiedBy/Issn/value = 780 ‡x)  
    Skriv in uppgiften.  
   ```Exempel:  1653-2945```  
   
-* Relaterade verk/Fortsätter delvis/Verk/Har instans/Instans/Beskriven av/Post/Kontrollnummer   (continuesInPart/Work/hasInstance/Instance/describedBy/record/controlNumber = 780 0/1 ‡w)  
+* Fortsätter delvis/Verk/Har instans/Instans/Beskriven av/Post/Kontrollnummer   (continuesInPart/Work/hasInstance/Instance/describedBy/record/controlNumber = 780 0/1 ‡w)  
   Skriv in uppgiften.  
   ```Exempel: 9955452```
   
-* Relaterade verk/Fortsättes av/Verk  
+* Fortsättes av/Verk  
   Länka till entitet.  
   I undantagsfall, skapa lokal entitet och skriv in uppgiften.  
 
-* Relaterade verk/Fortsättes av/Verk/Har instans/Instans/Har titel/Titel/Huvudtitel   (continuedBy/Work/hasInstance/Instance/title/Title/mainTitle = 785 ‡t)  
+* Fortsättes av/Verk/Har instans/Instans/Har titel/Titel/Huvudtitel   (continuedBy/Work/hasInstance/Instance/title/Title/mainTitle = 785 ‡t)  
   Skriv in uppgiften.  
   ```Exempel: Kammarmusik-nytt (Brämhult. Online)```  
   
-*  Relaterade verk/Fortsättes av/Verk/Har instans/Instans/Identifikator/Typ  
+*  Fortsättes av/Verk/Har instans/Instans/Identifikator/Typ  
    Välj från lista.    
-   I undantagsfall, skapa lokal entitet och skriv in uppgiften.  
    ```Exempel:  ISSN```  
    
-* Relaterade verk/Fortsättes av/Verk/Har instans/Instans/Identifikator/ISSN/Värde     (continuedBy/Work/hasInstance/Instance/identifiedBy/Issn/value = 785 ‡x)  
+* Fortsättes av/Verk/Har instans/Instans/Identifikator/ISSN/Värde     (continuedBy/Work/hasInstance/Instance/identifiedBy/Issn/value = 785 ‡x)  
   Skriv in uppgiften.  
   ```Exempel:  2001-6921```  
   
-* Relaterade verk/Fortsättes av/Verk/Har instans/Instans/Beskriven av/Post/Kontrollnummer  (continuedBy/Work/hasInstance/Instance/describedBy/record/controlNumber = 785 0/0 ‡w)  
-  Skriv in uppgiften. 
-  ```Exempel: 14697501```
+* Fortsättes av/Verk/Har instans/Instans/Beskriven av/Post/Kontrollnummer  (continuedBy/Work/hasInstance/Instance/describedBy/record/controlNumber = 785 0/0 ‡w)  
+  Skriv in uppgiften.  
+  ```Exempel: 14697501``
