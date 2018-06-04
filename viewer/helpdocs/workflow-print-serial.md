@@ -39,7 +39,7 @@ samt andra poster.
   För post katalogiserad enligt RDA, länka till entitet: marc/Isbd samt skapa lokal entitet med Kod: rda    
   ```Exempel: marc/Isbd (länkad entitet) + lokal entitet, Kod: rda```
 
-* Beskrivningsnivå (000/05)  
+* Beskrivningsnivå (000/17)  
   Välj från lista.    
   ```Exempel: nationalbibliografisk/fullständig nivå```
   
@@ -101,6 +101,7 @@ samt andra poster.
 * Utgivning  
   Välj typ från lista. För seriell resurs, välj Primär utgivningsperiod.  
   (= Typ av utgivningsdatum/utgivningsstatus) (008/06)    
+  Begreppet "Primär utgivning" har infört i Libris, främst för seriella resurser, där det ibland finns upprepade utgivningsavsnitt. Primär utgivning är då det första och sammanfattande utgivningsavsnittet.  
    
   * Land (country = 008/15-17)  
   Länka till entitet.  
@@ -215,6 +216,7 @@ samt andra poster.
    
 * Genre/form – saogf-termer (genreForm = 655 -/7 ‡a, ‡2 saogf)  
   Länka till entitet.  
+  Under Genre/form, välj Genre/form i listan över typer.  
   ```Exempel: Organisationspress```  
   ```Exempel: Musiktidskrifter```  
    
@@ -301,4 +303,4 @@ samt andra poster.
   
 * Fortsättes av/Verk/Har instans/Instans/Beskriven av/Post/Kontrollnummer  (continuedBy/Work/hasInstance/Instance/describedBy/record/controlNumber = 785 0/0 ‡w)  
   Skriv in uppgiften.  
-  ```Exempel: 14697501```
+  ```Exempel: 14697501``
