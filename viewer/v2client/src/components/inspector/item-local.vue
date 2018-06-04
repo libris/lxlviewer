@@ -429,13 +429,16 @@ export default {
   &-collapsedText {
     display: inline;
   }
-}
 
-.is-expanded > .ItemLocal-heading > .ItemLocal-arrow {
+  &.is-expanded > 
+  .ItemLocal-heading >
+  .ItemLocal-label > 
+  .ItemLocal-arrow {
   transform:rotate(90deg);
 
-  &::before {
-    vertical-align: sub;
+    &::before {
+      vertical-align: sub;
+    }
   }
 }
 </style>

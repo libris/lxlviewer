@@ -276,17 +276,19 @@ export default {
     :class="{'is-highlighted': isNewlyAdded, 'is-expanded': expanded}">
    
    <strong class="ItemSibling-heading">
-      <i class="ItemSibling-arrow fa fa-chevron-right " 
-        :class="{'down': expanded}" @click="toggleExpanded()"
-        tabindex="0"
-        @keyup.enter="toggleExpanded()"></i>
-      <span class="type" 
-        @click="toggleExpanded($event)" 
-        :title="item['@type']">{{ item['@type'] | labelByLang | capitalize }}:</span>
-      <span class="collapsed-label" @click="toggleExpanded()">
-        <span v-show="!expanded || isEmpty">{{getItemLabel}}</span>
-        <span class="placeholder"> </span>
-      </span>
+      <div class="ItemSibling-label">
+        <i class="ItemSibling-arrow fa fa-chevron-right " 
+          :class="{'down': expanded}" @click="toggleExpanded()"
+          tabindex="0"
+          @keyup.enter="toggleExpanded()"></i>
+        <span class="type" 
+          @click="toggleExpanded($event)" 
+          :title="item['@type']">{{ item['@type'] | labelByLang | capitalize }}:</span>
+        <span class="collapsed-label" @click="toggleExpanded()">
+          <span v-show="!expanded || isEmpty">{{getItemLabel}}</span>
+          <span class="placeholder"> </span>
+        </span>
+      </div>
       
       <div class="ItemSibling-actions">
         <field-adder class="ItemSibling-action"
@@ -380,6 +382,10 @@ export default {
     font-weight: normal;
   }
 
+  &-label {
+    margin-right: 40px;
+  }
+
   &-arrow {
     transition: all 0.2s ease;
     padding: 0 2px;
@@ -434,13 +440,15 @@ export default {
     padding-right: 5px;
   }
 
-}
+  &.is-expanded > 
+  .ItemSibling-heading > 
+  .ItemSibling-label >
+  .ItemSibling-arrow {
+    transform:rotate(90deg);
 
-.is-expanded > .ItemSibling-heading > .ItemSibling-arrow {
-  transform:rotate(90deg);
-
-  &::before {
-    vertical-align: sub;
+    &::before {
+      vertical-align: sub;
+    }
   }
 }
 
