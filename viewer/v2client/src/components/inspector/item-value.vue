@@ -60,6 +60,17 @@ export default {
     });
   },
   methods: {
+    removeHighlight(active) {
+      if (active) {
+        let item = event.target;
+        while ((item = item.parentElement) && !item.classList.contains('js-value'));
+          item.classList.add('is-removeable');
+      } else {
+        let item = event.target;
+        while ((item = item.parentElement) && !item.classList.contains('js-value'));
+          item.classList.remove('is-removeable');
+      }
+    },
     handleKeys(e) {
       this.$store.dispatch('setInspectorStatusValue', { property: 'updating', value: true });
       if (e.keyCode === 13) { // Handle enter
@@ -116,7 +127,7 @@ export default {
 </script>
 
 <template>
-  <div class="ItemValue" v-bind:class="{'is-locked': isLocked, 'unlocked': !isLocked, 'is-removed': removed}">
+  <div class="ItemValue js-value" v-bind:class="{'is-locked': isLocked, 'unlocked': !isLocked, 'is-removed': removed}">
     <textarea class="ItemValue-input js-itemValueInput" 
       rows="1" 
       v-model="value" 
@@ -128,8 +139,8 @@ export default {
     <div class="ItemValue-remover" 
       v-show="!isLocked && isRemovable" 
       v-on:click="removeThis()" 
-      @mouseover="removeHover = true" 
-      @mouseout="removeHover = false">
+      @mouseover="removeHover = true, removeHighlight(true)" 
+      @mouseout="removeHover = false, removeHighlight(false)">
       <i class="fa fa-minus">
         <tooltip-component 
           :show-tooltip="removeHover" 
@@ -146,7 +157,8 @@ export default {
   display: flex;
   flex: 1;
   flex-shrink: 0;
-  margin: 5px 0 5px 0;
+  margin: 0 0 0 -5px;
+  padding: 5px;
 
   &-input {
     display: block;
@@ -188,6 +200,10 @@ export default {
     &:hover {
       color: @black;
     }
+  }
+
+  &.is-removeable {
+    background-color: @warning;
   }
 }
 

@@ -226,6 +226,17 @@ export default {
     this.currentSearchTypes = this.getRange;
   },
   methods: {
+    actionHighlight(active) {
+      if(active) {
+        let item = event.target;
+        while ((item = item.parentElement) && !item.classList.contains('js-field'));
+          item.classList.add('is-marked');
+      } else {
+        let item = event.target;
+        while ((item = item.parentElement) && !item.classList.contains('js-field'));
+          item.classList.remove('is-marked');
+      }
+    },
     getFormattedSelectOption(term) {
       return DisplayUtil.getFormattedSelectOption(
         term, 
@@ -455,8 +466,8 @@ export default {
       v-on:click="add()" 
       tabindex="0"
       @keyup.enter="add()"
-      @mouseenter="showToolTip = true" 
-      @mouseleave="showToolTip = false">
+      @mouseenter="showToolTip = true, actionHighlight(true)" 
+      @mouseleave="showToolTip = false, actionHighlight(false)">
       <span>
         <i class="fa fa-fw fa-plus plus-icon" aria-hidden="true">
           <tooltip-component 
@@ -472,8 +483,8 @@ export default {
       tabindex="0"
       v-on:click="add()" 
       @keyup.enter="add()"
-      @mouseenter="showToolTip = true" 
-      @mouseleave="showToolTip = false">
+      @mouseenter="showToolTip = true, actionHighlight(true)" 
+      @mouseleave="showToolTip = false, actionHighlight(false)">
       <i class="EntityAdder-addIcon fa fa-fw fa-plus plus-icon" aria-hidden="true">
         <tooltip-component 
           :show-tooltip="showToolTip" 

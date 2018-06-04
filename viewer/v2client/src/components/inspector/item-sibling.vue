@@ -132,15 +132,27 @@ export default {
         changeList: changeList,
       });
     },
-    highlightItem(event) {
-      let item = event.target;
-      while ((item = item.parentElement) && !item.classList.contains('js-itemLocal'));
-      item.classList.add('is-marked');
+    actionHighlight(active) {
+      if (active) {
+        let item = event.target;
+        while ((item = item.parentElement) && !item.classList.contains('js-itemLocal'));
+          item.classList.add('is-marked');
+      } else {
+        let item = event.target;
+        while ((item = item.parentElement) && !item.classList.contains('js-itemLocal'));
+          item.classList.remove('is-marked');
+      }
     },
-    unHighlightItem(event) {
-      let item = event.target;
-      while ((item = item.parentElement) && !item.classList.contains('js-itemLocal'));
-      item.classList.remove('is-marked');
+    removeHighlight(active) {
+      if (active) {
+        let item = event.target;
+        while ((item = item.parentElement) && !item.classList.contains('js-itemLocal'));
+          item.classList.add('is-removeable');
+      } else {
+        let item = event.target;
+        while ((item = item.parentElement) && !item.classList.contains('js-itemLocal'));
+          item.classList.remove('is-removeable');
+      }
     },
     expand() {
       this.expanded = true;
@@ -303,8 +315,8 @@ export default {
             @click="openExtractDialog()" 
             tabindex="0"
             @keyup.enter="openExtractDialog()"
-            @mouseover="showLinkAction = true" 
-            @mouseout="showLinkAction = false">
+            @mouseover="showLinkAction = true, actionHighlight(true)" 
+            @mouseout="showLinkAction = false, actionHighlight(false)">
             <tooltip-component 
               :show-tooltip="showLinkAction" 
               tooltip-text="Link entity" 
@@ -316,8 +328,8 @@ export default {
           v-on:click="removeThis(true)"
           @keyup.enter="removeThis(true)"
           tabindex="0"
-          @mouseover="removeHover = true, highlightItem($event)" 
-          @mouseout="removeHover = false, unHighlightItem($event)">
+          @mouseover="removeHover = true, removeHighlight(true)" 
+          @mouseout="removeHover = false, removeHighlight(false)">
           <tooltip-component 
             :show-tooltip="removeHover" 
             tooltip-text="Remove" 
@@ -371,7 +383,6 @@ export default {
 
 .ItemSibling {
   padding: 5px;
-  margin: -5px;
   position: relative;
   flex: 1 100%;
   transition: background-color .2s ease;
@@ -436,8 +447,10 @@ export default {
 
   &.is-marked {
     background-color: @sec;
-    margin-right: -5px;
-    padding-right: 5px;
+  }
+  
+  &.is-removeable {
+    background-color: @warning;
   }
 
   &.is-expanded > 

@@ -258,15 +258,27 @@ export default {
     });
   },
   methods: {
-    highlightItem(event) {
-      let item = event.target;
-      while ((item = item.parentElement) && !item.classList.contains('js-field'));
-       item.classList.add('is-marked');
+    actionHighlight(active) {
+      if (active) {
+        let item = event.target;
+        while ((item = item.parentElement) && !item.classList.contains('js-field'));
+          item.classList.add('is-marked');
+      } else {
+        let item = event.target;
+        while ((item = item.parentElement) && !item.classList.contains('js-field'));
+          item.classList.remove('is-marked');
+      }
     },
-    unHighlightItem(event) {
-      let item = event.target;
-      while ((item = item.parentElement) && !item.classList.contains('js-field'));
-      item.classList.remove('is-marked');
+    removeHighlight(active) {
+      if (active) {
+        let item = event.target;
+        while ((item = item.parentElement) && !item.classList.contains('js-field'));
+          item.classList.add('is-removeable');
+      } else {
+        let item = event.target;
+        while ((item = item.parentElement) && !item.classList.contains('js-field'));
+          item.classList.remove('is-removeable');
+      }
     },
     updateValue(value) {
       this.$dispatch('update-value', this.getPath, value);
@@ -406,8 +418,8 @@ export default {
           :class="{'disabled': activeModal}">
           <i class="fa fa-trash-o action-button"
             v-on:click="removeThis(true)"
-            @mouseover="removeHover = true, highlightItem($event)" 
-            @mouseout="removeHover = false, unHighlightItem($event)">
+            @mouseover="removeHover = true, removeHighlight(true)" 
+            @mouseout="removeHover = false, removeHighlight(false)">
             <tooltip-component 
               :show-tooltip="removeHover" 
               tooltip-text="Remove" 
@@ -436,8 +448,8 @@ export default {
             tabindex="0"
             v-on:click="removeThis(true)"
             @keyup.enter="removeThis(true)"
-            @mouseover="removeHover = true, highlightItem($event)" 
-            @mouseout="removeHover = false, unHighlightItem($event)"  >
+            @mouseover="removeHover = true, removeHighlight(true)" 
+            @mouseout="removeHover = false, removeHighlight(false)"  >
             <tooltip-component translation="translatePhrase"
               :show-tooltip="removeHover" 
               tooltip-text="Remove"></tooltip-component>
@@ -449,7 +461,7 @@ export default {
 
     <pre class="path-code" v-show="user.settings.appTech">{{getPath}}</pre>
       
-    <div class="Field-content FieldContent is-value" 
+    <div class="Field-content FieldContent" 
       v-bind:class="{ 'is-locked': locked }"
       v-if="isObjectArray">
       <div class="Field-contentItem" 
@@ -504,7 +516,7 @@ export default {
       </div>
     </div>
 
-    <div class="Field-content is-value is-endOfTree js-endOfTree" 
+    <div class="Field-content is-endOfTree js-endOfTree" 
       v-bind:class="{ 'is-locked': locked }"
       v-if="!isObjectArray">
       <div class="Field-contentItem" 
@@ -559,6 +571,10 @@ export default {
     background-color: @sec;
   }
 
+  &.is-removeable {
+    background-color: @warning;
+  }
+
   @media (min-width: 768px) {
     display: flex;
   }
@@ -567,15 +583,18 @@ export default {
     border: 0;
     flex: 1 100%;
     margin: 0;
-    padding: 5px 0;
+    padding: 5px 5px 0 0;
+    border-radius: 4px;
     overflow: visible;
     max-height: auto;
     display: inline-block;
 
     &.is-marked {
       background-color: @sec;
-      margin-right: -5px;
-      padding-right: 5px;
+    }
+
+    &.is-removeable {
+      background-color: @warning;
     }
 
     &:before, 
