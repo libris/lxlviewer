@@ -186,55 +186,6 @@ export default {
       return this.forcedListTerms.indexOf(this.fieldKey) > -1;
     },
   },
-  events: {
-    'update-item'(index, value) {
-      let modified = _.cloneDeep(this.fieldValue);
-      if (_.isArray(modified)) {
-        modified[index] = value;
-      } else {
-        modified = value;
-      }
-      this.updateValue(modified);
-    },
-    'remove-item'(index) {
-      console.log("Remove item with index", index);
-      let modified = _.cloneDeep(this.fieldValue);
-      if (!_.isArray(modified)) {
-        modified = [modified];
-      }
-      if (typeof index !== 'undefined' && index !== '') {
-        modified.splice(index, 1);
-      } else {
-        modified = [];
-      }
-      if (modified.length === 1 && !this.forcedToArray) {
-        modified = modified[0];
-      }
-      this.updateValue(modified);
-    },
-    'add-item'(value, replaces) {
-      console.log("DataNode:"+ this.getPath +" - Adding", JSON.stringify(value));
-      let insertedValue = {};
-      if (value.hasOwnProperty('@id')) { // This is a linked item
-        insertedValue = { '@id': value['@id'] };
-        this.$dispatch('add-linked', value);
-      } else {
-        insertedValue = value;
-      }
-      let modified = [].concat(_.cloneDeep(this.fieldValue));
-      if (typeof replaces !== 'undefined') {
-        modified.splice(replaces, 1);
-      }
-      modified.push(insertedValue);
-      if (modified.length === 1 && !this.forcedToArray) {
-        modified = modified[0];
-      }
-      this.updateValue(modified);
-    },
-    'toggle-modal'(active) {
-      this.activeModal = active;
-    },
-  },
   mounted() {
     this.$nextTick(() => {
       setTimeout(() => {
@@ -386,7 +337,7 @@ export default {
 <template>
   <li class="Field js-field" 
     :id="`field-${getPath}`" 
-    v-bind:class="{'Field--inner': !asColumns, 'highlight': isLastAdded, 'removed': removed}" 
+    v-bind:class="{'Field--inner': !asColumns, 'is-lastAdded': isLastAdded, 'is-removed': removed}" 
     @mouseover="handleMouseEnter()" 
     @mouseleave="handleMouseLeave()">
     
@@ -575,6 +526,10 @@ export default {
     background-color: @warning;
   }
 
+  &.is-lastAdded {
+    background-color: @success;
+  }
+
   @media (min-width: 768px) {
     display: flex;
   }
@@ -583,7 +538,7 @@ export default {
     border: 0;
     flex: 1 100%;
     margin: 0;
-    padding: 5px 5px 0 0;
+    padding: 5px 5px 5px 0;
     border-radius: 4px;
     overflow: visible;
     max-height: auto;
@@ -786,32 +741,12 @@ export default {
 
 .field {
 
-  &.removed {
-    transition: 0.5s all ease;
-    min-height: 0em;
-    max-height: 0em;
-    opacity: 0;
-  }
   .path-code {
     padding: 1px 3px;
     margin: 0px;
     color: black;
   }
-  .confirm-remove-box {
-    position: absolute;
-    line-height: 1.6;
-    white-space: normal;
-    div {
-      background-color: @black;
-      padding: 0.1em 0.5em;
-      cursor: pointer;
-      color: white;
-      &:hover {
-        background-color: @gray-dark;
-      }
-    }
-
-  }
+  
   .node-list {
     line-height: 0;
     .chip-container > .chip {
@@ -834,76 +769,6 @@ export default {
       }
     }
   }
-
-  .shown-button {
-    opacity: 1;
-  }
- 
-
-  &.rows {
-    flex-wrap: wrap;
-    border: solid;
-    border-width: 0px;
-    padding-bottom: 4px;
-    &:last-child {
-      border-width: 0px;
-    }
-    >.label {
-      min-width: 100%;
-      justify-content: space-between;
-      text-align: left;
-      padding: 5px 0px 3px 0px;
-      display: flex;
-      > div {
-        display: flex;
-        > .action {
-          cursor: pointer;
-        }
-      }
-    }
-    >.value {
-      display: inline-block;
-      flex: 1 1 100%;
-      max-height: 400vh;
-      > ul {
-        width: 100%;
-        list-style: none;
-        padding: 0px 1% 0px 1%;
-        > li {
-          .item-value {
-            width: 100%;
-            display: flex;
-            > textarea {
-              flex: 9 9 90%;
-            }
-            > .remover {
-              flex: 1 1 2em;
-              text-align: center;
-            }
-          }
-        }
-        > li {
-          display: block;
-          &.inline {
-            display: inline-block;
-          }
-          .item-value {
-            > textarea {
-              width: 100%;
-            }
-          }
-        }
-      }
-    }
-    >.actions {
-      display: inline-block;
-      flex: 0 0 10%;
-      > * {
-        display: inline-block;
-      }
-    }
-  }
-  align-content: stretch;
 }
 
 </style>

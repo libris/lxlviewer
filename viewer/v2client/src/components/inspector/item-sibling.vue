@@ -388,9 +388,10 @@ export default {
   transition: background-color .2s ease;
 
   &-heading {
-    position: relative;
+    display: block;
     flex: 1 100%;
     font-weight: normal;
+    position: relative;
   }
 
   &-label {
@@ -415,8 +416,9 @@ export default {
   }
 
   &-actions {
-    float: right;
-    position: relative;
+    top: 0;
+    right: 0;
+    position: absolute;
   }
 
   &-action {

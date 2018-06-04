@@ -159,6 +159,7 @@ export default {
   flex-shrink: 0;
   margin: 0 0 0 -5px;
   padding: 5px;
+  border-radius: 4px;
 
   &-input {
     display: block;

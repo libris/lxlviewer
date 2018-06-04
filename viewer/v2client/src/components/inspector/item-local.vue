@@ -364,6 +364,7 @@ export default {
 <style lang="less">
 .ItemLocal {
   padding: 5px;
+  margin-left: -5px;
   border-radius: 4px;
   position: relative;
   flex: 1 100%;
@@ -446,7 +447,7 @@ export default {
   .ItemLocal-heading >
   .ItemLocal-label > 
   .ItemLocal-arrow {
-  transform:rotate(90deg);
+    transform:rotate(90deg);
 
     &::before {
       vertical-align: sub;
