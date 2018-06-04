@@ -1,6 +1,8 @@
 <script>
 import ResultListItem from './result-list-item';
 import * as RecordUtil from '@/utils/record';
+import * as _ from 'lodash';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'result-list',
@@ -17,8 +19,8 @@ export default {
   methods: {
     getImportItem(index) {
       if (this.importData.length !== 0) {
-        const node = this.importData[index].data;
-        const importItem = RecordUtil.getImportObject(node['@graph']);
+        const node = _.cloneDeep(this.importData[index].data);
+        const importItem = RecordUtil.prepareDuplicateFor(RecordUtil.splitJson(node), this.user);
         return importItem;
       }
       return {};
@@ -31,6 +33,11 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'resources',
+      'user',
+      'settings',
+    ]),
   },
   components: {
     'result-list-item': ResultListItem,

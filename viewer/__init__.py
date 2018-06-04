@@ -138,7 +138,12 @@ def _get_served_uri(url, path):
     # TODO: why is Flask unquoting url and path values?
     url_base = url_quote(url)
     path = url_quote(path)
+    # we need to do this to handle e.g. gmgpc//swe, since flask is a bit heavy
+    # handed when it comes to slashes in paths
+    # TODO: https://jira.kb.se/browse/LXL-1469
+    path = re.sub(r"([^:])//", r"\1%2F%2F", path)
     mapped_base = daccess.urimap.to_canonical_uri(url_base)
+
     # NOTE: Needed since some proxies lose one slash from paths that represent
     # full URIs (through seemingly incorrect path normalization).
     if re.match(r'^https?:/[^/]', path):

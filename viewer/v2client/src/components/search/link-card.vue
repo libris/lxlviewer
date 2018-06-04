@@ -8,6 +8,7 @@ export default {
     "linkText",
     "header",
     "text",
+    "html",
   ],
   data() {
     return {
@@ -25,9 +26,8 @@ export default {
   },
   watch: {
   },
-  ready() { // Ready method is deprecated in 2.0, switch to "mounted"
+  mounted() { 
     this.$nextTick(() => {
-      // Do stuff
     });
   },
 };
@@ -47,6 +47,7 @@ export default {
     <div class="LinkCard-content">
       <div class="LinkCard-text">
         <span class="LinkCard-title">{{ header }}</span>
+        <div v-if="html" class="LinkCard-html" v-html="html">{{ html }}</div>
         <div class="LinkCard-descr">{{ text }}</div>
       </div>
       <a v-if="linkUrl" :href="linkUrl" class="card-link LinkCard-link">{{ linkText }}</a>
@@ -56,20 +57,34 @@ export default {
 
 <style lang="less">
 .LinkCard {
-  flex-basis: 24%; // To parent
+  flex-basis: 100%; // To parent
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 0;
 
+  @media (min-width: 768px) {
+    flex-basis: 49%; 
+  }
+
+  @media (min-width: 992px) {
+    flex-basis: 24%; 
+  }
+
   &-img {
     width: 100%;
     flex-shrink: 0; // Prevent weird image sizing behaviour in IE11
+    border: solid #f1f1f1;
+    border-width: 0px 0px 1px 0px;
   }
 
   &-videoWrap {
-    flex-basis: 45%;
+    flex-basis: 100%;
     padding-bottom: 1px;
+
+    @media (min-width: 768px) {
+      flex-basis: 45%;
+    }
   }
 
   &-video {
@@ -100,8 +115,18 @@ export default {
 
     .LinkCard--large & {
       padding: 1em;
-      flex-basis: 45%;
+      @media (min-width: 768px) {
+        flex-basis: 45%;
+      }
     }
+  }
+
+  &-link {
+    padding: 10px 0;
+    font-size: 16px;
+    font-size: 1.6rem;
+    line-height: 1.2;
+    text-align: center;
   }
 
   &-text {
@@ -110,11 +135,29 @@ export default {
     width: 100%;
   }
 
+  &-descr,
+  &-html {
+    font-size: 16px;
+    font-size: 1.6rem;
+
+    @media (min-width: 768px) {
+      display: flex;
+      font-size: 18px;
+      font-size: 1.8rem;
+    }
+  }
+
+  &-html {
+    display: block;
+  }
+
   &-title {
     display: block;
     font-size: 20px;
     font-size: 2rem;
     font-weight: 700;
+    line-height: 1.2;
+    margin: 10px 0 10px 0;
   }
 
   &.no-link {
@@ -122,10 +165,14 @@ export default {
   }
 
   &--large {
-    display: flex;
+    display: block;
     justify-content: space-between;
     flex-direction: row;
     align-items: inherit;
+
+    @media (min-width: 768px) {
+      display: flex;
+    }
   }
 }
 </style>

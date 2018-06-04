@@ -37,7 +37,7 @@ export default {
                 };
                 if (typeof item.object !== 'undefined') {
                   if (item.variable === '@type') {
-                    filterObj.label = StringUtil.getLabelByLang(item.object['@id'], this.settings.language, this.resources.vocab, this.settings.vocabPfx, this.resources.context);
+                    filterObj.label = StringUtil.getLabelByLang(item.object['@id'], this.settings.language, this.resources.vocab, this.resources.context);
                   } else {
                     filterObj.label = item.object['@id'].replace('https://id.kb.se/', '');
                   }
@@ -156,15 +156,15 @@ export default {
       <ul class="ResultControls-pagList">
         <li class="ResultControls-pagItem" 
           v-bind:class="{ 'is-disabled': !pageData.first || pageData['@id'] === pageData.first['@id'] }">
-          <router-link class="ResultControls-pagLink"  v-if="pageData.first" :to="pageData.first['@id'] | asAppPath">Första</router-link>
-          <a class="ResultControls-pagLink" v-if="!pageData.first">Första</a>
+          <router-link class="ResultControls-pagLink"  v-if="pageData.first" :to="pageData.first['@id'] | asAppPath">{{'First' | translatePhrase}}</router-link>
+          <a class="ResultControls-pagLink" v-if="!pageData.first">{{'First' | translatePhrase}}</a>
         </li>
         <li class="ResultControls-pagItem" 
           v-bind:class="{ 'is-disabled': !pageData.previous }">
           <router-link class="ResultControls-pagLink" 
             v-if="pageData.previous" 
-            :to="pageData.previous['@id'] | asAppPath">Föregående</router-link>
-          <a class="ResultControls-pagLink" v-if="!pageData.previous">Föregående</a>
+            :to="pageData.previous['@id'] | asAppPath">{{'Previous' | translatePhrase}}</router-link>
+          <a class="ResultControls-pagLink" v-if="!pageData.previous">{{'Previous' | translatePhrase}}</a>
         </li>
         <li class="ResultControls-pagItem" 
           v-bind:class="{ 'is-active': page.active }" v-for="page in pageList" :key="page.link">
@@ -176,14 +176,14 @@ export default {
         <li class="ResultControls-pagItem" 
           v-bind:class="{ 'is-disabled': !pageData.next }">
           <router-link class="ResultControls-pagLink" 
-            v-if="pageData.next" :to="pageData.next['@id'] | asAppPath">Nästa</router-link>
-          <a class="ResultControls-pagLink" v-if="!pageData.next">Nästa</a>
+            v-if="pageData.next" :to="pageData.next['@id'] | asAppPath">{{'Next' | translatePhrase}}</router-link>
+          <a class="ResultControls-pagLink" v-if="!pageData.next">{{'Next' | translatePhrase}}</a>
         </li>
         <li class="ResultControls-pagItem" 
           v-bind:class="{ 'is-disabled': !pageData.last || pageData['@id'] === pageData.last['@id'] }">
           <router-link class="ResultControls-pagLink" 
-            v-if="pageData.last" :to="pageData.last['@id'] | asAppPath">Sista</router-link>
-          <a class="ResultControls-pagLink" v-if="!pageData.last">Sista</a>
+            v-if="pageData.last" :to="pageData.last['@id'] | asAppPath">{{'Last' | translatePhrase}}</router-link>
+          <a class="ResultControls-pagLink" v-if="!pageData.last">{{'Last' | translatePhrase}}</a>
         </li>
       </ul>
     </nav>
@@ -199,8 +199,13 @@ export default {
 
   &-searchDetails {
     color: @gray-darker;
-    display: flex;
     justify-content: space-between;  
+    display: block;
+    width: 100%;
+
+    @media (min-width: 992px) {
+      display: flex;
+    }
   }
 
   &-listTypes {

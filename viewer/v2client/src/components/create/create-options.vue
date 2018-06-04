@@ -53,8 +53,7 @@ export default {
 .Create {
   &-options {
     display: flex;
-    font-size: 16px;
-    font-size: 1.6rem;
+    border-bottom: 1px solid @brand-primary;
   }
 
   &-option {
@@ -67,7 +66,6 @@ export default {
 
     &.is-active {
       color: @white;
-      background: @brand-primary;
       
       &:hover {
         text-decoration: none;
@@ -76,9 +74,12 @@ export default {
   }
 
   &-optionName {
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
     cursor: pointer;
-    font-size: 20px;
-    font-size: 2rem;
+    font-size: 16px;
+    font-size: 1.6rem;
+    line-height: 1.4;
     padding: 5px 10px;
     width: 100%;
     text-align: center;
@@ -92,16 +93,23 @@ export default {
 
     .is-active & {
       border: 1px solid @brand-primary;
+      background: @brand-primary;
     }
 
     &:focus {
       outline: 0px dashed @brand-primary;
       border: 1px dashed @brand-primary;
     }
+
+    @media (min-width: 768px) {
+      font-size: 20px;
+      font-size: 2rem;
+    }
   }
 
   &-optionInput {
     display: none;  
+    margin: 0 !important;
   }
 }
 </style>

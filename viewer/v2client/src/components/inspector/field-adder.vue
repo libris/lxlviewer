@@ -27,6 +27,7 @@ export default {
     editingObject: '',
     entityType: '',
     inToolbar: false,
+    forceActive: false
   },
   data() {
     return {
@@ -48,12 +49,11 @@ export default {
       'status',
     ]),
     modalTitle() {
-      const title = StringUtil.getUiPhraseByLang('Add field', this.settings.language);
+      const title = StringUtil.getUiPhraseByLang('Add field in', this.settings.language);
       const contextString = StringUtil.getLabelByLang(
         this.entityType, 
         this.settings.language, 
         this.resources.vocab, 
-        this.settings.vocabPfx, 
         this.resources.context
       );
       return `${title}: ${contextString}`;
@@ -103,17 +103,12 @@ export default {
       return filtered;
     },
   },
-  events: {
-    'open-add-field-window'() {
-      if (!this.inner) {
-        this.show();
-      }
-    },
-    'select-next'() {
+  methods: {
+    selectNext() {
       if (this.active) {
         if (this.selectedIndex < this.filteredResults.length - 1) {
           if (this.selectedIndex >= 0) {
-            const fieldList = document.getElementsByClassName('field-list')[0];
+            const fieldList = document.getElementsByClassName('js-fieldlist')[0];
             const threshold =
               fieldList.getBoundingClientRect().top +
               fieldList.getBoundingClientRect().height;
@@ -129,11 +124,11 @@ export default {
         }
       }
     },
-    'select-prev'() {
+    selectPrev() {
       if (this.active) {
         if (this.selectedIndex > 0) {
           this.selectedIndex -= 1;
-          const fieldList = document.getElementsByClassName('field-list')[0];
+          const fieldList = document.getElementsByClassName('js-fieldlist')[0];
           const threshold = fieldList.getBoundingClientRect().top;
           const selectedElement = document.getElementsByClassName('selected')[0];
           const selectedPosition =
@@ -145,30 +140,28 @@ export default {
         }
       }
     },
-    'add-field-multiple'() {
+    addFieldMultiple() {
       if (this.active) {
         if (!this.filteredResults[this.selectedIndex].added) {
           this.addField(this.filteredResults[this.selectedIndex], false);
         } else {
-          console.warn("already added, should be handled");
+          console.warn("Already added, should be handled");
         }
       }
     },
-    'add-field-single'() {
+    addFieldSingle() {
       if (this.active) {
         if (!this.filteredResults[this.selectedIndex].added) {
           this.addField(this.filteredResults[this.selectedIndex], true);
         } else {
-          console.warn("already added, should be handled");
+          console.warn("Already added, should be handled");
         }
       }
     },
-    'close-modals'() {
+    closeModals() {
       this.hide();
       return true;
     },
-  },
-  methods: {
     getPropClassInfo(termObj) {
       if (_.isArray(termObj['@type'])) {
         if (termObj['@type'].indexOf('DatatypeProperty') > -1 && termObj['@type'].indexOf('DatatypeProperty') > -1) {
@@ -201,13 +194,22 @@ export default {
     getEmptyFieldValue(key, prop) {
       let value = [];
       const contextValue = VocabUtil.getContextValue(key, '@type', this.resources.context);
-      if (prop['@type'] === 'DatatypeProperty' || contextValue === '@vocab') {
+      if (
+        prop['@type'] === 'DatatypeProperty' &&
+        prop.hasOwnProperty('range') &&
+        prop.range.some(e => e['@id'] === 'http://www.w3.org/2001/XMLSchema#boolean')
+      ) {
+        // Boolean
+        value = true;
+      } else if (prop['@type'] === 'DatatypeProperty' || contextValue === '@vocab') {
+        // String value (first as array and as single item)
         if (VocabUtil.propIsRepeatable(key, this.resources.context)) {
           value = [''];
         } else {
           value = '';
         }
       } else {
+        // Object value (first as array and as single item)
         if (VocabUtil.propIsRepeatable(key, this.resources.context)) {
           value = [];
         } else {
@@ -222,10 +224,15 @@ export default {
         const propLastPart = splitProp[splitProp.length-1];
         const key = StringUtil.convertToPrefix(prop.item['@id'], this.resources.context);
         this.$store.dispatch('updateInspectorData', {
-          path: `${this.path}.${key}`,
-          value: this.getEmptyFieldValue(key, prop.item),
+          changeList: [
+            {
+              path: `${this.path}.${key}`,
+              value: this.getEmptyFieldValue(key, prop.item),
+            }
+          ],
           addToHistory: true,
         });
+        this.$store.dispatch('setInspectorStatusValue', { property: 'unsavedChanges', value: true });
         if (close) {
           this.hide();
           this.$store.dispatch('setInspectorStatusValue', { 
@@ -261,6 +268,36 @@ export default {
       this.selectedIndex = -1;
     },
   },
+  watch: {
+    forceActive: function(newVal, oldVal) {
+      if (newVal != oldVal) {
+        this.show();
+      }
+    },
+    'inspector.event'(val, oldVal) {
+      if (val.name === 'form-control') {
+        switch (val.value) { 
+          case 'select-next':
+            this.selectNext();
+            break;
+          case 'select-prev':
+            this.selectPrev();
+            break;
+          case 'close-modals':
+            this.hide();
+            break;
+          case 'add-field-single':
+            this.addFieldSingle();
+            break;
+          case 'add-field-multiple':
+            this.addFieldMultiple();
+            break;
+          default:
+            return;
+        }
+      }
+    }, 
+  },
   mounted() {
     this.$nextTick(() => { // TODO: Fix proper scroll tracking. This is just an ugly solution using document.onscroll here and window.scroll in editorcontrols.vue
     });
@@ -283,23 +320,23 @@ export default {
       <i class="FieldAdder-innerIcon fa fa-plus plus-icon" aria-hidden="true">
         <tooltip-component 
           :show-tooltip="showToolTip" 
-          tooltip-text="Add field" 
+          :tooltip-text="modalTitle" 
           translation="translatePhrase"></tooltip-component>
       </i>
-      <span class="FieldAdder-innerLabel">{{ "Field" | translatePhrase }}</span>
+      <span class="FieldAdder-innerLabel">{{ "Add field" | translatePhrase }}</span>
     </span>
 
-    <button v-if="!inner" class="FieldAdder-add btn btn-primary toolbar-button" 
+    <button v-if="!inner" class="FieldAdder-add btn btn-default toolbar-button" 
       v-on:click="show" 
       @keyup.enter="show"
       @mouseenter="showToolTip = true" 
       @mouseleave="showToolTip = false">
       <i class="FieldAdder-icon fa fa-plus plus-icon" aria-hidden="true">
-        <tooltip-component tooltip-text="Add field"
-          :show-tooltip="showToolTip" 
-          translation="translatePhrase"></tooltip-component>
+        <tooltip-component 
+          :tooltip-text="modalTitle"
+          :show-tooltip="showToolTip"></tooltip-component>
       </i>
-      <span v-if="!inToolbar" class="FieldAdder-label"> {{ "Field" | translatePhrase }}</span>
+      <span v-if="!inToolbar" class="FieldAdder-label"> {{ "Add field" | translatePhrase }}</span>
     </button>
 
     <modal-component @close="hide" v-if="active" class="FieldAdder-modal FieldAdderModal">
@@ -333,7 +370,7 @@ export default {
           </span>
         </div>
         <div class="FieldAdderModal-fieldList">
-          <ul id="fields-window">
+          <ul id="fields-window" class="js-fieldlist">
             <li tabindex="0"
               @focus="selectedIndex = index"
               @mouseover="selectedIndex = index" 

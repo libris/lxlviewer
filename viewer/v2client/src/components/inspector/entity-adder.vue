@@ -15,6 +15,7 @@ import ProcessedLabel from '../shared/processedlabel';
 import ToolTipComponent from '../shared/tooltip-component';
 import EntitySearchList from '../search/entity-search-list';
 import ModalComponent from '@/components/shared/modal-component.vue';
+import ModalPagination from '@/components/inspector/modal-pagination';
 import LensMixin from '../mixins/lens-mixin';
 import { mixin as clickaway } from 'vue-clickaway';
 
@@ -23,7 +24,7 @@ export default {
   data() {
     return {
       searchOpen: false,
-      searchResult: {},
+      searchResult: [],
       keyword: '',
       loading: false,
       debounceTimer: 500,
@@ -35,6 +36,9 @@ export default {
       searchMade: false,
       currentSearchTypes: [],
       active: false,
+      currentPage: 0,
+      numberOfPages: 0,
+      maxResults: 20,
     };
   },
   props: {
@@ -64,13 +68,25 @@ export default {
     'modal-component': ModalComponent,
     'tooltip-component': ToolTipComponent,
     'entity-search-list': EntitySearchList,
+    'modal-pagination': ModalPagination,
   },
   watch: {
     'inspector.event'(val, oldVal) {
       if (val.name === 'modal-control') {
         switch(val.value) {
           case 'close-entity-adder':
-          this.closeSearch();
+            this.closeSearch();
+            return true;
+            break;
+          default:
+            return;
+        }
+      }
+      if (val.name === 'form-control') {
+        switch(val.value) {
+          case 'close-modals':
+            this.closeSearch();
+            return true;
             break;
           default:
             return;
@@ -106,17 +122,25 @@ export default {
         return VocabUtil.getTree(
           type, 
           this.resources.vocab, 
-          this.settings.vocabPfx, 
           this.resources.context
         );
       });
       return VocabUtil.flattenTree(
         tree, 
         this.resources.vocab, 
-        this.settings.vocabPfx, 
         this.resources.context, 
         this.settings.language
       );
+    },
+    tooltipText() {
+      const addText = StringUtil.getUiPhraseByLang('Add', this.settings.language);
+      const label = StringUtil.getLabelByLang(
+        this.addLabel, 
+        this.settings.language, 
+        this.resources.vocab, 
+        this.resources.context).toLowerCase();
+
+      return addText+' '+label;
     },
     hasSingleRange() {
       return this.getFullRange.length === 1;
@@ -139,26 +163,25 @@ export default {
         this.entityType, 
         this.fieldKey, 
         this.resources.vocab, 
-        this.settings.vocabPfx, 
         this.resources.context)
-        .map(item => item.replace(this.settings.vocabPfx, ''));
+        .map(item => StringUtil.getCompactUri(item, this.resources.context));
       return fetchedRange;
     },
     getFullRange() {
-      return VocabUtil.getFullRange(
+      const fetchedRange = VocabUtil.getFullRange(
         this.entityType, 
         this.fieldKey, 
         this.resources.vocab, 
-        this.settings.vocabPfx, 
         this.resources.context, 
         this.resources.vocabClasses
-      );
+      ).map(item => StringUtil.getCompactUri(item, this.resources.context));;
+      return fetchedRange;
     },
     allSearchTypes() {
       const types = this.getFullRange;
       const typeArray = [];
       for (const type of types) {
-        typeArray.push(type.replace(this.settings.vocabPfx, ''));
+        typeArray.push(StringUtil.getCompactUri(type, this.resources.context));
       }
       return typeArray;
     },
@@ -214,15 +237,14 @@ export default {
     handleChange(value) {
       this.setSearching();
       this.searchMade = false;
-      let searchPhrase = value;
       if (value) {
         setTimeout(() => {
           if (this.keyword === value) {
-            this.search(searchPhrase);
+            this.search();
           }
         }, this.debounceTimer);
       } else {
-        this.searchResult = {};
+        this.searchResult = [];
       }
     },
     setSearching() {
@@ -284,7 +306,9 @@ export default {
     closeSearch() {
       this.searchOpen = false;
       this.keyword = '';
-      this.searchResult = {};
+      this.searchResult = [];
+      this.pagesFetched = 0;
+      this.allFetched = false;
       this.chooseLocalType = false;
       this.hide();
     },
@@ -298,15 +322,21 @@ export default {
       }
       this.$store.dispatch('addToQuoted', obj);
       this.$store.dispatch('updateInspectorData', {
-          path: `${this.path}`,
-          value: currentValue,
-          addToHistory: true,
+        changeList: [
+          {
+            path: `${this.path}`,
+            value: currentValue,
+          }
+        ],
+        addToHistory: true,
       });
       this.hide();
     },
     addItem(obj) {
       let currentValue = _.cloneDeep(_.get(this.inspector.data, this.path));
-      if (!_.isArray(currentValue)) {
+      if (currentValue === null) {
+        currentValue = obj;
+      } else if (!_.isArray(currentValue)) {
         currentValue = [currentValue];
         currentValue.push(obj);
       } else {
@@ -317,44 +347,85 @@ export default {
         } else {
           currentValue.push(obj);
         }
-        
-
       }
       this.$store.dispatch('updateInspectorData', {
-          path: `${this.path}`,
-          value: currentValue,
-          addToHistory: true,
+        changeList: [
+          {
+            path: `${this.path}`,
+            value: currentValue,
+          }
+        ],
+        addToHistory: true,
+      });
+    },
+    addSibling(obj) {
+      const linkObj = { '@id': `${this.inspector.data.record['@id']}#work` };
+      const workObj = obj;
+      workObj['@id'] = linkObj['@id'];
+      this.$store.dispatch('updateInspectorData', {
+        changeList: [
+          {
+            path: `${this.path}`,
+            value: linkObj,
+          },
+          {
+            path: 'work',
+            value: workObj,
+          }
+        ],
+        addToHistory: true,
       });
     },
     addEmpty(typeId) {
       this.closeSearch();
-      const shortenedType = StringUtil.convertToPrefix(typeId, this.resources.context);
+      const shortenedType = StringUtil.getCompactUri(typeId, this.resources.context);
       let obj = {'@type': shortenedType};
       if (StructuredValueTemplates.hasOwnProperty(shortenedType)) {
         obj = _.cloneDeep(StructuredValueTemplates[shortenedType]);
       }
-      this.addItem(obj);
+      if (this.fieldKey === 'instanceOf') {
+        this.addSibling(obj);
+      } else {
+        this.addItem(obj);
+      }
     },
     addType(typeId) {
       const shortenedType = StringUtil.convertToPrefix(typeId, this.resources.context);
       this.addEmpty(shortenedType);
       this.dismissTypeChooser();
     },
-    search(keyword) {
+    loadResults(result) {
+      this.searchResult = result.items;
+      this.numberOfPages = Math.floor(result.totalItems/this.maxResults);
+      this.loading = false;
+    },
+    go(n) {
+      if (n >= 0 && n <= this.numberOfPages && n !== this.currentPage) {
+        this.fetch(n);
+      }
+    },
+    fetch(pageNumber) {
       const self = this;
-      self.searchResult = {};
-      this.getItems(keyword, [].concat(this.currentSearchTypes)).then((result) => {
-        setTimeout(() => {
-          self.searchResult = result.items;
-          self.loading = false;
-          self.searchMade = true;
-        }, 500);
+      const totalItems = self.searchResult.length;
+      self.currentPage = pageNumber;
+      self.loading = true;
+      console.log('fetching page', this.currentPage);
+      this.getItems(this.keyword).then((result) => {
+        self.loadResults(result);
       }, (error) => {
         self.loading = false;
       });
     },
-    getItems(keyword, typeArray) {
+    search() {
+      const self = this;
+      this.typeArray = [].concat(this.currentSearchTypes);
+      self.searchResult = [];
+      self.searchMade = true;
+      this.fetch(0);
+    },
+    getItems(keyword) {
       // TODO: Support asking for more items
+      const typeArray = this.typeArray;
       const searchKey = keyword !== '*' ? `${keyword}*` : keyword;
       let searchUrl = `${this.settings.apiPath}/find.json?q=${searchKey}`;
       if (typeof typeArray !== 'undefined' && typeArray.length > 0) {
@@ -362,7 +433,8 @@ export default {
           searchUrl += `&@type=${type}`;
         }
       }
-      searchUrl += '&_limit=40';
+      const offset = this.currentPage * this.maxResults;
+      searchUrl += `&_limit=${this.maxResults}&_offset=${offset}`;
       return new Promise((resolve, reject) => {
         fetch(searchUrl).then((response) => {
           resolve(response.json());
@@ -377,6 +449,7 @@ export default {
 
 <template>
   <div class="EntityAdder" :class="{'is-innerAdder': isPlaceholder, 'is-fillWidth': addEmbedded}">
+    <!-- Adds another empty field of the same type -->
     <div class="EntityAdder-add"
       v-if="isPlaceholder && !addEmbedded" 
       v-on:click="add()" 
@@ -388,12 +461,12 @@ export default {
         <i class="fa fa-fw fa-plus plus-icon" aria-hidden="true">
           <tooltip-component 
             :show-tooltip="showToolTip" 
-            tooltip-text="Add" 
-            translation="translatePhrase"></tooltip-component>
+            :tooltip-text="tooltipText"></tooltip-component>
         </i>
       </span>
     </div>
 
+    <!-- Add entity within field -->
     <div class="EntityAdder-add action-button" 
       v-if="!isPlaceholder && !addEmbedded" 
       tabindex="0"
@@ -404,8 +477,7 @@ export default {
       <i class="EntityAdder-addIcon fa fa-fw fa-plus plus-icon" aria-hidden="true">
         <tooltip-component 
           :show-tooltip="showToolTip" 
-          tooltip-text="Add" 
-          translation="translatePhrase"></tooltip-component>
+          :tooltip-text="tooltipText"></tooltip-component>
       </i>
       <span class="EntityAdder-addLabel label-text">{{ addLabel | labelByLang | capitalize }}</span>
     </div>
@@ -429,11 +501,11 @@ export default {
       <template slot="modal-header">
         {{ "Add entity" | translatePhrase }} | {{ addLabel | labelByLang }}
         <span class="ModalComponent-windowControl">
-          <i @click="hide" tabindex="0" @keyup.enter="hide" class="fa fa-close"></i>
+          <i @click="closeSearch" tabindex="0" @keyup.enter="closeSearch" class="fa fa-close"></i>
         </span>
       </template>
 
-    <template slot="modal-body">
+    <template slot="modal-body" class="ScrollContainer">
       <div class="EntityAdder-modalBody">
         <div class="EntityAdder-controls">
           <div class="EntityAdder-controlForm">
@@ -496,10 +568,11 @@ export default {
           {{ "Searching" | translatePhrase }}...
           <br><i class="EntityAdder-searchStatusIcon fa fa-circle-o-notch fa-spin"></i>
         </div>
-        <div class="EntityAdder-searchStatussearch-status"
+        <div class="EntityAdder-searchStatus search-status"
           v-if="!loading && searchResult.length === 0 && keyword.length > 0 && searchMade">
           {{ "No results" | translatePhrase }}...
         </div>
+        <modal-pagination class="ScrollMarginTop" v-if="!loading && searchResult.length > 0" @go="go" :numberOfPages="numberOfPages" :currentPage="currentPage"></modal-pagination>
         <entity-search-list class="EntityAdder-searchResult"
           v-if="!loading && keyword.length > 0" 
           :path="path" 
@@ -507,6 +580,7 @@ export default {
           :disabled-ids="alreadyAdded"
           @add-item="addLinkedItem"
           ></entity-search-list>
+        <modal-pagination v-if="!loading && searchResult.length > 0" @go="go" :numberOfPages="numberOfPages" :currentPage="currentPage"></modal-pagination>
       </div>
     </template>
   </modal-component>
@@ -516,11 +590,8 @@ export default {
 <style lang="less">
 
 .EntityAdder {
-  &.disabled {
-    visibility: hidden;
-  }
-  &.is-fillWidth {
-    width: 100%;
+  &-modalBody {
+    margin-bottom: 100px;
   }
   &.is-innerAdder {
     cursor: pointer;
@@ -548,11 +619,17 @@ export default {
 
   &-typeChooser {
     text-align: center;
-    padding: 5px;
-    border: 2px solid #b2b2b2;
   }
 
   &-typeSelect {
+    background: @white;
+    color: @black;
+    margin: 0 0 5px 0;
+    border: 1px solid #6F767B;
+    border-radius: 2px;
+    font-size: 14px;
+    font-size: 1.4rem;
+    font-weight: normal;
     width: 100%;
   }
 
@@ -605,7 +682,7 @@ export default {
   }
 
   &-searchSelect {
-    max-width: 50%;
+    max-width: 200px;
     padding: .2em .5em;
     margin: 0 .3em;
     border-radius: .3em;
@@ -658,6 +735,11 @@ export default {
     font-size: 1.2rem;
   }
 
+  &-createSelect {
+    display: block;
+    width: 100%;
+  }
+
   &-searchStatus {
     font-size: 20px;
     font-size: 2rem;
@@ -672,10 +754,20 @@ export default {
   }
 
   &-searchResult {
-    padding: 85px 0 0 0;
-    margin: 0 0 100px;
+    padding: 0 0 0 0;
   }
 
+}
+.EntitySearchResult {
+  &-fetchMore {
+    text-align: center;
+  }
+}
+
+.ScrollMarginTop {
+  padding-top: 95px !important;
+  // If you question this, feel free to rewrite the layout of this modal.
+  // search-window.vue is a much better implementation.
 }
 
 </style>

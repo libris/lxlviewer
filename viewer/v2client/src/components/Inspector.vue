@@ -4,9 +4,9 @@ import * as StringUtil from '@/utils/string';
 import * as DataUtil from '@/utils/data';
 import * as VocabUtil from '@/utils/vocab';
 import * as HttpUtil from '@/utils/http';
-// import * as _ from 'lodash';
 import * as DisplayUtil from '@/utils/display';
 import * as RecordUtil from '@/utils/record';
+import * as md5 from 'md5';
 import EntityForm from '@/components/inspector/entity-form';
 import Toolbar from '@/components/inspector/toolbar';
 import EntityChangelog from '@/components/inspector/entity-changelog';
@@ -17,6 +17,19 @@ import { mapGetters } from 'vuex';
 
 export default {
   name: 'Inspector',
+  beforeRouteLeave (to, from , next) {
+    if (this.inspector.status.editing && this.inspector.status.unsavedChanges && !this.inspector.status.saving) {
+      const confString = StringUtil.getUiPhraseByLang('You have unsaved changes. Do you want to leave the page?', this.settings.language);
+      const answer = window.confirm(confString);
+      if (answer) {
+        next();
+      } else {
+        next(false);
+      }
+    } else {
+      next();
+    }
+  },
   data () {
     return {
       documentId: null,
@@ -27,6 +40,17 @@ export default {
     }
   },
   methods: {
+    initializeWarnBeforeUnload() {
+      window.addEventListener("beforeunload", (e) => {
+        if (!this.inspector.status.editing || !this.inspector.status.unsavedChanges || this.inspector.status.saving) {
+          return undefined;
+        }
+        const confirmationMessage = StringUtil.getUiPhraseByLang('You have unsaved changes. Do you want to leave the page?', this.settings.language);
+
+        (e || window.event).returnValue = confirmationMessage; //Gecko + IE
+        return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
+      });
+    },
     initJsonOutput() {
       window.getJsonOutput = () => {
       const obj = this.getPackagedItem();
@@ -39,12 +63,14 @@ export default {
     initToolbarFloat() {
       const toolbarPlaceholderEl = this.$refs.ToolbarPlaceholder;
       const toolbarTestEl = this.$refs.ToolbarTest;
-      const width = toolbarPlaceholderEl.clientWidth || 65;
-      toolbarTestEl.style.width = `${width}px`;
+      const width = typeof toolbarPlaceholderEl !== 'undefined' ? toolbarPlaceholderEl.clientWidth : 65;
+      if (typeof toolbarTestEl !== 'undefined') {
+        toolbarTestEl.style.width = `${width}px`;
+      }
     },
     fetchDocument() {
-      const fetchUrl = `${this.settings.apiPath}/${this.documentId}/data.jsonld`;
-
+      const randomHash = md5(new Date());
+      const fetchUrl = `${this.settings.apiPath}/${this.documentId}/data.jsonld?${randomHash}`;
       fetch(fetchUrl).then((response) => {
         if (response.status === 200) {
           return response.json();
@@ -61,12 +87,14 @@ export default {
         });
       }).then((result) => {
         this.result = result;
-        this.$store.dispatch('setInspectorData', RecordUtil.splitJson(result));
-        this.postLoaded = true;
+        const splitFetched = RecordUtil.splitJson(result);
+        this.$store.dispatch('setInspectorData', splitFetched);
+        this.onPostLoaded();
       });
     },
     initializeRecord() {
       this.postLoaded = false;
+      this.$store.dispatch('flushChangeHistory');
       this.$store.dispatch('setInspectorStatusValue', { property: 'focus', value: 'mainEntity' });
       if (this.$route.name === 'Inspector') {
         console.log("Initializing view for existing document");
@@ -115,7 +143,38 @@ export default {
           property: 'editing', 
           value: true 
         });
-        this.postLoaded = true;
+        this.onPostLoaded();
+      }
+    },
+    onPostLoaded() {
+      this.$store.dispatch('setInsertData', '');
+      this.$store.dispatch('setOriginalData', this.inspector.data);
+      this.$store.dispatch('setInspectorStatusValue', { property: 'unsavedChanges', value: false });
+      this.$store.dispatch('flushChangeHistory');
+      this.postLoaded = true;
+    },
+    doCancel() {
+      this.$store.dispatch('setInspectorStatusValue', { 
+        property: 'editing', 
+        value: false 
+      });
+      // Restore post
+      this.$store.dispatch('setInspectorData', this.inspector.originalData);
+      this.$store.dispatch('flushChangeHistory');
+    },
+    cancelEditing() {
+      if (!this.inspector.status.isNew) {
+        if (this.inspector.status.editing && this.inspector.status.unsavedChanges) {
+          const confString = StringUtil.getUiPhraseByLang('You have unsaved changes. Do you want to cancel?', this.settings.language);
+          const answer = window.confirm(confString);
+          if (answer) {
+            this.doCancel();
+          } 
+        } else {
+          this.doCancel();
+        }
+      } else {
+        this.$router.go(-1);
       }
     },
     setTitle() {
@@ -165,7 +224,7 @@ export default {
       return obj;
     },
     duplicateItem() {
-      if (!this.status.inEdit) {
+      if (!this.status.inEdit && !this.isItem) {
         const duplicate = RecordUtil.prepareDuplicateFor(this.inspector.data, this.user);
         this.$store.dispatch('setInsertData', duplicate);
         this.$router.push({ path: '/new' });
@@ -177,7 +236,6 @@ export default {
     },   
     saveItem(done=false) {
       this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: true });
-      this.$store.dispatch('setInspectorStatusValue', { property: 'isNew', value: false });
 
       const RecordId = this.inspector.data.record['@id'];
       const obj = this.getPackagedItem();
@@ -186,6 +244,7 @@ export default {
       if (!RecordId || RecordId === 'https://id.kb.se/TEMPID') { // No ID -> create new
         this.doCreate(obj, done);
       } else { // ID exists -> update
+        console.log('ETag ', ETag);
         this.doUpdate(RecordId, obj, ETag, done);
       }
     },
@@ -198,8 +257,7 @@ export default {
       requestMethod({ 
         url: opts.url, 
         ETag: opts.ETag, 
-        activeSigel: 
-        this.user.settings.activeSigel, 
+        activeSigel: this.user.settings.activeSigel, 
         token: this.user.token 
       }, obj).then((result) => {
         if (!this.documentId) {
@@ -215,8 +273,9 @@ export default {
             this.$store.dispatch('setInspectorStatusValue', { property: 'editing', value: false });
           }
         }
-        this.$store.dispatch('setInspectorStatusValue', { property: 'dirty', value: false });
         this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
+        this.$store.dispatch('setInspectorStatusValue', { property: 'unsavedChanges', value: false });
+        this.$store.dispatch('setInspectorStatusValue', { property: 'isNew', value: false });
       }, (error) => {
         this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
         this.$store.dispatch('pushNotification', { color: 'red', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error}` });
@@ -246,6 +305,9 @@ export default {
     'inspector.event'(val, oldVal) {
       if (val.name === 'post-control') {
         switch(val.value) {
+          case 'cancel':
+            this.cancelEditing();
+          break;
           case 'remove-post':
             this.openRemoveModal();
             break;
@@ -258,11 +320,6 @@ export default {
             return;
         }
       }
-    }
-  },
-  events: {
-    'toggle-editor-focus'() {
-      this.toggleEditorFocus();
     },
   },
   created: function () {
@@ -283,7 +340,6 @@ export default {
       return VocabUtil.getRecordType(
         this.inspector.data.mainEntity['@type'], 
         this.resources.vocab, 
-        this.settings, 
         this.resources.context);
     },
   },
@@ -297,10 +353,16 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
+      this.$store.dispatch('setStatusValue', { 
+        property: 'keybindState', 
+        value: 'overview' 
+      });
       if (!this.postLoaded) {
         this.initializeRecord();
       }
+      this.initializeWarnBeforeUnload();
       this.initJsonOutput();
+
       let self = this;
       window.addEventListener('resize', function() {
         self.initToolbarFloat();

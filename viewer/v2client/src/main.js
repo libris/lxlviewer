@@ -11,7 +11,6 @@ import * as DisplayUtil from '@/utils/display';
 import * as StringUtil from '@/utils/string';
 import * as HttpUtil from '@/utils/http';
 import * as User from '@/models/user';
-import FakedDisplayJson from '@/resources/json/fakedisplay.json';
 import Field from '@/components/inspector/field';
 import KeyBindings from '@/resources/json/keybindings.json';
 
@@ -20,7 +19,7 @@ Vue.use(Vuex);
 Vue.component('field', Field);
 
 Vue.filter('labelByLang', (label) => {
-  return StringUtil.getLabelByLang(label, store.getters.user.settings.language, store.getters.resources.vocab, store.getters.settings.vocabPfx, store.getters.resources.context);
+  return StringUtil.getLabelByLang(label, store.getters.user.settings.language, store.getters.resources.vocab, store.getters.resources.context);
 });
 
 Vue.filter('asAppPath', (path) => {
@@ -62,9 +61,9 @@ new Vue({
   created() {
     this.initWarningFunc();
     Promise.all(this.getLdDependencies()).then((resources) => {
-      store.dispatch('setContext', resources[1]['@context']);
+      store.dispatch('setContext', resources[2]['@context']);
       store.dispatch('setupVocab', resources[0]['@graph']);
-      store.dispatch('setDisplay', FakedDisplayJson);
+      store.dispatch('setDisplay', resources[1]);
       store.dispatch('changeResourcesStatus', true);
     }, (error) => {
       window.lxlWarning(`🔌 The API (at ${this.settings.apiPath}) might be offline!`);
@@ -83,21 +82,16 @@ new Vue({
       if (this.combokeys) {
         this.combokeys.detach();
       }
+
       this.combokeys = new ComboKeys(document.documentElement);
       require('combokeys/plugins/global-bind')(this.combokeys); // TODO: Solve with ES6 syntax
       const stateSettings = KeyBindings[state];
+        
       if (typeof stateSettings !== 'undefined') {
         _.each(stateSettings, (value, key) => {
           if (value !== null && value !== '') {
-            this.combokeys.bindGlobal(key.toString(), () => {
-              const valueArray = value.split('|');
-              // if (state === 'overview') {
-              //   this.$dispatch(valueArray[0], valueArray[1]);
-              // } else {
-              //   console.log(valueArray[0], valueArray[1]);
-              //   this.$dispatch(valueArray[0], valueArray[1]);
-              // }
-              this.$store.dispatch('pushKeyAction', valueArray[0]);
+            this.combokeys.bindGlobal(key.toString(), (e) => {
+              this.$store.dispatch('pushKeyAction', value);
               return false;
             });
           }
@@ -119,6 +113,7 @@ new Vue({
         }
       }
       this.updateTitle();
+      this.injectAnalytics();
     })
   },
   computed: {
@@ -136,12 +131,25 @@ new Vue({
     }
   },
   methods: {
+    injectAnalytics() {
+      const analyticsString = 'var _paq=_paq||[];_paq.push(["trackPageView"]),_paq.push(["enableLinkTracking"]),function(){var e="//analytics.kb.se/";_paq.push(["setTrackerUrl",e+"piwik.php"]),_paq.push(["setSiteId","****"]);var a=document,p=a.createElement("script"),t=a.getElementsByTagName("script")[0];p.type="text/javascript",p.async=!0,p.defer=!0,p.src=e+"piwik.js",t.parentNode.insertBefore(p,t)}();';
+      const scriptWithPiwikId = analyticsString.replace('****', this.settings.piwikID);
+      const scriptTag = document.createElement('script');
+
+      scriptTag.setAttribute('type', 'text/javascript');
+      scriptTag.text = scriptWithPiwikId;
+      
+      document.head.appendChild(scriptTag);
+    },
     verifyConfig() {
       if (!this.settings.apiPath || typeof this.settings.apiPath === 'undefined') {
         throw new Error('Missing API path in app-config');
       }
       if (!this.settings.authPath || typeof this.settings.authPath === 'undefined') {
         throw new Error('Missing AUTH path in app-config');
+      }
+      if (!this.settings.idPath || typeof this.settings.idPath === 'undefined') {
+        throw new Error('Missing ID path in app-config');
       }
     },
     verifyUser(token, initial) {
@@ -208,13 +216,9 @@ new Vue({
       const promiseArray = [];
       const vocabPromise = VocabUtil.getVocab(this.settings.apiPath);
       promiseArray.push(vocabPromise);
-      // const displayPromise = DisplayUtil.getDisplayDefinitions().then((display) => {
-      //   this.display = display;
-      // }, (error) => {
-      //   console.log('getDisplayDefinitions', error);
-      // });
-      // promiseArray.push(displayPromise);
-      const contextPromise = VocabUtil.getContext(this.settings.apiPath);
+      const displayPromise = DisplayUtil.getDisplayDefinitions(this.settings.idPath);
+      promiseArray.push(displayPromise);
+      const contextPromise = VocabUtil.getContext(this.settings.idPath);
       promiseArray.push(contextPromise);
       return promiseArray;
     }

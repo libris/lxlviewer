@@ -65,10 +65,5 @@ export default {
   &-section {
     margin: 0 0 2em;
   }
-
-  &-sectionTitle {
-    // font-size: 20px;
-    // font-size: 2.0rem;
-  }
 }
 </style>

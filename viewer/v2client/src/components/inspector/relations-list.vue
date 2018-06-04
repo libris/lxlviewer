@@ -1,0 +1,106 @@
+<script>
+import EntitySummary from '../shared/entity-summary';
+import ModalComponent from '@/components/shared/modal-component';
+import * as StringUtil from '@/utils/string';
+import * as RecordUtil from '@/utils/record';
+import * as LayoutUtil from '@/utils/layout';
+import * as HttpUtil from '@/utils/http';
+import { mapGetters } from 'vuex';
+
+export default {
+  name: 'relations-list',
+  props: {
+    relationsList: {
+      type: Array,
+      default: () => [],
+    },
+  },
+  data() {
+    return {
+      itemData: {},
+      embellishedList: [],
+      showInstances: false,
+      loading: true,
+    }
+  },
+  methods: {
+    buildEmbellishedInstanceList(instanceList) {
+      const promiseArray = instanceList.map(instanceId => {
+        return HttpUtil.get({ url: `${instanceId}/data.jsonld`, contentType: 'text/plain' }).then(instanceInfo => {
+          return RecordUtil.splitJson(instanceInfo);
+        }, (error) => {
+          console.log("Error fetching relation info");
+        });
+      });
+      Promise.all(promiseArray).then(results => {
+        this.embellishedList = results;
+        this.loading = false;
+      });
+    },
+    hide() {
+      this.$emit('close');
+    },
+  },
+  computed: {
+    ...mapGetters([
+      'inspector',
+      'resources',
+      'user',
+      'settings',
+      'status',
+    ]),
+    windowTitle() {
+      return StringUtil.getUiPhraseByLang('Instantiations of this work', this.settings.language);
+    }
+  },
+  components: {
+    'entity-summary': EntitySummary,
+    'modal-component': ModalComponent,
+  },
+  watch: {
+  },
+  mounted() { // Ready method is deprecated in 2.0, switch to "mounted"
+    this.$nextTick(() => {
+      this.buildEmbellishedInstanceList(this.relationsList);
+    });
+  },
+};
+</script>
+
+<template>
+  <div class="RelationsList">
+    <modal-component :title="windowTitle" @close="hide()">
+      <div slot="modal-body" class="RelationsList-body">
+        <entity-summary 
+          v-if="!loading" 
+          v-for="(instance, index) in embellishedList" 
+          :key="index"
+          :focus-data="instance.mainEntity" 
+          :add-link="true" 
+          :lines="4"></entity-summary>
+      </div>
+    </modal-component>
+  </div>
+</template>
+
+<style lang="less">
+
+.RelationsList {
+  &-body {
+    width: 100%;
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 0px;
+    overflow-y: scroll;
+    .entity-summary {
+      &:hover {
+        background: darken(@white, 5%);
+        cursor: pointer;
+        .header {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+}
+</style>

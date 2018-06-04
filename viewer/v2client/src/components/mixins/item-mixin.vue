@@ -23,18 +23,30 @@ export default {
       }
       if (animate) {
         this.$store.dispatch('setInspectorStatusValue', { property: 'removing', value: true });
+        this.$store.dispatch('setInspectorStatusValue', { 
+          property: 'unsavedChanges', 
+          value: true 
+        });
         this.removed = true;
         setTimeout(() => {
           this.$store.dispatch('updateInspectorData', {
-            path: `${this.parentPath}`,
-            value: parentValue,
+            changeList: [
+              {
+                path: `${this.parentPath}`,
+                value: parentValue,
+              }
+            ],
             addToHistory: true,
           });
         }, 500);
       } else {
         this.$store.dispatch('updateInspectorData', {
-          path: `${this.parentPath}`,
-          value: parentValue,
+          changeList: [
+            {
+              path: `${this.parentPath}`,
+              value: parentValue,
+            }
+          ],
           addToHistory: true,
         });
       }

@@ -38,9 +38,9 @@ export default {
     },
     getClassTree() {
       const tree = [this.creation].map(type => {
-        return VocabUtil.getTree(type, this.resources.vocab, this.settings.vocabPfx, this.resources.context);
+        return VocabUtil.getTree(type, this.resources.vocab, this.resources.context);
       });
-      return VocabUtil.flattenTree(tree, this.resources.vocab, this.settings.vocabPfx, this.resources.context, this.settings.language);
+      return VocabUtil.flattenTree(tree, this.resources.vocab, this.resources.context, this.settings.language);
     },
   },
 };

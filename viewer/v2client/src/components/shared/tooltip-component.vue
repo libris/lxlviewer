@@ -28,9 +28,11 @@ export default {
     },
     translatedText() {
       if (this.translation === 'labelByLang') {
-        return StringUtil.getLabelByLang(this.tooltipText, this.settings.language, this.resources.vocab, this.settings.vocabPfx, this.resources.context);
+        return StringUtil.getLabelByLang(this.tooltipText, this.settings.language, this.resources.vocab, this.resources.context);
       } else if (this.translation === 'translatePhrase') {
         return StringUtil.getUiPhraseByLang(this.tooltipText, this.settings.language);
+      } else {
+        return this.tooltipText;
       }
     },
   },

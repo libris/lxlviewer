@@ -12,6 +12,9 @@ export function removeDomain(string, removableBaseUriArray) {
 }
 
 export function getCompactUri(uri, context) {
+  if (typeof context === 'undefined') {
+    throw new Error('getCompactUri was called without context.');
+  }
   let compactUri = '';
   const vocabBase = context[0]['@vocab'];
   if (uri.startsWith(vocabBase)) {
@@ -26,10 +29,15 @@ export function convertToBaseUri(str, context) {
   if (typeof context === 'undefined') {
     throw new Error('convertToBaseUri was called without context.');
   }
-  if (str.indexOf('://') > -1 || str.indexOf(':') === -1) {
+  if (str.indexOf('://') > -1) {
     return str;
   }
-  const prefix = str.split(':')[0];
+  let prefix = '';
+  if (str.indexOf(':') > -1) {
+    prefix = str.split(':')[0];
+  } else {
+    prefix = 'kbv';
+  }
   const uri = str.replace(`${prefix}:`, '');
   const baseUri = VocabUtil.getBaseUriFromPrefix(prefix, context);
   const withBaseUri = `${baseUri}${uri}`;
@@ -124,7 +132,7 @@ export function getLabelFromObject(object, language) {
   return label;
 }
 
-export function getLabelByLang(string, lang, vocab, vocabPfx, context) {
+export function getLabelByLang(string, lang, vocab, context) {
   if (!string) {
     return '{FAILED LABEL}';
   }
@@ -134,7 +142,7 @@ export function getLabelByLang(string, lang, vocab, vocabPfx, context) {
       JSON.stringify(string)
     );
   }
-  let item = VocabUtil.getTermObject(string, vocab, vocabPfx, context);
+  let item = VocabUtil.getTermObject(string, vocab, context);
   let note = '';
   let labelByLang = '';
   if (typeof item !== 'undefined') {
@@ -187,7 +195,7 @@ export function getFormattedEntries(list, vocab, settings, context) {
   for (const entry of list) {
     if (translateable(entry.property)) {
       formatted = formatted.concat(entry.value.map((obj) => {
-        return getLabelByLang(obj, settings.language, vocab, settings.vocabPfx, context);
+        return getLabelByLang(obj, settings.language, vocab, context);
       }));
     } else {
       formatted = formatted.concat(entry.value);

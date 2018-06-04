@@ -4,30 +4,32 @@ import * as DataUtil from './data';
 import * as VocabUtil from './vocab';
 import * as StringUtil from './string';
 import * as displayGroups from '@/resources/json/displayGroups.json';
+import * as display from '@/resources/json/display.json'; // TODO: REMOVE HARDCODED
 import moment from 'moment';
 import 'moment/locale/sv';
 moment.locale('sv');
 
-export function getDisplayDefinitions() {
+export function getDisplayDefinitions(baseUri) {
   return new Promise((resolve, reject) => {
-    httpUtil.getResourceFromCache('/https://id.kb.se/vocab/display').then((result) => {
-      const clonedResult = _.cloneDeep(result);
-      _.each(clonedResult.lensGroups, lensGroup => {
-        _.each(lensGroup.lenses, lens => {
-          if (lens.hasOwnProperty('fresnel:extends')) {
-            const [extendLens, extendLevel] = lens['fresnel:extends']['@id'].split('-');
-            lens.showProperties.splice(
-              lens.showProperties.indexOf('fresnel:super'),
-              1,
-              ...result.lensGroups[extendLevel].lenses[extendLens].showProperties
-            );
-          }
-        });
-      });
-      resolve(clonedResult);
-    }, (error) => {
-      reject(error);
-    });
+    resolve(display); // TODO: REMOVE HARDCODED
+    // httpUtil.getResourceFromCache(`${baseUri}/vocab/display/data.jsonld`).then((result) => {
+    //   const clonedResult = _.cloneDeep(result);
+    //   _.each(clonedResult.lensGroups, lensGroup => {
+    //     _.each(lensGroup.lenses, lens => {
+    //       if (lens.hasOwnProperty('fresnel:extends')) {
+    //         const [extendLens, extendLevel] = lens['fresnel:extends']['@id'].split('-');
+    //         lens.showProperties.splice(
+    //           lens.showProperties.indexOf('fresnel:super'),
+    //           1,
+    //           ...result.lensGroups[extendLevel].lenses[extendLens].showProperties
+    //         );
+    //       }
+    //     });
+    //   });
+    //   resolve(clonedResult);
+    // }, (error) => {
+    //   reject(error);
+    // });
   });
 }
 
@@ -49,7 +51,25 @@ function getValueByLang(item, propertyId, displayDefs, langCode, context) {
   return translatedValue;
 }
 
-export function getProperties(typeInput, level, displayDefs, settings) {
+export function getLensById(id, displayDefs) {
+  if (!displayDefs) {
+    throw new Error('getLensById was called without display resource');
+  }
+  if (!id) {
+    throw new Error('getLensById was called without lens id');
+  }
+  for (const collection in displayDefs.lensGroups) {
+    for (const lens in displayDefs.lensGroups[collection].lenses) {
+      const obj = displayDefs.lensGroups[collection].lenses[lens];
+      if (obj.hasOwnProperty('@id') && obj['@id'] === id) {
+        return obj;
+      }
+    }
+  }
+  return {};
+}
+
+export function getProperties(typeInput, level, displayDefs) {
   if (!typeInput || typeof typeInput === 'undefined') {
     throw new Error('getProperties was called with an undefined type.');
   }
@@ -66,11 +86,27 @@ export function getProperties(typeInput, level, displayDefs, settings) {
       props = lenses[type].showProperties;
     }
     props = [].concat(props);
+    
+    let extension = [];
+    for (let i = 0;i < props.length; i++) {
+      if (props[i] === 'fresnel:super') {
+        extension = getLensById(lenses[type]['fresnel:extends']['@id'], displayDefs).showProperties;
+        props.splice(i, 1, ...extension);
+        break;
+      }
+    }
+    props = _.uniq(props);
     _.remove(props, (x) => _.isObject(x));
+
+    if (props.length > 0) {
+      return props;
+    } else if (level === 'full') { // Try fallback to card level
+      props = getProperties(type, 'cards', displayDefs);
+    }
     if (props.length > 0) {
       return props;
     } else if (level === 'cards') { // Try fallback to chip level
-      props = getProperties(type, 'chips', displayDefs, settings);
+      props = getProperties(type, 'chips', displayDefs);
       if (props.length > 0) {
         return props;
       }
@@ -106,10 +142,10 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
     return {};
   }
   if (properties.length === 0) { // If none were found, traverse up inheritance tree
-    const baseClasses = VocabUtil.getBaseClassesFromArray(trueItem['@type'], vocab, settings.vocabPfx, context);
+    const baseClasses = VocabUtil.getBaseClassesFromArray(trueItem['@type'], vocab, context);
     for (let i = 0; i < baseClasses.length; i++) {
       if (typeof baseClasses[i] !== 'undefined') {
-        properties = getProperties(baseClasses[i].replace(settings.vocabPfx, ''), level, displayDefs, settings);
+        properties = getProperties(StringUtil.getCompactUri(baseClasses[i], context), level, displayDefs, settings);
         if (properties.length > 0) {
           usedLensType = baseClasses[i];
           break;
@@ -140,7 +176,6 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
         let value = valueOnItem;
         if (_.isObject(value) && !_.isArray(value)) {
           value = getItemLabel(value, displayDefs, quoted, vocab, settings, context);
-          // value = getDisplayObject(value, 'chips', displayDefs, quoted, vocab, vocabPfx);
         } else if (_.isArray(value)) {
           const newArray = [];
           for (const arrayItem of value) {
@@ -159,7 +194,7 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
         }
         result[properties[i]] = value;
       } else if (properties.length < 3 && i === 0) {
-        const rangeOfMissingProp = VocabUtil.getRange(trueItem['@type'], properties[i], vocab, settings.vocabPfx, context);
+        const rangeOfMissingProp = VocabUtil.getRange(trueItem['@type'], properties[i], vocab, context);
         let propMissing = properties[i];
         if (rangeOfMissingProp.length > 0) {
           propMissing = rangeOfMissingProp[0];
@@ -168,7 +203,6 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
           propMissing, // Get the first one just to show something
           settings.language,
           vocab,
-          settings.vocabPfx,
           context
         );
         result[properties[i]] = `{${expectedClassName} saknas}`;
@@ -217,7 +251,7 @@ export function getItemSummary(item, displayDefs, quoted, vocab, settings, conte
 export function getItemLabel(item, displayDefs, quoted, vocab, settings, context) {
   const displayObject = getChip(item, displayDefs, quoted, vocab, settings, context);
   let rendered = StringUtil.extractStrings(displayObject).trim();
-  if (item['@type'] && VocabUtil.isSubClassOf(item['@type'], 'Identifier', vocab, settings.vocabPfx, context)) {
+  if (item['@type'] && VocabUtil.isSubClassOf(item['@type'], 'Identifier', vocab, context)) {
     rendered = `${item['@type']} ${rendered}`;
   }
   return rendered;
@@ -232,7 +266,7 @@ export function getCard(item, displayDefs, quoted, vocab, settings, context) {
 }
 
 export function getFormattedSelectOption(term, settings, vocab, context) {
-  const labelByLang = StringUtil.getLabelByLang(term.id, settings.language, vocab, settings.vocabPfx, context);
+  const labelByLang = StringUtil.getLabelByLang(term.id, settings.language, vocab, context);
   const abstractIndicator = ` {${StringUtil.getUiPhraseByLang('Abstract', settings.language)}}`;
   const prefix = Array((term.depth) + 1).join(' •');
   return `${prefix} ${labelByLang} ${term.abstract ? abstractIndicator : ''}`;

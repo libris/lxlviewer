@@ -3,7 +3,7 @@ import * as VocabUtil from '../../utils/vocab';
 import * as HttpUtil from '../../utils/http';
 import * as RecordUtil from '../../utils/record';
 import CreateItemButton from './create-item-button';
-import InstanceListButton from './instance-list-button';
+import RelationsList from '@/components/inspector/relations-list';
 import { mapGetters } from 'vuex';
 
 export default {
@@ -17,11 +17,15 @@ export default {
       relationPath: '',
       relationInfo: [],
       numberOfRelations: null,
+      relationsListOpen: false,
     }
   },
   methods: {
-    setCheckingRelations(newVal) {
-      this.checkingRelations = newVal;
+    showRelationsList() {
+      this.relationsListOpen = true;
+    },
+    hideRelationsList() {
+      this.relationsListOpen = false;
     },
     getRelatedPosts(id, property) {
       // Returns a list of posts that links to <id> with <property>
@@ -55,6 +59,7 @@ export default {
       this.getRelatedPosts(this.inspector.data.record['@id'], property).then((response) => {
         this.relationInfo = response;
         this.numberOfRelations = response.length;
+        this.checkingRelations = false;
       }, (error) => {
         console.log('Error checking for relations', error);
       });
@@ -75,7 +80,6 @@ export default {
       return VocabUtil.getRecordType(
         this.inspector.data.mainEntity['@type'], 
         this.resources.vocab, 
-        this.settings, 
         this.resources.context
       );
     },
@@ -87,7 +91,7 @@ export default {
   },
   components: {
     'create-item-button': CreateItemButton,
-    'instance-list-button': InstanceListButton,
+    'relations-list': RelationsList,
   },
   watch: {
     recordId(newVal) {
@@ -98,9 +102,6 @@ export default {
         this.relationInfo = [];
       }
     },
-    numberOfRelations(newVal, oldVal) {
-      //console.log(newVal, oldVal);
-    }
   },
   mounted() { // Ready method is deprecated in 2.0, switch to "mounted"
     this.$nextTick(() => {
@@ -112,13 +113,16 @@ export default {
 
 <template>
   <div class="ReverseRelations">
-    <div v-if="recordType === 'Work'" class="ReverseRelations-number">
+    <div v-if="recordType === 'Work'" v-show="!checkingRelations" class="ReverseRelations-number">
       <span class="ReverseRelations-label">
         {{ "Instantiations" | translatePhrase }}: {{numberOfRelations | translatePhrase}}
       </span>
-      <instance-list-button v-if="!inspector.status.editing && this.numberOfRelations > 0" class="ReverseRelations-button"
-        :checking-instances="checkingRelations" 
-        :instance-list="relationInfo"></instance-list-button>
+
+      <button class="ReverseRelations-button InstancesList-btn btn btn-primary" @click="showRelationsList()" v-if="!inspector.status.editing && this.numberOfRelations > 0"
+        :checking-instances="checkingRelations">
+        {{"Show instantiations" | translatePhrase}}
+      </button>
+      <relations-list v-if="relationsListOpen" :relations-list="relationInfo" @close="hideRelationsList()"></relations-list>
     </div>
       
     <div class="ReverseRelations-number" v-if="recordType === 'Instance'">
@@ -131,7 +135,8 @@ export default {
         :disabled="inspector.status.editing" 
         :has-holding="hasRelation" 
         :checking-holding="checkingRelations" 
-        :holding-id="relationPath"></create-item-button>
+        :holding-id="relationPath"
+        @done="checkingRelations=false"></create-item-button>
     </div>
   </div>
 </template>
@@ -142,11 +147,20 @@ export default {
   &-number {
     float: right;
     font-weight: 700;
+    margin: 0 0 20px;
     text-align: right;
+  }
+
+  &-label {
+    font-size: 12px;
+    font-size: 1.2rem;
   }
 
   &-button {
     margin: 5px 0 10px;
+    font-size: 20px;
+    font-size: 2.0rem;
+    font-weight: 700;
   }
 }
 

@@ -88,24 +88,31 @@ export default {
 
 <template>
 
-  <div class="help-component">
+  <div class="HelpSection">
     <div class="row">
       <div class="col-md-3">
-        <div class="menu panel panel-default">
-          <ul class="categories">
-            <li v-for="(value, key) in helpCategories" :key="key" v-bind:class="{'active': key == activeCategory }" v-on:click="activeCategory = key">
-              <span class="label">{{key}}</span>
-              <ul class="sections">
-                <li v-for="(section, index) in value" :key="index" v-bind:class="{'active': section.basename == activeSection }" v-on:click="changeSection(section.basename)">{{section.title}}</li>
+        <div class="HelpSection-menu panel panel-default">
+          <ul class="HelpSection-categories">
+            <li class="HelpSection-categoryItem"
+              v-for="(value, key) in helpCategories" 
+              :key="key" 
+              v-bind:class="{'is-active': key == activeCategory }" 
+              v-on:click="activeCategory = key">
+              <span class="HelpSection-categoryItemLabel">{{key}}</span>
+              <ul class="HelpSection-categoryList">
+                <li class="HelpSection-categoryListItem" v-for="(section, index) in value" 
+                  :key="index" 
+                  v-bind:class="{'active': section.basename == activeSection }" 
+                  v-on:click="changeSection(section.basename)">{{section.title}}</li>
               </ul>
             </li>
           </ul>
         </div>
       </div>
       <div class="col-md-9">
-        <div class="content panel panel-default">
+        <article class="HelpSection-article is-fromMarkdown panel panel-default">
           <div v-show="activeSection == ''">
-            <h1>Hjälp</h1>
+            <h1 class="HelpSection-title">Hjälp</h1>
             <p>
               Den här hjälpen omfattar instruktioner för gränssnittet och materialtyper, välj avsnitt till vänster för att läsa mer.
             </p>
@@ -118,10 +125,11 @@ export default {
               <li><a href="https://goo.gl/forms/dPxkhMqE10RvKQFE2" target="_blank">Här</a> kan du ge ändringsförslag.</li>
             </ul>
           </div>
-          <div v-for="(sectionValue, sectionKey) in docs" :key="sectionKey" v-if="sectionValue.basename == activeSection">
-            <span v-html="getHTML(docs[sectionKey].content)"></span>
+          <div v-for="(sectionValue, sectionKey) in docs" 
+            :key="sectionKey" v-if="sectionValue.basename == activeSection">
+            <div v-html="getHTML(docs[sectionKey].content)"></div>
           </div>
-        </div>
+        </article>
       </div>
     </div>
   </div>
@@ -129,64 +137,96 @@ export default {
 
 <style lang="less">
 
-.help-component {
-  .content {
+.HelpSection {
+  &-article {
     padding: 1em;
     height: 100%;
-    h1, h2, h3, h4 {
-      font-weight: normal;
-      margin: 10px 0 10px;
-    }
-    p {
-      margin: 0.5em 0px 1em;
-    }
-    code {
-      padding: 4px;
-      font-size: 90%;
-      color: #000000;
-      background-color: #fbebef;
-    }
-    img {
-      max-width: 100%;
+
+    &.is-fromMarkdown {
+      h1, h2, h3, h4 {
+        font-weight: normal;
+        margin: 10px 0 10px;
+      }
+
+      p {
+        margin: 0.5em 0px 1em;
+      }
+
+      code {
+        padding: 4px;
+        font-size: 90%;
+        color: #000000;
+        background-color: #fbebef;
+      }
+
+      img {
+        max-width: 100%;
+      }
+
+      table {
+        font-size: 12px;
+        font-size: 1.2rem;
+        border: 1px solid #f0f0f0;
+        width: 100%;
+      }
+
+      tr {
+        width: 100%;
+      }
+
+      td {
+        padding: 5px;
+      }
+
+      tr:nth-child(odd) {
+        background: #f0f0f0;
+      }
+
+      th {
+        background: #fff;
+        padding: 5px;
+        text-transform: uppercase;
+        line-height: 1.2;
+      }
     }
   }
-  .menu {
-    ul.categories {
-      list-style: none;
-      padding: 5px 10px;
-      > li {
-        font-weight: bold;
-        // cursor: pointer;
-        .label {
-          color: @black;
-          text-transform: uppercase;
-          padding: 0;
-        }
-        ul.sections {
-          // display: none; // SHOW ALL
-          list-style: none;
-          padding: 0;
-          li {
-            font-weight: normal;
-            border-radius: 5px;
-            padding: 0 0.3em;
-            margin: 3px 0px;
-            cursor: pointer;
-            &:hover {
-              background-color: @gray-lighter;
-            }
-            &.active {
-              background-color: @brand-primary;
-              color: @neutral-color;
-            }
-          }
-        }
-        &.active {
-          > ul {
-            display: block;
-          }
-        }
-      }
+
+  &-categories {
+    list-style: none;
+    padding: 10px 20px;
+  }
+
+  &-categoryItem {
+    display: block;
+    margin: 10px 0;
+    overflow: hidden;
+  }
+
+  &-categoryItemLabel {
+    color: @black;
+    text-transform: uppercase;
+    padding: 0;
+    font-weight: 700;
+  }
+
+  &-categoryList {
+    list-style: none;
+    padding: 0;
+  }
+
+  &-categoryListItem {
+    border-radius: 5px;
+    padding: 0 0.3em;
+    margin: 3px 0px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: @gray-lighter;
+    }
+
+    &.is-active {
+      background-color: @brand-primary;
+      color: @neutral-color;
     }
   }
 }

@@ -83,16 +83,8 @@
             "@type": "Copyright",
             "date": ""
           }],
-          "mediaType": [{
-            "@type": "MediaType",
-            "code": "n",
-            "termGroup": "rdamedia"
-          }],
-          "carrierType": [{
-            "@type": "CarrierType",
-            "code": "nc",
-            "termGroup": "rdacarrier"
-          }],
+          "mediaType": [{"@id": "https://id.kb.se/term/rda/Unmediated"}],
+          "carrierType": [{"@id": "https://id.kb.se/term/rda/Volume"}],
           "extent": [{
             "@type": "Extent",
             "label": ""
@@ -174,11 +166,7 @@
                 }
               }
             ],
-            "contentType": [{
-              "@type": "ContentType",
-              "code": "txt",
-              "termGroup": "rdacontent"
-            }],
+            "contentType": [{"@id": "https://id.kb.se/term/rda/Text"}],
             "subject": []
           }
         }
@@ -238,10 +226,10 @@
           }],
           "publication": [
             {
-              "@type": "CurrentPublicationPeriod",
+              "@type": "PrimaryPublication",
               "date": "",
-              "startDate": "",
-              "endDate": "",
+              "startYear": "",
+              "endYear": "",
               "country": [ {"@id": "https://id.kb.se/country/sw"} ],
               "place": {
                 "@type": "Place",
@@ -253,16 +241,8 @@
               }
             }
           ],
-          "carrierType": [{
-            "@type": "CarrierType",
-            "code": "nc",
-            "termGroup": "rdacarrier"
-          }],
-          "mediaType": [{
-            "@type": "MediaType",
-            "code": "n",
-            "termGroup": "rdamedia"
-          }],
+          "carrierType": [{"@id": "https://id.kb.se/term/rda/Volume"}],
+          "mediaType": [{"@id": "https://id.kb.se/term/rda/Unmediated"}],
           "hasDimensions": {
             "@type": "Dimensions",
             "label": ""
@@ -277,9 +257,6 @@
               "label": ""
             }
           ],
-          "succeededBy": [{
-            "@type": "Serial"
-          }],
           "instanceOf": {
             "@type": "Text",
             "language": [{
@@ -296,11 +273,7 @@
                 }
               }
             ],
-            "contentType": [{
-              "@type": "ContentType",
-              "code": "txt",
-              "termGroup": "rdacontent"
-            }],
+            "contentType": [{"@id": "https://id.kb.se/term/rda/Text"}],
             "genreForm": [{
               "@id": "https://id.kb.se/marc/Periodical"
             }],
@@ -380,13 +353,7 @@
             "name": "",
             "lifeSpan": ""
           }],
-          "seeAlso": [{
-            "@type": "Person",
-            "familyName": "",
-            "givenName": "",
-            "name": "",
-            "lifeSpan": ""
-          }],
+          "seeAlso": [],
           "fieldOfActivity": [],
           "hasOccupation": [],
           "identifiedBy": [{
@@ -441,20 +408,32 @@
         "mainEntity": {
           "@type": "Organization",
           "name": "",
+          "isPartOf": {
+            "@type": "Organization",
+            "name": ""
+          },
+          "marc:subordinateUnit": [ "" ],
           "activityStartDate": "",
           "activityEndDate": "",
           "hasHistoricalData": [{
             "@type": "AdministrativeHistoryNote",
             "label": ""
           }],
-          "hasVariant": [{
+          "hasVariant": [
+            {
             "@type": "Organization",
             "name": ""
-          }],
-          "seeAlso": [{
+          },
+          {
+          "@type": "Organization",
+          "isPartOf": {
             "@type": "Organization",
             "name": ""
-          }],
+          },
+          "marc:subordinateUnit": [ "" ]
+        }
+        ],
+          "seeAlso": [],
           "identifiedBy": [{
             "@type": "Identifier",
             "typeNote": "isni",

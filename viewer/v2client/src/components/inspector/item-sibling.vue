@@ -23,12 +23,13 @@ import FieldAdder from '@/components/inspector/field-adder';
 import SearchWindow from './search-window';
 import ItemMixin from '../mixins/item-mixin';
 import LensMixin from '../mixins/lens-mixin';
+import FormMixin from '../mixins/form-mixin';
 import {mixin as clickaway} from 'vue-clickaway';
 import { mapGetters } from 'vuex';
 
 export default {
   name: 'item-sibling',
-  mixins: [ItemMixin, LensMixin, clickaway],
+  mixins: [FormMixin, ItemMixin, LensMixin, clickaway],
   props: {
     id: '',
     fieldKey: '',
@@ -87,21 +88,14 @@ export default {
       return cleanObj;
     },
     isExtractable() {
-      const classId = `${this.settings.vocabPfx}${this.item['@type']}`;
-      if (!VocabUtil.isEmbedded(classId, this.resources.vocab, this.settings, this.resources.context)) {
+      const classId = StringUtil.getCompactUri(this.item['@type'], this.resources.context);
+      if (VocabUtil.isExtractable(classId, this.resources.vocab, this.settings, this.resources.context)) {
         return true;
       }
       return false;
     },
     getPath() {
       return this.suffix;
-    },
-    filteredItem() {
-      const fItem = _.cloneDeep(this.item);
-      delete fItem['@type'];
-      delete fItem['@id'];
-      delete fItem['_uid'];
-      return fItem;
     },
     isEmpty() {
       let bEmpty = true;
@@ -115,61 +109,38 @@ export default {
       });
       return bEmpty;
     },
-    allowedProperties() {
-      const settings = this.settings;
-      const formObj = this.item;
-      const allowed = VocabUtil.getPropertiesFromArray(
-        [StringUtil.convertToVocabKey(StringUtil.convertToBaseUri(formObj['@type'], this.resources.context), this.resources.context)],
-        this.resources.vocabClasses,
-        this.settings.vocabPfx,
-        this.resources.vocabProperties,
-        this.resources.context
-      );
-      // Add the "added" property
-      for (const element of allowed) {
-        const oId = element.item['@id'].replace(settings.vocabPfx, '');
-        element.added = (formObj.hasOwnProperty(oId) && formObj[oId] !== null);
-      }
-
-      const extendedAllowed = allowed.map(property => {
-        const labelByLang = property.item.labelByLang;
-        if (typeof labelByLang !== 'undefined') {
-          // Try to get the label in the preferred language
-          let label = ((typeof labelByLang[this.settings.language] !== 'undefined') ? labelByLang[this.settings.language] : labelByLang.en);
-          // If several labels are present, use the first one
-          if (_.isArray(label)) {
-            label = label[0];
-          }
-          return {
-            added: property.added,
-            item: property.item,
-            label: label
-          };
-        } else {
-          // If no label, use @id as label
-          return {
-            added: property.added,
-            item: property.item,
-            label: property.item['@id']
-          };
-        }
-      });
-      const sortedAllowed = _.sortBy(extendedAllowed, (prop) => {
-        return prop.label.toLowerCase();
-      });
-      return sortedAllowed;
+    formObj() {
+      return this.item;
     },
   },
   methods: {
+    removeThis() {
+      const changeList = [
+        {
+          path: `${this.parentPath}`,
+          value: null,
+        }
+      ];
+      if (this.fieldKey === 'instanceOf') {
+        changeList.push({
+          path: 'work',
+          value: null,
+        });
+      }
+      this.$store.dispatch('updateInspectorData', {
+        addToHistory: true,
+        changeList: changeList,
+      });
+    },
     highlightItem(event) {
       let item = event.target;
       while ((item = item.parentElement) && !item.classList.contains('js-itemLocal'));
-      item.classList.add('is-affected');
+      item.classList.add('is-marked');
     },
     unHighlightItem(event) {
       let item = event.target;
       while ((item = item.parentElement) && !item.classList.contains('js-itemLocal'));
-      item.classList.remove('is-affected');
+      item.classList.remove('is-marked');
     },
     expand() {
       this.expanded = true;
@@ -254,16 +225,21 @@ export default {
     replaceWith(value) {
       const newValue = { '@id': value['@id'] };
       this.$store.dispatch('addToQuoted', value);
+      const changeList = [
+        {
+          // Remove the link
+          path: `${this.parentPath}`,
+          value: newValue,
+        },
+        {
+          // Remove the #work
+          path: `${this.getPath}`,
+          value: null,
+        }
+      ];
       this.$store.dispatch('updateInspectorData', {
-        path: `${this.parentPath}`,
-        value: newValue,
-        addToHistory: false,
-      });
-      // Remove the #work
-      this.$store.dispatch('updateInspectorData', {
-        path: `${this.getPath}`,
-        value: null,
-        addToHistory: false,
+        addToHistory: true,
+        changeList: changeList,
       });
       this.$store.dispatch('pushNotification', { color: 'green', message: `${StringUtil.getUiPhraseByLang('Linking was successful', this.settings.language)}` });
       this.closeExtractDialog();
@@ -277,26 +253,6 @@ export default {
   created: function () {
     this.$on('collapse-item', this.collapse);
     this.$on('expand-item', this.expand);
-  },
-  events: {
-    'focus-new-item'(index) {
-      if (this.index === index) {
-        this.expand();
-        this.isNewlyAdded = true;
-
-        // Scroll to item
-        const windowHeight = window.innerHeight || document.documentElement.clientHeight || document.getElementsByTagName('body')[0].clientHeight;
-        const scrollPos = this.$el.offsetTop - (windowHeight * 0.2);
-        LayoutUtil.scrollTo(scrollPos, 1000, 'easeInOutQuad', () => {
-          setTimeout(() => {
-            this.isNewlyAdded = false;
-          }, 3000);
-        });
-      }
-    },
-    'set-copy-title'(bool) {
-      this.copyTitle = bool;
-    },
   },
   mounted() {
     this.$nextTick(() => {
@@ -317,7 +273,7 @@ export default {
 <template>
   <div class="ItemSibling js-itemLocal"
     tabindex="0"
-    :class="{'highlight': isNewlyAdded, 'is-expanded': expanded}">
+    :class="{'is-highlighted': isNewlyAdded, 'is-expanded': expanded}">
    
    <strong class="ItemSibling-heading">
       <i class="ItemSibling-arrow fa fa-chevron-right " 
@@ -333,7 +289,6 @@ export default {
       </span>
       
       <div class="ItemSibling-actions">
-
         <field-adder class="ItemSibling-action"
           v-if="!isLocked" 
           :entity-type="item['@type']" 
@@ -417,7 +372,7 @@ export default {
   margin: -5px;
   position: relative;
   flex: 1 100%;
-  border: 2px solid transparent;
+  transition: background-color .2s ease;
 
   &-heading {
     position: relative;
@@ -473,8 +428,10 @@ export default {
     }
   }
 
-  &.is-affected {
-    border: 2px solid @brand-primary;
+  &.is-marked {
+    background-color: @sec;
+    margin-right: -5px;
+    padding-right: 5px;
   }
 
 }
@@ -501,7 +458,7 @@ export default {
       cursor: pointer;
     }
   }
-  &.highlight {
+  &.is-highlighted {
     transition: 0s ease;
     transition-property: outline, box-shadow;
     outline: 2px solid @highlight-color;
