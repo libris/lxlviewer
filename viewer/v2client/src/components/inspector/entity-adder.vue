@@ -273,6 +273,7 @@ export default {
       this.selectedType = '';
     },
     add() {
+      this.actionHighlight(false);
       if (this.isEnumeration) {
         this.addItem({'@id': ''});
       } else if (this.isVocabField) {
