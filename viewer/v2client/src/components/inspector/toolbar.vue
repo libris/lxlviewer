@@ -155,6 +155,7 @@ export default {
       });
     },
     undo() {
+      this.showUndo = false;
       this.$store.dispatch('undoInspectorChange');
     },
     edit() {
