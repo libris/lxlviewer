@@ -18,7 +18,7 @@ export default {
         case '':
         break;
         case 'stg':
-          message = 'OBS! Du befinner dig nu i vår testmiljö.<br> För att komma till <strong>den skarpa katalogiseringstjänsten Libris katalogisering</strong> <a href="https://libris.se/katalogisering">klickar du här</a>.';
+          message = 'OBS! Du befinner dig nu i vår testmiljö.<br> För att komma till den skarpa katalogiseringstjänsten <strong> Libris katalogisering</strong> <a href="https://libris.kb.se/katalogisering">klickar du här</a>.';
         break;
         case 'qa':
         break;
@@ -34,7 +34,7 @@ export default {
 <template>
   <div class="GlobalMessage" 
     v-html="message" 
-    v-bind:class="{'GlobalMessage--warning':this.settings.environment === 'stg'}"
+    v-bind:class="{'GlobalMessage--warning':this.settings.environment === 'local'}"
     v-if="message && message.length > 0">
   </div>
 </template>
