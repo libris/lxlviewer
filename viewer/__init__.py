@@ -383,7 +383,7 @@ def _get_template_for(data):
         template = TYPE_TEMPLATES.get(rtype)
         if template:
             return template
-    return 'edit.html'
+    return 'thing.html'
 
 
 ##
