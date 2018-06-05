@@ -139,10 +139,12 @@ export default {
         console.warn('New document called without input data, routing user back.')
       } else {
         this.$store.dispatch('setInspectorData', RecordUtil.splitJson(insertData));
-        this.$store.dispatch('setInspectorStatusValue', { 
-          property: 'editing', 
-          value: true 
-        });
+        if (this.user.isLoggedIn) {
+          this.$store.dispatch('setInspectorStatusValue', { 
+            property: 'editing', 
+            value: true 
+          });
+        }
         this.onPostLoaded();
       }
     },
@@ -228,10 +230,6 @@ export default {
         const duplicate = RecordUtil.prepareDuplicateFor(this.inspector.data, this.user);
         this.$store.dispatch('setInsertData', duplicate);
         this.$router.push({ path: '/new' });
-        this.$store.dispatch('pushNotification', { 
-          color: 'green', 
-          message: `${StringUtil.getUiPhraseByLang('Copy successful', this.settings.language)}!` 
-        });
       }
     },   
     saveItem(done=false) {
