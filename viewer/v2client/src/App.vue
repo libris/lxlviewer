@@ -73,9 +73,7 @@ export default {
   display: flex;
   min-height: 100vh;
   flex-direction: column;
-  main {
-    flex-grow: 1;
-  }
+
   .fade-enter-active, .fade-leave-active {
     transition-property: opacity;
     transition-duration: .25s;
@@ -94,6 +92,10 @@ export default {
       padding: 2em;
     }
   }
+}
+
+.MainContent {
+  flex: 1;
 }
 
 </style>
