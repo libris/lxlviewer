@@ -206,6 +206,15 @@ export default {
   &.is-removeable {
     background-color: @warning;
   }
+
+  .is-lastAdded & {
+    -webkit-animation-duration: 1s;
+    animation-duration: 1s;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+    -webkit-animation-name: pulse;
+    animation-name: pulse;
+  }
 }
 
 </style>

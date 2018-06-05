@@ -332,6 +332,10 @@ export default {
         currentValue.push(linkObj);
       }
       this.$store.dispatch('addToQuoted', obj);
+      this.$store.dispatch('setInspectorStatusValue', { 
+        property: 'lastAdded', 
+        value: `${this.path}.{"@id":"${obj['@id']}"}` 
+      });
       this.$store.dispatch('updateInspectorData', {
         changeList: [
           {
@@ -420,7 +424,7 @@ export default {
       const totalItems = self.searchResult.length;
       self.currentPage = pageNumber;
       self.loading = true;
-      console.log('fetching page', this.currentPage);
+     // console.log('fetching page', this.currentPage);
       this.getItems(this.keyword).then((result) => {
         self.loadResults(result);
       }, (error) => {

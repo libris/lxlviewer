@@ -134,7 +134,7 @@ export default {
         if (typeof this.parentKey !== 'undefined' && typeof this.parentIndex !== 'undefined') {
           return `${this.parentPath}.${this.fieldKey}`;
         }
-      }
+      }          
       return `${this.parentPath}.${this.fieldKey}`;
     },
     isChild() {
@@ -196,7 +196,9 @@ export default {
           let element = this.$el;
           let topOfElement = LayoutUtil.getPosition(element).y;
           if (topOfElement > 0) {
-            const windowHeight = window.innerHeight || document.documentElement.clientHeight || document.getElementsByTagName('body')[0].clientHeight;
+            const windowHeight = window.innerHeight || 
+            document.documentElement.clientHeight || 
+            document.getElementsByTagName('body')[0].clientHeight;
             const scrollPos = LayoutUtil.getPosition(this.$el).y - (windowHeight * 0.2);
             LayoutUtil.scrollTo(scrollPos, 1000, 'easeInOutQuad', () => {
               this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
@@ -519,7 +521,7 @@ export default {
   transition: background-color .2s ease;
 
   &.is-marked {
-    background-color: @sec;
+    background-color: @sec-alter;
   }
 
   &.is-removeable {
@@ -527,7 +529,7 @@ export default {
   }
 
   &.is-lastAdded {
-    background-color: @success;
+    background-color: @sec;
   }
 
   @media (min-width: 768px) {
@@ -603,6 +605,15 @@ export default {
       &:after {
         height: 16px;
       }
+    }
+
+    .is-lastAdded & {
+      -webkit-animation-duration: 1s;
+      animation-duration: 1s;
+      -webkit-animation-fill-mode: both;
+      animation-fill-mode: both;
+      -webkit-animation-name: fadeIn;
+      animation-name: fadeIn;
     }
   }
 
