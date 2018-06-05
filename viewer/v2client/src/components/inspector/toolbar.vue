@@ -460,11 +460,11 @@ export default {
     bottom: 10px;
     min-width: 65px;
     position: fixed;
-    border: 1px solid #cccccc75;
-    background-color: #ecececd1;
+    border: 1px solid #cccccc;
+    background-color: #ececec;
     padding: 6px;
     border-radius: 0.5em;
-    box-shadow: 0px 0px 15px 0px #0000001f;
+    box-shadow: 0px 0px 15px 0px #000000;
 
     @media (min-width: 992px) {
       bottom: auto;
