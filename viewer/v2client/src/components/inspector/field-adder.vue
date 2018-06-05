@@ -104,6 +104,17 @@ export default {
     },
   },
   methods: {
+    actionHighlight(active) {
+      if(active) {
+        let item = event.target;
+        while ((item = item.parentElement) && !item.classList.contains('js-itemLocal'));
+          item.classList.add('is-marked');
+      } else {
+        let item = event.target;
+        while ((item = item.parentElement) && !item.classList.contains('js-itemLocal'));
+          item.classList.remove('is-marked');
+      }
+    },
     selectNext() {
       if (this.active) {
         if (this.selectedIndex < this.filteredResults.length - 1) {
@@ -315,8 +326,8 @@ export default {
       v-on:click="show" 
       tabindex="0"
       @keyup.enter="show"
-      @mouseenter="showToolTip = true" 
-      @mouseleave="showToolTip = false">
+      @mouseenter="showToolTip = true, actionHighlight(true)" 
+      @mouseleave="showToolTip = false, actionHighlight(false)">
       <i class="FieldAdder-innerIcon fa fa-plus plus-icon" aria-hidden="true">
         <tooltip-component 
           :show-tooltip="showToolTip" 
