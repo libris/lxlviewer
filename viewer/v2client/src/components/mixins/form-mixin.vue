@@ -144,7 +144,11 @@ export default {
         }
       });
       const sortedAllowed = _.sortBy(extendedAllowed, (prop) => {
-        return prop.label.toLowerCase();
+        if (prop.label) {
+          return prop.label.toLowerCase();
+        } else {
+          return prop.item['@id'];
+        }
       });
       return sortedAllowed;
     },
