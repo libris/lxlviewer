@@ -525,7 +525,7 @@ export default {
   }
 
   &.is-removeable {
-    background-color: @warning;
+    background-color: @danger;
   }
 
   &.is-lastAdded {
@@ -551,7 +551,7 @@ export default {
     }
 
     &.is-removeable {
-      background-color: @warning;
+      background-color: @danger;
     }
 
     &:before, 

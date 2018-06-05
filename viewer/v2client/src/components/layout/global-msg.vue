@@ -18,6 +18,7 @@ export default {
         case '':
         break;
         case 'stg':
+          message = 'OBS! Du befinner dig nu i vår testmiljö.<br> För att komma till <strong>den skarpa katalogiseringstjänsten Libris katalogisering</strong> <a href="https://libris.se/katalogisering">klickar du här</a>.';
         break;
         case 'qa':
         break;
@@ -31,7 +32,10 @@ export default {
 </script>
 
 <template>
-  <div class="GlobalMessage" v-html="message" v-if="message && message.length > 0">
+  <div class="GlobalMessage" 
+    v-html="message" 
+    v-bind:class="{'GlobalMessage--warning':this.settings.environment === 'stg'}"
+    v-if="message && message.length > 0">
   </div>
 </template>
 
@@ -47,6 +51,22 @@ export default {
   border-width: 0px 0px 1px 0px;
   a {
     color: white;
+  }
+
+  &--warning {
+    background-color: @warning;
+    border: @warning-alter;
+    font-size: 20px;
+    font-size: 2.0rem;
+    font-weight: normal;
+    padding: 10px 5px;
+    color: #000000;
+    text-shadow: none;
+
+    a {
+      color: #000;
+      text-decoration: underline;
+    }
   }
 }
 
