@@ -139,12 +139,7 @@ export default {
         console.warn('New document called without input data, routing user back.')
       } else {
         this.$store.dispatch('setInspectorData', RecordUtil.splitJson(insertData));
-        if (this.user.isLoggedIn) {
-          this.$store.dispatch('setInspectorStatusValue', { 
-            property: 'editing', 
-            value: true 
-          });
-        }
+        this.$store.dispatch('setInspectorStatusValue', { property: 'editing', value: true });
         this.onPostLoaded();
       }
     },
