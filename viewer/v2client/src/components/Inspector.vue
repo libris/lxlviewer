@@ -228,10 +228,6 @@ export default {
         const duplicate = RecordUtil.prepareDuplicateFor(this.inspector.data, this.user);
         this.$store.dispatch('setInsertData', duplicate);
         this.$router.push({ path: '/new' });
-        this.$store.dispatch('pushNotification', { 
-          color: 'green', 
-          message: `${StringUtil.getUiPhraseByLang('Copy successful', this.settings.language)}!` 
-        });
       }
     },   
     saveItem(done=false) {
