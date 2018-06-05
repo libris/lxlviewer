@@ -226,6 +226,17 @@ export default {
     this.currentSearchTypes = this.getRange;
   },
   methods: {
+    actionHighlight(active) {
+      if(active) {
+        let item = event.target;
+        while ((item = item.parentElement) && !item.classList.contains('js-field'));
+          item.classList.add('is-marked');
+      } else {
+        let item = event.target;
+        while ((item = item.parentElement) && !item.classList.contains('js-field'));
+          item.classList.remove('is-marked');
+      }
+    },
     getFormattedSelectOption(term) {
       return DisplayUtil.getFormattedSelectOption(
         term, 
@@ -262,6 +273,7 @@ export default {
       this.selectedType = '';
     },
     add() {
+      this.actionHighlight(false);
       if (this.isEnumeration) {
         this.addItem({'@id': ''});
       } else if (this.isVocabField) {
@@ -321,6 +333,10 @@ export default {
         currentValue.push(linkObj);
       }
       this.$store.dispatch('addToQuoted', obj);
+      this.$store.dispatch('setInspectorStatusValue', { 
+        property: 'lastAdded', 
+        value: `${this.path}.{"@id":"${obj['@id']}"}` 
+      });
       this.$store.dispatch('updateInspectorData', {
         changeList: [
           {
@@ -409,7 +425,7 @@ export default {
       const totalItems = self.searchResult.length;
       self.currentPage = pageNumber;
       self.loading = true;
-      console.log('fetching page', this.currentPage);
+     // console.log('fetching page', this.currentPage);
       this.getItems(this.keyword).then((result) => {
         self.loadResults(result);
       }, (error) => {
@@ -455,8 +471,8 @@ export default {
       v-on:click="add()" 
       tabindex="0"
       @keyup.enter="add()"
-      @mouseenter="showToolTip = true" 
-      @mouseleave="showToolTip = false">
+      @mouseenter="showToolTip = true, actionHighlight(true)" 
+      @mouseleave="showToolTip = false, actionHighlight(false)">
       <span>
         <i class="fa fa-fw fa-plus plus-icon" aria-hidden="true">
           <tooltip-component 
@@ -472,8 +488,8 @@ export default {
       tabindex="0"
       v-on:click="add()" 
       @keyup.enter="add()"
-      @mouseenter="showToolTip = true" 
-      @mouseleave="showToolTip = false">
+      @mouseenter="showToolTip = true, actionHighlight(true)" 
+      @mouseleave="showToolTip = false, actionHighlight(false)">
       <i class="EntityAdder-addIcon fa fa-fw fa-plus plus-icon" aria-hidden="true">
         <tooltip-component 
           :show-tooltip="showToolTip" 

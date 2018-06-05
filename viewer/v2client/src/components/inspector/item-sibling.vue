@@ -132,15 +132,27 @@ export default {
         changeList: changeList,
       });
     },
-    highlightItem(event) {
-      let item = event.target;
-      while ((item = item.parentElement) && !item.classList.contains('js-itemLocal'));
-      item.classList.add('is-marked');
+    actionHighlight(active) {
+      if (active) {
+        let item = event.target;
+        while ((item = item.parentElement) && !item.classList.contains('js-itemLocal'));
+          item.classList.add('is-marked');
+      } else {
+        let item = event.target;
+        while ((item = item.parentElement) && !item.classList.contains('js-itemLocal'));
+          item.classList.remove('is-marked');
+      }
     },
-    unHighlightItem(event) {
-      let item = event.target;
-      while ((item = item.parentElement) && !item.classList.contains('js-itemLocal'));
-      item.classList.remove('is-marked');
+    removeHighlight(active) {
+      if (active) {
+        let item = event.target;
+        while ((item = item.parentElement) && !item.classList.contains('js-itemLocal'));
+          item.classList.add('is-removeable');
+      } else {
+        let item = event.target;
+        while ((item = item.parentElement) && !item.classList.contains('js-itemLocal'));
+          item.classList.remove('is-removeable');
+      }
     },
     expand() {
       this.expanded = true;
@@ -276,17 +288,19 @@ export default {
     :class="{'is-highlighted': isNewlyAdded, 'is-expanded': expanded}">
    
    <strong class="ItemSibling-heading">
-      <i class="ItemSibling-arrow fa fa-chevron-right " 
-        :class="{'down': expanded}" @click="toggleExpanded()"
-        tabindex="0"
-        @keyup.enter="toggleExpanded()"></i>
-      <span class="type" 
-        @click="toggleExpanded($event)" 
-        :title="item['@type']">{{ item['@type'] | labelByLang | capitalize }}:</span>
-      <span class="collapsed-label" @click="toggleExpanded()">
-        <span v-show="!expanded || isEmpty">{{getItemLabel}}</span>
-        <span class="placeholder"> </span>
-      </span>
+      <div class="ItemSibling-label">
+        <i class="ItemSibling-arrow fa fa-chevron-right " 
+          :class="{'down': expanded}" @click="toggleExpanded()"
+          tabindex="0"
+          @keyup.enter="toggleExpanded()"></i>
+        <span class="type" 
+          @click="toggleExpanded($event)" 
+          :title="item['@type']">{{ item['@type'] | labelByLang | capitalize }}:</span>
+        <span class="collapsed-label" @click="toggleExpanded()">
+          <span v-show="!expanded || isEmpty">{{getItemLabel}}</span>
+          <span class="placeholder"> </span>
+        </span>
+      </div>
       
       <div class="ItemSibling-actions">
         <field-adder class="ItemSibling-action"
@@ -301,8 +315,8 @@ export default {
             @click="openExtractDialog()" 
             tabindex="0"
             @keyup.enter="openExtractDialog()"
-            @mouseover="showLinkAction = true" 
-            @mouseout="showLinkAction = false">
+            @mouseover="showLinkAction = true, actionHighlight(true)" 
+            @mouseout="showLinkAction = false, actionHighlight(false)">
             <tooltip-component 
               :show-tooltip="showLinkAction" 
               tooltip-text="Link entity" 
@@ -314,8 +328,8 @@ export default {
           v-on:click="removeThis(true)"
           @keyup.enter="removeThis(true)"
           tabindex="0"
-          @mouseover="removeHover = true, highlightItem($event)" 
-          @mouseout="removeHover = false, unHighlightItem($event)">
+          @mouseover="removeHover = true, removeHighlight(true)" 
+          @mouseout="removeHover = false, removeHighlight(false)">
           <tooltip-component 
             :show-tooltip="removeHover" 
             tooltip-text="Remove" 
@@ -369,15 +383,19 @@ export default {
 
 .ItemSibling {
   padding: 5px;
-  margin: -5px;
   position: relative;
   flex: 1 100%;
   transition: background-color .2s ease;
 
   &-heading {
-    position: relative;
+    display: block;
     flex: 1 100%;
     font-weight: normal;
+    position: relative;
+  }
+
+  &-label {
+    margin-right: 40px;
   }
 
   &-arrow {
@@ -398,8 +416,9 @@ export default {
   }
 
   &-actions {
-    float: right;
-    position: relative;
+    top: 0;
+    right: 0;
+    position: absolute;
   }
 
   &-action {
@@ -430,17 +449,21 @@ export default {
 
   &.is-marked {
     background-color: @sec;
-    margin-right: -5px;
-    padding-right: 5px;
+  }
+  
+  &.is-removeable {
+    background-color: @warning;
   }
 
-}
+  &.is-expanded > 
+  .ItemSibling-heading > 
+  .ItemSibling-label >
+  .ItemSibling-arrow {
+    transform:rotate(90deg);
 
-.is-expanded > .ItemSibling-heading > .ItemSibling-arrow {
-  transform:rotate(90deg);
-
-  &::before {
-    vertical-align: sub;
+    &::before {
+      vertical-align: sub;
+    }
   }
 }
 
