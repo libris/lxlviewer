@@ -49,7 +49,7 @@
           "publication": [
             {
               "@type": "PrimaryPublication",
-              "date": "",
+              "year": "",
               "country": [ {"@id": "https://id.kb.se/country/sw"} ],
               "place": {
                 "@type": "Place",
