@@ -14,9 +14,10 @@ import ItemSibling from './item-sibling';
 import ItemBoolean from './item-boolean';
 import TooltipComponent from '../shared/tooltip-component';
 import { mixin as clickaway } from 'vue-clickaway';
-import * as VocabUtil from '../../utils/vocab';
-import * as LayoutUtil from '../../utils/layout';
-import * as MathUtil from '../../utils/math';
+import * as VocabUtil from '@/utils/vocab';
+import * as LayoutUtil from '@/utils/layout';
+import * as MathUtil from '@/utils/math';
+import * as StringUtil from '@/utils/string';
 import LodashProxiesMixin from '../mixins/lodash-proxies-mixin';
 import { mapGetters } from 'vuex';
 
@@ -77,6 +78,9 @@ export default {
       'settings',
       'status',
     ]),
+    warnBeforeRemove() {
+      return this.inspector.status.focus === 'record';
+    },
     arrayLength() {
       return this.valueAsArray.length;
     },
@@ -237,24 +241,31 @@ export default {
       this.$dispatch('update-value', this.getPath, value);
     },
     removeThis() {
-      this.removed = true;
-      const parentData = _.cloneDeep(_.get(this.inspector.data, this.parentPath));
-      delete parentData[this.fieldKey];
-      setTimeout(() => {
-        this.$store.dispatch('updateInspectorData', {
-          changeList: [
-            {
-              path: this.parentPath,
-              value: parentData,
-            }
-          ],
-          addToHistory: true,
-        });
-        this.$store.dispatch('setInspectorStatusValue', { 
-          property: 'unsavedChanges', 
-          value: true 
-        });
-      }, 500);
+      let approved = true;
+      if (this.warnBeforeRemove) {
+        const confString = `${StringUtil.getUiPhraseByLang('Are you sure you want to remove the field', this.user.settings.language)} "${StringUtil.getLabelByLang(this.fieldKey, this.user.settings.language, this.resources.vocab, this.resources.context)}"?`;
+        approved = window.confirm(confString);
+      }
+      if (approved) {
+        this.removed = true;
+        const parentData = _.cloneDeep(_.get(this.inspector.data, this.parentPath));
+        delete parentData[this.fieldKey];
+        setTimeout(() => {
+          this.$store.dispatch('updateInspectorData', {
+            changeList: [
+              {
+                path: this.parentPath,
+                value: parentData,
+              }
+            ],
+            addToHistory: true,
+          });
+          this.$store.dispatch('setInspectorStatusValue', { 
+            property: 'unsavedChanges', 
+            value: true 
+          });
+        }, 500);
+      }
     },
     getDatatype(o) {
       if (typeof o === 'undefined') {

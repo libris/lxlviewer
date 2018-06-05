@@ -62,6 +62,7 @@
     "Yes, remove the record": "Ja, radera posten",
     "No, cancel": "Nej, avbryt",
     "This operation can't be reverted": "Den här operationen går ej att ångra",
+    "Are you sure you want to remove the field": "Är du säker på att du vill ta bort fältet",
     "Save and stop editing": "Spara och sluta redigera",
     "Create record": "Skapa post",
     "Remove": "Ta bort",
