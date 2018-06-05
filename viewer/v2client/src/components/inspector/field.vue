@@ -521,7 +521,7 @@ export default {
   transition: background-color .2s ease;
 
   &.is-marked {
-    background-color: @sec-alter;
+    background-color: @sec;
   }
 
   &.is-removeable {
