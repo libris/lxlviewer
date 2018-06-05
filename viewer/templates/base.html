@@ -118,15 +118,14 @@
       <div :class="{'show-content': initialized==true}" id="page-content-wrapper">
       {% endblock %}
       % if g.site.title == 'libris.kb.se'
-        <main class="container">
-          <h1>Letar du efter katalogiseringen?</h1>
-          <p>Gå till <a href="/katalogisering/">libris-${config.ENVIRONMENT}.kb.se/katalogisering/</a></p>
-        </main>
-      % else
+      <div>
+        <h1>Letar du efter katalogiseringen?</h1>
+        <p>Gå till <a href="/katalogisering/">libris-${config.ENVIRONMENT}.kb.se/katalogisering/</a></p>
+      </div>
+      % endif
         <main class="{% block containerclass %}container{% endblock %}">
           {% block content %}{% endblock %}
         </main>
-      % endif
         <footer>
           % block footer
 
@@ -209,15 +208,5 @@
     {% block scripts %}{% endblock %}
     <script id="serviceTitle" type="application/json">${g.site.title}</script>
     <script id="baseUriAlias" type="application/json">${config.BASE_URI_ALIAS|tojson|safe}</script>
-    <script type="text/javascript">
-      (function() {
-        var css = document.createElement('link');
-        css.href = '/assets/vendor/font-awesome/css/font-awesome.min.css';
-        css.rel = 'stylesheet';
-        css.type = 'text/css';
-        document.getElementsByTagName('head')[0].appendChild(css);
-      })();
-    </script>
-    <script src="/assets/build/app.js"></script>
   </body>
 </html>
