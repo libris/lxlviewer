@@ -460,10 +460,13 @@ export default {
     bottom: 10px;
     min-width: 65px;
     position: fixed;
+    border: 1px solid #cccccc;
     border: 1px solid #cccccc75;
+    background-color: #ececec;
     background-color: #ecececd1;
     padding: 6px;
     border-radius: 0.5em;
+    box-shadow: 0px 0px 15px 0px #000000;
     box-shadow: 0px 0px 15px 0px #0000001f;
 
     @media (min-width: 992px) {
