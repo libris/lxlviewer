@@ -7,6 +7,9 @@ tags:
 ---
 UNDER ARBETE - UPPDATERAS KONTINUERLIGT (uppdaterad 2018-05-25)
 
+UNDER ARBETE - UPPDATERAS KONTINUERLIGT (uppdaterad 2018-06-05)
+
+
 ## Skapa ny: Agent - Person
 Lathunden beskriver de fält som finns representerade i mallen. Om något av fälten i mallen inte behövs kan de raderas genom ett klick på papperskorgsikonen intill fältet. Ett urval av fält relevanta för person som är möjliga att lägga till men som inte finns i mallen beskrivs i slutet av lathunden. 
 
@@ -56,7 +59,7 @@ Beskrivning av agenten som ska auktoriseras.
 * Verksamhetsområde (fieldOfActivity = 372)
   <br/>Personens verksamhetsområde beskriver vad personen är intresserad av eller ägnar sig åt och det behöver inte ha med yrkesutövning att göra. Hämta i första hand termen från en kontrollerad vokabulär som Svenska ämnesord och länka.
    <br/>```Exempel: Fågelskådning```
-   <br/>För att lägga till fält: Klicka på +ikonen under egenskapen Har yrke eller sysselsättning, välj Allmänt ämnesord som typ och sök i rutan till vänster, välj önskad term och klicka på den gröna Lägg till-rutan till höger. (Skapa lokal entitet används endast då det inte finns auktoriserad entitet att länka till.)
+   <br/>För att lägga till fält: Klicka på +ikonen under egenskapen Verksamhetsområde, välj Allmänt ämnesord som typ och sök i rutan till vänster, välj önskad term och klicka på den gröna Lägg till-rutan till höger. (Skapa lokal entitet används endast då det inte finns auktoriserad entitet att länka till.)
 
 * Har yrke eller sysselsättning (hasOccupation = 374)
    <br/>Ange yrke eller sysselsättning om det behövs för att skilja en person från en annan, t.ex. när en persons födelsetid eller dödstid inte är tillgängligt. Hämta i första hand termen från en kontrollerad vokabulär som Svenska ämnesord och länka.
@@ -157,5 +160,3 @@ Vid behov är det möjligt att lägga till fält som inte ingår i mallen. Nya f
   <br/>```Exempel: 2```
   
 #### Glöm inte att redigera Adminmetadata och spara entiteten innan vidare navigation i verktyget!
-
-
