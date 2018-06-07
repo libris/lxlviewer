@@ -1,6 +1,6 @@
 ---
 section: Arbetsflöden
-title: Tryckt monografi - bok
+title: Bok - tryckt monografi
 order: 15
 tags:
 - editor
@@ -122,7 +122,7 @@ samt exempel hämtade från andra poster.
   * Agent/Benämning (= Utgivarnamn) (agent/label = 264 -/1 ‡b)  
   Skriv in uppgiften.  Utgivarnamn ska inte länkas som entitet.  
   ```Exempel: NoNa```  
-   * År (= Utgivningstid) (date = 008/07-10, 264 -/1 ‡c)  
+  * År (= Utgivningstid) (date = 008/07-10, 264 -/1 ‡c)  
  Ange utgivningsår, utan klamrar eller andra tecken, endast fyra positioner. Skriv in uppgiften.  
 För att ange ett år utan klamrar eller andra tecken, ange det endast här. För att ange klamrar eller andra tecken utöver fyra positioner, använd Datum.  
   ```Exempel: 2017```  

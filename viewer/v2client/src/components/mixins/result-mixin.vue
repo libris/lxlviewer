@@ -14,14 +14,14 @@ export default {
   },
   methods: {
     importThis() {
-      const original = RecordUtil.splitJson(this.importItem);
-      const duplicate = RecordUtil.prepareDuplicateFor(original, this.user);
-      this.$store.dispatch('setInsertData', duplicate);
-      this.$router.push({ path: '/new' });
-      this.$store.dispatch('pushNotification', {
-        color: 'green', 
-        message: `${StringUtil.getUiPhraseByLang('Copy successful', this.settings.language)}!` 
-      });
+      if (this.user.isLoggedIn) {
+        const original = RecordUtil.splitJson(this.importItem);
+        const duplicate = RecordUtil.prepareDuplicateFor(original, this.user);
+        this.$store.dispatch('setInsertData', duplicate);
+        this.$router.push({ path: '/new' });
+      } else {
+        this.$store.dispatch('pushNotification', { color: 'red', message: `${StringUtil.getUiPhraseByLang('You need to be logged in to perform this action', this.settings.language)}.` });
+      }
     },
   },
   events: {
