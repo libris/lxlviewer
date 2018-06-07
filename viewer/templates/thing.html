@@ -54,12 +54,11 @@
     </div>
   </div>
   % else
-  <div class="col-md-9">
-    {#${thing_full(thing.mainEntity or thing)}#}
+  <div class="col-md-9 thing">
+    ${viewthing(thing.mainEntity or thing)}
   </div>
   <div class="col-md-3">
     <div>
-
     </div>
   </div>
   % endif
