@@ -14,14 +14,55 @@
 
 % block content
 <div class="row">
+  % if g.site.title == 'libris.kb.se'
+  <div class="col-md-12">
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <a href="https://www.kb.se" class="pull-right">
+          <img src="/assets/img/kb_logo_black.svg" class="logo-medium" alt="" />
+        </a>
+        <h1>${vocab.get_label_for(thing)}</h1>
+        <h3>Andra vyer för samma resurs:</h3>
+        <ul>
+          % if thing.mainEntity['@id'].startswith('https://id.kb.se/')
+          <li><a href="${thing.mainEntity['@id']}">Visa denna resurs på id.kb.se</a></li>
+          % endif
+
+          % for same in thing.sameAs
+            % if same[ID].startswith('http://libris.kb.se/bib/')
+              <li><a href="${same[ID]}">Visa denna resurs på Libris Webbsök</a></li>
+            % endif
+          % endfor
+          % if thing['@id']
+          % set thing_slug = thing['@id'].rsplit('/',1)[-1]
+          <li><a href="https://libris.kb.se/katalogisering/${thing_slug}">Visa denna resurs på Libris Katalogisering</a></li>
+          % endif
+        </ul>
+        <h3>Visa som:</h3>
+        <ul>
+          <li>
+            <a href="${thing['@id']}/data.jsonld">JSON-LD</a>
+          </li>
+          <li>
+            <a href="${thing['@id']}/data.ttl">Turtle</a>
+          </li>
+          <li>
+            <a href="${thing['@id']}/data.rdf">RDF/XML</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  % else
   <div class="col-md-9">
-    ${thing_full(thing.mainEntity or thing)}
+    {#${thing_full(thing.mainEntity or thing)}#}
   </div>
   <div class="col-md-3">
     <div>
 
     </div>
   </div>
+  % endif
 </div>
 % endblock
 
