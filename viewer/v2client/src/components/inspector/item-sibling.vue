@@ -452,7 +452,7 @@ export default {
   }
   
   &.is-removeable {
-    background-color: @warning;
+    background-color: @danger;
   }
 
   &.is-expanded > 
