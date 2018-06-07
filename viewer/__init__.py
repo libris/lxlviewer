@@ -375,7 +375,7 @@ def _to_graph(data, base=None):
 
 def _get_template_for(data):
     type_key = ""
-    if not data.get(TYPE):
+    if GRAPH in data:
         type_key = data.get(GRAPH)[1].get(TYPE)
     else:
         type_key = data.get(TYPE)
