@@ -220,7 +220,7 @@ def _get_view_data_accept_header(request, suffix):
     if mimetype in ('application/json'):
         return 'application/json'
     elif mimetype in ('text/html', 'application/xhtml+xml'):
-        return 'application/ld+json'
+        return 'application/json'
     else:
         return None
 
