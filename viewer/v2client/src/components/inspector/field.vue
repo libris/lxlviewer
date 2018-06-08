@@ -668,7 +668,11 @@ export default {
       text-align: right;
       padding: 20px;
     }
+
+  @media print and (max-width: 768px) {
+    padding-bottom: 0;
   }
+}
 
   &-commentText {
     background-color: @white;
@@ -715,6 +719,10 @@ export default {
 
      @media (min-width: 768px) {
       border-left: 1px solid #d8d8d8;
+    }
+
+    @media print and (max-width: 768px) {
+      padding-top: 0;
     }
   }
 

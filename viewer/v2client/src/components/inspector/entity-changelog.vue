@@ -36,7 +36,7 @@ export default {
 
 <template>
   <div class="Entity-changelog">
-    <span class="Entity-created">Skapad {{ getCard.created }} av {{ getCard.descriptionCreator || 'okänd' }}</span> |
+    <span class="Entity-created">Skapad {{ getCard.created }} av {{ getCard.descriptionCreator || 'okänd' }}</span><span>|</span>
     <span class="Entity-changed">Ändrad {{ getCard.modified }} av {{ getCard.descriptionLastModifier || 'okänd' }}</span>
       <!--| <span class="show-record-toggle" v-show="!showRecord" v-on:click="toggleRecord">{{'Show admin metadata' | translatePhrase}}</span>
       <span class="show-record-toggle" v-show="showRecord" v-on:click="toggleRecord">{{'Hide admin metadata' | translatePhrase}}</span> -->
@@ -64,6 +64,19 @@ export default {
   font-size: 1.4rem;
   line-height: 1.2;
   align-items: center;
+
+  @media print {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+.Entity-created {
+  + span {
+    @media print {
+      display: none;
+    }
+  }
 }
 // .record-summary-container {
 //   .show-record-toggle {
