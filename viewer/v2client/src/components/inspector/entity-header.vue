@@ -25,7 +25,12 @@ export default {
   },
   methods: {
     handleScroll(e) {
-      e.target.scrollingElement.scrollTop > this.headerThreshold ? this.showCompact = true : this.showCompact = false;
+      if (document.body.scrollTop > this.headerThreshold || 
+      document.documentElement.scrollTop > this.headerThreshold) {
+        this.showCompact = true;
+      } else {
+        this.showCompact = false;
+      }
     }
   },
   computed: {
