@@ -97,7 +97,7 @@ export default {
       }
     },
     showOtherFormatMenu() {
-      this.otherFormatMenuActive = true;
+      this.otherFormatMenuActive = !this.otherFormatMenuActive;
     },
     hideOtherFormatMenu() {
       this.otherFormatMenuActive = false;
@@ -106,7 +106,7 @@ export default {
       this.toolsMenuActive = false;
     },
     showToolsMenu() {
-      this.toolsMenuActive = true;
+      this.toolsMenuActive = !this.toolsMenuActive;
     },
     getOtherDataFormat(suffix) {
       return `${this.focusData['@id']}/data.${suffix}`
@@ -357,7 +357,7 @@ export default {
         </li>
         <li>
           <marc-preview :openPreview="showMarcPreview" v-on:close-marc="closeMarc()"></marc-preview>
-          <a class="Toolbar-menuLink"   @click="openMarc" >
+          <a class="Toolbar-menuLink" @click="openMarc" >
           <i class="fa fa-fw fa-eye" aria-hidden="true"></i>
           {{"Preview MARC21" | translatePhrase}}
           </a>
@@ -451,7 +451,6 @@ export default {
 <style lang="less">
 
 .Toolbar {
-
   &-placeholder {
     width: 100%;
   }
