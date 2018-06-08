@@ -81,7 +81,12 @@ export default {
   flex: 1 1 33%;
   max-width: 33.34%;
   border: 1em solid transparent;  
-  
+
+  @media screen and (max-width: @screen-sm-min){
+    flex-basis: 100%;
+    max-width: 100%;
+  }
+
   &-title {
     font-size: 20px;
     font-size: 2.0rem;
