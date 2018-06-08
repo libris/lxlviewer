@@ -201,6 +201,9 @@ export function getObjectAsRecord(mainEntity, record = {}) {
 export function prepareDuplicateFor(inspectorData, user) {
   // Removes fields that we do not want to import or copy
   const newData = _.cloneDeep(inspectorData);
+  if (!newData.hasOwnProperty('quoted')) {
+    newData['quoted'] = {};
+  }
   const oldBaseId = inspectorData.record['@id'];
   const newBaseId = 'https://id.kb.se/TEMPID';
   newData.record.descriptionCreator = { '@id': `https://libris.kb.se/library/${user.settings.activeSigel}` };
