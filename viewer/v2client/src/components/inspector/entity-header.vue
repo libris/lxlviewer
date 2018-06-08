@@ -116,6 +116,10 @@ export default {
       top: 0;
       left: 0;
       width: 100%;
+      
+      @media print {
+        display: none;
+      }
       .compact-header {
         white-space: nowrap;
         overflow: hidden;

@@ -178,6 +178,10 @@ export default {
     color: white;
     cursor: default;
   }
+  
+  @media print {
+    background-color: #f5f5f5 !important;
+  }
 }
 
 </style>

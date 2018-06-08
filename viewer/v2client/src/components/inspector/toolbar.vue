@@ -473,6 +473,9 @@ export default {
     @media (min-width: 1200px) {
       padding: 8px;
     }
+    @media print {
+      display: none;
+    }
   }
 
   &-container {
