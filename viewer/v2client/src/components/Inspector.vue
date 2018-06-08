@@ -245,7 +245,7 @@ export default {
       this.doSaveRequest(HttpUtil.put, obj, { url, ETag }, done);
     },
     doCreate(obj, done) {
-      this.doSaveRequest(HttpUtil.post, obj, { url: this.settings.apiPath }, done);    },
+      this.doSaveRequest(HttpUtil.post, obj, { url: this.settings.apiPath+'/data' }, done);    },
     doSaveRequest(requestMethod, obj, opts, done) {
       requestMethod({ 
         url: opts.url, 
