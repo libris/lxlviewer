@@ -390,10 +390,10 @@ export default {
               :key="prop['@id']" 
               @click="addField(prop, true)">
               <span class="FieldAdderModal-addControl">
-                <a v-on:click.prevent="addField(prop, false)">
+                <a v-show="!prop.added" v-on:click.prevent="addField(prop, false)">
                   <i class="fa fa-fw fa-2x fa-plus-circle"></i>
                 </a>
-                <span><i class="fa fa-fw fa-check fa-2x"></i></span>
+                <span v-show="prop.added"><i class="fa fa-fw fa-check fa-2x"></i></span>
               </span>
               <span class="FieldAdderModal-fieldLabel" :title="prop.label | capitalize">
                 {{prop.label | capitalize }}
@@ -494,9 +494,6 @@ export default {
     a {
       cursor: pointer;
     }
-    span {
-      display: none;
-    }
   }
   &-fieldList {
     padding-top: 2em;
@@ -531,14 +528,6 @@ export default {
         &.added {
           span {
             opacity: 0.6;
-          }
-          .addControl {
-            a {
-              display: none;
-            }
-            span {
-              display: block;
-            }
           }
         }
       }
