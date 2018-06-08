@@ -5,7 +5,11 @@
       "description": "Tryckt monografi - RDA",
       "value": {
         "record": {
+          "@id": "https://id.kb.se/TEMPID",
           "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          },
           "bibliography": [
             {
               "@type": "Library",
@@ -30,6 +34,7 @@
           }
         },
         "mainEntity": {
+          "@id": "https://id.kb.se/TEMPID#it",
           "@type": "Instance",
           "issuanceType": "Monograph",
           "hasTitle": [{
@@ -124,51 +129,55 @@
             "label": ""
           }],
           "instanceOf": {
-            "@type": "Text",
-            "language": [{
-              "@id": "https://id.kb.se/language/swe"
-            }],
-            "genreForm": [],
-            "classification": [{
-                "@type": "ClassificationDdc",
-                "code": "",
-                "edition": ""
-              },
-              {
-                "@type": "Classification",
-                "code": "",
-                "inScheme": {
-                  "@type": "ConceptScheme",
-                  "@id": "https://id.kb.se/term/kssb/8",
-                  "code": "kssb/8"
-                }
-              }
-            ],
-            "contribution": [{
-                "@type": "PrimaryContribution",
-                "agent": {
-                  "@type": "Person",
-                  "familyName": "",
-                  "givenName": "",
-                  "lifeSpan": ""
-                },
-                "role": [{
-                  "@id": "https://id.kb.se/relator/author"
-                }]
-              },
-              {
-                "@type": "Contribution",
-                "agent": {
-                  "@type": "Person",
-                  "familyName": "",
-                  "givenName": "",
-                  "lifeSpan": ""
-                }
-              }
-            ],
-            "contentType": [{"@id": "https://id.kb.se/term/rda/Text"}],
-            "subject": []
+            "@id": "https://id.kb.se/TEMPID#work"
           }
+        },
+        "work": {
+          "@id": "https://id.kb.se/TEMPID#work",
+          "@type": "Text",
+          "language": [{
+            "@id": "https://id.kb.se/language/swe"
+          }],
+          "genreForm": [],
+          "classification": [{
+              "@type": "ClassificationDdc",
+              "code": "",
+              "edition": ""
+            },
+            {
+              "@type": "Classification",
+              "code": "",
+              "inScheme": {
+                "@type": "ConceptScheme",
+                "@id": "https://id.kb.se/term/kssb/8",
+                "code": "kssb/8"
+              }
+            }
+          ],
+          "contribution": [{
+              "@type": "PrimaryContribution",
+              "agent": {
+                "@type": "Person",
+                "familyName": "",
+                "givenName": "",
+                "lifeSpan": ""
+              },
+              "role": [{
+                "@id": "https://id.kb.se/relator/author"
+              }]
+            },
+            {
+              "@type": "Contribution",
+              "agent": {
+                "@type": "Person",
+                "familyName": "",
+                "givenName": "",
+                "lifeSpan": ""
+              }
+            }
+          ],
+          "contentType": [{"@id": "https://id.kb.se/term/rda/Text"}],
+          "subject": []
         }
       }
     },
@@ -177,7 +186,11 @@
       "description": "RDA",
       "value": {
         "record": {
+          "@id": "https://id.kb.se/TEMPID",
           "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          },
           "bibliography": [
             {
               "@type": "Library",
@@ -202,6 +215,7 @@
           }
         },
         "mainEntity": {
+          "@id": "https://id.kb.se/TEMPID#it",
           "@type": "Instance",
           "issuanceType": "Serial",
           "frequency": [],
@@ -258,42 +272,46 @@
             }
           ],
           "instanceOf": {
-            "@type": "Text",
-            "language": [{
-              "@id": "https://id.kb.se/language/swe"
-            }],
-            "contribution": [
-              {
-                "@type": "Contribution",
-                "agent": {
-                  "@type": "Person",
-                  "familyName": "",
-                  "givenName": "",
-                  "lifeSpan": ""
-                }
-              }
-            ],
-            "contentType": [{"@id": "https://id.kb.se/term/rda/Text"}],
-            "genreForm": [{
-              "@id": "https://id.kb.se/marc/Periodical"
-            }],
-            "classification": [{
-                "@type": "ClassificationDdc",
-                "code": "",
-                "edition": ""
-              },
-              {
-                "@type": "Classification",
-                "code": "",
-                "inScheme": {
-                  "@type": "ConceptScheme",
-                  "@id": "https://id.kb.se/term/kssb/8",
-                  "code": "kssb/8"
-                }
-              }
-            ],
-            "subject": []
+            "@id": "https://id.kb.se/TEMPID#work"
           }
+        },
+        "work": {
+          "@id": "https://id.kb.se/TEMPID#work",
+          "@type": "Text",
+          "language": [{
+            "@id": "https://id.kb.se/language/swe"
+          }],
+          "contribution": [
+            {
+              "@type": "Contribution",
+              "agent": {
+                "@type": "Person",
+                "familyName": "",
+                "givenName": "",
+                "lifeSpan": ""
+              }
+            }
+          ],
+          "contentType": [{"@id": "https://id.kb.se/term/rda/Text"}],
+          "genreForm": [{
+            "@id": "https://id.kb.se/marc/Periodical"
+          }],
+          "classification": [{
+              "@type": "ClassificationDdc",
+              "code": "",
+              "edition": ""
+            },
+            {
+              "@type": "Classification",
+              "code": "",
+              "inScheme": {
+                "@type": "ConceptScheme",
+                "@id": "https://id.kb.se/term/kssb/8",
+                "code": "kssb/8"
+              }
+            }
+          ],
+          "subject": []
         }
       }
     }
@@ -304,7 +322,11 @@
       "description": "Agent",
       "value": {
         "record": {
+          "@id": "https://id.kb.se/TEMPID",
           "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          },
           "encodingLevel": {
             "@id": "https://id.kb.se/marc/CompleteAuthorityRecord"
           },
@@ -340,6 +362,7 @@
           }]
         },
         "mainEntity": {
+          "@id": "https://id.kb.se/TEMPID#it",
           "@type": "Person",
           "familyName": "",
           "givenName": "",
@@ -373,7 +396,11 @@
       "description": "Agent",
       "value": {
         "record": {
+          "@id": "https://id.kb.se/TEMPID",
           "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          },
           "descriptionConventions": [{
               "code": "z"
             },
@@ -406,6 +433,7 @@
           }
         },
         "mainEntity": {
+          "@id": "https://id.kb.se/TEMPID#it",
           "@type": "Organization",
           "name": "",
           "isPartOf": {
@@ -453,7 +481,11 @@
       "description": "saogf",
       "value": {
         "record": {
+          "@id": "https://id.kb.se/TEMPID",
           "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          },
           "descriptionLanguage": [{
             "@id": "https://id.kb.se/language/swe"
           }],
@@ -471,6 +503,7 @@
           }
         },
         "mainEntity": {
+          "@id": "https://id.kb.se/TEMPID#it",
           "@type": "GenreForm",
           "closeMatch": [{
             "@id": "https://id.kb.se/term/saogf/",
@@ -501,7 +534,11 @@
       "description": "sao",
       "value": {
         "record": {
+          "@id": "https://id.kb.se/TEMPID",
           "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          },
           "descriptionLanguage": [{
             "@id": "https://id.kb.se/language/swe",
             "code": "swe"
@@ -520,6 +557,7 @@
           }
         },
         "mainEntity": {
+          "@id": "https://id.kb.se/TEMPID#it",
           "@type": "Geographic",
           "prefLabel": "",
           "closeMatch": [],
@@ -537,6 +575,11 @@
       "description": "sao",
       "value": {
         "record": {
+          "@id": "https://id.kb.se/TEMPID",
+          "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          },
           "encodingLevel": {
             "@id": "https://id.kb.se/marc/CompleteAuthorityRecord"
           },
@@ -568,6 +611,7 @@
         },
         "mainEntity": {
           "@type": "Topic",
+          "@id": "https://id.kb.se/TEMPID#it",
           "inScheme": {
             "@id": "https://id.kb.se/term/sao"
           },
@@ -615,7 +659,11 @@
       "description": "saogf",
       "value": {
         "record": {
+          "@id": "https://id.kb.se/TEMPID",
           "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          },
           "descriptionConventions": {
             "@id": "https://id.kb.se/marc/CatalogingRulesType-c"
           },
@@ -639,6 +687,7 @@
           }
         },
         "mainEntity": {
+          "@id": "https://id.kb.se/TEMPID#it",
           "@type": "Temporal",
           "prefLabel": "",
           "broadMatch": [],
