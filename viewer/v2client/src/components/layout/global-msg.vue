@@ -34,7 +34,7 @@ export default {
 <template>
   <div class="GlobalMessage" 
     v-html="message" 
-    v-bind:class="{'GlobalMessage--warning':this.settings.environment === 'local'}"
+    v-bind:class="{'GlobalMessage--warning':this.settings.environment === 'stg'}"
     v-if="message && message.length > 0">
   </div>
 </template>
