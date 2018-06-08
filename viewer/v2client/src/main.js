@@ -52,6 +52,11 @@ Vue.filter('capitalize', function (value) {
   return value.charAt(0).toUpperCase() + value.slice(1)
 })
 
+window.addEventListener("beforeunload", (e) => {
+  const path = `${window.location.pathname.replace('/katalogisering', '')}${window.location.search}`;
+  localStorage.setItem('lastPath', path);
+});
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
@@ -160,7 +165,13 @@ new Vue({
         store.dispatch('setUser', userObj);
         if (initial) {
           this.$store.dispatch('pushNotification', { color: 'green', message: `${StringUtil.getUiPhraseByLang('You were logged in', this.settings.language)}!` });
-          this.$router.push({ path: '/' });
+          const lastPath = localStorage.getItem('lastPath');
+          if (typeof lastPath !== 'undefined' && lastPath !== '/user') {
+            localStorage.removeItem('lastPath');
+            this.$router.push({ path: lastPath });
+          } else {
+            this.$router.push({ path: '/' });
+          }
         }
       }, (error) => {
         store.dispatch('setUser', userObj);
