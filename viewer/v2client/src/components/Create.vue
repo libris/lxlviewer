@@ -3,6 +3,7 @@ import * as _ from 'lodash';
 import * as CombinedTemplates from '@/resources/json/combinedTemplates.json';
 import * as BaseTemplates from '@/resources/json/baseTemplates.json'; 
 import * as VocabUtil from '@/utils/vocab';
+import * as RecordUtil from '@/utils/record';
 import * as StringUtil from '@/utils/string';
 import CreationCard from '@/components/create/creation-card';
 import CreateOptions from '@/components/create/create-options';
@@ -71,27 +72,15 @@ export default {
       this.chosenType = type;
       const baseRecord = Object.assign(this.baseRecord, BaseTemplates[this.selectedCreation.toLowerCase()].record);
       const baseMainEntity = Object.assign(this.baseMainEntity, BaseTemplates[this.selectedCreation.toLowerCase()].mainEntity);
-      this.thingData = {
-        '@graph': [
-          baseRecord,
-          baseMainEntity,
-        ],
+      const templateValue = {
+        'record': baseRecord,
+        'mainEntity': baseMainEntity,
       };
+      this.thingData = RecordUtil.prepareDuplicateFor(templateValue, this.user);
     },
     useTemplate(templateValue) {
-      const templateRecord = Object.assign(this.baseRecord, templateValue.record);
-      const templateMainEntity = Object.assign(this.baseMainEntity, templateValue.mainEntity);
-
-      // CLEAN IDS
-      templateRecord['@id'] = 'https://id.kb.se/TEMPID';
-      templateMainEntity['@id'] = 'https://id.kb.se/TEMPID#it';
-
-      this.thingData = {
-        '@graph': [
-          templateRecord,
-          templateMainEntity,
-        ],
-      };
+      const preparedTemplate = RecordUtil.prepareDuplicateFor(templateValue, this.user);
+      this.thingData = preparedTemplate;
     },
     setCreation(creation) {
       this.selectedCreation = creation;
