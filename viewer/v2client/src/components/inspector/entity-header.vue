@@ -25,7 +25,12 @@ export default {
   },
   methods: {
     handleScroll(e) {
-      e.target.scrollingElement.scrollTop > this.headerThreshold ? this.showCompact = true : this.showCompact = false;
+      if (document.body.scrollTop > this.headerThreshold || 
+      document.documentElement.scrollTop > this.headerThreshold) {
+        this.showCompact = true;
+      } else {
+        this.showCompact = false;
+      }
     }
   },
   computed: {
@@ -116,6 +121,10 @@ export default {
       top: 0;
       left: 0;
       width: 100%;
+      
+      @media print {
+        display: none;
+      }
       .compact-header {
         white-space: nowrap;
         overflow: hidden;

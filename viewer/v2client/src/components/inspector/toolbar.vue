@@ -97,7 +97,7 @@ export default {
       }
     },
     showOtherFormatMenu() {
-      this.otherFormatMenuActive = true;
+      this.otherFormatMenuActive = !this.otherFormatMenuActive;
     },
     hideOtherFormatMenu() {
       this.otherFormatMenuActive = false;
@@ -106,7 +106,7 @@ export default {
       this.toolsMenuActive = false;
     },
     showToolsMenu() {
-      this.toolsMenuActive = true;
+      this.toolsMenuActive = !this.toolsMenuActive;
     },
     getOtherDataFormat(suffix) {
       return `${this.focusData['@id']}/data.${suffix}`
@@ -155,6 +155,7 @@ export default {
       });
     },
     undo() {
+      this.showUndo = false;
       this.$store.dispatch('undoInspectorChange');
     },
     edit() {
@@ -325,7 +326,7 @@ export default {
         <span class="Toolbar-caret caret"></span>
       </button>
       <ul class="dropdown-menu Toolbar-menuList ToolsMenu-menu" 
-      v-show="toolsMenuActive">
+        v-show="toolsMenuActive">
         <li>
           <a class="Toolbar-menuLink" @click="formControl('expand-item')">
           <i class="fa fa-fw fa-expand" aria-hidden="true"></i>
@@ -355,8 +356,8 @@ export default {
           </a>
         </li>
         <li>
-          <marc-preview :openPreview="showMarcPreview" v-on:close-marc="closeMarc()"></marc-preview>
-          <a class="Toolbar-menuLink"   @click="openMarc" >
+          <marc-preview :openPreview="showMarcPreview" v-on:close-marc="closeMarc(), hideToolsMenu()"></marc-preview>
+          <a class="Toolbar-menuLink" @click="openMarc" >
           <i class="fa fa-fw fa-eye" aria-hidden="true"></i>
           {{"Preview MARC21" | translatePhrase}}
           </a>
@@ -450,7 +451,6 @@ export default {
 <style lang="less">
 
 .Toolbar {
-
   &-placeholder {
     width: 100%;
   }
@@ -460,10 +460,13 @@ export default {
     bottom: 10px;
     min-width: 65px;
     position: fixed;
+    border: 1px solid #cccccc;
     border: 1px solid #cccccc75;
+    background-color: #ececec;
     background-color: #ecececd1;
     padding: 6px;
     border-radius: 0.5em;
+    box-shadow: 0px 0px 15px 0px #000000;
     box-shadow: 0px 0px 15px 0px #0000001f;
 
     @media (min-width: 992px) {
@@ -472,6 +475,9 @@ export default {
     }
     @media (min-width: 1200px) {
       padding: 8px;
+    }
+    @media print {
+      display: none;
     }
   }
 

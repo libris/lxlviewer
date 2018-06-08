@@ -253,6 +253,10 @@ export default {
     float: left;
     padding: 5px 0px;
   }
+
+  @media print {
+    display: none;
+  }
 }
 
 </style>

@@ -221,6 +221,10 @@ export default {
   i {
     color: @text-alt-footer;
   }
+
+  @media print {
+    display: none;
+  }
 }
 
 </style>
