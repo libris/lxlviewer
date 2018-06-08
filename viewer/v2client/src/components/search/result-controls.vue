@@ -131,7 +131,7 @@ export default {
   <div class="ResultControls panel panel-default" v-if="!(!showDetails && pageData.totalItems < limit)">
     <div class="ResultControls-searchDetails" v-if="showDetails">
       <p class="ResultControls-resultDescr" id="resultDescr">Sökning på <strong>{{ queryText }}</strong>
-        <span v-if="filters.length > 0">(filtrerat på <span v-for="filter in filters" :key="filter.label"><strong>{{filter.label}}</strong></span>)</span>
+        <span v-if="filters.length > 0">(filtrerat på <span v-for="(filter, index) in filters" :key="index"><strong>{{filter.label}}{{ index === (filters.length - 1) ? '' : ', ' }}</strong></span>)</span>
       gav <strong>{{pageData.totalItems}}</strong> träffar.
        <em v-if="pageData.totalItems > limit && $route.params.perimeter === 'remote'">Du har fått fler träffar än vad som kan visas, testa att göra en mer detaljerad sökning om du inte kan hitta det du letar efter.</em>
       </p>

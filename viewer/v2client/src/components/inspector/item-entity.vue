@@ -2,6 +2,8 @@
 import * as _ from 'lodash';
 import * as VocabUtil from '../../utils/vocab';
 import * as DataUtil from '../../utils/data';
+import * as LayoutUtil from '../../utils/layout';
+
 import CardComponent from '../shared/card-component';
 import TooltipComponent from '../shared/tooltip-component';
 import EntitySummary from '../shared/entity-summary';
@@ -17,6 +19,7 @@ export default {
     fieldKey: '',
     index: Number,
     isLocked: false,
+    parentPath: '',
   },
   data() {
     return {
@@ -29,21 +32,21 @@ export default {
         default: false,
         type: Boolean,
       },
-      isNewlyAdded: false,
       removeHover: false,
     };
   },
   computed: {
-  },
-  events: {
-    'focus-new-item'(index) {
-      if (index === this.index) {
-        this.isNewlyAdded = true;
-        setTimeout(() => {
-          this.isNewlyAdded = false;
-        }, 1500);
+    isNewlyAdded() {
+      if (this.inspector.status.lastAdded === this.fullPath) {
+        return true;
       }
+      return false;
+    },
+    fullPath() {
+      return `${this.parentPath}.{"@id":"${this.item['@id']}"}`;
     }
+  },
+  watch: {
   },
   methods: {
     expand() {
@@ -78,17 +81,37 @@ export default {
     'entity-summary': EntitySummary,
     'tooltip-component': TooltipComponent,
   },
+  mounted() {
+    this.$nextTick(() => {
+      if(this.inspector.status.lastAdded === this.fullPath) {
+        setTimeout(() => {
+          let element = this.$el;
+          let topOfElement = LayoutUtil.getPosition(element).y;
+          if (topOfElement > 0) {
+            const windowHeight = window.innerHeight || 
+            document.documentElement.clientHeight || 
+            document.getElementsByTagName('body')[0].clientHeight;
+            const scrollPos = LayoutUtil.getPosition(this.$el).y - (windowHeight * 0.2);
+            LayoutUtil.scrollTo(scrollPos, 900, 'easeInOutQuad', () => {
+              this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
+            });
+          } else {
+            this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
+          }
+        }, 200);
+      }
+    });
+  }
 };
 </script>
 
 <template>
   <div class="ItemEntity-container" 
-    @mouseleave="showCardInfo=false" 
-    v-bind:class="{'is-highlighted': isNewlyAdded }">
+    @mouseleave="showCardInfo=false">
     <div class="ItemEntity" 
       tabindex="0"
       v-if="!expanded" 
-      :class="{ 'is-locked': isLocked, 'is-highlighted': showCardInfo }" 
+      :class="{ 'is-locked': isLocked, 'is-highlighted': showCardInfo, 'is-newlyAdded': isNewlyAdded}" 
       @keyup.enter="showCardInfo=true"
       @mouseenter="showCardInfo=true">
       <span class="ItemEntity-label">
@@ -131,11 +154,22 @@ export default {
   overflow: hidden;
   line-height: 1.6;
   padding: 3px 0.3em 3px 0.5em;
+  transition: .2s ease;
 
   &-container {
     display: flex;
     margin: 0px 5px 5px 0px;
     position: relative;
+  }
+
+  &.is-newlyAdded {
+    background-color: @sec-alter;
+    -webkit-animation-duration: 1s;
+    animation-duration: 1s;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+    -webkit-animation-name: pulse;
+    animation-name: pulse;
   }
 
   &-removeButton {

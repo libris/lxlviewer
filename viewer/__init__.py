@@ -443,6 +443,7 @@ def _dependencies():
 
 
 @app.route('/', methods=['POST'])
+@app.route('/data', methods=['POST'])
 def create():
     request.path = '/'
     return _write_data(request, query_params=MultiDict([]))
