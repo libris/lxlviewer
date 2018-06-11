@@ -29,7 +29,7 @@ Exempel: 2694
 För att lägga till ytterligare ett bestånd (motsvarande flera 852) klickar du på plusstecknet vid *Har komponent*.
 
 ## Oformaterad beståndsuppgift - huvudpublikation (866)
-* Benämning (866 ‡a)
+* Beståndsuppgift (866 ‡a)
 * Intern anmärkning (866 ‡x)
 * Offentlig anmärkning (866 ‡z)
 * Underordnad institution/enhet (866 ‡9)
