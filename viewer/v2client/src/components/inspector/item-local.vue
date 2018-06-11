@@ -104,7 +104,7 @@ export default {
     },
   },
   methods: {
-    actionHighlight(active) {
+    actionHighlight(active, event) {
       if (active) {
         let item = event.target;
         while ((item = item.parentElement) && !item.classList.contains('js-itemLocal'));
@@ -115,7 +115,7 @@ export default {
           item.classList.remove('is-marked');
       }
     },
-    removeHighlight(active) {
+    removeHighlight(active, event) {
       if (active) {
         let item = event.target;
         while ((item = item.parentElement) && !item.classList.contains('js-itemLocal'));
@@ -297,8 +297,8 @@ export default {
         <i class="ItemLocal-action fa fa-link"
           v-if="inspector.status.editing && isExtractable"
           @click="openExtractDialog()" 
-          @mouseover="showLinkAction = true, actionHighlight(true)" 
-          @mouseout="showLinkAction = false, actionHighlight(false)"
+          @mouseover="showLinkAction = true, actionHighlight(true, $event)" 
+          @mouseout="showLinkAction = false, actionHighlight(false, $event)"
           @keyup.enter="openExtractDialog()"
           tabindex="0">
           <tooltip-component 
@@ -313,8 +313,8 @@ export default {
           v-on:click="removeThis(true)" 
           @keyup.enter="removeThis(true)"
           tabindex="0"
-          @mouseover="removeHover = true, removeHighlight(true)"
-          @mouseout="removeHover = false, removeHighlight(false)">
+          @mouseover="removeHover = true, removeHighlight(true, $event)"
+          @mouseout="removeHover = false, removeHighlight(false, $event)">
           <tooltip-component 
             :show-tooltip="removeHover" 
             tooltip-text="Remove" 
