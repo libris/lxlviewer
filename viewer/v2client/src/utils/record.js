@@ -144,12 +144,10 @@ export function getItemObject(itemOf, heldBy, instance) {
           'shelfControlNumber': '',
         },
       ],
-      "marc:hasTextualHoldingsBasicBibliographicUnit": [
+      'marc:hasTextualHoldingsBasicBibliographicUnit': [
         {
-          "@type": "marc:TextualHoldingsBasicBibliographicUnit",
-          "label": [
-            ""
-          ]
+          '@type': 'marc:TextualHoldingsBasicBibliographicUnit',
+          'marc:textualString': ''
         }
       ]
     },
