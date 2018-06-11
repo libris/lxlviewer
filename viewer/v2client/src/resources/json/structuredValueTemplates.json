@@ -86,7 +86,9 @@
   "marc:TextualHoldingsBasicBibliographicUnit": [ 
     { 
       "@type": "marc:TextualHoldingsBasicBibliographicUnit", 
-      "marc:textualString": "" 
+      "marc:textualString": "",
+      "marc:holdingsLevel": " ",
+      "marc:typeOfNotation": " "
     } 
   ],
   "SeriesMembership": [
