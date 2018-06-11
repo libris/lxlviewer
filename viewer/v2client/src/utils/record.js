@@ -144,12 +144,12 @@ export function getItemObject(itemOf, heldBy, instance) {
           'shelfControlNumber': '',
         },
       ],
-      "marc:hasTextualHoldingsBasicBibliographicUnit": [
+      'marc:hasTextualHoldingsBasicBibliographicUnit': [
         {
-          "@type": "marc:TextualHoldingsBasicBibliographicUnit",
-          "label": [
-            ""
-          ]
+          '@type': 'marc:TextualHoldingsBasicBibliographicUnit',
+          'marc:textualString': '',
+          'marc:holdingsLevel': ' ',
+          'marc:typeOfNotation': ' '
         }
       ]
     },
@@ -207,6 +207,12 @@ export function prepareDuplicateFor(inspectorData, user) {
   const oldBaseId = inspectorData.record['@id'];
   const newBaseId = 'https://id.kb.se/TEMPID';
   newData.record.descriptionCreator = { '@id': `https://libris.kb.se/library/${user.settings.activeSigel}` };
+  if (newData.record.hasOwnProperty('controlNumber')) {
+    delete newData.record.controlNumber;
+  }
+  if (newData.record.hasOwnProperty('descriptionUpgrader')) {
+    delete newData.record.descriptionUpgrader;
+  }
   if (newData.mainEntity) {
     newData.mainEntity['@id'] =  newData.mainEntity['@id'].replace(oldBaseId, newBaseId);
     delete newData.mainEntity.sameAs;

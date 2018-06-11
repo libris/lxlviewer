@@ -184,7 +184,7 @@ Ospecificerad relation
 
 
 ### Oformaterad beståndsuppgift - huvudpublikation (866)
-* Benämning (866 ‡a)
+* Beståndsuppgift (866 ‡a)
 * Katalogisatörens anmärkning (866 ‡x)
 * Offentlig anmärkning (866 ‡z)
 * Underordnad institution/enhet (866 ‡9)

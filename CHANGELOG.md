@@ -5,10 +5,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-## [2.0.0] - 2018-03-06
-### Added
-- This CHANGELOG file to hopefully serve as an evolving example of a
-  standardized open source project CHANGELOG.
+## [1.0.7] - 2018-06-11
+### Fixed
+- Update holdings template with correct property for `866#a` in MARC21 exports. Also adding indicators with space to make up for missing handling of not being able to add them from a list and no handling of their default values in conversion.
+- "Copy record" will no longer copy the fields `controlNumber` and `descriptionUpgrader` from the original.
+
+## [1.0.6] - 2018-06-08
+## [1.0.5] - 2018-06-08
+## [1.0.4] - 2018-06-08
+## [1.0.3] - 2018-06-08
+## [1.0.2] - 2018-06-07
+## [1.0.1] - 2018-06-05
 
 ### Changed
 - Rewrite README file.
