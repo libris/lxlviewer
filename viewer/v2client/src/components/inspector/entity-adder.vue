@@ -226,7 +226,7 @@ export default {
     this.currentSearchTypes = this.getRange;
   },
   methods: {
-    actionHighlight(active) {
+    actionHighlight(active, event) {
       if(active) {
         let item = event.target;
         while ((item = item.parentElement) && !item.classList.contains('js-field'));
@@ -272,8 +272,8 @@ export default {
       this.showToolTip = false;
       this.selectedType = '';
     },
-    add() {
-      this.actionHighlight(false);
+    add(event) {
+      this.actionHighlight(false, event);
       if (this.isEnumeration) {
         this.addItem({'@id': ''});
       } else if (this.isVocabField) {
@@ -468,11 +468,11 @@ export default {
     <!-- Adds another empty field of the same type -->
     <div class="EntityAdder-add"
       v-if="isPlaceholder && !addEmbedded" 
-      v-on:click="add()" 
+      v-on:click="add($event)" 
       tabindex="0"
-      @keyup.enter="add()"
-      @mouseenter="showToolTip = true, actionHighlight(true)" 
-      @mouseleave="showToolTip = false, actionHighlight(false)">
+      @keyup.enter="add($event)"
+      @mouseenter="showToolTip = true, actionHighlight(true, $event)" 
+      @mouseleave="showToolTip = false, actionHighlight(false, $event)">
       <span>
         <i class="fa fa-fw fa-plus plus-icon" aria-hidden="true">
           <tooltip-component 
@@ -486,10 +486,10 @@ export default {
     <div class="EntityAdder-add action-button" 
       v-if="!isPlaceholder && !addEmbedded" 
       tabindex="0"
-      v-on:click="add()" 
-      @keyup.enter="add()"
-      @mouseenter="showToolTip = true, actionHighlight(true)" 
-      @mouseleave="showToolTip = false, actionHighlight(false)">
+      v-on:click="add($event)" 
+      @keyup.enter="add($event)"
+      @mouseenter="showToolTip = true, actionHighlight(true, $event)" 
+      @mouseleave="showToolTip = false, actionHighlight(false, $event)">
       <i class="EntityAdder-addIcon fa fa-fw fa-plus plus-icon" aria-hidden="true">
         <tooltip-component 
           :show-tooltip="showToolTip" 

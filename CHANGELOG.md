@@ -5,6 +5,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.0.8] - 2018-06-11
+
+### Fixed
+- Fixed bug in Firefox where entities couldn't be added.
+
 ## [1.0.7] - 2018-06-11
 ### Fixed
 - Update holdings template with correct property for `866#a` in MARC21 exports. Also adding indicators with space to make up for missing handling of not being able to add them from a list and no handling of their default values in conversion.

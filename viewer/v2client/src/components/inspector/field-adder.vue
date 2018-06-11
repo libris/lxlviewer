@@ -104,7 +104,7 @@ export default {
     },
   },
   methods: {
-    actionHighlight(active) {
+    actionHighlight(active, event) {
       if(active) {
         let item = event.target;
         while ((item = item.parentElement) && !item.classList.contains('js-itemLocal'));
@@ -326,8 +326,8 @@ export default {
       v-on:click="show" 
       tabindex="0"
       @keyup.enter="show"
-      @mouseenter="showToolTip = true, actionHighlight(true)" 
-      @mouseleave="showToolTip = false, actionHighlight(false)">
+      @mouseenter="showToolTip = true, actionHighlight(true, $event)" 
+      @mouseleave="showToolTip = false, actionHighlight(false, $event)">
       <i class="FieldAdder-innerIcon fa fa-plus plus-icon" aria-hidden="true">
         <tooltip-component 
           :show-tooltip="showToolTip" 
