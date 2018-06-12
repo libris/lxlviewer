@@ -214,7 +214,7 @@ export default {
   }
   
   @media print {
-    background-color: #f5f5f5 !important;
+    border: 1px solid;
   }
 }
 
