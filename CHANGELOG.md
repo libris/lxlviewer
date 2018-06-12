@@ -5,6 +5,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.1.0] - ????-??-??
+
+## [Released]
+
+## [1.0.9] - ????-??-??
+
+### Fixed
+- Fixed incorrect caching of results from the record relation API. This bug caused the holding information to not update correctly in some browsers.
+
 ## [1.0.8] - 2018-06-11
 
 ### Fixed
