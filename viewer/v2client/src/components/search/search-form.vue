@@ -277,7 +277,7 @@ export default {
         :class="{'is-active': searchPerimeter === 'remote' }">Andra källor
       </router-link>
     </div>
-    <div class="SearchBar-help" @mouseleave="hideHelp()">
+    <div  v-if="searchPerimeter === 'libris'"  class="SearchBar-help" @mouseleave="hideHelp()">
       <div class="SearchBar-helpBox dropdown" >
         <span class="SearchBar-helpIcon">
           <i class="fa fa-fw fa-question-circle-o" tabindex="0" aria-haspopup="true"
@@ -382,7 +382,7 @@ export default {
     font-weight: 700;
     font-size: 16px;
     font-size: 1.6rem;
-    margin: 5px 0;
+    margin: 5px 0 0;
     padding: 5px 10px 8px;
     text-transform: uppercase;
     transition: color 0.5s ease;
@@ -415,6 +415,12 @@ export default {
       font-size: 2rem;
     }
 
+  }
+
+  &-formContent {
+    &.is-remoteSearch {
+      margin: -8px 0 0;
+    }
   }
 
   &.is-landing-page {

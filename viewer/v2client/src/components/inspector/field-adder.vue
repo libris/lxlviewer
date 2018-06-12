@@ -104,7 +104,7 @@ export default {
     },
   },
   methods: {
-    actionHighlight(active) {
+    actionHighlight(active, event) {
       if(active) {
         let item = event.target;
         while ((item = item.parentElement) && !item.classList.contains('js-itemLocal'));
@@ -326,8 +326,8 @@ export default {
       v-on:click="show" 
       tabindex="0"
       @keyup.enter="show"
-      @mouseenter="showToolTip = true, actionHighlight(true)" 
-      @mouseleave="showToolTip = false, actionHighlight(false)">
+      @mouseenter="showToolTip = true, actionHighlight(true, $event)" 
+      @mouseleave="showToolTip = false, actionHighlight(false, $event)">
       <i class="FieldAdder-innerIcon fa fa-plus plus-icon" aria-hidden="true">
         <tooltip-component 
           :show-tooltip="showToolTip" 
@@ -390,10 +390,10 @@ export default {
               :key="prop['@id']" 
               @click="addField(prop, true)">
               <span class="FieldAdderModal-addControl">
-                <a v-on:click.prevent="addField(prop, false)">
+                <a v-show="!prop.added" v-on:click.prevent="addField(prop, false)">
                   <i class="fa fa-fw fa-2x fa-plus-circle"></i>
                 </a>
-                <span><i class="fa fa-fw fa-check fa-2x"></i></span>
+                <span v-show="prop.added"><i class="fa fa-fw fa-check fa-2x"></i></span>
               </span>
               <span class="FieldAdderModal-fieldLabel" :title="prop.label | capitalize">
                 {{prop.label | capitalize }}
@@ -494,9 +494,6 @@ export default {
     a {
       cursor: pointer;
     }
-    span {
-      display: none;
-    }
   }
   &-fieldList {
     padding-top: 2em;
@@ -531,14 +528,6 @@ export default {
         &.added {
           span {
             opacity: 0.6;
-          }
-          .addControl {
-            a {
-              display: none;
-            }
-            span {
-              display: block;
-            }
           }
         }
       }

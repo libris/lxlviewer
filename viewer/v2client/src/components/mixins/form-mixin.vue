@@ -105,7 +105,7 @@ export default {
       // Add the "added" property
       for (const element of allowed) {
         const oId = StringUtil.getCompactUri(element.item['@id'], this.resources.context);
-        element.added = (formObj.hasOwnProperty(oId) && formObj[oId] !== null);
+        element.added = formObj.hasOwnProperty(oId);
       }
       const extendedAllowed = allowed.map(property => {
         const labelByLang = property.item.labelByLang;
