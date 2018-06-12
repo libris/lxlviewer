@@ -390,7 +390,7 @@ export default {
               :key="prop['@id']" 
               @click="addField(prop, true)">
               <span class="FieldAdderModal-addControl">
-                <a v-show="!prop.added" v-on:click.prevent="addField(prop, false)">
+                <a v-show="!prop.added" v-on:click.stop.prevent="addField(prop, false)">
                   <i class="fa fa-fw fa-2x fa-plus-circle"></i>
                 </a>
                 <span v-show="prop.added"><i class="fa fa-fw fa-check fa-2x"></i></span>
