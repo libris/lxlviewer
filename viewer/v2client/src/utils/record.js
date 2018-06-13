@@ -127,15 +127,18 @@ export function getItemObject(itemOf, heldBy, instance) {
     mainEntity: {
       '@id': 'https://id.kb.se/TEMPID#it',
       '@type': 'Item',
-      'itemOf': {
-        '@id': itemOf,
-      },
       'heldBy': {
         '@id': heldBy,
+      },
+      'itemOf': {
+        '@id': itemOf,
       },
       'hasComponent': [
         {
           '@type': "Item",
+          'heldBy': {
+            '@id': heldBy,
+          },
           'shelfMark': {
             '@type': 'ShelfMark',
             'label': [''],
