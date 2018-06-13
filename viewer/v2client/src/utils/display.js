@@ -196,7 +196,10 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
       } else if (properties.length < 3 && i === 0) {
         const rangeOfMissingProp = VocabUtil.getRange(trueItem['@type'], properties[i], vocab, context);
         let propMissing = properties[i];
-        if (rangeOfMissingProp.length > 0) {
+        if (
+          rangeOfMissingProp.length > 1 ||
+          (rangeOfMissingProp.length === 1 && rangeOfMissingProp[0] !== 'http://www.w3.org/2000/01/rdf-schema#Literal')
+        ) {
           propMissing = rangeOfMissingProp[0];
         }
         const expectedClassName = StringUtil.getLabelByLang(
