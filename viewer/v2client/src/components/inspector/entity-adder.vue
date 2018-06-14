@@ -399,6 +399,13 @@ export default {
       if (StructuredValueTemplates.hasOwnProperty(shortenedType)) {
         obj = _.cloneDeep(StructuredValueTemplates[shortenedType]);
       }
+      // If this is a holding, add the heldBy property
+      if (obj['@type'] === 'Item') {
+        obj['heldBy'] = {
+          '@id': `https://libris.kb.se/library/${this.user.settings.activeSigel}`
+        };
+      }
+
       if (this.fieldKey === 'instanceOf') {
         this.addSibling(obj);
       } else {
