@@ -144,6 +144,7 @@ export default {
       },
       doSearch() {
         this.$router.push({ path: `/search/${this.searchPerimeter}?${this.composeQuery()}` });
+        this.$refs.dbComponent.showList = false;
       },
       clearInputs() {
         this.inputData.currentInput = 0;
@@ -356,7 +357,7 @@ export default {
           {{ filter.label }}
         </label>        
       </div>
-      <remote-databases v-if="searchPerimeter === 'remote'" :remoteSearch="remoteSearch"></remote-databases>
+      <remote-databases v-if="searchPerimeter === 'remote'" :remoteSearch="remoteSearch" ref="dbComponent"></remote-databases>
     </form>
   </div>
 </template>

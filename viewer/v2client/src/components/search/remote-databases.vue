@@ -223,6 +223,10 @@ export default {
     width: 100%;
   }
 
+  &-listTitle {
+    cursor: pointer;
+  }
+
   &-listItem {
     border-radius: 0.2em;
     background-color: #f1f1f1;
