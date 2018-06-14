@@ -144,7 +144,10 @@ export default {
       },
       doSearch() {
         this.$router.push({ path: `/search/${this.searchPerimeter}?${this.composeQuery()}` });
-        this.$refs.dbComponent.showList = false;
+        
+        if (this.searchPerimeter === 'remote') {
+          this.$refs.dbComponent.showList = false;
+        };
       },
       clearInputs() {
         this.inputData.currentInput = 0;
