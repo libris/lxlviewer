@@ -541,13 +541,13 @@ export function getContextProperty(propertyId, context) {
   return resultProp;
 }
 
-export function getContextWithContainer(propertyId, context) {
+export function getContextWithContainer(propertyId, container, context) {
   const contextList = context[1];
 
   let contextObj = undefined;
   _.forOwn(contextList, (value, key) => {
     if (typeof value !== 'undefined' && value !== null) {
-      if (value.hasOwnProperty('@id') && value['@id'] === propertyId && value.hasOwnProperty('@container')) {
+      if (value.hasOwnProperty('@id') && value['@id'] === propertyId && value.hasOwnProperty('@container') && value['@container'] === container) {
         contextObj = { '@id': key, '@container': value['@container'] };
       }
     }
