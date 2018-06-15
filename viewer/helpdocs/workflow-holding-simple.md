@@ -5,7 +5,7 @@ order: 75
 tags:
 - editor
 --- 
-*UNDER ARBETE - UPPDATERAS KONTINUERLIGT (2018-06-13)*
+*UNDER ARBETE (uppdaterad 2018-06-15)*
 
 # Enkel beståndsregistrering
 
