@@ -6,6 +6,7 @@ tags:
 - search
 - import
 ---
+*(Uppdaterad 2018-06-01)*
 
 [Extern länk till Libris undersidor](http://www.kb.se/libris/katalogisering/Metaproxy/)
 
