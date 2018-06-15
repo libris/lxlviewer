@@ -5,9 +5,9 @@ order: 95
 tags:
 - editor
 ---
-*UNDER ARBETE*
+*UNDER ARBETE - (Uppdaterarad 2018-06-07)*
 
-## Länka entitet - auktoriserat ämnesord
+## Lägg till auktoriserat ämnesord (sao)
 
 Lathunden beskriver hur auktoriserade ämnesord från ämnesordssystemet Svenska ämnesord (sao) länkas till verksinformationen i Instans av Verk. 
 
@@ -21,12 +21,12 @@ Utgår katalogiseringen från en mall finns egenskapen Ämne i mallen.
 
 ##### Länka entitet
 
-* Klicka på +ikonen intill egenskapen Ämne, pop up-rutan för Länka entitet öppnas.
+* Klicka på +ikonen intill egenskapen Ämne, pop up-rutan för Lägg till entitet öppnas.
 
 * Välj typ av ämnesord (Allmänt ämnesord / Geografiskt ämnesord / Kronologiskt ämnesord / Sammansatt term) i rullgardinsmenyn Alla typer.
 
 * Sök efter önskad term.
 
-* Välj term och klicka på Länka entitet, termen länkas då till verksinformationen i Instans av Verk.
+* Välj term och klicka på Lägg till, termen länkas då till verksinformationen i Instans av Verk.
 
-För att länka till ytterligare auktoriserat ämnesord upprepas tillvägagångssättet från punkt ett.
+För att lägga till ytterligare auktoriserat ämnesord upprepas tillvägagångssättet från punkt ett.
