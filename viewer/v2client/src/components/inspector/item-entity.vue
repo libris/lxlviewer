@@ -93,10 +93,14 @@ export default {
             document.getElementsByTagName('body')[0].clientHeight;
             const scrollPos = LayoutUtil.getPosition(this.$el).y - (windowHeight * 0.2);
             LayoutUtil.scrollTo(scrollPos, 900, 'easeInOutQuad', () => {
-              this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
+              setTimeout(() => {
+                this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
+              }, 1000)
             });
           } else {
-            this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
+            setTimeout(() => {
+                this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
+              }, 1000)
           }
         }, 200);
       }
@@ -154,7 +158,7 @@ export default {
   overflow: hidden;
   line-height: 1.6;
   padding: 3px 0.3em 3px 0.5em;
-  transition: .2s ease;
+  transition: .3s ease;
 
   &-container {
     display: flex;

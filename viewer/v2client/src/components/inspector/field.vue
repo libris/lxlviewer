@@ -205,10 +205,14 @@ export default {
             document.getElementsByTagName('body')[0].clientHeight;
             const scrollPos = LayoutUtil.getPosition(this.$el).y - (windowHeight * 0.2);
             LayoutUtil.scrollTo(scrollPos, 1000, 'easeInOutQuad', () => {
-              this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
+              setTimeout(() => {
+                this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
+              }, 1000)
             });
           } else {
-            this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
+              setTimeout(() => {
+                this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
+              }, 1000)
           }
         }
       }, 300);
@@ -529,7 +533,7 @@ export default {
   flex-direction: row;
   opacity: 1;
   position: relative;
-  transition: background-color .2s ease;
+  transition: background-color .3s ease;
 
   &.is-marked {
     background-color: @sec;
