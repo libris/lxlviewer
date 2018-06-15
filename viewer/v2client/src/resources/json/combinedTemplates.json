@@ -142,7 +142,8 @@
           "classification": [{
               "@type": "ClassificationDdc",
               "code": "",
-              "edition": ""
+              "edition": "full",
+              "editionEnumeration": "23/swe"
             },
             {
               "@type": "Classification",
@@ -299,7 +300,8 @@
           "classification": [{
               "@type": "ClassificationDdc",
               "code": "",
-              "edition": ""
+              "edition": "full",
+              "editionEnumeration": "23/swe"
             },
             {
               "@type": "Classification",
