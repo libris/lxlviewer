@@ -130,7 +130,8 @@
   "ClassificationDdc": {
     "@type": "ClassificationDdc",
     "code": "",
-    "edition": ""
+    "edition": "full",
+    "editionEnumeration": "23/swe"
   },
   "Extent": {
     "@type": "Extent",
