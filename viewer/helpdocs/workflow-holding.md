@@ -6,7 +6,7 @@ tags:
 - editor
 --- 
 
-*UNDER ARBETE*
+*UNDER ARBETE - UPPDATERAS KONTIUNUERLIGT (uppdaterad 2018-06-05)*
 
 # Beståndsregistrering
 
@@ -35,7 +35,7 @@ Många ytterligare fält kan läggas till **Har komponent** - gå till **+ikonen
 * Exemplarstatus (852 ‡i)
 * Prefix för lokalsignum (852 ‡k)
 * Hyllsignum: uppställningsord (852 ‡l)
-* Prefix för lokalsignum (852 ‡m)
+* Sufffix för lokalsignum (852 ‡m)
 * Unik exemplarbeteckning (streckkod) (852 ‡p)
 * Exemplarets fysiska tillstånd (852 ‡q)
 * Exemplarnummer (852 ‡t)
@@ -137,7 +137,10 @@ För att lägga till lokalt, se särskild hjälp för att skapa ämnesord och ge
   * Benämning (698 ‡b)
 
 * Klassifikation/DDK-klassifikation/Kod (082 ‡a)
-  * Klassifikationsupplaga (082 ‡2) Skriv in 23/sw
+  * Klassifikationsupplaga (082 indikator 1). Vanligen fullständig upplaga.
+  ```Skriv in: full```
+  * Utgåvans nummer och upphov (082 ‡2)
+  ```Skriv in: 23/swe```
 
 * Klassifikation/Klassifikation/Kod (084 ‡a)
 
@@ -184,6 +187,7 @@ Ospecificerad relation
 
 
 ### Oformaterad beståndsuppgift - huvudpublikation (866)
+*OBS! Ta inte bort de "tomma" fälten Marc:holdingsLevel samt Marc:typeOfNotation! I mallen finns ett blanksteg med som behövs för att få med värden i indikator 1 och 2. För att ändra från "ej angiven/saknas" måste blanktecknet först tas bort och därefter rätt siffra skrivas in. Detta är en temporär lösning på problemet med att 866 inte exporterades.*
 * Beståndsuppgift (866 ‡a)
 * Katalogisatörens anmärkning (866 ‡x)
 * Offentlig anmärkning (866 ‡z)
@@ -206,7 +210,7 @@ Ospecificerad relation
   * Underordnad institution/enhet (876 ‡9)
 
 * Har exemplarinformation - bihang etc. (877)
-  *  Internt exemplarnummer (877 ‡a)
+  * Internt exemplarnummer (877 ‡a)
   * Ogiltigt/makulerat intern exemplarnummer (877 ‡b)
   * Förvärvspris (877 ‡c)
   * Förvärvsdatum (876 ‡d)
@@ -226,4 +230,3 @@ Ospecificerad relation
 * Lokalt definierat beståndsfält (beståndsfält 949)
 Beståndsfält a-z, A-Z samt 0-9 kan läggas till.
 Sök upp dett fält som önskas, t.ex. Beståndsfält 948, delfält a
-
