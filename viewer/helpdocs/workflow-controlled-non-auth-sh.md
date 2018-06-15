@@ -5,7 +5,7 @@ order: 105
 tags:
 - editor
 ---
-UNDER ARBETE - UPPDATERAS KONTINUERLIGT (Uppdaterad 2018-06-07)
+*UNDER ARBETE (uppdaterad 2018-06-15)*
 
 ## Lägg till kontrollerade men ej auktoriserade ämnesord
 
