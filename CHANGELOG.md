@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Released]
 
+## [1.0.10] - 2018-06-15
+
+### Changed
+- Updated template for `classificationDdc` to include `ind 1` (Full) and `$2` (23/swe).
+
 ## [1.0.9] - 2018-06-13
 
 ### Fixed
