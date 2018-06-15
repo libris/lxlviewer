@@ -5,7 +5,7 @@ order: 15
 tags:
 - editor
 --- 
-*UNDER ARBETE - UPPDATERAS KONTINUERLIGT (2018-06-15)*
+*UNDER ARBETE (uppdaterad 2018-06-15)*
 
 ## Tryckt monografi - bok
 
