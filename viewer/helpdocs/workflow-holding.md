@@ -5,8 +5,7 @@ order: 85
 tags:
 - editor
 --- 
-
-*UNDER ARBETE - UPPDATERAS KONTIUNUERLIGT (uppdaterad 2018-06-05)*
+*UNDER ARBETE (uppdaterad 2018-06-15)*
 
 # Beståndsregistrering
 
