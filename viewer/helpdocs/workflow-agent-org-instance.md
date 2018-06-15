@@ -6,7 +6,7 @@ tags:
 - editor
 --- 
 
-*UNDER ARBETE - UPPDATERAS KONTINUERLIGT*
+*UNDER ARBETE (uppdaterad 2018-06-06)*
 
 ## Lägga till Agent - Organisation i Instans av Verk
 
