@@ -5,7 +5,7 @@ order: 72
 tags:
 - editor
 ---
-UNDER ARBETE - UPPDATERAS KONTINUERLIGT 
+*UNDER ARBETE (uppdaterad 2018-06-06)*
 
 ## Relationer till agenter, delar och verk (7XX)
 

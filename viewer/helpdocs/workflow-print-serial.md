@@ -5,7 +5,7 @@ order: 25
 tags:
 - editor
 --- 
-*UNDER ARBETE - UPPDATERAS KONTINUERLIGT*
+*UNDER ARBETE (uppdaterad 2018-06-15)*
 
 ## Tryckt seriell resurs
 
@@ -23,7 +23,7 @@ samt andra poster.
   Förval: den sigel som skapat posten. Ska inte ändras.  
   ```Exempel: S```  
   
-* Uppgraderad eller importerad av/Organisation/Namn (descriptionUpgrader/Organization/name = 040 ‡d)  
+* Uppgraderad eller importerad av/Bibliotek/Sigel (descriptionUpgrader/Library/sigel = 040 ‡d)  
   Länka till entitet.  
   ```Exempel: S```
 
@@ -35,9 +35,9 @@ samt andra poster.
   Länka till entitet.  
   ```Exempel: svenska (swe)```  
 
-* Katalogiseringsregler (descriptionConventions = 040 ‡e)   
-  För post katalogiserad enligt RDA, länka till entitet: marc/Isbd samt skapa lokal entitet med Kod: rda    
-  ```Exempel: marc/Isbd (länkad entitet) + lokal entitet, Kod: rda```
+* Katalogiseringsregler (descriptionConventions = 040 ‡e)
+För post katalogiserad enligt RDA, sök fram och länka till entitet: "ISBD-interpunktions finns: i" (välj Regler för deskriptiv katalogisering vid sökningen). Skapa också lokal entitet under Katalogiseringregler, välj typ Katalogiseringsregler. Lägg till Kod. Skriv in "rda".  
+ ```Exempel: marc/Isbd (länkad entitet) + lokal entitet, Kod: rda ```
 
 * Beskrivningsnivå (000/17)  
   Välj från lista.    
@@ -47,6 +47,10 @@ samt andra poster.
   Uppdateras automatiskt. Ändra inte.   
   ```Exempel: Ny post```  
   ```Exempel: Rättad eller reviderad post```
+  
+* Anmärkning/Anmärkning om katalogiseringskälla (588)  
+   ```Exempel: NLT: 1991-1999 bibliograferad för NLT```  
+  
 
 ### Instans
 * Utgivningssätt (issuanceType)  
@@ -303,4 +307,4 @@ samt andra poster.
   
 * Fortsättes av/Verk/Har instans/Instans/Beskriven av/Post/Kontrollnummer  (continuedBy/Work/hasInstance/Instance/describedBy/record/controlNumber = 785 0/0 ‡w)  
   Skriv in uppgiften.  
-  ```Exempel: 14697501``
+  ```Exempel: 14697501```
