@@ -5,10 +5,7 @@ order: 35
 tags:
 - editor
 ---
-UNDER ARBETE - UPPDATERAS KONTINUERLIGT (uppdaterad 2018-05-25)
-
-UNDER ARBETE - UPPDATERAS KONTINUERLIGT (uppdaterad 2018-06-05)
-
+*UNDER ARBETE (uppdaterad 2018-06-06)*
 
 ## Skapa ny: Agent - Person
 Lathunden beskriver de fält som finns representerade i mallen. Om något av fälten i mallen inte behövs kan de raderas genom ett klick på papperskorgsikonen intill fältet. Ett urval av fält relevanta för person som är möjliga att lägga till men som inte finns i mallen beskrivs i slutet av lathunden. 
