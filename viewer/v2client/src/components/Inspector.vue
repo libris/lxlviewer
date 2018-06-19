@@ -335,8 +335,7 @@ export default {
     unsavedChanges() {
       if (this.$route.name === 'NewDocument') {
         return true;
-      }
-      if (this.$route.name === 'Inspector') {
+      } else if (this.$route.name === 'Inspector') {
         const original = JSON.stringify(this.inspector.originalData);
         const current = JSON.stringify(this.inspector.data);
         return original !== current;
