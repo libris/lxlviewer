@@ -1,5 +1,6 @@
 <script>
-import * as StringUtil from '../../utils/string';
+import * as StringUtil from '@/utils/string';
+import * as LayoutUtil from '@/utils/layout';
 
 export default {
   data() {
@@ -11,6 +12,7 @@ export default {
     tooltipText: '',
     translation: '',
     showTooltip: false,
+    keybindName: '',
   },
   components: {
   },
@@ -35,6 +37,13 @@ export default {
         return this.tooltipText;
       }
     },
+    keybindingText() {
+      let str = '';
+      if (this.keybindName) {
+        str = LayoutUtil.getKeybindingText(this.keybindName);
+      }
+      return str;
+    },
   },
   ready() {
   },
@@ -46,7 +55,7 @@ export default {
 <template>
   <div class="tooltip-container-outer" :class="{ 'show-tooltip': compShowTooltip }" @mouseover="hoverTooltip = true" @mouseleave="hoverTooltip = false">
     <div class="tooltip-container-inner" >
-      {{translatedText | capitalize}}
+      {{translatedText | capitalize}}{{ keybindingText ? ` (${keybindingText})` : ''}}
     </div>
   </div>
 </template>
