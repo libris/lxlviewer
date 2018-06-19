@@ -264,10 +264,6 @@ export default {
             ],
             addToHistory: true,
           });
-          this.$store.dispatch('setInspectorStatusValue', { 
-            property: 'unsavedChanges', 
-            value: true 
-          });
         }, 500);
       }
     },
