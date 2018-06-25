@@ -89,6 +89,9 @@ export default {
     },
   },
   methods: {
+    getKeybindingText(eventName) {
+      return LayoutUtil.getKeybindingText(eventName);
+    },
     openFieldAdder() {
       if (!this.fieldAdderActive) {
         this.fieldAdderActive = true;
@@ -330,19 +333,19 @@ export default {
         <li>
           <a class="Toolbar-menuLink" @click="formControl('expand-item')">
           <i class="fa fa-fw fa-expand" aria-hidden="true"></i>
-          {{"Expand all" | translatePhrase}}
+          {{"Expand all" | translatePhrase}}{{ getKeybindingText('expand-item', ) ? ` (${getKeybindingText('expand-item')})` : ''}}
           </a>
         </li>
         <li>
           <a class="Toolbar-menuLink"  @click="formControl('collapse-item')">
           <i class="fa fa-fw fa-compress" aria-hidden="true"></i>
-          {{"Collapse all" | translatePhrase}}
+          {{"Collapse all" | translatePhrase}}{{ getKeybindingText('collapse-item', ) ? ` (${getKeybindingText('collapse-item')})` : ''}}
           </a>
         </li>
         <li v-if="user.isLoggedIn && !inspector.status.editing && !isSubClassOf('Item')">
           <a class="Toolbar-menuLink"  @click="handleCopy">
           <i class="fa fa-fw fa-files-o"></i>
-          {{ "Make copy" | translatePhrase }}
+          {{ "Make copy" | translatePhrase }}{{ getKeybindingText('duplicate-item', ) ? ` (${getKeybindingText('duplicate-item')})` : ''}}
           </a>
         </li>
         <li v-if="isSubClassOf('Instance') && hasSigel && !inspector.status.editing && user.email !== ''">
@@ -391,6 +394,7 @@ export default {
         <tooltip-component 
           :show-tooltip="showUndo" 
           tooltip-text="Undo" 
+          keybind-name="undo"
           translation="translatePhrase"></tooltip-component>
       </i>
     </button>
@@ -404,6 +408,7 @@ export default {
         <tooltip-component 
           :show-tooltip="showCancel" 
           tooltip-text="Cancel" 
+          keybind-name="cancel-edit"
           translation="translatePhrase"></tooltip-component>
       </i>
     </button>
@@ -417,6 +422,7 @@ export default {
         <tooltip-component 
           :show-tooltip="showSave" 
           tooltip-text="Save" 
+          keybind-name="save-item"
           translation="translatePhrase"></tooltip-component>
       </i>
     </button>
@@ -427,10 +433,10 @@ export default {
       @mouseout="showClarifySave = false">
       <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="inspector.status.saving"></i>
       <i class="fa fa-fw fa-check" v-show="!inspector.status.saving">
-        <tooltip-component tooltip-text="Save and stop editing" translation="translatePhrase"
+        <tooltip-component tooltip-text="Save and stop editing" keybind-name="save-item-done" translation="translatePhrase"
           v-if="!isNewRecord"
           :show-tooltip="showClarifySave"></tooltip-component>
-        <tooltip-component tooltip-text="Create record" translation="translatePhrase"
+        <tooltip-component tooltip-text="Create record" keybind-name="save-item"  translation="translatePhrase"
           v-if="isNewRecord"
           :show-tooltip="showClarifySave"></tooltip-component>
       </i>
@@ -442,7 +448,7 @@ export default {
       @mouseout="showEdit = false">
       <i class="fa fa-fw fa-pencil" v-show="!inspector.status.opening"></i>
       <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="inspector.status.opening"></i>
-      <tooltip-component tooltip-text="Edit" translation="translatePhrase"
+      <tooltip-component tooltip-text="Edit" keybind-name="edit-item" translation="translatePhrase"
           :show-tooltip="showEdit"></tooltip-component>
     </button>
   </div>

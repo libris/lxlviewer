@@ -344,6 +344,7 @@ export default {
       <i class="FieldAdder-icon fa fa-plus plus-icon" aria-hidden="true">
         <tooltip-component 
           :tooltip-text="modalTitle"
+          keybind-name="open-field-adder"
           :show-tooltip="showToolTip"></tooltip-component>
       </i>
       <span v-if="!inToolbar" class="FieldAdder-label"> {{ "Add field" | translatePhrase }}</span>
