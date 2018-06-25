@@ -110,7 +110,6 @@ const store = new Vuex.Store({
         'mainEntity',
         'created',
         'modified',
-        'technicalNote',
         'descriptionCreator'
       ],
       dataSetFilters: {
