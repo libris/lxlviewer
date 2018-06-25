@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [1.1.0] - ????-??-??
 
+### Fixed
+- Fixed entity adder modal not correctly resetting previous search.
+
 ## [Released]
 
 ## [1.0.10] - 2018-06-15

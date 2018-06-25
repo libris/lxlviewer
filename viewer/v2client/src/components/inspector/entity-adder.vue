@@ -23,12 +23,10 @@ export default {
   mixins: [clickaway, LensMixin],
   data() {
     return {
-      searchOpen: false,
       searchResult: [],
       keyword: '',
       loading: false,
       debounceTimer: 500,
-      chooseLocalType: false,
       showToolTip: false,
       rangeInfo: false,
       selectedType: '',
@@ -75,7 +73,7 @@ export default {
       if (val.name === 'modal-control') {
         switch(val.value) {
           case 'close-entity-adder':
-            this.closeSearch();
+            this.hide();
             return true;
             break;
           default:
@@ -85,7 +83,7 @@ export default {
       if (val.name === 'form-control') {
         switch(val.value) {
           case 'close-modals':
-            this.closeSearch();
+            this.hide();
             return true;
             break;
           default:
@@ -222,8 +220,6 @@ export default {
   },
   mounted() {
     this.addEmbedded = (this.valueList.length === 0 && this.onlyEmbedded && this.getFullRange.length > 1);
-    this.searchOpen = false;
-    this.currentSearchTypes = this.getRange;
   },
   methods: {
     actionHighlight(active, event) {
@@ -292,6 +288,7 @@ export default {
       }
     },
     show() {
+      this.resetSearch();
       LayoutUtil.scrollLock(true);
       this.active = true;
       this.$nextTick(() => {
@@ -311,18 +308,10 @@ export default {
         value: 'overview' 
       });
     },
-    openSearch() {
+    resetSearch() {
       this.keyword = '';
-      this.searchOpen = true;
-    },
-    closeSearch() {
-      this.searchOpen = false;
-      this.keyword = '';
+      this.currentSearchTypes = this.getRange;
       this.searchResult = [];
-      this.pagesFetched = 0;
-      this.allFetched = false;
-      this.chooseLocalType = false;
-      this.hide();
     },
     addLinkedItem(obj) {
       let currentValue = _.cloneDeep(_.get(this.inspector.data, this.path));
@@ -393,7 +382,7 @@ export default {
       });
     },
     addEmpty(typeId) {
-      this.closeSearch();
+      this.hide();
       const shortenedType = StringUtil.getCompactUri(typeId, this.resources.context);
       let obj = {'@type': shortenedType};
       if (StructuredValueTemplates.hasOwnProperty(shortenedType)) {
@@ -520,11 +509,11 @@ export default {
       </select>
     </div>
 
-    <modal-component v-if="active" class="EntityAdder-modal EntityAdderModal" @close="closeSearch">
+    <modal-component v-if="active" class="EntityAdder-modal EntityAdderModal" @close="hide">
       <template slot="modal-header">
         {{ "Add entity" | translatePhrase }} | {{ addLabel | labelByLang }}
         <span class="ModalComponent-windowControl">
-          <i @click="closeSearch" tabindex="0" @keyup.enter="closeSearch" class="fa fa-close"></i>
+          <i @click="hide" tabindex="0" @keyup.enter="hide" class="fa fa-close"></i>
         </span>
       </template>
 
