@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [1.1.0] - ????-??-??
 
+### Fixed
+- Set explicit (0px) left-position for hovering cards (needed for IE11). They should now appear directly below the chip in all browsers.
+- Fixed a bug where the user sometimes were not notified about unsaved changes.
+- Fixed a bug where the application couldn't find the correct `...byLang` variation of a property.
+
+### Added
+- Added info on Keyboard shortcuts on some tooltips and menu-items.
+
+### Changed
+- Unlocked `technicalNote`-property. It should now be editable.
+- Changed how missing information is represented in labels. It should now handle missing literals in a much nicer way.
+
 ## [Released]
 
 ## [1.0.10] - 2018-06-15
