@@ -18,7 +18,7 @@ import { mapGetters } from 'vuex';
 export default {
   name: 'Inspector',
   beforeRouteLeave (to, from , next) {
-    if (this.inspector.status.editing && this.inspector.status.unsavedChanges && !this.inspector.status.saving) {
+    if (this.shouldWarnOnUnload()) {
       const confString = StringUtil.getUiPhraseByLang('You have unsaved changes. Do you want to leave the page?', this.settings.language);
       const answer = window.confirm(confString);
       if (answer) {
@@ -40,15 +40,23 @@ export default {
     }
   },
   methods: {
+    shouldWarnOnUnload() {
+      return (
+        (this.$route.name === 'Inspector' || this.$route.name === 'NewDocument') &&
+        this.inspector.status.editing &&
+        this.unsavedChanges &&
+        !this.inspector.status.saving
+      );
+    },
     initializeWarnBeforeUnload() {
       window.addEventListener("beforeunload", (e) => {
-        if (!this.inspector.status.editing || !this.inspector.status.unsavedChanges || this.inspector.status.saving) {
+        if (this.shouldWarnOnUnload()) {
+          const confirmationMessage = StringUtil.getUiPhraseByLang('You have unsaved changes. Do you want to leave the page?', this.settings.language);
+          (e || window.event).returnValue = confirmationMessage; //Gecko + IE
+          return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
+        } else {
           return undefined;
         }
-        const confirmationMessage = StringUtil.getUiPhraseByLang('You have unsaved changes. Do you want to leave the page?', this.settings.language);
-
-        (e || window.event).returnValue = confirmationMessage; //Gecko + IE
-        return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
       });
     },
     initJsonOutput() {
@@ -146,7 +154,6 @@ export default {
     onPostLoaded() {
       this.$store.dispatch('setInsertData', '');
       this.$store.dispatch('setOriginalData', this.inspector.data);
-      this.$store.dispatch('setInspectorStatusValue', { property: 'unsavedChanges', value: false });
       this.$store.dispatch('flushChangeHistory');
       this.postLoaded = true;
     },
@@ -161,7 +168,7 @@ export default {
     },
     cancelEditing() {
       if (!this.inspector.status.isNew) {
-        if (this.inspector.status.editing && this.inspector.status.unsavedChanges) {
+        if (this.shouldWarnOnUnload()) {
           const confString = StringUtil.getUiPhraseByLang('You have unsaved changes. Do you want to cancel?', this.settings.language);
           const answer = window.confirm(confString);
           if (answer) {
@@ -267,7 +274,6 @@ export default {
           }
         }
         this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
-        this.$store.dispatch('setInspectorStatusValue', { property: 'unsavedChanges', value: false });
         this.$store.dispatch('setInspectorStatusValue', { property: 'isNew', value: false });
       }, (error) => {
         this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
@@ -326,6 +332,16 @@ export default {
       'settings',
       'status',
     ]),
+    unsavedChanges() {
+      if (this.$route.name === 'NewDocument') {
+        return true;
+      } else if (this.$route.name === 'Inspector') {
+        const original = JSON.stringify(this.inspector.originalData);
+        const current = JSON.stringify(this.inspector.data);
+        return original !== current;
+      }
+      return false;
+    },
     isItem() {
       return this.inspector.data.mainEntity['@type'] === 'Item';
     },

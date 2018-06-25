@@ -45,7 +45,6 @@ const store = new Vuex.Store({
         removing: false,
         updating: false,
         isNew: false,
-        unsavedChanges: false,
       },
       changeHistory: [],
       event: [],
