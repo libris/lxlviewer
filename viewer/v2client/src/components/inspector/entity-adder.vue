@@ -364,6 +364,10 @@ export default {
           currentValue.push(obj);
         }
       }
+      this.$store.dispatch('setInspectorStatusValue', { 
+        property: 'lastAdded', 
+        value: `${this.path}[${currentValue.length -1}]`
+      });
       this.$store.dispatch('updateInspectorData', {
         changeList: [
           {
