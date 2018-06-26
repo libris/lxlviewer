@@ -14,6 +14,7 @@ export class User {
       appTech: false,
       activeSigel: '',
       language: 'sv',
+      defaultDatabases: ['OCLC'],
     };
   }
 
