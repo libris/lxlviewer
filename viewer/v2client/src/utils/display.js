@@ -268,7 +268,11 @@ export function getCard(item, displayDefs, quoted, vocab, settings, context) {
 }
 
 export function getFormattedSelectOption(term, settings, vocab, context) {
-  const labelByLang = StringUtil.getLabelByLang(term.id, settings.language, vocab, context);
+  const maxLength = 40;
+  let labelByLang = StringUtil.getLabelByLang(term.id, settings.language, vocab, context);
+  if (labelByLang.length > maxLength) {
+    labelByLang = labelByLang.substr(0, maxLength-2) + '...';
+  }
   const abstractIndicator = ` {${StringUtil.getUiPhraseByLang('Abstract', settings.language)}}`;
   const prefix = Array((term.depth) + 1).join(' •');
   return `${prefix} ${labelByLang} ${term.abstract ? abstractIndicator : ''}`;
