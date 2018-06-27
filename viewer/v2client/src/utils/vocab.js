@@ -289,7 +289,7 @@ export function processRestrictions(range, entityType, property, vocab, context)
 
 export function getUnrestrictedRange(propertyId, vocab, context) {
   if (typeof propertyId === 'undefined') {
-    throw new Error('getRange was called without a property Id.');
+    throw new Error('getUnrestrictedRange was called without a property Id.');
   }
 
   const property = getTermObject(propertyId, vocab, context);
@@ -321,6 +321,16 @@ export function getUnrestrictedRange(propertyId, vocab, context) {
 export function getRange(entityType, propertyId, vocab, context) {
   const unrestrictedRange = getUnrestrictedRange(propertyId, vocab, context);
   return processRestrictions(unrestrictedRange, entityType, propertyId, vocab, context);
+}
+
+export function getFullRange(entityType, key, vocab, context, vocabClasses) {
+  const types = [].concat(getRange(entityType, key, vocab, context));
+  let allTypes = [];
+  _.each(types, type => {
+    allTypes = allTypes.concat(getSubClassChain(type, vocabClasses, context));
+  });
+  allTypes = _.uniq(allTypes);
+  return allTypes;
 }
 
 export function getSubClasses(classname, vocabClasses, context) {
@@ -367,16 +377,6 @@ export function getAllSubClasses(classArray, vocabClasses, context) {
   inputSubClasses = inputSubClasses.concat(newSubClasses);
   inputSubClasses = _.uniq(inputSubClasses);
   return inputSubClasses;
-}
-
-export function getFullRange(entityType, key, vocab, context, vocabClasses) {
-  const types = [].concat(getRange(entityType, key, vocab, context));
-  let allTypes = [];
-  _.each(types, type => {
-    allTypes = allTypes.concat(getSubClassChain(type, vocabClasses, context));
-  });
-  allTypes = _.uniq(allTypes);
-  return allTypes;
 }
 
 export function getDomainList(property, vocab, context) {
