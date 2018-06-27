@@ -84,6 +84,18 @@ export default {
         this.hide();
       }
     },
+    'inspector.event'(val, oldVal) {
+      if (val.name === 'form-control') {
+        switch(val.value) {
+          case 'close-modals':
+            this.hide();
+            return true;
+            break;
+          default:
+            return;
+        }
+      }
+    },
   },
   computed: {
     ...mapGetters([
