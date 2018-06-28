@@ -37,7 +37,6 @@ export default {
     return {
       inEdit: false,
       showCardInfo: false,
-      isNewlyAdded: false,
       extractDialogActive: false,
       extracting: false,
       expanded: false,
@@ -101,6 +100,12 @@ export default {
         }
       });
       return bEmpty;
+    },
+    isLastAdded() {
+      if (this.inspector.status.lastAdded === this.getPath) {
+        return true;
+      }
+      return false;
     },
   },
   methods: {
@@ -252,6 +257,12 @@ export default {
     this.$nextTick(() => {
       this.expandOnNew();
     });
+    
+    if (this.isLastAdded) {
+      setTimeout(()=> {
+        this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
+      }, 1000)
+    } 
   },
  
   components: {
@@ -267,7 +278,7 @@ export default {
 
 <template>
   <div class="ItemLocal js-itemLocal"
-    :class="{'is-highlighted': isNewlyAdded, 'is-expanded': expanded}"
+    :class="{'is-highlighted': isLastAdded, 'is-expanded': expanded}"
     tabindex="0">
    
    <strong class="ItemLocal-heading">
@@ -368,7 +379,7 @@ export default {
   border-radius: 4px;
   position: relative;
   flex: 1 100%;
-  transition: background-color .2s ease;
+  transition: background-color .5s ease;
 
   &-heading {
     display: block;
@@ -452,6 +463,10 @@ export default {
     &::before {
       vertical-align: sub;
     }
+  }
+
+  &.is-highlighted {
+    background-color: @sec;
   }
 }
 </style>
