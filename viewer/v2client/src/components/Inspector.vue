@@ -258,7 +258,7 @@ export default {
         url: opts.url, 
         ETag: opts.ETag, 
         activeSigel: this.user.settings.activeSigel, 
-        token: this.user.token 
+        token: this.user.token
       }, obj).then((result) => {
         if (!this.documentId) {
           const location = `${result.getResponseHeader('Location')}`;
@@ -277,7 +277,19 @@ export default {
         this.$store.dispatch('setInspectorStatusValue', { property: 'isNew', value: false });
       }, (error) => {
         this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
-        this.$store.dispatch('pushNotification', { color: 'red', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error}` });
+        const errorBase = StringUtil.getUiPhraseByLang('Save failed', this.settings.language);
+        let errorMessage = '';
+        switch(error.status) {
+          case 412:
+            errorMessage = `${StringUtil.getUiPhraseByLang('The resource has changed', this.settings.language)}`;
+            break;
+          case 401:
+            errorMessage = `${StringUtil.getUiPhraseByLang('Your login has expired', this.settings.language)}`;
+            break;
+          default:
+            errorMessage = `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error.status}: ${StringUtil.getUiPhraseByLang(error.statusText, this.settings.language)}`;
+        }
+        this.$store.dispatch('pushNotification', { color: 'red', message: `${errorBase}. ${errorMessage}.` });
       });
     },
   },
