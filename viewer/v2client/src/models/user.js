@@ -99,8 +99,6 @@ export function getUserObject(userObj) {
       userObj.permissions,
     );
   }
-  if (user.fullName !== '') {
-    user.loadSettings();
-  }
+  user.loadSettings();
   return user;
 }

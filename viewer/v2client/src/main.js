@@ -115,6 +115,9 @@ new Vue({
         const token = localStorage.getItem('at');
         if (token) {
           this.verifyUser(token, false);
+        } else {
+          const userObj = User.getUserObject();
+          store.dispatch('setUser', userObj);
         }
       }
       this.updateTitle();
@@ -158,7 +161,7 @@ new Vue({
       }
     },
     verifyUser(token, initial) {
-      let userObj = User.getUserObject()
+      let userObj = User.getUserObject();
       HttpUtil.get({ url: this.settings.authPath, token }).then((result) => {
         userObj = User.getUserObject(result.user);
         userObj.token = token;
