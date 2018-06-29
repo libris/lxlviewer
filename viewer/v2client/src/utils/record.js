@@ -151,8 +151,8 @@ export function getItemObject(itemOf, heldBy, instance) {
         {
           '@type': 'marc:TextualHoldingsBasicBibliographicUnit',
           'marc:textualString': '',
-          'marc:holdingsLevel': ' ',
-          'marc:typeOfNotation': ' '
+          'marc:cataloguersNote': [''],
+          'marc:publicNote': ['']
         }
       ]
     },
