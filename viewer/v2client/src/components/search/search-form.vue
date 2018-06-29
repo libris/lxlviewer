@@ -297,11 +297,11 @@ export default {
     <form id="searchForm" class="SearchBar-form">
       <div class="SearchBar-formContent is-librisSearch" id="librisPanel" 
         v-if="searchPerimeter === 'libris'">
-        <div class="SearchBar-formGroup form-group ">
+        <div class="SearchBar-formGroup form-group">
           <label class="SearchBar-inputLabel hidden" id="searchlabel" for="q" aria-hidden="false">
             {{"Search" | translatePhrase}}
           </label>
-          <div class="SearchBar-inputWrap" id="searchFieldContainer">
+          <div class="SearchBar-inputWrap panel" id="searchFieldContainer">
             <div class="SearchBar-input form-control">
               <div class="SearchBar-qsmart js-qsmartInput" aria-labelledby="searchlabel">
                 <input name="q"
@@ -314,6 +314,7 @@ export default {
                   @keydown="handleInput"
                   v-model="input.value"
                   class="SearchBar-qsmartInput"
+                  :placeholder="'Search' | translatePhrase"
                   :class="input.class">
                 <datalist id="matchingParameters">
                   <option v-for="matchingParameter in validSearchTags" 
@@ -327,23 +328,26 @@ export default {
                 <i class="fa fa-fw fa-close"></i>
               </span>
             </div>
-            <button class="SearchBar-submit btn btn-primary" @click.prevent="doSearch">
-              <i class="fa fa-search"></i> {{"Search" | translatePhrase}}
+            <button class="SearchBar-submit btn btn-primary" 
+              :aria-label="'Search' | translatePhrase"
+              @click.prevent="doSearch">
+              <i class="fa fa-search"></i>
             </button>
           </div>
         </div>
       </div>
       <div class="SearchBar-formContent is-remoteSearch" id="remotePanel" 
         v-if="searchPerimeter === 'remote'">
-        <div class="SearchBar-formGroup form-group">
+        <div class="SearchBar-formGroup form-group panel">
           <input type="text" class="SearchBar-input form-control" placeholder="ISBN eller valfria sökord" 
             v-model="remoteSearch.q">
           <button class="SearchBar-submit btn btn-primary"
+            :aria-label="'Search' | translatePhrase"
             v-bind:class="{
               'disabled': status.remoteDatabases.length === 0
             }" 
             v-on:click.prevent="doSearch">
-            <i class="fa fa-search"></i> {{"Search" | translatePhrase}}
+            <i class="fa fa-search"></i>
           </button>
         </div>
       </div>
@@ -479,16 +483,17 @@ export default {
   }
 
   &-input {
-    border-width: 1px;
     font-size: 20px;
     font-size: 2rem;
     line-height: 1.2;
     height: 42px;
     min-width: 75%;
-    margin: 0 0 10px 0;
     flex-grow: 1;
     display: flex;
     justify-content: space-between;
+    border-width: 1px 0 1px 1px;
+    border-color: @gray-light;
+    border-radius: 4px 0 0 4px;
 
     .is-remoteSearch & {
       width: 100%;
@@ -499,18 +504,11 @@ export default {
       outline: 0;
       box-shadow: none;
     }
-
-    @media (min-width: 768px) {
-      margin: 0 5px 0 0;
-    }
   }
 
   &-inputWrap {
-    display: block;
-
-    @media (min-width: 768px) {
-      display: flex;
-    }
+    display: flex;
+    margin-bottom: 0;
   }
 
   &-inputLabel {
@@ -564,17 +562,15 @@ export default {
   }
 
   &-submit {
-    font-size: 16px;
-    font-size: 1.6rem;
+    font-size: 20px;
+    font-size: 2rem;
     font-weight: 700;
-    height: 42px;   
-    width: 100%;
+    height: 42px;
+    border: 0;
+    border-radius: 0 4px 4px 0;
 
-    @media (min-width: 768px) {
-      min-width: 20%;
-      width: auto;
-      font-size: 20px;
-      font-size: 2rem;
+    @media (min-width: @screen-sm) {
+      min-width: 84px;
     }
   }
 
