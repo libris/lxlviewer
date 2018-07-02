@@ -5,7 +5,8 @@ order: 45
 tags:
 - editor
 --- 
-*UNDER ARBETE (uppdaterad 2018-05-25)*
+
+*Under arbete. Senast uppdaterad 2018-05-25.*
 
 ## Redigera befintlig Agent - Person
 Lathunden beskriver de fält som finns i den befintliga auktoriserade agenten och vilka fält som bör läggas till. Ett urval av fält relevanta för person som är möjliga att lägga till men som inte finns i mallen beskrivs i slutet av lathunden. 
