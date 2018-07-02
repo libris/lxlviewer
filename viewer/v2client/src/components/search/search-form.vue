@@ -272,7 +272,7 @@ export default {
 </script>
 
 <template>
-  <div class="SearchBar panel panel-default">
+  <div class="SearchBar">
     <div class="SearchBar-sourceTabs">
       <router-link to="/search/libris" class="SearchBar-sourceTab"
         :class="{'is-active': searchPerimeter === 'libris' }">Libris
@@ -280,20 +280,20 @@ export default {
       <router-link to="/search/remote" class="SearchBar-sourceTab"
         :class="{'is-active': searchPerimeter === 'remote' }">Andra källor
       </router-link>
-    </div>
-    <div  v-if="searchPerimeter === 'libris'"  class="SearchBar-help" @mouseleave="hideHelp()">
-      <div class="SearchBar-helpBox dropdown" >
-        <span class="SearchBar-helpIcon">
-          <i class="fa fa-fw fa-question-circle-o" tabindex="0" aria-haspopup="true"
-            @mouseover="showHelp()"
-            @keyup.enter="toggleHelp()"></i>
-        </span>
-        <div class="SearchBar-helpContent js-searchHelpText dropdown-menu"> 
-          <strong class="SearchBar-helpTitle">Operatorer för frågespråk</strong>
-          <div v-html="transformMarkdownToHTML(docs['search-01-queries'].content)"></div>
+      <div  v-if="searchPerimeter === 'libris'"  class="SearchBar-help" @mouseleave="hideHelp()">
+        <div class="SearchBar-helpBox dropdown" >
+          <span class="SearchBar-helpIcon">
+            <i class="fa fa-fw fa-question-circle" tabindex="0" aria-haspopup="true"
+              @mouseover="showHelp()"
+              @keyup.enter="toggleHelp()"></i>
+          </span>
+          <div class="SearchBar-helpContent js-searchHelpText dropdown-menu"> 
+            <strong class="SearchBar-helpTitle">Operatorer för frågespråk</strong>
+            <div v-html="transformMarkdownToHTML(docs['search-01-queries'].content)"></div>
+          </div>
         </div>
-      </div>
-    </div>       
+      </div> 
+    </div>      
     <form id="searchForm" class="SearchBar-form">
       <div class="SearchBar-formContent is-librisSearch" id="librisPanel" 
         v-if="searchPerimeter === 'libris'">
@@ -377,40 +377,56 @@ export default {
   transition: 0.3s ease margin-top;
 
   @media (min-width: 768px) {
-    padding: 20px;
+    padding: 0 0 20px 0;
   }
 
   &-sourceTabs {
-    margin: 20px 0 10px;
+    display: flex;
+    margin: 20px 0;
     padding: 0;
   }
 
   &-sourceTab {
-    color: @brand-primary;
+    display: inline-block;
+    color: @grey;
     font-weight: 700;
     font-size: 16px;
     font-size: 1.6rem;
-    margin: 5px 0 0;
-    padding: 5px 10px 8px;
+    margin: 5px 10px;
     text-transform: uppercase;
-    transition: color 0.5s ease;
-    border: 1px dashed #fff;
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
+    transition: color 0.2s ease;
+    border: 1px dashed transparent;
+
+    &:first-of-type {
+      margin-left: 0;
+    }
 
     &.is-active {
-      background-color: @brand-primary;
-      border: 1px solid @brand-primary;
-      color: #fff;
+      position: relative;
+      color: @black;
       text-decoration: none;
 
+      &::after {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 3px;
+        background-color: @brand-primary;
+        bottom: -5px;
+        left: 0;
+        right: 0;
+        margin: auto;
+      }
+
       &:hover {
-        color: #fff;
+        color: @black;
       }
     }
 
-    &:hover {
+    &:hover, 
+    &:focus {
       color: @brand-primary;
+      text-decoration: none;
     }
 
     &:focus {
@@ -419,16 +435,13 @@ export default {
     }
 
     @media (min-width: 768px) {
-      font-size: 20px;
-      font-size: 2rem;
+      font-size: 18px;
+      font-size: 1.8rem;
     }
 
   }
 
   &-formContent {
-    &.is-remoteSearch {
-      margin: -8px 0 0;
-    }
   }
 
   &.is-landing-page {
@@ -436,22 +449,22 @@ export default {
   }
 
   &-help {
-    margin-top: -35px;
+    margin-left: auto;
   }
 
   &-helpIcon {
     clear: right;
     cursor: pointer;
-    font-size: 18px;
+    font-size: 20px;
     float: right;
-    width: 20%;
+    color: @gray-darker;
+
+    & > i {
+      vertical-align: bottom;
+    }
 
     &:focus {
       outline: auto 5px;
-    }
-
-    @media (min-width: 768px) {
-      margin-right: 24px;
     }
   }
 
@@ -465,11 +478,11 @@ export default {
     font-size: 1.2rem;
     display: none;
     left: auto;
-    max-width: 300px;
+    width: 300px;
     padding: 10px;
+    margin-top: 10px;
     right: 0;
     top: 2em;
-    width: 30%;
 
     .is-active & {
       display: block;
@@ -586,8 +599,12 @@ export default {
   &-typeLabel {
     padding: 3px 10px;
     font-weight: normal;
-    font-size: 14px;   
-    font-size: 1.4rem;
+    font-size: 18px;   
+    font-size: 1.8rem;
+
+    &:first-of-type {
+      padding-left: 0;
+    }
   }
 
   &-typeInput {
