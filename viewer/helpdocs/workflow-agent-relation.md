@@ -152,5 +152,4 @@ Välj **Primär medverkan** när agenten har relation till ett annat verk än de
   ```Exempel: Roberts```
      * Medverkan och funktion / Primär medverkan / Agent/ Förnamn
    ```Exempel: Nora```
-   
   
