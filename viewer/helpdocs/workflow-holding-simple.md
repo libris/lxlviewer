@@ -5,7 +5,8 @@ order: 75
 tags:
 - editor
 --- 
-*UNDER ARBETE (uppdaterad 2018-06-15)*
+
+*Under arbete. Senast uppdaterad 2018-07-02.*
 
 # Enkel beståndsregistrering
 
@@ -32,8 +33,6 @@ Om ytterligare information om placering utöver Hyllkod behöver läggas till.
 För att lägga till ytterligare ett Bestånd (motsvarande flera 852) klickar du på **+ikonen** vid **Har komponent**.
 
 ### Oformaterad beståndsuppgift - huvudpublikation (866)
-*OBS! Ta inte bort de "tomma" fälten Marc:holdingsLevel samt Marc:typeOfNotation! I mallen finns ett blanksteg med som behövs för att få med värden i indikator 1 och 2. För att ändra från "ej angiven/saknas" måste blanktecknet först tas bort och därefter rätt siffra skrivas in. Detta är en temporär lösning på problemet med att 866 inte exporterades.*
-
 * Beståndsuppgift (866 ‡a)
 * Katalogisatörens anmärkning (866 ‡x)
 * Offentlig anmärkning (866 ‡z)
