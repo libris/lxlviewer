@@ -109,7 +109,6 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.getRelationsInfo();
-      console.log(this.numberOfRelations);
     });
   },
 };
