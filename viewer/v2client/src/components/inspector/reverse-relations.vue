@@ -102,8 +102,11 @@ export default {
         this.relationInfo = [];
       }
     },
+    numberOfRelations: function (val) {
+      this.numberOfRelations = val;
+    }
   },
-  mounted() { // Ready method is deprecated in 2.0, switch to "mounted"
+  mounted() {
     this.$nextTick(() => {
       this.getRelationsInfo();
     });
@@ -128,7 +131,9 @@ export default {
     <div class="ReverseRelations-number" v-if="recordType === 'Instance'">
       <i class="fa fa-university" aria-hidden="true"></i>
       <span class="ReverseRelations-label">
-        {{ "Libraries" | translatePhrase }}: {{numberOfRelations || 'Error' | translatePhrase}}
+        {{ "Libraries" | translatePhrase }}: 
+        <span v-if="numberOfRelations !== null"> {{numberOfRelations}} </span>
+        <span v-else> {{numberOfRelations || 'Error' | translatePhrase}} </span>
       </span>
       <create-item-button class="ReverseRelations-button"
         v-if="user.isLoggedIn && user.getPermissions().registrant" 
