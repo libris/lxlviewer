@@ -5,7 +5,8 @@ order: 95
 tags:
 - editor
 ---
-*UNDER ARBETE (uppdaterad 2018-06-15)*
+
+*Under arbete. Senast uppdaterad 2018-06-15.*
 
 ## Lägg till auktoriserat ämnesord (sao)
 

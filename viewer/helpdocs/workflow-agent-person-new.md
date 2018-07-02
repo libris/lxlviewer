@@ -5,7 +5,8 @@ order: 35
 tags:
 - editor
 ---
-*UNDER ARBETE (uppdaterad 2018-06-06)*
+
+UNDER ARBETE (uppdaterad 2018-07-02)
 
 ## Skapa ny: Agent - Person
 Lathunden beskriver de fält som finns representerade i mallen. Om något av fälten i mallen inte behövs kan de raderas genom ett klick på papperskorgsikonen intill fältet. Ett urval av fält relevanta för person som är möjliga att lägga till men som inte finns i mallen beskrivs i slutet av lathunden. 
@@ -81,13 +82,16 @@ Beskrivning av agenten som ska auktoriseras.
 ### Adminmetadata
 Information av administrativ karaktär som är väsentlig för auktoriseringen i sig men inte är direkt förknippad med den auktoriserade namnformen.
 
-* Katalogiseringsregler (descriptionConventions = 040 ‡e)
-  <br/>Förval: rda. Ändra vid behov. 
-  <br/>```Exempel: Kod: rda```
-
+* Kontrollnummer (controlNumber = 001)
+  <br/>Libris-ID. Genereras automatiskt vid sparande. Ändras ej.
+  
 * Skapad av (descriptionCreator = 040 ‡a)
   <br/>Förval: Inloggad sigel. Ändras ej.  
   <br/>```Exempel: S```
+  
+* Katalogiseringsregler (descriptionConventions = 040 ‡e)
+  <br/>Förval: rda. Ändra vid behov. 
+  <br/>```Exempel: Kod: rda```
 
 * Translitterering (marc:romanization = 008/07)
   <br/>Ändras ej.
@@ -124,9 +128,6 @@ Vid val av "Källa vid belagd uppgift" finns möjlighet att ange såväl Benämn
 
 * Katalogiseringsspråk (descriptionLanguage = 040 ‡b)
   <br/>Förval: language/swe. Ändras ej.
-
-* Kontrollnummer (controlNumber = 001)
-  <br/>Libris-ID. Genereras automatiskt vid sparande. Ändras ej.
 
 
 ### Valbara fält relevanta för Agent - Person
