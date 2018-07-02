@@ -44,7 +44,7 @@ De mest använda fälten finns färdiga att fylla i. Det motsvarar vad som kunde
 
 ### Har komponent
 (852)
-OBS! I konverterade data med bara ett 852 ligger delfälten inte under **Har komponent**. Vid skapande av nutt bestånd måste det motsvarar delfält läggas under **Har komponent** för det ska bli korrekt.
+OBS! I konverterade data med bara ett 852 ligger delfälten inte under **Har komponent**. Vid skapande av nytt bestånd måste de delfält som  motsvarar delfält i 852 läggas under **Har komponent** för det ska bli korrekt. För att uppdatera en konverterad post som inte har **Har komponent** behöver du ta bort de konverterade fälten som ligger fel och lägga dem under **Har komponent**. 
 
 Klicka på pilen för **Bestånd**. Du kan då lägga till
 * Hyllkod (852 ‡h)
@@ -98,7 +98,7 @@ Välj önskad nivå:
  
 
 ### Identifierare
-* Identifikator (IdentifiedBy) / Välj från lista (024 indikator 1)
+* Identifikator (IdentifiedBy) / Välj typ från lista (024 indikator 1)
   * Värde (024 ‡a)
   * Ogiltigt värde (024 ‡z)
   * Typanmärkning, bestämning till indikator 1=7 (024 ‡2)
@@ -127,6 +127,7 @@ Klicka på **+ikonen** för att lägga till. Klicka därefter på **+ikonen** ti
 
 * Förvärvsuppgifter (541)
 Klicka på **+ikonen** för att lägga till. Gå till Skapa lokal entitet. Förvärvsuppgister kommer då automatiskt.
+  * Sekretessbelagd information / Klicka i boxen (541 indikator 1) 0 = ifylld, 1 = ej ifylld. *OBS! Det går ännu inte att ange Uppgift saknas - detta är under arbete.*
   * Förvärvskälla (541 ‡a)
   * Adress (541 ‡b)
   * Förvärvssättt (541 ‡c)
@@ -153,6 +154,7 @@ Klicka på **+ikonen** för att lägga till. Klicka därefter på **+ikonen** ti
 
 * Har lokal anmärkning: Åtgärd (583)
 Klicka på **+ikonen** för att lägga till. Klicka därefter på **+ikonen** till höger om **Lokal anmärkning: Åtgärd** för att lägga till delfält och indikator
+  * Sekretessbelagd information / Klicka i boxen (583 indikator 1) 0 = ifylld, 1 = ej ifylld. *OBS! Det går ännu inte att ange Uppgift saknas - detta är under arbete.*
   * Benämning (583 ‡a)
   * Del av materialet som avses (583 ‡3) / Resurs (val vid Skapa lokal entitet) / Benämning 
     
@@ -227,6 +229,8 @@ Ospecificerad relation
 
 
 ### Oformaterad beståndsuppgift
+*OBS! i mallen finns fälten **Marc:holdingsLevel** samt **Marc:typeOfNotation**. Dessa fält behöver inte fyllas i men behövs för att exporten ska bli korrekt. Om du inte behöver använda **Oformaterad beståndsuppgift** måste du däremot ta bort fältet, det tas inte bort automatiskt eftersom det finns blanksteg i mallen.
+
 * Beståndsuppgift (866 ‡a)
 * Katalogisatörens anmärkning (866 ‡x)
 * Offentlig anmärkning (866 ‡z)
@@ -266,6 +270,7 @@ Ospecificerad relation
 
 
 ### Lokalt definierade beståndsfält
+*OBS! Tillsvidare måste indikator 1 och 2 läggas till för att fälten ska kunna exporteras
 * Lokalt definierat beståndsfält (beståndsfält 948)
 * Lokalt definierat beståndsfält (beståndsfält 949)
 Beståndsfält a-z, A-Z samt 0-9 kan läggas till.
