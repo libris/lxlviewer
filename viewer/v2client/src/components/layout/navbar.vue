@@ -56,25 +56,16 @@ export default {
           <ul class="MainNav">
             <li class="MainNav-item">
               <router-link to="/help" class="MainNav-link">
-                <div class="MainNav-iconWrap" aria-hidden="true">
-                  <i class="fa fa-question-circle"></i>
-                </div>
                 <span class="MainNav-linkText">{{"Help" | translatePhrase}}</span>
               </router-link>
             </li>
             <li class="MainNav-item">
               <router-link to="/search/libris" class="MainNav-link">
-                <div class="MainNav-iconWrap" aria-hidden="true">
-                  <i class="fa fa-search"></i>
-                </div>
                 <span class="MainNav-linkText">{{"Search" | translatePhrase}}</span>
               </router-link>
             </li>
               <li class="MainNav-item" v-if="user.isLoggedIn">
               <router-link to="/create" class="MainNav-link">
-                <div class="MainNav-iconWrap" aria-hidden="true">
-                  <i class="fa fa-file-text"></i>
-                </div>
                 <span class="MainNav-linkText">{{"Create new" | translatePhrase}}</span>
               </router-link>
             </li>
@@ -143,18 +134,18 @@ export default {
     line-height: 20px;
     padding: 5px;
 
+    &:hover {
+      color: @text-brand;
+    }
+
     @media (min-width: 768px) {
       padding: 15px 5px;
       height: 50px;
     }
 
     @media (min-width: 1200px) {
-      font-size: 20px;
-      font-size: 2rem;
-    }
-
-    &:hover {
-      text-decoration: none;
+      font-size: 24px;
+      font-size: 2.4rem;
     }
 
     .container-fluid {
@@ -221,16 +212,16 @@ export default {
   }
 
   &-link {
-    color: #333;
+    color: @black;
     cursor: pointer;
-    font-size: 16px;
-    font-size: 1.6rem;
+    font-size: 18px;
+    font-size: 1.8rem;
     padding: 5px;
     display: block;
 
     &:hover, 
     &:focus {
-      background-color: @bg-navbar-hover;
+      color: inherit;
       text-decoration: none;
     }
 

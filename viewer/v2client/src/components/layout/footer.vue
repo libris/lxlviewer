@@ -190,8 +190,8 @@ export default {
   }
 
   &-navList {
-    font-size: 14px;
-    font-size: 1.4rem;
+    font-size: 16px;
+    font-size: 1.6rem;
     list-style-type: none;
     margin: 0;
     padding: 0;
@@ -207,7 +207,8 @@ export default {
   &-link {
     color: @text-footer;
     text-transform:none;
-    &:hover {
+    &:hover, 
+    &:focus {
       color: @text-footer;
     }
   }

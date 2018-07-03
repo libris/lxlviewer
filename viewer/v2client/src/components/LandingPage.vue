@@ -95,7 +95,7 @@ export default {
   flex-wrap: wrap;
 
   @media (min-width: 768px) {
-    margin-top: 15vh;
+    margin-top: 7vh;
   }
 }
 </style>
