@@ -138,6 +138,8 @@ export default {
     <div class="ItemValue-remover" 
       v-show="!isLocked && isRemovable" 
       v-on:click="removeThis()" 
+      @focus="removeHover = true, removeHighlight(true)" 
+      @blur="removeHover = false, removeHighlight(false)"
       @mouseover="removeHover = true, removeHighlight(true)" 
       @mouseout="removeHover = false, removeHighlight(false)">
       <i class="fa fa-minus">

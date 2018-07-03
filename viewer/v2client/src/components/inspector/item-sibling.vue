@@ -234,6 +234,11 @@ export default {
       this.extracting = true;
       this.doExtract();
     },
+    checkFocus() {
+      if (this.focused) {
+        this.toggleExpanded();
+      }
+    },
     replaceWith(value) {
       const newValue = { '@id': value['@id'] };
       this.$store.dispatch('addToQuoted', value);
@@ -285,14 +290,16 @@ export default {
 <template>
   <div class="ItemSibling js-itemLocal"
     tabindex="0"
-    :class="{'is-highlighted': isNewlyAdded, 'is-expanded': expanded}">
+    :class="{'is-highlighted': isNewlyAdded, 'is-expanded': expanded}"
+    @keyup.enter="checkFocus()" 
+    @focus="addFocus()"
+    @blur="removeFocus()">
    
    <strong class="ItemSibling-heading">
       <div class="ItemSibling-label">
         <i class="ItemSibling-arrow fa fa-chevron-right " 
-          :class="{'down': expanded}" @click="toggleExpanded()"
-          tabindex="0"
-          @keyup.enter="toggleExpanded()"></i>
+          :class="{'down': expanded}"
+          @click="toggleExpanded()"></i>
         <span class="type" 
           @click="toggleExpanded($event)" 
           :title="item['@type']">{{ item['@type'] | labelByLang | capitalize }}:</span>
@@ -315,6 +322,8 @@ export default {
             @click="openExtractDialog()" 
             tabindex="0"
             @keyup.enter="openExtractDialog()"
+            @focus="showLinkAction = true, actionHighlight(true)" 
+            @blur="showLinkAction = false, actionHighlight(false)"
             @mouseover="showLinkAction = true, actionHighlight(true)" 
             @mouseout="showLinkAction = false, actionHighlight(false)">
             <tooltip-component 
@@ -328,6 +337,8 @@ export default {
           v-on:click="removeThis(true)"
           @keyup.enter="removeThis(true)"
           tabindex="0"
+          @focus="removeHover = true, removeHighlight(true)" 
+          @blur="removeHover = false, removeHighlight(false)"
           @mouseover="removeHover = true, removeHighlight(true)" 
           @mouseout="removeHover = false, removeHighlight(false)">
           <tooltip-component 
@@ -396,6 +407,10 @@ export default {
 
   &-label {
     margin-right: 40px;
+  }
+
+  &-type {
+    cursor: pointer;
   }
 
   &-arrow {
