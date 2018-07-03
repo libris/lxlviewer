@@ -42,8 +42,7 @@ export default {
       expanded: false,
       removeHover: false,
       showLinkAction: false,
-      copyTitle: false,
-      isFocused: false
+      copyTitle: false
     };
   },
   computed: {
