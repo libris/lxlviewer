@@ -285,15 +285,15 @@ export default {
   <div class="ItemLocal js-itemLocal"
     :class="{'is-highlighted': isLastAdded, 'is-expanded': expanded}"
     tabindex="0" 
-    @keyup.enter="checkFocus()" 
-    @click="toggleExpanded()"
+    @keyup.enter="checkFocus()"
     @focus="addFocus()"
     @blur="removeFocus()">
    
    <strong class="ItemLocal-heading">
      <div class="ItemLocal-label">
         <i class="ItemLocal-arrow fa fa-chevron-right " 
-          :class="{'down': expanded}" ></i>
+          :class="{'down': expanded}" 
+          @click="toggleExpanded()"></i>
         <span class="ItemLocal-type" 
           @click="toggleExpanded($event)" 
           :title="item['@type']">{{ item['@type'] | labelByLang | capitalize }}:</span>
@@ -400,6 +400,10 @@ export default {
 
   &-label {
     margin-right: 40px;
+  }
+
+  &-type {
+    cursor: pointer;
   }
 
   &-arrow {

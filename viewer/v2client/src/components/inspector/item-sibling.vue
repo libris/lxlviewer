@@ -161,9 +161,11 @@ export default {
       this.expanded = false;
     },
     toggleExpanded() {
+      console.log('click');
       if (this.expanded === true) {
         this.collapse();
       } else {
+        console.log('collapsed');
         this.expand();
       }
     },
@@ -292,7 +294,6 @@ export default {
     tabindex="0"
     :class="{'is-highlighted': isNewlyAdded, 'is-expanded': expanded}"
     @keyup.enter="checkFocus()" 
-    @click="toggleExpanded()"
     @focus="addFocus()"
     @blur="removeFocus()">
    
@@ -408,6 +409,10 @@ export default {
 
   &-label {
     margin-right: 40px;
+  }
+
+  &-type {
+    cursor: pointer;
   }
 
   &-arrow {
