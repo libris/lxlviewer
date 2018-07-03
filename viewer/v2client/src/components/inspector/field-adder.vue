@@ -343,6 +343,7 @@ export default {
       @mouseleave="showToolTip = false">
       <i class="FieldAdder-icon fa fa-plus plus-icon" aria-hidden="true">
         <tooltip-component 
+          class="Toolbar-tooltipContainer"
           :tooltip-text="modalTitle"
           keybind-name="open-field-adder"
           :show-tooltip="showToolTip"></tooltip-component>
@@ -432,6 +433,7 @@ export default {
 
   &--inToolbar {
     display: inline-block;
+    position: relative;
   }
 
   &-innerLabel {
