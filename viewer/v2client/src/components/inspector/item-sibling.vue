@@ -161,11 +161,9 @@ export default {
       this.expanded = false;
     },
     toggleExpanded() {
-      console.log('click');
       if (this.expanded === true) {
         this.collapse();
       } else {
-        console.log('collapsed');
         this.expand();
       }
     },
