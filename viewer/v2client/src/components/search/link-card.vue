@@ -123,9 +123,9 @@ export default {
 
   &-link {
     padding: 10px 0;
-    font-size: 16px;
-    font-size: 1.6rem;
-    line-height: 1.2;
+    font-size: 18px;
+    font-size: 1.8rem;
+    line-height: 27px;
     text-align: center;
   }
 
@@ -139,11 +139,10 @@ export default {
   &-html {
     font-size: 16px;
     font-size: 1.6rem;
+    line-height: 27px;
 
     @media (min-width: 768px) {
       display: flex;
-      font-size: 18px;
-      font-size: 1.8rem;
     }
   }
 
