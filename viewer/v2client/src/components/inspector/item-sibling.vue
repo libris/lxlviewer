@@ -234,6 +234,11 @@ export default {
       this.extracting = true;
       this.doExtract();
     },
+    checkFocus() {
+      if (this.focused) {
+        this.toggleExpanded();
+      }
+    },
     replaceWith(value) {
       const newValue = { '@id': value['@id'] };
       this.$store.dispatch('addToQuoted', value);
@@ -285,14 +290,17 @@ export default {
 <template>
   <div class="ItemSibling js-itemLocal"
     tabindex="0"
-    :class="{'is-highlighted': isNewlyAdded, 'is-expanded': expanded}">
+    :class="{'is-highlighted': isNewlyAdded, 'is-expanded': expanded}"
+    @keyup.enter="checkFocus()" 
+    @click="toggleExpanded()"
+    @focus="addFocus()"
+    @blur="removeFocus()">
    
    <strong class="ItemSibling-heading">
       <div class="ItemSibling-label">
         <i class="ItemSibling-arrow fa fa-chevron-right " 
-          :class="{'down': expanded}" @click="toggleExpanded()"
-          tabindex="0"
-          @keyup.enter="toggleExpanded()"></i>
+          :class="{'down': expanded}"
+          @click="toggleExpanded()"></i>
         <span class="type" 
           @click="toggleExpanded($event)" 
           :title="item['@type']">{{ item['@type'] | labelByLang | capitalize }}:</span>

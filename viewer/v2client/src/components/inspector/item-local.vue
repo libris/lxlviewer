@@ -43,6 +43,7 @@ export default {
       removeHover: false,
       showLinkAction: false,
       copyTitle: false,
+      isFocused: false
     };
   },
   computed: {
@@ -228,6 +229,11 @@ export default {
       this.extracting = true;
       this.doExtract();
     },
+    checkFocus() {
+      if (this.focused) {
+        this.toggleExpanded();
+      }
+    },
     replaceWith(value) {
       const newValue = { '@id': value['@id'] };
       this.$store.dispatch('addToQuoted', value);
@@ -279,15 +285,16 @@ export default {
 <template>
   <div class="ItemLocal js-itemLocal"
     :class="{'is-highlighted': isLastAdded, 'is-expanded': expanded}"
-    tabindex="0">
+    tabindex="0" 
+    @keyup.enter="checkFocus()" 
+    @click="toggleExpanded()"
+    @focus="addFocus()"
+    @blur="removeFocus()">
    
    <strong class="ItemLocal-heading">
      <div class="ItemLocal-label">
         <i class="ItemLocal-arrow fa fa-chevron-right " 
-          :class="{'down': expanded}" 
-          @click="toggleExpanded()"
-          tabindex="0"
-          @keyup.enter="toggleExpanded()"></i>
+          :class="{'down': expanded}" ></i>
         <span class="ItemLocal-type" 
           @click="toggleExpanded($event)" 
           :title="item['@type']">{{ item['@type'] | labelByLang | capitalize }}:</span>
