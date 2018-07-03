@@ -314,6 +314,8 @@ export default {
         <i class="ItemLocal-action fa fa-link"
           v-if="inspector.status.editing && isExtractable"
           @click="openExtractDialog()" 
+          @focus="showLinkAction = true, actionHighlight(true, $event)"
+          @blur="showLinkAction = false, actionHighlight(false, $event)"
           @mouseover="showLinkAction = true, actionHighlight(true, $event)" 
           @mouseout="showLinkAction = false, actionHighlight(false, $event)"
           @keyup.enter="openExtractDialog()"
@@ -330,6 +332,8 @@ export default {
           v-on:click="removeThis(true)" 
           @keyup.enter="removeThis(true)"
           tabindex="0"
+          @focus="removeHover = true, removeHighlight(true, $event)"
+          @blur="removeHover = false, removeHighlight(false, $event)"
           @mouseover="removeHover = true, removeHighlight(true, $event)"
           @mouseout="removeHover = false, removeHighlight(false, $event)">
           <tooltip-component 

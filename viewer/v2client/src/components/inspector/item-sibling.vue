@@ -323,6 +323,8 @@ export default {
             @click="openExtractDialog()" 
             tabindex="0"
             @keyup.enter="openExtractDialog()"
+            @focus="showLinkAction = true, actionHighlight(true)" 
+            @blur="showLinkAction = false, actionHighlight(false)"
             @mouseover="showLinkAction = true, actionHighlight(true)" 
             @mouseout="showLinkAction = false, actionHighlight(false)">
             <tooltip-component 
@@ -336,6 +338,8 @@ export default {
           v-on:click="removeThis(true)"
           @keyup.enter="removeThis(true)"
           tabindex="0"
+          @focus="removeHover = true, removeHighlight(true)" 
+          @blur="removeHover = false, removeHighlight(false)"
           @mouseover="removeHover = true, removeHighlight(true)" 
           @mouseout="removeHover = false, removeHighlight(false)">
           <tooltip-component 
