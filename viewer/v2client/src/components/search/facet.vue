@@ -54,10 +54,10 @@ export default {
       :title="determinedLabel | capitalize">
       <span class="Facet-label"
         :title="determinedLabel | capitalize">
-        {{determinedLabel | capitalize}}
+        {{determinedLabel | capitalize}} 
+        ({{observation.totalItems}})
       </span>
     </router-link>
-    <span class="Facet-quantity">({{observation.totalItems}})</span>
   </li>
 </template>
 
@@ -71,20 +71,17 @@ export default {
   text-overflow: ellipsis;
 
   &-link {
-    color: @gray-darker;
-    font-size: 14px;
-    font-size: 1.4rem;
+    font-size: 16px;
+    font-size: 1.6rem;
+
+    &:hover {
+      color: inherit;
+    }
   }
 
   &-label {
     cursor: pointer;
-    color: @gray-darker;
-  }
-
-  &-quantity {
-    color: @gray;
-    font-size: 12px;
-    font-size: 1.2rem;
+    color: @black;
   }
 }
 

@@ -50,51 +50,44 @@ export default {
 </script>
 
 <template>
-  <div class="FacetControls panel panel-default">
-    <div class="panel-body">
-      <h3 class="FacetControls-title">Filtrera</h3>
-      <div v-if="result.totalItems > 0 && result.stats">
-        <nav class="FacetControls-listNav" 
-          :aria-labelledby="facetLabelByLang(dimensionValue.dimension)"
-          v-for="(dimensionValue, dimensionKey) in result.stats.sliceByDimension" 
-          :key="dimensionKey">
-          <h4 class="FacetControls-listTitle js-listTitle" 
-            @click="expandFacets($event)"
-            :id="facetLabelByLang(dimensionValue.dimension)">
-            {{facetLabelByLang(dimensionValue.dimension) | capitalize}}
-          </h4>
-          <!--<range-input v-if="isRangeFacet(dimensionKey)"></range-input>-->
-          <ul class="FacetControls-list js-list">
-            <facet class="FacetControls-listItem"
-            v-for="observation in dimensionValue.observation" 
-            :observation="observation" 
-            :key="observation.label"></facet>
-          </ul>
-        </nav>
-      </div>
-    </div>
+  <div class="FacetControls">
+    <nav class="FacetControls-listNav" 
+      :aria-labelledby="facetLabelByLang(dimensionValue.dimension)"
+      v-for="(dimensionValue, dimensionKey) in result.stats.sliceByDimension" 
+      :key="dimensionKey">
+      <h4 class="FacetControls-listTitle js-listTitle" 
+        @click="expandFacets($event)"
+        :id="facetLabelByLang(dimensionValue.dimension)">
+        {{facetLabelByLang(dimensionValue.dimension) | capitalize}}
+      </h4>
+      <!--<range-input v-if="isRangeFacet(dimensionKey)"></range-input>-->
+      <ul class="FacetControls-list js-list">
+        <facet class="FacetControls-listItem"
+        v-for="observation in dimensionValue.observation" 
+        :observation="observation" 
+        :key="observation.label"></facet>
+      </ul>
+    </nav>
   </div>
 </template>
 
 <style lang="less">
 .FacetControls {
-  padding: 15px 5px 15px 15px;
+  padding: 0 10px;
 
-  &-title {
-    text-transform: uppercase;
-    font-weight: normal;
-    margin: 5px 0;
+  @media (min-width: 768px) {
+    padding: 0;
   }
 
   &-listTitle {
-    margin: 10px 0 2px 0;
+    margin: 10px 0 5px 0;
     padding: 0px;
-    font-size: 16px;
-    font-size: 1.6rem;
+    font-size: 14px;
+    font-size: 1.4rem;
     font-weight: 700;
     cursor: pointer;
     display: inline-block;
-
+    text-transform: uppercase;
 
     &:hover {
       text-decoration: underline;
@@ -116,7 +109,7 @@ export default {
 
   &-list {
     list-style: none;
-    padding: 5px 0 0 15px;
+    padding: 0;
     display: none;
 
     @media (min-width: 992px) {
@@ -129,7 +122,7 @@ export default {
   }
 
   &-listItem {
-    line-height: 1.3;
+    line-height: 27px;
   }
 }
 </style>

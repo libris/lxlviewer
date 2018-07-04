@@ -156,13 +156,18 @@ export default {
 <template>
   <div class="Find">
     <div class="row">
-      <div class="col-sm-12 col-md-3">
+      <div class="col-sm-12">
+        <search-form 
+          :search-perimeter="$route.params.perimeter"
+          :result-data="result">
+        </search-form>
+      </div>
+    </div>
+    <div class="row">
+      <div v-if="result.totalItems > 0 && result.stats" class="col-sm-12 col-md-3">
         <facet-controls :result="result"></facet-controls>
       </div>
       <div class="col-sm-12 col-md-9 Find-content">
-        <search-form 
-          :search-perimeter="$route.params.perimeter"
-          :result-data="result"></search-form>
         <div v-show="searchInProgress" class="panel panel-default">
           <div class="Find-progressText">
             {{ 'Searching' | translatePhrase }} <i class="fa fa-circle-o-notch fa-spin"></i>

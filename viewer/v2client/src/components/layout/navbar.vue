@@ -81,9 +81,6 @@ export default {
             </li>
             <li class="MainNav-item" v-if="!user.isLoggedIn">
               <a :href="`${settings.apiPath}/login/authorize`" class="MainNav-link">
-                <div class="MainNav-iconWrap" aria-hidden="true">
-                  <i class="fa fa-fw fa-sign-in"></i>
-                </div>
                 <span class="MainNav-linkText">{{"Log in" | translatePhrase}}</span>
               </a>
             </li>
