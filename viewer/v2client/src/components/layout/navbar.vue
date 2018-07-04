@@ -211,8 +211,8 @@ export default {
   &-link {
     color: @black;
     cursor: pointer;
-    font-size: 18px;
-    font-size: 1.8rem;
+    font-size: 16px;
+    font-size: 1.6rem;
     padding: 5px;
     display: block;
 
@@ -228,6 +228,8 @@ export default {
 
     @media (min-width: 992px) {
       padding: 20px 15px;
+      font-size: 18px;
+      font-size: 1.8rem;
     }
   }
 

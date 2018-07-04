@@ -425,15 +425,14 @@ export default {
       }
     }
 
-    &:hover, 
-    &:focus {
+    &:hover {
       color: @brand-primary;
       text-decoration: none;
     }
 
     &:focus {
-      outline: 0px dashed @brand-primary;
-      border: 1px dashed @brand-primary;
+      color: inherit;
+      text-decoration: none;
     }
 
     @media (min-width: 768px) {

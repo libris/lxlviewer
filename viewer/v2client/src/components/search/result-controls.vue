@@ -128,29 +128,31 @@ export default {
 </script>
 
 <template>
-  <div class="ResultControls panel panel-default" v-if="!(!showDetails && pageData.totalItems < limit)">
+  <div class="ResultControls" v-if="!(!showDetails && pageData.totalItems < limit)">
     <div class="ResultControls-searchDetails" v-if="showDetails">
-      <p class="ResultControls-resultDescr" id="resultDescr">Sökning på <strong>{{ queryText }}</strong>
-        <span v-if="filters.length > 0">(filtrerat på <span v-for="(filter, index) in filters" :key="index"><strong>{{filter.label}}{{ index === (filters.length - 1) ? '' : ', ' }}</strong></span>)</span>
-      gav <strong>{{pageData.totalItems}}</strong> träffar.
-       <em v-if="pageData.totalItems > limit && $route.params.perimeter === 'remote'">Du har fått fler träffar än vad som kan visas, testa att göra en mer detaljerad sökning om du inte kan hitta det du letar efter.</em>
-      </p>
-     
-      <p v-if="pageData.totalItems > limit && $route.params.perimeter != 'remote'">Visar <strong>{{ limit }}</strong> träffar per sida.</p>
-    </div>
-    <div class="ResultControls-listTypes" v-if="showDetails">
-      <button class="ResultControls-listType"
-        v-on:click="setFull()" 
-        v-bind:class="{'is-active': user.settings.resultListType === 'detailed' }"
-        title="Detailed">
-        <i class="fa fa-th-list"></i>
-      </button>
-      <button class="ResultControls-listType" 
-        v-on:click="setCompact()" 
-        v-bind:class="{'is-active': user.settings.resultListType === 'compact' }"
-        title="Compact">
-        <i class="fa fa-list"></i>
-      </button>
+      <div>
+        <p class="ResultControls-resultDescr" id="resultDescr">Sökning på {{ queryText }}
+          <span v-if="filters.length > 0">(filtrerat på <span v-for="(filter, index) in filters" :key="index">{{filter.label}}{{ index === (filters.length - 1) ? '' : ', ' }}</span>)</span>
+        gav {{pageData.totalItems}} träffar.
+        <em v-if="pageData.totalItems > limit && $route.params.perimeter === 'remote'">Du har fått fler träffar än vad som kan visas, testa att göra en mer detaljerad sökning om du inte kan hitta det du letar efter.</em>
+        </p>
+      
+        <p v-if="pageData.totalItems > limit && $route.params.perimeter != 'remote'" class="ResultControls-resultDescr">Visar {{ limit }} träffar per sida.</p>
+      </div>
+      <div class="ResultControls-listTypes" v-if="showDetails && pageData.totalItems > 0">
+        <button class="ResultControls-listType"
+          v-on:click="setFull()" 
+          v-bind:class="{'is-active': user.settings.resultListType === 'detailed' }"
+          title="Detailed">
+          <i class="fa fa-th-list"></i>
+        </button>
+        <button class="ResultControls-listType" 
+          v-on:click="setCompact()" 
+          v-bind:class="{'is-active': user.settings.resultListType === 'compact' }"
+          title="Compact">
+          <i class="fa fa-list"></i>
+        </button>
+      </div>
     </div>
     <nav v-if="hasPagination && showPages" class="ResultControls-pag">
       <ul class="ResultControls-pagList">
@@ -194,28 +196,28 @@ export default {
 @buttoncolor: darken(@neutral-color, 10%);
 
 .ResultControls {
-  margin: 10px 0px;
-  padding: 20px;
+  margin: 10px 0px 20px 0;
 
   &-searchDetails {
-    color: @gray-darker;
-    justify-content: space-between;  
-    display: block;
+    display: flex;
+    justify-content: space-between;
     width: 100%;
+    color: @gray-darker;
+  }
 
-    @media (min-width: 992px) {
-      display: flex;
-    }
+  &-resultDescr {
+    font-weight: 600;
   }
 
   &-listTypes {
     display: flex;
-    flex-direction: row-reverse;
+    flex-wrap: nowrap;
   }
 
   &-listType {
     background-color: @buttoncolor;
     margin: 0 0 0 0.3em;
+    height: 30px;
 
     &.is-active {
       &.blue {
