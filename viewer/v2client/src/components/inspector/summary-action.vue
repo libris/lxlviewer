@@ -30,10 +30,7 @@ export default {
       return `/katalogisering/${fnurgel}`;
     },
     isLibrisResource() {
-      if (this.options.payload['@id'].indexOf(this.settings.apiPath) > -1) {
-        return true;
-      }
-      return false;
+      return StringUtil.isLibrisResourceUri(this.options.payload['@id'], this.settings.apiPath);
     }
   },
   components: {

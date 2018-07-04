@@ -114,6 +114,24 @@ export function isNumeric(num) {
   return !isNaN(num);
 }
 
+export function getNumberOfVowels(str) {
+  var m = str.match(/[aeiouy]/gi);
+  return m === null ? 0 : m.length;
+}
+
+export function isLibrisResourceUri(uri, apiPath) {
+  if (uri) {
+    if (uri.startsWith(apiPath)) {
+      const uriWithoutPath = uri.replace(apiPath + '/', '');
+      const uriWithoutEnd = uriWithoutPath.split('/')[0].split('#')[0];
+      if (uriWithoutEnd.length > 10 && getNumberOfVowels(uriWithoutEnd) === 0) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
 export function getLabelFromObject(object, language) {
   let label = '';
   if (object.hasOwnProperty('titleByLang')) {

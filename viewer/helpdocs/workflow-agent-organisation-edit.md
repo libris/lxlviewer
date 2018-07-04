@@ -5,7 +5,8 @@ order: 65
 tags:
 - editor
 --- 
-UNDER ARBETE (uppdaterad 2018-06-14)
+
+*Under arbete. Senast uppdaterad 2018-06-15.*
 
 ## Redigera befintlig: Agent - Organisation
 

@@ -42,7 +42,7 @@ export default {
       expanded: false,
       removeHover: false,
       showLinkAction: false,
-      copyTitle: false,
+      copyTitle: false
     };
   },
   computed: {
@@ -228,6 +228,11 @@ export default {
       this.extracting = true;
       this.doExtract();
     },
+    checkFocus() {
+      if (this.focused) {
+        this.toggleExpanded();
+      }
+    },
     replaceWith(value) {
       const newValue = { '@id': value['@id'] };
       this.$store.dispatch('addToQuoted', value);
@@ -279,15 +284,16 @@ export default {
 <template>
   <div class="ItemLocal js-itemLocal"
     :class="{'is-highlighted': isLastAdded, 'is-expanded': expanded}"
-    tabindex="0">
+    tabindex="0" 
+    @keyup.enter="checkFocus()"
+    @focus="addFocus()"
+    @blur="removeFocus()">
    
    <strong class="ItemLocal-heading">
      <div class="ItemLocal-label">
         <i class="ItemLocal-arrow fa fa-chevron-right " 
           :class="{'down': expanded}" 
-          @click="toggleExpanded()"
-          tabindex="0"
-          @keyup.enter="toggleExpanded()"></i>
+          @click="toggleExpanded()"></i>
         <span class="ItemLocal-type" 
           @click="toggleExpanded($event)" 
           :title="item['@type']">{{ item['@type'] | labelByLang | capitalize }}:</span>
@@ -308,6 +314,8 @@ export default {
         <i class="ItemLocal-action fa fa-link"
           v-if="inspector.status.editing && isExtractable"
           @click="openExtractDialog()" 
+          @focus="showLinkAction = true, actionHighlight(true, $event)"
+          @blur="showLinkAction = false, actionHighlight(false, $event)"
           @mouseover="showLinkAction = true, actionHighlight(true, $event)" 
           @mouseout="showLinkAction = false, actionHighlight(false, $event)"
           @keyup.enter="openExtractDialog()"
@@ -324,6 +332,8 @@ export default {
           v-on:click="removeThis(true)" 
           @keyup.enter="removeThis(true)"
           tabindex="0"
+          @focus="removeHover = true, removeHighlight(true, $event)"
+          @blur="removeHover = false, removeHighlight(false, $event)"
           @mouseover="removeHover = true, removeHighlight(true, $event)"
           @mouseout="removeHover = false, removeHighlight(false, $event)">
           <tooltip-component 
@@ -390,6 +400,10 @@ export default {
 
   &-label {
     margin-right: 40px;
+  }
+
+  &-type {
+    cursor: pointer;
   }
 
   &-arrow {

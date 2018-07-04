@@ -381,7 +381,10 @@ export default {
           v-show="!locked" 
           :class="{'disabled': activeModal}">
           <i class="fa fa-trash-o action-button"
+            tabindex="0"
             v-on:click="removeThis(true)"
+            @focus="removeHover = true, removeHighlight(true, $event)" 
+            @blur="removeHover = false, removeHighlight(false, $event)"
             @mouseover="removeHover = true, removeHighlight(true, $event)" 
             @mouseout="removeHover = false, removeHighlight(false, $event)">
             <tooltip-component 
@@ -412,6 +415,8 @@ export default {
             tabindex="0"
             v-on:click="removeThis(true)"
             @keyup.enter="removeThis(true)"
+            @focus="removeHover = true, removeHighlight(true, $event)" 
+            @blur="removeHover = false, removeHighlight(false, $event)" 
             @mouseover="removeHover = true, removeHighlight(true, $event)" 
             @mouseout="removeHover = false, removeHighlight(false, $event)"  >
             <tooltip-component translation="translatePhrase"

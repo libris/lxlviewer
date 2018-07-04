@@ -268,7 +268,7 @@ export function getCard(item, displayDefs, quoted, vocab, settings, context) {
 }
 
 export function getFormattedSelectOption(term, settings, vocab, context) {
-  const maxLength = 40;
+  const maxLength = 43;
   let labelByLang = StringUtil.getLabelByLang(term.id, settings.language, vocab, context);
   if (labelByLang.length > maxLength) {
     labelByLang = labelByLang.substr(0, maxLength-2) + '...';

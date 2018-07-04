@@ -132,8 +132,8 @@ export default {
       <i class="fa fa-university" aria-hidden="true"></i>
       <span class="ReverseRelations-label">
         {{ "Libraries" | translatePhrase }}: 
-        <span v-if="numberOfRelations !== null"> {{numberOfRelations}} </span>
-        <span v-else> {{numberOfRelations || 'Error' | translatePhrase}} </span>
+        <span v-if="isNaN(numberOfRelations)"> {{'Error' | translatePhrase}}</span>
+        <span v-else> {{numberOfRelations}} </span>
       </span>
       <create-item-button class="ReverseRelations-button"
         v-if="user.isLoggedIn && user.getPermissions().registrant" 

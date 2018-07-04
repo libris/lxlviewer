@@ -5,8 +5,7 @@ order: 70
 tags:
 - editor
 --- 
-
-UNDER ARBETE (uppdaterad 2018-06-15)
+*Under arbete. Senast uppdaterad 2018-06-15.*
 
 ## Lägga till Agent - Organisation i Instans av Verk
 
