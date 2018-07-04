@@ -374,7 +374,7 @@ export default {
             v-on:close-marc="closeMarc(), hideToolsMenu()"></marc-preview>
           <a class="Toolbar-menuLink" @click="openMarc" >
           <i class="fa fa-fw fa-eye" aria-hidden="true"></i>
-          {{"Preview MARC21" | translatePhrase}}
+          {{"Preview MARC21" | translatePhrase}} {{ getKeybindingText('preview-marc', ) ? ` (${getKeybindingText('preview-marc')})` : ''}}
           </a>
         </li>
         <li class="remove-option" v-show="user.isLoggedIn && !status.isNew">
