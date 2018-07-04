@@ -88,7 +88,6 @@ export default {
         'KNYGOS',
         'LIBISNET',
         'LIBRIS',
-        'MELINDA', 
         'NORBOK', 
         'NOSP', 
         'NYPL', 
