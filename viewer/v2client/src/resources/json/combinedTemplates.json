@@ -597,11 +597,59 @@
               "@type": "Relationship",
               "entity": {
                 "@type": "Work",
+                "contribution": [
+                  {
+                    "@type": "PrimaryContribution",
+                    "agent": {
+                      "@type": "Person",
+                      "familyName": "",
+                      "givenName": "",
+                      "lifeSpan": ""
+                    }
+                  }
+                ],
                 "hasTitle": [
                   {
                     "@type": "Title",
-                    "mainTitle": "Huvudtitel"
+                    "mainTitle": "",
+                    "partNumber": [
+                      ""
+                    ]
                   }
+                ],
+                "musicKey": "",
+                "musicMedium": [
+                  ""
+                ]
+              }
+            },
+            {
+              "@type": "Relationship",
+              "entity": {
+                "@type": "Work",
+                "contribution": [
+                  {
+                    "@type": "PrimaryContribution",
+                    "agent": {
+                      "@type": "Person",
+                      "familyName": "",
+                      "givenName": "",
+                      "lifeSpan": ""
+                    }
+                  }
+                ],
+                "hasTitle": [
+                  {
+                    "@type": "Title",
+                    "mainTitle": "",
+                    "partNumber": [
+                      ""
+                    ]
+                  }
+                ],
+                "musicKey": "",
+                "musicMedium": [
+                  ""
                 ]
               }
             }
