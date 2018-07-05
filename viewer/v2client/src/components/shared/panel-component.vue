@@ -82,6 +82,7 @@ export default {
   },
   beforeDestroy() {
     this.$nextTick(() => {
+      this.lockScroll(false);
       this.$store.dispatch('setInspectorStatusValue', { property: 'panelOpen', value: false });
     });
   },
