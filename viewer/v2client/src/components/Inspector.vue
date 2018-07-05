@@ -37,6 +37,7 @@ export default {
       postLoaded: false,
       modalOpen: false,
       removeInProgress: false,
+      loadFailure: null,
     }
   },
   methods: {
@@ -82,6 +83,10 @@ export default {
       fetch(fetchUrl).then((response) => {
         if (response.status === 200) {
           return response.json();
+        } else if (response.status === 404 || response.status === 410) {
+          this.loadFailure = {
+            status: response.status,
+          };
         } else {
           this.$store.dispatch('pushNotification', { 
             color: 'red', 
@@ -94,10 +99,12 @@ export default {
           message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)}. ${error}` 
         });
       }).then((result) => {
-        this.result = result;
-        const splitFetched = RecordUtil.splitJson(result);
-        this.$store.dispatch('setInspectorData', splitFetched);
-        this.onPostLoaded();
+        if (typeof result !== 'undefined') {
+          this.result = result;
+          const splitFetched = RecordUtil.splitJson(result);
+          this.$store.dispatch('setInspectorData', splitFetched);
+          this.onPostLoaded();
+        }
       });
     },
     initializeRecord() {
@@ -394,9 +401,21 @@ export default {
 </script>
 <template>
   <div class="Inspector" ref="Inspector">
-    <div v-if="!postLoaded" class="text-center">
+    <div v-if="!postLoaded && !loadFailure" class="text-center">
       <i class="fa fa-circle-o-notch fa-4x fa-spin"></i><br/>
       <h3>{{ 'Loading document' | translatePhrase | capitalize }}</h3>
+    </div>
+    <div v-if="!postLoaded && loadFailure">
+      <h2>{{loadFailure.status}}</h2>
+      <p v-if="loadFailure.status === 404">
+        {{ 'The record' | translatePhrase }} <code>{{documentId}}</code> {{ 'could not be found' | translatePhrase}}.
+      </p>
+      <p v-if="loadFailure.status === 410">
+        {{ 'The record' | translatePhrase }} <code>{{documentId}}</code> {{ 'has been removed' | translatePhrase}}.
+      </p>
+      <router-link to="/">
+        {{ 'Back to home page' | translatePhrase }}
+      </router-link>
     </div>
     <div class="row">
       <div class="col-sm-12 col-md-11">
