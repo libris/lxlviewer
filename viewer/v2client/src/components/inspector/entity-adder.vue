@@ -14,7 +14,7 @@ import * as StructuredValueTemplates from '@/resources/json/structuredValueTempl
 import ProcessedLabel from '../shared/processedlabel';
 import ToolTipComponent from '../shared/tooltip-component';
 import EntitySearchList from '../search/entity-search-list';
-import ModalComponent from '@/components/shared/modal-component.vue';
+import PanelComponent from '@/components/shared/panel-component.vue';
 import ModalPagination from '@/components/inspector/modal-pagination';
 import LensMixin from '../mixins/lens-mixin';
 import { mixin as clickaway } from 'vue-clickaway';
@@ -63,7 +63,7 @@ export default {
     entityType: '',
   },
   components: {
-    'modal-component': ModalComponent,
+    'panel-component': PanelComponent,
     'tooltip-component': ToolTipComponent,
     'entity-search-list': EntitySearchList,
     'modal-pagination': ModalPagination,
@@ -114,6 +114,11 @@ export default {
     },
     inspector() {
       return this.$store.getters.inspector;
+    },
+    computedTitle() {
+      const modalStr = StringUtil.getUiPhraseByLang('Add entity', this.user.settings.language);
+      const addLabelStr = StringUtil.getLabelByLang(this.addLabel, this.user.settings.language, this.resources.vocab, this.resources.context);
+      return `${modalStr} | ${addLabelStr}`;
     },
     getClassTree() {
       const tree = this.getRange.map(type => {
@@ -289,7 +294,6 @@ export default {
     },
     show() {
       this.resetSearch();
-      LayoutUtil.scrollLock(true);
       this.active = true;
       this.$nextTick(() => {
         this.$el.querySelector('.entity-search-keyword-input').focus();
@@ -302,7 +306,6 @@ export default {
     hide() {
       if (!this.active) return;
       this.active = false;
-      LayoutUtil.scrollLock(false);
       this.$store.dispatch('setStatusValue', { 
         property: 'keybindState', 
         value: 'overview' 
@@ -513,16 +516,10 @@ export default {
       </select>
     </div>
 
-    <modal-component v-if="active" class="EntityAdder-modal EntityAdderModal" @close="hide">
-      <template slot="modal-header">
-        {{ "Add entity" | translatePhrase }} | {{ addLabel | labelByLang }}
-        <span class="ModalComponent-windowControl">
-          <i @click="hide" tabindex="0" @keyup.enter="hide" class="fa fa-close"></i>
-        </span>
-      </template>
+    <panel-component v-if="active" class="EntityAdder-panel EntityAdderPanel" :title="computedTitle" @close="hide">
 
-    <template slot="modal-body" class="ScrollContainer">
-      <div class="EntityAdder-modalBody">
+    <template slot="panel-body" class="ScrollContainer">
+      <div class="EntityAdder-panelBody">
         <div class="EntityAdder-controls">
           <div class="EntityAdder-controlForm">
             <!--<input class="entity-search-keyword-input" v-model="keyword" @input="setSearching()"></input>-->
@@ -599,14 +596,14 @@ export default {
         <modal-pagination v-if="!loading && searchResult.length > 0" @go="go" :numberOfPages="numberOfPages" :currentPage="currentPage"></modal-pagination>
       </div>
     </template>
-  </modal-component>
+  </panel-component>
 </div>
 </template>
 
 <style lang="less">
 
 .EntityAdder {
-  &-modalBody {
+  &-panelBody {
     margin-bottom: 100px;
   }
   &.is-innerAdder {

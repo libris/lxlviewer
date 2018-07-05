@@ -2,7 +2,7 @@
   <div id="app" class="App">
     <global-message />
     <navbar-component />
-    <main class="MainContent container " role="main">
+    <main class="MainContent" :class="{ 'container': !inspector.status.panelOpen, 'container-fluid': inspector.status.panelOpen }" role="main">
       <div v-if="!resourcesLoaded" class="text-center">
         <i class="fa fa-circle-o-notch fa-4x fa-spin"></i><br/>
         <h3>{{ 'Loading application' | translatePhrase | capitalize }}</h3>
@@ -14,11 +14,6 @@
     <modal-component title="Error" modal-type="danger" class="ResourceLoadingErrorModal"
       :closeable="false" 
       v-if="resourcesLoadingError">
-      <div slot="modal-header" class="ResourceLoadingErrorModal-header">
-        <header>
-          {{ 'Error' | translatePhrase }}
-        </header>
-      </div>
       <div slot="modal-body" class="ResourceLoadingErrorModal-body">
         Kunde inte hämta nödvändiga resurser.<br><br>
         Testa att ladda om sidan.<br><br>
@@ -40,8 +35,11 @@ import GlobalMessage from '@/components/layout/global-msg';
 export default {
   name: 'App',
   computed: {
+    inspector() {
+      return this.$store.getters.inspector;
+    },
     status() {
-      return this.$store.getters.resources.loadingError;
+      return this.$store.getters.status;
     },
     resourcesLoaded() {
       return this.$store.getters.resources.resourcesLoaded;
@@ -50,8 +48,29 @@ export default {
       return this.$store.getters.resources.loadingError;
     }
   },
+  watch: {
+    '$route.name'(val) {
+      this.correctWidth();
+    },
+  },
+  methods: {
+    correctWidth() {
+      if (this.$route.name === 'Inspector' || this.$route.name === 'NewDocument' ) {
+        this.$store.dispatch('setStatusValue', { 
+          property: 'fullWidth', 
+          value: true 
+        });
+      } else {
+        this.$store.dispatch('setStatusValue', { 
+          property: 'fullWidth', 
+          value: false
+        });
+      }
+    },
+  },
   mounted() {
     this.$nextTick(() => {
+      this.correctWidth();
     });
   },
   components: {
@@ -97,7 +116,12 @@ export default {
 .MainContent {
   flex: 1 0 auto;
 
-  @media screen and (max-width: @screen-sm-min){
+  &.container-fluid {
+    margin-right: 0px;
+    margin-left: 0px;
+  }
+
+  @media screen and (max-width: @screen-lg-min){
     width: 100%;
   }
 }

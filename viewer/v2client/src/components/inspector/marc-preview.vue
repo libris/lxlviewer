@@ -1,10 +1,10 @@
 <script>
-import * as DataUtil from '../../utils/data';
-import * as httpUtil from '../../utils/http';
-import * as LayoutUtil from '../../utils/layout';
+import * as DataUtil from '@/utils/data';
+import * as httpUtil from '@/utils/http';
+import * as LayoutUtil from '@/utils/layout';
 import * as _ from 'lodash';
 import { mapGetters } from 'vuex';
-import ModalComponent from '@/components/shared/modal-component.vue';
+import PanelComponent from '@/components/shared/panel-component.vue';
 
 //import { changeStatus, changeNotification } from '../../vuex/actions';
 //import { getVocabulary, getSettings, getDisplayDefinitions, getEditorData } from '../../vuex/getters';
@@ -49,14 +49,12 @@ export default {
       if (!this.active) return;
       this.active = false;
       this.$emit('close-marc');
-      LayoutUtil.scrollLock(false);
       this.$store.dispatch('setStatusValue', { 
         property: 'keybindState', 
         value: 'overview' 
       });
     },
     showMarc() {
-      LayoutUtil.scrollLock(true);
       this.$store.dispatch('setStatusValue', { 
         property: 'keybindState', 
         value: 'marc-preview'
@@ -114,7 +112,7 @@ export default {
     },
   },
   components: {
-    'modal-component': ModalComponent,
+    'panel-component': PanelComponent,
   },
   mounted() { 
     this.$nextTick(() => {
@@ -124,15 +122,9 @@ export default {
 </script>
 
 <template>
-  <modal-component v-if="active" class="" @close="hide">
-    <template slot="modal-header">
-      {{ "Preview MARC21" | translatePhrase }}
-      <span class="ModalComponent-windowControl">
-        <i @click="hide" class="fa fa-close"></i>
-      </span>
-    </template>
+  <panel-component v-if="active" class="" @close="hide" title="Preview MARC21">
     
-    <template slot="modal-body">
+    <template slot="panel-body">
       <div class="MarcPreview">
         <div class="MarcPreview-body">
           <div class="MarcPreview-status" v-show="!dataLoaded">
@@ -178,7 +170,7 @@ export default {
        
       </div>
     </template>
-  </modal-component>
+  </panel-component>
 </template>
 
 <style lang="less">

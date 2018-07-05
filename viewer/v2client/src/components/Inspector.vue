@@ -400,25 +400,24 @@ export default {
 }
 </script>
 <template>
-  <div class="Inspector" ref="Inspector">
-    <div v-if="!postLoaded && !loadFailure" class="text-center">
-      <i class="fa fa-circle-o-notch fa-4x fa-spin"></i><br/>
-      <h3>{{ 'Loading document' | translatePhrase | capitalize }}</h3>
-    </div>
-    <div v-if="!postLoaded && loadFailure">
-      <h2>{{loadFailure.status}}</h2>
-      <p v-if="loadFailure.status === 404">
-        {{ 'The record' | translatePhrase }} <code>{{documentId}}</code> {{ 'could not be found' | translatePhrase}}.
-      </p>
-      <p v-if="loadFailure.status === 410">
-        {{ 'The record' | translatePhrase }} <code>{{documentId}}</code> {{ 'has been removed' | translatePhrase}}.
-      </p>
-      <router-link to="/">
-        {{ 'Back to home page' | translatePhrase }}
-      </router-link>
-    </div>
-    <div class="row">
-      <div class="col-sm-12 col-md-11">
+  <div class="row">
+    <div class="Inspector col-sm-12" :class="{'col-md-11': !inspector.status.panelOpen, 'col-md-7': inspector.status.panelOpen }" ref="Inspector">
+      <div v-if="!postLoaded && !loadFailure" class="text-center">
+        <i class="fa fa-circle-o-notch fa-4x fa-spin"></i><br/>
+        <h3>{{ 'Loading document' | translatePhrase | capitalize }}</h3>
+      </div>
+      <div v-if="!postLoaded && loadFailure">
+        <h2>{{loadFailure.status}}</h2>
+        <p v-if="loadFailure.status === 404">
+          {{ 'The record' | translatePhrase }} <code>{{documentId}}</code> {{ 'could not be found' | translatePhrase}}.
+        </p>
+        <p v-if="loadFailure.status === 410">
+          {{ 'The record' | translatePhrase }} <code>{{documentId}}</code> {{ 'has been removed' | translatePhrase}}.
+        </p>
+        <router-link to="/">
+          {{ 'Back to home page' | translatePhrase }}
+        </router-link>
+      </div>
         <div v-if="postLoaded" class="Inspector-entity panel panel-default">
           <div class="panel-body">
             <h1 class="Inspector-title" :title="recordType">
@@ -461,11 +460,10 @@ export default {
           </div>
         </div>
       </div>
-      <div v-if="postLoaded" class="col-12 col-sm-12 col-md-1">
-        <div class="Toolbar-placeholder" ref="ToolbarPlaceholder"></div>
-        <div class="Toolbar-container" ref="ToolbarTest">
-          <toolbar></toolbar>
-        </div>
+    <div v-if="postLoaded" class="col-12 col-sm-12"  :class="{'col-md-1': !inspector.status.panelOpen, 'col-md-5': inspector.status.panelOpen }">
+      <div class="Toolbar-placeholder" ref="ToolbarPlaceholder"></div>
+      <div class="Toolbar-container" ref="ToolbarTest">
+        <toolbar></toolbar>
       </div>
     </div>
     <modal-component title="Error" modal-type="danger" @close="closeRemoveModal" class="RemovePostModal" 
