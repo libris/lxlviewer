@@ -143,13 +143,13 @@ export default {
         <button class="ResultControls-listType"
           v-on:click="setFull()" 
           v-bind:class="{'is-active': user.settings.resultListType === 'detailed' }"
-          title="Detailed">
+          :title="'Detailed view' | translatePhrase">
           <i class="fa fa-th-list"></i>
         </button>
         <button class="ResultControls-listType" 
           v-on:click="setCompact()" 
           v-bind:class="{'is-active': user.settings.resultListType === 'compact' }"
-          title="Compact">
+          :title="'Compact view' | translatePhrase">
           <i class="fa fa-list"></i>
         </button>
       </div>
