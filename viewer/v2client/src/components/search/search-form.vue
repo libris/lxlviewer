@@ -360,7 +360,7 @@ export default {
           <input type="checkbox" class="SearchBar-typeInput"
             :id="filter['@id']"
             v-model="inputData.ids"
-            :value="filter['@id']">
+            :value="filter['@id']"/>
             <span class="SearchBar-typeText">
               {{ filter.label }}
             </span>
@@ -454,11 +454,11 @@ export default {
   }
 
   &-helpIcon {
+    font-size: @icon-m;
+    color: @icon-default;
+    float: right;
     clear: right;
     cursor: pointer;
-    font-size: 20px;
-    float: right;
-    color: @gray-darker;
 
     & > i {
       vertical-align: bottom;
@@ -566,19 +566,14 @@ export default {
   }
 
   &-clear {
+    color: @icon-default;
     cursor: pointer;
     align-self: center;
     flex: 1 1 2%;
-
-    &:hover {
-        color: #555;
-    }
   }
 
   &-submit {
-    font-size: 20px;
-    font-size: 2rem;
-    font-weight: 700;
+    font-size: @icon-m;
     height: 42px;
     border: 0;
     border-radius: 0 4px 4px 0;

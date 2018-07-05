@@ -216,18 +216,26 @@ export default {
   }
 
   &-listType {
-    background-color: @buttoncolor;
-    margin: 0 0 0 0.3em;
+    color: @icon-default;
+    background-color: transparent;
+    font-size: @icon-m;
     height: 30px;
 
-    &.is-active {
-      &.blue {
-        background-color: @brand-id;
-      }
+    &:hover, 
+    &:focus {
+      background-color: transparent;
+      color: @icon-default--hover;
+    }
 
-      background-color: @brand-primary;
+    i {
+      color: inherit;
+    }
+
+    &.is-active {
+      color: @icon-primary;
+
       i {
-        color: @neutral-color;
+        color: inherit;
       }
     }
   }
