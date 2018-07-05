@@ -43,6 +43,9 @@ export default {
     }
   },
   methods: {
+    lockScroll(boolValue) {
+      LayoutUtil.scrollLock(boolValue);
+    },
     toggleFullView() {
       const user = this.user;
       user.settings.forceFullViewPanel = !user.settings.forceFullViewPanel;
@@ -86,7 +89,11 @@ export default {
 </script>
 
 <template>
-  <div class="PanelComponent" :class="{'is-fadedIn': fadedIn, 'is-danger': modalType === 'danger'}">
+  <div class="PanelComponent"
+  v-on:mouseenter="lockScroll(true)"
+  v-on:mouseleave="lockScroll(false)"
+  :class="{'is-fadedIn': fadedIn, 'is-danger': modalType === 'danger'}"
+  >
     <div class="PanelComponent-container" :class="{'full-view': user.settings.forceFullViewPanel }">
       <div class="PanelComponent-header">
         <slot name="panel-header">
