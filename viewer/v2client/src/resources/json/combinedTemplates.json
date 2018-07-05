@@ -514,15 +514,32 @@
             }
           ],
           "language": [{
-            "@id": "https://id.kb.se/language/swe"
+            "@id": "https://id.kb.se/language/zxx"
           }],
           "genreForm": [],
           "hasNote": [
             {
               "@type": "marc:LanguageNote",
-              "label": ""
+              "label": "",
+              "hasNotation": [
+                {
+                  "@type": "Notation",
+                  "label": "Traditionell västerländsk notskrift"
+                }
+              ]
+            },
+            {
+              "@type": "marc:LanguageNote",
+              "label": "",
+              "hasNotation": [
+                {
+                  "@type": "Notation",
+                  "label": ""
+                }
+              ]
             }
           ],
+          "intendedAudience": [],
           "classification": [{
               "@type": "ClassificationDdc",
               "code": "",
