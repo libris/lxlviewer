@@ -69,14 +69,6 @@ export default {
       };
       return true;
     },
-    initToolbarFloat() {
-      const toolbarPlaceholderEl = this.$refs.ToolbarPlaceholder;
-      const toolbarTestEl = this.$refs.ToolbarTest;
-      const width = typeof toolbarPlaceholderEl !== 'undefined' ? toolbarPlaceholderEl.clientWidth : 65;
-      if (typeof toolbarTestEl !== 'undefined') {
-        toolbarTestEl.style.width = `${width}px`;
-      }
-    },
     fetchDocument() {
       const randomHash = md5(new Date());
       const fetchUrl = `${this.settings.apiPath}/${this.documentId}/data.jsonld?${randomHash}`;
@@ -315,9 +307,6 @@ export default {
     },
     'postLoaded'(val) {
       if (val === true) {
-        setTimeout(() => {
-          this.initToolbarFloat();
-        }, 500);
       }
     },
     'inspector.event'(val, oldVal) {
@@ -392,9 +381,6 @@ export default {
       this.initJsonOutput();
 
       let self = this;
-      window.addEventListener('resize', function() {
-        self.initToolbarFloat();
-      });
     });
   },
 }
