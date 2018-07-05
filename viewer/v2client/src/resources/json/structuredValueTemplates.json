@@ -25,6 +25,22 @@
     "@type": "ISSN",
     "value": ""
   },
+  "MusicPlate": {
+    "@type": "MusicPlate",
+    "value": "",
+    "agent": {
+        "@type": "Organization",
+        "name": ""
+    }
+  },
+  "MusicPublisherNumber": {
+    "@type": "MusicPublisherNumber",
+    "value": "",
+    "agent": {
+        "@type": "Organization",
+        "name": ""
+    }
+  },
   "Publication": {
     "@type": "Publication",
     "place": [
