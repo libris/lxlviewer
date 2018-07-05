@@ -316,6 +316,283 @@
           "subject": []
         }
       }
+    },
+    "printedmusicalnotes": {
+      "label": "Noterad musik",
+      "description": "Musiktryck - RDA",
+      "value": {
+        "record": {
+          "@id": "https://id.kb.se/TEMPID",
+          "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          },
+          "bibliography": [
+            {
+              "@type": "Library",
+              "sigel": [""]
+            }
+          ],
+          "descriptionConventions": [{
+              "@id": "https://id.kb.se/marc/Isbd"
+            },
+            {
+              "@type": "DescriptionConventions",
+              "code": "rda"
+            }
+          ],
+          "descriptionLanguage": [{
+            "@id": "https://id.kb.se/language/swe"
+          }],
+          "encodingLevel": "",
+          "recordStatus": "",
+          "marc:catalogingSource": {
+            "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
+          }
+        },
+        "mainEntity": {
+          "@id": "https://id.kb.se/TEMPID#it",
+          "@type": "Instance",
+          "issuanceType": "Monograph",
+          "hasTitle": [{
+              "@type": "Title",
+              "mainTitle": "",
+              "subtitle": ""
+            }
+          ],
+          "responsibilityStatement": "",
+          "identifiedBy": [
+            {
+              "@type": "ISBN",
+              "value": "",
+              "qualifier": ""
+            },
+            {
+              "@type": "ISMN",
+              "value": ""
+            },
+            {
+              "@type": "MusicPlate",
+              "value": "",
+              "agent": {
+                  "@type": "Organization",
+                  "name": ""
+              }
+            },
+            {
+              "@type": "MusicPublisherNumber",
+              "value": "",
+              "agent": {
+                  "@type": "Organization",
+                  "name": ""
+              }
+            }
+          ],
+          "editionStatement": "",
+          "editionStatementRemainder": "",
+          "marc:otherPhysicalDetails": "",
+          "publication": [
+            {
+              "@type": "PrimaryPublication",
+              "year": "",
+              "date": [""],
+              "country": [ {"@id": "https://id.kb.se/country/sw"} ],
+              "place": {
+                "@type": "Place",
+                "label": ""
+              },
+              "agent": {
+                "@type": "Agent",
+                "label": ""
+              }
+            }
+          ],
+          "manufacture": [{
+            "@type": "Manufacture",
+            "agent": [{
+              "@type": "Agent",
+              "label": [
+                ""
+              ]
+            }],
+            "date": [
+              ""
+            ],
+            "place": [{
+              "@type": "Place",
+              "label": [
+                ""
+              ]
+            }]
+          }],
+          "copyright": [{
+            "@type": "Copyright",
+            "date": ""
+          }],
+          "mediaType": [{"@id": "https://id.kb.se/term/rda/Unmediated"}],
+          "carrierType": [{"@id": "https://id.kb.se/term/rda/Volume"}],
+          "extent": [{
+            "@type": "Extent",
+            "label": ""
+          }],
+          "hasDimensions": {
+            "@type": "Dimensions",
+            "label": ""
+          },
+          "seriesMembership": [
+            {
+              "@type": "SeriesMembership",
+              "inSeries": {
+                "@type": "Instance",
+                "identifiedBy": [
+                  {
+                    "@type": "ISSN",
+                    "value": ""
+                  }
+                ],
+                "instanceOf": {
+                  "@type": "Work",
+                  "hasTitle": [
+                    {
+                      "@type": "Title",
+                      "mainTitle": ""
+                    }
+                  ]
+                }
+              },
+              "marc:seriesTracingPolicy": "",
+              "seriesEnumeration": "",
+              "seriesStatement": [""]
+            }
+          ],
+          "hasNote": [{
+              "@type": "Note",
+              "label": ""
+          }],
+          "supplementaryContent": {
+            "@type": "SupplementaryContent",
+            "label": ""
+          },
+          "tableOfContents": [
+            {
+              "@type": "TableOfContents",
+              "label": ""
+            },
+            {
+              "@type": "TableOfContents",
+              "hasPart": [
+                {
+                  "@type": "ToCEntry",
+                  "label": "",
+                  "responsibilityStatement": ""
+                },
+                {
+                  "@type": "ToCEntry",
+                  "label": "",
+                  "responsibilityStatement": ""
+                }
+              ]
+            }
+          ],
+          "accompaniedBy": [
+            {
+              "@type": "Resource",
+              "label": ""
+            }
+          ],
+          "instanceOf": {
+            "@id": "https://id.kb.se/TEMPID#work"
+          }
+        },
+        "work": {
+          "@id": "https://id.kb.se/TEMPID#work",
+          "@type": "NotatedMusic",
+          "hasTitle": [
+            {
+              "@type": "Title",
+              "mainTitle": ""
+            }
+          ],
+          "language": [{
+            "@id": "https://id.kb.se/language/swe"
+          }],
+          "genreForm": [],
+          "hasNote": [
+            {
+              "@type": "marc:LanguageNote",
+              "label": ""
+            }
+          ],
+          "classification": [{
+              "@type": "ClassificationDdc",
+              "code": "",
+              "edition": "full",
+              "editionEnumeration": "23/swe"
+            },
+            {
+              "@type": "Classification",
+              "code": "",
+              "inScheme": {
+                "@type": "ConceptScheme",
+                "@id": "https://id.kb.se/term/kssb/8",
+                "code": "kssb",
+                "version": "8"
+              }
+            }
+          ],
+          "contribution": [
+            {
+              "@type": "PrimaryContribution",
+              "agent": {
+                "@type": "Person",
+                "familyName": "",
+                "givenName": "",
+                "lifeSpan": ""
+              },
+              "role": [{
+                "@id": "https://id.kb.se/relator/composer"
+              }]
+            },
+            {
+              "@type": "Contribution",
+              "agent": {
+                "@type": "Person",
+                "familyName": "",
+                "givenName": "",
+                "lifeSpan": ""
+              },
+              "role": []
+            },
+            {
+              "@type": "Contribution",
+              "agent": {
+                "@type": "Person",
+                "familyName": "",
+                "givenName": "",
+                "lifeSpan": ""
+              },
+              "role": []
+            }
+          ],
+          "contentType": [{"@id": "https://id.kb.se/term/rda/NotatedMusic"}],
+          "relationship": [
+            {
+              "@type": "Relationship",
+              "entity": {
+                "@type": "Work",
+                "hasTitle": [
+                  {
+                    "@type": "Title",
+                    "mainTitle": "Huvudtitel"
+                  }
+                ]
+              }
+            }
+          ],
+          "subject": []
+
+        }
+      }
     }
   },
   "agent": {
