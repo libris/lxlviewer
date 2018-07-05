@@ -404,48 +404,48 @@ export default {
           {{ 'Back to home page' | translatePhrase }}
         </router-link>
       </div>
-        <div v-if="postLoaded" class="Inspector-entity panel panel-default">
-          <div class="panel-body">
-            <h1 class="Inspector-title" :title="recordType">
-              <span>{{ recordType | labelByLang }}</span>
-              <span v-if="this.inspector.status.isNew"> - [{{ "New record" | translatePhrase }}]</span>
-            </h1>
+      <div v-if="postLoaded" class="Inspector-entity panel panel-default">
+        <div class="panel-body">
+          <h1 class="Inspector-title" :title="recordType">
+            <span>{{ recordType | labelByLang }}</span>
+            <span v-if="this.inspector.status.isNew"> - [{{ "New record" | translatePhrase }}]</span>
+          </h1>
 
-            <div class="Inspector-header">
+          <div class="Inspector-header">
 
-              <div class="Inspector-admin">
-                <entity-changelog></entity-changelog>
+            <div class="Inspector-admin">
+              <entity-changelog></entity-changelog>
 
-                <div class="Inspector-adminMeta">
-                  <a class="Inspector-adminMetaLink" tabindex="0"
-                    v-show="inspector.status.focus === 'record'" 
-                    v-on:click="toggleEditorFocus()">
-                    <i class="fa fa-fw fa-toggle-on"></i> {{'Admin metadata' | translatePhrase}}
-                  </a>
-                  <a class="Inspector-adminMetaLink" tabindex="0"
-                    v-show="inspector.status.focus === 'mainEntity'" 
-                    v-on:click="toggleEditorFocus()">
-                    <i class="fa fa-fw fa-toggle-off"></i> {{'Admin metadata' | translatePhrase}}
-                  </a>
-                </div>
+              <div class="Inspector-adminMeta">
+                <a class="Inspector-adminMetaLink" tabindex="0"
+                  v-show="inspector.status.focus === 'record'" 
+                  v-on:click="toggleEditorFocus()">
+                  <i class="fa fa-fw fa-toggle-on"></i> {{'Admin metadata' | translatePhrase}}
+                </a>
+                <a class="Inspector-adminMetaLink" tabindex="0"
+                  v-show="inspector.status.focus === 'mainEntity'" 
+                  v-on:click="toggleEditorFocus()">
+                  <i class="fa fa-fw fa-toggle-off"></i> {{'Admin metadata' | translatePhrase}}
+                </a>
               </div>
-
-              <reverse-relations class="Inspector-reverse" 
-                v-if="!inspector.status.isNew"></reverse-relations>
             </div>
-            
-            <entity-header id="main-header" 
-              :full="true" 
-              v-if="!isItem"></entity-header>
-            <entity-form 
-              :editing-object="inspector.status.focus" 
-              :locked="!inspector.status.editing"></entity-form>
-            <code v-if="user.settings.appTech">
-              {{result}}
-            </code>
+
+            <reverse-relations class="Inspector-reverse" 
+              v-if="!inspector.status.isNew"></reverse-relations>
           </div>
+          
+          <entity-header id="main-header" 
+            :full="true" 
+            v-if="!isItem"></entity-header>
+          <entity-form 
+            :editing-object="inspector.status.focus" 
+            :locked="!inspector.status.editing"></entity-form>
+          <code v-if="user.settings.appTech">
+            {{result}}
+          </code>
         </div>
       </div>
+    </div>
     <div v-if="postLoaded" class="col-12 col-sm-12"  :class="{'col-md-1': !inspector.status.panelOpen, 'col-md-5': inspector.status.panelOpen }">
       <div class="Toolbar-placeholder" ref="ToolbarPlaceholder"></div>
       <div class="Toolbar-container" ref="ToolbarTest">

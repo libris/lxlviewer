@@ -52,6 +52,8 @@ export default {
   },
   methods: {
   },
+  methods: {
+  },
   mounted() {
     this.$nextTick(() => {
     });
