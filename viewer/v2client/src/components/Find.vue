@@ -168,7 +168,7 @@ export default {
         <facet-controls :result="result"></facet-controls>
       </div>
       <div class="col-sm-12 col-md-9 Find-content">
-        <div v-show="searchInProgress" class="panel panel-default">
+        <div v-show="searchInProgress">
           <div class="Find-progressText">
             {{ 'Searching' | translatePhrase }} <i class="fa fa-circle-o-notch fa-spin"></i>
           </div>
@@ -187,7 +187,9 @@ export default {
 
 .Find {
   &-progressText {
-    padding: 20px;
+    margin-top: 10px;
+    color: @gray-darker;
+    font-weight: 600;
   }
 }
 

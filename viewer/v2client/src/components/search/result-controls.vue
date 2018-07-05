@@ -154,7 +154,7 @@ export default {
         </button>
       </div>
     </div>
-    <nav v-if="hasPagination && showPages" class="ResultControls-pag">
+    <nav v-if="hasPagination && showPages">
       <ul class="ResultControls-pagList">
         <li class="ResultControls-pagItem" 
           v-bind:class="{ 'is-disabled': !pageData.first || pageData['@id'] === pageData.first['@id'] }">
@@ -207,6 +207,7 @@ export default {
 
   &-resultDescr {
     font-weight: 600;
+    padding-right: 20px;
   }
 
   &-listTypes {
@@ -232,15 +233,8 @@ export default {
   }
 
   &-pagDecor {
-    font-size: 12px;
-    border: none;
-    line-height: 1;
-    color: @black;
-    background-color: @neutral-color;
-
-    &:hover {
-      background-color: @neutral-color;
-    }
+    color: @gray;
+    cursor: initial;
   }
 
   &-pagList {
@@ -258,47 +252,46 @@ export default {
   }
 
   &-pagLink {
-    border: 1px solid #fff;
-    color: #009788;
-    float: left;
+    color: @grey;
     font-weight: bold;
     position: relative;
-    padding: 6px 12px;
+    padding: 5px 10px;
     text-transform: uppercase;
-    opacity: 0.7;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: @brand-primary;
+      text-decoration: none;
+    }
 
     .is-disabled & {
-      background-color: #fff;
-      border: 1px solid #ddd;
-      color: #c4c7ca;
+      color: @gray-light;
+      cursor: initial;
 
       &:hover {
-        border-color: #ddd;
-        color: #c4c7ca;
+        color: @gray-light;
       }
     }
 
     .is-active & {
-      background-color: #009788;
-      border-color: #009788;
-      color: #fff;
+      color: @black;
       z-index: 3;
 
-      &:hover {
-        border-color: #009788;
-        color: #fff;
+      &::after {
+        content: '';
+        position: absolute;
+        width: 75%;
+        height: 3px;
+        background-color: @brand-primary;
+        bottom: -5px;
+        left: 0;
+        right: 0;
+        margin: auto;
       }
-    }
 
-    &:hover {
-      border-color: #009788;
-      color: #009788;
-      opacity: 1;
-      text-decoration: none;
-    }
-
-    &.pointer {
-      cursor: pointer;
+      &:hover {
+        color: @black;
+      }
     }
 
     i {
