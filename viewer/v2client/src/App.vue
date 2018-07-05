@@ -49,28 +49,11 @@ export default {
     }
   },
   watch: {
-    '$route.name'(val) {
-      this.correctWidth();
-    },
   },
   methods: {
-    correctWidth() {
-      if (this.$route.name === 'Inspector' || this.$route.name === 'NewDocument' ) {
-        this.$store.dispatch('setStatusValue', { 
-          property: 'fullWidth', 
-          value: true 
-        });
-      } else {
-        this.$store.dispatch('setStatusValue', { 
-          property: 'fullWidth', 
-          value: false
-        });
-      }
-    },
   },
   mounted() {
     this.$nextTick(() => {
-      this.correctWidth();
     });
   },
   components: {
