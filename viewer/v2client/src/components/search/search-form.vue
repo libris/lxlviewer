@@ -5,6 +5,7 @@ import * as httpUtil from '@/utils/http';
 import helpdocsJson from '@/resources/json/help.json';
 import * as StringUtil from '@/utils/string';
 import RemoteDatabases from '@/components/search/remote-databases';
+import TabMenu from '@/components/shared/tab-menu';
 import marked from 'marked';
 import { mapGetters } from 'vuex';
 
@@ -38,6 +39,9 @@ export default {
     }
   },
   methods: {
+    switchPerimeter(id) {
+      this.$router.push({ path: `/search/${id}` });
+    },
     removeTags(html) {
       let regexHtml = html.replace(/<h1.*>.*?<\/h1>/ig,'').replace(/<h2.*>.*?<\/h2>/ig,'');
       regexHtml = regexHtml.replace(/(<\/?(?:code|br|p)[^>]*>)|<[^>]+>/ig, '$1');
@@ -238,6 +242,7 @@ export default {
   },
   components: {
     'remote-databases': RemoteDatabases,
+    'tab-menu': TabMenu,
   },
   watch: {
     currentComputedInput(newValue) {
@@ -273,13 +278,11 @@ export default {
 
 <template>
   <div class="SearchBar">
-    <div class="SearchBar-sourceTabs">
-      <router-link to="/search/libris" class="SearchBar-sourceTab"
-        :class="{'is-active': searchPerimeter === 'libris' }">Libris
-      </router-link>
-      <router-link to="/search/remote" class="SearchBar-sourceTab"
-        :class="{'is-active': searchPerimeter === 'remote' }">Andra källor
-      </router-link>
+    <div class="SearchBar-topControl">
+      <tab-menu @go="switchPerimeter" :tabs="[
+        { 'id': 'libris', 'text': 'Libris' },
+        { 'id': 'remote', 'text': 'Other sources' },
+      ]" :active="searchPerimeter"></tab-menu>
       <div  v-if="searchPerimeter === 'libris'"  class="SearchBar-help" @mouseleave="hideHelp()">
         <div class="SearchBar-helpBox dropdown" >
           <span class="SearchBar-helpIcon">
@@ -293,7 +296,7 @@ export default {
           </div>
         </div>
       </div> 
-    </div>      
+    </div>
     <form id="searchForm" class="SearchBar-form">
       <div class="SearchBar-formContent is-librisSearch" id="librisPanel" 
         v-if="searchPerimeter === 'libris'">
@@ -378,68 +381,14 @@ export default {
   padding: 10px;
   transition: 0.3s ease margin-top;
 
+  &-topControl {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
   @media (min-width: 768px) {
     padding: 0 0 20px 0;
-  }
-
-  &-sourceTabs {
-    display: flex;
-    margin: 20px 0;
-    padding: 0;
-  }
-
-  &-sourceTab {
-    display: inline-block;
-    color: @grey;
-    font-weight: 700;
-    font-size: 16px;
-    font-size: 1.6rem;
-    margin: 5px 10px;
-    text-transform: uppercase;
-    transition: color 0.2s ease;
-    border: 1px dashed transparent;
-
-    &:first-of-type {
-      margin-left: 0;
-    }
-
-    &.is-active {
-      position: relative;
-      color: @black;
-      text-decoration: none;
-
-      &::after {
-        content: '';
-        position: absolute;
-        width: 100%;
-        height: 3px;
-        background-color: @brand-primary;
-        bottom: -5px;
-        left: 0;
-        right: 0;
-        margin: auto;
-      }
-
-      &:hover {
-        color: @black;
-      }
-    }
-
-    &:hover {
-      color: @brand-primary;
-      text-decoration: none;
-    }
-
-    &:focus {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    @media (min-width: 768px) {
-      font-size: 18px;
-      font-size: 1.8rem;
-    }
-
   }
 
   &-formContent {
