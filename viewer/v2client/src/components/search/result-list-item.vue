@@ -89,16 +89,18 @@ export default {
 .ResultItem {
   &--detailed {
     list-style: none;
-    margin-bottom: 0.5em;
+    margin-bottom: 15px;
     .panel-mixin(@neutral-color);
   }
 
   &--compact {
     display: flex;
+    align-items: center;
     margin: -1px 0 0 0;
     background-color: @white;
-    border: 1px solid #ccc;
-    padding: 0.4em 1em;
+    border: 1px solid @gray-light;
+    border-radius: 4px;
+    padding: 0.5em 1em;
     line-height: 1.2em;
 
     & .fa-external-link {
@@ -108,27 +110,27 @@ export default {
   }
 
   &-title {
+    color: @brand-primary;
     margin: 0px;
     display: inline-block;
     flex-basis: 50%;
     flex-grow: 1;
     font-size: 20px;
     font-size: 2.0rem;
-    font-weight: normal;
     line-height: 1.3;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
 
-  &-link {
-    color: @brand-primary;
-  }
-
   &-category {
+    color: @gray;
     display: inline-block;
     flex-basis: 30%;
-    font-size: 14px;
+    font-size: 12px;
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    font-weight: 600;
     text-align: right;
     white-space: nowrap;
     overflow: hidden;

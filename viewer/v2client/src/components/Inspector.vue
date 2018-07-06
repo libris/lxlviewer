@@ -419,7 +419,7 @@ export default {
     </div>
     <div class="row">
       <div class="col-sm-12 col-md-11">
-        <div v-if="postLoaded" class="Inspector-entity panel panel-default">
+        <div v-if="postLoaded" class="Inspector-entity">
           <div class="panel-body">
             <h1 class="Inspector-title" :title="recordType">
               <span>{{ recordType | labelByLang }}</span>

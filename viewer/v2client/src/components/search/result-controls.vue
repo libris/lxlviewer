@@ -202,7 +202,8 @@ export default {
     display: flex;
     justify-content: space-between;
     width: 100%;
-    color: @gray-darker;
+    color: @gray;
+    line-height: 1.2;
   }
 
   &-resultDescr {

@@ -198,26 +198,23 @@ export default {
   font-size: 12px;
   font-size: 1.2rem;
   justify-content: space-between;
-  padding: 10px;
   width: 100%;
 
-  .HeaderComponent & {
-    color: #fff;
+  .ResultList & {
+    padding: 15px 20px;
   }
 
   &-meta {
     border-width: 0px;
-
-    .ResultList & {
-      color: #8a8a8a;
-    }
+    color: @gray;
   }
 
   &-type {
     display: block;
+    text-transform: uppercase;
+    font-weight: 600;
     flex-basis: 85%;
     flex-grow: 2;
-    font-weight: bold;
     margin-bottom: -0.4em;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -243,16 +240,20 @@ export default {
   &-info {
     min-height: 7.5em;
     overflow: hidden;
+    line-height: 1.4;
   }
 
   &-title {
     font-size: 20px;
-    font-size: 2.0rem;
-    line-height: 1.2;
-    margin: 5px 0;
+    font-size: 2rem;
+    margin: 8px 0;
     overflow: hidden;
     width: 100%; 
     position: relative;
+
+    .ResultList & {
+      color: @brand-primary;
+    }
 
     &--imported {
       cursor: pointer;
@@ -266,16 +267,12 @@ export default {
   }
 
   &-titleLink {
-    color: @brand-primary;
-    display: inline;
-    
     &.blue-link {
       color: @brand-id;
     }
   }
 
   &-details {
-    line-height: 1.4;
     list-style-type: none;
     margin: 0;
     padding: 0px;
@@ -286,21 +283,25 @@ export default {
   }
 
   &-detailsKey {
-    font-size: 12px;
-    font-size: 1.2rem;
+    color: @gray-darker;
+    font-size: 14px;
+    font-size: 1.4rem;
     text-transform: uppercase;
     font-weight: 700;
   }
 
   &-detailsValue {
     margin-right: 10px;
+    font-size: 16px;
+    font-size: 1.6rem;
   }
 
   &-id {
+    color: @grey-darker;
+    font-size: 14px;
+    font-size: 1.4rem;
     display: block;
     font-weight: 700;
-    margin-top: -0.3em;
-    margin-bottom: 5px;
   }
 
   &-idInfo {

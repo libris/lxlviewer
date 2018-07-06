@@ -64,11 +64,11 @@ export default {
 <style lang="less">
 
 .Facet {
-  padding: 2px 0px;
   width: 100%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  line-height: 2;
 
   &-link {
     font-size: 16px;
