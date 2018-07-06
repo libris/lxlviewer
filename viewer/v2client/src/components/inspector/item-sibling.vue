@@ -173,7 +173,6 @@ export default {
           property: 'keybindState', 
           value: 'extraction-dialog' 
         });
-        LayoutUtil.scrollLock(true);
         this.extractDialogActive = true;
       }
     },
@@ -182,7 +181,6 @@ export default {
         property: 'keybindState', 
         value: 'overview' 
       });
-      LayoutUtil.scrollLock(false);
       this.extractDialogActive = false;
       this.extracting = false;
     },

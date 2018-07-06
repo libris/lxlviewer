@@ -462,7 +462,6 @@ export default {
   }
 
   &-container {
-    width: 100%;
     bottom: 10px;
     min-width: 65px;
     position: fixed;

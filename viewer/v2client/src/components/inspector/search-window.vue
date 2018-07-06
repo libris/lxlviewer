@@ -173,7 +173,6 @@ export default {
     },
     show() {
       this.resetSearch();
-      LayoutUtil.scrollLock(true);
       this.active = true;
       this.$nextTick(() => {
         this.$el.querySelector('.SearchWindowentity-search-keyword-input').focus();
@@ -187,7 +186,6 @@ export default {
       if (!this.active) return;
       this.active = false;
       this.$parent.closeExtractDialog();
-      LayoutUtil.scrollLock(false);
       this.$store.dispatch('setStatusValue', { 
         property: 'keybindState', 
         value: 'overview' 
@@ -252,12 +250,12 @@ export default {
 
 <template>
   <div class="SearchWindow">
-    <modal-component
+    <panel-component
       :title="'Link entity' | translatePhrase"
       v-if="active"
       @close="hide()"
-      class="SearchWindow-modal">
-      <template slot="modal-body">
+      class="SearchWindow-panel">
+      <template slot="panel-body">
         <div class="SearchWindow-header search-header">
           <span>{{ "Search" | translatePhrase }}</span>
           <div class="SearchWindow-search search">
@@ -364,7 +362,7 @@ export default {
           </div>
         </div>
       </template>
-    </modal-component>
+    </panel-component>
   </div>
 </template>
 
@@ -528,8 +526,8 @@ export default {
     }
   }
 
-  &-modal {
-    .ModalComponent-body {
+  &-panel {
+    .PanelComponent-body {
       width: 100%;
       background-color: white;
       border: 1px solid #ccc;

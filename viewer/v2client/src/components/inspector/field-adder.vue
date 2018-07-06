@@ -10,7 +10,7 @@ import * as LayoutUtil from '@/utils/layout';
 import * as StringUtil from '@/utils/string';
 import * as VocabUtil from '@/utils/vocab';
 import ComboKeys from 'combokeys';
-import ModalComponent from '@/components/shared/modal-component.vue';
+import PanelComponent from '@/components/shared/panel-component.vue';
 import { mapGetters } from 'vuex';
 
 export default {
@@ -104,6 +104,11 @@ export default {
     },
   },
   methods: {
+    toggleFullView() {
+      const user = this.user;
+      user.settings.forceFullViewPanel = !user.settings.forceFullViewPanel;
+      this.$store.dispatch('setUser', user);
+    },
     actionHighlight(active, event) {
       if(active) {
         let item = event.target;
@@ -313,7 +318,7 @@ export default {
     });
   },
   components: {
-    'modal-component': ModalComponent,
+    'panel-component': PanelComponent,
     'tooltip-component': ToolTipComponent,
   },
 };
@@ -350,12 +355,12 @@ export default {
       <span v-if="!inToolbar" class="FieldAdder-label"> {{ "Add field" | translatePhrase }}</span>
     </button>
 
-    <modal-component @close="hide" v-if="active" class="FieldAdder-modal FieldAdderModal">
-      <template slot="modal-header">
+    <panel-component @close="hide" v-if="active" class="FieldAdder-panel FieldAdderPanel">
+      <template slot="panel-header">
         <header>
           {{ modalTitle }}
         </header>
-        <span class="FieldAdderModal-filter">
+        <span class="FieldAdderPanel-filter">
           {{ "Filter by" | translatePhrase }} 
           <input id="field-adder-input" 
             class="filterInput mousetrap" 
@@ -364,23 +369,25 @@ export default {
             v-model="filterKey">
           <span class="filterInfo">{{ "Showing" | translatePhrase }} {{ filteredResults.length }} {{ "of" | translatePhrase }} {{allowed ? allowed.length : '0'}} {{ "total" | translatePhrase }}</span>
         </span>
-        <span class="ModalComponent-windowControl">
+        <span class="PanelComponent-windowControl">
+          <i @click="toggleFullView" v-show="user.settings.forceFullViewPanel" class="fullview-toggle-button fa fa-minus-square"></i>
+          <i @click="toggleFullView" v-show="!user.settings.forceFullViewPanel" class="fullview-toggle-button fa fa-plus-square"></i>
           <i @click="hide" @keyup.enter="hide" tabindex="0" class="fa fa-close"></i>
         </span>
       </template>
-      <template slot="modal-body">
-        <div class="FieldAdderModal-columnHeaders">
-          <span class="FieldAdderModal-addControl">
+      <template slot="panel-body">
+        <div class="FieldAdderPanel-columnHeaders">
+          <span class="FieldAdderPanel-addControl">
             &nbsp;
           </span>
-          <span class="FieldAdderModal-fieldLabel">
+          <span class="FieldAdderPanel-fieldLabel">
             {{ "Field label" | translatePhrase }}
           </span>
-          <span class="FieldAdderModal-classInfo">
+          <span class="FieldAdderPanel-classInfo">
             {{ "Can contain" | translatePhrase }}
           </span>
         </div>
-        <div class="FieldAdderModal-fieldList">
+        <div class="FieldAdderPanel-fieldList">
           <ul id="fields-window" class="js-fieldlist">
             <li tabindex="0"
               @focus="selectedIndex = index"
@@ -389,17 +396,17 @@ export default {
               v-for="(prop, index) in filteredResults" 
               :key="prop['@id']" 
               @click="addField(prop, true)">
-              <span class="FieldAdderModal-addControl">
+              <span class="FieldAdderPanel-addControl">
                 <a v-show="!prop.added" v-on:click.stop.prevent="addField(prop, false)">
                   <i class="fa fa-fw fa-2x fa-plus-circle"></i>
                 </a>
                 <span v-show="prop.added"><i class="fa fa-fw fa-check fa-2x"></i></span>
               </span>
-              <span class="FieldAdderModal-fieldLabel" :title="prop.label | capitalize">
+              <span class="FieldAdderPanel-fieldLabel" :title="prop.label | capitalize">
                 {{prop.label | capitalize }}
                 <span class="typeLabel">{{ prop.item['@id'] | removeDomain }}</span>
               </span>
-              <span class="FieldAdderModal-classInfo">
+              <span class="FieldAdderPanel-classInfo">
                 {{ getPropClassInfo(prop.item) }}
               </span>
             </li>
@@ -409,7 +416,7 @@ export default {
           </ul>
         </div>
       </template>
-    </modal-component>
+    </panel-component>
   </div>
 </template>
 
@@ -439,7 +446,7 @@ export default {
   }
 }
 
-.FieldAdderModal {
+.FieldAdderPanel {
   &-filter {
     input {
       height: 100%;
