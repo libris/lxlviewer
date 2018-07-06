@@ -110,27 +110,28 @@ export default {
   }
 
   &-title {
+    font-size: 20px;
+    font-size: 2.0rem;
+    line-height: 1.3;
     color: @brand-primary;
     margin: 0px;
     display: inline-block;
     flex-basis: 50%;
     flex-grow: 1;
-    font-size: 20px;
-    font-size: 2.0rem;
-    line-height: 1.3;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
 
   &-category {
-    color: @gray;
-    display: inline-block;
-    flex-basis: 30%;
     font-size: 12px;
     font-size: 1.2rem;
     text-transform: uppercase;
     font-weight: 600;
+    color: @gray;
+    margin-left: 10px;
+    display: inline-block;
+    flex-basis: 30%;
     text-align: right;
     white-space: nowrap;
     overflow: hidden;

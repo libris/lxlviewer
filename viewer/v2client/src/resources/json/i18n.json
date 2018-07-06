@@ -168,6 +168,9 @@
     "Done": "Klar",
     "Abstract": "Abstrakt",
     "Detailed view": "Detaljerad vy",
-    "Compact view": "Kompakt vy"
+    "Compact view": "Kompakt vy",
+    "Created": "Skapad",
+    "Changed": "Ändrad",
+    "by": "av"
   }
 }

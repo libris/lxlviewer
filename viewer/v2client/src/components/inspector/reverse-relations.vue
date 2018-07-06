@@ -129,7 +129,6 @@ export default {
     </div>
       
     <div class="ReverseRelations-number" v-if="recordType === 'Instance'">
-      <i class="fa fa-university" aria-hidden="true"></i>
       <span class="ReverseRelations-label">
         {{ "Libraries" | translatePhrase }}: 
         <span v-if="isNaN(numberOfRelations)"> {{'Error' | translatePhrase}}</span>
@@ -150,15 +149,21 @@ export default {
 
 .ReverseRelations {
   &-number {
-    float: right;
+    float: left;
     font-weight: 700;
     margin: 0 0 20px;
-    text-align: right;
+  
+    @media (min-width: @screen-sm) {
+      float: right;
+      text-align: right;
+    }
   }
 
   &-label {
-    font-size: 12px;
-    font-size: 1.2rem;
+    font-size: 14px;
+    font-size: 1.4rem;
+    font-weight: 600;
+    text-transform: uppercase;
   }
 
   &-button {

@@ -442,9 +442,6 @@ export default {
 
   }
 
-  &-formContent {
-  }
-
   &.is-landing-page {
     margin-top: 10vh;
   }
