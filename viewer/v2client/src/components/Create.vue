@@ -6,7 +6,7 @@ import * as VocabUtil from '@/utils/vocab';
 import * as RecordUtil from '@/utils/record';
 import * as StringUtil from '@/utils/string';
 import CreationCard from '@/components/create/creation-card';
-import CreateOptions from '@/components/create/create-options';
+import TabMenu from '@/components/shared/tab-menu';
 
 export default {
   name: 'create-new-form',
@@ -18,6 +18,12 @@ export default {
         'Agent',
         // 'Concept',
         'File',
+      ],
+      creationList2: [
+        {'id': 'Instance', 'text': 'Instance'},
+        {'id': 'Work', 'text': 'Work'},
+        {'id': 'Agent', 'text': 'Agent'},
+        {'id': 'File', 'text': 'From file'},
       ],
       chosenType: '',
       selectedCreation: 'Instance',
@@ -133,7 +139,7 @@ export default {
   },
   components: {
     'creation-card': CreationCard,
-    'create-options': CreateOptions,
+    'tab-menu': TabMenu,
   },
   watch: {
     'thingData': function() {
@@ -170,9 +176,7 @@ export default {
   <div class="Create panel panel-default" id="create-new-post">
     <div class="panel-body">
       <h1 class="Create-title">{{'Create new' | translatePhrase}}</h1>
-        <create-options
-          :creation-list="creationList"
-          @set-creation="setCreation" />
+        <tab-menu @go="setCreation" :tabs="creationList2" :active="selectedCreation"></tab-menu>
         <div v-if="selectedCreation !== 'File'" class="Create-cards" id="creationCardPanel">
           <creation-card
             :is-base="true"
