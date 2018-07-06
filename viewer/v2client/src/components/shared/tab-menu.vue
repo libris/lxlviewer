@@ -68,6 +68,7 @@ export default {
 <style lang="less">
 
 .TabMenu {
+  display: inline-block;
 
   &-tabList {
     display: flex;
