@@ -74,12 +74,12 @@ export default {
   <div class="CreateItem create-item-button-container">
     <!--<form method="POST" action="/edit">-->
       <!--<textarea id="copyItem" name="data" class="hidden">{{itemData | json}}</textarea>-->
-      <button class="btn btn-default CreateItem-btn"
+      <button class="btn btn-primary btn--lg CreateItem-btn"
         v-if="!hasHolding || checkingHolding" 
         @click="previewHolding()" 
         :disabled="disabled" 
         :class=" {'is-disabled': disabled} ">
-        <i class="fa fa-plus"
+        <i class="fa fa-plus-circle"
           v-if="!hasHolding && !checkingHolding"></i>
         <i class="fa fa-fw fa-circle-o-notch fa-spin"
           v-if="checkingHolding"></i>
@@ -104,7 +104,6 @@ export default {
 
 .CreateItem {
   &-btn {
-    font-weight: 700;
 
     &--hasHolding {
       background: @sec;
