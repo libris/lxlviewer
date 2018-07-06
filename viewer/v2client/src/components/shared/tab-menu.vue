@@ -13,7 +13,7 @@
       * id   -  Just an identifier, it is used when emitting the go-event and to match against the "active" prop.
       * text -  A fancy text for your tab, which should be in english. The component will automatically try to
                 translate this text to the users language, based on the i18n file.
-                
+
     Example tab-object:
       {'id': 'MyTab1', 'name': 'My tab text' }
 
@@ -33,7 +33,7 @@ export default {
   name: 'tab-menu',
   props: {
     tabs: {
-      default: [],
+      default: () => [],
       type: Array,
     },
     active: '',
@@ -60,7 +60,7 @@ export default {
 <template>
   <div class="TabMenu">
     <ul class="TabMenu-tabList">
-      <li class="TabMenu-tab" v-for="item in tabs" @click="go(item.id)" :class="{'is-active': active === item.id }">{{item.text | translatePhrase}}</li>
+      <li class="TabMenu-tab" :key="item.id" v-for="item in tabs" @click="go(item.id)" :class="{'is-active': active === item.id }">{{item.text | translatePhrase}}</li>
     </ul>
   </div>
 </template>
