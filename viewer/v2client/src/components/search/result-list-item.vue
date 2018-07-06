@@ -114,6 +114,7 @@ export default {
     font-size: 2.0rem;
     line-height: 1.3;
     color: @brand-primary;
+    font-weight: 600;
     margin: 0px;
     display: inline-block;
     flex-basis: 50%;
