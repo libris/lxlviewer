@@ -1,10 +1,39 @@
 <script>
+/* 
+
+  HOW TO USE:
+  This component can show a tablist and emit an event on tab click.
+
+  Props:
+    * Tabs    - Expects an array of tab-objects
+    * Active  - Expects a string that it will match against the id on the tab-object and put as active.
+
+  Tab-Objects:
+    A tab object needs two things.
+      * id   -  Just an identifier, it is used when emitting the go-event and to match against the "active" prop.
+      * text -  A fancy text for your tab, which should be in english. The component will automatically try to
+                translate this text to the users language, based on the i18n file.
+
+    Example tab-object:
+      {'id': 'MyTab1', 'name': 'My tab text' }
+
+  The go-event:
+    If a tab is clicked, it will emit an event with the id on the tab.
+    It's up to you to add a handler to this. See example below.
+
+  Example use:
+      <tab-menu @go="myHandler" :tabs="[
+        {'id': 'MyTab1', 'name': 'My tab text' },
+        {'id': 'MyOtherTab', 'name': 'My other text' }
+      ]" :active="myActivePageVariable"></tab-menu>
+
+*/
 
 export default {
   name: 'tab-menu',
   props: {
     tabs: {
-      default: [],
+      default: () => [],
       type: Array,
     },
     active: '',
@@ -31,7 +60,7 @@ export default {
 <template>
   <div class="TabMenu">
     <ul class="TabMenu-tabList">
-      <li class="TabMenu-tab" v-for="item in tabs" @click="go(item.id)" :class="{'is-active': active === item.id }">{{item.text | translatePhrase}}</li>
+      <li class="TabMenu-tab" :key="item.id" v-for="item in tabs" @click="go(item.id)" :class="{'is-active': active === item.id }">{{item.text | translatePhrase}}</li>
     </ul>
   </div>
 </template>
