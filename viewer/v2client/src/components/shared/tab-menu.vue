@@ -5,13 +5,23 @@
   This component can show a tablist and emit an event on tab click.
 
   Props:
-    * Tabs    - Expects an array of tab-objects i.e. [{'id': 'MyTab1', 'name': 'My tab text' }, {'id': 'MyOtherTab', 'name': 'My other text' }]
+    * Tabs    - Expects an array of tab-objects
     * Active  - Expects a string that it will match against the id on the tab-object and put as active.
+
+  Tab-Objects:
+    A tab object needs two things.
+      * id   -  Just an identifier, it is used when emitting the go-event and to match against the "active" prop.
+      * text -  A fancy text for your tab, which should be in english. The component will automatically try to
+                translate this text to the users language, based on the i18n file.
+                
+    Example tab-object:
+      {'id': 'MyTab1', 'name': 'My tab text' }
 
   The go-event:
     If a tab is clicked, it will emit an event with the id on the tab.
-    It's up to you to add a handler to this. Example:
+    It's up to you to add a handler to this. See example below.
 
+  Example use:
       <tab-menu @go="myHandler" :tabs="[
         {'id': 'MyTab1', 'name': 'My tab text' },
         {'id': 'MyOtherTab', 'name': 'My other text' }
