@@ -199,9 +199,10 @@ export default {
   font-size: 1.2rem;
   justify-content: space-between;
   width: 100%;
+  padding: 15px 20px;
 
-  .ResultList & {
-    padding: 15px 20px;
+  .EntityHeader & {
+    padding: 0;
   }
 
   &-meta {
@@ -246,6 +247,7 @@ export default {
   &-title {
     font-size: 20px;
     font-size: 2rem;
+    font-weight: 600;
     margin: 8px 0;
     overflow: hidden;
     width: 100%; 

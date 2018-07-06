@@ -391,9 +391,6 @@ export default {
     padding: 0 0 20px 0;
   }
 
-  &-formContent {
-  }
-
   &.is-landing-page {
     margin-top: 10vh;
   }

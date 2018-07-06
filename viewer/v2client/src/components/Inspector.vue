@@ -404,42 +404,44 @@ export default {
           {{ 'Back to home page' | translatePhrase }}
         </router-link>
       </div>
-      <div v-if="postLoaded" class="Inspector-entity panel panel-default">
+      <div v-if="postLoaded" class="Inspector-entity">
         <div class="panel-body">
-          <h1 class="Inspector-title" :title="recordType">
-            <span>{{ recordType | labelByLang }}</span>
-            <span v-if="this.inspector.status.isNew"> - [{{ "New record" | translatePhrase }}]</span>
-          </h1>
 
-          <div class="Inspector-header">
-
-            <div class="Inspector-admin">
-              <entity-changelog></entity-changelog>
-
-              <div class="Inspector-adminMeta">
-                <a class="Inspector-adminMetaLink" tabindex="0"
-                  v-show="inspector.status.focus === 'record'" 
-                  v-on:click="toggleEditorFocus()">
-                  <i class="fa fa-fw fa-toggle-on"></i> {{'Admin metadata' | translatePhrase}}
-                </a>
-                <a class="Inspector-adminMetaLink" tabindex="0"
-                  v-show="inspector.status.focus === 'mainEntity'" 
-                  v-on:click="toggleEditorFocus()">
-                  <i class="fa fa-fw fa-toggle-off"></i> {{'Admin metadata' | translatePhrase}}
-                </a>
-              </div>
+          <div class="Inspector-admin">
+            <div class="Inspector-header">
+                <h1 class="Inspector-title" :title="recordType">
+                  <span>{{ recordType | labelByLang }}</span>
+                  <span v-if="this.inspector.status.isNew"> - [{{ "New record" | translatePhrase }}]</span>
+                </h1>
+              <entity-changelog />
             </div>
-
             <reverse-relations class="Inspector-reverse" 
-              v-if="!inspector.status.isNew"></reverse-relations>
+              v-if="!inspector.status.isNew">
+            </reverse-relations>
           </div>
           
           <entity-header id="main-header" 
             :full="true" 
-            v-if="!isItem"></entity-header>
+            v-if="!isItem">
+          </entity-header>
+
+          <div class="Inspector-adminMeta">
+            <a class="Inspector-adminMetaLink" tabindex="0"
+              v-show="inspector.status.focus === 'record'" 
+              v-on:click="toggleEditorFocus()">
+              <i class="fa fa-fw fa-toggle-on"></i> {{'Admin metadata' | translatePhrase}}
+            </a>
+            <a class="Inspector-adminMetaLink" tabindex="0"
+              v-show="inspector.status.focus === 'mainEntity'" 
+              v-on:click="toggleEditorFocus()">
+              <i class="fa fa-fw fa-toggle-off"></i> {{'Admin metadata' | translatePhrase}}
+            </a>
+          </div>
+
           <entity-form 
             :editing-object="inspector.status.focus" 
-            :locked="!inspector.status.editing"></entity-form>
+            :locked="!inspector.status.editing">
+          </entity-form>
           <code v-if="user.settings.appTech">
             {{result}}
           </code>
@@ -477,12 +479,23 @@ export default {
 
 .Inspector {
 
-  &-header {
-    display: flex;
-    flex-direction: row
+  &-title {
+    font-weight: 600;
+    margin: 0 0 20px 0;
+
   }
 
   &-admin {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+
+    @media (min-width: @screen-sm) {
+      flex-direction: row;
+    }
+  }
+
+  &-header {
     flex: 3;
   }
 

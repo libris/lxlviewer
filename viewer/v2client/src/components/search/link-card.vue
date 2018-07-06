@@ -154,7 +154,7 @@ export default {
     display: block;
     font-size: 20px;
     font-size: 2rem;
-    font-weight: 700;
+    font-weight: 600;
     line-height: 1.2;
     margin: 10px 0 10px 0;
   }
