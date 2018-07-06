@@ -95,9 +95,9 @@ export default {
 <style lang="less">
 .NavBar {
   width: 100%;
-  border: solid @border-navbar;
-  background-color: @bg-navbar;
-  border-width: 0px 0px @border-navbar-width 0px;
+  // border: solid @border-navbar;
+  // background-color: @bg-navbar;
+  // border-width: 0px 0px @border-navbar-width 0px;
   box-shadow: @shadow-navbar;
   height: auto;
 
