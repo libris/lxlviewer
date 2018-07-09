@@ -95,7 +95,7 @@ export default {
 .TabMenu {
   display: inline-block;
   opacity: 1;
-  transition: opacity 0.5s ease;
+  transition: opacity 0.25s ease;
 
   &-tabList {
     display: flex;
