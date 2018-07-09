@@ -79,6 +79,12 @@ export default {
           case 'admin-data-off':
             this.toggleEditorFocus();
             break;
+          case 'preview-marc':
+            this.openMarc();
+            break;
+          case 'open-help':
+            this.openHelpWindow();
+            break;
           default:
             return;
         }
@@ -114,6 +120,10 @@ export default {
     getOtherDataFormat(suffix) {
       return `${this.focusData['@id']}/data.${suffix}`
     },
+    openHelpWindow() {
+      const helpUrl = 'https://libris.kb.se/katalogisering/help';
+      window.open(helpUrl);
+    },
     formControl(control) {
       this.$store.dispatch('pushInspectorEvent', { 
         name: 'form-control', 
@@ -147,6 +157,7 @@ export default {
     },
     openMarc() {
       this.showMarcPreview = true;
+      this.toolsMenuActive = true;
     },
     closeMarc() {
       this.showMarcPreview = false;
@@ -179,8 +190,7 @@ export default {
         this.inspector.data.mainEntity['@type'], 
         this.resources.vocab, 
         this.resources.context
-      )
-        .map(id => StringUtil.getCompactUri(id, this.resources.context));
+      ).map(id => StringUtil.getCompactUri(id, this.resources.context));
       return baseClasses.indexOf(type) > -1;
     },
     download(text) {
@@ -359,10 +369,12 @@ export default {
           </a>
         </li>
         <li>
-          <marc-preview :openPreview="showMarcPreview" v-on:close-marc="closeMarc(), hideToolsMenu()"></marc-preview>
+          <marc-preview 
+            :openPreview="showMarcPreview" 
+            v-on:close-marc="closeMarc(), hideToolsMenu()"></marc-preview>
           <a class="Toolbar-menuLink" @click="openMarc" >
           <i class="fa fa-fw fa-eye" aria-hidden="true"></i>
-          {{"Preview MARC21" | translatePhrase}}
+          {{"Preview MARC21" | translatePhrase}} {{ getKeybindingText('preview-marc', ) ? ` (${getKeybindingText('preview-marc')})` : ''}}
           </a>
         </li>
         <li class="remove-option" v-show="user.isLoggedIn && !status.isNew">
