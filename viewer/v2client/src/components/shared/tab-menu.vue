@@ -41,6 +41,7 @@ export default {
   data() {
     return {
       loading: true,
+      tabPadding: 10
     };
   },
   methods: {
@@ -52,7 +53,7 @@ export default {
       const boundingRect = $activeTab.getBoundingClientRect();
       const left = `${parseInt($activeTab.offsetLeft)}px`;
       const top = `${parseInt($activeTab.offsetTop+boundingRect.height)-5}px`;
-      const width = `${parseInt(boundingRect.width)}px`;
+      const width = `${parseInt(boundingRect.width) - (this.tabPadding * 2)}px`;
       const $underline = this.$refs.underline;
       $underline.style.width = width;
       $underline.style.left = left;
@@ -100,6 +101,7 @@ export default {
 </template>
 
 <style lang="less">
+@tabPadding: 10px;
 
 .TabMenu {
   display: inline-block;
@@ -121,7 +123,7 @@ export default {
     position: absolute;
     height: 3px;
     min-width: 5px;
-    margin: 0px;
+    margin: 0 0 0 @tabPadding;
     border: none;
     background-color: @brand-primary;
   }
@@ -131,7 +133,7 @@ export default {
     text-decoration: none;
     position: relative;
     display: inline-block;
-    padding: 5px 10px;
+    padding: 5px @tabPadding;
     display: inline-block;
     color: @grey;
     font-weight: 600;
