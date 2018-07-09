@@ -27,9 +27,9 @@ För att underlätta arbetet har vi integrerat ett antal kortkommandon för PC r
 | Stäng ner pop up-fönster | Escape |
 | Välj ett element i pop up-fönster | Enter |
 | Välj/markera fler element i pop up-fönster | Ctrl+Enter |
-
- 
- 
+| Förhandsgranska MARC21 | Alt+P |
+| Öppna hjälpen | Alt+H |
+| Visa instanser | Alt+I |
 
 # MAC 
     
@@ -47,4 +47,6 @@ För att underlätta arbetet har vi integrerat ett antal kortkommandon för PC r
 | Stäng ner pop up-fönster | Escape |
 | Välj ett element i pop up-fönster | Enter |
 | Välj/markera fler element i pop up-fönster | ⌘+Enter |
-
+| Förhandsgranska MARC21 | Alt+P |
+| Öppna hjälpen | Alt+H |
+| Visa instanser | Alt+I |
