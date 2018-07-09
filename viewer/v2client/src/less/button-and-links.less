@@ -2,7 +2,6 @@
   font-weight: 600;
   padding: 0.4em 1em;
   margin: 0.25em 0;
-  transition: color 0.2s ease;
   
   &:hover {
     text-decoration: underline;
@@ -14,4 +13,48 @@
       text-decoration: none;
     }
   }
+}
+
+// BUTTON
+
+.btn,
+.btn[disabled] {
+  border: 0;
+  box-shadow: @shadow-panel;
+  transition: background-color 0.1s ease;
+}
+
+.btn-primary {
+  &:hover {
+    background-color: @link-hover-color;
+    border-color: @link-hover-color;
+  }
+}
+
+//sizes
+
+.btn-mixin(@size, @width){
+  min-width: @width;
+  font-size: @size;
+  font-weight: 600;
+}
+
+.btn--lg {
+  .btn-mixin(20px, 275px);
+
+  @media screen and (max-width: @screen-sm-min){
+    .btn--md
+  }
+}
+
+.btn--md {
+  .btn-mixin(16px, 150px);
+
+  @media screen and (max-width: @screen-sm-min){
+    .btn--sm
+  }
+}
+
+.btn--sm {
+  .btn-mixin(13px, 150px);
 }
