@@ -38,9 +38,25 @@ export default {
     },
     active: '',
   },
+  data() {
+    return {
+      loading: true,
+    };
+  },
   methods: {
     go(name) {
       this.$emit('go', name);
+    },
+    moveUnderline() {
+      const $activeTab = this.$el.querySelector('.is-active');
+      const boundingRect = $activeTab.getBoundingClientRect();
+      const left = `${parseInt($activeTab.offsetLeft)}px`;
+      const top = `${parseInt($activeTab.offsetTop+boundingRect.height)-5}px`;
+      const width = `${parseInt(boundingRect.width)}px`;
+      const $underline = this.$refs.underline;
+      $underline.style.width = width;
+      $underline.style.left = left;
+      $underline.style.top = top;
     },
   },
   computed: {
@@ -48,17 +64,25 @@ export default {
   components: {
   },
   watch: {
+    active(value, oldValue) {
+      this.$nextTick(() => {
+        this.moveUnderline();
+      });
+    },
   },
   mounted() {
     this.$nextTick(() => {
-      
+      setTimeout(() => {
+        this.moveUnderline();
+        this.loading = false;
+      }, 500);
     });
   },
 };
 </script>
 
 <template>
-  <div class="TabMenu">
+  <div class="TabMenu" :class="{'loading': loading}">
     <ul class="TabMenu-tabList" role="tablist">
       <li class="TabMenu-tab"
         v-for="item in tabs" 
@@ -69,6 +93,7 @@ export default {
         role="tab">
           {{item.text | translatePhrase}}
       </li>
+      <hr class="TabMenu-underline" ref="underline">
     </ul>
   </div>
 </template>
@@ -77,13 +102,28 @@ export default {
 
 .TabMenu {
   display: inline-block;
+  opacity: 1;
+  transition: opacity 0.25s ease;
 
   &-tabList {
     display: flex;
     margin: 10px 0;
     padding: 0;
   }
+  &.loading {
+    opacity: 0;
+  }
 
+  &-underline {
+    display: inline-block;
+    transition: all 0.25s ease .025s;
+    position: absolute;
+    height: 3px;
+    min-width: 5px;
+    margin: 0px;
+    border: none;
+    background-color: @brand-primary;
+  }
 
   &-tab {
     cursor: pointer;
@@ -115,28 +155,5 @@ export default {
     }
   }
 
-  &-tab::after {
-    content: "";
-    background: @brand-primary;
-    height: 3px;
-    position: absolute;
-    bottom: 0;
-    transition: 0.25s all 0.025s;
-  }
-
-  &-tab::after {
-    left: 100%;
-    right: 0;
-  }
-
-  &-tab.is-active ~ &-tab::after {
-    left: 0;
-    right: 100%;
-  }
-
-  &-tab.is-active::after {
-    left: 0;
-    right: 0;
-  }
 }
 </style>
