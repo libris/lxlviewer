@@ -95,6 +95,9 @@ export function getParamValueFromUrl(url, param) {
       break;
     }
   }
+  if (typeof paramString === 'undefined') {
+    return null;
+  }
   const value = paramString.split('=')[1];
   return value;
 }
