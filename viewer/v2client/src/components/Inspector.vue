@@ -13,6 +13,7 @@ import EntityChangelog from '@/components/inspector/entity-changelog';
 import EntityHeader from '@/components/inspector/entity-header';
 import ModalComponent from '@/components/shared/modal-component';
 import ReverseRelations from '@/components/inspector/reverse-relations';
+import TabMenu from '@/components/shared/tab-menu';
 import { mapGetters } from 'vuex';
 
 export default {
@@ -359,6 +360,10 @@ export default {
         this.resources.vocab, 
         this.resources.context);
     },
+    editorTabs() {
+      return [{'id': 'mainEntity', 'text': this.$options.filters.labelByLang(this.recordType)},
+              {'id': 'record', 'text': 'Admin metadata' }]
+    },
   },
   components: {
     'entity-header': EntityHeader,
@@ -367,6 +372,7 @@ export default {
     'toolbar': Toolbar,
     'entity-changelog': EntityChangelog,
     'reverse-relations': ReverseRelations,
+    'tab-menu': TabMenu,
   },
   mounted() {
     this.$nextTick(() => {
@@ -425,18 +431,7 @@ export default {
             v-if="!isItem">
           </entity-header>
 
-          <div class="Inspector-adminMeta">
-            <a class="Inspector-adminMetaLink" tabindex="0"
-              v-show="inspector.status.focus === 'record'" 
-              v-on:click="toggleEditorFocus()">
-              <i class="fa fa-fw fa-toggle-on"></i> {{'Admin metadata' | translatePhrase}}
-            </a>
-            <a class="Inspector-adminMetaLink" tabindex="0"
-              v-show="inspector.status.focus === 'mainEntity'" 
-              v-on:click="toggleEditorFocus()">
-              <i class="fa fa-fw fa-toggle-off"></i> {{'Admin metadata' | translatePhrase}}
-            </a>
-          </div>
+          <tab-menu @go="toggleEditorFocus" :tabs="editorTabs" :active="this.inspector.status.focus" />
 
           <entity-form 
             :editing-object="inspector.status.focus" 
@@ -501,15 +496,6 @@ export default {
 
   &-reverse {
     flex: 1;
-  }
-
-  &-adminMeta {
-    margin: 10px 0;
-  }
-  
-  &-adminMetaLink {
-    cursor: pointer;
-    color: @brand-primary;
   }
 }
 .InspectorModal {

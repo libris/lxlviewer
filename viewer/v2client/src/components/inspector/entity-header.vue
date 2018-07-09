@@ -95,6 +95,7 @@ export default {
   display: flex;
   box-shadow: @shadow-base;
   padding: 0px;
+  margin-bottom: 20px;
 
   &-body {
     &.is-full {

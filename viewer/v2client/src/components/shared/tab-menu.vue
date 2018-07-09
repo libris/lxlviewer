@@ -15,7 +15,7 @@
                 translate this text to the users language, based on the i18n file.
 
     Example tab-object:
-      {'id': 'MyTab1', 'name': 'My tab text' }
+      {'id': 'MyTab1', 'text': 'My tab text' }
 
   The go-event:
     If a tab is clicked, it will emit an event with the id on the tab.
@@ -23,8 +23,8 @@
 
   Example use:
       <tab-menu @go="myHandler" :tabs="[
-        {'id': 'MyTab1', 'name': 'My tab text' },
-        {'id': 'MyOtherTab', 'name': 'My other text' }
+        {'id': 'MyTab1', 'text': 'My tab text' },
+        {'id': 'MyOtherTab', 'text': 'My other text' }
       ]" :active="myActivePageVariable"></tab-menu>
 
 */
@@ -59,8 +59,16 @@ export default {
 
 <template>
   <div class="TabMenu">
-    <ul class="TabMenu-tabList">
-      <li class="TabMenu-tab" :key="item.id" v-for="item in tabs" @click="go(item.id)" :class="{'is-active': active === item.id }">{{item.text | translatePhrase}}</li>
+    <ul class="TabMenu-tabList" role="tablist">
+      <li class="TabMenu-tab"
+        v-for="item in tabs" 
+        tabindex="0"
+        :key="item.id" 
+        @click="go(item.id)" 
+        :class="{'is-active': active === item.id }"
+        role="tab">
+          {{item.text | translatePhrase}}
+      </li>
     </ul>
   </div>
 </template>
