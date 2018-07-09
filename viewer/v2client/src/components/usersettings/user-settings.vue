@@ -57,7 +57,7 @@ export default {
 </script>
 
 <template>
-  <section class="panel UserSettings">
+  <section class="UserSettings">
     <h1 class="UserSettings-title">{{'Settings' | translatePhrase}}</h1>
     <div class="UserSettings-content">
       <div class="UserSettings-info UserInfo">
@@ -73,7 +73,6 @@ export default {
           <strong class="UserInfo-label">{{"E-mail" | translatePhrase}}</strong><br/>
           <span>{{user.email || '-'}}</span>
         </p>
-        <hr>
         <div class="UserInfo-meta">
           <p>Din användarprofil är hämtad från <a href="https://login.libris.kb.se">Libris Login</a>.
           </p>
@@ -123,18 +122,30 @@ export default {
 <style lang="less">
 
 .UserSettings {
-  margin-top: 15vh;
-  padding: 1em 0 1em 1em;
+  padding: 0;
+
+  @media (min-width: @screen-sm) {
+    padding: 1em 0 1em 1em;
+  }
 
   &-title {
     flex: 100% 1 1;
+    margin: 0 0 20px 0;
   }
 
   &-content {
     display: flex;
     flex-wrap: wrap;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: space-between;
+    padding: 20px;
+    background-color: @white;
+    border-radius: 4px;
+    box-shadow: @shadow-panel;
+
+    @media (min-width: @screen-sm) {
+      flex-direction: row;
+    }
   }
 
   &-config {
@@ -142,7 +153,7 @@ export default {
     flex-grow: 1;
     flex-direction: column;
     justify-content: space-between;
-    padding: 0em 1em;
+    padding: 20px;
 
     & form {
       width: 100%;
@@ -153,9 +164,7 @@ export default {
 .UserInfo {
   flex-grow: 1;
   min-width: 250px;
-  background-color: #f9f9f9;
-  padding: 1em;
-  box-shadow: @shadow-panel;
+  padding: 20px;
 
   &-avatar {
     padding: 20px;

@@ -475,7 +475,6 @@ export default {
 .Inspector {
 
   &-title {
-    font-weight: 600;
     margin: 0 0 20px 0;
 
   }
