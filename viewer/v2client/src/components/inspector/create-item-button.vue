@@ -86,12 +86,12 @@ export default {
         {{"Add holding" | translatePhrase}}
         <span>({{user.settings.activeSigel}})</span>
       </button>
-      <button class="btn btn-default CreateItem-btn"
+      <button class="btn btn--lg CreateItem-btn"
         v-if="hasHolding" 
         :class="{'CreateItem-btn--hasHolding': hasHolding, 'is-disabled': disabled}"  
         :disabled="disabled" 
         @click.prevent="gotoHolding()">
-        <i class="fa fa-check"
+        <i class="fa fa-check-circle"
           v-if="hasHolding && !checkingHolding"></i>
         {{"Show holding" | translatePhrase}}
         <span>({{user.settings.activeSigel}})</span>
@@ -104,15 +104,26 @@ export default {
 
 .CreateItem {
   &-btn {
-
     &--hasHolding {
-      background: @sec;
-      border-color: @sec-contrast;
+      background: @white;
+      color: @brand-primary;
+      
+      &:hover, 
+      &:focus,
+      &:active {
+        background: @white;
+        color: @link-hover-color;
+      }
+    }
+
+    &.is-disabled {
+      background-color: @gray-lighter;
       color: @white;
 
-      &:hover {
-        background: @sec-alter;
-        border-color: @sec-alter-contrast;
+      &:hover, 
+      &:focus,
+      &:active {
+        background-color: @gray-lighter;
         color: @white;
       }
     }
