@@ -110,8 +110,9 @@ export default {
 
   &-tabList {
     display: flex;
-    margin: 10px 0;
+    margin: 10px 0 10px -10px;
     padding: 0;
+    flex-wrap: wrap;
   }
   &.loading {
     opacity: 0;
@@ -144,6 +145,8 @@ export default {
     transition: color 0.2s ease;
     border: dashed transparent;
     border-width: 1px 0px 1px 0px;
+    white-space: nowrap;
+
     @media (min-width: 768px) {
       font-size: 18px;
       font-size: 1.8rem;

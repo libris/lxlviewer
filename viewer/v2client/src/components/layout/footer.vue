@@ -216,7 +216,8 @@ export default {
   &-listTitle {
     font-size: 16px;
     font-size: 1.6rem;
-    margin: 5px 0;
+    font-weight: 600;
+    margin: 5px 0;    
   }
 
   i {

@@ -167,7 +167,6 @@ export default {
 }
 
 .EntityForm {
-  margin: 20px 0 0;
   padding: 0;
 
   &-fieldList {

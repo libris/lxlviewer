@@ -239,7 +239,6 @@ export default {
   }
 
   &-info {
-    min-height: 7.5em;
     overflow: hidden;
     line-height: 1.4;
   }
