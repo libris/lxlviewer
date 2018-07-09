@@ -133,6 +133,9 @@ export default {
 
       return valueArray;
     },
+    isUriType() {
+      return VocabUtil.getContextValue(this.fieldKey, '@id', this.resources.context) === 'uri';
+    },
     getPath() {
       if (typeof this.parentPath !== 'undefined') {
         if (typeof this.parentKey !== 'undefined' && typeof this.parentIndex !== 'undefined') {
@@ -527,6 +530,7 @@ export default {
           v-if="getDatatype(item) == 'value'" 
           :is-removable="!hasSingleValue" 
           :is-locked="locked" 
+          :is-uri-type="isUriType"
           :field-value="item" 
           :field-key="fieldKey" 
           :index="index" 
