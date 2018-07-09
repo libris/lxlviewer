@@ -89,6 +89,7 @@ export default {
         tabindex="0"
         :key="item.id" 
         @click="go(item.id)" 
+        @keyup.enter="go(item.id)"
         :class="{'is-active': active === item.id }"
         role="tab">
           {{item.text | translatePhrase}}
