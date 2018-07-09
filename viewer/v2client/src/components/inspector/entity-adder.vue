@@ -46,6 +46,7 @@ export default {
       type: Array,
       default: () => [],
     },
+    compositional: null,
     showActionButtons: false,
     isPlaceholder: false,
     isChip: false,
@@ -184,11 +185,14 @@ export default {
       return typeArray;
     },
     onlyEmbedded() {
+      if (this.compositional === true) {
+        return true;
+      }
       const range = this.getFullRange;
-      for (const prop of range) {
+      for (const classId of range) {
         if (!VocabUtil.isEmbedded(
-          prop, this.
-          resources.vocab, 
+          classId,
+          this.resources.vocab, 
           this.settings, 
           this.resources.context
         )) {

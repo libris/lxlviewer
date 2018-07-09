@@ -154,6 +154,15 @@ export default {
         this.resources.context
       );
     },
+    isCompositional() {
+      if (this.keyAsVocabProperty && this.keyAsVocabProperty.hasOwnProperty('category')) {
+        if (this.keyAsVocabProperty.category['@id'] === 'https://id.kb.se/vocab/compositional') {
+          return true;
+        }
+        // Add handling for "uncompositional" ie a false-value
+      }
+      return null;
+    },
     hasSingleValue() {
       if (!_.isArray(this.fieldValue) || this.fieldValue.length === 1) {
         return true;
@@ -369,7 +378,8 @@ export default {
         <entity-adder  class="Field-entityAdder Field-action"
           v-show="!locked && (isRepeatable || isEmptyObject)" 
           :field-key="fieldKey" 
-          :already-added="linkedIds" 
+          :already-added="linkedIds"
+          :compositional="isCompositional" 
           :entity-type="entityType" 
           :property-types="propertyTypes" 
           :show-action-buttons="actionButtonsShown" 
@@ -402,6 +412,7 @@ export default {
           :field-key="fieldKey" 
           :path="getPath" 
           :already-added="linkedIds" 
+          :compositional="isCompositional" 
           :entity-type="entityType" 
           :property-types="propertyTypes" 
           :show-action-buttons="actionButtonsShown" 
