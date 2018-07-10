@@ -94,6 +94,7 @@
             "@type": "Extent",
             "label": ""
           }],
+          "marc:otherPhysicalDetails": "",
           "hasDimensions": {
             "@type": "Dimensions",
             "label": ""
@@ -138,6 +139,7 @@
           "language": [{
             "@id": "https://id.kb.se/language/swe"
           }],
+          "illustrativeContent": [],
           "genreForm": [],
           "classification": [{
               "@type": "ClassificationDdc",
