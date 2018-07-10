@@ -37,7 +37,6 @@ const store = new Vuex.Store({
       originalData: {},
       title: '',
       status: {
-        panelOpen: false,
         saving: false,
         opening: false,
         lastAdded: '',
@@ -51,6 +50,7 @@ const store = new Vuex.Store({
       event: [],
     },
     status: {
+      panelOpen: false,
       keybindState: '',
       fullWidth: false,
       keyActions: [],

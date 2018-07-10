@@ -2,7 +2,7 @@
   <div id="app" class="App">
     <global-message />
     <navbar-component />
-    <main class="MainContent" :class="{ 'container': !inspector.status.panelOpen, 'container-fluid': inspector.status.panelOpen }" role="main">
+    <main class="MainContent" :class="{ 'container': !status.panelOpen, 'container-fluid': status.panelOpen }" role="main">
       <div v-if="!resourcesLoaded" class="text-center">
         <i class="fa fa-circle-o-notch fa-4x fa-spin"></i><br/>
         <h3>{{ 'Loading application' | translatePhrase | capitalize }}</h3>

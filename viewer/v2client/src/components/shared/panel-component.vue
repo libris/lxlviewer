@@ -74,7 +74,7 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      this.$store.dispatch('setInspectorStatusValue', { property: 'panelOpen', value: true });
+      this.$store.dispatch('setStatusValue', { property: 'panelOpen', value: true });
       setTimeout(() => {
         this.fadedIn = true;
       }, 1);
@@ -83,7 +83,7 @@ export default {
   beforeDestroy() {
     this.$nextTick(() => {
       this.lockScroll(false);
-      this.$store.dispatch('setInspectorStatusValue', { property: 'panelOpen', value: false });
+      this.$store.dispatch('setStatusValue', { property: 'panelOpen', value: false });
     });
   },
 };
