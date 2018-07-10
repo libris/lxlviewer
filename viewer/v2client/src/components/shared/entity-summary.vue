@@ -171,7 +171,7 @@ export default {
       </a>
       
     </h3>
-    <span class="EntitySummary-id CapitalHeading--grey" 
+    <span class="EntitySummary-id CapitalHeading--gray" 
       v-if="identifiers.length > 0">
       {{ identifiers[0] }} 
       <span class="EntitySummary-idInfo" v-if="identifiers.length > 1">(+{{ identifiers.length-1 }})</span>
@@ -181,7 +181,7 @@ export default {
         v-show="v.length !== 0" 
         v-for="(v, k) in infoWithKeys" 
         :key="k">
-        <span class="EntitySummary-detailsKey CapitalHeading--grey">{{ k | labelByLang }}:</span>
+        <span class="EntitySummary-detailsKey CapitalHeading--gray">{{ k | labelByLang }}:</span>
         &nbsp;
         <span class="EntitySummary-detailsValue">{{ v }}</span>
       </li>

@@ -55,7 +55,7 @@ export default {
       :aria-labelledby="facetLabelByLang(dimensionValue.dimension)"
       v-for="(dimensionValue, dimensionKey) in result.stats.sliceByDimension" 
       :key="dimensionKey">
-      <h4 class="FacetControls-listTitle js-listTitle CapitalHeading--grey" 
+      <h4 class="FacetControls-listTitle js-listTitle CapitalHeading--gray" 
         @click="expandFacets($event)"
         :id="facetLabelByLang(dimensionValue.dimension)">
         {{facetLabelByLang(dimensionValue.dimension) | capitalize}}

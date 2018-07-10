@@ -1,0 +1,47 @@
+// CHECKBOX
+.customCheckbox {
+    &-input {
+        margin-right: 0.2em;
+        position: absolute;
+        opacity: 0;
+    
+        &:checked + .customCheckbox-icon::before {
+          content: "\f14a";
+          color: @brand-primary;
+        }
+    
+        &:focus + .customCheckbox-icon {
+          background: @gray-lighter;
+        }
+    }
+    
+    &-icon {
+        font-size: 18px;
+        padding: 0 5px;
+
+        &::before {
+          content: "\f096";
+          font-family: "FontAwesome";
+          display: inline-block;
+          color: @gray-darker;
+          width: 15px;
+        }
+    }
+}
+
+// SELECT
+.customSelect {
+    height: 27px;
+    min-width: 150px;
+    font-size: 16px;
+    font-size: 1.6rem;
+    color: @white;
+    background-color: @gray;
+    box-shadow: @shadow-panel;
+    text-align-last: center;
+    transition: background-color 0.1s ease;
+
+    &:hover {
+        background-color: @gray-darker;
+    }
+}

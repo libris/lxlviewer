@@ -66,20 +66,17 @@ export default {
           <br/>
         </div>
         <p class="UserInfo-name">
-          <strong class="UserInfo-label">{{"Name" | translatePhrase}}</strong><br/>
+          <strong class="UserInfo-label CapitalHeading--gray">{{"Name" | translatePhrase}}</strong><br/>
           <span>{{user.fullName}}</span>
         </p>
         <p class="UserInfo-email">
-          <strong class="UserInfo-label">{{"E-mail" | translatePhrase}}</strong><br/>
+          <strong class="UserInfo-label CapitalHeading--gray">{{"E-mail" | translatePhrase}}</strong><br/>
           <span>{{user.email || '-'}}</span>
         </p>
         <div class="UserInfo-meta">
           <p>Din användarprofil är hämtad från <a href="https://login.libris.kb.se">Libris Login</a>.
-          </p>
-          <p>Vid frågor om rättigheter för sigel kontakta <a href="mailto:libris@kb.se">libris@kb.se</a>.
-          </p>
-          <p>
-            Bild hämtad från <a href="https://www.gravatar.com">gravatar</a>.
+            <br>Vid frågor om rättigheter för sigel kontakta <a href="mailto:libris@kb.se">libris@kb.se</a>.
+            <br>Bild hämtad från <a href="https://www.gravatar.com">gravatar</a>.
           </p>
         </div>
       </div>
@@ -88,7 +85,7 @@ export default {
           <div class="UserConfig-formGroup">
             <label class="UserConfig-label">{{"Active sigel" | translatePhrase}}</label>
             <div class="UserConfig-selectWrap">
-              <select class="UserConfig-select" :value="user.settings.activeSigel" @change="updateSigel">
+              <select class="UserConfig-select customSelect" :value="user.settings.activeSigel" @change="updateSigel">
                 <option v-for="sigel in user.collections" :key="sigel.code" :value="sigel.code">{{ getSigelLabel(sigel, 50) }}</option>
               </select>
             </div>
@@ -97,23 +94,24 @@ export default {
           <div class="UserConfig-formGroup">
             <label class="UserConfig-label">{{"Language" | translatePhrase}}</label>
             <div class="UserConfig-selectWrap">
-              <select class="UserConfig-select" :value="user.settings.language" @change="updateLanguage">
+              <select class="UserConfig-select customSelect" :value="user.settings.language" @change="updateLanguage">
                 <option v-for="language in settings.availableUserSettings.languages" :key="language.value" :value="language.value">{{ language.label | translatePhrase }}</option>
               </select>
             </div>
           </div>
 
           <div class="UserConfig-formGroup">
-            <label class="UserConfig-label UserConfig-label--checkbox"> 
+            <label for="detailsCheckbox" class="UserConfig-label UserConfig-label--checkbox"> 
               <span class="UserConfig-span">{{"Show technical application details" | translatePhrase}}</span>
               <div class="UserConfig-checkboxWrap">
-                <input type="checkbox" @change="updateAppTech" :checked="user.settings.appTech">
+                <input id="detailsCheckbox" class="customCheckbox-input" type="checkbox" @change="updateAppTech" :checked="user.settings.appTech">
+                <div class="customCheckbox-icon"></div>
               </div>
             </label>
           </div>
 
         </form>
-        <button class="btn btn-block btn-info UserSettings-logout" @click="logout">Logga ut</button>
+        <button class="btn btn-primary btn--lg UserSettings-logout" @click="logout">Logga ut</button>
       </div>
     </div>
   </section>
@@ -151,6 +149,7 @@ export default {
   &-config {
     display: flex;
     flex-grow: 1;
+    flex-basis: 50%;
     flex-direction: column;
     justify-content: space-between;
     padding: 20px;
@@ -163,8 +162,13 @@ export default {
 
 .UserInfo {
   flex-grow: 1;
+  flex-basis: 50%;
   min-width: 250px;
   padding: 20px;
+
+  @media (min-width: @screen-sm) {
+      border-right: 1px solid @gray-lighter;
+    }
 
   &-avatar {
     padding: 20px;
@@ -179,13 +183,12 @@ export default {
   }
 
   &-label {
-    font-size: 16px;
-    font-size: 1.6rem;
   }
 
   &-meta {
-    font-size: 12px;
-    font-size: 1.2rem;
+    margin-top: 20px;
+    line-height: 1.8;
+
   }
 }
 
@@ -199,9 +202,13 @@ export default {
     }
   }
 
-  &-selectWrap,
-  &-checkboxWrap {
+  &-selectWrap {
     width: 60%;
+    float: right;
+  }
+
+  &-checkboxWrap {
+    width: auto;
     float: right;
   }
 
@@ -210,14 +217,11 @@ export default {
   }
 
   &-formGroup {
-    border: solid @gray-lighter;
-    border-width: 0px 0px 1px 0px;
     padding: 10px 0 5px;
   }
 
   &-span {
     float: left;
-    width: 40%;
   }
 }
 
