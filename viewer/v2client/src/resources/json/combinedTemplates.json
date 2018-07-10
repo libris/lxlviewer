@@ -139,7 +139,6 @@
           "language": [{
             "@id": "https://id.kb.se/language/swe"
           }],
-          "illustrativeContent": [],
           "genreForm": [],
           "classification": [{
               "@type": "ClassificationDdc",
