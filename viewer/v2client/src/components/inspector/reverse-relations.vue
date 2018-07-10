@@ -129,7 +129,7 @@ export default {
     </div>
       
     <div class="ReverseRelations-number" v-if="recordType === 'Instance'">
-      <span class="ReverseRelations-label">
+      <span class="ReverseRelations-label CapitalHeading--black">
         {{ "Libraries" | translatePhrase }}: 
         <span v-if="isNaN(numberOfRelations)"> {{'Error' | translatePhrase}}</span>
         <span v-else> {{numberOfRelations}} </span>
@@ -160,10 +160,6 @@ export default {
   }
 
   &-label {
-    font-size: 14px;
-    font-size: 1.4rem;
-    font-weight: 600;
-    text-transform: uppercase;
   }
 
   &-button {

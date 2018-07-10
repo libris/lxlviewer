@@ -78,7 +78,7 @@ export default {
           :href="focusData['@id']">{{ header.join(', ') }}
         </a>
       </h3>
-      <span class="ResultItem-category" :title="categorization.join(', ')">
+      <span class="ResultItem-category CapitalHeading--light" :title="categorization.join(', ')">
         {{categorization.join(', ')}}
       </span>
     </li>
@@ -125,11 +125,6 @@ export default {
   }
 
   &-category {
-    font-size: 12px;
-    font-size: 1.2rem;
-    text-transform: uppercase;
-    font-weight: 600;
-    color: @gray;
     margin-left: 10px;
     display: inline-block;
     flex-basis: 30%;

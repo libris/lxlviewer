@@ -37,11 +37,11 @@ export default {
 <template>
   <div class="EntityChangelog">
     <p>
-      <span class="EntityChangelog-key">{{ 'Created' | translatePhrase}}:</span> 
+      <span class="EntityChangelog-key CapitalHeading--black">{{ 'Created' | translatePhrase}}:</span> 
       {{ getCard.created }} {{ 'by' | translatePhrase}} {{ getCard.descriptionCreator || 'okänd' }}
     </p>
     <p>
-      <span class="EntityChangelog-key">{{ 'Changed' | translatePhrase}}:</span> 
+      <span class="EntityChangelog-key CapitalHeading--black">{{ 'Changed' | translatePhrase}}:</span> 
       {{ getCard.modified }} {{ 'by' | translatePhrase}} {{ getCard.descriptionLastModifier || 'okänd' }}
     </p>
       <!--| <span class="show-record-toggle" v-show="!showRecord" v-on:click="toggleRecord">{{'Show admin metadata' | translatePhrase}}</span>
@@ -67,10 +67,6 @@ export default {
   line-height: 1;
   
   &-key {
-    font-size: 14px;
-    font-size: 1.4rem;
-    text-transform: uppercase;
-    font-weight: 600;
   }
 
 }

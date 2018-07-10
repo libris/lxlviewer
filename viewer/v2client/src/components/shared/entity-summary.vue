@@ -136,7 +136,7 @@ export default {
 <template>
 <section class="EntitySummary">
   <div class="EntitySummary-meta">
-    <div class="EntitySummary-type">
+    <div class="EntitySummary-type CapitalHeading--light">
       {{categorization.join(', ')}} {{ isLocal ? '{lokal entitet}' : '' }}
       <span class="EntitySummary-sourceLabel" v-if="database">{{ database }}</span>
     </div>
@@ -171,7 +171,7 @@ export default {
       </a>
       
     </h3>
-    <span class="EntitySummary-id" 
+    <span class="EntitySummary-id CapitalHeading--grey" 
       v-if="identifiers.length > 0">
       {{ identifiers[0] }} 
       <span class="EntitySummary-idInfo" v-if="identifiers.length > 1">(+{{ identifiers.length-1 }})</span>
@@ -181,7 +181,7 @@ export default {
         v-show="v.length !== 0" 
         v-for="(v, k) in infoWithKeys" 
         :key="k">
-        <span class="EntitySummary-detailsKey">{{ k | labelByLang }}:</span>
+        <span class="EntitySummary-detailsKey CapitalHeading--grey">{{ k | labelByLang }}:</span>
         &nbsp;
         <span class="EntitySummary-detailsValue">{{ v }}</span>
       </li>
@@ -195,8 +195,6 @@ export default {
 .EntitySummary {
   display: flex;
   flex-direction: column;
-  font-size: 12px;
-  font-size: 1.2rem;
   justify-content: space-between;
   width: 100%;
   padding: 15px 20px;
@@ -207,13 +205,11 @@ export default {
 
   &-meta {
     border-width: 0px;
-    color: @gray;
   }
 
   &-type {
     display: block;
     text-transform: uppercase;
-    font-weight: 600;
     flex-basis: 85%;
     flex-grow: 2;
     margin-bottom: -0.4em;
@@ -246,7 +242,6 @@ export default {
   &-title {
     font-size: 20px;
     font-size: 2rem;
-    font-weight: 600;
     margin: 8px 0;
     overflow: hidden;
     width: 100%; 
@@ -284,11 +279,6 @@ export default {
   }
 
   &-detailsKey {
-    color: @gray-darker;
-    font-size: 14px;
-    font-size: 1.4rem;
-    text-transform: uppercase;
-    font-weight: 700;
   }
 
   &-detailsValue {
@@ -298,11 +288,6 @@ export default {
   }
 
   &-id {
-    color: @grey-darker;
-    font-size: 14px;
-    font-size: 1.4rem;
-    display: block;
-    font-weight: 700;
   }
 
   &-idInfo {
