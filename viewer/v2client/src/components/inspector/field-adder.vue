@@ -345,6 +345,7 @@ export default {
         <tooltip-component 
           class="Toolbar-tooltipContainer"
           :tooltip-text="modalTitle"
+          :position="inToolbar ? 'left' : 'top'"
           keybind-name="open-field-adder"
           :show-tooltip="showToolTip"></tooltip-component>
       </i>
