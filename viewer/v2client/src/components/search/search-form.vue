@@ -360,11 +360,11 @@ export default {
           :for="filter['@id']"
           v-for="filter in dataSetFilters" 
           :key="filter['@id']">
-          <input type="checkbox" class="SearchBar-typeInput"
+          <input type="checkbox" class="SearchBar-typeInput customCheckbox-input"
             :id="filter['@id']"
             v-model="inputData.ids"
             :value="filter['@id']"/>
-            <span class="SearchBar-typeText">
+            <span class="SearchBar-typeText customCheckbox-icon">
               {{ filter.label }}
             </span>
         </label>
@@ -551,28 +551,9 @@ export default {
   }
 
   &-typeInput {
-    margin-right: 0.2em;
-    position: absolute;
-    opacity: 0;
-
-    &:checked + .SearchBar-typeText::before {
-      content: "\f14a";
-      color: @brand-primary;
-    }
-
-    &:focus + .SearchBar-typeText {
-      background: @gray-lighter;
-    }
   }
 
   &-typeText {
-    &::before {
-      content: "\f096";
-      font-family: "FontAwesome";
-      display: inline-block;
-      color: @gray-darker;
-      width: 15px;
-    }
   }
 }
 </style>

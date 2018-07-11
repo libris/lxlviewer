@@ -6,6 +6,7 @@
 @import 'utils.less';
 @import 'window.less';
 @import 'form.less';
+@import 'type.less';
 
 @import url(//fonts.googleapis.com/css?family=Open+Sans:600);
 
@@ -84,10 +85,6 @@ body {
   }
 }
 
-h2 {
-  font-weight: normal;
-}
-
 #page-content-wrapper {
   opacity: 0;
   transition: opacity 0.3s ease-out 0.3s;
@@ -155,17 +152,6 @@ h2 {
 }
 
 
-body a {
-  color: @link-color;
-  text-decoration: none;
-
-  &:hover {
-    color: @link-hover-color;
-    text-decoration: underline;
-  }
-}
-
-
 // ----------- BUTTONS ----------------
 button, .btn-primary, .btn-primary:hover, .btn-primary:focus {
     color: #ffffff;
@@ -186,41 +172,7 @@ button {
   background:#bbb;
   }
 }
-// ----------- HEADINGS ----------------
-h1, h2, h3, h4 {
-  font-weight: 600;
-}
 
-h1 {
-  margin: 10px 0;
-}
-
-// smaller capital headings
-
-.CapitalHeading {
-  text-transform: uppercase;
-  font-size: 14px;
-  font-size: 1.4rem;
-  font-weight: 600;
-
-  &--gray {
-    &:extend(.CapitalHeading);
-    color: @gray-darker;
-    font-weight: 700;
-  }
-
-  &--black {
-    &:extend(.CapitalHeading);
-    color: @black;
-  }
-
-  &--light {
-    &:extend(.CapitalHeading);
-    font-size: 12px;
-    font-size: 1.2rem;
-    color: @gray;
-  }
-}
 
 
 // ----------- VARIOUS ----------------

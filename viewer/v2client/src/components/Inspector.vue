@@ -415,7 +415,7 @@ export default {
 
           <div class="Inspector-admin">
             <div class="Inspector-header">
-                <h1 class="Inspector-title" :title="recordType">
+                <h1 class="Inspector-title mainTitle" :title="recordType">
                   <span>{{ recordType | labelByLang }}</span>
                   <span v-if="this.inspector.status.isNew"> - [{{ "New record" | translatePhrase }}]</span>
                 </h1>
@@ -473,10 +473,7 @@ export default {
 <style lang="less">
 
 .Inspector {
-
   &-title {
-    margin: 0 0 20px 0;
-
   }
 
   &-admin {
@@ -497,6 +494,7 @@ export default {
     flex: 1;
   }
 }
+
 .InspectorModal {
   &-body {
     display: flex;
@@ -511,10 +509,12 @@ export default {
     overflow-y: scroll;
   }
 }
+
 .RemovePostModal .ModalComponent-container {
   width: 600px;
   height: 250px;
 }
+
 .RemovePostModal {
   &-body {
     height: 80%;
@@ -527,6 +527,5 @@ export default {
     text-align: center;
   }
 }
-
 
 </style>

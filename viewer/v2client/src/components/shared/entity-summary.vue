@@ -182,7 +182,6 @@ export default {
         v-for="(v, k) in infoWithKeys" 
         :key="k">
         <span class="EntitySummary-detailsKey CapitalHeading--gray">{{ k | labelByLang }}:</span>
-        &nbsp;
         <span class="EntitySummary-detailsValue">{{ v }}</span>
       </li>
     </ul>
@@ -276,13 +275,13 @@ export default {
 
   &-detailsItem {
     display: inline-block;
+    margin-right: 10px;
   }
 
   &-detailsKey {
   }
 
   &-detailsValue {
-    margin-right: 10px;
     font-size: 16px;
     font-size: 1.6rem;
   }
