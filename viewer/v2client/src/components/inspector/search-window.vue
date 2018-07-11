@@ -9,7 +9,7 @@ import * as StringUtil from '@/utils/string';
 import * as CombinedTemplates from '@/resources/json/combinedTemplates.json';
 import * as StructuredValueTemplates from '@/resources/json/structuredValueTemplates.json';
 import ProcessedLabel from '../shared/processedlabel';
-import ModalComponent from '@/components/shared/modal-component';
+import PanelComponent from '@/components/shared/panel-component';
 import ModalPagination from '@/components/inspector/modal-pagination';
 import ToolTipComponent from '../shared/tooltip-component';
 import EntitySearchList from '../search/entity-search-list';
@@ -67,7 +67,7 @@ export default {
     'entity-search-list': EntitySearchList,
     'entity-summary': EntitySummary,
     'summary-action': SummaryAction,
-    'modal-component': ModalComponent,
+    'panel-component': PanelComponent,
     'modal-pagination': ModalPagination,
   },
   watch: {
