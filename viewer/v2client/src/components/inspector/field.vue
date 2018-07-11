@@ -64,6 +64,15 @@ export default {
   watch: {
   },
   computed: {
+    isMainField() {
+      return (!this.isInner && this.settings.mainFields[this.recordType] === this.fieldKey);
+    },
+    recordType() {
+      return VocabUtil.getRecordType(
+        this.inspector.data.mainEntity['@type'], 
+        this.resources.vocab, 
+        this.resources.context);
+    },
     actionButtonsShown() {
       if (this.shouldShowActionButtons || this.showActionButtons) {
         return true;
@@ -350,7 +359,7 @@ export default {
 <template>
   <li class="Field js-field" 
     :id="`field-${getPath}`" 
-    v-bind:class="{'Field--inner': !asColumns, 'is-lastAdded': isLastAdded, 'is-removed': removed}" 
+    v-bind:class="{'is-mainField': isMainField, 'Field--inner': !asColumns, 'is-lastAdded': isLastAdded, 'is-removed': removed}" 
     @mouseover="handleMouseEnter()" 
     @mouseleave="handleMouseLeave()">
     
@@ -535,6 +544,13 @@ export default {
   opacity: 1;
   position: relative;
   transition: background-color .3s ease;
+
+  &.is-mainField {
+  border-bottom-width: 2px;
+    & .Field-label {
+      color: @black;
+    }
+  }
 
   &.is-marked {
     background-color: @sec;

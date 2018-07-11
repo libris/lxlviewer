@@ -216,14 +216,6 @@ export default {
     box-shadow: none;
     transition: box-shadow ease-out 0.2s;
 
-    &:first-child {
-      border-bottom-width: 2px;
-
-      & .Field-label {
-        color: @black;
-      }
-    }
-
     &:hover:not(.locked) {
       >.actions {
         opacity: 1;
