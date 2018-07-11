@@ -73,6 +73,7 @@ export default {
   .tooltip-container-inner {
     background-color: @black;
     white-space: nowrap;
+    text-transform: none;
     color: @white;
     padding: 5px 7px;
     border-radius: 3px;

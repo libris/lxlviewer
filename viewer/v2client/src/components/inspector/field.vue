@@ -690,6 +690,7 @@ export default {
     font-size: 1.2rem;
     width: 200px;
     line-height: 1.6;
+    text-transform: none;
     transform: translate(-89%, 5px);
     padding: 5px;
     position: absolute;
