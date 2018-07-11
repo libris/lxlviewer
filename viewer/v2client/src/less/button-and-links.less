@@ -1,17 +1,12 @@
-.card-link {
-  font-weight: 600;
-  padding: 0.4em 1em;
-  margin: 0.25em 0;
-  
+// ----------- LINKS ----------------
+body a {
+  color: @link-color;
+  text-decoration: none;
+  cursor: pointer;
+
   &:hover {
+    color: @link-hover-color;
     text-decoration: underline;
-  }
-  &.active {
-    color: @white;
-    background: @brand-primary;
-    &:hover {
-      text-decoration: none;
-    }
   }
 }
 
@@ -31,7 +26,7 @@
   }
 }
 
-//sizes
+//btn sizes
 
 .btn-mixin(@size, @width){
   min-width: @width;

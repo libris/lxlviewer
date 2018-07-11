@@ -58,7 +58,7 @@ export default {
 
 <template>
   <section class="UserSettings">
-    <h1 class="UserSettings-title">{{'Settings' | translatePhrase}}</h1>
+    <h1 class="UserSettings-title mainTitle">{{'Settings' | translatePhrase}}</h1>
     <div class="UserSettings-content">
       <div class="UserSettings-info UserInfo">
         <div class="UserInfo-avatar">
@@ -128,7 +128,6 @@ export default {
 
   &-title {
     flex: 100% 1 1;
-    margin: 0 0 20px 0;
   }
 
   &-content {
