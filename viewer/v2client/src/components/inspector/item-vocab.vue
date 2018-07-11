@@ -130,7 +130,7 @@ export default {
 .ItemVocab {
   &.is-locked {
     line-height: 2;
-    padding-left: 5px;
+    // padding-left: 5px;
   }
 
   &-text {

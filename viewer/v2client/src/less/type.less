@@ -14,25 +14,23 @@ h1 {
   
 // smaller capital headings
   
-.CapitalHeading {
+.capitalHeading {
     text-transform: uppercase;
     font-size: 14px;
     font-size: 1.4rem;
     font-weight: 600;
-  
-    &--gray {
-      &:extend(.CapitalHeading);
-      color: @gray-darker;
+
+    &--bold {
       font-weight: 700;
     }
   
-    &--black {
-      &:extend(.CapitalHeading);
-      color: @black;
+    &--gray {
+      &:extend(.capitalHeading);
+      color: @gray-darker;
     }
   
     &--light {
-      &:extend(.CapitalHeading);
+      &:extend(.capitalHeading);
       font-size: 12px;
       font-size: 1.2rem;
       color: @gray;

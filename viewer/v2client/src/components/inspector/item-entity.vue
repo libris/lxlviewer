@@ -162,7 +162,7 @@ export default {
 
   &-container {
     display: flex;
-    margin: 0px 5px 5px 0px;
+    margin: 2px 5px 2px 0px;
     position: relative;
   }
 

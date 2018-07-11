@@ -78,7 +78,7 @@ export default {
           :href="focusData['@id']">{{ header.join(', ') }}
         </a>
       </h3>
-      <span class="ResultItem-category CapitalHeading--light" :title="categorization.join(', ')">
+      <span class="ResultItem-category capitalHeading--light" :title="categorization.join(', ')">
         {{categorization.join(', ')}}
       </span>
     </li>

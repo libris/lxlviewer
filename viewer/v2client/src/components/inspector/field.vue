@@ -354,7 +354,7 @@ export default {
     @mouseover="handleMouseEnter()" 
     @mouseleave="handleMouseLeave()">
     
-    <div class="Field-label" v-bind:class="{ 'is-locked': locked }">
+    <div class="Field-label capitalHeading--gray" v-bind:class="{ 'is-locked': locked }">
       <span v-show="fieldKey === '@id'">{{ 'ID' | translatePhrase | capitalize }}</span>
       <span v-show="fieldKey === '@type'">{{ 'Type' | translatePhrase | capitalize }}</span>
       <span v-show="fieldKey !== '@id' && fieldKey !== '@type'" 
@@ -529,7 +529,7 @@ export default {
 <style lang="less">
 
 .Field {
-  border-bottom: 1px solid #d8d8d8;
+  border-bottom: 1px solid @form-border;
   width: 100%;
   flex-direction: row;
   opacity: 1;
@@ -599,15 +599,18 @@ export default {
   }
 
   &-label {
+    // flex: 0 0 @col-label;
+    // align-items: flex-start;
+    // justify-content: flex-end;
+    // padding: 20px;
+    // position: relative;
+  }
+
+  &-label {
     flex: 0 0 @col-label;
     align-items: flex-start;
     justify-content: flex-end;
-    // line-height: 2.6;
-    font-size: 20px;
-    font-size: 2.0rem;
-    font-weight: 700;
-    line-height: 1.4;
-    padding: 20px;
+    padding: 10px 20px;
     position: relative;
 
     &:after {
@@ -631,19 +634,6 @@ export default {
       -webkit-animation-name: fadeIn;
       animation-name: fadeIn;
     }
-  }
-
-  &-label {
-    flex: 0 0 @col-label;
-    align-items: flex-start;
-    justify-content: flex-end;
-    // line-height: 2.6;
-    font-size: 20px;
-    font-size: 2.0rem;
-    font-weight: 700;
-    line-height: 1.4;
-    padding: 20px;
-    position: relative;
 
     .Field--inner & {
       flex: 1 100%;
@@ -667,11 +657,7 @@ export default {
     } 
 
     @media (min-width: 768px) {
-      font-weight: normal;
-      font-size: 16px;
-      font-size: 1.6rem;
       text-align: right;
-      padding: 20px;
     }
 
   @media print and (max-width: 768px) {
@@ -715,7 +701,7 @@ export default {
   &-content {
     flex: 1 100%;
     margin: 0;
-    padding: 20px;
+    padding: 10px 20px;
 
     .Field--inner & {
       border: 0;
@@ -723,7 +709,7 @@ export default {
     }
 
      @media (min-width: 768px) {
-      border-left: 1px solid #d8d8d8;
+      border-left: 1px solid @form-border;
     }
 
     @media print and (max-width: 768px) {
@@ -740,7 +726,6 @@ export default {
     font-size: 20px;
     font-size: 2.0rem;
     line-height: 1;
-    margin: 10px 0 0;
     position: relative;
 
     .disabled {
@@ -762,7 +747,7 @@ export default {
 
   &-action {
     display: inline-block;
-    margin: 0 0 0 5px;
+    margin: 10px 0 0 5px;
     transition: opacity 0.25s ease;
     transition-delay: 0.1s;
     cursor: pointer;

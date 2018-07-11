@@ -382,7 +382,7 @@ export default {
 
 <style lang="less">
 .ItemLocal {
-  padding: 5px;
+  padding: 5px 0;
   margin-left: -5px;
   border-radius: 4px;
   position: relative;

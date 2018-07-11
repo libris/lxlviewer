@@ -45,7 +45,7 @@ export default {
     </div> 
      
     <div class="LinkCard-content card-content">
-      <div class="LinkCard-text">
+      <div class="LinkCard-text card-text">
         <span class="LinkCard-title card-title">{{ header }}</span>
         <div v-if="html" class="LinkCard-html card-descr" v-html="html">{{ html }}</div>
         <div class="LinkCard-descr card-descr">{{ text }}</div>

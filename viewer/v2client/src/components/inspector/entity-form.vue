@@ -167,6 +167,8 @@ export default {
 }
 
 .EntityForm {
+  background-color: @white;
+  border: 1px solid @form-border;
   padding: 0;
 
   &-fieldList {
@@ -208,11 +210,19 @@ export default {
     color: black;
     flex-direction: row;
     align-items: center;
-    padding:  5px 0;
     list-style: none;
     width: 100%;
+    min-height: 60px;
     box-shadow: none;
     transition: box-shadow ease-out 0.2s;
+
+    &:first-child {
+      border-bottom-width: 2px;
+
+      & .Field-label {
+        color: @black;
+      }
+    }
 
     &:hover:not(.locked) {
       >.actions {
