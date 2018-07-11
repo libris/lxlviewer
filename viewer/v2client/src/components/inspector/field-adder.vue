@@ -355,11 +355,8 @@ export default {
       <span v-if="!inToolbar" class="FieldAdder-label"> {{ "Add field" | translatePhrase }}</span>
     </button>
 
-    <panel-component @close="hide" v-if="active" class="FieldAdder-panel FieldAdderPanel">
-      <template slot="panel-header">
-        <header>
-          {{ modalTitle }}
-        </header>
+    <panel-component :title="modalTitle" @close="hide" v-if="active" class="FieldAdder-panel FieldAdderPanel">
+      <template slot="panel-header-extra">
         <span class="FieldAdderPanel-filter">
           {{ "Filter by" | translatePhrase }} 
           <input id="field-adder-input" 
@@ -368,11 +365,6 @@ export default {
             type="text" 
             v-model="filterKey">
           <span class="filterInfo">{{ "Showing" | translatePhrase }} {{ filteredResults.length }} {{ "of" | translatePhrase }} {{allowed ? allowed.length : '0'}} {{ "total" | translatePhrase }}</span>
-        </span>
-        <span class="PanelComponent-windowControl">
-          <i @click="toggleFullView" v-show="user.settings.forceFullViewPanel" class="fullview-toggle-button fa fa-minus-square"></i>
-          <i @click="toggleFullView" v-show="!user.settings.forceFullViewPanel" class="fullview-toggle-button fa fa-plus-square"></i>
-          <i @click="hide" @keyup.enter="hide" tabindex="0" class="fa fa-close"></i>
         </span>
       </template>
       <template slot="panel-body">

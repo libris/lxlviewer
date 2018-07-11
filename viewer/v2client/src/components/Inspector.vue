@@ -443,7 +443,7 @@ export default {
         </div>
       </div>
     </div>
-    <div v-if="postLoaded" class="col-12 col-sm-12"  :class="{'col-md-1': !status.panelOpen, 'col-md-5': status.panelOpen }">
+    <div v-if="postLoaded" class="col-12 col-sm-12" :class="{'col-md-1': !status.panelOpen, 'col-md-5': status.panelOpen }">
       <div class="Toolbar-placeholder" ref="ToolbarPlaceholder"></div>
       <div class="Toolbar-container" ref="ToolbarTest">
         <toolbar></toolbar>

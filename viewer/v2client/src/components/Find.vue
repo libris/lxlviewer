@@ -13,6 +13,7 @@ import DatasetObservations from '@/components/search/dataset-observations';
 import LinkCardComponent from '@/components/search/link-card';
 import IntroComponent from '@/components/search/link-card';
 import Modernizr from '@/../.modernizrrc.js';
+import { mapGetters } from 'vuex';
 
 export default {
   data: function () {
@@ -121,12 +122,11 @@ export default {
     },
   },
   computed: {
-    user() {
-      return this.$store.getters.user;
-    },
-    settings() {
-      return this.$store.getters.settings;
-    },
+    ...mapGetters([
+      'user',
+      'settings',
+      'status',
+    ]),
     copy() {
       return Copy[this.settings.siteInfo.title];
     },
@@ -154,31 +154,27 @@ export default {
 </script>
 
 <template>
-  <div class="Find">
-    <div class="row">
-      <div class="col-sm-12">
-        <search-form 
-          :search-perimeter="$route.params.perimeter"
-          :result-data="result">
-        </search-form>
-      </div>
+  <div class="row">
+    <div class="Find col-sm-12" :class="{'col-md-12': !status.panelOpen, 'col-md-7': status.panelOpen }" ref="Find">
+      <search-form 
+        :search-perimeter="$route.params.perimeter"
+        :result-data="result">
+      </search-form>
     </div>
-    <div class="row">
-      <div v-if="result.totalItems > 0 && result.stats" class="col-sm-12 col-md-3">
-        <facet-controls :result="result"></facet-controls>
-      </div>
-      <div class="col-sm-12 col-md-9 Find-content">
-        <div v-show="searchInProgress">
-          <div class="Find-progressText">
-            {{ 'Searching' | translatePhrase }} <i class="fa fa-circle-o-notch fa-spin"></i>
-          </div>
+    <div class="col-sm-12 col-md-3">
+      <facet-controls :result="result" v-if="result.totalItems > 0 && result.stats"></facet-controls>
+    </div>
+    <div class="col-sm-12 Find-content" :class="{'col-md-9': !status.panelOpen, 'col-md-7': status.panelOpen }">
+      <div v-show="searchInProgress">
+        <div class="Find-progressText">
+          {{ 'Searching' | translatePhrase }} <i class="fa fa-circle-o-notch fa-spin"></i>
         </div>
-        <search-result
-          v-show="!searchInProgress"
-          :import-data="importData" 
-          :result="result" 
-          v-if="result.totalItems > -1"></search-result>
       </div>
+      <search-result
+        v-show="!searchInProgress"
+        :import-data="importData" 
+        :result="result" 
+        v-if="result.totalItems > -1"></search-result>
     </div>
   </div>
 </template>
