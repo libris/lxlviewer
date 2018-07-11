@@ -96,9 +96,9 @@ export default {
 .NavBar {
   width: 100%;
   // border: solid @border-navbar;
-  // background-color: @bg-navbar;
+  background-color: @bg-navbar;
   // border-width: 0px 0px @border-navbar-width 0px;
-  box-shadow: @shadow-navbar;
+  box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
   height: auto;
 
   &-brand {
