@@ -393,7 +393,7 @@ export default {
 </script>
 <template>
   <div class="row">
-    <div class="Inspector col-sm-12" :class="{'col-md-11': !inspector.status.panelOpen, 'col-md-7': inspector.status.panelOpen }" ref="Inspector">
+    <div class="Inspector col-sm-12" :class="{'col-md-11': !status.panelOpen, 'col-md-7': status.panelOpen }" ref="Inspector">
       <div v-if="!postLoaded && !loadFailure" class="text-center">
         <i class="fa fa-circle-o-notch fa-4x fa-spin"></i><br/>
         <h3>{{ 'Loading document' | translatePhrase | capitalize }}</h3>
@@ -443,7 +443,7 @@ export default {
         </div>
       </div>
     </div>
-    <div v-if="postLoaded" class="col-12 col-sm-12"  :class="{'col-md-1': !inspector.status.panelOpen, 'col-md-5': inspector.status.panelOpen }">
+    <div v-if="postLoaded" class="col-12 col-sm-12" :class="{'col-md-1': !status.panelOpen, 'col-md-5': status.panelOpen }">
       <div class="Toolbar-placeholder" ref="ToolbarPlaceholder"></div>
       <div class="Toolbar-container" ref="ToolbarTest">
         <toolbar></toolbar>

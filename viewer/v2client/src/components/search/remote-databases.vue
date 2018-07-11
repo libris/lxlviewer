@@ -3,6 +3,7 @@ import * as _ from 'lodash';
 import * as httpUtil from '../../utils/http';
 import * as RecordUtil from '../../utils/record';
 import ResultList from './result-list';
+import PanelComponent from '@/components/shared/panel-component';
 import SearchResult from './search-result';
 import { mapGetters } from 'vuex';
 
@@ -20,6 +21,7 @@ export default {
       importData: [],
       showList: true,
       importJson: '',
+      filterKey: '',
       remoteDatabases: {
         state: '',
         list: [],
@@ -37,15 +39,29 @@ export default {
     ]),
     activeDatabases() {
       const selected = [];
-      const dbs = _.filter(this.remoteDatabases.list, function (o) {
-        return o.active;
-      });
-      if (dbs.length > 0) {
-        for (let i = 0; i < dbs.length; i++) {
-          selected.push(dbs[i].item.database);
+      const dbs = this.remoteDatabases.list;
+      for (const key in dbs) {
+        if (dbs.hasOwnProperty(key)) {
+          if (dbs[key].active) {
+            selected.push(key);
+          }
         }
       }
       return selected;
+    },
+    filteredDatabases() {
+      const dbs = this.remoteDatabases.list;
+      const query = this.filterKey.toLowerCase();
+      const filtered = {};
+      for (const key in dbs) {
+        if (
+          key.toLowerCase().indexOf(query) > -1 ||
+          dbs[key].name.toLowerCase().indexOf(query) > -1
+          ) {
+          filtered[key] = dbs[key];
+        }
+      }
+      return filtered;
     },
     q() {
       return this.remoteSearch.q;
@@ -73,6 +89,11 @@ export default {
         this.user && this.updateUserDbs(val);
       }
     },
+    showList(val, oldVal) {
+      if (val !== oldVal) {
+        this.filterKey = '';
+      }
+    }
   },
   methods: {
     isPlainObject(o) {
@@ -97,22 +118,17 @@ export default {
       ];
 
       const defaultDbs = this.user ? this.user.settings.defaultDatabases : [];
-
       this.remoteDatabases.state = 'loading';
       this.remoteDatabases.debug = '';
       this.fetchDatabases().then((dbs) => {
-        const newDbList = [];
+        const dbList = {};
         for (let i = 0; i < dbs.length; i++) {
-          const obj = { item: dbs[i], active: false, disabled: false };
-          if (disabled.includes(dbs[i].database)) {
-            obj.disabled = true;
-          }
-          if (defaultDbs.includes(dbs[i].database)) {
-            obj.active = true;
-          }
-          newDbList.push(obj);
+          const database = dbs[i];
+          database.disabled = disabled.includes(database.database);
+          database.active = defaultDbs.includes(database.database)
+          dbList[dbs[i].database] = database;
         }
-        this.remoteDatabases.list = newDbList;
+        this.remoteDatabases.list = dbList;
         this.remoteDatabases.state = 'complete';
       }, () => {
         this.remoteDatabases.state = 'error';
@@ -142,9 +158,17 @@ export default {
       })
       return convertedList;
     },
-    toggleDatabase(index) {
-      if (this.remoteDatabases.list[index]) {
-        this.remoteDatabases.list[index].active = !this.remoteDatabases.list[index].active;
+    addDatabase(key) {
+      if (this.remoteDatabases.list[key].disabled === false) {
+        this.remoteDatabases.list[key].active = true;
+      }
+    },
+    removeDatabase(key) {
+      this.remoteDatabases.list[key].active = false;
+    },
+    toggleDatabase(key) {
+      if (this.remoteDatabases.list[key].disabled === false) {
+        this.remoteDatabases.list[key].active = !this.remoteDatabases.list[key].active;
       }
     },
     attachResult(response) {
@@ -162,10 +186,12 @@ export default {
   components: {
     'result-list': ResultList,
     'search-result': SearchResult,
+    'panel-component': PanelComponent,
   },
   mounted() {
     this.remoteQuery = this.remoteSearch.q;
     this.loadRemoteDatabases();
+    this.showList = false;
   },
 };
 </script>
@@ -173,36 +199,62 @@ export default {
 <template>
   <div class="RemoteDatabases" v-show="remoteDatabases.state == 'complete'">
     <div class="RemoteDatabases-activeInfo">
-      <p v-if="activeDatabases.length > 0">
-        <span v-if="activeDatabases.length == 1">Vald databas:</span>
-        <span v-if="activeDatabases.length > 1">Valda databaser:</span>
-        <span v-for="(db, index) in activeDatabases" 
-          :key="index">{{db}}{{ index === (activeDatabases.length-1) ? '' : ', ' }}</span>
-      </p>
-      <p v-if="activeDatabases.length == 0">
-        <span>{{"No sources chosen" | translatePhrase}}...</span>
+      <p>
+        <span>{{'Databases' | translatePhrase}}:</span>
+        <span class="RemoteDatabases-chip active" v-for="(db, index) in activeDatabases" 
+          :key="index" v-on:click="removeDatabase(db)">
+          {{db}}
+          <i class="fa fa-times-circle chip-action"></i>
+          </span>
+        <span class="RemoteDatabases-chip" v-on:click="showList = true">{{'Add' | translatePhrase}} <i class="fa fa-plus-circle"></i></span>
       </p>
     </div>
-    <div class="RemoteDatabases-container">
-      <h4 id="remoteDbListLabel" class="RemoteDatabases-listTitle" v-on:click="showList = !showList">
-        {{"Sources" | translatePhrase}}
-        <i class="fa fa-fw fa-caret-right" v-show="!showList"></i>
-        <i class="fa fa-fw fa-caret-down" v-show="showList"></i>
-      </h4>
-      <ol class="RemoteDatabases-list" aria-labelledby="remoteDbListLabel"
+    <panel-component
+      v-if="showList"
+      :title="'Sources' | translatePhrase"
+      @close="showList = false"
+    >
+      <template slot="panel-header-extra">
+        <div class="RemoteDatabases-listFilter">
+          <label>
+            {{ "Filter by" | translatePhrase }} 
+          </label>
+          <input 
+            class="RemoteDatabases-listFilterInput mousetrap" 
+            type="text" 
+            v-model="filterKey">
+        </div>
+      </template>
+      <template slot="panel-body">
+      <ul class="RemoteDatabases-list" aria-labelledby="remoteDbListLabel"
         v-show="remoteDatabases.state == 'complete' && showList">
         <li class="RemoteDatabases-listItem" tabindex="0"
           :class="{'is-active': db.active, 'is-disabled': db.disabled }" 
-          v-for="(db, index) in remoteDatabases.list" 
-          @click="toggleDatabase(index)"
-          @keyup.enter="toggleDatabase(index)"
+          v-for="(db, index) in filteredDatabases" 
+          @click="toggleDatabase(db.database)"
+          @keyup.enter="toggleDatabase(db.database)"
           :key="index">
-          <span class="RemoteDatabases-dbLabel">{{db.item.database}}</span>
-          <em class="RemoteDatabases-dbName" 
-            v-show="db.item.database !== db.item.name" 
-            :title="db.item.name">{{db.item.name}}</em>
+          <div class="RemoteDatabases-addControl">
+            <i v-show="db.disabled" class="fa fa-fw fa-2x fa-ban"></i>
+            <i v-show="!db.active && !db.disabled" class="fa fa-fw fa-2x fa-plus-circle"></i>
+            <i v-show="db.active" class="fa fa-fw fa-check fa-2x"></i>
+          </div>
+          <div class="RemoteDatabases-dbInfo">
+            <span class="RemoteDatabases-dbLabel">{{db.database}} <span v-show="db.disabled" class="RemoteDatabases-dbUnavailable">({{'Unavailable' | translatePhrase}})</span></span>
+            <em class="RemoteDatabases-dbName" 
+              v-show="db.database !== db.name" 
+              :title="db.name">{{db.name}}</em>
+          </div>
+          <div class="RemoteDatabases-dbExtraInfo">
+            <i v-show="db.comment" :title="db.comment" class="RemoteDatabases-dbCommentTrigger fa fa-info-circle fa-fw">
+              <!-- <div class="RemoteDatabases-dbComment">
+                
+              </div> -->
+            </i>
+            <i v-show="db.about" class="fa fa-question-circle fa-fw"></i>
+          </div>
         </li>
-      </ol>
+      </ul>
       <p class="RemoteDatabases-statusText" v-show="remoteDatabases.state == 'loading'" >
         <i class="fa fa-circle-o-notch fa-spin"></i> 
         {{"Loading external databases" | translatePhrase}}...
@@ -214,7 +266,8 @@ export default {
           {{"Try again" | translatePhrase}}
         </a>
       </p>
-    </div>
+      </template>
+    </panel-component>
   <!-- <p v-if="remoteResult.state === 'error'">
     <i class="fa fa-close"></i> {{"Something went wrong" | translatePhrase}}
   </p>
@@ -228,13 +281,37 @@ export default {
 <style lang="less">
 
 .RemoteDatabases {
+
+  &-chip {
+    border: 1px solid @gray;
+    color: @gray;
+    border-radius: 1em;
+    font-weight: 600;
+    &.active {
+      color: @brand-primary;
+      border-color: @brand-primary;
+    }
+    margin: 0.25em;
+    display: inline-block;
+    padding: 0 0.5em 0 0.5em;
+    cursor: pointer;
+  }
+
   &-list {
     display: flex;
     flex-wrap: wrap;
     list-style: none;
     padding: 0px;
-    text-align: center;
     width: 100%;
+  }
+
+  &-listFilter {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    input {
+      flex-grow: 1;
+    }
   }
 
   &-listTitle {
@@ -242,27 +319,75 @@ export default {
   }
 
   &-listItem {
-    border-radius: 0.2em;
-    background-color: #f1f1f1;
-    border: 1px solid @gray;
+    background-color: @list-item-bg-even;
+    &:nth-child(odd) {
+      background-color: @list-item-bg-odd;
+    }
+    &:hover {
+      background-color: @list-item-bg-hover;
+    }
     cursor: pointer;
-    margin: 0.2em;
     padding: 0.2em;
-    width: 19%;
+    width: 100%;
+    display: flex;
 
     &.is-active {
-      background-color: desaturate(lighten(@brand-primary, 30%), 50%);
+      
     }
 
     &.is-disabled {
-      opacity: 0.2;
-      pointer-events: none;
+      cursor: default;
     }
-
-    &:focus {
-      border: 1px solid desaturate(lighten(@brand-primary, 30%), 50%);
-      border-radius: 0;
-      outline: 2px dashed desaturate(lighten(@brand-primary, 30%), 50%);
+  }
+  &-dbInfo {
+    display: flex;
+    flex-basis: 50%;
+    flex-grow: 1;
+    overflow: hidden;
+    flex-direction: column;
+    justify-content: center;
+  }
+  &-dbExtraInfo {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 1em;
+    i {
+      color: @gray;
+      &:hover {
+        color: @brand-primary;
+      }
+    }
+  }
+  // &-dbCommentTrigger {
+  //   div {
+  //     font-family: 'Open sans', sans-serif;
+  //     line-height: 1.6;
+  //     background-color: @neutral-color;
+  //     text-align: left;
+  //     display: none;
+  //     position: absolute;
+  //     top: 1em;
+  //     right: 1em;
+  //     border: 1px solid @gray-light;
+  //     padding: 0.25em;
+  //     border-radius: 0.25em;
+  //     width: 50%;
+  //   }
+  //   &:hover {
+  //     div {
+  //       display: block;
+  //     }
+  //   }
+  // }
+  &-addControl {
+    display: flex;
+    align-items: center;
+    .fa-ban {
+      color: @brand-danger;
+    }
+    .fa-plus-circle {
+      color: @brand-primary;
     }
   }
 

@@ -5,8 +5,9 @@
   This component can recieve content to inject in the different slots.
 
   The slots are:
-    * panel-header  - If no content, will just show the "title"-prop and a close-button, explained below.
-    * panel-body    - Just a container for your content. Supports highly customized layout.
+    * panel-header        - If no content, will just show the "title"-prop and a close-button, explained below.
+    * panel-header-extra  - If you need something extra in the header, this will render below the other header-content.
+    * panel-body          - Just a container for your content. Supports highly customized layout.
 
   Close-event:
     The default close button will emit an event called "close".
@@ -74,7 +75,7 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      this.$store.dispatch('setInspectorStatusValue', { property: 'panelOpen', value: true });
+      this.$store.dispatch('setStatusValue', { property: 'panelOpen', value: true });
       setTimeout(() => {
         this.fadedIn = true;
       }, 1);
@@ -83,7 +84,7 @@ export default {
   beforeDestroy() {
     this.$nextTick(() => {
       this.lockScroll(false);
-      this.$store.dispatch('setInspectorStatusValue', { property: 'panelOpen', value: false });
+      this.$store.dispatch('setStatusValue', { property: 'panelOpen', value: false });
     });
   },
 };
@@ -96,7 +97,8 @@ export default {
   :class="{'is-fadedIn': fadedIn, 'is-danger': modalType === 'danger'}"
   >
     <div class="PanelComponent-container" :class="{'full-view': user.settings.forceFullViewPanel }">
-      <div class="PanelComponent-header">
+      <div class="PanelComponent-headerContainer">
+        <div class="PanelComponent-header">
         <slot name="panel-header">
           <header>
             {{ translatedTitle }}
@@ -106,6 +108,9 @@ export default {
             <i @click="toggleFullView" v-show="!user.settings.forceFullViewPanel" class="fullview-toggle-button fa fa-plus-square"></i>
             <i @click="close" class="fa fa-close"></i>
           </span>
+        </slot>
+        </div>
+        <slot name="panel-header-extra">
         </slot>
       </div>
       <div class="PanelComponent-body">
@@ -149,7 +154,7 @@ export default {
     left: 65%;
     height: 100vh;
     text-align: left;
-    border: solid darken(@brand-primary, 5%);
+    border: #cccccc;
     border-width: 0px 0px 0px 1px;
     .is-danger & {
       border-color: darken(@brand-danger, 5%);
@@ -167,22 +172,27 @@ export default {
       height: 100vh;
     }
   }
-  &-header {
+  &-headerContainer {
     .is-danger & {
       background-color: @brand-danger;
+      color: @neutral-color;
     }
     display: flex;
     flex-wrap: nowrap;
-    flex-direction: row;
-    justify-content: space-between;
-    background-color: @brand-primary;
-    color: @neutral-color;
+    flex-direction: column;
+    background-color: @panel-header-bg;
     padding: 0.5em;
+    border: solid #ccc;
+    border-width: 0px 0px 1px 0px;
     header {
       display: inline-block;
       font-weight: bold;
       text-transform: uppercase;
     }
+  }
+  &-header {
+    display: flex;
+    justify-content: space-between;
   }
   &-body {
     overflow-y: auto;
@@ -190,9 +200,13 @@ export default {
     z-index: 5;
   }
   &-windowControl {
+    i {
+      color: @gray;
+      margin: 0 0 0 0.25em;
+    }
     i:hover {
       cursor: pointer;
-      color: darken(@neutral-color, 25%);
+      color: @brand-primary;
     }
     .fullview-toggle-button {
       @media screen and (max-width: @screen-lg-min) {
