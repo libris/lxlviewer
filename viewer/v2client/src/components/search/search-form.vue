@@ -285,7 +285,7 @@ export default {
       ]" :active="searchPerimeter"></tab-menu>
       <div  v-if="searchPerimeter === 'libris'"  class="SearchBar-help" @mouseleave="hideHelp()">
         <div class="SearchBar-helpBox dropdown" >
-          <span class="SearchBar-helpIcon">
+          <span class="SearchBar-helpIcon icon--md">
             <i class="fa fa-fw fa-question-circle" tabindex="0" aria-haspopup="true"
               @mouseover="showHelp()"
               @keyup.enter="toggleHelp()"></i>
@@ -327,11 +327,11 @@ export default {
                   </option>
                 </datalist>
               </div>
-              <span class="SearchBar-clear" v-show="hasInput" @click="clearInputs()">
+              <span class="SearchBar-clear icon--md" v-show="hasInput" @click="clearInputs()">
                 <i class="fa fa-fw fa-close"></i>
               </span>
             </div>
-            <button class="SearchBar-submit btn btn-primary" 
+            <button class="SearchBar-submit btn btn-primary icon--md" 
               :aria-label="'Search' | translatePhrase"
               @click.prevent="doSearch">
               <i class="fa fa-search"></i>
@@ -344,7 +344,7 @@ export default {
         <div class="SearchBar-formGroup form-group panel">
           <input type="text" class="SearchBar-input form-control" placeholder="ISBN eller valfria sökord" 
             v-model="remoteSearch.q">
-          <button class="SearchBar-submit btn btn-primary"
+          <button class="SearchBar-submit btn btn-primary icon--md"
             :aria-label="'Search' | translatePhrase"
             v-bind:class="{
               'disabled': status.remoteDatabases.length === 0
@@ -400,11 +400,8 @@ export default {
   }
 
   &-helpIcon {
-    font-size: @icon-m;
-    color: @icon-default;
     float: right;
     clear: right;
-    cursor: pointer;
 
     & > i {
       vertical-align: bottom;
@@ -512,14 +509,11 @@ export default {
   }
 
   &-clear {
-    color: @icon-default;
-    cursor: pointer;
     align-self: center;
     flex: 1 1 2%;
   }
 
   &-submit {
-    font-size: @icon-m;
     height: 42px;
     border: 0;
     border-radius: 0 4px 4px 0;

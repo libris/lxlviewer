@@ -1,0 +1,32 @@
+.icon {
+    color: @gray-op;
+    color: @icon-default;
+    cursor: pointer;
+
+    &:hover {
+        color: @icon-default--hover;
+    }
+
+    &--primary {
+        color: @icon-primary;
+
+        &:hover {
+            color: @icon-primary--hover;
+        }
+    }
+
+    &--sm {
+        &:extend(.icon);
+        font-size: @icon-sm;
+    }
+
+    &--md {
+        &:extend(.icon);
+        font-size: @icon-md;
+    }
+    
+    &--lg {
+        &:extend(.icon);
+        font-size: @icon-lg;
+    }
+}

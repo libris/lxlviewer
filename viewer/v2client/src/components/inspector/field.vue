@@ -362,47 +362,48 @@ export default {
     v-bind:class="{'is-mainField': isMainField, 'Field--inner': !asColumns, 'is-lastAdded': isLastAdded, 'is-removed': removed}" 
     @mouseover="handleMouseEnter()" 
     @mouseleave="handleMouseLeave()">
+
+    <div v-if="!isInner && this.inspector.status.editing" class="Field-actions">
+      <entity-adder class="Field-entityAdder Field-action"
+        v-if="!locked && (isRepeatable || isEmptyObject)" 
+        :field-key="fieldKey" 
+        :already-added="linkedIds" 
+        :entity-type="entityType" 
+        :property-types="propertyTypes" 
+        :show-action-buttons="actionButtonsShown" 
+        :active="activeModal" 
+        :is-placeholder="false" 
+        :value-list="valueAsArray" 
+        :path="getPath">
+      </entity-adder>
+      <div v-else class="Field-action placeholder"></div> 
+      <div class="Field-action Field-remove" 
+        v-show="!locked" 
+        :class="{'disabled': activeModal}">
+        <i class="fa fa-trash-o action-button icon--sm"
+          tabindex="0"
+          v-on:click="removeThis(true)"
+          @focus="removeHover = true, removeHighlight(true, $event)" 
+          @blur="removeHover = false, removeHighlight(false, $event)"
+          @mouseover="removeHover = true, removeHighlight(true, $event)" 
+          @mouseout="removeHover = false, removeHighlight(false, $event)">
+          <tooltip-component 
+            :show-tooltip="removeHover" 
+            tooltip-text="Remove" 
+            translation="translatePhrase"></tooltip-component>
+        </i>
+      </div>
+      <div class="Field-comment" v-if="propertyComment && !locked" >
+        <i class="fa fa-question-circle Field-commentIcon icon--sm"></i>
+        <span class="Field-commentText">{{ propertyComment }}</span>
+      </div>
+    </div>
     
     <div class="Field-label capitalHeading--gray" v-bind:class="{ 'is-locked': locked }">
       <span v-show="fieldKey === '@id'">{{ 'ID' | translatePhrase | capitalize }}</span>
       <span v-show="fieldKey === '@type'">{{ 'Type' | translatePhrase | capitalize }}</span>
       <span v-show="fieldKey !== '@id' && fieldKey !== '@type'" 
         :title="fieldKey">{{ fieldKey | labelByLang | capitalize }}</span>
-
-      <div class="Field-comment" v-if="propertyComment && !locked" >
-        <i class="fa fa-question-circle Field-commentIcon"></i>
-        <span class="Field-commentText">{{ propertyComment }}</span>
-      </div>
-    
-      <div v-if="!isInner" class="Field-actions">
-        <entity-adder  class="Field-entityAdder Field-action"
-          v-show="!locked && (isRepeatable || isEmptyObject)" 
-          :field-key="fieldKey" 
-          :already-added="linkedIds" 
-          :entity-type="entityType" 
-          :property-types="propertyTypes" 
-          :show-action-buttons="actionButtonsShown" 
-          :active="activeModal" 
-          :is-placeholder="false" 
-          :value-list="valueAsArray" 
-          :path="getPath"></entity-adder>
-        <div class="Field-action Field-remove" 
-          v-show="!locked" 
-          :class="{'disabled': activeModal}">
-          <i class="fa fa-trash-o action-button"
-            tabindex="0"
-            v-on:click="removeThis(true)"
-            @focus="removeHover = true, removeHighlight(true, $event)" 
-            @blur="removeHover = false, removeHighlight(false, $event)"
-            @mouseover="removeHover = true, removeHighlight(true, $event)" 
-            @mouseout="removeHover = false, removeHighlight(false, $event)">
-            <tooltip-component 
-              :show-tooltip="removeHover" 
-              tooltip-text="Remove" 
-              translation="translatePhrase"></tooltip-component>
-          </i>
-        </div>
-      </div>
 
       <!-- Is inner -->
       <div v-if="isInner" class="Field-actions is-nested">
@@ -689,7 +690,7 @@ export default {
     line-height: 1.6;
     text-transform: none;
     transform: translate(-89%, 5px);
-    padding: 5px;
+    padding: 10px;
     position: absolute;
     text-align: left;
     top: 20px;
@@ -700,8 +701,7 @@ export default {
   }
 
   &-comment {
-    display: inline;
-    margin-left: 2px;
+    width: 20px;
     position: relative;
 
     &:hover {
@@ -737,10 +737,9 @@ export default {
   }
 
   &-actions {
-    font-size: 20px;
-    font-size: 2.0rem;
-    line-height: 1;
-    position: relative;
+    display: flex;
+    width: 100px;
+    padding-left: 20px;
 
     .disabled {
       visibility: hidden;
@@ -760,15 +759,18 @@ export default {
   }
 
   &-action {
+    min-width:  20px;
     display: inline-block;
-    margin: 10px 0 0 5px;
     transition: opacity 0.25s ease;
     transition-delay: 0.1s;
-    cursor: pointer;
-    color: @gray-dark;
+    margin-right: 5px;
+  
+  &.placeholder {
+    width: 20px;
+  }
 
     &:hover {
-      color: @black;
+      // color: @black;
     }
   }
 }

@@ -165,14 +165,14 @@ export default {
   &-input {
     display: block;
     width: 100%;
-    border: 1px solid @gray-dark;
+    border: 1px solid @gray-light;
     border-radius: 2px;
     padding: 2px 10px;
     resize: none;
     transition: border .25s ease-out;
 
     &:focus {
-      border: 1px solid @black;
+      border: 1px solid @gray-dark;
     }
   }
 

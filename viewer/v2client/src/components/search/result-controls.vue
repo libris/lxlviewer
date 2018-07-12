@@ -140,13 +140,13 @@ export default {
         <p v-if="pageData.totalItems > limit && $route.params.perimeter != 'remote'" class="ResultControls-resultDescr">Visar {{ limit }} träffar per sida.</p>
       </div>
       <div class="ResultControls-listTypes" v-if="showDetails && pageData.totalItems > 0">
-        <button class="ResultControls-listType"
+        <button class="ResultControls-listType icon--md"
           v-on:click="setFull()" 
           v-bind:class="{'is-active': user.settings.resultListType === 'detailed' }"
           :title="'Detailed view' | translatePhrase">
           <i class="fa fa-th-list"></i>
         </button>
-        <button class="ResultControls-listType" 
+        <button class="ResultControls-listType icon--md" 
           v-on:click="setCompact()" 
           v-bind:class="{'is-active': user.settings.resultListType === 'compact' }"
           :title="'Compact view' | translatePhrase">
@@ -217,9 +217,7 @@ export default {
   }
 
   &-listType {
-    color: @icon-default;
     background-color: transparent;
-    font-size: @icon-m;
     height: 30px;
 
     &:hover, 
