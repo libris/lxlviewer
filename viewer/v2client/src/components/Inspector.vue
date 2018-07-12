@@ -203,12 +203,8 @@ export default {
         }
       }
     },
-    toggleEditorFocus() {
-      if (this.inspector.status.focus === 'record') {
-        this.$store.dispatch('setInspectorStatusValue', { property: 'focus', value: 'mainEntity' });
-      } else {
-        this.$store.dispatch('setInspectorStatusValue', { property: 'focus', value: 'record' });
-      }
+    setEditorFocus(value) {
+      this.$store.dispatch('setInspectorStatusValue', { property: 'focus', value: value });
     },
     getPackagedItem() {
       const RecordId = this.inspector.data.record['@id'];
@@ -431,7 +427,7 @@ export default {
             v-if="!isItem">
           </entity-header>
 
-          <tab-menu @go="toggleEditorFocus" :tabs="editorTabs" :active="this.inspector.status.focus" />
+          <tab-menu @go="setEditorFocus" :tabs="editorTabs" :active="this.inspector.status.focus" />
 
           <entity-form 
             :editing-object="inspector.status.focus" 
