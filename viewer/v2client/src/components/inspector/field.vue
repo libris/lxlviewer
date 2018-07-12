@@ -380,7 +380,7 @@ export default {
       <div class="Field-action Field-remove" 
         v-show="!locked" 
         :class="{'disabled': activeModal}">
-        <i class="fa fa-trash-o action-button icon--sm"
+        <i class="fa fa-trash-o action-button icon icon--sm"
           tabindex="0"
           v-on:click="removeThis(true)"
           @focus="removeHover = true, removeHighlight(true, $event)" 
@@ -394,7 +394,7 @@ export default {
         </i>
       </div>
       <div class="Field-comment" v-if="propertyComment && !locked" >
-        <i class="fa fa-question-circle Field-commentIcon icon--sm"></i>
+        <i class="fa fa-question-circle Field-comment icon icon--sm"></i>
         <span class="Field-commentText">{{ propertyComment }}</span>
       </div>
     </div>

@@ -2,6 +2,7 @@
     color: @gray-op;
     color: @icon-default;
     cursor: pointer;
+    transition: color .1s ease;
 
     &:hover {
         color: @icon-default--hover;
@@ -16,17 +17,14 @@
     }
 
     &--sm {
-        &:extend(.icon);
         font-size: @icon-sm;
     }
 
     &--md {
-        &:extend(.icon);
         font-size: @icon-md;
     }
     
     &--lg {
-        &:extend(.icon);
         font-size: @icon-lg;
     }
 }

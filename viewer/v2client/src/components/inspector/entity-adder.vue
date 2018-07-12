@@ -493,7 +493,7 @@ export default {
       @keyup.enter="add($event)"
       @mouseenter="showToolTip = true, actionHighlight(true, $event)" 
       @mouseleave="showToolTip = false, actionHighlight(false, $event)">
-      <i class="EntityAdder-addIcon fa fa-fw fa-plus-circle plus-icon icon--sm" aria-hidden="true">
+      <i class="EntityAdder-addIcon fa fa-fw fa-plus-circle icon icon--sm" aria-hidden="true">
         <tooltip-component 
           :show-tooltip="showToolTip" 
           :tooltip-text="tooltipText"></tooltip-component>
@@ -504,7 +504,7 @@ export default {
     <div class="EntityAdder-typeChooser" 
       v-if="addEmbedded" 
       v-on-clickaway="dismissTypeChooser">
-      <select class="EntityAdder-typeSelect" 
+      <select class="EntityAdder-typeSelect customSelect" 
         v-model="selectedType" 
         @change="addType(selectedType, true)">
         <option disabled value="">{{"Choose type" | translatePhrase}}</option>
@@ -635,15 +635,17 @@ export default {
   }
 
   &-typeSelect {
-    background: @white;
-    color: @black;
-    margin: 0 0 5px 0;
-    border: 1px solid #6F767B;
-    border-radius: 2px;
-    font-size: 14px;
-    font-size: 1.4rem;
-    font-weight: normal;
-    width: 100%;
+    // background: @white;
+    // color: @black;
+    // margin: 0 0 5px 0;
+    // border: 1px solid #6F767B;
+    // border-radius: 2px;
+    // font-size: 14px;
+    // font-size: 1.4rem;
+    // font-weight: normal;
+    position: absolute;
+    left: 20px;
+    z-index: 1;
   }
 
   &-controls {
