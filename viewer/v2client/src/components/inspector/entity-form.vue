@@ -122,7 +122,7 @@ export default {
 </script>
 
 <template>
-  <div class="EntityForm well form-component focused-form-component" 
+  <div class="EntityForm form-component focused-form-component" 
     :class="{ 'locked is-locked': isLocked }" 
     v-show="isActive">
     <ul class="FieldList" 
