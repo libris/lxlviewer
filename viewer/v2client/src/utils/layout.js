@@ -1,3 +1,5 @@
+import KeyBindings from '@/resources/json/keybindings.json';
+
 export function scrollLock(bool) {
   // Lock scroll of the body, mostly used with modals
   const e = document.documentElement;
@@ -100,6 +102,50 @@ export function scrollTo(position, duration = 200, easing = 'linear', callback) 
     requestAnimationFrame(scroll);
   }
   scroll();
+}
+
+export function getKeybindingText(eventName) {
+  let str = '';
+  const os = getOS();
+  let modkey = '';
+  if (os.indexOf('Windows') > -1) {
+    modkey = 'Ctrl';
+  } else if (os.indexOf('Mac') > -1) {
+    modkey = '⌘';
+  } else {
+    modkey = 'mod';
+  }
+  if (eventName) {
+    for (const view in KeyBindings) {
+      for (const binding in KeyBindings[view]) {
+        if (KeyBindings[view][binding] === eventName) {
+          str = binding.toUpperCase();
+          break;
+        }
+      }
+    }
+    str = str.replace('MOD', modkey);
+    str = str.replace('CTRL', 'Ctrl');
+    str = str.replace('ALT', 'Alt');
+    str = str.replace('SHIFT', '⇧');
+    str = str.replace('MINUS', 'Minus');
+    str = str.replace('PLUS', 'Plus');
+  }
+  return str;
+}
+
+export function getOS() {
+  let OSName = "Unknown";
+  if (window.navigator.userAgent.indexOf("Windows NT 10.0")!= -1) OSName="Windows 10";
+  if (window.navigator.userAgent.indexOf("Windows NT 6.2") != -1) OSName="Windows 8";
+  if (window.navigator.userAgent.indexOf("Windows NT 6.1") != -1) OSName="Windows 7";
+  if (window.navigator.userAgent.indexOf("Windows NT 6.0") != -1) OSName="Windows Vista";
+  if (window.navigator.userAgent.indexOf("Windows NT 5.1") != -1) OSName="Windows XP";
+  if (window.navigator.userAgent.indexOf("Windows NT 5.0") != -1) OSName="Windows 2000";
+  if (window.navigator.userAgent.indexOf("Mac")            != -1) OSName="Mac/iOS";
+  if (window.navigator.userAgent.indexOf("X11")            != -1) OSName="UNIX";
+  if (window.navigator.userAgent.indexOf("Linux")          != -1) OSName="Linux";
+  return OSName;
 }
 
 export function showPage(vueInstance) {

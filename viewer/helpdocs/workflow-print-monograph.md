@@ -1,17 +1,18 @@
 ---
 section: Arbetsflöden
-title: Bok - tryckt monografi
+title: Tryckt monografi - bok
 order: 15
 tags:
 - editor
 --- 
-*UNDER ARBETE - UPPDATERAS KONTINUERLIGT*
 
-## Bok – Tryckt monografi
+*Under arbete. Senast uppdaterad 2018-07-02.*
+
+## Tryckt monografi - bok
 
 Denna hjälptext beskriver ett antal vanligt förekommande fält, med utgångspunkt från exempel. För instruktioner om att länka till entitet, skapa lokal entitet och om hur formuläret fungerar i övrigt, se Redigering i vänstermenyn. För information om katalogregler, skrivregler och övriga katalogiseringsanvisningar, se [Anvisningar för katalogisering - RDA](http://www.kb.se/rdakatalogisering/ "Anvisningar för katalogisering - RDA").
 
-I de flesta fall ska informationen delas upp i olika fält och delfält. I några undantagsfall är det nödvändigt att använda ISBD-interpunktion inom fält, för att separera uppgifter. Dessa fall visas genom exempel nedan. Använd vid behov också klamrar inom fält, enligt Anvisningar för katalogisering - RDA.
+I de flesta fall ska informationen delas upp i olika fält och delfält. I några undantagsfall är det nödvändigt att använda ISBD-interpunktion inom fält, för att separera uppgifter. Dessa fall visas genom exempel nedan. I övriga fall, lägg inte in ISBD-interpunktion för att avsluta ett fält. Använd vid behov klamrar inom fält, enligt Anvisningar för katalogisering - RDA.
 
 I vissa fall fungerar det ännu inte fullt ut att lägga till alla uppgifter som beskrivs i denna hjälptext. Arbete pågår med förbättra gränssnittet. För att anmäla fel, använd detta [formulär](https://docs.google.com/forms/d/e/1FAIpQLSfOChJOGDoHUQguSF83F5XyTZiQL-yU47nvcqb6qwNT9GX7Aw/viewform). För att lämna synpunkter, använd detta [formulär](https://docs.google.com/forms/d/e/1FAIpQLScgz_0enebhBn6uB8xvowkDBB4ax_dbvaobLSFfqFMoty6eQg/viewform).  
 
@@ -29,13 +30,15 @@ samt exempel hämtade från andra poster.
   Förval: den sigel som skapat posten. Ska inte ändras.  
   ```Exempel: BOKR```
 
-* Uppgraderad eller importerad av/Organisation/Namn (descriptionUpgrader/Organization/name = 040 ‡d)  
-  Länka till entitet.  
-  ```Exempel: S```
+* Uppgraderad eller importerad av/Bibliotek/Sigel (descriptionUpgrader/Library/sigel = 040 ‡d)  
+  Om beskrivningsnivån uppgraderas, lägg till denna uppgift. Vid postimport, lägg till uppgiften. Lägg inte till uppgiften när posten endast ändras utan att beskrivningsnivån uppgraderas.  
+  Skapa lokal entitet. Klicka på Lägg till agent (+-ikonen vid Uppgraderad eller importerad av), välj därefter Skapa lokal entitet. Lägg till Sigel (+ikonen Lägg till fält under Bibliotek). Skriv in uppgiften.     
+  ```Exempel: S```  
 
 * Bibliografi/Bibliotek/Sigel (bibliography/Library/sigel = 042 ‡9)  
-  Länka till entitet.  
-  ```Exempel: NB```
+  Skapa lokal entitet. Klicka på Lägg till bibliotek (+-ikonen vid Bibliografi), välj därefter Skapa lokal entitet. Välj Bibliotek i rullgardinsmenyn. Lägg till Sigel (+ikonen Lägg till fält under Bibliotek). Skriv in uppgiften.  
+  ```Exempel: NB```  
+  ```Exempel: SAMB```  
 
 * Identifikator/Systemnummer/Värde (identifiedBy/SystemNumber/value = 035 ‡a)  
   Om ett systemnummer finns i förhandspost, till exempel Bokinfos systemnummer, låt det vara kvar oförändrat.    
@@ -46,7 +49,7 @@ samt exempel hämtade från andra poster.
   ```Exempel: svenska (swe)```
 
 * Katalogiseringsregler (descriptionConventions = 040 ‡e)  
-  För post katalogiserad enligt RDA, länka till entitet: marc/Isbd samt skapa lokal entitet med Kod: rda    
+  För post katalogiserad enligt RDA, sök fram och länka till entitet: "ISBD-interpunktions finns: i" (välj Regler för deskriptiv katalogisering vid sökningen). Skapa också lokal entitet under Katalogiseringregler, välj typ Katalogiseringsregler. Lägg till Kod. Skriv in "rda".    
   ```Exempel: marc/Isbd (länkad entitet) + lokal entitet, Kod: rda```
 
 * Beskrivningsnivå (000/17)  
@@ -57,6 +60,13 @@ samt exempel hämtade från andra poster.
   Uppdateras automatiskt. Ändra inte.   
   ```Exempel: Ny post```  
   ```Exempel: Rättad eller reviderad post```
+  
+ * Systemteknisk anmärkning/Benämning (599)  
+ 
+ Följande anmärkningar är under arbete och fungerar ännu inte fullt ut:  
+ * Katalogisatörens anmärkning  
+ * Anmärkning om katalogiseringskälla  
+ 
 
 ### Instans
 * Utgivningssätt (issuanceType)  
@@ -69,7 +79,9 @@ samt exempel hämtade från andra poster.
   ```Exempel: Under cover```  
   ```Exempel: En arbetsdag i skriftsamhället```  
     För en titel som börjar med bestämd eller obestämd artikel, ska artikeln fileras bort. Ange fileringsvärde genom att lägga till delfältet fileringsvärde och ange en siffra. Exempel: Huvudtitel: En arbetsdag i skriftsamhället, fileringsvärde: 3   
-    
+ Se exempel i formathandboken för Libris/Voyager: 
+[Fileringsindikator]( http://www.kb.se/katalogisering/Formathandboken/Fileringsindikator/)
+ 
 * Har titel/Titel/Övrig titelinformation (= Undertitel) (hasTitle/Title/subTitle = 245 ‡b)  
   Skriv in uppgiften. Om det finns flera undertitlar, skriv in dessa efter varandra i samma fält, åtskilda av mellanslag, kolon, mellanslag.    
   ```Exempel: livet som underrättelseagent åt MI5```  
@@ -111,27 +123,37 @@ samt exempel hämtade från andra poster.
   ```Exempel: Första upplagan```  
   
 * Utgivning (publication)  
-  Välj typ från lista. För monografier, välj Primär utgivning. (= Typ av utgivningsdatum/utgivningsstatus) (008/06)  
-  Begreppet "Primär utgivning" har infört i Libris, främst för seriella resurser, där det ibland finns upprepade utgivningsavsnitt. Primär utgivning är då det första och sammanfattande utgivningsavsnittet. Primär utgivning används även för monografier, men följs där inte av något ytterligare utgivningsavsnitt.  
+  Välj typ från lista. För monografier, använd Primär utgivning.  
+  
   * Land (country = 008/15-17)  
   Länka till entitet.  
   ```Exempel: Sverige (sw)```  
-  * Plats/Benämning (= Utgivningsort) (place/label = 264 -/1 ‡a)  
-  Skriv in uppgiften.  
+  * Plats/Plats/Benämning (= Utgivningsort) (place/label = 264 -/1 ‡a)  
+  För att lägga till Plats, klicka på Lägg till fält under Primär utgvning och välj Plats. Sök inte efter Plats som entitet utan välj istället Skapa lokal entitet, typ Plats. Lägg till Benämning.  
+  Skriv in uppgiften. Klamra vid behov. Plats ska inte länkas som entitet.  
   ```Exempel: [Göteborg]```  
   * Agent/Benämning (= Utgivarnamn) (agent/label = 264 -/1 ‡b)  
-  Skriv in uppgiften.  Utgivarnamn ska inte länkas som entitet.  
+  För att lägga till Agent, klicka på Lägg till fält under Primär utgivning och välj Agent. Sök inte efter Agent som entitet utan välj istället Skapa lokal entitet, typ Agent. Lägg till Benämning.  
+  Skriv in uppgiften. Klamra vid behov. Utgivarnamn ska inte länkas som entitet.  
   ```Exempel: NoNa```  
+ 
+  Om flera utgivare ska anges, lägg till "Har del" (hasPart) under Primär utgivning. Lägg därefter till Utgivning som lokal entitet (klicka på +-ikonen vid Har del och klicka sedan på Skapa lokal entitet. Välj Utgivning i listan). Använd År och vid behov Datum enligt anvisningar nedan. Upprepa Har del och Utgivning som lokal entitet för nästa utgivare.
+  Se [exempel](https://libris.kb.se/katalogisering/1kcsx46c1pmjdxz#it).
+  
   * År (= Utgivningstid) (date = 008/07-10, 264 -/1 ‡c)  
- Ange utgivningsår, utan klamrar eller andra tecken, endast fyra positioner. Skriv in uppgiften.  
-För att ange ett år utan klamrar eller andra tecken, ange det endast här. För att ange klamrar eller andra tecken utöver fyra positioner, använd Datum.  
+  År får endast innehålla siffror (0-9) och bokstaven u.  
+  Ange utgivningsår, utan klamrar eller andra tecken, endast fyra positioner. Skriv in uppgiften.  
+  För att ange ett år utan klamrar eller andra tecken, ange det endast här. Det kommer då att exporteras till både marcpostens 08/07-10 och 264 -/1 ‡c. För att ange årtal med klamrar eller andra tecken utöver fyra positioner, använd Datum.  
   ```Exempel: 2017```  
   * Datum (= Utgivningstid) (date = 264 -/1 ‡c)  
- För att ange ett utgivningsdatum med fler än fyra positioner, skriv in det här. Skriv in uppgiften.  
- För att ange ett år utan klamrar eller andra tecken, använd endast År.   
+  Datum får innehålla text och interpunktionstecken.  
+  För att ange ett utgivningsdatum med fler än fyra positioner, skriv in det här. Det kommer att exporteras till marcpostens  264 -/1 ‡c. Skriv in uppgiften.  
+  För att ange ett år utan klamrar eller andra tecken, använd endast År.   
   Skriv in uppgiften.  
-  ```Exempel: [2017]```  
+  ```Exempel: [2017]```   
   ```Exempel: [mellan 1863 och 1866?]```  
+  
+  Läs mer om [År och Datum](https://kundo.se/org/librisxl/d/falt-for-utgivningsar/)  
 
 * Tillverkning (manufacture)  
   * Plats/Benämning (place/label = 264 -/3 ‡a)  
@@ -139,19 +161,45 @@ För att ange ett år utan klamrar eller andra tecken, ange det endast här. Fö
   * Agent/Benämning (agent/label = 264 -/3 ‡b)  
   Skriv in uppgiften.   
   ```Exempel: Scandbook```  
+  * Datum (= Tillverkningstid) (date = 264 -/3 ‡c)  
+   Skriv in uppgiften. Klamra vid behov.  
+  ```Exempel: 2017```  
+  ```Exempel: [2017]```  
   
 * Copyright/Copyright/Datum (copyright/Copyright/date = 264 -/4 ‡c)  
   Skriv in uppgiften. För att få fram copyrighttecknet, se [Specialtecken](https://libris-dev.kb.se/katalogisering/help/search-04-special-chars). Du kan t ex söka på teckenuppsättning i “Sök i windows” och öppna programmet, markera och kopiera tecknet och sedan klistra in det.  
   ```Exempel: ©2017``` 
   
+* Omfång/Omfång/Benämning (extent/Extent/label = 300 ‡a)  
+  Skriv in uppgiften.  
+  ```Exempel: 319 sidor```  
+  
+* Övriga fysiska detaljer (other physical details = 300 ‡b)  
+  Skriv in uppgiften.  
+  ```Exempel: illustrationer```
+
+* Mått/Mått/Benämning (hasDimensions/Dimensions/label = 300 ‡c)  
+  Skriv in uppgiften.  
+  ```Exempel: 24 cm```   
+  
+* Medietyp (mediaType/Mediatype = 337 ‡b)  
+  Länka till entitet.  
+  ```Exempel:  n (= omedierad)```
+
+* Bärartyp (carrierType/CarrierType = 338 ‡b)  
+  Länka till entitet.  
+```Exempel:  nc (= volym)```  
+
 * Seriemedlemskap/Ingår i serie (seriesMembership)  
-  (Länka till entitet.  
-  I undantagsfall, skapa lokal entitet och skriv in uppgiften.)   
-  Avvakta med att skapa verk som länkade entiteter. Beskriv serien som lokal entitet, enligt exempel nedan.   
+  Avvakta med att skapa verk som länkade entiteter. Beskriv serien som lokal entitet, enligt exempel nedan.  
+  
+  Avsnittet Seriemedlemskap är under utredning. För närvarande måste man fylla i två Seriemedlemskap för att vid export till MARC få ut både 490 och 830. Om serien har ett ISSN ska även Identifikator/ISSN läggas till båda seriemedlemskapen. [Läs mer om seriemedlemskap](https://kundo.se/org/librisxl/d/uppgifter-om-seriemedlemskap-saknas-i-marc-export/).  
    
 * Seriemedlemskap/Indikator för seriebiuppslag (marc:seriesTracingPolicy = 490 i1: 0/1)  
-    Skriv in uppgiften.  
-  ```Exempel: 0```  
+  Ange indikator 0 om endast serieuppgift samt eventuellt ISSN och eventuell numrering inom serie ska anges (om det inte finns en seriehuvudpost).   
+    ```Exempel: 0```  
+  Ange indikator 1 om Seriemedlemskap/Ingår i serie/Instans av Verk/Verk/Har titel/Titel/Huvudtitel (motsvarande 830 i MARC) anges (om det finns en seriehuvudpost).  
+  Skriv in uppgiften.  
   ```Exempel: 1```  
   
 * Seriemedlemskap/Serieuppgift (seriesMembership/seriesStatement = 490 ‡a)  
@@ -169,34 +217,17 @@ För att ange ett år utan klamrar eller andra tecken, ange det endast här. Fö
 * Seriemedlemskap/Ingår i serie/Instans av Verk/Verk/Har titel/Titel/Huvudtitel (seriesMembership/inSeries/InstanceofWork/Work/hasTitle/Title/mainTitle = 830 ‡a)  
   Skriv in uppgiften.   
   ```Exempel: Årstasällskapets för Fredrika Bremer-studier skriftserie```    
- 
-* Medietyp (mediaType/Mediatype = 337 ‡b)  
-  Länka till entitet.  
-  ```Exempel:  n (= omedierad)```
 
-* Bärartyp (carrierType/CarrierType = 338 ‡b)  
-  Länka till entitet.  
-```Exempel:  nc (= volym)```
-
-* Omfång/Omfång/Benämning (extent/Extent/label = 300 ‡a)  
+* Anmärkning/Anmärkning/Benämning (hasNote/Note/label = 500 ‡a)   
+  Skriv in allmänna anmärkningar här. Anmärkningar om specifika fält skrivs in i Kommentar (note) under respektive fält, när sådana specifika anmärkningsfält finns.  
   Skriv in uppgiften.  
-  ```Exempel: 319 sidor```  
-  
-* Övriga fysiska detaljer (other physical details = 300 ‡b)  
-  Skriv in uppgiften.  
-  ```Exempel: illustrationer```
-
-* Mått/Mått/Benämning (hasDimensions/Dimensions/label = 300 ‡c)  
-  Skriv in uppgiften.  
-  ```Exempel: 24 cm```
-  
-* Anmärkning/Anmärkning/Benämning (hasNote/Note/label = 500 ‡a)  
-  Skriv in uppgiften.  
-  Skriv in allmänna anmärkningar här. Anmärkningar om specifika fält skrivs in i Kommentar (note) under respektive fält, när sådana specifika anmärkningsfält finns. 
   
 * Målgrupp/Målgrupp/Benämning (intendedAudience/IntendedAudience/label = 521 ‡a)   
   Skriv in uppgiften.    
-  ```Exempel: För årskurs 1```   
+  ```Exempel: För årskurs 1```  
+  
+* Relation/Relation/Entitet/Verk/Har titel/Titel/Huvudtitel (relationship/Relationship/entity/Work/hasTitle/Title/mainTitle = 740)  
+Ange alternativa titlar här för att öka sökbarheten för titlar som innehåller exempelvis specialtecken, siffror eller oväntade stavningar av ord.  
 
 ### Verk
 
@@ -230,23 +261,22 @@ Skapa verket som lokal entitet eller bryt ut verket till en länkbar entitet. Vi
   Ange det språk som en översatt text är översatt från. För en text som är översatt från engelska till svenska, ange engelska här.  
   Länka till entitet.  
   ```Exempel: engelska (eng)```
-
+  
+* Medverkan och funktion  
+  Läs [Auktoritetsgruppens rekommendationer](https://kundo.se/org/librisxl/d/kbs-auktoritetsgrupp-informerar-jraz/)  
+  
 * Medverkan och funktion/Primär medverkan/Agent/Person (contribution/PrimaryContribution/agent/Person = 100 1/- ‡a)  
-  Länka till entitet.  
-  I undantagsfall, skapa lokal entitet och skriv in uppgiften. 
-* Medverkan och funktion/Primär medverkan/Agent/Person/Efternamn (contribution/PrimaryContribution/agent/Person/familyName)  
-  ```Exempel: Marcus```
-
-* Medverkan och funktion/Primär medverkan/Agent/Person/Förnamn  (contribution/PrimaryContribution/agent/Person/givenName)  
-  ```Exempel: Tom```
+  Länka till entitet. Börja alltid med att söka efter om agenten redan finns. Klicka på Länka entitet (länkikonen) vid Person. I sökrutan, skriv in sökbegrepp, till exempel "Lindgren, Astrid". Om agenten visas i träfflistan, högerklicka på entiteten, öppna den i ny flik eller nytt fönster och granska den. Är agenten rätt, gå tillbaka till katalogiseringsformuläret och länka till den genom att klicka på Ersätt lokal entitet.  
+  Saknas auktoriserad namnform (som konstaterats vid sökning i pop up-rutan för Länka entitet), stäng pop up-rutan och ange kända uppgifter i formuläret.  
+ ```Exempel: Lindgren, Astrid, 1907-2002```
 
 * Medverkan och funktion/Primär medverkan/Funktion (contribution/PrimaryContribution/role = 100 ‡4)  
   Länka till entitet.  
   ```Exempel: relator/author (= författare)```
 
 * Medverkan och funktion/Medverkan/Agent/Person (contribution/agent/Person = 700 1/- ‡a)  
-  Länka till entitet.  
-  I undantagsfall, skapa lokal entitet och skriv in uppgiften.  
+  Länka till entitet. Börja alltid med att söka efter om agenten redan finns. Klicka på Länka entitet (länkikonen) vid Person. i Sökrutan, skriv in sökbegrepp, till exempel "Skoglund, Svante". Om agenten visas i träfflistan, högerklicka på entiteten, öppna den i ny flik eller nytt fönster och granska den. Är agenten rätt, gå tillbaka till katalogiseringsformuläret och länka till den genom att klicka på Ersätt lokal entitet.  
+  Saknas auktoriserad namnform (som konstaterats vid sökning i pop up-rutan för Länka entitet), stäng pop up-rutan och ange kända uppgifter i formuläret.  
   ```Exempel: Skoglund, Svante, 1960-```
 
 * Medverkan och funktion/Medverkan/Funktion (contribution/role = 700 ‡4)  
@@ -269,24 +299,22 @@ Skapa verket som lokal entitet eller bryt ut verket till en länkbar entitet. Vi
   Skriv in uppgiften.  
  ```Exempel: https://id.kb.se/term/kssb/8```
 
+* Ämne  
+  Läs mer:  
+  [Lägg till auktoriserade ämnesord](https://libris.kb.se/katalogisering/help/workflow-linked-entity-sh)  
+  [Lägg till kontrollerade men ej auktoriserade ämnesord](https://libris.kb.se/katalogisering/help/workflow-controlled-non-auth-sh)  
+  [Lägg till sammansatta men ej auktoriserade ämnesord](https://libris.kb.se/katalogisering/help/workflow-non-auth-sh)  
+  
 * Ämne/Agent/Person (subject/agent/person = 600 1/- ‡a)  
   Länka till entitet. 
   I undantagsfall, skapa lokal entitet. Skriv in uppgiften. 
 
-* Ämne/Agent/Person/Familjenamn (subject/agent/person/familyName)  
+* Ämne/Agent/Person/Efternamn (subject/agent/person/familyName)  
   ```Exempel: Marcus```
 
 * Ämne/Agent/Person/Förnamn (subject/agent/person/givenName)  
   ```Exempel: Tom```
 
-* Ämne/Jurisdiktion/Är del av/Jurisdiktion/Namn (subject/Jurisdiction/isPartof/Jurisdiction/name = 610 1/4 ‡a)  
-    Länka till entitet.  
-    I undantagsfall, skapa lokal entitet. Skriv in uppgiften.  
-    ```Exempel: Storbritannien```
-
-* Ämne/Agent/Jurisdiktion/Namn på underordnad enhet (subject/Jurisdiction/isPartof/Jurisdiction/marc:subordinateUnit = 610 ‡b)  
-  ```Exempel: MI5```  
-  
 * Ämne - sao-term (subject = 650 -/7 ‡a, ‡2 sao)  
   Länka till entitet.  
   ```Exempel: Säkerhetspolitik```
@@ -326,4 +354,4 @@ Skapa verket som lokal entitet eller bryt ut verket till en länkbar entitet. Vi
 * Innehållstyp (contentType/ContentType = 336 ‡b)  
   Länka till entitet.  
   ```Exempel: text (txt)```  
-  För att lägga till ytterligare innehållstyp, till exempel "sti" = stillbild för en bilderbok med både text och bild, ange Har del/Verk/Innehållstyp/Innehållstyp.  
+  För att lägga till ytterligare innehållstyp, till exempel "sti" = stillbild för en bilderbok med både text och bild, ange Har del/Verk/Innehållstyp/Innehållstyp (från Lägg till fält under Instans av Verk).   

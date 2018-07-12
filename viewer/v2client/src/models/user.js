@@ -14,6 +14,7 @@ export class User {
       appTech: false,
       activeSigel: '',
       language: 'sv',
+      defaultDatabases: ['OCLC'],
     };
   }
 
@@ -98,8 +99,6 @@ export function getUserObject(userObj) {
       userObj.permissions,
     );
   }
-  if (user.fullName !== '') {
-    user.loadSettings();
-  }
+  user.loadSettings();
   return user;
 }

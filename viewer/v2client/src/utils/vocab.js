@@ -64,7 +64,7 @@ export function getTermObject(term, vocab, context) {
   }
 
   if (!_class) {
-    window.lxlWarning('📘 Term lookup failed:', term, '| Tried :', tries.join(', '));
+    // window.lxlWarning('📘 Term lookup failed:', term, '| Tried :', tries.join(', '));
   }
   return _class;
 }
@@ -289,7 +289,7 @@ export function processRestrictions(range, entityType, property, vocab, context)
 
 export function getUnrestrictedRange(propertyId, vocab, context) {
   if (typeof propertyId === 'undefined') {
-    throw new Error('getRange was called without a property Id.');
+    throw new Error('getUnrestrictedRange was called without a property Id.');
   }
 
   const property = getTermObject(propertyId, vocab, context);
@@ -321,6 +321,16 @@ export function getUnrestrictedRange(propertyId, vocab, context) {
 export function getRange(entityType, propertyId, vocab, context) {
   const unrestrictedRange = getUnrestrictedRange(propertyId, vocab, context);
   return processRestrictions(unrestrictedRange, entityType, propertyId, vocab, context);
+}
+
+export function getFullRange(entityType, key, vocab, context, vocabClasses) {
+  const types = [].concat(getRange(entityType, key, vocab, context));
+  let allTypes = [];
+  _.each(types, type => {
+    allTypes = allTypes.concat(getSubClassChain(type, vocabClasses, context));
+  });
+  allTypes = _.uniq(allTypes);
+  return allTypes;
 }
 
 export function getSubClasses(classname, vocabClasses, context) {
@@ -367,16 +377,6 @@ export function getAllSubClasses(classArray, vocabClasses, context) {
   inputSubClasses = inputSubClasses.concat(newSubClasses);
   inputSubClasses = _.uniq(inputSubClasses);
   return inputSubClasses;
-}
-
-export function getFullRange(entityType, key, vocab, context, vocabClasses) {
-  const types = [].concat(getRange(entityType, key, vocab, context));
-  let allTypes = [];
-  _.each(types, type => {
-    allTypes = allTypes.concat(getSubClassChain(type, vocabClasses, context));
-  });
-  allTypes = _.uniq(allTypes);
-  return allTypes;
 }
 
 export function getDomainList(property, vocab, context) {
@@ -541,13 +541,13 @@ export function getContextProperty(propertyId, context) {
   return resultProp;
 }
 
-export function getContextWithContainer(propertyId, context) {
+export function getContextWithContainer(propertyId, container, context) {
   const contextList = context[1];
 
   let contextObj = undefined;
   _.forOwn(contextList, (value, key) => {
     if (typeof value !== 'undefined' && value !== null) {
-      if (value.hasOwnProperty('@id') && value['@id'] === propertyId && value.hasOwnProperty('@container')) {
+      if (value.hasOwnProperty('@id') && value['@id'] === propertyId && value.hasOwnProperty('@container') && value['@container'] === container) {
         contextObj = { '@id': key, '@container': value['@container'] };
       }
     }

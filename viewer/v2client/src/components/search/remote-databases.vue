@@ -49,7 +49,11 @@ export default {
     },
     q() {
       return this.remoteSearch.q;
-    }
+    },
+    user() {
+      const user = this.$store.getters.user;
+      return user.isLoggedIn ? user : false;
+    },
   },
   events: {
     'set-import'(data){
@@ -66,6 +70,7 @@ export default {
           property: 'remoteDatabases', 
           value: val
         });
+        this.user && this.updateUserDbs(val);
       }
     },
   },
@@ -83,7 +88,6 @@ export default {
         'KNYGOS',
         'LIBISNET',
         'LIBRIS',
-        'MELINDA', 
         'NORBOK', 
         'NOSP', 
         'NYPL', 
@@ -91,6 +95,8 @@ export default {
         'WHOLIS', 
         'YALE'
       ];
+
+      const defaultDbs = this.user ? this.user.settings.defaultDatabases : [];
 
       this.remoteDatabases.state = 'loading';
       this.remoteDatabases.debug = '';
@@ -100,6 +106,9 @@ export default {
           const obj = { item: dbs[i], active: false, disabled: false };
           if (disabled.includes(dbs[i].database)) {
             obj.disabled = true;
+          }
+          if (defaultDbs.includes(dbs[i].database)) {
+            obj.active = true;
           }
           newDbList.push(obj);
         }
@@ -144,6 +153,11 @@ export default {
       this.importData = response.items;
       this.remoteResult.state = 'complete';
     },
+    updateUserDbs(dbs) {
+      const userObj = this.user;
+      userObj.settings.defaultDatabases = dbs
+      this.$store.dispatch('setUser', userObj);
+    }
   },
   components: {
     'result-list': ResultList,
@@ -221,6 +235,10 @@ export default {
     padding: 0px;
     text-align: center;
     width: 100%;
+  }
+
+  &-listTitle {
+    cursor: pointer;
   }
 
   &-listItem {

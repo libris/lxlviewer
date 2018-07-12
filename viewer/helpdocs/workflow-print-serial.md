@@ -5,7 +5,7 @@ order: 25
 tags:
 - editor
 --- 
-*UNDER ARBETE - UPPDATERAS KONTINUERLIGT*
+*Under arbete. Senast uppdaterad 2018-07-02.*
 
 ## Tryckt seriell resurs
 
@@ -23,21 +23,22 @@ samt andra poster.
   Förval: den sigel som skapat posten. Ska inte ändras.  
   ```Exempel: S```  
   
-* Uppgraderad eller importerad av/Organisation/Namn (descriptionUpgrader/Organization/name = 040 ‡d)  
-  Länka till entitet.  
-  ```Exempel: S```
+* Uppgraderad eller importerad av/Bibliotek/Sigel (descriptionUpgrader/Library/sigel = 040 ‡d)  
+  Om beskrivningsnivån ändras, lägg till denna uppgift. Vid postimport, lägg till uppgiften.  
+  Skapa lokal entitet. Klicka på Lägg till agent (+-ikonen vid Uppgraderad eller importerad av), välj därefter Skapa lokal entitet. Välj Bibliotek i rullgardinsmenyn. Lägg till Sigel (+ikonen Lägg till fält under Bibliotek). Skriv in uppgiften.     
+  ```Exempel: S```  
 
 * Bibliografi/Bibliotek/Sigel (bibliography/Library/sigel = 042 ‡9)  
-  Länka till entitet.  
+ Skapa lokal entitet. Klicka på Lägg till bibliotek (+-ikonen vid Bibliografi), välj därefter Skapa lokal entitet. Lägg till Sigel (+ikonen Lägg till fält under Bibliotek). Skriv in uppgiften.  
   ```Exempel: NB```
   
 * Katalogiseringsspråk (descriptionLanguage = 040 ‡b)   
   Länka till entitet.  
   ```Exempel: svenska (swe)```  
 
-* Katalogiseringsregler (descriptionConventions = 040 ‡e)   
-  För post katalogiserad enligt RDA, länka till entitet: marc/Isbd samt skapa lokal entitet med Kod: rda    
-  ```Exempel: marc/Isbd (länkad entitet) + lokal entitet, Kod: rda```
+* Katalogiseringsregler (descriptionConventions = 040 ‡e)
+För post katalogiserad enligt RDA, sök fram och länka till entitet: "ISBD-interpunktions finns: i" (välj Regler för deskriptiv katalogisering vid sökningen). Skapa också lokal entitet under Katalogiseringregler, välj typ Katalogiseringsregler. Lägg till Kod. Skriv in "rda".  
+ ```Exempel: marc/Isbd (länkad entitet) + lokal entitet, Kod: rda ```
 
 * Beskrivningsnivå (000/17)  
   Välj från lista.    
@@ -47,6 +48,13 @@ samt andra poster.
   Uppdateras automatiskt. Ändra inte.   
   ```Exempel: Ny post```  
   ```Exempel: Rättad eller reviderad post```
+  
+* Systemteknisk anmärkning/Benämning (599)  
+ 
+ Följande anmärkningar är under arbete och fungerar ännu inte fullt ut:  
+ * Katalogisatörens anmärkning  
+ * Anmärkning om katalogiseringskälla  
+
 
 ### Instans
 * Utgivningssätt (issuanceType)  
@@ -99,19 +107,24 @@ samt andra poster.
   ```Exempel: 1653-2945```
 
 * Utgivning  
-  Välj typ från lista. För seriell resurs, välj Primär utgivningsperiod.  
-  (= Typ av utgivningsdatum/utgivningsstatus) (008/06)    
-  Begreppet "Primär utgivning" har infört i Libris, främst för seriella resurser, där det ibland finns upprepade utgivningsavsnitt. Primär utgivning är då det första och sammanfattande utgivningsavsnittet.  
-   
+  Välj typ från lista. För seriella resurser med endast en utgivare, använd Primär utgivning.  
+  För att beskriva en seriell resurs med flera utgivningsperioder (motsvarande 264, indikator 1 - sekvens av utgivaruppgifter) saknas vissa delar av formatet. Dessa är under arbete.  
+  
   * Land (country = 008/15-17)  
   Länka till entitet.  
   ```Exempel: Sverige (sw)```  
-  * Plats/Benämning (place/label = 264 -/1 ‡a)  
-  Skriv in uppgiften.  
-  ```Exempel: Brämhult```  
-  * Agent/Benämning (agent/label = 264 -/1 ‡b)  
-  Skriv in uppgiften.  
-  ```Exempel: Kammarmusikförbundet```  
+  * Plats/Plats/Benämning (= Utgivningsort) (place/label = 264 -/1 ‡a)  
+  För att lägga till Plats, klicka på Lägg till fält under Primär utgvning och välj Plats. Sök inte efter Plats som entitet utan välj istället Skapa lokal entitet, typ Plats. Lägg till Benämning.  
+  Skriv in uppgiften. Klamra vid behov. Plats ska inte länkas som entitet.  
+  ```Exempel: [Göteborg]```  
+  * Agent/Benämning (= Utgivarnamn) (agent/label = 264 -/1 ‡b)  
+  För att lägga till Agent, klicka på Lägg till fält under Primär utgivning och välj Agent. Sök inte efter Agent som entitet utan välj istället Skapa lokal entitet, typ Agent. Lägg till Benämning.  
+  Skriv in uppgiften. Klamra vid behov. Utgivarnamn ska inte länkas som entitet.  
+  ```Exempel: NoNa```  
+ 
+  Om flera utgivare ska anges, lägg till "Har del" (hasPart) under Primär utgivning. Lägg därefter till Utgivning som lokal entitet (klicka på +-ikonen vid Har del och klicka sedan på Skapa lokal entitet. Välj Utgivning i listan). Använd Startår, slutår och vid behov Datum enligt anvisningar nedan. Upprepa Har del och Utgivning som lokal entitet för nästa utgivare.
+  Se [exempel](https://libris.kb.se/katalogisering/1kcsx46c1pmjdxz#it).  
+  
   * Datum (date = 264 -/1 ‡c)  
   Skriv in uppgiften.  
   ```Exempel: 2011-2013```  
@@ -177,9 +190,14 @@ samt andra poster.
   Länka till entitet.  
   ```Exempel: 0 (= Successive entry = Titeländring ger upphov till ny post)```
   
+* Medverkan och funktion  
+  Läs mer:  
+  [Auktoritetsgruppens rekommendationer](https://kundo.se/org/librisxl/d/kbs-auktoritetsgrupp-informerar-jraz/)   
+  [Lägga till Agent - Organisation i Instans av Verk](https://libris.kb.se/katalogisering/help/workflow-agent-org-instance)  
+  
 * Medverkan och funktion/Medverkan/Agent (contribution/Contribution/agent = 710 2/- ‡a)  
-  Länka till entitet.  
-  I undantagsfall, skapa lokal entitet och skriv in uppgiften.  
+  Länka till entitet. Börja alltid med att söka efter om agenten redan finns. Klicka på Länka entitet (länkikonen) vid Person. I sökrutan, skriv in sökbegrepp, till exempel "Riksförbundet Sveriges kammarmusikarrangörer". Om agenten visas i träfflistan, högerklicka på entiteten, öppna den i ny flik eller nytt fönster och granska den. Är agenten rätt, gå tillbaka till katalogiseringsformuläret och länka till den genom att klicka på Ersätt lokal entitet.  
+  Saknas auktoriserad namnform (som konstaterats vid sökning i pop up-rutan för Länka entitet), stäng pop up-rutan och ange kända uppgifter i formuläret.  
   ```Exempel: Riksförbundet Sveriges kammarmusikarrangörer```  
 * Medverkan och funktion/Medverkan/Agent/Funktion (contribution/Contribution/agent/role = 710 ‡4)   
   Länka till entitet.   
@@ -198,17 +216,23 @@ samt andra poster.
 
 * Klassifikation/Termlista/Termlista/ID (classification/Classification/iinScheme/ConceptScheme = 084 ‡2)   
   Skriv in uppgiften.  
- ```Exempel: https://id.kb.se/term/kssb/8```
+ ```Exempel: https://id.kb.se/term/kssb/8```  
+ 
+ * Ämne  
+  Läs mer:  
+  [Lägg till auktoriserade ämnesord](https://libris.kb.se/katalogisering/help/workflow-linked-entity-sh)  
+  [Lägg till kontrollerade men ej auktoriserade ämnesord](https://libris.kb.se/katalogisering/help/workflow-controlled-non-auth-sh)  
+  [Lägg till sammansatta men ej auktoriserade ämnesord](https://libris.kb.se/katalogisering/help/workflow-non-auth-sh)  
 
 * Ämne/Agent/Organisation (subject/agent/Organization = 610 2/- ‡a)  
   Länka till entitet.  
   I undantagsfall, skapa lokal entitet och skriv in uppgiften.   
-  ```Exempel: Riksförbundet Sveriges kammarmusikarrangörer``` 
+  ```Exempel: Riksförbundet Sveriges kammarmusikarrangörer```  
   
 * Ämne/Sao-term (subject = 650 -/7 ‡a, ‡2 sao)   
    Länka till entitet.  
    ```Exempel: Kammarmusik```  
-   
+ 
 * Geografiskt ämnesord (subjcect = 651 -/4 ‡a)  
    Länka till entitet.  
    I undantagsfall, skapa lokal entitet och skriv in uppgiften.   
@@ -303,4 +327,4 @@ samt andra poster.
   
 * Fortsättes av/Verk/Har instans/Instans/Beskriven av/Post/Kontrollnummer  (continuedBy/Work/hasInstance/Instance/describedBy/record/controlNumber = 785 0/0 ‡w)  
   Skriv in uppgiften.  
-  ```Exempel: 14697501``
+  ```Exempel: 14697501```  

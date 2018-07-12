@@ -5,7 +5,8 @@ order: 55
 tags:
 - editor
 --- 
-*UNDER ARBETE - UPPDATERAS KONTINUERLIGT*
+
+*Under arbete. Senast uppdaterad 2018-06-15.*
 
 ## Skapa ny: Agent - Organisation
 

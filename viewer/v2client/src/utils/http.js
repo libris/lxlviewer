@@ -1,4 +1,3 @@
-
 function request(options, data) {
   // method, url, token, accept
   options.method = options.method || 'GET';
@@ -58,8 +57,10 @@ function request(options, data) {
         resolve(req);
       } else if (req.status === 403) {
         reject(req);
+      } else if (req.status === 412) {
+        reject(req);
       } else {
-        reject(Error(req.statusText));
+        reject(req);
       }
     };
     req.onerror = () => {

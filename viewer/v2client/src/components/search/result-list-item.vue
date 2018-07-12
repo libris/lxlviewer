@@ -34,10 +34,7 @@ export default {
       return StringUtil.getFormattedEntries(this.getSummary.header, this.resources.vocab, this.settings, this.resources.context);
     },
     isLibrisResource() {
-      if (this.focusData && this.focusData['@id']) {
-        return this.focusData['@id'].startsWith(this.settings.apiPath);
-      }
-      return false;
+      return StringUtil.isLibrisResourceUri(this.focusData['@id'], this.settings.apiPath);
     },
   },
   components: {

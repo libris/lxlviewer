@@ -25,6 +25,22 @@
     "@type": "ISSN",
     "value": ""
   },
+  "MusicPlate": {
+    "@type": "MusicPlate",
+    "value": "",
+    "agent": {
+        "@type": "Organization",
+        "name": ""
+    }
+  },
+  "MusicPublisherNumber": {
+    "@type": "MusicPublisherNumber",
+    "value": "",
+    "agent": {
+        "@type": "Organization",
+        "name": ""
+    }
+  },
   "Publication": {
     "@type": "Publication",
     "place": [
@@ -86,7 +102,9 @@
   "marc:TextualHoldingsBasicBibliographicUnit": [ 
     { 
       "@type": "marc:TextualHoldingsBasicBibliographicUnit", 
-      "label": [""] 
+      "marc:textualString": "",
+      "marc:cataloguersNote": [""],
+      "marc:publicNote": [""]
     } 
   ],
   "SeriesMembership": [
@@ -128,7 +146,8 @@
   "ClassificationDdc": {
     "@type": "ClassificationDdc",
     "code": "",
-    "edition": ""
+    "edition": "full",
+    "editionEnumeration": "23/swe"
   },
   "Extent": {
     "@type": "Extent",
@@ -146,5 +165,11 @@
   "SourceDataNotFound": {
     "@type": "SourceDataNotFound",
     "citationSource": ""
+  },
+  "ToCEntry": {
+    "@type": "ToCEntry",
+    "label": "",
+    "responsibilityStatement": "",
+    "comment": [""]
   }
 }

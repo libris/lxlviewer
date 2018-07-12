@@ -5,10 +5,12 @@ import * as httpUtil from '../../utils/http';
 import * as VocabUtil from '../../utils/vocab';
 import * as DisplayUtil from '../../utils/display';
 import * as DataUtil from '../../utils/data';
+import * as StringUtil from '@/utils/string';
 import ProcessedLabel from '../shared/processedlabel';
 import TooltipComponent from '../shared/tooltip-component';
 import ItemMixin from '../mixins/item-mixin';
 import LensMixin from '../mixins/lens-mixin';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'item-value',
@@ -17,6 +19,7 @@ export default {
     fieldValue: '',
     fieldKey: '',
     index: Number,
+    isUriType: false,
     isLocked: false,
     isRemovable: false,
     showActionButtons: false,
@@ -35,6 +38,9 @@ export default {
     };
   },
   computed: {
+    ...mapGetters([
+      'user',
+    ]),
     value: {
       get() {
         if (this.fieldValue === null) {
@@ -49,6 +55,12 @@ export default {
       set: _.debounce(function(newValue) {
         this.update(newValue);
       }, 1000)
+    },
+    shouldLink() {
+      return this.isUriType && this.fieldValue.startsWith('http');
+    },
+    newWindowText() {
+      return StringUtil.getUiPhraseByLang('Opens in new window', this.user.settings.language);
     }
   },
   mounted() {
@@ -91,7 +103,6 @@ export default {
           ],
           addToHistory: true,
         });
-        this.$store.dispatch('setInspectorStatusValue', { property: 'unsavedChanges', value: true });
       }
     },
     initializeTextarea() {
@@ -135,10 +146,15 @@ export default {
       @keydown="handleKeys" 
       v-if="!isLocked"></textarea>
     <span class="ItemValue-text" 
-      v-if="isLocked">{{fieldValue}}</span>
+      v-if="isLocked && !shouldLink">{{fieldValue}}</span>
+    <a class="ItemValue-text" 
+      v-if="isLocked && shouldLink"
+      :href="fieldValue" target="_blank" :title="`${fieldValue} (${newWindowText})`">{{fieldValue}} <i class="fa fa-external-link" aria-hidden="true"></i></a>
     <div class="ItemValue-remover" 
       v-show="!isLocked && isRemovable" 
       v-on:click="removeThis()" 
+      @focus="removeHover = true, removeHighlight(true)" 
+      @blur="removeHover = false, removeHighlight(false)"
       @mouseover="removeHover = true, removeHighlight(true)" 
       @mouseout="removeHover = false, removeHighlight(false)">
       <i class="fa fa-minus">

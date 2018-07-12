@@ -5,6 +5,7 @@ order: 1
 tags:
 - search
 ---
+*(Uppdaterad 2018-05-29)*
 
 # Sök
 

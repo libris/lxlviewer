@@ -30,7 +30,10 @@ export default {
       return page;
     },
     hasPagination() {
-      return (typeof this.paginationData.first !== 'undefined');
+      return (
+        typeof this.paginationData.first !== 'undefined' &&
+        typeof this.paginationData.last !== 'undefined'
+      );
     },
   },
   components: {

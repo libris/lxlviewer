@@ -45,7 +45,6 @@ const store = new Vuex.Store({
         removing: false,
         updating: false,
         isNew: false,
-        unsavedChanges: false,
       },
       changeHistory: [],
       event: [],
@@ -110,7 +109,6 @@ const store = new Vuex.Store({
         'mainEntity',
         'created',
         'modified',
-        'technicalNote',
         'descriptionCreator'
       ],
       dataSetFilters: {

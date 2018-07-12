@@ -81,7 +81,19 @@ export default {
       if(value) {
         this.show();
       } else {
-        this.closeSearch();
+        this.hide();
+      }
+    },
+    'inspector.event'(val, oldVal) {
+      if (val.name === 'form-control') {
+        switch(val.value) {
+          case 'close-modals':
+            this.hide();
+            return true;
+            break;
+          default:
+            return;
+        }
       }
     },
   },
@@ -160,6 +172,7 @@ export default {
       }
     },
     show() {
+      this.resetSearch();
       LayoutUtil.scrollLock(true);
       this.active = true;
       this.$nextTick(() => {
@@ -180,12 +193,10 @@ export default {
         value: 'overview' 
       });
     },
-    closeSearch() {
+    resetSearch() {
       this.keyword = '';
+      this.currentSearchTypes = this.getRange;
       this.searchResult = [];
-      this.pagesFetched = 0;
-      this.allFetched = false;
-      this.hide();
     },
     loadResults(result) {
       this.searchResult = result.items;
@@ -202,7 +213,6 @@ export default {
       const totalItems = self.searchResult.length;
       self.currentPage = pageNumber;
       self.loading = true;
-      console.log('fetching page', this.currentPage);
       this.getItems(this.keyword).then((result) => {
         self.loadResults(result);
       }, (error) => {
@@ -245,7 +255,7 @@ export default {
     <modal-component
       :title="'Link entity' | translatePhrase"
       v-if="active"
-      @close="closeSearch()"
+      @close="hide()"
       class="SearchWindow-modal">
       <template slot="modal-body">
         <div class="SearchWindow-header search-header">
@@ -333,7 +343,7 @@ export default {
           </ul>
           <modal-pagination v-if="!loading && searchResult.length > 0" @go="go" :numberOfPages="numberOfPages" :currentPage="currentPage"></modal-pagination>
           <div class="SearchWindow-searchStatusContainer"
-            v-show="extracting || keyword.length === 0 || loading || foundNoResult || fetchingMore || allFetched">
+            v-show="extracting || keyword.length === 0 || loading || foundNoResult">
             <div class="SearchWindow-searchStatus">
               <span v-show="keyword.length === 0 && !extracting">
                 {{ "Search for existing linked entities" | translatePhrase }}...
@@ -341,12 +351,6 @@ export default {
               <span v-show="loading">
                 <i class="fa fa-circle-o-notch fa-spin"></i>
                 {{ "Searching" | translatePhrase }}...
-              </span>
-              <span class="EntitySearchResult-fetchMore" v-show="fetchingMore">
-                {{"Fetching more results" | translatePhrase }} <i class="fa fa-circle-o-notch fa-spin"></i><br/>
-              </span>
-              <span class="EntitySearchResult-fetchMore" v-show="allFetched && searchResult.length > 0">
-                {{'No more results found' | translatePhrase }}
               </span>
               <span v-show="foundNoResult">
                 <strong>{{ "No results" | translatePhrase }}</strong>

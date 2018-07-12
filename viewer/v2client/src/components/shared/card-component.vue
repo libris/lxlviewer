@@ -81,6 +81,7 @@ export default {
   background-color: @white;
   display: none;
   top: 32px;
+  left: 0px; // IE11 needs this
   position: absolute;
   transition: opacity 0.4s ease;
 

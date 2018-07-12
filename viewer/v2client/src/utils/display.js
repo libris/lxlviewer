@@ -38,11 +38,10 @@ function getValueByLang(item, propertyId, displayDefs, langCode, context) {
     throw new Error('getValueByLang was called with an undefined language code.');
   }
   let translatedValue = item[propertyId]; // Set original value
-
   const contextKey = VocabUtil.getContextProperty(propertyId, context);
-  const langPropObject = VocabUtil.getContextWithContainer(contextKey, context);
+  const langPropObject = VocabUtil.getContextWithContainer(contextKey, '@language', context);
   let byLangKey = '';
-  if (typeof langPropObject !== 'undefined' && langPropObject['@container'] === '@language') {
+  if (typeof langPropObject !== 'undefined') {
     byLangKey = langPropObject['@id'];
   }
   if (item[byLangKey] && item[byLangKey][langCode]) {
@@ -196,7 +195,10 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
       } else if (properties.length < 3 && i === 0) {
         const rangeOfMissingProp = VocabUtil.getRange(trueItem['@type'], properties[i], vocab, context);
         let propMissing = properties[i];
-        if (rangeOfMissingProp.length > 0) {
+        if (
+          rangeOfMissingProp.length > 1 ||
+          (rangeOfMissingProp.length === 1 && rangeOfMissingProp[0] !== 'http://www.w3.org/2000/01/rdf-schema#Literal')
+        ) {
           propMissing = rangeOfMissingProp[0];
         }
         const expectedClassName = StringUtil.getLabelByLang(
@@ -266,7 +268,11 @@ export function getCard(item, displayDefs, quoted, vocab, settings, context) {
 }
 
 export function getFormattedSelectOption(term, settings, vocab, context) {
-  const labelByLang = StringUtil.getLabelByLang(term.id, settings.language, vocab, context);
+  const maxLength = 43;
+  let labelByLang = StringUtil.getLabelByLang(term.id, settings.language, vocab, context);
+  if (labelByLang.length > maxLength) {
+    labelByLang = labelByLang.substr(0, maxLength-2) + '...';
+  }
   const abstractIndicator = ` {${StringUtil.getUiPhraseByLang('Abstract', settings.language)}}`;
   const prefix = Array((term.depth) + 1).join(' •');
   return `${prefix} ${labelByLang} ${term.abstract ? abstractIndicator : ''}`;

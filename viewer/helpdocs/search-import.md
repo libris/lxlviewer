@@ -7,6 +7,8 @@ tags:
 - import
 ---
 
+*Under arbete. Senast uppdaterad 2018-06-01.*
+
 [Extern länk till Libris undersidor](http://www.kb.se/libris/katalogisering/Metaproxy/)
 
 ## Import av poster från andra källor

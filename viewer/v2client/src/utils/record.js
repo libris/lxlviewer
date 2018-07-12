@@ -127,15 +127,18 @@ export function getItemObject(itemOf, heldBy, instance) {
     mainEntity: {
       '@id': 'https://id.kb.se/TEMPID#it',
       '@type': 'Item',
-      'itemOf': {
-        '@id': itemOf,
-      },
       'heldBy': {
         '@id': heldBy,
+      },
+      'itemOf': {
+        '@id': itemOf,
       },
       'hasComponent': [
         {
           '@type': "Item",
+          'heldBy': {
+            '@id': heldBy,
+          },
           'shelfMark': {
             '@type': 'ShelfMark',
             'label': [''],
@@ -144,12 +147,12 @@ export function getItemObject(itemOf, heldBy, instance) {
           'shelfControlNumber': '',
         },
       ],
-      "marc:hasTextualHoldingsBasicBibliographicUnit": [
+      'marc:hasTextualHoldingsBasicBibliographicUnit': [
         {
-          "@type": "marc:TextualHoldingsBasicBibliographicUnit",
-          "label": [
-            ""
-          ]
+          '@type': 'marc:TextualHoldingsBasicBibliographicUnit',
+          'marc:textualString': '',
+          'marc:cataloguersNote': [''],
+          'marc:publicNote': ['']
         }
       ]
     },
@@ -201,9 +204,24 @@ export function getObjectAsRecord(mainEntity, record = {}) {
 export function prepareDuplicateFor(inspectorData, user) {
   // Removes fields that we do not want to import or copy
   const newData = _.cloneDeep(inspectorData);
+  if (!newData.hasOwnProperty('quoted')) {
+    newData['quoted'] = {};
+  }
   const oldBaseId = inspectorData.record['@id'];
   const newBaseId = 'https://id.kb.se/TEMPID';
   newData.record.descriptionCreator = { '@id': `https://libris.kb.se/library/${user.settings.activeSigel}` };
+  if (newData.record.hasOwnProperty('controlNumber')) {
+    delete newData.record.controlNumber;
+  }
+  if (newData.record.hasOwnProperty('generationProcess')) {
+    delete newData.record.generationProcess;
+  }
+  if (newData.record.hasOwnProperty('generationDate')) {
+    delete newData.record.generationDate;
+  }
+  if (newData.record.hasOwnProperty('descriptionUpgrader')) {
+    delete newData.record.descriptionUpgrader;
+  }
   if (newData.mainEntity) {
     newData.mainEntity['@id'] =  newData.mainEntity['@id'].replace(oldBaseId, newBaseId);
     delete newData.mainEntity.sameAs;
@@ -248,44 +266,3 @@ export function getNewCopy(id) {
   });
 }
 
-export function getEmptyForm(type, vocab, display, context) {
-  // TODO: Is this used?
-  console.log('Type', type);
-  const formObj = { '@type': type };
-  let inputKeys = DisplayUtil.getProperties(type, 'cards', display);
-  if (inputKeys.length === 0) {
-    const baseClasses = VocabUtil.getBaseClassesFromArray(
-      type,
-      vocab,
-    );
-    console.log('baseClasses for', type, 'is', JSON.stringify(baseClasses));
-    for (const baseClass of baseClasses) {
-      inputKeys = DisplayUtil.getProperties(
-        StringUtil.getCompactUri(baseClass, context),
-        'cards',
-        display,
-      );
-      if (inputKeys.length > 0) {
-        break;
-      }
-    }
-    if (inputKeys.length === 0) {
-      inputKeys = DisplayUtil.getProperties('Resource', 'cards', display);
-    }
-  }
-  inputKeys = ['@type'].concat(inputKeys);
-  for (const inputKey of inputKeys) {
-    if (inputKey === '@type') {
-      formObj[inputKey] = type;
-    } else {
-      const keyRange = VocabUtil.getRange(type, inputKey, vocab, context);
-      if (keyRange.length === 0 || keyRange[0].split(':')[1] === 'Literal') {
-        formObj[inputKey] = '';
-      } else {
-        formObj[inputKey] = [];
-      }
-    }
-  }
-  console.log('Form obj', JSON.stringify(formObj));
-  return formObj;
-}

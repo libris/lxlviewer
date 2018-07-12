@@ -23,12 +23,10 @@ export default {
   mixins: [clickaway, LensMixin],
   data() {
     return {
-      searchOpen: false,
       searchResult: [],
       keyword: '',
       loading: false,
       debounceTimer: 500,
-      chooseLocalType: false,
       showToolTip: false,
       rangeInfo: false,
       selectedType: '',
@@ -48,6 +46,7 @@ export default {
       type: Array,
       default: () => [],
     },
+    compositional: null,
     showActionButtons: false,
     isPlaceholder: false,
     isChip: false,
@@ -75,7 +74,7 @@ export default {
       if (val.name === 'modal-control') {
         switch(val.value) {
           case 'close-entity-adder':
-            this.closeSearch();
+            this.hide();
             return true;
             break;
           default:
@@ -85,7 +84,7 @@ export default {
       if (val.name === 'form-control') {
         switch(val.value) {
           case 'close-modals':
-            this.closeSearch();
+            this.hide();
             return true;
             break;
           default:
@@ -186,11 +185,14 @@ export default {
       return typeArray;
     },
     onlyEmbedded() {
+      if (this.compositional === true) {
+        return true;
+      }
       const range = this.getFullRange;
-      for (const prop of range) {
+      for (const classId of range) {
         if (!VocabUtil.isEmbedded(
-          prop, this.
-          resources.vocab, 
+          classId,
+          this.resources.vocab, 
           this.settings, 
           this.resources.context
         )) {
@@ -222,11 +224,9 @@ export default {
   },
   mounted() {
     this.addEmbedded = (this.valueList.length === 0 && this.onlyEmbedded && this.getFullRange.length > 1);
-    this.searchOpen = false;
-    this.currentSearchTypes = this.getRange;
   },
   methods: {
-    actionHighlight(active) {
+    actionHighlight(active, event) {
       if(active) {
         let item = event.target;
         while ((item = item.parentElement) && !item.classList.contains('js-field'));
@@ -272,8 +272,8 @@ export default {
       this.showToolTip = false;
       this.selectedType = '';
     },
-    add() {
-      this.actionHighlight(false);
+    add(event) {
+      this.actionHighlight(false, event);
       if (this.isEnumeration) {
         this.addItem({'@id': ''});
       } else if (this.isVocabField) {
@@ -292,6 +292,7 @@ export default {
       }
     },
     show() {
+      this.resetSearch();
       LayoutUtil.scrollLock(true);
       this.active = true;
       this.$nextTick(() => {
@@ -311,18 +312,10 @@ export default {
         value: 'overview' 
       });
     },
-    openSearch() {
+    resetSearch() {
       this.keyword = '';
-      this.searchOpen = true;
-    },
-    closeSearch() {
-      this.searchOpen = false;
-      this.keyword = '';
+      this.currentSearchTypes = this.getRange;
       this.searchResult = [];
-      this.pagesFetched = 0;
-      this.allFetched = false;
-      this.chooseLocalType = false;
-      this.hide();
     },
     addLinkedItem(obj) {
       let currentValue = _.cloneDeep(_.get(this.inspector.data, this.path));
@@ -364,6 +357,10 @@ export default {
           currentValue.push(obj);
         }
       }
+      this.$store.dispatch('setInspectorStatusValue', { 
+        property: 'lastAdded', 
+        value: `${this.path}[${currentValue.length -1}]`
+      });
       this.$store.dispatch('updateInspectorData', {
         changeList: [
           {
@@ -393,12 +390,19 @@ export default {
       });
     },
     addEmpty(typeId) {
-      this.closeSearch();
+      this.hide();
       const shortenedType = StringUtil.getCompactUri(typeId, this.resources.context);
       let obj = {'@type': shortenedType};
       if (StructuredValueTemplates.hasOwnProperty(shortenedType)) {
         obj = _.cloneDeep(StructuredValueTemplates[shortenedType]);
       }
+      // If this is a holding, add the heldBy property
+      if (obj['@type'] === 'Item') {
+        obj['heldBy'] = {
+          '@id': `https://libris.kb.se/library/${this.user.settings.activeSigel}`
+        };
+      }
+
       if (this.fieldKey === 'instanceOf') {
         this.addSibling(obj);
       } else {
@@ -468,11 +472,11 @@ export default {
     <!-- Adds another empty field of the same type -->
     <div class="EntityAdder-add"
       v-if="isPlaceholder && !addEmbedded" 
-      v-on:click="add()" 
+      v-on:click="add($event)" 
       tabindex="0"
-      @keyup.enter="add()"
-      @mouseenter="showToolTip = true, actionHighlight(true)" 
-      @mouseleave="showToolTip = false, actionHighlight(false)">
+      @keyup.enter="add($event)"
+      @mouseenter="showToolTip = true, actionHighlight(true, $event)" 
+      @mouseleave="showToolTip = false, actionHighlight(false, $event)">
       <span>
         <i class="fa fa-fw fa-plus plus-icon" aria-hidden="true">
           <tooltip-component 
@@ -486,10 +490,10 @@ export default {
     <div class="EntityAdder-add action-button" 
       v-if="!isPlaceholder && !addEmbedded" 
       tabindex="0"
-      v-on:click="add()" 
-      @keyup.enter="add()"
-      @mouseenter="showToolTip = true, actionHighlight(true)" 
-      @mouseleave="showToolTip = false, actionHighlight(false)">
+      v-on:click="add($event)" 
+      @keyup.enter="add($event)"
+      @mouseenter="showToolTip = true, actionHighlight(true, $event)" 
+      @mouseleave="showToolTip = false, actionHighlight(false, $event)">
       <i class="EntityAdder-addIcon fa fa-fw fa-plus plus-icon" aria-hidden="true">
         <tooltip-component 
           :show-tooltip="showToolTip" 
@@ -513,11 +517,11 @@ export default {
       </select>
     </div>
 
-    <modal-component v-if="active" class="EntityAdder-modal EntityAdderModal" @close="closeSearch">
+    <modal-component v-if="active" class="EntityAdder-modal EntityAdderModal" @close="hide">
       <template slot="modal-header">
         {{ "Add entity" | translatePhrase }} | {{ addLabel | labelByLang }}
         <span class="ModalComponent-windowControl">
-          <i @click="closeSearch" tabindex="0" @keyup.enter="closeSearch" class="fa fa-close"></i>
+          <i @click="hide" tabindex="0" @keyup.enter="hide" class="fa fa-close"></i>
         </span>
       </template>
 
