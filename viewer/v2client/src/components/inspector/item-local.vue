@@ -405,9 +405,9 @@ export default {
   }
 
   &-arrow {
+    font-size: 14px;
     transition: all 0.2s ease;
     padding: 0 2px;
-    margin: 0 0 0 2px;
     cursor: pointer;
   }
 
@@ -471,10 +471,7 @@ export default {
   .ItemLocal-label > 
   .ItemLocal-arrow {
     transform:rotate(90deg);
-
-    &::before {
-      vertical-align: sub;
-    }
+    transform-origin: center;
   }
 
   &.is-highlighted {

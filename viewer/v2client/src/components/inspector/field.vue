@@ -594,14 +594,14 @@ export default {
     }
 
     &:before {
-      border-top: 1px solid #666666;
+      border-top: 1px solid @form-field-bullet;
       top: 16px;
       width: 15px;
       height: 2px;
     }
 
     &:after {
-      border-left: 1px solid #666666;
+      border-left: 1px solid @form-field-bullet;
       height: 100%;
       width: 2px;
       top: 0px;
@@ -630,7 +630,7 @@ export default {
     position: relative;
 
     &:after {
-      border-left: 1px solid #666666;
+      border-left: 1px solid @form-field-bullet;
       height: 100%;
       width: 0px;
       top: 0px;
@@ -655,9 +655,6 @@ export default {
       flex: 1 100%;
       padding: 0 0 0 20px;
       text-align: left;
-      font-weight: 700;
-      font-size: 16px;
-      font-size: 1.6rem;
       justify-content: flex-start;
       display: flex;
     }
@@ -665,7 +662,7 @@ export default {
     &:before {
       .Field--inner & {
         content: " ● ";
-        color: #666666;
+        color: @form-field-bullet;
         position: absolute;
         left: 0px;
         top: -1px;
