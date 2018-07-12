@@ -54,11 +54,11 @@
 // --------- EDITOR SPECIFIC --------
 
 // Variables
-@chipColor: @gray-lighter;
+// @chipColor: @gray-lighter;
 // @chipColorLinked: rgb(131, 197, 191);
-@chipColorLinked: #b2d2cf;
-@chipTextColor: #000000;
-@chipTextColorLinked: #000000;
+// @chipColorLinked: #b2d2cf;
+// @chipTextColor: #000000;
+// @chipTextColorLinked: #000000;
 
 // ----------- VARIABLES ------------
 
@@ -138,7 +138,7 @@
 @icon-default: @gray;
 @icon-default--hover: @gray-darker;
 
-@icon-primary: @brand-primary;
+@icon-primary: @link-color;
 @icon-primary--hover: @link-hover-color;
 
 @icon-sm: 16px;
@@ -150,22 +150,19 @@
 
 // --------- EDITOR SPECIFIC --------
 
-@form-field: darken(@neutral-color, 5%);
+@form-field: @white;
 @form-border: @gray-lighter;
 
-@instance-chip-background: #547e91;
-@instance-chip-text: lighten(@instance-chip-background, 80%);
-@instance-background: #547e91;
-@instance-text: lighten(@instance-background, 80%);
-@instance-hover: lighten(@instance-background, 5%);
-@instance-background-dark: darken(@instance-background, 5%);
+@instance-chip-background: transparent;
+@instance-chip-color: @link-color;
+@instance-chip-color-hover: @link-hover-color;
 
-@work-chip-background: #5d9c73;
-@work-chip-text: lighten(@work-chip-background, 80%);
-@work-background: #3c9059;
-@work-text: lighten(@work-background, 80%);
-@work-hover: lighten(@work-background, 5%);
-@work-background-dark: darken(@work-background, 5%);
+// @work-chip-background: #5d9c73;
+// @work-chip-text: lighten(@work-chip-background, 80%);
+// @work-background: #3c9059;
+// @work-text: lighten(@work-background, 80%);
+// @work-hover: lighten(@work-background, 5%);
+// @work-background-dark: darken(@work-background, 5%);
 @node-bg: #fafafa;
 
 @highlight-color: @brand-primary;

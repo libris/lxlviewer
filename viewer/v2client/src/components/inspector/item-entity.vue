@@ -152,8 +152,8 @@ export default {
 
 .ItemEntity {
   display: inline-block;
-  background-color: lighten(@bib-color, 2%);
-  border: none;
+  background-color: @instance-chip-background;
+  border: 1px solid @instance-chip-color;
   border-radius: 2em;
   overflow: hidden;
   line-height: 1.6;
@@ -182,20 +182,19 @@ export default {
     height: 1.2em;
     line-height: 1.2em;
     cursor: pointer;
-    // background-color: rgba(255, 255, 255, 0.25);
-    i {
-      color: fadeout(white, 35%);
-    }
-    &:hover {
-      // background-color: rgba(255, 255, 255, 0.35);
-      i {
-        color: white;
-      }
-    }
-    display: inline-block;
     border-radius: 1em;
     text-align: center;
+
+    i {
+      color: @instance-chip-color;
+    }
+    &:hover {
+      i {
+        color: @instance-chip-color-hover;
+      }
+    }
   }
+
   &.expanded {
     margin: 0 0 2em 0;
   }
@@ -203,9 +202,7 @@ export default {
   &.is-locked {
     padding: 3px 0.5em 3px 0.5em;
   }
-  &:hover {
-    background-color: darken(@bib-color, 2%);
-  }
+
   a {
     color: white;
     &:hover {
@@ -213,7 +210,8 @@ export default {
     }
   }
   &-label {
-    color: white;
+    color: @instance-chip-color;
+    font-weight: 600;
     cursor: default;
   }
   

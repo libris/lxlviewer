@@ -167,7 +167,7 @@ export default {
 }
 
 .EntityForm {
-  background-color: @white;
+  background-color: @form-field;
   border: 1px solid @form-border;
   padding: 0;
 
