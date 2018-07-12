@@ -13,6 +13,10 @@ export default {
     translation: '',
     showTooltip: false,
     keybindName: '',
+    position: {
+      default: 'top',
+      type: String,
+    },
   },
   components: {
   },
@@ -53,7 +57,7 @@ export default {
 </script>
 
 <template>
-  <div class="tooltip-container-outer" :class="{ 'show-tooltip': compShowTooltip }" @mouseover="hoverTooltip = true" @mouseleave="hoverTooltip = false">
+  <div class="tooltip-container-outer" :class="{ 'show-tooltip': compShowTooltip, 'is-onLeft': position == 'left', 'is-onTop': position == 'top' }" @mouseover="hoverTooltip = true" @mouseleave="hoverTooltip = false">
     <div class="tooltip-container-inner" >
       {{translatedText | capitalize}}{{ keybindingText ? ` (${keybindingText})` : ''}}
     </div>
@@ -66,9 +70,45 @@ export default {
   position: absolute;
   visibility: hidden;
   opacity: 0;
-  transform: translate(-50%, -50px);
   transition: all 0.1s ease;
   display: none;
+
+  &:after {
+    position: absolute;
+    pointer-events: none;
+    border: solid transparent;
+    border-width: 6px;
+    content: " ";
+  }
+
+  &.is-onLeft {
+    right: 50px;
+    margin-right: 10px;
+    transform: none;
+    top: 10px;
+    &:after {
+      left: 100%;
+      right: auto;
+      bottom: auto;
+      top: 50%;
+      width: 8px;
+      margin-top: -6px;
+      border-left-color: @black;
+      border-width: 6px;
+      margin-left: -1px;
+    }
+  }
+  &.is-onTop {
+    transform: translate(-50%, -50px);
+    &::after {
+      left: 50%;
+      height: 0;
+      width: 0;
+      pointer-events: none;
+      border-top-color: @black;
+      margin-left: 3px;
+    }
+  }
 
   .tooltip-container-inner {
     background-color: @black;
@@ -81,19 +121,6 @@ export default {
     font-size: 14px;
     font-weight: bold;
     -webkit-text-stroke: 0;
-  }
-  &::after {
-    left: 50%;
-    border: solid transparent;
-    content: " ";
-    height: 0;
-    width: 0;
-    position: absolute;
-    pointer-events: none;
-    border-color: rgba(136, 183, 213, 0);
-    border-top-color: @black;
-    border-width: 6px;
-    margin-left: 3px;
   }
   &.show-tooltip {
     opacity: 1;

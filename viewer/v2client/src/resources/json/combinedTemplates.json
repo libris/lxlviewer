@@ -94,6 +94,7 @@
             "@type": "Extent",
             "label": ""
           }],
+          "marc:otherPhysicalDetails": "",
           "hasDimensions": {
             "@type": "Dimensions",
             "label": ""
