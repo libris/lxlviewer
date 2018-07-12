@@ -218,11 +218,9 @@ export default {
   }
 }
 .Dropzone {
-  margin-top: 1em;
   height: 275px;
   width: 100%;
-  padding: 2px;
-  border: 1px solid #E0E6E9;
+  border: 1px solid @form-border;
   background-color: @white;
 
   &.is-active {
