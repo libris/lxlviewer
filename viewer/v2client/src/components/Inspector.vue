@@ -14,6 +14,7 @@ import EntityHeader from '@/components/inspector/entity-header';
 import ModalComponent from '@/components/shared/modal-component';
 import ReverseRelations from '@/components/inspector/reverse-relations';
 import TabMenu from '@/components/shared/tab-menu';
+import VueSimpleSpinner from 'vue-simple-spinner';
 import { mapGetters } from 'vuex';
 
 export default {
@@ -369,6 +370,7 @@ export default {
     'entity-changelog': EntityChangelog,
     'reverse-relations': ReverseRelations,
     'tab-menu': TabMenu,
+    'vue-simple-spinner': VueSimpleSpinner,
   },
   mounted() {
     this.$nextTick(() => {
@@ -389,11 +391,10 @@ export default {
 </script>
 <template>
   <div class="row">
+    <div v-if="!postLoaded && !loadFailure" class="text-center">
+      <vue-simple-spinner size="large" :message="'Loading document' | translatePhrase"></vue-simple-spinner>
+    </div>
     <div class="Inspector col-sm-12" :class="{'col-md-11': !status.panelOpen, 'col-md-7': status.panelOpen }" ref="Inspector">
-      <div v-if="!postLoaded && !loadFailure" class="text-center">
-        <i class="fa fa-circle-o-notch fa-4x fa-spin"></i><br/>
-        <h3>{{ 'Loading document' | translatePhrase | capitalize }}</h3>
-      </div>
       <div v-if="!postLoaded && loadFailure">
         <h2>{{loadFailure.status}}</h2>
         <p v-if="loadFailure.status === 404">

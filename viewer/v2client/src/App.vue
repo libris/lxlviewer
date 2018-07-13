@@ -4,8 +4,7 @@
     <navbar-component />
     <main class="MainContent" :class="{ 'container': !status.panelOpen, 'container-fluid': status.panelOpen }" role="main">
       <div v-if="!resourcesLoaded" class="text-center">
-        <i class="fa fa-circle-o-notch fa-4x fa-spin"></i><br/>
-        <h3>{{ 'Loading application' | translatePhrase | capitalize }}</h3>
+        <vue-simple-spinner size="large" :message="'Loading application' | translatePhrase"></vue-simple-spinner>
       </div>
       <transition name="fade">
         <router-view v-if="resourcesLoaded" />
@@ -31,6 +30,7 @@ import Footer from '@/components/layout/footer';
 import NotificationList from '@/components/shared/notification-list';
 import ModalComponent from '@/components/shared/modal-component';
 import GlobalMessage from '@/components/layout/global-msg';
+import VueSimpleSpinner from 'vue-simple-spinner';
 
 export default {
   name: 'App',
@@ -62,6 +62,7 @@ export default {
     'notification-list': NotificationList,
     'modal-component': ModalComponent,
     'global-message': GlobalMessage,
+    'vue-simple-spinner': VueSimpleSpinner,
    },
 }
 </script>
