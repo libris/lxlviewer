@@ -121,8 +121,8 @@ export default {
       <span class="ItemEntity-label">
         <span v-if="!expanded">{{getItemLabel}}</span>
         <span class="placeholder"></span></span>
-      <div class="ItemEntity-removeButton" v-if="!isLocked">
-        <i class="fa fa-times chip-action" 
+      <div class="ItemEntity-removeButton icon icon--sm" v-if="!isLocked">
+        <i class="fa fa-times-circle" 
           v-if="!isLocked" 
           v-on:click="removeThis(true)" 
           @mouseover="removeHover = true" 
@@ -181,18 +181,18 @@ export default {
     width: 1.2em;
     height: 1.2em;
     line-height: 1.2em;
-    cursor: pointer;
+    // cursor: pointer;
     border-radius: 1em;
     text-align: center;
 
-    i {
-      color: @instance-chip-color;
-    }
-    &:hover {
-      i {
-        color: @instance-chip-color-hover;
-      }
-    }
+    // i {
+    //   color: @instance-chip-color;
+    // }
+    // &:hover {
+    //   i {
+    //     color: @instance-chip-color-hover;
+    //   }
+    // }
   }
 
   &.expanded {

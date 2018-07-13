@@ -555,15 +555,15 @@ export default {
   }
 
   &.is-marked {
-    background-color: @sec;
+    background-color: @add;
   }
 
   &.is-removeable {
-    background-color: @danger;
+    background-color: @remove;
   }
 
   &.is-lastAdded {
-    background-color: @sec;
+    background-color: @add;
   }
 
   @media (min-width: 768px) {
@@ -581,11 +581,11 @@ export default {
     display: inline-block;
 
     &.is-marked {
-      background-color: @sec;
+      background-color: @add;
     }
 
     &.is-removeable {
-      background-color: @danger;
+      background-color: @remove;
     }
 
     &:before, 
