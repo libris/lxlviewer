@@ -363,50 +363,57 @@ export default {
     @mouseover="handleMouseEnter()" 
     @mouseleave="handleMouseLeave()">
 
-    <div v-if="!isInner && this.inspector.status.editing" class="Field-actions">
-      <div class="Field-action Field-remove" 
-        v-show="!locked" 
-        :class="{'disabled': activeModal}">
-        <i class="fa fa-trash-o action-button icon icon--sm"
-          tabindex="0"
-          v-on:click="removeThis(true)"
-          @focus="removeHover = true, removeHighlight(true, $event)" 
-          @blur="removeHover = false, removeHighlight(false, $event)"
-          @mouseover="removeHover = true, removeHighlight(true, $event)" 
-          @mouseout="removeHover = false, removeHighlight(false, $event)">
-          <tooltip-component 
-            :show-tooltip="removeHover" 
-            tooltip-text="Remove" 
-            translation="translatePhrase"></tooltip-component>
-        </i>
+    <div class="Field-labelWrapper" v-if="!isInner">
+      <div v-if="this.inspector.status.editing" class="Field-actions">
+        <div class="Field-action Field-remove" 
+          v-show="!locked" 
+          :class="{'disabled': activeModal}">
+          <i class="fa fa-trash-o action-button icon icon--sm"
+            tabindex="0"
+            v-on:click="removeThis(true)"
+            @focus="removeHover = true, removeHighlight(true, $event)" 
+            @blur="removeHover = false, removeHighlight(false, $event)"
+            @mouseover="removeHover = true, removeHighlight(true, $event)" 
+            @mouseout="removeHover = false, removeHighlight(false, $event)">
+            <tooltip-component 
+              :show-tooltip="removeHover" 
+              tooltip-text="Remove" 
+              translation="translatePhrase"></tooltip-component>
+          </i>
+        </div>
+        <entity-adder class="Field-entityAdder Field-action"
+          v-if="!locked && (isRepeatable || isEmptyObject)" 
+          :field-key="fieldKey" 
+          :already-added="linkedIds" 
+          :entity-type="entityType" 
+          :property-types="propertyTypes" 
+          :show-action-buttons="actionButtonsShown" 
+          :active="activeModal" 
+          :is-placeholder="false" 
+          :value-list="valueAsArray" 
+          :path="getPath">
+        </entity-adder>
+        <div v-else class="Field-action placeholder"></div> 
+        <div class="Field-comment" v-if="propertyComment && !locked" >
+          <i class="fa fa-question-circle Field-comment icon icon--sm"></i>
+          <span class="Field-commentText">{{ propertyComment }}</span>
+        </div>
       </div>
-      <entity-adder class="Field-entityAdder Field-action"
-        v-if="!locked && (isRepeatable || isEmptyObject)" 
-        :field-key="fieldKey" 
-        :already-added="linkedIds" 
-        :entity-type="entityType" 
-        :property-types="propertyTypes" 
-        :show-action-buttons="actionButtonsShown" 
-        :active="activeModal" 
-        :is-placeholder="false" 
-        :value-list="valueAsArray" 
-        :path="getPath">
-      </entity-adder>
-      <div v-else class="Field-action placeholder"></div> 
-      <div class="Field-comment" v-if="propertyComment && !locked" >
-        <i class="fa fa-question-circle Field-comment icon icon--sm"></i>
-        <span class="Field-commentText">{{ propertyComment }}</span>
+      <div class="Field-label capitalHeading--gray" v-bind:class="{ 'is-locked': locked }">
+        <span v-show="fieldKey === '@id'">{{ 'ID' | translatePhrase | capitalize }}</span>
+        <span v-show="fieldKey === '@type'">{{ 'Type' | translatePhrase | capitalize }}</span>
+        <span v-show="fieldKey !== '@id' && fieldKey !== '@type'" 
+          :title="fieldKey">{{ fieldKey | labelByLang | capitalize }}</span>    
       </div>
     </div>
-    
-    <div class="Field-label capitalHeading--gray" v-bind:class="{ 'is-locked': locked }">
+    <div class="Field-label capitalHeading--gray" v-if="isInner" v-bind:class="{ 'is-locked': locked }">
       <span v-show="fieldKey === '@id'">{{ 'ID' | translatePhrase | capitalize }}</span>
       <span v-show="fieldKey === '@type'">{{ 'Type' | translatePhrase | capitalize }}</span>
       <span v-show="fieldKey !== '@id' && fieldKey !== '@type'" 
         :title="fieldKey">{{ fieldKey | labelByLang | capitalize }}</span>
 
       <!-- Is inner -->
-      <div v-if="isInner" class="Field-actions is-nested">
+      <div class="Field-actions is-nested">
         <entity-adder class="Field-action Field-entityAdder"
           v-if="!locked && (isRepeatable || isEmptyObject)" 
           :field-key="fieldKey" 
@@ -616,12 +623,20 @@ export default {
     }
   }
 
+  &-labelWrapper {
+    flex: 0 0 270px;
+    display: flex;
+    justify-content: flex-end;
+    padding: 1em 0.5em;
+    flex-direction: row;
+  }
+
   &-label {
-    flex: 0 0 @col-label;
     align-items: flex-start;
     justify-content: flex-end;
-    padding: 10px 20px;
     position: relative;
+    flex-grow: 1;
+    word-break: break-word;
 
     &:after {
       border-left: 1px solid @form-field-bullet;
@@ -731,8 +746,7 @@ export default {
 
   &-actions {
     display: flex;
-    width: 100px;
-    padding-left: 20px;
+    flex-grow: 1;
 
     .disabled {
       visibility: hidden;
