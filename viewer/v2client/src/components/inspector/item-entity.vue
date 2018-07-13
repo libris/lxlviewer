@@ -154,6 +154,7 @@ export default {
   display: inline-block;
   background-color: @instance-chip-background;
   border: 1px solid @instance-chip-color;
+  color: @instance-chip-color;
   border-radius: 2em;
   overflow: hidden;
   line-height: 1.6;
@@ -167,7 +168,7 @@ export default {
   }
 
   &.is-newlyAdded {
-    background-color: @sec-alter;
+    background-color: @add;
     -webkit-animation-duration: 1s;
     animation-duration: 1s;
     -webkit-animation-fill-mode: both;
@@ -181,18 +182,8 @@ export default {
     width: 1.2em;
     height: 1.2em;
     line-height: 1.2em;
-    // cursor: pointer;
     border-radius: 1em;
     text-align: center;
-
-    // i {
-    //   color: @instance-chip-color;
-    // }
-    // &:hover {
-    //   i {
-    //     color: @instance-chip-color-hover;
-    //   }
-    // }
   }
 
   &.expanded {
@@ -204,13 +195,12 @@ export default {
   }
 
   a {
-    color: white;
+    color: @white;
     &:hover {
       text-decoration: none;
     }
   }
   &-label {
-    color: @instance-chip-color;
     font-weight: 600;
     cursor: default;
   }
