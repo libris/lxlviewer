@@ -40,8 +40,6 @@ export default {
   },
   data() {
     return {
-      loading: true,
-      tabPadding: 10
     };
   },
   methods: {
@@ -49,15 +47,21 @@ export default {
       this.$emit('go', name);
     },
     moveUnderline() {
-      const $activeTab = this.$el.querySelector('.is-active');
-      const boundingRect = $activeTab.getBoundingClientRect();
-      const left = `${parseInt($activeTab.offsetLeft)}px`;
-      const top = `${parseInt($activeTab.offsetTop+boundingRect.height)-5}px`;
-      const width = `${parseInt(boundingRect.width) - (this.tabPadding * 2)}px`;
-      const $underline = this.$refs.underline;
-      $underline.style.width = width;
-      $underline.style.left = left;
-      $underline.style.top = top;
+      this.$nextTick(() => {
+        const $activeTab = this.$el.querySelector('.is-active');
+        const $tabList = this.$refs.tablist;
+        const $underline = this.$refs.underline;
+        const listElements = $tabList.getElementsByTagName('li');
+        let listWidth = 0;
+        for (let i = 0; i < listElements.length; i++) {
+          listWidth += listElements[i].clientWidth;
+        }
+        const padding = parseInt(window.getComputedStyle($activeTab).paddingLeft.replace('px', ''));
+        const left = `${parseInt((listWidth*-1)+$activeTab.offsetLeft+(padding*2)-4)}px`;
+        const width = `${parseInt($activeTab.clientWidth-(padding*2))}px`;
+        $underline.style.width = width;
+        $underline.style.left = left;
+      });
     },
   },
   computed: {
@@ -65,6 +69,13 @@ export default {
   components: {
   },
   watch: {
+    '$route.fullPath'(value, oldValue) {
+      if (value !== oldValue) {
+        this.$nextTick(() => {
+          this.moveUnderline();
+        });
+      }
+    },
     active(value, oldValue) {
       this.$nextTick(() => {
         this.moveUnderline();
@@ -73,18 +84,15 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      setTimeout(() => {
-        this.moveUnderline();
-        this.loading = false;
-      }, 500);
+      this.moveUnderline();
     });
   },
 };
 </script>
 
 <template>
-  <div class="TabMenu" :class="{'loading': loading}">
-    <ul class="TabMenu-tabList" role="tablist">
+  <div class="TabMenu">
+    <ul class="TabMenu-tabList" role="tablist" ref="tablist">
       <li class="TabMenu-tab"
         v-for="item in tabs" 
         tabindex="0"
@@ -107,24 +115,21 @@ export default {
   display: inline-block;
   opacity: 1;
   transition: opacity 0.25s ease;
+  position: relative;
 
   &-tabList {
-    display: flex;
     margin: 10px 0 10px -10px;
     padding: 0;
-    flex-wrap: wrap;
+    white-space: nowrap;
   }
-  &.loading {
-    opacity: 0;
-  }
-
   &-underline {
     display: inline-block;
     transition: all 0.25s ease .025s;
-    position: absolute;
+    position: relative;
     height: 3px;
+    top: 0.5em;
+    margin: 0px;
     min-width: 5px;
-    margin: 0 0 0 @tabPadding;
     border: none;
     background-color: @brand-primary;
   }
