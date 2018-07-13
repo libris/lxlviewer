@@ -35,10 +35,18 @@ export default {
       Promise.all(promiseArray).then(results => {
         this.embellishedList = results;
         this.loading = false;
+        this.$store.dispatch('setStatusValue', { 
+          property: 'keybindState', 
+          value: 'show-instances-list'
+        });
       });
     },
     hide() {
       this.$emit('close');
+      this.$store.dispatch('setStatusValue', { 
+        property: 'keybindState', 
+        value: 'overview'
+      });
     },
   },
   computed: {
@@ -58,8 +66,19 @@ export default {
     'modal-component': ModalComponent,
   },
   watch: {
+    'inspector.event'(val, oldVal) {
+      if (val.name === 'form-control') {
+        switch (val.value) { 
+          case 'close-modals':
+            this.hide();
+            break;
+          default:
+            return;
+        }
+      }
+    }
   },
-  mounted() { // Ready method is deprecated in 2.0, switch to "mounted"
+  mounted() {
     this.$nextTick(() => {
       this.buildEmbellishedInstanceList(this.relationsList);
     });

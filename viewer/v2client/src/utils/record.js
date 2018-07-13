@@ -213,6 +213,12 @@ export function prepareDuplicateFor(inspectorData, user) {
   if (newData.record.hasOwnProperty('controlNumber')) {
     delete newData.record.controlNumber;
   }
+  if (newData.record.hasOwnProperty('generationProcess')) {
+    delete newData.record.generationProcess;
+  }
+  if (newData.record.hasOwnProperty('generationDate')) {
+    delete newData.record.generationDate;
+  }
   if (newData.record.hasOwnProperty('descriptionUpgrader')) {
     delete newData.record.descriptionUpgrader;
   }

@@ -142,6 +142,9 @@ export default {
 
       return valueArray;
     },
+    isUriType() {
+      return VocabUtil.getContextValue(this.fieldKey, '@id', this.resources.context) === 'uri';
+    },
     getPath() {
       if (typeof this.parentPath !== 'undefined') {
         if (typeof this.parentKey !== 'undefined' && typeof this.parentIndex !== 'undefined') {
@@ -162,6 +165,15 @@ export default {
         this.resources.vocab,
         this.resources.context
       );
+    },
+    isCompositional() {
+      if (this.keyAsVocabProperty && this.keyAsVocabProperty.hasOwnProperty('category')) {
+        if (this.keyAsVocabProperty.category['@id'] === 'https://id.kb.se/vocab/compositional') {
+          return true;
+        }
+        // Add handling for "uncompositional" ie a false-value
+      }
+      return null;
     },
     hasSingleValue() {
       if (!_.isArray(this.fieldValue) || this.fieldValue.length === 1) {
@@ -385,6 +397,7 @@ export default {
           v-if="!locked && (isRepeatable || isEmptyObject)" 
           :field-key="fieldKey" 
           :already-added="linkedIds" 
+          :compositional="isCompositional" 
           :entity-type="entityType" 
           :property-types="propertyTypes" 
           :show-action-buttons="actionButtonsShown" 
@@ -419,6 +432,7 @@ export default {
           :field-key="fieldKey" 
           :path="getPath" 
           :already-added="linkedIds" 
+          :compositional="isCompositional" 
           :entity-type="entityType" 
           :property-types="propertyTypes" 
           :show-action-buttons="actionButtonsShown" 
@@ -483,6 +497,7 @@ export default {
           v-if="getDatatype(item) == 'local'" 
           :is-locked="locked" 
           :entity-type="entityType" 
+          :forced-extractability="isCompositional"
           :item="item" 
           :field-key="fieldKey" 
           :index="index" 
@@ -496,6 +511,7 @@ export default {
           :is-locked="locked"
           :field-key="fieldKey"
           :entity-type="entityType"
+          :forced-extractability="isCompositional"
           :index="index"
           :in-array="valueIsArray"
           :show-action-buttons="actionButtonsShown"
@@ -534,6 +550,7 @@ export default {
           v-if="getDatatype(item) == 'value'" 
           :is-removable="!hasSingleValue" 
           :is-locked="locked" 
+          :is-uri-type="isUriType"
           :field-value="item" 
           :field-key="fieldKey" 
           :index="index" 

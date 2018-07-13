@@ -88,6 +88,11 @@ export default {
       return cleanObj;
     },
     isExtractable() {
+      if (this.forcedExtractability === true) {
+        return false;
+      } else if (this.forcedExtractability === false) {
+        return true;
+      }
       const classId = StringUtil.getCompactUri(this.item['@type'], this.resources.context);
       if (VocabUtil.isExtractable(classId, this.resources.vocab, this.settings, this.resources.context)) {
         return true;

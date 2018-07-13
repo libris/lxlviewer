@@ -277,7 +277,7 @@ export default {
         let errorMessage = '';
         switch(error.status) {
           case 412:
-            errorMessage = `${StringUtil.getUiPhraseByLang('The resource has changed', this.settings.language)}`;
+            errorMessage = `${StringUtil.getUiPhraseByLang('The resource has been modified by another user', this.settings.language)}`;
             break;
           case 401:
             errorMessage = `${StringUtil.getUiPhraseByLang('Your login has expired', this.settings.language)}`;

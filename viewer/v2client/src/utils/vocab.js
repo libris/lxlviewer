@@ -64,7 +64,7 @@ export function getTermObject(term, vocab, context) {
   }
 
   if (!_class) {
-    window.lxlWarning('📘 Term lookup failed:', term, '| Tried :', tries.join(', '));
+    // window.lxlWarning('📘 Term lookup failed:', term, '| Tried :', tries.join(', '));
   }
   return _class;
 }

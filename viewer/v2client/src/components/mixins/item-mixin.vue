@@ -7,6 +7,10 @@ import { mapGetters } from 'vuex';
 export default {
   props: {
     parentPath: '',
+    forcedExtractability: {
+      type: Boolean,
+      default: null,
+    }
   },
   data(){
     return {

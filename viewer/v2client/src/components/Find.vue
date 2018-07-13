@@ -87,7 +87,7 @@ export default {
            totalResults += result.totalResults[db];
         }
       }
-      const convertedList = { totalItems: totalResults, items: []};
+      const convertedList = { totalItems: totalResults, items: [], first: {'@id': this.query } };
       _.each(result.items, (item) => {
         const convertedItem = RecordUtil.getMainEntity(item.data['@graph']);
         convertedList.items.push(convertedItem);

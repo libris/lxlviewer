@@ -94,6 +94,17 @@ export default {
     'relations-list': RelationsList,
   },
   watch: {
+    'inspector.event'(val, oldVal) {
+      if (val.name === 'form-control') {
+        switch (val.value) { 
+          case 'open-instances-window':
+            this.showRelationsList();
+            break;
+          default:
+            return;
+        }
+      }
+    },
     recordId(newVal) {
       if (newVal !== 'https://id.kb.se/TEMPID') {
         this.getRelationsInfo();
@@ -121,11 +132,16 @@ export default {
         {{ "Instantiations" | translatePhrase }}: {{numberOfRelations | translatePhrase}}
       </span>
 
-      <button class="ReverseRelations-button InstancesList-btn btn btn-primary btn--lg" @click="showRelationsList()" v-if="!inspector.status.editing && this.numberOfRelations > 0"
+      <button class="ReverseRelations-button InstancesList-btn btn btn-primary btn--lg" 
+        @click="showRelationsList()" 
+        v-if="!inspector.status.editing && this.numberOfRelations > 0"
         :checking-instances="checkingRelations">
         {{"Show instantiations" | translatePhrase}}
       </button>
-      <relations-list v-if="relationsListOpen" :relations-list="relationInfo" @close="hideRelationsList()"></relations-list>
+      <relations-list 
+        v-if="relationsListOpen" 
+        :relations-list="relationInfo" 
+        @close="hideRelationsList()"></relations-list>
     </div>
       
     <div class="ReverseRelations-number" v-if="recordType === 'Instance'">

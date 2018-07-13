@@ -25,10 +25,7 @@ export default {
   watch: {
     openPreview: function () {
       if (this.openPreview) {
-        this.active = true;
-        this.$emit('open-marc');
-        this.convertItemToMarc();
-        this.showMarc();
+        this.createMarcModal()
       }
     },
     'inspector.event'(val, oldVal) {
@@ -46,13 +43,19 @@ export default {
   },
   methods: {
     hide() {
-      if (!this.active) return;
+      if (!this.active) {
+        return;
+      }
       this.active = false;
       this.$emit('close-marc');
       this.$store.dispatch('setStatusValue', { 
         property: 'keybindState', 
         value: 'overview' 
       });
+    },
+    createMarcModal() {
+      this.convertItemToMarc();
+      this.showMarc();
     },
     showMarc() {
       this.$store.dispatch('setStatusValue', { 
@@ -96,7 +99,6 @@ export default {
         this.error = true;
         console.warn('Couldn\'t convert to marc.', error);
       });
-
     },
   },
   computed: {
@@ -107,16 +109,12 @@ export default {
       'settings',
       'status',
     ]),
-    isActive() {
-      return this.status.showMarc;
-    },
   },
   components: {
     'panel-component': PanelComponent,
   },
   mounted() { 
-    this.$nextTick(() => {
-    });
+    this.$nextTick(() => {});
   },
 };
 </script>

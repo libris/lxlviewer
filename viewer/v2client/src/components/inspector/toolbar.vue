@@ -79,6 +79,12 @@ export default {
           case 'admin-data-off':
             this.toggleEditorFocus();
             break;
+          case 'preview-marc':
+            this.openMarc();
+            break;
+          case 'open-help':
+            this.openHelpWindow();
+            break;
           default:
             return;
         }
@@ -114,6 +120,10 @@ export default {
     getOtherDataFormat(suffix) {
       return `${this.focusData['@id']}/data.${suffix}`
     },
+    openHelpWindow() {
+      const helpUrl = 'https://libris.kb.se/katalogisering/help';
+      window.open(helpUrl);
+    },
     formControl(control) {
       this.$store.dispatch('pushInspectorEvent', { 
         name: 'form-control', 
@@ -147,6 +157,7 @@ export default {
     },
     openMarc() {
       this.showMarcPreview = true;
+      this.toolsMenuActive = true;
     },
     closeMarc() {
       this.showMarcPreview = false;
@@ -179,8 +190,7 @@ export default {
         this.inspector.data.mainEntity['@type'], 
         this.resources.vocab, 
         this.resources.context
-      )
-        .map(id => StringUtil.getCompactUri(id, this.resources.context));
+      ).map(id => StringUtil.getCompactUri(id, this.resources.context));
       return baseClasses.indexOf(type) > -1;
     },
     download(text) {
@@ -296,10 +306,17 @@ export default {
         @click="showOtherFormatMenu" 
         aria-haspopup="true" 
         aria-expanded="true" 
+        @focus="showDisplayAs = true"
+        @blur="showDisplayAs = false"
         @mouseover="showDisplayAs = true" 
         @mouseout="showDisplayAs = false">
-        <i class="fa fa-eye" aria-hidden="true">
-          <tooltip-component :show-tooltip="showDisplayAs" tooltip-text="Show as" translation="translatePhrase"></tooltip-component>
+        <i class="fa fa-fw fa-eye" aria-hidden="true">
+          <tooltip-component 
+            class="Toolbar-tooltipContainer"
+            :show-tooltip="showDisplayAs" 
+            position="left"
+            tooltip-text="Show as" 
+            translation="translatePhrase"></tooltip-component>
         </i>
         <span class="Toolbar-caret caret"></span>
       </button>
@@ -320,9 +337,11 @@ export default {
         aria-expanded="true" 
         @mouseover="showTools = true" 
         @mouseout="showTools = false">
-        <i class="fa fa-wrench" aria-hidden="true">
+        <i class="fa fa-fw fa-wrench" aria-hidden="true">
           <tooltip-component 
+            class="Toolbar-tooltipContainer"
             :show-tooltip="showTools" 
+            position="left"
             tooltip-text="Tools" 
             translation="translatePhrase"></tooltip-component>
         </i>
@@ -359,10 +378,12 @@ export default {
           </a>
         </li>
         <li>
-          <marc-preview :openPreview="showMarcPreview" v-on:close-marc="closeMarc(), hideToolsMenu()"></marc-preview>
+          <marc-preview 
+            :openPreview="showMarcPreview" 
+            v-on:close-marc="closeMarc(), hideToolsMenu()"></marc-preview>
           <a class="Toolbar-menuLink" @click="openMarc" >
           <i class="fa fa-fw fa-eye" aria-hidden="true"></i>
-          {{"Preview MARC21" | translatePhrase}}
+          {{"Preview MARC21" | translatePhrase}} {{ getKeybindingText('preview-marc', ) ? ` (${getKeybindingText('preview-marc')})` : ''}}
           </a>
         </li>
         <li class="remove-option" v-show="user.isLoggedIn && !status.isNew">
@@ -392,7 +413,9 @@ export default {
       @mouseout="showUndo = false">
       <i class="fa fa-undo" aria-hidden="true">
         <tooltip-component 
+          class="Toolbar-tooltipContainer"
           :show-tooltip="showUndo" 
+          position="left"
           tooltip-text="Undo" 
           keybind-name="undo"
           translation="translatePhrase"></tooltip-component>
@@ -406,7 +429,9 @@ export default {
       @mouseout="showCancel = false">
       <i class="fa fa-close" aria-hidden="true">
         <tooltip-component 
+          class="Toolbar-tooltipContainer"
           :show-tooltip="showCancel" 
+          position="left"
           tooltip-text="Cancel" 
           keybind-name="cancel-edit"
           translation="translatePhrase"></tooltip-component>
@@ -420,7 +445,9 @@ export default {
       <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="inspector.status.saving"></i>
       <i class="fa fa-fw fa-save" v-show="!inspector.status.saving">
         <tooltip-component 
+          class="Toolbar-tooltipContainer"
           :show-tooltip="showSave" 
+          position="left"
           tooltip-text="Save" 
           keybind-name="save-item"
           translation="translatePhrase"></tooltip-component>
@@ -433,23 +460,39 @@ export default {
       @mouseout="showClarifySave = false">
       <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="inspector.status.saving"></i>
       <i class="fa fa-fw fa-check" v-show="!inspector.status.saving">
-        <tooltip-component tooltip-text="Save and stop editing" keybind-name="save-item-done" translation="translatePhrase"
+        <tooltip-component 
+          class="Toolbar-tooltipContainer"
+          tooltip-text="Save and stop editing" 
+          keybind-name="save-item-done" 
+          translation="translatePhrase"
+          position="left"
           v-if="!isNewRecord"
           :show-tooltip="showClarifySave"></tooltip-component>
-        <tooltip-component tooltip-text="Create record" keybind-name="save-item"  translation="translatePhrase"
+        <tooltip-component 
+          tooltip-text="Create record" 
+          keybind-name="save-item"  
+          translation="translatePhrase"
+          position="left"
+          class="Toolbar-tooltipContainer"
           v-if="isNewRecord"
           :show-tooltip="showClarifySave"></tooltip-component>
       </i>
     </button>
+
     <button class="Toolbar-btn btn btn-info edit-button" id="editButton" 
       v-on:click="edit()" 
       v-show="user.isLoggedIn && !inspector.status.editing && canEditThisType" 
       @mouseover="showEdit = true" 
       @mouseout="showEdit = false">
-      <i class="fa fa-fw fa-pencil" v-show="!inspector.status.opening"></i>
+      <i class="fa fa-fw fa-pencil" v-show="!inspector.status.opening">
+        <tooltip-component 
+        class="Toolbar-tooltipContainer"
+        tooltip-text="Edit" 
+        position="left"
+        keybind-name="edit-item" 
+        translation="translatePhrase"
+        :show-tooltip="showEdit"></tooltip-component></i>
       <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="inspector.status.opening"></i>
-      <tooltip-component tooltip-text="Edit" keybind-name="edit-item" translation="translatePhrase"
-          :show-tooltip="showEdit"></tooltip-component>
     </button>
   </div>
 </template>
@@ -496,12 +539,13 @@ export default {
 
   &-btn {
     border-radius: 100%;
-    font-size: 22px;
-    font-size: 2.2rem;
+    font-size: 20px;
+    font-size: 2rem;
     margin: 2px 0;
     width: 50px;
     height: 50px;
     line-height: 1;
+    position: relative;
   }
 
   &-menuLink {

@@ -6,6 +6,9 @@
     "alt+q": "cancel-edit",
     "alt+z": "undo",
     "alt+plus": "expand-item",
+    "alt+p": "preview-marc",
+    "alt+h": "open-help",
+    "alt+i": "open-instances-window",
     "±": "expand-item", 
     "alt+minus": "collapse-item",
     "alt+f": "open-field-adder",
@@ -39,5 +42,8 @@
     "down": "select-next",
     "up": "select-prev",
     "enter": "add-entity"
+  },
+  "show-instances-list": {
+    "esc": "close-modals"
   }
 }
