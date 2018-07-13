@@ -530,7 +530,7 @@ export default {
                     name="entityKeywordInput"
                     v-model="keyword"
                     autofocus />
-                  <select class="EntityAdder-searchSelect"
+                  <select class="EntityAdder-searchSelect customSelect"
                     v-model="currentSearchTypes" 
                     @change="handleChange(keyword)">
                     <option :value="getRange" selected>{{"All types" | translatePhrase}}</option>
@@ -559,7 +559,7 @@ export default {
                 v-if="hasSingleRange" 
                 v-on:click="addEmpty(getFullRange[0])">{{ "Create local entity" | translatePhrase }}
               </button>
-              <select class="EntityAdder-createSelect"
+              <select class="EntityAdder-createSelect customSelect"
                 v-model="selectedType" 
                 @change="addType(selectedType)" 
                 v-if="!hasSingleRange">
@@ -635,14 +635,6 @@ export default {
   }
 
   &-typeSelect {
-    // background: @white;
-    // color: @black;
-    // margin: 0 0 5px 0;
-    // border: 1px solid #6F767B;
-    // border-radius: 2px;
-    // font-size: 14px;
-    // font-size: 1.4rem;
-    // font-weight: normal;
     position: absolute;
     left: 20px;
     z-index: 1;
@@ -703,10 +695,7 @@ export default {
     border-radius: .3em;
     border: 0;
     outline: none;
-    background: #009788;
-    color: #fff;
     cursor: pointer;
-    font-weight: 700;
   }
 
   &-info {
@@ -721,7 +710,7 @@ export default {
   }
 
   &-infoText {
-    background-color: #fff;
+    background-color: @white;
     border: 1px solid #ccc;
     border-radius: 3px;
     font-size: 12px;
@@ -741,10 +730,8 @@ export default {
   &-createSelect {
     cursor: pointer;
     padding: 5px 10px;
-    color: #444;
     border: none;
     border-radius: 2px;
-    background: #ccc;
     font-weight: 700;
     font-size: 12px;
     font-size: 1.2rem;

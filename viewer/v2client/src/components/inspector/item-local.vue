@@ -309,7 +309,7 @@ export default {
           :inner="true" 
           :path="getPath"></field-adder>
          
-        <i class="ItemLocal-action fa fa-link"
+        <i class="ItemLocal-action fa fa-link icon icon--sm"
           v-if="inspector.status.editing && isExtractable"
           @click="openExtractDialog()" 
           @focus="showLinkAction = true, actionHighlight(true, $event)"
@@ -323,8 +323,9 @@ export default {
             tooltip-text="Link entity" 
             translation="translatePhrase"></tooltip-component>
         </i>
+        <div v-else class="ItemLocal-action placeholder"></div>
 
-        <i class="ItemLocal-action fa fa-trash-o chip-action" 
+        <i class="ItemLocal-action fa fa-trash-o icon icon--sm" 
           v-if="!isLocked" 
           :class="{'show-icon': showActionButtons}" 
           v-on:click="removeThis(true)" 
@@ -428,17 +429,9 @@ export default {
   }
 
   &-action {
+    min-width: 20px;
     display: inline-block;
-    color: @gray-dark;
-    cursor: pointer;
-    display: inline-block;
-    margin: 0 0 0 5px;
-    opacity: 1;
-    transition: opacity 0.5s ease;
-
-    &:hover {
-      color: @black;
-    }
+    margin-right: 5px;
   }
 
   &.is-marked {

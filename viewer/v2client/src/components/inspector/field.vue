@@ -616,14 +616,6 @@ export default {
   }
 
   &-label {
-    // flex: 0 0 @col-label;
-    // align-items: flex-start;
-    // justify-content: flex-end;
-    // padding: 20px;
-    // position: relative;
-  }
-
-  &-label {
     flex: 0 0 @col-label;
     align-items: flex-start;
     justify-content: flex-end;
@@ -761,8 +753,8 @@ export default {
   &-action {
     min-width:  20px;
     display: inline-block;
-    transition: opacity 0.25s ease;
-    transition-delay: 0.1s;
+    // transition: opacity 0.5s ease;
+    // transition-delay: 0.1s;
     margin-right: 5px;
   
   &.placeholder {

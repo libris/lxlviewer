@@ -332,7 +332,7 @@ export default {
       @keyup.enter="show"
       @mouseenter="showToolTip = true, actionHighlight(true, $event)" 
       @mouseleave="showToolTip = false, actionHighlight(false, $event)">
-      <i class="FieldAdder-innerIcon fa fa-plus plus-icon" aria-hidden="true">
+      <i class="FieldAdder-innerIcon fa fa-plus-circle icon icon--sm" aria-hidden="true">
         <tooltip-component 
           :show-tooltip="showToolTip" 
           :tooltip-text="modalTitle" 
