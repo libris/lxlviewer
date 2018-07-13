@@ -157,7 +157,7 @@ export default {
   border-radius: 2em;
   overflow: hidden;
   line-height: 1.6;
-  padding: 3px 0.3em 3px 0.5em;
+  padding: 3px 5px 3px 10px;
   transition: .3s ease;
 
   &-container {

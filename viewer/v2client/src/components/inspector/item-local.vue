@@ -323,7 +323,6 @@ export default {
             tooltip-text="Link entity" 
             translation="translatePhrase"></tooltip-component>
         </i>
-        <div v-else class="ItemLocal-action placeholder"></div>
 
         <i class="ItemLocal-action fa fa-trash-o icon icon--sm" 
           v-if="!isLocked" 

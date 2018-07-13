@@ -209,7 +209,7 @@ export default {
   &-item {
     color: black;
     flex-direction: row;
-    align-items: center;
+    align-items: baseline;
     list-style: none;
     width: 100%;
     min-height: 60px;

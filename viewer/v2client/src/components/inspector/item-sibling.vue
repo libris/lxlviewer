@@ -315,7 +315,7 @@ export default {
           :inner="true" 
           :path="getPath"></field-adder>
          
-          <i class="ItemSibling-action fa fa-link"
+          <i class="ItemSibling-action fa fa-link icon icon--sm"
             v-if="inspector.status.editing && isExtractable"
             @click="openExtractDialog()" 
             tabindex="0"
@@ -329,7 +329,7 @@ export default {
               tooltip-text="Link entity" 
               translation="translatePhrase"></tooltip-component>
           </i>
-        <i class="ItemSibling-action fa fa-trash-o chip-action" 
+        <i class="ItemSibling-action fa fa-trash-o icon icon--sm" 
           v-if="!isLocked" 
           :class="{'show-icon': showActionButtons}" 
           v-on:click="removeThis(true)"
@@ -391,7 +391,7 @@ export default {
 <style lang="less">
 
 .ItemSibling {
-  padding: 5px;
+  padding: 5px 0;
   position: relative;
   flex: 1 100%;
   transition: background-color .2s ease;
@@ -404,7 +404,6 @@ export default {
   }
 
   &-label {
-    margin-right: 40px;
   }
 
   &-type {
@@ -436,16 +435,8 @@ export default {
 
   &-action {
     display: inline-block;
-    color: @gray-dark;
-    cursor: pointer;
-    display: inline-block;
-    margin: 0 5px 0 0;
-    opacity: 1;
-    transition: opacity 0.5s ease;
-
-    &:hover {
-      color: @black;
-    }
+    min-width: 20px;
+    margin-right: 5px;
   }
 
   &-collapsedLabel {
@@ -534,10 +525,6 @@ export default {
         .confirm-remove-box {
           transform: translate(16px, 0px);
         }
-      }
-
-      .chip-action {
-        cursor: pointer;
       }
 
       .type {

@@ -364,19 +364,6 @@ export default {
     @mouseleave="handleMouseLeave()">
 
     <div v-if="!isInner && this.inspector.status.editing" class="Field-actions">
-      <entity-adder class="Field-entityAdder Field-action"
-        v-if="!locked && (isRepeatable || isEmptyObject)" 
-        :field-key="fieldKey" 
-        :already-added="linkedIds" 
-        :entity-type="entityType" 
-        :property-types="propertyTypes" 
-        :show-action-buttons="actionButtonsShown" 
-        :active="activeModal" 
-        :is-placeholder="false" 
-        :value-list="valueAsArray" 
-        :path="getPath">
-      </entity-adder>
-      <div v-else class="Field-action placeholder"></div> 
       <div class="Field-action Field-remove" 
         v-show="!locked" 
         :class="{'disabled': activeModal}">
@@ -393,6 +380,19 @@ export default {
             translation="translatePhrase"></tooltip-component>
         </i>
       </div>
+      <entity-adder class="Field-entityAdder Field-action"
+        v-if="!locked && (isRepeatable || isEmptyObject)" 
+        :field-key="fieldKey" 
+        :already-added="linkedIds" 
+        :entity-type="entityType" 
+        :property-types="propertyTypes" 
+        :show-action-buttons="actionButtonsShown" 
+        :active="activeModal" 
+        :is-placeholder="false" 
+        :value-list="valueAsArray" 
+        :path="getPath">
+      </entity-adder>
+      <div v-else class="Field-action placeholder"></div> 
       <div class="Field-comment" v-if="propertyComment && !locked" >
         <i class="fa fa-question-circle Field-comment icon icon--sm"></i>
         <span class="Field-commentText">{{ propertyComment }}</span>
@@ -408,7 +408,7 @@ export default {
       <!-- Is inner -->
       <div v-if="isInner" class="Field-actions is-nested">
         <entity-adder class="Field-action Field-entityAdder"
-          v-show="!locked && (isRepeatable || isEmptyObject)" 
+          v-if="!locked && (isRepeatable || isEmptyObject)" 
           :field-key="fieldKey" 
           :path="getPath" 
           :already-added="linkedIds" 
@@ -417,11 +417,12 @@ export default {
           :show-action-buttons="actionButtonsShown" 
           :active="activeModal" 
           :is-placeholder="true" 
-          :value-list="valueAsArray"></entity-adder>
+          :value-list="valueAsArray">
+        </entity-adder>
         <div class="Field-action Field-remove" 
           v-show="!locked" 
           :class="{'disabled': activeModal}">
-          <i class="fa fa-trash-o action-button"
+          <i class="fa fa-trash-o action-button icon icon--sm"
             tabindex="0"
             v-on:click="removeThis(true)"
             @keyup.enter="removeThis(true)"
@@ -573,7 +574,7 @@ export default {
     border: 0;
     flex: 1 100%;
     margin: 0;
-    padding: 5px 5px 5px 0;
+    padding: 5px 0 5px 0;
     border-radius: 4px;
     overflow: visible;
     max-height: auto;
@@ -746,15 +747,13 @@ export default {
       font-size: 16px;
       font-size: 1.6rem;
       margin: 0 0 0 5px;
-      line-height: 1.4;
-    }
+      line-height: 1.4;      
+      }
   }
 
   &-action {
     min-width:  20px;
     display: inline-block;
-    // transition: opacity 0.5s ease;
-    // transition-delay: 0.1s;
     margin-right: 5px;
   
   &.placeholder {
@@ -762,7 +761,6 @@ export default {
   }
 
     &:hover {
-      // color: @black;
     }
   }
 }

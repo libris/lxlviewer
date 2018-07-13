@@ -477,7 +477,7 @@ export default {
       @mouseenter="showToolTip = true, actionHighlight(true, $event)" 
       @mouseleave="showToolTip = false, actionHighlight(false, $event)">
       <span>
-        <i class="fa fa-fw fa-plus plus-icon" aria-hidden="true">
+        <i class="fa fa-fw fa-plus-circle icon icon--sm" aria-hidden="true">
           <tooltip-component 
             :show-tooltip="showToolTip" 
             :tooltip-text="tooltipText"></tooltip-component>
