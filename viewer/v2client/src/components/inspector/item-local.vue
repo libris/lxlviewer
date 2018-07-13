@@ -307,13 +307,6 @@ export default {
       </div>
       
       <div class="ItemLocal-actions">
-        <field-adder class="ItemLocal-action"
-          v-if="!isLocked" 
-          :entity-type="item['@type']" 
-          :allowed="allowedProperties" 
-          :inner="true" 
-          :path="getPath"></field-adder>
-         
         <i class="ItemLocal-action fa fa-link icon icon--sm"
           v-if="inspector.status.editing && isExtractable"
           @click="openExtractDialog()" 
@@ -328,6 +321,13 @@ export default {
             tooltip-text="Link entity" 
             translation="translatePhrase"></tooltip-component>
         </i>
+        <field-adder class="ItemLocal-action"
+          v-if="!isLocked" 
+          :entity-type="item['@type']" 
+          :allowed="allowedProperties" 
+          :inner="true" 
+          :path="getPath">
+        </field-adder>
 
         <i class="ItemLocal-action fa fa-trash-o icon icon--sm" 
           v-if="!isLocked" 
@@ -430,6 +430,11 @@ export default {
     top: 0;
     right: 0;
     position: absolute;
+
+    @media (max-width: @screen-sm) {
+      display: flex;
+      align-items: baseline;
+    }
   }
 
   &-action {

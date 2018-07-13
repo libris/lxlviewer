@@ -375,7 +375,7 @@ export default {
     @mouseover="handleMouseEnter()" 
     @mouseleave="handleMouseLeave()">
 
-    <div class="Field-labelWrapper" v-if="!isInner">
+    <div class="Field-labelWrapper" v-if="!isInner" :class="{'is-editing': inspector.status.editing}">
       <div v-if="this.inspector.status.editing" class="Field-actions">
         <div class="Field-action Field-remove" 
           v-show="!locked" 
@@ -641,11 +641,20 @@ export default {
   }
 
   &-labelWrapper {
-    flex: 0 0 270px;
+    flex: 0 0 225px;
     display: flex;
     justify-content: flex-end;
-    padding: 1em 0.5em;
-    flex-direction: row;
+    padding: 15px 20px 0 20px;
+    flex-direction: row-reverse;
+
+    &.is-editing {
+      flex-basis: 300px;
+    }
+
+    @media (min-width: @screen-sm) {
+      padding: 15px 20px;
+      flex-direction: row;
+    }
   }
 
   &-label {
@@ -728,6 +737,7 @@ export default {
   &-comment {
     width: 20px;
     position: relative;
+    margin-right: 5px;
 
     &:hover {
       .Field-commentText {
@@ -764,6 +774,12 @@ export default {
   &-actions {
     display: flex;
     flex-grow: 1;
+    justify-content: initial;
+  
+    @media (max-width: @screen-sm) {
+      justify-content: flex-start;
+      flex-direction: row-reverse;
+    }
 
     .disabled {
       visibility: hidden;
@@ -777,9 +793,15 @@ export default {
       display: inline-block;
       font-size: 16px;
       font-size: 1.6rem;
-      margin: 0 0 0 5px;
-      line-height: 1.4;      
+      margin: 0 0 0 10px;
+      line-height: 1.4;
+      
+      @media (max-width: @screen-sm) {
+        display: flex;
+        justify-content: flex-end;
+        flex-direction: row;
       }
+    }
   }
 
   &-action {
@@ -789,6 +811,11 @@ export default {
   
   &.placeholder {
     width: 20px;
+    display: none;
+
+    @media (min-width: @screen-sm) {
+      display: block;
+    }
   }
 
     &:hover {
