@@ -439,6 +439,15 @@ export default {
   &-innerLabel {
     display: none;
   }
+  
+  &-innerIcon {
+    .ItemSibling-action & {
+      color: @icon-primary;
+      &:hover {
+        color: @icon-primary--hover;
+      }
+    }
+  }
 }
 
 .FieldAdderPanel {

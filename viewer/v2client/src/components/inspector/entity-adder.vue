@@ -642,6 +642,7 @@ export default {
     position: absolute;
     left: 20px;
     z-index: 1;
+    max-width: 150px;
   }
 
   &-controls {

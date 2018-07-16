@@ -402,7 +402,7 @@ export default {
   }
 
   &-label {
-    margin-right: 40px;
+    margin-right: 80px;
   }
 
   &-type {
