@@ -4,6 +4,7 @@ import * as httpUtil from '../../utils/http';
 import * as RecordUtil from '../../utils/record';
 import ResultList from './result-list';
 import PanelComponent from '@/components/shared/panel-component';
+import TooltipComponent from '../shared/tooltip-component';
 import SearchResult from './search-result';
 import { mapGetters } from 'vuex';
 
@@ -27,6 +28,7 @@ export default {
         list: [],
         debug: '',
       },
+    removeHover: false,
     };
   },
   computed: {
@@ -187,6 +189,7 @@ export default {
     'result-list': ResultList,
     'search-result': SearchResult,
     'panel-component': PanelComponent,
+    'tooltip-component': TooltipComponent,
   },
   mounted() {
     this.remoteQuery = this.remoteSearch.q;
@@ -198,16 +201,30 @@ export default {
 
 <template>
   <div class="RemoteDatabases" v-show="remoteDatabases.state == 'complete'">
-    <div class="RemoteDatabases-activeInfo">
-      <p>
-        <span>{{'Databases' | translatePhrase}}:</span>
-        <span class="RemoteDatabases-chip active" v-for="(db, index) in activeDatabases" 
-          :key="index" v-on:click="removeDatabase(db)">
-          {{db}}
-          <i class="fa fa-times-circle chip-action"></i>
-          </span>
-        <span class="RemoteDatabases-chip" v-on:click="showList = true">{{'Add' | translatePhrase}} <i class="fa fa-plus-circle"></i></span>
-      </p>
+    <p class="RemoteDatabases-activeInfo">{{'Databases' | translatePhrase}}:</p>
+    <div class="RemoteDatabases-activeContainer">
+      <div class="RemoteDatabases-chip chip" v-for="(db, index) in activeDatabases" :key="index">
+        <span class="chip-label">{{db}}</span>
+        <div class="chip-removeButton icon icon--sm">
+          <i class="fa fa-times-circle"  v-on:click="removeDatabase(db)"></i>
+        </div>
+      </div>
+      <!-- <span class="RemoteDatabases-chip" v-on:click="showList = true">{{'Add' | translatePhrase}} <i class="fa fa-plus-circle"></i></span> -->
+      <div class="RemoteDatabases-add" 
+          :class="{ 'is-open': showList }"
+          v-on:click="showList = !showList"
+          @mouseover="removeHover = true" 
+          @mouseout="removeHover = false">
+        <tooltip-component 
+          v-if="!showList"
+          class="RemoteDatabases-tooltip"
+          :show-tooltip="removeHover" 
+          tooltip-text="Add"
+          position="top" 
+          translation="translatePhrase">
+        </tooltip-component>
+        <i class="fa fa-plus-circle icon icon--primary icon--lg"></i>
+      </div>
     </div>
     <panel-component
       v-if="showList"
@@ -282,19 +299,30 @@ export default {
 
 .RemoteDatabases {
 
+  &-activeInfo {
+    font-size: 18px;
+    font-size: 1.8rem;
+  }
+
+  &-activeContainer {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
   &-chip {
-    border: 1px solid @gray;
-    color: @gray;
-    border-radius: 1em;
-    font-weight: 600;
-    &.active {
-      color: @brand-primary;
-      border-color: @brand-primary;
+  }
+
+  &-add {
+    margin-left: 10px;
+
+    &.is-open i {
+      color: @icon-primary--hover;
     }
-    margin: 0.25em;
-    display: inline-block;
-    padding: 0 0.5em 0 0.5em;
-    cursor: pointer;
+  }
+
+  &-tooltip {
+    bottom: 10px;
   }
 
   &-list {
@@ -320,25 +348,27 @@ export default {
 
   &-listItem {
     background-color: @list-item-bg-even;
-    &:nth-child(odd) {
-      background-color: @list-item-bg-odd;
-    }
-    &:hover {
-      background-color: @list-item-bg-hover;
-    }
-    cursor: pointer;
     padding: 0.2em;
     width: 100%;
     display: flex;
+    transition: background-color 0.2s ease;
+    cursor: pointer;
 
-    &.is-active {
-      
+    &:nth-child(odd) {
+      background-color: @list-item-bg-odd;
+    }
+    &:hover:not(.is-disabled) {
+      background-color: @list-item-bg-hover;
+    }
+
+    &.is-active {      
     }
 
     &.is-disabled {
       cursor: default;
     }
   }
+  
   &-dbInfo {
     display: flex;
     flex-basis: 50%;

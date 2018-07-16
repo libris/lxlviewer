@@ -3,7 +3,7 @@
     <global-message />
     <navbar-component />
     <main class="MainContent" :class="{ 'container': !status.panelOpen, 'container-fluid': status.panelOpen }" role="main">
-      <div v-if="!resourcesLoaded" class="text-center">
+      <div v-if="!resourcesLoaded" class="text-center MainContent-spinner">
         <vue-simple-spinner size="large" :message="'Loading application' | translatePhrase"></vue-simple-spinner>
       </div>
       <transition name="fade">
@@ -103,6 +103,10 @@ export default {
   &.container-fluid {
     margin-right: 0px;
     margin-left: 0px;
+  }
+
+  &-spinner {
+    margin-top: 2em;
   }
 
   @media screen and (max-width: @screen-lg-min){

@@ -110,18 +110,18 @@ export default {
 </script>
 
 <template>
-  <div class="ItemEntity-container" 
-    @mouseleave="showCardInfo=false">
-    <div class="ItemEntity" 
+  <div class="ItemEntity-container" >
+    <div class="ItemEntity chip" 
       tabindex="0"
       v-if="!expanded" 
       :class="{ 'is-locked': isLocked, 'is-highlighted': showCardInfo, 'is-newlyAdded': isNewlyAdded}" 
       @keyup.enter="showCardInfo=true"
-      @mouseenter="showCardInfo=true">
-      <span class="ItemEntity-label">
+      @mouseenter="showCardInfo=true"
+      @mouseleave="showCardInfo=false">
+      <span class="ItemEntity-label chip-label">
         <span v-if="!expanded">{{getItemLabel}}</span>
         <span class="placeholder"></span></span>
-      <div class="ItemEntity-removeButton icon icon--sm" v-if="!isLocked">
+      <div class="ItemEntity-removeButton chip-removeButton icon icon--sm" v-if="!isLocked">
         <i class="fa fa-times-circle" 
           v-if="!isLocked" 
           v-on:click="removeThis(true)" 
@@ -151,19 +151,9 @@ export default {
 @linked-color: #daefec;
 
 .ItemEntity {
-  display: inline-block;
-  background-color: @instance-chip-background;
-  border: 1px solid @instance-chip-color;
-  color: @instance-chip-color;
-  border-radius: 2em;
-  overflow: hidden;
-  line-height: 1.6;
-  padding: 3px 5px 3px 10px;
-  transition: .3s ease;
 
   &-container {
     display: flex;
-    margin: 2px 5px 2px 0px;
     position: relative;
   }
 
@@ -178,12 +168,6 @@ export default {
   }
 
   &-removeButton {
-    display: inline-block;
-    width: 1.2em;
-    height: 1.2em;
-    line-height: 1.2em;
-    border-radius: 1em;
-    text-align: center;
   }
 
   &.expanded {
@@ -201,8 +185,6 @@ export default {
     }
   }
   &-label {
-    font-weight: 600;
-    cursor: default;
   }
   
   @media print {

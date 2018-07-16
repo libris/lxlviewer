@@ -100,9 +100,9 @@ export default {
       <div class="PanelComponent-headerContainer">
         <div class="PanelComponent-header">
         <slot name="panel-header">
-          <header>
+          <h4>
             {{ translatedTitle }}
-          </header>
+          </h4>
           <span class="PanelComponent-windowControl">
             <i @click="toggleFullView" v-show="user.settings.forceFullViewPanel" class="fullview-toggle-button fa fa-minus-square"></i>
             <i @click="toggleFullView" v-show="!user.settings.forceFullViewPanel" class="fullview-toggle-button fa fa-plus-square"></i>
@@ -172,18 +172,21 @@ export default {
       height: 100vh;
     }
   }
+
   &-headerContainer {
-    .is-danger & {
-      background-color: @brand-danger;
-      color: @neutral-color;
-    }
     display: flex;
     flex-wrap: nowrap;
     flex-direction: column;
     background-color: @panel-header-bg;
-    padding: 0.5em;
     border: solid #ccc;
     border-width: 0px 0px 1px 0px;
+    padding: 20px 15px;
+
+    .is-danger & {
+      background-color: @brand-danger;
+      color: @neutral-color;
+    }
+
     header {
       display: inline-block;
       font-weight: bold;

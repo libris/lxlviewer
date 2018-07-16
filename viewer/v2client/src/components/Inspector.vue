@@ -391,7 +391,7 @@ export default {
 </script>
 <template>
   <div class="row">
-    <div v-if="!postLoaded && !loadFailure" class="text-center">
+    <div v-if="!postLoaded && !loadFailure" class="Inspector-spinner text-center">
       <vue-simple-spinner size="large" :message="'Loading document' | translatePhrase"></vue-simple-spinner>
     </div>
     <div class="Inspector col-sm-12" :class="{'col-md-11': !status.panelOpen, 'col-md-7': status.panelOpen }" ref="Inspector">
@@ -471,6 +471,10 @@ export default {
 
 .Inspector {
   &-title {
+  }
+
+  &-spinner {
+    margin-top: 2em;
   }
 
   &-admin {

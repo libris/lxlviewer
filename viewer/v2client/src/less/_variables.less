@@ -45,20 +45,6 @@
 @color-headers: @brand-primary;
 @color-headers-text: #fff;
 
-// --------- MODAL/PANEL VARIABLES --------
-@list-item-bg-even: #FAFAFA;
-@list-item-bg-odd: #FFFFFF;
-@list-item-bg-hover: #E0E6E9;
-@panel-header-bg: #FAFAFA;
-
-// --------- EDITOR SPECIFIC --------
-
-// Variables
-// @chipColor: @gray-lighter;
-// @chipColorLinked: rgb(131, 197, 191);
-// @chipColorLinked: #b2d2cf;
-// @chipTextColor: #000000;
-// @chipTextColorLinked: #000000;
 
 // ----------- VARIABLES ------------
 
@@ -87,7 +73,6 @@
 
 // - Color choices
 @brand-id: #547e91;
-@bg-site: #F9F9F9;
 @test-color: pink;
 @neutral-color: #fff;
 @bg-img: none;
@@ -147,6 +132,12 @@
 @icon-md: 20px;
 @icon-lg: 30px;
 
+// --------- CHIP -------------------
+
+@chip-color: @link-color;
+@chip-color-hover: @link-hover-color;
+@chip-background: transparent;
+
 // --------- COMPONENT COLORS -------
 @color-local: @white;
 
@@ -156,19 +147,9 @@
 @form-border: @gray-lighter;
 @form-field-bullet: @gray-light;
 
-@instance-chip-background: transparent;
-@instance-chip-color: @link-color;
-@instance-chip-color-hover: @link-hover-color;
-
 @remove: @danger;
 @add: @sec;
 
-// @work-chip-background: #5d9c73;
-// @work-chip-text: lighten(@work-chip-background, 80%);
-// @work-background: #3c9059;
-// @work-text: lighten(@work-background, 80%);
-// @work-hover: lighten(@work-background, 5%);
-// @work-background-dark: darken(@work-background, 5%);
 @node-bg: #fafafa;
 
 @highlight-color: @brand-primary;
@@ -177,6 +158,13 @@
 @col-label: 200px;
 @col-value: 620px;
 @col-action: 250px;
+
+// --------- MODAL/PANEL VARIABLES --------
+
+@list-item-bg-even: @bg-site;
+@list-item-bg-odd: @white;
+@list-item-bg-hover: @gray-lighter;
+@panel-header-bg: @bg-site;
 
 
 // ----------- BASE STYLES ----------
