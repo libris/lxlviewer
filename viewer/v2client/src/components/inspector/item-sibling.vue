@@ -400,6 +400,7 @@ export default {
   position: relative;
   flex: 1 100%;
   transition: background-color .2s ease;
+  border-radius: 4px;
 
   &-heading {
     display: block;

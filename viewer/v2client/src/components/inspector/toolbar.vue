@@ -352,19 +352,19 @@ export default {
         <li>
           <a class="Toolbar-menuLink" @click="formControl('expand-item')">
           <i class="fa fa-fw fa-expand" aria-hidden="true"></i>
-          {{"Expand all" | translatePhrase}}{{ getKeybindingText('expand-item', ) ? ` (${getKeybindingText('expand-item')})` : ''}}
+          {{"Expand all" | translatePhrase}}{{ getKeybindingText('expand-item' ) ? ` (${getKeybindingText('expand-item')})` : ''}}
           </a>
         </li>
         <li>
           <a class="Toolbar-menuLink"  @click="formControl('collapse-item')">
           <i class="fa fa-fw fa-compress" aria-hidden="true"></i>
-          {{"Collapse all" | translatePhrase}}{{ getKeybindingText('collapse-item', ) ? ` (${getKeybindingText('collapse-item')})` : ''}}
+          {{"Collapse all" | translatePhrase}}{{ getKeybindingText('collapse-item' ) ? ` (${getKeybindingText('collapse-item')})` : ''}}
           </a>
         </li>
         <li v-if="user.isLoggedIn && !inspector.status.editing && !isSubClassOf('Item')">
           <a class="Toolbar-menuLink"  @click="handleCopy">
           <i class="fa fa-fw fa-files-o"></i>
-          {{ "Make copy" | translatePhrase }}{{ getKeybindingText('duplicate-item', ) ? ` (${getKeybindingText('duplicate-item')})` : ''}}
+          {{ "Make copy" | translatePhrase }}{{ getKeybindingText('duplicate-item' ) ? ` (${getKeybindingText('duplicate-item')})` : ''}}
           </a>
         </li>
         <li v-if="isSubClassOf('Instance') && hasSigel && !inspector.status.editing && user.email !== ''">
@@ -383,7 +383,7 @@ export default {
             v-on:close-marc="closeMarc(), hideToolsMenu()"></marc-preview>
           <a class="Toolbar-menuLink" @click="openMarc" >
           <i class="fa fa-fw fa-eye" aria-hidden="true"></i>
-          {{"Preview MARC21" | translatePhrase}} {{ getKeybindingText('preview-marc', ) ? ` (${getKeybindingText('preview-marc')})` : ''}}
+          {{"Preview MARC21" | translatePhrase}} {{ getKeybindingText('preview-marc' ) ? ` (${getKeybindingText('preview-marc')})` : ''}}
           </a>
         </li>
         <li class="remove-option" v-show="user.isLoggedIn && !status.isNew">
@@ -395,7 +395,7 @@ export default {
       </ul>
     </div>
     
-    <field-adder class="FieldAdder--inToolbar"
+    <field-adder class="FieldAdder--inToolbar Toolbar-btn"
       v-if="inspector.status.editing" 
       :entity-type="inspector.data[inspector.status.focus]['@type']" 
       :inner="false" 
@@ -453,7 +453,7 @@ export default {
           translation="translatePhrase"></tooltip-component>
       </i>
     </button>
-    <button class="Toolbar-btn btn btn-success" id="saveButton" 
+    <button class="Toolbar-btn btn btn-primary" id="saveButton" 
       @click="postControl('save-record-done')"
       v-if="inspector.status.editing"
       @mouseover="showClarifySave = true"
@@ -479,12 +479,12 @@ export default {
       </i>
     </button>
 
-    <button class="Toolbar-btn btn btn-info edit-button" id="editButton" 
+    <button class="Toolbar-btn btn btn-primary edit-button" id="editButton" 
       v-on:click="edit()" 
       v-show="user.isLoggedIn && !inspector.status.editing && canEditThisType" 
       @mouseover="showEdit = true" 
       @mouseout="showEdit = false">
-      <i class="fa fa-fw fa-pencil" v-show="!inspector.status.opening">
+      <i class="fa fa-fw fa-pencil-square-o" v-show="!inspector.status.opening">
         <tooltip-component 
         class="Toolbar-tooltipContainer"
         tooltip-text="Edit" 
@@ -541,7 +541,7 @@ export default {
     border-radius: 100%;
     font-size: 20px;
     font-size: 2rem;
-    margin: 2px 0;
+    margin: 4px 0;
     width: 50px;
     height: 50px;
     line-height: 1;
