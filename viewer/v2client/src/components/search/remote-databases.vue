@@ -209,7 +209,8 @@ export default {
           <i class="fa fa-times-circle"  v-on:click="removeDatabase(db)"></i>
         </div>
       </div>
-      <!-- <span class="RemoteDatabases-chip" v-on:click="showList = true">{{'Add' | translatePhrase}} <i class="fa fa-plus-circle"></i></span> -->
+      <!-- <span class="RemoteDatabases-chip" v-on:click="showList = true">
+        {{'Add' | translatePhrase}} <i class="fa fa-plus-circle"></i></span> -->
       <div class="RemoteDatabases-add" 
           :class="{ 'is-open': showList }"
           v-on:click="showList = !showList"
@@ -232,14 +233,13 @@ export default {
       @close="showList = false"
     >
       <template slot="panel-header-extra">
-        <div class="RemoteDatabases-listFilter">
-          <label>
-            {{ "Filter by" | translatePhrase }} 
-          </label>
+        <div class="RemoteDatabases-listFilter form-group panel">
           <input 
-            class="RemoteDatabases-listFilterInput mousetrap" 
+            class="RemoteDatabases-listFilterInput customInput form-control mousetrap" 
             type="text" 
-            v-model="filterKey">
+            v-model="filterKey"
+            :placeholder="'Filter by' | translatePhrase "
+            >
         </div>
       </template>
       <template slot="panel-body">
@@ -252,18 +252,26 @@ export default {
           @keyup.enter="toggleDatabase(db.database)"
           :key="index">
           <div class="RemoteDatabases-addControl">
-            <i v-show="db.disabled" class="fa fa-fw fa-2x fa-ban"></i>
-            <i v-show="!db.active && !db.disabled" class="fa fa-fw fa-2x fa-plus-circle"></i>
-            <i v-show="db.active" class="fa fa-fw fa-check fa-2x"></i>
+            <i v-show="db.disabled" class="fa fa-ban icon icon--lg is-disabled"></i>
+            <i v-show="!db.active && !db.disabled" class="fa fa-plus-circle icon icon--lg icon--primary"></i>
+            <i v-show="db.active" class="fa fa-check-circle icon icon--lg"></i>
           </div>
           <div class="RemoteDatabases-dbInfo">
-            <span class="RemoteDatabases-dbLabel">{{db.database}} <span v-show="db.disabled" class="RemoteDatabases-dbUnavailable">({{'Unavailable' | translatePhrase}})</span></span>
+            <span class="RemoteDatabases-dbLabel">
+              {{db.database}} 
+              <span v-show="db.disabled" class="RemoteDatabases-dbUnavailable">
+                ({{'Unavailable' | translatePhrase}})
+              </span>
+            </span>
             <em class="RemoteDatabases-dbName" 
               v-show="db.database !== db.name" 
               :title="db.name">{{db.name}}</em>
           </div>
           <div class="RemoteDatabases-dbExtraInfo">
-            <i v-show="db.comment" :title="db.comment" class="RemoteDatabases-dbCommentTrigger fa fa-info-circle fa-fw">
+            <i 
+              v-show="db.comment" 
+              :title="db.comment"
+              class="RemoteDatabases-dbCommentTrigger fa fa-info-circle fa-fw icon icon--sm">
               <!-- <div class="RemoteDatabases-dbComment">
                 
               </div> -->
@@ -291,7 +299,8 @@ export default {
   <p v-if="remoteResult.state === 'loading'">
     <i class="fa fa-circle-o-notch fa-spin"></i> {{"Searching" | translatePhrase}}...
   </p> -->
-  <!-- <search-result :result="convertedItems" :import-data="importData" v-if="convertedItems.totalItems > -1 || status.resultList.loading"></search-result> -->
+  <!-- <search-result :result="convertedItems" :import-data="importData" 
+  v-if="convertedItems.totalItems > -1 || status.resultList.loading"></search-result> -->
 </div>
 </template>
 
@@ -347,10 +356,11 @@ export default {
   }
 
   &-listItem {
-    background-color: @list-item-bg-even;
-    padding: 0.2em;
-    width: 100%;
     display: flex;
+    width: 100%;
+    height: 70px;
+    padding: 10px 15px;
+    background-color: @list-item-bg-even;
     transition: background-color 0.2s ease;
     cursor: pointer;
 
@@ -365,10 +375,11 @@ export default {
     }
 
     &.is-disabled {
+      color: @gray;
       cursor: default;
     }
   }
-  
+
   &-dbInfo {
     display: flex;
     flex-basis: 50%;
@@ -376,18 +387,13 @@ export default {
     overflow: hidden;
     flex-direction: column;
     justify-content: center;
+    padding: 0 15px;
+    font-weight: 600;
   }
+
   &-dbExtraInfo {
     display: flex;
-    flex-direction: row;
     align-items: center;
-    padding: 1em;
-    i {
-      color: @gray;
-      &:hover {
-        color: @brand-primary;
-      }
-    }
   }
   // &-dbCommentTrigger {
   //   div {
@@ -413,17 +419,12 @@ export default {
   &-addControl {
     display: flex;
     align-items: center;
-    .fa-ban {
-      color: @brand-danger;
-    }
-    .fa-plus-circle {
-      color: @brand-primary;
-    }
+    width: 30px;
   }
 
   &-dbLabel {
-    display: block;
-    font-weight: 700;
+    // display: block;
+    // font-weight: 700;
   }
 
   &-dbName {

@@ -305,7 +305,7 @@ export default {
             {{"Search" | translatePhrase}}
           </label>
           <div class="SearchBar-inputWrap panel" id="searchFieldContainer">
-            <div class="SearchBar-input form-control">
+            <div class="SearchBar-input customInput form-control">
               <div class="SearchBar-qsmart js-qsmartInput" aria-labelledby="searchlabel">
                 <input name="q"
                   aria-labelledby="searchlabel"
@@ -342,7 +342,7 @@ export default {
       <div class="SearchBar-formContent is-remoteSearch" id="remotePanel" 
         v-if="searchPerimeter === 'remote'">
         <div class="SearchBar-formGroup form-group panel">
-          <input type="text" class="SearchBar-input form-control" placeholder="ISBN eller valfria sökord" 
+          <input type="text" class="SearchBar-input customInput form-control" placeholder="ISBN eller valfria sökord" 
             v-model="remoteSearch.q">
           <button class="SearchBar-submit btn btn-primary icon icon--md"
             :aria-label="'Search' | translatePhrase"
@@ -440,26 +440,20 @@ export default {
   }
 
   &-input {
-    font-size: 20px;
-    font-size: 2rem;
-    line-height: 1.2;
-    height: 42px;
-    min-width: 75%;
-    flex-grow: 1;
-    display: flex;
-    justify-content: space-between;
+    // font-size: 20px;
+    // font-size: 2rem;
+    // line-height: 1.2;
+    // height: 42px;
+    // min-width: 75%;
+    // flex-grow: 1;
+    // display: flex;
+    // justify-content: space-between;
     border-width: 1px 0 1px 1px;
-    border-color: @gray-light;
+    // border-color: @gray-light;
     border-radius: 4px 0 0 4px;
 
     .is-remoteSearch & {
       width: 100%;
-    }
-
-    &:focus {
-      border: 1px solid @brand-primary;
-      outline: 0;
-      box-shadow: none;
     }
   }
 

@@ -99,19 +99,22 @@ export default {
     <div class="PanelComponent-container" :class="{'full-view': user.settings.forceFullViewPanel }">
       <div class="PanelComponent-headerContainer">
         <div class="PanelComponent-header">
-        <slot name="panel-header">
-          <h4>
-            {{ translatedTitle }}
-          </h4>
-          <span class="PanelComponent-windowControl">
-            <i @click="toggleFullView" v-show="user.settings.forceFullViewPanel" class="fullview-toggle-button fa fa-minus-square"></i>
-            <i @click="toggleFullView" v-show="!user.settings.forceFullViewPanel" class="fullview-toggle-button fa fa-plus-square"></i>
-            <i @click="close" class="fa fa-close"></i>
-          </span>
-        </slot>
+          <slot name="panel-header">
+            <h4 class="PanelComponent-title">{{ translatedTitle }}</h4>
+            <span class="PanelComponent-windowControl">
+              <i 
+                @click="toggleFullView" 
+                v-show="user.settings.forceFullViewPanel" 
+                class="fullview-toggle-button fa fa-window-minimize icon icon--md"></i>
+              <i 
+                @click="toggleFullView" 
+                v-show="!user.settings.forceFullViewPanel" 
+                class="fullview-toggle-button fa fa-window-maximize icon icon--md"></i>
+              <i @click="close" class="fa fa-close icon icon--md"></i>
+            </span>
+          </slot>
         </div>
-        <slot name="panel-header-extra">
-        </slot>
+        <slot name="panel-header-extra" />
       </div>
       <div class="PanelComponent-body">
         <slot name="panel-body">
@@ -126,10 +129,8 @@ export default {
 
 .PanelComponent {
   cursor: auto;
+
   &-backdrop {
-    .is-fadedIn & {
-      opacity: 1;
-    }
     opacity: 0;
     transition: opacity 0.5s ease;
     z-index: @backdrop-z;
@@ -138,33 +139,37 @@ export default {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.25);
-  }
-  &-container {
+    // background-color: rgba(0, 0, 0, 0.25);
+
     .is-fadedIn & {
       opacity: 1;
     }
+  }
+
+  &-container {
     opacity: 0;
     transition: opacity 0.5s ease;
     z-index: @modal-z;
-    box-shadow: 0px 5px 15px 0px rgba(0,0,0,0.4);
+    box-shadow: @shadow-card-elevated;
     position: fixed;
     width: 35%;
     top: 0;
     left: 65%;
     height: 100vh;
-    text-align: left;
-    border: #cccccc;
-    border-width: 0px 0px 0px 1px;
+    overflow: hidden;
+
+    .is-fadedIn & {
+      opacity: 1;
+    }
+
     .is-danger & {
       border-color: darken(@brand-danger, 5%);
     }
-    background-color: @neutral-color;
-    overflow: hidden;
-    line-height: 1.6;
+
     @media screen and (max-width: @screen-lg-min) {
       .full-view();
     }
+
     &.full-view {
       top: 0px;
       left: 0px;
@@ -178,39 +183,39 @@ export default {
     flex-wrap: nowrap;
     flex-direction: column;
     background-color: @panel-header-bg;
-    border: solid #ccc;
-    border-width: 0px 0px 1px 0px;
-    padding: 20px 15px;
+    border-bottom: 1px solid @gray-light;
+    padding: 20px 15px 0 15px;
 
     .is-danger & {
       background-color: @brand-danger;
       color: @neutral-color;
     }
-
-    header {
-      display: inline-block;
-      font-weight: bold;
-      text-transform: uppercase;
-    }
   }
+
   &-header {
     display: flex;
     justify-content: space-between;
+    margin-bottom: 10px;
   }
+
+  &-title {
+    font-size: 18px;
+    font-size: 1.8rem;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+
   &-body {
     overflow-y: auto;
     height: 100%;
     z-index: 5;
   }
+
   &-windowControl {
-    i {
-      color: @gray;
-      margin: 0 0 0 0.25em;
+    > * {
+      margin-right: 5px;
     }
-    i:hover {
-      cursor: pointer;
-      color: @brand-primary;
-    }
+
     .fullview-toggle-button {
       @media screen and (max-width: @screen-lg-min) {
         display: none;
@@ -218,6 +223,8 @@ export default {
     }
   }
 }
+
+
 
 
 </style>
