@@ -209,6 +209,7 @@ export default {
     overflow-y: auto;
     height: 100%;
     z-index: 5;
+    background-color: @white;
   }
 
   &-windowControl {

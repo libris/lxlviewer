@@ -7,6 +7,7 @@ import PanelComponent from '@/components/shared/panel-component';
 import TooltipComponent from '../shared/tooltip-component';
 import SearchResult from './search-result';
 import { mapGetters } from 'vuex';
+import VueSimpleSpinner from 'vue-simple-spinner';
 
 export default {
   name: 'remote-databases',
@@ -64,6 +65,9 @@ export default {
         }
       }
       return filtered;
+    },
+    numOfFilteredDatabases() {
+      return Object.keys(this.filteredDatabases).length;
     },
     q() {
       return this.remoteSearch.q;
@@ -190,6 +194,7 @@ export default {
     'search-result': SearchResult,
     'panel-component': PanelComponent,
     'tooltip-component': TooltipComponent,
+    'vue-simple-spinner': VueSimpleSpinner,
   },
   mounted() {
     this.remoteQuery = this.remoteSearch.q;
@@ -203,6 +208,7 @@ export default {
   <div class="RemoteDatabases" v-show="remoteDatabases.state == 'complete'">
     <p class="RemoteDatabases-activeInfo">{{'Databases' | translatePhrase}}:</p>
     <div class="RemoteDatabases-activeContainer">
+      <span v-if="activeDatabases.length === 0" class="RemoteDatabases-activeInfo no-sources">{{'No sources chosen' | translatePhrase}}</span> 
       <div class="RemoteDatabases-chip chip" v-for="(db, index) in activeDatabases" :key="index">
         <span class="chip-label">{{db}}</span>
         <div class="chip-removeButton icon icon--sm">
@@ -243,54 +249,60 @@ export default {
         </div>
       </template>
       <template slot="panel-body">
-      <ul class="RemoteDatabases-list" aria-labelledby="remoteDbListLabel"
-        v-show="remoteDatabases.state == 'complete' && showList">
-        <li class="RemoteDatabases-listItem" tabindex="0"
-          :class="{'is-active': db.active, 'is-disabled': db.disabled }" 
-          v-for="(db, index) in filteredDatabases" 
-          @click="toggleDatabase(db.database)"
-          @keyup.enter="toggleDatabase(db.database)"
-          :key="index">
-          <div class="RemoteDatabases-addControl">
-            <i v-show="db.disabled" class="fa fa-ban icon icon--lg is-disabled"></i>
-            <i v-show="!db.active && !db.disabled" class="fa fa-plus-circle icon icon--lg icon--primary"></i>
-            <i v-show="db.active" class="fa fa-check-circle icon icon--lg"></i>
-          </div>
-          <div class="RemoteDatabases-dbInfo">
-            <span class="RemoteDatabases-dbLabel">
-              {{db.database}} 
-              <span v-show="db.disabled" class="RemoteDatabases-dbUnavailable">
-                ({{'Unavailable' | translatePhrase}})
+        <ul class="RemoteDatabases-list" aria-labelledby="remoteDbListLabel"
+          v-show="remoteDatabases.state == 'complete' && showList">
+          <li class="RemoteDatabases-listItem" tabindex="0"
+            :class="{'is-active': db.active, 'is-disabled': db.disabled }" 
+            v-for="(db, index) in filteredDatabases" 
+            @click="toggleDatabase(db.database)"
+            @keyup.enter="toggleDatabase(db.database)"
+            :key="index">
+            <div class="RemoteDatabases-addControl">
+              <i v-show="db.disabled" class="fa fa-ban icon icon--lg is-disabled"></i>
+              <i v-show="!db.active && !db.disabled" class="fa fa-plus-circle icon icon--lg icon--primary"></i>
+              <i v-show="db.active" class="fa fa-check-circle icon icon--lg"></i>
+            </div>
+            <div class="RemoteDatabases-dbInfo">
+              <span class="RemoteDatabases-dbLabel">
+                {{db.database}} 
+                <span v-show="db.disabled" class="RemoteDatabases-dbUnavailable">
+                  ({{'unavailable' | translatePhrase}})
+                </span>
               </span>
-            </span>
-            <em class="RemoteDatabases-dbName" 
-              v-show="db.database !== db.name" 
-              :title="db.name">{{db.name}}</em>
-          </div>
-          <div class="RemoteDatabases-dbExtraInfo">
-            <i 
-              v-show="db.comment" 
-              :title="db.comment"
-              class="RemoteDatabases-dbCommentTrigger fa fa-info-circle fa-fw icon icon--sm">
-              <!-- <div class="RemoteDatabases-dbComment">
-                
-              </div> -->
-            </i>
-            <i v-show="db.about" class="fa fa-question-circle fa-fw"></i>
-          </div>
-        </li>
-      </ul>
-      <p class="RemoteDatabases-statusText" v-show="remoteDatabases.state == 'loading'" >
-        <i class="fa fa-circle-o-notch fa-spin"></i> 
-        {{"Loading external databases" | translatePhrase}}...
-      </p>
-      <p class="RemoteDatabases-statusText" v-show="remoteDatabases.state == 'error'">
-        <i class="fa fa-close"></i> 
-        {{"Did not find any external databases" | translatePhrase}}. 
-        <a href="" v-on:click.prevent="loadRemoteDatabases()">
-          {{"Try again" | translatePhrase}}
-        </a>
-      </p>
+              <span class="RemoteDatabases-dbName" 
+                v-show="db.database !== db.name" 
+                :title="db.name">{{db.name}}
+              </span>
+            </div>
+            <div class="RemoteDatabases-dbExtraInfo">
+              <i 
+                v-show="db.comment" 
+                :title="db.comment"
+                class="RemoteDatabases-dbCommentTrigger fa fa-info-circle fa-fw icon icon--sm">
+                <!-- <div class="RemoteDatabases-dbComment">
+                  
+                </div> -->
+              </i>
+              <i v-show="db.about" class="fa fa-question-circle fa-fw"></i>
+            </div>
+          </li>
+        </ul>
+        <div v-show="numOfFilteredDatabases === 0" class="RemoteDatabases-resultStatus">
+          <span>{{'No results' | translatePhrase}}</span>
+        </div>
+        <div v-show="remoteDatabases.state == 'loading'" class="RemoteDatabases-resultStatus">
+          <!-- <p class="RemoteDatabases-statusText">
+            <i class="fa fa-circle-o-notch fa-spin"></i> 
+            {{"Loading external databases" | translatePhrase}}...
+          </p> -->
+          <vue-simple-spinner size="large" :message="'Loading external databases' | translatePhrase"></vue-simple-spinner>
+        </div>
+        <div class="RemoteDatabases-resultStatus" v-show="remoteDatabases.state == 'error'">
+          <p class="RemoteDatabases-statusText">
+            {{"Did not find any external databases" | translatePhrase}}
+          </p>
+          <button class="btn btn-primary btn--sm" v-on:click.prevent="loadRemoteDatabases()">{{"Try again" | translatePhrase}}</button>
+        </div>
       </template>
     </panel-component>
   <!-- <p v-if="remoteResult.state === 'error'">
@@ -311,12 +323,17 @@ export default {
   &-activeInfo {
     font-size: 18px;
     font-size: 1.8rem;
+
+    &.no-sources {
+      color: @gray;
+    }
   }
 
   &-activeContainer {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
+    min-height: 35px;
   }
 
   &-chip {
@@ -358,7 +375,7 @@ export default {
   &-listItem {
     display: flex;
     width: 100%;
-    height: 70px;
+    height: 60px;
     padding: 10px 15px;
     background-color: @list-item-bg-even;
     transition: background-color 0.2s ease;
@@ -385,8 +402,9 @@ export default {
     flex-basis: 50%;
     flex-grow: 1;
     overflow: hidden;
-    flex-direction: column;
-    justify-content: center;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
     padding: 0 15px;
     font-weight: 600;
   }
@@ -423,20 +441,34 @@ export default {
   }
 
   &-dbLabel {
-    // display: block;
-    // font-weight: 700;
+    display: flex;
   }
 
   &-dbName {
     width: 100%;
+    font-weight: normal;
     display: inline-block;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;    
+    padding-left: 10px;
+    &::before {
+      content: ' – ';
+    }
+  }
+
+  &-dbUnavailable {
+    padding-left: 5px;
   }
 
   &-resultStatus {
     padding: 20px;
+    display: flex;    
+    flex-direction: column;
+    align-items: center;
+    font-size: 20px;
+    font-size: 2rem;
+    color: @grey;
   }
 }
 </style>
