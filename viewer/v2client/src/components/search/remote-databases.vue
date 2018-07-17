@@ -287,17 +287,13 @@ export default {
             </div>
           </li>
         </ul>
-        <div v-show="numOfFilteredDatabases === 0" class="RemoteDatabases-resultStatus">
+        <div v-show="numOfFilteredDatabases === 0" class="RemoteDatabases-searchStatus">
           <span>{{'No results' | translatePhrase}}</span>
         </div>
-        <div v-show="remoteDatabases.state == 'loading'" class="RemoteDatabases-resultStatus">
-          <!-- <p class="RemoteDatabases-statusText">
-            <i class="fa fa-circle-o-notch fa-spin"></i> 
-            {{"Loading external databases" | translatePhrase}}...
-          </p> -->
+        <div v-show="remoteDatabases.state == 'loading'" class="RemoteDatabases-searchStatus">
           <vue-simple-spinner size="large" :message="'Loading external databases' | translatePhrase"></vue-simple-spinner>
         </div>
-        <div class="RemoteDatabases-resultStatus" v-show="remoteDatabases.state == 'error'">
+        <div class="RemoteDatabases-searchStatus" v-show="remoteDatabases.state == 'error'">
           <p class="RemoteDatabases-statusText">
             {{"Did not find any external databases" | translatePhrase}}
           </p>
@@ -461,7 +457,7 @@ export default {
     padding-left: 5px;
   }
 
-  &-resultStatus {
+  &-searchStatus {
     padding: 20px;
     display: flex;    
     flex-direction: column;

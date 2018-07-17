@@ -18,6 +18,7 @@ import PanelComponent from '@/components/shared/panel-component.vue';
 import ModalPagination from '@/components/inspector/modal-pagination';
 import LensMixin from '../mixins/lens-mixin';
 import { mixin as clickaway } from 'vue-clickaway';
+import VueSimpleSpinner from 'vue-simple-spinner';
 
 export default {
   mixins: [clickaway, LensMixin],
@@ -68,6 +69,7 @@ export default {
     'tooltip-component': ToolTipComponent,
     'entity-search-list': EntitySearchList,
     'modal-pagination': ModalPagination,
+    'vue-simple-spinner': VueSimpleSpinner,
   },
   watch: {
     'inspector.event'(val, oldVal) {
@@ -520,46 +522,31 @@ export default {
       </select>
     </div>
 
-    <panel-component v-if="active" class="EntityAdder-panel EntityAdderPanel" :title="computedTitle" @close="hide">
-
-    <template slot="panel-body" class="ScrollContainer">
-      <div class="EntityAdder-panelBody">
+    <panel-component 
+      v-if="active" 
+      class="EntityAdder-panel EntityAdderPanel" 
+      :title="computedTitle" 
+      @close="hide">
+      <template slot="panel-header-extra">
+        <!-- <div class="EntityAdder-panelBody"> -->
         <div class="EntityAdder-controls">
           <div class="EntityAdder-controlForm">
             <!--<input class="entity-search-keyword-input" v-model="keyword" @input="setSearching()"></input>-->
-              <div class="EntityAdder-search">
-                <label for="entityKeywordInput" class="EntityAdder-searchLabel">{{ "Search" | translatePhrase }}</label>
-                <div class="EntityAdder-searchInputContainer">
-                  <input class="EntityAdder-searchInput entity-search-keyword-input"
-                    name="entityKeywordInput"
-                    v-model="keyword"
-                    autofocus />
-                  <select class="EntityAdder-searchSelect customSelect"
-                    v-model="currentSearchTypes" 
-                    @change="handleChange(keyword)">
-                    <option :value="getRange" selected>{{"All types" | translatePhrase}}</option>
-                    <option 
-                      v-for="(term, index) in getClassTree" 
-                      :key="`${term.id}-${index}`" 
-                      :value="term.id" 
-                      v-html="getFormattedSelectOption(term, settings, resources.vocab, resources.context)"></option>
-                  </select>
+            <div class="EntityAdder-create">
+              <div 
+                class="EntityAdder-info" 
+                v-if="getFullRange.length > 0" 
+                @mouseleave="rangeInfo = false">
+                <i class="fa fa-info-circle icon icon--sm" @mouseenter="rangeInfo = true"></i>
+                <div class="EntityAdder-infoText" v-if="rangeInfo">
+                  {{ "Allowed types" | translatePhrase }}:
+                  <br>
+                  <span v-for="(range, index) in getFullRange" :key="index" class="EntityAdder-infoRange">
+                    • {{range | labelByLang}}
+                  </span>
                 </div>
               </div>
-            <div class="EntityAdder-info" 
-              v-if="getFullRange.length > 0" 
-              @mouseleave="rangeInfo = false">
-              <i class="fa fa-info-circle" @mouseenter="rangeInfo = true"></i>
-              <div class="EntityAdder-infoText" v-if="rangeInfo">
-                {{ "Allowed types" | translatePhrase }}:
-                <br>
-                <span v-for="(range, index) in getFullRange" :key="index" class="EntityAdder-infoRange">
-                  - {{range | labelByLang}}
-                </span>
-              </div>
-            </div>
-            <div class="EntityAdder-create">
-              <button class="EntityAdder-createBtn"
+              <button class="EntityAdder-createBtn btn btn-primary btn--sm"
                 v-if="hasSingleRange" 
                 v-on:click="addEmpty(getFullRange[0])">{{ "Create local entity" | translatePhrase }}
               </button>
@@ -576,32 +563,64 @@ export default {
                   v-html="getFormattedSelectOption(term, settings, resources.vocab, resources.context)"></option>
               </select>
             </div>
+            <div class="EntityAdder-search">
+              <div class="EntityAdder-searchInputContainer form-group panel">
+                <input class="EntityAdder-searchInput customInput form-control entity-search-keyword-input"
+                  name="entityKeywordInput"
+                  v-model="keyword"
+                  autofocus
+                  :placeholder="'Search' | translatePhrase" />
+              </div>
+              <select class="EntityAdder-searchSelect customSelect"
+                  v-model="currentSearchTypes" 
+                  @change="handleChange(keyword)">
+                  <option :value="getRange" selected>{{"All types" | translatePhrase}}</option>
+                  <option 
+                    v-for="(term, index) in getClassTree" 
+                    :key="`${term.id}-${index}`" 
+                    :value="term.id" 
+                    v-html="getFormattedSelectOption(term, settings, resources.vocab, resources.context)">
+                  </option>
+              </select>
+            </div>
           </div>
         </div>
-        <div class="EntityAdder-searchStatus search-status"
-          v-if="!loading && keyword.length === 0" >{{ "Start writing to begin search" | translatePhrase }}...</div>
-        <div class="EntityAdder-searchStatus search-status"
-          v-if="loading">
-          {{ "Searching" | translatePhrase }}...
-          <br><i class="EntityAdder-searchStatusIcon fa fa-circle-o-notch fa-spin"></i>
-        </div>
-        <div class="EntityAdder-searchStatus search-status"
-          v-if="!loading && searchResult.length === 0 && keyword.length > 0 && searchMade">
-          {{ "No results" | translatePhrase }}...
-        </div>
-        <modal-pagination class="ScrollMarginTop" v-if="!loading && searchResult.length > 0" @go="go" :numberOfPages="numberOfPages" :currentPage="currentPage"></modal-pagination>
+        <modal-pagination 
+          class="ScrollMarginTop" 
+          v-if="!loading && searchResult.length > 0" 
+          @go="go" 
+          :numberOfPages="numberOfPages" 
+          :currentPage="currentPage">
+        </modal-pagination>
+      </template>
+      <template slot="panel-body">
         <entity-search-list class="EntityAdder-searchResult"
           v-if="!loading && keyword.length > 0" 
           :path="path" 
           :results="searchResult" 
           :disabled-ids="alreadyAdded"
-          @add-item="addLinkedItem"
-          ></entity-search-list>
-        <modal-pagination v-if="!loading && searchResult.length > 0" @go="go" :numberOfPages="numberOfPages" :currentPage="currentPage"></modal-pagination>
-      </div>
-    </template>
-  </panel-component>
-</div>
+          @add-item="addLinkedItem">
+        </entity-search-list>
+        <div class="EntityAdder-searchStatus" v-if="!loading && keyword.length === 0" >
+          {{ "Start writing to begin search" | translatePhrase }}...
+        </div>
+        <div v-if="loading" class="EntityAdder-searchStatus">
+          <vue-simple-spinner size="large" :message="'Searching' | translatePhrase"></vue-simple-spinner>
+        </div>
+        <div class="EntityAdder-searchStatus"
+          v-if="!loading && searchResult.length === 0 && keyword.length > 0 && searchMade">
+          {{ "No results" | translatePhrase }}
+        </div>
+        <modal-pagination 
+          v-if="!loading && searchResult.length > 0" 
+          @go="go" 
+          :numberOfPages="numberOfPages" 
+          :currentPage="currentPage">
+        </modal-pagination>
+      <!-- </div> -->
+      </template>
+    </panel-component>
+  </div>
 </template>
 
 <style lang="less">
@@ -646,16 +665,7 @@ export default {
   }
 
   &-controls {
-    border: solid #ccc;
-    border-top-width: medium;
-    border-right-width: medium;
-    border-bottom-width: medium;
-    border-left-width: medium;
-    border-width: 0 0 1px;
-    background-color: darken(@neutral-color, 4%);
     line-height: 1.2;
-    position: absolute;
-    padding: 10px;
     width: 100%;
     z-index: @modal-z;
   }
@@ -663,95 +673,101 @@ export default {
   &-controlForm {
     align-items: center;
     display: flex;
+    flex-direction: column;
   }
 
   &-searchLabel {
-    font-size: 14px;
-    font-size: 1.4rem;
-    font-weight: 700;
-    margin: 0;
+    // font-size: 14px;
+    // font-size: 1.4rem;
+    // font-weight: 700;
+    // margin: 0;
   }
 
   &-search {
-    flex: 60% 0 0;
+    width: 100%;
+    display: flex;
   }
 
   &-searchInputContainer {
-    font-size: 14px;
-    font-size: 1.4rem;
-    display: flex;
-    border: 2px solid #949a9e;
-    border-radius: .2em;
-    flex: 100% 0 0;
-    background: #fff;
-    padding: .5em; 
+    flex: 1;
+    // font-size: 14px;
+    // font-size: 1.4rem;
+    // display: flex;
+    // border: 2px solid #949a9e;
+    // border-radius: .2em;
+    // flex: 100% 0 0;
+    // background: #fff;
+    // padding: .5em; 
   }
 
   &-searchInput {
-    width: 100%;
-    border: none;
-    outline: none;
+    // width: 100%;
+    // border: none;
+    // outline: none;
   }
 
   &-searchSelect {
+    position: absolute;
+    right: 0;
+    margin: 7px 25px;
     max-width: 200px;
-    padding: .2em .5em;
-    margin: 0 .3em;
-    border-radius: .3em;
     border: 0;
     outline: none;
-    cursor: pointer;
   }
 
   &-info {
-    display: inline-block;
-    margin: 15px 0 0 10px;
-  }
-
-  &-infoRange {
-    display: block;
-    font-size: 14px;
-    font-size: 1.4rem;
+    // display: inline-block;
+    // margin: 15px 0 0 10px;
   }
 
   &-infoText {
     background-color: @white;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-    font-size: 12px;
-    font-size: 1.2rem;
-    padding: 5px;
+    border: 1px solid @gray-light;
+    border-radius: 4px;
+    box-shadow: @shadow-panel;
+    font-size: 14px;
+    font-size: 1.4rem;
+    line-height: 1.6;
+    font-weight: 600;
+    padding: 10px;
     position: absolute;
   }
 
-  &-create {
-    display: flex;
-    flex-grow: 1;
-    justify-content: flex-end;
-    margin: 15px 0 0 10px;
+  &-infoRange {
+    font-weight: normal;
   }
 
-  &-createBtn,
-  &-createSelect {
-    cursor: pointer;
-    padding: 5px 10px;
-    border: none;
-    border-radius: 2px;
-    font-weight: 700;
-    font-size: 12px;
-    font-size: 1.2rem;
+  &-create {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 10px;
+  }
+
+  &-createBtn {
+    margin-right: 10px;
+    // cursor: pointer;
+    // padding: 5px 10px;
+    // border: none;
+    // border-radius: 2px;
+    // font-weight: 700;
+    // font-size: 12px;
+    // font-size: 1.2rem;
   }
 
   &-createSelect {
     display: block;
-    width: 100%;
   }
 
   &-searchStatus {
+    padding: 20px;
+    display: flex;    
+    flex-direction: column;
+    align-items: center;
     font-size: 20px;
     font-size: 2rem;
-    padding: 30% 10px 10px;
-    text-align: center;
+    color: @grey;
   }
 
   &-searchStatusIcon {
