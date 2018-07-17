@@ -206,9 +206,9 @@ export default {
 
 <template>
   <div class="RemoteDatabases" v-show="remoteDatabases.state == 'complete'">
-    <p class="RemoteDatabases-activeInfo">{{'Databases' | translatePhrase}}:</p>
+    <p v-if="activeDatabases.length === 0" class="RemoteDatabases-activeInfo no-sources">{{'No sources chosen' | translatePhrase}}</p> 
+    <p v-else class="RemoteDatabases-activeInfo">{{'Databases' | translatePhrase}}:</p>
     <div class="RemoteDatabases-activeContainer">
-      <span v-if="activeDatabases.length === 0" class="RemoteDatabases-activeInfo no-sources">{{'No sources chosen' | translatePhrase}}</span> 
       <div class="RemoteDatabases-chip chip" v-for="(db, index) in activeDatabases" :key="index">
         <span class="chip-label">{{db}}</span>
         <div class="chip-removeButton icon icon--sm">

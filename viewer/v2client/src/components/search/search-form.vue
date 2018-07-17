@@ -339,16 +339,18 @@ export default {
           </div>
         </div>
       </div>
-      <div class="SearchBar-formContent is-remoteSearch" id="remotePanel" 
+      <div 
+        class="SearchBar-formContent is-remoteSearch" 
+        id="remotePanel" 
         v-if="searchPerimeter === 'remote'">
         <div class="SearchBar-formGroup form-group panel">
           <input type="text" class="SearchBar-input customInput form-control" placeholder="ISBN eller valfria sökord" 
             v-model="remoteSearch.q">
-          <button class="SearchBar-submit btn btn-primary icon icon--md"
+          <button 
+            class="SearchBar-submit btn btn-primary icon icon--md"
             :aria-label="'Search' | translatePhrase"
-            v-bind:class="{
-              'disabled': status.remoteDatabases.length === 0
-            }" 
+            v-bind:class="{'disabled': status.remoteDatabases.length === 0}"
+            :disabled="status.remoteDatabases.length === 0" 
             v-on:click.prevent="doSearch">
             <i class="fa fa-search"></i>
           </button>
@@ -440,16 +442,7 @@ export default {
   }
 
   &-input {
-    // font-size: 20px;
-    // font-size: 2rem;
-    // line-height: 1.2;
-    // height: 42px;
-    // min-width: 75%;
-    // flex-grow: 1;
-    // display: flex;
-    // justify-content: space-between;
     border-width: 1px 0 1px 1px;
-    // border-color: @gray-light;
     border-radius: 4px 0 0 4px;
 
     .is-remoteSearch & {

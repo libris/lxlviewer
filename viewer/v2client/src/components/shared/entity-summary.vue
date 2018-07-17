@@ -252,6 +252,10 @@ export default {
 
     &--imported {
       cursor: pointer;
+      &:hover {
+        text-decoration: underline;
+        color: @link-hover-color;
+      }
     }
 
     @media (min-width: 768px) {

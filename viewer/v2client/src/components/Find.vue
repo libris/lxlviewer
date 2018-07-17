@@ -168,10 +168,16 @@ export default {
           <vue-simple-spinner size="large" :message="'Searching' | translatePhrase"></vue-simple-spinner>
         </div>
     </div>
-    <div class="col-sm-12 col-md-3" v-if="result.totalItems > 0">
+    <div class="col-sm-12 col-md-3" v-if="result.totalItems > 0 && $route.params.perimeter === 'libris'">
       <facet-controls :result="result" v-if="result.stats"></facet-controls>
     </div>
-    <div class="col-sm-12 Find-content" :class="{'col-md-9': !status.panelOpen, 'col-md-7': status.panelOpen }">
+    <div 
+      class="col-sm-12 Find-content" 
+      :class="{
+        'col-md-9': $route.params.perimeter === 'libris',
+        'col-md-12': $route.params.perimeter === 'remote' && !status.panelOpen,
+        'col-md-7': status.panelOpen
+        }">
       <search-result
         v-show="!searchInProgress"
         :import-data="importData" 

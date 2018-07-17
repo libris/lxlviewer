@@ -61,6 +61,7 @@ export default {
     </li>
     <li class="ResultItem ResultItem--compact" v-else-if="!showDetailed">
       <h3 class="ResultItem-title" 
+        :class="{'ResultItem-title--imported' : isImport}"
         :title="header.join(', ')" 
         v-on:click="importThis()" 
         v-if="isImport">
@@ -122,6 +123,14 @@ export default {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+
+    &--imported {
+      cursor: pointer;
+      &:hover {
+        text-decoration: underline;
+        color: @link-hover-color;
+      }
+    }
   }
 
   &-category {
