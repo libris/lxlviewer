@@ -6,8 +6,10 @@
 
   The slots are:
     * panel-header        - If no content, will just show the "title"-prop and a close-button, explained below.
+    * panel-header-info   - This will render additional inline information in the title, used for ! and ? icons.
     * panel-header-extra  - If you need something extra in the header, this will render below the other header-content.
     * panel-body          - Just a container for your content. Supports highly customized layout.
+    * panel-footer        - Optional footer content
 
   Close-event:
     The default close button will emit an event called "close".
@@ -100,7 +102,10 @@ export default {
       <div class="PanelComponent-headerContainer">
         <div class="PanelComponent-header">
           <slot name="panel-header">
-            <h4 class="PanelComponent-title">{{ translatedTitle }}</h4>
+            <div class="PanelComponent-titleContainer">
+              <h4 class="PanelComponent-title">{{ translatedTitle }}</h4>
+              <slot name="panel-header-info"></slot>
+            </div>
             <span class="PanelComponent-windowControl">
               <i 
                 @click="toggleFullView" 
@@ -120,6 +125,9 @@ export default {
         <slot name="panel-body">
           <code>No content recieved from parent</code>
         </slot>
+      </div>
+      <div class="PanelComponent-footer">
+        <slot name="panel-footer"></slot>
       </div>
     </div>
   </div>
@@ -157,6 +165,8 @@ export default {
     left: 65%;
     height: 100vh;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
 
     .is-fadedIn & {
       opacity: 1;
@@ -198,6 +208,10 @@ export default {
     margin-bottom: 10px;
   }
 
+  &-titleContainer {
+    display: flex;
+  }
+
   &-title {
     font-size: 18px;
     font-size: 1.8rem;
@@ -206,10 +220,17 @@ export default {
   }
 
   &-body {
+    flex: 1;
     overflow-y: auto;
     height: 100%;
     z-index: 5;
     background-color: @white;
+  }
+
+  &-footer {
+    background-color: @panel-header-bg;
+    padding: 10px 15px;
+    border-top: 1px solid @gray-light;
   }
 
   &-windowControl {

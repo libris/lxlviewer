@@ -527,42 +527,26 @@ export default {
       class="EntityAdder-panel EntityAdderPanel" 
       :title="computedTitle" 
       @close="hide">
+      <template slot="panel-header-info">
+        <div 
+          class="EntityAdder-info" 
+          v-if="getFullRange.length > 0" 
+          @mouseleave="rangeInfo = false">
+          <i class="fa fa-info-circle icon icon--sm" @mouseenter="rangeInfo = true"></i>
+          <div class="EntityAdder-infoText" v-if="rangeInfo">
+            {{ "Allowed types" | translatePhrase }}:
+            <br>
+            <span v-for="(range, index) in getFullRange" :key="index" class="EntityAdder-infoRange">
+              • {{range | labelByLang}}
+            </span>
+          </div>
+        </div>
+      </template>
       <template slot="panel-header-extra">
         <!-- <div class="EntityAdder-panelBody"> -->
         <div class="EntityAdder-controls">
           <div class="EntityAdder-controlForm">
             <!--<input class="entity-search-keyword-input" v-model="keyword" @input="setSearching()"></input>-->
-            <div class="EntityAdder-create">
-              <div 
-                class="EntityAdder-info" 
-                v-if="getFullRange.length > 0" 
-                @mouseleave="rangeInfo = false">
-                <i class="fa fa-info-circle icon icon--sm" @mouseenter="rangeInfo = true"></i>
-                <div class="EntityAdder-infoText" v-if="rangeInfo">
-                  {{ "Allowed types" | translatePhrase }}:
-                  <br>
-                  <span v-for="(range, index) in getFullRange" :key="index" class="EntityAdder-infoRange">
-                    • {{range | labelByLang}}
-                  </span>
-                </div>
-              </div>
-              <button class="EntityAdder-createBtn btn btn-primary btn--sm"
-                v-if="hasSingleRange" 
-                v-on:click="addEmpty(getFullRange[0])">{{ "Create local entity" | translatePhrase }}
-              </button>
-              <select class="EntityAdder-createSelect customSelect"
-                v-model="selectedType" 
-                @change="addType(selectedType)" 
-                v-if="!hasSingleRange">
-                <option disabled value="">{{ "Create local entity" | translatePhrase }}</option>
-                <option 
-                  v-for="(term, index) in getClassTree" 
-                  :disabled="term.abstract" 
-                  :value="term.id" 
-                  :key="`${term.id}-${index}`" 
-                  v-html="getFormattedSelectOption(term, settings, resources.vocab, resources.context)"></option>
-              </select>
-            </div>
             <div class="EntityAdder-search">
               <div class="EntityAdder-searchInputContainer form-group panel">
                 <input class="EntityAdder-searchInput customInput form-control entity-search-keyword-input"
@@ -611,13 +595,27 @@ export default {
           v-if="!loading && searchResult.length === 0 && keyword.length > 0 && searchMade">
           {{ "No results" | translatePhrase }}
         </div>
-        <modal-pagination 
-          v-if="!loading && searchResult.length > 0" 
-          @go="go" 
-          :numberOfPages="numberOfPages" 
-          :currentPage="currentPage">
-        </modal-pagination>
       <!-- </div> -->
+      </template>
+      <template slot="panel-footer">
+        <div class="EntityAdder-create">
+          <button class="EntityAdder-createBtn btn btn-primary btn--sm"
+            v-if="hasSingleRange" 
+            v-on:click="addEmpty(getFullRange[0])">{{ "Create local entity" | translatePhrase }}
+          </button>
+          <select class="EntityAdder-createSelect customSelect"
+            v-model="selectedType" 
+            @change="addType(selectedType)" 
+            v-if="!hasSingleRange">
+            <option disabled value="">{{ "Create local entity" | translatePhrase }}</option>
+            <option 
+              v-for="(term, index) in getClassTree" 
+              :disabled="term.abstract" 
+              :value="term.id" 
+              :key="`${term.id}-${index}`" 
+              v-html="getFormattedSelectOption(term, settings, resources.vocab, resources.context)"></option>
+          </select>
+        </div>
       </template>
     </panel-component>
   </div>
@@ -667,7 +665,6 @@ export default {
   &-controls {
     line-height: 1.2;
     width: 100%;
-    z-index: @modal-z;
   }
 
   &-controlForm {
@@ -677,10 +674,6 @@ export default {
   }
 
   &-searchLabel {
-    // font-size: 14px;
-    // font-size: 1.4rem;
-    // font-weight: 700;
-    // margin: 0;
   }
 
   &-search {
@@ -690,20 +683,9 @@ export default {
 
   &-searchInputContainer {
     flex: 1;
-    // font-size: 14px;
-    // font-size: 1.4rem;
-    // display: flex;
-    // border: 2px solid #949a9e;
-    // border-radius: .2em;
-    // flex: 100% 0 0;
-    // background: #fff;
-    // padding: .5em; 
   }
 
   &-searchInput {
-    // width: 100%;
-    // border: none;
-    // outline: none;
   }
 
   &-searchSelect {
@@ -716,8 +698,7 @@ export default {
   }
 
   &-info {
-    // display: inline-block;
-    // margin: 15px 0 0 10px;
+    margin-left: 15px;
   }
 
   &-infoText {
@@ -731,6 +712,7 @@ export default {
     font-weight: 600;
     padding: 10px;
     position: absolute;
+    z-index: 1;
   }
 
   &-infoRange {
@@ -740,20 +722,10 @@ export default {
   &-create {
     width: 100%;
     display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    margin-bottom: 10px;
+    justify-content: flex-end;
   }
 
   &-createBtn {
-    margin-right: 10px;
-    // cursor: pointer;
-    // padding: 5px 10px;
-    // border: none;
-    // border-radius: 2px;
-    // font-weight: 700;
-    // font-size: 12px;
-    // font-size: 1.2rem;
   }
 
   &-createSelect {
@@ -788,7 +760,7 @@ export default {
 }
 
 .ScrollMarginTop {
-  padding-top: 95px !important;
+  // padding-top: 95px !important;
   // If you question this, feel free to rewrite the layout of this modal.
   // search-window.vue is a much better implementation.
 }
