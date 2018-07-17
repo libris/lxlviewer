@@ -59,29 +59,38 @@ body a {
 .chip {
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   height: 33px;
   background-color: @chip-background;
   border: 1px solid @chip-color;
   color: @chip-color;
   border-radius: 2em;
-  overflow: hidden;
   line-height: 1.6;
   padding: 3px 5px 3px 10px;
   margin: 2px 5px 2px 0px;
   transition: .1s ease;
+  max-width: 500px;
 
   &-label {
     font-weight: 600;
     cursor: default;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   &-removeButton {
     display: inline-block;
+    position: relative;
+    top: 2px;
     width: 1.2em;
     height: 1.2em;
     line-height: 1.2em;
     text-align: center;
-    margin-left: 5px;
+    margin: 0 5px;
+  }
+
+  @media (max-width: @screen-sm) {
+    max-width: 300px;
   }
 }
