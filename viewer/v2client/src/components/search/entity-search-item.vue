@@ -61,17 +61,19 @@ export default {
 </script>
 
 <template>
-  <li class="EntitySearch-item" >
+  <li class="EntitySearch-listItem" :class="{ 'already-added' : !listItemSettings.show }" >
+    <summary-action 
+      :disabled="!listItemSettings.show" 
+      :options="addPayload" 
+      @action="addItem()">
+    </summary-action>
     <div class="EntitySearch-itemContainer">
       <entity-summary 
         :focus-data="focusData" 
         :should-link="false" 
-        :lines="4"></entity-summary>
+        :lines="4">
+      </entity-summary>
     </div>
-    <summary-action 
-      v-show="listItemSettings.show" 
-      :options="addPayload" 
-      @action="addItem()"></summary-action>
   </li>
 </template>
 
@@ -80,21 +82,30 @@ export default {
 
 .EntitySearch{
 
-  &-item {
-    border: solid #777;
-    margin: 4px;
-    border-width: 1px;
+  &-listItem {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    width: 100%;
+    padding: 15px;
+    background-color: @list-item-bg-even;
+    transition: background-color 0.2s ease;
+
+    &:nth-child(odd) {
+      background-color: @list-item-bg-odd;
+    }
+    &:hover:not(.already-added) {
+      background-color: @list-item-bg-hover;
+    }
 
     code {
       color: @black;
     }
 
     &.already-added {
-      opacity: 0.5;
-      cursor: default;
+      & .EntitySearch-itemContainer {
+        opacity: 0.5;
+        cursor: default;
+      }
     }
 
     .label {
@@ -120,13 +131,23 @@ export default {
     }
 
     &.is-selected {
-      outline: solid 1px @brand-primary;
-      background-color: fadeout(@brand-primary, 70%);
+      // outline: solid 1px @brand-primary;
+      // background-color: fadeout(@brand-primary, 70%);
     } 
+
+    & .EntitySummary {
+      padding: 0;
+
+      & .EntitySummary-title {
+        font-size: 16px;
+        font-size: 1.6rem;
+        font-weight: 600;
+      }
+    }
   }
 
   &-itemContainer {
-    max-width: 85%;    
+    padding: 0 15px;
   }
 }
 

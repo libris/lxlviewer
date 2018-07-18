@@ -259,8 +259,8 @@ export default {
             :key="index">
             <div class="RemoteDatabases-addControl">
               <i v-show="db.disabled" class="fa fa-ban icon icon--lg is-disabled"></i>
-              <i v-show="!db.active && !db.disabled" class="fa fa-plus-circle icon icon--lg icon--primary"></i>
-              <i v-show="db.active" class="fa fa-check-circle icon icon--lg"></i>
+              <i v-show="!db.active && !db.disabled" class="fa fa-plus-circle icon icon--lg icon--primary" :title="'Add' | translatePhrase"></i>
+              <i v-show="db.active" class="fa fa-check-circle icon icon--lg" :title="'Added' | translatePhrase"></i>
             </div>
             <div class="RemoteDatabases-dbInfo">
               <span class="RemoteDatabases-dbLabel">

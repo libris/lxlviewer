@@ -532,7 +532,7 @@ export default {
           class="EntityAdder-info" 
           v-if="getFullRange.length > 0" 
           @mouseleave="rangeInfo = false">
-          <i class="fa fa-info-circle icon icon--sm" @mouseenter="rangeInfo = true"></i>
+          <i class="fa fa-info-circle icon icon--md" @mouseenter="rangeInfo = true"></i>
           <div class="EntityAdder-infoText" v-if="rangeInfo">
             {{ "Allowed types" | translatePhrase }}:
             <br>
