@@ -702,6 +702,8 @@ export default {
   }
 
   &-infoText {
+    display: flex;
+    flex-direction: column;
     background-color: @white;
     border: 1px solid @gray-light;
     border-radius: 4px;

@@ -251,16 +251,31 @@ export default {
       <template slot="panel-body">
         <ul class="RemoteDatabases-list" aria-labelledby="remoteDbListLabel"
           v-show="remoteDatabases.state == 'complete' && showList">
-          <li class="RemoteDatabases-listItem" tabindex="0"
+          <li 
+            class="RemoteDatabases-listItem"
             :class="{'is-active': db.active, 'is-disabled': db.disabled }" 
             v-for="(db, index) in filteredDatabases" 
-            @click="toggleDatabase(db.database)"
-            @keyup.enter="toggleDatabase(db.database)"
             :key="index">
             <div class="RemoteDatabases-addControl">
               <i v-show="db.disabled" class="fa fa-ban icon icon--lg is-disabled"></i>
-              <i v-show="!db.active && !db.disabled" class="fa fa-plus-circle icon icon--lg icon--primary" :title="'Add' | translatePhrase"></i>
-              <i v-show="db.active" class="fa fa-check-circle icon icon--lg" :title="'Added' | translatePhrase"></i>
+              <i 
+                v-show="!db.active && !db.disabled" 
+                class="fa fa-plus-circle icon icon--lg icon--primary" 
+                :title="'Add' | translatePhrase"
+                tabindex="0"
+                role="button"
+                @click="toggleDatabase(db.database)"
+                @keyup.enter="toggleDatabase(db.database)">
+              </i>
+              <i 
+                v-show="db.active" 
+                class="fa fa-check-circle icon icon--lg" 
+                :title="'Added' | translatePhrase"
+                tabindex="0"
+                role="button"
+                @click="toggleDatabase(db.database)"
+                @keyup.enter="toggleDatabase(db.database)">
+              </i>
             </div>
             <div class="RemoteDatabases-dbInfo">
               <span class="RemoteDatabases-dbLabel">

@@ -57,12 +57,18 @@ export default {
       v-show="!disabled && options.styling === 'brand'"
       class="fa fa-plus-circle icon icon--lg icon--primary"
       @click="action()"
+      @keyup.enter="action()"
+      role="button"
+      tabindex="0"
       :title="options.text | translatePhrase">
     </i>
     <i 
       v-show="!disabled && options.styling == 'gray'"
       class="fa fa-plus-circle icon icon--lg"
       @click="action()"
+      @keyup.enter="action()"
+      tabindex="0"
+      role="button"
       :title="options.text | translatePhrase">
     </i>
   </div>
