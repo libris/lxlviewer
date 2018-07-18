@@ -123,10 +123,14 @@ export default {
         <span class="placeholder"></span></span>
       <div class="ItemEntity-removeButton chip-removeButton icon icon--sm" v-if="!isLocked">
         <i class="fa fa-times-circle" 
-          v-if="!isLocked" 
-          v-on:click="removeThis(true)" 
+          v-if="!isLocked"
+          role="button"
+          tabindex="0"
+          @click="removeThis(true)"
+          @keyup.enter="removeThis(true)"
           @mouseover="removeHover = true" 
           @mouseout="removeHover = false">
+
           <tooltip-component 
             :show-tooltip="removeHover" 
             tooltip-text="Remove" 

@@ -219,7 +219,10 @@ export default {
         {{'Add' | translatePhrase}} <i class="fa fa-plus-circle"></i></span> -->
       <div class="RemoteDatabases-add" 
           :class="{ 'is-open': showList }"
-          v-on:click="showList = !showList"
+          @click="showList = !showList"
+          @keyup.enter="showList = !showList"
+          tabindex="0"
+          role="button"
           @mouseover="removeHover = true" 
           @mouseout="removeHover = false">
         <tooltip-component 
