@@ -101,7 +101,7 @@ export default {
 <template>
   <div class="EntitySearchResult">
     <ul class="EntitySearchResult-list js-field-list" v-show="results.length > 0" >
-      <entity-search-item tabindex="0"
+      <entity-search-item
         v-for="(item, index) in results" 
         :class="{'is-selected': index == selectedIndex }" 
         @mouseover.native="select(index)"

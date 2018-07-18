@@ -53,23 +53,49 @@ export default {
   <nav class="ModalPagination">
     <ul class="ModalPagination-list">
       <li class="ModalPagination-item" :class="{'is-disabled': currentPage-1 < 0 }">
-        <a class="ModalPagination-link" @click="go(0)">{{'First' | translatePhrase}}</a>
+        <a 
+          class="ModalPagination-link" 
+          @keydown.enter="go(0)" 
+          @click="go(0)" 
+          :tabindex="currentPage-1 < 0 ? -1 : 0">
+          {{'First' | translatePhrase}}
+        </a>
       </li>
       <li class="ModalPagination-item" :class="{'is-disabled': currentPage-1 < 0 }">
-        <a class="ModalPagination-link" @click="go(currentPage-1)">
+        <a 
+          class="ModalPagination-link" 
+          @keydown.enter="go(currentPage-1)" 
+          @click="go(currentPage-1)" 
+          :tabindex="currentPage-1 < 0 ? -1 : 0">
           <i class="fa fa-chevron-left"></i>
         </a>  
       </li>
       <li class="ModalPagination-item" :key="n" v-for="n in pageRange" :class="{'is-active': n.active, 'is-disabled': n.disabled}">
-        <a class="ModalPagination-link" @click="go(n.page)">{{n.page === '...' ? n.page : n.page + 1}}</a>
+        <a 
+          class="ModalPagination-link" 
+          @keydown.enter="go(n.page)" 
+          @click="go(n.page)" 
+          :tabindex="n.page === '...' ? -1 : 0">
+          {{n.page === '...' ? n.page : n.page + 1}}
+        </a>
       </li>
       <li class="ModalPagination-item" :class="{'is-disabled': currentPage+1 > numberOfPages }">
-         <a class="ModalPagination-link" @click="go(currentPage+1)">
+         <a 
+          class="ModalPagination-link" 
+          @keydown.enter="go(currentPage+1)" 
+          @click="go(currentPage+1)" 
+          :tabindex="currentPage+1 > numberOfPages ? -1 : 0">
            <i class="fa fa-chevron-right"></i>
          </a>
       </li>
       <li class="ModalPagination-item" :class="{'is-disabled': currentPage+1 > numberOfPages }">
-        <a class="ModalPagination-link" @click="go(numberOfPages)">{{'Last' | translatePhrase}}</a>
+        <a 
+          class="ModalPagination-link" 
+          @keydown.enter="go(numberOfPages)" 
+          @click="go(numberOfPages)" 
+          :tabindex="currentPage+1 > numberOfPages ? -1 : 0">
+          {{'Last' | translatePhrase}}
+        </a>
       </li>
     </ul>
   </nav>
@@ -78,7 +104,7 @@ export default {
 <style lang="less">
 
 .ModalPagination {
-  margin: 0 0 20px 0;
+  margin: 0 0 15px 0;
 
   &-list {
     display: flex;
@@ -105,7 +131,9 @@ export default {
     text-transform: uppercase;
     transition: color 0.2s ease;
 
-    &:hover {
+      &:hover, 
+      &:active, 
+      &:focus  {
       color: @brand-primary;
       text-decoration: none;
     }
@@ -114,8 +142,11 @@ export default {
       color: @gray-light;
       cursor: initial;
 
-      &:hover {
+      &:hover, 
+      &:active, 
+      &:focus {
         color: @gray-light;
+        text-decoration: none;
       }
     }
 
@@ -126,17 +157,19 @@ export default {
       &::after {
         content: '';
         position: absolute;
-        width: 75%;
+        width: 100%;
         height: 3px;
         background-color: @brand-primary;
-        bottom: -5px;
-        left: 0;
-        right: 0;
+        bottom: 0;
+        right: -5px;
         margin: auto;
       }
 
-      &:hover {
+      &:hover, 
+      &:active, 
+      &:focus  {
         color: @black;
+        text-decoration: none;
       }
     }
 
