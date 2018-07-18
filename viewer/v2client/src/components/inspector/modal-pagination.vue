@@ -19,6 +19,23 @@ export default {
     },
   },
   computed: {
+    pageRange() {
+      let dotObj = {page: '...', disabled: true, active: false};
+      let range = [];
+      for (let i = 0; i <= this.numberOfPages; i++) {
+        range.push({page: i, disabled: false, active: i === this.currentPage});
+      }
+      let filtered = range.filter((el) => {
+        return el.page <= this.currentPage + 3 && el.page >= this.currentPage - 3;
+      })
+      if (filtered[0].page > 0) {
+        filtered.unshift(dotObj);
+      }
+      if (filtered[filtered.length -1].page < this.numberOfPages) {
+        filtered.push(dotObj);
+      }
+      return filtered;
+    }
   },
   components: {
   },
@@ -33,46 +50,97 @@ export default {
 </script>
 
 <template>
-  <div class="ModalPagination">
-    <ul>
-      <li @click="go(0)" :class="{'disabled': currentPage-1 < 0 }">{{'First' | translatePhrase}}</li>
-      <li @click="go(currentPage-1)" :class="{'disabled': currentPage-1 < 0 }">{{'Previous' | translatePhrase}}</li>
-      <li @click="go(n-1)" :key="n" v-for="(n, index) in numberOfPages+1" :class="{'active': index === currentPage}">{{n}}</li>
-      <li @click="go(currentPage+1)" :class="{'disabled': currentPage+1 > numberOfPages }">{{'Next' | translatePhrase}}</li>
-      <li @click="go(numberOfPages)" :class="{'disabled': currentPage+1 > numberOfPages }">{{'Last' | translatePhrase}}</li>
+  <nav class="ModalPagination">
+    <ul class="ModalPagination-list">
+      <li class="ModalPagination-item" :class="{'is-disabled': currentPage-1 < 0 }">
+        <a class="ModalPagination-link" @click="go(0)">{{'First' | translatePhrase}}</a>
+      </li>
+      <li class="ModalPagination-item" :class="{'is-disabled': currentPage-1 < 0 }">
+        <a class="ModalPagination-link" @click="go(currentPage-1)">
+          <i class="fa fa-chevron-left"></i>
+        </a>  
+      </li>
+      <li class="ModalPagination-item" :key="n" v-for="n in pageRange" :class="{'is-active': n.active, 'is-disabled': n.disabled}">
+        <a class="ModalPagination-link" @click="go(n.page)">{{n.page === '...' ? n.page : n.page + 1}}</a>
+      </li>
+      <li class="ModalPagination-item" :class="{'is-disabled': currentPage+1 > numberOfPages }">
+         <a class="ModalPagination-link" @click="go(currentPage+1)">
+           <i class="fa fa-chevron-right"></i>
+         </a>
+      </li>
+      <li class="ModalPagination-item" :class="{'is-disabled': currentPage+1 > numberOfPages }">
+        <a class="ModalPagination-link" @click="go(numberOfPages)">{{'Last' | translatePhrase}}</a>
+      </li>
     </ul>
-  </div>
+  </nav>
 </template>
 
 <style lang="less">
 
 .ModalPagination {
-  padding: 0.5em;
-  width: 100%;
-  text-align: center;
-  font-size: 10pt;
-  ul {
-    list-style-type: none;
-    margin: 0px;
+  margin: 0 0 20px 0;
+
+  &-list {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    li {
-      margin: 0px;
-      border: 1px solid @brand-primary;
-      padding: 0px 5px;
-      display: inline-block;
-      cursor: pointer;
-      &.active {
+    list-style-type: none;
+    font-size: 16px;
+    font-size: 1.6rem;
+    margin: 0;
+    padding: 0;
+  }
+
+  &-item {
+  display: inline;
+  line-height: 1;
+    &:first-of-type a {
+      padding-left: 0;
+    }
+  }
+
+  &-link {
+    color: @grey;
+    font-weight: 600;
+    padding: 5px 10px;
+    position: relative;
+    text-transform: uppercase;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: @brand-primary;
+      text-decoration: none;
+    }
+
+    .is-disabled & {
+      color: @gray-light;
+      cursor: initial;
+
+      &:hover {
+        color: @gray-light;
+      }
+    }
+
+    .is-active & {
+      color: @black;
+      z-index: 3;
+
+      &::after {
+        content: '';
+        position: absolute;
+        width: 75%;
+        height: 3px;
         background-color: @brand-primary;
-        cursor: default;
-        color: white;
+        bottom: -5px;
+        left: 0;
+        right: 0;
+        margin: auto;
       }
-      &.disabled {
-        opacity: 0.5;
-        cursor: default;
-        visibility: visible;
+
+      &:hover {
+        color: @black;
       }
+    }
+
+    i {
     }
   }
 }

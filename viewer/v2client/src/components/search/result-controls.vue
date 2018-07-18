@@ -256,13 +256,16 @@ export default {
   &-pagItem {
     display: inline;
     line-height: 1;
+    &:first-of-type a {
+      padding-left: 0;
+    }
   }
 
   &-pagLink {
     color: @grey;
     font-weight: 600;
-    position: relative;
     padding: 5px 10px;
+    position: relative;
     text-transform: uppercase;
     transition: color 0.2s ease;
 
