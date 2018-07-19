@@ -209,8 +209,33 @@ export default {
     margin-bottom: 10px;
   }
 
+  &-headerInfo {
+    margin-left: 15px;
+  }
+
+  &-headerInfoBox {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    background-color: @white;
+    border: 1px solid @gray-light;
+    border-radius: 4px;
+    box-shadow: @shadow-panel;
+    padding: 10px;
+    z-index: 1;
+    max-width: 50%;
+    font-size: 14px;
+    font-size: 1.4rem;
+    line-height: 1.6;
+
+    & .header {
+      font-weight: 600;
+    }
+  }
+
   &-titleContainer {
     display: flex;
+    align-items: baseline;
   }
 
   &-title {
@@ -226,6 +251,17 @@ export default {
     height: 100%;
     // z-index: 5;
     background-color: @white;
+  }
+
+  &-searchStatus {
+    padding: 20px;
+    display: flex;    
+    flex-direction: column;
+    align-items: center;
+    font-size: 20px;
+    font-size: 2rem;
+    font-weight: normal;
+    color: @grey;
   }
 
   &-footer {
@@ -244,17 +280,6 @@ export default {
         display: none;
       }
     }
-  }
-
-  &-searchStatus {
-    padding: 20px;
-    display: flex;    
-    flex-direction: column;
-    align-items: center;
-    font-size: 20px;
-    font-size: 2rem;
-    font-weight: normal;
-    color: @grey;
   }
 }
 

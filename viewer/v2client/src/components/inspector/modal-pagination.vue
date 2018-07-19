@@ -126,7 +126,7 @@ export default {
   &-link {
     color: @grey;
     font-weight: 600;
-    padding: 5px 10px;
+    padding: 5px 8px;
     position: relative;
     text-transform: uppercase;
     transition: color 0.2s ease;
@@ -150,6 +150,10 @@ export default {
       }
     }
 
+    i {
+      font-size: 13px;
+    }
+
     .is-active & {
       color: @black;
       z-index: 3;
@@ -160,8 +164,8 @@ export default {
         width: 100%;
         height: 3px;
         background-color: @brand-primary;
-        bottom: 0;
-        right: -5px;
+        bottom: 1px;
+        right: -4px;
         margin: auto;
       }
 
@@ -171,9 +175,6 @@ export default {
         color: @black;
         text-decoration: none;
       }
-    }
-
-    i {
     }
   }
 }

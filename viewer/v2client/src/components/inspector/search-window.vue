@@ -255,6 +255,37 @@ export default {
       v-if="active"
       @close="hide()"
       class="SearchWindow-panel">
+      <template slot="panel-header-info">
+        <div class="PanelComponent-headerInfo help-tooltip-container" 
+          @mouseleave="showHelp = false">
+          <i class="fa fa-question-circle icon icon--md" 
+            @mouseenter="showHelp = true">
+          </i>
+          <div class="PanelComponent-headerInfoBox help-tooltip" v-if="showHelp">
+            <div>
+              <p class="header">
+                {{"Step" | translatePhrase}} 1: {{"Search for existing linked entities" | translatePhrase}}
+              </p>
+            </div>
+            <div>
+              <p class="header">
+                {{"Step" | translatePhrase}} 2: {{"Identify and replace" | translatePhrase}}
+              </p>
+              <p>
+                {{"If you identify a matching linked entity, click it to replace the local entity with it" | translatePhrase}}.
+              </p>
+            </div>
+            <div>
+              <p class="header">
+                {{"Create and link entity" | translatePhrase}}
+              </p>
+              <p>
+                {{"If no matching linked entity is found you can create and link. This will create a linked entity containing the information in the entity chosen for linking" | translatePhrase}}.
+              </p>
+            </div>
+          </div>
+        </div>
+      </template>
       <template slot="panel-body">
         <div class="SearchWindow-header search-header">
           <span>{{ "Search" | translatePhrase }}</span>
@@ -271,35 +302,6 @@ export default {
                   :value="term.id" 
                   v-html="getFormattedSelectOption(term, settings, resources.vocab, resources.context)"></option>
               </select>
-            </div>
-            <div class="SearchWindow-help help-tooltip-container" 
-              @mouseleave="showHelp = false">
-              <i class="fa fa-question-circle-o" 
-                @mouseenter="showHelp = true"></i>
-              <div class="SearchWindow-helpText help-tooltip" v-if="showHelp">
-                <div class="section">
-                  <div class="section-header">
-                    {{"Step" | translatePhrase}} 1: {{"Search for existing linked entities" | translatePhrase}}
-                  </div>
-                  <div class="section-content"></div>
-                </div>
-                <div class="section">
-                  <div class="section-header">
-                    {{"Step" | translatePhrase}} 2: {{"Identify and replace" | translatePhrase}}
-                  </div>
-                  <div class="section-content">
-                    {{"If you identify a matching linked entity, click it to replace the local entity with it" | translatePhrase}}
-                  </div>
-                </div>
-                <div class="section">
-                  <div class="section-header">
-                    {{"Create and link entity" | translatePhrase}}
-                  </div>
-                  <div class="section-content">
-                    {{"If no matching linked entity is found you can create and link. This will create a linked entity containing the information in the entity chosen for linking" | translatePhrase}}
-                  </div>
-                </div>
-              </div>
             </div>
             <div class="SearchWindow-controls"></div>
           </div>
@@ -501,19 +503,20 @@ export default {
   }
 
   &-help {
-    margin-left: 10px;
-    display: inline-block;
+    // margin-left: 10px;
+    // display: inline-block;
   }
 
   &-helpText {
-    max-width: 40%;
-    position: absolute;
-    background-color: #fff;
-    border: 1px solid #ccc;
-    padding: 5px;
-    border-radius: 3px;
-    font-size: 12px;
-    font-size: 1.2rem;
+    // max-width: 40%;
+    // position: absolute;
+    // background-color: #fff;
+    // border: 1px solid #ccc;
+    // padding: 5px;
+    // border-radius: 3px;
+    // font-size: 12px;
+    // font-size: 1.2rem;
+    // z-index: 1;
     
     .section {
       .section-header {

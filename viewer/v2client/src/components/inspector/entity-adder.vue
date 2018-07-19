@@ -529,14 +529,15 @@ export default {
       @close="hide">
       <template slot="panel-header-info">
         <div 
-          class="EntityAdder-info" 
+          class="PanelComponent-headerInfo" 
           v-if="getFullRange.length > 0" 
           @mouseleave="rangeInfo = false">
           <i class="fa fa-info-circle icon icon--md" @mouseenter="rangeInfo = true"></i>
-          <div class="EntityAdder-infoText" v-if="rangeInfo">
-            {{ "Allowed types" | translatePhrase }}:
-            <br>
-            <span v-for="(range, index) in getFullRange" :key="index" class="EntityAdder-infoRange">
+          <div class="PanelComponent-headerInfoBox" v-if="rangeInfo">
+            <p class="header">
+              {{ "Allowed types" | translatePhrase }}:
+            </p>
+            <span v-for="(range, index) in getFullRange" :key="index">
               • {{range | labelByLang}}
             </span>
           </div>
@@ -695,30 +696,6 @@ export default {
     max-width: 200px;
     border: 0;
     outline: none;
-  }
-
-  &-info {
-    margin-left: 15px;
-  }
-
-  &-infoText {
-    display: flex;
-    flex-direction: column;
-    background-color: @white;
-    border: 1px solid @gray-light;
-    border-radius: 4px;
-    box-shadow: @shadow-panel;
-    font-size: 14px;
-    font-size: 1.4rem;
-    line-height: 1.6;
-    font-weight: 600;
-    padding: 10px;
-    position: absolute;
-    z-index: 1;
-  }
-
-  &-infoRange {
-    font-weight: normal;
   }
 
   &-create {
