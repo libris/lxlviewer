@@ -266,8 +266,6 @@ export default {
 
   &-footer {
     background-color: @panel-header-bg;
-    padding: 10px 15px;
-    border-top: 1px solid @gray-light;
   }
 
   &-windowControl {

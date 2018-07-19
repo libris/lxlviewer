@@ -70,9 +70,9 @@ export default {
           :title="options.text | translatePhrase">
         </i>
     </div>
-    <button v-else class="SummaryAction-button"
+    <button v-else class="SummaryAction-button btn btn--sm"
       @click="action()"
-      :class="'SummaryAction-button--'+options.styling">
+      :class="{'btn-primary' : options.styling === 'brand'}">
       {{options.text | translatePhrase}}
     </button>
   </div>
@@ -88,38 +88,6 @@ export default {
   }
 
   &-button {
-    min-width: 90px;
-    padding: 3px 10px;
-    font-size: 12px;
-    font-size: 1.2rem;
-    line-height: 1.2;
-
-    &--brand {
-      color: @white;
-      background: @brand-primary;
-
-      &:hover {
-        background: lighten(@brand-primary, 5%);
-      }
-
-      &:active {
-        background: darken(@brand-primary, 5%);
-      }
-    }
-
-    &--gray {
-      color: @black;
-      background: @gray-light;
-
-      &:hover {
-        background: lighten(@gray-light, 5%);
-      }
-
-      &:active {
-        background: darken(@gray-light, 5%);
-      }
-    }
   }
 }
-
 </style>

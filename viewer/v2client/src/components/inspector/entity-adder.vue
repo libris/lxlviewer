@@ -702,6 +702,8 @@ export default {
     width: 100%;
     display: flex;
     justify-content: flex-end;
+    padding: 10px 15px;
+    border-top: 1px solid @gray-light;
   }
 
   &-createBtn {

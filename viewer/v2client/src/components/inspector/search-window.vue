@@ -286,27 +286,10 @@ export default {
           </div>
         </div>
       </template>
-      <template slot="panel-body">
+      <template slot="panel-header-extra">
         <div class="SearchWindow-header search-header">
-          <span>{{ "Search" | translatePhrase }}</span>
-          <div class="SearchWindow-search search">
-            <div class="SearchWindow-inputContainer input-container">
-              <input class="SearchWindow-input SearchWindowentity-search-keyword-input"
-                v-model="keyword"
-                autofocus>
-              <select v-model="currentSearchTypes" @change="handleChange(keyword)">
-                <option :value="getRange">{{"All types" | translatePhrase}}</option>
-                <option 
-                  v-for="term in getClassTree" 
-                  :key="term.parentChainString" 
-                  :value="term.id" 
-                  v-html="getFormattedSelectOption(term, settings, resources.vocab, resources.context)"></option>
-              </select>
-            </div>
-            <div class="SearchWindow-controls"></div>
-          </div>
           <div class="SearchWindow-extractControls">
-            <span class="preview-entity-text">{{ "Your new entity" | translatePhrase }}:</span>
+            <p class="preview-entity-text capitalHeading--gray">{{ "Your new entity" | translatePhrase }}:</p>
             <div class="copy-title" v-if="canCopyTitle">
               <label>
                 <input type="checkbox" name="copyTitle" v-model="copyTitle" /> 
@@ -314,7 +297,6 @@ export default {
               </label>
             </div>
           </div>
-
           <div class="SearchWindow-summaryContainer">
             <entity-summary 
               :action-settings="localEntitySettings" 
@@ -326,10 +308,37 @@ export default {
               :options="localEntitySettings" 
               @action="extract()"></summary-action>
           </div>
+          <div class="SearchWindow-search search">
+            <div class="SearchWindow-inputContainer input-container form-group panel">
+              <input 
+                class="SearchWindow-input SearchWindowentity-search-keyword-input customInput form-control"
+                v-model="keyword"
+                autofocus
+                :placeholder="'Search' | translatePhrase">
+              <select 
+                v-model="currentSearchTypes" 
+                @change="handleChange(keyword)"
+                class="customSelect">
+                <option :value="getRange">{{"All types" | translatePhrase}}</option>
+                <option 
+                  v-for="term in getClassTree" 
+                  :key="term.parentChainString" 
+                  :value="term.id" 
+                  v-html="getFormattedSelectOption(term, settings, resources.vocab, resources.context)"></option>
+              </select>
+            </div>
+          </div>
         </div>
+        <modal-pagination 
+          v-if="!loading && searchResult.length > 0" 
+          @go="go" 
+          :numberOfPages="numberOfPages" 
+          :currentPage="currentPage">
+        </modal-pagination>
+      </template>
 
+      <template slot="panel-body">
         <div class="SearchWindow-resultListContainer">
-          <modal-pagination v-if="!loading && searchResult.length > 0" @go="go" :numberOfPages="numberOfPages" :currentPage="currentPage"></modal-pagination>
           <ul v-show="displaySearchList" class="SearchWindow-resultList">
             <li class="SearchWindow-resultItem"
               v-for="item in searchResult" 
@@ -341,7 +350,6 @@ export default {
               <summary-action :options="addPayload(item)" @action="replaceWith(item)"></summary-action>
             </li>
           </ul>
-          <modal-pagination v-if="!loading && searchResult.length > 0" @go="go" :numberOfPages="numberOfPages" :currentPage="currentPage"></modal-pagination>
           <div class="SearchWindow-searchStatusContainer"
             v-show="extracting || keyword.length === 0 || loading || foundNoResult">
             <div class="SearchWindow-searchStatus">
@@ -375,17 +383,121 @@ export default {
     max-width: 80%;
   }
 
+  &-help {
+    // margin-left: 10px;
+    // display: inline-block;
+  }
+
+  &-helpText {
+    // max-width: 40%;
+    // position: absolute;
+    // background-color: #fff;
+    // border: 1px solid #ccc;
+    // padding: 5px;
+    // border-radius: 3px;
+    // font-size: 12px;
+    // font-size: 1.2rem;
+    // z-index: 1;
+  }
+
+  &-header {
+    // border: solid #ccc;
+    // border-width: 0px 0px 1px 0px;
+    // background-color: darken(@neutral-color, 4%);
+    // flex: 0 1 auto;
+    // font-weight: 700;
+    // padding: 10px 20px;
+    width: 100%;
+  }
+
+  &-search {
+    // align-items: center;
+    // display: flex;
+  }
+
+  &-inputContainer {
+    width: 100%;
+    display: flex;
+    // border: 2px solid @gray;
+    // border-radius: 0.2em;
+    // font-size: 14px;
+    // font-size: 1.4rem;
+    // flex: 60% 0 0;
+    // background: @white;
+    // padding: 10px;
+
+    > select {
+      position: absolute;
+      right: 0;
+      margin: 7px 25px;
+      max-width: 200px;
+      border: 0;
+      outline: none;
+      // max-width: 50%;
+      // padding: 0.2em 0.5em;
+      // margin: 0 0.3em;
+      // border-radius: 0.3em;
+      // border: 0px;
+      // outline: none;
+      // background: @brand-primary;
+      // color: @white;
+      // cursor: pointer;
+      // font-weight: bold;
+    }
+  }
+
+  &-input {
+    // font-weight: normal;
+    // width: 100%;
+    // border: none;
+    // outline: none;
+  }
+
+  &-extractControls {
+    // padding: 10px 0 0 0;
+    .preview-entity-text {
+    }
+    .copy-title {
+      float: right;
+      label {
+        margin: 0;
+        font-weight: normal;
+      }
+    }
+  }
+
+  &-summaryContainer {
+    display: flex;
+    // justify-content: space-between;
+    // align-items: center;
+    flex-direction: column;
+    margin-bottom: 20px;
+
+    .EntitySummary {
+      background: @white;
+      border-radius: 4px;
+      margin-bottom: 10px;
+      border: 1px solid @gray-lighter;
+    }
+  }
+
+  &-panel {
+    .PanelComponent-body {
+      // width: 100%;
+      // background-color: white;
+      // border: 1px solid #ccc;
+      // padding: 0px;
+      // overflow: hidden;
+      // height: 100%;
+      // display: flex;
+      // flex-flow: column;
+    }
+  }
+
   &-resultListContainer {
     overflow-y: scroll;
     flex: 1 1 auto;
-    padding-bottom: 50px;
-  }
-
-  &-searchStatusContainer {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
+    // padding-bottom: 50px;
   }
 
   &-resultList {
@@ -401,82 +513,18 @@ export default {
     align-items: center;
   }
 
+  &-searchStatusContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
+
   &-searchStatus {
     font-size: 20px;
     font-size: 2.0rem;
     text-align: center;
     margin: 20px;
-  }
-
-  &-header {
-    border: solid #ccc;
-    border-width: 0px 0px 1px 0px;
-    background-color: darken(@neutral-color, 4%);
-    flex: 0 1 auto;
-    font-weight: 700;
-    padding: 10px 20px;
-    width: 100%;
-  }
-
-  &-search {
-    align-items: center;
-    display: flex;
-  }
-
-  &-extractControls {
-    padding: 10px 0 0 0;
-
-    .preview-entity-text {
-      font-weight: bold;
-    }
-
-    .copy-title {
-      float: right;
-      label {
-        margin: 0;
-        font-weight: normal;
-      }
-    }
-  }
-
-  &-summaryContainer {
-    border: 1px solid #888;
-    background: @white;
-    margin: 0.2em 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  &-inputContainer {
-    display: flex;
-    border: 2px solid @gray;
-    border-radius: 0.2em;
-    font-size: 14px;
-    font-size: 1.4rem;
-    flex: 60% 0 0;
-    background: @white;
-    padding: 10px;
-
-    > select {
-      max-width: 50%;
-      padding: 0.2em 0.5em;
-      margin: 0 0.3em;
-      border-radius: 0.3em;
-      border: 0px;
-      outline: none;
-      background: @brand-primary;
-      color: @white;
-      cursor: pointer;
-      font-weight: bold;
-    }
-  }
-
-  &-input {
-    font-weight: normal;
-    width: 100%;
-    border: none;
-    outline: none;
   }
 
   &-controls {
@@ -499,46 +547,6 @@ export default {
       color: @white;
       font-weight: bold;
       font-size: 12px;
-    }
-  }
-
-  &-help {
-    // margin-left: 10px;
-    // display: inline-block;
-  }
-
-  &-helpText {
-    // max-width: 40%;
-    // position: absolute;
-    // background-color: #fff;
-    // border: 1px solid #ccc;
-    // padding: 5px;
-    // border-radius: 3px;
-    // font-size: 12px;
-    // font-size: 1.2rem;
-    // z-index: 1;
-    
-    .section {
-      .section-header {
-        font-weight: 700;
-      }
-      .section-content {
-        margin: 0 0 5px 5px;
-        font-weight: normal;
-      }
-    }
-  }
-
-  &-panel {
-    .PanelComponent-body {
-      width: 100%;
-      background-color: white;
-      border: 1px solid #ccc;
-      padding: 0px;
-      overflow: hidden;
-      height: 100%;
-      display: flex;
-      flex-flow: column;
     }
   }
 }

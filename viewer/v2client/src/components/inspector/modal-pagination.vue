@@ -156,7 +156,6 @@ export default {
 
     .is-active & {
       color: @black;
-      z-index: 3;
 
       &::after {
         content: '';
