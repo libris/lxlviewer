@@ -585,13 +585,13 @@ export default {
           :disabled-ids="alreadyAdded"
           @add-item="addLinkedItem">
         </entity-search-list>
-        <div class="EntityAdder-searchStatus" v-if="!loading && keyword.length === 0" >
+        <div class="PanelComponent-searchStatus" v-if="!loading && keyword.length === 0" >
           {{ "Start writing to begin search" | translatePhrase }}...
         </div>
-        <div v-if="loading" class="EntityAdder-searchStatus">
+        <div v-if="loading" class="PanelComponent-searchStatus">
           <vue-simple-spinner size="large" :message="'Searching' | translatePhrase"></vue-simple-spinner>
         </div>
-        <div class="EntityAdder-searchStatus"
+        <div class="PanelComponent-searchStatus"
           v-if="!loading && searchResult.length === 0 && keyword.length > 0 && searchMade">
           {{ "No results" | translatePhrase }}
         </div>
@@ -732,16 +732,6 @@ export default {
 
   &-createSelect {
     display: block;
-  }
-
-  &-searchStatus {
-    padding: 20px;
-    display: flex;    
-    flex-direction: column;
-    align-items: center;
-    font-size: 20px;
-    font-size: 2rem;
-    color: @grey;
   }
 
   &-searchStatusIcon {

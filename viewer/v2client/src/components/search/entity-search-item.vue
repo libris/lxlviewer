@@ -148,6 +148,8 @@ export default {
 
   &-itemContainer {
     padding: 0 15px;
+    width: 100%;
+    overflow: hidden;
   }
 }
 

@@ -359,42 +359,61 @@ export default {
 
     <panel-component :title="modalTitle" @close="hide" v-if="active" class="FieldAdder-panel FieldAdderPanel">
       <template slot="panel-header-extra">
-        <span class="FieldAdderPanel-filter">
-          {{ "Filter by" | translatePhrase }} 
-          <input id="field-adder-input" 
-            class="filterInput mousetrap" 
-            @input="resetSelectIndex()" 
+        <div class="FieldAdderPanel-filterContainer form-group panel">
+          <input id="field-adder-input"
             type="text" 
+            class="FieldAdderPanel-filterInput customInput form-control mousetrap" 
+            @input="resetSelectIndex()" 
+            :placeholder="'Filter by' | translatePhrase"
             v-model="filterKey">
-          <span class="filterInfo">{{ "Showing" | translatePhrase }} {{ filteredResults.length }} {{ "of" | translatePhrase }} {{allowed ? allowed.length : '0'}} {{ "total" | translatePhrase }}</span>
-        </span>
-      </template>
-      <template slot="panel-body">
-        <div class="FieldAdderPanel-columnHeaders">
-          <span class="FieldAdderPanel-addControl">
-            &nbsp;
+        </div>
+        <div class="FieldAdderPanel-filterInfo capitalHeading--gray">
+          <span>
+            {{ "Showing" | translatePhrase }} 
+            {{ filteredResults.length }} 
+            {{ "of" | translatePhrase }} 
+            {{allowed ? allowed.length : '0'}} 
+            {{ "total" | translatePhrase }}
           </span>
-          <span class="FieldAdderPanel-fieldLabel">
+        </div>
+      </template>
+      <template slot="panel-header-after">
+        <div class="FieldAdderPanel-columnHeaders">
+          <!-- <span class="FieldAdderPanel-addControl">
+          </span> -->
+          <span class="FieldAdderPanel-fieldLabel capitalHeading--gray">
             {{ "Field label" | translatePhrase }}
           </span>
-          <span class="FieldAdderPanel-classInfo">
+          <span class="FieldAdderPanel-classInfo capitalHeading--gray">
             {{ "Can contain" | translatePhrase }}
           </span>
         </div>
-        <div class="FieldAdderPanel-fieldList">
-          <ul id="fields-window" class="js-fieldlist">
+      </template>
+      <template slot="panel-body">
+        <div>
+          <ul id="fields-window" class="FieldAdderPanel-fieldList js-fieldlist">
             <li tabindex="0"
+              class="FieldAdderPanel-fieldItem"
               @focus="selectedIndex = index"
               @mouseover="selectedIndex = index" 
               v-bind:class="{ 'added': prop.added, 'available': !prop.added, 'selected': index == selectedIndex }" 
               v-for="(prop, index) in filteredResults" 
               :key="prop['@id']" 
-              @click="addField(prop, true)">
+              @click="addField(prop, true)"
+              @keyup.enter="addField(prop, true)">
               <span class="FieldAdderPanel-addControl">
-                <a v-show="!prop.added" v-on:click.stop.prevent="addField(prop, false)">
-                  <i class="fa fa-fw fa-2x fa-plus-circle"></i>
+                <a 
+                  v-show="!prop.added" 
+                  @click.stop.prevent="addField(prop, false)"
+                  @keyup.enter.stop.prevent="addField(prop, false)"
+                  :title="'Add' | translatePhrase"
+                  tabindex="0"
+                  >
+                  <i class="fa fa-plus-circle icon icon--lg icon--primary"></i>
                 </a>
-                <span v-show="prop.added"><i class="fa fa-fw fa-check fa-2x"></i></span>
+                <span v-show="prop.added" :title="'Added' | translatePhrase">
+                  <i class="fa fa-check-circle icon icon--lg is-disabled"></i>
+                </span>
               </span>
               <span class="FieldAdderPanel-fieldLabel" :title="prop.label | capitalize">
                 {{prop.label | capitalize }}
@@ -404,9 +423,9 @@ export default {
                 {{ getPropClassInfo(prop.item) }}
               </span>
             </li>
-            <li v-if="filteredResults.length === 0">
-              <i>{{ "Did not find any fields" | translatePhrase }}...</i>
-            </li>
+            <div v-if="filteredResults.length === 0" class="PanelComponent-searchStatus">
+              <span>{{ "Did not find any fields" | translatePhrase }}...</span>
+            </div>
           </ul>
         </div>
       </template>
@@ -451,13 +470,16 @@ export default {
 }
 
 .FieldAdderPanel {
-  &-filter {
-    input {
-      height: 100%;
-      color: #333;
-      border-radius: 3px;
-      border: none;
-    }
+  &-filterContainer {
+    flex: 1;
+  }
+
+  &-filterInput {
+  }
+
+  &-filterInfo {
+    color: @gray;
+    margin-bottom: 10px;
   }
 
   &-body {
@@ -466,82 +488,78 @@ export default {
   }
 
   &-columnHeaders {
+    display: flex;
     background-color: @white;
-    position: fixed;
-    z-index: 1;
     width: 100%;
-    border: solid @gray;
-    border-width: 0px 0px 1px 0px;
-    > * {
-      display: inline-block;
+    padding: 5px 15px;
+    border-bottom: 1px solid @gray-lighter;
+
+    &.FieldAdderPanel-fieldLabel {
+      padding-left: 0;
     }
   }
+
   &-fieldLabel {
-    display: inline-block;
-    width: 45%;
-    font-size: 16px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin: 5px 0 0;
-    .typeLabel {
-      display: block;
-      font-size: 85%;
-      font-family: monospace;
-    }
+  display: inline-block;
+  flex-basis: 75%;
+  padding: 0 15px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  .typeLabel {
+    display: block;
+    font-size: 14px;
+    font-size: 1.4rem;
+    font-family: monospace;
   }
+}
+
   &-classInfo {
     display: inline-block;
-    width: 40%;
+    flex-basis: 25%;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     font-size: 85%;
   }
+
   &-addControl {
-    float: left;
-    width: 8%;
-    text-align: center;
-    a {
-      cursor: pointer;
-    }
+    display: flex;
+    align-items: center;
+    width: 30px;
   }
+
   &-fieldList {
-    padding-top: 2em;
-    padding-bottom: 3em;
-    ul {
-      border-radius: 0px 0px 3px 3px;
-      padding-left: 0px;
-      width: 100%;
-      margin: 0px;
-      list-style-type: none;
-      li {
-        &:nth-child(odd) {
-          background-color: darken(@neutral-color, 5%);
-        }
-        &.available {
-          cursor: pointer;
-          &.selected {
-            outline: solid 1px @brand-primary;
-            background-color: fadeout(@brand-primary, 70%);
-          }
-        }
-        &.added {
-          &.selected {
-            background-color: @gray-light;
-          }
-        }
-        margin: 0px;
-        padding: 1em 0;
-        line-height: 1.3;
-        display: flex;
-        align-items: center;
-        &.added {
-          span {
-            opacity: 0.6;
-          }
-        }
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+  }
+
+  &-fieldItem {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 15px;
+    margin: 0px;
+    background-color: @list-item-bg-even;
+    transition: background-color 0.2s ease;
+      
+    &:nth-child(odd) {
+      background-color: @list-item-bg-odd;
+    }
+
+    &.available {
+      cursor: pointer;
+
+      &:hover {
+        background-color: @list-item-bg-hover;
       }
+    }
+
+    &.added {
+      opacity: 0.5;
     }
   }
 }

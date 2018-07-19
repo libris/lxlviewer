@@ -574,7 +574,7 @@ export default {
   &.is-mainField {
   border-bottom-width: 2px;
     & .Field-label {
-      color: @black;
+      // color: @black;
     }
   }
 

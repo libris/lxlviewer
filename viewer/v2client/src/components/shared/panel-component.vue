@@ -8,6 +8,7 @@
     * panel-header        - If no content, will just show the "title"-prop and a close-button, explained below.
     * panel-header-info   - This will render additional inline information in the title, used for ! and ? icons.
     * panel-header-extra  - If you need something extra in the header, this will render below the other header-content.
+    * panel-header-after  - If you need something sticky after the header, but outside the header container (ie grid, bg-color)
     * panel-body          - Just a container for your content. Supports highly customized layout.
     * panel-footer        - Optional footer content
 
@@ -121,6 +122,7 @@ export default {
         </div>
         <slot name="panel-header-extra" />
       </div>
+      <slot name="panel-header-after" />
       <div class="PanelComponent-body">
         <slot name="panel-body">
           <code>No content recieved from parent</code>
@@ -192,7 +194,7 @@ export default {
     flex-wrap: nowrap;
     flex-direction: column;
     background-color: @panel-header-bg;
-    border-bottom: 1px solid @gray-light;
+    border-bottom: 1px solid @gray-lighter;
     padding: 20px 15px 0 15px;
 
     .is-danger & {
@@ -242,6 +244,17 @@ export default {
         display: none;
       }
     }
+  }
+
+  &-searchStatus {
+    padding: 20px;
+    display: flex;    
+    flex-direction: column;
+    align-items: center;
+    font-size: 20px;
+    font-size: 2rem;
+    font-weight: normal;
+    color: @grey;
   }
 }
 

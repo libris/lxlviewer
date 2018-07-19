@@ -109,8 +109,8 @@ export default {
   &-list {
     display: flex;
     list-style-type: none;
-    font-size: 16px;
-    font-size: 1.6rem;
+    font-size: 14px;
+    font-size: 1.4rem;
     margin: 0;
     padding: 0;
   }
