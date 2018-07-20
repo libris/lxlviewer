@@ -426,10 +426,10 @@ export default {
                 {{ getPropClassInfo(prop.item) }}
               </span>
             </li>
-            <div v-if="filteredResults.length === 0" class="PanelComponent-searchStatus">
-              <span>{{ "Did not find any fields" | translatePhrase }}...</span>
-            </div>
           </ul>
+        </div>
+        <div v-if="filteredResults.length === 0" class="PanelComponent-searchStatus">
+          <span>{{ "Did not find any fields" | translatePhrase }}...</span>
         </div>
       </template>
     </panel-component>
@@ -545,6 +545,8 @@ export default {
 
   &-fieldItem {
     opacity: 0.6;
+    font-size: 16px;
+    font-size: 1.6rem;
 
     &.available {
       opacity: 1;

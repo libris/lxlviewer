@@ -544,7 +544,7 @@ export default {
     margin: 4px 0;
     width: 50px;
     height: 50px;
-    line-height: 1;
+    // line-height: 1;
     position: relative;
   }
 
