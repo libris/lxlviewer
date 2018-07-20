@@ -61,7 +61,7 @@ export default {
 </script>
 
 <template>
-  <li class="EntitySearch-listItem" :class="{ 'already-added' : !listItemSettings.show }" >
+  <li class="EntitySearch-listItem PanelComponent-listItem" :class="{ 'already-added' : !listItemSettings.show }" >
     <summary-action 
       :disabled="!listItemSettings.show" 
       :options="addPayload" 
@@ -83,29 +83,16 @@ export default {
 .EntitySearch{
 
   &-listItem {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    padding: 15px;
-    background-color: @list-item-bg-even;
-    transition: background-color 0.2s ease;
 
-    &:nth-child(odd) {
-      background-color: @list-item-bg-odd;
-    }
-    &:hover:not(.already-added) {
-      background-color: @list-item-bg-hover;
+    &.already-added {
+      & .EntitySearch-itemContainer {
+        opacity: 0.6;
+        cursor: default;
+      }
     }
 
     code {
       color: @black;
-    }
-
-    &.already-added {
-      & .EntitySearch-itemContainer {
-        opacity: 0.5;
-        cursor: default;
-      }
     }
 
     .label {
@@ -131,8 +118,6 @@ export default {
     }
 
     &.is-selected {
-      // outline: solid 1px @brand-primary;
-      // background-color: fadeout(@brand-primary, 70%);
     } 
 
     & .EntitySummary {

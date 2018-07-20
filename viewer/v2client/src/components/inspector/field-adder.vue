@@ -393,10 +393,10 @@ export default {
         <div>
           <ul id="fields-window" class="FieldAdderPanel-fieldList js-fieldlist">
             <li tabindex="0"
-              class="FieldAdderPanel-fieldItem"
+              class="FieldAdderPanel-fieldItem PanelComponent-listItem"
               @focus="selectedIndex = index"
               @mouseover="selectedIndex = index" 
-              v-bind:class="{ 'added': prop.added, 'available': !prop.added, 'selected': index == selectedIndex }" 
+              v-bind:class="{ 'already-added': prop.added, 'available': !prop.added, 'selected': index == selectedIndex }" 
               v-for="(prop, index) in filteredResults" 
               :key="prop['@id']" 
               @click="addField(prop, true)"
@@ -503,6 +503,7 @@ export default {
   display: inline-block;
   flex-basis: 75%;
   padding: 0 15px;
+  font-weight: 600;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -512,16 +513,18 @@ export default {
     font-size: 14px;
     font-size: 1.4rem;
     font-family: monospace;
+    font-weight: normal;
   }
 }
 
   &-classInfo {
     display: inline-block;
     flex-basis: 25%;
+    font-size: 14px;
+    font-size: 1.4rem;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    font-size: 85%;
   }
 
   &-addControl {
@@ -538,28 +541,11 @@ export default {
   }
 
   &-fieldItem {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    padding: 15px;
-    margin: 0px;
-    background-color: @list-item-bg-even;
-    transition: background-color 0.2s ease;
-      
-    &:nth-child(odd) {
-      background-color: @list-item-bg-odd;
-    }
+    opacity: 0.6;
 
     &.available {
+      opacity: 1;
       cursor: pointer;
-
-      &:hover {
-        background-color: @list-item-bg-hover;
-      }
-    }
-
-    &.added {
-      opacity: 0.5;
     }
   }
 }

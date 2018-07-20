@@ -249,19 +249,37 @@ export default {
     flex: 1;
     overflow-y: auto;
     height: 100%;
-    // z-index: 5;
     background-color: @white;
   }
 
   &-searchStatus {
-    padding: 20px;
+    padding: 20px 15px 80px 15px;
     display: flex;    
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+    height: 100%;
     font-size: 20px;
     font-size: 2rem;
     font-weight: normal;
     color: @grey;
+  }
+
+  &-listItem {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 15px;
+    background-color: @list-item-bg-even;
+    transition: background-color 0.2s ease;
+
+    &:nth-child(odd) {
+      background-color: @list-item-bg-odd;
+    }
+
+    &:hover:not(.already-added):not(.is-disabled) {
+      background-color: @list-item-bg-hover;
+    }
   }
 
   &-footer {

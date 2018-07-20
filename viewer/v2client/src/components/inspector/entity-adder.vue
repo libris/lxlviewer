@@ -570,8 +570,7 @@ export default {
             </div>
           </div>
         </div>
-        <modal-pagination 
-          class="ScrollMarginTop" 
+        <modal-pagination
           v-if="!loading && searchResult.length > 0" 
           @go="go" 
           :numberOfPages="numberOfPages" 
@@ -728,12 +727,6 @@ export default {
   &-fetchMore {
     text-align: center;
   }
-}
-
-.ScrollMarginTop {
-  // padding-top: 95px !important;
-  // If you question this, feel free to rewrite the layout of this modal.
-  // search-window.vue is a much better implementation.
 }
 
 </style>

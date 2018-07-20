@@ -18,6 +18,7 @@ import SummaryAction from './summary-action';
 import LensMixin from '../mixins/lens-mixin';
 import { mixin as clickaway } from 'vue-clickaway';
 import { mapGetters } from 'vuex';
+import VueSimpleSpinner from 'vue-simple-spinner';
 
 export default {
   name: 'search-window',
@@ -69,6 +70,7 @@ export default {
     'summary-action': SummaryAction,
     'panel-component': PanelComponent,
     'modal-pagination': ModalPagination,
+    'vue-simple-spinner': VueSimpleSpinner,
   },
   watch: {
     keyword(value) {
@@ -340,36 +342,29 @@ export default {
       <template slot="panel-body">
         <div class="SearchWindow-resultListContainer">
           <ul v-show="displaySearchList" class="SearchWindow-resultList">
-            <li class="SearchWindow-resultItem"
+            <li class="PanelComponent-listItem SearchWindow-resultItem"
               v-for="item in searchResult" 
               :key="item['@id']" >
               <entity-summary class="SearchWindow-entitySummary"
                 :focus-data="item" 
                 :lines="4" 
                 :should-open-tab="true"></entity-summary>
-              <summary-action :options="addPayload(item)" @action="replaceWith(item)"></summary-action>
+              <summary-action class="SearchWindow-listItemControls" :options="addPayload(item)" @action="replaceWith(item)"></summary-action>
             </li>
           </ul>
-          <div class="SearchWindow-searchStatusContainer"
-            v-show="extracting || keyword.length === 0 || loading || foundNoResult">
-            <div class="SearchWindow-searchStatus">
-              <span v-show="keyword.length === 0 && !extracting">
-                {{ "Search for existing linked entities" | translatePhrase }}...
-              </span>
-              <span v-show="loading">
-                <i class="fa fa-circle-o-notch fa-spin"></i>
-                {{ "Searching" | translatePhrase }}...
-              </span>
-              <span v-show="foundNoResult">
-                <strong>{{ "No results" | translatePhrase }}</strong>
-                <br>{{"Search again or" | translatePhrase}} {{"Create and link entity" | translatePhrase}}
-              </span>
-              <span v-show="extracting">
-                <i class="fa fa-circle-o-notch fa-spin" aria-hidden="true"></i>
-                {{ "Creating link" | translatePhrase }}
-              </span>
-            </div>
-          </div>
+        </div>
+        <div class="PanelComponent-searchStatus" v-show="keyword.length === 0 && !extracting">
+          {{ "Search for existing linked entities" | translatePhrase }}...
+        </div>
+        <div class="PanelComponent-searchStatus" v-show="loading">
+          <vue-simple-spinner size="large" :message="'Searching' | translatePhrase"></vue-simple-spinner>
+        </div>
+        <div class="PanelComponent-searchStatus" v-show="foundNoResult">
+          <p>{{ "No results" | translatePhrase }}</p>
+          <p>{{"Search again or" | translatePhrase}} {{"Create and link entity" | translatePhrase}}</p>
+        </div>
+        <div class="PanelComponent-searchStatus" v-show="extracting">
+          <vue-simple-spinner size="large" :message="'Creating link' | translatePhrase"></vue-simple-spinner>
         </div>
       </template>
     </panel-component>
@@ -497,57 +492,62 @@ export default {
   &-resultListContainer {
     overflow-y: scroll;
     flex: 1 1 auto;
-    // padding-bottom: 50px;
   }
 
   &-resultList {
     padding: 0; // Make sure last item is fully visible
   }
 
-  &-resultItem {
-    border: solid #777;
-    margin: 4px;
-    border-width: 1px;
+  &-resultItem.PanelComponent-listItem {
+    flex-direction: column;
+    align-items: flex-start;
+    // border: solid #777;
+    // margin: 4px;
+    // border-width: 1px;
+    // display: flex;
+    // justify-content: space-between;
+    // align-items: center;
+    & .EntitySummary {
+      padding: 0;
+      margin-bottom: 15px;
+      max-width: 100%;
+    }
+  }
+
+  &-listItemControls {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex-grow: 1;
+    justify-content: flex-start;
+    width: 100%;
+    // cursor: pointer;
+    // padding: 0.5em 1em;
+    // background: @brand-primary;
+    // border: none;
+    // border-radius: 2px;
+    // color: @white;
+    // font-weight: bold;
+    // font-size: 12px;
+    // button, select {
+    //   &:hover {
+    //     background: lighten(@brand-primary, 5%);
+    //   }
+    //   &:active {
+    //     background: darken(@brand-primary, 5%);
+    //   }
+    // }
   }
 
   &-searchStatusContainer {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
+    // display: flex;
+    // align-items: center;
+    // justify-content: center;
+    // height: 100%;
   }
 
   &-searchStatus {
-    font-size: 20px;
-    font-size: 2.0rem;
-    text-align: center;
-    margin: 20px;
-  }
-
-  &-controls {
-    display: flex;
-    flex-grow: 1;
-    justify-content: flex-end;
-
-    button, select {
-      &:hover {
-        background: lighten(@brand-primary, 5%);
-      }
-      &:active {
-        background: darken(@brand-primary, 5%);
-      }
-      cursor: pointer;
-      padding: 0.5em 1em;
-      background: @brand-primary;
-      border: none;
-      border-radius: 2px;
-      color: @white;
-      font-weight: bold;
-      font-size: 12px;
-    }
+    // font-size: 20px;
+    // font-size: 2.0rem;
+    // margin: 20px;
   }
 }
 

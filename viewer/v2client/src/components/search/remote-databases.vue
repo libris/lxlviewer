@@ -215,8 +215,6 @@ export default {
           <i class="fa fa-times-circle"  v-on:click="removeDatabase(db)"></i>
         </div>
       </div>
-      <!-- <span class="RemoteDatabases-chip" v-on:click="showList = true">
-        {{'Add' | translatePhrase}} <i class="fa fa-plus-circle"></i></span> -->
       <div class="RemoteDatabases-add" 
           :class="{ 'is-open': showList }"
           @click="showList = !showList"
@@ -255,7 +253,7 @@ export default {
         <ul class="RemoteDatabases-list" aria-labelledby="remoteDbListLabel"
           v-show="remoteDatabases.state == 'complete' && showList">
           <li 
-            class="RemoteDatabases-listItem"
+            class="RemoteDatabases-listItem PanelComponent-listItem"
             :class="{'is-active': db.active, 'is-disabled': db.disabled }" 
             v-for="(db, index) in filteredDatabases" 
             :key="index">
@@ -382,31 +380,14 @@ export default {
     }
   }
 
-  &-listTitle {
-    cursor: pointer;
-  }
-
   &-listItem {
-    display: flex;
-    width: 100%;
-    height: 60px;
-    padding: 10px 15px;
-    background-color: @list-item-bg-even;
-    transition: background-color 0.2s ease;
     cursor: pointer;
-
-    &:nth-child(odd) {
-      background-color: @list-item-bg-odd;
-    }
-    &:hover:not(.is-disabled) {
-      background-color: @list-item-bg-hover;
-    }
 
     &.is-active {      
     }
 
     &.is-disabled {
-      color: @gray;
+      opacity: 0.6;
       cursor: default;
     }
   }
