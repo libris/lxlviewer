@@ -520,7 +520,7 @@ export default {
   }
 
   &-typeLabel {
-    padding: 3px 10px;
+    padding: 3px 8px;
     font-weight: normal;
     font-size: 18px;   
     font-size: 1.8rem;

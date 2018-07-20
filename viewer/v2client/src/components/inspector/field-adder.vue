@@ -392,7 +392,7 @@ export default {
       <template slot="panel-body">
         <div>
           <ul id="fields-window" class="FieldAdderPanel-fieldList js-fieldlist">
-            <li tabindex="0"
+            <li
               class="FieldAdderPanel-fieldItem PanelComponent-listItem"
               @focus="selectedIndex = index"
               @mouseover="selectedIndex = index" 

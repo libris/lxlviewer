@@ -212,7 +212,13 @@ export default {
       <div class="RemoteDatabases-chip chip" v-for="(db, index) in activeDatabases" :key="index">
         <span class="chip-label">{{db}}</span>
         <div class="chip-removeButton icon icon--sm">
-          <i class="fa fa-times-circle"  v-on:click="removeDatabase(db)"></i>
+          <i 
+            role="button"
+            tabindex="0"
+            class="fa fa-times-circle"  
+            @click="removeDatabase(db)"
+            @keydown.enter="removeDatabase(db)">
+          </i>
         </div>
       </div>
       <div class="RemoteDatabases-add" 

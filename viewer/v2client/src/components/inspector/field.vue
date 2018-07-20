@@ -714,24 +714,29 @@ export default {
 }
 
   &-commentText {
-    background-color: @white;
-    border-radius: 4px;
-    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
     display: none;
-    font-size: 12px;
-    font-size: 1.2rem;
-    width: 200px;
-    line-height: 1.6;
-    text-transform: none;
-    transform: translate(-89%, 5px);
-    padding: 10px;
     position: absolute;
-    text-align: left;
     top: 20px;
     right: 0;
     left: 0;
+    width: 200px;
+    font-size: 12px;
+    font-size: 1.2rem;
+    line-height: 1.6;
+    text-transform: none;
+    transform: translate(-25%, 5px);
+    padding: 10px;
+    text-align: left;
     white-space: normal;
+    background-color: @white;
+    border: 1px solid @gray-lighter;
+    border-radius: 4px;
+    box-shadow: @shadow-panel;
     z-index: 3;
+
+    @media (max-width: @screen-sm) {
+      transform: translate(-60%, 5px);
+    }
   }
 
   &-comment {
