@@ -326,13 +326,16 @@ export default {
 
 <template>
   <div class="FieldAdder">
-    <span v-if="inner" class="FieldAdder-innerAdd"
-      v-on:click="show" 
-      tabindex="0"
-      @keyup.enter="show"
-      @mouseenter="showToolTip = true, actionHighlight(true, $event)" 
-      @mouseleave="showToolTip = false, actionHighlight(false, $event)">
-      <i class="FieldAdder-innerIcon fa fa-plus-circle icon icon--sm" aria-hidden="true">
+    <span v-if="inner" class="FieldAdder-innerAdd">
+      <i 
+        class="FieldAdder-innerIcon fa fa-plus-circle icon icon--sm" 
+        tabindex="0"
+        @click="show" 
+        @keyup.enter="show"
+        @mouseenter="showToolTip = true, actionHighlight(true, $event)" 
+        @mouseleave="showToolTip = false, actionHighlight(false, $event)"
+        @focus="showToolTip = true, actionHighlight(true, $event)"
+        @blur="showToolTip = false, actionHighlight(false, $event)">
         <tooltip-component 
           :show-tooltip="showToolTip" 
           :tooltip-text="modalTitle" 

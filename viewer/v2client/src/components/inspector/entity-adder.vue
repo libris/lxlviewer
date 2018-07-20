@@ -476,30 +476,34 @@ export default {
   <div class="EntityAdder" :class="{'is-innerAdder': isPlaceholder, 'is-fillWidth': addEmbedded}">
     <!-- Adds another empty field of the same type -->
     <div class="EntityAdder-add"
-      v-if="isPlaceholder && !addEmbedded" 
-      v-on:click="add($event)" 
-      tabindex="0"
-      @keyup.enter="add($event)"
-      @mouseenter="showToolTip = true, actionHighlight(true, $event)" 
-      @mouseleave="showToolTip = false, actionHighlight(false, $event)">
-      <span>
-        <i class="fa fa-fw fa-plus-circle icon icon--sm" aria-hidden="true">
+      v-if="isPlaceholder && !addEmbedded">
+        <i 
+          class="fa fa-fw fa-plus-circle icon icon--sm" 
+          tabindex="0"
+          aria-hidden="true"
+          @click="add($event)" 
+          @keyup.enter="add($event)"
+          @mouseenter="showToolTip = true, actionHighlight(true, $event)" 
+          @mouseleave="showToolTip = false, actionHighlight(false, $event)"
+          @focus="showToolTip = true, actionHighlight(true, $event)"
+          @blur="showToolTip = false, actionHighlight(false, $event)">
           <tooltip-component 
             :show-tooltip="showToolTip" 
             :tooltip-text="tooltipText"></tooltip-component>
         </i>
-      </span>
-    </div>
+    </div>      
 
     <!-- Add entity within field -->
-    <div class="EntityAdder-add action-button" 
-      v-if="!isPlaceholder && !addEmbedded" 
-      tabindex="0"
-      v-on:click="add($event)" 
-      @keyup.enter="add($event)"
-      @mouseenter="showToolTip = true, actionHighlight(true, $event)" 
-      @mouseleave="showToolTip = false, actionHighlight(false, $event)">
-      <i class="EntityAdder-addIcon fa fa-fw fa-plus-circle icon icon--sm" aria-hidden="true">
+    <div class="EntityAdder-add action-button" v-if="!isPlaceholder && !addEmbedded">
+      <i 
+        class="EntityAdder-addIcon fa fa-fw fa-plus-circle icon icon--sm" 
+        tabindex="0"
+        v-on:click="add($event)" 
+        @keyup.enter="add($event)"
+        @mouseenter="showToolTip = true, actionHighlight(true, $event)" 
+        @mouseleave="showToolTip = false, actionHighlight(false, $event)"
+        @focus="showToolTip = true, actionHighlight(true, $event)"
+        @blur="showToolTip = false, actionHighlight(false, $event)">
         <tooltip-component 
           :show-tooltip="showToolTip" 
           :tooltip-text="tooltipText"></tooltip-component>
