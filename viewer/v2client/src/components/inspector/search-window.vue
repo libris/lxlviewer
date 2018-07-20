@@ -379,47 +379,21 @@ export default {
   }
 
   &-help {
-    // margin-left: 10px;
-    // display: inline-block;
   }
 
   &-helpText {
-    // max-width: 40%;
-    // position: absolute;
-    // background-color: #fff;
-    // border: 1px solid #ccc;
-    // padding: 5px;
-    // border-radius: 3px;
-    // font-size: 12px;
-    // font-size: 1.2rem;
-    // z-index: 1;
   }
 
   &-header {
-    // border: solid #ccc;
-    // border-width: 0px 0px 1px 0px;
-    // background-color: darken(@neutral-color, 4%);
-    // flex: 0 1 auto;
-    // font-weight: 700;
-    // padding: 10px 20px;
     width: 100%;
   }
 
   &-search {
-    // align-items: center;
-    // display: flex;
   }
 
   &-inputContainer {
     width: 100%;
     display: flex;
-    // border: 2px solid @gray;
-    // border-radius: 0.2em;
-    // font-size: 14px;
-    // font-size: 1.4rem;
-    // flex: 60% 0 0;
-    // background: @white;
-    // padding: 10px;
 
     > select {
       position: absolute;
@@ -428,30 +402,16 @@ export default {
       max-width: 200px;
       border: 0;
       outline: none;
-      // max-width: 50%;
-      // padding: 0.2em 0.5em;
-      // margin: 0 0.3em;
-      // border-radius: 0.3em;
-      // border: 0px;
-      // outline: none;
-      // background: @brand-primary;
-      // color: @white;
-      // cursor: pointer;
-      // font-weight: bold;
     }
   }
 
   &-input {
-    // font-weight: normal;
-    // width: 100%;
-    // border: none;
-    // outline: none;
   }
 
   &-extractControls {
-    // padding: 10px 0 0 0;
     .preview-entity-text {
     }
+
     .copy-title {
       float: right;
       label {
@@ -463,8 +423,6 @@ export default {
 
   &-summaryContainer {
     display: flex;
-    // justify-content: space-between;
-    // align-items: center;
     flex-direction: column;
     margin-bottom: 20px;
 
@@ -477,16 +435,6 @@ export default {
   }
 
   &-panel {
-    .PanelComponent-body {
-      // width: 100%;
-      // background-color: white;
-      // border: 1px solid #ccc;
-      // padding: 0px;
-      // overflow: hidden;
-      // height: 100%;
-      // display: flex;
-      // flex-flow: column;
-    }
   }
 
   &-resultListContainer {
@@ -501,12 +449,7 @@ export default {
   &-resultItem.PanelComponent-listItem {
     flex-direction: column;
     align-items: flex-start;
-    // border: solid #777;
-    // margin: 4px;
-    // border-width: 1px;
-    // display: flex;
-    // justify-content: space-between;
-    // align-items: center;
+
     & .EntitySummary {
       padding: 0;
       margin-bottom: 15px;
@@ -519,35 +462,12 @@ export default {
     flex-grow: 1;
     justify-content: flex-start;
     width: 100%;
-    // cursor: pointer;
-    // padding: 0.5em 1em;
-    // background: @brand-primary;
-    // border: none;
-    // border-radius: 2px;
-    // color: @white;
-    // font-weight: bold;
-    // font-size: 12px;
-    // button, select {
-    //   &:hover {
-    //     background: lighten(@brand-primary, 5%);
-    //   }
-    //   &:active {
-    //     background: darken(@brand-primary, 5%);
-    //   }
-    // }
   }
 
   &-searchStatusContainer {
-    // display: flex;
-    // align-items: center;
-    // justify-content: center;
-    // height: 100%;
   }
 
   &-searchStatus {
-    // font-size: 20px;
-    // font-size: 2.0rem;
-    // margin: 20px;
   }
 }
 
