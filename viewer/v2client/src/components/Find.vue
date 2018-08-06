@@ -192,9 +192,7 @@ export default {
 
 .Find {
   &-progressText {
-    margin-top: 10px;
-    color: @gray-darker;
-    font-weight: 600;
+    margin-top: 20px;
   }
 }
 
