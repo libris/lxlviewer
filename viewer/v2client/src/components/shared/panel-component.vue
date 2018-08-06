@@ -140,6 +140,11 @@ export default {
 .PanelComponent {
   cursor: auto;
 
+  // prevent panel content from inheriting styles from the element it's nested in...
+  text-transform: initial;
+  font-weight: initial;
+  color: initial;
+
   &-backdrop {
     opacity: 0;
     transition: opacity 0.5s ease;

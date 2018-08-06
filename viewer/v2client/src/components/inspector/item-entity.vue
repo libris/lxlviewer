@@ -110,14 +110,14 @@ export default {
 </script>
 
 <template>
-  <div class="ItemEntity-container" >
+  <div class="ItemEntity-container" 
+    @keyup.enter="showCardInfo=true"
+    @mouseenter="showCardInfo=true"
+    @mouseleave="showCardInfo=false">
     <div class="ItemEntity chip" 
       tabindex="0"
       v-if="!expanded" 
-      :class="{ 'is-locked': isLocked, 'is-highlighted': showCardInfo, 'is-newlyAdded': isNewlyAdded}" 
-      @keyup.enter="showCardInfo=true"
-      @mouseenter="showCardInfo=true"
-      @mouseleave="showCardInfo=false">
+      :class="{ 'is-locked': isLocked, 'is-highlighted': showCardInfo, 'is-newlyAdded': isNewlyAdded}">
       <span class="ItemEntity-label chip-label">
         <span v-if="!expanded">{{getItemLabel}}</span>
         <span class="placeholder"></span></span>
