@@ -222,13 +222,13 @@ export default {
         </div>
       </div>
       <div class="RemoteDatabases-add" 
-          :class="{ 'is-open': showList }"
-          @click="showList = !showList"
-          @keyup.enter="showList = !showList"
-          tabindex="0"
-          role="button"
-          @mouseover="removeHover = true" 
-          @mouseout="removeHover = false">
+        :class="{ 'is-open': showList }"
+        @click="showList = !showList"
+        @keyup.enter="showList = !showList"
+        tabindex="0"
+        role="button"
+        @mouseover="removeHover = true" 
+        @mouseout="removeHover = false">
         <tooltip-component 
           v-if="!showList"
           class="RemoteDatabases-tooltip"
@@ -296,16 +296,13 @@ export default {
                 :title="db.name">{{db.name}}
               </span>
             </div>
-            <div class="RemoteDatabases-dbExtraInfo">
-              <i 
-                v-show="db.comment" 
-                :title="db.comment"
-                class="RemoteDatabases-dbCommentTrigger fa fa-info-circle fa-fw icon icon--sm">
-                <!-- <div class="RemoteDatabases-dbComment">
-                  
-                </div> -->
-              </i>
-              <i v-show="db.about" class="fa fa-question-circle fa-fw"></i>
+            <div class="RemoteDatabases-dbExtraInfo" v-show="db.about">
+              <i class="fa fa-question-circle fa-fw icon--sm"></i>
+              <span class="RemoteDatabases-dbExtrainfoText">{{ db.about }}</span>
+            </div>
+            <div class="RemoteDatabases-dbExtraInfo" v-show="db.comment">
+              <i class="fa fa-info-circle fa-fw icon icon icon--sm"></i>
+              <span class="RemoteDatabases-dbExtrainfoText">{{ db.comment }}</span>
             </div>
           </li>
         </ul>
@@ -373,7 +370,8 @@ export default {
     display: flex;
     flex-wrap: wrap;
     list-style: none;
-    padding: 0px;
+    padding: 0;
+    margin: 0;
     width: 100%;
   }
 
@@ -387,14 +385,12 @@ export default {
   }
 
   &-listItem {
-    cursor: pointer;
 
     &.is-active {      
     }
 
     &.is-disabled {
-      opacity: 0.6;
-      cursor: default;
+      color: @grey-light;
     }
   }
 
@@ -411,30 +407,37 @@ export default {
   }
 
   &-dbExtraInfo {
+    position: relative;
     display: flex;
     align-items: center;
+
+    &:hover {
+      .RemoteDatabases-dbExtrainfoText {
+        display: block;
+      }
+    }
   }
-  // &-dbCommentTrigger {
-  //   div {
-  //     font-family: 'Open sans', sans-serif;
-  //     line-height: 1.6;
-  //     background-color: @neutral-color;
-  //     text-align: left;
-  //     display: none;
-  //     position: absolute;
-  //     top: 1em;
-  //     right: 1em;
-  //     border: 1px solid @gray-light;
-  //     padding: 0.25em;
-  //     border-radius: 0.25em;
-  //     width: 50%;
-  //   }
-  //   &:hover {
-  //     div {
-  //       display: block;
-  //     }
-  //   }
-  // }
+
+  &-dbExtrainfoText {
+    display: none;
+    position: absolute;
+    right: 30px;
+    width: 300px;
+    font-size: 12px;
+    font-size: 1.2rem;
+    color: @black;
+    line-height: 1.6;
+    text-transform: none;
+    padding: 10px;
+    text-align: left;
+    white-space: normal;
+    background-color: @white;
+    border: 1px solid @gray-lighter;
+    border-radius: 4px;
+    box-shadow: @shadow-panel;
+    z-index: 3;
+  }
+
   &-addControl {
     display: flex;
     align-items: center;
