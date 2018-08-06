@@ -445,11 +445,12 @@ export default {
     <pre class="path-code" v-show="user.settings.appTech">{{getPath}}</pre>
       
     <div class="Field-content FieldContent" 
-      v-bind:class="{ 'is-locked': locked }"
+      v-bind:class="{ 'is-locked': locked}"
       v-if="isObjectArray">
       <div class="Field-contentItem" 
         v-for="(item, index) in valueAsArray" 
-        :key="index" >
+        :key="index"
+        v-bind:class="{'is-entityContent': getDatatype(item) == 'entity'}">
         <item-error 
           v-if="getDatatype(item) == 'error'" 
           :item="item"></item-error>
@@ -751,6 +752,10 @@ export default {
   &-contentItem {
     display: flex;
     flex: 1;
+
+    &.is-entityContent {
+      display: inline-flex;
+    }
   }
 
   &-actions {
