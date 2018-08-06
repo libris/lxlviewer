@@ -18,6 +18,7 @@ import ModalComponent from '@/components/shared/modal-component.vue';
 import ModalPagination from '@/components/inspector/modal-pagination';
 import LensMixin from '../mixins/lens-mixin';
 import { mixin as clickaway } from 'vue-clickaway';
+import FilterSelect from '@/components/shared/filter-select.vue';
 
 export default {
   mixins: [clickaway, LensMixin],
@@ -68,6 +69,7 @@ export default {
     'tooltip-component': ToolTipComponent,
     'entity-search-list': EntitySearchList,
     'modal-pagination': ModalPagination,
+    'filter-select': FilterSelect
   },
   watch: {
     'inspector.event'(val, oldVal) {
@@ -101,7 +103,7 @@ export default {
     },
     keyword(value) {
       this.handleChange(value);
-    },
+    }
   },
   computed: {
     settings() {
@@ -115,6 +117,22 @@ export default {
     },
     inspector() {
       return this.$store.getters.inspector;
+    },
+    selectOptions() {
+      const classTree = this.getClassTree;
+      let options = [];
+
+      for (let i = 0; i < classTree.length; i++) {
+        let term = {};
+
+        term.label = this.getFormattedSelectOption(classTree[i]);
+        term.value = classTree[i].id;
+        term.key = `${classTree[i].id}-${i}`;
+
+        options.push(term);
+      }
+
+      return options;
     },
     getClassTree() {
       const tree = this.getRange.map(type => {
@@ -244,6 +262,20 @@ export default {
         this.resources.vocab, 
         this.resources.context
       );
+    },
+    setFilter($event, keyword) {
+      let valuesArray = [];
+      let values;
+
+      if ($event['value'] !== null && typeof $event['value'] === 'object') {
+        values = Object.assign({}, { ['value'] : $event['value']});
+        valuesArray = Object.values(values.value)
+      } else {
+        valuesArray.push($event['value']);
+      }
+      
+      this.currentSearchTypes = valuesArray;
+      this.handleChange(keyword);
     },
     handleChange(value) {
       this.setSearching();
@@ -537,16 +569,12 @@ export default {
                     name="entityKeywordInput"
                     v-model="keyword"
                     autofocus />
-                  <select class="EntityAdder-searchSelect"
-                    v-model="currentSearchTypes" 
-                    @change="handleChange(keyword)">
-                    <option :value="getRange" selected>{{"All types" | translatePhrase}}</option>
-                    <option 
-                      v-for="(term, index) in getClassTree" 
-                      :key="`${term.id}-${index}`" 
-                      :value="term.id" 
-                      v-html="getFormattedSelectOption(term, settings, resources.vocab, resources.context)"></option>
-                  </select>
+                  <filter-select
+                    class="js-filterSelect"
+                    :options="selectOptions"
+                    :options-all="getRange"
+                    :options-selected="''"
+                    v-on:filter-selected="setFilter($event, keyword)"></filter-select>
                 </div>
               </div>
             <div class="EntityAdder-info" 
