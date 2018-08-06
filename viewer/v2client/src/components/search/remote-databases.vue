@@ -242,7 +242,7 @@ export default {
     </div>
     <panel-component
       v-if="showList"
-      :title="'Sources' | translatePhrase"
+      :title="'Select sources' | translatePhrase"
       @close="showList = false"
     >
       <template slot="panel-header-extra">

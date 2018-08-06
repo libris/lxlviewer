@@ -60,6 +60,12 @@
     border: 1px solid @gray-light;
     border-radius: 4px;
 
+    &::placeholder, 
+    input::placeholder  {
+        font-style: italic;
+        color: @gray;
+    }
+
     &:focus {
         border: 1px solid @brand-primary;
         outline: 0;
