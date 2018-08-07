@@ -157,7 +157,7 @@ export default {
       @blur="removeHover = false, removeHighlight(false)"
       @mouseover="removeHover = true, removeHighlight(true)" 
       @mouseout="removeHover = false, removeHighlight(false)">
-      <i class="fa fa-minus">
+      <i class="fa fa-minus icon icon--sm">
         <tooltip-component 
           :show-tooltip="removeHover" 
           tooltip-text="Remove" 
@@ -176,6 +176,7 @@ export default {
   margin: 0 0 0 -5px;
   padding: 5px;
   border-radius: 4px;
+  transition: background-color 0.2s ease;
 
   &-input {
     display: block;
