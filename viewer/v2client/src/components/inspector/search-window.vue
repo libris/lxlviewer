@@ -398,7 +398,7 @@ export default {
     > select {
       position: absolute;
       right: 0;
-      margin: 7px 25px;
+      margin: 6px 25px;
       max-width: 200px;
       border: 0;
       outline: none;

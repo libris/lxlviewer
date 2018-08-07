@@ -74,9 +74,9 @@ export default {
         <div class="CreationCard-descr card-descr">{{template.description}}</div>
       </div>
       <div class="card-link">
-        <a class="CreationCard-select" tabindex="0" v-show="!isActive" @keyup.enter="useTemplate(template.value)">
+        <button class="CreationCard-select btn btn-primary btn--md" tabindex="0" v-show="!isActive" @keyup.enter="useTemplate(template.value)">
           {{ 'Choose' | translatePhrase }}
-        </a>
+        </button>
         <a class="CreationCard-select" tabindex="0" v-show="isActive" @keyup.enter="useTemplate(template.value)">
           {{ 'Chosen' | translatePhrase }}
         </a>
