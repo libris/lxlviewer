@@ -21,12 +21,10 @@
     "Social media": "Sociala medier",
     "All": "Alla",
     "Home": "Hem",
-    "Item": "Bestånd",
     "Work": "Verk",
     "Instance": "Instans",
     "Agent": "Agent",
     "Concept": "Koncept",
-    "Save failed": "Sparning misslyckades",
     "Opens in new window": "Öppnas i nytt fönster",
     "The resource has changed": "Resursen har ändrats",
     "Save failed": "Kunde inte spara",
@@ -183,6 +181,8 @@
     "Compact view": "Kompakt vy",
     "Created": "Skapad",
     "Changed": "Ändrad",
-    "by": "av"
+    "by": "av",
+    "Clear all": "Rensa alla",
+    "Close": "Stäng"
   }
 }

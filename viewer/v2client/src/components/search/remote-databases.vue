@@ -29,7 +29,8 @@ export default {
         list: [],
         debug: '',
       },
-    removeHover: false,
+      addTooltip: false,
+      clearTooltip: false,
     };
   },
   computed: {
@@ -177,6 +178,12 @@ export default {
         this.remoteDatabases.list[key].active = !this.remoteDatabases.list[key].active;
       }
     },
+    clearDatabases() {
+      this.clearTooltip = false;
+      for (let key in this.remoteDatabases.list) {
+        this.remoteDatabases.list[key].active = false;
+      }
+    },
     attachResult(response) {
       const convertedResult = this.convertResult(response);
       this.convertedItems = convertedResult;
@@ -221,19 +228,35 @@ export default {
           </i>
         </div>
       </div>
+      <div class="RemoteDatabases-clear"
+        v-if="activeDatabases.length > 1"
+        @click="clearDatabases()"
+        @keyup.enter="clearDatabases()"
+        tabindex="0"
+        role="button"
+        @mouseover="clearTooltip = true" 
+        @mouseout="clearTooltip = false">
+        <tooltip-component 
+          class="RemoteDatabases-tooltip"
+          :show-tooltip="clearTooltip" 
+          tooltip-text="Clear all"
+          position="top" 
+          translation="translatePhrase">
+        </tooltip-component>
+        <i class="fa fa-times-circle icon icon--lg"></i>
+      </div>
       <div class="RemoteDatabases-add" 
         :class="{ 'is-open': showList }"
         @click="showList = !showList"
         @keyup.enter="showList = !showList"
         tabindex="0"
         role="button"
-        @mouseover="removeHover = true" 
-        @mouseout="removeHover = false">
+        @mouseover="addTooltip = true" 
+        @mouseout="addTooltip = false">
         <tooltip-component 
-          v-if="!showList"
           class="RemoteDatabases-tooltip"
-          :show-tooltip="removeHover" 
-          tooltip-text="Add"
+          :show-tooltip="addTooltip" 
+          :tooltip-text="showList ? 'Close' : 'Add'"
           position="top" 
           translation="translatePhrase">
         </tooltip-component>
@@ -243,8 +266,7 @@ export default {
     <panel-component
       v-if="showList"
       :title="'Select sources' | translatePhrase"
-      @close="showList = false"
-    >
+      @close="showList = false">
       <template slot="panel-header-extra">
         <div class="RemoteDatabases-listFilter form-group panel">
           <input 
@@ -336,11 +358,9 @@ export default {
 .RemoteDatabases {
 
   &-activeInfo {
-    font-size: 18px;
-    font-size: 1.8rem;
-
+    margin-bottom: 5px;
+    
     &.no-sources {
-      color: @gray;
     }
   }
 
@@ -348,13 +368,14 @@ export default {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    min-height: 35px;
+    min-height: 40px;
   }
 
   &-chip {
   }
 
-  &-add {
+  &-add,
+  &-clear {
     margin-left: 10px;
 
     &.is-open i {
