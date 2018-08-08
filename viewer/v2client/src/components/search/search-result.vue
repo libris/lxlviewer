@@ -43,10 +43,9 @@ export default {
   },
   watch: {
     keyword(value, oldval) {
-      console.log("keyword changed", value, oldval);
     },
   },
-  mounted() { // Ready method is deprecated in 2.0, switch to "mounted"
+  mounted() {
     this.$nextTick(() => {
       setTimeout(() => {
         this.showResult = true;
