@@ -70,7 +70,7 @@ export default {
           <i class="fa fa-chevron-left"></i>
         </a>  
       </li>
-      <li class="ModalPagination-item" :key="n" v-for="n in pageRange" :class="{'is-active': n.active, 'is-disabled': n.disabled}">
+      <li class="ModalPagination-item" :key="n.page" v-for="n in pageRange" :class="{'is-active': n.active, 'is-disabled': n.disabled}">
         <a 
           class="ModalPagination-link" 
           @keydown.enter="go(n.page)" 

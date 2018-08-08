@@ -228,6 +228,7 @@ export default {
 
     i {
       color: inherit;
+      vertical-align: top;
     }
 
     &.is-active {
