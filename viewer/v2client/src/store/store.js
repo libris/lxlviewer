@@ -32,6 +32,7 @@ const store = new Vuex.Store({
       context: {},
     },
     inspector: {
+      breadcrumb: [],
       data: {},
       insertData: {},
       originalData: {},

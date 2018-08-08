@@ -46,7 +46,7 @@ export default {
       console.log("keyword changed", value, oldval);
     },
   },
-  ready() { // Ready method is deprecated in 2.0, switch to "mounted"
+  mounted() { // Ready method is deprecated in 2.0, switch to "mounted"
     this.$nextTick(() => {
       setTimeout(() => {
         this.showResult = true;
