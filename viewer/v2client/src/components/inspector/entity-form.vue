@@ -139,7 +139,6 @@ export default {
         :field-value="v" 
         :parent-path="inspector.status.focus"></field>
       <div id="result" v-if="user.settings.appTech && !isLocked">
-        <div class="row">
         <pre class="col-md-6">
           SORTED
           {{sortedFormData | json}}
@@ -148,7 +147,6 @@ export default {
           ORIGINAL
           {{formData | json}}
         </pre>
-        </div>
       </div>
     </ul>
   </div>

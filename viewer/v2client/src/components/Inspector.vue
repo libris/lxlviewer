@@ -434,9 +434,11 @@ export default {
             :editing-object="inspector.status.focus" 
             :locked="!inspector.status.editing">
           </entity-form>
-          <code v-if="user.settings.appTech">
-            {{result}}
-          </code>
+          <div class="Inspector-code" v-if="user.settings.appTech">
+            <code>
+              {{result}}
+            </code>
+          </div>
         </div>
       </div>
     </div>
@@ -493,6 +495,12 @@ export default {
 
   &-reverse {
     flex: 1;
+  }
+
+  &-code {
+    padding: 10px 20px;
+    background-color: @white;
+    border: 1px solid @gray-lighter;
   }
 }
 

@@ -375,49 +375,52 @@ export default {
     @mouseover="handleMouseEnter()" 
     @mouseleave="handleMouseLeave()">
 
-    <div class="Field-labelWrapper" v-if="!isInner" :class="{'is-editing': inspector.status.editing}">
-      <div v-if="this.inspector.status.editing" class="Field-actions">
-        <div class="Field-action Field-remove" 
-          v-show="!locked" 
-          :class="{'disabled': activeModal}">
-          <i class="fa fa-trash-o action-button icon icon--sm"
-            tabindex="0"
-            v-on:click="removeThis(true)"
-            @focus="removeHover = true, removeHighlight(true, $event)" 
-            @blur="removeHover = false, removeHighlight(false, $event)"
-            @mouseover="removeHover = true, removeHighlight(true, $event)" 
-            @mouseout="removeHover = false, removeHighlight(false, $event)">
-            <tooltip-component 
-              :show-tooltip="removeHover" 
-              tooltip-text="Remove" 
-              translation="translatePhrase"></tooltip-component>
-          </i>
+    <div class="Field-labelContainer" v-if="!isInner" :class="{'is-wide': inspector.status.editing || user.settings.appTech}">
+      <div class="Field-labelWrapper">
+        <div v-if="this.inspector.status.editing" class="Field-actions">
+          <div class="Field-action Field-remove" 
+            v-show="!locked" 
+            :class="{'disabled': activeModal}">
+            <i class="fa fa-trash-o action-button icon icon--sm"
+              tabindex="0"
+              v-on:click="removeThis(true)"
+              @focus="removeHover = true, removeHighlight(true, $event)" 
+              @blur="removeHover = false, removeHighlight(false, $event)"
+              @mouseover="removeHover = true, removeHighlight(true, $event)" 
+              @mouseout="removeHover = false, removeHighlight(false, $event)">
+              <tooltip-component 
+                :show-tooltip="removeHover" 
+                tooltip-text="Remove" 
+                translation="translatePhrase"></tooltip-component>
+            </i>
+          </div>
+          <entity-adder class="Field-entityAdder Field-action"
+            v-if="!locked && (isRepeatable || isEmptyObject)" 
+            :field-key="fieldKey" 
+            :already-added="linkedIds" 
+            :compositional="isCompositional" 
+            :entity-type="entityType" 
+            :property-types="propertyTypes" 
+            :show-action-buttons="actionButtonsShown" 
+            :active="activeModal" 
+            :is-placeholder="false" 
+            :value-list="valueAsArray" 
+            :path="getPath">
+          </entity-adder>
+          <div v-else class="Field-action placeholder"></div> 
+          <div class="Field-comment" v-if="propertyComment && !locked" >
+            <i class="fa fa-question-circle Field-comment icon icon--sm"></i>
+            <span class="Field-commentText">{{ propertyComment }}</span>
+          </div>
         </div>
-        <entity-adder class="Field-entityAdder Field-action"
-          v-if="!locked && (isRepeatable || isEmptyObject)" 
-          :field-key="fieldKey" 
-          :already-added="linkedIds" 
-          :compositional="isCompositional" 
-          :entity-type="entityType" 
-          :property-types="propertyTypes" 
-          :show-action-buttons="actionButtonsShown" 
-          :active="activeModal" 
-          :is-placeholder="false" 
-          :value-list="valueAsArray" 
-          :path="getPath">
-        </entity-adder>
-        <div v-else class="Field-action placeholder"></div> 
-        <div class="Field-comment" v-if="propertyComment && !locked" >
-          <i class="fa fa-question-circle Field-comment icon icon--sm"></i>
-          <span class="Field-commentText">{{ propertyComment }}</span>
+        <div class="Field-label capitalHeading--gray" v-bind:class="{ 'is-locked': locked }">
+          <span v-show="fieldKey === '@id'">{{ 'ID' | translatePhrase | capitalize }}</span>
+          <span v-show="fieldKey === '@type'">{{ 'Type' | translatePhrase | capitalize }}</span>
+          <span v-show="fieldKey !== '@id' && fieldKey !== '@type'" 
+            :title="fieldKey">{{ fieldKey | labelByLang | capitalize }}</span>    
         </div>
       </div>
-      <div class="Field-label capitalHeading--gray" v-bind:class="{ 'is-locked': locked }">
-        <span v-show="fieldKey === '@id'">{{ 'ID' | translatePhrase | capitalize }}</span>
-        <span v-show="fieldKey === '@type'">{{ 'Type' | translatePhrase | capitalize }}</span>
-        <span v-show="fieldKey !== '@id' && fieldKey !== '@type'" 
-          :title="fieldKey">{{ fieldKey | labelByLang | capitalize }}</span>    
-      </div>
+      <pre class="path-code" v-show="user.settings.appTech && !isInner">{{getPath}}</pre>
     </div>
     <div class="Field-label capitalHeading--gray" v-if="isInner" v-bind:class="{ 'is-locked': locked }">
       <span v-show="fieldKey === '@id'">{{ 'ID' | translatePhrase | capitalize }}</span>
@@ -460,7 +463,7 @@ export default {
       <!-- {{ key | labelByLang | capitalize }} -->
     </div>
 
-    <pre class="path-code" v-show="user.settings.appTech">{{getPath}}</pre>
+    <pre class="path-code" v-show="user.settings.appTech && isInner">{{getPath}}</pre>
       
     <div class="Field-content FieldContent" 
       v-bind:class="{ 'is-locked': locked }"
@@ -640,19 +643,32 @@ export default {
     }
   }
 
-  &-labelWrapper {
-    flex: 0 0 225px;
+    &-labelContainer {
     display: flex;
-    justify-content: flex-end;
+    flex: 0 0 225px;
+    flex-direction: column;
     padding: 15px 20px 0 20px;
-    flex-direction: row-reverse;
 
-    &.is-editing {
+    &.is-wide {
       flex-basis: 300px;
+    }
+
+    pre {
+      margin-top: 5px;
+      max-width: 260px;
     }
 
     @media (min-width: @screen-sm) {
       padding: 15px 20px;
+    }
+  }
+
+  &-labelWrapper {
+    display: flex;
+    justify-content: flex-end;
+    flex-direction: row-reverse;
+
+    @media (min-width: @screen-sm) {
       flex-direction: row;
     }
   }
@@ -708,10 +724,10 @@ export default {
       text-align: right;
     }
 
-  @media print and (max-width: 768px) {
-    padding-bottom: 0;
+    @media print and (max-width: 768px) {
+      padding-bottom: 0;
+    }
   }
-}
 
   &-commentText {
     display: none;
@@ -826,15 +842,13 @@ export default {
     &:hover {
     }
   }
+
+  .path-code {
+    display: inline-block;
+  }
 }
 
 .field {
-
-  .path-code {
-    padding: 1px 3px;
-    margin: 0px;
-    color: black;
-  }
   
   .node-list {
     line-height: 0;
