@@ -53,8 +53,7 @@ export default {
   <nav class="ModalPagination">
     <ul class="ModalPagination-list">
       <li class="ModalPagination-item" :class="{'is-disabled': currentPage-1 < 0 }">
-        <a 
-          class="ModalPagination-link" 
+        <a class="ModalPagination-link" 
           @keydown.enter="go(0)" 
           @click="go(0)" 
           :tabindex="currentPage-1 < 0 ? -1 : 0">
@@ -62,8 +61,7 @@ export default {
         </a>
       </li>
       <li class="ModalPagination-item" :class="{'is-disabled': currentPage-1 < 0 }">
-        <a 
-          class="ModalPagination-link" 
+        <a class="ModalPagination-link" 
           @keydown.enter="go(currentPage-1)" 
           @click="go(currentPage-1)" 
           :tabindex="currentPage-1 < 0 ? -1 : 0">
@@ -71,8 +69,7 @@ export default {
         </a>  
       </li>
       <li class="ModalPagination-item" :key="n.page" v-for="n in pageRange" :class="{'is-active': n.active, 'is-disabled': n.disabled}">
-        <a 
-          class="ModalPagination-link" 
+        <a class="ModalPagination-link" 
           @keydown.enter="go(n.page)" 
           @click="go(n.page)" 
           :tabindex="n.page === '...' ? -1 : 0">
@@ -80,8 +77,7 @@ export default {
         </a>
       </li>
       <li class="ModalPagination-item" :class="{'is-disabled': currentPage+1 > numberOfPages }">
-         <a 
-          class="ModalPagination-link" 
+         <a class="ModalPagination-link" 
           @keydown.enter="go(currentPage+1)" 
           @click="go(currentPage+1)" 
           :tabindex="currentPage+1 > numberOfPages ? -1 : 0">
@@ -89,8 +85,7 @@ export default {
          </a>
       </li>
       <li class="ModalPagination-item" :class="{'is-disabled': currentPage+1 > numberOfPages }">
-        <a 
-          class="ModalPagination-link" 
+        <a class="ModalPagination-link" 
           @keydown.enter="go(numberOfPages)" 
           @click="go(numberOfPages)" 
           :tabindex="currentPage+1 > numberOfPages ? -1 : 0">
@@ -126,7 +121,7 @@ export default {
   &-link {
     color: @grey;
     font-weight: 600;
-    padding: 5px 8px;
+    padding: 5px 7px;
     position: relative;
     text-transform: uppercase;
     transition: color 0.2s ease;

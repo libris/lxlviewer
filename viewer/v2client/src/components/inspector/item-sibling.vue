@@ -410,6 +410,7 @@ export default {
   }
 
   &-label {
+    margin-right: 90px;
   }
 
   &-type {

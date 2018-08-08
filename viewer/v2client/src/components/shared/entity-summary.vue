@@ -20,6 +20,10 @@ export default {
       type: Boolean,
     },
     shouldOpenTab: false,
+    isCompact: {
+      default: false,
+      type: Boolean
+    } 
   },
   data() {
     return {
@@ -176,7 +180,7 @@ export default {
       {{ identifiers[0] }} 
       <span class="EntitySummary-idInfo" v-if="identifiers.length > 1">(+{{ identifiers.length-1 }})</span>
     </span>
-    <ul class="EntitySummary-details">
+    <ul class="EntitySummary-details" v-show="!isCompact">
       <li class="EntitySummary-detailsItem" 
         v-show="v.length !== 0" 
         v-for="(v, k) in infoWithKeys" 
