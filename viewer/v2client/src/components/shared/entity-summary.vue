@@ -160,6 +160,7 @@ export default {
         :to="this.routerPath" 
         :title="header.join(', ')"
         :target="shouldOpenTab ? '_blank' : '' ">
+        <i v-if="shouldOpenTab" class="EntitySummary-icon fa fa-external-link" aria-hidden="true"></i>
         {{ header.join(', ') }}
       </router-link>
       <a class="EntitySummary-titleLink"
@@ -167,6 +168,7 @@ export default {
         :href="focusData['@id']" 
         :title="header.join(', ')"
         :target="shouldOpenTab ? '_blank' : '' ">
+        <i v-if="shouldOpenTab" class="EntitySummary-icon fa fa-external-link" aria-hidden="true"></i>
         {{ header.join(', ') }}
       </a>
       
@@ -305,6 +307,10 @@ export default {
 
   &-idInfo {
     font-weight: normal;
+  }
+
+  &-icon {
+    vertical-align: middle;
   }
 }
 </style>
