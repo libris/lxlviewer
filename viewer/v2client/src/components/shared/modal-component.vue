@@ -79,8 +79,8 @@ export default {
           <header>
             {{ title }}
           </header>
-          <span class="ModalComponent-windowControl">
-            <i @click="close" class="fa fa-close"></i>
+          <span class="ModalComponent-windowControl" v-if="closeable">
+            <i @click="close" class="fa fa-close icon--md"></i>
           </span>
         </slot>
       </div>
@@ -129,7 +129,6 @@ export default {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    height: 85vh;
     text-align: left;
     border-radius: 4px;
     background-color: @neutral-color;
@@ -143,7 +142,7 @@ export default {
     flex-direction: row;
     justify-content: space-between;
     background-color: @brand-primary;
-    color: @neutral-color;
+    color: @white;
     padding: 10px 15px;
 
     .is-danger & {
@@ -165,7 +164,6 @@ export default {
   &-windowControl {
     i:hover {
       cursor: pointer;
-      color: darken(@neutral-color, 25%);
     }
   }
 }

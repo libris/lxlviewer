@@ -14,9 +14,9 @@
       :closeable="false" 
       v-if="resourcesLoadingError">
       <div slot="modal-body" class="ResourceLoadingErrorModal-body">
-        Kunde inte hämta nödvändiga resurser.<br><br>
-        Testa att ladda om sidan.<br><br>
-        Om felet kvarstår, kontakta <a href="mailto:libris@kb.se">libris@kb.se</a>.
+        <p>Kunde inte hämta nödvändiga resurser.</p>
+        <p>Testa att ladda om sidan.</p>
+        <p>Om felet kvarstår, kontakta <a href="mailto:libris@kb.se">libris@kb.se</a>.</p>
       </div>
     </modal-component>
     <footer-component></footer-component>
