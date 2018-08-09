@@ -68,8 +68,9 @@ export default {
           <i class="fa fa-chevron-left"></i>
         </a>  
       </li>
-      <li class="ModalPagination-item" :key="n.page" v-for="n in pageRange" :class="{'is-active': n.active, 'is-disabled': n.disabled}">
+      <li class="ModalPagination-item" v-for="(n, index) in pageRange" :key="index"  :class="{'is-active': n.active, 'is-disabled': n.disabled}">
         <a class="ModalPagination-link" 
+          :class="{'dots' : n.page === '...' }"
           @keydown.enter="go(n.page)" 
           @click="go(n.page)" 
           :tabindex="n.page === '...' ? -1 : 0">
@@ -121,7 +122,7 @@ export default {
   &-link {
     color: @grey;
     font-weight: 600;
-    padding: 5px 7px;
+    padding: 5px;
     position: relative;
     text-transform: uppercase;
     transition: color 0.2s ease;
@@ -159,7 +160,7 @@ export default {
         height: 3px;
         background-color: @brand-primary;
         bottom: 1px;
-        right: -4px;
+        right: -3px;
         margin: auto;
       }
 
@@ -169,6 +170,11 @@ export default {
         color: @black;
         text-decoration: none;
       }
+    }
+
+    &.dots {
+      padding-left: 0;
+      padding-right: 0;
     }
   }
 }

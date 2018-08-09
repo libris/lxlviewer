@@ -460,8 +460,8 @@ export default {
           {{ 'This operation can\'t be reverted' | translatePhrase }}
         </p>
         <div class="RemovePostModal-buttonContainer">
-          <button class="btn btn-danger" @click="doRemovePost()">{{ 'Yes, remove the record' | translatePhrase }}</button>
-          <button class="btn btn-default" @click="closeRemoveModal()">{{ 'No, cancel' | translatePhrase }}</button>
+          <button class="btn btn-danger btn--md" @click="doRemovePost()">{{ 'Remove the record' | translatePhrase }}</button>
+          <button class="btn btn-gray btn--md" @click="closeRemoveModal()">{{ 'Cancel' | translatePhrase }}</button>
         </div>
       </div>
     </modal-component>
@@ -529,11 +529,14 @@ export default {
     height: 80%;
     display: flex;
     flex-direction: column;
-    text-align: center;
     justify-content: center;
+    padding: 15px 45px;
   }
   &-buttonContainer {
-    text-align: center;
+    margin: 10px 0;
+    & > * {
+      margin-right: 15px;
+    }
   }
 }
 

@@ -26,6 +26,21 @@ body a {
   }
 }
 
+.btn-gray {
+  color: white;
+  background-color: @gray;
+  &:hover {
+    color: white;
+    background-color: @gray-darker;
+  }
+}
+
+.btn-danger {
+  &:hover {
+    background-color: @danger-alter;
+  }
+}
+
 //btn sizes
 
 .btn-mixin(@size, @width){
@@ -45,11 +60,11 @@ body a {
 .btn--md {
   .btn-mixin(16px, 150px);
   height: 30px;
-  padding: 0 10px;
+  padding: 0 15px;
 
-  // @media screen and (max-width: @screen-sm-min){
-  //   .btn--sm
-  // }
+  @media screen and (max-width: @screen-sm-min){
+    .btn--sm
+  }
 }
 
 .btn--sm {

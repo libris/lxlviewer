@@ -97,6 +97,7 @@ export default {
 
 .ModalComponent {
   cursor: auto;
+
   &-backdrop {
     .is-fadedIn & {
       opacity: 1;
@@ -111,6 +112,7 @@ export default {
     height: 100%;
     background-color: rgba(0, 0, 0, 0.25);
   }
+
   &-container {
     .is-fadedIn & {
       opacity: 1;
@@ -129,32 +131,32 @@ export default {
     transform: translate(-50%, -50%);
     height: 85vh;
     text-align: left;
-    border: 1px solid darken(@brand-primary, 5%);
-    .is-danger & {
-      border-color: darken(@brand-danger, 5%);
-    }
-    border-radius: 3px;
+    border-radius: 4px;
     background-color: @neutral-color;
     overflow: hidden;
     line-height: 1.6;
   }
+
   &-header {
-    .is-danger & {
-      background-color: @brand-danger;
-    }
     display: flex;
     flex-wrap: nowrap;
     flex-direction: row;
     justify-content: space-between;
     background-color: @brand-primary;
     color: @neutral-color;
-    padding: 0.5em;
+    padding: 10px 15px;
+
+    .is-danger & {
+      background-color: @brand-danger;
+    }
+
     header {
       display: inline-block;
-      font-weight: bold;
+      font-weight: 600;
       text-transform: uppercase;
     }
   }
+
   &-body {
     overflow-y: auto;
     height: 100%;
