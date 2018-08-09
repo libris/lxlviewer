@@ -567,7 +567,9 @@ export default {
 <style lang="less">
 
 .Field {
-  border-bottom: 1px solid @form-border;
+  border-bottom: 1px solid;
+  border-color: @form-border;
+  border-color: @form-border-alt;
   width: 100%;
   flex-direction: row;
   opacity: 1;
@@ -623,14 +625,18 @@ export default {
     }
 
     &:before {
-      border-top: 1px solid @form-field-bullet;
+      border-top: 1px solid;
+      border-color: @field-path;
+      border-color: @field-path-alt;
       top: 16px;
-      width: 15px;
+      width: 14px;
       height: 2px;
     }
 
     &:after {
-      border-left: 1px solid @form-field-bullet;
+      border-left: 1px solid;
+      border-color: @field-path;
+      border-color: @field-path-alt;
       height: 100%;
       width: 2px;
       top: 0px;
@@ -681,7 +687,9 @@ export default {
     word-break: break-word;
 
     &:after {
-      border-left: 1px solid @form-field-bullet;
+      border-left: 1px solid;
+      border-color: @field-path;
+      border-color: @field-path-alt;
       height: 100%;
       width: 0px;
       top: 0px;
@@ -713,7 +721,8 @@ export default {
     &:before {
       .Field--inner & {
         content: " ● ";
-        color: @form-field-bullet;
+        color: @field-path;
+        color: @field-path-alt;
         position: absolute;
         left: 0px;
         top: -1px;
@@ -779,7 +788,9 @@ export default {
     }
 
      @media (min-width: 768px) {
-      border-left: 1px solid @form-border;
+      border-left: 1px solid;
+      border-color: @form-border;
+      border-color: @form-border-alt;
     }
 
     @media print and (max-width: 768px) {

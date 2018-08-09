@@ -58,12 +58,17 @@
 
 // ---- grayscale ----
 @white: #ffffff;
-@gray-lighter: #E0E6E9;
-@gray-light: #C4C7CA;
+@black: #333;
 @gray: #949A9E;
+@gray-light: #C4C7CA;
+@gray-lighter: #E0E6E9;
 @gray-dark: #6F767B;
 @gray-darker: #595D61;
-@black: #333;
+
+@gray-transparent: rgba(0, 0, 0, 0.45);
+@gray-light-transparent: rgba(0, 0, 0, 0.25);
+@gray-lighter-transparent: rgba(0, 0, 0, 0.12);
+@gray-darker-transparent: rgba(0, 0, 0, 0.68);
 
 // LIBRIS colors
 @holding-color: #ac82b5;
@@ -123,6 +128,9 @@
 @icon-default: @gray;
 @icon-default--hover: @gray-darker;
 
+@icon-alt: @gray-transparent;
+@icon-alt--hover: @gray-darker-transparent;
+
 @icon-primary: @link-color;
 @icon-primary--hover: @link-hover-color;
 
@@ -144,8 +152,12 @@
 // --------- EDITOR SPECIFIC --------
 
 @form-field: @white;
+
 @form-border: @gray-lighter;
-@form-field-bullet: @gray-light;
+@form-border-alt: @gray-lighter-transparent;
+
+@field-path: @gray-light;
+@field-path-alt: @gray-light-transparent;
 
 @remove: @danger;
 @add: @sec;
