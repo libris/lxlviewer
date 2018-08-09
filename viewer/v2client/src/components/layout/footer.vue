@@ -214,6 +214,7 @@ export default {
   }
 
   &-listTitle {
+    color: @white;
     font-size: 16px;
     font-size: 1.6rem;
     font-weight: 600;
