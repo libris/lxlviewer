@@ -461,6 +461,10 @@ export default {
       border-radius: 4px;
       margin-bottom: 10px;
       border: 1px solid @gray-lighter;
+      max-height: inherit;
+      max-height: fit-content;
+      resize: vertical;
+      overflow: auto;
     }
   }
 
