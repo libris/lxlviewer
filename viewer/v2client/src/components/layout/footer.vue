@@ -129,9 +129,9 @@ export default {
 .Footer {
   padding: 20px 0;
   background-color: @bg-footer;
-  border: 0px solid @border-footer;
   color: @text-footer;
-  box-shadow: @shadow-footer;
+  // border: 0px solid @border-footer;
+  // box-shadow: @shadow-footer;
 
   &-content {
     display: flex;

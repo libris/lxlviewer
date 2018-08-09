@@ -143,7 +143,7 @@ export default {
   // prevent panel content from inheriting styles from the element it's nested in...
   text-transform: initial;
   font-weight: initial;
-  color: initial;
+  color: @black;
 
   &-backdrop {
     opacity: 0;

@@ -205,7 +205,7 @@ export default {
   padding-left: 0px;
   margin: 0px;
   &-item {
-    color: black;
+    color: @black;
     flex-direction: row;
     list-style: none;
     width: 100%;

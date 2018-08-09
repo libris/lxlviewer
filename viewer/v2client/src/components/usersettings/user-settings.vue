@@ -127,7 +127,7 @@ export default {
   }
 
   &-title {
-    flex: 100% 1 1;
+    flex: 1 1 100%;
   }
 
   &-content {

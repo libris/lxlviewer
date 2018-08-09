@@ -202,7 +202,7 @@ export default {
     display: flex;
     justify-content: space-between;
     width: 100%;
-    color: @gray;
+    color: @gray-dark;
     line-height: 1.2;
   }
 
