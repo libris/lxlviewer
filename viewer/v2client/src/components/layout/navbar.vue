@@ -36,7 +36,7 @@ export default {
 
 <template>
   <nav class="NavBar" aria-labelledby="service-name">
-    <div class="container">
+    <div class="NavBar-container container">
       <div class="row">
         <div class="col-xs-12 col-md-4 col-lg-5">
           <div class="NavBar-brand" role="banner">
@@ -101,6 +101,12 @@ export default {
   box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
   height: auto;
 
+  &-container {
+    @media screen and (max-width: @screen-lg-min){
+      width: 100%;
+    }
+  }
+
   &-brand {
     float: left;
     margin: 10px 0 5px;
@@ -163,7 +169,7 @@ export default {
 
 .MainNav {
   float: left;
-  border-top: 1px solid @black;
+  border-top: 1px solid @gray-light;
   width: 100%;
   list-style: none;
   padding: 5px 0 0;
@@ -182,6 +188,10 @@ export default {
     display: inline-block;
     max-height: 60px;
     margin-top: -2px;
+
+    &:last-of-type a {
+        padding-right: 0;
+    }
       
     @media screen and (max-width: @screen-sm-min) {
       display: inline;
