@@ -95,7 +95,7 @@ export default {
 .SearchResult {
   padding: 10px;
 
-  @media (min-width: @screen-sm-min) {
+  @media (min-width: @screen-md) {
     padding: 0;
   }
 

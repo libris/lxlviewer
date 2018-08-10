@@ -383,14 +383,14 @@ export default {
   padding: 10px;
   transition: 0.3s ease margin-top;
 
+  @media (min-width: @screen-md) {
+    padding: 0 0 20px 0;
+  }
+
   &-topControl {
     display: flex;
     align-items: center;
     justify-content: space-between;
-  }
-
-  @media (min-width: 768px) {
-    padding: 0 0 20px 0;
   }
 
   &.is-landing-page {

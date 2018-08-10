@@ -75,7 +75,7 @@ export default {
 .FacetControls {
   padding: 0 10px;
 
-  @media (min-width: 768px) {
+  @media (min-width: @screen-md) {
     padding: 0;
   }
 
