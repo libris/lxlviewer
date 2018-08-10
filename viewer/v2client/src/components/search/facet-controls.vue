@@ -22,6 +22,7 @@ export default {
     expandFacets($event) {
       let el = $event.target;
       let list = el.nextSibling.nextSibling;
+      el.classList.toggle('is-open');
       list.classList.toggle('is-open');
     }
   },
@@ -85,16 +86,27 @@ export default {
     cursor: pointer;
     display: inline-block;
 
-    &:hover {
-      text-decoration: underline;
+    &:before {
+      font-family: FontAwesome;
+      content: "\F054";
+      display: inline-block;
+      margin-right: 3px;
+      transition: transform 0.1s ease;
     }
 
     @media (min-width: 992px) {
       cursor: default;
       pointer-events: none;
 
-      &:hover {
-        text-decoration: none;
+      &:before {
+        content: '';
+        margin: -2px;
+      }
+    }
+
+    &.is-open {
+      &:before {
+        transform: rotate(90deg);
       }
     }
   }

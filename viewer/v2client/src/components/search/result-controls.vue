@@ -203,7 +203,6 @@ export default {
     justify-content: space-between;
     width: 100%;
     color: @gray-dark;
-    line-height: 1.2;
   }
 
   &-resultDescr {
