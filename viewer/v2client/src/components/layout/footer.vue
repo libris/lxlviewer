@@ -127,11 +127,9 @@ export default {
 <style lang="less">
 
 .Footer {
-  padding: 20px 0;
+  padding: 25px 10px;
   background-color: @bg-footer;
   color: @text-footer;
-  // border: 0px solid @border-footer;
-  // box-shadow: @shadow-footer;
 
   &-content {
     display: flex;
@@ -147,6 +145,7 @@ export default {
     align-items: center;
     flex-direction: column;
     justify-content: center;
+    justify-content: flex-start;
     font-weight: 700;
     display: block;
 
@@ -178,7 +177,7 @@ export default {
     list-style-type: none;
     flex: 80% 2 2;
 
-    @media (min-width: 998px) {
+    @media (min-width: @screen-sm) {
       display: flex;
     }
   }
@@ -186,15 +185,20 @@ export default {
   &-nav {
     flex: 25% 2 2;
     flex-direction: column;
-    margin: 0 0 20px 0;
+    margin: 0 20px 20px 0;
   }
 
   &-navList {
-    font-size: 16px;
-    font-size: 1.6rem;
+    font-size: 14px;
+    font-size: 1.4rem;
     list-style-type: none;
     margin: 0;
     padding: 0;
+
+    @media (min-width: @screen-md) {
+      font-size: 16px;
+      font-size: 1.6rem;
+    }
   }
 
   &-navItem {
@@ -215,10 +219,15 @@ export default {
 
   &-listTitle {
     color: @white;
-    font-size: 16px;
-    font-size: 1.6rem;
+    font-size: 14px;
+    font-size: 1.4rem;
     font-weight: 600;
-    margin: 5px 0;    
+    margin: 0 0 5px 0;
+
+    @media (min-width: @screen-md) {
+      font-size: 16px;
+      font-size: 1.6rem;
+    }
   }
 
   i {

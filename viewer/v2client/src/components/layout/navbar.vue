@@ -38,7 +38,7 @@ export default {
   <nav class="NavBar" aria-labelledby="service-name">
     <div class="NavBar-container container">
       <div class="row">
-        <div class="col-xs-12 col-md-4 col-lg-5">
+        <div class="col-xs-12 col-sm-5">
           <div class="NavBar-brand" role="banner">
             <router-link to="/" class="NavBar-brandLink">
               <img class="NavBar-brandLogo" src="~kungbib-styles/dist/assets/kb_logo_black.svg" alt="Kungliga Bibliotekets logotyp">
@@ -52,7 +52,7 @@ export default {
           </div>
         </div>
 
-        <div class="col-xs-12 col-md-8 col-lg-7">
+        <div class="col-xs-12 col-sm-7">
           <ul class="MainNav">
             <li class="MainNav-item">
               <router-link to="/help" class="MainNav-link">
@@ -102,7 +102,12 @@ export default {
   height: auto;
 
   &-container {
-    @media screen and (max-width: @screen-lg-min){
+    padding: 0 25px;
+    
+    @media screen and (min-width: @screen-sm){
+      padding: 0 15px;
+    }
+    @media screen and (max-width: @screen-lg){
       width: 100%;
     }
   }
@@ -129,7 +134,7 @@ export default {
   }
 
   &-brandTitle {
-    color: @text-brand;
+    color: @black;
     cursor: pointer;
     float: right;
     font-size: 18px;
@@ -138,7 +143,8 @@ export default {
     padding: 5px;
 
     &:hover {
-      color: @text-brand;
+      color: @black;
+      text-decoration: none;
     }
 
     @media (min-width: 768px) {
@@ -146,7 +152,7 @@ export default {
       height: 50px;
     }
 
-    @media (min-width: 1200px) {
+    @media (min-width: @screen-md) {
       font-size: 24px;
       font-size: 2.4rem;
     }
@@ -175,10 +181,10 @@ export default {
   padding: 5px 0 0;
   margin: 5px 0 5px;
 
-  @media (min-width: 992px) {
+  @media (min-width: @screen-sm) {
     float: right;
     border-top: 0;
-    margin: 0;
+    margin-top: 10px;
     padding: 0;
     text-align: right;
   }
@@ -223,7 +229,7 @@ export default {
     cursor: pointer;
     font-size: 16px;
     font-size: 1.6rem;
-    padding: 5px;
+    padding: 5px 0px;
     display: block;
 
     &:hover, 
@@ -236,8 +242,12 @@ export default {
       color: @text-alt-navbar;
     }
 
-    @media (min-width: 992px) {
-      padding: 20px 15px;
+    @media (min-width: @screen-sm) {
+      padding: 15px 10px;
+    }
+
+    @media (min-width: @screen-md) {
+      padding: 15px;
       font-size: 18px;
       font-size: 1.8rem;
     }

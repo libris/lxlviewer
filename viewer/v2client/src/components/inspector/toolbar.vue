@@ -522,8 +522,8 @@ export default {
     background-color: #ecececd1;
     padding: 6px;
     border-radius: 0.5em;
-    box-shadow: 0px 0px 15px 0px #000000;
-    box-shadow: 0px 0px 15px 0px #0000001f;
+    box-shadow: 0px 0px 15px 0px @gray;
+    box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.2);
 
     @media (min-width: 992px) {
       bottom: auto;
