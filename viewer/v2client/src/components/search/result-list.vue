@@ -20,7 +20,7 @@ export default {
     getImportItem(index) {
       if (this.importData.length !== 0) {
         const node = _.cloneDeep(this.importData[index].data);
-        const importItem = RecordUtil.prepareDuplicateFor(RecordUtil.splitJson(node), this.user);
+        const importItem = RecordUtil.prepareDuplicateFor(RecordUtil.splitJson(node), this.user, this.settings);
         return importItem;
       }
       return {};

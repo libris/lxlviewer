@@ -236,7 +236,7 @@ export default {
     },
     duplicateItem() {
       if (!this.status.inEdit && !this.isItem) {
-        const duplicate = RecordUtil.prepareDuplicateFor(this.inspector.data, this.user);
+        const duplicate = RecordUtil.prepareDuplicateFor(this.inspector.data, this.user, this.settings);
         this.$store.dispatch('setInsertData', duplicate);
         this.$router.push({ path: '/new' });
       }

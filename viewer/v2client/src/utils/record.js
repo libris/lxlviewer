@@ -201,7 +201,7 @@ export function getObjectAsRecord(mainEntity, record = {}) {
   return newObj;
 }
 
-export function prepareDuplicateFor(inspectorData, user) {
+export function prepareDuplicateFor(inspectorData, user, settings) {
   // Removes fields that we do not want to import or copy
   const newData = _.cloneDeep(inspectorData);
   if (!newData.hasOwnProperty('quoted')) {
@@ -209,32 +209,26 @@ export function prepareDuplicateFor(inspectorData, user) {
   }
   const oldBaseId = inspectorData.record['@id'];
   const newBaseId = 'https://id.kb.se/TEMPID';
+
+  // Update descriptionCreator to this organization
   newData.record.descriptionCreator = { '@id': `https://libris.kb.se/library/${user.settings.activeSigel}` };
-  if (newData.record.hasOwnProperty('controlNumber')) {
-    delete newData.record.controlNumber;
-  }
-  if (newData.record.hasOwnProperty('generationProcess')) {
-    delete newData.record.generationProcess;
-  }
-  if (newData.record.hasOwnProperty('generationDate')) {
-    delete newData.record.generationDate;
-  }
-  if (newData.record.hasOwnProperty('descriptionUpgrader')) {
-    delete newData.record.descriptionUpgrader;
-  }
+
+  // Remove properties that should not be included in the duplicate
+  _.each(settings.removeOnDuplication, (property) => {
+    _.unset(newData, property);
+  });
+
+  // Replace @id and internal @id references
   if (newData.mainEntity) {
     newData.mainEntity['@id'] =  newData.mainEntity['@id'].replace(oldBaseId, newBaseId);
-    delete newData.mainEntity.sameAs;
   }
   if (newData.record) {
     newData.record['@id'] =  newData.record['@id'].replace(oldBaseId, newBaseId);
     newData.record.mainEntity['@id'] = newData.record.mainEntity['@id'].replace(oldBaseId, newBaseId);
-    delete newData.record.sameAs;
   }
   if (newData.work) {
     newData.work['@id'] = newData.work['@id'].replace(oldBaseId, newBaseId);
     newData.mainEntity.instanceOf = { '@id': newData.work['@id'] };
-    delete newData.work.sameAs;
     newData.quoted[newData.work['@id']] = newData.work;
   }
 

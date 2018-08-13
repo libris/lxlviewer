@@ -85,6 +85,15 @@ const store = new Vuex.Store({
         'Instance',
         'Identity',
       ],
+      removeOnDuplication: [
+        'record.sameAs',
+        'mainEntity.sameAs',
+        'work.sameAs',
+        'controlNumber',
+        'generationProcess',
+        'generationDate',
+        'descriptionUpgrader',
+      ],
       removableBaseUris: [
         'http://libris.kb.se/',
         'https://libris.kb.se/',
