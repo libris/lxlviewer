@@ -21,7 +21,7 @@ export default {
       remoteResult: { state: '', totalResults: {}, items: [] },
       convertedItems: {},
       importData: [],
-      showList: true,
+      showList: false,
       importJson: '',
       filterKey: '',
       remoteDatabases: {
@@ -94,6 +94,9 @@ export default {
           value: val
         });
         this.user && this.updateUserDbs(val);
+      }
+      if (!this.showList) {
+        this.showList = val.length === 0;
       }
     },
     showList(val, oldVal) {
@@ -206,7 +209,6 @@ export default {
   mounted() {
     this.remoteQuery = this.remoteSearch.q;
     this.loadRemoteDatabases();
-    this.showList = false;
   },
 };
 </script>
