@@ -264,8 +264,8 @@ export default {
     align-items: center;
     justify-content: center;
     height: 100%;
-    font-size: 18px;
-    font-size: 1.8rem;
+    font-size: 20px;
+    font-size: 2rem;
     font-weight: normal;
     color: @grey;
   }

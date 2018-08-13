@@ -142,7 +142,10 @@ export default {
     line-height: 20px;
     padding: 5px;
 
-    &:hover {
+    &:hover,
+    &:focus,
+    &:active,
+    &:visited {
       color: @black;
       text-decoration: none;
     }
