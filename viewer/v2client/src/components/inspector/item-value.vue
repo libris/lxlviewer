@@ -179,12 +179,17 @@ export default {
   transition: background-color 0.2s ease;
 
   &-input {
+    width: 100%;
     display: block;
     border: 1px solid @gray-light;
     border-radius: 2px;
     padding: 2px 10px;
     resize: none;
     transition: border .25s ease-out;
+
+    @media (min-width: @screen-md) {
+      margin-right: 90px;
+    }
 
     &:focus {
       border: 1px solid @gray-dark;

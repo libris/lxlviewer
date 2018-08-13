@@ -104,8 +104,8 @@ export default {
         <div class="PanelComponent-header">
           <slot name="panel-header">
             <div class="PanelComponent-titleContainer">
-              <h4 class="PanelComponent-title">{{ translatedTitle }}</h4>
               <slot name="panel-header-info"></slot>
+              <h4 class="PanelComponent-title">{{ translatedTitle }}</h4>
             </div>
             <span class="PanelComponent-windowControl">
               <i 
@@ -215,7 +215,7 @@ export default {
   }
 
   &-headerInfo {
-    margin-left: 15px;
+      margin-right: 10px;
   }
 
   &-headerInfoBox {
@@ -247,7 +247,7 @@ export default {
     font-size: 18px;
     font-size: 1.8rem;
     text-transform: uppercase;
-    margin-top: 4px;
+    margin-top: 0;
   }
 
   &-body {
@@ -292,6 +292,10 @@ export default {
   }
 
   &-windowControl {
+    display: flex;
+    flex-wrap: nowrap;
+    margin-left: 10px;
+    
     > * {
       margin-right: 5px;
     }
