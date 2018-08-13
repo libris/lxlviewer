@@ -232,7 +232,7 @@ const store = new Vuex.Store({
 
       // Set the new values
       _.each(payload.changeList, (node) => {
-        console.log("DATA_UPDATE:", JSON.stringify(node));
+        // console.log("DATA_UPDATE:", JSON.stringify(node));
         _.set(inspectorData, node.path, node.value);
       });
       state.inspector.data = inspectorData;
