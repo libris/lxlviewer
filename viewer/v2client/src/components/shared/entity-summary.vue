@@ -276,13 +276,14 @@ export default {
   }
 
   &-details {
+    display: inline;
     list-style-type: none;
     margin: 0;
     padding: 0px;
   }
 
   &-detailsItem {
-    display: inline-block;
+    display: inline;
     margin-right: 10px;
   }
 
@@ -295,6 +296,8 @@ export default {
   }
 
   &-id {
+    display: inline;
+    margin-right: 10px;
   }
 
   &-idInfo {
