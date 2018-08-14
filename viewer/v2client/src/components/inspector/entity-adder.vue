@@ -344,7 +344,7 @@ export default {
         ],
         addToHistory: true,
       });
-      this.hide();
+      // this.hide();
     },
     addItem(obj) {
       let currentValue = _.cloneDeep(_.get(this.inspector.data, this.path));

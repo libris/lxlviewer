@@ -248,12 +248,12 @@ export default {
           ],
           addToHistory: true,
         });
+        this.$store.dispatch('setInspectorStatusValue', { 
+          property: 'lastAdded', 
+          value: `${this.path}.${key}` 
+          });
         if (close) {
           this.hide();
-          this.$store.dispatch('setInspectorStatusValue', { 
-            property: 'lastAdded', 
-            value: `${this.path}.${key}` 
-          });
         }
       }
       this.$parent.$emit('expand-item', true);
@@ -401,14 +401,12 @@ export default {
               @mouseover="selectedIndex = index" 
               v-bind:class="{ 'already-added': prop.added, 'available': !prop.added, 'selected': index == selectedIndex }" 
               v-for="(prop, index) in filteredResults" 
-              :key="prop['@id']" 
-              @click="addField(prop, true)"
-              @keyup.enter="addField(prop, true)">
+              :key="prop['@id']">
               <span class="FieldAdderPanel-addControl">
                 <a 
                   v-show="!prop.added" 
-                  @click.stop.prevent="addField(prop, false)"
-                  @keyup.enter.stop.prevent="addField(prop, false)"
+                  @click="addField(prop, false)"
+                  @keyup.enter="addField(prop, false)"                  
                   :title="'Add' | translatePhrase"
                   tabindex="0"
                   >
@@ -550,7 +548,6 @@ export default {
 
     &.available {
       opacity: 1;
-      cursor: pointer;
     }
   }
 }

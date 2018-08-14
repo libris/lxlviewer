@@ -222,6 +222,8 @@ export default {
     position: absolute;
     display: flex;
     flex-direction: column;
+    max-height: 100%;
+    overflow: scroll;
     background-color: @white;
     border: 1px solid @gray-light;
     border-radius: 4px;
