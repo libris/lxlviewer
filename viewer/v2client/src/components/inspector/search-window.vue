@@ -425,8 +425,6 @@ export default {
       right: 0;
       margin: 6px 25px;
       max-width: 200px;
-      border: 0;
-      outline: none;
     }
   }
 
@@ -462,7 +460,7 @@ export default {
   &-summaryContainer {
     display: flex;
     flex-direction: column;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
 
     .EntitySummary {
       background: @white;

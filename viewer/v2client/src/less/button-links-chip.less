@@ -43,14 +43,15 @@ body a {
 
 //btn sizes
 
-.btn-mixin(@size, @width){
+.btn-mixin(@width, @height, @fsize){
   min-width: @width;
-  font-size: @size;
+  height: @height;
+  font-size: @fsize;
   font-weight: 600;
 }
 
 .btn--lg {
-  .btn-mixin(20px, 275px);
+  .btn-mixin(275px, auto, 20px);
 
   @media screen and (max-width: @screen-sm-min){
     .btn--md
@@ -58,8 +59,7 @@ body a {
 }
 
 .btn--md {
-  .btn-mixin(16px, 150px);
-  height: 30px;
+  .btn-mixin(150px, 30px, 16px);
   padding: 0 15px;
 
   @media screen and (max-width: @screen-sm-min){
@@ -68,7 +68,8 @@ body a {
 }
 
 .btn--sm {
-  .btn-mixin(13px, 150px);
+  .btn-mixin(150px, 26px, 13px);
+  padding: 3px 10px;
 }
 
 // ----------- CHIP ----------------

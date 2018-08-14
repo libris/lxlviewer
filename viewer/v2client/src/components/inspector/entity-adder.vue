@@ -697,8 +697,6 @@ export default {
     right: 0;
     margin: 6px 25px;
     max-width: 200px;
-    border: 0;
-    outline: none;
   }
 
   &-create {
