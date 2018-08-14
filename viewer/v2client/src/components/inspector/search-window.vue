@@ -359,6 +359,7 @@ export default {
         <div class="SearchWindow-resultListContainer">
           <ul v-show="displaySearchList" class="SearchWindow-resultList">
             <li class="PanelComponent-listItem SearchWindow-resultItem"
+              :class="{'is-compact' : isCompact}"
               v-for="item in searchResult" 
               :key="item['@id']" >
               <entity-summary class="SearchWindow-entitySummary"
@@ -392,7 +393,14 @@ export default {
 
 .SearchWindow {
   &-entitySummary {
-    max-width: 80%;
+    max-width: 100%;
+    padding: 0;
+    margin-bottom: 15px;
+
+    .is-compact & {
+      width: 60%;
+      margin-bottom: 0;
+    }
   }
 
   &-help {
@@ -480,22 +488,26 @@ export default {
     padding: 0; // Make sure last item is fully visible
   }
 
-  &-resultItem.PanelComponent-listItem {
+  &-resultItem {
     flex-direction: column;
     align-items: flex-start;
 
-    & .EntitySummary {
-      padding: 0;
-      margin-bottom: 15px;
-      max-width: 100%;
+    &.is-compact {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 15px;
     }
   }
 
   &-listItemControls {
     display: flex;
-    flex-grow: 1;
     justify-content: flex-start;
     width: 100%;
+
+    .is-compact & {
+      width: 150px;
+    }
   }
 
   &-searchStatusContainer {

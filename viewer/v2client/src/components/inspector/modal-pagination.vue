@@ -122,7 +122,7 @@ export default {
   &-link {
     color: @grey;
     font-weight: 600;
-    padding: 5px;
+    padding: 5px 7px;
     position: relative;
     text-transform: uppercase;
     transition: color 0.2s ease;

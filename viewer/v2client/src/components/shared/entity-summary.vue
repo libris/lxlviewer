@@ -176,7 +176,8 @@ export default {
       
     </h3>
     <span class="EntitySummary-id capitalHeading--gray capitalHeading--bold" 
-      v-if="identifiers.length > 0">
+      v-if="identifiers.length > 0"
+      v-show="!isCompact">
       {{ identifiers[0] }} 
       <span class="EntitySummary-idInfo" v-if="identifiers.length > 1">(+{{ identifiers.length-1 }})</span>
     </span>
