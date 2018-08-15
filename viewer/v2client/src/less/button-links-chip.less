@@ -86,7 +86,7 @@ body a {
   line-height: 1.6;
   padding: 3px 5px 3px 10px;
   margin: 2px 5px 5px 0px;
-  transition: .1s ease;
+  transition: .3s ease;
   max-width: 300px;
 
   &-label {
@@ -106,6 +106,10 @@ body a {
     line-height: 1.2em;
     text-align: center;
     margin: 0 5px;
+  }
+
+  &.is-removeable {
+    background-color: @danger;
   }
 
   @media (max-width: @screen-sm) {

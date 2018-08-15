@@ -117,7 +117,7 @@ export default {
     <div class="ItemEntity chip" 
       tabindex="0"
       v-if="!expanded" 
-      :class="{ 'is-locked': isLocked, 'is-highlighted': showCardInfo, 'is-newlyAdded': isNewlyAdded}">
+      :class="{ 'is-locked': isLocked, 'is-highlighted': showCardInfo, 'is-newlyAdded': isNewlyAdded, 'is-removeable': removeHover}">
       <span class="ItemEntity-label chip-label">
         <span v-if="!expanded">{{getItemLabel}}</span>
         <span class="placeholder"></span></span>
@@ -128,8 +128,8 @@ export default {
           tabindex="0"
           @click="removeThis(true)"
           @keyup.enter="removeThis(true)"
-          @mouseover="removeHover = true" 
-          @mouseout="removeHover = false">
+          @mouseover="removeHover = true, showCardInfo = false"
+          @mouseout="removeHover = false, showCardInfo = true">
 
           <tooltip-component 
             :show-tooltip="removeHover" 
