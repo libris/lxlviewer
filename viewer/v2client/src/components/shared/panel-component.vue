@@ -108,15 +108,17 @@ export default {
               <h4 class="PanelComponent-title">{{ translatedTitle }}</h4>
             </div>
             <span class="PanelComponent-windowControl">
-              <i 
+              <i class="fullview-toggle-button fa fa-compress icon icon--md"
                 @click="toggleFullView" 
-                v-show="user.settings.forceFullViewPanel" 
-                class="fullview-toggle-button fa fa-window-minimize icon icon--md"></i>
-              <i 
+                v-show="user.settings.forceFullViewPanel"
+                :title="'Minimize' | translatePhrase"></i>
+              <i class="fullview-toggle-button fa fa-expand icon icon--md"
                 @click="toggleFullView" 
                 v-show="!user.settings.forceFullViewPanel" 
-                class="fullview-toggle-button fa fa-window-maximize icon icon--md"></i>
-              <i @click="close" class="fa fa-close icon icon--md"></i>
+                :title="'Expand' | translatePhrase"></i>
+              <i class="fa fa-close icon icon--md"
+                @click="close"
+                :title="'Close' | translatePhrase"></i>
             </span>
           </slot>
         </div>
@@ -297,12 +299,11 @@ export default {
     display: flex;
     flex-wrap: nowrap;
     margin-left: 10px;
-    
-    > * {
-      margin-right: 5px;
-    }
 
     .fullview-toggle-button {
+      width: 20px;
+      margin-right: 5px;
+      
       @media screen and (max-width: @screen-lg-min) {
         display: none;
       }
