@@ -66,11 +66,11 @@ export default {
           <br/>
         </div>
         <p class="UserInfo-name">
-          <strong class="UserInfo-label capitalHeading--gray capitalHeading--bold">{{"Name" | translatePhrase}}</strong><br/>
+          <strong class="UserInfo-label uppercaseHeading--bold">{{"Name" | translatePhrase}}</strong><br/>
           <span>{{user.fullName}}</span>
         </p>
         <p class="UserInfo-email">
-          <strong class="UserInfo-label capitalHeading--gray capitalHeading--bold">{{"E-mail" | translatePhrase}}</strong><br/>
+          <strong class="UserInfo-label uppercaseHeading--bold">{{"E-mail" | translatePhrase}}</strong><br/>
           <span>{{user.email || '-'}}</span>
         </p>
         <div class="UserInfo-meta">

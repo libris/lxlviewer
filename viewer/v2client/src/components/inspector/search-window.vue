@@ -292,7 +292,7 @@ export default {
       <template slot="panel-header-extra">
         <div class="SearchWindow-header search-header">
           <div class="SearchWindow-extractControls">
-            <p class="preview-entity-text capitalHeading--gray">{{ "Your new entity" | translatePhrase }}:</p>
+            <p class="preview-entity-text uppercaseHeading">{{ "Your new entity" | translatePhrase }}:</p>
             <div class="copy-title" v-if="canCopyTitle">
               <label>
                 <input type="checkbox" name="copyTitle" v-model="copyTitle" /> 

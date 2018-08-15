@@ -370,7 +370,7 @@ export default {
             :placeholder="'Filter by' | translatePhrase"
             v-model="filterKey">
         </div>
-        <div class="FieldAdderPanel-filterInfo capitalHeading--gray">
+        <div class="FieldAdderPanel-filterInfo uppercaseHeading">
           <span>
             {{ "Showing" | translatePhrase }} 
             {{ filteredResults.length }} 
@@ -384,10 +384,10 @@ export default {
         <div class="FieldAdderPanel-columnHeaders">
           <!-- <span class="FieldAdderPanel-addControl">
           </span> -->
-          <span class="FieldAdderPanel-fieldLabel capitalHeading--gray">
+          <span class="FieldAdderPanel-fieldLabel uppercaseHeading">
             {{ "Field label" | translatePhrase }}
           </span>
-          <span class="FieldAdderPanel-classInfo capitalHeading--gray">
+          <span class="FieldAdderPanel-classInfo uppercaseHeading">
             {{ "Can contain" | translatePhrase }}
           </span>
         </div>

@@ -140,7 +140,7 @@ export default {
 <template>
 <section class="EntitySummary">
   <div class="EntitySummary-meta">
-    <div class="EntitySummary-type capitalHeading--light">
+    <div class="EntitySummary-type uppercaseHeading--light">
       {{categorization.join(', ')}} {{ isLocal ? '{lokal entitet}' : '' }}
       <span class="EntitySummary-sourceLabel" v-if="database">{{ database }}</span>
     </div>
@@ -175,7 +175,7 @@ export default {
       </a>
       
     </h3>
-    <span class="EntitySummary-id capitalHeading--gray capitalHeading--bold" 
+    <span class="EntitySummary-id uppercaseHeading--bold" 
       v-if="identifiers.length > 0"
       v-show="!isCompact">
       {{ identifiers[0] }} 
@@ -186,7 +186,7 @@ export default {
         v-show="v.length !== 0" 
         v-for="(v, k) in infoWithKeys" 
         :key="k">
-        <span class="EntitySummary-detailsKey capitalHeading--gray capitalHeading--bold">{{ k | labelByLang }}:</span>
+        <span class="EntitySummary-detailsKey uppercaseHeading--bold">{{ k | labelByLang }}:</span>
         <span class="EntitySummary-detailsValue">{{ v }}</span>
       </li>
     </ul>

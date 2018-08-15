@@ -128,7 +128,7 @@ export default {
 <template>
   <div class="ReverseRelations">
     <div v-if="recordType === 'Work'" v-show="!checkingRelations" class="ReverseRelations-number">
-      <span class="ReverseRelations-label capitalHeading">
+      <span class="ReverseRelations-label uppercaseHeading">
         {{ "Instantiations" | translatePhrase }}: {{numberOfRelations | translatePhrase}}
       </span>
 
@@ -145,7 +145,7 @@ export default {
     </div>
       
     <div class="ReverseRelations-number" v-if="recordType === 'Instance'">
-      <span class="ReverseRelations-label capitalHeading">
+      <span class="ReverseRelations-label uppercaseHeading">
         {{ "Libraries" | translatePhrase }}: 
         <span v-if="isNaN(numberOfRelations)"> {{'Error' | translatePhrase}}</span>
         <span v-else> {{numberOfRelations}} </span>

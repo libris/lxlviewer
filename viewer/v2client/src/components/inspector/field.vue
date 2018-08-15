@@ -413,7 +413,7 @@ export default {
             <span class="Field-commentText">{{ propertyComment }}</span>
           </div>
         </div>
-        <div class="Field-label capitalHeading--gray" v-bind:class="{ 'is-locked': locked }">
+        <div class="Field-label uppercaseHeading" v-bind:class="{ 'is-locked': locked }">
           <span v-show="fieldKey === '@id'">{{ 'ID' | translatePhrase | capitalize }}</span>
           <span v-show="fieldKey === '@type'">{{ 'Type' | translatePhrase | capitalize }}</span>
           <span v-show="fieldKey !== '@id' && fieldKey !== '@type'" 
@@ -422,7 +422,7 @@ export default {
       </div>
       <pre class="path-code" v-show="user.settings.appTech && !isInner">{{getPath}}</pre>
     </div>
-    <div class="Field-label capitalHeading--gray" v-if="isInner" v-bind:class="{ 'is-locked': locked }">
+    <div class="Field-label uppercaseHeading" v-if="isInner" v-bind:class="{ 'is-locked': locked }">
       <span v-show="fieldKey === '@id'">{{ 'ID' | translatePhrase | capitalize }}</span>
       <span v-show="fieldKey === '@type'">{{ 'Type' | translatePhrase | capitalize }}</span>
       <span v-show="fieldKey !== '@id' && fieldKey !== '@type'" 
