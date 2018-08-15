@@ -226,7 +226,8 @@ export default {
             tabindex="0"
             class="fa fa-times-circle"  
             @click="removeDatabase(db)"
-            @keydown.enter="removeDatabase(db)">
+            @keydown.enter="removeDatabase(db)"
+            :title="'Remove' | translatePhrase">
           </i>
         </div>
       </div>
@@ -248,9 +249,9 @@ export default {
         <i class="fa fa-times-circle icon icon--lg"></i>
       </div>
       <div class="RemoteDatabases-add" 
-        :class="{ 'is-open': showList }"
-        @click="showList = !showList"
-        @keyup.enter="showList = !showList"
+        v-if="!showList"
+        @click="showList = true, addTooltip = false"
+        @keyup.enter="showList = true, addTooltip = false"
         tabindex="0"
         role="button"
         @mouseover="addTooltip = true" 
@@ -258,7 +259,7 @@ export default {
         <tooltip-component 
           class="RemoteDatabases-tooltip"
           :show-tooltip="addTooltip" 
-          :tooltip-text="showList ? 'Close' : 'Add'"
+          :tooltip-text="'Add'"
           position="top" 
           translation="translatePhrase">
         </tooltip-component>
@@ -301,7 +302,7 @@ export default {
               <i 
                 v-show="db.active" 
                 class="fa fa-check-circle icon icon--lg" 
-                :title="'Added' | translatePhrase"
+                :title="'Remove' | translatePhrase"
                 tabindex="0"
                 role="button"
                 @click="toggleDatabase(db.database)"
@@ -379,10 +380,6 @@ export default {
   &-add,
   &-clear {
     margin-left: 10px;
-
-    &.is-open i {
-      color: @icon-primary--hover;
-    }
   }
 
   &-tooltip {
