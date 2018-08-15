@@ -48,6 +48,7 @@ export default {
   <div class="SummaryAction action-container">
     <button class="SummaryAction-button"
       @click="action()"
+      @keyup.enter="action()"
       :class="'SummaryAction-button--'+options.styling">
       {{options.text | translatePhrase}}
     </button>
