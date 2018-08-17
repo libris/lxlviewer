@@ -578,8 +578,11 @@ export default {
 
   &.is-mainField {
   border-bottom-width: 2px;
-    & .Field-label {
-      // color: @black;
+  
+    & .Field-labelWrapper {
+      position: static;
+      position: sticky;
+      top: 55px;
     }
   }
 
