@@ -223,12 +223,12 @@
           "issuanceType": "Serial",
           "frequency": [],
           "hasTitle": [{
-              "@type": "KeyTitle"
+              "@type": "KeyTitle",
+              "mainTitle": ""
             },
             {
               "@type": "Title",
-              "mainTitle": "",
-              "titleRemainder": ""
+              "mainTitle": ""
             }
           ],
           "marc:alphabet": {
@@ -260,10 +260,6 @@
           ],
           "carrierType": [{"@id": "https://id.kb.se/term/rda/Volume"}],
           "mediaType": [{"@id": "https://id.kb.se/term/rda/Unmediated"}],
-          "hasDimensions": {
-            "@type": "Dimensions",
-            "label": ""
-          },
           "hasNote": [{
             "@type": "Note",
             "label": ""
@@ -288,10 +284,8 @@
             {
               "@type": "Contribution",
               "agent": {
-                "@type": "Person",
-                "familyName": "",
-                "givenName": "",
-                "lifeSpan": ""
+                "@type": "Organization",
+                "name": ""
               }
             }
           ],
