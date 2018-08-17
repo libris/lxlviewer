@@ -8,9 +8,13 @@
     * panel-header        - If no content, will just show the "title"-prop and a close-button, explained below.
     * panel-header-info   - This will render additional inline information in the title, used for ! and ? icons.
     * panel-header-extra  - If you need something extra in the header, this will render below the other header-content.
-    * panel-header-after  - If you need something sticky after the header, but outside the header container (ie grid, bg-color)
+    * panel-header-after  - If you need something sticky after the header, but outside the header container (with different grid, bg-color).
     * panel-body          - Just a container for your content. Supports highly customized layout.
-    * panel-footer        - Optional footer content
+    * panel-footer        - Optional footer content.
+  
+  'origin'-prop:
+    This component expects a unique identifier of the component that triggered it. This string is set as the value of panelOpen
+    in the Store. If another panel changes this value, the panel will close to prevent stacks of open panels. 
 
   Close-event:
     The default close button will emit an event called "close".
@@ -39,6 +43,10 @@ export default {
       default: true,
       type: Boolean,
     },
+    origin: {
+      default: '',
+      type: String,
+    }
   },
   data() {
     return {
@@ -74,11 +82,20 @@ export default {
       return StringUtil.getUiPhraseByLang(this.title, this.user.settings.language);
     },
   },
+  watch: {
+    'status.panelOpen'(val, oldVal) {
+      if (val !== this.origin) {
+        setTimeout(() => {
+          this.close();
+        }, 300)
+      }
+    }
+  },
   components: {
   },
   mounted() {
     this.$nextTick(() => {
-      this.$store.dispatch('setStatusValue', { property: 'panelOpen', value: true });
+      this.$store.dispatch('setStatusValue', { property: 'panelOpen', value: this.origin });
       setTimeout(() => {
         this.fadedIn = true;
       }, 1);
@@ -87,7 +104,9 @@ export default {
   beforeDestroy() {
     this.$nextTick(() => {
       this.lockScroll(false);
-      this.$store.dispatch('setStatusValue', { property: 'panelOpen', value: false });
+      if (this.status.panelOpen === this.origin) {
+        this.$store.dispatch('setStatusValue', { property: 'panelOpen', value: false });
+      };
     });
   },
 };

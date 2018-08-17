@@ -360,7 +360,11 @@ export default {
       <span v-if="!inToolbar" class="FieldAdder-label"> {{ "Add field" | translatePhrase }}</span>
     </button>
 
-    <panel-component :title="modalTitle" @close="hide" v-if="active" class="FieldAdder-panel FieldAdderPanel">
+    <panel-component class="FieldAdder-panel FieldAdderPanel"
+      v-if="active"
+      :title="modalTitle" 
+      :origin="path" 
+      @close="hide">
       <template slot="panel-header-extra">
         <div class="FieldAdderPanel-filterContainer form-group panel">
           <input id="field-adder-input"

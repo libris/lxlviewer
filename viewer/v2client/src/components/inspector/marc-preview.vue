@@ -120,8 +120,11 @@ export default {
 </script>
 
 <template>
-  <panel-component v-if="active" class="" @close="hide" title="Preview MARC21">
-    
+  <panel-component class=""
+    v-if="active"  
+    @close="hide" 
+    origin="Preview MARC21"
+    title="Preview MARC21">
     <template slot="panel-body">
       <div class="MarcPreview">
         <div class="MarcPreview-body">
@@ -205,7 +208,7 @@ export default {
 
     td, th {
       border: 1px solid #ccc;
-      padding: 5px;
+      padding: 10px;
       .sub-key {
         font-weight: bold;
         &::before {

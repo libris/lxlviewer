@@ -526,10 +526,10 @@ export default {
       </select>
     </div>
 
-    <panel-component 
-      v-if="active" 
-      class="EntityAdder-panel EntityAdderPanel" 
+    <panel-component class="EntityAdder-panel EntityAdderPanel" 
+      v-if="active"
       :title="computedTitle" 
+      :origin="path"
       @close="hide">
       <template slot="panel-header-info">
         <div 

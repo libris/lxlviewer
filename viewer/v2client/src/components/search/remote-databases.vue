@@ -269,6 +269,7 @@ export default {
     <panel-component
       v-if="showList"
       :title="'Select sources' | translatePhrase"
+      origin="Select sources"
       @close="showList = false">
       <template slot="panel-header-extra">
         <div class="RemoteDatabases-listFilter form-group panel">

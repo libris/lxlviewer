@@ -253,11 +253,11 @@ export default {
 
 <template>
   <div class="SearchWindow">
-    <panel-component
-      :title="'Link entity' | translatePhrase"
+    <panel-component class="SearchWindow-panel"
       v-if="active"
-      @close="hide()"
-      class="SearchWindow-panel">
+      :title="'Link entity' | translatePhrase"
+      :origin="fieldKey"
+      @close="hide()">
       <template slot="panel-header-info">
         <div class="PanelComponent-headerInfo help-tooltip-container" 
           @mouseleave="showHelp = false">
