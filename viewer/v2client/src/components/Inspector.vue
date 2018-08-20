@@ -11,6 +11,7 @@ import EntityForm from '@/components/inspector/entity-form';
 import Toolbar from '@/components/inspector/toolbar';
 import EntityChangelog from '@/components/inspector/entity-changelog';
 import EntityHeader from '@/components/inspector/entity-header';
+import Breadcrumb from '@/components/inspector/breadcrumb';
 import ModalComponent from '@/components/shared/modal-component';
 import ReverseRelations from '@/components/inspector/reverse-relations';
 import { mapGetters } from 'vuex';
@@ -37,7 +38,7 @@ export default {
       postLoaded: false,
       modalOpen: false,
       removeInProgress: false,
-      loadFailure: null,
+      loadFailure: null
     }
   },
   methods: {
@@ -378,9 +379,11 @@ export default {
     'toolbar': Toolbar,
     'entity-changelog': EntityChangelog,
     'reverse-relations': ReverseRelations,
+    'breadcrumb': Breadcrumb
   },
   mounted() {
     this.$nextTick(() => {
+
       this.$store.dispatch('setStatusValue', { 
         property: 'keybindState', 
         value: 'overview' 
@@ -419,6 +422,7 @@ export default {
     </div>
     <div class="row">
       <div class="col-sm-12 col-md-11">
+        <breadcrumb v-if="postLoaded && this.inspector.breadcrumb.length !== 0"></breadcrumb>
         <div v-if="postLoaded" class="Inspector-entity panel panel-default">
           <div class="panel-body">
             <h1 class="Inspector-title" :title="recordType">
@@ -427,10 +431,8 @@ export default {
             </h1>
 
             <div class="Inspector-header">
-
               <div class="Inspector-admin">
                 <entity-changelog></entity-changelog>
-
                 <div class="Inspector-adminMeta">
                   <a class="Inspector-adminMetaLink" tabindex="0"
                     v-show="inspector.status.focus === 'record'" 
@@ -492,7 +494,6 @@ export default {
 <style lang="less">
 
 .Inspector {
-
   &-header {
     display: flex;
     flex-direction: row
@@ -545,6 +546,5 @@ export default {
     text-align: center;
   }
 }
-
 
 </style>

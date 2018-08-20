@@ -124,12 +124,6 @@ export default {
       this.$dispatch('extract-item');
     },
   },
-  components: {
-  },
-  watch: {
-  },
-  mounted() { 
-  },
 };
 </script>
 

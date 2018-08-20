@@ -172,6 +172,7 @@ export default {
           v-show="!searchInProgress"
           :import-data="importData" 
           :result="result" 
+          :query="query"
           v-if="result.totalItems > -1"></search-result>
       </div>
     </div>

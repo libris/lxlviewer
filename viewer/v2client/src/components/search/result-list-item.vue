@@ -18,8 +18,6 @@ export default {
       keyword: '',
     }
   },
-  methods: {
-  },
   computed: {
     settings() {
       return this.$store.getters.settings;
@@ -40,9 +38,7 @@ export default {
   components: {
     'entity-summary': EntitySummary,
   },
-  watch: {
-  },
-  ready() { // Ready method is deprecated in 2.0, switch to "mounted"
+  mounted() { 
   },
 };
 </script>
