@@ -562,24 +562,24 @@ export default {
       <div class="EntityAdder-modalBody">
         <div class="EntityAdder-controls">
           <div class="EntityAdder-controlForm">
-            <!--<input class="entity-search-keyword-input" v-model="keyword" @input="setSearching()"></input>-->
-              <div class="EntityAdder-search">
-                <label for="entityKeywordInput" class="EntityAdder-searchLabel">{{ "Search" | translatePhrase }}</label>
-                <div class="EntityAdder-searchInputContainer">
-                  <input class="EntityAdder-searchInput entity-search-keyword-input"
-                    name="entityKeywordInput"
-                    v-model="keyword"
-                    autofocus />
-                  <filter-select
-                    :class-name="'js-filterSelect'"
-                    :custom-placeholder="'All types'"
-                    :options="selectOptions"
-                    :options-all="getRange"
-                    :is-filter="true"
-                    :options-selected="''"
-                    v-on:filter-selected="setFilter($event, keyword)"></filter-select>
-                </div>
+            <div class="EntityAdder-search">
+              <label for="entityKeywordInput" class="EntityAdder-searchLabel">{{ "Search" | translatePhrase }}</label>
+              <div class="EntityAdder-searchInputContainer">
+                <input class="EntityAdder-searchInput entity-search-keyword-input"
+                  name="entityKeywordInput"
+                  v-model="keyword"
+                  autofocus />
+                <filter-select
+                  :class-name="'js-filterSelect'"
+                  :custom-placeholder="'All types'"
+                  :options="selectOptions"
+                  :options-all="getRange"
+                  :is-filter="true"
+                  :options-selected="''"
+                  v-on:filter-selected="setFilter($event, keyword)"></filter-select>
               </div>
+            </div>
+           
             <div class="EntityAdder-info" 
               v-if="getFullRange.length > 0" 
               @mouseleave="rangeInfo = false">

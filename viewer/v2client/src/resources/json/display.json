@@ -3,11 +3,11 @@
   "@graph": [
     {
       "@id": "https://libris-dev.kb.se/00nj5pg324f356g2",
-      "created": "2018-06-07T13:34:16.475+02:00",
+      "created": "2018-08-17T15:24:19.02+02:00",
       "mainEntity": {
         "@id": "https://id.kb.se/vocab/display"
       },
-      "modified": "2018-06-07T13:34:16.475+02:00",
+      "modified": "2018-08-17T15:24:19.02+02:00",
       "recordStatus": "marc:New",
       "sameAs": [
         {
@@ -42,6 +42,9 @@
             "inCollection",
             "altLabel",
             "broader",
+            "exactMatch",
+            "closeMatch",
+            "broadMatch",
             {
               "inverseOf": "broader"
             },
@@ -240,7 +243,8 @@
             "descriptionCreator",
             "descriptionUpgrader",
             "descriptionLastModifier",
-            "descriptionConventions"
+            "descriptionConventions",
+            "identifiedBy"
           ]
         },
         "Resource": {
@@ -259,6 +263,15 @@
             "broadMatch",
             "isPartOf",
             "isDefinedBy"
+          ]
+        },
+        "SeriesMembership": {
+          "@type": "fresnel:Lens",
+          "classLensDomain": "SeriesMembership",
+          "showProperties": [
+            "inSeries",
+            "seriesStatement",
+            "seriesEnumeration"
           ]
         },
         "StructuredValue": {
@@ -417,11 +430,11 @@
             "place",
             "country",
             "agent",
+            "year",
+            "startYear",
+            "endYear",
             "date",
-            "startDate",
-            "endDate",
-            "marc:publicationStatus",
-            "otherDate"
+            "marc:publicationStatus"
           ]
         },
         "Publication": {
@@ -430,6 +443,7 @@
           "showProperties": [
             "place",
             "agent",
+            "year",
             "date"
           ]
         },
@@ -479,6 +493,7 @@
             "mainTitle",
             "title",
             "subtitle",
+            "titleRemainder",
             "partNumber",
             "partName",
             "hasPart"

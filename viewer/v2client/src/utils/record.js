@@ -201,6 +201,27 @@ export function getObjectAsRecord(mainEntity, record = {}) {
   return newObj;
 }
 
+export function convertToMarc(inspectorData, settings, user) {
+  const editorObj = DataUtil.getMergedItems(
+    DataUtil.removeNullValues(inspectorData.record),
+    DataUtil.removeNullValues(inspectorData.mainEntity),
+    DataUtil.removeNullValues(inspectorData.work),
+    inspectorData.quoted
+  );
+  const apiPath = settings.apiPath;
+  return new Promise((resolve, reject) => {
+    httpUtil.post({ 
+      url: `${apiPath}/_convert`,
+      accept: 'application/x-marc-json',
+      token: user.token,
+    }, editorObj).then((result) => {
+      resolve(result);
+    }, (error) => {
+      reject(Error('Couldn\'t convert to marc.', error));
+    });
+  });
+}
+
 export function prepareDuplicateFor(inspectorData, user, settings) {
   // Removes fields that we do not want to import or copy
   const newData = _.cloneDeep(inspectorData);
