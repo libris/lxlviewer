@@ -583,34 +583,32 @@ export default {
         <!-- <div class="EntityAdder-panelBody"> -->
         <div class="EntityAdder-controls">
           <div class="EntityAdder-controlForm">
-            <!--<input class="entity-search-keyword-input" v-model="keyword" @input="setSearching()"></input>-->
-              <div class="EntityAdder-search">
-                <label for="entityKeywordInput" class="EntityAdder-searchLabel">{{ "Search" | translatePhrase }}</label>
-                <div class="EntityAdder-searchInputContainer">
-                  <input class="EntityAdder-searchInput entity-search-keyword-input"
-                    name="entityKeywordInput"
-                    v-model="keyword"
-                    autofocus />
-                  <filter-select
-                    class="js-filterSelect"
-                    :options="selectOptions"
-                    :options-all="getRange"
-                    :options-selected="''"
-                    v-on:filter-selected="setFilter($event, keyword)"></filter-select>
-                </div>
+            <div class="EntityAdder-search">
+              <label for="entityKeywordInput" class="EntityAdder-searchLabel">{{ "Search" | translatePhrase }}</label>
+              <div class="EntityAdder-searchInputContainer">
+                <input class="EntityAdder-searchInput entity-search-keyword-input"
+                  name="entityKeywordInput"
+                  v-model="keyword"
+                  autofocus />
+                <filter-select
+                  class="js-filterSelect"
+                  :options="selectOptions"
+                  :options-all="getRange"
+                  :options-selected="''"
+                  v-on:filter-selected="setFilter($event, keyword)"></filter-select>
               </div>
-              <select class="EntityAdder-searchSelect customSelect"
-                  v-model="currentSearchTypes" 
-                  @change="handleChange(keyword)">
-                  <option :value="getRange" selected>{{"All types" | translatePhrase}}</option>
-                  <option 
-                    v-for="(term, index) in getClassTree" 
-                    :key="`${term.id}-${index}`" 
-                    :value="term.id" 
-                    v-html="getFormattedSelectOption(term, settings, resources.vocab, resources.context)">
-                  </option>
-              </select>
             </div>
+            <select class="EntityAdder-searchSelect customSelect"
+                v-model="currentSearchTypes" 
+                @change="handleChange(keyword)">
+                <option :value="getRange" selected>{{"All types" | translatePhrase}}</option>
+                <option 
+                  v-for="(term, index) in getClassTree" 
+                  :key="`${term.id}-${index}`" 
+                  :value="term.id" 
+                  v-html="getFormattedSelectOption(term, settings, resources.vocab, resources.context)">
+                </option>
+            </select>
           </div>
         </div>
         <modal-pagination
