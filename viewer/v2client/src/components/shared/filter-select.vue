@@ -102,9 +102,7 @@ export default {
     }
   },
   mounted() {
-    this.$nextTick(() => {
-      console.log(this.isFilter);    
-      });
+    this.$nextTick(() => {});
   },
 };
 </script>
