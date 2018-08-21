@@ -577,17 +577,36 @@ export default {
                   v-on:filter-selected="setFilter($event, keyword)"></filter-select>
               </div>
             </div>
-            <select class="EntityAdder-searchSelect customSelect"
-                v-model="currentSearchTypes" 
-                @change="handleChange(keyword)">
-                <option :value="getRange" selected>{{"All types" | translatePhrase}}</option>
+            <div class="EntityAdder-info" 
+              v-if="getFullRange.length > 0" 
+              @mouseleave="rangeInfo = false">
+              <i class="fa fa-info-circle" @mouseenter="rangeInfo = true"></i>
+              <div class="EntityAdder-infoText" v-if="rangeInfo">
+                {{ "Allowed types" | translatePhrase }}:
+                <br>
+                <span v-for="(range, index) in getFullRange" :key="index" class="EntityAdder-infoRange">
+                  - {{range | labelByLang}}
+                </span>
+              </div>
+            </div>
+            <div class="EntityAdder-create">
+              <button class="EntityAdder-createBtn"
+                v-if="hasSingleRange" 
+                v-on:click="addEmpty(getFullRange[0])">{{ "Create local entity" | translatePhrase }}
+              </button>
+              <select class="EntityAdder-createSelect"
+                v-model="selectedType" 
+                @change="addType(selectedType)" 
+                v-if="!hasSingleRange">
+                <option disabled value="">{{ "Create local entity" | translatePhrase }}</option>
                 <option 
                   v-for="(term, index) in getClassTree" 
-                  :key="`${term.id}-${index}`" 
+                  :disabled="term.abstract" 
                   :value="term.id" 
-                  v-html="getFormattedSelectOption(term, settings, resources.vocab, resources.context)">
-                </option>
-            </select>
+                  :key="`${term.id}-${index}`" 
+                  v-html="getFormattedSelectOption(term, settings, resources.vocab, resources.context)"></option>
+              </select>
+            </div>
           </div>
         </div>
         <div class="EntityAdder-searchStatus search-status"
