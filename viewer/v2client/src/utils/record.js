@@ -144,6 +144,7 @@ export function getItemObject(itemOf, heldBy, instance) {
             'label': [''],
           },
           'physicalLocation': [''],
+          'shelfLabel': '',
           'shelfControlNumber': '',
         },
       ],
