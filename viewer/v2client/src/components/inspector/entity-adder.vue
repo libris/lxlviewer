@@ -16,9 +16,9 @@ import ToolTipComponent from '../shared/tooltip-component';
 import EntitySearchList from '../search/entity-search-list';
 import ModalComponent from '@/components/shared/modal-component.vue';
 import ModalPagination from '@/components/inspector/modal-pagination';
+import FilterSelect from '@/components/shared/filter-select.vue';
 import LensMixin from '../mixins/lens-mixin';
 import { mixin as clickaway } from 'vue-clickaway';
-import FilterSelect from '@/components/shared/filter-select.vue';
 
 export default {
   mixins: [clickaway, LensMixin],
@@ -600,6 +600,7 @@ export default {
                 v-on:click="addEmpty(getFullRange[0])">{{ "Create local entity" | translatePhrase }}
               </button>
               <filter-select
+                v-if="!hasSingleRange" 
                 :class-name="'js-createSelect'"
                 :options="selectOptions"
                 :options-all="getRange"

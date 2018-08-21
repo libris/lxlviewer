@@ -3,8 +3,10 @@
   Adds custom select menu with searchable options
 */
 import * as StringUtil from '@/utils/string';
+import { mixin as clickaway } from 'vue-clickaway';
 
 export default {
+  mixins: [clickaway],
   name: 'filter-select',
   props: {
     options: {},
@@ -93,6 +95,9 @@ export default {
 
       this.selectedObject = allObj;
       this.filterVisible = false;
+    },
+    close() {
+      this.filterVisible = false;
     }
   },
   watch: {
@@ -110,7 +115,8 @@ export default {
 <template>
   <div class="FilterSelect" 
     :class="className" 
-    @blur="filterVisible = false">
+    @blur="filterVisible = false"
+    v-on-clickaway="close">
     <input class="FilterSelect-input js-filterSelectInput" 
       type="text" 
       v-bind:placeholder="translatedPlaceholder" 
@@ -120,6 +126,7 @@ export default {
     <ul class="FilterSelect-dropdown js-filterSelectDropdown"
       :class="{'is-visible': filterVisible}">
       <li class="FilterSelect-dropdownItem"
+        tabindex="0"
         @click="selectOption"
         @keypress.enter="selectOption"
         v-for="option in options"
@@ -145,8 +152,6 @@ export default {
   position: relative;
   display: inline-block;
   font-weight: normal;
-  font-size: 12px;
-  font-size: 1.2rem;
   width: 100%;
   background-color: lighten(@bib-color, 2%);
 
@@ -154,6 +159,9 @@ export default {
     padding: 5px 25px 5px 10px;
     border: none;
     border-bottom: 1px solid #ddd;
+    line-height: 1;
+    font-size: 12px;
+    font-size: 1.2rem;
     color: #fff;
     width: 100%;
     background-color: lighten(@bib-color, 2%);
@@ -184,6 +192,7 @@ export default {
       height: auto;
       max-height: 600px;
       opacity: 1;
+      overflow-y: scroll;
       border: 1px solid lighten(@bib-color, 2%);
     }
   }
@@ -218,7 +227,7 @@ export default {
     font-size: 1.8rem;
     font-weight: 700;
     right: 8px;
-    top: 3px;
+    top: 4px;
   }
 }
 </style>
