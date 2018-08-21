@@ -12,7 +12,6 @@ import * as ModalUtil from '@/utils/modals';
 import * as HttpUtil from '@/utils/http';
 import * as StringUtil from '@/utils/string';
 import * as RecordUtil from '@/utils/record';
-import MarcPreview from '@/components/inspector/marc-preview';
 import FieldAdder from '@/components/inspector/field-adder';
 import TooltipComponent from '@/components/shared/tooltip-component';
 import LensMixin from '@/components/mixins/lens-mixin';
@@ -156,8 +155,11 @@ export default {
       }
     },
     openMarc() {
-      this.showMarcPreview = true;
-      this.toolsMenuActive = true;
+      this.hideToolsMenu();
+      this.$store.dispatch('pushInspectorEvent', {
+        name: 'post-control',
+        value: 'open-marc-preview'
+      });
     },
     closeMarc() {
       this.showMarcPreview = false;
@@ -287,7 +289,6 @@ export default {
   components: {
     'field-adder': FieldAdder,
     'tooltip-component': TooltipComponent,
-    'marc-preview': MarcPreview,
   },
   mounted() {
     this.$nextTick(() => {
@@ -352,19 +353,19 @@ export default {
         <li>
           <a class="Toolbar-menuLink" @click="formControl('expand-item')">
           <i class="fa fa-fw fa-expand" aria-hidden="true"></i>
-          {{"Expand all" | translatePhrase}}{{ getKeybindingText('expand-item', ) ? ` (${getKeybindingText('expand-item')})` : ''}}
+          {{"Expand all" | translatePhrase}}{{ getKeybindingText('expand-item') ? ` (${getKeybindingText('expand-item')})` : ''}}
           </a>
         </li>
         <li>
           <a class="Toolbar-menuLink"  @click="formControl('collapse-item')">
           <i class="fa fa-fw fa-compress" aria-hidden="true"></i>
-          {{"Collapse all" | translatePhrase}}{{ getKeybindingText('collapse-item', ) ? ` (${getKeybindingText('collapse-item')})` : ''}}
+          {{"Collapse all" | translatePhrase}}{{ getKeybindingText('collapse-item') ? ` (${getKeybindingText('collapse-item')})` : ''}}
           </a>
         </li>
         <li v-if="user.isLoggedIn && !inspector.status.editing && !isSubClassOf('Item')">
           <a class="Toolbar-menuLink"  @click="handleCopy">
           <i class="fa fa-fw fa-files-o"></i>
-          {{ "Make copy" | translatePhrase }}{{ getKeybindingText('duplicate-item', ) ? ` (${getKeybindingText('duplicate-item')})` : ''}}
+          {{ "Make copy" | translatePhrase }}{{ getKeybindingText('duplicate-item') ? ` (${getKeybindingText('duplicate-item')})` : ''}}
           </a>
         </li>
         <li v-if="isSubClassOf('Instance') && hasSigel && !inspector.status.editing && user.email !== ''">
@@ -378,12 +379,9 @@ export default {
           </a>
         </li>
         <li>
-          <marc-preview 
-            :openPreview="showMarcPreview" 
-            v-on:close-marc="closeMarc(), hideToolsMenu()"></marc-preview>
-          <a class="Toolbar-menuLink" @click="openMarc" >
-          <i class="fa fa-fw fa-eye" aria-hidden="true"></i>
-          {{"Preview MARC21" | translatePhrase}} {{ getKeybindingText('preview-marc', ) ? ` (${getKeybindingText('preview-marc')})` : ''}}
+          <a class="Toolbar-menuLink" @click="openMarc()">
+            <i class="fa fa-fw fa-eye" aria-hidden="true"></i>
+            {{ "Preview MARC21" | translatePhrase }}  {{ getKeybindingText('preview-marc') ? ` (${getKeybindingText('preview-marc')})` : ''}}
           </a>
         </li>
         <li class="remove-option" v-show="user.isLoggedIn && !status.isNew">

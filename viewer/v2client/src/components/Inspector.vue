@@ -13,6 +13,7 @@ import EntityChangelog from '@/components/inspector/entity-changelog';
 import EntityHeader from '@/components/inspector/entity-header';
 import ModalComponent from '@/components/shared/modal-component';
 import ReverseRelations from '@/components/inspector/reverse-relations';
+import MarcPreview from '@/components/inspector/marc-preview';
 import { mapGetters } from 'vuex';
 
 export default {
@@ -38,6 +39,11 @@ export default {
       modalOpen: false,
       removeInProgress: false,
       loadFailure: null,
+      marcPreview: {
+        data: null,
+        active: false,
+        error: null,
+      },
     }
   },
   methods: {
@@ -76,6 +82,15 @@ export default {
       if (typeof toolbarTestEl !== 'undefined') {
         toolbarTestEl.style.width = `${width}px`;
       }
+    },
+    openMarcPreview() {
+      this.marcPreview.active = true;
+      RecordUtil.convertToMarc(this.inspector.data, this.settings, this.user).then((result) => {
+        this.marcPreview.data = result;
+      }, (error) => {
+        this.marcPreview.data = null;
+        this.marcPreview.error = error;
+      });
     },
     fetchDocument() {
       const randomHash = md5(new Date());
@@ -334,6 +349,10 @@ export default {
             break;
           case 'save-record-done':
             this.saveItem(true);
+            break;
+          case 'open-marc-preview':
+            this.openMarcPreview();
+            break;
           default:
             return;
         }
@@ -378,6 +397,7 @@ export default {
     'toolbar': Toolbar,
     'entity-changelog': EntityChangelog,
     'reverse-relations': ReverseRelations,
+    'marc-preview': MarcPreview,
   },
   mounted() {
     this.$nextTick(() => {
@@ -468,6 +488,7 @@ export default {
         </div>
       </div>
     </div>
+    <marc-preview @hide="marcPreview.active = false" :error="marcPreview.error" :marc-obj="marcPreview.data" v-if="marcPreview.active"></marc-preview>
     <modal-component title="Error" modal-type="danger" @close="closeRemoveModal" class="RemovePostModal" 
       v-if="removeInProgress">
       <div slot="modal-header" class="RemovePostModal-header">
