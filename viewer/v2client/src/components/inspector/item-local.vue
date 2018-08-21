@@ -163,7 +163,6 @@ export default {
           property: 'keybindState', 
           value: 'extraction-dialog' 
         });
-        LayoutUtil.scrollLock(true);
         this.extractDialogActive = true;
       }
     },
@@ -172,7 +171,6 @@ export default {
         property: 'keybindState', 
         value: 'overview' 
       });
-      LayoutUtil.scrollLock(false);
       this.extractDialogActive = false;
       this.extracting = false;
     },
@@ -309,14 +307,7 @@ export default {
       </div>
       
       <div class="ItemLocal-actions">
-        <field-adder class="ItemLocal-action"
-          v-if="!isLocked" 
-          :entity-type="item['@type']" 
-          :allowed="allowedProperties" 
-          :inner="true" 
-          :path="getPath"></field-adder>
-         
-        <i class="ItemLocal-action fa fa-link"
+        <i class="ItemLocal-action fa fa-link icon icon--sm"
           v-if="inspector.status.editing && isExtractable"
           @click="openExtractDialog()" 
           @focus="showLinkAction = true, actionHighlight(true, $event)"
@@ -330,8 +321,15 @@ export default {
             tooltip-text="Link entity" 
             translation="translatePhrase"></tooltip-component>
         </i>
+        <field-adder class="ItemLocal-action"
+          v-if="!isLocked" 
+          :entity-type="item['@type']" 
+          :allowed="allowedProperties" 
+          :inner="true" 
+          :path="getPath">
+        </field-adder>
 
-        <i class="ItemLocal-action fa fa-trash-o chip-action" 
+        <i class="ItemLocal-action fa fa-trash-o icon icon--sm" 
           v-if="!isLocked" 
           :class="{'show-icon': showActionButtons}" 
           v-on:click="removeThis(true)" 
@@ -389,7 +387,7 @@ export default {
 
 <style lang="less">
 .ItemLocal {
-  padding: 5px;
+  padding: 5px 0;
   margin-left: -5px;
   border-radius: 4px;
   position: relative;
@@ -404,7 +402,7 @@ export default {
   }
 
   &-label {
-    margin-right: 40px;
+    margin-right: 90px;
   }
 
   &-type {
@@ -412,9 +410,9 @@ export default {
   }
 
   &-arrow {
+    font-size: 14px;
     transition: all 0.2s ease;
     padding: 0 2px;
-    margin: 0 0 0 2px;
     cursor: pointer;
   }
 
@@ -432,20 +430,17 @@ export default {
     top: 0;
     right: 0;
     position: absolute;
+
+    @media (max-width: @screen-sm) {
+      display: flex;
+      align-items: baseline;
+    }
   }
 
   &-action {
+    min-width: 20px;
     display: inline-block;
-    color: @gray-dark;
-    cursor: pointer;
-    display: inline-block;
-    margin: 0 0 0 5px;
-    opacity: 1;
-    transition: opacity 0.5s ease;
-
-    &:hover {
-      color: @black;
-    }
+    margin-right: 5px;
   }
 
   &.is-marked {
@@ -478,10 +473,7 @@ export default {
   .ItemLocal-label > 
   .ItemLocal-arrow {
     transform:rotate(90deg);
-
-    &::before {
-      vertical-align: sub;
-    }
+    transform-origin: center;
   }
 
   &.is-highlighted {

@@ -2,10 +2,9 @@
   <div id="app" class="App">
     <global-message />
     <navbar-component />
-    <main class="MainContent container " role="main">
-      <div v-if="!resourcesLoaded" class="text-center">
-        <i class="fa fa-circle-o-notch fa-4x fa-spin"></i><br/>
-        <h3>{{ 'Loading application' | translatePhrase | capitalize }}</h3>
+    <main class="MainContent" :class="{ 'container': !status.panelOpen, 'container-fluid': status.panelOpen }" role="main">
+      <div v-if="!resourcesLoaded" class="text-center MainContent-spinner">
+        <vue-simple-spinner size="large" :message="'Loading application' | translatePhrase"></vue-simple-spinner>
       </div>
       <transition name="fade">
         <router-view v-if="resourcesLoaded" />
@@ -14,15 +13,10 @@
     <modal-component title="Error" modal-type="danger" class="ResourceLoadingErrorModal"
       :closeable="false" 
       v-if="resourcesLoadingError">
-      <div slot="modal-header" class="ResourceLoadingErrorModal-header">
-        <header>
-          {{ 'Error' | translatePhrase }}
-        </header>
-      </div>
       <div slot="modal-body" class="ResourceLoadingErrorModal-body">
-        Kunde inte hämta nödvändiga resurser.<br><br>
-        Testa att ladda om sidan.<br><br>
-        Om felet kvarstår, kontakta <a href="mailto:libris@kb.se">libris@kb.se</a>.
+        <p>Kunde inte hämta nödvändiga resurser.</p>
+        <p>Testa att ladda om sidan.</p>
+        <p>Om felet kvarstår, kontakta <a href="mailto:libris@kb.se">libris@kb.se</a>.</p>
       </div>
     </modal-component>
     <footer-component></footer-component>
@@ -36,12 +30,16 @@ import Footer from '@/components/layout/footer';
 import NotificationList from '@/components/shared/notification-list';
 import ModalComponent from '@/components/shared/modal-component';
 import GlobalMessage from '@/components/layout/global-msg';
+import VueSimpleSpinner from 'vue-simple-spinner';
 
 export default {
   name: 'App',
   computed: {
+    inspector() {
+      return this.$store.getters.inspector;
+    },
     status() {
-      return this.$store.getters.resources.loadingError;
+      return this.$store.getters.status;
     },
     resourcesLoaded() {
       return this.$store.getters.resources.resourcesLoaded;
@@ -49,6 +47,10 @@ export default {
     resourcesLoadingError() {
       return this.$store.getters.resources.loadingError;
     }
+  },
+  watch: {
+  },
+  methods: {
   },
   mounted() {
     this.$nextTick(() => {
@@ -60,6 +62,7 @@ export default {
     'notification-list': NotificationList,
     'modal-component': ModalComponent,
     'global-message': GlobalMessage,
+    'vue-simple-spinner': VueSimpleSpinner,
    },
 }
 </script>
@@ -97,7 +100,16 @@ export default {
 .MainContent {
   flex: 1 0 auto;
 
-  @media screen and (max-width: @screen-sm-min){
+  &.container-fluid {
+    margin-right: 0px;
+    margin-left: 0px;
+  }
+
+  &-spinner {
+    margin-top: 2em;
+  }
+
+  @media screen and (max-width: @screen-lg-min){
     width: 100%;
   }
 }

@@ -128,31 +128,33 @@ export default {
 </script>
 
 <template>
-  <div class="ResultControls panel panel-default" v-if="!(!showDetails && pageData.totalItems < limit)">
+  <div class="ResultControls" v-if="!(!showDetails && pageData.totalItems < limit)">
     <div class="ResultControls-searchDetails" v-if="showDetails">
-      <p class="ResultControls-resultDescr" id="resultDescr">Sökning på <strong>{{ queryText }}</strong>
-        <span v-if="filters.length > 0">(filtrerat på <span v-for="(filter, index) in filters" :key="index"><strong>{{filter.label}}{{ index === (filters.length - 1) ? '' : ', ' }}</strong></span>)</span>
-      gav <strong>{{pageData.totalItems}}</strong> träffar.
-       <em v-if="pageData.totalItems > limit && $route.params.perimeter === 'remote'">Du har fått fler träffar än vad som kan visas, testa att göra en mer detaljerad sökning om du inte kan hitta det du letar efter.</em>
-      </p>
-     
-      <p v-if="pageData.totalItems > limit && $route.params.perimeter != 'remote'">Visar <strong>{{ limit }}</strong> träffar per sida.</p>
+      <div>
+        <p class="ResultControls-resultDescr" id="resultDescr">Sökning på {{ queryText }}
+          <span v-if="filters.length > 0">(filtrerat på <span v-for="(filter, index) in filters" :key="index">{{filter.label}}{{ index === (filters.length - 1) ? '' : ', ' }}</span>)</span>
+        gav {{pageData.totalItems}} träffar.
+        <em v-if="pageData.totalItems > limit && $route.params.perimeter === 'remote'">Du har fått fler träffar än vad som kan visas, testa att göra en mer detaljerad sökning om du inte kan hitta det du letar efter.</em>
+        </p>
+      
+        <p v-if="pageData.totalItems > limit && $route.params.perimeter != 'remote'" class="ResultControls-resultDescr">Visar {{ limit }} träffar per sida.</p>
+      </div>
+      <div class="ResultControls-listTypes" v-if="showDetails && pageData.totalItems > 0">
+        <button class="ResultControls-listType icon icon--md"
+          v-on:click="setFull()" 
+          v-bind:class="{'is-active': user.settings.resultListType === 'detailed' }"
+          :title="'Detailed view' | translatePhrase">
+          <i class="fa fa-th-list"></i>
+        </button>
+        <button class="ResultControls-listType icon icon--md" 
+          v-on:click="setCompact()" 
+          v-bind:class="{'is-active': user.settings.resultListType === 'compact' }"
+          :title="'Compact view' | translatePhrase">
+          <i class="fa fa-list"></i>
+        </button>
+      </div>
     </div>
-    <div class="ResultControls-listTypes" v-if="showDetails">
-      <button class="ResultControls-listType"
-        v-on:click="setFull()" 
-        v-bind:class="{'is-active': user.settings.resultListType === 'detailed' }"
-        title="Detailed">
-        <i class="fa fa-th-list"></i>
-      </button>
-      <button class="ResultControls-listType" 
-        v-on:click="setCompact()" 
-        v-bind:class="{'is-active': user.settings.resultListType === 'compact' }"
-        title="Compact">
-        <i class="fa fa-list"></i>
-      </button>
-    </div>
-    <nav v-if="hasPagination && showPages" class="ResultControls-pag">
+    <nav v-if="hasPagination && showPages">
       <ul class="ResultControls-pagList">
         <li class="ResultControls-pagItem" 
           v-bind:class="{ 'is-disabled': !pageData.first || pageData['@id'] === pageData.first['@id'] }">
@@ -194,51 +196,52 @@ export default {
 @buttoncolor: darken(@neutral-color, 10%);
 
 .ResultControls {
-  margin: 10px 0px;
-  padding: 20px;
+  margin: 10px 0px 20px 0;
 
   &-searchDetails {
-    color: @gray-darker;
-    justify-content: space-between;  
-    display: block;
+    display: flex;
+    justify-content: space-between;
     width: 100%;
+    color: @gray-dark;
+  }
 
-    @media (min-width: 992px) {
-      display: flex;
-    }
+  &-resultDescr {
+    font-weight: 600;
+    padding-right: 20px;
   }
 
   &-listTypes {
     display: flex;
-    flex-direction: row-reverse;
+    flex-wrap: nowrap;
   }
 
   &-listType {
-    background-color: @buttoncolor;
-    margin: 0 0 0 0.3em;
+    background-color: transparent;
+    height: 30px;
+
+    &:hover, 
+    &:focus {
+      background-color: transparent;
+      color: @icon-default--hover;
+    }
+
+    i {
+      color: inherit;
+      vertical-align: top;
+    }
 
     &.is-active {
-      &.blue {
-        background-color: @brand-id;
-      }
+      color: @icon-primary;
 
-      background-color: @brand-primary;
       i {
-        color: @neutral-color;
+        color: inherit;
       }
     }
   }
 
   &-pagDecor {
-    font-size: 12px;
-    border: none;
-    line-height: 1;
-    color: @black;
-    background-color: @neutral-color;
-
-    &:hover {
-      background-color: @neutral-color;
-    }
+    color: @gray;
+    cursor: initial;
   }
 
   &-pagList {
@@ -253,50 +256,52 @@ export default {
   &-pagItem {
     display: inline;
     line-height: 1;
+    &:first-of-type a {
+      padding-left: 0;
+    }
   }
 
   &-pagLink {
-    border: 1px solid #fff;
-    color: #009788;
-    float: left;
-    font-weight: bold;
+    color: @grey;
+    font-weight: 600;
+    padding: 5px 10px;
     position: relative;
-    padding: 6px 12px;
     text-transform: uppercase;
-    opacity: 0.7;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: @brand-primary;
+      text-decoration: none;
+    }
 
     .is-disabled & {
-      background-color: #fff;
-      border: 1px solid #ddd;
-      color: #c4c7ca;
+      color: @gray-light;
+      cursor: initial;
 
       &:hover {
-        border-color: #ddd;
-        color: #c4c7ca;
+        color: @gray-light;
       }
     }
 
     .is-active & {
-      background-color: #009788;
-      border-color: #009788;
-      color: #fff;
+      color: @black;
       z-index: 3;
 
-      &:hover {
-        border-color: #009788;
-        color: #fff;
+      &::after {
+        content: '';
+        position: absolute;
+        width: 75%;
+        height: 3px;
+        background-color: @brand-primary;
+        bottom: -5px;
+        left: 0;
+        right: 0;
+        margin: auto;
       }
-    }
 
-    &:hover {
-      border-color: #009788;
-      color: #009788;
-      opacity: 1;
-      text-decoration: none;
-    }
-
-    &.pointer {
-      cursor: pointer;
+      &:hover {
+        color: @black;
+      }
     }
 
     i {

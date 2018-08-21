@@ -13,6 +13,8 @@ import EntityChangelog from '@/components/inspector/entity-changelog';
 import EntityHeader from '@/components/inspector/entity-header';
 import ModalComponent from '@/components/shared/modal-component';
 import ReverseRelations from '@/components/inspector/reverse-relations';
+import TabMenu from '@/components/shared/tab-menu';
+import VueSimpleSpinner from 'vue-simple-spinner';
 import { mapGetters } from 'vuex';
 
 export default {
@@ -68,14 +70,6 @@ export default {
         console.log('%c ------------- JSON END ---------------- ', 'background: #009788; color: #fff;', new Date());
       };
       return true;
-    },
-    initToolbarFloat() {
-      const toolbarPlaceholderEl = this.$refs.ToolbarPlaceholder;
-      const toolbarTestEl = this.$refs.ToolbarTest;
-      const width = typeof toolbarPlaceholderEl !== 'undefined' ? toolbarPlaceholderEl.clientWidth : 65;
-      if (typeof toolbarTestEl !== 'undefined') {
-        toolbarTestEl.style.width = `${width}px`;
-      }
     },
     fetchDocument() {
       const randomHash = md5(new Date());
@@ -210,12 +204,8 @@ export default {
         }
       }
     },
-    toggleEditorFocus() {
-      if (this.inspector.status.focus === 'record') {
-        this.$store.dispatch('setInspectorStatusValue', { property: 'focus', value: 'mainEntity' });
-      } else {
-        this.$store.dispatch('setInspectorStatusValue', { property: 'focus', value: 'record' });
-      }
+    setEditorFocus(value) {
+      this.$store.dispatch('setInspectorStatusValue', { property: 'focus', value: value });
     },
     getPackagedItem() {
       const RecordId = this.inspector.data.record['@id'];
@@ -315,9 +305,6 @@ export default {
     },
     'postLoaded'(val) {
       if (val === true) {
-        setTimeout(() => {
-          this.initToolbarFloat();
-        }, 500);
       }
     },
     'inspector.event'(val, oldVal) {
@@ -370,6 +357,10 @@ export default {
         this.resources.vocab, 
         this.resources.context);
     },
+    editorTabs() {
+      return [{'id': 'mainEntity', 'text': this.$options.filters.labelByLang(this.recordType)},
+              {'id': 'record', 'text': 'Admin metadata' }]
+    },
   },
   components: {
     'entity-header': EntityHeader,
@@ -378,6 +369,8 @@ export default {
     'toolbar': Toolbar,
     'entity-changelog': EntityChangelog,
     'reverse-relations': ReverseRelations,
+    'tab-menu': TabMenu,
+    'vue-simple-spinner': VueSimpleSpinner,
   },
   mounted() {
     this.$nextTick(() => {
@@ -392,80 +385,67 @@ export default {
       this.initJsonOutput();
 
       let self = this;
-      window.addEventListener('resize', function() {
-        self.initToolbarFloat();
-      });
     });
   },
 }
 </script>
 <template>
-  <div class="Inspector" ref="Inspector">
-    <div v-if="!postLoaded && !loadFailure" class="text-center">
-      <i class="fa fa-circle-o-notch fa-4x fa-spin"></i><br/>
-      <h3>{{ 'Loading document' | translatePhrase | capitalize }}</h3>
+  <div class="row">
+    <div v-if="!postLoaded && !loadFailure" class="Inspector-spinner text-center">
+      <vue-simple-spinner size="large" :message="'Loading document' | translatePhrase"></vue-simple-spinner>
     </div>
-    <div v-if="!postLoaded && loadFailure">
-      <h2>{{loadFailure.status}}</h2>
-      <p v-if="loadFailure.status === 404">
-        {{ 'The record' | translatePhrase }} <code>{{documentId}}</code> {{ 'could not be found' | translatePhrase}}.
-      </p>
-      <p v-if="loadFailure.status === 410">
-        {{ 'The record' | translatePhrase }} <code>{{documentId}}</code> {{ 'has been removed' | translatePhrase}}.
-      </p>
-      <router-link to="/">
-        {{ 'Back to home page' | translatePhrase }}
-      </router-link>
-    </div>
-    <div class="row">
-      <div class="col-sm-12 col-md-11">
-        <div v-if="postLoaded" class="Inspector-entity panel panel-default">
-          <div class="panel-body">
-            <h1 class="Inspector-title" :title="recordType">
-              <span>{{ recordType | labelByLang }}</span>
-              <span v-if="this.inspector.status.isNew"> - [{{ "New record" | translatePhrase }}]</span>
-            </h1>
+    <div class="Inspector col-sm-12" :class="{'col-md-11': !status.panelOpen, 'col-md-7': status.panelOpen }" ref="Inspector">
+      <div v-if="!postLoaded && loadFailure">
+        <h2>{{loadFailure.status}}</h2>
+        <p v-if="loadFailure.status === 404">
+          {{ 'The record' | translatePhrase }} <code>{{documentId}}</code> {{ 'could not be found' | translatePhrase}}.
+        </p>
+        <p v-if="loadFailure.status === 410">
+          {{ 'The record' | translatePhrase }} <code>{{documentId}}</code> {{ 'has been removed' | translatePhrase}}.
+        </p>
+        <router-link to="/">
+          {{ 'Back to home page' | translatePhrase }}
+        </router-link>
+      </div>
+      <div v-if="postLoaded" class="Inspector-entity">
+        <div class="panel-body">
 
+          <div class="Inspector-admin">
             <div class="Inspector-header">
-
-              <div class="Inspector-admin">
-                <entity-changelog></entity-changelog>
-
-                <div class="Inspector-adminMeta">
-                  <a class="Inspector-adminMetaLink" tabindex="0"
-                    v-show="inspector.status.focus === 'record'" 
-                    v-on:click="toggleEditorFocus()">
-                    <i class="fa fa-fw fa-toggle-on"></i> {{'Admin metadata' | translatePhrase}}
-                  </a>
-                  <a class="Inspector-adminMetaLink" tabindex="0"
-                    v-show="inspector.status.focus === 'mainEntity'" 
-                    v-on:click="toggleEditorFocus()">
-                    <i class="fa fa-fw fa-toggle-off"></i> {{'Admin metadata' | translatePhrase}}
-                  </a>
-                </div>
-              </div>
-
-              <reverse-relations class="Inspector-reverse" 
-                v-if="!inspector.status.isNew"></reverse-relations>
+                <h1 class="Inspector-title mainTitle" :title="recordType">
+                  <span>{{ recordType | labelByLang }}</span>
+                  <span v-if="this.inspector.status.isNew"> - [{{ "New record" | translatePhrase }}]</span>
+                </h1>
+              <entity-changelog />
             </div>
-            
-            <entity-header id="main-header" 
-              :full="true" 
-              v-if="!isItem"></entity-header>
-            <entity-form 
-              :editing-object="inspector.status.focus" 
-              :locked="!inspector.status.editing"></entity-form>
-            <code v-if="user.settings.appTech">
+            <reverse-relations class="Inspector-reverse" 
+              v-if="!inspector.status.isNew">
+            </reverse-relations>
+          </div>
+          
+          <entity-header id="main-header" 
+            :full="true" 
+            v-if="!isItem">
+          </entity-header>
+
+          <tab-menu @go="setEditorFocus" :tabs="editorTabs" :active="this.inspector.status.focus" />
+
+          <entity-form 
+            :editing-object="inspector.status.focus" 
+            :locked="!inspector.status.editing">
+          </entity-form>
+          <div class="Inspector-code" v-if="user.settings.appTech">
+            <code>
               {{result}}
             </code>
           </div>
         </div>
       </div>
-      <div v-if="postLoaded" class="col-12 col-sm-12 col-md-1">
-        <div class="Toolbar-placeholder" ref="ToolbarPlaceholder"></div>
-        <div class="Toolbar-container" ref="ToolbarTest">
-          <toolbar></toolbar>
-        </div>
+    </div>
+    <div v-if="postLoaded" class="col-12 col-sm-12" :class="{'col-md-1': !status.panelOpen, 'col-md-5': status.panelOpen }">
+      <div class="Toolbar-placeholder" ref="ToolbarPlaceholder"></div>
+      <div class="Toolbar-container" ref="ToolbarTest">
+        <toolbar></toolbar>
       </div>
     </div>
     <modal-component title="Error" modal-type="danger" @close="closeRemoveModal" class="RemovePostModal" 
@@ -480,8 +460,8 @@ export default {
           {{ 'This operation can\'t be reverted' | translatePhrase }}
         </p>
         <div class="RemovePostModal-buttonContainer">
-          <button class="btn btn-danger" @click="doRemovePost()">{{ 'Yes, remove the record' | translatePhrase }}</button>
-          <button class="btn btn-default" @click="closeRemoveModal()">{{ 'No, cancel' | translatePhrase }}</button>
+          <button class="btn btn-danger btn--md" @click="doRemovePost()">{{ 'Remove the record' | translatePhrase }}</button>
+          <button class="btn btn-gray btn--md" @click="closeRemoveModal()">{{ 'Cancel' | translatePhrase }}</button>
         </div>
       </div>
     </modal-component>
@@ -492,13 +472,24 @@ export default {
 <style lang="less">
 
 .Inspector {
+  &-title {
+  }
 
-  &-header {
-    display: flex;
-    flex-direction: row
+  &-spinner {
+    margin-top: 2em;
   }
 
   &-admin {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+
+    @media (min-width: @screen-sm) {
+      flex-direction: row;
+    }
+  }
+
+  &-header {
     flex: 3;
   }
 
@@ -506,15 +497,13 @@ export default {
     flex: 1;
   }
 
-  &-adminMeta {
-    margin: 10px 0;
-  }
-  
-  &-adminMetaLink {
-    cursor: pointer;
-    color: @brand-primary;
+  &-code {
+    padding: 10px 20px;
+    background-color: @white;
+    border: 1px solid @gray-lighter;
   }
 }
+
 .InspectorModal {
   &-body {
     display: flex;
@@ -529,22 +518,26 @@ export default {
     overflow-y: scroll;
   }
 }
+
 .RemovePostModal .ModalComponent-container {
   width: 600px;
   height: 250px;
 }
+
 .RemovePostModal {
   &-body {
     height: 80%;
     display: flex;
     flex-direction: column;
-    text-align: center;
     justify-content: center;
+    padding: 15px 45px;
   }
   &-buttonContainer {
-    text-align: center;
+    margin: 10px 0;
+    & > * {
+      margin-right: 15px;
+    }
   }
 }
-
 
 </style>

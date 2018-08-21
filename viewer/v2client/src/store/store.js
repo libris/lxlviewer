@@ -50,7 +50,9 @@ const store = new Vuex.Store({
       event: [],
     },
     status: {
+      panelOpen: false,
       keybindState: '',
+      fullWidth: false,
       keyActions: [],
       resultList: {
         loading: false
@@ -80,6 +82,11 @@ const store = new Vuex.Store({
         'StructuredValue',
         'QualifiedRole',
       ],
+      mainFields: {
+        'Instance': 'instanceOf',
+        'Work': 'expressionOf',
+        'Item': 'itemOf',
+      },
       extractableTypes: [
         'Item',
         'Instance',

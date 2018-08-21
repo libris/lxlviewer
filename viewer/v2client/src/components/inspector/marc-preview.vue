@@ -1,10 +1,10 @@
 <script>
-import * as DataUtil from '../../utils/data';
-import * as httpUtil from '../../utils/http';
-import * as LayoutUtil from '../../utils/layout';
+import * as DataUtil from '@/utils/data';
+import * as httpUtil from '@/utils/http';
+import * as LayoutUtil from '@/utils/layout';
 import * as _ from 'lodash';
 import { mapGetters } from 'vuex';
-import ModalComponent from '@/components/shared/modal-component.vue';
+import PanelComponent from '@/components/shared/panel-component.vue';
 
 //import { changeStatus, changeNotification } from '../../vuex/actions';
 //import { getVocabulary, getSettings, getDisplayDefinitions, getEditorData } from '../../vuex/getters';
@@ -48,7 +48,6 @@ export default {
       }
       this.active = false;
       this.$emit('close-marc');
-      LayoutUtil.scrollLock(false);
       this.$store.dispatch('setStatusValue', { 
         property: 'keybindState', 
         value: 'overview' 
@@ -59,7 +58,6 @@ export default {
       this.showMarc();
     },
     showMarc() {
-      LayoutUtil.scrollLock(true);
       this.$store.dispatch('setStatusValue', { 
         property: 'keybindState', 
         value: 'marc-preview'
@@ -113,7 +111,7 @@ export default {
     ]),
   },
   components: {
-    'modal-component': ModalComponent,
+    'panel-component': PanelComponent,
   },
   mounted() { 
     this.$nextTick(() => {});
@@ -122,15 +120,12 @@ export default {
 </script>
 
 <template>
-  <modal-component v-if="active" class="" @close="hide">
-    <template slot="modal-header">
-      {{ "Preview MARC21" | translatePhrase }}
-      <span class="ModalComponent-windowControl">
-        <i @click="hide" class="fa fa-close"></i>
-      </span>
-    </template>
-    
-    <template slot="modal-body">
+  <panel-component class=""
+    v-if="active"  
+    @close="hide" 
+    origin="Preview MARC21"
+    title="Preview MARC21">
+    <template slot="panel-body">
       <div class="MarcPreview">
         <div class="MarcPreview-body">
           <div class="MarcPreview-status" v-show="!dataLoaded">
@@ -176,7 +171,7 @@ export default {
        
       </div>
     </template>
-  </modal-component>
+  </panel-component>
 </template>
 
 <style lang="less">
@@ -213,7 +208,7 @@ export default {
 
     td, th {
       border: 1px solid #ccc;
-      padding: 5px;
+      padding: 10px;
       .sub-key {
         font-weight: bold;
         &::before {
