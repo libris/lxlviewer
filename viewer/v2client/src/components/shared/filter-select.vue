@@ -156,7 +156,7 @@ export default {
   background-color: lighten(@bib-color, 2%);
 
   &-input {
-    padding: 5px 25px 5px 10px;
+    padding: 5px 40px 5px 10px;
     border: none;
     border-bottom: 1px solid #ddd;
     line-height: 1;
