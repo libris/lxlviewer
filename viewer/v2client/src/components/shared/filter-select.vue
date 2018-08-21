@@ -1,4 +1,8 @@
 <script>
+/*
+  Adds custom select menu with searchable options
+*/
+import * as StringUtil from '@/utils/string';
 
 export default {
   name: 'filter-select',
@@ -7,17 +11,30 @@ export default {
     optionsAll: '',
     optionsSelected: '',
     selectId: 'filterSelect',
+    className: '',
+    customPlaceholder: '',
+    isFilter: true
   },
   data() {
     return {
       selectedObject: {},
-      filterVisible: false,
+      filterVisible: false
     };
+  },
+  computed: {
+    settings() {
+      return this.$store.getters.settings;
+    },
+    translatedPlaceholder() {
+      return StringUtil.getUiPhraseByLang(this.customPlaceholder, this.settings.language);
+    }
   },
   methods: {
     filter () {
       let inputSel, 
       inputEl, 
+      inputContEl, 
+      inputContSel,
       filterSelectContainer, 
       filterBy, 
       dropdownSel, 
@@ -25,7 +42,10 @@ export default {
       span, 
       i;
 
-      inputSel = document.getElementsByClassName('js-filterSelectInput');
+      inputContSel = document.getElementsByClassName(this.className);
+      inputContEl = inputContSel[0];
+
+      inputSel = inputContEl.getElementsByTagName('input');
       inputEl = inputSel[0];
       filterBy = inputEl.value.toUpperCase();
       filterSelectContainer = inputEl.parentElement;
@@ -53,8 +73,12 @@ export default {
       this.filterVisible = false;
     },
     showCurrentFilter(label) {
-      let inputSel, inputEl;
-      inputSel = document.getElementsByClassName('js-filterSelectInput');
+      let inputSel, inputEl, inputContEl, inputContSel;
+      
+      inputContSel = document.getElementsByClassName(this.className);
+      inputContEl = inputContSel[0];
+
+      inputSel = inputContEl.getElementsByTagName('input');
       inputEl = inputSel[0];
 
       inputEl.value = label;
@@ -71,10 +95,6 @@ export default {
       this.filterVisible = false;
     }
   },
-  computed: {
-  },
-  components: {
-  },
   watch: {
     selectedObject(value) {
       this.showCurrentFilter(value.label);
@@ -82,19 +102,23 @@ export default {
     }
   },
   mounted() {
-    this.$nextTick(() => {});
+    this.$nextTick(() => {
+      console.log(this.isFilter);    
+      });
   },
 };
 </script>
 
 <template>
-  <div class="FilterSelect" @blur="filterVisible = false">
+  <div class="FilterSelect" 
+    :class="className" 
+    @blur="filterVisible = false">
     <input class="FilterSelect-input js-filterSelectInput" 
       type="text" 
-      placeholder="Alla typer" 
+      v-bind:placeholder="translatedPlaceholder" 
       :id="selectId" 
       @keyup="filter(), filterVisible = true"
-      @click="filterVisible = true">
+      @click="filterVisible = !filterVisible">
     <ul class="FilterSelect-dropdown js-filterSelectDropdown"
       :class="{'is-visible': filterVisible}">
       <li class="FilterSelect-dropdownItem"
@@ -108,16 +132,23 @@ export default {
       </li>
     </ul>
     <i tabindex="0" 
+      class="fa FilterSelect-open"
+      :class="{'fa-angle-up': filterVisible, 'fa-angle-down': !filterVisible}"
+      @click="filterVisible = !filterVisible"></i>
+    <i v-if="isFilter" 
+      tabindex="0"
       class="fa fa-close FilterSelect-clear"
       @click="clear()"></i>
   </div>
 </template>
 
 <style lang="less">
-
 .FilterSelect {
   position: relative;
   display: inline-block;
+  font-weight: normal;
+  font-size: 12px;
+  font-size: 1.2rem;
   width: 100%;
   background-color: lighten(@bib-color, 2%);
 
@@ -161,9 +192,6 @@ export default {
 
   &-dropdownItem {
     text-decoration: none;
-    font-weight: normal;
-    font-size: 12px;
-    font-size: 1.2rem;
     display: block;
     cursor: pointer;
 
@@ -178,13 +206,21 @@ export default {
     padding: 5px;
   }
 
-  &-clear {
+  &-clear,
+  &-open {
     position: absolute;
     top: 6px;
     color: #fff;
-    right: 8px;
+    right: 24px;
     cursor: pointer;
   }
-}
 
+  &-open {
+    font-size: 18px;
+    font-size: 1.8rem;
+    font-weight: 700;
+    right: 8px;
+    top: 3px;
+  }
+}
 </style>

@@ -571,9 +571,11 @@ export default {
                     v-model="keyword"
                     autofocus />
                   <filter-select
-                    class="js-filterSelect"
+                    :class-name="'js-filterSelect'"
+                    :custom-placeholder="'All types'"
                     :options="selectOptions"
                     :options-all="getRange"
+                    :is-filter="true"
                     :options-selected="''"
                     v-on:filter-selected="setFilter($event, keyword)"></filter-select>
                 </div>
@@ -585,7 +587,9 @@ export default {
               <div class="EntityAdder-infoText" v-if="rangeInfo">
                 {{ "Allowed types" | translatePhrase }}:
                 <br>
-                <span v-for="(range, index) in getFullRange" :key="index" class="EntityAdder-infoRange">
+                <span class="EntityAdder-infoRange"
+                  v-for="(range, index) in getFullRange" 
+                  :key="index">
                   - {{range | labelByLang}}
                 </span>
               </div>
@@ -595,18 +599,13 @@ export default {
                 v-if="hasSingleRange" 
                 v-on:click="addEmpty(getFullRange[0])">{{ "Create local entity" | translatePhrase }}
               </button>
-              <select class="EntityAdder-createSelect"
-                v-model="selectedType" 
-                @change="addType(selectedType)" 
-                v-if="!hasSingleRange">
-                <option disabled value="">{{ "Create local entity" | translatePhrase }}</option>
-                <option 
-                  v-for="(term, index) in getClassTree" 
-                  :disabled="term.abstract" 
-                  :value="term.id" 
-                  :key="`${term.id}-${index}`" 
-                  v-html="getFormattedSelectOption(term, settings, resources.vocab, resources.context)"></option>
-              </select>
+              <filter-select
+                :class-name="'js-createSelect'"
+                :options="selectOptions"
+                :options-all="getRange"
+                :is-filter="false"
+                :custom-placeholder="'Create local entity'"
+                v-on:filter-selected="addType($event.value)"></filter-select>
             </div>
           </div>
         </div>
