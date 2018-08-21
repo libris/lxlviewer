@@ -93,5 +93,9 @@ export default {
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
+
+  @media (min-width: 768px) {
+    margin-top: 15vh;
+  }
 }
 </style>

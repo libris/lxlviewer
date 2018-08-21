@@ -113,7 +113,7 @@ export default {
 <template>
   <div class="ItemVocab" v-bind:class="{'is-locked': isLocked, 'is-unlocked': !isLocked, 'distinguish-removal': removeHover, 'removed': removed}">
     <div v-if="!isLocked && possibleValues.length > 0">
-      <select v-model="selected" class="ItemVocab-select customSelect">
+      <select v-model="selected" class="ItemVocab-select">
         <option 
           v-for="option in possibleValues" 
           :key="option" 
@@ -130,7 +130,7 @@ export default {
 .ItemVocab {
   &.is-locked {
     line-height: 2;
-    // padding-left: 5px;
+    padding-left: 5px;
   }
 
   &-text {

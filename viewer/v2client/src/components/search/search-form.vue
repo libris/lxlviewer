@@ -5,7 +5,6 @@ import * as httpUtil from '@/utils/http';
 import helpdocsJson from '@/resources/json/help.json';
 import * as StringUtil from '@/utils/string';
 import RemoteDatabases from '@/components/search/remote-databases';
-import TabMenu from '@/components/shared/tab-menu';
 import marked from 'marked';
 import { mapGetters } from 'vuex';
 
@@ -39,9 +38,6 @@ export default {
     }
   },
   methods: {
-    switchPerimeter(id) {
-      this.$router.push({ path: `/search/${id}` });
-    },
     removeTags(html) {
       let regexHtml = html.replace(/<h1.*>.*?<\/h1>/ig,'').replace(/<h2.*>.*?<\/h2>/ig,'');
       regexHtml = regexHtml.replace(/(<\/?(?:code|br|p)[^>]*>)|<[^>]+>/ig, '$1');
@@ -242,7 +238,6 @@ export default {
   },
   components: {
     'remote-databases': RemoteDatabases,
-    'tab-menu': TabMenu,
   },
   watch: {
     currentComputedInput(newValue) {
@@ -277,35 +272,37 @@ export default {
 </script>
 
 <template>
-  <div class="SearchBar">
-    <div class="SearchBar-topControl">
-      <tab-menu @go="switchPerimeter" :tabs="[
-        { 'id': 'libris', 'text': 'Libris' },
-        { 'id': 'remote', 'text': 'Other sources' },
-      ]" :active="searchPerimeter"></tab-menu>
-      <div  v-if="searchPerimeter === 'libris'"  class="SearchBar-help" @mouseleave="hideHelp()">
-        <div class="SearchBar-helpBox dropdown" >
-          <span class="SearchBar-helpIcon icon icon--md">
-            <i class="fa fa-fw fa-question-circle" tabindex="0" aria-haspopup="true"
-              @mouseover="showHelp()"
-              @keyup.enter="toggleHelp()"></i>
-          </span>
-          <div class="SearchBar-helpContent js-searchHelpText dropdown-menu"> 
-            <strong class="SearchBar-helpTitle">Operatorer för frågespråk</strong>
-            <div v-html="transformMarkdownToHTML(docs['search-01-queries'].content)"></div>
-          </div>
-        </div>
-      </div> 
+  <div class="SearchBar panel panel-default">
+    <div class="SearchBar-sourceTabs">
+      <router-link to="/search/libris" class="SearchBar-sourceTab"
+        :class="{'is-active': searchPerimeter === 'libris' }">Libris
+      </router-link>
+      <router-link to="/search/remote" class="SearchBar-sourceTab"
+        :class="{'is-active': searchPerimeter === 'remote' }">Andra källor
+      </router-link>
     </div>
+    <div  v-if="searchPerimeter === 'libris'"  class="SearchBar-help" @mouseleave="hideHelp()">
+      <div class="SearchBar-helpBox dropdown" >
+        <span class="SearchBar-helpIcon">
+          <i class="fa fa-fw fa-question-circle-o" tabindex="0" aria-haspopup="true"
+            @mouseover="showHelp()"
+            @keyup.enter="toggleHelp()"></i>
+        </span>
+        <div class="SearchBar-helpContent js-searchHelpText dropdown-menu"> 
+          <strong class="SearchBar-helpTitle">Operatorer för frågespråk</strong>
+          <div v-html="transformMarkdownToHTML(docs['search-01-queries'].content)"></div>
+        </div>
+      </div>
+    </div>       
     <form id="searchForm" class="SearchBar-form">
       <div class="SearchBar-formContent is-librisSearch" id="librisPanel" 
         v-if="searchPerimeter === 'libris'">
-        <div class="SearchBar-formGroup form-group">
+        <div class="SearchBar-formGroup form-group ">
           <label class="SearchBar-inputLabel hidden" id="searchlabel" for="q" aria-hidden="false">
             {{"Search" | translatePhrase}}
           </label>
-          <div class="SearchBar-inputWrap panel" id="searchFieldContainer">
-            <div class="SearchBar-input customInput form-control">
+          <div class="SearchBar-inputWrap" id="searchFieldContainer">
+            <div class="SearchBar-input form-control">
               <div class="SearchBar-qsmart js-qsmartInput" aria-labelledby="searchlabel">
                 <input name="q"
                   aria-labelledby="searchlabel"
@@ -317,7 +314,6 @@ export default {
                   @keydown="handleInput"
                   v-model="input.value"
                   class="SearchBar-qsmartInput"
-                  :placeholder="'Search' | translatePhrase"
                   :class="input.class">
                 <datalist id="matchingParameters">
                   <option v-for="matchingParameter in validSearchTags" 
@@ -327,32 +323,27 @@ export default {
                   </option>
                 </datalist>
               </div>
-              <span class="SearchBar-clear icon icon--md" v-show="hasInput" @click="clearInputs()">
+              <span class="SearchBar-clear" v-show="hasInput" @click="clearInputs()">
                 <i class="fa fa-fw fa-close"></i>
               </span>
             </div>
-            <button class="SearchBar-submit btn btn-primary icon icon--md" 
-              :aria-label="'Search' | translatePhrase"
-              @click.prevent="doSearch">
-              <i class="fa fa-search"></i>
+            <button class="SearchBar-submit btn btn-primary" @click.prevent="doSearch">
+              <i class="fa fa-search"></i> {{"Search" | translatePhrase}}
             </button>
           </div>
         </div>
       </div>
-      <div 
-        class="SearchBar-formContent is-remoteSearch" 
-        id="remotePanel" 
+      <div class="SearchBar-formContent is-remoteSearch" id="remotePanel" 
         v-if="searchPerimeter === 'remote'">
-        <div class="SearchBar-formGroup form-group panel">
-          <input type="text" class="SearchBar-input customInput form-control" placeholder="ISBN eller valfria sökord" 
+        <div class="SearchBar-formGroup form-group">
+          <input type="text" class="SearchBar-input form-control" placeholder="ISBN eller valfria sökord" 
             v-model="remoteSearch.q">
-          <button 
-            class="SearchBar-submit btn btn-primary icon icon--md"
-            :aria-label="'Search' | translatePhrase"
-            v-bind:class="{'disabled': status.remoteDatabases.length === 0}"
-            :disabled="status.remoteDatabases.length === 0" 
+          <button class="SearchBar-submit btn btn-primary"
+            v-bind:class="{
+              'disabled': status.remoteDatabases.length === 0
+            }" 
             v-on:click.prevent="doSearch">
-            <i class="fa fa-search"></i>
+            <i class="fa fa-search"></i> {{"Search" | translatePhrase}}
           </button>
         </div>
       </div>
@@ -362,14 +353,12 @@ export default {
           :for="filter['@id']"
           v-for="filter in dataSetFilters" 
           :key="filter['@id']">
-          <input type="checkbox" class="SearchBar-typeInput customCheckbox-input"
+          <input type="checkbox" class="Searchbar-typeInput"
             :id="filter['@id']"
             v-model="inputData.ids"
-            :value="filter['@id']"/>
-            <span class="SearchBar-typeText customCheckbox-icon">
-              {{ filter.label }}
-            </span>
-        </label>
+            :value="filter['@id']">
+          {{ filter.label }}
+        </label>        
       </div>
       <remote-databases v-if="searchPerimeter === 'remote'" :remoteSearch="remoteSearch" ref="dbComponent"></remote-databases>
     </form>
@@ -383,14 +372,59 @@ export default {
   padding: 10px;
   transition: 0.3s ease margin-top;
 
-  @media (min-width: @screen-md) {
-    padding: 0 0 20px 0;
+  @media (min-width: 768px) {
+    padding: 20px;
   }
 
-  &-topControl {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  &-sourceTabs {
+    margin: 20px 0 10px;
+    padding: 0;
+  }
+
+  &-sourceTab {
+    color: @brand-primary;
+    font-weight: 700;
+    font-size: 16px;
+    font-size: 1.6rem;
+    margin: 5px 0 0;
+    padding: 5px 10px 8px;
+    text-transform: uppercase;
+    transition: color 0.5s ease;
+    border: 1px dashed #fff;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+
+    &.is-active {
+      background-color: @brand-primary;
+      border: 1px solid @brand-primary;
+      color: #fff;
+      text-decoration: none;
+
+      &:hover {
+        color: #fff;
+      }
+    }
+
+    &:hover {
+      color: @brand-primary;
+    }
+
+    &:focus {
+      outline: 0px dashed @brand-primary;
+      border: 1px dashed @brand-primary;
+    }
+
+    @media (min-width: 768px) {
+      font-size: 20px;
+      font-size: 2rem;
+    }
+
+  }
+
+  &-formContent {
+    &.is-remoteSearch {
+      margin: -8px 0 0;
+    }
   }
 
   &.is-landing-page {
@@ -398,19 +432,22 @@ export default {
   }
 
   &-help {
-    margin-left: auto;
+    margin-top: -35px;
   }
 
   &-helpIcon {
-    float: right;
     clear: right;
-
-    & > i {
-      vertical-align: bottom;
-    }
+    cursor: pointer;
+    font-size: 18px;
+    float: right;
+    width: 20%;
 
     &:focus {
       outline: auto 5px;
+    }
+
+    @media (min-width: 768px) {
+      margin-right: 24px;
     }
   }
 
@@ -424,11 +461,11 @@ export default {
     font-size: 1.2rem;
     display: none;
     left: auto;
-    width: 300px;
+    max-width: 300px;
     padding: 10px;
-    margin-top: 10px;
     right: 0;
     top: 2em;
+    width: 30%;
 
     .is-active & {
       display: block;
@@ -442,17 +479,38 @@ export default {
   }
 
   &-input {
-    border-width: 1px 0 1px 1px;
-    border-radius: 4px 0 0 4px;
+    border-width: 1px;
+    font-size: 20px;
+    font-size: 2rem;
+    line-height: 1.2;
+    height: 42px;
+    min-width: 75%;
+    margin: 0 0 10px 0;
+    flex-grow: 1;
+    display: flex;
+    justify-content: space-between;
 
     .is-remoteSearch & {
       width: 100%;
     }
+
+    &:focus {
+      border: 1px solid @brand-primary;
+      outline: 0;
+      box-shadow: none;
+    }
+
+    @media (min-width: 768px) {
+      margin: 0 5px 0 0;
+    }
   }
 
   &-inputWrap {
-    display: flex;
-    margin-bottom: 0;
+    display: block;
+
+    @media (min-width: 768px) {
+      display: flex;
+    }
   }
 
   &-inputLabel {
@@ -496,17 +554,27 @@ export default {
   }
 
   &-clear {
+    cursor: pointer;
     align-self: center;
     flex: 1 1 2%;
+
+    &:hover {
+        color: #555;
+    }
   }
 
   &-submit {
-    height: 42px;
-    border: 0;
-    border-radius: 0 4px 4px 0;
+    font-size: 16px;
+    font-size: 1.6rem;
+    font-weight: 700;
+    height: 42px;   
+    width: 100%;
 
-    @media (min-width: @screen-sm) {
-      min-width: 84px;
+    @media (min-width: 768px) {
+      min-width: 20%;
+      width: auto;
+      font-size: 20px;
+      font-size: 2rem;
     }
   }
 
@@ -520,19 +588,14 @@ export default {
   }
 
   &-typeLabel {
-    padding: 3px 7px;
+    padding: 3px 10px;
     font-weight: normal;
-    position: relative;
-
-    &:first-of-type {
-      padding-left: 0;
-    }
+    font-size: 14px;   
+    font-size: 1.4rem;
   }
 
   &-typeInput {
-  }
-
-  &-typeText {
+    margin-right: 0.2em;   
   }
 }
 </style>

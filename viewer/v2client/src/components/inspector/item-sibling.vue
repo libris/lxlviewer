@@ -178,6 +178,7 @@ export default {
           property: 'keybindState', 
           value: 'extraction-dialog' 
         });
+        LayoutUtil.scrollLock(true);
         this.extractDialogActive = true;
       }
     },
@@ -186,6 +187,7 @@ export default {
         property: 'keybindState', 
         value: 'overview' 
       });
+      LayoutUtil.scrollLock(false);
       this.extractDialogActive = false;
       this.extracting = false;
     },
@@ -313,28 +315,28 @@ export default {
       </div>
       
       <div class="ItemSibling-actions">
-        <i class="ItemSibling-action fa fa-link icon icon--sm"
-          v-if="inspector.status.editing && isExtractable"
-          @click="openExtractDialog()" 
-          tabindex="0"
-          @keyup.enter="openExtractDialog()"
-          @focus="showLinkAction = true, actionHighlight(true)" 
-          @blur="showLinkAction = false, actionHighlight(false)"
-          @mouseover="showLinkAction = true, actionHighlight(true)" 
-          @mouseout="showLinkAction = false, actionHighlight(false)">
-          <tooltip-component 
-            :show-tooltip="showLinkAction" 
-            tooltip-text="Link entity" 
-            translation="translatePhrase"></tooltip-component>
-        </i>
         <field-adder class="ItemSibling-action"
           v-if="!isLocked" 
           :entity-type="item['@type']" 
           :allowed="allowedProperties" 
           :inner="true" 
-          :path="getPath">
-        </field-adder>
-        <i class="ItemSibling-action fa fa-trash-o icon icon--sm" 
+          :path="getPath"></field-adder>
+         
+          <i class="ItemSibling-action fa fa-link"
+            v-if="inspector.status.editing && isExtractable"
+            @click="openExtractDialog()" 
+            tabindex="0"
+            @keyup.enter="openExtractDialog()"
+            @focus="showLinkAction = true, actionHighlight(true)" 
+            @blur="showLinkAction = false, actionHighlight(false)"
+            @mouseover="showLinkAction = true, actionHighlight(true)" 
+            @mouseout="showLinkAction = false, actionHighlight(false)">
+            <tooltip-component 
+              :show-tooltip="showLinkAction" 
+              tooltip-text="Link entity" 
+              translation="translatePhrase"></tooltip-component>
+          </i>
+        <i class="ItemSibling-action fa fa-trash-o chip-action" 
           v-if="!isLocked" 
           :class="{'show-icon': showActionButtons}" 
           v-on:click="removeThis(true)"
@@ -396,11 +398,10 @@ export default {
 <style lang="less">
 
 .ItemSibling {
-  padding: 5px 0;
+  padding: 5px;
   position: relative;
   flex: 1 100%;
   transition: background-color .2s ease;
-  border-radius: 4px;
 
   &-heading {
     display: block;
@@ -410,7 +411,7 @@ export default {
   }
 
   &-label {
-    margin-right: 90px;
+    margin-right: 40px;
   }
 
   &-type {
@@ -438,17 +439,20 @@ export default {
     top: 0;
     right: 0;
     position: absolute;
-
-    @media (max-width: @screen-sm) {
-      display: flex;
-      align-items: baseline;
-    }
   }
 
   &-action {
     display: inline-block;
-    min-width: 20px;
-    margin-right: 5px;
+    color: @gray-dark;
+    cursor: pointer;
+    display: inline-block;
+    margin: 0 5px 0 0;
+    opacity: 1;
+    transition: opacity 0.5s ease;
+
+    &:hover {
+      color: @black;
+    }
   }
 
   &-collapsedLabel {
@@ -537,6 +541,10 @@ export default {
         .confirm-remove-box {
           transform: translate(16px, 0px);
         }
+      }
+
+      .chip-action {
+        cursor: pointer;
       }
 
       .type {

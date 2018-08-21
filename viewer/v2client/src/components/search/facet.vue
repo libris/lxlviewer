@@ -54,34 +54,37 @@ export default {
       :title="determinedLabel | capitalize">
       <span class="Facet-label"
         :title="determinedLabel | capitalize">
-        {{determinedLabel | capitalize}} 
-        ({{observation.totalItems}})
+        {{determinedLabel | capitalize}}
       </span>
     </router-link>
+    <span class="Facet-quantity">({{observation.totalItems}})</span>
   </li>
 </template>
 
 <style lang="less">
 
 .Facet {
+  padding: 2px 0px;
   width: 100%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  line-height: 2;
 
   &-link {
-    font-size: 16px;
-    font-size: 1.6rem;
-
-    &:hover {
-      color: inherit;
-    }
+    color: @gray-darker;
+    font-size: 14px;
+    font-size: 1.4rem;
   }
 
   &-label {
     cursor: pointer;
-    color: @black;
+    color: @gray-darker;
+  }
+
+  &-quantity {
+    color: @gray;
+    font-size: 12px;
+    font-size: 1.2rem;
   }
 }
 

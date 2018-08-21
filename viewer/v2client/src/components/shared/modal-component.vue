@@ -79,8 +79,8 @@ export default {
           <header>
             {{ title }}
           </header>
-          <span class="ModalComponent-windowControl" v-if="closeable">
-            <i @click="close" class="fa fa-close icon--md"></i>
+          <span class="ModalComponent-windowControl">
+            <i @click="close" class="fa fa-close"></i>
           </span>
         </slot>
       </div>
@@ -97,7 +97,6 @@ export default {
 
 .ModalComponent {
   cursor: auto;
-
   &-backdrop {
     .is-fadedIn & {
       opacity: 1;
@@ -112,7 +111,6 @@ export default {
     height: 100%;
     background-color: rgba(0, 0, 0, 0.25);
   }
-
   &-container {
     .is-fadedIn & {
       opacity: 1;
@@ -129,33 +127,34 @@ export default {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    height: 85vh;
     text-align: left;
-    border-radius: 4px;
+    border: 1px solid darken(@brand-primary, 5%);
+    .is-danger & {
+      border-color: darken(@brand-danger, 5%);
+    }
+    border-radius: 3px;
     background-color: @neutral-color;
     overflow: hidden;
     line-height: 1.6;
   }
-
   &-header {
+    .is-danger & {
+      background-color: @brand-danger;
+    }
     display: flex;
     flex-wrap: nowrap;
     flex-direction: row;
     justify-content: space-between;
     background-color: @brand-primary;
-    color: @white;
-    padding: 10px 15px;
-
-    .is-danger & {
-      background-color: @brand-danger;
-    }
-
+    color: @neutral-color;
+    padding: 0.5em;
     header {
       display: inline-block;
-      font-weight: 600;
+      font-weight: bold;
       text-transform: uppercase;
     }
   }
-
   &-body {
     overflow-y: auto;
     height: 100%;
@@ -164,6 +163,7 @@ export default {
   &-windowControl {
     i:hover {
       cursor: pointer;
+      color: darken(@neutral-color, 25%);
     }
   }
 }

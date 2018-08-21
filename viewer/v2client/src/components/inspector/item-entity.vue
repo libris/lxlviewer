@@ -111,26 +111,22 @@ export default {
 
 <template>
   <div class="ItemEntity-container" 
-    @keyup.enter="showCardInfo=true"
-    @mouseenter="showCardInfo=true"
     @mouseleave="showCardInfo=false">
-    <div class="ItemEntity chip" 
+    <div class="ItemEntity" 
       tabindex="0"
       v-if="!expanded" 
-      :class="{ 'is-locked': isLocked, 'is-highlighted': showCardInfo, 'is-newlyAdded': isNewlyAdded, 'is-removeable': removeHover}">
-      <span class="ItemEntity-label chip-label">
+      :class="{ 'is-locked': isLocked, 'is-highlighted': showCardInfo, 'is-newlyAdded': isNewlyAdded}" 
+      @keyup.enter="showCardInfo=true"
+      @mouseenter="showCardInfo=true">
+      <span class="ItemEntity-label">
         <span v-if="!expanded">{{getItemLabel}}</span>
         <span class="placeholder"></span></span>
-      <div class="ItemEntity-removeButton chip-removeButton icon icon--sm" v-if="!isLocked">
-        <i class="fa fa-times-circle" 
-          v-if="!isLocked"
-          role="button"
-          tabindex="0"
-          @click="removeThis(true)"
-          @keyup.enter="removeThis(true)"
-          @mouseover="removeHover = true, showCardInfo = false"
-          @mouseout="removeHover = false, showCardInfo = true">
-
+      <div class="ItemEntity-removeButton" v-if="!isLocked">
+        <i class="fa fa-times chip-action" 
+          v-if="!isLocked" 
+          v-on:click="removeThis(true)" 
+          @mouseover="removeHover = true" 
+          @mouseout="removeHover = false">
           <tooltip-component 
             :show-tooltip="removeHover" 
             tooltip-text="Remove" 
@@ -155,14 +151,23 @@ export default {
 @linked-color: #daefec;
 
 .ItemEntity {
+  display: inline-block;
+  background-color: lighten(@bib-color, 2%);
+  border: none;
+  border-radius: 2em;
+  overflow: hidden;
+  line-height: 1.6;
+  padding: 3px 0.3em 3px 0.5em;
+  transition: .3s ease;
 
   &-container {
     display: flex;
+    margin: 0px 5px 5px 0px;
     position: relative;
   }
 
   &.is-newlyAdded {
-    background-color: @add;
+    background-color: @sec-alter;
     -webkit-animation-duration: 1s;
     animation-duration: 1s;
     -webkit-animation-fill-mode: both;
@@ -172,8 +177,25 @@ export default {
   }
 
   &-removeButton {
+    display: inline-block;
+    width: 1.2em;
+    height: 1.2em;
+    line-height: 1.2em;
+    cursor: pointer;
+    // background-color: rgba(255, 255, 255, 0.25);
+    i {
+      color: fadeout(white, 35%);
+    }
+    &:hover {
+      // background-color: rgba(255, 255, 255, 0.35);
+      i {
+        color: white;
+      }
+    }
+    display: inline-block;
+    border-radius: 1em;
+    text-align: center;
   }
-
   &.expanded {
     margin: 0 0 2em 0;
   }
@@ -181,14 +203,18 @@ export default {
   &.is-locked {
     padding: 3px 0.5em 3px 0.5em;
   }
-
+  &:hover {
+    background-color: darken(@bib-color, 2%);
+  }
   a {
-    color: @white;
+    color: white;
     &:hover {
       text-decoration: none;
     }
   }
   &-label {
+    color: white;
+    cursor: default;
   }
   
   @media print {

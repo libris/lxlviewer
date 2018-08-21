@@ -6,7 +6,7 @@ import * as VocabUtil from '@/utils/vocab';
 import * as RecordUtil from '@/utils/record';
 import * as StringUtil from '@/utils/string';
 import CreationCard from '@/components/create/creation-card';
-import TabMenu from '@/components/shared/tab-menu';
+import CreateOptions from '@/components/create/create-options';
 
 export default {
   name: 'create-new-form',
@@ -18,12 +18,6 @@ export default {
         'Agent',
         // 'Concept',
         'File',
-      ],
-      creationList2: [
-        {'id': 'Instance', 'text': 'Instance'},
-        {'id': 'Work', 'text': 'Work'},
-        {'id': 'Agent', 'text': 'Agent'},
-        {'id': 'File', 'text': 'From file'},
       ],
       chosenType: '',
       selectedCreation: 'Instance',
@@ -139,7 +133,7 @@ export default {
   },
   components: {
     'creation-card': CreationCard,
-    'tab-menu': TabMenu,
+    'create-options': CreateOptions,
   },
   watch: {
     'thingData': function() {
@@ -173,10 +167,12 @@ export default {
 </script>
 
 <template>
-  <div class="Create" id="create-new-post">
+  <div class="Create panel panel-default" id="create-new-post">
     <div class="panel-body">
-      <h1 class="Create-title mainTitle">{{'Create new' | translatePhrase}}</h1>
-        <tab-menu @go="setCreation" :tabs="creationList2" :active="selectedCreation"></tab-menu>
+      <h1 class="Create-title">{{'Create new' | translatePhrase}}</h1>
+        <create-options
+          :creation-list="creationList"
+          @set-creation="setCreation" />
         <div v-if="selectedCreation !== 'File'" class="Create-cards" id="creationCardPanel">
           <creation-card
             :is-base="true"
@@ -209,20 +205,21 @@ export default {
 <style lang="less">
 .Create {
   &-title {
+    margin: 10px 0 20px;
   }
 
   &-cards {
     display: flex;
     flex-wrap: wrap;
-    justify-content: flex-start;
+    margin: 0 -1em;
   }
 }
 .Dropzone {
-  height: 275px;
+  margin-top: 1em;
+  height: 300px;
   width: 100%;
-  border: 1px solid @form-border;
-  background-color: @white;
-
+  padding: 2px;
+  border: 1px solid #E0E6E9;
   &.is-active {
     background-color: fadeout(@brand-primary, 50%);
     border: 3px dashed @brand-primary;

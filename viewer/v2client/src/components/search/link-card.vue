@@ -44,11 +44,11 @@ export default {
       </div>
     </div> 
      
-    <div class="LinkCard-content card-content">
-      <div class="LinkCard-text card-text">
-        <span class="LinkCard-title card-title">{{ header }}</span>
-        <div v-if="html" class="LinkCard-html card-descr" v-html="html">{{ html }}</div>
-        <div class="LinkCard-descr card-descr">{{ text }}</div>
+    <div class="LinkCard-content">
+      <div class="LinkCard-text">
+        <span class="LinkCard-title">{{ header }}</span>
+        <div v-if="html" class="LinkCard-html" v-html="html">{{ html }}</div>
+        <div class="LinkCard-descr">{{ text }}</div>
       </div>
       <a v-if="linkUrl" :href="linkUrl" class="card-link LinkCard-link">{{ linkText }}</a>
     </div>
@@ -105,6 +105,14 @@ export default {
   }
 
   &-content {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 0.5em 1em 0em 1em;
+    flex-grow: 1;
+    width: 100%;
+
     .LinkCard--large & {
       padding: 1em;
       @media (min-width: 768px) {
@@ -114,15 +122,28 @@ export default {
   }
 
   &-link {
+    padding: 10px 0;
+    font-size: 16px;
+    font-size: 1.6rem;
+    line-height: 1.2;
+    text-align: center;
   }
 
   &-text {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
   }
 
   &-descr,
   &-html {
+    font-size: 16px;
+    font-size: 1.6rem;
+
     @media (min-width: 768px) {
       display: flex;
+      font-size: 18px;
+      font-size: 1.8rem;
     }
   }
 
@@ -131,6 +152,12 @@ export default {
   }
 
   &-title {
+    display: block;
+    font-size: 20px;
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin: 10px 0 10px 0;
   }
 
   &.no-link {

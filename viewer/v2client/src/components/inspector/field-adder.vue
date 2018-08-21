@@ -10,7 +10,7 @@ import * as LayoutUtil from '@/utils/layout';
 import * as StringUtil from '@/utils/string';
 import * as VocabUtil from '@/utils/vocab';
 import ComboKeys from 'combokeys';
-import PanelComponent from '@/components/shared/panel-component.vue';
+import ModalComponent from '@/components/shared/modal-component.vue';
 import { mapGetters } from 'vuex';
 
 export default {
@@ -104,11 +104,6 @@ export default {
     },
   },
   methods: {
-    toggleFullView() {
-      const user = this.user;
-      user.settings.forceFullViewPanel = !user.settings.forceFullViewPanel;
-      this.$store.dispatch('setUser', user);
-    },
     actionHighlight(active, event) {
       if(active) {
         let item = event.target;
@@ -248,12 +243,12 @@ export default {
           ],
           addToHistory: true,
         });
-        this.$store.dispatch('setInspectorStatusValue', { 
-          property: 'lastAdded', 
-          value: `${this.path}.${key}` 
-          });
         if (close) {
           this.hide();
+          this.$store.dispatch('setInspectorStatusValue', { 
+            property: 'lastAdded', 
+            value: `${this.path}.${key}` 
+          });
         }
       }
       this.$parent.$emit('expand-item', true);
@@ -318,7 +313,7 @@ export default {
     });
   },
   components: {
-    'panel-component': PanelComponent,
+    'modal-component': ModalComponent,
     'tooltip-component': ToolTipComponent,
   },
 };
@@ -326,16 +321,13 @@ export default {
 
 <template>
   <div class="FieldAdder">
-    <span v-if="inner" class="FieldAdder-innerAdd">
-      <i 
-        class="FieldAdder-innerIcon fa fa-plus-circle icon icon--sm" 
-        tabindex="0"
-        @click="show" 
-        @keyup.enter="show"
-        @mouseenter="showToolTip = true, actionHighlight(true, $event)" 
-        @mouseleave="showToolTip = false, actionHighlight(false, $event)"
-        @focus="showToolTip = true, actionHighlight(true, $event)"
-        @blur="showToolTip = false, actionHighlight(false, $event)">
+    <span v-if="inner" class="FieldAdder-innerAdd"
+      v-on:click="show" 
+      tabindex="0"
+      @keyup.enter="show"
+      @mouseenter="showToolTip = true, actionHighlight(true, $event)" 
+      @mouseleave="showToolTip = false, actionHighlight(false, $event)">
+      <i class="FieldAdder-innerIcon fa fa-plus plus-icon" aria-hidden="true">
         <tooltip-component 
           :show-tooltip="showToolTip" 
           :tooltip-text="modalTitle" 
@@ -360,81 +352,66 @@ export default {
       <span v-if="!inToolbar" class="FieldAdder-label"> {{ "Add field" | translatePhrase }}</span>
     </button>
 
-    <panel-component class="FieldAdder-panel FieldAdderPanel"
-      v-if="active"
-      :title="modalTitle" 
-      :origin="path" 
-      @close="hide">
-      <template slot="panel-header-extra">
-        <div class="FieldAdderPanel-filterContainer form-group panel">
-          <input id="field-adder-input"
-            type="text" 
-            class="FieldAdderPanel-filterInput customInput form-control mousetrap" 
+    <modal-component @close="hide" v-if="active" class="FieldAdder-modal FieldAdderModal">
+      <template slot="modal-header">
+        <header>
+          {{ modalTitle }}
+        </header>
+        <span class="FieldAdderModal-filter">
+          {{ "Filter by" | translatePhrase }} 
+          <input id="field-adder-input" 
+            class="filterInput mousetrap" 
             @input="resetSelectIndex()" 
-            :placeholder="'Filter by' | translatePhrase"
+            type="text" 
             v-model="filterKey">
-        </div>
-        <div class="FieldAdderPanel-filterInfo uppercaseHeading">
-          <span>
-            {{ "Showing" | translatePhrase }} 
-            {{ filteredResults.length }} 
-            {{ "of" | translatePhrase }} 
-            {{allowed ? allowed.length : '0'}} 
-            {{ "total" | translatePhrase }}
-          </span>
-        </div>
+          <span class="filterInfo">{{ "Showing" | translatePhrase }} {{ filteredResults.length }} {{ "of" | translatePhrase }} {{allowed ? allowed.length : '0'}} {{ "total" | translatePhrase }}</span>
+        </span>
+        <span class="ModalComponent-windowControl">
+          <i @click="hide" @keyup.enter="hide" tabindex="0" class="fa fa-close"></i>
+        </span>
       </template>
-      <template slot="panel-header-after">
-        <div class="FieldAdderPanel-columnHeaders">
-          <!-- <span class="FieldAdderPanel-addControl">
-          </span> -->
-          <span class="FieldAdderPanel-fieldLabel uppercaseHeading">
+      <template slot="modal-body">
+        <div class="FieldAdderModal-columnHeaders">
+          <span class="FieldAdderModal-addControl">
+            &nbsp;
+          </span>
+          <span class="FieldAdderModal-fieldLabel">
             {{ "Field label" | translatePhrase }}
           </span>
-          <span class="FieldAdderPanel-classInfo uppercaseHeading">
+          <span class="FieldAdderModal-classInfo">
             {{ "Can contain" | translatePhrase }}
           </span>
         </div>
-      </template>
-      <template slot="panel-body">
-        <div>
-          <ul id="fields-window" class="FieldAdderPanel-fieldList js-fieldlist">
-            <li
-              class="FieldAdderPanel-fieldItem PanelComponent-listItem"
+        <div class="FieldAdderModal-fieldList">
+          <ul id="fields-window" class="js-fieldlist">
+            <li tabindex="0"
               @focus="selectedIndex = index"
               @mouseover="selectedIndex = index" 
-              v-bind:class="{ 'already-added': prop.added, 'available': !prop.added, 'selected': index == selectedIndex }" 
+              v-bind:class="{ 'added': prop.added, 'available': !prop.added, 'selected': index == selectedIndex }" 
               v-for="(prop, index) in filteredResults" 
-              :key="prop['@id']">
-              <span class="FieldAdderPanel-addControl">
-                <a 
-                  v-show="!prop.added" 
-                  @click="addField(prop, false)"
-                  @keyup.enter="addField(prop, false)"                  
-                  :title="'Add' | translatePhrase"
-                  tabindex="0"
-                  >
-                  <i class="fa fa-plus-circle icon icon--lg icon--primary"></i>
+              :key="prop['@id']" 
+              @click="addField(prop, true)">
+              <span class="FieldAdderModal-addControl">
+                <a v-show="!prop.added" v-on:click.stop.prevent="addField(prop, false)">
+                  <i class="fa fa-fw fa-2x fa-plus-circle"></i>
                 </a>
-                <span v-show="prop.added" :title="'Added' | translatePhrase">
-                  <i class="fa fa-check-circle icon icon--lg is-disabled"></i>
-                </span>
+                <span v-show="prop.added"><i class="fa fa-fw fa-check fa-2x"></i></span>
               </span>
-              <span class="FieldAdderPanel-fieldLabel" :title="prop.label | capitalize">
+              <span class="FieldAdderModal-fieldLabel" :title="prop.label | capitalize">
                 {{prop.label | capitalize }}
                 <span class="typeLabel">{{ prop.item['@id'] | removeDomain }}</span>
               </span>
-              <span class="FieldAdderPanel-classInfo">
+              <span class="FieldAdderModal-classInfo">
                 {{ getPropClassInfo(prop.item) }}
               </span>
             </li>
+            <li v-if="filteredResults.length === 0">
+              <i>{{ "Did not find any fields" | translatePhrase }}...</i>
+            </li>
           </ul>
         </div>
-        <div v-if="filteredResults.length === 0" class="PanelComponent-searchStatus">
-          <span>{{ "Did not find any fields" | translatePhrase }}...</span>
-        </div>
       </template>
-    </panel-component>
+    </modal-component>
   </div>
 </template>
 
@@ -463,28 +440,16 @@ export default {
   &-innerLabel {
     display: none;
   }
-  
-  &-innerIcon {
-    .ItemSibling-action & {
-      color: @icon-primary;
-      &:hover {
-        color: @icon-primary--hover;
-      }
-    }
-  }
 }
 
-.FieldAdderPanel {
-  &-filterContainer {
-    flex: 1;
-  }
-
-  &-filterInput {
-  }
-
-  &-filterInfo {
-    color: @gray;
-    margin-bottom: 10px;
+.FieldAdderModal {
+  &-filter {
+    input {
+      height: 100%;
+      color: #333;
+      border-radius: 3px;
+      border: none;
+    }
   }
 
   &-body {
@@ -493,65 +458,82 @@ export default {
   }
 
   &-columnHeaders {
-    display: flex;
     background-color: @white;
+    position: fixed;
+    z-index: 1;
     width: 100%;
-    padding: 5px 15px;
-    border-bottom: 1px solid @gray-lighter;
-
-    &.FieldAdderPanel-fieldLabel {
-      padding-left: 0;
+    border: solid @gray;
+    border-width: 0px 0px 1px 0px;
+    > * {
+      display: inline-block;
     }
   }
-
   &-fieldLabel {
-  display: inline-block;
-  flex-basis: 75%;
-  padding: 0 15px;
-  font-weight: 600;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-
-  .typeLabel {
-    display: block;
-    font-size: 14px;
-    font-size: 1.4rem;
-    font-family: monospace;
-    font-weight: normal;
-  }
-}
-
-  &-classInfo {
     display: inline-block;
-    flex-basis: 25%;
-    font-size: 14px;
-    font-size: 1.4rem;
+    width: 45%;
+    font-size: 16px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    margin: 5px 0 0;
+    .typeLabel {
+      display: block;
+      font-size: 85%;
+      font-family: monospace;
+    }
   }
-
+  &-classInfo {
+    display: inline-block;
+    width: 40%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 85%;
+  }
   &-addControl {
-    display: flex;
-    align-items: center;
-    width: 30px;
+    float: left;
+    width: 8%;
+    text-align: center;
+    a {
+      cursor: pointer;
+    }
   }
-
   &-fieldList {
-    width: 100%;
-    padding: 0;
-    margin: 0;
-    list-style-type: none;
-  }
-
-  &-fieldItem {
-    opacity: 0.6;
-    font-size: 16px;
-    font-size: 1.6rem;
-
-    &.available {
-      opacity: 1;
+    padding-top: 2em;
+    padding-bottom: 3em;
+    ul {
+      border-radius: 0px 0px 3px 3px;
+      padding-left: 0px;
+      width: 100%;
+      margin: 0px;
+      list-style-type: none;
+      li {
+        &:nth-child(odd) {
+          background-color: darken(@neutral-color, 5%);
+        }
+        &.available {
+          cursor: pointer;
+          &.selected {
+            outline: solid 1px @brand-primary;
+            background-color: fadeout(@brand-primary, 70%);
+          }
+        }
+        &.added {
+          &.selected {
+            background-color: @gray-light;
+          }
+        }
+        margin: 0px;
+        padding: 1em 0;
+        line-height: 1.3;
+        display: flex;
+        align-items: center;
+        &.added {
+          span {
+            opacity: 0.6;
+          }
+        }
+      }
     }
   }
 }

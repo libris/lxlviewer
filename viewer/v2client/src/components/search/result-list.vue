@@ -70,7 +70,6 @@ export default {
 <style lang="less">
 .ResultList {
   width: 100%;
-  margin-bottom: 40px;
   padding: 0px;
   list-style-type: none;
 }

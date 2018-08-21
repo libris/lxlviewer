@@ -77,7 +77,7 @@ export default {
 </script>
 
 <template>
-  <div class="EntityHeader HeaderComponent">
+  <div class="EntityHeader HeaderComponent" :class="{'is-new': inspector.status.isNew}">
     <div class="EntityHeader-body HeaderComponent-body is-full">
       <entity-summary :focus-data="focusData" :should-link="false" :lines="full ? 6 : 3"></entity-summary>
     </div>
@@ -93,10 +93,15 @@ export default {
 
 .HeaderComponent {
   display: flex;
+  background-color: @brand-primary;
   box-shadow: @shadow-base;
   padding: 0px;
-  margin-bottom: 20px;
-
+  &.is-new {
+    background-color: #6f767b;
+    > div > .compact-header {
+      background: #6f767b;
+    }
+  }
   &-body {
     &.is-full {
       flex: 8 8 100%;
@@ -110,7 +115,6 @@ export default {
         }
       }
     }
-
     &.is-compact {
       position: fixed;
       z-index: 2;
@@ -121,7 +125,6 @@ export default {
       @media print {
         display: none;
       }
-
       .compact-header {
         white-space: nowrap;
         overflow: hidden;
@@ -134,7 +137,6 @@ export default {
         opacity: 0;
         transition: all 0.3s ease;
         line-height: 0;
-        
         &.show-compact {
           max-height: 55px;
           opacity: 1;

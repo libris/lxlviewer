@@ -61,19 +61,17 @@ export default {
 </script>
 
 <template>
-  <li class="EntitySearch-listItem PanelComponent-listItem" :class="{ 'already-added' : !listItemSettings.show }" >
-    <summary-action 
-      :disabled="!listItemSettings.show" 
-      :options="addPayload" 
-      @action="addItem()">
-    </summary-action>
+  <li class="EntitySearch-item" >
     <div class="EntitySearch-itemContainer">
       <entity-summary 
         :focus-data="focusData" 
         :should-link="false" 
-        :lines="4">
-      </entity-summary>
+        :lines="4"></entity-summary>
     </div>
+    <summary-action 
+      v-show="listItemSettings.show" 
+      :options="addPayload" 
+      @action="addItem()"></summary-action>
   </li>
 </template>
 
@@ -82,17 +80,21 @@ export default {
 
 .EntitySearch{
 
-  &-listItem {
-
-    &.already-added {
-      & .EntitySearch-itemContainer {
-        opacity: 0.6;
-        cursor: default;
-      }
-    }
+  &-item {
+    border: solid #777;
+    margin: 4px;
+    border-width: 1px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 
     code {
       color: @black;
+    }
+
+    &.already-added {
+      opacity: 0.5;
+      cursor: default;
     }
 
     .label {
@@ -118,23 +120,13 @@ export default {
     }
 
     &.is-selected {
+      outline: solid 1px @brand-primary;
+      background-color: fadeout(@brand-primary, 70%);
     } 
-
-    & .EntitySummary {
-      padding: 0;
-
-      & .EntitySummary-title {
-        font-size: 16px;
-        font-size: 1.6rem;
-        font-weight: 600;
-      }
-    }
   }
 
   &-itemContainer {
-    padding: 0 15px;
-    width: 100%;
-    overflow: hidden;
+    max-width: 85%;    
   }
 }
 

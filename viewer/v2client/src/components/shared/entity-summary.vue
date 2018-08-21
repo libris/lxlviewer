@@ -20,10 +20,6 @@ export default {
       type: Boolean,
     },
     shouldOpenTab: false,
-    isCompact: {
-      default: false,
-      type: Boolean
-    } 
   },
   data() {
     return {
@@ -140,7 +136,7 @@ export default {
 <template>
 <section class="EntitySummary">
   <div class="EntitySummary-meta">
-    <div class="EntitySummary-type uppercaseHeading--light">
+    <div class="EntitySummary-type">
       {{categorization.join(', ')}} {{ isLocal ? '{lokal entitet}' : '' }}
       <span class="EntitySummary-sourceLabel" v-if="database">{{ database }}</span>
     </div>
@@ -177,18 +173,18 @@ export default {
       </a>
       
     </h3>
-    <span class="EntitySummary-id uppercaseHeading--bold" 
-      v-if="identifiers.length > 0"
-      v-show="!isCompact">
+    <span class="EntitySummary-id" 
+      v-if="identifiers.length > 0">
       {{ identifiers[0] }} 
       <span class="EntitySummary-idInfo" v-if="identifiers.length > 1">(+{{ identifiers.length-1 }})</span>
     </span>
-    <ul class="EntitySummary-details" v-show="!isCompact">
+    <ul class="EntitySummary-details">
       <li class="EntitySummary-detailsItem" 
         v-show="v.length !== 0" 
         v-for="(v, k) in infoWithKeys" 
         :key="k">
-        <span class="EntitySummary-detailsKey uppercaseHeading--bold">{{ k | labelByLang }}:</span>
+        <span class="EntitySummary-detailsKey">{{ k | labelByLang }}:</span>
+        &nbsp;
         <span class="EntitySummary-detailsValue">{{ v }}</span>
       </li>
     </ul>
@@ -201,23 +197,29 @@ export default {
 .EntitySummary {
   display: flex;
   flex-direction: column;
+  font-size: 12px;
+  font-size: 1.2rem;
   justify-content: space-between;
+  padding: 10px;
   width: 100%;
-  padding: 15px 20px;
 
-  .EntityHeader & {
-    padding: 0;
+  .HeaderComponent & {
+    color: #fff;
   }
 
   &-meta {
     border-width: 0px;
+
+    .ResultList & {
+      color: #8a8a8a;
+    }
   }
 
   &-type {
     display: block;
-    text-transform: uppercase;
     flex-basis: 85%;
     flex-grow: 2;
+    font-weight: bold;
     margin-bottom: -0.4em;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -241,28 +243,21 @@ export default {
   }
 
   &-info {
+    min-height: 7.5em;
     overflow: hidden;
-    line-height: 1.4;
   }
 
   &-title {
     font-size: 20px;
-    font-size: 2rem;
-    margin: 8px 0;
+    font-size: 2.0rem;
+    line-height: 1.2;
+    margin: 5px 0;
     overflow: hidden;
     width: 100%; 
     position: relative;
 
-    .ResultList & {
-      color: @brand-primary;
-    }
-
     &--imported {
       cursor: pointer;
-      &:hover {
-        text-decoration: underline;
-        color: @link-hover-color;
-      }
     }
 
     @media (min-width: 768px) {
@@ -273,34 +268,41 @@ export default {
   }
 
   &-titleLink {
+    color: @brand-primary;
+    display: inline;
+    
     &.blue-link {
       color: @brand-id;
     }
   }
 
   &-details {
-    display: inline;
+    line-height: 1.4;
     list-style-type: none;
     margin: 0;
     padding: 0px;
   }
 
   &-detailsItem {
-    display: inline;
-    margin-right: 10px;
+    display: inline-block;
   }
 
   &-detailsKey {
+    font-size: 12px;
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    font-weight: 700;
   }
 
   &-detailsValue {
-    font-size: 16px;
-    font-size: 1.6rem;
+    margin-right: 10px;
   }
 
   &-id {
-    display: inline;
-    margin-right: 10px;
+    display: block;
+    font-weight: 700;
+    margin-top: -0.3em;
+    margin-bottom: 5px;
   }
 
   &-idInfo {

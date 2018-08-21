@@ -101,8 +101,7 @@ export default {
 <template>
   <div class="EntitySearchResult">
     <ul class="EntitySearchResult-list js-field-list" v-show="results.length > 0" >
-      <entity-search-item
-        v-for="(item, index) in results" 
+      <entity-search-item tabindex="0"
         :class="{'is-selected': index == selectedIndex }" 
         @mouseover.native="select(index)"
         @focus.native="select(index)"
@@ -110,6 +109,7 @@ export default {
         :disabled-ids="disabledIds" 
         :add-link="false"
         :path="path"
+        v-for="(item, index) in results" 
         :key="index"
         @add-item="addItem(item)"
         ></entity-search-item>
@@ -121,7 +121,11 @@ export default {
 
 .EntitySearchResult {
   &-list {
+    width: 100%;
     padding: 0px;
+    list-style-type: none;
+    border: solid #ccc;
+    border-width: 1px 0px 0px 0px;   
   }
 }
 </style>

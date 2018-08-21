@@ -74,24 +74,24 @@ export default {
   <div class="CreateItem create-item-button-container">
     <!--<form method="POST" action="/edit">-->
       <!--<textarea id="copyItem" name="data" class="hidden">{{itemData | json}}</textarea>-->
-      <button class="btn btn-primary btn--lg CreateItem-btn"
+      <button class="btn btn-default CreateItem-btn"
         v-if="!hasHolding || checkingHolding" 
         @click="previewHolding()" 
         :disabled="disabled" 
         :class=" {'is-disabled': disabled} ">
-        <i class="fa fa-plus-circle"
+        <i class="fa fa-plus"
           v-if="!hasHolding && !checkingHolding"></i>
         <i class="fa fa-fw fa-circle-o-notch fa-spin"
           v-if="checkingHolding"></i>
         {{"Add holding" | translatePhrase}}
         <span>({{user.settings.activeSigel}})</span>
       </button>
-      <button class="btn btn--lg CreateItem-btn"
+      <button class="btn btn-default CreateItem-btn"
         v-if="hasHolding" 
         :class="{'CreateItem-btn--hasHolding': hasHolding, 'is-disabled': disabled}"  
         :disabled="disabled" 
         @click.prevent="gotoHolding()">
-        <i class="fa fa-check-circle"
+        <i class="fa fa-check"
           v-if="hasHolding && !checkingHolding"></i>
         {{"Show holding" | translatePhrase}}
         <span>({{user.settings.activeSigel}})</span>
@@ -103,28 +103,17 @@ export default {
 <style lang="less">
 
 .CreateItem {
-  margin-top: 20px;
   &-btn {
-    &--hasHolding {
-      background: @white;
-      color: @brand-primary;
-      
-      &:hover, 
-      &:focus,
-      &:active {
-        background: @white;
-        color: @link-hover-color;
-      }
-    }
+    font-weight: 700;
 
-    &.is-disabled {
-      background-color: @gray-lighter;
+    &--hasHolding {
+      background: @sec;
+      border-color: @sec-contrast;
       color: @white;
 
-      &:hover, 
-      &:focus,
-      &:active {
-        background-color: @gray-lighter;
+      &:hover {
+        background: @sec-alter;
+        border-color: @sec-alter-contrast;
         color: @white;
       }
     }
