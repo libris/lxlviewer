@@ -1,0 +1,19 @@
+{
+  "name": "lxltools",
+  "version": "1.0.0",
+  "description": "JavaScript tools for the Libris XL infrastructure.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/libris/lxltools-js.git"
+  },
+  "author": "Ola Blissing <ola.blissing@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/libris/lxltools-js/issues"
+  },
+  "homepage": "https://github.com/libris/lxltools-js#readme"
+}
