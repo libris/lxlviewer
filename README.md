@@ -6,7 +6,7 @@ JavaScript tools for the Libris XL infrastructure.
 Coming...
 
 
-# Commands
+# Developing
 - `npm run clean` - Remove `lib/` directory
 - `npm test` - Run tests with linting and coverage results.
 - `npm test:only` - Run tests without linting or coverage.
