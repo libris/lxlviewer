@@ -147,7 +147,7 @@ export default {
       HttpUtil._delete({ url, activeSigel: this.user.settings.activeSigel, token: this.user.token }).then((result) => {
         this.$store.dispatch('pushNotification', { color: 'green', message: `${StringUtil.getUiPhraseByLang('The post was deleted', this.settings.language)}!` });
         // Force reload
-        this.$router.push({ path: '/' });
+        this.$router.go(-1);
       }, (error) => {
         if (error.status === 403) {
           this.$store.dispatch('pushNotification', { color: 'red', message: `${StringUtil.getUiPhraseByLang('Forbidden', this.settings.language)} - ${StringUtil.getUiPhraseByLang('This entity may have active links', this.settings.language)} - ${error.statusText}` });
