@@ -56,7 +56,7 @@ export default {
       marcPreview: {
         data: null,
         active: false,
-        error: null,
+        error: null
       },
     }
   },
@@ -411,11 +411,8 @@ export default {
     'toolbar': Toolbar,
     'entity-changelog': EntityChangelog,
     'reverse-relations': ReverseRelations,
-<<<<<<< HEAD
-    'breadcrumb': Breadcrumb
-=======
+    'breadcrumb': Breadcrumb,
     'marc-preview': MarcPreview,
->>>>>>> c8a4fa23c5b729002d783143a1ae69c330baed49
   },
   mounted() {
     this.$nextTick(() => {
