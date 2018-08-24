@@ -31,6 +31,19 @@ export default {
       next();
     }
   },
+  beforeRouteUpdate (to, from, next) {
+  if (this.shouldWarnOnUnload()) {
+      const confString = StringUtil.getUiPhraseByLang('You have unsaved changes. Do you want to leave the page?', this.settings.language);
+      const answer = window.confirm(confString);
+      if (answer) {
+        next();
+      } else {
+        next(false);
+      }
+    } else {
+      next();
+    }
+  },
   data () {
     return {
       documentId: null,

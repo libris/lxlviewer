@@ -1,14 +1,12 @@
 <script>
 /*
-  Displays breadcrumbs/between post navigation in inspector
+ Displays breadcrumbs/between post navigation in inspector
 */
 
 import { mapGetters } from 'vuex';
 
 export default {
   name: 'breadcrumb',
-  props: {
-  },
   data() {
     return {
     };
@@ -97,7 +95,7 @@ export default {
   watch: {
   },
   mounted() {
-    this.$nextTick(() => { 
+    this.$nextTick(() => {
     });
   },
 };
@@ -123,7 +121,6 @@ export default {
 </template>
 
 <style lang="less">
-
 .Breadcrumb {
   display: flex;
   justify-content: space-between;
