@@ -86,7 +86,6 @@ export default {
         'BNF',
         'IRN', 
         'KNYGOS',
-        'LIBISNET',
         'LIBRIS',
         'NORBOK', 
         'NOSP', 

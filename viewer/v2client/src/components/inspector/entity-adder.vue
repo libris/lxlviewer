@@ -487,6 +487,7 @@ export default {
       }
       const offset = this.currentPage * this.maxResults;
       searchUrl += `&_limit=${this.maxResults}&_offset=${offset}`;
+      searchUrl = encodeURI(searchUrl);
       return new Promise((resolve, reject) => {
         fetch(searchUrl).then((response) => {
           resolve(response.json());
@@ -561,22 +562,21 @@ export default {
       <div class="EntityAdder-modalBody">
         <div class="EntityAdder-controls">
           <div class="EntityAdder-controlForm">
-            <!--<input class="entity-search-keyword-input" v-model="keyword" @input="setSearching()"></input>-->
-              <div class="EntityAdder-search">
-                <label for="entityKeywordInput" class="EntityAdder-searchLabel">{{ "Search" | translatePhrase }}</label>
-                <div class="EntityAdder-searchInputContainer">
-                  <input class="EntityAdder-searchInput entity-search-keyword-input"
-                    name="entityKeywordInput"
-                    v-model="keyword"
-                    autofocus />
-                  <filter-select
-                    class="js-filterSelect"
-                    :options="selectOptions"
-                    :options-all="getRange"
-                    :options-selected="''"
-                    v-on:filter-selected="setFilter($event, keyword)"></filter-select>
-                </div>
+            <div class="EntityAdder-search">
+              <label for="entityKeywordInput" class="EntityAdder-searchLabel">{{ "Search" | translatePhrase }}</label>
+              <div class="EntityAdder-searchInputContainer">
+                <input class="EntityAdder-searchInput entity-search-keyword-input"
+                  name="entityKeywordInput"
+                  v-model="keyword"
+                  autofocus />
+                <filter-select
+                  class="js-filterSelect"
+                  :options="selectOptions"
+                  :options-all="getRange"
+                  :options-selected="''"
+                  v-on:filter-selected="setFilter($event, keyword)"></filter-select>
               </div>
+            </div>
             <div class="EntityAdder-info" 
               v-if="getFullRange.length > 0" 
               @mouseleave="rangeInfo = false">

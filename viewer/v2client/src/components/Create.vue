@@ -76,10 +76,10 @@ export default {
         'record': baseRecord,
         'mainEntity': baseMainEntity,
       };
-      this.thingData = RecordUtil.prepareDuplicateFor(templateValue, this.user);
+      this.thingData = RecordUtil.prepareDuplicateFor(templateValue, this.user, this.settings);
     },
     useTemplate(templateValue) {
-      const preparedTemplate = RecordUtil.prepareDuplicateFor(templateValue, this.user);
+      const preparedTemplate = RecordUtil.prepareDuplicateFor(templateValue, this.user, this.settings);
       this.thingData = preparedTemplate;
     },
     setCreation(creation) {
