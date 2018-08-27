@@ -6,6 +6,7 @@ import * as DataUtil from './data';
 export class LxlTools {
   constructor() {
     this._data = {};
+    this._data.vocabJson = null;
     this._data.vocab = null;
     this._data.context = null;
     this._data.display = null;
@@ -15,13 +16,14 @@ export class LxlTools {
 
   install(vocab, context, display, settings) {
     const vocabMap = new Map(vocab.map((entry) => [entry['@id'], entry]));
+    this._data.vocabJson = vocab;
     this._data.vocab = vocabMap;
     this._data.context = context;
     this._data.display = display;
     this._data.settings = settings;
+    this.attachMethods();
     this._data.vocabClasses = this.getVocabClasses(vocab);
     this._data.vocabProperties = this.getVocabProperties(vocab);
-    this.attachMethods();
     this.installed = true;
   }
   logSettings() {
@@ -68,7 +70,7 @@ export class LxlTools {
     this.vocab.getBaseClassesFromArray    = typeArray               => VocabUtil.getBaseClassesFromArray(typeArray, this._data.vocab, this._data.context);
     this.vocab.isSubClassOf               = (classId, baseClassId)  => VocabUtil.isSubClassOf(classId, baseClassId, this._data.vocab, this._data.context);
     this.vocab.getRecordType              = mainEntityType          => VocabUtil.getRecordType(mainEntityType, this._data.vocab, this._data.context);
-    this.vocab.getTermByType              = (type, list)            => VocabUtil.getTermByType(type, list, this._data.context);
+    this.vocab.getTermByType              = type                    => VocabUtil.getTermByType(type, this._data.vocabJson, this._data.context);
     this.vocab.getTermFromLabel           = label                   => VocabUtil.getTermFromLabel(label, this._data.settings.language, this._data.vocab);
     this.vocab.getPropertyTypes           = propertyId              => VocabUtil.getPropertyTypes(propertyId, this._data.vocab, this._data.context);
     this.vocab.getAllEnumerationTypesFor  = onProp                  => VocabUtil.getAllEnumerationTypesFor(onProp, this._data.vocab);
@@ -106,7 +108,7 @@ export class LxlTools {
     this.string.getHash                   = string                  => StringUtil.getHash(string);
     this.string.isNumeric                 = num                     => StringUtil.isNumeric(num);
     this.string.getNumberOfVowels         = string                  => StringUtil.getNumberOfVowels(string);
-    this.string.isLibrisResourceURi       = (uri, apiPath)          => StringUtil.isLibrisResourceUri(uri, apiPath);
+    this.string.isLibrisResourceUri       = uri                     => StringUtil.isLibrisResourceUri(uri, this._data.settings.apiPath);
     this.string.getLabelFromObject        = object                  => StringUtil.getLabelFromObject(object, this._data.settings.language);
     this.string.getLabelByLang            = string                  => StringUtil.getLabelByLang(string, this._data.settings.language, this._data.vocab, this._data.context);
     this.string.extractStrings            = obj                     => StringUtil.extractStrings(obj);
