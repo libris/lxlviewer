@@ -219,7 +219,7 @@ export function getItemSummary(item, displayDefs, quoted, vocab, settings, conte
     }
   });
   if (summary['header'].length === 0) {
-    summary['header'].push({ property: 'error', value: `{${StringUtil.getUiPhraseByLang('Unnamed entity', settings.language)}}` });
+    summary['header'].push({ property: 'error', value: 'Namnlös entitet' });
   }
   return summary;
 }
@@ -247,7 +247,7 @@ export function getFormattedSelectOption(term, settings, vocab, context) {
   if (labelByLang.length > maxLength) {
     labelByLang = labelByLang.substr(0, maxLength-2) + '...';
   }
-  const abstractIndicator = ` {${StringUtil.getUiPhraseByLang('Abstract', settings.language)}}`;
+  const abstractIndicator = ' (Abstract)';
   const prefix = Array((term.depth) + 1).join(' •');
   return `${prefix} ${labelByLang} ${term.abstract ? abstractIndicator : ''}`;
 }
