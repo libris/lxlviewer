@@ -139,13 +139,13 @@ export function getRecordType(mainEntityType, vocab, context) {
   return 'Other';
 }
 
-export function getTermByType(type, list, context) {
-  if (!list || typeof list === 'undefined') {
+export function getTermByType(type, vocab, context) {
+  if (!vocab || typeof vocab === 'undefined') {
     throw new Error('getTermByType was called without a vocabulary.');
   }
   const expandedType = StringUtil.convertToBaseUri(type, context);
   const terms = [];
-  list.forEach((term) => {
+  vocab.forEach((term) => {
     if (_.isArray(term['@type'])) {
       if (term['@type'].indexOf(type) > -1 || term['@type'].indexOf(expandedType) > -1) {
         terms.push(term);
