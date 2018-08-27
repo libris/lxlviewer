@@ -19,11 +19,46 @@ export class LxlTools {
     this._data.context = context;
     this._data.display = display;
     this._data.settings = settings;
+    this._data.vocabClasses = this.getVocabClasses(vocab);
+    this._data.vocabProperties = this.getVocabProperties(vocab);
     this.attachMethods();
     this.installed = true;
   }
   logSettings() {
     console.log(this._data.settings);
+  }
+
+  getVocabClasses(vocabJson) {
+    let classTerms = [].concat(
+      VocabUtil.getTermByType('Class', vocabJson, this._data.context),
+      VocabUtil.getTermByType('marc:CollectionClass', vocabJson, this._data.context)
+    );
+    const classes = new Map(classTerms.map(entry => [entry['@id'], entry]));
+    classes.forEach(classObj => {
+      if (classObj.hasOwnProperty('subClassOf')) {
+        _.each(classObj.subClassOf, baseClass => {
+          const baseClassObj = classes.get(baseClass['@id']);
+          if (typeof baseClassObj !== 'undefined') {
+            if (baseClassObj.hasOwnProperty('baseClassOf')) {
+              baseClassObj.baseClassOf.push(StringUtil.convertToPrefix(classObj['@id'], this._data.context));
+            } else {
+              baseClassObj.baseClassOf = [StringUtil.convertToPrefix(classObj['@id'], this._data.context)];
+            }
+          }
+        });
+      }
+    });
+    return classes;
+  }
+
+  getVocabProperties(vocabJson) {
+    let props = [];
+    props = props.concat(VocabUtil.getTermByType('Property', vocabJson, this._data.context));
+    props = props.concat(VocabUtil.getTermByType('DatatypeProperty', vocabJson, this._data.context));
+    props = props.concat(VocabUtil.getTermByType('ObjectProperty', vocabJson, this._data.context));
+    props = props.concat(VocabUtil.getTermByType('owl:SymmetricProperty', vocabJson, this._data.context));
+    const vocabProperties = new Map(props.map((entry) => [entry['@id'], entry]));
+    return vocabProperties;
   }
 
   attachMethods() {
