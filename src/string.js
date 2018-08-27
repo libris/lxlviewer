@@ -74,26 +74,6 @@ export function convertToVocabKey(str, context) {
   return `${context[0]['@vocab']}${str}`;
 }
 
-export function getParamValueFromUrl(url, param) {
-  if (!url || url.length === 0) {
-    return null;
-  }
-
-  const splitUrl = url.split('&');
-  let paramString;
-  for (let i = 0; i < splitUrl.length; i++) {
-    if (splitUrl[i].indexOf(param) !== -1) {
-      paramString = splitUrl[i];
-      break;
-    }
-  }
-  if (typeof paramString === 'undefined') {
-    return null;
-  }
-  const value = paramString.split('=')[1];
-  return value;
-}
-
 export function getHash(str) {
   let hash = 0, i, chr;
   if (str.length === 0) return hash;
