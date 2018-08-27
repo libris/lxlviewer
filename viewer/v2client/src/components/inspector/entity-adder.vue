@@ -16,9 +16,9 @@ import ToolTipComponent from '../shared/tooltip-component';
 import EntitySearchList from '../search/entity-search-list';
 import ModalComponent from '@/components/shared/modal-component.vue';
 import ModalPagination from '@/components/inspector/modal-pagination';
+import FilterSelect from '@/components/shared/filter-select.vue';
 import LensMixin from '../mixins/lens-mixin';
 import { mixin as clickaway } from 'vue-clickaway';
-import FilterSelect from '@/components/shared/filter-select.vue';
 
 export default {
   mixins: [clickaway, LensMixin],
@@ -558,81 +558,81 @@ export default {
         </span>
       </template>
 
-    <template slot="modal-body" class="ScrollContainer">
-      <div class="EntityAdder-modalBody">
-        <div class="EntityAdder-controls">
-          <div class="EntityAdder-controlForm">
-            <div class="EntityAdder-search">
-              <label for="entityKeywordInput" class="EntityAdder-searchLabel">{{ "Search" | translatePhrase }}</label>
-              <div class="EntityAdder-searchInputContainer">
-                <input class="EntityAdder-searchInput entity-search-keyword-input"
-                  name="entityKeywordInput"
-                  v-model="keyword"
-                  autofocus />
+      <template slot="modal-body" class="ScrollContainer">
+        <div class="EntityAdder-modalBody">
+          <div class="EntityAdder-controls">
+            <div class="EntityAdder-controlForm">
+              <div class="EntityAdder-search">
+                <label for="entityKeywordInput" class="EntityAdder-searchLabel">{{ "Search" | translatePhrase }}</label>
+                <div class="EntityAdder-searchInputContainer">
+                  <input class="EntityAdder-searchInput entity-search-keyword-input"
+                    name="entityKeywordInput"
+                    v-model="keyword"
+                    autofocus />
+                  <filter-select
+                    :class-name="'js-filterSelect'"
+                    :custom-placeholder="'All types'"
+                    :options="selectOptions"
+                    :options-all="getRange"
+                    :is-filter="true"
+                    :options-selected="''"
+                    v-on:filter-selected="setFilter($event, keyword)"></filter-select>
+                </div>
+              </div>
+           
+              <div class="EntityAdder-info" 
+                v-if="getFullRange.length > 0" 
+                @mouseleave="rangeInfo = false">
+                <i class="fa fa-info-circle" @mouseenter="rangeInfo = true"></i>
+                <div class="EntityAdder-infoText" v-if="rangeInfo">
+                  {{ "Allowed types" | translatePhrase }}:
+                  <br>
+                  <span class="EntityAdder-infoRange"
+                    v-for="(range, index) in getFullRange" 
+                    :key="index">
+                    - {{range | labelByLang}}
+                  </span>
+                </div>
+              </div>
+              <div class="EntityAdder-create">
+                <button class="EntityAdder-createBtn"
+                  v-if="hasSingleRange" 
+                  v-on:click="addEmpty(getFullRange[0])">{{ "Create local entity" | translatePhrase }}
+                </button>
                 <filter-select
-                  class="js-filterSelect"
+                  v-if="!hasSingleRange" 
+                  :class-name="'js-createSelect'"
                   :options="selectOptions"
                   :options-all="getRange"
-                  :options-selected="''"
-                  v-on:filter-selected="setFilter($event, keyword)"></filter-select>
+                  :is-filter="false"
+                  :custom-placeholder="'Create local entity'"
+                  v-on:filter-selected="addType($event.value)"></filter-select>
               </div>
-            </div>
-            <div class="EntityAdder-info" 
-              v-if="getFullRange.length > 0" 
-              @mouseleave="rangeInfo = false">
-              <i class="fa fa-info-circle" @mouseenter="rangeInfo = true"></i>
-              <div class="EntityAdder-infoText" v-if="rangeInfo">
-                {{ "Allowed types" | translatePhrase }}:
-                <br>
-                <span v-for="(range, index) in getFullRange" :key="index" class="EntityAdder-infoRange">
-                  - {{range | labelByLang}}
-                </span>
-              </div>
-            </div>
-            <div class="EntityAdder-create">
-              <button class="EntityAdder-createBtn"
-                v-if="hasSingleRange" 
-                v-on:click="addEmpty(getFullRange[0])">{{ "Create local entity" | translatePhrase }}
-              </button>
-              <select class="EntityAdder-createSelect"
-                v-model="selectedType" 
-                @change="addType(selectedType)" 
-                v-if="!hasSingleRange">
-                <option disabled value="">{{ "Create local entity" | translatePhrase }}</option>
-                <option 
-                  v-for="(term, index) in getClassTree" 
-                  :disabled="term.abstract" 
-                  :value="term.id" 
-                  :key="`${term.id}-${index}`" 
-                  v-html="getFormattedSelectOption(term, settings, resources.vocab, resources.context)"></option>
-              </select>
             </div>
           </div>
+          <div class="EntityAdder-searchStatus search-status"
+            v-if="!loading && keyword.length === 0" >{{ "Start writing to begin search" | translatePhrase }}...</div>
+          <div class="EntityAdder-searchStatus search-status"
+            v-if="loading">
+            {{ "Searching" | translatePhrase }}...
+            <br><i class="EntityAdder-searchStatusIcon fa fa-circle-o-notch fa-spin"></i>
+          </div>
+          <div class="EntityAdder-searchStatus search-status"
+            v-if="!loading && searchResult.length === 0 && keyword.length > 0 && searchMade">
+            {{ "No results" | translatePhrase }}...
+          </div>
+          <modal-pagination class="ScrollMarginTop" v-if="!loading && searchResult.length > 0" @go="go" :numberOfPages="numberOfPages" :currentPage="currentPage"></modal-pagination>
+          <entity-search-list class="EntityAdder-searchResult"
+            v-if="!loading && keyword.length > 0" 
+            :path="path" 
+            :results="searchResult" 
+            :disabled-ids="alreadyAdded"
+            @add-item="addLinkedItem"></entity-search-list>
+          <modal-pagination v-if="!loading && searchResult.length > 0" @go="go" :numberOfPages="numberOfPages" :currentPage="currentPage"></modal-pagination>
         </div>
-        <div class="EntityAdder-searchStatus search-status"
-          v-if="!loading && keyword.length === 0" >{{ "Start writing to begin search" | translatePhrase }}...</div>
-        <div class="EntityAdder-searchStatus search-status"
-          v-if="loading">
-          {{ "Searching" | translatePhrase }}...
-          <br><i class="EntityAdder-searchStatusIcon fa fa-circle-o-notch fa-spin"></i>
-        </div>
-        <div class="EntityAdder-searchStatus search-status"
-          v-if="!loading && searchResult.length === 0 && keyword.length > 0 && searchMade">
-          {{ "No results" | translatePhrase }}...
-        </div>
-        <modal-pagination class="ScrollMarginTop" v-if="!loading && searchResult.length > 0" @go="go" :numberOfPages="numberOfPages" :currentPage="currentPage"></modal-pagination>
-        <entity-search-list class="EntityAdder-searchResult"
-          v-if="!loading && keyword.length > 0" 
-          :path="path" 
-          :results="searchResult" 
-          :disabled-ids="alreadyAdded"
-          @add-item="addLinkedItem"
-          ></entity-search-list>
-        <modal-pagination v-if="!loading && searchResult.length > 0" @go="go" :numberOfPages="numberOfPages" :currentPage="currentPage"></modal-pagination>
-      </div>
-    </template>
-  </modal-component>
-</div>
+      </template>
+    </modal-component>
+  </div>
 </template>
 
 <style lang="less">

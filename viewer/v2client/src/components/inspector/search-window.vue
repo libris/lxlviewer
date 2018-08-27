@@ -14,6 +14,7 @@ import ModalPagination from '@/components/inspector/modal-pagination';
 import ToolTipComponent from '../shared/tooltip-component';
 import EntitySearchList from '../search/entity-search-list';
 import EntitySummary from '../shared/entity-summary';
+import FilterSelect from '@/components/shared/filter-select.vue';
 import SummaryAction from './summary-action';
 import LensMixin from '../mixins/lens-mixin';
 import { mixin as clickaway } from 'vue-clickaway';
@@ -69,6 +70,7 @@ export default {
     'summary-action': SummaryAction,
     'modal-component': ModalComponent,
     'modal-pagination': ModalPagination,
+    'filter-select': FilterSelect
   },
   watch: {
     keyword(value) {
@@ -121,6 +123,22 @@ export default {
       }
       return typeArray;
     },
+    selectOptions() {
+      const classTree = this.getClassTree;
+      let options = [];
+
+      for (let i = 0; i < classTree.length; i++) {
+        let term = {};
+
+        term.label = this.getFormattedSelectOption(classTree[i]);
+        term.value = classTree[i].id;
+        term.key = `${classTree[i].id}-${i}`;
+
+        options.push(term);
+      }
+
+      return options;
+    },
     displaySearchList() {
       return !this.loading && !this.extracting && this.keyword.length > 0 && this.searchResult.length > 0;
     },
@@ -144,12 +162,31 @@ export default {
     extract() {
       this.$emit('extract');
     },
-    getFormattedSelectOption(term, settings, vocab, context) {
-      return DisplayUtil.getFormattedSelectOption(term, settings, vocab, context);
+    getFormattedSelectOption(term) {
+      return DisplayUtil.getFormattedSelectOption(
+        term, 
+        this.settings, 
+        this.resources.vocab, 
+        this.resources.context
+      );
     },
     addPayload(item) {
       const updatedListItemSettings = _.merge({payload: item}, _.cloneDeep(this.listItemSettings));
       return updatedListItemSettings;
+    },
+    setFilter($event, keyword) {
+      let valuesArray = [];
+      let values;
+
+      if ($event['value'] !== null && typeof $event['value'] === 'object') {
+        values = Object.assign({}, { ['value'] : $event['value']});
+        valuesArray = Object.values(values.value)
+      } else {
+        valuesArray.push($event['value']);
+      }
+      
+      this.currentSearchTypes = valuesArray;
+      this.handleChange(keyword);
     },
     handleChange(value) {
       this.setSearching();
@@ -266,14 +303,22 @@ export default {
               <input class="SearchWindow-input SearchWindowentity-search-keyword-input"
                 v-model="keyword"
                 autofocus>
-              <select v-model="currentSearchTypes" @change="handleChange(keyword)">
+              <filter-select
+                :class-name="'js-filterSelect'"
+                :custom-placeholder="'All types'"
+                :options="selectOptions"
+                :options-all="getRange"
+                :is-filter="true"
+                :options-selected="''"
+                v-on:filter-selected="setFilter($event, keyword)"></filter-select>
+              <!-- <select v-model="currentSearchTypes" @change="handleChange(keyword)">
                 <option :value="getRange">{{"All types" | translatePhrase}}</option>
                 <option 
                   v-for="term in getClassTree" 
                   :key="term.parentChainString" 
                   :value="term.id" 
                   v-html="getFormattedSelectOption(term, settings, resources.vocab, resources.context)"></option>
-              </select>
+              </select> -->
             </div>
             <div class="SearchWindow-help help-tooltip-container" 
               @mouseleave="showHelp = false">
