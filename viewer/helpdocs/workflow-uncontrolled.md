@@ -22,4 +22,4 @@ Utgår katalogiseringen från en mall finns egenskapen Ämne redan i mallen inom
 * Klicka på +ikonen inom den tillagda typen Allmänt ämnesord, pop up-rutan **Lägg till fält under** öppnas. Sök efter och välj Benämning (label). Skriv in den aktuella termen och lägg till (prel/[sigel]).
 <br/>```Exempel: Korthårstax (prel/S)```
 
-Vid behov av att lägga till fler okontrollerde ämnesord får punkterna ovan upprepas.
+Vid behov av att lägga till fler okontrollerde ämnesord får punkterna ovan upprepas. 
