@@ -57,4 +57,4 @@ Exempel: Tyskland--Bonn--sao
 
 * Klicka på **+ikonen** inom Geografiskt ämnesord, pop up-rutan **Lägg till fält under** öppnas. Sök efter och lägg till **Föredragen benämning** (skriv "Bonn") OBS! Här ska inte Geografisk underindelning användas
 
-Upprepa momenten ovan för att lägga till fler sammansatta termer eller enbart det senaste momentet för ytterligare underordnat led (t.ex. Tyskland--Bonn--Beuel).
+Upprepa momenten ovan för att lägga till fler sammansatta termer eller enbart det senaste momentet för ytterligare underordnat led (t.ex. Tyskland--Bonn--Beuel). 
