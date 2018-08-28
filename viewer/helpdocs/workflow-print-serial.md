@@ -5,18 +5,24 @@ order: 25
 tags:
 - editor
 --- 
-*Under arbete. Senast uppdaterad 2018-07-02.*
 
 ## Tryckt seriell resurs
 
-Denna hjälptext beskriver ett antal vanligt förekommande fält, med utgångspunkt från exempel. För instruktioner om att länka till entitet, skapa lokal entitet och om hur formuläret fungerar i övrigt, se Redigering i vänstermenyn. För information om katalogregler, skrivregler och övriga katalogiseringsanvisningar, se [Anvisningar för katalogisering - RDA](http://www.kb.se/rdakatalogisering/ "Anvisningar för katalogisering - RDA").
+Denna hjälptext beskriver ett antal vanligt förekommande fält, med utgångspunkt från exempel. För instruktioner om att länka till entitet, skapa lokal entitet och om hur formuläret fungerar i övrigt, se Redigering i vänstermenyn. För information om katalogregler, skrivregler och övriga katalogiseringsanvisningar, se [Anvisningar för katalogisering - RDA](http://www.kb.se/rdakatalogisering/Anvisningar/Arbetsfloden/Tryckta-seriella-resurser/ "Anvisningar för katalogisering - RDA").
 
 I de flesta fall ska informationen delas upp i olika fält och delfält. I några undantagsfall är det nödvändigt att använda ISBD-interpunktion inom fält, för att separera uppgifter. Dessa fall visas genom exempel nedan. Använd vid behov också klamrar inom fält, enligt Anvisningar för katalogisering - RDA.
 
 I vissa fall fungerar det ännu inte fullt ut att lägga till alla uppgifter som beskrivs i denna hjälptext. Arbete pågår med förbättra gränssnittet. För att anmäla fel, använd detta [formulär](https://docs.google.com/forms/d/e/1FAIpQLSfOChJOGDoHUQguSF83F5XyTZiQL-yU47nvcqb6qwNT9GX7Aw/viewform). För att lämna synpunkter, använd detta [formulär](https://docs.google.com/forms/d/e/1FAIpQLSfOChJOGDoHUQguSF83F5XyTZiQL-yU47nvcqb6qwNT9GX7Aw/viewform).  
 
-Exempel hämtade från: Kammarmusik-nytt, ISSN 2001-2721, Voyager BibID 12683491  
+Exempel hämtade från:
+Kammarmusik-nytt, ISSN 2001-2721, Voyager BibID 12683491  
+Familjehemsnytt, ISSN 2002-0694, Voyager BIBID 17852499  
 samt andra poster.
+
+[Adminmetadata](#adminmetadata)  
+[Instans](#instans)  
+[Verk](#verk)  
+
 
 ### Adminmetadata  
 * Skapad av/Organisation/Namn (descriptionCreator/Organization/name = 040 ‡a)  
@@ -29,15 +35,18 @@ samt andra poster.
   ```Exempel: S```  
 
 * Bibliografi/Bibliotek/Sigel (bibliography/Library/sigel = 042 ‡9)  
+  Observera att bibliografikod ska läggas endast av det bibliotek som arbetar med respektive bibliografi. Som exempel läggs bibliografikod NB endast av NB.  
  Skapa lokal entitet. Klicka på Lägg till bibliotek (+-ikonen vid Bibliografi), välj därefter Skapa lokal entitet. Lägg till Sigel (+ikonen Lägg till fält under Bibliotek). Skriv in uppgiften.  
-  ```Exempel: NB```
+  ```Exempel: NB```  
+  ```Exempel: SAMB```  
   
 * Katalogiseringsspråk (descriptionLanguage = 040 ‡b)   
   Länka till entitet.  
   ```Exempel: svenska (swe)```  
 
-* Katalogiseringsregler (descriptionConventions = 040 ‡e)
-För post katalogiserad enligt RDA, sök fram och länka till entitet: "ISBD-interpunktions finns: i" (välj Regler för deskriptiv katalogisering vid sökningen). Skapa också lokal entitet under Katalogiseringregler, välj typ Katalogiseringsregler. Lägg till Kod. Skriv in "rda".  
+* Katalogiseringsregler (descriptionConventions = 040 ‡e)  
+För post katalogiserad enligt RDA, sök fram och länka till entitet: "ISBD-interpunktions finns: i" (välj Regler för deskriptiv katalogisering vid sökningen). När man skapar ny post från mall visas entiteten som "marc/isbd". I en sparad post visas samma entitet som "ISBD information finns". Båda är rätt.  
+Skapa också lokal entitet under Katalogiseringsregler, välj typ Katalogiseringsregler. Lägg till Kod. Skriv in "rda".  
  ```Exempel: marc/Isbd (länkad entitet) + lokal entitet, Kod: rda ```
 
 * Beskrivningsnivå (000/17)  
@@ -121,23 +130,29 @@ För post katalogiserad enligt RDA, sök fram och länka till entitet: "ISBD-int
   För att lägga till Agent, klicka på Lägg till fält under Primär utgivning och välj Agent. Sök inte efter Agent som entitet utan välj istället Skapa lokal entitet, typ Agent. Lägg till Benämning.  
   Skriv in uppgiften. Klamra vid behov. Utgivarnamn ska inte länkas som entitet.  
   ```Exempel: NoNa```  
- 
-  Om flera utgivare ska anges, lägg till "Har del" (hasPart) under Primär utgivning. Lägg därefter till Utgivning som lokal entitet (klicka på +-ikonen vid Har del och klicka sedan på Skapa lokal entitet. Välj Utgivning i listan). Använd Startår, slutår och vid behov Datum enligt anvisningar nedan. Upprepa Har del och Utgivning som lokal entitet för nästa utgivare.
+  Om flera utgivare ska anges, lägg till "Har del" (hasPart) under Primär utgivning. Lägg därefter till Utgivning som lokal entitet (klicka på +-ikonen vid Har del och klicka sedan på Skapa lokal entitet. Välj Utgivning i listan). Använd Startår, slutår och vid behov Datum enligt anvisningar nedan. Upprepa Utgivning som lokal entitet för nästa utgivare.
   Se [exempel](https://libris.kb.se/katalogisering/1kcsx46c1pmjdxz#it).  
   
-  * Datum (date = 264 -/1 ‡c)  
-  Skriv in uppgiften.  
-  ```Exempel: 2011-2013```  
   * Startår (startYear = 008/7-10)  
+  Startår får endast innehålla siffror (0-9) och bokstaven u. Startår ska endast förekomma inom Primär utgivning.  
+  För att ange ett startår utan klamrar eller andra tecken, ange det endast här. Det kommer då att exporteras till både marcpostens 08/07-10 och 264 -/1 ‡c. Bindestreck sätts automatiskt. För att ange årtal med klamrar eller andra tecken utöver fyra positioner, använd Datum.  
   Skriv in uppgiften.  
     ```Exempel: 2011```  
   * Slutår (endYear = 008/11-14)  
+  Slutår får endast innehålla siffror (0-9) och bokstaven u. Slutår ska endast förekomma inom Primär utgivning.  
+  För att ange ett slutår utan klamrar eller andra tecken, ange det endast här. Det kommer då att exporteras till både marcpostens 08/11-14 och 264 -/1 ‡c. Bindestreck sätts automatiskt. För att ange årtal med klamrar eller andra tecken utöver fyra positioner, använd Datum.   
   Om slutår inte anges, sätts utgivningsstatus (008/06) automatiskt till "c = Utgivning pågår".  
   Om slutår anges, sätts utgivningsstatus (008/06) automatiskt till "d = Utgivning avslutad".  
   Skriv in uppgiften.  
-  ```Exempel: 2013```  
-  För att ange slutår för senaste utgivningsperiod (264 -/3 ‡c), notera först vilket startåret för utgivningsperioden är, ta bort Startår och lägg till Datum. Skriv in hela datumangivelsen med startår och slutår.  
- ```Exempel: 2012-2013```   
+  ```Exempel: 2013```     
+  För att ange slutår för senaste utgivningsperiod (264 -/3 ‡c), notera först vilket startåret för utgivningsperioden är, ta bort Startår och lägg till Datum. Skriv in hela datumangivelsen med startår och slutår (se nedan under Datum).    
+  * Datum (date = 264 -/1 ‡c)  
+  Datum får innehålla text och interpunktionstecken.  
+  För att ange utgivningsdatum med fler än fyra positioner, till exempel klamrade årtal, skriv in det här. Det kommer att exporteras till marcpostens  264 -/1 ‡c.  
+  För att ange år utan klamrar eller andra tecken, använd endast Startår och Slutår.  
+  Skriv in uppgiften.  
+  ```Exempel: 2012-2013```  
+  ```Exempel: [1988-]```  
  
 * Frekvens (frequency)  
   * Frekvensterm (008/18)  
@@ -167,6 +182,16 @@ För post katalogiserad enligt RDA, sök fram och länka till entitet: "ISBD-int
 * Anmärkning/Anmärkning/Benämning (hasNote/Note/label = 500 ‡a)  
   Skriv in uppgiften.  
   Skriv in allmänna anmärkningar här. Anmärkningar om specifika fält skrivs in i Kommentar (note) under respektive fält, när sådana specifika anmärkningsfält finns. 
+  
+* Annat bärarformat (otherPhysicalFormat = 776)  
+  För att länka till en utgåva i annat format, till exempel en elektronisk utgåva, lägg till Annat bärarformat genom att klicka på Lägg till fält. Välj Annat bärarformat.  
+  Skapa en instans som lokal entitet genom att klicka på +-tecknet vid Annat bärarformat (lägg till instans). Klicka på Skapa lokal entitet och välj Instans. 
+* Annat bärarformat/Har titel/Titel (776 ‡t)  
+  Under Instans, lägg till titel genom att klicka på +-tecknet vid Instans (Lägg till fält under: Instans) och välj Har titel. Välj Titel. Ta bort Övrig titelinformation och skriv in huvudtiteln under Huvudtitel. 
+* Annat bärarformat/Identifikator/ISSN/Värde (776 ‡x)  
+  Under Instans, lägg till identifikator genom att klicka på +-tecknet vid Instans (Lägg till fält under: Instans) och välj Identifikator. Välj typ ISSN. Skriv in ISSN för den utgåva du vill länka till under Värde.  
+* Annat bärarformat/Beskriven av/Post/Kontrollnummer (776 ‡w)  
+  Beskriven av/Post/Kontrollnummer, motsvarande delfält w, är för närvarande låst för redigering. Det går därmed inte att lägga till fältet eller redigera det i befintliga beskrivningar.  
 
 * Relaterad till/Dokument/URI (relatedTo/Document/uri = 856 4/8 ‡u)  
   Skriv in uppgiften.  
@@ -180,10 +205,13 @@ För post katalogiserad enligt RDA, sök fram och länka till entitet: "ISBD-int
   ```Exempel:  Förbundets webbplats```
 
 ### Verk
-* Instans av Verk/Text (instanceOf/Work/Text)  
 
-* Har titel/Huvudtitel (hasTitle/mainTitle = 130 0/- ‡a)  
-  Skriv in uppgiften. Skriv eventuellt särskiljande tillägg inom parentes.  
+* Instans av Verk/Text (instanceOf/Work/Text)  
+  Skapa verket som lokal entitet (bryt inte ut verket till en länkbar entitet). Vi rekommenderar att du skapar verket som lokal entitet under den första tiden som Nya Libris är i drift. Vi återkommer med anvisningar för att skapa verk som länkbara entiteter. Denna hjälptext beskriver exempel på verk som lokal entitet. Det betyder att du anger de uppgifter som listas här nedan, under Instans av Verk, utan att klicka på länksymbolen (Länka entitet) vid Instans av Verk/Text.  
+Läs mer om [Verk och Instans](https://librisbloggen.kb.se/2018/05/30/verk-och-instans-i-startversionen/).  
+
+* Uttryck av/Verk/Har titel/Huvudtitel (hasExpression/Work/hasTitle/mainTitle = 130 0/- ‡a)  
+  Lägg till Uttryck av genom att klicka på +-tecknet vid Instans av Verk/Text (Lägg till fält under: Text). Välj Uttryck av och lägg till det. Skapa ett verk som lokal entitet genom att klicka på +-tecknet vid Uttryck av (Lägg till verk). Klicka på Skapa lokal entitet. Välj Verk i listan. Klicka på +-tecknet vid Verk (Lägg till fält under: Verk) och lägg till Har titel. Välj Titel. Ta bort Övrig titelinformation. Under Huvudtitel, skriv in uppgiften. Skriv eventuellt särskiljande tillägg inom parentes.  
   ```Exempel:  Architecture (Paris. 1888)```  
   
 * Behandling vid titeländring (marc:typeOfEntry = 008/34)  
@@ -233,24 +261,27 @@ För post katalogiserad enligt RDA, sök fram och länka till entitet: "ISBD-int
    Länka till entitet.  
    ```Exempel: Kammarmusik```  
  
-* Geografiskt ämnesord (subjcect = 651 -/4 ‡a)  
+* Geografiskt ämnesord (subject = 651 -/4 ‡a)  
    Länka till entitet.  
    I undantagsfall, skapa lokal entitet och skriv in uppgiften.   
     ```Exempel: Sverige```
    
 * Genre/form – saogf-termer (genreForm = 655 -/7 ‡a, ‡2 saogf)  
   Länka till entitet.  
+  För att söka efter entiteter inom saogf-termer, välj Genre/form i listan över typer, under Genre/form. Trunkera genom att trycka på mellanslagstangenten eller med * i sökrutan. Välj rätt entitet genom att klicka på Lägg till.  
   Under Genre/form, välj Genre/form i listan över typer.  
   ```Exempel: Organisationspress```  
   ```Exempel: Musiktidskrifter```  
    
 * Genre/form - typ av fortlöpande resurs (genreForm/marc:Periodical = 008/21)  
   Länka till entitet.  
+  För att söka efter entiteter inom Typ av fortlöpande resurs, välj Typ av fortlöpande resurs i listan över typer, under Genre/form. Trunkera genom att trycka på mellanslagstangenten eller med * i sökrutan. Välj rätt entitet genom att klicka på Lägg till.  
   ```Exempel: p (Tidskrift = marc/Periodical)```  
   
-* Genre/form - konferenspublikation (genreForm/marc:conferencePublication = 008/29)  
+* Genre/form – konferenspublikation (genreForm = 008/29)  
   Länka till entitet.  
-  ```Exempel: 0 (= inte konferenspublikation)```  
+  För att söka efter entiteter inom Konferenspublikation, välj Konferenspublikation i listan över typer, under Genre/form. Trunkera genom att trycka på mellanslagstangenten eller med * i sökrutan. Välj rätt entitet genom att klicka på Lägg till.  
+     ```Exempel: Ja, resursen härrör från konferens```       
 
 * Språk (language = 008/35-37)  
   Länka till entitet.  
@@ -264,67 +295,38 @@ För post katalogiserad enligt RDA, sök fram och länka till entitet: "ISBD-int
   Länka till entitet.  
   ```Exempel: text (txt)```
   
-* Utgiven med/Verk (issuedWith/Work = 777)  
-  Länka till entitet.  
-  I undantagsfall, skapa lokal entitet och skriv in uppgiften.  
+ * Länkfält/relationer under verk: Fortsätter (780 0/0), Fortsättes av (785 0/0), Ersätter (780 0/2), med flera -   
+  konstrueras enligt följande mönster. Ange relationen, skapa verket som lokal instans och skapa en lokal instans av verket, ange egenskaper för instansen, till exempel titel och identifikator, se nedan.  
+  Under Instans av Verk, lägg till fält genom att klicka på +-tecknet vid Instans av Verk/Text (Lägg till fält under: Text). Välj till exempel Fortsätter (eller Fortsättes av eller annan relation) och lägg till det. Skapa ett verk som lokal entitet genom att klicka på +-tecknet vid Fortsätter. Klicka på Skapa lokal entitet. Välj Verk i listan. Skapa en instans av verket genom att klicka på +-tecknet vid Verk (Lägg till fält under: Verk) och lägg till Har instans. Klicka på +-tecknet vid Har instans och skapa instansen som lokal entitet (klicka på Skapa lokal entitet och välj Instans). 
   
-* Utgiven med/Verk/Inledande anmärkning (issuedWith/Work/Marc:displayText = 777 0/8 ‡i)  
-  Skriv in uppgiften.  
-  ```Exempel: 2011:4-2013:2 omvänt sammanhäftad med```
+* Fortsätter/Verk/Har instans/Instans/Har titel/Titel (780 0/0 ‡t)  
+  För att lägga till titel under Fortsätter, Fortsättes av, Ersätter, med flera:  
+  Klicka på +-tecknet vid Instans (Lägg till fält under: Instans) och lägg till Har titel. Välj Titel. Ta bort Övrig titelinformation. Under Huvudtitel, skriv in uppgiften.  
+```Exempel:   Aktuellt magazin```  
   
-* Utgiven med/Verk/Har titel/Titel/Titel (issuedWith/Work/hasTitle/Title/Title = 777 ‡t)  
-  Skriv in uppgiften.   
-  ```Exempel: Musikant (Stockholm. 2011)```  
-  
-* Utgiven med/Verk/Identifikator/Typ   
-  Välj från lista.   
-  ```Exempel:  ISSN```  
-  
-* Utgiven med/Verk/Identifikator/ISSN/Värde (issuedWith/Work/identifiedBy/Issn/value = 777 ‡x)  
-  Skriv in uppgiften.  
-  ```Exempel:  2001-273X```  
-  
-* Utgiven med/Verk/Beskriven av/Post/Kontrollnummer   
-  (issuedWith/Work/describedBy/record/controlNumber = 777 0/1 ‡w)  
-  Skriv in uppgiften.  
-  ```Exempel: 12683514```  
+* Fortsätter/Verk/Har instans/Instans/Identifikator/ISSN/Värde (780 0/0 ‡x)  
+ För att lägga till ISSN för den resurs man länkar till, under Fortsätter, Fortsättes av, Ersätter, med flera, klicka på +-tecknet vid Instans (lägg till fält under: Instans) och lägg till Identifikator (identifiedBy). Välj typ ISSN. Skriv in ISSN under Värde.  
+ ```Exempel: 1402-1250```
 
-* Fortsätter delvis/Verk (continuesInPart/Work = 780)  
-  Länka till entitet.  
-  I undantagsfall, skapa lokal entitet och skriv in uppgiften.  
+* Fortsätter/Verk/Har instans/Instans/Beskriven av/Post/Kontrollnummer (780 0/0 ‡w)  
+  Beskriven av/Post/Kontrollnummer, motsvarande delfält w, är för närvarande låst för redigering. Det går därmed inte att lägga till fältet eller redigera det i befintliga beskrivningar.  
 
-* Fortsätter delvis/Verk/Har instans/Instans/Har titel/Titel/Huvudtitel          (continuesInPart/Work/hasInstance/Instance/title/Title/mainTitle = 780 ‡t)  
-  Skriv in uppgiften.  
-  ```Exempel: Musikant och kammarmusik-nytt```  
+  Hör följer ett urval av de relationer som kan läggas till, enligt samma mönster som Fortsätter (se ovan), under Instans av Verk:  
   
-* Fortsätter delvis/Verk/Har instans/Instans/Identifikator/Typ  
-  Välj från lista.  
-  ```Exempel:  ISSN```  
+  Fortsätter (continues = 780 0/0)  
+  Fortsätter delvis (continuesInPartBy = 780 0/1)  
+  Föregående (precededBy = 780 0/2)  
+  Ersätter delvis (precededInPartBy = 780 0/3)  
+  Sammanslagen med (mergerOf = 780 0/4)  (se [Exempel](https://libris.kb.se/katalogisering/5ng67r2h49lzkl9#it))  
+  Har införlivat (absorbed = 780 0/5)  
+  Har delvis införlivat (absorbedInPart = 780 0/6)  
+  Separat från (separatedFrom = 780 0/7)  
   
-* Fortsätter delvis/Verk/Har instans/Instans/Identifikator/ISSN/Värde    (continesInPart/Work/hasInstance/Instance/identifiedBy/Issn/value = 780 ‡x)  
-   Skriv in uppgiften.  
-  ```Exempel:  1653-2945```  
-  
-* Fortsätter delvis/Verk/Har instans/Instans/Beskriven av/Post/Kontrollnummer   (continuesInPart/Work/hasInstance/Instance/describedBy/record/controlNumber = 780 0/1 ‡w)  
-  Skriv in uppgiften.  
-  ```Exempel: 9955452```
-  
-* Fortsättes av/Verk  
-  Länka till entitet.  
-  I undantagsfall, skapa lokal entitet och skriv in uppgiften.  
-
-* Fortsättes av/Verk/Har instans/Instans/Har titel/Titel/Huvudtitel   (continuedBy/Work/hasInstance/Instance/title/Title/mainTitle = 785 ‡t)  
-  Skriv in uppgiften.  
-  ```Exempel: Kammarmusik-nytt (Brämhult. Online)```  
-  
-*  Fortsättes av/Verk/Har instans/Instans/Identifikator/Typ  
-   Välj från lista.    
-   ```Exempel:  ISSN```  
-   
-* Fortsättes av/Verk/Har instans/Instans/Identifikator/ISSN/Värde     (continuedBy/Work/hasInstance/Instance/identifiedBy/Issn/value = 785 ‡x)  
-  Skriv in uppgiften.  
-  ```Exempel:  2001-6921```  
-  
-* Fortsättes av/Verk/Har instans/Instans/Beskriven av/Post/Kontrollnummer  (continuedBy/Work/hasInstance/Instance/describedBy/record/controlNumber = 785 0/0 ‡w)  
-  Skriv in uppgiften.  
-  ```Exempel: 14697501```  
+  Fortsättes av (continuedBy = 785 0/0)  
+  Fortsättes delvis av (continuedInPartBy = 785 0/1)  
+  Efterföljande (succeededBy = 785 0/2)  
+  Ersättes delvis av (succeededInPartBy = 785 0/3)  
+  Har uppgått i (absorbedBy = 785 0/4)  
+  Har delvis uppgått i (absorbedInPartBy = 785 0/5)  
+  Uppdelat på (splitInto = 785 0/6)  
+  Sammanslagen till (mergedToForm = 785 0/7)  (se [Exempel](https://libris.kb.se/katalogisering/tb4vcdf54hzlsr3#it))  
