@@ -42,7 +42,10 @@ export class LxlTools {
           const baseClassObj = classes.get(baseClass['@id']);
           if (typeof baseClassObj !== 'undefined') {
             if (baseClassObj.hasOwnProperty('baseClassOf')) {
-              baseClassObj.baseClassOf.push(StringUtil.convertToPrefix(classObj['@id'], this._data.context));
+              let subId = StringUtil.convertToPrefix(classObj['@id'], this._data.context);
+              if (baseClassObj.baseClassOf.indexOf(subId) < 0) {
+                baseClassObj.baseClassOf.push(subId);
+              }
             } else {
               baseClassObj.baseClassOf = [StringUtil.convertToPrefix(classObj['@id'], this._data.context)];
             }
