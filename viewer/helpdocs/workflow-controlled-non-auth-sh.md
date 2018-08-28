@@ -25,4 +25,4 @@ Utgår katalogiseringen från en mall finns egenskapen Ämne redan i mallen inom
 
 * Klicka på **+ikonen** intill Termlista, pop up-rutan för **Lägg till entitet** öppnas. Sök efter listkod (t.ex. kao) och Lägg till. Koden länkas till verksinformationen.
 
-Upprepa punkterna ovan för att lägga till fler ämnesord.
+Upprepa punkterna ovan för att lägga till fler ämnesord. 
