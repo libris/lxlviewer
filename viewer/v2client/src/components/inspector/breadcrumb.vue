@@ -116,14 +116,15 @@ export default {
       return itemIndex+1;
     },
     nextPostPath() {
-      if (this.inspector.breadcrumb === undefined || this.inspector.breadcrumb.length <= 1) return '';
-
+      if (this.inspector.breadcrumb === undefined || this.inspector.breadcrumb.length == 0) return '';
+      
       if (this.nextPostIndex > this.totalPostNumber) return '';
 
       let items = this.inspector.breadcrumb[0].result.items;
 
       let nextItem = items[this.nextPostIndex];
-      if (nextItem.hasOwnProperty('@id')) {
+
+      if (nextItem && nextItem.hasOwnProperty('@id')) {
         const uriParts = nextItem['@id'].split('/');
         const fnurgel = uriParts[uriParts.length-1];
         return `/${fnurgel}`;
@@ -162,7 +163,7 @@ export default {
         <router-link class="Breadcrumb-prev"
           v-if="this.prevPostPath != ''"
           :to="this.prevPostPath">Föregående post</router-link>
-          |
+        <span v-if="this.prevPostPath && this.nextPostPath"> | </span>
         <router-link class="Breadcrumb-next"
           v-if="this.nextPostPath != ''"
           :to="this.nextPostPath">Nästa post</router-link>
