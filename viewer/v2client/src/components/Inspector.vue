@@ -33,6 +33,7 @@ export default {
     }
   },
   beforeRouteUpdate (to, from, next) {
+    this.addBreadcrumb();
   if (this.shouldWarnOnUnload()) {
       const confString = StringUtil.getUiPhraseByLang('You have unsaved changes. Do you want to leave the page?', this.settings.language);
       const answer = window.confirm(confString);
@@ -61,6 +62,36 @@ export default {
     }
   },
   methods: {
+    addBreadcrumb() {
+      if (this.inspector.breadcrumb !== '') {
+        let currentTrail = this.inspector.breadcrumb;
+        let firstTrail = currentTrail.shift();
+
+        let newBreadcrumb = {
+          type: 'fromPost',
+          recordType: this.recordType,
+          postUrl: this.$route.fullPath
+        }
+
+        let newTrail = [];
+        newTrail.push(firstTrail);
+        newTrail.push(newBreadcrumb);
+
+        this.$store.dispatch('setBreadcrumbData', 
+          newTrail
+        );
+      } else {
+        this.$store.dispatch('setBreadcrumbData', 
+          [
+            {
+              type: 'fromPost',
+              recordType: this.recordType,
+              postUrl: this.$route.fullPath
+            }
+          ]
+        );
+      }
+    },
     shouldWarnOnUnload() {
       return (
         (this.$route.name === 'Inspector' || this.$route.name === 'NewDocument') &&
@@ -416,7 +447,6 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-
       this.$store.dispatch('setStatusValue', { 
         property: 'keybindState', 
         value: 'overview' 
@@ -455,7 +485,10 @@ export default {
     </div>
     <div class="row">
       <div class="col-sm-12 col-md-11">
-        <breadcrumb v-if="postLoaded && this.inspector.breadcrumb.length !== 0"></breadcrumb>
+        <breadcrumb 
+          v-if="postLoaded && this.inspector.breadcrumb.length !== 0"
+          :record-type="recordType">
+        </breadcrumb>
         <div v-if="postLoaded" class="Inspector-entity panel panel-default">
           <div class="panel-body">
             <h1 class="Inspector-title" :title="recordType">

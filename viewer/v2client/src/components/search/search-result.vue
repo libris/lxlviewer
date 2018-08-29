@@ -37,11 +37,15 @@ export default {
   },
   watch: {
     fullResult(newValue) {
-      this.$store.dispatch('setBreadcrumbData', {
-        type: 'searchResult',
-        result: newValue,
-        searchUrl: this.$route.fullPath
-      });
+      this.$store.dispatch('setBreadcrumbData',
+        [
+          {
+            type: 'searchResult',
+            result: newValue,
+            resultUrl: this.$route.fullPath
+          }
+        ]
+      );
     },
   },
   computed: {
