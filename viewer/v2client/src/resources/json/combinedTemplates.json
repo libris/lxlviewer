@@ -370,11 +370,7 @@
             },
             {
               "@type": "MusicPlate",
-              "value": "",
-              "agent": {
-                  "@type": "Organization",
-                  "name": ""
-              }
+              "value": ""
             },
             {
               "@type": "MusicPublisherNumber",
