@@ -152,10 +152,10 @@ export default {
         :to="this.searchResultUrl">Till träfflistan</router-link>
       <span v-if="this.showFromPost"> ›
         <router-link class="Breadcrumb-backLink" 
-          :to="this.fromPostUrl">Tillbaka till {{fromPostType}}</router-link>
+          :to="this.fromPostUrl">Tillbaka till {{this.fromPostType | labelByLang }}</router-link>
       </span>
     </div>
-    <div class="Breadcrumb-postData">
+    <div class="Breadcrumb-postData" v-if="totalPostNumber > 1 && currentPostNumber !== 0">
       <span class="Breadcrumb-postNumbers">{{this.currentPostNumber}} av {{this.totalPostNumber}}</span>
       <div class="Breadcrumb-postLinks"
         v-if="this.prevPostPath || this.nextPostPath">
