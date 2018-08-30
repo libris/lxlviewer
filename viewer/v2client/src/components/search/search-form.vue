@@ -144,6 +144,10 @@ export default {
       },
       doSearch() {
         this.$router.push({ path: `/search/${this.searchPerimeter}?${this.composeQuery()}` });
+        
+        if (this.searchPerimeter === 'remote') {
+          this.$refs.dbComponent.showList = false;
+        };
       },
       clearInputs() {
         this.inputData.currentInput = 0;
@@ -277,7 +281,7 @@ export default {
         :class="{'is-active': searchPerimeter === 'remote' }">Andra källor
       </router-link>
     </div>
-    <div class="SearchBar-help" @mouseleave="hideHelp()">
+    <div  v-if="searchPerimeter === 'libris'"  class="SearchBar-help" @mouseleave="hideHelp()">
       <div class="SearchBar-helpBox dropdown" >
         <span class="SearchBar-helpIcon">
           <i class="fa fa-fw fa-question-circle-o" tabindex="0" aria-haspopup="true"
@@ -356,7 +360,7 @@ export default {
           {{ filter.label }}
         </label>        
       </div>
-      <remote-databases v-if="searchPerimeter === 'remote'" :remoteSearch="remoteSearch"></remote-databases>
+      <remote-databases v-if="searchPerimeter === 'remote'" :remoteSearch="remoteSearch" ref="dbComponent"></remote-databases>
     </form>
   </div>
 </template>
@@ -382,7 +386,7 @@ export default {
     font-weight: 700;
     font-size: 16px;
     font-size: 1.6rem;
-    margin: 5px 0;
+    margin: 5px 0 0;
     padding: 5px 10px 8px;
     text-transform: uppercase;
     transition: color 0.5s ease;
@@ -415,6 +419,12 @@ export default {
       font-size: 2rem;
     }
 
+  }
+
+  &-formContent {
+    &.is-remoteSearch {
+      margin: -8px 0 0;
+    }
   }
 
   &.is-landing-page {

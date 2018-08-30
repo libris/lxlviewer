@@ -6,17 +6,17 @@ tags:
 - editor
 --- 
 
-*Under arbete. Senast uppdaterad 2018-06-15.*
+UNDER ARBETE (uppdaterad 2018-08-28)
 
 ## Redigera befintlig: Agent - Organisation
 
-<br/>Första delen av lathunden beskriver fält som redan finns i beskrivningen. Fält relevanta för organisation, som är möjliga att lägga till, beskrivs i slutet av lathunden. 
+<br/>Första delen av lathunden beskriver egenskaper och klasser som redan finns i beskrivningen. Ett urval egenskaper relevanta för organisation som är möjliga att lägga till beskrivs i slutet av lathunden. 
 
-OBS! Var noggrann vid sökning/testlänkning för att säkerställa att auktoriserad namnform inte redan finns. Glöm inte att redigera Adminmetadata och spara innan vidare navigation i verktyget.
+OBS! Var noggrann vid sökning/testlänkning för att säkerställa att auktoriserad namnform inte redan finns. Glöm inte att redigera Adminmetadata och spara innan vidare navigation i verktyget. Verktyget är fortfarande under utveckling och viss åtskillnad från lathunden, t.ex. avseende ordning på egenskaper kan förekomma.
 
-<br/>Exemplet nedan är baserat på Sveriges släktforskarförbund. Tillägg kan vara fiktiva och enbart med som exempel.
+<br/>Exemplet nedan är baserat på den auktoriserade namnformen Sveriges släktforskarförbund. Tillägg kan vara fiktiva och enbart med som exempel.
 
-### Befintliga fält i beskrivningen
+### Befintliga egenskaper i beskrivningen
 
 * Namn (name) (110 ‡a)
   <br/>Föredragen namnform som utgör den auktoriserade namnformen.
@@ -29,46 +29,46 @@ OBS! Var noggrann vid sökning/testlänkning för att säkerställa att auktoris
   <br/>Ange verksamhetsområde för en organisation vid behov.
   <br/>```Exempel: Släktforskning```
   <br/>Länka i första hand termen från en kontrollerad vokabulär som Svenska ämnesord. 
-För att lägga till fält: Klicka på +ikonen under egenskapen Verksamhetsområde, välj Allmänt ämnesord som typ och sök i rutan till vänster, välj önskad term och klicka på den gröna Lägg till-rutan till höger. (Skapa lokal entitet används endast då det inte finns auktoriserad entitet att länka till).
+För att lägga till: Klicka på +ikonen under egenskapen Verksamhetsområde, välj Allmänt ämnesord som typ och sök i rutan till vänster, välj önskad term och klicka på den gröna Lägg till-rutan till höger. (Skapa lokal entitet används endast då det inte finns auktoriserad entitet att länka till).
     
 * Administativ historik (has Historical Data = 678 ‡a)
   <br/>Anmärkning om administrativ historik.
   <br/>```Exempel: Riksförbund för svenska släktforskare```
-  <br/>Lägg till fält genom att klicka på +ikonen. Klicka på +ikonen inom det tillagda fältet och välj Benämning där uppgifterna anges.
+  <br/>Lägg till egenskap genom att klicka på +ikonen. Klicka på +ikonen inom det tillagda fältet och välj Benämning där uppgifterna anges.
   
 * Variant (hasVariant = 410 ‡a ‡b)
-  <br/>I detta fält anges variantnamn och alternativa namnformer som stavningsvarianter, förkortningar etc. Fältet upprepas om flera variantnamn behöver läggas till.
+  <br/>Här anges variantnamn och alternativa namnformer som stavningsvarianter, förkortningar etc.
   <br/>```Exempel: Släktforskarförbundet```
   <br/>```Exempel: Federation of Swedish Genealogical Societies```
-  <br/>För att lägga till fält: Klicka på +ikonen under egenskapen variant, och skapa lokal entitet t ex organisation. Lägg sedan till det fält som behövs t ex namn.
-  <br/>För att ange auktoriserad namnform som består av underordnad enhet: Klicka på +ikonen under egenskapen variant, och skapa lokal entitet organisation. Till organisation läggs, genom att klicka på +ikonen längst ut till höger vid organisation, fälten Är del av samt Namn på underordnad enhet. Vid Är del av skapas lokal entitet Organisation och fältet Namn läggs till.
+  <br/>För att lägga till: Klicka på +ikonen under egenskapen variant, och välj typ t ex organisation. Lägg sedan till de egenskaper som behövs t ex namn.
+  <br/>För att ange auktoriserad namnform som består av underordnad enhet: Klicka på +ikonen under egenskapen variant, och välj typ t ex organisation. Till organisation läggs, genom att klicka på +ikonen längst ut till höger vid organisation, egenskaperna Är del av samt Namn på underordnad enhet. Vid Är del av skapas lokal entitet Organisation och egenskapen Namn läggs till.
   <br/>```Exempel: Är del av/Organisation/Namn: Stockholm University samt Namn på underordnad enhet: Centre for Medieval Studies```
-  <br/>OBS! Varianter ska inte göras till sökbara länkar. 
+  <br/>OBS! Varianter ska inte göras till sökbara länkar.
   
 * Identifikator (identifiedBy = 024 ‡a ‡2)
-  <br/>Identifikator t ex ISNI kan läggas till om tillgänglig. 
-  <br/>```Exempel:  ISNI, 0000000104839039```
-  <br/>För att lägga till fält: Klicka på +ikonen under Identifikator, välj typ. Klicka på +ikonen inom det tillagda Identifikator-fältet, sök efter och lägg till fältet Värde.
+  <br/>Identifikator t ex ISNI kan läggas till om tillgänglig. ISNI kan hämtas från t ex VIAF.
+  <br/>```Exempel: 0000000104839039```
+  <br/>För att lägga till: Klicka på +ikonen under Identifikator, välj typ. Klicka på +ikonen inom Identifikator, sök efter och lägg till egenskapen Värde.
   
 * Nationalitet/verksamhetsland (nationality = 043 ‡a)
   <br/>Nationalitet/verksamhetsland för organisationen. Vid behov kan denna ändras eller flera nationaliteter läggas till.
   <br/>```Exempel: e-sw---```
-  <br/>För att lägga till fält: Klicka på +ikonen under egenskapen Nationalitet/verksamhetsland. Välj Nationalitet som typ och sök i rutan till vänster. Välj önskad nationalitet och klicka på den gröna Lägg till-rutan till höger. (Skapa lokal entitet används endast då det inte finns auktoriserad entitet att länka till).
+  <br/>För att lägga till: Klicka på +ikonen under egenskapen Nationalitet/verksamhetsland. Välj Nationalitet som typ och sök i rutan till vänster. Välj önskad nationalitet och klicka på den gröna Lägg till-rutan till höger. (Skapa lokal entitet används endast då det inte finns auktoriserad entitet att länka till).
   
 * Samma sak som (sameAs)
-  <br/>Ändras ej.
+  <br/>```Exempel: resource/auth/394287```
     
   
-### Befintliga fält i Adminmetadata
+### Befintliga egenskaper i Adminmetadata
 
-Information av administrativ karaktär som inte är direkt förknippad med den auktoriserade namnformen.
+Information av administrativ karaktär som är väsentlig för auktoriseringen i sig men inte är direkt förknippad med den auktoriserade namnformen.
 
 * Kontrollnummer (controllNumber = 001)
   <br/>LibrisID. Ändras ej.
   
 * Skapad av (descriptionCreator = 040 ‡a)
  <br/>Förval: Sigel för skapare av agenten. Ändras ej.
- <br/>```Exempel: Organisation S```
+ <br/>```Exempel: S```
       
 * Katalogiseringsregler (descriptionConventions = 040 ‡e)
  <br/>Förval: rda. Ändra vid behov.
@@ -76,13 +76,13 @@ Information av administrativ karaktär som inte är direkt förknippad med den a
  
  * Katalogisatörens anmärkning (cataloguersNote = 667 ‡a)
   <br/>Anmärkningar tänkta för kollegor inom Libriskollektivet. Det kan till exempel vara uppgifter som rör ändring av den auktoriserade namnformen. Motivera gärna ändringen och komplettera alltid med datum/sigel/signatur.
-  <br/>```Exempel: Ändrat auktoriserad namnform från Xxx till Yyy /2010-01-03/S/UL/marjan```
+  <br/>```Exempel: Ändrat auktoriserad namnform från Xxx till Yyy 2010-01-03/S/UL/marjan```
   
 * Katalogiseringsspråk (descriptionLanguage = 040 ‡b)
- <br/>Förval: Svenska. Ändras ej.
+ <br/>Förval: language/swe. Ändras ej.
  
 * Senast ändrad av (descriptionLastModifier)
- <br/>Förval: Sigel som gjort senaste ändring. Ändras ej.
+ <br/>Förval: Sigel som gjort senaste ändring. Ändras automatiskt vid sparande.
   
 * Beskrivningsnivå (encodingLevel = 000)
  <br/>Ändras ej.
@@ -127,19 +127,23 @@ Information av administrativ karaktär som inte är direkt förknippad med den a
  <br/>Ändras ej.  
 
 * Poststatus (recordStatus = 000)
-  <br/>Ändras ej.
+  <br/>Ändras ej. Vid uppdatering ändras status automatiskt.
   
 * Samma sak som (sameAs)
-  <br/>Ändras ej.
+  <br/>```Exempel: auth/394287```.
 
 * Konsulterad källa (sourceConsulted) innehåller Benämning (label = 670 ‡a) samt Uppgift från källa (citationNote = 670 ‡b)
-  <br/>Ange källa och vid behov vilken uppgift som hämtats från källan. Den resurs som föranleder auktoriseringen är en obligatorisk källa.
-  <br/>```Exempel: Benämning: Wikipedia (Svenska) 2018-04-24. Uppgift från källa: Startår 1886 ```
+  <br/>Ange källa och vid behov vilken uppgift som hämtats från källan. 
+  <br/>Den resurs som föranleder auktoriseringen är en obligatorisk källa.
   <br/>```Exempel: Benämning: Fader okänd / Sveriges släktforskarförbund, 2016```
-  <br/>```Exempel: Benämning: Statskalendern, 1994```
-  <br/>För att lägga till fält: Klicka på +ikonen under konsulterad källa. Välj typ av konsulterad källa i rullmenyn. Vid val av "Källa vid belagd uppgift" finns möjlighet att ange såväl Benämning (källa) som Uppgift hämtad från källa.
+  <br/>```Exempel: Benämning: Material i Kungliga bibliotekets vardagstryckssamling. Uppgift från källa: Namnformen: Stockholm vatten och avfall```
+  <br/>Ytterligare relevanta källor kan vara.
+  <br/>```Exempel: Benämning: Wikipedia (Svenska) 2018-04-24. Uppgift från källa: Startår 1886```
+  <br/>```Exempel: Benämning: Företagets webbplats 2018-08-17. Uppgift från källa: Datum för namnbyte```
+  <br/>OBS! Förkortningen t.p., isbd-interpunktion och parenteser som inte behövs för förståelse/läsbarhet behöver inte anges.
+  <br/>För att lägga till: Klicka på +ikonen under konsulterad källa. Välj typ av konsulterad källa i rullmenyn. Vid val av "Källa vid belagd uppgift" finns möjlighet att ange såväl Benämning (källa) som Uppgift hämtad från källa.
   
-### Valbara fält att lägga till i beskrivningen
+### Valbara egenskaper att lägga till i beskrivningen
 
 * Tid för upphörande/Slutdatum (terminateDate = 046 ‡r)
   <br/>```Exempel: 2003```
@@ -151,9 +155,9 @@ Information av administrativ karaktär som inte är direkt förknippad med den a
   <br/>```Exempel: 1999``` 
   
 * Se även (seeAlso = 510)
-  <br/>I detta fält länkas mot annan agent som hör ihop med organisationen. Det kan t ex vara föregångare eller efterföljare. 
+  <br/>Här länkas mot annan agent som hör ihop med organisationen. Det kan t ex vara föregångare eller efterföljare. 
   <br/>```Exempel: Föreningen Emigrantinstitutets vänner```
- <br/>För att lägga till fält: Klicka på +ikonen under egenskapen Se även, välj typen Organisation i sökrutan till vänster. Sök efter auktoriserad namnform och klicka på Lägg till-rutan till höger. (Finns ingen länkbar organisation behöver en ny skapas som kan länkas. Spara och avsluta innan ny organisation skapas. Använd befintlig mall för Skapa ny: Agent - Organisation).
+ <br/>För att lägga till: Klicka på +ikonen under egenskapen Se även, välj typen Organisation i sökrutan till vänster. Sök efter auktoriserad namnform och klicka på Lägg till-rutan till höger. (Finns ingen länkbar organisation behöver en ny skapas som kan länkas. Spara och avsluta innan ny organisation skapas. Använd befintlig mall för Skapa ny: Agent - Organisation).
 
 * Språk (associatedLanguage = 377 ‡a)
   <br/>Ange språk som organisation använder vid behov.
@@ -164,4 +168,6 @@ Information av administrativ karaktär som inte är direkt förknippad med den a
   <br/>Ange en term för att beskriva typ av organisation om det använts som särskiljande tillägg i den auktoriserade sökingången.
   <br/>```Exempel: Herrgårdar```
   <br/>Länka i första hand termen från en kontrollerad vokabulär som Svenska ämnesord. 
-För att lägga till fält: Klicka på +ikonen under egenskapen Andra attribut för person- och organisationsnamn, välj Allmänt ämnesord som typ och sök i rutan till vänster, välj önskad term och klicka på den gröna Lägg till-rutan till höger. (Skapa lokal entitet används endast då det inte finns auktoriserad entitet att länka till).
+För att lägga till: Klicka på +ikonen under egenskapen Andra attribut för person- och organisationsnamn, välj Allmänt ämnesord som typ och sök i rutan till vänster, välj önskad term och klicka på den gröna Lägg till-rutan till höger. (Skapa lokal entitet används endast då det inte finns auktoriserad entitet att länka till).
+
+Glöm inte att redigera Adminmetadata och spara entiteten innan vidare navigation i verktyget!

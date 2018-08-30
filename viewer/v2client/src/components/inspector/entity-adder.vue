@@ -16,6 +16,7 @@ import ToolTipComponent from '../shared/tooltip-component';
 import EntitySearchList from '../search/entity-search-list';
 import ModalComponent from '@/components/shared/modal-component.vue';
 import ModalPagination from '@/components/inspector/modal-pagination';
+import FilterSelect from '@/components/shared/filter-select.vue';
 import LensMixin from '../mixins/lens-mixin';
 import { mixin as clickaway } from 'vue-clickaway';
 
@@ -23,12 +24,10 @@ export default {
   mixins: [clickaway, LensMixin],
   data() {
     return {
-      searchOpen: false,
       searchResult: [],
       keyword: '',
       loading: false,
       debounceTimer: 500,
-      chooseLocalType: false,
       showToolTip: false,
       rangeInfo: false,
       selectedType: '',
@@ -48,6 +47,7 @@ export default {
       type: Array,
       default: () => [],
     },
+    compositional: null,
     showActionButtons: false,
     isPlaceholder: false,
     isChip: false,
@@ -69,13 +69,14 @@ export default {
     'tooltip-component': ToolTipComponent,
     'entity-search-list': EntitySearchList,
     'modal-pagination': ModalPagination,
+    'filter-select': FilterSelect
   },
   watch: {
     'inspector.event'(val, oldVal) {
       if (val.name === 'modal-control') {
         switch(val.value) {
           case 'close-entity-adder':
-            this.closeSearch();
+            this.hide();
             return true;
             break;
           default:
@@ -85,7 +86,7 @@ export default {
       if (val.name === 'form-control') {
         switch(val.value) {
           case 'close-modals':
-            this.closeSearch();
+            this.hide();
             return true;
             break;
           default:
@@ -102,7 +103,7 @@ export default {
     },
     keyword(value) {
       this.handleChange(value);
-    },
+    }
   },
   computed: {
     settings() {
@@ -116,6 +117,22 @@ export default {
     },
     inspector() {
       return this.$store.getters.inspector;
+    },
+    selectOptions() {
+      const classTree = this.getClassTree;
+      let options = [];
+
+      for (let i = 0; i < classTree.length; i++) {
+        let term = {};
+
+        term.label = this.getFormattedSelectOption(classTree[i]);
+        term.value = classTree[i].id;
+        term.key = `${classTree[i].id}-${i}`;
+
+        options.push(term);
+      }
+
+      return options;
     },
     getClassTree() {
       const tree = this.getRange.map(type => {
@@ -186,11 +203,14 @@ export default {
       return typeArray;
     },
     onlyEmbedded() {
+      if (this.compositional === true) {
+        return true;
+      }
       const range = this.getFullRange;
-      for (const prop of range) {
+      for (const classId of range) {
         if (!VocabUtil.isEmbedded(
-          prop, this.
-          resources.vocab, 
+          classId,
+          this.resources.vocab, 
           this.settings, 
           this.resources.context
         )) {
@@ -222,8 +242,6 @@ export default {
   },
   mounted() {
     this.addEmbedded = (this.valueList.length === 0 && this.onlyEmbedded && this.getFullRange.length > 1);
-    this.searchOpen = false;
-    this.currentSearchTypes = this.getRange;
   },
   methods: {
     actionHighlight(active, event) {
@@ -244,6 +262,20 @@ export default {
         this.resources.vocab, 
         this.resources.context
       );
+    },
+    setFilter($event, keyword) {
+      let valuesArray = [];
+      let values;
+
+      if ($event['value'] !== null && typeof $event['value'] === 'object') {
+        values = Object.assign({}, { ['value'] : $event['value']});
+        valuesArray = Object.values(values.value)
+      } else {
+        valuesArray.push($event['value']);
+      }
+      
+      this.currentSearchTypes = valuesArray;
+      this.handleChange(keyword);
     },
     handleChange(value) {
       this.setSearching();
@@ -292,6 +324,7 @@ export default {
       }
     },
     show() {
+      this.resetSearch();
       LayoutUtil.scrollLock(true);
       this.active = true;
       this.$nextTick(() => {
@@ -311,18 +344,10 @@ export default {
         value: 'overview' 
       });
     },
-    openSearch() {
+    resetSearch() {
       this.keyword = '';
-      this.searchOpen = true;
-    },
-    closeSearch() {
-      this.searchOpen = false;
-      this.keyword = '';
+      this.currentSearchTypes = this.getRange;
       this.searchResult = [];
-      this.pagesFetched = 0;
-      this.allFetched = false;
-      this.chooseLocalType = false;
-      this.hide();
     },
     addLinkedItem(obj) {
       let currentValue = _.cloneDeep(_.get(this.inspector.data, this.path));
@@ -364,6 +389,10 @@ export default {
           currentValue.push(obj);
         }
       }
+      this.$store.dispatch('setInspectorStatusValue', { 
+        property: 'lastAdded', 
+        value: `${this.path}[${currentValue.length -1}]`
+      });
       this.$store.dispatch('updateInspectorData', {
         changeList: [
           {
@@ -393,7 +422,7 @@ export default {
       });
     },
     addEmpty(typeId) {
-      this.closeSearch();
+      this.hide();
       const shortenedType = StringUtil.getCompactUri(typeId, this.resources.context);
       let obj = {'@type': shortenedType};
       if (StructuredValueTemplates.hasOwnProperty(shortenedType)) {
@@ -458,6 +487,7 @@ export default {
       }
       const offset = this.currentPage * this.maxResults;
       searchUrl += `&_limit=${this.maxResults}&_offset=${offset}`;
+      searchUrl = encodeURI(searchUrl);
       return new Promise((resolve, reject) => {
         fetch(searchUrl).then((response) => {
           resolve(response.json());
@@ -520,19 +550,18 @@ export default {
       </select>
     </div>
 
-    <modal-component v-if="active" class="EntityAdder-modal EntityAdderModal" @close="closeSearch">
+    <modal-component v-if="active" class="EntityAdder-modal EntityAdderModal" @close="hide">
       <template slot="modal-header">
         {{ "Add entity" | translatePhrase }} | {{ addLabel | labelByLang }}
         <span class="ModalComponent-windowControl">
-          <i @click="closeSearch" tabindex="0" @keyup.enter="closeSearch" class="fa fa-close"></i>
+          <i @click="hide" tabindex="0" @keyup.enter="hide" class="fa fa-close"></i>
         </span>
       </template>
 
-    <template slot="modal-body" class="ScrollContainer">
-      <div class="EntityAdder-modalBody">
-        <div class="EntityAdder-controls">
-          <div class="EntityAdder-controlForm">
-            <!--<input class="entity-search-keyword-input" v-model="keyword" @input="setSearching()"></input>-->
+      <template slot="modal-body" class="ScrollContainer">
+        <div class="EntityAdder-modalBody">
+          <div class="EntityAdder-controls">
+            <div class="EntityAdder-controlForm">
               <div class="EntityAdder-search">
                 <label for="entityKeywordInput" class="EntityAdder-searchLabel">{{ "Search" | translatePhrase }}</label>
                 <div class="EntityAdder-searchInputContainer">
@@ -540,74 +569,70 @@ export default {
                     name="entityKeywordInput"
                     v-model="keyword"
                     autofocus />
-                  <select class="EntityAdder-searchSelect"
-                    v-model="currentSearchTypes" 
-                    @change="handleChange(keyword)">
-                    <option :value="getRange" selected>{{"All types" | translatePhrase}}</option>
-                    <option 
-                      v-for="(term, index) in getClassTree" 
-                      :key="`${term.id}-${index}`" 
-                      :value="term.id" 
-                      v-html="getFormattedSelectOption(term, settings, resources.vocab, resources.context)"></option>
-                  </select>
+                  <filter-select
+                    :class-name="'js-filterSelect'"
+                    :custom-placeholder="'All types'"
+                    :options="selectOptions"
+                    :options-all="getRange"
+                    :is-filter="true"
+                    :options-selected="''"
+                    v-on:filter-selected="setFilter($event, keyword)"></filter-select>
                 </div>
               </div>
-            <div class="EntityAdder-info" 
-              v-if="getFullRange.length > 0" 
-              @mouseleave="rangeInfo = false">
-              <i class="fa fa-info-circle" @mouseenter="rangeInfo = true"></i>
-              <div class="EntityAdder-infoText" v-if="rangeInfo">
-                {{ "Allowed types" | translatePhrase }}:
-                <br>
-                <span v-for="(range, index) in getFullRange" :key="index" class="EntityAdder-infoRange">
-                  - {{range | labelByLang}}
-                </span>
+           
+              <div class="EntityAdder-info" 
+                v-if="getFullRange.length > 0" 
+                @mouseleave="rangeInfo = false">
+                <i class="fa fa-info-circle" @mouseenter="rangeInfo = true"></i>
+                <div class="EntityAdder-infoText" v-if="rangeInfo">
+                  {{ "Allowed types" | translatePhrase }}:
+                  <br>
+                  <span class="EntityAdder-infoRange"
+                    v-for="(range, index) in getFullRange" 
+                    :key="index">
+                    - {{range | labelByLang}}
+                  </span>
+                </div>
+              </div>
+              <div class="EntityAdder-create">
+                <button class="EntityAdder-createBtn"
+                  v-if="hasSingleRange" 
+                  v-on:click="addEmpty(getFullRange[0])">{{ "Create local entity" | translatePhrase }}
+                </button>
+                <filter-select
+                  v-if="!hasSingleRange" 
+                  :class-name="'js-createSelect'"
+                  :options="selectOptions"
+                  :options-all="getRange"
+                  :is-filter="false"
+                  :custom-placeholder="'Create local entity'"
+                  v-on:filter-selected="addType($event.value)"></filter-select>
               </div>
             </div>
-            <div class="EntityAdder-create">
-              <button class="EntityAdder-createBtn"
-                v-if="hasSingleRange" 
-                v-on:click="addEmpty(getFullRange[0])">{{ "Create local entity" | translatePhrase }}
-              </button>
-              <select class="EntityAdder-createSelect"
-                v-model="selectedType" 
-                @change="addType(selectedType)" 
-                v-if="!hasSingleRange">
-                <option disabled value="">{{ "Create local entity" | translatePhrase }}</option>
-                <option 
-                  v-for="(term, index) in getClassTree" 
-                  :disabled="term.abstract" 
-                  :value="term.id" 
-                  :key="`${term.id}-${index}`" 
-                  v-html="getFormattedSelectOption(term, settings, resources.vocab, resources.context)"></option>
-              </select>
-            </div>
           </div>
+          <div class="EntityAdder-searchStatus search-status"
+            v-if="!loading && keyword.length === 0" >{{ "Start writing to begin search" | translatePhrase }}...</div>
+          <div class="EntityAdder-searchStatus search-status"
+            v-if="loading">
+            {{ "Searching" | translatePhrase }}...
+            <br><i class="EntityAdder-searchStatusIcon fa fa-circle-o-notch fa-spin"></i>
+          </div>
+          <div class="EntityAdder-searchStatus search-status"
+            v-if="!loading && searchResult.length === 0 && keyword.length > 0 && searchMade">
+            {{ "No results" | translatePhrase }}...
+          </div>
+          <modal-pagination class="ScrollMarginTop" v-if="!loading && searchResult.length > 0" @go="go" :numberOfPages="numberOfPages" :currentPage="currentPage"></modal-pagination>
+          <entity-search-list class="EntityAdder-searchResult"
+            v-if="!loading && keyword.length > 0" 
+            :path="path" 
+            :results="searchResult" 
+            :disabled-ids="alreadyAdded"
+            @add-item="addLinkedItem"></entity-search-list>
+          <modal-pagination v-if="!loading && searchResult.length > 0" @go="go" :numberOfPages="numberOfPages" :currentPage="currentPage"></modal-pagination>
         </div>
-        <div class="EntityAdder-searchStatus search-status"
-          v-if="!loading && keyword.length === 0" >{{ "Start writing to begin search" | translatePhrase }}...</div>
-        <div class="EntityAdder-searchStatus search-status"
-          v-if="loading">
-          {{ "Searching" | translatePhrase }}...
-          <br><i class="EntityAdder-searchStatusIcon fa fa-circle-o-notch fa-spin"></i>
-        </div>
-        <div class="EntityAdder-searchStatus search-status"
-          v-if="!loading && searchResult.length === 0 && keyword.length > 0 && searchMade">
-          {{ "No results" | translatePhrase }}...
-        </div>
-        <modal-pagination class="ScrollMarginTop" v-if="!loading && searchResult.length > 0" @go="go" :numberOfPages="numberOfPages" :currentPage="currentPage"></modal-pagination>
-        <entity-search-list class="EntityAdder-searchResult"
-          v-if="!loading && keyword.length > 0" 
-          :path="path" 
-          :results="searchResult" 
-          :disabled-ids="alreadyAdded"
-          @add-item="addLinkedItem"
-          ></entity-search-list>
-        <modal-pagination v-if="!loading && searchResult.length > 0" @go="go" :numberOfPages="numberOfPages" :currentPage="currentPage"></modal-pagination>
-      </div>
-    </template>
-  </modal-component>
-</div>
+      </template>
+    </modal-component>
+  </div>
 </template>
 
 <style lang="less">

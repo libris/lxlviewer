@@ -243,7 +243,6 @@ export default {
           ],
           addToHistory: true,
         });
-        this.$store.dispatch('setInspectorStatusValue', { property: 'unsavedChanges', value: true });
         if (close) {
           this.hide();
           this.$store.dispatch('setInspectorStatusValue', { 
@@ -344,7 +343,10 @@ export default {
       @mouseleave="showToolTip = false">
       <i class="FieldAdder-icon fa fa-plus plus-icon" aria-hidden="true">
         <tooltip-component 
+          class="Toolbar-tooltipContainer"
           :tooltip-text="modalTitle"
+          :position="inToolbar ? 'left' : 'top'"
+          keybind-name="open-field-adder"
           :show-tooltip="showToolTip"></tooltip-component>
       </i>
       <span v-if="!inToolbar" class="FieldAdder-label"> {{ "Add field" | translatePhrase }}</span>
@@ -390,7 +392,7 @@ export default {
               :key="prop['@id']" 
               @click="addField(prop, true)">
               <span class="FieldAdderModal-addControl">
-                <a v-show="!prop.added" v-on:click.prevent="addField(prop, false)">
+                <a v-show="!prop.added" v-on:click.stop.prevent="addField(prop, false)">
                   <i class="fa fa-fw fa-2x fa-plus-circle"></i>
                 </a>
                 <span v-show="prop.added"><i class="fa fa-fw fa-check fa-2x"></i></span>
@@ -432,6 +434,7 @@ export default {
 
   &--inToolbar {
     display: inline-block;
+    position: relative;
   }
 
   &-innerLabel {

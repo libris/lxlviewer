@@ -14,6 +14,7 @@ import ModalPagination from '@/components/inspector/modal-pagination';
 import ToolTipComponent from '../shared/tooltip-component';
 import EntitySearchList from '../search/entity-search-list';
 import EntitySummary from '../shared/entity-summary';
+import FilterSelect from '@/components/shared/filter-select.vue';
 import SummaryAction from './summary-action';
 import LensMixin from '../mixins/lens-mixin';
 import { mixin as clickaway } from 'vue-clickaway';
@@ -69,6 +70,7 @@ export default {
     'summary-action': SummaryAction,
     'modal-component': ModalComponent,
     'modal-pagination': ModalPagination,
+    'filter-select': FilterSelect
   },
   watch: {
     keyword(value) {
@@ -81,7 +83,19 @@ export default {
       if(value) {
         this.show();
       } else {
-        this.closeSearch();
+        this.hide();
+      }
+    },
+    'inspector.event'(val, oldVal) {
+      if (val.name === 'form-control') {
+        switch(val.value) {
+          case 'close-modals':
+            this.hide();
+            return true;
+            break;
+          default:
+            return;
+        }
       }
     },
   },
@@ -109,6 +123,22 @@ export default {
       }
       return typeArray;
     },
+    selectOptions() {
+      const classTree = this.getClassTree;
+      let options = [];
+
+      for (let i = 0; i < classTree.length; i++) {
+        let term = {};
+
+        term.label = this.getFormattedSelectOption(classTree[i]);
+        term.value = classTree[i].id;
+        term.key = `${classTree[i].id}-${i}`;
+
+        options.push(term);
+      }
+
+      return options;
+    },
     displaySearchList() {
       return !this.loading && !this.extracting && this.keyword.length > 0 && this.searchResult.length > 0;
     },
@@ -132,12 +162,31 @@ export default {
     extract() {
       this.$emit('extract');
     },
-    getFormattedSelectOption(term, settings, vocab, context) {
-      return DisplayUtil.getFormattedSelectOption(term, settings, vocab, context);
+    getFormattedSelectOption(term) {
+      return DisplayUtil.getFormattedSelectOption(
+        term, 
+        this.settings, 
+        this.resources.vocab, 
+        this.resources.context
+      );
     },
     addPayload(item) {
       const updatedListItemSettings = _.merge({payload: item}, _.cloneDeep(this.listItemSettings));
       return updatedListItemSettings;
+    },
+    setFilter($event, keyword) {
+      let valuesArray = [];
+      let values;
+
+      if ($event['value'] !== null && typeof $event['value'] === 'object') {
+        values = Object.assign({}, { ['value'] : $event['value']});
+        valuesArray = Object.values(values.value)
+      } else {
+        valuesArray.push($event['value']);
+      }
+      
+      this.currentSearchTypes = valuesArray;
+      this.handleChange(keyword);
     },
     handleChange(value) {
       this.setSearching();
@@ -160,6 +209,7 @@ export default {
       }
     },
     show() {
+      this.resetSearch();
       LayoutUtil.scrollLock(true);
       this.active = true;
       this.$nextTick(() => {
@@ -180,12 +230,10 @@ export default {
         value: 'overview' 
       });
     },
-    closeSearch() {
+    resetSearch() {
       this.keyword = '';
+      this.currentSearchTypes = this.getRange;
       this.searchResult = [];
-      this.pagesFetched = 0;
-      this.allFetched = false;
-      this.hide();
     },
     loadResults(result) {
       this.searchResult = result.items;
@@ -202,7 +250,6 @@ export default {
       const totalItems = self.searchResult.length;
       self.currentPage = pageNumber;
       self.loading = true;
-      console.log('fetching page', this.currentPage);
       this.getItems(this.keyword).then((result) => {
         self.loadResults(result);
       }, (error) => {
@@ -228,6 +275,7 @@ export default {
       }
       const offset = this.currentPage * this.maxResults;
       searchUrl += `&_limit=${this.maxResults}&_offset=${offset}`;
+      searchUrl = encodeURI(searchUrl);
       return new Promise((resolve, reject) => {
         fetch(searchUrl).then((response) => {
           resolve(response.json());
@@ -245,7 +293,7 @@ export default {
     <modal-component
       :title="'Link entity' | translatePhrase"
       v-if="active"
-      @close="closeSearch()"
+      @close="hide()"
       class="SearchWindow-modal">
       <template slot="modal-body">
         <div class="SearchWindow-header search-header">
@@ -255,14 +303,22 @@ export default {
               <input class="SearchWindow-input SearchWindowentity-search-keyword-input"
                 v-model="keyword"
                 autofocus>
-              <select v-model="currentSearchTypes" @change="handleChange(keyword)">
+              <filter-select
+                :class-name="'js-filterSelect'"
+                :custom-placeholder="'All types'"
+                :options="selectOptions"
+                :options-all="getRange"
+                :is-filter="true"
+                :options-selected="''"
+                v-on:filter-selected="setFilter($event, keyword)"></filter-select>
+              <!-- <select v-model="currentSearchTypes" @change="handleChange(keyword)">
                 <option :value="getRange">{{"All types" | translatePhrase}}</option>
                 <option 
                   v-for="term in getClassTree" 
                   :key="term.parentChainString" 
                   :value="term.id" 
                   v-html="getFormattedSelectOption(term, settings, resources.vocab, resources.context)"></option>
-              </select>
+              </select> -->
             </div>
             <div class="SearchWindow-help help-tooltip-container" 
               @mouseleave="showHelp = false">
@@ -333,7 +389,7 @@ export default {
           </ul>
           <modal-pagination v-if="!loading && searchResult.length > 0" @go="go" :numberOfPages="numberOfPages" :currentPage="currentPage"></modal-pagination>
           <div class="SearchWindow-searchStatusContainer"
-            v-show="extracting || keyword.length === 0 || loading || foundNoResult || fetchingMore || allFetched">
+            v-show="extracting || keyword.length === 0 || loading || foundNoResult">
             <div class="SearchWindow-searchStatus">
               <span v-show="keyword.length === 0 && !extracting">
                 {{ "Search for existing linked entities" | translatePhrase }}...
@@ -341,12 +397,6 @@ export default {
               <span v-show="loading">
                 <i class="fa fa-circle-o-notch fa-spin"></i>
                 {{ "Searching" | translatePhrase }}...
-              </span>
-              <span class="EntitySearchResult-fetchMore" v-show="fetchingMore">
-                {{"Fetching more results" | translatePhrase }} <i class="fa fa-circle-o-notch fa-spin"></i><br/>
-              </span>
-              <span class="EntitySearchResult-fetchMore" v-show="allFetched && searchResult.length > 0">
-                {{'No more results found' | translatePhrase }}
               </span>
               <span v-show="foundNoResult">
                 <strong>{{ "No results" | translatePhrase }}</strong>

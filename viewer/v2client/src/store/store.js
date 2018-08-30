@@ -32,6 +32,7 @@ const store = new Vuex.Store({
       context: {},
     },
     inspector: {
+      breadcrumb: [],
       data: {},
       insertData: {},
       originalData: {},
@@ -45,7 +46,6 @@ const store = new Vuex.Store({
         removing: false,
         updating: false,
         isNew: false,
-        unsavedChanges: false,
       },
       changeHistory: [],
       event: [],
@@ -86,6 +86,15 @@ const store = new Vuex.Store({
         'Instance',
         'Identity',
       ],
+      removeOnDuplication: [
+        'record.sameAs',
+        'mainEntity.sameAs',
+        'work.sameAs',
+        'controlNumber',
+        'generationProcess',
+        'generationDate',
+        'descriptionUpgrader',
+      ],
       removableBaseUris: [
         'http://libris.kb.se/',
         'https://libris.kb.se/',
@@ -110,7 +119,6 @@ const store = new Vuex.Store({
         'mainEntity',
         'created',
         'modified',
-        'technicalNote',
         'descriptionCreator'
       ],
       dataSetFilters: {
@@ -203,6 +211,9 @@ const store = new Vuex.Store({
     setInsertData(state, data) {
       state.inspector.insertData = data;
     },
+    setBreadcrumbData(state, data) {
+      state.inspector.breadcrumb = data;
+    },
     addToQuoted(state, data) {
       const quoted = _.cloneDeep(state.inspector.data.quoted);
       quoted[data['@id']] = data;
@@ -225,7 +236,7 @@ const store = new Vuex.Store({
 
       // Set the new values
       _.each(payload.changeList, (node) => {
-        console.log("DATA_UPDATE:", JSON.stringify(node));
+        // console.log("DATA_UPDATE:", JSON.stringify(node));
         _.set(inspectorData, node.path, node.value);
       });
       state.inspector.data = inspectorData;
@@ -371,6 +382,9 @@ const store = new Vuex.Store({
     },
     setInsertData({ commit }, data) {
       commit('setInsertData', data);
+    },
+    setBreadcrumbData({ commit }, data) {
+      commit('setBreadcrumbData', data);
     },
     updateInspectorData({ commit }, payload) {
       commit('updateInspectorData', payload);

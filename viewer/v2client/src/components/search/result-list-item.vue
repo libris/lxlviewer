@@ -18,8 +18,6 @@ export default {
       keyword: '',
     }
   },
-  methods: {
-  },
   computed: {
     settings() {
       return this.$store.getters.settings;
@@ -34,18 +32,13 @@ export default {
       return StringUtil.getFormattedEntries(this.getSummary.header, this.resources.vocab, this.settings, this.resources.context);
     },
     isLibrisResource() {
-      if (this.focusData && this.focusData['@id']) {
-        return this.focusData['@id'].startsWith(this.settings.apiPath);
-      }
-      return false;
+      return StringUtil.isLibrisResourceUri(this.focusData['@id'], this.settings.apiPath);
     },
   },
   components: {
     'entity-summary': EntitySummary,
   },
-  watch: {
-  },
-  ready() { // Ready method is deprecated in 2.0, switch to "mounted"
+  mounted() { 
   },
 };
 </script>

@@ -133,6 +133,9 @@ export default {
 
       return valueArray;
     },
+    isUriType() {
+      return VocabUtil.getContextValue(this.fieldKey, '@id', this.resources.context) === 'uri';
+    },
     getPath() {
       if (typeof this.parentPath !== 'undefined') {
         if (typeof this.parentKey !== 'undefined' && typeof this.parentIndex !== 'undefined') {
@@ -153,6 +156,15 @@ export default {
         this.resources.vocab,
         this.resources.context
       );
+    },
+    isCompositional() {
+      if (this.keyAsVocabProperty && this.keyAsVocabProperty.hasOwnProperty('category')) {
+        if (this.keyAsVocabProperty.category['@id'] === 'https://id.kb.se/vocab/compositional') {
+          return true;
+        }
+        // Add handling for "uncompositional" ie a false-value
+      }
+      return null;
     },
     hasSingleValue() {
       if (!_.isArray(this.fieldValue) || this.fieldValue.length === 1) {
@@ -205,10 +217,14 @@ export default {
             document.getElementsByTagName('body')[0].clientHeight;
             const scrollPos = LayoutUtil.getPosition(this.$el).y - (windowHeight * 0.2);
             LayoutUtil.scrollTo(scrollPos, 1000, 'easeInOutQuad', () => {
-              this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
+              setTimeout(() => {
+                this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
+              }, 1000)
             });
           } else {
-            this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
+              setTimeout(() => {
+                this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
+              }, 1000)
           }
         }
       }, 300);
@@ -259,10 +275,6 @@ export default {
               }
             ],
             addToHistory: true,
-          });
-          this.$store.dispatch('setInspectorStatusValue', { 
-            property: 'unsavedChanges', 
-            value: true 
           });
         }, 500);
       }
@@ -369,7 +381,8 @@ export default {
         <entity-adder  class="Field-entityAdder Field-action"
           v-show="!locked && (isRepeatable || isEmptyObject)" 
           :field-key="fieldKey" 
-          :already-added="linkedIds" 
+          :already-added="linkedIds"
+          :compositional="isCompositional" 
           :entity-type="entityType" 
           :property-types="propertyTypes" 
           :show-action-buttons="actionButtonsShown" 
@@ -381,7 +394,10 @@ export default {
           v-show="!locked" 
           :class="{'disabled': activeModal}">
           <i class="fa fa-trash-o action-button"
+            tabindex="0"
             v-on:click="removeThis(true)"
+            @focus="removeHover = true, removeHighlight(true, $event)" 
+            @blur="removeHover = false, removeHighlight(false, $event)"
             @mouseover="removeHover = true, removeHighlight(true, $event)" 
             @mouseout="removeHover = false, removeHighlight(false, $event)">
             <tooltip-component 
@@ -399,6 +415,7 @@ export default {
           :field-key="fieldKey" 
           :path="getPath" 
           :already-added="linkedIds" 
+          :compositional="isCompositional" 
           :entity-type="entityType" 
           :property-types="propertyTypes" 
           :show-action-buttons="actionButtonsShown" 
@@ -412,6 +429,8 @@ export default {
             tabindex="0"
             v-on:click="removeThis(true)"
             @keyup.enter="removeThis(true)"
+            @focus="removeHover = true, removeHighlight(true, $event)" 
+            @blur="removeHover = false, removeHighlight(false, $event)" 
             @mouseover="removeHover = true, removeHighlight(true, $event)" 
             @mouseout="removeHover = false, removeHighlight(false, $event)"  >
             <tooltip-component translation="translatePhrase"
@@ -426,11 +445,12 @@ export default {
     <pre class="path-code" v-show="user.settings.appTech">{{getPath}}</pre>
       
     <div class="Field-content FieldContent" 
-      v-bind:class="{ 'is-locked': locked }"
+      v-bind:class="{ 'is-locked': locked}"
       v-if="isObjectArray">
       <div class="Field-contentItem" 
         v-for="(item, index) in valueAsArray" 
-        :key="index" >
+        :key="index"
+        v-bind:class="{'is-entityContent': getDatatype(item) == 'entity'}">
         <item-error 
           v-if="getDatatype(item) == 'error'" 
           :item="item"></item-error>
@@ -460,6 +480,7 @@ export default {
           v-if="getDatatype(item) == 'local'" 
           :is-locked="locked" 
           :entity-type="entityType" 
+          :forced-extractability="isCompositional"
           :item="item" 
           :field-key="fieldKey" 
           :index="index" 
@@ -473,6 +494,7 @@ export default {
           :is-locked="locked"
           :field-key="fieldKey"
           :entity-type="entityType"
+          :forced-extractability="isCompositional"
           :index="index"
           :in-array="valueIsArray"
           :show-action-buttons="actionButtonsShown"
@@ -511,6 +533,7 @@ export default {
           v-if="getDatatype(item) == 'value'" 
           :is-removable="!hasSingleValue" 
           :is-locked="locked" 
+          :is-uri-type="isUriType"
           :field-value="item" 
           :field-key="fieldKey" 
           :index="index" 
@@ -529,7 +552,7 @@ export default {
   flex-direction: row;
   opacity: 1;
   position: relative;
-  transition: background-color .2s ease;
+  transition: background-color .3s ease;
 
   &.is-marked {
     background-color: @sec;
@@ -668,7 +691,11 @@ export default {
       text-align: right;
       padding: 20px;
     }
+
+  @media print and (max-width: 768px) {
+    padding-bottom: 0;
   }
+}
 
   &-commentText {
     background-color: @white;
@@ -716,11 +743,19 @@ export default {
      @media (min-width: 768px) {
       border-left: 1px solid #d8d8d8;
     }
+
+    @media print and (max-width: 768px) {
+      padding-top: 0;
+    }
   }
 
   &-contentItem {
     display: flex;
     flex: 1;
+
+    &.is-entityContent {
+      display: inline-flex;
+    }
   }
 
   &-actions {

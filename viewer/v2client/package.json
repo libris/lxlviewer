@@ -1,6 +1,6 @@
 {
   "name": "v2client",
-  "version": "1.0.12",
+  "version": "1.1.0",
   "description": "LIBRIS cataloguing client",
   "author": "Ola Blissing <ola.blissing@gmail.com>",
   "private": true,
@@ -93,7 +93,7 @@
     "uglifyjs-webpack-plugin": "^1.1.1",
     "url-loader": "^0.5.8",
     "vue": "^2.5.2",
-    "vue-clickaway": "^2.1.0",
+    "vue-clickaway": "https://github.com/silverspectro/vue-clickaway/archive/2.2.3.tar.gz",
     "vue-loader": "^13.3.0",
     "vue-router": "^3.0.1",
     "vue-style-loader": "^3.0.1",

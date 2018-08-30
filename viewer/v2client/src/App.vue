@@ -96,6 +96,10 @@ export default {
 
 .MainContent {
   flex: 1 0 auto;
+
+  @media screen and (max-width: @screen-sm-min){
+    width: 100%;
+  }
 }
 
 </style>

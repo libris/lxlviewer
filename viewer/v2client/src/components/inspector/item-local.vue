@@ -37,13 +37,12 @@ export default {
     return {
       inEdit: false,
       showCardInfo: false,
-      isNewlyAdded: false,
       extractDialogActive: false,
       extracting: false,
       expanded: false,
       removeHover: false,
       showLinkAction: false,
-      copyTitle: false,
+      copyTitle: false
     };
   },
   computed: {
@@ -75,6 +74,11 @@ export default {
       return cleanObj;
     },
     isExtractable() {
+      if (this.forcedExtractability === true) {
+        return false;
+      } else if (this.forcedExtractability === false) {
+        return true;
+      }
       const classId = StringUtil.getCompactUri(this.item['@type'], this.resources.context);
       if (VocabUtil.isExtractable(classId, this.resources.vocab, this.settings, this.resources.context)) {
         return true;
@@ -101,6 +105,12 @@ export default {
         }
       });
       return bEmpty;
+    },
+    isLastAdded() {
+      if (this.inspector.status.lastAdded === this.getPath) {
+        return true;
+      }
+      return false;
     },
   },
   methods: {
@@ -223,6 +233,11 @@ export default {
       this.extracting = true;
       this.doExtract();
     },
+    checkFocus() {
+      if (this.focused) {
+        this.toggleExpanded();
+      }
+    },
     replaceWith(value) {
       const newValue = { '@id': value['@id'] };
       this.$store.dispatch('addToQuoted', value);
@@ -252,6 +267,12 @@ export default {
     this.$nextTick(() => {
       this.expandOnNew();
     });
+    
+    if (this.isLastAdded) {
+      setTimeout(()=> {
+        this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
+      }, 1000)
+    } 
   },
  
   components: {
@@ -267,16 +288,17 @@ export default {
 
 <template>
   <div class="ItemLocal js-itemLocal"
-    :class="{'is-highlighted': isNewlyAdded, 'is-expanded': expanded}"
-    tabindex="0">
+    :class="{'is-highlighted': isLastAdded, 'is-expanded': expanded}"
+    tabindex="0" 
+    @keyup.enter="checkFocus()"
+    @focus="addFocus()"
+    @blur="removeFocus()">
    
    <strong class="ItemLocal-heading">
      <div class="ItemLocal-label">
         <i class="ItemLocal-arrow fa fa-chevron-right " 
           :class="{'down': expanded}" 
-          @click="toggleExpanded()"
-          tabindex="0"
-          @keyup.enter="toggleExpanded()"></i>
+          @click="toggleExpanded()"></i>
         <span class="ItemLocal-type" 
           @click="toggleExpanded($event)" 
           :title="item['@type']">{{ item['@type'] | labelByLang | capitalize }}:</span>
@@ -297,6 +319,8 @@ export default {
         <i class="ItemLocal-action fa fa-link"
           v-if="inspector.status.editing && isExtractable"
           @click="openExtractDialog()" 
+          @focus="showLinkAction = true, actionHighlight(true, $event)"
+          @blur="showLinkAction = false, actionHighlight(false, $event)"
           @mouseover="showLinkAction = true, actionHighlight(true, $event)" 
           @mouseout="showLinkAction = false, actionHighlight(false, $event)"
           @keyup.enter="openExtractDialog()"
@@ -313,6 +337,8 @@ export default {
           v-on:click="removeThis(true)" 
           @keyup.enter="removeThis(true)"
           tabindex="0"
+          @focus="removeHover = true, removeHighlight(true, $event)"
+          @blur="removeHover = false, removeHighlight(false, $event)"
           @mouseover="removeHover = true, removeHighlight(true, $event)"
           @mouseout="removeHover = false, removeHighlight(false, $event)">
           <tooltip-component 
@@ -368,7 +394,7 @@ export default {
   border-radius: 4px;
   position: relative;
   flex: 1 100%;
-  transition: background-color .2s ease;
+  transition: background-color .5s ease;
 
   &-heading {
     display: block;
@@ -379,6 +405,10 @@ export default {
 
   &-label {
     margin-right: 40px;
+  }
+
+  &-type {
+    cursor: pointer;
   }
 
   &-arrow {
@@ -452,6 +482,10 @@ export default {
     &::before {
       vertical-align: sub;
     }
+  }
+
+  &.is-highlighted {
+    background-color: @sec;
   }
 }
 </style>

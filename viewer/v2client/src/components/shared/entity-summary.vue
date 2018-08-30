@@ -46,10 +46,10 @@ export default {
       return this.$store.getters.settings;
     },
     isLibrisResource() {
-      if (!this.focusData.hasOwnProperty('@id')) {
-        return true;
-      }
-      return this.focusData['@id'].startsWith(this.settings.apiPath);
+      // if (!this.focusData.hasOwnProperty('@id')) {
+      //   return true;
+      // }
+      return StringUtil.isLibrisResourceUri(this.focusData['@id'], this.settings.apiPath);
     },
     infoWithKeys() {
       const info = this.getSummary.info.concat(this.getSummary.sub);
@@ -124,12 +124,6 @@ export default {
       this.$dispatch('extract-item');
     },
   },
-  components: {
-  },
-  watch: {
-  },
-  mounted() { 
-  },
 };
 </script>
 
@@ -160,6 +154,7 @@ export default {
         :to="this.routerPath" 
         :title="header.join(', ')"
         :target="shouldOpenTab ? '_blank' : '' ">
+        <i v-if="shouldOpenTab" class="EntitySummary-icon fa fa-external-link" aria-hidden="true"></i>
         {{ header.join(', ') }}
       </router-link>
       <a class="EntitySummary-titleLink"
@@ -167,6 +162,7 @@ export default {
         :href="focusData['@id']" 
         :title="header.join(', ')"
         :target="shouldOpenTab ? '_blank' : '' ">
+        <i v-if="shouldOpenTab" class="EntitySummary-icon fa fa-external-link" aria-hidden="true"></i>
         {{ header.join(', ') }}
       </a>
       
@@ -305,6 +301,10 @@ export default {
 
   &-idInfo {
     font-weight: normal;
+  }
+
+  &-icon {
+    vertical-align: middle;
   }
 }
 </style>

@@ -1,36 +1,26 @@
 <script>
-import * as DataUtil from '../../utils/data';
-import * as httpUtil from '../../utils/http';
 import * as LayoutUtil from '../../utils/layout';
 import * as _ from 'lodash';
 import { mapGetters } from 'vuex';
 import ModalComponent from '@/components/shared/modal-component.vue';
 
-//import { changeStatus, changeNotification } from '../../vuex/actions';
-//import { getVocabulary, getSettings, getDisplayDefinitions, getEditorData } from '../../vuex/getters';
-
 export default {
   name: 'marc-preview',
   data() {
     return {
-      marcObj: {},
-      dataLoaded: false,
-      error: false,
-      active : false,
     }
   },
   props: {
-    openPreview: false
+    marcObj: {
+      type: Object,
+      default: null,
+    },
+    error: {
+      type: Error,
+      default: null,
+    }
   },
   watch: {
-    openPreview: function () {
-      if (this.openPreview) {
-        this.active = true;
-        this.$emit('open-marc');
-        this.convertItemToMarc();
-        this.showMarc();
-      }
-    },
     'inspector.event'(val, oldVal) {
       if (val.name === 'form-control') {
         switch(val.value) {
@@ -46,22 +36,11 @@ export default {
   },
   methods: {
     hide() {
-      if (!this.active) return;
-      this.active = false;
-      this.$emit('close-marc');
-      LayoutUtil.scrollLock(false);
+      this.$emit('hide');
       this.$store.dispatch('setStatusValue', { 
         property: 'keybindState', 
         value: 'overview' 
       });
-    },
-    showMarc() {
-      LayoutUtil.scrollLock(true);
-      this.$store.dispatch('setStatusValue', { 
-        property: 'keybindState', 
-        value: 'marc-preview'
-      });
-      this.active = true;
     },
     isObject(o) {
       return _.isObject(o);
@@ -76,30 +55,6 @@ export default {
       }
       return val;
     },
-    convertItemToMarc() {
-      this.dataLoaded = false;
-      this.error = false;
-      const editorObj = DataUtil.getMergedItems(
-        DataUtil.removeNullValues(this.inspector.data.record),
-        DataUtil.removeNullValues(this.inspector.data.mainEntity),
-        DataUtil.removeNullValues(this.inspector.data.work),
-        this.inspector.data.quoted
-      );
-      const apiPath = this.settings.apiPath;
-      httpUtil.post({ 
-        url: `${apiPath}/_convert`,
-        accept: 'application/x-marc-json',
-        token: this.user.token,
-      }, editorObj).then((result) => {
-        this.marcObj = result;
-        this.dataLoaded = true;
-      }, (error) => {
-        this.marcObj = {};
-        this.error = true;
-        console.warn('Couldn\'t convert to marc.', error);
-      });
-
-    },
   },
   computed: {
     ...mapGetters([
@@ -109,22 +64,23 @@ export default {
       'settings',
       'status',
     ]),
-    isActive() {
-      return this.status.showMarc;
-    },
   },
   components: {
     'modal-component': ModalComponent,
   },
   mounted() { 
     this.$nextTick(() => {
+      this.$store.dispatch('setStatusValue', { 
+        property: 'keybindState', 
+        value: 'marc-preview'
+      });
     });
   },
 };
 </script>
 
 <template>
-  <modal-component v-if="active" class="" @close="hide">
+  <modal-component class="" @close="hide">
     <template slot="modal-header">
       {{ "Preview MARC21" | translatePhrase }}
       <span class="ModalComponent-windowControl">
@@ -135,17 +91,17 @@ export default {
     <template slot="modal-body">
       <div class="MarcPreview">
         <div class="MarcPreview-body">
-          <div class="MarcPreview-status" v-show="!dataLoaded">
-            <p v-show="!error" >
+          <div class="MarcPreview-status" v-if="marcObj === null">
+            <p v-show="error === null" >
               {{ "Loading marc" | translatePhrase }}...<br>
               <i class="fa fa-circle-o-notch fa-spin"></i>
             </p>
-            <p v-show="error" class="MarcPreview-error">
+            <p v-show="error !== null" class="MarcPreview-error">
               {{ "Something went wrong" | translatePhrase }}...
             </p>
           </div>
 
-          <table class="MarcPreview-table" v-show="dataLoaded">
+          <table class="MarcPreview-table" v-if="marcObj !== null">
             <thead>
               <th>Tag</th>
               <th>I1</th>

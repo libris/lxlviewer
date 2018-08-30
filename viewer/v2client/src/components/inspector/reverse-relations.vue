@@ -94,6 +94,17 @@ export default {
     'relations-list': RelationsList,
   },
   watch: {
+    'inspector.event'(val, oldVal) {
+      if (val.name === 'form-control') {
+        switch (val.value) { 
+          case 'open-instances-window':
+            this.showRelationsList();
+            break;
+          default:
+            return;
+        }
+      }
+    },
     recordId(newVal) {
       if (newVal !== 'https://id.kb.se/TEMPID') {
         this.getRelationsInfo();
@@ -102,8 +113,11 @@ export default {
         this.relationInfo = [];
       }
     },
+    numberOfRelations: function (val) {
+      this.numberOfRelations = val;
+    }
   },
-  mounted() { // Ready method is deprecated in 2.0, switch to "mounted"
+  mounted() {
     this.$nextTick(() => {
       this.getRelationsInfo();
     });
@@ -118,17 +132,24 @@ export default {
         {{ "Instantiations" | translatePhrase }}: {{numberOfRelations | translatePhrase}}
       </span>
 
-      <button class="ReverseRelations-button InstancesList-btn btn btn-primary" @click="showRelationsList()" v-if="!inspector.status.editing && this.numberOfRelations > 0"
+      <button class="ReverseRelations-button InstancesList-btn btn btn-primary" 
+        @click="showRelationsList()" 
+        v-if="!inspector.status.editing && this.numberOfRelations > 0"
         :checking-instances="checkingRelations">
         {{"Show instantiations" | translatePhrase}}
       </button>
-      <relations-list v-if="relationsListOpen" :relations-list="relationInfo" @close="hideRelationsList()"></relations-list>
+      <relations-list 
+        v-if="relationsListOpen" 
+        :relations-list="relationInfo" 
+        @close="hideRelationsList()"></relations-list>
     </div>
       
     <div class="ReverseRelations-number" v-if="recordType === 'Instance'">
       <i class="fa fa-university" aria-hidden="true"></i>
       <span class="ReverseRelations-label">
-        {{ "Libraries" | translatePhrase }}: {{numberOfRelations || 'Error' | translatePhrase}}
+        {{ "Libraries" | translatePhrase }}: 
+        <span v-if="isNaN(numberOfRelations)"> {{'Error' | translatePhrase}}</span>
+        <span v-else> {{numberOfRelations}} </span>
       </span>
       <create-item-button class="ReverseRelations-button"
         v-if="user.isLoggedIn && user.getPermissions().registrant" 

@@ -86,7 +86,7 @@ export default {
            totalResults += result.totalResults[db];
         }
       }
-      const convertedList = { totalItems: totalResults, items: []};
+      const convertedList = { totalItems: totalResults, items: [], first: {'@id': this.query } };
       _.each(result.items, (item) => {
         const convertedItem = RecordUtil.getMainEntity(item.data['@graph']);
         convertedList.items.push(convertedItem);
@@ -172,6 +172,7 @@ export default {
           v-show="!searchInProgress"
           :import-data="importData" 
           :result="result" 
+          :query="query"
           v-if="result.totalItems > -1"></search-result>
       </div>
     </div>

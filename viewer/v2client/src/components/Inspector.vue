@@ -11,14 +11,29 @@ import EntityForm from '@/components/inspector/entity-form';
 import Toolbar from '@/components/inspector/toolbar';
 import EntityChangelog from '@/components/inspector/entity-changelog';
 import EntityHeader from '@/components/inspector/entity-header';
+import Breadcrumb from '@/components/inspector/breadcrumb';
 import ModalComponent from '@/components/shared/modal-component';
 import ReverseRelations from '@/components/inspector/reverse-relations';
+import MarcPreview from '@/components/inspector/marc-preview';
 import { mapGetters } from 'vuex';
 
 export default {
   name: 'Inspector',
   beforeRouteLeave (to, from , next) {
-    if (this.inspector.status.editing && this.inspector.status.unsavedChanges && !this.inspector.status.saving) {
+    if (this.shouldWarnOnUnload()) {
+      const confString = StringUtil.getUiPhraseByLang('You have unsaved changes. Do you want to leave the page?', this.settings.language);
+      const answer = window.confirm(confString);
+      if (answer) {
+        next();
+      } else {
+        next(false);
+      }
+    } else {
+      next();
+    }
+  },
+  beforeRouteUpdate (to, from, next) {
+  if (this.shouldWarnOnUnload()) {
       const confString = StringUtil.getUiPhraseByLang('You have unsaved changes. Do you want to leave the page?', this.settings.language);
       const answer = window.confirm(confString);
       if (answer) {
@@ -37,18 +52,32 @@ export default {
       postLoaded: false,
       modalOpen: false,
       removeInProgress: false,
+      loadFailure: null,
+      marcPreview: {
+        data: null,
+        active: false,
+        error: null
+      },
     }
   },
   methods: {
+    shouldWarnOnUnload() {
+      return (
+        (this.$route.name === 'Inspector' || this.$route.name === 'NewDocument') &&
+        this.inspector.status.editing &&
+        this.unsavedChanges &&
+        !this.inspector.status.saving
+      );
+    },
     initializeWarnBeforeUnload() {
       window.addEventListener("beforeunload", (e) => {
-        if (!this.inspector.status.editing || !this.inspector.status.unsavedChanges || this.inspector.status.saving) {
+        if (this.shouldWarnOnUnload()) {
+          const confirmationMessage = StringUtil.getUiPhraseByLang('You have unsaved changes. Do you want to leave the page?', this.settings.language);
+          (e || window.event).returnValue = confirmationMessage; //Gecko + IE
+          return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
+        } else {
           return undefined;
         }
-        const confirmationMessage = StringUtil.getUiPhraseByLang('You have unsaved changes. Do you want to leave the page?', this.settings.language);
-
-        (e || window.event).returnValue = confirmationMessage; //Gecko + IE
-        return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
       });
     },
     initJsonOutput() {
@@ -68,12 +97,25 @@ export default {
         toolbarTestEl.style.width = `${width}px`;
       }
     },
+    openMarcPreview() {
+      this.marcPreview.active = true;
+      RecordUtil.convertToMarc(this.inspector.data, this.settings, this.user).then((result) => {
+        this.marcPreview.data = result;
+      }, (error) => {
+        this.marcPreview.data = null;
+        this.marcPreview.error = error;
+      });
+    },
     fetchDocument() {
       const randomHash = md5(new Date());
       const fetchUrl = `${this.settings.apiPath}/${this.documentId}/data.jsonld?${randomHash}`;
       fetch(fetchUrl).then((response) => {
         if (response.status === 200) {
           return response.json();
+        } else if (response.status === 404 || response.status === 410) {
+          this.loadFailure = {
+            status: response.status,
+          };
         } else {
           this.$store.dispatch('pushNotification', { 
             color: 'red', 
@@ -86,10 +128,12 @@ export default {
           message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)}. ${error}` 
         });
       }).then((result) => {
-        this.result = result;
-        const splitFetched = RecordUtil.splitJson(result);
-        this.$store.dispatch('setInspectorData', splitFetched);
-        this.onPostLoaded();
+        if (typeof result !== 'undefined') {
+          this.result = result;
+          const splitFetched = RecordUtil.splitJson(result);
+          this.$store.dispatch('setInspectorData', splitFetched);
+          this.onPostLoaded();
+        }
       });
     },
     initializeRecord() {
@@ -117,7 +161,7 @@ export default {
       HttpUtil._delete({ url, activeSigel: this.user.settings.activeSigel, token: this.user.token }).then((result) => {
         this.$store.dispatch('pushNotification', { color: 'green', message: `${StringUtil.getUiPhraseByLang('The post was deleted', this.settings.language)}!` });
         // Force reload
-        this.$router.push({ path: '/' });
+        this.$router.go(-1);
       }, (error) => {
         if (error.status === 403) {
           this.$store.dispatch('pushNotification', { color: 'red', message: `${StringUtil.getUiPhraseByLang('Forbidden', this.settings.language)} - ${StringUtil.getUiPhraseByLang('This entity may have active links', this.settings.language)} - ${error.statusText}` });
@@ -146,7 +190,6 @@ export default {
     onPostLoaded() {
       this.$store.dispatch('setInsertData', '');
       this.$store.dispatch('setOriginalData', this.inspector.data);
-      this.$store.dispatch('setInspectorStatusValue', { property: 'unsavedChanges', value: false });
       this.$store.dispatch('flushChangeHistory');
       this.postLoaded = true;
     },
@@ -161,7 +204,7 @@ export default {
     },
     cancelEditing() {
       if (!this.inspector.status.isNew) {
-        if (this.inspector.status.editing && this.inspector.status.unsavedChanges) {
+        if (this.shouldWarnOnUnload()) {
           const confString = StringUtil.getUiPhraseByLang('You have unsaved changes. Do you want to cancel?', this.settings.language);
           const answer = window.confirm(confString);
           if (answer) {
@@ -222,7 +265,7 @@ export default {
     },
     duplicateItem() {
       if (!this.status.inEdit && !this.isItem) {
-        const duplicate = RecordUtil.prepareDuplicateFor(this.inspector.data, this.user);
+        const duplicate = RecordUtil.prepareDuplicateFor(this.inspector.data, this.user, this.settings);
         this.$store.dispatch('setInsertData', duplicate);
         this.$router.push({ path: '/new' });
       }
@@ -251,7 +294,7 @@ export default {
         url: opts.url, 
         ETag: opts.ETag, 
         activeSigel: this.user.settings.activeSigel, 
-        token: this.user.token 
+        token: this.user.token
       }, obj).then((result) => {
         if (!this.documentId) {
           const location = `${result.getResponseHeader('Location')}`;
@@ -267,11 +310,22 @@ export default {
           }
         }
         this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
-        this.$store.dispatch('setInspectorStatusValue', { property: 'unsavedChanges', value: false });
         this.$store.dispatch('setInspectorStatusValue', { property: 'isNew', value: false });
       }, (error) => {
         this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
-        this.$store.dispatch('pushNotification', { color: 'red', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error}` });
+        const errorBase = StringUtil.getUiPhraseByLang('Save failed', this.settings.language);
+        let errorMessage = '';
+        switch(error.status) {
+          case 412:
+            errorMessage = `${StringUtil.getUiPhraseByLang('The resource has been modified by another user', this.settings.language)}`;
+            break;
+          case 401:
+            errorMessage = `${StringUtil.getUiPhraseByLang('Your login has expired', this.settings.language)}`;
+            break;
+          default:
+            errorMessage = `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error.status}: ${StringUtil.getUiPhraseByLang(error.statusText, this.settings.language)}`;
+        }
+        this.$store.dispatch('pushNotification', { color: 'red', message: `${errorBase}. ${errorMessage}.` });
       });
     },
   },
@@ -309,6 +363,10 @@ export default {
             break;
           case 'save-record-done':
             this.saveItem(true);
+            break;
+          case 'open-marc-preview':
+            this.openMarcPreview();
+            break;
           default:
             return;
         }
@@ -326,6 +384,16 @@ export default {
       'settings',
       'status',
     ]),
+    unsavedChanges() {
+      if (this.$route.name === 'NewDocument') {
+        return true;
+      } else if (this.$route.name === 'Inspector') {
+        const original = JSON.stringify(this.inspector.originalData);
+        const current = JSON.stringify(this.inspector.data);
+        return original !== current;
+      }
+      return false;
+    },
     isItem() {
       return this.inspector.data.mainEntity['@type'] === 'Item';
     },
@@ -343,9 +411,12 @@ export default {
     'toolbar': Toolbar,
     'entity-changelog': EntityChangelog,
     'reverse-relations': ReverseRelations,
+    'breadcrumb': Breadcrumb,
+    'marc-preview': MarcPreview,
   },
   mounted() {
     this.$nextTick(() => {
+
       this.$store.dispatch('setStatusValue', { 
         property: 'keybindState', 
         value: 'overview' 
@@ -366,12 +437,25 @@ export default {
 </script>
 <template>
   <div class="Inspector" ref="Inspector">
-    <div v-if="!postLoaded" class="text-center">
+    <div v-if="!postLoaded && !loadFailure" class="text-center">
       <i class="fa fa-circle-o-notch fa-4x fa-spin"></i><br/>
       <h3>{{ 'Loading document' | translatePhrase | capitalize }}</h3>
     </div>
+    <div v-if="!postLoaded && loadFailure">
+      <h2>{{loadFailure.status}}</h2>
+      <p v-if="loadFailure.status === 404">
+        {{ 'The record' | translatePhrase }} <code>{{documentId}}</code> {{ 'could not be found' | translatePhrase}}.
+      </p>
+      <p v-if="loadFailure.status === 410">
+        {{ 'The record' | translatePhrase }} <code>{{documentId}}</code> {{ 'has been removed' | translatePhrase}}.
+      </p>
+      <router-link to="/">
+        {{ 'Back to home page' | translatePhrase }}
+      </router-link>
+    </div>
     <div class="row">
       <div class="col-sm-12 col-md-11">
+        <breadcrumb v-if="postLoaded && this.inspector.breadcrumb.length !== 0"></breadcrumb>
         <div v-if="postLoaded" class="Inspector-entity panel panel-default">
           <div class="panel-body">
             <h1 class="Inspector-title" :title="recordType">
@@ -380,10 +464,8 @@ export default {
             </h1>
 
             <div class="Inspector-header">
-
               <div class="Inspector-admin">
                 <entity-changelog></entity-changelog>
-
                 <div class="Inspector-adminMeta">
                   <a class="Inspector-adminMetaLink" tabindex="0"
                     v-show="inspector.status.focus === 'record'" 
@@ -421,6 +503,7 @@ export default {
         </div>
       </div>
     </div>
+    <marc-preview @hide="marcPreview.active = false" :error="marcPreview.error" :marc-obj="marcPreview.data" v-if="marcPreview.active"></marc-preview>
     <modal-component title="Error" modal-type="danger" @close="closeRemoveModal" class="RemovePostModal" 
       v-if="removeInProgress">
       <div slot="modal-header" class="RemovePostModal-header">
@@ -445,7 +528,6 @@ export default {
 <style lang="less">
 
 .Inspector {
-
   &-header {
     display: flex;
     flex-direction: row
@@ -498,6 +580,5 @@ export default {
     text-align: center;
   }
 }
-
 
 </style>

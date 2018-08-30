@@ -144,6 +144,7 @@ export function getItemObject(itemOf, heldBy, instance) {
             'label': [''],
           },
           'physicalLocation': [''],
+          'shelfLabel': '',
           'shelfControlNumber': '',
         },
       ],
@@ -151,8 +152,8 @@ export function getItemObject(itemOf, heldBy, instance) {
         {
           '@type': 'marc:TextualHoldingsBasicBibliographicUnit',
           'marc:textualString': '',
-          'marc:holdingsLevel': ' ',
-          'marc:typeOfNotation': ' '
+          'marc:cataloguersNote': [''],
+          'marc:publicNote': ['']
         }
       ]
     },
@@ -201,7 +202,28 @@ export function getObjectAsRecord(mainEntity, record = {}) {
   return newObj;
 }
 
-export function prepareDuplicateFor(inspectorData, user) {
+export function convertToMarc(inspectorData, settings, user) {
+  const editorObj = DataUtil.getMergedItems(
+    DataUtil.removeNullValues(inspectorData.record),
+    DataUtil.removeNullValues(inspectorData.mainEntity),
+    DataUtil.removeNullValues(inspectorData.work),
+    inspectorData.quoted
+  );
+  const apiPath = settings.apiPath;
+  return new Promise((resolve, reject) => {
+    httpUtil.post({ 
+      url: `${apiPath}/_convert`,
+      accept: 'application/x-marc-json',
+      token: user.token,
+    }, editorObj).then((result) => {
+      resolve(result);
+    }, (error) => {
+      reject(Error('Couldn\'t convert to marc.', error));
+    });
+  });
+}
+
+export function prepareDuplicateFor(inspectorData, user, settings) {
   // Removes fields that we do not want to import or copy
   const newData = _.cloneDeep(inspectorData);
   if (!newData.hasOwnProperty('quoted')) {
@@ -209,26 +231,26 @@ export function prepareDuplicateFor(inspectorData, user) {
   }
   const oldBaseId = inspectorData.record['@id'];
   const newBaseId = 'https://id.kb.se/TEMPID';
+
+  // Update descriptionCreator to this organization
   newData.record.descriptionCreator = { '@id': `https://libris.kb.se/library/${user.settings.activeSigel}` };
-  if (newData.record.hasOwnProperty('controlNumber')) {
-    delete newData.record.controlNumber;
-  }
-  if (newData.record.hasOwnProperty('descriptionUpgrader')) {
-    delete newData.record.descriptionUpgrader;
-  }
+
+  // Remove properties that should not be included in the duplicate
+  _.each(settings.removeOnDuplication, (property) => {
+    _.unset(newData, property);
+  });
+
+  // Replace @id and internal @id references
   if (newData.mainEntity) {
     newData.mainEntity['@id'] =  newData.mainEntity['@id'].replace(oldBaseId, newBaseId);
-    delete newData.mainEntity.sameAs;
   }
   if (newData.record) {
     newData.record['@id'] =  newData.record['@id'].replace(oldBaseId, newBaseId);
     newData.record.mainEntity['@id'] = newData.record.mainEntity['@id'].replace(oldBaseId, newBaseId);
-    delete newData.record.sameAs;
   }
   if (newData.work) {
     newData.work['@id'] = newData.work['@id'].replace(oldBaseId, newBaseId);
     newData.mainEntity.instanceOf = { '@id': newData.work['@id'] };
-    delete newData.work.sameAs;
     newData.quoted[newData.work['@id']] = newData.work;
   }
 
@@ -260,44 +282,3 @@ export function getNewCopy(id) {
   });
 }
 
-export function getEmptyForm(type, vocab, display, context) {
-  // TODO: Is this used?
-  console.log('Type', type);
-  const formObj = { '@type': type };
-  let inputKeys = DisplayUtil.getProperties(type, 'cards', display);
-  if (inputKeys.length === 0) {
-    const baseClasses = VocabUtil.getBaseClassesFromArray(
-      type,
-      vocab,
-    );
-    console.log('baseClasses for', type, 'is', JSON.stringify(baseClasses));
-    for (const baseClass of baseClasses) {
-      inputKeys = DisplayUtil.getProperties(
-        StringUtil.getCompactUri(baseClass, context),
-        'cards',
-        display,
-      );
-      if (inputKeys.length > 0) {
-        break;
-      }
-    }
-    if (inputKeys.length === 0) {
-      inputKeys = DisplayUtil.getProperties('Resource', 'cards', display);
-    }
-  }
-  inputKeys = ['@type'].concat(inputKeys);
-  for (const inputKey of inputKeys) {
-    if (inputKey === '@type') {
-      formObj[inputKey] = type;
-    } else {
-      const keyRange = VocabUtil.getRange(type, inputKey, vocab, context);
-      if (keyRange.length === 0 || keyRange[0].split(':')[1] === 'Literal') {
-        formObj[inputKey] = '';
-      } else {
-        formObj[inputKey] = [];
-      }
-    }
-  }
-  console.log('Form obj', JSON.stringify(formObj));
-  return formObj;
-}

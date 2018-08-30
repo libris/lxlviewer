@@ -16,7 +16,7 @@ export default {
     importThis() {
       if (this.user.isLoggedIn) {
         const original = RecordUtil.splitJson(this.importItem);
-        const duplicate = RecordUtil.prepareDuplicateFor(original, this.user);
+        const duplicate = RecordUtil.prepareDuplicateFor(original, this.user, this.settings);
         this.$store.dispatch('setInsertData', duplicate);
         this.$router.push({ path: '/new' });
       } else {
