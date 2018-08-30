@@ -6,7 +6,7 @@ tags:
 - editor
 --- 
 
-UNDER ARBETE (Uppdaterad 2018-08-27)
+UNDER ARBETE (Uppdaterad 2018-08-28)
 
 ## Tryckt seriell resurs
 
