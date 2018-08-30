@@ -6,7 +6,7 @@ tags:
 - editor
 ---
 
-*Under arbete. Senast uppdaterad 2018-06-15.*
+UNDER ARBETE - UPPDATERAS KONTINUERLIGT (Uppdaterad 2018-08-27)
 
 ## Lägg till kontrollerade men ej auktoriserade ämnesord
 
@@ -19,10 +19,10 @@ Utgår katalogiseringen från en mall finns egenskapen Ämne redan i mallen inom
 
 * Klicka på **+ikonen** intill egenskapen Ämne, pop up-rutan för **Lägg till entitet** öppnas. Välj typen **Allmänt ämnesord** i rullgardinsmenyn **Skapa lokal entitet**.
 
-* Klicka på **+ikonen** inom det tillagda fältet för Allmänt ämnesord, pop up-rutan **Lägg till fält under** öppnas. Sök efter och välj fältet **Föredragen benämning** (prefLabel). Skriv in den aktuella termen.
+* Klicka på **+ikonen** inom den tillagda typen Allmänt ämnesord, pop up-rutan **Lägg till fält under** öppnas. Sök efter och välj **Föredragen benämning** (prefLabel). Skriv in den aktuella termen.
 
-* Klicka på **+ikonen** inom det tillagda fältet för Allmänt ämnesord, pop up-rutan **Lägg till fält under** öppnas. Sök efter och välj fältet **Termlista** (inScheme). 
+* Klicka på **+ikonen** inom den tillagda typen Allmänt ämnesord, pop up-rutan **Lägg till fält under** öppnas. Sök efter och välj **Termlista** (inScheme). 
 
 * Klicka på **+ikonen** intill Termlista, pop up-rutan för **Lägg till entitet** öppnas. Sök efter listkod (t.ex. kao) och Lägg till. Koden länkas till verksinformationen.
 
-* Upprepa punkterna ovan för att lägga till fler ämnesord.
+Upprepa punkterna ovan för att lägga till fler ämnesord.
