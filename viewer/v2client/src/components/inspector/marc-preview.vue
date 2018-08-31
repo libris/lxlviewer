@@ -1,8 +1,10 @@
 <script>
-import * as LayoutUtil from '../../utils/layout';
+import * as DataUtil from '@/utils/data';
+import * as httpUtil from '@/utils/http';
+import * as LayoutUtil from '@/utils/layout';
 import * as _ from 'lodash';
 import { mapGetters } from 'vuex';
-import ModalComponent from '@/components/shared/modal-component.vue';
+import PanelComponent from '@/components/shared/panel-component.vue';
 
 export default {
   name: 'marc-preview',
@@ -66,7 +68,7 @@ export default {
     ]),
   },
   components: {
-    'modal-component': ModalComponent,
+    'panel-component': PanelComponent,
   },
   mounted() { 
     this.$nextTick(() => {
@@ -80,15 +82,11 @@ export default {
 </script>
 
 <template>
-  <modal-component class="" @close="hide">
-    <template slot="modal-header">
-      {{ "Preview MARC21" | translatePhrase }}
-      <span class="ModalComponent-windowControl">
-        <i @click="hide" class="fa fa-close"></i>
-      </span>
-    </template>
-    
-    <template slot="modal-body">
+  <panel-component class=""
+    @close="hide" 
+    origin="Preview MARC21"
+    title="Preview MARC21">
+    <template slot="panel-body">
       <div class="MarcPreview">
         <div class="MarcPreview-body">
           <div class="MarcPreview-status" v-if="marcObj === null">
@@ -134,7 +132,7 @@ export default {
        
       </div>
     </template>
-  </modal-component>
+  </panel-component>
 </template>
 
 <style lang="less">
@@ -171,7 +169,7 @@ export default {
 
     td, th {
       border: 1px solid #ccc;
-      padding: 5px;
+      padding: 10px;
       .sub-key {
         font-weight: bold;
         &::before {

@@ -40,7 +40,6 @@ export default {
 <style lang="less">
 
 .Article {
-  margin-top: 15vh;
 
   &-featuredImg {
     width: 100%;

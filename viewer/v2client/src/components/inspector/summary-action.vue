@@ -10,6 +10,7 @@ export default {
       text: 'button',
       inspectAction: false,
     },
+    disabled: true,
   },
   data() {
     return {
@@ -44,9 +45,32 @@ export default {
 };
 </script>
 
+
 <template>
-  <div class="SummaryAction action-container">
-    <button class="SummaryAction-button"
+  <div class="SummaryAction">
+     <!-- This component now renders as an icon button or a regular button depending on the action event -->
+    <div v-if="options.event === 'add-entity'" class="SummaryAction-icon action-container">
+      <i v-show="disabled" class="fa fa-check-circle icon icon--lg is-disabled" :title="'Added' | translatePhrase"></i>
+      <i 
+        v-show="!disabled && options.styling === 'brand'"
+          class="fa fa-plus-circle icon icon--lg icon--primary"
+          @click="action()"
+          @keyup.enter="action()"
+          role="button"
+          tabindex="0"
+          :title="options.text | translatePhrase">
+        </i>
+        <i 
+          v-show="!disabled && options.styling == 'gray'"
+          class="fa fa-plus-circle icon icon--lg"
+          @click="action()"
+          @keyup.enter="action()"
+          tabindex="0"
+          role="button"
+          :title="options.text | translatePhrase">
+        </i>
+    </div>
+    <button v-else class="SummaryAction-button btn btn--sm"
       @click="action()"
       @keyup.enter="action()"
       :class="'SummaryAction-button--'+options.styling">
@@ -58,45 +82,13 @@ export default {
 <style lang="less">
 
 .SummaryAction {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 4px;
-  padding: 0.5em;
+  &-icon {
+    display: flex;
+    align-items: center;
+    width: 30px;
+  }
 
   &-button {
-    min-width: 90px;
-    padding: 3px 10px;
-    font-size: 12px;
-    font-size: 1.2rem;
-    line-height: 1.2;
-
-    &--brand {
-      color: @white;
-      background: @brand-primary;
-
-      &:hover {
-        background: lighten(@brand-primary, 5%);
-      }
-
-      &:active {
-        background: darken(@brand-primary, 5%);
-      }
-    }
-
-    &--gray {
-      color: @black;
-      background: @gray-light;
-
-      &:hover {
-        background: lighten(@gray-light, 5%);
-      }
-
-      &:active {
-        background: darken(@gray-light, 5%);
-      }
-    }
   }
 }
-
 </style>

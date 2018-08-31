@@ -57,6 +57,7 @@ export default {
     </li>
     <li class="ResultItem ResultItem--compact" v-else-if="!showDetailed">
       <h3 class="ResultItem-title" 
+        :class="{'ResultItem-title--imported' : isImport}"
         :title="header.join(', ')" 
         v-on:click="importThis()" 
         v-if="isImport">
@@ -74,7 +75,7 @@ export default {
           :href="focusData['@id']">{{ header.join(', ') }}
         </a>
       </h3>
-      <span class="ResultItem-category" :title="categorization.join(', ')">
+      <span class="ResultItem-category uppercaseHeading--light" :title="categorization.join(', ')">
         {{categorization.join(', ')}}
       </span>
     </li>
@@ -85,16 +86,18 @@ export default {
 .ResultItem {
   &--detailed {
     list-style: none;
-    margin-bottom: 0.5em;
+    margin-bottom: 15px;
     .panel-mixin(@neutral-color);
   }
 
   &--compact {
     display: flex;
+    align-items: center;
     margin: -1px 0 0 0;
     background-color: @white;
-    border: 1px solid #ccc;
-    padding: 0.4em 1em;
+    border: 1px solid @gray-light;
+    border-radius: 4px;
+    padding: 0.5em 1em;
     line-height: 1.2em;
 
     & .fa-external-link {
@@ -104,27 +107,32 @@ export default {
   }
 
   &-title {
+    font-size: 20px;
+    font-size: 2.0rem;
+    line-height: 1.3;
+    color: @brand-primary;
+    font-weight: 600;
     margin: 0px;
     display: inline-block;
     flex-basis: 50%;
     flex-grow: 1;
-    font-size: 20px;
-    font-size: 2.0rem;
-    font-weight: normal;
-    line-height: 1.3;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-  }
 
-  &-link {
-    color: @brand-primary;
+    &--imported {
+      cursor: pointer;
+      &:hover {
+        text-decoration: underline;
+        color: @link-hover-color;
+      }
+    }
   }
 
   &-category {
+    margin-left: 10px;
     display: inline-block;
     flex-basis: 30%;
-    font-size: 14px;
     text-align: right;
     white-space: nowrap;
     overflow: hidden;
