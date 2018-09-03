@@ -188,9 +188,9 @@ export default {
     overflow: hidden;
     position: absolute;
     top: auto;
-    bottom: 26px;
+    bottom: 28px;
     background-color: #F9F9F9;
-    padding: 5px  0;
+    padding: 0 0 5px 0;
     width: 100%;
     border: 1px solid @gray-light;
     border-radius: 10px;
@@ -223,7 +223,7 @@ export default {
 
   &-dropdownText {
     display: block;
-    padding: 5px;
+    padding: 5px 5px;
   }
 
   &-clear,
