@@ -589,44 +589,26 @@ export default {
                 <input class="EntityAdder-searchInput entity-search-keyword-input"
                   name="entityKeywordInput"
                   v-model="keyword"
+                  placeholder="Sök"
                   autofocus />
-                <filter-select
-                  v-if="!hasSingleRange" 
-                  :class-name="'js-createSelect'"
-                  :options="selectOptions"
-                  :options-all="getRange"
-                  :is-filter="false"
-                  :custom-placeholder="'Create local entity'"
-                  v-on:filter-selected="addType($event.value)"></filter-select>
+                  <filter-select class="EntityAdder-filterSearchInput FilterSelect--insideInput"
+                    :class-name="'js-filterSelect'"
+                    :custom-placeholder="'All types:'"
+                    :options="selectOptions"
+                    :options-all="getRange"
+                    :is-filter="true"
+                    :options-selected="''"
+                    v-on:filter-selected="setFilter($event, keyword)"></filter-select>
               </div>
             </div>
           </div>
-          <div class="EntityAdder-searchStatus search-status"
-            v-if="!loading && keyword.length === 0" >{{ "Start writing to begin search" | translatePhrase }}...</div>
-          <div class="EntityAdder-searchStatus search-status"
-            v-if="loading">
-            {{ "Searching" | translatePhrase }}...
-            <br><i class="EntityAdder-searchStatusIcon fa fa-circle-o-notch fa-spin"></i>
-          </div>
-          <div class="EntityAdder-searchStatus search-status"
-            v-if="!loading && searchResult.length === 0 && keyword.length > 0 && searchMade">
-            {{ "No results" | translatePhrase }}...
-          </div>
-          <modal-pagination class="ScrollMarginTop" v-if="!loading && searchResult.length > 0" @go="go" :numberOfPages="numberOfPages" :currentPage="currentPage"></modal-pagination>
-          <entity-search-list class="EntityAdder-searchResult"
-            v-if="!loading && keyword.length > 0" 
-            :path="path" 
-            :results="searchResult" 
-            :disabled-ids="alreadyAdded"
-            @add-item="addLinkedItem"></entity-search-list>
-          <modal-pagination v-if="!loading && searchResult.length > 0" @go="go" :numberOfPages="numberOfPages" :currentPage="currentPage"></modal-pagination>
+          <modal-pagination
+            v-if="!loading && searchResult.length > 0" 
+            @go="go" 
+            :numberOfPages="numberOfPages" 
+            :currentPage="currentPage">
+          </modal-pagination>
         </div>
-        <modal-pagination
-          v-if="!loading && searchResult.length > 0" 
-          @go="go" 
-          :numberOfPages="numberOfPages" 
-          :currentPage="currentPage">
-        </modal-pagination>
       </template>
       <template slot="panel-body">
         <entity-search-list class="EntityAdder-searchResult"
@@ -654,18 +636,14 @@ export default {
             v-if="hasSingleRange" 
             v-on:click="addEmpty(getFullRange[0])">{{ "Create local entity" | translatePhrase }}
           </button>
-          <select class="EntityAdder-createSelect customSelect"
-            v-model="selectedType" 
-            @change="addType(selectedType)" 
-            v-if="!hasSingleRange">
-            <option disabled value="">{{ "Create local entity" | translatePhrase }}</option>
-            <option 
-              v-for="(term, index) in getClassTree" 
-              :disabled="term.abstract" 
-              :value="term.id" 
-              :key="`${term.id}-${index}`" 
-              v-html="getFormattedSelectOption(term, settings, resources.vocab, resources.context)"></option>
-          </select>
+           <filter-select
+            v-if="!hasSingleRange" 
+            :class-name="'js-createSelect'"
+            :options="selectOptions"
+            :options-all="getRange"
+            :is-filter="false"
+            :custom-placeholder="'Create local entity:'"
+            v-on:filter-selected="addType($event.value)"></filter-select>
         </div>
       </template>
     </panel-component>
@@ -716,6 +694,7 @@ export default {
   &-controls {
     line-height: 1.2;
     width: 100%;
+    margin: 0 0 10px 0;
   }
 
   &-controlForm {
@@ -725,6 +704,8 @@ export default {
   }
 
   &-searchLabel {
+    margin: 8px 10px 0 0;
+    position: absolute;
   }
 
   &-search {
@@ -734,9 +715,42 @@ export default {
 
   &-searchInputContainer {
     flex: 1;
+    position: relative;
+  }
+
+  &-filterSearchInput {
+    margin-left: 5px;
+    position: absolute;
+    left: auto;
+    right: 5px;
+    width: 50%;
+    top: 6px;
   }
 
   &-searchInput {
+    width: 100%;
+    font-size: 20px;
+    font-size: 2rem;
+    line-height: 1.2;
+    border: 0;
+    border: 1px solid #C4C7CA;
+    background: #fff;
+    padding: 2px 5px;
+    height: 42px;
+    border-radius: 4px;
+    box-shadow: 0px 0px 0px 2px transparent;
+
+    &::placeholder, 
+    input::placeholder  {
+        font-style: italic;
+        color: @gray;
+    }
+
+    &:focus {
+        border: 1px solid @brand-primary;
+        outline: 0;
+        box-shadow: none;
+    }
   }
 
   &-searchSelect {
