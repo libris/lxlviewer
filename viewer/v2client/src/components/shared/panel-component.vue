@@ -269,6 +269,7 @@ export default {
   &-title {
     font-size: 18px;
     font-size: 1.8rem;
+    display: block;
     text-transform: uppercase;
     margin-top: 0;
   }
@@ -329,8 +330,5 @@ export default {
     }
   }
 }
-
-
-
 
 </style>
