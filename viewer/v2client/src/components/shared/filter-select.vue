@@ -126,24 +126,26 @@ export default {
     <ul class="FilterSelect-dropdown js-filterSelectDropdown"
       :class="{'is-visible': filterVisible}">
       <li class="FilterSelect-dropdownItem"
-        tabindex="0"
         @click="selectOption"
-        @keypress.enter="selectOption"
+        @keyup.enter="selectOption"
         v-for="option in options"
         :key="option.key">
         <span class="FilterSelect-dropdownText" 
+          tabindex="0"
           :data-filter="option.value"
           :data-key="option.key">{{option.label}}</span>
       </li>
     </ul>
     <i tabindex="0" 
       class="fa FilterSelect-open"
-      :class="{'fa-angle-up': filterVisible, 'fa-angle-down': !filterVisible}"
-      @click="filterVisible = !filterVisible"></i>
+      :class="{'fa-angle-down': filterVisible, 'fa-angle-up': !filterVisible}"
+      @click="filterVisible = !filterVisible"
+      @keyup.enter="filterVisible = !filterVisible"></i>
     <i v-if="isFilter" 
       tabindex="0"
       class="fa fa-close FilterSelect-clear"
-      @click="clear()"></i>
+      @click="clear()"
+      @keyup.enter="clear()"></i>
   </div>
 </template>
 
@@ -153,21 +155,25 @@ export default {
   display: inline-block;
   font-weight: normal;
   width: 100%;
-  background-color: lighten(@bib-color, 2%);
 
   &-input {
     padding: 5px 40px 5px 10px;
     border: none;
     border-bottom: 1px solid #ddd;
     line-height: 1;
-    font-size: 12px;
-    font-size: 1.2rem;
-    color: #fff;
+    font-size: 16px;
+    font-size: 1.6rem;
     width: 100%;
-    background-color: lighten(@bib-color, 2%);
+    height: 30px;
+    background-color: #fff;
+    border: 1px solid @gray-light;
+    border-radius: 5px;
+    z-index: 2;
+    position: relative;
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.1);
 
     &::placeholder {
-      color: #fff;
+      color: #000;
     }
 
     &:focus::placeholder {
@@ -181,19 +187,25 @@ export default {
     opacity: 0;
     overflow: hidden;
     position: absolute;
-    background-color: #fff;
-    padding: 0;
+    top: auto;
+    bottom: 26px;
+    background-color: #F9F9F9;
+    padding: 5px  0;
     width: 100%;
-    border: 0px solid lighten(@bib-color, 2%);
+    border: 1px solid @gray-light;
+    border-radius: 10px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
     z-index: 1;
     transition: opacity 0.5s;
+    box-shadow: 0 4px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.1);
 
     &.is-visible {
       height: auto;
-      max-height: 600px;
+      max-height: 400px;
       opacity: 1;
       overflow-y: scroll;
-      border: 1px solid lighten(@bib-color, 2%);
+      border: 1px solid @gray-light;
     }
   }
 
@@ -201,9 +213,10 @@ export default {
     text-decoration: none;
     display: block;
     cursor: pointer;
+    padding: 0 5px;
 
     &:hover {
-      background-color: lighten(@bib-color, 2%);
+      background-color: @gray-light;
       color: #fff;
     }
   }
@@ -216,10 +229,11 @@ export default {
   &-clear,
   &-open {
     position: absolute;
-    top: 6px;
-    color: #fff;
+    top: 10px;
+    color: #000;
     right: 24px;
     cursor: pointer;
+    z-index: 3;
   }
 
   &-open {
@@ -227,7 +241,7 @@ export default {
     font-size: 1.8rem;
     font-weight: 700;
     right: 8px;
-    top: 4px;
+    top: 6px;
   }
 }
 </style>

@@ -100,7 +100,7 @@ export default {
 <style lang="less">
 
 .ModalPagination {
-  margin: 0 0 15px 0;
+  margin: 10px 0;
 
   &-list {
     display: flex;

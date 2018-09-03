@@ -590,43 +590,16 @@ export default {
                   name="entityKeywordInput"
                   v-model="keyword"
                   autofocus />
-                <filter-select
-                  v-if="!hasSingleRange" 
-                  :class-name="'js-createSelect'"
-                  :options="selectOptions"
-                  :options-all="getRange"
-                  :is-filter="false"
-                  :custom-placeholder="'Create local entity'"
-                  v-on:filter-selected="addType($event.value)"></filter-select>
               </div>
             </div>
           </div>
-          <div class="EntityAdder-searchStatus search-status"
-            v-if="!loading && keyword.length === 0" >{{ "Start writing to begin search" | translatePhrase }}...</div>
-          <div class="EntityAdder-searchStatus search-status"
-            v-if="loading">
-            {{ "Searching" | translatePhrase }}...
-            <br><i class="EntityAdder-searchStatusIcon fa fa-circle-o-notch fa-spin"></i>
-          </div>
-          <div class="EntityAdder-searchStatus search-status"
-            v-if="!loading && searchResult.length === 0 && keyword.length > 0 && searchMade">
-            {{ "No results" | translatePhrase }}...
-          </div>
-          <modal-pagination class="ScrollMarginTop" v-if="!loading && searchResult.length > 0" @go="go" :numberOfPages="numberOfPages" :currentPage="currentPage"></modal-pagination>
-          <entity-search-list class="EntityAdder-searchResult"
-            v-if="!loading && keyword.length > 0" 
-            :path="path" 
-            :results="searchResult" 
-            :disabled-ids="alreadyAdded"
-            @add-item="addLinkedItem"></entity-search-list>
-          <modal-pagination v-if="!loading && searchResult.length > 0" @go="go" :numberOfPages="numberOfPages" :currentPage="currentPage"></modal-pagination>
+          <modal-pagination
+            v-if="!loading && searchResult.length > 0" 
+            @go="go" 
+            :numberOfPages="numberOfPages" 
+            :currentPage="currentPage">
+          </modal-pagination>
         </div>
-        <modal-pagination
-          v-if="!loading && searchResult.length > 0" 
-          @go="go" 
-          :numberOfPages="numberOfPages" 
-          :currentPage="currentPage">
-        </modal-pagination>
       </template>
       <template slot="panel-body">
         <entity-search-list class="EntityAdder-searchResult"
@@ -654,18 +627,14 @@ export default {
             v-if="hasSingleRange" 
             v-on:click="addEmpty(getFullRange[0])">{{ "Create local entity" | translatePhrase }}
           </button>
-          <select class="EntityAdder-createSelect customSelect"
-            v-model="selectedType" 
-            @change="addType(selectedType)" 
-            v-if="!hasSingleRange">
-            <option disabled value="">{{ "Create local entity" | translatePhrase }}</option>
-            <option 
-              v-for="(term, index) in getClassTree" 
-              :disabled="term.abstract" 
-              :value="term.id" 
-              :key="`${term.id}-${index}`" 
-              v-html="getFormattedSelectOption(term, settings, resources.vocab, resources.context)"></option>
-          </select>
+           <filter-select
+                  v-if="!hasSingleRange" 
+                  :class-name="'js-createSelect'"
+                  :options="selectOptions"
+                  :options-all="getRange"
+                  :is-filter="false"
+                  :custom-placeholder="'Create local entity:'"
+                  v-on:filter-selected="addType($event.value)"></filter-select>
         </div>
       </template>
     </panel-component>
@@ -716,6 +685,7 @@ export default {
   &-controls {
     line-height: 1.2;
     width: 100%;
+    margin: 0 0 10px 0;
   }
 
   &-controlForm {
@@ -725,6 +695,7 @@ export default {
   }
 
   &-searchLabel {
+    margin: 5px 10px 0 0;
   }
 
   &-search {
@@ -734,9 +705,11 @@ export default {
 
   &-searchInputContainer {
     flex: 1;
+    display: flex;
   }
 
   &-searchInput {
+    flex: 1;
   }
 
   &-searchSelect {
