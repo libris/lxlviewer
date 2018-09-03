@@ -36,9 +36,9 @@ export default {
 
 <template>
   <nav class="NavBar" aria-labelledby="service-name">
-    <div class="container">
+    <div class="NavBar-container container">
       <div class="row">
-        <div class="col-xs-12 col-md-4 col-lg-5">
+        <div class="col-xs-12 col-sm-5">
           <div class="NavBar-brand" role="banner">
             <router-link to="/" class="NavBar-brandLink">
               <img class="NavBar-brandLogo" src="~kungbib-styles/dist/assets/kb_logo_black.svg" alt="Kungliga Bibliotekets logotyp">
@@ -52,29 +52,20 @@ export default {
           </div>
         </div>
 
-        <div class="col-xs-12 col-md-8 col-lg-7">
+        <div class="col-xs-12 col-sm-7">
           <ul class="MainNav">
             <li class="MainNav-item">
               <router-link to="/help" class="MainNav-link">
-                <div class="MainNav-iconWrap" aria-hidden="true">
-                  <i class="fa fa-question-circle"></i>
-                </div>
                 <span class="MainNav-linkText">{{"Help" | translatePhrase}}</span>
               </router-link>
             </li>
             <li class="MainNav-item">
               <router-link to="/search/libris" class="MainNav-link">
-                <div class="MainNav-iconWrap" aria-hidden="true">
-                  <i class="fa fa-search"></i>
-                </div>
                 <span class="MainNav-linkText">{{"Search" | translatePhrase}}</span>
               </router-link>
             </li>
               <li class="MainNav-item" v-if="user.isLoggedIn">
               <router-link to="/create" class="MainNav-link">
-                <div class="MainNav-iconWrap" aria-hidden="true">
-                  <i class="fa fa-file-text"></i>
-                </div>
                 <span class="MainNav-linkText">{{"Create new" | translatePhrase}}</span>
               </router-link>
             </li>
@@ -90,9 +81,6 @@ export default {
             </li>
             <li class="MainNav-item" v-if="!user.isLoggedIn">
               <a :href="`${settings.apiPath}/login/authorize`" class="MainNav-link">
-                <div class="MainNav-iconWrap" aria-hidden="true">
-                  <i class="fa fa-fw fa-sign-in"></i>
-                </div>
                 <span class="MainNav-linkText">{{"Log in" | translatePhrase}}</span>
               </a>
             </li>
@@ -107,11 +95,22 @@ export default {
 <style lang="less">
 .NavBar {
   width: 100%;
-  border: solid @border-navbar;
+  // border: solid @border-navbar;
   background-color: @bg-navbar;
-  border-width: 0px 0px @border-navbar-width 0px;
-  box-shadow: @shadow-navbar;
+  // border-width: 0px 0px @border-navbar-width 0px;
+  box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
   height: auto;
+
+  &-container {
+    padding: 0 25px;
+    
+    @media screen and (min-width: @screen-sm){
+      padding: 0 15px;
+    }
+    @media screen and (max-width: @screen-lg){
+      width: 100%;
+    }
+  }
 
   &-brand {
     float: left;
@@ -135,7 +134,7 @@ export default {
   }
 
   &-brandTitle {
-    color: @text-brand;
+    color: @black;
     cursor: pointer;
     float: right;
     font-size: 18px;
@@ -143,18 +142,22 @@ export default {
     line-height: 20px;
     padding: 5px;
 
+    &:hover,
+    &:focus,
+    &:active,
+    &:visited {
+      color: @black;
+      text-decoration: none;
+    }
+
     @media (min-width: 768px) {
       padding: 15px 5px;
       height: 50px;
     }
 
-    @media (min-width: 1200px) {
-      font-size: 20px;
-      font-size: 2rem;
-    }
-
-    &:hover {
-      text-decoration: none;
+    @media (min-width: @screen-md) {
+      font-size: 24px;
+      font-size: 2.4rem;
     }
 
     .container-fluid {
@@ -175,16 +178,16 @@ export default {
 
 .MainNav {
   float: left;
-  border-top: 1px solid @black;
+  border-top: 1px solid @gray-light;
   width: 100%;
   list-style: none;
   padding: 5px 0 0;
   margin: 5px 0 5px;
 
-  @media (min-width: 992px) {
+  @media (min-width: @screen-sm) {
     float: right;
     border-top: 0;
-    margin: 0;
+    margin-top: 10px;
     padding: 0;
     text-align: right;
   }
@@ -194,6 +197,10 @@ export default {
     display: inline-block;
     max-height: 60px;
     margin-top: -2px;
+
+    &:last-of-type a {
+        padding-right: 0;
+    }
       
     @media screen and (max-width: @screen-sm-min) {
       display: inline;
@@ -221,16 +228,16 @@ export default {
   }
 
   &-link {
-    color: #333;
+    color: @black;
     cursor: pointer;
     font-size: 16px;
     font-size: 1.6rem;
-    padding: 5px;
+    padding: 5px 0px;
     display: block;
 
     &:hover, 
     &:focus {
-      background-color: @bg-navbar-hover;
+      color: inherit;
       text-decoration: none;
     }
 
@@ -238,8 +245,14 @@ export default {
       color: @text-alt-navbar;
     }
 
-    @media (min-width: 992px) {
-      padding: 20px 15px;
+    @media (min-width: @screen-sm) {
+      padding: 15px 10px;
+    }
+
+    @media (min-width: @screen-md) {
+      padding: 15px;
+      font-size: 18px;
+      font-size: 1.8rem;
     }
   }
 

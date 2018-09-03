@@ -7,15 +7,48 @@ export default {
   name: 'search-result',
   props: {
     result: {},
+    query: '',
     importData: Array,
   },
   data() {
     return {
+      fullResult: {},
       keyword: '',
-      showResult: false,
+      showResult: false
     }
   },
   methods: {
+    getFullLocalResult() {
+      let currentQuery = this.query;
+      currentQuery = currentQuery.replace(/&_offset=.*/, '&_offset=');
+
+      const unlimitedQuery = currentQuery.replace(/_limit=.*&/, '_limit='+this.totalItems+'&');
+      
+      const fetchUrl = `${this.settings.apiPath}/find.json?${unlimitedQuery}`;
+
+      fetch(fetchUrl).then((response) => {
+        return response.json();
+      }, (error) => {
+        this.$store.dispatch('pushNotification', { color: 'red', message: StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language) });
+        this.searchInProgress = false;
+      }).then((result) => {
+        this.fullResult = result;
+        this.searchInProgress = false;
+      });
+    },
+  },
+  watch: {
+    fullResult(newValue) {
+      this.$store.dispatch('setBreadcrumbData',
+        [
+          {
+            type: 'searchResult',
+            result: newValue,
+            resultUrl: this.$route.fullPath
+          }
+        ]
+      );
+    },
   },
   computed: {
     status() {
@@ -23,6 +56,9 @@ export default {
     },
     user() {
       return this.$store.getters.user;
+    },
+    settings() {
+      return this.$store.getters.settings;
     },
     paginationData() {
       const page = Object.assign({}, this.result);
@@ -35,19 +71,18 @@ export default {
         typeof this.paginationData.last !== 'undefined'
       );
     },
+    totalItems() {
+      return this.result.totalItems;
+    }
   },
   components: {
     'entity-search-list': EntitySearchList,
     'result-controls': ResultControls,
     'result-list': ResultList,
   },
-  watch: {
-    keyword(value, oldval) {
-      console.log("keyword changed", value, oldval);
-    },
-  },
-  ready() { // Ready method is deprecated in 2.0, switch to "mounted"
+  mounted() {
     this.$nextTick(() => {
+      this.getFullLocalResult();
       setTimeout(() => {
         this.showResult = true;
       }, 1);
@@ -93,6 +128,12 @@ export default {
 
 <style lang="less">
 .SearchResult {
+  padding: 10px;
+
+  @media (min-width: @screen-md) {
+    padding: 0;
+  }
+
   &-loadingText {
     box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.1);
     padding: 20px 0px;

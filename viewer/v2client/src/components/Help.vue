@@ -91,7 +91,7 @@ export default {
   <div class="HelpSection">
     <div class="row">
       <div class="col-md-3">
-        <div class="HelpSection-menu panel panel-default">
+        <div class="HelpSection-menu">
           <ul class="HelpSection-categories">
             <li class="HelpSection-categoryItem"
               v-for="(value, key) in helpCategories" 
@@ -139,13 +139,13 @@ export default {
 
 .HelpSection {
   &-article {
-    padding: 1em;
+    padding: 30px;
     height: 100%;
 
     &.is-fromMarkdown {
-      h1, h2, h3, h4 {
+      h2, h3, h4 {
         font-weight: normal;
-        margin: 10px 0 10px;
+        margin: 20px 0 15px;
       }
 
       p {
@@ -166,7 +166,7 @@ export default {
       table {
         font-size: 12px;
         font-size: 1.2rem;
-        border: 1px solid #f0f0f0;
+        border: 1px solid @gray-lighter;
         width: 100%;
       }
 
@@ -178,12 +178,12 @@ export default {
         padding: 5px;
       }
 
-      tr:nth-child(odd) {
-        background: #f0f0f0;
+      tr:nth-child(even) {
+        background: @list-item-bg-even;
       }
 
       th {
-        background: #fff;
+        background: @gray-lighter;
         padding: 5px;
         text-transform: uppercase;
         line-height: 1.2;
@@ -193,7 +193,7 @@ export default {
 
   &-categories {
     list-style: none;
-    padding: 10px 20px;
+    padding: 0;
   }
 
   &-categoryItem {
@@ -204,9 +204,11 @@ export default {
 
   &-categoryItemLabel {
     color: @black;
+    font-size: 14px;
+    font-size: 1.4rem;
     text-transform: uppercase;
     padding: 0;
-    font-weight: 700;
+    font-weight: 600;
   }
 
   &-categoryList {
@@ -215,18 +217,16 @@ export default {
   }
 
   &-categoryListItem {
-    border-radius: 5px;
-    padding: 0 0.3em;
     margin: 3px 0px;
     cursor: pointer;
 
-    &:hover {
-      background-color: @gray-lighter;
+    &:hover:not(.active) {
+      text-decoration: underline;
     }
 
-    &.is-active {
-      background-color: @brand-primary;
-      color: @neutral-color;
+    &.active {
+      font-weight: 700;
+      cursor: initial;
     }
   }
 }

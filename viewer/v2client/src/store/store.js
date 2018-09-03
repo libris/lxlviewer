@@ -32,6 +32,7 @@ const store = new Vuex.Store({
       context: {},
     },
     inspector: {
+      breadcrumb: [],
       data: {},
       insertData: {},
       originalData: {},
@@ -50,7 +51,9 @@ const store = new Vuex.Store({
       event: [],
     },
     status: {
+      panelOpen: false,
       keybindState: '',
+      fullWidth: false,
       keyActions: [],
       resultList: {
         loading: false
@@ -80,6 +83,11 @@ const store = new Vuex.Store({
         'StructuredValue',
         'QualifiedRole',
       ],
+      mainFields: {
+        'Instance': 'instanceOf',
+        'Work': 'expressionOf',
+        'Item': 'itemOf',
+      },
       extractableTypes: [
         'Item',
         'Instance',
@@ -209,6 +217,9 @@ const store = new Vuex.Store({
     },
     setInsertData(state, data) {
       state.inspector.insertData = data;
+    },
+    setBreadcrumbData(state, data) {
+      state.inspector.breadcrumb = data;
     },
     addToQuoted(state, data) {
       const quoted = _.cloneDeep(state.inspector.data.quoted);
@@ -378,6 +389,9 @@ const store = new Vuex.Store({
     },
     setInsertData({ commit }, data) {
       commit('setInsertData', data);
+    },
+    setBreadcrumbData({ commit }, data) {
+      commit('setBreadcrumbData', data);
     },
     updateInspectorData({ commit }, payload) {
       commit('updateInspectorData', payload);

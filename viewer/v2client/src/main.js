@@ -7,6 +7,7 @@ import ComboKeys from 'combokeys';
 import router from './router'
 import store from '@/store/store';
 import * as VocabUtil from '@/utils/vocab';
+import * as LayoutUtil from '@/utils/layout';
 import * as DisplayUtil from '@/utils/display';
 import * as StringUtil from '@/utils/string';
 import * as HttpUtil from '@/utils/http';
@@ -120,6 +121,7 @@ new Vue({
           store.dispatch('setUser', userObj);
         }
       }
+      window.addEventListener('keydown', LayoutUtil.handleFirstTab);
       this.updateTitle();
       this.injectAnalytics();
     })

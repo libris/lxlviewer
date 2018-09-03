@@ -1,23 +1,42 @@
 <script>
+/*
+  Adds custom select menu with searchable options
+*/
+import * as StringUtil from '@/utils/string';
+import { mixin as clickaway } from 'vue-clickaway';
 
 export default {
+  mixins: [clickaway],
   name: 'filter-select',
   props: {
     options: {},
     optionsAll: '',
     optionsSelected: '',
     selectId: 'filterSelect',
+    className: '',
+    customPlaceholder: '',
+    isFilter: true
   },
   data() {
     return {
       selectedObject: {},
-      filterVisible: false,
+      filterVisible: false
     };
+  },
+  computed: {
+    settings() {
+      return this.$store.getters.settings;
+    },
+    translatedPlaceholder() {
+      return StringUtil.getUiPhraseByLang(this.customPlaceholder, this.settings.language);
+    }
   },
   methods: {
     filter () {
       let inputSel, 
       inputEl, 
+      inputContEl, 
+      inputContSel,
       filterSelectContainer, 
       filterBy, 
       dropdownSel, 
@@ -25,7 +44,10 @@ export default {
       span, 
       i;
 
-      inputSel = document.getElementsByClassName('js-filterSelectInput');
+      inputContSel = document.getElementsByClassName(this.className);
+      inputContEl = inputContSel[0];
+
+      inputSel = inputContEl.getElementsByTagName('input');
       inputEl = inputSel[0];
       filterBy = inputEl.value.toUpperCase();
       filterSelectContainer = inputEl.parentElement;
@@ -53,8 +75,12 @@ export default {
       this.filterVisible = false;
     },
     showCurrentFilter(label) {
-      let inputSel, inputEl;
-      inputSel = document.getElementsByClassName('js-filterSelectInput');
+      let inputSel, inputEl, inputContEl, inputContSel;
+      
+      inputContSel = document.getElementsByClassName(this.className);
+      inputContEl = inputContSel[0];
+
+      inputSel = inputContEl.getElementsByTagName('input');
       inputEl = inputSel[0];
 
       inputEl.value = label;
@@ -69,11 +95,10 @@ export default {
 
       this.selectedObject = allObj;
       this.filterVisible = false;
+    },
+    close() {
+      this.filterVisible = false;
     }
-  },
-  computed: {
-  },
-  components: {
   },
   watch: {
     selectedObject(value) {
@@ -88,16 +113,20 @@ export default {
 </script>
 
 <template>
-  <div class="FilterSelect" @blur="filterVisible = false">
+  <div class="FilterSelect" 
+    :class="className" 
+    @blur="filterVisible = false"
+    v-on-clickaway="close">
     <input class="FilterSelect-input js-filterSelectInput" 
       type="text" 
-      placeholder="Alla typer" 
+      v-bind:placeholder="translatedPlaceholder" 
       :id="selectId" 
       @keyup="filter(), filterVisible = true"
-      @click="filterVisible = true">
+      @click="filterVisible = !filterVisible">
     <ul class="FilterSelect-dropdown js-filterSelectDropdown"
       :class="{'is-visible': filterVisible}">
       <li class="FilterSelect-dropdownItem"
+        tabindex="0"
         @click="selectOption"
         @keypress.enter="selectOption"
         v-for="option in options"
@@ -108,23 +137,31 @@ export default {
       </li>
     </ul>
     <i tabindex="0" 
+      class="fa FilterSelect-open"
+      :class="{'fa-angle-up': filterVisible, 'fa-angle-down': !filterVisible}"
+      @click="filterVisible = !filterVisible"></i>
+    <i v-if="isFilter" 
+      tabindex="0"
       class="fa fa-close FilterSelect-clear"
       @click="clear()"></i>
   </div>
 </template>
 
 <style lang="less">
-
 .FilterSelect {
   position: relative;
   display: inline-block;
+  font-weight: normal;
   width: 100%;
   background-color: lighten(@bib-color, 2%);
 
   &-input {
-    padding: 5px 25px 5px 10px;
+    padding: 5px 40px 5px 10px;
     border: none;
     border-bottom: 1px solid #ddd;
+    line-height: 1;
+    font-size: 12px;
+    font-size: 1.2rem;
     color: #fff;
     width: 100%;
     background-color: lighten(@bib-color, 2%);
@@ -155,15 +192,13 @@ export default {
       height: auto;
       max-height: 600px;
       opacity: 1;
+      overflow-y: scroll;
       border: 1px solid lighten(@bib-color, 2%);
     }
   }
 
   &-dropdownItem {
     text-decoration: none;
-    font-weight: normal;
-    font-size: 12px;
-    font-size: 1.2rem;
     display: block;
     cursor: pointer;
 
@@ -178,13 +213,21 @@ export default {
     padding: 5px;
   }
 
-  &-clear {
+  &-clear,
+  &-open {
     position: absolute;
     top: 6px;
     color: #fff;
-    right: 8px;
+    right: 24px;
     cursor: pointer;
   }
-}
 
+  &-open {
+    font-size: 18px;
+    font-size: 1.8rem;
+    font-weight: 700;
+    right: 8px;
+    top: 4px;
+  }
+}
 </style>

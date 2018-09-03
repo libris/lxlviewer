@@ -370,11 +370,7 @@
             },
             {
               "@type": "MusicPlate",
-              "value": "",
-              "agent": {
-                  "@type": "Organization",
-                  "name": ""
-              }
+              "value": ""
             },
             {
               "@type": "MusicPublisherNumber",
@@ -517,7 +513,6 @@
           "hasNote": [
             {
               "@type": "marc:LanguageNote",
-              "label": "",
               "hasNotation": [
                 {
                   "@type": "Notation",
@@ -527,13 +522,7 @@
             },
             {
               "@type": "marc:LanguageNote",
-              "label": "",
-              "hasNotation": [
-                {
-                  "@type": "Notation",
-                  "label": ""
-                }
-              ]
+              "label": ""
             }
           ],
           "intendedAudience": [],
@@ -542,6 +531,16 @@
               "code": "",
               "edition": "full",
               "editionEnumeration": "23/swe"
+            },
+            {
+              "@type": "Classification",
+              "code": "",
+              "inScheme": {
+                "@type": "ConceptScheme",
+                "@id": "https://id.kb.se/term/kssb/8",
+                "code": "kssb",
+                "version": "8"
+              }
             },
             {
               "@type": "Classification",
@@ -656,9 +655,7 @@
                 ]
               }
             }
-          ],
-          "subject": []
-
+          ]
         }
       }
     }

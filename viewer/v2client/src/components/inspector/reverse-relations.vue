@@ -128,11 +128,11 @@ export default {
 <template>
   <div class="ReverseRelations">
     <div v-if="recordType === 'Work'" v-show="!checkingRelations" class="ReverseRelations-number">
-      <span class="ReverseRelations-label">
+      <span class="ReverseRelations-label uppercaseHeading">
         {{ "Instantiations" | translatePhrase }}: {{numberOfRelations | translatePhrase}}
       </span>
 
-      <button class="ReverseRelations-button InstancesList-btn btn btn-primary" 
+      <button class="ReverseRelations-button InstancesList-btn btn btn-primary btn--lg" 
         @click="showRelationsList()" 
         v-if="!inspector.status.editing && this.numberOfRelations > 0"
         :checking-instances="checkingRelations">
@@ -145,8 +145,7 @@ export default {
     </div>
       
     <div class="ReverseRelations-number" v-if="recordType === 'Instance'">
-      <i class="fa fa-university" aria-hidden="true"></i>
-      <span class="ReverseRelations-label">
+      <span class="ReverseRelations-label uppercaseHeading">
         {{ "Libraries" | translatePhrase }}: 
         <span v-if="isNaN(numberOfRelations)"> {{'Error' | translatePhrase}}</span>
         <span v-else> {{numberOfRelations}} </span>
@@ -166,22 +165,19 @@ export default {
 
 .ReverseRelations {
   &-number {
-    float: right;
-    font-weight: 700;
+    float: left;
     margin: 0 0 20px;
-    text-align: right;
+  
+    @media (min-width: @screen-sm) {
+      float: right;
+      text-align: right;
+    }
   }
 
   &-label {
-    font-size: 12px;
-    font-size: 1.2rem;
   }
 
   &-button {
-    margin: 5px 0 10px;
-    font-size: 20px;
-    font-size: 2.0rem;
-    font-weight: 700;
   }
 }
 
