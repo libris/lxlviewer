@@ -64,6 +64,15 @@ export default {
   watch: {
   },
   computed: {
+    isMainField() {
+      return (!this.isInner && this.settings.mainFields[this.recordType] === this.fieldKey);
+    },
+    recordType() {
+      return VocabUtil.getRecordType(
+        this.inspector.data.mainEntity['@type'], 
+        this.resources.vocab, 
+        this.resources.context);
+    },
     actionButtonsShown() {
       if (this.shouldShowActionButtons || this.showActionButtons) {
         return true;
@@ -362,56 +371,67 @@ export default {
 <template>
   <li class="Field js-field" 
     :id="`field-${getPath}`" 
-    v-bind:class="{'Field--inner': !asColumns, 'is-lastAdded': isLastAdded, 'is-removed': removed}" 
+    v-bind:class="{'is-mainField': isMainField, 'Field--inner': !asColumns, 'is-lastAdded': isLastAdded, 'is-removed': removed}" 
     @mouseover="handleMouseEnter()" 
     @mouseleave="handleMouseLeave()">
-    
-    <div class="Field-label" v-bind:class="{ 'is-locked': locked }">
+
+    <div class="Field-labelContainer" v-if="!isInner" :class="{'is-wide': inspector.status.editing || user.settings.appTech}">
+      <div class="Field-labelWrapper">
+        <div v-if="this.inspector.status.editing" class="Field-actions">
+          <div class="Field-action Field-remove" 
+            v-show="!locked" 
+            :class="{'disabled': activeModal}">
+            <i class="fa fa-trash-o action-button icon icon--sm"
+              tabindex="0"
+              v-on:click="removeThis(true)"
+              @focus="removeHover = true, removeHighlight(true, $event)" 
+              @blur="removeHover = false, removeHighlight(false, $event)"
+              @mouseover="removeHover = true, removeHighlight(true, $event)" 
+              @mouseout="removeHover = false, removeHighlight(false, $event)">
+              <tooltip-component 
+                :show-tooltip="removeHover" 
+                tooltip-text="Remove" 
+                translation="translatePhrase"></tooltip-component>
+            </i>
+          </div>
+          <entity-adder class="Field-entityAdder Field-action"
+            v-if="!locked && (isRepeatable || isEmptyObject)" 
+            :field-key="fieldKey" 
+            :already-added="linkedIds" 
+            :compositional="isCompositional" 
+            :entity-type="entityType" 
+            :property-types="propertyTypes" 
+            :show-action-buttons="actionButtonsShown" 
+            :active="activeModal" 
+            :is-placeholder="false" 
+            :value-list="valueAsArray" 
+            :path="getPath">
+          </entity-adder>
+          <div v-else class="Field-action placeholder"></div> 
+          <div class="Field-comment" v-if="propertyComment && !locked" >
+            <i class="fa fa-question-circle Field-comment icon icon--sm"></i>
+            <span class="Field-commentText">{{ propertyComment }}</span>
+          </div>
+        </div>
+        <div class="Field-label uppercaseHeading" v-bind:class="{ 'is-locked': locked }">
+          <span v-show="fieldKey === '@id'">{{ 'ID' | translatePhrase | capitalize }}</span>
+          <span v-show="fieldKey === '@type'">{{ 'Type' | translatePhrase | capitalize }}</span>
+          <span v-show="fieldKey !== '@id' && fieldKey !== '@type'" 
+            :title="fieldKey">{{ fieldKey | labelByLang | capitalize }}</span>    
+        </div>
+      </div>
+      <pre class="path-code" v-show="user.settings.appTech && !isInner">{{getPath}}</pre>
+    </div>
+    <div class="Field-label uppercaseHeading" v-if="isInner" v-bind:class="{ 'is-locked': locked }">
       <span v-show="fieldKey === '@id'">{{ 'ID' | translatePhrase | capitalize }}</span>
       <span v-show="fieldKey === '@type'">{{ 'Type' | translatePhrase | capitalize }}</span>
       <span v-show="fieldKey !== '@id' && fieldKey !== '@type'" 
         :title="fieldKey">{{ fieldKey | labelByLang | capitalize }}</span>
 
-      <div class="Field-comment" v-if="propertyComment && !locked" >
-        <i class="fa fa-question-circle Field-commentIcon"></i>
-        <span class="Field-commentText">{{ propertyComment }}</span>
-      </div>
-    
-      <div v-if="!isInner" class="Field-actions">
-        <entity-adder  class="Field-entityAdder Field-action"
-          v-show="!locked && (isRepeatable || isEmptyObject)" 
-          :field-key="fieldKey" 
-          :already-added="linkedIds"
-          :compositional="isCompositional" 
-          :entity-type="entityType" 
-          :property-types="propertyTypes" 
-          :show-action-buttons="actionButtonsShown" 
-          :active="activeModal" 
-          :is-placeholder="false" 
-          :value-list="valueAsArray" 
-          :path="getPath"></entity-adder>
-        <div class="Field-action Field-remove" 
-          v-show="!locked" 
-          :class="{'disabled': activeModal}">
-          <i class="fa fa-trash-o action-button"
-            tabindex="0"
-            v-on:click="removeThis(true)"
-            @focus="removeHover = true, removeHighlight(true, $event)" 
-            @blur="removeHover = false, removeHighlight(false, $event)"
-            @mouseover="removeHover = true, removeHighlight(true, $event)" 
-            @mouseout="removeHover = false, removeHighlight(false, $event)">
-            <tooltip-component 
-              :show-tooltip="removeHover" 
-              tooltip-text="Remove" 
-              translation="translatePhrase"></tooltip-component>
-          </i>
-        </div>
-      </div>
-
       <!-- Is inner -->
-      <div v-if="isInner" class="Field-actions is-nested">
+      <div class="Field-actions is-nested">
         <entity-adder class="Field-action Field-entityAdder"
-          v-show="!locked && (isRepeatable || isEmptyObject)" 
+          v-if="!locked && (isRepeatable || isEmptyObject)" 
           :field-key="fieldKey" 
           :path="getPath" 
           :already-added="linkedIds" 
@@ -421,11 +441,12 @@ export default {
           :show-action-buttons="actionButtonsShown" 
           :active="activeModal" 
           :is-placeholder="true" 
-          :value-list="valueAsArray"></entity-adder>
+          :value-list="valueAsArray">
+        </entity-adder>
         <div class="Field-action Field-remove" 
           v-show="!locked" 
           :class="{'disabled': activeModal}">
-          <i class="fa fa-trash-o action-button"
+          <i class="fa fa-trash-o action-button icon icon--sm"
             tabindex="0"
             v-on:click="removeThis(true)"
             @keyup.enter="removeThis(true)"
@@ -442,7 +463,7 @@ export default {
       <!-- {{ key | labelByLang | capitalize }} -->
     </div>
 
-    <pre class="path-code" v-show="user.settings.appTech">{{getPath}}</pre>
+    <pre class="path-code" v-show="user.settings.appTech && isInner">{{getPath}}</pre>
       
     <div class="Field-content FieldContent" 
       v-bind:class="{ 'is-locked': locked}"
@@ -547,23 +568,35 @@ export default {
 <style lang="less">
 
 .Field {
-  border-bottom: 1px solid #d8d8d8;
+  border-bottom: 1px solid;
+  border-color: @form-border;
+  border-color: @form-border-alt;
   width: 100%;
   flex-direction: row;
   opacity: 1;
   position: relative;
   transition: background-color .3s ease;
 
+  &.is-mainField {
+  border-bottom-width: 2px;
+  
+    & .Field-labelWrapper {
+      position: static;
+      position: sticky;
+      top: 55px;
+    }
+  }
+
   &.is-marked {
-    background-color: @sec;
+    background-color: @add;
   }
 
   &.is-removeable {
-    background-color: @danger;
+    background-color: @remove;
   }
 
   &.is-lastAdded {
-    background-color: @sec;
+    background-color: @add;
   }
 
   @media (min-width: 768px) {
@@ -574,18 +607,18 @@ export default {
     border: 0;
     flex: 1 100%;
     margin: 0;
-    padding: 5px 5px 5px 0;
+    padding: 5px 0 5px 0;
     border-radius: 4px;
     overflow: visible;
     max-height: auto;
     display: inline-block;
 
     &.is-marked {
-      background-color: @sec;
+      background-color: @add;
     }
 
     &.is-removeable {
-      background-color: @danger;
+      background-color: @remove;
     }
 
     &:before, 
@@ -596,14 +629,18 @@ export default {
     }
 
     &:before {
-      border-top: 1px solid #666666;
+      border-top: 1px solid;
+      border-color: @field-path;
+      border-color: @field-path-alt;
       top: 16px;
-      width: 15px;
+      width: 14px;
       height: 2px;
     }
 
     &:after {
-      border-left: 1px solid #666666;
+      border-left: 1px solid;
+      border-color: @field-path;
+      border-color: @field-path-alt;
       height: 100%;
       width: 2px;
       top: 0px;
@@ -616,20 +653,47 @@ export default {
     }
   }
 
+    &-labelContainer {
+    display: flex;
+    flex: 0 0 225px;
+    flex-direction: column;
+    padding: 15px 20px 0 20px;
+
+    &.is-wide {
+      flex-basis: 300px;
+    }
+
+    pre {
+      margin-top: 5px;
+      max-width: 260px;
+    }
+
+    @media (min-width: @screen-sm) {
+      padding: 15px 20px;
+    }
+  }
+
+  &-labelWrapper {
+    display: flex;
+    justify-content: flex-end;
+    flex-direction: row-reverse;
+
+    @media (min-width: @screen-sm) {
+      flex-direction: row;
+    }
+  }
+
   &-label {
-    flex: 0 0 @col-label;
     align-items: flex-start;
     justify-content: flex-end;
-    // line-height: 2.6;
-    font-size: 20px;
-    font-size: 2.0rem;
-    font-weight: 700;
-    line-height: 1.4;
-    padding: 20px;
     position: relative;
+    flex-grow: 1;
+    word-break: break-word;
 
     &:after {
-      border-left: 1px solid #666666;
+      border-left: 1px solid;
+      border-color: @field-path;
+      border-color: @field-path-alt;
       height: 100%;
       width: 0px;
       top: 0px;
@@ -649,27 +713,11 @@ export default {
       -webkit-animation-name: fadeIn;
       animation-name: fadeIn;
     }
-  }
-
-  &-label {
-    flex: 0 0 @col-label;
-    align-items: flex-start;
-    justify-content: flex-end;
-    // line-height: 2.6;
-    font-size: 20px;
-    font-size: 2.0rem;
-    font-weight: 700;
-    line-height: 1.4;
-    padding: 20px;
-    position: relative;
 
     .Field--inner & {
       flex: 1 100%;
       padding: 0 0 0 20px;
       text-align: left;
-      font-weight: 700;
-      font-size: 16px;
-      font-size: 1.6rem;
       justify-content: flex-start;
       display: flex;
     }
@@ -677,7 +725,8 @@ export default {
     &:before {
       .Field--inner & {
         content: " ● ";
-        color: #666666;
+        color: @field-path;
+        color: @field-path-alt;
         position: absolute;
         left: 0px;
         top: -1px;
@@ -685,42 +734,44 @@ export default {
     } 
 
     @media (min-width: 768px) {
-      font-weight: normal;
-      font-size: 16px;
-      font-size: 1.6rem;
       text-align: right;
-      padding: 20px;
     }
 
-  @media print and (max-width: 768px) {
-    padding-bottom: 0;
+    @media print and (max-width: 768px) {
+      padding-bottom: 0;
+    }
   }
-}
 
   &-commentText {
-    background-color: @white;
-    border-radius: 4px;
-    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
     display: none;
-    font-size: 12px;
-    font-size: 1.2rem;
-    width: 200px;
-    line-height: 1.6;
-    transform: translate(-89%, 5px);
-    padding: 5px;
     position: absolute;
-    text-align: left;
     top: 20px;
     right: 0;
     left: 0;
+    width: 200px;
+    font-size: 12px;
+    font-size: 1.2rem;
+    line-height: 1.6;
+    text-transform: none;
+    transform: translate(-25%, 5px);
+    padding: 10px;
+    text-align: left;
     white-space: normal;
+    background-color: @white;
+    border: 1px solid @gray-lighter;
+    border-radius: 4px;
+    box-shadow: @shadow-panel;
     z-index: 3;
+
+    @media (max-width: @screen-sm) {
+      transform: translate(-60%, 5px);
+    }
   }
 
   &-comment {
-    display: inline;
-    margin-left: 2px;
+    width: 20px;
     position: relative;
+    margin-right: 5px;
 
     &:hover {
       .Field-commentText {
@@ -733,7 +784,7 @@ export default {
   &-content {
     flex: 1 100%;
     margin: 0;
-    padding: 20px;
+    padding: 10px 20px;
 
     .Field--inner & {
       border: 0;
@@ -741,7 +792,9 @@ export default {
     }
 
      @media (min-width: 768px) {
-      border-left: 1px solid #d8d8d8;
+      border-left: 1px solid;
+      border-color: @form-border;
+      border-color: @form-border-alt;
     }
 
     @media print and (max-width: 768px) {
@@ -759,11 +812,14 @@ export default {
   }
 
   &-actions {
-    font-size: 20px;
-    font-size: 2.0rem;
-    line-height: 1;
-    margin: 10px 0 0;
-    position: relative;
+    display: flex;
+    flex-grow: 1;
+    justify-content: initial;
+  
+    @media (max-width: @screen-sm) {
+      justify-content: flex-start;
+      flex-direction: row-reverse;
+    }
 
     .disabled {
       visibility: hidden;
@@ -777,32 +833,41 @@ export default {
       display: inline-block;
       font-size: 16px;
       font-size: 1.6rem;
-      margin: 0 0 0 5px;
+      margin: 0 0 0 10px;
       line-height: 1.4;
+      
+      @media (max-width: @screen-sm) {
+        display: flex;
+        justify-content: flex-end;
+        flex-direction: row;
+      }
     }
   }
 
   &-action {
+    min-width:  20px;
     display: inline-block;
-    margin: 0 0 0 5px;
-    transition: opacity 0.25s ease;
-    transition-delay: 0.1s;
-    cursor: pointer;
-    color: @gray-dark;
+    margin-right: 5px;
+  
+  &.placeholder {
+    width: 20px;
+    display: none;
+
+    @media (min-width: @screen-sm) {
+      display: block;
+    }
+  }
 
     &:hover {
-      color: @black;
     }
+  }
+
+  .path-code {
+    display: inline-block;
   }
 }
 
 .field {
-
-  .path-code {
-    padding: 1px 3px;
-    margin: 0px;
-    color: black;
-  }
   
   .node-list {
     line-height: 0;

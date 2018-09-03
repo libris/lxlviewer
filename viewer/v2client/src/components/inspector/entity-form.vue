@@ -122,7 +122,7 @@ export default {
 </script>
 
 <template>
-  <div class="EntityForm well form-component focused-form-component" 
+  <div class="EntityForm form-component focused-form-component" 
     :class="{ 'locked is-locked': isLocked }" 
     v-show="isActive">
     <ul class="FieldList" 
@@ -139,7 +139,6 @@ export default {
         :field-value="v" 
         :parent-path="inspector.status.focus"></field>
       <div id="result" v-if="user.settings.appTech && !isLocked">
-        <div class="row">
         <pre class="col-md-6">
           SORTED
           {{sortedFormData | json}}
@@ -148,7 +147,6 @@ export default {
           ORIGINAL
           {{formData | json}}
         </pre>
-        </div>
       </div>
     </ul>
   </div>
@@ -167,7 +165,8 @@ export default {
 }
 
 .EntityForm {
-  margin: 20px 0 0;
+  background-color: @form-field;
+  border: 1px solid @form-border;
   padding: 0;
 
   &-fieldList {
@@ -206,12 +205,11 @@ export default {
   padding-left: 0px;
   margin: 0px;
   &-item {
-    color: black;
+    color: @black;
     flex-direction: row;
-    align-items: center;
-    padding:  5px 0;
     list-style: none;
     width: 100%;
+    min-height: 60px;
     box-shadow: none;
     transition: box-shadow ease-out 0.2s;
 

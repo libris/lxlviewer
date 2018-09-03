@@ -6,7 +6,7 @@ tags:
 - editor
 --- 
 
-*Under arbete. Senast uppdaterad 2018-07-02.*
+*Under arbete. Senast uppdaterad 2018-08-28.*
 
 # Beståndsregistrering
 
@@ -229,7 +229,6 @@ Ospecificerad relation
 
 
 ### Oformaterad beståndsuppgift
-*OBS! i mallen finns fälten **Marc:holdingsLevel** samt **Marc:typeOfNotation**. Dessa fält behöver inte fyllas i men behövs för att exporten ska bli korrekt. Om du inte behöver använda **Oformaterad beståndsuppgift** måste du däremot ta bort fältet, det tas inte bort automatiskt eftersom det finns blanksteg i mallen.
 
 * Beståndsuppgift (866 ‡a)
 * Katalogisatörens anmärkning (866 ‡x)

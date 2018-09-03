@@ -12,6 +12,7 @@ export default {
   },
   data() {
     return {
+      recordTypeChange: false,
     };
   },
   computed: {
@@ -23,7 +24,7 @@ export default {
       'status',
     ]),
     showFromPost() {
-      if (!this.fromPostUrl) return false;
+      if (!this.fromPostUrl || !this.recordTypeChange) return false;
       if ((this.fromPostUrl !== '') && (this.fromPostUrl !== this.currentPost)) {
         return true;
       }  
@@ -136,7 +137,6 @@ export default {
   methods: {
   },
   watch: {
-
   },
   mounted() {
     this.$nextTick(() => {

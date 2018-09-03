@@ -15,6 +15,7 @@ export class User {
       activeSigel: '',
       language: 'sv',
       defaultDatabases: ['OCLC'],
+      forceFullViewPanel: false,
     };
   }
 

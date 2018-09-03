@@ -20,6 +20,8 @@ export default {
   methods: {
     getFullLocalResult() {
       let currentQuery = this.query;
+      currentQuery = currentQuery.replace(/&_offset=.*/, '&_offset=');
+
       const unlimitedQuery = currentQuery.replace(/_limit=.*&/, '_limit='+this.totalItems+'&');
       
       const fetchUrl = `${this.settings.apiPath}/find.json?${unlimitedQuery}`;
@@ -126,6 +128,12 @@ export default {
 
 <style lang="less">
 .SearchResult {
+  padding: 10px;
+
+  @media (min-width: @screen-md) {
+    padding: 0;
+  }
+
   &-loadingText {
     box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.1);
     padding: 20px 0px;

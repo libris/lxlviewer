@@ -47,29 +47,39 @@ export default {
 </script>
 
 <template>
-  <div class="CreationCard" :class="{'is-active': isActive}">
-    <div class="CreationCard-wrap">
-      <div v-if="isBase" class="CreationCard-content" @click="setIndex()">
-        <h2 class="CreationCard-title">{{'Baspost'}}</h2>
-          <div class="CreationCard-descr">Innehåller de vanligaste fälten för vald typ.</div>
-          <select class="CreationCard-select" @change="useBase($event)" @keyup.enter="useBase($event)">
-            <option class="CreationCard-option" selected disabled>
-              {{'Choose type' | translatePhrase}}
-            </option>
-            <option class="CreationCard-option"
-              v-for="(term, index) in getClassTree" 
-              :value="term.id" 
-              :key="index" 
-              v-html="getFormattedSelectOption(term, settings, resources.vocab, resources.context)">
-            </option>
-          </select>
+  <div class="CreationCard panel card" :class="{'is-active': isActive}">
+    <div v-if="isBase" class="CreationCard-content card-content" @click="setIndex()">
+      <div class="card-text">
+        <h2 class="CreationCard-title card-title">{{'Baspost'}}</h2>
+        <div class="CreationCard-descr card-descr">Innehåller de vanligaste fälten för vald typ.</div>
       </div>
-      <div v-if="!isBase" class="CreationCard-content" 
-        @click="useTemplate(template.value)">
-        <h2 class="CreationCard-title">{{template.label}}</h2>
-        <div class="CreationCard-descr">{{template.description}}</div>
-        <button class="CreationCard-select" v-show="!isActive" @keyup.enter="useTemplate(template.value)">{{ 'Choose' | translatePhrase }}</button>
-        <button class="CreationCard-select" v-show="isActive" @keyup.enter="useTemplate(template.value)">{{ 'Chosen' | translatePhrase }}</button>
+      <div class="card-link">
+        <select class="CreationCard-select customSelect" @change="useBase($event)" @keyup.enter="useBase($event)">
+          <option class="CreationCard-option" selected disabled>
+            {{'Choose type' | translatePhrase}}
+          </option>
+          <option class="CreationCard-option"
+            v-for="(term, index) in getClassTree" 
+            :value="term.id" 
+            :key="index" 
+            v-html="getFormattedSelectOption(term, settings, resources.vocab, resources.context)">
+          </option>
+        </select>
+      </div>
+    </div>
+    <div v-if="!isBase" class="CreationCard-content card-content" 
+      @click="useTemplate(template.value)">
+      <div class="card-text">
+        <h2 class="CreationCard-title card-title">{{template.label}}</h2>
+        <div class="CreationCard-descr card-descr">{{template.description}}</div>
+      </div>
+      <div class="card-link">
+        <button class="CreationCard-select btn btn-primary btn--md" tabindex="0" v-show="!isActive" @keyup.enter="useTemplate(template.value)">
+          {{ 'Choose' | translatePhrase }}
+        </button>
+        <a class="CreationCard-select" tabindex="0" v-show="isActive" @keyup.enter="useTemplate(template.value)">
+          {{ 'Chosen' | translatePhrase }}
+        </a>
       </div>
     </div>
   </div>
@@ -78,75 +88,29 @@ export default {
 <style lang="less">
 
 .CreationCard  {
-  flex: 1 1 33%;
-  max-width: 33.34%;
-  border: 1em solid transparent;  
+  min-width: 250px;
+  max-width: 250px;
+  margin-right: 20px;
 
-  @media screen and (max-width: @screen-sm-min){
+  @media screen and (max-width: @screen-xs-min){
     flex-basis: 100%;
     max-width: 100%;
   }
 
   &-title {
-    font-size: 20px;
-    font-size: 2.0rem;
-    font-weight: 500;
-    margin: 5px 0;
+    width: 100%;
   }
 
   &-descr {
-    font-size: 16px;
-    font-size: 1.6rem;
-    margin-bottom: 0.1em;
-    flex-grow: 1;
-  }
-
-  &-wrap {
-    height: 100%;
   }
 
   &-content {
-    height: 100%;
-    border: 1px solid @gray-lighter;
-    padding: 0.5em;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    cursor: pointer;
-
-    .CreationCard:hover & {
-      outline: 2px dashed fadeout(@brand-primary, 70%);
-    }
-
-    .is-active & {
-      outline: 3px solid @brand-primary;
-    }
+    min-height: 200px;
+    padding-bottom: 10px;
   }
 
   &-select {
-    color: @black;
-    border:none;
-    border-radius: 2px;
-    background-color: @gray-lighter;
-    padding: 0.4em;
-    font-weight:bold;
-    height: 2.4em;
-
-    &:focus {
-      outline: 2px dashed fadeout(@brand-primary, 70%);
-      background-color: lighten(@brand-primary, 5%);
-      color: @white;
-    }
-
-    .is-active & {
-      color: @white;
-      background-color: lighten(@brand-primary, 5%);
-    }
-
-    .CreationCard:hover & {
-      color: @white;
-      background-color: lighten(@brand-primary, 5%);
-    }
+    width: 100%;
   }
 
   &-option {
