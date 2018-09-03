@@ -7,8 +7,12 @@ import { mapGetters } from 'vuex';
 
 export default {
   name: 'breadcrumb',
+  props: {
+    recordType: ''
+  },
   data() {
     return {
+      recordTypeChange: false,
     };
   },
   computed: {
@@ -19,16 +23,53 @@ export default {
       'settings',
       'status',
     ]),
+    showFromPost() {
+      if (!this.fromPostUrl || !this.recordTypeChange) return false;
+      if ((this.fromPostUrl !== '') && (this.fromPostUrl !== this.currentPost)) {
+        return true;
+      }  
+      return false;
+    },
     searchResultUrl() {
-      return this.inspector.breadcrumb.searchUrl;
+      return this.inspector.breadcrumb[0].resultUrl;
+    },
+    fromPostUrl() {
+      const breadcrumbTrail = this.inspector.breadcrumb;
+      let fromPostId;
+
+      if (breadcrumbTrail.length > 1) {
+        const result = breadcrumbTrail.filter(breadcrumb => breadcrumb.type === 'fromPost');
+        fromPostId = result[0].postUrl;
+      } else if (breadcrumbTrail.length > 0) {
+        fromPostId = breadcrumbTrail[0].postUrl;
+      } else {
+        fromPostId = '';
+      }
+
+      return fromPostId;
+    },
+    fromPostType() {
+      const breadcrumbTrail = this.inspector.breadcrumb;
+      let fromPostType;
+
+      if (breadcrumbTrail.length > 1) {
+        const result = breadcrumbTrail.filter(breadcrumb => breadcrumb.type === 'fromPost');
+        fromPostType = result[0].recordType;
+      } else if (breadcrumbTrail.length > 0) {
+        fromPostType = breadcrumbTrail[0].recordType;
+      } else {
+        fromPostType = '';
+      }
+
+      return fromPostType;
     },
     currentPost() {
       return this.inspector.data.mainEntity['@id'];
     },
     currentPostNumber() {
       if (this.inspector.breadcrumb === undefined || this.inspector.breadcrumb.length == 0) return;
-      let items = this.inspector.breadcrumb.result.items;
-      
+      let items = this.inspector.breadcrumb[0].result.items;
+
       const item = items.find(item => item['@id'] === this.currentPost);
       const itemIndex = items.indexOf(item)
 
@@ -37,12 +78,12 @@ export default {
     totalPostNumber() {
       if (this.inspector.breadcrumb === undefined || this.inspector.breadcrumb.length == 0) return;
 
-      return this.inspector.breadcrumb.result.totalItems;
+      return this.inspector.breadcrumb[0].result.totalItems;
     },
     prevPostIndex() {
       if (this.inspector.breadcrumb === undefined || this.inspector.breadcrumb.length == 0) return;
 
-      let items = this.inspector.breadcrumb.result.items;
+      let items = this.inspector.breadcrumb[0].result.items;
       
       const item = items.find(item => item['@id'] === this.currentPost);
       const itemIndex = items.indexOf(item)
@@ -50,11 +91,12 @@ export default {
       return itemIndex-1;
     },
     prevPostPath() {
-      if (this.inspector.breadcrumb === undefined || this.inspector.breadcrumb.length == 0) return;
+      if (this.inspector.breadcrumb === undefined || this.inspector.breadcrumb.length == 0) return '';
 
-      if(this.prevPostIndex < 0) return '';
+      if (this.prevPostIndex < 0) return '';
 
-      let items = this.inspector.breadcrumb.result.items;
+      let items = this.inspector.breadcrumb[0].result.items;
+
       let prevItem = items[this.prevPostIndex];
       if (prevItem.hasOwnProperty('@id')) {
         const uriParts = prevItem['@id'].split('/');
@@ -67,7 +109,7 @@ export default {
     nextPostIndex() {
       if (this.inspector.breadcrumb === undefined || this.inspector.breadcrumb.length == 0) return;
 
-      let items = this.inspector.breadcrumb.result.items;
+      let items = this.inspector.breadcrumb[0].result.items;
       
       const item = items.find(item => item['@id'] === this.currentPost);
       const itemIndex = items.indexOf(item)
@@ -75,13 +117,15 @@ export default {
       return itemIndex+1;
     },
     nextPostPath() {
-      if (this.inspector.breadcrumb === undefined || this.inspector.breadcrumb.length == 0) return;
+      if (this.inspector.breadcrumb === undefined || this.inspector.breadcrumb.length == 0) return '';
+      
+      if (this.nextPostIndex > this.totalPostNumber) return '';
 
-      if(this.prevPostIndex > this.totalPostNumber) return '';
+      let items = this.inspector.breadcrumb[0].result.items;
 
-      let items = this.inspector.breadcrumb.result.items;
       let nextItem = items[this.nextPostIndex];
-      if (nextItem.hasOwnProperty('@id')) {
+
+      if (nextItem && nextItem.hasOwnProperty('@id')) {
         const uriParts = nextItem['@id'].split('/');
         const fnurgel = uriParts[uriParts.length-1];
         return `/${fnurgel}`;
@@ -103,15 +147,23 @@ export default {
 
 <template>
   <div class="Breadcrumb">
-    <router-link class="Breadcrumb-back"
-      :to="this.searchResultUrl">Till träfflistan</router-link>
-    <div class="Breadcrumb-postData">
+    <div class="Breadcrumb-back">
+      <router-link class="Breadcrumb-backLink"
+        v-if="this.searchResultUrl != ''"
+        :to="this.searchResultUrl">Till träfflistan</router-link>
+      <span v-if="this.showFromPost"> ›
+        <router-link class="Breadcrumb-backLink" 
+          :to="this.fromPostUrl">Tillbaka till {{this.fromPostType | labelByLang }}</router-link>
+      </span>
+    </div>
+    <div class="Breadcrumb-postData" v-if="totalPostNumber > 1 && currentPostNumber !== 0">
       <span class="Breadcrumb-postNumbers">{{this.currentPostNumber}} av {{this.totalPostNumber}}</span>
-      <div class="Breadcrumb-postLinks">
+      <div class="Breadcrumb-postLinks"
+        v-if="this.prevPostPath || this.nextPostPath">
         <router-link class="Breadcrumb-prev"
           v-if="this.prevPostPath != ''"
           :to="this.prevPostPath">Föregående post</router-link>
-          |
+        <span v-if="this.prevPostPath && this.nextPostPath"> | </span>
         <router-link class="Breadcrumb-next"
           v-if="this.nextPostPath != ''"
           :to="this.nextPostPath">Nästa post</router-link>
@@ -127,7 +179,6 @@ export default {
   margin: 0 0 30px 0;
 
   &-postNumbers {
-    margin: 0 30px 0 0;
   }
 
   &-postData {
@@ -136,11 +187,15 @@ export default {
 
   &-postLinks {
     display: flex;
+    margin: 0 0 0 30px;
   }
 
   &-back {
-    color: @brand-primary;
   }
+
+  &-backLink {
+    color: @brand-primary;
+  } 
 
   &-next {
     margin: 0 0 0 10px;

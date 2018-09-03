@@ -20,6 +20,8 @@ export default {
   methods: {
     getFullLocalResult() {
       let currentQuery = this.query;
+      currentQuery = currentQuery.replace(/&_offset=.*/, '&_offset=');
+
       const unlimitedQuery = currentQuery.replace(/_limit=.*&/, '_limit='+this.totalItems+'&');
       
       const fetchUrl = `${this.settings.apiPath}/find.json?${unlimitedQuery}`;
@@ -37,11 +39,15 @@ export default {
   },
   watch: {
     fullResult(newValue) {
-      this.$store.dispatch('setBreadcrumbData', {
-        type: 'searchResult',
-        result: newValue,
-        searchUrl: this.$route.fullPath
-      });
+      this.$store.dispatch('setBreadcrumbData',
+        [
+          {
+            type: 'searchResult',
+            result: newValue,
+            resultUrl: this.$route.fullPath
+          }
+        ]
+      );
     },
   },
   computed: {

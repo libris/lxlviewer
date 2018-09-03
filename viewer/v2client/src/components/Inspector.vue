@@ -35,6 +35,7 @@ export default {
     }
   },
   beforeRouteUpdate (to, from, next) {
+    this.addBreadcrumb();
   if (this.shouldWarnOnUnload()) {
       const confString = StringUtil.getUiPhraseByLang('You have unsaved changes. Do you want to leave the page?', this.settings.language);
       const answer = window.confirm(confString);
@@ -63,6 +64,36 @@ export default {
     }
   },
   methods: {
+    addBreadcrumb() {
+      if (this.inspector.breadcrumb !== '') {
+        let currentTrail = this.inspector.breadcrumb;
+        let firstTrail = currentTrail.shift();
+
+        let newBreadcrumb = {
+          type: 'fromPost',
+          recordType: this.recordType,
+          postUrl: this.$route.fullPath
+        }
+
+        let newTrail = [];
+        newTrail.push(firstTrail);
+        newTrail.push(newBreadcrumb);
+
+        this.$store.dispatch('setBreadcrumbData', 
+          newTrail
+        );
+      } else {
+        this.$store.dispatch('setBreadcrumbData', 
+          [
+            {
+              type: 'fromPost',
+              recordType: this.recordType,
+              postUrl: this.$route.fullPath
+            }
+          ]
+        );
+      }
+    },
     shouldWarnOnUnload() {
       return (
         (this.$route.name === 'Inspector' || this.$route.name === 'NewDocument') &&
@@ -417,7 +448,6 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-
       this.$store.dispatch('setStatusValue', { 
         property: 'keybindState', 
         value: 'overview' 
@@ -439,7 +469,6 @@ export default {
       <vue-simple-spinner size="large" :message="'Loading document' | translatePhrase"></vue-simple-spinner>
     </div>
     <div class="Inspector col-sm-12" :class="{'col-md-11': !status.panelOpen, 'col-md-7': status.panelOpen }" ref="Inspector">
-      <breadcrumb v-if="postLoaded && this.inspector.breadcrumb.length !== 0"></breadcrumb>
       <div v-if="!postLoaded && loadFailure">
         <h2>{{loadFailure.status}}</h2>
         <p v-if="loadFailure.status === 404">
@@ -454,7 +483,10 @@ export default {
       </div>
       <div v-if="postLoaded" class="Inspector-entity">
         <div class="panel-body">
-
+          <breadcrumb class="Inspector-breadcrumb"
+            v-if="postLoaded && this.inspector.breadcrumb.length !== 0"
+            :record-type="recordType">
+          </breadcrumb>   
           <div class="Inspector-admin">
             <div class="Inspector-header">
                 <h1 class="Inspector-title mainTitle" :title="recordType">
@@ -530,6 +562,11 @@ export default {
     @media (min-width: @screen-sm) {
       flex-direction: row;
     }
+  }
+
+  &-breadcrumb {
+    border-bottom:  1px solid @gray-lighter;
+    padding-bottom: 10px;
   }
 
   &-header {
