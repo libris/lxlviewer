@@ -41,8 +41,10 @@ export default {
       extracting: false,
       expanded: false,
       removeHover: false,
+      cloneHover: false,
       showLinkAction: false,
-      copyTitle: false
+      copyTitle: false,
+      cloned: false
     };
   },
   computed: {
@@ -251,6 +253,22 @@ export default {
       this.$store.dispatch('pushNotification', { color: 'green', message: `${StringUtil.getUiPhraseByLang('Linking was successful', this.settings.language)}` });
       this.closeExtractDialog();
     },
+    cloneThis() {      
+      let parentData = _.cloneDeep(_.get(this.inspector.data, this.parentPath));
+      parentData.push(this.item);
+      
+      setTimeout(() => {
+        this.$store.dispatch('updateInspectorData', {
+          changeList: [
+            {
+              path: this.parentPath,
+              value: parentData,
+            }
+          ],
+          addToHistory: true,
+        });
+      }, 500);
+    },
   },
   watch: {
     'inspector.event'(val, oldVal) {
@@ -321,6 +339,7 @@ export default {
             tooltip-text="Link entity" 
             translation="translatePhrase"></tooltip-component>
         </i>
+
         <field-adder class="ItemLocal-action"
           v-if="!isLocked" 
           :entity-type="item['@type']" 
@@ -328,6 +347,24 @@ export default {
           :inner="true" 
           :path="getPath">
         </field-adder>
+
+        <div class="ItemLocal-action" 
+          v-if="!isLocked && inArray">
+          <i class="fa fa-clone action-button icon icon--sm"
+            tabindex="0"
+            v-on:click="cloneThis(true)"
+            @keyup.enter="cloneThis(true)"
+            @focus="cloneHover = true, actionHighlight(true, $event)"
+            @blur="cloneHover = false, actionHighlight(false, $event)"
+            @mouseover="cloneHover = true, actionHighlight(true, $event)" 
+            @mouseout="cloneHover = false, actionHighlight(false, $event)">
+            <tooltip-component 
+              :show-tooltip="cloneHover" 
+              translation="translatePhrase"
+              tooltip-text="Clone"></tooltip-component>
+          </i>
+        </div>
+
 
         <i class="ItemLocal-action fa fa-trash-o icon icon--sm" 
           v-if="!isLocked" 
