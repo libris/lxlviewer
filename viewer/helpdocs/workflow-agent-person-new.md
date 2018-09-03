@@ -2,12 +2,11 @@
 section: Arbetsflöden
 title: Skapa ny Agent - Person
 order: 35
+date: 2018-08-28
 tags:
 - editor
+- under arbete
 ---
-
-UNDER ARBETE (uppdaterad 2018-08-28)
-
 
 ## Skapa ny: Agent - Person
 Lathunden beskriver de egenskaper och klasser som finns representerade i mallen. Om något av inmatningsfälten i mallen inte behövs kan de raderas med hjälp av papperskorgen intill. Ett urval av egenskaper relevanta för person som är möjliga att lägga till men som inte finns i mallen beskrivs i slutet av lathunden. 

@@ -2,11 +2,11 @@
 section: Arbetsflöden
 title: Relationer till agenter, delar och verk
 order: 72
+date: 2018-07-02
 tags:
 - editor
+- under arbete
 ---
-
-*Under arbete. Senast uppdaterad 2018-07-02.*
 
 ## Relationer till agenter, delar och verk (7XX)
 

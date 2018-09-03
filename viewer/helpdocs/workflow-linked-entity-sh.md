@@ -2,11 +2,11 @@
 section: Arbetsflöden
 title: Länka entitet - auktoriserat ämnesord
 order: 95
+date: 2018-08-27
 tags:
 - editor
+- under arbete
 ---
-
-UNDER ARBETE - UPPDATERAS KONTINUERLIGT (Uppdaterad 2018-08-27)
 
 ## Lägg till auktoriserat ämnesord (sao)
 

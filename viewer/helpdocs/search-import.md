@@ -2,12 +2,12 @@
 section: Sök
 title: Andra källor
 order: 3
+date: 2018-06-01
 tags:
 - search
 - import
+- under arbete
 ---
-
-*Under arbete. Senast uppdaterad 2018-06-01.*
 
 [Extern länk till Libris undersidor](http://www.kb.se/libris/katalogisering/Metaproxy/)
 

@@ -2,11 +2,11 @@
 section: Arbetsflöden
 title: Lägga till sammansatt men ej auktoriserat ämnesord (sao)
 order: 115
+date: 2018-08-27
 tags:
 - editor
+- under arbete
 ---
-
-UNDER ARBETE (Uppdaterad 2018-08-27)
 
 ## Lägg till sammansatt men ej auktoriserat ämnesord 
 

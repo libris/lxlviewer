@@ -2,10 +2,11 @@
 section: Arbetsflöden
 title: Lägga till Agent - Organisation i Instans av Verk
 order: 70
+date: 2018-08-28
 tags:
 - editor
+- under arbete
 --- 
-UNDER ARBETE (uppdaterad 2018-08-28)
 
 ## Lägga till Agent - Organisation i Instans av Verk
 

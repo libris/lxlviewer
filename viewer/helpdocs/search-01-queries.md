@@ -2,10 +2,10 @@
 section: Sök
 title: Utforma sökfrågor
 order: 1
+date: 2018-05-29
 tags:
 - search
 ---
-*(Uppdaterad 2018-05-29)*
 
 # Sök
 

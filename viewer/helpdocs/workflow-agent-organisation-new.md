@@ -2,11 +2,11 @@
 section: Arbetsflöden
 title: Skapa ny Agent - Organisation
 order: 55
+date: 2018-08-28
 tags:
 - editor
+- under arbete
 --- 
-
-UNDER ARBETE (uppdaterad 2018-08-28)
 
 ## Skapa ny: Agent - Organisation
 

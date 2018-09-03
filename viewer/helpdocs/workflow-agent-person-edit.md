@@ -2,11 +2,11 @@
 section: Arbetsflöden
 title: Redigera befintlig Agent - Person
 order: 45
+date: 2018-08-28
 tags:
 - editor
+- under arbete
 --- 
-
-UNDER ARBETE (uppdaterad 2018-08-28)
 
 ## Redigera befintlig Agent - Person
 Lathunden beskriver de egenskaper och klasser som finns i en befintlig auktoriserad agent och vilka egenskaper som bör läggas till. Ett urval av egenskaper relevanta för person som är möjliga att lägga till men som inte finns i mallen beskrivs i slutet av lathunden. 

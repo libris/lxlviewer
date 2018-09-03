@@ -1,8 +1,11 @@
 <script>
 import * as _ from 'lodash';
 import * as LayoutUtil from '@/utils/layout';
+import * as StringUtil from '@/utils/string';
 import helpdocsJson from '@/resources/json/help.json';
 import marked from 'marked';
+import moment from 'moment';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'help-component',
@@ -43,8 +46,24 @@ export default {
       const html = marked(markdown);
       return html;
     },
+    getTimeAgoString(date) {
+      const today = moment().startOf('day');
+      if (today.isSame(date, 'day')) {
+        return StringUtil.getUiPhraseByLang('Today', this.user.settings.language).toLowerCase();
+      }
+      return moment(date, "YYYY-MM-DD").from(moment().startOf('day'));
+    },
+    getDateString(date) {
+      return moment(date).format('YYYY-MM-DD');
+    },
     changeSection(value) {
       this.$router.push({ path: `/help/${value}` });
+    },
+    sectionIsUpdating(sectionKey) {
+      if (this.docs[sectionKey].tags !== null && this.docs[sectionKey].tags.indexOf('under arbete') > -1) {
+        return true;
+      }
+      return false;
     },
   },
   mounted() {
@@ -54,8 +73,13 @@ export default {
   events: {
   },
   computed: {
+    ...mapGetters([
+      'user',
+      'settings',
+      'status',
+    ]),
     activeSection() {
-      return this.$route.params.section || '';
+      return this.$route.params.section || 'index';
     },
     status() {
       return this.$store.getters.status;
@@ -98,7 +122,7 @@ export default {
               :key="key" 
               v-bind:class="{'is-active': key == activeCategory }" 
               v-on:click="activeCategory = key">
-              <span class="HelpSection-categoryItemLabel">{{key}}</span>
+              <span class="HelpSection-categoryItemLabel" v-if="key !== 'Main'">{{key}}</span>
               <ul class="HelpSection-categoryList">
                 <li class="HelpSection-categoryListItem" v-for="(section, index) in value" 
                   :key="index" 
@@ -111,22 +135,12 @@ export default {
       </div>
       <div class="col-md-9">
         <article class="HelpSection-article is-fromMarkdown panel panel-default">
-          <div v-show="activeSection == ''">
-            <h1 class="HelpSection-title">Hjälp</h1>
-            <p>
-              Den här hjälpen omfattar instruktioner för gränssnittet och materialtyper, välj avsnitt till vänster för att läsa mer.
-            </p>
-            <h2>Nyttiga länkar</h2>
-            <ul>
-              <li>Om du vill läsa om Formatet (mappning och basvokabulär) så har du det <a href="https://id-qa.kb.se/" target="_blank">här</a>.</li>
-              <li>Är du ute efter instruktionsmaterial hittar du det <a href="http://librisbloggen.kb.se/2017/10/31/sjalvstudier-infor-overgangen-till-nya-libris-och-xl/" target="_blank">här</a>.</li>
-              <li>Vill du komma i kontakt med kundservice gör du det <a href="http://www.kb.se/libris/kontakta/" target="_blank">här</a>.</li>
-              <li><a href="https://goo.gl/forms/3mL7jTlEpbU3BQM13" target="_blank">Här</a> kan du rapportera fel.</li>
-              <li><a href="https://goo.gl/forms/dPxkhMqE10RvKQFE2" target="_blank">Här</a> kan du ge ändringsförslag.</li>
-            </ul>
-          </div>
           <div v-for="(sectionValue, sectionKey) in docs" 
             :key="sectionKey" v-if="sectionValue.basename == activeSection">
+            <div class="pull-right text-right" v-show="docs[sectionKey].date">
+              <span class="label label-primary" v-if="sectionIsUpdating(sectionKey)">UNDER ARBETE</span> <span :title="getDateString(docs[sectionKey].date)">Uppdaterad {{ getTimeAgoString(docs[sectionKey].date) }}</span>
+            </div>
+            <br v-show="docs[sectionKey].date">
             <div v-html="getHTML(docs[sectionKey].content)"></div>
           </div>
         </article>

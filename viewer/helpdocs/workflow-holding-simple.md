@@ -2,11 +2,11 @@
 section: Arbetsflöden
 title: Enkel beståndsregistrering
 order: 75
+date: 2018-08-28
 tags:
 - editor
+- under arbete
 --- 
-
-*Under arbete. Senast uppdaterad 2018-08-28.*
 
 # Enkel beståndsregistrering
 

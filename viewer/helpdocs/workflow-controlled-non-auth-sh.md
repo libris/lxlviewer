@@ -2,11 +2,11 @@
 section: Arbetsflöden
 title: Lägga till kontrollerade men ej auktoriserade ämnesord
 order: 105
+date: 2018-08-27
 tags:
 - editor
+- under arbete
 ---
-
-UNDER ARBETE - UPPDATERAS KONTINUERLIGT (Uppdaterad 2018-08-27)
 
 ## Lägg till kontrollerade men ej auktoriserade ämnesord
 

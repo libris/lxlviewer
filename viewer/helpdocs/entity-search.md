@@ -1,11 +1,12 @@
 ---
 section: Redigering
 title: Entiteter
+date: 2018-04-27
 tags:
 - editor
+- under arbete
 order: 13
 ---
-*UNDER ARBETE (uppdaterad 2018-04-27)* 
 
 ## Söka fram entiteter
 När du ska lägga till en entitet är första steget att göra en sökning för att se om entiteten redan finns eller inte. Sökningen görs antingen via:

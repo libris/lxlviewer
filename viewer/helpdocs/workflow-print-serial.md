@@ -2,11 +2,11 @@
 section: Arbetsflöden
 title: Tryckt seriell resurs
 order: 25
+date: 2018-08-28
 tags:
 - editor
+- under arbete
 --- 
-
-UNDER ARBETE (Uppdaterad 2018-08-28)
 
 ## Tryckt seriell resurs
 
