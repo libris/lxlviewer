@@ -143,7 +143,7 @@ export default {
       @keyup.enter="filterVisible = !filterVisible"></i>
     <i v-if="isFilter" 
       tabindex="0"
-      class="fa fa-close FilterSelect-clear"
+      class="fa fa-minus-circle FilterSelect-clear"
       @click="clear()"
       @keyup.enter="clear()"></i>
   </div>
@@ -155,6 +155,8 @@ export default {
   display: inline-block;
   font-weight: normal;
   width: 100%;
+  border-radius: 10px;
+  box-shadow: @shadow-panel;
 
   &-input {
     padding: 5px 40px 5px 10px;
@@ -170,7 +172,6 @@ export default {
     border-radius: 5px;
     z-index: 2;
     position: relative;
-    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.1);
 
     &::placeholder {
       color: #000;
@@ -181,6 +182,11 @@ export default {
     }
   }
 
+  &--insideInput {
+    position: absolute;
+    width: 50%;
+  }
+
   &-dropdown {
     height: 0;
     max-height: 0;
@@ -188,17 +194,15 @@ export default {
     overflow: hidden;
     position: absolute;
     top: auto;
-    bottom: 28px;
+    bottom: 26px;
     background-color: #F9F9F9;
-    padding: 0 0 5px 0;
+    padding: 5px 0;
     width: 100%;
     border: 1px solid @gray-light;
     border-radius: 10px;
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
     z-index: 1;
-    transition: opacity 0.5s;
-    box-shadow: 0 4px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.1);
 
     &.is-visible {
       height: auto;
@@ -206,6 +210,15 @@ export default {
       opacity: 1;
       overflow-y: scroll;
       border: 1px solid @gray-light;
+      box-shadow: @shadow-panel;
+    }
+
+    .FilterSelect--insideInput & {
+      top: 26px;
+      bottom: auto;
+      border-radius: 10px;
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
     }
   }
 
@@ -229,11 +242,12 @@ export default {
   &-clear,
   &-open {
     position: absolute;
-    top: 10px;
+    top: 7px;
     color: #000;
     right: 24px;
     cursor: pointer;
     z-index: 3;
+    font-weight: 300;
   }
 
   &-open {

@@ -589,7 +589,16 @@ export default {
                 <input class="EntityAdder-searchInput entity-search-keyword-input"
                   name="entityKeywordInput"
                   v-model="keyword"
+                  placeholder="Sök"
                   autofocus />
+                  <filter-select class="EntityAdder-filterSearchInput FilterSelect--insideInput"
+                    :class-name="'js-filterSelect'"
+                    :custom-placeholder="'All types:'"
+                    :options="selectOptions"
+                    :options-all="getRange"
+                    :is-filter="true"
+                    :options-selected="''"
+                    v-on:filter-selected="setFilter($event, keyword)"></filter-select>
               </div>
             </div>
           </div>
@@ -628,13 +637,13 @@ export default {
             v-on:click="addEmpty(getFullRange[0])">{{ "Create local entity" | translatePhrase }}
           </button>
            <filter-select
-                  v-if="!hasSingleRange" 
-                  :class-name="'js-createSelect'"
-                  :options="selectOptions"
-                  :options-all="getRange"
-                  :is-filter="false"
-                  :custom-placeholder="'Create local entity:'"
-                  v-on:filter-selected="addType($event.value)"></filter-select>
+            v-if="!hasSingleRange" 
+            :class-name="'js-createSelect'"
+            :options="selectOptions"
+            :options-all="getRange"
+            :is-filter="false"
+            :custom-placeholder="'Create local entity:'"
+            v-on:filter-selected="addType($event.value)"></filter-select>
         </div>
       </template>
     </panel-component>
@@ -695,7 +704,8 @@ export default {
   }
 
   &-searchLabel {
-    margin: 5px 10px 0 0;
+    margin: 8px 10px 0 0;
+    position: absolute;
   }
 
   &-search {
@@ -705,11 +715,42 @@ export default {
 
   &-searchInputContainer {
     flex: 1;
-    display: flex;
+    position: relative;
+  }
+
+  &-filterSearchInput {
+    margin-left: 5px;
+    position: absolute;
+    left: auto;
+    right: 5px;
+    width: 50%;
+    top: 6px;
   }
 
   &-searchInput {
-    flex: 1;
+    width: 100%;
+    font-size: 20px;
+    font-size: 2rem;
+    line-height: 1.2;
+    border: 0;
+    border: 1px solid #C4C7CA;
+    background: #fff;
+    padding: 2px 5px;
+    height: 42px;
+    border-radius: 4px;
+    box-shadow: 0px 0px 0px 2px transparent;
+
+    &::placeholder, 
+    input::placeholder  {
+        font-style: italic;
+        color: @gray;
+    }
+
+    &:focus {
+        border: 1px solid @brand-primary;
+        outline: 0;
+        box-shadow: none;
+    }
   }
 
   &-searchSelect {
