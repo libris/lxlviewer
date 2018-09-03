@@ -330,24 +330,12 @@ export default {
       <template slot="panel-header-extra">
         <div class="SearchWindow-header search-header">
           <div class="SearchWindow-extractControls">
-            <p class="preview-entity-text uppercaseHeading">{{ "Your new entity" | translatePhrase }}:</p>
             <div class="copy-title" v-if="canCopyTitle">
               <label>
                 <input type="checkbox" name="copyTitle" v-model="copyTitle" /> 
                 {{ "Copy title from" | translatePhrase }} {{this.editorData.mainEntity['@type'] | labelByLang}}
               </label>
             </div>
-          </div>
-          <div class="SearchWindow-summaryContainer">
-            <entity-summary 
-              :action-settings="localEntitySettings" 
-              :focus-data="itemInfo" 
-              :lines="4"
-              :should-link="false"></entity-summary>
-            <summary-action 
-              v-show="!extracting" 
-              :options="localEntitySettings" 
-              @action="extract()"></summary-action>
           </div>
           <div class="SearchWindow-search search">
             <div class="SearchWindow-inputContainer input-container form-group panel">
@@ -356,7 +344,15 @@ export default {
                 v-model="keyword"
                 autofocus
                 :placeholder="'Search' | translatePhrase">
-              <select 
+              <filter-select class="EntityAdder-filterSearchInput FilterSelect--insideInput"
+                :class-name="'js-filterSelect'"
+                :custom-placeholder="'All types:'"
+                :options="selectOptions"
+                :options-all="getRange"
+                :is-filter="true"
+                :options-selected="''"
+                v-on:filter-selected="setFilter($event, keyword)"></filter-select>
+              <!-- <select 
                 v-model="currentSearchTypes" 
                 @change="handleChange(keyword)"
                 class="customSelect">
@@ -366,7 +362,7 @@ export default {
                   :key="term.parentChainString" 
                   :value="term.id" 
                   v-html="getFormattedSelectOption(term, settings, resources.vocab, resources.context)"></option>
-              </select>
+              </select> -->
             </div>
           </div>
           <div class="SearchWindow-resultControls" v-if="!loading && searchResult.length > 0" >
@@ -423,6 +419,21 @@ export default {
           <vue-simple-spinner size="large" :message="'Creating link' | translatePhrase"></vue-simple-spinner>
         </div>
       </template>
+      <template slot="panel-footer">
+        <div class="SearchWindow-summaryContainer">
+            <p class="preview-entity-text uppercaseHeading">{{ "Your new entity" | translatePhrase }}:</p>
+
+            <entity-summary 
+              :action-settings="localEntitySettings" 
+              :focus-data="itemInfo" 
+              :lines="4"
+              :should-link="false"></entity-summary>
+            <summary-action 
+              v-show="!extracting" 
+              :options="localEntitySettings" 
+              @action="extract()"></summary-action>
+          </div>
+      </template>
     </panel-component>
   </div>
 </template>
@@ -441,32 +452,14 @@ export default {
     }
   }
 
-  &-help {
-  }
-
-  &-helpText {
-  }
-
   &-header {
     width: 100%;
-  }
-
-  &-search {
   }
 
   &-inputContainer {
     width: 100%;
     display: flex;
-
-    > select {
-      position: absolute;
-      right: 0;
-      margin: 6px 25px;
-      max-width: 200px;
-    }
-  }
-
-  &-input {
+    position: relative;
   }
 
   &-extractControls {
@@ -499,6 +492,8 @@ export default {
     display: flex;
     flex-direction: column;
     margin-bottom: 15px;
+    border-top: 1px solid @gray-lighter;
+    padding: 10px;
 
     .EntitySummary {
       background: @white;
