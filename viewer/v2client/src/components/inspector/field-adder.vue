@@ -465,12 +465,6 @@ export default {
   }
   
   &-innerIcon {
-    .ItemSibling-action & {
-      color: @icon-primary;
-      &:hover {
-        color: @icon-primary--hover;
-      }
-    }
   }
 }
 
