@@ -100,15 +100,19 @@ export function _delete(options) {
 }
 
 export function getResourceFromCache(url) {
+  // This does not cache for the moment...
   return new Promise((resolve, reject) => {
     const resource = JSON.parse(localStorage.getItem(url));
-    const ETag = resource ? resource.ETag : '';
-    get({ url, accept: 'application/ld+json', ETag }).then((result) => {
+    fetch(url).then((result) => {
       if (result.status === 304) {
         resolve(resource);
       } else {
-        localStorage.setItem(url, JSON.stringify(result));
-        resolve(result);
+        result.json().then((obj) => {
+          localStorage.setItem(url, JSON.stringify(obj));
+          resolve(obj);
+        }, (error) => {
+          reject(error);
+        })
       }
     }, (error) => {
       reject(error);
