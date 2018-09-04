@@ -676,9 +676,13 @@ export default {
   }
 
   &-labelWrapper {
+    position: static;
+    position: sticky;
+    top: 55px;
     display: flex;
     justify-content: flex-end;
     flex-direction: row-reverse;
+    height: 30px;
 
     @media (min-width: @screen-sm) {
       flex-direction: row;
