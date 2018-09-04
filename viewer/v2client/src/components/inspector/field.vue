@@ -443,6 +443,7 @@ export default {
           :is-placeholder="true" 
           :value-list="valueAsArray">
         </entity-adder>
+
         <div class="Field-action Field-remove" 
           v-show="!locked" 
           :class="{'disabled': activeModal}">
