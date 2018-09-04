@@ -64,7 +64,8 @@ export default {
 </script>
 
 <template>
-  <li class="EntitySearch-listItem PanelComponent-listItem" :class="{ 'already-added' : !listItemSettings.show }" >
+  <li class="EntitySearch-listItem PanelComponent-listItem" 
+    :class="{ 'already-added' : !listItemSettings.show }">
     <summary-action 
       :disabled="isDisabled" 
       :options="addPayload" 
@@ -86,6 +87,7 @@ export default {
 .EntitySearch{
 
   &-listItem {
+    cursor: pointer;
 
     &.already-added {
       & .EntitySearch-itemContainer {

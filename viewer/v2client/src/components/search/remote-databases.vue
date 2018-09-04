@@ -287,6 +287,8 @@ export default {
             class="RemoteDatabases-listItem PanelComponent-listItem"
             :class="{'is-active': db.active, 'is-disabled': db.disabled }" 
             v-for="(db, index) in filteredDatabases" 
+            @click="toggleDatabase(db.database)"
+            @keyup.enter="toggleDatabase(db.database)"
             :key="index">
             <div class="RemoteDatabases-addControl">
               <i v-show="db.disabled" class="fa fa-ban icon icon--lg is-disabled"></i>
@@ -294,19 +296,13 @@ export default {
                 v-show="!db.active && !db.disabled" 
                 class="fa fa-plus-circle icon icon--lg icon--primary" 
                 :title="'Add' | translatePhrase"
-                tabindex="0"
-                role="button"
-                @click="toggleDatabase(db.database)"
-                @keyup.enter="toggleDatabase(db.database)">
+                tabindex="0">
               </i>
               <i 
                 v-show="db.active" 
                 class="fa fa-check-circle icon icon--lg" 
                 :title="'Remove' | translatePhrase"
-                tabindex="0"
-                role="button"
-                @click="toggleDatabase(db.database)"
-                @keyup.enter="toggleDatabase(db.database)">
+                tabindex="0">
               </i>
             </div>
             <div class="RemoteDatabases-dbInfo">
@@ -405,12 +401,14 @@ export default {
   }
 
   &-listItem {
+      cursor: pointer;
 
     &.is-active {      
     }
 
     &.is-disabled {
       color: @grey-light;
+      cursor: initial;
     }
   }
 
