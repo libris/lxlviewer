@@ -73,7 +73,7 @@ export default {
     <button v-else class="SummaryAction-button btn btn--sm"
       @click="action()"
       @keyup.enter="action()"
-      :class="'SummaryAction-button--'+options.styling">
+      :class="{'btn-primary' : options.styling === 'brand'}">
       {{options.text | translatePhrase}}
     </button>
   </div>

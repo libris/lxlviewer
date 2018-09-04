@@ -632,8 +632,8 @@ export default {
 
     &:before {
       border-top: 1px solid;
-      border-color: @field-path;
-      border-color: @field-path-alt;
+      border-top-color: @field-path;
+      border-top-color: @field-path-alt;
       top: 16px;
       width: 14px;
       height: 2px;
@@ -641,8 +641,8 @@ export default {
 
     &:after {
       border-left: 1px solid;
-      border-color: @field-path;
-      border-color: @field-path-alt;
+      border-left-color: @field-path;
+      border-left-color: @field-path-alt;
       height: 100%;
       width: 2px;
       top: 0px;
