@@ -340,14 +340,6 @@ export default {
             translation="translatePhrase"></tooltip-component>
         </i>
 
-        <field-adder class="ItemLocal-action"
-          v-if="!isLocked" 
-          :entity-type="item['@type']" 
-          :allowed="allowedProperties" 
-          :inner="true" 
-          :path="getPath">
-        </field-adder>
-
         <div class="ItemLocal-action" 
           v-if="!isLocked && inArray">
           <i class="fa fa-clone action-button icon icon--sm"
@@ -365,6 +357,13 @@ export default {
           </i>
         </div>
 
+        <field-adder class="ItemLocal-action"
+          v-if="!isLocked" 
+          :entity-type="item['@type']" 
+          :allowed="allowedProperties" 
+          :inner="true" 
+          :path="getPath">
+        </field-adder>
 
         <i class="ItemLocal-action fa fa-trash-o icon icon--sm" 
           v-if="!isLocked" 
