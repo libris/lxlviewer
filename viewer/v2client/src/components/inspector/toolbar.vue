@@ -386,7 +386,7 @@ export default {
               {{"Download compiled MARC21" | translatePhrase}}
           </a>
         </li>
-        <li>
+        <li class="Toolbar-menuItem">
           <a class="Toolbar-menuLink" @click="openMarc()">
             <i class="fa fa-fw fa-eye" aria-hidden="true"></i>
             {{ "Preview MARC21" | translatePhrase }}  {{ getKeybindingText('preview-marc') ? ` (${getKeybindingText('preview-marc')})` : ''}}
