@@ -353,7 +353,7 @@ export default {
             <tooltip-component 
               :show-tooltip="cloneHover" 
               translation="translatePhrase"
-              tooltip-text="Duplicate"></tooltip-component>
+              tooltip-text="Duplicate entity"></tooltip-component>
           </i>
         </div>
 
