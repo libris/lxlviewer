@@ -371,7 +371,7 @@ export default {
 <template>
   <li class="Field js-field" 
     :id="`field-${getPath}`" 
-    v-bind:class="{'is-mainField': isMainField, 'Field--inner': !asColumns, 'is-lastAdded': isLastAdded, 'is-removed': removed}" 
+    v-bind:class="{'is-mainField': isMainField, 'Field--inner': !asColumns, 'is-lastAdded': isLastAdded, 'is-removed': removed, 'is-hovered': shouldShowActionButtons}" 
     @mouseover="handleMouseEnter()" 
     @mouseleave="handleMouseLeave()">
 
@@ -580,7 +580,6 @@ export default {
 
   &.is-mainField {
     border-bottom-width: 2px;
-    z-index: 1;
   
     & .Field-labelWrapper {
       position: static;
@@ -599,6 +598,10 @@ export default {
 
   &.is-lastAdded {
     background-color: @add;
+  }
+
+  &.is-hovered {
+    z-index: 1;
   }
 
   @media (min-width: 768px) {
