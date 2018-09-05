@@ -14,6 +14,10 @@ export default {
       type: Array,
       default: () => [],
     },
+    isDisabled: {
+      type: Boolean,
+      default: false,
+    },
     path: '',
   },
   data() {
@@ -23,7 +27,6 @@ export default {
         text: 'Add',
         styling: 'brand',
         event: 'add-entity',
-        show: (this.disabledIds.indexOf(this.focusData['@id']) === -1),
         inspectAction: true,
         path: this.path,
       },
@@ -63,7 +66,7 @@ export default {
 <template>
   <li class="EntitySearch-listItem PanelComponent-listItem" :class="{ 'already-added' : !listItemSettings.show }" >
     <summary-action 
-      :disabled="!listItemSettings.show" 
+      :disabled="isDisabled" 
       :options="addPayload" 
       @action="addItem()">
     </summary-action>

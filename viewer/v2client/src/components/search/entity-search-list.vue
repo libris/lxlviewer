@@ -25,6 +25,9 @@ export default {
     }
   },
   methods: {
+    itemIsAdded(item) {
+      return this.disabledIds.indexOf(item['@id']) > -1;
+    },
     addItem(item) {
       this.$emit('add-item', item);
     },
@@ -107,7 +110,7 @@ export default {
         @mouseover.native="select(index)"
         @focus.native="select(index)"
         :focus-data="item" 
-        :disabled-ids="disabledIds" 
+        :is-disabled="itemIsAdded(item)" 
         :add-link="false"
         :path="path"
         :key="index"
