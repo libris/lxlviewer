@@ -63,6 +63,9 @@ export default {
               <li>
                 <a href="https://goo.gl/forms/xJ837GVLmG6IHwsu2" class="Footer-link js-translateable" data-translateable="Report error" >Report error</a>
               </li>
+              <li>
+                <a href="https://www.kb.se/libris/Om-Libris/Versionsinformation/" class="Footer-link js-translateable" data-translateable="Release notes">Release notes</a>
+              </li>
             </ul>
           </nav>
 
