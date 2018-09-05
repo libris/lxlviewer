@@ -352,17 +352,6 @@ export default {
                 :is-filter="true"
                 :options-selected="''"
                 v-on:filter-selected="setFilter($event, keyword)"></filter-select>
-              <!-- <select 
-                v-model="currentSearchTypes" 
-                @change="handleChange(keyword)"
-                class="customSelect">
-                <option :value="getRange">{{"All types" | translatePhrase}}</option>
-                <option 
-                  v-for="term in getClassTree" 
-                  :key="term.parentChainString" 
-                  :value="term.id" 
-                  v-html="getFormattedSelectOption(term, settings, resources.vocab, resources.context)"></option>
-              </select> -->
             </div>
           </div>
           <div class="SearchWindow-resultControls" v-if="!loading && searchResult.length > 0" >
