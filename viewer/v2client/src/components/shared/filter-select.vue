@@ -137,13 +137,13 @@ export default {
       </li>
     </ul>
     <i tabindex="0" 
-      class="fa FilterSelect-open"
+      class="fa icon icon--sm FilterSelect-open"
       :class="{'fa-angle-down': filterVisible, 'fa-angle-up': !filterVisible}"
       @click="filterVisible = !filterVisible"
       @keyup.enter="filterVisible = !filterVisible"></i>
     <i v-if="isFilter" 
       tabindex="0"
-      class="fa fa-minus-circle FilterSelect-clear"
+      class="fa fa-close icon icon--sm FilterSelect-clear"
       @click="clear()"
       @keyup.enter="clear()"></i>
   </div>
@@ -167,14 +167,14 @@ export default {
     font-size: 1.6rem;
     width: 100%;
     height: 30px;
-    background-color: #fff;
+    background-color: @white;
     border: 1px solid @gray-light;
     border-radius: 5px;
     z-index: 2;
     position: relative;
 
     &::placeholder {
-      color: #000;
+      color: @black;
     }
 
     &:focus::placeholder {
@@ -195,7 +195,7 @@ export default {
     position: absolute;
     top: auto;
     bottom: 26px;
-    background-color: #F9F9F9;
+    background-color: @panel-header-bg;
     padding: 5px 0;
     width: 100%;
     border: 1px solid @gray-light;
@@ -230,7 +230,7 @@ export default {
 
     &:hover {
       background-color: @gray-light;
-      color: #fff;
+      color: @white;
     }
   }
 
@@ -243,7 +243,6 @@ export default {
   &-open {
     position: absolute;
     top: 7px;
-    color: #000;
     right: 24px;
     cursor: pointer;
     z-index: 3;

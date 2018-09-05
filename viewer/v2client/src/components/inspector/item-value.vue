@@ -157,7 +157,7 @@ export default {
       @blur="removeHover = false, removeHighlight(false)"
       @mouseover="removeHover = true, removeHighlight(true)" 
       @mouseout="removeHover = false, removeHighlight(false)">
-      <i class="fa fa-minus icon icon--sm">
+      <i class="fa fa-trash-o icon icon--sm">
         <tooltip-component 
           :show-tooltip="removeHover" 
           tooltip-text="Remove" 
@@ -225,7 +225,7 @@ export default {
   }
 
   &.is-removeable {
-    background-color: @warning;
+    background-color: @danger;
   }
 
   .is-lastAdded & {

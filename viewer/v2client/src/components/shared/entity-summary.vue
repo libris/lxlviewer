@@ -242,7 +242,8 @@ export default {
   &-title {
     font-size: 20px;
     font-size: 2rem;
-    margin: 8px 0;
+    margin: 5px 0;
+    line-height: 26px;
     overflow: hidden;
     width: 100%; 
     position: relative;

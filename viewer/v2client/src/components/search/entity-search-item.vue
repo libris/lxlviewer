@@ -34,7 +34,9 @@ export default {
   },
   methods: {
     addItem() {
-      this.$emit('add-item');
+      if (!this.isDisabled) {
+        this.$emit('add-item');
+      }
     },
   },
   computed: {
@@ -64,7 +66,9 @@ export default {
 </script>
 
 <template>
-  <li class="EntitySearch-listItem PanelComponent-listItem" :class="{ 'already-added' : !listItemSettings.show }" >
+  <li class="EntitySearch-listItem PanelComponent-listItem" 
+    @click="addItem()"
+    :class="{ 'already-added' : isDisabled }">
     <summary-action 
       :disabled="isDisabled" 
       :options="addPayload" 
@@ -86,11 +90,13 @@ export default {
 .EntitySearch{
 
   &-listItem {
+    cursor: pointer;
 
     &.already-added {
-      & .EntitySearch-itemContainer {
-        opacity: 0.6;
-        cursor: default;
+      cursor: default;
+
+      & .EntitySummary-title {
+        color: @grey-light;
       }
     }
 

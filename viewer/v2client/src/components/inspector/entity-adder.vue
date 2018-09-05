@@ -734,9 +734,9 @@ export default {
     font-size: 2rem;
     line-height: 1.2;
     border: 0;
-    border: 1px solid #C4C7CA;
-    background: #fff;
-    padding: 2px 5px;
+    border: 1px solid @gray-light;
+    background: @white;
+    padding: 2px 8px;
     height: 42px;
     border-radius: 4px;
     box-shadow: 0px 0px 0px 2px transparent;

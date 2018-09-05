@@ -371,7 +371,7 @@ export default {
 <template>
   <li class="Field js-field" 
     :id="`field-${getPath}`" 
-    v-bind:class="{'is-mainField': isMainField, 'Field--inner': !asColumns, 'is-lastAdded': isLastAdded, 'is-removed': removed}" 
+    v-bind:class="{'is-mainField': isMainField, 'Field--inner': !asColumns, 'is-lastAdded': isLastAdded, 'is-removed': removed, 'is-hovered': shouldShowActionButtons}" 
     @mouseover="handleMouseEnter()" 
     @mouseleave="handleMouseLeave()">
 
@@ -580,7 +580,6 @@ export default {
 
   &.is-mainField {
     border-bottom-width: 2px;
-    z-index: 1;
   
     & .Field-labelWrapper {
       position: static;
@@ -599,6 +598,10 @@ export default {
 
   &.is-lastAdded {
     background-color: @add;
+  }
+
+  &.is-hovered {
+    z-index: 1;
   }
 
   @media (min-width: 768px) {
@@ -632,8 +635,8 @@ export default {
 
     &:before {
       border-top: 1px solid;
-      border-color: @field-path;
-      border-color: @field-path-alt;
+      border-top-color: @field-path;
+      border-top-color: @field-path-alt;
       top: 16px;
       width: 14px;
       height: 2px;
@@ -641,8 +644,8 @@ export default {
 
     &:after {
       border-left: 1px solid;
-      border-color: @field-path;
-      border-color: @field-path-alt;
+      border-left-color: @field-path;
+      border-left-color: @field-path-alt;
       height: 100%;
       width: 2px;
       top: 0px;
@@ -676,9 +679,13 @@ export default {
   }
 
   &-labelWrapper {
+    position: static;
+    position: sticky;
+    top: 55px;
     display: flex;
     justify-content: flex-end;
     flex-direction: row-reverse;
+    height: 30px;
 
     @media (min-width: @screen-sm) {
       flex-direction: row;

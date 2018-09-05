@@ -126,7 +126,7 @@ export default {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        background: darken(@brand-primary, 5%);
+        background: @brand-primary;
         color: @white;
         padding: 0.5em;
         box-shadow: 0 2px 5px rgba(0,0,0,.26);

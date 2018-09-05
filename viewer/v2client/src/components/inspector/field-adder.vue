@@ -405,12 +405,12 @@ export default {
               @mouseover="selectedIndex = index" 
               v-bind:class="{ 'already-added': prop.added, 'available': !prop.added, 'selected': index == selectedIndex }" 
               v-for="(prop, index) in filteredResults" 
+              @click="addField(prop, false)"
+              @keyup.enter="addField(prop, false)" 
               :key="prop['@id']">
               <span class="FieldAdderPanel-addControl">
                 <a 
-                  v-show="!prop.added" 
-                  @click="addField(prop, false)"
-                  @keyup.enter="addField(prop, false)"                  
+                  v-show="!prop.added"                  
                   :title="'Add' | translatePhrase"
                   tabindex="0"
                   >
@@ -465,12 +465,6 @@ export default {
   }
   
   &-innerIcon {
-    .ItemSibling-action & {
-      color: @icon-primary;
-      &:hover {
-        color: @icon-primary--hover;
-      }
-    }
   }
 }
 
@@ -546,12 +540,15 @@ export default {
   }
 
   &-fieldItem {
-    opacity: 0.6;
     font-size: 16px;
     font-size: 1.6rem;
 
     &.available {
-      opacity: 1;
+      cursor: pointer;
+    }
+
+    &.already-added {
+      color: @gray-light;
     }
   }
 }

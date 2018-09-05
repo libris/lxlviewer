@@ -435,6 +435,11 @@ export default {
     padding: 0;
     margin-bottom: 15px;
 
+    .EntitySummary-title {
+      font-size: 16px;
+      font-size: 1.6rem;
+    }
+
     .is-compact & {
       width: 60%;
       margin-bottom: 0;

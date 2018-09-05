@@ -54,8 +54,8 @@ export default {
       <i 
         v-show="!disabled && options.styling === 'brand'"
           class="fa fa-plus-circle icon icon--lg icon--primary"
-          @click="action()"
-          @keyup.enter="action()"
+          @click.stop="action()"
+          @keyup.enter.stop="action()"
           role="button"
           tabindex="0"
           :title="options.text | translatePhrase">
@@ -73,7 +73,7 @@ export default {
     <button v-else class="SummaryAction-button btn btn--sm"
       @click="action()"
       @keyup.enter="action()"
-      :class="'SummaryAction-button--'+options.styling">
+      :class="{'btn-primary' : options.styling === 'brand'}">
       {{options.text | translatePhrase}}
     </button>
   </div>
