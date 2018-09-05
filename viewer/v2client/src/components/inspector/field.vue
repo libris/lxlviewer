@@ -579,7 +579,8 @@ export default {
   transition: background-color .3s ease;
 
   &.is-mainField {
-  border-bottom-width: 2px;
+    border-bottom-width: 2px;
+    z-index: 1;
   
     & .Field-labelWrapper {
       position: static;
