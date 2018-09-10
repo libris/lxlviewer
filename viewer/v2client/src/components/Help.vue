@@ -18,7 +18,17 @@ export default {
     }
   },
   methods: {
-    getHelpDocs() {
+    getHelpDocs(isRetrying = false) {
+      this.loading = true;
+      if (isRetrying) {
+        setTimeout(() => {
+          this.fetchHelpDocs();
+        }, 1000);
+      } else {
+        this.fetchHelpDocs();
+      }
+    },
+    fetchHelpDocs() {
       fetch(`${this.settings.apiPath}/helpdocs/help.json`).then((result) => {
         if (result.status == 200) {
           result.json().then((body) => {
@@ -129,7 +139,7 @@ export default {
 
   <div class="HelpSection">
     <div v-if="helpDocsJson == null && !loading" class="text-center MainContent-spinner">
-      {{ 'Something went wrong' | translatePhrase }}
+      {{ 'Couldn\t load help documentation' | translatePhrase }}. <a @click="getHelpDocs(true)">{{'Try again' | translatePhrase}}</a>.
     </div>
     <div v-if="helpDocsJson == null && loading" class="text-center MainContent-spinner">
       <vue-simple-spinner size="large" :message="'Loading documents' | translatePhrase"></vue-simple-spinner>
