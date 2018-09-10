@@ -65,9 +65,6 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      if (!this.status.isNew) {
-        this.addFocus();
-      }
       this.initializeTextarea();
     });
   },
@@ -112,22 +109,6 @@ export default {
     isEmpty() {
       // TODO: Is the item empty?
       return false;
-    },
-    addFocus() {
-      const children = this.$el.children;
-      _.each(children, child => {
-        if (child.className.indexOf('js-itemValueInput') > -1) {
-          child.focus();
-        }
-      });
-    },
-    removeFocus() {
-      const children = this.$el.children;
-      _.each(children, child => {
-        if (child.className.indexOf('js-itemValueInput') > -1) {
-          child.blur();
-        }
-      });
     },
   },
   components: {
