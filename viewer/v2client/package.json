@@ -9,11 +9,10 @@
     "start": "npm run buildresources && npm run dev",
     "unit": "cross-env BABEL_ENV=test karma start test/unit/karma.conf.js --single-run",
     "e2e": "node test/e2e/runner.js",
-    "buildresources": "npm run generatehelp",
+    "buildresources": " ",
     "test": "npm run unit && npm run e2e",
     "lint": "eslint --ext .js,.vue src test/unit test/e2e/specs",
     "build": "node build/build.js",
-    "generatehelp": "rm -rf src/assets/img/generated/* && m2j ../helpdocs/*.md -c -o src/resources/json/help.json && cp ../helpdocs/*.png src/assets/img/generated/",
     "axe": "mocha test/axe/test.js"
   },
   "dependencies": {
@@ -65,7 +64,6 @@
     "less": "^2.7.3",
     "less-loader": "^4.0.5",
     "lodash": "^4.17.5",
-    "markdown-to-json": "^0.5.1",
     "marked": "^0.3.12",
     "md5": "^2.2.1",
     "mocha": "^3.2.0",
