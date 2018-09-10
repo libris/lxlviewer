@@ -2,10 +2,10 @@
 import * as _ from 'lodash';
 import * as LayoutUtil from '@/utils/layout';
 import * as StringUtil from '@/utils/string';
-import helpdocsJson from '@/resources/json/help.json';
 import marked from 'marked';
 import moment from 'moment';
 import { mapGetters } from 'vuex';
+import VueSimpleSpinner from 'vue-simple-spinner';
 
 export default {
   name: 'help-component',
@@ -13,9 +13,24 @@ export default {
     return {
       openAll: 'open-all',
       activeCategory: '',
+      helpDocsJson: null,
+      loading: true,
     }
   },
   methods: {
+    getHelpDocs() {
+      fetch(`${this.settings.apiPath}/helpdocs/help.json`).then((result) => {
+        if (result.status == 200) {
+          result.json().then((body) => {
+            this.helpDocs = body;
+          });
+        }
+        this.loading = false;
+      }, (error) => {
+        console.log(error);
+        this.loading = false;
+      });
+    },
     getImagePath(imgName) {
       const pathParts = imgName.split('/');
       const fileName = pathParts[pathParts.length-1];
@@ -67,7 +82,13 @@ export default {
     },
   },
   mounted() {
+    this.$nextTick(() => {
+      this.getHelpDocs();
+    });
   },
+  components: {
+    'vue-simple-spinner': VueSimpleSpinner,
+   },
   watch: {
   },
   events: {
@@ -101,7 +122,7 @@ export default {
       return categories;
     },
     docs() {
-      const json = helpdocsJson;
+      const json = this.helpDocsJson;
       delete json.default;
       delete json.readme;
       return json;
@@ -113,7 +134,13 @@ export default {
 <template>
 
   <div class="HelpSection">
-    <div class="row">
+    <div v-if="helpDocsJson == null && !loading" class="text-center MainContent-spinner">
+      {{ 'Something went wrong' | translatePhrase }}
+    </div>
+    <div v-if="helpDocsJson == null && loading" class="text-center MainContent-spinner">
+      <vue-simple-spinner size="large" :message="'Loading documents' | translatePhrase"></vue-simple-spinner>
+    </div>
+    <div class="row" v-if="helpDocsJson != null">
       <div class="col-md-3">
         <div class="HelpSection-menu">
           <ul class="HelpSection-categories">
