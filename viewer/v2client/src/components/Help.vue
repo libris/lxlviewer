@@ -34,13 +34,7 @@ export default {
     getImagePath(imgName) {
       const pathParts = imgName.split('/');
       const fileName = pathParts[pathParts.length-1];
-      let fetchedFileName = '';
-      try {
-        fetchedFileName = require(`@/assets/img/generated/${fileName}`);
-      }
-      catch(error) {
-        console.warn(`Could not resolve path for image "${fileName}"`);
-      }
+      const fetchedFileName = `${this.settings.apiPath}/helpdocs/${fileName}`;
       return fetchedFileName;
     },
     resolveImages(html) {
