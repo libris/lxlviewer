@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 - Readability when printing Marc21 preview.
 
+### Added
+- Link to release notes in footer
+
 ## [1.1.0] - 2018-08-30
 
 ### Fixed
