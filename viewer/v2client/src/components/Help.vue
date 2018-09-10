@@ -22,7 +22,7 @@ export default {
       fetch(`${this.settings.apiPath}/helpdocs/help.json`).then((result) => {
         if (result.status == 200) {
           result.json().then((body) => {
-            this.helpDocs = body;
+            this.helpDocsJson = body;
           });
         }
         this.loading = false;
