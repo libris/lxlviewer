@@ -5,6 +5,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+- Input textareas in form autosize to fit content.
+
 ### Added
 - Link to release notes in footer
 
