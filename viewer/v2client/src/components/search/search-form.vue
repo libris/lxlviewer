@@ -2,7 +2,6 @@
 import * as _ from 'lodash';
 import PropertyMappings from '@/resources/json/propertymappings.json';
 import * as httpUtil from '@/utils/http';
-import helpdocsJson from '@/resources/json/help.json';
 import * as StringUtil from '@/utils/string';
 import RemoteDatabases from '@/components/search/remote-databases';
 import TabMenu from '@/components/shared/tab-menu';
@@ -161,12 +160,23 @@ export default {
       }
   },
   computed: {
-      docs() {
-        const json = helpdocsJson;
+    searchHelpDocs() {
+      if (this.docs.hasOwnProperty('search-01-queries')) {
+        this.transformMarkdownToHTML(this.docs['search-01-queries'].content)
+      } else {
+        return StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language);
+      }
+    },
+    docs() {
+      if (this.resources.helpDocs != null) {
+        const json = this.resources.helpDocs;
         delete json.default;
         delete json.readme;
         return json;
-      },
+      } else {
+        return null;
+      }
+    },
     ...mapGetters([
       'resources',
       'settings',
@@ -292,7 +302,7 @@ export default {
           </span>
           <div class="SearchBar-helpContent js-searchHelpText dropdown-menu"> 
             <strong class="SearchBar-helpTitle">Operatorer för frågespråk</strong>
-            <div v-html="transformMarkdownToHTML(docs['search-01-queries'].content)"></div>
+            <div v-html="searchHelpDocs"></div>
           </div>
         </div>
       </div> 

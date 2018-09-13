@@ -30,6 +30,7 @@ const store = new Vuex.Store({
       vocab: {},
       display: {},
       context: {},
+      helpDocs: {},
     },
     inspector: {
       breadcrumb: [],
@@ -285,6 +286,9 @@ const store = new Vuex.Store({
     changeResourcesLoadingError(state, bool) {
       state.resources.loadingError = bool;
     },
+    setHelpDocs(state, data) {
+      state.resources.helpDocs = data;
+    },
     setVocab(state, data) {
       state.resources.vocab = data;
     },
@@ -425,6 +429,9 @@ const store = new Vuex.Store({
     },
     setDisplay( { commit }, displayJson) {
       commit('setDisplay', displayJson);
+    },
+    setHelpDocs( { commit }, helpDocsJson) {
+      commit('setHelpDocs', helpDocsJson);
     },
     setForcedListTerms( { commit }, forcedSetTermsJson) {
       commit('setForcedListTerms', forcedSetTermsJson);

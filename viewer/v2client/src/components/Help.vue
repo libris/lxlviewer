@@ -13,34 +13,10 @@ export default {
     return {
       openAll: 'open-all',
       activeCategory: '',
-      helpDocsJson: null,
       loading: true,
     }
   },
   methods: {
-    getHelpDocs(isRetrying = false) {
-      this.loading = true;
-      if (isRetrying) {
-        setTimeout(() => {
-          this.fetchHelpDocs();
-        }, 1000);
-      } else {
-        this.fetchHelpDocs();
-      }
-    },
-    fetchHelpDocs() {
-      fetch(`${this.settings.apiPath}/helpdocs/help.json`).then((result) => {
-        if (result.status == 200) {
-          result.json().then((body) => {
-            this.helpDocsJson = body;
-          });
-        }
-        this.loading = false;
-      }, (error) => {
-        console.log(error);
-        this.loading = false;
-      });
-    },
     getImagePath(imgName) {
       const pathParts = imgName.split('/');
       const fileName = pathParts[pathParts.length-1];
@@ -87,7 +63,6 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      this.getHelpDocs();
     });
   },
   components: {
@@ -102,6 +77,7 @@ export default {
       'user',
       'settings',
       'status',
+      'resources',
     ]),
     activeSection() {
       return this.$route.params.section || 'index';
@@ -126,7 +102,7 @@ export default {
       return categories;
     },
     docs() {
-      const json = this.helpDocsJson;
+      const json = this.resources.helpDocsJson;
       delete json.default;
       delete json.readme;
       return json;
@@ -138,13 +114,10 @@ export default {
 <template>
 
   <div class="HelpSection">
-    <div v-if="helpDocsJson == null && !loading" class="text-center MainContent-spinner">
-      {{ 'Couldn\t load help documentation' | translatePhrase }}. <a @click="getHelpDocs(true)">{{'Try again' | translatePhrase}}</a>.
+    <div v-if="resources.helpDocsJson == null" class="text-center MainContent-spinner">
+      {{ 'Couldn\t load help documentation' | translatePhrase }}. {{ 'Try reloading the page' | translatePhrase }}.
     </div>
-    <div v-if="helpDocsJson == null && loading" class="text-center MainContent-spinner">
-      <vue-simple-spinner size="large" :message="'Loading documents' | translatePhrase"></vue-simple-spinner>
-    </div>
-    <div class="row" v-if="helpDocsJson != null">
+    <div class="row" v-if="resources.helpDocsJson != null">
       <div class="col-md-3">
         <div class="HelpSection-menu">
           <ul class="HelpSection-categories">

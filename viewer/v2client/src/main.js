@@ -66,6 +66,7 @@ new Vue({
   template: '<App/>',
   created() {
     this.initWarningFunc();
+    this.fetchHelpDocs();
     Promise.all(this.getLdDependencies()).then((resources) => {
       store.dispatch('setContext', resources[2]['@context']);
       store.dispatch('setupVocab', resources[0]['@graph']);
@@ -227,6 +228,17 @@ new Vue({
           return console.error('%c LXL ERROR ', 'background: #a50000; color: #fff;', ...strings);
         }
       };
+    },
+    fetchHelpDocs() {
+      fetch(`${this.settings.apiPath}/helpdocs/help.json`).then((result) => {
+        if (result.status == 200) {
+          result.json().then((body) => {
+            store.dispatch('setHelpDocs', body);
+          });
+        }
+      }, (error) => {
+        console.log(error);
+      });
     },
     getLdDependencies(fetchIndicator) {
       const promiseArray = [];
