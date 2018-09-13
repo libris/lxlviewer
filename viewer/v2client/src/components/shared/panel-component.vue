@@ -207,13 +207,6 @@ export default {
       .full-view();
     }
 
-    @media print {
-      .full-view();
-      height: auto;
-      position: absolute;
-      background-color: @white!important;
-    }
-
     &.full-view {
       top: 0px;
       left: 0px;
