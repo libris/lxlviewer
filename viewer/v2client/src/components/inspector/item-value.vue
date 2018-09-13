@@ -23,6 +23,7 @@ export default {
     isLocked: false,
     isRemovable: false,
     showActionButtons: false,
+    isExpanded: false,
   },
   watch: {
     isLocked(val) {
@@ -30,6 +31,11 @@ export default {
         this.initializeTextarea();
       }
     },
+    isExpanded(val) {
+      if (val) {
+        this.initializeTextarea();
+      }
+    }
   },
   data() {
     return {
@@ -65,7 +71,9 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      this.initializeTextarea();
+      if (!this.isLocked) {
+        this.initializeTextarea();
+      }
     });
   },
   methods: {
@@ -103,8 +111,11 @@ export default {
       }
     },
     initializeTextarea() {
-      AutoSize(this.$el.querySelector('textarea'));
-      AutoSize.update(this.$el.querySelector('textarea'));
+      this.$nextTick(() => {
+        let textarea = this.$el.querySelector('textarea');
+        AutoSize(textarea);
+        AutoSize.update(textarea);
+      })
     },
     isEmpty() {
       // TODO: Is the item empty?

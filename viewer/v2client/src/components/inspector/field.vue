@@ -39,6 +39,7 @@ export default {
     isInner: '',
     entityType: '',
     showActionButtons: '',
+    isExpanded: false,
   },
   data() {
     return {
@@ -560,7 +561,8 @@ export default {
           :field-key="fieldKey" 
           :index="index" 
           :parent-path="getPath" 
-          :show-action-buttons="actionButtonsShown"></item-value>
+          :show-action-buttons="actionButtonsShown"
+          :is-expanded="isExpanded"></item-value>
       </div>
     </div>
   </li>

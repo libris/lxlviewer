@@ -404,7 +404,8 @@ export default {
         :field-key="k"
         :field-value="v"
         :key="k" 
-        :show-action-buttons="showActionButtons"></field> 
+        :show-action-buttons="showActionButtons"
+        :is-expanded="expanded"></field> 
     </ul>
        
     <search-window 
