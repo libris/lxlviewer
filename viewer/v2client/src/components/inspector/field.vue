@@ -685,7 +685,7 @@ export default {
     display: flex;
     justify-content: flex-end;
     flex-direction: row-reverse;
-    height: 30px;
+    min-height: 30px;
 
     @media (min-width: @screen-sm) {
       flex-direction: row;
