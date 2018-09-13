@@ -161,8 +161,8 @@ export default {
   },
   computed: {
     searchHelpDocs() {
-      if (this.docs.hasOwnProperty('search-01-queries')) {
-        this.transformMarkdownToHTML(this.docs['search-01-queries'].content)
+      if (this.docs && this.docs.hasOwnProperty('search-01-queries')) {
+        return this.transformMarkdownToHTML(this.docs['search-01-queries'].content)
       } else {
         return StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language);
       }
@@ -170,8 +170,6 @@ export default {
     docs() {
       if (this.resources.helpDocs != null) {
         const json = this.resources.helpDocs;
-        delete json.default;
-        delete json.readme;
         return json;
       } else {
         return null;
