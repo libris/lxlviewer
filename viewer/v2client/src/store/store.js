@@ -30,7 +30,7 @@ const store = new Vuex.Store({
       vocab: {},
       display: {},
       context: {},
-      helpDocs: {},
+      helpDocs: null,
     },
     inspector: {
       breadcrumb: [],

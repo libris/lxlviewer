@@ -102,7 +102,7 @@ export default {
       return categories;
     },
     docs() {
-      const json = this.resources.helpDocsJson;
+      const json = this.resources.helpDocs;
       delete json.default;
       delete json.readme;
       return json;
@@ -114,10 +114,10 @@ export default {
 <template>
 
   <div class="HelpSection">
-    <div v-if="resources.helpDocsJson == null" class="text-center MainContent-spinner">
+    <div v-if="resources.helpDocs == null" class="text-center MainContent-spinner">
       {{ 'Couldn\t load help documentation' | translatePhrase }}. {{ 'Try reloading the page' | translatePhrase }}.
     </div>
-    <div class="row" v-if="resources.helpDocsJson != null">
+    <div class="row" v-if="resources.helpDocs != null">
       <div class="col-md-3">
         <div class="HelpSection-menu">
           <ul class="HelpSection-categories">
