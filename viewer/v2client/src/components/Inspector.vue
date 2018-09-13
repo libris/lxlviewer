@@ -7,6 +7,7 @@ import * as HttpUtil from '@/utils/http';
 import * as DisplayUtil from '@/utils/display';
 import * as RecordUtil from '@/utils/record';
 import * as md5 from 'md5';
+import * as CombinedTemplates from '@/resources/json/combinedTemplates.json';
 import EntityForm from '@/components/inspector/entity-form';
 import Toolbar from '@/components/inspector/toolbar';
 import EntityChangelog from '@/components/inspector/entity-changelog';
@@ -181,6 +182,32 @@ export default {
         console.log("Initializing view for new document");
         this.loadNewDocument();
       }
+    },
+    applyFieldsFromTemplate(templateName) {
+      this.doApplyFieldsFromTemplate(CombinedTemplates.instance[templateName].value);
+    },
+    doApplyFieldsFromTemplate(templateJson) {
+      const basePostData = _.cloneDeep(this.inspector.data);
+      const changeList = [];
+      function applyChangeList(objectKey) {
+        _.each(templateJson[objectKey], (value, key) => {
+          if (!basePostData.hasOwnProperty(objectKey) || !basePostData[objectKey].hasOwnProperty(key)) {
+            console.log("Applied ->", `${objectKey}.${key}`);
+            changeList.push({
+              path: `${objectKey}.${key}`,
+              value: value,
+            });
+          }
+        });
+      }
+      applyChangeList('record');
+      applyChangeList('mainEntity');
+      applyChangeList('work');
+
+      this.$store.dispatch('updateInspectorData', {
+        changeList: changeList,
+        addToHistory: true,
+      });
     },
     openRemoveModal() {
       this.removeInProgress = true;
@@ -465,6 +492,7 @@ export default {
 </script>
 <template>
   <div class="row">
+    <button @click="applyFieldsFromTemplate('printedmonograph')">Apply template</button>
     <div v-if="!postLoaded && !loadFailure" class="Inspector-spinner text-center">
       <vue-simple-spinner size="large" :message="'Loading document' | translatePhrase"></vue-simple-spinner>
     </div>
