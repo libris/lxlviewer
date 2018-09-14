@@ -427,6 +427,12 @@
             "@type": "Extent",
             "label": ""
           }],
+          "accompaniedBy": [
+            {
+              "@type": "Resource",
+              "label": ""
+            }
+          ],
           "hasDimensions": {
             "@type": "Dimensions",
             "label": ""
@@ -461,10 +467,6 @@
               "@type": "Note",
               "label": ""
           }],
-          "supplementaryContent": {
-            "@type": "SupplementaryContent",
-            "label": ""
-          },
           "tableOfContents": [
             {
               "@type": "TableOfContents",
@@ -484,12 +486,6 @@
                   "responsibilityStatement": ""
                 }
               ]
-            }
-          ],
-          "accompaniedBy": [
-            {
-              "@type": "Resource",
-              "label": ""
             }
           ],
           "instanceOf": {
