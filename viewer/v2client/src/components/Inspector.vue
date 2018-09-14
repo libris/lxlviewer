@@ -196,7 +196,7 @@ export default {
             basePostData[objectKey] = {};
           }
           if (!basePostData[objectKey].hasOwnProperty(key) || basePostData[objectKey][key] === null) {
-            console.log("Applied ->", `${objectKey}.${key}`);
+            // console.log("Applied ->", `${objectKey}.${key}`);
             changeList.push({
               path: `${objectKey}.${key}`,
               value: value,
