@@ -184,14 +184,18 @@ export default {
       }
     },
     applyFieldsFromTemplate(templateName) {
-      this.doApplyFieldsFromTemplate(CombinedTemplates.instance[templateName].value);
+      const type = this.inspector.data.mainEntity['@type'].toLowerCase();
+      this.doApplyFieldsFromTemplate(CombinedTemplates[type][templateName].value);
     },
     doApplyFieldsFromTemplate(templateJson) {
       const basePostData = _.cloneDeep(this.inspector.data);
       const changeList = [];
       function applyChangeList(objectKey) {
         _.each(templateJson[objectKey], (value, key) => {
-          if (!basePostData.hasOwnProperty(objectKey) || !basePostData[objectKey].hasOwnProperty(key)) {
+          if (!basePostData.hasOwnProperty(objectKey) || basePostData[objectKey] === null) {
+            basePostData[objectKey] = {};
+          }
+          if (!basePostData[objectKey].hasOwnProperty(key) || basePostData[objectKey][key] === null) {
             console.log("Applied ->", `${objectKey}.${key}`);
             changeList.push({
               path: `${objectKey}.${key}`,
@@ -206,7 +210,7 @@ export default {
 
       this.$store.dispatch('updateInspectorData', {
         changeList: changeList,
-        addToHistory: true,
+        addToHistory: false,
       });
     },
     openRemoveModal() {
@@ -423,6 +427,8 @@ export default {
           default:
             return;
         }
+      } else if (val.name === 'apply-template') {
+        this.applyFieldsFromTemplate(val.value);
       }
     },
   },
@@ -492,7 +498,6 @@ export default {
 </script>
 <template>
   <div class="row">
-    <button @click="applyFieldsFromTemplate('printedmonograph')">Apply template</button>
     <div v-if="!postLoaded && !loadFailure" class="Inspector-spinner text-center">
       <vue-simple-spinner size="large" :message="'Loading document' | translatePhrase"></vue-simple-spinner>
     </div>

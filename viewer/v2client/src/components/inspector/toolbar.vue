@@ -16,6 +16,7 @@ import FieldAdder from '@/components/inspector/field-adder';
 import TooltipComponent from '@/components/shared/tooltip-component';
 import LensMixin from '@/components/mixins/lens-mixin';
 import FormMixin from '@/components/mixins/form-mixin';
+import * as CombinedTemplates from '@/resources/json/combinedTemplates.json';
 import { mixin as clickaway } from 'vue-clickaway';
 import { mapGetters } from 'vuex';
 
@@ -39,6 +40,7 @@ export default {
       showFieldAdderTooltip: false,
       showClarifySave: false,
       showMarcPreview: false,
+      showTemplatesSubMenu: false,
       fieldAdderActive: false
     };
   },
@@ -112,6 +114,7 @@ export default {
     },
     hideToolsMenu() {
       this.toolsMenuActive = false;
+      this.showTemplatesSubMenu = false;
     },
     showToolsMenu() {
       this.toolsMenuActive = !this.toolsMenuActive;
@@ -159,6 +162,13 @@ export default {
       this.$store.dispatch('pushInspectorEvent', {
         name: 'post-control',
         value: 'open-marc-preview'
+      });
+    },
+    applyTemplate(templateName) {
+      this.hideToolsMenu();
+      this.$store.dispatch('pushInspectorEvent', {
+        name: 'apply-template',
+        value: templateName
       });
     },
     closeMarc() {
@@ -227,6 +237,18 @@ export default {
       'settings',
       'status',
     ]),
+    validTemplates() {
+      const type = this.inspector.data.mainEntity['@type'].toLowerCase();
+      const templates = CombinedTemplates;
+      if (templates.hasOwnProperty(type)) {
+        return templates[type];
+      } else {
+        return {};
+      }
+    },
+    hasTemplates() {
+      return Object.keys(this.validTemplates).length !== 0;
+    },
     formObj() {
       return this.inspector.data[this.inspector.status.focus];
     },
@@ -365,7 +387,7 @@ export default {
           </a>
         </li>
         <li class="Toolbar-menuItem">
-          <a class="Toolbar-menuLink"  @click="formControl('collapse-item')">
+          <a class="Toolbar-menuLink" @click="formControl('collapse-item')">
           <i class="fa fa-fw fa-compress" aria-hidden="true"></i>
           {{"Collapse all" | translatePhrase}}{{ getKeybindingText('collapse-item') ? ` (${getKeybindingText('collapse-item')})` : ''}}
           </a>
@@ -374,6 +396,19 @@ export default {
           <a class="Toolbar-menuLink"  @click="handleCopy">
           <i class="fa fa-fw fa-files-o"></i>
           {{ "Make copy" | translatePhrase }}{{ getKeybindingText('duplicate-item') ? ` (${getKeybindingText('duplicate-item')})` : ''}}
+          </a>
+        </li>
+        <li class="Toolbar-menuItem" :class="{'is-active': showTemplatesSubMenu}" v-if="user.isLoggedIn && inspector.status.editing && hasTemplates">
+          <a class="Toolbar-menuLink" @click="showTemplatesSubMenu = !showTemplatesSubMenu">
+          <i class="fa fa-fw fa-clipboard"></i>
+          {{ "Embellish from template" | translatePhrase }}{{ getKeybindingText('embellish-from-template') ? ` (${getKeybindingText('embellish-from-template')})` : ''}}
+          <i class="fa fa-fw pull-right" :class="{ 'fa-caret-down': showTemplatesSubMenu, 'fa-caret-right': !showTemplatesSubMenu }"></i>
+          </a>
+        </li>
+        <li class="Toolbar-menuItem inSubMenu" v-for="(value, key) in validTemplates" v-show="showTemplatesSubMenu" :key="key">
+          <a class="Toolbar-menuLink" @click="applyTemplate(key)">
+          <i class="fa fa-fw fa-plus"></i>
+          {{ value.label }}
           </a>
         </li>
         <li class="Toolbar-menuItem" v-if="isSubClassOf('Instance') && hasSigel && !inspector.status.editing && user.email !== ''">
@@ -392,7 +427,7 @@ export default {
             {{ "Preview MARC21" | translatePhrase }}  {{ getKeybindingText('preview-marc') ? ` (${getKeybindingText('preview-marc')})` : ''}}
           </a>
         </li>
-        <li class="Toolbar-menuItem remove-option" v-show="user.isLoggedIn && !status.isNew">
+        <li class="Toolbar-menuItem remove-option" v-if="user.isLoggedIn && !status.isNew">
           <a class="Toolbar-menuLink"  @click="postControl('remove-post')">
           <i class="fa fa-fw fa-trash" aria-hidden="true"></i>
           {{"Remove" | translatePhrase}} {{ recordType | labelByLang }}
@@ -500,7 +535,7 @@ export default {
         :show-tooltip="showEdit"></tooltip-component></i>
       <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="inspector.status.opening"></i>
     </button>
-  </div>
+  </div> 
 </template>
 
 <style lang="less">
@@ -576,6 +611,12 @@ export default {
     padding: 10px 0;
 
     & .Toolbar-menuItem {
+      &.is-active {
+        background-color: @gray-lighter;
+      }
+      &.inSubMenu {
+        background-color: @gray-lighter;
+      }
       & a {
         padding: 5px 15px;
         color: @grey-darker;
