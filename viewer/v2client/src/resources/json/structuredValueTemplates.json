@@ -8,6 +8,27 @@
     "@type": "ParallelTitle",
     "mainTitle": ""
   },
+  "KeyTitle": {
+    "@type": "KeyTitle",
+    "mainTitle": ""
+  },
+  "TitlePortion": {
+    "@type": "TitlePortion",
+    "mainTitle": ""
+  },
+  "VariantTitle": {
+    "@type": "VariantTitle",
+    "mainTitle": ""
+  },
+  "TitlePart": {
+    "@type": "TitlePart",
+    "partName": [
+      ""
+    ],
+    "partNumber": [
+      ""
+    ]
+  },
   "EAN": {
     "@type": "EAN",
     "value": ""
