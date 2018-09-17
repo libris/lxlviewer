@@ -71,6 +71,8 @@
     "Accept": "Godkänn",
     "Edit": "Redigera",
     "Save": "Spara",
+    "field(s) added from template": "fält lades till från mall",
+    "The record already contains these fields": "Posten har redan dessa fält",
     "Yes, remove the record": "Ja, radera posten",
     "Remove the record": "Radera posten",
     "No, cancel": "Nej, avbryt",

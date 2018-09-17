@@ -152,13 +152,13 @@ export default {
           };
         } else {
           this.$store.dispatch('pushNotification', { 
-            color: 'red', 
+            type: 'danger', 
             message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)}. ${response.status} ${response.statusText}` 
           });
         }
       }, (error) => {
         this.$store.dispatch('pushNotification', { 
-          color: 'red', 
+          type: 'danger', 
           message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)}. ${error}` 
         });
       }).then((result) => {
@@ -203,11 +203,21 @@ export default {
       applyChangeList('record');
       applyChangeList('mainEntity');
       applyChangeList('work');
-
-      this.$store.dispatch('updateInspectorData', {
-        changeList: changeList,
-        addToHistory: false,
-      });
+      if (changeList.length !== 0) {
+        this.$store.dispatch('updateInspectorData', {
+          changeList: changeList,
+          addToHistory: false,
+        });
+        this.$store.dispatch('pushNotification', { 
+          type: 'info', 
+          message: `${changeList.length} ${StringUtil.getUiPhraseByLang('field(s) added from template', this.user.settings.language)}` 
+        });
+      } else {
+        this.$store.dispatch('pushNotification', { 
+          type: 'info', 
+          message: `${StringUtil.getUiPhraseByLang('The record already contains these fields', this.user.settings.language)}` 
+        });
+      }
     },
     openRemoveModal() {
       this.removeInProgress = true;
@@ -219,14 +229,14 @@ export default {
       this.closeRemoveModal();
       const url = `${this.settings.apiPath}/${this.documentId}`;
       HttpUtil._delete({ url, activeSigel: this.user.settings.activeSigel, token: this.user.token }).then((result) => {
-        this.$store.dispatch('pushNotification', { color: 'green', message: `${StringUtil.getUiPhraseByLang('The post was deleted', this.settings.language)}!` });
+        this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('The post was deleted', this.settings.language)}!` });
         // Force reload
         this.$router.go(-1);
       }, (error) => {
         if (error.status === 403) {
-          this.$store.dispatch('pushNotification', { color: 'red', message: `${StringUtil.getUiPhraseByLang('Forbidden', this.settings.language)} - ${StringUtil.getUiPhraseByLang('This entity may have active links', this.settings.language)} - ${error.statusText}` });
+          this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Forbidden', this.settings.language)} - ${StringUtil.getUiPhraseByLang('This entity may have active links', this.settings.language)} - ${error.statusText}` });
         } else {
-          this.$store.dispatch('pushNotification', { color: 'red', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error.statusText}` });
+          this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error.statusText}` });
         }
       });
     },
@@ -356,11 +366,11 @@ export default {
           const location = `${result.getResponseHeader('Location')}`;
           const locationParts = location.split('/');
           const fnurgel = locationParts[locationParts.length-1];
-          this.$store.dispatch('pushNotification', { color: 'green', message: `${StringUtil.getUiPhraseByLang('The post was created', this.settings.language)}!` });
+          this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('The post was created', this.settings.language)}!` });
           this.$router.push({ path: `/${fnurgel}` });
         } else {
           this.fetchDocument();
-          this.$store.dispatch('pushNotification', { color: 'green', message: `${StringUtil.getUiPhraseByLang('The post was saved', this.settings.language)}!` });
+          this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('The post was saved', this.settings.language)}!` });
           if (done) {
             this.$store.dispatch('setInspectorStatusValue', { property: 'editing', value: false });
           }
@@ -381,7 +391,7 @@ export default {
           default:
             errorMessage = `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error.status}: ${StringUtil.getUiPhraseByLang(error.statusText, this.settings.language)}`;
         }
-        this.$store.dispatch('pushNotification', { color: 'red', message: `${errorBase}. ${errorMessage}.` });
+        this.$store.dispatch('pushNotification', { type: 'danger', message: `${errorBase}. ${errorMessage}.` });
       });
     },
   },

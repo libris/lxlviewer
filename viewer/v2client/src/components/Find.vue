@@ -59,7 +59,7 @@ export default {
       fetch(fetchUrl).then((response) => {
         return response.json();
       }, (error) => {
-        this.$store.dispatch('pushNotification', { color: 'red', message: StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language) });
+        this.$store.dispatch('pushNotification', { type: 'danger', message: StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language) });
         this.searchInProgress = false;
       }).then((result) => {
         this.result = result;
@@ -72,7 +72,7 @@ export default {
       fetch(fetchUrl).then((response) => {
         return response.json();
       }, (error) => {
-        this.$store.dispatch('pushNotification', { color: 'red', message: StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language) });
+        this.$store.dispatch('pushNotification', { type: 'danger', message: StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language) });
         this.searchInProgress = false;
       }).then((result) => {
         console.log(result);

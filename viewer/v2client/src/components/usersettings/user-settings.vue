@@ -33,7 +33,7 @@ export default {
     },
     logout() {
       this.$store.dispatch('logoutUser');
-      this.$store.dispatch('pushNotification', { color: 'green', message: `${StringUtil.getUiPhraseByLang('You were logged out', this.settings.language)}!` });
+      this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('You were logged out', this.settings.language)}!` });
       this.$router.push({ path: '/' });
     },
   },
