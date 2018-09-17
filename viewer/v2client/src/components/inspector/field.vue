@@ -372,11 +372,11 @@ export default {
 <template>
   <li class="Field js-field" 
     :id="`field-${getPath}`" 
-    v-bind:class="{'is-mainField': isMainField, 'Field--inner': !asColumns, 'is-lastAdded': isLastAdded, 'is-removed': removed, 'is-hovered': shouldShowActionButtons}" 
+    v-bind:class="{'is-mainField': isMainField, 'Field--inner': !asColumns, 'is-lastAdded': isLastAdded, 'is-removed': removed}" 
     @mouseover="handleMouseEnter()" 
     @mouseleave="handleMouseLeave()">
 
-    <div class="Field-labelContainer" v-if="!isInner" :class="{'is-wide': inspector.status.editing || user.settings.appTech}">
+    <div class="Field-labelContainer" v-if="!isInner" :class="{'is-wide': inspector.status.editing || user.settings.appTech, 'is-hovered': shouldShowActionButtons}">
       <div class="Field-labelWrapper">
         <div v-if="this.inspector.status.editing" class="Field-actions">
           <div class="Field-action Field-remove" 
@@ -602,10 +602,6 @@ export default {
     background-color: @add;
   }
 
-  &.is-hovered {
-    z-index: 1;
-  }
-
   @media (min-width: 768px) {
     display: flex;
   }
@@ -668,6 +664,10 @@ export default {
 
     &.is-wide {
       flex-basis: 300px;
+    }
+
+    &.is-hovered {
+      z-index: 1;
     }
 
     pre {
