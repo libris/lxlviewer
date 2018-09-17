@@ -117,10 +117,10 @@ export default {
                 <td>{{ getKeys(field)[0] }}</td>
                 <td>{{ getValue(field)['ind1'] }}</td>
                 <td>{{ getValue(field)['ind2'] }}</td>
-                <td v-if="getValue(field)['value']">
+                <td class="MarcPreview-value" v-if="getValue(field)['value']">
                   <span>{{getValue(field)['value']}}</span>
                 </td>
-                <td v-if="!getValue(field)['value']">
+                <td class="MarcPreview-value" v-if="!getValue(field)['value']">
                   <span v-for="(sub, index) in getValue(field)['subfields']" :key="index">
                     <span class="sub-key">#{{ getKeys(sub)[0] }}</span> {{ sub[getKeys(sub)[0]] }}
                   </span>
@@ -142,6 +142,10 @@ export default {
   &-body {
     width: 100%;
     padding-bottom: 30px;
+  }
+
+  &-value {
+    word-break: break-word;
   }
 
   &-status {
