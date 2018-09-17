@@ -11,6 +11,7 @@ export default {
       inspectAction: false,
     },
     disabled: true,
+    replaced: true
   },
   data() {
     return {
@@ -50,9 +51,9 @@ export default {
   <div class="SummaryAction">
      <!-- This component now renders as an icon button or a regular button depending on the action event -->
     <div v-if="options.event === 'add-entity'" class="SummaryAction-icon action-container">
-      <i v-show="disabled" class="fa fa-check-circle icon icon--lg is-disabled" :title="'Added' | translatePhrase"></i>
+      <i v-show="disabled || replaced" class="fa fa-check-circle icon icon--lg is-disabled" :title="'Added' | translatePhrase"></i>
       <i 
-        v-show="!disabled && options.styling === 'brand'"
+        v-show="!(disabled || replaced) && options.styling === 'brand'"
           class="fa fa-plus-circle icon icon--lg icon--primary"
           @click.stop="action()"
           @keyup.enter.stop="action()"
@@ -61,7 +62,7 @@ export default {
           :title="options.text | translatePhrase">
         </i>
         <i 
-          v-show="!disabled && options.styling == 'gray'"
+          v-show="!(disabled || replaced) && options.styling == 'gray'"
           class="fa fa-plus-circle icon icon--lg"
           @click="action()"
           @keyup.enter="action()"
