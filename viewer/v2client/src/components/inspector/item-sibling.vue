@@ -293,7 +293,7 @@ export default {
 <template>
   <div class="ItemSibling js-itemLocal"
     tabindex="0"
-    :class="{'is-highlighted': isNewlyAdded, 'is-expanded': expanded}"
+    :class="{'is-highlighted': isNewlyAdded, 'is-expanded': expanded, 'is-extractable': isExtractable}"
     @keyup.enter="checkFocus()" 
     @focus="addFocus()"
     @blur="removeFocus()">

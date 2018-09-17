@@ -304,7 +304,7 @@ export default {
 
 <template>
   <div class="ItemLocal js-itemLocal"
-    :class="{'is-highlighted': isLastAdded, 'is-expanded': expanded}"
+    :class="{'is-highlighted': isLastAdded, 'is-expanded': expanded, 'is-extractable': isExtractable}"
     tabindex="0" 
     @keyup.enter="checkFocus()"
     @focus="addFocus()"
