@@ -19,7 +19,9 @@ export default {
       _.each(translationEls, function (translationEl) {
         const originalText = translationEl.getAttribute('data-translateable');
         const newText = StringUtil.getUiPhraseByLang(originalText, langCode);
-        translationEl.innerHTML = newText;
+        if (newText) {
+          translationEl.innerHTML = newText;
+        }
       });
     }
   },
