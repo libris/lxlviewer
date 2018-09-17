@@ -583,6 +583,22 @@ export function getPrefixFromBaseUri(baseUri, context) {
   return prefix;
 }
 
+export function getValidTemplates(type, templateCollection, vocabClasses, context) {
+  const validTemplates = [];
+  const keys = Object.keys(templateCollection);
+  for(let i = 0; i < keys.length; i++) {
+    const currentType = templateCollection[keys[i]].value.mainEntity['@type'];
+    if (
+      type === currentType ||
+      getSubClassChain(currentType, vocabClasses, context).indexOf(type) > -1 ||
+      getSubClassChain(type, vocabClasses, context).indexOf(currentType) > -1
+    ) {
+      validTemplates.push(templateCollection[keys[i]]);
+    }
+  }
+  return validTemplates;
+}
+
 export function isAbstract(itemId, vocab, context) {
   const vocabKey = StringUtil.convertToVocabKey(StringUtil.convertToBaseUri(itemId, context), context);
   const termObject = getTermObject(vocabKey, vocab, context);

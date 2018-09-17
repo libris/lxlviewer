@@ -183,11 +183,7 @@ export default {
         this.loadNewDocument();
       }
     },
-    applyFieldsFromTemplate(templateName) {
-      const type = this.inspector.data.mainEntity['@type'].toLowerCase();
-      this.doApplyFieldsFromTemplate(CombinedTemplates[type][templateName].value);
-    },
-    doApplyFieldsFromTemplate(templateJson) {
+    applyFieldsFromTemplate(templateJson) {
       const basePostData = _.cloneDeep(this.inspector.data);
       const changeList = [];
       function applyChangeList(objectKey) {
