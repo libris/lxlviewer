@@ -584,6 +584,9 @@ export function getPrefixFromBaseUri(baseUri, context) {
 }
 
 export function getValidTemplates(type, templateCollection, vocabClasses, context) {
+  if (typeof templateCollection === 'undefined' || templateCollection === null) {
+    return [];
+  }
   const validTemplates = [];
   const keys = Object.keys(templateCollection);
   for(let i = 0; i < keys.length; i++) {
