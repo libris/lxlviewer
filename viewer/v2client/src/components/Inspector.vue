@@ -497,7 +497,7 @@ export default {
     <div v-if="!postLoaded && !loadFailure" class="Inspector-spinner text-center">
       <vue-simple-spinner size="large" :message="'Loading document' | translatePhrase"></vue-simple-spinner>
     </div>
-    <div class="Inspector col-sm-12" :class="{'col-md-11': !status.panelOpen, 'col-md-7': status.panelOpen }" ref="Inspector">
+    <div class="Inspector col-sm-12" :class="{'col-md-11': !status.panelOpen, 'col-md-7': status.panelOpen, 'hideOnPrint': marcPreview.active}" ref="Inspector">
       <div v-if="!postLoaded && loadFailure">
         <h2>{{loadFailure.status}}</h2>
         <p v-if="loadFailure.status === 404">
@@ -610,6 +610,12 @@ export default {
     padding: 10px 20px;
     background-color: @white;
     border: 1px solid @gray-lighter;
+  }
+
+  &.hideOnPrint {
+    @media print {
+      display: none;
+    }
   }
 }
 

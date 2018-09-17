@@ -82,12 +82,12 @@ export default {
 </script>
 
 <template>
-  <panel-component class=""
+  <panel-component class="MarcPreview"
     @close="hide" 
     origin="Preview MARC21"
     title="Preview MARC21">
     <template slot="panel-body">
-      <div class="MarcPreview">
+      <div class="">
         <div class="MarcPreview-body">
           <div class="MarcPreview-status" v-if="marcObj === null">
             <p v-show="error === null" >
@@ -117,10 +117,10 @@ export default {
                 <td>{{ getKeys(field)[0] }}</td>
                 <td>{{ getValue(field)['ind1'] }}</td>
                 <td>{{ getValue(field)['ind2'] }}</td>
-                <td v-if="getValue(field)['value']">
+                <td class="MarcPreview-value" v-if="getValue(field)['value']">
                   <span>{{getValue(field)['value']}}</span>
                 </td>
-                <td v-if="!getValue(field)['value']">
+                <td class="MarcPreview-value" v-if="!getValue(field)['value']">
                   <span v-for="(sub, index) in getValue(field)['subfields']" :key="index">
                     <span class="sub-key">#{{ getKeys(sub)[0] }}</span> {{ sub[getKeys(sub)[0]] }}
                   </span>
@@ -141,8 +141,11 @@ export default {
 
   &-body {
     width: 100%;
-    overflow-y: scroll;
     padding-bottom: 30px;
+  }
+
+  &-value {
+    word-break: break-word;
   }
 
   &-status {
@@ -154,7 +157,6 @@ export default {
   &-table {
     width: 100%;
     height: 100%;
-    overflow: scroll;
     margin: 0 0 20px 0; // Make sure last field is fully visible
     font-family: monospace;
     border: 1px solid #a1a1a1;
@@ -180,6 +182,15 @@ export default {
 
     tbody td, tbody th {
       vertical-align: top;
+    }
+  }
+
+  & .PanelComponent-container {
+    @media print {
+      display: block;
+      position: static;
+      width: 100%;
+      height: auto;
     }
   }
 }
