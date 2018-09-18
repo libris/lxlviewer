@@ -60,6 +60,8 @@
     "Entity": "Entitet",
     "Unnamed": "Namnlös",
     "Link entity": "Länka entitet",
+    "Didn’t find what you were looking for": "Hittar du ingen som passar",
+    "You can create a new entity, based on your local one": "Du kan skapa en ny entitet baserad på din lokala",
     "Post": "Post",
     "Unknown": "Okänd",
     "Field": "Fält",
