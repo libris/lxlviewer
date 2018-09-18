@@ -510,7 +510,6 @@ export default {
   }
 
   &-resultListContainer {
-    overflow-y: scroll;
     flex: 1 1 auto;
   }
 
