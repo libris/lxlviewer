@@ -62,6 +62,7 @@ export default {
       const user = this.user;
       user.settings.forceFullViewPanel = !user.settings.forceFullViewPanel;
       this.$store.dispatch('setUser', user);
+      this.lockScroll(user.settings.forceFullViewPanel);
     },
     close() {
       if (this.closeable) {
@@ -96,6 +97,9 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.$store.dispatch('setStatusValue', { property: 'panelOpen', value: this.origin });
+      if (window.innerWidth <= 1200 || this.user.settings.forceFullViewPanel) {
+        this.lockScroll(true);
+      }
       setTimeout(() => {
         this.fadedIn = true;
       }, 1);
@@ -114,8 +118,6 @@ export default {
 
 <template>
   <div class="PanelComponent"
-  v-on:mouseenter="lockScroll(true)"
-  v-on:mouseleave="lockScroll(false)"
   :class="{'is-fadedIn': fadedIn, 'is-danger': modalType === 'danger'}"
   >
     <div class="PanelComponent-container" :class="{'full-view': user.settings.forceFullViewPanel }">
