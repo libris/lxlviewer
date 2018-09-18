@@ -3,6 +3,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import App from './App'
+import PortalVue from 'portal-vue';
 import ComboKeys from 'combokeys';
 import router from './router'
 import store from '@/store/store';
@@ -17,6 +18,7 @@ import KeyBindings from '@/resources/json/keybindings.json';
 
 Vue.config.productionTip = false
 Vue.use(Vuex);
+Vue.use(PortalVue);
 Vue.component('field', Field);
 
 Vue.filter('labelByLang', (label) => {
