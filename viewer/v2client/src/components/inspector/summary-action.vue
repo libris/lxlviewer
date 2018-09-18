@@ -51,7 +51,8 @@ export default {
   <div class="SummaryAction">
      <!-- This component now renders as an icon button or a regular button depending on the action event -->
     <div v-if="options.event === 'add-entity'" class="SummaryAction-icon action-container">
-      <i v-show="disabled || replaced" class="fa fa-check-circle icon icon--lg is-disabled" :title="'Added' | translatePhrase"></i>
+      <i v-show="replaced" class="fa fa-ban icon icon--lg is-disabled" :title="'Replaced by' | translatePhrase"></i>
+      <i v-show="disabled" class="fa fa-check-circle icon icon--lg is-disabled" :title="'Added' | translatePhrase"></i>
       <i 
         v-show="!(disabled || replaced) && options.styling === 'brand'"
           class="fa fa-plus-circle icon icon--lg icon--primary"
