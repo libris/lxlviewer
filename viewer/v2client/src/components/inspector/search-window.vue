@@ -215,7 +215,9 @@ export default {
       this.resetSearch();
       this.active = true;
       this.$nextTick(() => {
-        this.$el.querySelector('.SearchWindowentity-search-keyword-input').focus();
+        this.$nextTick(() => {
+          this.$refs.input.focus();
+        });
       });
       this.$store.dispatch('setStatusValue', { 
         property: 'keybindState', 
@@ -291,6 +293,7 @@ export default {
 
 <template>
   <div class="SearchWindow">
+    <portal to="sidebar">
     <panel-component class="SearchWindow-panel"
       v-if="active"
       :title="'Link entity' | translatePhrase"
@@ -340,8 +343,9 @@ export default {
           <div class="SearchWindow-search search">
             <div class="SearchWindow-inputContainer input-container form-group panel">
               <input 
-                class="SearchWindow-input SearchWindowentity-search-keyword-input customInput form-control"
+                class="SearchWindow-input SearchWindow-entity-search-keyword-input customInput form-control"
                 v-model="keyword"
+                ref="input"
                 autofocus
                 :placeholder="'Search' | translatePhrase">
               <filter-select class="EntityAdder-filterSearchInput FilterSelect--insideInput"
@@ -424,6 +428,7 @@ export default {
           </div>
       </template>
     </panel-component>
+    </portal>
   </div>
 </template>
 

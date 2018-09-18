@@ -197,16 +197,6 @@ export default {
         }
       }
     },
-    toggleWindowFade(e) {
-      const targetElement = e.target;
-      const threshold = targetElement.scrollHeight - 20;
-      const position = targetElement.offsetHeight + targetElement.scrollTop;
-      if (threshold > position) {
-        this.fieldListBottom = false;
-      } else {
-        this.fieldListBottom = true;
-      }
-    },
     getEmptyFieldValue(key, prop) {
       let value = [];
       const contextValue = VocabUtil.getContextValue(key, '@type', this.resources.context);
@@ -260,12 +250,11 @@ export default {
     },
     show() {
       this.active = true;
-      setTimeout(() => {
-        const input = document.getElementById('field-adder-input');
-        input.focus();
-        const fieldsWindow = document.getElementById('fields-window');
-        fieldsWindow.addEventListener('scroll', this.toggleWindowFade);
-      }, 1);
+      this.$nextTick(() => {
+        this.$nextTick(() => {
+          this.$refs.input.focus();
+        });
+      });
       this.$store.dispatch('setStatusValue', { 
         property: 'keybindState', 
         value: 'field-adder' 
@@ -315,6 +304,7 @@ export default {
   },
   mounted() {
     this.$nextTick(() => { // TODO: Fix proper scroll tracking. This is just an ugly solution using document.onscroll here and window.scroll in editorcontrols.vue
+
     });
   },
   components: {
@@ -359,7 +349,7 @@ export default {
       </i>
       <span v-if="!inToolbar" class="FieldAdder-label"> {{ "Add field" | translatePhrase }}</span>
     </button>
-
+    <portal to="sidebar">
     <panel-component class="FieldAdder-panel FieldAdderPanel"
       v-if="active"
       :title="modalTitle" 
@@ -369,6 +359,7 @@ export default {
         <div class="FieldAdderPanel-filterContainer form-group panel">
           <input id="field-adder-input"
             type="text" 
+            ref="input"
             class="FieldAdderPanel-filterInput customInput form-control mousetrap" 
             @input="resetSelectIndex()" 
             :placeholder="'Filter by' | translatePhrase"
@@ -398,7 +389,7 @@ export default {
       </template>
       <template slot="panel-body">
         <div>
-          <ul id="fields-window" class="FieldAdderPanel-fieldList js-fieldlist">
+          <ul class="FieldAdderPanel-fieldList js-fieldlist">
             <li
               class="FieldAdderPanel-fieldItem PanelComponent-listItem"
               @focus="selectedIndex = index"
@@ -435,6 +426,7 @@ export default {
         </div>
       </template>
     </panel-component>
+    </portal>
   </div>
 </template>
 

@@ -334,7 +334,9 @@ export default {
       this.resetSearch();
       this.active = true;
       this.$nextTick(() => {
-        this.$el.querySelector('.entity-search-keyword-input').focus();
+        this.$nextTick(() => {
+          this.$refs.input.focus();
+        });
       });
       this.$store.dispatch('setStatusValue', { 
         property: 'keybindState', 
@@ -558,7 +560,7 @@ export default {
           :value="term.id"></option>
       </select>
     </div>
-
+    <portal to="sidebar">
     <panel-component class="EntityAdder-panel EntityAdderPanel" 
       v-if="active"
       :title="computedTitle" 
@@ -590,6 +592,7 @@ export default {
                 <input class="EntityAdder-searchInput entity-search-keyword-input"
                   name="entityKeywordInput"
                   v-model="keyword"
+                  ref="input"
                   placeholder="Sök"
                   autofocus />
                   <filter-select class="EntityAdder-filterSearchInput FilterSelect--insideInput"
@@ -648,6 +651,7 @@ export default {
         </div>
       </template>
     </panel-component>
+    </portal>
   </div>
 </template>
 
