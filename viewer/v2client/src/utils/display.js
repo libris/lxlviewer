@@ -185,7 +185,7 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
             } else if (arrayItem.length > 0) {
               newArray.push(arrayItem);
             } else {
-              console.warn("Array contained unknown item", arrayItem);
+              // console.warn("Array contained unknown item", arrayItem);
             }
           }
           value = newArray;
