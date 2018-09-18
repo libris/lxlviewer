@@ -42,7 +42,7 @@ KEEP_HEADERS = ['ETag', 'Location', 'Content-Location', 'Expires', 'Document', '
 CONTEXT_PATH = '/context.jsonld'
 
 TYPE_TEMPLATES = {
-    'DataCatalog': 'pagedcollection.html',
+    'DataCatalog': 'website.html',
     'PartialCollectionView': 'pagedcollection.html',
     'Article': 'article.html'
 }
@@ -220,7 +220,7 @@ def _get_view_data_accept_header(request, suffix):
     if mimetype in ('application/json'):
         return 'application/json'
     elif mimetype in ('text/html', 'application/xhtml+xml'):
-        return 'application/ld+json'
+        return 'application/json'
     else:
         return None
 
@@ -259,10 +259,6 @@ def some(suffix=None):
 
 
 @app.route('/', methods=R_METHODS)
-def show_base():
-    return render_template('base.html')
-
-
 @app.route('/data', methods=R_METHODS)
 @app.route('/data.<suffix>', methods=R_METHODS)
 def dataindexview(suffix=None):
@@ -375,7 +371,7 @@ def _to_graph(data, base=None):
 
 def _get_template_for(data):
     type_key = ""
-    if not data.get(TYPE):
+    if GRAPH in data:
         type_key = data.get(GRAPH)[1].get(TYPE)
     else:
         type_key = data.get(TYPE)
@@ -383,7 +379,7 @@ def _get_template_for(data):
         template = TYPE_TEMPLATES.get(rtype)
         if template:
             return template
-    return 'edit.html'
+    return 'thing.html'
 
 
 ##
@@ -425,6 +421,7 @@ def thingnewp():
 def maintenance():
     return render_template('maintenance.html')
 
+# TODO: remove (unused and deprecated)
 @app.route('/sys/forcedsetterms.json')
 def forcedsetterms():
     return _proxy_request(request, session, None)
