@@ -283,13 +283,7 @@ export default {
 
   &-detailsItem {
     display: inline;
-
-    &:not(:first-of-type) {
-      &::before {
-        content: " • ";
-        color: @gray-darker;
-      }
-    }
+    margin-right: 10px;
   }
 
   &-detailsKey {
