@@ -273,6 +273,7 @@ export default {
     font-size: 1.8rem;
     display: block;
     text-transform: uppercase;
+    color: @gray-darker;
     margin-top: 0;
   }
 
