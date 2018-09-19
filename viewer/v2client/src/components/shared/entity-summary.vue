@@ -171,13 +171,14 @@ export default {
       </a>
       
     </h3>
-    <span class="EntitySummary-id uppercaseHeading--bold" 
-      v-if="identifiers.length > 0"
-      v-show="!isCompact">
-      {{ identifiers[0] }} 
-      <span class="EntitySummary-idInfo" v-if="identifiers.length > 1">(+{{ identifiers.length-1 }})</span>
-    </span>
     <ul class="EntitySummary-details" v-show="!isCompact">
+      <li class="EntitySummary-detailsItem" 
+        v-if="identifiers.length > 0">
+        <span class="EntitySummary-detailsKey uppercaseHeading--bold">
+        {{ identifiers[0] }}</span>
+        <span class="EntitySummary-detailsValue" 
+          v-if="identifiers.length > 1">(+{{ identifiers.length-1 }})</span>
+      </li>
       <li class="EntitySummary-detailsItem" 
         v-show="v.length !== 0" 
         v-for="(v, k) in infoWithKeys" 
@@ -282,10 +283,17 @@ export default {
 
   &-detailsItem {
     display: inline;
-    margin-right: 10px;
+
+    &:not(:first-of-type) {
+      &::before {
+        content: " • ";
+        color: @gray-darker;
+      }
+    }
   }
 
   &-detailsKey {
+    // display: inline;
   }
 
   &-detailsValue {
@@ -293,14 +301,14 @@ export default {
     font-size: 1.6rem;
   }
 
-  &-id {
-    display: inline;
-    margin-right: 10px;
-  }
+  // &-id {
+  //   display: inline;
+  //   margin-right: 10px;
+  // }
 
-  &-idInfo {
-    font-weight: normal;
-  }
+  // &-idInfo {
+  //   font-weight: normal;
+  // }
 
   &-icon {
     vertical-align: middle;
