@@ -293,22 +293,12 @@ export default {
   }
 
   &-detailsKey {
-    // display: inline;
   }
 
   &-detailsValue {
     font-size: 16px;
     font-size: 1.6rem;
   }
-
-  // &-id {
-  //   display: inline;
-  //   margin-right: 10px;
-  // }
-
-  // &-idInfo {
-  //   font-weight: normal;
-  // }
 
   &-icon {
     vertical-align: middle;
