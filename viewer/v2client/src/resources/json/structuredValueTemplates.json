@@ -123,6 +123,22 @@
     "date": [""]
 
   },
+  "Production": {
+    "@type": "Production",
+    "place": [
+      {
+        "@type": "Place",
+        "label": [""]
+      }
+    ],
+    "agent": [
+      {
+        "@type": "Agent",
+        "label": [""]
+      }
+    ],
+    "date": [""]
+  },
   "Manufacture": {
     "@type": "Manufacture",
     "place": [
@@ -155,24 +171,22 @@
     ],
     "date": [""]
   },
-  "Item": {
-    "@type": "Item",
-    "physicalLocation": [""],
-    "shelfControlNumber": "",
-    "shelfLabel": "",
-    "shelfMark": {
-      "@type": "ShelfMark",
-      "label": [""]
-    }
+  "Copyright": {
+    "@type": "Copyright",
+    "date": [""]
   },
-  "marc:TextualHoldingsBasicBibliographicUnit": [ 
-    { 
-      "@type": "marc:TextualHoldingsBasicBibliographicUnit", 
-      "marc:textualString": "",
-      "marc:cataloguersNote": [""],
-      "marc:publicNote": [""]
-    } 
-  ],
+  "Extent": {
+    "@type": "Extent",
+    "label": ""
+  },
+  "Dimensions": {
+    "@type": "Dimensions",
+    "label": ""
+  },
+  "Note": {
+    "@type": "Note",
+    "label": ""
+  },
   "SeriesMembership": [
     {
       "@type": "SeriesMembership",
@@ -199,6 +213,24 @@
       "seriesStatement": [""]
     }
   ],
+  "Item": {
+    "@type": "Item",
+    "physicalLocation": [""],
+    "shelfControlNumber": "",
+    "shelfLabel": "",
+    "shelfMark": {
+      "@type": "ShelfMark",
+      "label": [""]
+    }
+  },
+  "marc:TextualHoldingsBasicBibliographicUnit": [ 
+    { 
+      "@type": "marc:TextualHoldingsBasicBibliographicUnit", 
+      "marc:textualString": "",
+      "marc:cataloguersNote": [""],
+      "marc:publicNote": [""]
+    } 
+  ],
   "Classification": {
     "@type": "Classification",
     "code": "",
@@ -214,14 +246,6 @@
     "code": "",
     "edition": "full",
     "editionEnumeration": "23/swe"
-  },
-  "Extent": {
-    "@type": "Extent",
-    "label": ""
-  },
-  "Note": {
-    "@type": "Note",
-    "label": ""
   },
   "SourceData": {
     "@type": "SourceData",
