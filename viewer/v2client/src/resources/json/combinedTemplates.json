@@ -498,9 +498,17 @@
           "hasTitle": [
             {
               "@type": "Title",
-              "mainTitle": ""
+              "mainTitle": "",
+              "partName": [
+              ""
+              ],
+              "partNumber": [
+                ""
+              ]
             }
           ],
+          "musicKey": "",
+          "version": "",
           "language": [{
             "@id": "https://id.kb.se/language/zxx"
           }],
