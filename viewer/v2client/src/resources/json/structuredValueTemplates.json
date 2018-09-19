@@ -29,6 +29,18 @@
       ""
     ]
   },
+  "Identifier": {
+    "@type": "Identifier",
+    "value": ""
+  },
+  "AudioIssueNumber": {
+    "@type": "AudioIssueNumber",
+    "value": ""
+  },
+  "CODEN": {
+    "@type": "CODEN",
+    "value": ""
+  },
   "EAN": {
     "@type": "EAN",
     "value": ""
@@ -46,6 +58,14 @@
     "@type": "ISSN",
     "value": ""
   },
+  "ISRC": {
+    "@type": "ISRC",
+    "value": ""
+  },
+  "MatrixNumber": {
+    "@type": "MatrixNumber",
+    "value": ""
+  },
   "MusicPlate": {
     "@type": "MusicPlate",
     "value": "",
@@ -61,6 +81,30 @@
         "@type": "Organization",
         "name": ""
     }
+  },
+  "NBN": {
+    "@type": "NBN",
+    "value": ""
+  },
+  "PublisherNumber": {
+    "@type": "PublisherNumber",
+    "value": ""
+  },
+  "SICI": {
+    "@type": "SICI",
+    "value": ""
+  },
+  "STRN": {
+    "@type": "STRN",
+    "value": ""
+  },
+  "UPC": {
+    "@type": "UPC",
+    "value": ""
+  },
+  "VideoRecordingNumber": {
+    "@type": "VideoRecordingNumber",
+    "value": ""
   },
   "Publication": {
     "@type": "Publication",
