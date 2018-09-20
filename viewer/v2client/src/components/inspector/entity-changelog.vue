@@ -36,12 +36,11 @@ export default {
 
 <template>
   <div class="EntityChangelog">
-    <p>
+    <p class="EntityChangelog-created">
       <span class="EntityChangelog-key uppercaseHeading--bold">{{ 'Created' | translatePhrase}}:</span> 
       {{ getCard.created }} {{ 'by' | translatePhrase}} {{ getCard.descriptionCreator || 'okänd' }}
     </p>
-    <span class="EntityChangelog-separator">|</span>
-    <p>
+    <p class="EntityChangelog-changed">
       <span class="EntityChangelog-key uppercaseHeading--bold">{{ 'Changed' | translatePhrase}}:</span> 
       {{ getCard.modified }} {{ 'by' | translatePhrase}} {{ getCard.descriptionLastModifier || 'okänd' }}
     </p>
@@ -68,21 +67,19 @@ export default {
   display: flex;
   flex-wrap: wrap;
   line-height: 1;
+  margin-right: 20px;
+
+  &-created {
+    margin-right: 10px;
+    padding-right: 10px;
+    border-right: 1px solid @gray-light;
+
+    @media screen and (max-width: @screen-sm) {
+      border-right: none;
+    }
+  }
   
   &-key {
-  }
-
-  &-separator {
-    padding: 0 5px;
-    color: @grey-light;
-  }
-  
-  @media (max-width: @screen-sm) {
-    flex-direction: column;
-    
-    &-separator {
-      display: none;
-    } 
   }
 }
 // .record-summary-container {
