@@ -513,7 +513,7 @@ export default {
     <div class="EntityAdder-add"
       v-if="isPlaceholder && !addEmbedded">
         <i 
-          class="fa fa-fw fa-plus-circle icon icon--sm" 
+          class="fa fa-plus-circle icon icon--sm" 
           tabindex="0"
           aria-hidden="true"
           @click="add($event)" 
@@ -531,7 +531,7 @@ export default {
     <!-- Add entity within field -->
     <div class="EntityAdder-add action-button" v-if="!isPlaceholder && !addEmbedded">
       <i 
-        class="EntityAdder-addIcon fa fa-fw fa-plus-circle icon icon--sm" 
+        class="EntityAdder-addIcon fa fa-plus-circle icon icon--sm" 
         tabindex="0"
         v-on:click="add($event)" 
         @keyup.enter="add($event)"

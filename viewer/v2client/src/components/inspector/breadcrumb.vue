@@ -188,8 +188,10 @@ export default {
     justify-content: flex-end;
     white-space: nowrap;
 
-    @media (max-width: @screen-sm) {
+    @media (max-width: @screen-xs) {
       justify-content: space-between;
+      flex-direction: column;
+      align-items: flex-end;
     }
   }
 

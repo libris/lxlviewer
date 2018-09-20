@@ -816,6 +816,7 @@ export default {
   &-contentItem {
     display: flex;
     flex: 1;
+    max-width: 100%;
 
     &.is-entityContent {
       display: inline-flex;

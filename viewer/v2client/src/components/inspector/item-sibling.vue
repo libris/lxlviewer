@@ -396,6 +396,7 @@ export default {
 <style lang="less">
 
 .ItemSibling {
+  width: 100%;
   padding: 5px 0;
   position: relative;
   flex: 1 100%;
