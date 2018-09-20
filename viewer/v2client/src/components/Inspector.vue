@@ -598,7 +598,7 @@ export default {
   &-admin {
     display: flex;
     flex-direction: column;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
 
     @media (min-width: @screen-sm) {
       flex-direction: row;

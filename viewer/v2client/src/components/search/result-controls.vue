@@ -262,7 +262,7 @@ export default {
   }
 
   &-pagLink {
-    color: @grey;
+    color: @grey-dark;
     font-weight: 600;
     padding: 0 4px;
     position: relative;
