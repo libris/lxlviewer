@@ -79,6 +79,7 @@ export default {
   
   @media (max-width: @screen-sm) {
     flex-direction: column;
+    
     &-separator {
       display: none;
     } 

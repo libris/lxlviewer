@@ -264,7 +264,7 @@ export default {
   &-pagLink {
     color: @grey;
     font-weight: 600;
-    padding: 5px 10px;
+    padding: 0 4px;
     position: relative;
     text-transform: uppercase;
     transition: color 0.2s ease;
@@ -290,13 +290,12 @@ export default {
       &::after {
         content: '';
         position: absolute;
-        width: 75%;
+        width: 100%;
         height: 3px;
-        background-color: @brand-primary;
-        bottom: -5px;
+        background-color: #29A1A2;
         left: 0;
         right: 0;
-        margin: auto;
+        bottom: -3px;
       }
 
       &:hover {
