@@ -265,6 +265,7 @@ export default {
         <i class="fa fa-plus-circle icon icon--primary icon--lg"></i>
       </div>
     </div>
+    <portal to="sidebar">
     <panel-component
       v-if="showList"
       :title="'Select sources' | translatePhrase"
@@ -341,14 +342,7 @@ export default {
         </div>
       </template>
     </panel-component>
-  <!-- <p v-if="remoteResult.state === 'error'">
-    <i class="fa fa-close"></i> {{"Something went wrong" | translatePhrase}}
-  </p>
-  <p v-if="remoteResult.state === 'loading'">
-    <i class="fa fa-circle-o-notch fa-spin"></i> {{"Searching" | translatePhrase}}...
-  </p> -->
-  <!-- <search-result :result="convertedItems" :import-data="importData" 
-  v-if="convertedItems.totalItems > -1 || status.resultList.loading"></search-result> -->
+    </portal>
 </div>
 </template>
 
