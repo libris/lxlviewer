@@ -170,7 +170,7 @@ new Vue({
         userObj.token = token;
         store.dispatch('setUser', userObj);
         if (initial) {
-          this.$store.dispatch('pushNotification', { color: 'green', message: `${StringUtil.getUiPhraseByLang('You were logged in', this.settings.language)}!` });
+          this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('You were logged in', this.settings.language)}!` });
           const lastPath = localStorage.getItem('lastPath');
           if (typeof lastPath !== 'undefined' && lastPath !== '/user' && lastPath !== '/login') {
             localStorage.removeItem('lastPath');

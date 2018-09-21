@@ -164,11 +164,11 @@ export default {
         value: 'open-marc-preview'
       });
     },
-    applyTemplate(templateName) {
+    applyTemplate(template) {
       this.hideToolsMenu();
       this.$store.dispatch('pushInspectorEvent', {
         name: 'apply-template',
-        value: templateName
+        value: template.value
       });
     },
     closeMarc() {
@@ -220,8 +220,7 @@ export default {
       HttpUtil.get({ url: this.compileMARCUrl }).then((response) => {
         this.download(response);
       }, (error) => {
-        this.changeNotification('color', 'red');
-        this.changeNotification('message', `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${StringUtil.getUiPhraseByLang(error, this.settings.language)}`);
+        this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${StringUtil.getUiPhraseByLang(error, this.settings.language)}` });
       });
     },
     handleCopy() {
@@ -238,13 +237,10 @@ export default {
       'status',
     ]),
     validTemplates() {
-      const type = this.inspector.data.mainEntity['@type'].toLowerCase();
-      const templates = CombinedTemplates;
-      if (templates.hasOwnProperty(type)) {
-        return templates[type];
-      } else {
-        return {};
-      }
+      const type = this.inspector.data.mainEntity['@type'];
+      const baseType = VocabUtil.getRecordType(type, this.resources.vocab, this.resources.context);
+      const templates = VocabUtil.getValidTemplates(type, CombinedTemplates[baseType.toLowerCase()], this.resources.vocabClasses, this.resources.context);
+      return templates;
     },
     hasTemplates() {
       return Object.keys(this.validTemplates).length !== 0;
@@ -406,7 +402,7 @@ export default {
           </a>
         </li>
         <li class="Toolbar-menuItem inSubMenu" v-for="(value, key) in validTemplates" v-show="showTemplatesSubMenu" :key="key">
-          <a class="Toolbar-menuLink" @click="applyTemplate(key)">
+          <a class="Toolbar-menuLink" @click="applyTemplate(value)">
           <i class="fa fa-fw fa-plus"></i>
           {{ value.label }}
           </a>

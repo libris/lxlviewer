@@ -197,21 +197,21 @@ export default {
             this.closeExtractDialog();
           }, (error) => {
             this.$store.dispatch('pushNotification', { 
-              color: 'red', 
+              type: 'danger', 
               message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error}`
             });
             this.closeExtractDialog();
           });
         } else {
           this.$store.dispatch('pushNotification', { 
-            color: 'red', 
+            type: 'danger', 
             message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error}`
           });
           this.closeExtractDialog();
         }
       }, (error) => {
         this.$store.dispatch('pushNotification', { 
-          color: 'red', 
+          type: 'danger', 
           message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error}`
         });
         this.closeExtractDialog();
@@ -250,7 +250,7 @@ export default {
         ],
         addToHistory: false,
       });
-      this.$store.dispatch('pushNotification', { color: 'green', message: `${StringUtil.getUiPhraseByLang('Linking was successful', this.settings.language)}` });
+      this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('Linking was successful', this.settings.language)}` });
       this.closeExtractDialog();
     },
     cloneThis() {      
@@ -304,7 +304,7 @@ export default {
 
 <template>
   <div class="ItemLocal js-itemLocal"
-    :class="{'is-highlighted': isLastAdded, 'is-expanded': expanded}"
+    :class="{'is-highlighted': isLastAdded, 'is-expanded': expanded, 'is-extractable': isExtractable}"
     tabindex="0" 
     @keyup.enter="checkFocus()"
     @focus="addFocus()"

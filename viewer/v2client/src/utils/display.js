@@ -212,7 +212,7 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
   }
   if (_.isEmpty(result)) {
     window.lxlWarning(`🏷️ DisplayObject was empty. @type was ${trueItem['@type']}. Used lens: "${usedLensType}".`, 'Item data:', trueItem);
-    result = { 'label': `{${StringUtil.getUiPhraseByLang('Unknown', settings.language)}}` };
+    result = { 'label': `{${StringUtil.getUiPhraseByLang('Unnamed', settings.language)}}` };
   }
   return result;
 }
@@ -244,7 +244,7 @@ export function getItemSummary(item, displayDefs, quoted, vocab, settings, conte
     }
   });
   if (summary['header'].length === 0) {
-    summary['header'].push({ property: 'error', value: `{${StringUtil.getUiPhraseByLang('Unnamed entity', settings.language)}}` });
+    summary['header'].push({ property: 'error', value: `{${StringUtil.getUiPhraseByLang('Unnamed', settings.language)}}` });
   }
   return summary;
 }

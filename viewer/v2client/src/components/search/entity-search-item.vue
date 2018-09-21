@@ -19,6 +19,7 @@ export default {
       default: false,
     },
     path: '',
+    isReplaced: false,
   },
   data() {
     return {
@@ -34,7 +35,7 @@ export default {
   },
   methods: {
     addItem() {
-      if (!this.isDisabled) {
+      if (!this.isDisabled && !this.isReplaced) {
         this.$emit('add-item');
       }
     },
@@ -56,11 +57,7 @@ export default {
     'entity-summary': EntitySummary,
     'summary-action': SummaryAction,
   },
-  watch: {
-  },
-  events: {
-  },
-  ready() { // Ready method is deprecated in 2.0, switch to "mounted"
+  mounted() { 
   },
 };
 </script>
@@ -68,9 +65,10 @@ export default {
 <template>
   <li class="EntitySearch-listItem PanelComponent-listItem" 
     @click="addItem()"
-    :class="{ 'already-added' : isDisabled }">
+    :class="{ 'is-alreadyAdded' : isDisabled, 'is-replaced' : isReplaced }">
     <summary-action 
       :disabled="isDisabled" 
+      :replaced="isReplaced"
       :options="addPayload" 
       @action="addItem()">
     </summary-action>
@@ -92,7 +90,15 @@ export default {
   &-listItem {
     cursor: pointer;
 
-    &.already-added {
+    &.is-alreadyAdded {
+      cursor: default;
+
+      & .EntitySummary-title {
+        color: @grey-light;
+      }
+    }
+
+    &.is-replaced {
       cursor: default;
 
       & .EntitySummary-title {

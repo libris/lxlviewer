@@ -37,6 +37,18 @@ export default {
     }
   },
   computed: {
+    isReplacedBy() {
+      const info = this.getSummary.info.concat(this.getSummary.sub);
+      const infoObj = {};
+      let value = '';
+      _.each(info, (node) => {
+        infoObj[node.property] = node.value.join(', ');
+        if (node.property === 'isReplacedBy') {
+          value = node.value;
+        }
+      });
+      return value;
+    },
     routerPath() {
       if (this.focusData.hasOwnProperty('@id')) {
         const uriParts = this.focusData['@id'].split('/');
@@ -182,8 +194,14 @@ export default {
         v-show="v.length !== 0" 
         v-for="(v, k) in infoWithKeys" 
         :key="k">
-        <span class="EntitySummary-detailsKey uppercaseHeading--bold">{{ k | labelByLang }}:</span>
-        <span class="EntitySummary-detailsValue">{{ v }}</span>
+        <div v-if="isReplacedBy === ''">
+          <span  class="EntitySummary-detailsKey uppercaseHeading--bold">{{ k | labelByLang }}:</span>
+          <span class="EntitySummary-detailsValue">{{ v }}</span>
+        </div>
+        <div v-if="isReplacedBy !== ''">
+          <span  class="EntitySummary-detailsKey uppercaseHeading--bold">Ersatt av:</span>
+          <span class="EntitySummary-detailsValue">{{ v }}</span>
+        </div>
       </li>
     </ul>
   </div>
@@ -281,7 +299,7 @@ export default {
   }
 
   &-detailsItem {
-    display: inline;
+    display: inline-block;
     margin-right: 10px;
   }
 

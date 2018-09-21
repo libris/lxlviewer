@@ -58,7 +58,7 @@
     "Add field" : "Lägg till fält",
     "Add field in" : "Lägg till fält under",
     "Entity": "Entitet",
-    "Unnamed entity": "Namnlös entitet",
+    "Unnamed": "Namnlös",
     "Link entity": "Länka entitet",
     "Post": "Post",
     "Unknown": "Okänd",
@@ -71,6 +71,8 @@
     "Accept": "Godkänn",
     "Edit": "Redigera",
     "Save": "Spara",
+    "field(s) added from template": "fält lades till från mall",
+    "The record already contains these fields": "Posten har redan dessa fält",
     "Yes, remove the record": "Ja, radera posten",
     "Remove the record": "Radera posten",
     "No, cancel": "Nej, avbryt",
@@ -194,6 +196,7 @@
     "Clear all": "Rensa alla",
     "Close": "Stäng",
     "Expand": "Expandera",
-    "Minimize": "Minimera"
+    "Minimize": "Minimera",
+    "Replaced by": "Ersatt av"
   }
 }

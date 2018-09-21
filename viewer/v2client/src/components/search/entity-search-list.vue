@@ -28,6 +28,13 @@ export default {
     itemIsAdded(item) {
       return this.disabledIds.indexOf(item['@id']) > -1;
     },
+    isReplaced(item) {
+      if ('isReplacedBy' in item) {
+        return true;
+      } 
+
+      return false;
+    },
     addItem(item) {
       this.$emit('add-item', item);
     },
@@ -109,6 +116,7 @@ export default {
         :class="{'is-selected': index == selectedIndex }" 
         @mouseover.native="select(index)"
         @focus.native="select(index)"
+        :is-replaced="isReplaced(item)"
         :focus-data="item" 
         :is-disabled="itemIsAdded(item)" 
         :add-link="false"
