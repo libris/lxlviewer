@@ -256,6 +256,8 @@ export default {
   &-pagItem {
     display: inline;
     line-height: 1;
+    padding: 0 3px;
+
     &:first-of-type a {
       padding-left: 0;
     }
@@ -264,7 +266,7 @@ export default {
   &-pagLink {
     color: @grey-dark;
     font-weight: 600;
-    padding: 0 4px;
+    padding: 0 3px;
     position: relative;
     text-transform: uppercase;
     transition: color 0.2s ease;
