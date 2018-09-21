@@ -85,6 +85,23 @@ export default {
 
       inputEl.value = label;
     },
+    focusOnInput(event) {
+
+      if (!event.target.classList.contains('js-filterSelect')) {
+        return;
+      }
+      const input = event.target.getElementsByClassName('js-filterSelectInput')[0];
+      this.simulateClick(input);
+    },
+    simulateClick(elem) {
+      let evt = new MouseEvent('click', {
+        bubbles: true,
+        cancelable: true,
+        view: window
+      });
+      
+      let canceled = !elem.dispatchEvent(evt);
+    },
     clear() {
       let allObj = {};
       let allValue = this.optionsAll;
@@ -115,14 +132,16 @@ export default {
 <template>
   <div class="FilterSelect" 
     :class="className" 
-    @blur="filterVisible = false"
-    v-on-clickaway="close">
+    v-on-clickaway="close"
+    :tabindex="0"
+    @keyup.enter="focusOnInput">
     <input class="FilterSelect-input js-filterSelectInput" 
       type="text" 
       v-bind:placeholder="translatedPlaceholder" 
       :id="selectId" 
       @keyup="filter(), filterVisible = true"
-      @click="filterVisible = !filterVisible">
+      @click="filterVisible = !filterVisible"
+      :tabindex="-1">
     <ul class="FilterSelect-dropdown js-filterSelectDropdown"
       :class="{'is-visible': filterVisible}">
       <li class="FilterSelect-dropdownItem"
@@ -131,18 +150,16 @@ export default {
         v-for="option in options"
         :key="option.key">
         <span class="FilterSelect-dropdownText" 
-          tabindex="0"
           :data-filter="option.value"
           :data-key="option.key">{{option.label}}</span>
       </li>
     </ul>
-    <i tabindex="0" 
+    <i
       class="fa icon icon--sm FilterSelect-open"
-      :class="{'fa-angle-down': filterVisible, 'fa-angle-up': !filterVisible}"
+      :class="{'fa-angle-up': filterVisible, 'fa-angle-down': !filterVisible}"
       @click="filterVisible = !filterVisible"
       @keyup.enter="filterVisible = !filterVisible"></i>
-    <i v-if="isFilter" 
-      tabindex="0"
+    <i v-if="isFilter"
       class="fa fa-close icon icon--sm FilterSelect-clear"
       @click="clear()"
       @keyup.enter="clear()"></i>
@@ -194,7 +211,7 @@ export default {
     overflow: hidden;
     position: absolute;
     top: auto;
-    bottom: 26px;
+    bottom: 18px;
     background-color: @panel-header-bg;
     padding: 5px 0;
     width: 100%;
