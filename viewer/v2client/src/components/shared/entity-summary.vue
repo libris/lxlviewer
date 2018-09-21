@@ -174,9 +174,9 @@ export default {
     <ul class="EntitySummary-details" v-show="!isCompact">
       <li class="EntitySummary-detailsItem" 
         v-if="identifiers.length > 0">
-        <span class="EntitySummary-detailsKey uppercaseHeading--bold">
+        <span class="EntitySummary-detailsKey EntitySummary-id uppercaseHeading--bold">
         {{ identifiers[0] }}</span>
-        <span class="EntitySummary-detailsValue" 
+        <span class="EntitySummary-detailsValue EntitySummary-idInfo" 
           v-if="identifiers.length > 1">(+{{ identifiers.length-1 }})</span>
       </li>
       <li class="EntitySummary-detailsItem" 
@@ -279,6 +279,12 @@ export default {
     list-style-type: none;
     margin: 0;
     padding: 0px;
+  }
+
+  &-id {
+  }
+
+  &-idInfo {
   }
 
   &-detailsItem {

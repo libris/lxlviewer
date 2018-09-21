@@ -138,7 +138,7 @@ export default {
     </ul>
     <i tabindex="0" 
       class="fa icon icon--sm FilterSelect-open"
-      :class="{'fa-angle-down': filterVisible, 'fa-angle-up': !filterVisible}"
+      :class="{'fa-angle-up': filterVisible, 'fa-angle-down': !filterVisible}"
       @click="filterVisible = !filterVisible"
       @keyup.enter="filterVisible = !filterVisible"></i>
     <i v-if="isFilter" 
