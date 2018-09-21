@@ -441,8 +441,8 @@ export default {
     margin-bottom: 15px;
 
     .EntitySummary-title {
-      font-size: 16px;
-      font-size: 1.6rem;
+      font-size: 18px;
+      font-size: 1.8rem;
     }
 
     .is-compact & {
@@ -453,12 +453,14 @@ export default {
 
   &-header {
     width: 100%;
+    margin: 0 0 10px 0;
   }
 
   &-inputContainer {
     width: 100%;
     display: flex;
     position: relative;
+    margin-bottom: 0;
   }
 
   &-extractControls {
@@ -477,6 +479,7 @@ export default {
   &-resultControls {
     display: flex;
     justify-content: space-between;
+    align-items: baseline;
   }
 
   &-listTypes {
