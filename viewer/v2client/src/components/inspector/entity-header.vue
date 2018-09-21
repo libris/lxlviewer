@@ -93,9 +93,10 @@ export default {
 
 .HeaderComponent {
   display: flex;
-  box-shadow: @shadow-base;
-  padding: 0px;
   margin-bottom: 20px;
+  border: 1px solid @gray-lighter;
+  border-radius: 4px;
+  padding: 15px 20px;
 
   &-body {
     &.is-full {
