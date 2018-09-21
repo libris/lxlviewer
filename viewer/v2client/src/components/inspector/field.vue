@@ -736,6 +736,7 @@ export default {
       text-align: left;
       justify-content: flex-start;
       display: flex;
+      margin-bottom: 2px;
     }
 
     &:before {
