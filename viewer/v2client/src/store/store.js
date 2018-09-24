@@ -95,13 +95,13 @@ const store = new Vuex.Store({
         'Identity',
       ],
       removeOnDuplication: [
-        'record.sameAs',
         'record.controlNumber',
+        'record.descriptionUpgrader',
         'record.generationProcess',
         'record.generationDate',
-        'record.descriptionUpgrader',
+        'record.identifiedBy',
+        'record.sameAs',
         'mainEntity.sameAs',
-        'mainEntity.identifiedBy',
         'work.sameAs',
       ],
       removableBaseUris: [
