@@ -308,7 +308,7 @@ export default {
       background-color: @list-item-bg-odd;
     }
 
-    &:hover:not(.already-added):not(.is-disabled):not(.SearchWindow-resultItem) {
+    &:hover:not(.is-added):not(.is-disabled):not(.is-replaced):not(.SearchWindow-resultItem) {
       background-color: @list-item-bg-hover;
     }
   }

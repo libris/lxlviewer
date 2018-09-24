@@ -252,7 +252,9 @@ export default {
       this.active = true;
       this.$nextTick(() => {
         this.$nextTick(() => {
-          this.$refs.input.focus();
+          if (this.$refs.input) {
+            this.$refs.input.focus();
+          }
         });
       });
       this.$store.dispatch('setStatusValue', { 
@@ -394,7 +396,7 @@ export default {
               class="FieldAdderPanel-fieldItem PanelComponent-listItem"
               @focus="selectedIndex = index"
               @mouseover="selectedIndex = index" 
-              v-bind:class="{ 'already-added': prop.added, 'available': !prop.added, 'selected': index == selectedIndex }" 
+              v-bind:class="{ 'is-added': prop.added, 'available': !prop.added, 'selected': index == selectedIndex }" 
               v-for="(prop, index) in filteredResults" 
               @click="addField(prop, false)"
               @keyup.enter="addField(prop, false)" 
@@ -408,7 +410,7 @@ export default {
                   <i class="fa fa-plus-circle icon icon--lg icon--primary"></i>
                 </a>
                 <span v-show="prop.added" :title="'Added' | translatePhrase">
-                  <i class="fa fa-check-circle icon icon--lg is-disabled"></i>
+                  <i class="fa fa-check-circle icon icon--lg is-added"></i>
                 </span>
               </span>
               <span class="FieldAdderPanel-fieldLabel" :title="prop.label | capitalize">
@@ -537,10 +539,6 @@ export default {
 
     &.available {
       cursor: pointer;
-    }
-
-    &.already-added {
-      color: @gray-light;
     }
   }
 }

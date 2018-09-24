@@ -65,7 +65,7 @@ export default {
 <template>
   <li class="EntitySearch-listItem PanelComponent-listItem" 
     @click="addItem()"
-    :class="{ 'is-alreadyAdded' : isDisabled, 'is-replaced' : isReplaced }">
+    :class="{ 'is-added' : isDisabled, 'is-replaced' : isReplaced }">
     <summary-action 
       :disabled="isDisabled" 
       :replaced="isReplaced"
@@ -90,20 +90,9 @@ export default {
   &-listItem {
     cursor: pointer;
 
-    &.is-alreadyAdded {
-      cursor: default;
-
-      & .EntitySummary-title {
-        color: @grey-light;
-      }
-    }
-
+    &.is-added, 
     &.is-replaced {
       cursor: default;
-
-      & .EntitySummary-title {
-        color: @grey-light;
-      }
     }
 
     code {
