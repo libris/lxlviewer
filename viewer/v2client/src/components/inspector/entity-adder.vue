@@ -335,7 +335,9 @@ export default {
       this.active = true;
       this.$nextTick(() => {
         this.$nextTick(() => {
-          this.$refs.input.focus();
+          if (this.$refs.input) {
+            this.$refs.input.focus();
+          }
         });
       });
       this.$store.dispatch('setStatusValue', { 
