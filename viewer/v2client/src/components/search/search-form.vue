@@ -528,13 +528,9 @@ export default {
   }
 
   &-typeLabel {
-    padding: 3px 7px;
+    padding-right: 10px;
     font-weight: normal;
     position: relative;
-
-    &:first-of-type {
-      padding-left: 0;
-    }
   }
 
   &-typeInput {

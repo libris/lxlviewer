@@ -166,7 +166,7 @@ export default {
 .ReverseRelations {
   &-number {
     float: left;
-    margin: 0 0 20px;
+    margin: 0 0 10px;
   
     @media (min-width: @screen-sm) {
       float: right;

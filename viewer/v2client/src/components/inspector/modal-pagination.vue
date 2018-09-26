@@ -100,7 +100,7 @@ export default {
 <style lang="less">
 
 .ModalPagination {
-  margin: 10px 0;
+  margin: 20px 0 10px 0;
 
   &-list {
     display: flex;
@@ -114,18 +114,26 @@ export default {
   &-item {
   display: inline;
   line-height: 1;
-    &:first-of-type a {
-      padding-left: 0;
+  margin-right: 6px;
+  position: relative;
+
+    &.is-active::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 3px;
+      background-color: @brand-primary;
+      bottom: -6px;
     }
   }
 
   &-link {
-    color: @grey;
+    color: @grey-dark;
     font-weight: 600;
-    padding: 5px 7px;
     position: relative;
     text-transform: uppercase;
     transition: color 0.2s ease;
+    padding: 0 3px;
 
       &:hover, 
       &:active, 
@@ -148,21 +156,11 @@ export default {
 
     i {
       font-size: 13px;
+      padding: 0 2px;
     }
 
     .is-active & {
       color: @black;
-
-      &::after {
-        content: '';
-        position: absolute;
-        width: 100%;
-        height: 3px;
-        background-color: @brand-primary;
-        bottom: 1px;
-        right: -3px;
-        margin: auto;
-      }
 
       &:hover, 
       &:active, 

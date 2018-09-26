@@ -165,7 +165,7 @@ export default {
   display: flex;
   flex: 1;
   flex-shrink: 0;
-  margin: 0 0 0 -5px;
+  margin-left: -5px;
   padding: 5px;
   border-radius: 4px;
   transition: background-color 0.2s ease;
@@ -178,10 +178,6 @@ export default {
     padding: 2px 10px;
     resize: none;
     transition: border .25s ease-out;
-
-    @media (min-width: @screen-md) {
-      margin-right: 90px;
-    }
 
     &:focus {
       border: 1px solid @gray-dark;
@@ -206,10 +202,11 @@ export default {
     font-size: 1.6rem;
     float: right;
     display: inline-block;
-    padding: 3px;
-    margin-left: 5px;
     cursor: pointer;
     color: @gray;
+    min-width: 20px;
+    margin-left: 5px;
+
 
     &:hover {
       color: @black;

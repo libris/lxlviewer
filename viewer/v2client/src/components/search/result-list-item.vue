@@ -87,7 +87,7 @@ export default {
   &--detailed {
     list-style: none;
     margin-bottom: 15px;
-    .panel-mixin(@neutral-color);
+    .panel-mixin(@white);
   }
 
   &--compact {

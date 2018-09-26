@@ -159,6 +159,7 @@ export default {
   &-container {
     display: flex;
     position: relative;
+    width: 100%;
   }
 
   &.is-newlyAdded {

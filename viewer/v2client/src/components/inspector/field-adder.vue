@@ -487,7 +487,7 @@ export default {
     padding: 5px 15px;
     border-bottom: 1px solid @gray-lighter;
 
-    &.FieldAdderPanel-fieldLabel {
+    & .FieldAdderPanel-fieldLabel {
       padding-left: 0;
     }
   }

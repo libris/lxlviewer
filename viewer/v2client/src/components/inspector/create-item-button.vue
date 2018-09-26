@@ -103,7 +103,8 @@ export default {
 <style lang="less">
 
 .CreateItem {
-  margin-top: 20px;
+  margin-top: 10px;
+
   &-btn {
     &--hasHolding {
       background: @white;

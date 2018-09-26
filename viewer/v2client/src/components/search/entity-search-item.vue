@@ -128,8 +128,8 @@ export default {
       padding: 0;
 
       & .EntitySummary-title {
-        font-size: 16px;
-        font-size: 1.6rem;
+        font-size: 18px;
+        font-size: 1.8rem;
         font-weight: 600;
       }
     }

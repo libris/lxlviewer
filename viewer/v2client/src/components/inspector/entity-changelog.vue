@@ -36,12 +36,12 @@ export default {
 
 <template>
   <div class="EntityChangelog">
-    <p>
-      <span class="EntityChangelog-key uppercaseHeading">{{ 'Created' | translatePhrase}}:</span> 
+    <p class="EntityChangelog-created">
+      <span class="EntityChangelog-key uppercaseHeading--bold">{{ 'Created' | translatePhrase}}:</span> 
       {{ getCard.created }} {{ 'by' | translatePhrase}} {{ getCard.descriptionCreator || 'okänd' }}
     </p>
-    <p>
-      <span class="EntityChangelog-key uppercaseHeading">{{ 'Changed' | translatePhrase}}:</span> 
+    <p class="EntityChangelog-changed">
+      <span class="EntityChangelog-key uppercaseHeading--bold">{{ 'Changed' | translatePhrase}}:</span> 
       {{ getCard.modified }} {{ 'by' | translatePhrase}} {{ getCard.descriptionLastModifier || 'okänd' }}
     </p>
       <!--| <span class="show-record-toggle" v-show="!showRecord" v-on:click="toggleRecord">{{'Show admin metadata' | translatePhrase}}</span>
@@ -64,11 +64,23 @@ export default {
 <style lang="less">
 
 .EntityChangelog {
+  display: flex;
+  flex-wrap: wrap;
   line-height: 1;
+  margin-right: 20px;
+
+  &-created {
+    margin-right: 10px;
+    padding-right: 10px;
+    border-right: 1px solid @gray-light;
+
+    @media screen and (max-width: @screen-sm) {
+      border-right: none;
+    }
+  }
   
   &-key {
   }
-
 }
 // .record-summary-container {
 //   .show-record-toggle {

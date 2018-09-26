@@ -256,15 +256,17 @@ export default {
   &-pagItem {
     display: inline;
     line-height: 1;
+    padding: 0 3px;
+
     &:first-of-type a {
       padding-left: 0;
     }
   }
 
   &-pagLink {
-    color: @grey;
+    color: @grey-dark;
     font-weight: 600;
-    padding: 5px 10px;
+    padding: 0 3px;
     position: relative;
     text-transform: uppercase;
     transition: color 0.2s ease;
@@ -290,13 +292,12 @@ export default {
       &::after {
         content: '';
         position: absolute;
-        width: 75%;
+        width: 100%;
         height: 3px;
-        background-color: @brand-primary;
-        bottom: -5px;
+        background-color: #29A1A2;
         left: 0;
         right: 0;
-        margin: auto;
+        bottom: -3px;
       }
 
       &:hover {

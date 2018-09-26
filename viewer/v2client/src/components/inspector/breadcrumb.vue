@@ -175,6 +175,7 @@ export default {
 <style lang="less">
 .Breadcrumb {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   margin: 0 0 30px 0;
 
@@ -183,6 +184,15 @@ export default {
 
   &-postData {
     display: flex;
+    flex: 1;
+    justify-content: flex-end;
+    white-space: nowrap;
+
+    @media (max-width: @screen-xs) {
+      justify-content: space-between;
+      flex-direction: column;
+      align-items: flex-end;
+    }
   }
 
   &-postLinks {
@@ -191,20 +201,20 @@ export default {
   }
 
   &-back {
+    flex: 1;
   }
 
   &-backLink {
-    color: @brand-primary;
+    white-space: nowrap;
+    margin-right: 10px;
   } 
 
   &-next {
     margin: 0 0 0 10px;
-    color: @brand-primary;
   }
 
   &-prev {
     margin: 0 10px 0 0;
-    color: @brand-primary;
   }
 }
 </style>

@@ -663,7 +663,12 @@ export default {
     padding: 15px 20px 0 20px;
 
     &.is-wide {
-      flex-basis: 300px;
+      flex-basis: 35%;
+      max-width: 270px;
+
+      @media screen and (max-width: @screen-sm) { 
+        max-width: 100%;
+      }
     }
 
     &.is-hovered {
@@ -731,6 +736,7 @@ export default {
       text-align: left;
       justify-content: flex-start;
       display: flex;
+      margin-bottom: 2px;
     }
 
     &:before {
@@ -799,7 +805,7 @@ export default {
 
     .Field--inner & {
       border: 0;
-      padding: 0 0 0 20px;
+      padding: 0 0 0 10px;
     }
 
      @media (min-width: 768px) {
@@ -816,6 +822,7 @@ export default {
   &-contentItem {
     display: flex;
     flex: 1;
+    max-width: 100%;
 
     &.is-entityContent {
       display: inline-flex;
@@ -846,6 +853,9 @@ export default {
       font-size: 1.6rem;
       margin: 0 0 0 10px;
       line-height: 1.4;
+      position: absolute;
+      top: 0;
+      right: 0;
       
       @media (max-width: @screen-sm) {
         display: flex;

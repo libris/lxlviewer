@@ -252,7 +252,7 @@ export default {
     border-radius: 4px;
     box-shadow: @shadow-panel;
     padding: 10px;
-    z-index: 1;
+    z-index: 3;
     max-width: 50%;
     font-size: 14px;
     font-size: 1.4rem;
@@ -273,6 +273,7 @@ export default {
     font-size: 1.8rem;
     display: block;
     text-transform: uppercase;
+    color: @gray-darker;
     margin-top: 0;
   }
 

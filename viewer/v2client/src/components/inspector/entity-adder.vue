@@ -515,7 +515,7 @@ export default {
     <div class="EntityAdder-add"
       v-if="isPlaceholder && !addEmbedded">
         <i 
-          class="fa fa-fw fa-plus-circle icon icon--sm" 
+          class="fa fa-plus-circle icon icon--sm" 
           tabindex="0"
           aria-hidden="true"
           @click="add($event)" 
@@ -533,7 +533,7 @@ export default {
     <!-- Add entity within field -->
     <div class="EntityAdder-add action-button" v-if="!isPlaceholder && !addEmbedded">
       <i 
-        class="EntityAdder-addIcon fa fa-fw fa-plus-circle icon icon--sm" 
+        class="EntityAdder-addIcon fa fa-plus-circle icon icon--sm" 
         tabindex="0"
         v-on:click="add($event)" 
         @keyup.enter="add($event)"
@@ -590,8 +590,8 @@ export default {
           <div class="EntityAdder-controlForm">
             <div class="EntityAdder-search">
               <label for="entityKeywordInput" class="EntityAdder-searchLabel">{{ "Search" | translatePhrase }}</label>
-              <div class="EntityAdder-searchInputContainer">
-                <input class="EntityAdder-searchInput entity-search-keyword-input"
+              <div class="EntityAdder-searchInputContainer panel">
+                <input class="EntityAdder-searchInput entity-search-keyword-input customInput form-control"
                   name="entityKeywordInput"
                   v-model="keyword"
                   ref="input"
@@ -723,6 +723,7 @@ export default {
   &-searchInputContainer {
     flex: 1;
     position: relative;
+    margin-bottom: 0;
   }
 
   &-filterSearchInput {
@@ -735,29 +736,6 @@ export default {
   }
 
   &-searchInput {
-    width: 100%;
-    font-size: 20px;
-    font-size: 2rem;
-    line-height: 1.2;
-    border: 0;
-    border: 1px solid @gray-light;
-    background: @white;
-    padding: 2px 8px;
-    height: 42px;
-    border-radius: 4px;
-    box-shadow: 0px 0px 0px 2px transparent;
-
-    &::placeholder, 
-    input::placeholder  {
-        font-style: italic;
-        color: @gray;
-    }
-
-    &:focus {
-        border: 1px solid @brand-primary;
-        outline: 0;
-        box-shadow: none;
-    }
   }
 
   &-searchSelect {

@@ -430,6 +430,7 @@ export default {
   position: relative;
   flex: 1 100%;
   transition: background-color .5s ease;
+  width: 100%;
 
   &-heading {
     display: block;
