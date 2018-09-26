@@ -564,7 +564,7 @@ export default {
         <toolbar></toolbar>
       </div>
     </div>
-    <portal to="sidebar">
+    <portal to="sidebar" v-if="marcPreview.active">
       <marc-preview @hide="marcPreview.active = false" :error="marcPreview.error" :marc-obj="marcPreview.data" v-if="marcPreview.active"></marc-preview>
     </portal>
     <modal-component title="Error" modal-type="danger" @close="closeRemoveModal" class="RemovePostModal" 

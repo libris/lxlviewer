@@ -265,7 +265,7 @@ export default {
         <i class="fa fa-plus-circle icon icon--primary icon--lg"></i>
       </div>
     </div>
-    <portal to="sidebar">
+    <portal to="sidebar" v-if="showList">
     <panel-component
       v-if="showList"
       :title="'Select sources' | translatePhrase"

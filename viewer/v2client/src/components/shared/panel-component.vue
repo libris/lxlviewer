@@ -66,6 +66,7 @@ export default {
     },
     close() {
       if (this.closeable) {
+        console.log(this.title, 'close function called')
         this.fadedIn = false;
         setTimeout(() => {
           this.$emit('close');
@@ -86,15 +87,17 @@ export default {
   watch: {
     'status.panelOpen'(val, oldVal) {
       if (val !== this.origin) {
+        console.log(this.title, 'watch mismatch, closing')
         setTimeout(() => {
           this.close();
-        }, 300)
+        }, 1)
       }
     }
   },
   components: {
   },
   mounted() {
+    console.log(this.title, 'mountar');
     this.$nextTick(() => {
       this.$store.dispatch('setStatusValue', { property: 'panelOpen', value: this.origin });
       if (window.innerWidth <= 1200 || this.user.settings.forceFullViewPanel) {
@@ -108,9 +111,11 @@ export default {
   beforeDestroy() {
     this.$nextTick(() => {
       this.lockScroll(false);
-      if (this.status.panelOpen === this.origin) {
-        this.$store.dispatch('setStatusValue', { property: 'panelOpen', value: false });
-      };
+      console.log(this.title, 'destroying')
+      // if (this.status.panelOpen === this.origin) {
+      //   console.log(this.title, 'setting panel open to false');
+      //   this.$store.dispatch('setStatusValue', { property: 'panelOpen', value: false });
+      // };
     });
   },
 };

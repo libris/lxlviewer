@@ -249,6 +249,7 @@ export default {
       this.$parent.$emit('expand-item', true);
     },
     show() {
+      console.log(this.modalTitle, 'show() function called in field-adder');
       this.active = true;
       this.$nextTick(() => {
         this.$nextTick(() => {
@@ -265,6 +266,7 @@ export default {
     hide() {
       if (!this.active) return;
       this.active = false;
+      console.log('hide() in field-adder');
       this.filterKey = '';
       this.$store.dispatch('setStatusValue', { property: 'keybindState', value: 'overview' });
       this.resetSelectIndex();
@@ -351,7 +353,7 @@ export default {
       </i>
       <span v-if="!inToolbar" class="FieldAdder-label"> {{ "Add field" | translatePhrase }}</span>
     </button>
-    <portal to="sidebar">
+    <portal to="sidebar" v-if="active">
     <panel-component class="FieldAdder-panel FieldAdderPanel"
       v-if="active"
       :title="modalTitle" 

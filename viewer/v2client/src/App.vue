@@ -19,7 +19,7 @@
         <p>Om felet kvarstår, kontakta <a href="mailto:libris@kb.se">libris@kb.se</a>.</p>
       </div>
     </modal-component>
-    <portal-target name="sidebar" slim />
+    <portal-target name="sidebar" multiple />
     <footer-component></footer-component>
     <notification-list></notification-list>
   </div>

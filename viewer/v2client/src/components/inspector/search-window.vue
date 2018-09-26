@@ -295,7 +295,7 @@ export default {
 
 <template>
   <div class="SearchWindow">
-    <portal to="sidebar">
+    <portal to="sidebar" v-if="active">
     <panel-component class="SearchWindow-panel"
       v-if="active"
       :title="'Link entity' | translatePhrase"
