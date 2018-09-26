@@ -132,12 +132,18 @@ export default {
       }
     },
     openMarcPreview() {
-      this.marcPreview.active = true;
-      RecordUtil.convertToMarc(this.inspector.data, this.settings, this.user).then((result) => {
-        this.marcPreview.data = result;
-      }, (error) => {
-        this.marcPreview.data = null;
-        this.marcPreview.error = error;
+      this.$store.dispatch('pushInspectorEvent', { 
+        name: 'form-control', 
+        value: 'close-modals'
+      })
+      .then(() => {
+        this.marcPreview.active = true;
+        RecordUtil.convertToMarc(this.inspector.data, this.settings, this.user).then((result) => {
+          this.marcPreview.data = result;
+        }, (error) => {
+          this.marcPreview.data = null;
+          this.marcPreview.error = error;
+        });
       });
     },
     fetchDocument() {

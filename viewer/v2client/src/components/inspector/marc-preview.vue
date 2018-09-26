@@ -83,8 +83,7 @@ export default {
 
 <template>
   <panel-component class="MarcPreview"
-    @close="hide" 
-    origin="Preview MARC21"
+    @close="hide"
     title="Preview MARC21">
     <template slot="panel-body">
       <div class="">

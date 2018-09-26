@@ -249,13 +249,18 @@ export default {
       this.$parent.$emit('expand-item', true);
     },
     show() {
-      console.log(this.modalTitle, 'show() function called in field-adder');
-      this.active = true;
-      this.$nextTick(() => {
+      this.$store.dispatch('pushInspectorEvent', { 
+        name: 'form-control', 
+        value: 'close-modals'
+      })
+      .then(() => {
         this.$nextTick(() => {
-          if (this.$refs.input) {
-            this.$refs.input.focus();
-          }
+          this.$nextTick(() => {
+            this.active = true;
+            if (this.$refs.input) {
+              this.$refs.input.focus();
+            }
+          });
         });
       });
       this.$store.dispatch('setStatusValue', { 
@@ -266,7 +271,6 @@ export default {
     hide() {
       if (!this.active) return;
       this.active = false;
-      console.log('hide() in field-adder');
       this.filterKey = '';
       this.$store.dispatch('setStatusValue', { property: 'keybindState', value: 'overview' });
       this.resetSelectIndex();
@@ -356,8 +360,7 @@ export default {
     <portal to="sidebar" v-if="active">
     <panel-component class="FieldAdder-panel FieldAdderPanel"
       v-if="active"
-      :title="modalTitle" 
-      :origin="path" 
+      :title="modalTitle"
       @close="hide">
       <template slot="panel-header-extra">
         <div class="FieldAdderPanel-filterContainer form-group panel">

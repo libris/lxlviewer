@@ -331,15 +331,22 @@ export default {
       }
     },
     show() {
-      this.resetSearch();
-      this.active = true;
-      this.$nextTick(() => {
+      this.$store.dispatch('pushInspectorEvent', { 
+        name: 'form-control', 
+        value: 'close-modals'
+      })
+      .then(() => {
         this.$nextTick(() => {
-          if (this.$refs.input) {
-            this.$refs.input.focus();
-          }
+          this.$nextTick(() => {
+            this.resetSearch();
+            this.active = true;
+            if (this.$refs.input) {
+              this.$refs.input.focus();
+            }
+          });
         });
       });
+
       this.$store.dispatch('setStatusValue', { 
         property: 'keybindState', 
         value: 'entity-adder' 
@@ -565,8 +572,7 @@ export default {
     <portal to="sidebar" v-if="active">
     <panel-component class="EntityAdder-panel EntityAdderPanel" 
       v-if="active"
-      :title="computedTitle" 
-      :origin="path"
+      :title="computedTitle"
       @close="hide">
       <template slot="panel-header-info">
         <div 
