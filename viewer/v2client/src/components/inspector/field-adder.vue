@@ -35,8 +35,6 @@ export default {
       buttonFixed: true,
       buttonPos: -1,
       filterKey: '',
-      selectedIndex: -1,
-      fieldListBottom: false,
       showToolTip: false,
     };
   },
@@ -118,60 +116,6 @@ export default {
         let item = event.target;
         while ((item = item.parentElement) && !item.classList.contains('js-itemLocal'));
           item.classList.remove('is-marked');
-      }
-    },
-    selectNext() {
-      if (this.active) {
-        if (this.selectedIndex < this.filteredResults.length - 1) {
-          if (this.selectedIndex >= 0) {
-            const fieldList = document.getElementsByClassName('js-fieldlist')[0];
-            const threshold =
-              fieldList.getBoundingClientRect().top +
-              fieldList.getBoundingClientRect().height;
-            const selectedElement = document.getElementsByClassName('selected')[0];
-            const selectedPosition =
-              selectedElement.getBoundingClientRect().top +
-              selectedElement.getBoundingClientRect().height * 2;
-            if (selectedPosition > threshold) {
-              fieldList.scrollTop += selectedElement.getBoundingClientRect().height * 2;
-            }
-          }
-          this.selectedIndex += 1;
-        }
-      }
-    },
-    selectPrev() {
-      if (this.active) {
-        if (this.selectedIndex > 0) {
-          this.selectedIndex -= 1;
-          const fieldList = document.getElementsByClassName('js-fieldlist')[0];
-          const threshold = fieldList.getBoundingClientRect().top;
-          const selectedElement = document.getElementsByClassName('selected')[0];
-          const selectedPosition =
-            selectedElement.getBoundingClientRect().top -
-            selectedElement.getBoundingClientRect().height;
-          if (selectedPosition < threshold) {
-            fieldList.scrollTop -= selectedElement.getBoundingClientRect().height * 2;
-          }
-        }
-      }
-    },
-    addFieldMultiple() {
-      if (this.active) {
-        if (!this.filteredResults[this.selectedIndex].added) {
-          this.addField(this.filteredResults[this.selectedIndex], false);
-        } else {
-          console.warn("Already added, should be handled");
-        }
-      }
-    },
-    addFieldSingle() {
-      if (this.active) {
-        if (!this.filteredResults[this.selectedIndex].added) {
-          this.addField(this.filteredResults[this.selectedIndex], true);
-        } else {
-          console.warn("Already added, should be handled");
-        }
       }
     },
     closeModals() {
@@ -273,11 +217,6 @@ export default {
       this.active = false;
       this.filterKey = '';
       this.$store.dispatch('setStatusValue', { property: 'keybindState', value: 'overview' });
-      this.resetSelectIndex();
-    },
-    resetSelectIndex() {
-      this.fieldListBottom = false;
-      this.selectedIndex = -1;
     },
   },
   watch: {
@@ -289,20 +228,8 @@ export default {
     'inspector.event'(val, oldVal) {
       if (val.name === 'form-control') {
         switch (val.value) { 
-          case 'select-next':
-            this.selectNext();
-            break;
-          case 'select-prev':
-            this.selectPrev();
-            break;
           case 'close-modals':
             this.hide();
-            break;
-          case 'add-field-single':
-            this.addFieldSingle();
-            break;
-          case 'add-field-multiple':
-            this.addFieldMultiple();
             break;
           default:
             return;
@@ -368,7 +295,6 @@ export default {
             type="text" 
             ref="input"
             class="FieldAdderPanel-filterInput customInput form-control mousetrap" 
-            @input="resetSelectIndex()" 
             :placeholder="'Filter by' | translatePhrase"
             v-model="filterKey">
         </div>
@@ -399,10 +325,8 @@ export default {
           <ul class="FieldAdderPanel-fieldList js-fieldlist">
             <li
               class="FieldAdderPanel-fieldItem PanelComponent-listItem"
-              @focus="selectedIndex = index"
-              @mouseover="selectedIndex = index" 
-              v-bind:class="{ 'is-added': prop.added, 'available': !prop.added, 'selected': index == selectedIndex }" 
-              v-for="(prop, index) in filteredResults" 
+              v-bind:class="{ 'is-added': prop.added, 'available': !prop.added }" 
+              v-for="(prop) in filteredResults" 
               @click="addField(prop, false)"
               @keyup.enter="addField(prop, false)" 
               :key="prop['@id']">
