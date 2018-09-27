@@ -255,17 +255,17 @@ export default {
       })
       .then(() => {
         this.$nextTick(() => {
+          this.active = true;
           this.$nextTick(() => {
-            this.active = true;
+            this.$store.dispatch('setStatusValue', { 
+              property: 'keybindState', 
+              value: 'field-adder' 
+            });
             if (this.$refs.input) {
               this.$refs.input.focus();
             }
           });
         });
-      });
-      this.$store.dispatch('setStatusValue', { 
-        property: 'keybindState', 
-        value: 'field-adder' 
       });
     },
     hide() {

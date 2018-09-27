@@ -219,18 +219,17 @@ export default {
       })
       .then(() => {
         this.$nextTick(() => {
+          this.active = true;
           this.$nextTick(() => {
-            this.active = true;
+            this.$store.dispatch('setStatusValue', { 
+              property: 'keybindState', 
+              value: 'entity-adder' 
+            });
             if (this.$refs.input) {
               this.$refs.input.focus();
             }
           });
         });
-      });
-
-      this.$store.dispatch('setStatusValue', { 
-        property: 'keybindState', 
-        value: 'entity-adder' 
       });
     },
     hide() {
