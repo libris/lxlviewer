@@ -853,9 +853,6 @@ export default {
       font-size: 1.6rem;
       margin: 0 0 0 10px;
       line-height: 1.4;
-      position: absolute;
-      top: 0;
-      right: 0;
       
       @media (max-width: @screen-sm) {
         display: flex;
