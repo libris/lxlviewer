@@ -107,6 +107,12 @@ def get_release_feed():
     return requests.get('https://github.com/libris/lxlviewer/releases.atom').content
 
 ##
+# Setup blog feed
+@app.route('/blogfeed', methods=['GET'])
+def get_blog_feed():
+    return requests.get('http://librisbloggen.kb.se/wp-json/wp/v2/posts/?categories=8&per_page=4').content
+
+##
 # Setup basic views
 
 @app.route('/assets/<path:path>.<suffix>')

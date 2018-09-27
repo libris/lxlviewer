@@ -3,6 +3,7 @@ import ServiceWidgetSettings from '@/resources/json/serviceWidgetSettings.json';
 import SearchForm from '@/components/search/search-form';
 import DatasetObservations from '@/components/search/dataset-observations';
 import LinkCardComponent from '@/components/search/link-card';
+import BlogPanel from '@/components/search/blog-panel';
 import Copy from '@/resources/json/copy.json';
 
 export default {
@@ -38,6 +39,7 @@ export default {
     'dataset-observations': DatasetObservations,
     'intro-component': LinkCardComponent,
     'link-card': LinkCardComponent,
+    'blog-panel': BlogPanel,
   },
 }
 </script>
@@ -56,12 +58,13 @@ export default {
           :text="copy['about-xl'].text" 
           :link-text="copy['about-xl'].linkText" 
           :link-url="copy['about-xl'].linkUrl"></link-card>
-        <link-card v-if="widgetShouldBeShown('link-blog')" 
-          :image="copy['blog'].image" 
-          :header="copy['blog'].header" 
+        <blog-panel v-if="widgetShouldBeShown('link-blog')"
+          :image="copy['blog'].image"
+          :header="copy['blog'].header"
           :text="copy['blog'].text" 
           :link-text="copy['blog'].linkText" 
-          :link-url="copy['blog'].linkUrl"></link-card>
+          :link-url="copy['blog'].linkUrl"
+        />
         <link-card v-if="widgetShouldBeShown('link-studies')" 
           :image="copy['studies'].image" 
           :header="copy['studies'].header" 
