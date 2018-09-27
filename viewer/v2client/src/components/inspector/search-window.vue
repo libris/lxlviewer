@@ -213,17 +213,23 @@ export default {
     },
     show() {
       this.resetSearch();
-      this.active = true;
-      this.$nextTick(() => {
+      this.$store.dispatch('pushInspectorEvent', { 
+        name: 'form-control', 
+        value: 'close-modals'
+      })
+      .then(() => {
         this.$nextTick(() => {
-          if (this.$refs.input) {
-            this.$refs.input.focus();
-          }
+          this.active = true;
+          this.$nextTick(() => {
+            this.$store.dispatch('setStatusValue', { 
+              property: 'keybindState', 
+              value: 'entity-adder' 
+            });
+            if (this.$refs.input) {
+              this.$refs.input.focus();
+            }
+          });
         });
-      });
-      this.$store.dispatch('setStatusValue', { 
-        property: 'keybindState', 
-        value: 'entity-adder' 
       });
     },
     hide() {
@@ -295,11 +301,10 @@ export default {
 
 <template>
   <div class="SearchWindow">
-    <portal to="sidebar">
+    <portal to="sidebar" v-if="active">
     <panel-component class="SearchWindow-panel"
       v-if="active"
       :title="'Link entity' | translatePhrase"
-      :origin="fieldKey"
       @close="hide()">
       <template slot="panel-header-info">
         <div class="PanelComponent-headerInfo help-tooltip-container" 

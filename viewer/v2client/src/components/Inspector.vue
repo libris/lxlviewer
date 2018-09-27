@@ -132,12 +132,18 @@ export default {
       }
     },
     openMarcPreview() {
-      this.marcPreview.active = true;
-      RecordUtil.convertToMarc(this.inspector.data, this.settings, this.user).then((result) => {
-        this.marcPreview.data = result;
-      }, (error) => {
-        this.marcPreview.data = null;
-        this.marcPreview.error = error;
+      this.$store.dispatch('pushInspectorEvent', { 
+        name: 'form-control', 
+        value: 'close-modals'
+      })
+      .then(() => {
+        this.marcPreview.active = true;
+        RecordUtil.convertToMarc(this.inspector.data, this.settings, this.user).then((result) => {
+          this.marcPreview.data = result;
+        }, (error) => {
+          this.marcPreview.data = null;
+          this.marcPreview.error = error;
+        });
       });
     },
     fetchDocument() {
@@ -564,7 +570,7 @@ export default {
         <toolbar></toolbar>
       </div>
     </div>
-    <portal to="sidebar">
+    <portal to="sidebar" v-if="marcPreview.active">
       <marc-preview @hide="marcPreview.active = false" :error="marcPreview.error" :marc-obj="marcPreview.data" v-if="marcPreview.active"></marc-preview>
     </portal>
     <modal-component title="Error" modal-type="danger" @close="closeRemoveModal" class="RemovePostModal" 

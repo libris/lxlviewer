@@ -249,17 +249,23 @@ export default {
       this.$parent.$emit('expand-item', true);
     },
     show() {
-      this.active = true;
-      this.$nextTick(() => {
+      this.$store.dispatch('pushInspectorEvent', { 
+        name: 'form-control', 
+        value: 'close-modals'
+      })
+      .then(() => {
         this.$nextTick(() => {
-          if (this.$refs.input) {
-            this.$refs.input.focus();
-          }
+          this.active = true;
+          this.$nextTick(() => {
+            this.$store.dispatch('setStatusValue', { 
+              property: 'keybindState', 
+              value: 'field-adder' 
+            });
+            if (this.$refs.input) {
+              this.$refs.input.focus();
+            }
+          });
         });
-      });
-      this.$store.dispatch('setStatusValue', { 
-        property: 'keybindState', 
-        value: 'field-adder' 
       });
     },
     hide() {
@@ -351,11 +357,10 @@ export default {
       </i>
       <span v-if="!inToolbar" class="FieldAdder-label"> {{ "Add field" | translatePhrase }}</span>
     </button>
-    <portal to="sidebar">
+    <portal to="sidebar" v-if="active">
     <panel-component class="FieldAdder-panel FieldAdderPanel"
       v-if="active"
-      :title="modalTitle" 
-      :origin="path" 
+      :title="modalTitle"
       @close="hide">
       <template slot="panel-header-extra">
         <div class="FieldAdderPanel-filterContainer form-group panel">

@@ -11,10 +11,6 @@
     * panel-header-after  - If you need something sticky after the header, but outside the header container (with different grid, bg-color).
     * panel-body          - Just a container for your content. Supports highly customized layout.
     * panel-footer        - Optional footer content.
-  
-  'origin'-prop:
-    This component expects a unique identifier of the component that triggered it. This string is set as the value of panelOpen
-    in the Store. If another panel changes this value, the panel will close to prevent stacks of open panels. 
 
   Close-event:
     The default close button will emit an event called "close".
@@ -43,15 +39,11 @@ export default {
       default: true,
       type: Boolean,
     },
-    origin: {
-      default: '',
-      type: String,
-    }
   },
   data() {
     return {
       fadedIn: false,
-      fadeTime: 500,
+      fadeTime: 300,
     }
   },
   methods: {
@@ -84,19 +76,12 @@ export default {
     },
   },
   watch: {
-    'status.panelOpen'(val, oldVal) {
-      if (val !== this.origin) {
-        setTimeout(() => {
-          this.close();
-        }, 300)
-      }
-    }
   },
   components: {
   },
   mounted() {
     this.$nextTick(() => {
-      this.$store.dispatch('setStatusValue', { property: 'panelOpen', value: this.origin });
+      this.$store.dispatch('setStatusValue', { property: 'panelOpen', value: true });
       if (window.innerWidth <= 1200 || this.user.settings.forceFullViewPanel) {
         this.lockScroll(true);
       }
@@ -108,7 +93,7 @@ export default {
   beforeDestroy() {
     this.$nextTick(() => {
       this.lockScroll(false);
-      if (this.status.panelOpen === this.origin) {
+      if (this.status.panelOpen) {
         this.$store.dispatch('setStatusValue', { property: 'panelOpen', value: false });
       };
     });
