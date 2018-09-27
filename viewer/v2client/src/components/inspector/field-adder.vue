@@ -464,6 +464,7 @@ export default {
 
 .FieldAdderPanel {
   &-filterContainer {
+    min-height: 40px;
     flex: 1;
   }
 
