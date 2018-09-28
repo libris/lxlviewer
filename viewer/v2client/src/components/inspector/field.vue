@@ -705,6 +705,8 @@ export default {
     position: relative;
     flex-grow: 1;
     word-break: break-word;
+    -ms-word-break: break-all;
+    hyphens: auto;
 
     &:after {
       border-left: 1px solid;
