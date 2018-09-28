@@ -50,7 +50,7 @@ export default {
   width: 100%;
   display: inline-block;
   code {
-    color: black;
+    color: @black;
     background-color: transparent;
   }
 }
