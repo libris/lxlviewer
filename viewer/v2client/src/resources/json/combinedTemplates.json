@@ -619,10 +619,14 @@
                     "mainTitle": "",
                     "partNumber": [
                       ""
+                    ],
+                    "partName": [
+                    ""
                     ]
                   }
                 ],
                 "musicKey": "",
+                "version": "",
                 "musicMedium": [
                   ""
                 ]
@@ -649,10 +653,14 @@
                     "mainTitle": "",
                     "partNumber": [
                       ""
+                    ],
+                    "partName": [
+                    ""
                     ]
                   }
                 ],
                 "musicKey": "",
+                "version": "",
                 "musicMedium": [
                   ""
                 ]
