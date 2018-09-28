@@ -421,7 +421,12 @@ export default {
       </template>
       <template slot="panel-footer">
         <div class="SearchWindow-summaryContainer">
-            <p class="preview-entity-text uppercaseHeading">{{ "Your new entity" | translatePhrase }}:</p>
+            <p class="preview-entity-text uppercaseHeading">
+              {{ "Didn’t find what you were looking for" | translatePhrase }}?
+            </p>
+            <p class="preview-entity-text">
+              {{ "You can create a new entity, based on your local one" | translatePhrase }}:
+            </p>
 
             <entity-summary 
               :action-settings="localEntitySettings" 
@@ -442,6 +447,9 @@ export default {
 <style lang="less">
 
 .SearchWindow {
+  .preview-entity-text {
+    margin: 0px;
+  }
   &-entitySummary {
     max-width: 100%;
     padding: 0;
@@ -471,8 +479,6 @@ export default {
   }
 
   &-extractControls {
-    .preview-entity-text {
-    }
 
     .copy-title {
       float: right;
