@@ -14,13 +14,9 @@
   },
   "field-adder": {
     "esc": "close-modals",
-    "down": "select-next",
-    "up": "select-prev",
-    "enter": "add-field-single",
-    "mod+enter": "add-field-multiple"
   },
   "entity-adder": {
-    "esc": "close-modals"
+    "esc": "close-modals",
   },
   "release-notes": {
     "esc": "close-modals",
@@ -34,8 +30,4 @@
   "help-window": {
     "esc": "close-modals",
   },
-  "entity-search-list": {
-    "down": "select-next",
-    "up": "select-prev"
-  }
 }
