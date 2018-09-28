@@ -173,7 +173,7 @@ export default {
       code {
         padding: 4px;
         font-size: 90%;
-        color: #000000;
+        color: @black;
         background-color: #fbebef;
       }
 

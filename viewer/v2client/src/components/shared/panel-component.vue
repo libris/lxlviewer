@@ -270,7 +270,7 @@ export default {
   }
 
   &-searchStatus {
-    padding: 20px 15px 80px 15px;
+    padding: 15px;
     display: flex;    
     flex-direction: column;
     align-items: center;
@@ -306,6 +306,7 @@ export default {
   &-windowControl {
     display: flex;
     flex-wrap: nowrap;
+    min-width: 40px;
     margin-left: 10px;
 
     .fullview-toggle-button {

@@ -60,11 +60,11 @@ export default {
     font-size: 2.0rem;
     font-weight: normal;
     padding: 10px 5px;
-    color: #000000;
+    color: @black;
     text-shadow: none;
 
     a {
-      color: #000;
+      color: @black;
       text-decoration: underline;
     }
   }

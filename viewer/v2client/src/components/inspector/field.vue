@@ -705,6 +705,8 @@ export default {
     position: relative;
     flex-grow: 1;
     word-break: break-word;
+    -ms-word-break: break-all;
+    hyphens: auto;
 
     &:after {
       border-left: 1px solid;
@@ -853,9 +855,6 @@ export default {
       font-size: 1.6rem;
       margin: 0 0 0 10px;
       line-height: 1.4;
-      position: absolute;
-      top: 0;
-      right: 0;
       
       @media (max-width: @screen-sm) {
         display: flex;
