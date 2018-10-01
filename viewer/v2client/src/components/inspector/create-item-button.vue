@@ -42,7 +42,7 @@ export default {
       this.$emit('done');
     },
     gotoHolding() {
-      const locationParts = this.holdingId[0].split('/');
+      const locationParts = this.holdingId.split('/');
       const fnurgel = locationParts[locationParts.length-1];
       this.$router.push({ path: `/${fnurgel}` });
     },
