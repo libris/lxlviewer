@@ -10,7 +10,7 @@ import * as LayoutUtil from '@/utils/layout';
 import * as StringUtil from '@/utils/string';
 import * as VocabUtil from '@/utils/vocab';
 import ComboKeys from 'combokeys';
-import ModalComponent from '@/components/shared/modal-component.vue';
+import PanelComponent from '@/components/shared/panel-component.vue';
 import { mapGetters } from 'vuex';
 
 export default {
@@ -35,8 +35,6 @@ export default {
       buttonFixed: true,
       buttonPos: -1,
       filterKey: '',
-      selectedIndex: -1,
-      fieldListBottom: false,
       showToolTip: false,
     };
   },
@@ -104,6 +102,11 @@ export default {
     },
   },
   methods: {
+    toggleFullView() {
+      const user = this.user;
+      user.settings.forceFullViewPanel = !user.settings.forceFullViewPanel;
+      this.$store.dispatch('setUser', user);
+    },
     actionHighlight(active, event) {
       if(active) {
         let item = event.target;
@@ -113,60 +116,6 @@ export default {
         let item = event.target;
         while ((item = item.parentElement) && !item.classList.contains('js-itemLocal'));
           item.classList.remove('is-marked');
-      }
-    },
-    selectNext() {
-      if (this.active) {
-        if (this.selectedIndex < this.filteredResults.length - 1) {
-          if (this.selectedIndex >= 0) {
-            const fieldList = document.getElementsByClassName('js-fieldlist')[0];
-            const threshold =
-              fieldList.getBoundingClientRect().top +
-              fieldList.getBoundingClientRect().height;
-            const selectedElement = document.getElementsByClassName('selected')[0];
-            const selectedPosition =
-              selectedElement.getBoundingClientRect().top +
-              selectedElement.getBoundingClientRect().height * 2;
-            if (selectedPosition > threshold) {
-              fieldList.scrollTop += selectedElement.getBoundingClientRect().height * 2;
-            }
-          }
-          this.selectedIndex += 1;
-        }
-      }
-    },
-    selectPrev() {
-      if (this.active) {
-        if (this.selectedIndex > 0) {
-          this.selectedIndex -= 1;
-          const fieldList = document.getElementsByClassName('js-fieldlist')[0];
-          const threshold = fieldList.getBoundingClientRect().top;
-          const selectedElement = document.getElementsByClassName('selected')[0];
-          const selectedPosition =
-            selectedElement.getBoundingClientRect().top -
-            selectedElement.getBoundingClientRect().height;
-          if (selectedPosition < threshold) {
-            fieldList.scrollTop -= selectedElement.getBoundingClientRect().height * 2;
-          }
-        }
-      }
-    },
-    addFieldMultiple() {
-      if (this.active) {
-        if (!this.filteredResults[this.selectedIndex].added) {
-          this.addField(this.filteredResults[this.selectedIndex], false);
-        } else {
-          console.warn("Already added, should be handled");
-        }
-      }
-    },
-    addFieldSingle() {
-      if (this.active) {
-        if (!this.filteredResults[this.selectedIndex].added) {
-          this.addField(this.filteredResults[this.selectedIndex], true);
-        } else {
-          console.warn("Already added, should be handled");
-        }
       }
     },
     closeModals() {
@@ -190,16 +139,6 @@ export default {
         } else if (termObj['@type'] === 'ObjectProperty') {
           return StringUtil.getUiPhraseByLang('Entities', this.settings.language);
         }
-      }
-    },
-    toggleWindowFade(e) {
-      const targetElement = e.target;
-      const threshold = targetElement.scrollHeight - 20;
-      const position = targetElement.offsetHeight + targetElement.scrollTop;
-      if (threshold > position) {
-        this.fieldListBottom = false;
-      } else {
-        this.fieldListBottom = true;
       }
     },
     getEmptyFieldValue(key, prop) {
@@ -243,39 +182,44 @@ export default {
           ],
           addToHistory: true,
         });
+        this.$store.dispatch('setInspectorStatusValue', { 
+          property: 'lastAdded', 
+          value: `${this.path}.${key}` 
+          });
         if (close) {
           this.hide();
-          this.$store.dispatch('setInspectorStatusValue', { 
-            property: 'lastAdded', 
-            value: `${this.path}.${key}` 
-          });
         }
       }
       this.$parent.$emit('expand-item', true);
     },
     show() {
-      this.active = true;
-      setTimeout(() => {
-        const input = document.getElementById('field-adder-input');
-        input.focus();
-        const fieldsWindow = document.getElementById('fields-window');
-        fieldsWindow.addEventListener('scroll', this.toggleWindowFade);
-      }, 1);
-      this.$store.dispatch('setStatusValue', { 
-        property: 'keybindState', 
-        value: 'field-adder' 
+      this.$store.dispatch('pushInspectorEvent', { 
+        name: 'form-control', 
+        value: 'close-modals'
+      })
+      .then(() => {
+        this.$nextTick(() => {
+          this.active = true;
+          this.$nextTick(() => {
+            // this.$store.dispatch('setStatusValue', { 
+            //   property: 'keybindState', 
+            //   value: 'field-adder' 
+            // });
+            if (this.$refs.input) {
+              this.$refs.input.focus();
+            }
+          });
+        });
       });
     },
     hide() {
       if (!this.active) return;
       this.active = false;
       this.filterKey = '';
-      this.$store.dispatch('setStatusValue', { property: 'keybindState', value: 'overview' });
-      this.resetSelectIndex();
-    },
-    resetSelectIndex() {
-      this.fieldListBottom = false;
-      this.selectedIndex = -1;
+      // this.$store.dispatch('setStatusValue', {
+      //  property: 'keybindState',
+      //  value: 'overview'
+      // });
     },
   },
   watch: {
@@ -287,20 +231,8 @@ export default {
     'inspector.event'(val, oldVal) {
       if (val.name === 'form-control') {
         switch (val.value) { 
-          case 'select-next':
-            this.selectNext();
-            break;
-          case 'select-prev':
-            this.selectPrev();
-            break;
           case 'close-modals':
             this.hide();
-            break;
-          case 'add-field-single':
-            this.addFieldSingle();
-            break;
-          case 'add-field-multiple':
-            this.addFieldMultiple();
             break;
           default:
             return;
@@ -310,10 +242,11 @@ export default {
   },
   mounted() {
     this.$nextTick(() => { // TODO: Fix proper scroll tracking. This is just an ugly solution using document.onscroll here and window.scroll in editorcontrols.vue
+
     });
   },
   components: {
-    'modal-component': ModalComponent,
+    'panel-component': PanelComponent,
     'tooltip-component': ToolTipComponent,
   },
 };
@@ -321,13 +254,16 @@ export default {
 
 <template>
   <div class="FieldAdder">
-    <span v-if="inner" class="FieldAdder-innerAdd"
-      v-on:click="show" 
-      tabindex="0"
-      @keyup.enter="show"
-      @mouseenter="showToolTip = true, actionHighlight(true, $event)" 
-      @mouseleave="showToolTip = false, actionHighlight(false, $event)">
-      <i class="FieldAdder-innerIcon fa fa-plus plus-icon" aria-hidden="true">
+    <span v-if="inner" class="FieldAdder-innerAdd">
+      <i 
+        class="FieldAdder-innerIcon fa fa-plus-circle icon icon--sm" 
+        tabindex="0"
+        @click="show" 
+        @keyup.enter="show"
+        @mouseenter="showToolTip = true, actionHighlight(true, $event)" 
+        @mouseleave="showToolTip = false, actionHighlight(false, $event)"
+        @focus="showToolTip = true, actionHighlight(true, $event)"
+        @blur="showToolTip = false, actionHighlight(false, $event)">
         <tooltip-component 
           :show-tooltip="showToolTip" 
           :tooltip-text="modalTitle" 
@@ -351,67 +287,80 @@ export default {
       </i>
       <span v-if="!inToolbar" class="FieldAdder-label"> {{ "Add field" | translatePhrase }}</span>
     </button>
-
-    <modal-component @close="hide" v-if="active" class="FieldAdder-modal FieldAdderModal">
-      <template slot="modal-header">
-        <header>
-          {{ modalTitle }}
-        </header>
-        <span class="FieldAdderModal-filter">
-          {{ "Filter by" | translatePhrase }} 
-          <input id="field-adder-input" 
-            class="filterInput mousetrap" 
-            @input="resetSelectIndex()" 
+    <portal to="sidebar" v-if="active">
+    <panel-component class="FieldAdder-panel FieldAdderPanel"
+      v-if="active"
+      :title="modalTitle"
+      @close="hide">
+      <template slot="panel-header-extra">
+        <div class="FieldAdderPanel-filterContainer form-group panel">
+          <input id="field-adder-input"
             type="text" 
+            ref="input"
+            class="FieldAdderPanel-filterInput customInput form-control mousetrap" 
+            :placeholder="'Filter by' | translatePhrase"
             v-model="filterKey">
-          <span class="filterInfo">{{ "Showing" | translatePhrase }} {{ filteredResults.length }} {{ "of" | translatePhrase }} {{allowed ? allowed.length : '0'}} {{ "total" | translatePhrase }}</span>
-        </span>
-        <span class="ModalComponent-windowControl">
-          <i @click="hide" @keyup.enter="hide" tabindex="0" class="fa fa-close"></i>
-        </span>
-      </template>
-      <template slot="modal-body">
-        <div class="FieldAdderModal-columnHeaders">
-          <span class="FieldAdderModal-addControl">
-            &nbsp;
+        </div>
+        <div class="FieldAdderPanel-filterInfo uppercaseHeading">
+          <span>
+            {{ "Showing" | translatePhrase }} 
+            {{ filteredResults.length }} 
+            {{ "of" | translatePhrase }} 
+            {{allowed ? allowed.length : '0'}} 
+            {{ "total" | translatePhrase }}
           </span>
-          <span class="FieldAdderModal-fieldLabel">
+        </div>
+      </template>
+      <template slot="panel-header-after">
+        <div class="FieldAdderPanel-columnHeaders">
+          <!-- <span class="FieldAdderPanel-addControl">
+          </span> -->
+          <span class="FieldAdderPanel-fieldLabel uppercaseHeading">
             {{ "Field label" | translatePhrase }}
           </span>
-          <span class="FieldAdderModal-classInfo">
+          <span class="FieldAdderPanel-classInfo uppercaseHeading">
             {{ "Can contain" | translatePhrase }}
           </span>
         </div>
-        <div class="FieldAdderModal-fieldList">
-          <ul id="fields-window" class="js-fieldlist">
-            <li tabindex="0"
-              @focus="selectedIndex = index"
-              @mouseover="selectedIndex = index" 
-              v-bind:class="{ 'added': prop.added, 'available': !prop.added, 'selected': index == selectedIndex }" 
-              v-for="(prop, index) in filteredResults" 
-              :key="prop['@id']" 
-              @click="addField(prop, true)">
-              <span class="FieldAdderModal-addControl">
-                <a v-show="!prop.added" v-on:click.stop.prevent="addField(prop, false)">
-                  <i class="fa fa-fw fa-2x fa-plus-circle"></i>
+      </template>
+      <template slot="panel-body">
+        <div>
+          <ul class="FieldAdderPanel-fieldList js-fieldlist">
+            <li
+              class="FieldAdderPanel-fieldItem PanelComponent-listItem"
+              v-bind:class="{ 'is-added': prop.added, 'available': !prop.added }" 
+              v-for="(prop) in filteredResults" 
+              @click="addField(prop, false)"
+              @keyup.enter="addField(prop, false)" 
+              :key="prop['@id']">
+              <span class="FieldAdderPanel-addControl">
+                <a 
+                  v-show="!prop.added"                  
+                  :title="'Add' | translatePhrase"
+                  tabindex="0"
+                  >
+                  <i class="fa fa-plus-circle icon icon--lg icon--primary"></i>
                 </a>
-                <span v-show="prop.added"><i class="fa fa-fw fa-check fa-2x"></i></span>
+                <span v-show="prop.added" :title="'Added' | translatePhrase">
+                  <i class="fa fa-check-circle icon icon--lg is-added"></i>
+                </span>
               </span>
-              <span class="FieldAdderModal-fieldLabel" :title="prop.label | capitalize">
+              <span class="FieldAdderPanel-fieldLabel" :title="prop.label | capitalize">
                 {{prop.label | capitalize }}
                 <span class="typeLabel">{{ prop.item['@id'] | removeDomain }}</span>
               </span>
-              <span class="FieldAdderModal-classInfo">
+              <span class="FieldAdderPanel-classInfo">
                 {{ getPropClassInfo(prop.item) }}
               </span>
             </li>
-            <li v-if="filteredResults.length === 0">
-              <i>{{ "Did not find any fields" | translatePhrase }}...</i>
-            </li>
           </ul>
         </div>
+        <div v-if="filteredResults.length === 0" class="PanelComponent-searchStatus">
+          <span>{{ "Did not find any fields" | translatePhrase }}...</span>
+        </div>
       </template>
-    </modal-component>
+    </panel-component>
+    </portal>
   </div>
 </template>
 
@@ -440,16 +389,23 @@ export default {
   &-innerLabel {
     display: none;
   }
+  
+  &-innerIcon {
+  }
 }
 
-.FieldAdderModal {
-  &-filter {
-    input {
-      height: 100%;
-      color: #333;
-      border-radius: 3px;
-      border: none;
-    }
+.FieldAdderPanel {
+  &-filterContainer {
+    min-height: 40px;
+    flex: 1;
+  }
+
+  &-filterInput {
+  }
+
+  &-filterInfo {
+    color: @gray;
+    margin-bottom: 10px;
   }
 
   &-body {
@@ -458,82 +414,64 @@ export default {
   }
 
   &-columnHeaders {
+    display: flex;
     background-color: @white;
-    position: fixed;
-    z-index: 1;
     width: 100%;
-    border: solid @gray;
-    border-width: 0px 0px 1px 0px;
-    > * {
-      display: inline-block;
+    padding: 5px 15px;
+    border-bottom: 1px solid @gray-lighter;
+
+    & .FieldAdderPanel-fieldLabel {
+      padding-left: 0;
     }
   }
+
   &-fieldLabel {
-    display: inline-block;
-    width: 45%;
-    font-size: 16px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin: 5px 0 0;
-    .typeLabel {
-      display: block;
-      font-size: 85%;
-      font-family: monospace;
-    }
+  display: inline-block;
+  flex-basis: 75%;
+  padding: 0 15px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  .typeLabel {
+    display: block;
+    font-size: 14px;
+    font-size: 1.4rem;
+    font-family: monospace;
+    font-weight: normal;
   }
+}
+
   &-classInfo {
     display: inline-block;
-    width: 40%;
+    flex-basis: 25%;
+    font-size: 14px;
+    font-size: 1.4rem;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    font-size: 85%;
   }
+
   &-addControl {
-    float: left;
-    width: 8%;
-    text-align: center;
-    a {
-      cursor: pointer;
-    }
+    display: flex;
+    align-items: center;
+    width: 30px;
   }
+
   &-fieldList {
-    padding-top: 2em;
-    padding-bottom: 3em;
-    ul {
-      border-radius: 0px 0px 3px 3px;
-      padding-left: 0px;
-      width: 100%;
-      margin: 0px;
-      list-style-type: none;
-      li {
-        &:nth-child(odd) {
-          background-color: darken(@neutral-color, 5%);
-        }
-        &.available {
-          cursor: pointer;
-          &.selected {
-            outline: solid 1px @brand-primary;
-            background-color: fadeout(@brand-primary, 70%);
-          }
-        }
-        &.added {
-          &.selected {
-            background-color: @gray-light;
-          }
-        }
-        margin: 0px;
-        padding: 1em 0;
-        line-height: 1.3;
-        display: flex;
-        align-items: center;
-        &.added {
-          span {
-            opacity: 0.6;
-          }
-        }
-      }
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+  }
+
+  &-fieldItem {
+    font-size: 16px;
+    font-size: 1.6rem;
+
+    &.available {
+      cursor: pointer;
     }
   }
 }

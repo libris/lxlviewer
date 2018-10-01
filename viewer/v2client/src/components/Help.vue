@@ -1,8 +1,11 @@
 <script>
 import * as _ from 'lodash';
 import * as LayoutUtil from '@/utils/layout';
-import helpdocsJson from '@/resources/json/help.json';
+import * as StringUtil from '@/utils/string';
 import marked from 'marked';
+import moment from 'moment';
+import { mapGetters } from 'vuex';
+import VueSimpleSpinner from 'vue-simple-spinner';
 
 export default {
   name: 'help-component',
@@ -10,19 +13,14 @@ export default {
     return {
       openAll: 'open-all',
       activeCategory: '',
+      loading: true,
     }
   },
   methods: {
     getImagePath(imgName) {
       const pathParts = imgName.split('/');
       const fileName = pathParts[pathParts.length-1];
-      let fetchedFileName = '';
-      try {
-        fetchedFileName = require(`@/assets/img/generated/${fileName}`);
-      }
-      catch(error) {
-        console.warn(`Could not resolve path for image "${fileName}"`);
-      }
+      const fetchedFileName = `${this.settings.apiPath}/helpdocs/${fileName}`;
       return fetchedFileName;
     },
     resolveImages(html) {
@@ -43,19 +41,46 @@ export default {
       const html = marked(markdown);
       return html;
     },
+    getTimeAgoString(date) {
+      const today = moment().startOf('day');
+      if (today.isSame(date, 'day')) {
+        return StringUtil.getUiPhraseByLang('Today', this.user.settings.language).toLowerCase();
+      }
+      return moment(date, "YYYY-MM-DD").from(moment().startOf('day'));
+    },
+    getDateString(date) {
+      return moment(date).format('YYYY-MM-DD');
+    },
     changeSection(value) {
       this.$router.push({ path: `/help/${value}` });
     },
+    sectionIsUpdating(sectionKey) {
+      if (this.docs[sectionKey].tags !== null && this.docs[sectionKey].tags.indexOf('under arbete') > -1) {
+        return true;
+      }
+      return false;
+    },
   },
   mounted() {
+    this.$nextTick(() => {
+    });
   },
+  components: {
+    'vue-simple-spinner': VueSimpleSpinner,
+   },
   watch: {
   },
   events: {
   },
   computed: {
+    ...mapGetters([
+      'user',
+      'settings',
+      'status',
+      'resources',
+    ]),
     activeSection() {
-      return this.$route.params.section || '';
+      return this.$route.params.section || 'index';
     },
     status() {
       return this.$store.getters.status;
@@ -77,7 +102,7 @@ export default {
       return categories;
     },
     docs() {
-      const json = helpdocsJson;
+      const json = this.resources.helpDocs;
       delete json.default;
       delete json.readme;
       return json;
@@ -89,16 +114,19 @@ export default {
 <template>
 
   <div class="HelpSection">
-    <div class="row">
+    <div v-if="resources.helpDocs == null" class="text-center MainContent-spinner">
+      {{ 'Couldn\t load help documentation' | translatePhrase }}. {{ 'Try reloading the page' | translatePhrase }}.
+    </div>
+    <div class="row" v-if="resources.helpDocs != null">
       <div class="col-md-3">
-        <div class="HelpSection-menu panel panel-default">
+        <div class="HelpSection-menu">
           <ul class="HelpSection-categories">
             <li class="HelpSection-categoryItem"
               v-for="(value, key) in helpCategories" 
               :key="key" 
               v-bind:class="{'is-active': key == activeCategory }" 
               v-on:click="activeCategory = key">
-              <span class="HelpSection-categoryItemLabel">{{key}}</span>
+              <span class="HelpSection-categoryItemLabel" v-if="key !== 'Main'">{{key}}</span>
               <ul class="HelpSection-categoryList">
                 <li class="HelpSection-categoryListItem" v-for="(section, index) in value" 
                   :key="index" 
@@ -111,22 +139,12 @@ export default {
       </div>
       <div class="col-md-9">
         <article class="HelpSection-article is-fromMarkdown panel panel-default">
-          <div v-show="activeSection == ''">
-            <h1 class="HelpSection-title">Hjälp</h1>
-            <p>
-              Den här hjälpen omfattar instruktioner för gränssnittet och materialtyper, välj avsnitt till vänster för att läsa mer.
-            </p>
-            <h2>Nyttiga länkar</h2>
-            <ul>
-              <li>Om du vill läsa om Formatet (mappning och basvokabulär) så har du det <a href="https://id-qa.kb.se/" target="_blank">här</a>.</li>
-              <li>Är du ute efter instruktionsmaterial hittar du det <a href="http://librisbloggen.kb.se/2017/10/31/sjalvstudier-infor-overgangen-till-nya-libris-och-xl/" target="_blank">här</a>.</li>
-              <li>Vill du komma i kontakt med kundservice gör du det <a href="http://www.kb.se/libris/kontakta/" target="_blank">här</a>.</li>
-              <li><a href="https://goo.gl/forms/3mL7jTlEpbU3BQM13" target="_blank">Här</a> kan du rapportera fel.</li>
-              <li><a href="https://goo.gl/forms/dPxkhMqE10RvKQFE2" target="_blank">Här</a> kan du ge ändringsförslag.</li>
-            </ul>
-          </div>
           <div v-for="(sectionValue, sectionKey) in docs" 
             :key="sectionKey" v-if="sectionValue.basename == activeSection">
+            <div class="pull-right text-right" v-show="docs[sectionKey].date">
+              <span class="label label-primary" v-if="sectionIsUpdating(sectionKey)">UNDER ARBETE</span> <span :title="getDateString(docs[sectionKey].date)">Uppdaterad {{ getTimeAgoString(docs[sectionKey].date) }}</span>
+            </div>
+            <br v-show="docs[sectionKey].date">
             <div v-html="getHTML(docs[sectionKey].content)"></div>
           </div>
         </article>
@@ -139,13 +157,13 @@ export default {
 
 .HelpSection {
   &-article {
-    padding: 1em;
+    padding: 30px;
     height: 100%;
 
     &.is-fromMarkdown {
-      h1, h2, h3, h4 {
+      h2, h3, h4 {
         font-weight: normal;
-        margin: 10px 0 10px;
+        margin: 20px 0 15px;
       }
 
       p {
@@ -155,7 +173,7 @@ export default {
       code {
         padding: 4px;
         font-size: 90%;
-        color: #000000;
+        color: @black;
         background-color: #fbebef;
       }
 
@@ -166,7 +184,7 @@ export default {
       table {
         font-size: 12px;
         font-size: 1.2rem;
-        border: 1px solid #f0f0f0;
+        border: 1px solid @gray-lighter;
         width: 100%;
       }
 
@@ -178,12 +196,12 @@ export default {
         padding: 5px;
       }
 
-      tr:nth-child(odd) {
-        background: #f0f0f0;
+      tr:nth-child(even) {
+        background: @list-item-bg-even;
       }
 
       th {
-        background: #fff;
+        background: @gray-lighter;
         padding: 5px;
         text-transform: uppercase;
         line-height: 1.2;
@@ -193,7 +211,7 @@ export default {
 
   &-categories {
     list-style: none;
-    padding: 10px 20px;
+    padding: 0;
   }
 
   &-categoryItem {
@@ -204,9 +222,11 @@ export default {
 
   &-categoryItemLabel {
     color: @black;
+    font-size: 14px;
+    font-size: 1.4rem;
     text-transform: uppercase;
     padding: 0;
-    font-weight: 700;
+    font-weight: 600;
   }
 
   &-categoryList {
@@ -215,18 +235,16 @@ export default {
   }
 
   &-categoryListItem {
-    border-radius: 5px;
-    padding: 0 0.3em;
     margin: 3px 0px;
     cursor: pointer;
 
-    &:hover {
-      background-color: @gray-lighter;
+    &:hover:not(.active) {
+      text-decoration: underline;
     }
 
-    &.is-active {
-      background-color: @brand-primary;
-      color: @neutral-color;
+    &.active {
+      font-weight: 700;
+      cursor: initial;
     }
   }
 }

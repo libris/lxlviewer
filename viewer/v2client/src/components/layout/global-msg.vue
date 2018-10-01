@@ -46,8 +46,8 @@ export default {
   color: white;
   text-shadow: 0px 1px 1px #00000054;
   font-weight: bold;
-  background-color: @bib-color;
-  border: 1px solid darken(@bib-color, 5%);
+  background-color: darken(@brand-primary, 5%);
+  border: 1px solid darken(@brand-primary, 10%);
   border-width: 0px 0px 1px 0px;
   a {
     color: white;
@@ -60,11 +60,11 @@ export default {
     font-size: 2.0rem;
     font-weight: normal;
     padding: 10px 5px;
-    color: #000000;
+    color: @black;
     text-shadow: none;
 
     a {
-      color: #000;
+      color: @black;
       text-decoration: underline;
     }
   }

@@ -5,8 +5,8 @@
 @import "~kungbib-styles/dist/less/mixins/colors";
 
 // ----------- VARIABLES ------------
-@brand-primary: #009788;
-@brand-danger: #ab5252;
+@brand-primary: #29A1A2;
+@brand-danger: #FF7373;
 @bg-site: #F9F9F9;
 @test-color: pink;
 @bg-img: none;
@@ -24,7 +24,6 @@
 @bg-sidebars: darken(@white, 5%);
 @border-navbar: @gray-light;
 @border-navbar-width: 1px;
-@bg-footer: @white;
 @shadow-footer: inset 0px 1px 0px 0px @gray;
 @text-footer: @black;
 @text-alt-footer: @black;
@@ -37,7 +36,7 @@
 @color-ext: #d51;
 @color-id: #c7254e;
 @link-color: @brand-primary;
-@link-hover-color: darken(@link-color,15%);
+@link-hover-color: darken(@link-color,17%);
 @panel-border-radius: 3px;
 @thing-header-bg: @brand-primary;
 @thing-header-text: @white;
@@ -45,14 +44,6 @@
 @color-headers: @brand-primary;
 @color-headers-text: #fff;
 
-// --------- EDITOR SPECIFIC --------
-
-// Variables
-@chipColor: @gray-lighter;
-// @chipColorLinked: rgb(131, 197, 191);
-@chipColorLinked: #b2d2cf;
-@chipTextColor: #000000;
-@chipTextColorLinked: #000000;
 
 // ----------- VARIABLES ------------
 
@@ -66,12 +57,17 @@
 
 // ---- grayscale ----
 @white: #ffffff;
-@gray-lighter: #E0E6E9;
-@gray-light: #C4C7CA;
+@black: #222;
 @gray: #949A9E;
+@gray-light: #C4C7CA;
+@gray-lighter: #E0E6E9;
 @gray-dark: #6F767B;
 @gray-darker: #595D61;
-@black: #333;
+
+@gray-transparent: rgba(0, 0, 0, 0.45);
+@gray-light-transparent: rgba(0, 0, 0, 0.25);
+@gray-lighter-transparent: rgba(0, 0, 0, 0.12);
+@gray-darker-transparent: rgba(0, 0, 0, 0.68);
 
 // LIBRIS colors
 @holding-color: #ac82b5;
@@ -79,9 +75,8 @@
 
 // - Color choices
 @brand-id: #547e91;
-@bg-site: #F9F9F9;
 @test-color: pink;
-@neutral-color: #fff;
+@neutral-color: #FCFCFC;
 @bg-img: none;
 @bg-content: @white;
 @bg-content-alt: @white;
@@ -91,7 +86,7 @@
 @text-alt-navbar: #505050;
 @text-toolbar: fade(@white, 55%);
 @bg-sidebars: darken(@white, 5%);
-@bg-footer: @brand-primary;
+@bg-footer: @gray-darker;
 @text-footer: #fff;
 @text-alt-footer: #fff;
 @bg-jumbotron: transparent;
@@ -99,12 +94,10 @@
 @border-footer: @gray-light;
 @color-ext: #d51;
 @color-id: #c7254e;
-@link-color: @brand-primary;
-@link-hover-color: darken(@link-color,15%);
 @panel-border-radius: 3px;
 @topbar-color: @white;
 
-@sec: #86B5CB;
+@sec: rgba(135, 170, 187, 0.3);
 @sec-contrast: #74aac3;
 
 @sec-alter: #629fbc;
@@ -113,10 +106,10 @@
 @success: #d4edda;
 @success-alt: #c3e6cb;
 
-@danger: #f5c6cb;
-@danger-alter: #963c3c;
+@danger: rgba(255, 115, 115, 0.3);
+@danger-alter: #C85151;
 
-@warning: #fed481;
+@warning: rgba(254, 212, 129, 0.5);
 @warning-alter: #CA9543;
 
 @color-headers: @brand-primary;
@@ -126,31 +119,49 @@
 @shadow-base: none;
 @shadow-chip: 0px 0px 5px 1px rgba(0, 0, 0, 0.15);
 @shadow-chip-elevated: 0px 5px 13px 2px rgba(0, 0, 0, 0.3);
-@shadow-card-elevated: 0px 5px 10px 2px rgba(0, 0, 0, 0.3);
+@shadow-card-elevated: 0px -1px 5px 2px rgba(0, 0, 0, 0.2);
 @shadow-select: 0px 5px 13px 2px rgba(0, 0, 0, 0.3);
-@shadow-panel: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1px -2px rgba(0,0,0,0.2);
+@shadow-panel: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1px -2px rgba(0,0,0,0.1);
 
+// --------- ICON COLOR & SIZES -----
+@icon-default: @gray;
+@icon-default--hover: @gray-darker;
+
+@icon-alt: @gray-transparent;
+@icon-alt--hover: @gray-darker-transparent;
+
+@icon-primary: @link-color;
+@icon-primary--hover: @link-hover-color;
+
+@icon-added: @gray-light;
+@icon-disabled: @gray-lighter;
+
+@icon-sm: 16px;
+@icon-md: 20px;
+@icon-lg: 30px;
+
+// --------- CHIP -------------------
+
+@chip-color: @link-color;
+@chip-color-hover: @link-hover-color;
+@chip-background: transparent;
 
 // --------- COMPONENT COLORS -------
 @color-local: @white;
 
 // --------- EDITOR SPECIFIC --------
 
-@form-field: darken(@neutral-color, 5%);
+@form-field: @white;
 
-@instance-chip-background: #547e91;
-@instance-chip-text: lighten(@instance-chip-background, 80%);
-@instance-background: #547e91;
-@instance-text: lighten(@instance-background, 80%);
-@instance-hover: lighten(@instance-background, 5%);
-@instance-background-dark: darken(@instance-background, 5%);
+@form-border: @gray-lighter;
+@form-border-alt: @gray-lighter-transparent;
 
-@work-chip-background: #5d9c73;
-@work-chip-text: lighten(@work-chip-background, 80%);
-@work-background: #3c9059;
-@work-text: lighten(@work-background, 80%);
-@work-hover: lighten(@work-background, 5%);
-@work-background-dark: darken(@work-background, 5%);
+@field-path: @gray-light;
+@field-path-alt: @gray-light-transparent;
+
+@remove: @danger;
+@add: @sec;
+
 @node-bg: #fafafa;
 
 @highlight-color: @brand-primary;
@@ -159,6 +170,13 @@
 @col-label: 200px;
 @col-value: 620px;
 @col-action: 250px;
+
+// --------- MODAL/PANEL VARIABLES --------
+
+@list-item-bg-even: @bg-site;
+@list-item-bg-odd: @white;
+@list-item-bg-hover: @gray-lighter;
+@panel-header-bg: @bg-site;
 
 
 // ----------- BASE STYLES ----------

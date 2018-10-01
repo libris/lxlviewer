@@ -50,7 +50,6 @@
             "qualifier": ""
           }],
           "editionStatement": "",
-          "editionStatementRemainder": "",
           "publication": [
             {
               "@type": "PrimaryPublication",
@@ -428,6 +427,12 @@
             "@type": "Extent",
             "label": ""
           }],
+          "accompaniedBy": [
+            {
+              "@type": "Resource",
+              "label": ""
+            }
+          ],
           "hasDimensions": {
             "@type": "Dimensions",
             "label": ""
@@ -462,10 +467,6 @@
               "@type": "Note",
               "label": ""
           }],
-          "supplementaryContent": {
-            "@type": "SupplementaryContent",
-            "label": ""
-          },
           "tableOfContents": [
             {
               "@type": "TableOfContents",
@@ -487,12 +488,6 @@
               ]
             }
           ],
-          "accompaniedBy": [
-            {
-              "@type": "Resource",
-              "label": ""
-            }
-          ],
           "instanceOf": {
             "@id": "https://id.kb.se/TEMPID#work"
           }
@@ -503,9 +498,17 @@
           "hasTitle": [
             {
               "@type": "Title",
-              "mainTitle": ""
+              "mainTitle": "",
+              "partName": [
+              ""
+              ],
+              "partNumber": [
+                ""
+              ]
             }
           ],
+          "musicKey": "",
+          "version": "",
           "language": [{
             "@id": "https://id.kb.se/language/zxx"
           }],
@@ -616,10 +619,14 @@
                     "mainTitle": "",
                     "partNumber": [
                       ""
+                    ],
+                    "partName": [
+                    ""
                     ]
                   }
                 ],
                 "musicKey": "",
+                "version": "",
                 "musicMedium": [
                   ""
                 ]
@@ -646,10 +653,14 @@
                     "mainTitle": "",
                     "partNumber": [
                       ""
+                    ],
+                    "partName": [
+                    ""
                     ]
                   }
                 ],
                 "musicKey": "",
+                "version": "",
                 "musicMedium": [
                   ""
                 ]

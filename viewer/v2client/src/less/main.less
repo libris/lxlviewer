@@ -1,11 +1,14 @@
-@import 'button-and-links.less';
+@import 'button-links-chip.less';
 @import 'card.less';
-@import 'chip.less';
 @import 'edit.less';
 @import 'login.less';
 @import 'utils.less';
 @import 'window.less';
+@import 'form.less';
+@import 'type.less';
+@import 'icon.less';
 
+@import url(//fonts.googleapis.com/css?family=Open+Sans:600);
 
 html {
   height: 100%;
@@ -51,6 +54,10 @@ main {
   }
 }
 
+.vue-simple-spinner {
+  border-color: @brand-primary @gray-lighter @gray-lighter !important;
+}
+
 #body-blocker {
   display: none;
   z-index: @backdrop-z;
@@ -72,6 +79,8 @@ body {
   height: 100vh;
   display: flex;
   flex-direction: column;
+  -ms-overflow-style: scrollbar;
+  
   .facet-container {
     opacity: 1;
     transition: 0.3s ease width 0s, 0.3s ease opacity 0.3s;
@@ -80,10 +89,6 @@ body {
       opacity: 0;
     }
   }
-}
-
-h2 {
-  font-weight: normal;
 }
 
 #page-content-wrapper {
@@ -153,17 +158,6 @@ h2 {
 }
 
 
-a {
-  color: @link-color;
-  text-decoration: none;
-
-  &:hover {
-    color: @link-hover-color;
-    text-decoration: underline;
-  }
-}
-
-
 // ----------- BUTTONS ----------------
 button, .btn-primary, .btn-primary:hover, .btn-primary:focus {
     color: #ffffff;
@@ -184,10 +178,17 @@ button {
   background:#bbb;
   }
 }
-// ----------- HEADINGS ----------------
-h1 {
-  font-weight: normal;
-  margin: 10px 0;
-}
+
+
 
 // ----------- VARIOUS ----------------
+body:not(.user-is-tabbing) button:focus,
+body:not(.user-is-tabbing) .btn:focus,
+body:not(.user-is-tabbing) input:focus,
+body:not(.user-is-tabbing) select:focus,
+body:not(.user-is-tabbing) textarea:focus,
+body:not(.user-is-tabbing) div:focus,
+body:not(.user-is-tabbing) li:focus,
+body:not(.user-is-tabbing) a:focus {
+  outline: none;
+}

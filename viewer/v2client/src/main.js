@@ -3,10 +3,12 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import App from './App'
+import PortalVue from 'portal-vue';
 import ComboKeys from 'combokeys';
 import router from './router'
 import store from '@/store/store';
 import * as VocabUtil from '@/utils/vocab';
+import * as LayoutUtil from '@/utils/layout';
 import * as DisplayUtil from '@/utils/display';
 import * as StringUtil from '@/utils/string';
 import * as HttpUtil from '@/utils/http';
@@ -16,6 +18,7 @@ import KeyBindings from '@/resources/json/keybindings.json';
 
 Vue.config.productionTip = false
 Vue.use(Vuex);
+Vue.use(PortalVue);
 Vue.component('field', Field);
 
 Vue.filter('labelByLang', (label) => {
@@ -65,6 +68,7 @@ new Vue({
   template: '<App/>',
   created() {
     this.initWarningFunc();
+    this.fetchHelpDocs();
     Promise.all(this.getLdDependencies()).then((resources) => {
       store.dispatch('setContext', resources[2]['@context']);
       store.dispatch('setupVocab', resources[0]['@graph']);
@@ -120,6 +124,7 @@ new Vue({
           store.dispatch('setUser', userObj);
         }
       }
+      window.addEventListener('keydown', LayoutUtil.handleFirstTab);
       this.updateTitle();
       this.injectAnalytics();
     })
@@ -167,9 +172,9 @@ new Vue({
         userObj.token = token;
         store.dispatch('setUser', userObj);
         if (initial) {
-          this.$store.dispatch('pushNotification', { color: 'green', message: `${StringUtil.getUiPhraseByLang('You were logged in', this.settings.language)}!` });
+          this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('You were logged in', this.settings.language)}!` });
           const lastPath = localStorage.getItem('lastPath');
-          if (typeof lastPath !== 'undefined' && lastPath !== '/user') {
+          if (typeof lastPath !== 'undefined' && lastPath !== '/user' && lastPath !== '/login') {
             localStorage.removeItem('lastPath');
             this.$router.push({ path: lastPath });
           } else {
@@ -225,6 +230,17 @@ new Vue({
           return console.error('%c LXL ERROR ', 'background: #a50000; color: #fff;', ...strings);
         }
       };
+    },
+    fetchHelpDocs() {
+      fetch(`${this.settings.apiPath}/helpdocs/help.json`).then((result) => {
+        if (result.status == 200) {
+          result.json().then((body) => {
+            store.dispatch('setHelpDocs', body);
+          });
+        }
+      }, (error) => {
+        console.log(error);
+      });
     },
     getLdDependencies(fetchIndicator) {
       const promiseArray = [];

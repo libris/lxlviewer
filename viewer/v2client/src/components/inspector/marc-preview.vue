@@ -1,8 +1,10 @@
 <script>
-import * as LayoutUtil from '../../utils/layout';
+import * as DataUtil from '@/utils/data';
+import * as httpUtil from '@/utils/http';
+import * as LayoutUtil from '@/utils/layout';
 import * as _ from 'lodash';
 import { mapGetters } from 'vuex';
-import ModalComponent from '@/components/shared/modal-component.vue';
+import PanelComponent from '@/components/shared/panel-component.vue';
 
 export default {
   name: 'marc-preview',
@@ -37,10 +39,10 @@ export default {
   methods: {
     hide() {
       this.$emit('hide');
-      this.$store.dispatch('setStatusValue', { 
-        property: 'keybindState', 
-        value: 'overview' 
-      });
+      // this.$store.dispatch('setStatusValue', { 
+      //   property: 'keybindState', 
+      //   value: 'overview' 
+      // });
     },
     isObject(o) {
       return _.isObject(o);
@@ -66,30 +68,25 @@ export default {
     ]),
   },
   components: {
-    'modal-component': ModalComponent,
+    'panel-component': PanelComponent,
   },
   mounted() { 
     this.$nextTick(() => {
-      this.$store.dispatch('setStatusValue', { 
-        property: 'keybindState', 
-        value: 'marc-preview'
-      });
+      // this.$store.dispatch('setStatusValue', { 
+      //   property: 'keybindState', 
+      //   value: 'marc-preview'
+      // });
     });
   },
 };
 </script>
 
 <template>
-  <modal-component class="" @close="hide">
-    <template slot="modal-header">
-      {{ "Preview MARC21" | translatePhrase }}
-      <span class="ModalComponent-windowControl">
-        <i @click="hide" class="fa fa-close"></i>
-      </span>
-    </template>
-    
-    <template slot="modal-body">
-      <div class="MarcPreview">
+  <panel-component class="MarcPreview"
+    @close="hide"
+    title="Preview MARC21">
+    <template slot="panel-body">
+      <div class="">
         <div class="MarcPreview-body">
           <div class="MarcPreview-status" v-if="marcObj === null">
             <p v-show="error === null" >
@@ -119,10 +116,10 @@ export default {
                 <td>{{ getKeys(field)[0] }}</td>
                 <td>{{ getValue(field)['ind1'] }}</td>
                 <td>{{ getValue(field)['ind2'] }}</td>
-                <td v-if="getValue(field)['value']">
+                <td class="MarcPreview-value" v-if="getValue(field)['value']">
                   <span>{{getValue(field)['value']}}</span>
                 </td>
-                <td v-if="!getValue(field)['value']">
+                <td class="MarcPreview-value" v-if="!getValue(field)['value']">
                   <span v-for="(sub, index) in getValue(field)['subfields']" :key="index">
                     <span class="sub-key">#{{ getKeys(sub)[0] }}</span> {{ sub[getKeys(sub)[0]] }}
                   </span>
@@ -134,7 +131,7 @@ export default {
        
       </div>
     </template>
-  </modal-component>
+  </panel-component>
 </template>
 
 <style lang="less">
@@ -143,8 +140,11 @@ export default {
 
   &-body {
     width: 100%;
-    overflow-y: scroll;
     padding-bottom: 30px;
+  }
+
+  &-value {
+    word-break: break-word;
   }
 
   &-status {
@@ -156,7 +156,6 @@ export default {
   &-table {
     width: 100%;
     height: 100%;
-    overflow: scroll;
     margin: 0 0 20px 0; // Make sure last field is fully visible
     font-family: monospace;
     border: 1px solid #a1a1a1;
@@ -171,7 +170,7 @@ export default {
 
     td, th {
       border: 1px solid #ccc;
-      padding: 5px;
+      padding: 10px;
       .sub-key {
         font-weight: bold;
         &::before {
@@ -182,6 +181,15 @@ export default {
 
     tbody td, tbody th {
       vertical-align: top;
+    }
+  }
+
+  & .PanelComponent-container {
+    @media print {
+      display: block;
+      position: static;
+      width: 100%;
+      height: auto;
     }
   }
 }

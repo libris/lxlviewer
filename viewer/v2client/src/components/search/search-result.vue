@@ -20,6 +20,8 @@ export default {
   methods: {
     getFullLocalResult() {
       let currentQuery = this.query;
+      currentQuery = currentQuery.replace(/&_offset=.*/, '&_offset=');
+
       const unlimitedQuery = currentQuery.replace(/_limit=.*&/, '_limit='+this.totalItems+'&');
       
       const fetchUrl = `${this.settings.apiPath}/find.json?${unlimitedQuery}`;
@@ -27,7 +29,7 @@ export default {
       fetch(fetchUrl).then((response) => {
         return response.json();
       }, (error) => {
-        this.$store.dispatch('pushNotification', { color: 'red', message: StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language) });
+        this.$store.dispatch('pushNotification', { type: 'danger', message: StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language) });
         this.searchInProgress = false;
       }).then((result) => {
         this.fullResult = result;
@@ -37,11 +39,15 @@ export default {
   },
   watch: {
     fullResult(newValue) {
-      this.$store.dispatch('setBreadcrumbData', {
-        type: 'searchResult',
-        result: newValue,
-        searchUrl: this.$route.fullPath
-      });
+      this.$store.dispatch('setBreadcrumbData',
+        [
+          {
+            type: 'searchResult',
+            result: newValue,
+            resultUrl: this.$route.fullPath
+          }
+        ]
+      );
     },
   },
   computed: {
@@ -122,6 +128,12 @@ export default {
 
 <style lang="less">
 .SearchResult {
+  padding: 10px;
+
+  @media (min-width: @screen-md) {
+    padding: 0;
+  }
+
   &-loadingText {
     box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.1);
     padding: 20px 0px;

@@ -23,6 +23,7 @@ export default {
     isLocked: false,
     isRemovable: false,
     showActionButtons: false,
+    isExpanded: false,
   },
   watch: {
     isLocked(val) {
@@ -30,6 +31,11 @@ export default {
         this.initializeTextarea();
       }
     },
+    isExpanded(val) {
+      if (val) {
+        this.initializeTextarea();
+      }
+    }
   },
   data() {
     return {
@@ -65,10 +71,9 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      if (!this.status.isNew) {
-        this.addFocus();
+      if (!this.isLocked) {
+        this.initializeTextarea();
       }
-      this.initializeTextarea();
     });
   },
   methods: {
@@ -106,28 +111,15 @@ export default {
       }
     },
     initializeTextarea() {
-      AutoSize(this.$el.querySelector('textarea'));
-      AutoSize.update(this.$el.querySelector('textarea'));
+      this.$nextTick(() => {
+        let textarea = this.$el.querySelector('textarea');
+        AutoSize(textarea);
+        AutoSize.update(textarea);
+      })
     },
     isEmpty() {
       // TODO: Is the item empty?
       return false;
-    },
-    addFocus() {
-      const children = this.$el.children;
-      _.each(children, child => {
-        if (child.className.indexOf('js-itemValueInput') > -1) {
-          child.focus();
-        }
-      });
-    },
-    removeFocus() {
-      const children = this.$el.children;
-      _.each(children, child => {
-        if (child.className.indexOf('js-itemValueInput') > -1) {
-          child.blur();
-        }
-      });
     },
   },
   components: {
@@ -157,7 +149,7 @@ export default {
       @blur="removeHover = false, removeHighlight(false)"
       @mouseover="removeHover = true, removeHighlight(true)" 
       @mouseout="removeHover = false, removeHighlight(false)">
-      <i class="fa fa-minus">
+      <i class="fa fa-trash-o icon icon--sm">
         <tooltip-component 
           :show-tooltip="removeHover" 
           tooltip-text="Remove" 
@@ -173,21 +165,22 @@ export default {
   display: flex;
   flex: 1;
   flex-shrink: 0;
-  margin: 0 0 0 -5px;
+  margin-left: -5px;
   padding: 5px;
   border-radius: 4px;
+  transition: background-color 0.2s ease;
 
   &-input {
-    display: block;
     width: 100%;
-    border: 1px solid @gray-dark;
+    display: block;
+    border: 1px solid @gray-light;
     border-radius: 2px;
     padding: 2px 10px;
     resize: none;
     transition: border .25s ease-out;
 
     &:focus {
-      border: 1px solid @black;
+      border: 1px solid @gray-dark;
     }
   }
 
@@ -209,10 +202,11 @@ export default {
     font-size: 1.6rem;
     float: right;
     display: inline-block;
-    padding: 3px;
-    margin-left: 5px;
     cursor: pointer;
     color: @gray;
+    min-width: 20px;
+    margin-left: 5px;
+
 
     &:hover {
       color: @black;
@@ -220,7 +214,7 @@ export default {
   }
 
   &.is-removeable {
-    background-color: @warning;
+    background-color: @danger;
   }
 
   .is-lastAdded & {

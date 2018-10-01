@@ -35,10 +35,15 @@ export default {
 </script>
 
 <template>
-  <div class="Entity-changelog">
-    <span class="Entity-created">Skapad {{ getCard.created }} av {{ getCard.descriptionCreator || 'okänd' }}</span>
-    <span class="Entity-createdSeparator">|</span>
-    <span class="Entity-changed">Ändrad {{ getCard.modified }} av {{ getCard.descriptionLastModifier || 'okänd' }}</span>
+  <div class="EntityChangelog">
+    <p class="EntityChangelog-created">
+      <span class="EntityChangelog-key uppercaseHeading--bold">{{ 'Created' | translatePhrase}}:</span> 
+      {{ getCard.created }} {{ 'by' | translatePhrase}} {{ getCard.descriptionCreator || 'okänd' }}
+    </p>
+    <p class="EntityChangelog-changed">
+      <span class="EntityChangelog-key uppercaseHeading--bold">{{ 'Changed' | translatePhrase}}:</span> 
+      {{ getCard.modified }} {{ 'by' | translatePhrase}} {{ getCard.descriptionLastModifier || 'okänd' }}
+    </p>
       <!--| <span class="show-record-toggle" v-show="!showRecord" v-on:click="toggleRecord">{{'Show admin metadata' | translatePhrase}}</span>
       <span class="show-record-toggle" v-show="showRecord" v-on:click="toggleRecord">{{'Hide admin metadata' | translatePhrase}}</span> -->
     <!-- <div class="container-wrapper" v-if="showFull">
@@ -58,21 +63,23 @@ export default {
 
 <style lang="less">
 
-.Entity-changelog {
+.EntityChangelog {
   display: flex;
-  flex-direction: row;
-  font-size: 14px;
-  font-size: 1.4rem;
-  line-height: 1.2;
-  align-items: center;
+  flex-wrap: wrap;
+  line-height: 1;
+  margin-right: 20px;
 
-  @media print {
-    flex-direction: column;
-    align-items: flex-start;
+  &-created {
+    margin-right: 10px;
+    padding-right: 10px;
+    border-right: 1px solid @gray-light;
 
-    .Entity-createdSeparator {
-      display: none;
+    @media screen and (max-width: @screen-sm) {
+      border-right: none;
     }
+  }
+  
+  &-key {
   }
 }
 // .record-summary-container {

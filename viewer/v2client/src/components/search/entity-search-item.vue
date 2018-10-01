@@ -14,7 +14,12 @@ export default {
       type: Array,
       default: () => [],
     },
+    isDisabled: {
+      type: Boolean,
+      default: false,
+    },
     path: '',
+    isReplaced: false,
   },
   data() {
     return {
@@ -23,7 +28,6 @@ export default {
         text: 'Add',
         styling: 'brand',
         event: 'add-entity',
-        show: (this.disabledIds.indexOf(this.focusData['@id']) === -1),
         inspectAction: true,
         path: this.path,
       },
@@ -31,7 +35,9 @@ export default {
   },
   methods: {
     addItem() {
-      this.$emit('add-item');
+      if (!this.isDisabled && !this.isReplaced) {
+        this.$emit('add-item');
+      }
     },
   },
   computed: {
@@ -51,27 +57,28 @@ export default {
     'entity-summary': EntitySummary,
     'summary-action': SummaryAction,
   },
-  watch: {
-  },
-  events: {
-  },
-  ready() { // Ready method is deprecated in 2.0, switch to "mounted"
+  mounted() { 
   },
 };
 </script>
 
 <template>
-  <li class="EntitySearch-item" >
+  <li class="EntitySearch-listItem PanelComponent-listItem" 
+    @click="addItem()"
+    :class="{ 'is-added' : isDisabled, 'is-replaced' : isReplaced }">
+    <summary-action 
+      :disabled="isDisabled" 
+      :replaced="isReplaced"
+      :options="addPayload" 
+      @action="addItem()">
+    </summary-action>
     <div class="EntitySearch-itemContainer">
       <entity-summary 
         :focus-data="focusData" 
         :should-link="false" 
-        :lines="4"></entity-summary>
+        :lines="4">
+      </entity-summary>
     </div>
-    <summary-action 
-      v-show="listItemSettings.show" 
-      :options="addPayload" 
-      @action="addItem()"></summary-action>
   </li>
 </template>
 
@@ -80,21 +87,16 @@ export default {
 
 .EntitySearch{
 
-  &-item {
-    border: solid #777;
-    margin: 4px;
-    border-width: 1px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  &-listItem {
+    cursor: pointer;
+
+    &.is-added, 
+    &.is-replaced {
+      cursor: default;
+    }
 
     code {
       color: @black;
-    }
-
-    &.already-added {
-      opacity: 0.5;
-      cursor: default;
     }
 
     .label {
@@ -120,13 +122,23 @@ export default {
     }
 
     &.is-selected {
-      outline: solid 1px @brand-primary;
-      background-color: fadeout(@brand-primary, 70%);
     } 
+
+    & .EntitySummary {
+      padding: 0;
+
+      & .EntitySummary-title {
+        font-size: 18px;
+        font-size: 1.8rem;
+        font-weight: 600;
+      }
+    }
   }
 
   &-itemContainer {
-    max-width: 85%;    
+    padding: 0 15px;
+    width: 100%;
+    overflow: hidden;
   }
 }
 

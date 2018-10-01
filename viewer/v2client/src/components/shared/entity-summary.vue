@@ -20,6 +20,10 @@ export default {
       type: Boolean,
     },
     shouldOpenTab: false,
+    isCompact: {
+      default: false,
+      type: Boolean
+    } 
   },
   data() {
     return {
@@ -33,6 +37,18 @@ export default {
     }
   },
   computed: {
+    isReplacedBy() {
+      const info = this.getSummary.info.concat(this.getSummary.sub);
+      const infoObj = {};
+      let value = '';
+      _.each(info, (node) => {
+        infoObj[node.property] = node.value.join(', ');
+        if (node.property === 'isReplacedBy') {
+          value = node.value;
+        }
+      });
+      return value;
+    },
     routerPath() {
       if (this.focusData.hasOwnProperty('@id')) {
         const uriParts = this.focusData['@id'].split('/');
@@ -130,7 +146,7 @@ export default {
 <template>
 <section class="EntitySummary">
   <div class="EntitySummary-meta">
-    <div class="EntitySummary-type">
+    <div class="EntitySummary-type uppercaseHeading--light">
       {{categorization.join(', ')}} {{ isLocal ? '{lokal entitet}' : '' }}
       <span class="EntitySummary-sourceLabel" v-if="database">{{ database }}</span>
     </div>
@@ -167,19 +183,26 @@ export default {
       </a>
       
     </h3>
-    <span class="EntitySummary-id" 
-      v-if="identifiers.length > 0">
-      {{ identifiers[0] }} 
-      <span class="EntitySummary-idInfo" v-if="identifiers.length > 1">(+{{ identifiers.length-1 }})</span>
-    </span>
-    <ul class="EntitySummary-details">
+    <ul class="EntitySummary-details" v-show="!isCompact">
+      <li class="EntitySummary-detailsItem" 
+        v-if="identifiers.length > 0">
+        <span class="EntitySummary-detailsKey EntitySummary-id uppercaseHeading--bold">
+        {{ identifiers[0] }}</span>
+        <span class="EntitySummary-detailsValue EntitySummary-idInfo" 
+          v-if="identifiers.length > 1">(+{{ identifiers.length-1 }})</span>
+      </li>
       <li class="EntitySummary-detailsItem" 
         v-show="v.length !== 0" 
         v-for="(v, k) in infoWithKeys" 
         :key="k">
-        <span class="EntitySummary-detailsKey">{{ k | labelByLang }}:</span>
-        &nbsp;
-        <span class="EntitySummary-detailsValue">{{ v }}</span>
+        <div v-if="isReplacedBy === ''">
+          <span  class="EntitySummary-detailsKey uppercaseHeading--bold">{{ k | labelByLang }}:</span>
+          <span class="EntitySummary-detailsValue">{{ v }}</span>
+        </div>
+        <div v-if="isReplacedBy !== ''">
+          <span  class="EntitySummary-detailsKey uppercaseHeading--bold">Ersatt av:</span>
+          <span class="EntitySummary-detailsValue">{{ v }}</span>
+        </div>
       </li>
     </ul>
   </div>
@@ -191,29 +214,23 @@ export default {
 .EntitySummary {
   display: flex;
   flex-direction: column;
-  font-size: 12px;
-  font-size: 1.2rem;
   justify-content: space-between;
-  padding: 10px;
   width: 100%;
+  padding: 15px 20px;
 
-  .HeaderComponent & {
-    color: #fff;
+  .EntityHeader & {
+    padding: 0;
   }
 
   &-meta {
     border-width: 0px;
-
-    .ResultList & {
-      color: #8a8a8a;
-    }
   }
 
   &-type {
     display: block;
+    text-transform: uppercase;
     flex-basis: 85%;
     flex-grow: 2;
-    font-weight: bold;
     margin-bottom: -0.4em;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -237,21 +254,29 @@ export default {
   }
 
   &-info {
-    min-height: 7.5em;
     overflow: hidden;
+    line-height: 1.4;
   }
 
   &-title {
     font-size: 20px;
-    font-size: 2.0rem;
-    line-height: 1.2;
+    font-size: 2rem;
     margin: 5px 0;
+    line-height: 26px;
     overflow: hidden;
     width: 100%; 
     position: relative;
 
+    .ResultList & {
+      color: @brand-primary;
+    }
+
     &--imported {
       cursor: pointer;
+      &:hover {
+        text-decoration: underline;
+        color: @link-hover-color;
+      }
     }
 
     @media (min-width: 768px) {
@@ -262,45 +287,35 @@ export default {
   }
 
   &-titleLink {
-    color: @brand-primary;
-    display: inline;
-    
     &.blue-link {
       color: @brand-id;
     }
   }
 
   &-details {
-    line-height: 1.4;
+    display: inline;
     list-style-type: none;
     margin: 0;
     padding: 0px;
   }
 
-  &-detailsItem {
-    display: inline-block;
-  }
-
-  &-detailsKey {
-    font-size: 12px;
-    font-size: 1.2rem;
-    text-transform: uppercase;
-    font-weight: 700;
-  }
-
-  &-detailsValue {
-    margin-right: 10px;
-  }
-
   &-id {
-    display: block;
-    font-weight: 700;
-    margin-top: -0.3em;
-    margin-bottom: 5px;
   }
 
   &-idInfo {
-    font-weight: normal;
+  }
+
+  &-detailsItem {
+    display: inline-block;
+    margin-right: 10px;
+  }
+
+  &-detailsKey {
+  }
+
+  &-detailsValue {
+    font-size: 16px;
+    font-size: 1.6rem;
   }
 
   &-icon {

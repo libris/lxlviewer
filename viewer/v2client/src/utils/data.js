@@ -51,17 +51,16 @@ export function removeNullValues(inputObj) {
     cleanObj = {};
     for (const key in obj) {
       if (obj.hasOwnProperty(key) && key !== '_uid') {
-        if (obj[key] === null || typeof obj[key] === 'undefined' || obj[key].length === 0) {
-          delete obj[key];
-        } else {
-          const cleanValue = removeNullValues(obj[key]);
-          // if (!(_.isArray(cleanValue) && cleanValue.length === 0)) {
-          cleanObj[key] = cleanValue;
-          // }
+        cleanObj[key] = removeNullValues(obj[key]);
+        if (cleanObj[key] === null || typeof cleanObj[key] === 'undefined' || cleanObj[key].length === 0) {
+          delete cleanObj[key];
         }
       }
     }
-  } else if (typeof obj !== 'undefined' && obj !== null) {
+    if (Object.keys(cleanObj).length == 1 && cleanObj.hasOwnProperty('@type')) {
+      cleanObj = null;
+    }
+  } else if (typeof obj !== 'undefined' && obj !== null && obj !== "") {
     cleanObj = obj;
   }
   return cleanObj;

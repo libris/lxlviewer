@@ -34,21 +34,22 @@ export default {
 
 <template>
   <div class="Notification " @click="remove" role="alert" :class="{
-    'Notification--error': content.color === 'red',
-    'Notification--success': content.color === 'green',
+    'Notification--error': content.type === 'danger',
+    'Notification--success': content.type === 'success',
+    'Notification--info': content.type === 'info',
     'is-showing': shouldShow
       }">
 
-      <span v-if="content.color === 'red'" class="fa-stack fa-lg Notification-iconCont">
+      <span v-if="content.type === 'danger'" class="fa-stack fa-lg Notification-iconCont">
         <i class="fa fa-circle fa-stack-2x fa-inverse"></i>
         <i class="fa fa-times fa-stack-1x Notification-icon"></i>
       </span>
-      <span v-if="content.color === 'green'" class="fa-stack fa-lg Notification-iconCont">
+      <span v-if="content.type === 'success'" class="fa-stack fa-lg Notification-iconCont">
         <i class="fa fa-circle fa-stack-2x fa-inverse"></i>
         <i class="fa fa-check fa-stack-1x Notification-icon"></i>
       </span>
-      <span v-if="content.color === 'grey'" class="fa-stack fa-lg Notification-iconCont">
-        <i class="fa fa-circle fa-stack-2x fa-inverse"></i>
+      <span v-if="content.type === 'info'" class="fa-stack fa-lg Notification-iconCont">
+        <i class="fa fa-circle fa-stack-2x"></i>
         <i class="fa fa-info fa-stack-1x Notification-icon"></i>
       </span>
     {{ content.message }}
@@ -58,8 +59,11 @@ export default {
 <style lang="less">
 
 @error-color: rgb(206, 104, 104);
+@error-color-text: white;
 @success-color: @brand-primary;
-@info-color: #757575;
+@success-color-text: white;
+@info-color: white;
+@info-color-text: #757575;
 
 .Notification {
   background-color: @info-color;
@@ -71,10 +75,14 @@ export default {
   margin: 0.5em;
   font-weight: bold;
   box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.6);
-  color: white;
+  color: @info-color-text;
+  .notification-icon {
+    color: @info-color;
+  }
 
   &--error {
     background-color: @error-color;
+    color: @error-color-text;
     .notification-icon {
       color: @error-color;
     }
@@ -82,6 +90,10 @@ export default {
 
   &--success {
     background-color: @success-color;
+    color: @success-color-text;
+    .notification-icon {
+      color: @success-color;
+    }
   }
 
   &-icon {

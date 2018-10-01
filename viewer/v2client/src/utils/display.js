@@ -11,25 +11,24 @@ moment.locale('sv');
 
 export function getDisplayDefinitions(baseUri) {
   return new Promise((resolve, reject) => {
-    resolve(display); // TODO: REMOVE HARDCODED
-    // httpUtil.getResourceFromCache(`${baseUri}/vocab/display/data.jsonld`).then((result) => {
-    //   const clonedResult = _.cloneDeep(result);
-    //   _.each(clonedResult.lensGroups, lensGroup => {
-    //     _.each(lensGroup.lenses, lens => {
-    //       if (lens.hasOwnProperty('fresnel:extends')) {
-    //         const [extendLens, extendLevel] = lens['fresnel:extends']['@id'].split('-');
-    //         lens.showProperties.splice(
-    //           lens.showProperties.indexOf('fresnel:super'),
-    //           1,
-    //           ...result.lensGroups[extendLevel].lenses[extendLens].showProperties
-    //         );
-    //       }
-    //     });
-    //   });
-    //   resolve(clonedResult);
-    // }, (error) => {
-    //   reject(error);
-    // });
+    httpUtil.getResourceFromCache(`${baseUri}/vocab/display/data.jsonld`).then((result) => {
+      const clonedResult = _.cloneDeep(result);
+      _.each(clonedResult.lensGroups, lensGroup => {
+        _.each(lensGroup.lenses, lens => {
+          if (lens.hasOwnProperty('fresnel:extends')) {
+            const [extendLens, extendLevel] = lens['fresnel:extends']['@id'].split('-');
+            lens.showProperties.splice(
+              lens.showProperties.indexOf('fresnel:super'),
+              1,
+              ...result.lensGroups[extendLevel].lenses[extendLens].showProperties
+            );
+          }
+        });
+      });
+      resolve(clonedResult);
+    }, (error) => {
+      reject(error);
+    });
   });
 }
 
@@ -186,7 +185,7 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
             } else if (arrayItem.length > 0) {
               newArray.push(arrayItem);
             } else {
-              console.warn("Array contained unknown item", arrayItem);
+              // console.warn("Array contained unknown item", arrayItem);
             }
           }
           value = newArray;
@@ -213,7 +212,7 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
   }
   if (_.isEmpty(result)) {
     window.lxlWarning(`🏷️ DisplayObject was empty. @type was ${trueItem['@type']}. Used lens: "${usedLensType}".`, 'Item data:', trueItem);
-    result = { 'label': `{${StringUtil.getUiPhraseByLang('Unknown', settings.language)}}` };
+    result = { 'label': `{${StringUtil.getUiPhraseByLang('Unnamed', settings.language)}}` };
   }
   return result;
 }
@@ -245,7 +244,7 @@ export function getItemSummary(item, displayDefs, quoted, vocab, settings, conte
     }
   });
   if (summary['header'].length === 0) {
-    summary['header'].push({ property: 'error', value: `{${StringUtil.getUiPhraseByLang('Unnamed entity', settings.language)}}` });
+    summary['header'].push({ property: 'error', value: `{${StringUtil.getUiPhraseByLang('Unnamed', settings.language)}}` });
   }
   return summary;
 }

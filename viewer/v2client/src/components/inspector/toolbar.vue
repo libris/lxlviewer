@@ -16,6 +16,7 @@ import FieldAdder from '@/components/inspector/field-adder';
 import TooltipComponent from '@/components/shared/tooltip-component';
 import LensMixin from '@/components/mixins/lens-mixin';
 import FormMixin from '@/components/mixins/form-mixin';
+import * as CombinedTemplates from '@/resources/json/combinedTemplates.json';
 import { mixin as clickaway } from 'vue-clickaway';
 import { mapGetters } from 'vuex';
 
@@ -39,6 +40,7 @@ export default {
       showFieldAdderTooltip: false,
       showClarifySave: false,
       showMarcPreview: false,
+      showTemplatesSubMenu: false,
       fieldAdderActive: false
     };
   },
@@ -112,6 +114,7 @@ export default {
     },
     hideToolsMenu() {
       this.toolsMenuActive = false;
+      this.showTemplatesSubMenu = false;
     },
     showToolsMenu() {
       this.toolsMenuActive = !this.toolsMenuActive;
@@ -159,6 +162,13 @@ export default {
       this.$store.dispatch('pushInspectorEvent', {
         name: 'post-control',
         value: 'open-marc-preview'
+      });
+    },
+    applyTemplate(template) {
+      this.hideToolsMenu();
+      this.$store.dispatch('pushInspectorEvent', {
+        name: 'apply-template',
+        value: template.value
       });
     },
     closeMarc() {
@@ -210,8 +220,7 @@ export default {
       HttpUtil.get({ url: this.compileMARCUrl }).then((response) => {
         this.download(response);
       }, (error) => {
-        this.changeNotification('color', 'red');
-        this.changeNotification('message', `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${StringUtil.getUiPhraseByLang(error, this.settings.language)}`);
+        this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${StringUtil.getUiPhraseByLang(error, this.settings.language)}` });
       });
     },
     handleCopy() {
@@ -227,6 +236,15 @@ export default {
       'settings',
       'status',
     ]),
+    validTemplates() {
+      const type = this.inspector.data.mainEntity['@type'];
+      const baseType = VocabUtil.getRecordType(type, this.resources.vocab, this.resources.context);
+      const templates = VocabUtil.getValidTemplates(type, CombinedTemplates[baseType.toLowerCase()], this.resources.vocabClasses, this.resources.context);
+      return templates;
+    },
+    hasTemplates() {
+      return Object.keys(this.validTemplates).length !== 0;
+    },
     formObj() {
       return this.inspector.data[this.inspector.status.focus];
     },
@@ -324,9 +342,17 @@ export default {
       <ul class="dropdown-menu Toolbar-menuList OtherFormatMenu-menu" 
         v-show="otherFormatMenuActive"
         @click="hideOtherFormatMenu" >
-        <li><a :href="getOtherDataFormat('jsonld')">JSON-LD</a></li>
-        <li><a :href="getOtherDataFormat('ttl')">Turtle</a></li>
-        <li><a :href="getOtherDataFormat('rdf')"><i class="fa fa-fw fa-download" aria-hidden="true"></i>RDF/XML</a></li>
+        <li class="Toolbar-menuItem">
+          <a class="Toolbar-menuLink" :href="getOtherDataFormat('jsonld')">JSON-LD</a>
+        </li>
+        <li class="Toolbar-menuItem">
+          <a class="Toolbar-menuLink" :href="getOtherDataFormat('ttl')">Turtle</a>
+        </li>
+        <li class="Toolbar-menuItem">
+          <a class="Toolbar-menuLink" :href="getOtherDataFormat('rdf')">
+          <i class="fa fa-fw fa-download" aria-hidden="true"></i>
+          RDF/XML</a>
+        </li>
       </ul>
     </div>
 
@@ -350,25 +376,38 @@ export default {
       </button>
       <ul class="dropdown-menu Toolbar-menuList ToolsMenu-menu" 
         v-show="toolsMenuActive">
-        <li>
+        <li class="Toolbar-menuItem">
           <a class="Toolbar-menuLink" @click="formControl('expand-item')">
           <i class="fa fa-fw fa-expand" aria-hidden="true"></i>
           {{"Expand all" | translatePhrase}}{{ getKeybindingText('expand-item') ? ` (${getKeybindingText('expand-item')})` : ''}}
           </a>
         </li>
-        <li>
-          <a class="Toolbar-menuLink"  @click="formControl('collapse-item')">
+        <li class="Toolbar-menuItem">
+          <a class="Toolbar-menuLink" @click="formControl('collapse-item')">
           <i class="fa fa-fw fa-compress" aria-hidden="true"></i>
           {{"Collapse all" | translatePhrase}}{{ getKeybindingText('collapse-item') ? ` (${getKeybindingText('collapse-item')})` : ''}}
           </a>
         </li>
-        <li v-if="user.isLoggedIn && !inspector.status.editing && !isSubClassOf('Item')">
+        <li class="Toolbar-menuItem" v-if="user.isLoggedIn && !inspector.status.editing && !isSubClassOf('Item')">
           <a class="Toolbar-menuLink"  @click="handleCopy">
           <i class="fa fa-fw fa-files-o"></i>
           {{ "Make copy" | translatePhrase }}{{ getKeybindingText('duplicate-item') ? ` (${getKeybindingText('duplicate-item')})` : ''}}
           </a>
         </li>
-        <li v-if="isSubClassOf('Instance') && hasSigel && !inspector.status.editing && user.email !== ''">
+        <li class="Toolbar-menuItem" :class="{'is-active': showTemplatesSubMenu}" v-if="user.isLoggedIn && inspector.status.editing && hasTemplates">
+          <a class="Toolbar-menuLink" @click="showTemplatesSubMenu = !showTemplatesSubMenu">
+          <i class="fa fa-fw fa-clipboard"></i>
+          {{ "Embellish from template" | translatePhrase }}{{ getKeybindingText('embellish-from-template') ? ` (${getKeybindingText('embellish-from-template')})` : ''}}
+          <i class="fa fa-fw pull-right" :class="{ 'fa-caret-down': showTemplatesSubMenu, 'fa-caret-right': !showTemplatesSubMenu }"></i>
+          </a>
+        </li>
+        <li class="Toolbar-menuItem inSubMenu" v-for="(value, key) in validTemplates" v-show="showTemplatesSubMenu" :key="key">
+          <a class="Toolbar-menuLink" @click="applyTemplate(value)">
+          <i class="fa fa-fw fa-plus"></i>
+          {{ value.label }}
+          </a>
+        </li>
+        <li class="Toolbar-menuItem" v-if="isSubClassOf('Instance') && hasSigel && !inspector.status.editing && user.email !== ''">
           <a class="Toolbar-menuLink"  v-if="downloadIsSupported" @click="getCompiledPost()">
             <i class="fa fa-fw fa-download" aria-hidden="true"></i>
               {{"Download compiled MARC21" | translatePhrase}}
@@ -378,13 +417,13 @@ export default {
               {{"Download compiled MARC21" | translatePhrase}}
           </a>
         </li>
-        <li>
+        <li class="Toolbar-menuItem">
           <a class="Toolbar-menuLink" @click="openMarc()">
             <i class="fa fa-fw fa-eye" aria-hidden="true"></i>
             {{ "Preview MARC21" | translatePhrase }}  {{ getKeybindingText('preview-marc') ? ` (${getKeybindingText('preview-marc')})` : ''}}
           </a>
         </li>
-        <li class="remove-option" v-show="user.isLoggedIn && !status.isNew">
+        <li class="Toolbar-menuItem remove-option" v-if="user.isLoggedIn && !status.isNew">
           <a class="Toolbar-menuLink"  @click="postControl('remove-post')">
           <i class="fa fa-fw fa-trash" aria-hidden="true"></i>
           {{"Remove" | translatePhrase}} {{ recordType | labelByLang }}
@@ -393,7 +432,7 @@ export default {
       </ul>
     </div>
     
-    <field-adder class="FieldAdder--inToolbar"
+    <field-adder class="FieldAdder--inToolbar Toolbar-btn"
       v-if="inspector.status.editing" 
       :entity-type="inspector.data[inspector.status.focus]['@type']" 
       :inner="false" 
@@ -451,7 +490,7 @@ export default {
           translation="translatePhrase"></tooltip-component>
       </i>
     </button>
-    <button class="Toolbar-btn btn btn-success" id="saveButton" 
+    <button class="Toolbar-btn btn btn-primary" id="saveButton" 
       @click="postControl('save-record-done')"
       v-if="inspector.status.editing"
       @mouseover="showClarifySave = true"
@@ -477,12 +516,12 @@ export default {
       </i>
     </button>
 
-    <button class="Toolbar-btn btn btn-info edit-button" id="editButton" 
+    <button class="Toolbar-btn btn btn-primary edit-button" id="editButton" 
       v-on:click="edit()" 
       v-show="user.isLoggedIn && !inspector.status.editing && canEditThisType" 
       @mouseover="showEdit = true" 
       @mouseout="showEdit = false">
-      <i class="fa fa-fw fa-pencil" v-show="!inspector.status.opening">
+      <i class="fa fa-fw fa-pencil-square-o" v-show="!inspector.status.opening">
         <tooltip-component 
         class="Toolbar-tooltipContainer"
         tooltip-text="Edit" 
@@ -492,7 +531,7 @@ export default {
         :show-tooltip="showEdit"></tooltip-component></i>
       <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="inspector.status.opening"></i>
     </button>
-  </div>
+  </div> 
 </template>
 
 <style lang="less">
@@ -503,7 +542,6 @@ export default {
   }
 
   &-container {
-    width: 100%;
     bottom: 10px;
     min-width: 65px;
     position: fixed;
@@ -513,8 +551,8 @@ export default {
     background-color: #ecececd1;
     padding: 6px;
     border-radius: 0.5em;
-    box-shadow: 0px 0px 15px 0px #000000;
-    box-shadow: 0px 0px 15px 0px #0000001f;
+    box-shadow: 0px 0px 15px 0px @gray;
+    box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.2);
 
     @media (min-width: 992px) {
       bottom: auto;
@@ -540,15 +578,19 @@ export default {
     border-radius: 100%;
     font-size: 20px;
     font-size: 2rem;
-    margin: 2px 0;
+    margin: 4px 0;
     width: 50px;
     height: 50px;
-    line-height: 1;
+    // line-height: 1;
     position: relative;
   }
 
   &-menuLink {
     cursor: pointer;
+
+    & i {
+      margin-right: 5px;
+    }
   }
 
   &-caret {
@@ -562,6 +604,20 @@ export default {
     top: -250%;
     left: 50px;
     bottom: 0;
+    padding: 10px 0;
+
+    & .Toolbar-menuItem {
+      &.is-active {
+        background-color: @gray-lighter;
+      }
+      &.inSubMenu {
+        background-color: @gray-lighter;
+      }
+      & a {
+        padding: 5px 15px;
+        color: @grey-darker;
+      }
+    }
 
     @media (min-width: 992px) {
       top: auto;

@@ -7,6 +7,7 @@ import * as HttpUtil from '@/utils/http';
 import * as DisplayUtil from '@/utils/display';
 import * as RecordUtil from '@/utils/record';
 import * as md5 from 'md5';
+import * as CombinedTemplates from '@/resources/json/combinedTemplates.json';
 import EntityForm from '@/components/inspector/entity-form';
 import Toolbar from '@/components/inspector/toolbar';
 import EntityChangelog from '@/components/inspector/entity-changelog';
@@ -15,6 +16,8 @@ import Breadcrumb from '@/components/inspector/breadcrumb';
 import ModalComponent from '@/components/shared/modal-component';
 import ReverseRelations from '@/components/inspector/reverse-relations';
 import MarcPreview from '@/components/inspector/marc-preview';
+import TabMenu from '@/components/shared/tab-menu';
+import VueSimpleSpinner from 'vue-simple-spinner';
 import { mapGetters } from 'vuex';
 
 export default {
@@ -33,6 +36,7 @@ export default {
     }
   },
   beforeRouteUpdate (to, from, next) {
+    this.addBreadcrumb();
   if (this.shouldWarnOnUnload()) {
       const confString = StringUtil.getUiPhraseByLang('You have unsaved changes. Do you want to leave the page?', this.settings.language);
       const answer = window.confirm(confString);
@@ -61,6 +65,36 @@ export default {
     }
   },
   methods: {
+    addBreadcrumb() {
+      if (this.inspector.breadcrumb !== '') {
+        let currentTrail = this.inspector.breadcrumb;
+        let firstTrail = currentTrail.shift();
+
+        let newBreadcrumb = {
+          type: 'fromPost',
+          recordType: this.recordType,
+          postUrl: this.$route.fullPath
+        }
+
+        let newTrail = [];
+        newTrail.push(firstTrail);
+        newTrail.push(newBreadcrumb);
+
+        this.$store.dispatch('setBreadcrumbData', 
+          newTrail
+        );
+      } else {
+        this.$store.dispatch('setBreadcrumbData', 
+          [
+            {
+              type: 'fromPost',
+              recordType: this.recordType,
+              postUrl: this.$route.fullPath
+            }
+          ]
+        );
+      }
+    },
     shouldWarnOnUnload() {
       return (
         (this.$route.name === 'Inspector' || this.$route.name === 'NewDocument') &&
@@ -98,12 +132,18 @@ export default {
       }
     },
     openMarcPreview() {
-      this.marcPreview.active = true;
-      RecordUtil.convertToMarc(this.inspector.data, this.settings, this.user).then((result) => {
-        this.marcPreview.data = result;
-      }, (error) => {
-        this.marcPreview.data = null;
-        this.marcPreview.error = error;
+      this.$store.dispatch('pushInspectorEvent', { 
+        name: 'form-control', 
+        value: 'close-modals'
+      })
+      .then(() => {
+        this.marcPreview.active = true;
+        RecordUtil.convertToMarc(this.inspector.data, this.settings, this.user).then((result) => {
+          this.marcPreview.data = result;
+        }, (error) => {
+          this.marcPreview.data = null;
+          this.marcPreview.error = error;
+        });
       });
     },
     fetchDocument() {
@@ -118,13 +158,13 @@ export default {
           };
         } else {
           this.$store.dispatch('pushNotification', { 
-            color: 'red', 
+            type: 'danger', 
             message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)}. ${response.status} ${response.statusText}` 
           });
         }
       }, (error) => {
         this.$store.dispatch('pushNotification', { 
-          color: 'red', 
+          type: 'danger', 
           message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)}. ${error}` 
         });
       }).then((result) => {
@@ -149,6 +189,42 @@ export default {
         this.loadNewDocument();
       }
     },
+    applyFieldsFromTemplate(templateJson) {
+      const basePostData = _.cloneDeep(this.inspector.data);
+      const changeList = [];
+      function applyChangeList(objectKey) {
+        _.each(templateJson[objectKey], (value, key) => {
+          if (!basePostData.hasOwnProperty(objectKey) || basePostData[objectKey] === null) {
+            basePostData[objectKey] = {};
+          }
+          if (!basePostData[objectKey].hasOwnProperty(key) || basePostData[objectKey][key] === null) {
+            // console.log("Applied ->", `${objectKey}.${key}`);
+            changeList.push({
+              path: `${objectKey}.${key}`,
+              value: value,
+            });
+          }
+        });
+      }
+      applyChangeList('record');
+      applyChangeList('mainEntity');
+      applyChangeList('work');
+      if (changeList.length !== 0) {
+        this.$store.dispatch('updateInspectorData', {
+          changeList: changeList,
+          addToHistory: false,
+        });
+        this.$store.dispatch('pushNotification', { 
+          type: 'info', 
+          message: `${changeList.length} ${StringUtil.getUiPhraseByLang('field(s) added from template', this.user.settings.language)}` 
+        });
+      } else {
+        this.$store.dispatch('pushNotification', { 
+          type: 'info', 
+          message: `${StringUtil.getUiPhraseByLang('The record already contains these fields', this.user.settings.language)}` 
+        });
+      }
+    },
     openRemoveModal() {
       this.removeInProgress = true;
     },
@@ -159,14 +235,14 @@ export default {
       this.closeRemoveModal();
       const url = `${this.settings.apiPath}/${this.documentId}`;
       HttpUtil._delete({ url, activeSigel: this.user.settings.activeSigel, token: this.user.token }).then((result) => {
-        this.$store.dispatch('pushNotification', { color: 'green', message: `${StringUtil.getUiPhraseByLang('The post was deleted', this.settings.language)}!` });
+        this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('The post was deleted', this.settings.language)}!` });
         // Force reload
         this.$router.go(-1);
       }, (error) => {
         if (error.status === 403) {
-          this.$store.dispatch('pushNotification', { color: 'red', message: `${StringUtil.getUiPhraseByLang('Forbidden', this.settings.language)} - ${StringUtil.getUiPhraseByLang('This entity may have active links', this.settings.language)} - ${error.statusText}` });
+          this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Forbidden', this.settings.language)} - ${StringUtil.getUiPhraseByLang('This entity may have active links', this.settings.language)} - ${error.statusText}` });
         } else {
-          this.$store.dispatch('pushNotification', { color: 'red', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error.statusText}` });
+          this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error.statusText}` });
         }
       });
     },
@@ -239,12 +315,8 @@ export default {
         }
       }
     },
-    toggleEditorFocus() {
-      if (this.inspector.status.focus === 'record') {
-        this.$store.dispatch('setInspectorStatusValue', { property: 'focus', value: 'mainEntity' });
-      } else {
-        this.$store.dispatch('setInspectorStatusValue', { property: 'focus', value: 'record' });
-      }
+    setEditorFocus(value) {
+      this.$store.dispatch('setInspectorStatusValue', { property: 'focus', value: value });
     },
     getPackagedItem() {
       const RecordId = this.inspector.data.record['@id'];
@@ -300,11 +372,11 @@ export default {
           const location = `${result.getResponseHeader('Location')}`;
           const locationParts = location.split('/');
           const fnurgel = locationParts[locationParts.length-1];
-          this.$store.dispatch('pushNotification', { color: 'green', message: `${StringUtil.getUiPhraseByLang('The post was created', this.settings.language)}!` });
+          this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('The post was created', this.settings.language)}!` });
           this.$router.push({ path: `/${fnurgel}` });
         } else {
           this.fetchDocument();
-          this.$store.dispatch('pushNotification', { color: 'green', message: `${StringUtil.getUiPhraseByLang('The post was saved', this.settings.language)}!` });
+          this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('The post was saved', this.settings.language)}!` });
           if (done) {
             this.$store.dispatch('setInspectorStatusValue', { property: 'editing', value: false });
           }
@@ -325,7 +397,7 @@ export default {
           default:
             errorMessage = `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error.status}: ${StringUtil.getUiPhraseByLang(error.statusText, this.settings.language)}`;
         }
-        this.$store.dispatch('pushNotification', { color: 'red', message: `${errorBase}. ${errorMessage}.` });
+        this.$store.dispatch('pushNotification', { type: 'danger', message: `${errorBase}. ${errorMessage}.` });
       });
     },
   },
@@ -344,9 +416,6 @@ export default {
     },
     'postLoaded'(val) {
       if (val === true) {
-        setTimeout(() => {
-          this.initToolbarFloat();
-        }, 500);
       }
     },
     'inspector.event'(val, oldVal) {
@@ -370,6 +439,8 @@ export default {
           default:
             return;
         }
+      } else if (val.name === 'apply-template') {
+        this.applyFieldsFromTemplate(val.value);
       }
     },
   },
@@ -403,6 +474,10 @@ export default {
         this.resources.vocab, 
         this.resources.context);
     },
+    editorTabs() {
+      return [{'id': 'mainEntity', 'text': this.$options.filters.labelByLang(this.recordType)},
+              {'id': 'record', 'text': 'Admin metadata' }]
+    },
   },
   components: {
     'entity-header': EntityHeader,
@@ -413,10 +488,11 @@ export default {
     'reverse-relations': ReverseRelations,
     'breadcrumb': Breadcrumb,
     'marc-preview': MarcPreview,
+    'tab-menu': TabMenu,
+    'vue-simple-spinner': VueSimpleSpinner,
   },
   mounted() {
     this.$nextTick(() => {
-
       this.$store.dispatch('setStatusValue', { 
         property: 'keybindState', 
         value: 'overview' 
@@ -428,82 +504,75 @@ export default {
       this.initJsonOutput();
 
       let self = this;
-      window.addEventListener('resize', function() {
-        self.initToolbarFloat();
-      });
     });
   },
 }
 </script>
 <template>
-  <div class="Inspector" ref="Inspector">
-    <div v-if="!postLoaded && !loadFailure" class="text-center">
-      <i class="fa fa-circle-o-notch fa-4x fa-spin"></i><br/>
-      <h3>{{ 'Loading document' | translatePhrase | capitalize }}</h3>
+  <div class="row">
+    <div v-if="!postLoaded && !loadFailure" class="Inspector-spinner text-center">
+      <vue-simple-spinner size="large" :message="'Loading document' | translatePhrase"></vue-simple-spinner>
     </div>
-    <div v-if="!postLoaded && loadFailure">
-      <h2>{{loadFailure.status}}</h2>
-      <p v-if="loadFailure.status === 404">
-        {{ 'The record' | translatePhrase }} <code>{{documentId}}</code> {{ 'could not be found' | translatePhrase}}.
-      </p>
-      <p v-if="loadFailure.status === 410">
-        {{ 'The record' | translatePhrase }} <code>{{documentId}}</code> {{ 'has been removed' | translatePhrase}}.
-      </p>
-      <router-link to="/">
-        {{ 'Back to home page' | translatePhrase }}
-      </router-link>
-    </div>
-    <div class="row">
-      <div class="col-sm-12 col-md-11">
-        <breadcrumb v-if="postLoaded && this.inspector.breadcrumb.length !== 0"></breadcrumb>
-        <div v-if="postLoaded" class="Inspector-entity panel panel-default">
-          <div class="panel-body">
-            <h1 class="Inspector-title" :title="recordType">
-              <span>{{ recordType | labelByLang }}</span>
-              <span v-if="this.inspector.status.isNew"> - [{{ "New record" | translatePhrase }}]</span>
-            </h1>
-
+    <div class="Inspector col-sm-12" :class="{'col-md-11': !status.panelOpen, 'col-md-7': status.panelOpen, 'hideOnPrint': marcPreview.active}" ref="Inspector">
+      <div v-if="!postLoaded && loadFailure">
+        <h2>{{loadFailure.status}}</h2>
+        <p v-if="loadFailure.status === 404">
+          {{ 'The record' | translatePhrase }} <code>{{documentId}}</code> {{ 'could not be found' | translatePhrase}}.
+        </p>
+        <p v-if="loadFailure.status === 410">
+          {{ 'The record' | translatePhrase }} <code>{{documentId}}</code> {{ 'has been removed' | translatePhrase}}.
+        </p>
+        <router-link to="/">
+          {{ 'Back to home page' | translatePhrase }}
+        </router-link>
+      </div>
+      <div v-if="postLoaded" class="Inspector-entity">
+        <div class="panel-body">
+          <breadcrumb class="Inspector-breadcrumb"
+            v-if="postLoaded && this.inspector.breadcrumb.length !== 0"
+            :record-type="recordType">
+          </breadcrumb>   
+          <div class="Inspector-admin">
             <div class="Inspector-header">
-              <div class="Inspector-admin">
-                <entity-changelog></entity-changelog>
-                <div class="Inspector-adminMeta">
-                  <a class="Inspector-adminMetaLink" tabindex="0"
-                    v-show="inspector.status.focus === 'record'" 
-                    v-on:click="toggleEditorFocus()">
-                    <i class="fa fa-fw fa-toggle-on"></i> {{'Admin metadata' | translatePhrase}}
-                  </a>
-                  <a class="Inspector-adminMetaLink" tabindex="0"
-                    v-show="inspector.status.focus === 'mainEntity'" 
-                    v-on:click="toggleEditorFocus()">
-                    <i class="fa fa-fw fa-toggle-off"></i> {{'Admin metadata' | translatePhrase}}
-                  </a>
-                </div>
-              </div>
-
-              <reverse-relations class="Inspector-reverse" 
-                v-if="!inspector.status.isNew"></reverse-relations>
+                <h1 class="Inspector-title mainTitle" :title="recordType">
+                  <span>{{ recordType | labelByLang }}</span>
+                  <span v-if="this.inspector.status.isNew"> - [{{ "New record" | translatePhrase }}]</span>
+                </h1>
+              <entity-changelog />
             </div>
-            
-            <entity-header id="main-header" 
-              :full="true" 
-              v-if="!isItem"></entity-header>
-            <entity-form 
-              :editing-object="inspector.status.focus" 
-              :locked="!inspector.status.editing"></entity-form>
-            <code v-if="user.settings.appTech">
+            <reverse-relations class="Inspector-reverse" 
+              v-if="!inspector.status.isNew">
+            </reverse-relations>
+          </div>
+          
+          <entity-header id="main-header" 
+            :full="true" 
+            v-if="!isItem">
+          </entity-header>
+
+          <tab-menu @go="setEditorFocus" :tabs="editorTabs" :active="this.inspector.status.focus" />
+
+          <entity-form 
+            :editing-object="inspector.status.focus" 
+            :locked="!inspector.status.editing">
+          </entity-form>
+          <div class="Inspector-code" v-if="user.settings.appTech">
+            <code>
               {{result}}
             </code>
           </div>
         </div>
       </div>
-      <div v-if="postLoaded" class="col-12 col-sm-12 col-md-1">
-        <div class="Toolbar-placeholder" ref="ToolbarPlaceholder"></div>
-        <div class="Toolbar-container" ref="ToolbarTest">
-          <toolbar></toolbar>
-        </div>
+    </div>
+    <div v-if="postLoaded" class="col-12 col-sm-12" :class="{'col-md-1': !status.panelOpen, 'col-md-5': status.panelOpen }">
+      <div class="Toolbar-placeholder" ref="ToolbarPlaceholder"></div>
+      <div class="Toolbar-container" ref="ToolbarTest">
+        <toolbar></toolbar>
       </div>
     </div>
-    <marc-preview @hide="marcPreview.active = false" :error="marcPreview.error" :marc-obj="marcPreview.data" v-if="marcPreview.active"></marc-preview>
+    <portal to="sidebar" v-if="marcPreview.active">
+      <marc-preview @hide="marcPreview.active = false" :error="marcPreview.error" :marc-obj="marcPreview.data" v-if="marcPreview.active"></marc-preview>
+    </portal>
     <modal-component title="Error" modal-type="danger" @close="closeRemoveModal" class="RemovePostModal" 
       v-if="removeInProgress">
       <div slot="modal-header" class="RemovePostModal-header">
@@ -516,8 +585,8 @@ export default {
           {{ 'This operation can\'t be reverted' | translatePhrase }}
         </p>
         <div class="RemovePostModal-buttonContainer">
-          <button class="btn btn-danger" @click="doRemovePost()">{{ 'Yes, remove the record' | translatePhrase }}</button>
-          <button class="btn btn-default" @click="closeRemoveModal()">{{ 'No, cancel' | translatePhrase }}</button>
+          <button class="btn btn-danger btn--md" @click="doRemovePost()">{{ 'Remove the record' | translatePhrase }}</button>
+          <button class="btn btn-gray btn--md" @click="closeRemoveModal()">{{ 'Cancel' | translatePhrase }}</button>
         </div>
       </div>
     </modal-component>
@@ -528,12 +597,26 @@ export default {
 <style lang="less">
 
 .Inspector {
-  &-header {
-    display: flex;
-    flex-direction: row
+  &-spinner {
+    margin-top: 2em;
   }
 
   &-admin {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+
+    @media (min-width: @screen-sm) {
+      flex-direction: row;
+    }
+  }
+
+  &-breadcrumb {
+    border-bottom:  1px solid @gray-lighter;
+    padding-bottom: 10px;
+  }
+
+  &-header {
     flex: 3;
   }
 
@@ -541,15 +624,24 @@ export default {
     flex: 1;
   }
 
-  &-adminMeta {
-    margin: 10px 0;
+  &-code {
+    padding: 10px 20px;
+    background-color: @white;
+    border: 1px solid @gray-lighter;
   }
-  
-  &-adminMetaLink {
-    cursor: pointer;
-    color: @brand-primary;
+
+  &.hideOnPrint {
+    @media print {
+      display: none;
+    }
+  }
+
+  @media screen and (max-width: @screen-sm) {
+    padding-left: 0;
+    padding-right: 0;
   }
 }
+
 .InspectorModal {
   &-body {
     display: flex;
@@ -564,20 +656,25 @@ export default {
     overflow-y: scroll;
   }
 }
+
 .RemovePostModal .ModalComponent-container {
   width: 600px;
   height: 250px;
 }
+
 .RemovePostModal {
   &-body {
     height: 80%;
     display: flex;
     flex-direction: column;
-    text-align: center;
     justify-content: center;
+    padding: 15px 45px;
   }
   &-buttonContainer {
-    text-align: center;
+    margin: 10px 0;
+    & > * {
+      margin-right: 15px;
+    }
   }
 }
 

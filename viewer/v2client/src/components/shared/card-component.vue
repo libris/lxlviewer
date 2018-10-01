@@ -100,8 +100,11 @@ export default {
 
   &.is-floating {
     width: 600px;
+    left: -20px;
+    max-width: 80vw;
     border-radius: 0.5em;
-    box-shadow: @shadow-card-elevated;
+    box-shadow: @shadow-panel;
+    border: 1px solid @gray-lighter;
   }
 }
 </style>

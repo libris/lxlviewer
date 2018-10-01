@@ -439,7 +439,7 @@ def _findhold():
 
 @app.route('/_dependencies')
 def _dependencies():
-    return _proxy_request(request, session, query_params=['id', 'relation', 'reverse'])
+    return _proxy_request(request, session, query_params=['id', 'relation', 'reverse', "return"])
 
 
 @app.route('/', methods=['POST'])

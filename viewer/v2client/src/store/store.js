@@ -30,6 +30,7 @@ const store = new Vuex.Store({
       vocab: {},
       display: {},
       context: {},
+      helpDocs: null,
     },
     inspector: {
       breadcrumb: [],
@@ -51,7 +52,9 @@ const store = new Vuex.Store({
       event: [],
     },
     status: {
+      panelOpen: false,
       keybindState: '',
+      fullWidth: false,
       keyActions: [],
       resultList: {
         loading: false
@@ -81,19 +84,25 @@ const store = new Vuex.Store({
         'StructuredValue',
         'QualifiedRole',
       ],
+      mainFields: {
+        'Instance': 'instanceOf',
+        'Work': 'expressionOf',
+        'Item': 'itemOf',
+      },
       extractableTypes: [
         'Item',
         'Instance',
         'Identity',
       ],
       removeOnDuplication: [
+        'record.controlNumber',
+        'record.descriptionUpgrader',
+        'record.generationProcess',
+        'record.generationDate',
+        'record.identifiedBy',
         'record.sameAs',
         'mainEntity.sameAs',
         'work.sameAs',
-        'controlNumber',
-        'generationProcess',
-        'generationDate',
-        'descriptionUpgrader',
       ],
       removableBaseUris: [
         'http://libris.kb.se/',
@@ -278,6 +287,9 @@ const store = new Vuex.Store({
     changeResourcesLoadingError(state, bool) {
       state.resources.loadingError = bool;
     },
+    setHelpDocs(state, data) {
+      state.resources.helpDocs = data;
+    },
     setVocab(state, data) {
       state.resources.vocab = data;
     },
@@ -418,6 +430,9 @@ const store = new Vuex.Store({
     },
     setDisplay( { commit }, displayJson) {
       commit('setDisplay', displayJson);
+    },
+    setHelpDocs( { commit }, helpDocsJson) {
+      commit('setHelpDocs', helpDocsJson);
     },
     setForcedListTerms( { commit }, forcedSetTermsJson) {
       commit('setForcedListTerms', forcedSetTermsJson);

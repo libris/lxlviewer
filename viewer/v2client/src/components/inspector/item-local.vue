@@ -41,8 +41,10 @@ export default {
       extracting: false,
       expanded: false,
       removeHover: false,
+      cloneHover: false,
       showLinkAction: false,
-      copyTitle: false
+      copyTitle: false,
+      cloned: false
     };
   },
   computed: {
@@ -159,20 +161,18 @@ export default {
     },
     openExtractDialog() {
       if (this.inspector.status.editing) {
-        this.$store.dispatch('setStatusValue', { 
-          property: 'keybindState', 
-          value: 'extraction-dialog' 
-        });
-        LayoutUtil.scrollLock(true);
+        // this.$store.dispatch('setStatusValue', { 
+        //   property: 'keybindState', 
+        //   value: 'extraction-dialog' 
+        // });
         this.extractDialogActive = true;
       }
     },
     closeExtractDialog() {
-      this.$store.dispatch('setStatusValue', { 
-        property: 'keybindState', 
-        value: 'overview' 
-      });
-      LayoutUtil.scrollLock(false);
+      // this.$store.dispatch('setStatusValue', { 
+      //   property: 'keybindState', 
+      //   value: 'overview' 
+      // });
       this.extractDialogActive = false;
       this.extracting = false;
     },
@@ -197,21 +197,21 @@ export default {
             this.closeExtractDialog();
           }, (error) => {
             this.$store.dispatch('pushNotification', { 
-              color: 'red', 
+              type: 'danger', 
               message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error}`
             });
             this.closeExtractDialog();
           });
         } else {
           this.$store.dispatch('pushNotification', { 
-            color: 'red', 
+            type: 'danger', 
             message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error}`
           });
           this.closeExtractDialog();
         }
       }, (error) => {
         this.$store.dispatch('pushNotification', { 
-          color: 'red', 
+          type: 'danger', 
           message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error}`
         });
         this.closeExtractDialog();
@@ -250,8 +250,24 @@ export default {
         ],
         addToHistory: false,
       });
-      this.$store.dispatch('pushNotification', { color: 'green', message: `${StringUtil.getUiPhraseByLang('Linking was successful', this.settings.language)}` });
+      this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('Linking was successful', this.settings.language)}` });
       this.closeExtractDialog();
+    },
+    cloneThis() {      
+      let parentData = _.cloneDeep(_.get(this.inspector.data, this.parentPath));
+      parentData.push(this.item);
+      
+      setTimeout(() => {
+        this.$store.dispatch('updateInspectorData', {
+          changeList: [
+            {
+              path: this.parentPath,
+              value: parentData,
+            }
+          ],
+          addToHistory: true,
+        });
+      }, 500);
     },
   },
   watch: {
@@ -288,7 +304,7 @@ export default {
 
 <template>
   <div class="ItemLocal js-itemLocal"
-    :class="{'is-highlighted': isLastAdded, 'is-expanded': expanded}"
+    :class="{'is-highlighted': isLastAdded, 'is-expanded': expanded, 'is-extractable': isExtractable}"
     tabindex="0" 
     @keyup.enter="checkFocus()"
     @focus="addFocus()"
@@ -309,14 +325,7 @@ export default {
       </div>
       
       <div class="ItemLocal-actions">
-        <field-adder class="ItemLocal-action"
-          v-if="!isLocked" 
-          :entity-type="item['@type']" 
-          :allowed="allowedProperties" 
-          :inner="true" 
-          :path="getPath"></field-adder>
-         
-        <i class="ItemLocal-action fa fa-link"
+        <i class="ItemLocal-action fa fa-link icon icon--sm"
           v-if="inspector.status.editing && isExtractable"
           @click="openExtractDialog()" 
           @focus="showLinkAction = true, actionHighlight(true, $event)"
@@ -331,7 +340,32 @@ export default {
             translation="translatePhrase"></tooltip-component>
         </i>
 
-        <i class="ItemLocal-action fa fa-trash-o chip-action" 
+        <div class="ItemLocal-action" 
+          v-if="!isLocked && inArray">
+          <i class="fa fa-clone action-button icon icon--sm"
+            tabindex="0"
+            v-on:click="cloneThis(true)"
+            @keyup.enter="cloneThis(true)"
+            @focus="cloneHover = true, actionHighlight(true, $event)"
+            @blur="cloneHover = false, actionHighlight(false, $event)"
+            @mouseover="cloneHover = true, actionHighlight(true, $event)" 
+            @mouseout="cloneHover = false, actionHighlight(false, $event)">
+            <tooltip-component 
+              :show-tooltip="cloneHover" 
+              translation="translatePhrase"
+              tooltip-text="Duplicate entity"></tooltip-component>
+          </i>
+        </div>
+
+        <field-adder class="ItemLocal-action"
+          v-if="!isLocked" 
+          :entity-type="item['@type']" 
+          :allowed="allowedProperties" 
+          :inner="true" 
+          :path="getPath">
+        </field-adder>
+
+        <i class="ItemLocal-action fa fa-trash-o icon icon--sm" 
           v-if="!isLocked" 
           :class="{'show-icon': showActionButtons}" 
           v-on:click="removeThis(true)" 
@@ -370,7 +404,8 @@ export default {
         :field-key="k"
         :field-value="v"
         :key="k" 
-        :show-action-buttons="showActionButtons"></field> 
+        :show-action-buttons="showActionButtons"
+        :is-expanded="expanded"></field> 
     </ul>
        
     <search-window 
@@ -389,12 +424,13 @@ export default {
 
 <style lang="less">
 .ItemLocal {
-  padding: 5px;
+  padding: 5px 0;
   margin-left: -5px;
   border-radius: 4px;
   position: relative;
   flex: 1 100%;
   transition: background-color .5s ease;
+  width: 100%;
 
   &-heading {
     display: block;
@@ -404,7 +440,7 @@ export default {
   }
 
   &-label {
-    margin-right: 40px;
+    margin-right: 90px;
   }
 
   &-type {
@@ -412,9 +448,9 @@ export default {
   }
 
   &-arrow {
+    font-size: 14px;
     transition: all 0.2s ease;
     padding: 0 2px;
-    margin: 0 0 0 2px;
     cursor: pointer;
   }
 
@@ -432,20 +468,17 @@ export default {
     top: 0;
     right: 0;
     position: absolute;
+
+    @media (max-width: @screen-sm) {
+      display: flex;
+      align-items: baseline;
+    }
   }
 
   &-action {
+    min-width: 20px;
     display: inline-block;
-    color: @gray-dark;
-    cursor: pointer;
-    display: inline-block;
-    margin: 0 0 0 5px;
-    opacity: 1;
-    transition: opacity 0.5s ease;
-
-    &:hover {
-      color: @black;
-    }
+    margin-right: 5px;
   }
 
   &.is-marked {
@@ -478,10 +511,7 @@ export default {
   .ItemLocal-label > 
   .ItemLocal-arrow {
     transform:rotate(90deg);
-
-    &::before {
-      vertical-align: sub;
-    }
+    transform-origin: center;
   }
 
   &.is-highlighted {
