@@ -1,6 +1,6 @@
 <script>
 import EntitySummary from '../shared/entity-summary';
-import ModalComponent from '@/components/shared/modal-component';
+import PanelComponent from '@/components/shared/panel-component';
 import * as StringUtil from '@/utils/string';
 import * as RecordUtil from '@/utils/record';
 import * as LayoutUtil from '@/utils/layout';
@@ -20,26 +20,25 @@ export default {
       itemData: {},
       embellishedList: [],
       showInstances: false,
-      loading: true,
     }
   },
   methods: {
     buildEmbellishedInstanceList(instanceList) {
-      const promiseArray = instanceList.map(instanceId => {
-        return HttpUtil.get({ url: `${instanceId}/data.jsonld`, contentType: 'text/plain' }).then(instanceInfo => {
-          return RecordUtil.splitJson(instanceInfo);
-        }, (error) => {
-          console.log("Error fetching relation info");
-        });
-      });
-      Promise.all(promiseArray).then(results => {
-        this.embellishedList = results;
-        this.loading = false;
-        // this.$store.dispatch('setStatusValue', { 
-        //   property: 'keybindState', 
-        //   value: 'show-instances-list'
-        // });
-      });
+      // const promiseArray = instanceList.map(instanceId => {
+      //   return HttpUtil.get({ url: `${instanceId}/data.jsonld`, contentType: 'text/plain' }).then(instanceInfo => {
+      //     return RecordUtil.splitJson(instanceInfo);
+      //   }, (error) => {
+      //     console.log("Error fetching relation info");
+      //   });
+      // });
+      // Promise.all(promiseArray).then(results => {
+      //   this.embellishedList = results;
+      //   this.loading = false;
+      //   // this.$store.dispatch('setStatusValue', { 
+      //   //   property: 'keybindState', 
+      //   //   value: 'show-instances-list'
+      //   // });
+      // });
     },
     hide() {
       this.$emit('close');
@@ -63,7 +62,7 @@ export default {
   },
   components: {
     'entity-summary': EntitySummary,
-    'modal-component': ModalComponent,
+    'panel-component': PanelComponent,
   },
   watch: {
     'inspector.event'(val, oldVal) {
@@ -88,17 +87,18 @@ export default {
 
 <template>
   <div class="RelationsList">
-    <modal-component :title="windowTitle" @close="hide()">
-      <div slot="modal-body" class="RelationsList-body">
-        <entity-summary 
-          v-if="!loading" 
-          v-for="(instance, index) in embellishedList" 
-          :key="index"
-          :focus-data="instance.mainEntity" 
-          :add-link="true" 
-          :lines="4"></entity-summary>
-      </div>
-    </modal-component>
+    <panel-component :title="windowTitle" @close="hide()">
+      <template slot="panel-body">
+        <ul>
+          <li v-for="item in relationsList" :key="item['@id']">
+            <entity-summary  
+              :focus-data="item" 
+              :add-link="true" 
+              :lines="4"></entity-summary>
+          </li>
+        </ul>
+      </template>
+    </panel-component>
   </div>
 </template>
 
