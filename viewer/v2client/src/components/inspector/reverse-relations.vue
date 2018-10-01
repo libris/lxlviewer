@@ -12,9 +12,9 @@ export default {
   },
   data() {
     return {
-      hasRelation: false,
       checkingRelations: true,
       relationPath: '',
+      myHolding: null,
       relationInfo: [],
       numberOfRelations: null,
       relationsListOpen: false,
@@ -27,38 +27,52 @@ export default {
     hideRelationsList() {
       this.relationsListOpen = false;
     },
-    getRelatedPosts(id, property) {
+    getRelatedPosts(queryPairs) {
       // Returns a list of posts that links to <id> with <property>
       return new Promise((resolve, reject) => {
-        const getInstancesUrl = `${this.settings.apiPath}/_dependencies?id=${id}&relation=${property}&reverse=true`;
-        HttpUtil.get({ url: getInstancesUrl, accept: 'application/ld+json' }).then((response) => {
-          resolve(response);
-        }, (error) => {
-          reject('getRelatedPosts failed - ', error);
+        let relatedPosts = `${this.settings.apiPath}/find.json?`;
+        _.each(queryPairs, (v, k) => {
+          relatedPosts += (`${encodeURIComponent(k)}=${encodeURIComponent(v)}&`);
+        });
+        fetch(relatedPosts)
+        .then((response) => {
+          if (response.status === 200) {
+            resolve(response.json());
+          } else {
+            reject();
+          }
+        })
+        .catch((error) => {
+          reject(error);
         });
       });
     },
     getRelationsInfo() {
-      let property = '';
+      const query = {};
       if (this.recordType === 'Instance') {
-        property = 'itemOf';
-        const holdingUrl = `${this.settings.apiPath}/_findhold?library=${this.libraryUrl}&id=${this.inspector.data.record['@id']}`
-        HttpUtil.get({ url: holdingUrl, accept: 'application/ld+json' }).then((response) => {
-          if (response.length > 0) {
-            this.hasRelation = true;
-            this.relationPath = response;
-          } else {
-            this.hasRelation = false;
+        query['itemOf.@id'] = this.inspector.data.mainEntity['@id'];
+        query['@type'] = 'Item';
+
+        // Check if my sigel has holding
+        const myHoldingQuery = Object.assign({}, query);
+        myHoldingQuery['heldBy.@id'] = `https://libris.kb.se/library/${this.user.settings.activeSigel}`;
+        this.getRelatedPosts(myHoldingQuery)
+        .then((response) => {
+          if (response.totalItems > 0) {
+            this.myHolding = response.items[0]['@id'];
           }
-        }, (error) => {
-          console.log('Error checking for relations', error);
+        })
+        .catch((error) => {
+          console.log(error);
         });
+
       } else if (this.recordType === 'Work') {
-        property = 'instanceOf';
+        query['instanceOf.@id'] = this.inspector.data.mainEntity['@id'];
+        query['@type'] = 'Instance';
       }
-      this.getRelatedPosts(this.inspector.data.record['@id'], property).then((response) => {
+      this.getRelatedPosts(query).then((response) => {
         this.relationInfo = response;
-        this.numberOfRelations = response.length;
+        this.numberOfRelations = response.totalItems;
         this.checkingRelations = false;
       }, (error) => {
         console.log('Error checking for relations', error);
@@ -73,6 +87,9 @@ export default {
       'settings',
       'status',
     ]),
+    hasRelation() {
+      return this.myHolding !== null;
+    },
     libraryUrl() {
       return `https://libris.kb.se/library/${this.user.settings.activeSigel}`;
     },
@@ -155,7 +172,7 @@ export default {
         :disabled="inspector.status.editing" 
         :has-holding="hasRelation" 
         :checking-holding="checkingRelations" 
-        :holding-id="relationPath"
+        :holding-id="myHolding"
         @done="checkingRelations=false"></create-item-button>
     </div>
   </div>
