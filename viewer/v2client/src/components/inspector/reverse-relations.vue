@@ -157,14 +157,7 @@ export default {
         <span v-if="recordType === 'Instance' || recordType === 'Item'">{{ "Libraries" | translatePhrase }}</span>
         <span v-if="isNaN(numberOfRelations)"> {{'Error' | translatePhrase}}</span>
         <span v-else> {{numberOfRelations}} </span>
-
       </span>
-      <portal to="sidebar">
-        <relations-list 
-          v-if="relationsListOpen" 
-          :relations-list="relationInfo" 
-          @close="hidePanel()"></relations-list>
-      </portal>
       <create-item-button class="ReverseRelations-button"
         v-if="recordType === 'Instance' && user.isLoggedIn && user.getPermissions().registrant" 
         :disabled="inspector.status.editing" 
@@ -172,6 +165,12 @@ export default {
         :checking-holding="checkingRelations" 
         :holding-id="myHolding"
         @done="checkingRelations=false"></create-item-button>
+      <portal to="sidebar">
+        <relations-list 
+          v-if="relationsListOpen" 
+          :relations-list="relationInfo" 
+          @close="hidePanel()"></relations-list>
+      </portal>
     </div>
   </div>
 </template>
