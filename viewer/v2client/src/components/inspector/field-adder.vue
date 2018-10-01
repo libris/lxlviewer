@@ -201,10 +201,10 @@ export default {
         this.$nextTick(() => {
           this.active = true;
           this.$nextTick(() => {
-            this.$store.dispatch('setStatusValue', { 
-              property: 'keybindState', 
-              value: 'field-adder' 
-            });
+            // this.$store.dispatch('setStatusValue', { 
+            //   property: 'keybindState', 
+            //   value: 'field-adder' 
+            // });
             if (this.$refs.input) {
               this.$refs.input.focus();
             }
@@ -216,7 +216,10 @@ export default {
       if (!this.active) return;
       this.active = false;
       this.filterKey = '';
-      this.$store.dispatch('setStatusValue', { property: 'keybindState', value: 'overview' });
+      // this.$store.dispatch('setStatusValue', {
+      //  property: 'keybindState',
+      //  value: 'overview'
+      // });
     },
   },
   watch: {

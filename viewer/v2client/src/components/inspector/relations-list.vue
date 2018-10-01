@@ -35,18 +35,18 @@ export default {
       Promise.all(promiseArray).then(results => {
         this.embellishedList = results;
         this.loading = false;
-        this.$store.dispatch('setStatusValue', { 
-          property: 'keybindState', 
-          value: 'show-instances-list'
-        });
+        // this.$store.dispatch('setStatusValue', { 
+        //   property: 'keybindState', 
+        //   value: 'show-instances-list'
+        // });
       });
     },
     hide() {
       this.$emit('close');
-      this.$store.dispatch('setStatusValue', { 
-        property: 'keybindState', 
-        value: 'overview'
-      });
+      // this.$store.dispatch('setStatusValue', { 
+      //   property: 'keybindState', 
+      //   value: 'overview'
+      // });
     },
   },
   computed: {
