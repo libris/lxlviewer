@@ -340,10 +340,10 @@ export default {
           this.active = true;
           this.$nextTick(() => {
             this.resetSearch();
-            this.$store.dispatch('setStatusValue', { 
-              property: 'keybindState', 
-              value: 'entity-adder' 
-            });
+            // this.$store.dispatch('setStatusValue', { 
+            //   property: 'keybindState', 
+            //   value: 'entity-adder' 
+            // });
             if (this.$refs.input) {
               this.$refs.input.focus();
             }
@@ -354,10 +354,10 @@ export default {
     hide() {
       if (!this.active) return;
       this.active = false;
-      this.$store.dispatch('setStatusValue', { 
-        property: 'keybindState', 
-        value: 'overview' 
-      });
+      // this.$store.dispatch('setStatusValue', { 
+      //   property: 'keybindState', 
+      //   value: 'overview' 
+      // });
     },
     resetSearch() {
       this.keyword = '';

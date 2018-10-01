@@ -39,10 +39,10 @@ export default {
   methods: {
     hide() {
       this.$emit('hide');
-      this.$store.dispatch('setStatusValue', { 
-        property: 'keybindState', 
-        value: 'overview' 
-      });
+      // this.$store.dispatch('setStatusValue', { 
+      //   property: 'keybindState', 
+      //   value: 'overview' 
+      // });
     },
     isObject(o) {
       return _.isObject(o);
@@ -72,10 +72,10 @@ export default {
   },
   mounted() { 
     this.$nextTick(() => {
-      this.$store.dispatch('setStatusValue', { 
-        property: 'keybindState', 
-        value: 'marc-preview'
-      });
+      // this.$store.dispatch('setStatusValue', { 
+      //   property: 'keybindState', 
+      //   value: 'marc-preview'
+      // });
     });
   },
 };

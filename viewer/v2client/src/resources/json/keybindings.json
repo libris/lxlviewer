@@ -14,14 +14,11 @@
     "alt+f": "open-field-adder",
     "mod+shift+c": "duplicate-item",
     "ctrl+shift+right": "admin-data-on",
-    "ctrl+shift+left": "admin-data-off"
+    "ctrl+shift+left": "admin-data-off",
+    "esc": "close-modals"
   },
   "field-adder": {
-    "esc": "close-modals",
-    "down": "select-next",
-    "up": "select-prev",
-    "enter": "add-field-single",
-    "mod+enter": "add-field-multiple"
+    "esc": "close-modals"
   },
   "entity-adder": {
     "esc": "close-modals"
@@ -37,11 +34,6 @@
   },
   "help-window": {
     "esc": "close-modals"
-  },
-  "entity-search-list": {
-    "down": "select-next",
-    "up": "select-prev",
-    "enter": "add-entity"
   },
   "show-instances-list": {
     "esc": "close-modals"

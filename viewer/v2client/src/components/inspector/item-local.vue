@@ -161,18 +161,18 @@ export default {
     },
     openExtractDialog() {
       if (this.inspector.status.editing) {
-        this.$store.dispatch('setStatusValue', { 
-          property: 'keybindState', 
-          value: 'extraction-dialog' 
-        });
+        // this.$store.dispatch('setStatusValue', { 
+        //   property: 'keybindState', 
+        //   value: 'extraction-dialog' 
+        // });
         this.extractDialogActive = true;
       }
     },
     closeExtractDialog() {
-      this.$store.dispatch('setStatusValue', { 
-        property: 'keybindState', 
-        value: 'overview' 
-      });
+      // this.$store.dispatch('setStatusValue', { 
+      //   property: 'keybindState', 
+      //   value: 'overview' 
+      // });
       this.extractDialogActive = false;
       this.extracting = false;
     },
