@@ -169,6 +169,7 @@ export default {
         <relations-list 
           v-if="relationsListOpen" 
           :relations-list="relationInfo" 
+          :list-context-type="recordType"
           @close="hidePanel()"></relations-list>
       </portal>
     </div>

@@ -14,6 +14,10 @@ export default {
       type: Array,
       default: () => [],
     },
+    listContextType: {
+      type: String,
+      default: '',
+    }
   },
   data() {
     return {
@@ -57,7 +61,14 @@ export default {
       'status',
     ]),
     windowTitle() {
-      return StringUtil.getUiPhraseByLang('Instantiations of this work', this.settings.language);
+      if (this.listContextType === 'Item') {
+        return StringUtil.getUiPhraseByLang('All holdings');
+      } else if (this.listContextType === 'Work') {
+        return StringUtil.getUiPhraseByLang('Instantiations of this work', this.settings.language);
+      } else if (this.listContextType === 'Instance') {
+        return StringUtil.getUiPhraseByLang('Holdings of this instance', this.settings.language);
+      }
+      return '';
     }
   },
   components: {
