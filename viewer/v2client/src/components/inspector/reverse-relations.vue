@@ -9,6 +9,7 @@ import { mapGetters } from 'vuex';
 export default {
   name: 'reverse-relations',
   props: {
+    mainEntity: {},
   },
   data() {
     return {
@@ -50,10 +51,10 @@ export default {
     getRelationsInfo() {
       const query = {};
       if (this.recordType === 'Item') {
-        query['itemOf.@id'] = this.inspector.data.mainEntity.itemOf['@id'];
+        query['itemOf.@id'] = this.mainEntity.itemOf['@id'];
         query['@type'] = 'Item';
       } else if (this.recordType === 'Instance') {
-        query['itemOf.@id'] = this.inspector.data.mainEntity['@id'];
+        query['itemOf.@id'] = this.mainEntity['@id'];
         query['@type'] = 'Item';
 
         // Check if my sigel has holding
@@ -70,7 +71,7 @@ export default {
         });
 
       } else if (this.recordType === 'Work') {
-        query['instanceOf.@id'] = this.inspector.data.mainEntity['@id'];
+        query['instanceOf.@id'] = this.mainEntity['@id'];
         query['@type'] = 'Instance';
       }
       this.getRelatedPosts(query).then((response) => {
@@ -98,13 +99,13 @@ export default {
     },
     recordType() {
       return VocabUtil.getRecordType(
-        this.inspector.data.mainEntity['@type'], 
+        this.mainEntity['@type'], 
         this.resources.vocab, 
         this.resources.context
       );
     },
     recordId() {
-      return this.inspector.data.record['@id'];
+      return this.mainEntity['@id'];
     }
   },
   events: {

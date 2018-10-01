@@ -540,9 +540,10 @@ export default {
                 </h1>
               <entity-changelog />
             </div>
-            <reverse-relations class="Inspector-reverse" 
-              v-if="!inspector.status.isNew">
-            </reverse-relations>
+            <reverse-relations 
+              class="Inspector-reverse" 
+              :main-entity="this.inspector.data.mainEntity" 
+              v-if="!inspector.status.isNew"></reverse-relations>
           </div>
           
           <entity-header id="main-header" 

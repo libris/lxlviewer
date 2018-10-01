@@ -2,6 +2,7 @@
 import LensMixin from '../mixins/lens-mixin';
 import ResultMixin from '../mixins/result-mixin';
 import EntitySummary from '../shared/entity-summary';
+import ReverseRelations from '@/components/inspector/reverse-relations';
 import * as StringUtil from '@/utils/string';
 
 export default {
@@ -37,6 +38,7 @@ export default {
   },
   components: {
     'entity-summary': EntitySummary,
+    'reverse-relations': ReverseRelations,
   },
   mounted() { 
   },
@@ -53,7 +55,12 @@ export default {
         :import-item="importItem" 
         :add-link="true" 
         @import-this="importThis()"
-        :lines="4"></entity-summary>
+        :lines="4">
+      </entity-summary>
+      <div v-if="this.$route.params.perimeter !== 'remote'">
+        <reverse-relations :main-entity="focusData">
+        </reverse-relations>
+      </div>
     </li>
     <li class="ResultItem ResultItem--compact" v-else-if="!showDetailed">
       <h3 class="ResultItem-title" 
