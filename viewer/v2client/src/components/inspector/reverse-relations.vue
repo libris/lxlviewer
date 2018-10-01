@@ -21,10 +21,10 @@ export default {
     }
   },
   methods: {
-    showRelationsList() {
+    showPanel() {
       this.relationsListOpen = true;
     },
-    hideRelationsList() {
+    hidePanel() {
       this.relationsListOpen = false;
     },
     getRelatedPosts(queryPairs) {
@@ -49,7 +49,10 @@ export default {
     },
     getRelationsInfo() {
       const query = {};
-      if (this.recordType === 'Instance') {
+      if (this.recordType === 'Item') {
+        query['itemOf.@id'] = this.inspector.data.mainEntity.itemOf['@id'];
+        query['@type'] = 'Item';
+      } else if (this.recordType === 'Instance') {
         query['itemOf.@id'] = this.inspector.data.mainEntity['@id'];
         query['@type'] = 'Item';
 
@@ -71,7 +74,7 @@ export default {
         query['@type'] = 'Instance';
       }
       this.getRelatedPosts(query).then((response) => {
-        this.relationInfo = response;
+        this.relationInfo = response.items;
         this.numberOfRelations = response.totalItems;
         this.checkingRelations = false;
       }, (error) => {
@@ -115,7 +118,11 @@ export default {
       if (val.name === 'form-control') {
         switch (val.value) { 
           case 'open-instances-window':
-            this.showRelationsList();
+            this.showPanel();
+            break;
+          case 'close-modals':
+            this.hidePanel();
+            return true;
             break;
           default:
             return;
@@ -144,31 +151,22 @@ export default {
 
 <template>
   <div class="ReverseRelations">
-    <div v-if="recordType === 'Work'" v-show="!checkingRelations" class="ReverseRelations-number">
-      <span class="ReverseRelations-label uppercaseHeading">
-        {{ "Instantiations" | translatePhrase }}: {{numberOfRelations | translatePhrase}}
-      </span>
-
-      <button class="ReverseRelations-button InstancesList-btn btn btn-primary btn--lg" 
-        @click="showRelationsList()" 
-        v-if="!inspector.status.editing && this.numberOfRelations > 0"
-        :checking-instances="checkingRelations">
-        {{"Show instantiations" | translatePhrase}}
-      </button>
-      <relations-list 
-        v-if="relationsListOpen" 
-        :relations-list="relationInfo" 
-        @close="hideRelationsList()"></relations-list>
-    </div>
-      
-    <div class="ReverseRelations-number" v-if="recordType === 'Instance'">
-      <span class="ReverseRelations-label uppercaseHeading">
-        {{ "Libraries" | translatePhrase }}: 
+    <div v-show="!checkingRelations" class="ReverseRelations-number">
+      <span class="ReverseRelations-label uppercaseHeading" @click="showPanel()" >
+        <span v-if="recordType === 'Work'">{{ "Instantiations" | translatePhrase }}</span>
+        <span v-if="recordType === 'Instance' || recordType === 'Item'">{{ "Libraries" | translatePhrase }}</span>
         <span v-if="isNaN(numberOfRelations)"> {{'Error' | translatePhrase}}</span>
         <span v-else> {{numberOfRelations}} </span>
+
       </span>
+      <portal to="sidebar">
+        <relations-list 
+          v-if="relationsListOpen" 
+          :relations-list="relationInfo" 
+          @close="hidePanel()"></relations-list>
+      </portal>
       <create-item-button class="ReverseRelations-button"
-        v-if="user.isLoggedIn && user.getPermissions().registrant" 
+        v-if="recordType === 'Instance' && user.isLoggedIn && user.getPermissions().registrant" 
         :disabled="inspector.status.editing" 
         :has-holding="hasRelation" 
         :checking-holding="checkingRelations" 
