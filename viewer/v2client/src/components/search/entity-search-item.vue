@@ -35,7 +35,7 @@ export default {
   },
   methods: {
     addItem() {
-      if (!this.isDisabled && !this.isReplaced) {
+      if (!this.isDisabled && !this.isReplaced ) {
         this.$emit('add-item');
       }
     },
@@ -63,8 +63,7 @@ export default {
 </script>
 
 <template>
-  <li class="EntitySearch-listItem PanelComponent-listItem" 
-    @click="addItem()"
+  <li class="EntitySearch-listItem PanelComponent-listItem"
     :class="{ 'is-added' : isDisabled, 'is-replaced' : isReplaced }">
     <summary-action 
       :disabled="isDisabled" 
@@ -75,8 +74,9 @@ export default {
     <div class="EntitySearch-itemContainer">
       <entity-summary 
         :focus-data="focusData" 
-        :should-link="false" 
-        :lines="4">
+        :should-link="true" 
+        :lines="4"
+        :shouldOpenTab="true">
       </entity-summary>
     </div>
   </li>
@@ -88,7 +88,6 @@ export default {
 .EntitySearch{
 
   &-listItem {
-    cursor: pointer;
 
     &.is-added, 
     &.is-replaced {
