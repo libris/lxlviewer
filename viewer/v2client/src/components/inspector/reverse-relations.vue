@@ -187,7 +187,8 @@ export default {
     <div class="ReverseRelations compact" 
       v-if="compact && !checkingRelations">
       <div class="uppercaseHeading--light">
-        <span>{{"Holding" | translatePhrase}}</span>
+        <span v-if="recordType === 'Instance'">{{"Holding" | translatePhrase}}</span>
+        <span v-if="recordType === 'Work'">{{"Instances" | translatePhrase}}</span>
       </div>
       <div class="circle has-holding" v-if="hasRelation">
       </div>
