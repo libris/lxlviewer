@@ -25,7 +25,14 @@ export default {
   },
   methods: {
     showPanel() {
-      this.relationsListOpen = true;
+      this.$store.dispatch('pushInspectorEvent', { 
+        name: 'form-control', 
+        value: 'close-modals'
+      }).then(() => {
+        this.$nextTick(() => {
+          this.relationsListOpen = true;
+        });
+      });
     },
     hidePanel() {
       this.relationsListOpen = false;
