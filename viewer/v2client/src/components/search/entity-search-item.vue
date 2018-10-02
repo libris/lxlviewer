@@ -75,8 +75,9 @@ export default {
     <div class="EntitySearch-itemContainer">
       <entity-summary 
         :focus-data="focusData" 
-        :should-link="false" 
-        :lines="4">
+        :should-link="true" 
+        :lines="4"
+        :shouldOpenTab="true">
       </entity-summary>
     </div>
   </li>
