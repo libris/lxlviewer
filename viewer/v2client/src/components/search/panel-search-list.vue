@@ -3,7 +3,7 @@ import PanelSearchItem from './panel-search-item';
 import { mapGetters } from 'vuex';
 
 export default {
-  name: 'entity-search-list',
+  name: 'panel-search-list',
   props: {
     results: {
       type: Array,
@@ -60,8 +60,8 @@ export default {
 </script>
 
 <template>
-  <div class="EntitySearchResult">
-    <ul class="EntitySearchResult-list js-field-list" v-show="results.length > 0" >
+  <div class="PanelSearchResult">
+    <ul class="PanelSearchResult-list js-field-list" v-show="results.length > 0" >
       <panel-search-item
         v-for="(item, index) in results" 
         :is-replaced="isReplaced(item)"
@@ -78,7 +78,7 @@ export default {
 
 <style lang="less">
 
-.EntitySearchResult {
+.PanelSearchResult {
   &-list {
     padding: 0px;
   }

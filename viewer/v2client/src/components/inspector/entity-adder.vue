@@ -13,7 +13,7 @@ import * as CombinedTemplates from '@/resources/json/combinedTemplates.json';
 import * as StructuredValueTemplates from '@/resources/json/structuredValueTemplates.json';
 import ProcessedLabel from '../shared/processedlabel';
 import ToolTipComponent from '../shared/tooltip-component';
-import EntitySearchList from '../search/entity-search-list';
+import PanelSearchList from '../search/panel-search-list';
 import PanelComponent from '@/components/shared/panel-component.vue';
 import ModalPagination from '@/components/inspector/modal-pagination';
 import FilterSelect from '@/components/shared/filter-select.vue';
@@ -68,7 +68,7 @@ export default {
   components: {
     'panel-component': PanelComponent,
     'tooltip-component': ToolTipComponent,
-    'entity-search-list': EntitySearchList,
+    'panel-search-list': PanelSearchList,
     'modal-pagination': ModalPagination,
     'filter-select': FilterSelect,
     'vue-simple-spinner': VueSimpleSpinner,
@@ -622,13 +622,13 @@ export default {
         </div>
       </template>
       <template slot="panel-body">
-        <entity-search-list class="EntityAdder-searchResult"
+        <panel-search-list class="EntityAdder-searchResult"
           v-if="!loading && keyword.length > 0" 
           :path="path" 
           :results="searchResult" 
           :disabled-ids="alreadyAdded"
           @add-item="addLinkedItem">
-        </entity-search-list>
+        </panel-search-list>
         <div class="PanelComponent-searchStatus" v-if="!loading && keyword.length === 0" >
           {{ "Start writing to begin search" | translatePhrase }}...
         </div>
@@ -776,7 +776,7 @@ export default {
   }
 
 }
-.EntitySearchResult {
+.PanelSearchResult {
   &-fetchMore {
     text-align: center;
   }
