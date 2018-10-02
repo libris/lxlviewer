@@ -1,5 +1,5 @@
 <script>
-import EntitySearchItem from './entity-search-item';
+import PanelSearchItem from './panel-search-item';
 import { mapGetters } from 'vuex';
 
 export default {
@@ -47,7 +47,7 @@ export default {
     ]),
   },
   components: {
-    'entity-search-item': EntitySearchItem,
+    'panel-search-item': PanelSearchItem,
   },
   watch: {
   },
@@ -62,7 +62,7 @@ export default {
 <template>
   <div class="EntitySearchResult">
     <ul class="EntitySearchResult-list js-field-list" v-show="results.length > 0" >
-      <entity-search-item
+      <panel-search-item
         v-for="(item, index) in results" 
         :is-replaced="isReplaced(item)"
         :focus-data="item" 
@@ -71,7 +71,7 @@ export default {
         :path="path"
         :key="index"
         @add-item="addItem(item)"
-        ></entity-search-item>
+        ></panel-search-item>
     </ul>
   </div>
 </template>

@@ -6,7 +6,7 @@ import SummaryAction from '../inspector/summary-action';
 import { mapGetters } from 'vuex';
 
 export default {
-  name: 'entity-search-item',
+  name: 'panel-search-item',
   mixins: [LensMixin],
   props: {
     focusData: {},
@@ -63,7 +63,7 @@ export default {
 </script>
 
 <template>
-  <li class="EntitySearch-listItem PanelComponent-listItem"
+  <li class="PanelSearch-listItem PanelComponent-listItem"
     :class="{ 'is-added' : isDisabled, 'is-replaced' : isReplaced }">
     <summary-action 
       :disabled="isDisabled" 
@@ -71,7 +71,7 @@ export default {
       :options="addPayload" 
       @action="addItem()">
     </summary-action>
-    <div class="EntitySearch-itemContainer">
+    <div class="PanelSearch-itemContainer">
       <entity-summary 
         :focus-data="focusData" 
         :should-link="true" 
@@ -85,7 +85,7 @@ export default {
 
 <style lang="less">
 
-.EntitySearch{
+.PanelSearch{
 
   &-listItem {
 
