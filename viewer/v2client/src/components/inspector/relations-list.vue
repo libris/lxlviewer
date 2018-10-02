@@ -76,17 +76,6 @@ export default {
     'panel-component': PanelComponent,
   },
   watch: {
-    'inspector.event'(val, oldVal) {
-      if (val.name === 'form-control') {
-        switch (val.value) { 
-          case 'close-modals':
-            this.hide();
-            break;
-          default:
-            return;
-        }
-      }
-    }
   },
   mounted() {
     this.$nextTick(() => {
