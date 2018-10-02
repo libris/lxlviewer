@@ -211,6 +211,22 @@ export function extractStrings(obj) {
   return label;
 }
 
+export function formatLabel(obj) {
+  let label = [];
+  _.each(obj, (value, key) => {
+    if (!_.isObject(value)) {
+      label.push(value);
+
+    } else {
+      label.push(extractStrings(value));
+  
+    }
+  });
+  label = [].concat.apply([], label);
+  label = label.join(' • ');
+  return label;
+}
+
 export function getFormattedEntries(list, vocab, settings, context) {
   let formatted = [];
   for (const entry of list) {
