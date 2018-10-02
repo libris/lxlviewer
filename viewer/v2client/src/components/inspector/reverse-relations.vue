@@ -5,11 +5,13 @@ import * as RecordUtil from '../../utils/record';
 import CreateItemButton from './create-item-button';
 import RelationsList from '@/components/inspector/relations-list';
 import { mapGetters } from 'vuex';
+import VueSimpleSpinner from 'vue-simple-spinner';
 
 export default {
   name: 'reverse-relations',
   props: {
     mainEntity: {},
+    compact: { type: Boolean, default: false }, 
   },
   data() {
     return {
@@ -113,6 +115,7 @@ export default {
   components: {
     'create-item-button': CreateItemButton,
     'relations-list': RelationsList,
+    'vue-simple-spinner': VueSimpleSpinner,
   },
   watch: {
     'inspector.event'(val, oldVal) {
@@ -152,7 +155,9 @@ export default {
 
 <template>
   <div class="ReverseRelations">
-    <div v-show="!checkingRelations" class="ReverseRelations-number">
+    <div class="ReverseRelations-number"
+      v-show="!checkingRelations"
+      v-if="!compact">
       <span class="ReverseRelations-label uppercaseHeading" @click="showPanel()" >
         <span v-if="recordType === 'Work'">{{ "Instantiations" | translatePhrase }}</span>
         <span v-if="recordType === 'Instance' || recordType === 'Item'">{{ "Libraries" | translatePhrase }}</span>
@@ -174,6 +179,19 @@ export default {
           @close="hidePanel()"></relations-list>
       </portal>
     </div>
+    <!-- compact view (in search result) -->
+    <vue-simple-spinner class="ReverseRelations compact"
+      v-if="compact && checkingRelations" 
+      size="medium"></vue-simple-spinner>
+
+    <div class="ReverseRelations compact" 
+      v-if="compact && !checkingRelations">
+      <div class="circle has-holding" v-if="hasRelation">
+      </div>
+      <div class="circle no-holding" v-else>nay!</div>
+      <button class="circle">{{numberOfRelations}} </button>
+    </div>
+    <!-- end -->
   </div>
 </template>
 
@@ -194,6 +212,25 @@ export default {
   }
 
   &-button {
+  }
+
+  &.compact {
+    padding-top: 15px;
+    display: flex;
+    flex-direction: column;
+
+    & .circle {
+      height: 32px;
+      min-width: 32px;
+      border-radius: 16px;
+      
+      &.has-holding {
+        background-color: @brand-primary;
+      }
+      &.no-holding {
+        background-color: @gray;
+      }
+    }
   }
 }
 
