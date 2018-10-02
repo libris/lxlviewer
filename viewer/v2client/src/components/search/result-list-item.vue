@@ -103,6 +103,7 @@ export default {
     & .EntitySummary {
       width: 50%;
       flex: 1;
+      justify-content: start;
       padding: 0 15px 0 0
     }
   }
