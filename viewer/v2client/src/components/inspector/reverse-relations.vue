@@ -58,7 +58,9 @@ export default {
       });
     },
     getRelationsInfo() {
-      const query = {};
+      const query = {
+        '_limit': 0,
+      };
       if (this.recordType === 'Item') {
         query['itemOf.@id'] = this.mainEntity.itemOf['@id'];
         query['@type'] = 'Item';
@@ -68,6 +70,7 @@ export default {
 
         // Check if my sigel has holding
         const myHoldingQuery = Object.assign({}, query);
+        myHoldingQuery['_limit'] = 1;
         myHoldingQuery['heldBy.@id'] = `https://libris.kb.se/library/${this.user.settings.activeSigel}`;
         this.getRelatedPosts(myHoldingQuery)
         .then((response) => {
