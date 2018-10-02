@@ -59,9 +59,6 @@ export default {
     </entity-summary>
     <div class="ResultItem-holdingContainer"
       v-if="this.$route.params.perimeter !== 'remote'">
-      <div class="ResultItem-holdingHeader uppercaseHeading--light">
-        <span>{{"Holding" | translatePhrase}}</span>
-      </div>
       <reverse-relations :main-entity="focusData" :compact=true>
       </reverse-relations>
     </div>
@@ -167,10 +164,6 @@ export default {
     overflow: hidden;
     align-items: center;
     padding-left: 15px;
-  }
-
-  &-holdingHeader {
-
   }
 }
 

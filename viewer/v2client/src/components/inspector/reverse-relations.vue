@@ -171,13 +171,6 @@ export default {
         :checking-holding="checkingRelations" 
         :holding-id="myHolding"
         @done="checkingRelations=false"></create-item-button>
-      <portal to="sidebar">
-        <relations-list 
-          v-if="relationsListOpen" 
-          :relations-list="relationInfo" 
-          :list-context-type="recordType"
-          @close="hidePanel()"></relations-list>
-      </portal>
     </div>
     <!-- compact view (in search result) -->
     <vue-simple-spinner class="ReverseRelations compact"
@@ -186,12 +179,22 @@ export default {
 
     <div class="ReverseRelations compact" 
       v-if="compact && !checkingRelations">
+      <div class="uppercaseHeading--light">
+        <span>{{"Holding" | translatePhrase}}</span>
+      </div>
       <div class="circle has-holding" v-if="hasRelation">
       </div>
       <div class="circle no-holding" v-else>nay!</div>
-      <button class="circle">{{numberOfRelations}} </button>
+      <button class="circle" @click="showPanel()">{{numberOfRelations}} </button>
     </div>
     <!-- end -->
+    <portal to="sidebar">
+      <relations-list 
+        v-if="relationsListOpen" 
+        :relations-list="relationInfo" 
+        :list-context-type="recordType"
+        @close="hidePanel()"></relations-list>
+    </portal>
   </div>
 </template>
 
@@ -215,7 +218,6 @@ export default {
   }
 
   &.compact {
-    padding-top: 15px;
     display: flex;
     flex-direction: column;
 
