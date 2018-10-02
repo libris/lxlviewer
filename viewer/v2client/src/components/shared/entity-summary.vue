@@ -173,7 +173,7 @@ export default {
         <i v-if="shouldOpenTab" class="EntitySummary-icon fa fa-external-link" aria-hidden="true"></i>
         {{ header.join(', ') }}
       </router-link>
-      <a class="EntitySummary-titleLink "
+      <a class="EntitySummary-titleLink"
         v-if="!isLibrisResource && !isImport && shouldLink" 
         :href="focusData['@id']" 
         :title="header.join(', ')"
