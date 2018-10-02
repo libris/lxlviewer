@@ -4,6 +4,7 @@ import * as HttpUtil from '../../utils/http';
 import * as RecordUtil from '../../utils/record';
 import CreateItemButton from './create-item-button';
 import RelationsList from '@/components/inspector/relations-list';
+import RoundButton from '@/components/shared/round-button.vue';
 import { mapGetters } from 'vuex';
 import VueSimpleSpinner from 'vue-simple-spinner';
 
@@ -123,6 +124,7 @@ export default {
     'create-item-button': CreateItemButton,
     'relations-list': RelationsList,
     'vue-simple-spinner': VueSimpleSpinner,
+    'round-button': RoundButton,
   },
   watch: {
     'inspector.event'(val, oldVal) {
@@ -180,19 +182,28 @@ export default {
         @done="checkingRelations=false"></create-item-button>
     </div>
     <!-- compact view (in search result) -->
-    <vue-simple-spinner class="ReverseRelations compact"
-      v-if="compact && checkingRelations" 
-      size="medium"></vue-simple-spinner>
-
     <div class="ReverseRelations compact" 
-      v-if="compact && !checkingRelations">
-      <div class="uppercaseHeading--light">
+      v-if="compact">
+      <div class="ReverseRelations-header uppercaseHeading--light">
         <span>{{"Holding" | translatePhrase}}</span>
       </div>
-      <div class="circle has-holding" v-if="hasRelation">
+      <vue-simple-spinner class="ReverseRelations compact"
+        v-if="checkingRelations" 
+        size="medium">
+      </vue-simple-spinner>
+      <div class="ReverseRelations-btnContainer" v-if="!checkingRelations">
+        <round-button 
+          :disabled="!hasRelation" 
+          :color="hasRelation ? 'primary' : 'gray'"
+          :icon="hasRelation ? 'check' : 'close'">
+        </round-button>
+        <round-button
+          :disabled="!numberOfRelations"
+          :color="numberOfRelations > 0 ? 'primary' : 'gray'"
+          @click="showPanel()">
+          {{numberOfRelations}}
+        </round-button>
       </div>
-      <div class="circle no-holding" v-else>nay!</div>
-      <button class="circle" @click="showPanel()">{{numberOfRelations}} </button>
     </div>
     <!-- end -->
     <portal to="sidebar">
@@ -224,23 +235,17 @@ export default {
   &-button {
   }
 
-  &.compact {
+  &-header {
+    margin-bottom: 10px;
+  }
+
+  &-btnContainer {
     display: flex;
     flex-direction: column;
+    align-items: center;
+  }
 
-    & .circle {
-      height: 32px;
-      min-width: 32px;
-      border-radius: 16px;
-      
-      &.has-holding {
-        background-color: @brand-primary;
-      }
-      &.no-holding {
-        background-color: @gray;
-      }
-    }
+  &.compact {
   }
 }
-
 </style>
