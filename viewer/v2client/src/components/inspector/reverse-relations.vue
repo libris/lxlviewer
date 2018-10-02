@@ -59,7 +59,9 @@ export default {
       });
     },
     getRelationsInfo() {
-      const query = {};
+      const query = {
+        '_limit': 0,
+      };
       if (this.recordType === 'Item') {
         query['itemOf.@id'] = this.mainEntity.itemOf['@id'];
         query['@type'] = 'Item';
@@ -69,6 +71,7 @@ export default {
 
         // Check if my sigel has holding
         const myHoldingQuery = Object.assign({}, query);
+        myHoldingQuery['_limit'] = 1;
         myHoldingQuery['heldBy.@id'] = `https://libris.kb.se/library/${this.user.settings.activeSigel}`;
         this.getRelatedPosts(myHoldingQuery)
         .then((response) => {
@@ -182,27 +185,24 @@ export default {
         @done="checkingRelations=false"></create-item-button>
     </div>
     <!-- compact view (in search result) -->
-    <div class="ReverseRelations compact" 
-      v-if="compact">
+    <div class="ReverseRelations compact" v-if="compact">
       <div class="ReverseRelations-header uppercaseHeading--light">
-        <span>{{"Holding" | translatePhrase}}</span>
+        <span v-if="recordType === 'Instance'">{{"Holding" | translatePhrase}}</span>
+        <span v-if="recordType === 'Work'">{{"Instances" | translatePhrase}}</span>
       </div>
       <vue-simple-spinner class="ReverseRelations compact"
         v-if="checkingRelations" 
-        size="medium">
-      </vue-simple-spinner>
+        size="medium"></vue-simple-spinner>
       <div class="ReverseRelations-btnContainer" v-if="!checkingRelations">
         <round-button 
           :disabled="!hasRelation" 
           :color="hasRelation ? 'primary' : 'gray'"
-          :icon="hasRelation ? 'check' : 'close'">
-        </round-button>
+          :icon="hasRelation ? 'check' : 'close'"></round-button>
         <round-button
           :disabled="!numberOfRelations"
           :color="numberOfRelations > 0 ? 'primary' : 'gray'"
           @click="showPanel()">
-          {{numberOfRelations}}
-        </round-button>
+          {{numberOfRelations}}</round-button>
       </div>
     </div>
     <!-- end -->
