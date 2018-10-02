@@ -12,7 +12,6 @@ import ProcessedLabel from '../shared/processedlabel';
 import PanelComponent from '@/components/shared/panel-component';
 import ModalPagination from '@/components/inspector/modal-pagination';
 import ToolTipComponent from '../shared/tooltip-component';
-import EntitySearchList from '../search/entity-search-list';
 import EntitySummary from '../shared/entity-summary';
 import FilterSelect from '@/components/shared/filter-select.vue';
 import SummaryAction from './summary-action';
@@ -67,7 +66,6 @@ export default {
     isActive: false,
   },
   components: {
-    'entity-search-list': EntitySearchList,
     'entity-summary': EntitySummary,
     'summary-action': SummaryAction,
     'panel-component': PanelComponent,
