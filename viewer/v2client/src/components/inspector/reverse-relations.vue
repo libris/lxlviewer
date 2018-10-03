@@ -175,11 +175,17 @@ export default {
     <div class="ReverseRelations-number"
       v-show="!checkingRelations"
       v-if="!compact">
-      <span class="ReverseRelations-label uppercaseHeading" @click="showPanel()" >
-        <span v-if="recordType === 'Work'">{{ "Instantiations" | translatePhrase }}</span>
-        <span v-if="recordType === 'Instance' || recordType === 'Item'">{{ "Libraries" | translatePhrase }}</span>
-        <span v-if="isNaN(numberOfRelations)"> {{'Error' | translatePhrase}}</span>
-        <span v-else> {{numberOfRelations}} </span>
+      <span class="uppercaseHeading">
+        <span class="ReverseRelations-label" 
+          v-if="recordType === 'Work'">{{ "Instantiations" | translatePhrase }}</span>
+        <span class="ReverseRelations-label " 
+          v-if="recordType === 'Instance' || recordType === 'Item'">{{ "Libraries" | translatePhrase }}</span>
+        <round-button
+          :disabled="numberOfRelations === 0 || isNaN(numberOfRelations)"
+          :color="numberOfRelations > 0 ? 'primary' : 'gray'"
+          :icon="isNaN(numberOfRelations) ? 'exclamation' : false"
+          @click="showPanel()">
+          {{numberOfRelations}}</round-button>
       </span>
       <create-item-button class="ReverseRelations-button"
         v-if="recordType === 'Instance' && user.isLoggedIn && user.getPermissions().registrant" 
@@ -206,8 +212,9 @@ export default {
           :icon="hasRelation ? 'check' : 'close'"
           @click="gotoHolding()"></round-button>
         <round-button
-          :disabled="!numberOfRelations"
+          :disabled="!numberOfRelations || isNaN(numberOfRelations)"
           :color="numberOfRelations > 0 ? 'primary' : 'gray'"
+          :icon="isNaN(numberOfRelations) ? 'exclamation' : false"
           @click="showPanel()">
           {{numberOfRelations}}</round-button>
       </div>
@@ -239,6 +246,7 @@ export default {
   }
 
   &-label {
+    margin-right: 5px;
   }
 
   &-button {
