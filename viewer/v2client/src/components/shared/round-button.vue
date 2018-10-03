@@ -50,18 +50,21 @@ export default {
 
 <template>
     <button class="RoundButton btn"
-        :class="`btn-${color}`"
+        :class="`btn-${color} ${disabled ? 'disabled' : ''}`"
         @click="action()"
-        :disabled="disabled" >
+        @mouseover="$emit('mouseover')" 
+        @mouseout="$emit('mouseout')">
         <span v-if="icon">
-            <i :class="`fa fa-${icon}`"></i>
+            <i :class="`fa fa-${icon}`" aria-hidden="true"></i>
         </span>
         <slot v-else></slot>
+        <slot name="tooltip"></slot>
     </button>
 </template>
 
 <style lang="less">
 .RoundButton {
+    position: relative;
     margin-bottom: 10px;
     width: 32px;
     height: 32px;

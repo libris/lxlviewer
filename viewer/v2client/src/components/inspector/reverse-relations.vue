@@ -7,6 +7,7 @@ import RelationsList from '@/components/inspector/relations-list';
 import RoundButton from '@/components/shared/round-button.vue';
 import { mapGetters } from 'vuex';
 import VueSimpleSpinner from 'vue-simple-spinner';
+import TooltipComponent from '@/components/shared/tooltip-component';
 
 export default {
   name: 'reverse-relations',
@@ -22,6 +23,8 @@ export default {
       relationInfo: [],
       numberOfRelations: null,
       relationsListOpen: false,
+      totalHoldingTooltip: false,
+      myHoldingTooltip: false,
     }
   },
   methods: {
@@ -124,7 +127,14 @@ export default {
     },
     recordId() {
       return this.mainEntity['@id'];
-    }
+    },
+    totalHoldingTooltipText() {
+      if (this.numberOfRelations === 0) {
+        return 'No holdings'
+      } else if (isNaN(this.numberOfRelations)) {
+        return 'Holdings could not be loaded'
+      } else return 'Show all holdings'
+    },
   },
   events: {
   },
@@ -133,6 +143,7 @@ export default {
     'relations-list': RelationsList,
     'vue-simple-spinner': VueSimpleSpinner,
     'round-button': RoundButton,
+    'tooltip-component': TooltipComponent,
   },
   watch: {
     'inspector.event'(val, oldVal) {
@@ -184,8 +195,19 @@ export default {
           :disabled="numberOfRelations === 0 || isNaN(numberOfRelations)"
           :color="numberOfRelations > 0 ? 'primary' : 'gray'"
           :icon="isNaN(numberOfRelations) ? 'exclamation' : false"
+          @mouseover="totalHoldingTooltip = true"
+          @mouseout="totalHoldingTooltip = false"
           @click="showPanel()">
-          {{numberOfRelations}}</round-button>
+          {{numberOfRelations}}
+          <template slot="tooltip">
+            <tooltip-component 
+              class="Toolbar-tooltipContainer"
+              :show-tooltip="totalHoldingTooltip" 
+              position="left"
+              :tooltip-text="totalHoldingTooltipText" 
+              translation="translatePhrase"></tooltip-component>
+          </template>
+        </round-button>
       </span>
       <create-item-button class="ReverseRelations-button"
         v-if="recordType === 'Instance' && user.isLoggedIn && user.getPermissions().registrant" 
@@ -210,13 +232,36 @@ export default {
           :disabled="!hasRelation" 
           :color="hasRelation ? 'primary' : 'gray'"
           :icon="hasRelation ? 'check' : 'close'"
-          @click="gotoHolding()"></round-button>
+          @mouseover="myHoldingTooltip = true"
+          @mouseout="myHoldingTooltip = false"
+          @click="gotoHolding()">
+          <template slot="tooltip">
+            <tooltip-component 
+              class="Toolbar-tooltipContainer"
+              :show-tooltip="myHoldingTooltip" 
+              position="left"
+              :tooltip-text="hasRelation ? 'has holding' : 'does not have holding'" 
+              :literalString="user.settings.activeSigel"
+              translation="translatePhrase"></tooltip-component>
+          </template>
+        </round-button>
         <round-button
           :disabled="!numberOfRelations || isNaN(numberOfRelations)"
           :color="numberOfRelations > 0 ? 'primary' : 'gray'"
           :icon="isNaN(numberOfRelations) ? 'exclamation' : false"
+          @mouseover="totalHoldingTooltip = true"
+          @mouseout="totalHoldingTooltip = false"
           @click="showPanel()">
-          {{numberOfRelations}}</round-button>
+          {{numberOfRelations}}
+          <template slot="tooltip">
+            <tooltip-component 
+              class="Toolbar-tooltipContainer"
+              :show-tooltip="totalHoldingTooltip" 
+              position="left"
+              :tooltip-text="totalHoldingTooltipText" 
+              translation="translatePhrase"></tooltip-component>
+          </template>
+        </round-button>
       </div>
     </div>
     <!-- end -->
