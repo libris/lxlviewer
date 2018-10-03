@@ -19,6 +19,17 @@ body a {
   transition: background-color 0.1s ease;
 }
 
+.btn[disabled] {
+  background-color: @gray-light;
+  &:hover {
+    background-color: @gray-light;
+  }
+
+  &.btn-primary {
+    background-color: fadeout(@brand-primary, 20%);
+  }
+}
+
 .btn-primary {
   &:hover {
     background-color: @link-hover-color;

@@ -95,6 +95,11 @@ export default {
         console.log('Error checking for relations', error);
       });
     },
+    gotoHolding() {
+      const locationParts = this.myHolding.split('/');
+      const fnurgel = locationParts[locationParts.length-1];
+      this.$router.push({ path: `/${fnurgel}` });
+    },
   },
   computed: {
     ...mapGetters([
@@ -197,10 +202,11 @@ export default {
       </vue-simple-spinner>
       <div class="ReverseRelations-btnContainer" v-if="!checkingRelations">
         <round-button 
+          v-if="recordType === 'Instance' && user.isLoggedIn && user.getPermissions().registrant" 
           :disabled="!hasRelation" 
           :color="hasRelation ? 'primary' : 'gray'"
-          :icon="hasRelation ? 'check' : 'close'">
-        </round-button>
+          :icon="hasRelation ? 'check' : 'close'"
+          @click="gotoHolding()"></round-button>
         <round-button
           :disabled="!numberOfRelations"
           :color="numberOfRelations > 0 ? 'primary' : 'gray'"
@@ -223,6 +229,8 @@ export default {
 <style lang="less">
 
 .ReverseRelations {
+  height: 100%;
+  
   &-number {
     float: left;
     margin: 0 0 10px;
@@ -244,12 +252,16 @@ export default {
   }
 
   &-btnContainer {
+    height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
+    // justify-content: center;
   }
 
   &.compact {
+    display: flex;
+    flex-direction: column;
   }
 }
 </style>
