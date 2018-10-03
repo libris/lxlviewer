@@ -162,7 +162,6 @@ export default {
     display: flex;
     flex-direction: column;
     border-left: 1px solid @gray-lighter;
-    overflow: hidden;
     align-items: center;
     padding-left: 15px;
   }
