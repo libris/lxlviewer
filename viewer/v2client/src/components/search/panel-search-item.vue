@@ -138,7 +138,10 @@ export default {
   }
 
   &-itemContainer {
+    border: solid @gray-lighter;
+    border-width: 0px 0px 0px 1px;
     padding: 0 15px;
+    margin-left: 10px;
     width: 100%;
     overflow: hidden;
   }
