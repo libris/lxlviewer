@@ -278,7 +278,7 @@ export default {
 <style lang="less">
 
 .ReverseRelations {
-  height: 100%;
+  // height: 100%;
   
   &-number {
     float: left;
@@ -302,11 +302,10 @@ export default {
   }
 
   &-btnContainer {
-    height: 100%;
+    // height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    // justify-content: center;
   }
 
   &.compact {
