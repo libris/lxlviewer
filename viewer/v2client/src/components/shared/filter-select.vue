@@ -88,6 +88,15 @@ export default {
     clear() {
       let allObj = {};
       let allValue = this.optionsAll;
+      let inputSel, inputEl, inputContEl, inputContSel, texts;
+
+      inputContSel = document.getElementsByClassName(this.className);
+      inputContEl = inputContSel[0];
+      texts = inputContEl.getElementsByClassName('js-filterSelectText');
+      
+      _.forEach(texts, function(text) {
+        text.removeAttribute('style');
+      });
 
       allObj.label = '';
       allObj.value = allValue;
@@ -130,7 +139,7 @@ export default {
         @keyup.enter="selectOption"
         v-for="option in options"
         :key="option.key">
-        <span class="FilterSelect-dropdownText" 
+        <span class="FilterSelect-dropdownText js-filterSelectText" 
           tabindex="0"
           :data-filter="option.value"
           :data-key="option.key">{{option.label}}</span>
@@ -211,6 +220,7 @@ export default {
       overflow-y: scroll;
       border: 1px solid @gray-light;
       box-shadow: @shadow-panel;
+      z-index: 4;
     }
 
     .FilterSelect--insideInput & {
