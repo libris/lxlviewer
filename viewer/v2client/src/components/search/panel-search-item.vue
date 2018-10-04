@@ -18,8 +18,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    icon: null,
     path: '',
     isReplaced: false,
+    isCompact: false,
   },
   data() {
     return {
@@ -27,16 +29,16 @@ export default {
       listItemSettings: {
         text: 'Add',
         styling: 'brand',
-        event: 'add-entity',
         inspectAction: true,
         path: this.path,
+        icon: this.icon,
       },
     }
   },
   methods: {
-    addItem() {
+    useItem() {
       if (!this.isDisabled && !this.isReplaced ) {
-        this.$emit('add-item');
+        this.$emit('use-item');
       }
     },
   },
@@ -69,13 +71,14 @@ export default {
       :disabled="isDisabled" 
       :replaced="isReplaced"
       :options="addPayload" 
-      @action="addItem()">
+      @action="useItem()">
     </summary-action>
     <div class="PanelSearch-itemContainer">
       <entity-summary 
         :focus-data="focusData" 
         :should-link="true" 
         :lines="4"
+        :is-compact="isCompact"
         :shouldOpenTab="true">
       </entity-summary>
     </div>

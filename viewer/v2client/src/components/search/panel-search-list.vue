@@ -13,8 +13,10 @@ export default {
       type: Array,
       default: () => [],
     },
+    icon: null,
     path: '',
     index: Number,
+    isCompact: false,
   },
   data() {
     return {
@@ -33,8 +35,8 @@ export default {
 
       return false;
     },
-    addItem(item) {
-      this.$emit('add-item', item);
+    useItem(item) {
+      this.$emit('use-item', item);
     },
   },
   computed: {
@@ -70,7 +72,9 @@ export default {
         :add-link="false"
         :path="path"
         :key="index"
-        @add-item="addItem(item)"
+        :icon="icon"
+        :is-compact="isCompact"
+        @use-item="useItem(item)"
         ></panel-search-item>
     </ul>
   </div>
