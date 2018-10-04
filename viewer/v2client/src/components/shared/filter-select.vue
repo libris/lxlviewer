@@ -20,6 +20,7 @@ export default {
   data() {
     return {
       selectedObject: {},
+      currentItem: 0,
       filterVisible: false
     };
   },
@@ -32,6 +33,17 @@ export default {
     }
   },
   methods: {
+    nextItem () {
+      if (!this.isFilter) {
+        return;
+      }
+
+    	if (event.keyCode == 38 && this.currentItem > 0) {
+      	this.currentItem--
+      } else if (event.keyCode == 40 && this.currentItem < 3) {
+      	this.currentItem++
+      }
+    },
     filter () {
       let inputSel, 
       inputEl, 
@@ -124,7 +136,10 @@ export default {
     }
   },
   mounted() {
-    this.$nextTick(() => {});
+    document.addEventListener('keyup', this.nextItem);
+    this.$nextTick(() => {
+      
+    });
   },
 };
 </script>
@@ -139,16 +154,18 @@ export default {
       type="text" 
       v-bind:placeholder="translatedPlaceholder" 
       :id="selectId" 
-      @keyup="filter(), filterVisible = true"
+      @keyup="filter(), filterVisible = true, nextItem"
       @click="filterVisible = !filterVisible"
       :tabindex="-1">
     <ul class="FilterSelect-dropdown js-filterSelectDropdown"
       :class="{'is-visible': filterVisible}">
-      <li class="FilterSelect-dropdownItem"
+      <li class="FilterSelect-dropdownItem "
+        :class='{"isActive": currentItem === index}'
         @click="selectOption"
         @keyup.enter="selectOption"
-        v-for="option in options"
-        :key="option.key">
+        v-for="(option, index) in options"
+        :key="option.key"
+        :data-index="index">
         <span class="FilterSelect-dropdownText" 
           :data-filter="option.value"
           :data-key="option.key">{{option.label}}</span>
@@ -245,7 +262,8 @@ export default {
     cursor: pointer;
     padding: 0 5px;
 
-    &:hover {
+    &:hover,
+    &.isActive {
       background-color: @gray-light;
       color: @white;
     }
