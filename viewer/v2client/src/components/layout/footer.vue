@@ -54,6 +54,9 @@ export default {
               <li>
                 <a href="https://www.kb.se/libris/Om-Libris/Versionsinformation/" class="Footer-link">{{ "Release notes" | translatePhrase }}</a>
               </li>
+              <li>
+                <a href="https://www.kb.se/omoss/dataskydd.html#XLkat" class="Footer-link">{{ "GDPR compliance" | translatePhrase }}</a>
+              </li>
             </ul>
           </nav>
 
