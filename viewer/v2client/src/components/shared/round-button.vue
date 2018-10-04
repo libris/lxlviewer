@@ -1,6 +1,6 @@
 <script>
-/* 
-This dumb component will render a round button. 
+/*
+This dumb component will render a round button.
 Listen to the 'click' event in the parent as usual.
 
   Available props:
@@ -12,27 +12,27 @@ Listen to the 'click' event in the parent as usual.
 export default {
   name: 'round-button',
   props: {
-      size: {
-          type: String,
-          default: 'medium',
-      },
-      color: {
-          type: String,
-          default: 'gray'
-      },
-      disabled: {
-          type: Boolean,
-          default: false,
-      },
-      icon: {
-          default: false,
-      }
+    size: {
+        type: String,
+        default: 'medium',
+    },
+    color: {
+        type: String,
+        default: 'gray'
+    },
+    disabled: {
+        type: Boolean,
+        default: false,
+    },
+    icon: {
+        default: false,
+    }
   },
   methods: {
     action() {
-        if (!this.disabled) {
-            this.$emit('click')
-        }
+      if (!this.disabled) {
+          this.$emit('click')
+      }
     }
   },
   computed: {
@@ -49,30 +49,30 @@ export default {
 </script>
 
 <template>
-    <button class="RoundButton btn"
-        :class="`btn-${color} ${disabled ? 'disabled' : ''}`"
-        @click="action()"
-        @mouseover="$emit('mouseover')" 
-        @mouseout="$emit('mouseout')">
-        <span v-if="icon">
-            <i :class="`fa fa-${icon}`" aria-hidden="true"></i>
-        </span>
-        <slot v-else></slot>
-        <slot name="tooltip"></slot>
-    </button>
+  <button class="RoundButton btn"
+    :class="`btn-${color} ${disabled ? 'disabled' : ''}`"
+    @click="action()"
+    @mouseover="$emit('mouseover')"
+    @mouseout="$emit('mouseout')">
+    <span v-if="icon">
+        <i :class="`fa fa-${icon}`" aria-hidden="true"></i>
+    </span>
+    <slot v-else></slot>
+    <slot name="tooltip"></slot>
+  </button>
 </template>
 
 <style lang="less">
 .RoundButton {
-    position: relative;
-    margin-bottom: 10px;
-    width: 32px;
-    height: 32px;
-    border-radius: 16px;
-    justify-content: center;
-    align-items: center;
-    padding: 0;
-    font-weight: 700;
+  position: relative;
+  margin-bottom: 10px;
+  width: 32px;
+  height: 32px;
+  border-radius: 16px;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  font-weight: 700;
 }
 
 </style>
