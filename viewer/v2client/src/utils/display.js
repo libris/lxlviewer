@@ -251,7 +251,7 @@ export function getItemSummary(item, displayDefs, quoted, vocab, settings, conte
 
 export function getItemLabel(item, displayDefs, quoted, vocab, settings, context) {
   const displayObject = getChip(item, displayDefs, quoted, vocab, settings, context);
-  let rendered = StringUtil.extractStrings(displayObject).trim();
+  let rendered = StringUtil.formatLabel(displayObject).trim();
   if (item['@type'] && VocabUtil.isSubClassOf(item['@type'], 'Identifier', vocab, context)) {
     rendered = `${item['@type']} ${rendered}`;
   }
