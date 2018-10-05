@@ -6,7 +6,7 @@ import SummaryAction from '../inspector/summary-action';
 import { mapGetters } from 'vuex';
 
 export default {
-  name: 'entity-search-item',
+  name: 'panel-search-item',
   mixins: [LensMixin],
   props: {
     focusData: {},
@@ -18,8 +18,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    icon: null,
     path: '',
     isReplaced: false,
+    isCompact: false,
   },
   data() {
     return {
@@ -27,16 +29,16 @@ export default {
       listItemSettings: {
         text: 'Add',
         styling: 'brand',
-        event: 'add-entity',
         inspectAction: true,
         path: this.path,
+        icon: this.icon,
       },
     }
   },
   methods: {
-    addItem() {
+    useItem() {
       if (!this.isDisabled && !this.isReplaced ) {
-        this.$emit('add-item');
+        this.$emit('use-item');
       }
     },
   },
@@ -63,19 +65,20 @@ export default {
 </script>
 
 <template>
-  <li class="EntitySearch-listItem PanelComponent-listItem"
+  <li class="PanelSearch-listItem PanelComponent-listItem"
     :class="{ 'is-added' : isDisabled, 'is-replaced' : isReplaced }">
     <summary-action 
       :disabled="isDisabled" 
       :replaced="isReplaced"
       :options="addPayload" 
-      @action="addItem()">
+      @action="useItem()">
     </summary-action>
-    <div class="EntitySearch-itemContainer">
+    <div class="PanelSearch-itemContainer">
       <entity-summary 
         :focus-data="focusData" 
         :should-link="true" 
         :lines="4"
+        :is-compact="isCompact"
         :shouldOpenTab="true">
       </entity-summary>
     </div>
@@ -85,7 +88,7 @@ export default {
 
 <style lang="less">
 
-.EntitySearch{
+.PanelSearch{
 
   &-listItem {
 
@@ -135,7 +138,10 @@ export default {
   }
 
   &-itemContainer {
+    border: solid @gray-lighter;
+    border-width: 0px 0px 0px 1px;
     padding: 0 15px;
+    margin-left: 10px;
     width: 100%;
     overflow: hidden;
   }
