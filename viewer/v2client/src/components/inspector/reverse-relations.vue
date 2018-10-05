@@ -86,6 +86,7 @@ export default {
         .catch((error) => {
           console.log(error);
         });
+
       } else if (this.recordType === 'Work') {
         query['instanceOf.@id'] = this.mainEntity['@id'];
         query['@type'] = 'Instance';
