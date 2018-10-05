@@ -20,7 +20,7 @@ export default {
   data() {
     return {
       selectedObject: {},
-      currentItem: 0,
+      currentItem: -1,
       filterVisible: false
     };
   },
@@ -36,6 +36,15 @@ export default {
     preventBodyScroll (e) {
       if([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
         e.preventDefault();
+      } 
+    },
+    checkInput (event) {
+      if (event.keyCode == 32) {
+        this.filterVisible = !this.filterVisible;
+      }
+    },
+    handleSpacebar (event) {
+      if (event.keyCode == 32 && this.filterVisible) {
       }
     },
     nextItem () {
@@ -43,8 +52,7 @@ export default {
         window.removeEventListener('keydown', this.preventBodyScroll, false);
         return;
       } else {
-        window.addEventListener('keydown', this.preventBodyScroll, false);
-        console.log(this);
+        window.addEventListener('keydown', this.preventBodyScroll, false); 
 
         let inputSel, inputEl, inputContSel, inputContEl, texts, items;
         inputContSel = document.getElementsByClassName(this.className);
@@ -58,7 +66,7 @@ export default {
           item.classList.remove('isActive');
         });
 
-        if (event.keyCode == 38 && this.currentItem > 0) {
+        if (event.keyCode == 38 && this.currentItem > -1) {
           this.currentItem--
           texts[this.currentItem].focus();
           items[this.currentItem].classList.add('isActive');
@@ -118,6 +126,7 @@ export default {
       event.target.classList.contains('js-createSelect')) {
         const input = event.target.getElementsByClassName('js-filterSelectInput')[0];
         this.simulateClick(input);
+        input.focus();
       }
     },
     simulateClick(elem) {
@@ -162,6 +171,7 @@ export default {
   },
   mounted() {
     this.$el.addEventListener('keyup', this.nextItem);
+    this.$el.addEventListener('keyup', this.handleSpacebar);
 
     this.$nextTick(() => { 
     });
@@ -174,12 +184,13 @@ export default {
     :class="className" 
     v-on-clickaway="close"
     :tabindex="0"
-    @keyup.enter="focusOnInput">
+    @keyup.space="focusOnInput">
     <input class="FilterSelect-input js-filterSelectInput" 
       type="text" 
       v-bind:placeholder="translatedPlaceholder" 
       :id="selectId" 
-      @keyup="filter(), filterVisible = true, nextItem"
+      @keyup="filter(), nextItem($event)"
+      @keyup.space="checkInput($event)"
       @click="filterVisible = !filterVisible"
       :tabindex="-1">
     <ul class="FilterSelect-dropdown js-filterSelectDropdown"
