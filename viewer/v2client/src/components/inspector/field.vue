@@ -431,6 +431,10 @@ export default {
 
       <!-- Is inner -->
       <div class="Field-actions is-nested">
+        <div class="Field-action Field-comment" v-if="propertyComment && !locked" >
+          <i class="fa fa-question-circle icon icon--sm"></i>
+          <span class="Field-commentText">{{ propertyComment }}</span>
+        </div>
         <entity-adder class="Field-action Field-entityAdder"
           v-if="!locked && (isRepeatable || isEmptyObject)" 
           :field-key="fieldKey" 
@@ -776,6 +780,7 @@ export default {
     padding: 10px;
     text-align: left;
     white-space: normal;
+    color: @black;
     background-color: @white;
     border: 1px solid @gray-lighter;
     border-radius: 4px;

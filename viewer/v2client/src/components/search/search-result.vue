@@ -1,6 +1,5 @@
 <script>
 import ResultList from './result-list';
-import EntitySearchList from './entity-search-list';
 import ResultControls from './result-controls';
 
 export default {
@@ -76,7 +75,6 @@ export default {
     }
   },
   components: {
-    'entity-search-list': EntitySearchList,
     'result-controls': ResultControls,
     'result-list': ResultList,
   },

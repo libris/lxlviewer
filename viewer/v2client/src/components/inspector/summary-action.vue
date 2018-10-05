@@ -8,7 +8,6 @@ export default {
       show: false,
       styling: 'gray',
       text: 'button',
-      inspectAction: false,
     },
     disabled: true,
     replaced: true
@@ -26,14 +25,6 @@ export default {
     ...mapGetters([
       'settings',
     ]),
-    inspectUrl() {
-      const uriParts = this.options.payload['@id'].split('/');
-      const fnurgel = uriParts[uriParts.length-1];
-      return `/katalogisering/${fnurgel}`;
-    },
-    isLibrisResource() {
-      return StringUtil.isLibrisResourceUri(this.options.payload['@id'], this.settings.apiPath);
-    }
   },
   components: {
   },
@@ -50,12 +41,14 @@ export default {
 <template>
   <div class="SummaryAction">
      <!-- This component now renders as an icon button or a regular button depending on the action event -->
-    <div v-if="options.event === 'add-entity'" class="SummaryAction-icon action-container">
-      <i v-show="replaced" class="fa fa-ban icon icon--lg is-disabled" :title="'Replaced by' | translatePhrase"></i>
-      <i v-show="disabled" class="fa fa-check-circle icon icon--lg is-added" :title="'Added' | translatePhrase"></i>
+    <div v-if="options.icon !== null" class="SummaryAction-icon action-container fa-stack">
+      <i v-show="replaced" class="fa fa-fw fa-ban icon icon--lg is-disabled" :title="'Replaced by' | translatePhrase"></i>
+      <i v-show="disabled" class="fa fa-fw fa-check-circle icon icon--lg is-added" :title="'Added' | translatePhrase"></i>
+      <i v-show="!disabled && !replaced" class="fa fa-fw fa-circle fa-stack-2x"></i>
       <i 
         v-show="!(disabled || replaced) && options.styling === 'brand'"
-          class="fa fa-plus-circle icon icon--lg icon--primary"
+          class="fa fa-fw icon fa-stack-1x"
+          :class="options.icon"
           @click.stop="action()"
           @keyup.enter.stop="action()"
           role="button"
@@ -64,7 +57,8 @@ export default {
         </i>
         <i 
           v-show="!(disabled || replaced) && options.styling == 'gray'"
-          class="fa fa-plus-circle icon icon--lg"
+          class="fa fa-fw icon fa-stack-1x"
+          :class="options.icon"
           @click="action()"
           @keyup.enter="action()"
           tabindex="0"
@@ -88,7 +82,20 @@ export default {
     display: flex;
     align-items: center;
     width: 30px;
+    .fa-stack-1x {
+      color: @white;
+    }
+    .fa-stack-2x {
+      transition: color 0.25s ease;
+      color: @link-color;
+    }
+    &:hover {
+      .fa-stack-2x {
+        color: @link-hover-color;
+      }
+    }
   }
+  
 
   &-button {
   }

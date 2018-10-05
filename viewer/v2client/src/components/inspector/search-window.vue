@@ -10,9 +10,9 @@ import * as CombinedTemplates from '@/resources/json/combinedTemplates.json';
 import * as StructuredValueTemplates from '@/resources/json/structuredValueTemplates.json';
 import ProcessedLabel from '../shared/processedlabel';
 import PanelComponent from '@/components/shared/panel-component';
+import PanelSearchList from '@/components/search/panel-search-list';
 import ModalPagination from '@/components/inspector/modal-pagination';
 import ToolTipComponent from '../shared/tooltip-component';
-import EntitySearchList from '../search/entity-search-list';
 import EntitySummary from '../shared/entity-summary';
 import FilterSelect from '@/components/shared/filter-select.vue';
 import SummaryAction from './summary-action';
@@ -38,14 +38,13 @@ export default {
       localEntitySettings: {
         text: 'Create and link entity',
         styling: 'brand',
-        event: 'extract-item',
+        icon: null,
         show: true,
         inspectAction: false,
       },
       listItemSettings: {
         text: 'Replace local entity',
         styling: 'brand',
-        event: 'replace-local',
         show: true,
         inspectAction: true,
       },
@@ -67,7 +66,7 @@ export default {
     isActive: false,
   },
   components: {
-    'entity-search-list': EntitySearchList,
+    'panel-search-list': PanelSearchList,
     'entity-summary': EntitySummary,
     'summary-action': SummaryAction,
     'panel-component': PanelComponent,
@@ -390,7 +389,14 @@ export default {
       </template>
 
       <template slot="panel-body">
-        <div class="SearchWindow-resultListContainer">
+        <panel-search-list
+          class="SearchWindow-resultListContainer"
+          :results="searchResult"
+          :is-compact="isCompact"
+          icon="fa-chain"
+          @use-item="replaceWith"
+        />
+        <!-- <div class="SearchWindow-resultListContainer">
           <ul v-show="displaySearchList" class="SearchWindow-resultList">
             <li class="PanelComponent-listItem SearchWindow-resultItem"
               :class="{'is-compact' : isCompact}"
@@ -404,7 +410,7 @@ export default {
               <summary-action class="SearchWindow-listItemControls" :options="addPayload(item)" @action="replaceWith(item)"></summary-action>
             </li>
           </ul>
-        </div>
+        </div> -->
         <div class="PanelComponent-searchStatus" v-show="keyword.length === 0 && !extracting">
           {{ "Search for existing linked entities" | translatePhrase }}...
         </div>

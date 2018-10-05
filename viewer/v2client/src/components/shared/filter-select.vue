@@ -269,6 +269,7 @@ export default {
       overflow-y: scroll;
       border: 1px solid @gray-light;
       box-shadow: @shadow-panel;
+      z-index: 4;
     }
 
     .FilterSelect--insideInput & {
