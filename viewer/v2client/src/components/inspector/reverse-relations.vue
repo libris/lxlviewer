@@ -233,7 +233,7 @@ export default {
     </div>
     <!-- compact view (in search result) -->
     <div class="ReverseRelations compact" 
-      v-if="compact && !checkingRelations">
+      v-if="compact">
       <div class="ReverseRelations-header uppercaseHeading--light">
         <span v-if="recordType === 'Instance'">{{"Holding" | translatePhrase}}</span>
         <span v-if="recordType === 'Work'">{{"Instances" | translatePhrase}}</span>
