@@ -19,6 +19,7 @@ export default {
       default: false,
     },
     icon: null,
+    hasAction: false,
     path: '',
     isReplaced: false,
     isCompact: false,
@@ -71,7 +72,8 @@ export default {
       :disabled="isDisabled" 
       :replaced="isReplaced"
       :options="addPayload" 
-      @action="useItem()">
+      @action="useItem()"
+      v-if="hasAction">
     </summary-action>
     <div class="PanelSearch-itemContainer">
       <entity-summary 

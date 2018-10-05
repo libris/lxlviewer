@@ -394,6 +394,7 @@ export default {
           :results="searchResult"
           :is-compact="isCompact"
           icon="fa-chain"
+          :has-action="true"
           @use-item="replaceWith"
         />
         <!-- <div class="SearchWindow-resultListContainer">

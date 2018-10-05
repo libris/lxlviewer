@@ -17,6 +17,7 @@ export default {
     path: '',
     index: Number,
     isCompact: false,
+    hasAction: false,
   },
   data() {
     return {
@@ -74,6 +75,7 @@ export default {
         :key="index"
         :icon="icon"
         :is-compact="isCompact"
+        :has-action="hasAction"
         @use-item="useItem(item)"
         ></panel-search-item>
     </ul>

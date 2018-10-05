@@ -23,8 +23,9 @@ export default {
       relationInfo: [],
       numberOfRelations: null,
       relationsListOpen: false,
-      totalHoldingTooltip: false,
+      totalRelationTooltip: false,
       myHoldingTooltip: false,
+      panelQuery: '',
     }
   },
   methods: {
@@ -85,11 +86,11 @@ export default {
         .catch((error) => {
           console.log(error);
         });
-
       } else if (this.recordType === 'Work') {
         query['instanceOf.@id'] = this.mainEntity['@id'];
         query['@type'] = 'Instance';
       }
+      this.panelQuery = Object.assign({}, query);
       this.getRelatedPosts(query).then((response) => {
         this.relationInfo = response.items;
         this.numberOfRelations = response.totalItems;
@@ -128,12 +129,24 @@ export default {
     recordId() {
       return this.mainEntity['@id'];
     },
-    totalHoldingTooltipText() {
-      if (this.numberOfRelations === 0) {
-        return 'No holdings'
-      } else if (isNaN(this.numberOfRelations)) {
-        return 'Holdings could not be loaded'
-      } else return 'Show all holdings'
+    totalRelationTooltipText() {
+      if (this.recordType === 'Instance') {
+        if (this.numberOfRelations === 0) {
+          return 'No holdings';
+        } else if (isNaN(this.numberOfRelations)) {
+          return 'Holdings could not be loaded';
+        } else {
+          return 'Show all holdings';
+        }
+      } else if (this.recordType === 'Work') {
+        if (this.numberOfRelations === 0) {
+          return 'No instances';
+        } else if (isNaN(this.numberOfRelations)) {
+          return 'Instances could not be loaded';
+        } else {
+          return 'Show all instances';
+        }
+      }
     },
   },
   events: {
@@ -251,16 +264,16 @@ export default {
           :disabled="!numberOfRelations || isNaN(numberOfRelations)"
           :color="numberOfRelations > 0 ? 'primary' : 'gray'"
           :icon="isNaN(numberOfRelations) ? 'exclamation' : false"
-          @mouseover="totalHoldingTooltip = true"
-          @mouseout="totalHoldingTooltip = false"
+          @mouseover="totalRelationTooltip = true"
+          @mouseout="totalRelationTooltip = false"
           @click="showPanel()">
           {{numberOfRelations}}
           <template slot="tooltip">
             <tooltip-component 
               class="Toolbar-tooltipContainer"
-              :show-tooltip="totalHoldingTooltip" 
+              :show-tooltip="totalRelationTooltip" 
               position="left"
-              :tooltip-text="totalHoldingTooltipText" 
+              :tooltip-text="totalRelationTooltipText" 
               translation="translatePhrase"></tooltip-component>
           </template>
         </round-button>
@@ -270,7 +283,7 @@ export default {
     <portal to="sidebar">
       <relations-list 
         v-if="relationsListOpen" 
-        :relations-list="relationInfo" 
+        :query="panelQuery"
         :list-context-type="recordType"
         @close="hidePanel()"></relations-list>
     </portal>

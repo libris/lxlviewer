@@ -1,19 +1,19 @@
 <script>
 import EntitySummary from '../shared/entity-summary';
 import PanelComponent from '@/components/shared/panel-component';
+import PanelSearchList from '@/components/search/panel-search-list';
+import ModalPagination from '@/components/inspector/modal-pagination';
 import * as StringUtil from '@/utils/string';
 import * as RecordUtil from '@/utils/record';
 import * as LayoutUtil from '@/utils/layout';
 import * as HttpUtil from '@/utils/http';
 import { mapGetters } from 'vuex';
+import VueSimpleSpinner from 'vue-simple-spinner';
 
 export default {
   name: 'relations-list',
   props: {
-    relationsList: {
-      type: Array,
-      default: () => [],
-    },
+    query: null,
     listContextType: {
       type: String,
       default: '',
@@ -21,35 +21,43 @@ export default {
   },
   data() {
     return {
+      currentPage: 0,
+      numberOfPages: 0,
+      maxResults: 20,
+      isCompact: false,
+      loading: true,
+      error: null,
+      searchResult: null,
       itemData: {},
       embellishedList: [],
       showInstances: false,
     }
   },
   methods: {
-    buildEmbellishedInstanceList(instanceList) {
-      // const promiseArray = instanceList.map(instanceId => {
-      //   return HttpUtil.get({ url: `${instanceId}/data.jsonld`, contentType: 'text/plain' }).then(instanceInfo => {
-      //     return RecordUtil.splitJson(instanceInfo);
-      //   }, (error) => {
-      //     console.log("Error fetching relation info");
-      //   });
-      // });
-      // Promise.all(promiseArray).then(results => {
-      //   this.embellishedList = results;
-      //   this.loading = false;
-      //   // this.$store.dispatch('setStatusValue', { 
-      //   //   property: 'keybindState', 
-      //   //   value: 'show-instances-list'
-      //   // });
-      // });
+    go(n) {
+      if (n >= 0 && n <= this.numberOfPages && n !== this.currentPage) {
+        this.currentPage = n;
+      }
+    },
+    getResults() {
+      this.loading = true;
+      fetch(this.builtQuery)
+        .then((response) => {
+          if (response.status === 200) {
+            response.json().then((result) => {
+              this.searchResult = result;
+              this.numberOfPages = Math.floor(result.totalItems/this.maxResults);
+              this.loading = false;
+            });
+          }
+        })
+        .catch((error) => {
+          this.error = error;
+          this.loading = false;
+        });
     },
     hide() {
       this.$emit('close');
-      // this.$store.dispatch('setStatusValue', { 
-      //   property: 'keybindState', 
-      //   value: 'overview'
-      // });
     },
   },
   computed: {
@@ -60,6 +68,26 @@ export default {
       'settings',
       'status',
     ]),
+    resultItems() {
+      if (this.searchResult) {
+        return this.searchResult.items;
+      } else {
+        return [];
+      }
+    },
+    builtQuery() {
+      const queryPairs = this.query;
+      if (queryPairs === null) {
+        return '';
+      }
+      queryPairs['_offset'] = this.currentPage*this.maxResults;
+      queryPairs['_limit'] = this.maxResults;
+      let q = `${this.settings.apiPath}/find.json?`;
+      _.each(queryPairs, (v, k) => {
+        q += (`${encodeURIComponent(k)}=${encodeURIComponent(v)}&`);
+      });
+      return q;
+    },
     windowTitle() {
       if (this.listContextType === 'Item') {
         return StringUtil.getUiPhraseByLang('All holdings');
@@ -72,14 +100,22 @@ export default {
     }
   },
   components: {
+    'modal-pagination': ModalPagination,
     'entity-summary': EntitySummary,
     'panel-component': PanelComponent,
+    'panel-search-list': PanelSearchList,
+    'vue-simple-spinner': VueSimpleSpinner,
   },
   watch: {
+    builtQuery(val, oldVal) {
+      if (val.length > 0 && val !== oldVal) {
+        this.getResults();
+      }
+    }
   },
   mounted() {
     this.$nextTick(() => {
-      this.buildEmbellishedInstanceList(this.relationsList);
+      this.getResults();
     });
   },
 };
@@ -88,15 +124,30 @@ export default {
 <template>
   <div class="RelationsList">
     <panel-component :title="windowTitle" @close="hide()">
+      <template slot="panel-header-extra">
+        <div class="RelationsList-resultControls" v-if="!loading && resultItems.length > 0">
+          <modal-pagination 
+            v-if="searchResult.totalItems > maxResults"
+            @go="go" 
+            :numberOfPages="numberOfPages" 
+            :currentPage="currentPage">
+          </modal-pagination>
+        </div>
+      </template>
       <template slot="panel-body">
-        <ul>
-          <li v-for="item in relationsList" :key="item['@id']">
-            <entity-summary  
-              :focus-data="item" 
-              :add-link="true" 
-              :lines="4"></entity-summary>
-          </li>
-        </ul>
+        <div class="PanelComponent-searchStatus" v-show="loading">
+          <vue-simple-spinner size="large" :message="'Searching' | translatePhrase"></vue-simple-spinner>
+        </div>
+        <panel-search-list
+          class="RelationsList-resultListContainer"
+          :results="resultItems"
+          :is-compact="isCompact"
+          icon="fa-chain"
+          v-if="!loading && searchResult !== null && error == null"
+        />
+        <div v-if="error !== null">
+          error happened: {{error}}
+        </div>
       </template>
     </panel-component>
   </div>
@@ -105,6 +156,15 @@ export default {
 <style lang="less">
 
 .RelationsList {
+
+  &-resultControls {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    .ModalPagination {
+      margin: 0px 0 10px 0;
+    }
+  }
   &-body {
     width: 100%;
     background-color: white;
