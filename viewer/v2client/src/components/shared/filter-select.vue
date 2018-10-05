@@ -33,28 +33,46 @@ export default {
     }
   },
   methods: {
-    nextItem () {
-      if (!this.isFilter) {
-        return;
-      }
-
-    	if (event.keyCode == 38 && this.currentItem > 0) {
-      	this.currentItem--
-      } else if (event.keyCode == 40 && this.currentItem < 3) {
-      	this.currentItem++
+    preventBodyScroll (e) {
+      if([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
+        e.preventDefault();
       }
     },
+    nextItem () {
+      if (!this.filterVisible) {
+        window.removeEventListener('keydown', this.preventBodyScroll, false);
+        return;
+      } else {
+        window.addEventListener('keydown', this.preventBodyScroll, false);
+        console.log(this);
+
+        let inputSel, inputEl, inputContSel, inputContEl, texts, items;
+        inputContSel = document.getElementsByClassName(this.className);
+        
+        inputContEl = inputContSel[0];
+        texts = inputContEl.getElementsByClassName('js-filterSelectText');
+        items = inputContEl.getElementsByClassName('js-filterSelectItem');
+
+        _.forEach(items, function(item, index) {
+          item.dataset.index = index;
+          item.classList.remove('isActive');
+        });
+
+        if (event.keyCode == 38 && this.currentItem > 0) {
+          this.currentItem--
+          texts[this.currentItem].focus();
+          items[this.currentItem].classList.add('isActive');
+        } else if (event.keyCode == 40 && this.currentItem < texts.length-1) {
+          this.currentItem++
+          texts[this.currentItem].focus();
+          items[this.currentItem].classList.add('isActive');
+        }
+      }
+     
+    },
     filter () {
-      let inputSel, 
-      inputEl, 
-      inputContEl, 
-      inputContSel,
-      filterSelectContainer, 
-      filterBy, 
-      dropdownSel, 
-      dropdownEl,
-      span, 
-      i;
+      let inputSel, inputEl, inputContEl, inputContSel, filterSelectContainer, 
+      filterBy, dropdownSel, dropdownEl, span, i;
 
       inputContSel = document.getElementsByClassName(this.className);
       inputContEl = inputContSel[0];
@@ -76,9 +94,7 @@ export default {
         }
       }
     },
-    selectOption(event) {
-      let eventObject = {};
-
+    selectOption(event, eventObject = {}) {
       eventObject.label = event.target.textContent;
       eventObject.value = event.target.dataset.filter;
       eventObject.key = event.target.dataset.key;
@@ -98,12 +114,11 @@ export default {
       inputEl.value = label;
     },
     focusOnInput(event) {
-
-      if (!event.target.classList.contains('js-filterSelect')) {
-        return;
+      if (event.target.classList.contains('js-filterSelect') || 
+      event.target.classList.contains('js-createSelect')) {
+        const input = event.target.getElementsByClassName('js-filterSelectInput')[0];
+        this.simulateClick(input);
       }
-      const input = event.target.getElementsByClassName('js-filterSelectInput')[0];
-      this.simulateClick(input);
     },
     simulateClick(elem) {
       let evt = new MouseEvent('click', {
@@ -117,6 +132,16 @@ export default {
     clear() {
       let allObj = {};
       let allValue = this.optionsAll;
+      let inputSel, inputEl, inputContEl, inputContSel, texts;
+
+      inputContSel = document.getElementsByClassName(this.className);
+      inputContEl = inputContSel[0];
+      texts = inputContEl.getElementsByClassName('js-filterSelectText');
+      
+      // Make all options visible again
+      _.forEach(texts, function(text) {
+        text.removeAttribute('style');
+      });
 
       allObj.label = '';
       allObj.value = allValue;
@@ -136,9 +161,9 @@ export default {
     }
   },
   mounted() {
-    document.addEventListener('keyup', this.nextItem);
-    this.$nextTick(() => {
-      
+    this.$el.addEventListener('keyup', this.nextItem);
+
+    this.$nextTick(() => { 
     });
   },
 };
@@ -159,14 +184,13 @@ export default {
       :tabindex="-1">
     <ul class="FilterSelect-dropdown js-filterSelectDropdown"
       :class="{'is-visible': filterVisible}">
-      <li class="FilterSelect-dropdownItem "
-        :class='{"isActive": currentItem === index}'
+      <li class="FilterSelect-dropdownItem js-filterSelectItem"
         @click="selectOption"
         @keyup.enter="selectOption"
-        v-for="(option, index) in options"
-        :key="option.key"
-        :data-index="index">
-        <span class="FilterSelect-dropdownText" 
+        v-for="option in options"
+        :key="option.key">
+        <span class="FilterSelect-dropdownText js-filterSelectText" 
+          tabindex="-1"
           :data-filter="option.value"
           :data-key="option.key">{{option.label}}</span>
       </li>
