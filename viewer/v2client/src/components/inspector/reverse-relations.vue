@@ -209,16 +209,16 @@ export default {
           :disabled="numberOfRelations === 0 || isNaN(numberOfRelations)"
           :color="numberOfRelations > 0 ? 'primary' : 'gray'"
           :icon="isNaN(numberOfRelations) ? 'exclamation' : false"
-          @mouseover="totalHoldingTooltip = true"
-          @mouseout="totalHoldingTooltip = false"
+          @mouseover="totalRelationTooltip = true"
+          @mouseout="totalRelationTooltip = false"
           @click="showPanel()">
           {{numberOfRelations}}
           <template slot="tooltip">
             <tooltip-component 
               class="Toolbar-tooltipContainer"
-              :show-tooltip="totalHoldingTooltip" 
+              :show-tooltip="totalRelationTooltip" 
               position="left"
-              :tooltip-text="totalHoldingTooltipText" 
+              :tooltip-text="totalRelationTooltipText" 
               translation="translatePhrase"></tooltip-component>
           </template>
         </round-button>
