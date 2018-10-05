@@ -306,6 +306,7 @@ export default {
   &-windowControl {
     display: flex;
     flex-wrap: nowrap;
+    justify-content: flex-end;
     min-width: 40px;
     margin-left: 10px;
 
