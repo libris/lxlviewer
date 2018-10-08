@@ -174,7 +174,12 @@ new Vue({
         if (initial) {
           this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('You were logged in', this.settings.language)}!` });
           const lastPath = localStorage.getItem('lastPath');
-          if (typeof lastPath !== 'undefined' && lastPath !== '/user' && lastPath !== '/login') {
+          if (
+            typeof lastPath !== 'undefined' &&
+            lastPath !== '/user' &&
+            lastPath !== '/login' && 
+            lastPath !== '/login/authorized'
+          ) {
             localStorage.removeItem('lastPath');
             this.$router.push({ path: lastPath });
           } else {
