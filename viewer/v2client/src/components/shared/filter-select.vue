@@ -20,7 +20,7 @@ export default {
   data() {
     return {
       selectedObject: {},
-      currentItem: -1,
+      currentItem: 0,
       filterVisible: false
     };
   },
@@ -66,7 +66,7 @@ export default {
           item.classList.remove('isActive');
         });
 
-        if (event.keyCode == 38 && this.currentItem >= 0) {
+        if (event.keyCode == 38 && this.currentItem > 0) {
           this.currentItem--
           texts[this.currentItem].focus();
           items[this.currentItem].classList.add('isActive');
@@ -121,6 +121,7 @@ export default {
       inputEl.value = label;
     },
     focusOnInput(event) {
+      event.preventDefault();
       if (event.target.classList.contains('js-filterSelect') || 
       event.target.classList.contains('js-createSelect')) {
         const input = event.target.getElementsByClassName('js-filterSelectInput')[0];
