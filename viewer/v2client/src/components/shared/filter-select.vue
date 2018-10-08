@@ -66,7 +66,7 @@ export default {
           item.classList.remove('isActive');
         });
 
-        if (event.keyCode == 38 && this.currentItem > -1) {
+        if (event.keyCode == 38 && this.currentItem > 0) {
           this.currentItem--
           texts[this.currentItem].focus();
           items[this.currentItem].classList.add('isActive');
@@ -76,7 +76,6 @@ export default {
           items[this.currentItem].classList.add('isActive');
         }
       }
-     
     },
     filter () {
       let inputSel, inputEl, inputContEl, inputContSel, filterSelectContainer, 
