@@ -185,11 +185,13 @@ export default {
       this.$store.dispatch('undoInspectorChange');
     },
     edit() {
-      this.loadingEdit = true;
-      this.$store.dispatch('setInspectorStatusValue', { 
-        property: 'editing', 
-        value: true 
-      });
+      if (this.user.isLoggedIn && !this.inspector.status.editing && this.canEditThisType) {
+        this.loadingEdit = true;
+        this.$store.dispatch('setInspectorStatusValue', { 
+          property: 'editing', 
+          value: true 
+        });
+      }
     },
     navigateFormChanges(direction) {
       this.navigateChangeHistory(this.inspector.status.focus, direction);
