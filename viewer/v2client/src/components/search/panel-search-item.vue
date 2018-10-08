@@ -145,7 +145,7 @@ export default {
     overflow: hidden;
 
     &.has-action {
-      border: solid @gray-lighter;
+      border: solid @gray-lighter-transparent;
       border-width: 0px 0px 0px 1px;
       padding: 0 15px;
       margin-left: 10px;
