@@ -5,21 +5,27 @@
       "description": "Videoinspelning",
       "value": {
         "record": {
+          "@id": "https://id.kb.se/TEMPID",
           "@type": "Record",
-          "encodingLevel": {
-            "@id": "https://id.kb.se/marc/MinimalLevel"
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
           },
+          "bibliography": [
+            {
+              "@type": "Library",
+              "sigel": [""]
+            }
+          ],
           "descriptionConventions": [
             {
               "@id": "https://id.kb.se/marc/Aacr2"
             }
           ],
-          "descriptionLanguage": [
-            {
-              "@id": "https://id.kb.se/language/swe",
-              "code": "swe"
-            }
-          ],
+          "descriptionLanguage": [{
+            "@id": "https://id.kb.se/language/swe"
+          }],
+          "encodingLevel": "",
+          "recordStatus": "",
           "marc:catalogingSource": {
             "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
           }
@@ -93,21 +99,27 @@
       "description": "Ljudinspelning",
       "value": {
         "record": {
+          "@id": "https://id.kb.se/TEMPID",
           "@type": "Record",
-          "encodingLevel": {
-            "@id": "https://id.kb.se/marc/MinimalLevel"
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
           },
+          "bibliography": [
+            {
+              "@type": "Library",
+              "sigel": [""]
+            }
+          ],
           "descriptionConventions": [
             {
               "@id": "https://id.kb.se/marc/Aacr2"
             }
           ],
-          "descriptionLanguage": [
-            {
-              "@id": "https://id.kb.se/language/swe",
-              "code": "swe"
-            }
-          ],
+          "descriptionLanguage": [{
+            "@id": "https://id.kb.se/language/swe"
+          }],
+          "encodingLevel": "",
+          "recordStatus": "",
           "marc:catalogingSource": {
             "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
           }
@@ -938,21 +950,27 @@
       "description": "Multimedia",
       "value": {
         "record": {
+          "@id": "https://id.kb.se/TEMPID",
           "@type": "Record",
-          "encodingLevel": {
-            "@id": "https://id.kb.se/marc/MinimalLevel"
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
           },
+          "bibliography": [
+            {
+              "@type": "Library",
+              "sigel": [""]
+            }
+          ],
           "descriptionConventions": [
             {
               "@id": "https://id.kb.se/marc/Aacr2"
             }
           ],
-          "descriptionLanguage": [
-            {
-              "@id": "https://id.kb.se/language/swe",
-              "code": "swe"
-            }
-          ],
+          "descriptionLanguage": [{
+            "@id": "https://id.kb.se/language/swe"
+          }],
+          "encodingLevel": "",
+          "recordStatus": "",
           "marc:catalogingSource": {
             "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
           }
