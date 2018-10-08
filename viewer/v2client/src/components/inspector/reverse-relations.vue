@@ -131,7 +131,7 @@ export default {
       return this.mainEntity['@id'];
     },
     totalRelationTooltipText() {
-      if (this.recordType === 'Instance') {
+      if (this.recordType === 'Instance' || this.recordType === 'Item') {
         if (this.numberOfRelations === 0) {
           return 'No holdings';
         } else if (isNaN(this.numberOfRelations)) {
@@ -147,7 +147,7 @@ export default {
         } else {
           return 'Show all instances';
         }
-      }
+      } 
     },
   },
   events: {
