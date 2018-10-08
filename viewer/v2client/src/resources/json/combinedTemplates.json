@@ -31,6 +31,7 @@
           }
         },
         "mainEntity": {
+          "@id": "https://id.kb.se/TEMPID#it",
           "@type": "VideoRecording",
           "issuanceType": "Monograph",
           "hasTitle": [
@@ -83,6 +84,9 @@
           "videoCharacteristic": [],
           "marc:mediaTerm": "Videoupptagning",
           "instanceOf": {
+            "@id": "https://id.kb.se/TEMPID#work"
+          },
+          "instanceOf": {
             "@type": "ProjectedImage",
             "language": [],
             "genreForm": [],
@@ -125,6 +129,7 @@
           }
         },
         "mainEntity": {
+          "@id": "https://id.kb.se/TEMPID#it",
           "@type": "SoundRecording",
           "issuanceType": "Monograph",
           "hasTitle": [
@@ -202,76 +207,80 @@
             }
           ],
           "instanceOf": {
-            "@type": "Music",
-            "language": [
-              {
-                "@id": "https://id.kb.se/language/swe"
-              }
-            ],
-            "classification": [
-              {
-                "@type": "ClassificationDdc",
-                "inScheme": {
-                  "@type": "ConceptScheme",
-                  "@id": "http://dewey.info/scheme/edition/e23/swe/",
-                  "version": "23",
-                  "language": "swe"
-                }
-              },
-              {
-                "@type": "Classification",
-                "inScheme": {
-                  "@type": "ConceptScheme",
-                  "@id": "https://id.kb.se/term/kssb/8",
-                  "code": "kssb/8"
-                }
-              }
-            ],
-            "contribution": [
-              {
-                "@type": "PrimaryContribution",
-                "agent": {
-                  "@type": "Person",
-                  "name": ""
-                }
-              },
-              {
-                "@type": "Contribution",
-                "agent": {
-                  "@type": "Person",
-                  "name": ""
-                }
-              }
-            ],
-            "hasTitle": {
-              "@type": "Title"
-            },
-            "genreForm": [
-              {
-                "@type": "GenreForm",
-                "inScheme": {
-                  "@type": "ConceptScheme",
-                  "@id": "https://id.kb.se/term/saogf",
-                  "code": "saogf"
-                }
-              }
-            ],
-            "hasPart": [
-              {
-                "@type": "Work",
-                "contribution": [
-                  {
-                    "@type": "PrimaryContribution",
-                    "agent": {
-                      "@type": "Person",
-                      "name": "",
-                      "lifeSpan": ""
-                    }
-                  }
-                ]
-              }
-            ]
+            "@id": "https://id.kb.se/TEMPID#work"
           }
+        },
+        "work": {
+          "@id": "https://id.kb.se/TEMPID#work",
+          "@type": "Music",
+          "language": [
+            {
+              "@id": "https://id.kb.se/language/swe"
+            }
+          ],
+          "classification": [
+            {
+              "@type": "ClassificationDdc",
+              "inScheme": {
+                "@type": "ConceptScheme",
+                "@id": "http://dewey.info/scheme/edition/e23/swe/",
+                "version": "23",
+                "language": "swe"
+              }
+            },
+            {
+              "@type": "Classification",
+              "inScheme": {
+                "@type": "ConceptScheme",
+                "@id": "https://id.kb.se/term/kssb/8",
+                "code": "kssb/8"
+              }
+            }
+          ],
+          "contribution": [
+            {
+              "@type": "PrimaryContribution",
+              "agent": {
+                "@type": "Person",
+                "name": ""
+              }
+            },
+            {
+              "@type": "Contribution",
+              "agent": {
+                "@type": "Person",
+                "name": ""
+              }
+            }
+          ],
+          "hasTitle": {
+            "@type": "Title"
+          },
+          "genreForm": [
+            {
+              "@type": "GenreForm",
+              "inScheme": {
+                "@type": "ConceptScheme",
+                "@id": "https://id.kb.se/term/saogf",
+                "code": "saogf"
+              }
+            }
+          ],
+          "hasPart": [
+            {
+              "@type": "Work",
+              "contribution": [
+                {
+                  "@type": "PrimaryContribution",
+                  "agent": {
+                    "@type": "Person",
+                    "name": "",
+                    "lifeSpan": ""
+                  }
+                }
+              ]
+            }
+          ]
         }
       }
     },
@@ -976,6 +985,7 @@
           }
         },
         "mainEntity": {
+          "@id": "https://id.kb.se/TEMPID#it",
           "@type": "Electronic",
           "issuanceType": "Monograph",
           "hasTitle": [
@@ -1033,19 +1043,23 @@
           ],
           "marc:mediaTerm": "Elektronisk resurs",
           "instanceOf": {
-            "@type": "Multimedia",
-            "intendedAudience": [
-              {
-                "@type": "IntendedAudience",
-                "label": ""
-              }
-            ],
-            "language": [],
-            "genreForm": [],
-            "contribution": [],
-            "languageNote": [],
-            "subject": []
+            "@id": "https://id.kb.se/TEMPID#work"
           }
+        },
+        "work": {
+          "@id": "https://id.kb.se/TEMPID#work",
+          "@type": "Multimedia",
+          "intendedAudience": [
+            {
+              "@type": "IntendedAudience",
+              "label": ""
+            }
+          ],
+          "language": [],
+          "genreForm": [],
+          "contribution": [],
+          "languageNote": [],
+          "subject": []
         }
       }
     }
