@@ -57,11 +57,6 @@
           "marc:publicationStatus": {
             "@id": "https://id.kb.se/marc/SingleKnownDateProbableDate"
           },
-          "publicationCountry": [
-            {
-              "@id": "https://id.kb.se/country/sw"
-            }
-          ],
           "extent": [
             {
               "@type": "Extent",
@@ -85,16 +80,57 @@
           "marc:mediaTerm": "Videoupptagning",
           "instanceOf": {
             "@id": "https://id.kb.se/TEMPID#work"
-          },
-          "instanceOf": {
-            "@type": "ProjectedImage",
-            "language": [],
-            "genreForm": [],
-            "contribution": [],
-            "languageNote": [],
-            "participantNote": [],
-            "subject": []
           }
+        },
+        "work": {
+          "@id": "https://id.kb.se/TEMPID#work",
+          "@type": "ProjectedImage",
+          "classification": [{
+              "@type": "ClassificationDdc",
+              "code": "",
+              "edition": "full",
+              "editionEnumeration": "23/swe"
+            },
+            {
+              "@type": "Classification",
+              "code": "",
+              "inScheme": {
+                "@type": "ConceptScheme",
+                "@id": "https://id.kb.se/term/kssb/8",
+                "code": "kssb",
+                "version": "8"
+              }
+            }
+          ],
+          "contribution": [{
+              "@type": "PrimaryContribution",
+              "agent": {
+                "@type": "Person",
+                "familyName": "",
+                "givenName": "",
+                "lifeSpan": ""
+              },
+              "role": [{
+                "@id": "https://id.kb.se/relator/author"
+              }]
+            },
+            {
+              "@type": "Contribution",
+              "agent": {
+                "@type": "Person",
+                "familyName": "",
+                "givenName": "",
+                "lifeSpan": ""
+              }
+            }
+          ],
+          "language": [{
+            "@id": "https://id.kb.se/language/swe"
+          }],
+          "languageNote": [],
+          "participantNote": [],
+          "genreForm": [],
+          "subject": []
         }
       }
     },
@@ -164,14 +200,6 @@
               "date": ""
             }
           ],
-          "publicationCountry": [
-            {
-              "@id": "https://id.kb.se/country/sw"
-            }
-          ],
-          "marc:publicationStatus": {
-            "@id": "https://id.kb.se/marc/SingleKnownDateProbableDate"
-          },
           "carrierType": [
             {
               "@id": "https://id.kb.se/marc/SoundDisc"
@@ -213,59 +241,52 @@
         "work": {
           "@id": "https://id.kb.se/TEMPID#work",
           "@type": "Music",
-          "language": [
-            {
-              "@id": "https://id.kb.se/language/swe"
-            }
-          ],
-          "classification": [
-            {
+          "language": [{
+            "@id": "https://id.kb.se/language/swe"
+          }],
+          "classification": [{
               "@type": "ClassificationDdc",
-              "inScheme": {
-                "@type": "ConceptScheme",
-                "@id": "http://dewey.info/scheme/edition/e23/swe/",
-                "version": "23",
-                "language": "swe"
-              }
+              "code": "",
+              "edition": "full",
+              "editionEnumeration": "23/swe"
             },
             {
               "@type": "Classification",
+              "code": "",
               "inScheme": {
                 "@type": "ConceptScheme",
                 "@id": "https://id.kb.se/term/kssb/8",
-                "code": "kssb/8"
+                "code": "kssb",
+                "version": "8"
               }
             }
           ],
-          "contribution": [
-            {
+          "contribution": [{
               "@type": "PrimaryContribution",
               "agent": {
                 "@type": "Person",
-                "name": ""
-              }
+                "familyName": "",
+                "givenName": "",
+                "lifeSpan": ""
+              },
+              "role": [{
+                "@id": "https://id.kb.se/relator/author"
+              }]
             },
             {
               "@type": "Contribution",
               "agent": {
                 "@type": "Person",
-                "name": ""
+                "familyName": "",
+                "givenName": "",
+                "lifeSpan": ""
               }
             }
           ],
           "hasTitle": {
             "@type": "Title"
           },
-          "genreForm": [
-            {
-              "@type": "GenreForm",
-              "inScheme": {
-                "@type": "ConceptScheme",
-                "@id": "https://id.kb.se/term/saogf",
-                "code": "saogf"
-              }
-            }
-          ],
+          "genreForm": [],
           "hasPart": [
             {
               "@type": "Work",
@@ -1049,16 +1070,56 @@
         "work": {
           "@id": "https://id.kb.se/TEMPID#work",
           "@type": "Multimedia",
+          "classification": [{
+              "@type": "ClassificationDdc",
+              "code": "",
+              "edition": "full",
+              "editionEnumeration": "23/swe"
+            },
+            {
+              "@type": "Classification",
+              "code": "",
+              "inScheme": {
+                "@type": "ConceptScheme",
+                "@id": "https://id.kb.se/term/kssb/8",
+                "code": "kssb",
+                "version": "8"
+              }
+            }
+          ],
+          "contribution": [{
+              "@type": "PrimaryContribution",
+              "agent": {
+                "@type": "Person",
+                "familyName": "",
+                "givenName": "",
+                "lifeSpan": ""
+              },
+              "role": [{
+                "@id": "https://id.kb.se/relator/author"
+              }]
+            },
+            {
+              "@type": "Contribution",
+              "agent": {
+                "@type": "Person",
+                "familyName": "",
+                "givenName": "",
+                "lifeSpan": ""
+              }
+            }
+          ],
           "intendedAudience": [
             {
               "@type": "IntendedAudience",
               "label": ""
             }
           ],
-          "language": [],
-          "genreForm": [],
-          "contribution": [],
+          "language": [{
+            "@id": "https://id.kb.se/language/swe"
+          }],
           "languageNote": [],
+          "genreForm": [],
           "subject": []
         }
       }
