@@ -74,11 +74,11 @@ export default {
   <div class="CreateItem create-item-button-container">
     <!--<form method="POST" action="/edit">-->
       <!--<textarea id="copyItem" name="data" class="hidden">{{itemData | json}}</textarea>-->
-      <button class="btn btn-primary btn--lg CreateItem-btn"
+      <button class="btn btn--lg CreateItem-btn"
         v-if="!hasHolding || checkingHolding" 
         @click="previewHolding()" 
         :disabled="disabled" 
-        :class=" {'is-disabled': disabled} ">
+        :class=" {'is-disabled': disabled, 'btn-primary': !disabled} ">
         <i class="fa fa-plus-circle"
           v-if="!hasHolding && !checkingHolding"></i>
         <i class="fa fa-fw fa-circle-o-notch fa-spin"
@@ -119,7 +119,6 @@ export default {
     }
 
     &.is-disabled {
-      background-color: @gray-lighter;
       color: @white;
 
       &:hover, 
