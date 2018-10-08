@@ -90,6 +90,10 @@ export default {
       } else if (this.recordType === 'Work') {
         query['instanceOf.@id'] = this.mainEntity['@id'];
         query['@type'] = 'Instance';
+      } else if (this.recordType === 'Agent') {
+        query['instanceOf.contribution.agent.@id'] = this.mainEntity['@id'];
+      } else {
+        query['q'] = this.mainEntity['@id'];
       }
       this.panelQuery = Object.assign({}, query);
       this.getRelatedPosts(query).then((response) => {
@@ -114,6 +118,21 @@ export default {
       'settings',
       'status',
     ]),
+    numberOfRelationsCircle() {
+      const no = this.numberOfRelations;
+      let compact = '';
+      let compactNo = 0;
+      if (no > 999 && no < 1000000) {
+        compactNo = parseInt(no / 1000);
+        compact = `${compactNo}k`;
+      } else if (no > 999999) {
+        compactNo = Math.round(no/1000000);
+        compact = `${compactNo}M`;
+      } else {
+        return no;
+      }
+      return compact;
+    },
     hasRelation() {
       return this.myHolding !== null;
     },
@@ -139,13 +158,21 @@ export default {
         } else {
           return 'Show all holdings';
         }
-      } else if (this.recordType === 'Work') {
+      } else if (this.recordType === 'Agent') {
         if (this.numberOfRelations === 0) {
-          return 'No instances';
+          return 'No contributions';
         } else if (isNaN(this.numberOfRelations)) {
-          return 'Instances could not be loaded';
+          return 'Contribution could not be loaded';
         } else {
-          return 'Show all instances';
+          return 'Show all contributions';
+        }
+      } else {
+        if (this.numberOfRelations === 0) {
+          return 'No uses';
+        } else if (isNaN(this.numberOfRelations)) {
+          return 'Uses could not be loaded';
+        } else {
+          return 'Show all uses';
         }
       } 
     },
@@ -212,7 +239,7 @@ export default {
           @mouseover="totalRelationTooltip = true"
           @mouseout="totalRelationTooltip = false"
           @click="showPanel()">
-          {{numberOfRelations}}
+          {{numberOfRelationsCircle}}
           <template slot="tooltip">
             <tooltip-component 
               class="Toolbar-tooltipContainer"
@@ -236,7 +263,8 @@ export default {
       v-if="compact">
       <div class="ReverseRelations-header uppercaseHeading--light">
         <span v-if="recordType === 'Instance'">{{"Holding" | translatePhrase}}</span>
-        <span v-if="recordType === 'Work'">{{"Instances" | translatePhrase}}</span>
+        <span v-else-if="recordType === 'Agent'">{{ "Contribution" | translatePhrase }}</span>
+        <span v-else>{{"Used in" | translatePhrase}}</span>
       </div>
       <vue-simple-spinner class="ReverseRelations compact"
         v-if="checkingRelations" 
@@ -268,7 +296,7 @@ export default {
           @mouseover="totalRelationTooltip = true"
           @mouseout="totalRelationTooltip = false"
           @click="showPanel()">
-          {{numberOfRelations}}
+          {{numberOfRelationsCircle}}
           <template slot="tooltip">
             <tooltip-component 
               class="Toolbar-tooltipContainer"

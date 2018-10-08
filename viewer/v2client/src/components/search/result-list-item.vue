@@ -57,7 +57,7 @@ export default {
       @import-this="importThis()"
       :lines="4">
     </entity-summary>
-    <div class="ResultItem-holdingContainer"
+    <div class="ResultItem-relationsContainer"
       v-if="this.$route.params.perimeter !== 'remote'">
       <reverse-relations :main-entity="focusData" :compact=true>
       </reverse-relations>
@@ -157,13 +157,13 @@ export default {
     text-overflow: ellipsis;
   }
 
-  &-holdingContainer {
-    width: 75px;
+  &-relationsContainer {
+    width: 80px;
     display: flex;
     flex-direction: column;
     border-left: 1px solid @gray-lighter;
     align-items: center;
-    padding-left: 15px;
+    padding-left: 10px;
   }
 }
 

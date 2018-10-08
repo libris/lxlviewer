@@ -90,13 +90,14 @@ export default {
     },
     windowTitle() {
       if (this.listContextType === 'Item') {
-        return StringUtil.getUiPhraseByLang('All holdings');
-      } else if (this.listContextType === 'Work') {
-        return StringUtil.getUiPhraseByLang('Instantiations of this work', this.settings.language);
+        return StringUtil.getUiPhraseByLang('All holdings', this.settings.language);
       } else if (this.listContextType === 'Instance') {
         return StringUtil.getUiPhraseByLang('Holdings of this instance', this.settings.language);
+      } else if (this.listContextType === 'Agent') {
+        return StringUtil.getUiPhraseByLang('Contribution', this.settings.language);
       }
-      return '';
+      const typeLabel = StringUtil.getLabelByLang(this.listContextType, this.settings.language, this.resources.vocab, this.resources.context);
+      return `${typeLabel} ${StringUtil.getUiPhraseByLang('Used in', this.settings.language)}`;
     }
   },
   components: {
