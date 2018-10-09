@@ -230,8 +230,10 @@ export default {
       <span class="uppercaseHeading">
         <span class="ReverseRelations-label" 
           v-if="recordType === 'Work'">{{ "Instantiations" | translatePhrase }}</span>
-        <span class="ReverseRelations-label " 
+        <span class="ReverseRelations-label" 
           v-if="recordType === 'Instance' || recordType === 'Item'">{{ "Libraries" | translatePhrase }}</span>
+        <span class="ReverseRelations-label" 
+          v-if="recordType === 'Agent'">{{ "Contribution" | translatePhrase }}</span>
         <round-button
           :disabled="numberOfRelations === 0 || isNaN(numberOfRelations)"
           :color="numberOfRelations > 0 ? 'primary' : 'gray'"
