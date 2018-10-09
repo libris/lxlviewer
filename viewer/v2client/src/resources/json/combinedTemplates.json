@@ -184,11 +184,18 @@
             {
               "@type": "EAN",
               "value": ""
+            },
+            {
+              "@type": "ISBN",
+              "value": "",
+              "qualifier": ""
             }
           ],
           "publication": [
             {
-              "@type": "Publication",
+              "@type": "PrimaryPublication",
+              "year": "",
+              "country": [ {"@id": "https://id.kb.se/country/sw"} ],
               "place": {
                 "@type": "Place",
                 "label": ""
@@ -196,31 +203,50 @@
               "agent": {
                 "@type": "Agent",
                 "label": ""
-              },
-              "date": ""
-            }
-          ],
-          "carrierType": [
-            {
-              "@id": "https://id.kb.se/marc/SoundDisc"
+              }
             }
           ],
           "extent": [
             {
               "@type": "Extent",
-              "label": "CD"
+              "label": ""
+            }
+          ],
+          "carrierType": [
+            {
+              "@id": "https://id.kb.se/term/rda/AudioDisc"
+            }
+          ],
+          "mediaType": [
+            {
+              "@id": "https://id.kb.se/term/rda/Audio"
             }
           ],
           "marc:otherPhysicalDetails": "",
-          "marc:soundKindOfMaterial": {
-            "@id": "https://id.kb.se/marc/PlasticWithMetal"
-          },
-          "marc:mediaTerm": "Ljudupptagning",
-          "hasSeries": [
+          "seriesMembership": [
             {
-              "@type": "Serial",
-              "title": ",",
-              "issn": ";"
+              "@type": "SeriesMembership",
+              "inSeries": {
+                "@type": "Instance",
+                "identifiedBy": [
+                  {
+                    "@type": "ISSN",
+                    "value": ""
+                  }
+                ],
+                "instanceOf": {
+                  "@type": "Work",
+                  "hasTitle": [
+                    {
+                      "@type": "Title",
+                      "mainTitle": ""
+                    }
+                  ]
+                }
+              },
+              "marc:seriesTracingPolicy": "",
+              "seriesEnumeration": "",
+              "seriesStatement": [""]
             }
           ],
           "hasNote": [
@@ -231,7 +257,8 @@
           ],
           "tableOfContents": [
             {
-              "@type": "TableOfContents"
+              "@type": "TableOfContents",
+              "label": ""
             }
           ],
           "instanceOf": {
@@ -281,6 +308,11 @@
                 "givenName": "",
                 "lifeSpan": ""
               }
+            }
+          ],
+          "contentType": [
+            {
+              "@id": "https://id.kb.se/term/rda/PerformedMusic"
             }
           ],
           "hasTitle": {
