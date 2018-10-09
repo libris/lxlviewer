@@ -84,7 +84,7 @@ export default {
       const possibleValues = [];
       _.each(this.range, (item) => {
         const type = StringUtil.getCompactUri(item, this.resources.context);
-        values = values.concat(VocabUtil.getTermByType(type, this.resources.vocab, this.resources.context));
+        values = values.concat(VocabUtil.getTermByType(type, this.resources.vocab, this.resources.context, this.settings));
       });
       values = _.uniq(values);
       _.each(values, (value) => {

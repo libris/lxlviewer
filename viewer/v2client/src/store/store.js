@@ -112,6 +112,11 @@ const store = new Vuex.Store({
         'http://id.kb.se/',
         'https://id.kb.se/',
       ],
+      filteredCategories: [
+        'pending',
+        'shorthand',
+        'unstable',
+      ],
       hiddenProperties: [
         '@id',
         '@type',
@@ -448,8 +453,8 @@ const store = new Vuex.Store({
     },
     setVocabClasses({ commit, state }, vocabJson) {
       let classTerms = [].concat(
-            VocabUtil.getTermByType('Class', vocabJson, state.resources.context),
-            VocabUtil.getTermByType('marc:CollectionClass', vocabJson, state.resources.context)
+            VocabUtil.getTermByType('Class', vocabJson, state.resources.context, state.settings),
+            VocabUtil.getTermByType('marc:CollectionClass', vocabJson, state.resources.context, state.settings)
           );
       const classes = new Map(classTerms.map(entry => [entry['@id'], entry]));
       classes.forEach(classObj => {
@@ -470,10 +475,10 @@ const store = new Vuex.Store({
     },
     setVocabProperties({ commit, state }, vocabJson) {
       let props = [];
-      props = props.concat(VocabUtil.getTermByType('Property', vocabJson, state.resources.context));
-      props = props.concat(VocabUtil.getTermByType('DatatypeProperty', vocabJson, state.resources.context));
-      props = props.concat(VocabUtil.getTermByType('ObjectProperty', vocabJson, state.resources.context));
-      props = props.concat(VocabUtil.getTermByType('owl:SymmetricProperty', vocabJson, state.resources.context));
+      props = props.concat(VocabUtil.getTermByType('Property', vocabJson, state.resources.context, state.settings));
+      props = props.concat(VocabUtil.getTermByType('DatatypeProperty', vocabJson, state.resources.context, state.settings));
+      props = props.concat(VocabUtil.getTermByType('ObjectProperty', vocabJson, state.resources.context, state.settings));
+      props = props.concat(VocabUtil.getTermByType('owl:SymmetricProperty', vocabJson, state.resources.context, state.settings));
       const vocabProperties = new Map(props.map((entry) => [entry['@id'], entry]));
 
       commit('setVocabProperties', vocabProperties)
