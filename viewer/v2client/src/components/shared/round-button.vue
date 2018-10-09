@@ -24,6 +24,10 @@ export default {
         type: Boolean,
         default: false,
     },
+    buttonText: {
+      type: String,
+      default: '',
+    },
     icon: {
         default: false,
     }
@@ -36,6 +40,12 @@ export default {
     }
   },
   computed: {
+    smallText() {
+      if (this.buttonText && this.buttonText.length > 3) {
+        return true;
+      }
+      return false;
+    },
   },
   components: {
   },
@@ -57,7 +67,7 @@ export default {
     <span v-if="icon">
         <i :class="`fa fa-${icon}`" aria-hidden="true"></i>
     </span>
-    <slot v-else></slot>
+    <span class="RoundButton-buttonText" :class="{'small-text': smallText }" v-else>{{ buttonText }}</span>
     <slot name="tooltip"></slot>
   </button>
 </template>
@@ -73,6 +83,11 @@ export default {
   align-items: center;
   padding: 0;
   font-weight: 700;
+  &-buttonText {
+    &.small-text {
+      font-size: 85%;
+    }
+  }
 }
 
 </style>

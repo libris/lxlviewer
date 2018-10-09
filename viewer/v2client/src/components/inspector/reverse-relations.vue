@@ -129,7 +129,7 @@ export default {
         compactNo = Math.round(no/1000000);
         compact = `${compactNo}M`;
       } else {
-        return no;
+        compact = `${no}`;
       }
       return compact;
     },
@@ -233,13 +233,13 @@ export default {
         <span class="ReverseRelations-label " 
           v-if="recordType === 'Instance' || recordType === 'Item'">{{ "Libraries" | translatePhrase }}</span>
         <round-button
+          :button-text="numberOfRelationsCircle"
           :disabled="numberOfRelations === 0 || isNaN(numberOfRelations)"
           :color="numberOfRelations > 0 ? 'primary' : 'gray'"
           :icon="isNaN(numberOfRelations) ? 'exclamation' : false"
           @mouseover="totalRelationTooltip = true"
           @mouseout="totalRelationTooltip = false"
           @click="showPanel()">
-          {{numberOfRelationsCircle}}
           <template slot="tooltip">
             <tooltip-component 
               class="Toolbar-tooltipContainer"
@@ -290,13 +290,13 @@ export default {
           </template>
         </round-button>
         <round-button
+          :button-text="numberOfRelationsCircle"
           :disabled="!numberOfRelations || isNaN(numberOfRelations)"
           :color="numberOfRelations > 0 ? 'primary' : 'gray'"
           :icon="isNaN(numberOfRelations) ? 'exclamation' : false"
           @mouseover="totalRelationTooltip = true"
           @mouseout="totalRelationTooltip = false"
           @click="showPanel()">
-          {{numberOfRelationsCircle}}
           <template slot="tooltip">
             <tooltip-component 
               class="Toolbar-tooltipContainer"
