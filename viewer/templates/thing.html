@@ -92,7 +92,14 @@
 % if thing.identifiedBy
   % set identifiers = identifiers + thing.identifiedBy
 % endif
-% set typelabels = [vocab_term(thing[TYPE])]
+% if isinstance(thing[TYPE], list)
+  % set typelabels = ""
+  % for term in thing[TYPE]
+  %   set typelabels = typelabels + vocab_term(term)
+  % endfor
+% else
+  % set typelabels = [vocab_term(thing[TYPE])]
+% endif
 % if thing.issuanceType
   % set typelabels =  typelabels + [vocab_term(thing.issuanceType)]
 % endif
