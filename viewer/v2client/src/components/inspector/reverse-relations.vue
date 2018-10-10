@@ -268,7 +268,7 @@ export default {
         <span v-else-if="recordType === 'Agent'">{{ "Contribution" | translatePhrase }}</span>
         <span v-else>{{"Used in" | translatePhrase}}</span>
       </div>
-      <vue-simple-spinner class="ReverseRelations compact"
+      <vue-simple-spinner class="ReverseRelations spinner compact"
         v-if="checkingRelations" 
         size="medium">
       </vue-simple-spinner>
@@ -313,9 +313,10 @@ export default {
     <!-- end -->
     <portal to="sidebar">
       <relations-list 
-        v-if="relationsListOpen" 
+        v-if="relationsListOpen"
         :query="panelQuery"
         :list-context-type="recordType"
+        :totalHits="numberOfRelations"
         @close="hidePanel()"></relations-list>
     </portal>
   </div>
@@ -324,7 +325,6 @@ export default {
 <style lang="less">
 
 .ReverseRelations {
-  // height: 100%;
   
   &-number {
     float: left;
@@ -348,7 +348,6 @@ export default {
   }
 
   &-btnContainer {
-    // height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -357,6 +356,10 @@ export default {
   &.compact {
     display: flex;
     flex-direction: column;
+  }
+
+  &.spinner {
+    margin-bottom: 10px;
   }
 }
 </style>
