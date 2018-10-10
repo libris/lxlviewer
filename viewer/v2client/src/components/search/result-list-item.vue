@@ -2,6 +2,7 @@
 import LensMixin from '../mixins/lens-mixin';
 import ResultMixin from '../mixins/result-mixin';
 import EntitySummary from '../shared/entity-summary';
+import ReverseRelations from '@/components/inspector/reverse-relations';
 import * as StringUtil from '@/utils/string';
 
 export default {
@@ -37,6 +38,7 @@ export default {
   },
   components: {
     'entity-summary': EntitySummary,
+    'reverse-relations': ReverseRelations,
   },
   mounted() { 
   },
@@ -44,50 +46,66 @@ export default {
 </script>
 
 <template>
-    <li class="ResultItem ResultItem--detailed" v-if="showDetailed">
-      <entity-summary 
-        :focus-data="focusData" 
-        :database="database" 
-        :router-path="focusData['@id'] | asFnurgelLink" 
-        :is-import="isImport" 
-        :import-item="importItem" 
-        :add-link="true" 
-        @import-this="importThis()"
-        :lines="4"></entity-summary>
-    </li>
-    <li class="ResultItem ResultItem--compact" v-else-if="!showDetailed">
-      <h3 class="ResultItem-title" 
-        :class="{'ResultItem-title--imported' : isImport}"
+  <li class="ResultItem ResultItem--detailed" v-if="showDetailed">
+    <entity-summary 
+      :focus-data="focusData" 
+      :database="database" 
+      :router-path="focusData['@id'] | asFnurgelLink" 
+      :is-import="isImport" 
+      :import-item="importItem" 
+      :add-link="true" 
+      @import-this="importThis()"
+      :lines="4">
+    </entity-summary>
+    <div class="ResultItem-relationsContainer"
+      v-if="this.$route.params.perimeter !== 'remote'">
+      <reverse-relations :main-entity="focusData" :compact=true>
+      </reverse-relations>
+    </div>
+  </li>
+  <li class="ResultItem ResultItem--compact" v-else-if="!showDetailed">
+    <h3 class="ResultItem-title" 
+      :class="{'ResultItem-title--imported' : isImport}"
+      :title="header.join(', ')" 
+      v-on:click="importThis()" 
+      v-if="isImport">
+      <i class="fa fa-external-link" aria-hidden="true"></i> {{ header.join(', ') }}
+    </h3>
+    <h3 class="ResultItem-title header">
+      <router-link class="ResultItem-link"
+        v-if="isLibrisResource && !isImport"  
         :title="header.join(', ')" 
-        v-on:click="importThis()" 
-        v-if="isImport">
-        <i class="fa fa-external-link" aria-hidden="true"></i> {{ header.join(', ') }}
-      </h3>
-      <h3 class="ResultItem-title header">
-        <router-link class="ResultItem-link"
-          v-if="isLibrisResource && !isImport"  
-          :title="header.join(', ')" 
-          :to="focusData['@id'] | asFnurgelLink">{{ header.join(', ') }}
-        </router-link>
-        <a class="ResultItem-link"
-          v-if="!isLibrisResource && !isImport" 
-          :title="header.join(', ')" 
-          :href="focusData['@id']">{{ header.join(', ') }}
-        </a>
-      </h3>
-      <span class="ResultItem-category uppercaseHeading--light" :title="categorization.join(', ')">
-        {{categorization.join(', ')}}
-      </span>
-    </li>
+        :to="focusData['@id'] | asFnurgelLink">{{ header.join(', ') }}
+      </router-link>
+      <a class="ResultItem-link"
+        v-if="!isLibrisResource && !isImport" 
+        :title="header.join(', ')" 
+        :href="focusData['@id']">{{ header.join(', ') }}
+      </a>
+    </h3>
+    <span class="ResultItem-category uppercaseHeading--light" :title="categorization.join(', ')">
+      {{categorization.join(', ')}}
+    </span>
+  </li>
 </template>
 
 <style lang="less">
 
 .ResultItem {
+
   &--detailed {
+    display: flex;
     list-style: none;
     margin-bottom: 15px;
+    padding: 15px 20px;
     .panel-mixin(@white);
+
+    & .EntitySummary {
+      width: 50%;
+      flex: 1;
+      justify-content: start;
+      padding: 0 15px 0 0
+    }
   }
 
   &--compact {
@@ -137,6 +155,15 @@ export default {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  &-relationsContainer {
+    width: 80px;
+    display: flex;
+    flex-direction: column;
+    border-left: 1px solid @gray-lighter;
+    align-items: center;
+    padding-left: 10px;
   }
 }
 

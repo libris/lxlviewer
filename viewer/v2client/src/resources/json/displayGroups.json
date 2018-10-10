@@ -10,7 +10,7 @@
     "title",
     "prefLabel",
     "label",
-    "itemOf",
+    "heldBy",
     "familyName",
     "givenName",
     "name",

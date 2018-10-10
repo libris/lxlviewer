@@ -228,7 +228,6 @@ export default {
 
   &-type {
     display: block;
-    text-transform: uppercase;
     flex-basis: 85%;
     flex-grow: 2;
     margin-bottom: -0.4em;
