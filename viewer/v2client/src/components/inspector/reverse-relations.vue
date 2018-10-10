@@ -316,7 +316,6 @@ export default {
         v-if="relationsListOpen"
         :query="panelQuery"
         :list-context-type="recordType"
-        :totalHits="numberOfRelations"
         @close="hidePanel()"></relations-list>
     </portal>
   </div>
