@@ -161,10 +161,11 @@ export function getRecordType(mainEntityType, vocab, context) {
 }
 
 function isFiltered(termObj, settings) {
+  // Return true if term has any of the filteredCategories, else false
   const filteredCategories = settings.filteredCategories;
   for (let i = 0; i < filteredCategories.length; i++) {
     if (termObj.hasOwnProperty('category') && termObj.category['@id'] === `https://id.kb.se/vocab/${filteredCategories[i]}`) {
-      window.lxlWarning(`🗑️ Filtered ${filteredCategories[i]} class:`, termObj['@id']);
+      // window.lxlWarning(`🗑️ Filtered ${filteredCategories[i]} class:`, termObj['@id']);
       return true;
     }
   }
@@ -178,7 +179,7 @@ export function getTermByType(type, list, context, settings) {
   const expandedType = StringUtil.convertToBaseUri(type, context);
   const terms = [];
   list.forEach((term) => {
-    if (!isFiltered(term, settings)) {
+    if (!isFiltered(term, settings)) { // Only add if term should not be filtered
       if (_.isArray(term['@type'])) {
         if (term['@type'].indexOf(type) > -1 || term['@type'].indexOf(expandedType) > -1) {
           terms.push(term);
