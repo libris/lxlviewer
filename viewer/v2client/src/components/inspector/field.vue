@@ -565,6 +565,7 @@ export default {
           :field-key="fieldKey" 
           :index="index" 
           :parent-path="getPath" 
+          :gparent-path="parentPath"
           :show-action-buttons="actionButtonsShown"
           :is-expanded="isExpanded"></item-value>
       </div>
@@ -815,7 +816,7 @@ export default {
       padding: 0 0 0 10px;
     }
 
-     @media (min-width: 768px) {
+    @media (min-width: 768px) {
       border-left: 1px solid;
       border-color: @form-border;
       border-color: @form-border-alt;

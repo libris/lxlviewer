@@ -277,6 +277,7 @@ export default {
   },
   mounted() {
     if (this.isLastAdded) {
+      this.toggleExpanded();
       setTimeout(()=> {     
         if (this.isEmpty) {
           this.$el.getElementsByClassName('js-expandable')[0].classList.add('is-inactive');
@@ -287,7 +288,7 @@ export default {
       }, 1000)
     } 
   },
- 
+
   components: {
     'processed-label': ProcessedLabel,
     'item-entity': ItemEntity,
@@ -306,9 +307,9 @@ export default {
     @keyup.enter="checkFocus()"
     @focus="addFocus()"
     @blur="removeFocus()">
-   
-   <strong class="ItemLocal-heading">
-     <div class="ItemLocal-label js-expandable">
+
+    <strong class="ItemLocal-heading">
+      <div class="ItemLocal-label js-expandable">
         <i class="ItemLocal-arrow fa fa-chevron-right " 
           :class="{'down': expanded}" 
           @click="toggleExpanded()"></i>
@@ -404,7 +405,7 @@ export default {
         :show-action-buttons="showActionButtons"
         :is-expanded="expanded"></field> 
     </ul>
-       
+
     <search-window 
       :isActive="extractDialogActive" 
       :can-copy-title="canCopyTitle" 
