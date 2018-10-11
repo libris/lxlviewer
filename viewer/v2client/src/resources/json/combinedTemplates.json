@@ -72,6 +72,14 @@
               }
             }
           ],
+          "copyright": [
+            {
+              "@type": "Copyright",
+              "date": [
+                ""
+              ]
+            }
+          ],
           "extent": [
             {
               "@type": "Extent",
@@ -243,6 +251,16 @@
               "mainTitle": ""
             }
           ],
+          "identifiedBy": [
+            {
+              "@type": "EAN",
+              "value": ""
+            },
+            {
+              "@type": "VideoRecordingNumber",
+              "value": ""
+            }
+          ],
           "publication": [
             {
               "@type": "PrimaryPublication",
@@ -258,6 +276,14 @@
               }
             }
           ],
+          "copyright": [
+            {
+              "@type": "Copyright",
+              "date": [
+                ""
+              ]
+            }
+          ],
           "extent": [
             {
               "@type": "Extent",
@@ -271,12 +297,6 @@
               "label": ""
             }
           ],
-          "summary": [
-            {
-              "@type": "Summary",
-              "label": ""
-            }
-          ],
           "carrierType": [
             {
               "@id": "https://id.kb.se/term/rda/Videodisc"
@@ -287,14 +307,10 @@
               "@id": "https://id.kb.se/term/rda/Video"
             }
           ],
-          "copyright": [
-            {
-              "@type": "Copyright",
-              "date": [
-                ""
-              ]
-            }
-          ],
+          "marc:hasSystemDetailsNote": {
+            "@type": "marc:SystemDetailsNote",
+            "marc:systemDetailsNote": ""
+          },
           "videoCharacteristic": [],
           "instanceOf": {
             "@id": "https://id.kb.se/TEMPID#work"
@@ -342,10 +358,24 @@
               }
             }
           ],
-          "language": [{
-            "@id": "https://id.kb.se/language/swe"
-          }],
+          "language": [],
           "languageNote": [],
+          "marc:subtitlesOrCaptions": {
+            "@type": "marc:SubtitlesOrCaptions",
+            "language": [
+              {
+                "@id": "https://id.kb.se/language/swe"
+              }
+            ]
+          },
+          "summary": [
+            {
+              "@type": "Summary",
+              "label": [
+                ""
+              ]
+            }
+          ],
           "contentType": [
             {
               "@id": "https://id.kb.se/term/rda/TwoDimensionalMovingImage"
@@ -427,6 +457,14 @@
                 "@type": "Agent",
                 "label": ""
               }
+            }
+          ],
+          "copyright": [
+            {
+              "@type": "Copyright",
+              "date": [
+                ""
+              ]
             }
           ],
           "extent": [
@@ -1274,6 +1312,10 @@
             {
               "@type": "EAN",
               "value": ""
+            },
+            {
+              "@type": "VideoRecordingNumber",
+              "value": ""
             }
           ],
           "publication": [
@@ -1291,6 +1333,14 @@
               }
             }
           ],
+          "copyright": [
+            {
+              "@type": "Copyright",
+              "date": [
+                ""
+              ]
+            }
+          ],
           "extent": [
             {
               "@type": "Extent",
@@ -1304,6 +1354,10 @@
               "label": ""
             }
           ],
+          "marc:hasSystemDetailsNote": {
+            "@type": "marc:SystemDetailsNote",
+            "marc:systemDetailsNote": ""
+          },
           "systemRequirement": [
             {
               "@type": "SystemRequirement",
@@ -1367,7 +1421,15 @@
           }],
           "languageNote": [],
           "genreForm": [],
-          "subject": []
+          "subject": [],
+          "summary": [
+            {
+              "@type": "Summary",
+              "label": [
+                ""
+              ]
+            }
+          ]
         }
       }
     }
