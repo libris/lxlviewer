@@ -138,21 +138,16 @@
 
 % macro thing_list_item(thing)
 <div class="thing thing-list-item">
-  <div class="header">
-    <span class="title"><a href="${view_url(thing[ID])}">${vocab.get_label_for(thing)}</a></span>
-    <span class="class">
-      % if isinstance(thing[TYPE], list)
-        % for t in thing[TYPE]
-          ${vocab_term(t)}
-        % endfor
-      % else
-        ${vocab_term(thing[TYPE])}
-      % endif
-    </span>
-  </div>
-  <div class="body">
-    ${thing_summary(thing)}
-  </div>
+  <span class="title"><a href="${view_url(thing[ID])}">${vocab.get_label_for(thing)}</a></span>
+  <span class="class">
+    % if isinstance(thing[TYPE], list)
+      % for t in thing[TYPE]
+        ${vocab_term(t)}
+      % endfor
+    % else
+      ${vocab_term(thing[TYPE])}
+    % endif
+  </span>
 </div>
 % endmacro
 
@@ -358,23 +353,18 @@
       ${toolbar_old(thing_url, current_user.is_authenticated, typename, element)}
 
       <header class="panel-heading">
-        <div class="panel-heading-meta">
-          % if t
-            ${termref(t, classes='', labeltype='label-class')}
-          % endif
-          <a href="${thing_url}" class="toolbar-button id-label thing-id">
-             <small><code>${thing_id}</code></small>
-          </a>
-
-
-        </div>
+        % if t
+          ${termref(t, classes='', labeltype='label-class')}
+        % endif
+        <a href="${thing_url}" class="toolbar-button id-label thing-id">
+            <small><code>${thing_id}</code></small>
+        </a>
         <h1 class="panel-title">
-          % if rel == 'items'
-          <div class='expand-button'><i class='fa rotate fa-plus-circle'></i></div>
-          % endif
           <a href="${thing_url}" class="thing-label">
             % set label = vocab.get_label_for(thing)
-            % if isinstance(label, basestring)
+            % if len(label) == 0
+              {Etikett saknas}
+            % elif isinstance(label, basestring)
               ${label}
             % else
               {# label is sometimes an object, resolve this in a propper way when data content is known #}
@@ -387,16 +377,16 @@
 
     % if not as_chip
       <div class="panel-body">
-        <dl class="{% if not rel %}dl-horizontal{% endif %}">
+        <table class="table">
           % for k in vocab.sortedkeys(thing)
             % set v = thing[k]
             % if (k in vocab.index or k != REVERSE)
               % set p = vocab.index[k] or {'curie': k}
-              {% if loop.index > 1 %}<hr/>{% endif %}
-              <dt>
+              <tr>
+              <td class="term-label">
                 ${termref(p)}
-              </dt>
-              <dd>
+              </td>
+              <td>
                 % if k == ID and v[0] != '_'
                   <a href="${view_url(v)}">&lt;${v}&gt;</a>
                 % elif isinstance(v, dict) and len(v) > 1
@@ -416,11 +406,12 @@
                 % else
                   <span {% if p.curie %} property="${p.curie}"{% endif %}>${v}</span>
                 % endif
-              </dd>
+              </td>
+            </tr>
             % endif
           % endfor
 
-        </dl>
+          </table>
       </div>
     % endif
 
