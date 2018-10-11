@@ -139,43 +139,39 @@ export default {
       }
     },
     expand() {
+      this.$el.getElementsByClassName('js-expandable')[0].classList.remove('is-inactive');
       this.expanded = true;
     },
     collapse() {
       this.expanded = false;
     },
     toggleExpanded() {
-      if (this.expanded === true) {
-        this.collapse();
+      if (this.hasItems()) {
+        if (this.expanded === true) {
+          this.collapse();
+        } else {   
+          this.expand();
+        }
       } else {
-        this.expand();
+        this.$el.getElementsByClassName('js-expandable')[0].classList.add('is-inactive');
       }
     },
     isHolding() {
       return this.inspector.data.mainEntity['@type'] === 'Item';
     },
-    expandOnNew() {
-      // Check if entity is empty
+    hasItems() {
       if (this.$el.getElementsByTagName('ul')[0].childNodes.length == 0)  {
-        this.$el.getElementsByTagName('i')[0].classList.add('is-inactive');
+        return false;
       } else {
-        this.toggleExpanded();
+        return true;
       }
     },
     openExtractDialog() {
       if (this.inspector.status.editing) {
-        // this.$store.dispatch('setStatusValue', { 
-        //   property: 'keybindState', 
-        //   value: 'extraction-dialog' 
-        // });
         this.extractDialogActive = true;
       }
     },
     closeExtractDialog() {
-      // this.$store.dispatch('setStatusValue', { 
-      //   property: 'keybindState', 
-      //   value: 'overview' 
-      // });
       this.extractDialogActive = false;
       this.extracting = false;
     },
@@ -283,10 +279,9 @@ export default {
     this.$on('expand-item', this.expand);
   },
   mounted() {
-    
     if (this.isLastAdded) {
       setTimeout(()=> {
-        this.expandOnNew();
+        this.toggleExpanded();
         this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
       }, 1000)
     } 
@@ -312,7 +307,7 @@ export default {
     @blur="removeFocus()">
    
    <strong class="ItemLocal-heading">
-     <div class="ItemLocal-label">
+     <div class="ItemLocal-label js-expandable">
         <i class="ItemLocal-arrow fa fa-chevron-right " 
           :class="{'down': expanded}" 
           @click="toggleExpanded()"></i>
@@ -442,6 +437,10 @@ export default {
 
   &-label {
     margin-right: 90px;
+    
+    .is-inactive & {
+      pointer-events: none;
+    }
   }
 
   &-type {
@@ -454,7 +453,7 @@ export default {
     padding: 0 2px;
     cursor: pointer;
 
-    &.is-inactive {
+    .is-inactive & {
       color: @gray-light;
       pointer-events: none;
       cursor: not-allowed;

@@ -160,41 +160,37 @@ export default {
       }
     },
     expand() {
+      this.$el.getElementsByClassName('js-expandable')[0].classList.remove('is-inactive');
       this.expanded = true;
     },
     collapse() {
       this.expanded = false;
     },
     toggleExpanded() {
-      if (this.expanded === true) {
-        this.collapse();
+      if (this.hasItems()) {
+        if (this.expanded === true) {
+          this.collapse();
+        } else {   
+          this.expand();
+        }
       } else {
-        this.expand();
+        this.$el.getElementsByClassName('js-expandable')[0].classList.add('is-inactive');
       }
     },
     openExtractDialog() {
       if (this.inspector.status.editing) {
-        // this.$store.dispatch('setStatusValue', { 
-        //   property: 'keybindState', 
-        //   value: 'extraction-dialog' 
-        // });
         this.extractDialogActive = true;
       }
     },
     closeExtractDialog() {
-      // this.$store.dispatch('setStatusValue', { 
-      //   property: 'keybindState', 
-      //   value: 'overview' 
-      // });
       this.extractDialogActive = false;
       this.extracting = false;
     },
-    expandOnNew() {
-        // Check if entity is empty
+    hasItems() {
       if (this.$el.getElementsByTagName('ul')[0].childNodes.length == 0)  {
-        this.$el.getElementsByTagName('i')[0].classList.add('is-inactive');
+        return false;
       } else {
-        this.toggleExpanded();
+        return true;
       }
     },
     doExtract() {
@@ -287,7 +283,7 @@ export default {
     });
     if (this.isLastAdded) {
       setTimeout(()=> {
-        this.expandOnNew();
+        this.toggleExpanded();
         this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
       }, 1000)
     } 
@@ -313,7 +309,7 @@ export default {
     @blur="removeFocus()">
    
    <strong class="ItemSibling-heading">
-      <div class="ItemSibling-label">
+      <div class="ItemSibling-label js-expandable">
         <i class="ItemSibling-arrow fa fa-chevron-right " 
           :class="{'down': expanded}"
           @click="toggleExpanded()"></i>
