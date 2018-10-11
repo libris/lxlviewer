@@ -155,7 +155,10 @@ export default {
       return this.inspector.data.mainEntity['@type'] === 'Item';
     },
     expandOnNew() {
-      if (this.isHolding() && this.inspector.status.isNew) {
+      // Check if entity is empty
+      if (this.$el.getElementsByTagName('ul')[0].childNodes.length == 0)  {
+        this.$el.getElementsByTagName('i')[0].classList.add('is-inactive');
+      } else {
         this.toggleExpanded();
       }
     },
@@ -280,12 +283,10 @@ export default {
     this.$on('expand-item', this.expand);
   },
   mounted() {
-    this.$nextTick(() => {
-      this.expandOnNew();
-    });
     
     if (this.isLastAdded) {
       setTimeout(()=> {
+        this.expandOnNew();
         this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
       }, 1000)
     } 
@@ -452,6 +453,12 @@ export default {
     transition: all 0.2s ease;
     padding: 0 2px;
     cursor: pointer;
+
+    &.is-inactive {
+      color: @gray-light;
+      pointer-events: none;
+      cursor: not-allowed;
+    }
   }
 
   &-list {

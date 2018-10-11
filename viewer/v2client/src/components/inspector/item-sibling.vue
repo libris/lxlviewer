@@ -189,6 +189,14 @@ export default {
       this.extractDialogActive = false;
       this.extracting = false;
     },
+    expandOnNew() {
+        // Check if entity is empty
+      if (this.$el.getElementsByTagName('ul')[0].childNodes.length == 0)  {
+        this.$el.getElementsByTagName('i')[0].classList.add('is-inactive');
+      } else {
+        this.toggleExpanded();
+      }
+    },
     doExtract() {
       this.extracting = true;
 
@@ -277,6 +285,12 @@ export default {
   mounted() {
     this.$nextTick(() => {
     });
+    if (this.isLastAdded) {
+      setTimeout(()=> {
+        this.expandOnNew();
+        this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
+      }, 1000)
+    } 
   },
  
   components: {
@@ -423,6 +437,12 @@ export default {
     padding: 0 2px;
     margin: 0 0 0 1px;
     cursor: pointer;
+
+    &.is-inactive {
+      color: @gray-light;
+      pointer-events: none;
+      cursor: not-allowed;
+    }
   }
 
   &-list {
