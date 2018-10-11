@@ -1278,7 +1278,9 @@
           ],
           "publication": [
             {
-              "@type": "Publication",
+              "@type": "PrimaryPublication",
+              "year": "",
+              "country": [ {"@id": "https://id.kb.se/country/sw"} ],
               "place": {
                 "@type": "Place",
                 "label": ""
@@ -1286,16 +1288,7 @@
               "agent": {
                 "@type": "Agent",
                 "label": ""
-              },
-              "date": ""
-            }
-          ],
-          "marc:publicationStatus": {
-            "@id": "https://id.kb.se/marc/SingleKnownDateProbableDate"
-          },
-          "publicationCountry": [
-            {
-              "@id": "https://id.kb.se/country/sw"
+              }
             }
           ],
           "extent": [
@@ -1317,7 +1310,6 @@
               "marc:systemDetailsNote": ""
             }
           ],
-          "marc:mediaTerm": "Elektronisk resurs",
           "instanceOf": {
             "@id": "https://id.kb.se/TEMPID#work"
           }
