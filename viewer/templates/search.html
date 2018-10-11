@@ -17,7 +17,7 @@
 <div class="panel panel-default search-controls">
     <form action="/find" method="GET" id="searchForm">
 
-      <div class="form-inline">
+      <div class="form">
         <div class="form-group">
           % for param, value in request.args.items(multi=True)
             % if param != 'q'
