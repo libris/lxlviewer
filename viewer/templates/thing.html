@@ -58,7 +58,24 @@
     ${viewthing(thing.mainEntity or thing)}
   </div>
   <div class="col-md-3">
-    <div>
+    % set thingId = thing.mainEntity['@id'] or thing['@id']
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        Visa som:
+      </div>
+      <div class="panel-body">
+        <ul>
+          <li>
+            <a href="${thingId}/data.jsonld">JSON-LD</a>
+          </li>
+          <li>
+            <a href="${thingId}/data.ttl">Turtle</a>
+          </li>
+          <li>
+            <a href="${thingId}/data.rdf">RDF/XML</a>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
   % endif
