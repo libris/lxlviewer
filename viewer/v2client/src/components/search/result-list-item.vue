@@ -101,10 +101,10 @@ export default {
     .panel-mixin(@white);
 
     & .EntitySummary {
-      width: 50%;
       flex: 1;
       justify-content: start;
-      padding: 0 15px 0 0
+      padding: 0 15px 0 0;
+      min-width: 0;
     }
   }
 
@@ -158,8 +158,8 @@ export default {
   }
 
   &-relationsContainer {
-    width: 80px;
     display: flex;
+    flex: 0 0 80px;
     flex-direction: column;
     border-left: 1px solid @gray-lighter;
     align-items: center;
