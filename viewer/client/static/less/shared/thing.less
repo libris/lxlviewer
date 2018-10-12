@@ -1,0 +1,55 @@
+.thing {
+  .panel-body {
+    padding: 0px;
+  }
+  ul {
+    padding-left: 0px;
+  }
+  li {
+    list-style: none;
+  }
+  td {
+    padding: 5px;
+  }
+  hr {
+    margin: 0px;
+  }
+  .panel-heading {
+    .thing-id {
+      float: right;
+      max-width: 50%;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      &:hover {
+        overflow: visible;
+      }
+    }
+  }
+  .link-item {
+    .panel-heading {
+      background-color: #cddee4;
+    }
+  }
+  .table {
+    margin-bottom: 0;
+  }
+}
+
+.thing-list-item {
+  .panel-mixin(@neutral-color);
+  padding: 0.5em;
+  .class {
+    float: right;
+  }
+}
+
+.term-label {
+  color: lighten(@black, 15%);
+  width: 25%;
+  min-width: 120px;
+  font-size: 10pt;
+  text-transform: uppercase;
+  font-weight: bold;
+  word-break: break-word;
+}
