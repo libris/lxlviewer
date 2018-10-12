@@ -47,7 +47,7 @@ export default {
       if (event.keyCode == 32 && this.filterVisible) {
       }
     },
-    nextItem () {
+    nextItem (event) {
       if (!this.filterVisible) {
         window.removeEventListener('keydown', this.preventBodyScroll, false);
         return;
