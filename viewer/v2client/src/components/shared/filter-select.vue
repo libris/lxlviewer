@@ -241,6 +241,7 @@ export default {
     border-radius: 5px;
     z-index: 2;
     position: relative;
+    text-overflow: ellipsis;
 
     &::placeholder {
       color: @black;
