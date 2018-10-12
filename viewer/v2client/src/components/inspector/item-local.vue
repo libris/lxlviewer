@@ -139,32 +139,20 @@ export default {
       }
     },
     expand() {
-      this.$el.getElementsByClassName('js-expandable')[0].classList.remove('is-inactive');
       this.expanded = true;
     },
     collapse() {
       this.expanded = false;
     },
     toggleExpanded() {
-      if (this.hasItems()) {
-        if (this.expanded === true) {
-          this.collapse();
-        } else {   
-          this.expand();
-        }
-      } else {
-        this.$el.getElementsByClassName('js-expandable')[0].classList.add('is-inactive');
+      if (this.expanded === true || this.isEmpty) {
+        this.collapse();
+      } else {   
+        this.expand();
       }
     },
     isHolding() {
       return this.inspector.data.mainEntity['@type'] === 'Item';
-    },
-    hasItems() {
-      if (this.$el.getElementsByTagName('ul')[0].childNodes.length == 0)  {
-        return false;
-      } else {
-        return true;
-      }
     },
     openExtractDialog() {
       if (this.inspector.status.editing) {
@@ -281,7 +269,9 @@ export default {
   mounted() {
     if (this.isLastAdded) {
       setTimeout(()=> {
-        this.toggleExpanded();
+        if (this.isEmpty) {
+          this.$el.getElementsByClassName('js-expandable')[0].classList.add('is-inactive');
+        } 
         this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
       }, 1000)
     } 
@@ -438,7 +428,7 @@ export default {
   &-label {
     margin-right: 90px;
     
-    .is-inactive & {
+    &.is-inactive {
       pointer-events: none;
     }
   }
