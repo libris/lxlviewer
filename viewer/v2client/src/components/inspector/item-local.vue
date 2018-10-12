@@ -145,7 +145,7 @@ export default {
       this.expanded = false;
     },
     toggleExpanded() {
-      if (this.expanded === true || this.isEmpty) {
+      if (this.expanded === true) {
         this.collapse();
       } else {   
         this.expand();
@@ -258,6 +258,15 @@ export default {
     },
   },
   watch: {
+    isEmpty(val) {
+      if (val) {
+        this.$el.getElementsByClassName('js-expandable')[0].classList.add('is-inactive');
+        this.$el.classList.remove('is-expanded');
+      } else {
+        this.$el.getElementsByClassName('js-expandable')[0].classList.remove('is-inactive');
+        this.$el.classList.add('is-expanded');
+      }
+    },
     'inspector.event'(val, oldVal) {
       this.$emit(`${val.value}`);
     }
@@ -268,10 +277,12 @@ export default {
   },
   mounted() {
     if (this.isLastAdded) {
-      setTimeout(()=> {
+      setTimeout(()=> {     
         if (this.isEmpty) {
           this.$el.getElementsByClassName('js-expandable')[0].classList.add('is-inactive');
-        } 
+        } else {
+          this.expand();
+        }
         this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
       }, 1000)
     } 

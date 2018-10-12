@@ -270,6 +270,15 @@ export default {
     },
   },
   watch: {
+     isEmpty(val) {
+      if (val) {
+        this.$el.getElementsByClassName('js-expandable')[0].classList.add('is-inactive');
+        this.$el.classList.remove('is-expanded');
+      } else {
+        this.$el.getElementsByClassName('js-expandable')[0].classList.remove('is-inactive');
+        this.$el.classList.add('is-expanded');
+      }
+    },
     'inspector.event'(val, oldVal) {
       this.$emit(`${val.value}`);
     }
@@ -279,11 +288,13 @@ export default {
     this.$on('expand-item', this.expand);
   },
   mounted() {
-    this.$nextTick(() => {
-    });
     if (this.isLastAdded) {
       setTimeout(()=> {
-        this.toggleExpanded();
+        if (this.isEmpty) {
+          this.$el.getElementsByClassName('js-expandable')[0].classList.add('is-inactive');
+        } else {
+          this.expand();
+        }
         this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
       }, 1000)
     } 
@@ -422,6 +433,10 @@ export default {
 
   &-label {
     margin-right: 90px;
+    
+    &.is-inactive {
+      pointer-events: none;
+    }
   }
 
   &-type {
