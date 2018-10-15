@@ -62,19 +62,16 @@ export default {
         texts = inputContEl.getElementsByClassName('js-filterSelectText');
         items = inputContEl.getElementsByClassName('js-filterSelectItem');
 
-        _.forEach(items, function(item, index) {
+        if (event.keyCode == 38 || event.keyCode == 40 ) {
+          _.forEach(items, function(item, index) {
           item.dataset.index = index;
           item.classList.remove('isActive');
-        });
+          });
 
-        if (event.keyCode == 38) {
-          if (this.currentItem > 0) {
+          if (event.keyCode == 38 && this.currentItem > 0) {
             this.currentItem--;
           }
-          texts[this.currentItem].focus();
-          items[this.currentItem].classList.add('isActive');
-        } else if (event.keyCode == 40) {
-          if (this.currentItem < texts.length-1) {
+          else if (event.keyCode == 40 && this.currentItem < texts.length-1) {
             this.currentItem++;
           }
           texts[this.currentItem].focus();
