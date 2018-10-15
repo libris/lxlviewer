@@ -44,6 +44,7 @@ export default {
       }
     },
     handleSpacebar (event) {
+      event.preventDefault();
       if (event.keyCode == 32 && this.filterVisible) {
       }
     },
@@ -66,12 +67,16 @@ export default {
           item.classList.remove('isActive');
         });
 
-        if (event.keyCode == 38 && this.currentItem > 0) {
-          this.currentItem--
+        if (event.keyCode == 38) {
+          if (this.currentItem > 0) {
+            this.currentItem--;
+          }
           texts[this.currentItem].focus();
           items[this.currentItem].classList.add('isActive');
-        } else if (event.keyCode == 40 && this.currentItem < texts.length-1) {
-          this.currentItem++
+        } else if (event.keyCode == 40) {
+          if (this.currentItem < texts.length-1) {
+            this.currentItem++;
+          }
           texts[this.currentItem].focus();
           items[this.currentItem].classList.add('isActive');
         }
@@ -264,15 +269,16 @@ export default {
     overflow: hidden;
     position: absolute;
     top: auto;
-    bottom: 18px;
+    bottom: 28px;
     background-color: @panel-header-bg;
-    padding: 5px 0;
     width: 100%;
     border: 1px solid @gray-light;
     border-radius: 10px;
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
     z-index: 1;
+    margin: 0;
+    padding: 0;
 
     &.is-visible {
       height: auto;
@@ -282,6 +288,7 @@ export default {
       border: 1px solid @gray-light;
       box-shadow: @shadow-panel;
       z-index: 4;
+      padding: 5px 0;
     }
 
     .FilterSelect--insideInput & {
