@@ -364,27 +364,6 @@ export default {
                 v-on:filter-selected="setFilter($event, keyword)"></filter-select>
             </div>
           </div>
-          <div class="SearchWindow-resultControls" v-if="!loading && searchResult.length > 0" >
-            <modal-pagination 
-              @go="go" 
-              :numberOfPages="numberOfPages" 
-              :currentPage="currentPage">
-            </modal-pagination>
-            <div class="SearchWindow-listTypes">
-              <i class="fa fa-th-list icon icon--sm"
-                @click="isCompact = false"
-                @keyup.enter="isCompact = false"
-                :class="{'icon--primary' : !isCompact}"
-                :title="'Detailed view' | translatePhrase"
-                tabindex="0"></i>
-              <i class="fa fa-list icon icon--sm"
-                @click="isCompact = true"
-                @keyup.enter="isCompact = true"
-                :class="{'icon--primary' : isCompact}"
-                :title="'Compact view' | translatePhrase"
-                tabindex="0"></i>
-            </div>
-          </div>
         </div>
       </template>
 
@@ -427,6 +406,27 @@ export default {
         </div>
       </template>
       <template slot="panel-footer">
+         <div class="SearchWindow-resultControls" v-if="!loading && searchResult.length > 0" >
+            <modal-pagination 
+              @go="go" 
+              :numberOfPages="numberOfPages" 
+              :currentPage="currentPage">
+            </modal-pagination>
+            <div class="SearchWindow-listTypes">
+              <i class="fa fa-th-list icon icon--sm"
+                @click="isCompact = false"
+                @keyup.enter="isCompact = false"
+                :class="{'icon--primary' : !isCompact}"
+                :title="'Detailed view' | translatePhrase"
+                tabindex="0"></i>
+              <i class="fa fa-list icon icon--sm"
+                @click="isCompact = true"
+                @keyup.enter="isCompact = true"
+                :class="{'icon--primary' : isCompact}"
+                :title="'Compact view' | translatePhrase"
+                tabindex="0"></i>
+            </div>
+          </div>
         <div class="SearchWindow-summaryContainer">
             <p class="preview-entity-text uppercaseHeading">{{ "Your new entity" | translatePhrase }}:</p>
 
@@ -494,6 +494,7 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
+    margin: 0 10px;
   }
 
   &-listTypes {
