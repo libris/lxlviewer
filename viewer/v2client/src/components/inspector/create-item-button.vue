@@ -112,17 +112,19 @@ export default {
     </template>
     <template v-if="compact">
       <round-button 
-        :color="hasHolding ? 'primary' : 'gray'"
-        :icon="hasHolding ? 'check' : 'close'"
-        :mouse-over-classes="!hasHolding ? 'rotate-45' :  ''"
+        :icon="hasHolding ? 'check' : 'plus'"
+        :indicator="hasHolding"
         @click="performItemAction()">
         <template slot="tooltip">
           <tooltip-component 
             class="Toolbar-tooltipContainer"
             :show-tooltip="true" 
             position="left"
-            :tooltip-text="hasHolding ? 'has holding' : 'does not have holding'" 
-            :literalString="user.settings.activeSigel"
+            :tooltip-text="hasHolding ? 'has holding' : 'Add holding for'" 
+            :literalString="{
+              position: hasHolding ? 'before' : 'after',
+              text: user.settings.activeSigel
+            }"
             translation="translatePhrase"></tooltip-component>
         </template>
       </round-button>

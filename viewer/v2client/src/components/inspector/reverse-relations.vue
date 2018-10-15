@@ -235,7 +235,7 @@ export default {
         <round-button
           :button-text="numberOfRelationsCircle"
           :disabled="numberOfRelations === 0 || isNaN(numberOfRelations)"
-          :color="numberOfRelations > 0 ? 'primary' : 'gray'"
+          :indicator="numberOfRelations > 0"
           :icon="isNaN(numberOfRelations) ? 'exclamation' : false"
           @click="showPanel()">
           <template slot="tooltip">
@@ -282,13 +282,14 @@ export default {
         <round-button
           :button-text="numberOfRelationsCircle"
           :disabled="!numberOfRelations || isNaN(numberOfRelations)"
-          :color="numberOfRelations > 0 ? 'primary' : 'gray'"
+          :indicator="numberOfRelations > 0"
           :icon="isNaN(numberOfRelations) ? 'exclamation' : false"
           @click="showPanel()">
           <template slot="tooltip">
             <tooltip-component 
               class="Toolbar-tooltipContainer"
               position="left"
+              :active="true"
               :show-tooltip="true"
               :tooltip-text="totalRelationTooltipText" 
               translation="translatePhrase"></tooltip-component>
