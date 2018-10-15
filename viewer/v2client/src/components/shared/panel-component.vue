@@ -76,8 +76,30 @@ export default {
     },
   },
   watch: {
+    'status.panelOpen'(open){
+      if (open) {
+        this.$store.dispatch('setStatusValue', { 
+          property: 'keybindState', 
+          value: 'panel-open' 
+        });
+      } else {
+        this.$store.dispatch('setStatusValue', { 
+          property: 'keybindState', 
+          value: 'panel-closed' 
+        });
+      }
+    },
+    'status.keybindState'(value) {
+      if (value === 'panel-open') {
+         combokeys.bind('esc', function() { 
+          console.log('escape'); 
+        }, 'keydown');
+      }
+    }
   },
   components: {
+  },
+  created: function () {
   },
   mounted() {
     this.$nextTick(() => {

@@ -23,6 +23,9 @@
   "entity-adder": {
     "esc": "close-modals"
   },
+  "panel-open": {
+    "esc": "close-panel"
+  },
   "release-notes": {
     "esc": "close-modals"
   },
