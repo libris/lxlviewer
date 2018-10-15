@@ -1,34 +1,40 @@
-% extends "base.html"
+% extends "thing.html"
+% import 'search.html' as search
 
 {% block bodyattrs %}vocab="${config.VOCAB_IRI}" id="pagedcollection"{% endblock %}
 {% block title %}${ui.SEARCH_RESULTS.label}{% endblock %}
 
 % block content
-% set items = thing['items']
-
-<div id="PagedCollectionApp">
-  <div class="row">
-    <div class="col-md-3 facet-container" :class="{'facet-hidden': isLandingPage}">
-      <facet-controls v-if="initialized == true" :result="result"></facet-controls>
-    </div>
-    <div v-bind:class="{'col-md-12': isLandingPage, 'col-md-9': !isLandingPage }" class="search-content-container">
-      <search-form v-if="initialized == true" :result="result" site-title="${g.site.title}" filter-param="${g.site.filter_param}" :is-landing-page="isLandingPage"></search-form>
-      <search-result-component :result="result" v-if="(initialized == true && result.totalItems > -1) || status.resultList.loading"></search-result-component>
-      <dataset-observations
-      v-if="initialized == true && !result.totalItems && widgetShouldBeShown('dataset-observations')"
-      :statistics="result.statistics"
-      :stats-index="${g.site.statsindex}"
-      site-title="${g.site.title}"
-      ></dataset-observations>
-      <div class="link-container">
-        <link-card v-if="initialized == true && widgetShouldBeShown('about-xl')" :image="copy['about-xl'].image" :header="copy['about-xl'].header" :text="copy['about-xl'].text" :link-text="copy['about-xl'].linkText" :link-url="copy['about-xl'].linkUrl"></link-card>
-        <link-card v-if="initialized == true && widgetShouldBeShown('link-blog')" :image="copy['blog'].image" :header="copy['blog'].header" :text="copy['blog'].text" :link-text="copy['blog'].linkText" :link-url="copy['blog'].linkUrl"></link-card>
-        <link-card v-if="initialized == true && widgetShouldBeShown('link-studies')" :image="copy['studies'].image" :header="copy['studies'].header" :text="copy['studies'].text" :link-text="copy['studies'].linkText" :link-url="copy['studies'].linkUrl"></link-card>
-        <link-card v-if="initialized == true && widgetShouldBeShown('link-supportforum')"  :image="copy['supportforum'].image" :header="copy['supportforum'].header" :text="copy['supportforum'].text" :link-text="copy['supportforum'].linkText" :link-url="copy['supportforum'].linkUrl"></link-card>
+  % set items = thing['items']
+<div class="row">
+  <div class="col-md-3 hidden-xs hidden-sm">
+    <!--% if not request.args.get('@type')-->
+    <div class="panel panel-default">
+      <div class="panel-body facet-controls">
+      ${ search.facet_controls(thing, ui) }
       </div>
-      <intro-component v-if="initialized == true && widgetShouldBeShown('intro-component')" :video-url="copy['instructional-videos'].video" :header="copy['instructional-videos'].header" :text="copy['instructional-videos'].text" :link-text="copy['instructional-videos'].linkText" :link-url="copy['instructional-videos'].linkUrl"></intro-component>
     </div>
+    <!--% endif-->
+  </div>
+  <div class="col-md-9">
+
+    ${ search.search_controls(thing) }
+    % if not request.args.get('@type')
+    <div class="panel panel-default hidden-md hidden-lg">
+      <div class="panel-body facet-controls">
+      ${ search.facet_controls(thing, ui) }
+      </div>
+    </div>
+    % endif
+    ${ search.result_controls(thing, True) }
+    % if items
+      <div class="result-list">
+        % for item in items
+          ${thing_list_item(item)}
+        % endfor
+      </div>
+    % endif
+    ${ search.result_controls(thing, False) }
   </div>
 </div>
-<script id="data" type="application/json">${thing|tojson|safe}</script>
 % endblock

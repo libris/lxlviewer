@@ -19,6 +19,20 @@ body a {
   transition: background-color 0.1s ease;
 }
 
+.btn[disabled],
+.btn.disabled {
+  background-color: @gray-lighter;
+  opacity: 1;
+  &:hover, 
+  &:focus {
+    background-color: @gray-lighter;
+  }
+
+  &.btn-primary {
+    background-color: fadeout(@brand-primary, 35%);
+  }
+}
+
 .btn-primary {
   &:hover {
     background-color: @link-hover-color;
@@ -29,7 +43,8 @@ body a {
 .btn-gray {
   color: white;
   background-color: @gray;
-  &:hover {
+  &:hover, 
+  &:focus {
     color: white;
     background-color: @gray-darker;
   }

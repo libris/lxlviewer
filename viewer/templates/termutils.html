@@ -1,0 +1,23 @@
+% macro vocab_term(k)
+  % set p = vocab.get_term_dfn(k) or {'curie': k}
+  % set label = p.curie
+  % if p.label
+    % set label = p.label[0].upper() + p.label[1:]
+  % endif
+  ${- label -}
+% endmacro
+
+% macro termref(term, classes='', labeltype='')
+  % set label = term.curie
+  % if term.label
+    % set label = term.label[0].upper() + term.label[1:]
+  % endif
+  % if term.curie
+    <a href="/vocab/#${term.curie}" class="${labeltype} term-label"><span
+        class="${classes}">${label}</span></a>
+  % elif term.label
+    ${label}
+  % else
+    <code>${term.curie}</code>
+  % endif
+% endmacro

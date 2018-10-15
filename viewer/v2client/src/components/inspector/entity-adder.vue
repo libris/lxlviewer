@@ -645,6 +645,7 @@ export default {
           :disabled-ids="alreadyAdded"
           :is-compact="isCompact"
           icon="fa-plus"
+          :has-action="true"
           @use-item="addLinkedItem">
         </panel-search-list>
         <div class="PanelComponent-searchStatus" v-if="!loading && keyword.length === 0" >

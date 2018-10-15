@@ -12,6 +12,7 @@ export default {
     tooltipText: '',
     translation: '',
     showTooltip: false,
+    literalString: false,
     keybindName: '',
     position: {
       default: 'top',
@@ -58,8 +59,10 @@ export default {
 
 <template>
   <div class="tooltip-container-outer" :class="{ 'show-tooltip': compShowTooltip, 'is-onLeft': position == 'left', 'is-onTop': position == 'top' }" @mouseover="hoverTooltip = true" @mouseleave="hoverTooltip = false">
-    <div class="tooltip-container-inner" >
-      {{translatedText | capitalize}}{{ keybindingText ? ` (${keybindingText})` : ''}}
+    <div class="tooltip-container-inner">
+      {{ literalString ?` ${literalString} ` : '' }}
+      {{ translatedText }}
+      {{ keybindingText ? ` (${keybindingText})` : ''}}
     </div>
   </div>
 </template>
@@ -82,10 +85,10 @@ export default {
   }
 
   &.is-onLeft {
-    right: 50px;
+    right: 100%;
     margin-right: 10px;
     transform: none;
-    top: 10px;
+    top: 15%;
     &:after {
       left: 100%;
       right: auto;

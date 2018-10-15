@@ -1,8 +1,8 @@
-% extends "base.html"
+% extends "thing.html"
 
 {% block bodyattrs %}vocab="${config.VOCAB_IRI}" id="article"{% endblock %}
 
-{% block title %}${thing.get('@graph')[1].title}{% endblock %}
+{% block title %}${thing.mainEntity.title}{% endblock %}
 
 {% block wrapper %}<div class="show-content" id="page-content-wrapper"> {% endblock %}
 
@@ -11,7 +11,7 @@
     <div class="panel-body container-fluid">
       <div class="row">
         <div class="col-md-8 col-md-offset-2">
-          ${thing.get('@graph')[1].articleBody|safe}
+          ${thing.mainEntity.articleBody|safe}
         </div>
       </div>
     </div>

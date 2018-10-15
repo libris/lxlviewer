@@ -185,11 +185,13 @@ export default {
       this.$store.dispatch('undoInspectorChange');
     },
     edit() {
-      this.loadingEdit = true;
-      this.$store.dispatch('setInspectorStatusValue', { 
-        property: 'editing', 
-        value: true 
-      });
+      if (this.user.isLoggedIn && !this.inspector.status.editing && this.canEditThisType) {
+        this.loadingEdit = true;
+        this.$store.dispatch('setInspectorStatusValue', { 
+          property: 'editing', 
+          value: true 
+        });
+      }
     },
     navigateFormChanges(direction) {
       this.navigateChangeHistory(this.inspector.status.focus, direction);
@@ -396,9 +398,9 @@ export default {
         </li>
         <li class="Toolbar-menuItem" :class="{'is-active': showTemplatesSubMenu}" v-if="user.isLoggedIn && inspector.status.editing && hasTemplates">
           <a class="Toolbar-menuLink" @click="showTemplatesSubMenu = !showTemplatesSubMenu">
-          <i class="fa fa-fw fa-clipboard"></i>
-          {{ "Embellish from template" | translatePhrase }}{{ getKeybindingText('embellish-from-template') ? ` (${getKeybindingText('embellish-from-template')})` : ''}}
-          <i class="fa fa-fw pull-right" :class="{ 'fa-caret-down': showTemplatesSubMenu, 'fa-caret-right': !showTemplatesSubMenu }"></i>
+            <i class="fa fa-fw fa-clipboard"></i>
+            <span>{{ "Embellish from template" | translatePhrase }}{{ getKeybindingText('embellish-from-template') ? ` (${getKeybindingText('embellish-from-template')})` : ''}}</span>
+            <span class="submenuControl"><i class="fa fa-fw" :class="{ 'fa-caret-down': showTemplatesSubMenu, 'fa-caret-right': !showTemplatesSubMenu }"></i></span>
           </a>
         </li>
         <li class="Toolbar-menuItem inSubMenu" v-for="(value, key) in validTemplates" v-show="showTemplatesSubMenu" :key="key">
@@ -581,7 +583,6 @@ export default {
     margin: 4px 0;
     width: 50px;
     height: 50px;
-    // line-height: 1;
     position: relative;
   }
 
@@ -614,8 +615,16 @@ export default {
         background-color: @gray-lighter;
       }
       & a {
+        display: flex;
         padding: 5px 15px;
         color: @grey-darker;
+      }
+
+      & .submenuControl {
+        display: flex;
+        flex: 1;
+        justify-content: flex-end;
+        align-items: center;
       }
     }
 

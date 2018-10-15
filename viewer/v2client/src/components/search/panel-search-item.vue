@@ -19,6 +19,7 @@ export default {
       default: false,
     },
     icon: null,
+    hasAction: false,
     path: '',
     isReplaced: false,
     isCompact: false,
@@ -71,9 +72,11 @@ export default {
       :disabled="isDisabled" 
       :replaced="isReplaced"
       :options="addPayload" 
-      @action="useItem()">
+      @action="useItem()"
+      v-if="hasAction">
     </summary-action>
-    <div class="PanelSearch-itemContainer">
+    <div class="PanelSearch-itemContainer" 
+      :class="{'has-action' : hasAction}">
       <entity-summary 
         :focus-data="focusData" 
         :should-link="true" 
@@ -138,12 +141,15 @@ export default {
   }
 
   &-itemContainer {
-    border: solid @gray-lighter;
-    border-width: 0px 0px 0px 1px;
-    padding: 0 15px;
-    margin-left: 10px;
     width: 100%;
     overflow: hidden;
+
+    &.has-action {
+      border: solid @gray-lighter-transparent;
+      border-width: 0px 0px 0px 1px;
+      padding: 0 15px;
+      margin-left: 10px;
+    }
   }
 }
 

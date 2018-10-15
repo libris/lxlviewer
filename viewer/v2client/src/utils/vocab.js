@@ -160,20 +160,34 @@ export function getRecordType(mainEntityType, vocab, context) {
   return 'Other';
 }
 
-export function getTermByType(type, list, context) {
+function isFiltered(termObj, settings) {
+  // Return true if term has any of the filteredCategories, else false
+  const filteredCategories = settings.filteredCategories;
+  for (let i = 0; i < filteredCategories.length; i++) {
+    if (termObj.hasOwnProperty('category') && termObj.category['@id'] === `https://id.kb.se/vocab/${filteredCategories[i]}`) {
+      // window.lxlWarning(`🗑️ Filtered ${filteredCategories[i]} class:`, termObj['@id']);
+      return true;
+    }
+  }
+  return false;
+}
+
+export function getTermByType(type, list, context, settings) {
   if (!list || typeof list === 'undefined') {
     throw new Error('getTermByType was called without a vocabulary.');
   }
   const expandedType = StringUtil.convertToBaseUri(type, context);
   const terms = [];
   list.forEach((term) => {
-    if (_.isArray(term['@type'])) {
-      if (term['@type'].indexOf(type) > -1 || term['@type'].indexOf(expandedType) > -1) {
-        terms.push(term);
-      }
-    } else {
-      if (term['@type'] === type || term['@type'] === expandedType) {
-        terms.push(term);
+    if (!isFiltered(term, settings)) { // Only add if term should not be filtered
+      if (_.isArray(term['@type'])) {
+        if (term['@type'].indexOf(type) > -1 || term['@type'].indexOf(expandedType) > -1) {
+          terms.push(term);
+        }
+      } else {
+        if (term['@type'] === type || term['@type'] === expandedType) {
+          terms.push(term);
+        }
       }
     }
   });
@@ -462,15 +476,7 @@ export function getPropertiesFromArray(typeArray, vocabClasses, vocabProperties,
         item: properties[x],
       };
       // TODO: Handle shorthand when format is ready
-      if (
-        p.item.hasOwnProperty('category') &&
-        (
-          p.item.category['@id'] === 'https://id.kb.se/vocab/shorthand' ||
-          p.item.category['@id'] === 'https://id.kb.se/vocab/unstable'
-        )
-      ) {
-        // Dont add (is shorthand/unstable)
-      } else if (p.item.hasOwnProperty('abstract') && p.item.abstract === true) {
+      if (p.item.hasOwnProperty('abstract') && p.item.abstract === true) {
         // Dont add (is abstract)
       } else {
         // Do add

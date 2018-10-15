@@ -13,7 +13,6 @@ import SearchResultComponent from '../components/search/search-result-component'
 import SearchForm from '../components/search/search-form';
 import DatasetObservations from '../components/search/dataset-observations';
 import LinkCardComponent from '../components/search/link-card-component';
-import IntroComponent from '../components/search/intro-component';
 import { getSettings, getStatus } from '../vuex/getters';
 import { changeSettings, changeNotification, loadContext, loadVocabMap, loadDisplayDefs, changeResultListStatus, changeStatus } from '../vuex/actions';
 
@@ -165,7 +164,6 @@ export default class PagedCollection extends View {
         'search-result-component': SearchResultComponent,
         'search-form': SearchForm,
         'dataset-observations': DatasetObservations,
-        'intro-component': IntroComponent,
         'link-card': LinkCardComponent,
       },
       store,
