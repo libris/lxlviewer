@@ -301,6 +301,7 @@ export default {
 
   &-footer {
     background-color: @panel-header-bg;
+    border-top: 1px solid @gray-light;
   }
 
   &-windowControl {

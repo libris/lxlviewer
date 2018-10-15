@@ -614,27 +614,7 @@ export default {
               </div>
             </div>
           </div>
-          <div class="EntityAdder-resultControls" v-if="!loading && searchResult.length > 0">
-            <modal-pagination
-              @go="go" 
-              :numberOfPages="numberOfPages" 
-              :currentPage="currentPage">
-            </modal-pagination>
-            <div class="EntityAdder-listTypes">
-              <i class="fa fa-th-list icon icon--sm"
-                @click="isCompact = false"
-                @keyup.enter="isCompact = false"
-                :class="{'icon--primary' : !isCompact}"
-                :title="'Detailed view' | translatePhrase"
-                tabindex="0"></i>
-              <i class="fa fa-list icon icon--sm"
-                @click="isCompact = true"
-                @keyup.enter="isCompact = true"
-                :class="{'icon--primary' : isCompact}"
-                :title="'Compact view' | translatePhrase"
-                tabindex="0"></i>
-            </div>
-          </div>
+          
         </div>
       </template>
       <template slot="panel-body">
@@ -661,6 +641,28 @@ export default {
       <!-- </div> -->
       </template>
       <template slot="panel-footer">
+        
+        <div class="EntityAdder-resultControls" v-if="!loading && searchResult.length > 0">
+          <modal-pagination
+            @go="go" 
+            :numberOfPages="numberOfPages" 
+            :currentPage="currentPage">
+          </modal-pagination>
+          <div class="EntityAdder-listTypes">
+            <i class="fa fa-th-list icon icon--sm"
+              @click="isCompact = false"
+              @keyup.enter="isCompact = false"
+              :class="{'icon--primary' : !isCompact}"
+              :title="'Detailed view' | translatePhrase"
+              tabindex="0"></i>
+            <i class="fa fa-list icon icon--sm"
+              @click="isCompact = true"
+              @keyup.enter="isCompact = true"
+              :class="{'icon--primary' : isCompact}"
+              :title="'Compact view' | translatePhrase"
+              tabindex="0"></i>
+          </div>
+        </div>
         <div class="EntityAdder-create">
           <button class="EntityAdder-createBtn btn btn-primary btn--sm"
             v-if="hasSingleRange" 
@@ -695,6 +697,7 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
+    padding: 0 10px;
   }
 
   &-listTypes {
@@ -788,7 +791,7 @@ export default {
     display: flex;
     justify-content: flex-end;
     padding: 10px 15px;
-    border-top: 1px solid @gray-light;
+    border-top: 1px solid @white;
   }
 
   &-createBtn {
