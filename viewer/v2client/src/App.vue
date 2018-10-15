@@ -55,6 +55,10 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
+      this.$store.dispatch('setStatusValue', { 
+        property: 'keybindState', 
+        value: 'default' 
+      });
     });
   },
   components: {

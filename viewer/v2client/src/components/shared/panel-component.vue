@@ -34,7 +34,7 @@ export default {
     modalType: {
       default: 'normal',
       type: String,
-    },
+    }, 
     closeable: {
       default: true,
       type: Boolean,
@@ -59,6 +59,7 @@ export default {
     close() {
       if (this.closeable) {
         this.fadedIn = false;
+        
         setTimeout(() => {
           this.$emit('close');
         }, this.fadeTime);
@@ -76,30 +77,12 @@ export default {
     },
   },
   watch: {
-    'status.panelOpen'(open){
-      if (open) {
-        this.$store.dispatch('setStatusValue', { 
-          property: 'keybindState', 
-          value: 'panel-open' 
-        });
-      } else {
-        this.$store.dispatch('setStatusValue', { 
-          property: 'keybindState', 
-          value: 'panel-closed' 
-        });
+    'status.keyActions'(actions) {
+      let lastAction = actions.slice(-1);
+      if (lastAction == 'close-modals') {
+        this.close();
       }
-    },
-    'status.keybindState'(value) {
-      if (value === 'panel-open') {
-         combokeys.bind('esc', function() { 
-          console.log('escape'); 
-        }, 'keydown');
-      }
-    }
-  },
-  components: {
-  },
-  created: function () {
+    }, 
   },
   mounted() {
     this.$nextTick(() => {
@@ -328,7 +311,6 @@ export default {
   &-windowControl {
     display: flex;
     flex-wrap: nowrap;
-    justify-content: flex-end;
     min-width: 40px;
     margin-left: 10px;
 

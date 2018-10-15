@@ -15,6 +15,9 @@
   "field-adder": {
     "esc": "close-modals",
   },
+  "panel-open": {
+    "esc": "close-panel",
+  },
   "entity-adder": {
     "esc": "close-modals",
   },
