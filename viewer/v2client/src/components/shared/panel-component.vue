@@ -82,6 +82,12 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.$store.dispatch('setStatusValue', { property: 'panelOpen', value: true });
+      if (this.status.panelOpen) {
+        this.$store.dispatch('setStatusValue', { 
+          property: 'keybindState', 
+          value: 'panel-open' 
+        });
+      }
       if (window.innerWidth <= 1200 || this.user.settings.forceFullViewPanel) {
         this.lockScroll(true);
       }

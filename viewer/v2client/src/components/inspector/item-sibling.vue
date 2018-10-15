@@ -160,34 +160,38 @@ export default {
       }
     },
     expand() {
+      this.$el.getElementsByClassName('js-expandable')[0].classList.remove('is-inactive');
       this.expanded = true;
     },
     collapse() {
       this.expanded = false;
     },
     toggleExpanded() {
-      if (this.expanded === true) {
-        this.collapse();
+      if (this.hasItems()) {
+        if (this.expanded === true) {
+          this.collapse();
+        } else {   
+          this.expand();
+        }
       } else {
-        this.expand();
+        this.$el.getElementsByClassName('js-expandable')[0].classList.add('is-inactive');
       }
     },
     openExtractDialog() {
       if (this.inspector.status.editing) {
-        // this.$store.dispatch('setStatusValue', { 
-        //   property: 'keybindState', 
-        //   value: 'extraction-dialog' 
-        // });
         this.extractDialogActive = true;
       }
     },
     closeExtractDialog() {
-      // this.$store.dispatch('setStatusValue', { 
-      //   property: 'keybindState', 
-      //   value: 'overview' 
-      // });
       this.extractDialogActive = false;
       this.extracting = false;
+    },
+    hasItems() {
+      if (this.$el.getElementsByTagName('ul')[0].childNodes.length == 0)  {
+        return false;
+      } else {
+        return true;
+      }
     },
     doExtract() {
       this.extracting = true;
@@ -266,6 +270,15 @@ export default {
     },
   },
   watch: {
+     isEmpty(val) {
+      if (val) {
+        this.$el.getElementsByClassName('js-expandable')[0].classList.add('is-inactive');
+        this.$el.classList.remove('is-expanded');
+      } else {
+        this.$el.getElementsByClassName('js-expandable')[0].classList.remove('is-inactive');
+        this.$el.classList.add('is-expanded');
+      }
+    },
     'inspector.event'(val, oldVal) {
       this.$emit(`${val.value}`);
     }
@@ -275,8 +288,16 @@ export default {
     this.$on('expand-item', this.expand);
   },
   mounted() {
-    this.$nextTick(() => {
-    });
+    if (this.isLastAdded) {
+      setTimeout(()=> {
+        if (this.isEmpty) {
+          this.$el.getElementsByClassName('js-expandable')[0].classList.add('is-inactive');
+        } else {
+          this.expand();
+        }
+        this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
+      }, 1000)
+    } 
   },
  
   components: {
@@ -299,7 +320,7 @@ export default {
     @blur="removeFocus()">
    
    <strong class="ItemSibling-heading">
-      <div class="ItemSibling-label">
+      <div class="ItemSibling-label js-expandable">
         <i class="ItemSibling-arrow fa fa-chevron-right " 
           :class="{'down': expanded}"
           @click="toggleExpanded()"></i>
@@ -412,6 +433,10 @@ export default {
 
   &-label {
     margin-right: 90px;
+    
+    &.is-inactive {
+      pointer-events: none;
+    }
   }
 
   &-type {
@@ -423,6 +448,12 @@ export default {
     padding: 0 2px;
     margin: 0 0 0 1px;
     cursor: pointer;
+
+    &.is-inactive {
+      color: @gray-light;
+      pointer-events: none;
+      cursor: not-allowed;
+    }
   }
 
   &-list {

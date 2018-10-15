@@ -147,32 +147,19 @@ export default {
     toggleExpanded() {
       if (this.expanded === true) {
         this.collapse();
-      } else {
+      } else {   
         this.expand();
       }
     },
     isHolding() {
       return this.inspector.data.mainEntity['@type'] === 'Item';
     },
-    expandOnNew() {
-      if (this.isHolding() && this.inspector.status.isNew) {
-        this.toggleExpanded();
-      }
-    },
     openExtractDialog() {
       if (this.inspector.status.editing) {
-        // this.$store.dispatch('setStatusValue', { 
-        //   property: 'keybindState', 
-        //   value: 'extraction-dialog' 
-        // });
         this.extractDialogActive = true;
       }
     },
     closeExtractDialog() {
-      // this.$store.dispatch('setStatusValue', { 
-      //   property: 'keybindState', 
-      //   value: 'overview' 
-      // });
       this.extractDialogActive = false;
       this.extracting = false;
     },
@@ -271,6 +258,15 @@ export default {
     },
   },
   watch: {
+    isEmpty(val) {
+      if (val) {
+        this.$el.getElementsByClassName('js-expandable')[0].classList.add('is-inactive');
+        this.$el.classList.remove('is-expanded');
+      } else {
+        this.$el.getElementsByClassName('js-expandable')[0].classList.remove('is-inactive');
+        this.$el.classList.add('is-expanded');
+      }
+    },
     'inspector.event'(val, oldVal) {
       this.$emit(`${val.value}`);
     }
@@ -280,12 +276,13 @@ export default {
     this.$on('expand-item', this.expand);
   },
   mounted() {
-    this.$nextTick(() => {
-      this.expandOnNew();
-    });
-    
     if (this.isLastAdded) {
-      setTimeout(()=> {
+      setTimeout(()=> {     
+        if (this.isEmpty) {
+          this.$el.getElementsByClassName('js-expandable')[0].classList.add('is-inactive');
+        } else {
+          this.expand();
+        }
         this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
       }, 1000)
     } 
@@ -311,7 +308,7 @@ export default {
     @blur="removeFocus()">
    
    <strong class="ItemLocal-heading">
-     <div class="ItemLocal-label">
+     <div class="ItemLocal-label js-expandable">
         <i class="ItemLocal-arrow fa fa-chevron-right " 
           :class="{'down': expanded}" 
           @click="toggleExpanded()"></i>
@@ -441,6 +438,10 @@ export default {
 
   &-label {
     margin-right: 90px;
+    
+    &.is-inactive {
+      pointer-events: none;
+    }
   }
 
   &-type {
@@ -452,6 +453,12 @@ export default {
     transition: all 0.2s ease;
     padding: 0 2px;
     cursor: pointer;
+
+    .is-inactive & {
+      color: @gray-light;
+      pointer-events: none;
+      cursor: not-allowed;
+    }
   }
 
   &-list {

@@ -20,7 +20,7 @@ export default {
   data: function () {
     return {
       initialized: false,
-      combokeys: null,
+      //combokeys: null,
       result: {},
       importData: [],
       searchInProgress: false,
