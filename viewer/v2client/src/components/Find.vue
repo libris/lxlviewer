@@ -129,7 +129,7 @@ export default {
       'status',
     ]),
     copy() {
-      return Copy[this.settings.siteInfo.title];
+      return Copy;
     },
   },
   beforeCreate() {

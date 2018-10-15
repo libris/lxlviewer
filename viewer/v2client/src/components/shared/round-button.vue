@@ -30,6 +30,15 @@ export default {
     },
     icon: {
         default: false,
+    },
+    mouseOverClasses: {
+      type: String,
+      default: '',
+    }
+  },
+  data() {
+    return {
+      mouseOver: false,
     }
   },
   methods: {
@@ -62,13 +71,13 @@ export default {
   <button class="RoundButton btn"
     :class="`btn-${color} ${disabled ? 'disabled' : ''}`"
     @click="action()"
-    @mouseover="$emit('mouseover')"
-    @mouseout="$emit('mouseout')">
+    @mouseover="mouseOver = true"
+    @mouseout="mouseOver = false">
     <span v-if="icon">
-        <i :class="`fa fa-${icon}`" aria-hidden="true"></i>
+        <i :class="`fa fa-${icon} ${mouseOver ? mouseOverClasses : ''}`" aria-hidden="true"></i>
     </span>
     <span class="RoundButton-buttonText" :class="{'small-text': smallText }" v-else>{{ buttonText }}</span>
-    <slot name="tooltip"></slot>
+    <slot name="tooltip" v-if="mouseOver"></slot>
   </button>
 </template>
 
@@ -86,6 +95,12 @@ export default {
   &-buttonText {
     &.small-text {
       font-size: 85%;
+    }
+  }
+  i {
+    transition: transform 0.25s ease;
+    &.rotate-45 {
+      transform: rotate(45deg);
     }
   }
 }
