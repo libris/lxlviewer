@@ -20,7 +20,7 @@ export default {
   data() {
     return {
       selectedObject: {},
-      currentItem: 0,
+      currentItem: -1,
       filterVisible: false
     };
   },
@@ -44,8 +44,8 @@ export default {
       }
     },
     handleSpacebar (event) {
-      event.preventDefault();
       if (event.keyCode == 32 && this.filterVisible) {
+        this.preventBodyScroll(event);
       }
     },
     nextItem (event) {
