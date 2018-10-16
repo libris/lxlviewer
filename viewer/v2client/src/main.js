@@ -88,19 +88,25 @@ new Vue({
     },
     'status.keybindState'(state) {
       // Bindings are defined in keybindings.json
-      if (this.combokeys) {
-        this.combokeys.detach();
-      }
+      // if (this.combokeys) {
+      //   this.combokeys.detach();
+      // }
+
+      console.log(state);
 
       this.combokeys = new ComboKeys(document.documentElement);
       require('combokeys/plugins/global-bind')(this.combokeys); // TODO: Solve with ES6 syntax
       const stateSettings = KeyBindings[state];
         
       if (typeof stateSettings !== 'undefined') {
+    
         _.each(stateSettings, (value, key) => {
+
           if (value !== null && value !== '') {
+        
             this.combokeys.bindGlobal(key.toString(), (e) => {
               this.$store.dispatch('pushKeyAction', value);
+              console.log(value);
               return false;
             });
           }

@@ -25,7 +25,8 @@ export default {
     isRemovable: false,
     showActionButtons: false,
     isExpanded: false,
-    parentPath: '',
+    parentPath: false,
+    gparentPath: false,
   },
   watch: {
     isLocked(val) {
@@ -37,7 +38,7 @@ export default {
       if (val) {
         this.initializeTextarea();
       }
-    }
+    },
   },
   data() {
     return {
@@ -69,6 +70,13 @@ export default {
     },
     newWindowText() {
       return StringUtil.getUiPhraseByLang('Opens in new window', this.user.settings.language);
+    },
+    shouldFocus() {
+      let lastAdded = this.inspector.status.lastAdded;
+      if (lastAdded === this.path || lastAdded === this.parentPath || lastAdded === this.gparentPath) {
+        return true;
+      }
+      return false;
     },
     isLastAdded() {
       if (this.inspector.status.lastAdded === this.path) {
@@ -142,6 +150,9 @@ export default {
     isEmpty() {
       return false;
     },
+    addFocus() {
+      this.$refs.textarea.focus();
+    },
   },
   components: {
     'processed-label': ProcessedLabel,
@@ -150,11 +161,15 @@ export default {
   mounted() {
     this.$nextTick(() => {
       if (!this.isLocked) {
-        this.initializeTextarea();
         this.highLightLastAdded();
+        this.initializeTextarea();
+        if (!this.status.isNew && this.shouldFocus) {
+          this.addFocus();
+        }
       }
-    });
-  },
+      return false;
+    })
+  }
 };
 </script>
 
@@ -163,30 +178,27 @@ export default {
     v-bind:class="{'is-locked': isLocked, 'unlocked': !isLocked, 'is-removed': removed, 'is-lastAdded': isLastAdded}">
     <textarea class="ItemValue-input js-itemValueInput" 
       rows="1" 
-      v-model="value" 
+      v-model="value"
       @blur="update($event.target.value)"
-      @keydown="handleKeys" 
-      v-if="!isLocked"></textarea>
-    <span class="ItemValue-text" 
+      @keydown="handleKeys"
+      v-if="!isLocked"
+      ref="textarea"></textarea>
+    <span class="ItemValue-text"
       v-if="isLocked && !shouldLink">{{fieldValue}}</span>
-    <a class="ItemValue-text" 
+    <a class="ItemValue-text"
       v-if="isLocked && shouldLink"
-      :href="fieldValue" 
-      target="_blank" 
-      :title="`${fieldValue} (${newWindowText})`">
-      {{fieldValue}} <i class="fa fa-external-link" aria-hidden="true"></i>
-    </a>
-    <div class="ItemValue-remover" 
-      v-show="!isLocked && isRemovable" 
-      v-on:click="removeThis()" 
-      @focus="removeHover = true, removeHighlight(true)" 
+      :href="fieldValue" target="_blank" :title="`${fieldValue} (${newWindowText})`">{{fieldValue}} <i class="fa fa-external-link" aria-hidden="true"></i></a>
+    <div class="ItemValue-remover"
+      v-show="!isLocked && isRemovable"
+      v-on:click="removeThis()"
+      @focus="removeHover = true, removeHighlight(true)"
       @blur="removeHover = false, removeHighlight(false)"
-      @mouseover="removeHover = true, removeHighlight(true)" 
+      @mouseover="removeHover = true, removeHighlight(true)"
       @mouseout="removeHover = false, removeHighlight(false)">
       <i class="fa fa-trash-o icon icon--sm">
-        <tooltip-component 
-          :show-tooltip="removeHover" 
-          tooltip-text="Remove" 
+        <tooltip-component
+          :show-tooltip="removeHover"
+          tooltip-text="Remove"
           translation="translatePhrase"></tooltip-component>
       </i>
     </div>
