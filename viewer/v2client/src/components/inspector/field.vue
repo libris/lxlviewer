@@ -735,8 +735,8 @@ export default {
     }
 
     .is-lastAdded & {
-      -webkit-animation-duration: 3s;
-      animation-duration: 3s;
+      -webkit-animation-duration: 2s;
+      animation-duration: 2s;
       -webkit-animation-fill-mode: both;
       animation-fill-mode: both;
       -webkit-animation-name: fadeIn;
