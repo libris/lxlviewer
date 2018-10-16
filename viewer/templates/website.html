@@ -1,5 +1,6 @@
 % extends "base.html"
 % import 'search.html' as search
+% import 'libris.html' as libris
 % from "termutils.html" import vocab_term
 
 {% block title %}{% endblock %}
@@ -21,6 +22,9 @@
 {% block navcontainerclass %} container {% endblock %}
 
 % block content
+% if g.site.title == 'libris.kb.se'
+  ${ libris.redirect_page() }
+% else
 <div class="row">
   <div class="col-md-4">
     <div class="panel panel-default intro-text">
@@ -66,6 +70,7 @@
   % endif
   </div>
 </div>
+% endif
 
 % endblock
 
