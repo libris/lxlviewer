@@ -1,6 +1,6 @@
 'use strict'
 require('babel-polyfill')
-const webpack = require('webpack');
+const webpack = require('webpack')
 const path = require('path')
 const utils = require('./utils')
 const config = require('../config')
@@ -102,10 +102,6 @@ module.exports = {
           // limit: 10000,
           name: utils.assetsPath('fonts/[name].[hash:7].[ext]')
         }
-      },
-      {
-        loader: "webpack-modernizr-loader",
-        test: /\.modernizrrc\.js$/
       }
     ]
   },

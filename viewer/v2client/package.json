@@ -67,7 +67,6 @@
     "marked": "^0.3.12",
     "md5": "^2.2.1",
     "mocha": "^3.2.0",
-    "modernizr": "^3.5.0",
     "moment": "^2.20.1",
     "nightwatch": "^0.9.12",
     "node-notifier": "^5.1.2",
@@ -104,7 +103,6 @@
     "webpack-bundle-analyzer": "^2.9.0",
     "webpack-dev-server": "^2.9.1",
     "webpack-merge": "^4.1.0",
-    "webpack-modernizr-loader": "^4.0.0",
     "whatwg-fetch": "^2.0.4"
   },
   "devDependencies": {},
