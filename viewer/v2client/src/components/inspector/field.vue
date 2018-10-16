@@ -212,34 +212,6 @@ export default {
       return this.forcedListTerms.indexOf(this.fieldKey) > -1;
     },
   },
-  mounted() {
-    this.$nextTick(() => {
-      setTimeout(() => {
-        if (this.fieldKey === '_uid') {
-          throw new Error('A datanode component has been added for a _uid key, which should never happen.');
-        }
-        if (this.isLastAdded === true) {
-          let element = this.$el;
-          let topOfElement = LayoutUtil.getPosition(element).y;
-          if (topOfElement > 0) {
-            const windowHeight = window.innerHeight || 
-            document.documentElement.clientHeight || 
-            document.getElementsByTagName('body')[0].clientHeight;
-            const scrollPos = LayoutUtil.getPosition(this.$el).y - (windowHeight * 0.2);
-            LayoutUtil.scrollTo(scrollPos, 1000, 'easeInOutQuad', () => {
-              setTimeout(() => {
-                this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
-              }, 1000)
-            });
-          } else {
-              setTimeout(() => {
-                this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
-              }, 1000)
-          }
-        }
-      }, 300);
-    });
-  },
   methods: {
     actionHighlight(active, event) {
       if (active) {
@@ -365,18 +337,51 @@ export default {
         this.shouldShowActionButtons=false
       }
     },
+    highLightLastAdded() {
+      if (this.isLastAdded === true) {
+        let element = this.$el;
+        let topOfElement = LayoutUtil.getPosition(element).y;
+        if (topOfElement > 0) {
+          const windowHeight = window.innerHeight || 
+          document.documentElement.clientHeight || 
+          document.getElementsByTagName('body')[0].clientHeight;
+          const scrollPos = LayoutUtil.getPosition(this.$el).y - (windowHeight * 0.2);
+          LayoutUtil.scrollTo(scrollPos, 1000, 'easeInOutQuad', () => {
+            setTimeout(() => {
+              this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
+            }, 1000)
+          });
+        } else {
+          setTimeout(() => {
+            this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
+          }, 1000)
+        }
+      }
+    }
+  },
+  mounted() {
+    this.$nextTick(() => {
+      setTimeout(() => {
+        if (this.fieldKey === '_uid') {
+          throw new Error('A datanode component has been added for a _uid key, which should never happen.');
+        }
+        this.highLightLastAdded();
+      }, 300);
+    });
   },
 };
 </script>
 
 <template>
   <li class="Field js-field" 
-    :id="`field-${getPath}`" 
+    :id="`field-${getPath}`"
     v-bind:class="{'is-mainField': isMainField, 'Field--inner': !asColumns, 'is-lastAdded': isLastAdded, 'is-removed': removed}" 
     @mouseover="handleMouseEnter()" 
     @mouseleave="handleMouseLeave()">
 
-    <div class="Field-labelContainer" v-if="!isInner" :class="{'is-wide': inspector.status.editing || user.settings.appTech, 'is-hovered': shouldShowActionButtons}">
+    <div class="Field-labelContainer" 
+      :class="{'is-wide': inspector.status.editing || user.settings.appTech, 'is-hovered': shouldShowActionButtons}"
+      v-if="!isInner" >
       <div class="Field-labelWrapper">
         <div v-if="this.inspector.status.editing" class="Field-actions">
           <div class="Field-action Field-remove" 
@@ -478,6 +483,7 @@ export default {
         v-for="(item, index) in valueAsArray" 
         :key="index"
         v-bind:class="{'is-entityContent': getDatatype(item) == 'entity'}">
+
         <item-error 
           v-if="getDatatype(item) == 'error'" 
           :item="item"></item-error>
@@ -558,6 +564,7 @@ export default {
         <!-- Not linked, local child strings -->
         <item-value 
           v-if="getDatatype(item) == 'value'" 
+          :is-last-added="isLastAdded"
           :is-removable="!hasSingleValue" 
           :is-locked="locked" 
           :is-uri-type="isUriType"
@@ -728,8 +735,8 @@ export default {
     }
 
     .is-lastAdded & {
-      -webkit-animation-duration: 1s;
-      animation-duration: 1s;
+      -webkit-animation-duration: 3s;
+      animation-duration: 3s;
       -webkit-animation-fill-mode: both;
       animation-fill-mode: both;
       -webkit-animation-name: fadeIn;
@@ -917,5 +924,4 @@ export default {
     }
   }
 }
-
 </style>
