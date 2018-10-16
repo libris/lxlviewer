@@ -1314,7 +1314,7 @@
               "value": ""
             },
             {
-              "@type": "VideoRecordingNumber",
+              "@type": "PublisherNumber",
               "value": ""
             }
           ],
@@ -1341,6 +1341,8 @@
               ]
             }
           ],
+          "carrierType": [],
+          "mediaType": [],
           "extent": [
             {
               "@type": "Extent",
@@ -1360,8 +1362,16 @@
           },
           "systemRequirement": [
             {
-              "@type": "SystemRequirement",
-              "marc:systemDetailsNote": ""
+              "@type": "MachineModel",
+              "label": [
+                ""
+              ]
+            },
+            {
+              "@type": "OperatingSystem",
+              "label": [
+                ""
+              ]
             }
           ],
           "instanceOf": {
@@ -1420,7 +1430,12 @@
             "@id": "https://id.kb.se/language/swe"
           }],
           "languageNote": [],
-          "genreForm": [],
+          "genreForm": [
+            {
+              "@id": "https://id.kb.se/term/saogf/Datorspel"
+            }
+          ],
+          "contentType": [],
           "subject": [],
           "summary": [
             {
