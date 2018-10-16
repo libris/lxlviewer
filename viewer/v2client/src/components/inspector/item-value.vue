@@ -187,7 +187,11 @@ export default {
       v-if="isLocked && !shouldLink">{{fieldValue}}</span>
     <a class="ItemValue-text"
       v-if="isLocked && shouldLink"
-      :href="fieldValue" target="_blank" :title="`${fieldValue} (${newWindowText})`">{{fieldValue}} <i class="fa fa-external-link" aria-hidden="true"></i></a>
+      :href="fieldValue" 
+      target="_blank" 
+      :title="`${fieldValue} (${newWindowText})`">{{fieldValue}} 
+        <i class="fa fa-external-link" aria-hidden="true"></i>
+    </a>
     <div class="ItemValue-remover"
       v-show="!isLocked && isRemovable"
       v-on:click="removeThis()"
