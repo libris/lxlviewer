@@ -493,10 +493,6 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      this.$store.dispatch('setStatusValue', { 
-        property: 'keybindState', 
-        value: 'overview' 
-      });
       if (!this.postLoaded) {
         this.initializeRecord();
       }

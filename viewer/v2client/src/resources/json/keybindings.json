@@ -1,5 +1,5 @@
 {
-  "overview": {
+  "default": {
     "mod+s": "save-item",
     "mod+d": "save-item-done",
     "mod+e": "edit-item",
@@ -15,27 +15,6 @@
     "mod+shift+c": "duplicate-item",
     "ctrl+shift+right": "admin-data-on",
     "ctrl+shift+left": "admin-data-off",
-    "esc": "close-modals"
-  },
-  "field-adder": {
-    "esc": "close-modals"
-  },
-  "entity-adder": {
-    "esc": "close-modals"
-  },
-  "release-notes": {
-    "esc": "close-modals"
-  },
-  "extraction-dialog": {
-    "esc": "close-modals"
-  },
-  "marc-preview": {
-    "esc": "close-modals"
-  },
-  "help-window": {
-    "esc": "close-modals"
-  },
-  "show-instances-list": {
     "esc": "close-modals"
   }
 }

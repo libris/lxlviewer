@@ -99,8 +99,11 @@ new Vue({
       const stateSettings = KeyBindings[state];
         
       if (typeof stateSettings !== 'undefined') {
+    
         _.each(stateSettings, (value, key) => {
+
           if (value !== null && value !== '') {
+        
             this.combokeys.bindGlobal(key.toString(), (e) => {
               this.$store.dispatch('pushKeyAction', value);
               console.log(value);
