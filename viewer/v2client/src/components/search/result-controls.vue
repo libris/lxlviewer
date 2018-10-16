@@ -1,7 +1,6 @@
 <script>
 import * as StringUtil from '@/utils/string';
 import * as httpUtil from '@/utils/http';
-import Modernizr from '@/../.modernizrrc.js';
 
 export default {
   name: 'result-controls',

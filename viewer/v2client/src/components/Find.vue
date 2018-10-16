@@ -12,7 +12,6 @@ import SearchForm from '@/components/search/search-form';
 import DatasetObservations from '@/components/search/dataset-observations';
 import LinkCardComponent from '@/components/search/link-card';
 import IntroComponent from '@/components/search/link-card';
-import Modernizr from '@/../.modernizrrc.js';
 import { mapGetters } from 'vuex';
 import VueSimpleSpinner from 'vue-simple-spinner';
 

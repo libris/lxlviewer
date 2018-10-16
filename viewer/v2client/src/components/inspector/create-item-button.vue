@@ -5,7 +5,6 @@ import * as RecordUtil from '@/utils/record';
 import * as DataUtil from '@/utils/data';
 import * as HttpUtil from '@/utils/http';
 import { mapGetters } from 'vuex';
-import Modernizr from '@/../.modernizrrc.js';
 
 export default {
   name: 'create-item-button',
