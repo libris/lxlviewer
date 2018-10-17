@@ -246,15 +246,18 @@
               "sigel": [""]
             }
           ],
-          "descriptionConventions": [
+          "descriptionConventions": [{
+            "@id": "https://id.kb.se/marc/Isbd"
+          },
             {
-              "@id": "https://id.kb.se/marc/Aacr2"
+              "@type": "DescriptionConventions",
+              "code": "rda"
             }
           ],
           "descriptionLanguage": [{
             "@id": "https://id.kb.se/language/swe"
           }],
-          "encodingLevel": "",
+          "encodingLevel": "marc:AbbreviatedLevel",
           "recordStatus": "",
           "marc:catalogingSource": {
             "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
@@ -267,7 +270,8 @@
           "hasTitle": [
             {
               "@type": "Title",
-              "mainTitle": ""
+              "mainTitle": "",
+              "subtitle": ""
             }
           ],
           "identifiedBy": [
@@ -402,6 +406,33 @@
           ],
           "participantNote": [],
           "genreForm": [],
+          "hasPart": [
+            {
+              "@type": "Work",
+              "contribution": [
+                {
+                  "@type": "PrimaryContribution",
+                  "agent": {
+                    "@type": "Person",
+                    "familyName": "",
+                    "givenName": "",
+                    "lifeSpan": ""
+                  },
+                  "role": [
+                    {
+                      "@id": "https://id.kb.se/relator/director"
+                    }
+                  ]
+                }
+              ],
+              "hasTitle": [
+                {
+                  "@type": "Title",
+                  "mainTitle": ""
+                }
+              ]
+            }
+          ],
           "subject": []
         }
       }
