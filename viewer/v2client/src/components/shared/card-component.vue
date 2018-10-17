@@ -68,7 +68,6 @@ export default {
       :focus-data="focusData" 
       :is-extractable="isExtractable" 
       :add-link="hasUri" 
-      :lines="5" 
       :actions="!floating && !isLocked" 
       :is-local="isLocal"></entity-summary>
   </div>

@@ -8,7 +8,6 @@ export default {
   name: 'entity-summary',
   props: {
     focusData: {},
-    lines: Number,
     actions: false,
     isLocal: false,
     isExtractable: false,
@@ -71,6 +70,7 @@ export default {
       const info = this.getSummary.info.concat(this.getSummary.sub);
       const infoObj = {};
       _.each(info, (node) => {
+        // console.log(node.value);
         infoObj[node.property] = node.value.join(', ');
       });
       return infoObj;
@@ -98,11 +98,6 @@ export default {
         this.settings, 
         this.resources.context
       );
-      if (identifiersList.length > this.lines) {
-        const diff = identifiersList.length - this.lines;
-        identifiersList.splice((this.lines - 1), diff+1);
-        identifiersList.push(`+ ${diff+1} identifierare`);
-      }
       return identifiersList;
     },
     info() {

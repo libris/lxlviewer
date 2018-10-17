@@ -80,7 +80,6 @@ export default {
       <entity-summary 
         :focus-data="focusData" 
         :should-link="true" 
-        :lines="4"
         :is-compact="isCompact"
         :shouldOpenTab="true">
       </entity-summary>

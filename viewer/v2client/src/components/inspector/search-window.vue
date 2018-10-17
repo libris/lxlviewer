@@ -433,7 +433,6 @@ export default {
             <entity-summary 
               :action-settings="localEntitySettings" 
               :focus-data="itemInfo" 
-              :lines="4"
               :should-link="false"></entity-summary>
             <summary-action 
               v-show="!extracting" 

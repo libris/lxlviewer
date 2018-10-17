@@ -54,8 +54,7 @@ export default {
       :is-import="isImport" 
       :import-item="importItem" 
       :add-link="true" 
-      @import-this="importThis()"
-      :lines="4">
+      @import-this="importThis()">
     </entity-summary>
     <div class="ResultItem-relationsContainer"
       v-if="this.$route.params.perimeter !== 'remote'">
