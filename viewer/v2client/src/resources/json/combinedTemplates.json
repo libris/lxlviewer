@@ -453,15 +453,18 @@
               "sigel": [""]
             }
           ],
-          "descriptionConventions": [
+          "descriptionConventions": [{
+            "@id": "https://id.kb.se/marc/Isbd"
+          },
             {
-              "@id": "https://id.kb.se/marc/Aacr2"
+              "@type": "DescriptionConventions",
+              "code": "rda"
             }
           ],
           "descriptionLanguage": [{
             "@id": "https://id.kb.se/language/swe"
           }],
-          "encodingLevel": "",
+          "encodingLevel": "marc:AbbreviatedLevel",
           "recordStatus": "",
           "marc:catalogingSource": {
             "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
@@ -626,9 +629,13 @@
               "@id": "https://id.kb.se/term/rda/PerformedMusic"
             }
           ],
-          "hasTitle": {
-            "@type": "Title"
-          },
+          "hasTitle": [
+            {
+              "@type": "Title",
+              "mainTitle": "",
+              "subtitle": ""
+            }
+          ],
           "genreForm": [],
           "hasPart": [
             {
@@ -638,9 +645,21 @@
                   "@type": "PrimaryContribution",
                   "agent": {
                     "@type": "Person",
-                    "name": "",
+                    "familyName": "",
+                    "givenName": "",
                     "lifeSpan": ""
-                  }
+                  },
+                  "role": [
+                    {
+                      "@id": "https://id.kb.se/relator/composer"
+                    }
+                  ]
+                }
+              ],
+              "hasTitle": [
+                {
+                  "@type": "Title",
+                  "mainTitle": ""
                 }
               ]
             }
