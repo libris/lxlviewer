@@ -126,14 +126,6 @@ export default {
   <div class="RelationsList">
     <panel-component :title="windowTitle" @close="hide()">
       <template slot="panel-header-extra">
-        <div class="RelationsList-resultControls" v-if="!loading && resultItems.length > 0">
-          <modal-pagination 
-            v-if="searchResult.totalItems > maxResults"
-            @go="go" 
-            :numberOfPages="numberOfPages" 
-            :currentPage="currentPage">
-          </modal-pagination>
-        </div>
       </template>
       <template slot="panel-body">
         <div class="PanelComponent-searchStatus" v-show="loading">
@@ -150,7 +142,19 @@ export default {
           error happened: {{error}}
         </div>
       </template>
+      <template slot="panel-footer"> 
+        <div class="RelationsList-resultControls" v-if="!loading && resultItems.length > 0">
+          <modal-pagination 
+            v-if="searchResult.totalItems > maxResults"
+            @go="go" 
+            :numberOfPages="numberOfPages" 
+            :currentPage="currentPage">
+          </modal-pagination>
+        </div>
+      </template>
     </panel-component>
+   
+   
   </div>
 </template>
 
@@ -163,7 +167,7 @@ export default {
     justify-content: space-between;
     align-items: baseline;
     .ModalPagination {
-      margin: 0px 0 10px 0;
+      margin: 10px;
     }
   }
   &-body {

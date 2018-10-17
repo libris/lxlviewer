@@ -233,9 +233,9 @@ export default {
     background-color: @danger;
   }
 
-  .is-lastAdded & {
-    -webkit-animation-duration: 1s;
-    animation-duration: 1s;
+  &.is-lastAdded {
+    -webkit-animation-duration: 3s;
+    animation-duration: 3s;
     -webkit-animation-fill-mode: both;
     animation-fill-mode: both;
     -webkit-animation-name: pulse;
