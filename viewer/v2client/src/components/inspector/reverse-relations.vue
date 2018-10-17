@@ -12,7 +12,7 @@ import TooltipComponent from '@/components/shared/tooltip-component';
 export default {
   name: 'reverse-relations',
   props: {
-    mainEntity: {},
+    mainEntity: null,
     compact: { type: Boolean, default: false }, 
   },
   data() {
@@ -23,8 +23,6 @@ export default {
       relationInfo: [],
       numberOfRelations: null,
       relationsListOpen: false,
-      totalRelationTooltip: false,
-      myHoldingTooltip: false,
       panelQuery: '',
     }
   },
@@ -237,16 +235,14 @@ export default {
         <round-button
           :button-text="numberOfRelationsCircle"
           :disabled="numberOfRelations === 0 || isNaN(numberOfRelations)"
-          :color="numberOfRelations > 0 ? 'primary' : 'gray'"
+          :indicator="numberOfRelations > 0"
           :icon="isNaN(numberOfRelations) ? 'exclamation' : false"
-          @mouseover="totalRelationTooltip = true"
-          @mouseout="totalRelationTooltip = false"
           @click="showPanel()">
           <template slot="tooltip">
             <tooltip-component 
               class="Toolbar-tooltipContainer"
-              :show-tooltip="totalRelationTooltip" 
               position="left"
+              :show-tooltip="true"
               :tooltip-text="totalRelationTooltipText" 
               translation="translatePhrase"></tooltip-component>
           </template>
@@ -255,6 +251,8 @@ export default {
       <create-item-button class="ReverseRelations-button"
         v-if="recordType === 'Instance' && user.isLoggedIn && user.getPermissions().registrant" 
         :disabled="inspector.status.editing" 
+        :compact="false"
+        :main-entity="mainEntity"
         :has-holding="hasRelation" 
         :checking-holding="checkingRelations" 
         :holding-id="myHolding"
@@ -273,37 +271,26 @@ export default {
         size="medium">
       </vue-simple-spinner>
       <div class="ReverseRelations-btnContainer" v-if="!checkingRelations">
-        <round-button 
-          v-if="recordType === 'Instance' && user.isLoggedIn && user.getPermissions().registrant" 
-          :disabled="!hasRelation" 
-          :color="hasRelation ? 'primary' : 'gray'"
-          :icon="hasRelation ? 'check' : 'close'"
-          @mouseover="myHoldingTooltip = true"
-          @mouseout="myHoldingTooltip = false"
-          @click="gotoHolding()">
-          <template slot="tooltip">
-            <tooltip-component 
-              class="Toolbar-tooltipContainer"
-              :show-tooltip="myHoldingTooltip" 
-              position="left"
-              :tooltip-text="hasRelation ? 'has holding' : 'does not have holding'" 
-              :literalString="user.settings.activeSigel"
-              translation="translatePhrase"></tooltip-component>
-          </template>
-        </round-button>
+        <create-item-button class="ReverseRelations-button"
+        v-if="recordType === 'Instance' && user.isLoggedIn && user.getPermissions().registrant" 
+        :compact="true"
+        :main-entity="mainEntity"
+        :has-holding="hasRelation" 
+        :checking-holding="checkingRelations" 
+        :holding-id="myHolding"
+        @done="checkingRelations=false"></create-item-button>
         <round-button
           :button-text="numberOfRelationsCircle"
           :disabled="!numberOfRelations || isNaN(numberOfRelations)"
-          :color="numberOfRelations > 0 ? 'primary' : 'gray'"
+          :indicator="numberOfRelations > 0"
           :icon="isNaN(numberOfRelations) ? 'exclamation' : false"
-          @mouseover="totalRelationTooltip = true"
-          @mouseout="totalRelationTooltip = false"
           @click="showPanel()">
           <template slot="tooltip">
             <tooltip-component 
               class="Toolbar-tooltipContainer"
-              :show-tooltip="totalRelationTooltip" 
               position="left"
+              :active="true"
+              :show-tooltip="true"
               :tooltip-text="totalRelationTooltipText" 
               translation="translatePhrase"></tooltip-component>
           </template>
