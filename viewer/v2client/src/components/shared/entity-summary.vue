@@ -295,6 +295,7 @@ export default {
     list-style-type: none;
     margin: 0;
     padding: 0px;
+    max-height: 175px;
   }
 
   &-id {
