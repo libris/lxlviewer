@@ -314,12 +314,6 @@
             }
           ],
           "marc:otherPhysicalDetails": "",
-          "hasNote": [
-            {
-              "@type": "Note",
-              "label": ""
-            }
-          ],
           "carrierType": [
             {
               "@id": "https://id.kb.se/term/rda/Videodisc"
@@ -330,11 +324,17 @@
               "@id": "https://id.kb.se/term/rda/Video"
             }
           ],
+          "videoCharacteristic": [],
           "marc:hasSystemDetailsNote": {
             "@type": "marc:SystemDetailsNote",
             "marc:systemDetailsNote": ""
           },
-          "videoCharacteristic": [],
+          "hasNote": [
+            {
+              "@type": "Note",
+              "label": ""
+            }
+          ],
           "instanceOf": {
             "@id": "https://id.kb.se/TEMPID#work"
           }
@@ -391,21 +391,13 @@
               }
             ]
           },
-          "summary": [
-            {
-              "@type": "Summary",
-              "label": [
-                ""
-              ]
-            }
-          ],
           "contentType": [
             {
               "@id": "https://id.kb.se/term/rda/TwoDimensionalMovingImage"
             }
           ],
-          "participantNote": [],
           "genreForm": [],
+          "participantNote": [],
           "hasPart": [
             {
               "@type": "Work",
@@ -433,7 +425,15 @@
               ]
             }
           ],
-          "subject": []
+          "subject": [],
+          "summary": [
+            {
+              "@type": "Summary",
+              "label": [
+                ""
+              ]
+            }
+          ]
         }
       }
     },
@@ -1414,29 +1414,19 @@
               ]
             }
           ],
-          "carrierType": [],
-          "mediaType": [
-            {
-              "@id": "https://id.kb.se/term/rda/Computer"
-            }
-          ],
           "extent": [
             {
               "@type": "Extent",
               "label": ""
             }
           ],
-          "marc:otherPhysicalDetails": "",
-          "hasNote": [
+          "carrierType": [],
+          "mediaType": [
             {
-              "@type": "Note",
-              "label": ""
+              "@id": "https://id.kb.se/term/rda/Computer"
             }
           ],
-          "marc:hasSystemDetailsNote": {
-            "@type": "marc:SystemDetailsNote",
-            "marc:systemDetailsNote": ""
-          },
+          "marc:otherPhysicalDetails": "",
           "systemRequirement": [
             {
               "@type": "MachineModel",
@@ -1451,6 +1441,16 @@
               ]
             }
           ],
+          "marc:hasSystemDetailsNote": {
+            "@type": "marc:SystemDetailsNote",
+            "marc:systemDetailsNote": ""
+          },
+          "hasNote": [
+            {
+              "@type": "Note",
+              "label": ""
+            }
+          ],
           "instanceOf": {
             "@id": "https://id.kb.se/TEMPID#work"
           }
@@ -1458,6 +1458,10 @@
         "work": {
           "@id": "https://id.kb.se/TEMPID#work",
           "@type": "Multimedia",
+          "language": [{
+            "@id": "https://id.kb.se/language/swe"
+          }],
+          "languageNote": [],
           "classification": [{
               "@type": "ClassificationDdc",
               "code": "",
@@ -1492,18 +1496,14 @@
               "label": ""
             }
           ],
-          "language": [{
-            "@id": "https://id.kb.se/language/swe"
-          }],
-          "languageNote": [],
-          "genreForm": [
-            {
-              "@id": "https://id.kb.se/term/saogf/Datorspel"
-            }
-          ],
           "contentType": [
             {
               "@id": "https://id.kb.se/term/rda/ComputerProgram"
+            }
+          ],
+          "genreForm": [
+            {
+              "@id": "https://id.kb.se/term/saogf/Datorspel"
             }
           ],
           "subject": [],
