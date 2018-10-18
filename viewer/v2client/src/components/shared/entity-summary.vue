@@ -22,7 +22,11 @@ export default {
     isCompact: {
       default: false,
       type: Boolean
-    } 
+    },
+    valueDisplayLimit: {
+      default: 5,
+      type: Number
+    }, 
   },
   data() {
     return {
@@ -70,8 +74,9 @@ export default {
       const info = this.getSummary.info.concat(this.getSummary.sub);
       const infoObj = {};
       _.each(info, (node) => {
-        // console.log(node.value);
-        infoObj[node.property] = node.value.join(', ');
+        let remainder = node.value.length > this.valueDisplayLimit ? ` (+${node.value.length - this.valueDisplayLimit})` : '';
+        let trimmed = node.value.slice(0, this.valueDisplayLimit).join(', ') + remainder;
+        infoObj[node.property] = trimmed;
       });
       return infoObj;
     },
@@ -190,14 +195,14 @@ export default {
         v-show="v.length !== 0" 
         v-for="(v, k) in infoWithKeys" 
         :key="k">
-        <div v-if="isReplacedBy === ''">
+        <span v-if="isReplacedBy === ''">
           <span  class="EntitySummary-detailsKey uppercaseHeading--bold">{{ k | labelByLang }}:</span>
           <span class="EntitySummary-detailsValue">{{ v }}</span>
-        </div>
-        <div v-if="isReplacedBy !== ''">
+        </span>
+        <span v-if="isReplacedBy !== ''">
           <span  class="EntitySummary-detailsKey uppercaseHeading--bold">Ersatt av:</span>
           <span class="EntitySummary-detailsValue">{{ v }}</span>
-        </div>
+        </span>
       </li>
     </ul>
   </div>
@@ -287,7 +292,6 @@ export default {
   }
 
   &-details {
-    display: inline;
     list-style-type: none;
     margin: 0;
     padding: 0px;
@@ -300,7 +304,7 @@ export default {
   }
 
   &-detailsItem {
-    display: inline-block;
+    display: inline;
     margin-right: 10px;
   }
 

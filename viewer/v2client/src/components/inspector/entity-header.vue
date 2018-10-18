@@ -79,7 +79,7 @@ export default {
 <template>
   <div class="EntityHeader HeaderComponent">
     <div class="EntityHeader-body HeaderComponent-body is-full">
-      <entity-summary :focus-data="focusData" :should-link="false"></entity-summary>
+      <entity-summary :focus-data="focusData" :should-link="false" :valueDisplayLimit=3></entity-summary>
     </div>
     <div class="EntityHeader-body HeaderComponent-body is-compact">
       <div class="compact-header" :class="{ 'show-compact': showCompact }">

@@ -432,7 +432,7 @@ export default {
   }
 
   &-label {
-    margin-right: 90px;
+    margin-right: 120px;
     
     &.is-inactive {
       pointer-events: none;

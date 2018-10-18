@@ -69,7 +69,8 @@ export default {
       :is-extractable="isExtractable" 
       :add-link="hasUri" 
       :actions="!floating && !isLocked" 
-      :is-local="isLocal"></entity-summary>
+      :is-local="isLocal"
+      :valueDisplayLimit=3></entity-summary>
   </div>
 </template>
 

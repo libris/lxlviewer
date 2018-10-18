@@ -433,7 +433,8 @@ export default {
             <entity-summary 
               :action-settings="localEntitySettings" 
               :focus-data="itemInfo" 
-              :should-link="false"></entity-summary>
+              :should-link="false"
+              :valueDisplayLimit=1></entity-summary>
             <summary-action 
               v-show="!extracting" 
               :options="localEntitySettings" 
@@ -517,7 +518,6 @@ export default {
       border: 1px solid @gray-lighter;
       max-height: inherit;
       max-height: fit-content;
-      resize: vertical;
       overflow: auto;
     }
   }

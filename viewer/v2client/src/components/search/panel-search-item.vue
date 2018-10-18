@@ -81,7 +81,8 @@ export default {
         :focus-data="focusData" 
         :should-link="true" 
         :is-compact="isCompact"
-        :shouldOpenTab="true">
+        :shouldOpenTab="true"
+        :valueDisplayLimit=1>
       </entity-summary>
     </div>
   </li>
