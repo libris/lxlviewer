@@ -296,7 +296,6 @@ export default {
 
   &-listItem {
     display: flex;
-    align-items: center;
     width: 100%;
     padding: 15px;
     background-color: @list-item-bg-even;
@@ -314,6 +313,7 @@ export default {
   &-footer {
     background-color: @panel-header-bg;
     border-top: 1px solid @gray-light;
+    padding: 5px 0;
   }
 
   &-windowControl {

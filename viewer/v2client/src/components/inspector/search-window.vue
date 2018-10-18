@@ -508,8 +508,6 @@ export default {
   &-summaryContainer {
     display: flex;
     flex-direction: column;
-    margin-bottom: 15px;
-    border-top: 1px solid @gray-lighter;
     padding: 10px;
 
     .EntitySummary {

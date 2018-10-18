@@ -40,8 +40,7 @@ export default {
 
 <template>
   <div class="SummaryAction">
-     <!-- This component now renders as an icon button or a regular button depending on the action event -->
-    <div v-if="options.icon !== null" class="SummaryAction-icon action-container fa-stack">
+    <div v-if="options.icon !== null" class="SummaryAction-roundButton fa-stack">
       <i v-show="replaced" class="fa fa-fw fa-ban icon icon--lg is-disabled" :title="'Replaced by' | translatePhrase"></i>
       <i v-show="disabled" class="fa fa-fw fa-check-circle icon icon--lg is-added" :title="'Added' | translatePhrase"></i>
       <i v-show="!disabled && !replaced" class="fa fa-fw fa-circle fa-stack-2x"></i>
@@ -78,10 +77,12 @@ export default {
 <style lang="less">
 
 .SummaryAction {
-  &-icon {
-    display: flex;
-    align-items: center;
-    width: 30px;
+  display: flex;
+  align-items: baseline;
+
+  &-roundButton {
+    margin-top: 10px;
+
     .fa-stack-1x {
       color: @white;
     }
