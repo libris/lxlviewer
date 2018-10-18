@@ -65,7 +65,7 @@ export default {
       // if (!this.focusData.hasOwnProperty('@id')) {
       //   return true;
       // }
-      return StringUtil.isLibrisResourceUri(this.focusData['@id'], this.settings.apiPath);
+      return StringUtil.isLibrisResourceUri(this.focusData['@id'], this.settings);
     },
     infoWithKeys() {
       const info = this.getSummary.info.concat(this.getSummary.sub);

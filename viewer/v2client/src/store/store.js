@@ -73,6 +73,7 @@ const store = new Vuex.Store({
       language: 'sv',
       environment: getEnvironment(),
       version: process.env.VERSION,
+      dataPath: process.env.DATA_PATH,
       apiPath: process.env.API_PATH,
       authPath: process.env.AUTH_PATH,
       idPath: process.env.ID_PATH,
