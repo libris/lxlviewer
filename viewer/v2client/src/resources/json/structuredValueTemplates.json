@@ -311,12 +311,12 @@
   },
   "PrimaryContribution": {
     "@type": "PrimaryContribution",
-    "agent": {},
+    "agent": [],
     "role": []
   },
   "Contribution": {
     "@type": "Contribution",
-    "agent": {},
+    "agent": [],
     "role": []
   },
   "ComplexSubject": {
