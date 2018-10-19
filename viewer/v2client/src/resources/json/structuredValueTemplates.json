@@ -257,6 +257,7 @@
     "name": ""
   },
   "Family": {
+    "@type": "Family",
     "name": "",
     "lifeSpan": ""
   },
