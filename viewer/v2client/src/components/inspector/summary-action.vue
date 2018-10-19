@@ -1,5 +1,7 @@
 <script>
 import { mapGetters } from 'vuex';
+import RoundButton from '@/components/shared/round-button.vue';
+import TooltipComponent from '@/components/shared/tooltip-component';
 
 export default {
   name: 'summary-action-button',
@@ -25,8 +27,16 @@ export default {
     ...mapGetters([
       'settings',
     ]),
+    getIcon() {
+      if (this.disabled) return 'check'
+      if (this.replaced) return 'ban'
+      if (this.options.icon) return this.options.icon
+      else return false;
+    }
   },
   components: {
+    'round-button': RoundButton,
+    'tooltip-component': TooltipComponent,
   },
   watch: {
   },
@@ -40,11 +50,11 @@ export default {
 
 <template>
   <div class="SummaryAction">
-    <div v-if="options.icon !== null" class="SummaryAction-roundButton fa-stack">
-      <i v-show="replaced" class="fa fa-fw fa-ban icon icon--lg is-disabled" :title="'Replaced by' | translatePhrase"></i>
-      <i v-show="disabled" class="fa fa-fw fa-check-circle icon icon--lg is-added" :title="'Added' | translatePhrase"></i>
-      <i v-show="!disabled && !replaced" class="fa fa-fw fa-circle fa-stack-2x"></i>
-      <i 
+    <div v-if="options.icon !== null" class="SummaryAction-roundButton">
+      <!-- <i v-show="replaced" class="fa fa-fw fa-ban icon icon--lg is-disabled" :title="'Replaced by' | translatePhrase"></i>
+      <i v-show="disabled" class="fa fa-fw fa-check-circle icon icon--lg is-added" :title="'Added' | translatePhrase"></i> -->
+      <!-- <i v-show="!disabled && !replaced" class="fa fa-fw fa-circle fa-stack-2x"></i> -->
+      <!-- <i 
         v-show="!(disabled || replaced) && options.styling === 'brand'"
           class="fa fa-fw icon fa-stack-1x"
           :class="options.icon"
@@ -53,8 +63,9 @@ export default {
           role="button"
           tabindex="0"
           :title="options.text | translatePhrase">
-        </i>
-        <i 
+        </i> -->
+
+        <!-- <i 
           v-show="!(disabled || replaced) && options.styling == 'gray'"
           class="fa fa-fw icon fa-stack-1x"
           :class="options.icon"
@@ -63,7 +74,23 @@ export default {
           tabindex="0"
           role="button"
           :title="options.text | translatePhrase">
-        </i>
+        </i> -->
+      <round-button 
+        :disabled="disabled || replaced"
+        :color="options.styling"
+        :icon="getIcon"
+        :indicator="!disabled || !replaced" 
+        @click="action()"
+        @keyup.enter="action()">
+        <template slot="tooltip">
+          <tooltip-component 
+            class="Toolbar-tooltipContainer"
+            position="left"
+            :show-tooltip="true"
+            :tooltip-text="'Hi!'" 
+            translation="translatePhrase"></tooltip-component>
+        </template>
+      </round-button>
     </div>
     <button v-else class="SummaryAction-button btn btn--sm"
       @click="action()"

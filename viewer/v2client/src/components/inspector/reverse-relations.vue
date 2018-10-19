@@ -330,7 +330,6 @@ export default {
   }
 
   &-header {
-    margin-bottom: 10px;
   }
 
   &-btnContainer {

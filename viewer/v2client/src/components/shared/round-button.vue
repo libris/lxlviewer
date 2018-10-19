@@ -8,6 +8,7 @@ Listen to the 'click' event in the parent as usual.
     * color - 'gray' (default), 'primary', 'danger' & 'warning'.
     * disabled - bool, true will not emit the action.
     * icon - pass in a fa-name, i.e 'check'. Otherwise child node will render as text content
+    * indicator - true gets an 'active' look
 */
 export default {
   name: 'round-button',
@@ -65,7 +66,7 @@ export default {
 
 <template>
   <button class="RoundButton btn"
-    :class="`${disabled ? 'btn-gray disabled' : 'btn-primary'} ${indicator ? 'indicate-active': ''}`"
+    :class="{'btn-gray disabled' : disabled, 'default': !indicator, 'btn-primary': indicator && !disabled}"
     @click="action()"
     @mouseover="mouseOver = true"
     @mouseout="mouseOver = false">
@@ -83,30 +84,30 @@ export default {
   margin-bottom: 10px;
   width: 32px;
   height: 32px;
-  border: 2px solid;
   border-radius: 16px;
   justify-content: center;
   align-items: center;
   padding: 0;
   font-weight: 700;
-  background-color: @neutral-color;
-  border-color: @brand-primary;
-  color: @brand-primary;
   transition: all 0.25s ease;
+
+  &.default {
+  background-color: @neutral-color;
+  color: @brand-primary;
+  border: 2px solid @brand-primary;
+  }
+
   &.disabled {
     color: @white;
-    border-color: @gray-lighter;
+    border: none;
   }
-  &.indicate-active {
-    background-color: @brand-primary;
-    border-color: @brand-primary;
-    color: @white;
-  }
+
   &-buttonText {
     &.small-text {
       font-size: 85%;
     }
   }
+  
   i {
     transition: transform 0.25s ease;
     &.rotate-45 {

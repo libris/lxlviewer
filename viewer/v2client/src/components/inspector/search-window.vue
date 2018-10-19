@@ -372,7 +372,7 @@ export default {
           class="SearchWindow-resultListContainer"
           :results="searchResult"
           :is-compact="isCompact"
-          icon="fa-chain"
+          icon="chain"
           :has-action="true"
           @use-item="replaceWith"
         />

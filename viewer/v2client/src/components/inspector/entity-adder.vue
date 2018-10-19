@@ -624,7 +624,7 @@ export default {
           :results="searchResult" 
           :disabled-ids="alreadyAdded"
           :is-compact="isCompact"
-          icon="fa-plus"
+          icon="plus"
           :has-action="true"
           @use-item="addLinkedItem">
         </panel-search-list>
