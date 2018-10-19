@@ -8,7 +8,6 @@ export default {
   name: 'entity-summary',
   props: {
     focusData: {},
-    lines: Number,
     actions: false,
     isLocal: false,
     isExtractable: false,
@@ -23,7 +22,11 @@ export default {
     isCompact: {
       default: false,
       type: Boolean
-    } 
+    },
+    valueDisplayLimit: {
+      default: 5,
+      type: Number
+    }, 
   },
   data() {
     return {
@@ -71,7 +74,9 @@ export default {
       const info = this.getSummary.info.concat(this.getSummary.sub);
       const infoObj = {};
       _.each(info, (node) => {
-        infoObj[node.property] = node.value.join(', ');
+        let remainder = node.value.length > this.valueDisplayLimit ? ` <span class="badge">+${node.value.length - this.valueDisplayLimit}</span>` : '';
+        let trimmed = node.value.slice(0, this.valueDisplayLimit).join(', ') + remainder;
+        infoObj[node.property] = trimmed;
       });
       return infoObj;
     },
@@ -98,11 +103,6 @@ export default {
         this.settings, 
         this.resources.context
       );
-      if (identifiersList.length > this.lines) {
-        const diff = identifiersList.length - this.lines;
-        identifiersList.splice((this.lines - 1), diff+1);
-        identifiersList.push(`+ ${diff+1} identifierare`);
-      }
       return identifiersList;
     },
     info() {
@@ -189,20 +189,20 @@ export default {
         <span class="EntitySummary-detailsKey EntitySummary-id uppercaseHeading--bold">
         {{ identifiers[0] }}</span>
         <span class="EntitySummary-detailsValue EntitySummary-idInfo" 
-          v-if="identifiers.length > 1">(+{{ identifiers.length-1 }})</span>
+          v-if="identifiers.length > 1"><span class="badge">+{{ identifiers.length-1 }}</span></span>
       </li>
       <li class="EntitySummary-detailsItem" 
         v-show="v.length !== 0" 
         v-for="(v, k) in infoWithKeys" 
         :key="k">
-        <div v-if="isReplacedBy === ''">
+        <span v-if="isReplacedBy === ''">
           <span  class="EntitySummary-detailsKey uppercaseHeading--bold">{{ k | labelByLang }}:</span>
-          <span class="EntitySummary-detailsValue">{{ v }}</span>
-        </div>
-        <div v-if="isReplacedBy !== ''">
+          <span class="EntitySummary-detailsValue" v-html="v"></span>
+        </span>
+        <span v-if="isReplacedBy !== ''">
           <span  class="EntitySummary-detailsKey uppercaseHeading--bold">Ersatt av:</span>
           <span class="EntitySummary-detailsValue">{{ v }}</span>
-        </div>
+        </span>
       </li>
     </ul>
   </div>
@@ -292,10 +292,10 @@ export default {
   }
 
   &-details {
-    display: inline;
     list-style-type: none;
     margin: 0;
     padding: 0px;
+    max-height: 175px;
   }
 
   &-id {
@@ -305,7 +305,7 @@ export default {
   }
 
   &-detailsItem {
-    display: inline-block;
+    display: inline;
     margin-right: 10px;
   }
 
@@ -315,6 +315,10 @@ export default {
   &-detailsValue {
     font-size: 16px;
     font-size: 1.6rem;
+    .badge {
+      background-color: @gray-lighter;
+      color: @gray-darker;
+    }
   }
 
   &-icon {
