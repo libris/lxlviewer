@@ -324,11 +324,11 @@ export default {
         <i class="ItemSibling-arrow fa fa-chevron-right " 
           :class="{'down': expanded}"
           @click="toggleExpanded()"></i>
-        <span class="type" 
+        <span class="ItemSibling-type" 
           @click="toggleExpanded($event)" 
           :title="item['@type']">{{ item['@type'] | labelByLang | capitalize }}:</span>
-        <span class="collapsed-label" @click="toggleExpanded()">
-          <span v-show="!expanded || isEmpty">{{getItemLabel}}</span>
+        <span class="ItemSibling-collapsedLabel" @click="toggleExpanded()">
+          <span class="ItemSibling-collapsedText" v-show="!expanded || isEmpty">{{getItemLabel}}</span>
           <span class="placeholder"> </span>
         </span>
       </div>
