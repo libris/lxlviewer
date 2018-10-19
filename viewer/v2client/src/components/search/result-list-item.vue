@@ -113,8 +113,7 @@ export default {
     align-items: center;
     margin: -1px 0 0 0;
     background-color: @white;
-    border: 1px solid @gray-light;
-    border-radius: 4px;
+    border: 1px solid @gray-lighter;
     padding: 0.5em 1em;
     line-height: 1.2em;
 
