@@ -380,6 +380,18 @@
     "@type": "SourceDataNotFound",
     "citationSource": ""
   },
+  "AdministrativeHistoryNote": {
+    "@type": "AdministrativeHistoryNote",
+    "label": ""
+  },
+  "BiographicalInformation": {
+    "@type": "BiographicalInformation",
+    "label": ""
+  },
+  "BiographicalOrHistoricalData": {
+    "@type": "BiographicalOrHistoricalData",
+    "label": ""
+  },
   "IntendedAudience": {
     "@type": "IntendedAudience",
     "label": ""
