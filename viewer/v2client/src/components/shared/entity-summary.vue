@@ -74,7 +74,7 @@ export default {
       const info = this.getSummary.info.concat(this.getSummary.sub);
       const infoObj = {};
       _.each(info, (node) => {
-        let remainder = node.value.length > this.valueDisplayLimit ? ` (+${node.value.length - this.valueDisplayLimit})` : '';
+        let remainder = node.value.length > this.valueDisplayLimit ? ` <span class="badge">+${node.value.length - this.valueDisplayLimit}</span>` : '';
         let trimmed = node.value.slice(0, this.valueDisplayLimit).join(', ') + remainder;
         infoObj[node.property] = trimmed;
       });
@@ -189,7 +189,7 @@ export default {
         <span class="EntitySummary-detailsKey EntitySummary-id uppercaseHeading--bold">
         {{ identifiers[0] }}</span>
         <span class="EntitySummary-detailsValue EntitySummary-idInfo" 
-          v-if="identifiers.length > 1">(+{{ identifiers.length-1 }})</span>
+          v-if="identifiers.length > 1"><span class="badge">+{{ identifiers.length-1 }}</span></span>
       </li>
       <li class="EntitySummary-detailsItem" 
         v-show="v.length !== 0" 
@@ -197,7 +197,7 @@ export default {
         :key="k">
         <span v-if="isReplacedBy === ''">
           <span  class="EntitySummary-detailsKey uppercaseHeading--bold">{{ k | labelByLang }}:</span>
-          <span class="EntitySummary-detailsValue">{{ v }}</span>
+          <span class="EntitySummary-detailsValue" v-html="v"></span>
         </span>
         <span v-if="isReplacedBy !== ''">
           <span  class="EntitySummary-detailsKey uppercaseHeading--bold">Ersatt av:</span>
@@ -315,6 +315,10 @@ export default {
   &-detailsValue {
     font-size: 16px;
     font-size: 1.6rem;
+    .badge {
+      background-color: @gray-lighter;
+      color: @gray-darker;
+    }
   }
 
   &-icon {
