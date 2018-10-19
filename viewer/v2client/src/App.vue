@@ -3,22 +3,19 @@
     <global-message />
     <navbar-component />
     <main class="MainContent" :class="{ 'container': !status.panelOpen, 'container-fluid': status.panelOpen }" role="main">
-      <div v-if="!resourcesLoaded" class="text-center MainContent-spinner">
-        <vue-simple-spinner size="large" :message="'Loading application' | translatePhrase"></vue-simple-spinner>
-      </div>
-      <transition name="fade">
+        <div v-if="status.loadingIndicators.length > 0" class="text-center MainContent-spinner">
+          <vue-simple-spinner size="large" :message="status.loadingIndicators[0] | translatePhrase"></vue-simple-spinner>
+        </div>
+        <div v-if="resourcesLoadingError" class="ResourcesLoadingError">
+          <i class="fa fa-warning fa-4x text-danger"></i>
+          <div>
+            <h2>Kunde inte hämta nödvändiga resurser</h2>
+            <p>Testa att ladda om sidan.</p>
+            <p>Om felet kvarstår, kontakta <a href="mailto:libris@kb.se">libris@kb.se</a>.</p>
+          </div>
+        </div>
         <router-view v-if="resourcesLoaded" />
-      </transition>
     </main>
-    <modal-component title="Error" modal-type="danger" class="ResourceLoadingErrorModal"
-      :closeable="false" 
-      v-if="resourcesLoadingError">
-      <div slot="modal-body" class="ResourceLoadingErrorModal-body">
-        <p>Kunde inte hämta nödvändiga resurser.</p>
-        <p>Testa att ladda om sidan.</p>
-        <p>Om felet kvarstår, kontakta <a href="mailto:libris@kb.se">libris@kb.se</a>.</p>
-      </div>
-    </modal-component>
     <portal-target name="sidebar" multiple />
     <footer-component></footer-component>
     <notification-list></notification-list>
@@ -94,10 +91,12 @@ export default {
   .fade-enter, .fade-leave-active {
     opacity: 0
   }
-  .ResourceLoadingErrorModal {
-    &-body {
-      text-align: center;
-      padding: 2em;
+  .ResourcesLoadingError {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    i {
+      margin-right: 0.5em;
     }
   }
 }
