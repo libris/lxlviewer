@@ -14,6 +14,7 @@ export default {
       default: () => [],
     },
     icon: null,
+    text: '',
     path: '',
     index: Number,
     isCompact: false,
@@ -74,6 +75,7 @@ export default {
         :path="path"
         :key="index"
         :icon="icon"
+        :text="text"
         :is-compact="isCompact"
         :has-action="hasAction"
         @use-item="useItem(item)"

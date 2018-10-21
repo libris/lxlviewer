@@ -311,7 +311,7 @@ export default {
           <i class="fa fa-question-circle icon icon--md" 
             @mouseenter="showHelp = true">
           </i>
-          <div class="PanelComponent-headerInfoBox help-tooltip" v-if="showHelp">
+          <div class="PanelComponent-headerInfoBox help-tooltip" v-show="showHelp">
             <div>
               <p class="header">
                 {{"Step" | translatePhrase}} 1: {{"Search for existing linked entities" | translatePhrase}}
@@ -373,6 +373,7 @@ export default {
           :results="searchResult"
           :is-compact="isCompact"
           icon="chain"
+          text="Replace local entity"
           :has-action="true"
           @use-item="replaceWith"
         />

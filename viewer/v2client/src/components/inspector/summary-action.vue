@@ -32,7 +32,13 @@ export default {
       if (this.replaced) return 'ban'
       if (this.options.icon) return this.options.icon
       else return false;
-    }
+    },
+    getTooltipText() {
+      if (this.disabled) return 'Added';
+      if (this.replaced) return 'Replaced';
+      if (this.options.text) return this.options.text;
+      else return false;
+    },
   },
   components: {
     'round-button': RoundButton,
@@ -51,30 +57,6 @@ export default {
 <template>
   <div class="SummaryAction">
     <div v-if="options.icon !== null" class="SummaryAction-roundButton">
-      <!-- <i v-show="replaced" class="fa fa-fw fa-ban icon icon--lg is-disabled" :title="'Replaced by' | translatePhrase"></i>
-      <i v-show="disabled" class="fa fa-fw fa-check-circle icon icon--lg is-added" :title="'Added' | translatePhrase"></i> -->
-      <!-- <i v-show="!disabled && !replaced" class="fa fa-fw fa-circle fa-stack-2x"></i> -->
-      <!-- <i 
-        v-show="!(disabled || replaced) && options.styling === 'brand'"
-          class="fa fa-fw icon fa-stack-1x"
-          :class="options.icon"
-          @click.stop="action()"
-          @keyup.enter.stop="action()"
-          role="button"
-          tabindex="0"
-          :title="options.text | translatePhrase">
-        </i> -->
-
-        <!-- <i 
-          v-show="!(disabled || replaced) && options.styling == 'gray'"
-          class="fa fa-fw icon fa-stack-1x"
-          :class="options.icon"
-          @click="action()"
-          @keyup.enter="action()"
-          tabindex="0"
-          role="button"
-          :title="options.text | translatePhrase">
-        </i> -->
       <round-button 
         :disabled="disabled || replaced"
         :color="options.styling"
@@ -82,12 +64,12 @@ export default {
         :indicator="!disabled || !replaced" 
         @click="action()"
         @keyup.enter="action()">
-        <template slot="tooltip">
-          <tooltip-component 
+        <template slot="tooltip" v-if="getTooltipText">
+          <tooltip-component
             class="Toolbar-tooltipContainer"
-            position="left"
+            position="right"
             :show-tooltip="true"
-            :tooltip-text="'Hi!'" 
+            :tooltip-text="getTooltipText" 
             translation="translatePhrase"></tooltip-component>
         </template>
       </round-button>
