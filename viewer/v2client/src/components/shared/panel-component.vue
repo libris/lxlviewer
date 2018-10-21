@@ -121,8 +121,8 @@ export default {
         <div class="PanelComponent-header">
           <slot name="panel-header">
             <div class="PanelComponent-titleContainer">
-              <slot name="panel-header-info"></slot>
               <h4 class="PanelComponent-title">{{ translatedTitle }}</h4>
+              <slot name="panel-header-info"></slot>
             </div>
             <span class="PanelComponent-windowControl">
               <i class="fullview-toggle-button fa fa-compress icon icon--md"
@@ -235,7 +235,7 @@ export default {
   }
 
   &-headerInfo {
-      margin-right: 10px;
+      margin-left: 10px;
   }
 
   &-headerInfoBox {
@@ -249,7 +249,7 @@ export default {
     border-radius: 4px;
     box-shadow: @shadow-panel;
     padding: 10px;
-    z-index: 3;
+    z-index: 4;
     max-width: 50%;
     font-size: 14px;
     font-size: 1.4rem;
