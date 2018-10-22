@@ -208,9 +208,13 @@ export default {
       return baseClasses.indexOf(type) > -1;
     },
     download(text) {
+      let focusId = this.inspector.data.record['@id'];
+      if (this.recordType === 'Item') {
+        focusId = this.inspector.data.mainEntity.itemOf['@id'].split('#')[0];
+      }
       const element = document.createElement('a');
       element.setAttribute('href', 'data:application/octet-stream,' + encodeURIComponent(text));
-      const splitIdParts = this.inspector.data.record['@id'].split('/');
+      const splitIdParts = focusId.split('/');
       const id = splitIdParts[splitIdParts.length-1];
       element.setAttribute('download', id);
       element.style.display = 'none';
@@ -238,6 +242,23 @@ export default {
       'settings',
       'status',
     ]),
+    isMyHolding() {
+      if (this.recordType === 'Item' && this.inspector.data.mainEntity.heldBy['@id'] === this.libraryUrl) {
+        return true;
+      }
+      return false;
+    },
+    compiledIsAvailable() {
+      if (
+        (this.recordType === 'Instance' || this.isMyHolding) &&
+        this.hasSigel &&
+        !this.inspector.status.editing &&
+        this.user.email !== ''
+      ) {
+        return true;
+      }
+      return false;
+    },
     validTemplates() {
       const type = this.inspector.data.mainEntity['@type'];
       const baseType = VocabUtil.getRecordType(type, this.resources.vocab, this.resources.context);
@@ -288,7 +309,11 @@ export default {
       return `https://libris.kb.se/library/${this.user.settings.activeSigel}`;
     },
     compileMARCUrl() {
-      return `/_compilemarc?library=${this.libraryUrl}&id=${this.inspector.data.record['@id']}`;
+      let focusId = this.inspector.data.record['@id'];
+      if (this.recordType === 'Item') {
+        focusId = this.inspector.data.mainEntity.itemOf['@id'].split('#')[0];
+      }
+      return `/_compilemarc?library=${this.libraryUrl}&id=${focusId}`;
     },
     hasSigel() {
       return typeof this.user.settings.activeSigel !== 'undefined';
@@ -412,14 +437,14 @@ export default {
           {{ value.label }}
           </a>
         </li>
-        <li class="Toolbar-menuItem" v-if="isSubClassOf('Instance') && hasSigel && !inspector.status.editing && user.email !== ''">
+        <li class="Toolbar-menuItem" v-if="compiledIsAvailable">
           <a class="Toolbar-menuLink"  v-if="downloadIsSupported" @click="getCompiledPost()">
             <i class="fa fa-fw fa-download" aria-hidden="true"></i>
-              {{"Download compiled MARC21" | translatePhrase}}
+              {{"Download compiled" | translatePhrase}} MARC21
           </a>
           <a class="Toolbar-menuLink"  v-if="!downloadIsSupported" :href="compileMARCUrl">
             <i class="fa fa-fw fa-download" aria-hidden="true"></i>
-              {{"Download compiled MARC21" | translatePhrase}}
+              {{"Download compiled" | translatePhrase}} MARC21
           </a>
         </li>
         <li class="Toolbar-menuItem">
