@@ -66,7 +66,7 @@ export default {
 
 <template>
   <button class="RoundButton btn"
-    :class="{'btn-gray disabled' : disabled, 'default': !indicator, 'btn-primary': indicator && !disabled}"
+    :class="{'btn-gray disabled' : disabled, 'default': !indicator && !disabled, 'btn-primary': indicator && !disabled}"
     @click="action()"
     @mouseover="mouseOver = true"
     @mouseout="mouseOver = false">
@@ -95,6 +95,11 @@ export default {
   background-color: @neutral-color;
   color: @brand-primary;
   border: 2px solid @brand-primary;
+
+    &:hover {
+      border-color: @link-hover-color; 
+      color: @link-hover-color;
+    }
   }
 
   &.disabled {

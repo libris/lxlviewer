@@ -75,6 +75,9 @@ export default {
     translatedTitle() {
       return StringUtil.getUiPhraseByLang(this.title, this.user.settings.language);
     },
+    hasFooter() {
+      return !!this.$slots["panel-footer"];
+    },
   },
   watch: {
     'status.keyActions'(actions) {
@@ -147,7 +150,7 @@ export default {
           <code>No content recieved from parent</code>
         </slot>
       </div>
-      <div class="PanelComponent-footer">
+      <div class="PanelComponent-footer" v-if="hasFooter">
         <slot name="panel-footer"></slot>
       </div>
     </div>

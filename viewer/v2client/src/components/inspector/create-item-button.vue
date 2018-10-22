@@ -135,9 +135,10 @@ export default {
 <style lang="less">
 
 .CreateItem {
-  margin-top: 10px;
 
   &-btn {
+    margin-top: 10px;
+    
     &--hasHolding {
       background: @white;
       color: @brand-primary;
