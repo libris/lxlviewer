@@ -12,7 +12,8 @@ export default {
       text: 'button',
     },
     disabled: true,
-    replaced: true
+    replaced: true,
+    extracting: false,
   },
   data() {
     return {
@@ -58,7 +59,7 @@ export default {
   <div class="SummaryAction">
     <div class="SummaryAction-roundButton">
       <round-button 
-        :disabled="disabled || replaced"
+        :disabled="disabled || replaced || extracting"
         :color="options.styling"
         :icon="getIcon"
         :indicator="!disabled || !replaced" 

@@ -433,7 +433,7 @@ export default {
             <p class="preview-entity-text uppercaseHeading">{{ "Create link from local entity" | translatePhrase }}:</p>
             <div class="SearchWindow-summaryContainer">
               <summary-action 
-                v-show="!extracting"
+                :extracting="extracting"
                 :options="localEntitySettings" 
                 @action="extract()"></summary-action>
             <entity-summary 
