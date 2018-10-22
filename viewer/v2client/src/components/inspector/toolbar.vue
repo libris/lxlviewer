@@ -382,13 +382,13 @@ export default {
       <ul class="dropdown-menu Toolbar-menuList ToolsMenu-menu" 
         v-show="toolsMenuActive">
         <li class="Toolbar-menuItem">
-          <a class="Toolbar-menuLink" @click="formControl('expand-item')">
+          <a class="Toolbar-menuLink" @click="formControl('expand-item'), hideToolsMenu()">
           <i class="fa fa-fw fa-expand" aria-hidden="true"></i>
           {{"Expand all" | translatePhrase}}{{ getKeybindingText('expand-item') ? ` (${getKeybindingText('expand-item')})` : ''}}
           </a>
         </li>
         <li class="Toolbar-menuItem">
-          <a class="Toolbar-menuLink" @click="formControl('collapse-item')">
+          <a class="Toolbar-menuLink" @click="formControl('collapse-item'), hideToolsMenu()">
           <i class="fa fa-fw fa-compress" aria-hidden="true"></i>
           {{"Collapse all" | translatePhrase}}{{ getKeybindingText('collapse-item') ? ` (${getKeybindingText('collapse-item')})` : ''}}
           </a>
