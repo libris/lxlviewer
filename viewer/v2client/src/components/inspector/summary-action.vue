@@ -56,7 +56,7 @@ export default {
 
 <template>
   <div class="SummaryAction">
-    <div v-if="options.icon !== null" class="SummaryAction-roundButton">
+    <div class="SummaryAction-roundButton">
       <round-button 
         :disabled="disabled || replaced"
         :color="options.styling"
@@ -74,12 +74,6 @@ export default {
         </template>
       </round-button>
     </div>
-    <button v-else class="SummaryAction-button btn btn--sm"
-      @click="action()"
-      @keyup.enter="action()"
-      :class="{'btn-primary' : options.styling === 'brand'}">
-      {{options.text | translatePhrase}}
-    </button>
   </div>
 </template>
 
@@ -90,7 +84,7 @@ export default {
   align-items: baseline;
 
   &-roundButton {
-    margin-top: 10px;
+    margin-top: 5px;
 
     .fa-stack-1x {
       color: @white;

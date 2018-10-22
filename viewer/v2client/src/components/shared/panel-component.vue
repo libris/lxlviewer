@@ -315,7 +315,7 @@ export default {
 
   &-footer {
     background-color: @panel-header-bg;
-    border-top: 1px solid @gray-light;
+    border-top: 1px solid @gray-lighter;
     padding: 5px 0;
   }
 

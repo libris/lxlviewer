@@ -38,7 +38,7 @@ export default {
       localEntitySettings: {
         text: 'Create and link entity',
         styling: 'brand',
-        icon: null,
+        icon: 'chain',
         show: true,
         inspectAction: false,
       },
@@ -429,18 +429,19 @@ export default {
                 tabindex="0"></i>
               </div>
             </div>
-          <div class="SearchWindow-summaryContainer">
+          <div class="SearchWindow-footerContainer">
             <p class="preview-entity-text uppercaseHeading">{{ "Create link from local entity" | translatePhrase }}:</p>
-
+            <div class="SearchWindow-summaryContainer">
+              <summary-action 
+                v-show="!extracting"
+                :options="localEntitySettings" 
+                @action="extract()"></summary-action>
             <entity-summary 
               :action-settings="localEntitySettings" 
               :focus-data="itemInfo" 
               :should-link="false"
               :valueDisplayLimit=1></entity-summary>
-            <summary-action 
-              v-show="!extracting" 
-              :options="localEntitySettings" 
-              @action="extract()"></summary-action>
+            </div>
           </div>
         </template>
       </panel-component>
@@ -507,20 +508,28 @@ export default {
     width: 45px;
   }
 
-  &-summaryContainer {
+  &-footerContainer {
     display: flex;
     flex-direction: column;
     padding: 10px 15px;
 
     .EntitySummary {
-      background: @white;
-      border-radius: 4px;
-      margin-bottom: 10px;
-      border: 1px solid @gray-lighter;
       max-height: inherit;
       max-height: fit-content;
       overflow: auto;
+      padding: 0 0 0 15px;
+      border-left: 1px solid @gray-lighter;
+      margin-left: 15px;
     }
+  }
+
+  &-summaryContainer {
+    display: flex;
+    flex-direction: row;
+    border: 1px solid @gray-lighter;
+    background: @white;
+    border-radius: 4px;
+    padding: 15px;
   }
 
   &-panel {
