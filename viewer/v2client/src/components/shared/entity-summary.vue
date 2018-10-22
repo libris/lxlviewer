@@ -58,16 +58,12 @@ export default {
         const fnurgel = uriParts[uriParts.length-1];
         return `/${fnurgel}`;
       }
-
       return '';
     },
     settings() {
       return this.$store.getters.settings;
     },
     isLibrisResource() {
-      // if (!this.focusData.hasOwnProperty('@id')) {
-      //   return true;
-      // }
       return StringUtil.isLibrisResourceUri(this.focusData['@id'], this.settings);
     },
     infoWithKeys() {

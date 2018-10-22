@@ -1,9 +1,9 @@
 <script>
 import * as _ from 'lodash';
-import * as VocabUtil from '../../utils/vocab';
-import * as DataUtil from '../../utils/data';
-import * as LayoutUtil from '../../utils/layout';
-
+import * as VocabUtil from '@/utils/vocab';
+import * as DataUtil from '@/utils/data';
+import * as LayoutUtil from '@/utils/layout';
+import * as StringUtil from '@/utils/string';
 import CardComponent from '../shared/card-component';
 import TooltipComponent from '../shared/tooltip-component';
 import EntitySummary from '../shared/entity-summary';
@@ -36,6 +36,9 @@ export default {
     };
   },
   computed: {
+    settings() {
+      return this.$store.getters.settings;
+    },
     isNewlyAdded() {
       if (this.inspector.status.lastAdded === this.fullPath) {
         return true;
@@ -44,7 +47,18 @@ export default {
     },
     fullPath() {
       return `${this.parentPath}.{"@id":"${this.item['@id']}"}`;
-    }
+    },
+    routerPath() {
+      if (this.item.hasOwnProperty('@id')) {
+        const uriParts = this.item['@id'].split('/');
+        const fnurgel = uriParts[uriParts.length-1];
+        return `/${fnurgel}`;
+      }
+      return '';
+    },
+    isLibrisResource() {
+      return StringUtil.isLibrisResourceUri(this.item['@id'], this.settings);
+    },
   },
   watch: {
   },
@@ -119,7 +133,8 @@ export default {
       v-if="!expanded" 
       :class="{ 'is-locked': isLocked, 'is-highlighted': showCardInfo, 'is-newlyAdded': isNewlyAdded, 'is-removeable': removeHover}">
       <span class="ItemEntity-label chip-label">
-        <span v-if="!expanded">{{getItemLabel}}</span>
+        <span v-if="!expanded && isLibrisResource"><router-link :to="routerPath">{{getItemLabel}}</router-link></span>
+        <span v-if="!expanded && !isLibrisResource"><a :href="item['@id']">{{getItemLabel}}</a></span>
         <span class="placeholder"></span></span>
       <div class="ItemEntity-removeButton chip-removeButton icon icon--sm" v-if="!isLocked">
         <i class="fa fa-times-circle" 
@@ -190,6 +205,12 @@ export default {
     }
   }
   &-label {
+    a {
+      color: @link-color;
+      &:hover {
+        color: @link-color;
+      }
+    }
   }
   
   @media print {
