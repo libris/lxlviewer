@@ -104,7 +104,7 @@
     "Step": "Steg",
     "Search for existing linked entities": "Sök efter befintliga länkade entiteter",
     "Search for existing linked entities to replace your local entity": "Sök efter befintliga länkade entiteter att ersätta din lokala entitet med",
-    "If you can't find an existing link, you can create one using your local entity below": "Om du inte hittar en befintlig länk kan du skapa en egen av den lokala entiteten nedan",
+    "If you can't find an existing link, you can create one using your local entity below": "Om du inte hittar en befintlig länk kan du skapa en egen länk av den lokala entiteten nedan",
     "Identify and replace": "Identifiera och ersätt",
     "If you identify a matching linked entity, click it to replace the local entity with it": "Om du identifierar en matchande länkad entitet, klicka på den för att ersätta den lokala entiteten med den länkade",
     "If no matching linked entity is found you can create and link. This will create a linked entity containing the information in the entity chosen for linking": "Om du inte lyckas identifiera en matchande länkad entitet kan du skapa och länka. Detta kommer att skapa en länkad entitet med samma innehåll som entiteten som valts för länkning",
