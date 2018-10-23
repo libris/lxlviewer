@@ -345,6 +345,9 @@ export default {
         v-show="otherFormatMenuActive"
         @click="hideOtherFormatMenu" >
         <li class="Toolbar-menuItem">
+          <a class="Toolbar-menuLink" :href="focusData['@id']">Formell resurs</a>
+        </li>
+        <li class="Toolbar-menuItem">
           <a class="Toolbar-menuLink" :href="getOtherDataFormat('jsonld')">JSON-LD</a>
         </li>
         <li class="Toolbar-menuItem">

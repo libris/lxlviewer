@@ -122,10 +122,11 @@ export function getNumberOfVowels(str) {
   return m === null ? 0 : m.length;
 }
 
-export function isLibrisResourceUri(uri, apiPath) {
+export function isLibrisResourceUri(uri, settings) {
+  const baseUri = settings.dataPath;
   if (uri) {
-    if (uri.startsWith(apiPath)) {
-      const uriWithoutPath = uri.replace(apiPath + '/', '');
+    if (uri.startsWith(baseUri)) {
+      const uriWithoutPath = uri.replace(baseUri + '/', '');
       const uriWithoutEnd = uriWithoutPath.split('/')[0].split('#')[0];
       if (uriWithoutEnd.length > 10 && getNumberOfVowels(uriWithoutEnd) === 0) {
         return true;

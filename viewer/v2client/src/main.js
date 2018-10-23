@@ -69,14 +69,17 @@ new Vue({
   created() {
     this.initWarningFunc();
     this.fetchHelpDocs();
+    store.dispatch('pushLoadingIndicator', 'Loading application');
     Promise.all(this.getLdDependencies()).then((resources) => {
       store.dispatch('setContext', resources[2]['@context']);
       store.dispatch('setupVocab', resources[0]['@graph']);
       store.dispatch('setDisplay', resources[1]);
       store.dispatch('changeResourcesStatus', true);
+      store.dispatch('removeLoadingIndicator', 'Loading application');
     }, (error) => {
       window.lxlWarning(`🔌 The API (at ${this.settings.apiPath}) might be offline!`);
       store.dispatch('changeResourcesLoadingError', true);
+      store.dispatch('removeLoadingIndicator', 'Loading application');
     });
   },
   watch: {

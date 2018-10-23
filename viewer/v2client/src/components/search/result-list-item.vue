@@ -33,7 +33,7 @@ export default {
       return StringUtil.getFormattedEntries(this.getSummary.header, this.resources.vocab, this.settings, this.resources.context);
     },
     isLibrisResource() {
-      return StringUtil.isLibrisResourceUri(this.focusData['@id'], this.settings.apiPath);
+      return StringUtil.isLibrisResourceUri(this.focusData['@id'], this.settings);
     },
   },
   components: {
@@ -55,7 +55,7 @@ export default {
       :import-item="importItem" 
       :add-link="true" 
       @import-this="importThis()"
-      :lines="4">
+      :valueDisplayLimit=3>
     </entity-summary>
     <div class="ResultItem-relationsContainer"
       v-if="this.$route.params.perimeter !== 'remote'">
@@ -113,8 +113,7 @@ export default {
     align-items: center;
     margin: -1px 0 0 0;
     background-color: @white;
-    border: 1px solid @gray-light;
-    border-radius: 4px;
+    border: 1px solid @gray-lighter;
     padding: 0.5em 1em;
     line-height: 1.2em;
 

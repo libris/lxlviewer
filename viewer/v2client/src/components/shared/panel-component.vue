@@ -217,6 +217,7 @@ export default {
     display: flex;
     flex-wrap: nowrap;
     flex-direction: column;
+    flex-shrink: 0;
     background-color: @panel-header-bg;
     border-bottom: 1px solid @gray-lighter;
     padding: 20px 15px 0 15px;
@@ -312,6 +313,7 @@ export default {
 
   &-footer {
     background-color: @panel-header-bg;
+    border-top: 1px solid @gray-light;
   }
 
   &-windowControl {

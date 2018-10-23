@@ -12,7 +12,15 @@ export default {
     tooltipText: '',
     translation: '',
     showTooltip: false,
-    literalString: false,
+    literalString: {
+      type: Object,
+      default: () => {
+        return {
+          position: 'before',
+          text: '',
+        }
+      },
+    },
     keybindName: '',
     position: {
       default: 'top',
@@ -42,6 +50,23 @@ export default {
         return this.tooltipText;
       }
     },
+    totalText() {
+      let text = '';
+      if (this.literalString.position == 'before') {
+        text += this.literalString.text;
+        text += ' ';
+        text += this.translatedText;
+      } else {
+        text += this.translatedText;
+        text += ' ';
+        text += this.literalString.text;
+      }
+      if (this.keyBindingText) {
+        text += ' ';
+        text += this.keyBindingText;
+      }
+      return text;
+    },
     keybindingText() {
       let str = '';
       if (this.keybindName) {
@@ -60,9 +85,7 @@ export default {
 <template>
   <div class="tooltip-container-outer" :class="{ 'show-tooltip': compShowTooltip, 'is-onLeft': position == 'left', 'is-onTop': position == 'top' }" @mouseover="hoverTooltip = true" @mouseleave="hoverTooltip = false">
     <div class="tooltip-container-inner">
-      {{ literalString ?` ${literalString} ` : '' }}
-      {{ translatedText }}
-      {{ keybindingText ? ` (${keybindingText})` : ''}}
+      {{ totalText }}
     </div>
   </div>
 </template>
