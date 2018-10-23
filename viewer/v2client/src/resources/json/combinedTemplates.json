@@ -450,11 +450,6 @@
             {
               "@type": "EAN",
               "value": ""
-            },
-            {
-              "@type": "ISBN",
-              "value": "",
-              "qualifier": ""
             }
           ],
           "publication": [
@@ -486,11 +481,7 @@
               "label": ""
             }
           ],
-          "carrierType": [
-            {
-              "@id": "https://id.kb.se/term/rda/AudioDisc"
-            }
-          ],
+          "carrierType": [],
           "mediaType": [
             {
               "@id": "https://id.kb.se/term/rda/Audio"
@@ -542,9 +533,7 @@
         "work": {
           "@id": "https://id.kb.se/TEMPID#work",
           "@type": "Music",
-          "language": [{
-            "@id": "https://id.kb.se/language/swe"
-          }],
+          "language": [],
           "classification": [{
               "@type": "ClassificationDdc",
               "code": "",
@@ -564,24 +553,12 @@
           ],
           "contribution": [{
               "@type": "PrimaryContribution",
-              "agent": {
-                "@type": "Person",
-                "familyName": "",
-                "givenName": "",
-                "lifeSpan": ""
-              },
-              "role": [{
-                "@id": "https://id.kb.se/relator/author"
-              }]
+              "agent": {},
+              "role": []
             },
             {
               "@type": "Contribution",
-              "agent": {
-                "@type": "Person",
-                "familyName": "",
-                "givenName": "",
-                "lifeSpan": ""
-              }
+              "agent": {}
             }
           ],
           "contentType": [
@@ -596,7 +573,15 @@
               "subtitle": ""
             }
           ],
-          "genreForm": [],
+          "genreForm": [
+            {
+              "@id": "https://id.kb.se/term/saogf/Musikinspelningar"
+            }
+          ],
+          "hasNote": [{
+            "@type": "marc:ParticipantOrPerformerNote",
+            "label": ""
+          }],
           "hasPart": [
             {
               "@type": "Work",
