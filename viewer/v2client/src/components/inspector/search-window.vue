@@ -369,6 +369,7 @@ export default {
 
         <template slot="panel-body">
           <panel-search-list
+            v-if="!loading"
             class="SearchWindow-resultListContainer"
             :results="searchResult"
             :is-compact="isCompact"
