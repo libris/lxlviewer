@@ -102,7 +102,7 @@ export default {
     getPath() {
       return this.suffix;
     },
-    isEmpty() {
+     isEmpty() {
       let bEmpty = true;
       // Check if item has any keys besides @type and _uid. If not, we'll consider it empty.
       _.each(this.item, (value, key) => {
@@ -160,21 +160,16 @@ export default {
       }
     },
     expand() {
-      this.$el.getElementsByClassName('js-expandable')[0].classList.remove('is-inactive');
       this.expanded = true;
     },
     collapse() {
       this.expanded = false;
     },
     toggleExpanded() {
-      if (this.hasItems()) {
-        if (this.expanded === true) {
-          this.collapse();
-        } else {   
-          this.expand();
-        }
-      } else {
-        this.$el.getElementsByClassName('js-expandable')[0].classList.add('is-inactive');
+      if (this.expanded === true) {
+        this.collapse();
+      } else {   
+        this.expand();
       }
     },
     openExtractDialog() {
@@ -185,13 +180,6 @@ export default {
     closeExtractDialog() {
       this.extractDialogActive = false;
       this.extracting = false;
-    },
-    hasItems() {
-      if (this.$el.getElementsByTagName('ul')[0].childNodes.length == 0)  {
-        return false;
-      } else {
-        return true;
-      }
     },
     doExtract() {
       this.extracting = true;
@@ -270,7 +258,7 @@ export default {
     },
   },
   watch: {
-     isEmpty(val) {
+    isEmpty(val) {
       if (val) {
         this.$el.getElementsByClassName('js-expandable')[0].classList.add('is-inactive');
         this.$el.classList.remove('is-expanded');
@@ -289,6 +277,7 @@ export default {
   },
   mounted() {
     if (this.isLastAdded) {
+      this.toggleExpanded();
       setTimeout(()=> {
         if (this.isEmpty) {
           this.$el.getElementsByClassName('js-expandable')[0].classList.add('is-inactive');
@@ -449,7 +438,7 @@ export default {
     margin: 0 0 0 1px;
     cursor: pointer;
 
-    &.is-inactive {
+    .is-inactive & {
       color: @gray-light;
       pointer-events: none;
       cursor: not-allowed;
