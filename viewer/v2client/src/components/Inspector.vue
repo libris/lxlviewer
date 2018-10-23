@@ -155,11 +155,13 @@ export default {
           this.loadFailure = {
             status: response.status,
           };
+          this.$store.dispatch('removeLoadingIndicator', 'Loading document');
         } else {
           this.$store.dispatch('pushNotification', { 
             type: 'danger', 
             message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)}. ${response.status} ${response.statusText}` 
           });
+          this.$store.dispatch('removeLoadingIndicator', 'Loading document');
         }
       }, (error) => {
         this.$store.dispatch('pushNotification', { 
@@ -255,6 +257,7 @@ export default {
       const insertData = this.inspector.insertData;
       this.$store.dispatch('setInspectorStatusValue', { property: 'isNew', value: true });
       if (!insertData.hasOwnProperty('@graph') || insertData['@graph'].length === 0) {
+        this.$store.dispatch('removeLoadingIndicator', 'Loading document');
         this.$router.go(-1);
         console.warn('New document called without input data, routing user back.')
       } else {
