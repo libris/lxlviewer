@@ -61,6 +61,7 @@ export default {
       });
     },
     getRelationsInfo() {
+      this.checkingRelations = true;
       const query = {
         '_limit': 0,
       };
@@ -198,14 +199,12 @@ export default {
           default:
             return;
         }
-      }
-    },
-    recordId(newVal) {
-      if (newVal !== 'https://id.kb.se/TEMPID') {
-        this.getRelationsInfo();
-      } else {
-        this.numberOfRelations = 0;
-        this.relationInfo = [];
+      } else if (val.name === 'post-events') {
+        switch (val.value) {
+          case 'on-post-loaded':
+            this.getRelationsInfo();
+          break;
+        }
       }
     },
     numberOfRelations: function (val) {
@@ -214,7 +213,9 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      this.getRelationsInfo();
+      if (this.$route.name === 'Search') {
+        this.getRelationsInfo();
+      }
     });
   },
 };
