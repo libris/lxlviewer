@@ -95,8 +95,6 @@ new Vue({
       //   this.combokeys.detach();
       // }
 
-      console.log(state);
-
       this.combokeys = new ComboKeys(document.documentElement);
       require('combokeys/plugins/global-bind')(this.combokeys); // TODO: Solve with ES6 syntax
       const stateSettings = KeyBindings[state];
