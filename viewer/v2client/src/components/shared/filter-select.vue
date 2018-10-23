@@ -126,19 +126,10 @@ export default {
       event.preventDefault();
       if (event.target.classList.contains('js-filterSelect') || 
       event.target.classList.contains('js-createSelect')) {
-        const input = event.target.getElementsByClassName('js-filterSelectInput')[0];
-        this.simulateClick(input);
+        const input = this.$refs.filterselectInput;
+        input.click();
         input.focus();
       }
-    },
-    simulateClick(elem) {
-      let evt = new MouseEvent('click', {
-        bubbles: true,
-        cancelable: true,
-        view: window
-      });
-      
-      let canceled = !elem.dispatchEvent(evt);
     },
     clear() {
       let allObj = {};
@@ -194,6 +185,7 @@ export default {
       @keyup="filter()"
       @keyup.space="checkInput($event)"
       @click="filterVisible = !filterVisible"
+      ref="filterselectInput"
       :tabindex="-1">
     <ul class="FilterSelect-dropdown js-filterSelectDropdown"
       :class="{'is-visible': filterVisible}">
