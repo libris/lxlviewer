@@ -269,6 +269,12 @@ export default {
       this.$store.dispatch('flushChangeHistory');
       this.postLoaded = true;
       this.$store.dispatch('removeLoadingIndicator', 'Loading document');
+      this.$nextTick(() => {
+        this.$store.dispatch('pushInspectorEvent', { 
+          name: 'post-events', 
+          value: 'on-post-loaded'
+        });
+      })
     },
     doCancel() {
       this.$store.dispatch('setInspectorStatusValue', { 
@@ -536,7 +542,7 @@ export default {
             <reverse-relations 
               class="Inspector-reverse" 
               :main-entity="this.inspector.data.mainEntity" 
-              v-if="!inspector.status.isNew"></reverse-relations>
+              v-if="!inspector.status.isNew || recordType === 'Item'"></reverse-relations>
           </div>
           
           <entity-header id="main-header" 
