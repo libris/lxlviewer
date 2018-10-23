@@ -403,6 +403,7 @@ export default {
             <i class="fa fa-trash-o action-button icon icon--sm"
               tabindex="0"
               v-on:click="removeThis(true)"
+              @keyup.enter="removeThis(true)"
               @focus="removeHover = true, removeHighlight(true, $event)" 
               @blur="removeHover = false, removeHighlight(false, $event)"
               @mouseover="removeHover = true, removeHighlight(true, $event)" 
