@@ -274,6 +274,7 @@
               "subtitle": ""
             }
           ],
+          "responsibilityStatement": "",
           "identifiedBy": [
             {
               "@type": "EAN",
@@ -325,6 +326,32 @@
             }
           ],
           "videoCharacteristic": [],
+          "seriesMembership": [
+            {
+              "@type": "SeriesMembership",
+              "inSeries": {
+                "@type": "Instance",
+                "identifiedBy": [
+                  {
+                    "@type": "ISSN",
+                    "value": ""
+                  }
+                ],
+                "instanceOf": {
+                  "@type": "Work",
+                  "hasTitle": [
+                    {
+                      "@type": "Title",
+                      "mainTitle": ""
+                    }
+                  ]
+                }
+              },
+              "marc:seriesTracingPolicy": "",
+              "seriesEnumeration": "",
+              "seriesStatement": [""]
+            }
+          ],
           "marc:hasSystemDetailsNote": {
             "@type": "marc:SystemDetailsNote",
             "marc:systemDetailsNote": ""
@@ -359,18 +386,7 @@
               }
             }
           ],
-          "contribution": [{
-              "@type": "PrimaryContribution",
-              "agent": {
-                "@type": "Person",
-                "familyName": "",
-                "givenName": "",
-                "lifeSpan": ""
-              },
-              "role": [{
-                "@id": "https://id.kb.se/relator/author"
-              }]
-            },
+          "contribution": [
             {
               "@type": "Contribution",
               "agent": {
@@ -378,7 +394,8 @@
                 "familyName": "",
                 "givenName": "",
                 "lifeSpan": ""
-              }
+              },
+              "role": []
             }
           ],
           "language": [],
@@ -397,34 +414,10 @@
             }
           ],
           "genreForm": [],
-          "participantNote": [],
-          "hasPart": [
-            {
-              "@type": "Work",
-              "contribution": [
-                {
-                  "@type": "PrimaryContribution",
-                  "agent": {
-                    "@type": "Person",
-                    "familyName": "",
-                    "givenName": "",
-                    "lifeSpan": ""
-                  },
-                  "role": [
-                    {
-                      "@id": "https://id.kb.se/relator/director"
-                    }
-                  ]
-                }
-              ],
-              "hasTitle": [
-                {
-                  "@type": "Title",
-                  "mainTitle": ""
-                }
-              ]
-            }
-          ],
+          "hasNote": [{
+            "@type": "marc:ParticipantOrPerformerNote",
+            "label": ""
+          }],
           "subject": [],
           "summary": [
             {
