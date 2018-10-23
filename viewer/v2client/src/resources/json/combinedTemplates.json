@@ -89,11 +89,7 @@
               "label": ""
             }
           ],
-          "carrierType": [
-            {
-              "@id": "https://id.kb.se/term/rda/AudioDisc"
-            }
-          ],
+          "carrierType": [],
           "mediaType": [
             {
               "@id": "https://id.kb.se/term/rda/Audio"
@@ -129,12 +125,6 @@
           "hasNote": [
             {
               "@type": "Note",
-              "label": ""
-            }
-          ],
-          "tableOfContents": [
-            {
-              "@type": "TableOfContents",
               "label": ""
             }
           ],
@@ -184,7 +174,10 @@
                 "familyName": "",
                 "givenName": "",
                 "lifeSpan": ""
-              }
+              },
+              "role": [{
+                "@id": "https://id.kb.se/relator/nrt"
+              }]
             }
           ],
           "contentType": [
@@ -192,41 +185,15 @@
               "@id": "https://id.kb.se/term/rda/SpokenWord"
             }
           ],
-          "hasTitle": [
+          "genreForm": [
             {
-              "@type": "Title",
-              "mainTitle": "",
-              "subtitle": ""
+              "@id": "https://id.kb.se/term/saogf/Ljudb%C3%B6cker"
             }
           ],
-          "genreForm": [],
-          "hasPart": [
-            {
-              "@type": "Work",
-              "contribution": [
-                {
-                  "@type": "PrimaryContribution",
-                  "agent": {
-                    "@type": "Person",
-                    "familyName": "",
-                    "givenName": "",
-                    "lifeSpan": ""
-                  },
-                  "role": [
-                    {
-                      "@id": "https://id.kb.se/relator/author"
-                    }
-                  ]
-                }
-              ],
-              "hasTitle": [
-                {
-                  "@type": "Title",
-                  "mainTitle": ""
-                }
-              ]
-            }
-          ]
+          "hasNote": [{
+            "@type": "marc:ParticipantOrPerformerNote",
+            "label": ""
+          }]
         }
       }
     },
