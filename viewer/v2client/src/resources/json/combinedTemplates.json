@@ -1403,9 +1403,7 @@
         "work": {
           "@id": "https://id.kb.se/TEMPID#work",
           "@type": "Multimedia",
-          "language": [{
-            "@id": "https://id.kb.se/language/swe"
-          }],
+          "language": [],
           "languageNote": [],
           "classification": [{
               "@type": "ClassificationDdc",
@@ -1432,7 +1430,8 @@
                 "familyName": "",
                 "givenName": "",
                 "lifeSpan": ""
-              }
+              },
+              "role": []
             }
           ],
           "intendedAudience": [
