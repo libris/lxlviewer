@@ -339,6 +339,19 @@ export default {
     },
     highLightLastAdded() {
       if (this.isLastAdded === true) {
+        if (this.fieldValue === null || (_.isArray(this.fieldValue) && this.fieldValue.length === 0 )) {
+          const entityAdder = this.$refs.entityAdder;
+          this.$nextTick(() => {
+            if (entityAdder) {
+              LayoutUtil.enableTabbing();
+              if (entityAdder.$refs.adderTypeSelect) {
+                entityAdder.$refs.adderTypeSelect.focus();
+              } else {
+                entityAdder.$refs.adderFocusElement.focus();
+              }
+            }
+          });
+        }
         let element = this.$el;
         let topOfElement = LayoutUtil.getPosition(element).y;
         if (topOfElement > 0) {
@@ -390,6 +403,7 @@ export default {
             <i class="fa fa-trash-o action-button icon icon--sm"
               tabindex="0"
               v-on:click="removeThis(true)"
+              @keyup.enter="removeThis(true)"
               @focus="removeHover = true, removeHighlight(true, $event)" 
               @blur="removeHover = false, removeHighlight(false, $event)"
               @mouseover="removeHover = true, removeHighlight(true, $event)" 
@@ -402,6 +416,7 @@ export default {
           </div>
           <entity-adder class="Field-entityAdder Field-action"
             v-if="!locked && (isRepeatable || isEmptyObject)" 
+            ref="entityAdder"
             :field-key="fieldKey" 
             :already-added="linkedIds" 
             :compositional="isCompositional" 
@@ -442,6 +457,7 @@ export default {
         </div>
         <entity-adder class="Field-action Field-entityAdder"
           v-if="!locked && (isRepeatable || isEmptyObject)" 
+          ref="entityAdder"
           :field-key="fieldKey" 
           :path="getPath" 
           :already-added="linkedIds" 

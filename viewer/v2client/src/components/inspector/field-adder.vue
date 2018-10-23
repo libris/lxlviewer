@@ -260,6 +260,7 @@ export default {
       <i 
         class="FieldAdder-innerIcon fa fa-plus-circle icon icon--sm" 
         tabindex="0"
+        ref="adderButton"
         @click="show" 
         @keyup.enter="show"
         @mouseenter="showToolTip = true, actionHighlight(true, $event)" 
@@ -276,6 +277,7 @@ export default {
 
     <button v-if="!inner" class="FieldAdder-add btn btn-default toolbar-button" 
       v-on:click="show" 
+      ref="adderButton"
       @keyup.enter="show"
       @mouseenter="showToolTip = true" 
       @mouseleave="showToolTip = false">

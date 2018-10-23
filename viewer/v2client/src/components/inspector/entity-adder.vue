@@ -525,6 +525,7 @@ export default {
           class="fa fa-plus-circle icon icon--sm" 
           tabindex="0"
           aria-hidden="true"
+          ref="adderFocusElement"
           @click="add($event)" 
           @keyup.enter="add($event)"
           @mouseenter="showToolTip = true, actionHighlight(true, $event)" 
@@ -542,6 +543,7 @@ export default {
       <i 
         class="EntityAdder-addIcon fa fa-plus-circle icon icon--sm" 
         tabindex="0"
+        ref="adderFocusElement"
         v-on:click="add($event)" 
         @keyup.enter="add($event)"
         @mouseenter="showToolTip = true, actionHighlight(true, $event)" 
@@ -560,6 +562,7 @@ export default {
       v-on-clickaway="dismissTypeChooser">
       <select class="EntityAdder-typeSelect customSelect" 
         v-model="selectedType" 
+        ref="adderTypeSelect"
         @change="addType(selectedType, true)">
         <option disabled value="">{{"Choose type" | translatePhrase}}</option>
         <option v-for="(term, index) in getClassTree"  

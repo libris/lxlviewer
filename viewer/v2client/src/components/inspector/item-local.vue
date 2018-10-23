@@ -278,9 +278,12 @@ export default {
   mounted() {
     if (this.isLastAdded) {
       this.toggleExpanded();
-      setTimeout(()=> {     
+      const fieldAdder = this.$refs.fieldAdder;
+      setTimeout(() => {
         if (this.isEmpty) {
           this.$el.getElementsByClassName('js-expandable')[0].classList.add('is-inactive');
+          LayoutUtil.enableTabbing();
+          fieldAdder.$refs.adderButton.focus();
         } else {
           this.expand();
         }
@@ -355,7 +358,7 @@ export default {
           </i>
         </div>
 
-        <field-adder class="ItemLocal-action"
+        <field-adder ref="fieldAdder" class="ItemLocal-action"
           v-if="!isLocked" 
           :entity-type="item['@type']" 
           :allowed="allowedProperties" 
