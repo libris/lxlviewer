@@ -38,6 +38,13 @@ export default {
     }
   },
   methods: {
+    focusSearchForm() {
+      if (this.searchPerimeter === 'libris') {
+        document.querySelectorAll('#librisPanel input')[0].focus();
+      } else {
+        document.querySelectorAll('#remotePanel input')[0].focus();
+      }
+    },
     switchPerimeter(id) {
       this.$router.push({ path: `/search/${id}` });
     },
@@ -256,6 +263,13 @@ export default {
     currentComputedInput(newValue) {
       document.querySelector('.js-qsmartInput').children[newValue].focus();
     },
+    searchPerimeter(newVal, oldVal) {
+      if (newVal !== oldVal) {
+        this.$nextTick(() => {
+          this.focusSearchForm();
+        });
+      }
+    },
     resultData: function(newVal, oldVal) {
       if (typeof newVal !== 'undefined' && Object.keys(newVal).length) {
         if (this.usedFilters !== '') {
@@ -276,9 +290,7 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      if (this.searchPerimeter === 'libris') {
-        document.querySelector('.js-qsmartInput').children[this.inputData.currentInput].focus();
-      }
+      this.focusSearchForm();
     });
   },
 };
@@ -306,7 +318,7 @@ export default {
       </div> 
     </div>
     <form id="searchForm" class="SearchBar-form">
-      <div class="SearchBar-formContent is-librisSearch" id="librisPanel" 
+      <div class="SearchBar-formContent is-librisSearch" id="librisPanel"
         v-if="searchPerimeter === 'libris'">
         <div class="SearchBar-formGroup form-group">
           <label class="SearchBar-inputLabel hidden" id="searchlabel" for="q" aria-hidden="false">
