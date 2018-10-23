@@ -83,7 +83,10 @@ export default {
 </script>
 
 <template>
-  <div class="tooltip-container-outer" :class="{ 'show-tooltip': compShowTooltip, 'is-onLeft': position == 'left', 'is-onTop': position == 'top' }" @mouseover="hoverTooltip = true" @mouseleave="hoverTooltip = false">
+  <div class="tooltip-container-outer" 
+    :class="{ 'show-tooltip': compShowTooltip, 'is-onLeft': position == 'left', 'is-onTop': position == 'top', 'is-onRight': position == 'right' }" 
+    @mouseover="hoverTooltip = true" 
+    @mouseleave="hoverTooltip = false">
     <div class="tooltip-container-inner">
       {{ totalText }}
     </div>
@@ -133,6 +136,27 @@ export default {
       pointer-events: none;
       border-top-color: @black;
       margin-left: 3px;
+    }
+  }
+
+  &.is-onRight {
+    left: 100%;
+    margin-left: 10px;
+    transform: none;
+    top: 0;
+    z-index: 99;
+
+    &:after {
+      right: 100%;
+      left: auto;
+      bottom: auto;
+      top: 50%;
+      width: 8px;
+      margin-top: -6px;
+      border-left-color: @black;
+      border-width: 6px;
+      margin-left: -1px;
+      transform: rotate(180deg);
     }
   }
 

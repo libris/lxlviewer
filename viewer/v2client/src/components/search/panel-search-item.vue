@@ -19,6 +19,7 @@ export default {
       default: false,
     },
     icon: null,
+    text: '',
     hasAction: false,
     path: '',
     isReplaced: false,
@@ -28,7 +29,7 @@ export default {
     return {
       keyword: '',
       listItemSettings: {
-        text: 'Add',
+        text: this.text,
         styling: 'brand',
         inspectAction: true,
         path: this.path,
@@ -148,7 +149,7 @@ export default {
       border: solid @gray-lighter-transparent;
       border-width: 0px 0px 0px 1px;
       padding: 0 15px;
-      margin-left: 10px;
+      margin-left: 15px;
     }
   }
 }

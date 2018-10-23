@@ -38,7 +38,7 @@ export default {
       localEntitySettings: {
         text: 'Create and link entity',
         styling: 'brand',
-        icon: null,
+        icon: 'chain',
         show: true,
         inspectAction: false,
       },
@@ -301,112 +301,115 @@ export default {
 <template>
   <div class="SearchWindow">
     <portal to="sidebar" v-if="active">
-    <panel-component class="SearchWindow-panel"
-      v-if="active"
-      :title="'Link entity' | translatePhrase"
-      @close="hide()">
-      <template slot="panel-header-info">
-        <div class="PanelComponent-headerInfo help-tooltip-container" 
-          @mouseleave="showHelp = false">
-          <i class="fa fa-question-circle icon icon--md" 
-            @mouseenter="showHelp = true">
-          </i>
-          <div class="PanelComponent-headerInfoBox help-tooltip" v-if="showHelp">
-            <div>
-              <p class="header">
-                {{"Step" | translatePhrase}} 1: {{"Search for existing linked entities" | translatePhrase}}
-              </p>
-            </div>
-            <div>
-              <p class="header">
-                {{"Step" | translatePhrase}} 2: {{"Identify and replace" | translatePhrase}}
-              </p>
-              <p>
-                {{"If you identify a matching linked entity, click it to replace the local entity with it" | translatePhrase}}.
-              </p>
-            </div>
-            <div>
-              <p class="header">
-                {{"Create and link entity" | translatePhrase}}
-              </p>
-              <p>
-                {{"If no matching linked entity is found you can create and link. This will create a linked entity containing the information in the entity chosen for linking" | translatePhrase}}.
-              </p>
-            </div>
-          </div>
-        </div>
-      </template>
-      <template slot="panel-header-extra">
-        <div class="SearchWindow-header search-header">
-          <div class="SearchWindow-extractControls">
-            <div class="copy-title" v-if="canCopyTitle">
-              <label>
-                <input type="checkbox" name="copyTitle" v-model="copyTitle" /> 
-                {{ "Copy title from" | translatePhrase }} {{this.editorData.mainEntity['@type'] | labelByLang}}
-              </label>
+      <panel-component class="SearchWindow-panel"
+        v-if="active"
+        :title="'Link entity' | translatePhrase"
+        @close="hide()">
+        <template slot="panel-header-info">
+          <div class="PanelComponent-headerInfo help-tooltip-container" 
+            @mouseleave="showHelp = false">
+            <i class="fa fa-question-circle icon icon--md" 
+              @mouseenter="showHelp = true">
+            </i>
+            <div class="PanelComponent-headerInfoBox help-tooltip" v-show="showHelp">
+              <div>
+                <p class="header">
+                  {{"Step" | translatePhrase}} 1: {{"Search for existing linked entities" | translatePhrase}}
+                </p>
+              </div>
+              <div>
+                <p class="header">
+                  {{"Step" | translatePhrase}} 2: {{"Identify and replace" | translatePhrase}}
+                </p>
+                <p>
+                  {{"If you identify a matching linked entity, click it to replace the local entity with it" | translatePhrase}}.
+                </p>
+              </div>
+              <div>
+                <p class="header">
+                  {{"Create and link entity" | translatePhrase}}
+                </p>
+                <p>
+                  {{"If no matching linked entity is found you can create and link. This will create a linked entity containing the information in the entity chosen for linking" | translatePhrase}}.
+                </p>
+              </div>
             </div>
           </div>
-          <div class="SearchWindow-search search">
-            <div class="SearchWindow-inputContainer input-container form-group panel">
-              <input 
-                class="SearchWindow-input SearchWindow-entity-search-keyword-input customInput form-control"
-                v-model="keyword"
-                ref="input"
-                autofocus
-                :placeholder="'Search' | translatePhrase">
-              <filter-select class="EntityAdder-filterSearchInput FilterSelect--insideInput"
-                :class-name="'js-filterSelect'"
-                :custom-placeholder="'All types:'"
-                :options="selectOptions"
-                :options-all="getRange"
-                :is-filter="true"
-                :options-selected="''"
-                v-on:filter-selected="setFilter($event, keyword)"></filter-select>
+        </template>
+        <template slot="panel-header-extra">
+          <div class="SearchWindow-header search-header">
+            <div class="SearchWindow-extractControls">
+              <div class="copy-title" v-if="canCopyTitle">
+                <label>
+                  <input type="checkbox" name="copyTitle" v-model="copyTitle" /> 
+                  {{ "Copy title from" | translatePhrase }} {{this.editorData.mainEntity['@type'] | labelByLang}}
+                </label>
+              </div>
+            </div>
+            <div class="SearchWindow-search search">
+              <div class="SearchWindow-inputContainer input-container form-group panel">
+                <input 
+                  class="SearchWindow-input SearchWindow-entity-search-keyword-input customInput form-control"
+                  v-model="keyword"
+                  ref="input"
+                  autofocus
+                  :placeholder="'Search' | translatePhrase">
+                <filter-select class="EntityAdder-filterSearchInput FilterSelect--insideInput"
+                  :class-name="'js-filterSelect'"
+                  :custom-placeholder="'All types:'"
+                  :options="selectOptions"
+                  :options-all="getRange"
+                  :is-filter="true"
+                  :options-selected="''"
+                  v-on:filter-selected="setFilter($event, keyword)"></filter-select>
+              </div>
             </div>
           </div>
-        </div>
-      </template>
+        </template>
 
-      <template slot="panel-body">
-        <panel-search-list
-          class="SearchWindow-resultListContainer"
-          :results="searchResult"
-          :is-compact="isCompact"
-          icon="fa-chain"
-          :has-action="true"
-          @use-item="replaceWith"
-        />
-        <!-- <div class="SearchWindow-resultListContainer">
-          <ul v-show="displaySearchList" class="SearchWindow-resultList">
-            <li class="PanelComponent-listItem SearchWindow-resultItem"
-              :class="{'is-compact' : isCompact}"
-              v-for="item in searchResult" 
-              :key="item['@id']" >
-              <entity-summary class="SearchWindow-entitySummary"
-                :focus-data="item" 
-                :lines="4" 
-                :should-open-tab="true"
-                :isCompact="isCompact"></entity-summary>
-              <summary-action class="SearchWindow-listItemControls" :options="addPayload(item)" @action="replaceWith(item)"></summary-action>
-            </li>
-          </ul>
-        </div> -->
-        <div class="PanelComponent-searchStatus" v-show="keyword.length === 0 && !extracting">
-          {{ "Search for existing linked entities" | translatePhrase }}...
-        </div>
-        <div class="PanelComponent-searchStatus" v-show="loading">
-          <vue-simple-spinner size="large" :message="'Searching' | translatePhrase"></vue-simple-spinner>
-        </div>
-        <div class="PanelComponent-searchStatus" v-show="foundNoResult">
-          <p>{{ "No results" | translatePhrase }}</p>
-          <p>{{"Search again or" | translatePhrase}} {{"Create and link entity" | translatePhrase}}</p>
-        </div>
-        <div class="PanelComponent-searchStatus" v-show="extracting">
-          <vue-simple-spinner size="large" :message="'Creating link' | translatePhrase"></vue-simple-spinner>
-        </div>
-      </template>
-      <template slot="panel-footer">
-         <div class="SearchWindow-resultControls" v-if="!loading && searchResult.length > 0" >
+        <template slot="panel-body">
+          <panel-search-list
+            v-if="!loading"
+            class="SearchWindow-resultListContainer"
+            :results="searchResult"
+            :is-compact="isCompact"
+            icon="chain"
+            text="Replace local entity"
+            :has-action="true"
+            @use-item="replaceWith"
+          />
+          <!-- <div class="SearchWindow-resultListContainer">
+            <ul v-show="displaySearchList" class="SearchWindow-resultList">
+              <li class="PanelComponent-listItem SearchWindow-resultItem"
+                :class="{'is-compact' : isCompact}"
+                v-for="item in searchResult" 
+                :key="item['@id']" >
+                <entity-summary class="SearchWindow-entitySummary"
+                  :focus-data="item" 
+                  :lines="4" 
+                  :should-open-tab="true"
+                  :isCompact="isCompact"></entity-summary>
+                <summary-action class="SearchWindow-listItemControls" :options="addPayload(item)" @action="replaceWith(item)"></summary-action>
+              </li>
+            </ul>
+          </div> -->
+          <div class="PanelComponent-searchStatus" v-show="keyword.length === 0 && !extracting">
+            <p>1. {{ "Search for existing linked entities to replace your local entity" | translatePhrase }}.</p>
+            <p>2. {{ "If you can't find an existing link, you can create one using your local entity below" | translatePhrase }}.</p>
+          </div>
+          <div class="PanelComponent-searchStatus" v-show="loading">
+            <vue-simple-spinner size="large" :message="'Searching' | translatePhrase"></vue-simple-spinner>
+          </div>
+          <div class="PanelComponent-searchStatus" v-show="foundNoResult">
+            <p>{{ "Your search gave no results" | translatePhrase }}.</p>
+            <p>{{ "Try again" | translatePhrase }} {{ "or create a link from your local data below" | translatePhrase }}.</p>
+          </div>
+          <div class="PanelComponent-searchStatus" v-show="extracting">
+            <vue-simple-spinner size="large" :message="'Creating link' | translatePhrase"></vue-simple-spinner>
+          </div>
+        </template>
+        <template slot="panel-footer">
+          <div class="SearchWindow-resultControls" v-if="!loading && searchResult.length > 0" >
             <modal-pagination 
               @go="go" 
               :numberOfPages="numberOfPages" 
@@ -425,23 +428,24 @@ export default {
                 :class="{'icon--primary' : isCompact}"
                 :title="'Compact view' | translatePhrase"
                 tabindex="0"></i>
+              </div>
             </div>
-          </div>
-        <div class="SearchWindow-summaryContainer">
-            <p class="preview-entity-text uppercaseHeading">{{ "Your new entity" | translatePhrase }}:</p>
-
+          <div class="SearchWindow-footerContainer">
+            <p class="preview-entity-text uppercaseHeading">{{ "Create link from local entity" | translatePhrase }}:</p>
+            <div class="SearchWindow-summaryContainer">
+              <summary-action 
+                :extracting="extracting"
+                :options="localEntitySettings" 
+                @action="extract()"></summary-action>
             <entity-summary 
               :action-settings="localEntitySettings" 
               :focus-data="itemInfo" 
               :should-link="false"
               :valueDisplayLimit=1></entity-summary>
-            <summary-action 
-              v-show="!extracting" 
-              :options="localEntitySettings" 
-              @action="extract()"></summary-action>
+            </div>
           </div>
-      </template>
-    </panel-component>
+        </template>
+      </panel-component>
     </portal>
   </div>
 </template>
@@ -505,22 +509,28 @@ export default {
     width: 45px;
   }
 
-  &-summaryContainer {
+  &-footerContainer {
     display: flex;
     flex-direction: column;
-    margin-bottom: 15px;
-    border-top: 1px solid @gray-lighter;
-    padding: 10px;
+    padding: 10px 15px;
 
     .EntitySummary {
-      background: @white;
-      border-radius: 4px;
-      margin-bottom: 10px;
-      border: 1px solid @gray-lighter;
       max-height: inherit;
       max-height: fit-content;
       overflow: auto;
+      padding: 0 0 0 15px;
+      border-left: 1px solid @gray-lighter;
+      margin-left: 15px;
     }
+  }
+
+  &-summaryContainer {
+    display: flex;
+    flex-direction: row;
+    border: 1px solid @gray-lighter;
+    background: @white;
+    border-radius: 4px;
+    padding: 15px;
   }
 
   &-panel {

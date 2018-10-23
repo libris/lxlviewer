@@ -135,7 +135,8 @@ export default {
           class="RelationsList-resultListContainer"
           :results="resultItems"
           :is-compact="isCompact"
-          icon="fa-chain"
+          icon="chain"
+          text="Link entity"
           v-if="!loading && searchResult !== null && error == null"
         />
         <div v-if="error !== null">
@@ -153,8 +154,6 @@ export default {
         </div>
       </template>
     </panel-component>
-   
-   
   </div>
 </template>
 

@@ -580,7 +580,7 @@ export default {
           v-if="getFullRange.length > 0" 
           @mouseleave="rangeInfo = false">
           <i class="fa fa-info-circle icon icon--md" @mouseenter="rangeInfo = true"></i>
-          <div class="PanelComponent-headerInfoBox" v-if="rangeInfo">
+          <div class="PanelComponent-headerInfoBox" v-show="rangeInfo">
             <p class="header">
               {{ "Allowed types" | translatePhrase }}:
             </p>
@@ -624,7 +624,8 @@ export default {
           :results="searchResult" 
           :disabled-ids="alreadyAdded"
           :is-compact="isCompact"
-          icon="fa-plus"
+          icon="plus"
+          text="Add"
           :has-action="true"
           @use-item="addLinkedItem">
         </panel-search-list>
@@ -791,7 +792,6 @@ export default {
     display: flex;
     justify-content: flex-end;
     padding: 10px 15px;
-    border-top: 1px solid @white;
   }
 
   &-createBtn {

@@ -75,6 +75,9 @@ export default {
     translatedTitle() {
       return StringUtil.getUiPhraseByLang(this.title, this.user.settings.language);
     },
+    hasFooter() {
+      return !!this.$slots["panel-footer"];
+    },
   },
   watch: {
     'status.keyActions'(actions) {
@@ -121,8 +124,8 @@ export default {
         <div class="PanelComponent-header">
           <slot name="panel-header">
             <div class="PanelComponent-titleContainer">
-              <slot name="panel-header-info"></slot>
               <h4 class="PanelComponent-title">{{ translatedTitle }}</h4>
+              <slot name="panel-header-info"></slot>
             </div>
             <span class="PanelComponent-windowControl">
               <i class="fullview-toggle-button fa fa-compress icon icon--md"
@@ -147,7 +150,7 @@ export default {
           <code>No content recieved from parent</code>
         </slot>
       </div>
-      <div class="PanelComponent-footer">
+      <div class="PanelComponent-footer" v-if="hasFooter">
         <slot name="panel-footer"></slot>
       </div>
     </div>
@@ -235,7 +238,7 @@ export default {
   }
 
   &-headerInfo {
-      margin-right: 10px;
+      margin-left: 10px;
   }
 
   &-headerInfoBox {
@@ -249,7 +252,7 @@ export default {
     border-radius: 4px;
     box-shadow: @shadow-panel;
     padding: 10px;
-    z-index: 3;
+    z-index: 4;
     max-width: 50%;
     font-size: 14px;
     font-size: 1.4rem;
@@ -282,7 +285,7 @@ export default {
   }
 
   &-searchStatus {
-    padding: 15px;
+    padding: 15px 20px;
     display: flex;    
     flex-direction: column;
     align-items: center;
@@ -296,7 +299,6 @@ export default {
 
   &-listItem {
     display: flex;
-    align-items: center;
     width: 100%;
     padding: 15px;
     background-color: @list-item-bg-even;
@@ -313,7 +315,8 @@ export default {
 
   &-footer {
     background-color: @panel-header-bg;
-    border-top: 1px solid @gray-light;
+    border-top: 1px solid @gray-lighter;
+    padding: 5px 0;
   }
 
   &-windowControl {
