@@ -6,6 +6,7 @@ import * as VocabUtil from '../../utils/vocab';
 import * as DisplayUtil from '../../utils/display';
 import * as DataUtil from '../../utils/data';
 import * as StringUtil from '@/utils/string';
+import * as LayoutUtil from '@/utils/layout';
 import ProcessedLabel from '../shared/processedlabel';
 import TooltipComponent from '../shared/tooltip-component';
 import ItemMixin from '../mixins/item-mixin';
@@ -77,16 +78,12 @@ export default {
       }
       return false;
     },
-  },
-  mounted() {
-    this.$nextTick(() => {
-      if (!this.isLocked) {
-        this.initializeTextarea();
-        if (!this.status.isNew && this.shouldFocus) {
-          this.addFocus();
-        }
+    isLastAdded() {
+      if (this.inspector.status.lastAdded === this.path) {
+        return true;
       }
-    });
+      return false;
+    },
   },
   methods: {
     removeHighlight(active) {
@@ -122,6 +119,27 @@ export default {
         });
       }
     },
+    highLightLastAdded() {
+      if (this.isLastAdded === true) {
+        let element = this.$el;
+        let topOfElement = LayoutUtil.getPosition(element).y;
+        if (topOfElement > 0) {
+          const windowHeight = window.innerHeight || 
+          document.documentElement.clientHeight || 
+          document.getElementsByTagName('body')[0].clientHeight;
+          const scrollPos = LayoutUtil.getPosition(this.$el).y - (windowHeight * 0.2);
+          LayoutUtil.scrollTo(scrollPos, 1000, 'easeInOutQuad', () => {
+            setTimeout(() => {
+              this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
+            }, 1000)
+          });
+        } else {
+          setTimeout(() => {
+            this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
+          }, 1000)
+        }
+      }
+    },
     initializeTextarea() {
       this.$nextTick(() => {
         let textarea = this.$el.querySelector('textarea');
@@ -130,7 +148,6 @@ export default {
       })
     },
     isEmpty() {
-      // TODO: Is the item empty?
       return false;
     },
     addFocus() {
@@ -141,13 +158,26 @@ export default {
     'processed-label': ProcessedLabel,
     'tooltip-component': TooltipComponent,
   },
+  mounted() {
+    this.$nextTick(() => {
+      if (!this.isLocked) {
+        this.highLightLastAdded();
+        this.initializeTextarea();
+        if (!this.status.isNew && this.shouldFocus) {
+          this.addFocus();
+        }
+      }
+      return false;
+    })
+  }
 };
 </script>
 
 <template>
-  <div class="ItemValue js-value" v-bind:class="{'is-locked': isLocked, 'unlocked': !isLocked, 'is-removed': removed}">
-    <textarea class="ItemValue-input js-itemValueInput"
-      rows="1"
+  <div class="ItemValue js-value" 
+    v-bind:class="{'is-locked': isLocked, 'unlocked': !isLocked, 'is-removed': removed, 'is-lastAdded': isLastAdded}">
+    <textarea class="ItemValue-input js-itemValueInput" 
+      rows="1" 
       v-model="value"
       @blur="update($event.target.value)"
       @keydown="handleKeys"
@@ -157,7 +187,11 @@ export default {
       v-if="isLocked && !shouldLink">{{fieldValue}}</span>
     <a class="ItemValue-text"
       v-if="isLocked && shouldLink"
-      :href="fieldValue" target="_blank" :title="`${fieldValue} (${newWindowText})`">{{fieldValue}} <i class="fa fa-external-link" aria-hidden="true"></i></a>
+      :href="fieldValue" 
+      target="_blank" 
+      :title="`${fieldValue} (${newWindowText})`">{{fieldValue}} 
+        <i class="fa fa-external-link" aria-hidden="true"></i>
+    </a>
     <div class="ItemValue-remover"
       v-show="!isLocked && isRemovable"
       v-on:click="removeThis()"
@@ -234,13 +268,13 @@ export default {
   }
 
   &.is-lastAdded {
-    -webkit-animation-duration: 3s;
-    animation-duration: 3s;
+    background-color: @add;
+    -webkit-animation-duration: 1s;
+    animation-duration: 1s;
     -webkit-animation-fill-mode: both;
     animation-fill-mode: both;
     -webkit-animation-name: pulse;
     animation-name: pulse;
   }
 }
-
 </style>
