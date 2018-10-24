@@ -328,14 +328,6 @@
     "@type": "Geographic",
     "prefLabel": ""
   },
-  "Temporal": {
-    "@type": "Temporal",
-    "prefLabel": ""
-  },
-  "Topic": {
-    "@type": "Topic",
-    "prefLabel": ""
-  },
   "GenreSubdivision": {
     "@type": "GenreSubdivision",
     "prefLabel": ""
