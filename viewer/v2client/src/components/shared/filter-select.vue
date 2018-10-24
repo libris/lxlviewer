@@ -21,7 +21,14 @@ export default {
     return {
       selectedObject: {},
       currentItem: -1,
-      filterVisible: false
+      filterVisible: false,
+      keyEnums: {
+        space: 32,
+        left: 37,
+        up: 38,
+        right: 39,
+        down: 40,
+      }
     };
   },
   computed: {
@@ -34,27 +41,31 @@ export default {
   },
   methods: {
     preventBodyScroll (e) {
-      if([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
+      const keys = this.keyEnums;
+      if([
+        keys.space,
+        keys.left,
+        keys.up,
+        keys.right,
+        keys.down
+        ].indexOf(e.keyCode) > -1) {
         e.preventDefault();
       } 
     },
     checkInput (event) {
       if (event.keyCode == 32) {
-        this.filterVisible = !this.filterVisible;
+        this.filterVisible = true;
       }
     },
-    handleSpacebar (event) {
-      if (event.keyCode == 32 && this.filterVisible) {
+    handleKeys (event) {
+      if (this.filterVisible) {
         this.preventBodyScroll(event);
       }
     },
     nextItem (event) {
       if (!this.filterVisible) {
-        window.removeEventListener('keydown', this.preventBodyScroll, false);
         return;
       } else {
-        window.addEventListener('keydown', this.preventBodyScroll, false); 
-
         let inputSel, inputEl, inputContSel, inputContEl, texts, items;
         inputContSel = document.getElementsByClassName(this.className);
         
@@ -163,7 +174,7 @@ export default {
   },
   mounted() {
     this.$el.addEventListener('keyup', this.nextItem);
-    this.$el.addEventListener('keyup', this.handleSpacebar);
+    this.$el.addEventListener('keyup', this.handleKeys);
 
     this.$nextTick(() => { 
     });
