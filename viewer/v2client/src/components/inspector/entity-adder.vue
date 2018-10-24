@@ -422,7 +422,14 @@ export default {
     addSibling(obj) {
       const linkObj = { '@id': `${this.inspector.data.record['@id']}#work` };
       const workObj = obj;
+      const workType = workObj['@type'];
       workObj['@id'] = linkObj['@id'];
+
+      this.$store.dispatch('setInspectorStatusValue', { 
+        property: 'lastAdded', 
+        value: 'work'
+      });
+
       this.$store.dispatch('updateInspectorData', {
         changeList: [
           {
