@@ -20,7 +20,7 @@ REVERSE = '@reverse'
 class VocabView:
 
     def __init__(self, vocab, context, display, lang='en'):
-        self.vocab_uri = vocab.uri
+        self.vocab_uri = u'https://id.kb.se/vocab/'
         self.vocab_data = vocab.data
         self.vocab_etag = vocab.etag
         self.context_data = context.data
@@ -35,7 +35,7 @@ class VocabView:
             node_id = node.get(ID)
             if not node_id:
                 continue
-            if not node_id.startswith(vocab.uri):
+            if not node_id.startswith(self.vocab_uri):
                 continue
 
             term_key = self._get_term_key(node_id)

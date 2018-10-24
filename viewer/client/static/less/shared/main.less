@@ -1,13 +1,14 @@
 @import '../shared/utils.less';
 @import '../shared/vocab.less';
-@import '../shared/edit.less';
 @import '../shared/graph.less';
 @import '../shared/items.less';
 @import '../shared/marcframe.less';
 @import '../shared/panel.less';
+@import '../shared/search.less';
 @import '../shared/navbar.less';
 @import '../shared/modals.less';
 @import '../shared/login.less';
+@import '../shared/thing.less';
 @import '../shared/button-and-links.less';
 @import '../../js/es6/components/shared/_variables.less';
 
@@ -116,6 +117,13 @@ h2 {
   font-weight: normal;
 }
 
+.libris-redirect-page {
+  text-align: center;
+  h1 { font-size: 50px; }
+  a { color: @brand-primary; }
+  a:hover { color: #333; }
+}
+
 footer {
   background-color: @bg-footer;
   border: 0px solid @border-footer;
@@ -170,74 +178,6 @@ footer {
     color: @text-alt-footer;
   }
 }
-
-
-// #page-content-wrapper {
-//   opacity: 0;
-//   transition: opacity 0.3s ease-out 0.3s;
-//   &.show-content {
-//     opacity: 1;
-//     flex: 1;
-//     display: flex;
-//     justify-content: space-between;
-//     flex-direction: column;
-//   }
-// }
-
-@sweep-color: #ddd;
-@skeleton-z: 1111;
-
-.skeleton-page {
-  position: fixed;
-  width: 100%;
-  z-index: @skeleton-z;
-  opacity: 1;
-  transition: opacity 0.3s ease 0s, width 0s ease 0.3s;
-  &.hide-skeleton {
-    opacity: 0;
-    width: 0%;
-    > .skeleton-container {
-      width: 0;
-      padding: 0;
-    }
-  }
-  .skeleton-container {
-    transition: width 0s ease 0.3s, padding 0s ease 0.3s;
-    margin-top: 15vh;
-    padding-top: 15px;
-    padding-bottom: 15px;
-    background: @white;
-    > div {
-      height: 75vh;
-      display: flex;
-      flex-direction: column;
-      align-items: stretch;
-      background-color: @sweep-color;
-      background-image: linear-gradient(100deg , @sweep-color 40%, #eee 50%, @sweep-color 60%);
-      background-size: 200px 1000px;
-      background-repeat: no-repeat;
-      animation: shine 1.5s infinite;
-      background-position: -200px 0;
-      overflow: hidden;
-      > div {
-        border-color: @white;
-        border-style: solid;
-        background: transparent;
-        border-width: 8px 0;
-        min-height: 40px;
-      }
-    }
-  }
-}
-
-// keyframe for skeleton animation
-@keyframes shine {
-  to {
-    background-position:
-      1200px 0;
-  }
-}
-
 
 a {
   color: @link-color;

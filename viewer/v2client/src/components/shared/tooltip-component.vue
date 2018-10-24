@@ -12,6 +12,15 @@ export default {
     tooltipText: '',
     translation: '',
     showTooltip: false,
+    literalString: {
+      type: Object,
+      default: () => {
+        return {
+          position: 'before',
+          text: '',
+        }
+      },
+    },
     keybindName: '',
     position: {
       default: 'top',
@@ -41,6 +50,23 @@ export default {
         return this.tooltipText;
       }
     },
+    totalText() {
+      let text = '';
+      if (this.literalString.position == 'before') {
+        text += this.literalString.text;
+        text += ' ';
+        text += this.translatedText;
+      } else {
+        text += this.translatedText;
+        text += ' ';
+        text += this.literalString.text;
+      }
+      if (this.keyBindingText) {
+        text += ' ';
+        text += this.keyBindingText;
+      }
+      return text;
+    },
     keybindingText() {
       let str = '';
       if (this.keybindName) {
@@ -57,9 +83,12 @@ export default {
 </script>
 
 <template>
-  <div class="tooltip-container-outer" :class="{ 'show-tooltip': compShowTooltip, 'is-onLeft': position == 'left', 'is-onTop': position == 'top' }" @mouseover="hoverTooltip = true" @mouseleave="hoverTooltip = false">
-    <div class="tooltip-container-inner" >
-      {{translatedText | capitalize}}{{ keybindingText ? ` (${keybindingText})` : ''}}
+  <div class="tooltip-container-outer" 
+    :class="{ 'show-tooltip': compShowTooltip, 'is-onLeft': position == 'left', 'is-onTop': position == 'top', 'is-onRight': position == 'right' }" 
+    @mouseover="hoverTooltip = true" 
+    @mouseleave="hoverTooltip = false">
+    <div class="tooltip-container-inner">
+      {{ totalText }}
     </div>
   </div>
 </template>
@@ -82,10 +111,10 @@ export default {
   }
 
   &.is-onLeft {
-    right: 50px;
+    right: 100%;
     margin-right: 10px;
     transform: none;
-    top: 10px;
+    top: 15%;
     &:after {
       left: 100%;
       right: auto;
@@ -107,6 +136,27 @@ export default {
       pointer-events: none;
       border-top-color: @black;
       margin-left: 3px;
+    }
+  }
+
+  &.is-onRight {
+    left: 100%;
+    margin-left: 10px;
+    transform: none;
+    top: 0;
+    z-index: 99;
+
+    &:after {
+      right: 100%;
+      left: auto;
+      bottom: auto;
+      top: 50%;
+      width: 8px;
+      margin-top: -6px;
+      border-left-color: @black;
+      border-width: 6px;
+      margin-left: -1px;
+      transform: rotate(180deg);
     }
   }
 

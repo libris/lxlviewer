@@ -14,9 +14,11 @@ export default {
       default: () => [],
     },
     icon: null,
+    text: '',
     path: '',
     index: Number,
     isCompact: false,
+    hasAction: false,
   },
   data() {
     return {
@@ -73,7 +75,9 @@ export default {
         :path="path"
         :key="index"
         :icon="icon"
+        :text="text"
         :is-compact="isCompact"
+        :has-action="hasAction"
         @use-item="useItem(item)"
         ></panel-search-item>
     </ul>
@@ -85,6 +89,7 @@ export default {
 .PanelSearchResult {
   &-list {
     padding: 0px;
+    margin-bottom: 0px;
   }
 }
 </style>

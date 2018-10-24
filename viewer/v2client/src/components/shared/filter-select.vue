@@ -20,6 +20,7 @@ export default {
   data() {
     return {
       selectedObject: {},
+      currentItem: -1,
       filterVisible: false
     };
   },
@@ -32,17 +33,55 @@ export default {
     }
   },
   methods: {
+    preventBodyScroll (e) {
+      if([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
+        e.preventDefault();
+      } 
+    },
+    checkInput (event) {
+      if (event.keyCode == 32) {
+        this.filterVisible = !this.filterVisible;
+      }
+    },
+    handleSpacebar (event) {
+      if (event.keyCode == 32 && this.filterVisible) {
+        this.preventBodyScroll(event);
+      }
+    },
+    nextItem (event) {
+      if (!this.filterVisible) {
+        window.removeEventListener('keydown', this.preventBodyScroll, false);
+        return;
+      } else {
+        window.addEventListener('keydown', this.preventBodyScroll, false); 
+
+        let inputSel, inputEl, inputContSel, inputContEl, texts, items;
+        inputContSel = document.getElementsByClassName(this.className);
+        
+        inputContEl = inputContSel[0];
+        texts = inputContEl.getElementsByClassName('js-filterSelectText');
+        items = inputContEl.getElementsByClassName('js-filterSelectItem');
+
+        if (event.keyCode == 38 || event.keyCode == 40 ) {
+          _.forEach(items, function(item, index) {
+          item.dataset.index = index;
+          item.classList.remove('isActive');
+          });
+
+          if (event.keyCode == 38 && this.currentItem > 0) {
+            this.currentItem--;
+          }
+          else if (event.keyCode == 40 && this.currentItem < texts.length-1) {
+            this.currentItem++;
+          }
+          texts[this.currentItem].focus();
+          items[this.currentItem].classList.add('isActive');
+        }
+      }
+    },
     filter () {
-      let inputSel, 
-      inputEl, 
-      inputContEl, 
-      inputContSel,
-      filterSelectContainer, 
-      filterBy, 
-      dropdownSel, 
-      dropdownEl,
-      span, 
-      i;
+      let inputSel, inputEl, inputContEl, inputContSel, filterSelectContainer, 
+      filterBy, dropdownSel, dropdownEl, span, i;
 
       inputContSel = document.getElementsByClassName(this.className);
       inputContEl = inputContSel[0];
@@ -64,9 +103,7 @@ export default {
         }
       }
     },
-    selectOption(event) {
-      let eventObject = {};
-
+    selectOption(event, eventObject = {}) {
       eventObject.label = event.target.textContent;
       eventObject.value = event.target.dataset.filter;
       eventObject.key = event.target.dataset.key;
@@ -85,6 +122,15 @@ export default {
 
       inputEl.value = label;
     },
+    focusOnInput(event) {
+      event.preventDefault();
+      if (event.target.classList.contains('js-filterSelect') || 
+      event.target.classList.contains('js-createSelect')) {
+        const input = this.$refs.filterselectInput;
+        input.click();
+        input.focus();
+      }
+    },
     clear() {
       let allObj = {};
       let allValue = this.optionsAll;
@@ -94,6 +140,7 @@ export default {
       inputContEl = inputContSel[0];
       texts = inputContEl.getElementsByClassName('js-filterSelectText');
       
+      // Make all options visible again
       _.forEach(texts, function(text) {
         text.removeAttribute('style');
       });
@@ -116,7 +163,11 @@ export default {
     }
   },
   mounted() {
-    this.$nextTick(() => {});
+    this.$el.addEventListener('keyup', this.nextItem);
+    this.$el.addEventListener('keyup', this.handleSpacebar);
+
+    this.$nextTick(() => { 
+    });
   },
 };
 </script>
@@ -124,34 +175,37 @@ export default {
 <template>
   <div class="FilterSelect" 
     :class="className" 
-    @blur="filterVisible = false"
-    v-on-clickaway="close">
+    v-on-clickaway="close"
+    :tabindex="0"
+    @keyup.space="focusOnInput">
     <input class="FilterSelect-input js-filterSelectInput" 
       type="text" 
       v-bind:placeholder="translatedPlaceholder" 
       :id="selectId" 
-      @keyup="filter(), filterVisible = true"
-      @click="filterVisible = !filterVisible">
+      @keyup="filter()"
+      @keyup.space="checkInput($event)"
+      @click="filterVisible = !filterVisible"
+      ref="filterselectInput"
+      :tabindex="-1">
     <ul class="FilterSelect-dropdown js-filterSelectDropdown"
       :class="{'is-visible': filterVisible}">
-      <li class="FilterSelect-dropdownItem"
+      <li class="FilterSelect-dropdownItem js-filterSelectItem"
         @click="selectOption"
         @keyup.enter="selectOption"
         v-for="option in options"
         :key="option.key">
         <span class="FilterSelect-dropdownText js-filterSelectText" 
-          tabindex="0"
+          tabindex="-1"
           :data-filter="option.value"
           :data-key="option.key">{{option.label}}</span>
       </li>
     </ul>
-    <i tabindex="0" 
+    <i
       class="fa icon icon--sm FilterSelect-open"
       :class="{'fa-angle-up': filterVisible, 'fa-angle-down': !filterVisible}"
       @click="filterVisible = !filterVisible"
       @keyup.enter="filterVisible = !filterVisible"></i>
-    <i v-if="isFilter" 
-      tabindex="0"
+    <i v-if="isFilter"
       class="fa fa-close icon icon--sm FilterSelect-clear"
       @click="clear()"
       @keyup.enter="clear()"></i>
@@ -181,6 +235,7 @@ export default {
     border-radius: 5px;
     z-index: 2;
     position: relative;
+    text-overflow: ellipsis;
 
     &::placeholder {
       color: @black;
@@ -203,15 +258,16 @@ export default {
     overflow: hidden;
     position: absolute;
     top: auto;
-    bottom: 26px;
+    bottom: 28px;
     background-color: @panel-header-bg;
-    padding: 5px 0;
     width: 100%;
     border: 1px solid @gray-light;
     border-radius: 10px;
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
     z-index: 1;
+    margin: 0;
+    padding: 0;
 
     &.is-visible {
       height: auto;
@@ -221,6 +277,7 @@ export default {
       border: 1px solid @gray-light;
       box-shadow: @shadow-panel;
       z-index: 4;
+      padding: 5px 0;
     }
 
     .FilterSelect--insideInput & {
@@ -238,7 +295,8 @@ export default {
     cursor: pointer;
     padding: 0 5px;
 
-    &:hover {
+    &:hover,
+    &.isActive {
       background-color: @gray-light;
       color: @white;
     }

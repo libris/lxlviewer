@@ -4,12 +4,45 @@
     "mainTitle": "",
     "subtitle": ""
   },
+  "AbbreviatedTitle": {
+    "@type": "AbbreviatedTitle",
+    "mainTitle": ""
+  },
+  "AddedTitlePageTitle": {
+    "@type": "AddedTitlePageTitle",
+    "mainTitle": ""
+  },
+  "CaptionTitle": {
+    "@type": "CaptionTitle",
+    "mainTitle": ""
+  },
+  "CoverTitle": {
+    "@type": "CoverTitle",
+    "mainTitle": ""
+  },
+  "DistinctiveTitle": {
+    "@type": "DistinctiveTitle",
+    "mainTitle": "",
+    "coverage": ""
+  },
+  "KeyTitle": {
+    "@type": "KeyTitle",
+    "mainTitle": ""
+  },
+  "marc:OtherTitle": {
+    "@type": "marc:OtherTitle",
+    "mainTitle": ""
+  },
   "ParallelTitle": {
     "@type": "ParallelTitle",
     "mainTitle": ""
   },
-  "KeyTitle": {
-    "@type": "KeyTitle",
+  "RunningTitle": {
+    "@type": "AbbreviatedTitle",
+    "mainTitle": ""
+  },
+  "SpineTitle": {
+    "@type": "SpineTitle",
     "mainTitle": ""
   },
   "TitlePortion": {
@@ -106,6 +139,24 @@
     "@type": "VideoRecordingNumber",
     "value": ""
   },
+  "PrimaryPublication": {
+    "@type": "PrimaryPublication",
+    "place": [
+      {
+        "@type": "Place",
+        "label": ""
+      }
+    ],
+    "agent": [
+      {
+        "@type": "Agent",
+        "label": ""
+      }
+    ],
+    "year": "",
+    "country": []
+
+  },
   "Publication": {
     "@type": "Publication",
     "place": [
@@ -187,6 +238,39 @@
     "@type": "Note",
     "label": ""
   },
+  "marc:BindingInformationNote": {
+    "@type": "marc:BindingInformationNote",
+    "label": ""
+  },
+  "Person": {
+    "@type": "Person",
+    "familyName": "",
+    "givenName": "",
+    "lifeSpan": ""
+  },
+  "Organization": {
+    "@type": "Organization",
+    "name": ""
+  },
+  "Jurisdiction": {
+    "@type": "Jurisdiction",
+    "name": ""
+  },
+  "Family": {
+    "@type": "Family",
+    "name": "",
+    "lifeSpan": ""
+  },
+  "Meeting": {
+    "@type": "Meeting",
+    "date": "",
+    "marc:numeration": "",
+    "name": ""
+  },
+  "Dissertation": {
+    "@type": "Dissertation",
+    "label": ""
+  },
   "SeriesMembership": [
     {
       "@type": "SeriesMembership",
@@ -213,6 +297,53 @@
       "seriesStatement": [""]
     }
   ],
+  "NumberingOfSerials": {
+    "@type": "NumberingOfSerials",
+    "label": ""
+  },
+  "Place": {
+    "@type": "Place",
+    "label": [""]
+  },
+  "Agent": {
+    "@type": "Agent",
+    "label": [""]
+  },
+  "PrimaryContribution": {
+    "@type": "PrimaryContribution",
+    "agent": [],
+    "role": []
+  },
+  "Contribution": {
+    "@type": "Contribution",
+    "agent": [],
+    "role": []
+  },
+  "ComplexSubject": {
+    "@type": "ComplexSubject",
+    "termComponentList": [],
+    "inScheme": []
+  },
+  "Geographic": {
+    "@type": "Geographic",
+    "prefLabel": ""
+  },
+  "GenreSubdivision": {
+    "@type": "GenreSubdivision",
+    "prefLabel": ""
+  },
+  "GeographicSubdivision": {
+    "@type": "GeographicSubdivision",
+    "prefLabel": ""
+  },
+  "TemporalSubdivision": {
+    "@type": "TemporalSubdivision",
+    "prefLabel": ""
+  },
+  "TopicSubdivision": {
+    "@type": "TopicSubdivision",
+    "prefLabel": ""
+  },
   "Item": {
     "@type": "Item",
     "physicalLocation": [""],
@@ -222,6 +353,14 @@
       "@type": "ShelfMark",
       "label": [""]
     }
+  },
+  "ShelfMark": {
+    "@type": "ShelfMark",
+    "label": [""]
+  },
+  "Availability": {
+    "@type": "Availability",
+    "label": ""
   },
   "marc:TextualHoldingsBasicBibliographicUnit": [ 
     { 
@@ -255,6 +394,34 @@
   "SourceDataNotFound": {
     "@type": "SourceDataNotFound",
     "citationSource": ""
+  },
+  "AdministrativeHistoryNote": {
+    "@type": "AdministrativeHistoryNote",
+    "label": ""
+  },
+  "BiographicalInformation": {
+    "@type": "BiographicalInformation",
+    "label": ""
+  },
+  "BiographicalOrHistoricalData": {
+    "@type": "BiographicalOrHistoricalData",
+    "label": ""
+  },
+  "IntendedAudience": {
+    "@type": "IntendedAudience",
+    "label": ""
+  },
+  "DescriptionConventions": {
+    "@type": "DescriptionConventions",
+    "code": ""
+  },
+  "Library": {
+    "@type": "Library",
+    "sigel": ""
+  },
+  "TableOfContents": {
+    "@type": "TableOfContents",
+    "label": ""
   },
   "ToCEntry": {
     "@type": "ToCEntry",

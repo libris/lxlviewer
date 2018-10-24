@@ -67,17 +67,16 @@ export default {
         </select>
       </div>
     </div>
-    <div v-if="!isBase" class="CreationCard-content card-content" 
-      @click="useTemplate(template.value)">
+    <div v-if="!isBase" class="CreationCard-content card-content">
       <div class="card-text">
         <h2 class="CreationCard-title card-title">{{template.label}}</h2>
         <div class="CreationCard-descr card-descr">{{template.description}}</div>
       </div>
       <div class="card-link">
-        <button class="CreationCard-select btn btn-primary btn--md" tabindex="0" v-show="!isActive" @keyup.enter="useTemplate(template.value)">
+        <button class="CreationCard-select btn btn-primary btn--md" tabindex="0" v-show="!isActive" @keyup.enter="useTemplate(template.value)" @click="useTemplate(template.value)">
           {{ 'Choose' | translatePhrase }}
         </button>
-        <a class="CreationCard-select" tabindex="0" v-show="isActive" @keyup.enter="useTemplate(template.value)">
+        <a class="CreationCard-select" tabindex="0" v-show="isActive" @keyup.enter="useTemplate(template.value)" @click="useTemplate(template.value)">
           {{ 'Chosen' | translatePhrase }}
         </a>
       </div>

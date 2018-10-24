@@ -1,72 +1,72 @@
 // CHECKBOX
 .customCheckbox {
-    &-input {
-        margin-right: 0.2em;
-        position: absolute;
-        opacity: 0;
-    
-        &:checked + .customCheckbox-icon::before {
-          content: "\f14a";
-          color: @brand-primary;
-        }
-    
-        &:focus + .customCheckbox-icon {
-          background: @gray-lighter;
-          background: @gray-lighter-transparent;
-        }
-    }
-    
-    &-icon {
-        padding: 0 3px;
-        margin-left: -3px;
+  &-input {
+    margin-right: 0.2em;
+    position: absolute;
+    opacity: 0;
 
-        &::before {
-          content: "\f096";
-          font-family: "FontAwesome";
-          display: inline-block;
-          font-size: 18px;
-          font-size: 1.8rem;
-          color: @gray-darker;
-          width: 18px;
-        }
+    &:checked + .customCheckbox-icon::before {
+      content: "\f14a";
+      color: @brand-primary;
     }
+
+    &:focus + .customCheckbox-icon {
+      background: @gray-lighter;
+      background: @gray-lighter-transparent;
+    }
+  }
+
+  &-icon {
+    padding: 0 3px;
+    margin-left: -3px;
+
+    &::before {
+      content: "\f096";
+      font-family: "FontAwesome";
+      display: inline-block;
+      font-size: 18px;
+      font-size: 1.8rem;
+      color: @gray-darker;
+      width: 18px;
+    }
+  }
 }
 
 // SELECT
 .customSelect {
-    height: 30px;
-    min-width: 150px;
-    font-size: 16px;
-    font-size: 1.6rem;
-    font-weight: 500;
-    background-color: @white;
-    border: 1px solid @gray-light;
-    box-shadow: @shadow-panel;
-    text-align-last: center;
+  height: 30px;
+  min-width: 150px;
+  font-size: 16px;
+  font-size: 1.6rem;
+  font-weight: 500;
+  background-color: @white;
+  border: 1px solid @gray-light;
+  box-shadow: @shadow-panel;
+  text-align-last: center;
 }
 
 //TEXT INPUT
 .customInput {
-    display: flex;
-    justify-content: space-between;
-    height: 42px;
-    min-width: 75%;
-    flex-grow: 1;
-    font-size: 20px;
-    font-size: 2rem;
-    line-height: 1.2;
-    border: 1px solid @gray-light;
-    border-radius: 4px;
+  display: flex;
+  justify-content: space-between;
+  height: 42px;
+  min-width: 75%;
+  flex-grow: 1;
+  font-size: 20px;
+  font-size: 2rem;
+  line-height: 1.2;
+  border: 1px solid @gray-light;
+  border-radius: 4px;
 
-    &::placeholder, 
-    input::placeholder  {
-        font-style: italic;
-        color: @gray;
-    }
+  &::placeholder,
+  input::placeholder  {
+    font-style: italic;
+    color: @gray;
+  }
 
-    &:focus {
-        border: 1px solid @brand-primary;
-        outline: 0;
-        box-shadow: none;
-    }
+  &:focus {
+    border: 1px solid @brand-primary;
+    outline: 0;
+    box-shadow: none;
+  }
 }

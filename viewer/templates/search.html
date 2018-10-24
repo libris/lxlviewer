@@ -1,0 +1,269 @@
+% from "termutils.html" import vocab_term
+
+% macro search_controls(result, filter_param=None)
+
+% if result.search
+
+  % set q
+    ${ result.search.mapping | selectattr("variable", "equalto", "q") | map(attribute='value') | first }
+  % endset
+
+  % set mapping = result.search.mapping
+
+% endif
+
+% set vocab_url = 'https://id.kb.se/vocab/'
+
+<div class="panel panel-default search-controls">
+    <form action="/find" method="GET" id="searchForm">
+
+      <div class="form">
+        <div class="form-group">
+          % for param, value in request.args.items(multi=True)
+            % if param != 'q'
+              <input type="hidden" name="${param}" value="${value}" />
+            % endif
+          % endfor
+          <label class="search-label" id="searchlabel" for="q">
+            Sök
+          </label>
+
+          <div id="searchFieldContainer">
+            <input aria-labelledby="searchlabel" class="form-control search-input tagInput" name="q" id="searchQ" value="${q | safe | trim }" ></input>
+            <button id="searchSubmit" class="search-button btn btn-primary"><i class="fa fa-search"></i> Sök</button>
+          </div>
+        </div>
+      </div>
+
+    % if filter_param
+      <div class="type-buttons" aria-label="Välj typ">
+        % if len(result.statistics) > 0
+          % for value in result.statistics.sliceByDimension.values()
+            % for obs in value.observation
+              <label class="">
+                <input name="${filter_param}" value="${obs.object['curie'] or obs.object['@id'].replace(vocab_url, '')}" type="checkbox" checked>
+                % if obs.object.titleByLang
+                  ${obs.object.titleByLang['sv']}
+                % elif obs.object.label
+                  ${obs.object.label}
+                % elif obs.object.notation
+                  ${obs.object.notation|join(', ')}
+                % else
+                  ${obs.object['@id'].replace(vocab_url, '')}
+                % endif
+              </label>
+            % endfor
+          % endfor
+        % endif
+      </div>
+    % endif
+
+    % if len(mapping) > 1
+      <div class="activated-facets">
+        <label>
+          Aktiv filtrering (klicka för att ta bort)
+        </label>
+        <ul>
+        % for item in mapping
+          % if item.variable != 'q'
+          <li>
+            % if item.object
+              % set label = item.object['@id']
+            % else
+              % set label = item.value
+            % endif
+            <a href="${item.up['@id']}">
+              ${vocab_term(label)}<i class="fa fa-remove"></i>
+            </a>
+          </li>
+          % endif
+        % endfor
+        </ul>
+      </div>
+    % endif
+
+  </form>
+</div>
+% endmacro
+
+% macro result_controls(result, details)
+
+  % set items = result['items']
+  % set search = result['search']
+  % set mapping = search.mapping
+
+  % set q
+    ${ mapping | selectattr("variable", "equalto", "q") | map(attribute='value') | first }
+  % endset
+
+  <div class="panel panel-default result-controls">
+    % if details
+    <div class="search-details">
+      <span class="search-keyword">
+        % if q and result.totalItems > 0
+          Sökning på <span class="query">${q | safe | trim}</span>
+          % if result.totalItems
+            gav ${result.totalItems} träffar.
+          % endif
+        % elif result.value
+          Sökning ${result.value}
+        % else
+          Sökning på <span class="query">${q | safe | trim}</span> gav inga träffar.
+        % endif
+      </span>
+      <span class="search-items-per-page pull-right">
+        % if result.totalItems
+        Visar resultat
+          ${result.itemOffset + 1}-${min(result.totalItems, result.itemOffset + len(items))}.
+        % endif
+      </span>
+    </div>
+    % endif
+
+    <div class="search-buttons">
+      <nav>
+      <ul class="pagination">
+      % if result.first and result.previous
+      <li>
+        <a href="${result.first['@id']}"><i class="fa fa-fast-backward" aria-hidden="true"></i> Första</a>
+      </li>
+      % else
+      <li class="disabled">
+        <a><i class="fa fa-fast-backward" aria-hidden="true"></i> Första</a>
+      </li>
+      % endif
+      % if result.previous
+      <li>
+        <a href="${result.previous['@id']}"><i class="fa fa-backward" aria-hidden="true"></i> Föregående</a>
+      </li>
+      % else
+      <li class="disabled">
+        <a><i class="fa fa-backward" aria-hidden="true"></i> Föregående</a>
+      </li>
+      % endif
+
+      % set limit = int(request.args.get('limit')) if request.args.get('limit') else int(200)
+      % set offset = result.itemOffset
+
+      % if result.totalItems
+        % set pages = int(result.totalItems / limit) + 1
+      % else
+        % set pages = 1
+      % endif
+
+      % set currentpage = int(offset / limit)
+      % set paddedpages = 4
+
+      % if currentpage < paddedpages
+        % set paddedpages = paddedpages + (paddedpages - currentpage - 1)
+      % elif currentpage + paddedpages > pages
+        % set paddedpages = paddedpages + (currentpage + paddedpages - pages)
+      % endif
+
+      % if currentpage - paddedpages > -1
+      <li>
+        <a>..</a>
+      </li>
+      % endif
+
+      % for num in range(pages)
+        % if (num == currentpage) or (num == pages) or (num < currentpage and (num - currentpage) > -paddedpages) or (num > currentpage and (num - currentpage) < paddedpages)
+
+          % if currentpage == num
+            <li class="active">
+              <a>${num +1}</a>
+            </li>
+          % else
+          <li>
+            <a href="${result.first['@id'] + '&_offset=' + str(limit * num) }">${num +1}</a>
+          </li>
+          % endif
+        % endif
+      % endfor
+
+      % if currentpage + paddedpages < (pages)
+      <li>
+        <a>..</a>
+      </li>
+      % endif
+
+      % if result.next
+      <li>
+        <a href="${result.next['@id']}">Nästa <i class="fa fa-forward" aria-hidden="true"></i></a>
+      </li>
+      % else
+      <li class="disabled">
+        <a>Nästa <i class="fa fa-forward" aria-hidden="true"></i></a>
+      </li>
+      % endif
+      % if result.last and result.next
+      <li>
+        <a href="${result.last['@id']}">Sista <i class="fa fa-fast-forward" aria-hidden="true"></i></a>
+      </li>
+      % else
+      <li class="disabled">
+        <a>Sista <i class="fa fa-fast-forward" aria-hidden="true"></i></a>
+      </li>
+      % endif
+      </ul>
+    </nav>
+
+    </div>
+  </div>
+% endmacro
+
+% macro facet_controls(result, ui)
+  <div>
+  % if result['stats']
+  % set stats = result['stats']
+  % set mapping = result.search['mapping']
+  <label>
+    Filtrera
+  </label>
+  % set facet_labels = ui['FACET_LABELS']
+  % for dimension in stats.sliceByDimension
+  % set value = stats.sliceByDimension[dimension]
+  % set dimension_prop = value.dimension
+  % set swedish_label = facet_labels[dimension_prop]
+  <div class="dimension-header">${swedish_label}</div>
+  <ul>
+
+    % for observation in stats.sliceByDimension[dimension].observation
+    % if observation.object.label
+    <li>
+      <a href="${observation.view['@id']}" title="${observation.object.label}">
+        ${vocab_term(observation.object.label)}
+      </a>
+      <span class="quantity">(${observation.totalItems})</span>
+    </li>
+    % elif observation.object.prefLabelByLang and observation.object.prefLabelByLang.sv
+    <li>
+      <a href="${observation.view['@id']}" title="${observation.object.prefLabelByLang.sv}">
+        % if isinstance(observation.object.prefLabelByLang.sv, list)
+          ${observation.object.prefLabelByLang.sv | join(', ') | truncate(30, true) }
+        % else
+          ${observation.object.prefLabelByLang.sv | truncate(30, true) }
+        % endif
+      </a>
+      <span class="quantity">(${observation.totalItems})</span>
+    </li>
+    % elif observation.object.labelByLang and observation.object.labelByLang.sv
+    <li>
+      <a href="${observation.view['@id']}" title="${observation.object.labelByLang.sv}">
+        % if isinstance(observation.object.labelByLang.sv, list)
+          ${observation.object.labelByLang.sv | join(', ') | truncate(30, true) }
+        % else
+          ${observation.object.labelByLang.sv | truncate(30, true) }
+        % endif
+      </a>
+      <span class="quantity">(${observation.totalItems})</span>
+    </li>
+    % endif
+    % endfor
+  </ul>
+  % endfor
+  % else
+    Inga facetter tillgängliga.
+  % endif
+  </div>
+% endmacro

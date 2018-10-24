@@ -20,7 +20,7 @@ export default {
   data: function () {
     return {
       initialized: false,
-      combokeys: null,
+      //combokeys: null,
       result: {},
       importData: [],
       searchInProgress: false,
@@ -129,7 +129,7 @@ export default {
       'status',
     ]),
     copy() {
-      return Copy[this.settings.siteInfo.title];
+      return Copy;
     },
   },
   beforeCreate() {
@@ -168,7 +168,7 @@ export default {
           <vue-simple-spinner size="large" :message="'Searching' | translatePhrase"></vue-simple-spinner>
         </div>
     </div>
-    <div class="col-sm-12 col-md-3" v-if="result.totalItems > 0 && $route.params.perimeter === 'libris'">
+    <div class="col-sm-12 col-md-3" v-if="!status.panelOpen && result.totalItems > 0 && $route.params.perimeter === 'libris'">
       <facet-controls :result="result" v-if="result.stats"></facet-controls>
     </div>
     <div 

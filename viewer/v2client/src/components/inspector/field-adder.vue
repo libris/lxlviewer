@@ -11,6 +11,7 @@ import * as StringUtil from '@/utils/string';
 import * as VocabUtil from '@/utils/vocab';
 import ComboKeys from 'combokeys';
 import PanelComponent from '@/components/shared/panel-component.vue';
+import RoundButton from '@/components/shared/round-button.vue';
 import { mapGetters } from 'vuex';
 
 export default {
@@ -248,6 +249,7 @@ export default {
   components: {
     'panel-component': PanelComponent,
     'tooltip-component': ToolTipComponent,
+    'round-button': RoundButton,
   },
 };
 </script>
@@ -258,6 +260,7 @@ export default {
       <i 
         class="FieldAdder-innerIcon fa fa-plus-circle icon icon--sm" 
         tabindex="0"
+        ref="adderButton"
         @click="show" 
         @keyup.enter="show"
         @mouseenter="showToolTip = true, actionHighlight(true, $event)" 
@@ -274,6 +277,7 @@ export default {
 
     <button v-if="!inner" class="FieldAdder-add btn btn-default toolbar-button" 
       v-on:click="show" 
+      ref="adderButton"
       @keyup.enter="show"
       @mouseenter="showToolTip = true" 
       @mouseleave="showToolTip = false">
@@ -334,16 +338,11 @@ export default {
               @keyup.enter="addField(prop, false)" 
               :key="prop['@id']">
               <span class="FieldAdderPanel-addControl">
-                <a 
-                  v-show="!prop.added"                  
-                  :title="'Add' | translatePhrase"
-                  tabindex="0"
-                  >
-                  <i class="fa fa-plus-circle icon icon--lg icon--primary"></i>
-                </a>
-                <span v-show="prop.added" :title="'Added' | translatePhrase">
-                  <i class="fa fa-check-circle icon icon--lg is-added"></i>
-                </span>
+                <round-button
+                  :tabindex="prop.added ? -1 : 0"
+                  :icon="prop.added ? 'check' : 'plus'"
+                  :indicator="true"
+                  :disabled="prop.added"/>
               </span>
               <span class="FieldAdderPanel-fieldLabel" :title="prop.label | capitalize">
                 {{prop.label | capitalize }}
@@ -456,7 +455,6 @@ export default {
   &-addControl {
     display: flex;
     align-items: center;
-    width: 30px;
   }
 
   &-fieldList {

@@ -6,6 +6,7 @@ import * as VocabUtil from '../../utils/vocab';
 import * as DisplayUtil from '../../utils/display';
 import * as DataUtil from '../../utils/data';
 import * as StringUtil from '@/utils/string';
+import * as LayoutUtil from '@/utils/layout';
 import ProcessedLabel from '../shared/processedlabel';
 import TooltipComponent from '../shared/tooltip-component';
 import ItemMixin from '../mixins/item-mixin';
@@ -24,6 +25,8 @@ export default {
     isRemovable: false,
     showActionButtons: false,
     isExpanded: false,
+    parentPath: false,
+    gparentPath: false,
   },
   watch: {
     isLocked(val) {
@@ -35,7 +38,7 @@ export default {
       if (val) {
         this.initializeTextarea();
       }
-    }
+    },
   },
   data() {
     return {
@@ -67,14 +70,20 @@ export default {
     },
     newWindowText() {
       return StringUtil.getUiPhraseByLang('Opens in new window', this.user.settings.language);
-    }
-  },
-  mounted() {
-    this.$nextTick(() => {
-      if (!this.isLocked) {
-        this.initializeTextarea();
+    },
+    shouldFocus() {
+      let lastAdded = this.inspector.status.lastAdded;
+      if (lastAdded === this.path || lastAdded === this.parentPath || lastAdded === this.gparentPath) {
+        return true;
       }
-    });
+      return false;
+    },
+    isLastAdded() {
+      if (this.inspector.status.lastAdded === this.path) {
+        return true;
+      }
+      return false;
+    },
   },
   methods: {
     removeHighlight(active) {
@@ -110,6 +119,27 @@ export default {
         });
       }
     },
+    highLightLastAdded() {
+      if (this.isLastAdded === true) {
+        let element = this.$el;
+        let topOfElement = LayoutUtil.getPosition(element).y;
+        if (topOfElement > 0) {
+          const windowHeight = window.innerHeight || 
+          document.documentElement.clientHeight || 
+          document.getElementsByTagName('body')[0].clientHeight;
+          const scrollPos = LayoutUtil.getPosition(this.$el).y - (windowHeight * 0.2);
+          LayoutUtil.scrollTo(scrollPos, 1000, 'easeInOutQuad', () => {
+            setTimeout(() => {
+              this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
+            }, 1000)
+          });
+        } else {
+          setTimeout(() => {
+            this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
+          }, 1000)
+        }
+      }
+    },
     initializeTextarea() {
       this.$nextTick(() => {
         let textarea = this.$el.querySelector('textarea');
@@ -118,41 +148,61 @@ export default {
       })
     },
     isEmpty() {
-      // TODO: Is the item empty?
       return false;
+    },
+    addFocus() {
+      this.$refs.textarea.focus();
     },
   },
   components: {
     'processed-label': ProcessedLabel,
     'tooltip-component': TooltipComponent,
   },
+  mounted() {
+    this.$nextTick(() => {
+      if (!this.isLocked) {
+        this.highLightLastAdded();
+        this.initializeTextarea();
+        if (!this.status.isNew && this.shouldFocus) {
+          this.addFocus();
+        }
+      }
+      return false;
+    })
+  }
 };
 </script>
 
 <template>
-  <div class="ItemValue js-value" v-bind:class="{'is-locked': isLocked, 'unlocked': !isLocked, 'is-removed': removed}">
+  <div class="ItemValue js-value" 
+    v-bind:class="{'is-locked': isLocked, 'unlocked': !isLocked, 'is-removed': removed, 'is-lastAdded': isLastAdded}">
     <textarea class="ItemValue-input js-itemValueInput" 
       rows="1" 
-      v-model="value" 
+      v-model="value"
       @blur="update($event.target.value)"
-      @keydown="handleKeys" 
-      v-if="!isLocked"></textarea>
-    <span class="ItemValue-text" 
+      @keydown="handleKeys"
+      v-if="!isLocked"
+      ref="textarea"></textarea>
+    <span class="ItemValue-text"
       v-if="isLocked && !shouldLink">{{fieldValue}}</span>
-    <a class="ItemValue-text" 
+    <a class="ItemValue-text"
       v-if="isLocked && shouldLink"
-      :href="fieldValue" target="_blank" :title="`${fieldValue} (${newWindowText})`">{{fieldValue}} <i class="fa fa-external-link" aria-hidden="true"></i></a>
-    <div class="ItemValue-remover" 
-      v-show="!isLocked && isRemovable" 
-      v-on:click="removeThis()" 
-      @focus="removeHover = true, removeHighlight(true)" 
+      :href="fieldValue" 
+      target="_blank" 
+      :title="`${fieldValue} (${newWindowText})`">{{fieldValue}} 
+        <i class="fa fa-external-link" aria-hidden="true"></i>
+    </a>
+    <div class="ItemValue-remover"
+      v-show="!isLocked && isRemovable"
+      v-on:click="removeThis()"
+      @focus="removeHover = true, removeHighlight(true)"
       @blur="removeHover = false, removeHighlight(false)"
-      @mouseover="removeHover = true, removeHighlight(true)" 
+      @mouseover="removeHover = true, removeHighlight(true)"
       @mouseout="removeHover = false, removeHighlight(false)">
       <i class="fa fa-trash-o icon icon--sm">
-        <tooltip-component 
-          :show-tooltip="removeHover" 
-          tooltip-text="Remove" 
+        <tooltip-component
+          :show-tooltip="removeHover"
+          tooltip-text="Remove"
           translation="translatePhrase"></tooltip-component>
       </i>
     </div>
@@ -217,7 +267,8 @@ export default {
     background-color: @danger;
   }
 
-  .is-lastAdded & {
+  &.is-lastAdded {
+    background-color: @add;
     -webkit-animation-duration: 1s;
     animation-duration: 1s;
     -webkit-animation-fill-mode: both;
@@ -226,5 +277,4 @@ export default {
     animation-name: pulse;
   }
 }
-
 </style>

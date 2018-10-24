@@ -525,6 +525,7 @@ export default {
           class="fa fa-plus-circle icon icon--sm" 
           tabindex="0"
           aria-hidden="true"
+          ref="adderFocusElement"
           @click="add($event)" 
           @keyup.enter="add($event)"
           @mouseenter="showToolTip = true, actionHighlight(true, $event)" 
@@ -542,6 +543,7 @@ export default {
       <i 
         class="EntityAdder-addIcon fa fa-plus-circle icon icon--sm" 
         tabindex="0"
+        ref="adderFocusElement"
         v-on:click="add($event)" 
         @keyup.enter="add($event)"
         @mouseenter="showToolTip = true, actionHighlight(true, $event)" 
@@ -560,6 +562,7 @@ export default {
       v-on-clickaway="dismissTypeChooser">
       <select class="EntityAdder-typeSelect customSelect" 
         v-model="selectedType" 
+        ref="adderTypeSelect"
         @change="addType(selectedType, true)">
         <option disabled value="">{{"Choose type" | translatePhrase}}</option>
         <option v-for="(term, index) in getClassTree"  
@@ -580,7 +583,7 @@ export default {
           v-if="getFullRange.length > 0" 
           @mouseleave="rangeInfo = false">
           <i class="fa fa-info-circle icon icon--md" @mouseenter="rangeInfo = true"></i>
-          <div class="PanelComponent-headerInfoBox" v-if="rangeInfo">
+          <div class="PanelComponent-headerInfoBox" v-show="rangeInfo">
             <p class="header">
               {{ "Allowed types" | translatePhrase }}:
             </p>
@@ -614,27 +617,7 @@ export default {
               </div>
             </div>
           </div>
-          <div class="EntityAdder-resultControls" v-if="!loading && searchResult.length > 0">
-            <modal-pagination
-              @go="go" 
-              :numberOfPages="numberOfPages" 
-              :currentPage="currentPage">
-            </modal-pagination>
-            <div class="EntityAdder-listTypes">
-              <i class="fa fa-th-list icon icon--sm"
-                @click="isCompact = false"
-                @keyup.enter="isCompact = false"
-                :class="{'icon--primary' : !isCompact}"
-                :title="'Detailed view' | translatePhrase"
-                tabindex="0"></i>
-              <i class="fa fa-list icon icon--sm"
-                @click="isCompact = true"
-                @keyup.enter="isCompact = true"
-                :class="{'icon--primary' : isCompact}"
-                :title="'Compact view' | translatePhrase"
-                tabindex="0"></i>
-            </div>
-          </div>
+          
         </div>
       </template>
       <template slot="panel-body">
@@ -644,7 +627,9 @@ export default {
           :results="searchResult" 
           :disabled-ids="alreadyAdded"
           :is-compact="isCompact"
-          icon="fa-plus"
+          icon="plus"
+          text="Add"
+          :has-action="true"
           @use-item="addLinkedItem">
         </panel-search-list>
         <div class="PanelComponent-searchStatus" v-if="!loading && keyword.length === 0" >
@@ -660,6 +645,28 @@ export default {
       <!-- </div> -->
       </template>
       <template slot="panel-footer">
+        
+        <div class="EntityAdder-resultControls" v-if="!loading && searchResult.length > 0">
+          <modal-pagination
+            @go="go" 
+            :numberOfPages="numberOfPages" 
+            :currentPage="currentPage">
+          </modal-pagination>
+          <div class="EntityAdder-listTypes">
+            <i class="fa fa-th-list icon icon--sm"
+              @click="isCompact = false"
+              @keyup.enter="isCompact = false"
+              :class="{'icon--primary' : !isCompact}"
+              :title="'Detailed view' | translatePhrase"
+              tabindex="0"></i>
+            <i class="fa fa-list icon icon--sm"
+              @click="isCompact = true"
+              @keyup.enter="isCompact = true"
+              :class="{'icon--primary' : isCompact}"
+              :title="'Compact view' | translatePhrase"
+              tabindex="0"></i>
+          </div>
+        </div>
         <div class="EntityAdder-create">
           <button class="EntityAdder-createBtn btn btn-primary btn--sm"
             v-if="hasSingleRange" 
@@ -694,6 +701,7 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
+    padding: 0 10px;
   }
 
   &-listTypes {
@@ -787,7 +795,6 @@ export default {
     display: flex;
     justify-content: flex-end;
     padding: 10px 15px;
-    border-top: 1px solid @gray-light;
   }
 
   &-createBtn {
