@@ -278,9 +278,12 @@ export default {
   mounted() {
     if (this.isLastAdded) {
       this.toggleExpanded();
+      const fieldAdder = this.$refs.fieldAdder;
       setTimeout(()=> {
         if (this.isEmpty) {
           this.$el.getElementsByClassName('js-expandable')[0].classList.add('is-inactive');
+          LayoutUtil.enableTabbing();
+          fieldAdder.$refs.adderButton.focus();
         } else {
           this.expand();
         }
@@ -337,7 +340,7 @@ export default {
             tooltip-text="Link entity" 
             translation="translatePhrase"></tooltip-component>
         </i>
-        <field-adder class="ItemSibling-action"
+        <field-adder ref="fieldAdder" class="ItemSibling-action"
           v-if="!isLocked" 
           :entity-type="item['@type']" 
           :allowed="allowedProperties" 
