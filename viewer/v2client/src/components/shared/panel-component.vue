@@ -295,6 +295,10 @@ export default {
     font-size: 2rem;
     font-weight: normal;
     color: @grey;
+
+    & > * {
+      max-width: 100%;
+    }
   }
 
   &-listItem {
