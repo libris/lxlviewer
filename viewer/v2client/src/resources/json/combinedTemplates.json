@@ -282,11 +282,7 @@
             }
           ],
           "marc:otherPhysicalDetails": "",
-          "carrierType": [
-            {
-              "@id": "https://id.kb.se/term/rda/Videodisc"
-            }
-          ],
+          "carrierType": [],
           "mediaType": [
             {
               "@id": "https://id.kb.se/term/rda/Video"
@@ -553,12 +549,12 @@
           ],
           "contribution": [{
               "@type": "PrimaryContribution",
-              "agent": {},
+              "agent": [],
               "role": []
             },
             {
               "@type": "Contribution",
-              "agent": {}
+              "agent": []
             }
           ],
           "contentType": [
