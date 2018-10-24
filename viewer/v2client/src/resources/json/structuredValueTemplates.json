@@ -321,13 +321,36 @@
   },
   "ComplexSubject": {
     "@type": "ComplexSubject",
-    "inScheme": [],
-    "prefLabel": "",
-    "termComponentList": []
+    "termComponentList": [],
+    "inScheme": []
   },
   "Geographic": {
     "@type": "Geographic",
-    "prefLabel": "" 
+    "prefLabel": ""
+  },
+  "Temporal": {
+    "@type": "Temporal",
+    "prefLabel": ""
+  },
+  "Topic": {
+    "@type": "Topic",
+    "prefLabel": ""
+  },
+  "GenreSubdivision": {
+    "@type": "GenreSubdivision",
+    "prefLabel": ""
+  },
+  "GeographicSubdivision": {
+    "@type": "GeographicSubdivision",
+    "prefLabel": ""
+  },
+  "TemporalSubdivision": {
+    "@type": "TemporalSubdivision",
+    "prefLabel": ""
+  },
+  "TopicSubdivision": {
+    "@type": "TopicSubdivision",
+    "prefLabel": ""
   },
   "Item": {
     "@type": "Item",
