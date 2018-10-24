@@ -123,11 +123,10 @@ export default {
       inputEl.value = label;
     },
     focusOnInput(event) {
-      event.preventDefault();
       if (event.target.classList.contains('js-filterSelect') || 
       event.target.classList.contains('js-createSelect')) {
         const input = this.$refs.filterselectInput;
-        input.click();
+        this.filterVisible = !this.filterVisible;
         input.focus();
       }
     },
@@ -177,6 +176,7 @@ export default {
     :class="className" 
     v-on-clickaway="close"
     :tabindex="0"
+    @keydown.space="preventBodyScroll"
     @keyup.space="focusOnInput">
     <input class="FilterSelect-input js-filterSelectInput" 
       type="text" 
