@@ -78,12 +78,12 @@ export default {
         </a>
       </li>
       <li class="ModalPagination-item" :class="{'is-disabled': currentPage+1 > numberOfPages }">
-         <a class="ModalPagination-link" 
+        <a class="ModalPagination-link" 
           @keydown.enter="go(currentPage+1)" 
           @click="go(currentPage+1)" 
           :tabindex="currentPage+1 > numberOfPages ? -1 : 0">
-           <i class="fa fa-chevron-right"></i>
-         </a>
+          <i class="fa fa-chevron-right"></i>
+        </a>
       </li>
       <li class="ModalPagination-item" :class="{'is-disabled': currentPage+1 > numberOfPages }">
         <a class="ModalPagination-link" 
@@ -124,6 +124,7 @@ export default {
       height: 3px;
       background-color: @brand-primary;
       bottom: -6px;
+      left: 0;
     }
   }
 
