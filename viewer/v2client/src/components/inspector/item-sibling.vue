@@ -99,17 +99,30 @@ export default {
       }
       return false;
     },
+    isLastAdded() {
+      if (this.inspector.status.lastAdded === this.getPath) {
+        return true;
+      }
+      return false;
+    },
     getPath() {
       return this.suffix;
     },
-     isEmpty() {
+    isEmpty() {
+      this.$el.getElementsByClassName('js-expandable')[0].classList.add('is-inactive');
+      this.$el.classList.remove('is-expanded');
       let bEmpty = true;
       // Check if item has any keys besides @type and _uid. If not, we'll consider it empty.
       _.each(this.item, (value, key) => {
         if (key !== '@type' && key !== '_uid') {
-          if (typeof value !== 'undefined') {
-            bEmpty = false;
+          if (key !== '@id') {
+            if (typeof value !== 'undefined') {
+              this.$el.getElementsByClassName('js-expandable')[0].classList.remove('is-inactive');
+              this.$el.classList.add('is-expanded');
+              bEmpty = false;
+            }
           }
+        
         }
       });
       return bEmpty;
@@ -258,15 +271,6 @@ export default {
     },
   },
   watch: {
-    isEmpty(val) {
-      if (val) {
-        this.$el.getElementsByClassName('js-expandable')[0].classList.add('is-inactive');
-        this.$el.classList.remove('is-expanded');
-      } else {
-        this.$el.getElementsByClassName('js-expandable')[0].classList.remove('is-inactive');
-        this.$el.classList.add('is-expanded');
-      }
-    },
     'inspector.event'(val, oldVal) {
       this.$emit(`${val.value}`);
     }
@@ -277,10 +281,15 @@ export default {
   },
   mounted() {
     if (this.isLastAdded) {
-      this.toggleExpanded();
-      setTimeout(()=> {
+      //const fieldAdder = this.$refs.fieldAdder;
+      setTimeout(() => {
+        console.log(this.$el);
         if (this.isEmpty) {
           this.$el.getElementsByClassName('js-expandable')[0].classList.add('is-inactive');
+          
+          this.collapse();
+          LayoutUtil.enableTabbing();
+          //fieldAdder.$refs.adderButton.focus();
         } else {
           this.expand();
         }
