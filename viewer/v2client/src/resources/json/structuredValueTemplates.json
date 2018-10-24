@@ -321,7 +321,7 @@
   },
   "ComplexSubject": {
     "@type": "ComplexSubject",
-    "inScheme": {},
+    "inScheme": [],
     "prefLabel": "",
     "termComponentList": []
   },
