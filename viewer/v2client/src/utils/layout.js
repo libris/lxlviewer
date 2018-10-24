@@ -178,7 +178,7 @@ export function getPosition(element) {
 
   while(element) {
       xPosition += (element.offsetLeft - element.scrollLeft + element.clientLeft);
-      yPosition += (element.offsetTop - element.scrollTop + element.clientTop);
+      yPosition += (element.offsetTop + element.clientTop);
       element = element.offsetParent;
   }
 
