@@ -299,7 +299,6 @@ export default {
     if (this.isLastAdded) {
       this.highLightLastAdded();
       const fieldAdder = this.$refs.fieldAdder;
-      setTimeout(() => {
         if (this.isEmpty) {
           this.$el.getElementsByClassName('js-expandable')[0].classList.add('is-inactive');
           this.collapse();
@@ -308,6 +307,7 @@ export default {
         } else {
           this.expand();
         }
+      setTimeout(() => {
         this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
       }, 1000)
     } 
