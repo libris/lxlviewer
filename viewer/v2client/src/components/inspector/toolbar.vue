@@ -370,16 +370,16 @@ export default {
         v-show="otherFormatMenuActive"
         @click="hideOtherFormatMenu" >
         <li class="Toolbar-menuItem">
-          <a class="Toolbar-menuLink" :href="focusData['@id']">Formell resurs</a>
+          <a class="Toolbar-menuLink" :href="focusData['@id']" target="_blank">Formell resurs</a>
         </li>
         <li class="Toolbar-menuItem">
-          <a class="Toolbar-menuLink" :href="getOtherDataFormat('jsonld')">JSON-LD</a>
+          <a class="Toolbar-menuLink" :href="getOtherDataFormat('jsonld')" target="_blank">JSON-LD</a>
         </li>
         <li class="Toolbar-menuItem">
-          <a class="Toolbar-menuLink" :href="getOtherDataFormat('ttl')">Turtle</a>
+          <a class="Toolbar-menuLink" :href="getOtherDataFormat('ttl')" target="_blank">Turtle</a>
         </li>
         <li class="Toolbar-menuItem">
-          <a class="Toolbar-menuLink" :href="getOtherDataFormat('rdf')">
+          <a class="Toolbar-menuLink" :href="getOtherDataFormat('rdf')" target="_blank">
           <i class="fa fa-fw fa-download" aria-hidden="true"></i>
           RDF/XML</a>
         </li>
