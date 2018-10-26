@@ -185,11 +185,13 @@ export default {
       this.$store.dispatch('undoInspectorChange');
     },
     edit() {
-      this.loadingEdit = true;
-      this.$store.dispatch('setInspectorStatusValue', { 
-        property: 'editing', 
-        value: true 
-      });
+      if (this.user.isLoggedIn && !this.inspector.status.editing && this.canEditThisType) {
+        this.loadingEdit = true;
+        this.$store.dispatch('setInspectorStatusValue', { 
+          property: 'editing', 
+          value: true 
+        });
+      }
     },
     navigateFormChanges(direction) {
       this.navigateChangeHistory(this.inspector.status.focus, direction);
@@ -206,9 +208,13 @@ export default {
       return baseClasses.indexOf(type) > -1;
     },
     download(text) {
+      let focusId = this.inspector.data.record['@id'];
+      if (this.recordType === 'Item') {
+        focusId = this.inspector.data.mainEntity.itemOf['@id'].split('#')[0];
+      }
       const element = document.createElement('a');
       element.setAttribute('href', 'data:application/octet-stream,' + encodeURIComponent(text));
-      const splitIdParts = this.inspector.data.record['@id'].split('/');
+      const splitIdParts = focusId.split('/');
       const id = splitIdParts[splitIdParts.length-1];
       element.setAttribute('download', id);
       element.style.display = 'none';
@@ -236,6 +242,23 @@ export default {
       'settings',
       'status',
     ]),
+    isMyHolding() {
+      if (this.recordType === 'Item' && this.inspector.data.mainEntity.heldBy['@id'] === this.libraryUrl) {
+        return true;
+      }
+      return false;
+    },
+    compiledIsAvailable() {
+      if (
+        (this.recordType === 'Instance' || this.isMyHolding) &&
+        this.hasSigel &&
+        !this.inspector.status.editing &&
+        this.user.email !== ''
+      ) {
+        return true;
+      }
+      return false;
+    },
     validTemplates() {
       const type = this.inspector.data.mainEntity['@type'];
       const baseType = VocabUtil.getRecordType(type, this.resources.vocab, this.resources.context);
@@ -286,7 +309,11 @@ export default {
       return `https://libris.kb.se/library/${this.user.settings.activeSigel}`;
     },
     compileMARCUrl() {
-      return `/_compilemarc?library=${this.libraryUrl}&id=${this.inspector.data.record['@id']}`;
+      let focusId = this.inspector.data.record['@id'];
+      if (this.recordType === 'Item') {
+        focusId = this.inspector.data.mainEntity.itemOf['@id'].split('#')[0];
+      }
+      return `/_compilemarc?library=${this.libraryUrl}&id=${focusId}`;
     },
     hasSigel() {
       return typeof this.user.settings.activeSigel !== 'undefined';
@@ -343,6 +370,9 @@ export default {
         v-show="otherFormatMenuActive"
         @click="hideOtherFormatMenu" >
         <li class="Toolbar-menuItem">
+          <a class="Toolbar-menuLink" :href="focusData['@id']">Formell resurs</a>
+        </li>
+        <li class="Toolbar-menuItem">
           <a class="Toolbar-menuLink" :href="getOtherDataFormat('jsonld')">JSON-LD</a>
         </li>
         <li class="Toolbar-menuItem">
@@ -377,13 +407,13 @@ export default {
       <ul class="dropdown-menu Toolbar-menuList ToolsMenu-menu" 
         v-show="toolsMenuActive">
         <li class="Toolbar-menuItem">
-          <a class="Toolbar-menuLink" @click="formControl('expand-item')">
+          <a class="Toolbar-menuLink" @click="formControl('expand-item'), hideToolsMenu()">
           <i class="fa fa-fw fa-expand" aria-hidden="true"></i>
           {{"Expand all" | translatePhrase}}{{ getKeybindingText('expand-item') ? ` (${getKeybindingText('expand-item')})` : ''}}
           </a>
         </li>
         <li class="Toolbar-menuItem">
-          <a class="Toolbar-menuLink" @click="formControl('collapse-item')">
+          <a class="Toolbar-menuLink" @click="formControl('collapse-item'), hideToolsMenu()">
           <i class="fa fa-fw fa-compress" aria-hidden="true"></i>
           {{"Collapse all" | translatePhrase}}{{ getKeybindingText('collapse-item') ? ` (${getKeybindingText('collapse-item')})` : ''}}
           </a>
@@ -396,9 +426,9 @@ export default {
         </li>
         <li class="Toolbar-menuItem" :class="{'is-active': showTemplatesSubMenu}" v-if="user.isLoggedIn && inspector.status.editing && hasTemplates">
           <a class="Toolbar-menuLink" @click="showTemplatesSubMenu = !showTemplatesSubMenu">
-          <i class="fa fa-fw fa-clipboard"></i>
-          {{ "Embellish from template" | translatePhrase }}{{ getKeybindingText('embellish-from-template') ? ` (${getKeybindingText('embellish-from-template')})` : ''}}
-          <i class="fa fa-fw pull-right" :class="{ 'fa-caret-down': showTemplatesSubMenu, 'fa-caret-right': !showTemplatesSubMenu }"></i>
+            <i class="fa fa-fw fa-clipboard"></i>
+            <span>{{ "Embellish from template" | translatePhrase }}{{ getKeybindingText('embellish-from-template') ? ` (${getKeybindingText('embellish-from-template')})` : ''}}</span>
+            <span class="submenuControl"><i class="fa fa-fw" :class="{ 'fa-caret-down': showTemplatesSubMenu, 'fa-caret-right': !showTemplatesSubMenu }"></i></span>
           </a>
         </li>
         <li class="Toolbar-menuItem inSubMenu" v-for="(value, key) in validTemplates" v-show="showTemplatesSubMenu" :key="key">
@@ -407,14 +437,14 @@ export default {
           {{ value.label }}
           </a>
         </li>
-        <li class="Toolbar-menuItem" v-if="isSubClassOf('Instance') && hasSigel && !inspector.status.editing && user.email !== ''">
+        <li class="Toolbar-menuItem" v-if="compiledIsAvailable">
           <a class="Toolbar-menuLink"  v-if="downloadIsSupported" @click="getCompiledPost()">
             <i class="fa fa-fw fa-download" aria-hidden="true"></i>
-              {{"Download compiled MARC21" | translatePhrase}}
+              {{"Download compiled" | translatePhrase}} MARC21
           </a>
           <a class="Toolbar-menuLink"  v-if="!downloadIsSupported" :href="compileMARCUrl">
             <i class="fa fa-fw fa-download" aria-hidden="true"></i>
-              {{"Download compiled MARC21" | translatePhrase}}
+              {{"Download compiled" | translatePhrase}} MARC21
           </a>
         </li>
         <li class="Toolbar-menuItem">
@@ -581,7 +611,6 @@ export default {
     margin: 4px 0;
     width: 50px;
     height: 50px;
-    // line-height: 1;
     position: relative;
   }
 
@@ -614,8 +643,16 @@ export default {
         background-color: @gray-lighter;
       }
       & a {
+        display: flex;
         padding: 5px 15px;
         color: @grey-darker;
+      }
+
+      & .submenuControl {
+        display: flex;
+        flex: 1;
+        justify-content: flex-end;
+        align-items: center;
       }
     }
 

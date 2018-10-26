@@ -6,7 +6,7 @@ import SummaryAction from '../inspector/summary-action';
 import { mapGetters } from 'vuex';
 
 export default {
-  name: 'entity-search-item',
+  name: 'panel-search-item',
   mixins: [LensMixin],
   props: {
     focusData: {},
@@ -18,25 +18,29 @@ export default {
       type: Boolean,
       default: false,
     },
+    icon: null,
+    text: '',
+    hasAction: false,
     path: '',
     isReplaced: false,
+    isCompact: false,
   },
   data() {
     return {
       keyword: '',
       listItemSettings: {
-        text: 'Add',
+        text: this.text,
         styling: 'brand',
-        event: 'add-entity',
         inspectAction: true,
         path: this.path,
+        icon: this.icon,
       },
     }
   },
   methods: {
-    addItem() {
-      if (!this.isDisabled && !this.isReplaced) {
-        this.$emit('add-item');
+    useItem() {
+      if (!this.isDisabled && !this.isReplaced ) {
+        this.$emit('use-item');
       }
     },
   },
@@ -63,20 +67,23 @@ export default {
 </script>
 
 <template>
-  <li class="EntitySearch-listItem PanelComponent-listItem" 
-    @click="addItem()"
+  <li class="PanelSearch-listItem PanelComponent-listItem"
     :class="{ 'is-added' : isDisabled, 'is-replaced' : isReplaced }">
     <summary-action 
       :disabled="isDisabled" 
       :replaced="isReplaced"
       :options="addPayload" 
-      @action="addItem()">
+      @action="useItem()"
+      v-if="hasAction">
     </summary-action>
-    <div class="EntitySearch-itemContainer">
+    <div class="PanelSearch-itemContainer" 
+      :class="{'has-action' : hasAction}">
       <entity-summary 
         :focus-data="focusData" 
-        :should-link="false" 
-        :lines="4">
+        :should-link="true" 
+        :is-compact="isCompact"
+        :shouldOpenTab="true"
+        :valueDisplayLimit=1>
       </entity-summary>
     </div>
   </li>
@@ -85,10 +92,9 @@ export default {
 
 <style lang="less">
 
-.EntitySearch{
+.PanelSearch{
 
   &-listItem {
-    cursor: pointer;
 
     &.is-added, 
     &.is-replaced {
@@ -136,9 +142,15 @@ export default {
   }
 
   &-itemContainer {
-    padding: 0 15px;
     width: 100%;
     overflow: hidden;
+
+    &.has-action {
+      border: solid @gray-lighter-transparent;
+      border-width: 0px 0px 0px 1px;
+      padding: 0 15px;
+      margin-left: 15px;
+    }
   }
 }
 

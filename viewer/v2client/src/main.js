@@ -69,14 +69,17 @@ new Vue({
   created() {
     this.initWarningFunc();
     this.fetchHelpDocs();
+    store.dispatch('pushLoadingIndicator', 'Loading application');
     Promise.all(this.getLdDependencies()).then((resources) => {
       store.dispatch('setContext', resources[2]['@context']);
       store.dispatch('setupVocab', resources[0]['@graph']);
       store.dispatch('setDisplay', resources[1]);
       store.dispatch('changeResourcesStatus', true);
+      store.dispatch('removeLoadingIndicator', 'Loading application');
     }, (error) => {
       window.lxlWarning(`🔌 The API (at ${this.settings.apiPath}) might be offline!`);
       store.dispatch('changeResourcesLoadingError', true);
+      store.dispatch('removeLoadingIndicator', 'Loading application');
     });
   },
   watch: {
@@ -88,19 +91,23 @@ new Vue({
     },
     'status.keybindState'(state) {
       // Bindings are defined in keybindings.json
-      if (this.combokeys) {
-        this.combokeys.detach();
-      }
+      // if (this.combokeys) {
+      //   this.combokeys.detach();
+      // }
 
       this.combokeys = new ComboKeys(document.documentElement);
       require('combokeys/plugins/global-bind')(this.combokeys); // TODO: Solve with ES6 syntax
       const stateSettings = KeyBindings[state];
         
       if (typeof stateSettings !== 'undefined') {
+    
         _.each(stateSettings, (value, key) => {
+
           if (value !== null && value !== '') {
+        
             this.combokeys.bindGlobal(key.toString(), (e) => {
               this.$store.dispatch('pushKeyAction', value);
+              console.log(value);
               return false;
             });
           }
@@ -174,7 +181,12 @@ new Vue({
         if (initial) {
           this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('You were logged in', this.settings.language)}!` });
           const lastPath = localStorage.getItem('lastPath');
-          if (typeof lastPath !== 'undefined' && lastPath !== '/user' && lastPath !== '/login') {
+          if (
+            typeof lastPath !== 'undefined' &&
+            lastPath !== '/user' &&
+            lastPath !== '/login' && 
+            lastPath !== '/login/authorized'
+          ) {
             localStorage.removeItem('lastPath');
             this.$router.push({ path: lastPath });
           } else {

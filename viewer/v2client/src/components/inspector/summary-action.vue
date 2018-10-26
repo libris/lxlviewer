@@ -1,5 +1,7 @@
 <script>
 import { mapGetters } from 'vuex';
+import RoundButton from '@/components/shared/round-button.vue';
+import TooltipComponent from '@/components/shared/tooltip-component';
 
 export default {
   name: 'summary-action-button',
@@ -8,10 +10,10 @@ export default {
       show: false,
       styling: 'gray',
       text: 'button',
-      inspectAction: false,
     },
     disabled: true,
-    replaced: true
+    replaced: true,
+    extracting: false,
   },
   data() {
     return {
@@ -26,16 +28,22 @@ export default {
     ...mapGetters([
       'settings',
     ]),
-    inspectUrl() {
-      const uriParts = this.options.payload['@id'].split('/');
-      const fnurgel = uriParts[uriParts.length-1];
-      return `/katalogisering/${fnurgel}`;
+    getIcon() {
+      if (this.disabled) return 'check'
+      if (this.replaced) return 'ban'
+      if (this.options.icon) return this.options.icon
+      else return false;
     },
-    isLibrisResource() {
-      return StringUtil.isLibrisResourceUri(this.options.payload['@id'], this.settings.apiPath);
-    }
+    getTooltipText() {
+      if (this.disabled) return 'Added';
+      if (this.replaced) return 'Replaced';
+      if (this.options.text) return this.options.text;
+      else return false;
+    },
   },
   components: {
+    'round-button': RoundButton,
+    'tooltip-component': TooltipComponent,
   },
   watch: {
   },
@@ -49,46 +57,50 @@ export default {
 
 <template>
   <div class="SummaryAction">
-     <!-- This component now renders as an icon button or a regular button depending on the action event -->
-    <div v-if="options.event === 'add-entity'" class="SummaryAction-icon action-container">
-      <i v-show="replaced" class="fa fa-ban icon icon--lg is-disabled" :title="'Replaced by' | translatePhrase"></i>
-      <i v-show="disabled" class="fa fa-check-circle icon icon--lg is-added" :title="'Added' | translatePhrase"></i>
-      <i 
-        v-show="!(disabled || replaced) && options.styling === 'brand'"
-          class="fa fa-plus-circle icon icon--lg icon--primary"
-          @click.stop="action()"
-          @keyup.enter.stop="action()"
-          role="button"
-          tabindex="0"
-          :title="options.text | translatePhrase">
-        </i>
-        <i 
-          v-show="!(disabled || replaced) && options.styling == 'gray'"
-          class="fa fa-plus-circle icon icon--lg"
-          @click="action()"
-          @keyup.enter="action()"
-          tabindex="0"
-          role="button"
-          :title="options.text | translatePhrase">
-        </i>
+    <div class="SummaryAction-roundButton">
+      <round-button 
+        :disabled="disabled || replaced || extracting"
+        :color="options.styling"
+        :icon="getIcon"
+        :indicator="!disabled || !replaced" 
+        @click="action()"
+        @keyup.enter="action()">
+        <template slot="tooltip" v-if="getTooltipText">
+          <tooltip-component
+            class="Toolbar-tooltipContainer"
+            position="right"
+            :show-tooltip="true"
+            :tooltip-text="getTooltipText" 
+            translation="translatePhrase"></tooltip-component>
+        </template>
+      </round-button>
     </div>
-    <button v-else class="SummaryAction-button btn btn--sm"
-      @click="action()"
-      @keyup.enter="action()"
-      :class="{'btn-primary' : options.styling === 'brand'}">
-      {{options.text | translatePhrase}}
-    </button>
   </div>
 </template>
 
 <style lang="less">
 
 .SummaryAction {
-  &-icon {
-    display: flex;
-    align-items: center;
-    width: 30px;
+  display: flex;
+  align-items: baseline;
+
+  &-roundButton {
+    margin-top: 5px;
+
+    .fa-stack-1x {
+      color: @white;
+    }
+    .fa-stack-2x {
+      transition: color 0.25s ease;
+      color: @link-color;
+    }
+    &:hover {
+      .fa-stack-2x {
+        color: @link-hover-color;
+      }
+    }
   }
+  
 
   &-button {
   }

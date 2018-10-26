@@ -99,17 +99,30 @@ export default {
       }
       return false;
     },
+    isLastAdded() {
+      if (this.inspector.status.lastAdded === this.getPath) {
+        return true;
+      }
+      return false;
+    },
     getPath() {
       return this.suffix;
     },
     isEmpty() {
+      this.$el.getElementsByClassName('js-expandable')[0].classList.add('is-inactive');
+      this.$el.classList.remove('is-expanded');
       let bEmpty = true;
       // Check if item has any keys besides @type and _uid. If not, we'll consider it empty.
       _.each(this.item, (value, key) => {
         if (key !== '@type' && key !== '_uid') {
-          if (typeof value !== 'undefined') {
-            bEmpty = false;
+          if (key !== '@id') {
+            if (typeof value !== 'undefined') {
+              this.$el.getElementsByClassName('js-expandable')[0].classList.remove('is-inactive');
+              this.$el.classList.add('is-expanded');
+              bEmpty = false;
+            }
           }
+        
         }
       });
       return bEmpty;
@@ -168,24 +181,16 @@ export default {
     toggleExpanded() {
       if (this.expanded === true) {
         this.collapse();
-      } else {
+      } else {   
         this.expand();
       }
     },
     openExtractDialog() {
       if (this.inspector.status.editing) {
-        // this.$store.dispatch('setStatusValue', { 
-        //   property: 'keybindState', 
-        //   value: 'extraction-dialog' 
-        // });
         this.extractDialogActive = true;
       }
     },
     closeExtractDialog() {
-      // this.$store.dispatch('setStatusValue', { 
-      //   property: 'keybindState', 
-      //   value: 'overview' 
-      // });
       this.extractDialogActive = false;
       this.extracting = false;
     },
@@ -275,8 +280,19 @@ export default {
     this.$on('expand-item', this.expand);
   },
   mounted() {
-    this.$nextTick(() => {
-    });
+    if (this.isLastAdded) {
+      const fieldAdder = this.$refs.fieldAdder;
+      setTimeout(()=> {
+        if (this.isEmpty) {
+          this.$el.getElementsByClassName('js-expandable')[0].classList.add('is-inactive');
+          LayoutUtil.enableTabbing();
+          fieldAdder.$refs.adderButton.focus();
+        } else {
+          this.expand();
+        }
+        this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
+      }, 1000)
+    } 
   },
  
   components: {
@@ -299,15 +315,15 @@ export default {
     @blur="removeFocus()">
    
    <strong class="ItemSibling-heading">
-      <div class="ItemSibling-label">
+      <div class="ItemSibling-label js-expandable">
         <i class="ItemSibling-arrow fa fa-chevron-right " 
           :class="{'down': expanded}"
           @click="toggleExpanded()"></i>
-        <span class="type" 
+        <span class="ItemSibling-type" 
           @click="toggleExpanded($event)" 
           :title="item['@type']">{{ item['@type'] | labelByLang | capitalize }}:</span>
-        <span class="collapsed-label" @click="toggleExpanded()">
-          <span v-show="!expanded || isEmpty">{{getItemLabel}}</span>
+        <span class="ItemSibling-collapsedLabel" @click="toggleExpanded()">
+          <span class="ItemSibling-collapsedText" v-show="!expanded || isEmpty">{{getItemLabel}}</span>
           <span class="placeholder"> </span>
         </span>
       </div>
@@ -327,7 +343,7 @@ export default {
             tooltip-text="Link entity" 
             translation="translatePhrase"></tooltip-component>
         </i>
-        <field-adder class="ItemSibling-action"
+        <field-adder ref="fieldAdder" class="ItemSibling-action"
           v-if="!isLocked" 
           :entity-type="item['@type']" 
           :allowed="allowedProperties" 
@@ -411,7 +427,11 @@ export default {
   }
 
   &-label {
-    margin-right: 90px;
+    margin-right: 120px;
+    
+    &.is-inactive {
+      pointer-events: none;
+    }
   }
 
   &-type {
@@ -423,6 +443,12 @@ export default {
     padding: 0 2px;
     margin: 0 0 0 1px;
     cursor: pointer;
+
+    .is-inactive & {
+      color: @gray-light;
+      pointer-events: none;
+      cursor: not-allowed;
+    }
   }
 
   &-list {

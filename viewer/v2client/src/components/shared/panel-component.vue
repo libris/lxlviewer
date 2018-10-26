@@ -34,7 +34,7 @@ export default {
     modalType: {
       default: 'normal',
       type: String,
-    },
+    }, 
     closeable: {
       default: true,
       type: Boolean,
@@ -59,6 +59,7 @@ export default {
     close() {
       if (this.closeable) {
         this.fadedIn = false;
+        
         setTimeout(() => {
           this.$emit('close');
         }, this.fadeTime);
@@ -74,14 +75,27 @@ export default {
     translatedTitle() {
       return StringUtil.getUiPhraseByLang(this.title, this.user.settings.language);
     },
+    hasFooter() {
+      return !!this.$slots["panel-footer"];
+    },
   },
   watch: {
-  },
-  components: {
+    'status.keyActions'(actions) {
+      let lastAction = actions.slice(-1);
+      if (lastAction == 'close-modals') {
+        this.close();
+      }
+    }, 
   },
   mounted() {
     this.$nextTick(() => {
       this.$store.dispatch('setStatusValue', { property: 'panelOpen', value: true });
+      if (this.status.panelOpen) {
+        this.$store.dispatch('setStatusValue', { 
+          property: 'keybindState', 
+          value: 'panel-open' 
+        });
+      }
       if (window.innerWidth <= 1200 || this.user.settings.forceFullViewPanel) {
         this.lockScroll(true);
       }
@@ -110,8 +124,8 @@ export default {
         <div class="PanelComponent-header">
           <slot name="panel-header">
             <div class="PanelComponent-titleContainer">
-              <slot name="panel-header-info"></slot>
               <h4 class="PanelComponent-title">{{ translatedTitle }}</h4>
+              <slot name="panel-header-info"></slot>
             </div>
             <span class="PanelComponent-windowControl">
               <i class="fullview-toggle-button fa fa-compress icon icon--md"
@@ -136,7 +150,7 @@ export default {
           <code>No content recieved from parent</code>
         </slot>
       </div>
-      <div class="PanelComponent-footer">
+      <div class="PanelComponent-footer" v-if="hasFooter">
         <slot name="panel-footer"></slot>
       </div>
     </div>
@@ -206,6 +220,7 @@ export default {
     display: flex;
     flex-wrap: nowrap;
     flex-direction: column;
+    flex-shrink: 0;
     background-color: @panel-header-bg;
     border-bottom: 1px solid @gray-lighter;
     padding: 20px 15px 0 15px;
@@ -223,7 +238,7 @@ export default {
   }
 
   &-headerInfo {
-      margin-right: 10px;
+      margin-left: 10px;
   }
 
   &-headerInfoBox {
@@ -237,7 +252,7 @@ export default {
     border-radius: 4px;
     box-shadow: @shadow-panel;
     padding: 10px;
-    z-index: 3;
+    z-index: 4;
     max-width: 50%;
     font-size: 14px;
     font-size: 1.4rem;
@@ -270,7 +285,7 @@ export default {
   }
 
   &-searchStatus {
-    padding: 15px;
+    padding: 15px 20px;
     display: flex;    
     flex-direction: column;
     align-items: center;
@@ -280,11 +295,14 @@ export default {
     font-size: 2rem;
     font-weight: normal;
     color: @grey;
+
+    & > * {
+      max-width: 100%;
+    }
   }
 
   &-listItem {
     display: flex;
-    align-items: center;
     width: 100%;
     padding: 15px;
     background-color: @list-item-bg-even;
@@ -301,6 +319,8 @@ export default {
 
   &-footer {
     background-color: @panel-header-bg;
+    border-top: 1px solid @gray-lighter;
+    padding: 5px 0;
   }
 
   &-windowControl {

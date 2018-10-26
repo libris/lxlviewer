@@ -46,9 +46,6 @@ export default {
   <div class="row">
     <div class="col-md-12">
       <search-form class="LandingPage-searchBar"></search-form>
-      <link-card v-if="widgetShouldBeShown('gdpr')" 
-          :header="copy['gdpr'].header" 
-          :html="copy['gdpr'].html"></link-card>
       <div class="LandingPage-linkCards">
         <link-card v-if="widgetShouldBeShown('about-xl')" 
           :image="copy['about-xl'].image" 

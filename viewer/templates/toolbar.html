@@ -1,0 +1,40 @@
+
+
+{% macro toolbar_old(thing_url, is_authenticated, thing_type, element='article', view='thing') %}
+  % if is_authenticated and element == 'article'
+    <div class="toolbar">
+    % if thing_type == 'Record' and view == 'edit'
+      <form method="POST" action="/edit">
+        <textarea id="holdingItem" name="item" class="hidden"></textarea>
+        <button type="submit" class="toolbar-button js-toolbar-add-holding"><i class="fa fa-plus"></i>Lägg till Bestånd</button>
+      </form>
+    % endif
+    % if view != 'edit'
+      <form method="POST" action="/edit">
+        <span id="itemId" class="hidden">${ thing_url }</span>
+        <textarea id="copyItem" name="item" class="hidden"></textarea>
+        <button type="submit" class="toolbar-button js-toolbar-copy hidden"><i class="fa fa-copy"></i>Kopiera</button>
+      </form>
+    % endif
+      <a href="" class="toolbar-button js-toolbar-remove" data-record-id="${thing_url}"><i class="fa fa-trash" aria-hidden="true"></i>Ta bort post</a>
+    % if view != 'thing'
+      <a href="" class="toolbar-button js-toolbar-marc" data-record-id="${thing_url}"><i class="fa fa-list-alt" aria-hidden="true"></i>Förhandsgranska Marc</a>
+    % else
+      <a href="${thing_url}/edit" class="toolbar-button js-toolbar-edit"><i class="fa fa-pencil"></i>Redigera</a>
+    % endif
+    </div>
+  % endif
+{% endmacro %}
+
+% macro toolbar(thing, is_authenticated, thing_type, element='article', view='thing')
+  % set thing_url = view_url(thing['@id'])
+  % set edit_url = thing_url.split('#')[0]
+<div class="toolbar">
+  % if is_authenticated
+    <a href="" class="toolbar-button js-toolbar-remove" data-record-id="${thing_url}"><i class="fa fa-trash" aria-hidden="true"></i>Ta bort post</a>
+    <a href="${edit_url}/edit" class="toolbar-button js-toolbar-edit"><i class="fa fa-pencil"></i>Redigera</a>
+  % endif
+</div>
+
+
+% endmacro

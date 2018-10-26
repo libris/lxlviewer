@@ -59,6 +59,7 @@ const store = new Vuex.Store({
       resultList: {
         loading: false
       },
+      loadingIndicators: [],
       notifications: [],
       helpSection: 'none',
       remoteDatabases: [],
@@ -73,6 +74,7 @@ const store = new Vuex.Store({
       language: 'sv',
       environment: getEnvironment(),
       version: process.env.VERSION,
+      dataPath: process.env.DATA_PATH,
       apiPath: process.env.API_PATH,
       authPath: process.env.AUTH_PATH,
       idPath: process.env.ID_PATH,
@@ -111,6 +113,11 @@ const store = new Vuex.Store({
         'https://id.kb.se/vocab/',
         'http://id.kb.se/',
         'https://id.kb.se/',
+      ],
+      filteredCategories: [
+        'pending',
+        'shorthand',
+        'unstable',
       ],
       hiddenProperties: [
         '@id',
@@ -371,6 +378,27 @@ const store = new Vuex.Store({
       history.splice(history.length-1, 1);
       commit('updateInspectorData', payload);
     },
+    pushLoadingIndicator({ commit, state }, indicatorString) {
+      const loaders = state.status.loadingIndicators;
+      loaders.push(indicatorString);
+      commit('setStatusValue', {
+        property: 'loadingIndicators',
+        value: loaders
+      });
+    },
+    removeLoadingIndicator({ commit, state }, indicatorString) {
+      const loaders = state.status.loadingIndicators;
+      for (let i = 0; i < loaders.length; i++) {
+        if (loaders[i] === indicatorString) {
+          loaders.splice(i, 1);
+          break;
+        }
+      }
+      commit('setStatusValue', {
+        property: 'loadingIndicators',
+        value: loaders
+      });
+    },
     pushKeyAction({ commit }, keyAction) {
       commit('pushKeyAction', keyAction);
     },
@@ -448,8 +476,8 @@ const store = new Vuex.Store({
     },
     setVocabClasses({ commit, state }, vocabJson) {
       let classTerms = [].concat(
-            VocabUtil.getTermByType('Class', vocabJson, state.resources.context),
-            VocabUtil.getTermByType('marc:CollectionClass', vocabJson, state.resources.context)
+            VocabUtil.getTermByType('Class', vocabJson, state.resources.context, state.settings),
+            VocabUtil.getTermByType('marc:CollectionClass', vocabJson, state.resources.context, state.settings)
           );
       const classes = new Map(classTerms.map(entry => [entry['@id'], entry]));
       classes.forEach(classObj => {
@@ -470,10 +498,10 @@ const store = new Vuex.Store({
     },
     setVocabProperties({ commit, state }, vocabJson) {
       let props = [];
-      props = props.concat(VocabUtil.getTermByType('Property', vocabJson, state.resources.context));
-      props = props.concat(VocabUtil.getTermByType('DatatypeProperty', vocabJson, state.resources.context));
-      props = props.concat(VocabUtil.getTermByType('ObjectProperty', vocabJson, state.resources.context));
-      props = props.concat(VocabUtil.getTermByType('owl:SymmetricProperty', vocabJson, state.resources.context));
+      props = props.concat(VocabUtil.getTermByType('Property', vocabJson, state.resources.context, state.settings));
+      props = props.concat(VocabUtil.getTermByType('DatatypeProperty', vocabJson, state.resources.context, state.settings));
+      props = props.concat(VocabUtil.getTermByType('ObjectProperty', vocabJson, state.resources.context, state.settings));
+      props = props.concat(VocabUtil.getTermByType('owl:SymmetricProperty', vocabJson, state.resources.context, state.settings));
       const vocabProperties = new Map(props.map((entry) => [entry['@id'], entry]));
 
       commit('setVocabProperties', vocabProperties)

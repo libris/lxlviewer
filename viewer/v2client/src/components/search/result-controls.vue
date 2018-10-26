@@ -59,11 +59,12 @@ export default {
       return '';
     },
     limit() {
-      if (this.pageData.first) {
-        return StringUtil.getParamValueFromUrl(this.pageData.first['@id'], '_limit');
+      const limitFromUrl = StringUtil.getParamValueFromUrl(this.pageData.first['@id'], '_limit');
+      if (limitFromUrl !== null) {
+        return limitFromUrl;
+      } else {
+        return 20;
       }
-      console.warn('Search details is missing limit parameter');
-      return '';
     },
     pageList() {
       const list = [];

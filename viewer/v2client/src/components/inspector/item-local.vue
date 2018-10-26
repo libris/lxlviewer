@@ -97,11 +97,16 @@ export default {
       return this.item;
     },
     isEmpty() {
+      this.$el.getElementsByClassName('js-expandable')[0].classList.add('is-inactive');
+      this.$el.classList.remove('is-expanded');
+
       let bEmpty = true;
       // Check if item has any keys besides @type and _uid. If not, we'll consider it empty.
       _.each(this.item, (value, key) => {
         if (key !== '@type' && key !== '_uid') {
           if (typeof value !== 'undefined') {
+            this.$el.getElementsByClassName('js-expandable')[0].classList.remove('is-inactive');
+            this.$el.classList.add('is-expanded');
             bEmpty = false;
           }
         }
@@ -147,32 +152,19 @@ export default {
     toggleExpanded() {
       if (this.expanded === true) {
         this.collapse();
-      } else {
+      } else {   
         this.expand();
       }
     },
     isHolding() {
       return this.inspector.data.mainEntity['@type'] === 'Item';
     },
-    expandOnNew() {
-      if (this.isHolding() && this.inspector.status.isNew) {
-        this.toggleExpanded();
-      }
-    },
     openExtractDialog() {
       if (this.inspector.status.editing) {
-        // this.$store.dispatch('setStatusValue', { 
-        //   property: 'keybindState', 
-        //   value: 'extraction-dialog' 
-        // });
         this.extractDialogActive = true;
       }
     },
     closeExtractDialog() {
-      // this.$store.dispatch('setStatusValue', { 
-      //   property: 'keybindState', 
-      //   value: 'overview' 
-      // });
       this.extractDialogActive = false;
       this.extracting = false;
     },
@@ -256,7 +248,12 @@ export default {
     cloneThis() {      
       let parentData = _.cloneDeep(_.get(this.inspector.data, this.parentPath));
       parentData.push(this.item);
-      
+
+      this.$store.dispatch('setInspectorStatusValue', { 
+        property: 'lastAdded', 
+        value: `${this.parentPath}[${parentData.length-1}]`
+      });
+
       setTimeout(() => {
         this.$store.dispatch('updateInspectorData', {
           changeList: [
@@ -280,17 +277,22 @@ export default {
     this.$on('expand-item', this.expand);
   },
   mounted() {
-    this.$nextTick(() => {
-      this.expandOnNew();
-    });
-    
     if (this.isLastAdded) {
-      setTimeout(()=> {
+      const fieldAdder = this.$refs.fieldAdder;
+      setTimeout(() => {
+        if (this.isEmpty) {
+          this.$el.getElementsByClassName('js-expandable')[0].classList.add('is-inactive');
+          this.collapse();
+          LayoutUtil.enableTabbing();
+          fieldAdder.$refs.adderButton.focus();
+        } else {
+          this.expand();
+        }
         this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
       }, 1000)
     } 
   },
- 
+
   components: {
     'processed-label': ProcessedLabel,
     'item-entity': ItemEntity,
@@ -309,9 +311,9 @@ export default {
     @keyup.enter="checkFocus()"
     @focus="addFocus()"
     @blur="removeFocus()">
-   
-   <strong class="ItemLocal-heading">
-     <div class="ItemLocal-label">
+
+    <strong class="ItemLocal-heading">
+      <div class="ItemLocal-label js-expandable">
         <i class="ItemLocal-arrow fa fa-chevron-right " 
           :class="{'down': expanded}" 
           @click="toggleExpanded()"></i>
@@ -357,7 +359,7 @@ export default {
           </i>
         </div>
 
-        <field-adder class="ItemLocal-action"
+        <field-adder ref="fieldAdder" class="ItemLocal-action"
           v-if="!isLocked" 
           :entity-type="item['@type']" 
           :allowed="allowedProperties" 
@@ -407,7 +409,7 @@ export default {
         :show-action-buttons="showActionButtons"
         :is-expanded="expanded"></field> 
     </ul>
-       
+
     <search-window 
       :isActive="extractDialogActive" 
       :can-copy-title="canCopyTitle" 
@@ -440,7 +442,11 @@ export default {
   }
 
   &-label {
-    margin-right: 90px;
+    margin-right: 120px;
+    
+    &.is-inactive {
+      pointer-events: none;
+    }
   }
 
   &-type {
@@ -452,6 +458,12 @@ export default {
     transition: all 0.2s ease;
     padding: 0 2px;
     cursor: pointer;
+
+    .is-inactive & {
+      color: @gray-light;
+      pointer-events: none;
+      cursor: not-allowed;
+    }
   }
 
   &-list {

@@ -212,34 +212,6 @@ export default {
       return this.forcedListTerms.indexOf(this.fieldKey) > -1;
     },
   },
-  mounted() {
-    this.$nextTick(() => {
-      setTimeout(() => {
-        if (this.fieldKey === '_uid') {
-          throw new Error('A datanode component has been added for a _uid key, which should never happen.');
-        }
-        if (this.isLastAdded === true) {
-          let element = this.$el;
-          let topOfElement = LayoutUtil.getPosition(element).y;
-          if (topOfElement > 0) {
-            const windowHeight = window.innerHeight || 
-            document.documentElement.clientHeight || 
-            document.getElementsByTagName('body')[0].clientHeight;
-            const scrollPos = LayoutUtil.getPosition(this.$el).y - (windowHeight * 0.2);
-            LayoutUtil.scrollTo(scrollPos, 1000, 'easeInOutQuad', () => {
-              setTimeout(() => {
-                this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
-              }, 1000)
-            });
-          } else {
-              setTimeout(() => {
-                this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
-              }, 1000)
-          }
-        }
-      }, 300);
-    });
-  },
   methods: {
     actionHighlight(active, event) {
       if (active) {
@@ -365,18 +337,64 @@ export default {
         this.shouldShowActionButtons=false
       }
     },
+    highLightLastAdded() {
+      if (this.isLastAdded === true) {
+        if (this.fieldValue === null || (_.isArray(this.fieldValue) && this.fieldValue.length === 0 )) {
+          const entityAdder = this.$refs.entityAdder;
+          this.$nextTick(() => {
+            if (entityAdder) {
+              LayoutUtil.enableTabbing();
+              if (entityAdder.$refs.adderTypeSelect) {
+                entityAdder.$refs.adderTypeSelect.focus();
+              } else {
+                entityAdder.$refs.adderFocusElement.focus();
+              }
+            }
+          });
+        }
+        let element = this.$el;
+        let topOfElement = LayoutUtil.getPosition(element).y;
+        if (topOfElement > 0) {
+          const windowHeight = window.innerHeight || 
+          document.documentElement.clientHeight || 
+          document.getElementsByTagName('body')[0].clientHeight;
+          const scrollPos = LayoutUtil.getPosition(this.$el).y - (windowHeight * 0.2);
+          LayoutUtil.scrollTo(scrollPos, 1000, 'easeInOutQuad', () => {
+            setTimeout(() => {
+              this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
+            }, 1000)
+          });
+        } else {
+          setTimeout(() => {
+            this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
+          }, 1000)
+        }
+      }
+    }
+  },
+  mounted() {
+    this.$nextTick(() => {
+      setTimeout(() => {
+        if (this.fieldKey === '_uid') {
+          throw new Error('A datanode component has been added for a _uid key, which should never happen.');
+        }
+        this.highLightLastAdded();
+      }, 300);
+    });
   },
 };
 </script>
 
 <template>
   <li class="Field js-field" 
-    :id="`field-${getPath}`" 
+    :id="`field-${getPath}`"
     v-bind:class="{'is-mainField': isMainField, 'Field--inner': !asColumns, 'is-lastAdded': isLastAdded, 'is-removed': removed}" 
     @mouseover="handleMouseEnter()" 
     @mouseleave="handleMouseLeave()">
 
-    <div class="Field-labelContainer" v-if="!isInner" :class="{'is-wide': inspector.status.editing || user.settings.appTech, 'is-hovered': shouldShowActionButtons}">
+    <div class="Field-labelContainer" 
+      :class="{'is-wide': inspector.status.editing || user.settings.appTech, 'is-hovered': shouldShowActionButtons}"
+      v-if="!isInner" >
       <div class="Field-labelWrapper">
         <div v-if="this.inspector.status.editing" class="Field-actions">
           <div class="Field-action Field-remove" 
@@ -385,6 +403,7 @@ export default {
             <i class="fa fa-trash-o action-button icon icon--sm"
               tabindex="0"
               v-on:click="removeThis(true)"
+              @keyup.enter="removeThis(true)"
               @focus="removeHover = true, removeHighlight(true, $event)" 
               @blur="removeHover = false, removeHighlight(false, $event)"
               @mouseover="removeHover = true, removeHighlight(true, $event)" 
@@ -397,6 +416,7 @@ export default {
           </div>
           <entity-adder class="Field-entityAdder Field-action"
             v-if="!locked && (isRepeatable || isEmptyObject)" 
+            ref="entityAdder"
             :field-key="fieldKey" 
             :already-added="linkedIds" 
             :compositional="isCompositional" 
@@ -431,8 +451,13 @@ export default {
 
       <!-- Is inner -->
       <div class="Field-actions is-nested">
+        <div class="Field-action Field-comment" v-if="propertyComment && !locked" >
+          <i class="fa fa-question-circle icon icon--sm"></i>
+          <span class="Field-commentText">{{ propertyComment }}</span>
+        </div>
         <entity-adder class="Field-action Field-entityAdder"
           v-if="!locked && (isRepeatable || isEmptyObject)" 
+          ref="entityAdder"
           :field-key="fieldKey" 
           :path="getPath" 
           :already-added="linkedIds" 
@@ -474,6 +499,7 @@ export default {
         v-for="(item, index) in valueAsArray" 
         :key="index"
         v-bind:class="{'is-entityContent': getDatatype(item) == 'entity'}">
+
         <item-error 
           v-if="getDatatype(item) == 'error'" 
           :item="item"></item-error>
@@ -554,6 +580,7 @@ export default {
         <!-- Not linked, local child strings -->
         <item-value 
           v-if="getDatatype(item) == 'value'" 
+          :is-last-added="isLastAdded"
           :is-removable="!hasSingleValue" 
           :is-locked="locked" 
           :is-uri-type="isUriType"
@@ -561,6 +588,7 @@ export default {
           :field-key="fieldKey" 
           :index="index" 
           :parent-path="getPath" 
+          :gparent-path="parentPath"
           :show-action-buttons="actionButtonsShown"
           :is-expanded="isExpanded"></item-value>
       </div>
@@ -724,8 +752,8 @@ export default {
     }
 
     .is-lastAdded & {
-      -webkit-animation-duration: 1s;
-      animation-duration: 1s;
+      -webkit-animation-duration: 2s;
+      animation-duration: 2s;
       -webkit-animation-fill-mode: both;
       animation-fill-mode: both;
       -webkit-animation-name: fadeIn;
@@ -776,6 +804,7 @@ export default {
     padding: 10px;
     text-align: left;
     white-space: normal;
+    color: @black;
     background-color: @white;
     border: 1px solid @gray-lighter;
     border-radius: 4px;
@@ -810,7 +839,7 @@ export default {
       padding: 0 0 0 10px;
     }
 
-     @media (min-width: 768px) {
+    @media (min-width: 768px) {
       border-left: 1px solid;
       border-color: @form-border;
       border-color: @form-border-alt;
@@ -912,5 +941,4 @@ export default {
     }
   }
 }
-
 </style>

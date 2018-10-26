@@ -13,7 +13,7 @@ import * as CombinedTemplates from '@/resources/json/combinedTemplates.json';
 import * as StructuredValueTemplates from '@/resources/json/structuredValueTemplates.json';
 import ProcessedLabel from '../shared/processedlabel';
 import ToolTipComponent from '../shared/tooltip-component';
-import EntitySearchList from '../search/entity-search-list';
+import PanelSearchList from '../search/panel-search-list';
 import PanelComponent from '@/components/shared/panel-component.vue';
 import ModalPagination from '@/components/inspector/modal-pagination';
 import FilterSelect from '@/components/shared/filter-select.vue';
@@ -39,6 +39,7 @@ export default {
       currentPage: 0,
       numberOfPages: 0,
       maxResults: 20,
+      isCompact: false,
     };
   },
   props: {
@@ -68,7 +69,7 @@ export default {
   components: {
     'panel-component': PanelComponent,
     'tooltip-component': ToolTipComponent,
-    'entity-search-list': EntitySearchList,
+    'panel-search-list': PanelSearchList,
     'modal-pagination': ModalPagination,
     'filter-select': FilterSelect,
     'vue-simple-spinner': VueSimpleSpinner,
@@ -421,7 +422,14 @@ export default {
     addSibling(obj) {
       const linkObj = { '@id': `${this.inspector.data.record['@id']}#work` };
       const workObj = obj;
+      const workType = workObj['@type'];
       workObj['@id'] = linkObj['@id'];
+
+      this.$store.dispatch('setInspectorStatusValue', { 
+        property: 'lastAdded', 
+        value: 'work'
+      });
+
       this.$store.dispatch('updateInspectorData', {
         changeList: [
           {
@@ -524,6 +532,7 @@ export default {
           class="fa fa-plus-circle icon icon--sm" 
           tabindex="0"
           aria-hidden="true"
+          ref="adderFocusElement"
           @click="add($event)" 
           @keyup.enter="add($event)"
           @mouseenter="showToolTip = true, actionHighlight(true, $event)" 
@@ -541,6 +550,7 @@ export default {
       <i 
         class="EntityAdder-addIcon fa fa-plus-circle icon icon--sm" 
         tabindex="0"
+        ref="adderFocusElement"
         v-on:click="add($event)" 
         @keyup.enter="add($event)"
         @mouseenter="showToolTip = true, actionHighlight(true, $event)" 
@@ -559,6 +569,7 @@ export default {
       v-on-clickaway="dismissTypeChooser">
       <select class="EntityAdder-typeSelect customSelect" 
         v-model="selectedType" 
+        ref="adderTypeSelect"
         @change="addType(selectedType, true)">
         <option disabled value="">{{"Choose type" | translatePhrase}}</option>
         <option v-for="(term, index) in getClassTree"  
@@ -579,7 +590,7 @@ export default {
           v-if="getFullRange.length > 0" 
           @mouseleave="rangeInfo = false">
           <i class="fa fa-info-circle icon icon--md" @mouseenter="rangeInfo = true"></i>
-          <div class="PanelComponent-headerInfoBox" v-if="rangeInfo">
+          <div class="PanelComponent-headerInfoBox" v-show="rangeInfo">
             <p class="header">
               {{ "Allowed types" | translatePhrase }}:
             </p>
@@ -613,22 +624,21 @@ export default {
               </div>
             </div>
           </div>
-          <modal-pagination
-            v-if="!loading && searchResult.length > 0" 
-            @go="go" 
-            :numberOfPages="numberOfPages" 
-            :currentPage="currentPage">
-          </modal-pagination>
+          
         </div>
       </template>
       <template slot="panel-body">
-        <entity-search-list class="EntityAdder-searchResult"
+        <panel-search-list class="EntityAdder-searchResult"
           v-if="!loading && keyword.length > 0" 
           :path="path" 
           :results="searchResult" 
           :disabled-ids="alreadyAdded"
-          @add-item="addLinkedItem">
-        </entity-search-list>
+          :is-compact="isCompact"
+          icon="plus"
+          text="Add"
+          :has-action="true"
+          @use-item="addLinkedItem">
+        </panel-search-list>
         <div class="PanelComponent-searchStatus" v-if="!loading && keyword.length === 0" >
           {{ "Start writing to begin search" | translatePhrase }}...
         </div>
@@ -642,6 +652,28 @@ export default {
       <!-- </div> -->
       </template>
       <template slot="panel-footer">
+        
+        <div class="EntityAdder-resultControls" v-if="!loading && searchResult.length > 0">
+          <modal-pagination
+            @go="go" 
+            :numberOfPages="numberOfPages" 
+            :currentPage="currentPage">
+          </modal-pagination>
+          <div class="EntityAdder-listTypes">
+            <i class="fa fa-th-list icon icon--sm"
+              @click="isCompact = false"
+              @keyup.enter="isCompact = false"
+              :class="{'icon--primary' : !isCompact}"
+              :title="'Detailed view' | translatePhrase"
+              tabindex="0"></i>
+            <i class="fa fa-list icon icon--sm"
+              @click="isCompact = true"
+              @keyup.enter="isCompact = true"
+              :class="{'icon--primary' : isCompact}"
+              :title="'Compact view' | translatePhrase"
+              tabindex="0"></i>
+          </div>
+        </div>
         <div class="EntityAdder-create">
           <button class="EntityAdder-createBtn btn btn-primary btn--sm"
             v-if="hasSingleRange" 
@@ -670,6 +702,21 @@ export default {
   }
   &.is-innerAdder {
     cursor: pointer;
+  }
+
+  &-resultControls {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 0 10px;
+  }
+
+  &-listTypes {
+    display: flex;
+    justify-content: space-between;
+    height: 20px;
+    height: fit-content;
+    width: 45px;
   }
 
   &-add {
@@ -755,7 +802,6 @@ export default {
     display: flex;
     justify-content: flex-end;
     padding: 10px 15px;
-    border-top: 1px solid @gray-light;
   }
 
   &-createBtn {
@@ -776,7 +822,7 @@ export default {
   }
 
 }
-.EntitySearchResult {
+.PanelSearchResult {
   &-fetchMore {
     text-align: center;
   }

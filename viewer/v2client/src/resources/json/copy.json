@@ -26,10 +26,6 @@
     "linkUrl": "",
     "linkText": ""
   },
-  "gdpr": {
-    "header": "Så här hanterar KB dina uppgifter",
-    "html": "Kungliga biblioteket hanterar dina personuppgifter i enlighet med EU:s dataskyddsförordning (2018), GDPR. <a href=\"https://www.kb.se/omoss/dataskydd.html\">Läs mer om dataskydd här.<\/a> Så här hanterar KB dina uppgifter vid <a href=\"https://www.kb.se/omoss/dataskydd.html#XLkat\">användning av denna tjänst.</a>"
-  },
   "about-xl": {
     "image": "omxl_new.png",
     "header": "Om nya Libris och XL",

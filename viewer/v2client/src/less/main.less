@@ -182,13 +182,9 @@ button {
 
 
 // ----------- VARIOUS ----------------
-body:not(.user-is-tabbing) button:focus,
-body:not(.user-is-tabbing) .btn:focus,
-body:not(.user-is-tabbing) input:focus,
-body:not(.user-is-tabbing) select:focus,
-body:not(.user-is-tabbing) textarea:focus,
-body:not(.user-is-tabbing) div:focus,
-body:not(.user-is-tabbing) li:focus,
-body:not(.user-is-tabbing) a:focus {
+* {
   outline: none;
+}
+.user-is-tabbing *:focus {
+  outline: auto darkcyan;
 }

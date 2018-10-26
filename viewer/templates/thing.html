@@ -1,0 +1,467 @@
+% extends "base.html"
+{% from 'toolbar.html' import toolbar_old %}
+{% from 'toolbar.html' import toolbar %}
+% from "termutils.html" import vocab_term, termref
+
+{% block title %}${vocab.get_label_for(thing)}{% endblock %}
+
+{% block bodyattrs %}vocab="${config.VOCAB_IRI}" id="thing"{% endblock %}
+{% block navcontainerclass %} container {% endblock %}
+
+% block scripts
+
+% endblock
+
+% block content
+<div class="row">
+  % if g.site.title == 'libris.kb.se'
+  <div class="col-md-12">
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <a href="https://www.kb.se" class="pull-right">
+          <img src="/assets/img/kb_logo_black.svg" class="logo-medium" alt="" />
+        </a>
+        <h1>${vocab.get_label_for(thing)}</h1>
+        <h3>Andra vyer för samma resurs:</h3>
+        <ul>
+          % if thing.mainEntity['@id'].startswith('https://id.kb.se/')
+          <li><a href="${thing.mainEntity['@id']}">Visa denna resurs på id.kb.se</a></li>
+          % endif
+
+          % for same in thing.sameAs
+            % if same[ID].startswith('http://libris.kb.se/bib/')
+              <li><a href="${same[ID]}">Visa denna resurs på Libris Webbsök</a></li>
+            % endif
+          % endfor
+          % if thing['@id']
+          % set thing_slug = thing['@id'].rsplit('/',1)[-1]
+          <li><a href="/katalogisering/${thing_slug}">Visa denna resurs på Libris Katalogisering</a></li>
+          % endif
+        </ul>
+        <h3>Visa som:</h3>
+        <ul>
+          <li>
+            <a href="${thing['@id']}/data.jsonld">JSON-LD</a>
+          </li>
+          <li>
+            <a href="${thing['@id']}/data.ttl">Turtle</a>
+          </li>
+          <li>
+            <a href="${thing['@id']}/data.rdf">RDF/XML</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  % else
+  <div class="col-md-9 thing">
+    ${viewthing(thing.mainEntity or thing)}
+  </div>
+  <div class="col-md-3">
+    % set thingId = thing.mainEntity['@id'] or thing['@id']
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        Visa som:
+      </div>
+      <div class="panel-body">
+        <ul>
+          <li>
+            <a href="${thingId}/data.jsonld">JSON-LD</a>
+          </li>
+          <li>
+            <a href="${thingId}/data.ttl">Turtle</a>
+          </li>
+          <li>
+            <a href="${thingId}/data.rdf">RDF/XML</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  % endif
+</div>
+% endblock
+
+% macro thing_full(thing)
+<div class="thing thing-full">
+  ${toolbar(thing, current_user.is_authenticated)}
+  <div class="header">
+    <h1>${vocab.get_label_for(thing)}</h1>
+  </div>
+  <div class="body">
+    ${ thing_data_list(thing) }
+  </div>
+</div>
+
+% endmacro
+
+% macro thing_summary(thing)
+
+% set title = vocab.get_label_for(thing)
+% set subtitle = ''
+% if thing.responsibilityStatement
+  % set subtitle = thing.responsibilityStatement
+% endif
+% set identifiers = []
+% if thing.sameAs
+% set identifiers = identifiers + thing.sameAs
+% endif
+% if thing.identifiedBy
+  % set identifiers = identifiers + thing.identifiedBy
+% endif
+% if isinstance(thing[TYPE], list)
+  % set typelabels = ""
+  % for term in thing[TYPE]
+  %   set typelabels = typelabels + vocab_term(term)
+  % endfor
+% else
+  % set typelabels = [vocab_term(thing[TYPE])]
+% endif
+% if thing.issuanceType
+  % set typelabels =  typelabels + [vocab_term(thing.issuanceType)]
+% endif
+
+<div class="thing-summary">
+  <div class="main-info">
+    <h3 class="title"><a href="${view_url(thing[ID])}">${title}</a></h3>
+    <span class="subtitle">${subtitle}</span>
+  </div>
+  <div class="identifiers">
+    <ul>
+      % for i in identifiers
+      % if loop.index < 5
+        % if i[TYPE]
+        <li>${i[TYPE]}
+           % if isinstance(i.value, list)
+           ${ ", ".join(i.value)}
+           % else
+           ${i.value}
+           % endif
+         </li>
+        % else
+        <li>${i[ID]}</li>
+        % endif
+      % elif loop.index == 6
+        <li>...</li>
+      % endif
+      % endfor
+    </ul>
+  </div>
+  <div class="bottom-info">
+    <span>${typelabels|join(', ')}</span>
+  </div>
+</div>
+% endmacro
+
+% macro thing_list_item(thing)
+<div class="thing thing-list-item">
+  <span class="title"><a href="${view_url(thing[ID])}">${vocab.get_label_for(thing)}</a></span>
+  <span class="class">
+    % if isinstance(thing[TYPE], list)
+      % for t in thing[TYPE]
+        ${vocab_term(t)}
+      % endfor
+    % else
+      ${vocab_term(thing[TYPE])}
+    % endif
+  </span>
+</div>
+% endmacro
+
+% macro thing_data_list(thing)
+
+% set node = thing
+% for k in vocab.sortedkeys(node)
+% set v = node[k]
+% set expandedProp = 'instanceOf'
+<div class="data-node rows">
+  <div class="label">${vocab_term(k)}</div>
+  <div class="value node-list">
+    % if isinstance(v, list)
+    <ul>
+      % for sub in v
+        <li>
+          % if isinstance(sub, dict)
+            % if not ID in sub.keys()
+              ${thing_embedded(sub)}
+            % elif sub == expandedProp
+              ${thing_card(sub, True)}
+            % else
+              ${thing_chip(sub)}
+            % endif
+          % else
+            ${thing_value(sub)}
+          % endif
+        </li>
+      % endfor
+    </ul>
+    % elif isinstance(v, dict)
+      % if not ID in v.keys()
+        ${thing_embedded(v)}
+      % elif k == expandedProp
+        ${thing_card(v, True)}
+      % else
+        ${thing_chip(v)}
+      % endif
+    % else
+      ${thing_value(v)}
+    % endif
+  </div>
+</div>
+% endfor
+% endmacro
+
+% macro thing_value(object)
+<div class="item-value">
+  <span>${object}</span>
+</div>
+% endmacro
+
+% macro thing_card(object, expanded = False)
+
+% if expanded
+<div class="card-info-container expanded">
+% else
+<div class="card-info-container floating card-hidden">
+% endif
+  <div class="card">
+    <div class="header">
+      <span class="title">
+        <a href="${object[ID]}">${vocab.get_label_for(object)}</a>
+      </span>
+      <span class="type">
+        ${vocab_term(object[TYPE])}
+      </span>
+    </div>
+    <ul class="card-data">
+      % set node = object
+      % for k in vocab.sortedkeys(node)
+      % set v = node[k]
+      <li>
+        <span class="key">${vocab_term(k)}</span>
+          % if isinstance(v, dict) and len(v) > 1
+            <span class="value">
+              % if not ID in v.keys()
+                ${vocab.get_label_for(v)}
+              % elif expanded
+                ${thing_chip(v)}
+              % else
+                ${thing_chip(v, False)}
+              % endif
+            </span>
+          % elif isinstance(v, list)
+            <ul class="value">
+              % for sub in v
+                <li class="card-data-value-row">
+                  % if isinstance(sub, dict)
+                    % if not ID in sub.keys()
+                      ${vocab.get_label_for(sub)}
+                    % elif expanded
+                      ${thing_chip(sub)}
+                    % else
+                      ${thing_chip(sub, False)}
+                    % endif
+                  % else
+                  <span>${sub}</span>
+                  % endif
+                </li>
+              % endfor
+            </ul>
+          % else
+            % if isinstance(v, dict)
+              % if not ID in v.keys()
+                ${thing_embedded(v)}
+              % elif expanded
+                ${thing_chip(v)}
+              % else
+                ${thing_chip(v, False)}
+              % endif
+            % else
+              <span class="value">${v}</span>
+            % endif
+          % endif
+      </li>
+      % endfor
+    </ul>
+  </div>
+</div>
+% endmacro
+
+% macro thing_chip(object, expandable = True)
+<div class="chip-container">
+  <div class="chip">
+    <span class="chip-label">
+      % set label = vocab.get_label_for(object)
+      % if ID in object
+        <a href="${view_url(object[ID])}">
+          ${label}
+        </a>
+      % else
+        ${label}
+      % endif
+    </span>
+  </div>
+  % if expandable
+    ${thing_card(object)}
+  % endif
+</div>
+% endmacro
+
+% macro thing_embedded(object)
+<div class="item-embedded">
+  <span class="type">${vocab_term(object[TYPE])}</span>
+    % for k,v in object.items()
+      % if k != TYPE
+        <div class="data-node column">
+          <div class="label">
+            ${vocab_term(k)}
+          </div>
+          <div class="value">
+            % if isinstance(v, list)
+              % for sub in v
+                % if isinstance(sub, dict)
+                  ${thing_chip(sub)}
+                % else
+                  ${sub}
+                % endif
+              % endfor
+            % else
+              % if isinstance(v, dict)
+                ${thing_chip(v)}
+              % else
+                ${v}
+              % endif
+            % endif
+          </div>
+        </div>
+      % endif
+    % endfor
+</div>
+% endmacro
+
+% macro displayvalues(object)
+  % for value in object.values()
+    % if isinstance(value, dict)
+      ${value} ++++
+    % else
+      ${ value }
+    % endif
+  % endfor
+% endmacro
+
+% macro viewthing(thing, element='div', classes='panel panel-default', rel=None, rev=None)
+  % set thing_id = thing[ID]
+  % set typename = thing[TYPE]
+  % if isinstance(typename, list)
+    % set t = vocab.index[typename[0]] or vocab.index[typename[1]] or {}
+  % else
+    % set t = vocab.index[typename] or {}
+  % endif
+  % set as_chip = rev or (rel and 'quotedFromGraph' in thing or len(thing) < 2)
+  <${element} class="${classes}{% if as_chip%} link-item{% endif %}"
+
+      {% if rel %} property="${rel}"{% endif %}
+      {% if rev %} rev="${rev}"{% endif %}
+      {% if ID in thing %} resource="${thing_id}"{% endif %}
+      {% if t.curie %} typeof="${t.curie}"{% endif %}>
+
+    % if ID in thing
+      % set thing_url = view_url(thing_id)
+      ${toolbar_old(thing_url, current_user.is_authenticated, typename, element)}
+
+      <header class="panel-heading">
+        % if t
+          ${termref(t, classes='', labeltype='label-class')}
+        % endif
+        <a href="${thing_url}" class="toolbar-button id-label thing-id">
+            <small><code>${thing_id}</code></small>
+        </a>
+        <h1 class="panel-title">
+          <a href="${thing_url}" class="thing-label">
+            % set label = vocab.get_label_for(thing)
+            % if len(label) == 0
+              {Etikett saknas}
+            % elif isinstance(label, basestring)
+              ${label}
+            % else
+              {# label is sometimes an object, resolve this in a propper way when data content is known #}
+              ${jsonToList(label)}
+            % endif
+          </a>
+        </h1>
+      </header>
+    % endif
+
+    % if not as_chip
+      <div class="panel-body">
+        <table class="table">
+          % for k in vocab.sortedkeys(thing)
+            % set v = thing[k]
+            % if (k in vocab.index or k != REVERSE)
+              % set p = vocab.index[k] or {'curie': k}
+              <tr>
+              <td class="term-label">
+                ${termref(p)}
+              </td>
+              <td>
+                % if k == ID and v[0] != '_'
+                  <a href="${view_url(v)}">&lt;${v}&gt;</a>
+                % elif isinstance(v, dict) and len(v) > 1
+                  ${viewthing(v, rel=k)}
+                % elif isinstance(v, list)
+                  <ul>
+                    % for sub in v
+                      <li>
+                        % if isinstance(sub, dict)
+                          ${viewthing(sub, rel=k)}
+                        % else
+                        <span {% if p.curie %} property="${p.curie}"{% endif %}>${sub}</span>
+                        % endif
+                      </li>
+                    % endfor
+                  </ul>
+                % else
+                  <span {% if p.curie %} property="${p.curie}"{% endif %}>${v}</span>
+                % endif
+              </td>
+            </tr>
+            % endif
+          % endfor
+
+          </table>
+      </div>
+    % endif
+
+  </${element}>
+% endmacro
+
+{# Macro to render random json to a html list #}
+% macro jsonToList(json)
+  % if isinstance(value, basestring)
+    ${json}
+  % else
+    % for key, value in json.items()
+      <dl class="raw-json-list">
+      % if isinstance(value, dict)
+        <dt>
+          ${key}
+        </dt>
+        <dd>
+          ${jsonToList(value)}
+        </dd>
+      % elif isinstance(value, list)
+        <dt>
+          ${key}
+        </dt>
+        <dd>
+          % for sub in value
+            ${sub}
+          % endfor
+        </dd>
+      % else
+        <dt>${key}</dt><dd>${value}</dd>
+      % endif
+      </dl>
+    % endfor
+  %endif
+% endmacro

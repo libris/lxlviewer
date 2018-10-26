@@ -17,7 +17,6 @@ import ModalComponent from '@/components/shared/modal-component';
 import ReverseRelations from '@/components/inspector/reverse-relations';
 import MarcPreview from '@/components/inspector/marc-preview';
 import TabMenu from '@/components/shared/tab-menu';
-import VueSimpleSpinner from 'vue-simple-spinner';
 import { mapGetters } from 'vuex';
 
 export default {
@@ -156,11 +155,13 @@ export default {
           this.loadFailure = {
             status: response.status,
           };
+          this.$store.dispatch('removeLoadingIndicator', 'Loading document');
         } else {
           this.$store.dispatch('pushNotification', { 
             type: 'danger', 
             message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)}. ${response.status} ${response.statusText}` 
           });
+          this.$store.dispatch('removeLoadingIndicator', 'Loading document');
         }
       }, (error) => {
         this.$store.dispatch('pushNotification', { 
@@ -177,6 +178,7 @@ export default {
       });
     },
     initializeRecord() {
+      this.$store.dispatch('pushLoadingIndicator', 'Loading document');
       this.postLoaded = false;
       this.$store.dispatch('flushChangeHistory');
       this.$store.dispatch('setInspectorStatusValue', { property: 'focus', value: 'mainEntity' });
@@ -255,6 +257,7 @@ export default {
       const insertData = this.inspector.insertData;
       this.$store.dispatch('setInspectorStatusValue', { property: 'isNew', value: true });
       if (!insertData.hasOwnProperty('@graph') || insertData['@graph'].length === 0) {
+        this.$store.dispatch('removeLoadingIndicator', 'Loading document');
         this.$router.go(-1);
         console.warn('New document called without input data, routing user back.')
       } else {
@@ -268,6 +271,13 @@ export default {
       this.$store.dispatch('setOriginalData', this.inspector.data);
       this.$store.dispatch('flushChangeHistory');
       this.postLoaded = true;
+      this.$store.dispatch('removeLoadingIndicator', 'Loading document');
+      this.$nextTick(() => {
+        this.$store.dispatch('pushInspectorEvent', { 
+          name: 'post-events', 
+          value: 'on-post-loaded'
+        });
+      })
     },
     doCancel() {
       this.$store.dispatch('setInspectorStatusValue', { 
@@ -489,14 +499,9 @@ export default {
     'breadcrumb': Breadcrumb,
     'marc-preview': MarcPreview,
     'tab-menu': TabMenu,
-    'vue-simple-spinner': VueSimpleSpinner,
   },
   mounted() {
     this.$nextTick(() => {
-      this.$store.dispatch('setStatusValue', { 
-        property: 'keybindState', 
-        value: 'overview' 
-      });
       if (!this.postLoaded) {
         this.initializeRecord();
       }
@@ -510,9 +515,6 @@ export default {
 </script>
 <template>
   <div class="row">
-    <div v-if="!postLoaded && !loadFailure" class="Inspector-spinner text-center">
-      <vue-simple-spinner size="large" :message="'Loading document' | translatePhrase"></vue-simple-spinner>
-    </div>
     <div class="Inspector col-sm-12" :class="{'col-md-11': !status.panelOpen, 'col-md-7': status.panelOpen, 'hideOnPrint': marcPreview.active}" ref="Inspector">
       <div v-if="!postLoaded && loadFailure">
         <h2>{{loadFailure.status}}</h2>
@@ -540,9 +542,10 @@ export default {
                 </h1>
               <entity-changelog />
             </div>
-            <reverse-relations class="Inspector-reverse" 
-              v-if="!inspector.status.isNew">
-            </reverse-relations>
+            <reverse-relations 
+              class="Inspector-reverse" 
+              :main-entity="this.inspector.data.mainEntity" 
+              v-if="!inspector.status.isNew || recordType === 'Item'"></reverse-relations>
           </div>
           
           <entity-header id="main-header" 

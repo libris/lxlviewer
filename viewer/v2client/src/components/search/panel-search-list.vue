@@ -1,9 +1,9 @@
 <script>
-import EntitySearchItem from './entity-search-item';
+import PanelSearchItem from './panel-search-item';
 import { mapGetters } from 'vuex';
 
 export default {
-  name: 'entity-search-list',
+  name: 'panel-search-list',
   props: {
     results: {
       type: Array,
@@ -13,8 +13,12 @@ export default {
       type: Array,
       default: () => [],
     },
+    icon: null,
+    text: '',
     path: '',
     index: Number,
+    isCompact: false,
+    hasAction: false,
   },
   data() {
     return {
@@ -33,8 +37,8 @@ export default {
 
       return false;
     },
-    addItem(item) {
-      this.$emit('add-item', item);
+    useItem(item) {
+      this.$emit('use-item', item);
     },
   },
   computed: {
@@ -47,7 +51,7 @@ export default {
     ]),
   },
   components: {
-    'entity-search-item': EntitySearchItem,
+    'panel-search-item': PanelSearchItem,
   },
   watch: {
   },
@@ -60,9 +64,9 @@ export default {
 </script>
 
 <template>
-  <div class="EntitySearchResult">
-    <ul class="EntitySearchResult-list js-field-list" v-show="results.length > 0" >
-      <entity-search-item
+  <div class="PanelSearchResult">
+    <ul class="PanelSearchResult-list js-field-list" v-show="results.length > 0" >
+      <panel-search-item
         v-for="(item, index) in results" 
         :is-replaced="isReplaced(item)"
         :focus-data="item" 
@@ -70,17 +74,22 @@ export default {
         :add-link="false"
         :path="path"
         :key="index"
-        @add-item="addItem(item)"
-        ></entity-search-item>
+        :icon="icon"
+        :text="text"
+        :is-compact="isCompact"
+        :has-action="hasAction"
+        @use-item="useItem(item)"
+        ></panel-search-item>
     </ul>
   </div>
 </template>
 
 <style lang="less">
 
-.EntitySearchResult {
+.PanelSearchResult {
   &-list {
     padding: 0px;
+    margin-bottom: 0px;
   }
 }
 </style>
