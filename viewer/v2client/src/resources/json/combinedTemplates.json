@@ -1348,14 +1348,18 @@
             },
             {
               "@type": "PublisherNumber",
-              "value": ""
+              "value": "",
+              "agent": {
+                "@type": "Organization",
+                "name": ""
+              }
             }
           ],
           "publication": [
             {
               "@type": "PrimaryPublication",
               "year": "",
-              "country": [ {"@id": "https://id.kb.se/country/sw"} ],
+              "country": [],
               "place": {
                 "@type": "Place",
                 "label": ""
@@ -1380,22 +1384,28 @@
               "label": ""
             }
           ],
-          "carrierType": [],
+          "carrierType": [
+            {
+              "@id": "https://id.kb.se/term/rda/ComputerDisc"
+            }
+          ],
           "mediaType": [
             {
               "@id": "https://id.kb.se/term/rda/Computer"
             }
           ],
+          "intendedAudience": [
+            {
+              "@type": "IntendedAudience",
+              "marc:audienceType": "marc:InterestAgeLevel",
+              "label": ""
+            }
+          ],
+          "accompaniedBy": [],
           "marc:otherPhysicalDetails": "",
           "systemRequirement": [
             {
               "@type": "MachineModel",
-              "label": [
-                ""
-              ]
-            },
-            {
-              "@type": "OperatingSystem",
               "label": [
                 ""
               ]
@@ -1447,6 +1457,14 @@
                 "lifeSpan": ""
               },
               "role": []
+            },
+            {
+              "@type": "Contribution",
+              "agent": {
+                "@type": "Organization",
+                "name": ""
+              },
+              "role": []
             }
           ],
           "intendedAudience": [
@@ -1463,8 +1481,15 @@
           "genreForm": [
             {
               "@id": "https://id.kb.se/term/saogf/Datorspel"
+            },
+            {
+              "@id": "https://id.kb.se/marc/ComputerTypeOfFileType-g"
             }
           ],
+          "hasNote": [{
+            "@type": "marc:LanguageNote",
+            "label": ""
+          }],
           "subject": [],
           "summary": [
             {
