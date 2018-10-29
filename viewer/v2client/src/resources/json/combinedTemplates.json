@@ -238,7 +238,8 @@
             {
               "@type": "Title",
               "mainTitle": "",
-              "subtitle": ""
+              "subtitle": "",
+              "marc:parallelTitle": ""
             }
           ],
           "responsibilityStatement": "",
@@ -249,7 +250,11 @@
             },
             {
               "@type": "VideoRecordingNumber",
-              "value": ""
+              "value": "",
+              "agent": {
+                "@type": "Organization",
+                "name": ""
+              }
             }
           ],
           "publication": [
@@ -282,37 +287,29 @@
             }
           ],
           "marc:otherPhysicalDetails": "",
-          "carrierType": [],
+          "carrierType": [
+            {
+              "@id": "https://id.kb.se/term/rda/Videodisc"
+            }
+          ],
           "mediaType": [
             {
               "@id": "https://id.kb.se/term/rda/Video"
             }
           ],
           "videoCharacteristic": [],
-          "seriesMembership": [
+          "intendedAudience": [
             {
-              "@type": "SeriesMembership",
-              "inSeries": {
-                "@type": "Instance",
-                "identifiedBy": [
-                  {
-                    "@type": "ISSN",
-                    "value": ""
-                  }
-                ],
-                "instanceOf": {
-                  "@type": "Work",
-                  "hasTitle": [
-                    {
-                      "@type": "Title",
-                      "mainTitle": ""
-                    }
-                  ]
-                }
-              },
-              "marc:seriesTracingPolicy": "",
-              "seriesEnumeration": "",
-              "seriesStatement": [""]
+              "@type": "IntendedAudience",
+              "label": ""
+            }
+          ],
+          "accompaniedBy": [],
+          "isPrimaryTopicOf": [],
+          "tableOfContents": [
+            {
+              "@type": "TableOfContents",
+              "label": ""
             }
           ],
           "marc:hasSystemDetailsNote": {
@@ -361,6 +358,7 @@
               "role": []
             }
           ],
+          "intendedAudience": [],
           "language": [],
           "languageNote": [],
           "marc:subtitlesOrCaptions": {
@@ -378,6 +376,9 @@
           ],
           "genreForm": [],
           "hasNote": [{
+            "@type": "marc:LanguageNote",
+            "label": ""
+          },{
             "@type": "marc:ParticipantOrPerformerNote",
             "label": ""
           }],
@@ -387,6 +388,24 @@
               "@type": "Summary",
               "label": [
                 ""
+              ]
+            }
+          ],
+          "hasPart": [
+            {
+              "@type": "Work",
+              "contribution": [
+                {
+                  "@type": "PrimaryContribution",
+                  "agent": [],
+                  "role": []
+                }
+              ],
+              "hasTitle": [
+                {
+                  "@type": "Title",
+                  "mainTitle": ""
+                }
               ]
             }
           ]
