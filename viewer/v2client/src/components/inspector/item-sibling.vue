@@ -132,6 +132,25 @@ export default {
     },
   },
   methods: {
+    highLightLastAdded() {
+      let element = this.$el;
+      let topOfElement = LayoutUtil.getPosition(element).y;
+      if (topOfElement > 0) {
+        const windowHeight = window.innerHeight || 
+        document.documentElement.clientHeight || 
+        document.getElementsByTagName('body')[0].clientHeight;
+        const scrollPos = LayoutUtil.getPosition(this.$el).y - (windowHeight * 0.2);
+        LayoutUtil.scrollTo(scrollPos, 1000, 'easeInOutQuad', () => {
+          setTimeout(() => {
+            this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
+          }, 1000)
+        });
+      } else {
+        setTimeout(() => {
+          this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
+        }, 1000)
+      }
+    },
     removeThis() {
       const changeList = [
         {
@@ -281,20 +300,21 @@ export default {
   },
   mounted() {
     if (this.isLastAdded) {
+      this.highLightLastAdded();
       const fieldAdder = this.$refs.fieldAdder;
+      if (this.isEmpty) {
+        this.$el.getElementsByClassName('js-expandable')[0].classList.add('is-inactive');
+        LayoutUtil.enableTabbing();
+        fieldAdder.$refs.adderButton.focus();
+      } else {
+        this.expand();
+      }
       setTimeout(()=> {
-        if (this.isEmpty) {
-          this.$el.getElementsByClassName('js-expandable')[0].classList.add('is-inactive');
-          LayoutUtil.enableTabbing();
-          fieldAdder.$refs.adderButton.focus();
-        } else {
-          this.expand();
-        }
-        this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
-      }, 1000)
+      this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
+    }, 1000)
     } 
   },
- 
+
   components: {
     'processed-label': ProcessedLabel,
     'item-entity': ItemEntity,
