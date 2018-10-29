@@ -97,16 +97,12 @@ export default {
       return this.item;
     },
     isEmpty() {
-      this.$el.getElementsByClassName('js-expandable')[0].classList.add('is-inactive');
-      this.$el.classList.remove('is-expanded');
 
       let bEmpty = true;
       // Check if item has any keys besides @type and _uid. If not, we'll consider it empty.
       _.each(this.item, (value, key) => {
         if (key !== '@type' && key !== '_uid') {
           if (typeof value !== 'undefined') {
-            this.$el.getElementsByClassName('js-expandable')[0].classList.remove('is-inactive');
-            this.$el.classList.add('is-expanded');
             bEmpty = false;
           }
         }
@@ -300,8 +296,6 @@ export default {
       this.highLightLastAdded();
       const fieldAdder = this.$refs.fieldAdder;
         if (this.isEmpty) {
-          this.$el.getElementsByClassName('js-expandable')[0].classList.add('is-inactive');
-          this.collapse();
           LayoutUtil.enableTabbing();
           fieldAdder.$refs.adderButton.focus();
         } else {
@@ -326,16 +320,17 @@ export default {
 
 <template>
   <div class="ItemLocal js-itemLocal"
-    :class="{'is-highlighted': isLastAdded, 'is-expanded': expanded, 'is-extractable': isExtractable}"
-    tabindex="0" 
+    :class="{'is-highlighted': isLastAdded, 'is-expanded': expanded && !isEmpty, 'is-extractable': isExtractable}"
+    :tabindex="isEmpty ? -1 : 0"
     @keyup.enter="checkFocus()"
     @focus="addFocus()"
     @blur="removeFocus()">
 
     <strong class="ItemLocal-heading">
-      <div class="ItemLocal-label js-expandable">
-        <i class="ItemLocal-arrow fa fa-chevron-right " 
-          :class="{'down': expanded}" 
+      <div class="ItemLocal-label"
+        :class="{'is-inactive': isEmpty}">
+        <i class="ItemLocal-arrow fa fa-chevron-right" 
+          :class="{'icon is-disabled' : isEmpty}"
           @click="toggleExpanded()"></i>
         <span class="ItemLocal-type" 
           @click="toggleExpanded($event)" 
@@ -478,12 +473,6 @@ export default {
     transition: all 0.2s ease;
     padding: 0 2px;
     cursor: pointer;
-
-    .is-inactive & {
-      color: @gray-light;
-      pointer-events: none;
-      cursor: not-allowed;
-    }
   }
 
   &-list {

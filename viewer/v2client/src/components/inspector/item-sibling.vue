@@ -109,16 +109,12 @@ export default {
       return this.suffix;
     },
     isEmpty() {
-      this.$el.getElementsByClassName('js-expandable')[0].classList.add('is-inactive');
-      this.$el.classList.remove('is-expanded');
       let bEmpty = true;
       // Check if item has any keys besides @type and _uid. If not, we'll consider it empty.
       _.each(this.item, (value, key) => {
         if (key !== '@type' && key !== '_uid') {
           if (key !== '@id') {
             if (typeof value !== 'undefined') {
-              this.$el.getElementsByClassName('js-expandable')[0].classList.remove('is-inactive');
-              this.$el.classList.add('is-expanded');
               bEmpty = false;
             }
           }
@@ -303,7 +299,6 @@ export default {
       this.highLightLastAdded();
       const fieldAdder = this.$refs.fieldAdder;
       if (this.isEmpty) {
-        this.$el.getElementsByClassName('js-expandable')[0].classList.add('is-inactive');
         LayoutUtil.enableTabbing();
         fieldAdder.$refs.adderButton.focus();
       } else {
@@ -328,16 +323,17 @@ export default {
 
 <template>
   <div class="ItemSibling js-itemLocal"
-    tabindex="0"
-    :class="{'is-highlighted': isNewlyAdded, 'is-expanded': expanded, 'is-extractable': isExtractable}"
+    :class="{'is-highlighted': isNewlyAdded, 'is-expanded': expanded && !isEmpty, 'is-extractable': isExtractable}"
+    :tabindex="isEmpty ? -1 : 0"
     @keyup.enter="checkFocus()" 
     @focus="addFocus()"
     @blur="removeFocus()">
-   
-   <strong class="ItemSibling-heading">
-      <div class="ItemSibling-label js-expandable">
-        <i class="ItemSibling-arrow fa fa-chevron-right " 
-          :class="{'down': expanded}"
+
+    <strong class="ItemSibling-heading">
+      <div class="ItemSibling-label"
+        :class="{'is-inactive': isEmpty}">
+        <i class="ItemSibling-arrow fa fa-chevron-right" 
+          :class="{'icon is-disabled' : isEmpty}"
           @click="toggleExpanded()"></i>
         <span class="ItemSibling-type" 
           @click="toggleExpanded($event)" 
@@ -411,7 +407,7 @@ export default {
         :key="k" 
         :show-action-buttons="showActionButtons"></field>
     </ul>
-       
+
     <search-window 
       :isActive="extractDialogActive" 
       :can-copy-title="canCopyTitle" 
@@ -463,12 +459,6 @@ export default {
     padding: 0 2px;
     margin: 0 0 0 1px;
     cursor: pointer;
-
-    .is-inactive & {
-      color: @gray-light;
-      pointer-events: none;
-      cursor: not-allowed;
-    }
   }
 
   &-list {
