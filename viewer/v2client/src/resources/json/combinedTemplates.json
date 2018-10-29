@@ -48,11 +48,11 @@
           "identifiedBy": [
             {
               "@type": "AudioIssueNumber",
-              "value": ""
-            },
-            {
-              "@type": "EAN",
-              "value": ""
+              "value": "",
+              "agent": {
+                "@type": "Organization",
+                "name": ""
+              }
             },
             {
               "@type": "ISBN",
@@ -89,7 +89,11 @@
               "label": ""
             }
           ],
-          "carrierType": [],
+          "carrierType": [
+            {
+              "@id": "https://id.kb.se/term/rda/AudioDisc"
+            }
+          ],
           "mediaType": [
             {
               "@id": "https://id.kb.se/term/rda/Audio"
@@ -135,9 +139,16 @@
         "work": {
           "@id": "https://id.kb.se/TEMPID#work",
           "@type": "Audio",
+          "hasTitle": [
+            {
+              "@type": "Title",
+              "mainTitle": ""
+            }
+          ],
           "language": [{
             "@id": "https://id.kb.se/language/swe"
           }],
+          "originalVersion": [],
           "classification": [{
               "@type": "ClassificationDdc",
               "code": "",
@@ -190,7 +201,11 @@
               "@id": "https://id.kb.se/term/saogf/Ljudb%C3%B6cker"
             }
           ],
+          "subject": [],
           "hasNote": [{
+            "@type": "marc:LanguageNote",
+            "label": ""
+          },{
             "@type": "marc:ParticipantOrPerformerNote",
             "label": ""
           }]
