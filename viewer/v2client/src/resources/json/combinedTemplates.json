@@ -1870,9 +1870,7 @@
           "descriptionLanguage": [{
             "@id": "https://id.kb.se/language/swe"
           }],
-          "encodingLevel": {
-            "@id": "https://id.kb.se/marc/CompleteAuthorityRecord"
-          },
+          "encodingLevel": "marc:CompleteAuthorityRecord",
           "marc:subjectSubdivision": {
             "@id": "https://id.kb.se/marc/Topical"
           },
