@@ -1537,9 +1537,7 @@
           "mainEntity": {
             "@id": "https://id.kb.se/TEMPID#it"
           },
-          "encodingLevel": {
-            "@id": "https://id.kb.se/marc/CompleteAuthorityRecord"
-          },
+          "encodingLevel": "marc:CompleteAuthorityRecord",
           "marc:romanization": {
             "@id": "https://id.kb.se/marc/NationalStandard"
           },
@@ -1623,9 +1621,7 @@
             "@id": "https://id.kb.se/language/swe",
             "code": "swe"
           }],
-          "encodingLevel": {
-            "@id": "https://id.kb.se/marc/CompleteAuthorityRecord"
-          },
+          "encodingLevel": "marc:CompleteAuthorityRecord",
           "marc:romanization": {
             "@id": "https://id.kb.se/marc/NationalStandard"
           },
@@ -1699,9 +1695,7 @@
           "descriptionLanguage": [{
             "@id": "https://id.kb.se/language/swe"
           }],
-          "encodingLevel": {
-            "@id": "https://id.kb.se/marc/CompleteAuthorityRecord"
-          },
+          "encodingLevel": "marc:CompleteAuthorityRecord",
           "marc:kindOfRecord": {
             "@id": "https://id.kb.se/marc/EstablishedHeadingRecord"
           },
@@ -1753,9 +1747,7 @@
             "@id": "https://id.kb.se/language/swe",
             "code": "swe"
           }],
-          "encodingLevel": {
-            "@id": "https://id.kb.se/marc/CompleteAuthorityRecord"
-          },
+          "encodingLevel": "marc:CompleteAuthorityRecord",
           "marc:kindOfRecord": {
             "@id": "https://id.kb.se/marc/EstablishedHeadingRecord"
           },
@@ -1790,9 +1782,7 @@
           "mainEntity": {
             "@id": "https://id.kb.se/TEMPID#it"
           },
-          "encodingLevel": {
-            "@id": "https://id.kb.se/marc/CompleteAuthorityRecord"
-          },
+          "encodingLevel": "marc:CompleteAuthorityRecord",
           "marc:romanization": {
             "@id": "https://id.kb.se/marc/NationalStandard"
           },
