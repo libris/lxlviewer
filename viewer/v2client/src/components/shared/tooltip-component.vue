@@ -178,6 +178,7 @@ export default {
     transition-delay: 0.2s;
     visibility: visible;
     display:block;
+    z-index: 4;
   }
 }
 
