@@ -16,17 +16,20 @@
               "sigel": [""]
             }
           ],
-          "descriptionConventions": [{
-            "@id": "https://id.kb.se/marc/Isbd"
-          },
+          "descriptionConventions": [
+            {
+              "@id": "https://id.kb.se/marc/Isbd"
+            },
             {
               "@type": "DescriptionConventions",
               "code": "rda"
             }
           ],
-          "descriptionLanguage": [{
-            "@id": "https://id.kb.se/language/swe"
-          }],
+          "descriptionLanguage": [
+            {
+              "@id": "https://id.kb.se/language/swe"
+            }
+          ],
           "encodingLevel": "marc:AbbreviatedLevel",
           "recordStatus": "",
           "marc:catalogingSource": {
@@ -228,17 +231,20 @@
               "sigel": [""]
             }
           ],
-          "descriptionConventions": [{
-            "@id": "https://id.kb.se/marc/Isbd"
-          },
+          "descriptionConventions": [
+            {
+              "@id": "https://id.kb.se/marc/Isbd"
+            },
             {
               "@type": "DescriptionConventions",
               "code": "rda"
             }
           ],
-          "descriptionLanguage": [{
-            "@id": "https://id.kb.se/language/swe"
-          }],
+          "descriptionLanguage": [
+            {
+              "@id": "https://id.kb.se/language/swe"
+            }
+          ],
           "encodingLevel": "marc:AbbreviatedLevel",
           "recordStatus": "",
           "marc:catalogingSource": {
@@ -443,17 +449,20 @@
               "sigel": [""]
             }
           ],
-          "descriptionConventions": [{
-            "@id": "https://id.kb.se/marc/Isbd"
-          },
+          "descriptionConventions": [
+            {
+              "@id": "https://id.kb.se/marc/Isbd"
+            },
             {
               "@type": "DescriptionConventions",
               "code": "rda"
             }
           ],
-          "descriptionLanguage": [{
-            "@id": "https://id.kb.se/language/swe"
-          }],
+          "descriptionLanguage": [
+            {
+              "@id": "https://id.kb.se/language/swe"
+            }
+          ],
           "encodingLevel": "marc:AbbreviatedLevel",
           "recordStatus": "",
           "marc:catalogingSource": {
@@ -666,7 +675,8 @@
               "sigel": [""]
             }
           ],
-          "descriptionConventions": [{
+          "descriptionConventions": [
+            {
               "@id": "https://id.kb.se/marc/Isbd"
             },
             {
@@ -674,9 +684,11 @@
               "code": "rda"
             }
           ],
-          "descriptionLanguage": [{
-            "@id": "https://id.kb.se/language/swe"
-          }],
+          "descriptionLanguage": [
+            {
+              "@id": "https://id.kb.se/language/swe"
+            }
+          ],
           "encodingLevel": "marc:AbbreviatedLevel",
           "recordStatus": "",
           "marc:catalogingSource": {
@@ -849,7 +861,8 @@
               "sigel": [""]
             }
           ],
-          "descriptionConventions": [{
+          "descriptionConventions": [
+            {
               "@id": "https://id.kb.se/marc/Isbd"
             },
             {
@@ -857,9 +870,11 @@
               "code": "rda"
             }
           ],
-          "descriptionLanguage": [{
-            "@id": "https://id.kb.se/language/swe"
-          }],
+          "descriptionLanguage": [
+            {
+              "@id": "https://id.kb.se/language/swe"
+            }
+          ],
           "encodingLevel": "marc:AbbreviatedLevel",
           "recordStatus": "",
           "marc:catalogingSource": {
@@ -979,7 +994,8 @@
               "sigel": [""]
             }
           ],
-          "descriptionConventions": [{
+          "descriptionConventions": [
+            {
               "@id": "https://id.kb.se/marc/Isbd"
             },
             {
@@ -987,9 +1003,11 @@
               "code": "rda"
             }
           ],
-          "descriptionLanguage": [{
-            "@id": "https://id.kb.se/language/swe"
-          }],
+          "descriptionLanguage": [
+            {
+              "@id": "https://id.kb.se/language/swe"
+            }
+          ],
           "encodingLevel": "marc:AbbreviatedLevel",
           "recordStatus": "",
           "marc:catalogingSource": {
@@ -1336,17 +1354,20 @@
               "sigel": [""]
             }
           ],
-          "descriptionConventions": [{
-            "@id": "https://id.kb.se/marc/Isbd"
-          },
+          "descriptionConventions": [
+            {
+              "@id": "https://id.kb.se/marc/Isbd"
+            },
             {
               "@type": "DescriptionConventions",
               "code": "rda"
             }
           ],
-          "descriptionLanguage": [{
-            "@id": "https://id.kb.se/language/swe"
-          }],
+          "descriptionLanguage": [
+            {
+              "@id": "https://id.kb.se/language/swe"
+            }
+          ],
           "encodingLevel": "marc:AbbreviatedLevel",
           "recordStatus": "",
           "marc:catalogingSource": {
