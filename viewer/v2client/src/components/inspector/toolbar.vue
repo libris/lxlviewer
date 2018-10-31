@@ -370,18 +370,24 @@ export default {
         v-show="otherFormatMenuActive"
         @click="hideOtherFormatMenu" >
         <li class="Toolbar-menuItem">
-          <a class="Toolbar-menuLink" :href="focusData['@id']">Formell resurs</a>
+          <a class="Toolbar-menuLink" :href="focusData['@id']" target="_blank">
+            <i class="fa fa-fw fa-external-link" aria-hidden="true"></i>
+            Formell resurs</a>
         </li>
         <li class="Toolbar-menuItem">
-          <a class="Toolbar-menuLink" :href="getOtherDataFormat('jsonld')">JSON-LD</a>
+          <a class="Toolbar-menuLink" :href="getOtherDataFormat('jsonld')" target="_blank">
+            <i class="fa fa-fw fa-external-link" aria-hidden="true"></i>
+            JSON-LD</a>
         </li>
         <li class="Toolbar-menuItem">
-          <a class="Toolbar-menuLink" :href="getOtherDataFormat('ttl')">Turtle</a>
+          <a class="Toolbar-menuLink" :href="getOtherDataFormat('ttl')" target="_blank">
+            <i class="fa fa-fw fa-external-link" aria-hidden="true"></i>
+            Turtle</a>
         </li>
         <li class="Toolbar-menuItem">
           <a class="Toolbar-menuLink" :href="getOtherDataFormat('rdf')">
-          <i class="fa fa-fw fa-download" aria-hidden="true"></i>
-          RDF/XML</a>
+            <i class="fa fa-fw fa-download" aria-hidden="true"></i>
+            RDF/XML</a>
         </li>
       </ul>
     </div>
@@ -644,6 +650,7 @@ export default {
       }
       & a {
         display: flex;
+        align-items: center;
         padding: 5px 15px;
         color: @grey-darker;
       }
