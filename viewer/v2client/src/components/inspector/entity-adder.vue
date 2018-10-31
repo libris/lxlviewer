@@ -563,133 +563,133 @@ export default {
       </i>
       <span class="EntityAdder-addLabel label-text">{{ addLabel | labelByLang | capitalize }}</span>
     </div>
-
-    <div class="EntityAdder-typeChooser" 
-      v-if="addEmbedded" 
-      v-on-clickaway="dismissTypeChooser">
-      <select class="EntityAdder-typeSelect customSelect" 
-        v-model="selectedType" 
-        ref="adderTypeSelect"
-        @change="addType(selectedType, true)">
-        <option disabled value="">{{"Choose type" | translatePhrase}}</option>
-        <option v-for="(term, index) in getClassTree"  
-          v-html="getFormattedSelectOption(term, settings, resources.vocab, resources.context)"
-          :disabled="term.abstract" 
-          :key="`${term.id}-${index}`" 
-          :value="term.id"></option>
-      </select>
-    </div>
+    <portal :to="`typeSelect-${path}`">
+      <div class="EntityAdder-typeChooser" 
+        v-if="addEmbedded">
+        <select class="EntityAdder-typeSelect customSelect" 
+          v-model="selectedType" 
+          ref="adderTypeSelect"
+          @change="addType(selectedType, true)">
+          <option disabled value="">{{"Choose type" | translatePhrase}}</option>
+          <option v-for="(term, index) in getClassTree"  
+            v-html="getFormattedSelectOption(term, settings, resources.vocab, resources.context)"
+            :disabled="term.abstract" 
+            :key="`${term.id}-${index}`" 
+            :value="term.id"></option>
+        </select>
+      </div>
+    </portal>
     <portal to="sidebar" v-if="active">
-    <panel-component class="EntityAdder-panel EntityAdderPanel" 
-      v-if="active"
-      :title="computedTitle"
-      @close="hide">
-      <template slot="panel-header-info">
-        <div 
-          class="PanelComponent-headerInfo" 
-          v-if="getFullRange.length > 0" 
-          @mouseleave="rangeInfo = false">
-          <i class="fa fa-info-circle icon icon--md" @mouseenter="rangeInfo = true"></i>
-          <div class="PanelComponent-headerInfoBox" v-show="rangeInfo">
-            <p class="header">
-              {{ "Allowed types" | translatePhrase }}:
-            </p>
-            <span v-for="(range, index) in getFullRange" :key="index">
-              • {{range | labelByLang}}
-            </span>
-          </div>
-        </div>
-      </template>
-      <template slot="panel-header-extra">
-        <!-- <div class="EntityAdder-panelBody"> -->
-        <div class="EntityAdder-controls">
-          <div class="EntityAdder-controlForm">
-            <div class="EntityAdder-search">
-              <label for="entityKeywordInput" class="EntityAdder-searchLabel">{{ "Search" | translatePhrase }}</label>
-              <div class="EntityAdder-searchInputContainer panel">
-                <input class="EntityAdder-searchInput entity-search-keyword-input customInput form-control"
-                  name="entityKeywordInput"
-                  v-model="keyword"
-                  ref="input"
-                  placeholder="Sök"
-                  autofocus />
-                  <filter-select class="EntityAdder-filterSearchInput FilterSelect--insideInput"
-                    :class-name="'js-filterSelect'"
-                    :custom-placeholder="'All types:'"
-                    :options="selectOptions"
-                    :options-all="getRange"
-                    :is-filter="true"
-                    :options-selected="''"
-                    v-on:filter-selected="setFilter($event, keyword)"></filter-select>
-              </div>
+      <panel-component class="EntityAdder-panel EntityAdderPanel" 
+        v-if="active"
+        :title="computedTitle"
+        @close="hide">
+        <template slot="panel-header-info">
+          <div 
+            class="PanelComponent-headerInfo" 
+            v-if="getFullRange.length > 0" 
+            @mouseleave="rangeInfo = false">
+            <i class="fa fa-info-circle icon icon--md" @mouseenter="rangeInfo = true"></i>
+            <div class="PanelComponent-headerInfoBox" v-show="rangeInfo">
+              <p class="header">
+                {{ "Allowed types" | translatePhrase }}:
+              </p>
+              <span v-for="(range, index) in getFullRange" :key="index">
+                • {{range | labelByLang}}
+              </span>
             </div>
           </div>
-          
-        </div>
-      </template>
-      <template slot="panel-body">
-        <panel-search-list class="EntityAdder-searchResult"
-          v-if="!loading && keyword.length > 0" 
-          :path="path" 
-          :results="searchResult" 
-          :disabled-ids="alreadyAdded"
-          :is-compact="isCompact"
-          icon="plus"
-          text="Add"
-          :has-action="true"
-          @use-item="addLinkedItem">
-        </panel-search-list>
-        <div class="PanelComponent-searchStatus" v-if="!loading && keyword.length === 0" >
-          {{ "Start writing to begin search" | translatePhrase }}...
-        </div>
-        <div v-if="loading" class="PanelComponent-searchStatus">
-          <vue-simple-spinner size="large" :message="'Searching' | translatePhrase"></vue-simple-spinner>
-        </div>
-        <div class="PanelComponent-searchStatus"
-          v-if="!loading && searchResult.length === 0 && keyword.length > 0 && searchMade">
-          {{ "No results" | translatePhrase }}
-        </div>
-      <!-- </div> -->
-      </template>
-      <template slot="panel-footer">
-        
-        <div class="EntityAdder-resultControls" v-if="!loading && searchResult.length > 0">
-          <modal-pagination
-            @go="go" 
-            :numberOfPages="numberOfPages" 
-            :currentPage="currentPage">
-          </modal-pagination>
-          <div class="EntityAdder-listTypes">
-            <i class="fa fa-th-list icon icon--sm"
-              @click="isCompact = false"
-              @keyup.enter="isCompact = false"
-              :class="{'icon--primary' : !isCompact}"
-              :title="'Detailed view' | translatePhrase"
-              tabindex="0"></i>
-            <i class="fa fa-list icon icon--sm"
-              @click="isCompact = true"
-              @keyup.enter="isCompact = true"
-              :class="{'icon--primary' : isCompact}"
-              :title="'Compact view' | translatePhrase"
-              tabindex="0"></i>
+        </template>
+        <template slot="panel-header-extra">
+          <!-- <div class="EntityAdder-panelBody"> -->
+          <div class="EntityAdder-controls">
+            <div class="EntityAdder-controlForm">
+              <div class="EntityAdder-search">
+                <label for="entityKeywordInput" class="EntityAdder-searchLabel">{{ "Search" | translatePhrase }}</label>
+                <div class="EntityAdder-searchInputContainer panel">
+                  <input class="EntityAdder-searchInput entity-search-keyword-input customInput form-control"
+                    name="entityKeywordInput"
+                    v-model="keyword"
+                    ref="input"
+                    placeholder="Sök"
+                    autofocus />
+                    <filter-select class="EntityAdder-filterSearchInput FilterSelect--insideInput"
+                      :class-name="'js-filterSelect'"
+                      :custom-placeholder="'All types:'"
+                      :options="selectOptions"
+                      :options-all="getRange"
+                      :is-filter="true"
+                      :options-selected="''"
+                      v-on:filter-selected="setFilter($event, keyword)"></filter-select>
+                </div>
+              </div>
+            </div>
+            
           </div>
-        </div>
-        <div class="EntityAdder-create">
-          <button class="EntityAdder-createBtn btn btn-primary btn--sm"
-            v-if="hasSingleRange" 
-            v-on:click="addEmpty(getFullRange[0])">{{ "Create local entity" | translatePhrase }}
-          </button>
-           <filter-select
-            v-if="!hasSingleRange" 
-            :class-name="'js-createSelect'"
-            :options="selectOptions"
-            :options-all="getRange"
-            :is-filter="false"
-            :custom-placeholder="'Create local entity:'"
-            v-on:filter-selected="addType($event.value)"></filter-select>
-        </div>
-      </template>
-    </panel-component>
+        </template>
+        <template slot="panel-body">
+          <panel-search-list class="EntityAdder-searchResult"
+            v-if="!loading && keyword.length > 0" 
+            :path="path" 
+            :results="searchResult" 
+            :disabled-ids="alreadyAdded"
+            :is-compact="isCompact"
+            icon="plus"
+            text="Add"
+            :has-action="true"
+            @use-item="addLinkedItem">
+          </panel-search-list>
+          <div class="PanelComponent-searchStatus" v-if="!loading && keyword.length === 0" >
+            {{ "Start writing to begin search" | translatePhrase }}...
+          </div>
+          <div v-if="loading" class="PanelComponent-searchStatus">
+            <vue-simple-spinner size="large" :message="'Searching' | translatePhrase"></vue-simple-spinner>
+          </div>
+          <div class="PanelComponent-searchStatus"
+            v-if="!loading && searchResult.length === 0 && keyword.length > 0 && searchMade">
+            {{ "No results" | translatePhrase }}
+          </div>
+        <!-- </div> -->
+        </template>
+        <template slot="panel-footer">
+          
+          <div class="EntityAdder-resultControls" v-if="!loading && searchResult.length > 0">
+            <modal-pagination
+              @go="go" 
+              :numberOfPages="numberOfPages" 
+              :currentPage="currentPage">
+            </modal-pagination>
+            <div class="EntityAdder-listTypes">
+              <i class="fa fa-th-list icon icon--sm"
+                @click="isCompact = false"
+                @keyup.enter="isCompact = false"
+                :class="{'icon--primary' : !isCompact}"
+                :title="'Detailed view' | translatePhrase"
+                tabindex="0"></i>
+              <i class="fa fa-list icon icon--sm"
+                @click="isCompact = true"
+                @keyup.enter="isCompact = true"
+                :class="{'icon--primary' : isCompact}"
+                :title="'Compact view' | translatePhrase"
+                tabindex="0"></i>
+            </div>
+          </div>
+          <div class="EntityAdder-create">
+            <button class="EntityAdder-createBtn btn btn-primary btn--sm"
+              v-if="hasSingleRange" 
+              v-on:click="addEmpty(getFullRange[0])">{{ "Create local entity" | translatePhrase }}
+            </button>
+            <filter-select
+              v-if="!hasSingleRange" 
+              :class-name="'js-createSelect'"
+              :options="selectOptions"
+              :options-all="getRange"
+              :is-filter="false"
+              :custom-placeholder="'Create local entity:'"
+              v-on:filter-selected="addType($event.value)"></filter-select>
+          </div>
+        </template>
+      </panel-component>
     </portal>
   </div>
 </template>
@@ -740,13 +740,10 @@ export default {
   }
 
   &-typeChooser {
-    text-align: center;
+    // text-align: center;
   }
 
   &-typeSelect {
-    position: absolute;
-    left: 20px;
-    z-index: 1;
     max-width: 150px;
   }
 

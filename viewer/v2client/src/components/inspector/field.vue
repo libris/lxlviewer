@@ -549,6 +549,7 @@ export default {
           :show-action-buttons="actionButtonsShown"
           :parent-path="getPath"></item-sibling>
       </div>
+      <portal-target :name="`typeSelect-${getPath}`" />
     </div>
 
     <div class="Field-content is-endOfTree js-endOfTree" 
@@ -592,6 +593,7 @@ export default {
           :show-action-buttons="actionButtonsShown"
           :is-expanded="isExpanded"></item-value>
       </div>
+      <portal-target :name="`typeSelect-${getPath}`" />
     </div>
   </li>
 </template>
