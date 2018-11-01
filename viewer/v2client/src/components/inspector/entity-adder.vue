@@ -17,12 +17,12 @@ import PanelSearchList from '../search/panel-search-list';
 import PanelComponent from '@/components/shared/panel-component.vue';
 import ModalPagination from '@/components/inspector/modal-pagination';
 import FilterSelect from '@/components/shared/filter-select.vue';
+import TypeSelect from '@/components/inspector/type-select';
 import LensMixin from '../mixins/lens-mixin';
-import { mixin as clickaway } from 'vue-clickaway';
 import VueSimpleSpinner from 'vue-simple-spinner';
 
 export default {
-  mixins: [clickaway, LensMixin],
+  mixins: [LensMixin],
   data() {
     return {
       searchResult: [],
@@ -31,7 +31,6 @@ export default {
       debounceTimer: 500,
       showToolTip: false,
       rangeInfo: false,
-      selectedType: '',
       addEmbedded: false,
       searchMade: false,
       currentSearchTypes: [],
@@ -72,6 +71,7 @@ export default {
     'panel-search-list': PanelSearchList,
     'modal-pagination': ModalPagination,
     'filter-select': FilterSelect,
+    'type-select': TypeSelect,
     'vue-simple-spinner': VueSimpleSpinner,
   },
   watch: {
@@ -310,7 +310,6 @@ export default {
         this.addEmbedded = false;
       }
       this.showToolTip = false;
-      this.selectedType = '';
     },
     add(event) {
       this.actionHighlight(false, event);
@@ -527,12 +526,12 @@ export default {
   <div class="EntityAdder" :class="{'is-innerAdder': isPlaceholder, 'is-fillWidth': addEmbedded}">
     <!-- Adds another empty field of the same type -->
     <div class="EntityAdder-add"
-      v-if="isPlaceholder && !addEmbedded">
-        <i 
-          class="fa fa-plus-circle icon icon--sm" 
-          tabindex="0"
+      v-if="isPlaceholder">
+        <i class="fa fa-plus-circle icon icon--sm"
+          :class="{'is-disabled': addEmbedded}"
+          :tabindex="addEmbedded ? -1 : 0"
           aria-hidden="true"
-          ref="adderFocusElement"
+          :ref="addEmbedded ? '' : 'adderFocusElement'"
           @click="add($event)" 
           @keyup.enter="add($event)"
           @mouseenter="showToolTip = true, actionHighlight(true, $event)" 
@@ -540,16 +539,17 @@ export default {
           @focus="showToolTip = true, actionHighlight(true, $event)"
           @blur="showToolTip = false, actionHighlight(false, $event)">
           <tooltip-component 
-            :show-tooltip="showToolTip" 
+            :show-tooltip="showToolTip && !addEmbedded" 
             :tooltip-text="tooltipText"></tooltip-component>
         </i>
     </div>      
 
     <!-- Add entity within field -->
-    <div class="EntityAdder-add action-button" v-if="!isPlaceholder && !addEmbedded">
+    <div class="EntityAdder-add action-button" v-if="!isPlaceholder">
       <i 
-        class="EntityAdder-addIcon fa fa-plus-circle icon icon--sm" 
-        tabindex="0"
+        class="EntityAdder-addIcon fa fa-plus-circle icon icon--sm"
+        :class="{'is-disabled': addEmbedded}" 
+        :tabindex="addEmbedded ? -1 : 0"
         ref="adderFocusElement"
         v-on:click="add($event)" 
         @keyup.enter="add($event)"
@@ -558,26 +558,19 @@ export default {
         @focus="showToolTip = true, actionHighlight(true, $event)"
         @blur="showToolTip = false, actionHighlight(false, $event)">
         <tooltip-component 
-          :show-tooltip="showToolTip" 
+          :show-tooltip="showToolTip && !addEmbedded" 
           :tooltip-text="tooltipText"></tooltip-component>
       </i>
       <span class="EntityAdder-addLabel label-text">{{ addLabel | labelByLang | capitalize }}</span>
     </div>
     <portal :to="`typeSelect-${path}`">
-      <div class="EntityAdder-typeChooser" 
-        v-if="addEmbedded">
-        <select class="EntityAdder-typeSelect customSelect" 
-          v-model="selectedType" 
-          ref="adderTypeSelect"
-          @change="addType(selectedType, true)">
-          <option disabled value="">{{"Choose type" | translatePhrase}}</option>
-          <option v-for="(term, index) in getClassTree"  
-            v-html="getFormattedSelectOption(term, settings, resources.vocab, resources.context)"
-            :disabled="term.abstract" 
-            :key="`${term.id}-${index}`" 
-            :value="term.id"></option>
-        </select>
-      </div>
+      <type-select
+        v-if="addEmbedded"
+        :classTree="getClassTree"
+        :options="selectOptions"
+        :removeable="valueList.length > 0"
+        @selected="addType($event)"
+        @dismiss="dismissTypeChooser()" />
     </portal>
     <portal to="sidebar" v-if="active">
       <panel-component class="EntityAdder-panel EntityAdderPanel" 
@@ -739,13 +732,6 @@ export default {
     display: none;
   }
 
-  &-typeChooser {
-    // text-align: center;
-  }
-
-  &-typeSelect {
-    max-width: 150px;
-  }
 
   &-controls {
     line-height: 1.2;

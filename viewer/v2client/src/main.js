@@ -107,7 +107,6 @@ new Vue({
         
             this.combokeys.bindGlobal(key.toString(), (e) => {
               this.$store.dispatch('pushKeyAction', value);
-              console.log(value);
               return false;
             });
           }

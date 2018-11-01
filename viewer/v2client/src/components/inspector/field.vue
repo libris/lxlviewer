@@ -155,10 +155,10 @@ export default {
       return `${this.parentPath}.${this.fieldKey}`;
     },
     isChild() {
-     if (this.parentPath !== 'mainEntity') {
-       return true;
-     }
-     return false;
+      if (this.parentPath !== 'mainEntity') {
+        return true;
+      }
+      return false;
     },
     propertyTypes() {
       return VocabUtil.getPropertyTypes(
@@ -342,13 +342,9 @@ export default {
         if (this.fieldValue === null || (_.isArray(this.fieldValue) && this.fieldValue.length === 0 )) {
           const entityAdder = this.$refs.entityAdder;
           this.$nextTick(() => {
-            if (entityAdder) {
+            if (entityAdder.$refs.adderFocusElement) {
               LayoutUtil.enableTabbing();
-              if (entityAdder.$refs.adderTypeSelect) {
-                entityAdder.$refs.adderTypeSelect.focus();
-              } else {
-                entityAdder.$refs.adderFocusElement.focus();
-              }
+              entityAdder.$refs.adderFocusElement.focus();
             }
           });
         }
