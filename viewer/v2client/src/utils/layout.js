@@ -33,6 +33,19 @@ function handleMouseDownOnce() {
   window.addEventListener('keydown', handleFirstTab);
 }
 
+export function scrollToElement($el, duration, callback) {
+  let topOfElement = getPosition($el).y;
+  if (topOfElement > 0) {
+    const windowHeight = window.innerHeight || 
+    document.documentElement.clientHeight || 
+    document.getElementsByTagName('body')[0].clientHeight;
+    const scrollPos = getPosition($el).y - (windowHeight * 0.2);
+    scrollTo(scrollPos, duration, 'easeInOutQuad', callback);
+  } else {
+    callback();
+  }
+}
+
 export function scrollTo(position, duration = 200, easing = 'linear', callback) {
   let properPosition = Math.floor(position);
   if (properPosition < 0) {
@@ -108,12 +121,17 @@ export function scrollTo(position, duration = 200, easing = 'linear', callback) 
   const windowHeight = window.innerHeight || document.documentElement.clientHeight || document.getElementsByTagName('body')[0].clientHeight;
   const destination = documentHeight - properPosition < windowHeight ? documentHeight - windowHeight : properPosition;
 
+  function reachedBottom() {
+    if (body.scrollHeight - body.scrollTop - body.clientHeight === 0) return true;
+    return false;
+  }
+
   function scroll() {
     const now = Date.now();
     const time = Math.min(1, ((now - startTime) / duration));
     const timeFunction = easings[easing](time);
     body.scrollTop = (timeFunction * (destination - start)) + start;
-    if (Math.floor(body.scrollTop) > destination - 10 && Math.floor(body.scrollTop) < destination + 10) {
+    if (Math.floor(body.scrollTop) > destination - 10 && Math.floor(body.scrollTop) < destination + 10 || reachedBottom() ) {
       callback();
       return;
     }

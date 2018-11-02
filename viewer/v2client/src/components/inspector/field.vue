@@ -155,10 +155,10 @@ export default {
       return `${this.parentPath}.${this.fieldKey}`;
     },
     isChild() {
-     if (this.parentPath !== 'mainEntity') {
-       return true;
-     }
-     return false;
+      if (this.parentPath !== 'mainEntity') {
+        return true;
+      }
+      return false;
     },
     propertyTypes() {
       return VocabUtil.getPropertyTypes(
@@ -342,33 +342,18 @@ export default {
         if (this.fieldValue === null || (_.isArray(this.fieldValue) && this.fieldValue.length === 0 )) {
           const entityAdder = this.$refs.entityAdder;
           this.$nextTick(() => {
-            if (entityAdder) {
+            if (entityAdder.$refs.adderFocusElement) {
               LayoutUtil.enableTabbing();
-              if (entityAdder.$refs.adderTypeSelect) {
-                entityAdder.$refs.adderTypeSelect.focus();
-              } else {
-                entityAdder.$refs.adderFocusElement.focus();
-              }
+              entityAdder.$refs.adderFocusElement.focus();
             }
           });
         }
         let element = this.$el;
-        let topOfElement = LayoutUtil.getPosition(element).y;
-        if (topOfElement > 0) {
-          const windowHeight = window.innerHeight || 
-          document.documentElement.clientHeight || 
-          document.getElementsByTagName('body')[0].clientHeight;
-          const scrollPos = LayoutUtil.getPosition(this.$el).y - (windowHeight * 0.2);
-          LayoutUtil.scrollTo(scrollPos, 1000, 'easeInOutQuad', () => {
-            setTimeout(() => {
-              this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
-            }, 1000)
-          });
-        } else {
+        LayoutUtil.scrollToElement(element, 1000, () => {
           setTimeout(() => {
             this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
-          }, 1000)
-        }
+          }, 1000);
+        });
       }
     }
   },
@@ -549,6 +534,7 @@ export default {
           :show-action-buttons="actionButtonsShown"
           :parent-path="getPath"></item-sibling>
       </div>
+      <portal-target :name="`typeSelect-${getPath}`" />
     </div>
 
     <div class="Field-content is-endOfTree js-endOfTree" 
@@ -592,6 +578,7 @@ export default {
           :show-action-buttons="actionButtonsShown"
           :is-expanded="isExpanded"></item-value>
       </div>
+      <portal-target :name="`typeSelect-${getPath}`" />
     </div>
   </li>
 </template>
