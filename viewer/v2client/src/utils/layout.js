@@ -33,6 +33,19 @@ function handleMouseDownOnce() {
   window.addEventListener('keydown', handleFirstTab);
 }
 
+export function scrollToElement($el, duration, callback) {
+  let topOfElement = getPosition($el).y;
+  if (topOfElement > 0) {
+    const windowHeight = window.innerHeight || 
+    document.documentElement.clientHeight || 
+    document.getElementsByTagName('body')[0].clientHeight;
+    const scrollPos = getPosition($el).y - (windowHeight * 0.2);
+    scrollTo(scrollPos, duration, 'easeInOutQuad', callback);
+  } else {
+    callback();
+  }
+}
+
 export function scrollTo(position, duration = 200, easing = 'linear', callback) {
   let properPosition = Math.floor(position);
   if (properPosition < 0) {
