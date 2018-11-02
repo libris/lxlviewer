@@ -108,12 +108,17 @@ export function scrollTo(position, duration = 200, easing = 'linear', callback) 
   const windowHeight = window.innerHeight || document.documentElement.clientHeight || document.getElementsByTagName('body')[0].clientHeight;
   const destination = documentHeight - properPosition < windowHeight ? documentHeight - windowHeight : properPosition;
 
+  function reachedBottom() {
+    if (body.scrollHeight - body.scrollTop - body.clientHeight === 0) return true;
+    return false;
+  }
+
   function scroll() {
     const now = Date.now();
     const time = Math.min(1, ((now - startTime) / duration));
     const timeFunction = easings[easing](time);
     body.scrollTop = (timeFunction * (destination - start)) + start;
-    if (Math.floor(body.scrollTop) > destination - 10 && Math.floor(body.scrollTop) < destination + 10) {
+    if (Math.floor(body.scrollTop) > destination - 10 && Math.floor(body.scrollTop) < destination + 10 || reachedBottom() ) {
       callback();
       return;
     }
