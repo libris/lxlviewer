@@ -29,14 +29,7 @@ export default {
     },
     scrollToEl(){
       let element = this.$el;
-      let topOfElement = LayoutUtil.getPosition(element).y;
-      if (topOfElement > 0) {
-        const windowHeight = window.innerHeight || 
-        document.documentElement.clientHeight || 
-        document.getElementsByTagName('body')[0].clientHeight;
-        const scrollPos = LayoutUtil.getPosition(this.$el).y - (windowHeight * 0.2);
-        LayoutUtil.scrollTo(scrollPos, 1000, 'easeInOutQuad', ()=>{});
-      }
+      LayoutUtil.scrollToElement(element, 1000, () => {});
     },
   },
   computed: {
