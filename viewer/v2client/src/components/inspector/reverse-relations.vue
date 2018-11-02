@@ -62,46 +62,49 @@ export default {
     },
     getRelationsInfo() {
       this.checkingRelations = true;
-      const query = {
-        '_limit': 0,
-      };
-      if (this.recordType === 'Item') {
-        query['itemOf.@id'] = this.mainEntity.itemOf['@id'];
-        query['@type'] = 'Item';
-      } else if (this.recordType === 'Instance') {
-        query['itemOf.@id'] = this.mainEntity['@id'];
-        query['@type'] = 'Item';
+      const timeoutLength = 1100; // Needed so that the index has time to update 
+      setTimeout(() => { // 
+        const query = {
+          '_limit': 0,
+        };
+        if (this.recordType === 'Item') {
+          query['itemOf.@id'] = this.mainEntity.itemOf['@id'];
+          query['@type'] = 'Item';
+        } else if (this.recordType === 'Instance') {
+          query['itemOf.@id'] = this.mainEntity['@id'];
+          query['@type'] = 'Item';
 
-        // Check if my sigel has holding
-        const myHoldingQuery = Object.assign({}, query);
-        myHoldingQuery['_limit'] = 1;
-        myHoldingQuery['heldBy.@id'] = `https://libris.kb.se/library/${this.user.settings.activeSigel}`;
-        this.getRelatedPosts(myHoldingQuery)
-        .then((response) => {
-          if (response.totalItems > 0) {
-            this.myHolding = response.items[0]['@id'];
-          }
-        })
-        .catch((error) => {
-          console.log(error);
+          // Check if my sigel has holding
+          const myHoldingQuery = Object.assign({}, query);
+          myHoldingQuery['_limit'] = 1;
+          myHoldingQuery['heldBy.@id'] = `https://libris.kb.se/library/${this.user.settings.activeSigel}`;
+          this.getRelatedPosts(myHoldingQuery)
+          .then((response) => {
+            if (response.totalItems > 0) {
+              this.myHolding = response.items[0]['@id'];
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+
+        } else if (this.recordType === 'Work') {
+          query['instanceOf.@id'] = this.mainEntity['@id'];
+          query['@type'] = 'Instance';
+        } else if (this.recordType === 'Agent') {
+          query['instanceOf.contribution.agent.@id'] = this.mainEntity['@id'];
+        } else {
+          query['q'] = this.mainEntity['@id'];
+        }
+        this.panelQuery = Object.assign({}, query);
+        this.getRelatedPosts(query).then((response) => {
+          this.relationInfo = response.items;
+          this.numberOfRelations = response.totalItems;
+          this.checkingRelations = false;
+        }, (error) => {
+          console.log('Error checking for relations', error);
         });
-
-      } else if (this.recordType === 'Work') {
-        query['instanceOf.@id'] = this.mainEntity['@id'];
-        query['@type'] = 'Instance';
-      } else if (this.recordType === 'Agent') {
-        query['instanceOf.contribution.agent.@id'] = this.mainEntity['@id'];
-      } else {
-        query['q'] = this.mainEntity['@id'];
-      }
-      this.panelQuery = Object.assign({}, query);
-      this.getRelatedPosts(query).then((response) => {
-        this.relationInfo = response.items;
-        this.numberOfRelations = response.totalItems;
-        this.checkingRelations = false;
-      }, (error) => {
-        console.log('Error checking for relations', error);
-      });
+      }, timeoutLength);
     },
     gotoHolding() {
       const locationParts = this.myHolding.split('/');
@@ -223,6 +226,11 @@ export default {
 
 <template>
   <div class="ReverseRelations">
+    <vue-simple-spinner class="ReverseRelations spinner"
+        v-show="checkingRelations"
+        v-if="!compact" 
+        size="medium">
+      </vue-simple-spinner>
     <div class="ReverseRelations-number"
       v-show="!checkingRelations"
       v-if="!compact">
