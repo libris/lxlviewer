@@ -667,6 +667,239 @@
         }
       }
     },
+    "printedCartograph": {
+      "label": "Karta",
+      "description": "Tryckt kartografiskt material - RDA",
+      "value": {
+        "record": {
+          "@id": "https://id.kb.se/TEMPID",
+          "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          },
+          "bibliography": [
+            {
+              "@type": "Library",
+              "sigel": [""]
+            }
+          ],
+          "descriptionConventions": [
+            {
+              "@id": "https://id.kb.se/marc/Isbd"
+            },
+            {
+              "@type": "DescriptionConventions",
+              "code": "rda"
+            }
+          ],
+          "descriptionLanguage": [
+            {
+              "@id": "https://id.kb.se/language/swe"
+            }
+          ],
+          "encodingLevel": "marc:AbbreviatedLevel",
+          "recordStatus": "",
+          "marc:catalogingSource": {
+            "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
+          }
+        },
+        "mainEntity": {
+          "@id": "https://id.kb.se/TEMPID#it",
+          "@type": "Instance",
+          "issuanceType": "Monograph",
+          "hasTitle": [{
+              "@type": "Title",
+              "mainTitle": "",
+              "subtitle": ""
+            }
+          ],
+          "responsibilityStatement": "",
+          "identifiedBy": [{
+            "@type": "ISBN",
+            "value": "",
+            "qualifier": ""
+          }],
+          "publication": [
+            {
+              "@type": "PrimaryPublication",
+              "year": "",
+              "country": [ {"@id": "https://id.kb.se/country/sw"} ],
+              "place": {
+                "@type": "Place",
+                "label": ""
+              },
+              "agent": {
+                "@type": "Agent",
+                "label": ""
+              }
+            }
+          ],
+          "manufacture": [{
+            "@type": "Manufacture",
+            "agent": [{
+              "@type": "Agent",
+              "label": [
+                ""
+              ]
+            }],
+            "date": [
+              ""
+            ],
+            "place": [{
+              "@type": "Place",
+              "label": [
+                ""
+              ]
+            }]
+          }],
+          "marc:relief": [
+            {
+              "@id": "https://id.kb.se/marc/GradientOrBathymetricTint"
+            },
+            {
+              "@id": "https://id.kb.se/marc/SpotHeight"
+            }
+          ],
+          "productionMethod": [
+            {
+              "@type": "ProductionMethod",
+              "label": ""
+            }
+          ],
+          "mediaType": [{"@id": "https://id.kb.se/term/rda/Unmediated"}],
+          "carrierType": [{"@id": "https://id.kb.se/term/rda/Sheet"}],
+          "baseMaterial": [
+            {
+              "@id": "https://id.kb.se/marc/Paper"
+            }
+          ],
+          "colorContent": [
+            {
+              "@id": "https://id.kb.se/marc/Multicolored"
+            }
+          ],
+          "extent": [{
+            "@type": "Extent",
+            "label": ""
+          }],
+          "genreForm": [
+            {
+              "@id": "https://id.kb.se/marc/MapATwoDimensionalMap"
+            }
+          ],
+          "marc:otherPhysicalDetails": "färg",
+          "hasDimensions": {
+            "@type": "Dimensions",
+            "label": ""
+          },
+          "hasNote": [{
+            "@type": "Note",
+            "label": ""
+          }],
+          "tableOfContents": [
+            {
+              "@type": "TableOfContents",
+              "label": ""
+            }
+          ],
+          "instanceOf": {
+            "@id": "https://id.kb.se/TEMPID#work"
+          }
+        },
+        "work": {
+          "@id": "https://id.kb.se/TEMPID#work",
+          "@type": "Cartography",
+          "language": [{
+            "@id": "https://id.kb.se/language/swe"
+          }],
+          "cartographicAttributes": [
+            {
+              "@type": "Cartographic",
+              "marc:easternmostLongitudeCoordinates": "e0",
+              "marc:northernmostLatitudeCoordinates": "n0",
+              "marc:southernmostLatitudeCoordinates": "n0",
+              "marc:westernmostLongitudeCoordinates": "e0",
+              "scale": {
+                "@type": "marc:LinearScale",
+                "marc:constantRatioLinearHorizontalScale": ""
+              }
+            },
+            {
+              "@type": "Cartographic",
+              "coordinates": "(Ö °-Ö °/N °'-N °)",
+              "scale": {
+                "@type": "Scale",
+                "label": [
+                  "Skala 1:  ; Skalstock:"
+                ]
+              }
+            },
+            {
+              "@type": "Cartographic",
+              "coordinates": "Måttenhet för koordinaterna: grader, minuter och sekunder (0-360°)"
+            }
+          ],
+          "genreForm": [
+            {
+              "@id": "https://id.kb.se/marc/SingleMap"
+            },
+            {
+              "@id": "https://id.kb.se/term/gmgpc%2F%2Fswe/Kartor"
+            }
+          ],
+          "classification": [{
+              "@type": "ClassificationDdc",
+              "code": "912",
+              "edition": "full",
+              "editionEnumeration": "23/swe"
+            },
+            {
+              "@type": "Classification",
+              "code": "",
+              "inScheme": {
+                "@type": "ConceptScheme",
+                "@id": "https://id.kb.se/term/kssb/8",
+                "code": "kssb",
+                "version": "8"
+              }
+            }
+          ],
+          "contribution": [{
+              "@type": "PrimaryContribution",
+              "agent": {
+                "@type": "Person",
+                "familyName": "",
+                "givenName": "",
+                "lifeSpan": ""
+              },
+              "role": [{
+                "@id": "https://id.kb.se/relator/cartographer"
+              }]
+            },
+            {
+              "@type": "Contribution",
+              "agent": {
+                "@type": "Person",
+                "familyName": "",
+                "givenName": "",
+                "lifeSpan": ""
+              },
+              "role": [{
+                "@id": "https://id.kb.se/relator/unspecifiedContributor"
+              }]
+            }
+          ],
+          "contentType": [{"@id": "https://id.kb.se/term/rda/CartographicImage"}],
+          "subject": [],
+          "summary": [
+            {
+              "@type": "Summary",
+              "label": ""
+            }
+          ]
+        }
+      }
+    },
     "printedmonograph": {
       "label": "Bok",
       "description": "Tryckt monografi - RDA",
@@ -1341,6 +1574,236 @@
                   ""
                 ]
               }
+            }
+          ]
+        }
+      }
+    },
+    "printedStillImage": {
+      "label": "Stillbild",
+      "description": "Tryckt stillbild - RDA",
+      "value": {
+        "record": {
+          "@id": "https://id.kb.se/TEMPID",
+          "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          },
+          "bibliography": [
+            {
+              "@type": "Library",
+              "sigel": [""]
+            }
+          ],
+          "descriptionConventions": [
+            {
+              "@id": "https://id.kb.se/marc/Isbd"
+            },
+            {
+              "@type": "DescriptionConventions",
+              "code": "rda"
+            }
+          ],
+          "descriptionLanguage": [
+            {
+              "@id": "https://id.kb.se/language/swe"
+            }
+          ],
+          "encodingLevel": "marc:AbbreviatedLevel",
+          "recordStatus": "",
+          "marc:catalogingSource": {
+            "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
+          }
+        },
+        "mainEntity": {
+          "@id": "https://id.kb.se/TEMPID#it",
+          "@type": "Instance",
+          "issuanceType": "Monograph",
+          "hasTitle": [{
+              "@type": "Title",
+              "mainTitle": "",
+              "subtitle": ""
+            }
+          ],
+          "responsibilityStatement": "",
+          "publication": [
+            {
+              "@type": "PrimaryPublication",
+              "year": "",
+              "country": [ {"@id": "https://id.kb.se/country/sw"} ],
+              "place": {
+                "@type": "Place",
+                "label": ""
+              },
+              "agent": {
+                "@type": "Agent",
+                "label": ""
+              }
+            }
+          ],
+          "manufacture": [{
+            "@type": "Manufacture",
+            "agent": [{
+              "@type": "Agent",
+              "label": [
+                ""
+              ]
+            }],
+            "date": [
+              ""
+            ],
+            "place": [{
+              "@type": "Place",
+              "label": [
+                ""
+              ]
+            }]
+          }],
+          "production": [{
+            "@type": "Production",
+            "agent": [{
+              "@type": "Agent",
+              "label": [
+                ""
+              ]
+            }],
+            "date": [
+              ""
+            ],
+            "place": [{
+              "@type": "Place",
+              "label": [
+                ""
+              ]
+            }]
+          }],
+          "productionMethod": [
+            {
+              "@type": "ProductionMethod",
+              "label": ""
+            }
+          ],
+          "mediaType": [{"@id": "https://id.kb.se/term/rda/Unmediated"}],
+          "carrierType": [{"@id": "https://id.kb.se/term/rda/Sheet"}],
+          "appliedMaterial": [
+            {
+              "@type": "AppliedMaterial",
+              "label": ""
+            }
+          ],
+          "baseMaterial": [
+            {
+              "@id": "https://id.kb.se/marc/NonProjectedType-o"
+            },
+            {
+              "@type": "BaseMaterial",
+              "label": "papper"
+            }
+          ],
+          "colorContent": [
+            {
+              "@id": "https://id.kb.se/marc/BlackAndWhite"
+            }
+          ],
+          "extent": [{
+            "@type": "Extent",
+            "label": ""
+          }],
+          "marc:otherPhysicalDetails": "",
+          "hasDimensions": {
+            "@type": "Dimensions",
+            "label": ""
+          },
+          "genreForm": [
+            {
+              "@id": "https://id.kb.se/marc/Picture"
+            }
+          ],
+          "polarity": [
+            {
+              "@type": "Polarity",
+              "label": ["positiv"]
+            }
+          ],
+          "hasNote": [{
+            "@type": "Note",
+            "label": ""
+          }],
+          "tableOfContents": [
+            {
+              "@type": "TableOfContents",
+              "label": ""
+            }
+          ],
+          "instanceOf": {
+            "@id": "https://id.kb.se/TEMPID#work"
+          }
+        },
+        "work": {
+          "@id": "https://id.kb.se/TEMPID#work",
+          "@type": "StillImage",
+          "language": [{
+            "@id": "https://id.kb.se/language/zxx"
+          }],
+          "genreForm": [
+            {
+              "@id": "https://id.kb.se/marc/Picture"
+            },
+            {
+              "@id": "https://id.kb.se/term/gmgpc%2F%2Fswe/Bilder"
+            }
+          ],
+          "classification": [{
+              "@type": "ClassificationDdc",
+              "code": "",
+              "edition": "full",
+              "editionEnumeration": "23/swe"
+            },
+            {
+              "@type": "Classification",
+              "code": "",
+              "inScheme": {
+                "@type": "ConceptScheme",
+                "@id": "https://id.kb.se/term/kssb/8",
+                "code": "kssb",
+                "version": "8"
+              }
+            }
+          ],
+          "contribution": [{
+              "@type": "PrimaryContribution",
+              "agent": {
+                "@type": "Person",
+                "familyName": "",
+                "givenName": "",
+                "lifeSpan": ""
+              },
+              "role": [{
+                "@id": "https://id.kb.se/relator/artist"
+              }]
+            },
+            {
+              "@type": "Contribution",
+              "agent": {
+                "@type": "Organization",
+                "name": ""
+              },
+              "role": [{
+                "@id": "https://id.kb.se/relator/unspecifiedContributor"
+              }]
+            }
+          ],
+          "contentType": [
+            {
+              "@id": "https://id.kb.se/term/rda/StillImage"
+            }
+          ],
+          "subject": [],
+          "summary": [
+            {
+              "@type": "Summary",
+              "label": [""],
+              "marc:summaryType": "marc:NoDisplayConstantGenerated"
             }
           ]
         }
