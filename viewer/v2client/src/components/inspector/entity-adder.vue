@@ -456,7 +456,7 @@ export default {
         };
       }
 
-      if (this.fieldKey === 'instanceOf') {
+      if (this.path === 'mainEntity.instanceOf') {
         this.addSibling(obj);
       } else {
         this.addItem(obj);
