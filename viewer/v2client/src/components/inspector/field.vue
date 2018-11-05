@@ -628,7 +628,6 @@ export default {
     padding: 5px 0 5px 0;
     border-radius: 4px;
     overflow: visible;
-    max-height: auto;
     display: block;
 
     &.is-marked {
