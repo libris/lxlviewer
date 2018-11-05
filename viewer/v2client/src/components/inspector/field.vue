@@ -629,7 +629,7 @@ export default {
     border-radius: 4px;
     overflow: visible;
     max-height: auto;
-    display: inline-block;
+    display: block;
 
     &.is-marked {
       background-color: @add;
