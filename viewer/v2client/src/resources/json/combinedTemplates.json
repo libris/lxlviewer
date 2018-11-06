@@ -330,7 +330,6 @@
               "label": ""
             }
           ],
-          "isPrimaryTopicOf": [],
           "tableOfContents": [
             {
               "@type": "TableOfContents",
@@ -1347,7 +1346,7 @@
       }
     },
     "videogame": {
-      "label": "Tv-spel",
+      "label": "Datorspel",
       "description": "Multimedia",
       "value": {
         "record": {
