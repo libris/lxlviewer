@@ -99,17 +99,26 @@ export default {
       }
       return false;
     },
+    isLastAdded() {
+      if (this.inspector.status.lastAdded === this.getPath) {
+        return true;
+      }
+      return false;
+    },
     getPath() {
       return this.suffix;
     },
-     isEmpty() {
+    isEmpty() {
       let bEmpty = true;
       // Check if item has any keys besides @type and _uid. If not, we'll consider it empty.
       _.each(this.item, (value, key) => {
         if (key !== '@type' && key !== '_uid') {
-          if (typeof value !== 'undefined') {
-            bEmpty = false;
+          if (key !== '@id') {
+            if (typeof value !== 'undefined') {
+              bEmpty = false;
+            }
           }
+        
         }
       });
       return bEmpty;
@@ -119,6 +128,14 @@ export default {
     },
   },
   methods: {
+    highLightLastAdded() {
+      let element = this.$el;
+      LayoutUtil.scrollToElement(element, 1000, () => {
+        setTimeout(() => {
+          this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
+        }, 1000);
+      });
+    },
     removeThis() {
       const changeList = [
         {
@@ -258,15 +275,6 @@ export default {
     },
   },
   watch: {
-    isEmpty(val) {
-      if (val) {
-        this.$el.getElementsByClassName('js-expandable')[0].classList.add('is-inactive');
-        this.$el.classList.remove('is-expanded');
-      } else {
-        this.$el.getElementsByClassName('js-expandable')[0].classList.remove('is-inactive');
-        this.$el.classList.add('is-expanded');
-      }
-    },
     'inspector.event'(val, oldVal) {
       this.$emit(`${val.value}`);
     }
@@ -277,18 +285,20 @@ export default {
   },
   mounted() {
     if (this.isLastAdded) {
-      this.toggleExpanded();
+      this.highLightLastAdded();
+      const fieldAdder = this.$refs.fieldAdder;
+      if (this.isEmpty) {
+        LayoutUtil.enableTabbing();
+        fieldAdder.$refs.adderButton.focus();
+      } else {
+        this.expand();
+      }
       setTimeout(()=> {
-        if (this.isEmpty) {
-          this.$el.getElementsByClassName('js-expandable')[0].classList.add('is-inactive');
-        } else {
-          this.expand();
-        }
-        this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
-      }, 1000)
+      this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
+    }, 1000)
     } 
   },
- 
+
   components: {
     'processed-label': ProcessedLabel,
     'item-entity': ItemEntity,
@@ -302,16 +312,17 @@ export default {
 
 <template>
   <div class="ItemSibling js-itemLocal"
-    tabindex="0"
-    :class="{'is-highlighted': isNewlyAdded, 'is-expanded': expanded, 'is-extractable': isExtractable}"
+    :class="{'is-highlighted': isNewlyAdded, 'is-expanded': expanded && !isEmpty, 'is-extractable': isExtractable}"
+    :tabindex="isEmpty ? -1 : 0"
     @keyup.enter="checkFocus()" 
     @focus="addFocus()"
     @blur="removeFocus()">
-   
-   <strong class="ItemSibling-heading">
-      <div class="ItemSibling-label js-expandable">
-        <i class="ItemSibling-arrow fa fa-chevron-right " 
-          :class="{'down': expanded}"
+
+    <strong class="ItemSibling-heading">
+      <div class="ItemSibling-label"
+        :class="{'is-inactive': isEmpty}">
+        <i class="ItemSibling-arrow fa fa-chevron-right" 
+          :class="{'icon is-disabled' : isEmpty}"
           @click="toggleExpanded()"></i>
         <span class="ItemSibling-type" 
           @click="toggleExpanded($event)" 
@@ -337,7 +348,7 @@ export default {
             tooltip-text="Link entity" 
             translation="translatePhrase"></tooltip-component>
         </i>
-        <field-adder class="ItemSibling-action"
+        <field-adder ref="fieldAdder" class="ItemSibling-action"
           v-if="!isLocked" 
           :entity-type="item['@type']" 
           :allowed="allowedProperties" 
@@ -385,7 +396,7 @@ export default {
         :key="k" 
         :show-action-buttons="showActionButtons"></field>
     </ul>
-       
+
     <search-window 
       :isActive="extractDialogActive" 
       :can-copy-title="canCopyTitle" 
@@ -437,12 +448,6 @@ export default {
     padding: 0 2px;
     margin: 0 0 0 1px;
     cursor: pointer;
-
-    .is-inactive & {
-      color: @gray-light;
-      pointer-events: none;
-      cursor: not-allowed;
-    }
   }
 
   &-list {

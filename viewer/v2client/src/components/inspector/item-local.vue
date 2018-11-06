@@ -97,6 +97,7 @@ export default {
       return this.item;
     },
     isEmpty() {
+
       let bEmpty = true;
       // Check if item has any keys besides @type and _uid. If not, we'll consider it empty.
       _.each(this.item, (value, key) => {
@@ -116,6 +117,14 @@ export default {
     },
   },
   methods: {
+    highLightLastAdded() {
+      let element = this.$el;
+      LayoutUtil.scrollToElement(element, 1000, () => {
+        setTimeout(() => {
+          this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
+        }, 1000);
+      });
+    },
     actionHighlight(active, event) {
       if (active) {
         let item = event.target;
@@ -243,7 +252,12 @@ export default {
     cloneThis() {      
       let parentData = _.cloneDeep(_.get(this.inspector.data, this.parentPath));
       parentData.push(this.item);
-      
+
+      this.$store.dispatch('setInspectorStatusValue', { 
+        property: 'lastAdded', 
+        value: `${this.parentPath}[${parentData.length-1}]`
+      });
+
       setTimeout(() => {
         this.$store.dispatch('updateInspectorData', {
           changeList: [
@@ -258,15 +272,6 @@ export default {
     },
   },
   watch: {
-    isEmpty(val) {
-      if (val) {
-        this.$el.getElementsByClassName('js-expandable')[0].classList.add('is-inactive');
-        this.$el.classList.remove('is-expanded');
-      } else {
-        this.$el.getElementsByClassName('js-expandable')[0].classList.remove('is-inactive');
-        this.$el.classList.add('is-expanded');
-      }
-    },
     'inspector.event'(val, oldVal) {
       this.$emit(`${val.value}`);
     }
@@ -277,16 +282,15 @@ export default {
   },
   mounted() {
     if (this.isLastAdded) {
-      this.toggleExpanded();
+      this.highLightLastAdded();
       const fieldAdder = this.$refs.fieldAdder;
-      setTimeout(() => {
         if (this.isEmpty) {
-          this.$el.getElementsByClassName('js-expandable')[0].classList.add('is-inactive');
           LayoutUtil.enableTabbing();
           fieldAdder.$refs.adderButton.focus();
         } else {
           this.expand();
         }
+      setTimeout(() => {
         this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
       }, 1000)
     } 
@@ -305,16 +309,17 @@ export default {
 
 <template>
   <div class="ItemLocal js-itemLocal"
-    :class="{'is-highlighted': isLastAdded, 'is-expanded': expanded, 'is-extractable': isExtractable}"
-    tabindex="0" 
+    :class="{'is-highlighted': isLastAdded, 'is-expanded': expanded && !isEmpty, 'is-extractable': isExtractable}"
+    :tabindex="isEmpty ? -1 : 0"
     @keyup.enter="checkFocus()"
     @focus="addFocus()"
     @blur="removeFocus()">
 
     <strong class="ItemLocal-heading">
-      <div class="ItemLocal-label js-expandable">
-        <i class="ItemLocal-arrow fa fa-chevron-right " 
-          :class="{'down': expanded}" 
+      <div class="ItemLocal-label"
+        :class="{'is-inactive': isEmpty}">
+        <i class="ItemLocal-arrow fa fa-chevron-right" 
+          :class="{'icon is-disabled' : isEmpty}"
           @click="toggleExpanded()"></i>
         <span class="ItemLocal-type" 
           @click="toggleExpanded($event)" 
@@ -457,12 +462,6 @@ export default {
     transition: all 0.2s ease;
     padding: 0 2px;
     cursor: pointer;
-
-    .is-inactive & {
-      color: @gray-light;
-      pointer-events: none;
-      cursor: not-allowed;
-    }
   }
 
   &-list {

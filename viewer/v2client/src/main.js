@@ -107,7 +107,6 @@ new Vue({
         
             this.combokeys.bindGlobal(key.toString(), (e) => {
               this.$store.dispatch('pushKeyAction', value);
-              console.log(value);
               return false;
             });
           }
@@ -118,19 +117,7 @@ new Vue({
   mounted() {
     this.$nextTick(() => {
       this.verifyConfig();
-      if (this.$route.name === 'Authenticating') {
-        const token = StringUtil.getParamValueFromUrl(this.$route.hash, 'access_token');
-        localStorage.setItem('at', token);
-        this.verifyUser(token, true);
-      } else {
-        const token = localStorage.getItem('at');
-        if (token) {
-          this.verifyUser(token, false);
-        } else {
-          const userObj = User.getUserObject();
-          store.dispatch('setUser', userObj);
-        }
-      }
+      this.authenticate();
       window.addEventListener('keydown', LayoutUtil.handleFirstTab);
       this.updateTitle();
       this.injectAnalytics();
@@ -151,6 +138,43 @@ new Vue({
     }
   },
   methods: {
+    navigateToLastPath() {
+      const lastPath = localStorage.getItem('lastPath');
+      if (
+        typeof lastPath !== 'undefined' &&
+        lastPath !== '/user' &&
+        lastPath !== '/login' && 
+        lastPath !== '/login/authorized'
+      ) {
+        localStorage.removeItem('lastPath');
+        this.$router.push({ path: lastPath });
+      } else {
+        this.$router.push({ path: '/' });
+      }
+    },
+    authenticate() {
+      if (this.$route.name === 'Authenticating') {
+        let token = StringUtil.getParamValueFromUrl(this.$route.hash, 'access_token');
+        if (token === null) {
+          token = localStorage.getItem('at');
+        }
+        if (token !== null) {
+          localStorage.setItem('at', token);
+          this.verifyUser(token, true);
+        } else {
+          this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Login failed', this.settings.language)}!` });
+          this.navigateToLastPath();
+        }
+      } else {
+        const token = localStorage.getItem('at');
+        if (token) {
+          this.verifyUser(token, false);
+        } else {
+          const userObj = User.getUserObject();
+          store.dispatch('setUser', userObj);
+        }
+      }
+    },
     injectAnalytics() {
       const analyticsString = 'var _paq=_paq||[];_paq.push(["trackPageView"]),_paq.push(["enableLinkTracking"]),function(){var e="//analytics.kb.se/";_paq.push(["setTrackerUrl",e+"piwik.php"]),_paq.push(["setSiteId","****"]);var a=document,p=a.createElement("script"),t=a.getElementsByTagName("script")[0];p.type="text/javascript",p.async=!0,p.defer=!0,p.src=e+"piwik.js",t.parentNode.insertBefore(p,t)}();';
       const scriptWithPiwikId = analyticsString.replace('****', this.settings.piwikID);
@@ -180,18 +204,7 @@ new Vue({
         store.dispatch('setUser', userObj);
         if (initial) {
           this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('You were logged in', this.settings.language)}!` });
-          const lastPath = localStorage.getItem('lastPath');
-          if (
-            typeof lastPath !== 'undefined' &&
-            lastPath !== '/user' &&
-            lastPath !== '/login' && 
-            lastPath !== '/login/authorized'
-          ) {
-            localStorage.removeItem('lastPath');
-            this.$router.push({ path: lastPath });
-          } else {
-            this.$router.push({ path: '/' });
-          }
+          this.navigateToLastPath();
         }
       }, (error) => {
         store.dispatch('setUser', userObj);
