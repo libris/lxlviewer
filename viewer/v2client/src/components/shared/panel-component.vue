@@ -75,9 +75,6 @@ export default {
     translatedTitle() {
       return StringUtil.getUiPhraseByLang(this.title, this.user.settings.language);
     },
-    hasFooter() {
-      return !!this.$slots["panel-footer"];
-    },
   },
   watch: {
     'status.keyActions'(actions) {
@@ -150,7 +147,7 @@ export default {
           <code>No content recieved from parent</code>
         </slot>
       </div>
-      <div class="PanelComponent-footer" v-if="hasFooter">
+      <div class="PanelComponent-footer">
         <slot name="panel-footer"></slot>
       </div>
     </div>
@@ -320,7 +317,6 @@ export default {
   &-footer {
     background-color: @panel-header-bg;
     border-top: 1px solid @gray-lighter;
-    padding: 5px 0;
   }
 
   &-windowControl {

@@ -165,8 +165,9 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
+
     .ModalPagination {
-      margin: 10px;
+      margin: 15px 10px;
     }
   }
   &-body {
