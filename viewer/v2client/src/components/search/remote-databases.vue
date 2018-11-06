@@ -277,7 +277,7 @@ export default {
             type="text" 
             v-model="filterKey"
             :placeholder="'Filter by' | translatePhrase "
-            >
+            autofocus >
         </div>
       </template>
       <template slot="panel-body">
