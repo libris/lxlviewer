@@ -273,6 +273,11 @@ export default {
       this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('Linking was successful', this.settings.language)}` });
       this.closeExtractDialog();
     },
+    expandOnNew() {
+      if (this.inspector.status.isNew) {
+        this.expand();
+      }
+    }
   },
   watch: {
     'inspector.event'(val, oldVal) {
@@ -296,7 +301,8 @@ export default {
       setTimeout(()=> {
       this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
     }, 1000)
-    } 
+    }
+    this.expandOnNew();
   },
 
   components: {
