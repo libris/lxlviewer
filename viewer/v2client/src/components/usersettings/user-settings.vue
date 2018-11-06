@@ -102,7 +102,7 @@ export default {
 
           <div class="UserConfig-formGroup">
             <label for="detailsCheckbox" class="UserConfig-label UserConfig-label--checkbox"> 
-              <span class="UserConfig-span">{{"Show technical application details" | translatePhrase}}</span>
+              <span class="UserConfig-span">{{"Show debug information" | translatePhrase}}</span>
               <div class="UserConfig-checkboxWrap">
                 <input id="detailsCheckbox" class="customCheckbox-input" type="checkbox" @change="updateAppTech" :checked="user.settings.appTech">
                 <div class="customCheckbox-icon"></div>

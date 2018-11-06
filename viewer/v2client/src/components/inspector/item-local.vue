@@ -32,6 +32,10 @@ export default {
     showActionButtons: false,
     parentPath: '',
     inArray: false,
+    parentRange: {
+      type: Array,
+      default: () => [],
+    },
   },
   data() {
     return {
@@ -55,6 +59,39 @@ export default {
       'user',
       'status',
     ]),
+    failedValidations() {
+      const failedValidations = [];
+      if (this.user.settings.appTech === false) {
+        return failedValidations;
+      }
+
+      const termObj = VocabUtil.getTermObject(this.focusData['@type'], this.resources.vocab, this.resources.context);
+      if (termObj === {} || typeof termObj === 'undefined') {
+        failedValidations.push({
+          text: "The class could not be found",
+          hint: this.focusData['@type']
+        });
+      } else {
+        if (termObj.abstract === true) {
+          failedValidations.push({
+            text: "The class is abstract and should not be used",
+            hint: this.focusData['@type']
+          });
+        } else if (this.parentRange.indexOf(this.focusData['@type']) == -1) {
+          failedValidations.push({
+            text: "The class is not in the range of this property",
+            hint: `${this.fieldKey} <- ${this.focusData['@type']}`
+          });
+        }
+      }
+
+      if (failedValidations.length > 0) {
+        this.$store.dispatch('setValidation', { path: this.path, validates: false, reasons: failedValidations });
+      } else {
+        this.$store.dispatch('setValidation', { path: this.path, validates: true });
+      }
+      return failedValidations;
+    },
     canCopyTitle() {
       if (this.isExtractable && !this.item.hasOwnProperty('hasTitle') && this.key === 'instanceOf') {
         return true;
@@ -276,6 +313,9 @@ export default {
       this.$emit(`${val.value}`);
     }
   },
+  beforeDestroy() {
+    this.$store.dispatch('setValidation', { path: this.path, validates: true });
+  },
   created: function () {
     this.$on('collapse-item', this.collapse);
     this.$on('expand-item', this.expand);
@@ -309,7 +349,7 @@ export default {
 
 <template>
   <div class="ItemLocal js-itemLocal"
-    :class="{'is-highlighted': isLastAdded, 'is-expanded': expanded && !isEmpty, 'is-extractable': isExtractable}"
+    :class="{'is-highlighted': isLastAdded, 'is-expanded': expanded && !isEmpty, 'is-extractable': isExtractable, 'has-failed-validations': failedValidations.length > 0 }"
     :tabindex="isEmpty ? -1 : 0"
     @keyup.enter="checkFocus()"
     @focus="addFocus()"
@@ -437,6 +477,10 @@ export default {
   flex: 1 100%;
   transition: background-color .5s ease;
   width: 100%;
+
+  &.has-failed-validations {
+    outline: 1px dotted red;
+  }
 
   &-heading {
     display: block;

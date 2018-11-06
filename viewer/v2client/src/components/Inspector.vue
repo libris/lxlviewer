@@ -17,6 +17,7 @@ import ModalComponent from '@/components/shared/modal-component';
 import ReverseRelations from '@/components/inspector/reverse-relations';
 import MarcPreview from '@/components/inspector/marc-preview';
 import TabMenu from '@/components/shared/tab-menu';
+import ValidationSummary from '@/components/inspector/validation-summary';
 import { mapGetters } from 'vuex';
 
 export default {
@@ -499,6 +500,7 @@ export default {
     'breadcrumb': Breadcrumb,
     'marc-preview': MarcPreview,
     'tab-menu': TabMenu,
+    'validation-summary': ValidationSummary,
   },
   mounted() {
     this.$nextTick(() => {
@@ -552,6 +554,7 @@ export default {
             :full="true" 
             v-if="!isItem">
           </entity-header>
+          <validation-summary v-if="user.settings.appTech" />
 
           <tab-menu @go="setEditorFocus" :tabs="editorTabs" :active="this.inspector.status.focus" />
 
@@ -559,11 +562,6 @@ export default {
             :editing-object="inspector.status.focus" 
             :locked="!inspector.status.editing">
           </entity-form>
-          <div class="Inspector-code" v-if="user.settings.appTech">
-            <code>
-              {{result}}
-            </code>
-          </div>
         </div>
       </div>
     </div>

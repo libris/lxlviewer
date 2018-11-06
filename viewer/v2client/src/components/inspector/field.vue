@@ -65,8 +65,37 @@ export default {
   watch: {
   },
   computed: {
+    failedValidations() {
+      const failedValidations = [];
+      if (this.user.settings.appTech === false) {
+        return failedValidations;
+      }
+      if (!this.isRepeatable && _.isArray(this.fieldValue) && this.fieldValue.length > 1) {
+        failedValidations.push({
+          text: "The property is not repeatable",
+          hint: this.fieldKey
+        });
+      }
+
+      if (failedValidations.length > 0) {
+        this.$store.dispatch('setValidation', { path: this.getPath, validates: false, reasons: failedValidations });
+      } else {
+        this.$store.dispatch('setValidation', { path: this.getPath, validates: true });
+      }
+      return failedValidations;
+    },
     isMainField() {
       return (!this.isInner && this.settings.mainFields[this.recordType] === this.fieldKey);
+    },
+    fullRange() {
+      const fetchedRange = VocabUtil.getFullRange(
+        this.entityType, 
+        this.fieldKey, 
+        this.resources.vocab, 
+        this.resources.context, 
+        this.resources.vocabClasses
+      ).map(item => StringUtil.getCompactUri(item, this.resources.context));;
+      return fetchedRange;
     },
     recordType() {
       return VocabUtil.getRecordType(
@@ -357,6 +386,9 @@ export default {
       }
     }
   },
+  beforeDestroy() {
+    this.$store.dispatch('setValidation', { path: this.getPath, validates: true });
+  },
   mounted() {
     this.$nextTick(() => {
       setTimeout(() => {
@@ -373,7 +405,7 @@ export default {
 <template>
   <li class="Field js-field" 
     :id="`field-${getPath}`"
-    v-bind:class="{'is-mainField': isMainField, 'Field--inner': !asColumns, 'is-lastAdded': isLastAdded, 'is-removed': removed}" 
+    v-bind:class="{'is-mainField': isMainField, 'Field--inner': !asColumns, 'is-lastAdded': isLastAdded, 'is-removed': removed, 'has-failed-validations': failedValidations.length > 0 }" 
     @mouseover="handleMouseEnter()" 
     @mouseleave="handleMouseLeave()">
 
@@ -515,6 +547,7 @@ export default {
           :is-locked="locked" 
           :entity-type="entityType" 
           :forced-extractability="isCompositional"
+          :parent-range="fullRange"
           :item="item" 
           :field-key="fieldKey" 
           :index="index" 
@@ -595,6 +628,9 @@ export default {
   position: relative;
   transition: background-color .3s ease;
 
+  &.has-failed-validations {
+    outline: 1px dotted red;
+  }
   &.is-mainField {
     border-bottom-width: 2px;
   
