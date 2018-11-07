@@ -341,7 +341,7 @@ export default {
       const promptInstruction = StringUtil.getUiPhraseByLang('Name your file', this.user.settings.language);
       const promptedName = prompt(promptInstruction, id);
       if (promptedName !== null) {
-        element.download = promptedName;
+        element.download = `${promptedName}.jsonld`;
         element.style.display = 'none';
         document.body.appendChild(element);
         element.click();
