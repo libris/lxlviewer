@@ -249,7 +249,6 @@ export default {
   },
   mounted() {
     this.addEmbedded = (this.valueList.length === 0 && this.onlyEmbedded && this.getFullRange.length > 1);
-
   },
   methods: {
     actionHighlight(active, event) {
@@ -457,7 +456,7 @@ export default {
         };
       }
 
-      if (this.fieldKey === 'instanceOf') {
+      if (this.path === 'mainEntity.instanceOf') {
         this.addSibling(obj);
       } else {
         this.addItem(obj);
