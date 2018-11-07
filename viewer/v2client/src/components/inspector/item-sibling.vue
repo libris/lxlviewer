@@ -271,6 +271,10 @@ export default {
         changeList: changeList,
       });
       this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('Linking was successful', this.settings.language)}` });
+      this.$store.dispatch('setInspectorStatusValue', { 
+        property: 'lastAdded', 
+        value: `${this.parentPath}.{"@id":"${newValue['@id']}"}`
+      });
       this.closeExtractDialog();
     },
   },

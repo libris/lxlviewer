@@ -97,7 +97,7 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      if(this.inspector.status.lastAdded === this.fullPath) {
+      if(this.isNewlyAdded) {
         setTimeout(() => {
           let element = this.$el;
           LayoutUtil.scrollToElement(element, 1000, () => {
