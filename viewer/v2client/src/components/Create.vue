@@ -148,7 +148,8 @@ export default {
     },
     'droppedFile': function(val) {
       if (val.hasOwnProperty('@graph')) {
-        this.thingData = val;
+        const inspectorObject = RecordUtil.splitJson(val);
+        this.thingData = RecordUtil.prepareDuplicateFor(inspectorObject, this.user, this.settings);
       } else {
         this.invalidFile = true;
       }
