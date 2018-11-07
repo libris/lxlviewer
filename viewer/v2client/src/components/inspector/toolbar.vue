@@ -213,7 +213,7 @@ export default {
         focusId = this.inspector.data.mainEntity.itemOf['@id'].split('#')[0];
       }
       const element = document.createElement('a');
-      let blob = new Blob([`${text}`], { type: 'text/plain'});
+      let blob = new Blob([`${text}`], { type: 'application/marc'});
       element.href = window.URL.createObjectURL(blob);
       const splitIdParts = focusId.split('/');
       const id = splitIdParts[splitIdParts.length-1];
@@ -452,6 +452,12 @@ export default {
           <a class="Toolbar-menuLink"  v-if="!downloadIsSupported" :href="compileMARCUrl">
             <i class="fa fa-fw fa-download" aria-hidden="true"></i>
               {{"Download compiled" | translatePhrase}} MARC21
+          </a>
+        </li>
+        <li class="Toolbar-menuItem">
+          <a class="Toolbar-menuLink" @click="postControl('download-json'), hideToolsMenu()">
+            <i class="fa fa-fw fa-download" aria-hidden="true"></i>
+            {{"Download" | translatePhrase}} JSON-LD<span v-show="inspector.status.editing">&nbsp;({{'Incl. unsaved changes' | translatePhrase}})</span>
           </a>
         </li>
         <li class="Toolbar-menuItem">
