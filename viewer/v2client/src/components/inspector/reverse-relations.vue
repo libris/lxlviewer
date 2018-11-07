@@ -319,9 +319,7 @@ export default {
 </template>
 
 <style lang="less">
-
 .ReverseRelations {
-  
   &-number {
     float: left;
     margin: 0 0 10px;
@@ -334,9 +332,6 @@ export default {
 
   &-label {
     margin-right: 5px;
-  }
-
-  &-button {
   }
 
   &-header {
