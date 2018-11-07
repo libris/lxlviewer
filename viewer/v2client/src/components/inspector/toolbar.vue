@@ -213,10 +213,11 @@ export default {
         focusId = this.inspector.data.mainEntity.itemOf['@id'].split('#')[0];
       }
       const element = document.createElement('a');
-      element.setAttribute('href', 'data:application/octet-stream,' + encodeURIComponent(text));
+      let blob = new Blob([`${text}`], { type: 'text/plain'});
+      element.href = window.URL.createObjectURL(blob);
       const splitIdParts = focusId.split('/');
       const id = splitIdParts[splitIdParts.length-1];
-      element.setAttribute('download', id);
+      element.download = id;
       element.style.display = 'none';
       document.body.appendChild(element);
       element.click();
