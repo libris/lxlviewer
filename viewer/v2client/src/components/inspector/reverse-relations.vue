@@ -34,11 +34,13 @@ export default {
       }).then(() => {
         this.$nextTick(() => {
           this.relationsListOpen = true;
+          this.$parent.$el.classList.add('is-highlighted');
         });
       });
     },
     hidePanel() {
       this.relationsListOpen = false;
+      this.$parent.$el.classList.remove('is-highlighted');
     },
     getRelatedPosts(queryPairs) {
       // Returns a list of posts that links to <id> with <property>
@@ -210,6 +212,11 @@ export default {
         }
       }
     },
+    relationsListOpen(val, oldVal) { 
+      if (val !== oldVal) {
+        this.$parent.$emit('relations-list-open', val);
+      }
+    },
     numberOfRelations: function (val) {
       this.numberOfRelations = val;
     }
@@ -226,11 +233,11 @@ export default {
 
 <template>
   <div class="ReverseRelations">
-    <vue-simple-spinner class="ReverseRelations spinner"
-        v-show="checkingRelations"
-        v-if="!compact" 
-        size="medium">
-      </vue-simple-spinner>
+    <vue-simple-spinner class="ReverseRelations-spinner"
+      v-show="checkingRelations"
+      v-if="!compact" 
+      size="medium">
+    </vue-simple-spinner>
     <div class="ReverseRelations-number"
       v-show="!checkingRelations"
       v-if="!compact">
@@ -349,7 +356,7 @@ export default {
     flex-direction: column;
   }
 
-  &.spinner {
+  &-spinner {
     margin-bottom: 10px;
   }
 }

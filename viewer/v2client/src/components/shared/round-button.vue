@@ -22,8 +22,8 @@ export default {
       default: false,
     },
     disabled: {
-        type: Boolean,
-        default: false,
+      type: Boolean,
+      default: false,
     },
     buttonText: {
       type: String,
@@ -41,7 +41,7 @@ export default {
   methods: {
     action() {
       if (!this.disabled) {
-          this.$emit('click')
+        this.$emit('click')
       }
     }
   },
@@ -66,7 +66,7 @@ export default {
 
 <template>
   <button class="RoundButton btn"
-    :class="{'btn-gray disabled' : disabled, 'default': !indicator && !disabled, 'btn-primary': indicator && !disabled}"
+    :class="{'btn-gray is-disabled' : disabled, 'default': !indicator && !disabled, 'btn-primary': indicator && !disabled}"
     @click="action()"
     @mouseover="mouseOver = true"
     @mouseout="mouseOver = false">
@@ -102,7 +102,13 @@ export default {
     }
   }
 
-  &.disabled {
+  .is-active & {
+    background-color: @link-hover-color; 
+    border-color: @link-hover-color; 
+    color: @white;
+  }
+
+  &.is-disabled {
     color: @white;
     border: none;
   }
