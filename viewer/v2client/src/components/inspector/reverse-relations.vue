@@ -311,6 +311,7 @@ export default {
       <relations-list 
         v-if="relationsListOpen"
         :query="panelQuery"
+        :item-of="mainEntity"
         :list-context-type="recordType"
         @close="hidePanel()"></relations-list>
     </portal>
