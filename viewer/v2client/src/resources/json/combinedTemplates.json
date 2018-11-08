@@ -669,7 +669,7 @@
     },
     "printedCartograph": {
       "label": "Karta",
-      "description": "Tryckt kartografiskt material - RDA",
+      "description": "Under utveckling",
       "value": {
         "record": {
           "@id": "https://id.kb.se/TEMPID",
@@ -1581,7 +1581,7 @@
     },
     "printedStillImage": {
       "label": "Stillbild",
-      "description": "Tryckt stillbild - RDA",
+      "description": "Under utveckling",
       "value": {
         "record": {
           "@id": "https://id.kb.se/TEMPID",
