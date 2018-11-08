@@ -194,6 +194,18 @@ export default {
       }
     },
     applyFieldsFromTemplate(templateJson) {
+      const basePostType = this.inspector.data.mainEntity['@type'];
+      const tempPostType = templateJson.mainEntity['@type'];
+      const matching = VocabUtil.isSubClassOf(tempPostType, basePostType, this.resources.vocab, this.resources.context);
+      if (matching === false) {
+        const basePostLabel = StringUtil.getLabelByLang(basePostType, this.user.settings.language, this.resources.vocab, this.resources.context);
+        const tempPostLabel = StringUtil.getLabelByLang(tempPostType, this.user.settings.language, this.resources.vocab, this.resources.context);
+        const errorBase = `${StringUtil.getUiPhraseByLang('The types do not match', this.user.settings.language)}`;
+        const errorMessage = `"${tempPostLabel}" ${StringUtil.getUiPhraseByLang('is not compatible with', this.user.settings.language)} "${basePostLabel}"`;
+        this.$store.dispatch('pushNotification', { type: 'danger', message: `${errorBase}! ${errorMessage}` });
+        return;
+      }
+
       const basePostData = _.cloneDeep(this.inspector.data);
       const changeList = [];
       function applyChangeList(objectKey) {

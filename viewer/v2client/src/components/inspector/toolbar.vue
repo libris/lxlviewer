@@ -293,9 +293,6 @@ export default {
       const templates = VocabUtil.getValidTemplates(type, CombinedTemplates[baseType.toLowerCase()], this.resources.vocabClasses, this.resources.context);
       return templates;
     },
-    hasTemplates() {
-      return Object.keys(this.validTemplates).length !== 0;
-    },
     formObj() {
       return this.inspector.data[this.inspector.status.focus];
     },
@@ -459,7 +456,7 @@ export default {
           {{ "Make copy" | translatePhrase }}{{ getKeybindingText('duplicate-item') ? ` (${getKeybindingText('duplicate-item')})` : ''}}
           </a>
         </li>
-        <li class="Toolbar-menuItem" :class="{'is-active': showTemplatesSubMenu}" v-if="user.isLoggedIn && inspector.status.editing && hasTemplates">
+        <li class="Toolbar-menuItem" :class="{'is-active': showTemplatesSubMenu}" v-if="user.isLoggedIn && inspector.status.editing">
           <a class="Toolbar-menuLink" @click="showTemplatesSubMenu = !showTemplatesSubMenu">
             <i class="fa fa-fw fa-clipboard"></i>
             <span>{{ "Embellish from template" | translatePhrase }}{{ getKeybindingText('embellish-from-template') ? ` (${getKeybindingText('embellish-from-template')})` : ''}}</span>

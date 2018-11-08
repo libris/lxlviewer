@@ -106,7 +106,6 @@ export default {
   },
   watch: {
     'thingData': function() {
-      debugger;
       this.$store.dispatch('setInsertData', this.thingData);
       this.$router.push({ path: `/new` });
     },
