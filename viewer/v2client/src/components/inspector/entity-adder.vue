@@ -403,9 +403,13 @@ export default {
           currentValue.push(obj);
         }
       }
+      let index = '';
+      if (currentValue.length) {
+        index = `[${currentValue.length -1}]`;
+      }
       this.$store.dispatch('setInspectorStatusValue', { 
         property: 'lastAdded', 
-        value: `${this.path}[${currentValue.length -1}]`
+        value: `${this.path}${index}`
       });
       this.$store.dispatch('updateInspectorData', {
         changeList: [
