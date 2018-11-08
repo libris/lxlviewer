@@ -307,6 +307,11 @@ export default {
         });
       }, 500);
     },
+    expandOnNew() {
+      if (this.inspector.status.isNew) {
+        this.expand();
+      }
+    }
   },
   watch: {
     'inspector.event'(val, oldVal) {
@@ -334,6 +339,7 @@ export default {
         this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
       }, 1000)
     } 
+    this.expandOnNew();
   },
 
   components: {
