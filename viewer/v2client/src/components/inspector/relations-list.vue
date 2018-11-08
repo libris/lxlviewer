@@ -6,6 +6,7 @@ import ModalPagination from '@/components/inspector/modal-pagination';
 import * as StringUtil from '@/utils/string';
 import * as RecordUtil from '@/utils/record';
 import * as LayoutUtil from '@/utils/layout';
+import * as DataUtil from '@/utils/data';
 import * as HttpUtil from '@/utils/http';
 import { mapGetters } from 'vuex';
 import VueSimpleSpinner from 'vue-simple-spinner';
@@ -17,7 +18,8 @@ export default {
     listContextType: {
       type: String,
       default: '',
-    }
+    },
+    itemOf: {}
   },
   data() {
     return {
@@ -92,12 +94,19 @@ export default {
       if (this.listContextType === 'Item') {
         return StringUtil.getUiPhraseByLang('All holdings', this.settings.language);
       } else if (this.listContextType === 'Instance') {
-        return StringUtil.getUiPhraseByLang('Holdings of this instance', this.settings.language);
+        let windowTitle = StringUtil.getUiPhraseByLang('Holdings of', this.settings.language);
+        windowTitle += ' '+this.itemOfTitle;
+        return windowTitle;
       } else if (this.listContextType === 'Agent') {
         return StringUtil.getUiPhraseByLang('Contribution', this.settings.language);
       }
       const typeLabel = StringUtil.getLabelByLang(this.listContextType, this.settings.language, this.resources.vocab, this.resources.context);
       return `${typeLabel} ${StringUtil.getUiPhraseByLang('Used in', this.settings.language)}`;
+    },
+    itemOfTitle() {
+      return this.itemOf.hasTitle[0] ? 
+      this.itemOf.hasTitle[0].mainTitle : 
+      StringUtil.getUiPhraseByLang('instance', this.settings.language);
     }
   },
   components: {

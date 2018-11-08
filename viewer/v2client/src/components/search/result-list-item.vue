@@ -27,14 +27,26 @@ export default {
       return this.$store.getters.user;
     },
     categorization() {
-      return StringUtil.getFormattedEntries(this.getSummary.categorization, this.resources.vocab, this.settings, this.resources.context);
+      return StringUtil.getFormattedEntries(
+        this.getSummary.categorization, 
+        this.resources.vocab, 
+        this.settings, 
+        this.resources.context
+      );
     },
     header() {
-      return StringUtil.getFormattedEntries(this.getSummary.header, this.resources.vocab, this.settings, this.resources.context);
+      return StringUtil.getFormattedEntries(
+        this.getSummary.header, 
+        this.resources.vocab, 
+        this.settings, 
+        this.resources.context
+      );
     },
     isLibrisResource() {
       return StringUtil.isLibrisResourceUri(this.focusData['@id'], this.settings);
     },
+  },
+  methods: {
   },
   components: {
     'entity-summary': EntitySummary,
@@ -46,7 +58,8 @@ export default {
 </script>
 
 <template>
-  <li class="ResultItem ResultItem--detailed" v-if="showDetailed">
+  <li class="ResultItem ResultItem--detailed" 
+    v-if="showDetailed">
     <entity-summary 
       :focus-data="focusData" 
       :database="database" 
@@ -59,7 +72,9 @@ export default {
     </entity-summary>
     <div class="ResultItem-relationsContainer"
       v-if="this.$route.params.perimeter !== 'remote'">
-      <reverse-relations :main-entity="focusData" :compact=true>
+      <reverse-relations 
+        :main-entity="focusData" 
+        :compact=true>
       </reverse-relations>
     </div>
   </li>
@@ -92,7 +107,6 @@ export default {
 <style lang="less">
 
 .ResultItem {
-
   &--detailed {
     display: flex;
     list-style: none;
@@ -106,7 +120,16 @@ export default {
       padding: 0 15px 0 0;
       min-width: 0;
     }
+
+    .is-dimmed & {
+      opacity: 0.5;
+    }
+
+    &.is-highlighted {
+      opacity: 1;
+    }
   }
+
 
   &--compact {
     display: flex;
