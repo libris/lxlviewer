@@ -4,6 +4,7 @@ import * as CombinedTemplates from '@/resources/json/combinedTemplates.json';
 import * as BaseTemplates from '@/resources/json/baseTemplates.json'; 
 import * as VocabUtil from '@/utils/vocab';
 import * as RecordUtil from '@/utils/record';
+import * as DataUtil from '@/utils/data';
 import * as StringUtil from '@/utils/string';
 import CreationCard from '@/components/create/creation-card';
 import FileAdder from '@/components/create/file-adder';
@@ -14,13 +15,6 @@ export default {
   data () {
     return {
       creationList: [
-        'Instance',
-        'Work',
-        'Agent',
-        // 'Concept',
-        'File',
-      ],
-      creationList2: [
         {'id': 'Instance', 'text': 'Instance'},
         {'id': 'Work', 'text': 'Work'},
         {'id': 'Agent', 'text': 'Agent'},
@@ -59,7 +53,11 @@ export default {
       this.activeIndex = -1;
     },
     recieveFileData(data) {
-      this.thingData = data;
+      this.thingData = RecordUtil.prepareDuplicateFor(data, this.user, this.settings);
+    },
+    recieveFileDataOverwrite(data) {
+      const packaged = DataUtil.getMergedItems(data.record, data.mainEntity, data.work, data.quoted);
+      this.thingData = packaged;
     },
     setActiveIndex(index) {
       this.activeIndex = index;
@@ -108,9 +106,15 @@ export default {
   },
   watch: {
     'thingData': function() {
+      debugger;
       this.$store.dispatch('setInsertData', this.thingData);
       this.$router.push({ path: `/new` });
     },
+  },
+  created() {
+    if (this.user.settings.appTech) {
+      this.creationList.push({'id': 'Overwrite', 'text': 'Overwrite post'});
+    }
   },
   mounted() { // Ready method is deprecated in 2.0, switch to "mounted"
     this.$nextTick(() => {
@@ -126,8 +130,8 @@ export default {
   <div class="Create" id="create-new-post">
     <div class="panel-body">
       <h1 class="Create-title mainTitle">{{'Create new' | translatePhrase}}</h1>
-      <tab-menu @go="setCreation" :tabs="creationList2" :active="selectedCreation"></tab-menu>
-      <div v-if="selectedCreation !== 'File'" class="Create-cards" id="creationCardPanel">
+      <tab-menu @go="setCreation" :tabs="creationList" :active="selectedCreation"></tab-menu>
+      <div v-if="selectedCreation !== 'File' && selectedCreation !== 'Overwrite'" class="Create-cards" id="creationCardPanel">
         <creation-card
           :is-base="true"
           :creation="selectedCreation"
@@ -145,7 +149,8 @@ export default {
           @use-template="useTemplate"
           @set-active-index="setActiveIndex" />
       </div>
-      <file-adder v-if="selectedCreation === 'File'" @output="recieveFileData" />
+      <file-adder type="new" v-if="selectedCreation === 'File'" @output="recieveFileData" />
+      <file-adder type="overwrite" v-if="selectedCreation === 'Overwrite'" @output="recieveFileDataOverwrite" />
     </div>
   </div>
 </template>

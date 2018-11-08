@@ -13,6 +13,12 @@ export default {
       droppedFile: {},
     }
   },
+  props: {
+    type: {
+      type: String,
+      default: 'new',
+    }
+  },
   methods: {
     outputData(data) {
       this.$emit('output', data);
@@ -84,7 +90,7 @@ export default {
     'droppedFile': function(val) {
       if (val.hasOwnProperty('@graph')) {
         const inspectorObject = RecordUtil.splitJson(val);
-        this.outputData(RecordUtil.prepareDuplicateFor(inspectorObject, this.user, this.settings));
+        this.outputData(inspectorObject);
       } else {
         this.invalidFile = true;
       }
@@ -109,7 +115,14 @@ export default {
 
 <template>
   <div class="FileAdder">
-    <p>Notera att denna funktion automatiskt rensar och byter ut vissa värden som inte ska tas med till den nya posten. Till detta hör bland annat en posts ID, information om vem som skapat posten och när den skapades.</p>
+    <div class="alert alert-info" v-if="type === 'new'">
+      Notera att denna funktion automatiskt rensar och byter ut vissa värden som inte ska tas med till den nya posten. Till detta hör bland annat en posts ID, information om vem som skapat posten och när den skapades.
+    </div>
+    <div class="alert alert-danger" v-if="type === 'overwrite'">
+      Denna funktion förbereder formuläret för att <strong>skriva över en post</strong>. Om du vill skapa en ny post istället, välj "Från fil" i menyn ovan.<br><br>
+      Notera att interna @ID-värden behöver matcha posten du vill skriva över.<br>
+      Du behöver även spara posten i nästa steg för att operationen ska slutföras.
+    </div>
     <button class="btn btn-primary" @click="openPicker">{{ 'Choose file' | translatePhrase }}</button>
     <input type="file" class="FilePicker" ref="FilePicker" accept=".jsonld,application/ld+json,text/*" />
     <hr/>{{ 'or' | translatePhrase }}<hr/>
