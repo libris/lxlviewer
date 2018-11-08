@@ -704,7 +704,7 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    padding: 0 10px;
+    padding: 5px 10px 0 10px;
   }
 
   &-listTypes {
