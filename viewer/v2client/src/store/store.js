@@ -48,6 +48,10 @@ const store = new Vuex.Store({
         updating: false,
         isNew: false,
       },
+      validation: {
+        numberOfViolations: 0,
+        violations: {},
+      },
       changeHistory: [],
       event: [],
     },
@@ -200,6 +204,16 @@ const store = new Vuex.Store({
     }
   },
   mutations: {
+    setValidation(state, payload) {
+      if (payload.validates) {
+        if (state.inspector.validation.violations[payload.path]) {
+          delete state.inspector.validation.violations[payload.path];
+        }
+      } else {
+        state.inspector.validation.violations[payload.path] = payload.reasons;
+      }
+      state.inspector.validation.numberOfViolations = Object.keys(state.inspector.validation.violations).length;
+    },
     pushKeyAction(state, keyAction) {
       state.status.keyActions.push(keyAction);
     },
@@ -346,6 +360,12 @@ const store = new Vuex.Store({
     }
   },
   actions: {
+    setValidation({commit}, payload) {
+      commit('setValidation', payload);
+    },
+    pushInspectorEvent({ commit }, payload) {
+      commit('pushInspectorEvent', payload);
+    },
     flushChangeHistory({commit}) {
       commit('flushChangeHistory');
     },
