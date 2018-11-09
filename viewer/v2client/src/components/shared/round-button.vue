@@ -65,7 +65,7 @@ export default {
 
 <template>
   <button class="RoundButton btn"
-    :class="{'btn-gray is-disabled' : disabled, 'default': !indicator && !disabled, 'btn-primary': indicator && !disabled}"
+    :class="{'btn-gray disabled' : disabled, 'default': !indicator && !disabled, 'btn-primary': indicator && !disabled}"
     @click="action()"
     @mouseover="mouseOver = true"
     @mouseout="mouseOver = false">
@@ -107,7 +107,7 @@ export default {
     color: @white;
   }
 
-  &.is-disabled {
+  &.disabled { //can't be SUIT-ified because inherits from Bootstrap .disabled
     color: @white;
     border: none;
   }
