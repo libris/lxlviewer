@@ -346,7 +346,7 @@ export default {
       <div class="ItemSibling-actions">
         <i class="ItemSibling-action fa fa-link icon icon--sm"
           v-if="inspector.status.editing && isExtractable"
-          @click="openExtractDialog()" 
+          @click="openExtractDialog(), expand()" 
           tabindex="0"
           @keyup.enter="openExtractDialog()"
           @focus="showLinkAction = true, actionHighlight(true)" 
