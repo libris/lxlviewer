@@ -553,7 +553,7 @@ export default {
         class="EntityAdder-addIcon fa fa-plus-circle icon icon--sm"
         :class="{'is-disabled': addEmbedded}" 
         :tabindex="addEmbedded ? -1 : 0"
-        ref="adderFocusElement"
+        :ref="addEmbedded ? '' : 'adderFocusElement'"
         v-on:click="add($event)" 
         @keyup.enter="add($event)"
         @mouseenter="showToolTip = true, actionHighlight(true, $event)" 
