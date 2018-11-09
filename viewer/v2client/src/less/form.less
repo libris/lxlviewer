@@ -10,15 +10,16 @@
       color: @brand-primary;
     }
 
-    &:focus + .customCheckbox-icon {
-      background: @gray-lighter;
-      background: @gray-lighter-transparent;
+    .user-is-tabbing &:focus + .customCheckbox-icon {
+      outline: 2px solid #8cc9c9; //fallback for IE & Edge
+      outline: auto darkcyan;
     }
   }
 
   &-icon {
     padding: 0 3px;
     margin-left: -3px;
+    display: inline-block;
 
     &::before {
       content: "\f096";
