@@ -899,7 +899,7 @@
         }
       }
     },
-    "printedmonograph": {
+    "printedMonographText": {
       "label": "Bok",
       "description": "Tryckt monografi - RDA",
       "value": {
@@ -1085,7 +1085,7 @@
         }
       }
     },
-    "printedperiodical": {
+    "printedPeriodicalText": {
       "label": "Tryckt seriell resurs",
       "description": "RDA",
       "value": {
@@ -1218,7 +1218,7 @@
         }
       }
     },
-    "printedmusicalnotes": {
+    "printedNotatedMusic": {
       "label": "Noterad musik",
       "description": "Musiktryck - RDA",
       "value": {
