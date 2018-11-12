@@ -383,7 +383,7 @@ export default {
       <div class="ItemLocal-actions">
         <i class="ItemLocal-action fa fa-link icon icon--sm"
           v-if="inspector.status.editing && isExtractable"
-          @click="openExtractDialog()" 
+          @click="openExtractDialog(), expand()" 
           @focus="showLinkAction = true, actionHighlight(true, $event)"
           @blur="showLinkAction = false, actionHighlight(false, $event)"
           @mouseover="showLinkAction = true, actionHighlight(true, $event)" 
