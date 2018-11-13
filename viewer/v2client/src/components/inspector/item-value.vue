@@ -127,8 +127,10 @@ export default {
     highLightLastAdded() {
       if (this.isLastAdded === true) {
         let element = this.$el;
+        element.classList.add('is-lastAdded');
         LayoutUtil.scrollToElement(element, 1000, () => {
           setTimeout(() => {
+            element.classList.remove('is-lastAdded');
             this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
           }, 1000);
         });
@@ -169,7 +171,7 @@ export default {
 
 <template>
   <div class="ItemValue js-value" 
-    v-bind:class="{'is-locked': isLocked, 'unlocked': !isLocked, 'is-removed': removed, 'is-lastAdded': isLastAdded}">
+    v-bind:class="{'is-locked': isLocked, 'unlocked': !isLocked, 'is-removed': removed}">
     <textarea class="ItemValue-input js-itemValueInput" 
       rows="1" 
       v-model="value"
