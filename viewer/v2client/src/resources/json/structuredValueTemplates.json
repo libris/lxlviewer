@@ -426,7 +426,12 @@
   },
   "MusicFormat": {
     "@type": "MusicFormat",
-    "label": ""
+    "label": [""],
+    "code": [""],
+    "source": {
+      "@type": "Source",
+      "code": ""
+    }
   },
   "ToCEntry": {
     "@type": "ToCEntry",
