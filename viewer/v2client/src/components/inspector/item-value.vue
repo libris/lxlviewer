@@ -97,13 +97,18 @@ export default {
           item.classList.remove('is-removeable');
       }
     },
-    handleKeys(e) {
-      this.$store.dispatch('setInspectorStatusValue', { property: 'updating', value: true });
-      if (e.keyCode === 13) { // Handle enter
-        e.target.blur();
-        e.preventDefault();
-        return false;
-      }
+    // no one seems to watch inspector.status.updating anyway?
+    // handleKeys(e) {
+    //   this.$store.dispatch('setInspectorStatusValue', { property: 'updating', value: true });
+    //   if (e.keyCode === 13) { // Handle enter
+    //     e.target.blur();
+    //     e.preventDefault();
+    //     return false;
+    //   }
+    // },
+    handleEnter(e) {
+      e.target.blur();
+      return false;
     },
     update(newValue) {
       const oldValue = _.cloneDeep(_.get(this.inspector.data, this.path));
@@ -131,7 +136,7 @@ export default {
     },
     initializeTextarea() {
       this.$nextTick(() => {
-        let textarea = this.$el.querySelector('textarea');
+        let textarea = this.$refs.textarea;
         AutoSize(textarea);
         AutoSize.update(textarea);
       })
@@ -169,7 +174,7 @@ export default {
       rows="1" 
       v-model="value"
       @blur="update($event.target.value)"
-      @keydown="handleKeys"
+      @keydown.enter.prevent="handleEnter"
       v-if="!isLocked"
       ref="textarea"></textarea>
     <span class="ItemValue-text"
