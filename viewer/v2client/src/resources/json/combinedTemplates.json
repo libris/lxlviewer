@@ -852,14 +852,14 @@
           ],
           "contribution": [{
               "@type": "PrimaryContribution",
-              "agent": {},
+              "agent": [],
               "role": [{
                 "@id": "https://id.kb.se/relator/cartographer"
               }]
             },
             {
               "@type": "Contribution",
-              "agent": {},
+              "agent": [],
               "role": []
             }
           ],
@@ -880,7 +880,7 @@
               "label": ""
             }
           ],
-          "supplementaryContent": {}
+          "supplementaryContent": []
         }
       }
     },
