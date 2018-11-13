@@ -200,17 +200,17 @@ export default {
         if (typeof this.resultData.search !== 'undefined') {
             this.resultData.search.mapping.forEach(item => {
             if (item.variable !== 'q') {
-                let filter = '';
-                if (typeof item.object !== 'undefined') {
-                  if (item.variable === '@type') {
-                    filter = item.object['@id'];
-                  } else {
-                    filter = item.object['@id'].replace('https://id.kb.se/', '');
-                  }
+              let filter = '';
+              if (typeof item.object !== 'undefined') {
+                if (item.variable === '@type') {
+                  filter = item.object['@id'];
                 } else {
-                  filter = item.value;
+                  filter = item.object['@id'].replace('https://id.kb.se/', '');
                 }
-                filters.push(filter);
+              } else {
+                filter = item.value;
+              }
+              filters.push(filter);
             }
           });
         }
@@ -272,9 +272,11 @@ export default {
     },
     resultData: function(newVal, oldVal) {
       if (typeof newVal !== 'undefined' && Object.keys(newVal).length) {
-        if (this.usedFilters !== '') {
-          this.inputData.ids = this.usedFilters;
-        }
+
+        // don't include filters from facets on new search
+        // if (this.usedFilters !== '') {
+          // this.inputData.ids = this.usedFilters;
+        // }
 
         if (this.usedTextInput !== '') {
           const newObj = {};
