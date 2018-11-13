@@ -424,6 +424,10 @@
     "@type": "TableOfContents",
     "label": ""
   },
+  "MusicFormat": {
+    "@type": "MusicFormat",
+    "label": ""
+  },
   "ToCEntry": {
     "@type": "ToCEntry",
     "label": "",
