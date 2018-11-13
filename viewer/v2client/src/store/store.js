@@ -174,9 +174,9 @@ const store = new Vuex.Store({
           sv: 'Verksspråk',
           en: 'Language of work',
         },
-        'publication.date': {
-          sv: 'Utgivningsdatum',
-          en: 'Publication date',
+        'publication.year.keyword': {
+          sv: 'Utgivningsår',
+          en: 'Publication year',
         },
       },
       availableUserSettings: {

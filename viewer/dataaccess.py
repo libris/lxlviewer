@@ -81,7 +81,7 @@ sites = {
                     "sortOrder":"asc",
                     "size":100
                 },
-                "publication.date":{
+                "publication.year.keyword":{
                     "sort":"key",
                     "sortOrder":"desc",
                     "size":50
