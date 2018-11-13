@@ -27,7 +27,8 @@
   },
   "KeyTitle": {
     "@type": "KeyTitle",
-    "mainTitle": ""
+    "mainTitle": "",
+    "qualifier": ""
   },
   "marc:OtherTitle": {
     "@type": "marc:OtherTitle",
