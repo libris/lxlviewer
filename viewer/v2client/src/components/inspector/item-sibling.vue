@@ -39,6 +39,7 @@ export default {
     showActionButtons: false,
     parentPath: '',
     inArray: false,
+    shouldExpand: false,
   },
   data() {
     return {
@@ -51,6 +52,7 @@ export default {
       removeHover: false,
       showLinkAction: false,
       copyTitle: false,
+      expandChildren: false,
     };
   },
   computed: {
@@ -277,15 +279,23 @@ export default {
       });
       this.closeExtractDialog();
     },
-    expandOnNew() {
-      if (this.inspector.status.isNew) {
-        this.expand();
-      }
-    }
+    expandAllChildren() {
+      this.expandChildren = true;
+      this.$nextTick(this.focusFirstInput);
+    },
+    focusFirstInput() {
+      this.$el.querySelector('.js-itemValueInput').focus();
+    },
   },
   watch: {
     'inspector.event'(val, oldVal) {
       this.$emit(`${val.value}`);
+    },
+    shouldExpand(val) {
+      if (val) {
+        this.expand();
+        this.expandChildren = true;
+      }
     }
   },
   created: function () {
@@ -301,12 +311,15 @@ export default {
         fieldAdder.$refs.adderButton.focus();
       } else {
         this.expand();
+        this.expandAllChildren();
       }
       setTimeout(()=> {
       this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
     }, 1000)
     }
-    this.expandOnNew();
+    if (this.inspector.status.isNew) {
+      this.expand();
+    }
   },
 
   components: {
@@ -404,6 +417,7 @@ export default {
         :field-key="k" 
         :field-value="v" 
         :key="k" 
+        :expand-children="expandChildren"
         :show-action-buttons="showActionButtons"></field>
     </ul>
 
