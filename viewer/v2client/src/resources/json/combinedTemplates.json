@@ -751,14 +751,7 @@
               ]
             }]
           }],
-          "marc:relief": [
-            {
-              "@id": "https://id.kb.se/marc/GradientOrBathymetricTint"
-            },
-            {
-              "@id": "https://id.kb.se/marc/SpotHeight"
-            }
-          ],
+          "marc:relief": [],
           "productionMethod": [
             {
               "@type": "ProductionMethod",
