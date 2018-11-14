@@ -92,7 +92,14 @@
               "label": ""
             }
           ],
-          "carrierType": [],
+          "carrierType": [
+            {
+              "@id": "https://id.kb.se/term/rda/AudioDisc"
+            },
+            {
+              "@id": "https://id.kb.se/marc/SoundDisc"
+            }
+          ],
           "mediaType": [
             {
               "@id": "https://id.kb.se/term/rda/Audio"
