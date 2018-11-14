@@ -136,6 +136,7 @@ export function getItemObject(itemOf, heldBy, instance) {
       'hasComponent': [
         {
           '@type': "Item",
+          'cataloguersNote': [''],
           'heldBy': {
             '@id': heldBy,
           },
