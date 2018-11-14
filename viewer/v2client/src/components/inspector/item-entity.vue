@@ -116,6 +116,7 @@ export default {
 
 <template>
   <div class="ItemEntity-container" 
+    :id="`formPath-${path}`"
     @keyup.enter="showCardInfo=true"
     @mouseenter="showCardInfo=true"
     @mouseleave="showCardInfo=false">

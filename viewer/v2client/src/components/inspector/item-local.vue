@@ -384,6 +384,7 @@ export default {
 
 <template>
   <div class="ItemLocal js-itemLocal"
+    :id="`formPath-${path}`"
     :class="{'is-highlighted': isLastAdded, 'is-expanded': expanded && !isEmpty, 'is-extractable': isExtractable, 'has-failed-validations': failedValidations.length > 0 }"
     :tabindex="isEmpty ? -1 : 0"
     @keyup.enter="checkFocus()"

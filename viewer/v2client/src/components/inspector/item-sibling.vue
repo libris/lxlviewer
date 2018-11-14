@@ -336,6 +336,7 @@ export default {
 
 <template>
   <div class="ItemSibling js-itemLocal"
+    :id="`formPath-${path}`"
     :class="{'is-highlighted': isNewlyAdded, 'is-expanded': expanded && !isEmpty, 'is-extractable': isExtractable}"
     :tabindex="isEmpty ? -1 : 0"
     @keyup.enter="checkFocus()" 

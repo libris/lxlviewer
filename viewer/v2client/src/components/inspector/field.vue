@@ -452,7 +452,7 @@ export default {
 
 <template>
   <li class="Field js-field" 
-    :id="`field-${getPath}`"
+    :id="`formPath-${getPath}`"
     v-bind:class="{'is-mainField': isMainField, 'Field--inner': !asColumns, 'is-lastAdded': isLastAdded, 'is-removed': removed, 'has-failed-validations': failedValidations.length > 0 }" 
     @mouseover="handleMouseEnter()" 
     @mouseleave="handleMouseLeave()">
