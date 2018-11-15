@@ -52,6 +52,7 @@ const store = new Vuex.Store({
         numberOfViolations: 0,
         violations: {},
       },
+      clipboard: null,
       changeHistory: [],
       event: [],
     },
@@ -288,6 +289,11 @@ const store = new Vuex.Store({
         throw new Error(`Trying to set unknown status property "${payload.property}" on inspector. Is it defined in the store?`);
       }
     },
+    setClipboard(state, data) {
+      const copyObj = JSON.stringify(data);
+      state.inspector.clipboard = copyObj;
+      localStorage.setItem('copyClipboard', copyObj);
+    },
     setUser(state, userObj) {
       state.user = userObj;
       state.user.saveSettings();
@@ -357,6 +363,12 @@ const store = new Vuex.Store({
     },
     context: state => {
       return state.resources.context;
+    },
+    clipboard: state => {
+      if (state.inspector.clipboard == null) {
+        state.inspector.clipboard = localStorage.getItem('copyClipboard');
+      }
+      return JSON.parse(state.inspector.clipboard);
     }
   },
   actions: {
@@ -424,6 +436,9 @@ const store = new Vuex.Store({
     },
     pushInspectorEvent({ commit }, payload) {
       commit('pushInspectorEvent', payload);
+    },
+    setClipboard({ commit }, data) {
+      commit('setClipboard', data);
     },
     setUser({ commit }, userObj) {
       commit('setUser', userObj);

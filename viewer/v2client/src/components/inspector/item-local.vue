@@ -47,6 +47,7 @@ export default {
       expanded: false,
       removeHover: false,
       cloneHover: false,
+      copyHover: false,
       showLinkAction: false,
       copyTitle: false,
       expandChildren: false,
@@ -319,6 +320,9 @@ export default {
         firstInput.focus();
       }
     },
+    copyThis() {
+      this.$store.dispatch('setClipboard', this.item);
+    },
   },
   watch: {
     'inspector.event'(val, oldVal) {
@@ -426,6 +430,23 @@ export default {
               :show-tooltip="cloneHover" 
               translation="translatePhrase"
               tooltip-text="Duplicate entity"></tooltip-component>
+          </i>
+        </div>
+
+        <div class="ItemLocal-action" 
+          v-if="!isLocked">
+          <i class="fa fa-copy action-button icon icon--sm"
+            tabindex="0"
+            v-on:click="copyThis()"
+            @keyup.enter="copyThis()"
+            @focus="copyHover = true, actionHighlight(true, $event)"
+            @blur="copyHover = false, actionHighlight(false, $event)"
+            @mouseover="copyHover = true, actionHighlight(true, $event)" 
+            @mouseout="copyHover = false, actionHighlight(false, $event)">
+            <tooltip-component 
+              :show-tooltip="copyHover" 
+              translation="translatePhrase"
+              tooltip-text="Copy entity"></tooltip-component>
           </i>
         </div>
 
