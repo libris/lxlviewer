@@ -1977,12 +1977,7 @@
               "role": []
             }
           ],
-          "intendedAudience": [
-            {
-              "@type": "IntendedAudience",
-              "label": ""
-            }
-          ],
+          "intendedAudience": [],
           "contentType": [
             {
               "@id": "https://id.kb.se/term/rda/ComputerProgram"
