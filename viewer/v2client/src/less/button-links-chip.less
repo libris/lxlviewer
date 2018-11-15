@@ -10,6 +10,10 @@ body a {
   }
 }
 
+a:focus {
+  outline: none;
+}
+
 // ----------- BUTTON ----------------
 
 .btn,
@@ -17,6 +21,11 @@ body a {
   border: 0;
   box-shadow: @shadow-panel;
   transition: background-color 0.1s ease;
+}
+
+.btn:focus,
+.btn:active:focus {
+  outline: 0;
 }
 
 .btn[disabled],

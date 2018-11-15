@@ -344,20 +344,23 @@ export default {
       </div>
       
       <div class="ItemSibling-actions">
-        <i class="ItemSibling-action fa fa-link icon icon--sm"
-          v-if="inspector.status.editing && isExtractable"
-          @click="openExtractDialog(), expand()" 
-          tabindex="0"
-          @keyup.enter="openExtractDialog()"
-          @focus="showLinkAction = true, actionHighlight(true)" 
-          @blur="showLinkAction = false, actionHighlight(false)"
-          @mouseover="showLinkAction = true, actionHighlight(true)" 
-          @mouseout="showLinkAction = false, actionHighlight(false)">
-          <tooltip-component 
-            :show-tooltip="showLinkAction" 
-            tooltip-text="Link entity" 
-            translation="translatePhrase"></tooltip-component>
-        </i>
+        <div class="ItemSibling-action">
+          <i class="fa fa-link icon icon--sm"
+            v-if="inspector.status.editing && isExtractable"
+            @click="openExtractDialog(), expand()" 
+            tabindex="0"
+            @keyup.enter="openExtractDialog(), expand()"
+            @focus="showLinkAction = true, actionHighlight(true)" 
+            @blur="showLinkAction = false, actionHighlight(false)"
+            @mouseover="showLinkAction = true, actionHighlight(true)" 
+            @mouseout="showLinkAction = false, actionHighlight(false)">
+            <tooltip-component 
+              :show-tooltip="showLinkAction" 
+              tooltip-text="Link entity" 
+              translation="translatePhrase"></tooltip-component>
+          </i>
+        </div>
+
         <field-adder ref="fieldAdder" class="ItemSibling-action"
           v-if="!isLocked" 
           :entity-type="item['@type']" 
@@ -365,21 +368,23 @@ export default {
           :inner="true" 
           :path="getPath">
         </field-adder>
-        <i class="ItemSibling-action fa fa-trash-o icon icon--sm" 
-          v-if="!isLocked" 
-          :class="{'show-icon': showActionButtons}" 
-          v-on:click="removeThis(true)"
-          @keyup.enter="removeThis(true)"
-          tabindex="0"
-          @focus="removeHover = true, removeHighlight(true)" 
-          @blur="removeHover = false, removeHighlight(false)"
-          @mouseover="removeHover = true, removeHighlight(true)" 
-          @mouseout="removeHover = false, removeHighlight(false)">
-          <tooltip-component 
-            :show-tooltip="removeHover" 
-            tooltip-text="Remove" 
-            translation="translatePhrase"></tooltip-component>
-        </i>
+        <div class="ItemSibling-action">
+          <i class="fa fa-trash-o icon icon--sm" 
+            v-if="!isLocked" 
+            :class="{'show-icon': showActionButtons}" 
+            v-on:click="removeThis(true)"
+            @keyup.enter="removeThis(true)"
+            tabindex="0"
+            @focus="removeHover = true, removeHighlight(true)" 
+            @blur="removeHover = false, removeHighlight(false)"
+            @mouseover="removeHover = true, removeHighlight(true)" 
+            @mouseout="removeHover = false, removeHighlight(false)">
+            <tooltip-component 
+              :show-tooltip="removeHover" 
+              tooltip-text="Remove" 
+              translation="translatePhrase"></tooltip-component>
+          </i>
+        </div>
       </div>
     </strong>
   

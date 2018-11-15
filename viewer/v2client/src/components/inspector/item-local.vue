@@ -381,20 +381,22 @@ export default {
       </div>
       
       <div class="ItemLocal-actions">
-        <i class="ItemLocal-action fa fa-link icon icon--sm"
-          v-if="inspector.status.editing && isExtractable"
-          @click="openExtractDialog(), expand()" 
-          @focus="showLinkAction = true, actionHighlight(true, $event)"
-          @blur="showLinkAction = false, actionHighlight(false, $event)"
-          @mouseover="showLinkAction = true, actionHighlight(true, $event)" 
-          @mouseout="showLinkAction = false, actionHighlight(false, $event)"
-          @keyup.enter="openExtractDialog()"
-          tabindex="0">
-          <tooltip-component 
-            :show-tooltip="showLinkAction" 
-            tooltip-text="Link entity" 
-            translation="translatePhrase"></tooltip-component>
-        </i>
+        <div class="ItemLocal-action">
+          <i class="fa fa-link icon icon--sm"
+            v-if="inspector.status.editing && isExtractable"
+            @click="openExtractDialog(), expand()" 
+            @focus="showLinkAction = true, actionHighlight(true, $event)"
+            @blur="showLinkAction = false, actionHighlight(false, $event)"
+            @mouseover="showLinkAction = true, actionHighlight(true, $event)" 
+            @mouseout="showLinkAction = false, actionHighlight(false, $event)"
+            @keyup.enter="openExtractDialog(), expand()"
+            tabindex="0">
+            <tooltip-component 
+              :show-tooltip="showLinkAction" 
+              tooltip-text="Link entity" 
+              translation="translatePhrase"></tooltip-component>
+          </i>
+        </div>
 
         <div class="ItemLocal-action" 
           v-if="!isLocked && inArray">
@@ -421,21 +423,23 @@ export default {
           :path="getPath">
         </field-adder>
 
-        <i class="ItemLocal-action fa fa-trash-o icon icon--sm" 
-          v-if="!isLocked" 
-          :class="{'show-icon': showActionButtons}" 
-          v-on:click="removeThis(true)" 
-          @keyup.enter="removeThis(true)"
-          tabindex="0"
-          @focus="removeHover = true, removeHighlight(true, $event)"
-          @blur="removeHover = false, removeHighlight(false, $event)"
-          @mouseover="removeHover = true, removeHighlight(true, $event)"
-          @mouseout="removeHover = false, removeHighlight(false, $event)">
-          <tooltip-component 
-            :show-tooltip="removeHover" 
-            tooltip-text="Remove" 
-            translation="translatePhrase"></tooltip-component>
-        </i>
+        <div class="ItemLocal-action">
+          <i class="fa fa-trash-o icon icon--sm" 
+            v-if="!isLocked" 
+            :class="{'show-icon': showActionButtons}" 
+            v-on:click="removeThis(true)" 
+            @keyup.enter="removeThis(true)"
+            tabindex="0"
+            @focus="removeHover = true, removeHighlight(true, $event)"
+            @blur="removeHover = false, removeHighlight(false, $event)"
+            @mouseover="removeHover = true, removeHighlight(true, $event)"
+            @mouseout="removeHover = false, removeHighlight(false, $event)">
+            <tooltip-component 
+              :show-tooltip="removeHover" 
+              tooltip-text="Remove" 
+              translation="translatePhrase"></tooltip-component>
+          </i>
+        </div>
       </div>
     </strong>
   
