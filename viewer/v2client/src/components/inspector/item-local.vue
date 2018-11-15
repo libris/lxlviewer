@@ -318,7 +318,10 @@ export default {
       this.$nextTick(this.focusFirstInput);
     },
     focusFirstInput() {
-      this.$el.querySelector('.js-itemValueInput').focus();
+      const firstInput = this.$el.querySelector('.js-itemValueInput')
+      if (firstInput) {
+        firstInput.focus();
+      }
     },
   },
   watch: {
