@@ -758,14 +758,7 @@
               ]
             }]
           }],
-          "marc:relief": [
-            {
-              "@id": "https://id.kb.se/marc/GradientOrBathymetricTint"
-            },
-            {
-              "@id": "https://id.kb.se/marc/SpotHeight"
-            }
-          ],
+          "marc:relief": [],
           "productionMethod": [
             {
               "@type": "ProductionMethod",
@@ -1367,6 +1360,15 @@
               "@type": "Note",
               "label": ""
           }],
+          "musicFormat": {
+                  "@type": "MusicFormat",
+                  "code": [""],
+                  "label": [""],
+                  "source": {
+                    "@type": "Source",
+                    "code": ""
+                  }
+                },
           "tableOfContents": [
             {
               "@type": "TableOfContents",
