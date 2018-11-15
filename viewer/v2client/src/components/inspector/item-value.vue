@@ -121,7 +121,9 @@ export default {
         LayoutUtil.scrollToElement(element, 1000, () => {
           setTimeout(() => {
             element.classList.remove('is-lastAdded');
-            this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
+            if (this.isLastAdded) {
+              this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
+            }
           }, 1000);
         });
       }
