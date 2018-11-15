@@ -495,6 +495,12 @@ export default {
           </entity-adder>
           <div v-else class="Field-action placeholder"></div> 
 
+          <div class="Field-comment" v-if="propertyComment && !locked" >
+            <i class="fa fa-question-circle Field-comment icon icon--sm"></i>
+            <span class="Field-commentText">{{ propertyComment }}</span>
+          </div>
+          <div v-else class="Field-action placeholder"></div> 
+
           <div class="Field-action Field-clipboardPaster"
             v-if="!locked && (isRepeatable || isEmptyObject) && clipboardHasValidObject" 
             ref="clipboardPaster">
@@ -508,12 +514,6 @@ export default {
                 tooltip-text="Paste entity" 
                 translation="translatePhrase"></tooltip-component>
             </i>
-          </div>
-          <div v-else class="Field-action placeholder"></div> 
-
-          <div class="Field-comment" v-if="propertyComment && !locked" >
-            <i class="fa fa-question-circle Field-comment icon icon--sm"></i>
-            <span class="Field-commentText">{{ propertyComment }}</span>
           </div>
         </div>
         <div class="Field-label uppercaseHeading" v-bind:class="{ 'is-locked': locked }">

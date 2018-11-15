@@ -46,8 +46,8 @@ export default {
       extracting: false,
       expanded: false,
       removeHover: false,
-      cloneHover: false,
-      copyHover: false,
+      managerMenuOpen: false,
+      manageHover: false,
       showLinkAction: false,
       copyTitle: false,
       expandChildren: false,
@@ -157,6 +157,12 @@ export default {
     },
   },
   methods: {
+    openManagerMenu() {
+      this.managerMenuOpen = true;
+    },
+    closeManagerMenu() {
+      this.managerMenuOpen = false;
+    },
     highLightLastAdded() {
       let element = this.$el;
       LayoutUtil.scrollToElement(element, 1000, () => {});
@@ -260,6 +266,7 @@ export default {
     },
     removeFocus() {
       this.focused = false;
+      this.closeManagerMenu();
     },
     extract() {
       this.extracting = true;
@@ -416,40 +423,6 @@ export default {
           </i>
         </div>
 
-        <div class="ItemLocal-action" 
-          v-if="!isLocked && inArray">
-          <i class="fa fa-clone action-button icon icon--sm"
-            tabindex="0"
-            v-on:click="cloneThis(true)"
-            @keyup.enter="cloneThis(true)"
-            @focus="cloneHover = true, actionHighlight(true, $event)"
-            @blur="cloneHover = false, actionHighlight(false, $event)"
-            @mouseover="cloneHover = true, actionHighlight(true, $event)" 
-            @mouseout="cloneHover = false, actionHighlight(false, $event)">
-            <tooltip-component 
-              :show-tooltip="cloneHover" 
-              translation="translatePhrase"
-              tooltip-text="Duplicate entity"></tooltip-component>
-          </i>
-        </div>
-
-        <div class="ItemLocal-action" 
-          v-if="!isLocked">
-          <i class="fa fa-copy action-button icon icon--sm"
-            tabindex="0"
-            v-on:click="copyThis()"
-            @keyup.enter="copyThis()"
-            @focus="copyHover = true, actionHighlight(true, $event)"
-            @blur="copyHover = false, actionHighlight(false, $event)"
-            @mouseover="copyHover = true, actionHighlight(true, $event)" 
-            @mouseout="copyHover = false, actionHighlight(false, $event)">
-            <tooltip-component 
-              :show-tooltip="copyHover" 
-              translation="translatePhrase"
-              tooltip-text="Copy entity"></tooltip-component>
-          </i>
-        </div>
-
         <field-adder ref="fieldAdder" class="ItemLocal-action"
           v-if="!isLocked" 
           :entity-type="item['@type']" 
@@ -474,6 +447,48 @@ export default {
               tooltip-text="Remove" 
               translation="translatePhrase"></tooltip-component>
           </i>
+        </div>
+
+        <div class="ItemLocal-action">
+          <i class="icon icon--sm fa fa-ellipsis-v"
+            v-if="!isLocked"
+            :class="{'show-icon': showActionButtons}" 
+            v-on:click="managerMenuOpen ? closeManagerMenu() : openManagerMenu()" 
+            @keyup.enter="managerMenuOpen ? closeManagerMenu() : openManagerMenu()"
+            tabindex="0"
+            @focus="manageHover = true, actionHighlight(true, $event)"
+            @blur="manageHover = false, actionHighlight(false, $event)"
+            @mouseover="manageHover = true, actionHighlight(true, $event)"
+            @mouseout="manageHover = false, actionHighlight(false, $event)">
+            <tooltip-component 
+              :show-tooltip="manageHover" 
+              tooltip-text="Manage" 
+              translation="translatePhrase"></tooltip-component>
+          </i>
+        </div>
+        <div class="dropdown ManagerMenu" v-on-clickaway="closeManagerMenu" v-if="managerMenuOpen"
+          @mouseover="actionHighlight(true, $event)"
+          @mouseout="actionHighlight(false, $event)">
+          <ul class="dropdown-menu ManagerMenu-menuList">
+            <li class="ManagerMenu-menuItem">
+              <a tabindex="0" class="ManagerMenu-menuLink"
+              @focus="actionHighlight(true, $event)"
+              @keyup.enter="copyThis(), closeManagerMenu(), actionHighlight(false, $event)"
+              @click="copyThis(), closeManagerMenu(), actionHighlight(false, $event)">
+              <i class="fa fa-fw fa-copy" aria-hidden="true"></i>
+              {{"Copy to clipboard" | translatePhrase}}
+              </a>
+            </li>
+            <li class="ManagerMenu-menuItem">
+              <a tabindex="0" class="ManagerMenu-menuLink"
+              @focus="actionHighlight(true, $event)"
+              @keyup.enter="cloneThis(), closeManagerMenu(), actionHighlight(false, $event)"
+              @click="cloneThis(), closeManagerMenu(), actionHighlight(false, $event)">
+              <i class="fa fa-fw fa-copy" aria-hidden="true"></i>
+              {{"Duplicate entity" | translatePhrase}}
+              </a>
+            </li>
+          </ul>
         </div>
       </div>
     </strong>
@@ -576,6 +591,32 @@ export default {
     @media (max-width: @screen-sm) {
       display: flex;
       align-items: baseline;
+    }
+  }
+
+  .ManagerMenu {
+    li > a {
+      cursor: pointer;
+      padding: 3px 5px;
+    }
+    &-menuList {
+      display: block;
+      padding: 5px 0;
+    }
+    &-menuItem {
+      & a {
+        display: flex;
+        align-items: center;
+        padding: 5px 15px;
+        color: @grey-darker;
+      }
+
+    }
+    &-menuLink {
+      cursor: pointer;
+      & i {
+        margin-right: 5px;
+      }
     }
   }
 
