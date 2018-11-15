@@ -179,6 +179,7 @@ export default {
       });
     },
     initializeRecord() {
+      this.marcPreview.active = false
       this.$store.dispatch('pushLoadingIndicator', 'Loading document');
       this.postLoaded = false;
       this.$store.dispatch('flushChangeHistory');
