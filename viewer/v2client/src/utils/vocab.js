@@ -597,11 +597,8 @@ export function getValidTemplates(type, templateCollection, vocabClasses, contex
   const keys = Object.keys(templateCollection);
   for(let i = 0; i < keys.length; i++) {
     const currentType = templateCollection[keys[i]].value.mainEntity['@type'];
-    if (
-      type === currentType ||
-      getSubClassChain(currentType, vocabClasses, context).indexOf(type) > -1 ||
-      getSubClassChain(type, vocabClasses, context).indexOf(currentType) > -1
-    ) {
+    const matching = isSubClassOf(currentType, type, vocabClasses, context);
+    if (matching) {
       validTemplates.push(templateCollection[keys[i]]);
     }
   }

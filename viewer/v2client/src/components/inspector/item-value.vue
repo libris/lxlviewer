@@ -163,7 +163,8 @@ export default {
 
 <template>
   <div class="ItemValue js-value" 
-    v-bind:class="{'is-locked': isLocked, 'unlocked': !isLocked, 'is-removed': removed}">
+    v-bind:class="{'is-locked': isLocked, 'unlocked': !isLocked, 'is-removed': removed}"
+    :id="`formPath-${path}`">
     <textarea class="ItemValue-input js-itemValueInput" 
       rows="1" 
       v-model="value"
@@ -177,7 +178,8 @@ export default {
       v-if="isLocked && shouldLink"
       :href="fieldValue" 
       target="_blank" 
-      :title="`${fieldValue} (${newWindowText})`">{{fieldValue}} 
+      :title="`${fieldValue} (${newWindowText})`">
+        {{fieldValue}} 
         <i class="fa fa-external-link" aria-hidden="true"></i>
     </a>
     <div class="ItemValue-remover"

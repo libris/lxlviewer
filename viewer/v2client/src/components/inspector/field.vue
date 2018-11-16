@@ -452,7 +452,7 @@ export default {
 
 <template>
   <li class="Field js-field" 
-    :id="`field-${getPath}`"
+    :id="`formPath-${getPath}`"
     v-bind:class="{'is-mainField': isMainField, 'Field--inner': !asColumns, 'is-lastAdded': isLastAdded, 'is-removed': removed, 'has-failed-validations': failedValidations.length > 0 }" 
     @mouseover="handleMouseEnter()" 
     @mouseleave="handleMouseLeave()">
@@ -525,7 +525,7 @@ export default {
             :title="fieldKey">{{ fieldKey | labelByLang | capitalize }}</span>    
         </div>
       </div>
-      <pre class="path-code" v-show="user.settings.appTech && !isInner">{{getPath}}</pre>
+      <code class="path-code" v-show="user.settings.appTech && !isInner">{{getPath}}</code>
     </div>
     <div class="Field-label uppercaseHeading" v-if="isInner" v-bind:class="{ 'is-locked': locked }">
       <span v-show="fieldKey === '@id'">{{ 'ID' | translatePhrase | capitalize }}</span>
@@ -1003,6 +1003,11 @@ export default {
 
   .path-code {
     display: inline-block;
+    word-break: break-all;
+    overflow: hidden;
+    background-color: #f0f0f0;
+    padding: 0;
+    color: #4f4f4f;
   }
 }
 

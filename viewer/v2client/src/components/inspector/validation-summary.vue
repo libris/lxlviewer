@@ -1,4 +1,5 @@
 <script>
+import * as LayoutUtil from '@/utils/layout';
 
 export default {
   name: 'validation-summary',
@@ -22,6 +23,17 @@ export default {
     };
   },
   methods: {
+    goToPath(path) {
+      const id = `formPath-${path}`;
+      const $element = document.getElementById(id);
+      this.$store.dispatch('pushInspectorEvent', { 
+        name: 'form-control', 
+        value: 'expand-item'
+      });
+      setTimeout(() => {
+        LayoutUtil.scrollToElement($element, 1000, () => {});
+      }, 1000);
+    },
   },
 }
 </script>
@@ -37,6 +49,7 @@ export default {
       </thead>
       <tr class="Violation" v-for="(value, key) in violations" :key="key">
         <td class="Violation-key">
+          <a @click="goToPath(key)"><i class="fa fa-tag"></i></a>
           <code>{{ key }}</code>
         </td>
         <td class="Violation-value">
@@ -68,6 +81,9 @@ export default {
     .Violation {
       border: 1px solid @gray-light;
       border-width: 0px 0px 1px 0px;
+      &-nav {
+        text-align: center;
+      }
       &-key {
         code {
           background-color: transparent;

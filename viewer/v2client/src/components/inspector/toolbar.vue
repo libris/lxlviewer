@@ -96,6 +96,33 @@ export default {
     },
   },
   methods: {
+    openFilePicker() {
+      this.$refs.FilePicker.click();
+    },
+    applyFileTemplate(data) {
+      const inspectorObj = RecordUtil.splitJson(data);
+      const preparedData = RecordUtil.prepareDuplicateFor(inspectorObj, this.user, this.settings);
+      const splitData = RecordUtil.splitJson(preparedData);
+      this.$store.dispatch('pushInspectorEvent', {
+        name: 'apply-template',
+        value: splitData
+      });
+    },
+    initFilePicker() {
+      const self = this;
+      this.$refs.FilePicker.addEventListener('change', function(e) {
+        const reader = new FileReader();
+        reader.onloadend = function() {
+          try {
+            const data = JSON.parse(this.result);
+            self.applyFileTemplate(data);
+          } catch (e) {
+            window.alert('Något gick fel...');
+          }
+        };
+        reader.readAsText(e.target.files[0]);
+      });
+    },
     getKeybindingText(eventName) {
       return LayoutUtil.getKeybindingText(eventName);
     },
@@ -213,7 +240,7 @@ export default {
         focusId = this.inspector.data.mainEntity.itemOf['@id'].split('#')[0];
       }
       const element = document.createElement('a');
-      let blob = new Blob([`${text}`], { type: 'text/plain'});
+      let blob = new Blob([`${text}`], { type: 'application/marc'});
       element.href = window.URL.createObjectURL(blob);
       const splitIdParts = focusId.split('/');
       const id = splitIdParts[splitIdParts.length-1];
@@ -265,9 +292,6 @@ export default {
       const baseType = VocabUtil.getRecordType(type, this.resources.vocab, this.resources.context);
       const templates = VocabUtil.getValidTemplates(type, CombinedTemplates[baseType.toLowerCase()], this.resources.vocabClasses, this.resources.context);
       return templates;
-    },
-    hasTemplates() {
-      return Object.keys(this.validTemplates).length !== 0;
     },
     formObj() {
       return this.inspector.data[this.inspector.status.focus];
@@ -338,7 +362,7 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-    
+      this.initFilePicker();
     });
   },
 };
@@ -346,6 +370,7 @@ export default {
 
 <template>
   <div class="Toolbar" id="editor-container">
+    <input type="file" class="FilePicker" ref="FilePicker" accept=".jsonld,application/ld+json,text/*" />
     <div class="dropdown Toolbar-menu OtherFormatMenu"
       v-if="!inspector.status.editing" 
       v-on-clickaway="hideOtherFormatMenu">
@@ -431,7 +456,7 @@ export default {
           {{ "Make copy" | translatePhrase }}{{ getKeybindingText('duplicate-item') ? ` (${getKeybindingText('duplicate-item')})` : ''}}
           </a>
         </li>
-        <li class="Toolbar-menuItem" :class="{'is-active': showTemplatesSubMenu}" v-if="user.isLoggedIn && inspector.status.editing && hasTemplates">
+        <li class="Toolbar-menuItem" :class="{'is-active': showTemplatesSubMenu}" v-if="user.isLoggedIn && inspector.status.editing">
           <a class="Toolbar-menuLink" @click="showTemplatesSubMenu = !showTemplatesSubMenu">
             <i class="fa fa-fw fa-clipboard"></i>
             <span>{{ "Embellish from template" | translatePhrase }}{{ getKeybindingText('embellish-from-template') ? ` (${getKeybindingText('embellish-from-template')})` : ''}}</span>
@@ -444,6 +469,12 @@ export default {
           {{ value.label }}
           </a>
         </li>
+        <li class="Toolbar-menuItem inSubMenu" v-show="showTemplatesSubMenu">
+          <a class="Toolbar-menuLink" @click="openFilePicker">
+          <i class="fa fa-fw fa-upload"></i>
+          {{ 'From file' | translatePhrase }}
+          </a>
+        </li>
         <li class="Toolbar-menuItem" v-if="compiledIsAvailable">
           <a class="Toolbar-menuLink"  v-if="downloadIsSupported" @click="getCompiledPost()">
             <i class="fa fa-fw fa-download" aria-hidden="true"></i>
@@ -452,6 +483,12 @@ export default {
           <a class="Toolbar-menuLink"  v-if="!downloadIsSupported" :href="compileMARCUrl">
             <i class="fa fa-fw fa-download" aria-hidden="true"></i>
               {{"Download compiled" | translatePhrase}} MARC21
+          </a>
+        </li>
+        <li class="Toolbar-menuItem">
+          <a class="Toolbar-menuLink" @click="postControl('download-json'), hideToolsMenu()">
+            <i class="fa fa-fw fa-download" aria-hidden="true"></i>
+            {{"Download" | translatePhrase}} JSON-LD<span v-show="inspector.status.editing">&nbsp;({{'Incl. unsaved changes' | translatePhrase}})</span>
           </a>
         </li>
         <li class="Toolbar-menuItem">
@@ -674,6 +711,11 @@ export default {
       bottom: auto;
       right: 0;
     }
+  }
+  .FilePicker {
+    width: 1px;
+    height: 1px;
+    opacity: 0;
   }
 }
 

@@ -194,6 +194,18 @@ export default {
       }
     },
     applyFieldsFromTemplate(templateJson) {
+      const basePostType = this.inspector.data.mainEntity['@type'];
+      const tempPostType = templateJson.mainEntity['@type'];
+      const matching = VocabUtil.isSubClassOf(tempPostType, basePostType, this.resources.vocab, this.resources.context);
+      if (matching === false) {
+        const basePostLabel = StringUtil.getLabelByLang(basePostType, this.user.settings.language, this.resources.vocab, this.resources.context);
+        const tempPostLabel = StringUtil.getLabelByLang(tempPostType, this.user.settings.language, this.resources.vocab, this.resources.context);
+        const errorBase = `${StringUtil.getUiPhraseByLang('The types do not match', this.user.settings.language)}`;
+        const errorMessage = `"${tempPostLabel}" ${StringUtil.getUiPhraseByLang('is not compatible with', this.user.settings.language)} "${basePostLabel}"`;
+        this.$store.dispatch('pushNotification', { type: 'danger', message: `${errorBase}! ${errorMessage}` });
+        return;
+      }
+
       const basePostData = _.cloneDeep(this.inspector.data);
       const changeList = [];
       function applyChangeList(objectKey) {
@@ -330,6 +342,24 @@ export default {
     setEditorFocus(value) {
       this.$store.dispatch('setInspectorStatusValue', { property: 'focus', value: value });
     },
+    downloadJson() {
+      const focusId = this.inspector.data.record['@id'];
+      const element = document.createElement('a');
+      const json = JSON.stringify(this.getPackagedItem());
+      let blob = new Blob([`${json}`], { type: 'application/ld+json'});
+      element.href = window.URL.createObjectURL(blob);
+      const splitIdParts = focusId.split('/');
+      const id = splitIdParts[splitIdParts.length-1];
+      const promptInstruction = StringUtil.getUiPhraseByLang('Name your file', this.user.settings.language);
+      const promptedName = prompt(promptInstruction, id);
+      if (promptedName !== null) {
+        element.download = `${promptedName}.jsonld`;
+        element.style.display = 'none';
+        document.body.appendChild(element);
+        element.click();
+        document.body.removeChild(element);
+      }
+    },
     getPackagedItem() {
       const RecordId = this.inspector.data.record['@id'];
       const recordCopy = _.cloneDeep(this.inspector.data.record);
@@ -435,6 +465,9 @@ export default {
         switch(val.value) {
           case 'cancel':
             this.cancelEditing();
+          break;
+          case 'download-json':
+            this.downloadJson();
           break;
           case 'remove-post':
             this.openRemoveModal();
