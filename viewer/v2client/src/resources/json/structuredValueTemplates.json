@@ -311,18 +311,18 @@
   },
   "PrimaryContribution": {
     "@type": "PrimaryContribution",
-    "agent": [],
+    "agent": null,
     "role": []
   },
   "Contribution": {
     "@type": "Contribution",
-    "agent": [],
+    "agent": null,
     "role": []
   },
   "ComplexSubject": {
     "@type": "ComplexSubject",
     "termComponentList": [],
-    "inScheme": []
+    "inScheme": null
   },
   "Geographic": {
     "@type": "Geographic",
