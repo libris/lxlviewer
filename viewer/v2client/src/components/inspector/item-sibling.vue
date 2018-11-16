@@ -361,7 +361,7 @@ export default {
       <div class="ItemSibling-actions">
         <div class="ItemSibling-action">
           <i class="fa fa-link icon icon--sm"
-            v-if="inspector.status.editing && isExtractable"
+            v-if="inspector.status.editing && isExtractable && extractedMainEntity"
             @click="openExtractDialog(), expand()" 
             tabindex="0"
             @keyup.enter="openExtractDialog(), expand()"
