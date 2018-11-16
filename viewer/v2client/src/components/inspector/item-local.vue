@@ -484,7 +484,7 @@ export default {
               @focus="actionHighlight(true, $event)"
               @keyup.enter="cloneThis(), closeManagerMenu(), actionHighlight(false, $event)"
               @click="cloneThis(), closeManagerMenu(), actionHighlight(false, $event)">
-              <i class="fa fa-fw fa-copy" aria-hidden="true"></i>
+              <i class="fa fa-fw fa-clone" aria-hidden="true"></i>
               {{"Duplicate entity" | translatePhrase}}
               </a>
             </li>
