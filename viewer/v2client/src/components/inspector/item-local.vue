@@ -432,7 +432,7 @@ export default {
         </field-adder>
 
         <div class="ItemLocal-action">
-          <i class="fa fa-trash-o icon icon--sm" 
+          <i class="fa fa-trash-o fa-fw icon icon--sm" 
             v-if="!isLocked" 
             :class="{'show-icon': showActionButtons}" 
             v-on:click="removeThis(true)" 
@@ -450,7 +450,7 @@ export default {
         </div>
 
         <div class="ItemLocal-action">
-          <i class="icon icon--sm fa fa-ellipsis-v"
+          <i class="icon icon--sm fa fa-fw fa-ellipsis-v"
             v-if="!isLocked"
             :class="{'show-icon': showActionButtons}" 
             v-on:click="managerMenuOpen ? closeManagerMenu() : openManagerMenu()" 
@@ -621,9 +621,7 @@ export default {
   }
 
   &-action {
-    min-width: 20px;
     display: inline-block;
-    margin-right: 5px;
   }
 
   &.is-marked {

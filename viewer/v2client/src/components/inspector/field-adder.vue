@@ -258,7 +258,7 @@ export default {
   <div class="FieldAdder">
     <span v-if="inner" class="FieldAdder-innerAdd">
       <i 
-        class="FieldAdder-innerIcon fa fa-plus-circle icon icon--sm" 
+        class="FieldAdder-innerIcon fa fa-plus-circle fa-fw icon icon--sm" 
         tabindex="0"
         ref="adderButton"
         @click="show" 
