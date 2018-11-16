@@ -408,7 +408,7 @@ export default {
       
       <div class="ItemLocal-actions">
         <div class="ItemLocal-action">
-          <i class="fa fa-link icon icon--sm"
+          <i class="fa fa-link fa-fw icon icon--sm"
             v-if="inspector.status.editing && isExtractable"
             @click="openExtractDialog(), expand()" 
             @focus="showLinkAction = true, actionHighlight(true, $event)"
@@ -480,7 +480,7 @@ export default {
               {{"Copy to clipboard" | translatePhrase}}
               </a>
             </li>
-            <li class="ManagerMenu-menuItem">
+            <li class="ManagerMenu-menuItem" v-if="inArray">
               <a tabindex="0" class="ManagerMenu-menuLink"
               @focus="actionHighlight(true, $event)"
               @keyup.enter="cloneThis(), closeManagerMenu(), actionHighlight(false, $event)"
