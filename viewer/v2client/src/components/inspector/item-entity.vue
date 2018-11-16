@@ -102,7 +102,9 @@ export default {
           let element = this.$el;
           LayoutUtil.scrollToElement(element, 1000, () => {
             setTimeout(() => {
-              this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
+              if (this.isNewlyAdded) {
+                this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
+              }
             }, 1000);
           });
         }, 200);

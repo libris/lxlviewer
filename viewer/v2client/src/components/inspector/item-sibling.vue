@@ -132,11 +132,7 @@ export default {
   methods: {
     highLightLastAdded() {
       let element = this.$el;
-      LayoutUtil.scrollToElement(element, 1000, () => {
-        setTimeout(() => {
-          this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
-        }, 1000);
-      });
+      LayoutUtil.scrollToElement(element, 1000, () => {});
     },
     removeThis() {
       const changeList = [
@@ -317,8 +313,10 @@ export default {
         this.expandAllChildren();
       }
       setTimeout(()=> {
-      this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
-    }, 1000)
+        if (this.isLastAdded) {
+          this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
+        }
+      }, 1000)
     }
     if (this.inspector.status.isNew) {
       this.expand();
