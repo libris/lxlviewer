@@ -118,6 +118,9 @@ new Vue({
     this.$nextTick(() => {
       this.verifyConfig();
       this.authenticate();
+      window.addEventListener('focus', () => {
+        this.$store.dispatch('setClipboard', JSON.parse(localStorage.getItem('copyClipboard')));
+      });
       window.addEventListener('keydown', LayoutUtil.handleFirstTab);
       this.updateTitle();
       this.injectAnalytics();

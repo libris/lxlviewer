@@ -47,6 +47,7 @@ export default {
       activeModal: false,
       shouldShowActionButtons: false,
       removeHover: false,
+      pasteHover: false,
       foundChip: false,
       removed: false,
       uniqueIds: [],
@@ -85,6 +86,15 @@ export default {
       }
       return failedValidations;
     },
+    clipboardHasValidObject() {
+      if (this.clipboardValue === null) {
+        return false;
+      }
+      return this.fullRange.indexOf(this.clipboardValue['@type']) > -1;
+    },
+    clipboardValue() {
+      return this.clipboard;
+    },
     isMainField() {
       return (!this.isInner && this.settings.mainFields[this.recordType] === this.fieldKey);
     },
@@ -117,6 +127,7 @@ export default {
       'user',
       'settings',
       'status',
+      'clipboard',
     ]),
     warnBeforeRemove() {
       return this.inspector.status.focus === 'record';
@@ -170,7 +181,6 @@ export default {
       if (!_.isArray(this.fieldValue)) {
         valueArray = [this.fieldValue];
       }
-
       return valueArray;
     },
     isUriType() {
@@ -243,6 +253,41 @@ export default {
     },
   },
   methods: {
+    pasteClipboardItem() {
+      const obj = this.clipboardValue;
+      let currentValue = _.cloneDeep(_.get(this.inspector.data, this.getPath));
+      if (currentValue === null) {
+        currentValue = obj;
+      } else if (!_.isArray(currentValue)) {
+        currentValue = [currentValue];
+        currentValue.push(obj);
+      } else {
+        if(typeof obj.length !== "undefined" && _.isArray(obj) ) {
+          obj.forEach(function(subObj) {
+            currentValue.push(subObj);
+          });
+        } else {
+          currentValue.push(obj);
+        }
+      }
+      let index = '';
+      if (currentValue.length) {
+        index = `[${currentValue.length -1}]`;
+      }
+      this.$store.dispatch('setInspectorStatusValue', { 
+        property: 'lastAdded', 
+        value: `${this.getPath}${index}`
+      });
+      this.$store.dispatch('updateInspectorData', {
+        changeList: [
+          {
+            path: `${this.getPath}`,
+            value: currentValue,
+          }
+        ],
+        addToHistory: true,
+      });
+    },
     actionHighlight(active, event) {
       if (active) {
         let item = event.target;
@@ -449,9 +494,26 @@ export default {
             :path="getPath">
           </entity-adder>
           <div v-else class="Field-action placeholder"></div> 
+
           <div class="Field-comment" v-if="propertyComment && !locked" >
             <i class="fa fa-question-circle Field-comment icon icon--sm"></i>
             <span class="Field-commentText">{{ propertyComment }}</span>
+          </div>
+          <div v-else class="Field-action placeholder"></div> 
+
+          <div class="Field-action Field-clipboardPaster"
+            v-if="!locked && (isRepeatable || isEmptyObject) && clipboardHasValidObject" 
+            ref="clipboardPaster">
+            <i tabindex="0" class="fa fa-paste action-button icon icon--sm" @click="pasteClipboardItem"
+              @focus="pasteHover = true, removeHighlight(true, $event)" 
+              @blur="pasteHover = false, removeHighlight(false, $event)"
+              @mouseover="pasteHover = true, removeHighlight(true, $event)" 
+              @mouseout="pasteHover = false, removeHighlight(false, $event)">
+              <tooltip-component 
+                :show-tooltip="pasteHover" 
+                tooltip-text="Paste entity" 
+                translation="translatePhrase"></tooltip-component>
+            </i>
           </div>
         </div>
         <div class="Field-label uppercaseHeading" v-bind:class="{ 'is-locked': locked }">
