@@ -30,7 +30,7 @@
               "@id": "https://id.kb.se/language/swe"
             }
           ],
-          "encodingLevel": "marc:AbbreviatedLevel",
+          "encodingLevel": "marc:MinimalLevel",
           "recordStatus": "",
           "marc:catalogingSource": {
             "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
@@ -248,7 +248,7 @@
               "@id": "https://id.kb.se/language/swe"
             }
           ],
-          "encodingLevel": "marc:AbbreviatedLevel",
+          "encodingLevel": "marc:MinimalLevel",
           "recordStatus": "",
           "marc:catalogingSource": {
             "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
@@ -472,7 +472,7 @@
               "@id": "https://id.kb.se/language/swe"
             }
           ],
-          "encodingLevel": "marc:AbbreviatedLevel",
+          "encodingLevel": "marc:MinimalLevel",
           "recordStatus": "",
           "marc:catalogingSource": {
             "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
@@ -703,7 +703,7 @@
               "@id": "https://id.kb.se/language/swe"
             }
           ],
-          "encodingLevel": "marc:AbbreviatedLevel",
+          "encodingLevel": "marc:MinimalLevel",
           "recordStatus": "",
           "marc:catalogingSource": {
             "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
@@ -914,7 +914,7 @@
               "@id": "https://id.kb.se/language/swe"
             }
           ],
-          "encodingLevel": "marc:AbbreviatedLevel",
+          "encodingLevel": "marc:MinimalLevel",
           "recordStatus": "",
           "marc:catalogingSource": {
             "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
@@ -1100,7 +1100,7 @@
               "@id": "https://id.kb.se/language/swe"
             }
           ],
-          "encodingLevel": "marc:AbbreviatedLevel",
+          "encodingLevel": "marc:MinimalLevel",
           "recordStatus": "",
           "marc:catalogingSource": {
             "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
@@ -1233,7 +1233,7 @@
               "@id": "https://id.kb.se/language/swe"
             }
           ],
-          "encodingLevel": "marc:AbbreviatedLevel",
+          "encodingLevel": "marc:MinimalLevel",
           "recordStatus": "",
           "marc:catalogingSource": {
             "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
@@ -1602,7 +1602,7 @@
               "@id": "https://id.kb.se/language/swe"
             }
           ],
-          "encodingLevel": "marc:AbbreviatedLevel",
+          "encodingLevel": "marc:MinimalLevel",
           "recordStatus": "",
           "marc:catalogingSource": {
             "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
@@ -1832,7 +1832,7 @@
               "@id": "https://id.kb.se/language/swe"
             }
           ],
-          "encodingLevel": "marc:AbbreviatedLevel",
+          "encodingLevel": "marc:MinimalLevel",
           "recordStatus": "",
           "marc:catalogingSource": {
             "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
