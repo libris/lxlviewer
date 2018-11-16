@@ -97,13 +97,9 @@ export default {
           item.classList.remove('is-removeable');
       }
     },
-    handleKeys(e) {
-      this.$store.dispatch('setInspectorStatusValue', { property: 'updating', value: true });
-      if (e.keyCode === 13) { // Handle enter
-        e.target.blur();
-        e.preventDefault();
-        return false;
-      }
+    handleEnter(e) {
+      e.target.blur();
+      return false;
     },
     update(newValue) {
       const oldValue = _.cloneDeep(_.get(this.inspector.data, this.path));
@@ -122,8 +118,10 @@ export default {
     highLightLastAdded() {
       if (this.isLastAdded === true) {
         let element = this.$el;
+        element.classList.add('is-lastAdded');
         LayoutUtil.scrollToElement(element, 1000, () => {
           setTimeout(() => {
+            element.classList.remove('is-lastAdded');
             this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
           }, 1000);
         });
@@ -131,7 +129,7 @@ export default {
     },
     initializeTextarea() {
       this.$nextTick(() => {
-        let textarea = this.$el.querySelector('textarea');
+        let textarea = this.$refs.textarea;
         AutoSize(textarea);
         AutoSize.update(textarea);
       })
@@ -164,12 +162,12 @@ export default {
 
 <template>
   <div class="ItemValue js-value" 
-    v-bind:class="{'is-locked': isLocked, 'unlocked': !isLocked, 'is-removed': removed, 'is-lastAdded': isLastAdded}">
+    v-bind:class="{'is-locked': isLocked, 'unlocked': !isLocked, 'is-removed': removed}">
     <textarea class="ItemValue-input js-itemValueInput" 
       rows="1" 
       v-model="value"
       @blur="update($event.target.value)"
-      @keydown="handleKeys"
+      @keydown.enter.prevent="handleEnter"
       v-if="!isLocked"
       ref="textarea"></textarea>
     <span class="ItemValue-text"
