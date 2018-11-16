@@ -97,15 +97,6 @@ export default {
           item.classList.remove('is-removeable');
       }
     },
-    // no one seems to watch inspector.status.updating anyway?
-    // handleKeys(e) {
-    //   this.$store.dispatch('setInspectorStatusValue', { property: 'updating', value: true });
-    //   if (e.keyCode === 13) { // Handle enter
-    //     e.target.blur();
-    //     e.preventDefault();
-    //     return false;
-    //   }
-    // },
     handleEnter(e) {
       e.target.blur();
       return false;
