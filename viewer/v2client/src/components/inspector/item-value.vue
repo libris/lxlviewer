@@ -26,7 +26,6 @@ export default {
     showActionButtons: false,
     isExpanded: false,
     parentPath: false,
-    gparentPath: false,
   },
   watch: {
     isLocked(val) {
@@ -73,7 +72,7 @@ export default {
     },
     shouldFocus() {
       let lastAdded = this.inspector.status.lastAdded;
-      if (lastAdded === this.path || lastAdded === this.parentPath || lastAdded === this.gparentPath) {
+      if (lastAdded === this.path || lastAdded === this.parentPath) {
         return true;
       }
       return false;

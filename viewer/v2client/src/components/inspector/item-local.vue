@@ -36,6 +36,7 @@ export default {
       type: Array,
       default: () => [],
     },
+    shouldExpand: false,
   },
   data() {
     return {
@@ -48,6 +49,7 @@ export default {
       cloneHover: false,
       showLinkAction: false,
       copyTitle: false,
+      expandChildren: false,
       cloned: false
     };
   },
@@ -311,15 +313,26 @@ export default {
         });
       }, 500);
     },
-    expandOnNew() {
-      if (this.inspector.status.isNew) {
-        this.expand();
+    expandAllChildren() {
+      this.expandChildren = true;
+      this.$nextTick(this.focusFirstInput);
+    },
+    focusFirstInput() {
+      const firstInput = this.$el.querySelector('.js-itemValueInput')
+      if (firstInput) {
+        firstInput.focus();
       }
-    }
+    },
   },
   watch: {
     'inspector.event'(val, oldVal) {
       this.$emit(`${val.value}`);
+    },
+    shouldExpand(val) {
+      if (val) {
+        this.expand();
+        this.expandChildren = true;
+      }
     }
   },
   beforeDestroy() {
@@ -338,12 +351,15 @@ export default {
           fieldAdder.$refs.adderButton.focus();
         } else {
           this.expand();
+          this.expandAllChildren();
         }
       setTimeout(() => {
         this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
       }, 1000)
-    } 
-    this.expandOnNew();
+    }
+    if (this.inspector.status.isNew) {
+      this.expand();
+    }
   },
 
   components: {
@@ -465,6 +481,7 @@ export default {
         :field-value="v"
         :key="k" 
         :show-action-buttons="showActionButtons"
+        :expand-children="expandChildren"
         :is-expanded="expanded"></field> 
     </ul>
 

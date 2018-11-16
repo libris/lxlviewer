@@ -40,6 +40,7 @@ export default {
     entityType: '',
     showActionButtons: '',
     isExpanded: false,
+    expandChildren: false,
   },
   data() {
     return {
@@ -553,6 +554,7 @@ export default {
           :index="index" 
           :parent-path="getPath" 
           :in-array="valueIsArray" 
+          :should-expand="expandChildren"
           :show-action-buttons="actionButtonsShown"></item-local>
 
         <item-sibling
@@ -565,6 +567,7 @@ export default {
           :index="index"
           :in-array="valueIsArray"
           :show-action-buttons="actionButtonsShown"
+          :should-expand="expandChildren"
           :parent-path="getPath"></item-sibling>
       </div>
       <portal-target :name="`typeSelect-${getPath}`" />
@@ -607,7 +610,6 @@ export default {
           :field-key="fieldKey" 
           :index="index" 
           :parent-path="getPath" 
-          :gparent-path="parentPath"
           :show-action-buttons="actionButtonsShown"
           :is-expanded="isExpanded"></item-value>
       </div>
