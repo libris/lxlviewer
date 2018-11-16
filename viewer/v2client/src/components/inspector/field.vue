@@ -504,8 +504,8 @@ export default {
           <div class="Field-action Field-clipboardPaster"
             v-if="!locked && (isRepeatable || isEmptyObject) && clipboardHasValidObject" 
             ref="clipboardPaster">
-            <i tabindex="0" class="fa fa-paste action-button icon icon--sm" @click="pasteClipboardItem"
-              v-on:click="pasteClipboardItem"
+            <i tabindex="0" class="fa fa-paste action-button icon icon--sm"
+              @click="pasteClipboardItem"
               @keyup.enter="pasteClipboardItem"
               @focus="pasteHover = true, actionHighlight(true, $event)" 
               @blur="pasteHover = false, actionHighlight(false, $event)"
