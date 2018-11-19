@@ -420,6 +420,10 @@
     "@type": "Library",
     "sigel": ""
   },
+  "Summary": {
+    "@type": "Summary",
+    "label": ""
+  },
   "TableOfContents": {
     "@type": "TableOfContents",
     "label": ""
