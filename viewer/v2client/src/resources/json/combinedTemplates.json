@@ -420,24 +420,6 @@
                 ""
               ]
             }
-          ],
-          "hasPart": [
-            {
-              "@type": "Work",
-              "contribution": [
-                {
-                  "@type": "PrimaryContribution",
-                  "agent": null,
-                  "role": []
-                }
-              ],
-              "hasTitle": [
-                {
-                  "@type": "Title",
-                  "mainTitle": ""
-                }
-              ]
-            }
           ]
         }
       }
@@ -646,30 +628,7 @@
           "hasNote": [{
             "@type": "marc:ParticipantOrPerformerNote",
             "label": ""
-          }],
-          "hasPart": [
-            {
-              "@type": "Work",
-              "contribution": [
-                {
-                  "@type": "PrimaryContribution",
-                  "agent": {
-                    "@type": "Person",
-                    "familyName": "",
-                    "givenName": "",
-                    "lifeSpan": ""
-                  },
-                  "role": []
-                }
-              ],
-              "hasTitle": [
-                {
-                  "@type": "Title",
-                  "mainTitle": ""
-                }
-              ]
-            }
-          ]
+          }]
         }
       }
     },
