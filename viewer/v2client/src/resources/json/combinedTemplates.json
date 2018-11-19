@@ -154,7 +154,7 @@
           "language": [{
             "@id": "https://id.kb.se/language/swe"
           }],
-          "originalVersion": [],
+          "originalVersion": null,
           "classification": [{
               "@type": "ClassificationDdc",
               "code": "",
@@ -427,7 +427,7 @@
               "contribution": [
                 {
                   "@type": "PrimaryContribution",
-                  "agent": [],
+                  "agent": null,
                   "role": []
                 }
               ],
@@ -619,12 +619,12 @@
           ],
           "contribution": [{
               "@type": "PrimaryContribution",
-              "agent": [],
+              "agent": null,
               "role": []
             },
             {
               "@type": "Contribution",
-              "agent": []
+              "agent": null
             }
           ],
           "contentType": [
@@ -852,14 +852,14 @@
           ],
           "contribution": [{
               "@type": "PrimaryContribution",
-              "agent": [],
+              "agent": null,
               "role": [{
                 "@id": "https://id.kb.se/relator/cartographer"
               }]
             },
             {
               "@type": "Contribution",
-              "agent": [],
+              "agent": null,
               "role": []
             }
           ],
@@ -880,7 +880,7 @@
               "label": ""
             }
           ],
-          "supplementaryContent": []
+          "supplementaryContent": null
         }
       }
     },
