@@ -645,7 +645,7 @@
           "bibliography": [
             {
               "@type": "Library",
-              "sigel": [""]
+              "sigel": ""
             }
           ],
           "descriptionConventions": [
@@ -699,23 +699,18 @@
               }
             }
           ],
+          "marc:primaryProvisionActivity": null,
           "manufacture": [{
             "@type": "Manufacture",
-            "agent": [{
+            "agent": {
               "@type": "Agent",
-              "label": [
-                ""
-              ]
-            }],
-            "date": [
-              ""
-            ],
-            "place": [{
+              "label": ""
+            },
+            "date": "",
+            "place": {
               "@type": "Place",
-              "label": [
-                ""
-              ]
-            }]
+              "label": ""
+            }
           }],
           "marc:relief": [],
           "productionMethod": [
@@ -780,16 +775,15 @@
               "scale": {
                 "@type": "marc:LinearScale",
                 "marc:constantRatioLinearHorizontalScale": ""
-              }
+              },
+              "projection": null
             },
             {
               "@type": "Cartographic",
               "coordinates": "(Ö °-Ö °/N °'-N °)",
               "scale": {
                 "@type": "Scale",
-                "label": [
-                  "Skala 1:  ; Skalstock:"
-                ]
+                "label": "Skala 1:  ; Skalstock:"
               }
             },
             {
@@ -839,7 +833,11 @@
               "label": ""
             }
           ],
-          "supplementaryContent": null
+          "supplementaryContent": null,
+          "hasNote": [{
+            "@type": "marc:LanguageNote",
+            "label": ""
+          }]
         }
       }
     },
@@ -1544,7 +1542,7 @@
           "bibliography": [
             {
               "@type": "Library",
-              "sigel": [""]
+              "sigel": ""
             }
           ],
           "descriptionConventions": [
@@ -1581,6 +1579,7 @@
           "publication": [
             {
               "@type": "PrimaryPublication",
+              "date": "",
               "year": "",
               "country": [ {"@id": "https://id.kb.se/country/sw"} ],
               "place": {
@@ -1593,41 +1592,22 @@
               }
             }
           ],
+          "marc:primaryProvisionActivity": null,
           "manufacture": [{
             "@type": "Manufacture",
-            "agent": [{
+            "agent": {
               "@type": "Agent",
-              "label": [
-                ""
-              ]
-            }],
-            "date": [
-              ""
-            ],
-            "place": [{
+              "label": ""
+            },
+            "date": "",
+            "place": {
               "@type": "Place",
-              "label": [
-                ""
-              ]
-            }]
+              "label": ""
+            }
           }],
           "production": [{
             "@type": "Production",
-            "agent": [{
-              "@type": "Agent",
-              "label": [
-                ""
-              ]
-            }],
-            "date": [
-              ""
-            ],
-            "place": [{
-              "@type": "Place",
-              "label": [
-                ""
-              ]
-            }]
+            "date": ""
           }],
           "productionMethod": [
             {
@@ -1674,7 +1654,7 @@
           "polarity": [
             {
               "@type": "Polarity",
-              "label": ["positiv"]
+              "label": "positiv"
             }
           ],
           "hasNote": [{
@@ -1705,44 +1685,16 @@
               "@id": "https://id.kb.se/term/gmgpc%2F%2Fswe/Bilder"
             }
           ],
-          "classification": [{
-              "@type": "ClassificationDdc",
-              "code": "",
-              "edition": "full",
-              "editionEnumeration": "23/swe"
-            },
-            {
-              "@type": "Classification",
-              "code": "",
-              "inScheme": {
-                "@type": "ConceptScheme",
-                "@id": "https://id.kb.se/term/kssb/8",
-                "code": "kssb",
-                "version": "8"
-              }
-            }
-          ],
           "contribution": [{
               "@type": "PrimaryContribution",
-              "agent": {
-                "@type": "Person",
-                "familyName": "",
-                "givenName": "",
-                "lifeSpan": ""
-              },
+              "agent": null,
               "role": [{
                 "@id": "https://id.kb.se/relator/artist"
               }]
             },
             {
               "@type": "Contribution",
-              "agent": {
-                "@type": "Organization",
-                "name": ""
-              },
-              "role": [{
-                "@id": "https://id.kb.se/relator/unspecifiedContributor"
-              }]
+              "agent": null
             }
           ],
           "contentType": [
@@ -1754,8 +1706,7 @@
           "summary": [
             {
               "@type": "Summary",
-              "label": [""],
-              "marc:summaryType": "marc:NoDisplayConstantGenerated"
+              "label": ""
             }
           ]
         }
