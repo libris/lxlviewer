@@ -1360,6 +1360,10 @@
             }
           ],
           "musicKey": "",
+          "musicMedium": [{
+            "@type": "MusicMedium",
+            "label": ""
+          }],
           "version": "",
           "language": [{
             "@id": "https://id.kb.se/language/zxx"
