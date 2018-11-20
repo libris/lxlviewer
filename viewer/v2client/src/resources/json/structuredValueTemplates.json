@@ -27,7 +27,8 @@
   },
   "KeyTitle": {
     "@type": "KeyTitle",
-    "mainTitle": ""
+    "mainTitle": "",
+    "qualifier": ""
   },
   "marc:OtherTitle": {
     "@type": "marc:OtherTitle",
@@ -419,9 +420,22 @@
     "@type": "Library",
     "sigel": ""
   },
+  "Summary": {
+    "@type": "Summary",
+    "label": ""
+  },
   "TableOfContents": {
     "@type": "TableOfContents",
     "label": ""
+  },
+  "MusicFormat": {
+    "@type": "MusicFormat",
+    "label": [""],
+    "code": [""],
+    "source": {
+      "@type": "Source",
+      "code": ""
+    }
   },
   "ToCEntry": {
     "@type": "ToCEntry",
