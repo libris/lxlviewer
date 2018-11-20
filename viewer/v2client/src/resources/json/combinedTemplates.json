@@ -1486,9 +1486,10 @@
                 ],
                 "musicKey": "",
                 "version": "",
-                "musicMedium": [
-                  ""
-                ]
+                "musicMedium": [{
+                  "@type": "MusicMedium",
+                  "label": ""
+                }]
               }
             },
             {
@@ -1520,9 +1521,10 @@
                 ],
                 "musicKey": "",
                 "version": "",
-                "musicMedium": [
-                  ""
-                ]
+                "musicMedium": [{
+                  "@type": "MusicMedium",
+                  "label": ""
+                }]
               }
             }
           ]
