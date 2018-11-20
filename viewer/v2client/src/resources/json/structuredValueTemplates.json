@@ -436,6 +436,10 @@
       "code": ""
     }
   },
+  "MusicMedium": {
+    "@type": "MusicMedium",
+    "label": ""
+  },
   "ToCEntry": {
     "@type": "ToCEntry",
     "label": "",
