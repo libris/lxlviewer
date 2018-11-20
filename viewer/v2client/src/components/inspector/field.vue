@@ -570,6 +570,23 @@ export default {
               tooltip-text="Remove"></tooltip-component>
           </i>
         </div>
+
+        <div class="Field-action Field-clipboardPaster"
+          v-if="!locked && (isRepeatable || isEmptyObject) && clipboardHasValidObject" 
+          ref="clipboardPaster">
+          <i tabindex="0" class="fa fa-paste action-button icon icon--sm"
+            @click="pasteClipboardItem"
+            @keyup.enter="pasteClipboardItem"
+            @focus="pasteHover = true, actionHighlight(true, $event)" 
+            @blur="pasteHover = false, actionHighlight(false, $event)"
+            @mouseover="pasteHover = true, actionHighlight(true, $event)" 
+            @mouseout="pasteHover = false, actionHighlight(false, $event)">
+            <tooltip-component 
+              :show-tooltip="pasteHover" 
+              tooltip-text="Paste entity" 
+              translation="translatePhrase"></tooltip-component>
+          </i>
+        </div>
       </div>
       <!-- {{ key | labelByLang | capitalize }} -->
     </div>
