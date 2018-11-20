@@ -1309,15 +1309,16 @@
               "@type": "Note",
               "label": ""
           }],
-          "musicFormat": {
-                  "@type": "MusicFormat",
-                  "code": [""],
-                  "label": [""],
-                  "source": {
-                    "@type": "Source",
-                    "code": ""
-                  }
-                },
+          "musicFormat": [
+            {
+              "@type": "MusicFormat",
+              "label": [""],
+              "source": {
+                "@type": "Source",
+                "code": ""
+              }
+            }
+          ],
           "tableOfContents": [
             {
               "@type": "TableOfContents",

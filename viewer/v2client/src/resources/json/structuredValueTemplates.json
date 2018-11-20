@@ -431,7 +431,6 @@
   "MusicFormat": {
     "@type": "MusicFormat",
     "label": [""],
-    "code": [""],
     "source": {
       "@type": "Source",
       "code": ""
