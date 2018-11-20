@@ -684,22 +684,14 @@
             "value": "",
             "qualifier": ""
           }],
-          "publication": [
-            {
-              "@type": "PrimaryPublication",
-              "year": "",
-              "country": [ {"@id": "https://id.kb.se/country/sw"} ],
-              "place": {
-                "@type": "Place",
-                "label": ""
-              },
-              "agent": {
-                "@type": "Agent",
-                "label": ""
-              }
-            }
-          ],
-          "marc:primaryProvisionActivity": null,
+          "publication": [],
+          "marc:primaryProvisionActivity": {
+            "@type": "PrimaryPublication",
+            "country": null,
+            "marc:publicationStatus": null,
+            "otherYear": "",
+            "year": ""
+          },
           "manufacture": [{
             "@type": "Manufacture",
             "agent": {
@@ -1576,23 +1568,14 @@
             }
           ],
           "responsibilityStatement": "",
-          "publication": [
-            {
-              "@type": "PrimaryPublication",
-              "date": "",
-              "year": "",
-              "country": [ {"@id": "https://id.kb.se/country/sw"} ],
-              "place": {
-                "@type": "Place",
-                "label": ""
-              },
-              "agent": {
-                "@type": "Agent",
-                "label": ""
-              }
-            }
-          ],
-          "marc:primaryProvisionActivity": null,
+          "publication": [],
+          "marc:primaryProvisionActivity": {
+            "@type": "PrimaryPublication",
+            "country": null,
+            "marc:publicationStatus": null,
+            "otherYear": "",
+            "year": ""
+          },
           "manufacture": [{
             "@type": "Manufacture",
             "agent": {
