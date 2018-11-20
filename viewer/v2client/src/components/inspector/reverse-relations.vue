@@ -99,6 +99,10 @@ export default {
           query['q'] = this.mainEntity['@id'];
         }
         this.panelQuery = Object.assign({}, query);
+        if (this.recordType === 'Item' || this.recordType === 'Instance') {
+          // Sort panel query by alphabetical order of sigel id
+          this.panelQuery['_sort'] = 'heldBy.@id';
+        }
         this.getRelatedPosts(query).then((response) => {
           this.relationInfo = response.items;
           this.numberOfRelations = response.totalItems;
