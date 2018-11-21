@@ -101,6 +101,7 @@
     "Copy to clipboard": "Kopiera till urklipp",
     "Paste entity": "Klistra in entitet",
     "Manage": "Hantera",
+    "Debug mode activated. Click here to disable.": "Felsökningsläge aktiverat. Tryck här för att inaktivera.",
     "Create local entity" : "Skapa lokal entitet",
     "Create local entity:" : "Skapa lokal entitet:",
     "Create and link entity": "Skapa och länka entitet",
