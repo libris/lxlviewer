@@ -342,24 +342,24 @@ export default {
     setEditorFocus(value) {
       this.$store.dispatch('setInspectorStatusValue', { property: 'focus', value: value });
     },
-    downloadJson() {
-      const focusId = this.inspector.data.record['@id'];
-      const element = document.createElement('a');
-      const json = JSON.stringify(this.getPackagedItem());
-      let blob = new Blob([`${json}`], { type: 'application/ld+json'});
-      element.href = window.URL.createObjectURL(blob);
-      const splitIdParts = focusId.split('/');
-      const id = splitIdParts[splitIdParts.length-1];
-      const promptInstruction = StringUtil.getUiPhraseByLang('Name your file', this.user.settings.language);
-      const promptedName = prompt(promptInstruction, id);
-      if (promptedName !== null) {
-        element.download = `${promptedName}.jsonld`;
-        element.style.display = 'none';
-        document.body.appendChild(element);
-        element.click();
-        document.body.removeChild(element);
-      }
-    },
+    // downloadJson() {
+    //   const focusId = this.inspector.data.record['@id'];
+    //   const element = document.createElement('a');
+    //   const json = JSON.stringify(this.getPackagedItem());
+    //   let blob = new Blob([`${json}`], { type: 'application/ld+json'});
+    //   element.href = window.URL.createObjectURL(blob);
+    //   const splitIdParts = focusId.split('/');
+    //   const id = splitIdParts[splitIdParts.length-1];
+    //   const promptInstruction = StringUtil.getUiPhraseByLang('Name your file', this.user.settings.language);
+    //   const promptedName = prompt(promptInstruction, id);
+    //   if (promptedName !== null) {
+    //     element.download = `${promptedName}.jsonld`;
+    //     element.style.display = 'none';
+    //     document.body.appendChild(element);
+    //     element.click();
+    //     document.body.removeChild(element);
+    //   }
+    // },
     getPackagedItem() {
       const RecordId = this.inspector.data.record['@id'];
       const recordCopy = _.cloneDeep(this.inspector.data.record);

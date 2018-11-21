@@ -96,33 +96,33 @@ export default {
     },
   },
   methods: {
-    openFilePicker() {
-      this.$refs.FilePicker.click();
-    },
-    applyFileTemplate(data) {
-      const inspectorObj = RecordUtil.splitJson(data);
-      const preparedData = RecordUtil.prepareDuplicateFor(inspectorObj, this.user, this.settings);
-      const splitData = RecordUtil.splitJson(preparedData);
-      this.$store.dispatch('pushInspectorEvent', {
-        name: 'apply-template',
-        value: splitData
-      });
-    },
-    initFilePicker() {
-      const self = this;
-      this.$refs.FilePicker.addEventListener('change', function(e) {
-        const reader = new FileReader();
-        reader.onloadend = function() {
-          try {
-            const data = JSON.parse(this.result);
-            self.applyFileTemplate(data);
-          } catch (e) {
-            window.alert('Något gick fel...');
-          }
-        };
-        reader.readAsText(e.target.files[0]);
-      });
-    },
+    // openFilePicker() {
+    //   this.$refs.FilePicker.click();
+    // },
+    // applyFileTemplate(data) {
+    //   const inspectorObj = RecordUtil.splitJson(data);
+    //   const preparedData = RecordUtil.prepareDuplicateFor(inspectorObj, this.user, this.settings);
+    //   const splitData = RecordUtil.splitJson(preparedData);
+    //   this.$store.dispatch('pushInspectorEvent', {
+    //     name: 'apply-template',
+    //     value: splitData
+    //   });
+    // },
+    // initFilePicker() {
+    //   const self = this;
+    //   this.$refs.FilePicker.addEventListener('change', function(e) {
+    //     const reader = new FileReader();
+    //     reader.onloadend = function() {
+    //       try {
+    //         const data = JSON.parse(this.result);
+    //         self.applyFileTemplate(data);
+    //       } catch (e) {
+    //         window.alert('Något gick fel...');
+    //       }
+    //     };
+    //     reader.readAsText(e.target.files[0]);
+    //   });
+    // },
     getKeybindingText(eventName) {
       return LayoutUtil.getKeybindingText(eventName);
     },
@@ -362,7 +362,7 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      this.initFilePicker();
+      // this.initFilePicker();
     });
   },
 };
@@ -469,12 +469,12 @@ export default {
           {{ value.label }}
           </a>
         </li>
-        <li class="Toolbar-menuItem inSubMenu" v-show="showTemplatesSubMenu">
+        <!-- <li class="Toolbar-menuItem inSubMenu" v-show="showTemplatesSubMenu">
           <a class="Toolbar-menuLink" @click="openFilePicker">
           <i class="fa fa-fw fa-upload"></i>
           {{ 'From file' | translatePhrase }}
           </a>
-        </li>
+        </li> -->
         <li class="Toolbar-menuItem" v-if="compiledIsAvailable">
           <a class="Toolbar-menuLink"  v-if="downloadIsSupported" @click="getCompiledPost()">
             <i class="fa fa-fw fa-download" aria-hidden="true"></i>
@@ -485,12 +485,12 @@ export default {
               {{"Download compiled" | translatePhrase}} MARC21
           </a>
         </li>
-        <li class="Toolbar-menuItem">
+        <!-- <li class="Toolbar-menuItem">
           <a class="Toolbar-menuLink" @click="postControl('download-json'), hideToolsMenu()">
             <i class="fa fa-fw fa-download" aria-hidden="true"></i>
             {{"Download" | translatePhrase}} JSON-LD<span v-show="inspector.status.editing">&nbsp;({{'Incl. unsaved changes' | translatePhrase}})</span>
           </a>
-        </li>
+        </li> -->
         <li class="Toolbar-menuItem">
           <a class="Toolbar-menuLink" @click="openMarc()">
             <i class="fa fa-fw fa-eye" aria-hidden="true"></i>
