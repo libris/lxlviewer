@@ -47,6 +47,10 @@ export default {
     },
     switchPerimeter(id) {
       this.$router.push({ path: `/search/${id}` });
+      this.copyQuery(id);
+    },
+    copyQuery(id) {
+      id === 'libris' ? this.input.value = this.remoteSearch.q : this.remoteSearch.q = this.input.value;
     },
     removeTags(html) {
       let regexHtml = html.replace(/<h1.*>.*?<\/h1>/ig,'').replace(/<h2.*>.*?<\/h2>/ig,'');
