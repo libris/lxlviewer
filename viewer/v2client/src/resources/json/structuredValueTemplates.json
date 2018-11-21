@@ -431,11 +431,14 @@
   "MusicFormat": {
     "@type": "MusicFormat",
     "label": [""],
-    "code": [""],
     "source": {
       "@type": "Source",
       "code": ""
     }
+  },
+  "MusicMedium": {
+    "@type": "MusicMedium",
+    "label": ""
   },
   "ToCEntry": {
     "@type": "ToCEntry",
