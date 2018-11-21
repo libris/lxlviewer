@@ -47,10 +47,15 @@ export default {
     },
     switchPerimeter(id) {
       this.$router.push({ path: `/search/${id}` });
-      this.copyQuery(id);
+      this.moveQuery(id);
     },
-    copyQuery(id) {
-      id === 'libris' ? this.input.value = this.remoteSearch.q : this.remoteSearch.q = this.input.value;
+    moveQuery(id) {
+      let qIndex = _.findIndex(this.inputData.textInput, {class: 'is-searchPhrase'});
+      if (id === 'libris') {
+        this.inputData.textInput[qIndex].value = this.remoteSearch.q;
+      } else {
+        this.remoteSearch.q = this.inputData.textInput[qIndex].value;
+      }
     },
     removeTags(html) {
       let regexHtml = html.replace(/<h1.*>.*?<\/h1>/ig,'').replace(/<h2.*>.*?<\/h2>/ig,'');
