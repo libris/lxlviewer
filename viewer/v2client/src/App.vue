@@ -2,7 +2,10 @@
   <div id="app" class="App">
     <global-message />
     <navbar-component />
-    <main class="MainContent" :class="{ 'container': !status.panelOpen, 'container-fluid': status.panelOpen }" role="main">
+    <div class="debug-mode-indicator" v-if="user.settings.appTech" @click="disableDebugMode">
+      {{ 'Debug mode activated. Click here to disable.' | translatePhrase }}
+    </div>
+    <main class="MainContent" :class="{ 'container': !status.panelOpen, 'container-fluid': status.panelOpen, 'debug-mode': user.settings.appTech }" role="main">
         <div v-if="status.loadingIndicators.length > 0" class="text-center MainContent-spinner">
           <vue-simple-spinner size="large" :message="status.loadingIndicators[0] | translatePhrase"></vue-simple-spinner>
         </div>
@@ -36,6 +39,9 @@ export default {
     inspector() {
       return this.$store.getters.inspector;
     },
+    user() {
+      return this.$store.getters.user;
+    },
     status() {
       return this.$store.getters.status;
     },
@@ -49,6 +55,11 @@ export default {
   watch: {
   },
   methods: {
+    disableDebugMode() {
+      const userObj = this.user;
+      userObj.settings.appTech = false;
+      this.$store.dispatch('setUser', userObj);
+    },
   },
   mounted() {
     this.$nextTick(() => {
@@ -98,6 +109,21 @@ export default {
     i {
       margin-right: 0.5em;
     }
+  }
+}
+
+.debug-mode-indicator {
+  width: 100%;
+  height: 2em;
+  text-align: center;
+  background-color: @brand-warning;
+  cursor: pointer;
+  box-shadow: 0px 5px 5px 0px rgba(0, 0, 0, 0.25);
+  font-variant: all-small-caps;
+  color: #222222;
+  font-weight: bold;
+  &:hover {
+    background-color: darken(@brand-warning, 10%);
   }
 }
 
