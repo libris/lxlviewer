@@ -362,7 +362,7 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      this.initFilePicker();
+      // this.initFilePicker();
     });
   },
 };
