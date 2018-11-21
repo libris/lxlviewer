@@ -634,7 +634,7 @@
     },
     "printedCartograph": {
       "label": "Karta",
-      "description": "Under utveckling",
+      "description": "Kartmaterial",
       "value": {
         "record": {
           "@id": "https://id.kb.se/TEMPID",
@@ -684,6 +684,7 @@
             "value": "",
             "qualifier": ""
           }],
+          "editionStatement": "",
           "publication": [],
           "marc:primaryProvisionActivity": {
             "@type": "PrimaryPublication",
@@ -725,7 +726,7 @@
           ],
           "extent": [{
             "@type": "Extent",
-            "label": ""
+            "label": "1 karta"
           }],
           "genreForm": [
             {
@@ -772,7 +773,7 @@
             },
             {
               "@type": "Cartographic",
-              "coordinates": "(Ö °-Ö °/N °'-N °)",
+              "coordinates": "(Ö °-Ö °/N °-N °)",
               "scale": {
                 "@type": "Scale",
                 "label": "Skala 1:  ; Skalstock:"
@@ -815,8 +816,16 @@
               "inScheme": {
                 "@id": "https://id.kb.se/term/sao"
               },
-              "prefLabel": "",
-              "termComponentList": []
+              "termComponentList": [
+                {
+                  "@type": "Geographic",
+                  "prefLabel": ""
+                },
+                {
+                  "@type": "GeographicSubdivision",
+                  "prefLabel": ""
+                }
+              ]
             }
           ],
           "summary": [
@@ -1530,7 +1539,7 @@
     },
     "printedStillImage": {
       "label": "Stillbild",
-      "description": "Under utveckling",
+      "description": "",
       "value": {
         "record": {
           "@id": "https://id.kb.se/TEMPID",
@@ -1692,7 +1701,24 @@
               "@id": "https://id.kb.se/term/rda/StillImage"
             }
           ],
-          "subject": [],
+          "subject": [
+            {
+              "@type": "ComplexSubject",
+              "inScheme": {
+                "@id": "https://id.kb.se/term/sao"
+              },
+              "termComponentList": [
+                {
+                  "@type": "Geographic",
+                  "prefLabel": ""
+                },
+                {
+                  "@type": "GeographicSubdivision",
+                  "prefLabel": ""
+                }
+              ]
+            }
+          ],
           "summary": [
             {
               "@type": "Summary",
