@@ -634,7 +634,7 @@
     },
     "printedCartograph": {
       "label": "Karta",
-      "description": "Under utveckling",
+      "description": "Kartmaterial",
       "value": {
         "record": {
           "@id": "https://id.kb.se/TEMPID",
@@ -816,7 +816,6 @@
               "inScheme": {
                 "@id": "https://id.kb.se/term/sao"
               },
-              "prefLabel": "",
               "termComponentList": [
                 {
                   "@type": "Geographic",
@@ -1540,7 +1539,7 @@
     },
     "printedStillImage": {
       "label": "Stillbild",
-      "description": "Under utveckling",
+      "description": "",
       "value": {
         "record": {
           "@id": "https://id.kb.se/TEMPID",
@@ -1708,7 +1707,6 @@
               "inScheme": {
                 "@id": "https://id.kb.se/term/sao"
               },
-              "prefLabel": "",
               "termComponentList": [
                 {
                   "@type": "Geographic",
