@@ -423,6 +423,9 @@ export default {
               tooltip-text="Link entity" 
               translation="translatePhrase"></tooltip-component>
           </i>
+          <i class="fa fa-link fa-fw icon icon--sm is-disabled"
+            v-else-if="inspector.status.editing && isExtractable && !extractedMainEntity"
+            tabindex="-1"></i>
         </div>
 
         <field-adder ref="fieldAdder" class="ItemLocal-action"

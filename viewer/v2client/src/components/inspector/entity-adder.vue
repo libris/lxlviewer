@@ -531,10 +531,10 @@ export default {
     <div class="EntityAdder-add"
       v-if="isPlaceholder">
         <i class="fa fa-plus-circle icon icon--sm"
-          :class="{'is-disabled': addEmbedded}"
-          :tabindex="addEmbedded ? -1 : 0"
+          v-if="!addEmbedded"
+          tabindex="0"
           aria-hidden="true"
-          :ref="addEmbedded ? '' : 'adderFocusElement'"
+          ref="adderFocusElement"
           @click="add($event)" 
           @keyup.enter="add($event)"
           @mouseenter="showToolTip = true, actionHighlight(true, $event)" 
@@ -542,8 +542,13 @@ export default {
           @focus="showToolTip = true, actionHighlight(true, $event)"
           @blur="showToolTip = false, actionHighlight(false, $event)">
           <tooltip-component 
-            :show-tooltip="showToolTip && !addEmbedded" 
+            :show-tooltip="showToolTip" 
             :tooltip-text="tooltipText"></tooltip-component>
+        </i>
+        <i class="fa fa-plus-circle icon icon--sm is-disabled"
+          v-else-if="addEmbedded"
+          tabindex="-1"
+          aria-hidden="true">
         </i>
     </div>      
 
@@ -551,9 +556,9 @@ export default {
     <div class="EntityAdder-add action-button" v-if="!isPlaceholder">
       <i 
         class="EntityAdder-addIcon fa fa-plus-circle icon icon--sm"
-        :class="{'is-disabled': addEmbedded}" 
-        :tabindex="addEmbedded ? -1 : 0"
-        :ref="addEmbedded ? '' : 'adderFocusElement'"
+        v-if="!addEmbedded"
+        tabindex="0"
+        ref="adderFocusElement"
         v-on:click="add($event)" 
         @keyup.enter="add($event)"
         @mouseenter="showToolTip = true, actionHighlight(true, $event)" 
@@ -561,8 +566,13 @@ export default {
         @focus="showToolTip = true, actionHighlight(true, $event)"
         @blur="showToolTip = false, actionHighlight(false, $event)">
         <tooltip-component 
-          :show-tooltip="showToolTip && !addEmbedded" 
+          :show-tooltip="showToolTip" 
           :tooltip-text="tooltipText"></tooltip-component>
+      </i>
+      <i
+        class="EntityAdder-addIcon fa fa-plus-circle icon icon--sm is-disabled"
+        v-else-if="addEmbedded"
+        tabindex="-1">
       </i>
       <span class="EntityAdder-addLabel label-text">{{ addLabel | labelByLang | capitalize }}</span>
     </div>
