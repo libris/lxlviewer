@@ -1,3 +1,10 @@
 .panel {
   .panel-mixin(@neutral-color);
 }
+
+.panel-mixin(@color) {
+  border-radius: 2px;
+  box-shadow: @shadow-panel;
+  background-color: @color;
+  border-width: 0px;
+}
