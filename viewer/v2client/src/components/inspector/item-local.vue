@@ -329,6 +329,7 @@ export default {
     },
     copyThis() {
       this.$store.dispatch('setClipboard', this.item);
+      this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('Copied entity to clipboard', this.settings.language)}` });
     },
   },
   watch: {
