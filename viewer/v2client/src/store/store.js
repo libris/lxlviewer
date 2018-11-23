@@ -290,7 +290,12 @@ const store = new Vuex.Store({
       }
     },
     setClipboard(state, data) {
-      const copyObj = JSON.stringify(data);
+      let copyObj;
+      if (data === null) {
+        copyObj = null;
+      } else {
+        copyObj = JSON.stringify(data);
+      }
       state.inspector.clipboard = copyObj;
       localStorage.setItem('copyClipboard', copyObj);
     },
