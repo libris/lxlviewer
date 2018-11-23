@@ -5,7 +5,6 @@ import * as _ from 'lodash';
 import * as VocabUtil from '@/utils/vocab';
 import * as StringUtil from '@/utils/string';
 import * as User from '@/models/user';
-import { navigateChangeHistory } from '../../../client/static/js/es6/vuex/actions.es6';
 
 function getEnvironment() {
   switch(window.location.host.split('.')[0]) {
