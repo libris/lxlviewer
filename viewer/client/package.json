@@ -19,7 +19,7 @@
   "scripts": {
     "postinstall": "mkdir -p static/build && npm run vendor && npm run app",
     "vendor": "npm run copyvendor && npm run vendor:js",
-    "copyvendor": "mkdir -p static/vendor/{jquery,bootstrap}/js && cp -r node_modules/jquery/dist/ static/vendor/jquery/js/ && cp -r node_modules/bootstrap/dist/ static/vendor/bootstrap/",
+    "copyvendor": "mkdir -p static/vendor/{jquery,bootstrap}/js && cp -r node_modules/jquery/dist/* static/vendor/jquery/js/ && cp -r node_modules/bootstrap/dist/* static/vendor/bootstrap/",
     "vendor:js": "uglifyjs static/vendor/{jquery,bootstrap}/js/*.min.js -o static/build/vendor.min.js --source-map static/build/vendor.min.js.map --source-map-url ./vendor.min.js.map --source-map-root /",
     "watch": "parallelshell 'npm run watch:id:less'",
     "watch:id:less": "watch 'npm run app:id:less' static/less/",
