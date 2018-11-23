@@ -287,6 +287,7 @@ export default {
         ],
         addToHistory: true,
       });
+      this.$store.dispatch('setClipboard', null);
     },
     actionHighlight(active, event) {
       if (active) {
