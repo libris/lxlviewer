@@ -111,7 +111,7 @@ export default {
 </script>
 
 <template>
-  <div class="ItemVocab" v-bind:class="{'is-locked': isLocked, 'is-unlocked': !isLocked, 'distinguish-removal': removeHover, 'removed': removed}">
+  <div class="ItemVocab" :id="`formPath-${path}`" v-bind:class="{'is-locked': isLocked, 'is-unlocked': !isLocked, 'distinguish-removal': removeHover, 'removed': removed}">
     <div v-if="!isLocked && possibleValues.length > 0">
       <select v-model="selected" class="ItemVocab-select customSelect">
         <option 

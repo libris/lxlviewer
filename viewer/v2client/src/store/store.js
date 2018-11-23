@@ -48,6 +48,11 @@ const store = new Vuex.Store({
         updating: false,
         isNew: false,
       },
+      validation: {
+        numberOfViolations: 0,
+        violations: {},
+      },
+      clipboard: null,
       changeHistory: [],
       event: [],
     },
@@ -200,6 +205,16 @@ const store = new Vuex.Store({
     }
   },
   mutations: {
+    setValidation(state, payload) {
+      if (payload.validates) {
+        if (state.inspector.validation.violations[payload.path]) {
+          delete state.inspector.validation.violations[payload.path];
+        }
+      } else {
+        state.inspector.validation.violations[payload.path] = payload.reasons;
+      }
+      state.inspector.validation.numberOfViolations = Object.keys(state.inspector.validation.violations).length;
+    },
     pushKeyAction(state, keyAction) {
       state.status.keyActions.push(keyAction);
     },
@@ -274,6 +289,16 @@ const store = new Vuex.Store({
         throw new Error(`Trying to set unknown status property "${payload.property}" on inspector. Is it defined in the store?`);
       }
     },
+    setClipboard(state, data) {
+      let copyObj;
+      if (data === null) {
+        copyObj = null;
+      } else {
+        copyObj = JSON.stringify(data);
+      }
+      state.inspector.clipboard = copyObj;
+      localStorage.setItem('copyClipboard', copyObj);
+    },
     setUser(state, userObj) {
       state.user = userObj;
       state.user.saveSettings();
@@ -343,9 +368,21 @@ const store = new Vuex.Store({
     },
     context: state => {
       return state.resources.context;
+    },
+    clipboard: state => {
+      if (state.inspector.clipboard == null) {
+        state.inspector.clipboard = localStorage.getItem('copyClipboard');
+      }
+      return JSON.parse(state.inspector.clipboard);
     }
   },
   actions: {
+    setValidation({commit}, payload) {
+      commit('setValidation', payload);
+    },
+    pushInspectorEvent({ commit }, payload) {
+      commit('pushInspectorEvent', payload);
+    },
     flushChangeHistory({commit}) {
       commit('flushChangeHistory');
     },
@@ -404,6 +441,9 @@ const store = new Vuex.Store({
     },
     pushInspectorEvent({ commit }, payload) {
       commit('pushInspectorEvent', payload);
+    },
+    setClipboard({ commit }, data) {
+      commit('setClipboard', data);
     },
     setUser({ commit }, userObj) {
       commit('setUser', userObj);

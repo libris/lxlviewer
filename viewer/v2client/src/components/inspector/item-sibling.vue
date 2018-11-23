@@ -39,6 +39,7 @@ export default {
     showActionButtons: false,
     parentPath: '',
     inArray: false,
+    shouldExpand: false,
   },
   data() {
     return {
@@ -51,6 +52,7 @@ export default {
       removeHover: false,
       showLinkAction: false,
       copyTitle: false,
+      expandChildren: false,
     };
   },
   computed: {
@@ -109,16 +111,12 @@ export default {
       return this.suffix;
     },
     isEmpty() {
-      this.$el.getElementsByClassName('js-expandable')[0].classList.add('is-inactive');
-      this.$el.classList.remove('is-expanded');
       let bEmpty = true;
       // Check if item has any keys besides @type and _uid. If not, we'll consider it empty.
       _.each(this.item, (value, key) => {
         if (key !== '@type' && key !== '_uid') {
           if (key !== '@id') {
             if (typeof value !== 'undefined') {
-              this.$el.getElementsByClassName('js-expandable')[0].classList.remove('is-inactive');
-              this.$el.classList.add('is-expanded');
               bEmpty = false;
             }
           }
@@ -134,22 +132,7 @@ export default {
   methods: {
     highLightLastAdded() {
       let element = this.$el;
-      let topOfElement = LayoutUtil.getPosition(element).y;
-      if (topOfElement > 0) {
-        const windowHeight = window.innerHeight || 
-        document.documentElement.clientHeight || 
-        document.getElementsByTagName('body')[0].clientHeight;
-        const scrollPos = LayoutUtil.getPosition(this.$el).y - (windowHeight * 0.2);
-        LayoutUtil.scrollTo(scrollPos, 1000, 'easeInOutQuad', () => {
-          setTimeout(() => {
-            this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
-          }, 1000)
-        });
-      } else {
-        setTimeout(() => {
-          this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
-        }, 1000)
-      }
+      LayoutUtil.scrollToElement(element, 1000, () => {});
     },
     removeThis() {
       const changeList = [
@@ -286,12 +269,32 @@ export default {
         changeList: changeList,
       });
       this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('Linking was successful', this.settings.language)}` });
+      this.$store.dispatch('setInspectorStatusValue', { 
+        property: 'lastAdded', 
+        value: `${this.parentPath}.{"@id":"${newValue['@id']}"}`
+      });
       this.closeExtractDialog();
+    },
+    expandAllChildren() {
+      this.expandChildren = true;
+      this.$nextTick(this.focusFirstInput);
+    },
+    focusFirstInput() {
+      const firstInput = this.$el.querySelector('.js-itemValueInput')
+      if (firstInput) {
+        firstInput.focus();
+      }
     },
   },
   watch: {
     'inspector.event'(val, oldVal) {
       this.$emit(`${val.value}`);
+    },
+    shouldExpand(val) {
+      if (val) {
+        this.expand();
+        this.expandChildren = true;
+      }
     }
   },
   created: function () {
@@ -303,16 +306,21 @@ export default {
       this.highLightLastAdded();
       const fieldAdder = this.$refs.fieldAdder;
       if (this.isEmpty) {
-        this.$el.getElementsByClassName('js-expandable')[0].classList.add('is-inactive');
         LayoutUtil.enableTabbing();
         fieldAdder.$refs.adderButton.focus();
       } else {
         this.expand();
+        this.expandAllChildren();
       }
       setTimeout(()=> {
-      this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
-    }, 1000)
-    } 
+        if (this.isLastAdded) {
+          this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
+        }
+      }, 1000)
+    }
+    if (this.inspector.status.isNew) {
+      this.expand();
+    }
   },
 
   components: {
@@ -328,16 +336,18 @@ export default {
 
 <template>
   <div class="ItemSibling js-itemLocal"
-    tabindex="0"
-    :class="{'is-highlighted': isNewlyAdded, 'is-expanded': expanded, 'is-extractable': isExtractable}"
+    :id="`formPath-${path}`"
+    :class="{'is-highlighted': isNewlyAdded, 'is-expanded': expanded && !isEmpty, 'is-extractable': isExtractable}"
+    :tabindex="isEmpty ? -1 : 0"
     @keyup.enter="checkFocus()" 
     @focus="addFocus()"
     @blur="removeFocus()">
-   
-   <strong class="ItemSibling-heading">
-      <div class="ItemSibling-label js-expandable">
-        <i class="ItemSibling-arrow fa fa-chevron-right " 
-          :class="{'down': expanded}"
+
+    <strong class="ItemSibling-heading">
+      <div class="ItemSibling-label"
+        :class="{'is-inactive': isEmpty}">
+        <i class="ItemSibling-arrow fa fa-chevron-right" 
+          :class="{'icon is-disabled' : isEmpty}"
           @click="toggleExpanded()"></i>
         <span class="ItemSibling-type" 
           @click="toggleExpanded($event)" 
@@ -349,20 +359,26 @@ export default {
       </div>
       
       <div class="ItemSibling-actions">
-        <i class="ItemSibling-action fa fa-link icon icon--sm"
-          v-if="inspector.status.editing && isExtractable"
-          @click="openExtractDialog()" 
-          tabindex="0"
-          @keyup.enter="openExtractDialog()"
-          @focus="showLinkAction = true, actionHighlight(true)" 
-          @blur="showLinkAction = false, actionHighlight(false)"
-          @mouseover="showLinkAction = true, actionHighlight(true)" 
-          @mouseout="showLinkAction = false, actionHighlight(false)">
-          <tooltip-component 
-            :show-tooltip="showLinkAction" 
-            tooltip-text="Link entity" 
-            translation="translatePhrase"></tooltip-component>
-        </i>
+        <div class="ItemSibling-action">
+          <i class="fa fa-link icon icon--sm"
+            v-if="inspector.status.editing && isExtractable && extractedMainEntity"
+            @click="openExtractDialog(), expand()" 
+            tabindex="0"
+            @keyup.enter="openExtractDialog(), expand()"
+            @focus="showLinkAction = true, actionHighlight(true)" 
+            @blur="showLinkAction = false, actionHighlight(false)"
+            @mouseover="showLinkAction = true, actionHighlight(true)" 
+            @mouseout="showLinkAction = false, actionHighlight(false)">
+            <tooltip-component 
+              :show-tooltip="showLinkAction" 
+              tooltip-text="Link entity" 
+              translation="translatePhrase"></tooltip-component>
+          </i>
+          <i class="fa fa-link fa-fw icon icon--sm is-disabled"
+            v-else-if="inspector.status.editing && isExtractable && !extractedMainEntity"
+            tabindex="-1"></i>
+        </div>
+
         <field-adder ref="fieldAdder" class="ItemSibling-action"
           v-if="!isLocked" 
           :entity-type="item['@type']" 
@@ -370,21 +386,23 @@ export default {
           :inner="true" 
           :path="getPath">
         </field-adder>
-        <i class="ItemSibling-action fa fa-trash-o icon icon--sm" 
-          v-if="!isLocked" 
-          :class="{'show-icon': showActionButtons}" 
-          v-on:click="removeThis(true)"
-          @keyup.enter="removeThis(true)"
-          tabindex="0"
-          @focus="removeHover = true, removeHighlight(true)" 
-          @blur="removeHover = false, removeHighlight(false)"
-          @mouseover="removeHover = true, removeHighlight(true)" 
-          @mouseout="removeHover = false, removeHighlight(false)">
-          <tooltip-component 
-            :show-tooltip="removeHover" 
-            tooltip-text="Remove" 
-            translation="translatePhrase"></tooltip-component>
-        </i>
+        <div class="ItemSibling-action">
+          <i class="fa fa-trash-o icon icon--sm" 
+            v-if="!isLocked" 
+            :class="{'show-icon': showActionButtons}" 
+            v-on:click="removeThis(true)"
+            @keyup.enter="removeThis(true)"
+            tabindex="0"
+            @focus="removeHover = true, removeHighlight(true)" 
+            @blur="removeHover = false, removeHighlight(false)"
+            @mouseover="removeHover = true, removeHighlight(true)" 
+            @mouseout="removeHover = false, removeHighlight(false)">
+            <tooltip-component 
+              :show-tooltip="removeHover" 
+              tooltip-text="Remove" 
+              translation="translatePhrase"></tooltip-component>
+          </i>
+        </div>
       </div>
     </strong>
   
@@ -409,9 +427,10 @@ export default {
         :field-key="k" 
         :field-value="v" 
         :key="k" 
+        :expand-children="expandChildren"
         :show-action-buttons="showActionButtons"></field>
     </ul>
-       
+
     <search-window 
       :isActive="extractDialogActive" 
       :can-copy-title="canCopyTitle" 
@@ -463,12 +482,6 @@ export default {
     padding: 0 2px;
     margin: 0 0 0 1px;
     cursor: pointer;
-
-    .is-inactive & {
-      color: @gray-light;
-      pointer-events: none;
-      cursor: not-allowed;
-    }
   }
 
   &-list {

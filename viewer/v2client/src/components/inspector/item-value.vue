@@ -26,7 +26,6 @@ export default {
     showActionButtons: false,
     isExpanded: false,
     parentPath: false,
-    gparentPath: false,
   },
   watch: {
     isLocked(val) {
@@ -73,7 +72,7 @@ export default {
     },
     shouldFocus() {
       let lastAdded = this.inspector.status.lastAdded;
-      if (lastAdded === this.path || lastAdded === this.parentPath || lastAdded === this.gparentPath) {
+      if (lastAdded === this.path || lastAdded === this.parentPath) {
         return true;
       }
       return false;
@@ -97,13 +96,9 @@ export default {
           item.classList.remove('is-removeable');
       }
     },
-    handleKeys(e) {
-      this.$store.dispatch('setInspectorStatusValue', { property: 'updating', value: true });
-      if (e.keyCode === 13) { // Handle enter
-        e.target.blur();
-        e.preventDefault();
-        return false;
-      }
+    handleEnter(e) {
+      e.target.blur();
+      return false;
     },
     update(newValue) {
       const oldValue = _.cloneDeep(_.get(this.inspector.data, this.path));
@@ -122,27 +117,20 @@ export default {
     highLightLastAdded() {
       if (this.isLastAdded === true) {
         let element = this.$el;
-        let topOfElement = LayoutUtil.getPosition(element).y;
-        if (topOfElement > 0) {
-          const windowHeight = window.innerHeight || 
-          document.documentElement.clientHeight || 
-          document.getElementsByTagName('body')[0].clientHeight;
-          const scrollPos = LayoutUtil.getPosition(this.$el).y - (windowHeight * 0.2);
-          LayoutUtil.scrollTo(scrollPos, 1000, 'easeInOutQuad', () => {
-            setTimeout(() => {
-              this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
-            }, 1000)
-          });
-        } else {
+        element.classList.add('is-lastAdded');
+        LayoutUtil.scrollToElement(element, 1000, () => {
           setTimeout(() => {
-            this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
-          }, 1000)
-        }
+            element.classList.remove('is-lastAdded');
+            if (this.isLastAdded) {
+              this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
+            }
+          }, 1000);
+        });
       }
     },
     initializeTextarea() {
       this.$nextTick(() => {
-        let textarea = this.$el.querySelector('textarea');
+        let textarea = this.$refs.textarea;
         AutoSize(textarea);
         AutoSize.update(textarea);
       })
@@ -175,12 +163,13 @@ export default {
 
 <template>
   <div class="ItemValue js-value" 
-    v-bind:class="{'is-locked': isLocked, 'unlocked': !isLocked, 'is-removed': removed, 'is-lastAdded': isLastAdded}">
+    v-bind:class="{'is-locked': isLocked, 'unlocked': !isLocked, 'is-removed': removed}"
+    :id="`formPath-${path}`">
     <textarea class="ItemValue-input js-itemValueInput" 
       rows="1" 
       v-model="value"
       @blur="update($event.target.value)"
-      @keydown="handleKeys"
+      @keydown.enter.prevent="handleEnter"
       v-if="!isLocked"
       ref="textarea"></textarea>
     <span class="ItemValue-text"
@@ -189,7 +178,8 @@ export default {
       v-if="isLocked && shouldLink"
       :href="fieldValue" 
       target="_blank" 
-      :title="`${fieldValue} (${newWindowText})`">{{fieldValue}} 
+      :title="`${fieldValue} (${newWindowText})`">
+        {{fieldValue}} 
         <i class="fa fa-external-link" aria-hidden="true"></i>
     </a>
     <div class="ItemValue-remover"

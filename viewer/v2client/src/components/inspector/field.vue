@@ -40,12 +40,14 @@ export default {
     entityType: '',
     showActionButtons: '',
     isExpanded: false,
+    expandChildren: false,
   },
   data() {
     return {
       activeModal: false,
       shouldShowActionButtons: false,
       removeHover: false,
+      pasteHover: false,
       foundChip: false,
       removed: false,
       uniqueIds: [],
@@ -65,8 +67,46 @@ export default {
   watch: {
   },
   computed: {
+    failedValidations() {
+      const failedValidations = [];
+      if (this.user.settings.appTech === false) {
+        return failedValidations;
+      }
+      if (!this.isRepeatable && _.isArray(this.fieldValue) && this.fieldValue.length > 1) {
+        failedValidations.push({
+          text: "The property is not repeatable",
+          hint: this.fieldKey
+        });
+      }
+
+      if (failedValidations.length > 0) {
+        this.$store.dispatch('setValidation', { path: this.getPath, validates: false, reasons: failedValidations });
+      } else {
+        this.$store.dispatch('setValidation', { path: this.getPath, validates: true });
+      }
+      return failedValidations;
+    },
+    clipboardHasValidObject() {
+      if (this.clipboardValue === null) {
+        return false;
+      }
+      return this.fullRange.indexOf(this.clipboardValue['@type']) > -1;
+    },
+    clipboardValue() {
+      return this.clipboard;
+    },
     isMainField() {
       return (!this.isInner && this.settings.mainFields[this.recordType] === this.fieldKey);
+    },
+    fullRange() {
+      const fetchedRange = VocabUtil.getFullRange(
+        this.entityType, 
+        this.fieldKey, 
+        this.resources.vocab, 
+        this.resources.context, 
+        this.resources.vocabClasses
+      ).map(item => StringUtil.getCompactUri(item, this.resources.context));;
+      return fetchedRange;
     },
     recordType() {
       return VocabUtil.getRecordType(
@@ -87,6 +127,7 @@ export default {
       'user',
       'settings',
       'status',
+      'clipboard',
     ]),
     warnBeforeRemove() {
       return this.inspector.status.focus === 'record';
@@ -140,7 +181,6 @@ export default {
       if (!_.isArray(this.fieldValue)) {
         valueArray = [this.fieldValue];
       }
-
       return valueArray;
     },
     isUriType() {
@@ -155,10 +195,10 @@ export default {
       return `${this.parentPath}.${this.fieldKey}`;
     },
     isChild() {
-     if (this.parentPath !== 'mainEntity') {
-       return true;
-     }
-     return false;
+      if (this.parentPath !== 'mainEntity') {
+        return true;
+      }
+      return false;
     },
     propertyTypes() {
       return VocabUtil.getPropertyTypes(
@@ -213,6 +253,42 @@ export default {
     },
   },
   methods: {
+    pasteClipboardItem() {
+      const obj = this.clipboardValue;
+      let currentValue = _.cloneDeep(_.get(this.inspector.data, this.getPath));
+      if (currentValue === null) {
+        currentValue = obj;
+      } else if (!_.isArray(currentValue)) {
+        currentValue = [currentValue];
+        currentValue.push(obj);
+      } else {
+        if(typeof obj.length !== "undefined" && _.isArray(obj) ) {
+          obj.forEach(function(subObj) {
+            currentValue.push(subObj);
+          });
+        } else {
+          currentValue.push(obj);
+        }
+      }
+      let index = '';
+      if (currentValue.length) {
+        index = `[${currentValue.length -1}]`;
+      }
+      this.$store.dispatch('setInspectorStatusValue', { 
+        property: 'lastAdded', 
+        value: `${this.getPath}${index}`
+      });
+      this.$store.dispatch('updateInspectorData', {
+        changeList: [
+          {
+            path: `${this.getPath}`,
+            value: currentValue,
+          }
+        ],
+        addToHistory: true,
+      });
+      this.$store.dispatch('setClipboard', null);
+    },
     actionHighlight(active, event) {
       if (active) {
         let item = event.target;
@@ -342,35 +418,25 @@ export default {
         if (this.fieldValue === null || (_.isArray(this.fieldValue) && this.fieldValue.length === 0 )) {
           const entityAdder = this.$refs.entityAdder;
           this.$nextTick(() => {
-            if (entityAdder) {
+            if (entityAdder.$refs.adderFocusElement) {
               LayoutUtil.enableTabbing();
-              if (entityAdder.$refs.adderTypeSelect) {
-                entityAdder.$refs.adderTypeSelect.focus();
-              } else {
-                entityAdder.$refs.adderFocusElement.focus();
-              }
+              entityAdder.$refs.adderFocusElement.focus();
             }
           });
         }
         let element = this.$el;
-        let topOfElement = LayoutUtil.getPosition(element).y;
-        if (topOfElement > 0) {
-          const windowHeight = window.innerHeight || 
-          document.documentElement.clientHeight || 
-          document.getElementsByTagName('body')[0].clientHeight;
-          const scrollPos = LayoutUtil.getPosition(this.$el).y - (windowHeight * 0.2);
-          LayoutUtil.scrollTo(scrollPos, 1000, 'easeInOutQuad', () => {
-            setTimeout(() => {
-              this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
-            }, 1000)
-          });
-        } else {
+        LayoutUtil.scrollToElement(element, 1000, () => {
           setTimeout(() => {
-            this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
-          }, 1000)
-        }
+            if (this.isLastAdded) {
+              this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
+            }
+          }, 1000);
+        });
       }
     }
+  },
+  beforeDestroy() {
+    this.$store.dispatch('setValidation', { path: this.getPath, validates: true });
   },
   mounted() {
     this.$nextTick(() => {
@@ -387,8 +453,8 @@ export default {
 
 <template>
   <li class="Field js-field" 
-    :id="`field-${getPath}`"
-    v-bind:class="{'is-mainField': isMainField, 'Field--inner': !asColumns, 'is-lastAdded': isLastAdded, 'is-removed': removed}" 
+    :id="`formPath-${getPath}`"
+    v-bind:class="{'is-mainField': isMainField, 'Field--inner': !asColumns, 'is-lastAdded': isLastAdded, 'is-removed': removed, 'has-failed-validations': failedValidations.length > 0 }" 
     @mouseover="handleMouseEnter()" 
     @mouseleave="handleMouseLeave()">
 
@@ -429,9 +495,28 @@ export default {
             :path="getPath">
           </entity-adder>
           <div v-else class="Field-action placeholder"></div> 
+
           <div class="Field-comment" v-if="propertyComment && !locked" >
             <i class="fa fa-question-circle Field-comment icon icon--sm"></i>
             <span class="Field-commentText">{{ propertyComment }}</span>
+          </div>
+          <div v-else class="Field-action placeholder"></div> 
+
+          <div class="Field-action Field-clipboardPaster"
+            v-if="!locked && (isRepeatable || isEmptyObject) && clipboardHasValidObject" 
+            ref="clipboardPaster">
+            <i tabindex="0" class="fa fa-paste action-button icon icon--sm"
+              @click="pasteClipboardItem"
+              @keyup.enter="pasteClipboardItem"
+              @focus="pasteHover = true, actionHighlight(true, $event)" 
+              @blur="pasteHover = false, actionHighlight(false, $event)"
+              @mouseover="pasteHover = true, actionHighlight(true, $event)" 
+              @mouseout="pasteHover = false, actionHighlight(false, $event)">
+              <tooltip-component 
+                :show-tooltip="pasteHover" 
+                tooltip-text="Paste entity" 
+                translation="translatePhrase"></tooltip-component>
+            </i>
           </div>
         </div>
         <div class="Field-label uppercaseHeading" v-bind:class="{ 'is-locked': locked }">
@@ -441,7 +526,7 @@ export default {
             :title="fieldKey">{{ fieldKey | labelByLang | capitalize }}</span>    
         </div>
       </div>
-      <pre class="path-code" v-show="user.settings.appTech && !isInner">{{getPath}}</pre>
+      <code class="path-code" v-show="user.settings.appTech && !isInner">{{getPath}}</code>
     </div>
     <div class="Field-label uppercaseHeading" v-if="isInner" v-bind:class="{ 'is-locked': locked }">
       <span v-show="fieldKey === '@id'">{{ 'ID' | translatePhrase | capitalize }}</span>
@@ -484,6 +569,23 @@ export default {
             <tooltip-component translation="translatePhrase"
               :show-tooltip="removeHover" 
               tooltip-text="Remove"></tooltip-component>
+          </i>
+        </div>
+
+        <div class="Field-action Field-clipboardPaster"
+          v-if="!locked && (isRepeatable || isEmptyObject) && clipboardHasValidObject" 
+          ref="clipboardPaster">
+          <i tabindex="0" class="fa fa-paste action-button icon icon--sm"
+            @click="pasteClipboardItem"
+            @keyup.enter="pasteClipboardItem"
+            @focus="pasteHover = true, actionHighlight(true, $event)" 
+            @blur="pasteHover = false, actionHighlight(false, $event)"
+            @mouseover="pasteHover = true, actionHighlight(true, $event)" 
+            @mouseout="pasteHover = false, actionHighlight(false, $event)">
+            <tooltip-component 
+              :show-tooltip="pasteHover" 
+              tooltip-text="Paste entity" 
+              translation="translatePhrase"></tooltip-component>
           </i>
         </div>
       </div>
@@ -530,11 +632,13 @@ export default {
           :is-locked="locked" 
           :entity-type="entityType" 
           :forced-extractability="isCompositional"
+          :parent-range="fullRange"
           :item="item" 
           :field-key="fieldKey" 
           :index="index" 
           :parent-path="getPath" 
           :in-array="valueIsArray" 
+          :should-expand="expandChildren"
           :show-action-buttons="actionButtonsShown"></item-local>
 
         <item-sibling
@@ -547,8 +651,10 @@ export default {
           :index="index"
           :in-array="valueIsArray"
           :show-action-buttons="actionButtonsShown"
+          :should-expand="expandChildren"
           :parent-path="getPath"></item-sibling>
       </div>
+      <portal-target :name="`typeSelect-${getPath}`" />
     </div>
 
     <div class="Field-content is-endOfTree js-endOfTree" 
@@ -588,10 +694,10 @@ export default {
           :field-key="fieldKey" 
           :index="index" 
           :parent-path="getPath" 
-          :gparent-path="parentPath"
           :show-action-buttons="actionButtonsShown"
           :is-expanded="isExpanded"></item-value>
       </div>
+      <portal-target :name="`typeSelect-${getPath}`" />
     </div>
   </li>
 </template>
@@ -608,6 +714,9 @@ export default {
   position: relative;
   transition: background-color .3s ease;
 
+  &.has-failed-validations {
+    outline: 1px dotted red;
+  }
   &.is-mainField {
     border-bottom-width: 2px;
   
@@ -641,8 +750,7 @@ export default {
     padding: 5px 0 5px 0;
     border-radius: 4px;
     overflow: visible;
-    max-height: auto;
-    display: inline-block;
+    display: block;
 
     &.is-marked {
       background-color: @add;
@@ -913,6 +1021,11 @@ export default {
 
   .path-code {
     display: inline-block;
+    word-break: break-all;
+    overflow: hidden;
+    background-color: #f0f0f0;
+    padding: 0;
+    color: #4f4f4f;
   }
 }
 

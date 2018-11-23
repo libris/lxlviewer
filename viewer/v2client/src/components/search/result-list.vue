@@ -14,6 +14,7 @@ export default {
   data() {
     return {
       keyword: '',
+      relationsList: false,
     }
   },
   methods: {
@@ -30,6 +31,13 @@ export default {
         return this.importData[index].database;
       }
       return '';
+    },
+    relationsListOpen(e) {
+      if (e) {
+        this.relationsList = true;
+      } else {
+        this.relationsList = false;
+      }
     }
   },
   computed: {
@@ -42,28 +50,30 @@ export default {
   components: {
     'result-list-item': ResultListItem,
   },
-  watch: {
-  },
   mounted() { // Ready method is deprecated in 2.0, switch to "mounted"
   },
 };
 </script>
 
 <template>
-  <ol class="ResultList" aria-labelledby="resultDescr">
+  <ol class="ResultList" 
+    aria-labelledby="resultDescr"
+    :class="{'is-dimmed': relationsList}">
     <result-list-item  v-if="!compact && results.length > 0" class="ResultList-item"
       :database="getDatabase(index)" 
       :show-detailed="true"
       :focus-data="item" 
       :import-item="getImportItem(index)" v-for="(item, index) in results" 
-      :key="item['@id']"></result-list-item>
+      :key="item['@id']"
+      @relations-list-open="relationsListOpen"></result-list-item>
 
     <result-list-item v-if="compact && results.length > 0" class="ResultList-item"
       :database="getDatabase(index)" 
       :show-detailed="false"
       :focus-data="item" 
       :import-item="getImportItem(index)" v-for="(item, index) in results" 
-      :key="item['@id']"></result-list-item>
+      :key="item['@id']"
+      @relations-list-open="relationsListOpen"></result-list-item>
   </ol>
 </template>
 

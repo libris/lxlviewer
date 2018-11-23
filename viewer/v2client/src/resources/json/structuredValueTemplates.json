@@ -27,7 +27,8 @@
   },
   "KeyTitle": {
     "@type": "KeyTitle",
-    "mainTitle": ""
+    "mainTitle": "",
+    "qualifier": ""
   },
   "marc:OtherTitle": {
     "@type": "marc:OtherTitle",
@@ -311,18 +312,18 @@
   },
   "PrimaryContribution": {
     "@type": "PrimaryContribution",
-    "agent": [],
+    "agent": null,
     "role": []
   },
   "Contribution": {
     "@type": "Contribution",
-    "agent": [],
+    "agent": null,
     "role": []
   },
   "ComplexSubject": {
     "@type": "ComplexSubject",
     "termComponentList": [],
-    "inScheme": []
+    "inScheme": null
   },
   "Geographic": {
     "@type": "Geographic",
@@ -419,8 +420,24 @@
     "@type": "Library",
     "sigel": ""
   },
+  "Summary": {
+    "@type": "Summary",
+    "label": ""
+  },
   "TableOfContents": {
     "@type": "TableOfContents",
+    "label": ""
+  },
+  "MusicFormat": {
+    "@type": "MusicFormat",
+    "label": [""],
+    "source": {
+      "@type": "Source",
+      "code": ""
+    }
+  },
+  "MusicMedium": {
+    "@type": "MusicMedium",
     "label": ""
   },
   "ToCEntry": {

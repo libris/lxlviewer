@@ -32,6 +32,11 @@ export default {
     showActionButtons: false,
     parentPath: '',
     inArray: false,
+    parentRange: {
+      type: Array,
+      default: () => [],
+    },
+    shouldExpand: false,
   },
   data() {
     return {
@@ -41,9 +46,11 @@ export default {
       extracting: false,
       expanded: false,
       removeHover: false,
-      cloneHover: false,
+      managerMenuOpen: false,
+      manageHover: false,
       showLinkAction: false,
       copyTitle: false,
+      expandChildren: false,
       cloned: false
     };
   },
@@ -55,6 +62,39 @@ export default {
       'user',
       'status',
     ]),
+    failedValidations() {
+      const failedValidations = [];
+      if (this.user.settings.appTech === false) {
+        return failedValidations;
+      }
+
+      const termObj = VocabUtil.getTermObject(this.focusData['@type'], this.resources.vocab, this.resources.context);
+      if (termObj === {} || typeof termObj === 'undefined') {
+        failedValidations.push({
+          text: "The class could not be found",
+          hint: this.focusData['@type']
+        });
+      } else {
+        if (termObj.abstract === true) {
+          failedValidations.push({
+            text: "The class is abstract and should not be used",
+            hint: this.focusData['@type']
+          });
+        } else if (this.parentRange.indexOf(this.focusData['@type']) == -1) {
+          failedValidations.push({
+            text: "The class is not in the range of this property",
+            hint: `${this.fieldKey} <- ${this.focusData['@type']}`
+          });
+        }
+      }
+
+      if (failedValidations.length > 0) {
+        this.$store.dispatch('setValidation', { path: this.path, validates: false, reasons: failedValidations });
+      } else {
+        this.$store.dispatch('setValidation', { path: this.path, validates: true });
+      }
+      return failedValidations;
+    },
     canCopyTitle() {
       if (this.isExtractable && !this.item.hasOwnProperty('hasTitle') && this.key === 'instanceOf') {
         return true;
@@ -97,16 +137,12 @@ export default {
       return this.item;
     },
     isEmpty() {
-      this.$el.getElementsByClassName('js-expandable')[0].classList.add('is-inactive');
-      this.$el.classList.remove('is-expanded');
 
       let bEmpty = true;
       // Check if item has any keys besides @type and _uid. If not, we'll consider it empty.
       _.each(this.item, (value, key) => {
         if (key !== '@type' && key !== '_uid') {
           if (typeof value !== 'undefined') {
-            this.$el.getElementsByClassName('js-expandable')[0].classList.remove('is-inactive');
-            this.$el.classList.add('is-expanded');
             bEmpty = false;
           }
         }
@@ -121,24 +157,15 @@ export default {
     },
   },
   methods: {
+    openManagerMenu() {
+      this.managerMenuOpen = true;
+    },
+    closeManagerMenu() {
+      this.managerMenuOpen = false;
+    },
     highLightLastAdded() {
       let element = this.$el;
-      let topOfElement = LayoutUtil.getPosition(element).y;
-      if (topOfElement > 0) {
-        const windowHeight = window.innerHeight || 
-        document.documentElement.clientHeight || 
-        document.getElementsByTagName('body')[0].clientHeight;
-        const scrollPos = LayoutUtil.getPosition(this.$el).y - (windowHeight * 0.2);
-        LayoutUtil.scrollTo(scrollPos, 1000, 'easeInOutQuad', () => {
-          setTimeout(() => {
-            this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
-          }, 1000)
-        });
-      } else {
-        setTimeout(() => {
-          this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
-        }, 1000)
-      }
+      LayoutUtil.scrollToElement(element, 1000, () => {});
     },
     actionHighlight(active, event) {
       if (active) {
@@ -239,6 +266,7 @@ export default {
     },
     removeFocus() {
       this.focused = false;
+      this.closeManagerMenu();
     },
     extract() {
       this.extracting = true;
@@ -262,6 +290,10 @@ export default {
         addToHistory: false,
       });
       this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('Linking was successful', this.settings.language)}` });
+      this.$store.dispatch('setInspectorStatusValue', { 
+        property: 'lastAdded', 
+        value: `${this.parentPath}.{"@id":"${newValue['@id']}"}`
+      });
       this.closeExtractDialog();
     },
     cloneThis() {      
@@ -285,11 +317,34 @@ export default {
         });
       }, 500);
     },
+    expandAllChildren() {
+      this.expandChildren = true;
+      this.$nextTick(this.focusFirstInput);
+    },
+    focusFirstInput() {
+      const firstInput = this.$el.querySelector('.js-itemValueInput')
+      if (firstInput) {
+        firstInput.focus();
+      }
+    },
+    copyThis() {
+      this.$store.dispatch('setClipboard', this.item);
+      this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('Copied entity to clipboard', this.settings.language)}` });
+    },
   },
   watch: {
     'inspector.event'(val, oldVal) {
       this.$emit(`${val.value}`);
+    },
+    shouldExpand(val) {
+      if (val) {
+        this.expand();
+        this.expandChildren = true;
+      }
     }
+  },
+  beforeDestroy() {
+    this.$store.dispatch('setValidation', { path: this.path, validates: true });
   },
   created: function () {
     this.$on('collapse-item', this.collapse);
@@ -300,17 +355,21 @@ export default {
       this.highLightLastAdded();
       const fieldAdder = this.$refs.fieldAdder;
         if (this.isEmpty) {
-          this.$el.getElementsByClassName('js-expandable')[0].classList.add('is-inactive');
-          this.collapse();
           LayoutUtil.enableTabbing();
           fieldAdder.$refs.adderButton.focus();
         } else {
           this.expand();
+          this.expandAllChildren();
         }
       setTimeout(() => {
-        this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
+        if (this.isLastAdded) {
+          this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
+        }
       }, 1000)
-    } 
+    }
+    if (this.inspector.status.isNew) {
+      this.expand();
+    }
   },
 
   components: {
@@ -326,16 +385,18 @@ export default {
 
 <template>
   <div class="ItemLocal js-itemLocal"
-    :class="{'is-highlighted': isLastAdded, 'is-expanded': expanded, 'is-extractable': isExtractable}"
-    tabindex="0" 
+    :id="`formPath-${path}`"
+    :class="{'is-highlighted': isLastAdded, 'is-expanded': expanded && !isEmpty, 'is-extractable': isExtractable, 'has-failed-validations': failedValidations.length > 0 }"
+    :tabindex="isEmpty ? -1 : 0"
     @keyup.enter="checkFocus()"
     @focus="addFocus()"
     @blur="removeFocus()">
 
     <strong class="ItemLocal-heading">
-      <div class="ItemLocal-label js-expandable">
-        <i class="ItemLocal-arrow fa fa-chevron-right " 
-          :class="{'down': expanded}" 
+      <div class="ItemLocal-label"
+        :class="{'is-inactive': isEmpty}">
+        <i class="ItemLocal-arrow fa fa-chevron-right" 
+          :class="{'icon is-disabled' : isEmpty}"
           @click="toggleExpanded()"></i>
         <span class="ItemLocal-type" 
           @click="toggleExpanded($event)" 
@@ -347,36 +408,24 @@ export default {
       </div>
       
       <div class="ItemLocal-actions">
-        <i class="ItemLocal-action fa fa-link icon icon--sm"
-          v-if="inspector.status.editing && isExtractable"
-          @click="openExtractDialog()" 
-          @focus="showLinkAction = true, actionHighlight(true, $event)"
-          @blur="showLinkAction = false, actionHighlight(false, $event)"
-          @mouseover="showLinkAction = true, actionHighlight(true, $event)" 
-          @mouseout="showLinkAction = false, actionHighlight(false, $event)"
-          @keyup.enter="openExtractDialog()"
-          tabindex="0">
-          <tooltip-component 
-            :show-tooltip="showLinkAction" 
-            tooltip-text="Link entity" 
-            translation="translatePhrase"></tooltip-component>
-        </i>
-
-        <div class="ItemLocal-action" 
-          v-if="!isLocked && inArray">
-          <i class="fa fa-clone action-button icon icon--sm"
-            tabindex="0"
-            v-on:click="cloneThis(true)"
-            @keyup.enter="cloneThis(true)"
-            @focus="cloneHover = true, actionHighlight(true, $event)"
-            @blur="cloneHover = false, actionHighlight(false, $event)"
-            @mouseover="cloneHover = true, actionHighlight(true, $event)" 
-            @mouseout="cloneHover = false, actionHighlight(false, $event)">
+        <div class="ItemLocal-action">
+          <i class="fa fa-link fa-fw icon icon--sm"
+            v-if="inspector.status.editing && isExtractable && extractedMainEntity"
+            @click="openExtractDialog(), expand()" 
+            @focus="showLinkAction = true, actionHighlight(true, $event)"
+            @blur="showLinkAction = false, actionHighlight(false, $event)"
+            @mouseover="showLinkAction = true, actionHighlight(true, $event)" 
+            @mouseout="showLinkAction = false, actionHighlight(false, $event)"
+            @keyup.enter="openExtractDialog(), expand()"
+            tabindex="0">
             <tooltip-component 
-              :show-tooltip="cloneHover" 
-              translation="translatePhrase"
-              tooltip-text="Duplicate entity"></tooltip-component>
+              :show-tooltip="showLinkAction" 
+              tooltip-text="Link entity" 
+              translation="translatePhrase"></tooltip-component>
           </i>
+          <i class="fa fa-link fa-fw icon icon--sm is-disabled"
+            v-else-if="inspector.status.editing && isExtractable && !extractedMainEntity"
+            tabindex="-1"></i>
         </div>
 
         <field-adder ref="fieldAdder" class="ItemLocal-action"
@@ -387,21 +436,65 @@ export default {
           :path="getPath">
         </field-adder>
 
-        <i class="ItemLocal-action fa fa-trash-o icon icon--sm" 
-          v-if="!isLocked" 
-          :class="{'show-icon': showActionButtons}" 
-          v-on:click="removeThis(true)" 
-          @keyup.enter="removeThis(true)"
-          tabindex="0"
-          @focus="removeHover = true, removeHighlight(true, $event)"
-          @blur="removeHover = false, removeHighlight(false, $event)"
-          @mouseover="removeHover = true, removeHighlight(true, $event)"
-          @mouseout="removeHover = false, removeHighlight(false, $event)">
-          <tooltip-component 
-            :show-tooltip="removeHover" 
-            tooltip-text="Remove" 
-            translation="translatePhrase"></tooltip-component>
-        </i>
+        <div class="ItemLocal-action">
+          <i class="fa fa-trash-o fa-fw icon icon--sm" 
+            v-if="!isLocked" 
+            :class="{'show-icon': showActionButtons}" 
+            v-on:click="removeThis(true)" 
+            @keyup.enter="removeThis(true)"
+            tabindex="0"
+            @focus="removeHover = true, removeHighlight(true, $event)"
+            @blur="removeHover = false, removeHighlight(false, $event)"
+            @mouseover="removeHover = true, removeHighlight(true, $event)"
+            @mouseout="removeHover = false, removeHighlight(false, $event)">
+            <tooltip-component 
+              :show-tooltip="removeHover" 
+              tooltip-text="Remove" 
+              translation="translatePhrase"></tooltip-component>
+          </i>
+        </div>
+
+        <div class="ItemLocal-action">
+          <i class="icon icon--sm fa fa-fw fa-ellipsis-v"
+            v-if="!isLocked"
+            :class="{'show-icon': showActionButtons}" 
+            v-on:click="managerMenuOpen ? closeManagerMenu() : openManagerMenu()" 
+            @keyup.enter="managerMenuOpen ? closeManagerMenu() : openManagerMenu()"
+            tabindex="0"
+            @focus="manageHover = true, actionHighlight(true, $event)"
+            @blur="manageHover = false, actionHighlight(false, $event)"
+            @mouseover="manageHover = true, actionHighlight(true, $event)"
+            @mouseout="manageHover = false, actionHighlight(false, $event)">
+            <tooltip-component 
+              :show-tooltip="manageHover" 
+              tooltip-text="Manage" 
+              translation="translatePhrase"></tooltip-component>
+          </i>
+        </div>
+        <div class="dropdown ManagerMenu" v-on-clickaway="closeManagerMenu" v-if="managerMenuOpen"
+          @mouseover="actionHighlight(true, $event)"
+          @mouseout="actionHighlight(false, $event)">
+          <ul class="dropdown-menu ManagerMenu-menuList">
+            <li class="ManagerMenu-menuItem">
+              <a tabindex="0" class="ManagerMenu-menuLink"
+              @focus="actionHighlight(true, $event)"
+              @keyup.enter="copyThis(), closeManagerMenu(), actionHighlight(false, $event)"
+              @click="copyThis(), closeManagerMenu(), actionHighlight(false, $event)">
+              <i class="fa fa-fw fa-copy" aria-hidden="true"></i>
+              {{"Copy to clipboard" | translatePhrase}}
+              </a>
+            </li>
+            <li class="ManagerMenu-menuItem" v-if="inArray">
+              <a tabindex="0" class="ManagerMenu-menuLink"
+              @focus="actionHighlight(true, $event)"
+              @keyup.enter="cloneThis(), closeManagerMenu(), actionHighlight(false, $event)"
+              @click="cloneThis(), closeManagerMenu(), actionHighlight(false, $event)">
+              <i class="fa fa-fw fa-clone" aria-hidden="true"></i>
+              {{"Duplicate entity" | translatePhrase}}
+              </a>
+            </li>
+          </ul>
+        </div>
       </div>
     </strong>
   
@@ -427,6 +520,7 @@ export default {
         :field-value="v"
         :key="k" 
         :show-action-buttons="showActionButtons"
+        :expand-children="expandChildren"
         :is-expanded="expanded"></field> 
     </ul>
 
@@ -454,6 +548,10 @@ export default {
   transition: background-color .5s ease;
   width: 100%;
 
+  &.has-failed-validations {
+    outline: 1px dotted red;
+  }
+
   &-heading {
     display: block;
     flex: 1 100%;
@@ -478,12 +576,6 @@ export default {
     transition: all 0.2s ease;
     padding: 0 2px;
     cursor: pointer;
-
-    .is-inactive & {
-      color: @gray-light;
-      pointer-events: none;
-      cursor: not-allowed;
-    }
   }
 
   &-list {
@@ -507,10 +599,34 @@ export default {
     }
   }
 
+  .ManagerMenu {
+    li > a {
+      cursor: pointer;
+      padding: 3px 5px;
+    }
+    &-menuList {
+      display: block;
+      padding: 5px 0;
+    }
+    &-menuItem {
+      & a {
+        display: flex;
+        align-items: center;
+        padding: 5px 15px;
+        color: @grey-darker;
+      }
+
+    }
+    &-menuLink {
+      cursor: pointer;
+      & i {
+        margin-right: 5px;
+      }
+    }
+  }
+
   &-action {
-    min-width: 20px;
     display: inline-block;
-    margin-right: 5px;
   }
 
   &.is-marked {

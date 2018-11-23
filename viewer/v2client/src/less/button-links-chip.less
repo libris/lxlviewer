@@ -10,6 +10,10 @@ body a {
   }
 }
 
+a:focus {
+  outline: none;
+}
+
 // ----------- BUTTON ----------------
 
 .btn,
@@ -17,6 +21,11 @@ body a {
   border: 0;
   box-shadow: @shadow-panel;
   transition: background-color 0.1s ease;
+}
+
+.btn:focus,
+.btn:active:focus {
+  outline: 0;
 }
 
 .btn[disabled],
@@ -101,7 +110,7 @@ body a {
   line-height: 1.6;
   padding: 3px 5px 3px 10px;
   margin: 2px 5px 5px 0px;
-  transition: .3s ease;
+  transition: .3s ease, background-color 0.3s ease;
   max-width: 300px;
 
   &-label {

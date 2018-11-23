@@ -34,11 +34,13 @@ export default {
       }).then(() => {
         this.$nextTick(() => {
           this.relationsListOpen = true;
+          this.$parent.$el.classList.add('is-highlighted');
         });
       });
     },
     hidePanel() {
       this.relationsListOpen = false;
+      this.$parent.$el.classList.remove('is-highlighted');
     },
     getRelatedPosts(queryPairs) {
       // Returns a list of posts that links to <id> with <property>
@@ -62,46 +64,53 @@ export default {
     },
     getRelationsInfo() {
       this.checkingRelations = true;
-      const query = {
-        '_limit': 0,
-      };
-      if (this.recordType === 'Item') {
-        query['itemOf.@id'] = this.mainEntity.itemOf['@id'];
-        query['@type'] = 'Item';
-      } else if (this.recordType === 'Instance') {
-        query['itemOf.@id'] = this.mainEntity['@id'];
-        query['@type'] = 'Item';
+      const timeoutLength = 1100; // Needed so that the index has time to update 
+      setTimeout(() => { // 
+        const query = {
+          '_limit': 0,
+        };
+        if (this.recordType === 'Item') {
+          query['itemOf.@id'] = this.mainEntity.itemOf['@id'];
+          query['@type'] = 'Item';
+        } else if (this.recordType === 'Instance') {
+          query['itemOf.@id'] = this.mainEntity['@id'];
+          query['@type'] = 'Item';
 
-        // Check if my sigel has holding
-        const myHoldingQuery = Object.assign({}, query);
-        myHoldingQuery['_limit'] = 1;
-        myHoldingQuery['heldBy.@id'] = `https://libris.kb.se/library/${this.user.settings.activeSigel}`;
-        this.getRelatedPosts(myHoldingQuery)
-        .then((response) => {
-          if (response.totalItems > 0) {
-            this.myHolding = response.items[0]['@id'];
-          }
-        })
-        .catch((error) => {
-          console.log(error);
+          // Check if my sigel has holding
+          const myHoldingQuery = Object.assign({}, query);
+          myHoldingQuery['_limit'] = 1;
+          myHoldingQuery['heldBy.@id'] = `https://libris.kb.se/library/${this.user.settings.activeSigel}`;
+          this.getRelatedPosts(myHoldingQuery)
+          .then((response) => {
+            if (response.totalItems > 0) {
+              this.myHolding = response.items[0]['@id'];
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+
+        } else if (this.recordType === 'Work') {
+          query['instanceOf.@id'] = this.mainEntity['@id'];
+          query['@type'] = 'Instance';
+        } else if (this.recordType === 'Agent') {
+          query['instanceOf.contribution.agent.@id'] = this.mainEntity['@id'];
+        } else {
+          query['q'] = this.mainEntity['@id'];
+        }
+        this.panelQuery = Object.assign({}, query);
+        if (this.recordType === 'Item' || this.recordType === 'Instance') {
+          // Sort panel query by alphabetical order of sigel id
+          this.panelQuery['_sort'] = 'heldBy.@id';
+        }
+        this.getRelatedPosts(query).then((response) => {
+          this.relationInfo = response.items;
+          this.numberOfRelations = response.totalItems;
+          this.checkingRelations = false;
+        }, (error) => {
+          console.log('Error checking for relations', error);
         });
-
-      } else if (this.recordType === 'Work') {
-        query['instanceOf.@id'] = this.mainEntity['@id'];
-        query['@type'] = 'Instance';
-      } else if (this.recordType === 'Agent') {
-        query['instanceOf.contribution.agent.@id'] = this.mainEntity['@id'];
-      } else {
-        query['q'] = this.mainEntity['@id'];
-      }
-      this.panelQuery = Object.assign({}, query);
-      this.getRelatedPosts(query).then((response) => {
-        this.relationInfo = response.items;
-        this.numberOfRelations = response.totalItems;
-        this.checkingRelations = false;
-      }, (error) => {
-        console.log('Error checking for relations', error);
-      });
+      }, timeoutLength);
     },
     gotoHolding() {
       const locationParts = this.myHolding.split('/');
@@ -207,6 +216,11 @@ export default {
         }
       }
     },
+    relationsListOpen(val, oldVal) { 
+      if (val !== oldVal) {
+        this.$parent.$emit('relations-list-open', val);
+      }
+    },
     numberOfRelations: function (val) {
       this.numberOfRelations = val;
     }
@@ -223,6 +237,11 @@ export default {
 
 <template>
   <div class="ReverseRelations">
+    <vue-simple-spinner class="ReverseRelations-spinner"
+      v-show="checkingRelations"
+      v-if="!compact" 
+      size="medium">
+    </vue-simple-spinner>
     <div class="ReverseRelations-number"
       v-show="!checkingRelations"
       v-if="!compact">
@@ -303,6 +322,7 @@ export default {
       <relations-list 
         v-if="relationsListOpen"
         :query="panelQuery"
+        :item-of="mainEntity"
         :list-context-type="recordType"
         @close="hidePanel()"></relations-list>
     </portal>
@@ -310,9 +330,7 @@ export default {
 </template>
 
 <style lang="less">
-
 .ReverseRelations {
-  
   &-number {
     float: left;
     margin: 0 0 10px;
@@ -325,9 +343,6 @@ export default {
 
   &-label {
     margin-right: 5px;
-  }
-
-  &-button {
   }
 
   &-header {
@@ -345,7 +360,7 @@ export default {
     flex-direction: column;
   }
 
-  &.spinner {
+  &-spinner {
     margin-bottom: 10px;
   }
 }

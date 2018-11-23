@@ -61,16 +61,12 @@ export default {
         text += ' ';
         text += this.literalString.text;
       }
-      if (this.keyBindingText) {
-        text += ' ';
-        text += this.keyBindingText;
-      }
-      return text;
+      return text + this.keybindingText;
     },
     keybindingText() {
       let str = '';
       if (this.keybindName) {
-        str = LayoutUtil.getKeybindingText(this.keybindName);
+        str = ` (${LayoutUtil.getKeybindingText(this.keybindName)})`;
       }
       return str;
     },
@@ -178,6 +174,7 @@ export default {
     transition-delay: 0.2s;
     visibility: visible;
     display:block;
+    z-index: 4;
   }
 }
 

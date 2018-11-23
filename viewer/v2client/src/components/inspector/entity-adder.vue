@@ -17,12 +17,12 @@ import PanelSearchList from '../search/panel-search-list';
 import PanelComponent from '@/components/shared/panel-component.vue';
 import ModalPagination from '@/components/inspector/modal-pagination';
 import FilterSelect from '@/components/shared/filter-select.vue';
+import TypeSelect from '@/components/inspector/type-select';
 import LensMixin from '../mixins/lens-mixin';
-import { mixin as clickaway } from 'vue-clickaway';
 import VueSimpleSpinner from 'vue-simple-spinner';
 
 export default {
-  mixins: [clickaway, LensMixin],
+  mixins: [LensMixin],
   data() {
     return {
       searchResult: [],
@@ -31,7 +31,6 @@ export default {
       debounceTimer: 500,
       showToolTip: false,
       rangeInfo: false,
-      selectedType: '',
       addEmbedded: false,
       searchMade: false,
       currentSearchTypes: [],
@@ -72,6 +71,7 @@ export default {
     'panel-search-list': PanelSearchList,
     'modal-pagination': ModalPagination,
     'filter-select': FilterSelect,
+    'type-select': TypeSelect,
     'vue-simple-spinner': VueSimpleSpinner,
   },
   watch: {
@@ -249,7 +249,6 @@ export default {
   },
   mounted() {
     this.addEmbedded = (this.valueList.length === 0 && this.onlyEmbedded && this.getFullRange.length > 1);
-
   },
   methods: {
     actionHighlight(active, event) {
@@ -310,7 +309,6 @@ export default {
         this.addEmbedded = false;
       }
       this.showToolTip = false;
-      this.selectedType = '';
     },
     add(event) {
       this.actionHighlight(false, event);
@@ -405,9 +403,13 @@ export default {
           currentValue.push(obj);
         }
       }
+      let index = '';
+      if (currentValue.length) {
+        index = `[${currentValue.length -1}]`;
+      }
       this.$store.dispatch('setInspectorStatusValue', { 
         property: 'lastAdded', 
-        value: `${this.path}[${currentValue.length -1}]`
+        value: `${this.path}${index}`
       });
       this.$store.dispatch('updateInspectorData', {
         changeList: [
@@ -458,7 +460,7 @@ export default {
         };
       }
 
-      if (this.fieldKey === 'instanceOf') {
+      if (this.path === 'mainEntity.instanceOf') {
         this.addSibling(obj);
       } else {
         this.addItem(obj);
@@ -527,9 +529,9 @@ export default {
   <div class="EntityAdder" :class="{'is-innerAdder': isPlaceholder, 'is-fillWidth': addEmbedded}">
     <!-- Adds another empty field of the same type -->
     <div class="EntityAdder-add"
-      v-if="isPlaceholder && !addEmbedded">
-        <i 
-          class="fa fa-plus-circle icon icon--sm" 
+      v-if="isPlaceholder">
+        <i class="fa fa-plus-circle icon icon--sm"
+          v-if="!addEmbedded"
           tabindex="0"
           aria-hidden="true"
           ref="adderFocusElement"
@@ -543,12 +545,18 @@ export default {
             :show-tooltip="showToolTip" 
             :tooltip-text="tooltipText"></tooltip-component>
         </i>
+        <i class="fa fa-plus-circle icon icon--sm is-disabled"
+          v-else-if="addEmbedded"
+          tabindex="-1"
+          aria-hidden="true">
+        </i>
     </div>      
 
     <!-- Add entity within field -->
-    <div class="EntityAdder-add action-button" v-if="!isPlaceholder && !addEmbedded">
+    <div class="EntityAdder-add action-button" v-if="!isPlaceholder">
       <i 
-        class="EntityAdder-addIcon fa fa-plus-circle icon icon--sm" 
+        class="EntityAdder-addIcon fa fa-plus-circle icon icon--sm"
+        v-if="!addEmbedded"
         tabindex="0"
         ref="adderFocusElement"
         v-on:click="add($event)" 
@@ -561,135 +569,133 @@ export default {
           :show-tooltip="showToolTip" 
           :tooltip-text="tooltipText"></tooltip-component>
       </i>
+      <i
+        class="EntityAdder-addIcon fa fa-plus-circle icon icon--sm is-disabled"
+        v-else-if="addEmbedded"
+        tabindex="-1">
+      </i>
       <span class="EntityAdder-addLabel label-text">{{ addLabel | labelByLang | capitalize }}</span>
     </div>
-
-    <div class="EntityAdder-typeChooser" 
-      v-if="addEmbedded" 
-      v-on-clickaway="dismissTypeChooser">
-      <select class="EntityAdder-typeSelect customSelect" 
-        v-model="selectedType" 
-        ref="adderTypeSelect"
-        @change="addType(selectedType, true)">
-        <option disabled value="">{{"Choose type" | translatePhrase}}</option>
-        <option v-for="(term, index) in getClassTree"  
-          v-html="getFormattedSelectOption(term, settings, resources.vocab, resources.context)"
-          :disabled="term.abstract" 
-          :key="`${term.id}-${index}`" 
-          :value="term.id"></option>
-      </select>
-    </div>
+    <portal :to="`typeSelect-${path}`">
+      <type-select
+        v-if="addEmbedded"
+        :classTree="getClassTree"
+        :options="selectOptions"
+        :removeable="valueList.length > 0"
+        @selected="addType($event)"
+        @dismiss="dismissTypeChooser()" />
+    </portal>
     <portal to="sidebar" v-if="active">
-    <panel-component class="EntityAdder-panel EntityAdderPanel" 
-      v-if="active"
-      :title="computedTitle"
-      @close="hide">
-      <template slot="panel-header-info">
-        <div 
-          class="PanelComponent-headerInfo" 
-          v-if="getFullRange.length > 0" 
-          @mouseleave="rangeInfo = false">
-          <i class="fa fa-info-circle icon icon--md" @mouseenter="rangeInfo = true"></i>
-          <div class="PanelComponent-headerInfoBox" v-show="rangeInfo">
-            <p class="header">
-              {{ "Allowed types" | translatePhrase }}:
-            </p>
-            <span v-for="(range, index) in getFullRange" :key="index">
-              • {{range | labelByLang}}
-            </span>
-          </div>
-        </div>
-      </template>
-      <template slot="panel-header-extra">
-        <!-- <div class="EntityAdder-panelBody"> -->
-        <div class="EntityAdder-controls">
-          <div class="EntityAdder-controlForm">
-            <div class="EntityAdder-search">
-              <label for="entityKeywordInput" class="EntityAdder-searchLabel">{{ "Search" | translatePhrase }}</label>
-              <div class="EntityAdder-searchInputContainer panel">
-                <input class="EntityAdder-searchInput entity-search-keyword-input customInput form-control"
-                  name="entityKeywordInput"
-                  v-model="keyword"
-                  ref="input"
-                  placeholder="Sök"
-                  autofocus />
-                  <filter-select class="EntityAdder-filterSearchInput FilterSelect--insideInput"
-                    :class-name="'js-filterSelect'"
-                    :custom-placeholder="'All types:'"
-                    :options="selectOptions"
-                    :options-all="getRange"
-                    :is-filter="true"
-                    :options-selected="''"
-                    v-on:filter-selected="setFilter($event, keyword)"></filter-select>
-              </div>
+      <panel-component class="EntityAdder-panel EntityAdderPanel" 
+        v-if="active"
+        :title="computedTitle"
+        @close="hide">
+        <template slot="panel-header-info">
+          <div 
+            class="PanelComponent-headerInfo" 
+            v-if="getFullRange.length > 0" 
+            @mouseleave="rangeInfo = false">
+            <i class="fa fa-info-circle icon icon--md" @mouseenter="rangeInfo = true"></i>
+            <div class="PanelComponent-headerInfoBox" v-show="rangeInfo">
+              <p class="header">
+                {{ "Allowed types" | translatePhrase }}:
+              </p>
+              <span v-for="(range, index) in getFullRange" :key="index">
+                • {{range | labelByLang}}
+              </span>
             </div>
           </div>
-          
-        </div>
-      </template>
-      <template slot="panel-body">
-        <panel-search-list class="EntityAdder-searchResult"
-          v-if="!loading && keyword.length > 0" 
-          :path="path" 
-          :results="searchResult" 
-          :disabled-ids="alreadyAdded"
-          :is-compact="isCompact"
-          icon="plus"
-          text="Add"
-          :has-action="true"
-          @use-item="addLinkedItem">
-        </panel-search-list>
-        <div class="PanelComponent-searchStatus" v-if="!loading && keyword.length === 0" >
-          {{ "Start writing to begin search" | translatePhrase }}...
-        </div>
-        <div v-if="loading" class="PanelComponent-searchStatus">
-          <vue-simple-spinner size="large" :message="'Searching' | translatePhrase"></vue-simple-spinner>
-        </div>
-        <div class="PanelComponent-searchStatus"
-          v-if="!loading && searchResult.length === 0 && keyword.length > 0 && searchMade">
-          {{ "No results" | translatePhrase }}
-        </div>
-      <!-- </div> -->
-      </template>
-      <template slot="panel-footer">
-        
-        <div class="EntityAdder-resultControls" v-if="!loading && searchResult.length > 0">
-          <modal-pagination
-            @go="go" 
-            :numberOfPages="numberOfPages" 
-            :currentPage="currentPage">
-          </modal-pagination>
-          <div class="EntityAdder-listTypes">
-            <i class="fa fa-th-list icon icon--sm"
-              @click="isCompact = false"
-              @keyup.enter="isCompact = false"
-              :class="{'icon--primary' : !isCompact}"
-              :title="'Detailed view' | translatePhrase"
-              tabindex="0"></i>
-            <i class="fa fa-list icon icon--sm"
-              @click="isCompact = true"
-              @keyup.enter="isCompact = true"
-              :class="{'icon--primary' : isCompact}"
-              :title="'Compact view' | translatePhrase"
-              tabindex="0"></i>
+        </template>
+        <template slot="panel-header-extra">
+          <!-- <div class="EntityAdder-panelBody"> -->
+          <div class="EntityAdder-controls">
+            <div class="EntityAdder-controlForm">
+              <div class="EntityAdder-search">
+                <label for="entityKeywordInput" class="EntityAdder-searchLabel">{{ "Search" | translatePhrase }}</label>
+                <div class="EntityAdder-searchInputContainer panel">
+                  <input class="EntityAdder-searchInput entity-search-keyword-input customInput form-control"
+                    name="entityKeywordInput"
+                    v-model="keyword"
+                    ref="input"
+                    placeholder="Sök"
+                    autofocus />
+                    <filter-select class="EntityAdder-filterSearchInput FilterSelect--insideInput"
+                      :class-name="'js-filterSelect'"
+                      :custom-placeholder="'All types:'"
+                      :options="selectOptions"
+                      :options-all="getRange"
+                      :is-filter="true"
+                      :options-selected="''"
+                      v-on:filter-selected="setFilter($event, keyword)"></filter-select>
+                </div>
+              </div>
+            </div>
+            
           </div>
-        </div>
-        <div class="EntityAdder-create">
-          <button class="EntityAdder-createBtn btn btn-primary btn--sm"
-            v-if="hasSingleRange" 
-            v-on:click="addEmpty(getFullRange[0])">{{ "Create local entity" | translatePhrase }}
-          </button>
-           <filter-select
-            v-if="!hasSingleRange" 
-            :class-name="'js-createSelect'"
-            :options="selectOptions"
-            :options-all="getRange"
-            :is-filter="false"
-            :custom-placeholder="'Create local entity:'"
-            v-on:filter-selected="addType($event.value)"></filter-select>
-        </div>
-      </template>
-    </panel-component>
+        </template>
+        <template slot="panel-body">
+          <panel-search-list class="EntityAdder-searchResult"
+            v-if="!loading && keyword.length > 0" 
+            :path="path" 
+            :results="searchResult" 
+            :disabled-ids="alreadyAdded"
+            :is-compact="isCompact"
+            icon="plus"
+            text="Add"
+            :has-action="true"
+            @use-item="addLinkedItem">
+          </panel-search-list>
+          <div class="PanelComponent-searchStatus" v-if="!loading && keyword.length === 0" >
+            {{ "Start writing to begin search" | translatePhrase }}...
+          </div>
+          <div v-if="loading" class="PanelComponent-searchStatus">
+            <vue-simple-spinner size="large" :message="'Searching' | translatePhrase"></vue-simple-spinner>
+          </div>
+          <div class="PanelComponent-searchStatus"
+            v-if="!loading && searchResult.length === 0 && keyword.length > 0 && searchMade">
+            {{ "No results" | translatePhrase }}
+          </div>
+        <!-- </div> -->
+        </template>
+        <template slot="panel-footer">
+          
+          <div class="EntityAdder-resultControls" v-if="!loading && searchResult.length > 0">
+            <modal-pagination
+              @go="go" 
+              :numberOfPages="numberOfPages" 
+              :currentPage="currentPage">
+            </modal-pagination>
+            <div class="EntityAdder-listTypes">
+              <i class="fa fa-th-list icon icon--sm"
+                @click="isCompact = false"
+                @keyup.enter="isCompact = false"
+                :class="{'icon--primary' : !isCompact}"
+                :title="'Detailed view' | translatePhrase"
+                tabindex="0"></i>
+              <i class="fa fa-list icon icon--sm"
+                @click="isCompact = true"
+                @keyup.enter="isCompact = true"
+                :class="{'icon--primary' : isCompact}"
+                :title="'Compact view' | translatePhrase"
+                tabindex="0"></i>
+            </div>
+          </div>
+          <div class="EntityAdder-create">
+            <button class="EntityAdder-createBtn btn btn-primary btn--sm"
+              v-if="hasSingleRange" 
+              v-on:click="addEmpty(getFullRange[0])">{{ "Create local entity" | translatePhrase }}
+            </button>
+            <filter-select
+              v-if="!hasSingleRange" 
+              :class-name="'js-createSelect'"
+              :options="selectOptions"
+              :options-all="getRange"
+              :is-filter="false"
+              :custom-placeholder="'Create local entity:'"
+              v-on:filter-selected="addType($event.value)"></filter-select>
+          </div>
+        </template>
+      </panel-component>
     </portal>
   </div>
 </template>
@@ -708,7 +714,7 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    padding: 0 10px;
+    padding: 5px 10px 0 10px;
   }
 
   &-listTypes {
@@ -739,16 +745,6 @@ export default {
     display: none;
   }
 
-  &-typeChooser {
-    text-align: center;
-  }
-
-  &-typeSelect {
-    position: absolute;
-    left: 20px;
-    z-index: 1;
-    max-width: 150px;
-  }
 
   &-controls {
     line-height: 1.2;

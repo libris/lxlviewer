@@ -97,25 +97,16 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      if(this.inspector.status.lastAdded === this.fullPath) {
+      if(this.isNewlyAdded) {
         setTimeout(() => {
           let element = this.$el;
-          let topOfElement = LayoutUtil.getPosition(element).y;
-          if (topOfElement > 0) {
-            const windowHeight = window.innerHeight || 
-            document.documentElement.clientHeight || 
-            document.getElementsByTagName('body')[0].clientHeight;
-            const scrollPos = LayoutUtil.getPosition(this.$el).y - (windowHeight * 0.2);
-            LayoutUtil.scrollTo(scrollPos, 900, 'easeInOutQuad', () => {
-              setTimeout(() => {
-                this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
-              }, 1000)
-            });
-          } else {
+          LayoutUtil.scrollToElement(element, 1000, () => {
             setTimeout(() => {
+              if (this.isNewlyAdded) {
                 this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
-              }, 1000)
-          }
+              }
+            }, 1000);
+          });
         }, 200);
       }
     });
@@ -125,6 +116,7 @@ export default {
 
 <template>
   <div class="ItemEntity-container" 
+    :id="`formPath-${path}`"
     @keyup.enter="showCardInfo=true"
     @mouseenter="showCardInfo=true"
     @mouseleave="showCardInfo=false">

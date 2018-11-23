@@ -63,11 +63,11 @@ export default {
     },
   },
   beforeDestroy() {
-    window.removeEventListener('scroll', this.handleScroll);
+    window.removeEventListener('scroll', _.throttle(this.handleScroll, 300));
   },
   mounted() {
     this.$nextTick(() => {
-      window.addEventListener('scroll', this.handleScroll);
+    window.addEventListener('scroll', _.throttle(this.handleScroll, 300));
     });
   },
   components: {
