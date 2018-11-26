@@ -35,4 +35,4 @@ Each one of these main files include:
 
 ## Help documents
 
-[Go here](helpdocs/).
+The help documentation has been moved to [its own project](https://github.com/libris/lxl-helpdocs).
