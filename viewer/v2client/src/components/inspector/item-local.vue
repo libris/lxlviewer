@@ -25,12 +25,9 @@ export default {
   mixins: [ItemMixin, LensMixin, FormMixin, clickaway],
   props: {
     item: {},
-    fieldKey: '',
     entityType: '',
-    index: Number,
     isLocked: false,
     showActionButtons: false,
-    parentPath: '',
     inArray: false,
     parentRange: {
       type: Array,

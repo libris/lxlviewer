@@ -6,11 +6,19 @@ import { mapGetters } from 'vuex';
 
 export default {
   props: {
-    parentPath: '',
+    parentPath: {
+      type: String,
+      default: '',
+    },
+    fieldKey: {
+      type: String,
+      default: '',
+    },
     forcedExtractability: {
       type: Boolean,
       default: null,
-    }
+    },
+    index: Number,
   },
   data(){
     return {

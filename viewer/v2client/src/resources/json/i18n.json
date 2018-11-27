@@ -59,6 +59,8 @@
     "Add field" : "Lägg till egenskaper",
     "Add field in" : "Lägg till egenskaper under",
     "The property is not repeatable": "Egenskapen är ej repeterbar",
+    "The property is not recognized": "Egenskapen känns inte igen",
+    "The entity is missing crucial data": "Entiteten saknar nödvändig data",
     "The class could not be found": "Klassen känns inte igen",
     "The class is abstract and should not be used": "Klassen är abstrakt och ska inte användas",
     "The class is not in the range of this property": "Klassen är inte tillåten på denna egenskap",

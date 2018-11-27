@@ -446,7 +446,7 @@ export function getProperties(classId, vocabClasses, vocabProperties, context) {
 
 export function getContextValue(propertyId, key, context) {
   if (context[1].hasOwnProperty(propertyId)) {
-    if (context[1][propertyId].hasOwnProperty(key)) {
+    if (context[1][propertyId] !== null && context[1][propertyId].hasOwnProperty(key)) {
       return context[1][propertyId][key];
     }
   }

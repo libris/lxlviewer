@@ -72,6 +72,14 @@ export default {
       if (this.user.settings.appTech === false) {
         return failedValidations;
       }
+
+      if (this.keyAsVocabProperty === null || typeof this.keyAsVocabProperty === 'undefined') {
+        failedValidations.push({
+          text: "The property is not recognized",
+          hint: this.fieldKey
+        });
+      }
+
       if (!this.isRepeatable && _.isArray(this.fieldValue) && this.fieldValue.length > 1) {
         failedValidations.push({
           text: "The property is not repeatable",
@@ -604,6 +612,9 @@ export default {
 
         <item-error 
           v-if="getDatatype(item) == 'error'" 
+          :field-key="fieldKey" 
+          :parent-path="getPath"
+          :index="index" 
           :item="item"></item-error>
 
         <!-- Other linked resources -->

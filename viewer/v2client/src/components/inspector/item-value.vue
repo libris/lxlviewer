@@ -18,14 +18,11 @@ export default {
   mixins: [ItemMixin, LensMixin],
   props: {
     fieldValue: '',
-    fieldKey: '',
-    index: Number,
     isUriType: false,
     isLocked: false,
     isRemovable: false,
     showActionButtons: false,
     isExpanded: false,
-    parentPath: false,
   },
   watch: {
     isLocked(val) {
