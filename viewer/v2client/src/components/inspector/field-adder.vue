@@ -213,6 +213,9 @@ export default {
         });
       });
     },
+    expand() {
+      this.$parent.$emit('expand-item', true);
+    },
     hide() {
       if (!this.active) return;
       this.active = false;
@@ -261,7 +264,7 @@ export default {
         class="FieldAdder-innerIcon fa fa-plus-circle fa-fw icon icon--sm" 
         tabindex="0"
         ref="adderButton"
-        @click="show" 
+        @click="show(), expand()" 
         @keyup.enter="show"
         @mouseenter="showToolTip = true, actionHighlight(true, $event)" 
         @mouseleave="showToolTip = false, actionHighlight(false, $event)"

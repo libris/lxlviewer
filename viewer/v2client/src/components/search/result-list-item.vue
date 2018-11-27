@@ -112,6 +112,7 @@ export default {
     list-style: none;
     margin-bottom: 15px;
     padding: 15px 20px;
+    transition: transform .2s ease-in-out;
     .panel-mixin(@white);
 
     & .EntitySummary {
@@ -122,11 +123,16 @@ export default {
     }
 
     .is-dimmed & {
-      opacity: 0.5;
+      // opacity: 0.5;
     }
 
     &.is-highlighted {
       opacity: 1;
+      transform-origin: left center;
+      transition: transform .4s ease-in-out;
+      transform: scale(1.05);
+      border: 1px solid @brand-primary;
+      box-shadow: -5px 5px 10px 0px rgba(0, 0, 0, 0.1), -5px 5px 20px 10px rgba(0, 0, 0, 0.1), 0 10px 5px -10px rgba(0, 0, 0, 0.1);    
     }
   }
 
