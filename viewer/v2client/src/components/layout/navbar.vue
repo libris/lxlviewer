@@ -1,7 +1,16 @@
 <script>
+import UserAvatar from '@/components/shared/user-avatar';
 
 export default {
   name: 'navbar-component',
+  data() {
+    return {
+      hasAvatar: true,
+    }
+  },
+  components: {
+    'user-avatar': UserAvatar,
+  },
   computed: {
     user() {
       return this.$store.getters.user;
@@ -71,9 +80,7 @@ export default {
             </li>
             <li class="MainNav-item" v-if="user.isLoggedIn">
               <router-link to="/user" class="MainNav-link">
-                <div class="MainNav-iconWrap MainNav-iconWrap--userSettings">
-                  <img class="MainNav-gravatar" :src="`https://www.gravatar.com/avatar/${user.emailHash}?d=mm&s=32`" alt="Avatar"/>
-                </div>
+                <user-avatar :size="32" />
                 <span class="MainNav-linkText">
                 {{ user.fullName }} <span v-cloak class="sigelLabel">({{ user.settings.activeSigel }})</span>
                 </span>
@@ -218,13 +225,10 @@ export default {
     width: .8em;
 
     &--userSettings {
-      height: 30px;   
-      width: 30px;
+      height: 32px;   
+      width: 32px;
+      position: relative;
     }
-  }
-
-  &-gravatar {
-    border-radius: 80%;
   }
 
   &-link {

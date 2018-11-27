@@ -1,6 +1,7 @@
 <script>
 import * as StringUtil from '@/utils/string';
 import * as _ from 'lodash';
+import UserAvatar from '@/components/shared/user-avatar';
 
 export default {
   name: 'user-settings',
@@ -46,6 +47,7 @@ export default {
     },
   },
   components: {
+    'user-avatar': UserAvatar,
   },
   watch: {
   },
@@ -62,8 +64,7 @@ export default {
     <div class="UserSettings-content">
       <div class="UserSettings-info UserInfo">
         <div class="UserInfo-avatar">
-          <img :src="`https://www.gravatar.com/avatar/${user.emailHash}?d=mm&s=150`" class="UserInfo-img" alt="Avatar"/>
-          <br/>
+          <user-avatar :size="150" />
         </div>
         <p class="UserInfo-name">
           <strong class="UserInfo-label uppercaseHeading--bold">{{"Name" | translatePhrase}}</strong><br/>
@@ -166,12 +167,7 @@ export default {
   padding: 20px;
 
   @media (min-width: @screen-sm) {
-      border-right: 1px solid @gray-lighter;
-    }
-
-  &-avatar {
-    padding: 20px;
-    text-align: center;
+    border-right: 1px solid @gray-lighter;
   }
 
   &-img {
@@ -179,6 +175,10 @@ export default {
     border-radius: 50%;
     width: 150px;
     height: 150px;
+  }
+
+  &-avatar {
+    text-align: center;
   }
 
   &-label {
