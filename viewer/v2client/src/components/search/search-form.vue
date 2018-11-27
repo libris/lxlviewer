@@ -47,6 +47,15 @@ export default {
     },
     switchPerimeter(id) {
       this.$router.push({ path: `/search/${id}` });
+      this.moveQuery(id);
+    },
+    moveQuery(id) {
+      let qIndex = _.findIndex(this.inputData.textInput, {class: 'is-searchPhrase'});
+      if (id === 'libris') {
+        this.inputData.textInput[qIndex].value = this.remoteSearch.q;
+      } else {
+        this.remoteSearch.q = this.inputData.textInput[qIndex].value;
+      }
     },
     removeTags(html) {
       let regexHtml = html.replace(/<h1.*>.*?<\/h1>/ig,'').replace(/<h2.*>.*?<\/h2>/ig,'');
@@ -322,11 +331,11 @@ export default {
     <form id="searchForm" class="SearchBar-form">
       <div class="SearchBar-formContent is-librisSearch" id="librisPanel"
         v-if="searchPerimeter === 'libris'">
-        <div class="SearchBar-formGroup form-group">
+        <div class="SearchBar-formGroup form-group panel">
           <label class="SearchBar-inputLabel hidden" id="searchlabel" for="q" aria-hidden="false">
             {{"Search" | translatePhrase}}
           </label>
-          <div class="SearchBar-inputWrap panel" id="searchFieldContainer">
+          <div class="SearchBar-inputWrap" id="searchFieldContainer">
             <div class="SearchBar-input customInput form-control">
               <div class="SearchBar-qsmart js-qsmartInput" aria-labelledby="searchlabel">
                 <input name="q"
@@ -500,6 +509,7 @@ export default {
     &.is-searchPhrase {
       flex-grow: 1;
       margin-right: 5px;
+      padding: 0;
       outline: none;
       cursor: text;
     }
