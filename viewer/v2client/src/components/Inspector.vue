@@ -181,6 +181,7 @@ export default {
       });
     },
     initializeRecord() {
+      this.documentETag = null; // Reset this
       this.marcPreview.active = false
       this.$store.dispatch('pushLoadingIndicator', 'Loading document');
       this.postLoaded = false;
