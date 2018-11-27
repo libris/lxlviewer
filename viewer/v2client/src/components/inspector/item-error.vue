@@ -1,8 +1,10 @@
 <script>
 import * as _ from 'lodash';
+import ItemMixin from '../mixins/item-mixin';
 
 export default {
   name: 'item-error',
+  mixins: [ItemMixin],
   props: {
     item: {},
   },
@@ -21,6 +23,18 @@ export default {
       }
       return JSON.stringify(cleanItem);
     },
+    failedValidations() {
+      const failedValidations = [];
+      if (this.user.settings.appTech === false) {
+        return failedValidations;
+      }
+      failedValidations.push({
+        text: "The entity is missing crucial data"
+      });
+
+      this.$store.dispatch('setValidation', { path: this.path, validates: false, reasons: failedValidations });
+      return failedValidations;
+    },
   },
   components: {
   },
@@ -29,16 +43,18 @@ export default {
       console.log("keyword changed", value, oldval);
     },
   },
-  ready() { // Ready method is deprecated in 2.0, switch to "mounted"
+  mounted() {
     this.$nextTick(() => {
-      // Do stuff
     });
+  },
+  beforeDestroy() {
+    this.$store.dispatch('setValidation', { path: this.path, validates: true });
   },
 };
 </script>
 
 <template>
-  <div class="ItemError">
+  <div class="ItemError" :id="`formPath-${path}`" :class="{ 'has-failed-validations': failedValidations.length > 0 }">
     <code>{{itemAsJson}}</code>
   </div>
 </template>
@@ -52,6 +68,10 @@ export default {
   code {
     color: @black;
     background-color: transparent;
+  }
+
+  &.has-failed-validations {
+    outline: 1px dotted red;
   }
 }
 

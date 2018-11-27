@@ -14,8 +14,6 @@ export default {
   mixins: [ItemMixin],
   props: {
     fieldValue: '',
-    fieldKey: '',
-    index: Number,
     isLocked: false,
     expanded: false,
     entityType: '',

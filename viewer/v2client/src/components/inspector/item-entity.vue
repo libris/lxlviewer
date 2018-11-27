@@ -16,10 +16,7 @@ export default {
   mixins: [ItemMixin, LensMixin],
   props: {
     item: {},
-    fieldKey: '',
-    index: Number,
     isLocked: false,
-    parentPath: '',
   },
   data() {
     return {
