@@ -52,6 +52,7 @@ export default {
   data () {
     return {
       documentId: null,
+      documentETag: null,
       result: {},
       postLoaded: false,
       modalOpen: false,
@@ -151,6 +152,7 @@ export default {
       const fetchUrl = `${this.settings.apiPath}/${this.documentId}/data.jsonld?${randomHash}`;
       fetch(fetchUrl).then((response) => {
         if (response.status === 200) {
+          this.documentETag = response.headers.get('ETag').replace(/"/g, ''); // Fix double quoted string
           return response.json();
         } else if (response.status === 404 || response.status === 410) {
           this.loadFailure = {
@@ -383,13 +385,13 @@ export default {
         this.$store.dispatch('setInsertData', duplicate);
         this.$router.push({ path: '/new' });
       }
-    },   
+    },
     saveItem(done=false) {
       this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: true });
 
       const RecordId = this.inspector.data.record['@id'];
       const obj = this.getPackagedItem();
-      const ETag = this.inspector.data.record.modified;
+      const ETag = this.documentETag;
 
       if (!RecordId || RecordId === 'https://id.kb.se/TEMPID') { // No ID -> create new
         this.doCreate(obj, done);
