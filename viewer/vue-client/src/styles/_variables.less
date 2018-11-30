@@ -1,0 +1,193 @@
+// Import kb-styles colors
+@import "~bootstrap/less/variables.less";
+@import "~kungbib-styles/dist/less/colors";
+@import "~kungbib-styles/dist/less/colors-deprecated";
+@import "~kungbib-styles/dist/less/mixins/colors";
+
+// ----------- VARIABLES ------------
+@brand-primary: #29A1A2;
+@brand-danger: #FF7373;
+@bg-site: #F9F9F9;
+@test-color: pink;
+@bg-img: none;
+//@bg-img: url('/assets/img/bg_libris.png');
+@bg-content: @black;
+@bg-content-alt: @black;
+@bg-navbar: #ffffff;
+@bg-navbar-hover: rgba(199, 226, 224, 0.27);
+@shadow-navbar: none;
+@text-navbar: #505050;
+@text-brand: #505050;
+@text-brand-env: @brand-primary;
+@text-alt-navbar: #505050;
+@text-toolbar: fade(@white, 55%);
+@bg-sidebars: darken(@white, 5%);
+@border-navbar: @gray-light;
+@border-navbar-width: 1px;
+@shadow-footer: inset 0px 1px 0px 0px @gray;
+@text-footer: @black;
+@text-alt-footer: @black;
+@bg-jumbotron: transparent;
+@bg-jumbotron-image: none;
+@border-footer: @gray-light;
+@color-class: @gray;
+@color-prop: @happy-magenta;
+@color-prop-list: @gray;
+@color-ext: #d51;
+@color-id: #c7254e;
+@link-color: @brand-primary;
+@link-hover-color: darken(@link-color,17%);
+@panel-border-radius: 3px;
+@thing-header-bg: @brand-primary;
+@thing-header-text: @white;
+
+@color-headers: @brand-primary;
+@color-headers-text: #fff;
+
+
+// ----------- VARIABLES ------------
+
+// Z-index
+@header-z: 900;
+@modal-z: 999;
+@popover-z: 900;
+@notification-z: 1000;
+@active-component-z: 99;
+@backdrop-z: 950;
+
+// ---- grayscale ----
+@white: #ffffff;
+@black: #222;
+@gray: #949A9E;
+@gray-light: #C4C7CA;
+@gray-lighter: #E0E6E9;
+@gray-dark: #6F767B;
+@gray-darker: #595D61;
+
+@gray-transparent: rgba(0, 0, 0, 0.45);
+@gray-light-transparent: rgba(0, 0, 0, 0.25);
+@gray-lighter-transparent: rgba(0, 0, 0, 0.12);
+@gray-darker-transparent: rgba(0, 0, 0, 0.68);
+
+// LIBRIS colors
+@holding-color: #ac82b5;
+@bib-color: #009788;
+
+// - Color choices
+@brand-id: #547e91;
+@test-color: pink;
+@neutral-color: #FCFCFC;
+@bg-img: none;
+@bg-content: @white;
+@bg-content-alt: @white;
+@text-navbar: #505050;
+@text-brand: #505050;
+@text-brand-env: @brand-primary;
+@text-alt-navbar: #505050;
+@text-toolbar: fade(@white, 55%);
+@bg-sidebars: darken(@white, 5%);
+@bg-footer: @gray-darker;
+@text-footer: #fff;
+@text-alt-footer: #fff;
+@bg-jumbotron: transparent;
+@bg-jumbotron-image: none;
+@border-footer: @gray-light;
+@color-ext: #d51;
+@color-id: #c7254e;
+@panel-border-radius: 3px;
+@topbar-color: @white;
+
+// @sec: rgba(135, 170, 187, 0.3);
+@sec: #e0e9ee;
+@sec-contrast: #74aac3;
+
+@sec-alter: #629fbc;
+@sec-alter-contrast: #4b8faf;
+
+@success: #d4edda;
+@success-alt: #c3e6cb;
+
+@danger: rgba(255, 115, 115, 0.3);
+@danger-alter: #C85151;
+
+@warning: rgba(254, 212, 129, 0.5);
+@warning-alter: #CA9543;
+
+@color-headers: @brand-primary;
+@color-headers-text: #fff;
+
+// --------- SHADOWS AND ELEVATION --
+@shadow-base: none;
+@shadow-chip: 0px 0px 5px 1px rgba(0, 0, 0, 0.15);
+@shadow-chip-elevated: 0px 5px 13px 2px rgba(0, 0, 0, 0.3);
+@shadow-card-elevated: 0px -1px 5px 2px rgba(0, 0, 0, 0.2);
+@shadow-select: 0px 5px 13px 2px rgba(0, 0, 0, 0.3);
+@shadow-panel: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1px -2px rgba(0,0,0,0.1);
+
+// --------- ICON COLOR & SIZES -----
+@icon-default: @gray;
+@icon-default--hover: @gray-darker;
+
+@icon-alt: @gray-transparent;
+@icon-alt--hover: @gray-darker-transparent;
+
+@icon-primary: @link-color;
+@icon-primary--hover: @link-hover-color;
+
+@icon-added: @gray-light;
+@icon-disabled: @gray-lighter-transparent;
+
+@icon-sm: 16px;
+@icon-md: 20px;
+@icon-lg: 30px;
+
+// --------- CHIP -------------------
+
+@chip-color: @link-color;
+@chip-color-hover: @link-hover-color;
+@chip-background: transparent;
+
+// --------- COMPONENT COLORS -------
+@color-local: @white;
+
+// --------- EDITOR SPECIFIC --------
+
+@form-field: @white;
+
+@form-border: @gray-lighter;
+@form-border-alt: @gray-lighter-transparent;
+
+@field-path: @gray-light;
+@field-path-alt: @gray-light-transparent;
+
+@remove: @danger;
+@add: @sec;
+
+@node-bg: #fafafa;
+
+@highlight-color: @brand-primary;
+
+// Column widths
+@col-label: 200px;
+@col-value: 620px;
+@col-action: 250px;
+
+// --------- MODAL/PANEL VARIABLES --------
+
+@list-item-bg-even: @bg-site;
+@list-item-bg-odd: @white;
+@list-item-bg-hover: @gray-lighter;
+@panel-header-bg: @bg-site;
+
+
+// ----------- BASE STYLES ----------
+
+@orange: #CA9543;
+@green: #009788;
+@gray-very-dark: #191913; // font-color
+
+
+// Column widths
+@col-label: 200px;
+@col-value: 620px;
+@col-action: 250px;
