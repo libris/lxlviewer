@@ -83,7 +83,6 @@ export default {
 <style lang="less">
 @import "~bootstrap/less/bootstrap";
 @import "~kungbib-styles/dist/less/kb-style";
-@import "./less/main";
 
 #app {
   display: flex;
@@ -141,6 +140,463 @@ export default {
 
   @media screen and (max-width: @screen-lg-min){
     width: 100%;
+  }
+}
+
+// ----------- LINKS ----------------
+body a {
+  color: @link-color;
+  text-decoration: none;
+  cursor: pointer;
+
+  &:hover {
+    color: @link-hover-color;
+    text-decoration: underline;
+  }
+}
+
+a:focus {
+  outline: none;
+}
+
+// ----------- BUTTON ----------------
+
+button, .btn-primary, .btn-primary:hover, .btn-primary:focus {
+    color: #ffffff;
+}
+
+button {
+  color:#444;
+  border:none;
+  border-radius: 2px;
+  background:#ccc;
+  padding: 0 0.4em;
+  font-weight:bold;
+  &:hover {
+  background: #ddd;
+  color:#222;
+  }
+  &:focus {
+  background:#bbb;
+  }
+}
+
+.btn,
+.btn[disabled] {
+  border: 0;
+  box-shadow: @shadow-panel;
+  transition: background-color 0.1s ease;
+}
+
+.btn:focus,
+.btn:active:focus {
+  outline: 0;
+}
+
+.btn[disabled],
+.btn.disabled {
+  background-color: @gray-lighter;
+  opacity: 1;
+  &:hover, 
+  &:focus {
+    background-color: @gray-lighter;
+  }
+
+  &.btn-primary {
+    background-color: fadeout(@brand-primary, 35%);
+  }
+}
+
+.btn-primary {
+  &:hover {
+    background-color: @link-hover-color;
+    border-color: @link-hover-color;
+  }
+}
+
+.btn-gray {
+  color: white;
+  background-color: @gray;
+  &:hover, 
+  &:focus {
+    color: white;
+    background-color: @gray-darker;
+  }
+}
+
+.btn-danger {
+  &:hover {
+    background-color: @danger-alter;
+  }
+}
+
+//btn sizes
+
+.btn-mixin(@width, @height, @fsize){
+  min-width: @width;
+  height: @height;
+  font-size: @fsize;
+  font-weight: 600;
+}
+
+.btn--lg {
+  .btn-mixin(275px, auto, 20px);
+
+  @media screen and (max-width: @screen-sm-min){
+    .btn--md
+  }
+}
+
+.btn--md {
+  .btn-mixin(150px, 30px, 16px);
+  padding: 0 15px;
+
+  @media screen and (max-width: @screen-sm-min){
+    .btn--sm
+  }
+}
+
+.btn--sm {
+  .btn-mixin(150px, 26px, 13px);
+  padding: 3px 10px;
+}
+
+@import url(//fonts.googleapis.com/css?family=Open+Sans:600);
+
+html {
+  height: 100%;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-y: scroll;
+  &.ie11 {
+    main {
+      margin-bottom: 75vh;
+    }
+  }
+  &.no-flexbox {
+    .container {
+      display: none;
+    }
+    #oldbrowsermsg {
+      padding: 25px;
+      display: block !important;
+    }
+  }
+}
+
+[v-cloak] {
+  display: none;
+}
+
+main {
+  margin-top: 30px;
+  margin-bottom: 100px;
+}
+
+#oldbrowsermsg {
+  width: 100%;
+  padding: 3em 0em;
+  div {
+    border: 1px solid @gray;
+    background-color: @gray-lighter;
+    padding: 25px;
+    width: 800px;
+    margin: auto;
+    box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.15);
+  }
+}
+
+.vue-simple-spinner {
+  border-color: @brand-primary @gray-lighter @gray-lighter !important;
+}
+
+#body-blocker {
+  display: none;
+  z-index: @backdrop-z;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.3);
+}
+html.scroll-lock {
+  overflow: hidden;
+}
+
+body {
+  position: relative;
+  background-color: @bg-site;
+  background-image: @bg-img;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  -ms-overflow-style: scrollbar;
+  
+  .facet-container {
+    opacity: 1;
+    transition: 0.3s ease width 0s, 0.3s ease opacity 0.3s;
+    &.facet-hidden {
+      width: 0%;
+      opacity: 0;
+    }
+  }
+}
+
+// ----------- VARIOUS ----------------
+* {
+  outline: none;
+}
+.user-is-tabbing *:focus {
+  outline: 2px solid #8cc9c9; //fallback for IE & Edge
+  outline: auto darkcyan;
+}
+
+// ------------ UTILS ------------------
+.rotate {
+  transition: 0.25s ease;
+}
+
+.rotate-90 {
+  -ms-transform: rotate(90deg); /* IE 9 */
+  -webkit-transform: rotate(90deg); /* Chrome, Safari, Opera */
+  transform: rotate(90deg);
+}
+.rotate-180 {
+  -ms-transform: rotate(180deg); /* IE 9 */
+  -webkit-transform: rotate(180deg); /* Chrome, Safari, Opera */
+  transform: rotate(180deg);
+}
+.rotate-270 {
+  -ms-transform: rotate(270deg); /* IE 9 */
+  -webkit-transform: rotate(270deg); /* Chrome, Safari, Opera */
+  transform: rotate(270deg);
+}
+
+.display-block {
+  display: block !important;
+}
+
+
+// ------------- ICONS ----------------
+.icon {
+    color: @icon-default;
+    color: @icon-alt;
+    cursor: pointer;
+    transition: color .2s ease, background-color .2s ease;
+
+    &:hover {
+        color: @icon-default--hover;
+        color: @icon-alt--hover;
+    }
+
+    &--primary {
+        color: @icon-primary;
+
+        &:hover {
+            color: @icon-primary--hover;
+        }
+    }
+
+    &--white {
+      color: @white;
+      &:hover {
+        color: @white;
+      }
+    }
+
+    &--sm {
+        font-size: @icon-sm;
+    }
+
+    &--md {
+        font-size: @icon-md;
+    }
+    
+    &--lg {
+        font-size: @icon-lg;
+    }
+
+    &.is-disabled {
+        color: @icon-disabled;
+        cursor: not-allowed;
+    }
+
+    &.is-added {
+        color: @icon-added;
+        cursor: not-allowed;
+    }
+}
+
+// ---------- TYPOGRAPHY -------------
+// ----------- HEADINGS ----------------
+h1, h2, h3, h4 {
+  font-weight: 600;
+  color: @black;
+}
+  
+h1 {
+    margin: 10px 0;
+}
+
+.mainTitle {
+  margin: 0 0 20px 0;
+}
+
+// smaller uppercase headings
+  
+.uppercaseHeading {
+    text-transform: uppercase;
+    color: @gray-darker;
+    font-size: 14px;
+    font-size: 1.4rem;
+    font-weight: 600;
+  
+    &--light {
+      &:extend(.uppercaseHeading);
+      font-size: 12px;
+      font-size: 1.2rem;
+      color: @gray-dark;
+    }
+
+    &--bold {
+      &:extend(.uppercaseHeading);
+      font-weight: 700;
+    }
+}
+
+// -------- FORM -------------
+
+// CHECKBOX
+.customCheckbox {
+  &-input {
+    margin-right: 0.2em;
+    position: absolute;
+    opacity: 0;
+
+    &:checked + .customCheckbox-icon::before {
+      content: "\f14a";
+      color: @brand-primary;
+    }
+
+    .user-is-tabbing &:focus + .customCheckbox-icon {
+      outline: 2px solid #8cc9c9; //fallback for IE & Edge
+      outline: auto darkcyan;
+    }
+  }
+
+  &-icon {
+    padding: 0 3px;
+    margin-left: -3px;
+    display: inline-block;
+
+    &::before {
+      content: "\f096";
+      font-family: "FontAwesome";
+      display: inline-block;
+      font-size: 18px;
+      font-size: 1.8rem;
+      color: @gray-darker;
+      width: 18px;
+    }
+  }
+}
+
+// SELECT
+.customSelect {
+  height: 30px;
+  min-width: 150px;
+  font-size: 16px;
+  font-size: 1.6rem;
+  font-weight: 500;
+  background-color: @white;
+  border: 1px solid @gray-light;
+  box-shadow: @shadow-panel;
+  text-align-last: center;
+}
+
+//TEXT INPUT
+.customInput {
+  display: flex;
+  justify-content: space-between;
+  height: 42px;
+  min-width: 75%;
+  flex-grow: 1;
+  font-size: 20px;
+  font-size: 2rem;
+  line-height: 1.2;
+  border: 1px solid @gray-light;
+  border-radius: 4px;
+
+  &::placeholder,
+  input::placeholder  {
+    font-style: italic;
+    color: @gray;
+  }
+
+  &:focus {
+    border: 1px solid @brand-primary;
+    outline: 0;
+    box-shadow: none;
+  }
+}
+
+// ------------ CARDS --------------
+
+.card {
+  border: 1px solid @gray-lighter;
+
+  &-content {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 0.5em 1em 0em 1em;
+    flex-grow: 1;
+    width: 100%;
+  }
+
+  &-text {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  &-title {
+    display: block;
+    font-size: 20px;
+    font-size: 2rem;
+    font-weight: 600;
+    line-height: 1.2;
+    margin: 10px 0 10px 0;
+  }
+
+  &-descr {
+    font-size: 16px;
+    font-size: 1.6rem;
+    line-height: 27px;
+    margin-bottom: 10px;
+    width: 100%;
+  }
+
+  &-link {
+    font-size: 18px;
+    font-size: 1.8rem;
+    font-weight: 600;
+    line-height: 27px;
+    text-align: center;
+    padding: 10px 0;
+    margin: 0.25em 0;
+    width: 100%;
+    
+    &.active {
+      color: @white;
+      background: @brand-primary;
+      &:hover {
+          text-decoration: none;
+      }
+    }
   }
 }
 

@@ -207,4 +207,47 @@ export default {
   }
 }
 
+.chip {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  height: 33px;
+  background-color: @chip-background;
+  border: 1px solid @chip-color;
+  color: @chip-color;
+  border-radius: 2em;
+  line-height: 1.6;
+  padding: 3px 5px 3px 10px;
+  margin: 2px 5px 5px 0px;
+  transition: .3s ease, background-color 0.3s ease;
+  max-width: 300px;
+
+  &-label {
+    font-weight: 600;
+    cursor: default;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &-removeButton {
+    display: inline-block;
+    position: relative;
+    top: 3px;
+    width: 1.2em;
+    height: 1.2em;
+    line-height: 1.2em;
+    text-align: center;
+    margin: 0 5px;
+  }
+
+  &.is-removeable {
+    background-color: @danger;
+  }
+
+  @media (max-width: @screen-sm) {
+    max-width: 100%;
+  }
+}
+
 </style>
