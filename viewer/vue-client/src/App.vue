@@ -445,7 +445,6 @@ h1 {
 }
 
 // smaller uppercase headings
-  
 .uppercaseHeading {
     text-transform: uppercase;
     color: @gray-darker;

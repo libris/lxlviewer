@@ -30,7 +30,7 @@ export function getTermObject(term, vocab, context) {
   if (_.isObject(term)) {
     throw new Error(
       'getTermObject was called with an object (should be a string).',
-      JSON.stringify(term)
+      JSON.stringify(term),
     );
   }
   if (term.indexOf('@') !== -1) {
@@ -87,7 +87,7 @@ export function getBaseClasses(classId, vocab, context) {
     return _.uniq(classList);
   }
   if (termObj && termObj.hasOwnProperty('subClassOf')) {
-    termObj.subClassOf.forEach(obj => {
+    termObj.subClassOf.forEach((obj) => {
       if (typeof obj['@type'] === 'undefined') {
         if (obj['@id']) {
           const baseClass = getTermObject(obj['@id'], vocab, context);
@@ -120,7 +120,6 @@ export function getBaseClassesFromArray(typeArray, vocab, context) {
     }
   }
   classes = _.uniq(classes);
-  // console.log("getBaseClassesFromArray("+JSON.stringify(typeArray)+") ->", JSON.stringify(classes));
   return classes;
 }
 
@@ -150,11 +149,14 @@ export function getRecordType(mainEntityType, vocab, context) {
   }
   if (isSubClassOf(mainEntityType, 'Instance', vocab, context)) {
     return 'Instance';
-  } else if (isSubClassOf(mainEntityType, 'Work', vocab, context)) {
+  }
+  if (isSubClassOf(mainEntityType, 'Work', vocab, context)) {
     return 'Work';
-  } else if (isSubClassOf(mainEntityType, 'Agent', vocab, context)) {
+  }
+  if (isSubClassOf(mainEntityType, 'Agent', vocab, context)) {
     return 'Agent';
-  } else if (isSubClassOf(mainEntityType, 'Concept', vocab, context)) {
+  }
+  if (isSubClassOf(mainEntityType, 'Concept', vocab, context)) {
     return 'Concept';
   }
   return 'Other';
@@ -184,10 +186,8 @@ export function getTermByType(type, list, context, settings) {
         if (term['@type'].indexOf(type) > -1 || term['@type'].indexOf(expandedType) > -1) {
           terms.push(term);
         }
-      } else {
-        if (term['@type'] === type || term['@type'] === expandedType) {
-          terms.push(term);
-        }
+      } else if (term['@type'] === type || term['@type'] === expandedType) {
+        terms.push(term);
       }
     }
   });
@@ -199,7 +199,8 @@ export function getTermFromLabel(label, language, vocab) {
     let existingLang = language;
     if (typeof obj.labelByLang === 'undefined') {
       return false;
-    } else if (typeof obj.labelByLang[language] === 'undefined') {
+    }
+    if (typeof obj.labelByLang[language] === 'undefined') {
       existingLang = 'en';
     }
     if (_.isArray(obj.labelByLang[existingLang])) {
@@ -208,9 +209,8 @@ export function getTermFromLabel(label, language, vocab) {
           return true;
         }
       }
-    } else {
-      return obj.labelByLang[existingLang].toLowerCase() === label.toLowerCase();
     }
+    return obj.labelByLang[existingLang].toLowerCase() === label.toLowerCase();
   });
   return classObject;
 }
@@ -235,7 +235,7 @@ export function getPropertyTypes(propertyId, vocab, context) {
 
 export function getAllEnumerationTypesFor(onProp, vocab) {
   const enumerationTypes = [];
-  vocab.forEach(term => {
+  vocab.forEach((term) => {
     if (term.hasOwnProperty('subClassOf')) {
       _.each(term.subClassOf, (superClassObj) => {
         if (superClassObj.hasOwnProperty('@type') && superClassObj['@type'] === 'Restriction') {
@@ -260,22 +260,22 @@ export function getValuesFrom(restrictionProperty, entityType, property, vocab, 
   }
   let result = [];
   const baseClasses = getBaseClasses(entityType, vocab, context);
-  baseClasses.forEach(baseClass => {
+  baseClasses.forEach((baseClass) => {
     const vocabEntry = getTermObject(baseClass, vocab, context);
     if (vocabEntry.hasOwnProperty('subClassOf')) {
-      vocabEntry.subClassOf.forEach(subClassObject => {
+      vocabEntry.subClassOf.forEach((subClassObject) => {
         let embellishedObj = _.cloneDeep(subClassObject);
         if (
-          Object.keys(embellishedObj).length === 1 &&
-          embellishedObj.hasOwnProperty('@id') &&
-          embellishedObj['@id'].indexOf('_:') > -1
+          Object.keys(embellishedObj).length === 1
+          && embellishedObj.hasOwnProperty('@id')
+          && embellishedObj['@id'].indexOf('_:') > -1
         ) {
           embellishedObj = getTermObject(embellishedObj['@id'], vocab, context);
         }
         if (
-          embellishedObj.hasOwnProperty('@type') &&
-          embellishedObj['@type'] === 'Restriction' &&
-          StringUtil.getCompactUri(embellishedObj.onProperty['@id'], context) === StringUtil.getCompactUri(property, context)
+          embellishedObj.hasOwnProperty('@type')
+          && embellishedObj['@type'] === 'Restriction'
+          && StringUtil.getCompactUri(embellishedObj.onProperty['@id'], context) === StringUtil.getCompactUri(property, context)
         ) {
           if (embellishedObj.hasOwnProperty(restrictionProperty)) {
             if (_.isArray(embellishedObj[restrictionProperty])) {
@@ -337,16 +337,6 @@ export function getRange(entityType, propertyId, vocab, context) {
   return processRestrictions(unrestrictedRange, entityType, propertyId, vocab, context);
 }
 
-export function getFullRange(entityType, key, vocab, context, vocabClasses) {
-  const types = [].concat(getRange(entityType, key, vocab, context));
-  let allTypes = [];
-  _.each(types, type => {
-    allTypes = allTypes.concat(getSubClassChain(type, vocabClasses, context));
-  });
-  allTypes = _.uniq(allTypes);
-  return allTypes;
-}
-
 export function getSubClasses(classname, vocabClasses, context) {
   const classObj = getTermObject(classname, vocabClasses, context);
   let subClasses = [];
@@ -354,6 +344,23 @@ export function getSubClasses(classname, vocabClasses, context) {
     subClasses = classObj.baseClassOf;
   }
   return subClasses;
+}
+
+export function getAllSubClasses(classArray, vocabClasses, context) {
+  let inputSubClasses = [].concat(classArray);
+  let newSubClasses = [];
+  if (inputSubClasses.length > 0) {
+    _.each(inputSubClasses, (classId) => {
+      const className = StringUtil.getCompactUri(classId, context);
+      const subClasses = getSubClasses(className, vocabClasses, context);
+      if (subClasses.length > 0) {
+        newSubClasses = newSubClasses.concat(getAllSubClasses(subClasses, vocabClasses, context));
+      }
+    });
+  }
+  inputSubClasses = inputSubClasses.concat(newSubClasses);
+  inputSubClasses = _.uniq(inputSubClasses);
+  return inputSubClasses;
 }
 
 export function getSubClassChain(classname, vocabClasses, context) {
@@ -369,28 +376,19 @@ export function getSubClassChain(classname, vocabClasses, context) {
     vocabClasses,
     context,
   ));
-  const curieChain = subClassChain.map((subClass) => {
-    return StringUtil.getCompactUri(subClass, context);
-  });
+  const curieChain = subClassChain.map(subClass => StringUtil.getCompactUri(subClass, context));
   classObj.subClassChain = curieChain;
   return subClassChain;
 }
 
-export function getAllSubClasses(classArray, vocabClasses, context) {
-  let inputSubClasses = [].concat(classArray);
-  let newSubClasses = [];
-  if (inputSubClasses.length > 0) {
-    _.each(inputSubClasses, classId => {
-      const className = StringUtil.getCompactUri(classId, context);
-      const subClasses = getSubClasses(className, vocabClasses, context);
-      if (subClasses.length > 0) {
-        newSubClasses = newSubClasses.concat(getAllSubClasses(subClasses, vocabClasses, context));
-      }
-    });
-  }
-  inputSubClasses = inputSubClasses.concat(newSubClasses);
-  inputSubClasses = _.uniq(inputSubClasses);
-  return inputSubClasses;
+export function getFullRange(entityType, key, vocab, context, vocabClasses) {
+  const types = [].concat(getRange(entityType, key, vocab, context));
+  let allTypes = [];
+  _.each(types, (type) => {
+    allTypes = allTypes.concat(getSubClassChain(type, vocabClasses, context));
+  });
+  allTypes = _.uniq(allTypes);
+  return allTypes;
 }
 
 export function getDomainList(property, vocab, context) {
@@ -415,7 +413,7 @@ export function getDomainList(property, vocab, context) {
       }
     }
   }
-  return domainList.map((item) => StringUtil.getCompactUri(item, context));
+  return domainList.map(item => StringUtil.getCompactUri(item, context));
 }
 
 export function getProperties(classId, vocabClasses, vocabProperties, context) {
@@ -426,12 +424,12 @@ export function getProperties(classId, vocabClasses, vocabProperties, context) {
   if (termObj.allowedProperties) {
     return termObj.allowedProperties;
   }
-  vocabProperties.forEach(prop => {
-    let domainList = getDomainList(prop, vocabProperties, context);
+  vocabProperties.forEach((prop) => {
+    const domainList = getDomainList(prop, vocabProperties, context);
     let domainListWithSubClasses = [];
     for (let i = 0; i < domainList.length; i++) {
       domainListWithSubClasses = domainListWithSubClasses.concat(
-        getSubClassChain(domainList[i], vocabClasses, context)
+        getSubClassChain(domainList[i], vocabClasses, context),
       );
     }
     for (const domain of domainListWithSubClasses) {
@@ -496,7 +494,6 @@ export function isEmbedded(classId, vocab, settings, context) {
     throw new Error('isEmbedded was called with an object as class id (should be a string)');
   }
   const embeddedTypes = settings.embeddedTypes;
-  const vocabPfx = context[0]['@vocab'];
   const typeChain = getBaseClasses(classId, vocab, context);
   if (typeChain.length > 0) {
     for (const item of embeddedTypes) {
@@ -517,7 +514,7 @@ export function isExtractable(classId, vocab, settings, context) {
   }
   const extractableTypes = settings.extractableTypes;
   const typeChain = getBaseClasses(classId, vocab, context);
-  let curieChain = [];
+  const curieChain = [];
   for (let i = 0; i < typeChain.length; i++) {
     curieChain.push(StringUtil.getCompactUri(typeChain[i], context));
   }
@@ -550,7 +547,7 @@ export function getContextProperty(propertyId, context) {
 export function getContextWithContainer(propertyId, container, context) {
   const contextList = context[1];
 
-  let contextObj = undefined;
+  let contextObj;
   _.forOwn(contextList, (value, key) => {
     if (typeof value !== 'undefined' && value !== null) {
       if (value.hasOwnProperty('@id') && value['@id'] === propertyId && value.hasOwnProperty('@container') && value['@container'] === container) {
@@ -595,7 +592,7 @@ export function getValidTemplates(type, templateCollection, vocabClasses, contex
   }
   const validTemplates = [];
   const keys = Object.keys(templateCollection);
-  for(let i = 0; i < keys.length; i++) {
+  for (let i = 0; i < keys.length; i++) {
     const currentType = templateCollection[keys[i]].value.mainEntity['@type'];
     const matching = isSubClassOf(currentType, type, vocabClasses, context);
     if (matching) {
@@ -606,7 +603,10 @@ export function getValidTemplates(type, templateCollection, vocabClasses, contex
 }
 
 export function isAbstract(itemId, vocab, context) {
-  const vocabKey = StringUtil.convertToVocabKey(StringUtil.convertToBaseUri(itemId, context), context);
+  const vocabKey = StringUtil.convertToVocabKey(
+    StringUtil.convertToBaseUri(itemId, context),
+    context,
+  );
   const termObject = getTermObject(vocabKey, vocab, context);
   return (termObject.hasOwnProperty('abstract') && termObject.abstract === true);
 }
@@ -617,28 +617,35 @@ export function getTree(term, vocab, context, counter = 0, parentChainString = '
     sub: [],
     abstract: isAbstract(term, vocab, context),
     depth: counter,
-    parentChainString: parentChainString+term,
+    parentChainString: parentChainString + term,
   };
   const subs = getTermObject(term, vocab, context).baseClassOf;
   _.each(subs, (sub) => {
-    treeNode.sub.push(getTree(sub, vocab, context, counter + 1, parentChainString+term));
+    treeNode.sub.push(getTree(sub, vocab, context, counter + 1, parentChainString + term));
   });
   return treeNode;
 }
 
 export function flattenTree(termArray, vocab, context, language) {
-  const sortedArray = _.sortBy(termArray, term => StringUtil.getLabelByLang(term.id, language, vocab, context));
-  return sortedArray.reduce((acc, current) => acc.concat([current], flattenTree(current.sub, vocab, context, language)), []);
+  const sortedArray = _.sortBy(
+    termArray,
+    term => StringUtil.getLabelByLang(term.id, language, vocab, context),
+  );
+  return sortedArray.reduce((acc, current) => acc.concat(
+    [current],
+    flattenTree(current.sub, vocab, context, language),
+  ), []);
 }
 
 export function printTree(term, vocab, context) {
   function printNode(node, indent, isLast) {
+    let currentIndent = indent;
     const branch = isLast ? '└─ ' : '├─ ';
     const nodeStr = indent.length > 0 ? (indent + branch) : 'Class tree: ';
     console.log(nodeStr + StringUtil.convertToPrefix(node.id, context));
-    indent += isLast ? '   ' : '│  ';
-    for (let i = 0; i < node.sub.length; i ++) {
-      printNode(node.sub[i], indent, i === node.sub.length - 1);
+    currentIndent += isLast ? '   ' : '│  ';
+    for (let i = 0; i < node.sub.length; i++) {
+      printNode(node.sub[i], currentIndent, i === node.sub.length - 1);
     }
   }
   printNode(getTree(term, vocab, context), '', true);

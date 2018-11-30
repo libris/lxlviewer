@@ -16,5 +16,8 @@ module.exports = {
       ],
       preProcessor: 'less',
     },
+    moment: {
+      locales: ['en', 'sv'],
+    },
   },
 };
