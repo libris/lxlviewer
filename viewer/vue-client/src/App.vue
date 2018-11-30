@@ -261,7 +261,7 @@ button {
   padding: 3px 10px;
 }
 
-@import url(//fonts.googleapis.com/css?family=Open+Sans:600);
+@import (css) url(//fonts.googleapis.com/css?family=Open+Sans:600);
 
 html {
   height: 100%;
