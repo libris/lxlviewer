@@ -152,7 +152,7 @@ export default {
       const fetchUrl = `${this.settings.apiPath}/${this.documentId}/data.jsonld?${randomHash}`;
       fetch(fetchUrl).then((response) => {
         if (response.status === 200) {
-          this.documentETag = response.headers.get('ETag').replace(/"/g, ''); // Fix double quoted string
+          this.documentETag = response.headers.get('ETag');
           return response.json();
         } else if (response.status === 404 || response.status === 410) {
           this.loadFailure = {
