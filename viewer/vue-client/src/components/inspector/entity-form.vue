@@ -17,7 +17,10 @@ export default {
   mixins: [FormMixin],
   props: {
     locked: false,
-    editingObject: '',
+    editingObject: {
+      type: String,
+      default: '',
+    },
     collapsed: false,
   },
   data() {
@@ -48,7 +51,7 @@ export default {
         )
       ) {
         return true;
-      } else if (VocabUtil.isSubClassOf(
+      } if (VocabUtil.isSubClassOf(
           this.inspector.data[this.editingObject]['@type'], 
           'Work', 
           this.resources.vocab, 
@@ -117,7 +120,7 @@ export default {
   components: {
   },
   mounted() {
-  }
+  },
 };
 </script>
 

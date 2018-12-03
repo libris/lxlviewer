@@ -37,9 +37,7 @@ export default {
       return this.activeIndex === this.index;
     },
     getClassTree() {
-      const tree = [this.creation].map(type => {
-        return VocabUtil.getTree(type, this.resources.vocab, this.resources.context);
-      });
+      const tree = [this.creation].map(type => VocabUtil.getTree(type, this.resources.vocab, this.resources.context));
       return VocabUtil.flattenTree(tree, this.resources.vocab, this.resources.context, this.settings.language);
     },
   },

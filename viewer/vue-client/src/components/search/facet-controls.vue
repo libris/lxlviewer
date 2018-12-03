@@ -10,7 +10,7 @@ export default {
   },
   data() {
     return {
-    }
+    };
   },
   methods: {
     isRangeFacet(dimensionKey) {
@@ -20,11 +20,11 @@ export default {
       return this.settings.propertyChains[facetType][this.user.settings.language];
     },
     expandFacets($event) {
-      let el = $event.target;
-      let list = el.nextSibling.nextSibling;
+      const el = $event.target;
+      const list = el.nextSibling.nextSibling;
       el.classList.toggle('is-open');
       list.classList.toggle('is-open');
-    }
+    },
   },
   computed: {
     user() {
@@ -38,7 +38,7 @@ export default {
   },
   components: {
     'range-input': RangeInput,
-    'facet': Facet,
+    facet: Facet,
   },
   watch: {
   },

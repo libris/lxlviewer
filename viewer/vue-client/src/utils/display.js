@@ -1,26 +1,27 @@
 import * as _ from 'lodash';
+import moment from 'moment';
 import * as httpUtil from './http';
 import * as DataUtil from './data';
 import * as VocabUtil from './vocab';
 import * as StringUtil from './string';
 import * as displayGroups from '@/resources/json/displayGroups.json';
 import * as display from '@/resources/json/display.json'; // TODO: REMOVE HARDCODED
-import moment from 'moment';
 import 'moment/locale/sv';
+
 moment.locale('sv');
 
 export function getDisplayDefinitions(baseUri) {
   return new Promise((resolve, reject) => {
     httpUtil.getResourceFromCache(`${baseUri}/vocab/display/data.jsonld`).then((result) => {
       const clonedResult = _.cloneDeep(result);
-      _.each(clonedResult.lensGroups, lensGroup => {
-        _.each(lensGroup.lenses, lens => {
+      _.each(clonedResult.lensGroups, (lensGroup) => {
+        _.each(lensGroup.lenses, (lens) => {
           if (lens.hasOwnProperty('fresnel:extends')) {
             const [extendLens, extendLevel] = lens['fresnel:extends']['@id'].split('-');
             lens.showProperties.splice(
               lens.showProperties.indexOf('fresnel:super'),
               1,
-              ...result.lensGroups[extendLevel].lenses[extendLens].showProperties
+              ...result.lensGroups[extendLevel].lenses[extendLens].showProperties,
             );
           }
         });
@@ -73,7 +74,7 @@ export function getProperties(typeInput, level, displayDefs) {
   }
   if (_.isObject(typeInput) && !_.isArray(typeInput)) {
     throw new Error(
-      'getProperties was called with an object as type parameter (should be a string or an array of strings).'
+      'getProperties was called with an object as type parameter (should be a string or an array of strings).',
     );
   }
   const typeList = [].concat(typeInput);
@@ -86,7 +87,7 @@ export function getProperties(typeInput, level, displayDefs) {
     props = [].concat(props);
     
     let extension = [];
-    for (let i = 0;i < props.length; i++) {
+    for (let i = 0; i < props.length; i++) {
       if (props[i] === 'fresnel:super') {
         extension = getLensById(lenses[type]['fresnel:extends']['@id'], displayDefs).showProperties;
         props.splice(i, 1, ...extension);
@@ -94,16 +95,16 @@ export function getProperties(typeInput, level, displayDefs) {
       }
     }
     props = _.uniq(props);
-    _.remove(props, (x) => _.isObject(x));
+    _.remove(props, x => _.isObject(x));
 
     if (props.length > 0) {
       return props;
-    } else if (level === 'full') { // Try fallback to card level
+    } if (level === 'full') { // Try fallback to card level
       props = getProperties(type, 'cards', displayDefs);
     }
     if (props.length > 0) {
       return props;
-    } else if (level === 'cards') { // Try fallback to chip level
+    } if (level === 'cards') { // Try fallback to chip level
       props = getProperties(type, 'chips', displayDefs);
       if (props.length > 0) {
         return props;
@@ -126,7 +127,7 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
   if (trueItem.hasOwnProperty('@id') && !trueItem.hasOwnProperty('@type')) {
     trueItem = DataUtil.getEmbellished(trueItem['@id'], quoted);
     if (!trueItem.hasOwnProperty('@type') && trueItem.hasOwnProperty('@id')) {
-      return { 'label': StringUtil.removeDomain(trueItem['@id'], settings.removableBaseUris) };
+      return { label: StringUtil.removeDomain(trueItem['@id'], settings.removableBaseUris) };
     }
   }
 
@@ -195,8 +196,8 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
         const rangeOfMissingProp = VocabUtil.getRange(trueItem['@type'], properties[i], vocab, context);
         let propMissing = properties[i];
         if (
-          rangeOfMissingProp.length > 1 ||
-          (rangeOfMissingProp.length === 1 && rangeOfMissingProp[0] !== 'http://www.w3.org/2000/01/rdf-schema#Literal')
+          rangeOfMissingProp.length > 1
+          || (rangeOfMissingProp.length === 1 && rangeOfMissingProp[0] !== 'http://www.w3.org/2000/01/rdf-schema#Literal')
         ) {
           propMissing = rangeOfMissingProp[0];
         }
@@ -204,7 +205,7 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
           propMissing, // Get the first one just to show something
           settings.language,
           vocab,
-          context
+          context,
         );
         result[properties[i]] = `{${expectedClassName} saknas}`;
       }
@@ -212,7 +213,7 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
   }
   if (_.isEmpty(result)) {
     window.lxlWarning(`🏷️ DisplayObject was empty. @type was ${trueItem['@type']}. Used lens: "${usedLensType}".`, 'Item data:', trueItem);
-    result = { 'label': `{${StringUtil.getUiPhraseByLang('Unnamed', settings.language)}}` };
+    result = { label: `{${StringUtil.getUiPhraseByLang('Unnamed', settings.language)}}` };
   }
   return result;
 }
@@ -231,20 +232,20 @@ export function getItemSummary(item, displayDefs, quoted, vocab, settings, conte
     if (!_.isArray(value)) {
       v = [value];
     }
-    if (displayGroups['header'].indexOf(key) !== -1) {
-      summary['header'].push({ 'property': key, value: v });
-    } else if (displayGroups['info'].indexOf(key) !== -1) {
-      summary['info'].push({ 'property': key, value: v });
-    } else if (displayGroups['identifiers'].indexOf(key) !== -1) {
-      summary['identifiers'].push({ 'property': key, value: v });
-    } else if (displayGroups['categorization'].indexOf(key) !== -1) {
-      summary['categorization'].push({ 'property': key, value: v });
+    if (displayGroups.header.indexOf(key) !== -1) {
+      summary.header.push({ property: key, value: v });
+    } else if (displayGroups.info.indexOf(key) !== -1) {
+      summary.info.push({ property: key, value: v });
+    } else if (displayGroups.identifiers.indexOf(key) !== -1) {
+      summary.identifiers.push({ property: key, value: v });
+    } else if (displayGroups.categorization.indexOf(key) !== -1) {
+      summary.categorization.push({ property: key, value: v });
     } else {
-      summary['sub'].push({ 'property': key, value: v });
+      summary.sub.push({ property: key, value: v });
     }
   });
-  if (summary['header'].length === 0) {
-    summary['header'].push({ property: 'error', value: `{${StringUtil.getUiPhraseByLang('Unnamed', settings.language)}}` });
+  if (summary.header.length === 0) {
+    summary.header.push({ property: 'error', value: `{${StringUtil.getUiPhraseByLang('Unnamed', settings.language)}}` });
   }
   return summary;
 }
@@ -270,7 +271,7 @@ export function getFormattedSelectOption(term, settings, vocab, context) {
   const maxLength = 43;
   let labelByLang = StringUtil.getLabelByLang(term.id, settings.language, vocab, context);
   if (labelByLang.length > maxLength) {
-    labelByLang = labelByLang.substr(0, maxLength-2) + '...';
+    labelByLang = `${labelByLang.substr(0, maxLength - 2)}...`;
   }
   const abstractIndicator = ` {${StringUtil.getUiPhraseByLang('Abstract', settings.language)}}`;
   const prefix = Array((term.depth) + 1).join(' •');

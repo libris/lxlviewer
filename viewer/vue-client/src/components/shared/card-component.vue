@@ -8,10 +8,16 @@ export default {
   mixins: [LodashProxiesMixin],
   props: {
     focusData: {},
-    fieldKey: '',
+    fieldKey: {
+      type: String,
+      default: '',
+    },
     title: {},
     shouldShow: false,
-    uri: '',
+    uri: {
+      type: String,
+      default: '',
+    },
     floating: false,
     isLocked: false,
     isLocal: false,
@@ -32,7 +38,7 @@ export default {
         return true;
       }
       return false;
-    }
+    },
   },
   components: {
     'entity-summary': EntitySummary,

@@ -50,7 +50,7 @@ export default {
     },
     resourcesLoadingError() {
       return this.$store.getters.resources.loadingError;
-    }
+    },
   },
   watch: {
   },
@@ -65,7 +65,7 @@ export default {
     this.$nextTick(() => {
       this.$store.dispatch('setStatusValue', { 
         property: 'keybindState', 
-        value: 'default' 
+        value: 'default', 
       });
     });
   },
@@ -76,8 +76,8 @@ export default {
     'modal-component': ModalComponent,
     'global-message': GlobalMessage,
     'vue-simple-spinner': VueSimpleSpinner,
-   },
-}
+  },
+};
 </script>
 
 <style lang="less">

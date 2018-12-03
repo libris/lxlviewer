@@ -8,7 +8,10 @@ import { mapGetters } from 'vuex';
 export default {
   name: 'breadcrumb',
   props: {
-    recordType: ''
+    recordType: {
+      type: String,
+      default: '',
+    }
   },
   data() {
     return {
@@ -68,12 +71,12 @@ export default {
     },
     currentPostNumber() {
       if (this.inspector.breadcrumb === undefined || this.inspector.breadcrumb.length == 0) return;
-      let items = this.inspector.breadcrumb[0].result.items;
+      const items = this.inspector.breadcrumb[0].result.items;
 
       const item = items.find(item => item['@id'] === this.currentPost);
-      const itemIndex = items.indexOf(item)
+      const itemIndex = items.indexOf(item);
 
-      return itemIndex+1;
+      return itemIndex + 1;
     },
     totalPostNumber() {
       if (this.inspector.breadcrumb === undefined || this.inspector.breadcrumb.length == 0) return;
@@ -83,24 +86,24 @@ export default {
     prevPostIndex() {
       if (this.inspector.breadcrumb === undefined || this.inspector.breadcrumb.length == 0) return;
 
-      let items = this.inspector.breadcrumb[0].result.items;
+      const items = this.inspector.breadcrumb[0].result.items;
       
       const item = items.find(item => item['@id'] === this.currentPost);
-      const itemIndex = items.indexOf(item)
+      const itemIndex = items.indexOf(item);
      
-      return itemIndex-1;
+      return itemIndex - 1;
     },
     prevPostPath() {
       if (this.inspector.breadcrumb === undefined || this.inspector.breadcrumb.length == 0) return '';
 
       if (this.prevPostIndex < 0) return '';
 
-      let items = this.inspector.breadcrumb[0].result.items;
+      const items = this.inspector.breadcrumb[0].result.items;
 
-      let prevItem = items[this.prevPostIndex];
+      const prevItem = items[this.prevPostIndex];
       if (prevItem.hasOwnProperty('@id')) {
         const uriParts = prevItem['@id'].split('/');
-        const fnurgel = uriParts[uriParts.length-1];
+        const fnurgel = uriParts[uriParts.length - 1];
         return `/${fnurgel}`;
       }
 
@@ -109,25 +112,25 @@ export default {
     nextPostIndex() {
       if (this.inspector.breadcrumb === undefined || this.inspector.breadcrumb.length == 0) return;
 
-      let items = this.inspector.breadcrumb[0].result.items;
+      const items = this.inspector.breadcrumb[0].result.items;
       
       const item = items.find(item => item['@id'] === this.currentPost);
-      const itemIndex = items.indexOf(item)
+      const itemIndex = items.indexOf(item);
      
-      return itemIndex+1;
+      return itemIndex + 1;
     },
     nextPostPath() {
       if (this.inspector.breadcrumb === undefined || this.inspector.breadcrumb.length == 0) return '';
       
       if (this.nextPostIndex > this.totalPostNumber) return '';
 
-      let items = this.inspector.breadcrumb[0].result.items;
+      const items = this.inspector.breadcrumb[0].result.items;
 
-      let nextItem = items[this.nextPostIndex];
+      const nextItem = items[this.nextPostIndex];
 
       if (nextItem && nextItem.hasOwnProperty('@id')) {
         const uriParts = nextItem['@id'].split('/');
-        const fnurgel = uriParts[uriParts.length-1];
+        const fnurgel = uriParts[uriParts.length - 1];
         return `/${fnurgel}`;
       }
 

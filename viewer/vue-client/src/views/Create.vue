@@ -12,19 +12,19 @@ import TabMenu from '@/components/shared/tab-menu';
 
 export default {
   name: 'create-new-form',
-  data () {
+  data() {
     return {
       creationList: [
-        {'id': 'Instance', 'text': 'Instance'},
-        {'id': 'Work', 'text': 'Work'},
-        {'id': 'Agent', 'text': 'Agent'},
-        {'id': 'File', 'text': 'From file'},
+        { id: 'Instance', text: 'Instance' },
+        { id: 'Work', text: 'Work' },
+        { id: 'Agent', text: 'Agent' },
+        { id: 'File', text: 'From file' },
       ],
       chosenType: '',
       selectedCreation: 'Instance',
       thingData: {},
       activeIndex: -1,
-    }
+    };
   },
   methods: {
     getPrefLabelByLang(item) {
@@ -39,8 +39,8 @@ export default {
       const baseRecord = Object.assign(this.baseRecord, BaseTemplates[this.selectedCreation.toLowerCase()].record);
       const baseMainEntity = Object.assign(this.baseMainEntity, BaseTemplates[this.selectedCreation.toLowerCase()].mainEntity);
       const templateValue = {
-        'record': baseRecord,
-        'mainEntity': baseMainEntity,
+        record: baseRecord,
+        mainEntity: baseMainEntity,
       };
       this.thingData = RecordUtil.prepareDuplicateFor(templateValue, this.user, this.settings);
     },
@@ -83,10 +83,10 @@ export default {
       const baseRecord = {
         '@type': 'Record',
         '@id': 'https://id.kb.se/TEMPID',
-        'descriptionCreator': {
+        descriptionCreator: {
           '@id': `https://libris.kb.se/library/${this.user.settings.activeSigel}`,
         },
-        'mainEntity': {
+        mainEntity: {
           '@id': 'https://id.kb.se/TEMPID#it',
         },
       };
@@ -105,14 +105,14 @@ export default {
     'tab-menu': TabMenu,
   },
   watch: {
-    'thingData': function() {
+    thingData: function () {
       this.$store.dispatch('setInsertData', this.thingData);
-      this.$router.push({ path: `/new` });
+      this.$router.push({ path: '/new' });
     },
   },
   created() {
     if (this.user.settings.appTech) {
-      this.creationList.push({'id': 'Overwrite', 'text': 'Overwrite post'});
+      this.creationList.push({ id: 'Overwrite', text: 'Overwrite post' });
     }
   },
   mounted() { // Ready method is deprecated in 2.0, switch to "mounted"

@@ -5,7 +5,6 @@
 
 import { mixin as clickaway } from 'vue-clickaway';
 import * as _ from 'lodash';
-import ToolTipComponent from '../shared/tooltip-component';
 import * as LayoutUtil from '@/utils/layout';
 import * as StringUtil from '@/utils/string';
 import * as VocabUtil from '@/utils/vocab';
@@ -13,6 +12,7 @@ import ComboKeys from 'combokeys';
 import PanelComponent from '@/components/shared/panel-component.vue';
 import RoundButton from '@/components/shared/round-button.vue';
 import { mapGetters } from 'vuex';
+import ToolTipComponent from '../shared/tooltip-component';
 
 export default {
   mixins: [clickaway],
@@ -23,10 +23,19 @@ export default {
       default: () => [],
     },
     inner: false,
-    path: '',
+    path: {
+      type: String,
+      default: '',
+    },
     index: Number,
-    editingObject: '',
-    entityType: '',
+    editingObject: {
+      type: String,
+      default: '',
+    },
+    entityType: {
+      type: String,
+      default: '',
+    },
     inToolbar: false,
     forceActive: false
   },
@@ -53,7 +62,7 @@ export default {
         this.entityType, 
         this.settings.language, 
         this.resources.vocab, 
-        this.resources.context
+        this.resources.context,
       );
       return `${title}: ${contextString}`;
     },
@@ -71,8 +80,8 @@ export default {
       const filtered = _.filter(this.allowed, (o) => {
         let labelByLang = '';
         if (
-          typeof o.item.labelByLang !== 'undefined' &&
-          typeof o.item.labelByLang[lang] !== 'undefined'
+          typeof o.item.labelByLang !== 'undefined'
+          && typeof o.item.labelByLang[lang] !== 'undefined'
         ) {
           if (_.isArray(o.item.labelByLang[lang])) {
             labelByLang = o.item.labelByLang[lang][0];
@@ -80,8 +89,8 @@ export default {
             labelByLang = o.item.labelByLang[lang];
           }
         } else if (
-          typeof o.item.prefLabelByLang !== 'undefined' &&
-          typeof o.item.prefLabelByLang[lang] !== 'undefined'
+          typeof o.item.prefLabelByLang !== 'undefined'
+          && typeof o.item.prefLabelByLang[lang] !== 'undefined'
         ) {
           if (_.isArray(o.item.prefLabelByLang[lang])) {
             labelByLang = o.item.prefLabelByLang[lang][0];
@@ -109,14 +118,14 @@ export default {
       this.$store.dispatch('setUser', user);
     },
     actionHighlight(active, event) {
-      if(active) {
+      if (active) {
         let item = event.target;
         while ((item = item.parentElement) && !item.classList.contains('js-itemLocal'));
-          item.classList.add('is-marked');
+        item.classList.add('is-marked');
       } else {
         let item = event.target;
         while ((item = item.parentElement) && !item.classList.contains('js-itemLocal'));
-          item.classList.remove('is-marked');
+        item.classList.remove('is-marked');
       }
     },
     closeModals() {
@@ -127,7 +136,7 @@ export default {
       if (_.isArray(termObj['@type'])) {
         if (termObj['@type'].indexOf('DatatypeProperty') > -1 && termObj['@type'].indexOf('DatatypeProperty') > -1) {
           return StringUtil.getUiPhraseByLang('Literals and entities', this.settings.language);
-        } else if (termObj['@type'].indexOf('DatatypeProperty') > -1) {
+        } if (termObj['@type'].indexOf('DatatypeProperty') > -1) {
           return StringUtil.getUiPhraseByLang('Literals', this.settings.language);
         } else if (termObj['@type'].indexOf('ObjectProperty') > -1) {
           return StringUtil.getUiPhraseByLang('Entities', this.settings.language);
@@ -146,9 +155,9 @@ export default {
       let value = [];
       const contextValue = VocabUtil.getContextValue(key, '@type', this.resources.context);
       if (
-        prop['@type'] === 'DatatypeProperty' &&
-        prop.hasOwnProperty('range') &&
-        prop.range.some(e => e['@id'] === 'http://www.w3.org/2001/XMLSchema#boolean')
+        prop['@type'] === 'DatatypeProperty'
+        && prop.hasOwnProperty('range')
+        && prop.range.some(e => e['@id'] === 'http://www.w3.org/2001/XMLSchema#boolean')
       ) {
         // Boolean
         value = true;
@@ -172,21 +181,21 @@ export default {
     addField(prop, close) {  
       if (!prop.added) {
         const splitProp = prop.item['@id'].split('/');
-        const propLastPart = splitProp[splitProp.length-1];
+        const propLastPart = splitProp[splitProp.length - 1];
         const key = StringUtil.convertToPrefix(prop.item['@id'], this.resources.context);
         this.$store.dispatch('updateInspectorData', {
           changeList: [
             {
               path: `${this.path}.${key}`,
               value: this.getEmptyFieldValue(key, prop.item),
-            }
+            },
           ],
           addToHistory: true,
         });
         this.$store.dispatch('setInspectorStatusValue', { 
           property: 'lastAdded', 
-          value: `${this.path}.${key}` 
-          });
+          value: `${this.path}.${key}`, 
+        });
         if (close) {
           this.hide();
         }
@@ -196,22 +205,22 @@ export default {
     show() {
       this.$store.dispatch('pushInspectorEvent', { 
         name: 'form-control', 
-        value: 'close-modals'
+        value: 'close-modals',
       })
-      .then(() => {
-        this.$nextTick(() => {
-          this.active = true;
+        .then(() => {
           this.$nextTick(() => {
+            this.active = true;
+            this.$nextTick(() => {
             // this.$store.dispatch('setStatusValue', { 
             //   property: 'keybindState', 
             //   value: 'field-adder' 
             // });
-            if (this.$refs.input) {
-              this.$refs.input.focus();
-            }
+              if (this.$refs.input) {
+                this.$refs.input.focus();
+              }
+            });
           });
         });
-      });
     },
     expand() {
       this.$parent.$emit('expand-item', true);
@@ -227,7 +236,7 @@ export default {
     },
   },
   watch: {
-    forceActive: function(newVal, oldVal) {
+    forceActive: function (newVal, oldVal) {
       if (newVal != oldVal) {
         this.show();
       }
@@ -239,7 +248,7 @@ export default {
             this.hide();
             break;
           default:
-            return;
+            
         }
       }
     }, 

@@ -25,13 +25,13 @@ export default {
   },
   methods: {
     handleScroll(e) {
-      if (document.body.scrollTop > this.headerThreshold || 
-      document.documentElement.scrollTop > this.headerThreshold) {
+      if (document.body.scrollTop > this.headerThreshold 
+      || document.documentElement.scrollTop > this.headerThreshold) {
         this.showCompact = true;
       } else {
         this.showCompact = false;
       }
-    }
+    },
   },
   computed: {
     ...mapGetters([
@@ -42,21 +42,21 @@ export default {
       const state = this.inspector.status.level;
       if (state === 'mainEntity') {
         return 'Instance';
-      } else if (state === 'work') {
+      } if (state === 'work') {
         return 'Work';
       }
       return 'Unknown';
     },
     focusData() {
-      return this.inspector.data['mainEntity'];
+      return this.inspector.data.mainEntity;
     },
     headerThreshold() {
       const headerContainer = document.getElementById('main-header');
-      return headerContainer.offsetTop + headerContainer.offsetHeight -20;
+      return headerContainer.offsetTop + headerContainer.offsetHeight - 20;
     },
     compactSummary() {
       let summary = [];
-      _.each(this.getSummary, summaryArray => {
+      _.each(this.getSummary, (summaryArray) => {
         summary = summary.concat(StringUtil.getFormattedEntries(summaryArray, this.resources.vocab, this.settings, this.resources.context));
       });
       return summary.join(' • ');
@@ -67,7 +67,7 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-    window.addEventListener('scroll', _.throttle(this.handleScroll, 300));
+      window.addEventListener('scroll', _.throttle(this.handleScroll, 300));
     });
   },
   components: {

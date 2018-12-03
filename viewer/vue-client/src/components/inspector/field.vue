@@ -4,6 +4,7 @@
   It's responsible for its own data, and dispatches all changes to the form component.
 */
 import * as _ from 'lodash';
+import { mixin as clickaway } from 'vue-clickaway';
 import EntityAdder from './entity-adder';
 import ItemEntity from './item-entity';
 import ItemValue from './item-value';
@@ -13,7 +14,6 @@ import ItemVocab from './item-vocab';
 import ItemSibling from './item-sibling';
 import ItemBoolean from './item-boolean';
 import TooltipComponent from '../shared/tooltip-component';
-import { mixin as clickaway } from 'vue-clickaway';
 import * as VocabUtil from '@/utils/vocab';
 import * as LayoutUtil from '@/utils/layout';
 import * as MathUtil from '@/utils/math';
@@ -25,20 +25,50 @@ export default {
   name: 'field',
   mixins: [clickaway, LodashProxiesMixin],
   props: {
-    parentKey: '',
-    parentIndex: '',
-    parentPath: '',
-    fieldKey: '',
-    fieldValue: '',
-    isLocked: '',
+    parentKey: {
+      type: String,
+      default: '',
+    },
+    parentIndex: {
+      type: String,
+      default: '',
+    },
+    parentPath: {
+      type: String,
+      default: '',
+    },
+    fieldKey: {
+      type: String,
+      default: '',
+    },
+    fieldValue: {
+      type: String,
+      default: '',
+    },
+    isLocked: {
+      type: String,
+      default: '',
+    },
     asColumns: {
       default: true,
       type: Boolean,
     },
-    isRemovable: '',
-    isInner: '',
-    entityType: '',
-    showActionButtons: '',
+    isRemovable: {
+      type: String,
+      default: '',
+    },
+    isInner: {
+      type: String,
+      default: '',
+    },
+    entityType: {
+      type: String,
+      default: '',
+    },
+    showActionButtons: {
+      type: String,
+      default: '',
+    },
     isExpanded: false,
     expandChildren: false,
   },
@@ -75,15 +105,15 @@ export default {
 
       if (this.keyAsVocabProperty === null || typeof this.keyAsVocabProperty === 'undefined') {
         failedValidations.push({
-          text: "The property is not recognized",
-          hint: this.fieldKey
+          text: 'The property is not recognized',
+          hint: this.fieldKey,
         });
       }
 
       if (!this.isRepeatable && _.isArray(this.fieldValue) && this.fieldValue.length > 1) {
         failedValidations.push({
-          text: "The property is not repeatable",
-          hint: this.fieldKey
+          text: 'The property is not repeatable',
+          hint: this.fieldKey,
         });
       }
 
@@ -112,22 +142,23 @@ export default {
         this.fieldKey, 
         this.resources.vocab, 
         this.resources.context, 
-        this.resources.vocabClasses
-      ).map(item => StringUtil.getCompactUri(item, this.resources.context));;
+        this.resources.vocabClasses,
+      ).map(item => StringUtil.getCompactUri(item, this.resources.context));
       return fetchedRange;
     },
     recordType() {
       return VocabUtil.getRecordType(
         this.inspector.data.mainEntity['@type'], 
         this.resources.vocab, 
-        this.resources.context);
+        this.resources.context
+);
     },
     actionButtonsShown() {
       if (this.shouldShowActionButtons || this.showActionButtons) {
         return true;
-      } else {
+      } 
         return false;
-      }
+      
     },
     ...mapGetters([
       'inspector',
@@ -174,9 +205,9 @@ export default {
       if (this.keyAsVocabProperty && this.keyAsVocabProperty.commentByLang) {
         if (this.keyAsVocabProperty.commentByLang[this.settings.language]) {
           return this.keyAsVocabProperty.commentByLang[this.settings.language];
-        } else {
+        } 
           return this.keyAsVocabProperty.commentByLang[0];
-        }
+        
       } else {
         return '';
       }
@@ -212,7 +243,7 @@ export default {
       return VocabUtil.getPropertyTypes(
         this.fieldKey,
         this.resources.vocab,
-        this.resources.context
+        this.resources.context,
       );
     },
     isCompositional() {
@@ -269,29 +300,27 @@ export default {
       } else if (!_.isArray(currentValue)) {
         currentValue = [currentValue];
         currentValue.push(obj);
-      } else {
-        if(typeof obj.length !== "undefined" && _.isArray(obj) ) {
+      } else if(typeof obj.length !== "undefined" && _.isArray(obj) ) {
           obj.forEach(function(subObj) {
             currentValue.push(subObj);
           });
         } else {
           currentValue.push(obj);
         }
-      }
       let index = '';
       if (currentValue.length) {
-        index = `[${currentValue.length -1}]`;
+        index = `[${currentValue.length - 1}]`;
       }
       this.$store.dispatch('setInspectorStatusValue', { 
         property: 'lastAdded', 
-        value: `${this.getPath}${index}`
+        value: `${this.getPath}${index}`,
       });
       this.$store.dispatch('updateInspectorData', {
         changeList: [
           {
             path: `${this.getPath}`,
             value: currentValue,
-          }
+          },
         ],
         addToHistory: true,
       });
@@ -301,22 +330,22 @@ export default {
       if (active) {
         let item = event.target;
         while ((item = item.parentElement) && !item.classList.contains('js-field'));
-          item.classList.add('is-marked');
+        item.classList.add('is-marked');
       } else {
         let item = event.target;
         while ((item = item.parentElement) && !item.classList.contains('js-field'));
-          item.classList.remove('is-marked');
+        item.classList.remove('is-marked');
       }
     },
     removeHighlight(active, event) {
       if (active) {
         let item = event.target;
         while ((item = item.parentElement) && !item.classList.contains('js-field'));
-          item.classList.add('is-removeable');
+        item.classList.add('is-removeable');
       } else {
         let item = event.target;
         while ((item = item.parentElement) && !item.classList.contains('js-field'));
-          item.classList.remove('is-removeable');
+        item.classList.remove('is-removeable');
       }
     },
     updateValue(value) {
@@ -338,7 +367,7 @@ export default {
               {
                 path: this.parentPath,
                 value: parentData,
-              }
+              },
             ],
             addToHistory: true,
           });
@@ -368,9 +397,9 @@ export default {
         return 'sibling';
       }
       if (
-        this.isPlainObject(o) &&
-        (
-        !this.isLinked(o)
+        this.isPlainObject(o)
+        && (
+          !this.isLinked(o)
         // || (this.isLinked(o) && o['@id'].indexOf(this.editorData.record['@id']) !== -1)
         )
       ) {
@@ -418,12 +447,12 @@ export default {
     },
     handleMouseLeave() {
       if (!this.isInner) {
-        this.shouldShowActionButtons=false
+        this.shouldShowActionButtons = false;
       }
     },
     highLightLastAdded() {
       if (this.isLastAdded === true) {
-        if (this.fieldValue === null || (_.isArray(this.fieldValue) && this.fieldValue.length === 0 )) {
+        if (this.fieldValue === null || (_.isArray(this.fieldValue) && this.fieldValue.length === 0)) {
           const entityAdder = this.$refs.entityAdder;
           this.$nextTick(() => {
             if (entityAdder.$refs.adderFocusElement) {
@@ -432,7 +461,7 @@ export default {
             }
           });
         }
-        let element = this.$el;
+        const element = this.$el;
         LayoutUtil.scrollToElement(element, 1000, () => {
           setTimeout(() => {
             if (this.isLastAdded) {
@@ -441,7 +470,7 @@ export default {
           }, 1000);
         });
       }
-    }
+    },
   },
   beforeDestroy() {
     this.$store.dispatch('setValidation', { path: this.getPath, validates: true });

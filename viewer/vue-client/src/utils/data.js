@@ -14,7 +14,7 @@ export function getEmbellished(id, quotedIndex = {}) {
 
   if (obj == null) {
     window.lxlWarning(`🔍 Couldn\'t find embellished data for: ${id}`);
-    obj = {'@id': id};
+    obj = { '@id': id };
   }
   if (obj != null && !obj.hasOwnProperty('@type')) {
     window.lxlWarning('👽 Embellished entity has an unknown type (missing @type). ID:', id);
@@ -60,7 +60,7 @@ export function removeNullValues(inputObj) {
     if (Object.keys(cleanObj).length == 1 && cleanObj.hasOwnProperty('@type')) {
       cleanObj = null;
     }
-  } else if (typeof obj !== 'undefined' && obj !== null && obj !== "") {
+  } else if (typeof obj !== 'undefined' && obj !== null && obj !== '') {
     cleanObj = obj;
   }
   return cleanObj;
@@ -93,10 +93,10 @@ export function xmlToJson(xml) {
     for (let i = 0; i < xml.childNodes.length; i++) {
       const item = xml.childNodes.item(i);
       const nodeName = item.nodeName;
-      if (typeof(obj[nodeName]) === 'undefined') {
+      if (typeof (obj[nodeName]) === 'undefined') {
         obj[nodeName] = xmlToJson(item);
       } else {
-        if (typeof(obj[nodeName].push) === 'undefined') {
+        if (typeof (obj[nodeName].push) === 'undefined') {
           const old = obj[nodeName];
           obj[nodeName] = [];
           obj[nodeName].push(old);

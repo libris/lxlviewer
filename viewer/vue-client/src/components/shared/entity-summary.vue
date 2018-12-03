@@ -12,8 +12,14 @@ export default {
     isLocal: false,
     isExtractable: false,
     isImport: false,
-    importItem: '',
-    database: '',
+    importItem: {
+      type: String,
+      default: '',
+    },
+    database: {
+      type: String,
+      default: '',
+    },
     shouldLink: {
       default: true,
       type: Boolean,
@@ -21,11 +27,11 @@ export default {
     shouldOpenTab: false,
     isCompact: {
       default: false,
-      type: Boolean
+      type: Boolean,
     },
     valueDisplayLimit: {
       default: 5,
-      type: Number
+      type: Number,
     }, 
   },
   data() {
@@ -37,7 +43,7 @@ export default {
         payload: {},
         event: '',
       },
-    }
+    };
   },
   computed: {
     isReplacedBy() {
@@ -55,7 +61,7 @@ export default {
     routerPath() {
       if (this.focusData.hasOwnProperty('@id')) {
         const uriParts = this.focusData['@id'].split('/');
-        const fnurgel = uriParts[uriParts.length-1];
+        const fnurgel = uriParts[uriParts.length - 1];
         return `/${fnurgel}`;
       }
       return '';
@@ -70,8 +76,8 @@ export default {
       const info = this.getSummary.info.concat(this.getSummary.sub);
       const infoObj = {};
       _.each(info, (node) => {
-        let remainder = node.value.length > this.valueDisplayLimit ? ` <span class="badge">+${node.value.length - this.valueDisplayLimit}</span>` : '';
-        let trimmed = node.value.slice(0, this.valueDisplayLimit).join(', ') + remainder;
+        const remainder = node.value.length > this.valueDisplayLimit ? ` <span class="badge">+${node.value.length - this.valueDisplayLimit}</span>` : '';
+        const trimmed = node.value.slice(0, this.valueDisplayLimit).join(', ') + remainder;
         infoObj[node.property] = trimmed;
       });
       return infoObj;
@@ -81,7 +87,7 @@ export default {
         this.getSummary.categorization, 
         this.resources.vocab, 
         this.settings, 
-        this.resources.context
+        this.resources.context,
       );
     },
     header() {
@@ -89,15 +95,15 @@ export default {
         this.getSummary.header, 
         this.resources.vocab, 
         this.settings, 
-        this.resources.context
+        this.resources.context,
       );
     },
     identifiers() {
-      let identifiersList = StringUtil.getFormattedEntries(
+      const identifiersList = StringUtil.getFormattedEntries(
         this.getSummary.identifiers, 
         this.resources.vocab, 
         this.settings, 
-        this.resources.context
+        this.resources.context,
       );
       return identifiersList;
     },
@@ -106,7 +112,7 @@ export default {
         this.getSummary.info, 
         this.resources.vocab, 
         this.settings, 
-        this.resources.context
+        this.resources.context,
       );
     },
     sub() {
@@ -114,13 +120,13 @@ export default {
         this.getSummary.info, 
         this.resources.vocab, 
         this.settings, 
-        this.resources.context
+        this.resources.context,
       );
       allThings = allThings.concat(StringUtil.getFormattedEntries(
         this.getSummary.sub, 
         this.resources.vocab, 
         this.settings, 
-        this.resources.context
+        this.resources.context,
       ));
       return allThings;
     },

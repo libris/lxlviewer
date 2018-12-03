@@ -14,7 +14,10 @@ export default {
   props: {
     hasHolding: false,
     checkingHolding: true,
-    holdingId: '',
+    holdingId: {
+      type: String,
+      default: '',
+    },
     mainEntity: null, // mainEntity of the record we want to create item on
     disabled: false,
     compact: false,
@@ -22,7 +25,7 @@ export default {
   data() {
     return {
       itemData: {},
-    }
+    };
   },
   events: {
   },
@@ -34,20 +37,21 @@ export default {
         this.inspector.data.quoted, 
         this.resources.vocab, 
         this.settings, 
-        this.resources.context);
+        this.resources.context
+);
       embellishedReference['@id'] = this.mainEntity['@id'];
 
       this.itemData = RecordUtil.getItemObject(
         this.mainEntity['@id'],
         `https://libris.kb.se/library/${this.user.settings.activeSigel}`,
-        embellishedReference
+        embellishedReference,
       );
 
       this.$emit('done');
     },
     gotoHolding() {
       const locationParts = this.holdingId.split('/');
-      const fnurgel = locationParts[locationParts.length-1];
+      const fnurgel = locationParts[locationParts.length - 1];
       this.$router.push({ path: `/${fnurgel}` });
     },
     previewHolding() {

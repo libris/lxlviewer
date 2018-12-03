@@ -9,7 +9,7 @@ export default {
   },
   data() {
     return {
-    }
+    };
   },
   methods: {
   },
@@ -27,14 +27,13 @@ export default {
       }
       if (typeof object.label !== 'undefined') {
         return object.label;
-      } else if (typeof object.prefLabelByLang !== 'undefined' && typeof object.prefLabelByLang[this.user.settings.language] !== 'undefined') {
+      } if (typeof object.prefLabelByLang !== 'undefined' && typeof object.prefLabelByLang[this.user.settings.language] !== 'undefined') {
         return object.prefLabelByLang[this.user.settings.language];
-      } else if (typeof object.labelByLang !== 'undefined' && typeof object.labelByLang[this.user.settings.language] !== 'undefined') {
+      } if (typeof object.labelByLang !== 'undefined' && typeof object.labelByLang[this.user.settings.language] !== 'undefined') {
         return object.labelByLang[this.user.settings.language];
-      } else {
-        const idArray = object['@id'].split('/');
-        return `${idArray[idArray.length - 1]} (has no label)`;
-      }
+      } 
+      const idArray = object['@id'].split('/');
+      return `${idArray[idArray.length - 1]} (has no label)`;
     },
   },
   components: {

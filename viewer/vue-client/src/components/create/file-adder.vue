@@ -6,18 +6,18 @@ import * as StringUtil from '@/utils/string';
 
 export default {
   name: 'file-adder',
-  data () {
+  data() {
     return {
       userIsDropping: false,
       invalidFile: false,
       droppedFile: {},
-    }
+    };
   },
   props: {
     type: {
       type: String,
       default: 'new',
-    }
+    },
   },
   methods: {
     outputData(data) {
@@ -28,9 +28,9 @@ export default {
     },
     initFilePicker() {
       const self = this;
-      this.$refs.FilePicker.addEventListener('input', function(e) {
+      this.$refs.FilePicker.addEventListener('input', (e) => {
         const reader = new FileReader();
-        reader.onloadend = function() {
+        reader.onloadend = function () {
           try {
             const data = JSON.parse(this.result);
             self.droppedFile = data;
@@ -42,27 +42,27 @@ export default {
       });
     },
     initDropzone() {
-      window.addEventListener("dragover",function(e){
+      window.addEventListener('dragover', (e) => {
         e = e || event;
         e.preventDefault();
       }, false);
-      window.addEventListener("drop",function(e){
+      window.addEventListener('drop', (e) => {
         e = e || event;
         e.preventDefault();
       }, false);
       const self = this;
-      this.$refs.dropzone.addEventListener('dragenter', function(e) {
+      this.$refs.dropzone.addEventListener('dragenter', (e) => {
         e.preventDefault();
         self.userIsDropping = true;
       });
-      this.$refs.dropzone.addEventListener('dragleave', function(e) {
+      this.$refs.dropzone.addEventListener('dragleave', (e) => {
         e.preventDefault();
         self.userIsDropping = false;
       });
-      this.$refs.dropzone.addEventListener('drop', function(e) {
+      this.$refs.dropzone.addEventListener('drop', (e) => {
         e.preventDefault();
         const reader = new FileReader();
-        reader.onloadend = function() {
+        reader.onloadend = function () {
           try {
             const data = JSON.parse(this.result);
             self.droppedFile = data;
@@ -87,7 +87,7 @@ export default {
   components: {
   },
   watch: {
-    'droppedFile': function(val) {
+    droppedFile: function (val) {
       if (val.hasOwnProperty('@graph')) {
         const inspectorObject = RecordUtil.splitJson(val);
         this.outputData(inspectorObject);
@@ -95,7 +95,7 @@ export default {
         this.invalidFile = true;
       }
     },
-    'invalidFile': function(val) {
+    invalidFile: function (val) {
       if (val === true) {
         setTimeout(() => {
           this.invalidFile = false;
