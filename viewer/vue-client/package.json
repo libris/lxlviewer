@@ -1,6 +1,6 @@
 {
   "name": "vue-client",
-  "version": "0.1.0",
+  "version": "1.5.0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -60,7 +60,11 @@
       "no-trailing-spaces": "off",
       "no-prototype-builtins": "off",
       "prefer-destructuring": "off",
-      "no-underscore-dangle": "off"
+      "no-underscore-dangle": "off",
+      "max-len": "off",
+      "prefer-promise-reject-errors": "off",
+      "no-cond-assign": "off",
+      "object-shorthand": "off"
     },
     "parserOptions": {
       "parser": "babel-eslint"

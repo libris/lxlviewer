@@ -1,6 +1,6 @@
+import * as _ from 'lodash';
 import * as httpUtil from './http';
 import * as StringUtil from './string';
-import * as _ from 'lodash';
 
 export function getVocab(apiPath) {
   return new Promise((resolve, reject) => {

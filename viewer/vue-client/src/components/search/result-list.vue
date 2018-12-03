@@ -1,8 +1,8 @@
 <script>
-import ResultListItem from './result-list-item';
-import * as RecordUtil from '@/utils/record';
 import * as _ from 'lodash';
 import { mapGetters } from 'vuex';
+import ResultListItem from './result-list-item';
+import * as RecordUtil from '@/utils/record';
 
 export default {
   name: 'result-list',
@@ -15,7 +15,7 @@ export default {
     return {
       keyword: '',
       relationsList: false,
-    }
+    };
   },
   methods: {
     getImportItem(index) {
@@ -38,7 +38,7 @@ export default {
       } else {
         this.relationsList = false;
       }
-    }
+    },
   },
   computed: {
     ...mapGetters([

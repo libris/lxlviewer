@@ -3,7 +3,7 @@
   Presentation of type label and changed/created text nodes.
 */
 
-import LensMixin from '@/components/mixins/lens-mixin';
+import LensMixin from '@/components/mixins/lens-mixin.vue';
 import { mixin as clickaway } from 'vue-clickaway';
 import { mapGetters } from 'vuex';
 
@@ -13,7 +13,7 @@ export default {
   data() {
     return {
       showFull: false,
-    }
+    };
   },
   methods: {
   },

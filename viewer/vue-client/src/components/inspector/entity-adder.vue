@@ -3,23 +3,18 @@
   Controls add new entity button and add entity modal with it's content
 */
 import * as _ from 'lodash';
-import * as httpUtil from '@/utils/http';
 import * as VocabUtil from '@/utils/vocab';
 import * as DisplayUtil from '@/utils/display';
-import * as LayoutUtil from '@/utils/layout';
-import * as RecordUtil from '@/utils/record';
 import * as StringUtil from '@/utils/string';
-import * as CombinedTemplates from '@/resources/json/combinedTemplates.json';
 import * as StructuredValueTemplates from '@/resources/json/structuredValueTemplates.json';
-import ProcessedLabel from '../shared/processedlabel';
-import ToolTipComponent from '../shared/tooltip-component';
-import PanelSearchList from '../search/panel-search-list';
-import PanelComponent from '@/components/shared/panel-component.vue';
-import ModalPagination from '@/components/inspector/modal-pagination';
-import FilterSelect from '@/components/shared/filter-select.vue';
-import TypeSelect from '@/components/inspector/type-select';
-import LensMixin from '../mixins/lens-mixin';
 import VueSimpleSpinner from 'vue-simple-spinner';
+import ToolTipComponent from '../shared/tooltip-component.vue';
+import PanelSearchList from '../search/panel-search-list.vue';
+import PanelComponent from '@/components/shared/panel-component.vue';
+import ModalPagination from '@/components/inspector/modal-pagination.vue';
+import FilterSelect from '@/components/shared/filter-select.vue';
+import TypeSelect from '@/components/inspector/type-select.vue';
+import LensMixin from '@/components/mixins/lens-mixin.vue';
 
 export default {
   mixins: [LensMixin],
@@ -42,17 +37,35 @@ export default {
     };
   },
   props: {
-    fieldKey: '',
-    allowLocal: true,
+    fieldKey: {
+      type: String,
+      default: '',
+    },
+    allowLocal: {
+      type: Boolean,
+      default: true,
+    },
     propertyTypes: {
       type: Array,
       default: () => [],
     },
     compositional: null,
-    showActionButtons: false,
-    isPlaceholder: false,
-    isChip: false,
-    path: '',
+    showActionButtons: {
+      type: Boolean,
+      default: false,
+    },
+    isPlaceholder: {
+      type: Boolean,
+      default: false,
+    },
+    isChip: {
+      type: Boolean,
+      default: false,
+    },
+    path: {
+      type: String,
+      default: '',
+    },
     alreadyAdded: {
       type: Array,
       default: () => [],
@@ -62,8 +75,14 @@ export default {
       default: () => [],
     },
     possibleValues: [],
-    hasRescriction: false,
-    entityType: '',
+    hasRescriction: {
+      type: Boolean,
+      default: false,
+    },
+    entityType: {
+      type: String,
+      default: '',
+    },
   },
   components: {
     'panel-component': PanelComponent,
@@ -75,25 +94,20 @@ export default {
     'vue-simple-spinner': VueSimpleSpinner,
   },
   watch: {
-    'inspector.event'(val, oldVal) {
+    'inspector.event'(val) {
       if (val.name === 'modal-control') {
-        switch(val.value) {
+        switch (val.value) {
           case 'close-entity-adder':
             this.hide();
-            return true;
             break;
           default:
-            return;
         }
-      }
-      if (val.name === 'form-control') {
-        switch(val.value) {
+      } else if (val.name === 'form-control') {
+        switch (val.value) {
           case 'close-modals':
             this.hide();
-            return true;
             break;
           default:
-            return;
         }
       }
     },
@@ -106,7 +120,7 @@ export default {
     },
     keyword(value) {
       this.handleChange(value);
-    }
+    },
   },
   computed: {
     settings() {
@@ -123,10 +137,10 @@ export default {
     },
     selectOptions() {
       const classTree = this.getClassTree;
-      let options = [];
+      const options = [];
 
       for (let i = 0; i < classTree.length; i++) {
-        let term = {};
+        const term = {};
 
         term.label = this.getFormattedSelectOption(classTree[i]);
         term.value = classTree[i].id;
@@ -142,18 +156,16 @@ export default {
       return `${modalStr} | ${addLabelStr}`;
     },
     getClassTree() {
-      const tree = this.getRange.map(type => {
-        return VocabUtil.getTree(
-          type, 
-          this.resources.vocab, 
-          this.resources.context
-        );
-      });
+      const tree = this.getRange.map(type => VocabUtil.getTree(
+        type, 
+        this.resources.vocab, 
+        this.resources.context,
+      ));
       return VocabUtil.flattenTree(
-        tree, 
+        tree,
         this.resources.vocab, 
         this.resources.context, 
-        this.settings.language
+        this.settings.language,
       );
     },
     tooltipText() {
@@ -162,9 +174,10 @@ export default {
         this.addLabel, 
         this.settings.language, 
         this.resources.vocab, 
-        this.resources.context).toLowerCase();
+        this.resources.context,
+      ).toLowerCase();
 
-      return addText+' '+label;
+      return `${addText} ${label}`;
     },
     hasSingleRange() {
       return this.getFullRange.length === 1;
@@ -175,9 +188,11 @@ export default {
     addLabel() {
       if (this.isLiteral) {
         return this.fieldKey;
-      } else if (this.getRange.length === 1) {
+      }
+      if (this.getRange.length === 1) {
         return this.getRange[0];
-      } else if (this.getRange.length > 1) {
+      }
+      if (this.getRange.length > 1) {
         return StringUtil.getUiPhraseByLang('entity', this.settings.language);
       }
       return this.fieldKey;
@@ -187,8 +202,8 @@ export default {
         this.entityType, 
         this.fieldKey, 
         this.resources.vocab, 
-        this.resources.context)
-        .map(item => StringUtil.getCompactUri(item, this.resources.context));
+        this.resources.context,
+      ).map(item => StringUtil.getCompactUri(item, this.resources.context));
       return fetchedRange;
     },
     getFullRange() {
@@ -197,8 +212,8 @@ export default {
         this.fieldKey, 
         this.resources.vocab, 
         this.resources.context, 
-        this.resources.vocabClasses
-      ).map(item => StringUtil.getCompactUri(item, this.resources.context));;
+        this.resources.vocabClasses,
+      ).map(item => StringUtil.getCompactUri(item, this.resources.context));
       return fetchedRange;
     },
     allSearchTypes() {
@@ -219,7 +234,7 @@ export default {
           classId,
           this.resources.vocab, 
           this.settings, 
-          this.resources.context
+          this.resources.context,
         )) {
           return false;
         }
@@ -252,14 +267,14 @@ export default {
   },
   methods: {
     actionHighlight(active, event) {
-      if(active) {
+      if (active) {
         let item = event.target;
         while ((item = item.parentElement) && !item.classList.contains('js-field'));
-          item.classList.add('is-marked');
+        item.classList.add('is-marked');
       } else {
         let item = event.target;
         while ((item = item.parentElement) && !item.classList.contains('js-field'));
-          item.classList.remove('is-marked');
+        item.classList.remove('is-marked');
       }
     },
     getFormattedSelectOption(term) {
@@ -267,18 +282,18 @@ export default {
         term, 
         this.settings, 
         this.resources.vocab, 
-        this.resources.context
+        this.resources.context,
       );
     },
     setFilter($event, keyword) {
       let valuesArray = [];
       let values;
 
-      if ($event['value'] !== null && typeof $event['value'] === 'object') {
-        values = Object.assign({}, { ['value'] : $event['value']});
-        valuesArray = Object.values(values.value)
+      if ($event.value !== null && typeof $event.value === 'object') {
+        values = Object.assign({}, { value: $event.value });
+        valuesArray = Object.values(values.value);
       } else {
-        valuesArray.push($event['value']);
+        valuesArray.push($event.value);
       }
       
       this.currentSearchTypes = valuesArray;
@@ -313,7 +328,7 @@ export default {
     add(event) {
       this.actionHighlight(false, event);
       if (this.isEnumeration) {
-        this.addItem({'@id': ''});
+        this.addItem({ '@id': '' });
       } else if (this.isVocabField) {
         this.addItem('');
       } else if (this.canRecieveObjects) {
@@ -332,23 +347,23 @@ export default {
     show() {
       this.$store.dispatch('pushInspectorEvent', { 
         name: 'form-control', 
-        value: 'close-modals'
+        value: 'close-modals',
       })
-      .then(() => {
-        this.$nextTick(() => {
-          this.active = true;
+        .then(() => {
           this.$nextTick(() => {
-            this.resetSearch();
-            // this.$store.dispatch('setStatusValue', { 
-            //   property: 'keybindState', 
-            //   value: 'entity-adder' 
-            // });
-            if (this.$refs.input) {
-              this.$refs.input.focus();
-            }
+            this.active = true;
+            this.$nextTick(() => {
+              this.resetSearch();
+              // this.$store.dispatch('setStatusValue', { 
+              //   property: 'keybindState', 
+              //   value: 'entity-adder' 
+              // });
+              if (this.$refs.input) {
+                this.$refs.input.focus();
+              }
+            });
           });
         });
-      });
     },
     hide() {
       if (!this.active) return;
@@ -374,14 +389,14 @@ export default {
       this.$store.dispatch('addToQuoted', obj);
       this.$store.dispatch('setInspectorStatusValue', { 
         property: 'lastAdded', 
-        value: `${this.path}.{"@id":"${obj['@id']}"}` 
+        value: `${this.path}.{"@id":"${obj['@id']}"}`,
       });
       this.$store.dispatch('updateInspectorData', {
         changeList: [
           {
             path: `${this.path}`,
             value: currentValue,
-          }
+          },
         ],
         addToHistory: true,
       });
@@ -394,29 +409,27 @@ export default {
       } else if (!_.isArray(currentValue)) {
         currentValue = [currentValue];
         currentValue.push(obj);
+      } else if (typeof obj.length !== 'undefined' && _.isArray(obj)) {
+        obj.forEach((subObj) => {
+          currentValue.push(subObj);
+        });
       } else {
-        if(typeof obj.length !== "undefined" && _.isArray(obj) ) {
-          obj.forEach(function(subObj) {
-            currentValue.push(subObj);
-          });
-        } else {
-          currentValue.push(obj);
-        }
+        currentValue.push(obj);
       }
       let index = '';
       if (currentValue.length) {
-        index = `[${currentValue.length -1}]`;
+        index = `[${currentValue.length - 1}]`;
       }
       this.$store.dispatch('setInspectorStatusValue', { 
         property: 'lastAdded', 
-        value: `${this.path}${index}`
+        value: `${this.path}${index}`,
       });
       this.$store.dispatch('updateInspectorData', {
         changeList: [
           {
             path: `${this.path}`,
             value: currentValue,
-          }
+          },
         ],
         addToHistory: true,
       });
@@ -424,12 +437,11 @@ export default {
     addSibling(obj) {
       const linkObj = { '@id': `${this.inspector.data.record['@id']}#work` };
       const workObj = obj;
-      const workType = workObj['@type'];
       workObj['@id'] = linkObj['@id'];
 
       this.$store.dispatch('setInspectorStatusValue', { 
         property: 'lastAdded', 
-        value: 'work'
+        value: 'work',
       });
 
       this.$store.dispatch('updateInspectorData', {
@@ -441,7 +453,7 @@ export default {
           {
             path: 'work',
             value: workObj,
-          }
+          },
         ],
         addToHistory: true,
       });
@@ -449,14 +461,14 @@ export default {
     addEmpty(typeId) {
       this.hide();
       const shortenedType = StringUtil.getCompactUri(typeId, this.resources.context);
-      let obj = {'@type': shortenedType};
+      let obj = { '@type': shortenedType };
       if (StructuredValueTemplates.hasOwnProperty(shortenedType)) {
         obj = _.cloneDeep(StructuredValueTemplates[shortenedType]);
       }
       // If this is a holding, add the heldBy property
       if (obj['@type'] === 'Item') {
-        obj['heldBy'] = {
-          '@id': `https://libris.kb.se/library/${this.user.settings.activeSigel}`
+        obj.heldBy = {
+          '@id': `https://libris.kb.se/library/${this.user.settings.activeSigel}`,
         };
       }
 
@@ -473,7 +485,7 @@ export default {
     },
     loadResults(result) {
       this.searchResult = result.items;
-      this.numberOfPages = Math.floor(result.totalItems/this.maxResults);
+      this.numberOfPages = Math.floor(result.totalItems / this.maxResults);
       this.loading = false;
     },
     go(n) {
@@ -483,13 +495,12 @@ export default {
     },
     fetch(pageNumber) {
       const self = this;
-      const totalItems = self.searchResult.length;
       self.currentPage = pageNumber;
       self.loading = true;
-     // console.log('fetching page', this.currentPage);
+      // console.log('fetching page', this.currentPage);
       this.getItems(this.keyword).then((result) => {
         self.loadResults(result);
-      }, (error) => {
+      }, () => {
         self.loading = false;
       });
     },
