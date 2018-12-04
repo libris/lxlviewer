@@ -91,16 +91,6 @@ export function stripId(obj) {
   return newObj;
 }
 
-export function replaceIdWithTemp(obj) {
-  const replaceableId = graph[0]['@id'];
-  for (const node in obj) {
-      if (data.hasOwnProperty(k)) {
-         user[k] = data[k];
-      }
-  }
-  return itemObj;
-}
-
 export function getMainEntity(graph) {
   const mainEntityId = graph[0].mainEntity['@id'];
   let mainEntity = {};

@@ -25,7 +25,7 @@ export default {
   beforeRouteLeave(to, from, next) {
     if (this.shouldWarnOnUnload()) {
       const confString = StringUtil.getUiPhraseByLang('You have unsaved changes. Do you want to leave the page?', this.settings.language);
-      const answer = window.confirm(confString);
+      const answer = window.confirm(confString); // eslint-disable-line no-alert
       if (answer) {
         next();
       } else {
@@ -39,7 +39,7 @@ export default {
     this.addBreadcrumb();
     if (this.shouldWarnOnUnload()) {
       const confString = StringUtil.getUiPhraseByLang('You have unsaved changes. Do you want to leave the page?', this.settings.language);
-      const answer = window.confirm(confString);
+      const answer = window.confirm(confString); // eslint-disable-line no-alert
       if (answer) {
         next();
       } else {
@@ -161,6 +161,7 @@ export default {
           });
           this.$store.dispatch('removeLoadingIndicator', 'Loading document');
         }
+        return null;
       }, (error) => {
         this.$store.dispatch('pushNotification', { 
           type: 'danger', 
@@ -247,7 +248,7 @@ export default {
     doRemovePost() {
       this.closeRemoveModal();
       const url = `${this.settings.apiPath}/${this.documentId}`;
-      HttpUtil._delete({ url, activeSigel: this.user.settings.activeSigel, token: this.user.token }).then((result) => {
+      HttpUtil._delete({ url, activeSigel: this.user.settings.activeSigel, token: this.user.token }).then(() => {
         this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('The post was deleted', this.settings.language)}!` });
         // Force reload
         this.$router.go(-1);
@@ -303,7 +304,7 @@ export default {
       if (!this.inspector.status.isNew) {
         if (this.shouldWarnOnUnload()) {
           const confString = StringUtil.getUiPhraseByLang('You have unsaved changes. Do you want to cancel?', this.settings.language);
-          const answer = window.confirm(confString);
+          const answer = window.confirm(confString); // eslint-disable-line no-alert
           if (answer) {
             this.doCancel();
           } 
@@ -456,9 +457,10 @@ export default {
     },
     'postLoaded'(val) {
       if (val === true) {
+        // do something
       }
     },
-    'inspector.event'(val, oldVal) {
+    'inspector.event'(val) {
       if (val.name === 'post-control') {
         switch (val.value) {
           case 'cancel':
@@ -486,7 +488,7 @@ export default {
       }
     },
   },
-  created: function () {
+  created() {
     this.$on('duplicate-item', this.duplicateItem);
   },
   computed: {

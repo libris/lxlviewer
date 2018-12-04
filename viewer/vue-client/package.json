@@ -17,6 +17,7 @@
     "lodash": "^4.17.11",
     "marked": "^0.5.2",
     "md5": "^2.2.1",
+    "moment": "^2.22.2",
     "portal-vue": "^1.5.0",
     "vue": "^2.5.17",
     "vue-cli-plugin-moment": "^0.1.1",
@@ -65,7 +66,9 @@
       "prefer-promise-reject-errors": "off",
       "no-cond-assign": "off",
       "object-shorthand": "off",
-      "import/extensions": "off"
+      "import/extensions": "off",
+      "import/no-dynamic-require": "off",
+      "global-require": "off"
     },
     "parserOptions": {
       "parser": "babel-eslint"

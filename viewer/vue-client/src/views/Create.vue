@@ -2,10 +2,8 @@
 import * as _ from 'lodash';
 import * as CombinedTemplates from '@/resources/json/combinedTemplates.json';
 import * as BaseTemplates from '@/resources/json/baseTemplates.json'; 
-import * as VocabUtil from '@/utils/vocab';
 import * as RecordUtil from '@/utils/record';
 import * as DataUtil from '@/utils/data';
-import * as StringUtil from '@/utils/string';
 import CreationCard from '@/components/create/creation-card';
 import FileAdder from '@/components/create/file-adder';
 import TabMenu from '@/components/shared/tab-menu';
@@ -28,7 +26,7 @@ export default {
   },
   methods: {
     getPrefLabelByLang(item) {
-      const label = item.prefLabelByLang[self.language] || item.prefLabelByLang.en;
+      const label = item.prefLabelByLang[this.user.settings.language] || item.prefLabelByLang.en;
       if (typeof label === 'string') {
         return label;
       }
@@ -105,7 +103,7 @@ export default {
     'tab-menu': TabMenu,
   },
   watch: {
-    thingData: function () {
+    thingData() {
       this.$store.dispatch('setInsertData', this.thingData);
       this.$router.push({ path: '/new' });
     },

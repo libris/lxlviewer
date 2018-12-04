@@ -10,7 +10,6 @@ import * as DataUtil from '../../utils/data';
 import * as DisplayUtil from '../../utils/display';
 import * as LayoutUtil from '../../utils/layout';
 import * as VocabUtil from '@/utils/vocab';
-import * as ModalUtil from '@/utils/modals';
 import * as HttpUtil from '@/utils/http';
 import * as StringUtil from '@/utils/string';
 import * as RecordUtil from '@/utils/record';

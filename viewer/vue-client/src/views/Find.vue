@@ -2,22 +2,16 @@
 import * as _ from 'lodash';
 import * as RecordUtil from '@/utils/record';
 import * as StringUtil from '@/utils/string';
-import * as LayoutUtil from '@/utils/layout';
-import * as HttpUtil from '@/utils/http';
 import ServiceWidgetSettings from '@/resources/json/serviceWidgetSettings.json';
 import Copy from '@/resources/json/copy.json';
 import FacetControls from '@/components/search/facet-controls';
 import SearchResult from '@/components/search/search-result';
 import SearchForm from '@/components/search/search-form';
-import DatasetObservations from '@/components/search/dataset-observations';
-import LinkCardComponent from '@/components/search/link-card';
-import IntroComponent from '@/components/search/link-card';
-import Modernizr from '@/../.modernizrrc.js';
 import { mapGetters } from 'vuex';
 import VueSimpleSpinner from 'vue-simple-spinner';
 
 export default {
-  data: function () {
+  data() {
     return {
       initialized: false,
       // combokeys: null,
@@ -57,7 +51,7 @@ export default {
       const fetchUrl = `${this.settings.apiPath}/find.json?${this.query}`;
 
       fetch(fetchUrl).then(response => response.json(), (error) => {
-        this.$store.dispatch('pushNotification', { type: 'danger', message: StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language) });
+        this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)} ${error}` });
         this.searchInProgress = false;
       }).then((result) => {
         this.result = result;
@@ -68,7 +62,7 @@ export default {
       const fetchUrl = `${this.settings.apiPath}/_remotesearch?${this.query}`;
       
       fetch(fetchUrl).then(response => response.json(), (error) => {
-        this.$store.dispatch('pushNotification', { type: 'danger', message: StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language) });
+        this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)} ${error}` });
         this.searchInProgress = false;
       }).then((result) => {
         console.log(result);
@@ -144,7 +138,6 @@ export default {
     'facet-controls': FacetControls,
     'search-result': SearchResult,
     'search-form': SearchForm,
-    'dataset-observations': DatasetObservations,
     'vue-simple-spinner': VueSimpleSpinner,
   },
 };

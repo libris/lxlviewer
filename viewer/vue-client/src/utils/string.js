@@ -11,6 +11,27 @@ export function removeDomain(string, removableBaseUriArray) {
   return newValue;
 }
 
+export function convertToPrefix(uri, context) {
+  if (typeof context === 'undefined') {
+    throw new Error('convertToPrefix was called without context');
+  }
+  const hashParts = uri.split('#');
+  let suffix = '';
+  let baseUri = '';
+  if (hashParts.length > 1) {
+    suffix = hashParts[1];
+    baseUri = `${hashParts[0]}#`;
+  } else {
+    const uriParts = uri.split('/');
+    suffix = uriParts[uriParts.length - 1];
+    uriParts.splice(uriParts.length - 1, 1);
+    baseUri = `${uriParts.join('/')}/`;
+  }
+  const prefix = VocabUtil.getPrefixFromBaseUri(baseUri, context);
+  const withPrefix = prefix !== '' ? `${prefix}:${suffix}` : suffix;
+  return withPrefix;
+}
+
 export function getCompactUri(uri, context) {
   if (typeof context === 'undefined') {
     throw new Error('getCompactUri was called without context.');
@@ -42,27 +63,6 @@ export function convertToBaseUri(str, context) {
   const baseUri = VocabUtil.getBaseUriFromPrefix(prefix, context);
   const withBaseUri = `${baseUri}${uri}`;
   return withBaseUri;
-}
-
-export function convertToPrefix(uri, context) {
-  if (typeof context === 'undefined') {
-    throw new Error('convertToPrefix was called without context');
-  }
-  const hashParts = uri.split('#');
-  let suffix = '';
-  let baseUri = '';
-  if (hashParts.length > 1) {
-    suffix = hashParts[1];
-    baseUri = `${hashParts[0]}#`;
-  } else {
-    const uriParts = uri.split('/');
-    suffix = uriParts[uriParts.length - 1];
-    uriParts.splice(uriParts.length - 1, 1);
-    baseUri = `${uriParts.join('/')}/`;
-  }
-  const prefix = VocabUtil.getPrefixFromBaseUri(baseUri, context);
-  const withPrefix = prefix !== '' ? `${prefix}:${suffix}` : suffix;
-  return withPrefix;
 }
 
 export function convertToVocabKey(str, context) {
@@ -108,14 +108,15 @@ export function getHash(str) {
   if (str.length === 0) return hash;
   for (i = 0; i < str.length; i++) {
     chr = str.charCodeAt(i);
-    hash = ((hash << 5) - hash) + chr;
-    hash |= 0; // Convert to 32bit integer
+    hash = ((hash << 5) - hash) + chr; // eslint-disable-line no-bitwise
+    // Convert to 32bit integer
+    hash |= 0; // eslint-disable-line no-bitwise
   }
   return hash;
 }
 
 export function isNumeric(num) {
-  return !isNaN(num);
+  return !Number.isNaN(num);
 }
 
 export function getNumberOfVowels(str) {
@@ -200,7 +201,7 @@ function translateable(type) {
 
 export function extractStrings(obj) {
   let label = '';
-  _.each(obj, (value, key) => {
+  _.each(obj, (value) => {
     if (!_.isObject(value)) {
       label += value;
     } else {
@@ -213,7 +214,7 @@ export function extractStrings(obj) {
 
 export function formatLabel(obj) {
   let label = [];
-  _.each(obj, (value, key) => {
+  _.each(obj, (value) => {
     if (!_.isObject(value)) {
       label.push(value);
     } else {

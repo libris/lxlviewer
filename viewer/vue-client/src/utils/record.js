@@ -1,16 +1,6 @@
 import * as _ from 'lodash';
 import * as httpUtil from './http';
-import * as DisplayUtil from './display';
 import * as DataUtil from './data';
-import * as VocabUtil from './vocab';
-
-export function getMarc(json) {
-  return new Promise((resolve, reject) => {
-    const req = new XMLHttpRequest();
-    const url = '/_format?to=application/x-marc-json';
-    req.open('POST', url);
-  });
-}
 
 export function splitJson(json) {
   if (!json || json.length === 0) {
@@ -87,16 +77,6 @@ export function stripId(obj) {
     newObj['@id'] = '';
   }
   return newObj;
-}
-
-export function replaceIdWithTemp(obj) {
-  const replaceableId = graph[0]['@id'];
-  for (const node in obj) {
-    if (data.hasOwnProperty(k)) {
-      user[k] = data[k];
-    }
-  }
-  return itemObj;
 }
 
 export function getMainEntity(graph) {

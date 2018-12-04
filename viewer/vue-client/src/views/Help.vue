@@ -1,11 +1,9 @@
 <script>
 import * as _ from 'lodash';
-import * as LayoutUtil from '@/utils/layout';
 import * as StringUtil from '@/utils/string';
 import marked from 'marked';
 import moment from 'moment';
 import { mapGetters } from 'vuex';
-import VueSimpleSpinner from 'vue-simple-spinner';
 
 export default {
   name: 'help-component',
@@ -66,7 +64,6 @@ export default {
     });
   },
   components: {
-    'vue-simple-spinner': VueSimpleSpinner,
   },
   watch: {
   },

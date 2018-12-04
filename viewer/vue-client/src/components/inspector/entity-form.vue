@@ -6,7 +6,6 @@
 */
 
 import * as _ from 'lodash';
-import * as ModalUtil from '@/utils/modals';
 import * as VocabUtil from '@/utils/vocab';
 import * as DisplayUtil from '@/utils/display';
 import * as StringUtil from '@/utils/string';
