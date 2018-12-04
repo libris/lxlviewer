@@ -1,6 +1,7 @@
 <script>
 import AutoSize from 'autosize';
 import * as _ from 'lodash';
+import { mapGetters } from 'vuex';
 import * as httpUtil from '../../utils/http';
 import * as VocabUtil from '../../utils/vocab';
 import * as DisplayUtil from '../../utils/display';
@@ -11,13 +12,15 @@ import ProcessedLabel from '../shared/processedlabel';
 import TooltipComponent from '../shared/tooltip-component';
 import ItemMixin from '../mixins/item-mixin';
 import LensMixin from '../mixins/lens-mixin';
-import { mapGetters } from 'vuex';
 
 export default {
   name: 'item-value',
   mixins: [ItemMixin, LensMixin],
   props: {
-    fieldValue: '',
+    fieldValue: {
+      type: String,
+      default: '',
+    },
     isUriType: false,
     isLocked: false,
     isRemovable: false,
@@ -57,9 +60,9 @@ export default {
         }
         return valueArray;
       },
-      set: _.debounce(function(newValue) {
+      set: _.debounce(function (newValue) {
         this.update(newValue);
-      }, 1000)
+      }, 1000),
     },
     shouldLink() {
       return this.isUriType && this.fieldValue.startsWith('http');
@@ -68,7 +71,7 @@ export default {
       return StringUtil.getUiPhraseByLang('Opens in new window', this.user.settings.language);
     },
     shouldFocus() {
-      let lastAdded = this.inspector.status.lastAdded;
+      const lastAdded = this.inspector.status.lastAdded;
       if (lastAdded === this.path || lastAdded === this.parentPath) {
         return true;
       }
@@ -86,11 +89,11 @@ export default {
       if (active) {
         let item = event.target;
         while ((item = item.parentElement) && !item.classList.contains('js-value'));
-          item.classList.add('is-removeable');
+        item.classList.add('is-removeable');
       } else {
         let item = event.target;
         while ((item = item.parentElement) && !item.classList.contains('js-value'));
-          item.classList.remove('is-removeable');
+        item.classList.remove('is-removeable');
       }
     },
     handleEnter(e) {
@@ -105,7 +108,7 @@ export default {
             {
               path: this.path,
               value: newValue,
-            }
+            },
           ],
           addToHistory: true,
         });
@@ -113,7 +116,7 @@ export default {
     },
     highLightLastAdded() {
       if (this.isLastAdded === true) {
-        let element = this.$el;
+        const element = this.$el;
         element.classList.add('is-lastAdded');
         LayoutUtil.scrollToElement(element, 1000, () => {
           setTimeout(() => {
@@ -127,10 +130,10 @@ export default {
     },
     initializeTextarea() {
       this.$nextTick(() => {
-        let textarea = this.$refs.textarea;
+        const textarea = this.$refs.textarea;
         AutoSize(textarea);
         AutoSize.update(textarea);
-      })
+      });
     },
     isEmpty() {
       return false;
@@ -153,8 +156,8 @@ export default {
         }
       }
       return false;
-    })
-  }
+    });
+  },
 };
 </script>
 

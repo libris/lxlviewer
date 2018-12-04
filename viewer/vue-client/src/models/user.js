@@ -23,9 +23,8 @@ export class User {
     if (this.collections.length > 0) {
       if (this.collections[0].code === '?') {
         return false;
-      } else {
-        return true;
-      }
+      } 
+      return true;
     }
     return false;
   }
@@ -71,9 +70,7 @@ export class User {
     if (!this.settings.activeSigel) {
       return this.collections[0];
     }
-    return _.find(this.collections, (o) => {
-      return o.code === this.settings.activeSigel;
-    });
+    return _.find(this.collections, o => o.code === this.settings.activeSigel);
   }
 
   verifySigel(sigelCode) {

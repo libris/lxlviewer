@@ -12,12 +12,15 @@ export default {
     focusData: {},
     showDetailed: false,
     importItem: {},
-    database: '',
+    database: {
+      type: String,
+      default: '',
+    },
   },
   data() {
     return {
       keyword: '',
-    }
+    };
   },
   computed: {
     settings() {
@@ -31,7 +34,7 @@ export default {
         this.getSummary.categorization, 
         this.resources.vocab, 
         this.settings, 
-        this.resources.context
+        this.resources.context,
       );
     },
     header() {
@@ -39,7 +42,7 @@ export default {
         this.getSummary.header, 
         this.resources.vocab, 
         this.settings, 
-        this.resources.context
+        this.resources.context,
       );
     },
     isLibrisResource() {

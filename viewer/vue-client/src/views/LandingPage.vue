@@ -1,16 +1,15 @@
 <script>
 import ServiceWidgetSettings from '@/resources/json/serviceWidgetSettings.json';
 import SearchForm from '@/components/search/search-form';
-import DatasetObservations from '@/components/search/dataset-observations';
 import LinkCardComponent from '@/components/search/link-card';
 import Copy from '@/resources/json/copy.json';
 
 export default {
   name: 'LandingPage',
-  data () {
+  data() {
     return {
-      msg: 'Welcome to Your Vue.js App'
-    }
+      msg: 'Welcome to Your Vue.js App',
+    };
   },
   methods: {
     widgetShouldBeShown(id) {
@@ -19,9 +18,9 @@ export default {
         return false;
       }
       if (
-        (componentList[id].hasOwnProperty('forced') && componentList[id].forced === true) ||
+        (componentList[id].hasOwnProperty('forced') && componentList[id].forced === true)
         // TODO: Don't read standard here, read from user settings and init as active in user settings if standard
-        (componentList[id].hasOwnProperty('standard') && componentList[id].standard)
+        || (componentList[id].hasOwnProperty('standard') && componentList[id].standard)
       ) {
         return true;
       }
@@ -35,11 +34,9 @@ export default {
   },
   components: {
     'search-form': SearchForm,
-    'dataset-observations': DatasetObservations,
-    'intro-component': LinkCardComponent,
     'link-card': LinkCardComponent,
   },
-}
+};
 </script>
 
 <template>

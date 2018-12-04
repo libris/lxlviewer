@@ -37,8 +37,8 @@ export default {
         this.inspector.data.quoted, 
         this.resources.vocab, 
         this.settings, 
-        this.resources.context
-);
+        this.resources.context,
+      );
       embellishedReference['@id'] = this.mainEntity['@id'];
 
       this.itemData = RecordUtil.getItemObject(

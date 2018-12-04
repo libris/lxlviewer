@@ -8,6 +8,9 @@ import * as RecordUtil from '@/utils/record';
 import * as StringUtil from '@/utils/string';
 import * as CombinedTemplates from '@/resources/json/combinedTemplates.json';
 import * as StructuredValueTemplates from '@/resources/json/structuredValueTemplates.json';
+import { mixin as clickaway } from 'vue-clickaway';
+import { mapGetters } from 'vuex';
+import VueSimpleSpinner from 'vue-simple-spinner';
 import ProcessedLabel from '../shared/processedlabel';
 import PanelComponent from '@/components/shared/panel-component';
 import PanelSearchList from '@/components/search/panel-search-list';
@@ -17,9 +20,6 @@ import EntitySummary from '../shared/entity-summary';
 import FilterSelect from '@/components/shared/filter-select.vue';
 import SummaryAction from './summary-action';
 import LensMixin from '../mixins/lens-mixin';
-import { mixin as clickaway } from 'vue-clickaway';
-import { mapGetters } from 'vuex';
-import VueSimpleSpinner from 'vue-simple-spinner';
 
 export default {
   name: 'search-window',
@@ -56,13 +56,19 @@ export default {
     };
   },
   props: {
-    fieldKey: '',
+    fieldKey: {
+      type: String,
+      default: '',
+    },
     extracting: false,
     itemInfo: {},
     index: 0,
     copyTitle: false,
     canCopyTitle: false,
-    entityType: '',
+    entityType: {
+      type: String,
+      default: '',
+    },
     isActive: false,
   },
   components: {
@@ -82,7 +88,7 @@ export default {
       this.$dispatch('set-copy-title', value);
     },
     isActive(value, oldvalue) {
-      if(value) {
+      if (value) {
         this.show();
       } else {
         this.hide();
@@ -90,13 +96,12 @@ export default {
     },
     'inspector.event'(val, oldVal) {
       if (val.name === 'form-control') {
-        switch(val.value) {
+        switch (val.value) {
           case 'close-modals':
             this.hide();
             return true;
             break;
           default:
-            return;
         }
       }
     },
@@ -127,10 +132,10 @@ export default {
     },
     selectOptions() {
       const classTree = this.getClassTree;
-      let options = [];
+      const options = [];
 
       for (let i = 0; i < classTree.length; i++) {
-        let term = {};
+        const term = {};
 
         term.label = this.getFormattedSelectOption(classTree[i]);
         term.value = classTree[i].id;
@@ -148,9 +153,7 @@ export default {
       return !this.loading && this.searchResult.length === 0 && this.keyword.length > 0 && this.searchMade;
     },
     getClassTree() {
-      const tree = this.getRange.map(type => {
-        return VocabUtil.getTree(type, this.resources.vocab, this.resources.context);
-      });
+      const tree = this.getRange.map(type => VocabUtil.getTree(type, this.resources.vocab, this.resources.context));
       return VocabUtil.flattenTree(tree, this.resources.vocab, this.resources.context, this.settings.language);
     },
   },
@@ -169,22 +172,22 @@ export default {
         term, 
         this.settings, 
         this.resources.vocab, 
-        this.resources.context
+        this.resources.context,
       );
     },
     addPayload(item) {
-      const updatedListItemSettings = _.merge({payload: item}, _.cloneDeep(this.listItemSettings));
+      const updatedListItemSettings = _.merge({ payload: item }, _.cloneDeep(this.listItemSettings));
       return updatedListItemSettings;
     },
     setFilter($event, keyword) {
       let valuesArray = [];
       let values;
 
-      if ($event['value'] !== null && typeof $event['value'] === 'object') {
-        values = Object.assign({}, { ['value'] : $event['value']});
-        valuesArray = Object.values(values.value)
+      if ($event.value !== null && typeof $event.value === 'object') {
+        values = Object.assign({}, { value: $event.value });
+        valuesArray = Object.values(values.value);
       } else {
-        valuesArray.push($event['value']);
+        valuesArray.push($event.value);
       }
       
       this.currentSearchTypes = valuesArray;
@@ -214,22 +217,22 @@ export default {
       this.resetSearch();
       this.$store.dispatch('pushInspectorEvent', { 
         name: 'form-control', 
-        value: 'close-modals'
+        value: 'close-modals',
       })
-      .then(() => {
-        this.$nextTick(() => {
-          this.active = true;
+        .then(() => {
           this.$nextTick(() => {
+            this.active = true;
+            this.$nextTick(() => {
             // this.$store.dispatch('setStatusValue', { 
             //   property: 'keybindState', 
             //   value: 'entity-adder' 
             // });
-            if (this.$refs.input) {
-              this.$refs.input.focus();
-            }
+              if (this.$refs.input) {
+                this.$refs.input.focus();
+              }
+            });
           });
         });
-      });
     },
     hide() {
       if (!this.active) return;
@@ -247,7 +250,7 @@ export default {
     },
     loadResults(result) {
       this.searchResult = result.items;
-      this.numberOfPages = Math.floor(result.totalItems/this.maxResults);
+      this.numberOfPages = Math.floor(result.totalItems / this.maxResults);
       this.loading = false;
     },
     go(n) {

@@ -1,6 +1,6 @@
 <script>
-import PanelSearchItem from './panel-search-item';
 import { mapGetters } from 'vuex';
+import PanelSearchItem from './panel-search-item';
 
 export default {
   name: 'panel-search-list',
@@ -14,8 +14,14 @@ export default {
       default: () => [],
     },
     icon: null,
-    text: '',
-    path: '',
+    text: {
+      type: String,
+      default: '',
+    },
+    path: {
+      type: String,
+      default: '',
+    },
     index: Number,
     isCompact: false,
     hasAction: false,
@@ -24,7 +30,7 @@ export default {
     return {
       keyword: '',
       active: false,
-    }
+    };
   },
   methods: {
     itemIsAdded(item) {
@@ -59,7 +65,7 @@ export default {
   },
   mounted: function () {
     this.active = true;
-  }
+  },
 };
 </script>
 

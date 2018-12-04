@@ -11,7 +11,7 @@ export default {
     recordType: {
       type: String,
       default: '',
-    }
+    },
   },
   data() {
     return {

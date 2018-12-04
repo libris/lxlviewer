@@ -1,5 +1,4 @@
 <script>
-import EntitySummary from '../shared/entity-summary';
 import PanelComponent from '@/components/shared/panel-component';
 import PanelSearchList from '@/components/search/panel-search-list';
 import ModalPagination from '@/components/inspector/modal-pagination';
@@ -10,6 +9,7 @@ import * as DataUtil from '@/utils/data';
 import * as HttpUtil from '@/utils/http';
 import { mapGetters } from 'vuex';
 import VueSimpleSpinner from 'vue-simple-spinner';
+import EntitySummary from '../shared/entity-summary';
 
 export default {
   name: 'relations-list',
@@ -19,7 +19,7 @@ export default {
       type: String,
       default: '',
     },
-    itemOf: {}
+    itemOf: {},
   },
   data() {
     return {
@@ -33,7 +33,7 @@ export default {
       itemData: {},
       embellishedList: [],
       showInstances: false,
-    }
+    };
   },
   methods: {
     go(n) {
@@ -48,7 +48,7 @@ export default {
           if (response.status === 200) {
             response.json().then((result) => {
               this.searchResult = result;
-              this.numberOfPages = Math.floor(result.totalItems/this.maxResults);
+              this.numberOfPages = Math.floor(result.totalItems / this.maxResults);
               this.loading = false;
             });
           }
@@ -73,17 +73,16 @@ export default {
     resultItems() {
       if (this.searchResult) {
         return this.searchResult.items;
-      } else {
-        return [];
-      }
+      } 
+      return [];
     },
     builtQuery() {
       const queryPairs = this.query;
       if (queryPairs === null) {
         return '';
       }
-      queryPairs['_offset'] = this.currentPage*this.maxResults;
-      queryPairs['_limit'] = this.maxResults;
+      queryPairs._offset = this.currentPage * this.maxResults;
+      queryPairs._limit = this.maxResults;
       let q = `${this.settings.apiPath}/find.json?`;
       _.each(queryPairs, (v, k) => {
         q += (`${encodeURIComponent(k)}=${encodeURIComponent(v)}&`);
@@ -93,21 +92,21 @@ export default {
     windowTitle() {
       if (this.listContextType === 'Item') {
         return StringUtil.getUiPhraseByLang('All holdings', this.settings.language);
-      } else if (this.listContextType === 'Instance') {
+      } if (this.listContextType === 'Instance') {
         let windowTitle = StringUtil.getUiPhraseByLang('Holdings of', this.settings.language);
-        windowTitle += ' '+this.itemOfTitle;
+        windowTitle += ` ${this.itemOfTitle}`;
         return windowTitle;
-      } else if (this.listContextType === 'Agent') {
+      } if (this.listContextType === 'Agent') {
         return StringUtil.getUiPhraseByLang('Contribution', this.settings.language);
       }
       const typeLabel = StringUtil.getLabelByLang(this.listContextType, this.settings.language, this.resources.vocab, this.resources.context);
       return `${typeLabel} ${StringUtil.getUiPhraseByLang('Used in', this.settings.language)}`;
     },
     itemOfTitle() {
-      return this.itemOf.hasTitle[0] ? 
-      this.itemOf.hasTitle[0].mainTitle : 
-      StringUtil.getUiPhraseByLang('instance', this.settings.language);
-    }
+      return this.itemOf.hasTitle[0] 
+        ? this.itemOf.hasTitle[0].mainTitle 
+        : StringUtil.getUiPhraseByLang('instance', this.settings.language);
+    },
   },
   components: {
     'modal-pagination': ModalPagination,
@@ -121,7 +120,7 @@ export default {
       if (val.length > 0 && val !== oldVal) {
         this.getResults();
       }
-    }
+    },
   },
   mounted() {
     this.$nextTick(() => {

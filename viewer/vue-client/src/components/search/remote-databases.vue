@@ -1,13 +1,13 @@
 <script>
 import * as _ from 'lodash';
+import { mapGetters } from 'vuex';
+import VueSimpleSpinner from 'vue-simple-spinner';
 import * as httpUtil from '../../utils/http';
 import * as RecordUtil from '../../utils/record';
 import ResultList from './result-list';
 import PanelComponent from '@/components/shared/panel-component';
 import TooltipComponent from '../shared/tooltip-component';
 import SearchResult from './search-result';
-import { mapGetters } from 'vuex';
-import VueSimpleSpinner from 'vue-simple-spinner';
 
 export default {
   name: 'remote-databases',
@@ -59,9 +59,9 @@ export default {
       const filtered = {};
       for (const key in dbs) {
         if (
-          key.toLowerCase().indexOf(query) > -1 ||
-          dbs[key].name.toLowerCase().indexOf(query) > -1
-          ) {
+          key.toLowerCase().indexOf(query) > -1
+          || dbs[key].name.toLowerCase().indexOf(query) > -1
+        ) {
           filtered[key] = dbs[key];
         }
       }
@@ -79,10 +79,10 @@ export default {
     },
   },
   events: {
-    'set-import'(data){
+    'set-import'(data) {
       this.importJson = data;
       this.$nextTick(() => {
-        document.getElementById("importForm").submit();
+        document.getElementById('importForm').submit();
       });
     },
   },
@@ -91,7 +91,7 @@ export default {
       if (val !== oldVal) {
         this.$store.dispatch('setStatusValue', { 
           property: 'remoteDatabases', 
-          value: val
+          value: val,
         });
         this.user && this.updateUserDbs(val);
       }
@@ -103,7 +103,7 @@ export default {
       if (val !== oldVal) {
         this.filterKey = '';
       }
-    }
+    },
   },
   methods: {
     isPlainObject(o) {
@@ -123,7 +123,7 @@ export default {
         'NYPL', 
         'NY',
         'WHOLIS', 
-        'YALE'
+        'YALE',
       ];
 
       const defaultDbs = this.user ? this.user.settings.defaultDatabases : [];
@@ -134,7 +134,7 @@ export default {
         for (let i = 0; i < dbs.length; i++) {
           const database = dbs[i];
           database.disabled = disabled.includes(database.database);
-          database.active = defaultDbs.includes(database.database)
+          database.active = defaultDbs.includes(database.database);
           dbList[dbs[i].database] = database;
         }
         this.remoteDatabases.list = dbList;
@@ -146,25 +146,25 @@ export default {
     fetchDatabases() {
       return new Promise((resolve, reject) => {
         httpUtil.get({ url: `${this.settings.apiPath}/_remotesearch?databases=list` })
-        .then((response) => {
-          resolve(response);
-        }, (error) => {
-          reject('Error loading databases...', error);
-        });
+          .then((response) => {
+            resolve(response);
+          }, (error) => {
+            reject('Error loading databases...', error);
+          });
       });
     },
     convertResult(result) {
       let totalResults = 0;
       for (const db in result.totalResults) {
         if (result.totalResults.hasOwnProperty(db)) {
-           totalResults += result.totalResults[db];
+          totalResults += result.totalResults[db];
         }
       }
-      const convertedList = { totalItems: totalResults, items: []};
+      const convertedList = { totalItems: totalResults, items: [] };
       _.each(result.items, (item) => {
         const convertedItem = RecordUtil.getMainEntity(item.data['@graph']);
         convertedList.items.push(convertedItem);
-      })
+      });
       return convertedList;
     },
     addDatabase(key) {
@@ -182,7 +182,7 @@ export default {
     },
     clearDatabases() {
       this.clearTooltip = false;
-      for (let key in this.remoteDatabases.list) {
+      for (const key in this.remoteDatabases.list) {
         this.remoteDatabases.list[key].active = false;
       }
     },
@@ -194,9 +194,9 @@ export default {
     },
     updateUserDbs(dbs) {
       const userObj = this.user;
-      userObj.settings.defaultDatabases = dbs
+      userObj.settings.defaultDatabases = dbs;
       this.$store.dispatch('setUser', userObj);
-    }
+    },
   },
   components: {
     'result-list': ResultList,

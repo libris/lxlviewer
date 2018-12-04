@@ -36,7 +36,10 @@ export default {
       default: () => [],
       type: Array,
     },
-    active: '',
+    active: {
+      type: String,
+      default: '',
+    },
   },
   data() {
     return {
@@ -57,8 +60,8 @@ export default {
           listWidth += listElements[i].clientWidth;
         }
         const padding = parseInt(window.getComputedStyle($activeTab).paddingLeft.replace('px', ''));
-        const left = `${parseInt((listWidth*-1)+$activeTab.offsetLeft+(padding*2)-4)}px`;
-        const width = `${parseInt($activeTab.clientWidth-(padding*2))}px`;
+        const left = `${parseInt((listWidth * -1) + $activeTab.offsetLeft + (padding * 2) - 4)}px`;
+        const width = `${parseInt($activeTab.clientWidth - (padding * 2))}px`;
         $underline.style.width = width;
         $underline.style.left = left;
       });

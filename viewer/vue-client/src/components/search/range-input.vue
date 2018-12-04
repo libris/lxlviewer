@@ -9,8 +9,8 @@ export default {
       max: 3000,
       lowerLimit: 0,
       upperLimit: 3000,
-      step: 1
-    }
+      step: 1,
+    };
   },
   methods: {
   },

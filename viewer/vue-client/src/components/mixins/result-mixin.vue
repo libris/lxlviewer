@@ -7,10 +7,10 @@ import * as _ from 'lodash';
 import { mapGetters } from 'vuex';
 
 export default {
-  data(){
+  data() {
     return {
       removed: false,
-    }
+    };
   },
   methods: {
     importThis() {
@@ -25,7 +25,7 @@ export default {
     },
   },
   events: {
-    'import-this'(){
+    'import-this'() {
       this.importThis();
     },
   },

@@ -4,14 +4,13 @@ function createModal(id, options) {
 
   const elementId = `#${id}`;
   let footerTemplate = '';
-  if(options.sFooterContent) {
+  if (options.sFooterContent) {
     footerTemplate = `<div class="modal-footer">
                         ${options.sFooterContent}
                       </div>`;
   }
 
-  const template =
-      `<div class="modal fade in" id="${id}" tabindex="-1" role="dialog" aria-labelledby="${id}-label">
+  const template = `<div class="modal fade in" id="${id}" tabindex="-1" role="dialog" aria-labelledby="${id}-label">
         <div class="modal-dialog" role="document">
           <div class="modal-content">
             <div class="modal-header">
@@ -35,15 +34,15 @@ function createModal(id, options) {
   $(elementId).modal('show');
 
   return new Promise((resolve, reject) => {
-    $(elementId + ' .js-button-accept').click(() => {
+    $(`${elementId} .js-button-accept`).click(() => {
       resolve();
     });
-    $(elementId + ' .js-button-reject').click(() => {
+    $(`${elementId} .js-button-reject`).click(() => {
       reject();
     });
     $(elementId).on('hidden.bs.modal', () => {
       reject();
-    })
+    });
   });
 }
 
@@ -57,7 +56,6 @@ function createModal(id, options) {
     [sType]         - Optional accept style (string) - 'danger', 'warning'
 */
 export function confirmDialog(options) {
-
   switch (options.sType) {
     case 'danger':
       options.sAcceptClass = 'btn-danger';
@@ -82,5 +80,4 @@ export function confirmDialog(options) {
 */
 export function modal(options) {
   return createModal('modal-modal', options);
-
 }

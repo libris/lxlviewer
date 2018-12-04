@@ -17,7 +17,7 @@ export default {
   },
   data() {
     return {
-    }
+    };
   },
   methods: {
     action() {
@@ -29,16 +29,16 @@ export default {
       'settings',
     ]),
     getIcon() {
-      if (this.disabled) return 'check'
-      if (this.replaced) return 'ban'
-      if (this.options.icon) return this.options.icon
-      else return false;
+      if (this.disabled) return 'check';
+      if (this.replaced) return 'ban';
+      if (this.options.icon) return this.options.icon;
+      return false;
     },
     getTooltipText() {
       if (this.disabled) return 'Added';
       if (this.replaced) return 'Replaced';
       if (this.options.text) return this.options.text;
-      else return false;
+      return false;
     },
   },
   components: {

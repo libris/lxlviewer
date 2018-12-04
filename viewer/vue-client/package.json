@@ -64,7 +64,8 @@
       "max-len": "off",
       "prefer-promise-reject-errors": "off",
       "no-cond-assign": "off",
-      "object-shorthand": "off"
+      "object-shorthand": "off",
+      "import/extensions": "off"
     },
     "parserOptions": {
       "parser": "babel-eslint"

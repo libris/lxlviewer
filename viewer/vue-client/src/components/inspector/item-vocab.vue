@@ -1,5 +1,6 @@
 <script>
 import * as _ from 'lodash';
+import { mapGetters } from 'vuex';
 import * as VocabUtil from '../../utils/vocab';
 import * as DataUtil from '../../utils/data';
 import * as StringUtil from '../../utils/string';
@@ -7,16 +8,21 @@ import ProcessedLabel from '../shared/processedlabel';
 import TooltipComponent from '../shared/tooltip-component';
 import ItemMixin from '../mixins/item-mixin';
 import LensMixin from '../mixins/lens-mixin';
-import { mapGetters } from 'vuex';
 
 export default {
   name: 'item-vocab',
   mixins: [ItemMixin],
   props: {
-    fieldValue: '',
+    fieldValue: {
+      type: String,
+      default: '',
+    },
     isLocked: false,
     expanded: false,
-    entityType: '',
+    entityType: {
+      type: String,
+      default: '',
+    },
   },
   data() {
     return {
@@ -69,7 +75,7 @@ export default {
             {
               path: this.path,
               value: value,
-            }
+            },
           ],
           addToHistory: true,
         });
@@ -92,8 +98,8 @@ export default {
         value, 
         this.settings.language, 
         this.resources.vocab, 
-        this.resources.context)
-      );
+        this.resources.context,
+      ));
     },
     setInitialValue() {
       // if (this.possibleValues.indexOf(this.fieldValue) > -1) {

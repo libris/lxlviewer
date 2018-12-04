@@ -1,5 +1,8 @@
 <script>
 import * as _ from 'lodash';
+import Vue from 'vue';
+import { mixin as clickaway } from 'vue-clickaway';
+import { mapGetters } from 'vuex';
 import * as httpUtil from '../../utils/http';
 import * as LayoutUtil from '../../utils/layout';
 import * as VocabUtil from '../../utils/vocab';
@@ -7,7 +10,6 @@ import * as DisplayUtil from '../../utils/display';
 import * as RecordUtil from '../../utils/record';
 import * as StringUtil from '../../utils/string';
 import * as DataUtil from '../../utils/data';
-import Vue from 'vue';
 import ProcessedLabel from '../shared/processedlabel';
 import ItemEntity from './item-entity';
 import CardComponent from '../shared/card-component';
@@ -17,15 +19,16 @@ import SearchWindow from './search-window';
 import ItemMixin from '../mixins/item-mixin';
 import LensMixin from '../mixins/lens-mixin';
 import FormMixin from '../mixins/form-mixin';
-import {mixin as clickaway} from 'vue-clickaway';
-import { mapGetters } from 'vuex';
 
 export default {
   name: 'item-local',
   mixins: [ItemMixin, LensMixin, FormMixin, clickaway],
   props: {
     item: {},
-    entityType: '',
+    entityType: {
+      type: String,
+      default: '',
+    },
     isLocked: false,
     showActionButtons: false,
     inArray: false,
@@ -48,7 +51,7 @@ export default {
       showLinkAction: false,
       copyTitle: false,
       expandChildren: false,
-      cloned: false
+      cloned: false,
     };
   },
   computed: {
@@ -68,21 +71,19 @@ export default {
       const termObj = VocabUtil.getTermObject(this.focusData['@type'], this.resources.vocab, this.resources.context);
       if (termObj === {} || typeof termObj === 'undefined') {
         failedValidations.push({
-          text: "The class could not be found",
-          hint: this.focusData['@type']
+          text: 'The class could not be found',
+          hint: this.focusData['@type'],
         });
-      } else {
-        if (termObj.abstract === true) {
-          failedValidations.push({
-            text: "The class is abstract and should not be used",
-            hint: this.focusData['@type']
-          });
-        } else if (this.parentRange.indexOf(this.focusData['@type']) == -1) {
-          failedValidations.push({
-            text: "The class is not in the range of this property",
-            hint: `${this.fieldKey} <- ${this.focusData['@type']}`
-          });
-        }
+      } else if (termObj.abstract === true) {
+        failedValidations.push({
+          text: 'The class is abstract and should not be used',
+          hint: this.focusData['@type'],
+        });
+      } else if (this.parentRange.indexOf(this.focusData['@type']) == -1) {
+        failedValidations.push({
+          text: 'The class is not in the range of this property',
+          hint: `${this.fieldKey} <- ${this.focusData['@type']}`,
+        });
       }
 
       if (failedValidations.length > 0) {
@@ -108,14 +109,14 @@ export default {
       const cleanObj = DataUtil.removeNullValues(this.item);
 
       if (this.copyTitle) {
-        cleanObj['hasTitle'] = this.editorData.mainEntity.hasTitle;
+        cleanObj.hasTitle = this.editorData.mainEntity.hasTitle;
       }
       return cleanObj;
     },
     isExtractable() {
       if (this.forcedExtractability === true) {
         return false;
-      } else if (this.forcedExtractability === false) {
+      } if (this.forcedExtractability === false) {
         return true;
       }
       const classId = StringUtil.getCompactUri(this.item['@type'], this.resources.context);
@@ -134,7 +135,6 @@ export default {
       return this.item;
     },
     isEmpty() {
-
       let bEmpty = true;
       // Check if item has any keys besides @type and _uid. If not, we'll consider it empty.
       _.each(this.item, (value, key) => {
@@ -161,29 +161,29 @@ export default {
       this.managerMenuOpen = false;
     },
     highLightLastAdded() {
-      let element = this.$el;
+      const element = this.$el;
       LayoutUtil.scrollToElement(element, 1000, () => {});
     },
     actionHighlight(active, event) {
       if (active) {
         let item = event.target;
         while ((item = item.parentElement) && !item.classList.contains('js-itemLocal'));
-          item.classList.add('is-marked');
+        item.classList.add('is-marked');
       } else {
         let item = event.target;
         while ((item = item.parentElement) && !item.classList.contains('js-itemLocal'));
-          item.classList.remove('is-marked');
+        item.classList.remove('is-marked');
       }
     },
     removeHighlight(active, event) {
       if (active) {
         let item = event.target;
         while ((item = item.parentElement) && !item.classList.contains('js-itemLocal'));
-          item.classList.add('is-removeable');
+        item.classList.add('is-removeable');
       } else {
         let item = event.target;
         while ((item = item.parentElement) && !item.classList.contains('js-itemLocal'));
-          item.classList.remove('is-removeable');
+        item.classList.remove('is-removeable');
       }
     },
     expand() {
@@ -226,28 +226,28 @@ export default {
           httpUtil.get({ url: `${postUrl}/data.jsonld`, contentType: 'text/plain' }).then((getResult) => {
             const recievedObj = {
               '@graph': getResult['@graph'],
-            }
+            };
             const mainEntity = RecordUtil.splitJson(recievedObj).mainEntity;
             this.replaceWith(mainEntity);
             this.closeExtractDialog();
           }, (error) => {
             this.$store.dispatch('pushNotification', { 
               type: 'danger', 
-              message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error}`
+              message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error}`,
             });
             this.closeExtractDialog();
           });
         } else {
           this.$store.dispatch('pushNotification', { 
             type: 'danger', 
-            message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error}`
+            message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error}`,
           });
           this.closeExtractDialog();
         }
       }, (error) => {
         this.$store.dispatch('pushNotification', { 
           type: 'danger', 
-          message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error}`
+          message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error}`,
         });
         this.closeExtractDialog();
       });
@@ -282,24 +282,24 @@ export default {
           {
             path: `${this.path}`,
             value: newValue,
-          }
+          },
         ],
         addToHistory: false,
       });
       this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('Linking was successful', this.settings.language)}` });
       this.$store.dispatch('setInspectorStatusValue', { 
         property: 'lastAdded', 
-        value: `${this.parentPath}.{"@id":"${newValue['@id']}"}`
+        value: `${this.parentPath}.{"@id":"${newValue['@id']}"}`,
       });
       this.closeExtractDialog();
     },
     cloneThis() {      
-      let parentData = _.cloneDeep(_.get(this.inspector.data, this.parentPath));
+      const parentData = _.cloneDeep(_.get(this.inspector.data, this.parentPath));
       parentData.push(this.item);
 
       this.$store.dispatch('setInspectorStatusValue', { 
         property: 'lastAdded', 
-        value: `${this.parentPath}[${parentData.length-1}]`
+        value: `${this.parentPath}[${parentData.length - 1}]`,
       });
 
       setTimeout(() => {
@@ -308,7 +308,7 @@ export default {
             {
               path: this.parentPath,
               value: parentData,
-            }
+            },
           ],
           addToHistory: true,
         });
@@ -319,7 +319,7 @@ export default {
       this.$nextTick(this.focusFirstInput);
     },
     focusFirstInput() {
-      const firstInput = this.$el.querySelector('.js-itemValueInput')
+      const firstInput = this.$el.querySelector('.js-itemValueInput');
       if (firstInput) {
         firstInput.focus();
       }
@@ -338,7 +338,7 @@ export default {
         this.expand();
         this.expandChildren = true;
       }
-    }
+    },
   },
   beforeDestroy() {
     this.$store.dispatch('setValidation', { path: this.path, validates: true });
@@ -351,18 +351,18 @@ export default {
     if (this.isLastAdded) {
       this.highLightLastAdded();
       const fieldAdder = this.$refs.fieldAdder;
-        if (this.isEmpty) {
-          LayoutUtil.enableTabbing();
-          fieldAdder.$refs.adderButton.focus();
-        } else {
-          this.expand();
-          this.expandAllChildren();
-        }
+      if (this.isEmpty) {
+        LayoutUtil.enableTabbing();
+        fieldAdder.$refs.adderButton.focus();
+      } else {
+        this.expand();
+        this.expandAllChildren();
+      }
       setTimeout(() => {
         if (this.isLastAdded) {
           this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
         }
-      }, 1000)
+      }, 1000);
     }
     if (this.inspector.status.isNew) {
       this.expand();

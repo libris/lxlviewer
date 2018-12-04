@@ -10,11 +10,23 @@ export default {
   name: 'filter-select',
   props: {
     options: {},
-    optionsAll: '',
-    optionsSelected: '',
-    selectId: 'filterSelect',
-    className: '',
-    customPlaceholder: '',
+    optionsAll: {
+      type: String,
+      default: '',
+    },
+    optionsSelected: {
+      type: String,
+      default: '',
+    },
+    selectId: filterSelect,
+    className: {
+      type: String,
+      default: '',
+    },
+    customPlaceholder: {
+      type: String,
+      default: '',
+    },
     isFilter: true
   },
   data() {
@@ -28,7 +40,7 @@ export default {
         up: 38,
         right: 39,
         down: 40,
-      }
+      },
     };
   },
   computed: {
@@ -37,52 +49,52 @@ export default {
     },
     translatedPlaceholder() {
       return StringUtil.getUiPhraseByLang(this.customPlaceholder, this.settings.language);
-    }
+    },
   },
   methods: {
-    preventBodyScroll (e) {
+    preventBodyScroll(e) {
       const keys = this.keyEnums;
-      if([
+      if ([
         keys.space,
         keys.left,
         keys.up,
         keys.right,
-        keys.down
-        ].indexOf(e.keyCode) > -1) {
+        keys.down,
+      ].indexOf(e.keyCode) > -1) {
         e.preventDefault();
       } 
     },
-    checkInput (event) {
+    checkInput(event) {
       if (event.keyCode == 32) {
         this.filterVisible = true;
       }
     },
-    handleKeys (event) {
+    handleKeys(event) {
       if (this.filterVisible) {
         this.preventBodyScroll(event);
       }
     },
-    nextItem (event) {
+    nextItem(event) {
       if (!this.filterVisible) {
-        return;
+        
       } else {
-        let inputSel, inputEl, inputContSel, inputContEl, texts, items;
+        let inputSel; let inputEl; let inputContSel; let inputContEl; let texts; let 
+          items;
         inputContSel = document.getElementsByClassName(this.className);
         
         inputContEl = inputContSel[0];
         texts = inputContEl.getElementsByClassName('js-filterSelectText');
         items = inputContEl.getElementsByClassName('js-filterSelectItem');
 
-        if (event.keyCode == 38 || event.keyCode == 40 ) {
-          _.forEach(items, function(item, index) {
-          item.dataset.index = index;
-          item.classList.remove('isActive');
+        if (event.keyCode == 38 || event.keyCode == 40) {
+          _.forEach(items, (item, index) => {
+            item.dataset.index = index;
+            item.classList.remove('isActive');
           });
 
           if (event.keyCode == 38 && this.currentItem > 0) {
             this.currentItem--;
-          }
-          else if (event.keyCode == 40 && this.currentItem < texts.length-1) {
+          } else if (event.keyCode == 40 && this.currentItem < texts.length - 1) {
             this.currentItem++;
           }
           texts[this.currentItem].focus();
@@ -90,9 +102,12 @@ export default {
         }
       }
     },
-    filter () {
-      let inputSel, inputEl, inputContEl, inputContSel, filterSelectContainer, 
-      filterBy, dropdownSel, dropdownEl, span, i;
+    filter() {
+      let inputSel; let inputEl; let inputContEl; let inputContSel; let filterSelectContainer;
+ 
+      
+      let filterBy; let dropdownSel; let dropdownEl; let span; let 
+        i;
 
       inputContSel = document.getElementsByClassName(this.className);
       inputContEl = inputContSel[0];
@@ -123,7 +138,8 @@ export default {
       this.filterVisible = false;
     },
     showCurrentFilter(label) {
-      let inputSel, inputEl, inputContEl, inputContSel;
+      let inputSel; let inputEl; let inputContEl; let 
+        inputContSel;
       
       inputContSel = document.getElementsByClassName(this.className);
       inputContEl = inputContSel[0];
@@ -134,24 +150,25 @@ export default {
       inputEl.value = label;
     },
     focusOnInput(event) {
-      if (event.target.classList.contains('js-filterSelect') || 
-      event.target.classList.contains('js-createSelect')) {
+      if (event.target.classList.contains('js-filterSelect') 
+      || event.target.classList.contains('js-createSelect')) {
         const input = this.$refs.filterselectInput;
         this.filterVisible = !this.filterVisible;
         input.focus();
       }
     },
     clear() {
-      let allObj = {};
-      let allValue = this.optionsAll;
-      let inputSel, inputEl, inputContEl, inputContSel, texts;
+      const allObj = {};
+      const allValue = this.optionsAll;
+      let inputSel; let inputEl; let inputContEl; let inputContSel; let 
+        texts;
 
       inputContSel = document.getElementsByClassName(this.className);
       inputContEl = inputContSel[0];
       texts = inputContEl.getElementsByClassName('js-filterSelectText');
       
       // Make all options visible again
-      _.forEach(texts, function(text) {
+      _.forEach(texts, (text) => {
         text.removeAttribute('style');
       });
 
@@ -164,13 +181,13 @@ export default {
     },
     close() {
       this.filterVisible = false;
-    }
+    },
   },
   watch: {
     selectedObject(value) {
       this.showCurrentFilter(value.label);
       this.$emit('filter-selected', value);
-    }
+    },
   },
   mounted() {
     this.$el.addEventListener('keyup', this.nextItem);

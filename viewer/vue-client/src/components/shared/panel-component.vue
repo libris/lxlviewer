@@ -44,7 +44,7 @@ export default {
     return {
       fadedIn: false,
       fadeTime: 300,
-    }
+    };
   },
   methods: {
     lockScroll(boolValue) {
@@ -78,7 +78,7 @@ export default {
   },
   watch: {
     'status.keyActions'(actions) {
-      let lastAction = actions.slice(-1);
+      const lastAction = actions.slice(-1);
       if (lastAction == 'close-modals') {
         this.close();
       }
@@ -90,7 +90,7 @@ export default {
       if (this.status.panelOpen) {
         this.$store.dispatch('setStatusValue', { 
           property: 'keybindState', 
-          value: 'panel-open' 
+          value: 'panel-open', 
         });
       }
       if (window.innerWidth <= 1200 || this.user.settings.forceFullViewPanel) {
@@ -106,7 +106,7 @@ export default {
       this.lockScroll(false);
       if (this.status.panelOpen) {
         this.$store.dispatch('setStatusValue', { property: 'panelOpen', value: false });
-      };
+      }
     });
   },
 };

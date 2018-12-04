@@ -48,17 +48,17 @@ export function convertToPrefix(uri, context) {
   if (typeof context === 'undefined') {
     throw new Error('convertToPrefix was called without context');
   }
-  let hashParts = uri.split('#');
+  const hashParts = uri.split('#');
   let suffix = '';
   let baseUri = '';
   if (hashParts.length > 1) {
     suffix = hashParts[1];
-    baseUri = hashParts[0] + '#';
+    baseUri = `${hashParts[0]}#`;
   } else {
     const uriParts = uri.split('/');
-    suffix = uriParts[uriParts.length-1];
-    uriParts.splice(uriParts.length-1, 1);
-    baseUri = uriParts.join('/') + '/';
+    suffix = uriParts[uriParts.length - 1];
+    uriParts.splice(uriParts.length - 1, 1);
+    baseUri = `${uriParts.join('/')}/`;
   }
   const prefix = VocabUtil.getPrefixFromBaseUri(baseUri, context);
   const withPrefix = prefix !== '' ? `${prefix}:${suffix}` : suffix;
@@ -103,22 +103,23 @@ export function getParamValueFromUrl(url, param) {
 }
 
 export function getHash(str) {
-  let hash = 0, i, chr;
+  let hash = 0; let i; let 
+    chr;
   if (str.length === 0) return hash;
   for (i = 0; i < str.length; i++) {
-    chr   = str.charCodeAt(i);
-    hash  = ((hash << 5) - hash) + chr;
+    chr = str.charCodeAt(i);
+    hash = ((hash << 5) - hash) + chr;
     hash |= 0; // Convert to 32bit integer
   }
   return hash;
-};
+}
 
 export function isNumeric(num) {
   return !isNaN(num);
 }
 
 export function getNumberOfVowels(str) {
-  var m = str.match(/[aeiouy]/gi);
+  const m = str.match(/[aeiouy]/gi);
   return m === null ? 0 : m.length;
 }
 
@@ -126,7 +127,7 @@ export function isLibrisResourceUri(uri, settings) {
   const baseUri = settings.dataPath;
   if (uri) {
     if (uri.startsWith(baseUri)) {
-      const uriWithoutPath = uri.replace(baseUri + '/', '');
+      const uriWithoutPath = uri.replace(`${baseUri}/`, '');
       const uriWithoutEnd = uriWithoutPath.split('/')[0].split('#')[0];
       if (uriWithoutEnd.length > 10 && getNumberOfVowels(uriWithoutEnd) === 0) {
         return true;
@@ -161,10 +162,10 @@ export function getLabelByLang(string, lang, vocab, context) {
   if (_.isObject(string)) {
     throw new Error(
       'getLabelByLang was called with an object (should be a string).',
-      JSON.stringify(string)
+      JSON.stringify(string),
     );
   }
-  let item = VocabUtil.getTermObject(string, vocab, context);
+  const item = VocabUtil.getTermObject(string, vocab, context);
   let note = '';
   let labelByLang = '';
   if (typeof item !== 'undefined') {
@@ -180,9 +181,7 @@ export function getLabelByLang(string, lang, vocab, context) {
   }
   // Check if we have something of value
   if (_.isArray(labelByLang)) {
-    labelByLang = _.uniqBy(labelByLang, (i) => {
-      return i.toLowerCase();
-    });
+    labelByLang = _.uniqBy(labelByLang, i => i.toLowerCase());
     labelByLang = labelByLang.join(', ');
   }
 
@@ -217,10 +216,8 @@ export function formatLabel(obj) {
   _.each(obj, (value, key) => {
     if (!_.isObject(value)) {
       label.push(value);
-
     } else {
       label.push(extractStrings(value));
-  
     }
   });
   label = [].concat.apply([], label);
@@ -232,9 +229,7 @@ export function getFormattedEntries(list, vocab, settings, context) {
   let formatted = [];
   for (const entry of list) {
     if (translateable(entry.property)) {
-      formatted = formatted.concat(entry.value.map((obj) => {
-        return getLabelByLang(obj, settings.language, vocab, context);
-      }));
+      formatted = formatted.concat(entry.value.map(obj => getLabelByLang(obj, settings.language, vocab, context)));
     } else {
       formatted = formatted.concat(entry.value);
     }

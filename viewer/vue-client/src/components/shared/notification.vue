@@ -6,7 +6,7 @@ export default {
     return {
       TTL: 5000,
       shouldShow: false,
-    }
+    };
   },
   props: ['content'],
   watch: {
@@ -28,7 +28,7 @@ export default {
     remove() {
       this.$store.dispatch('removeNotification', this.content.id);
     },
-  }
+  },
 };
 </script>
 

@@ -2,12 +2,12 @@
 export default {
   name: 'test-component',
   props: {
-    title: 'test',
+    title: test,
   },
   data() {
     return {
       keyword: '',
-    }
+    };
   },
   methods: {
   },
@@ -17,7 +17,7 @@ export default {
   },
   watch: {
     keyword(value, oldval) {
-      console.log("keyword changed", value, oldval);
+      console.log('keyword changed', value, oldval);
     },
   },
   mounted() {

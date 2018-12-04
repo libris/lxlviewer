@@ -8,10 +8,10 @@ export default {
   computed: {
     notifications() {
       return this.$store.getters.status.notifications;
-    }
+    },
   },
   components: {
-    'notification': Notification
+    notification: Notification,
   },
   ready() { // Ready method is deprecated in 2.0, switch to "mounted"
     this.$nextTick(() => {

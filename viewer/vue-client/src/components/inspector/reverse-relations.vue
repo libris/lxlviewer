@@ -24,13 +24,13 @@ export default {
       numberOfRelations: null,
       relationsListOpen: false,
       panelQuery: '',
-    }
+    };
   },
   methods: {
     showPanel() {
       this.$store.dispatch('pushInspectorEvent', { 
         name: 'form-control', 
-        value: 'close-modals'
+        value: 'close-modals',
       }).then(() => {
         this.$nextTick(() => {
           this.relationsListOpen = true;
@@ -50,16 +50,16 @@ export default {
           relatedPosts += (`${encodeURIComponent(k)}=${encodeURIComponent(v)}&`);
         });
         fetch(relatedPosts)
-        .then((response) => {
-          if (response.status === 200) {
-            resolve(response.json());
-          } else {
-            reject();
-          }
-        })
-        .catch((error) => {
-          reject(error);
-        });
+          .then((response) => {
+            if (response.status === 200) {
+              resolve(response.json());
+            } else {
+              reject();
+            }
+          })
+          .catch((error) => {
+            reject(error);
+          });
       });
     },
     getRelationsInfo() {
@@ -67,7 +67,7 @@ export default {
       const timeoutLength = 1100; // Needed so that the index has time to update 
       setTimeout(() => { // 
         const query = {
-          '_limit': 0,
+          _limit: 0,
         };
         if (this.recordType === 'Item') {
           query['itemOf.@id'] = this.mainEntity.itemOf['@id'];
@@ -78,30 +78,29 @@ export default {
 
           // Check if my sigel has holding
           const myHoldingQuery = Object.assign({}, query);
-          myHoldingQuery['_limit'] = 1;
+          myHoldingQuery._limit = 1;
           myHoldingQuery['heldBy.@id'] = `https://libris.kb.se/library/${this.user.settings.activeSigel}`;
           this.getRelatedPosts(myHoldingQuery)
-          .then((response) => {
-            if (response.totalItems > 0) {
-              this.myHolding = response.items[0]['@id'];
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-
+            .then((response) => {
+              if (response.totalItems > 0) {
+                this.myHolding = response.items[0]['@id'];
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
         } else if (this.recordType === 'Work') {
           query['instanceOf.@id'] = this.mainEntity['@id'];
           query['@type'] = 'Instance';
         } else if (this.recordType === 'Agent') {
           query['instanceOf.contribution.agent.@id'] = this.mainEntity['@id'];
         } else {
-          query['q'] = this.mainEntity['@id'];
+          query.q = this.mainEntity['@id'];
         }
         this.panelQuery = Object.assign({}, query);
         if (this.recordType === 'Item' || this.recordType === 'Instance') {
           // Sort panel query by alphabetical order of sigel id
-          this.panelQuery['_sort'] = 'heldBy.@id';
+          this.panelQuery._sort = 'heldBy.@id';
         }
         this.getRelatedPosts(query).then((response) => {
           this.relationInfo = response.items;
@@ -114,7 +113,7 @@ export default {
     },
     gotoHolding() {
       const locationParts = this.myHolding.split('/');
-      const fnurgel = locationParts[locationParts.length-1];
+      const fnurgel = locationParts[locationParts.length - 1];
       this.$router.push({ path: `/${fnurgel}` });
     },
   },
@@ -134,7 +133,7 @@ export default {
         compactNo = parseInt(no / 1000);
         compact = `${compactNo}k`;
       } else if (no > 999999) {
-        compactNo = Math.round(no/1000000);
+        compactNo = Math.round(no / 1000000);
         compact = `${compactNo}M`;
       } else {
         compact = `${no}`;
@@ -151,7 +150,7 @@ export default {
       return VocabUtil.getRecordType(
         this.mainEntity['@type'], 
         this.resources.vocab, 
-        this.resources.context
+        this.resources.context,
       );
     },
     recordId() {
@@ -161,28 +160,24 @@ export default {
       if (this.recordType === 'Instance' || this.recordType === 'Item') {
         if (this.numberOfRelations === 0) {
           return 'No holdings';
-        } else if (isNaN(this.numberOfRelations)) {
+        } if (isNaN(this.numberOfRelations)) {
           return 'Holdings could not be loaded';
-        } else {
-          return 'Show all holdings';
-        }
-      } else if (this.recordType === 'Agent') {
+        } 
+        return 'Show all holdings';
+      } if (this.recordType === 'Agent') {
         if (this.numberOfRelations === 0) {
           return 'No contributions';
-        } else if (isNaN(this.numberOfRelations)) {
+        } if (isNaN(this.numberOfRelations)) {
           return 'Contribution could not be loaded';
-        } else {
-          return 'Show all contributions';
-        }
-      } else {
-        if (this.numberOfRelations === 0) {
-          return 'No uses';
-        } else if (isNaN(this.numberOfRelations)) {
-          return 'Uses could not be loaded';
-        } else {
-          return 'Show all uses';
-        }
+        } 
+        return 'Show all contributions';
       } 
+      if (this.numberOfRelations === 0) {
+        return 'No uses';
+      } if (isNaN(this.numberOfRelations)) {
+        return 'Uses could not be loaded';
+      } 
+      return 'Show all uses';
     },
   },
   events: {
@@ -206,13 +201,12 @@ export default {
             return true;
             break;
           default:
-            return;
         }
       } else if (val.name === 'post-events') {
         switch (val.value) {
           case 'on-post-loaded':
             this.getRelationsInfo();
-          break;
+            break;
         }
       }
     },
@@ -223,7 +217,7 @@ export default {
     },
     numberOfRelations: function (val) {
       this.numberOfRelations = val;
-    }
+    },
   },
   mounted() {
     this.$nextTick(() => {

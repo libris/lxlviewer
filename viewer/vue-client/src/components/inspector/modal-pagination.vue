@@ -11,7 +11,7 @@ export default {
     currentPage: {
       default: 5,
       type: Number,
-    }
+    },
   },
   methods: {
     go(n) {
@@ -20,22 +20,20 @@ export default {
   },
   computed: {
     pageRange() {
-      let dotObj = {page: '...', disabled: true, active: false};
-      let range = [];
+      const dotObj = { page: '...', disabled: true, active: false };
+      const range = [];
       for (let i = 0; i <= this.numberOfPages; i++) {
-        range.push({page: i, disabled: false, active: i === this.currentPage});
+        range.push({ page: i, disabled: false, active: i === this.currentPage });
       }
-      let filtered = range.filter((el) => {
-        return el.page <= this.currentPage + 3 && el.page >= this.currentPage - 3;
-      })
+      const filtered = range.filter(el => el.page <= this.currentPage + 3 && el.page >= this.currentPage - 3);
       if (filtered[0].page > 0) {
         filtered.unshift(dotObj);
       }
-      if (filtered[filtered.length -1].page < this.numberOfPages) {
+      if (filtered[filtered.length - 1].page < this.numberOfPages) {
         filtered.push(dotObj);
       }
       return filtered;
-    }
+    },
   },
   components: {
   },

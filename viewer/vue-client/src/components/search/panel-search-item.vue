@@ -1,9 +1,9 @@
 <script>
 import * as _ from 'lodash';
+import { mapGetters } from 'vuex';
 import LensMixin from '../mixins/lens-mixin';
 import EntitySummary from '../shared/entity-summary';
 import SummaryAction from '../inspector/summary-action';
-import { mapGetters } from 'vuex';
 
 export default {
   name: 'panel-search-item',
@@ -19,9 +19,15 @@ export default {
       default: false,
     },
     icon: null,
-    text: '',
+    text: {
+      type: String,
+      default: '',
+    },
     hasAction: false,
-    path: '',
+    path: {
+      type: String,
+      default: '',
+    },
     isReplaced: false,
     isCompact: false,
   },
@@ -35,11 +41,11 @@ export default {
         path: this.path,
         icon: this.icon,
       },
-    }
+    };
   },
   methods: {
     useItem() {
-      if (!this.isDisabled && !this.isReplaced ) {
+      if (!this.isDisabled && !this.isReplaced) {
         this.$emit('use-item');
       }
     },
@@ -53,7 +59,7 @@ export default {
       'status',
     ]),
     addPayload() {
-      const updatedListItemSettings = _.merge({payload: this.focusData}, _.cloneDeep(this.listItemSettings));
+      const updatedListItemSettings = _.merge({ payload: this.focusData }, _.cloneDeep(this.listItemSettings));
       return updatedListItemSettings;
     },
   },

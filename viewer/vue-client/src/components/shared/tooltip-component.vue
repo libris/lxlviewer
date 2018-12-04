@@ -9,19 +9,26 @@ export default {
     };
   },
   props: {
-    tooltipText: '',
-    translation: '',
+    tooltipText: {
+      type: String,
+      default: '',
+    },
+    translation: {
+      type: String,
+      default: '',
+    },
     showTooltip: false,
     literalString: {
       type: Object,
-      default: () => {
-        return {
-          position: 'before',
-          text: '',
-        }
-      },
+      default: () => ({
+        position: 'before',
+        text: '',
+      }),
     },
-    keybindName: '',
+    keybindName: {
+      type: String,
+      default: '',
+    },
     position: {
       default: 'top',
       type: String,
@@ -44,11 +51,10 @@ export default {
     translatedText() {
       if (this.translation === 'labelByLang') {
         return StringUtil.getLabelByLang(this.tooltipText, this.settings.language, this.resources.vocab, this.resources.context);
-      } else if (this.translation === 'translatePhrase') {
+      } if (this.translation === 'translatePhrase') {
         return StringUtil.getUiPhraseByLang(this.tooltipText, this.settings.language);
-      } else {
-        return this.tooltipText;
-      }
+      } 
+      return this.tooltipText;
     },
     totalText() {
       let text = '';

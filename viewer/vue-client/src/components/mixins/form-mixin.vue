@@ -9,9 +9,9 @@ import { mapGetters } from 'vuex';
 export default {
   props: {
   },
-  data(){
+  data() {
     return {
-    }
+    };
   },
   methods: {
   },
@@ -32,7 +32,7 @@ export default {
       const fItem = _.cloneDeep(this.sortedFormData);
       delete fItem['@type'];
       delete fItem['@id'];
-      delete fItem['_uid'];
+      delete fItem._uid;
       return fItem;
     },
     sortedFormData() {
@@ -53,19 +53,19 @@ export default {
       let propertyList = DisplayUtil.getProperties(
         this.formType,
         'full',
-        this.resources.display
+        this.resources.display,
       );
       if (propertyList.length === 0) { // If none were found, traverse up inheritance tree
         const baseClasses = VocabUtil.getBaseClassesFromArray(
           this.formType,
           this.resources.vocab,
-          this.resources.context
+          this.resources.context,
         );
         for (const baseClass of baseClasses) {
           propertyList = DisplayUtil.getProperties(
             StringUtil.getCompactUri(baseClass, this.resources.context),
             'full',
-            this.resources.display
+            this.resources.display,
           );
           if (propertyList.length > 0) {
             break;
@@ -75,7 +75,7 @@ export default {
           propertyList = DisplayUtil.getProperties(
             'Resource',
             'full',
-            this.resources.display
+            this.resources.display,
           );
         }
       }
@@ -84,9 +84,7 @@ export default {
           propertyList.push(k);
         }
       });
-      _.remove(propertyList, (k) => {
-        return (this.settings.hiddenProperties.indexOf(k) !== -1);
-      });
+      _.remove(propertyList, k => (this.settings.hiddenProperties.indexOf(k) !== -1));
       return propertyList;
     },
     allowed() {
@@ -94,7 +92,7 @@ export default {
         this.formObj['@type'],
         this.resources.vocabClasses,
         this.resources.vocabProperties,
-        this.resources.context
+        this.resources.context,
       );
     },
     allowedProperties() {
@@ -107,7 +105,7 @@ export default {
         const oId = StringUtil.getCompactUri(element.item['@id'], this.resources.context);
         element.added = formObj.hasOwnProperty(oId);
       }
-      const extendedAllowed = allowed.map(property => {
+      const extendedAllowed = allowed.map((property) => {
         const labelByLang = property.item.labelByLang;
         const prefLabelByLang = property.item.prefLabelByLang;
         if (typeof labelByLang !== 'undefined') {
@@ -120,9 +118,9 @@ export default {
           return {
             added: property.added,
             item: property.item,
-            label: label
+            label: label,
           };
-        } else if (typeof prefLabelByLang !== 'undefined') {
+        } if (typeof prefLabelByLang !== 'undefined') {
           // Try to get the label in the preferred language
           let label = (typeof prefLabelByLang[language] !== 'undefined') ? prefLabelByLang[language] : prefLabelByLang.en;
           // If several labels are present, use the first one
@@ -132,23 +130,21 @@ export default {
           return {
             added: property.added,
             item: property.item,
-            label: label
+            label: label,
           };
-        } else {
-          // If no label, use @id as label
-          return {
-            added: property.added,
-            item: property.item,
-            label: property.item['@id']
-          };
-        }
+        } 
+        // If no label, use @id as label
+        return {
+          added: property.added,
+          item: property.item,
+          label: property.item['@id'],
+        };
       });
       const sortedAllowed = _.sortBy(extendedAllowed, (prop) => {
         if (prop.label) {
           return prop.label.toLowerCase();
-        } else {
-          return prop.item['@id'];
-        }
+        } 
+        return prop.item['@id'];
       });
       return sortedAllowed;
     },

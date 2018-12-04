@@ -10,7 +10,7 @@ export default {
   },
   components: {
     'user-settings': UserSettings,
-  }
+  },
 };
 </script>
 

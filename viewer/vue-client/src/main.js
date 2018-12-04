@@ -1,9 +1,9 @@
 
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
-import Vue from 'vue'
-import Vuex from 'vuex'
-import App from './App'
+import Vue from 'vue';
+import Vuex from 'vuex';
+import App from './App';
 import PortalVue from 'portal-vue';
 import ComboKeys from 'combokeys';
 import router from './router';
@@ -17,14 +17,12 @@ import * as User from '@/models/user';
 import Field from '@/components/inspector/field';
 import KeyBindings from '@/resources/json/keybindings.json';
 
-Vue.config.productionTip = false
+Vue.config.productionTip = false;
 Vue.use(Vuex);
 Vue.use(PortalVue);
 Vue.component('field', Field);
 
-Vue.filter('labelByLang', (label) => {
-  return StringUtil.getLabelByLang(label, store.getters.user.settings.language, store.getters.resources.vocab, store.getters.resources.context);
-});
+Vue.filter('labelByLang', label => StringUtil.getLabelByLang(label, store.getters.user.settings.language, store.getters.resources.vocab, store.getters.resources.context));
 
 Vue.filter('asAppPath', (path) => {
   const appPaths = store.getters.settings.appPaths;
@@ -40,23 +38,19 @@ Vue.filter('asFnurgelLink', (id) => {
     return '';
   }
   const parts = id.split('/');
-  const fnurgel = '/' + parts[parts.length-1];
+  const fnurgel = `/${parts[parts.length - 1]}`;
   return fnurgel;
 });
 
-Vue.filter('removeDomain', (value) => {
-  return StringUtil.removeDomain(value, store.getters.settings.removableBaseUris);
+Vue.filter('removeDomain', value => StringUtil.removeDomain(value, store.getters.settings.removableBaseUris));
+Vue.filter('translatePhrase', string => StringUtil.getUiPhraseByLang(string, store.getters.user.settings.language));
+Vue.filter('capitalize', (value) => {
+  if (!value) return '';
+  value = value.toString();
+  return value.charAt(0).toUpperCase() + value.slice(1);
 });
-Vue.filter('translatePhrase', (string) => {
-  return StringUtil.getUiPhraseByLang(string, store.getters.user.settings.language);
-});
-Vue.filter('capitalize', function (value) {
-  if (!value) return ''
-  value = value.toString()
-  return value.charAt(0).toUpperCase() + value.slice(1)
-})
 
-window.addEventListener("beforeunload", (e) => {
+window.addEventListener('beforeunload', (e) => {
   const path = `${window.location.pathname.replace('/katalogisering', '')}${window.location.search}`;
   localStorage.setItem('lastPath', path);
 });
@@ -100,11 +94,8 @@ new Vue({
       const stateSettings = KeyBindings[state];
         
       if (typeof stateSettings !== 'undefined') {
-    
         _.each(stateSettings, (value, key) => {
-
           if (value !== null && value !== '') {
-        
             this.combokeys.bindGlobal(key.toString(), (e) => {
               this.$store.dispatch('pushKeyAction', value);
               return false;
@@ -124,7 +115,7 @@ new Vue({
       window.addEventListener('keydown', LayoutUtil.handleFirstTab);
       this.updateTitle();
       this.injectAnalytics();
-    })
+    });
   },
   computed: {
     settings() {
@@ -138,16 +129,16 @@ new Vue({
     },
     status() {
       return this.$store.getters.status;
-    }
+    },
   },
   methods: {
     navigateToLastPath() {
       const lastPath = localStorage.getItem('lastPath');
       if (
-        typeof lastPath !== 'undefined' &&
-        lastPath !== '/user' &&
-        lastPath !== '/login' && 
-        lastPath !== '/login/authorized'
+        typeof lastPath !== 'undefined'
+        && lastPath !== '/user'
+        && lastPath !== '/login' 
+        && lastPath !== '/login/authorized'
       ) {
         localStorage.removeItem('lastPath');
         this.$router.push({ path: lastPath });
@@ -221,7 +212,7 @@ new Vue({
         const queryParts = route.params.query.split('&');
         for (const param of queryParts) {
           if (param[0] === 'q' && param[1] === '=') {
-            title += `"${param.substr(2, param.length -2)}"`;
+            title += `"${param.substr(2, param.length - 2)}"`;
           }
         }
       } else if (route.name === 'NewDocument') {
@@ -237,11 +228,11 @@ new Vue({
     initWarningFunc() {
       if (!this.settings.environment === 'development' || navigator.userAgent.indexOf('PhantomJS') > -1) {
         window.lxlWarning = function (...strings) {
-          return;
-        }
+          
+        };
         window.lxlError = function (...strings) {
-          return;
-        }
+          
+        };
         return;
       }
       window.lxlWarnStack = [];
@@ -279,7 +270,7 @@ new Vue({
       const contextPromise = VocabUtil.getContext(this.settings.idPath);
       promiseArray.push(contextPromise);
       return promiseArray;
-    }
+    },
   },
-  store
+  store,
 }).$mount('#app');

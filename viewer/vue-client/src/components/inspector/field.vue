@@ -5,6 +5,7 @@
 */
 import * as _ from 'lodash';
 import { mixin as clickaway } from 'vue-clickaway';
+import { mapGetters } from 'vuex';
 import EntityAdder from './entity-adder';
 import ItemEntity from './item-entity';
 import ItemValue from './item-value';
@@ -19,7 +20,6 @@ import * as LayoutUtil from '@/utils/layout';
 import * as MathUtil from '@/utils/math';
 import * as StringUtil from '@/utils/string';
 import LodashProxiesMixin from '../mixins/lodash-proxies-mixin';
-import { mapGetters } from 'vuex';
 
 export default {
   name: 'field',
@@ -150,15 +150,14 @@ export default {
       return VocabUtil.getRecordType(
         this.inspector.data.mainEntity['@type'], 
         this.resources.vocab, 
-        this.resources.context
-);
+        this.resources.context,
+      );
     },
     actionButtonsShown() {
       if (this.shouldShowActionButtons || this.showActionButtons) {
         return true;
       } 
-        return false;
-      
+      return false;
     },
     ...mapGetters([
       'inspector',
@@ -206,11 +205,9 @@ export default {
         if (this.keyAsVocabProperty.commentByLang[this.settings.language]) {
           return this.keyAsVocabProperty.commentByLang[this.settings.language];
         } 
-          return this.keyAsVocabProperty.commentByLang[0];
-        
-      } else {
-        return '';
-      }
+        return this.keyAsVocabProperty.commentByLang[0];
+      } 
+      return '';
     },
     valueAsArray() {
       if (this.fieldValue === null) {
@@ -300,13 +297,13 @@ export default {
       } else if (!_.isArray(currentValue)) {
         currentValue = [currentValue];
         currentValue.push(obj);
-      } else if(typeof obj.length !== "undefined" && _.isArray(obj) ) {
-          obj.forEach(function(subObj) {
-            currentValue.push(subObj);
-          });
-        } else {
-          currentValue.push(obj);
-        }
+      } else if (typeof obj.length !== 'undefined' && _.isArray(obj)) {
+        obj.forEach((subObj) => {
+          currentValue.push(subObj);
+        });
+      } else {
+        currentValue.push(obj);
+      }
       let index = '';
       if (currentValue.length) {
         index = `[${currentValue.length - 1}]`;

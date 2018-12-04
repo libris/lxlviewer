@@ -2,25 +2,25 @@
 export default {
   name: 'link-card',
   props: [
-    "videoUrl",
-    "image",
-    "linkUrl",
-    "linkText",
-    "header",
-    "text",
-    "html",
+    'videoUrl',
+    'image',
+    'linkUrl',
+    'linkText',
+    'header',
+    'text',
+    'html',
   ],
   data() {
     return {
       keyword: '',
-    }
+    };
   },
   methods: {
   },
   computed: {
     resolvedImage() {
-      return require(`@/assets/img/${this.image}`)
-    }
+      return require(`@/assets/img/${this.image}`);
+    },
   },
   components: {
   },

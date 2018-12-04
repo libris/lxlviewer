@@ -15,7 +15,7 @@ export default {
     },
     numberOfViolations() {
       return this.inspector.validation.numberOfViolations;
-    }
+    },
   },
   data() {
     return {
@@ -28,14 +28,14 @@ export default {
       const $element = document.getElementById(id);
       this.$store.dispatch('pushInspectorEvent', { 
         name: 'form-control', 
-        value: 'expand-item'
+        value: 'expand-item',
       });
       setTimeout(() => {
         LayoutUtil.scrollToElement($element, 1000, () => {});
       }, 1000);
     },
   },
-}
+};
 </script>
 
 <template>

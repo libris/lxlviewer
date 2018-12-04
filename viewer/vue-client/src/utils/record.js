@@ -1,8 +1,8 @@
-import * as httpUtil from '../utils/http';
-import * as DisplayUtil from '../utils/display';
-import * as DataUtil from '../utils/data';
-import * as VocabUtil from '../utils/vocab';
 import * as _ from 'lodash';
+import * as httpUtil from './http';
+import * as DisplayUtil from './display';
+import * as DataUtil from './data';
+import * as VocabUtil from './vocab';
 
 export function getMarc(json) {
   return new Promise((resolve, reject) => {
@@ -57,10 +57,8 @@ export function splitJson(json) {
           dataObj.quoted[obj['@id']] = obj;
         }
       }
-    } else {
-      if (original[i]['@id']) {
-        dataObj.quoted[original[i]['@id']] = original[i];
-      }
+    } else if (original[i]['@id']) {
+      dataObj.quoted[original[i]['@id']] = original[i];
     }
   }
   return dataObj;
@@ -94,9 +92,9 @@ export function stripId(obj) {
 export function replaceIdWithTemp(obj) {
   const replaceableId = graph[0]['@id'];
   for (const node in obj) {
-      if (data.hasOwnProperty(k)) {
-         user[k] = data[k];
-      }
+    if (data.hasOwnProperty(k)) {
+      user[k] = data[k];
+    }
   }
   return itemObj;
 }
@@ -110,43 +108,43 @@ export function getMainEntity(graph) {
     }
   });
   return mainEntity;
-};
+}
 
 export function getItemObject(itemOf, heldBy, instance) {
   const itemObj = {
     record: {
       '@type': 'Record',
       '@id': 'https://id.kb.se/TEMPID',
-      'descriptionCreator': {
+      descriptionCreator: {
         '@id': heldBy,
       },
-      'mainEntity': {
+      mainEntity: {
         '@id': 'https://id.kb.se/TEMPID#it',
       },
     },
     mainEntity: {
       '@id': 'https://id.kb.se/TEMPID#it',
       '@type': 'Item',
-      'heldBy': {
+      heldBy: {
         '@id': heldBy,
       },
-      'itemOf': {
+      itemOf: {
         '@id': itemOf,
       },
-      'hasComponent': [
+      hasComponent: [
         {
-          '@type': "Item",
-          'cataloguersNote': [''],
-          'heldBy': {
+          '@type': 'Item',
+          cataloguersNote: [''],
+          heldBy: {
             '@id': heldBy,
           },
-          'shelfMark': {
+          shelfMark: {
             '@type': 'ShelfMark',
-            'label': [''],
+            label: [''],
           },
-          'physicalLocation': [''],
-          'shelfLabel': '',
-          'shelfControlNumber': '',
+          physicalLocation: [''],
+          shelfLabel: '',
+          shelfControlNumber: '',
         },
       ],
       'marc:hasTextualHoldingsBasicBibliographicUnit': [
@@ -154,22 +152,22 @@ export function getItemObject(itemOf, heldBy, instance) {
           '@type': 'marc:TextualHoldingsBasicBibliographicUnit',
           'marc:textualString': '',
           'marc:cataloguersNote': [''],
-          'marc:publicNote': ['']
-        }
-      ]
+          'marc:publicNote': [''],
+        },
+      ],
     },
     quoted: [
       {
         '@graph': [
           {
             '@id': itemOf,
-            'mainEntity': {
-              '@id': instance['@id']
-            }
+            mainEntity: {
+              '@id': instance['@id'],
+            },
           },
           instance,
         ],
-      }
+      },
     ],
   };
   return itemObj;
@@ -188,7 +186,7 @@ export function getObjectAsRecord(mainEntity, record = {}) {
   const blankRecord = {
     '@type': 'Record',
     '@id': 'https://id.kb.se/TEMPID',
-    'mainEntity': {
+    mainEntity: {
       '@id': 'https://id.kb.se/TEMPID#it',
     },
   };
@@ -208,7 +206,7 @@ export function convertToMarc(inspectorData, settings, user) {
     DataUtil.removeNullValues(inspectorData.record),
     DataUtil.removeNullValues(inspectorData.mainEntity),
     DataUtil.removeNullValues(inspectorData.work),
-    inspectorData.quoted
+    inspectorData.quoted,
   );
   const apiPath = settings.apiPath;
   return new Promise((resolve, reject) => {
@@ -228,7 +226,7 @@ export function prepareDuplicateFor(inspectorData, user, settings) {
   // Removes fields that we do not want to import or copy
   const newData = _.cloneDeep(inspectorData);
   if (!newData.hasOwnProperty('quoted')) {
-    newData['quoted'] = {};
+    newData.quoted = {};
   }
   const oldBaseId = inspectorData.record['@id'];
   const newBaseId = 'https://id.kb.se/TEMPID';
@@ -243,10 +241,10 @@ export function prepareDuplicateFor(inspectorData, user, settings) {
 
   // Replace @id and internal @id references
   if (newData.mainEntity) {
-    newData.mainEntity['@id'] =  newData.mainEntity['@id'].replace(oldBaseId, newBaseId);
+    newData.mainEntity['@id'] = newData.mainEntity['@id'].replace(oldBaseId, newBaseId);
   }
   if (newData.record) {
-    newData.record['@id'] =  newData.record['@id'].replace(oldBaseId, newBaseId);
+    newData.record['@id'] = newData.record['@id'].replace(oldBaseId, newBaseId);
     newData.record.mainEntity['@id'] = newData.record.mainEntity['@id'].replace(oldBaseId, newBaseId);
   }
   if (newData.work) {
@@ -259,7 +257,7 @@ export function prepareDuplicateFor(inspectorData, user, settings) {
     newData.record, 
     newData.mainEntity, 
     newData.work, 
-    newData.quoted
+    newData.quoted,
   );
   return merged;
 }
@@ -282,4 +280,3 @@ export function getNewCopy(id) {
     });
   });
 }
-

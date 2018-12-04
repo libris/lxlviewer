@@ -14,20 +14,20 @@ export default {
       openAll: 'open-all',
       activeCategory: '',
       loading: true,
-    }
+    };
   },
   methods: {
     getImagePath(imgName) {
       const pathParts = imgName.split('/');
-      const fileName = pathParts[pathParts.length-1];
+      const fileName = pathParts[pathParts.length - 1];
       const fetchedFileName = `${this.settings.apiPath}/helpdocs/${fileName}`;
       return fetchedFileName;
     },
     resolveImages(html) {
-      const parser=new DOMParser();
-      const htmldoc=parser.parseFromString(html, "text/html");
+      const parser = new DOMParser();
+      const htmldoc = parser.parseFromString(html, 'text/html');
       const images = htmldoc.getElementsByTagName('img');
-      for (let img of images) {
+      for (const img of images) {
         img.src = this.getImagePath(img.src);
       }
       return htmldoc.body.innerHTML;
@@ -46,7 +46,7 @@ export default {
       if (today.isSame(date, 'day')) {
         return StringUtil.getUiPhraseByLang('Today', this.user.settings.language).toLowerCase();
       }
-      return moment(date, "YYYY-MM-DD").from(moment().startOf('day'));
+      return moment(date, 'YYYY-MM-DD').from(moment().startOf('day'));
     },
     getDateString(date) {
       return moment(date).format('YYYY-MM-DD');
@@ -67,7 +67,7 @@ export default {
   },
   components: {
     'vue-simple-spinner': VueSimpleSpinner,
-   },
+  },
   watch: {
   },
   events: {
@@ -90,7 +90,7 @@ export default {
     },
     helpCategories() {
       const json = this.docs;
-      const sortedJson = _.orderBy(json, ['order'],['asc']);
+      const sortedJson = _.orderBy(json, ['order'], ['asc']);
       const categories = {};
       for (const section in sortedJson) {
         const cat = sortedJson[section].section;

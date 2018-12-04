@@ -52,7 +52,7 @@ function request(options, data) {
         }
         resolve(resp, req);
       } else if (req.status === 201 || req.status === 204) {
-        resolve (req);
+        resolve(req);
       } else if (req.status === 304) {
         resolve(req);
       } else if (req.status === 403) {
@@ -112,7 +112,7 @@ export function getResourceFromCache(url) {
           resolve(obj);
         }, (error) => {
           reject(error);
-        })
+        });
       }
     }, (error) => {
       reject(error);

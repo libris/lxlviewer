@@ -48,7 +48,7 @@ export default {
     routerPath() {
       if (this.item.hasOwnProperty('@id')) {
         const uriParts = this.item['@id'].split('/');
-        const fnurgel = uriParts[uriParts.length-1];
+        const fnurgel = uriParts[uriParts.length - 1];
         return `/${fnurgel}`;
       }
       return '';
@@ -94,9 +94,9 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      if(this.isNewlyAdded) {
+      if (this.isNewlyAdded) {
         setTimeout(() => {
-          let element = this.$el;
+          const element = this.$el;
           LayoutUtil.scrollToElement(element, 1000, () => {
             setTimeout(() => {
               if (this.isNewlyAdded) {
@@ -107,7 +107,7 @@ export default {
         }, 200);
       }
     });
-  }
+  },
 };
 </script>
 

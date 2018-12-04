@@ -15,19 +15,19 @@ export default {
       if (sigel.friendly_name) {
         label += ` - ${sigel.friendly_name}`;
       }
-      return label.length > len ? `${label.substr(0,len-2)}...` : label;
+      return label.length > len ? `${label.substr(0, len - 2)}...` : label;
     },
-    updateSigel (e) {
+    updateSigel(e) {
       const userObj = this.user;
       userObj.settings.activeSigel = e.target.value;
       this.setUser(userObj);
     },
-    updateLanguage (e) {
+    updateLanguage(e) {
       const userObj = this.user;
       userObj.settings.language = e.target.value;
       this.setUser(userObj);
     },
-    updateAppTech (e) {
+    updateAppTech(e) {
       const userObj = this.user;
       userObj.settings.appTech = e.target.checked;
       this.setUser(userObj);

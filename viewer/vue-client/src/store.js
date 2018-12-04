@@ -1,23 +1,24 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-Vue.use(Vuex);
 import * as _ from 'lodash';
 import * as VocabUtil from '@/utils/vocab';
 import * as StringUtil from '@/utils/string';
 import * as User from '@/models/user';
 
+Vue.use(Vuex);
+
 function getEnvironment() {
-  switch(window.location.host.split('.')[0]) {
+  switch (window.location.host.split('.')[0]) {
     case 'libris-dev':
       return 'dev';
     case 'localhost:8080':
-      return 'local'
+      return 'local';
     case 'libris-qa':
       return 'qa';
     case 'libris-stg':
       return 'stg';
     default:
-      return ''
+      return '';
   }
 }
 
@@ -61,7 +62,7 @@ const store = new Vuex.Store({
       fullWidth: false,
       keyActions: [],
       resultList: {
-        loading: false
+        loading: false,
       },
       loadingIndicators: [],
       notifications: [],
@@ -70,8 +71,8 @@ const store = new Vuex.Store({
     },
     user: {
       settings: {
-        language: 'sv'
-      }
+        language: 'sv',
+      },
     },
     settings: {
       title: 'Libris Katalogisering',
@@ -91,9 +92,9 @@ const store = new Vuex.Store({
         'QualifiedRole',
       ],
       mainFields: {
-        'Instance': 'instanceOf',
-        'Work': 'expressionOf',
-        'Item': 'itemOf',
+        Instance: 'instanceOf',
+        Work: 'expressionOf',
+        Item: 'itemOf',
       },
       extractableTypes: [
         'Item',
@@ -128,7 +129,7 @@ const store = new Vuex.Store({
         '@type',
         'created',
         'modified',
-        'mainEntity'
+        'mainEntity',
       ],
       lockedProperties: [
         'sameAs',
@@ -139,7 +140,7 @@ const store = new Vuex.Store({
         'mainEntity',
         'created',
         'modified',
-        'descriptionCreator'
+        'descriptionCreator',
       ],
       dataSetFilters: {
         libris: [
@@ -154,11 +155,11 @@ const store = new Vuex.Store({
           sv: 'Typ',
           en: 'Type',
         },
-        'carrierType': {
+        carrierType: {
           sv: 'Bärartyp',
           en: 'Carrier type',
         },
-        'issuanceType': {
+        issuanceType: {
           sv: 'Utgivningssätt',
           en: 'Issuance type',
         },
@@ -182,26 +183,26 @@ const store = new Vuex.Store({
       availableUserSettings: {
         languages: [
           {
-            'label': 'Swedish',
-            'value': 'sv',
+            label: 'Swedish',
+            value: 'sv',
           },
           {
-            'label': 'English (experimental)',
-            'value': 'en',
+            label: 'English (experimental)',
+            value: 'en',
           },
         ],
         appTechs: [
           {
-            'label': 'On',
-            'value': 'on',
+            label: 'On',
+            value: 'on',
           },
           {
-            'label': 'Off',
-            'value': 'off',
+            label: 'Off',
+            value: 'off',
           },
         ],
-      }
-    }
+      },
+    },
   },
   mutations: {
     setValidation(state, payload) {
@@ -222,7 +223,7 @@ const store = new Vuex.Store({
     },
     pushNotification(state, content) {
       const date = new Date();
-      content['id'] = StringUtil.getHash(`${date.getSeconds()}${date.getMilliseconds()}`);
+      content.id = StringUtil.getHash(`${date.getSeconds()}${date.getMilliseconds()}`);
       state.status.notifications.push(content);
     },
     removeNotification(state, id) {
@@ -341,55 +342,37 @@ const store = new Vuex.Store({
     },
   },
   getters: {
-    inspector: state => {
-      return state.inspector;
-    },
-    resources: state => {
-      return state.resources;
-    },
-    settings: state => {
-      return state.settings;
-    },
-    user: state => {
-      return state.user;
-    },
-    status: state => {
-      return state.status;
-    },
-    vocab: state => {
-      return state.resources.vocab;
-    },
-    display: state => {
-      return state.resources.display;
-    },
-    forcedSetTerms: state => {
-      return state.resources.forcedSetTerms;
-    },
-    context: state => {
-      return state.resources.context;
-    },
-    clipboard: state => {
+    inspector: state => state.inspector,
+    resources: state => state.resources,
+    settings: state => state.settings,
+    user: state => state.user,
+    status: state => state.status,
+    vocab: state => state.resources.vocab,
+    display: state => state.resources.display,
+    forcedSetTerms: state => state.resources.forcedSetTerms,
+    context: state => state.resources.context,
+    clipboard: (state) => {
       if (state.inspector.clipboard == null) {
         state.inspector.clipboard = localStorage.getItem('copyClipboard');
       }
       return JSON.parse(state.inspector.clipboard);
-    }
+    },
   },
   actions: {
-    setValidation({commit}, payload) {
+    setValidation({ commit }, payload) {
       commit('setValidation', payload);
     },
     pushInspectorEvent({ commit }, payload) {
       commit('pushInspectorEvent', payload);
     },
-    flushChangeHistory({commit}) {
+    flushChangeHistory({ commit }) {
       commit('flushChangeHistory');
     },
     undoInspectorChange({ commit, state }) {
       const history = state.inspector.changeHistory;
-      const lastNode = history[history.length-1];
+      const lastNode = history[history.length - 1];
 
-      let payload = { addToHistory: false, changeList: [] };
+      const payload = { addToHistory: false, changeList: [] };
       _.each(lastNode, (node) => {
         if (typeof node.value !== 'undefined') {
           // It had a value
@@ -400,8 +383,8 @@ const store = new Vuex.Store({
         } else {
           // It did not have a value (ie key did not exist)
           const pathParts = node.path.split('.');
-          const key = pathParts[pathParts.length-1];
-          pathParts.splice(pathParts.length-1, 1);
+          const key = pathParts[pathParts.length - 1];
+          pathParts.splice(pathParts.length - 1, 1);
           const path = pathParts.join('.');
           const data = _.cloneDeep(_.get(state.inspector.data, path));
           delete data[key];
@@ -411,7 +394,7 @@ const store = new Vuex.Store({
           });
         }
       });
-      history.splice(history.length-1, 1);
+      history.splice(history.length - 1, 1);
       commit('updateInspectorData', payload);
     },
     pushLoadingIndicator({ commit, state }, indicatorString) {
@@ -419,7 +402,7 @@ const store = new Vuex.Store({
       loaders.push(indicatorString);
       commit('setStatusValue', {
         property: 'loadingIndicators',
-        value: loaders
+        value: loaders,
       });
     },
     removeLoadingIndicator({ commit, state }, indicatorString) {
@@ -432,7 +415,7 @@ const store = new Vuex.Store({
       }
       commit('setStatusValue', {
         property: 'loadingIndicators',
-        value: loaders
+        value: loaders,
       });
     },
     pushKeyAction({ commit }, keyAction) {
@@ -483,45 +466,45 @@ const store = new Vuex.Store({
     removeNotification({ commit }, index) {
       commit('removeNotification', index);
     },
-    pushNotification( { commit }, content ) {
+    pushNotification({ commit }, content) {
       commit('pushNotification', content);
     },
-    changeResourcesStatus( { commit }, status ) {
+    changeResourcesStatus({ commit }, status) {
       commit('changeResourcesStatus', status);
     },
-    changeResourcesLoadingError( { commit }, bool) {
+    changeResourcesLoadingError({ commit }, bool) {
       commit('changeResourcesLoadingError', bool);
     },
-    setContext( { commit }, contextJson) {
+    setContext({ commit }, contextJson) {
       commit('setContext', contextJson);
     },
-    setDisplay( { commit }, displayJson) {
+    setDisplay({ commit }, displayJson) {
       commit('setDisplay', displayJson);
     },
-    setHelpDocs( { commit }, helpDocsJson) {
+    setHelpDocs({ commit }, helpDocsJson) {
       commit('setHelpDocs', helpDocsJson);
     },
-    setForcedListTerms( { commit }, forcedSetTermsJson) {
+    setForcedListTerms({ commit }, forcedSetTermsJson) {
       commit('setForcedListTerms', forcedSetTermsJson);
     },
-    setupVocab( { dispatch }, vocabJson) {
-      dispatch('setVocab', vocabJson)
-      dispatch('setVocabClasses', vocabJson)
-      dispatch('setVocabProperties', vocabJson)
+    setupVocab({ dispatch }, vocabJson) {
+      dispatch('setVocab', vocabJson);
+      dispatch('setVocabClasses', vocabJson);
+      dispatch('setVocabProperties', vocabJson);
     },
     setVocab({ commit }, vocabJson) {
-      const vocabMap = new Map(vocabJson.map((entry) => [entry['@id'], entry]));
-      commit('setVocab', vocabMap)
+      const vocabMap = new Map(vocabJson.map(entry => [entry['@id'], entry]));
+      commit('setVocab', vocabMap);
     },
     setVocabClasses({ commit, state }, vocabJson) {
-      let classTerms = [].concat(
-            VocabUtil.getTermByType('Class', vocabJson, state.resources.context, state.settings),
-            VocabUtil.getTermByType('marc:CollectionClass', vocabJson, state.resources.context, state.settings)
-          );
+      const classTerms = [].concat(
+        VocabUtil.getTermByType('Class', vocabJson, state.resources.context, state.settings),
+        VocabUtil.getTermByType('marc:CollectionClass', vocabJson, state.resources.context, state.settings),
+      );
       const classes = new Map(classTerms.map(entry => [entry['@id'], entry]));
-      classes.forEach(classObj => {
+      classes.forEach((classObj) => {
         if (classObj.hasOwnProperty('subClassOf')) {
-          _.each(classObj.subClassOf, baseClass => {
+          _.each(classObj.subClassOf, (baseClass) => {
             const baseClassObj = classes.get(baseClass['@id']);
             if (typeof baseClassObj !== 'undefined') {
               if (baseClassObj.hasOwnProperty('baseClassOf')) {
@@ -533,7 +516,7 @@ const store = new Vuex.Store({
           });
         }
       });
-      commit('setVocabClasses', classes)
+      commit('setVocabClasses', classes);
     },
     setVocabProperties({ commit, state }, vocabJson) {
       let props = [];
@@ -541,11 +524,11 @@ const store = new Vuex.Store({
       props = props.concat(VocabUtil.getTermByType('DatatypeProperty', vocabJson, state.resources.context, state.settings));
       props = props.concat(VocabUtil.getTermByType('ObjectProperty', vocabJson, state.resources.context, state.settings));
       props = props.concat(VocabUtil.getTermByType('owl:SymmetricProperty', vocabJson, state.resources.context, state.settings));
-      const vocabProperties = new Map(props.map((entry) => [entry['@id'], entry]));
+      const vocabProperties = new Map(props.map(entry => [entry['@id'], entry]));
 
-      commit('setVocabProperties', vocabProperties)
+      commit('setVocabProperties', vocabProperties);
     },
-  }
-})
+  },
+});
 
 export default store;

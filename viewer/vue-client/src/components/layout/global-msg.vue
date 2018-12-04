@@ -11,24 +11,24 @@ export default {
     },
     message() {
       let message = '';
-      switch(this.settings.environment) {
+      switch (this.settings.environment) {
         case 'dev':
           message = 'Du befinner dig nu i vår utvecklingsmiljö. Använd <a href="https://libris-qa.kb.se/katalogisering">libris-qa.kb.se/katalogisering</a> om du vill testa funktionalitet i en stabilare miljö';
-        break;
+          break;
         case '':
-        break;
+          break;
         case 'stg':
           message = 'OBS! Du befinner dig nu i vår testmiljö.<br> För att komma till den skarpa katalogiseringstjänsten <strong> Libris katalogisering</strong> <a href="https://libris.kb.se/katalogisering">klickar du här</a>.';
-        break;
+          break;
         case 'qa':
-        break;
+          break;
         case 'local':
-        break;
+          break;
       }
       return message;
     },
-  }
-}
+  },
+};
 </script>
 
 <template>

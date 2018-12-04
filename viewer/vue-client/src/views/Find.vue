@@ -20,12 +20,12 @@ export default {
   data: function () {
     return {
       initialized: false,
-      //combokeys: null,
+      // combokeys: null,
       result: {},
       importData: [],
       searchInProgress: false,
       query: '',
-    }
+    };
   },
   events: {
   },
@@ -56,9 +56,7 @@ export default {
     getLocalResult() {
       const fetchUrl = `${this.settings.apiPath}/find.json?${this.query}`;
 
-      fetch(fetchUrl).then((response) => {
-        return response.json();
-      }, (error) => {
+      fetch(fetchUrl).then(response => response.json(), (error) => {
         this.$store.dispatch('pushNotification', { type: 'danger', message: StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language) });
         this.searchInProgress = false;
       }).then((result) => {
@@ -69,9 +67,7 @@ export default {
     getRemoteResult() {
       const fetchUrl = `${this.settings.apiPath}/_remotesearch?${this.query}`;
       
-      fetch(fetchUrl).then((response) => {
-        return response.json();
-      }, (error) => {
+      fetch(fetchUrl).then(response => response.json(), (error) => {
         this.$store.dispatch('pushNotification', { type: 'danger', message: StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language) });
         this.searchInProgress = false;
       }).then((result) => {
@@ -85,14 +81,14 @@ export default {
       let totalResults = 0;
       for (const db in result.totalResults) {
         if (result.totalResults.hasOwnProperty(db)) {
-           totalResults += result.totalResults[db];
+          totalResults += result.totalResults[db];
         }
       }
-      const convertedList = { totalItems: totalResults, items: [], first: {'@id': this.query } };
+      const convertedList = { totalItems: totalResults, items: [], first: { '@id': this.query } };
       _.each(result.items, (item) => {
         const convertedItem = RecordUtil.getMainEntity(item.data['@graph']);
         convertedList.items.push(convertedItem);
-      })
+      });
       return convertedList;
     },
     isArray(o) {
@@ -113,9 +109,9 @@ export default {
         return false;
       }
       if (
-        (componentList[id].hasOwnProperty('forced') && componentList[id].forced === true) ||
+        (componentList[id].hasOwnProperty('forced') && componentList[id].forced === true)
         // TODO: Don't read standard here, read from user settings and init as active in user settings if standard
-        (componentList[id].hasOwnProperty('standard') && componentList[id].standard)
+        || (componentList[id].hasOwnProperty('standard') && componentList[id].standard)
       ) {
         return true;
       }
@@ -137,12 +133,12 @@ export default {
   mounted() {
     this.$nextTick(() => {
       if (this.$route.params.perimeter !== 'libris' && this.$route.params.perimeter !== 'remote') {
-        this.$router.push({ path: `/search/` });
+        this.$router.push({ path: '/search/' });
       }
       this.query = this.$route.fullPath.split('?')[1];
       this.getResult();
       this.initialized = true;
-    })
+    });
   },
   components: {
     'facet-controls': FacetControls,

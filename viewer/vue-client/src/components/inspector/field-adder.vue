@@ -138,17 +138,15 @@ export default {
           return StringUtil.getUiPhraseByLang('Literals and entities', this.settings.language);
         } if (termObj['@type'].indexOf('DatatypeProperty') > -1) {
           return StringUtil.getUiPhraseByLang('Literals', this.settings.language);
-        } else if (termObj['@type'].indexOf('ObjectProperty') > -1) {
+        } if (termObj['@type'].indexOf('ObjectProperty') > -1) {
           return StringUtil.getUiPhraseByLang('Entities', this.settings.language);
-        } else {
-          return '';
-        }
-      } else {
-        if (termObj['@type'] === 'DatatypeProperty') {
-          return StringUtil.getUiPhraseByLang('Literals', this.settings.language);
-        } else if (termObj['@type'] === 'ObjectProperty') {
-          return StringUtil.getUiPhraseByLang('Entities', this.settings.language);
-        }
+        } 
+        return '';
+      } 
+      if (termObj['@type'] === 'DatatypeProperty') {
+        return StringUtil.getUiPhraseByLang('Literals', this.settings.language);
+      } if (termObj['@type'] === 'ObjectProperty') {
+        return StringUtil.getUiPhraseByLang('Entities', this.settings.language);
       }
     },
     getEmptyFieldValue(key, prop) {
@@ -248,7 +246,6 @@ export default {
             this.hide();
             break;
           default:
-            
         }
       }
     }, 

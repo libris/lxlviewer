@@ -4,6 +4,8 @@
 */
 
 import * as _ from 'lodash';
+import { mixin as clickaway } from 'vue-clickaway';
+import { mapGetters } from 'vuex';
 import * as DataUtil from '../../utils/data';
 import * as DisplayUtil from '../../utils/display';
 import * as LayoutUtil from '../../utils/layout';
@@ -17,8 +19,6 @@ import TooltipComponent from '@/components/shared/tooltip-component';
 import LensMixin from '@/components/mixins/lens-mixin';
 import FormMixin from '@/components/mixins/form-mixin';
 import * as CombinedTemplates from '@/resources/json/combinedTemplates.json';
-import { mixin as clickaway } from 'vue-clickaway';
-import { mapGetters } from 'vuex';
 
 export default {
   mixins: [clickaway, LensMixin, FormMixin],
@@ -41,7 +41,7 @@ export default {
       showClarifySave: false,
       showMarcPreview: false,
       showTemplatesSubMenu: false,
-      fieldAdderActive: false
+      fieldAdderActive: false,
     };
   },
   watch: {
@@ -52,7 +52,7 @@ export default {
     },
     'inspector.event'(val, oldVal) {
       if (val.name === 'form-control') {
-        switch(val.value) {
+        switch (val.value) {
           case 'duplicate-item':
             this.handleCopy();
             break;
@@ -87,12 +87,11 @@ export default {
             this.openHelpWindow();
             break;
           default:
-            return;
         }
       }
     },
     'status.keyActions'(value) {
-      this.formControl(value[value.length-1]);
+      this.formControl(value[value.length - 1]);
     },
   },
   methods: {
@@ -147,7 +146,7 @@ export default {
       this.toolsMenuActive = !this.toolsMenuActive;
     },
     getOtherDataFormat(suffix) {
-      return `${this.focusData['@id']}/data.${suffix}`
+      return `${this.focusData['@id']}/data.${suffix}`;
     },
     openHelpWindow() {
       const helpUrl = 'https://libris.kb.se/katalogisering/help';
@@ -156,15 +155,15 @@ export default {
     formControl(control) {
       this.$store.dispatch('pushInspectorEvent', { 
         name: 'form-control', 
-        value: control 
+        value: control, 
       });
     },
     postControl(control) {
       // if (!this.inspector.status.updating) {
-        this.$store.dispatch('pushInspectorEvent', { 
-          name: 'post-control', 
-          value: control 
-        });
+      this.$store.dispatch('pushInspectorEvent', { 
+        name: 'post-control', 
+        value: control, 
+      });
       // }
     },
     toggleEditorFocus(on = false) {
@@ -175,12 +174,12 @@ export default {
       if (this.inspector.status.focus === 'record') {
         this.$store.dispatch('setInspectorStatusValue', { 
           property: 'focus', 
-          value: 'mainEntity' 
+          value: 'mainEntity', 
         });
       } else {
         this.$store.dispatch('setInspectorStatusValue', { 
           property: 'focus', 
-          value: 'record' 
+          value: 'record', 
         });
       }
     },
@@ -188,14 +187,14 @@ export default {
       this.hideToolsMenu();
       this.$store.dispatch('pushInspectorEvent', {
         name: 'post-control',
-        value: 'open-marc-preview'
+        value: 'open-marc-preview',
       });
     },
     applyTemplate(template) {
       this.hideToolsMenu();
       this.$store.dispatch('pushInspectorEvent', {
         name: 'apply-template',
-        value: template.value
+        value: template.value,
       });
     },
     closeMarc() {
@@ -204,7 +203,7 @@ export default {
     cancel() {
       this.$store.dispatch('pushInspectorEvent', { 
         name: 'post-control', 
-        value: 'cancel'
+        value: 'cancel',
       });
     },
     undo() {
@@ -216,7 +215,7 @@ export default {
         this.loadingEdit = true;
         this.$store.dispatch('setInspectorStatusValue', { 
           property: 'editing', 
-          value: true 
+          value: true, 
         });
       }
     },
@@ -230,7 +229,7 @@ export default {
       const baseClasses = VocabUtil.getBaseClasses(
         this.inspector.data.mainEntity['@type'], 
         this.resources.vocab, 
-        this.resources.context
+        this.resources.context,
       ).map(id => StringUtil.getCompactUri(id, this.resources.context));
       return baseClasses.indexOf(type) > -1;
     },
@@ -240,10 +239,10 @@ export default {
         focusId = this.inspector.data.mainEntity.itemOf['@id'].split('#')[0];
       }
       const element = document.createElement('a');
-      let blob = new Blob([`${text}`], { type: 'application/marc'});
+      const blob = new Blob([`${text}`], { type: 'application/marc' });
       element.href = window.URL.createObjectURL(blob);
       const splitIdParts = focusId.split('/');
-      const id = splitIdParts[splitIdParts.length-1];
+      const id = splitIdParts[splitIdParts.length - 1];
       element.download = id;
       element.style.display = 'none';
       document.body.appendChild(element);
@@ -278,10 +277,10 @@ export default {
     },
     compiledIsAvailable() {
       if (
-        (this.recordType === 'Instance' || this.isMyHolding) &&
-        this.hasSigel &&
-        !this.inspector.status.editing &&
-        this.user.email !== ''
+        (this.recordType === 'Instance' || this.isMyHolding)
+        && this.hasSigel
+        && !this.inspector.status.editing
+        && this.user.email !== ''
       ) {
         return true;
       }
@@ -301,14 +300,15 @@ export default {
         this.formObj['@type'],
         this.resources.vocabClasses,
         this.resources.vocabProperties,
-        this.resources.context
+        this.resources.context,
       );
     },
     recordType() {
       return VocabUtil.getRecordType(
         this.inspector.data.mainEntity['@type'], 
         this.resources.vocab, 
-        this.resources.context);
+        this.resources.context,
+      );
     },
     canEditThisType() {
       return true;
@@ -318,7 +318,7 @@ export default {
       const permission = this.user.getPermissions();
       if (this.inspector.data.mainEntity['@type'] === 'Item' && permission.registrant === true) {
         return true;
-      } else if (permission.cataloger === true) {
+      } if (permission.cataloger === true) {
         return true;
       }
       return false;
@@ -328,7 +328,7 @@ export default {
     },
     downloadIsSupported() {
       const a = document.createElement('a');
-      return typeof a.download != 'undefined';
+      return typeof a.download !== 'undefined';
     },
     libraryUrl() {
       return `https://libris.kb.se/library/${this.user.settings.activeSigel}`;
@@ -353,7 +353,7 @@ export default {
       return this.inspector.data.record['@id'] === 'https://id.kb.se/TEMPID';
     },
     hasLocalWork() {
-      return (typeof this.inspector.data.work !== 'undefined') ? true : false;
+      return (typeof this.inspector.data.work !== 'undefined');
     },
   },
   components: {

@@ -15,7 +15,7 @@ export default {
         this.inspector.data.quoted,
         this.resources.vocab,
         this.settings,
-        this.resources.context
+        this.resources.context,
       );
       return label;
     },
@@ -45,7 +45,7 @@ export default {
         this.inspector.data.quoted,
         this.resources.vocab,
         this.settings,
-        this.resources.context
+        this.resources.context,
       );
       return chip;
     },
@@ -56,7 +56,7 @@ export default {
         this.inspector.data.quoted,
         this.resources.vocab,
         this.settings,
-        this.resources.context
+        this.resources.context,
       );
       return card;
     },
@@ -67,7 +67,7 @@ export default {
         this.inspector.data.quoted,
         this.resources.vocab,
         this.settings,
-        this.resources.context
+        this.resources.context,
       );
       return summary;
     },

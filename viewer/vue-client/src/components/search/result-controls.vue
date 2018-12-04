@@ -14,7 +14,7 @@ export default {
   data() {
     return {
       keyword: '',
-    }
+    };
   },
   computed: {
     settings() {
@@ -27,29 +27,29 @@ export default {
       return this.$store.getters.user;
     },
     filters() {
-        const filters = [];
-        if (typeof this.pageData.search !== 'undefined') {
-            this.pageData.search.mapping.forEach(item => {
-            if (item.variable !== 'q') {
-                const filterObj = {
-                    label: '',
-                    up: '',
-                };
-                if (typeof item.object !== 'undefined') {
-                  if (item.variable === '@type') {
-                    filterObj.label = StringUtil.getLabelByLang(item.object['@id'], this.settings.language, this.resources.vocab, this.resources.context);
-                  } else {
-                    filterObj.label = item.object['@id'].replace('https://id.kb.se/', '');
-                  }
-                } else {
-                  filterObj.label = item.value;
-                }
-                filterObj.up = item.up['@id'];
-                filters.push(filterObj);
+      const filters = [];
+      if (typeof this.pageData.search !== 'undefined') {
+        this.pageData.search.mapping.forEach((item) => {
+          if (item.variable !== 'q') {
+            const filterObj = {
+              label: '',
+              up: '',
+            };
+            if (typeof item.object !== 'undefined') {
+              if (item.variable === '@type') {
+                filterObj.label = StringUtil.getLabelByLang(item.object['@id'], this.settings.language, this.resources.vocab, this.resources.context);
+              } else {
+                filterObj.label = item.object['@id'].replace('https://id.kb.se/', '');
+              }
+            } else {
+              filterObj.label = item.value;
             }
-          });
-        }
-        return filters;
+            filterObj.up = item.up['@id'];
+            filters.push(filterObj);
+          }
+        });
+      }
+      return filters;
     },
     queryText() {
       if (this.pageData.first) {
@@ -62,9 +62,8 @@ export default {
       const limitFromUrl = StringUtil.getParamValueFromUrl(this.pageData.first['@id'], '_limit');
       if (limitFromUrl !== null) {
         return limitFromUrl;
-      } else {
-        return 20;
-      }
+      } 
+      return 20;
     },
     pageList() {
       const list = [];
@@ -76,29 +75,29 @@ export default {
       const limit = 20;
       const offset = this.pageData.itemOffset;
       const noOfPages = parseInt(this.pageData.totalItems / this.limit) + 1 || 1;
-      const currentPage = parseInt(offset/this.limit);
+      const currentPage = parseInt(offset / this.limit);
       let paddedPages = 3;
       if (currentPage < paddedPages) {
-        paddedPages = paddedPages + 1 + (paddedPages - currentPage -1);
+        paddedPages = paddedPages + 1 + (paddedPages - currentPage - 1);
       } else if (currentPage + paddedPages > noOfPages) {
         paddedPages = paddedPages + 1 + (currentPage + paddedPages - noOfPages);
       }
       const minPage = currentPage - paddedPages;
       const maxPage = currentPage + paddedPages;
       if (minPage > 0) {
-        list.push({pageLabel: '...'});
+        list.push({ pageLabel: '...' });
       }
       for (let i = 0; i < noOfPages; i++) {
         const pageOffset = i * this.limit;
         if (i >= minPage && i <= maxPage) {
-          list.push({ pageLabel: i+1, link: `${first}&_offset=${pageOffset}`, active: (i === currentPage)});
+          list.push({ pageLabel: i + 1, link: `${first}&_offset=${pageOffset}`, active: (i === currentPage) });
         }
       }
       if (noOfPages > maxPage) {
-        list.push({pageLabel: '...'});
+        list.push({ pageLabel: '...' });
       }
       return list;
-    }
+    },
   },
   methods: {
     setCompact() {
@@ -123,7 +122,7 @@ export default {
         });
       });
       this.$dispatch('newresult', resultPromise);
-    }
+    },
   },
 };
 </script>

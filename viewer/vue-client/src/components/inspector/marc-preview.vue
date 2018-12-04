@@ -10,7 +10,7 @@ export default {
   name: 'marc-preview',
   data() {
     return {
-    }
+    };
   },
   props: {
     marcObj: {
@@ -20,18 +20,17 @@ export default {
     error: {
       type: Error,
       default: null,
-    }
+    },
   },
   watch: {
     'inspector.event'(val, oldVal) {
       if (val.name === 'form-control') {
-        switch(val.value) {
+        switch (val.value) {
           case 'close-modals':
             this.hide();
             return true;
             break;
           default:
-            return;
         }
       }
     },
@@ -51,9 +50,9 @@ export default {
       return Object.keys(obj);
     },
     getValue(obj) {
-      let val = obj[this.getKeys(obj)[0]];
+      const val = obj[this.getKeys(obj)[0]];
       if (!_.isObject(val)) {
-        return { 'value': val };
+        return { value: val };
       }
       return val;
     },

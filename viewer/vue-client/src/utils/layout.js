@@ -34,11 +34,11 @@ function handleMouseDownOnce() {
 }
 
 export function scrollToElement($el, duration, callback) {
-  let topOfElement = getPosition($el).y;
+  const topOfElement = getPosition($el).y;
   if (topOfElement > 0) {
-    const windowHeight = window.innerHeight || 
-    document.documentElement.clientHeight || 
-    document.getElementsByTagName('body')[0].clientHeight;
+    const windowHeight = window.innerHeight 
+    || document.documentElement.clientHeight 
+    || document.getElementsByTagName('body')[0].clientHeight;
     const scrollPos = getPosition($el).y - (windowHeight * 0.2);
     scrollTo(scrollPos, duration, 'easeInOutQuad', callback);
   } else {
@@ -91,7 +91,7 @@ export function scrollTo(position, duration = 200, easing = 'linear', callback) 
     },
     easeInOutQuint(t) {
       return t < 0.5 ? 16 * t * t * t * t * t : 1 + 16 * (--t) * t * t * t * t;
-    }
+    },
   };
 
   // Returns document.documentElement for Chrome and Safari
@@ -115,7 +115,7 @@ export function scrollTo(position, duration = 200, easing = 'linear', callback) 
     document.body.offsetHeight,
     document.documentElement.clientHeight,
     document.documentElement.scrollHeight,
-    document.documentElement.offsetHeight
+    document.documentElement.offsetHeight,
   );
 
   const windowHeight = window.innerHeight || document.documentElement.clientHeight || document.getElementsByTagName('body')[0].clientHeight;
@@ -131,7 +131,7 @@ export function scrollTo(position, duration = 200, easing = 'linear', callback) 
     const time = Math.min(1, ((now - startTime) / duration));
     const timeFunction = easings[easing](time);
     body.scrollTop = (timeFunction * (destination - start)) + start;
-    if (Math.floor(body.scrollTop) > destination - 10 && Math.floor(body.scrollTop) < destination + 10 || reachedBottom() ) {
+    if (Math.floor(body.scrollTop) > destination - 10 && Math.floor(body.scrollTop) < destination + 10 || reachedBottom()) {
       callback();
       return;
     }
@@ -171,16 +171,16 @@ export function getKeybindingText(eventName) {
 }
 
 export function getOS() {
-  let OSName = "Unknown";
-  if (window.navigator.userAgent.indexOf("Windows NT 10.0")!= -1) OSName="Windows 10";
-  if (window.navigator.userAgent.indexOf("Windows NT 6.2") != -1) OSName="Windows 8";
-  if (window.navigator.userAgent.indexOf("Windows NT 6.1") != -1) OSName="Windows 7";
-  if (window.navigator.userAgent.indexOf("Windows NT 6.0") != -1) OSName="Windows Vista";
-  if (window.navigator.userAgent.indexOf("Windows NT 5.1") != -1) OSName="Windows XP";
-  if (window.navigator.userAgent.indexOf("Windows NT 5.0") != -1) OSName="Windows 2000";
-  if (window.navigator.userAgent.indexOf("Mac")            != -1) OSName="Mac/iOS";
-  if (window.navigator.userAgent.indexOf("X11")            != -1) OSName="UNIX";
-  if (window.navigator.userAgent.indexOf("Linux")          != -1) OSName="Linux";
+  let OSName = 'Unknown';
+  if (window.navigator.userAgent.indexOf('Windows NT 10.0') != -1) OSName = 'Windows 10';
+  if (window.navigator.userAgent.indexOf('Windows NT 6.2') != -1) OSName = 'Windows 8';
+  if (window.navigator.userAgent.indexOf('Windows NT 6.1') != -1) OSName = 'Windows 7';
+  if (window.navigator.userAgent.indexOf('Windows NT 6.0') != -1) OSName = 'Windows Vista';
+  if (window.navigator.userAgent.indexOf('Windows NT 5.1') != -1) OSName = 'Windows XP';
+  if (window.navigator.userAgent.indexOf('Windows NT 5.0') != -1) OSName = 'Windows 2000';
+  if (window.navigator.userAgent.indexOf('Mac') != -1) OSName = 'Mac/iOS';
+  if (window.navigator.userAgent.indexOf('X11') != -1) OSName = 'UNIX';
+  if (window.navigator.userAgent.indexOf('Linux') != -1) OSName = 'Linux';
   return OSName;
 }
 
@@ -191,13 +191,13 @@ export function showPage(vueInstance) {
 }
 
 export function getPosition(element) {
-  var xPosition = 0;
-  var yPosition = 0;
+  let xPosition = 0;
+  let yPosition = 0;
 
-  while(element) {
-      xPosition += (element.offsetLeft - element.scrollLeft + element.clientLeft);
-      yPosition += (element.offsetTop + element.clientTop);
-      element = element.offsetParent;
+  while (element) {
+    xPosition += (element.offsetLeft - element.scrollLeft + element.clientLeft);
+    yPosition += (element.offsetTop + element.clientTop);
+    element = element.offsetParent;
   }
 
   return { x: xPosition, y: yPosition };

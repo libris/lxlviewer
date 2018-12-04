@@ -1,8 +1,5 @@
 <script>
 import { mapGetters } from 'vuex';
-import * as StringUtil from '@/utils/string';
-import * as HttpUtil from '@/utils/http';
-import * as User from '@/models/user';
 
 export default {
   name: 'Login',
@@ -10,7 +7,7 @@ export default {
     return {
       showButton: false,
       failedLogin: false,
-    }
+    };
   },
   watch: {
   },
@@ -28,7 +25,7 @@ export default {
   mounted() {
     this.$nextTick(() => {
     });
-  }
+  },
 };
 </script>
 

@@ -44,34 +44,34 @@ export default {
     },
     isBib() {
       if (VocabUtil.isSubClassOf(
-          this.inspector.data[this.editingObject]['@type'], 
-          'Instance', 
-          this.resources.vocab,  
-          this.resources.context
-        )
+        this.inspector.data[this.editingObject]['@type'], 
+        'Instance', 
+        this.resources.vocab,  
+        this.resources.context,
+      )
       ) {
         return true;
       } if (VocabUtil.isSubClassOf(
-          this.inspector.data[this.editingObject]['@type'], 
-          'Work', 
-          this.resources.vocab, 
-          this.resources.context
-          )
-        ) {
+        this.inspector.data[this.editingObject]['@type'], 
+        'Work', 
+        this.resources.vocab, 
+        this.resources.context,
+      )
+      ) {
         return true;
-      } else if (VocabUtil.isSubClassOf(
-          this.inspector.data[this.editingObject]['@type'], 
-          'Agent', this.resources.vocab, 
-          this.resources.context
-          )
-        ) {
+      } if (VocabUtil.isSubClassOf(
+        this.inspector.data[this.editingObject]['@type'], 
+        'Agent', this.resources.vocab, 
+        this.resources.context,
+      )
+      ) {
         return true;
-      } else if (VocabUtil.isSubClassOf(
-          this.inspector.data[this.editingObject]['@type'], 
-          'Concept', 
-          this.resources.vocab, 
-          this.resources.context
-        )
+      } if (VocabUtil.isSubClassOf(
+        this.inspector.data[this.editingObject]['@type'], 
+        'Concept', 
+        this.resources.vocab, 
+        this.resources.context,
+      )
       ) {
         return true;
       }

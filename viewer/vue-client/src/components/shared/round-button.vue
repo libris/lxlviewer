@@ -14,8 +14,8 @@ export default {
   name: 'round-button',
   props: {
     size: {
-        type: String,
-        default: 'medium',
+      type: String,
+      default: 'medium',
     },
     indicator: {
       type: Boolean,
@@ -30,20 +30,20 @@ export default {
       default: '',
     },
     icon: {
-        default: false,
+      default: false,
     },
   },
   data() {
     return {
       mouseOver: false,
-    }
+    };
   },
   methods: {
     action() {
       if (!this.disabled) {
-        this.$emit('click')
+        this.$emit('click');
       }
-    }
+    },
   },
   computed: {
     smallText() {

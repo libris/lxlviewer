@@ -1,5 +1,6 @@
 
 <script>
+import * as _ from 'lodash';
 import * as StringUtil from '@/utils/string';
 import * as DataUtil from '@/utils/data';
 import * as VocabUtil from '@/utils/vocab';
@@ -7,7 +8,6 @@ import * as HttpUtil from '@/utils/http';
 import * as DisplayUtil from '@/utils/display';
 import * as RecordUtil from '@/utils/record';
 import * as md5 from 'md5';
-import * as CombinedTemplates from '@/resources/json/combinedTemplates.json';
 import EntityForm from '@/components/inspector/entity-form';
 import Toolbar from '@/components/inspector/toolbar';
 import EntityChangelog from '@/components/inspector/entity-changelog';
@@ -22,7 +22,7 @@ import { mapGetters } from 'vuex';
 
 export default {
   name: 'Inspector',
-  beforeRouteLeave (to, from , next) {
+  beforeRouteLeave(to, from, next) {
     if (this.shouldWarnOnUnload()) {
       const confString = StringUtil.getUiPhraseByLang('You have unsaved changes. Do you want to leave the page?', this.settings.language);
       const answer = window.confirm(confString);
@@ -35,9 +35,9 @@ export default {
       next();
     }
   },
-  beforeRouteUpdate (to, from, next) {
+  beforeRouteUpdate(to, from, next) {
     this.addBreadcrumb();
-  if (this.shouldWarnOnUnload()) {
+    if (this.shouldWarnOnUnload()) {
       const confString = StringUtil.getUiPhraseByLang('You have unsaved changes. Do you want to leave the page?', this.settings.language);
       const answer = window.confirm(confString);
       if (answer) {
@@ -49,7 +49,7 @@ export default {
       next();
     }
   },
-  data () {
+  data() {
     return {
       documentId: null,
       result: {},
@@ -60,63 +60,60 @@ export default {
       marcPreview: {
         data: null,
         active: false,
-        error: null
+        error: null,
       },
-    }
+    };
   },
   methods: {
     addBreadcrumb() {
       if (this.inspector.breadcrumb !== '') {
-        let currentTrail = this.inspector.breadcrumb;
-        let firstTrail = currentTrail.shift();
+        const currentTrail = this.inspector.breadcrumb;
+        const firstTrail = currentTrail.shift();
 
-        let newBreadcrumb = {
+        const newBreadcrumb = {
           type: 'fromPost',
           recordType: this.recordType,
-          postUrl: this.$route.fullPath
-        }
+          postUrl: this.$route.fullPath,
+        };
 
-        let newTrail = [];
+        const newTrail = [];
         newTrail.push(firstTrail);
         newTrail.push(newBreadcrumb);
 
         this.$store.dispatch('setBreadcrumbData', 
-          newTrail
-        );
+          newTrail);
       } else {
         this.$store.dispatch('setBreadcrumbData', 
           [
             {
               type: 'fromPost',
               recordType: this.recordType,
-              postUrl: this.$route.fullPath
-            }
-          ]
-        );
+              postUrl: this.$route.fullPath,
+            },
+          ]);
       }
     },
     shouldWarnOnUnload() {
       return (
-        (this.$route.name === 'Inspector' || this.$route.name === 'NewDocument') &&
-        this.inspector.status.editing &&
-        this.unsavedChanges &&
-        !this.inspector.status.saving
+        (this.$route.name === 'Inspector' || this.$route.name === 'NewDocument')
+        && this.inspector.status.editing
+        && this.unsavedChanges
+        && !this.inspector.status.saving
       );
     },
     initializeWarnBeforeUnload() {
-      window.addEventListener("beforeunload", (e) => {
+      window.addEventListener('beforeunload', (e) => {
         if (this.shouldWarnOnUnload()) {
           const confirmationMessage = StringUtil.getUiPhraseByLang('You have unsaved changes. Do you want to leave the page?', this.settings.language);
-          (e || window.event).returnValue = confirmationMessage; //Gecko + IE
-          return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
-        } else {
-          return undefined;
-        }
+          (e || window.event).returnValue = confirmationMessage; // Gecko + IE
+          return confirmationMessage; // Gecko + Webkit, Safari, Chrome etc.
+        } 
+        return undefined;
       });
     },
     initJsonOutput() {
       window.getJsonOutput = () => {
-      const obj = this.getPackagedItem();
+        const obj = this.getPackagedItem();
         console.log('%c ------------ JSON START --------------- ', 'background: #009788; color: #fff;');
         console.log(JSON.stringify(obj));
         console.log('%c ------------- JSON END ---------------- ', 'background: #009788; color: #fff;', new Date());
@@ -134,17 +131,17 @@ export default {
     openMarcPreview() {
       this.$store.dispatch('pushInspectorEvent', { 
         name: 'form-control', 
-        value: 'close-modals'
+        value: 'close-modals',
       })
-      .then(() => {
-        this.marcPreview.active = true;
-        RecordUtil.convertToMarc(this.inspector.data, this.settings, this.user).then((result) => {
-          this.marcPreview.data = result;
-        }, (error) => {
-          this.marcPreview.data = null;
-          this.marcPreview.error = error;
+        .then(() => {
+          this.marcPreview.active = true;
+          RecordUtil.convertToMarc(this.inspector.data, this.settings, this.user).then((result) => {
+            this.marcPreview.data = result;
+          }, (error) => {
+            this.marcPreview.data = null;
+            this.marcPreview.error = error;
+          });
         });
-      });
     },
     fetchDocument() {
       const randomHash = md5(new Date());
@@ -152,7 +149,7 @@ export default {
       fetch(fetchUrl).then((response) => {
         if (response.status === 200) {
           return response.json();
-        } else if (response.status === 404 || response.status === 410) {
+        } if (response.status === 404 || response.status === 410) {
           this.loadFailure = {
             status: response.status,
           };
@@ -160,14 +157,14 @@ export default {
         } else {
           this.$store.dispatch('pushNotification', { 
             type: 'danger', 
-            message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)}. ${response.status} ${response.statusText}` 
+            message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)}. ${response.status} ${response.statusText}`, 
           });
           this.$store.dispatch('removeLoadingIndicator', 'Loading document');
         }
       }, (error) => {
         this.$store.dispatch('pushNotification', { 
           type: 'danger', 
-          message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)}. ${error}` 
+          message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)}. ${error}`, 
         });
       }).then((result) => {
         if (typeof result !== 'undefined') {
@@ -179,17 +176,17 @@ export default {
       });
     },
     initializeRecord() {
-      this.marcPreview.active = false
+      this.marcPreview.active = false;
       this.$store.dispatch('pushLoadingIndicator', 'Loading document');
       this.postLoaded = false;
       this.$store.dispatch('flushChangeHistory');
       this.$store.dispatch('setInspectorStatusValue', { property: 'focus', value: 'mainEntity' });
       if (this.$route.name === 'Inspector') {
-        console.log("Initializing view for existing document");
+        console.log('Initializing view for existing document');
         this.documentId = this.$route.params.fnurgel;
         this.loadDocument();
       } else {
-        console.log("Initializing view for new document");
+        console.log('Initializing view for new document');
         this.loadNewDocument();
       }
     },
@@ -232,12 +229,12 @@ export default {
         });
         this.$store.dispatch('pushNotification', { 
           type: 'info', 
-          message: `${changeList.length} ${StringUtil.getUiPhraseByLang('field(s) added from template', this.user.settings.language)}` 
+          message: `${changeList.length} ${StringUtil.getUiPhraseByLang('field(s) added from template', this.user.settings.language)}`, 
         });
       } else {
         this.$store.dispatch('pushNotification', { 
           type: 'info', 
-          message: `${StringUtil.getUiPhraseByLang('The record already contains these fields', this.user.settings.language)}` 
+          message: `${StringUtil.getUiPhraseByLang('The record already contains these fields', this.user.settings.language)}`, 
         });
       }
     },
@@ -273,7 +270,7 @@ export default {
       if (!insertData.hasOwnProperty('@graph') || insertData['@graph'].length === 0) {
         this.$store.dispatch('removeLoadingIndicator', 'Loading document');
         this.$router.go(-1);
-        console.warn('New document called without input data, routing user back.')
+        console.warn('New document called without input data, routing user back.');
       } else {
         this.$store.dispatch('setInspectorData', RecordUtil.splitJson(insertData));
         this.$store.dispatch('setInspectorStatusValue', { property: 'editing', value: true });
@@ -289,14 +286,14 @@ export default {
       this.$nextTick(() => {
         this.$store.dispatch('pushInspectorEvent', { 
           name: 'post-events', 
-          value: 'on-post-loaded'
+          value: 'on-post-loaded',
         });
-      })
+      });
     },
     doCancel() {
       this.$store.dispatch('setInspectorStatusValue', { 
         property: 'editing', 
-        value: false 
+        value: false, 
       });
       // Restore post
       this.$store.dispatch('setInspectorData', this.inspector.originalData);
@@ -325,13 +322,13 @@ export default {
           this.inspector.data.quoted, 
           this.resources.vocab, 
           this.settings, 
-          this.resources.context
+          this.resources.context,
         ).header;
         const header = StringUtil.getFormattedEntries(
           headerList, 
           this.resources.vocab, 
           this.settings, 
-          this.resources.context
+          this.resources.context,
         ).join(', ');
         if (header.length > 0 && header !== '{Unknown}') {
           const title = header;
@@ -373,7 +370,7 @@ export default {
       const obj = DataUtil.getMergedItems(
         DataUtil.removeNullValues(recordCopy),
         DataUtil.removeNullValues(this.inspector.data.mainEntity),
-        DataUtil.removeNullValues(this.inspector.data.work)
+        DataUtil.removeNullValues(this.inspector.data.work),
       );
       return obj;
     },
@@ -384,7 +381,7 @@ export default {
         this.$router.push({ path: '/new' });
       }
     },   
-    saveItem(done=false) {
+    saveItem(done = false) {
       this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: true });
 
       const RecordId = this.inspector.data.record['@id'];
@@ -402,18 +399,19 @@ export default {
       this.doSaveRequest(HttpUtil.put, obj, { url, ETag }, done);
     },
     doCreate(obj, done) {
-      this.doSaveRequest(HttpUtil.post, obj, { url: this.settings.apiPath+'/data' }, done);    },
+      this.doSaveRequest(HttpUtil.post, obj, { url: `${this.settings.apiPath}/data` }, done); 
+    },
     doSaveRequest(requestMethod, obj, opts, done) {
       requestMethod({ 
         url: opts.url, 
         ETag: opts.ETag, 
         activeSigel: this.user.settings.activeSigel, 
-        token: this.user.token
+        token: this.user.token,
       }, obj).then((result) => {
         if (!this.documentId) {
           const location = `${result.getResponseHeader('Location')}`;
           const locationParts = location.split('/');
-          const fnurgel = locationParts[locationParts.length-1];
+          const fnurgel = locationParts[locationParts.length - 1];
           this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('The post was created', this.settings.language)}!` });
           this.$router.push({ path: `/${fnurgel}` });
         } else {
@@ -429,7 +427,7 @@ export default {
         this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
         const errorBase = StringUtil.getUiPhraseByLang('Save failed', this.settings.language);
         let errorMessage = '';
-        switch(error.status) {
+        switch (error.status) {
           case 412:
             errorMessage = `${StringUtil.getUiPhraseByLang('The resource has been modified by another user', this.settings.language)}`;
             break;
@@ -462,13 +460,13 @@ export default {
     },
     'inspector.event'(val, oldVal) {
       if (val.name === 'post-control') {
-        switch(val.value) {
+        switch (val.value) {
           case 'cancel':
             this.cancelEditing();
-          break;
+            break;
           case 'download-json':
             this.downloadJson();
-          break;
+            break;
           case 'remove-post':
             this.openRemoveModal();
             break;
@@ -482,7 +480,6 @@ export default {
             this.openMarcPreview();
             break;
           default:
-            return;
         }
       } else if (val.name === 'apply-template') {
         this.applyFieldsFromTemplate(val.value);
@@ -503,7 +500,7 @@ export default {
     unsavedChanges() {
       if (this.$route.name === 'NewDocument') {
         return true;
-      } else if (this.$route.name === 'Inspector') {
+      } if (this.$route.name === 'Inspector') {
         const original = JSON.stringify(this.inspector.originalData);
         const current = JSON.stringify(this.inspector.data);
         return original !== current;
@@ -517,21 +514,22 @@ export default {
       return VocabUtil.getRecordType(
         this.inspector.data.mainEntity['@type'], 
         this.resources.vocab, 
-        this.resources.context);
+        this.resources.context,
+      );
     },
     editorTabs() {
-      return [{'id': 'mainEntity', 'text': this.$options.filters.labelByLang(this.recordType)},
-              {'id': 'record', 'text': 'Admin metadata' }]
+      return [{ id: 'mainEntity', text: this.$options.filters.labelByLang(this.recordType) },
+        { id: 'record', text: 'Admin metadata' }];
     },
   },
   components: {
     'entity-header': EntityHeader,
     'entity-form': EntityForm,
     'modal-component': ModalComponent,
-    'toolbar': Toolbar,
+    toolbar: Toolbar,
     'entity-changelog': EntityChangelog,
     'reverse-relations': ReverseRelations,
-    'breadcrumb': Breadcrumb,
+    breadcrumb: Breadcrumb,
     'marc-preview': MarcPreview,
     'tab-menu': TabMenu,
     'validation-summary': ValidationSummary,
@@ -543,11 +541,9 @@ export default {
       }
       this.initializeWarnBeforeUnload();
       this.initJsonOutput();
-
-      let self = this;
     });
   },
-}
+};
 </script>
 <template>
   <div class="row">

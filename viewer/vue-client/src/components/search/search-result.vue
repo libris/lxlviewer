@@ -6,28 +6,29 @@ export default {
   name: 'search-result',
   props: {
     result: {},
-    query: '',
+    query: {
+      type: String,
+      default: '',
+    },
     importData: Array,
   },
   data() {
     return {
       fullResult: {},
       keyword: '',
-      showResult: false
-    }
+      showResult: false,
+    };
   },
   methods: {
     getFullLocalResult() {
       let currentQuery = this.query;
       currentQuery = currentQuery.replace(/&_offset=.*/, '&_offset=');
 
-      const unlimitedQuery = currentQuery.replace(/_limit=.*&/, '_limit='+this.totalItems+'&');
+      const unlimitedQuery = currentQuery.replace(/_limit=.*&/, `_limit=${this.totalItems}&`);
       
       const fetchUrl = `${this.settings.apiPath}/find.json?${unlimitedQuery}`;
 
-      fetch(fetchUrl).then((response) => {
-        return response.json();
-      }, (error) => {
+      fetch(fetchUrl).then(response => response.json(), (error) => {
         this.$store.dispatch('pushNotification', { type: 'danger', message: StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language) });
         this.searchInProgress = false;
       }).then((result) => {
@@ -43,10 +44,9 @@ export default {
           {
             type: 'searchResult',
             result: newValue,
-            resultUrl: this.$route.fullPath
-          }
-        ]
-      );
+            resultUrl: this.$route.fullPath,
+          },
+        ]);
     },
   },
   computed: {
@@ -66,13 +66,13 @@ export default {
     },
     hasPagination() {
       return (
-        typeof this.paginationData.first !== 'undefined' &&
-        typeof this.paginationData.last !== 'undefined'
+        typeof this.paginationData.first !== 'undefined'
+        && typeof this.paginationData.last !== 'undefined'
       );
     },
     totalItems() {
       return this.result.totalItems;
-    }
+    },
   },
   components: {
     'result-controls': ResultControls,

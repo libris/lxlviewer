@@ -11,7 +11,7 @@ export default {
   data() {
     return {
       keyword: '',
-    }
+    };
   },
   methods: {
   },
@@ -19,7 +19,7 @@ export default {
     itemAsJson() {
       const cleanItem = _.cloneDeep(this.item);
       if (cleanItem.hasOwnProperty('_uid')) {
-        delete cleanItem['_uid'];
+        delete cleanItem._uid;
       }
       return JSON.stringify(cleanItem);
     },
@@ -29,7 +29,7 @@ export default {
         return failedValidations;
       }
       failedValidations.push({
-        text: "The entity is missing crucial data"
+        text: 'The entity is missing crucial data',
       });
 
       this.$store.dispatch('setValidation', { path: this.path, validates: false, reasons: failedValidations });
@@ -40,7 +40,7 @@ export default {
   },
   watch: {
     keyword(value, oldval) {
-      console.log("keyword changed", value, oldval);
+      console.log('keyword changed', value, oldval);
     },
   },
   mounted() {

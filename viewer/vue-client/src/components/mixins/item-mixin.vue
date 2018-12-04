@@ -20,10 +20,10 @@ export default {
     },
     index: Number,
   },
-  data(){
+  data() {
     return {
       removed: false,
-    }
+    };
   },
   methods: {
     removeThis(animate = false) {
@@ -42,7 +42,7 @@ export default {
               {
                 path: `${this.parentPath}`,
                 value: parentValue,
-              }
+              },
             ],
             addToHistory: true,
           });
@@ -53,7 +53,7 @@ export default {
             {
               path: `${this.parentPath}`,
               value: parentValue,
-            }
+            },
           ],
           addToHistory: true,
         });
@@ -61,7 +61,7 @@ export default {
     },
   },
   events: {
-    'remove-entity'(){
+    'remove-entity'() {
       this.removeThis();
     },
   },
@@ -77,9 +77,8 @@ export default {
       const parentValue = _.get(this.inspector.data, this.parentPath);
       if (_.isArray(parentValue)) {
         return `${this.parentPath}[${this.index}]`;
-      } else {
-        return this.parentPath;
-      }
+      } 
+      return this.parentPath;
     },
     recordType() {
       return VocabUtil.getRecordType(this.item['@type'], this.vocab, this.settings);
@@ -97,13 +96,13 @@ export default {
       }
       return DataUtil.getEmbellished(
         this.item['@id'],
-        this.inspector.data.quoted
+        this.inspector.data.quoted,
       );
     },
   },
   watch: {
     'status.removing': {
-      handler: function(newValue) {
+      handler: function (newValue) {
         if (!newValue) {
           this.removed = false;
         }

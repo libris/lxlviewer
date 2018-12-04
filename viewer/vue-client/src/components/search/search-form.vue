@@ -12,8 +12,8 @@ export default {
   name: 'search-form',
   props: {
     searchPerimeter: {
-        default: 'libris',
-        type: String,
+      default: 'libris',
+      type: String,
     },
     resultData: {},
   },
@@ -22,20 +22,20 @@ export default {
       vocabUrl: 'https://id.kb.se/vocab/',
       inputData: {
         textInput: [
-            {
+          {
             value: '',
             class: 'is-searchPhrase',
-            }
+          },
         ],
         currentInput: 0,
-        ids: ['Instance']
+        ids: ['Instance'],
       },
       remoteSearch: {
         q: '',
       },
       query: '',
       activeClass: 'is-active',
-    }
+    };
   },
   methods: {
     focusSearchForm() {
@@ -50,7 +50,7 @@ export default {
       this.moveQuery(id);
     },
     moveQuery(id) {
-      let qIndex = _.findIndex(this.inputData.textInput, {class: 'is-searchPhrase'});
+      const qIndex = _.findIndex(this.inputData.textInput, { class: 'is-searchPhrase' });
       if (id === 'libris') {
         this.inputData.textInput[qIndex].value = this.remoteSearch.q;
       } else {
@@ -58,7 +58,7 @@ export default {
       }
     },
     removeTags(html) {
-      let regexHtml = html.replace(/<h1.*>.*?<\/h1>/ig,'').replace(/<h2.*>.*?<\/h2>/ig,'');
+      let regexHtml = html.replace(/<h1.*>.*?<\/h1>/ig, '').replace(/<h2.*>.*?<\/h2>/ig, '');
       regexHtml = regexHtml.replace(/(<\/?(?:code|br|p)[^>]*>)|<[^>]+>/ig, '$1');
       return regexHtml;
     },
@@ -68,201 +68,197 @@ export default {
       return html;
     },
     showHelp() {
-      let helpText = document.querySelector('.js-searchHelpText');
+      const helpText = document.querySelector('.js-searchHelpText');
       helpText.parentElement.classList.add(this.activeClass);
     },
     hideHelp() {
-      let helpText = document.querySelector('.js-searchHelpText');
+      const helpText = document.querySelector('.js-searchHelpText');
       if (helpText.parentElement.classList.contains(this.activeClass)) {
         helpText.parentElement.classList.remove(this.activeClass);
       } 
     },
     toggleHelp() {
-      let helpText = document.querySelector('.js-searchHelpText');
+      const helpText = document.querySelector('.js-searchHelpText');
       helpText.parentElement.classList.toggle(this.activeClass);
     },
     addSearchField() {
-        const newobj = {};
-        newobj.value='';
-        newobj.class='is-searchPhrase';
-        this.inputData.textInput.push(newobj);
-        this.inputData.currentInput += 1;
+      const newobj = {};
+      newobj.value = '';
+      newobj.class = 'is-searchPhrase';
+      this.inputData.textInput.push(newobj);
+      this.inputData.currentInput += 1;
     },
     updateField() {
       const validTags = this.validSearchTags;
       if (this.currentIsTag) {
-          this.currentField.class = 'is-searchTag is-valid';
+        this.currentField.class = 'is-searchTag is-valid';
       } else {
-          this.currentField.class = 'is-searchPhrase';
+        this.currentField.class = 'is-searchPhrase';
       }
     },
     handleFocus(focusedIndex) {
       this.inputData.currentInput = focusedIndex;
     },
-    handleInput: function(e) {
+    handleInput: function (e) {
       const currentElement = document.querySelector('.js-qsmartInput').children[this.inputData.currentInput];
       if (e.keyCode === 13) { // Enter
-          e.preventDefault();
-          if (!this.currentIsTag) {
-              this.doSearch();
-          } else if (this.inputData.currentInput === this.inputData.textInput.length-1) {
-              this.addSearchField();
-          } else {
-              this.inputData.currentInput += 1;
-          }
-      } else if (e.keyCode === 8 && // Backspace
-      !this.currentIsTag &&
-      currentElement.value.slice(0, currentElement.selectionStart).length === 0 &&
-      this.inputData.textInput.length >= 2) {
-          e.preventDefault();
-          this.inputData.textInput.splice(this.inputData.currentInput-1, 1);
-          this.inputData.currentInput -= 1;
+        e.preventDefault();
+        if (!this.currentIsTag) {
+          this.doSearch();
+        } else if (this.inputData.currentInput === this.inputData.textInput.length - 1) {
+          this.addSearchField();
+        } else {
+          this.inputData.currentInput += 1;
+        }
+      } else if (e.keyCode === 8 // Backspace
+      && !this.currentIsTag
+      && currentElement.value.slice(0, currentElement.selectionStart).length === 0
+      && this.inputData.textInput.length >= 2) {
+        e.preventDefault();
+        this.inputData.textInput.splice(this.inputData.currentInput - 1, 1);
+        this.inputData.currentInput -= 1;
       }
     },
     composeQuery() {
-        let query = '';
-        if (this.searchPerimeter === 'libris') {
-            const validTags = this.validSearchTags;
-            let queryText = [];
-            for (const inputElement of this.inputData.textInput) {     
-                if (inputElement.class.indexOf('is-searchTag') > -1) {
-                    const tag = inputElement.value.split(':');
-                    const tagKey = tag[0];
-                    const tagValue = tag[1];
-                    if (validTags.indexOf(tagKey) > -1) {
-                        _.each(PropertyMappings, obj => {
-                            if (obj.key === tagKey) {
-                                _.each(obj.mappings, (mappingValue, mappingKey) => {
-                                    if (mappingValue === '') {
-                                        queryText.push(`${mappingKey}=${tagValue}`);
-                                    } else {
-                                        queryText.push(`${mappingKey}=${mappingValue}`);
-                                    }
-                                });
-                            }
-                        });
+      let query = '';
+      if (this.searchPerimeter === 'libris') {
+        const validTags = this.validSearchTags;
+        const queryText = [];
+        for (const inputElement of this.inputData.textInput) {     
+          if (inputElement.class.indexOf('is-searchTag') > -1) {
+            const tag = inputElement.value.split(':');
+            const tagKey = tag[0];
+            const tagValue = tag[1];
+            if (validTags.indexOf(tagKey) > -1) {
+              _.each(PropertyMappings, (obj) => {
+                if (obj.key === tagKey) {
+                  _.each(obj.mappings, (mappingValue, mappingKey) => {
+                    if (mappingValue === '') {
+                      queryText.push(`${mappingKey}=${tagValue}`);
+                    } else {
+                      queryText.push(`${mappingKey}=${mappingValue}`);
                     }
-                } else if (inputElement.value !== '') {
-                    queryText.push(`q=${inputElement.value}`);
-                } else {
-                  queryText.push('q=*');
+                  });
                 }
+              });
             }
-            if (queryText.length === 0) {
-            return;
-            }
-            queryText.push('_limit=20');
-            _.each(this.inputData.ids, id => queryText.push(`@type=${id}`));
-            query = queryText.join('&');
-        } else {
-            const databases = this.status.remoteDatabases.join();
-            const keywords = this.remoteSearch.q;
-            query = `q=${keywords}&databases=${databases}`;
+          } else if (inputElement.value !== '') {
+            queryText.push(`q=${inputElement.value}`);
+          } else {
+            queryText.push('q=*');
+          }
         }
-        return query;
-      },
-      doSearch() {
-        this.$router.push({ path: `/search/${this.searchPerimeter}?${this.composeQuery()}` });
-        
-        if (this.searchPerimeter === 'remote') {
-          this.$refs.dbComponent.showList = false;
-        };
-      },
-      clearInputs() {
-        this.inputData.currentInput = 0;
-        this.inputData.textInput.splice(1, this.inputData.textInput.length);
-        this.inputData.textInput[0].value = '';
-        this.inputData.textInput[0].class = 'is-searchPhrase';
+        if (queryText.length === 0) {
+          return;
+        }
+        queryText.push('_limit=20');
+        _.each(this.inputData.ids, id => queryText.push(`@type=${id}`));
+        query = queryText.join('&');
+      } else {
+        const databases = this.status.remoteDatabases.join();
+        const keywords = this.remoteSearch.q;
+        query = `q=${keywords}&databases=${databases}`;
       }
+      return query;
+    },
+    doSearch() {
+      this.$router.push({ path: `/search/${this.searchPerimeter}?${this.composeQuery()}` });
+        
+      if (this.searchPerimeter === 'remote') {
+        this.$refs.dbComponent.showList = false;
+      }
+    },
+    clearInputs() {
+      this.inputData.currentInput = 0;
+      this.inputData.textInput.splice(1, this.inputData.textInput.length);
+      this.inputData.textInput[0].value = '';
+      this.inputData.textInput[0].class = 'is-searchPhrase';
+    },
   },
   computed: {
     searchHelpDocs() {
       if (this.docs && this.docs.hasOwnProperty('search-01-queries')) {
-        return this.transformMarkdownToHTML(this.docs['search-01-queries'].content)
-      } else {
-        return StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language);
-      }
+        return this.transformMarkdownToHTML(this.docs['search-01-queries'].content);
+      } 
+      return StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language);
     },
     docs() {
       if (this.resources.helpDocs != null) {
         const json = this.resources.helpDocs;
         return json;
-      } else {
-        return null;
-      }
+      } 
+      return null;
     },
     ...mapGetters([
       'resources',
       'settings',
       'status',
     ]),
-      dataSetFilters() {
-        return this.settings.dataSetFilters.libris.map(term => {
-            return {
-            '@id': StringUtil.getCompactUri(term, this.resources.context),
-            'label': StringUtil.getLabelByLang(term, this.settings.language, this.resources.vocab, this.resources.context)
-            };
-        });
-      },
-      usedFilters() {
-        const filters = [];
-        if (typeof this.resultData.search !== 'undefined') {
-            this.resultData.search.mapping.forEach(item => {
-            if (item.variable !== 'q') {
-              let filter = '';
-              if (typeof item.object !== 'undefined') {
-                if (item.variable === '@type') {
-                  filter = item.object['@id'];
-                } else {
-                  filter = item.object['@id'].replace('https://id.kb.se/', '');
-                }
+    dataSetFilters() {
+      return this.settings.dataSetFilters.libris.map(term => ({
+        '@id': StringUtil.getCompactUri(term, this.resources.context),
+        label: StringUtil.getLabelByLang(term, this.settings.language, this.resources.vocab, this.resources.context),
+      }));
+    },
+    usedFilters() {
+      const filters = [];
+      if (typeof this.resultData.search !== 'undefined') {
+        this.resultData.search.mapping.forEach((item) => {
+          if (item.variable !== 'q') {
+            let filter = '';
+            if (typeof item.object !== 'undefined') {
+              if (item.variable === '@type') {
+                filter = item.object['@id'];
               } else {
-                filter = item.value;
+                filter = item.object['@id'].replace('https://id.kb.se/', '');
               }
-              filters.push(filter);
+            } else {
+              filter = item.value;
             }
-          });
-        }
-        return filters;
-      },
-      usedTextInput() {
-        let textInput = '';
-        if (typeof this.resultData.search !== 'undefined') {
-            this.resultData.search.mapping.forEach(item => {
-            if (item.variable === 'q') {
-              textInput = item.value;
-            } 
-          });
-        }
-        return textInput;
-      },
-      currentIsTag() {
-          const value = this.currentField.value;
-          return value.indexOf(':') > -1 && this.validSearchTags.indexOf(value.split(':')[0]) > -1;
-      },
-      currentField() {
-          return this.inputData.textInput[this.inputData.currentInput];
-      },
-      caretIsAtStart() {
-          const currentElement = document.querySelector('.js-qsmartInput').children[this.inputData.currentInput];
-          return currentElement.value.slice(0, currentElement.selectionStart).length === 0;
-      },
-      validSearchTags() {
-        const searchTags = PropertyMappings.map(property => property.key);
-        return searchTags;
-      },
-      currentComputedInput() {
-        return this.inputData.currentInput;
-      },
-      hasInput() {
-        let hasInput = false;
-        _.each(this.inputData.textInput, inputField => {
-            if (inputField.value !== '') {
-                hasInput = true;
-            }
+            filters.push(filter);
+          }
         });
-        return hasInput;
       }
+      return filters;
+    },
+    usedTextInput() {
+      let textInput = '';
+      if (typeof this.resultData.search !== 'undefined') {
+        this.resultData.search.mapping.forEach((item) => {
+          if (item.variable === 'q') {
+            textInput = item.value;
+          } 
+        });
+      }
+      return textInput;
+    },
+    currentIsTag() {
+      const value = this.currentField.value;
+      return value.indexOf(':') > -1 && this.validSearchTags.indexOf(value.split(':')[0]) > -1;
+    },
+    currentField() {
+      return this.inputData.textInput[this.inputData.currentInput];
+    },
+    caretIsAtStart() {
+      const currentElement = document.querySelector('.js-qsmartInput').children[this.inputData.currentInput];
+      return currentElement.value.slice(0, currentElement.selectionStart).length === 0;
+    },
+    validSearchTags() {
+      const searchTags = PropertyMappings.map(property => property.key);
+      return searchTags;
+    },
+    currentComputedInput() {
+      return this.inputData.currentInput;
+    },
+    hasInput() {
+      let hasInput = false;
+      _.each(this.inputData.textInput, (inputField) => {
+        if (inputField.value !== '') {
+          hasInput = true;
+        }
+      });
+      return hasInput;
+    },
   },
   components: {
     'remote-databases': RemoteDatabases,
@@ -279,19 +275,18 @@ export default {
         });
       }
     },
-    resultData: function(newVal, oldVal) {
+    resultData: function (newVal, oldVal) {
       if (typeof newVal !== 'undefined' && Object.keys(newVal).length) {
-
         // don't include filters from facets on new search
         // if (this.usedFilters !== '') {
-          // this.inputData.ids = this.usedFilters;
+        // this.inputData.ids = this.usedFilters;
         // }
 
         if (this.usedTextInput !== '') {
           const newObj = {};
           const usedTextInput = [];
           newObj.value = this.usedTextInput;
-          newObj.class='is-searchPhrase';
+          newObj.class = 'is-searchPhrase';
           usedTextInput.push(newObj);
           
           this.inputData.textInput = usedTextInput;

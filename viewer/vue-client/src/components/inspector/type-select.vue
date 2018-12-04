@@ -5,30 +5,30 @@ export default {
   name: 'type-select',
   props: {
     classTree: {
-      type: Array
+      type: Array,
     },
     options: {
-      type: Array
+      type: Array,
     },
     removeable: {
       type: Boolean,
-    }
+    },
   },
   data() {
     return {
       selectedType: '',
       highlight: false,
-    }
+    };
   },
   methods: {
-    handleChange(){
+    handleChange() {
       this.$emit('selected', this.selectedType);
     },
-    dismiss(){
-      this.$emit('dismiss')
+    dismiss() {
+      this.$emit('dismiss');
     },
-    scrollToEl(){
-      let element = this.$el;
+    scrollToEl() {
+      const element = this.$el;
       LayoutUtil.scrollToElement(element, 1000, () => {});
     },
   },

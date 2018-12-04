@@ -11,7 +11,7 @@ export default {
   data() {
     return {
       hasAvatar: true,
-    }
+    };
   },
   computed: {
     user() {
@@ -37,8 +37,8 @@ export default {
       }
       return calcSize;
     },
-  }
-}
+  },
+};
 </script>
 <template>
   <div class="UserAvatar" :style="{ width: `${size}px`, height: `${size}px` }">

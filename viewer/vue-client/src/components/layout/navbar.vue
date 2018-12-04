@@ -6,7 +6,7 @@ export default {
   data() {
     return {
       hasAvatar: true,
-    }
+    };
   },
   components: {
     'user-avatar': UserAvatar,
@@ -20,27 +20,27 @@ export default {
     },
     environmentLabel() {
       let label = '';
-      switch(this.settings.environment) {
+      switch (this.settings.environment) {
         case 'dev':
           label += 'DEV ';
-        break;
+          break;
         case '':
-        break;
+          break;
         case 'stg':
-          label += 'STG '
-        break;
+          label += 'STG ';
+          break;
         case 'qa':
-          label += 'QA '
-        break;
+          label += 'QA ';
+          break;
         case 'local':
           label += 'LOCAL ';
-        break;
+          break;
       }
       label += this.settings.version;
       return label;
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <template>

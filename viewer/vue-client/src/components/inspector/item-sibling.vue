@@ -7,6 +7,9 @@
 */
 
 import * as _ from 'lodash';
+import Vue from 'vue';
+import { mixin as clickaway } from 'vue-clickaway';
+import { mapGetters } from 'vuex';
 import * as httpUtil from '../../utils/http';
 import * as LayoutUtil from '../../utils/layout';
 import * as VocabUtil from '../../utils/vocab';
@@ -14,7 +17,6 @@ import * as DisplayUtil from '../../utils/display';
 import * as RecordUtil from '../../utils/record';
 import * as StringUtil from '../../utils/string';
 import * as DataUtil from '../../utils/data';
-import Vue from 'vue';
 import ProcessedLabel from '../shared/processedlabel';
 import ItemEntity from './item-entity';
 import CardComponent from '../shared/card-component';
@@ -24,15 +26,19 @@ import SearchWindow from './search-window';
 import ItemMixin from '../mixins/item-mixin';
 import LensMixin from '../mixins/lens-mixin';
 import FormMixin from '../mixins/form-mixin';
-import {mixin as clickaway} from 'vue-clickaway';
-import { mapGetters } from 'vuex';
 
 export default {
   name: 'item-sibling',
   mixins: [FormMixin, ItemMixin, LensMixin, clickaway],
   props: {
-    id: '',
-    entityType: '',
+    id: {
+      type: String,
+      default: '',
+    },
+    entityType: {
+      type: String,
+      default: '',
+    },
     isLocked: false,
     showActionButtons: false,
     inArray: false,
@@ -82,14 +88,14 @@ export default {
       const cleanObj = DataUtil.removeNullValues(this.item);
 
       if (this.copyTitle) {
-        cleanObj['hasTitle'] = this.editorData.mainEntity.hasTitle;
+        cleanObj.hasTitle = this.editorData.mainEntity.hasTitle;
       }
       return cleanObj;
     },
     isExtractable() {
       if (this.forcedExtractability === true) {
         return false;
-      } else if (this.forcedExtractability === false) {
+      } if (this.forcedExtractability === false) {
         return true;
       }
       const classId = StringUtil.getCompactUri(this.item['@type'], this.resources.context);
@@ -117,7 +123,6 @@ export default {
               bEmpty = false;
             }
           }
-        
         }
       });
       return bEmpty;
@@ -128,7 +133,7 @@ export default {
   },
   methods: {
     highLightLastAdded() {
-      let element = this.$el;
+      const element = this.$el;
       LayoutUtil.scrollToElement(element, 1000, () => {});
     },
     removeThis() {
@@ -136,7 +141,7 @@ export default {
         {
           path: `${this.parentPath}`,
           value: null,
-        }
+        },
       ];
       if (this.fieldKey === 'instanceOf') {
         changeList.push({
@@ -153,22 +158,22 @@ export default {
       if (active) {
         let item = event.target;
         while ((item = item.parentElement) && !item.classList.contains('js-itemLocal'));
-          item.classList.add('is-marked');
+        item.classList.add('is-marked');
       } else {
         let item = event.target;
         while ((item = item.parentElement) && !item.classList.contains('js-itemLocal'));
-          item.classList.remove('is-marked');
+        item.classList.remove('is-marked');
       }
     },
     removeHighlight(active) {
       if (active) {
         let item = event.target;
         while ((item = item.parentElement) && !item.classList.contains('js-itemLocal'));
-          item.classList.add('is-removeable');
+        item.classList.add('is-removeable');
       } else {
         let item = event.target;
         while ((item = item.parentElement) && !item.classList.contains('js-itemLocal'));
-          item.classList.remove('is-removeable');
+        item.classList.remove('is-removeable');
       }
     },
     expand() {
@@ -208,7 +213,7 @@ export default {
           httpUtil.get({ url: `${postUrl}/data.jsonld`, contentType: 'text/plain' }).then((getResult) => {
             const recievedObj = {
               '@graph': getResult['@graph'],
-            }
+            };
             const mainEntity = RecordUtil.splitJson(recievedObj).mainEntity;
             this.replaceWith(mainEntity);
             this.closeExtractDialog();
@@ -259,7 +264,7 @@ export default {
           // Remove the #work
           path: `${this.getPath}`,
           value: null,
-        }
+        },
       ];
       this.$store.dispatch('updateInspectorData', {
         addToHistory: true,
@@ -268,7 +273,7 @@ export default {
       this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('Linking was successful', this.settings.language)}` });
       this.$store.dispatch('setInspectorStatusValue', { 
         property: 'lastAdded', 
-        value: `${this.parentPath}.{"@id":"${newValue['@id']}"}`
+        value: `${this.parentPath}.{"@id":"${newValue['@id']}"}`,
       });
       this.closeExtractDialog();
     },
@@ -277,7 +282,7 @@ export default {
       this.$nextTick(this.focusFirstInput);
     },
     focusFirstInput() {
-      const firstInput = this.$el.querySelector('.js-itemValueInput')
+      const firstInput = this.$el.querySelector('.js-itemValueInput');
       if (firstInput) {
         firstInput.focus();
       }
@@ -292,7 +297,7 @@ export default {
         this.expand();
         this.expandChildren = true;
       }
-    }
+    },
   },
   created: function () {
     this.$on('collapse-item', this.collapse);
@@ -309,11 +314,11 @@ export default {
         this.expand();
         this.expandAllChildren();
       }
-      setTimeout(()=> {
+      setTimeout(() => {
         if (this.isLastAdded) {
           this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
         }
-      }, 1000)
+      }, 1000);
     }
     if (this.inspector.status.isNew) {
       this.expand();
