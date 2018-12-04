@@ -1,6 +1,4 @@
 <script>
-import * as StringUtil from '@/utils/string';
-import RangeInput from './range-input.vue';
 import Facet from './facet.vue';
 
 export default {
@@ -37,7 +35,6 @@ export default {
   events: {
   },
   components: {
-    'range-input': RangeInput,
     facet: Facet,
   },
   watch: {

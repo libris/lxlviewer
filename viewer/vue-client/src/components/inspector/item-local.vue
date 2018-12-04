@@ -10,7 +10,6 @@ import * as DisplayUtil from '../../utils/display';
 import * as RecordUtil from '../../utils/record';
 import * as StringUtil from '../../utils/string';
 import * as DataUtil from '../../utils/data';
-import ProcessedLabel from '../shared/processedlabel';
 import ItemEntity from './item-entity';
 import CardComponent from '../shared/card-component';
 import ToolTipComponent from '../shared/tooltip-component';
@@ -370,7 +369,6 @@ export default {
   },
 
   components: {
-    'processed-label': ProcessedLabel,
     'item-entity': ItemEntity,
     'card-component': CardComponent,
     'field-adder': FieldAdder,

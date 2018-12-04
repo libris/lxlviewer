@@ -23,8 +23,14 @@ export default {
       default: '',
     },
     index: Number,
-    isCompact: false,
-    hasAction: false,
+    isCompact: {
+      type: Boolean,
+      default: false,
+    },
+    hasAction: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -63,7 +69,7 @@ export default {
   },
   events: {
   },
-  mounted: function () {
+  mounted() {
     this.active = true;
   },
 };

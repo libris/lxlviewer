@@ -1,5 +1,6 @@
-function request(options, data) {
+function request(opts, data) {
   // method, url, token, accept
+  const options = opts;
   options.method = options.method || 'GET';
 
   // Fix baseUri
@@ -79,22 +80,26 @@ function request(options, data) {
   });
 }
 
-export function get(options) {
+export function get(opts) {
+  const options = opts;
   options.method = 'GET';
   return request(options);
 }
 
-export function put(options, data) {
+export function put(opts, data) {
+  const options = opts;
   options.method = 'PUT';
   return request(options, data);
 }
 
-export function post(options, data) {
+export function post(opts, data) {
+  const options = opts;
   options.method = 'POST';
   return request(options, data);
 }
 
-export function _delete(options) {
+export function _delete(opts) {
+  const options = opts;
   options.method = 'DELETE';
   return request(options);
 }

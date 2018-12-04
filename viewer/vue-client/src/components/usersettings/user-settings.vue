@@ -1,6 +1,5 @@
 <script>
 import * as StringUtil from '@/utils/string';
-import * as _ from 'lodash';
 import UserAvatar from '@/components/shared/user-avatar';
 
 export default {
@@ -191,7 +190,7 @@ export default {
   }
 }
 
-.UserConfig {
+.UserConfig {
   &-label {
     font-weight: 500;
     width: 40%;

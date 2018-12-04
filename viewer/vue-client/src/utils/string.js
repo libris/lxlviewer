@@ -221,7 +221,7 @@ export function formatLabel(obj) {
       label.push(extractStrings(value));
     }
   });
-  label = [].concat.apply([], label);
+  label = [].concat.apply([], label); // eslint-disable-line prefer-spread
   label = label.join(' • ');
   return label;
 }

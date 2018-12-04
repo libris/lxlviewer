@@ -4,10 +4,8 @@ import { mapGetters } from 'vuex';
 import VueSimpleSpinner from 'vue-simple-spinner';
 import * as httpUtil from '../../utils/http';
 import * as RecordUtil from '../../utils/record';
-import ResultList from './result-list';
 import PanelComponent from '@/components/shared/panel-component';
 import TooltipComponent from '../shared/tooltip-component';
-import SearchResult from './search-result';
 
 export default {
   name: 'remote-databases',
@@ -93,7 +91,10 @@ export default {
           property: 'remoteDatabases', 
           value: val,
         });
-        this.user && this.updateUserDbs(val);
+
+        if (this.user) {
+          this.updateUserDbs(val);
+        }
       }
       if (!this.showList) {
         this.showList = val.length === 0;
@@ -183,7 +184,9 @@ export default {
     clearDatabases() {
       this.clearTooltip = false;
       for (const key in this.remoteDatabases.list) {
-        this.remoteDatabases.list[key].active = false;
+        if (Object.prototype.hasOwnProperty.call(this.remoteDatabases.list, key)) {
+          this.remoteDatabases.list[key].active = false;
+        }
       }
     },
     attachResult(response) {
@@ -199,8 +202,6 @@ export default {
     },
   },
   components: {
-    'result-list': ResultList,
-    'search-result': SearchResult,
     'panel-component': PanelComponent,
     'tooltip-component': TooltipComponent,
     'vue-simple-spinner': VueSimpleSpinner,

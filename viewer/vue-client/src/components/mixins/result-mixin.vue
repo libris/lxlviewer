@@ -1,9 +1,6 @@
 <script>
-import * as DataUtil from '@/utils/data';
 import * as RecordUtil from '@/utils/record';
-import * as httpUtil from '@/utils/http';
 import * as StringUtil from '@/utils/string';
-import * as _ from 'lodash';
 import { mapGetters } from 'vuex';
 
 export default {
@@ -35,7 +32,7 @@ export default {
       'user',
     ]),
     isImport() {
-      if (typeof this.importItem !== undefined && this.importItem['@graph'] && this.importItem['@graph'].length > 0 && this.importItem['@graph'][0].hasOwnProperty('@id')) {
+      if (typeof this.importItem !== 'undefined' && this.importItem['@graph'] && this.importItem['@graph'].length > 0 && this.importItem['@graph'][0].hasOwnProperty('@id')) {
         return true;
       }
       return false;

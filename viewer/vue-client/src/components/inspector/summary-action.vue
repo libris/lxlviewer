@@ -11,9 +11,18 @@ export default {
       styling: 'gray',
       text: 'button',
     },
-    disabled: true,
-    replaced: true,
-    extracting: false,
+    disabled: {
+      type: Boolean,
+      default: true,
+    },
+    replaced: {
+      type: Boolean,
+      default: true,
+    },
+    extracting: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {

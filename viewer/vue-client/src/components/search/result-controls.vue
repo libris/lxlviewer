@@ -1,15 +1,23 @@
 <script>
 import * as StringUtil from '@/utils/string';
 import * as httpUtil from '@/utils/http';
-import Modernizr from '@/../.modernizrrc.js';
 
 export default {
   name: 'result-controls',
   props: {
     pageData: {},
-    showDetails: false,
-    showPages: false,
-    hasPagination: true,
+    showDetails: {
+      type: Boolean,
+      default: false,
+    },
+    showPages: {
+      type: Boolean,
+      default: false,
+    },
+    hasPagination: {
+      type: Boolean,
+      default: true,
+    },
   },
   data() {
     return {
@@ -72,7 +80,6 @@ export default {
         return list;
       }
       const first = this.pageData.first['@id'];
-      const limit = 20;
       const offset = this.pageData.itemOffset;
       const noOfPages = parseInt(this.pageData.totalItems / this.limit) + 1 || 1;
       const currentPage = parseInt(offset / this.limit);
@@ -114,10 +121,10 @@ export default {
       this.changeResultListStatus('loading', true);
       const resultPromise = new Promise((resolve, reject) => {
         httpUtil.get({ url: url, accept: 'application/ld+json' }).then((response) => {
-          history.pushState(response, 'unused', response['@id']);
+          window.history.pushState(response, 'unused', response['@id']);
           resolve(response);
         }, (error) => {
-          history.pushState({}, 'unused', url);
+          window.history.pushState({}, 'unused', url);
           reject('Error searching...', error);
         });
       });

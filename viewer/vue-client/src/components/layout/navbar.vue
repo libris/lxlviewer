@@ -35,6 +35,8 @@ export default {
         case 'local':
           label += 'LOCAL ';
           break;
+        default:
+          break;
       }
       label += this.settings.version;
       return label;

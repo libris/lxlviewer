@@ -24,6 +24,8 @@ export default {
           break;
         case 'local':
           break;
+        default:
+          break;
       }
       return message;
     },

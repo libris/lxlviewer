@@ -29,7 +29,6 @@
 import Navbar from '@/components/layout/navbar';
 import Footer from '@/components/layout/footer';
 import NotificationList from '@/components/shared/notification-list';
-import ModalComponent from '@/components/shared/modal-component';
 import GlobalMessage from '@/components/layout/global-msg';
 import VueSimpleSpinner from 'vue-simple-spinner';
 
@@ -73,7 +72,6 @@ export default {
     'navbar-component': Navbar,
     'footer-component': Footer,
     'notification-list': NotificationList,
-    'modal-component': ModalComponent,
     'global-message': GlobalMessage,
     'vue-simple-spinner': VueSimpleSpinner,
   },

@@ -7,7 +7,6 @@ import * as StringUtil from '@/utils/string';
 import CardComponent from '../shared/card-component';
 import TooltipComponent from '../shared/tooltip-component';
 import EntitySummary from '../shared/entity-summary';
-import ProcessedLabel from '../shared/processedlabel';
 import ItemMixin from '../mixins/item-mixin';
 import LensMixin from '../mixins/lens-mixin';
 
@@ -87,7 +86,6 @@ export default {
     },
   },
   components: {
-    'processed-label': ProcessedLabel,
     'card-component': CardComponent,
     'entity-summary': EntitySummary,
     'tooltip-component': TooltipComponent,

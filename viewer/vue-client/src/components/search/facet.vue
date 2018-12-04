@@ -1,10 +1,12 @@
 <script>
-import * as httpUtil from '@/utils/http';
 
 export default {
   name: 'facet',
   props: {
-    active: false,
+    active: {
+      type: Boolean,
+      default: false,
+    },
     observation: {},
   },
   data() {

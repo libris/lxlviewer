@@ -4,7 +4,6 @@ import { mapGetters } from 'vuex';
 import * as VocabUtil from '../../utils/vocab';
 import * as DataUtil from '../../utils/data';
 import * as StringUtil from '../../utils/string';
-import ProcessedLabel from '../shared/processedlabel';
 import TooltipComponent from '../shared/tooltip-component';
 import ItemMixin from '../mixins/item-mixin';
 import LensMixin from '../mixins/lens-mixin';
@@ -87,7 +86,6 @@ export default {
   methods: {
   },
   components: {
-    'processed-label': ProcessedLabel,
     'tooltip-component': TooltipComponent,
   },
 };

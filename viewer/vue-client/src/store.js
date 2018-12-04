@@ -22,6 +22,7 @@ function getEnvironment() {
   }
 }
 
+/* eslint-disable no-param-reassign */
 const store = new Vuex.Store({
   state: {
     resources: {
@@ -362,9 +363,6 @@ const store = new Vuex.Store({
     setValidation({ commit }, payload) {
       commit('setValidation', payload);
     },
-    pushInspectorEvent({ commit }, payload) {
-      commit('pushInspectorEvent', payload);
-    },
     flushChangeHistory({ commit }) {
       commit('flushChangeHistory');
     },
@@ -530,5 +528,6 @@ const store = new Vuex.Store({
     },
   },
 });
+/* eslint-enable no-param-reassign */
 
 export default store;

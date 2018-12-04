@@ -15,36 +15,23 @@ export function scrollLock(bool) {
   }
 }
 
-export function handleFirstTab(e) {
-  if (e.keyCode === 9) {
-    enableTabbing();
-  }
-}
-
-export function enableTabbing() {
-  document.body.classList.add('user-is-tabbing');
-  window.removeEventListener('keydown', handleFirstTab);
-  window.addEventListener('mousedown', handleMouseDownOnce);
-}
-
+/* eslint-disable no-use-before-define */
 function handleMouseDownOnce() {
   document.body.classList.remove('user-is-tabbing');
   window.removeEventListener('mousedown', handleMouseDownOnce);
   window.addEventListener('keydown', handleFirstTab);
 }
-
-export function scrollToElement($el, duration, callback) {
-  const topOfElement = getPosition($el).y;
-  if (topOfElement > 0) {
-    const windowHeight = window.innerHeight 
-    || document.documentElement.clientHeight 
-    || document.getElementsByTagName('body')[0].clientHeight;
-    const scrollPos = getPosition($el).y - (windowHeight * 0.2);
-    scrollTo(scrollPos, duration, 'easeInOutQuad', callback);
-  } else {
-    callback();
+export function enableTabbing() {
+  document.body.classList.add('user-is-tabbing');
+  window.removeEventListener('keydown', handleFirstTab);
+  window.addEventListener('mousedown', handleMouseDownOnce);
+}
+export function handleFirstTab(e) {
+  if (e.keyCode === 9) {
+    enableTabbing();
   }
 }
+/* eslint-enable no-use-before-define */
 
 export function scrollTo(position, duration = 200, easing = 'linear', callback) {
   let properPosition = Math.floor(position);
@@ -52,6 +39,7 @@ export function scrollTo(position, duration = 200, easing = 'linear', callback) 
     properPosition = 0;
   }
   // define timing functions
+  /* eslint-disable no-param-reassign */
   const easings = {
     linear(t) {
       return t;
@@ -93,6 +81,7 @@ export function scrollTo(position, duration = 200, easing = 'linear', callback) 
       return t < 0.5 ? 16 * t * t * t * t * t : 1 + 16 * (--t) * t * t * t * t;
     },
   };
+  /* eslint-enable no-param-reassign */
 
   // Returns document.documentElement for Chrome and Safari
   // document.body for rest of the world
@@ -131,7 +120,7 @@ export function scrollTo(position, duration = 200, easing = 'linear', callback) 
     const time = Math.min(1, ((now - startTime) / duration));
     const timeFunction = easings[easing](time);
     body.scrollTop = (timeFunction * (destination - start)) + start;
-    if (Math.floor(body.scrollTop) > destination - 10 && Math.floor(body.scrollTop) < destination + 10 || reachedBottom()) {
+    if (Math.floor(body.scrollTop) > destination - 10 && (Math.floor(body.scrollTop) < destination + 10 || reachedBottom())) {
       callback();
       return;
     }
@@ -140,34 +129,31 @@ export function scrollTo(position, duration = 200, easing = 'linear', callback) 
   scroll();
 }
 
-export function getKeybindingText(eventName) {
-  let str = '';
-  const os = getOS();
-  let modkey = '';
-  if (os.indexOf('Windows') > -1) {
-    modkey = 'Ctrl';
-  } else if (os.indexOf('Mac') > -1) {
-    modkey = '⌘';
+export function getPosition(element) {
+  let curElement = element;
+  let xPosition = 0;
+  let yPosition = 0;
+
+  while (curElement) {
+    xPosition += (curElement.offsetLeft - curElement.scrollLeft + curElement.clientLeft);
+    yPosition += (curElement.offsetTop + curElement.clientTop);
+    curElement = curElement.offsetParent;
+  }
+
+  return { x: xPosition, y: yPosition };
+}
+
+export function scrollToElement($el, duration, callback) {
+  const topOfElement = getPosition($el).y;
+  if (topOfElement > 0) {
+    const windowHeight = window.innerHeight 
+    || document.documentElement.clientHeight 
+    || document.getElementsByTagName('body')[0].clientHeight;
+    const scrollPos = getPosition($el).y - (windowHeight * 0.2);
+    scrollTo(scrollPos, duration, 'easeInOutQuad', callback);
   } else {
-    modkey = 'mod';
+    callback();
   }
-  if (eventName) {
-    for (const view in KeyBindings) {
-      for (const binding in KeyBindings[view]) {
-        if (KeyBindings[view][binding] === eventName) {
-          str = binding.toUpperCase();
-          break;
-        }
-      }
-    }
-    str = str.replace('MOD', modkey);
-    str = str.replace('CTRL', 'Ctrl');
-    str = str.replace('ALT', 'Alt');
-    str = str.replace('SHIFT', '⇧');
-    str = str.replace('MINUS', 'Minus');
-    str = str.replace('PLUS', 'Plus');
-  }
-  return str;
 }
 
 export function getOS() {
@@ -184,16 +170,36 @@ export function getOS() {
   return OSName;
 }
 
-export function getPosition(element) {
-  let curElement = element;
-  let xPosition = 0;
-  let yPosition = 0;
-
-  while (curElement) {
-    xPosition += (curElement.offsetLeft - curElement.scrollLeft + curElement.clientLeft);
-    yPosition += (curElement.offsetTop + curElement.clientTop);
-    curElement = curElement.offsetParent;
+export function getKeybindingText(eventName) {
+  let str = '';
+  const os = getOS();
+  let modkey = '';
+  if (os.indexOf('Windows') > -1) {
+    modkey = 'Ctrl';
+  } else if (os.indexOf('Mac') > -1) {
+    modkey = '⌘';
+  } else {
+    modkey = 'mod';
   }
-
-  return { x: xPosition, y: yPosition };
+  if (eventName) {
+    for (const view in KeyBindings) {
+      if (Object.prototype.hasOwnProperty.call(KeyBindings, view)) {
+        for (const binding in KeyBindings[view]) {
+          if (Object.prototype.hasOwnProperty.call(KeyBindings[view], binding)) {
+            if (KeyBindings[view][binding] === eventName) {
+              str = binding.toUpperCase();
+              break;
+            }
+          }
+        }
+      }
+    }
+    str = str.replace('MOD', modkey);
+    str = str.replace('CTRL', 'Ctrl');
+    str = str.replace('ALT', 'Alt');
+    str = str.replace('SHIFT', '⇧');
+    str = str.replace('MINUS', 'Minus');
+    str = str.replace('PLUS', 'Plus');
+  }
+  return str;
 }

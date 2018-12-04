@@ -102,7 +102,7 @@ export default {
   },
   watch: {
     'status.removing': {
-      handler: function (newValue) {
+      handler(newValue) {
         if (!newValue) {
           this.removed = false;
         }

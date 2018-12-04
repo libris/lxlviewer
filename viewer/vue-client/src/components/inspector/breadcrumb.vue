@@ -70,7 +70,7 @@ export default {
       return this.inspector.data.mainEntity['@id'];
     },
     currentPostNumber() {
-      if (this.inspector.breadcrumb === undefined || this.inspector.breadcrumb.length == 0) return;
+      if (this.inspector.breadcrumb === undefined || this.inspector.breadcrumb.length === 0) return;
       const items = this.inspector.breadcrumb[0].result.items;
 
       const item = items.find(item => item['@id'] === this.currentPost);
@@ -79,12 +79,12 @@ export default {
       return itemIndex + 1;
     },
     totalPostNumber() {
-      if (this.inspector.breadcrumb === undefined || this.inspector.breadcrumb.length == 0) return;
+      if (this.inspector.breadcrumb === undefined || this.inspector.breadcrumb.length === 0) return;
 
       return this.inspector.breadcrumb[0].result.totalItems;
     },
     prevPostIndex() {
-      if (this.inspector.breadcrumb === undefined || this.inspector.breadcrumb.length == 0) return;
+      if (this.inspector.breadcrumb === undefined || this.inspector.breadcrumb.length === 0) return;
 
       const items = this.inspector.breadcrumb[0].result.items;
       
@@ -94,7 +94,7 @@ export default {
       return itemIndex - 1;
     },
     prevPostPath() {
-      if (this.inspector.breadcrumb === undefined || this.inspector.breadcrumb.length == 0) return '';
+      if (this.inspector.breadcrumb === undefined || this.inspector.breadcrumb.length === 0) return '';
 
       if (this.prevPostIndex < 0) return '';
 
@@ -110,7 +110,9 @@ export default {
       return '';
     },
     nextPostIndex() {
-      if (this.inspector.breadcrumb === undefined || this.inspector.breadcrumb.length == 0) return;
+      if (this.inspector.breadcrumb === undefined || this.inspector.breadcrumb.length === 0) {
+        return null;
+      }
 
       const items = this.inspector.breadcrumb[0].result.items;
       
@@ -120,7 +122,7 @@ export default {
       return itemIndex + 1;
     },
     nextPostPath() {
-      if (this.inspector.breadcrumb === undefined || this.inspector.breadcrumb.length == 0) return '';
+      if (this.inspector.breadcrumb === undefined || this.inspector.breadcrumb.length === 0) return '';
       
       if (this.nextPostIndex > this.totalPostNumber) return '';
 

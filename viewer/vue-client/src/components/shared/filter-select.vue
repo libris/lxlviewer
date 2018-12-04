@@ -2,6 +2,7 @@
 /*
   Adds custom select menu with searchable options
 */
+import * as _ from 'lodash';
 import * as StringUtil from '@/utils/string';
 import { mixin as clickaway } from 'vue-clickaway';
 
@@ -78,13 +79,10 @@ export default {
       if (!this.filterVisible) {
         
       } else {
-        let inputSel; let inputEl; let inputContSel; let inputContEl; let texts; let 
-          items;
-        inputContSel = document.getElementsByClassName(this.className);
-        
-        inputContEl = inputContSel[0];
-        texts = inputContEl.getElementsByClassName('js-filterSelectText');
-        items = inputContEl.getElementsByClassName('js-filterSelectItem');
+        const inputContSel = document.getElementsByClassName(this.className);
+        const inputContEl = inputContSel[0];
+        const texts = inputContEl.getElementsByClassName('js-filterSelectText');
+        const items = inputContEl.getElementsByClassName('js-filterSelectItem');
 
         if (event.keyCode == 38 || event.keyCode == 40) {
           _.forEach(items, (item, index) => {
@@ -103,19 +101,15 @@ export default {
       }
     },
     filter() {
-      let inputSel; let inputEl; let inputContEl; let inputContSel; let filterSelectContainer;
- 
-      
-      let filterBy; let dropdownSel; let dropdownEl; let span; let 
-        i;
+      let filterBy; let dropdownSel; let dropdownEl; let span; let i;
 
-      inputContSel = document.getElementsByClassName(this.className);
-      inputContEl = inputContSel[0];
+      const inputContSel = document.getElementsByClassName(this.className);
+      const inputContEl = inputContSel[0];
 
-      inputSel = inputContEl.getElementsByTagName('input');
-      inputEl = inputSel[0];
+      const inputSel = inputContEl.getElementsByTagName('input');
+      const inputEl = inputSel[0];
+      const filterSelectContainer = inputEl.parentElement;
       filterBy = inputEl.value.toUpperCase();
-      filterSelectContainer = inputEl.parentElement;
       dropdownSel = filterSelectContainer.getElementsByClassName('js-filterSelectDropdown');
       dropdownEl = dropdownSel[0];
       filterBy = inputEl.value.toUpperCase();
@@ -137,15 +131,11 @@ export default {
       this.selectedObject = eventObject;
       this.filterVisible = false;
     },
-    showCurrentFilter(label) {
-      let inputSel; let inputEl; let inputContEl; let 
-        inputContSel;
-      
-      inputContSel = document.getElementsByClassName(this.className);
-      inputContEl = inputContSel[0];
-
-      inputSel = inputContEl.getElementsByTagName('input');
-      inputEl = inputSel[0];
+    showCurrentFilter(label) {      
+      const inputContSel = document.getElementsByClassName(this.className);
+      const inputContEl = inputContSel[0];
+      const inputSel = inputContEl.getElementsByTagName('input');
+      const inputEl = inputSel[0];
 
       inputEl.value = label;
     },
@@ -160,12 +150,10 @@ export default {
     clear() {
       const allObj = {};
       const allValue = this.optionsAll;
-      let inputSel; let inputEl; let inputContEl; let inputContSel; let 
-        texts;
 
-      inputContSel = document.getElementsByClassName(this.className);
-      inputContEl = inputContSel[0];
-      texts = inputContEl.getElementsByClassName('js-filterSelectText');
+      const inputContSel = document.getElementsByClassName(this.className);
+      const inputContEl = inputContSel[0];
+      const texts = inputContEl.getElementsByClassName('js-filterSelectText');
       
       // Make all options visible again
       _.forEach(texts, (text) => {

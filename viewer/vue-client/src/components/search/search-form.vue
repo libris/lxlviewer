@@ -1,7 +1,6 @@
 <script>
 import * as _ from 'lodash';
 import PropertyMappings from '@/resources/json/propertymappings.json';
-import * as httpUtil from '@/utils/http';
 import * as StringUtil from '@/utils/string';
 import RemoteDatabases from '@/components/search/remote-databases';
 import TabMenu from '@/components/shared/tab-menu';

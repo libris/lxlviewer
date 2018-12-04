@@ -52,12 +52,6 @@ export default {
     changeSection(value) {
       this.$router.push({ path: `/help/${value}` });
     },
-    sectionIsUpdating(sectionKey) {
-      if (this.docs[sectionKey].tags !== null && this.docs[sectionKey].tags.indexOf('under arbete') > -1) {
-        return true;
-      }
-      return false;
-    },
   },
   mounted() {
     this.$nextTick(() => {
@@ -79,6 +73,20 @@ export default {
     activeSection() {
       return this.$route.params.section || 'index';
     },
+    sectionIsUpdating() {
+      if (this.activeSectionData.tags !== null && this.activeSectionData.tags.indexOf('under arbete') > -1) {
+        return true;
+      }
+      return false;
+    },
+    activeSectionData() {
+      for (const section in this.docs) {
+        if (this.docs[section].basename === this.activeSection) {
+          return this.docs[section];
+        }
+      }
+      return null;
+    },
     status() {
       return this.$store.getters.status;
     },
@@ -90,11 +98,13 @@ export default {
       const sortedJson = _.orderBy(json, ['order'], ['asc']);
       const categories = {};
       for (const section in sortedJson) {
-        const cat = sortedJson[section].section;
-        if (categories.hasOwnProperty(cat) === false) {
-          categories[cat] = [];
+        if (Object.prototype.hasOwnProperty.call(sortedJson, section)) {
+          const cat = sortedJson[section].section;
+          if (categories.hasOwnProperty(cat) === false) {
+            categories[cat] = [];
+          }
+          categories[cat].push(sortedJson[section]);
         }
-        categories[cat].push(sortedJson[section]);
       }
       return categories;
     },
@@ -136,13 +146,12 @@ export default {
       </div>
       <div class="col-md-9">
         <article class="HelpSection-article is-fromMarkdown panel panel-default">
-          <div v-for="(sectionValue, sectionKey) in docs" 
-            :key="sectionKey" v-if="sectionValue.basename == activeSection">
-            <div class="pull-right text-right" v-show="docs[sectionKey].date">
-              <span class="label label-primary" v-if="sectionIsUpdating(sectionKey)">UNDER ARBETE</span> <span :title="getDateString(docs[sectionKey].date)">Uppdaterad {{ getTimeAgoString(docs[sectionKey].date) }}</span>
+          <div>
+            <div class="pull-right text-right" v-show="activeSectionData.date">
+              <span class="label label-primary" v-if="sectionIsUpdating">UNDER ARBETE</span> <span :title="getDateString(activeSectionData.date)">Uppdaterad {{ getTimeAgoString(activeSectionData.date) }}</span>
             </div>
-            <br v-show="docs[sectionKey].date">
-            <div v-html="getHTML(docs[sectionKey].content)"></div>
+            <br v-show="activeSectionData.date">
+            <div v-html="getHTML(activeSectionData.content)"></div>
           </div>
         </article>
       </div>

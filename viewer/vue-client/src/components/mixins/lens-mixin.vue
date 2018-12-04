@@ -1,7 +1,5 @@
 <script>
 import * as DisplayUtil from '@/utils/display';
-import * as StringUtil from '@/utils/string';
-import * as _ from 'lodash';
 
 export default {
   methods: {

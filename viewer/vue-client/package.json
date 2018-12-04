@@ -68,7 +68,8 @@
       "object-shorthand": "off",
       "import/extensions": "off",
       "import/no-dynamic-require": "off",
-      "global-require": "off"
+      "global-require": "off",
+      "radix": "off"
     },
     "parserOptions": {
       "parser": "babel-eslint"

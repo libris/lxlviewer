@@ -1,6 +1,4 @@
 import * as _ from 'lodash';
-import * as RecordUtil from './record';
-import * as VocabUtil from './vocab';
 
 export function getEmbellished(id, quotedIndex = {}) {
   if (typeof id === 'undefined' || id === '') {
@@ -12,8 +10,8 @@ export function getEmbellished(id, quotedIndex = {}) {
   // }
   let obj = quotedIndex[id];
 
-  if (obj == null) {
-    window.lxlWarning(`🔍 Couldn\'t find embellished data for: ${id}`);
+  if (obj === null) {
+    window.lxlWarning(`🔍 Couldn't find embellished data for: ${id}`);
     obj = { '@id': id };
   }
   if (obj != null && !obj.hasOwnProperty('@type')) {
@@ -30,7 +28,9 @@ export function getMergedItems(record, mainEntity, work, quoted) {
     obj['@graph'].push(work);
   }
   for (const graph in quoted) {
-    obj['@graph'].push(quoted[graph]);
+    if (Object.prototype.hasOwnProperty.call(quoted, graph)) {
+      obj['@graph'].push(quoted[graph]);
+    }
   }
   return obj;
 }
@@ -57,7 +57,7 @@ export function removeNullValues(inputObj) {
         }
       }
     }
-    if (Object.keys(cleanObj).length == 1 && cleanObj.hasOwnProperty('@type')) {
+    if (Object.keys(cleanObj).length === 1 && cleanObj.hasOwnProperty('@type')) {
       cleanObj = null;
     }
   } else if (typeof obj !== 'undefined' && obj !== null && obj !== '') {

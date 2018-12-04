@@ -23,13 +23,22 @@ export default {
       type: String,
       default: '',
     },
-    hasAction: false,
+    hasAction: {
+      type: Boolean,
+      default: false,
+    },
     path: {
       type: String,
       default: '',
     },
-    isReplaced: false,
-    isCompact: false,
+    isReplaced: {
+      type: Boolean,
+      default: false,
+    },
+    isCompact: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {

@@ -80,9 +80,11 @@ export default {
       }
     },
     active(value, oldValue) {
-      this.$nextTick(() => {
-        this.moveUnderline();
-      });
+      if (value !== oldValue) {
+        this.$nextTick(() => {
+          this.moveUnderline();
+        });
+      }
     },
   },
   mounted() {

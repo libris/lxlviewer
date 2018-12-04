@@ -11,7 +11,6 @@ import * as StructuredValueTemplates from '@/resources/json/structuredValueTempl
 import { mixin as clickaway } from 'vue-clickaway';
 import { mapGetters } from 'vuex';
 import VueSimpleSpinner from 'vue-simple-spinner';
-import ProcessedLabel from '../shared/processedlabel';
 import PanelComponent from '@/components/shared/panel-component';
 import PanelSearchList from '@/components/search/panel-search-list';
 import ModalPagination from '@/components/inspector/modal-pagination';

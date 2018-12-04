@@ -5,7 +5,6 @@ import * as DataUtil from './data';
 import * as VocabUtil from './vocab';
 import * as StringUtil from './string';
 import * as displayGroups from '@/resources/json/displayGroups.json';
-import * as display from '@/resources/json/display.json'; // TODO: REMOVE HARDCODED
 import 'moment/locale/sv';
 
 moment.locale('sv');
@@ -58,10 +57,14 @@ export function getLensById(id, displayDefs) {
     throw new Error('getLensById was called without lens id');
   }
   for (const collection in displayDefs.lensGroups) {
-    for (const lens in displayDefs.lensGroups[collection].lenses) {
-      const obj = displayDefs.lensGroups[collection].lenses[lens];
-      if (obj.hasOwnProperty('@id') && obj['@id'] === id) {
-        return obj;
+    if (Object.prototype.hasOwnProperty.call(displayDefs.lensGroups, collection)) {
+      for (const lens in displayDefs.lensGroups[collection].lenses) {
+        if (Object.prototype.hasOwnProperty.call(displayDefs.lensGroups[collection].lenses, lens)) {
+          const obj = displayDefs.lensGroups[collection].lenses[lens];
+          if (obj.hasOwnProperty('@id') && obj['@id'] === id) {
+            return obj;
+          }
+        }
       }
     }
   }
@@ -112,6 +115,16 @@ export function getProperties(typeInput, level, displayDefs) {
     }
   }
   return [];
+}
+
+/* eslint-disable no-use-before-define */
+export function getItemLabel(item, displayDefs, quoted, vocab, settings, context) {
+  const displayObject = getChip(item, displayDefs, quoted, vocab, settings, context);
+  let rendered = StringUtil.formatLabel(displayObject).trim();
+  if (item['@type'] && VocabUtil.isSubClassOf(item['@type'], 'Identifier', vocab, context)) {
+    rendered = `${item['@type']} ${rendered}`;
+  }
+  return rendered;
 }
 
 export function getDisplayObject(item, level, displayDefs, quoted, vocab, settings, context) {
@@ -218,6 +231,15 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
   return result;
 }
 
+export function getChip(item, displayDefs, quoted, vocab, settings, context) {
+  return getDisplayObject(item, 'chips', displayDefs, quoted, vocab, settings, context);
+}
+
+export function getCard(item, displayDefs, quoted, vocab, settings, context) {
+  return getDisplayObject(item, 'cards', displayDefs, quoted, vocab, settings, context);
+}
+/* eslint-enable no-use-before-define */
+
 export function getItemSummary(item, displayDefs, quoted, vocab, settings, context) {
   const card = getCard(item, displayDefs, quoted, vocab, settings, context);
   const summary = {
@@ -248,23 +270,6 @@ export function getItemSummary(item, displayDefs, quoted, vocab, settings, conte
     summary.header.push({ property: 'error', value: `{${StringUtil.getUiPhraseByLang('Unnamed', settings.language)}}` });
   }
   return summary;
-}
-
-export function getItemLabel(item, displayDefs, quoted, vocab, settings, context) {
-  const displayObject = getChip(item, displayDefs, quoted, vocab, settings, context);
-  let rendered = StringUtil.formatLabel(displayObject).trim();
-  if (item['@type'] && VocabUtil.isSubClassOf(item['@type'], 'Identifier', vocab, context)) {
-    rendered = `${item['@type']} ${rendered}`;
-  }
-  return rendered;
-}
-
-export function getChip(item, displayDefs, quoted, vocab, settings, context) {
-  return getDisplayObject(item, 'chips', displayDefs, quoted, vocab, settings, context);
-}
-
-export function getCard(item, displayDefs, quoted, vocab, settings, context) {
-  return getDisplayObject(item, 'cards', displayDefs, quoted, vocab, settings, context);
 }
 
 export function getFormattedSelectOption(term, settings, vocab, context) {

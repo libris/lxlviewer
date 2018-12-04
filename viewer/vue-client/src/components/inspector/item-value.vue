@@ -8,7 +8,6 @@ import * as DisplayUtil from '../../utils/display';
 import * as DataUtil from '../../utils/data';
 import * as StringUtil from '@/utils/string';
 import * as LayoutUtil from '@/utils/layout';
-import ProcessedLabel from '../shared/processedlabel';
 import TooltipComponent from '../shared/tooltip-component';
 import ItemMixin from '../mixins/item-mixin';
 import LensMixin from '../mixins/lens-mixin';
@@ -143,7 +142,6 @@ export default {
     },
   },
   components: {
-    'processed-label': ProcessedLabel,
     'tooltip-component': TooltipComponent,
   },
   mounted() {

@@ -58,18 +58,11 @@ export default {
 <template>
   <ol class="ResultList" 
     aria-labelledby="resultDescr"
-    :class="{'is-dimmed': relationsList}">
-    <result-list-item  v-if="!compact && results.length > 0" class="ResultList-item"
+    :class="{'is-dimmed': relationsList}"
+    v-if="results.length > 0">
+    <result-list-item class="ResultList-item"
       :database="getDatabase(index)" 
-      :show-detailed="true"
-      :focus-data="item" 
-      :import-item="getImportItem(index)" v-for="(item, index) in results" 
-      :key="item['@id']"
-      @relations-list-open="relationsListOpen"></result-list-item>
-
-    <result-list-item v-if="compact && results.length > 0" class="ResultList-item"
-      :database="getDatabase(index)" 
-      :show-detailed="false"
+      :show-detailed="!compact"
       :focus-data="item" 
       :import-item="getImportItem(index)" v-for="(item, index) in results" 
       :key="item['@id']"

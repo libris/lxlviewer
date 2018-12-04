@@ -8,10 +8,22 @@ export default {
   name: 'entity-summary',
   props: {
     focusData: {},
-    actions: false,
-    isLocal: false,
-    isExtractable: false,
-    isImport: false,
+    actions: {
+      type: Boolean,
+      default: false,
+    },
+    isLocal: {
+      type: Boolean,
+      default: false,
+    },
+    isExtractable: {
+      type: Boolean,
+      default: false,
+    },
+    isImport: {
+      type: Boolean,
+      default: false,
+    },
     importItem: {
       type: String,
       default: '',
@@ -24,7 +36,10 @@ export default {
       default: true,
       type: Boolean,
     },
-    shouldOpenTab: false,
+    shouldOpenTab: {
+      type: Boolean,
+      default: false,
+    },
     isCompact: {
       default: false,
       type: Boolean,

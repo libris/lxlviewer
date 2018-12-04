@@ -10,7 +10,10 @@ export default {
   mixins: [LensMixin, ResultMixin],
   props: {
     focusData: {},
-    showDetailed: false,
+    showDetailed: {
+      type: Boolean,
+      default: false,
+    },
     importItem: {},
     database: {
       type: String,

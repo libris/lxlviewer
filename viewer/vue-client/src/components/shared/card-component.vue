@@ -1,5 +1,4 @@
 <script>
-import * as _ from 'lodash';
 import LodashProxiesMixin from '../mixins/lodash-proxies-mixin';
 import EntitySummary from './entity-summary';
 
@@ -13,15 +12,30 @@ export default {
       default: '',
     },
     title: {},
-    shouldShow: false,
+    shouldShow: {
+      type: Boolean,
+      default: false,
+    },
     uri: {
       type: String,
       default: '',
     },
-    floating: false,
-    isLocked: false,
-    isLocal: false,
-    isExtractable: false,
+    floating: {
+      type: Boolean,
+      default: false,
+    },
+    isLocked: {
+      type: Boolean,
+      default: false,
+    },
+    isLocal: {
+      type: Boolean,
+      default: false,
+    },
+    isExtractable: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {

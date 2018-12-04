@@ -8,6 +8,7 @@ import PortalVue from 'portal-vue';
 import ComboKeys from 'combokeys';
 import router from './router';
 import store from './store';
+import * as _ from 'lodash';
 import * as VocabUtil from '@/utils/vocab';
 import * as LayoutUtil from '@/utils/layout';
 import * as DisplayUtil from '@/utils/display';
@@ -34,7 +35,7 @@ Vue.filter('asAppPath', (path) => {
 });
 
 Vue.filter('asFnurgelLink', (id) => {
-  if (!id || typeof id === undefined) {
+  if (!id || typeof id === 'undefined') {
     return '';
   }
   const parts = id.split('/');
@@ -46,11 +47,12 @@ Vue.filter('removeDomain', value => StringUtil.removeDomain(value, store.getters
 Vue.filter('translatePhrase', string => StringUtil.getUiPhraseByLang(string, store.getters.user.settings.language));
 Vue.filter('capitalize', (value) => {
   if (!value) return '';
-  value = value.toString();
-  return value.charAt(0).toUpperCase() + value.slice(1);
+  let newValue = value;
+  newValue = newValue.toString();
+  return newValue.charAt(0).toUpperCase() + newValue.slice(1);
 });
 
-window.addEventListener('beforeunload', (e) => {
+window.addEventListener('beforeunload', () => {
   const path = `${window.location.pathname.replace('/katalogisering', '')}${window.location.search}`;
   localStorage.setItem('lastPath', path);
 });
@@ -71,7 +73,7 @@ new Vue({
       store.dispatch('changeResourcesStatus', true);
       store.dispatch('removeLoadingIndicator', 'Loading application');
     }, (error) => {
-      window.lxlWarning(`🔌 The API (at ${this.settings.apiPath}) might be offline!`);
+      window.lxlWarning(`🔌 The API (at ${this.settings.apiPath}) might be offline! Error: ${error}`);
       store.dispatch('changeResourcesLoadingError', true);
       store.dispatch('removeLoadingIndicator', 'Loading application');
     });
@@ -96,7 +98,7 @@ new Vue({
       if (typeof stateSettings !== 'undefined') {
         _.each(stateSettings, (value, key) => {
           if (value !== null && value !== '') {
-            this.combokeys.bindGlobal(key.toString(), (e) => {
+            this.combokeys.bindGlobal(key.toString(), () => {
               this.$store.dispatch('pushKeyAction', value);
               return false;
             });
@@ -203,6 +205,7 @@ new Vue({
       }, (error) => {
         store.dispatch('setUser', userObj);
         localStorage.removeItem('at');
+        console.warning(`Authentication failed: ${error}`);
       });
     },
     updateTitle() {
@@ -227,32 +230,34 @@ new Vue({
     },
     initWarningFunc() {
       if (!this.settings.environment === 'development' || navigator.userAgent.indexOf('PhantomJS') > -1) {
-        window.lxlWarning = function (...strings) {
+        // window.lxlWarning = (...strings) => {
           
-        };
-        window.lxlError = function (...strings) {
+        // };
+        // window.lxlError = (...strings) => {
           
-        };
+        // };
         return;
       }
       window.lxlWarnStack = [];
-      window.lxlWarning = function (...strings) {
+      window.lxlWarning = (...strings) => {
         if (window.lxlWarnStack.indexOf(JSON.stringify(strings.join())) === -1) {
           window.lxlWarnStack.push(JSON.stringify(strings.join()));
           return console.warn('%c LXL ', 'background: #009788; color: #fff;', ...strings);
         }
+        return false;
       };
       window.lxlErrorStack = [];
-      window.lxlError = function (...strings) {
+      window.lxlError = (...strings) => {
         if (window.lxlErrorStack.indexOf(JSON.stringify(strings.join())) === -1) {
           window.lxlErrorStack.push(JSON.stringify(strings.join()));
           return console.error('%c LXL ERROR ', 'background: #a50000; color: #fff;', ...strings);
         }
+        return false;
       };
     },
     fetchHelpDocs() {
       fetch(`${this.settings.apiPath}/helpdocs/help.json`).then((result) => {
-        if (result.status == 200) {
+        if (result.status === 200) {
           result.json().then((body) => {
             store.dispatch('setHelpDocs', body);
           });
@@ -261,7 +266,7 @@ new Vue({
         console.log(error);
       });
     },
-    getLdDependencies(fetchIndicator) {
+    getLdDependencies() {
       const promiseArray = [];
       const vocabPromise = VocabUtil.getVocab(this.settings.apiPath);
       promiseArray.push(vocabPromise);
@@ -272,5 +277,4 @@ new Vue({
       return promiseArray;
     },
   },
-  store,
 }).$mount('#app');

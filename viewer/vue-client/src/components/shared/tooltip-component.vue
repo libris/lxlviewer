@@ -17,7 +17,10 @@ export default {
       type: String,
       default: '',
     },
-    showTooltip: false,
+    showTooltip: {
+      type: Boolean,
+      default: false,
+    },
     literalString: {
       type: Object,
       default: () => ({
@@ -58,7 +61,7 @@ export default {
     },
     totalText() {
       let text = '';
-      if (this.literalString.position == 'before') {
+      if (this.literalString.position === 'before') {
         text += this.literalString.text;
         text += ' ';
         text += this.translatedText;

@@ -2,7 +2,10 @@
 export default {
   name: 'test-component',
   props: {
-    title: test,
+    title: {
+      type: String,
+      default: '',
+    },
   },
   data() {
     return {
