@@ -63,6 +63,7 @@ class Negotiator:
     def __init__(self):
         self.mimetype_renderer_map = {}
         self.suffix_mimetype_map = {}
+        self.mimetype_suffix_map = {}
         self.preferred = None
         self.default = None
 
@@ -71,6 +72,8 @@ class Negotiator:
             self.mimetype_renderer_map[mediatype] = f
             for suffix in suffixes:
                 self.suffix_mimetype_map[suffix] = mediatype
+            if suffixes:
+                self.mimetype_suffix_map[mediatype] = suffixes[0]
             if not self.preferred:
                 self.preferred = mediatype
                 self.default = f

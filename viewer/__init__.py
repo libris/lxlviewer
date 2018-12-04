@@ -479,7 +479,20 @@ def _proxy_request(request, session, json_data=None, query_params=[],
     url_path = url_path or request.path
 
     headers = dict(request.headers)
+
+    # The backend API only deals with JSON-LD. Thus, we add negotiation for
+    # that if missing, and then serialize to preferred requested format here.
+    accept_header = accept_header or headers['Accept']
+    response_data_suffix = None
     if accept_header:
+        if JSONLD_MIMETYPE not in accept_header:
+            if accept_header:
+                response_data_suffix = negotiator.mimetype_suffix_map.get(
+                        accept_header)
+                accept_header += ', ' + JSONLD_MIMETYPE
+            else:
+                accept_header = JSONLD_MIMETYPE
+
         headers['Accept'] = accept_header
 
     app.logger.debug('Sending proxy %s request to: %s with headers:\n%r\nand body:\n %s',
@@ -489,7 +502,18 @@ def _proxy_request(request, session, json_data=None, query_params=[],
                                    json_data=json_data,
                                    query_params=params)
 
-    return _map_response(response)
+    mapped_response = _map_response(response)
+
+    # If the accept was for something other than JSON-LD, we need to adjust the
+    # content location accordingly (since the backend API only serves the
+    # JSON-LD location).
+    if response_data_suffix:
+        content_location = mapped_response.headers['Content-Location']
+        content_location = content_location.replace('data.jsonld',
+                'data.{}'.format(response_data_suffix))
+        mapped_response.headers['Content-Location'] = content_location
+
+    return mapped_response
 
 
 def _map_response(response):
