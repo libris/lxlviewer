@@ -5,10 +5,8 @@
 
 import { mixin as clickaway } from 'vue-clickaway';
 import * as _ from 'lodash';
-import * as LayoutUtil from '@/utils/layout';
 import * as StringUtil from '@/utils/string';
 import * as VocabUtil from '@/utils/vocab';
-import ComboKeys from 'combokeys';
 import PanelComponent from '@/components/shared/panel-component.vue';
 import RoundButton from '@/components/shared/round-button.vue';
 import { mapGetters } from 'vuex';
@@ -22,7 +20,10 @@ export default {
       type: Array,
       default: () => [],
     },
-    inner: false,
+    inner: {
+      type: Boolean,
+      default: false,
+    },
     path: {
       type: String,
       default: '',
@@ -36,8 +37,14 @@ export default {
       type: String,
       default: '',
     },
-    inToolbar: false,
-    forceActive: false
+    inToolbar: {
+      type: Boolean,
+      default: false,
+    },
+    forceActive: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -148,6 +155,7 @@ export default {
       } if (termObj['@type'] === 'ObjectProperty') {
         return StringUtil.getUiPhraseByLang('Entities', this.settings.language);
       }
+      return '';
     },
     getEmptyFieldValue(key, prop) {
       let value = [];
@@ -166,20 +174,16 @@ export default {
         } else {
           value = '';
         }
-      } else {
+      } else if (VocabUtil.propIsRepeatable(key, this.resources.context)) {
         // Object value (first as array and as single item)
-        if (VocabUtil.propIsRepeatable(key, this.resources.context)) {
-          value = [];
-        } else {
-          value = null;
-        }
+        value = [];
+      } else {
+        value = null;
       }
       return value;
     },
     addField(prop, close) {  
       if (!prop.added) {
-        const splitProp = prop.item['@id'].split('/');
-        const propLastPart = splitProp[splitProp.length - 1];
         const key = StringUtil.convertToPrefix(prop.item['@id'], this.resources.context);
         this.$store.dispatch('updateInspectorData', {
           changeList: [
@@ -234,12 +238,12 @@ export default {
     },
   },
   watch: {
-    forceActive: function (newVal, oldVal) {
-      if (newVal != oldVal) {
+    forceActive(newVal, oldVal) {
+      if (newVal !== oldVal) {
         this.show();
       }
     },
-    'inspector.event'(val, oldVal) {
+    'inspector.event'(val) {
       if (val.name === 'form-control') {
         switch (val.value) { 
           case 'close-modals':

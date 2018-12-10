@@ -7,20 +7,24 @@
 
 import * as _ from 'lodash';
 import * as VocabUtil from '@/utils/vocab';
-import * as DisplayUtil from '@/utils/display';
-import * as StringUtil from '@/utils/string';
 import FormMixin from '@/components/mixins/form-mixin';
 import { mapGetters } from 'vuex';
 
 export default {
   mixins: [FormMixin],
   props: {
-    locked: false,
     editingObject: {
       type: String,
       default: '',
     },
-    collapsed: false,
+    locked: {
+      type: Boolean,
+      default: false,
+    },
+    collapsed: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {

@@ -1,8 +1,5 @@
 <script>
-import * as _ from 'lodash';
-import * as VocabUtil from '@/utils/vocab';
 import * as RecordUtil from '@/utils/record';
-import * as StringUtil from '@/utils/string';
 
 export default {
   name: 'file-adder',
@@ -30,12 +27,13 @@ export default {
       const self = this;
       this.$refs.FilePicker.addEventListener('input', (e) => {
         const reader = new FileReader();
-        reader.onloadend = function () {
+        reader.onloadend = () => {
           try {
             const data = JSON.parse(this.result);
             self.droppedFile = data;
-          } catch (e) {
+          } catch (error) {
             self.invalidFile = true;
+            console.log(error);
           }
         };
         reader.readAsText(e.target.files[0]);
@@ -43,11 +41,9 @@ export default {
     },
     initDropzone() {
       window.addEventListener('dragover', (e) => {
-        e = e || event;
         e.preventDefault();
       }, false);
       window.addEventListener('drop', (e) => {
-        e = e || event;
         e.preventDefault();
       }, false);
       const self = this;
@@ -62,12 +58,13 @@ export default {
       this.$refs.dropzone.addEventListener('drop', (e) => {
         e.preventDefault();
         const reader = new FileReader();
-        reader.onloadend = function () {
+        reader.onloadend = () => {
           try {
             const data = JSON.parse(this.result);
             self.droppedFile = data;
-          } catch (e) {
+          } catch (error) {
             self.invalidFile = true;
+            console.log(error);
           }
         };
         reader.readAsText(e.dataTransfer.files[0]);
@@ -87,7 +84,7 @@ export default {
   components: {
   },
   watch: {
-    droppedFile: function (val) {
+    droppedFile(val) {
       if (val.hasOwnProperty('@graph')) {
         const inspectorObject = RecordUtil.splitJson(val);
         this.outputData(inspectorObject);
@@ -95,7 +92,7 @@ export default {
         this.invalidFile = true;
       }
     },
-    invalidFile: function (val) {
+    invalidFile(val) {
       if (val === true) {
         setTimeout(() => {
           this.invalidFile = false;

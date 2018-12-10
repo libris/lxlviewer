@@ -5,8 +5,6 @@
 */
 
 import * as _ from 'lodash';
-import * as DisplayUtil from '@/utils/display';
-import * as DataUtil from '@/utils/data';
 import * as StringUtil from '@/utils/string';
 import EntitySummary from '@/components/shared/entity-summary';
 import LensMixin from '@/components/mixins/lens-mixin';
@@ -16,7 +14,10 @@ export default {
   name: 'entity-header',
   mixins: [LensMixin],
   props: {
-    full: false,
+    full: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -24,7 +25,7 @@ export default {
     };
   },
   methods: {
-    handleScroll(e) {
+    handleScroll() {
       if (document.body.scrollTop > this.headerThreshold 
       || document.documentElement.scrollTop > this.headerThreshold) {
         this.showCompact = true;

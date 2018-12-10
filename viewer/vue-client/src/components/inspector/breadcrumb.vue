@@ -70,25 +70,25 @@ export default {
       return this.inspector.data.mainEntity['@id'];
     },
     currentPostNumber() {
-      if (this.inspector.breadcrumb === undefined || this.inspector.breadcrumb.length === 0) return;
+      if (this.inspector.breadcrumb === undefined || this.inspector.breadcrumb.length === 0) return null;
       const items = this.inspector.breadcrumb[0].result.items;
 
-      const item = items.find(item => item['@id'] === this.currentPost);
+      const item = items.find(itemObj => itemObj['@id'] === this.currentPost);
       const itemIndex = items.indexOf(item);
 
       return itemIndex + 1;
     },
     totalPostNumber() {
-      if (this.inspector.breadcrumb === undefined || this.inspector.breadcrumb.length === 0) return;
+      if (this.inspector.breadcrumb === undefined || this.inspector.breadcrumb.length === 0) return null;
 
       return this.inspector.breadcrumb[0].result.totalItems;
     },
     prevPostIndex() {
-      if (this.inspector.breadcrumb === undefined || this.inspector.breadcrumb.length === 0) return;
+      if (this.inspector.breadcrumb === undefined || this.inspector.breadcrumb.length === 0) return null;
 
       const items = this.inspector.breadcrumb[0].result.items;
       
-      const item = items.find(item => item['@id'] === this.currentPost);
+      const item = items.find(itemObj => itemObj['@id'] === this.currentPost);
       const itemIndex = items.indexOf(item);
      
       return itemIndex - 1;
@@ -116,7 +116,7 @@ export default {
 
       const items = this.inspector.breadcrumb[0].result.items;
       
-      const item = items.find(item => item['@id'] === this.currentPost);
+      const item = items.find(itemObj => itemObj['@id'] === this.currentPost);
       const itemIndex = items.indexOf(item);
      
       return itemIndex + 1;

@@ -86,10 +86,10 @@ export default {
         const items = inputContEl.getElementsByClassName('js-filterSelectItem');
 
         if (event.keyCode === 38 || event.keyCode === 40) {
-          _.forEach(items, (item, index) => {
-            item.dataset.index = index;
-            item.classList.remove('isActive');
-          });
+          for (let i = 0; i < items.length; i++) {
+            items[i].dataset.index = i;
+            items[i].classList.remove('isActive');
+          }
 
           if (event.keyCode === 38 && this.currentItem > 0) {
             this.currentItem--;

@@ -69,7 +69,8 @@
       "import/extensions": "off",
       "import/no-dynamic-require": "off",
       "global-require": "off",
-      "radix": "off"
+      "radix": "off",
+      "no-alert": "off"
     },
     "parserOptions": {
       "parser": "babel-eslint"

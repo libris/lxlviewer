@@ -1,26 +1,35 @@
 <script>
 import * as DisplayUtil from '@/utils/display';
-import * as StringUtil from '@/utils/string';
 import * as RecordUtil from '@/utils/record';
 import * as DataUtil from '@/utils/data';
-import * as HttpUtil from '@/utils/http';
 import RoundButton from '@/components/shared/round-button.vue';
 import TooltipComponent from '@/components/shared/tooltip-component';
 import { mapGetters } from 'vuex';
-import Modernizr from '@/../.modernizrrc.js';
 
 export default {
   name: 'create-item-button',
   props: {
-    hasHolding: false,
-    checkingHolding: true,
+    hasHolding: {
+      type: Boolean,
+      default: false,
+    },
+    checkingHolding: {
+      type: Boolean,
+      default: true,
+    },
     holdingId: {
       type: String,
       default: '',
     },
     mainEntity: null, // mainEntity of the record we want to create item on
-    disabled: false,
-    compact: false,
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
+    compact: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {

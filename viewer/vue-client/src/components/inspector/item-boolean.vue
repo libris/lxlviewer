@@ -1,7 +1,6 @@
 <script>
 import { mapGetters } from 'vuex';
 import * as VocabUtil from '../../utils/vocab';
-import TooltipComponent from '../shared/tooltip-component';
 import ItemMixin from '../mixins/item-mixin';
 
 export default {
@@ -66,7 +65,7 @@ export default {
     });
   },
   watch: {
-    fieldValue(value, oldValue) {
+    fieldValue(value) {
       if (value !== this.selected) {
         this.selected = this.fieldValue;
       }
@@ -88,7 +87,6 @@ export default {
   methods: {
   },
   components: {
-    'tooltip-component': TooltipComponent,
   },
 };
 </script>

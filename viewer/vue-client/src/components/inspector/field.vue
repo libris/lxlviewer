@@ -17,7 +17,6 @@ import ItemBoolean from './item-boolean';
 import TooltipComponent from '../shared/tooltip-component';
 import * as VocabUtil from '@/utils/vocab';
 import * as LayoutUtil from '@/utils/layout';
-import * as MathUtil from '@/utils/math';
 import * as StringUtil from '@/utils/string';
 import LodashProxiesMixin from '../mixins/lodash-proxies-mixin';
 
@@ -69,8 +68,14 @@ export default {
       type: String,
       default: '',
     },
-    isExpanded: false,
-    expandChildren: false,
+    isExpanded: {
+      type: Boolean,
+      default: false,
+    },
+    expandChildren: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -405,6 +410,7 @@ export default {
       if (!this.isPlainObject(o) && !this.isLinked(o)) {
         return 'value';
       }
+      return 'error';
     },
     isLinked(o) {
       if (o === null) {
@@ -433,7 +439,7 @@ export default {
       return VocabUtil.isEmbedded(type, this.resources.vocab, this.settings);
     },
     isChip(item) {
-      if (this.getDatatype(item) == 'entity') {
+      if (this.getDatatype(item) === 'entity') {
         this.foundChip = true;
         return true;
       }
