@@ -7,18 +7,14 @@
 */
 
 import * as _ from 'lodash';
-import Vue from 'vue';
 import { mixin as clickaway } from 'vue-clickaway';
 import { mapGetters } from 'vuex';
 import * as httpUtil from '../../utils/http';
 import * as LayoutUtil from '../../utils/layout';
 import * as VocabUtil from '../../utils/vocab';
-import * as DisplayUtil from '../../utils/display';
 import * as RecordUtil from '../../utils/record';
 import * as StringUtil from '../../utils/string';
 import * as DataUtil from '../../utils/data';
-import ItemEntity from './item-entity';
-import CardComponent from '../shared/card-component';
 import ToolTipComponent from '../shared/tooltip-component';
 import FieldAdder from '@/components/inspector/field-adder';
 import SearchWindow from './search-window';
@@ -38,10 +34,22 @@ export default {
       type: String,
       default: '',
     },
-    isLocked: false,
-    showActionButtons: false,
-    inArray: false,
-    shouldExpand: false,
+    isLocked: {
+      type: Boolean,
+      default: false,
+    },
+    showActionButtons: {
+      type: Boolean,
+      default: false,
+    },
+    inArray: {
+      type: Boolean,
+      default: false,
+    },
+    shouldExpand: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -153,7 +161,7 @@ export default {
         changeList: changeList,
       });
     },
-    actionHighlight(active) {
+    actionHighlight(event, active) {
       if (active) {
         let item = event.target;
         while ((item = item.parentElement) && !item.classList.contains('js-itemLocal'));
@@ -164,7 +172,7 @@ export default {
         item.classList.remove('is-marked');
       }
     },
-    removeHighlight(active) {
+    removeHighlight(event, active) {
       if (active) {
         let item = event.target;
         while ((item = item.parentElement) && !item.classList.contains('js-itemLocal'));
@@ -221,7 +229,7 @@ export default {
             this.closeExtractDialog();
           });
         } else {
-          this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error}` });
+          this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)}` });
           this.closeExtractDialog();
         }
       }, (error) => {
@@ -288,7 +296,7 @@ export default {
     },
   },
   watch: {
-    'inspector.event'(val, oldVal) {
+    'inspector.event'(val) {
       this.$emit(`${val.value}`);
     },
     shouldExpand(val) {
@@ -298,7 +306,7 @@ export default {
       }
     },
   },
-  created: function () {
+  created() {
     this.$on('collapse-item', this.collapse);
     this.$on('expand-item', this.expand);
   },
@@ -325,8 +333,6 @@ export default {
   },
 
   components: {
-    'item-entity': ItemEntity,
-    'card-component': CardComponent,
     'field-adder': FieldAdder,
     'tooltip-component': ToolTipComponent,
     'search-window': SearchWindow,
@@ -365,10 +371,10 @@ export default {
             @click="openExtractDialog(), expand()" 
             tabindex="0"
             @keyup.enter="openExtractDialog(), expand()"
-            @focus="showLinkAction = true, actionHighlight(true)" 
-            @blur="showLinkAction = false, actionHighlight(false)"
-            @mouseover="showLinkAction = true, actionHighlight(true)" 
-            @mouseout="showLinkAction = false, actionHighlight(false)">
+            @focus="showLinkAction = true, actionHighlight(event, true)" 
+            @blur="showLinkAction = false, actionHighlight(event, false)"
+            @mouseover="showLinkAction = true, actionHighlight(event, true)" 
+            @mouseout="showLinkAction = false, actionHighlight(event, false)">
             <tooltip-component 
               :show-tooltip="showLinkAction" 
               tooltip-text="Link entity" 
@@ -393,10 +399,10 @@ export default {
             v-on:click="removeThis(true)"
             @keyup.enter="removeThis(true)"
             tabindex="0"
-            @focus="removeHover = true, removeHighlight(true)" 
-            @blur="removeHover = false, removeHighlight(false)"
-            @mouseover="removeHover = true, removeHighlight(true)" 
-            @mouseout="removeHover = false, removeHighlight(false)">
+            @focus="removeHover = true, removeHighlight(event, true)" 
+            @blur="removeHover = false, removeHighlight(event, false)"
+            @mouseover="removeHover = true, removeHighlight(event, true)" 
+            @mouseout="removeHover = false, removeHighlight(event, false)">
             <tooltip-component 
               :show-tooltip="removeHover" 
               tooltip-text="Remove" 

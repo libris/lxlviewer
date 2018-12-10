@@ -1,12 +1,8 @@
 <script>
-import * as _ from 'lodash';
 import { mapGetters } from 'vuex';
 import * as VocabUtil from '../../utils/vocab';
-import * as DataUtil from '../../utils/data';
-import * as StringUtil from '../../utils/string';
 import TooltipComponent from '../shared/tooltip-component';
 import ItemMixin from '../mixins/item-mixin';
-import LensMixin from '../mixins/lens-mixin';
 
 export default {
   name: 'item-boolean',
@@ -21,8 +17,14 @@ export default {
       default: '',
     },
     index: Number,
-    isLocked: false,
-    expanded: false,
+    isLocked: {
+      type: Boolean,
+      default: false,
+    },
+    expanded: {
+      type: Boolean,
+      default: false,
+    },
     entityType: {
       type: String,
       default: '',

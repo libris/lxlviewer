@@ -1,12 +1,9 @@
 <script>
 import * as _ from 'lodash';
-import * as VocabUtil from '@/utils/vocab';
-import * as DataUtil from '@/utils/data';
 import * as LayoutUtil from '@/utils/layout';
 import * as StringUtil from '@/utils/string';
 import CardComponent from '../shared/card-component';
 import TooltipComponent from '../shared/tooltip-component';
-import EntitySummary from '../shared/entity-summary';
 import ItemMixin from '../mixins/item-mixin';
 import LensMixin from '../mixins/lens-mixin';
 
@@ -15,7 +12,10 @@ export default {
   mixins: [ItemMixin, LensMixin],
   props: {
     item: {},
-    isLocked: false,
+    isLocked: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -87,7 +87,6 @@ export default {
   },
   components: {
     'card-component': CardComponent,
-    'entity-summary': EntitySummary,
     'tooltip-component': TooltipComponent,
   },
   mounted() {

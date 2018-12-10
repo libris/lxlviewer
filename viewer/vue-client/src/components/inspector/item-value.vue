@@ -2,10 +2,6 @@
 import AutoSize from 'autosize';
 import * as _ from 'lodash';
 import { mapGetters } from 'vuex';
-import * as httpUtil from '../../utils/http';
-import * as VocabUtil from '../../utils/vocab';
-import * as DisplayUtil from '../../utils/display';
-import * as DataUtil from '../../utils/data';
 import * as StringUtil from '@/utils/string';
 import * as LayoutUtil from '@/utils/layout';
 import TooltipComponent from '../shared/tooltip-component';
@@ -20,11 +16,26 @@ export default {
       type: String,
       default: '',
     },
-    isUriType: false,
-    isLocked: false,
-    isRemovable: false,
-    showActionButtons: false,
-    isExpanded: false,
+    isUriType: {
+      type: Boolean,
+      default: false,
+    },
+    isLocked: {
+      type: Boolean,
+      default: false,
+    },
+    isRemovable: {
+      type: Boolean,
+      default: false,
+    },
+    showActionButtons: {
+      type: Boolean,
+      default: false,
+    },
+    isExpanded: {
+      type: Boolean,
+      default: false,
+    },
   },
   watch: {
     isLocked(val) {
@@ -59,7 +70,7 @@ export default {
         }
         return valueArray;
       },
-      set: _.debounce(function (newValue) {
+      set: _.debounce((newValue) => {
         this.update(newValue);
       }, 1000),
     },
@@ -84,7 +95,7 @@ export default {
     },
   },
   methods: {
-    removeHighlight(active) {
+    removeHighlight(event, active) {
       if (active) {
         let item = event.target;
         while ((item = item.parentElement) && !item.classList.contains('js-value'));
@@ -183,10 +194,10 @@ export default {
     <div class="ItemValue-remover"
       v-show="!isLocked && isRemovable"
       v-on:click="removeThis()"
-      @focus="removeHover = true, removeHighlight(true)"
-      @blur="removeHover = false, removeHighlight(false)"
-      @mouseover="removeHover = true, removeHighlight(true)"
-      @mouseout="removeHover = false, removeHighlight(false)">
+      @focus="removeHover = true, removeHighlight(event, true)"
+      @blur="removeHover = false, removeHighlight(event, false)"
+      @mouseover="removeHover = true, removeHighlight(event, true)"
+      @mouseout="removeHover = false, removeHighlight(event, false)">
       <i class="fa fa-trash-o icon icon--sm">
         <tooltip-component
           :show-tooltip="removeHover"

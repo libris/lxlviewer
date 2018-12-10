@@ -1,17 +1,13 @@
 <script>
 import * as _ from 'lodash';
-import Vue from 'vue';
 import { mixin as clickaway } from 'vue-clickaway';
 import { mapGetters } from 'vuex';
 import * as httpUtil from '../../utils/http';
 import * as LayoutUtil from '../../utils/layout';
 import * as VocabUtil from '../../utils/vocab';
-import * as DisplayUtil from '../../utils/display';
 import * as RecordUtil from '../../utils/record';
 import * as StringUtil from '../../utils/string';
 import * as DataUtil from '../../utils/data';
-import ItemEntity from './item-entity';
-import CardComponent from '../shared/card-component';
 import ToolTipComponent from '../shared/tooltip-component';
 import FieldAdder from '@/components/inspector/field-adder';
 import SearchWindow from './search-window';
@@ -28,14 +24,26 @@ export default {
       type: String,
       default: '',
     },
-    isLocked: false,
-    showActionButtons: false,
-    inArray: false,
+    isLocked: {
+      type: Boolean,
+      default: false,
+    },
+    showActionButtons: {
+      type: Boolean,
+      default: false,
+    },
+    inArray: {
+      type: Boolean,
+      default: false,
+    },
     parentRange: {
       type: Array,
       default: () => [],
     },
-    shouldExpand: false,
+    shouldExpand: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -78,7 +86,7 @@ export default {
           text: 'The class is abstract and should not be used',
           hint: this.focusData['@type'],
         });
-      } else if (this.parentRange.indexOf(this.focusData['@type']) == -1) {
+      } else if (this.parentRange.indexOf(this.focusData['@type']) === -1) {
         failedValidations.push({
           text: 'The class is not in the range of this property',
           hint: `${this.fieldKey} <- ${this.focusData['@type']}`,
@@ -239,7 +247,7 @@ export default {
         } else {
           this.$store.dispatch('pushNotification', { 
             type: 'danger', 
-            message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error}`,
+            message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)}`,
           });
           this.closeExtractDialog();
         }
@@ -329,7 +337,7 @@ export default {
     },
   },
   watch: {
-    'inspector.event'(val, oldVal) {
+    'inspector.event'(val) {
       this.$emit(`${val.value}`);
     },
     shouldExpand(val) {
@@ -342,7 +350,7 @@ export default {
   beforeDestroy() {
     this.$store.dispatch('setValidation', { path: this.path, validates: true });
   },
-  created: function () {
+  created() {
     this.$on('collapse-item', this.collapse);
     this.$on('expand-item', this.expand);
   },
@@ -369,8 +377,6 @@ export default {
   },
 
   components: {
-    'item-entity': ItemEntity,
-    'card-component': CardComponent,
     'field-adder': FieldAdder,
     'tooltip-component': ToolTipComponent,
     'search-window': SearchWindow,
