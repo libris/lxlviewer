@@ -460,10 +460,11 @@ export default {
     },
     addEmpty(typeId) {
       this.hide();
+      const templates = JSON.parse(StructuredValueTemplates);
       const shortenedType = StringUtil.getCompactUri(typeId, this.resources.context);
       let obj = { '@type': shortenedType };
-      if (StructuredValueTemplates.hasOwnProperty(shortenedType)) {
-        obj = _.cloneDeep(StructuredValueTemplates[shortenedType]);
+      if (templates.hasOwnProperty(shortenedType)) {
+        obj = _.cloneDeep(templates[shortenedType]);
       }
       // If this is a holding, add the heldBy property
       if (obj['@type'] === 'Item') {

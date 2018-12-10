@@ -7,7 +7,10 @@ export default {
   mixins: [LensMixin],
   name: 'entity-summary',
   props: {
-    focusData: {},
+    focusData: {
+      type: Object,
+      defualt: null,
+    },
     actions: {
       type: Boolean,
       default: false,
@@ -25,8 +28,8 @@ export default {
       default: false,
     },
     importItem: {
-      type: String,
-      default: '',
+      type: Object,
+      default: null,
     },
     database: {
       type: String,
