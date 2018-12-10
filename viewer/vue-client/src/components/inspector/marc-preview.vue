@@ -1,7 +1,4 @@
 <script>
-import * as DataUtil from '@/utils/data';
-import * as httpUtil from '@/utils/http';
-import * as LayoutUtil from '@/utils/layout';
 import * as _ from 'lodash';
 import { mapGetters } from 'vuex';
 import PanelComponent from '@/components/shared/panel-component.vue';
@@ -23,12 +20,11 @@ export default {
     },
   },
   watch: {
-    'inspector.event'(val, oldVal) {
+    'inspector.event'(val) {
       if (val.name === 'form-control') {
         switch (val.value) {
           case 'close-modals':
             this.hide();
-            return true;
             break;
           default:
         }

@@ -1,15 +1,11 @@
 <script>
+import * as _ from 'lodash';
 import PanelComponent from '@/components/shared/panel-component';
 import PanelSearchList from '@/components/search/panel-search-list';
 import ModalPagination from '@/components/inspector/modal-pagination';
 import * as StringUtil from '@/utils/string';
-import * as RecordUtil from '@/utils/record';
-import * as LayoutUtil from '@/utils/layout';
-import * as DataUtil from '@/utils/data';
-import * as HttpUtil from '@/utils/http';
 import { mapGetters } from 'vuex';
 import VueSimpleSpinner from 'vue-simple-spinner';
-import EntitySummary from '../shared/entity-summary';
 
 export default {
   name: 'relations-list',
@@ -110,7 +106,6 @@ export default {
   },
   components: {
     'modal-pagination': ModalPagination,
-    'entity-summary': EntitySummary,
     'panel-component': PanelComponent,
     'panel-search-list': PanelSearchList,
     'vue-simple-spinner': VueSimpleSpinner,

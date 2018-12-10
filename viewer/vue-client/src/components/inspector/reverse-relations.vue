@@ -1,7 +1,6 @@
 <script>
+import * as _ from 'lodash';
 import * as VocabUtil from '../../utils/vocab';
-import * as HttpUtil from '../../utils/http';
-import * as RecordUtil from '../../utils/record';
 import CreateItemButton from './create-item-button';
 import RelationsList from '@/components/inspector/relations-list';
 import RoundButton from '@/components/shared/round-button.vue';
@@ -160,21 +159,21 @@ export default {
       if (this.recordType === 'Instance' || this.recordType === 'Item') {
         if (this.numberOfRelations === 0) {
           return 'No holdings';
-        } if (isNaN(this.numberOfRelations)) {
+        } if (Number.isNaN(this.numberOfRelations)) {
           return 'Holdings could not be loaded';
         } 
         return 'Show all holdings';
       } if (this.recordType === 'Agent') {
         if (this.numberOfRelations === 0) {
           return 'No contributions';
-        } if (isNaN(this.numberOfRelations)) {
+        } if (Number.isNaN(this.numberOfRelations)) {
           return 'Contribution could not be loaded';
         } 
         return 'Show all contributions';
       } 
       if (this.numberOfRelations === 0) {
         return 'No uses';
-      } if (isNaN(this.numberOfRelations)) {
+      } if (Number.isNaN(this.numberOfRelations)) {
         return 'Uses could not be loaded';
       } 
       return 'Show all uses';
@@ -190,7 +189,7 @@ export default {
     'tooltip-component': TooltipComponent,
   },
   watch: {
-    'inspector.event'(val, oldVal) {
+    'inspector.event'(val) {
       if (val.name === 'form-control') {
         switch (val.value) { 
           case 'open-instances-window':
@@ -198,7 +197,6 @@ export default {
             break;
           case 'close-modals':
             this.hidePanel();
-            return true;
             break;
           default:
         }
@@ -207,6 +205,7 @@ export default {
           case 'on-post-loaded':
             this.getRelationsInfo();
             break;
+          default:
         }
       }
     },
@@ -215,7 +214,7 @@ export default {
         this.$parent.$emit('relations-list-open', val);
       }
     },
-    numberOfRelations: function (val) {
+    numberOfRelations(val) {
       this.numberOfRelations = val;
     },
   },

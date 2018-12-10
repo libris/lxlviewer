@@ -1,20 +1,14 @@
 <script>
 import * as _ from 'lodash';
-import * as HttpUtil from '@/utils/http';
 import * as VocabUtil from '@/utils/vocab';
 import * as DisplayUtil from '@/utils/display';
-import * as LayoutUtil from '@/utils/layout';
-import * as RecordUtil from '@/utils/record';
 import * as StringUtil from '@/utils/string';
-import * as CombinedTemplates from '@/resources/json/combinedTemplates.json';
-import * as StructuredValueTemplates from '@/resources/json/structuredValueTemplates.json';
 import { mixin as clickaway } from 'vue-clickaway';
 import { mapGetters } from 'vuex';
 import VueSimpleSpinner from 'vue-simple-spinner';
 import PanelComponent from '@/components/shared/panel-component';
 import PanelSearchList from '@/components/search/panel-search-list';
 import ModalPagination from '@/components/inspector/modal-pagination';
-import ToolTipComponent from '../shared/tooltip-component';
 import EntitySummary from '../shared/entity-summary';
 import FilterSelect from '@/components/shared/filter-select.vue';
 import SummaryAction from './summary-action';
@@ -59,16 +53,31 @@ export default {
       type: String,
       default: '',
     },
-    extracting: false,
+    extracting: {
+      type: Boolean,
+      default: false,
+    },
     itemInfo: {},
-    index: 0,
-    copyTitle: false,
-    canCopyTitle: false,
+    index: {
+      type: Number,
+      default: 0,
+    },
+    copyTitle: {
+      type: Boolean,
+      default: false,
+    },
+    canCopyTitle: {
+      type: Boolean,
+      default: false,
+    },
     entityType: {
       type: String,
       default: '',
     },
-    isActive: false,
+    isActive: {
+      type: Boolean,
+      default: false,
+    },
   },
   components: {
     'panel-search-list': PanelSearchList,
@@ -86,19 +95,18 @@ export default {
     copyTitle(value) {
       this.$dispatch('set-copy-title', value);
     },
-    isActive(value, oldvalue) {
+    isActive(value) {
       if (value) {
         this.show();
       } else {
         this.hide();
       }
     },
-    'inspector.event'(val, oldVal) {
+    'inspector.event'(val) {
       if (val.name === 'form-control') {
         switch (val.value) {
           case 'close-modals':
             this.hide();
-            return true;
             break;
           default:
         }
@@ -259,12 +267,12 @@ export default {
     },
     fetch(pageNumber) {
       const self = this;
-      const totalItems = self.searchResult.length;
       self.currentPage = pageNumber;
       self.loading = true;
       this.getItems(this.keyword).then((result) => {
         self.loadResults(result);
       }, (error) => {
+        console.log(error);
         self.loading = false;
       });
     },

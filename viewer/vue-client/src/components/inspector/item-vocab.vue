@@ -2,11 +2,8 @@
 import * as _ from 'lodash';
 import { mapGetters } from 'vuex';
 import * as VocabUtil from '../../utils/vocab';
-import * as DataUtil from '../../utils/data';
 import * as StringUtil from '../../utils/string';
-import TooltipComponent from '../shared/tooltip-component';
 import ItemMixin from '../mixins/item-mixin';
-import LensMixin from '../mixins/lens-mixin';
 
 export default {
   name: 'item-vocab',
@@ -16,8 +13,14 @@ export default {
       type: String,
       default: '',
     },
-    isLocked: false,
-    expanded: false,
+    isLocked: {
+      type: Boolean,
+      default: false,
+    },
+    expanded: {
+      type: Boolean,
+      default: false,
+    },
     entityType: {
       type: String,
       default: '',
@@ -62,7 +65,7 @@ export default {
     });
   },
   watch: {
-    fieldValue(value, oldValue) {
+    fieldValue(value) {
       if (value !== this.selected) {
         this.selected = this.fieldValue;
       }
@@ -107,7 +110,6 @@ export default {
     },
   },
   components: {
-    'tooltip-component': TooltipComponent,
   },
 };
 </script>

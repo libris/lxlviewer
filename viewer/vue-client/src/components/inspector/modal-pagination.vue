@@ -1,5 +1,4 @@
 <script>
-import * as StringUtil from '@/utils/string';
 
 export default {
   name: 'modal-pagination',
