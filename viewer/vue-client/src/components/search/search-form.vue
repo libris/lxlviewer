@@ -274,13 +274,8 @@ export default {
         });
       }
     },
-    resultData: function (newVal, oldVal) {
+    resultData(newVal) {
       if (typeof newVal !== 'undefined' && Object.keys(newVal).length) {
-        // don't include filters from facets on new search
-        // if (this.usedFilters !== '') {
-        // this.inputData.ids = this.usedFilters;
-        // }
-
         if (this.usedTextInput !== '') {
           const newObj = {};
           const usedTextInput = [];

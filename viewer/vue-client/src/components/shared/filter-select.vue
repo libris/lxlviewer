@@ -19,7 +19,6 @@ export default {
       type: String,
       default: '',
     },
-    selectId: filterSelect,
     className: {
       type: String,
       default: '',
@@ -28,10 +27,14 @@ export default {
       type: String,
       default: '',
     },
-    isFilter: true
+    isFilter: {
+      type: Boolean,
+      default: true,
+    },
   },
   data() {
     return {
+      selectId: 'filterSelect',
       selectedObject: {},
       currentItem: -1,
       filterVisible: false,
@@ -66,7 +69,7 @@ export default {
       } 
     },
     checkInput(event) {
-      if (event.keyCode == 32) {
+      if (event.keyCode === 32) {
         this.filterVisible = true;
       }
     },
@@ -76,23 +79,21 @@ export default {
       }
     },
     nextItem(event) {
-      if (!this.filterVisible) {
-        
-      } else {
+      if (this.filterVisible) {
         const inputContSel = document.getElementsByClassName(this.className);
         const inputContEl = inputContSel[0];
         const texts = inputContEl.getElementsByClassName('js-filterSelectText');
         const items = inputContEl.getElementsByClassName('js-filterSelectItem');
 
-        if (event.keyCode == 38 || event.keyCode == 40) {
+        if (event.keyCode === 38 || event.keyCode === 40) {
           _.forEach(items, (item, index) => {
             item.dataset.index = index;
             item.classList.remove('isActive');
           });
 
-          if (event.keyCode == 38 && this.currentItem > 0) {
+          if (event.keyCode === 38 && this.currentItem > 0) {
             this.currentItem--;
-          } else if (event.keyCode == 40 && this.currentItem < texts.length - 1) {
+          } else if (event.keyCode === 40 && this.currentItem < texts.length - 1) {
             this.currentItem++;
           }
           texts[this.currentItem].focus();
@@ -101,21 +102,18 @@ export default {
       }
     },
     filter() {
-      let filterBy; let dropdownSel; let dropdownEl; let span; let i;
-
       const inputContSel = document.getElementsByClassName(this.className);
       const inputContEl = inputContSel[0];
-
       const inputSel = inputContEl.getElementsByTagName('input');
       const inputEl = inputSel[0];
       const filterSelectContainer = inputEl.parentElement;
+      let filterBy = inputEl.value.toUpperCase();
+      const dropdownSel = filterSelectContainer.getElementsByClassName('js-filterSelectDropdown');
+      const dropdownEl = dropdownSel[0];
       filterBy = inputEl.value.toUpperCase();
-      dropdownSel = filterSelectContainer.getElementsByClassName('js-filterSelectDropdown');
-      dropdownEl = dropdownSel[0];
-      filterBy = inputEl.value.toUpperCase();
-      span = dropdownEl.getElementsByTagName('span');
+      const span = dropdownEl.getElementsByTagName('span');
 
-      for (i = 0; i < span.length; i++) {
+      for (let i = 0; i < span.length; i++) {
         if (span[i].innerHTML.toUpperCase().indexOf(filterBy) > -1) {
           span[i].style.display = '';
         } else {
@@ -123,7 +121,8 @@ export default {
         }
       }
     },
-    selectOption(event, eventObject = {}) {
+    selectOption(event, eventObj = {}) {
+      const eventObject = eventObj;
       eventObject.label = event.target.textContent;
       eventObject.value = event.target.dataset.filter;
       eventObject.key = event.target.dataset.key;

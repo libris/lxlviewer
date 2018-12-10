@@ -1,4 +1,5 @@
 <script>
+import * as StringUtil from '@/utils/string';
 import ResultList from './result-list';
 import ResultControls from './result-controls';
 
@@ -29,7 +30,7 @@ export default {
       const fetchUrl = `${this.settings.apiPath}/find.json?${unlimitedQuery}`;
 
       fetch(fetchUrl).then(response => response.json(), (error) => {
-        this.$store.dispatch('pushNotification', { type: 'danger', message: StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language) });
+        this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)} ${error}` });
         this.searchInProgress = false;
       }).then((result) => {
         this.fullResult = result;
