@@ -4,12 +4,10 @@ export function getEmbellished(id, quotedIndex = {}) {
   if (typeof id === 'undefined' || id === '') {
     throw new Error('getEmbellished was called with an undefined or empty Id.');
   }
-  // if (id.indexOf('marc:') !== -1) {
-  //   graphId = id.replace('marc:', 'https://id.kb.se/marc/');
-  //   // console.warn('Tried to find embellished from marc-id. Returning', JSON.stringify(obj));
-  // }
-  let obj = quotedIndex[id];
-
+  let obj = null;
+  if (!_.isEmpty(quotedIndex)) {
+    obj = quotedIndex[id];
+  }
   if (obj === null) {
     window.lxlWarning(`🔍 Couldn't find embellished data for: ${id}`);
     obj = { '@id': id };
