@@ -88,7 +88,6 @@ export default {
       this.inputData.currentInput += 1;
     },
     updateField() {
-      const validTags = this.validSearchTags;
       if (this.currentIsTag) {
         this.currentField.class = 'is-searchTag is-valid';
       } else {
@@ -98,7 +97,7 @@ export default {
     handleFocus(focusedIndex) {
       this.inputData.currentInput = focusedIndex;
     },
-    handleInput: function (e) {
+    handleInput(e) {
       const currentElement = document.querySelector('.js-qsmartInput').children[this.inputData.currentInput];
       if (e.keyCode === 13) { // Enter
         e.preventDefault();
@@ -148,7 +147,7 @@ export default {
           }
         }
         if (queryText.length === 0) {
-          return;
+          return '';
         }
         queryText.push('_limit=20');
         _.each(this.inputData.ids, id => queryText.push(`@type=${id}`));

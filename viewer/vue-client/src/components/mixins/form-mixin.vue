@@ -1,5 +1,4 @@
 <script>
-import * as DataUtil from '@/utils/data';
 import * as DisplayUtil from '@/utils/display';
 import * as VocabUtil from '@/utils/vocab';
 import * as StringUtil from '@/utils/string';
@@ -96,7 +95,6 @@ export default {
       );
     },
     allowedProperties() {
-      const settings = this.settings;
       const formObj = this.formObj;
       const allowed = this.allowed;
       const language = this.user.settings.language;

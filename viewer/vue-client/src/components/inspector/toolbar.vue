@@ -2,17 +2,12 @@
 /*
   Fixed toolbar
 */
-
-import * as _ from 'lodash';
 import { mixin as clickaway } from 'vue-clickaway';
 import { mapGetters } from 'vuex';
-import * as DataUtil from '../../utils/data';
-import * as DisplayUtil from '../../utils/display';
 import * as LayoutUtil from '../../utils/layout';
 import * as VocabUtil from '@/utils/vocab';
 import * as HttpUtil from '@/utils/http';
 import * as StringUtil from '@/utils/string';
-import * as RecordUtil from '@/utils/record';
 import FieldAdder from '@/components/inspector/field-adder';
 import TooltipComponent from '@/components/shared/tooltip-component';
 import LensMixin from '@/components/mixins/lens-mixin';
@@ -22,7 +17,10 @@ import * as CombinedTemplates from '@/resources/json/combinedTemplates.json';
 export default {
   mixins: [clickaway, LensMixin, FormMixin],
   props: {
-    fieldAdderOpen: false,
+    fieldAdderOpen: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -49,7 +47,7 @@ export default {
         this.loadingEdit = false;
       }
     },
-    'inspector.event'(val, oldVal) {
+    'inspector.event'(val) {
       if (val.name === 'form-control') {
         switch (val.value) {
           case 'duplicate-item':
@@ -74,7 +72,7 @@ export default {
             this.postControl('save-record-done');
             break;
           case 'admin-data-on':
-            this.toggleEditorFocus(true);
+            this.toggleEditorFocus();
             break;
           case 'admin-data-off':
             this.toggleEditorFocus();
@@ -165,11 +163,7 @@ export default {
       });
       // }
     },
-    toggleEditorFocus(on = false) {
-      if (on) {
-        this.inspector.status.focus === 'record';
-      } 
-
+    toggleEditorFocus() {
       if (this.inspector.status.focus === 'record') {
         this.$store.dispatch('setInspectorStatusValue', { 
           property: 'focus', 
@@ -311,16 +305,16 @@ export default {
     },
     canEditThisType() {
       return true;
-      if (this.user.hasAnyCollections() === false) {
-        return false;
-      }
-      const permission = this.user.getPermissions();
-      if (this.inspector.data.mainEntity['@type'] === 'Item' && permission.registrant === true) {
-        return true;
-      } if (permission.cataloger === true) {
-        return true;
-      }
-      return false;
+      // if (this.user.hasAnyCollections() === false) {
+      //   return false;
+      // }
+      // const permission = this.user.getPermissions();
+      // if (this.inspector.data.mainEntity['@type'] === 'Item' && permission.registrant === true) {
+      //   return true;
+      // } if (permission.cataloger === true) {
+      //   return true;
+      // }
+      // return false;
     },
     showRecord() {
       return this.status.showRecord;

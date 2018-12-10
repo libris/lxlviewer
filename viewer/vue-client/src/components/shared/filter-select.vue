@@ -197,7 +197,7 @@ export default {
       type="text" 
       v-bind:placeholder="translatedPlaceholder" 
       :id="selectId" 
-      @keyup="filter()"
+      @keyup.exact="filter()"
       @keyup.space="checkInput($event)"
       @click="filterVisible = !filterVisible"
       ref="filterselectInput"
