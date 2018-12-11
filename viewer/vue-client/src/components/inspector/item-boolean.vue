@@ -9,7 +9,7 @@ export default {
   props: {
     fieldValue: {
       type: Boolean,
-      default: '',
+      default: false,
     },
     fieldKey: {
       type: String,
