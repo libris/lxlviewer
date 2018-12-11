@@ -8,7 +8,7 @@ export default {
   mixins: [ItemMixin],
   props: {
     fieldValue: {
-      type: String,
+      type: Boolean,
       default: '',
     },
     fieldKey: {
