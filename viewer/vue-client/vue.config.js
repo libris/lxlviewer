@@ -2,6 +2,7 @@ const path = require('path');
 process.env.VUE_APP_VERSION = require('./package.json').version;
 
 module.exports = {
+  baseUrl: '/katalogisering/',
   configureWebpack: {
     resolve: {
       extensions: ['.js', '.vue', '.json'],
