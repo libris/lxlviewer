@@ -13,6 +13,7 @@
     "autosize": "^4.0.2",
     "bootstrap": "https://github.com/twbs/bootstrap/archive/v3.3.7.tar.gz",
     "combokeys": "^3.0.0",
+    "font-awesome": "4.7.0",
     "kungbib-styles": "^1.2.4",
     "lodash": "^4.17.11",
     "marked": "^0.5.2",

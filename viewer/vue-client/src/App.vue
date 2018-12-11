@@ -81,6 +81,7 @@ export default {
 <style lang="less">
 @import "~bootstrap/less/bootstrap";
 @import "~kungbib-styles/dist/less/kb-style";
+@import "~font-awesome/css/font-awesome.css";
 
 #app {
   display: flex;
