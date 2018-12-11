@@ -22,6 +22,7 @@ export default {
   data() {
     return {
       showCompact: false,
+      headerThreshold: 0,
     };
   },
   methods: {
@@ -32,6 +33,10 @@ export default {
       } else {
         this.showCompact = false;
       }
+    },
+    setHeaderThreshold() {
+      const headerContainer = document.getElementById('main-header');
+      this.headerThreshold = headerContainer.offsetTop + headerContainer.offsetHeight - 20;
     },
   },
   computed: {
@@ -51,10 +56,6 @@ export default {
     focusData() {
       return this.inspector.data.mainEntity;
     },
-    headerThreshold() {
-      const headerContainer = document.getElementById('main-header');
-      return headerContainer.offsetTop + headerContainer.offsetHeight - 20;
-    },
     compactSummary() {
       let summary = [];
       _.each(this.getSummary, (summaryArray) => {
@@ -69,6 +70,9 @@ export default {
   mounted() {
     this.$nextTick(() => {
       window.addEventListener('scroll', _.throttle(this.handleScroll, 300));
+      setTimeout(() => {
+        this.setHeaderThreshold();
+      }, 500);
     });
   },
   components: {
