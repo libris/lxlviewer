@@ -5,14 +5,14 @@ export function getEmbellished(id, quotedIndex = {}) {
     throw new Error('getEmbellished was called with an undefined or empty Id.');
   }
   let obj = null;
-  if (!_.isEmpty(quotedIndex)) {
+  if (!_.isEmpty(quotedIndex) && typeof quotedIndex[id] !== 'undefined') {
     obj = quotedIndex[id];
   }
   if (obj === null) {
     window.lxlWarning(`🔍 Couldn't find embellished data for: ${id}`);
     obj = { '@id': id };
   }
-  if (obj != null && !obj.hasOwnProperty('@type')) {
+  if (obj !== null && !obj.hasOwnProperty('@type')) {
     window.lxlWarning('👽 Embellished entity has an unknown type (missing @type). ID:', id);
   }
   return _.cloneDeep(obj);
