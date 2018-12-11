@@ -205,7 +205,7 @@ new Vue({
       }, (error) => {
         store.dispatch('setUser', userObj);
         localStorage.removeItem('at');
-        console.warning(`Authentication failed: ${error}`);
+        console.warn(`Authentication failed: ${error}`);
       });
     },
     updateTitle() {
