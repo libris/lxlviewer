@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import LandingPage from '@/views/LandingPage';
+import Login from '@/views/Login';
 
 Vue.use(Router);
 
@@ -30,12 +31,12 @@ export default new Router({
     {
       path: '/login/authorized',
       name: 'Authenticating',
-      component: () => import(/* webpackChunkName: "Login" */ './views/Login.vue'),
+      component: Login,
     },
     {
       path: '/login',
       name: 'Login',
-      component: () => import(/* webpackChunkName: "Login" */ './views/Login.vue'),
+      component: Login,
     },
     {
       path: '/search',
