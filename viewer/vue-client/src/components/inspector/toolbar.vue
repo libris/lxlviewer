@@ -12,7 +12,6 @@ import FieldAdder from '@/components/inspector/field-adder';
 import TooltipComponent from '@/components/shared/tooltip-component';
 import LensMixin from '@/components/mixins/lens-mixin';
 import FormMixin from '@/components/mixins/form-mixin';
-import * as CombinedTemplates from '@/resources/json/combinedTemplates.json';
 
 export default {
   mixins: [clickaway, LensMixin, FormMixin],
@@ -281,6 +280,7 @@ export default {
     },
     validTemplates() {
       const type = this.inspector.data.mainEntity['@type'];
+      const CombinedTemplates = require('@/resources/json/combinedTemplates');
       const baseType = VocabUtil.getRecordType(type, this.resources.vocab, this.resources.context);
       const templates = VocabUtil.getValidTemplates(type, CombinedTemplates[baseType.toLowerCase()], this.resources.vocabClasses, this.resources.context);
       return templates;

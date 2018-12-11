@@ -1,7 +1,5 @@
 <script>
 import * as _ from 'lodash';
-import * as CombinedTemplates from '@/resources/json/combinedTemplates.json';
-import * as BaseTemplates from '@/resources/json/baseTemplates.json'; 
 import * as RecordUtil from '@/utils/record';
 import * as DataUtil from '@/utils/data';
 import CreationCard from '@/components/create/creation-card';
@@ -34,6 +32,7 @@ export default {
     },
     useBase(type) {
       this.chosenType = type;
+      const BaseTemplates = require('@/resources/json/baseTemplates');
       const baseRecord = Object.assign(this.baseRecord, BaseTemplates[this.selectedCreation.toLowerCase()].record);
       const baseMainEntity = Object.assign(this.baseMainEntity, BaseTemplates[this.selectedCreation.toLowerCase()].mainEntity);
       const templateValue = {
@@ -91,6 +90,7 @@ export default {
       return baseRecord;
     },
     combinedTemplates() {
+      const CombinedTemplates = require('@/resources/json/combinedTemplates');
       return _.sortBy(CombinedTemplates[this.selectedCreation.toLowerCase()], template => template.label);
     },
     hasChosen() {
