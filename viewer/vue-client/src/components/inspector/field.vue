@@ -29,8 +29,8 @@ export default {
       default: '',
     },
     parentIndex: {
-      type: String,
-      default: '',
+      type: Number,
+      default: 0,
     },
     parentPath: {
       type: String,
@@ -41,32 +41,32 @@ export default {
       default: '',
     },
     fieldValue: {
-      type: String,
-      default: '',
+      type: [Object, String, Array, Boolean],
+      default: null,
     },
     isLocked: {
-      type: String,
-      default: '',
+      type: Boolean,
+      default: false,
     },
     asColumns: {
       default: true,
       type: Boolean,
     },
     isRemovable: {
-      type: String,
-      default: '',
+      type: Boolean,
+      default: false,
     },
     isInner: {
-      type: String,
-      default: '',
+      type: Boolean,
+      default: false,
     },
     entityType: {
       type: String,
       default: '',
     },
     showActionButtons: {
-      type: String,
-      default: '',
+      type: Boolean,
+      default: false,
     },
     isExpanded: {
       type: Boolean,

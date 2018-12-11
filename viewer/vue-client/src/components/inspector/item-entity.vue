@@ -24,10 +24,7 @@ export default {
       searchDelay: 2,
       formObj: {},
       expanded: false,
-      showCardInfo: {
-        default: false,
-        type: Boolean,
-      },
+      showCardInfo: false,
       removeHover: false,
     };
   },
