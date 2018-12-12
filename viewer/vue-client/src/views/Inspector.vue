@@ -52,6 +52,7 @@ export default {
   data() {
     return {
       documentId: null,
+      documentETag: null,
       result: {},
       postLoaded: false,
       modalOpen: false,
@@ -148,6 +149,7 @@ export default {
       const fetchUrl = `${this.settings.apiPath}/${this.documentId}/data.jsonld?${randomHash}`;
       fetch(fetchUrl).then((response) => {
         if (response.status === 200) {
+          this.documentETag = response.headers.get('ETag');
           return response.json();
         } if (response.status === 404 || response.status === 410) {
           this.loadFailure = {
@@ -177,6 +179,7 @@ export default {
       });
     },
     initializeRecord() {
+      this.documentETag = null; // Reset this
       this.marcPreview.active = false;
       this.$store.dispatch('pushLoadingIndicator', 'Loading document');
       this.postLoaded = false;
@@ -387,7 +390,7 @@ export default {
 
       const RecordId = this.inspector.data.record['@id'];
       const obj = this.getPackagedItem();
-      const ETag = this.inspector.data.record.modified;
+      const ETag = this.documentETag;
 
       if (!RecordId || RecordId === 'https://id.kb.se/TEMPID') { // No ID -> create new
         this.doCreate(obj, done);
