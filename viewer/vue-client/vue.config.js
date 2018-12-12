@@ -3,6 +3,19 @@ process.env.VUE_APP_VERSION = require('./package.json').version;
 
 module.exports = {
   baseUrl: '/katalogisering/',
+  chainWebpack(config) {
+    config.module
+      .rule('vue')
+      .use('vue-loader')
+      .loader('vue-loader')
+      .tap(options => ({
+        ...options,
+        compilerOptions: {
+          ...options.compilerOptions,
+          preserveWhitespace: true,
+        },
+      }));
+  },
   configureWebpack: {
     resolve: {
       extensions: ['.js', '.vue', '.json'],
