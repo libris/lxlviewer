@@ -80,13 +80,36 @@ export default {
 
 <style lang="less">
 @import "~bootstrap/less/bootstrap";
-@import "~kungbib-styles/dist/less/kb-style";
 @import "~font-awesome/css/font-awesome.css";
+@import (css) url(//fonts.googleapis.com/css?family=Open+Sans:400italic,700,400);
+
+body {
+  line-height: 1.6;
+  font-size: 16px;
+  color: @black;
+}
+
+h1, h2, h3, h4 {
+  font-weight: 700;
+}
+h1 {
+  font-size: 36px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 20px;
+}
 
 #app {
   display: flex;
   min-height: 100vh;
   flex-direction: column;
+  font-family: 'Open Sans';
 
   .fade-enter-active, .fade-leave-active {
     transition-property: opacity;
