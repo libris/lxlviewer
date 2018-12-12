@@ -194,10 +194,10 @@ export default {
     <div class="ItemValue-remover"
       v-show="!isLocked && isRemovable"
       v-on:click="removeThis()"
-      @focus="removeHover = true, removeHighlight(event, true)"
-      @blur="removeHover = false, removeHighlight(event, false)"
-      @mouseover="removeHover = true, removeHighlight(event, true)"
-      @mouseout="removeHover = false, removeHighlight(event, false)">
+      @focus="removeHover = true, removeHighlight($event, true)"
+      @blur="removeHover = false, removeHighlight($event, false)"
+      @mouseover="removeHover = true, removeHighlight($event, true)"
+      @mouseout="removeHover = false, removeHighlight($event, false)">
       <i class="fa fa-trash-o icon icon--sm">
         <tooltip-component
           :show-tooltip="removeHover"

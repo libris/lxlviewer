@@ -371,10 +371,10 @@ export default {
             @click="openExtractDialog(), expand()" 
             tabindex="0"
             @keyup.enter="openExtractDialog(), expand()"
-            @focus="showLinkAction = true, actionHighlight(event, true)" 
-            @blur="showLinkAction = false, actionHighlight(event, false)"
-            @mouseover="showLinkAction = true, actionHighlight(event, true)" 
-            @mouseout="showLinkAction = false, actionHighlight(event, false)">
+            @focus="showLinkAction = true, actionHighlight($event, true)" 
+            @blur="showLinkAction = false, actionHighlight($event, false)"
+            @mouseover="showLinkAction = true, actionHighlight($event, true)" 
+            @mouseout="showLinkAction = false, actionHighlight($event, false)">
             <tooltip-component 
               :show-tooltip="showLinkAction" 
               tooltip-text="Link entity" 
@@ -399,10 +399,10 @@ export default {
             v-on:click="removeThis(true)"
             @keyup.enter="removeThis(true)"
             tabindex="0"
-            @focus="removeHover = true, removeHighlight(event, true)" 
-            @blur="removeHover = false, removeHighlight(event, false)"
-            @mouseover="removeHover = true, removeHighlight(event, true)" 
-            @mouseout="removeHover = false, removeHighlight(event, false)">
+            @focus="removeHover = true, removeHighlight($event, true)" 
+            @blur="removeHover = false, removeHighlight($event, false)"
+            @mouseover="removeHover = true, removeHighlight($event, true)" 
+            @mouseout="removeHover = false, removeHighlight($event, false)">
             <tooltip-component 
               :show-tooltip="removeHover" 
               tooltip-text="Remove" 
