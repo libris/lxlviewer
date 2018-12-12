@@ -6,7 +6,6 @@ import * as _ from 'lodash';
 import * as VocabUtil from '@/utils/vocab';
 import * as DisplayUtil from '@/utils/display';
 import * as StringUtil from '@/utils/string';
-import * as StructuredValueTemplates from '@/resources/json/structuredValueTemplates.json';
 import VueSimpleSpinner from 'vue-simple-spinner';
 import ToolTipComponent from '../shared/tooltip-component.vue';
 import PanelSearchList from '../search/panel-search-list.vue';
@@ -460,7 +459,7 @@ export default {
     },
     addEmpty(typeId) {
       this.hide();
-      const templates = JSON.parse(StructuredValueTemplates);
+      const templates = require('@/resources/json/structuredValueTemplates.json');
       const shortenedType = StringUtil.getCompactUri(typeId, this.resources.context);
       let obj = { '@type': shortenedType };
       if (templates.hasOwnProperty(shortenedType)) {
