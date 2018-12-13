@@ -225,7 +225,11 @@ new Vue({
       } else {
         title += StringUtil.getUiPhraseByLang(route.name, this.$store.getters.user.settings.language);
       }
-      title += ` | ${this.$store.getters.settings.title}`;
+      if (route.name === 'Home') {
+        title = this.$store.getters.settings.title;
+      } else {
+        title += ` | ${this.$store.getters.settings.title}`;
+      }
       document.title = title;
     },
     initWarningFunc() {

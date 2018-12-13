@@ -17,12 +17,12 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'home',
+      name: 'Home',
       component: LandingPage,
     },
     {
       path: '/about',
-      name: 'about',
+      name: 'About',
       // route level code-splitting
       // this generates a separate chunk (about.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
@@ -54,12 +54,12 @@ export default new Router({
     },
     {
       path: '/user',
-      name: 'User',
+      name: 'User settings',
       component: () => import(/* webpackChunkName: "UserPage" */ './views/UserPage.vue'),
     },
     {
       path: '/create',
-      name: 'Create',
+      name: 'Create new',
       component: () => import(/* webpackChunkName: "Create" */ './views/Create.vue'),
     },
     {
