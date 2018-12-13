@@ -1,0 +1,22 @@
+[
+  {
+    "key": "ISBN",
+    "mappings": {
+      "identifiedBy.value": "",
+      "identifiedBy.@type": "ISBN"
+    }
+  },
+  {
+    "key": "ISSN",
+    "mappings": {
+      "identifiedBy.value": "",
+      "identifiedBy.@type": "ISSN"
+    }
+  },
+  {
+    "key": "title",
+    "mappings": {
+      "hasTitle.mainTitle": ""
+    }
+  }
+]

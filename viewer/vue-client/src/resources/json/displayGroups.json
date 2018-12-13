@@ -1,0 +1,29 @@
+{
+  "categorization": [
+    "@type",
+    "issuanceType",
+    "inCollection",
+    "inScheme"
+  ],
+  "header": [
+    "hasTitle",
+    "title",
+    "prefLabel",
+    "label",
+    "heldBy",
+    "familyName",
+    "givenName",
+    "name",
+    "marc:numeration",
+    "marc:titlesAndOtherWordsAssociatedWithAName",
+    "qualifyingNote",
+    "marc:fullerFormName",
+    "lifeSpan",
+    "marc:attributionQualifier",
+    "code",
+    "isPartOf",
+    "marc:subordinateUnit"
+  ],
+  "info": ["responsibilityStatement", "instanceOf", "contribution", "broader", "date", "note"],
+  "identifiers": ["identifiedBy", "sameAs"]
+}

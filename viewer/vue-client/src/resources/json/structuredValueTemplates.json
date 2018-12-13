@@ -1,0 +1,449 @@
+{
+  "Title": {
+    "@type": "Title",
+    "mainTitle": "",
+    "subtitle": ""
+  },
+  "AbbreviatedTitle": {
+    "@type": "AbbreviatedTitle",
+    "mainTitle": ""
+  },
+  "AddedTitlePageTitle": {
+    "@type": "AddedTitlePageTitle",
+    "mainTitle": ""
+  },
+  "CaptionTitle": {
+    "@type": "CaptionTitle",
+    "mainTitle": ""
+  },
+  "CoverTitle": {
+    "@type": "CoverTitle",
+    "mainTitle": ""
+  },
+  "DistinctiveTitle": {
+    "@type": "DistinctiveTitle",
+    "mainTitle": "",
+    "coverage": ""
+  },
+  "KeyTitle": {
+    "@type": "KeyTitle",
+    "mainTitle": "",
+    "qualifier": ""
+  },
+  "marc:OtherTitle": {
+    "@type": "marc:OtherTitle",
+    "mainTitle": ""
+  },
+  "ParallelTitle": {
+    "@type": "ParallelTitle",
+    "mainTitle": ""
+  },
+  "RunningTitle": {
+    "@type": "AbbreviatedTitle",
+    "mainTitle": ""
+  },
+  "SpineTitle": {
+    "@type": "SpineTitle",
+    "mainTitle": ""
+  },
+  "TitlePortion": {
+    "@type": "TitlePortion",
+    "mainTitle": ""
+  },
+  "VariantTitle": {
+    "@type": "VariantTitle",
+    "mainTitle": ""
+  },
+  "TitlePart": {
+    "@type": "TitlePart",
+    "partName": [
+      ""
+    ],
+    "partNumber": [
+      ""
+    ]
+  },
+  "Identifier": {
+    "@type": "Identifier",
+    "value": ""
+  },
+  "AudioIssueNumber": {
+    "@type": "AudioIssueNumber",
+    "value": ""
+  },
+  "CODEN": {
+    "@type": "CODEN",
+    "value": ""
+  },
+  "EAN": {
+    "@type": "EAN",
+    "value": ""
+  },
+  "ISBN": {
+    "@type": "ISBN",
+    "value": "",
+    "qualifier": [""]
+  },
+  "ISMN": {
+    "@type": "ISMN",
+    "value": ""
+  },
+  "ISSN": {
+    "@type": "ISSN",
+    "value": ""
+  },
+  "ISRC": {
+    "@type": "ISRC",
+    "value": ""
+  },
+  "MatrixNumber": {
+    "@type": "MatrixNumber",
+    "value": ""
+  },
+  "MusicPlate": {
+    "@type": "MusicPlate",
+    "value": "",
+    "agent": {
+        "@type": "Organization",
+        "name": ""
+    }
+  },
+  "MusicPublisherNumber": {
+    "@type": "MusicPublisherNumber",
+    "value": "",
+    "agent": {
+        "@type": "Organization",
+        "name": ""
+    }
+  },
+  "NBN": {
+    "@type": "NBN",
+    "value": ""
+  },
+  "PublisherNumber": {
+    "@type": "PublisherNumber",
+    "value": ""
+  },
+  "SICI": {
+    "@type": "SICI",
+    "value": ""
+  },
+  "STRN": {
+    "@type": "STRN",
+    "value": ""
+  },
+  "UPC": {
+    "@type": "UPC",
+    "value": ""
+  },
+  "VideoRecordingNumber": {
+    "@type": "VideoRecordingNumber",
+    "value": ""
+  },
+  "PrimaryPublication": {
+    "@type": "PrimaryPublication",
+    "place": [
+      {
+        "@type": "Place",
+        "label": ""
+      }
+    ],
+    "agent": [
+      {
+        "@type": "Agent",
+        "label": ""
+      }
+    ],
+    "year": "",
+    "country": []
+
+  },
+  "Publication": {
+    "@type": "Publication",
+    "place": [
+      {
+        "@type": "Place",
+        "label": [""]
+      }
+    ],
+    "agent": [
+      {
+        "@type": "Agent",
+        "label": [""]
+      }
+    ],
+    "date": [""]
+
+  },
+  "Production": {
+    "@type": "Production",
+    "place": [
+      {
+        "@type": "Place",
+        "label": [""]
+      }
+    ],
+    "agent": [
+      {
+        "@type": "Agent",
+        "label": [""]
+      }
+    ],
+    "date": [""]
+  },
+  "Manufacture": {
+    "@type": "Manufacture",
+    "place": [
+      {
+        "@type": "Place",
+        "label": [""]
+      }
+    ],
+    "agent": [
+      {
+        "@type": "Agent",
+        "label": [""]
+      }
+    ],
+    "date": [""]
+  },
+  "Distribution": {
+    "@type": "Distribution",
+    "place": [
+      {
+        "@type": "Place",
+        "label": [""]
+      }
+    ],
+    "agent": [
+      {
+        "@type": "Agent",
+        "label": [""]
+      }
+    ],
+    "date": [""]
+  },
+  "Copyright": {
+    "@type": "Copyright",
+    "date": [""]
+  },
+  "Extent": {
+    "@type": "Extent",
+    "label": ""
+  },
+  "Dimensions": {
+    "@type": "Dimensions",
+    "label": ""
+  },
+  "Note": {
+    "@type": "Note",
+    "label": ""
+  },
+  "marc:BindingInformationNote": {
+    "@type": "marc:BindingInformationNote",
+    "label": ""
+  },
+  "Person": {
+    "@type": "Person",
+    "familyName": "",
+    "givenName": "",
+    "lifeSpan": ""
+  },
+  "Organization": {
+    "@type": "Organization",
+    "name": ""
+  },
+  "Jurisdiction": {
+    "@type": "Jurisdiction",
+    "name": ""
+  },
+  "Family": {
+    "@type": "Family",
+    "name": "",
+    "lifeSpan": ""
+  },
+  "Meeting": {
+    "@type": "Meeting",
+    "date": "",
+    "marc:numeration": "",
+    "name": ""
+  },
+  "Dissertation": {
+    "@type": "Dissertation",
+    "label": ""
+  },
+  "SeriesMembership": [
+    {
+      "@type": "SeriesMembership",
+      "inSeries": {
+        "@type": "Instance",
+        "identifiedBy": [
+          {
+            "@type": "ISSN",
+            "value": ""
+          }
+        ],
+        "instanceOf": {
+          "@type": "Work",
+          "hasTitle": [
+            {
+              "@type": "Title",
+              "mainTitle": ""
+            }
+          ]
+        }
+      },
+      "marc:seriesTracingPolicy": "",
+      "seriesEnumeration": "",
+      "seriesStatement": [""]
+    }
+  ],
+  "NumberingOfSerials": {
+    "@type": "NumberingOfSerials",
+    "label": ""
+  },
+  "Place": {
+    "@type": "Place",
+    "label": [""]
+  },
+  "Agent": {
+    "@type": "Agent",
+    "label": [""]
+  },
+  "PrimaryContribution": {
+    "@type": "PrimaryContribution",
+    "agent": null,
+    "role": []
+  },
+  "Contribution": {
+    "@type": "Contribution",
+    "agent": null,
+    "role": []
+  },
+  "ComplexSubject": {
+    "@type": "ComplexSubject",
+    "termComponentList": [],
+    "inScheme": null
+  },
+  "Geographic": {
+    "@type": "Geographic",
+    "prefLabel": ""
+  },
+  "GenreSubdivision": {
+    "@type": "GenreSubdivision",
+    "prefLabel": ""
+  },
+  "GeographicSubdivision": {
+    "@type": "GeographicSubdivision",
+    "prefLabel": ""
+  },
+  "TemporalSubdivision": {
+    "@type": "TemporalSubdivision",
+    "prefLabel": ""
+  },
+  "TopicSubdivision": {
+    "@type": "TopicSubdivision",
+    "prefLabel": ""
+  },
+  "Item": {
+    "@type": "Item",
+    "physicalLocation": [""],
+    "shelfControlNumber": "",
+    "shelfLabel": "",
+    "shelfMark": {
+      "@type": "ShelfMark",
+      "label": [""]
+    }
+  },
+  "ShelfMark": {
+    "@type": "ShelfMark",
+    "label": [""]
+  },
+  "Availability": {
+    "@type": "Availability",
+    "label": ""
+  },
+  "marc:TextualHoldingsBasicBibliographicUnit": [ 
+    { 
+      "@type": "marc:TextualHoldingsBasicBibliographicUnit", 
+      "marc:textualString": "",
+      "marc:cataloguersNote": [""],
+      "marc:publicNote": [""]
+    } 
+  ],
+  "Classification": {
+    "@type": "Classification",
+    "code": "",
+    "inScheme": {
+      "@id": "https://id.kb.se/term/kssb/8/",
+      "@type": "ConceptScheme",
+      "code": "kssb",
+      "version": "8"
+    }
+  },
+  "ClassificationDdc": {
+    "@type": "ClassificationDdc",
+    "code": "",
+    "edition": "full",
+    "editionEnumeration": "23/swe"
+  },
+  "SourceData": {
+    "@type": "SourceData",
+    "label": "",
+    "citationNote": ""
+  },
+  "SourceDataNotFound": {
+    "@type": "SourceDataNotFound",
+    "citationSource": ""
+  },
+  "AdministrativeHistoryNote": {
+    "@type": "AdministrativeHistoryNote",
+    "label": ""
+  },
+  "BiographicalInformation": {
+    "@type": "BiographicalInformation",
+    "label": ""
+  },
+  "BiographicalOrHistoricalData": {
+    "@type": "BiographicalOrHistoricalData",
+    "label": ""
+  },
+  "IntendedAudience": {
+    "@type": "IntendedAudience",
+    "label": ""
+  },
+  "DescriptionConventions": {
+    "@type": "DescriptionConventions",
+    "code": ""
+  },
+  "Library": {
+    "@type": "Library",
+    "sigel": ""
+  },
+  "Summary": {
+    "@type": "Summary",
+    "label": ""
+  },
+  "TableOfContents": {
+    "@type": "TableOfContents",
+    "label": ""
+  },
+  "MusicFormat": {
+    "@type": "MusicFormat",
+    "label": [""],
+    "source": {
+      "@type": "Source",
+      "code": ""
+    }
+  },
+  "MusicMedium": {
+    "@type": "MusicMedium",
+    "label": ""
+  },
+  "ToCEntry": {
+    "@type": "ToCEntry",
+    "label": "",
+    "responsibilityStatement": "",
+    "comment": [""]
+  }
+}
