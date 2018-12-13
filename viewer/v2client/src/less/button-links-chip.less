@@ -1,0 +1,142 @@
+// ----------- LINKS ----------------
+body a {
+  color: @link-color;
+  text-decoration: none;
+  cursor: pointer;
+
+  &:hover {
+    color: @link-hover-color;
+    text-decoration: underline;
+  }
+}
+
+a:focus {
+  outline: none;
+}
+
+// ----------- BUTTON ----------------
+
+.btn,
+.btn[disabled] {
+  border: 0;
+  box-shadow: @shadow-panel;
+  transition: background-color 0.1s ease;
+}
+
+.btn:focus,
+.btn:active:focus {
+  outline: 0;
+}
+
+.btn[disabled],
+.btn.disabled {
+  background-color: @gray-lighter;
+  opacity: 1;
+  &:hover, 
+  &:focus {
+    background-color: @gray-lighter;
+  }
+
+  &.btn-primary {
+    background-color: fadeout(@brand-primary, 35%);
+  }
+}
+
+.btn-primary {
+  &:hover {
+    background-color: @link-hover-color;
+    border-color: @link-hover-color;
+  }
+}
+
+.btn-gray {
+  color: white;
+  background-color: @gray;
+  &:hover, 
+  &:focus {
+    color: white;
+    background-color: @gray-darker;
+  }
+}
+
+.btn-danger {
+  &:hover {
+    background-color: @danger-alter;
+  }
+}
+
+//btn sizes
+
+.btn-mixin(@width, @height, @fsize){
+  min-width: @width;
+  height: @height;
+  font-size: @fsize;
+  font-weight: 600;
+}
+
+.btn--lg {
+  .btn-mixin(275px, auto, 20px);
+
+  @media screen and (max-width: @screen-sm-min){
+    .btn--md
+  }
+}
+
+.btn--md {
+  .btn-mixin(150px, 30px, 16px);
+  padding: 0 15px;
+
+  @media screen and (max-width: @screen-sm-min){
+    .btn--sm
+  }
+}
+
+.btn--sm {
+  .btn-mixin(150px, 26px, 13px);
+  padding: 3px 10px;
+}
+
+// ----------- CHIP ----------------
+
+.chip {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  height: 33px;
+  background-color: @chip-background;
+  border: 1px solid @chip-color;
+  color: @chip-color;
+  border-radius: 2em;
+  line-height: 1.6;
+  padding: 3px 5px 3px 10px;
+  margin: 2px 5px 5px 0px;
+  transition: .3s ease, background-color 0.3s ease;
+  max-width: 300px;
+
+  &-label {
+    font-weight: 600;
+    cursor: default;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &-removeButton {
+    display: inline-block;
+    position: relative;
+    top: 3px;
+    width: 1.2em;
+    height: 1.2em;
+    line-height: 1.2em;
+    text-align: center;
+    margin: 0 5px;
+  }
+
+  &.is-removeable {
+    background-color: @danger;
+  }
+
+  @media (max-width: @screen-sm) {
+    max-width: 100%;
+  }
+}

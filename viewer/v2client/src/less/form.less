@@ -1,0 +1,73 @@
+// CHECKBOX
+.customCheckbox {
+  &-input {
+    margin-right: 0.2em;
+    position: absolute;
+    opacity: 0;
+
+    &:checked + .customCheckbox-icon::before {
+      content: "\f14a";
+      color: @brand-primary;
+    }
+
+    .user-is-tabbing &:focus + .customCheckbox-icon {
+      outline: 2px solid #8cc9c9; //fallback for IE & Edge
+      outline: auto darkcyan;
+    }
+  }
+
+  &-icon {
+    padding: 0 3px;
+    margin-left: -3px;
+    display: inline-block;
+
+    &::before {
+      content: "\f096";
+      font-family: "FontAwesome";
+      display: inline-block;
+      font-size: 18px;
+      font-size: 1.8rem;
+      color: @gray-darker;
+      width: 18px;
+    }
+  }
+}
+
+// SELECT
+.customSelect {
+  height: 30px;
+  min-width: 150px;
+  font-size: 16px;
+  font-size: 1.6rem;
+  font-weight: 500;
+  background-color: @white;
+  border: 1px solid @gray-light;
+  box-shadow: @shadow-panel;
+  text-align-last: center;
+}
+
+//TEXT INPUT
+.customInput {
+  display: flex;
+  justify-content: space-between;
+  height: 42px;
+  min-width: 75%;
+  flex-grow: 1;
+  font-size: 20px;
+  font-size: 2rem;
+  line-height: 1.2;
+  border: 1px solid @gray-light;
+  border-radius: 4px;
+
+  &::placeholder,
+  input::placeholder  {
+    font-style: italic;
+    color: @gray;
+  }
+
+  &:focus {
+    border: 1px solid @brand-primary;
+    outline: 0;
+    box-shadow: none;
+  }
+}

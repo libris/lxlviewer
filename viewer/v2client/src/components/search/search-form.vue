@@ -362,7 +362,7 @@ export default {
                 <i class="fa fa-fw fa-close"></i>
               </span>
             </div>
-            <button class="SearchBar-submit btn btn-primary icon icon--white icon--md" 
+            <button class="SearchBar-submit btn btn-primary icon icon--md" 
               :aria-label="'Search' | translatePhrase"
               @click.prevent="doSearch">
               <i class="fa fa-search"></i>
@@ -378,7 +378,7 @@ export default {
           <input type="text" class="SearchBar-input customInput form-control" placeholder="ISBN eller valfria sökord" 
             v-model="remoteSearch.q">
           <button 
-            class="SearchBar-submit btn btn-primary icon icon--white icon--md"
+            class="SearchBar-submit btn btn-primary icon icon--md"
             :aria-label="'Search' | translatePhrase"
             v-bind:class="{'disabled': status.remoteDatabases.length === 0}"
             :disabled="status.remoteDatabases.length === 0" 

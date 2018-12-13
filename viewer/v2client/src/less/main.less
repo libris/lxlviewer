@@ -1,0 +1,191 @@
+@import 'button-links-chip.less';
+@import 'card.less';
+@import 'edit.less';
+@import 'login.less';
+@import 'utils.less';
+@import 'window.less';
+@import 'form.less';
+@import 'type.less';
+@import 'icon.less';
+
+@import url(//fonts.googleapis.com/css?family=Open+Sans:600);
+
+html {
+  height: 100%;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-y: scroll;
+  &.ie11 {
+    main {
+      margin-bottom: 75vh;
+    }
+  }
+  &.no-flexbox {
+    .container {
+      display: none;
+    }
+    #oldbrowsermsg {
+      padding: 25px;
+      display: block !important;
+    }
+  }
+}
+
+[v-cloak] {
+  display: none;
+}
+
+main {
+  margin-top: 30px;
+  margin-bottom: 100px;
+}
+
+#oldbrowsermsg {
+  width: 100%;
+  padding: 3em 0em;
+  div {
+    border: 1px solid @gray;
+    background-color: @gray-lighter;
+    padding: 25px;
+    width: 800px;
+    margin: auto;
+    box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.15);
+  }
+}
+
+.vue-simple-spinner {
+  border-color: @brand-primary @gray-lighter @gray-lighter !important;
+}
+
+#body-blocker {
+  display: none;
+  z-index: @backdrop-z;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.3);
+}
+html.scroll-lock {
+  overflow: hidden;
+}
+
+body {
+  position: relative;
+  background-color: @bg-site;
+  background-image: @bg-img;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  -ms-overflow-style: scrollbar;
+  
+  .facet-container {
+    opacity: 1;
+    transition: 0.3s ease width 0s, 0.3s ease opacity 0.3s;
+    &.facet-hidden {
+      width: 0%;
+      opacity: 0;
+    }
+  }
+}
+
+#page-content-wrapper {
+  opacity: 0;
+  transition: opacity 0.3s ease-out 0.3s;
+  &.show-content {
+    opacity: 1;
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+  }
+}
+
+@sweep-color: #ddd;
+@skeleton-z: 1111;
+
+.skeleton-page {
+  position: fixed;
+  width: 100%;
+  z-index: @skeleton-z;
+  opacity: 1;
+  transition: opacity 0.3s ease 0s, width 0s ease 0.3s;
+  &.hide-skeleton {
+    opacity: 0;
+    width: 0%;
+    > .skeleton-container {
+      width: 0;
+      padding: 0;
+    }
+  }
+  .skeleton-container {
+    transition: width 0s ease 0.3s, padding 0s ease 0.3s;
+    margin-top: 15vh;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    background: @white;
+    > div {
+      height: 75vh;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      background-color: @sweep-color;
+      background-image: linear-gradient(100deg , @sweep-color 40%, #eee 50%, @sweep-color 60%);
+      background-size: 200px 1000px;
+      background-repeat: no-repeat;
+      animation: shine 1.5s infinite;
+      background-position: -200px 0;
+      overflow: hidden;
+      > div {
+        border-color: @white;
+        border-style: solid;
+        background: transparent;
+        border-width: 8px 0;
+        min-height: 40px;
+      }
+    }
+  }
+}
+
+// keyframe for skeleton animation
+@keyframes shine {
+  to {
+    background-position:
+      1200px 0;
+  }
+}
+
+
+// ----------- BUTTONS ----------------
+button, .btn-primary, .btn-primary:hover, .btn-primary:focus {
+    color: #ffffff;
+}
+
+button {
+  color:#444;
+  border:none;
+  border-radius: 2px;
+  background:#ccc;
+  padding: 0 0.4em;
+  font-weight:bold;
+  &:hover {
+  background: #ddd;
+  color:#222;
+  }
+  &:focus {
+  background:#bbb;
+  }
+}
+
+
+
+// ----------- VARIOUS ----------------
+* {
+  outline: none;
+}
+.user-is-tabbing *:focus {
+  outline: 2px solid #8cc9c9; //fallback for IE & Edge
+  outline: auto darkcyan;
+}
