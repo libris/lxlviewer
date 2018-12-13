@@ -12,8 +12,8 @@ export default {
   props: {
     options: {},
     optionsAll: {
-      type: String,
-      default: '',
+      type: Array,
+      default: () => [],
     },
     optionsSelected: {
       type: String,
