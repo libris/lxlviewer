@@ -13,11 +13,11 @@ export default {
     },
     disabled: {
       type: Boolean,
-      default: true,
+      default: false,
     },
     replaced: {
       type: Boolean,
-      default: true,
+      default: false,
     },
     extracting: {
       type: Boolean,
