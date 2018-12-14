@@ -49,12 +49,22 @@ export default {
     },
     getLocalResult() {
       const fetchUrl = `${this.settings.apiPath}/find.json?${this.query}`;
-
-      fetch(fetchUrl).then(response => response.json(), (error) => {
+      fetch(fetchUrl).then(response => response.text(), (error) => {
         this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)} ${error}` });
         this.searchInProgress = false;
       }).then((result) => {
-        this.result = result;
+        try {
+          this.result = JSON.parse(result);
+        } catch (e) {
+          const msg = [
+            `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)}`,
+            `${StringUtil.getUiPhraseByLang('Could not process server response', this.user.settings.language)}`,
+          ];
+          this.$store.dispatch('pushNotification', {
+            type: 'danger',
+            message: msg.join('. '),
+          });
+        }
         this.searchInProgress = false;
       });
     },

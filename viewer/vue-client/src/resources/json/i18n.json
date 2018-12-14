@@ -147,6 +147,7 @@
     "Other sources": "Andra källor",
     "No sources chosen": "Inga källor valda",
     "Something went wrong": "Något gick snett",
+    "Could not process server response": "Kunde inte hantera svaret från servern",
     "Embellish from template": "Berika från mall",
     "Try reloading the page": "Försök att ladda om sidan",
     "Couldn\t load help documentation": "Kunde inte ladda hjälpdokumentation",
