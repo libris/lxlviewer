@@ -3,12 +3,13 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue';
 import Vuex from 'vuex';
-import App from './App';
 import PortalVue from 'portal-vue';
 import ComboKeys from 'combokeys';
+import modernizr from 'modernizr'; // eslint-disable-line no-unused-vars
+import * as _ from 'lodash';
+import App from './App';
 import router from './router';
 import store from './store';
-import * as _ from 'lodash';
 import * as VocabUtil from '@/utils/vocab';
 import * as LayoutUtil from '@/utils/layout';
 import * as DisplayUtil from '@/utils/display';
