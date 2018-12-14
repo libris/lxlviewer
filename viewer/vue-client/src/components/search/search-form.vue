@@ -461,6 +461,7 @@ export default {
   }
 
   &-input {
+    color: @black;
     border-width: 1px 0 1px 1px;
     border-radius: 4px 0 0 4px;
 
