@@ -60,7 +60,7 @@
     "karma-sourcemap-loader": "^0.3.7",
     "karma-spec-reporter": "0.0.31",
     "karma-webpack": "^2.0.2",
-    "kungbib-styles": "^1.2.4",
+    "kungbib-styles": "1.2.4",
     "less": "^2.7.3",
     "less-loader": "^4.0.5",
     "lodash": "^4.17.5",
