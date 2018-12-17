@@ -197,7 +197,10 @@ export default {
     applyFieldsFromTemplate(templateJson) {
       const basePostType = this.inspector.data.mainEntity['@type'];
       const tempPostType = templateJson.mainEntity['@type'];
-      const matching = VocabUtil.isSubClassOf(tempPostType, basePostType, this.resources.vocab, this.resources.context);
+      const matching = (
+        VocabUtil.isSubClassOf(tempPostType, basePostType, this.resources.vocab, this.resources.context)
+        || VocabUtil.isSubClassOf(basePostType, tempPostType, this.resources.vocab, this.resources.context)
+      );
       if (matching === false) {
         const basePostLabel = StringUtil.getLabelByLang(basePostType, this.user.settings.language, this.resources.vocab, this.resources.context);
         const tempPostLabel = StringUtil.getLabelByLang(tempPostType, this.user.settings.language, this.resources.vocab, this.resources.context);
