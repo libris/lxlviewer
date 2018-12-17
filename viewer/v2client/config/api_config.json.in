@@ -1,6 +1,0 @@
-{
-  "path": "http://kblocalhost.kb.se:5000",
-  "auth": "https://login.libris.kb.se/oauth/verify",
-  "id": "http://localhost:5000",
-  "piwik_id": "00"
-}
