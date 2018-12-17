@@ -145,16 +145,9 @@
         "work": {
           "@id": "https://id.kb.se/TEMPID#work",
           "@type": "Audio",
-          "hasTitle": [
-            {
-              "@type": "Title",
-              "mainTitle": ""
-            }
-          ],
           "language": [{
             "@id": "https://id.kb.se/language/swe"
           }],
-          "originalVersion": null,
           "classification": [{
               "@type": "ClassificationDdc",
               "code": "",
@@ -612,12 +605,6 @@
           "contentType": [
             {
               "@id": "https://id.kb.se/term/rda/PerformedMusic"
-            }
-          ],
-          "hasTitle": [
-            {
-              "@type": "Title",
-              "mainTitle": ""
             }
           ],
           "genreForm": [
