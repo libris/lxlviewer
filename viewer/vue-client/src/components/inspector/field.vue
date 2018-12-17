@@ -3,7 +3,7 @@
   The field component is responsible for a specific key value pair.
   It's responsible for its own data, and dispatches all changes to the form component.
 */
-import * as _ from 'lodash';
+import { isArray, isPlainObject, isObject, cloneDeep, get } from 'lodash-es';
 import { mixin as clickaway } from 'vue-clickaway';
 import { mapGetters } from 'vuex';
 import EntityAdder from './entity-adder';
@@ -115,7 +115,7 @@ export default {
         });
       }
 
-      if (!this.isRepeatable && _.isArray(this.fieldValue) && this.fieldValue.length > 1) {
+      if (!this.isRepeatable && isArray(this.fieldValue) && this.fieldValue.length > 1) {
         failedValidations.push({
           text: 'The property is not repeatable',
           hint: this.fieldKey,
@@ -179,7 +179,7 @@ export default {
       return this.valueAsArray.length;
     },
     valueIsArray() {
-      return _.isArray(this.fieldValue);
+      return isArray(this.fieldValue);
     },
     locked() {
       if (this.settings.lockedProperties.indexOf(this.fieldKey) !== -1) {
@@ -188,7 +188,7 @@ export default {
       return this.isLocked;
     },
     isObjectArray() {
-      return _.isPlainObject(this.valueAsArray[0]);
+      return isPlainObject(this.valueAsArray[0]);
     },
     linkedIds() {
       const ids = [];
@@ -219,7 +219,7 @@ export default {
         return [];
       }
       let valueArray = this.fieldValue;
-      if (!_.isArray(this.fieldValue)) {
+      if (!isArray(this.fieldValue)) {
         valueArray = [this.fieldValue];
       }
       return valueArray;
@@ -258,7 +258,7 @@ export default {
       return null;
     },
     hasSingleValue() {
-      if (!_.isArray(this.fieldValue) || this.fieldValue.length === 1) {
+      if (!isArray(this.fieldValue) || this.fieldValue.length === 1) {
         return true;
       }
       return false;
@@ -277,7 +277,7 @@ export default {
       if (typeof value === 'undefined') {
         return true;
       }
-      if (!_.isObject(value)) {
+      if (!isObject(value)) {
         return false;
       }
       const bEmpty = (Object.keys(value).length === 0);
@@ -296,13 +296,13 @@ export default {
   methods: {
     pasteClipboardItem() {
       const obj = this.clipboardValue;
-      let currentValue = _.cloneDeep(_.get(this.inspector.data, this.getPath));
+      let currentValue = cloneDeep(get(this.inspector.data, this.getPath));
       if (currentValue === null) {
         currentValue = obj;
-      } else if (!_.isArray(currentValue)) {
+      } else if (!isArray(currentValue)) {
         currentValue = [currentValue];
         currentValue.push(obj);
-      } else if (typeof obj.length !== 'undefined' && _.isArray(obj)) {
+      } else if (typeof obj.length !== 'undefined' && isArray(obj)) {
         obj.forEach((subObj) => {
           currentValue.push(subObj);
         });
@@ -361,7 +361,7 @@ export default {
       }
       if (approved) {
         this.removed = true;
-        const parentData = _.cloneDeep(_.get(this.inspector.data, this.parentPath));
+        const parentData = cloneDeep(get(this.inspector.data, this.parentPath));
         delete parentData[this.fieldKey];
         setTimeout(() => {
           this.$store.dispatch('updateInspectorData', {
@@ -455,7 +455,7 @@ export default {
     },
     highLightLastAdded() {
       if (this.isLastAdded === true) {
-        if (this.fieldValue === null || (_.isArray(this.fieldValue) && this.fieldValue.length === 0)) {
+        if (this.fieldValue === null || (isArray(this.fieldValue) && this.fieldValue.length === 0)) {
           const entityAdder = this.$refs.entityAdder;
           this.$nextTick(() => {
             if (entityAdder.$refs.adderFocusElement) {

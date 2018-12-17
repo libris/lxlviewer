@@ -1,5 +1,5 @@
 <script>
-import * as _ from 'lodash';
+import { sortBy } from 'lodash-es';
 import * as RecordUtil from '@/utils/record';
 import * as DataUtil from '@/utils/data';
 import CreationCard from '@/components/create/creation-card';
@@ -91,7 +91,7 @@ export default {
     },
     combinedTemplates() {
       const CombinedTemplates = require('@/resources/json/combinedTemplates');
-      return _.sortBy(CombinedTemplates[this.selectedCreation.toLowerCase()], template => template.label);
+      return sortBy(CombinedTemplates[this.selectedCreation.toLowerCase()], template => template.label);
     },
     hasChosen() {
       return this.activeIndex > 0 || (this.activeIndex === 0 && this.chosenType);

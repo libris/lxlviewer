@@ -6,7 +6,7 @@ import Vuex from 'vuex';
 import PortalVue from 'portal-vue';
 import ComboKeys from 'combokeys';
 import modernizr from 'modernizr'; // eslint-disable-line no-unused-vars
-import * as _ from 'lodash';
+import { each } from 'lodash-es';
 import App from './App';
 import router from './router';
 import store from './store';
@@ -97,7 +97,7 @@ new Vue({
       const stateSettings = KeyBindings[state];
         
       if (typeof stateSettings !== 'undefined') {
-        _.each(stateSettings, (value, key) => {
+        each(stateSettings, (value, key) => {
           if (value !== null && value !== '') {
             this.combokeys.bindGlobal(key.toString(), () => {
               this.$store.dispatch('pushKeyAction', value);

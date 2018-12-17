@@ -1,11 +1,11 @@
-import * as _ from 'lodash';
+import { isEmpty, cloneDeep, isArray, isObject } from 'lodash-es';
 
 export function getEmbellished(id, quotedIndex = {}) {
   if (typeof id === 'undefined' || id === '') {
     throw new Error('getEmbellished was called with an undefined or empty Id.');
   }
   let obj = null;
-  if (!_.isEmpty(quotedIndex) && typeof quotedIndex[id] !== 'undefined') {
+  if (!isEmpty(quotedIndex) && typeof quotedIndex[id] !== 'undefined') {
     obj = quotedIndex[id];
   }
   if (obj === null) {
@@ -15,14 +15,14 @@ export function getEmbellished(id, quotedIndex = {}) {
   if (obj !== null && !obj.hasOwnProperty('@type')) {
     window.lxlWarning('👽 Embellished entity has an unknown type (missing @type). ID:', id);
   }
-  return _.cloneDeep(obj);
+  return cloneDeep(obj);
 }
 
 export function getMergedItems(record, mainEntity, work, quoted) {
   const obj = { '@graph': [] };
   obj['@graph'].push(record);
   obj['@graph'].push(mainEntity);
-  if (!_.isEmpty(work)) {
+  if (!isEmpty(work)) {
     obj['@graph'].push(work);
   }
   for (const graph in quoted) {
@@ -34,10 +34,10 @@ export function getMergedItems(record, mainEntity, work, quoted) {
 }
 
 export function removeNullValues(inputObj) {
-  const obj = _.cloneDeep(inputObj);
+  const obj = cloneDeep(inputObj);
   // Strips away all null value keys
   let cleanObj;
-  if (_.isArray(obj)) {
+  if (isArray(obj)) {
     cleanObj = [];
     for (let i = 0; i < obj.length; i++) {
       const item = removeNullValues(obj[i]);
@@ -45,7 +45,7 @@ export function removeNullValues(inputObj) {
         cleanObj.push(item);
       }
     }
-  } else if (_.isObject(obj)) {
+  } else if (isObject(obj)) {
     cleanObj = {};
     for (const key in obj) {
       if (obj.hasOwnProperty(key) && key !== '_uid') {

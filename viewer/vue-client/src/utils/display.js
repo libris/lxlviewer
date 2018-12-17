@@ -1,10 +1,9 @@
-import * as _ from 'lodash';
+import { cloneDeep, each, isObject, uniq, remove, isArray, isEmpty } from 'lodash-es';
 import moment from 'moment';
 import * as httpUtil from './http';
 import * as DataUtil from './data';
 import * as VocabUtil from './vocab';
 import * as StringUtil from './string';
-import * as displayGroups from '@/resources/json/displayGroups.json';
 import 'moment/locale/sv';
 
 moment.locale('sv');
@@ -12,9 +11,9 @@ moment.locale('sv');
 export function getDisplayDefinitions(baseUri) {
   return new Promise((resolve, reject) => {
     httpUtil.getResourceFromCache(`${baseUri}/vocab/display/data.jsonld`).then((result) => {
-      const clonedResult = _.cloneDeep(result);
-      _.each(clonedResult.lensGroups, (lensGroup) => {
-        _.each(lensGroup.lenses, (lens) => {
+      const clonedResult = cloneDeep(result);
+      each(clonedResult.lensGroups, (lensGroup) => {
+        each(lensGroup.lenses, (lens) => {
           if (lens.hasOwnProperty('fresnel:extends')) {
             const [extendLens, extendLevel] = lens['fresnel:extends']['@id'].split('-');
             lens.showProperties.splice(
@@ -75,7 +74,7 @@ export function getProperties(typeInput, level, displayDefs) {
   if (!typeInput || typeof typeInput === 'undefined') {
     throw new Error('getProperties was called with an undefined type.');
   }
-  if (_.isObject(typeInput) && !_.isArray(typeInput)) {
+  if (isObject(typeInput) && !isArray(typeInput)) {
     throw new Error(
       'getProperties was called with an object as type parameter (should be a string or an array of strings).',
     );
@@ -97,8 +96,8 @@ export function getProperties(typeInput, level, displayDefs) {
         break;
       }
     }
-    props = _.uniq(props);
-    _.remove(props, x => _.isObject(x));
+    props = uniq(props);
+    remove(props, x => isObject(x));
 
     if (props.length > 0) {
       return props;
@@ -131,7 +130,7 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
   if (!item || typeof item === 'undefined') {
     throw new Error('getDisplayObject was called with an undefined object.');
   }
-  if (!_.isObject(item)) {
+  if (!isObject(item)) {
     throw new Error('getDisplayObject was called with a non-object.');
   }
   let result = {};
@@ -177,7 +176,7 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
 
   // Start filling the object with the selected properties
   for (let i = 0; i < properties.length; i++) {
-    if (!_.isObject(properties[i])) {
+    if (!isObject(properties[i])) {
       let valueOnItem = '';
       if (properties[i] === 'created' || properties[i] === 'modified') {
         valueOnItem = moment(item[properties[i]]).format('lll');
@@ -186,15 +185,15 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
       }
       if (typeof valueOnItem !== 'undefined') {
         let value = valueOnItem;
-        if (_.isObject(value) && !_.isArray(value)) {
+        if (isObject(value) && !isArray(value)) {
           value = getItemLabel(value, displayDefs, quoted, vocab, settings, context);
-        } else if (_.isArray(value)) {
+        } else if (isArray(value)) {
           const newArray = [];
           for (const arrayItem of value) {
             if (typeof arrayItem === 'undefined' || arrayItem === null) {
               throw new Error('getDisplayObject encountered an undefined or null item in an array.');
             }
-            if (_.isObject(arrayItem) && (Object.keys(arrayItem).length > 1 || arrayItem[Object.keys(arrayItem)[0]] !== '')) {
+            if (isObject(arrayItem) && (Object.keys(arrayItem).length > 1 || arrayItem[Object.keys(arrayItem)[0]] !== '')) {
               newArray.push(getItemLabel(arrayItem, displayDefs, quoted, vocab, settings, context));
             } else if (arrayItem.length > 0) {
               newArray.push(arrayItem);
@@ -224,7 +223,7 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
       }
     }
   }
-  if (_.isEmpty(result)) {
+  if (isEmpty(result)) {
     window.lxlWarning(`🏷️ DisplayObject was empty. @type was ${trueItem['@type']}. Used lens: "${usedLensType}".`, 'Item data:', trueItem);
     result = { label: `{${StringUtil.getUiPhraseByLang('Unnamed', settings.language)}}` };
   }
@@ -242,6 +241,7 @@ export function getCard(item, displayDefs, quoted, vocab, settings, context) {
 
 export function getItemSummary(item, displayDefs, quoted, vocab, settings, context) {
   const card = getCard(item, displayDefs, quoted, vocab, settings, context);
+  const displayGroups = require('@/resources/json/displayGroups.json');
   const summary = {
     categorization: [],
     header: [],
@@ -249,9 +249,9 @@ export function getItemSummary(item, displayDefs, quoted, vocab, settings, conte
     identifiers: [],
     sub: [],
   };
-  _.each(card, (value, key) => {
+  each(card, (value, key) => {
     let v = value;
-    if (!_.isArray(value)) {
+    if (!isArray(value)) {
       v = [value];
     }
     if (displayGroups.header.indexOf(key) !== -1) {

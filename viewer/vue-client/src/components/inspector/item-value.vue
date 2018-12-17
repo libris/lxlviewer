@@ -1,6 +1,6 @@
 <script>
 import AutoSize from 'autosize';
-import * as _ from 'lodash';
+import { isArray, debounce, cloneDeep, get } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import * as StringUtil from '@/utils/string';
 import * as LayoutUtil from '@/utils/layout';
@@ -65,12 +65,12 @@ export default {
           return [];
         }
         let valueArray = this.fieldValue;
-        if (!_.isArray(this.fieldValue)) {
+        if (!isArray(this.fieldValue)) {
           valueArray = [this.fieldValue];
         }
         return valueArray;
       },
-      set: _.debounce((newValue) => {
+      set: debounce((newValue) => {
         this.update(newValue);
       }, 1000),
     },
@@ -111,7 +111,7 @@ export default {
       return false;
     },
     update(newValue) {
-      const oldValue = _.cloneDeep(_.get(this.inspector.data, this.path));
+      const oldValue = cloneDeep(get(this.inspector.data, this.path));
       if (newValue !== oldValue) {
         this.$store.dispatch('updateInspectorData', {
           changeList: [

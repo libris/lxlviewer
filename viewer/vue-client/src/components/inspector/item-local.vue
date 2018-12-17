@@ -1,5 +1,5 @@
 <script>
-import * as _ from 'lodash';
+import { each, cloneDeep, get } from 'lodash-es';
 import { mixin as clickaway } from 'vue-clickaway';
 import { mapGetters } from 'vuex';
 import * as httpUtil from '../../utils/http';
@@ -144,7 +144,7 @@ export default {
     isEmpty() {
       let bEmpty = true;
       // Check if item has any keys besides @type and _uid. If not, we'll consider it empty.
-      _.each(this.item, (value, key) => {
+      each(this.item, (value, key) => {
         if (key !== '@type' && key !== '_uid') {
           if (typeof value !== 'undefined') {
             bEmpty = false;
@@ -301,7 +301,7 @@ export default {
       this.closeExtractDialog();
     },
     cloneThis() {      
-      const parentData = _.cloneDeep(_.get(this.inspector.data, this.parentPath));
+      const parentData = cloneDeep(get(this.inspector.data, this.parentPath));
       parentData.push(this.item);
 
       this.$store.dispatch('setInspectorStatusValue', { 

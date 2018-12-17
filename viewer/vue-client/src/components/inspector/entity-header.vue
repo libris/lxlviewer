@@ -4,7 +4,7 @@
   header or in fixed bar at top of window.
 */
 
-import * as _ from 'lodash';
+import { each, throttle } from 'lodash-es';
 import * as StringUtil from '@/utils/string';
 import EntitySummary from '@/components/shared/entity-summary';
 import LensMixin from '@/components/mixins/lens-mixin';
@@ -58,18 +58,18 @@ export default {
     },
     compactSummary() {
       let summary = [];
-      _.each(this.getSummary, (summaryArray) => {
+      each(this.getSummary, (summaryArray) => {
         summary = summary.concat(StringUtil.getFormattedEntries(summaryArray, this.resources.vocab, this.settings, this.resources.context));
       });
       return summary.join(' • ');
     },
   },
   beforeDestroy() {
-    window.removeEventListener('scroll', _.throttle(this.handleScroll, 300));
+    window.removeEventListener('scroll', throttle(this.handleScroll, 300));
   },
   mounted() {
     this.$nextTick(() => {
-      window.addEventListener('scroll', _.throttle(this.handleScroll, 300));
+      window.addEventListener('scroll', throttle(this.handleScroll, 300));
       setTimeout(() => {
         this.setHeaderThreshold();
       }, 500);

@@ -2,7 +2,7 @@
 /*
   Controls add new entity button and add entity modal with it's content
 */
-import * as _ from 'lodash';
+import { cloneDeep, isArray, get } from 'lodash-es';
 import * as VocabUtil from '@/utils/vocab';
 import * as DisplayUtil from '@/utils/display';
 import * as StringUtil from '@/utils/string';
@@ -378,9 +378,9 @@ export default {
       this.searchResult = [];
     },
     addLinkedItem(obj) {
-      let currentValue = _.cloneDeep(_.get(this.inspector.data, this.path));
+      let currentValue = cloneDeep(get(this.inspector.data, this.path));
       const linkObj = { '@id': obj['@id'] };
-      if (!_.isArray(currentValue)) {
+      if (!isArray(currentValue)) {
         currentValue = linkObj;
       } else {
         currentValue.push(linkObj);
@@ -402,13 +402,13 @@ export default {
       // this.hide();
     },
     addItem(obj) {
-      let currentValue = _.cloneDeep(_.get(this.inspector.data, this.path));
+      let currentValue = cloneDeep(get(this.inspector.data, this.path));
       if (currentValue === null) {
         currentValue = obj;
-      } else if (!_.isArray(currentValue)) {
+      } else if (!isArray(currentValue)) {
         currentValue = [currentValue];
         currentValue.push(obj);
-      } else if (typeof obj.length !== 'undefined' && _.isArray(obj)) {
+      } else if (typeof obj.length !== 'undefined' && isArray(obj)) {
         obj.forEach((subObj) => {
           currentValue.push(subObj);
         });
@@ -463,7 +463,7 @@ export default {
       const shortenedType = StringUtil.getCompactUri(typeId, this.resources.context);
       let obj = { '@type': shortenedType };
       if (templates.hasOwnProperty(shortenedType)) {
-        obj = _.cloneDeep(templates[shortenedType]);
+        obj = cloneDeep(templates[shortenedType]);
       }
       // If this is a holding, add the heldBy property
       if (obj['@type'] === 'Item') {

@@ -1,5 +1,5 @@
 <script>
-import * as _ from 'lodash';
+import { size } from 'lodash-es';
 import * as LayoutUtil from '@/utils/layout';
 import * as StringUtil from '@/utils/string';
 import CardComponent from '../shared/card-component';
@@ -70,7 +70,7 @@ export default {
       }
     },
     size(obj) {
-      return _.size(obj);
+      return size(obj);
     },
     isPretty(key, value) {
       return (this.isObject(value) || key === '@id');

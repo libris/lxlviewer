@@ -1,5 +1,5 @@
 <script>
-import * as _ from 'lodash';
+import { each } from 'lodash-es';
 import LensMixin from '../mixins/lens-mixin';
 import * as StringUtil from '@/utils/string';
 
@@ -68,7 +68,7 @@ export default {
       const info = this.getSummary.info.concat(this.getSummary.sub);
       const infoObj = {};
       let value = '';
-      _.each(info, (node) => {
+      each(info, (node) => {
         infoObj[node.property] = node.value.join(', ');
         if (node.property === 'isReplacedBy') {
           value = node.value;
@@ -93,7 +93,7 @@ export default {
     infoWithKeys() {
       const info = this.getSummary.info.concat(this.getSummary.sub);
       const infoObj = {};
-      _.each(info, (node) => {
+      each(info, (node) => {
         const remainder = node.value.length > this.valueDisplayLimit ? ` <span class="badge">+${node.value.length - this.valueDisplayLimit}</span>` : '';
         const trimmed = node.value.slice(0, this.valueDisplayLimit).join(', ') + remainder;
         infoObj[node.property] = trimmed;

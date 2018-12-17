@@ -1,5 +1,5 @@
 <script>
-import * as _ from 'lodash';
+import { orderBy } from 'lodash-es';
 import * as StringUtil from '@/utils/string';
 import marked from 'marked';
 import moment from 'moment';
@@ -95,7 +95,7 @@ export default {
     },
     helpCategories() {
       const json = this.docs;
-      const sortedJson = _.orderBy(json, ['order'], ['asc']);
+      const sortedJson = orderBy(json, ['order'], ['asc']);
       const categories = {};
       for (const section in sortedJson) {
         if (Object.prototype.hasOwnProperty.call(sortedJson, section)) {

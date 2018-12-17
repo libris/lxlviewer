@@ -2,7 +2,7 @@
 import * as DisplayUtil from '@/utils/display';
 import * as VocabUtil from '@/utils/vocab';
 import * as StringUtil from '@/utils/string';
-import * as _ from 'lodash';
+import { cloneDeep, each, includes, remove, isArray, sortBy } from 'lodash-es';
 import { mapGetters } from 'vuex';
 
 export default {
@@ -28,7 +28,7 @@ export default {
       return this.formObj['@type'];
     },
     filteredItem() {
-      const fItem = _.cloneDeep(this.sortedFormData);
+      const fItem = cloneDeep(this.sortedFormData);
       delete fItem['@type'];
       delete fItem['@id'];
       delete fItem._uid;
@@ -78,12 +78,12 @@ export default {
           );
         }
       }
-      _.each(formObj, (v, k) => {
-        if (!_.includes(propertyList, k)) {
+      each(formObj, (v, k) => {
+        if (!includes(propertyList, k)) {
           propertyList.push(k);
         }
       });
-      _.remove(propertyList, k => (this.settings.hiddenProperties.indexOf(k) !== -1));
+      remove(propertyList, k => (this.settings.hiddenProperties.indexOf(k) !== -1));
       return propertyList;
     },
     allowed() {
@@ -110,7 +110,7 @@ export default {
           // Try to get the label in the preferred language
           let label = (typeof labelByLang[language] !== 'undefined') ? labelByLang[language] : labelByLang.en;
           // If several labels are present, use the first one
-          if (_.isArray(label)) {
+          if (isArray(label)) {
             label = label[0];
           }
           return {
@@ -122,7 +122,7 @@ export default {
           // Try to get the label in the preferred language
           let label = (typeof prefLabelByLang[language] !== 'undefined') ? prefLabelByLang[language] : prefLabelByLang.en;
           // If several labels are present, use the first one
-          if (_.isArray(label)) {
+          if (isArray(label)) {
             label = label[0];
           }
           return {
@@ -138,7 +138,7 @@ export default {
           label: property.item['@id'],
         };
       });
-      const sortedAllowed = _.sortBy(extendedAllowed, (prop) => {
+      const sortedAllowed = sortBy(extendedAllowed, (prop) => {
         if (prop.label) {
           return prop.label.toLowerCase();
         } 

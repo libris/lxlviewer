@@ -1,5 +1,5 @@
 <script>
-import * as _ from 'lodash';
+import { isPlainObject, each } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import VueSimpleSpinner from 'vue-simple-spinner';
 import * as httpUtil from '../../utils/http';
@@ -108,7 +108,7 @@ export default {
   },
   methods: {
     isPlainObject(o) {
-      return _.isPlainObject(o);
+      return isPlainObject(o);
     },
     loadRemoteDatabases() {
       const disabled = [
@@ -162,7 +162,7 @@ export default {
         }
       }
       const convertedList = { totalItems: totalResults, items: [] };
-      _.each(result.items, (item) => {
+      each(result.items, (item) => {
         const convertedItem = RecordUtil.getMainEntity(item.data['@graph']);
         convertedList.items.push(convertedItem);
       });

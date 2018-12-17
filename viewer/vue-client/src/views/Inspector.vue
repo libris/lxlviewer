@@ -1,6 +1,6 @@
 
 <script>
-import * as _ from 'lodash';
+import { cloneDeep, each } from 'lodash-es';
 import * as StringUtil from '@/utils/string';
 import * as DataUtil from '@/utils/data';
 import * as VocabUtil from '@/utils/vocab';
@@ -207,10 +207,10 @@ export default {
         return;
       }
 
-      const basePostData = _.cloneDeep(this.inspector.data);
+      const basePostData = cloneDeep(this.inspector.data);
       const changeList = [];
       function applyChangeList(objectKey) {
-        _.each(templateJson[objectKey], (value, key) => {
+        each(templateJson[objectKey], (value, key) => {
           if (!basePostData.hasOwnProperty(objectKey) || basePostData[objectKey] === null) {
             basePostData[objectKey] = {};
           }
@@ -363,7 +363,7 @@ export default {
     // },
     getPackagedItem() {
       const RecordId = this.inspector.data.record['@id'];
-      const recordCopy = _.cloneDeep(this.inspector.data.record);
+      const recordCopy = cloneDeep(this.inspector.data.record);
 
       if (!RecordId || RecordId === 'https://id.kb.se/TEMPID') { // No ID -> create new
         recordCopy.descriptionCreator = { '@id': `https://libris.kb.se/library/${this.user.settings.activeSigel}` };

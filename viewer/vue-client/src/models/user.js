@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import { each, find } from 'lodash-es';
 import * as md5 from 'md5';
 
 export class User {
@@ -36,7 +36,7 @@ export class User {
     }
     if (savedSettings.hasOwnProperty(this.emailHash)) {
       const savedUserSettings = savedSettings[this.emailHash];
-      _.each(this.settings, (value, key) => {
+      each(this.settings, (value, key) => {
         if (savedUserSettings.hasOwnProperty(key)) {
           if (key === 'activeSigel' && this.isLoggedIn) {
             if (this.verifySigel(savedUserSettings[key])) {
@@ -70,14 +70,14 @@ export class User {
     if (!this.settings.activeSigel) {
       return this.collections[0];
     }
-    return _.find(this.collections, o => o.code === this.settings.activeSigel);
+    return find(this.collections, o => o.code === this.settings.activeSigel);
   }
 
   verifySigel(sigelCode) {
     // Check if the chosen sigel is in list of permissions.
     let verified = false;
     if (sigelCode.length > 0) {
-      _.each(this.collections, (sigel) => {
+      each(this.collections, (sigel) => {
         if (sigel.code === sigelCode) {
           verified = true;
         }

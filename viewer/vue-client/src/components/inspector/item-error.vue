@@ -1,5 +1,5 @@
 <script>
-import * as _ from 'lodash';
+import { cloneDeep } from 'lodash-es';
 import ItemMixin from '../mixins/item-mixin';
 
 export default {
@@ -17,7 +17,7 @@ export default {
   },
   computed: {
     itemAsJson() {
-      const cleanItem = _.cloneDeep(this.item);
+      const cleanItem = cloneDeep(this.item);
       if (cleanItem.hasOwnProperty('_uid')) {
         delete cleanItem._uid;
       }

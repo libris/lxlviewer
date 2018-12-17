@@ -4,7 +4,7 @@
 */
 
 import { mixin as clickaway } from 'vue-clickaway';
-import * as _ from 'lodash';
+import { filter, isArray } from 'lodash-es';
 import * as StringUtil from '@/utils/string';
 import * as VocabUtil from '@/utils/vocab';
 import PanelComponent from '@/components/shared/panel-component.vue';
@@ -84,13 +84,13 @@ export default {
         }
       }
       const fKey = this.filterKey.toLowerCase();
-      const filtered = _.filter(this.allowed, (o) => {
+      const filtered = filter(this.allowed, (o) => {
         let labelByLang = '';
         if (
           typeof o.item.labelByLang !== 'undefined'
           && typeof o.item.labelByLang[lang] !== 'undefined'
         ) {
-          if (_.isArray(o.item.labelByLang[lang])) {
+          if (isArray(o.item.labelByLang[lang])) {
             labelByLang = o.item.labelByLang[lang][0];
           } else {
             labelByLang = o.item.labelByLang[lang];
@@ -99,7 +99,7 @@ export default {
           typeof o.item.prefLabelByLang !== 'undefined'
           && typeof o.item.prefLabelByLang[lang] !== 'undefined'
         ) {
-          if (_.isArray(o.item.prefLabelByLang[lang])) {
+          if (isArray(o.item.prefLabelByLang[lang])) {
             labelByLang = o.item.prefLabelByLang[lang][0];
           } else {
             labelByLang = o.item.prefLabelByLang[lang];
@@ -140,7 +140,7 @@ export default {
       return true;
     },
     getPropClassInfo(termObj) {
-      if (_.isArray(termObj['@type'])) {
+      if (isArray(termObj['@type'])) {
         if (termObj['@type'].indexOf('DatatypeProperty') > -1 && termObj['@type'].indexOf('DatatypeProperty') > -1) {
           return StringUtil.getUiPhraseByLang('Literals and entities', this.settings.language);
         } if (termObj['@type'].indexOf('DatatypeProperty') > -1) {

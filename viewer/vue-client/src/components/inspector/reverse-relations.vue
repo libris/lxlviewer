@@ -1,5 +1,5 @@
 <script>
-import * as _ from 'lodash';
+import { each } from 'lodash-es';
 import * as VocabUtil from '../../utils/vocab';
 import CreateItemButton from './create-item-button';
 import RelationsList from '@/components/inspector/relations-list';
@@ -45,7 +45,7 @@ export default {
       // Returns a list of posts that links to <id> with <property>
       return new Promise((resolve, reject) => {
         let relatedPosts = `${this.settings.apiPath}/find.json?`;
-        _.each(queryPairs, (v, k) => {
+        each(queryPairs, (v, k) => {
           relatedPosts += (`${encodeURIComponent(k)}=${encodeURIComponent(v)}&`);
         });
         fetch(relatedPosts)

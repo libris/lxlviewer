@@ -1,5 +1,5 @@
 <script>
-import * as _ from 'lodash';
+import { findIndex, each } from 'lodash-es';
 import PropertyMappings from '@/resources/json/propertymappings.json';
 import * as StringUtil from '@/utils/string';
 import RemoteDatabases from '@/components/search/remote-databases';
@@ -49,7 +49,7 @@ export default {
       this.moveQuery(id);
     },
     moveQuery(id) {
-      const qIndex = _.findIndex(this.inputData.textInput, { class: 'is-searchPhrase' });
+      const qIndex = findIndex(this.inputData.textInput, { class: 'is-searchPhrase' });
       if (id === 'libris') {
         this.inputData.textInput[qIndex].value = this.remoteSearch.q;
       } else {
@@ -128,9 +128,9 @@ export default {
             const tagKey = tag[0];
             const tagValue = tag[1];
             if (validTags.indexOf(tagKey) > -1) {
-              _.each(PropertyMappings, (obj) => {
+              each(PropertyMappings, (obj) => {
                 if (obj.key === tagKey) {
-                  _.each(obj.mappings, (mappingValue, mappingKey) => {
+                  each(obj.mappings, (mappingValue, mappingKey) => {
                     if (mappingValue === '') {
                       queryText.push(`${mappingKey}=${tagValue}`);
                     } else {
@@ -150,7 +150,7 @@ export default {
           return '';
         }
         queryText.push('_limit=20');
-        _.each(this.inputData.ids, id => queryText.push(`@type=${id}`));
+        each(this.inputData.ids, id => queryText.push(`@type=${id}`));
         query = queryText.join('&');
       } else {
         const databases = this.status.remoteDatabases.join();
@@ -250,7 +250,7 @@ export default {
     },
     hasInput() {
       let hasInput = false;
-      _.each(this.inputData.textInput, (inputField) => {
+      each(this.inputData.textInput, (inputField) => {
         if (inputField.value !== '') {
           hasInput = true;
         }

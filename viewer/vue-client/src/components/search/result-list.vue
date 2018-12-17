@@ -1,5 +1,5 @@
 <script>
-import * as _ from 'lodash';
+import { cloneDeep } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import ResultListItem from './result-list-item';
 import * as RecordUtil from '@/utils/record';
@@ -20,7 +20,7 @@ export default {
   methods: {
     getImportItem(index) {
       if (this.importData.length !== 0) {
-        const node = _.cloneDeep(this.importData[index].data);
+        const node = cloneDeep(this.importData[index].data);
         const importItem = RecordUtil.prepareDuplicateFor(RecordUtil.splitJson(node), this.user, this.settings);
         return importItem;
       }

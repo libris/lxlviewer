@@ -1,16 +1,16 @@
 <script>
-import * as _ from 'lodash';
+import { isObject, isArray, isPlainObject } from 'lodash-es';
 
 export default {
   methods: {
     isObject(value) {
-      return _.isObject(value);
+      return isObject(value);
     },
     isArray(o) {
-      return _.isArray(o);
+      return isArray(o);
     },
     isPlainObject(o) {
-      return _.isPlainObject(o);
+      return isPlainObject(o);
     },
   },
 };

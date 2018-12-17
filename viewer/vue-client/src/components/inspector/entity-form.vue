@@ -5,7 +5,7 @@
   and makes changes to the bound 'focus' object accordingly.
 */
 
-import * as _ from 'lodash';
+import { cloneDeep, unset, set } from 'lodash-es';
 import * as VocabUtil from '@/utils/vocab';
 import FormMixin from '@/components/mixins/form-mixin';
 import { mapGetters } from 'vuex';
@@ -97,15 +97,15 @@ export default {
   },
   events: {
     'remove-field'(path) {
-      const modifiedData = _.cloneDeep(this.formData);
-      _.unset(modifiedData, path);
+      const modifiedData = cloneDeep(this.formData);
+      unset(modifiedData, path);
       this.updateForm(this.editingObject, modifiedData, this.formData);
     },
     'update-value'(path, value) {
       // console.log("FormComp: - Updating " + path, 'to', JSON.stringify(value));
-      const modified = _.cloneDeep(this.formData);
+      const modified = cloneDeep(this.formData);
 
-      _.set(modified, path, value);
+      set(modified, path, value);
       // console.log("New value recieved for", path, "=", value);
       // console.log(modified);
       this.changeStatus('removing', false);

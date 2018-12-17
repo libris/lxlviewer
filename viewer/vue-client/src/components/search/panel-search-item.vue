@@ -1,5 +1,5 @@
 <script>
-import * as _ from 'lodash';
+import { merge, cloneDeep } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import LensMixin from '../mixins/lens-mixin';
 import EntitySummary from '../shared/entity-summary';
@@ -68,7 +68,7 @@ export default {
       'status',
     ]),
     addPayload() {
-      const updatedListItemSettings = _.merge({ payload: this.focusData }, _.cloneDeep(this.listItemSettings));
+      const updatedListItemSettings = merge({ payload: this.focusData }, cloneDeep(this.listItemSettings));
       return updatedListItemSettings;
     },
   },

@@ -1,5 +1,5 @@
 <script>
-import * as _ from 'lodash';
+import { merge, cloneDeep } from 'lodash-es';
 import * as VocabUtil from '@/utils/vocab';
 import * as DisplayUtil from '@/utils/display';
 import * as StringUtil from '@/utils/string';
@@ -183,7 +183,7 @@ export default {
       );
     },
     addPayload(item) {
-      const updatedListItemSettings = _.merge({ payload: item }, _.cloneDeep(this.listItemSettings));
+      const updatedListItemSettings = merge({ payload: item }, cloneDeep(this.listItemSettings));
       return updatedListItemSettings;
     },
     setFilter($event, keyword) {

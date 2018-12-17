@@ -1,5 +1,5 @@
 <script>
-import * as _ from 'lodash';
+import { each, isArray, isPlainObject } from 'lodash-es';
 import * as RecordUtil from '@/utils/record';
 import * as StringUtil from '@/utils/string';
 import ServiceWidgetSettings from '@/resources/json/serviceWidgetSettings.json';
@@ -89,17 +89,17 @@ export default {
         }
       }
       const convertedList = { totalItems: totalResults, items: [], first: { '@id': this.query } };
-      _.each(result.items, (item) => {
+      each(result.items, (item) => {
         const convertedItem = RecordUtil.getMainEntity(item.data['@graph']);
         convertedList.items.push(convertedItem);
       });
       return convertedList;
     },
     isArray(o) {
-      return _.isArray(o);
+      return isArray(o);
     },
     isPlainObject(o) {
-      return _.isPlainObject(o);
+      return isPlainObject(o);
     },
     showHelp() {
       this.$dispatch('show-help', '');

@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import * as _ from 'lodash';
+import { cloneDeep, each, set, get } from 'lodash-es';
 import * as VocabUtil from '@/utils/vocab';
 import * as StringUtil from '@/utils/string';
 import * as User from '@/models/user';
@@ -247,19 +247,19 @@ const store = new Vuex.Store({
       state.inspector.breadcrumb = data;
     },
     addToQuoted(state, data) {
-      const quoted = _.cloneDeep(state.inspector.data.quoted);
+      const quoted = cloneDeep(state.inspector.data.quoted);
       quoted[data['@id']] = data;
       state.inspector.data.quoted = quoted;
     },
     updateInspectorData(state, payload) {
       state.inspector.status.updating = true;
       // Clone inspectorData so we can manipulate it before setting it
-      const inspectorData = _.cloneDeep(state.inspector.data);
+      const inspectorData = cloneDeep(state.inspector.data);
       // Push old value to history
       if (payload.addToHistory) {
         const changes = [];
-        _.each(payload.changeList, (node) => {
-          const oldValue = _.cloneDeep(_.get(inspectorData, node.path));
+        each(payload.changeList, (node) => {
+          const oldValue = cloneDeep(get(inspectorData, node.path));
           const historyNode = { path: node.path, value: oldValue };
           changes.push(historyNode);
         });
@@ -267,9 +267,9 @@ const store = new Vuex.Store({
       }
 
       // Set the new values
-      _.each(payload.changeList, (node) => {
+      each(payload.changeList, (node) => {
         // console.log("DATA_UPDATE:", JSON.stringify(node));
-        _.set(inspectorData, node.path, node.value);
+        set(inspectorData, node.path, node.value);
       });
       state.inspector.data = inspectorData;
     },
@@ -371,7 +371,7 @@ const store = new Vuex.Store({
       const lastNode = history[history.length - 1];
 
       const payload = { addToHistory: false, changeList: [] };
-      _.each(lastNode, (node) => {
+      each(lastNode, (node) => {
         if (typeof node.value !== 'undefined') {
           // It had a value
           payload.changeList.push({
@@ -384,7 +384,7 @@ const store = new Vuex.Store({
           const key = pathParts[pathParts.length - 1];
           pathParts.splice(pathParts.length - 1, 1);
           const path = pathParts.join('.');
-          const data = _.cloneDeep(_.get(state.inspector.data, path));
+          const data = cloneDeep(get(state.inspector.data, path));
           delete data[key];
           payload.changeList.push({
             path: path,
@@ -502,7 +502,7 @@ const store = new Vuex.Store({
       const classes = new Map(classTerms.map(entry => [entry['@id'], entry]));
       classes.forEach((classObj) => {
         if (classObj.hasOwnProperty('subClassOf')) {
-          _.each(classObj.subClassOf, (baseClass) => {
+          each(classObj.subClassOf, (baseClass) => {
             const baseClassObj = classes.get(baseClass['@id']);
             if (typeof baseClassObj !== 'undefined') {
               if (baseClassObj.hasOwnProperty('baseClassOf')) {

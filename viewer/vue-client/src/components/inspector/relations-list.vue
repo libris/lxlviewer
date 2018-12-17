@@ -1,5 +1,5 @@
 <script>
-import * as _ from 'lodash';
+import { each } from 'lodash-es';
 import PanelComponent from '@/components/shared/panel-component';
 import PanelSearchList from '@/components/search/panel-search-list';
 import ModalPagination from '@/components/inspector/modal-pagination';
@@ -80,7 +80,7 @@ export default {
       queryPairs._offset = this.currentPage * this.maxResults;
       queryPairs._limit = this.maxResults;
       let q = `${this.settings.apiPath}/find.json?`;
-      _.each(queryPairs, (v, k) => {
+      each(queryPairs, (v, k) => {
         q += (`${encodeURIComponent(k)}=${encodeURIComponent(v)}&`);
       });
       return q;

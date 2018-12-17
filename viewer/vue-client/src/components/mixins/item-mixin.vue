@@ -1,7 +1,7 @@
 <script>
 import * as DataUtil from '@/utils/data';
 import * as VocabUtil from '@/utils/vocab';
-import * as _ from 'lodash';
+import { cloneDeep, isArray, get, isObject } from 'lodash-es';
 import { mapGetters } from 'vuex';
 
 export default {
@@ -27,8 +27,8 @@ export default {
   },
   methods: {
     removeThis(animate = false) {
-      let parentValue = _.cloneDeep(_.get(this.inspector.data, this.parentPath));
-      if (_.isArray(parentValue)) {
+      let parentValue = cloneDeep(get(this.inspector.data, this.parentPath));
+      if (isArray(parentValue)) {
         parentValue.splice(this.index, 1);
       } else {
         parentValue = null;
@@ -74,8 +74,8 @@ export default {
       'status',
     ]),
     path() {
-      const parentValue = _.get(this.inspector.data, this.parentPath);
-      if (_.isArray(parentValue)) {
+      const parentValue = get(this.inspector.data, this.parentPath);
+      if (isArray(parentValue)) {
         return `${this.parentPath}[${this.index}]`;
       } 
       return this.parentPath;
@@ -87,7 +87,7 @@ export default {
       if (!this.item['@id']) {
         return this.item;
       }
-      if (_.isArray(this.item) || !_.isObject(this.item)) {
+      if (isArray(this.item) || !isObject(this.item)) {
         throw new Error('Item is not an object.');
       }
       // If items have more than one key, consider them already embellished

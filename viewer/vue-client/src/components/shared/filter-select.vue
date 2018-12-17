@@ -2,7 +2,7 @@
 /*
   Adds custom select menu with searchable options
 */
-import * as _ from 'lodash';
+import { forEach } from 'lodash-es';
 import * as StringUtil from '@/utils/string';
 import { mixin as clickaway } from 'vue-clickaway';
 
@@ -155,7 +155,7 @@ export default {
       const texts = inputContEl.getElementsByClassName('js-filterSelectText');
       
       // Make all options visible again
-      _.forEach(texts, (text) => {
+      forEach(texts, (text) => {
         text.removeAttribute('style');
       });
 

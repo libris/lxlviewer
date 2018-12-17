@@ -1,5 +1,5 @@
 <script>
-import * as _ from 'lodash';
+import { each, uniq, sortBy } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import * as VocabUtil from '../../utils/vocab';
 import * as StringUtil from '../../utils/string';
@@ -88,15 +88,15 @@ export default {
     getPossibleValues() {
       let values = [];
       const possibleValues = [];
-      _.each(this.range, (item) => {
+      each(this.range, (item) => {
         const type = StringUtil.getCompactUri(item, this.resources.context);
         values = values.concat(VocabUtil.getTermByType(type, this.resources.vocab, this.resources.context, this.settings));
       });
-      values = _.uniq(values);
-      _.each(values, (value) => {
+      values = uniq(values);
+      each(values, (value) => {
         possibleValues.push(StringUtil.getCompactUri(value['@id'], this.resources.context));
       });
-      return _.sortBy(possibleValues, value => StringUtil.getLabelByLang(
+      return sortBy(possibleValues, value => StringUtil.getLabelByLang(
         value, 
         this.settings.language, 
         this.resources.vocab, 

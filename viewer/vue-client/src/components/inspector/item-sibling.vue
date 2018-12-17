@@ -6,7 +6,7 @@
   and to another for what data to edit.
 */
 
-import * as _ from 'lodash';
+import { cloneDeep, each } from 'lodash-es';
 import { mixin as clickaway } from 'vue-clickaway';
 import { mapGetters } from 'vuex';
 import * as httpUtil from '../../utils/http';
@@ -74,7 +74,7 @@ export default {
       'status',
     ]),
     item() {
-      return _.cloneDeep(this.inspector.data[this.suffix]);
+      return cloneDeep(this.inspector.data[this.suffix]);
     },
     suffix() {
       return this.id.split('#')[1];
@@ -123,7 +123,7 @@ export default {
     isEmpty() {
       let bEmpty = true;
       // Check if item has any keys besides @type and _uid. If not, we'll consider it empty.
-      _.each(this.item, (value, key) => {
+      each(this.item, (value, key) => {
         if (key !== '@type' && key !== '_uid') {
           if (key !== '@id') {
             if (typeof value !== 'undefined') {

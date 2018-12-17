@@ -1,5 +1,5 @@
 <script>
-import * as _ from 'lodash';
+import { isObject } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import PanelComponent from '@/components/shared/panel-component.vue';
 
@@ -40,14 +40,14 @@ export default {
       // });
     },
     isObject(o) {
-      return _.isObject(o);
+      return isObject(o);
     },
     getKeys(obj) {
       return Object.keys(obj);
     },
     getValue(obj) {
       const val = obj[this.getKeys(obj)[0]];
-      if (!_.isObject(val)) {
+      if (!isObject(val)) {
         return { value: val };
       }
       return val;

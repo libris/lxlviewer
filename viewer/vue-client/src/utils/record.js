@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import { cloneDeep, each, unset } from 'lodash-es';
 import * as httpUtil from './http';
 import * as DataUtil from './data';
 
@@ -6,7 +6,7 @@ export function splitJson(json) {
   if (!json || json.length === 0) {
     throw new Error('Trying to split empty JSON data.');
   }
-  const original = _.cloneDeep(json['@graph']);
+  const original = cloneDeep(json['@graph']);
   const dataObj = {};
   dataObj.quoted = {};
 
@@ -82,7 +82,7 @@ export function stripId(obj) {
 export function getMainEntity(graph) {
   const mainEntityId = graph[0].mainEntity['@id'];
   let mainEntity = {};
-  _.each(graph, (node) => {
+  each(graph, (node) => {
     if (node['@id'] === mainEntityId) {
       mainEntity = node;
     }
@@ -154,15 +154,15 @@ export function getItemObject(itemOf, heldBy, instance) {
 }
 
 export function getObjectAsRecord(mainEntity, record = {}) {
-  const newMainEntity = _.cloneDeep(mainEntity);
+  const newMainEntity = cloneDeep(mainEntity);
   newMainEntity['@id'] = 'https://id.kb.se/TEMPID#it';
-  _.unset(newMainEntity, 'sameAs');
-  const newRecord = _.cloneDeep(record);
+  unset(newMainEntity, 'sameAs');
+  const newRecord = cloneDeep(record);
   // TODO: Exclude more fields?
-  _.unset(newRecord, 'created');
-  _.unset(newRecord, 'modified');
-  _.unset(newRecord, 'controlNumber');
-  _.unset(newRecord, 'sameAs');
+  unset(newRecord, 'created');
+  unset(newRecord, 'modified');
+  unset(newRecord, 'controlNumber');
+  unset(newRecord, 'sameAs');
   const blankRecord = {
     '@type': 'Record',
     '@id': 'https://id.kb.se/TEMPID',
@@ -204,7 +204,7 @@ export function convertToMarc(inspectorData, settings, user) {
 
 export function prepareDuplicateFor(inspectorData, user, settings) {
   // Removes fields that we do not want to import or copy
-  const newData = _.cloneDeep(inspectorData);
+  const newData = cloneDeep(inspectorData);
   if (!newData.hasOwnProperty('quoted')) {
     newData.quoted = {};
   }
@@ -215,8 +215,8 @@ export function prepareDuplicateFor(inspectorData, user, settings) {
   newData.record.descriptionCreator = { '@id': `https://libris.kb.se/library/${user.settings.activeSigel}` };
 
   // Remove properties that should not be included in the duplicate
-  _.each(settings.removeOnDuplication, (property) => {
-    _.unset(newData, property);
+  each(settings.removeOnDuplication, (property) => {
+    unset(newData, property);
   });
 
   // Replace @id and internal @id references

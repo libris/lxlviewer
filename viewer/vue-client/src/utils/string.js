@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import { isObject, isArray, uniqBy, each, remove } from 'lodash-es';
 import translationsFile from '@/resources/json/i18n.json';
 import * as VocabUtil from './vocab';
 
@@ -160,7 +160,7 @@ export function getLabelByLang(string, lang, vocab, context) {
   if (!string) {
     return '{FAILED LABEL}';
   }
-  if (_.isObject(string)) {
+  if (isObject(string)) {
     throw new Error(
       'getLabelByLang was called with an object (should be a string).',
       JSON.stringify(string),
@@ -181,8 +181,8 @@ export function getLabelByLang(string, lang, vocab, context) {
     note = ' (unhandled term)';
   }
   // Check if we have something of value
-  if (_.isArray(labelByLang)) {
-    labelByLang = _.uniqBy(labelByLang, i => i.toLowerCase());
+  if (isArray(labelByLang)) {
+    labelByLang = uniqBy(labelByLang, i => i.toLowerCase());
     labelByLang = labelByLang.join(', ');
   }
 
@@ -201,8 +201,8 @@ function translateable(type) {
 
 export function extractStrings(obj) {
   let label = '';
-  _.each(obj, (value) => {
-    if (!_.isObject(value)) {
+  each(obj, (value) => {
+    if (!isObject(value)) {
       label += value;
     } else {
       label += extractStrings(value);
@@ -214,8 +214,8 @@ export function extractStrings(obj) {
 
 export function formatLabel(obj) {
   let label = [];
-  _.each(obj, (value) => {
-    if (!_.isObject(value)) {
+  each(obj, (value) => {
+    if (!isObject(value)) {
       label.push(value);
     } else {
       label.push(extractStrings(value));
@@ -235,6 +235,6 @@ export function getFormattedEntries(list, vocab, settings, context) {
       formatted = formatted.concat(entry.value);
     }
   }
-  _.remove(formatted, value => value === ''); // Remove empty strings
+  remove(formatted, value => value === ''); // Remove empty strings
   return formatted;
 }
