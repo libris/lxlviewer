@@ -346,25 +346,25 @@ export default {
     setEditorFocus(value) {
       this.$store.dispatch('setInspectorStatusValue', { property: 'focus', value: value });
     },
-    // downloadJson() {
-    //   const focusId = this.inspector.data.record['@id'];
-    //   const element = document.createElement('a');
-    //   const json = JSON.stringify(this.getPackagedItem());
-    //   let blob = new Blob([`${json}`], { type: 'application/ld+json'});
-    //   element.href = window.URL.createObjectURL(blob);
-    //   const splitIdParts = focusId.split('/');
-    //   const id = splitIdParts[splitIdParts.length-1];
-    //   const promptInstruction = StringUtil.getUiPhraseByLang('Name your file', this.user.settings.language);
-    //   const promptedName = prompt(promptInstruction, id);
-    //   if (promptedName !== null) {
-    //     element.download = `${promptedName}.jsonld`;
-    //     element.style.display = 'none';
-    //     document.body.appendChild(element);
-    //     element.click();
-    //     document.body.removeChild(element);
-    //   }
-    // },
-    getPackagedItem() {
+    downloadJson() {
+      const focusId = this.inspector.data.record['@id'];
+      const element = document.createElement('a');
+      const json = JSON.stringify(this.getPackagedItem(true));
+      const blob = new Blob([`${json}`], { type: 'application/ld+json' });
+      element.href = window.URL.createObjectURL(blob);
+      const splitIdParts = focusId.split('/');
+      const id = splitIdParts[splitIdParts.length - 1];
+      const promptInstruction = StringUtil.getUiPhraseByLang('Name your file', this.user.settings.language);
+      const promptedName = prompt(promptInstruction, id);
+      if (promptedName !== null) {
+        element.download = `${promptedName}.jsonld`;
+        element.style.display = 'none';
+        document.body.appendChild(element);
+        element.click();
+        document.body.removeChild(element);
+      }
+    },
+    getPackagedItem(keepEmpty = false) {
       const RecordId = this.inspector.data.record['@id'];
       const recordCopy = cloneDeep(this.inspector.data.record);
 
@@ -374,11 +374,20 @@ export default {
         recordCopy.descriptionLastModifier = { '@id': `https://libris.kb.se/library/${this.user.settings.activeSigel}` };
       }
 
-      const obj = DataUtil.getMergedItems(
-        DataUtil.removeNullValues(recordCopy),
-        DataUtil.removeNullValues(this.inspector.data.mainEntity),
-        DataUtil.removeNullValues(this.inspector.data.work),
-      );
+      let obj = null;
+      if (keepEmpty) {
+        obj = DataUtil.getMergedItems(
+          recordCopy,
+          this.inspector.data.mainEntity,
+          this.inspector.data.work,
+        );
+      } else {
+        obj = DataUtil.getMergedItems(
+          DataUtil.removeNullValues(recordCopy),
+          DataUtil.removeNullValues(this.inspector.data.mainEntity),
+          DataUtil.removeNullValues(this.inspector.data.work),
+        );
+      }
       return obj;
     },
     duplicateItem() {
@@ -387,7 +396,7 @@ export default {
         this.$store.dispatch('setInsertData', duplicate);
         this.$router.push({ path: '/new' });
       }
-    },   
+    },
     saveItem(done = false) {
       this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: true });
 
