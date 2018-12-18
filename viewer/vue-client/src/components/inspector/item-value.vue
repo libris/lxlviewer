@@ -70,7 +70,7 @@ export default {
         }
         return valueArray;
       },
-      set: debounce((newValue) => {
+      set: debounce(function debounceUpdate(newValue) {
         this.update(newValue);
       }, 1000),
     },
