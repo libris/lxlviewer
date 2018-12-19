@@ -370,7 +370,6 @@ export default {
                   :options="selectOptions"
                   :options-all="getRange"
                   :is-filter="true"
-                  :options-selected="''"
                   v-on:filter-selected="setFilter($event, keyword)"></filter-select>
               </div>
             </div>

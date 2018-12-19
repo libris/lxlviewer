@@ -15,10 +15,6 @@ export default {
       type: Array,
       default: () => [],
     },
-    optionsSelected: {
-      type: String,
-      default: '',
-    },
     className: {
       type: String,
       default: '',
