@@ -69,7 +69,6 @@ const store = new Vuex.Store({
       notifications: [],
       helpSection: 'none',
       remoteDatabases: [],
-      sortOrder: null,
     },
     user: {
       settings: {
@@ -210,12 +209,12 @@ const store = new Vuex.Store({
             label: 'Relevance', 
           },
           {
-            query: 'publication.year.keyword',
-            label: 'Publication year (ascending)',
-          },
-          {
             query: '-publication.year.keyword',
             label: 'Publication year (descending)',
+          },
+          {
+            query: 'publication.year.keyword',
+            label: 'Publication year (ascending)',
           },
           // Uncomment when API supports them
           // {

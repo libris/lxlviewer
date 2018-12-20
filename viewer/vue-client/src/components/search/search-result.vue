@@ -37,6 +37,10 @@ export default {
         this.searchInProgress = false;
       });
     },
+    doSort(newsort) {
+      const newQuery = Object.assign({}, this.$route.query, { _sort: newsort, _offset: 0 });
+      this.$router.push({ query: newQuery });
+    },
   },
   watch: {
     fullResult(newValue) {
@@ -107,7 +111,8 @@ export default {
       :page-data="paginationData" 
       :show-details="true" 
       :has-pagination="hasPagination" 
-      :show-pages="false">
+      :show-pages="false"
+      @sortChange="doSort($event)">
     </result-controls>
     <result-list class="SearchResult-list" 
       v-if="!status.resultList.loading && !status.resultList.error" 

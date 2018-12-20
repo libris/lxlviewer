@@ -140,9 +140,6 @@ export default {
       });
       this.$dispatch('newresult', resultPromise);
     },
-    handleSortChange(sort) {
-      this.$store.dispatch('setStatusValue', { property: 'sortOrder', value: sort });
-    },
   },
   components: {
     sort: Sort,
@@ -166,7 +163,7 @@ export default {
           v-if="getRecordType && $route.params.perimeter != 'remote'"
           :currentSort="currentSortOrder ? currentSortOrder : ''"
           :recordType="getRecordType"
-          @change="handleSortChange($event)"/>
+          @change="$emit('sortChange', $event)"/>
         <div class="ResultControls-listTypes">
           <button class="ResultControls-listType icon icon--md"
             v-on:click="setFull()" 

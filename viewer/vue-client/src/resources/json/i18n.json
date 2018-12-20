@@ -249,8 +249,8 @@
     "Show all": "Visa alla",
     "Sorting": "Sortering",
     "Relevance": "Relevans",
-    "Publication year (ascending)": "Utgivningsår (stigande)",
-    "Publication year (descending)": "Utgivningsår (fallande)",
+    "Publication year (descending)": "Utgivningsår (nyast först)",
+    "Publication year (ascending)": "Utgivningsår (äldst först)",
     "Main title (A-Z)": "Huvudtitel (A-Ö)",
     "Main title (Z-A)": "Huvudtitel (Ö-A)"
     }

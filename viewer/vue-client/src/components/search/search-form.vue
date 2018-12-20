@@ -166,9 +166,6 @@ export default {
         this.$refs.dbComponent.showList = false;
       }
     },
-    doSort(sortVal) {
-      this.$router.push({ path: `/search/${this.searchPerimeter}?${this.composeQuery()}&_sort=${sortVal}` });
-    },
     clearInputs() {
       this.inputData.currentInput = 0;
       this.inputData.textInput.splice(1, this.inputData.textInput.length);
@@ -288,9 +285,6 @@ export default {
           this.inputData.textInput = usedTextInput;
         } 
       }
-    },
-    'status.sortOrder'(val) {
-      this.doSort(val);
     },
   },
   mounted() {
@@ -507,6 +501,7 @@ export default {
       padding: 0;
       outline: none;
       cursor: text;
+      color: @black;
     }
 
     &.is-searchTag {
