@@ -69,6 +69,7 @@ const store = new Vuex.Store({
       notifications: [],
       helpSection: 'none',
       remoteDatabases: [],
+      sortOrder: null,
     },
     user: {
       settings: {
@@ -201,6 +202,41 @@ const store = new Vuex.Store({
             order: 2,
           },
         },
+      },
+      sortOptions: {
+        Instance: [
+          { 
+            query: '',
+            label: 'Relevance', 
+          },
+          {
+            query: 'publication.year.keyword',
+            label: 'Publication year (ascending)',
+          },
+          {
+            query: '-publication.year.keyword',
+            label: 'Publication year (descending)',
+          },
+          // Uncomment when API supports them
+          // {
+          //   query: 'hasTitle.mainTitle.keyword',
+          //   label: 'Main title (A-Z)',
+          // },
+          // {
+          //   query: '-hasTitle.mainTitle.keyword',
+          //   label: 'Main title (Z-A)',
+          // },
+        ],
+        Item: [
+          { 
+            query: 'heldBy.@id',
+            label: 'Sigel (A-Z)', 
+          },
+          { 
+            query: '-heldBy.@id',
+            label: 'Sigel (Z-A)', 
+          },
+        ],  
       },
       availableUserSettings: {
         languages: [

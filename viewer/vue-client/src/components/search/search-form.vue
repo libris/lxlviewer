@@ -4,7 +4,6 @@ import PropertyMappings from '@/resources/json/propertymappings.json';
 import * as StringUtil from '@/utils/string';
 import RemoteDatabases from '@/components/search/remote-databases';
 import TabMenu from '@/components/shared/tab-menu';
-import SortControl from '@/components/search/sort-control';
 import marked from 'marked';
 import { mapGetters } from 'vuex';
 
@@ -35,24 +34,6 @@ export default {
       },
       query: '',
       activeClass: 'is-active',
-      sortOptions: [
-        {
-          query: '',
-          text: 'Relevance',
-          default: true,
-        },
-        {
-          query: 'publication.year.keyword',
-          text: 'Publication year (ascending)',
-          default: false,
-        },
-        {
-          query: '-publication.year.keyword',
-          text: 'Publication year (descending)',
-          default: false,
-        },
-      ],
-      sortString: '',
     };
   },
   methods: {
@@ -185,15 +166,14 @@ export default {
         this.$refs.dbComponent.showList = false;
       }
     },
+    doSort(sortVal) {
+      this.$router.push({ path: `/search/${this.searchPerimeter}?${this.composeQuery()}&_sort=${sortVal}` });
+    },
     clearInputs() {
       this.inputData.currentInput = 0;
       this.inputData.textInput.splice(1, this.inputData.textInput.length);
       this.inputData.textInput[0].value = '';
       this.inputData.textInput[0].class = 'is-searchPhrase';
-    },
-    changeSort(sort) {
-      this.sortString = sort;
-      this.doSearch();
     },
   },
   computed: {
@@ -284,7 +264,6 @@ export default {
   components: {
     'remote-databases': RemoteDatabases,
     'tab-menu': TabMenu,
-    'sort-control': SortControl,
   },
   watch: {
     currentComputedInput(newValue) {
@@ -309,6 +288,9 @@ export default {
           this.inputData.textInput = usedTextInput;
         } 
       }
+    },
+    'status.sortOrder'(val) {
+      this.doSort(val);
     },
   },
   mounted() {
@@ -399,9 +381,6 @@ export default {
           </button>
         </div>
       </div>
-      <sort-control 
-        :options="sortOptions" 
-        @change="changeSort($event)"/>
       <div class="SearchBar-typeButtons" aria-label="Välj typ" 
         v-if="searchPerimeter === 'libris'">
         <label class="SearchBar-typeLabel" 
