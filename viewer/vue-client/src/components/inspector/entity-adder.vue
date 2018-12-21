@@ -44,6 +44,26 @@ export default {
       type: Boolean,
       default: true,
     },
+    allSearchTypes: {
+      type: Array,
+      default: () => [],
+    },
+    allValuesFrom: {
+      type: Array,
+      default: () => [],
+    },
+    someValuesFrom: {
+      type: Array,
+      default: () => [],
+    },
+    range: {
+      type: Array,
+      default: () => [],
+    },
+    rangeFull: {
+      type: Array,
+      default: () => [],
+    },
     propertyTypes: {
       type: Array,
       default: () => [],
@@ -111,7 +131,7 @@ export default {
       }
     },
     valueList(newVal) {
-      if (newVal.length === 0 && this.onlyEmbedded && this.getFullRange.length > 1) {
+      if (newVal.length === 0 && this.onlyEmbedded && this.rangeFull.length > 1) {
         this.addEmbedded = true;
       } else {
         this.addEmbedded = false;
@@ -140,14 +160,18 @@ export default {
 
       for (let i = 0; i < classTree.length; i++) {
         const term = {};
-
+        term.depth = classTree[i].depth;
+        term.abstract = classTree[i].abstract;
         term.label = this.getFormattedSelectOption(classTree[i]);
         term.value = classTree[i].id;
         term.key = `${classTree[i].id}-${i}`;
-
         options.push(term);
       }
       return options;
+    },
+    priorityOptions() {
+      const list = this.allValuesFrom.length > 1 ? this.allValuesFrom : this.someValuesFrom;
+      return list;
     },
     computedTitle() {
       const modalStr = StringUtil.getUiPhraseByLang('Add entity', this.user.settings.language);
@@ -155,7 +179,11 @@ export default {
       return `${modalStr} | ${addLabelStr}`;
     },
     getClassTree() {
-      const tree = this.getRange.map(type => VocabUtil.getTree(
+      let treeSource = this.range;
+      if (this.allValuesFrom.length > 0) {
+        treeSource = this.allValuesFrom;
+      }
+      const tree = treeSource.map(type => VocabUtil.getTree(
         type, 
         this.resources.vocab, 
         this.resources.context,
@@ -179,7 +207,7 @@ export default {
       return `${addText} ${label}`;
     },
     hasSingleRange() {
-      return this.getFullRange.length === 1;
+      return this.rangeFull.length === 1;
     },
     isVocabField() {
       return VocabUtil.getContextValue(this.fieldKey, '@type', this.resources.context) === '@vocab';
@@ -188,46 +216,19 @@ export default {
       if (this.isLiteral) {
         return this.fieldKey;
       }
-      if (this.getRange.length === 1) {
-        return this.getRange[0];
+      if (this.rangeFull.length === 1) {
+        return this.rangeFull[0];
       }
-      if (this.getRange.length > 1) {
+      if (this.rangeFull.length > 1) {
         return StringUtil.getUiPhraseByLang('entity', this.settings.language);
       }
       return this.fieldKey;
-    },
-    getRange() {
-      const fetchedRange = VocabUtil.getRange(
-        this.entityType, 
-        this.fieldKey, 
-        this.resources.vocab, 
-        this.resources.context,
-      ).map(item => StringUtil.getCompactUri(item, this.resources.context));
-      return fetchedRange;
-    },
-    getFullRange() {
-      const fetchedRange = VocabUtil.getFullRange(
-        this.entityType, 
-        this.fieldKey, 
-        this.resources.vocab, 
-        this.resources.context, 
-        this.resources.vocabClasses,
-      ).map(item => StringUtil.getCompactUri(item, this.resources.context));
-      return fetchedRange;
-    },
-    allSearchTypes() {
-      const types = this.getFullRange;
-      const typeArray = [];
-      for (const type of types) {
-        typeArray.push(StringUtil.getCompactUri(type, this.resources.context));
-      }
-      return typeArray;
     },
     onlyEmbedded() {
       if (this.compositional === true) {
         return true;
       }
-      const range = this.getFullRange;
+      const range = this.rangeFull;
       for (const classId of range) {
         if (!VocabUtil.isEmbedded(
           classId,
@@ -251,8 +252,8 @@ export default {
     },
     isLiteral() {
       // TODO: Verify usage
-      if (this.getFullRange.length > 0) {
-        for (const rangeElement of this.getFullRange) {
+      if (this.rangeFull.length > 0) {
+        for (const rangeElement of this.rangeFull) {
           if (rangeElement.indexOf('Literal') > -1) {
             return true;
           }
@@ -262,7 +263,7 @@ export default {
     },
   },
   mounted() {
-    this.addEmbedded = (this.valueList.length === 0 && this.onlyEmbedded && this.getFullRange.length > 1);
+    this.addEmbedded = (this.valueList.length === 0 && this.onlyEmbedded && this.rangeFull.length > 1);
   },
   methods: {
     actionHighlight(active, event) {
@@ -331,7 +332,7 @@ export default {
       } else if (this.isVocabField) {
         this.addItem('');
       } else if (this.canRecieveObjects) {
-        const range = this.getFullRange;
+        const range = this.rangeFull;
         if (range.length === 1 && this.onlyEmbedded) {
           this.addEmpty(range[0]);
         } else if (this.onlyEmbedded) {
@@ -374,7 +375,7 @@ export default {
     },
     resetSearch() {
       this.keyword = '';
-      this.currentSearchTypes = this.getRange;
+      this.currentSearchTypes = this.allSearchTypes;
       this.searchResult = [];
     },
     addLinkedItem(obj) {
@@ -604,14 +605,14 @@ export default {
         <template slot="panel-header-info">
           <div 
             class="PanelComponent-headerInfo" 
-            v-if="getFullRange.length > 0" 
+            v-if="rangeFull.length > 0" 
             @mouseleave="rangeInfo = false">
             <i class="fa fa-info-circle icon icon--md" @mouseenter="rangeInfo = true"></i>
             <div class="PanelComponent-headerInfoBox" v-show="rangeInfo">
               <p class="header">
                 {{ "Allowed types" | translatePhrase }}:
               </p>
-              <span v-for="(range, index) in getFullRange" :key="index">
+              <span v-for="(range, index) in rangeFull" :key="index">
                 • {{range | labelByLang}}
               </span>
             </div>
@@ -633,8 +634,8 @@ export default {
                     <filter-select class="EntityAdder-filterSearchInput FilterSelect--insideInput"
                       :class-name="'js-filterSelect'"
                       :custom-placeholder="'All types:'"
-                      :options="selectOptions"
-                      :options-all="getRange"
+                      :options="{ tree: selectOptions, priority: priorityOptions }"
+                      :options-all="allSearchTypes"
                       :is-filter="true"
                       v-on:filter-selected="setFilter($event, keyword)"></filter-select>
                 </div>
@@ -693,13 +694,13 @@ export default {
           <div class="EntityAdder-create">
             <button class="EntityAdder-createBtn btn btn-primary btn--sm"
               v-if="hasSingleRange" 
-              v-on:click="addEmpty(getFullRange[0])">{{ "Create local entity" | translatePhrase }}
+              v-on:click="addEmpty(rangeFull[0])">{{ "Create local entity" | translatePhrase }}
             </button>
             <filter-select
               v-if="!hasSingleRange" 
               :class-name="'js-createSelect'"
-              :options="selectOptions"
-              :options-all="getRange"
+              :options="{ tree: selectOptions, priority: priorityOptions }"
+              :options-all="allSearchTypes"
               :is-filter="false"
               :custom-placeholder="'Create local entity:'"
               v-on:filter-selected="addType($event.value)"></filter-select>

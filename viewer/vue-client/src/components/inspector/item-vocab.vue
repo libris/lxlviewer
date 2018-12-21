@@ -47,8 +47,7 @@ export default {
       'status',
     ]),
     range() {
-      const types = VocabUtil.getFullRange(
-        this.entityType,
+      const types = VocabUtil.getRangeFull(
         this.fieldKey,
         this.resources.vocab,
         this.resources.context,

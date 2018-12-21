@@ -133,7 +133,7 @@ export default {
       if (this.clipboardValue === null) {
         return false;
       }
-      return this.fullRange.indexOf(this.clipboardValue['@type']) > -1;
+      return this.rangeFull.indexOf(this.clipboardValue['@type']) > -1;
     },
     clipboardValue() {
       return this.clipboard;
@@ -141,15 +141,35 @@ export default {
     isMainField() {
       return (!this.isInner && this.settings.mainFields[this.recordType] === this.fieldKey);
     },
-    fullRange() {
-      const fetchedRange = VocabUtil.getFullRange(
-        this.entityType, 
+    someValuesFrom() {
+      return VocabUtil.getRestrictions('someValuesFrom', this.entityType, this.fieldKey, this.resources.vocab, this.resources.context);
+    },
+    allValuesFrom() {
+      return VocabUtil.getRestrictions('allValuesFrom', this.entityType, this.fieldKey, this.resources.vocab, this.resources.context);
+    },
+    range() {
+      const fetchedRange = VocabUtil.getRange(
         this.fieldKey, 
         this.resources.vocab, 
         this.resources.context, 
         this.resources.vocabClasses,
       ).map(item => StringUtil.getCompactUri(item, this.resources.context));
       return fetchedRange;
+    },
+    rangeFull() {
+      const fetchedRange = VocabUtil.getRangeFull(
+        this.fieldKey, 
+        this.resources.vocab, 
+        this.resources.context, 
+        this.resources.vocabClasses,
+      ).map(item => StringUtil.getCompactUri(item, this.resources.context));
+      return fetchedRange;
+    },
+    allSearchTypes() {
+      if (this.allValuesFrom.length > 0) {
+        return this.allValuesFrom;
+      }
+      return this.someValuesFrom.concat(this.range);
     },
     recordType() {
       return VocabUtil.getRecordType(
@@ -523,15 +543,20 @@ export default {
             v-if="!locked && (isRepeatable || isEmptyObject)" 
             ref="entityAdder"
             :field-key="fieldKey" 
+            :path="getPath"
             :already-added="linkedIds" 
             :compositional="isCompositional" 
             :entity-type="entityType" 
+            :range-full="rangeFull"
+            :range="range"
+            :all-values-from="allValuesFrom"
+            :some-values-from="someValuesFrom"
+            :all-search-types="allSearchTypes"
             :property-types="propertyTypes" 
             :show-action-buttons="actionButtonsShown" 
             :active="activeModal" 
             :is-placeholder="false" 
-            :value-list="valueAsArray" 
-            :path="getPath">
+            :value-list="valueAsArray">
           </entity-adder>
           <div v-else class="Field-action placeholder"></div> 
 
@@ -586,6 +611,11 @@ export default {
           :already-added="linkedIds" 
           :compositional="isCompositional" 
           :entity-type="entityType" 
+          :range-full="rangeFull"
+          :range="range"
+          :all-values-from="allValuesFrom"
+          :some-values-from="someValuesFrom"
+          :all-search-types="allSearchTypes"
           :property-types="propertyTypes" 
           :show-action-buttons="actionButtonsShown" 
           :active="activeModal" 
@@ -651,6 +681,7 @@ export default {
           v-if="getDatatype(item) == 'vocab'" 
           :is-locked="locked" 
           :field-key="fieldKey" 
+          :parent-range="rangeFull"
           :value="item" 
           :entity-type="entityType" 
           :index="index" 
@@ -672,7 +703,11 @@ export default {
           :is-locked="locked" 
           :entity-type="entityType" 
           :forced-extractability="isCompositional"
-          :parent-range="fullRange"
+          :all-values-from="allValuesFrom"
+          :some-values-from="someValuesFrom"
+          :all-search-types="allSearchTypes"
+          :range="range"
+          :range-full="rangeFull"
           :item="item" 
           :field-key="fieldKey" 
           :index="index" 
@@ -688,6 +723,11 @@ export default {
           :field-key="fieldKey"
           :entity-type="entityType"
           :forced-extractability="isCompositional"
+          :all-values-from="allValuesFrom"
+          :some-values-from="someValuesFrom"
+          :all-search-types="allSearchTypes"
+          :range="range"
+          :range-full="rangeFull"
           :index="index"
           :in-array="valueIsArray"
           :show-action-buttons="actionButtonsShown"

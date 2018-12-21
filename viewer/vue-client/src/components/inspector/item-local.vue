@@ -36,7 +36,23 @@ export default {
       type: Boolean,
       default: false,
     },
-    parentRange: {
+    allSearchTypes: {
+      type: Array,
+      default: () => [],
+    },
+    allValuesFrom: {
+      type: Array,
+      default: () => [],
+    },
+    someValuesFrom: {
+      type: Array,
+      default: () => [],
+    },
+    range: {
+      type: Array,
+      default: () => [],
+    },
+    rangeFull: {
       type: Array,
       default: () => [],
     },
@@ -86,7 +102,7 @@ export default {
           text: 'The class is abstract and should not be used',
           hint: this.focusData['@type'],
         });
-      } else if (this.parentRange.indexOf(this.focusData['@type']) === -1) {
+      } else if (this.rangeFull.indexOf(this.focusData['@type']) === -1) {
         failedValidations.push({
           text: 'The class is not in the range of this property',
           hint: `${this.fieldKey} <- ${this.focusData['@type']}`,
@@ -523,6 +539,11 @@ export default {
       :isActive="extractDialogActive" 
       :can-copy-title="canCopyTitle" 
       :copy-title="copyTitle" 
+      :range-full="rangeFull"
+      :range="range"
+      :all-values-from="allValuesFrom"
+      :some-values-from="someValuesFrom"
+      :all-search-types="allSearchTypes"
       :entity-type="entityType" 
       :field-key="fieldKey" 
       :extracting="extracting" 

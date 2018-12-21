@@ -10,7 +10,13 @@ export default {
   mixins: [clickaway],
   name: 'filter-select',
   props: {
-    options: {},
+    options: {
+      type: Object,
+      default: () => ({
+        priority: [],
+        tree: [],
+      }),
+    },
     optionsAll: {
       type: Array,
       default: () => [],
@@ -118,6 +124,9 @@ export default {
       }
     },
     selectOption(event, eventObj = {}) {
+      if (event.target.dataset.abstract) {
+        return;
+      }
       const eventObject = eventObj;
       eventObject.label = event.target.textContent;
       eventObject.value = event.target.dataset.filter;
@@ -126,7 +135,7 @@ export default {
       this.selectedObject = eventObject;
       this.filterVisible = false;
     },
-    showCurrentFilter(label) {      
+    showCurrentFilter(label) {
       const inputContSel = document.getElementsByClassName(this.className);
       const inputContEl = inputContSel[0];
       const inputSel = inputContEl.getElementsByTagName('input');
@@ -200,15 +209,36 @@ export default {
       :tabindex="-1">
     <ul class="FilterSelect-dropdown js-filterSelectDropdown"
       :class="{'is-visible': filterVisible}">
+      <li class="FilterSelect-dropdownHeader" v-show="options.priority.length > 0">
+        {{ 'Suggested' | translatePhrase }}:
+      </li>
       <li class="FilterSelect-dropdownItem js-filterSelectItem"
+        :class="{ 'is-abstract': option.abstract, 'is-concrete': !option.abstract }"
         @click="selectOption"
         @keyup.enter="selectOption"
-        v-for="option in options"
+        v-for="option in options.priority"
+        :key="option">
+        <span class="FilterSelect-dropdownText js-filterSelectText" 
+          tabindex="-1"
+          :data-filter="option"
+          :data-abstract="option.abstract"
+          :data-key="option">{{ option | labelByLang }}</span >
+      </li>
+      <hr class="FilterSelect-dropdownDivider" v-show="options.priority.length > 0">
+      <li class="FilterSelect-dropdownHeader" v-show="options.tree.length > 0 && options.priority.length > 0">
+        {{ 'All' | translatePhrase }}:
+      </li>
+      <li class="FilterSelect-dropdownItem js-filterSelectItem"
+        :class="{ 'is-abstract': option.abstract, 'is-concrete': !option.abstract }"
+        @click="selectOption"
+        @keyup.enter="selectOption"
+        v-for="option in options.tree"
         :key="option.key">
         <span class="FilterSelect-dropdownText js-filterSelectText" 
           tabindex="-1"
           :data-filter="option.value"
-          :data-key="option.key">{{option.label}}</span>
+          :data-abstract="option.abstract"
+          :data-key="option.key">{{ option.label }}</span>
       </li>
     </ul>
     <i
@@ -259,7 +289,6 @@ export default {
 
   &--insideInput {
     position: absolute;
-    width: 50%;
   }
 
   &-dropdown {
@@ -269,9 +298,10 @@ export default {
     overflow: hidden;
     position: absolute;
     top: auto;
+    min-width: 100%;
+    right: 0px;
     bottom: 28px;
     background-color: @panel-header-bg;
-    width: 100%;
     border: 1px solid @gray-light;
     border-radius: 10px;
     border-bottom-left-radius: 0;
@@ -303,19 +333,38 @@ export default {
   &-dropdownItem {
     text-decoration: none;
     display: block;
-    cursor: pointer;
     padding: 0 5px;
+    line-height: 1.2;
 
-    &:hover,
-    &.isActive {
-      background-color: @gray-light;
-      color: @white;
+    &.is-abstract {
+      color: @gray;
+      cursor: default;
     }
+    &.is-concrete {
+      cursor: pointer;
+      &:hover,
+      &.isActive {
+        background-color: @gray-light;
+        color: @white;
+      }
+    }
+
+  }
+
+  &-dropdownDivider {
+    margin-top: 0.4em;
+    margin-bottom: 0;
+  }
+  &-dropdownHeader {
+    font-variant: all-small-caps;
+    font-weight: bold;
+    padding-left: 0.7em;
   }
 
   &-dropdownText {
     display: block;
-    padding: 5px 5px;
+    padding: 0px 5px;
+    white-space: nowrap;
   }
 
   &-clear,
