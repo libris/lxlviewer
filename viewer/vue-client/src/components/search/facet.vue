@@ -1,4 +1,5 @@
 <script>
+import * as MathUtil from '@/utils/math';
 
 export default {
   name: 'facet',
@@ -37,6 +38,9 @@ export default {
       const idArray = object['@id'].split('/');
       return `${idArray[idArray.length - 1]} (has no label)`;
     },
+    getCompactNumber() {
+      return MathUtil.getCompactNumber(this.observation.totalItems);
+    },
   },
   components: {
   },
@@ -53,11 +57,10 @@ export default {
     <router-link class="Facet-link"
       :to="observation.view['@id'] | asAppPath" 
       :title="determinedLabel | capitalize">
-      <span class="Facet-label"
-        :title="determinedLabel | capitalize">
-        {{determinedLabel | capitalize}} 
-        ({{observation.totalItems}})
-      </span>
+        <span class="Facet-label"
+          :title="determinedLabel | capitalize">
+          {{determinedLabel | capitalize}}</span>
+        <span class="Facet-badge badge">{{getCompactNumber}}</span>
     </router-link>
   </li>
 </template>
@@ -65,24 +68,34 @@ export default {
 <style lang="less">
 
 .Facet {
-  width: 100%;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  line-height: 2;
 
   &-link {
-    font-size: 16px;
-    font-size: 1.6rem;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: nowrap;
 
     &:hover {
-      color: inherit;
+      text-decoration: none;
+      & .Facet-label {
+        text-decoration: underline;
+      }
     }
+  }
+
+  &-badge {
   }
 
   &-label {
     cursor: pointer;
     color: @black;
+    line-height: 1.8em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
 

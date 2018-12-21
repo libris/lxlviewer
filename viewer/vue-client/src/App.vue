@@ -451,6 +451,13 @@ body {
     }
 }
 
+// ------------- BADGE ----------------
+
+.badge {
+  background-color: @gray-lighter;
+  color: @gray-darker;
+}
+
 // ---------- TYPOGRAPHY -------------
 // ----------- HEADINGS ----------------
 h1, h2, h3, h4 {
