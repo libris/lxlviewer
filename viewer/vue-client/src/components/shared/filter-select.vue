@@ -4,6 +4,7 @@
 */
 import { forEach } from 'lodash-es';
 import * as StringUtil from '@/utils/string';
+import * as LayoutUtil from '@/utils/layout';
 import { mixin as clickaway } from 'vue-clickaway';
 
 export default {
@@ -82,6 +83,7 @@ export default {
     },
     nextItem(event) {
       if (this.filterVisible) {
+        this.preventBodyScroll(event);
         const inputContSel = document.getElementsByClassName(this.className);
         const inputContEl = inputContSel[0];
         const texts = inputContEl.getElementsByClassName('js-filterSelectText');
@@ -180,6 +182,16 @@ export default {
       this.showCurrentFilter(value.label);
       this.$emit('filter-selected', value);
     },
+    filterVisible(val, oldVal) {
+      if (val !== oldVal) {
+        LayoutUtil.scrollLock(val);
+      }
+    },
+  },
+  beforeDestroy() {
+    if (this.filterVisible == true) { // Make sure we unlock the scroll lock
+      LayoutUtil.scrollLock(false);
+    }
   },
   mounted() {
     this.$el.addEventListener('keyup', this.nextItem);
@@ -208,7 +220,7 @@ export default {
       ref="filterselectInput"
       :tabindex="-1">
     <ul class="FilterSelect-dropdown js-filterSelectDropdown"
-      :class="{'is-visible': filterVisible}">
+      :class="{'is-visible': filterVisible}" v-show="filterVisible">
       <li class="FilterSelect-dropdownHeader" v-show="options.priority.length > 0">
         {{ 'Suggested' | translatePhrase }}:
       </li>
