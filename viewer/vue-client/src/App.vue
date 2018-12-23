@@ -166,7 +166,8 @@ h4 {
 }
 
 // ----------- LINKS ----------------
-body a {
+body a,
+.link {
   color: @link-color;
   text-decoration: none;
   cursor: pointer;

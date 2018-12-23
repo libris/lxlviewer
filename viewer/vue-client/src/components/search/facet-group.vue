@@ -4,7 +4,7 @@ import Facet from './facet.vue';
 export default {
   name: 'facet-group',
   props: {
-    slice: {
+    group: {
       type: Object,
       required: true,
     },
@@ -12,6 +12,8 @@ export default {
   data() {
     return {
       isExpanded: true,
+      currentLevel: 0,
+      revealLevels: [5, 15, false],
     };
   },
   methods: {
@@ -29,6 +31,20 @@ export default {
     user() {
       return this.$store.getters.user;
     },
+    slicedObservations() {
+      const limit = this.revealLevels[this.currentLevel];
+      return limit ? this.group.observation.slice(0, limit) : this.group.observation;
+    },
+    revealText() {
+      if (this.slicedObservations.length >= this.group.observation.length) {
+        return false;
+      } 
+      if (this.revealLevels[this.currentLevel + 1] 
+        && this.revealLevels[this.currentLevel + 1] < this.group.observation.length) {
+        return 'Show more';
+      } 
+      return 'Show all';
+    },
   },
   components: {
     facet: Facet,
@@ -42,25 +58,30 @@ export default {
 
 <template>
   <nav class="FacetGroup" 
-    :aria-labelledby="facetLabelByLang(slice.dimension)">
+    :aria-labelledby="facetLabelByLang(group.dimension)">
     <h4 class="FacetGroup-title uppercaseHeading--bold"
       :class="{'is-expanded' : isExpanded}"
       @click="toggleExpanded()"
-      :id="facetLabelByLang(slice.dimension)">
-      {{facetLabelByLang(slice.dimension) | capitalize}}
+      :id="facetLabelByLang(group.dimension)">
+      {{facetLabelByLang(group.dimension) | capitalize}}
     </h4>
     <ul class="FacetGroup-list"
       :class="{'is-expanded' : isExpanded}">
-      <facet v-for="observation in slice.observation" 
+      <facet v-for="observation in slicedObservations"
       :observation="observation" 
       :key="observation.label"></facet>
+      <span 
+        v-if="revealText" 
+        class="FacetGroup-reveal link" 
+        @click="currentLevel++">{{ revealText | translatePhrase }}...</span>
     </ul>
+
   </nav>
 </template>
 
 <style lang="less">
 .FacetGroup {
-  width: 200px;
+  width: 230px;
   margin: 0px 0 0;
 
   &-title {
@@ -88,13 +109,20 @@ export default {
 
   &-list {
     list-style: none;
-    padding: 0;
+    padding: 0 15px 0 0;
     display: none;
+    max-height: 450px;
+    overflow-y: scroll;
 
     &.is-expanded {
       margin-top: 5px;
-      display: block;     
+      display: block;
     }
+  }
+
+  &-reveal {
+    font-size: 14px;
+    line-height: 30px;
   }
 }
 </style>

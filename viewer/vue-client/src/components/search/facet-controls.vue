@@ -33,7 +33,7 @@ export default {
     <facet-group
       v-for="(dimensionValue, dimensionKey) in result.stats.sliceByDimension"
       :key="dimensionKey"
-      :slice="dimensionValue"/>
+      :group="dimensionValue"/>
   </div>
 </template>
 
