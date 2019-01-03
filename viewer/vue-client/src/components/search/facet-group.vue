@@ -8,10 +8,13 @@ export default {
       type: Object,
       required: true,
     },
+    expanded: {
+      type: Boolean,
+    },
   },
   data() {
     return {
-      isExpanded: true,
+      isExpanded: this.expanded,
       currentLevel: 0,
       revealLevels: [5, 15, false],
     };
@@ -23,6 +26,13 @@ export default {
     toggleExpanded() {
       this.isExpanded = !this.isExpanded;
     },
+    sortObservations(arr) {
+      const sortFunc = this.settings.propertyChains[this.group.dimension].facet.sortBy;
+      if (!sortFunc) {
+        return arr;
+      }
+      return arr.sort(sortFunc);
+    },
   },
   computed: {
     settings() {
@@ -33,10 +43,12 @@ export default {
     },
     slicedObservations() {
       let limit = this.revealLevels[this.currentLevel];
+      const sortedObs = this.sortObservations(this.group.observation);
+
       if (this.group.observation.length - limit === 1) {
         limit = false; // if only one remains hidden we might as well show all
       }
-      return limit ? this.group.observation.slice(0, limit) : this.group.observation;
+      return limit ? sortedObs.slice(0, limit) : sortedObs;
     },
     revealText() {
       if (this.slicedObservations.length >= this.group.observation.length) {
@@ -54,11 +66,6 @@ export default {
   },
   components: {
     facet: Facet,
-  },
-  mounted() {
-    this.$nextTick(() => {
-      this.isExpanded = this.settings.propertyChains[this.group.dimension].facet.expanded;
-    });
   },
 };
 </script>

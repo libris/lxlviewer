@@ -157,7 +157,7 @@ const store = new Vuex.Store({
           en: 'Type',
           facet: {
             order: 3,
-            expanded: false,
+            sortBy: false,
           },
         },
         carrierType: {
@@ -165,7 +165,7 @@ const store = new Vuex.Store({
           en: 'Carrier type',
           facet: {
             order: false,
-            expanded: false,
+            sortBy: false,
           },
         },
         issuanceType: {
@@ -173,7 +173,7 @@ const store = new Vuex.Store({
           en: 'Issuance type',
           facet: {
             order: false,
-            expanded: false,
+            sortBy: false,
           },
         },
         'instanceOf.@type': {
@@ -181,7 +181,7 @@ const store = new Vuex.Store({
           en: 'Type of work',
           facet: {
             order: 0,
-            expanded: true,
+            sortBy: (a, b) => b.totalItems - a.totalItems,
           },
         },
         'instanceOf.contentType': {
@@ -189,7 +189,7 @@ const store = new Vuex.Store({
           en: 'Content type of work',
           facet: {
             order: false,
-            expanded: false,
+            sortBy: false,
           },
         },
         'instanceOf.language': {
@@ -197,7 +197,7 @@ const store = new Vuex.Store({
           en: 'Language of work',
           facet: {
             order: 1,
-            expanded: true,
+            sortBy: false,
           },
         },
         'publication.year.keyword': {
@@ -205,7 +205,7 @@ const store = new Vuex.Store({
           en: 'Publication year',
           facet: {
             order: 2,
-            expanded: true,
+            sortBy: false,
           },
         },
       },

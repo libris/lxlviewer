@@ -8,6 +8,7 @@ export default {
   },
   data() {
     return {
+      numOfExpanded: 3,
     };
   },
   methods: {
@@ -46,9 +47,10 @@ export default {
 <template>
   <div class="FacetControls">
     <facet-group
-      v-for="(dimensionValue, dimensionKey) in sortedFacets"
+      v-for="(dimensionValue, dimensionKey, index) in sortedFacets"
       :key="dimensionKey"
-      :group="dimensionValue"/>
+      :group="dimensionValue"
+      :expanded="index < numOfExpanded"/>
   </div>
 </template>
 
