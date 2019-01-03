@@ -13,6 +13,21 @@ export default {
   methods: {
   },
   computed: {
+    facetSettings() {
+      return this.$store.getters.settings.propertyChains;
+    },
+    sortedFacets() {
+      const unordered = this.result.stats.sliceByDimension;
+      const ordered = Object
+        .keys(unordered)
+        .sort((a, b) => this.facetSettings[unordered[a].dimension].facet.order 
+            - this.facetSettings[unordered[b].dimension].facet.order)
+        .reduce((_sortedObj, key) => ({
+          ..._sortedObj, 
+          [key]: unordered[key],
+        }), {});
+      return ordered;
+    },
   },
   events: {
   },
@@ -31,7 +46,7 @@ export default {
 <template>
   <div class="FacetControls">
     <facet-group
-      v-for="(dimensionValue, dimensionKey) in result.stats.sliceByDimension"
+      v-for="(dimensionValue, dimensionKey) in sortedFacets"
       :key="dimensionKey"
       :group="dimensionValue"/>
   </div>
