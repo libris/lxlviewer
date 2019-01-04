@@ -10,7 +10,7 @@ export default {
   },
   props: {
     tooltipText: {
-      type: String,
+      type: [String, Array],
       default: '',
     },
     translation: {
@@ -20,13 +20,6 @@ export default {
     showTooltip: {
       type: Boolean,
       default: false,
-    },
-    literalString: {
-      type: Object,
-      default: () => ({
-        position: 'before',
-        text: '',
-      }),
     },
     keybindName: {
       type: String,
@@ -54,23 +47,12 @@ export default {
     translatedText() {
       if (this.translation === 'labelByLang') {
         return StringUtil.getLabelByLang(this.tooltipText, this.settings.language, this.resources.vocab, this.resources.context);
-      } if (this.translation === 'translatePhrase') {
-        return StringUtil.getUiPhraseByLang(this.tooltipText, this.settings.language);
       } 
-      return this.tooltipText;
-    },
-    totalText() {
-      let text = '';
-      if (this.literalString.position === 'before') {
-        text += this.literalString.text;
-        text += ' ';
-        text += this.translatedText;
-      } else {
-        text += this.translatedText;
-        text += ' ';
-        text += this.literalString.text;
-      }
-      return text + this.keybindingText;
+      // if (this.translation === 'translatePhrase') {
+      //   return StringUtil.getUiPhraseByLang(this.tooltipText, this.settings.language);
+      // } 
+      // return this.tooltipText;
+      return StringUtil.getUiPhraseByLang(this.tooltipText, this.settings.language);
     },
     keybindingText() {
       let str = '';
@@ -93,7 +75,7 @@ export default {
     @mouseover="hoverTooltip = true" 
     @mouseleave="hoverTooltip = false">
     <div class="tooltip-container-inner">
-      {{ totalText }}
+      {{ translatedText + keybindingText }}
     </div>
   </div>
 </template>

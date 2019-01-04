@@ -76,8 +76,17 @@ export function convertToVocabKey(str, context) {
 }
 
 export function getUiPhraseByLang(phrase, langcode) {
-  if (translationsFile[langcode] && translationsFile[langcode][phrase]) {
-    return translationsFile[langcode][phrase];
+  if (typeof phrase === 'string') {
+    if (translationsFile[langcode] && translationsFile[langcode][phrase]) {
+      return translationsFile[langcode][phrase];
+    }
+  } else if (Array.isArray(phrase)) {
+    const translated = phrase.map((el) => {
+      if (translationsFile[langcode] && translationsFile[langcode][el]) {
+        return translationsFile[langcode][el];
+      } return el;
+    });
+    return translated.join(' ');
   }
   return phrase;
 }

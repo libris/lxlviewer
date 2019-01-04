@@ -133,12 +133,9 @@ export default {
             class="Toolbar-tooltipContainer"
             :show-tooltip="true" 
             position="left"
-            :tooltip-text="hasHolding ? 'has holding' : 'Add holding for'" 
-            :literalString="{
-              position: hasHolding ? 'before' : 'after',
-              text: user.settings.activeSigel
-            }"
-            translation="translatePhrase"></tooltip-component>
+            :tooltip-text="hasHolding ? 
+              [user.settings.activeSigel, 'has holding'] : 
+              ['Add holding for', user.settings.activeSigel]"></tooltip-component>
         </template>
       </round-button>
     </template>
