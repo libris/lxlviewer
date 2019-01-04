@@ -262,7 +262,7 @@ export default {
     &:hover, 
     &:focus {
       background-color: transparent;
-      color: @icon-default--hover;
+      color: @gray-darker;
     }
 
     i {
@@ -271,7 +271,7 @@ export default {
     }
 
     &.is-active {
-      color: @icon-primary;
+      color: @btn-primary;
 
       i {
         color: inherit;
@@ -311,7 +311,8 @@ export default {
     text-transform: uppercase;
     transition: color 0.2s ease;
 
-    &:hover {
+    &:hover, 
+    &:focus {
       color: @brand-primary;
       text-decoration: none;
     }

@@ -612,7 +612,7 @@ export default {
       display: flex;
       align-items: center;
       padding: 5px 0;
-      background: @topbar-color;
+      background: @white;
       white-space: nowrap;
       overflow: hidden;
       cursor: pointer;

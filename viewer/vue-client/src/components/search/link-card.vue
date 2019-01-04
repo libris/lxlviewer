@@ -36,14 +36,13 @@ export default {
 
 <template>
   <div class="panel panel-default LinkCard" v-bind:class="{'no-link': !linkUrl, 'LinkCard--large': videoUrl}">
-    <img v-if="image" :src="resolvedImage" class="LinkCard-img"/>
+    <img v-if="image" :src="resolvedImage" class="LinkCard-img" :alt="header"/>
 
     <div v-else-if="videoUrl" class="LinkCard-videoWrap">
       <div class="LinkCard-video Video">
-        <iframe :src="videoUrl" frameborder="0" allowfullscreen></iframe>
+        <iframe :src="videoUrl" frameborder="0" allowfullscreen :title="header"></iframe>
       </div>
     </div> 
-     
     <div class="LinkCard-content card-content">
       <div class="LinkCard-text card-text">
         <span class="LinkCard-title card-title">{{ header }}</span>
