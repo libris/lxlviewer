@@ -201,8 +201,7 @@ export default {
       <i class="fa fa-trash-o icon icon--sm">
         <tooltip-component
           :show-tooltip="removeHover"
-          tooltip-text="Remove"
-          translation="translatePhrase"></tooltip-component>
+          tooltip-text="Remove"></tooltip-component>
       </i>
     </div>
   </div>

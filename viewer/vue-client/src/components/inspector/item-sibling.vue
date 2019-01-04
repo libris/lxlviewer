@@ -377,8 +377,7 @@ export default {
             @mouseout="showLinkAction = false, actionHighlight($event, false)">
             <tooltip-component 
               :show-tooltip="showLinkAction" 
-              tooltip-text="Link entity" 
-              translation="translatePhrase"></tooltip-component>
+              tooltip-text="Link entity"></tooltip-component>
           </i>
           <i class="fa fa-link fa-fw icon icon--sm is-disabled"
             v-else-if="inspector.status.editing && isExtractable && !extractedMainEntity"
@@ -405,8 +404,7 @@ export default {
             @mouseout="removeHover = false, removeHighlight($event, false)">
             <tooltip-component 
               :show-tooltip="removeHover" 
-              tooltip-text="Remove" 
-              translation="translatePhrase"></tooltip-component>
+              tooltip-text="Remove"></tooltip-component>
           </i>
         </div>
       </div>

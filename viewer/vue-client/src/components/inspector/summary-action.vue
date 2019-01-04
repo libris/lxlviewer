@@ -79,8 +79,7 @@ export default {
             class="Toolbar-tooltipContainer"
             position="right"
             :show-tooltip="true"
-            :tooltip-text="getTooltipText" 
-            translation="translatePhrase"></tooltip-component>
+            :tooltip-text="getTooltipText"></tooltip-component>
         </template>
       </round-button>
     </div>

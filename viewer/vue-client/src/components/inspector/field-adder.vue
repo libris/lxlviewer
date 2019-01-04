@@ -282,8 +282,7 @@ export default {
         @blur="showToolTip = false, actionHighlight(false, $event)">
         <tooltip-component 
           :show-tooltip="showToolTip" 
-          :tooltip-text="modalTitle" 
-          translation="translatePhrase"></tooltip-component>
+          :tooltip-text="modalTitle"></tooltip-component>
       </i>
       <span class="FieldAdder-innerLabel">{{ "Add field" | translatePhrase }}</span>
     </span>

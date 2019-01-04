@@ -13,10 +13,6 @@ export default {
       type: [String, Array],
       default: '',
     },
-    translation: {
-      type: String,
-      default: '',
-    },
     showTooltip: {
       type: Boolean,
       default: false,
@@ -45,13 +41,6 @@ export default {
       return !this.hoverTooltip && this.showTooltip;
     },
     translatedText() {
-      if (this.translation === 'labelByLang') {
-        return StringUtil.getLabelByLang(this.tooltipText, this.settings.language, this.resources.vocab, this.resources.context);
-      } 
-      // if (this.translation === 'translatePhrase') {
-      //   return StringUtil.getUiPhraseByLang(this.tooltipText, this.settings.language);
-      // } 
-      // return this.tooltipText;
       return StringUtil.getUiPhraseByLang(this.tooltipText, this.settings.language);
     },
     keybindingText() {

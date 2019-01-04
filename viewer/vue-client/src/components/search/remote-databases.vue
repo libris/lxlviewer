@@ -243,8 +243,7 @@ export default {
           class="RemoteDatabases-tooltip"
           :show-tooltip="clearTooltip" 
           tooltip-text="Clear all"
-          position="top" 
-          translation="translatePhrase">
+          position="top">
         </tooltip-component>
         <i class="fa fa-times-circle icon icon--lg"></i>
       </div>
@@ -260,8 +259,7 @@ export default {
           class="RemoteDatabases-tooltip"
           :show-tooltip="addTooltip" 
           :tooltip-text="'Add'"
-          position="top" 
-          translation="translatePhrase">
+          position="top">
         </tooltip-component>
         <i class="fa fa-plus-circle icon icon--primary icon--lg"></i>
       </div>

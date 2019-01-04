@@ -516,8 +516,7 @@ export default {
               @mouseout="removeHover = false, removeHighlight(false, $event)">
               <tooltip-component 
                 :show-tooltip="removeHover" 
-                tooltip-text="Remove" 
-                translation="translatePhrase"></tooltip-component>
+                tooltip-text="Remove"></tooltip-component>
             </i>
           </div>
           <entity-adder class="Field-entityAdder Field-action"
@@ -554,8 +553,7 @@ export default {
               @mouseout="pasteHover = false, actionHighlight(false, $event)">
               <tooltip-component 
                 :show-tooltip="pasteHover" 
-                tooltip-text="Paste entity" 
-                translation="translatePhrase"></tooltip-component>
+                tooltip-text="Paste entity"></tooltip-component>
             </i>
           </div>
         </div>
@@ -606,7 +604,7 @@ export default {
             @blur="removeHover = false, removeHighlight(false, $event)" 
             @mouseover="removeHover = true, removeHighlight(true, $event)" 
             @mouseout="removeHover = false, removeHighlight(false, $event)"  >
-            <tooltip-component translation="translatePhrase"
+            <tooltip-component
               :show-tooltip="removeHover" 
               tooltip-text="Remove"></tooltip-component>
           </i>
@@ -624,8 +622,7 @@ export default {
             @mouseout="pasteHover = false, actionHighlight(false, $event)">
             <tooltip-component 
               :show-tooltip="pasteHover" 
-              tooltip-text="Paste entity" 
-              translation="translatePhrase"></tooltip-component>
+              tooltip-text="Paste entity"></tooltip-component>
           </i>
         </div>
       </div>
