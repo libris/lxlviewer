@@ -275,6 +275,9 @@ export function getItemSummary(item, displayDefs, quoted, vocab, settings, conte
 export function getFormattedSelectOption(term, settings, vocab, context) {
   const maxLength = 43;
   let labelByLang = StringUtil.getLabelByLang(term.id, settings.language, vocab, context);
+  if (labelByLang === null) {
+    labelByLang = term.id;
+  }
   if (labelByLang.length > maxLength) {
     labelByLang = `${labelByLang.substr(0, maxLength - 2)}...`;
   }
