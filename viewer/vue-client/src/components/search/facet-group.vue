@@ -26,13 +26,6 @@ export default {
     toggleExpanded() {
       this.isExpanded = !this.isExpanded;
     },
-    sortObservations(arr) {
-      const sortFunc = this.settings.propertyChains[this.group.dimension].facet.sortBy;
-      if (!sortFunc) {
-        return arr;
-      }
-      return arr.sort(sortFunc);
-    },
   },
   computed: {
     settings() {
@@ -43,12 +36,11 @@ export default {
     },
     slicedObservations() {
       let limit = this.revealLevels[this.currentLevel];
-      const sortedObs = this.sortObservations(this.group.observation);
 
       if (this.group.observation.length - limit === 1) {
         limit = false; // if only one remains hidden we might as well show all
       }
-      return limit ? sortedObs.slice(0, limit) : sortedObs;
+      return limit ? this.group.observation.slice(0, limit) : this.group.observation;
     },
     revealText() {
       if (this.slicedObservations.length >= this.group.observation.length) {
