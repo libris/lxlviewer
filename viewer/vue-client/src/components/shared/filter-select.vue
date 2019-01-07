@@ -189,7 +189,7 @@ export default {
     },
   },
   beforeDestroy() {
-    if (this.filterVisible == true) { // Make sure we unlock the scroll lock
+    if (this.filterVisible === true) { // Make sure we unlock the scroll lock
       LayoutUtil.scrollLock(false);
     }
   },
