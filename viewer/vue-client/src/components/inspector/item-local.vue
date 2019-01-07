@@ -157,6 +157,13 @@ export default {
     formObj() {
       return this.item;
     },
+    typeLabel() {
+      let label = StringUtil.getLabelByLang(this.item['@type'], this.settings.language, this.resources.vocab, this.resources.context);
+      if (label === null) {
+        label = this.item['@type'];
+      }
+      return label;
+    },
     isEmpty() {
       let bEmpty = true;
       // Check if item has any keys besides @type and _uid. If not, we'll consider it empty.
@@ -417,7 +424,7 @@ export default {
           @click="toggleExpanded()"></i>
         <span class="ItemLocal-type" 
           @click="toggleExpanded($event)" 
-          :title="item['@type']">{{ item['@type'] | labelByLang | capitalize }}:</span>
+          :title="typeLabel">{{ typeLabel | capitalize }}:</span>
         <span class="ItemLocal-collapsedLabel" @click="toggleExpanded()">
           <span class="ItemLocal-collapsedText" v-show="!expanded || isEmpty">{{getItemLabel}}</span>
           <span class="placeholder"> </span>
