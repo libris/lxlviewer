@@ -353,7 +353,8 @@
     "shelfMark": {
       "@type": "ShelfMark",
       "label": [""]
-    }
+    },
+    "cataloguersNote": [""]
   },
   "ShelfMark": {
     "@type": "ShelfMark",
