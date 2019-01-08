@@ -479,8 +479,10 @@ def _proxy_request(request, session, json_data=None, query_params=[],
     url_path = url_path or request.path
 
     headers = dict(request.headers)
-    if accept_header:
-        headers['Accept'] = accept_header
+    accept_header = accept_header or headers['Accept']
+    adjusted_accept_header = _adjust_accept_header(accept_header)
+    if adjusted_accept_header:
+        headers['Accept'] = adjusted_accept_header
 
     app.logger.debug('Sending proxy %s request to: %s with headers:\n%r\nand body:\n %s',
                      request.method, url_path, headers, json_data)
@@ -489,7 +491,31 @@ def _proxy_request(request, session, json_data=None, query_params=[],
                                    json_data=json_data,
                                    query_params=params)
 
-    return _map_response(response)
+    mapped_response = _map_response(response)
+
+    # If the accept was for something other than JSON-LD, we need to adjust the
+    # content location accordingly (since the backend API only serves the
+    # JSON-LD location).
+    response_data_suffix = negotiator.mimetype_suffix_map.get(accept_header)
+    if response_data_suffix:
+        content_location = mapped_response.headers.get('Content-Location')
+        if content_location:
+            content_location = content_location.replace('data.jsonld',
+                    'data.{}'.format(response_data_suffix))
+            mapped_response.headers['Content-Location'] = content_location
+
+    return mapped_response
+
+
+def _adjust_accept_header(accept_header):
+    # For RDF, the backend API only deals with JSON-LD. Thus, we add
+    # negotiation for that if missing, and then serialize to preferred
+    # requested format here.
+    if accept_header and accept_header != JSONLD_MIMETYPE and any(
+            ah.strip() in RDF_MIMETYPES for ah in accept_header.split(',')):
+        return ', ' + JSONLD_MIMETYPE
+    else:
+        return accept_header
 
 
 def _map_response(response):
