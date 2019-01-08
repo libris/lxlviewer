@@ -479,21 +479,10 @@ def _proxy_request(request, session, json_data=None, query_params=[],
     url_path = url_path or request.path
 
     headers = dict(request.headers)
-
-    # The backend API only deals with JSON-LD. Thus, we add negotiation for
-    # that if missing, and then serialize to preferred requested format here.
     accept_header = accept_header or headers['Accept']
-    response_data_suffix = None
-    if accept_header:
-        if JSONLD_MIMETYPE not in accept_header:
-            if accept_header:
-                response_data_suffix = negotiator.mimetype_suffix_map.get(
-                        accept_header)
-                accept_header += ', ' + JSONLD_MIMETYPE
-            else:
-                accept_header = JSONLD_MIMETYPE
-
-        headers['Accept'] = accept_header
+    adjusted_accept_header = _adjust_accept_header(accept_header)
+    if adjusted_accept_header:
+        headers['Accept'] = adjusted_accept_header
 
     app.logger.debug('Sending proxy %s request to: %s with headers:\n%r\nand body:\n %s',
                      request.method, url_path, headers, json_data)
@@ -507,6 +496,7 @@ def _proxy_request(request, session, json_data=None, query_params=[],
     # If the accept was for something other than JSON-LD, we need to adjust the
     # content location accordingly (since the backend API only serves the
     # JSON-LD location).
+    response_data_suffix = negotiator.mimetype_suffix_map.get(accept_header)
     if response_data_suffix:
         content_location = mapped_response.headers['Content-Location']
         content_location = content_location.replace('data.jsonld',
@@ -514,6 +504,19 @@ def _proxy_request(request, session, json_data=None, query_params=[],
         mapped_response.headers['Content-Location'] = content_location
 
     return mapped_response
+
+
+def _adjust_accept_header(accept_header):
+    # For RDF, the backend API only deals with JSON-LD. Thus, we add
+    # negotiation for that if missing, and then serialize to preferred
+    # requested format here.
+    if not accept_header:
+        return None
+    if JSONLD_MIMETYPE not in accept_header:
+        if accept_header:
+            return ', ' + JSONLD_MIMETYPE
+        else:
+            return JSONLD_MIMETYPE
 
 
 def _map_response(response):
