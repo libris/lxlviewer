@@ -511,13 +511,11 @@ def _adjust_accept_header(accept_header):
     # For RDF, the backend API only deals with JSON-LD. Thus, we add
     # negotiation for that if missing, and then serialize to preferred
     # requested format here.
-    if not accept_header:
-        return None
-    if JSONLD_MIMETYPE not in accept_header:
-        if accept_header:
-            return ', ' + JSONLD_MIMETYPE
-        else:
-            return JSONLD_MIMETYPE
+    if accept_header and accept_header != JSONLD_MIMETYPE and any(
+            ah.strip() in RDF_MIMETYPES for ah in accept_header.split(',')):
+        return ', ' + JSONLD_MIMETYPE
+    else:
+        return accept_header
 
 
 def _map_response(response):
