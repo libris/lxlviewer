@@ -498,10 +498,11 @@ def _proxy_request(request, session, json_data=None, query_params=[],
     # JSON-LD location).
     response_data_suffix = negotiator.mimetype_suffix_map.get(accept_header)
     if response_data_suffix:
-        content_location = mapped_response.headers['Content-Location']
-        content_location = content_location.replace('data.jsonld',
-                'data.{}'.format(response_data_suffix))
-        mapped_response.headers['Content-Location'] = content_location
+        content_location = mapped_response.headers.get('Content-Location')
+        if content_location:
+            content_location = content_location.replace('data.jsonld',
+                    'data.{}'.format(response_data_suffix))
+            mapped_response.headers['Content-Location'] = content_location
 
     return mapped_response
 
