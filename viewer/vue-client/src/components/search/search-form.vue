@@ -375,7 +375,7 @@ export default {
           </button>
         </div>
       </div>
-      <div class="SearchBar-typeButtons" aria-label="Välj typ" 
+      <div class="SearchBar-typeButtons" :aria-label="'Choose type' | translatePhrase"
         v-if="searchPerimeter === 'libris'">
         <label class="SearchBar-typeLabel" 
           :for="filter['@id']"

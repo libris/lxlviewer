@@ -435,13 +435,15 @@ export default {
         <div class="ItemLocal-action">
           <i class="fa fa-link fa-fw icon icon--sm"
             v-if="inspector.status.editing && isExtractable"
+            role="button"
+            tabindex="0"
+            :aria-label="'Link entity' | translatePhrase"
             @click="openExtractDialog(), expand()" 
             @focus="showLinkAction = true, actionHighlight(true, $event)"
             @blur="showLinkAction = false, actionHighlight(false, $event)"
             @mouseover="showLinkAction = true, actionHighlight(true, $event)" 
             @mouseout="showLinkAction = false, actionHighlight(false, $event)"
-            @keyup.enter="openExtractDialog(), expand()"
-            tabindex="0">
+            @keyup.enter="openExtractDialog(), expand()">
             <tooltip-component 
               :show-tooltip="showLinkAction" 
               tooltip-text="Link entity"></tooltip-component>
@@ -457,12 +459,14 @@ export default {
         </field-adder>
 
         <div class="ItemLocal-action">
-          <i class="fa fa-trash-o fa-fw icon icon--sm" 
+          <i class="fa fa-trash-o fa-fw icon icon--sm"
             v-if="!isLocked" 
-            :class="{'show-icon': showActionButtons}" 
+            :class="{'show-icon': showActionButtons}"
+            role="button"
+            tabindex="0"
+            :aria-label="'Remove' | translatePhrase"
             v-on:click="removeThis(true)" 
             @keyup.enter="removeThis(true)"
-            tabindex="0"
             @focus="removeHover = true, removeHighlight(true, $event)"
             @blur="removeHover = false, removeHighlight(false, $event)"
             @mouseover="removeHover = true, removeHighlight(true, $event)"
@@ -477,9 +481,11 @@ export default {
           <i class="icon icon--sm fa fa-fw fa-ellipsis-v"
             v-if="!isLocked"
             :class="{'show-icon': showActionButtons}" 
+            role="button"
+            tabindex="0"
+            :aria-label="'Manage' | translatePhrase"
             v-on:click="managerMenuOpen ? closeManagerMenu() : openManagerMenu()" 
             @keyup.enter="managerMenuOpen ? closeManagerMenu() : openManagerMenu()"
-            tabindex="0"
             @focus="manageHover = true, actionHighlight(true, $event)"
             @blur="manageHover = false, actionHighlight(false, $event)"
             @mouseover="manageHover = true, actionHighlight(true, $event)"

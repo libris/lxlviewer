@@ -115,7 +115,7 @@ export default {
 <template>
   <div class="PanelComponent"
   :class="{'is-fadedIn': fadedIn, 'is-danger': modalType === 'danger'}"
-  >
+  role="complementary">
     <div class="PanelComponent-container" :class="{'full-view': user.settings.forceFullViewPanel }">
       <div class="PanelComponent-headerContainer">
         <div class="PanelComponent-header">

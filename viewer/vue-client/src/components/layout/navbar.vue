@@ -46,11 +46,11 @@ export default {
 </script>
 
 <template>
-  <nav class="NavBar" aria-labelledby="service-name">
+  <nav class="NavBar" role="navigation" aria-labelledby="service-name">
     <div class="NavBar-container container">
       <div class="row">
         <div class="col-xs-12 col-sm-5">
-          <div class="NavBar-brand" role="banner">
+          <div class="NavBar-brand">
             <router-link to="/" class="NavBar-brandLink">
               <img class="NavBar-brandLogo" src="~kungbib-styles/dist/assets/kb_logo_black.svg" alt="Kungliga Bibliotekets logotyp">
             </router-link>

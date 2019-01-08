@@ -177,6 +177,7 @@ export default {
     <textarea class="ItemValue-input js-itemValueInput" 
       rows="1" 
       v-model="value"
+      :aria-label="fieldKey | labelByLang"
       @blur="update($event.target.value)"
       @keydown.enter.prevent="handleEnter"
       v-if="!isLocked"
@@ -193,6 +194,8 @@ export default {
     </a>
     <div class="ItemValue-remover"
       v-show="!isLocked && isRemovable"
+      role="button"
+      :aria-label="'Remove' | translatePhrase"
       v-on:click="removeThis()"
       @focus="removeHover = true, removeHighlight($event, true)"
       @blur="removeHover = false, removeHighlight($event, false)"

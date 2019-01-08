@@ -59,6 +59,7 @@
 @gray-transparent: rgba(0, 0, 0, 0.45);
 @gray-light-transparent: rgba(0, 0, 0, 0.25);
 @gray-lighter-transparent: rgba(0, 0, 0, 0.12);
+@gray-dark-transparent: rgba(0, 0, 0, 0.58);
 @gray-darker-transparent: rgba(0, 0, 0, 0.68);
 
 @grey-lighter: @gray-lighter;
@@ -150,7 +151,7 @@
 // SIDEBAR
 @list-item-bg-even: @bg-site;
 @list-item-bg-odd: @white;
-@list-item-bg-hover: @gray-lighter;
+@list-item-bg-hover: darken(@list-item-bg-even, 6%);
 @panel-header-bg: @bg-site;
 
 // TOOLBAR

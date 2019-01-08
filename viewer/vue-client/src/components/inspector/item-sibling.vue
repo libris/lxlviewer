@@ -386,12 +386,14 @@ export default {
       
       <div class="ItemSibling-actions">
         <div class="ItemSibling-action">
-          <i class="fa fa-link icon icon--sm"
-            v-if="inspector.status.editing && isExtractable"
-            @click="openExtractDialog(), expand()" 
+          <i class="fa fa-link fa-fw icon icon--sm"
+            role="button"
+            :aria-label="'Link entity' | translatePhrase"
             tabindex="0"
+            v-if="inspector.status.editing && isExtractable"
+            @click="openExtractDialog(), expand()"
             @keyup.enter="openExtractDialog(), expand()"
-            @focus="showLinkAction = true, actionHighlight($event, true)" 
+            @focus="showLinkAction = true, actionHighlight($event, true)"
             @blur="showLinkAction = false, actionHighlight($event, false)"
             @mouseover="showLinkAction = true, actionHighlight($event, true)" 
             @mouseout="showLinkAction = false, actionHighlight($event, false)">
@@ -409,12 +411,14 @@ export default {
           :path="getPath">
         </field-adder>
         <div class="ItemSibling-action">
-          <i class="fa fa-trash-o icon icon--sm" 
+          <i class="fa fa-trash-o fa-fw icon icon--sm" 
             v-if="!isLocked" 
-            :class="{'show-icon': showActionButtons}" 
+            :class="{'show-icon': showActionButtons}"
+            role="button"
+            tabindex="0"
+            :aria-label="'Remove' | translatePhrase"
             v-on:click="removeThis(true)"
             @keyup.enter="removeThis(true)"
-            tabindex="0"
             @focus="removeHover = true, removeHighlight($event, true)" 
             @blur="removeHover = false, removeHighlight($event, false)"
             @mouseover="removeHover = true, removeHighlight($event, true)" 
@@ -423,6 +427,9 @@ export default {
               :show-tooltip="removeHover" 
               tooltip-text="Remove"></tooltip-component>
           </i>
+        </div>
+        <div class="ItemSibling-action">
+          <div class="ItemSibling-placeHolder"></div>
         </div>
       </div>
     </strong>
@@ -533,8 +540,10 @@ export default {
 
   &-action {
     display: inline-block;
-    min-width: 20px;
-    margin-right: 5px;
+  }
+
+  &-placeHolder {
+    width: 20px;
   }
 
   &-collapsedLabel {

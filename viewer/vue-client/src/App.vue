@@ -488,6 +488,7 @@ h1 {
       font-size: 12px;
       font-size: 1.2rem;
       color: @gray-dark;
+      color: @gray-dark-transparent;
     }
 
     &--bold {
