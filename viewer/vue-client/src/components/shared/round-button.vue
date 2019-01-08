@@ -32,6 +32,9 @@ export default {
     icon: {
       default: false,
     },
+    active: {
+      default: false,
+    },
   },
   data() {
     return {
@@ -65,7 +68,7 @@ export default {
 
 <template>
   <button class="RoundButton btn"
-    :class="{'btn-gray disabled' : disabled, 'default': !indicator && !disabled, 'btn-primary': indicator && !disabled}"
+    :class="{'btn-gray disabled' : disabled, 'default': !indicator && !disabled, 'btn-primary': indicator && !disabled, 'is-active': active}"
     @click="action()"
     @mouseover="mouseOver = true"
     @mouseout="mouseOver = false">
@@ -92,19 +95,18 @@ export default {
 
   &.default {
   background-color: @neutral-color;
-  color: @brand-primary;
-  border: 2px solid @brand-primary;
+  color: @btn-primary;
+  border: 2px solid @btn-primary;
 
     &:hover {
-      border-color: @link-hover-color; 
-      color: @link-hover-color;
+      border-color: @btn-primary--hover; 
+      color: @btn-primary--hover;
     }
   }
 
-  .is-highlighted & {
-    background-color: @link-hover-color; 
-    border-color: @link-hover-color; 
-    color: @white;
+  &.btn-primary.is-active {
+    background-color: @btn-primary--hover; 
+    border: @btn-primary--hover;
   }
 
   &.disabled { //can't be SUIT-ified because inherits from Bootstrap .disabled
