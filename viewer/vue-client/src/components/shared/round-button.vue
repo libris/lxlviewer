@@ -9,6 +9,8 @@ Listen to the 'click' event in the parent as usual.
     * disabled - bool, true will not emit the action.
     * icon - pass in a fa-name, i.e 'check'. Otherwise child node will render as text content
     * indicator - true gets an 'active' look
+    * active - true gives primary a permanent 'focused' look
+    * label - (if icon) provide a string that will be translated & used as accessible label
 */
 export default {
   name: 'round-button',
@@ -33,6 +35,10 @@ export default {
       default: false,
     },
     active: {
+      default: false,
+    },
+    label: {
+      type: [String, Boolean],
       default: false,
     },
   },
@@ -71,7 +77,8 @@ export default {
     :class="{'btn-gray disabled' : disabled, 'default': !indicator && !disabled, 'btn-primary': indicator && !disabled, 'is-active': active}"
     @click="action()"
     @mouseover="mouseOver = true"
-    @mouseout="mouseOver = false">
+    @mouseout="mouseOver = false"
+    :aria-label="label | translatePhrase">
     <span v-if="icon">
       <i :class="`fa fa-${icon}`" aria-hidden="true"></i>
     </span>

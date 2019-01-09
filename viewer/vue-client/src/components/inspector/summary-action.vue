@@ -71,7 +71,8 @@ export default {
         :disabled="disabled || replaced || extracting"
         :color="options.styling"
         :icon="getIcon"
-        :indicator="!disabled || !replaced" 
+        :indicator="!disabled || !replaced"
+        :label="getTooltipText" 
         @click="action()"
         @keyup.enter="action()">
         <template slot="tooltip" v-if="getTooltipText">

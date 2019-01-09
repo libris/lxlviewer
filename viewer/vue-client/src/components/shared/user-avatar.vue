@@ -58,7 +58,7 @@ export default {
   flex-direction: column;
   align-items: center;
   border-radius: 50%;
-  background-color: @brand-darker;
+  background-color: @brand-primary;
 
   &-gravatar {
     line-height: 1.8em;

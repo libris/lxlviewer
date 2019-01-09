@@ -631,7 +631,8 @@ export default {
                     name="entityKeywordInput"
                     v-model="keyword"
                     ref="input"
-                    placeholder="Sök"
+                    :aria-label="'Sök' | translatePhrase"
+                    :placeholder="'Sök' | translatePhrase"
                     autofocus />
                 </div>
                 <div class="EntityAdder-filterSearchContainer">
@@ -684,12 +685,14 @@ export default {
             </modal-pagination>
             <div class="EntityAdder-listTypes">
               <i class="fa fa-th-list icon icon--sm"
+                role="button"
                 @click="isCompact = false"
                 @keyup.enter="isCompact = false"
                 :class="{'icon--primary' : !isCompact}"
                 :title="'Detailed view' | translatePhrase"
                 tabindex="0"></i>
               <i class="fa fa-list icon icon--sm"
+                role="button"
                 @click="isCompact = true"
                 @keyup.enter="isCompact = true"
                 :class="{'icon--primary' : isCompact}"

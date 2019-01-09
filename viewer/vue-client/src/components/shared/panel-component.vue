@@ -126,14 +126,17 @@ export default {
             </div>
             <span class="PanelComponent-windowControl">
               <i class="fullview-toggle-button fa fa-compress icon icon--md"
-                @click="toggleFullView" 
                 v-show="user.settings.forceFullViewPanel"
+                role="button"
+                @click="toggleFullView" 
                 :title="'Minimize' | translatePhrase"></i>
               <i class="fullview-toggle-button fa fa-expand icon icon--md"
+                v-show="!user.settings.forceFullViewPanel"
+                role="button"
                 @click="toggleFullView" 
-                v-show="!user.settings.forceFullViewPanel" 
                 :title="'Expand' | translatePhrase"></i>
               <i class="fa fa-close icon icon--md"
+                role="button"
                 @click="close"
                 :title="'Close' | translatePhrase"></i>
             </span>
@@ -291,7 +294,7 @@ export default {
     font-size: 20px;
     font-size: 2rem;
     font-weight: normal;
-    color: @grey;
+    color: @grey-dark;
 
     & > * {
       max-width: 500px;

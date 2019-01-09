@@ -558,6 +558,7 @@ h1 {
   font-size: 20px;
   font-size: 2rem;
   line-height: 1.2;
+  color: @black;
   border: 1px solid @gray-light;
   border-radius: 4px;
 

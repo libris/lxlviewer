@@ -318,6 +318,7 @@ export default {
             ref="input"
             class="FieldAdderPanel-filterInput customInput form-control mousetrap" 
             :placeholder="'Filter by' | translatePhrase"
+            :aria-label="'Filter by' | translatePhrase"
             v-model="filterKey">
         </div>
         <div class="FieldAdderPanel-filterInfo uppercaseHeading">
@@ -357,7 +358,8 @@ export default {
                   :tabindex="prop.added ? -1 : 0"
                   :icon="prop.added ? 'check' : 'plus'"
                   :indicator="true"
-                  :disabled="prop.added"/>
+                  :disabled="prop.added"
+                  :label="prop.added ? 'Added' : 'Add'"/>
               </span>
               <span class="FieldAdderPanel-fieldLabel" :title="prop.label | capitalize">
                 {{prop.label | capitalize }}
@@ -418,7 +420,7 @@ export default {
   }
 
   &-filterInfo {
-    color: @gray;
+    color: @gray-darker;
     margin-bottom: 10px;
   }
 

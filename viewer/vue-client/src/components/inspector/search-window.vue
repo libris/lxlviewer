@@ -244,7 +244,7 @@ export default {
           this.$nextTick(() => {
             this.active = true;
             this.$nextTick(() => {
-              let cleanedChipString = DisplayUtil.getItemLabel(this.itemInfo, this.resources.display, this.inspector.data.quoted, this.resources.vocab, this.settings, this.resources.context).replace(' • ', ' ');
+              const cleanedChipString = DisplayUtil.getItemLabel(this.itemInfo, this.resources.display, this.inspector.data.quoted, this.resources.vocab, this.settings, this.resources.context).replace(' • ', ' ');
               this.keyword = cleanedChipString;
               this.search();
               if (this.$refs.input) {
@@ -382,7 +382,8 @@ export default {
                   v-model="keyword"
                   ref="input"
                   autofocus
-                  :placeholder="'Search' | translatePhrase">
+                  :placeholder="'Search' | translatePhrase"
+                  :aria-label="'Search' | translatePhrase">
               </div>
               <div class="SearchWindow-filterSearchContainer">
                 <span class="SearchWindow-filterSearchLabel">{{ 'Show' | translatePhrase }}</span>
@@ -449,12 +450,14 @@ export default {
             </modal-pagination>
             <div class="SearchWindow-listTypes">
               <i class="fa fa-th-list icon icon--sm"
+                role="button"
                 @click="isCompact = false"
                 @keyup.enter="isCompact = false"
                 :class="{'icon--primary' : !isCompact}"
                 :title="'Detailed view' | translatePhrase"
                 tabindex="0"></i>
               <i class="fa fa-list icon icon--sm"
+                role="button"
                 @click="isCompact = true"
                 @keyup.enter="isCompact = true"
                 :class="{'icon--primary' : isCompact}"
