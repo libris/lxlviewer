@@ -446,5 +446,13 @@
     "label": "",
     "responsibilityStatement": "",
     "comment": [""]
+  },
+  "EncodingFormat": {
+    "@type": "EncodingFormat",
+    "label": ""
+  },
+  "MediaObject": {
+    "@type": "MediaObject",
+    "uri": [""]
   }
 }
