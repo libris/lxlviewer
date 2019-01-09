@@ -240,6 +240,7 @@ export default {
           :indicator="numberOfRelations > 0"
           :icon="isNaN(numberOfRelations) ? 'exclamation' : false"
           :active="relationsListOpen"
+          :label="totalRelationTooltipText"
           @click="showPanel()">
           <template slot="tooltip">
             <tooltip-component 
@@ -287,6 +288,7 @@ export default {
           :indicator="numberOfRelations > 0"
           :icon="isNaN(numberOfRelations) ? 'exclamation' : false"
           :active="relationsListOpen"
+          :label="totalRelationTooltipText"
           @click="showPanel()">
           <template slot="tooltip">
             <tooltip-component 

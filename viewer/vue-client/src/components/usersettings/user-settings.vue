@@ -83,19 +83,28 @@ export default {
       <div class="UserSettings-config UserConfig">
         <form class="UserConfig-form">
           <div class="UserConfig-formGroup">
-            <label class="UserConfig-label">{{"Active sigel" | translatePhrase}}</label>
+            <label for="UserConfig-sigel" class="UserConfig-label">{{"Active sigel" | translatePhrase}}</label>
             <div class="UserConfig-selectWrap">
-              <select class="UserConfig-select customSelect" :value="user.settings.activeSigel" @change="updateSigel">
-                <option v-for="sigel in user.collections" :key="sigel.code" :value="sigel.code">{{ getSigelLabel(sigel, 50) }}</option>
+              <select id="UserConfig-sigel" 
+                class="UserConfig-select customSelect" 
+                :value="user.settings.activeSigel" 
+                @change="updateSigel">
+                <option v-for="sigel in user.collections" 
+                  :key="sigel.code" 
+                  :value="sigel.code">{{ getSigelLabel(sigel, 50) }}</option>
               </select>
             </div>
           </div>
           
           <div class="UserConfig-formGroup">
-            <label class="UserConfig-label">{{"Language" | translatePhrase}}</label>
+            <label for="UserConfig-lang" class="UserConfig-label">{{"Language" | translatePhrase}}</label>
             <div class="UserConfig-selectWrap">
-              <select class="UserConfig-select customSelect" :value="user.settings.language" @change="updateLanguage">
-                <option v-for="language in settings.availableUserSettings.languages" :key="language.value" :value="language.value">{{ language.label | translatePhrase }}</option>
+              <select id="UserConfig-lang" class="UserConfig-select customSelect" 
+                :value="user.settings.language" 
+                @change="updateLanguage">
+                <option v-for="language in settings.availableUserSettings.languages" 
+                  :key="language.value" 
+                  :value="language.value">{{ language.label | translatePhrase }}</option>
               </select>
             </div>
           </div>
@@ -111,7 +120,7 @@ export default {
           </div>
 
         </form>
-        <button class="btn btn-primary btn--lg UserSettings-logout" @click="logout">Logga ut</button>
+        <button class="btn btn-primary btn--lg UserSettings-logout" @click="logout">{{"Log out" | translatePhrase}}</button>
       </div>
     </div>
   </section>

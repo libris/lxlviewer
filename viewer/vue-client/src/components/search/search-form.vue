@@ -363,7 +363,10 @@ export default {
         id="remotePanel" 
         v-if="searchPerimeter === 'remote'">
         <div class="SearchBar-formGroup form-group panel">
-          <input type="text" class="SearchBar-input customInput form-control" placeholder="ISBN eller valfria sökord" 
+          <input type="text" 
+            class="SearchBar-input customInput form-control" 
+            placeholder="ISBN eller valfria sökord"
+            aria-label="ISBN eller valfria sökord"
             v-model="remoteSearch.q">
           <button 
             class="SearchBar-submit btn btn-primary icon icon--white icon--md"

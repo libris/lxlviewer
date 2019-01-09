@@ -287,7 +287,7 @@ export default {
     position: relative;
 
     .ResultList & {
-      color: @brand-primary;
+      color: @brand-darker;
     }
 
     &--imported {

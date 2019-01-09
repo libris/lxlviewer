@@ -120,14 +120,23 @@ export default {
       Notera att interna @ID-värden behöver matcha posten du vill skriva över.<br>
       Du behöver även spara posten i nästa steg för att operationen ska slutföras.
     </div>
-    <button class="btn btn-primary" @click="openPicker">{{ 'Choose file' | translatePhrase }}</button>
-    <input type="file" class="FilePicker" ref="FilePicker" accept=".jsonld,application/ld+json,text/*" />
+    <button class="btn btn-primary btn--lg" 
+      @click="openPicker">{{ 'Choose file' | translatePhrase }}</button>
+    <input type="file" 
+      class="FilePicker" 
+      ref="FilePicker" 
+      accept=".jsonld,application/ld+json,text/*"
+      aria-labelledby="Dropzone-description"/>
     <hr/>{{ 'or' | translatePhrase }}<hr/>
     <div class="Dropzone" :class="{'is-active': userIsDropping, 'is-invalid': invalidFile}">
       <div class="Dropzone-mask" ref="dropzone"></div>
       <div class="Dropzone-container">
-        <div class="Dropzone-description" v-show="!invalidFile">{{'Drop your file here' | translatePhrase}}</div>
-        <div class="Dropzone-description" v-show="invalidFile">{{'Invalid file' | translatePhrase}}</div>
+        <div id="Dropzone-description" 
+          class="Dropzone-description" 
+          v-if="!invalidFile">{{'Drop your file here' | translatePhrase}}</div>
+        <div id="Dropzone-description" 
+          class="Dropzone-description" 
+          v-else-if="invalidFile">{{'Invalid file' | translatePhrase}}</div>
       </div>
     </div>
   </div>
