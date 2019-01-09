@@ -212,7 +212,7 @@ export default {
     width: 100%;
     min-height: 60px;
     box-shadow: none;
-    transition: box-shadow ease-out 0.2s;
+    // transition: box-shadow ease-out 0.2s;
 
     &:hover:not(.locked) {
       >.actions {

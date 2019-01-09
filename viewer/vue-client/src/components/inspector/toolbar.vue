@@ -368,7 +368,7 @@ export default {
 
 <template>
   <div class="Toolbar" id="editor-container">
-    <input type="file" class="FilePicker" ref="FilePicker" accept=".jsonld,application/ld+json,text/*" />
+    <input type="file" class="FilePicker" ref="FilePicker" accept=".jsonld,application/ld+json,text/*" aria-hidden="true"/>
     <div class="dropdown Toolbar-menu OtherFormatMenu"
       v-if="!inspector.status.editing" 
       v-on-clickaway="hideOtherFormatMenu">
