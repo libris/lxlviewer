@@ -563,7 +563,7 @@ export default {
           keybind-name="save-item"></tooltip-component>
       </i>
     </button>
-    <button class="Toolbar-btn btn btn-primary" id="saveButton" 
+    <button class="Toolbar-btn btn btn-primary" id="saveDoneButton" 
       @click="postControl('save-record-done')"
       v-if="inspector.status.editing"
       @mouseover="showClarifySave = true"

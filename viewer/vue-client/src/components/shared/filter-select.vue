@@ -41,7 +41,6 @@ export default {
   },
   data() {
     return {
-      selectId: 'filterSelect',
       selectedObject: {},
       currentItem: -1,
       filterVisible: false,
@@ -223,7 +222,6 @@ export default {
     <input class="FilterSelect-input js-filterSelectInput" 
       type="text" 
       v-bind:placeholder="translatedPlaceholder" 
-      :id="selectId" 
       @keyup.exact="filter()"
       @keyup.space="checkInput($event)"
       @click="filterVisible = !filterVisible"

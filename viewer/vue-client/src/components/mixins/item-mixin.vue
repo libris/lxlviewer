@@ -78,7 +78,7 @@ export default {
       if (isArray(parentValue)) {
         return `${this.parentPath}[${this.index}]`;
       } 
-      return this.parentPath;
+      return `${this.parentPath}[0]`;
     },
     recordType() {
       return VocabUtil.getRecordType(this.item['@type'], this.vocab, this.settings);
