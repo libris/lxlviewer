@@ -100,7 +100,8 @@ const store = new Vuex.Store({
       extractableTypes: [
         'Item',
         'Instance',
-        'Identity',
+        'Agent',
+        'Work',
       ],
       removeOnDuplication: [
         'record.controlNumber',
