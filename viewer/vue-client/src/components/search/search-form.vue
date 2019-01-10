@@ -171,6 +171,7 @@ export default {
       this.inputData.textInput.splice(1, this.inputData.textInput.length);
       this.inputData.textInput[0].value = '';
       this.inputData.textInput[0].class = 'is-searchPhrase';
+      this.$refs.librisSearch[0].focus();
     },
   },
   computed: {
@@ -337,7 +338,8 @@ export default {
                   v-model="input.value"
                   class="SearchBar-qsmartInput"
                   :placeholder="'Search' | translatePhrase"
-                  :class="input.class">
+                  :class="input.class"
+                  ref="librisSearch">
                 <datalist id="matchingParameters">
                   <option v-for="matchingParameter in validSearchTags" 
                     :key="matchingParameter" 

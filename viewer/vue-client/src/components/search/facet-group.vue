@@ -69,6 +69,8 @@ export default {
     <h4 class="FacetGroup-title uppercaseHeading--bold"
       :class="{'is-expanded' : isExpanded}"
       @click="toggleExpanded()"
+      @keyup.enter="toggleExpanded()"
+      tabindex="0"
       :id="facetLabelByLang(group.dimension)">
       {{facetLabelByLang(group.dimension) | capitalize}}
     </h4>
@@ -77,19 +79,20 @@ export default {
       <facet v-for="observation in slicedObservations"
       :observation="observation" 
       :key="observation.label"></facet>
-      <span 
-        v-if="revealText" 
-        class="FacetGroup-reveal link" 
-        @click="currentLevel++">{{ revealText | translatePhrase }}...</span>
     </ul>
-
+    <span 
+      v-if="revealText && isExpanded" 
+      class="FacetGroup-reveal link"
+      tabindex="0"
+      @click="currentLevel++"
+      @keyup.enter="currentLevel++">{{ revealText | translatePhrase }}...</span>
   </nav>
 </template>
 
 <style lang="less">
 .FacetGroup {
   width: 230px;
-  margin: 0px 0 0;
+  margin-bottom: 5px;
 
   &-title {
     margin: 10px 0 5px 0;
@@ -116,6 +119,7 @@ export default {
 
   &-list {
     list-style: none;
+    margin: 0;
     padding: 0 15px 0 0;
     display: none;
 

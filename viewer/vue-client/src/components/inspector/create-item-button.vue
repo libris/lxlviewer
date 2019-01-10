@@ -127,6 +127,9 @@ export default {
       <round-button 
         :icon="hasHolding ? 'check' : 'plus'"
         :indicator="hasHolding"
+        :label="hasHolding ? 
+              [user.settings.activeSigel, 'has holding'] : 
+              ['Add holding for', user.settings.activeSigel]"
         @click="performItemAction()">
         <template slot="tooltip">
           <tooltip-component 

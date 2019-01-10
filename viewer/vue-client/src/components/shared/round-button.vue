@@ -38,7 +38,7 @@ export default {
       default: false,
     },
     label: {
-      type: [String, Boolean],
+      type: [String, Boolean, Array],
       default: false,
     },
   },
