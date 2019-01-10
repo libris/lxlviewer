@@ -294,7 +294,8 @@ export default {
     color: @grey;
 
     & > * {
-      max-width: 100%;
+      max-width: 500px;
+      text-align: center;
     }
   }
 
