@@ -269,24 +269,6 @@
               }
             }
           ],
-          "manufacture": [{
-            "@type": "Manufacture",
-            "agent": [{
-              "@type": "Agent",
-              "label": [
-                ""
-              ]
-            }],
-            "date": [
-              ""
-            ],
-            "place": [{
-              "@type": "Place",
-              "label": [
-                ""
-              ]
-            }]
-          }],
           "copyright": [{
             "@type": "Copyright",
             "date": ""
