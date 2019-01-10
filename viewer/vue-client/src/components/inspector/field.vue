@@ -376,7 +376,7 @@ export default {
     removeThis() {
       let approved = true;
       if (this.warnBeforeRemove) {
-        const confString = `${StringUtil.getUiPhraseByLang('Are you sure you want to remove the field', this.user.settings.language)} "${StringUtil.getLabelByLang(this.fieldKey, this.user.settings.language, this.resources.vocab, this.resources.context)}"?`;
+        const confString = `${StringUtil.getUiPhraseByLang('Are you sure you want to remove the field', this.user.settings.language)} "${StringUtil.getLabelByLang(this.fieldKey, this.user.settings.language, this.resources.vocab, this.resources.context) || this.fieldKey}"?`;
         approved = window.confirm(confString);
       }
       if (approved) {

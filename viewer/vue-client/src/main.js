@@ -24,7 +24,7 @@ Vue.use(Vuex);
 Vue.use(PortalVue);
 Vue.component('field', Field);
 
-Vue.filter('labelByLang', label => StringUtil.getLabelByLang(label, store.getters.user.settings.language, store.getters.resources.vocab, store.getters.resources.context));
+Vue.filter('labelByLang', label => StringUtil.getLabelByLang(label, store.getters.user.settings.language, store.getters.resources.vocab, store.getters.resources.context) || label);
 
 Vue.filter('asAppPath', (path) => {
   const appPaths = store.getters.settings.appPaths;
