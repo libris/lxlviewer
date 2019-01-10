@@ -209,6 +209,14 @@ const store = new Vuex.Store({
             label: 'Relevance', 
           },
           {
+            query: 'hasTitle.mainTitle.keyword',
+            label: 'Main title (A-Z)',
+          },
+          {
+            query: '-hasTitle.mainTitle.keyword',
+            label: 'Main title (Z-A)',
+          },
+          {
             query: '-publication.year.keyword',
             label: 'Publication year (descending)',
           },
@@ -216,15 +224,6 @@ const store = new Vuex.Store({
             query: 'publication.year.keyword',
             label: 'Publication year (ascending)',
           },
-          // Uncomment when API supports them
-          // {
-          //   query: 'hasTitle.mainTitle.keyword',
-          //   label: 'Main title (A-Z)',
-          // },
-          // {
-          //   query: '-hasTitle.mainTitle.keyword',
-          //   label: 'Main title (Z-A)',
-          // },
         ],
         Item: [
           { 

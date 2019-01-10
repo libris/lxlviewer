@@ -540,6 +540,7 @@ h1 {
   font-size: 1.6rem;
   font-weight: 500;
   background-color: @white;
+  color: @black;
   border: 1px solid @gray-light;
   box-shadow: @shadow-panel;
   text-align-last: center;
