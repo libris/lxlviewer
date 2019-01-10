@@ -335,10 +335,6 @@ export default {
   &-detailsValue {
     font-size: 16px;
     font-size: 1.6rem;
-    .badge {
-      background-color: @gray-lighter;
-      color: @gray-darker;
-    }
   }
 
   &-icon {

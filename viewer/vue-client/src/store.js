@@ -155,30 +155,51 @@ const store = new Vuex.Store({
         '@type': {
           sv: 'Typ',
           en: 'Type',
+          facet: {
+            order: 3,
+          },
         },
         carrierType: {
           sv: 'Bärartyp',
           en: 'Carrier type',
+          facet: {
+            order: false,
+          },
         },
         issuanceType: {
           sv: 'Utgivningssätt',
           en: 'Issuance type',
+          facet: {
+            order: false,
+          },
         },
         'instanceOf.@type': {
           sv: 'Verkstyp',
           en: 'Type of work',
+          facet: {
+            order: 0,
+          },
         },
         'instanceOf.contentType': {
           sv: 'Verksinnehållstyp',
           en: 'Content type of work',
+          facet: {
+            order: false,
+          },
         },
         'instanceOf.language': {
-          sv: 'Verksspråk',
+          sv: 'Språk',
           en: 'Language of work',
+          facet: {
+            order: 1,
+          },
         },
         'publication.year.keyword': {
           sv: 'Utgivningsår',
           en: 'Publication year',
+          facet: {
+            order: 2,
+          },
         },
       },
       availableUserSettings: {

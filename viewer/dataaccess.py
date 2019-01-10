@@ -69,22 +69,22 @@ sites = {
                 "instanceOf.language.@id":{
                     "sort":"value",
                     "sortOrder":"desc",
-                    "size":10
+                    "size":100
                 },
                 "carrierType":{
                     "sort":"value",
                     "sortOrder":"desc",
-                    "size":10
+                    "size":100
                 },
                 "instanceOf.@type":{
-                    "sort":"key",
-                    "sortOrder":"asc",
+                    "sort":"value",
+                    "sortOrder":"desc",
                     "size":100
                 },
                 "publication.year.keyword":{
                     "sort":"key",
                     "sortOrder":"desc",
-                    "size":50
+                    "size":500
                 },
                 "@type":{
                     "sort":"key",

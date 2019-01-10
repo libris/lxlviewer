@@ -166,7 +166,8 @@ h4 {
 }
 
 // ----------- LINKS ----------------
-body a {
+body a,
+.link {
   color: @link-color;
   text-decoration: none;
   cursor: pointer;
@@ -449,6 +450,13 @@ body {
         color: @icon-added;
         cursor: not-allowed;
     }
+}
+
+// ------------- BADGE ----------------
+
+.badge {
+  background-color: @gray-lighter;
+  color: @gray-darker;
 }
 
 // ---------- TYPOGRAPHY -------------

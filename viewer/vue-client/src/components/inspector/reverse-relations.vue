@@ -1,6 +1,7 @@
 <script>
 import { each } from 'lodash-es';
 import * as VocabUtil from '../../utils/vocab';
+import * as MathUtil from '@/utils/math';
 import CreateItemButton from './create-item-button';
 import RelationsList from '@/components/inspector/relations-list';
 import RoundButton from '@/components/shared/round-button.vue';
@@ -125,19 +126,7 @@ export default {
       'status',
     ]),
     numberOfRelationsCircle() {
-      const no = this.numberOfRelations;
-      let compact = '';
-      let compactNo = 0;
-      if (no > 999 && no < 1000000) {
-        compactNo = parseInt(no / 1000);
-        compact = `${compactNo}k`;
-      } else if (no > 999999) {
-        compactNo = Math.round(no / 1000000);
-        compact = `${compactNo}M`;
-      } else {
-        compact = `${no}`;
-      }
-      return compact;
+      return MathUtil.getCompactNumber(this.numberOfRelations);
     },
     hasRelation() {
       return this.myHolding !== null;
