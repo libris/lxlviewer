@@ -385,8 +385,7 @@ export default {
             class="Toolbar-tooltipContainer"
             :show-tooltip="showDisplayAs" 
             position="left"
-            tooltip-text="Show as" 
-            translation="translatePhrase"></tooltip-component>
+            tooltip-text="Show as"></tooltip-component>
         </i>
         <span class="Toolbar-caret caret"></span>
       </button>
@@ -429,8 +428,7 @@ export default {
             class="Toolbar-tooltipContainer"
             :show-tooltip="showTools" 
             position="left"
-            tooltip-text="Tools" 
-            translation="translatePhrase"></tooltip-component>
+            tooltip-text="Tools"></tooltip-component>
         </i>
         <span class="Toolbar-caret caret"></span>
       </button>
@@ -526,8 +524,7 @@ export default {
           :show-tooltip="showUndo" 
           position="left"
           tooltip-text="Undo" 
-          keybind-name="undo"
-          translation="translatePhrase"></tooltip-component>
+          keybind-name="undo"></tooltip-component>
       </i>
     </button>
 
@@ -542,8 +539,7 @@ export default {
           :show-tooltip="showCancel" 
           position="left"
           tooltip-text="Cancel" 
-          keybind-name="cancel-edit"
-          translation="translatePhrase"></tooltip-component>
+          keybind-name="cancel-edit"></tooltip-component>
       </i>
     </button>
 
@@ -558,8 +554,7 @@ export default {
           :show-tooltip="showSave" 
           position="left"
           tooltip-text="Save" 
-          keybind-name="save-item"
-          translation="translatePhrase"></tooltip-component>
+          keybind-name="save-item"></tooltip-component>
       </i>
     </button>
     <button class="Toolbar-btn btn btn-primary" id="saveButton" 
@@ -572,15 +567,13 @@ export default {
         <tooltip-component 
           class="Toolbar-tooltipContainer"
           tooltip-text="Save and stop editing" 
-          keybind-name="save-item-done" 
-          translation="translatePhrase"
+          keybind-name="save-item-done"
           position="left"
           v-if="!isNewRecord"
           :show-tooltip="showClarifySave"></tooltip-component>
         <tooltip-component 
           tooltip-text="Create record" 
-          keybind-name="save-item"  
-          translation="translatePhrase"
+          keybind-name="save-item"
           position="left"
           class="Toolbar-tooltipContainer"
           v-if="isNewRecord"
@@ -599,7 +592,6 @@ export default {
         tooltip-text="Edit" 
         position="left"
         keybind-name="edit-item" 
-        translation="translatePhrase"
         :show-tooltip="showEdit"></tooltip-component></i>
       <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="inspector.status.opening"></i>
     </button>

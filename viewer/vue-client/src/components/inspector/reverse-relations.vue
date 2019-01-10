@@ -256,8 +256,7 @@ export default {
               class="Toolbar-tooltipContainer"
               position="left"
               :show-tooltip="true"
-              :tooltip-text="totalRelationTooltipText" 
-              translation="translatePhrase"></tooltip-component>
+              :tooltip-text="totalRelationTooltipText"></tooltip-component>
           </template>
         </round-button>
       </span>
@@ -304,8 +303,7 @@ export default {
               position="left"
               :active="true"
               :show-tooltip="true"
-              :tooltip-text="totalRelationTooltipText" 
-              translation="translatePhrase"></tooltip-component>
+              :tooltip-text="totalRelationTooltipText"></tooltip-component>
           </template>
         </round-button>
       </div>

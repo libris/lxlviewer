@@ -131,8 +131,7 @@ export default {
 
           <tooltip-component 
             :show-tooltip="removeHover" 
-            tooltip-text="Remove" 
-            translation="translatePhrase"></tooltip-component>
+            tooltip-text="Remove"></tooltip-component>
         </i>
       </div>
     </div>
