@@ -246,6 +246,12 @@
     "LibrisNytt on Twitter": "LibrisNytt på Twitter",
     "LibrisNytt on Facebook": "LibrisNytt på Facebook",
     "Show more": "Visa fler",
-    "Show all": "Visa alla"
-  }
+    "Show all": "Visa alla",
+    "Sorting": "Sortering",
+    "Relevance": "Relevans",
+    "Publication year (descending)": "Utgivningsår (nyast först)",
+    "Publication year (ascending)": "Utgivningsår (äldst först)",
+    "Main title (A-Z)": "Huvudtitel (A-Ö)",
+    "Main title (Z-A)": "Huvudtitel (Ö-A)"
+    }
 }

@@ -1,6 +1,7 @@
 <script>
 import * as StringUtil from '@/utils/string';
 import * as httpUtil from '@/utils/http';
+import Sort from '@/components/search/sort';
 
 export default {
   name: 'result-controls',
@@ -105,6 +106,15 @@ export default {
       }
       return list;
     },
+    getRecordType() {
+      const searchTypes = this.$route.query['@type'];
+      if (typeof searchTypes === 'string') { // disable sorting when searching multiple types
+        return searchTypes;
+      } return false;
+    },
+    currentSortOrder() {
+      return this.$route.query._sort;
+    },
   },
   methods: {
     setCompact() {
@@ -131,34 +141,43 @@ export default {
       this.$dispatch('newresult', resultPromise);
     },
   },
+  components: {
+    sort: Sort,
+  },
 };
 </script>
 
 <template>
   <div class="ResultControls" v-if="!(!showDetails && pageData.totalItems < limit)">
     <div class="ResultControls-searchDetails" v-if="showDetails">
-      <div>
-        <p class="ResultControls-resultDescr" id="resultDescr">Sökning på {{ queryText }}
+      <div class="ResultControls-resultDescr">
+        <p class="ResultControls-resultText" id="resultDescr">Sökning på {{ queryText }}
           <span v-if="filters.length > 0">(filtrerat på <span v-for="(filter, index) in filters" :key="index">{{filter.label}}{{ index === (filters.length - 1) ? '' : ', ' }}</span>)</span>
-        gav {{pageData.totalItems}} träffar.
-        <em v-if="pageData.totalItems > limit && $route.params.perimeter === 'remote'">Du har fått fler träffar än vad som kan visas, testa att göra en mer detaljerad sökning om du inte kan hitta det du letar efter.</em>
-        </p>
-      
-        <p v-if="pageData.totalItems > limit && $route.params.perimeter != 'remote'" class="ResultControls-resultDescr">Visar {{ limit }} träffar per sida.</p>
+          gav {{pageData.totalItems}} träffar.
+          <em v-if="pageData.totalItems > limit && $route.params.perimeter === 'remote'">Du har fått fler träffar än vad som kan visas, testa att göra en mer detaljerad sökning om du inte kan hitta det du letar efter.</em>
+        </p>  
+        <p v-if="pageData.totalItems > limit && $route.params.perimeter != 'remote'" class="ResultControls-resultText">Visar {{ limit }} träffar per sida.</p>
       </div>
-      <div class="ResultControls-listTypes" v-if="showDetails && pageData.totalItems > 0">
-        <button class="ResultControls-listType icon icon--md"
-          v-on:click="setFull()" 
-          v-bind:class="{'is-active': user.settings.resultListType === 'detailed' }"
-          :title="'Detailed view' | translatePhrase">
-          <i class="fa fa-th-list"></i>
-        </button>
-        <button class="ResultControls-listType icon icon--md" 
-          v-on:click="setCompact()" 
-          v-bind:class="{'is-active': user.settings.resultListType === 'compact' }"
-          :title="'Compact view' | translatePhrase">
-          <i class="fa fa-list"></i>
-        </button>
+      <div class="ResultControls-controlWrap" v-if="showDetails && pageData.totalItems > 0">
+        <sort 
+          v-if="getRecordType && $route.params.perimeter != 'remote'"
+          :currentSort="currentSortOrder ? currentSortOrder : ''"
+          :recordType="getRecordType"
+          @change="$emit('sortChange', $event)"/>
+        <div class="ResultControls-listTypes">
+          <button class="ResultControls-listType icon icon--md"
+            v-on:click="setFull()" 
+            v-bind:class="{'is-active': user.settings.resultListType === 'detailed' }"
+            :title="'Detailed view' | translatePhrase">
+            <i class="fa fa-th-list"></i>
+          </button>
+          <button class="ResultControls-listType icon icon--md" 
+            v-on:click="setCompact()" 
+            v-bind:class="{'is-active': user.settings.resultListType === 'compact' }"
+            :title="'Compact view' | translatePhrase">
+            <i class="fa fa-list"></i>
+          </button>
+        </div>
       </div>
     </div>
     <nav v-if="hasPagination && showPages">
@@ -208,23 +227,37 @@ export default {
   &-searchDetails {
     display: flex;
     justify-content: space-between;
+    align-items: baseline;
     width: 100%;
     color: @gray-dark;
+
+    @media (max-width: @screen-sm) {
+      flex-direction: column;
+    }
   }
 
   &-resultDescr {
+
+  }
+
+  &-resultText {
     font-weight: 600;
     padding-right: 20px;
+  }
+
+  &-controlWrap {
+    display: flex;
   }
 
   &-listTypes {
     display: flex;
     flex-wrap: nowrap;
+    align-items: center;
   }
 
   &-listType {
     background-color: transparent;
-    height: 30px;
+    height: 20px;
 
     &:hover, 
     &:focus {

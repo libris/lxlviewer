@@ -203,6 +203,40 @@ const store = new Vuex.Store({
           },
         },
       },
+      sortOptions: {
+        Instance: [
+          { 
+            query: '',
+            label: 'Relevance', 
+          },
+          {
+            query: 'hasTitle.mainTitle.keyword',
+            label: 'Main title (A-Z)',
+          },
+          {
+            query: '-hasTitle.mainTitle.keyword',
+            label: 'Main title (Z-A)',
+          },
+          {
+            query: '-publication.year.keyword',
+            label: 'Publication year (descending)',
+          },
+          {
+            query: 'publication.year.keyword',
+            label: 'Publication year (ascending)',
+          },
+        ],
+        Item: [
+          { 
+            query: 'heldBy.@id',
+            label: 'Sigel (A-Z)', 
+          },
+          { 
+            query: '-heldBy.@id',
+            label: 'Sigel (Z-A)', 
+          },
+        ],  
+      },
       availableUserSettings: {
         languages: [
           {

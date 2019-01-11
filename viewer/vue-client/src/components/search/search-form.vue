@@ -501,6 +501,7 @@ export default {
       padding: 0;
       outline: none;
       cursor: text;
+      color: @black;
     }
 
     &.is-searchTag {
