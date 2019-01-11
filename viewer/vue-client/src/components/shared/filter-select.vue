@@ -22,6 +22,10 @@ export default {
       type: Array,
       default: () => [],
     },
+    optionsAllSuggested: {
+      type: Array,
+      default: () => [],
+    },
     className: {
       type: String,
       default: '',
@@ -126,7 +130,7 @@ export default {
       }
     },
     selectOption(event, eventObj = {}) {
-      if (event.target.dataset.abstract) {
+      if (!this.isFilter && event.target.dataset.abstract) {
         return;
       }
       const eventObject = eventObj;
@@ -241,7 +245,7 @@ export default {
         {{ 'All' | translatePhrase }}:
       </li>
       <li class="FilterSelect-dropdownItem js-filterSelectItem"
-        :class="{ 'is-abstract': option.abstract, 'is-concrete': !option.abstract }"
+        :class="{ 'is-abstract': option.abstract && !isFilter, 'is-concrete': !option.abstract || isFilter }"
         @click="selectOption"
         @keyup.enter="selectOption"
         v-for="option in options.tree"
