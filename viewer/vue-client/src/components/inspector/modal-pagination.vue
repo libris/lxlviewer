@@ -21,14 +21,14 @@ export default {
     pageRange() {
       const dotObj = { page: '...', disabled: true, active: false };
       const range = [];
-      for (let i = 0; i <= this.numberOfPages; i++) {
+      for (let i = 0; i < this.numberOfPages; i++) {
         range.push({ page: i, disabled: false, active: i === this.currentPage });
       }
       const filtered = range.filter(el => el.page <= this.currentPage + 3 && el.page >= this.currentPage - 3);
       if (filtered[0].page > 0) {
         filtered.unshift(dotObj);
       }
-      if (filtered[filtered.length - 1].page < this.numberOfPages) {
+      if (filtered[filtered.length - 1].page < (this.numberOfPages - 1)) {
         filtered.push(dotObj);
       }
       return filtered;
