@@ -367,7 +367,7 @@ export default {
       <div class="ItemSibling-actions">
         <div class="ItemSibling-action">
           <i class="fa fa-link icon icon--sm"
-            v-if="inspector.status.editing && isExtractable && extractedMainEntity"
+            v-if="inspector.status.editing && isExtractable"
             @click="openExtractDialog(), expand()" 
             tabindex="0"
             @keyup.enter="openExtractDialog(), expand()"
@@ -379,9 +379,6 @@ export default {
               :show-tooltip="showLinkAction" 
               tooltip-text="Link entity"></tooltip-component>
           </i>
-          <i class="fa fa-link fa-fw icon icon--sm is-disabled"
-            v-else-if="inspector.status.editing && isExtractable && !extractedMainEntity"
-            tabindex="-1"></i>
         </div>
 
         <field-adder ref="fieldAdder" class="ItemSibling-action"
