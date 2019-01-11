@@ -222,11 +222,15 @@ new Vue({
       } else if (route.name === 'NewDocument') {
         title += StringUtil.getUiPhraseByLang('New record', this.$store.getters.user.settings.language);
       } else if (route.name === 'Inspector') {
-        title += this.inspector.title;
+        if (this.inspector.title && this.inspector.title.length > 0) {
+          title += this.inspector.title;
+        } else {
+          title += StringUtil.getUiPhraseByLang('Loading document', this.$store.getters.user.settings.language);
+        }
       } else {
         title += StringUtil.getUiPhraseByLang(route.name, this.$store.getters.user.settings.language);
       }
-      if (route.name === 'Home') {
+      if (route.name === 'Home' || route.name === null) {
         title = this.$store.getters.settings.title;
       } else {
         title += ` | ${this.$store.getters.settings.title}`;
