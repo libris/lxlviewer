@@ -252,6 +252,8 @@
     "Publication year (descending)": "Utgivningsår (nyast först)",
     "Publication year (ascending)": "Utgivningsår (äldst först)",
     "Main title (A-Z)": "Huvudtitel (A-Ö)",
-    "Main title (Z-A)": "Huvudtitel (Ö-A)"
+    "Main title (Z-A)": "Huvudtitel (Ö-A)",
+    "Sigel (A-Z)": "Sigel (A-Ö)",
+    "Sigel (Z-A)": "Sigel (Ö-A)"
     }
 }
