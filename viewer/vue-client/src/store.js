@@ -228,6 +228,10 @@ const store = new Vuex.Store({
         ],
         Item: [
           { 
+            query: '',
+            label: 'Relevance', 
+          },
+          { 
             query: 'heldBy.@id',
             label: 'Sigel (A-Z)', 
           },
