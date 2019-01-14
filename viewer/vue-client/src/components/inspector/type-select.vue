@@ -54,7 +54,8 @@ export default {
     <select class="customSelect" 
       v-model="selectedType"
       ref="adderTypeSelect"
-      @change="handleChange()">
+      @change="handleChange()"
+      :aria-label="'Choose type' | translatePhrase">
       <option disabled value="">{{"Choose type" | translatePhrase}}</option>
       <option v-for="(term, index) in classTree"  
         v-html="options[index].label"
@@ -66,6 +67,7 @@ export default {
       <i class="fa fa-times-circle icon icon--sm" 
         role="button"
         tabindex="0"
+        :aria-label="'Remove' | translatePhrase"
         @click="dismiss()"
         @keyup.enter="dismiss()"
         @mouseover="highlight = true"

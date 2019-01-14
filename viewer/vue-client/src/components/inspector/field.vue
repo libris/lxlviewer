@@ -526,7 +526,9 @@ export default {
           <div class="Field-action Field-remove" 
             v-show="!locked" 
             :class="{'disabled': activeModal}">
-            <i class="fa fa-trash-o action-button icon icon--sm"
+            <i class="fa fa-trash-o fa-fw action-button icon icon--sm"
+              role="button"
+              :aria-label="'Remove' | translatePhrase"
               tabindex="0"
               v-on:click="removeThis(true)"
               @keyup.enter="removeThis(true)"
@@ -561,7 +563,7 @@ export default {
           <div v-else class="Field-action placeholder"></div> 
 
           <div class="Field-comment" v-if="propertyComment && !locked" >
-            <i class="fa fa-question-circle Field-comment icon icon--sm"></i>
+            <i class="fa fa-question-circle fa-fw icon icon--sm"></i>
             <span class="Field-commentText">{{ propertyComment }}</span>
           </div>
           <div v-else class="Field-action placeholder"></div> 
@@ -569,7 +571,9 @@ export default {
           <div class="Field-action Field-clipboardPaster"
             v-if="!locked && (isRepeatable || isEmptyObject) && clipboardHasValidObject" 
             ref="clipboardPaster">
-            <i tabindex="0" class="fa fa-paste action-button icon icon--sm"
+            <i tabindex="0" class="fa fa-paste fa-fw action-button icon icon--sm"
+              role="button"
+              :aria-label="'Paste entity' | translatePhrase"
               @click="pasteClipboardItem"
               @keyup.enter="pasteClipboardItem"
               @focus="pasteHover = true, actionHighlight(true, $event)" 
@@ -600,7 +604,7 @@ export default {
       <!-- Is inner -->
       <div class="Field-actions is-nested">
         <div class="Field-action Field-comment" v-if="propertyComment && !locked" >
-          <i class="fa fa-question-circle icon icon--sm"></i>
+          <i class="fa fa-question-circle fa-fw icon icon--sm"></i>
           <span class="Field-commentText">{{ propertyComment }}</span>
         </div>
         <entity-adder class="Field-action Field-entityAdder"
@@ -626,8 +630,10 @@ export default {
         <div class="Field-action Field-remove" 
           v-show="!locked" 
           :class="{'disabled': activeModal}">
-          <i class="fa fa-trash-o action-button icon icon--sm"
+          <i class="fa fa-trash-o fa-fw action-button icon icon--sm"
             tabindex="0"
+            role="button"
+            :aria-label="'Remove' | translatePhrase"
             v-on:click="removeThis(true)"
             @keyup.enter="removeThis(true)"
             @focus="removeHover = true, removeHighlight(true, $event)" 
@@ -643,7 +649,9 @@ export default {
         <div class="Field-action Field-clipboardPaster"
           v-if="!locked && (isRepeatable || isEmptyObject) && clipboardHasValidObject" 
           ref="clipboardPaster">
-          <i tabindex="0" class="fa fa-paste action-button icon icon--sm"
+          <i tabindex="0" class="fa fa-paste fa-fw action-button icon icon--sm"
+            role="button"
+            :aria-label="'Paste entity' | translatePhrase"
             @click="pasteClipboardItem"
             @keyup.enter="pasteClipboardItem"
             @focus="pasteHover = true, actionHighlight(true, $event)" 
@@ -1067,7 +1075,6 @@ export default {
     }
 
     .Field--inner & {
-      display: inline-block;
       font-size: 16px;
       font-size: 1.6rem;
       margin: 0 0 0 10px;

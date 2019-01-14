@@ -93,7 +93,11 @@ export default {
 <template>
   <div class="ItemBoolean" v-bind:class="{'is-locked': isLocked, 'is-unlocked': !isLocked, 'distinguish-removal': removeHover, 'removed': removed}">
     <div v-if="!isLocked">
-      <input type="checkbox" class="customCheckbox-input" v-model="selected" :disabled="isLocked" />
+      <input type="checkbox" 
+        class="customCheckbox-input" 
+        v-model="selected" 
+        :disabled="isLocked"
+        :aria-label="fieldKey | labelByLang" />
       <div class="customCheckbox-icon"></div>
     </div>
     <span class="ItemVocab-text" 

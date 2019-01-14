@@ -52,8 +52,10 @@ export default {
         <div class="CreationCard-descr card-descr">Innehåller de vanligaste fälten för vald typ.</div>
       </div>
       <div class="card-link">
-        <select class="CreationCard-select customSelect" @change="useBase($event)">
-          <option class="CreationCard-option" selected disabled>
+        <select class="CreationCard-select customSelect" 
+          @change="useBase($event)"
+          aria-labelledby="CreationCard-selectLabel">
+          <option id="CreationCard-selectLabel" class="CreationCard-option" selected disabled>
             {{'Choose type' | translatePhrase}}
           </option>
           <option class="CreationCard-option"

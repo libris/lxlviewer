@@ -171,6 +171,7 @@ export default {
       this.inputData.textInput.splice(1, this.inputData.textInput.length);
       this.inputData.textInput[0].value = '';
       this.inputData.textInput[0].class = 'is-searchPhrase';
+      this.$refs.librisSearch[0].focus();
     },
   },
   computed: {
@@ -337,7 +338,8 @@ export default {
                   v-model="input.value"
                   class="SearchBar-qsmartInput"
                   :placeholder="'Search' | translatePhrase"
-                  :class="input.class">
+                  :class="input.class"
+                  ref="librisSearch">
                 <datalist id="matchingParameters">
                   <option v-for="matchingParameter in validSearchTags" 
                     :key="matchingParameter" 
@@ -363,7 +365,10 @@ export default {
         id="remotePanel" 
         v-if="searchPerimeter === 'remote'">
         <div class="SearchBar-formGroup form-group panel">
-          <input type="text" class="SearchBar-input customInput form-control" placeholder="ISBN eller valfria sökord" 
+          <input type="text" 
+            class="SearchBar-input customInput form-control" 
+            placeholder="ISBN eller valfria sökord"
+            aria-label="ISBN eller valfria sökord"
             v-model="remoteSearch.q">
           <button 
             class="SearchBar-submit btn btn-primary icon icon--white icon--md"
@@ -375,7 +380,7 @@ export default {
           </button>
         </div>
       </div>
-      <div class="SearchBar-typeButtons" aria-label="Välj typ" 
+      <div class="SearchBar-typeButtons" :aria-label="'Choose type' | translatePhrase"
         v-if="searchPerimeter === 'libris'">
         <label class="SearchBar-typeLabel" 
           :for="filter['@id']"

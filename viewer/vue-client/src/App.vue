@@ -185,7 +185,7 @@ a:focus {
 // ----------- BUTTON ----------------
 
 button, .btn-primary, .btn-primary:hover, .btn-primary:focus {
-    color: #ffffff;
+    color: @white;
 }
 
 button {
@@ -226,14 +226,15 @@ button {
   }
 
   &.btn-primary {
-    background-color: fadeout(@brand-primary, 35%);
+    background-color: fadeout(@btn-primary, 35%);
   }
 }
 
 .btn-primary {
+  background-color: @btn-primary;
   &:hover {
-    background-color: @link-hover-color;
-    border-color: @link-hover-color;
+    background-color: @btn-primary--hover;
+    border-color: @btn-primary--hover;
   }
 }
 
@@ -404,21 +405,21 @@ body {
 
 // ------------- ICONS ----------------
 .icon {
-    color: @icon-default;
-    color: @icon-alt;
+    color: @gray;
+    color: @gray-transparent;
     cursor: pointer;
     transition: color .2s ease, background-color .2s ease;
 
     &:hover {
-        color: @icon-default--hover;
-        color: @icon-alt--hover;
+        color: @gray-darker;
+        color: @gray-darker-transparent;
     }
 
     &--primary {
-        color: @icon-primary;
+        color: @btn-primary;
 
         &:hover {
-            color: @icon-primary--hover;
+            color: @btn-primary--hover;
         }
     }
 
@@ -430,24 +431,24 @@ body {
     }
 
     &--sm {
-        font-size: @icon-sm;
+        font-size: 16px;
     }
 
     &--md {
-        font-size: @icon-md;
+        font-size: 20px;
     }
     
     &--lg {
-        font-size: @icon-lg;
+        font-size: 30px;
     }
 
     &.is-disabled {
-        color: @icon-disabled;
+        color: @gray-lighter-transparent;
         cursor: not-allowed;
     }
 
     &.is-added {
-        color: @icon-added;
+        color: @gray-light;
         cursor: not-allowed;
     }
 }
@@ -487,6 +488,7 @@ h1 {
       font-size: 12px;
       font-size: 1.2rem;
       color: @gray-dark;
+      color: @gray-dark-transparent;
     }
 
     &--bold {
@@ -556,6 +558,7 @@ h1 {
   font-size: 20px;
   font-size: 2rem;
   line-height: 1.2;
+  color: @black;
   border: 1px solid @gray-light;
   border-radius: 4px;
 

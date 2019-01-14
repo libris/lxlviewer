@@ -9,6 +9,8 @@ Listen to the 'click' event in the parent as usual.
     * disabled - bool, true will not emit the action.
     * icon - pass in a fa-name, i.e 'check'. Otherwise child node will render as text content
     * indicator - true gets an 'active' look
+    * active - true gives primary a permanent 'focused' look
+    * label - (if icon) provide a string that will be translated & used as accessible label
 */
 export default {
   name: 'round-button',
@@ -30,6 +32,13 @@ export default {
       default: '',
     },
     icon: {
+      default: false,
+    },
+    active: {
+      default: false,
+    },
+    label: {
+      type: [String, Boolean, Array],
       default: false,
     },
   },
@@ -65,10 +74,11 @@ export default {
 
 <template>
   <button class="RoundButton btn"
-    :class="{'btn-gray disabled' : disabled, 'default': !indicator && !disabled, 'btn-primary': indicator && !disabled}"
+    :class="{'btn-gray disabled' : disabled, 'default': !indicator && !disabled, 'btn-primary': indicator && !disabled, 'is-active': active}"
     @click="action()"
     @mouseover="mouseOver = true"
-    @mouseout="mouseOver = false">
+    @mouseout="mouseOver = false"
+    :aria-label="label | translatePhrase">
     <span v-if="icon">
       <i :class="`fa fa-${icon}`" aria-hidden="true"></i>
     </span>
@@ -92,19 +102,18 @@ export default {
 
   &.default {
   background-color: @neutral-color;
-  color: @brand-primary;
-  border: 2px solid @brand-primary;
+  color: @btn-primary;
+  border: 2px solid @btn-primary;
 
     &:hover {
-      border-color: @link-hover-color; 
-      color: @link-hover-color;
+      border-color: @btn-primary--hover; 
+      color: @btn-primary--hover;
     }
   }
 
-  .is-highlighted & {
-    background-color: @link-hover-color; 
-    border-color: @link-hover-color; 
-    color: @white;
+  &.btn-primary.is-active {
+    background-color: @btn-primary--hover; 
+    border: @btn-primary--hover;
   }
 
   &.disabled { //can't be SUIT-ified because inherits from Bootstrap .disabled

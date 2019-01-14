@@ -541,10 +541,11 @@ export default {
     <!-- Adds another empty field of the same type -->
     <div class="EntityAdder-add"
       v-if="isPlaceholder">
-        <i class="fa fa-plus-circle icon icon--sm"
+        <i class="fa fa-plus-circle fa-fw icon icon--sm"
           v-if="!addEmbedded"
           tabindex="0"
-          aria-hidden="true"
+          role="button"
+          :aria-label="tooltipText | translatePhrase"
           ref="adderFocusElement"
           @click="add($event)" 
           @keyup.enter="add($event)"
@@ -556,7 +557,7 @@ export default {
             :show-tooltip="showToolTip" 
             :tooltip-text="tooltipText"></tooltip-component>
         </i>
-        <i class="fa fa-plus-circle icon icon--sm is-disabled"
+        <i class="fa fa-plus-circle fa-fw icon icon--sm is-disabled"
           v-else-if="addEmbedded"
           tabindex="-1"
           aria-hidden="true">
@@ -566,10 +567,12 @@ export default {
     <!-- Add entity within field -->
     <div class="EntityAdder-add action-button" v-if="!isPlaceholder">
       <i 
-        class="EntityAdder-addIcon fa fa-plus-circle icon icon--sm"
+        class="fa fa-fw fa-plus-circle icon icon--sm"
         v-if="!addEmbedded"
         tabindex="0"
+        role="button"
         ref="adderFocusElement"
+        :aria-label="tooltipText | translatePhrase"
         v-on:click="add($event)" 
         @keyup.enter="add($event)"
         @mouseenter="showToolTip = true, actionHighlight(true, $event)" 
@@ -581,7 +584,7 @@ export default {
           :tooltip-text="tooltipText"></tooltip-component>
       </i>
       <i
-        class="EntityAdder-addIcon fa fa-plus-circle icon icon--sm is-disabled"
+        class="fa fa-plus-circle fa-fw icon icon--sm is-disabled"
         v-else-if="addEmbedded"
         tabindex="-1">
       </i>
@@ -628,7 +631,8 @@ export default {
                     name="entityKeywordInput"
                     v-model="keyword"
                     ref="input"
-                    placeholder="Sök"
+                    :aria-label="'Sök' | translatePhrase"
+                    :placeholder="'Sök' | translatePhrase"
                     autofocus />
                 </div>
                 <div class="EntityAdder-filterSearchContainer">
@@ -681,12 +685,14 @@ export default {
             </modal-pagination>
             <div class="EntityAdder-listTypes">
               <i class="fa fa-th-list icon icon--sm"
+                role="button"
                 @click="isCompact = false"
                 @keyup.enter="isCompact = false"
                 :class="{'icon--primary' : !isCompact}"
                 :title="'Detailed view' | translatePhrase"
                 tabindex="0"></i>
               <i class="fa fa-list icon icon--sm"
+                role="button"
                 @click="isCompact = true"
                 @keyup.enter="isCompact = true"
                 :class="{'icon--primary' : isCompact}"
@@ -750,10 +756,6 @@ export default {
     &:hover {
       color: @black;
     }
-  }
-
-  &-addIcon {
-    width: 16px;
   }
 
   &-addLabel {

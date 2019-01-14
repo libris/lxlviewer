@@ -237,6 +237,7 @@ export default {
         @keyup.enter="clearDatabases()"
         tabindex="0"
         role="button"
+        :aria-label="'Clear all' | translatePhrase"
         @mouseover="clearTooltip = true" 
         @mouseout="clearTooltip = false">
         <tooltip-component 
@@ -253,6 +254,7 @@ export default {
         @keyup.enter="showList = true, addTooltip = false"
         tabindex="0"
         role="button"
+        :aria-label="'Add' | translatePhrase"
         @mouseover="addTooltip = true" 
         @mouseout="addTooltip = false">
         <tooltip-component 
@@ -275,12 +277,13 @@ export default {
             class="RemoteDatabases-listFilterInput customInput form-control mousetrap" 
             type="text" 
             v-model="filterKey"
-            :placeholder="'Filter by' | translatePhrase "
-            autofocus >
+            :aria-label="'Filter by' | translatePhrase"
+            :placeholder="'Filter by' | translatePhrase"
+            autofocus>
         </div>
       </template>
       <template slot="panel-body">
-        <ul class="RemoteDatabases-list" aria-labelledby="remoteDbListLabel"
+        <ul class="RemoteDatabases-list"
           v-show="remoteDatabases.state == 'complete' && showList">
           <li 
             class="RemoteDatabases-listItem PanelComponent-listItem"
@@ -288,20 +291,23 @@ export default {
             v-for="(db, index) in filteredDatabases" 
             @click="toggleDatabase(db.database)"
             @keyup.enter="toggleDatabase(db.database)"
-            :key="index">
+            :key="index"
+            :aria-label="db.database">
             <div class="RemoteDatabases-addControl">
               <i v-show="db.disabled" class="fa fa-ban icon icon--lg is-disabled"></i>
               <i 
                 v-show="!db.active && !db.disabled" 
                 class="fa fa-plus-circle icon icon--lg icon--primary" 
                 :title="'Add' | translatePhrase"
-                tabindex="0">
+                tabindex="0"
+                role="button">
               </i>
               <i 
                 v-show="db.active" 
                 class="fa fa-check-circle icon icon--lg" 
                 :title="'Remove' | translatePhrase"
-                tabindex="0">
+                tabindex="0"
+                role="button">
               </i>
             </div>
             <div class="RemoteDatabases-dbInfo">
@@ -399,7 +405,7 @@ export default {
     }
 
     &.is-disabled {
-      color: @grey-light;
+      color: @gray-dark-transparent;
       cursor: initial;
     }
   }

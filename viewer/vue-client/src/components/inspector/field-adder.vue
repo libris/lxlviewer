@@ -271,9 +271,11 @@ export default {
   <div class="FieldAdder">
     <span v-if="inner" class="FieldAdder-innerAdd">
       <i 
-        class="FieldAdder-innerIcon fa fa-plus-circle fa-fw icon icon--sm" 
+        class="FieldAdder-innerIcon fa fa-plus-circle fa-fw icon icon--sm"
+        role="button"
         tabindex="0"
         ref="adderButton"
+        :aria-label="modalTitle | translatePhrase"
         @click="show(), expand()" 
         @keyup.enter="show"
         @mouseenter="showToolTip = true, actionHighlight(true, $event)" 
@@ -292,7 +294,8 @@ export default {
       ref="adderButton"
       @keyup.enter="show"
       @mouseenter="showToolTip = true" 
-      @mouseleave="showToolTip = false">
+      @mouseleave="showToolTip = false"
+      :aria-label="modalTitle | translatePhrase">
       <i class="FieldAdder-icon fa fa-plus plus-icon" aria-hidden="true">
         <tooltip-component 
           class="Toolbar-tooltipContainer"
@@ -315,6 +318,7 @@ export default {
             ref="input"
             class="FieldAdderPanel-filterInput customInput form-control mousetrap" 
             :placeholder="'Filter by' | translatePhrase"
+            :aria-label="'Filter by' | translatePhrase"
             v-model="filterKey">
         </div>
         <div class="FieldAdderPanel-filterInfo uppercaseHeading">
@@ -354,7 +358,8 @@ export default {
                   :tabindex="prop.added ? -1 : 0"
                   :icon="prop.added ? 'check' : 'plus'"
                   :indicator="true"
-                  :disabled="prop.added"/>
+                  :disabled="prop.added"
+                  :label="prop.added ? 'Added' : 'Add'"/>
               </span>
               <span class="FieldAdderPanel-fieldLabel" :title="prop.label | capitalize">
                 {{prop.label | capitalize }}
@@ -415,7 +420,7 @@ export default {
   }
 
   &-filterInfo {
-    color: @gray;
+    color: @gray-darker;
     margin-bottom: 10px;
   }
 

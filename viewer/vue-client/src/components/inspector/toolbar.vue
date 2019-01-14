@@ -368,7 +368,7 @@ export default {
 
 <template>
   <div class="Toolbar" id="editor-container">
-    <input type="file" class="FilePicker" ref="FilePicker" accept=".jsonld,application/ld+json,text/*" />
+    <input type="file" class="FilePicker" ref="FilePicker" accept=".jsonld,application/ld+json,text/*" aria-hidden="true"/>
     <div class="dropdown Toolbar-menu OtherFormatMenu"
       v-if="!inspector.status.editing" 
       v-on-clickaway="hideOtherFormatMenu">
@@ -379,7 +379,8 @@ export default {
         @focus="showDisplayAs = true"
         @blur="showDisplayAs = false"
         @mouseover="showDisplayAs = true" 
-        @mouseout="showDisplayAs = false">
+        @mouseout="showDisplayAs = false"
+        :aria-label="'Show as' | translatePhrase">
         <i class="fa fa-fw fa-eye" aria-hidden="true">
           <tooltip-component 
             class="Toolbar-tooltipContainer"
@@ -422,7 +423,8 @@ export default {
         aria-haspopup="true" 
         aria-expanded="true" 
         @mouseover="showTools = true" 
-        @mouseout="showTools = false">
+        @mouseout="showTools = false"
+        :aria-label="'Tools' | translatePhrase">
         <i class="fa fa-fw fa-wrench" aria-hidden="true">
           <tooltip-component 
             class="Toolbar-tooltipContainer"
@@ -517,7 +519,8 @@ export default {
       v-show="inspector.status.editing" 
       @click="undo" 
       @mouseover="showUndo = true" 
-      @mouseout="showUndo = false">
+      @mouseout="showUndo = false"
+      :aria-label="'Undo' | translatePhrase">
       <i class="fa fa-undo" aria-hidden="true">
         <tooltip-component 
           class="Toolbar-tooltipContainer"
@@ -532,7 +535,8 @@ export default {
       v-show="inspector.status.editing" 
       @click="cancel" 
       @mouseover="showCancel = true" 
-      @mouseout="showCancel = false">
+      @mouseout="showCancel = false"
+      :aria-label="'Cancel' | translatePhrase">
       <i class="fa fa-close" aria-hidden="true">
         <tooltip-component 
           class="Toolbar-tooltipContainer"
@@ -546,7 +550,9 @@ export default {
     <button class="Toolbar-btn btn btn-default" id="saveButton" 
       @click="postControl('save-record')"
       v-if="inspector.status.editing && !isNewRecord" 
-      @mouseover="showSave = true" @mouseout="showSave = false">
+      @mouseover="showSave = true" 
+      @mouseout="showSave = false"
+      :aria-label="'Save' | translatePhrase">
       <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="inspector.status.saving"></i>
       <i class="fa fa-fw fa-save" v-show="!inspector.status.saving">
         <tooltip-component 
@@ -557,11 +563,12 @@ export default {
           keybind-name="save-item"></tooltip-component>
       </i>
     </button>
-    <button class="Toolbar-btn btn btn-primary" id="saveButton" 
+    <button class="Toolbar-btn btn btn-primary" id="saveDoneButton" 
       @click="postControl('save-record-done')"
       v-if="inspector.status.editing"
       @mouseover="showClarifySave = true"
-      @mouseout="showClarifySave = false">
+      @mouseout="showClarifySave = false"
+      :aria-label="'Save and stop editing' | translatePhrase">
       <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="inspector.status.saving"></i>
       <i class="fa fa-fw fa-check" v-show="!inspector.status.saving">
         <tooltip-component 
@@ -585,7 +592,8 @@ export default {
       v-on:click="edit()" 
       v-show="user.isLoggedIn && !inspector.status.editing && canEditThisType" 
       @mouseover="showEdit = true" 
-      @mouseout="showEdit = false">
+      @mouseout="showEdit = false"
+      :aria-label="'Edit' | translatePhrase">
       <i class="fa fa-fw fa-pencil-square-o" v-show="!inspector.status.opening">
         <tooltip-component 
         class="Toolbar-tooltipContainer"

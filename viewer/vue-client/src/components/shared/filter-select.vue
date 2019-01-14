@@ -41,7 +41,6 @@ export default {
   },
   data() {
     return {
-      selectId: 'filterSelect',
       selectedObject: {},
       currentItem: -1,
       filterVisible: false,
@@ -222,8 +221,8 @@ export default {
     @keyup.space="focusOnInput">
     <input class="FilterSelect-input js-filterSelectInput" 
       type="text" 
-      v-bind:placeholder="translatedPlaceholder" 
-      :id="selectId" 
+      v-bind:placeholder="translatedPlaceholder"
+      :aria-label="translatedPlaceholder"
       @keyup.exact="filter()"
       @keyup.space="checkInput($event)"
       @click="filterVisible = !filterVisible"
@@ -266,10 +265,14 @@ export default {
     <i
       class="fa icon icon--sm FilterSelect-open"
       :class="{'fa-angle-up': filterVisible, 'fa-angle-down': !filterVisible}"
+      role="button"
+      :title="!filterVisible ? 'Expand' : 'Minimize' | translatePhrase"
       @click="filterVisible = !filterVisible"
       @keyup.enter="filterVisible = !filterVisible"></i>
     <i v-if="isFilter"
       class="fa fa-close icon icon--sm FilterSelect-clear"
+      :title="'Close' | translatePhrase"
+      role="button"
       @click="clear()"
       @keyup.enter="clear()"></i>
   </div>

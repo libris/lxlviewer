@@ -124,6 +124,7 @@ export default {
           v-if="!isLocked"
           role="button"
           tabindex="0"
+          :aria-label="'Remove' | translatePhrase"
           @click="removeThis(true)"
           @keyup.enter="removeThis(true)"
           @mouseover="removeHover = true, showCardInfo = false"

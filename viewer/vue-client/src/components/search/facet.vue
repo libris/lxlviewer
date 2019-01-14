@@ -57,10 +57,10 @@ export default {
     <router-link class="Facet-link"
       :to="observation.view['@id'] | asAppPath" 
       :title="determinedLabel | capitalize">
-        <span class="Facet-label"
-          :title="determinedLabel | capitalize">
-          {{determinedLabel | capitalize}}</span>
-        <span class="Facet-badge badge">{{getCompactNumber}}</span>
+      <span class="Facet-label"
+        :title="determinedLabel | capitalize">
+        {{determinedLabel | capitalize}}</span>
+      <span class="Facet-badge badge">{{getCompactNumber}}</span>
     </router-link>
   </li>
 </template>
@@ -87,10 +87,12 @@ export default {
   }
 
   &-badge {
+    min-width: 20px;
   }
 
   &-label {
     cursor: pointer;
+    margin-right: 5px;
     color: @black;
     line-height: 1.8em;
     white-space: nowrap;
