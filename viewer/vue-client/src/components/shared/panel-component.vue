@@ -78,7 +78,7 @@ export default {
   },
   watch: {
     'status.keyActions'(actions) {
-      const lastAction = actions.slice(-1);
+      const lastAction = actions.slice(-1).join();
       if (lastAction === 'close-modals') {
         this.close();
       }
