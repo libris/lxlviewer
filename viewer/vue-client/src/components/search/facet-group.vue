@@ -91,20 +91,6 @@ export default {
   width: 230px;
   margin: 0px 0 0;
 
-  &.has-scroll {
-    position: relative;
-
-    &::after {
-      content: '';
-      position: absolute;
-      left: 0;
-      bottom: 0;
-      width: 215px;
-      height: 50px;
-      background-image: linear-gradient(to bottom, transparent, @bg-site);
-    }
-  }
-
   &-title {
     margin: 10px 0 5px 0;
     padding: 0px;
@@ -139,9 +125,9 @@ export default {
     }
 
     &.has-scroll {
-      max-height: 450px;
+      max-height: 437px;
       overflow-y: scroll;
-      padding-bottom: 50px;
+      border-bottom: 1px solid @gray-light;
     }
   }
 
