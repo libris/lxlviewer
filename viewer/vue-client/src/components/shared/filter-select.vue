@@ -159,7 +159,13 @@ export default {
     },
     clear() {
       const allObj = {};
-      const allValue = this.optionsAll;
+
+      let allValue = [];
+      if (this.optionsAllSuggested.length > 0) {
+        allValue = this.optionsAllSuggested;
+      } else {
+        allValue = this.optionsAll;
+      }
 
       const inputContSel = document.getElementsByClassName(this.className);
       const inputContEl = inputContSel[0];
@@ -337,7 +343,7 @@ export default {
       padding: 5px 0;
     }
 
-    .FilterSelect--insideInput & {
+    .FilterSelect--openDown & {
       top: 26px;
       bottom: auto;
       border-radius: 10px;

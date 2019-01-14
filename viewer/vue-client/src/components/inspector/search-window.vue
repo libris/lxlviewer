@@ -140,6 +140,12 @@ export default {
       'settings',
       'status',
     ]),
+    filterPlaceHolder() {
+      if (this.someValuesFrom.length > 0) {
+        return 'Show suggested';
+      }
+      return 'Show all';
+    },
     selectOptions() {
       const classTree = this.getClassTree;
       const options = [];
@@ -183,9 +189,6 @@ export default {
       );
     },
   },
-  mounted() {
-    this.currentSearchTypes = this.allSearchTypes;
-  },
   methods: {
     replaceWith(obj) {
       this.$emit('replace-with', obj);
@@ -220,7 +223,6 @@ export default {
       this.handleChange(keyword);
     },
     handleChange(value) {
-      this.setSearching();
       this.searchMade = false;
       if (value) {
         setTimeout(() => {
@@ -230,13 +232,6 @@ export default {
         }, this.debounceTimer);
       } else {
         this.searchResult = [];
-      }
-    },
-    setSearching() {
-      if (this.keyword === '') {
-        this.loading = false;
-      } else {
-        this.loading = true;
       }
     },
     show() {
@@ -249,10 +244,9 @@ export default {
           this.$nextTick(() => {
             this.active = true;
             this.$nextTick(() => {
-            // this.$store.dispatch('setStatusValue', { 
-            //   property: 'keybindState', 
-            //   value: 'entity-adder' 
-            // });
+              let cleanedChipString = DisplayUtil.getItemLabel(this.itemInfo, this.resources.display, this.inspector.data.quoted, this.resources.vocab, this.settings, this.resources.context).replace(' • ', ' ');
+              this.keyword = cleanedChipString;
+              this.search();
               if (this.$refs.input) {
                 this.$refs.input.focus();
               }
@@ -271,7 +265,12 @@ export default {
     },
     resetSearch() {
       this.keyword = '';
-      this.currentSearchTypes = this.allSearchTypes;
+      this.searchMade = false;
+      if (this.someValuesFrom.length > 0) {
+        this.currentSearchTypes = this.someValuesFrom;
+      } else {
+        this.currentSearchTypes = this.allSearchTypes;
+      }
       this.searchResult = [];
     },
     loadResults(result) {
@@ -297,6 +296,7 @@ export default {
     },
     search() {
       const self = this;
+      this.loading = true;
       this.typeArray = [].concat(this.currentSearchTypes);
       self.searchResult = [];
       self.searchMade = true;
@@ -383,14 +383,15 @@ export default {
                   ref="input"
                   autofocus
                   :placeholder="'Search' | translatePhrase">
-                <filter-select class="EntityAdder-filterSearchInput FilterSelect--insideInput"
-                  :class-name="'js-filterSelect'"
-                  :custom-placeholder="'All types:'"
-                  :options="{ tree: selectOptions, priority: priorityOptions }"
-                  :options-all="allSearchTypes"
-                  :is-filter="true"
-                  v-on:filter-selected="setFilter($event, keyword)"></filter-select>
               </div>
+              <filter-select class="SearchWindow-filterSearchInput FilterSelect--openDown"
+                :class-name="'js-filterSelect'"
+                :custom-placeholder="filterPlaceHolder"
+                :options="{ tree: selectOptions, priority: priorityOptions }"
+                :options-all="allSearchTypes"
+                :options-all-suggested="someValuesFrom"
+                :is-filter="true"
+                v-on:filter-selected="setFilter($event, keyword)"></filter-select>
             </div>
           </div>
         </template>
@@ -495,6 +496,16 @@ export default {
       width: 60%;
       margin-bottom: 0;
     }
+  }
+
+  &-input {
+    color: @black;
+  }
+
+  &-filterSearchInput {
+    margin-left: 50%;
+    position: relative;
+    width: 50%;
   }
 
   &-header {

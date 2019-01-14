@@ -154,6 +154,12 @@ export default {
     inspector() {
       return this.$store.getters.inspector;
     },
+    filterPlaceHolder() {
+      if (this.someValuesFrom.length > 0) {
+        return 'Show suggested';
+      }
+      return 'Show all';
+    },
     selectOptions() {
       const classTree = this.getClassTree;
       const options = [];
@@ -300,7 +306,6 @@ export default {
       this.handleChange(keyword);
     },
     handleChange(value) {
-      this.setSearching();
       this.searchMade = false;
       if (value) {
         setTimeout(() => {
@@ -310,13 +315,6 @@ export default {
         }, this.debounceTimer);
       } else {
         this.searchResult = [];
-      }
-    },
-    setSearching() {
-      if (this.keyword === '') {
-        this.loading = false;
-      } else {
-        this.loading = true;
       }
     },
     dismissTypeChooser() {
@@ -354,10 +352,9 @@ export default {
             this.active = true;
             this.$nextTick(() => {
               this.resetSearch();
-              // this.$store.dispatch('setStatusValue', { 
-              //   property: 'keybindState', 
-              //   value: 'entity-adder' 
-              // });
+              if (this.someValuesFrom.length > 0) {
+                this.search();
+              }
               if (this.$refs.input) {
                 this.$refs.input.focus();
               }
@@ -368,14 +365,15 @@ export default {
     hide() {
       if (!this.active) return;
       this.active = false;
-      // this.$store.dispatch('setStatusValue', { 
-      //   property: 'keybindState', 
-      //   value: 'overview' 
-      // });
     },
     resetSearch() {
       this.keyword = '';
-      this.currentSearchTypes = this.allSearchTypes;
+      this.searchMade = false;
+      if (this.someValuesFrom.length > 0) {
+        this.currentSearchTypes = this.someValuesFrom;
+      } else {
+        this.currentSearchTypes = this.allSearchTypes;
+      }
       this.searchResult = [];
     },
     addLinkedItem(obj) {
@@ -507,6 +505,7 @@ export default {
     },
     search() {
       const self = this;
+      this.loading = true;
       this.typeArray = [].concat(this.currentSearchTypes);
       self.searchResult = [];
       self.searchMade = true;
@@ -631,14 +630,15 @@ export default {
                     ref="input"
                     placeholder="Sök"
                     autofocus />
-                    <filter-select class="EntityAdder-filterSearchInput FilterSelect--insideInput"
-                      :class-name="'js-filterSelect'"
-                      :custom-placeholder="'All types:'"
-                      :options="{ tree: selectOptions, priority: priorityOptions }"
-                      :options-all="allSearchTypes"
-                      :is-filter="true"
-                      v-on:filter-selected="setFilter($event, keyword)"></filter-select>
                 </div>
+                <filter-select class="EntityAdder-filterSearchInput FilterSelect--openDown"
+                  :class-name="'js-filterSelect'"
+                  :custom-placeholder="filterPlaceHolder"
+                  :options="{ tree: selectOptions, priority: priorityOptions }"
+                  :options-all="allSearchTypes"
+                  :options-all-suggested="someValuesFrom"
+                  :is-filter="true"
+                  v-on:filter-selected="setFilter($event, keyword)"></filter-select>
               </div>
             </div>
             
@@ -646,7 +646,7 @@ export default {
         </template>
         <template slot="panel-body">
           <panel-search-list class="EntityAdder-searchResult"
-            v-if="!loading && keyword.length > 0" 
+            v-if="!loading && searchMade" 
             :path="path" 
             :results="searchResult" 
             :disabled-ids="alreadyAdded"
@@ -656,14 +656,14 @@ export default {
             :has-action="true"
             @use-item="addLinkedItem">
           </panel-search-list>
-          <div class="PanelComponent-searchStatus" v-if="!loading && keyword.length === 0" >
+          <div class="PanelComponent-searchStatus" v-if="!loading && !searchMade" >
             {{ "Start writing to begin search" | translatePhrase }}...
           </div>
           <div v-if="loading" class="PanelComponent-searchStatus">
             <vue-simple-spinner size="large" :message="'Searching' | translatePhrase"></vue-simple-spinner>
           </div>
           <div class="PanelComponent-searchStatus"
-            v-if="!loading && searchResult.length === 0 && keyword.length > 0 && searchMade">
+            v-if="!loading && searchResult.length === 0 && searchMade">
             {{ "No results" | translatePhrase }}
           </div>
         <!-- </div> -->
@@ -701,6 +701,7 @@ export default {
               :class-name="'js-createSelect'"
               :options="{ tree: selectOptions, priority: priorityOptions }"
               :options-all="allSearchTypes"
+              :options-all-suggested="someValuesFrom"
               :is-filter="false"
               :custom-placeholder="'Create local entity:'"
               v-on:filter-selected="addType($event.value)"></filter-select>
@@ -776,7 +777,6 @@ export default {
 
   &-search {
     width: 100%;
-    display: flex;
   }
 
   &-searchInputContainer {
@@ -786,15 +786,13 @@ export default {
   }
 
   &-filterSearchInput {
-    margin-left: 5px;
-    position: absolute;
-    left: auto;
-    right: 5px;
+    margin-left: 50%;
+    position: relative;
     width: 50%;
-    top: 6px;
   }
 
   &-searchInput {
+    color: @black;
   }
 
   &-searchSelect {
