@@ -42,7 +42,6 @@ export default {
       },
       active: false,
       currentPage: 0,
-      numberOfPages: 0,
       maxResults: 20,
       isCompact: false,
     };
@@ -258,10 +257,6 @@ export default {
       if (!this.active) return;
       this.active = false;
       this.$parent.closeExtractDialog();
-      // this.$store.dispatch('setStatusValue', { 
-      //   property: 'keybindState', 
-      //   value: 'overview' 
-      // });
     },
     resetSearch() {
       this.keyword = '';
@@ -275,13 +270,11 @@ export default {
     },
     loadResults(result) {
       this.searchResult = result.items;
-      this.numberOfPages = Math.floor(result.totalItems / this.maxResults);
+      this.totalItems = result.totalItems;
       this.loading = false;
     },
     go(n) {
-      if (n >= 0 && n <= this.numberOfPages && n !== this.currentPage) {
-        this.fetch(n);
-      }
+      this.fetch(n);
     },
     fetch(pageNumber) {
       const self = this;
@@ -445,8 +438,10 @@ export default {
           <div class="SearchWindow-resultControls" v-if="!loading && searchResult.length > 0" >
             <modal-pagination 
               @go="go" 
-              :numberOfPages="numberOfPages" 
-              :currentPage="currentPage">
+              :total-items="totalItems" 
+              :max-per-page="maxResults"
+              :current-page="currentPage"
+            >
             </modal-pagination>
             <div class="SearchWindow-listTypes">
               <i class="fa fa-th-list icon icon--sm"

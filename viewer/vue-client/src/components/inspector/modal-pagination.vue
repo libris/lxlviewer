@@ -3,26 +3,42 @@
 export default {
   name: 'modal-pagination',
   props: {
-    numberOfPages: {
+    totalItems: {
+      default: 0,
+      type: Number,
+    },
+    maxPerPage: {
       default: 10,
       type: Number,
     },
     currentPage: {
-      default: 5,
+      default: 0,
       type: Number,
     },
   },
   methods: {
     go(n) {
-      this.$emit('go', n);
+      if (n !== this.currentPage && n >= 0 && n <= this.lastPageIndex) {
+        this.$emit('go', n);
+      }
     },
   },
   computed: {
+    numberOfPages() {
+      return Math.floor(this.totalItems / this.maxPerPage) + 1;
+    },
+    lastPageIndex() {
+      return this.numberOfPages - 1;
+    },
     pageRange() {
       const dotObj = { page: '...', disabled: true, active: false };
       const range = [];
       for (let i = 0; i < this.numberOfPages; i++) {
-        range.push({ page: i, disabled: false, active: i === this.currentPage });
+        range.push({
+          page: i,
+          disabled: false,
+          active: i === this.currentPage,
+        });
       }
       const filtered = range.filter(el => el.page <= this.currentPage + 3 && el.page >= this.currentPage - 3);
       if (filtered[0].page > 0) {
@@ -71,22 +87,22 @@ export default {
           @keydown.enter="go(n.page)" 
           @click="go(n.page)" 
           :tabindex="n.page === '...' ? -1 : 0">
-          {{n.page === '...' ? n.page : n.page + 1}}
+          {{n.page === '...' ? n.page : n.page + 1 }}
         </a>
       </li>
-      <li class="ModalPagination-item" :class="{'is-disabled': currentPage+1 > numberOfPages }">
+      <li class="ModalPagination-item" :class="{'is-disabled': currentPage+1 > lastPageIndex }">
         <a class="ModalPagination-link" 
           @keydown.enter="go(currentPage+1)" 
           @click="go(currentPage+1)" 
-          :tabindex="currentPage+1 > numberOfPages ? -1 : 0">
+          :tabindex="currentPage+1 > lastPageIndex ? -1 : 0">
           <i class="fa fa-chevron-right"></i>
         </a>
       </li>
-      <li class="ModalPagination-item" :class="{'is-disabled': currentPage+1 > numberOfPages }">
+      <li class="ModalPagination-item" :class="{'is-disabled': currentPage+1 > lastPageIndex }">
         <a class="ModalPagination-link" 
-          @keydown.enter="go(numberOfPages)" 
-          @click="go(numberOfPages)" 
-          :tabindex="currentPage+1 > numberOfPages ? -1 : 0">
+          @keydown.enter="go(lastPageIndex)" 
+          @click="go(lastPageIndex)" 
+          :tabindex="currentPage === lastPageIndex ? -1 : 0">
           {{'Last' | translatePhrase}}
         </a>
       </li>
