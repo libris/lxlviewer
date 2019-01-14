@@ -283,6 +283,7 @@ export default {
   width: 100%;
   border-radius: 10px;
   box-shadow: @shadow-panel;
+  text-align: left;
 
   &-input {
     padding: 5px 40px 5px 10px;

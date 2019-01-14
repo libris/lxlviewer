@@ -156,9 +156,9 @@ export default {
     },
     filterPlaceHolder() {
       if (this.someValuesFrom.length > 0) {
-        return 'Show suggested';
+        return 'Suggested types';
       }
-      return 'Show all';
+      return 'All types';
     },
     selectOptions() {
       const classTree = this.getClassTree;
@@ -631,14 +631,17 @@ export default {
                     placeholder="Sök"
                     autofocus />
                 </div>
-                <filter-select class="EntityAdder-filterSearchInput FilterSelect--openDown"
-                  :class-name="'js-filterSelect'"
-                  :custom-placeholder="filterPlaceHolder"
-                  :options="{ tree: selectOptions, priority: priorityOptions }"
-                  :options-all="allSearchTypes"
-                  :options-all-suggested="someValuesFrom"
-                  :is-filter="true"
-                  v-on:filter-selected="setFilter($event, keyword)"></filter-select>
+                <div class="EntityAdder-filterSearchContainer">
+                  <span class="EntityAdder-filterSearchLabel">{{ 'Show' | translatePhrase }}</span>
+                  <filter-select class="EntityAdder-filterSearchInput FilterSelect--openDown"
+                    :class-name="'js-filterSelect'"
+                    :custom-placeholder="filterPlaceHolder"
+                    :options="{ tree: selectOptions, priority: priorityOptions }"
+                    :options-all="allSearchTypes"
+                    :options-all-suggested="someValuesFrom"
+                    :is-filter="true"
+                    v-on:filter-selected="setFilter($event, keyword)"></filter-select>
+                </div>
               </div>
             </div>
             
@@ -785,8 +788,17 @@ export default {
     margin-bottom: 0;
   }
 
+  &-filterSearchContainer {
+    width: 100%;
+    margin-top: 0.25em;
+    text-align: right;
+  }
+
+  &-filterSearchLabel {
+
+  }
+
   &-filterSearchInput {
-    margin-left: 50%;
     position: relative;
     width: 50%;
   }
