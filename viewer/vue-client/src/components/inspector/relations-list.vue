@@ -20,7 +20,6 @@ export default {
   data() {
     return {
       currentPage: 0,
-      numberOfPages: 0,
       maxResults: 20,
       isCompact: false,
       loading: true,
@@ -33,9 +32,7 @@ export default {
   },
   methods: {
     go(n) {
-      if (n >= 0 && n <= this.numberOfPages && n !== this.currentPage) {
-        this.currentPage = n;
-      }
+      this.currentPage = n;
     },
     getResults() {
       this.loading = true;
@@ -44,7 +41,7 @@ export default {
           if (response.status === 200) {
             response.json().then((result) => {
               this.searchResult = result;
-              this.numberOfPages = Math.floor(result.totalItems / this.maxResults);
+              this.totalItems = result.totalItems;
               this.loading = false;
             });
           }
@@ -151,8 +148,10 @@ export default {
           <modal-pagination 
             v-if="searchResult.totalItems > maxResults"
             @go="go" 
-            :numberOfPages="numberOfPages" 
-            :currentPage="currentPage">
+            :total-items="totalItems" 
+            :max-per-page="maxResults"
+            :current-page="currentPage"
+          >
           </modal-pagination>
         </div>
       </template>

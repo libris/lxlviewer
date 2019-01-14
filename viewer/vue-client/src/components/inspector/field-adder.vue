@@ -65,7 +65,7 @@ export default {
     ]),
     modalTitle() {
       const title = StringUtil.getUiPhraseByLang('Add field in', this.settings.language);
-      let contextString = StringUtil.getLabelByLang(
+      const contextString = StringUtil.getLabelByLang(
         this.entityType, 
         this.settings.language, 
         this.resources.vocab, 
