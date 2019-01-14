@@ -1,4 +1,4 @@
-import { isObject, uniq, isArray, find, each, isPlainObject, cloneDeep, uniqBy, forOwn, sortBy } from 'lodash-es';
+import { isObject, uniq, isArray, find, each, isPlainObject, cloneDeep, uniqBy, forOwn } from 'lodash-es';
 import * as httpUtil from './http';
 import * as StringUtil from './string';
 
@@ -251,12 +251,12 @@ export function getAllEnumerationTypesFor(onProp, vocab) {
   return enumerationTypes;
 }
 
-export function getValuesFrom(restrictionProperty, entityType, property, vocab, context) {
+export function getRestrictions(restrictionProperty, entityType, property, vocab, context) {
   if (typeof entityType === 'undefined') {
-    throw new Error('getValuesFrom was called without an entityType');
+    throw new Error('getRestrictions was called without an entityType');
   }
   if (isPlainObject(property)) {
-    throw new Error('getValuesFrom was called with an object as property id (should be a string)');
+    throw new Error('getRestrictions was called with an object as property id (should be a string)');
   }
   let result = [];
   const baseClasses = getBaseClasses(entityType, vocab, context);
@@ -293,48 +293,20 @@ export function getValuesFrom(restrictionProperty, entityType, property, vocab, 
   return result.map(item => StringUtil.getCompactUri(item, context));
 }
 
-export function processRestrictions(range, entityType, property, vocab, context) {
-  const allValuesFrom = getValuesFrom('allValuesFrom', entityType, property, vocab, context);
-  if (allValuesFrom.length > 0) {
-    return allValuesFrom;
-  }
-  return range.concat(getValuesFrom('someValuesFrom', entityType, property, vocab, context));
-}
-
-export function getUnrestrictedRange(propertyId, vocab, context) {
-  if (typeof propertyId === 'undefined') {
-    throw new Error('getUnrestrictedRange was called without a property Id.');
-  }
-
-  const property = getTermObject(propertyId, vocab, context);
-  let range = [];
-  if (!property) {
-    return range;
-  }
-  if (property.range) {
-    for (let i = 0; i < property.range.length; i++) {
-      range.push(property.range[i]['@id']);
+export function getRange(propertyId, vocab, context) {
+  const termObj = getTermObject(propertyId, vocab, context);
+  const range = [];
+  if (termObj.hasOwnProperty('range')) {
+    for (let i = 0; i < termObj.range.length; i++) {
+      range.push(termObj.range[i]['@id']);
     }
   }
-  if (property.rangeIncludes) {
-    for (let i = 0; i < property.rangeIncludes.length; i++) {
-      range.push(property.rangeIncludes[i]['@id']);
+  if (termObj.hasOwnProperty('rangeIncludes')) {
+    for (let i = 0; i < termObj.rangeIncludes.length; i++) {
+      range.push(termObj.rangeIncludes[i]['@id']);
     }
-  }
-  if (range.length === 0 && property.hasOwnProperty('subPropertyOf')) {
-    each(property.subPropertyOf, (prop) => {
-      if (prop.hasOwnProperty('@id')) {
-        range = range.concat(getUnrestrictedRange(prop['@id'], vocab, context));
-      }
-    });
-  }
-  range = uniq(range);
-  return range;
-}
-
-export function getRange(entityType, propertyId, vocab, context) {
-  const unrestrictedRange = getUnrestrictedRange(propertyId, vocab, context);
-  return processRestrictions(unrestrictedRange, entityType, propertyId, vocab, context);
+  } 
+  return uniq(range);
 }
 
 export function getSubClasses(classname, vocabClasses, context) {
@@ -381,8 +353,8 @@ export function getSubClassChain(classname, vocabClasses, context) {
   return subClassChain;
 }
 
-export function getFullRange(entityType, key, vocab, context, vocabClasses) {
-  const types = [].concat(getRange(entityType, key, vocab, context));
+export function getRangeFull(key, vocab, context, vocabClasses) {
+  const types = [].concat(getRange(key, vocab, context));
   let allTypes = [];
   each(types, (type) => {
     allTypes = allTypes.concat(getSubClassChain(type, vocabClasses, context));
@@ -605,36 +577,33 @@ export function getValidTemplates(type, templateCollection, vocabClasses, contex
   return validTemplates;
 }
 
-export function isAbstract(itemId, vocab, context) {
-  const vocabKey = StringUtil.convertToVocabKey(
-    StringUtil.convertToBaseUri(itemId, context),
-    context,
-  );
-  const termObject = getTermObject(vocabKey, vocab, context);
+export function isAbstract(termObject) {
+  if (typeof termObject === 'undefined') {
+    return false;
+  }
   return (termObject.hasOwnProperty('abstract') && termObject.abstract === true);
 }
 
 export function getTree(term, vocab, context, counter = 0, parentChainString = '') {
+  const termObj = getTermObject(term, vocab, context);
   const treeNode = {
     id: term,
     sub: [],
-    abstract: isAbstract(term, vocab, context),
+    abstract: isAbstract(termObj, vocab, context),
     depth: counter,
     parentChainString: parentChainString + term,
   };
-  const subs = getTermObject(term, vocab, context).baseClassOf;
-  each(subs, (sub) => {
-    treeNode.sub.push(getTree(sub, vocab, context, counter + 1, parentChainString + term));
-  });
+  if (typeof termObj !== 'undefined') {
+    const subs = termObj.baseClassOf;
+    each(subs, (sub) => {
+      treeNode.sub.push(getTree(sub, vocab, context, counter + 1, parentChainString + term));
+    });
+  }
   return treeNode;
 }
 
 export function flattenTree(termArray, vocab, context, language) {
-  const sortedArray = sortBy(
-    termArray,
-    term => StringUtil.getLabelByLang(term.id, language, vocab, context),
-  );
-  return sortedArray.reduce((acc, current) => acc.concat(
+  return termArray.reduce((acc, current) => acc.concat(
     [current],
     flattenTree(current.sub, vocab, context, language),
   ), []);

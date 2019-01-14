@@ -44,6 +44,26 @@ export default {
       type: Boolean,
       default: true,
     },
+    allSearchTypes: {
+      type: Array,
+      default: () => [],
+    },
+    allValuesFrom: {
+      type: Array,
+      default: () => [],
+    },
+    someValuesFrom: {
+      type: Array,
+      default: () => [],
+    },
+    range: {
+      type: Array,
+      default: () => [],
+    },
+    rangeFull: {
+      type: Array,
+      default: () => [],
+    },
     propertyTypes: {
       type: Array,
       default: () => [],
@@ -111,7 +131,7 @@ export default {
       }
     },
     valueList(newVal) {
-      if (newVal.length === 0 && this.onlyEmbedded && this.getFullRange.length > 1) {
+      if (newVal.length === 0 && this.onlyEmbedded && this.rangeFull.length > 1) {
         this.addEmbedded = true;
       } else {
         this.addEmbedded = false;
@@ -134,28 +154,42 @@ export default {
     inspector() {
       return this.$store.getters.inspector;
     },
+    filterPlaceHolder() {
+      if (this.someValuesFrom.length > 0) {
+        return 'Suggested types';
+      }
+      return 'All types';
+    },
     selectOptions() {
       const classTree = this.getClassTree;
       const options = [];
 
       for (let i = 0; i < classTree.length; i++) {
         const term = {};
-
+        term.depth = classTree[i].depth;
+        term.abstract = classTree[i].abstract;
         term.label = this.getFormattedSelectOption(classTree[i]);
         term.value = classTree[i].id;
         term.key = `${classTree[i].id}-${i}`;
-
         options.push(term);
       }
       return options;
     },
+    priorityOptions() {
+      const list = this.allValuesFrom.length > 1 ? this.allValuesFrom : this.someValuesFrom;
+      return list;
+    },
     computedTitle() {
       const modalStr = StringUtil.getUiPhraseByLang('Add entity', this.user.settings.language);
-      const addLabelStr = StringUtil.getLabelByLang(this.addLabel, this.user.settings.language, this.resources.vocab, this.resources.context);
+      const addLabelStr = StringUtil.getLabelByLang(this.addLabel, this.user.settings.language, this.resources.vocab, this.resources.context) || this.addLabel;
       return `${modalStr} | ${addLabelStr}`;
     },
     getClassTree() {
-      const tree = this.getRange.map(type => VocabUtil.getTree(
+      let treeSource = this.range;
+      if (this.allValuesFrom.length > 0) {
+        treeSource = this.allValuesFrom;
+      }
+      const tree = treeSource.map(type => VocabUtil.getTree(
         type, 
         this.resources.vocab, 
         this.resources.context,
@@ -174,12 +208,12 @@ export default {
         this.settings.language, 
         this.resources.vocab, 
         this.resources.context,
-      ).toLowerCase();
+      ) || this.addLabel;
 
-      return `${addText} ${label}`;
+      return `${addText} ${label.toLowerCase()}`;
     },
     hasSingleRange() {
-      return this.getFullRange.length === 1;
+      return this.rangeFull.length === 1;
     },
     isVocabField() {
       return VocabUtil.getContextValue(this.fieldKey, '@type', this.resources.context) === '@vocab';
@@ -188,46 +222,19 @@ export default {
       if (this.isLiteral) {
         return this.fieldKey;
       }
-      if (this.getRange.length === 1) {
-        return this.getRange[0];
+      if (this.rangeFull.length === 1) {
+        return this.rangeFull[0];
       }
-      if (this.getRange.length > 1) {
+      if (this.rangeFull.length > 1) {
         return StringUtil.getUiPhraseByLang('entity', this.settings.language);
       }
       return this.fieldKey;
-    },
-    getRange() {
-      const fetchedRange = VocabUtil.getRange(
-        this.entityType, 
-        this.fieldKey, 
-        this.resources.vocab, 
-        this.resources.context,
-      ).map(item => StringUtil.getCompactUri(item, this.resources.context));
-      return fetchedRange;
-    },
-    getFullRange() {
-      const fetchedRange = VocabUtil.getFullRange(
-        this.entityType, 
-        this.fieldKey, 
-        this.resources.vocab, 
-        this.resources.context, 
-        this.resources.vocabClasses,
-      ).map(item => StringUtil.getCompactUri(item, this.resources.context));
-      return fetchedRange;
-    },
-    allSearchTypes() {
-      const types = this.getFullRange;
-      const typeArray = [];
-      for (const type of types) {
-        typeArray.push(StringUtil.getCompactUri(type, this.resources.context));
-      }
-      return typeArray;
     },
     onlyEmbedded() {
       if (this.compositional === true) {
         return true;
       }
-      const range = this.getFullRange;
+      const range = this.rangeFull;
       for (const classId of range) {
         if (!VocabUtil.isEmbedded(
           classId,
@@ -251,8 +258,8 @@ export default {
     },
     isLiteral() {
       // TODO: Verify usage
-      if (this.getFullRange.length > 0) {
-        for (const rangeElement of this.getFullRange) {
+      if (this.rangeFull.length > 0) {
+        for (const rangeElement of this.rangeFull) {
           if (rangeElement.indexOf('Literal') > -1) {
             return true;
           }
@@ -262,7 +269,7 @@ export default {
     },
   },
   mounted() {
-    this.addEmbedded = (this.valueList.length === 0 && this.onlyEmbedded && this.getFullRange.length > 1);
+    this.addEmbedded = (this.valueList.length === 0 && this.onlyEmbedded && this.rangeFull.length > 1);
   },
   methods: {
     actionHighlight(active, event) {
@@ -299,7 +306,6 @@ export default {
       this.handleChange(keyword);
     },
     handleChange(value) {
-      this.setSearching();
       this.searchMade = false;
       if (value) {
         setTimeout(() => {
@@ -309,13 +315,6 @@ export default {
         }, this.debounceTimer);
       } else {
         this.searchResult = [];
-      }
-    },
-    setSearching() {
-      if (this.keyword === '') {
-        this.loading = false;
-      } else {
-        this.loading = true;
       }
     },
     dismissTypeChooser() {
@@ -331,7 +330,7 @@ export default {
       } else if (this.isVocabField) {
         this.addItem('');
       } else if (this.canRecieveObjects) {
-        const range = this.getFullRange;
+        const range = this.rangeFull;
         if (range.length === 1 && this.onlyEmbedded) {
           this.addEmpty(range[0]);
         } else if (this.onlyEmbedded) {
@@ -353,10 +352,9 @@ export default {
             this.active = true;
             this.$nextTick(() => {
               this.resetSearch();
-              // this.$store.dispatch('setStatusValue', { 
-              //   property: 'keybindState', 
-              //   value: 'entity-adder' 
-              // });
+              if (this.someValuesFrom.length > 0) {
+                this.search();
+              }
               if (this.$refs.input) {
                 this.$refs.input.focus();
               }
@@ -367,14 +365,15 @@ export default {
     hide() {
       if (!this.active) return;
       this.active = false;
-      // this.$store.dispatch('setStatusValue', { 
-      //   property: 'keybindState', 
-      //   value: 'overview' 
-      // });
     },
     resetSearch() {
       this.keyword = '';
-      this.currentSearchTypes = this.getRange;
+      this.searchMade = false;
+      if (this.someValuesFrom.length > 0) {
+        this.currentSearchTypes = this.someValuesFrom;
+      } else {
+        this.currentSearchTypes = this.allSearchTypes;
+      }
       this.searchResult = [];
     },
     addLinkedItem(obj) {
@@ -506,6 +505,7 @@ export default {
     },
     search() {
       const self = this;
+      this.loading = true;
       this.typeArray = [].concat(this.currentSearchTypes);
       self.searchResult = [];
       self.searchMade = true;
@@ -604,14 +604,14 @@ export default {
         <template slot="panel-header-info">
           <div 
             class="PanelComponent-headerInfo" 
-            v-if="getFullRange.length > 0" 
+            v-if="rangeFull.length > 0" 
             @mouseleave="rangeInfo = false">
             <i class="fa fa-info-circle icon icon--md" @mouseenter="rangeInfo = true"></i>
             <div class="PanelComponent-headerInfoBox" v-show="rangeInfo">
               <p class="header">
                 {{ "Allowed types" | translatePhrase }}:
               </p>
-              <span v-for="(range, index) in getFullRange" :key="index">
+              <span v-for="(range, index) in rangeFull" :key="index">
                 • {{range | labelByLang}}
               </span>
             </div>
@@ -630,14 +630,17 @@ export default {
                     ref="input"
                     placeholder="Sök"
                     autofocus />
-                    <filter-select class="EntityAdder-filterSearchInput FilterSelect--insideInput"
-                      :class-name="'js-filterSelect'"
-                      :custom-placeholder="'All types:'"
-                      :options="selectOptions"
-                      :options-all="getRange"
-                      :is-filter="true"
-                      :options-selected="''"
-                      v-on:filter-selected="setFilter($event, keyword)"></filter-select>
+                </div>
+                <div class="EntityAdder-filterSearchContainer">
+                  <span class="EntityAdder-filterSearchLabel">{{ 'Show' | translatePhrase }}</span>
+                  <filter-select class="EntityAdder-filterSearchInput FilterSelect--openDown"
+                    :class-name="'js-filterSelect'"
+                    :custom-placeholder="filterPlaceHolder"
+                    :options="{ tree: selectOptions, priority: priorityOptions }"
+                    :options-all="allSearchTypes"
+                    :options-all-suggested="someValuesFrom"
+                    :is-filter="true"
+                    v-on:filter-selected="setFilter($event, keyword)"></filter-select>
                 </div>
               </div>
             </div>
@@ -646,7 +649,7 @@ export default {
         </template>
         <template slot="panel-body">
           <panel-search-list class="EntityAdder-searchResult"
-            v-if="!loading && keyword.length > 0" 
+            v-if="!loading && searchMade" 
             :path="path" 
             :results="searchResult" 
             :disabled-ids="alreadyAdded"
@@ -656,14 +659,14 @@ export default {
             :has-action="true"
             @use-item="addLinkedItem">
           </panel-search-list>
-          <div class="PanelComponent-searchStatus" v-if="!loading && keyword.length === 0" >
+          <div class="PanelComponent-searchStatus" v-if="!loading && !searchMade" >
             {{ "Start writing to begin search" | translatePhrase }}...
           </div>
           <div v-if="loading" class="PanelComponent-searchStatus">
             <vue-simple-spinner size="large" :message="'Searching' | translatePhrase"></vue-simple-spinner>
           </div>
           <div class="PanelComponent-searchStatus"
-            v-if="!loading && searchResult.length === 0 && keyword.length > 0 && searchMade">
+            v-if="!loading && searchResult.length === 0 && searchMade">
             {{ "No results" | translatePhrase }}
           </div>
         <!-- </div> -->
@@ -694,13 +697,14 @@ export default {
           <div class="EntityAdder-create">
             <button class="EntityAdder-createBtn btn btn-primary btn--sm"
               v-if="hasSingleRange" 
-              v-on:click="addEmpty(getFullRange[0])">{{ "Create local entity" | translatePhrase }}
+              v-on:click="addEmpty(rangeFull[0])">{{ "Create local entity" | translatePhrase }}
             </button>
             <filter-select
               v-if="!hasSingleRange" 
               :class-name="'js-createSelect'"
-              :options="selectOptions"
-              :options-all="getRange"
+              :options="{ tree: selectOptions, priority: priorityOptions }"
+              :options-all="allSearchTypes"
+              :options-all-suggested="someValuesFrom"
               :is-filter="false"
               :custom-placeholder="'Create local entity:'"
               v-on:filter-selected="addType($event.value)"></filter-select>
@@ -776,7 +780,6 @@ export default {
 
   &-search {
     width: 100%;
-    display: flex;
   }
 
   &-searchInputContainer {
@@ -785,16 +788,23 @@ export default {
     margin-bottom: 0;
   }
 
+  &-filterSearchContainer {
+    width: 100%;
+    margin-top: 0.25em;
+    text-align: right;
+  }
+
+  &-filterSearchLabel {
+
+  }
+
   &-filterSearchInput {
-    margin-left: 5px;
-    position: absolute;
-    left: auto;
-    right: 5px;
+    position: relative;
     width: 50%;
-    top: 6px;
   }
 
   &-searchInput {
+    color: @black;
   }
 
   &-searchSelect {

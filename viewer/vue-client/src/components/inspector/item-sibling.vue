@@ -42,6 +42,26 @@ export default {
       type: Boolean,
       default: false,
     },
+    allSearchTypes: {
+      type: Array,
+      default: () => [],
+    },
+    allValuesFrom: {
+      type: Array,
+      default: () => [],
+    },
+    someValuesFrom: {
+      type: Array,
+      default: () => [],
+    },
+    range: {
+      type: Array,
+      default: () => [],
+    },
+    rangeFull: {
+      type: Array,
+      default: () => [],
+    },
     inArray: {
       type: Boolean,
       default: false,
@@ -436,6 +456,11 @@ export default {
       :isActive="extractDialogActive" 
       :can-copy-title="canCopyTitle" 
       :copy-title="copyTitle" 
+      :range-full="rangeFull"
+      :range="range"
+      :all-values-from="allValuesFrom"
+      :some-values-from="someValuesFrom"
+      :all-search-types="allSearchTypes"
       :entity-type="entityType" 
       :field-key="fieldKey" 
       :extracting="extracting" 

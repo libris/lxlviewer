@@ -167,7 +167,7 @@ export function getLabelFromObject(object, language) {
 
 export function getLabelByLang(string, lang, vocab, context) {
   if (!string) {
-    return '{FAILED LABEL}';
+    return null;
   }
   if (isObject(string)) {
     throw new Error(
@@ -176,7 +176,6 @@ export function getLabelByLang(string, lang, vocab, context) {
     );
   }
   const item = VocabUtil.getTermObject(string, vocab, context);
-  let note = '';
   let labelByLang = '';
   if (typeof item !== 'undefined') {
     if (item.labelByLang) {
@@ -186,8 +185,6 @@ export function getLabelByLang(string, lang, vocab, context) {
     } else if (item.label) {
       labelByLang = item.label;
     }
-  } else {
-    note = ' (unhandled term)';
   }
   // Check if we have something of value
   if (isArray(labelByLang)) {
@@ -198,7 +195,7 @@ export function getLabelByLang(string, lang, vocab, context) {
   if (labelByLang && labelByLang.length > 0) {
     return labelByLang;
   }
-  return `${string}${note}`;
+  return null;
 }
 
 function translateable(type) {
@@ -244,6 +241,6 @@ export function getFormattedEntries(list, vocab, settings, context) {
       formatted = formatted.concat(entry.value);
     }
   }
-  remove(formatted, value => value === ''); // Remove empty strings
+  remove(formatted, value => value === '' || value === null); // Remove empty strings
   return formatted;
 }

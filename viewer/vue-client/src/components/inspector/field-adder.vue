@@ -65,12 +65,12 @@ export default {
     ]),
     modalTitle() {
       const title = StringUtil.getUiPhraseByLang('Add field in', this.settings.language);
-      const contextString = StringUtil.getLabelByLang(
+      let contextString = StringUtil.getLabelByLang(
         this.entityType, 
         this.settings.language, 
         this.resources.vocab, 
         this.resources.context,
-      );
+      ) || this.entityType;
       return `${title}: ${contextString}`;
     },
     filteredResults() {

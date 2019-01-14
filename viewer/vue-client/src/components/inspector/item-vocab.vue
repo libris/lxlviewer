@@ -47,8 +47,7 @@ export default {
       'status',
     ]),
     range() {
-      const types = VocabUtil.getFullRange(
-        this.entityType,
+      const types = VocabUtil.getRangeFull(
         this.fieldKey,
         this.resources.vocab,
         this.resources.context,
@@ -101,7 +100,7 @@ export default {
         this.settings.language, 
         this.resources.vocab, 
         this.resources.context,
-      ));
+      ) || value);
     },
     setInitialValue() {
       // if (this.possibleValues.indexOf(this.fieldValue) > -1) {

@@ -205,7 +205,7 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
         }
         result[properties[i]] = value;
       } else if (properties.length < 3 && i === 0) {
-        const rangeOfMissingProp = VocabUtil.getRange(trueItem['@type'], properties[i], vocab, context);
+        const rangeOfMissingProp = VocabUtil.getRange(properties[i], vocab, context);
         let propMissing = properties[i];
         if (
           rangeOfMissingProp.length > 1
@@ -218,7 +218,7 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
           settings.language,
           vocab,
           context,
-        );
+        ) || propMissing;
         result[properties[i]] = `{${expectedClassName} saknas}`;
       }
     }
@@ -274,11 +274,11 @@ export function getItemSummary(item, displayDefs, quoted, vocab, settings, conte
 
 export function getFormattedSelectOption(term, settings, vocab, context) {
   const maxLength = 43;
-  let labelByLang = StringUtil.getLabelByLang(term.id, settings.language, vocab, context);
+  let labelByLang = StringUtil.getLabelByLang(term.id, settings.language, vocab, context) || term.id;
   if (labelByLang.length > maxLength) {
     labelByLang = `${labelByLang.substr(0, maxLength - 2)}...`;
   }
   const abstractIndicator = ` {${StringUtil.getUiPhraseByLang('Abstract', settings.language)}}`;
-  const prefix = Array((term.depth) + 1).join(' •');
-  return `${prefix} ${labelByLang} ${term.abstract ? abstractIndicator : ''}`;
+  const indent = Array(term.depth + 1).join('- ');
+  return `${indent}${labelByLang} ${term.abstract ? abstractIndicator : ''}`;
 }

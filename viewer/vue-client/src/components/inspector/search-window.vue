@@ -2,7 +2,6 @@
 import { merge, cloneDeep } from 'lodash-es';
 import * as VocabUtil from '@/utils/vocab';
 import * as DisplayUtil from '@/utils/display';
-import * as StringUtil from '@/utils/string';
 import { mixin as clickaway } from 'vue-clickaway';
 import { mapGetters } from 'vuex';
 import VueSimpleSpinner from 'vue-simple-spinner';
@@ -56,6 +55,26 @@ export default {
     extracting: {
       type: Boolean,
       default: false,
+    },
+    allSearchTypes: {
+      type: Array,
+      default: () => [],
+    },
+    allValuesFrom: {
+      type: Array,
+      default: () => [],
+    },
+    someValuesFrom: {
+      type: Array,
+      default: () => [],
+    },
+    range: {
+      type: Array,
+      default: () => [],
+    },
+    rangeFull: {
+      type: Array,
+      default: () => [],
     },
     itemInfo: {},
     index: {
@@ -121,21 +140,11 @@ export default {
       'settings',
       'status',
     ]),
-    getRange() {
-      const fetchedRange = VocabUtil.getRange(this.entityType, this.fieldKey, this.resources.vocab, this.resources.context)
-        .map(item => StringUtil.getCompactUri(item, this.resources.context));
-      return fetchedRange;
-    },
-    getFullRange() {
-      return VocabUtil.getFullRange(this.entityType, this.fieldKey, this.resources.vocab, this.resources.context, this.resources.vocabClasses);
-    },
-    allSearchTypes() {
-      const types = this.getFullRange;
-      const typeArray = [];
-      for (const type of types) {
-        typeArray.push(StringUtil.getCompactUri(type, this.resources.context));
+    filterPlaceHolder() {
+      if (this.someValuesFrom.length > 0) {
+        return 'Suggested types';
       }
-      return typeArray;
+      return 'All types';
     },
     selectOptions() {
       const classTree = this.getClassTree;
@@ -143,15 +152,18 @@ export default {
 
       for (let i = 0; i < classTree.length; i++) {
         const term = {};
-
+        term.depth = classTree[i].depth;
+        term.abstract = classTree[i].abstract;
         term.label = this.getFormattedSelectOption(classTree[i]);
         term.value = classTree[i].id;
         term.key = `${classTree[i].id}-${i}`;
-
         options.push(term);
       }
-
       return options;
+    },
+    priorityOptions() {
+      const list = this.allValuesFrom.length > 1 ? this.allValuesFrom : this.someValuesFrom;
+      return list;
     },
     displaySearchList() {
       return !this.loading && !this.extracting && this.keyword.length > 0 && this.searchResult.length > 0;
@@ -160,12 +172,22 @@ export default {
       return !this.loading && this.searchResult.length === 0 && this.keyword.length > 0 && this.searchMade;
     },
     getClassTree() {
-      const tree = this.getRange.map(type => VocabUtil.getTree(type, this.resources.vocab, this.resources.context));
-      return VocabUtil.flattenTree(tree, this.resources.vocab, this.resources.context, this.settings.language);
+      let treeSource = this.range;
+      if (this.allValuesFrom.length > 0) {
+        treeSource = this.allValuesFrom;
+      }
+      const tree = treeSource.map(type => VocabUtil.getTree(
+        type, 
+        this.resources.vocab, 
+        this.resources.context,
+      ));
+      return VocabUtil.flattenTree(
+        tree,
+        this.resources.vocab, 
+        this.resources.context, 
+        this.settings.language,
+      );
     },
-  },
-  mounted() {
-    this.currentSearchTypes = this.getRange;
   },
   methods: {
     replaceWith(obj) {
@@ -201,7 +223,6 @@ export default {
       this.handleChange(keyword);
     },
     handleChange(value) {
-      this.setSearching();
       this.searchMade = false;
       if (value) {
         setTimeout(() => {
@@ -211,13 +232,6 @@ export default {
         }, this.debounceTimer);
       } else {
         this.searchResult = [];
-      }
-    },
-    setSearching() {
-      if (this.keyword === '') {
-        this.loading = false;
-      } else {
-        this.loading = true;
       }
     },
     show() {
@@ -230,10 +244,9 @@ export default {
           this.$nextTick(() => {
             this.active = true;
             this.$nextTick(() => {
-            // this.$store.dispatch('setStatusValue', { 
-            //   property: 'keybindState', 
-            //   value: 'entity-adder' 
-            // });
+              let cleanedChipString = DisplayUtil.getItemLabel(this.itemInfo, this.resources.display, this.inspector.data.quoted, this.resources.vocab, this.settings, this.resources.context).replace(' • ', ' ');
+              this.keyword = cleanedChipString;
+              this.search();
               if (this.$refs.input) {
                 this.$refs.input.focus();
               }
@@ -252,7 +265,12 @@ export default {
     },
     resetSearch() {
       this.keyword = '';
-      this.currentSearchTypes = this.getRange;
+      this.searchMade = false;
+      if (this.someValuesFrom.length > 0) {
+        this.currentSearchTypes = this.someValuesFrom;
+      } else {
+        this.currentSearchTypes = this.allSearchTypes;
+      }
       this.searchResult = [];
     },
     loadResults(result) {
@@ -278,6 +296,7 @@ export default {
     },
     search() {
       const self = this;
+      this.loading = true;
       this.typeArray = [].concat(this.currentSearchTypes);
       self.searchResult = [];
       self.searchMade = true;
@@ -364,13 +383,16 @@ export default {
                   ref="input"
                   autofocus
                   :placeholder="'Search' | translatePhrase">
-                <filter-select class="EntityAdder-filterSearchInput FilterSelect--insideInput"
+              </div>
+              <div class="SearchWindow-filterSearchContainer">
+                <span class="SearchWindow-filterSearchLabel">{{ 'Show' | translatePhrase }}</span>
+                <filter-select class="SearchWindow-filterSearchInput FilterSelect--openDown"
                   :class-name="'js-filterSelect'"
-                  :custom-placeholder="'All types:'"
-                  :options="selectOptions"
-                  :options-all="getRange"
+                  :custom-placeholder="filterPlaceHolder"
+                  :options="{ tree: selectOptions, priority: priorityOptions }"
+                  :options-all="allSearchTypes"
+                  :options-all-suggested="someValuesFrom"
                   :is-filter="true"
-                  :options-selected="''"
                   v-on:filter-selected="setFilter($event, keyword)"></filter-select>
               </div>
             </div>
@@ -477,6 +499,26 @@ export default {
       width: 60%;
       margin-bottom: 0;
     }
+  }
+
+  &-input {
+    color: @black;
+  }
+
+
+  &-filterSearchContainer {
+    width: 100%;
+    margin-top: 0.25em;
+    text-align: right;
+  }
+
+  &-filterSearchLabel {
+
+  }
+
+  &-filterSearchInput {
+    position: relative;
+    width: 50%;
   }
 
   &-header {
