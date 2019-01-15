@@ -150,6 +150,7 @@
     "Something went wrong": "Något gick snett",
     "Verify structure in template": "Kontrollera strukturen i mallen",
     "Could not process server response": "Kunde inte hantera svaret från servern",
+    "Data is missing a reference, please verify file": "Datan saknar en referens, var god verifiera filen",
     "Embellish from template": "Berika från mall",
     "Try reloading the page": "Försök att ladda om sidan",
     "Couldn\t load help documentation": "Kunde inte ladda hjälpdokumentation",
