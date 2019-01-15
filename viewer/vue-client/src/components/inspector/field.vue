@@ -123,9 +123,9 @@ export default {
       }
 
       if (failedValidations.length > 0) {
-        this.$store.dispatch('setValidation', { path: this.getPath, validates: false, reasons: failedValidations });
+        this.$store.dispatch('setValidation', { path: this.path, validates: false, reasons: failedValidations });
       } else {
-        this.$store.dispatch('setValidation', { path: this.getPath, validates: true });
+        this.$store.dispatch('setValidation', { path: this.path, validates: true });
       }
       return failedValidations;
     },
@@ -247,12 +247,12 @@ export default {
     isUriType() {
       return VocabUtil.getContextValue(this.fieldKey, '@id', this.resources.context) === 'uri';
     },
-    getPath() {
+    path() {
       if (typeof this.parentPath !== 'undefined') {
         if (typeof this.parentKey !== 'undefined' && typeof this.parentIndex !== 'undefined') {
           return `${this.parentPath}.${this.fieldKey}`;
         }
-      }          
+      }
       return `${this.parentPath}.${this.fieldKey}`;
     },
     isChild() {
@@ -304,7 +304,7 @@ export default {
       return bEmpty;
     },
     isLastAdded() {
-      if (this.inspector.status.lastAdded === this.getPath) {
+      if (this.inspector.status.lastAdded === this.path) {
         return true;
       }
       return false;
@@ -316,7 +316,7 @@ export default {
   methods: {
     pasteClipboardItem() {
       const obj = this.clipboardValue;
-      let currentValue = cloneDeep(get(this.inspector.data, this.getPath));
+      let currentValue = cloneDeep(get(this.inspector.data, this.path));
       if (currentValue === null) {
         currentValue = obj;
       } else if (!isArray(currentValue)) {
@@ -335,12 +335,12 @@ export default {
       }
       this.$store.dispatch('setInspectorStatusValue', { 
         property: 'lastAdded', 
-        value: `${this.getPath}${index}`,
+        value: `${this.path}${index}`,
       });
       this.$store.dispatch('updateInspectorData', {
         changeList: [
           {
-            path: `${this.getPath}`,
+            path: `${this.path}`,
             value: currentValue,
           },
         ],
@@ -371,7 +371,7 @@ export default {
       }
     },
     updateValue(value) {
-      this.$dispatch('update-value', this.getPath, value);
+      this.$dispatch('update-value', this.path, value);
     },
     removeThis() {
       let approved = true;
@@ -496,7 +496,7 @@ export default {
     },
   },
   beforeDestroy() {
-    this.$store.dispatch('setValidation', { path: this.getPath, validates: true });
+    this.$store.dispatch('setValidation', { path: this.path, validates: true });
   },
   mounted() {
     this.$nextTick(() => {
@@ -513,7 +513,7 @@ export default {
 
 <template>
   <li class="Field js-field" 
-    :id="`formPath-${getPath}`"
+    :id="`formPath-${path}`"
     v-bind:class="{'is-mainField': isMainField, 'Field--inner': !asColumns, 'is-lastAdded': isLastAdded, 'is-removed': removed, 'has-failed-validations': failedValidations.length > 0 }" 
     @mouseover="handleMouseEnter()" 
     @mouseleave="handleMouseLeave()">
@@ -545,7 +545,7 @@ export default {
             v-if="!locked && (isRepeatable || isEmptyObject)" 
             ref="entityAdder"
             :field-key="fieldKey" 
-            :path="getPath"
+            :path="path"
             :already-added="linkedIds" 
             :compositional="isCompositional" 
             :entity-type="entityType" 
@@ -593,7 +593,7 @@ export default {
             :title="fieldKey">{{ fieldKey | labelByLang | capitalize }}</span>    
         </div>
       </div>
-      <code class="path-code" v-show="user.settings.appTech && !isInner">{{getPath}}</code>
+      <code class="path-code" v-show="user.settings.appTech && !isInner">{{path}}</code>
     </div>
     <div class="Field-label uppercaseHeading" v-if="isInner" v-bind:class="{ 'is-locked': locked }">
       <span v-show="fieldKey === '@id'">{{ 'ID' | translatePhrase | capitalize }}</span>
@@ -611,7 +611,7 @@ export default {
           v-if="!locked && (isRepeatable || isEmptyObject)" 
           ref="entityAdder"
           :field-key="fieldKey" 
-          :path="getPath" 
+          :path="path" 
           :already-added="linkedIds" 
           :compositional="isCompositional" 
           :entity-type="entityType" 
@@ -667,7 +667,7 @@ export default {
       <!-- {{ key | labelByLang | capitalize }} -->
     </div>
 
-    <pre class="path-code" v-show="user.settings.appTech && isInner">{{getPath}}</pre>
+    <pre class="path-code" v-show="user.settings.appTech && isInner">{{path}}</pre>
       
     <div class="Field-content FieldContent" 
       v-bind:class="{ 'is-locked': locked}"
@@ -680,7 +680,7 @@ export default {
         <item-error 
           v-if="getDatatype(item) == 'error'" 
           :field-key="fieldKey" 
-          :parent-path="getPath"
+          :parent-path="path"
           :index="index" 
           :item="item"></item-error>
 
@@ -693,7 +693,7 @@ export default {
           :value="item" 
           :entity-type="entityType" 
           :index="index" 
-          :parent-path="getPath"></item-vocab>
+          :parent-path="path"></item-vocab>
 
         <!-- Other linked entities -->
         <item-entity 
@@ -702,11 +702,11 @@ export default {
           :item="item" 
           :field-key="fieldKey" 
           :index="index" 
-          :parent-path="getPath"></item-entity>
+          :parent-path="path"></item-entity>
 
         <!-- Not linked, local child objects -->
         <item-local
-          :data-parent="getPath"
+          :data-parent="path"
           v-if="getDatatype(item) == 'local'" 
           :is-locked="locked" 
           :entity-type="entityType" 
@@ -719,7 +719,7 @@ export default {
           :item="item" 
           :field-key="fieldKey" 
           :index="index" 
-          :parent-path="getPath" 
+          :parent-path="path" 
           :in-array="valueIsArray" 
           :should-expand="expandChildren"
           :show-action-buttons="actionButtonsShown"></item-local>
@@ -740,9 +740,9 @@ export default {
           :in-array="valueIsArray"
           :show-action-buttons="actionButtonsShown"
           :should-expand="expandChildren"
-          :parent-path="getPath"></item-sibling>
+          :parent-path="path"></item-sibling>
       </div>
-      <portal-target :name="`typeSelect-${getPath}`" />
+      <portal-target :name="`typeSelect-${path}`" />
     </div>
 
     <div class="Field-content is-endOfTree js-endOfTree" 
@@ -759,7 +759,7 @@ export default {
           :field-value="item" 
           :entity-type="entityType" 
           :index="index" 
-          :parent-path="getPath"></item-vocab>
+          :parent-path="path"></item-vocab>
 
         <!-- Boolean value -->
         <item-boolean
@@ -769,7 +769,7 @@ export default {
           :field-value="item" 
           :entity-type="entityType" 
           :index="index" 
-          :parent-path="getPath"></item-boolean>
+          :parent-path="path"></item-boolean>
 
         <!-- Not linked, local child strings -->
         <item-value 
@@ -781,11 +781,11 @@ export default {
           :field-value="item" 
           :field-key="fieldKey" 
           :index="index" 
-          :parent-path="getPath" 
+          :parent-path="path" 
           :show-action-buttons="actionButtonsShown"
           :is-expanded="isExpanded"></item-value>
       </div>
-      <portal-target :name="`typeSelect-${getPath}`" />
+      <portal-target :name="`typeSelect-${path}`" />
     </div>
   </li>
 </template>
