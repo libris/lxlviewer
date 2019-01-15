@@ -106,11 +106,8 @@ export default {
       }
       return list;
     },
-    getRecordType() {
-      const searchTypes = this.$route.query['@type'];
-      if (typeof searchTypes === 'string') { // disable sorting when searching multiple types
-        return searchTypes;
-      } return false;
+    searchedTypes() {
+      return this.$route.query['@type'];
     },
     currentSortOrder() {
       return this.$route.query._sort;
@@ -160,9 +157,9 @@ export default {
       </div>
       <div class="ResultControls-controlWrap" v-if="showDetails && pageData.totalItems > 0">
         <sort 
-          v-if="getRecordType && $route.params.perimeter != 'remote'"
+          v-if="searchedTypes && $route.params.perimeter != 'remote'"
           :currentSort="currentSortOrder ? currentSortOrder : ''"
-          :recordType="getRecordType"
+          :recordTypes="searchedTypes"
           @change="$emit('sortChange', $event)"/>
         <div class="ResultControls-listTypes">
           <button class="ResultControls-listType icon icon--md"
