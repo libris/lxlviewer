@@ -27,9 +27,10 @@ export default {
       const self = this;
       this.$refs.FilePicker.addEventListener('input', (e) => {
         const reader = new FileReader();
-        reader.onloadend = () => {
+        reader.onloadend = function insertDropped(event) {
           try {
-            const data = JSON.parse(this.result);
+            const res = event.target.result;
+            const data = JSON.parse(res);
             self.droppedFile = data;
           } catch (error) {
             self.invalidFile = true;
@@ -58,9 +59,10 @@ export default {
       this.$refs.dropzone.addEventListener('drop', (e) => {
         e.preventDefault();
         const reader = new FileReader();
-        reader.onloadend = () => {
+        reader.onloadend = function insertDropped(event) {
           try {
-            const data = JSON.parse(this.result);
+            const res = event.target.result;
+            const data = JSON.parse(res);
             self.droppedFile = data;
           } catch (error) {
             self.invalidFile = true;
