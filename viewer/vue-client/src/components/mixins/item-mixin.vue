@@ -77,8 +77,8 @@ export default {
       const parentValue = get(this.inspector.data, this.parentPath);
       if (isArray(parentValue)) {
         return `${this.parentPath}[${this.index}]`;
-      } 
-      return `${this.parentPath}[0]`;
+      }
+      return `${this.parentPath}`;
     },
     recordType() {
       return VocabUtil.getRecordType(this.item['@type'], this.vocab, this.settings);
