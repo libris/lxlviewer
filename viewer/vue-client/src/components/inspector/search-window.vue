@@ -51,6 +51,10 @@ export default {
       type: String,
       default: '',
     },
+    extractable: {
+      type: Boolean,
+      default: false,
+    },
     extracting: {
       type: Boolean,
       default: false,
@@ -243,7 +247,7 @@ export default {
           this.$nextTick(() => {
             this.active = true;
             this.$nextTick(() => {
-              const cleanedChipString = DisplayUtil.getItemLabel(this.itemInfo, this.resources.display, this.inspector.data.quoted, this.resources.vocab, this.settings, this.resources.context).replace(' • ', ' ');
+              const cleanedChipString = DisplayUtil.getItemLabel(this.itemInfo, this.resources.display, this.inspector.data.quoted, this.resources.vocab, this.settings, this.resources.context).replace(/#|_|•|\[|\]/g,' ').replace(/  +/g, ' ');;
               this.keyword = cleanedChipString;
               this.search();
               if (this.$refs.input) {
@@ -421,14 +425,14 @@ export default {
           </div> -->
           <div class="PanelComponent-searchStatus" v-show="keyword.length === 0 && !extracting">
             <p> {{ "Search for existing linked entities to replace your local entity" | translatePhrase }}.</p>
-            <p v-if="itemInfo"> {{ "If you can't find an existing link, you can create one using your local entity below" | translatePhrase }}.</p>
+            <p v-if="itemInfo && extractable"> {{ "If you can't find an existing link, you can create one using your local entity below" | translatePhrase }}.</p>
           </div>
           <div class="PanelComponent-searchStatus" v-show="loading">
             <vue-simple-spinner size="large" :message="'Searching' | translatePhrase"></vue-simple-spinner>
           </div>
           <div class="PanelComponent-searchStatus" v-show="foundNoResult">
             <p>{{ "Your search gave no results" | translatePhrase }}.</p>
-            <p v-if="itemInfo">{{ "Try again" | translatePhrase }} {{ "or create a link from your local data below" | translatePhrase }}.</p>
+            <p v-if="itemInfo && extractable">{{ "Try again" | translatePhrase }} {{ "or create a link from your local data below" | translatePhrase }}.</p>
           </div>
           <div class="PanelComponent-searchStatus" v-show="extracting">
             <vue-simple-spinner size="large" :message="'Creating link' | translatePhrase"></vue-simple-spinner>
@@ -460,7 +464,7 @@ export default {
                 tabindex="0"></i>
               </div>
             </div>
-          <div class="SearchWindow-footerContainer" v-if="itemInfo">
+          <div class="SearchWindow-footerContainer" v-if="itemInfo && extractable">
             <p class="preview-entity-text uppercaseHeading">{{ "Create link from local entity" | translatePhrase }}:</p>
             <div class="SearchWindow-summaryContainer">
               <summary-action 

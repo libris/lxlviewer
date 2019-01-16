@@ -100,7 +100,8 @@ const store = new Vuex.Store({
       extractableTypes: [
         'Item',
         'Instance',
-        'Agent',
+        // 'Agent', - Blocking this per request of MSS
+        // 'Concept', - Blocking this per request of MSS
         'Work',
       ],
       removeOnDuplication: [

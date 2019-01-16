@@ -434,7 +434,7 @@ export default {
       <div class="ItemLocal-actions">
         <div class="ItemLocal-action">
           <i class="fa fa-link fa-fw icon icon--sm"
-            v-if="inspector.status.editing && isExtractable"
+            v-if="inspector.status.editing && !isEmbedded"
             role="button"
             tabindex="0"
             :aria-label="'Link entity' | translatePhrase"
@@ -559,6 +559,7 @@ export default {
       :all-search-types="allSearchTypes"
       :entity-type="entityType" 
       :field-key="fieldKey" 
+      :extractable="isExtractable"
       :extracting="extracting" 
       :item-info="extractedMainEntity"
       :index="index"
