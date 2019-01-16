@@ -94,7 +94,15 @@ export default {
       'status',
     ]),
     item() {
-      return cloneDeep(this.inspector.data[this.suffix]);
+      const item = cloneDeep(this.inspector.data[this.suffix]);
+      if (typeof item === 'undefined' || item === null) {
+        this.$store.dispatch('pushNotification', {
+          type: 'danger',
+          message: `${StringUtil.getUiPhraseByLang('Data is missing a reference, please verify file', this.settings.language)}`,
+        });
+        throw new Error('A sibling-item was undefined. This is probably a reference error in the data.');
+      }
+      return item;
     },
     suffix() {
       return this.id.split('#')[1];
