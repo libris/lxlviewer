@@ -320,13 +320,6 @@
               "label": [""]
             }
           ],
-          "associatedMedia": [
-            {
-              "@type": "MediaObject",
-              "marc:publicNote": [""],
-              "uri": [""]
-            }
-          ],
           "instanceOf": {
             "@id": "https://id.kb.se/TEMPID#work"
           }
