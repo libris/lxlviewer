@@ -467,12 +467,12 @@ export default {
           {{ value.label }}
           </a>
         </li>
-        <li class="Toolbar-menuItem inSubMenu" v-show="showTemplatesSubMenu">
+        <!-- <li class="Toolbar-menuItem inSubMenu" v-show="showTemplatesSubMenu">
           <a class="Toolbar-menuLink" @click="openFilePicker">
           <i class="fa fa-fw fa-upload"></i>
           {{ 'From file' | translatePhrase }}
           </a>
-        </li>
+        </li> -->
         <li class="Toolbar-menuItem" v-if="compiledIsAvailable">
           <a class="Toolbar-menuLink"  v-if="downloadIsSupported" @click="getCompiledPost()">
             <i class="fa fa-fw fa-download" aria-hidden="true"></i>
