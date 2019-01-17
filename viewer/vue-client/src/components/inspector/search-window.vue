@@ -247,7 +247,7 @@ export default {
           this.$nextTick(() => {
             this.active = true;
             this.$nextTick(() => {
-              const cleanedChipString = DisplayUtil.getItemLabel(this.itemInfo, this.resources.display, this.inspector.data.quoted, this.resources.vocab, this.settings, this.resources.context).replace(/#|_|•|\[|\]/g,' ').replace(/  +/g, ' ');;
+              const cleanedChipString = DisplayUtil.getItemLabel(this.itemInfo, this.resources.display, this.inspector.data.quoted, this.resources.vocab, this.settings, this.resources.context).replace(/#|_|•|\[|\]/g, ' ').replace(/  +/g, ' ');
               this.keyword = cleanedChipString;
               this.search();
               if (this.$refs.input) {
