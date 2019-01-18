@@ -349,7 +349,7 @@ export default {
     downloadJson() {
       const focusId = this.inspector.data.record['@id'];
       const element = document.createElement('a');
-      const json = JSON.stringify(this.getPackagedItem(true));
+      const json = JSON.stringify(this.getPackagedItem(true), null, 2); // 2 = json-spacing
       const blob = new Blob([`${json}`], { type: 'application/ld+json' });
       element.href = window.URL.createObjectURL(blob);
       const splitIdParts = focusId.split('/');
