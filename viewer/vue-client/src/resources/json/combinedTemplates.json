@@ -1147,12 +1147,7 @@
             },
             {
               "@type": "Contribution",
-              "agent": {
-                "@type": "Person",
-                "familyName": "",
-                "givenName": "",
-                "lifeSpan": ""
-              }
+              "agent": null
             }
           ],
           "contentType": [{"@id": "https://id.kb.se/term/rda/Text"}],
@@ -1569,16 +1564,6 @@
               "@type": "Contribution",
               "agent": null,
               "role": []
-            },
-            {
-              "@type": "Contribution",
-              "agent": {
-                "@type": "Person",
-                "familyName": "",
-                "givenName": "",
-                "lifeSpan": ""
-              },
-              "role": []
             }
           ],
           "contentType": [{"@id": "https://id.kb.se/term/rda/NotatedMusic"}],
@@ -1590,12 +1575,7 @@
                 "contribution": [
                   {
                     "@type": "PrimaryContribution",
-                    "agent": {
-                      "@type": "Person",
-                      "familyName": "",
-                      "givenName": "",
-                      "lifeSpan": ""
-                    }
+                    "agent": null
                   }
                 ],
                 "hasTitle": [
@@ -1625,12 +1605,7 @@
                 "contribution": [
                   {
                     "@type": "PrimaryContribution",
-                    "agent": {
-                      "@type": "Person",
-                      "familyName": "",
-                      "givenName": "",
-                      "lifeSpan": ""
-                    }
+                    "agent": null
                   }
                 ],
                 "hasTitle": [
