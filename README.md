@@ -1,12 +1,12 @@
 # LXL Viewer
-The frontend of Libris XL project. The v2 client is a static standalone single page application built with Webpack 3 and VueJS 2 (based on [this template](http://vuejs-templates.github.io/webpack/)).
+The frontend of Libris XL project. The vue-client is a static standalone single page application built with Webpack 4 and VueJS 2 (initialized with Vue-CLI 3).
 
 #### Requirements
 
 Requires the following to be installed on the host machine:
 
-* [node.js](http://nodejs.org/) 
-* [npm](https://www.npmjs.com/)
+* [node.js](http://nodejs.org/)
+* [yarn](https://yarnpkg.com/en/docs/install)
 
 * A functional REST-API for the resources (check out [xl_vagrant_up](https://github.com/libris/xl_vagrant_up))
 
@@ -16,6 +16,7 @@ Requires the following to be installed on the host machine:
 
 ##### Coding Standard
 * [SUIT CSS](https://suitcss.github.io/)
+* [Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript/) (with our own modifications, see `package.json` in `./viewer/vue-client`)
 
 ## Setup
 
@@ -23,39 +24,27 @@ Requires the following to be installed on the host machine:
 
 Get variables from a developer at KB for `config.cfg`.
 
-    $ cd viewer/v2client && npm install
+    $ cd viewer/vue-client && yarn install
 
-    $ cp config/api_config.json.in config/api_config.json
-
-
-In `api_config.json`, input the path to your REST-API (if not standard) and auth URL.
+In `./viewer/vue-client/.env.development`, input the path to your REST-API (if not standard) and auth URL.
 
 
 ## Building
 
 ```
-# run build and then serve with hot reload at localhost:8080
-$ npm run start
 
 # serve with hot reload at localhost:8080
-$ npm run dev
+$ yarn serve
 
 # build for production with minification
-$ npm run build
+$ yarn build
 
-# build for production and view the bundle analyzer report
-$ npm run build --report
 ```
 
 ## Testing
 
 ```
-# run unit tests
-$ npm run unit
 
-# run e2e tests
-$ npm run e2e
+# Fix this section
 
-# run all tests
-$ npm test
 ```
