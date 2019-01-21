@@ -393,7 +393,7 @@ export default {
       </div>
       
       <div class="ItemSibling-actions">
-        <div class="ItemSibling-action">
+        <div class="ItemSibling-action LinkAction">
           <i class="fa fa-link fa-fw icon icon--sm"
             role="button"
             :aria-label="'Link entity' | translatePhrase"
@@ -418,7 +418,7 @@ export default {
           :inner="true" 
           :path="getPath">
         </field-adder>
-        <div class="ItemSibling-action">
+        <div class="ItemSibling-action RemoveAction">
           <i class="fa fa-trash-o fa-fw icon icon--sm" 
             v-if="!isLocked" 
             :class="{'show-icon': showActionButtons}"

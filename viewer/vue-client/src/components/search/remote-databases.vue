@@ -269,6 +269,7 @@ export default {
     <portal to="sidebar" v-if="showList">
     <panel-component
       v-if="showList"
+      class="RemoteDatabasesPanel"
       :title="'Select sources' | translatePhrase"
       @close="showList = false">
       <template slot="panel-header-extra">
