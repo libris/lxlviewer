@@ -32,6 +32,7 @@ ui_defs = {
         '@type': 'Typ',
         'carrierType': 'Bärartyp',
         'instanceOf.@type': 'Verkstyp',
+        'issuanceType': 'Utgivningssätt',
         'instanceOf.contentType': 'Verksinnehållstyp',
         'instanceOf.language': 'Verksspråk',
         'publication.date': 'Utgivningsdatum'
@@ -85,6 +86,11 @@ sites = {
                     "sort":"key",
                     "sortOrder":"desc",
                     "size":500
+                },
+                "issuanceType.keyword":{
+                    "sort":"value",
+                    "sortOrder":"desc",
+                    "size":100
                 },
                 "@type":{
                     "sort":"key",
