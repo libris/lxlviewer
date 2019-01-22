@@ -214,6 +214,9 @@ export function prepareDuplicateFor(inspectorData, user, settings) {
   // Update descriptionCreator to this organization
   newData.record.descriptionCreator = { '@id': `https://libris.kb.se/library/${user.settings.activeSigel}` };
 
+  // Update any heldBy keys to this organization
+  // TODO: Do that
+
   // Remove properties that should not be included in the duplicate
   each(settings.removeOnDuplication, (property) => {
     unset(newData, property);
