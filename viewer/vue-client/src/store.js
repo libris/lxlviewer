@@ -168,7 +168,7 @@ const store = new Vuex.Store({
             order: false,
           },
         },
-        issuanceType: {
+        'issuanceType.keyword': {
           sv: 'Utgivningssätt',
           en: 'Issuance type',
           facet: {
