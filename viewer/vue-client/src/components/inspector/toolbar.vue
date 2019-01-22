@@ -99,6 +99,7 @@ export default {
       const inspectorObj = RecordUtil.splitJson(data);
       const preparedData = RecordUtil.prepareDuplicateFor(inspectorObj, this.user, this.settings);
       const splitData = RecordUtil.splitJson(preparedData);
+      this.$refs.FilePicker.value = ''; // Important: reset the picker
       this.$store.dispatch('pushInspectorEvent', {
         name: 'apply-template',
         value: splitData,
@@ -454,7 +455,7 @@ export default {
           {{ "Make copy" | translatePhrase }}{{ getKeybindingText('duplicate-item') ? ` (${getKeybindingText('duplicate-item')})` : ''}}
           </a>
         </li>
-        <li class="Toolbar-menuItem" :class="{'is-active': showTemplatesSubMenu}" v-if="user.isLoggedIn && inspector.status.editing && validTemplates.length > 0">
+        <li class="Toolbar-menuItem" :class="{'is-active': showTemplatesSubMenu}" v-if="user.isLoggedIn && inspector.status.editing">
           <a class="Toolbar-menuLink" @click="showTemplatesSubMenu = !showTemplatesSubMenu">
             <i class="fa fa-fw fa-clipboard"></i>
             <span>{{ "Embellish from template" | translatePhrase }}{{ getKeybindingText('embellish-from-template') ? ` (${getKeybindingText('embellish-from-template')})` : ''}}</span>
@@ -467,12 +468,12 @@ export default {
           {{ value.label }}
           </a>
         </li>
-        <!-- <li class="Toolbar-menuItem inSubMenu" v-show="showTemplatesSubMenu">
+        <li class="Toolbar-menuItem inSubMenu" v-show="showTemplatesSubMenu">
           <a class="Toolbar-menuLink" @click="openFilePicker">
           <i class="fa fa-fw fa-upload"></i>
           {{ 'From file' | translatePhrase }}
           </a>
-        </li> -->
+        </li>
         <li class="Toolbar-menuItem" v-if="compiledIsAvailable">
           <a class="Toolbar-menuLink"  v-if="downloadIsSupported" @click="getCompiledPost()">
             <i class="fa fa-fw fa-download" aria-hidden="true"></i>
