@@ -212,6 +212,7 @@ export default {
             message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)}. ${response.status} ${response.statusText}`, 
           });
         }
+        return false;
       }, (error) => {
         this.$store.dispatch('pushNotification', { 
           type: 'danger', 
