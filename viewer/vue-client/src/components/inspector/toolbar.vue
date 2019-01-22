@@ -96,6 +96,7 @@ export default {
       this.$refs.FilePicker.click();
     },
     applyFileTemplate(data) {
+      this.hideToolsMenu();
       const inspectorObj = RecordUtil.splitJson(data);
       const preparedData = RecordUtil.prepareDuplicateFor(inspectorObj, this.user, this.settings);
       const splitData = RecordUtil.splitJson(preparedData);
@@ -106,18 +107,19 @@ export default {
       });
     },
     applyPostAsTemplate() {
+      this.hideToolsMenu();
       const inputId = window.prompt(StringUtil.getUiPhraseByLang('Enter id of post', this.settings.language), '');
       if (typeof inputId === 'undefined' || inputId === 'undefined' || inputId === null) {
         return;
-      } else {
-        const id = inputId;
-        this.$store.dispatch('pushInspectorEvent', {
-          name: 'apply-post-as-template',
-          value: id,
-        });
       }
+      const id = inputId;
+      this.$store.dispatch('pushInspectorEvent', {
+        name: 'apply-post-as-template',
+        value: id,
+      });
     },
     initFilePicker() {
+      this.hideToolsMenu();
       const self = this;
       this.$refs.FilePicker.addEventListener('change', (e) => {
         const reader = new FileReader();
