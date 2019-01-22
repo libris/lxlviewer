@@ -105,6 +105,18 @@ export default {
         value: splitData,
       });
     },
+    applyPostAsTemplate() {
+      const inputId = window.prompt(StringUtil.getUiPhraseByLang('Enter id of post', this.settings.language), '');
+      if (typeof inputId === 'undefined' || inputId === 'undefined' || inputId === null) {
+        return;
+      } else {
+        const id = inputId;
+        this.$store.dispatch('pushInspectorEvent', {
+          name: 'apply-post-as-template',
+          value: id,
+        });
+      }
+    },
     initFilePicker() {
       const self = this;
       this.$refs.FilePicker.addEventListener('change', (e) => {
@@ -472,6 +484,12 @@ export default {
           <a class="Toolbar-menuLink" @click="openFilePicker">
           <i class="fa fa-fw fa-upload"></i>
           {{ 'From file' | translatePhrase }}
+          </a>
+        </li>
+        <li class="Toolbar-menuItem inSubMenu" v-show="showTemplatesSubMenu">
+          <a class="Toolbar-menuLink" @click="applyPostAsTemplate">
+          <i class="fa fa-fw fa-chain"></i>
+          {{ 'From ID' | translatePhrase }}
           </a>
         </li>
         <li class="Toolbar-menuItem" v-if="compiledIsAvailable">

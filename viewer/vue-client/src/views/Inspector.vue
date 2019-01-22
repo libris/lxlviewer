@@ -194,6 +194,38 @@ export default {
         this.loadNewDocument();
       }
     },
+    applyPostAsTemplate(id) {
+      const fixedId = RecordUtil.extractFnurgel(id);
+      const randomHash = md5(new Date());
+      const fetchUrl = `${this.settings.apiPath}/${fixedId}/data.jsonld?${randomHash}`;
+      fetch(fetchUrl).then((response) => {
+        if (response.status === 200) {
+          return response.json();
+        } if (response.status === 404 || response.status === 410) {
+          this.$store.dispatch('pushNotification', { 
+            type: 'danger', 
+            message: `${StringUtil.getUiPhraseByLang('The post was not found', this.user.settings.language)}. ${response.status} ${response.statusText}`, 
+          });
+        } else {
+          this.$store.dispatch('pushNotification', { 
+            type: 'danger', 
+            message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)}. ${response.status} ${response.statusText}`, 
+          });
+        }
+      }, (error) => {
+        this.$store.dispatch('pushNotification', { 
+          type: 'danger', 
+          message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)}. ${error}`, 
+        });
+      }).then((result) => {
+        if (typeof result !== 'undefined') {
+          const splitFetched = RecordUtil.splitJson(result);
+          const templateJson = RecordUtil.prepareDuplicateFor(splitFetched, this.user, this.settings);
+          const template = RecordUtil.splitJson(templateJson);
+          this.applyFieldsFromTemplate(template);
+        }
+      });
+    },
     applyFieldsFromTemplate(templateJson) {
       const basePostType = this.inspector.data.mainEntity['@type'];
       const tempPostType = templateJson.mainEntity['@type'];
@@ -500,6 +532,8 @@ export default {
         }
       } else if (val.name === 'apply-template') {
         this.applyFieldsFromTemplate(val.value);
+      } else if (val.name === 'apply-post-as-template') {
+        this.applyPostAsTemplate(val.value);
       }
     },
   },
