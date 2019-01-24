@@ -268,7 +268,7 @@ export default {
           addToHistory: false,
         });
         this.$store.dispatch('pushNotification', { 
-          type: 'info', 
+          type: 'success', 
           message: `${changeList.length} ${StringUtil.getUiPhraseByLang('field(s) added from template', this.user.settings.language)}`, 
         });
       } else {
