@@ -432,7 +432,7 @@ export default {
       </div>
       
       <div class="ItemLocal-actions">
-        <div class="ItemLocal-action">
+        <div class="ItemLocal-action LinkAction">
           <i class="fa fa-link fa-fw icon icon--sm"
             v-if="inspector.status.editing && !isEmbedded"
             role="button"
@@ -458,7 +458,7 @@ export default {
           :path="getPath">
         </field-adder>
 
-        <div class="ItemLocal-action">
+        <div class="ItemLocal-action RemoveAction">
           <i class="fa fa-trash-o fa-fw icon icon--sm"
             v-if="!isLocked" 
             :class="{'show-icon': showActionButtons}"
@@ -477,7 +477,7 @@ export default {
           </i>
         </div>
 
-        <div class="ItemLocal-action">
+        <div class="ItemLocal-action OptionAction">
           <i class="icon icon--sm fa fa-fw fa-ellipsis-v"
             v-if="!isLocked"
             :class="{'show-icon': showActionButtons}" 
