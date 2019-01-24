@@ -64,6 +64,27 @@ export function removeNullValues(inputObj) {
   return cleanObj;
 }
 
+export function rewriteValueOfKey(obj, key, newValue, deep = false) {
+  const newObj = cloneDeep(obj);
+  const keys = Object.keys(newObj);
+  for (let i = 0; i < keys.length; i++) {
+    const value = newObj[keys[i]];
+    if (keys[i] === key) {
+      newObj[keys[i]] = newValue;
+    } else if (deep === true) {
+      if (isObject(value) && deep === true) {
+        newObj[keys[i]] = rewriteValueOfKey(value, key, newValue, true);
+      }
+      if (isArray(value)) {
+        for (let x = 0; x < value.length; x++) {
+          newObj[keys[i]][x] = rewriteValueOfKey(newObj[keys[i]][x], key, newValue, true);
+        }
+      }
+    }
+  }
+  return newObj;
+}
+
 // Changes XML to JSON
 // Modified version from here: http://davidwalsh.name/convert-xml-json
 export function xmlToJson(xml) {
