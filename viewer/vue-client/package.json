@@ -10,6 +10,7 @@
     "test:e2e": "vue-cli-service test:e2e"
   },
   "dependencies": {
+    "@babel/polyfill": "^7.2.5",
     "@vue/cli-plugin-babel": "^3.0.1",
     "@vue/cli-plugin-e2e-cypress": "^3.0.1",
     "@vue/cli-plugin-eslint": "^3.0.1",
@@ -71,9 +72,12 @@
       "object-shorthand": "off",
       "import/extensions": "off",
       "import/no-dynamic-require": "off",
-      "object-curly-newline": ["error", {
-        "ImportDeclaration": "never"
-      }],
+      "object-curly-newline": [
+        "error",
+        {
+          "ImportDeclaration": "never"
+        }
+      ],
       "global-require": "off",
       "radix": "off",
       "no-alert": "off"
