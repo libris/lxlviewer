@@ -895,7 +895,7 @@ export default {
       }
     }
 
-    &.is-hovered {
+    &.is-hovered * {
       z-index: 1;
     }
 
