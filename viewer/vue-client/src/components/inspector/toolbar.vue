@@ -92,8 +92,26 @@ export default {
     },
   },
   methods: {
-    openFilePicker() {
-      this.$refs.FilePicker.click();
+    openTemplatePicker() {
+      this.$refs.TemplatePicker.click();
+    },
+    openOverridePicker() {
+      this.$refs.OverridePicker.click();
+    },
+    applyFileAsOverride(data) {
+      const splitData = RecordUtil.splitJson(data);
+      this.$refs.OverridePicker.value = ''; // Important: reset the picker
+      if (splitData.record['@id'] === this.inspector.data.record['@id']) {
+        this.$store.dispatch('pushInspectorEvent', {
+          name: 'apply-override',
+          value: splitData,
+        });
+      } else {
+        this.$store.dispatch('pushNotification', {
+          type: 'danger',
+          message: StringUtil.getUiPhraseByLang('New data @id does not match existing @id', this.settings.language),
+        });
+      }
     },
     applyFileTemplate(data) {
       const inspectorObj = RecordUtil.splitJson(data);
@@ -104,9 +122,30 @@ export default {
         value: splitData,
       });
     },
-    initFilePicker() {
+    initOverridePicker() {
+      this.hideToolsMenu();
       const self = this;
-      this.$refs.FilePicker.addEventListener('change', (e) => {
+      this.$refs.OverridePicker.addEventListener('change', (e) => {
+        const reader = new FileReader();
+        reader.onloadend = function onloadend() {
+          try {
+            const data = JSON.parse(this.result);
+            self.applyFileAsOverride(data);
+          } catch (error) {
+            const msg = [
+              StringUtil.getUiPhraseByLang('Something went wrong', self.settings.language),
+              StringUtil.getUiPhraseByLang('Verify structure in template', self.settings.language),
+            ];
+            self.$store.dispatch('pushNotification', { type: 'danger', message: msg.join() });
+          }
+        };
+        reader.readAsText(e.target.files[0]);
+      });
+    },
+    initTemplatePicker() {
+      this.hideToolsMenu();
+      const self = this;
+      this.$refs.TemplatePicker.addEventListener('change', (e) => {
         const reader = new FileReader();
         reader.onloadend = function onloadend() {
           try {
@@ -114,10 +153,10 @@ export default {
             self.applyFileTemplate(data);
           } catch (error) {
             const msg = [
-              StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language),
-              StringUtil.getUiPhraseByLang('Verify structure in template', this.settings.language),
+              StringUtil.getUiPhraseByLang('Something went wrong', self.settings.language),
+              StringUtil.getUiPhraseByLang('Verify structure in template', self.settings.language),
             ];
-            this.$store.dispatch('pushNotification', { type: 'danger', message: msg.join() });
+            self.$store.dispatch('pushNotification', { type: 'danger', message: msg.join() });
           }
         };
         reader.readAsText(e.target.files[0]);
@@ -360,7 +399,8 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      this.initFilePicker();
+      this.initTemplatePicker();
+      this.initOverridePicker();
     });
   },
 };
@@ -368,7 +408,8 @@ export default {
 
 <template>
   <div class="Toolbar" id="editor-container">
-    <input type="file" class="FilePicker" ref="FilePicker" accept=".jsonld,application/ld+json,text/*" aria-hidden="true"/>
+    <input type="file" class="TemplatePicker" ref="TemplatePicker" accept=".jsonld,application/ld+json,text/*" aria-hidden="true"/>
+    <input type="file" class="OverridePicker" ref="OverridePicker" accept=".jsonld,application/ld+json,text/*" aria-hidden="true"/>
     <div class="dropdown Toolbar-menu OtherFormatMenu"
       v-if="!inspector.status.editing" 
       v-on-clickaway="hideOtherFormatMenu">
@@ -468,7 +509,7 @@ export default {
           </a>
         </li>
         <!-- <li class="Toolbar-menuItem inSubMenu" v-show="showTemplatesSubMenu">
-          <a class="Toolbar-menuLink" @click="openFilePicker">
+          <a class="Toolbar-menuLink" @click="openTemplatePicker">
           <i class="fa fa-fw fa-upload"></i>
           {{ 'From file' | translatePhrase }}
           </a>
@@ -495,10 +536,16 @@ export default {
             {{ "Preview MARC21" | translatePhrase }}  {{ getKeybindingText('preview-marc') ? ` (${getKeybindingText('preview-marc')})` : ''}}
           </a>
         </li>
-        <li class="Toolbar-menuItem remove-option" v-if="user.isLoggedIn && !status.isNew">
+        <li class="Toolbar-menuItem remove-option" v-if="user.isLoggedIn && !inspector.status.isNew">
           <a class="Toolbar-menuLink"  @click="postControl('remove-post')">
           <i class="fa fa-fw fa-trash" aria-hidden="true"></i>
           {{"Remove" | translatePhrase}} {{ recordType | labelByLang }}
+          </a>
+        </li>
+        <li class="Toolbar-menuItem" v-if="user.isLoggedIn && inspector.status.editing && !inspector.status.isNew && user.settings.appTech">
+          <a class="Toolbar-menuLink" @click="openOverridePicker">
+          <i class="fa fa-fw fa-upload"></i>
+          {{ 'Overwrite data' | translatePhrase }}
           </a>
         </li>
       </ul>
@@ -710,7 +757,7 @@ export default {
       right: 0;
     }
   }
-  .FilePicker {
+  .TemplatePicker, .OverridePicker {
     width: 1px;
     height: 1px;
     opacity: 0;

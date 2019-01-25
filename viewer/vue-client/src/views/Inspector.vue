@@ -66,6 +66,13 @@ export default {
     };
   },
   methods: {
+    applyOverride(data) {
+      this.$store.dispatch('setInspectorData', data);
+      this.$store.dispatch('pushNotification', { 
+        type: 'success', 
+        message: `${StringUtil.getUiPhraseByLang('Formulär uppdaterat, glöm inte att spara posten', this.user.settings.language)}`, 
+      });
+    },
     addBreadcrumb() {
       if (this.inspector.breadcrumb !== '') {
         const currentTrail = this.inspector.breadcrumb;
@@ -500,6 +507,8 @@ export default {
         }
       } else if (val.name === 'apply-template') {
         this.applyFieldsFromTemplate(val.value);
+      } else if (val.name === 'apply-override') {
+        this.applyOverride(val.value);
       }
     },
   },
