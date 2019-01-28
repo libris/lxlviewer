@@ -1,7 +1,6 @@
 <script>
 import { sortBy } from 'lodash-es';
 import * as RecordUtil from '@/utils/record';
-import * as DataUtil from '@/utils/data';
 import CreationCard from '@/components/create/creation-card';
 import FileAdder from '@/components/create/file-adder';
 import TabMenu from '@/components/shared/tab-menu';
@@ -51,10 +50,6 @@ export default {
     },
     recieveFileData(data) {
       this.thingData = RecordUtil.prepareDuplicateFor(data, this.user, this.settings);
-    },
-    recieveFileDataOverwrite(data) {
-      const packaged = DataUtil.getMergedItems(data.record, data.mainEntity, data.work, data.quoted);
-      this.thingData = packaged;
     },
     setActiveIndex(index) {
       this.activeIndex = index;
@@ -109,9 +104,7 @@ export default {
     },
   },
   created() {
-    if (this.user.settings.appTech) {
-      this.creationList.push({ id: 'Overwrite', text: 'Overwrite post' });
-    }
+
   },
   mounted() { // Ready method is deprecated in 2.0, switch to "mounted"
     this.$nextTick(() => {
@@ -128,7 +121,7 @@ export default {
     <div class="panel-body">
       <h1 class="Create-title mainTitle">{{'Create new' | translatePhrase}}</h1>
       <tab-menu @go="setCreation" :tabs="creationList" :active="selectedCreation"></tab-menu>
-      <div v-if="selectedCreation !== 'File' && selectedCreation !== 'Overwrite'" class="Create-cards" id="creationCardPanel">
+      <div v-if="selectedCreation !== 'File'" class="Create-cards" id="creationCardPanel">
         <creation-card
           :is-base="true"
           :creation="selectedCreation"
@@ -147,7 +140,6 @@ export default {
           @set-active-index="setActiveIndex" />
       </div>
       <file-adder type="new" v-if="selectedCreation === 'File'" @output="recieveFileData" />
-      <file-adder type="overwrite" v-if="selectedCreation === 'Overwrite'" @output="recieveFileDataOverwrite" />
     </div>
   </div>
 </template>
