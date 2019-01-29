@@ -181,6 +181,12 @@ export default {
     }
   }
 
+  &-link {
+    &:visited {
+      color: @link-visited-color;
+    }
+  }
+
   &-category {
     margin-left: 10px;
     display: inline-block;
