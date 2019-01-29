@@ -1147,7 +1147,8 @@
             },
             {
               "@type": "Contribution",
-              "agent": null
+              "agent": null,
+              "role": []
             }
           ],
           "contentType": [{"@id": "https://id.kb.se/term/rda/Text"}],
