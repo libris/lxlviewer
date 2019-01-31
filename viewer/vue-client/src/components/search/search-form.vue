@@ -1,5 +1,5 @@
 <script>
-// import { each } from 'lodash-es';
+import { isEmpty, cloneDeep } from 'lodash-es';
 import PropertyMappings from '@/resources/json/propertymappings.json';
 import * as StringUtil from '@/utils/string';
 import RemoteDatabases from '@/components/search/remote-databases';
@@ -14,20 +14,34 @@ export default {
       default: 'libris',
       type: String,
     },
-    resultData: {},
+    // resultData: {},
   },
   data() {
     return {
       vocabUrl: 'https://id.kb.se/vocab/',
-      inputData: {
-        type: 'q',
-        q: this.$route.query.q,
-      },
-      searchParams: {
-        _limit: 20,
-        // currentInput: 0,
-        '@type': ['Instance', 'Work'],
-      },
+      // inputData: {
+      //   type: 'q',
+      //   q: this.$route.query.q,
+      // },
+      // searchParams: {
+      //   _limit: 20,
+      //   // currentInput: 0,
+      //   '@type': ['Instance', 'Work'],
+      // },
+      query: (() => {
+        if (isEmpty(this.$route.query)) {
+          return {
+            q: '',
+            _limit: 20,
+            '@type': ['Instance'],
+          };
+        }
+        const currentQuery = cloneDeep(this.$route.query);
+        if (typeof currentQuery['@type'] === 'string') { // put a single @type into an array
+          currentQuery['@type'] = [currentQuery['@type']];
+        }
+        return currentQuery;
+      })(),
       // remoteSearch: {
       //   q: '',
       // },
@@ -120,23 +134,17 @@ export default {
       if (this.searchPerimeter === 'libris') {
         // const validTags = this.validSearchTags;
         const queryArr = [];
-        queryArr.push(`${this.inputData.type}=${!this.inputData.q ? '*' : this.inputData.q}`);
-        Object.keys(this.searchParams).forEach((param) => {
-          if (Array.isArray(this.searchParams[param])) {
-            console.log('im an array');
-            this.searchParams[param].forEach((el) => {
-              console.log(el);
+        Object.keys(this.query).forEach((param) => {
+          if (Array.isArray(this.query[param])) {
+            this.query[param].forEach((el) => {
               queryArr.push(`${param}=${el}`);
             });
-          } else queryArr.push(`${param}=${this.searchParams[param]}`);
+          } else queryArr.push(`${param}=${this.query[param]}`);
         });
-        // queryArr.push(`_limit=${this.inputData._limit}`);
-        // this.inputData.ids.forEach(id => queryArr.push(`@type=${id}`));
-        console.log(queryArr);
         query = queryArr.join('&');
       } else {
         const databases = this.status.remoteDatabases.join();
-        const keywords = this.inputData.q;
+        const keywords = this.query.q;
         query = `q=${keywords}&databases=${databases}`;
       }
       return encodeURI(query);
@@ -153,7 +161,7 @@ export default {
       // this.inputData.textInput.splice(1, this.inputData.textInput.length);
       // this.inputData.textInput[0].value = '';
       // this.inputData.textInput[0].class = 'is-searchPhrase';
-      this.inputData.q = '';
+      this.query.q = '';
       this.focusSearchInput();
     },
   },
@@ -182,38 +190,38 @@ export default {
         label: StringUtil.getLabelByLang(term, this.settings.language, this.resources.vocab, this.resources.context) || term,
       }));
     },
-    usedFilters() {
-      const filters = [];
-      if (typeof this.resultData.search !== 'undefined') {
-        this.resultData.search.mapping.forEach((item) => {
-          if (item.variable !== 'q') {
-            let filter = '';
-            if (typeof item.object !== 'undefined') {
-              if (item.variable === '@type') {
-                filter = item.object['@id'];
-              } else {
-                filter = item.object['@id'].replace('https://id.kb.se/', '');
-              }
-            } else {
-              filter = item.value;
-            }
-            filters.push(filter);
-          }
-        });
-      }
-      return filters;
-    },
-    usedTextInput() {
-      let textInput = '';
-      if (typeof this.resultData.search !== 'undefined') {
-        this.resultData.search.mapping.forEach((item) => {
-          if (item.variable === 'q') {
-            textInput = item.value;
-          } 
-        });
-      }
-      return textInput;
-    },
+    // usedFilters() {
+    //   const filters = [];
+    //   if (typeof this.resultData.search !== 'undefined') {
+    //     this.resultData.search.mapping.forEach((item) => {
+    //       if (item.variable !== 'q') {
+    //         let filter = '';
+    //         if (typeof item.object !== 'undefined') {
+    //           if (item.variable === '@type') {
+    //             filter = item.object['@id'];
+    //           } else {
+    //             filter = item.object['@id'].replace('https://id.kb.se/', '');
+    //           }
+    //         } else {
+    //           filter = item.value;
+    //         }
+    //         filters.push(filter);
+    //       }
+    //     });
+    //   }
+    //   return filters;
+    // },
+    // usedTextInput() {
+    //   let textInput = '';
+    //   if (typeof this.resultData.search !== 'undefined') {
+    //     this.resultData.search.mapping.forEach((item) => {
+    //       if (item.variable === 'q') {
+    //         textInput = item.value;
+    //       } 
+    //     });
+    //   }
+    //   return textInput;
+    // },
     // currentIsTag() {
     //   const value = this.currentField.value;
     //   return value.indexOf(':') > -1 && this.validSearchTags.indexOf(value.split(':')[0]) > -1;
@@ -242,7 +250,7 @@ export default {
       // return hasInput;
 
       // value in input?
-      return this.inputData.q.length > 0;
+      return this.query.q.length > 0;
     },
     inputPlaceholder() {
       return this.searchPerimeter === 'remote' ? 'ISBN eller valfria sökord' : 'Search';
@@ -317,7 +325,7 @@ export default {
               <!-- <div class="SearchBar-qsmart js-qsmartInput" aria-labelledby="searchlabel"> -->
                 <input type="text"
                   class="SearchBar-input customInput form-control"
-                  v-model="inputData.q"
+                  v-model="query.q"
                   aria-labelledby="searchlabel"
                   :placeholder="inputPlaceholder | translatePhrase"
                   ref="searchBarInput">
@@ -374,7 +382,7 @@ export default {
           :key="filter['@id']">
           <input type="checkbox" class="SearchBar-typeInput customCheckbox-input"
             :id="filter['@id']"
-            v-model="inputData['@type']"
+            v-model="query['@type']"
             :value="filter['@id']"/>
             <span class="SearchBar-typeText customCheckbox-icon">
               {{ filter.label }}
@@ -383,7 +391,7 @@ export default {
       </div>
       <remote-databases 
         v-if="searchPerimeter === 'remote'" 
-        :remoteSearch="inputData.q"
+        :remoteSearch="query.q"
         @panelClosed="focusSearchInput"
         ref="dbComponent"></remote-databases>
     </form>
