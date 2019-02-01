@@ -28,12 +28,13 @@ export default {
       //   // currentInput: 0,
       //   '@type': ['Instance', 'Work'],
       // },
+      searchPhrase: '',
       searchProperties: PropertyMappings,
-      selectedProperty: PropertyMappings[0].mappings,
+      selectedProperty: PropertyMappings[0],
       query: (() => { // try to compose v-model bound object from route query
         if (isEmpty(this.$route.query)) {
           return { // else return default settings
-            q: '',
+            // q: '',
             // ...this.selectedProperty,
             _limit: 20,
             '@type': ['Instance'],
@@ -144,11 +145,11 @@ export default {
             });
           } else queryArr.push(`${param}=${this.query[param]}`);
         });
+
         query = queryArr.join('&');
       } else {
         const databases = this.status.remoteDatabases.join();
-        const keywords = this.query.q;
-        query = `q=${keywords}&databases=${databases}`;
+        query = `q=${this.searchPhrase}&databases=${databases}`;
       }
       return encodeURI(query);
     },
@@ -164,11 +165,17 @@ export default {
       // this.inputData.textInput.splice(1, this.inputData.textInput.length);
       // this.inputData.textInput[0].value = '';
       // this.inputData.textInput[0].class = 'is-searchPhrase';
-      this.query.q = '';
+      this.searchPhrase = '';
       this.focusSearchInput();
     },
-    handleTypeChange(e) {
-      console.log(e.target.value);
+    matchSearchProp() {
+      // console.log(this.$route.query);
+      this.searchProperties.forEach((prop, index) => {
+        const match = Object.keys(prop.mappings).every(key => this.$route.query.hasOwnProperty(key));
+        if (match) {
+          this.selectedProperty = this.searchProperties[index];
+        }
+      });
     },
   },
   computed: {
@@ -239,10 +246,10 @@ export default {
     //   const currentElement = document.querySelector('.js-qsmartInput').children[this.inputData.currentInput];
     //   return currentElement.value.slice(0, currentElement.selectionStart).length === 0;
     // },
-    validSearchTags() {
-      const searchTags = PropertyMappings.map(property => property.key);
-      return searchTags;
-    },
+    // validSearchTags() {
+    //   const searchTags = PropertyMappings.map(property => property.key);
+    //   return searchTags;
+    // },
     // currentComputedInput() {
     //   return this.inputData.currentInput;
     // },
@@ -256,10 +263,15 @@ export default {
       // return hasInput;
 
       // value in input?
-      return this.query.q.length > 0;
+      return this.searchPhrase.length > 0;
     },
     inputPlaceholder() {
       return this.searchPerimeter === 'remote' ? 'ISBN eller valfria sökord' : 'Search';
+    },
+    composedSearchProp() {
+      const composed = this.selectedProperty.mappings;
+      composed[this.selectedProperty.searchProp] = this.searchPhrase;
+      return composed;
     },
   },
   components: {
@@ -294,6 +306,7 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.focusSearchInput();
+      this.matchSearchProp();
     });
   },
 };
@@ -331,18 +344,17 @@ export default {
               <!-- <div class="SearchBar-qsmart js-qsmartInput" aria-labelledby="searchlabel"> -->
                 <select 
                   v-if="searchPerimeter === 'libris'"
-                  v-model="selectedProperty"
-                  @change="handleTypeChange($event)">
+                  v-model="selectedProperty">
                   <option 
                     v-for="prop in searchProperties"
                     :key="prop.key"
-                    :value="prop.mappings">
+                    :value="prop">
                     {{prop.key | translatePhrase}}
                   </option>
                 </select>
                 <input type="text"
                   class="SearchBar-input customInput form-control"
-                  v-model="query.q"
+                  v-model="searchPhrase"
                   aria-labelledby="searchlabel"
                   :placeholder="inputPlaceholder | translatePhrase"
                   ref="searchBarInput">
@@ -408,7 +420,7 @@ export default {
       </div>
       <remote-databases 
         v-if="searchPerimeter === 'remote'" 
-        :remoteSearch="query.q"
+        :remoteSearch="searchPhrase"
         @panelClosed="focusSearchInput"
         ref="dbComponent"></remote-databases>
     </form>

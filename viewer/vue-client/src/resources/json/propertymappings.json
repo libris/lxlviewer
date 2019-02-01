@@ -1,12 +1,14 @@
 [
   {
     "key": "Free text",
+    "searchProp": "q",
     "mappings": {
       "q": ""
     }
   },
   {
     "key": "ISBN",
+    "searchProp": "identifiedBy.value",
     "mappings": {
       "identifiedBy.value": "",
       "identifiedBy.@type": "ISBN"
@@ -14,6 +16,7 @@
   },
   {
     "key": "ISSN",
+    "searchProp": "identifiedBy.value",
     "mappings": {
       "identifiedBy.value": "",
       "identifiedBy.@type": "ISSN"
@@ -21,6 +24,7 @@
   },
   {
     "key": "title",
+    "searchProp": "hasTitle.mainTitle",
     "mappings": {
       "hasTitle.mainTitle": ""
     }
