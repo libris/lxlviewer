@@ -306,6 +306,9 @@ export default {
   }
 
   &-titleLink {
+    &:visited {
+      color: @link-visited-color;
+    }
     &.blue-link {
       color: @brand-id;
     }
