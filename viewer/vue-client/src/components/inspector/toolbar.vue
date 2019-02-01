@@ -503,7 +503,7 @@ export default {
           {{"Collapse all" | translatePhrase}}{{ getKeybindingText('collapse-item') ? ` (${getKeybindingText('collapse-item')})` : ''}}
           </a>
         </li>
-        <li class="Toolbar-menuItem" v-if="user.isLoggedIn && !inspector.status.editing && !isSubClassOf('Item')">
+        <li class="Toolbar-menuItem" v-if="user.isLoggedIn && !inspector.status.editing">
           <a class="Toolbar-menuLink"  @click="handleCopy">
           <i class="fa fa-fw fa-files-o"></i>
           {{ "Make copy" | translatePhrase }}{{ getKeybindingText('duplicate-item') ? ` (${getKeybindingText('duplicate-item')})` : ''}}
