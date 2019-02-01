@@ -1,5 +1,11 @@
 [
   {
+    "key": "Free text",
+    "mappings": {
+      "q": ""
+    }
+  },
+  {
     "key": "ISBN",
     "mappings": {
       "identifiedBy.value": "",

@@ -28,10 +28,13 @@ export default {
       //   // currentInput: 0,
       //   '@type': ['Instance', 'Work'],
       // },
-      query: (() => {
+      searchProperties: PropertyMappings,
+      selectedProperty: PropertyMappings[0].mappings,
+      query: (() => { // try to compose v-model bound object from route query
         if (isEmpty(this.$route.query)) {
-          return {
+          return { // else return default settings
             q: '',
+            // ...this.selectedProperty,
             _limit: 20,
             '@type': ['Instance'],
           };
@@ -163,6 +166,9 @@ export default {
       // this.inputData.textInput[0].class = 'is-searchPhrase';
       this.query.q = '';
       this.focusSearchInput();
+    },
+    handleTypeChange(e) {
+      console.log(e.target.value);
     },
   },
   computed: {
@@ -323,6 +329,17 @@ export default {
           <!-- <div class="SearchBar-inputWrap" id="searchFieldContainer"> -->
             <!-- <div class="SearchBar-input customInput form-control"> -->
               <!-- <div class="SearchBar-qsmart js-qsmartInput" aria-labelledby="searchlabel"> -->
+                <select 
+                  v-if="searchPerimeter === 'libris'"
+                  v-model="selectedProperty"
+                  @change="handleTypeChange($event)">
+                  <option 
+                    v-for="prop in searchProperties"
+                    :key="prop.key"
+                    :value="prop.mappings">
+                    {{prop.key | translatePhrase}}
+                  </option>
+                </select>
                 <input type="text"
                   class="SearchBar-input customInput form-control"
                   v-model="query.q"
