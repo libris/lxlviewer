@@ -385,6 +385,7 @@ export default {
     },
     setEditorFocus(value) {
       this.$store.dispatch('setInspectorStatusValue', { property: 'focus', value: value });
+      this.$store.dispatch('pushInspectorEvent', { name: 'form-control', value: 'focus-changed' });
     },
     downloadJson() {
       const focusId = this.inspector.data.record['@id'];
@@ -648,11 +649,13 @@ export default {
           <validation-summary v-if="user.settings.appTech" />
 
           <tab-menu @go="setEditorFocus" :tabs="editorTabs" :active="this.inspector.status.focus" />
-
-          <entity-form 
-            :editing-object="inspector.status.focus" 
-            :locked="!inspector.status.editing">
-          </entity-form>
+            
+            <entity-form 
+              v-for="tab in editorTabs"
+              :editing-object="tab.id" 
+              :key="tab.id"
+              :locked="!inspector.status.editing">
+            </entity-form>
         </div>
       </div>
     </div>

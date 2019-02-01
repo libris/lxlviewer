@@ -130,6 +130,9 @@ export default {
           case 'close-modals':
             this.hide();
             break;
+          case 'focus-changed':
+            this.hide();
+            break;
           default:
         }
       }

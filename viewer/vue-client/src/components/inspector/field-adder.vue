@@ -249,6 +249,11 @@ export default {
           case 'close-modals':
             this.hide();
             break;
+          case 'focus-changed':
+            if (!this.inToolbar) {
+              this.hide();
+            }
+            break;
           default:
         }
       }
