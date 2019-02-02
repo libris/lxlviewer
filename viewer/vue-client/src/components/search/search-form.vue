@@ -170,17 +170,21 @@ export default {
       this.focusSearchInput();
     },
     getIncomingSearch() {
-      const match = PropertyMappings.filter(prop => Object.keys(prop.mappings).every(key => this.$route.query.hasOwnProperty(key)));
-      console.log(match);
+      let match = PropertyMappings
+        .filter(prop => Object.keys(prop.mappings)
+          .every(key => this.$route.query.hasOwnProperty(key)));
+
+      if (match.length > 1) { // multiple sets of matching parameters
+        const newMatch = match
+          .filter(prop => prop.mappings['identifiedBy.@type'] === this.$route.query['identifiedBy.@type']);
+        match = newMatch;
+      }
       if (match.length > 0) {
         const matchObj = match[0];
         this.$nextTick(() => {
           this.searchPhrase = this.$route.query[matchObj.searchProp];
         });
         return matchObj;
-      } if (match.length > 1) { // problem, we have multiple sets of matching parameters
-        console.log('ouch!');
-        return false;
       }
       return PropertyMappings[0];
     },
