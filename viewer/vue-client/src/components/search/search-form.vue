@@ -28,24 +28,26 @@ export default {
       //   // currentInput: 0,
       //   '@type': ['Instance', 'Work'],
       // },
+      staticProps: { _limit: 20 },
       searchPhrase: '',
-      searchProperties: PropertyMappings,
-      selectedProperty: PropertyMappings[0],
-      query: (() => { // try to compose v-model bound object from route query
-        if (isEmpty(this.$route.query)) {
-          return { // else return default settings
-            // q: '',
-            // ...this.selectedProperty,
-            _limit: 20,
-            '@type': ['Instance'],
-          };
-        }
-        const currentQuery = cloneDeep(this.$route.query);
-        if (typeof currentQuery['@type'] === 'string') { // put a single @type into an array
-          currentQuery['@type'] = [currentQuery['@type']];
-        }
-        return currentQuery;
-      })(),
+      searchParams: PropertyMappings,
+      activeSearchParam: PropertyMappings[0],
+      activeTypes: this.getIncomingTypes(),
+      // query: (() => { // try to compose v-model bound object from route query
+      //   if (isEmpty(this.$route.query)) {
+      //     return { // else return default settings
+      //       // q: '',
+      //       // ...this.activeSearchParam,
+      //       // _limit: 20,
+      //       '@type': ['Instance'],
+      //     };
+      //   }
+      //   const currentQuery = cloneDeep(this.$route.query);
+      //   if (typeof currentQuery['@type'] === 'string') { // put a single @type into an array
+      //     currentQuery['@type'] = [currentQuery['@type']];
+      //   }
+      //   return currentQuery;
+      // })(),
       // remoteSearch: {
       //   q: '',
       // },
@@ -138,14 +140,13 @@ export default {
       if (this.searchPerimeter === 'libris') {
         // const validTags = this.validSearchTags;
         const queryArr = [];
-        Object.keys(this.query).forEach((param) => {
-          if (Array.isArray(this.query[param])) {
-            this.query[param].forEach((el) => {
+        Object.keys(this.mergedParams).forEach((param) => {
+          if (Array.isArray(this.mergedParams[param])) {
+            this.mergedParams[param].forEach((el) => {
               queryArr.push(`${param}=${el}`);
             });
-          } else queryArr.push(`${param}=${this.query[param]}`);
+          } else queryArr.push(`${param}=${this.mergedParams[param]}`);
         });
-
         query = queryArr.join('&');
       } else {
         const databases = this.status.remoteDatabases.join();
@@ -170,12 +171,25 @@ export default {
     },
     matchSearchProp() {
       // console.log(this.$route.query);
-      this.searchProperties.forEach((prop, index) => {
+      this.searchParams.forEach((prop, index) => {
         const match = Object.keys(prop.mappings).every(key => this.$route.query.hasOwnProperty(key));
         if (match) {
-          this.selectedProperty = this.searchProperties[index];
+          this.activeSearchParam = this.searchParams[index];
         }
       });
+    },
+    getIncomingTypes() {
+      const performedQuery = cloneDeep(this.$route.query);
+      if (isEmpty(performedQuery)) {
+        return ['Instance'];
+      }
+      if (!performedQuery.hasOwnProperty('@type')) {
+        return [];
+      }
+      if (typeof performedQuery['@type'] === 'string') { // put a single @type into an array
+        return [performedQuery['@type']];
+      }
+      return performedQuery['@type'];
     },
   },
   computed: {
@@ -268,10 +282,20 @@ export default {
     inputPlaceholder() {
       return this.searchPerimeter === 'remote' ? 'ISBN eller valfria sökord' : 'Search';
     },
-    composedSearchProp() {
-      const composed = this.selectedProperty.mappings;
-      composed[this.selectedProperty.searchProp] = this.searchPhrase;
+    composedSearchParam() {
+      const composed = this.activeSearchParam.mappings;
+      composed[this.activeSearchParam.searchProp] = this.searchPhrase.length > 0 ? this.searchPhrase : '*';
       return composed;
+    },
+    composedTypes() {
+      return this.activeTypes.length > 0 ? { '@type': this.activeTypes } : {};
+    },
+    mergedParams() {
+      return Object.assign(
+        this.composedSearchParam,
+        this.staticProps,
+        this.composedTypes,
+      );
     },
   },
   components: {
@@ -306,7 +330,7 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.focusSearchInput();
-      this.matchSearchProp();
+      // this.matchSearchProp();
     });
   },
 };
@@ -344,9 +368,9 @@ export default {
               <!-- <div class="SearchBar-qsmart js-qsmartInput" aria-labelledby="searchlabel"> -->
                 <select 
                   v-if="searchPerimeter === 'libris'"
-                  v-model="selectedProperty">
+                  v-model="activeSearchParam">
                   <option 
-                    v-for="prop in searchProperties"
+                    v-for="prop in searchParams"
                     :key="prop.key"
                     :value="prop">
                     {{prop.key | translatePhrase}}
@@ -411,7 +435,7 @@ export default {
           :key="filter['@id']">
           <input type="checkbox" class="SearchBar-typeInput customCheckbox-input"
             :id="filter['@id']"
-            v-model="query['@type']"
+            v-model="activeTypes"
             :value="filter['@id']"/>
             <span class="SearchBar-typeText customCheckbox-icon">
               {{ filter.label }}
