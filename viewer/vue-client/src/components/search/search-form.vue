@@ -14,66 +14,24 @@ export default {
       default: 'libris',
       type: String,
     },
-    // resultData: {},
   },
   data() {
     return {
       vocabUrl: 'https://id.kb.se/vocab/',
-      // inputData: {
-      //   type: 'q',
-      //   q: this.$route.query.q,
-      // },
-      // searchParams: {
-      //   _limit: 20,
-      //   // currentInput: 0,
-      //   '@type': ['Instance', 'Work'],
-      // },
       staticProps: { _limit: 20 },
       searchPhrase: '',
       searchParams: PropertyMappings,
       activeSearchParam: this.getIncomingSearch(),
       activeTypes: this.getIncomingTypes(),
-      // query: (() => { // try to compose v-model bound object from route query
-      //   if (isEmpty(this.$route.query)) {
-      //     return { // else return default settings
-      //       // q: '',
-      //       // ...this.activeSearchParam,
-      //       // _limit: 20,
-      //       '@type': ['Instance'],
-      //     };
-      //   }
-      //   const currentQuery = cloneDeep(this.$route.query);
-      //   if (typeof currentQuery['@type'] === 'string') { // put a single @type into an array
-      //     currentQuery['@type'] = [currentQuery['@type']];
-      //   }
-      //   return currentQuery;
-      // })(),
-      // remoteSearch: {
-      //   q: '',
-      // },
-      // query: '',
-      // activeClass: 'is-active',
-      // currentSearchEl: null,
     };
   },
   methods: {
     focusSearchInput() {
-      // this.currentSearchEl = this.searchPerimeter === 'libris' ? this.$refs.librisSearch : this.$refs.remoteSearch;
-      // this.currentSearchEl.focus();
       this.$refs.searchBarInput.focus();
     },
     switchPerimeter(id) {
       this.$router.push({ path: `/search/${id}` });
-      // this.moveQuery(id);
     },
-    // moveQuery(toPerimeter) {
-    //   const qIndex = findIndex(this.inputData.textInput, { class: 'is-searchPhrase' });
-    //   if (toPerimeter === 'libris') {
-    //     this.inputData.textInput[qIndex].value = this.remoteSearch.q;
-    //   } else {
-    //     this.remoteSearch.q = this.inputData.textInput[qIndex].value;
-    //   }
-    // },
     removeTags(html) {
       let regexHtml = html.replace(/<h1.*>.*?<\/h1>/ig, '').replace(/<h2.*>.*?<\/h2>/ig, '');
       regexHtml = regexHtml.replace(/(<\/?(?:code|br|p)[^>]*>)|<[^>]+>/ig, '$1');
@@ -98,47 +56,9 @@ export default {
       const helpText = document.querySelector('.js-searchHelpText');
       helpText.parentElement.classList.toggle(this.activeClass);
     },
-    // addSearchField() {
-    //   const newobj = {};
-    //   newobj.value = '';
-    //   newobj.class = 'is-searchPhrase';
-    //   this.inputData.textInput.push(newobj);
-    //   this.inputData.currentInput += 1;
-    // },
-    // updateField() {
-    //   if (this.currentIsTag) {
-    //     this.currentField.class = 'is-searchTag is-valid';
-    //   } else {
-    //     this.currentField.class = 'is-searchPhrase';
-    //   }
-    // },
-    // handleFocus(focusedIndex) {
-    //   this.inputData.currentInput = focusedIndex;
-    // },
-    // handleInput(e) {
-    //   const currentElement = document.querySelector('.js-qsmartInput').children[this.inputData.currentInput];
-    //   if (e.keyCode === 13) { // Enter
-    //     e.preventDefault();
-    //     if (!this.currentIsTag) {
-    //       this.doSearch();
-    //     } else if (this.inputData.currentInput === this.inputData.textInput.length - 1) {
-    //       this.addSearchField();
-    //     } else {
-    //       this.inputData.currentInput += 1;
-    //     }
-    //   } else if (e.keyCode === 8 // Backspace
-    //   && !this.currentIsTag
-    //   && currentElement.value.slice(0, currentElement.selectionStart).length === 0
-    //   && this.inputData.textInput.length >= 2) {
-    //     e.preventDefault();
-    //     this.inputData.textInput.splice(this.inputData.currentInput - 1, 1);
-    //     this.inputData.currentInput -= 1;
-    //   }
-    // },
     composeQuery() {
       let query = '';
       if (this.searchPerimeter === 'libris') {
-        // const validTags = this.validSearchTags;
         const queryArr = [];
         Object.keys(this.mergedParams).forEach((param) => {
           if (Array.isArray(this.mergedParams[param])) {
@@ -162,10 +82,6 @@ export default {
       }
     },
     clearInputs() {
-      // this.inputData.currentInput = 0;
-      // this.inputData.textInput.splice(1, this.inputData.textInput.length);
-      // this.inputData.textInput[0].value = '';
-      // this.inputData.textInput[0].class = 'is-searchPhrase';
       this.searchPhrase = '';
       this.focusSearchInput();
     },
@@ -227,66 +143,7 @@ export default {
         label: StringUtil.getLabelByLang(term, this.settings.language, this.resources.vocab, this.resources.context) || term,
       }));
     },
-    // usedFilters() {
-    //   const filters = [];
-    //   if (typeof this.resultData.search !== 'undefined') {
-    //     this.resultData.search.mapping.forEach((item) => {
-    //       if (item.variable !== 'q') {
-    //         let filter = '';
-    //         if (typeof item.object !== 'undefined') {
-    //           if (item.variable === '@type') {
-    //             filter = item.object['@id'];
-    //           } else {
-    //             filter = item.object['@id'].replace('https://id.kb.se/', '');
-    //           }
-    //         } else {
-    //           filter = item.value;
-    //         }
-    //         filters.push(filter);
-    //       }
-    //     });
-    //   }
-    //   return filters;
-    // },
-    // usedTextInput() {
-    //   let textInput = '';
-    //   if (typeof this.resultData.search !== 'undefined') {
-    //     this.resultData.search.mapping.forEach((item) => {
-    //       if (item.variable === 'q') {
-    //         textInput = item.value;
-    //       } 
-    //     });
-    //   }
-    //   return textInput;
-    // },
-    // currentIsTag() {
-    //   const value = this.currentField.value;
-    //   return value.indexOf(':') > -1 && this.validSearchTags.indexOf(value.split(':')[0]) > -1;
-    // },
-    // currentField() {
-    //   return this.inputData.textInput[this.inputData.currentInput];
-    // },
-    // caretIsAtStart() {
-    //   const currentElement = document.querySelector('.js-qsmartInput').children[this.inputData.currentInput];
-    //   return currentElement.value.slice(0, currentElement.selectionStart).length === 0;
-    // },
-    // validSearchTags() {
-    //   const searchTags = PropertyMappings.map(property => property.key);
-    //   return searchTags;
-    // },
-    // currentComputedInput() {
-    //   return this.inputData.currentInput;
-    // },
     hasInput() {
-      // let hasInput = false;
-      // each(this.inputData.textInput, (inputField) => {
-      //   if (inputField.value !== '') {
-      //     hasInput = true;
-      //   }
-      // });
-      // return hasInput;
-
-      // value in input?
       return this.searchPhrase.length > 0;
     },
     inputPlaceholder() {
@@ -313,9 +170,6 @@ export default {
     'tab-menu': TabMenu,
   },
   watch: {
-    // currentComputedInput(newValue) {
-    //   document.querySelector('.js-qsmartInput').children[newValue].focus();
-    // },
     searchPerimeter(newVal, oldVal) {
       if (newVal !== oldVal) {
         this.$nextTick(() => {
@@ -323,24 +177,10 @@ export default {
         });
       }
     },
-    // resultData(newVal) {
-    //   if (typeof newVal !== 'undefined' && Object.keys(newVal).length) {
-    //     if (this.usedTextInput !== '') {
-    //       const newObj = {};
-    //       const usedTextInput = [];
-    //       newObj.value = this.usedTextInput;
-    //       newObj.class = 'is-searchPhrase';
-    //       usedTextInput.push(newObj);
-          
-    //       this.inputData.textInput = usedTextInput;
-    //     } 
-    //   }
-    // },
   },
   mounted() {
     this.$nextTick(() => {
       this.focusSearchInput();
-      // this.matchSearchProp();
     });
   },
 };
@@ -373,69 +213,36 @@ export default {
           <label class="SearchBar-inputLabel hidden" id="searchlabel" for="q" aria-hidden="false">
             {{"Search" | translatePhrase}}
           </label>
-          <!-- <div class="SearchBar-inputWrap" id="searchFieldContainer"> -->
-            <!-- <div class="SearchBar-input customInput form-control"> -->
-              <!-- <div class="SearchBar-qsmart js-qsmartInput" aria-labelledby="searchlabel"> -->
-                <select 
-                  v-if="searchPerimeter === 'libris'"
-                  v-model="activeSearchParam">
-                  <option 
-                    v-for="prop in searchParams"
-                    :key="prop.key"
-                    :value="prop">
-                    {{prop.key | translatePhrase}}
-                  </option>
-                </select>
-                <input type="text"
-                  class="SearchBar-input customInput form-control"
-                  v-model="searchPhrase"
-                  aria-labelledby="searchlabel"
-                  :placeholder="inputPlaceholder | translatePhrase"
-                  ref="searchBarInput">
-                <!-- <input type="text" 
-                  class="SearchBar-input customInput form-control" 
-                  placeholder="ISBN eller valfria sökord"
-                  aria-label="ISBN eller valfria sökord"
-                  v-model="inputData.q"
-                  ref="remoteSearch"> -->
-                <!-- <datalist id="matchingParameters">
-                  <option v-for="matchingParameter in validSearchTags" 
-                    :key="matchingParameter" 
-                    :value="`${matchingParameter}:`">
-                    {{matchingParameter}}:
-                  </option>
-                </datalist> -->
-              <!-- </div> -->
-              <span class="SearchBar-clear icon icon--md" v-show="hasInput" @click="clearInputs()">
-                <i class="fa fa-fw fa-close"></i>
-              </span>
-            <!-- </div> -->
-            <button 
-              class="SearchBar-submit btn btn-primary icon icon--white icon--md" 
-              :aria-label="'Search' | translatePhrase"
-              @click.prevent="doSearch"
-              :class="{'disabled': searchPerimeter === 'remote' && status.remoteDatabases.length === 0}"
-              :disabled="searchPerimeter === 'remote' && status.remoteDatabases.length === 0" >
-              <i class="fa fa-search"></i>
-            </button>
-            <!-- <button 
-              v-else-if="searchPerimeter === 'remote'"
-              class="SearchBar-submit btn btn-primary icon icon--white icon--md"
-              :aria-label="'Search' | translatePhrase"
-              v-bind:class="{'disabled': status.remoteDatabases.length === 0}"
-              :disabled="status.remoteDatabases.length === 0" 
-              v-on:click.prevent="doSearch">
+          <select
+            class="SearchBar-select form-control customSelect"
+            v-if="searchPerimeter === 'libris'"
+            v-model="activeSearchParam">
+            <option 
+              v-for="prop in searchParams"
+              :key="prop.key"
+              :value="prop">
+              {{prop.key | translatePhrase}}
+            </option>
+          </select>
+          <input type="text"
+            class="SearchBar-input customInput form-control"
+            v-model="searchPhrase"
+            aria-labelledby="searchlabel"
+            :placeholder="inputPlaceholder | translatePhrase"
+            ref="searchBarInput">
+          <span class="SearchBar-clear icon icon--md" v-show="hasInput" @click="clearInputs()">
+            <i class="fa fa-fw fa-close"></i>
+          </span>
+          <button 
+            class="SearchBar-submit btn btn-primary icon icon--white icon--md" 
+            :aria-label="'Search' | translatePhrase"
+            @click.prevent="doSearch"
+            :class="{'disabled': searchPerimeter === 'remote' && status.remoteDatabases.length === 0}"
+            :disabled="searchPerimeter === 'remote' && status.remoteDatabases.length === 0" >
             <i class="fa fa-search"></i>
-          </button> -->
-          <!-- </div> -->
+          </button>
         </div>
       </div>
-      <!-- <div 
-        class="SearchBar-formContent"
-        v-if="searchPerimeter === 'remote'">
-        <div class="SearchBar-formGroup form-group panel">
-        </div>
-      </div> -->
       <div class="SearchBar-typeButtons" 
         v-if="searchPerimeter === 'libris'"
         :aria-label="'Choose type' | translatePhrase">
@@ -529,61 +336,29 @@ export default {
   &-input {
     color: @black;
     border-width: 1px 0 1px 1px;
-    border-radius: 4px 0 0 4px;
+    border-radius: 0;
     width: 100%;
     box-shadow: none;
+    border: 1px solid @gray-light;
 
     &:focus {
       border-right: none;
     }
   }
 
-  // &-inputWrap {
-  //   display: flex;
-  //   margin-bottom: 0;
-  // }
+  &-select {
+    height: auto;
+    max-width: 90px;
+    min-width: 50px;
+    box-shadow: none;
+    border: none;
+    text-align-last: left;
+  }
 
   &-inputLabel {
     display: block;
     text-transform: uppercase;
   }
-
-  // &-qsmart {
-  //   display: flex;
-  //   flex: 8 8 98%;
-  //   flex-direction: row;
-  //   flex-wrap: nowrap;
-  //   white-space: nowrap;
-  //   overflow: hidden;
-  //   text-overflow: ellipsis;
-  // }
-
-  // &-qsmartInput {
-  //   border: 0px;
-  //   outline: none;
-  //   display: inline-block;
-
-  //   &.is-searchPhrase {
-  //     flex-grow: 1;
-  //     margin-right: 5px;
-  //     padding: 0;
-  //     outline: none;
-  //     cursor: text;
-  //     color: @black;
-  //   }
-
-  //   &.is-searchTag {
-  //     margin-right: 5px;
-  //     border-radius: 3px;
-  //     padding: 0px 5px;
-  //     outline: none;
-  //     cursor: text;
-  //   }
-          
-  //   &.is-valid {
-  //     background-color: #E0F2F1;
-  //   }
-  // }
 
   &-clear {
     align-self: center;

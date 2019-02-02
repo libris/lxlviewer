@@ -227,6 +227,7 @@ button {
 
   &.btn-primary {
     background-color: fadeout(@btn-primary, 35%);
+    box-shadow: none;
   }
 }
 
