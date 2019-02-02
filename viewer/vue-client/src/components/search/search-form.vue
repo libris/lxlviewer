@@ -31,7 +31,7 @@ export default {
       staticProps: { _limit: 20 },
       searchPhrase: '',
       searchParams: PropertyMappings,
-      activeSearchParam: PropertyMappings[0],
+      activeSearchParam: this.getIncomingSearch(),
       activeTypes: this.getIncomingTypes(),
       // query: (() => { // try to compose v-model bound object from route query
       //   if (isEmpty(this.$route.query)) {
@@ -169,14 +169,20 @@ export default {
       this.searchPhrase = '';
       this.focusSearchInput();
     },
-    matchSearchProp() {
-      // console.log(this.$route.query);
-      this.searchParams.forEach((prop, index) => {
-        const match = Object.keys(prop.mappings).every(key => this.$route.query.hasOwnProperty(key));
-        if (match) {
-          this.activeSearchParam = this.searchParams[index];
-        }
-      });
+    getIncomingSearch() {
+      const match = PropertyMappings.filter(prop => Object.keys(prop.mappings).every(key => this.$route.query.hasOwnProperty(key)));
+      console.log(match);
+      if (match.length > 0) {
+        const matchObj = match[0];
+        this.$nextTick(() => {
+          this.searchPhrase = this.$route.query[matchObj.searchProp];
+        });
+        return matchObj;
+      } if (match.length > 1) { // problem, we have multiple sets of matching parameters
+        console.log('ouch!');
+        return false;
+      }
+      return PropertyMappings[0];
     },
     getIncomingTypes() {
       const performedQuery = cloneDeep(this.$route.query);

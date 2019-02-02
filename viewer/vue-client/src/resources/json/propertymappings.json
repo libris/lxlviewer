@@ -23,7 +23,7 @@
     }
   },
   {
-    "key": "title",
+    "key": "Title",
     "searchProp": "hasTitle.mainTitle",
     "mappings": {
       "hasTitle.mainTitle": ""
