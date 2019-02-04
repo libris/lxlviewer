@@ -745,7 +745,8 @@
             },
             {
               "@type": "Contribution",
-              "agent": null
+              "agent": null,
+              "role": []
             }
           ],
           "contentType": [
@@ -1975,11 +1976,6 @@
             }
           ],
           "contribution": [
-            {
-              "@type": "Contribution",
-              "agent": null,
-              "role": []
-            },
             {
               "@type": "Contribution",
               "agent": null,
