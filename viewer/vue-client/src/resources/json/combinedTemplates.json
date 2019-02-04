@@ -491,10 +491,6 @@
               "label": ""
             }
           ],
-          "marc:hasSystemDetailsNote": {
-            "@type": "marc:SystemDetailsNote",
-            "marc:systemDetailsNote": ""
-          },
           "hasNote": [
             {
               "@type": "Note",
@@ -1947,10 +1943,6 @@
               ]
             }
           ],
-          "marc:hasSystemDetailsNote": {
-            "@type": "marc:SystemDetailsNote",
-            "marc:systemDetailsNote": ""
-          },
           "hasNote": [
             {
               "@type": "Note",
