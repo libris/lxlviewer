@@ -92,7 +92,7 @@ export default {
 <style lang="less">
 .FacetGroup {
   width: 230px;
-  margin-bottom: 5px;
+  margin-bottom: 15px;
 
   &-title {
     margin: 10px 0 5px 0;
