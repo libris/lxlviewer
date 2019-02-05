@@ -67,6 +67,7 @@
             {
               "@type": "PrimaryPublication",
               "year": "",
+              "date": [""],
               "country": [ {"@id": "https://id.kb.se/country/sw"} ],
               "place": {
                 "@type": "Place",
@@ -258,6 +259,7 @@
             {
               "@type": "PrimaryPublication",
               "year": "",
+              "date": [""],
               "country": [ {"@id": "https://id.kb.se/country/sw"} ],
               "place": {
                 "@type": "Place",
@@ -436,6 +438,7 @@
             {
               "@type": "PrimaryPublication",
               "year": "",
+              "date": [""],
               "country": [ {"@id": "https://id.kb.se/country/sw"} ],
               "place": {
                 "@type": "Place",
@@ -629,6 +632,7 @@
             {
               "@type": "PrimaryPublication",
               "year": "",
+              "date": [""],
               "country": [ {"@id": "https://id.kb.se/country/sw"} ],
               "place": {
                 "@type": "Place",
@@ -1033,6 +1037,7 @@
             {
               "@type": "PrimaryPublication",
               "year": "",
+              "date": [""],
               "country": [ {"@id": "https://id.kb.se/country/sw"} ],
               "place": {
                 "@type": "Place",
@@ -1216,7 +1221,7 @@
           "publication": [
             {
               "@type": "PrimaryPublication",
-              "date": "",
+              "date": [""],
               "startYear": "",
               "endYear": "",
               "country": [ {"@id": "https://id.kb.se/country/sw"} ],
@@ -1887,6 +1892,7 @@
             {
               "@type": "PrimaryPublication",
               "year": "",
+              "date": [""],
               "country": [],
               "place": {
                 "@type": "Place",
