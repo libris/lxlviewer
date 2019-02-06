@@ -41,7 +41,7 @@ export default {
       default: '',
     },
     fieldValue: {
-      type: [Object, String, Array, Boolean],
+      type: [Object, String, Array, Boolean, Number],
       default: null,
     },
     isLocked: {
