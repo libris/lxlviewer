@@ -321,6 +321,7 @@
               "label": [""]
             }
           ],
+          "otherPhysicalFormat": [],
           "instanceOf": {
             "@id": "https://id.kb.se/TEMPID#work"
           }
