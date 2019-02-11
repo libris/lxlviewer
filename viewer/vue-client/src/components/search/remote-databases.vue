@@ -104,6 +104,11 @@ export default {
       if (val !== oldVal) {
         this.filterKey = '';
       }
+      if (val) {
+        this.$nextTick(() => this.focusFilterInput());
+      } else {
+        this.$emit('panelClosed');
+      }
     },
   },
   methods: {
@@ -200,6 +205,9 @@ export default {
       userObj.settings.defaultDatabases = dbs;
       this.$store.dispatch('setUser', userObj);
     },
+    focusFilterInput() {
+      this.$refs.listFilterInput.focus();
+    },
   },
   components: {
     'panel-component': PanelComponent,
@@ -280,6 +288,7 @@ export default {
             v-model="filterKey"
             :aria-label="'Filter by' | translatePhrase"
             :placeholder="'Filter by' | translatePhrase"
+            ref="listFilterInput"
             autofocus>
         </div>
       </template>
