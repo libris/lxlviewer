@@ -933,13 +933,6 @@
               "@id": "https://id.kb.se/term/gmgpc%2F%2Fswe/Kartor"
             }
           ],
-          "classification": [{
-              "@type": "ClassificationDdc",
-              "code": "912.",
-              "edition": "full",
-              "editionEnumeration": "23/swe"
-            }
-          ],
           "contribution": [{
               "@type": "PrimaryContribution",
               "agent": null,
