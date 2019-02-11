@@ -143,7 +143,7 @@ export default {
         :key="k" 
         :field-key="k" 
         :field-value="v" 
-        :parent-path="inspector.status.focus"></field>
+        :parent-path="editingObject"></field>
       <div id="result" v-if="user.settings.appTech && !isLocked">
         <pre class="col-md-12">
           {{ formData }}
