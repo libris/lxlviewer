@@ -370,9 +370,6 @@ export default {
         item.classList.remove('is-removeable');
       }
     },
-    updateValue(value) {
-      this.$dispatch('update-value', this.path, value);
-    },
     removeThis() {
       let approved = true;
       if (this.warnBeforeRemove) {
