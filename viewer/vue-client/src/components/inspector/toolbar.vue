@@ -758,7 +758,7 @@ export default {
 
     & .Toolbar-menuItem {
       &.is-active {
-        background-color: @gray-lighter;
+        font-weight: bold;
       }
       &.inSubMenu {
         background-color: @gray-lighter;
