@@ -199,7 +199,7 @@ export default {
         <TooltipComponent  
         :show-tooltip="copyHover" 
         tooltip-text="Copy ID" />
-      </i> {{ idAsFnurgel }}
+      </i>{{ idAsFnurgel }}
     </div>
   </div>
 
@@ -306,7 +306,7 @@ export default {
     background-color: #f3f5f6;
     letter-spacing: 0.5px;
     font-weight: 400;
-    padding: 0 0.75em 0 0.5em;
+    padding: 0 0.75em;
     border-radius: 1em;
     &.recently-copied {
       background-color: @brand-success;
@@ -314,9 +314,9 @@ export default {
   }
   &-idCopyIcon {
     transition: all 0.25s ease;
-    margin: 0 0.25em 0 0;
+    margin: 0 0.25em 0 -0.25em;
     overflow: hidden;
-    width: 1em;
+    width: 1.2em;
     opacity: 1;
     cursor: pointer;
     &.collapsedIcon {
