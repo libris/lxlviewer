@@ -1,12 +1,16 @@
 <script>
 import { each } from 'lodash-es';
 import LensMixin from '../mixins/lens-mixin';
+import TooltipComponent from '@/components/shared/tooltip-component';
 import * as StringUtil from '@/utils/string';
 import * as RecordUtil from '@/utils/record';
 
 export default {
   mixins: [LensMixin],
   name: 'entity-summary',
+  components: {
+    TooltipComponent,
+  },
   props: {
     focusData: {
       type: Object,
@@ -55,6 +59,10 @@ export default {
   },
   data() {
     return {
+      idHover: false,
+      recentlyCopiedId: false,
+      failedCopyId: false,
+      copyHover: false,
       defaultSettings: {
         show: false,
         styling: 'gray',
@@ -154,6 +162,18 @@ export default {
     },
   },
   methods: {
+    copyFnurgel() {
+      const self = this;
+      this.$copyText(this.focusData['@id']).then(() => {
+        self.recentlyCopiedId = true;
+        setTimeout(() => {
+          self.recentlyCopiedId = false;
+        }, 1000);
+      }, (e) => {
+        self.failedCopyId = true;
+        console.warn(e);
+      });
+    },
     importThis() {
       this.$emit('import-this');
     },
@@ -174,8 +194,12 @@ export default {
       {{categorization.join(', ')}} {{ isLocal ? '{lokal entitet}' : '' }}
       <span class="EntitySummary-sourceLabel" v-if="database">{{ database }}</span>
     </div>
-    <div class="EntitySummary-id uppercaseHeading--light">
-      {{ idAsFnurgel }}
+    <div class="EntitySummary-id uppercaseHeading--light" :class="{'recently-copied': recentlyCopiedId }" @mouseover="idHover = true" @mouseout="idHover = false">
+      <i class="fa fa-copy EntitySummary-idCopyIcon" @mouseover="copyHover = true" @mouseout="copyHover = false" :class="{'collapsedIcon': !idHover }" @click="copyFnurgel">
+        <TooltipComponent  
+        :show-tooltip="copyHover" 
+        tooltip-text="Copy ID" />
+      </i> {{ idAsFnurgel }}
     </div>
   </div>
 
@@ -278,11 +302,28 @@ export default {
     text-align: right;
     text-transform: none;
     color: @gray-darker;
+    transition: background-color 0.5s ease;
     background-color: #f3f5f6;
     letter-spacing: 0.5px;
     font-weight: 400;
-    padding: 0 0.75em;
+    padding: 0 0.75em 0 0.5em;
     border-radius: 1em;
+    &.recently-copied {
+      background-color: @brand-success;
+    }
+  }
+  &-idCopyIcon {
+    transition: all 0.25s ease;
+    margin: 0 0.25em 0 0;
+    overflow: hidden;
+    width: 1em;
+    opacity: 1;
+    cursor: pointer;
+    &.collapsedIcon {
+      margin: 0 0 0 0;
+      width: 0;
+      opacity: 0;
+    }
   }
   
 

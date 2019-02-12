@@ -5,6 +5,7 @@ import 'whatwg-fetch';
 import Vue from 'vue';
 import Vuex from 'vuex';
 import PortalVue from 'portal-vue';
+import VueClipboard from 'vue-clipboard2';
 import ComboKeys from 'combokeys';
 import modernizr from 'modernizr'; // eslint-disable-line no-unused-vars
 import { each } from 'lodash-es';
@@ -23,6 +24,7 @@ import KeyBindings from '@/resources/json/keybindings.json';
 Vue.config.productionTip = false;
 Vue.use(Vuex);
 Vue.use(PortalVue);
+Vue.use(VueClipboard);
 Vue.component('field', Field);
 
 Vue.filter('labelByLang', label => StringUtil.getLabelByLang(label, store.getters.user.settings.language, store.getters.resources.vocab, store.getters.resources.context) || label);
