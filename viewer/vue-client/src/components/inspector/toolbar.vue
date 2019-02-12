@@ -127,14 +127,8 @@ export default {
     },
     applyPostAsTemplate() {
       this.hideToolsMenu();
-      const inputId = window.prompt(StringUtil.getUiPhraseByLang('Enter id of post', this.settings.language), '');
-      if (typeof inputId === 'undefined' || inputId === 'undefined' || inputId === null) {
-        return;
-      }
-      const id = inputId;
       this.$store.dispatch('pushInspectorEvent', {
-        name: 'apply-post-as-template',
-        value: id,
+        name: 'open-embellish-from-id',
       });
     },
     initOverridePicker() {
@@ -195,7 +189,8 @@ export default {
     },
     hideToolsMenu() {
       this.toolsMenuActive = false;
-      this.showTemplatesSubMenu = false;
+      this.showEmbellishTemplateSubMenu = false;
+      this.showEmbellishFromPostSubMenu = false;
     },
     showToolsMenu() {
       this.toolsMenuActive = !this.toolsMenuActive;
