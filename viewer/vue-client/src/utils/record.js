@@ -127,6 +127,12 @@ export function getItemObject(itemOf, heldBy, instance) {
           shelfControlNumber: '',
         },
       ],
+      'associatedMedia': [
+        {
+          '@type': 'MediaObject',
+          'uri': ['']
+        }
+      ],
       'marc:hasTextualHoldingsBasicBibliographicUnit': [
         {
           '@type': 'marc:TextualHoldingsBasicBibliographicUnit',
