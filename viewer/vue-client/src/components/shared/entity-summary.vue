@@ -73,7 +73,12 @@ export default {
       'user',
     ]),
     idAsFnurgel() {
-      return RecordUtil.extractFnurgel(this.focusData['@id']);
+      const id = this.focusData['@id'];
+      const fnurgel = RecordUtil.extractFnurgel(this.focusData['@id']);
+      if (fnurgel) {
+        return fnurgel;
+      }
+      return this.focusData['@id'].replace('https://', '').replace('http://', '');
     },
     idTooltipText() {
       return StringUtil.getUiPhraseByLang('Copy ID', this.user.settings.language);
