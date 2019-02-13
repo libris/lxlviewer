@@ -37,7 +37,8 @@ export default {
       showFieldAdderTooltip: false,
       showClarifySave: false,
       showMarcPreview: false,
-      showTemplatesSubMenu: false,
+      showEmbellishTemplateSubMenu: false,
+      showEmbellishFromPostSubMenu: false,
       fieldAdderActive: false,
     };
   },
@@ -126,14 +127,8 @@ export default {
     },
     applyPostAsTemplate() {
       this.hideToolsMenu();
-      const inputId = window.prompt(StringUtil.getUiPhraseByLang('Enter id of post', this.settings.language), '');
-      if (typeof inputId === 'undefined' || inputId === 'undefined' || inputId === null) {
-        return;
-      }
-      const id = inputId;
       this.$store.dispatch('pushInspectorEvent', {
-        name: 'apply-post-as-template',
-        value: id,
+        name: 'open-embellish-from-id',
       });
     },
     initOverridePicker() {
@@ -194,7 +189,8 @@ export default {
     },
     hideToolsMenu() {
       this.toolsMenuActive = false;
-      this.showTemplatesSubMenu = false;
+      this.showEmbellishTemplateSubMenu = false;
+      this.showEmbellishFromPostSubMenu = false;
     },
     showToolsMenu() {
       this.toolsMenuActive = !this.toolsMenuActive;
@@ -509,26 +505,33 @@ export default {
           {{ "Make copy" | translatePhrase }}{{ getKeybindingText('duplicate-item') ? ` (${getKeybindingText('duplicate-item')})` : ''}}
           </a>
         </li>
-        <li class="Toolbar-menuItem" :class="{'is-active': showTemplatesSubMenu}" v-if="user.isLoggedIn && inspector.status.editing">
-          <a class="Toolbar-menuLink" @click="showTemplatesSubMenu = !showTemplatesSubMenu">
+        <li class="Toolbar-menuItem" :class="{'is-active': showEmbellishTemplateSubMenu}" v-if="user.isLoggedIn && inspector.status.editing">
+          <a class="Toolbar-menuLink" @click="showEmbellishTemplateSubMenu = !showEmbellishTemplateSubMenu">
             <i class="fa fa-fw fa-clipboard"></i>
             <span>{{ "Embellish from template" | translatePhrase }}{{ getKeybindingText('embellish-from-template') ? ` (${getKeybindingText('embellish-from-template')})` : ''}}</span>
-            <span class="submenuControl"><i class="fa fa-fw" :class="{ 'fa-caret-down': showTemplatesSubMenu, 'fa-caret-right': !showTemplatesSubMenu }"></i></span>
+            <span class="submenuControl"><i class="fa fa-fw" :class="{ 'fa-caret-down': showEmbellishTemplateSubMenu, 'fa-caret-right': !showEmbellishTemplateSubMenu }"></i></span>
           </a>
         </li>
-        <li class="Toolbar-menuItem inSubMenu" v-for="(value, key) in validTemplates" v-show="showTemplatesSubMenu" :key="key">
+        <li class="Toolbar-menuItem inSubMenu" v-for="(value, key) in validTemplates" v-show="showEmbellishTemplateSubMenu" :key="key">
           <a class="Toolbar-menuLink" @click="applyTemplate(value)">
           <i class="fa fa-fw fa-plus"></i>
           {{ value.label }}
           </a>
         </li>
-        <li class="Toolbar-menuItem inSubMenu" v-show="showTemplatesSubMenu">
+        <li class="Toolbar-menuItem" :class="{'is-active': showEmbellishFromPostSubMenu}" v-if="user.isLoggedIn && inspector.status.editing">
+          <a class="Toolbar-menuLink" @click="showEmbellishFromPostSubMenu = !showEmbellishFromPostSubMenu">
+            <i class="fa fa-fw fa-clipboard"></i>
+            <span>{{ "Embellish from post" | translatePhrase }}{{ getKeybindingText('embellish-from-post') ? ` (${getKeybindingText('embellish-from-post')})` : ''}}</span>
+            <span class="submenuControl"><i class="fa fa-fw" :class="{ 'fa-caret-down': showEmbellishFromPostSubMenu, 'fa-caret-right': !showEmbellishFromPostSubMenu }"></i></span>
+          </a>
+        </li>
+        <li class="Toolbar-menuItem inSubMenu" v-show="showEmbellishFromPostSubMenu">
           <a class="Toolbar-menuLink" @click="openTemplatePicker">
           <i class="fa fa-fw fa-upload"></i>
             {{ 'From file' | translatePhrase }}
           </a>
         </li>
-        <li class="Toolbar-menuItem inSubMenu" v-show="showTemplatesSubMenu">
+        <li class="Toolbar-menuItem inSubMenu" v-show="showEmbellishFromPostSubMenu">
           <a class="Toolbar-menuLink" @click="applyPostAsTemplate">
           <i class="fa fa-fw fa-chain"></i>
           {{ 'From ID' | translatePhrase }}
@@ -750,7 +753,7 @@ export default {
 
     & .Toolbar-menuItem {
       &.is-active {
-        background-color: @gray-lighter;
+        font-weight: bold;
       }
       &.inSubMenu {
         background-color: @gray-lighter;
