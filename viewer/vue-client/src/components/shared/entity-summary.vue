@@ -307,7 +307,8 @@ export default {
 
   &-titleLink {
     &:visited {
-      color: @link-visited-color;
+      // Commented out until fixing in IE11
+      // color: @link-visited-color;
     }
     &.blue-link {
       color: @brand-id;
