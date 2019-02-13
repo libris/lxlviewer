@@ -2,16 +2,12 @@
 import { each } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import LensMixin from '../mixins/lens-mixin';
-import TooltipComponent from '@/components/shared/tooltip-component';
 import * as StringUtil from '@/utils/string';
 import * as RecordUtil from '@/utils/record';
 
 export default {
   mixins: [LensMixin],
   name: 'entity-summary',
-  components: {
-    TooltipComponent,
-  },
   props: {
     focusData: {
       type: Object,
@@ -201,7 +197,7 @@ export default {
       <span class="EntitySummary-sourceLabel" v-if="database">{{ database }}</span>
     </div>
     <div class="EntitySummary-id uppercaseHeading--light" :class="{'recently-copied': recentlyCopiedId }" @mouseover="idHover = true" @mouseout="idHover = false">
-      <i v-tooltip.top="idTooltipText" class="fa fa-copy EntitySummary-idCopyIcon" :class="{'collapsedIcon': !idHover }" @click="copyFnurgel">
+      <i v-tooltip.top="idTooltipText" class="fa fa-copy EntitySummary-idCopyIcon" :class="{'collapsedIcon': !idHover || recentlyCopiedId }" @click="copyFnurgel">
       </i>{{ idAsFnurgel }}
     </div>
   </div>
