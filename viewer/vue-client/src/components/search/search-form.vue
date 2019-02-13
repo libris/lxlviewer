@@ -335,12 +335,10 @@ export default {
 
   &-input {
     color: @black;
-    border-width: 1px 0 1px 1px;
+    border-width: 0px 0px 0px 1px;
     border-radius: 0;
     width: 100%;
     box-shadow: none;
-    border: 1px solid @gray-light;
-
     &:focus {
       border-right: none;
     }
@@ -348,8 +346,8 @@ export default {
 
   &-select {
     height: auto;
-    max-width: 90px;
-    min-width: 50px;
+    min-width: unset;
+    width: 8em;
     box-shadow: none;
     border: none;
     text-align-last: left;
