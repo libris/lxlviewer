@@ -795,6 +795,7 @@ export default {
   }
   &-body {
     padding: 1em;
+    width: 100%;
   }
   &-form {
 
