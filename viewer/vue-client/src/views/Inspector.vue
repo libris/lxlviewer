@@ -392,17 +392,21 @@ export default {
       const element = document.createElement('a');
       const json = JSON.stringify(this.getPackagedItem(true), null, 2); // 2 = json-spacing
       const blob = new Blob([`${json}`], { type: 'application/ld+json' });
-      element.href = window.URL.createObjectURL(blob);
       const splitIdParts = focusId.split('/');
       const id = splitIdParts[splitIdParts.length - 1];
       const promptInstruction = StringUtil.getUiPhraseByLang('Name your file', this.user.settings.language);
       const promptedName = prompt(promptInstruction, id);
       if (promptedName !== null) {
-        element.download = `${promptedName}.jsonld`;
-        element.style.display = 'none';
-        document.body.appendChild(element);
-        element.click();
-        document.body.removeChild(element);
+        if (this.downloadIsSupported) {
+          element.href = window.URL.createObjectURL(blob);
+          element.download = `${promptedName}.jsonld`;
+          element.style.display = 'none';
+          document.body.appendChild(element);
+          element.click();
+          document.body.removeChild(element);
+        } else {
+          window.navigator.msSaveOrOpenBlob(blob, `${promptedName}.jsonld`);
+        }
       }
     },
     getPackagedItem(keepEmpty = false) {
@@ -571,6 +575,10 @@ export default {
     },
     isItem() {
       return this.inspector.data.mainEntity['@type'] === 'Item';
+    },
+    downloadIsSupported() {
+      const a = document.createElement('a');
+      return typeof a.download !== 'undefined';
     },
     recordType() {
       return VocabUtil.getRecordType(
