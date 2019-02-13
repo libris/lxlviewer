@@ -346,6 +346,7 @@ export default {
 
   &-select {
     height: auto;
+    min-width: unset;
     width: 8em;
     box-shadow: none;
     border: none;
