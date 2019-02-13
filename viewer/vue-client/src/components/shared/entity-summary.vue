@@ -1,5 +1,6 @@
 <script>
 import { each } from 'lodash-es';
+import { mapGetters } from 'vuex';
 import LensMixin from '../mixins/lens-mixin';
 import TooltipComponent from '@/components/shared/tooltip-component';
 import * as StringUtil from '@/utils/string';
@@ -62,7 +63,6 @@ export default {
       idHover: false,
       recentlyCopiedId: false,
       failedCopyId: false,
-      copyHover: false,
       defaultSettings: {
         show: false,
         styling: 'gray',
@@ -73,8 +73,14 @@ export default {
     };
   },
   computed: {
+    ...mapGetters([
+      'user',
+    ]),
     idAsFnurgel() {
       return RecordUtil.extractFnurgel(this.focusData['@id']);
+    },
+    idTooltipText() {
+      return StringUtil.getUiPhraseByLang('Copy ID', this.user.settings.language);
     },
     isReplacedBy() {
       const info = this.getSummary.info.concat(this.getSummary.sub);
@@ -195,10 +201,7 @@ export default {
       <span class="EntitySummary-sourceLabel" v-if="database">{{ database }}</span>
     </div>
     <div class="EntitySummary-id uppercaseHeading--light" :class="{'recently-copied': recentlyCopiedId }" @mouseover="idHover = true" @mouseout="idHover = false">
-      <i class="fa fa-copy EntitySummary-idCopyIcon" @mouseover="copyHover = true" @mouseout="copyHover = false" :class="{'collapsedIcon': !idHover }" @click="copyFnurgel">
-        <TooltipComponent  
-        :show-tooltip="copyHover" 
-        tooltip-text="Copy ID" />
+      <i v-tooltip.top="idTooltipText" class="fa fa-copy EntitySummary-idCopyIcon" :class="{'collapsedIcon': !idHover }" @click="copyFnurgel">
       </i>{{ idAsFnurgel }}
     </div>
   </div>

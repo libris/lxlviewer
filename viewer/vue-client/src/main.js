@@ -4,6 +4,7 @@
 import 'whatwg-fetch';
 import Vue from 'vue';
 import Vuex from 'vuex';
+import VTooltip from 'v-tooltip';
 import PortalVue from 'portal-vue';
 import VueClipboard from 'vue-clipboard2';
 import ComboKeys from 'combokeys';
@@ -24,6 +25,7 @@ import KeyBindings from '@/resources/json/keybindings.json';
 Vue.config.productionTip = false;
 Vue.use(Vuex);
 Vue.use(PortalVue);
+Vue.use(VTooltip);
 Vue.use(VueClipboard);
 Vue.component('field', Field);
 
