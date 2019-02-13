@@ -174,12 +174,12 @@ new Vue({
       }
     },
     injectAnalytics() {
-      const analyticsString = 'var _paq=_paq||[];_paq.push(["trackPageView"]),_paq.push(["enableLinkTracking"]),function(){var e="//analytics.kb.se/";_paq.push(["setTrackerUrl",e+"piwik.php"]),_paq.push(["setSiteId","****"]);var a=document,p=a.createElement("script"),t=a.getElementsByTagName("script")[0];p.type="text/javascript",p.async=!0,p.defer=!0,p.src=e+"piwik.js",t.parentNode.insertBefore(p,t)}();';
-      const scriptWithPiwikId = analyticsString.replace('****', this.settings.piwikID);
+      const analyticsString = 'var _paq=_paq||[];_paq.push(["trackPageView"]),_paq.push(["enableLinkTracking"]),function(){var e="//analytics.kb.se/";_paq.push(["setTrackerUrl",e+"matomo.php"]),_paq.push(["setSiteId","****"]);var a=document,p=a.createElement("script"),t=a.getElementsByTagName("script")[0];p.type="text/javascript",p.async=!0,p.defer=!0,p.src=e+"matomo.js",t.parentNode.insertBefore(p,t)}();';
+      const scriptWithMatomoId = analyticsString.replace('****', this.settings.matomoId);
       const scriptTag = document.createElement('script');
 
       scriptTag.setAttribute('type', 'text/javascript');
-      scriptTag.text = scriptWithPiwikId;
+      scriptTag.text = scriptWithMatomoId;
       
       document.head.appendChild(scriptTag);
     },
