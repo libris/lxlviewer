@@ -75,10 +75,11 @@ export default {
     idAsFnurgel() {
       const id = this.focusData['@id'];
       const fnurgel = RecordUtil.extractFnurgel(this.focusData['@id']);
-      if (fnurgel) {
+      if (fnurgel && this.isLibrisResource) {
         return fnurgel;
       }
-      return this.focusData['@id'].replace('https://', '').replace('http://', '');
+      const cleaned = this.focusData['@id'].replace('https://', '').replace('http://', '');
+      return cleaned;
     },
     idTooltipText() {
       return StringUtil.getUiPhraseByLang('Copy ID', this.user.settings.language);
@@ -285,7 +286,6 @@ export default {
 
   &-type, &-id {
     display: block;
-    flex-grow: 2;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -300,6 +300,8 @@ export default {
   }
   &-type {
     text-align: left;
+    flex-grow: 2;
+    flex-basis: 50%;
   }
   &-id {
     flex-grow: 0;
