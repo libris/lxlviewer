@@ -74,11 +74,11 @@ export default {
     ]),
     idAsFnurgel() {
       const id = this.focusData['@id'];
-      const fnurgel = RecordUtil.extractFnurgel(this.focusData['@id']);
+      const fnurgel = RecordUtil.extractFnurgel(id);
       if (fnurgel && this.isLibrisResource) {
         return fnurgel;
       }
-      const cleaned = this.focusData['@id'].replace('https://', '').replace('http://', '');
+      const cleaned = id.replace('https://', '').replace('http://', '');
       return cleaned;
     },
     idTooltipText() {
