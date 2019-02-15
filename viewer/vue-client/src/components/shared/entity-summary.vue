@@ -1,7 +1,9 @@
 <script>
 import { each } from 'lodash-es';
+import { mapGetters } from 'vuex';
 import LensMixin from '../mixins/lens-mixin';
 import * as StringUtil from '@/utils/string';
+import * as RecordUtil from '@/utils/record';
 
 export default {
   mixins: [LensMixin],
@@ -54,6 +56,9 @@ export default {
   },
   data() {
     return {
+      idHover: false,
+      recentlyCopiedId: false,
+      failedCopyId: false,
       defaultSettings: {
         show: false,
         styling: 'gray',
@@ -64,6 +69,21 @@ export default {
     };
   },
   computed: {
+    ...mapGetters([
+      'user',
+    ]),
+    idAsFnurgel() {
+      const id = this.focusData['@id'];
+      const fnurgel = RecordUtil.extractFnurgel(id);
+      if (fnurgel && this.isLibrisResource) {
+        return fnurgel;
+      }
+      const cleaned = id.replace('https://', '').replace('http://', '');
+      return cleaned;
+    },
+    idTooltipText() {
+      return StringUtil.getUiPhraseByLang('Copy ID', this.user.settings.language);
+    },
     isReplacedBy() {
       const info = this.getSummary.info.concat(this.getSummary.sub);
       const infoObj = {};
@@ -150,6 +170,18 @@ export default {
     },
   },
   methods: {
+    copyFnurgel() {
+      const self = this;
+      this.$copyText(this.focusData['@id']).then(() => {
+        self.recentlyCopiedId = true;
+        setTimeout(() => {
+          self.recentlyCopiedId = false;
+        }, 1000);
+      }, (e) => {
+        self.failedCopyId = true;
+        console.warn(e);
+      });
+    },
     importThis() {
       this.$emit('import-this');
     },
@@ -169,6 +201,10 @@ export default {
     <div class="EntitySummary-type uppercaseHeading--light">
       {{categorization.join(', ')}} {{ isLocal ? '{lokal entitet}' : '' }}
       <span class="EntitySummary-sourceLabel" v-if="database">{{ database }}</span>
+    </div>
+    <div class="EntitySummary-id uppercaseHeading--light" :class="{'recently-copied': recentlyCopiedId }" @mouseover="idHover = true" @mouseout="idHover = false">
+      <i v-tooltip.top="idTooltipText" class="fa fa-copy EntitySummary-idCopyIcon" :class="{'collapsedIcon': !idHover || recentlyCopiedId }" @click="copyFnurgel">
+      </i>{{ idAsFnurgel }}
     </div>
   </div>
 
@@ -206,9 +242,9 @@ export default {
     <ul class="EntitySummary-details" v-show="!isCompact">
       <li class="EntitySummary-detailsItem" 
         v-if="identifiers.length > 0">
-        <span class="EntitySummary-detailsKey EntitySummary-id uppercaseHeading--bold">
+        <span class="EntitySummary-detailsKey EntitySummary-identifiers uppercaseHeading--bold">
         {{ identifiers[0] }}</span>
-        <span class="EntitySummary-detailsValue EntitySummary-idInfo" 
+        <span class="EntitySummary-detailsValue EntitySummary-identifiersInfo" 
           v-if="identifiers.length > 1"><span class="badge">+{{ identifiers.length-1 }}</span></span>
       </li>
       <li class="EntitySummary-detailsItem" 
@@ -244,13 +280,12 @@ export default {
 
   &-meta {
     border-width: 0px;
+    display: flex;
+    margin-bottom: -0.4em;
   }
 
-  &-type {
+  &-type, &-id {
     display: block;
-    flex-basis: 85%;
-    flex-grow: 2;
-    margin-bottom: -0.4em;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -263,6 +298,40 @@ export default {
       padding: 3px;
     }
   }
+  &-type {
+    text-align: left;
+    flex-grow: 2;
+    flex-basis: 50%;
+  }
+  &-id {
+    flex-grow: 0;
+    text-align: right;
+    text-transform: none;
+    color: @gray-darker;
+    transition: background-color 0.5s ease;
+    background-color: #f3f5f6;
+    letter-spacing: 0.5px;
+    font-weight: 400;
+    padding: 0 0.75em;
+    border-radius: 1em;
+    &.recently-copied {
+      background-color: @brand-success;
+    }
+  }
+  &-idCopyIcon {
+    transition: all 0.25s ease;
+    margin: 0 0.25em 0 -0.25em;
+    overflow: hidden;
+    width: 1.2em;
+    opacity: 1;
+    cursor: pointer;
+    &.collapsedIcon {
+      margin: 0 0 0 0;
+      width: 0;
+      opacity: 0;
+    }
+  }
+  
 
   &-sourceLabel {
     border: 1px solid;
@@ -306,6 +375,10 @@ export default {
   }
 
   &-titleLink {
+    &:visited {
+      // Commented out until fixing in IE11
+      // color: @link-visited-color;
+    }
     &.blue-link {
       color: @brand-id;
     }

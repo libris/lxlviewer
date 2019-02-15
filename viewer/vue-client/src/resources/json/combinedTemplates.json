@@ -67,6 +67,7 @@
             {
               "@type": "PrimaryPublication",
               "year": "",
+              "date": [""],
               "country": [ {"@id": "https://id.kb.se/country/sw"} ],
               "place": {
                 "@type": "Place",
@@ -191,13 +192,12 @@
             }
           ],
           "subject": [],
-          "hasNote": [{
-            "@type": "marc:LanguageNote",
-            "label": ""
-          },{
-            "@type": "marc:ParticipantOrPerformerNote",
-            "label": ""
-          }]
+          "hasNote": [
+            {
+              "@type": "marc:ParticipantOrPerformerNote",
+              "label": ""
+            }
+          ]
         }
       }
     },
@@ -258,6 +258,7 @@
             {
               "@type": "PrimaryPublication",
               "year": "",
+              "date": [""],
               "country": [ {"@id": "https://id.kb.se/country/sw"} ],
               "place": {
                 "@type": "Place",
@@ -320,6 +321,7 @@
               "label": [""]
             }
           ],
+          "otherPhysicalFormat": [],
           "instanceOf": {
             "@id": "https://id.kb.se/TEMPID#work"
           }
@@ -362,6 +364,12 @@
             }
           ],
           "contentType": [{"@id": "https://id.kb.se/term/rda/Text"}],
+          "hasNote": [
+            {
+              "@type": "marc:LanguageNote",
+              "label": ""
+            }
+          ],
           "subject": []
         }
       }
@@ -436,6 +444,7 @@
             {
               "@type": "PrimaryPublication",
               "year": "",
+              "date": [""],
               "country": [ {"@id": "https://id.kb.se/country/sw"} ],
               "place": {
                 "@type": "Place",
@@ -491,10 +500,6 @@
               "label": ""
             }
           ],
-          "marc:hasSystemDetailsNote": {
-            "@type": "marc:SystemDetailsNote",
-            "marc:systemDetailsNote": ""
-          },
           "hasNote": [
             {
               "@type": "Note",
@@ -633,6 +638,7 @@
             {
               "@type": "PrimaryPublication",
               "year": "",
+              "date": [""],
               "country": [ {"@id": "https://id.kb.se/country/sw"} ],
               "place": {
                 "@type": "Place",
@@ -749,7 +755,8 @@
             },
             {
               "@type": "Contribution",
-              "agent": null
+              "agent": null,
+              "role": []
             }
           ],
           "contentType": [
@@ -926,13 +933,6 @@
               "@id": "https://id.kb.se/term/gmgpc%2F%2Fswe/Kartor"
             }
           ],
-          "classification": [{
-              "@type": "ClassificationDdc",
-              "code": "912.",
-              "edition": "full",
-              "editionEnumeration": "23/swe"
-            }
-          ],
           "contribution": [{
               "@type": "PrimaryContribution",
               "agent": null,
@@ -1036,6 +1036,7 @@
             {
               "@type": "PrimaryPublication",
               "year": "",
+              "date": [""],
               "country": [ {"@id": "https://id.kb.se/country/sw"} ],
               "place": {
                 "@type": "Place",
@@ -1147,10 +1148,17 @@
             },
             {
               "@type": "Contribution",
-              "agent": null
+              "agent": null,
+              "role": []
             }
           ],
           "contentType": [{"@id": "https://id.kb.se/term/rda/Text"}],
+          "hasNote": [
+            {
+              "@type": "marc:LanguageNote",
+              "label": ""
+            }
+          ],
           "subject": []
         }
       }
@@ -1218,7 +1226,7 @@
           "publication": [
             {
               "@type": "PrimaryPublication",
-              "date": "",
+              "date": [""],
               "startYear": "",
               "endYear": "",
               "country": [ {"@id": "https://id.kb.se/country/sw"} ],
@@ -1889,6 +1897,7 @@
             {
               "@type": "PrimaryPublication",
               "year": "",
+              "date": [""],
               "country": [],
               "place": {
                 "@type": "Place",
@@ -1946,10 +1955,6 @@
               ]
             }
           ],
-          "marc:hasSystemDetailsNote": {
-            "@type": "marc:SystemDetailsNote",
-            "marc:systemDetailsNote": ""
-          },
           "hasNote": [
             {
               "@type": "Note",
@@ -1982,11 +1987,6 @@
             }
           ],
           "contribution": [
-            {
-              "@type": "Contribution",
-              "agent": null,
-              "role": []
-            },
             {
               "@type": "Contribution",
               "agent": null,

@@ -4,7 +4,9 @@
 import 'whatwg-fetch';
 import Vue from 'vue';
 import Vuex from 'vuex';
+import VTooltip from 'v-tooltip';
 import PortalVue from 'portal-vue';
+import VueClipboard from 'vue-clipboard2';
 import ComboKeys from 'combokeys';
 import modernizr from 'modernizr'; // eslint-disable-line no-unused-vars
 import { each } from 'lodash-es';
@@ -23,6 +25,8 @@ import KeyBindings from '@/resources/json/keybindings.json';
 Vue.config.productionTip = false;
 Vue.use(Vuex);
 Vue.use(PortalVue);
+Vue.use(VTooltip);
+Vue.use(VueClipboard);
 Vue.component('field', Field);
 
 Vue.filter('labelByLang', label => StringUtil.getLabelByLang(label, store.getters.user.settings.language, store.getters.resources.vocab, store.getters.resources.context) || label);
@@ -174,12 +178,12 @@ new Vue({
       }
     },
     injectAnalytics() {
-      const analyticsString = 'var _paq=_paq||[];_paq.push(["trackPageView"]),_paq.push(["enableLinkTracking"]),function(){var e="//analytics.kb.se/";_paq.push(["setTrackerUrl",e+"piwik.php"]),_paq.push(["setSiteId","****"]);var a=document,p=a.createElement("script"),t=a.getElementsByTagName("script")[0];p.type="text/javascript",p.async=!0,p.defer=!0,p.src=e+"piwik.js",t.parentNode.insertBefore(p,t)}();';
-      const scriptWithPiwikId = analyticsString.replace('****', this.settings.piwikID);
+      const analyticsString = 'var _paq=_paq||[];_paq.push(["trackPageView"]),_paq.push(["enableLinkTracking"]),function(){var e="//analytics.kb.se/";_paq.push(["setTrackerUrl",e+"matomo.php"]),_paq.push(["setSiteId","****"]);var a=document,p=a.createElement("script"),t=a.getElementsByTagName("script")[0];p.type="text/javascript",p.async=!0,p.defer=!0,p.src=e+"matomo.js",t.parentNode.insertBefore(p,t)}();';
+      const scriptWithMatomoId = analyticsString.replace('****', this.settings.matomoId);
       const scriptTag = document.createElement('script');
 
       scriptTag.setAttribute('type', 'text/javascript');
-      scriptTag.text = scriptWithPiwikId;
+      scriptTag.text = scriptWithMatomoId;
       
       document.head.appendChild(scriptTag);
     },

@@ -109,6 +109,8 @@
     "Copy to clipboard": "Kopiera till urklipp",
     "Copied entity to clipboard": "Kopierade entitet till urklipp",
     "Paste entity": "Klistra in entitet",
+    "Paste": "Klistra in",
+    "Link": "Länk",
     "Manage": "Hantera",
     "Create local entity" : "Skapa lokal entitet",
     "Create local entity:" : "Skapa lokal entitet:",
@@ -155,6 +157,8 @@
     "Could not process server response": "Kunde inte hantera svaret från servern",
     "Data is missing a reference, please verify file": "Datan saknar en referens, var god verifiera filen",
     "Embellish from template": "Berika från mall",
+    "Embellish from post": "Berika från post",
+    "Embellish": "Berika",
     "Try reloading the page": "Försök att ladda om sidan",
     "Couldn\t load help documentation": "Kunde inte ladda hjälpdokumentation",
     "Try again": "Försök igen",
@@ -182,6 +186,7 @@
     "Create link from local entity": "Skapa länk av lokal entitet",
     "Copy title from": "Kopiera titel från",
     "Copy": "Kopia",
+    "Copy ID": "Kopiera ID",
     "Copy successful": "Kopiering lyckades",
     "Admin metadata": "Adminmetadata",
     "Add holding": "Lägg bestånd",
@@ -213,6 +218,9 @@
     "ID": "ID",
     "Type": "Typ",
     "Use": "Använd",
+    "From ID": "Från ID",
+    "Enter id of post": "Ange id för posten",
+    "The post was not found": "Posten kan ej hittas",
     "The page was not found": "Sidan kan ej hittas",
     "Back to home page": "Tillbaka till startsidan",
     "Release notes": "Versionsinformation",
@@ -259,6 +267,8 @@
     "Main title (A-Z)": "Huvudtitel (A-Ö)",
     "Main title (Z-A)": "Huvudtitel (Ö-A)",
     "Sigel (A-Z)": "Sigel (A-Ö)",
-    "Sigel (Z-A)": "Sigel (Ö-A)"
+    "Sigel (Z-A)": "Sigel (Ö-A)",
+    "Free text": "Fritext",
+    "Title": "Titel"
     }
 }

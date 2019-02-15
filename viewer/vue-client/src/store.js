@@ -84,7 +84,7 @@ const store = new Vuex.Store({
       apiPath: process.env.VUE_APP_API_PATH,
       authPath: process.env.VUE_APP_AUTH_PATH,
       idPath: process.env.VUE_APP_ID_PATH,
-      piwikID: process.env.PIWIK_ID,
+      matomoId: process.env.PIWIK_ID,
       appPaths: {
         '/find?': '/search/libris?',
       },
@@ -168,7 +168,7 @@ const store = new Vuex.Store({
             order: false,
           },
         },
-        issuanceType: {
+        'issuanceType.keyword': {
           sv: 'Utgivningssätt',
           en: 'Issuance type',
           facet: {

@@ -157,10 +157,7 @@ export default {
 <template>
   <div class="row">
     <div class="Find col-sm-12" :class="{'col-md-12': !status.panelOpen, 'col-md-7': status.panelOpen }" ref="Find">
-      <search-form 
-        :search-perimeter="$route.params.perimeter"
-        :result-data="result">
-      </search-form>
+      <search-form :search-perimeter="$route.params.perimeter" />
     </div>
     <div v-show="searchInProgress" class="col-sm-12">
         <div class="Find-progressText">

@@ -13,7 +13,7 @@ export default {
   mixins: [ItemMixin, LensMixin],
   props: {
     fieldValue: {
-      type: String,
+      type: [String, Number],
       default: '',
     },
     isUriType: {

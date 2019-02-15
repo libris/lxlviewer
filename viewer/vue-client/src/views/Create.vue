@@ -1,7 +1,6 @@
 <script>
 import { sortBy } from 'lodash-es';
 import * as RecordUtil from '@/utils/record';
-import * as DataUtil from '@/utils/data';
 import CreationCard from '@/components/create/creation-card';
 import FileAdder from '@/components/create/file-adder';
 import TabMenu from '@/components/shared/tab-menu';

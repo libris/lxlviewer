@@ -41,7 +41,7 @@ export default {
       default: '',
     },
     fieldValue: {
-      type: [Object, String, Array, Boolean],
+      type: [Object, String, Array, Boolean, Number],
       default: null,
     },
     isLocked: {
@@ -369,9 +369,6 @@ export default {
         while ((item = item.parentElement) && !item.classList.contains('js-field'));
         item.classList.remove('is-removeable');
       }
-    },
-    updateValue(value) {
-      this.$dispatch('update-value', this.path, value);
     },
     removeThis() {
       let approved = true;
@@ -895,7 +892,7 @@ export default {
       }
     }
 
-    &.is-hovered {
+    &.is-hovered * {
       z-index: 1;
     }
 

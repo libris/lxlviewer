@@ -83,6 +83,12 @@ export default {
 @import "~font-awesome/css/font-awesome.css";
 @import (css) url(//fonts.googleapis.com/css?family=Open+Sans:400italic,700,400);
 
+// BOOTSTRAP UNSET START
+.dropdown-menu > li > a {
+  font-weight: unset;
+}
+// BOOTSTRAP UNSET END
+
 body {
   line-height: 1.6;
   font-size: 16px;
@@ -227,6 +233,7 @@ button {
 
   &.btn-primary {
     background-color: fadeout(@btn-primary, 35%);
+    box-shadow: none;
   }
 }
 

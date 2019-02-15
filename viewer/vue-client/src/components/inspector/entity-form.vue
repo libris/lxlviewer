@@ -5,7 +5,6 @@
   and makes changes to the bound 'focus' object accordingly.
 */
 
-import { cloneDeep, unset, set } from 'lodash-es';
 import * as VocabUtil from '@/utils/vocab';
 import FormMixin from '@/components/mixins/form-mixin';
 import { mapGetters } from 'vuex';
@@ -95,29 +94,9 @@ export default {
   },
   watch: {
   },
-  events: {
-    'remove-field'(path) {
-      const modifiedData = cloneDeep(this.formData);
-      unset(modifiedData, path);
-      this.updateForm(this.editingObject, modifiedData, this.formData);
-    },
-    'update-value'(path, value) {
-      // console.log("FormComp: - Updating " + path, 'to', JSON.stringify(value));
-      const modified = cloneDeep(this.formData);
-
-      set(modified, path, value);
-      // console.log("New value recieved for", path, "=", value);
-      // console.log(modified);
-      this.changeStatus('removing', false);
-      this.updateForm(this.editingObject, modified, this.formData);
-    },
-  },
   methods: {
     keyIsLocked(key) {
       return (this.isLocked || key === '@id' || key === '@type');
-    },
-    updateFromTextarea(e) {
-      this.updateForm(this.editingObject, JSON.parse(e.target.value), this.formData);
     },
   },
   components: {
@@ -143,7 +122,7 @@ export default {
         :key="k" 
         :field-key="k" 
         :field-value="v" 
-        :parent-path="inspector.status.focus"></field>
+        :parent-path="editingObject"></field>
       <div id="result" v-if="user.settings.appTech && !isLocked">
         <pre class="col-md-12">
           {{ formData }}

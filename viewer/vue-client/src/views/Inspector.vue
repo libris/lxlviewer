@@ -63,6 +63,10 @@ export default {
         active: false,
         error: null,
       },
+      embellishFromIdModal: {
+        open: false,
+        inputValue: '',
+      },
     };
   },
   methods: {
@@ -136,6 +140,17 @@ export default {
         toolbarTestEl.style.width = `${width}px`;
       }
     },
+    toggleEmbellishFromIdModal(open = true) {
+      if (open) {
+        this.embellishFromIdModal.inputValue = '';
+        this.embellishFromIdModal.open = true;
+        this.$nextTick(() => {
+          this.$refs.EmbellishFromIdModalInput.focus();
+        });
+      } else {
+        this.embellishFromIdModal.open = false;
+      }
+    },
     openMarcPreview() {
       this.$store.dispatch('pushInspectorEvent', { 
         name: 'form-control', 
@@ -201,6 +216,46 @@ export default {
         this.loadNewDocument();
       }
     },
+    confirmApplyPostAsTemplate() {
+      const id = this.embellishFromIdModal.inputValue;
+      if (id.length > 0) {
+        this.applyPostAsTemplate(id);
+      }
+    },
+    applyPostAsTemplate(id) {
+      const fixedId = RecordUtil.extractFnurgel(id);
+      const randomHash = md5(new Date());
+      const fetchUrl = `${this.settings.apiPath}/${fixedId}/data.jsonld?${randomHash}`;
+      fetch(fetchUrl).then((response) => {
+        if (response.status === 200) {
+          return response.json();
+        } if (response.status === 404 || response.status === 410) {
+          this.$store.dispatch('pushNotification', { 
+            type: 'danger', 
+            message: `${StringUtil.getUiPhraseByLang('The post was not found', this.user.settings.language)}. ${response.status} ${response.statusText}`, 
+          });
+        } else {
+          this.$store.dispatch('pushNotification', { 
+            type: 'danger', 
+            message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)}. ${response.status} ${response.statusText}`, 
+          });
+        }
+        return false;
+      }, (error) => {
+        this.$store.dispatch('pushNotification', { 
+          type: 'danger', 
+          message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)}. ${error}`, 
+        });
+      }).then((result) => {
+        if (typeof result !== 'undefined') {
+          const splitFetched = RecordUtil.splitJson(result);
+          const templateJson = RecordUtil.prepareDuplicateFor(splitFetched, this.user, this.settings);
+          const template = RecordUtil.splitJson(templateJson);
+          this.applyFieldsFromTemplate(template);
+          this.embellishFromIdModal.open = false;
+        }
+      });
+    },
     applyFieldsFromTemplate(templateJson) {
       const basePostType = this.inspector.data.mainEntity['@type'];
       const tempPostType = templateJson.mainEntity['@type'];
@@ -242,7 +297,7 @@ export default {
           addToHistory: false,
         });
         this.$store.dispatch('pushNotification', { 
-          type: 'info', 
+          type: 'success', 
           message: `${changeList.length} ${StringUtil.getUiPhraseByLang('field(s) added from template', this.user.settings.language)}`, 
         });
       } else {
@@ -352,23 +407,28 @@ export default {
     },
     setEditorFocus(value) {
       this.$store.dispatch('setInspectorStatusValue', { property: 'focus', value: value });
+      this.$store.dispatch('pushInspectorEvent', { name: 'form-control', value: 'focus-changed' });
     },
     downloadJson() {
       const focusId = this.inspector.data.record['@id'];
       const element = document.createElement('a');
       const json = JSON.stringify(this.getPackagedItem(true), null, 2); // 2 = json-spacing
       const blob = new Blob([`${json}`], { type: 'application/ld+json' });
-      element.href = window.URL.createObjectURL(blob);
       const splitIdParts = focusId.split('/');
       const id = splitIdParts[splitIdParts.length - 1];
       const promptInstruction = StringUtil.getUiPhraseByLang('Name your file', this.user.settings.language);
       const promptedName = prompt(promptInstruction, id);
       if (promptedName !== null) {
-        element.download = `${promptedName}.jsonld`;
-        element.style.display = 'none';
-        document.body.appendChild(element);
-        element.click();
-        document.body.removeChild(element);
+        if (this.downloadIsSupported) {
+          element.href = window.URL.createObjectURL(blob);
+          element.download = `${promptedName}.jsonld`;
+          element.style.display = 'none';
+          document.body.appendChild(element);
+          element.click();
+          document.body.removeChild(element);
+        } else {
+          window.navigator.msSaveOrOpenBlob(blob, `${promptedName}.jsonld`);
+        }
       }
     },
     getPackagedItem(keepEmpty = false) {
@@ -507,6 +567,8 @@ export default {
         }
       } else if (val.name === 'apply-template') {
         this.applyFieldsFromTemplate(val.value);
+      } else if (val.name === 'open-embellish-from-id') {
+        this.toggleEmbellishFromIdModal(true);
       } else if (val.name === 'apply-override') {
         this.applyOverride(val.value);
       }
@@ -535,6 +597,10 @@ export default {
     },
     isItem() {
       return this.inspector.data.mainEntity['@type'] === 'Item';
+    },
+    downloadIsSupported() {
+      const a = document.createElement('a');
+      return typeof a.download !== 'undefined';
     },
     recordType() {
       return VocabUtil.getRecordType(
@@ -613,11 +679,13 @@ export default {
           <validation-summary v-if="user.settings.appTech" />
 
           <tab-menu @go="setEditorFocus" :tabs="editorTabs" :active="this.inspector.status.focus" />
-
-          <entity-form 
-            :editing-object="inspector.status.focus" 
-            :locked="!inspector.status.editing">
-          </entity-form>
+            
+            <entity-form 
+              v-for="tab in editorTabs"
+              :editing-object="tab.id" 
+              :key="tab.id"
+              :locked="!inspector.status.editing">
+            </entity-form>
         </div>
       </div>
     </div>
@@ -644,6 +712,20 @@ export default {
         <div class="RemovePostModal-buttonContainer">
           <button class="btn btn-danger btn--md" @click="doRemovePost()">{{ 'Remove the record' | translatePhrase }}</button>
           <button class="btn btn-gray btn--md" @click="closeRemoveModal()">{{ 'Cancel' | translatePhrase }}</button>
+        </div>
+      </div>
+    </modal-component>
+    <modal-component class="EmbellishFromIdModal" :title="['Embellish', 'From ID']" v-if="embellishFromIdModal.open" @close="embellishFromIdModal.open = false">
+      <div slot="modal-body" class="EmbellishFromIdModal-body">
+        <div class="EmbellishFromIdModal-infoText">
+          Med funktionen <em>Berika från ID</em> kan du berika en post med egenskaper från en annan. För att göra detta behöver du tillgång till den berikande postens ID (URI), vilken du hittar i postens sammanfattning. Du kan också länka till posten genom att kopiera adressfältet i din webbläsare.
+        </div>
+        <div class="input-group EmbellishFromIdModal-form">
+          <label class="input-group-addon EmbellishFromIdModal-label" for="id">{{ 'ID' | translatePhrase }}/{{ 'Link' | translatePhrase }}</label>
+          <input name="id" class="EmbellishFromIdModal-input form-control" ref="EmbellishFromIdModalInput" v-model="embellishFromIdModal.inputValue" @keyup.enter="confirmApplyPostAsTemplate" />
+          <span class="input-group-btn">
+            <button class="btn btn-primary EmbellishFromIdModal-confirmButton" @click="confirmApplyPostAsTemplate" @keyup.enter="confirmApplyPostAsTemplate">{{ 'Embellish' | translatePhrase }}</button>
+          </span>
         </div>
       </div>
     </modal-component>
@@ -711,6 +793,43 @@ export default {
   &-searchList {
     height: 100%;
     overflow-y: scroll;
+  }
+}
+
+.EmbellishFromIdModal {
+  .ModalComponent-container {
+    width: 650px;
+    top: 40%;
+  }
+  &-body {
+    padding: 1em;
+    width: 100%;
+  }
+  &-form {
+
+  }
+  &-label {
+    color: @black;
+  }
+  &-infoText {
+    margin-bottom: 1em;
+  }
+  &-input {
+    width: 50%;
+    color: @black;
+  }
+  &-reference {
+    margin-top: 1em;
+    border: 1px solid @gray;
+    border-radius: 0.5em;
+    padding: 1em;
+  }
+  &-referenceTitle {
+    display: block;
+    font-weight: bold;
+  }
+  &-confirmButton {
+    box-shadow: none;
   }
 }
 

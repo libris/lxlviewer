@@ -127,6 +127,12 @@ export function getItemObject(itemOf, heldBy, instance) {
           shelfControlNumber: '',
         },
       ],
+      'associatedMedia': [
+        {
+          '@type': 'MediaObject',
+          'uri': ['']
+        }
+      ],
       'marc:hasTextualHoldingsBasicBibliographicUnit': [
         {
           '@type': 'marc:TextualHoldingsBasicBibliographicUnit',
@@ -203,8 +209,10 @@ export function convertToMarc(inspectorData, settings, user) {
 }
 
 export function prepareDuplicateFor(inspectorData, user, settings) {
+  const userSigelObj = { '@id': `https://libris.kb.se/library/${user.settings.activeSigel}` };
+
   // Removes fields that we do not want to import or copy
-  const newData = cloneDeep(inspectorData);
+  let newData = cloneDeep(inspectorData);
   if (!newData.hasOwnProperty('quoted')) {
     newData.quoted = {};
   }
@@ -212,7 +220,10 @@ export function prepareDuplicateFor(inspectorData, user, settings) {
   const newBaseId = 'https://id.kb.se/TEMPID';
 
   // Update descriptionCreator to this organization
-  newData.record.descriptionCreator = { '@id': `https://libris.kb.se/library/${user.settings.activeSigel}` };
+  newData.record.descriptionCreator = userSigelObj;
+
+  // Update any heldBy keys to this organization
+  newData = DataUtil.rewriteValueOfKey(newData, 'heldBy', userSigelObj, true);
 
   // Remove properties that should not be included in the duplicate
   each(settings.removeOnDuplication, (property) => {

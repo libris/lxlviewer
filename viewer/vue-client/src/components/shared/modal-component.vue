@@ -4,6 +4,9 @@
   HOW TO USE:
   This component can recieve content to inject in the different slots.
 
+  Props:
+    * title         - Takes a string or an array of strings. Will try to translate into user language.
+
   The slots are:
     * modal-header  - If no content, will just show the "title"-prop and a close-button, explained below.
     * modal-body    - Just a container for your content. Supports highly customized layout.
@@ -16,14 +19,18 @@
       <modal-component title="My nice modal" v-if="modalActive" @close="modalActive=false"></modal-component>
 
 */
+
+import { isArray } from 'lodash-es';
+import { mapGetters } from 'vuex';
 import * as LayoutUtil from '@/utils/layout';
+import * as StringUtil from '@/utils/string';
 
 export default {
   name: 'modal-component',
   props: {
     title: {
       default: 'Untitled modal',
-      type: String,
+      type: [String, Array],
     },
     modalType: {
       default: 'normal',
@@ -51,6 +58,20 @@ export default {
     },
   },
   computed: {
+    ...mapGetters([
+      'user',
+    ]),
+    translatedTitle() {
+      let title = '';
+      if (isArray(this.title)) {
+        for (let i = 0; i < this.title.length; i++) {
+          title = `${title}${StringUtil.getUiPhraseByLang(this.title[i], this.user.settings.language)} `;
+        }
+      } else {
+        title = StringUtil.getUiPhraseByLang(this.title, this.user.settings.language);
+      }
+      return title;
+    },
   },
   components: {
   },
@@ -77,7 +98,7 @@ export default {
       <div class="ModalComponent-header">
         <slot name="modal-header">
           <header>
-            {{ title }}
+            {{ translatedTitle }}
           </header>
           <span class="ModalComponent-windowControl" v-if="closeable">
             <i @click="close" class="fa fa-close icon--md"></i>
@@ -159,6 +180,9 @@ export default {
   &-body {
     overflow-y: auto;
     height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     z-index: 5;
   }
   &-windowControl {

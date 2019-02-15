@@ -130,6 +130,9 @@ export default {
           case 'close-modals':
             this.hide();
             break;
+          case 'focus-changed':
+            this.hide();
+            break;
           default:
         }
       }
@@ -327,7 +330,7 @@ export default {
 <template>
   <div class="SearchWindow">
     <portal to="sidebar" v-if="active">
-      <panel-component class="SearchWindow-panel"
+      <panel-component class="SearchWindow-panel SearchWindowPanel"
         v-if="active"
         :title="'Link entity' | translatePhrase"
         @close="hide()">

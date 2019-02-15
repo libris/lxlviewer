@@ -58,7 +58,6 @@ export default {
 <template>
   <ol class="ResultList" 
     aria-labelledby="resultDescr"
-    :class="{'is-dimmed': relationsList}"
     v-if="results.length > 0">
     <result-list-item class="ResultList-item"
       :database="getDatabase(index)" 
