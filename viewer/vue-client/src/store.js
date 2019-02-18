@@ -18,6 +18,9 @@ const store = new Vuex.Store({
       context: {},
       helpDocs: null,
     },
+    directoryCare: {
+      preSelected: [],
+    },
     inspector: {
       breadcrumb: [],
       data: {},
@@ -387,6 +390,9 @@ const store = new Vuex.Store({
     setDisplay(state, data) {
       state.resources.display = data;
     },
+    setDirectoryCare(state, data) {
+      state.directoryCare = data;
+    },
   },
   getters: {
     inspector: state => state.inspector,
@@ -524,6 +530,9 @@ const store = new Vuex.Store({
     },
     setDisplay({ commit }, displayJson) {
       commit('setDisplay', displayJson);
+    },
+    setDirectoryCare({ commit }, obj) {
+      commit('setDirectoryCare', obj);
     },
     setHelpDocs({ commit }, helpDocsJson) {
       commit('setHelpDocs', helpDocsJson);
