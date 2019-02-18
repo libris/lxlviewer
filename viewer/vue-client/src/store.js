@@ -408,6 +408,7 @@ const store = new Vuex.Store({
     settings: state => state.settings,
     user: state => state.user,
     status: state => state.status,
+    directoryCare: state => state.directoryCare,
     vocab: state => state.resources.vocab,
     display: state => state.resources.display,
     forcedSetTerms: state => state.resources.forcedSetTerms,
