@@ -53,6 +53,11 @@ export default new Router({
       component: () => import(/* webpackChunkName: "Help" */ './views/Help.vue'),
     },
     {
+      path: '/directory-care/:tool?',
+      name: 'Directory care',
+      component: () => import(/* webpackChunkName: "UserPage" */ './views/DirectoryCare.vue'),
+    },
+    {
       path: '/user',
       name: 'User settings',
       component: () => import(/* webpackChunkName: "UserPage" */ './views/UserPage.vue'),
