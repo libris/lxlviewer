@@ -1,5 +1,6 @@
 <script>
 import UserAvatar from '@/components/shared/user-avatar';
+import TabMenu from '@/components/shared/tab-menu';
 
 export default {
   name: 'navbar-component',
@@ -10,6 +11,7 @@ export default {
   },
   components: {
     'user-avatar': UserAvatar,
+    'tab-menu': TabMenu,
   },
   computed: {
     user() {
@@ -24,6 +26,21 @@ export default {
       }
       return '';
     },
+    tabs() {
+      const tabList = [{ id: 'Search', text: 'Search' }];
+      if (this.user.isLoggedIn) {
+        tabList.push(
+          { id: 'Create new', text: 'Create new' },
+          { id: 'Directory care', text: 'Directory care' }, 
+        );
+      }
+      return tabList;
+    },
+  },
+  methods: {
+    tabChange(id) {
+      this.$router.push({ name: id });
+    },
   },
 };
 </script>
@@ -31,53 +48,42 @@ export default {
 <template>
   <nav class="NavBar" role="navigation" aria-labelledby="service-name">
     <div class="NavBar-container container">
-      <div class="row">
-        <div class="col-xs-12 col-sm-5">
-          <div class="NavBar-brand">
-            <router-link to="/" class="NavBar-brandLink">
-              <img class="NavBar-brandLogo" src="~kungbib-styles/dist/assets/kb_logo_black.svg" alt="Kungliga Bibliotekets logotyp">
+      <div class="NavBar-brand">
+        <router-link to="/" class="NavBar-brandLink">
+          <img class="NavBar-brandLogo" src="~kungbib-styles/dist/assets/kb_logo_black.svg" alt="Kungliga Bibliotekets logotyp">
+        </router-link>
+        <router-link to="/" class="NavBar-brandTitle" :title="`Version ${settings.version}`">
+          <span id="service-name">Libris katalogisering</span>
+          <span class="NavBar-envLabel">
+          {{ environmentLabel }}
+          </span>
+        </router-link>
+      </div>
+      <div class="MainNav">
+        <tab-menu
+          :tabs="tabs"
+          :active="$route.name"
+          @go="tabChange" />
+        <ul class="MainNav-userWrapper">
+          <li class="MainNav-item">
+            <router-link to="/help" class="MainNav-link">
+              <span class="MainNav-linkText">{{"Help" | translatePhrase}}</span>
             </router-link>
-            <router-link to="/" class="NavBar-brandTitle" :title="`Version ${settings.version}`">
-              <span id="service-name">Libris katalogisering</span>
-              <span class="NavBar-envLabel">
-              {{ environmentLabel }} {{ settings.version }}
+          </li>
+          <li class="MainNav-item" v-if="user.isLoggedIn">
+            <router-link to="/user" class="MainNav-link">
+              <user-avatar :size="32" />
+              <span class="MainNav-linkText">
+              {{ user.fullName }} <span v-cloak class="sigelLabel">({{ user.settings.activeSigel }})</span>
               </span>
             </router-link>
-          </div>
-        </div>
-
-        <div class="col-xs-12 col-sm-7">
-          <ul class="MainNav">
-            <li class="MainNav-item">
-              <router-link to="/help" class="MainNav-link">
-                <span class="MainNav-linkText">{{"Help" | translatePhrase}}</span>
-              </router-link>
-            </li>
-            <li class="MainNav-item">
-              <router-link to="/search/libris" class="MainNav-link">
-                <span class="MainNav-linkText">{{"Search" | translatePhrase}}</span>
-              </router-link>
-            </li>
-              <li class="MainNav-item" v-if="user.isLoggedIn">
-              <router-link to="/create" class="MainNav-link">
-                <span class="MainNav-linkText">{{"Create new" | translatePhrase}}</span>
-              </router-link>
-            </li>
-            <li class="MainNav-item" v-if="user.isLoggedIn">
-              <router-link to="/user" class="MainNav-link">
-                <user-avatar :size="32" />
-                <span class="MainNav-linkText">
-                {{ user.fullName }} <span v-cloak class="sigelLabel">({{ user.settings.activeSigel }})</span>
-                </span>
-              </router-link>
-            </li>
-            <li class="MainNav-item" v-if="!user.isLoggedIn">
-              <a :href="`${settings.apiPath}/login/authorize`" class="MainNav-link">
-                <span class="MainNav-linkText">{{"Log in" | translatePhrase}}</span>
-              </a>
-            </li>
-          </ul>
-        </div>
+          </li>
+          <li class="MainNav-item" v-if="!user.isLoggedIn">
+            <a :href="`${settings.apiPath}/login/authorize`" class="MainNav-link">
+              <span class="MainNav-linkText">{{"Log in" | translatePhrase}}</span>
+            </a>
+          </li>
+        </ul>
       </div>
     </div>
   </nav>
@@ -87,25 +93,27 @@ export default {
 <style lang="less">
 .NavBar {
   width: 100%;
-  // border: solid @border-navbar;
   background-color: @bg-navbar;
-  // border-width: 0px 0px @border-navbar-width 0px;
-  box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
+  box-shadow: @shadow-navbar;
   height: auto;
 
   &-container {
     padding: 0 25px;
+    display: flex;
+    align-items: center;
     
     @media screen and (min-width: @screen-sm){
       padding: 0 15px;
     }
     @media screen and (max-width: @screen-lg){
-      width: 100%;
+      width: 100% !important;
+      flex-direction: column;
+      align-items: flex-start;
     }
   }
 
   &-brand {
-    float: left;
+    display: flex;
     margin: 10px 0 5px;
   }
 
@@ -147,11 +155,6 @@ export default {
       height: 50px;
     }
 
-    @media (min-width: @screen-md) {
-      font-size: 24px;
-      font-size: 2.4rem;
-    }
-
     .container-fluid {
       padding: 0 30px 0 15px;
     }
@@ -169,19 +172,49 @@ export default {
 }
 
 .MainNav {
-  float: left;
+  display: flex;
+  flex: 1;
+  justify-content: flex-end;
+  align-items: center;
+  flex-direction: column;
   border-top: 1px solid @gray-light;
-  width: 100%;
   list-style: none;
   padding: 5px 0 0;
   margin: 5px 0 5px;
 
-  @media (min-width: @screen-sm) {
-    float: right;
+  @media (min-width: @screen-lg) {
     border-top: 0;
     margin-top: 10px;
     padding: 0;
-    text-align: right;
+    flex-direction: row;
+  }
+
+  @media screen and (max-width: @screen-lg){
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  @media screen and (max-width: @screen-sm) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  &-userWrapper {
+    margin: 0;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    order: -1;
+
+    @media (max-width: @screen-sm) {
+      padding: 0;
+    }
+
+    @media (min-width: @screen-sm) {
+      order: 0
+    }
   }
 
   &-item {
@@ -199,29 +232,29 @@ export default {
     }
   }
 
-  &-iconWrap {
-    display: inline-block;
-    width: 30px;
-    height: 24px;
-    border-radius: 50%;
-    line-height: 1;
-    margin-right: 5px;
-    text-align: center;
-    width: .8em;
+  // &-iconWrap {
+  //   display: inline-block;
+  //   width: 30px;
+  //   height: 24px;
+  //   border-radius: 50%;
+  //   line-height: 1;
+  //   margin-right: 5px;
+  //   text-align: center;
+  //   width: .8em;
 
-    &--userSettings {
-      height: 32px;   
-      width: 32px;
-      position: relative;
-    }
-  }
+  //   &--userSettings {
+  //     height: 32px;   
+  //     width: 32px;
+  //     position: relative;
+  //   }
+  // }
 
   &-link {
     color: @black;
     cursor: pointer;
     font-size: 16px;
     font-size: 1.6rem;
-    padding: 5px 0px;
+    padding: 15px 10px;
     display: block;
 
     &:hover, 
@@ -236,12 +269,12 @@ export default {
 
     @media (min-width: @screen-sm) {
       padding: 15px 10px;
+      font-size: 18px;
+      font-size: 1.8rem;
     }
 
     @media (min-width: @screen-md) {
       padding: 15px;
-      font-size: 18px;
-      font-size: 1.8rem;
     }
   }
 
@@ -252,12 +285,31 @@ export default {
   }
 
   @media screen and (max-width: @screen-sm-min) {
-    float: left;
     padding: 5px 0px;
   }
 
   @media print {
     display: none;
+  }
+
+  & .TabMenu {
+      max-width: 300px;
+
+    &-tabList {
+      margin-bottom: 0;
+      margin-top: 0;
+    }
+
+    &-tab {
+      margin: 0;
+      font-size: 16px;
+      font-size: 1.6rem;
+      color: @black;
+    }
+
+    &-underline {
+      top: 28px;
+    }
   }
 }
 
