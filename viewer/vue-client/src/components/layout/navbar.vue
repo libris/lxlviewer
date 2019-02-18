@@ -77,31 +77,31 @@ export default {
         </router-link>
       </div>
       <div class="MainNav">
-        <tab-menu
-          :tabs="tabs"
-          :active="$route.name"
-          @go="tabChange" />
-        <ul class="MainNav-userWrapper">
-          <li class="MainNav-item">
-            <router-link to="/help" class="MainNav-link">
-              <span class="MainNav-linkText">{{"Help" | translatePhrase}}</span>
-            </router-link>
-          </li>
-          <li class="MainNav-item" v-if="user.isLoggedIn">
-            <router-link to="/user" class="MainNav-link">
-              <user-avatar :size="32" />
-              <span class="MainNav-linkText">
-              {{ user.fullName }} <span v-cloak class="sigelLabel">({{ user.settings.activeSigel }})</span>
-              </span>
-            </router-link>
-          </li>
-          <li class="MainNav-item" v-if="!user.isLoggedIn">
-            <a :href="`${settings.apiPath}/login/authorize`" class="MainNav-link">
-              <span class="MainNav-linkText">{{"Log in" | translatePhrase}}</span>
-            </a>
-          </li>
-        </ul>
+      <tab-menu
+        :tabs="tabs"
+        :active="$route.name"
+        @go="tabChange" />
       </div>
+      <ul class="MainNav-userWrapper">
+        <li class="MainNav-item">
+          <router-link to="/help" class="MainNav-link">
+            <span class="MainNav-linkText">{{"Help" | translatePhrase}}</span>
+          </router-link>
+        </li>
+        <li class="MainNav-item" v-if="user.isLoggedIn">
+          <router-link to="/user" class="MainNav-link">
+            <user-avatar :size="32" />
+            <span class="MainNav-linkText userName">
+            {{ user.fullName }} <span v-cloak class="sigelLabel">({{ user.settings.activeSigel }})</span>
+            </span>
+          </router-link>
+        </li>
+        <li class="MainNav-item" v-if="!user.isLoggedIn">
+          <a :href="`${settings.apiPath}/login/authorize`" class="MainNav-link">
+            <span class="MainNav-linkText">{{"Log in" | translatePhrase}}</span>
+          </a>
+        </li>
+      </ul>
     </div>
   </nav>
 </template>
@@ -123,14 +123,14 @@ export default {
       padding: 0 15px;
     }
     @media screen and (max-width: @screen-lg){
+      flex-wrap: wrap;
       width: 100% !important;
-      flex-direction: column;
-      align-items: flex-start;
     }
   }
 
   &-brand {
     display: flex;
+    flex: 1;
     margin: 10px 0 5px;
   }
 
@@ -143,11 +143,7 @@ export default {
 
   &-brandLink {
     display: inline-block;
-    width: 30px;
-    
-    @media (min-width: 768px) {
-      width: 50px;
-    }
+    width: 50px;
   }
 
   &-brandTitle {
@@ -157,7 +153,9 @@ export default {
     font-size: 18px;
     font-size: 1.8rem;
     line-height: 20px;
-    padding: 5px;
+    padding: 15px 5px;
+    height: 50px;
+    min-width: 235px;
 
     &:hover,
     &:focus,
@@ -165,11 +163,6 @@ export default {
     &:visited {
       color: @black;
       text-decoration: none;
-    }
-
-    @media (min-width: 768px) {
-      padding: 15px 5px;
-      height: 50px;
     }
 
     .container-fluid {
@@ -191,46 +184,25 @@ export default {
 .MainNav {
   display: flex;
   flex: 1;
-  justify-content: flex-end;
-  align-items: center;
-  flex-direction: column;
-  border-top: 1px solid @gray-light;
   list-style: none;
-  padding: 5px 0 0;
-  margin: 5px 0 5px;
+  margin: 10px 0 5px;
+  padding: 10px 0;
 
-  @media (min-width: @screen-lg) {
-    border-top: 0;
-    margin-top: 10px;
-    padding: 0;
-    flex-direction: row;
-  }
-
-  @media screen and (max-width: @screen-lg){
-    width: 100%;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: space-between;
-  }
-
-  @media screen and (max-width: @screen-sm) {
-    flex-direction: column;
+  @media screen and (max-width: @screen-md){
+    min-width: 100%;
+    border-top: 1px solid @gray-light;
     align-items: flex-start;
+    order: 3;
   }
 
   &-userWrapper {
-    margin: 0;
+    margin: 10px 0 5px;
     display: flex;
     flex-wrap: nowrap;
     align-items: center;
-    order: -1;
 
     @media (max-width: @screen-sm) {
       padding: 0;
-    }
-
-    @media (min-width: @screen-sm) {
-      order: 0
     }
   }
 
@@ -241,7 +213,7 @@ export default {
     margin-top: -2px;
 
     &:last-of-type a {
-        padding-right: 0;
+      padding-right: 0;
     }
       
     @media screen and (max-width: @screen-sm-min) {
@@ -269,8 +241,8 @@ export default {
   &-link {
     color: @black;
     cursor: pointer;
-    font-size: 16px;
-    font-size: 1.6rem;
+    font-size: 18px;
+    font-size: 1.8rem;
     padding: 15px 10px;
     display: block;
 
@@ -284,14 +256,15 @@ export default {
       color: @text-alt-navbar;
     }
 
-    @media (min-width: @screen-sm) {
-      padding: 15px 10px;
-      font-size: 18px;
-      font-size: 1.8rem;
+    @media (max-width: @screen-md) {
+      font-size: 16px;
+      font-size: 1.6rem;
     }
 
-    @media (min-width: @screen-md) {
-      padding: 15px;
+    @media (max-width: @screen-sm) {
+      & .userName {
+        display: none;
+      }
     }
   }
 
@@ -299,10 +272,6 @@ export default {
     .MainNav-link:hover & {
       text-decoration: underline;
     }
-  }
-
-  @media screen and (max-width: @screen-sm-min) {
-    padding: 5px 0px;
   }
 
   @media print {
@@ -325,7 +294,7 @@ export default {
     }
 
     &-underline {
-      top: 28px;
+      top: 29px;
     }
   }
 }
