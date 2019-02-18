@@ -95,6 +95,9 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.moveUnderline();
+      setTimeout(() => {
+        this.moveUnderline(); // fallback to catch weird underline positions
+      }, 300);
     });
   },
 };
