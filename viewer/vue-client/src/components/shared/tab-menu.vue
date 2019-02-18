@@ -52,22 +52,27 @@ export default {
     moveUnderline() {
       this.$nextTick(() => {
         const $activeTab = this.$el.querySelector('.is-active');
-        const $tabList = this.$refs.tablist;
-        const $underline = this.$refs.underline;
-        const listElements = $tabList.getElementsByTagName('li');
-        let listWidth = 0;
-        for (let i = 0; i < listElements.length; i++) {
-          listWidth += listElements[i].clientWidth;
+        if ($activeTab) {
+          const $tabList = this.$refs.tablist;
+          const $underline = this.$refs.underline;
+          const listElements = $tabList.getElementsByTagName('li');
+          let listWidth = 0;
+          for (let i = 0; i < listElements.length; i++) {
+            listWidth += listElements[i].clientWidth;
+          }
+          const padding = parseInt(window.getComputedStyle($activeTab).paddingLeft.replace('px', ''));
+          const left = `${parseInt((listWidth * -1) + $activeTab.offsetLeft + (padding * 2) - 4)}px`;
+          const width = `${parseInt($activeTab.clientWidth - (padding * 2))}px`;
+          $underline.style.width = width;
+          $underline.style.left = left;
         }
-        const padding = parseInt(window.getComputedStyle($activeTab).paddingLeft.replace('px', ''));
-        const left = `${parseInt((listWidth * -1) + $activeTab.offsetLeft + (padding * 2) - 4)}px`;
-        const width = `${parseInt($activeTab.clientWidth - (padding * 2))}px`;
-        $underline.style.width = width;
-        $underline.style.left = left;
       });
     },
   },
   computed: {
+    hasActive() {
+      return this.tabs.some(el => el.id === this.active);
+    },
   },
   components: {
   },
@@ -108,7 +113,7 @@ export default {
         role="tab">
           {{item.text | translatePhrase}}
       </li>
-      <hr class="TabMenu-underline" ref="underline">
+      <hr v-show="hasActive" class="TabMenu-underline" ref="underline">
     </ul>
   </div>
 </template>
