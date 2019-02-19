@@ -281,7 +281,6 @@ export default {
   &-meta {
     border-width: 0px;
     display: flex;
-    margin-bottom: -0.4em;
   }
 
   &-type, &-id {
@@ -314,8 +313,10 @@ export default {
     font-weight: 400;
     padding: 0 0.75em;
     border-radius: 1em;
+
     &.recently-copied {
       background-color: @brand-success;
+      color: @white;
     }
   }
   &-idCopyIcon {
@@ -331,7 +332,6 @@ export default {
       opacity: 0;
     }
   }
-  
 
   &-sourceLabel {
     border: 1px solid;

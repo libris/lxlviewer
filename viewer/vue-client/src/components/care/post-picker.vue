@@ -18,6 +18,9 @@ export default {
     return {
       expanded: true,
       fetchedItems: [],
+      selected: null,
+      error: '',
+      loading: false,
     };
   },
   computed: {
@@ -26,19 +29,42 @@ export default {
     ]),
   },
   methods: {
-    getPosts() {
-      const searchUrl = `${this.settings.apiPath}/find.json?q=${this.items[0]}&@type=Instance`;
-      fetch(searchUrl).then(response => response.json()).then((res) => {
-        if (res.totalItems === 1) {
-          this.fetchedItems.push(res.items[0]);
-        }
+    getAllPosts() {
+      this.loading = true;
+      const promiseArray = [];
+      this.items.forEach((item) => {
+        promiseArray.push(this.getOnePost(item));
       });
-
-      console.log(searchUrl);
+      Promise.all(promiseArray).then((result) => {
+        this.transformPosts(result);
+      }, (error) => {
+        this.loading = false;
+        this.error = error;
+        console.log(error);
+      }); 
+    },
+    getOnePost(id) {
+      const searchUrl = `${this.settings.apiPath}/find.json?q=${id}&@type=Instance`; // Noooo!
+      return new Promise((resolve, reject) => {
+        fetch(searchUrl).then((response) => {
+          resolve(response.json());
+        }, (error) => {
+          reject(error);
+        });
+      });
+    },
+    transformPosts(data) {
+      this.fetchedItems = data.map(item => item.items[0]);
+    },
+    selectThis(item) {
+      this.selected = item;
+    },
+    unselectThis() {
+      this.selected = null;
     },
   },
   mounted() {
-    this.getPosts();
+    this.getAllPosts();
   },
 
 };
@@ -46,7 +72,7 @@ export default {
 
 <template>
   <div class="PostPicker">
-    <div class="PostPicker-dropdownContainer">
+    <div class="PostPicker-dropdownContainer" v-if="!selected">
       <div class="PostPicker-toggle" @click="expanded = !expanded">
         <span class="PostPicker-toggleLabel">{{ 'Choose' | translatePhrase }}</span>
         <span class="PostPicker-toggleIcon" :class="{ 'expanded' : expanded}">
@@ -55,16 +81,24 @@ export default {
       </div>
       <div class="PostPicker-dropdown" v-if="expanded">
         <input type="text" class="PostPicker-input" autofocus :placeholder="'Search favourites' | translatePhrase">
-        <!-- <ul>
-          <li :key="id" v-for="id in items">{{id}}</li>
-        </ul> -->
-        <entity-summary 
+        <div class="PostPicker-itemWrapper"
           :key="item['@id']"
           v-for="item in fetchedItems"
-          :action-settings="localEntitySettings" 
-          :focus-data="item" 
-          :should-link="false"
-          :valueDisplayLimit=1></entity-summary>
+          @click="selectThis(item)">
+          <entity-summary 
+            :focus-data="item" 
+            :should-link="false"
+            :valueDisplayLimit=1></entity-summary>
+        </div>
+      </div>
+    </div>
+    <div class="PostPicker-selectedContainer" v-if="selected">
+      <entity-summary 
+        :focus-data="selected" 
+        :should-link="false"
+        :valueDisplayLimit=1></entity-summary>
+      <div>
+        <button @click="unselectThis">x</button>
       </div>
     </div>
     <p>{{info}}</p>
@@ -79,7 +113,8 @@ export default {
   border: 1px solid @grey-lighter;
   padding: 20px;
 
-  &-dropdownContainer {
+  &-dropdownContainer,
+  &-selectedContainer {
     border: 1px solid @gray-lighter;
     box-shadow: @shadow-panel;
     padding: 10px 15px;
@@ -118,6 +153,27 @@ export default {
     border: 1px solid @grey-lighter;
     border-radius: 4px;
     padding: 5px;
+  }
+
+  &-itemWrapper {
+    cursor: pointer;
+    border-top: 1px solid @grey-lighter;
+
+    &:first-of-type {
+      border-top: none;
+    }
+
+    &:hover {
+      background-color: rgba(0, 128, 127, 0.1);
+    }
+  }
+
+  & .EntitySummary {
+    padding: 15px 5px;
+  }
+
+  & .EntitySummary-title {
+    color: @brand-darker;
   }
 }
 
