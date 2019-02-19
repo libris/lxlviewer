@@ -2,18 +2,20 @@
 import { mapGetters } from 'vuex';
 import TabMenu from '@/components/shared/tab-menu';
 import * as RecordUtil from '@/utils/record';
+import HoldingMover from '@/components/care/holding-mover';
 
 export default {
   name: 'DirectoryCare',
   components: {
     'tab-menu': TabMenu,
+    'holding-mover': HoldingMover,
   },
   data() {
     return {
       holdingId: '',
       destinationId: '',
       loadingStatus: '',
-    }
+    };
   },
   computed: {
     ...mapGetters([
@@ -49,14 +51,7 @@ export default {
       { 'id': 'merge', 'text': 'Merge posts' },
     ]" :active="$route.params.tool"></tab-menu>
     <hr class="menuDivider">
-    <div class="" v-if="$route.params.tool === 'holdings'">
-      <h1>move holdings</h1>
-      <!-- replace this whole div with the component -->
-      <h3>Marked for care:</h3>
-      <ul>
-        <li :key="id" v-for="id in userCare">{{id}}</li>
-      </ul>
-    </div>
+    <holding-mover v-if="$route.params.tool === 'holdings'" />
     <div class="" v-if="$route.params.tool === 'merge'">
       <h1>merge posts</h1>
       <!-- replace this whole div with the component -->

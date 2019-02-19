@@ -275,6 +275,8 @@
     "Sigel (A-Z)": "Sigel (A-Ö)",
     "Sigel (Z-A)": "Sigel (Ö-A)",
     "Free text": "Fritext",
-    "Title": "Titel"
+    "Title": "Titel",
+    "Sender": "Avsändare",
+    "Reciever": "Mottagare"
     }
 }
