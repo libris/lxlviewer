@@ -1,4 +1,5 @@
 <script>
+import { mapGetters } from 'vuex';
 import TabMenu from '@/components/shared/tab-menu';
 
 export default {
@@ -7,6 +8,9 @@ export default {
     'tab-menu': TabMenu,
   },
   computed: {
+    ...mapGetters([
+      'userCare',
+    ]),
   },
   methods: {
     switchTool(id) {
@@ -31,6 +35,10 @@ export default {
     <div class="" v-if="$route.params.tool === 'holdings'">
       <h1>move holdings</h1>
       <!-- replace this whole div with the component -->
+      <h3>Marked for care:</h3>
+      <ul>
+        <li :key="id" v-for="id in userCare">{{id}}</li>
+      </ul>
     </div>
     <div class="" v-if="$route.params.tool === 'merge'">
       <h1>merge posts</h1>

@@ -100,7 +100,7 @@ export default {
   <div class="CreateItem create-item-button-container">
     <!--<textarea id="copyItem" name="data" class="hidden">{{itemData | json}}</textarea>-->
     <template v-if="!compact">
-      <button class="btn btn--lg CreateItem-btn"
+      <button class="btn btn--md CreateItem-btn"
         v-if="!hasHolding || checkingHolding" 
         @click="previewHolding()" 
         :disabled="disabled" 
@@ -112,7 +112,7 @@ export default {
         {{"Add holding" | translatePhrase}}
         <span>({{user.settings.activeSigel}})</span>
       </button>
-      <button class="btn btn--lg CreateItem-btn"
+      <button class="btn btn--md CreateItem-btn"
         v-if="hasHolding" 
         :class="{'CreateItem-btn--hasHolding': hasHolding, 'is-disabled': disabled}"  
         :disabled="disabled" 
