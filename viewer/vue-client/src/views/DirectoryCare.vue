@@ -1,20 +1,37 @@
 <script>
 import { mapGetters } from 'vuex';
 import TabMenu from '@/components/shared/tab-menu';
+import * as RecordUtil from '@/utils/record';
 
 export default {
   name: 'DirectoryCare',
   components: {
     'tab-menu': TabMenu,
   },
+  data() {
+    return {
+      holdingId: '',
+      destinationId: '',
+      loadingStatus: '',
+    }
+  },
   computed: {
     ...mapGetters([
       'userCare',
+      'user',
     ]),
   },
   methods: {
     switchTool(id) {
       this.$router.push({ path: `/directory-care/${id}` });
+    },
+    doMove() {
+      this.loadingStatus = 'loading...';
+      RecordUtil.moveHolding(this.holdingId, this.destinationId, this.user).then((result) => {
+        this.loadingStatus = 'success!';
+      }, (error) => {
+        this.loadingStatus = error;
+      });
     },
   },
   mounted() {
@@ -43,6 +60,15 @@ export default {
     <div class="" v-if="$route.params.tool === 'merge'">
       <h1>merge posts</h1>
       <!-- replace this whole div with the component -->
+    </div>
+    <div class="">
+      <h3>Testlåda för flytt</h3>
+      <label for="holdingInput">ID på beståndsposten</label>
+      <input name="holdingInput" size="50" v-model="holdingId" /><br>
+      <label for="destinationInput">ID på NYA bibposten (mottagare)</label>
+      <input name="destinationInput" size="50" v-model="destinationId" /><br>
+      <button @click="doMove">Flytta</button>
+      <span>Status: {{loadingStatus}}</span>
     </div>
   </div>
 </template>
