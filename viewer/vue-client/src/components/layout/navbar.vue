@@ -27,9 +27,10 @@ export default {
       return '';
     },
     tabs() {
-      const tabList = [{ id: 'Search', text: 'Search' }];
+      const tabList = [];
       if (this.user.isLoggedIn) {
         tabList.push(
+          { id: 'Search', text: 'Search' },
           { id: 'Create new', text: 'Create new' },
           { id: 'Directory care', text: 'Directory care' }, 
         );
