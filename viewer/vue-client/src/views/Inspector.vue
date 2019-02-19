@@ -9,6 +9,7 @@ import * as DisplayUtil from '@/utils/display';
 import * as RecordUtil from '@/utils/record';
 import * as md5 from 'md5';
 import EntityForm from '@/components/inspector/entity-form';
+import TagSwitch from '@/components/shared/tag-switch';
 import Toolbar from '@/components/inspector/toolbar';
 import EntityChangelog from '@/components/inspector/entity-changelog';
 import EntityHeader from '@/components/inspector/entity-header';
@@ -584,6 +585,8 @@ export default {
       'user',
       'settings',
       'status',
+      'userCare',
+      'userFavorites',
     ]),
     unsavedChanges() {
       if (this.$route.name === 'NewDocument') {
@@ -624,6 +627,7 @@ export default {
     breadcrumb: Breadcrumb,
     'marc-preview': MarcPreview,
     'tab-menu': TabMenu,
+    TagSwitch,
     'validation-summary': ValidationSummary,
   },
   mounted() {
@@ -665,6 +669,9 @@ export default {
                   <span v-if="this.inspector.status.isNew"> - [{{ "New record" | translatePhrase }}]</span>
                 </h1>
               <entity-changelog />
+            </div>
+            <div class="TagContainer">
+              <tag-switch :document-id="documentId" tag="Directory care" />
             </div>
             <reverse-relations 
               class="Inspector-reverse" 
@@ -736,6 +743,7 @@ export default {
 <style lang="less">
 
 .Inspector {
+
   &-spinner {
     margin-top: 2em;
   }
@@ -794,6 +802,16 @@ export default {
     height: 100%;
     overflow-y: scroll;
   }
+}
+
+.TagContainer {
+  padding: 2px 0.75em;
+  border: 1px solid @grey;
+  border-radius: 0.25em;
+  height: fit-content;
+  align-self: flex-end;
+  margin-bottom: 9px;
+  box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, 0.15);
 }
 
 .EmbellishFromIdModal {

@@ -279,7 +279,7 @@ button {
 }
 
 .btn--md {
-  .btn-mixin(150px, 30px, 16px);
+  .btn-mixin(150px, 30px, 14px);
   padding: 0 15px;
 
   @media screen and (max-width: @screen-sm-min){
