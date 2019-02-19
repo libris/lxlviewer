@@ -670,14 +670,16 @@ export default {
                 </h1>
               <entity-changelog />
             </div>
-            <div class="TagContainer">
-              <tag-switch :document-id="documentId" tag="Directory care" />
+            <div class="Inspector-actions">
+              <div class="TagContainer">
+                <tag-switch :document-id="documentId" tag="Directory care" />
+              </div>
+              <reverse-relations 
+                class="Inspector-reverse" 
+                :main-entity="this.inspector.data.mainEntity" 
+                v-if="!inspector.status.isNew || recordType === 'Item'"></reverse-relations>
+              </div>
             </div>
-            <reverse-relations 
-              class="Inspector-reverse" 
-              :main-entity="this.inspector.data.mainEntity" 
-              v-if="!inspector.status.isNew || recordType === 'Item'"></reverse-relations>
-          </div>
           
           <entity-header id="main-header" 
             :full="true" 
@@ -767,8 +769,17 @@ export default {
     flex: 3;
   }
 
+  &-actions {
+    display: flex;
+    height: fit-content;
+
+    @media (max-width: @screen-sm) {
+      flex-direction: row-reverse;
+      justify-content: flex-end;
+    }
+  }
+
   &-reverse {
-    flex: 1;
   }
 
   &-code {
@@ -806,12 +817,11 @@ export default {
 
 .TagContainer {
   padding: 2px 0.75em;
-  border: 1px solid @grey;
+  border: 1px solid @grey-light;
   border-radius: 0.25em;
   height: fit-content;
   align-self: flex-end;
-  margin-bottom: 9px;
-  box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, 0.15);
+  margin: 9px;
 }
 
 .EmbellishFromIdModal {
