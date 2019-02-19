@@ -335,8 +335,18 @@ export default {
     },
   },
   created() {
-    this.$on('collapse-item', this.collapse);
-    this.$on('expand-item', this.expand);
+    this.$on('collapse-item', () => {
+      if (this.getPath.startsWith(this.inspector.status.focus) // Only expand part of form that has focus
+          || (this.getPath.startsWith('work') && this.inspector.status.focus === 'mainEntity')) {
+        this.collapse();
+      }
+    });
+    this.$on('expand-item', () => {
+      if (this.getPath.startsWith(this.inspector.status.focus)
+          || (this.getPath.startsWith('work') && this.inspector.status.focus === 'mainEntity')) {
+        this.expand();
+      }
+    });
   },
   mounted() {
     if (this.isLastAdded) {
