@@ -13,6 +13,7 @@ export class User {
       resultListType: 'detailed',
       appTech: false,
       activeSigel: '',
+      list: {},
       language: 'sv',
       defaultDatabases: ['OCLC'],
       forceFullViewPanel: false,

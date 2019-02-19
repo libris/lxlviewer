@@ -61,6 +61,7 @@ const store = new Vuex.Store({
     user: {
       settings: {
         language: 'sv',
+        list: {},
       },
     },
     settings: {
@@ -353,6 +354,30 @@ const store = new Vuex.Store({
       state.user = userObj;
       state.user.saveSettings();
     },
+    markPost(state, payload) {
+      const list = cloneDeep(state.user.settings.list);
+      const tag = payload.tag;
+      if (list.hasOwnProperty(payload.id)) {
+        if (list[payload.id].indexOf(tag) < 0) {
+          list[payload.id].push(tag);
+        }
+      } else {
+        list[payload.id] = [tag];
+      }
+      state.user.settings.list = list;
+      state.user.saveSettings();
+    },
+    unmarkPost(state, payload) {
+      const list = cloneDeep(state.user.settings.list);
+      const tag = payload.tag;
+      if (list.hasOwnProperty(payload.id)) {
+        if (list[payload.id].indexOf(tag) >= 0) {
+          list[payload.id].splice(list[payload.id].indexOf(tag), 1);
+          state.user.settings.list = list;
+          state.user.saveSettings();
+        }
+      }
+    },
     flushChangeHistory(state) {
       state.inspector.changeHistory = [];
     },
@@ -399,6 +424,28 @@ const store = new Vuex.Store({
     resources: state => state.resources,
     settings: state => state.settings,
     user: state => state.user,
+    userFavorites: (state) => {
+      const collection = [];
+      const list = state.user.settings.list;
+      const ids = Object.keys(list);
+      for (let i = 0; i < ids.length; i++) {
+        if (list[ids[i]].indexOf('Favorite') > -1) {
+          collection.push(ids[i]);
+        }
+      }
+      return collection;
+    },
+    userCare: (state) => {
+      const collection = [];
+      const list = state.user.settings.list;
+      const ids = Object.keys(list);
+      for (let i = 0; i < ids.length; i++) {
+        if (list[ids[i]].indexOf('Directory care') > -1) {
+          collection.push(ids[i]);
+        }
+      }
+      return collection;
+    },
     status: state => state.status,
     directoryCare: state => state.directoryCare,
     vocab: state => state.resources.vocab,
@@ -413,6 +460,12 @@ const store = new Vuex.Store({
     },
   },
   actions: {
+    markPost({ commit }, payload) {
+      commit('markPost', payload);
+    },
+    unmarkPost({ commit }, payload) {
+      commit('unmarkPost', payload);
+    },
     setValidation({ commit }, payload) {
       commit('setValidation', payload);
     },
