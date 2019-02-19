@@ -43,7 +43,7 @@ export default new Router({
       redirect: '/search/libris',
     },
     {
-      path: '/search/:perimeter',
+      path: '/search/:perimeter?',
       name: 'Search',
       component: () => import(/* webpackChunkName: "Find" */ './views/Find.vue'),
     },
