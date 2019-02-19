@@ -7,6 +7,11 @@ export default {
   data() {
     return {
       hasAvatar: true,
+      tabs: [
+        { id: 'Search', text: 'Search' },
+        { id: 'Create new', text: 'Create new' },
+        { id: 'Directory care', text: 'Directory care' }, 
+      ],
     };
   },
   components: {
@@ -43,17 +48,6 @@ export default {
       label += this.settings.version;
       return label;
     },
-    tabs() {
-      const tabList = [];
-      if (this.user.isLoggedIn) {
-        tabList.push(
-          { id: 'Search', text: 'Search' },
-          { id: 'Create new', text: 'Create new' },
-          { id: 'Directory care', text: 'Directory care' }, 
-        );
-      }
-      return tabList;
-    },
   },
   methods: {
     tabChange(id) {
@@ -77,7 +71,7 @@ export default {
           </span>
         </router-link>
       </div>
-      <div class="MainNav">
+      <div class="MainNav" v-if="user.isLoggedIn">
       <tab-menu
         :tabs="tabs"
         :active="$route.name"
