@@ -776,6 +776,214 @@
         }
       }
     },
+    "handPrintedMonographText": {
+      "label": "Äldretryck",
+      "description": "",
+      "value": {
+        "record": {
+          "@id": "https://id.kb.se/TEMPID",
+          "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          },
+          "bibliography": [
+            {
+              "@type": "Library",
+              "sigel": [""]
+            }
+          ],
+          "descriptionConventions": [
+            {
+              "@id": "https://id.kb.se/marc/Isbd"
+            },
+            {
+              "@type": "DescriptionConventions",
+              "code": "rda"
+            }
+          ],
+          "descriptionLanguage": [
+            {
+              "@id": "https://id.kb.se/language/swe"
+            }
+          ],
+          "encodingLevel": "marc:MinimalLevel",
+          "recordStatus": "",
+          "marc:catalogingSource": {
+            "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
+          }
+        },
+        "mainEntity": {
+          "@id": "https://id.kb.se/TEMPID#it",
+          "@type": "Instance",
+          "issuanceType": "Monograph",
+          "hasTitle": [{
+              "@type": "Title",
+              "mainTitle": ""
+            }
+          ],
+          "responsibilityStatement": "",
+          "identifiedBy": [{
+            "@type": "Identifier",
+            "value": "",
+            "typeNote": ""
+          }],
+          "editionStatement": "",
+          "publication": [
+            {
+              "@type": "PrimaryPublication",
+              "year": "",
+              "date": [""],
+              "country": [ {"@id": "https://id.kb.se/country/sw"} ],
+              "place": {
+                "@type": "Place",
+                "label": ""
+              },
+              "agent": {
+                "@type": "Agent",
+                "label": ""
+              }
+            }
+          ],
+          "manufacture": [{
+            "@type": "Manufacture",
+            "agent": [{
+              "@type": "Agent",
+              "label": [
+                ""
+              ]
+            }],
+            "date": [
+              ""
+            ],
+            "place": [{
+              "@type": "Place",
+              "label": [
+                ""
+              ]
+            }]
+          }],
+          "mediaType": [{"@id": "https://id.kb.se/term/rda/Unmediated"}],
+          "carrierType": [{"@id": "https://id.kb.se/term/rda/Volume"}],
+          "extent": [{
+            "@type": "Extent",
+            "label": ""
+          }],
+          "marc:otherPhysicalDetails": "",
+          "hasDimensions": {
+            "@type": "Dimensions",
+            "label": ""
+          },
+          "hasNumberingOfSerials": [
+            {
+              "@type": "NumberingOfSerials",
+              "label": ""
+            }
+          ],
+          "seriesMembership": [
+            {
+              "@type": "SeriesMembership",
+              "inSeries": {
+                "@type": "Instance",
+                "identifiedBy": [
+                  {
+                    "@type": "ISSN",
+                    "value": ""
+                  }
+                ],
+                "instanceOf": {
+                  "@type": "Work",
+                  "hasTitle": [
+                    {
+                      "@type": "Title",
+                      "mainTitle": ""
+                    }
+                  ]
+                }
+              },
+              "marc:seriesTracingPolicy": "",
+              "seriesEnumeration": "",
+              "seriesStatement": [""]
+            }
+          ],
+          "indexedIn": [
+            {
+              "@type": "Instance",
+              "hasTitle": [
+                {
+                  "@type": "Title",
+                  "label": ""
+                }
+              ]
+            }
+          ],
+          "hasNote": [{
+            "@type": "Note",
+            "label": ""
+          }],
+          "tableOfContents": [
+            {
+              "@type": "TableOfContents",
+              "hasPart": [
+                {
+                  "@type": "ToCEntry",
+                  "label": "",
+                  "responsibilityStatement": ""
+                }
+              ]
+            }
+          ],
+          "instanceOf": {
+            "@id": "https://id.kb.se/TEMPID#work"
+          }
+        },
+        "work": {
+          "@id": "https://id.kb.se/TEMPID#work",
+          "@type": "Text",
+          "language": [{
+            "@id": "https://id.kb.se/language/swe"
+          }],
+          "genreForm": [],
+          "classification": [{
+              "@type": "ClassificationDdc",
+              "code": "",
+              "edition": "full",
+              "editionEnumeration": "23/swe"
+            },
+            {
+              "@type": "Classification",
+              "code": "",
+              "inScheme": {
+                "@type": "ConceptScheme",
+                "@id": "https://id.kb.se/term/kssb/8",
+                "code": "kssb",
+                "version": "8"
+              }
+            }
+          ],
+          "contribution": [{
+              "@type": "PrimaryContribution",
+              "agent": null,
+              "role": [{
+                "@id": "https://id.kb.se/relator/author"
+              }]
+            },
+            {
+              "@type": "Contribution",
+              "agent": null,
+              "role": []
+            }
+          ],
+          "contentType": [{"@id": "https://id.kb.se/term/rda/Text"}],
+          "hasNote": [
+            {
+              "@type": "marc:LanguageNote",
+              "label": ""
+            }
+          ],
+          "subject": []
+        }
+      }
+    },
     "printedCartograph": {
       "label": "Karta",
       "description": "Tryckt kartmaterial",
