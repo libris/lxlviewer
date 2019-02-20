@@ -2,6 +2,7 @@
 import { mapGetters } from 'vuex';
 import EntitySummary from '@/components/shared/entity-summary';
 import VueSimpleSpinner from 'vue-simple-spinner';
+import * as RecordUtil from '@/utils/record';
 
 export default {
   name: 'post-picker',
@@ -45,14 +46,14 @@ export default {
         promiseArray.push(this.getOnePost(item));
       });
       Promise.all(promiseArray).then((result) => {
-        this.transformPosts(result);
+        this.getMainEntities(result);
       }, (error) => {
         this.loading = false;
         this.error = error;
       }); 
     },
     getOnePost(id) {
-      const searchUrl = `${this.settings.apiPath}/find.json?q=${id}&@type=Instance`; // Noooo!
+      const searchUrl = `${this.settings.apiPath}/${id}/data.jsonld`;
       return new Promise((resolve, reject) => {
         fetch(searchUrl).then((response) => {
           resolve(response.json());
@@ -61,8 +62,8 @@ export default {
         });
       });
     },
-    transformPosts(data) {
-      this.fetchedItems = data.map(item => item.items[0]);
+    getMainEntities(data) {
+      this.fetchedItems = data.map(item => RecordUtil.getMainEntity(item['@graph']));
       this.loading = false;
     },
     selectThis(item) {
