@@ -1,4 +1,5 @@
 import { cloneDeep, each, unset } from 'lodash-es';
+import * as md5 from 'md5';
 import * as httpUtil from './http';
 import * as DataUtil from './data';
 
@@ -157,6 +158,38 @@ export function getItemObject(itemOf, heldBy, instance) {
     ],
   };
   return itemObj;
+}
+
+export function moveHolding(holdingId, destinationId, user) {
+  const randomHash = md5(new Date());
+  const getUrl = `${holdingId.replace('#it', '')}/data.jsonld?${randomHash}`;
+  let ETag = '';
+  return new Promise((resolve, reject) => {
+    fetch(getUrl).then((response) => {
+      ETag = response.headers.get('ETag');
+      return response.json();
+    }, (error) => {
+      reject('Error moving holding (fetching data)', holdingId, error);
+    }).then((json) => {
+      const splitData = splitJson(json);
+      const sigelUrlParts = splitData.mainEntity.heldBy['@id'].split('/');
+      const sigel = sigelUrlParts[sigelUrlParts.length - 1];
+      const newMainEntity = DataUtil.rewriteValueOfKey(splitData.mainEntity, 'itemOf', { '@id': destinationId });
+      const packagedData = DataUtil.getMergedItems(splitData.record, newMainEntity);
+      httpUtil.put({
+        url: holdingId,
+        ETag: ETag,
+        activeSigel: sigel,
+        token: user.token,
+      }, packagedData).then((result) => {
+        resolve(result);
+      }, (error) => {
+        reject('Error moving holding (on save)', holdingId, error);
+      });
+    }, (error) => {
+      reject('Error moving holding (broken json)', holdingId, error);
+    });
+  });
 }
 
 export function getObjectAsRecord(mainEntity, record = {}) {
