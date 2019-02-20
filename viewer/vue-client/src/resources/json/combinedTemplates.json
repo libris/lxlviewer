@@ -816,7 +816,8 @@
           "@id": "https://id.kb.se/TEMPID#it",
           "@type": "Instance",
           "issuanceType": "Monograph",
-          "hasTitle": [{
+          "hasTitle": [
+            {
               "@type": "Title",
               "mainTitle": ""
             }
@@ -911,6 +912,12 @@
               "hasTitle": [
                 {
                   "@type": "Title",
+                  "label": ""
+                }
+              ],
+              "hasNote": [
+                {
+                  "@type": "Note",
                   "label": ""
                 }
               ]
