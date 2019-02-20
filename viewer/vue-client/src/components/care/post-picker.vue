@@ -132,7 +132,6 @@ export default {
 <style lang="less">
 
 .PostPicker  {
-  height: 100%;
   background-color: @white;
   border: 1px solid @grey-lighter;
   padding: 20px;
