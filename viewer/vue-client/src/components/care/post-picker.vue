@@ -86,55 +86,70 @@ export default {
 
 <template>
   <div class="PostPicker">
-    <div class="PostPicker-dropdownContainer" v-if="!selected">
-      <div class="PostPicker-toggle" @click="expanded = !expanded">
-        <span class="PostPicker-toggleLabel">{{ 'Choose' | translatePhrase }}</span>
-        <span class="PostPicker-toggleIcon" :class="{ 'expanded' : expanded}">
-          <i class="fa fa-fw fa-chevron-down"></i>
-        </span>
-      </div>
-      <div class="PostPicker-dropdown" v-if="expanded">
-        <vue-simple-spinner 
-          v-if="loading" 
-          size="large" 
-          :message="'Loading' | translatePhrase"></vue-simple-spinner>
-        <input
-          v-if="!loading"
-          type="text" 
-          class="PostPicker-input" 
-          autofocus 
-          :placeholder="'Search favourites' | translatePhrase">
-        <div class="PostPicker-itemWrapper"
-          :key="item['@id']"
-          v-for="item in fetchedItems"
-          @click="selectThis(item)">
-          <entity-summary 
-            :focus-data="item" 
-            :should-link="false"
-            :valueDisplayLimit=1></entity-summary>
+    <div class="PostPicker-label uppercaseHeading">{{ name | translatePhrase }}</div>
+    <div class="PostPicker-body">
+      <div class="PostPicker-dropdownContainer" v-if="!selected">
+        <div class="PostPicker-toggle" @click="expanded = !expanded">
+          <span class="PostPicker-toggleLabel">{{ ['Choose', name] | translatePhrase }}</span>
+          <span class="PostPicker-toggleIcon" :class="{ 'expanded' : expanded}">
+            <i class="fa fa-fw fa-chevron-down"></i>
+          </span>
+        </div>
+        <div class="PostPicker-dropdown" v-if="expanded">
+          <vue-simple-spinner 
+            v-if="loading" 
+            size="large" 
+            :message="'Loading' | translatePhrase"></vue-simple-spinner>
+          <input
+            v-if="!loading"
+            type="text" 
+            class="PostPicker-input" 
+            autofocus 
+            :placeholder="'Search favourites' | translatePhrase">
+          <div class="PostPicker-itemWrapper"
+            :key="item['@id']"
+            v-for="item in fetchedItems"
+            @click="selectThis(item)">
+            <entity-summary 
+              :focus-data="item" 
+              :should-link="false"
+              :valueDisplayLimit=1></entity-summary>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="PostPicker-selectedContainer" v-if="selected">
-      <entity-summary 
-        :focus-data="selected" 
-        :should-link="false"
-        :valueDisplayLimit=1></entity-summary>
-      <div>
-        <button @click="unselectThis">x</button>
+      <div class="PostPicker-selectedContainer" v-if="selected">
+        <span class="PostPicker-toggleLabel">{{ ['Chosen', name] | translatePhrase }}:</span>
+        <entity-summary 
+          :focus-data="selected" 
+          :should-link="false"
+          :valueDisplayLimit=1></entity-summary>
+        <div>
+          <button @click="unselectThis">x</button>
+        </div>
       </div>
+      <p v-if="info">{{info}}</p>
+      <p v-if="error" class="PostPicker-error">{{error}}</p>
     </div>
-    <p v-if="info">{{info}}</p>
-    <p v-if="error" class="PostPicker-error">{{error}}</p>
   </div>
 </template>
 
 <style lang="less">
 
 .PostPicker  {
-  background-color: @white;
-  border: 1px solid @grey-lighter;
-  padding: 20px;
+  max-width: 50%;
+  flex: 1;
+
+  &-label {
+    padding: 5px 10px;
+    background-color: @gray-lighter;
+    display: inline-block;
+  }
+
+  &-body {
+    background-color: @white;
+    border: 1px solid @grey-lighter;
+    padding: 20px;
+  }
 
   &-dropdownContainer,
   &-selectedContainer {
@@ -176,6 +191,7 @@ export default {
     border: 1px solid @grey-lighter;
     border-radius: 4px;
     padding: 5px 10px;
+    margin-bottom: 10px;
   }
 
   &-error {
