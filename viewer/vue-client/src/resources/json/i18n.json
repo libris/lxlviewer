@@ -276,8 +276,8 @@
     "Sigel (Z-A)": "Sigel (Ö-A)",
     "Free text": "Fritext",
     "Title": "Titel",
-    "Sender": "Avsändare",
-    "Reciever": "Mottagare",
+    "sender": "avsändare",
+    "reciever": "mottagare",
     "Search favourites": "Sök bland favoriter"
     }
 }
