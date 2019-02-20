@@ -2,7 +2,6 @@
 import { mapGetters } from 'vuex';
 import EntitySummary from '@/components/shared/entity-summary';
 import VueSimpleSpinner from 'vue-simple-spinner';
-import * as RecordUtil from '@/utils/record';
 
 export default {
   name: 'post-picker',
@@ -11,8 +10,12 @@ export default {
       type: String,
       required: true,
     },
-    items: {
+    fetchedItems: {
       type: Array,
+      required: true,
+    },
+    fetchComplete: {
+      type: Boolean,
     },
     info: {
       type: String,
@@ -26,46 +29,15 @@ export default {
   data() {
     return {
       expanded: false,
-      fetchedItems: [],
       selected: null,
-      error: '',
-      loading: false,
     };
   },
   computed: {
     ...mapGetters([
-      'settings',
       'directoryCare',
     ]),
   },
   methods: {
-    getAllPosts() {
-      this.loading = true;
-      const promiseArray = [];
-      this.items.forEach((item) => {
-        promiseArray.push(this.getOnePost(item));
-      });
-      Promise.all(promiseArray).then((result) => {
-        this.getMainEntities(result);
-      }, (error) => {
-        this.loading = false;
-        this.error = error;
-      }); 
-    },
-    getOnePost(id) {
-      const searchUrl = `${this.settings.apiPath}/${id}/data.jsonld`;
-      return new Promise((resolve, reject) => {
-        fetch(searchUrl).then((response) => {
-          resolve(response.json());
-        }, (error) => {
-          reject(error);
-        });
-      });
-    },
-    getMainEntities(data) {
-      this.fetchedItems = data.map(item => RecordUtil.getMainEntity(item['@graph']));
-      this.loading = false;
-    },
     selectThis(item) {
       this.selected = item;
       const changeObj = { [this.name]: item['@id'] };
@@ -78,7 +50,6 @@ export default {
     },
   },
   mounted() {
-    this.getAllPosts();
   },
 
 };
@@ -97,11 +68,11 @@ export default {
         </div>
         <div class="PostPicker-dropdown" v-if="expanded">
           <vue-simple-spinner 
-            v-if="loading" 
+            v-if="!fetchComplete" 
             size="large" 
             :message="'Loading' | translatePhrase"></vue-simple-spinner>
           <input
-            v-if="!loading"
+            v-if="fetchComplete"
             type="text" 
             class="PostPicker-input" 
             autofocus 
@@ -128,7 +99,6 @@ export default {
         </div>
       </div>
       <p v-if="info">{{info}}</p>
-      <p v-if="error" class="PostPicker-error">{{error}}</p>
     </div>
   </div>
 </template>
@@ -194,10 +164,6 @@ export default {
     margin-bottom: 10px;
   }
 
-  &-error {
-    color: red;
-  }
-
   &-itemWrapper {
     cursor: pointer;
     border-top: 1px solid @grey-lighter;
@@ -217,6 +183,8 @@ export default {
 
   & .EntitySummary-title {
     color: @brand-darker;
+    font-size: 18px;
+    font-size: 1.8rem;
   }
 }
 
