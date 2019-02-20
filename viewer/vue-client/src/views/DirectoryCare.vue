@@ -29,7 +29,7 @@ export default {
       this.$router.push({ path: `/directory-care/${id}` });
     },
     fetchOne(id) {
-      const searchUrl = `${this.settings.apiPath}/${id}/data.jsonld`;
+      const searchUrl = `${this.settings.apiPath}/${id}/data.json`; // Should be JSON, not JSON-LD
       return new Promise((resolve, reject) => {
         fetch(searchUrl).then((response) => {
           resolve(response.json());
@@ -48,10 +48,10 @@ export default {
       }, (error) => {
         this.fetchComplete = true;
         this.error = error;
-      }); 
+      });
     },
     getMainEntities(data) {
-      this.fetchedItems = data.map(item => RecordUtil.getMainEntity(item['@graph']));
+      this.fetchedItems = data.map(item => item.mainEntity);
       this.fetchComplete = true;
     },
   },
