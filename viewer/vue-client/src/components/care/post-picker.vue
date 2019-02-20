@@ -105,7 +105,7 @@ export default {
             type="text" 
             class="PostPicker-input" 
             autofocus 
-            :placeholder="'Search favourites' | translatePhrase">
+            :placeholder="'Filter' | translatePhrase">
           <div class="PostPicker-itemWrapper"
             :key="item['@id']"
             v-for="item in fetchedItems"
