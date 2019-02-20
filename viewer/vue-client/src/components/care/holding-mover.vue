@@ -23,11 +23,16 @@ export default {
   <div class="HoldingMover">
     <div class="HoldingMover-wrapper">
       <div class="HoldingMover-label uppercaseHeading">{{ 'Sender' | translatePhrase }}</div>
-      <post-picker :items="userCare" info="Från den avsändande posten flyttar du bestånd eller annan information till den mottagande parten"/>
+      <post-picker 
+        name="sender"
+        :items="userCare" 
+        info="Från den avsändande posten flyttar du bestånd eller annan information till den mottagande parten"/>
     </div>
     <div class="HoldingMover-wrapper">
       <div class="HoldingMover-label uppercaseHeading">{{ 'Reciever' | translatePhrase }}</div>
-      <post-picker :items="userCare"/>
+      <post-picker 
+        name="reciever"
+        :items="userCare"/>
     </div>
   </div>
 </template>

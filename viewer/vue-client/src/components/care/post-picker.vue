@@ -1,11 +1,18 @@
 <script>
 import { mapGetters } from 'vuex';
 import EntitySummary from '@/components/shared/entity-summary';
+import * as RecordUtil from '@/utils/record';
 
 export default {
   name: 'post-picker',
   props: {
-    items: Array,
+    name: {
+      type: String,
+      required: true,
+    },
+    items: {
+      type: Array,
+    },
     info: {
       type: String,
       default: '',
@@ -26,6 +33,7 @@ export default {
   computed: {
     ...mapGetters([
       'settings',
+      'directoryCare',
     ]),
   },
   methods: {
@@ -58,9 +66,13 @@ export default {
     },
     selectThis(item) {
       this.selected = item;
+      const changeObj = { [this.name]: RecordUtil.extractFnurgel(item['@id']) };
+      this.$store.dispatch('setDirectoryCare', { ...this.directoryCare, ...changeObj });
     },
     unselectThis() {
       this.selected = null;
+      const changeObj = { [this.name]: null };
+      this.$store.dispatch('setDirectoryCare', { ...this.directoryCare, ...changeObj });
     },
   },
   mounted() {
