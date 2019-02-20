@@ -1,7 +1,7 @@
 <script>
 import { mapGetters } from 'vuex';
 import EntitySummary from '@/components/shared/entity-summary';
-import * as RecordUtil from '@/utils/record';
+import VueSimpleSpinner from 'vue-simple-spinner';
 
 export default {
   name: 'post-picker',
@@ -20,10 +20,11 @@ export default {
   },
   components: {
     'entity-summary': EntitySummary,
+    'vue-simple-spinner': VueSimpleSpinner,
   },
   data() {
     return {
-      expanded: true,
+      expanded: false,
       fetchedItems: [],
       selected: null,
       error: '',
@@ -48,7 +49,6 @@ export default {
       }, (error) => {
         this.loading = false;
         this.error = error;
-        console.log(error);
       }); 
     },
     getOnePost(id) {
@@ -63,10 +63,11 @@ export default {
     },
     transformPosts(data) {
       this.fetchedItems = data.map(item => item.items[0]);
+      this.loading = false;
     },
     selectThis(item) {
       this.selected = item;
-      const changeObj = { [this.name]: RecordUtil.extractFnurgel(item['@id']) };
+      const changeObj = { [this.name]: item['@id'] };
       this.$store.dispatch('setDirectoryCare', { ...this.directoryCare, ...changeObj });
     },
     unselectThis() {
@@ -92,7 +93,16 @@ export default {
         </span>
       </div>
       <div class="PostPicker-dropdown" v-if="expanded">
-        <input type="text" class="PostPicker-input" autofocus :placeholder="'Search favourites' | translatePhrase">
+        <vue-simple-spinner 
+          v-if="loading" 
+          size="large" 
+          :message="'Loading' | translatePhrase"></vue-simple-spinner>
+        <input
+          v-if="!loading"
+          type="text" 
+          class="PostPicker-input" 
+          autofocus 
+          :placeholder="'Search favourites' | translatePhrase">
         <div class="PostPicker-itemWrapper"
           :key="item['@id']"
           v-for="item in fetchedItems"
@@ -113,7 +123,8 @@ export default {
         <button @click="unselectThis">x</button>
       </div>
     </div>
-    <p>{{info}}</p>
+    <p v-if="info">{{info}}</p>
+    <p v-if="error" class="PostPicker-error">{{error}}</p>
   </div>
 </template>
 
@@ -164,7 +175,11 @@ export default {
     width: 100%;
     border: 1px solid @grey-lighter;
     border-radius: 4px;
-    padding: 5px;
+    padding: 5px 10px;
+  }
+
+  &-error {
+    color: red;
   }
 
   &-itemWrapper {
