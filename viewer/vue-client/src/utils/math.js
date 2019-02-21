@@ -2,7 +2,8 @@
 export function getRandomInt(min, max) {
   const iMin = Math.ceil(min);
   const iMax = Math.floor(max);
-  return Math.floor(Math.random() * (iMax - iMin)) + iMin;
+  const rand = Math.floor(Math.random() * (iMax - iMin)) + iMin;
+  return rand;
 }
 
 export function getNewRandom(randomArray) {
