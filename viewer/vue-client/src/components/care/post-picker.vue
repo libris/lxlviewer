@@ -10,7 +10,7 @@ export default {
       type: String,
       required: true,
     },
-    fetchedItems: {
+    flaggedInstances: {
       type: Array,
       required: true,
     },
@@ -39,23 +39,33 @@ export default {
   },
   methods: {
     selectThis(item) {
-      this.selected = item;
       const changeObj = { [this.name]: item['@id'] };
       this.$store.dispatch('setDirectoryCare', { ...this.directoryCare, ...changeObj });
     },
     unselectThis() {
-      this.selected = null;
       const changeObj = { [this.name]: null };
       this.$store.dispatch('setDirectoryCare', { ...this.directoryCare, ...changeObj });
     },
+  },
+  mounted() {
+    this.$watch(`directoryCare.${this.name}`, (newVal) => {
+      if (!newVal) {
+        this.selected = newVal;
+      } else {
+        const match = this.flaggedInstances.filter(el => el['@id'] === newVal);
+        this.selected = match[0];
+      }
+    });
   },
 };
 </script>
 
 <template>
   <div class="PostPicker">
-    <div class="PostPicker-label uppercaseHeading">{{ name | translatePhrase }}</div>
-    <div class="PostPicker-body">
+    <div class="PostPicker-label uppercaseHeading" 
+      :class="{ 'has-selection' : selected}">
+      {{ name | translatePhrase }}</div>
+    <div class="PostPicker-body" :class="{ 'has-selection' : selected}">
       <div class="PostPicker-dropdownContainer" v-if="!selected">
         <div class="PostPicker-toggle" @click="expanded = !expanded">
           <span class="PostPicker-toggleLabel">{{ ['Choose', name] | translatePhrase }}</span>
@@ -76,7 +86,7 @@ export default {
             :placeholder="'Filter' | translatePhrase">
           <div class="PostPicker-itemWrapper"
             :key="item['@id']"
-            v-for="item in fetchedItems"
+            v-for="item in flaggedInstances"
             @click="selectThis(item)">
             <entity-summary 
               :focus-data="item" 
@@ -91,9 +101,9 @@ export default {
           :focus-data="selected" 
           :should-link="false"
           :valueDisplayLimit=1></entity-summary>
-        <div>
-          <button @click="unselectThis">x</button>
-        </div>
+        <span class="PostPicker-closeBtn" role="button" @click="unselectThis">
+          <i class="fa fa-fw fa-close"></i>
+        </span>
       </div>
       <p v-if="info">{{info}}</p>
     </div>
@@ -108,11 +118,21 @@ export default {
   display: flex;
   flex-direction: column;
 
+  @media (max-width: @screen-sm) {
+    max-width: 100%;
+    width: 100%;
+  }
+
   &-label {
     padding: 5px 10px;
     background-color: @gray-lighter;
     display: inline-block;
     width: fit-content;
+    transition: background-color 0.3s ease;
+
+    &.has-selection {
+      background-color: @brand-faded;
+    }
   }
 
   &-body {
@@ -120,18 +140,25 @@ export default {
     border: 1px solid @grey-lighter;
     padding: 20px;
     flex-grow: 1;
+    transition: background-color 0.3s ease;
+
+    &.has-selection {
+      background-color: @brand-faded;
+      border-color: @brand-faded;
+    }
   }
 
   &-dropdownContainer,
   &-selectedContainer {
+    position: relative;
     border: 1px solid @gray-lighter;
     box-shadow: @shadow-panel;
     padding: 10px 15px;
     margin-bottom: 10px;
+    background-color: @white;
   }
 
   &-toggle {
-
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -163,6 +190,13 @@ export default {
     border-radius: 4px;
     padding: 5px 10px;
     margin-bottom: 10px;
+  }
+
+  &-closeBtn {
+    position: absolute;
+    padding: 10px;
+    top: 0;
+    right: 0;
   }
 
   &-itemWrapper {

@@ -78,7 +78,7 @@ export default {
     <hr class="menuDivider">
     <holding-mover 
       v-if="$route.params.tool === 'holdings'"
-      :fetchedItems="flaggedInstances"
+      :flaggedInstances="flaggedInstances"
       :fetchComplete="fetchComplete"
       :error="error" />
     <div class="" v-if="$route.params.tool === 'merge'">

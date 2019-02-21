@@ -14,7 +14,7 @@ export default {
     HoldingList,
   },
   props: {
-    fetchedItems: {
+    flaggedInstances: {
       type: Array,
       required: true,
     },
@@ -70,6 +70,10 @@ export default {
       //   this.loadingStatus = error;
       // });
     },
+    switchInstances() {
+      const switchObj = { sender: this.directoryCare.reciever, reciever: this.directoryCare.sender };
+      this.$store.dispatch('setDirectoryCare', { ...this.directoryCare, ...switchObj });
+    },
   },
   computed: {
     ...mapGetters([
@@ -77,6 +81,9 @@ export default {
       'directoryCare',
       'settings',
     ]),
+    canSwitchInstances() {
+      return !!(this.directoryCare.sender || this.directoryCare.reciever);
+    },
   },
   mounted() {
   },
@@ -88,18 +95,23 @@ export default {
     <div class="HoldingMover-pickers">
       <post-picker 
         name="sender"
-        :fetchedItems="fetchedItems"
+        :flaggedInstances="flaggedInstances"
         :fetchComplete="fetchComplete"
-        info="Från den avsändande posten flyttar du bestånd eller annan information till den mottagande parten"/>
-      <div class="HoldingMover-separator"></div>
+        info="Från den avsändande posten flyttar du bestånd till den mottagande parten"/>
+      <div class="HoldingMover-separator">
+        <button @click="switchInstances" class="btn btn-primary" :disabled="!canSwitchInstances">
+          <i class="fa fa-fw fa-exchange"></i>
+        </button>
+      </div>
       <post-picker 
         name="reciever"
-        :fetchedItems="fetchedItems"
+        :flaggedInstances="flaggedInstances"
         :fetchComplete="fetchComplete"/>
     </div>
     <div class="HoldingMover-resultListContainer">
       <HoldingList name="sender" />
-      <div class="HoldingMover-separator"></div>
+      <div class="HoldingMover-separator">
+      </div>
       <HoldingList name="reciever" />
     </div>
     <p class="HoldingMover-error" v-if="error">{{error}}</p>
@@ -129,9 +141,21 @@ export default {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+
+    @media (max-width: @screen-sm) {
+      flex-direction: column;
+      align-items: center;
+    }
   }
+
   &-separator {
+    display: flex;
+    align-items: baseline;
+    margin: 60px 10px;
     
+    @media (max-width: @screen-sm) {
+      margin: 20px;
+    }
   }
 
   &-error {
