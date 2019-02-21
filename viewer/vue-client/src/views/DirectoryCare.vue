@@ -23,11 +23,10 @@ export default {
       'settings',
       'userCare',
       'user',
-      'vocab',
-      'context',
+      'resources',
     ]),
     flaggedInstances() {
-      return filter(this.fetchedItems, o => VocabUtil.getRecordType(o['@type'], this.vocab, this.context) === 'Instance');
+      return filter(this.fetchedItems, o => VocabUtil.getRecordType(o['@type'], this.resources.vocab, this.resources.context) === 'Instance');
     },
   },
   methods: {
