@@ -95,6 +95,7 @@ export default {
     <div class="HoldingMover-pickers">
       <post-picker 
         name="sender"
+        opposite="reciever"
         :flaggedInstances="flaggedInstances"
         :fetchComplete="fetchComplete"
         info="Från den avsändande posten flyttar du bestånd till den mottagande parten"/>
@@ -105,6 +106,7 @@ export default {
       </div>
       <post-picker 
         name="reciever"
+        opposite="sender"
         :flaggedInstances="flaggedInstances"
         :fetchComplete="fetchComplete"/>
     </div>

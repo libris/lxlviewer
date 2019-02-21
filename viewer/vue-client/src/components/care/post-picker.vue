@@ -10,6 +10,10 @@ export default {
       type: String,
       required: true,
     },
+    opposite: {
+      type: String,
+      required: true,
+    },
     flaggedInstances: {
       type: Array,
       required: true,
@@ -30,6 +34,7 @@ export default {
     return {
       expanded: false,
       selected: null,
+      oppositeSelected: null,
     };
   },
   computed: {
@@ -39,8 +44,10 @@ export default {
   },
   methods: {
     selectThis(item) {
-      const changeObj = { [this.name]: item['@id'] };
-      this.$store.dispatch('setDirectoryCare', { ...this.directoryCare, ...changeObj });
+      if (item['@id'] !== this.oppositeSelected) {
+        const changeObj = { [this.name]: item['@id'] };
+        this.$store.dispatch('setDirectoryCare', { ...this.directoryCare, ...changeObj });
+      }
     },
     unselectThis() {
       const changeObj = { [this.name]: null };
@@ -48,13 +55,17 @@ export default {
     },
   },
   mounted() {
-    this.$watch(`directoryCare.${this.name}`, (newVal) => {
+    this.$watch(`directoryCare.${this.name}`, (newVal) => { // create dynamic watcher for this component
       if (!newVal) {
         this.selected = newVal;
       } else {
         const match = this.flaggedInstances.filter(el => el['@id'] === newVal);
         this.selected = match[0];
       }
+    });
+
+    this.$watch(`directoryCare.${this.opposite}`, (newVal) => { // create dynamic watcher for opposite
+      this.oppositeSelected = newVal;
     });
   },
 };
@@ -87,7 +98,8 @@ export default {
           <div class="PostPicker-itemWrapper"
             :key="item['@id']"
             v-for="item in flaggedInstances"
-            @click="selectThis(item)">
+            @click="selectThis(item)"
+            :class="{ 'is-disabled' : item['@id'] === oppositeSelected}">
             <entity-summary 
               :focus-data="item" 
               :should-link="false"
@@ -205,11 +217,16 @@ export default {
     background-color: @white;
     transition: background-color 0.2s ease;
 
+    &.is-disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
     &:first-of-type {
       border-top: none;
     }
 
-    &:hover {
+    &:hover:not(.is-disabled) {
       background-color: @brand-faded;
     }
   }
