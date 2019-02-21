@@ -106,19 +106,23 @@ export default {
 <style lang="less">
 
 .PostPicker  {
-  max-width: 50%;
-  flex: 1;
+  flex-basis: @directorycare-sidewidth;
+  max-width: @directorycare-sidewidth;
+  display: flex;
+  flex-direction: column;
 
   &-label {
     padding: 5px 10px;
     background-color: @gray-lighter;
     display: inline-block;
+    width: fit-content;
   }
 
   &-body {
     background-color: @white;
     border: 1px solid @grey-lighter;
     padding: 20px;
+    flex-grow: 1;
   }
 
   &-dropdownContainer,

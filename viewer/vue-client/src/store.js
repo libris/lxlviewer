@@ -34,9 +34,11 @@ const store = new Vuex.Store({
       helpDocs: null,
     },
     directoryCare: {
-      preSelected: [],
       sender: null,
+      senderHoldings: [],
       reciever: null,
+      recieverHoldings: [],
+      selectedHoldings: [],
     },
     inspector: {
       breadcrumb: [],
