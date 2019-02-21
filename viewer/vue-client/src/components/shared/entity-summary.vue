@@ -307,8 +307,10 @@ export default {
     text-align: right;
     text-transform: none;
     color: @gray-darker;
+    color: @gray-darker-transparent;
+    background-color: @badge-color;
+    background-color: @badge-color-transparent;
     transition: background-color 0.5s ease;
-    background-color: #f3f5f6;
     letter-spacing: 0.5px;
     font-weight: 400;
     padding: 0 0.75em;

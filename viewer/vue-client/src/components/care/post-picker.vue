@@ -49,9 +49,6 @@ export default {
       this.$store.dispatch('setDirectoryCare', { ...this.directoryCare, ...changeObj });
     },
   },
-  mounted() {
-  },
-
 };
 </script>
 
@@ -171,13 +168,15 @@ export default {
   &-itemWrapper {
     cursor: pointer;
     border-top: 1px solid @grey-lighter;
+    background-color: @white;
+    transition: background-color 0.2s ease;
 
     &:first-of-type {
       border-top: none;
     }
 
     &:hover {
-      background-color: rgba(0, 128, 127, 0.1);
+      background-color: @brand-faded;
     }
   }
 
