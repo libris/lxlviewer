@@ -122,7 +122,6 @@ export default {
 </template>
 
 <style lang="less">
-@ColumnWidth: 48%;
 
 .HoldingMover  {
   &-pickers {
