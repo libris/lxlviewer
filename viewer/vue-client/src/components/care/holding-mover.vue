@@ -1,15 +1,15 @@
 <script>
 import { mapGetters } from 'vuex';
-import VueSimpleSpinner from 'vue-simple-spinner';
+// import VueSimpleSpinner from 'vue-simple-spinner';
 import PostPicker from '@/components/care/post-picker';
 import HoldingList from '@/components/care/holding-list';
-import * as RecordUtil from '@/utils/record';
+// import * as RecordUtil from '@/utils/record';
 import * as MathUtil from '@/utils/math';
 
 export default {
   name: 'holding-mover',
   components: {
-    'vue-simple-spinner': VueSimpleSpinner,
+    // 'vue-simple-spinner': VueSimpleSpinner,
     'post-picker': PostPicker,
     HoldingList,
   },
@@ -54,7 +54,7 @@ export default {
             this.$set(this.statuses, result, 'done');
           }).catch((error) => {
             this.$set(this.statuses, error, 'error');
-          })
+          }),
         );
       }
       // Promise.all(promiseCollection)
@@ -111,7 +111,7 @@ export default {
       <button @click="doMove">Flytta</button>
       <span>Status:</span>
       <ul>
-        <li class="statusItem" v-for="(status, index) in statuses">
+        <li class="statusItem" v-for="(status, index) in statuses" :key="index">
           <i class="statusItem-loading fa fa-circle-o-notch fa-spin" v-show="status === 'loading'" />
           <i class="statusItem-success fa fa-check" v-show="status === 'done'" />
           <i class="statusItem-error fa fa-times" v-show="status === 'error'" />
