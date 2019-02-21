@@ -118,13 +118,11 @@ export default {
 
 <style lang="less">
 
-@ColumnWidth: 48%;
-
 .HoldingList {
-  flex-basis: @ColumnWidth;
+  flex-basis: @directorycare-sidewidth: 48%;;
   padding: 20px;
   &-item {
-    flex-basis: @ColumnWidth;
+    flex-basis: @directorycare-sidewidth: 48%;;
     display: flex;
     flex-direction: row;
     border: 1px solid @grey-light;
