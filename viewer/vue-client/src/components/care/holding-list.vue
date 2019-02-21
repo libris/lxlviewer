@@ -119,10 +119,10 @@ export default {
 <style lang="less">
 
 .HoldingList {
-  flex-basis: @directorycare-sidewidth: 48%;;
+  flex-basis: @directorycare-sidewidth;
   padding: 20px;
   &-item {
-    flex-basis: @directorycare-sidewidth: 48%;;
+    flex-basis: @directorycare-sidewidth;
     display: flex;
     flex-direction: row;
     border: 1px solid @grey-light;
