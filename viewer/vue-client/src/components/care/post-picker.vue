@@ -106,8 +106,8 @@ export default {
 <style lang="less">
 
 .PostPicker  {
-  flex-basis: @directorycare-sidewidth: 48%;;
-  max-width: @directorycare-sidewidth: 48%;;
+  flex-basis: @directorycare-sidewidth;
+  max-width: @directorycare-sidewidth;
   display: flex;
   flex-direction: column;
 
