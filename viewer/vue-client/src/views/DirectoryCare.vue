@@ -1,7 +1,8 @@
 <script>
 import { mapGetters } from 'vuex';
+import { filter } from 'lodash-es';
+import * as VocabUtil from '@/utils/vocab';
 import TabMenu from '@/components/shared/tab-menu';
-import * as RecordUtil from '@/utils/record';
 import HoldingMover from '@/components/care/holding-mover';
 
 export default {
@@ -22,7 +23,12 @@ export default {
       'settings',
       'userCare',
       'user',
+      'vocab',
+      'context',
     ]),
+    flaggedInstances() {
+      return filter(this.fetchedItems, o => VocabUtil.getRecordType(o['@type'], this.vocab, this.context) === 'Instance');
+    },
   },
   methods: {
     switchTool(id) {
@@ -73,7 +79,7 @@ export default {
     <hr class="menuDivider">
     <holding-mover 
       v-if="$route.params.tool === 'holdings'"
-      :fetchedItems="fetchedItems"
+      :fetchedItems="flaggedInstances"
       :fetchComplete="fetchComplete"
       :error="error" />
     <div class="" v-if="$route.params.tool === 'merge'">
