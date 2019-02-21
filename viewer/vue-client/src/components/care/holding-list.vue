@@ -1,7 +1,6 @@
 <script>
 import { mapGetters } from 'vuex';
 import { each } from 'lodash-es';
-import VueSimpleSpinner from 'vue-simple-spinner';
 
 export default {
   name: 'holding-list',
@@ -12,7 +11,6 @@ export default {
     },
   },
   components: {
-    'vue-simple-spinner': VueSimpleSpinner,
   },
   data() {
     return {
