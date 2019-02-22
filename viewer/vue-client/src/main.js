@@ -57,6 +57,8 @@ Vue.filter('capitalize', (value) => {
   newValue = newValue.toString();
   return newValue.charAt(0).toUpperCase() + newValue.slice(1);
 });
+Vue.filter('lowercase', value => value.toLowerCase());
+Vue.filter('uppercase', value => value.toUpperCase());
 
 window.addEventListener('beforeunload', () => {
   const path = `${window.location.pathname.replace('/katalogisering', '')}${window.location.search}`;

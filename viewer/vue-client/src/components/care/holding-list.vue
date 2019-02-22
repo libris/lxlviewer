@@ -1,6 +1,7 @@
 <script>
 import { mapGetters } from 'vuex';
-import { each } from 'lodash-es';
+import { each, isObject } from 'lodash-es';
+import * as StringUtil from '@/utils/string';
 
 export default {
   name: 'holding-list',
@@ -9,18 +10,28 @@ export default {
       type: String,
       required: true,
     },
+    progress: {
+      type: Object,
+      default: null,
+    },
+    lock: {
+      type: Boolean,
+      default: false,
+    },
   },
   components: {
   },
   data() {
     return {
       selected: [],
+      allHoldingsSelected: false,
     };
   },
   computed: {
     ...mapGetters([
       'directoryCare',
       'settings',
+      'user',
     ]),
     isSender() {
       return this.name === 'sender';
@@ -28,11 +39,29 @@ export default {
     bothSelected() {
       return (this.directoryCare.sender !== null && this.directoryCare.reciever !== null);
     },
+    movableHoldings() {
+      const holdings = this.directoryCare.senderHoldings;
+      const permitted = [];
+      for (let i = 0; i < holdings.length; i++) {
+        if (this.userHasPermission(holdings[i]) && !this.holdingExistsOnTarget(holdings[i])) {
+          permitted.push(holdings[i]);
+        }
+      }
+      return permitted;
+    },
+    noPermissionTooltip() {
+      return StringUtil.getUiPhraseByLang('You don\'t have permission', this.user.settings.language);
+    },
   },
   watch: {
     selected(value) {
       const changeObj = { selectedHoldings: value };
       this.$store.dispatch('setDirectoryCare', { ...this.directoryCare, ...changeObj });
+      if (this.selected.length > 0 && this.movableHoldings.length === this.selected.length) {
+        this.allHoldingsSelected = true;
+      } else {
+        this.allHoldingsSelected = false;
+      }
     },
     'directoryCare.sender'() {
       if (this.name === 'sender') {
@@ -46,10 +75,62 @@ export default {
       }
       this.clearSelected();
     },
+    lock(newValue, oldValue) {
+      if (newValue === false && oldValue === true) {
+        this.clearSelected;
+      }
+    },
   },
   methods: {
+    doSend() {
+      this.$emit('send');
+    },
+    getStatus(holding) {
+      const id = holding['@id'];
+      if (this.progress !== null && this.progress.hasOwnProperty(id)) {
+        return this.progress[id];
+      }
+      return null;
+    },
+    userHasPermission(holding) {
+      let heldBy = '';
+      if (isObject(holding)) {
+        heldBy = holding.heldBy['@id'];
+      } else {
+        heldBy = holding;
+      }
+      const holdingSigel = StringUtil.removeDomain(heldBy, this.settings.removableBaseUris).replace('library/', '');
+      const collections = this.user.collections.map((x) => {
+        if (x.registrant === true) {
+          return x.code
+        }
+      });
+      if (collections.indexOf(holdingSigel) > -1) {
+        return true;
+      }
+      return false;
+    },
     isSelected(holding) {
       return this.selected.indexOf(holding['@id']) > -1;
+    },
+    resetList() {
+      this.selected = [];
+      this.getHoldings();
+    },
+    selectAllPossible() {
+      for (let i = 0; i < this.movableHoldings.length; i++) {
+        this.selected.push(this.movableHoldings[i]['@id']);
+      }
+    },
+    clearSelected() {
+      this.selected = [];
+    },
+    handleAllSelect($event) {
+      if ($event.target.checked) {
+        this.selectAllPossible();
+      } else {
+        this.clearSelected();
+      }
     },
     handleCheckbox($event, holding) {
       if ($event.target.checked === true) {
@@ -72,9 +153,6 @@ export default {
       }
       return false;
     },
-    clearSelected() {
-      this.selected = [];
-    },
     getHoldings() {
       const self = this;
       const bibId = this.directoryCare[this.name];
@@ -95,20 +173,40 @@ export default {
     },
   },
   mounted() {
+    this.$nextTick(() => {
+    });
   },
 
 };
 </script>
 
 <template>
-  <div class="HoldingList">
-    <div class="HoldingList-item" :key="index" v-for="(holding, index) in directoryCare[`${this.name}Holdings`]">
-      <div class="HoldingList-inputAndLoading" v-if="isSender">
-        <input v-if="!holdingExistsOnTarget(holding) && bothSelected" :checked="isSelected(holding)" type="checkbox" @change="handleCheckbox($event, holding)" />
-        <input v-if="holdingExistsOnTarget(holding) || !bothSelected" :checked="isSelected(holding)" type="checkbox" disabled />
-      </div>
-      <div class="HoldingList-itemInfo">
-        {{ holding.heldBy['@id'] | removeDomain }} <span v-if="isSender && holdingExistsOnTarget(holding)" class="badge">{{ 'Already exists' | translatePhrase }}</span>
+  <div class="HoldingList" :class="{ 'is-sender': isSender }" v-if="directoryCare[this.name]">
+    <div class="HoldingList-topBar">
+        <span v-if="isSender" class="">
+          <input v-model="allHoldingsSelected" type="checkbox" :disabled="lock || movableHoldings.length === 0" @change="handleAllSelect" />
+        </span>
+        <button class="btn btn--md SendHoldings-btn btn-primary" v-if="isSender" :disabled="directoryCare.selectedHoldings.length === 0" @click="doSend">Flytta bestånd</button>
+        <span v-if="isSender">{{ directoryCare.selectedHoldings.length }} / {{ directoryCare.senderHoldings.length }} {{ 'Holdings chosen' | translatePhrase | lowercase }}</span>
+        <div v-if="!isSender"></div>
+        <span v-if="!isSender">{{ directoryCare.recieverHoldings.length }} {{ 'Holdings' | translatePhrase | lowercase }}</span>
+    </div>
+    <div class="HoldingList-body">
+      <div class="HoldingList-item" :class="{ 'selected': isSelected(holding) }" :key="index" v-for="(holding, index) in directoryCare[`${this.name}Holdings`]">
+        <div class="HoldingList-input" v-if="isSender && !lock && userHasPermission(holding)">
+          <input :checked="isSelected(holding)" type="checkbox" :disabled="holdingExistsOnTarget(holding) || lock" @change="handleCheckbox($event, holding)" />
+        </div>
+        <div class="HoldingList-noPermission" v-if="isSender && !userHasPermission(holding)">
+          <i v-tooltip.top="noPermissionTooltip" class="fa fa-lock"></i>
+        </div>
+        <div class="HoldingList-status" v-if="lock && isSender && userHasPermission(holding)">
+          <i class="statusItem-loading fa fa-circle-o-notch fa-spin" v-show="getStatus(holding) === 'loading'" />
+          <i class="statusItem-success fa fa-check" v-show="getStatus(holding) === 'done'" />
+          <i class="statusItem-error fa fa-times" v-show="getStatus(holding) === 'error'" />
+        </div>
+        <div class="HoldingList-itemInfo">
+          {{ holding.heldBy['@id'] | removeDomain }} <span v-if="isSender && holdingExistsOnTarget(holding)" class="badge">{{ 'Already exists' | translatePhrase }}</span>
+        </div>
       </div>
     </div>
   </div>
@@ -118,17 +216,37 @@ export default {
 
 .HoldingList {
   flex-basis: @directorycare-sidewidth;
-  padding: 20px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  &-topBar {
+    padding: 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  &-body {
+    border: solid @grey-light;
+    border-width: 1px 0px 0px 1px;
+    padding: 1em;
+    flex-grow: 1;
+    .is-sender & {
+      border-width: 1px 1px 0px 0px;
+    }
+  }
   &-item {
     flex-basis: @directorycare-sidewidth;
     display: flex;
     flex-direction: row;
     border: 1px solid @grey-light;
+    &.selected {
+      background-color: fadeout(@brand-primary, 75%);
+    }
   }
   &-itemInfo {
     padding: 1em;
   }
-  &-inputAndLoading {
+  &-input, &-status, &-noPermission {
     display: flex;
     flex-direction: row;
     width: 10%;
@@ -137,6 +255,10 @@ export default {
     input {
       margin: 0;
     }
+  }
+
+  .SendHoldings-btn {
+    // font-weight: 800;
   }
 }
 
