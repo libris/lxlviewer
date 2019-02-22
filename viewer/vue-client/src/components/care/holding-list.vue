@@ -77,7 +77,7 @@ export default {
     },
     lock(newValue, oldValue) {
       if (newValue === false && oldValue === true) {
-        this.clearSelected;
+        this.clearSelected();
       }
     },
   },
@@ -102,8 +102,9 @@ export default {
       const holdingSigel = StringUtil.removeDomain(heldBy, this.settings.removableBaseUris).replace('library/', '');
       const collections = this.user.collections.map((x) => {
         if (x.registrant === true) {
-          return x.code
+          return x.code;
         }
+        return false;
       });
       if (collections.indexOf(holdingSigel) > -1) {
         return true;

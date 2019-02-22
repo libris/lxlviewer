@@ -1,11 +1,9 @@
 <script>
 import { mapGetters } from 'vuex';
 import { filter } from 'lodash-es';
-import VueSimpleSpinner from 'vue-simple-spinner';
 import PostPicker from '@/components/care/post-picker';
 import HoldingList from '@/components/care/holding-list';
-// import * as RecordUtil from '@/utils/record';
-import * as MathUtil from '@/utils/math';
+import * as RecordUtil from '@/utils/record';
 
 export default {
   name: 'holding-mover',
@@ -63,23 +61,26 @@ export default {
       this.loading = true;
       const promiseCollection = [];
       const selected = this.directoryCare.selectedHoldings;
-      const id = this.directoryCare.reciever;
 
       for (let i = 0; i < selected.length; i++) {
         this.$set(this.progress, selected[i], 'loading');
         promiseCollection.push(
           RecordUtil.moveHolding(selected[i], this.directoryCare.reciever, this.user)
-          .then((result) => {
-            this.$set(this.progress, selected[i], 'done');
-            this.checkAllDone();
-          }, (error) => {
-            this.$set(this.progress, selected[i], 'error');
-            this.checkAllDone();
-          })
-          .catch((error) => {
-            this.$set(this.progress, selected[i], 'error');
-            this.checkAllDone();
-          })
+            .then(() => {
+              // Success
+              this.$set(this.progress, selected[i], 'done');
+              this.checkAllDone();
+            }, () => {
+              // Error
+              this.$set(this.progress, selected[i], 'error');
+              this.checkAllDone();
+            })
+            .catch((error) => {
+              // Catch
+              this.$set(this.progress, selected[i], 'error');
+              console.warn(error);
+              this.checkAllDone();
+            }),
         );
       }
     },
