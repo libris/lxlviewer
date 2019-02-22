@@ -77,7 +77,7 @@ export default {
       :class="{ 'has-selection' : selected}">
       {{ name | translatePhrase }}</div>
     <div class="PostPicker-body" :class="{ 'has-selection' : selected}">
-      <div class="PostPicker-dropdownContainer" v-if="!selected">
+      <div class="PostPicker-dropdownContainer" v-if="!selected && flaggedInstances.length > 0">
         <div class="PostPicker-toggle" @click="expanded = !expanded">
           <span class="PostPicker-toggleLabel">{{ ['Choose', name] | translatePhrase }}</span>
           <span class="PostPicker-toggleIcon" :class="{ 'expanded' : expanded}">
