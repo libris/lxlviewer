@@ -53,6 +53,14 @@ export default {
       const changeObj = { [this.name]: null };
       this.$store.dispatch('setDirectoryCare', { ...this.directoryCare, ...changeObj });
     },
+    toggleDropdown() {
+      this.expanded = !this.expanded;
+      this.$nextTick(() => {
+        if (this.expanded) {
+          this.$refs.pickerInput.focus();
+        }
+      });
+    },
   },
   mounted() {
     this.$watch(`directoryCare.${this.name}`, (newVal) => { // create dynamic watcher for this component
@@ -78,7 +86,7 @@ export default {
       {{ name | translatePhrase }}</div>
     <div class="PostPicker-body" :class="{ 'has-selection' : selected}">
       <div class="PostPicker-dropdownContainer" v-if="!selected && flaggedInstances.length > 0">
-        <div class="PostPicker-toggle" @click="expanded = !expanded">
+        <div class="PostPicker-toggle" @click="toggleDropdown">
           <span class="PostPicker-toggleLabel">{{ ['Choose', name] | translatePhrase }}</span>
           <span class="PostPicker-toggleIcon" :class="{ 'expanded' : expanded}">
             <i class="fa fa-fw fa-chevron-down"></i>
@@ -94,7 +102,7 @@ export default {
               v-if="fetchComplete"
               type="text" 
               class="PostPicker-input" 
-              autofocus 
+              ref="pickerInput" 
               :placeholder="'Filter' | translatePhrase">
           </div>
           <div class="PostPicker-itemWrapper"
