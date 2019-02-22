@@ -1,6 +1,7 @@
 <script>
 import { mapGetters } from 'vuex';
-// import VueSimpleSpinner from 'vue-simple-spinner';
+import { filter } from 'lodash-es';
+import VueSimpleSpinner from 'vue-simple-spinner';
 import PostPicker from '@/components/care/post-picker';
 import HoldingList from '@/components/care/holding-list';
 // import * as RecordUtil from '@/utils/record';
@@ -30,45 +31,57 @@ export default {
     return {
       destinationId: '',
       loadingStatus: '',
-      statuses: [],
+      progress: {},
+      loading: false,
     };
   },
   watch: {
+    'directoryCare.selectedHoldings'() {
+      this.clearProgress();
+    },
   },
   methods: {
+    clearProgress() {
+      this.progress = {};
+    },
+    checkAllDone() {
+      const selected = this.directoryCare.selectedHoldings;
+      if (filter(this.progress, o => o !== 'loading').length === selected.length) {
+        this.allDone();
+      }
+    },
+    allDone() {
+      const self = this;
+      setTimeout(() => {
+        this.loading = false;
+        self.$refs.sender.resetList();
+        self.$refs.reciever.resetList();
+      }, 1500);
+    },
     doMove() {
+      this.clearProgress();
+      this.loading = true;
       const promiseCollection = [];
-      this.statuses = [];
-      for (let i = 0; i < 50; i++) {
-        this.statuses.push('loading');
+      const selected = this.directoryCare.selectedHoldings;
+      const id = this.directoryCare.reciever;
+
+      for (let i = 0; i < selected.length; i++) {
+        this.$set(this.progress, selected[i], 'loading');
         promiseCollection.push(
-          new Promise((resolve, reject) => {
-            setTimeout(() => {
-              if (MathUtil.getRandomInt(0, 2) > 0) {
-                resolve(i);
-              } else {
-                reject(i);
-              }
-            }, MathUtil.getRandomInt(0, 4000));
-          }).then((result) => {
-            this.$set(this.statuses, result, 'done');
-          }).catch((error) => {
-            this.$set(this.statuses, error, 'error');
-          }),
+          RecordUtil.moveHolding(selected[i], this.directoryCare.reciever, this.user)
+          .then((result) => {
+            this.$set(this.progress, selected[i], 'done');
+            this.checkAllDone();
+          }, (error) => {
+            this.$set(this.progress, selected[i], 'error');
+            this.checkAllDone();
+          })
+          .catch((error) => {
+            this.$set(this.progress, selected[i], 'error');
+            this.checkAllDone();
+          })
         );
       }
-      // Promise.all(promiseCollection)
-      // .then(values => {
-      //   console.log(values);
-      // })
-      // .catch(error => console.log(error));
-      // this.loadingStatus = 'loading...';
-      // RecordUtil.moveHolding(this.holdingId, this.destinationId, this.user).then((result) => {
-      //   console.log(result);
-      //   this.loadingStatus = 'success!';
-      // }, (error) => {
-      //   this.loadingStatus = error;
-      // });
     },
     switchInstances() {
       const switchObj = { sender: this.directoryCare.reciever, reciever: this.directoryCare.sender };
@@ -80,9 +93,13 @@ export default {
       'userCare',
       'directoryCare',
       'settings',
+      'user',
     ]),
     canSwitchInstances() {
       return !!(this.directoryCare.sender || this.directoryCare.reciever);
+    },
+    bothSelected() {
+      return (this.directoryCare.sender && this.directoryCare.reciever);
     },
   },
   mounted() {
@@ -115,27 +132,11 @@ export default {
         :fetchComplete="fetchComplete"/>
     </div>
     <div class="HoldingMover-resultListContainer">
-      <HoldingList name="sender" />
-      <div class="HoldingMover-separator">
-      </div>
-      <HoldingList name="reciever" />
+      <HoldingList ref="sender" name="sender" :lock="loading || !bothSelected" @send="doMove" :progress="progress" />
+      <div class="HoldingMover-separator"></div>
+      <HoldingList ref="reciever" :lock="true" name="reciever" />
     </div>
     <p class="HoldingMover-error" v-if="error">{{error}}</p>
-    <div class="">
-      <h3>Testlåda för flytt</h3>
-      {{ directoryCare.selectedHoldings}}<br>
-      <label for="destinationInput">ID på NYA bibposten (mottagare)</label>
-      <input name="destinationInput" size="50" v-model="destinationId" /><br>
-      <button @click="doMove">Flytta</button>
-      <span>Status:</span>
-      <ul>
-        <li class="statusItem" v-for="(status, index) in statuses" :key="index">
-          <i class="statusItem-loading fa fa-circle-o-notch fa-spin" v-show="status === 'loading'" />
-          <i class="statusItem-success fa fa-check" v-show="status === 'done'" />
-          <i class="statusItem-error fa fa-times" v-show="status === 'error'" />
-        </li>
-      </ul>
-    </div>
   </div>
 </template>
 
