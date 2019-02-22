@@ -463,8 +463,10 @@ body {
 // ------------- BADGE ----------------
 
 .badge {
-  background-color: @gray-lighter;
+  background-color: @badge-color;
+  background-color: @badge-color-transparent;
   color: @gray-darker;
+  color: @gray-darker-transparent;
 }
 
 // ---------- TYPOGRAPHY -------------

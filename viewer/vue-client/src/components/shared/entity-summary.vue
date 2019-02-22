@@ -203,7 +203,7 @@ export default {
       <span class="EntitySummary-sourceLabel" v-if="database">{{ database }}</span>
     </div>
     <div class="EntitySummary-id uppercaseHeading--light" :class="{'recently-copied': recentlyCopiedId }" @mouseover="idHover = true" @mouseout="idHover = false">
-      <i v-tooltip.top="idTooltipText" class="fa fa-copy EntitySummary-idCopyIcon" :class="{'collapsedIcon': !idHover || recentlyCopiedId }" @click="copyFnurgel">
+      <i v-tooltip.top="idTooltipText" class="fa fa-copy EntitySummary-idCopyIcon" :class="{'collapsedIcon': !idHover || recentlyCopiedId }" @click.stop="copyFnurgel">
       </i>{{ idAsFnurgel }}
     </div>
   </div>
@@ -307,8 +307,10 @@ export default {
     text-align: right;
     text-transform: none;
     color: @gray-darker;
+    color: @gray-darker-transparent;
+    background-color: @badge-color;
+    background-color: @badge-color-transparent;
     transition: background-color 0.5s ease;
-    background-color: #f3f5f6;
     letter-spacing: 0.5px;
     font-weight: 400;
     padding: 0 0.75em;

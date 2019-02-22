@@ -10,7 +10,11 @@ export default {
       type: String,
       required: true,
     },
-    fetchedItems: {
+    opposite: {
+      type: String,
+      required: true,
+    },
+    flaggedInstances: {
       type: Array,
       required: true,
     },
@@ -30,6 +34,7 @@ export default {
     return {
       expanded: false,
       selected: null,
+      oppositeSelected: null,
     };
   },
   computed: {
@@ -39,27 +44,40 @@ export default {
   },
   methods: {
     selectThis(item) {
-      this.selected = item;
-      const changeObj = { [this.name]: item['@id'] };
-      this.$store.dispatch('setDirectoryCare', { ...this.directoryCare, ...changeObj });
+      if (item['@id'] !== this.oppositeSelected) {
+        const changeObj = { [this.name]: item['@id'] };
+        this.$store.dispatch('setDirectoryCare', { ...this.directoryCare, ...changeObj });
+      }
     },
     unselectThis() {
-      this.selected = null;
       const changeObj = { [this.name]: null };
       this.$store.dispatch('setDirectoryCare', { ...this.directoryCare, ...changeObj });
     },
   },
   mounted() {
-  },
+    this.$watch(`directoryCare.${this.name}`, (newVal) => { // create dynamic watcher for this component
+      if (!newVal) {
+        this.selected = newVal;
+      } else {
+        const match = this.flaggedInstances.filter(el => el['@id'] === newVal);
+        this.selected = match[0];
+      }
+    });
 
+    this.$watch(`directoryCare.${this.opposite}`, (newVal) => { // create dynamic watcher for opposite
+      this.oppositeSelected = newVal;
+    });
+  },
 };
 </script>
 
 <template>
   <div class="PostPicker">
-    <div class="PostPicker-label uppercaseHeading">{{ name | translatePhrase }}</div>
-    <div class="PostPicker-body">
-      <div class="PostPicker-dropdownContainer" v-if="!selected">
+    <div class="PostPicker-label uppercaseHeading" 
+      :class="{ 'has-selection' : selected}">
+      {{ name | translatePhrase }}</div>
+    <div class="PostPicker-body" :class="{ 'has-selection' : selected}">
+      <div class="PostPicker-dropdownContainer" v-if="!selected && flaggedInstances.length > 0">
         <div class="PostPicker-toggle" @click="expanded = !expanded">
           <span class="PostPicker-toggleLabel">{{ ['Choose', name] | translatePhrase }}</span>
           <span class="PostPicker-toggleIcon" :class="{ 'expanded' : expanded}">
@@ -79,8 +97,9 @@ export default {
             :placeholder="'Filter' | translatePhrase">
           <div class="PostPicker-itemWrapper"
             :key="item['@id']"
-            v-for="item in fetchedItems"
-            @click="selectThis(item)">
+            v-for="item in flaggedInstances"
+            @click="selectThis(item)"
+            :class="{ 'is-disabled' : item['@id'] === oppositeSelected}">
             <entity-summary 
               :focus-data="item" 
               :should-link="false"
@@ -94,11 +113,11 @@ export default {
           :focus-data="selected" 
           :should-link="false"
           :valueDisplayLimit=1></entity-summary>
-        <div>
-          <button @click="unselectThis">x</button>
-        </div>
+        <span class="PostPicker-closeBtn" role="button" @click="unselectThis">
+          <i class="fa fa-fw fa-close"></i>
+        </span>
       </div>
-      <p v-if="info">{{info}}</p>
+      <slot name="info"></slot>
     </div>
   </div>
 </template>
@@ -111,11 +130,21 @@ export default {
   display: flex;
   flex-direction: column;
 
+  @media (max-width: @screen-sm) {
+    max-width: 100%;
+    width: 100%;
+  }
+
   &-label {
     padding: 5px 10px;
     background-color: @gray-lighter;
     display: inline-block;
     width: fit-content;
+    transition: background-color 0.3s ease;
+
+    &.has-selection {
+      background-color: @brand-faded;
+    }
   }
 
   &-body {
@@ -123,18 +152,25 @@ export default {
     border: 1px solid @grey-lighter;
     padding: 20px;
     flex-grow: 1;
+    transition: background-color 0.3s ease;
+
+    &.has-selection {
+      background-color: @brand-faded;
+      border-color: @brand-faded;
+    }
   }
 
   &-dropdownContainer,
   &-selectedContainer {
+    position: relative;
     border: 1px solid @gray-lighter;
     box-shadow: @shadow-panel;
     padding: 10px 15px;
     margin-bottom: 10px;
+    background-color: @white;
   }
 
   &-toggle {
-
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -168,16 +204,30 @@ export default {
     margin-bottom: 10px;
   }
 
+  &-closeBtn {
+    position: absolute;
+    padding: 10px;
+    top: 0;
+    right: 0;
+  }
+
   &-itemWrapper {
     cursor: pointer;
     border-top: 1px solid @grey-lighter;
+    background-color: @white;
+    transition: background-color 0.2s ease;
+
+    &.is-disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
 
     &:first-of-type {
       border-top: none;
     }
 
-    &:hover {
-      background-color: rgba(0, 128, 127, 0.1);
+    &:hover:not(.is-disabled) {
+      background-color: @brand-faded;
     }
   }
 

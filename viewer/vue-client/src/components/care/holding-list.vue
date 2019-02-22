@@ -31,7 +31,7 @@ export default {
   },
   watch: {
     selected(value) {
-      const changeObj = { ['selectedHoldings']: value };
+      const changeObj = { selectedHoldings: value };
       this.$store.dispatch('setDirectoryCare', { ...this.directoryCare, ...changeObj });
     },
     'directoryCare.sender'() {
