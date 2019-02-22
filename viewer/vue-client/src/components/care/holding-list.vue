@@ -213,7 +213,7 @@ export default {
           <div class="HoldingList-foundOnDestination" v-if="isSender && holdingExistsOnTarget(holding)">
             <i v-tooltip.top="foundOnDestinationTooltip" class="fa fa-fw fa-warning"></i>
           </div>
-          <div class="HoldingList-status" v-if="lock && isSender && userHasPermission(holding)">
+          <div class="HoldingList-status" v-if="lock && isSender && userHasPermission(holding) && !holdingExistsOnTarget(holding)">
             <i class="statusItem-loading fa fa-fw fa-circle-o-notch fa-spin" v-show="getStatus(holding) === 'loading'" />
             <i class="statusItem-success fa fa-fw fa-check" v-show="getStatus(holding) === 'done'" />
             <i class="statusItem-error fa fa-fw fa-times" v-show="getStatus(holding) === 'error'" />
