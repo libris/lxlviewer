@@ -16,6 +16,11 @@ export default {
       fetchedItems: [],
       fetchComplete: false,
       error: '',
+      tabs: [
+        { id: 'holdings', text: 'Move holdings' },
+        // { 'id': 'merge', 'text': 'Merge posts' }, 
+        // { 'id': 'remove', 'text': 'Batch remove' }, 
+      ],
     };
   },
   computed: {
@@ -71,10 +76,7 @@ export default {
 
 <template>
   <div class="DirectoryCare">
-    <tab-menu @go="switchTool" :tabs="[
-      { 'id': 'holdings', 'text': 'Move holdings' },
-      { 'id': 'merge', 'text': 'Merge posts' },
-    ]" :active="$route.params.tool"></tab-menu>
+    <tab-menu @go="switchTool" :tabs="tabs" :active="$route.params.tool"></tab-menu>
     <hr class="menuDivider">
     <holding-mover 
       v-if="$route.params.tool === 'holdings'"
