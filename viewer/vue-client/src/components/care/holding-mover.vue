@@ -99,7 +99,8 @@ export default {
         :flaggedInstances="flaggedInstances"
         :fetchComplete="fetchComplete">
         <p slot="info">
-          Från den avsändande posten flyttar du bestånd till den mottagande parten.
+          <span v-if="flaggedInstances.length === 0">Det finns inga instanser markerade för katalogvård.</span>
+          <span v-else="">Från den avsändande posten flyttar du bestånd till den mottagande posten.</span>
         </p>
       </post-picker>
       <div class="HoldingMover-separator">
@@ -156,7 +157,7 @@ export default {
   &-separator {
     display: flex;
     align-items: baseline;
-    margin: 60px 10px;
+    margin: 40px 10px;
     
     @media (max-width: @screen-sm) {
       margin: 20px;
