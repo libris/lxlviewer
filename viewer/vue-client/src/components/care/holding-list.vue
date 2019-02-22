@@ -86,12 +86,14 @@ export default {
     },
     'directoryCare.sender'() {
       if (this.name === 'sender') {
+        this.resetMovedStatus();
         this.getHoldings();
       }
       this.clearSelected();
     },
     'directoryCare.reciever'() {
       if (this.name === 'reciever') {
+        this.resetMovedStatus();
         this.getHoldings();
       }
       this.clearSelected();
@@ -103,6 +105,10 @@ export default {
     },
   },
   methods: {
+    resetMovedStatus() {
+      const changeObj = { holdingsMoved: [] };
+      this.$store.dispatch('setDirectoryCare', { ...this.directoryCare, ...changeObj });
+    },
     doSend() {
       this.$emit('send');
     },
@@ -129,7 +135,19 @@ export default {
     isSelected(holding) {
       return this.selected.indexOf(holding['@id']) > -1;
     },
-    resetList() {
+    isNewlyMoved(holding) {
+      if (this.name === 'reciever') {
+        const moved = this.directoryCare.holdingsMoved;
+        if (moved.indexOf(holding['@id']) > -1) {
+          return true;
+        }
+      }
+      return false;
+    },
+    doneMoving() {
+      if (this.name === 'reciever') {
+        this.beforeChange = this.sortedHoldings;
+      }
       this.selected = [];
       this.getHoldings();
     },
@@ -139,13 +157,21 @@ export default {
       }
     },
     clearSelected() {
+      this.beforeChange = null;
       this.selected = [];
     },
-    handleAllSelect($event) {
-      if ($event.target.checked) {
-        this.selectAllPossible();
-      } else {
+    // handleAllSelect($event) {
+    //   if ($event.target.checked) {
+    //     this.selectAllPossible();
+    //   } else {
+    //     this.clearSelected();
+    //   }
+    // },
+    toggleAll() {
+      if (this.allHoldingsSelected) {
         this.clearSelected();
+      } else {
+        this.selectAllPossible();
       }
     },
     handleCheckbox($event, holding) {
@@ -199,18 +225,21 @@ export default {
 <template>
   <div class="HoldingList" :class="{ 'is-sender': isSender }" v-if="directoryCare[this.name]">
     <div class="HoldingList-topBar">
-        <span v-if="isSender" class="">
-          <input v-model="allHoldingsSelected" type="checkbox" :disabled="lock || movableHoldings.length === 0" @change="handleAllSelect" />
-        </span>
+        <button v-if="isSender" class="btn btn--md btn-light SelectAll-btn" @click="toggleAll" :disabled="lock || movableHoldings.length === 0">
+          <i class="fa fa-fw fa-square-o" v-show="!allHoldingsSelected"></i>
+          <i class="fa fa-fw fa-check-square-o" v-show="allHoldingsSelected"></i>
+          <!-- <input v-model="allHoldingsSelected" type="checkbox" :disabled="lock || movableHoldings.length === 0" @change="handleAllSelect" /> -->
+          {{ 'Select all' | translatePhrase }}
+        </button>
         <button class="btn btn--md SendHoldings-btn btn-primary" v-if="isSender" :disabled="lock || directoryCare.selectedHoldings.length === 0" @click="doSend">Flytta bestånd</button>
         <span v-if="isSender">{{ directoryCare.selectedHoldings.length }} / {{ directoryCare.senderHoldings.length }} {{ 'Holdings chosen' | translatePhrase | lowercase }}</span>
         <div v-if="!isSender"></div>
         <span v-if="!isSender">{{ directoryCare.recieverHoldings.length }} {{ 'Holdings' | translatePhrase | lowercase }}</span>
     </div>
     <div class="HoldingList-body">
-      <div class="HoldingList-item" :class="{ 'selected': isSelected(holding) }" :key="index" v-for="(holding, index) in sortedHoldings">
+      <div class="HoldingList-item" :key="index" v-for="(holding, index) in sortedHoldings">
         <div class="HoldingList-itemIndex">{{index + 1}}</div>
-        <div class="HoldingList-itemBody">
+        <div class="HoldingList-itemBody" :class="{ 'selected': isSelected(holding), 'newly-moved': isNewlyMoved(holding), 'is-first': index === 0 }">
           <div class="HoldingList-input" v-if="isSender && !lock && userHasPermission(holding) && !holdingExistsOnTarget(holding)">
             <input :checked="isSelected(holding)" type="checkbox" :disabled="lock" @change="handleCheckbox($event, holding)" />
           </div>
@@ -247,6 +276,9 @@ export default {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    .btn {
+      min-width: unset;
+    }
   }
   &-body {
     border: solid @grey-light;
@@ -264,13 +296,21 @@ export default {
   }
   &-itemIndex {
     padding: 0.5em;
+    flex-basis: 8%;
   }
   &-itemBody {
     flex-direction: row;
     display: flex;
     flex-grow: 1;
-    border: 1px solid @grey-light;
+    border: solid @grey-light;
+    border-width: 0px 1px 1px 1px;
+    &.is-first {
+      border-width: 1px 1px 1px 1px;
+    }
     &.selected {
+      background-color: fadeout(@brand-primary, 75%);
+    }
+    &.newly-moved {
       background-color: fadeout(@brand-primary, 75%);
     }
   }

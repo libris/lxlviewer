@@ -39,6 +39,7 @@ const store = new Vuex.Store({
       reciever: null,
       recieverHoldings: [],
       selectedHoldings: [],
+      holdingsMoved: [],
     },
     inspector: {
       breadcrumb: [],
