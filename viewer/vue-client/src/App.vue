@@ -463,8 +463,8 @@ body {
 // ------------- BADGE ----------------
 
 .badge {
-  background-color: @gray-lighter;
-  background-color: @gray-lighter-transparent;
+  background-color: @badge-color;
+  background-color: @badge-color-transparent;
   color: @gray-darker;
   color: @gray-darker-transparent;
 }

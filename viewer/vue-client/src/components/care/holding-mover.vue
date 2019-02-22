@@ -97,8 +97,11 @@ export default {
         name="sender"
         opposite="reciever"
         :flaggedInstances="flaggedInstances"
-        :fetchComplete="fetchComplete"
-        info="Från den avsändande posten flyttar du bestånd till den mottagande parten"/>
+        :fetchComplete="fetchComplete">
+        <p slot="info">
+          Från den avsändande posten flyttar du bestånd till den mottagande parten.
+        </p>
+      </post-picker>
       <div class="HoldingMover-separator">
         <button @click="switchInstances" class="btn btn-primary" :disabled="!canSwitchInstances">
           <i class="fa fa-fw fa-exchange"></i>

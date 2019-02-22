@@ -117,7 +117,7 @@ export default {
           <i class="fa fa-fw fa-close"></i>
         </span>
       </div>
-      <p v-if="info">{{info}}</p>
+      <slot name="info"></slot>
     </div>
   </div>
 </template>
