@@ -17,10 +17,10 @@ export default {
       fetchComplete: false,
       error: '',
       tabs: [
-        { 'id': 'holdings', 'text': 'Move holdings' },
+        { id: 'holdings', text: 'Move holdings' },
         // { 'id': 'merge', 'text': 'Merge posts' }, 
         // { 'id': 'remove', 'text': 'Batch remove' }, 
-      ]
+      ],
     };
   },
   computed: {
