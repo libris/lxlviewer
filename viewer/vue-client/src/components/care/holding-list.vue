@@ -33,6 +33,15 @@ export default {
       'settings',
       'user',
     ]),
+    registrantPermissions() {
+      const collections = this.user.collections.map((x) => {
+        if (x.registrant === true) {
+          return x.code;
+        }
+        return false;
+      });
+      return collections;
+    },
     isSender() {
       return this.name === 'sender';
     },
@@ -52,6 +61,9 @@ export default {
     noPermissionTooltip() {
       return StringUtil.getUiPhraseByLang('You don\'t have permission', this.user.settings.language);
     },
+    foundOnDestinationTooltip() {
+      return StringUtil.getUiPhraseByLang('Holding already exists on the reciever', this.user.settings.language);
+    },
   },
   watch: {
     selected(value) {
@@ -64,12 +76,14 @@ export default {
       }
     },
     'directoryCare.sender'() {
+      console.log("sender updated");
       if (this.name === 'sender') {
         this.getHoldings();
       }
       this.clearSelected();
     },
     'directoryCare.reciever'() {
+      console.log("reciever updated");
       if (this.name === 'reciever') {
         this.getHoldings();
       }
@@ -100,13 +114,7 @@ export default {
         heldBy = holding;
       }
       const holdingSigel = StringUtil.removeDomain(heldBy, this.settings.removableBaseUris).replace('library/', '');
-      const collections = this.user.collections.map((x) => {
-        if (x.registrant === true) {
-          return x.code;
-        }
-        return false;
-      });
-      if (collections.indexOf(holdingSigel) > -1) {
+      if (this.registrantPermissions.indexOf(holdingSigel) > -1) {
         return true;
       }
       return false;
@@ -194,19 +202,25 @@ export default {
     </div>
     <div class="HoldingList-body">
       <div class="HoldingList-item" :class="{ 'selected': isSelected(holding) }" :key="index" v-for="(holding, index) in directoryCare[`${this.name}Holdings`]">
-        <div class="HoldingList-input" v-if="isSender && !lock && userHasPermission(holding)">
-          <input :checked="isSelected(holding)" type="checkbox" :disabled="holdingExistsOnTarget(holding) || lock" @change="handleCheckbox($event, holding)" />
-        </div>
-        <div class="HoldingList-noPermission" v-if="isSender && !userHasPermission(holding)">
-          <i v-tooltip.top="noPermissionTooltip" class="fa fa-lock"></i>
-        </div>
-        <div class="HoldingList-status" v-if="lock && isSender && userHasPermission(holding)">
-          <i class="statusItem-loading fa fa-circle-o-notch fa-spin" v-show="getStatus(holding) === 'loading'" />
-          <i class="statusItem-success fa fa-check" v-show="getStatus(holding) === 'done'" />
-          <i class="statusItem-error fa fa-times" v-show="getStatus(holding) === 'error'" />
-        </div>
-        <div class="HoldingList-itemInfo">
-          {{ holding.heldBy['@id'] | removeDomain }} <span v-if="isSender && holdingExistsOnTarget(holding)" class="badge">{{ 'Already exists' | translatePhrase }}</span>
+        <div class="HoldingList-itemIndex">{{index + 1}}</div>
+        <div class="HoldingList-itemBody">
+          <div class="HoldingList-input" v-if="isSender && !lock && userHasPermission(holding) && !holdingExistsOnTarget(holding)">
+            <input :checked="isSelected(holding)" type="checkbox" :disabled="lock" @change="handleCheckbox($event, holding)" />
+          </div>
+          <div class="HoldingList-noPermission" v-if="isSender && !userHasPermission(holding)">
+            <i v-tooltip.top="noPermissionTooltip" class="fa fa-fw fa-lock"></i>
+          </div>
+          <div class="HoldingList-foundOnDestination" v-if="isSender && holdingExistsOnTarget(holding)">
+            <i v-tooltip.top="foundOnDestinationTooltip" class="fa fa-fw fa-warning"></i>
+          </div>
+          <div class="HoldingList-status" v-if="lock && isSender && userHasPermission(holding)">
+            <i class="statusItem-loading fa fa-fw fa-circle-o-notch fa-spin" v-show="getStatus(holding) === 'loading'" />
+            <i class="statusItem-success fa fa-fw fa-check" v-show="getStatus(holding) === 'done'" />
+            <i class="statusItem-error fa fa-fw fa-times" v-show="getStatus(holding) === 'error'" />
+          </div>
+          <div class="HoldingList-itemInfo">
+            {{ holding.heldBy['@id'] | removeDomain }}</span>
+          </div>
         </div>
       </div>
     </div>
@@ -236,9 +250,17 @@ export default {
     }
   }
   &-item {
-    flex-basis: @directorycare-sidewidth;
-    display: flex;
     flex-direction: row;
+    display: flex;
+    align-items: center;
+  }
+  &-itemIndex {
+    padding: 0.5em;
+  }
+  &-itemBody {
+    flex-direction: row;
+    display: flex;
+    flex-grow: 1;
     border: 1px solid @grey-light;
     &.selected {
       background-color: fadeout(@brand-primary, 75%);
@@ -247,7 +269,7 @@ export default {
   &-itemInfo {
     padding: 1em;
   }
-  &-input, &-status, &-noPermission {
+  &-input, &-status, &-noPermission, &-foundOnDestination {
     display: flex;
     flex-direction: row;
     width: 10%;
@@ -256,6 +278,12 @@ export default {
     input {
       margin: 0;
     }
+  }
+  &-noPermission {
+    color: @grey-light;
+  }
+  &-foundOnDestination {
+    color: @brand-warning;
   }
 
   .SendHoldings-btn {
