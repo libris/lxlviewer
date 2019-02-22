@@ -281,7 +281,7 @@ export default {
     }
   }
   &-body {
-    border: solid @grey-light;
+    border: solid @grey-lighter;
     border-width: 1px 0px 0px 1px;
     padding: 1em;
     flex-grow: 1;
@@ -302,16 +302,16 @@ export default {
     flex-direction: row;
     display: flex;
     flex-grow: 1;
-    border: solid @grey-light;
+    border: solid @grey-lighter;
     border-width: 0px 1px 1px 1px;
     &.is-first {
       border-width: 1px 1px 1px 1px;
     }
     &.selected {
-      background-color: fadeout(@brand-primary, 75%);
+      background-color: @brand-faded;
     }
     &.newly-moved {
-      background-color: fadeout(@brand-primary, 75%);
+      background-color: @brand-faded;
     }
   }
   &-itemInfo {

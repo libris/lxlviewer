@@ -84,17 +84,19 @@ export default {
             <i class="fa fa-fw fa-chevron-down"></i>
           </span>
         </div>
-        <div class="PostPicker-dropdown" v-if="expanded">
+        <div class="PostPicker-dropdown" v-show="expanded">
           <vue-simple-spinner 
             v-if="!fetchComplete" 
             size="large" 
             :message="'Loading' | translatePhrase"></vue-simple-spinner>
-          <input
-            v-if="fetchComplete"
-            type="text" 
-            class="PostPicker-input" 
-            autofocus 
-            :placeholder="'Filter' | translatePhrase">
+          <div class="PostPicker-inputContainer">
+            <input
+              v-if="fetchComplete"
+              type="text" 
+              class="PostPicker-input" 
+              autofocus 
+              :placeholder="'Filter' | translatePhrase">
+          </div>
           <div class="PostPicker-itemWrapper"
             :key="item['@id']"
             v-for="item in flaggedInstances"
@@ -114,7 +116,7 @@ export default {
           :should-link="false"
           :valueDisplayLimit=1></entity-summary>
         <span class="PostPicker-closeBtn" role="button" @click="unselectThis">
-          <i class="fa fa-fw fa-close"></i>
+          <i class="fa fa-fw fa-close icon"></i>
         </span>
       </div>
       <slot name="info"></slot>
@@ -156,7 +158,7 @@ export default {
 
     &.has-selection {
       background-color: @brand-faded;
-      border-color: @brand-faded;
+      border-color: transparent;
     }
   }
 
@@ -170,11 +172,16 @@ export default {
     background-color: @white;
   }
 
+  &-dropdownContainer {
+    padding: 0;
+  }
+
   &-toggle {
     display: flex;
     justify-content: space-between;
     align-items: center;
     cursor: pointer;
+    padding: 10px 15px;
   }
 
   &-toggleLabel {
@@ -196,12 +203,16 @@ export default {
     margin-top: 10px;
   }
 
+  &-inputContainer {
+    padding: 0 15px;
+  }
+
   &-input {
     width: 100%;
-    border: 1px solid @grey-lighter;
+    border: 1px solid @grey-light;
     border-radius: 4px;
     padding: 5px 10px;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
   }
 
   &-closeBtn {
@@ -216,15 +227,13 @@ export default {
     border-top: 1px solid @grey-lighter;
     background-color: @white;
     transition: background-color 0.2s ease;
+    padding: 0 15px;
 
     &.is-disabled {
       opacity: 0.5;
       cursor: not-allowed;
     }
 
-    &:first-of-type {
-      border-top: none;
-    }
 
     &:hover:not(.is-disabled) {
       background-color: @brand-faded;
