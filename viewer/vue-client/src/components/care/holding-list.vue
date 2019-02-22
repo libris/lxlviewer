@@ -1,6 +1,6 @@
 <script>
 import { mapGetters } from 'vuex';
-import { each, isObject } from 'lodash-es';
+import { each, isObject, orderBy } from 'lodash-es';
 import * as StringUtil from '@/utils/string';
 
 export default {
@@ -64,6 +64,15 @@ export default {
     foundOnDestinationTooltip() {
       return StringUtil.getUiPhraseByLang('Holding already exists on the reciever', this.user.settings.language);
     },
+    sortedHoldings() {
+      const holdings = this.directoryCare[`${this.name}Holdings`];
+      const sorted = orderBy(holdings, [(o) => {
+        const parts = o.heldBy['@id'].split('/');
+        const code = parts[parts.length - 1];
+        return this.registrantPermissions.indexOf(code) > -1;
+      }, o => o.heldBy['@id']], ['desc', 'asc']);
+      return sorted;
+    },
   },
   watch: {
     selected(value) {
@@ -76,14 +85,12 @@ export default {
       }
     },
     'directoryCare.sender'() {
-      console.log("sender updated");
       if (this.name === 'sender') {
         this.getHoldings();
       }
       this.clearSelected();
     },
     'directoryCare.reciever'() {
-      console.log("reciever updated");
       if (this.name === 'reciever') {
         this.getHoldings();
       }
@@ -195,13 +202,13 @@ export default {
         <span v-if="isSender" class="">
           <input v-model="allHoldingsSelected" type="checkbox" :disabled="lock || movableHoldings.length === 0" @change="handleAllSelect" />
         </span>
-        <button class="btn btn--md SendHoldings-btn btn-primary" v-if="isSender" :disabled="directoryCare.selectedHoldings.length === 0" @click="doSend">Flytta bestånd</button>
+        <button class="btn btn--md SendHoldings-btn btn-primary" v-if="isSender" :disabled="lock || directoryCare.selectedHoldings.length === 0" @click="doSend">Flytta bestånd</button>
         <span v-if="isSender">{{ directoryCare.selectedHoldings.length }} / {{ directoryCare.senderHoldings.length }} {{ 'Holdings chosen' | translatePhrase | lowercase }}</span>
         <div v-if="!isSender"></div>
         <span v-if="!isSender">{{ directoryCare.recieverHoldings.length }} {{ 'Holdings' | translatePhrase | lowercase }}</span>
     </div>
     <div class="HoldingList-body">
-      <div class="HoldingList-item" :class="{ 'selected': isSelected(holding) }" :key="index" v-for="(holding, index) in directoryCare[`${this.name}Holdings`]">
+      <div class="HoldingList-item" :class="{ 'selected': isSelected(holding) }" :key="index" v-for="(holding, index) in sortedHoldings">
         <div class="HoldingList-itemIndex">{{index + 1}}</div>
         <div class="HoldingList-itemBody">
           <div class="HoldingList-input" v-if="isSender && !lock && userHasPermission(holding) && !holdingExistsOnTarget(holding)">
@@ -235,6 +242,7 @@ export default {
   display: flex;
   flex-direction: column;
   &-topBar {
+    height: 4em;
     padding: 20px;
     display: flex;
     flex-direction: row;
