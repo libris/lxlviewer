@@ -246,7 +246,7 @@ export default {
           <div class="HoldingList-noPermission" v-if="isSender && !userHasPermission(holding)">
             <i v-tooltip.top="noPermissionTooltip" class="fa fa-fw fa-lock"></i>
           </div>
-          <div class="HoldingList-foundOnDestination" v-if="isSender && holdingExistsOnTarget(holding)">
+          <div class="HoldingList-foundOnDestination" v-if="isSender && userHasPermission(holding) && holdingExistsOnTarget(holding)">
             <i v-tooltip.top="foundOnDestinationTooltip" class="fa fa-fw fa-warning"></i>
           </div>
           <div class="HoldingList-status" v-if="lock && isSender && userHasPermission(holding) && !holdingExistsOnTarget(holding)">
