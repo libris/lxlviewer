@@ -104,6 +104,10 @@ export default {
     },
   },
   mounted() {
+    this.$nextTick(() => {
+      const changeObj = { sender: null, reciever: null, selectedHoldings: [] };
+      this.$store.dispatch('setDirectoryCare', { ...this.directoryCare, ...changeObj });
+    });
   },
 };
 </script>
