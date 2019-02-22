@@ -235,6 +235,10 @@ button {
     background-color: fadeout(@btn-primary, 35%);
     box-shadow: none;
   }
+  &.btn-light {
+    opacity: 0.7;
+    box-shadow: none;
+  }
 }
 
 .btn-primary {
@@ -252,6 +256,19 @@ button {
   &:focus {
     color: white;
     background-color: @gray-darker;
+  }
+}
+
+.btn-light {
+  color: lighten(@black, 15%);
+  background-color: darken(@white, 5%);
+  &:focus {
+    color: lighten(@black, 15%);
+    background-color: darken(@white, 5%);
+  }
+  &:hover {
+    color: lighten(@black, 15%);
+    background-color: darken(@white, 10%);
   }
 }
 

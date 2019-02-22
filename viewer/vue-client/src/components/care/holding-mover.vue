@@ -52,8 +52,8 @@ export default {
       const self = this;
       setTimeout(() => {
         this.loading = false;
-        self.$refs.sender.resetList();
-        self.$refs.reciever.resetList();
+        self.$refs.sender.doneMoving();
+        self.$refs.reciever.doneMoving();
       }, 1500);
     },
     doMove() {
@@ -68,6 +68,9 @@ export default {
           RecordUtil.moveHolding(selected[i], this.directoryCare.reciever, this.user)
             .then(() => {
               // Success
+              const changeObj = { holdingsMoved: this.directoryCare.holdingsMoved };
+              changeObj.holdingsMoved.push(selected[i]);
+              this.$store.dispatch('setDirectoryCare', { ...this.directoryCare, ...changeObj });
               this.$set(this.progress, selected[i], 'done');
               this.checkAllDone();
             }, () => {
