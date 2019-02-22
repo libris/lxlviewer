@@ -255,7 +255,7 @@ export default {
             <i class="statusItem-error fa fa-fw fa-times" v-show="getStatus(holding) === 'error'" />
           </div>
           <div class="HoldingList-itemInfo">
-            {{ holding.heldBy['@id'] | removeDomain }}</span>
+            <span>{{ holding.heldBy['@id'] | removeDomain }}</span>
           </div>
         </div>
       </div>
