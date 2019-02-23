@@ -17,6 +17,8 @@ export default {
   },
   data() {
     return {
+      helpHover: false,
+      helpToggled: false,
       vocabUrl: 'https://id.kb.se/vocab/',
       staticProps: { _limit: 20 },
       searchPhrase: '',
@@ -42,19 +44,8 @@ export default {
       html = this.removeTags(html);
       return html;
     },
-    showHelp() {
-      const helpText = document.querySelector('.js-searchHelpText');
-      helpText.parentElement.classList.add(this.activeClass);
-    },
-    hideHelp() {
-      const helpText = document.querySelector('.js-searchHelpText');
-      if (helpText.parentElement.classList.contains(this.activeClass)) {
-        helpText.parentElement.classList.remove(this.activeClass);
-      } 
-    },
     toggleHelp() {
-      const helpText = document.querySelector('.js-searchHelpText');
-      helpText.parentElement.classList.toggle(this.activeClass);
+      this.helpToggled = !this.helpToggled;
     },
     composeQuery() {
       let query = '';
@@ -119,10 +110,21 @@ export default {
     },
   },
   computed: {
+    showHelp() {
+      if (this.helpHover || this.helpToggled) {
+        return true;
+      }
+      return false;
+    },
+    helpContainerBoundaryStyles() {
+      const $icon = this.$refs.helpIcon;
+      const styles = { top: `${$icon.clientHeight + 20}px` };
+      return styles;
+    },
     searchHelpDocs() {
       if (this.docs && this.docs.hasOwnProperty('search-01-queries')) {
         return this.transformMarkdownToHTML(this.docs['search-01-queries'].content);
-      } 
+      }
       return StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language);
     },
     docs() {
@@ -193,16 +195,19 @@ export default {
         { 'id': 'libris', 'text': 'Libris' },
         { 'id': 'remote', 'text': 'Other sources' },
       ]" :active="searchPerimeter"></tab-menu>
-      <div  v-if="searchPerimeter === 'libris'"  class="SearchBar-help" @mouseleave="hideHelp()">
+      <div  v-if="searchPerimeter === 'libris'"  class="SearchBar-help">
         <div class="SearchBar-helpBox dropdown" >
           <span class="SearchBar-helpIcon icon icon--md">
             <i class="fa fa-fw fa-question-circle" tabindex="0" aria-haspopup="true"
-              @mouseover="showHelp()"
-              @keyup.enter="toggleHelp()"></i>
+              ref="helpIcon"
+              @mouseover="helpHover = true"
+              @mouseleave="helpHover = false"
+              @click="toggleHelp"
+              @keyup.enter="toggleHelp"></i>
           </span>
-          <div class="SearchBar-helpContent js-searchHelpText dropdown-menu"> 
-            <strong class="SearchBar-helpTitle">Operatorer för frågespråk</strong>
-            <div v-html="searchHelpDocs"></div>
+          <div class="SearchBar-helpContainer" :style="helpContainerBoundaryStyles" v-if="showHelp"> 
+            <strong class="SearchBar-helpTitle">Operatorer för frågespråk</strong><i v-if="helpToggled" class="fa fa-times SearchBar-closeHelp" @click="toggleHelp"></i>
+            <div class="SearchBar-helpContent" v-html="searchHelpDocs"></div>
           </div>
         </div>
       </div> 
@@ -293,6 +298,29 @@ export default {
     margin-left: auto;
   }
 
+  &-helpContainer {
+    position: absolute;
+    z-index: @popover-z;
+    right: 0px;
+    background-color: @neutral-color;
+    padding: 1em;
+    width: 40vw;
+    max-height: 50vh;
+    overflow-y: scroll;
+    border-radius: 0.25em;
+    border: 1px solid;
+    border-color: #ccc #ccc #aaa #ccc;
+    box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.25);
+  }
+  &-closeHelp {
+    float: right;
+    cursor: pointer;
+    color: @grey;
+    &:hover {
+      color: @black;
+    }
+  }
+
   &-helpIcon {
     float: right;
     clear: right;
@@ -304,33 +332,6 @@ export default {
     &:focus {
       outline: auto 5px;
     }
-  }
-
-  &-helpBox {
-    float: none;
-  }
-
-  &-helpContent {
-    background: @white;
-    font-size: 12px;
-    font-size: 1.2rem;
-    display: none;
-    left: auto;
-    width: 300px;
-    padding: 10px;
-    margin-top: 10px;
-    right: 0;
-    top: 2em;
-
-    .is-active & {
-      display: block;
-    }
-  }
-
-  &-helpTitle {
-    font-weight: 700;
-    font-size: 16px;
-    font-size: 1.6rem;
   }
 
   &-input {
