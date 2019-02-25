@@ -126,10 +126,11 @@ export default {
     </ul>
     <ul v-else class="TabMenu-tabList" ref="tablist">
       <li v-for="item in tabs" 
-        :key="item.id" 
-        class="TabMenu-tab" 
-        :class="{'is-active': active === item.id }" >
-        <router-link class="TabMenu-tabLink" :to="item.link">{{item.text | translatePhrase}}
+        class="TabMenu-linkContainer"
+        :key="item.id">
+        <router-link class="TabMenu-tab" 
+          :class="{'is-active': active === item.id }" 
+          :to="item.link">{{item.text | translatePhrase}}
         </router-link>
       </li>
       <hr v-show="hasActive" class="TabMenu-underline" ref="underline">
@@ -163,13 +164,16 @@ export default {
     background-color: @brand-primary;
   }
 
+  &-linkContainer {
+    display: inline-block;
+  }
+
   &-tab {
     cursor: pointer;
     text-decoration: none;
     position: relative;
     display: inline-block;
     padding: 5px @tabPadding;
-    display: inline-block;
     color: @grey;
     font-weight: 600;
     font-size: 16px;
@@ -185,21 +189,14 @@ export default {
       font-size: 18px;
       font-size: 1.8rem;
     }
-    &:hover {
+
+    &:hover,
+    &:focus {
       color: @brand-primary;
       text-decoration: none;
     }
     &.is-active {
       color: @black;
-      text-decoration: none;
-    }
-  }
-  &-tabLink {
-    color: inherit;
-    &:hover, 
-    &:active,
-    &:focus {
-      color: inherit;
       text-decoration: none;
     }
   }
