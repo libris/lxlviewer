@@ -52,7 +52,11 @@ export default {
     valueDisplayLimit: {
       default: 5,
       type: Number,
-    }, 
+    },
+    highlightStr: {
+      type: [String, Boolean], 
+      default: false,
+    },
   },
   data() {
     return {
@@ -191,6 +195,11 @@ export default {
     extractEntity() {
       this.$dispatch('extract-item');
     },
+    highlight(header) {
+      const index = header.toLowerCase().indexOf(this.highlightStr.toLowerCase());
+      const newHeader = `${header.substr(0, index)}<span class="highlight">${header.substr(index, this.highlightStr.length)}</span>${header.substr(index + this.highlightStr.length)}`;
+      return newHeader;
+    },
   },
 };
 </script>
@@ -210,9 +219,12 @@ export default {
 
   <div class="EntitySummary-info">
     <h3 class="EntitySummary-title" v-bind:class="{ 'EntitySummary-title--imported': isImport && shouldLink }">
-      
+      <span v-if="highlightStr && !shouldLink" 
+        v-html="highlight(header.join(', '))"
+        :title="header.join(', ')">
+      </span>
       <span 
-        v-if="!shouldLink" 
+        v-if="!highlightStr && !shouldLink" 
         :title="header.join(', ')">{{ header.join(', ') }}</span>
       <span
         v-if="isImport && shouldLink" 
@@ -356,6 +368,10 @@ export default {
     overflow: hidden;
     width: 100%; 
     position: relative;
+
+    & .highlight {
+      background-color: @brand-faded;
+    }
 
     .ResultList & {
       color: @brand-darker;
