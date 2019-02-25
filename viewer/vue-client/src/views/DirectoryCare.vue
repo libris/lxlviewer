@@ -34,6 +34,13 @@ export default {
       return filter(this.fetchedItems, o => VocabUtil.getRecordType(o['@type'], this.resources.vocab, this.resources.context) === 'Instance');
     },
   },
+  watch: {
+    userCare(newValue, oldValue) {
+      if (newValue !== oldValue) {
+        this.fetchAllFlagged();
+      }
+    },
+  },
   methods: {
     switchTool(id) {
       this.$router.push({ path: `/directory-care/${id}` });
