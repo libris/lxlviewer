@@ -18,6 +18,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    loading: {
+      type: Boolean,
+      default: false,
+    },
   },
   components: {
   },
@@ -231,7 +235,8 @@ export default {
           <!-- <input v-model="allHoldingsSelected" type="checkbox" :disabled="lock || movableHoldings.length === 0" @change="handleAllSelect" /> -->
           {{ 'Select all' | translatePhrase }}
         </button>
-        <button class="btn btn--md SendHoldings-btn btn-primary" v-if="isSender" :disabled="lock || directoryCare.selectedHoldings.length === 0" @click="doSend">Flytta bestånd</button>
+        <button class="btn btn--md SendHoldings-btn btn-primary" v-if="isSender && !loading" :disabled="lock || directoryCare.selectedHoldings.length === 0" @click="doSend">{{ 'Move holdings' | translatePhrase }}</button>
+        <button class="btn btn--md SendHoldings-btn btn-primary" v-if="isSender && loading" :disabled="true"><i class="fa fa-circle-o-notch fa-spin"></i> {{ 'Moving holdings' | translatePhrase }}</button>
         <span v-if="isSender">{{ directoryCare.selectedHoldings.length }} / {{ directoryCare.senderHoldings.length }} {{ 'Holdings chosen' | translatePhrase | lowercase }}</span>
         <div v-if="!isSender"></div>
         <span v-if="!isSender">{{ directoryCare.recieverHoldings.length }} {{ 'Holdings' | translatePhrase | lowercase }}</span>

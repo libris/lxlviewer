@@ -140,7 +140,7 @@ export default {
         :fetchComplete="fetchComplete"/>
     </div>
     <div class="HoldingMover-resultListContainer">
-      <HoldingList ref="sender" name="sender" :lock="loading || !bothSelected" @send="doMove" :progress="progress" />
+      <HoldingList ref="sender" name="sender" :loading="loading" :lock="loading || !bothSelected" @send="doMove" :progress="progress" />
       <div class="HoldingMover-separator"></div>
       <HoldingList ref="reciever" :lock="true" name="reciever" />
     </div>
