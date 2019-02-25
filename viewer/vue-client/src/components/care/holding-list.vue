@@ -241,7 +241,11 @@ export default {
         <div class="HoldingList-itemIndex">{{index + 1}}</div>
         <div class="HoldingList-itemBody" :class="{ 'selected': isSelected(holding), 'newly-moved': isNewlyMoved(holding), 'is-first': index === 0 }">
           <div class="HoldingList-input" v-if="isSender && !lock && userHasPermission(holding) && !holdingExistsOnTarget(holding)">
-            <input :checked="isSelected(holding)" type="checkbox" :disabled="lock" @change="handleCheckbox($event, holding)" />
+            <input 
+              :checked="isSelected(holding)" 
+              type="checkbox" :disabled="lock" 
+              @change="handleCheckbox($event, holding)" 
+              :id="`checkbox-${holding.heldBy['@id']}`"/>
           </div>
           <div class="HoldingList-noPermission" v-if="isSender && !userHasPermission(holding)">
             <i v-tooltip.top="noPermissionTooltip" class="fa fa-fw fa-lock"></i>
@@ -254,9 +258,9 @@ export default {
             <i class="statusItem-success fa fa-fw fa-check" v-show="getStatus(holding) === 'done'" />
             <i class="statusItem-error fa fa-fw fa-times" v-show="getStatus(holding) === 'error'" />
           </div>
-          <div class="HoldingList-itemInfo">
-            <span>{{ holding.heldBy['@id'] | removeDomain }}</span>
-          </div>
+          <label :for="`checkbox-${holding.heldBy['@id']}`" class="HoldingList-itemInfo">
+            {{ holding.heldBy['@id'] | removeDomain }}
+          </label>
         </div>
       </div>
     </div>
@@ -316,6 +320,8 @@ export default {
   }
   &-itemInfo {
     padding: 1em;
+    font-weight: normal;
+    margin: 0;
   }
   &-input, &-status, &-noPermission, &-foundOnDestination {
     display: flex;
