@@ -35,12 +35,25 @@ export default {
       expanded: false,
       selected: null,
       oppositeSelected: null,
+      filterPhrase: '',
     };
   },
   computed: {
     ...mapGetters([
       'directoryCare',
     ]),
+    filteredInstances() {
+      return this.flaggedInstances.filter((el) => {
+        let titles = [];
+        el.hasTitle.forEach((t) => {
+          for (const val in t) {
+            if (t.hasOwnProperty(val) && typeof t[val] === 'string' && val !== '@type') { titles.push(t[val]); }
+          }
+        });
+        titles = titles.join(' • ').toLowerCase();
+        return titles.indexOf(this.filterPhrase.trim().toLowerCase()) > -1;
+      });
+    },
   },
   methods: {
     selectThis(item) {
@@ -101,19 +114,21 @@ export default {
             <input
               v-if="fetchComplete"
               type="text" 
+              v-model="filterPhrase"
               class="PostPicker-input" 
               ref="pickerInput" 
               :placeholder="'Filter' | translatePhrase">
           </div>
           <div class="PostPicker-itemWrapper"
             :key="item['@id']"
-            v-for="item in flaggedInstances"
+            v-for="item in filteredInstances"
             @click="selectThis(item)"
             :class="{ 'is-disabled' : item['@id'] === oppositeSelected}">
             <entity-summary 
               :focus-data="item" 
               :should-link="false"
-              :valueDisplayLimit=1></entity-summary>
+              :valueDisplayLimit=1
+              :highlightStr="filterPhrase.trim()"></entity-summary>
           </div>
         </div>
       </div>
