@@ -7,6 +7,8 @@
   Props:
     * Tabs    - Expects an array of tab-objects
     * Active  - Expects a string that it will match against the id on the tab-object and put as active.
+    * Link    - If true, component expects tab-objects to have a link prop. 
+                It will then render a <router-link> instead of emitting an event.
 
   Tab-Objects:
     A tab object needs two things.
@@ -39,6 +41,10 @@ export default {
     active: {
       type: String,
       default: '',
+    },
+    link: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {
@@ -105,7 +111,7 @@ export default {
 
 <template>
   <div class="TabMenu">
-    <ul class="TabMenu-tabList" role="tablist" ref="tablist">
+    <ul v-if="!link" class="TabMenu-tabList" role="tablist" ref="tablist">
       <li class="TabMenu-tab"
         v-for="item in tabs" 
         tabindex="0"
@@ -115,6 +121,16 @@ export default {
         :class="{'is-active': active === item.id }"
         role="tab">
           {{item.text | translatePhrase}}
+      </li>
+      <hr v-show="hasActive" class="TabMenu-underline" ref="underline">
+    </ul>
+    <ul v-else class="TabMenu-tabList" ref="tablist">
+      <li v-for="item in tabs" 
+        :key="item.id" 
+        class="TabMenu-tab" 
+        :class="{'is-active': active === item.id }" >
+        <router-link class="TabMenu-tabLink" :to="item.link">{{item.text | translatePhrase}}
+        </router-link>
       </li>
       <hr v-show="hasActive" class="TabMenu-underline" ref="underline">
     </ul>
@@ -178,6 +194,14 @@ export default {
       text-decoration: none;
     }
   }
-
+  &-tabLink {
+    color: inherit;
+    &:hover, 
+    &:active,
+    &:focus {
+      color: inherit;
+      text-decoration: none;
+    }
+  }
 }
 </style>
