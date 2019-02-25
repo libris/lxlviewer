@@ -66,8 +66,11 @@ const store = new Vuex.Store({
     user: {
       settings: {
         language: 'sv',
-        list: {},
       },
+    },
+    userStorage: {
+      list: {},
+      copyClipboard: null,
     },
     settings: {
       title: 'Libris Katalogisering',
@@ -353,42 +356,18 @@ const store = new Vuex.Store({
         throw new Error(`Trying to set unknown status property "${payload.property}" on inspector. Is it defined in the store?`);
       }
     },
-    setClipboard(state, data) {
-      let copyObj;
-      if (data === null) {
-        copyObj = null;
-      } else {
-        copyObj = JSON.stringify(data);
-      }
-      state.inspector.clipboard = copyObj;
-      localStorage.setItem('copyClipboard', copyObj);
-    },
     setUser(state, userObj) {
       state.user = userObj;
       state.user.saveSettings();
     },
-    markPost(state, payload) {
-      const list = cloneDeep(state.user.settings.list);
-      const tag = payload.tag;
-      if (list.hasOwnProperty(payload.id)) {
-        if (list[payload.id].indexOf(tag) < 0) {
-          list[payload.id].push(tag);
-        }
+    setUserStorage(state, data) {
+      if (data) {
+        state.userStorage = data;
       } else {
-        list[payload.id] = [tag];
-      }
-      state.user.settings.list = list;
-      state.user.saveSettings();
-    },
-    unmarkPost(state, payload) {
-      const list = cloneDeep(state.user.settings.list);
-      const tag = payload.tag;
-      if (list.hasOwnProperty(payload.id)) {
-        if (list[payload.id].indexOf(tag) >= 0) {
-          list[payload.id].splice(list[payload.id].indexOf(tag), 1);
-          state.user.settings.list = list;
-          state.user.saveSettings();
-        }
+        state.userStorage = {
+          list: {},
+          copyClipboard: null,
+        };
       }
     },
     flushChangeHistory(state) {
@@ -437,9 +416,10 @@ const store = new Vuex.Store({
     resources: state => state.resources,
     settings: state => state.settings,
     user: state => state.user,
-    userFavorites: (state) => {
+    userStorage: state => state.userStorage,
+    userFavorites: (state, getters) => {
       const collection = [];
-      const list = state.user.settings.list;
+      const list = getters.userStorage.list;
       const ids = Object.keys(list);
       for (let i = 0; i < ids.length; i++) {
         if (list[ids[i]].indexOf('Favorite') > -1) {
@@ -448,9 +428,9 @@ const store = new Vuex.Store({
       }
       return collection;
     },
-    userCare: (state) => {
+    userCare: (state, getters) => {
       const collection = [];
-      const list = state.user.settings.list;
+      const list = getters.userStorage.list;
       const ids = Object.keys(list);
       for (let i = 0; i < ids.length; i++) {
         if (list[ids[i]].indexOf('Directory care') > -1) {
@@ -465,20 +445,8 @@ const store = new Vuex.Store({
     display: state => state.resources.display,
     forcedSetTerms: state => state.resources.forcedSetTerms,
     context: state => state.resources.context,
-    clipboard: (state) => {
-      if (state.inspector.clipboard == null) {
-        state.inspector.clipboard = localStorage.getItem('copyClipboard');
-      }
-      return JSON.parse(state.inspector.clipboard);
-    },
   },
   actions: {
-    markPost({ commit }, payload) {
-      commit('markPost', payload);
-    },
-    unmarkPost({ commit }, payload) {
-      commit('unmarkPost', payload);
-    },
     setValidation({ commit }, payload) {
       commit('setValidation', payload);
     },
@@ -541,8 +509,8 @@ const store = new Vuex.Store({
     pushInspectorEvent({ commit }, payload) {
       commit('pushInspectorEvent', payload);
     },
-    setClipboard({ commit }, data) {
-      commit('setClipboard', data);
+    setUserStorage({ commit }, data) {
+      commit('setUserStorage', data);
     },
     setUser({ commit }, userObj) {
       commit('setUser', userObj);
@@ -649,6 +617,17 @@ const store = new Vuex.Store({
       commit('setVocabProperties', vocabProperties);
     },
   },
+});
+
+store.subscribe((mutation, state) => {
+  if (mutation.type === 'setUserStorage') {
+    let userStorageTotal = JSON.parse(localStorage.getItem('userStorage'));
+    if (userStorageTotal === null) {
+      userStorageTotal = {};
+    }
+    userStorageTotal[state.user.emailHash] = mutation.payload;
+    localStorage.setItem('userStorage', JSON.stringify(userStorageTotal));
+  }
 });
 /* eslint-enable no-param-reassign */
 

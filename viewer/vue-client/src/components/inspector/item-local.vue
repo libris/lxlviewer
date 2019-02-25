@@ -84,6 +84,7 @@ export default {
       'settings',
       'user',
       'status',
+      'userStorage',
     ]),
     failedValidations() {
       const failedValidations = [];
@@ -352,7 +353,9 @@ export default {
       }
     },
     copyThis() {
-      this.$store.dispatch('setClipboard', this.item);
+      const userStorage = cloneDeep(this.userStorage);
+      userStorage.copyClipboard = this.item;
+      this.$store.dispatch('setUserStorage', userStorage);
       this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('Copied entity to clipboard', this.settings.language)}` });
     },
   },
