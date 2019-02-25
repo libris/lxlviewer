@@ -10,6 +10,7 @@ import VueClipboard from 'vue-clipboard2';
 import ComboKeys from 'combokeys';
 import modernizr from 'modernizr'; // eslint-disable-line no-unused-vars
 import { each } from 'lodash-es';
+import { mapGetters } from 'vuex';
 import App from './App';
 import router from './router';
 import store from './store';
@@ -93,6 +94,9 @@ new Vue({
     'inspector.title'() {
       this.updateTitle();
     },
+    'user.emailHash'() {
+      this.syncUserStorage();
+    },
     'status.keybindState'(state) {
       // Bindings are defined in keybindings.json
       // if (this.combokeys) {
@@ -120,7 +124,7 @@ new Vue({
       this.verifyConfig();
       this.authenticate();
       window.addEventListener('focus', () => {
-        this.$store.dispatch('setClipboard', JSON.parse(localStorage.getItem('copyClipboard')));
+        this.syncUserStorage();
       });
       window.addEventListener('keydown', LayoutUtil.handleFirstTab);
       this.updateTitle();
@@ -128,20 +132,23 @@ new Vue({
     });
   },
   computed: {
-    settings() {
-      return this.$store.getters.settings;
-    },
-    user() {
-      return this.$store.getters.user;
-    },
-    inspector() {
-      return this.$store.getters.inspector;
-    },
-    status() {
-      return this.$store.getters.status;
-    },
+    ...mapGetters([
+      'settings',
+      'user',
+      'inspector',
+      'status',
+      'userStorage',
+    ]),
   },
   methods: {
+    syncUserStorage() {
+      const userStorageTotal = JSON.parse(localStorage.getItem('userStorage'));
+      let userStorage = this.userStorage;
+      if (userStorageTotal !== null && userStorageTotal.hasOwnProperty(this.user.emailHash)) {
+        userStorage = userStorageTotal[this.user.emailHash];
+      }
+      this.$store.dispatch('setUserStorage', userStorage);
+    },
     navigateToLastPath() {
       const lastPath = localStorage.getItem('lastPath');
       if (

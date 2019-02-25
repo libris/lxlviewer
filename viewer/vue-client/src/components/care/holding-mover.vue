@@ -34,8 +34,10 @@ export default {
     };
   },
   watch: {
-    'directoryCare.selectedHoldings'() {
-      this.clearProgress();
+    'directoryCare.selectedHoldings'(newValue, oldValue) {
+      if (newValue !== oldValue) {
+        this.clearProgress();
+      }
     },
   },
   methods: {
@@ -51,7 +53,7 @@ export default {
     allDone() {
       const self = this;
       setTimeout(() => {
-        this.loading = false;
+        self.loading = false;
         self.$refs.sender.doneMoving();
         self.$refs.reciever.doneMoving();
       }, 1500);
@@ -103,7 +105,7 @@ export default {
       return !!(this.directoryCare.sender || this.directoryCare.reciever);
     },
     bothSelected() {
-      return (this.directoryCare.sender && this.directoryCare.reciever);
+      return !!(this.directoryCare.sender && this.directoryCare.reciever);
     },
   },
   mounted() {
