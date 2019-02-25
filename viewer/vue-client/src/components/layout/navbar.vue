@@ -150,7 +150,6 @@ export default {
     line-height: 20px;
     padding: 15px 5px;
     height: 50px;
-    min-width: 235px;
 
     &:hover,
     &:focus,
