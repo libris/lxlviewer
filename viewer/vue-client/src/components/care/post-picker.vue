@@ -135,7 +135,6 @@ export default {
         </div>
       </div>
       <div class="PostPicker-selectedContainer" v-if="selected">
-        <span class="PostPicker-toggleLabel">{{ ['Chosen', name] | translatePhrase }}:</span>
         <entity-summary 
           :focus-data="selected" 
           :should-link="false"
@@ -192,9 +191,11 @@ export default {
     position: relative;
     border: 1px solid @gray-lighter;
     box-shadow: @shadow-panel;
-    padding: 10px 15px;
-    margin-bottom: 10px;
     background-color: @white;
+  }
+
+  &-selectedContainer {
+    padding: 15px;
   }
 
   &-dropdownContainer {
@@ -243,7 +244,7 @@ export default {
 
   &-closeBtn {
     position: absolute;
-    padding: 10px;
+    padding: 5px;
     top: 0;
     right: 0;
   }
@@ -268,7 +269,6 @@ export default {
       opacity: 0.5;
       cursor: not-allowed;
     }
-
 
     &:hover:not(.is-disabled) {
       background-color: @brand-faded;
