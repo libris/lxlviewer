@@ -185,7 +185,6 @@ export default {
     background-color: @white;
     border: 1px solid @grey-lighter;
     padding: 20px;
-    flex-grow: 1;
     transition: background-color 0.3s ease;
 
     &.has-selection {
