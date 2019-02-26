@@ -127,16 +127,18 @@ export default {
               ref="pickerInput" 
               :placeholder="'Filter' | translatePhrase">
           </div>
-          <div class="PostPicker-itemWrapper"
-            :key="item['@id']"
-            v-for="item in filteredInstances"
-            @click="selectThis(item)"
-            :class="{ 'is-disabled' : item['@id'] === oppositeSelected}">
-            <entity-summary 
-              :focus-data="item" 
-              :should-link="false"
-              :valueDisplayLimit=1
-              :highlightStr="filterPhrase.trim()"></entity-summary>
+          <div class="PostPicker-items">
+            <div class="PostPicker-item"
+              :key="item['@id']"
+              v-for="item in filteredInstances"
+              @click="selectThis(item)"
+              :class="{ 'is-disabled' : item['@id'] === oppositeSelected}">
+              <entity-summary 
+                :focus-data="item" 
+                :should-link="false"
+                :valueDisplayLimit=1
+                :highlightStr="filterPhrase.trim()"></entity-summary>
+            </div>
           </div>
         </div>
       </div>
@@ -236,6 +238,7 @@ export default {
 
   &-inputContainer {
     padding: 0 15px;
+    border-bottom: 1px solid @gray-lighter;
   }
 
   &-input {
@@ -253,12 +256,21 @@ export default {
     right: 0;
   }
 
-  &-itemWrapper {
+  &-items {
+    max-height: 500px;
+    overflow-y: scroll;
+  }
+
+  &-item {
     cursor: pointer;
-    border-top: 1px solid @grey-lighter;
+    border-top: 1px solid @gray-lighter;
     background-color: @white;
     transition: background-color 0.2s ease;
     padding: 0 15px;
+
+    &:first-of-type {
+      border-top: none;
+    }
 
     &.is-disabled {
       opacity: 0.5;
