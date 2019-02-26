@@ -249,7 +249,7 @@ export default {
   }
 
   &-items {
-    max-height: 500px;
+    max-height: 50vh;
     overflow-y: scroll;
   }
 
