@@ -8,9 +8,9 @@ export default {
     return {
       hasAvatar: true,
       tabs: [
-        { id: 'Search', text: 'Search' },
-        { id: 'Create new', text: 'Create new' },
-        { id: 'Directory care', text: 'Directory care' }, 
+        { id: 'Search', text: 'Search', link: '/search/libris' },
+        { id: 'Create new', text: 'Create new', link: '/create' },
+        { id: 'Directory care', text: 'Directory care', link: '/directory-care' }, 
       ],
     };
   },
@@ -50,9 +50,6 @@ export default {
     },
   },
   methods: {
-    tabChange(id) {
-      this.$router.push({ name: id });
-    },
   },
 };
 </script>
@@ -75,7 +72,8 @@ export default {
       <tab-menu
         :tabs="tabs"
         :active="$route.name"
-        @go="tabChange" />
+        :link="true"
+        />
       </div>
       <ul class="MainNav-userWrapper">
         <li class="MainNav-item">

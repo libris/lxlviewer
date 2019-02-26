@@ -29,9 +29,6 @@ export default {
     focusSearchInput() {
       this.$refs.searchBarInput.focus();
     },
-    switchPerimeter(id) {
-      this.$router.push({ path: `/search/${id}` });
-    },
     removeTags(html) {
       let regexHtml = html.replace(/<h1.*>.*?<\/h1>/ig, '').replace(/<h2.*>.*?<\/h2>/ig, '');
       regexHtml = regexHtml.replace(/(<\/?(?:code|br|p)[^>]*>)|<[^>]+>/ig, '$1');
@@ -189,9 +186,9 @@ export default {
 <template>
   <div class="SearchBar">
     <div class="SearchBar-topControl">
-      <tab-menu @go="switchPerimeter" :tabs="[
-        { 'id': 'libris', 'text': 'Libris' },
-        { 'id': 'remote', 'text': 'Other sources' },
+      <tab-menu :link="true" :tabs="[
+        { 'id': 'libris', 'text': 'Libris', link: '/search/libris'},
+        { 'id': 'remote', 'text': 'Other sources', link: '/search/remote' },
       ]" :active="searchPerimeter"></tab-menu>
       <div  v-if="searchPerimeter === 'libris'"  class="SearchBar-help" @mouseleave="hideHelp()">
         <div class="SearchBar-helpBox dropdown" >
