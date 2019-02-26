@@ -17,7 +17,6 @@ export default {
   },
   data() {
     return {
-      helpHover: false,
       helpToggled: false,
       vocabUrl: 'https://id.kb.se/vocab/',
       staticProps: { _limit: 20 },
@@ -110,16 +109,14 @@ export default {
     },
   },
   computed: {
-    showHelp() {
-      if (this.helpHover || this.helpToggled) {
-        return true;
-      }
-      return false;
-    },
     helpContainerBoundaryStyles() {
       const $icon = this.$refs.helpIcon;
-      const styles = { top: `${$icon.clientHeight + 20}px` };
+      const $formGroup = this.$refs.formGroup;
+      const styles = { top: `${$icon.clientHeight + $formGroup.clientHeight + 50}px` };
       return styles;
+    },
+    searchHelpTooltip() {
+      return StringUtil.getUiPhraseByLang('Show search help', this.user.settings.language);
     },
     searchHelpDocs() {
       if (this.docs && this.docs.hasOwnProperty('search-01-queries')) {
@@ -138,6 +135,7 @@ export default {
       'resources',
       'settings',
       'status',
+      'user',
     ]),
     dataSetFilters() {
       return this.settings.dataSetFilters.libris.map(term => ({
@@ -198,14 +196,14 @@ export default {
       <div  v-if="searchPerimeter === 'libris'"  class="SearchBar-help">
         <div class="SearchBar-helpBox dropdown" >
           <span class="SearchBar-helpIcon icon icon--md">
-            <i class="fa fa-fw fa-question-circle" tabindex="0" aria-haspopup="true"
+            <i v-tooltip="searchHelpTooltip" class="fa fa-fw fa-question-circle" tabindex="0" aria-haspopup="true"
               ref="helpIcon"
               @mouseover="helpHover = true"
               @mouseleave="helpHover = false"
               @click="toggleHelp"
               @keyup.enter="toggleHelp"></i>
           </span>
-          <div class="SearchBar-helpContainer" :style="helpContainerBoundaryStyles" v-if="showHelp"> 
+          <div class="SearchBar-helpContainer" :style="helpContainerBoundaryStyles" v-if="helpToggled"> 
             <strong class="SearchBar-helpTitle">Operatorer för frågespråk</strong><i v-if="helpToggled" class="fa fa-times SearchBar-closeHelp" @click="toggleHelp"></i>
             <div class="SearchBar-helpContent" v-html="searchHelpDocs"></div>
           </div>
@@ -214,7 +212,7 @@ export default {
     </div>
     <form id="searchForm" class="SearchBar-form">
       <div class="SearchBar-formContent">
-        <div class="SearchBar-formGroup form-group panel">
+        <div ref="formGroup" class="SearchBar-formGroup form-group panel">
           <label class="SearchBar-inputLabel hidden" id="searchlabel" for="q" aria-hidden="false">
             {{"Search" | translatePhrase}}
           </label>
@@ -304,7 +302,7 @@ export default {
     right: 0px;
     background-color: @neutral-color;
     padding: 1em;
-    width: 40vw;
+    width: 30vw;
     max-height: 50vh;
     overflow-y: scroll;
     border-radius: 0.25em;
