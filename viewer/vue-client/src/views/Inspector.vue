@@ -672,7 +672,7 @@ export default {
             </div>
             <div class="Inspector-actions">
               <div class="TagContainer" v-if="recordType === 'Instance'">
-                <tag-switch :document-id="documentId" tag="Directory care" />
+                <tag-switch :document-id="documentId" :action-labels="{ on: 'Flag for', off: 'Unflag for' }" tag="Directory care" />
               </div>
               <reverse-relations 
                 class="Inspector-reverse" 
