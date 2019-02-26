@@ -24,6 +24,9 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
+      if (this.user.isLoggedIn) {
+        this.$router.push({ path: '/' });
+      } else window.location = `${this.settings.apiPath}/login/authorize`;
     });
   },
 };

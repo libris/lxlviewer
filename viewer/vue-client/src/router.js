@@ -5,7 +5,7 @@ import Login from '@/views/Login';
 
 Vue.use(Router);
 
-export default new Router({
+const router = new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   scrollBehavior(to, from, savedPosition) {
@@ -60,6 +60,9 @@ export default new Router({
       path: '/directory-care/:tool?',
       name: 'Directory care',
       component: () => import(/* webpackChunkName: "UserPage" */ './views/DirectoryCare.vue'),
+      meta: { 
+        requiresAuth: true,
+      },
     },
     {
       path: '/user',
@@ -83,3 +86,18 @@ export default new Router({
     },
   ],
 });
+
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    const token = localStorage.getItem('at');
+    if (token === null) {
+      next({
+        path: '/login',
+      });
+    } else next();
+  } else {
+    next();
+  }
+});
+
+export default router;
