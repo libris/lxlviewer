@@ -126,7 +126,7 @@ export default {
         :flaggedInstances="flaggedInstances"
         :fetchComplete="fetchComplete">
         <p slot="info">
-          <span v-if="flaggedInstances.length === 0">Det finns inga instanser markerade för katalogvård.</span>
+          <span v-if="flaggedInstances.length === 0">Det finns inga instanser flaggade för katalogvård.</span>
           <span v-else="">Från den avsändande posten flyttar du bestånd till den mottagande posten.</span>
         </p>
       </post-picker>
