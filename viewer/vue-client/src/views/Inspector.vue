@@ -671,7 +671,7 @@ export default {
               <entity-changelog />
             </div>
             <div class="Inspector-actions">
-              <div class="TagContainer">
+              <div class="TagContainer" v-if="recordType === 'Instance'">
                 <tag-switch :document-id="documentId" tag="Directory care" />
               </div>
               <reverse-relations 
