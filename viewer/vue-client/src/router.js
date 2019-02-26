@@ -53,6 +53,10 @@ export default new Router({
       component: () => import(/* webpackChunkName: "Help" */ './views/Help.vue'),
     },
     {
+      path: '/directory-care',
+      redirect: '/directory-care/holdings',
+    },
+    {
       path: '/directory-care/:tool?',
       name: 'Directory care',
       component: () => import(/* webpackChunkName: "UserPage" */ './views/DirectoryCare.vue'),
