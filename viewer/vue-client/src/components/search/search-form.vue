@@ -303,6 +303,15 @@ export default {
     background-color: @neutral-color;
     padding: 1em;
     width: 30vw;
+    @media all and (max-width: 1300px) {
+      width: 40vw;
+    }
+    @media all and (max-width: 1100px) {
+      width: 50vw;
+    }
+    @media all and (max-width: 800px) {
+      width: 60vw;
+    }
     max-height: 50vh;
     overflow-y: scroll;
     border-radius: 0.25em;
