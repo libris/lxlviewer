@@ -288,7 +288,6 @@ export default {
   }
 
   & .EntitySummary-title {
-    color: @brand-darker;
     font-size: 18px;
     font-size: 1.8rem;
   }
