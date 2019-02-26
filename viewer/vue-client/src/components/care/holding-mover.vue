@@ -125,10 +125,14 @@ export default {
         opposite="reciever"
         :flaggedInstances="flaggedInstances"
         :fetchComplete="fetchComplete">
-        <p slot="info">
-          <span v-if="flaggedInstances.length === 0">Det finns inga instanser flaggade för katalogvård.</span>
-          <span v-else="">Från den avsändande posten flyttar du bestånd till den mottagande posten.</span>
-        </p>
+        <p v-if="flaggedInstances.length === 0"
+          class="HoldingMover-info" 
+          slot="info">
+          Det finns inga instanser flaggade för katalogvård.</p>
+        <p v-else-if="!directoryCare.sender"
+          class="HoldingMover-info" 
+          slot="info">
+          Från den avsändande posten flyttar du bestånd till den mottagande posten.</p>
       </post-picker>
       <div class="HoldingMover-separator">
         <button @click="switchInstances" class="btn btn-primary" :disabled="!canSwitchInstances">
@@ -196,8 +200,11 @@ export default {
       color: @brand-danger;
     }
     &-loading {
-
     }
+  }
+
+  &-info {
+    margin: 20px 0 0;
   }
 
 }
