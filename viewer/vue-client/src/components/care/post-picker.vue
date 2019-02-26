@@ -35,12 +35,25 @@ export default {
       expanded: false,
       selected: null,
       oppositeSelected: null,
+      filterPhrase: '',
     };
   },
   computed: {
     ...mapGetters([
       'directoryCare',
     ]),
+    filteredInstances() {
+      return this.flaggedInstances.filter((el) => {
+        let titles = [];
+        el.hasTitle.forEach((t) => {
+          for (const val in t) {
+            if (t.hasOwnProperty(val) && typeof t[val] === 'string' && val !== '@type') { titles.push(t[val]); }
+          }
+        });
+        titles = titles.join(' • ').toLowerCase();
+        return titles.indexOf(this.filterPhrase.trim().toLowerCase()) > -1;
+      });
+    },
   },
   methods: {
     selectThis(item) {
@@ -52,6 +65,14 @@ export default {
     unselectThis() {
       const changeObj = { [this.name]: null };
       this.$store.dispatch('setDirectoryCare', { ...this.directoryCare, ...changeObj });
+    },
+    toggleDropdown() {
+      this.expanded = !this.expanded;
+      this.$nextTick(() => {
+        if (this.expanded) {
+          this.$refs.pickerInput.focus();
+        }
+      });
     },
   },
   mounted() {
@@ -78,32 +99,36 @@ export default {
       {{ name | translatePhrase }}</div>
     <div class="PostPicker-body" :class="{ 'has-selection' : selected}">
       <div class="PostPicker-dropdownContainer" v-if="!selected && flaggedInstances.length > 0">
-        <div class="PostPicker-toggle" @click="expanded = !expanded">
+        <div class="PostPicker-toggle" @click="toggleDropdown">
           <span class="PostPicker-toggleLabel">{{ ['Choose', name] | translatePhrase }}</span>
           <span class="PostPicker-toggleIcon" :class="{ 'expanded' : expanded}">
             <i class="fa fa-fw fa-chevron-down"></i>
           </span>
         </div>
-        <div class="PostPicker-dropdown" v-if="expanded">
+        <div class="PostPicker-dropdown" v-show="expanded">
           <vue-simple-spinner 
             v-if="!fetchComplete" 
             size="large" 
             :message="'Loading' | translatePhrase"></vue-simple-spinner>
-          <input
-            v-if="fetchComplete"
-            type="text" 
-            class="PostPicker-input" 
-            autofocus 
-            :placeholder="'Filter' | translatePhrase">
+          <div class="PostPicker-inputContainer">
+            <input
+              v-if="fetchComplete"
+              type="text" 
+              v-model="filterPhrase"
+              class="PostPicker-input" 
+              ref="pickerInput" 
+              :placeholder="'Filter' | translatePhrase">
+          </div>
           <div class="PostPicker-itemWrapper"
             :key="item['@id']"
-            v-for="item in flaggedInstances"
+            v-for="item in filteredInstances"
             @click="selectThis(item)"
             :class="{ 'is-disabled' : item['@id'] === oppositeSelected}">
             <entity-summary 
               :focus-data="item" 
               :should-link="false"
-              :valueDisplayLimit=1></entity-summary>
+              :valueDisplayLimit=1
+              :highlightStr="filterPhrase.trim()"></entity-summary>
           </div>
         </div>
       </div>
@@ -114,7 +139,7 @@ export default {
           :should-link="false"
           :valueDisplayLimit=1></entity-summary>
         <span class="PostPicker-closeBtn" role="button" @click="unselectThis">
-          <i class="fa fa-fw fa-close"></i>
+          <i class="fa fa-fw fa-close icon"></i>
         </span>
       </div>
       <slot name="info"></slot>
@@ -156,7 +181,7 @@ export default {
 
     &.has-selection {
       background-color: @brand-faded;
-      border-color: @brand-faded;
+      border-color: transparent;
     }
   }
 
@@ -170,11 +195,16 @@ export default {
     background-color: @white;
   }
 
+  &-dropdownContainer {
+    padding: 0;
+  }
+
   &-toggle {
     display: flex;
     justify-content: space-between;
     align-items: center;
     cursor: pointer;
+    padding: 10px 15px;
   }
 
   &-toggleLabel {
@@ -196,12 +226,16 @@ export default {
     margin-top: 10px;
   }
 
+  &-inputContainer {
+    padding: 0 15px;
+  }
+
   &-input {
     width: 100%;
-    border: 1px solid @grey-lighter;
+    border: 1px solid @grey-light;
     border-radius: 4px;
     padding: 5px 10px;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
   }
 
   &-closeBtn {
@@ -216,15 +250,13 @@ export default {
     border-top: 1px solid @grey-lighter;
     background-color: @white;
     transition: background-color 0.2s ease;
+    padding: 0 15px;
 
     &.is-disabled {
       opacity: 0.5;
       cursor: not-allowed;
     }
 
-    &:first-of-type {
-      border-top: none;
-    }
 
     &:hover:not(.is-disabled) {
       background-color: @brand-faded;

@@ -183,8 +183,8 @@ export default {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    background-color: #ffffff;
-    border: 1px solid @grey-light;
+    background-color: @white;
+    border: 1px solid @grey-lighter;
   }
   .statusItem {
     list-style: none;
