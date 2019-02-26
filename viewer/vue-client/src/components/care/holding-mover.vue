@@ -172,7 +172,7 @@ export default {
   &-separator {
     display: flex;
     align-items: baseline;
-    margin: 40px 10px;
+    margin: 80px 10px;
     
     @media (max-width: @screen-sm) {
       margin: 20px;
