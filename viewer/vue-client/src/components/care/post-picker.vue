@@ -64,10 +64,14 @@ export default {
     },
     unselectThis() {
       const changeObj = { [this.name]: null };
-      this.$store.dispatch('setDirectoryCare', { ...this.directoryCare, ...changeObj });
+      this.$store.dispatch('setDirectoryCare', { ...this.directoryCare, ...changeObj })
+        .then(() => this.focusInput());
     },
     toggleDropdown() {
       this.expanded = !this.expanded;
+      this.focusInput();
+    },
+    focusInput() {
       this.$nextTick(() => {
         if (this.expanded) {
           this.$refs.pickerInput.focus();
@@ -87,6 +91,10 @@ export default {
 
     this.$watch(`directoryCare.${this.opposite}`, (newVal) => { // create dynamic watcher for opposite
       this.oppositeSelected = newVal;
+      if (newVal && !this.selected) {
+        this.expanded = true;
+        this.focusInput();
+      }
     });
   },
 };
