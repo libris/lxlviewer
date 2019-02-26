@@ -73,9 +73,6 @@ export default {
     },
   },
   mounted() {
-    if (this.$route.params.tool === '' || typeof this.$route.params.tool === 'undefined') {
-      this.$router.push({ path: '/directory-care/holdings' });
-    }
     this.fetchAllFlagged();
   },
 };
