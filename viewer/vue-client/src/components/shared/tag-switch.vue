@@ -19,6 +19,13 @@ export default {
       type: String,
       default: '',
     },
+    actionLabels: {
+      type: Object,
+      default: {
+        on: 'Mark',
+        off: 'Unmark',
+      },
+    }
   },
   data() {
     return {
@@ -101,11 +108,11 @@ export default {
     tooltip() {
       let str = '';
       if (!this.isMarked) {
-        str += StringUtil.getUiPhraseByLang('Mark', this.user.settings.language);
+        str += StringUtil.getUiPhraseByLang(this.actionLabels.on, this.user.settings.language);
       } else {
-        str += StringUtil.getUiPhraseByLang('Unmark', this.user.settings.language);
+        str += StringUtil.getUiPhraseByLang(this.actionLabels.off, this.user.settings.language);
       }
-      str += ` ${StringUtil.getUiPhraseByLang(this.tag, this.user.settings.language)}`;
+      str += ` ${StringUtil.getUiPhraseByLang(this.tag, this.user.settings.language).toLowerCase()}`;
       return str;
     },
   },
