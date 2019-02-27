@@ -8,7 +8,6 @@ import * as RecordUtil from '@/utils/record';
 export default {
   name: 'holding-mover',
   components: {
-    // 'vue-simple-spinner': VueSimpleSpinner,
     'post-picker': PostPicker,
     HoldingList,
   },
@@ -16,9 +15,6 @@ export default {
     flaggedInstances: {
       type: Array,
       required: true,
-    },
-    fetchComplete: {
-      type: Boolean,
     },
     error: {
       type: String,
@@ -28,7 +24,7 @@ export default {
   data() {
     return {
       destinationId: '',
-      loadingStatus: '',
+      // loadingStatus: '',
       progress: {},
       loading: false,
     };
@@ -124,15 +120,15 @@ export default {
         name="sender"
         opposite="reciever"
         :flaggedInstances="flaggedInstances"
-        :fetchComplete="fetchComplete">
+        :expand="true">
         <p v-if="flaggedInstances.length === 0"
           class="HoldingMover-info" 
           slot="info">
-          Det finns inga instanser flaggade för katalogvård.</p>
+          {{ "There are no instances flagged for directory care" | translatePhrase }}.</p>
         <p v-else-if="!directoryCare.sender"
           class="HoldingMover-info" 
           slot="info">
-          Från den avsändande posten flyttar du bestånd till den mottagande posten.</p>
+          {{ "Holdings are moved from the sender post to the reciever post" | translatePhrase }}.</p>
       </post-picker>
       <div class="HoldingMover-separator">
         <button @click="switchInstances" class="btn btn-primary" :disabled="!canSwitchInstances">
@@ -142,8 +138,7 @@ export default {
       <post-picker 
         name="reciever"
         opposite="sender"
-        :flaggedInstances="flaggedInstances"
-        :fetchComplete="fetchComplete"/>
+        :flaggedInstances="flaggedInstances"/>
     </div>
     <div class="HoldingMover-resultListContainer">
       <HoldingList ref="sender" name="sender" :loading="loading" :lock="loading || !bothSelected" @send="doMove" :progress="progress" />

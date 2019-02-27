@@ -63,29 +63,35 @@ export default {
       Promise.all(promiseArray).then((result) => {
         this.getMainEntities(result);
       }, (error) => {
-        this.fetchComplete = true;
         this.error = error;
+        this.allDone();
       });
     },
     getMainEntities(data) {
       this.fetchedItems = data.map(item => item.mainEntity);
-      this.fetchComplete = true;
+      this.allDone();
+    },
+    allDone() {
+      this.$store.dispatch('removeLoadingIndicator', 'Loading')
+        .then(() => {
+          this.fetchComplete = true;
+        });
     },
   },
   mounted() {
+    this.$store.dispatch('pushLoadingIndicator', 'Loading');
     this.fetchAllFlagged();
   },
 };
 </script>
 
 <template>
-  <div class="DirectoryCare">
+  <div class="DirectoryCare" v-if="fetchComplete">
     <tab-menu @go="switchTool" :tabs="tabs" :active="$route.params.tool"></tab-menu>
     <hr class="menuDivider">
     <holding-mover 
       v-if="$route.params.tool === 'holdings'"
       :flaggedInstances="flaggedInstances"
-      :fetchComplete="fetchComplete"
       :error="error" />
     <div class="" v-if="$route.params.tool === 'merge'">
       <h1>merge posts</h1>

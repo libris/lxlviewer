@@ -1,7 +1,6 @@
 <script>
 import { mapGetters } from 'vuex';
 import EntitySummary from '@/components/shared/entity-summary';
-import VueSimpleSpinner from 'vue-simple-spinner';
 
 export default {
   name: 'post-picker',
@@ -18,17 +17,17 @@ export default {
       type: Array,
       required: true,
     },
-    fetchComplete: {
-      type: Boolean,
-    },
     info: {
       type: String,
       default: '',
     },
+    expand: {
+      type: Boolean,
+      default: false,
+    },
   },
   components: {
     'entity-summary': EntitySummary,
-    'vue-simple-spinner': VueSimpleSpinner,
   },
   data() {
     return {
@@ -71,6 +70,10 @@ export default {
       this.expanded = !this.expanded;
       this.focusInput();
     },
+    expandAndFocus() {
+      this.expanded = true;
+      this.focusInput();
+    },
     focusInput() {
       this.$nextTick(() => {
         if (this.expanded) {
@@ -92,10 +95,12 @@ export default {
     this.$watch(`directoryCare.${this.opposite}`, (newVal) => { // create dynamic watcher for opposite
       this.oppositeSelected = newVal;
       if (newVal && !this.selected) {
-        this.expanded = true;
-        this.focusInput();
+        this.expandAndFocus();
       }
     });
+    if (this.expand) {
+      this.expandAndFocus();
+    }
   },
 };
 </script>
@@ -114,13 +119,8 @@ export default {
           </span>
         </div>
         <div class="PostPicker-dropdown" v-show="expanded">
-          <vue-simple-spinner 
-            v-if="!fetchComplete" 
-            size="large" 
-            :message="'Loading' | translatePhrase"></vue-simple-spinner>
           <div class="PostPicker-inputContainer">
             <input
-              v-if="fetchComplete"
               type="text" 
               v-model="filterPhrase"
               class="PostPicker-input" 
