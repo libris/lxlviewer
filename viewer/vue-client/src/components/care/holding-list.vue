@@ -339,6 +339,9 @@ export default {
     input {
       margin: 0;
     }
+    & .customCheckbox-icon {
+        margin-left: 0;
+    }
   }
   &-noPermission {
     color: @grey-light;

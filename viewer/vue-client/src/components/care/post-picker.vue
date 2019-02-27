@@ -128,7 +128,8 @@ export default {
               v-model="filterPhrase"
               class="PostPicker-input" 
               ref="pickerInput" 
-              :placeholder="'Filter' | translatePhrase">
+              :placeholder="'Filter' | translatePhrase"
+              :aria-label="'Filter' | translatePhrase">
           </div>
           <div class="PostPicker-items">
             <div class="PostPicker-item"
@@ -156,7 +157,8 @@ export default {
           role="button" 
           @click="unselectThis"
           @keyup.enter="unselectThis"
-          tabindex="0">
+          tabindex="0"
+          :aria-label="'Close' | translatePhrase">
           <i class="fa fa-fw fa-close icon"></i>
         </span>
       </div>
