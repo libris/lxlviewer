@@ -293,6 +293,7 @@
     "sender": "avsändare",
     "reciever": "mottagare",
     "There are no instances flagged for directory care": "Det finns inga instanser flaggade för katalogvård",
-    "Holdings are moved from the sender post to the reciever post": "Från den avsändande posten flyttar du bestånd till den mottagande posten"
+    "Holdings are moved from the sender post to the reciever post": "Från den avsändande posten flyttar du bestånd till den mottagande posten",
+    "Switch place": "Byt plats"
     }
 }

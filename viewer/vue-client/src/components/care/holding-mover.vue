@@ -131,7 +131,10 @@ export default {
           {{ "Holdings are moved from the sender post to the reciever post" | translatePhrase }}.</p>
       </post-picker>
       <div class="HoldingMover-separator">
-        <button @click="switchInstances" class="btn btn-primary" :disabled="!canSwitchInstances">
+        <button class="btn btn-primary" 
+          @click="switchInstances" 
+          :disabled="!canSwitchInstances"
+          :aria-label="'Switch place' | translatePhrase">
           <i class="fa fa-fw fa-exchange"></i>
         </button>
       </div>
