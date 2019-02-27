@@ -82,12 +82,12 @@ sites = {
                     "sortOrder":"desc",
                     "size":100
                 },
-                "publication.year.keyword":{
+                "publication.year":{
                     "sort":"key",
                     "sortOrder":"desc",
                     "size":500
                 },
-                "issuanceType.keyword":{
+                "issuanceType":{
                     "sort":"value",
                     "sortOrder":"desc",
                     "size":100

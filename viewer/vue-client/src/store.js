@@ -168,7 +168,7 @@ const store = new Vuex.Store({
             order: false,
           },
         },
-        'issuanceType.keyword': {
+        'issuanceType': {
           sv: 'Utgivningssätt',
           en: 'Issuance type',
           facet: {
@@ -196,7 +196,7 @@ const store = new Vuex.Store({
             order: 1,
           },
         },
-        'publication.year.keyword': {
+        'publication.year': {
           sv: 'Utgivningsår',
           en: 'Publication year',
           facet: {
@@ -211,19 +211,19 @@ const store = new Vuex.Store({
             label: 'Relevance', 
           },
           {
-            query: 'hasTitle.mainTitle.keyword',
+            query: 'hasTitle.mainTitle',
             label: 'Main title (A-Z)',
           },
           {
-            query: '-hasTitle.mainTitle.keyword',
+            query: '-hasTitle.mainTitle',
             label: 'Main title (Z-A)',
           },
           {
-            query: '-publication.year.keyword',
+            query: '-publication.year',
             label: 'Publication year (descending)',
           },
           {
-            query: 'publication.year.keyword',
+            query: 'publication.year',
             label: 'Publication year (ascending)',
           },
         ],
