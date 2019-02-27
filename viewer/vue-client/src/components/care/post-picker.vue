@@ -127,21 +127,22 @@ export default {
               ref="pickerInput" 
               :placeholder="'Filter' | translatePhrase">
           </div>
-          <div class="PostPicker-itemWrapper"
-            :key="item['@id']"
-            v-for="item in filteredInstances"
-            @click="selectThis(item)"
-            :class="{ 'is-disabled' : item['@id'] === oppositeSelected}">
-            <entity-summary 
-              :focus-data="item" 
-              :should-link="false"
-              :valueDisplayLimit=1
-              :highlightStr="filterPhrase.trim()"></entity-summary>
+          <div class="PostPicker-items">
+            <div class="PostPicker-item"
+              :key="item['@id']"
+              v-for="item in filteredInstances"
+              @click="selectThis(item)"
+              :class="{ 'is-disabled' : item['@id'] === oppositeSelected}">
+              <entity-summary 
+                :focus-data="item" 
+                :should-link="false"
+                :valueDisplayLimit=1
+                :highlightStr="filterPhrase.trim()"></entity-summary>
+            </div>
           </div>
         </div>
       </div>
       <div class="PostPicker-selectedContainer" v-if="selected">
-        <span class="PostPicker-toggleLabel">{{ ['Chosen', name] | translatePhrase }}:</span>
         <entity-summary 
           :focus-data="selected" 
           :should-link="false"
@@ -184,7 +185,6 @@ export default {
     background-color: @white;
     border: 1px solid @grey-lighter;
     padding: 20px;
-    flex-grow: 1;
     transition: background-color 0.3s ease;
 
     &.has-selection {
@@ -198,9 +198,11 @@ export default {
     position: relative;
     border: 1px solid @gray-lighter;
     box-shadow: @shadow-panel;
-    padding: 10px 15px;
-    margin-bottom: 10px;
     background-color: @white;
+  }
+
+  &-selectedContainer {
+    padding: 15px;
   }
 
   &-dropdownContainer {
@@ -236,6 +238,7 @@ export default {
 
   &-inputContainer {
     padding: 0 15px;
+    border-bottom: 1px solid @gray-lighter;
   }
 
   &-input {
@@ -248,23 +251,31 @@ export default {
 
   &-closeBtn {
     position: absolute;
-    padding: 10px;
+    padding: 5px;
     top: 0;
     right: 0;
   }
 
-  &-itemWrapper {
+  &-items {
+    max-height: 50vh;
+    overflow-y: scroll;
+  }
+
+  &-item {
     cursor: pointer;
-    border-top: 1px solid @grey-lighter;
+    border-top: 1px solid @gray-lighter;
     background-color: @white;
     transition: background-color 0.2s ease;
     padding: 0 15px;
+
+    &:first-of-type {
+      border-top: none;
+    }
 
     &.is-disabled {
       opacity: 0.5;
       cursor: not-allowed;
     }
-
 
     &:hover:not(.is-disabled) {
       background-color: @brand-faded;
@@ -276,7 +287,6 @@ export default {
   }
 
   & .EntitySummary-title {
-    color: @brand-darker;
     font-size: 18px;
     font-size: 1.8rem;
   }
