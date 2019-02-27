@@ -112,7 +112,10 @@ export default {
       {{ name | translatePhrase }}</div>
     <div class="PostPicker-body" :class="{ 'has-selection' : selected}">
       <div class="PostPicker-dropdownContainer" v-if="!selected && flaggedInstances.length > 0">
-        <div class="PostPicker-toggle" @click="toggleDropdown">
+        <div class="PostPicker-toggle" 
+          @click="toggleDropdown"
+          @keyup.enter="toggleDropdown"
+          tabIndex="0">
           <span class="PostPicker-toggleLabel">{{ ['Choose', name] | translatePhrase }}</span>
           <span class="PostPicker-toggleIcon" :class="{ 'expanded' : expanded}">
             <i class="fa fa-fw fa-chevron-down"></i>
@@ -132,6 +135,8 @@ export default {
               :key="item['@id']"
               v-for="item in filteredInstances"
               @click="selectThis(item)"
+              @keyup.enter="selectThis(item)"
+              :tabindex="item['@id'] === oppositeSelected ? -1 : 0"
               :class="{ 'is-disabled' : item['@id'] === oppositeSelected}">
               <entity-summary 
                 :focus-data="item" 
@@ -147,7 +152,11 @@ export default {
           :focus-data="selected" 
           :should-link="false"
           :valueDisplayLimit=1></entity-summary>
-        <span class="PostPicker-closeBtn" role="button" @click="unselectThis">
+        <span class="PostPicker-closeBtn" 
+          role="button" 
+          @click="unselectThis"
+          @keyup.enter="unselectThis"
+          tabindex="0">
           <i class="fa fa-fw fa-close icon"></i>
         </span>
       </div>
@@ -277,7 +286,8 @@ export default {
       cursor: not-allowed;
     }
 
-    &:hover:not(.is-disabled) {
+    &:hover:not(.is-disabled),
+    &:focus:not(.is-disabled) {
       background-color: @brand-faded;
     }
   }
