@@ -2,10 +2,12 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import LandingPage from '@/views/LandingPage';
 import Login from '@/views/Login';
+import store from './store';
+import * as StringUtil from '@/utils/string';
 
 Vue.use(Router);
 
-export default new Router({
+const router = new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   scrollBehavior(to, from, savedPosition) {
@@ -34,7 +36,7 @@ export default new Router({
       component: Login,
     },
     {
-      path: '/login',
+      path: '/login/:state?',
       name: 'Login',
       component: Login,
     },
@@ -60,16 +62,25 @@ export default new Router({
       path: '/directory-care/:tool?',
       name: 'Directory care',
       component: () => import(/* webpackChunkName: "UserPage" */ './views/DirectoryCare.vue'),
+      meta: { 
+        requiresAuth: true,
+      },
     },
     {
       path: '/user',
       name: 'User settings',
       component: () => import(/* webpackChunkName: "UserPage" */ './views/UserPage.vue'),
+      meta: { 
+        requiresAuth: true,
+      },
     },
     {
       path: '/create',
       name: 'Create new',
       component: () => import(/* webpackChunkName: "Create" */ './views/Create.vue'),
+      meta: { 
+        requiresAuth: true,
+      },
     },
     {
       path: '/new',
@@ -83,3 +94,28 @@ export default new Router({
     },
   ],
 });
+
+router.beforeEach((to, from, next) => {
+  const newToken = StringUtil.getParamValueFromUrl(to.hash, 'access_token');
+  if (newToken) {
+    localStorage.setItem('at', newToken);
+  }
+  store.dispatch('verifyUser').then(() => {
+    // authed
+    next();
+  }, () => {
+    // notAuthed
+    if (to.matched.some(record => record.meta.requiresAuth)) {
+      if (to.fullPath.indexOf('login') < 0) {
+        localStorage.setItem('lastPath', to.fullPath);
+      }
+      next({
+        path: '/login/expired',
+      });
+    } else {
+      next();
+    }
+  });
+});
+
+export default router;

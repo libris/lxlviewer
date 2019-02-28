@@ -31,25 +31,18 @@ import Footer from '@/components/layout/footer';
 import NotificationList from '@/components/shared/notification-list';
 import GlobalMessage from '@/components/layout/global-msg';
 import VueSimpleSpinner from 'vue-simple-spinner';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'App',
   computed: {
-    inspector() {
-      return this.$store.getters.inspector;
-    },
-    user() {
-      return this.$store.getters.user;
-    },
-    status() {
-      return this.$store.getters.status;
-    },
-    resourcesLoaded() {
-      return this.$store.getters.resources.resourcesLoaded;
-    },
-    resourcesLoadingError() {
-      return this.$store.getters.resources.loadingError;
-    },
+    ...mapGetters([
+      'settings',
+      'user',
+      'resourcesLoaded',
+      'resourcesLoadingError',
+      'status',
+    ]),
   },
   watch: {
   },

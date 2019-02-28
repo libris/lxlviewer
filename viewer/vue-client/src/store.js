@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import router from './router';
 import { cloneDeep, each, set, get } from 'lodash-es';
 import * as VocabUtil from '@/utils/vocab';
 import * as StringUtil from '@/utils/string';
@@ -78,11 +79,7 @@ const store = new Vuex.Store({
       helpSection: 'none',
       remoteDatabases: [],
     },
-    user: {
-      settings: {
-        language: 'sv',
-      },
-    },
+    user: User.getUserObject(),
     userStorage: {
       list: {},
       copyClipboard: null,
@@ -421,6 +418,8 @@ const store = new Vuex.Store({
   getters: {
     inspector: state => state.inspector,
     resources: state => state.resources,
+    resourcesLoaded: state => state.resources.resourcesLoaded,
+    resourcesLoadingError: state => state.resources.loadingError,
     settings: state => state.settings,
     user: state => state.user,
     userStorage: state => state.userStorage,
@@ -454,6 +453,44 @@ const store = new Vuex.Store({
     context: state => state.resources.context,
   },
   actions: {
+    verifyUser({ commit, state }) {
+      return new Promise((resolve, reject) => {
+        if (state.user.isLoggedIn === true && state.user.hasTokenExpired() === false) {
+          return resolve();
+        }
+        const token = localStorage.getItem('at');
+        let userObj = User.getUserObject();
+        if (token !== null) {
+          const headers = new Headers();
+          const url = state.settings.authPath;
+          headers.append('Authorization', `Bearer ${token}`);
+          fetch(url, {
+            headers,
+            method: 'GET',
+          }).then(response => response.json()).then((result) => {
+            userObj = User.getUserObject(result.user);
+            userObj.token = token;
+            userObj.token_expires_at = result.expires_at;
+            commit('setUser', userObj);
+            return resolve();
+          }, (error) => {
+            localStorage.removeItem('at');
+            commit('setUser', userObj);
+            console.warn(`Authentication failed for existing token: ${error}`);
+            reject();
+          });
+        } else {
+          commit('setUser', userObj);
+          reject();
+        }
+      });
+    },
+    logoutUser({ commit, state }) {
+      const userObj = User.getUserObject();
+      localStorage.removeItem('at');
+      localStorage.removeItem('lastPath');
+      commit('setUser', userObj);
+    },
     setValidation({ commit }, payload) {
       commit('setValidation', payload);
     },
@@ -521,9 +558,6 @@ const store = new Vuex.Store({
     },
     setUser({ commit }, userObj) {
       commit('setUser', userObj);
-    },
-    logoutUser({ commit }) {
-      commit('logoutUser');
     },
     setSettings({ commit }, settingsObj) {
       commit('setSettings', settingsObj);
