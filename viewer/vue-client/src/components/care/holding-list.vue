@@ -247,10 +247,12 @@ export default {
         <div class="HoldingList-itemBody" :class="{ 'selected': isSelected(holding), 'newly-moved': isNewlyMoved(holding), 'is-first': index === 0 }">
           <div class="HoldingList-input" v-if="isSender && !lock && userHasPermission(holding) && !holdingExistsOnTarget(holding)">
             <input 
+              class="customCheckbox-input"
               :checked="isSelected(holding)" 
               type="checkbox" :disabled="lock" 
               @change="handleCheckbox($event, holding)" 
               :id="`checkbox-${holding.heldBy['@id']}`"/>
+              <div class="customCheckbox-icon"></div>
           </div>
           <div class="HoldingList-noPermission" v-if="isSender && !userHasPermission(holding)">
             <i v-tooltip.top="noPermissionTooltip" class="fa fa-fw fa-lock"></i>
@@ -336,6 +338,9 @@ export default {
     align-items: center;
     input {
       margin: 0;
+    }
+    & .customCheckbox-icon {
+        margin-left: 0;
     }
   }
   &-noPermission {
