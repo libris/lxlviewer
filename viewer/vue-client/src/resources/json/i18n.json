@@ -289,6 +289,8 @@
     "Sigel (Z-A)": "Sigel (Ö-A)",
     "Free text": "Fritext",
     "Title": "Titel",
+    "Failed to retrieve": "Misslyckades med att hämta",
+    "resources": "resurser",
     "sender": "avsändare",
     "reciever": "mottagare",
     "There are no instances flagged for directory care": "Det finns inga instanser flaggade för katalogvård",
