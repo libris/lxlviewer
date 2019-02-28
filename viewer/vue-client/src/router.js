@@ -2,6 +2,8 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import LandingPage from '@/views/LandingPage';
 import Login from '@/views/Login';
+import store from './store';
+import * as StringUtil from '@/utils/string';
 
 Vue.use(Router);
 
@@ -34,7 +36,7 @@ const router = new Router({
       component: Login,
     },
     {
-      path: '/login',
+      path: '/login/:state?',
       name: 'Login',
       component: Login,
     },
@@ -88,16 +90,26 @@ const router = new Router({
 });
 
 router.beforeEach((to, from, next) => {
-  if (to.matched.some(record => record.meta.requiresAuth)) {
-    const token = localStorage.getItem('at');
-    if (token === null) {
-      next({
-        path: '/login',
-      });
-    } else next();
-  } else {
-    next();
+  const newToken = StringUtil.getParamValueFromUrl(to.hash, 'access_token');
+  if (newToken) {
+    localStorage.setItem('at', newToken);
   }
+  store.dispatch('verifyUser').then(() => {
+    // authed
+    next();
+  }, () => {
+    // notAuthed
+    if (to.matched.some(record => record.meta.requiresAuth)) {
+      if (to.fullPath.indexOf('login') < 0) {
+        localStorage.setItem('lastPath', to.fullPath);
+      }
+      next({
+        path: '/login/expired',
+      });
+    } else {
+      next();
+    }
+  });
 });
 
 export default router;

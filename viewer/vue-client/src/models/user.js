@@ -30,6 +30,19 @@ export class User {
     return false;
   }
 
+  timeLeftOnToken() {
+    if (this.token_expires_at) {
+      const now = new Date();
+      const expires = new Date(this.token_expires_at);
+      return Math.floor((expires - now) * 0.001);
+    }
+    return -1;
+  }
+
+  hasTokenExpired() {
+    return this.timeLeftOnToken() < 0;
+  }
+
   loadSettings() {
     let savedSettings = JSON.parse(localStorage.getItem('userSettings'));
     if (typeof savedSettings === 'undefined' || !savedSettings) {

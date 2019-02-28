@@ -7,6 +7,7 @@ export default {
     return {
       showButton: false,
       failedLogin: false,
+      loginExpired: false,
     };
   },
   watch: {
@@ -21,10 +22,16 @@ export default {
     ]),
   },
   methods: {
+    renewLogin() {
+      window.location = `${this.settings.apiPath}/login/authorize`;
+    },
   },
   mounted() {
     this.$nextTick(() => {
-      if (this.user.isLoggedIn) {
+      const token = localStorage.getItem('at');
+      if (this.$route.params.state === 'expired') {
+        this.loginExpired = true;
+      } else if (this.user.isLoggedIn && token !== null) {
         const path = localStorage.getItem('lastPath') || '/';
         this.$router.push({ path: path });
       } else window.location = `${this.settings.apiPath}/login/authorize`;
@@ -35,8 +42,15 @@ export default {
 
 <template>
   <div class="Login">
-    <div v-if="failedLogin">
+    <div class="Login-content" v-if="failedLogin">
       {{ 'Something went wrong' | translatePhrase }}
+    </div>
+    <div class="Login-content" v-if="loginExpired">
+      {{ 'Your login has expired' | translatePhrase }}.
+      <hr>
+      <button class="btn-primary btn--md" @click="renewLogin" @keyup.enter="renewLogin">
+        {{ 'Renew' | translatePhrase }}
+      </button>
     </div>
   </div>
 </template>
@@ -44,6 +58,18 @@ export default {
 <style lang="less">
 
 .Login {
-
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  &-content {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    justify-content: space-around;
+    padding: 20px;
+    background-color: @white;
+    border-radius: 4px;
+    box-shadow: @shadow-panel;
+  }
 }
 </style>
