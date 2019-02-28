@@ -288,6 +288,8 @@
     "Sigel (Z-A)": "Sigel (Ö-A)",
     "Free text": "Fritext",
     "Title": "Titel",
+    "Failed to retrieve": "Misslyckades med att hämta",
+    "resources": "resurser",
     "sender": "avsändare",
     "reciever": "mottagare"
     }

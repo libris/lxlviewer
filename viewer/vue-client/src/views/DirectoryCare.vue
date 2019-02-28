@@ -4,6 +4,7 @@ import { filter } from 'lodash-es';
 import * as VocabUtil from '@/utils/vocab';
 import TabMenu from '@/components/shared/tab-menu';
 import HoldingMover from '@/components/care/holding-mover';
+import * as StringUtil from '@/utils/string';
 
 export default {
   name: 'DirectoryCare',
@@ -15,7 +16,7 @@ export default {
     return {
       fetchedItems: [],
       fetchComplete: false,
-      error: '',
+      errors: [],
       tabs: [
         { id: 'holdings', text: 'Move holdings' },
         // { 'id': 'merge', 'text': 'Merge posts' }, 
@@ -33,6 +34,14 @@ export default {
     flaggedInstances() {
       return filter(this.fetchedItems, o => VocabUtil.getRecordType(o['@type'], this.resources.vocab, this.resources.context) === 'Instance');
     },
+    errorMsg() {
+      if (this.errors.length === this.userCare.length) {
+        return ['Failed to retrieve', 'resources'];
+      }
+      if (this.errors.length > 0) {
+        return ['Failed to retrieve', this.errors.length, 'of', this.userCare.length, 'resources'];
+      } return false;
+    },
   },
   watch: {
     userCare(newValue, oldValue) {
@@ -48,11 +57,17 @@ export default {
     fetchOne(id) {
       const searchUrl = `${this.settings.apiPath}/${id}/data.json`; // Should be JSON, not JSON-LD
       return new Promise((resolve, reject) => {
-        fetch(searchUrl).then((response) => {
-          resolve(response.json());
-        }, (error) => {
-          reject(error);
-        });
+        fetch(searchUrl)
+          .then((response) => {
+            if (response.ok) {
+              resolve(response.json());
+            } else {
+              this.errors.push({ status: response.status, statusText: response.statusText, url: response.url });
+              resolve();
+            }
+          }, (error) => {
+            reject(error);
+          });
       });
     },
     fetchAllFlagged() {
@@ -60,16 +75,27 @@ export default {
       this.userCare.forEach((item) => {
         promiseArray.push(this.fetchOne(item));
       });
-      Promise.all(promiseArray).then((result) => {
-        this.getMainEntities(result);
-      }, (error) => {
-        this.fetchComplete = true;
-        this.error = error;
-      });
+      Promise.all(promiseArray)
+        .then((result) => {
+          this.getMainEntities(result);
+        })
+        .catch(() => {
+          this.$store.dispatch('pushNotification', 
+            { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)}` });
+        })
+        .finally(() => {
+          this.fetchComplete = true;
+          if (this.errors.length > 0) {
+            this.$store.dispatch('pushNotification', 
+              { type: 'danger', message: `${StringUtil.getUiPhraseByLang(this.errorMsg, this.user.settings.language)}` })
+              .then(() => {
+                this.errors = [];
+              });
+          }
+        });
     },
     getMainEntities(data) {
-      this.fetchedItems = data.map(item => item.mainEntity);
-      this.fetchComplete = true;
+      this.fetchedItems = data.filter((item => !!item)).map(item => item.mainEntity);
     },
   },
   mounted() {
@@ -85,8 +111,7 @@ export default {
     <holding-mover 
       v-if="$route.params.tool === 'holdings'"
       :flaggedInstances="flaggedInstances"
-      :fetchComplete="fetchComplete"
-      :error="error" />
+      :fetchComplete="fetchComplete"/>
     <div class="" v-if="$route.params.tool === 'merge'">
       <h1>merge posts</h1>
       <!-- replace this whole div with the component -->

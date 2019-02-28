@@ -184,7 +184,7 @@ export default {
   &-body {
     background-color: @white;
     border: 1px solid @grey-lighter;
-    padding: 20px;
+    padding: 0 20px 20px; 
     transition: background-color 0.3s ease;
 
     &.has-selection {
@@ -196,6 +196,7 @@ export default {
   &-dropdownContainer,
   &-selectedContainer {
     position: relative;
+    margin-top: 20px;
     border: 1px solid @gray-lighter;
     box-shadow: @shadow-panel;
     background-color: @white;
