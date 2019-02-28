@@ -65,6 +65,7 @@ export default {
       return encodeURI(query);
     },
     doSearch() {
+      this.helpToggled = false;
       this.$router.push({ path: `/search/${this.searchPerimeter}?${this.composeQuery()}` });
         
       if (this.searchPerimeter === 'remote') {
@@ -173,6 +174,7 @@ export default {
     searchPerimeter(newVal, oldVal) {
       if (newVal !== oldVal) {
         this.$nextTick(() => {
+          this.helpToggled = false;
           this.focusSearchInput();
         });
       }
