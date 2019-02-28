@@ -70,11 +70,17 @@ const router = new Router({
       path: '/user',
       name: 'User settings',
       component: () => import(/* webpackChunkName: "UserPage" */ './views/UserPage.vue'),
+      meta: { 
+        requiresAuth: true,
+      },
     },
     {
       path: '/create',
       name: 'Create new',
       component: () => import(/* webpackChunkName: "Create" */ './views/Create.vue'),
+      meta: { 
+        requiresAuth: true,
+      },
     },
     {
       path: '/new',
