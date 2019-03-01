@@ -16,10 +16,6 @@ export default {
       type: Array,
       required: true,
     },
-    error: {
-      type: String,
-      default: '',
-    },
   },
   data() {
     return {
@@ -130,7 +126,7 @@ export default {
           slot="info">
           {{ "Holdings are moved from the sender post to the reciever post" | translatePhrase }}.</p>
       </post-picker>
-      <div class="HoldingMover-separator">
+      <div class="HoldingMover-separator" v-if="flaggedInstances.length > 0">
         <button class="btn btn-primary" 
           @click="switchInstances" 
           :disabled="!canSwitchInstances"
@@ -139,16 +135,16 @@ export default {
         </button>
       </div>
       <post-picker 
+        v-if="flaggedInstances.length > 0"
         name="reciever"
         opposite="sender"
         :flaggedInstances="flaggedInstances"/>
     </div>
-    <div class="HoldingMover-resultListContainer">
+    <div class="HoldingMover-resultListContainer" v-if="flaggedInstances.length > 0">
       <HoldingList ref="sender" name="sender" :loading="loading" :lock="loading || !bothSelected" @send="doMove" :progress="progress" />
       <div class="HoldingMover-separator"></div>
       <HoldingList ref="reciever" :lock="true" name="reciever" />
     </div>
-    <p class="HoldingMover-error" v-if="error">{{error}}</p>
   </div>
 </template>
 
@@ -177,9 +173,6 @@ export default {
     }
   }
 
-  &-error {
-    color: red;
-  }
   &-resultListContainer {
     margin-top: 1em;
     display: flex;
