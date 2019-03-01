@@ -244,10 +244,10 @@ new Vue({
     },
     initWarningFunc() {
       if (this.settings.environment === 'prod' || this.settings.environment === 'stg') {
-        window.lxlWarning = (...strings) => {
+        window.lxlWarning = () => {
           
         };
-        window.lxlError = (...strings) => {
+        window.lxlError = () => {
           
         };
         return;
