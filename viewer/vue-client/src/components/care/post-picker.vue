@@ -46,8 +46,8 @@ export default {
       'inspector',
       'settings',
     ]),
-    filteredInstances() {
-      return this.flaggedInstances.filter((instance) => {
+    headers() {
+      return this.flaggedInstances.map((instance) => {
         const headerList = DisplayUtil.getItemSummary(
           instance, 
           this.resources.display, 
@@ -62,10 +62,14 @@ export default {
           this.resources.vocab, 
           this.settings, 
           this.resources.context,
-        ).join(', ').toLowerCase();
-
-        return header.indexOf(this.filterPhrase.trim().toLowerCase()) > -1;
+        ).join(', ');
+        return { '@id': instance['@id'], header };
       });
+    },
+    filteredInstances() {
+      const filteredTitles = this.headers.filter(el => el.header.toLowerCase()
+        .indexOf(this.filterPhrase.trim().toLowerCase()) > -1);
+      return this.flaggedInstances.filter(instance => filteredTitles.some(el => el['@id'] === instance['@id']));
     },
   },
   methods: {
