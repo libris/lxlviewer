@@ -438,6 +438,33 @@ const store = new Vuex.Store({
     context: state => state.resources.context,
   },
   actions: {
+    mark({ commit, state }, payload) {
+      const userStorage = cloneDeep(state.userStorage);
+      const tag = payload.tag;
+      const id = payload.documentId;
+      if (userStorage.list.hasOwnProperty(id)) {
+        if (userStorage.list[id].indexOf(tag) < 0) {
+          userStorage.list[id].push(tag);
+        }
+      } else {
+        userStorage.list[id] = [tag];
+      }
+      commit('setUserStorage', userStorage);
+    },
+    unmark({ commit, state }, payload) {
+      const userStorage = cloneDeep(state.userStorage);
+      const tag = payload.tag;
+      const id = payload.documentId;
+      if (userStorage.list.hasOwnProperty(id)) {
+        if (userStorage.list[id].indexOf(tag) >= 0) {
+          userStorage.list[id].splice(userStorage.list[id].indexOf(tag), 1);
+          if (userStorage.list[id].length === 0) {
+            delete userStorage.list[id];
+          }
+        }
+      }
+      commit('setUserStorage', userStorage);
+    },
     verifyUser({ commit, state }) {
       return new Promise((resolve, reject) => {
         if (state.user.isLoggedIn === true && state.user.hasTokenExpired() === false) {

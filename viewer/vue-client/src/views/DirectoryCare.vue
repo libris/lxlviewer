@@ -4,23 +4,30 @@ import { filter } from 'lodash-es';
 import * as VocabUtil from '@/utils/vocab';
 import TabMenu from '@/components/shared/tab-menu';
 import HoldingMover from '@/components/care/holding-mover';
+import ModalComponent from '@/components/shared/modal-component';
+import * as StringUtil from '@/utils/string';
 
 export default {
   name: 'DirectoryCare',
   components: {
     'tab-menu': TabMenu,
     'holding-mover': HoldingMover,
+    'modal-component': ModalComponent,
   },
   data() {
     return {
       fetchedItems: [],
       fetchComplete: false,
-      error: '',
+      errors: {
+        removed: [],
+        other: [],
+      },
       tabs: [
         { id: 'holdings', text: 'Move holdings' },
         // { 'id': 'merge', 'text': 'Merge posts' }, 
         // { 'id': 'remove', 'text': 'Batch remove' }, 
       ],
+      showModal: false,
     };
   },
   computed: {
@@ -48,11 +55,21 @@ export default {
     fetchOne(id) {
       const searchUrl = `${this.settings.apiPath}/${id}/data.json`; // Should be JSON, not JSON-LD
       return new Promise((resolve, reject) => {
-        fetch(searchUrl).then((response) => {
-          resolve(response.json());
-        }, (error) => {
-          reject(error);
-        });
+        fetch(searchUrl)
+          .then((response) => {
+            if (response.ok) {
+              resolve(response.json());
+            } else if (response.status === 410) {
+              this.errors.removed.push(id);
+              this.$store.dispatch('unmark', { tag: 'Directory care', documentId: id });
+              resolve();
+            } else {
+              this.errors.other.push(id);
+              resolve();
+            }
+          }, (error) => {
+            reject(error);
+          });
       });
     },
     fetchAllFlagged() {
@@ -60,22 +77,48 @@ export default {
       this.userCare.forEach((item) => {
         promiseArray.push(this.fetchOne(item));
       });
-      Promise.all(promiseArray).then((result) => {
-        this.getMainEntities(result);
-      }, (error) => {
-        this.error = error;
-        this.allDone();
-      });
+      Promise.all(promiseArray)
+        .then((result) => {
+          this.getMainEntities(result);
+        })
+        .catch(() => {
+          this.$store.dispatch('pushNotification',
+            { 
+              type: 'danger',
+              message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)}`, 
+            })
+            .then(() => {
+              this.allDone();
+            });
+        });
     },
     getMainEntities(data) {
-      this.fetchedItems = data.map(item => item.mainEntity);
+      this.fetchedItems = data.filter((item => !!item)).map(item => item.mainEntity);
       this.allDone();
     },
     allDone() {
       this.$store.dispatch('removeLoadingIndicator', 'Loading')
         .then(() => {
           this.fetchComplete = true;
+          if (this.errors.removed.length > 0) {
+            this.showModal = true;
+          }
+          if (this.errors.other.length > 0) {
+            this.$store.dispatch('pushNotification',
+              {
+                type: 'danger',
+                message: `${StringUtil.getUiPhraseByLang('The following resources could not be retrieved', this.user.settings.language)}: 
+                ${this.errors.other.join(', ')}`, 
+              })
+              .then(() => {
+                this.errors.other = [];
+              });
+          }
         });
+    },
+    closeModal() {
+      this.showModal = false;
+      this.errors.removed = [];
     },
   },
   mounted() {
@@ -91,12 +134,34 @@ export default {
     <hr class="menuDivider">
     <holding-mover 
       v-if="$route.params.tool === 'holdings'"
-      :flaggedInstances="flaggedInstances"
-      :error="error" />
+      :flaggedInstances="flaggedInstances"/>
     <div class="" v-if="$route.params.tool === 'merge'">
       <h1>merge posts</h1>
       <!-- replace this whole div with the component -->
     </div>
+    <modal-component 
+      v-if="showModal"
+      title="Error" 
+      modal-type="danger" 
+      @close="closeModal">
+      <div slot="modal-header" class="">
+        <header>
+          {{'Error' | translatePhrase}}
+        </header>
+      </div>
+      <div slot="modal-body" class="DirectoryCare-modalBody">
+        <p>{{ ['The following resources could not be retrieved', 
+          'because they no longer exist. They have been removed from the directory care list'] | translatePhrase }}:</p>
+        <ul>
+          <li v-for="error in errors.removed" :key="error">
+            {{error}}
+          </li>
+        </ul>
+        <div class="DirectoryCare-modalBtnContainer">
+          <button class="btn btn-gray btn--md" @click="closeModal">OK</button>
+        </div>
+      </div>
+    </modal-component>
   </div>
 </template>
 
@@ -106,6 +171,15 @@ export default {
   .menuDivider {
     margin: -23px 0px 2em 0px;
     border-width: 3px;
+  }
+
+  &-modalBody {
+    width: 100%;
+    padding: 20px;
+  }
+
+  &-modalBtnContainer {
+    margin-top: 20px;
   }
 }
 </style>
