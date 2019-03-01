@@ -243,13 +243,13 @@ new Vue({
       document.title = title;
     },
     initWarningFunc() {
-      if (!this.settings.environment === 'development' || navigator.userAgent.indexOf('PhantomJS') > -1) {
-        // window.lxlWarning = (...strings) => {
+      if (this.settings.environment === 'prod' || this.settings.environment === 'stg') {
+        window.lxlWarning = (...strings) => {
           
-        // };
-        // window.lxlError = (...strings) => {
+        };
+        window.lxlError = (...strings) => {
           
-        // };
+        };
         return;
       }
       window.lxlWarnStack = [];

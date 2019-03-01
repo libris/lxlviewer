@@ -10,24 +10,12 @@ export default {
       return this.$store.getters.settings;
     },
     message() {
-      let message = '';
-      switch (this.settings.environment) {
-        case 'dev':
-          message = 'Du befinner dig nu i vår utvecklingsmiljö. Använd <a href="https://libris-qa.kb.se/katalogisering">libris-qa.kb.se/katalogisering</a> om du vill testa funktionalitet i en stabilare miljö';
-          break;
-        case '':
-          break;
-        case 'stg':
-          message = 'OBS! Du befinner dig nu i vår testmiljö.<br> För att komma till den skarpa katalogiseringstjänsten <strong> Libris katalogisering</strong> <a href="https://libris.kb.se/katalogisering">klickar du här</a>.';
-          break;
-        case 'qa':
-          break;
-        case 'local':
-          break;
-        default:
-          break;
+      if (this.settings.environment.startsWith('dev')) { // Matches dev2, dev3 etc...
+        return 'Du befinner dig nu i vår utvecklingsmiljö. Använd <a href="https://libris-qa.kb.se/katalogisering">libris-qa.kb.se/katalogisering</a> om du vill testa funktionalitet i en stabilare miljö';
+      } else if (this.settings.environment === 'stg') {
+        return 'OBS! Du befinner dig nu i vår testmiljö.<br> För att komma till den skarpa katalogiseringstjänsten <strong> Libris katalogisering</strong> <a href="https://libris.kb.se/katalogisering">klickar du här</a>.';
       }
-      return message;
+      return '';
     },
   },
 };

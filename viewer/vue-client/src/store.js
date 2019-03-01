@@ -7,21 +7,6 @@ import * as User from '@/models/user';
 
 Vue.use(Vuex);
 
-function getEnvironment() {
-  switch (window.location.host.split('.')[0]) {
-    case 'libris-dev':
-      return 'dev';
-    case 'localhost:8080':
-      return 'local';
-    case 'libris-qa':
-      return 'qa';
-    case 'libris-stg':
-      return 'stg';
-    default:
-      return '';
-  }
-}
-
 /* eslint-disable no-param-reassign */
 const store = new Vuex.Store({
   state: {
@@ -78,7 +63,7 @@ const store = new Vuex.Store({
     settings: {
       title: 'Libris Katalogisering',
       language: 'sv',
-      environment: getEnvironment(),
+      environment: process.env.VUE_APP_ENV_LABEL || 'local',
       version: process.env.VUE_APP_VERSION,
       dataPath: process.env.VUE_APP_DATA_PATH || process.env.VUE_APP_API_PATH,
       apiPath: process.env.VUE_APP_API_PATH,
