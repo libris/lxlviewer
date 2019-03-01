@@ -671,7 +671,7 @@ export default {
               <entity-changelog />
             </div>
             <div class="Inspector-actions">
-              <div class="TagContainer" v-if="recordType === 'Instance' && user.isLoggedIn">
+              <div class="TagContainer" v-if="recordType === 'Instance' && user.isLoggedIn && !inspector.status.isNew">
                 <tag-switch :document-id="documentId" :action-labels="{ on: 'Flag for', off: 'Unflag for' }" tag="Directory care" />
               </div>
               <reverse-relations 
