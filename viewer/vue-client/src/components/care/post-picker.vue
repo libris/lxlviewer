@@ -1,6 +1,8 @@
 <script>
 import { mapGetters } from 'vuex';
 import EntitySummary from '@/components/shared/entity-summary';
+import * as DisplayUtil from '@/utils/display';
+import * as StringUtil from '@/utils/string';
 
 export default {
   name: 'post-picker',
@@ -40,17 +42,29 @@ export default {
   computed: {
     ...mapGetters([
       'directoryCare',
+      'resources',
+      'inspector',
+      'settings',
     ]),
     filteredInstances() {
-      return this.flaggedInstances.filter((el) => {
-        let titles = [];
-        el.hasTitle.forEach((t) => {
-          for (const val in t) {
-            if (t.hasOwnProperty(val) && typeof t[val] === 'string' && val !== '@type') { titles.push(t[val]); }
-          }
-        });
-        titles = titles.join(' • ').toLowerCase();
-        return titles.indexOf(this.filterPhrase.trim().toLowerCase()) > -1;
+      return this.flaggedInstances.filter((instance) => {
+        const headerList = DisplayUtil.getItemSummary(
+          instance, 
+          this.resources.display, 
+          this.inspector.data.quoted, 
+          this.resources.vocab, 
+          this.settings, 
+          this.resources.context,
+        ).header;
+
+        const header = StringUtil.getFormattedEntries(
+          headerList, 
+          this.resources.vocab, 
+          this.settings, 
+          this.resources.context,
+        ).join(', ').toLowerCase();
+
+        return header.indexOf(this.filterPhrase.trim().toLowerCase()) > -1;
       });
     },
   },
