@@ -19,27 +19,10 @@ export default {
       return this.$store.getters.settings;
     },
     environmentLabel() {
-      let label = '';
-      switch (this.settings.environment) {
-        case 'dev':
-          label += 'DEV ';
-          break;
-        case '':
-          break;
-        case 'stg':
-          label += 'STG ';
-          break;
-        case 'qa':
-          label += 'QA ';
-          break;
-        case 'local':
-          label += 'LOCAL ';
-          break;
-        default:
-          break;
+      if (this.settings.environment !== 'prod') {
+        return this.settings.environment;
       }
-      label += this.settings.version;
-      return label;
+      return '';
     },
   },
 };
