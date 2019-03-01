@@ -5,7 +5,6 @@
     * tag         - String, what tag we are operating on
 */
 import * as StringUtil from '@/utils/string';
-import { cloneDeep } from 'lodash-es';
 import { mapGetters } from 'vuex';
 
 export default {
@@ -21,11 +20,8 @@ export default {
     },
     actionLabels: {
       type: Object,
-      default: {
-        on: 'Mark',
-        off: 'Unmark',
-      },
-    }
+      default: () => ({ on: 'Mark', off: 'Unmark' }),
+    },
   },
   data() {
     return {
@@ -40,31 +36,10 @@ export default {
       }
     },
     mark() {
-      const userStorage = cloneDeep(this.userStorage);
-      const tag = this.tag;
-      const id = this.documentId;
-      if (userStorage.list.hasOwnProperty(id)) {
-        if (userStorage.list[id].indexOf(tag) < 0) {
-          userStorage.list[id].push(tag);
-        }
-      } else {
-        userStorage.list[id] = [tag];
-      }
-      this.$store.dispatch('setUserStorage', userStorage);
+      this.$store.dispatch('mark', { tag: this.tag, documentId: this.documentId });
     },
     unmark() {
-      const userStorage = cloneDeep(this.userStorage);
-      const tag = this.tag;
-      const id = this.documentId;
-      if (userStorage.list.hasOwnProperty(id)) {
-        if (userStorage.list[id].indexOf(tag) >= 0) {
-          userStorage.list[id].splice(userStorage.list[id].indexOf(tag), 1);
-          if (userStorage.list[id].length === 0) {
-            delete userStorage.list[id];
-          }
-        }
-      }
-      this.$store.dispatch('setUserStorage', userStorage);
+      this.$store.dispatch('unmark', { tag: this.tag, documentId: this.documentId });
     },
   },
   computed: {
