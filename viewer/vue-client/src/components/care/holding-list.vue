@@ -2,6 +2,7 @@
 import { mapGetters } from 'vuex';
 import { each, isObject, orderBy } from 'lodash-es';
 import * as StringUtil from '@/utils/string';
+import EntitySummary from '@/components/shared/entity-summary';
 
 export default {
   name: 'holding-list',
@@ -24,6 +25,7 @@ export default {
     },
   },
   components: {
+    'entity-summary': EntitySummary,
   },
   data() {
     return {
@@ -242,32 +244,34 @@ export default {
         <span v-if="!isSender">{{ directoryCare.recieverHoldings.length }} {{ 'Holdings' | translatePhrase | lowercase }}</span>
     </div>
     <div class="HoldingList-body">
-      <div class="HoldingList-item" :key="index" v-for="(holding, index) in sortedHoldings">
-        <div class="HoldingList-itemIndex">{{index + 1}}</div>
-        <div class="HoldingList-itemBody" :class="{ 'selected': isSelected(holding), 'newly-moved': isNewlyMoved(holding), 'is-first': index === 0 }">
-          <div class="HoldingList-input" v-if="isSender && !lock && userHasPermission(holding) && !holdingExistsOnTarget(holding)">
-            <input 
-              class="customCheckbox-input"
-              :checked="isSelected(holding)" 
-              type="checkbox" :disabled="lock" 
-              @change="handleCheckbox($event, holding)" 
-              :id="`checkbox-${holding.heldBy['@id']}`"/>
-              <div class="customCheckbox-icon"></div>
+      <div class="HoldingList-items">
+        <div class="HoldingList-item" :key="index" v-for="(holding, index) in sortedHoldings">
+          <div class="HoldingList-itemIndex">{{index + 1}}</div>
+          <div class="HoldingList-itemBody" :class="{ 'selected': isSelected(holding), 'newly-moved': isNewlyMoved(holding), 'is-first': index === 0 }">
+            <div class="HoldingList-input" v-if="isSender && !lock && userHasPermission(holding) && !holdingExistsOnTarget(holding)">
+              <input 
+                class="customCheckbox-input"
+                :checked="isSelected(holding)" 
+                type="checkbox" :disabled="lock" 
+                @change="handleCheckbox($event, holding)" 
+                :id="`checkbox-${holding.heldBy['@id']}`"/>
+                <div class="customCheckbox-icon"></div>
+            </div>
+            <div class="HoldingList-noPermission" v-if="isSender && !userHasPermission(holding)">
+              <i v-tooltip.top="noPermissionTooltip" class="fa fa-fw fa-lock"></i>
+            </div>
+            <div class="HoldingList-foundOnDestination" v-if="isSender && userHasPermission(holding) && holdingExistsOnTarget(holding)">
+              <i v-tooltip.top="foundOnDestinationTooltip" class="fa fa-fw fa-warning"></i>
+            </div>
+            <div class="HoldingList-status" v-if="lock && isSender && userHasPermission(holding) && !holdingExistsOnTarget(holding)">
+              <i class="statusItem-loading fa fa-fw fa-circle-o-notch fa-spin" v-show="getStatus(holding) === 'loading'" />
+              <i class="statusItem-success fa fa-fw fa-check" v-show="getStatus(holding) === 'done'" />
+              <i class="statusItem-error fa fa-fw fa-times" v-show="getStatus(holding) === 'error'" />
+            </div>
+            <entity-summary 
+            :focus-data="holding"
+            :shouldOpenTab="true"></entity-summary>
           </div>
-          <div class="HoldingList-noPermission" v-if="isSender && !userHasPermission(holding)">
-            <i v-tooltip.top="noPermissionTooltip" class="fa fa-fw fa-lock"></i>
-          </div>
-          <div class="HoldingList-foundOnDestination" v-if="isSender && userHasPermission(holding) && holdingExistsOnTarget(holding)">
-            <i v-tooltip.top="foundOnDestinationTooltip" class="fa fa-fw fa-warning"></i>
-          </div>
-          <div class="HoldingList-status" v-if="lock && isSender && userHasPermission(holding) && !holdingExistsOnTarget(holding)">
-            <i class="statusItem-loading fa fa-fw fa-circle-o-notch fa-spin" v-show="getStatus(holding) === 'loading'" />
-            <i class="statusItem-success fa fa-fw fa-check" v-show="getStatus(holding) === 'done'" />
-            <i class="statusItem-error fa fa-fw fa-times" v-show="getStatus(holding) === 'error'" />
-          </div>
-          <label :for="`checkbox-${holding.heldBy['@id']}`" class="HoldingList-itemInfo">
-            {{ holding.heldBy['@id'] | removeDomain }}
-          </label>
         </div>
       </div>
     </div>
@@ -294,16 +298,28 @@ export default {
   &-body {
     border: solid @grey-lighter;
     border-width: 1px 0px 0px 1px;
-    padding: 1em;
+    padding: 0 1em;
     flex-grow: 1;
     .is-sender & {
       border-width: 1px 1px 0px 0px;
     }
   }
+  &-items {
+    max-height: 50vh;
+    overflow-y: scroll;
+  }
   &-item {
     flex-direction: row;
     display: flex;
     align-items: center;
+
+    &:first-of-type {
+      margin-top: 1em;
+    }
+
+    &:last-of-type {
+      margin-bottom: 1em;
+    }
   }
   &-itemIndex {
     padding: 0.5em;
@@ -312,7 +328,7 @@ export default {
   &-itemBody {
     flex-direction: row;
     display: flex;
-    flex-grow: 1;
+    flex: 1;
     border: solid @grey-lighter;
     border-width: 0px 1px 1px 1px;
     &.is-first {
@@ -352,6 +368,11 @@ export default {
 
   .SendHoldings-btn {
     // font-weight: 800;
+  }
+
+  & .EntitySummary-title {
+    font-size: 18px;
+    font-size: 1.8rem;
   }
 }
 
