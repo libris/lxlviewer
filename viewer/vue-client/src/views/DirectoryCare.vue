@@ -59,7 +59,7 @@ export default {
           .then((responseObject) => {
             if (responseObject.status === 200) {
               resolve(responseObject.data);
-            } else if (responseObject.status = 410) {
+            } else if (responseObject.status === 410) {
               this.errors.removed.push(id);
               this.$store.dispatch('unmark', { tag: 'Directory care', documentId: id });
               resolve();
