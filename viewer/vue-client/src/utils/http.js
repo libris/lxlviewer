@@ -84,11 +84,10 @@ export async function getDocument(uri, contentType = 'application/ld+json') {
   const headers = new Headers();
   headers.append('Accept', contentType);
   const responseObject = {};
-  let response;
   const options = {
     headers,
-  }
-  response = await fetch(uri, options);
+  };
+  const response = await fetch(uri, options);
   responseObject.status = response.status;
   if (response.status !== 200) {
     console.warn('HttpUtil.getDocument failed to fetch any data for:', uri);
