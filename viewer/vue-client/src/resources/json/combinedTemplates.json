@@ -815,7 +815,9 @@
           "hasTitle": [
             {
               "@type": "Title",
-              "mainTitle": ""
+              "mainTitle": "",
+              "subtitle": "",
+              "marc:nonfilingChars": ""
             }
           ],
           "responsibilityStatement": "",
@@ -917,12 +919,22 @@
             "@type": "Note",
             "label": ""
           }],
+          "marc:hasAddedEntryHierarchicalPlaceName": [
+            {
+              "@type": "marc:AddedEntryHierarchicalPlaceName",
+              "marc:city": "",
+              "marc:countryOrLargerEntity": [
+                ""
+              ]
+            }
+          ],
           "tableOfContents": [
             {
               "@type": "TableOfContents",
               "hasPart": [
                 {
                   "@type": "ToCEntry",
+                  "comment": "",
                   "label": "",
                   "responsibilityStatement": ""
                 }
@@ -977,7 +989,35 @@
               "label": ""
             }
           ],
-          "subject": []
+          "relationship": [
+            {
+              "@type": "Relationship",
+              "entity": {
+                "@type": "Work",
+                "hasTitle": [
+                  {
+                    "@type": "Title",
+                    "mainTitle": ""
+                  }
+                ]
+              }
+            }
+          ],
+          "subject": [
+            {
+              "@type": "ComplexSubject",
+              "inScheme": {
+                "@id": "https://id.kb.se/term/sao"
+              },
+              "termComponentList": []
+            }
+          ],
+          "summary": [
+            {
+              "@type": "Summary",
+              "label": ""
+            }
+          ]
         }
       }
     },
