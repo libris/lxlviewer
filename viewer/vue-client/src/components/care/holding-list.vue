@@ -92,7 +92,6 @@ export default {
     },
     'directoryCare.sender'() {
       if (this.name === 'sender') {
-        this.resetMovedStatus();
         this.getHoldings();
       }
       this.clearSelected();
