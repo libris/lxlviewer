@@ -41,8 +41,6 @@ export default {
     acceptUntag() {
       this.untagSender();
       this.allSuccessDialog = false;
-      const changeObj = { sender: null };
-      this.$store.dispatch('setDirectoryCare', { ...this.directoryCare, ...changeObj });
     },
     openModal() {
       this.allSuccessDialog = true;
