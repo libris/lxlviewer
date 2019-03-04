@@ -870,12 +870,6 @@
             "@type": "Dimensions",
             "label": ""
           },
-          "hasNumberingOfSerials": [
-            {
-              "@type": "NumberingOfSerials",
-              "label": ""
-            }
-          ],
           "seriesMembership": [
             {
               "@type": "SeriesMembership",
