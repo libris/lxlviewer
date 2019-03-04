@@ -168,8 +168,8 @@ export default {
       </div>
       <div class="PostPicker-selectedContainer" v-if="selected">
         <entity-summary 
-          :focus-data="selected" 
-          :should-link="false"
+          :focus-data="selected"
+          :shouldOpenTab="true"
           :valueDisplayLimit=1></entity-summary>
         <span class="PostPicker-closeBtn" 
           role="button" 
