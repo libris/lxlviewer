@@ -131,7 +131,6 @@ export default {
 <template>
   <div class="DirectoryCare" v-if="fetchComplete">
     <tab-menu @go="switchTool" :tabs="tabs" :active="$route.params.tool"></tab-menu>
-    <hr class="menuDivider">
     <holding-mover 
       v-if="$route.params.tool === 'holdings'"
       :flaggedInstances="flaggedInstances"/>
@@ -163,10 +162,6 @@ export default {
 <style lang="less">
 
 .DirectoryCare {
-  .menuDivider {
-    margin: -23px 0px 2em 0px;
-    border-width: 3px;
-  }
 
   &-modalBody {
     width: 100%;
