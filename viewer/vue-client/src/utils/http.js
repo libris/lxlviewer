@@ -80,6 +80,26 @@ function request(opts, data) {
   });
 }
 
+export async function getDocument(uri, contentType = 'application/ld+json') {
+  const headers = new Headers();
+  headers.append('Accept', contentType);
+  const responseObject = {};
+  let response;
+  const options = {
+    headers,
+  }
+  response = await fetch(uri, options);
+  responseObject.status = response.status;
+  if (response.status !== 200) {
+    console.warn('HttpUtil.getDocument failed to fetch any data for:', uri);
+    responseObject.data = null;
+    return responseObject;
+  }
+  responseObject.data = await response.json();
+  responseObject.ETag = response.headers.get('ETag');
+  return responseObject;
+}
+
 export function get(opts) {
   const options = opts;
   options.method = 'GET';

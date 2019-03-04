@@ -3,6 +3,7 @@ import { mapGetters } from 'vuex';
 import { filter } from 'lodash-es';
 import PostPicker from '@/components/care/post-picker';
 import HoldingList from '@/components/care/holding-list';
+import ModalComponent from '@/components/shared/modal-component';
 import * as RecordUtil from '@/utils/record';
 
 export default {
@@ -10,6 +11,7 @@ export default {
   components: {
     'post-picker': PostPicker,
     HoldingList,
+    ModalComponent,
   },
   props: {
     flaggedInstances: {
@@ -20,8 +22,8 @@ export default {
   data() {
     return {
       destinationId: '',
-      // loadingStatus: '',
       progress: {},
+      allSuccessDialog: false,
       loading: false,
     };
   },
@@ -36,6 +38,24 @@ export default {
     clearProgress() {
       this.progress = {};
     },
+    acceptUntag() {
+      this.untagSender();
+      this.allSuccessDialog = false;
+      const changeObj = { sender: null };
+      this.$store.dispatch('setDirectoryCare', { ...this.directoryCare, ...changeObj });
+    },
+    openModal() {
+      this.allSuccessDialog = true;
+      this.$nextTick(() => {
+        this.$refs.acceptUntagButton.focus();
+      });
+    },
+    closeModal() {
+      this.allSuccessDialog = false;
+    },
+    untagSender() {
+      this.$store.dispatch('unmark', { tag: 'Directory care', documentId: this.directoryCare.sender });
+    },
     checkAllDone() {
       const selected = this.directoryCare.selectedHoldings;
       if (filter(this.progress, o => o !== 'loading').length === selected.length) {
@@ -48,6 +68,9 @@ export default {
         self.loading = false;
         self.$refs.sender.doneMoving();
         self.$refs.reciever.doneMoving();
+        if (self.directoryCare.holdingsMoved.length === filter(self.progress, o => o === 'done').length) {
+          self.openModal();
+        }
       }, 1500);
     },
     doMove() {
@@ -145,6 +168,20 @@ export default {
       <div class="HoldingMover-separator"></div>
       <HoldingList ref="reciever" :lock="true" name="reciever" />
     </div>
+    <modal-component 
+      v-if="allSuccessDialog"
+      width="500px"
+      @close="closeModal"
+      title="Move was successful" 
+      modal-type="info">
+      <div slot="modal-body" class="HoldingMover-allSuccessDialog">
+        <p>{{ 'All selected holdings has been moved' | translatePhrase }}.</p>
+        <p>{{ ['Do you want to unmark the post for', 'Directory care'] | translatePhrase }}?</p>
+        <div class="HoldingMover-allSuccessDialogBtnContainer">
+          <button ref="acceptUntagButton" class="btn btn-primary btn--md" @click="acceptUntag">{{ 'Yes' | translatePhrase }}</button> <button class="btn btn-primary btn--md" @click="closeModal">{{ 'No' | translatePhrase }}</button>
+        </div>
+      </div>
+    </modal-component>
   </div>
 </template>
 
@@ -196,6 +233,16 @@ export default {
 
   &-info {
     margin: 20px 0 0;
+  }
+
+  &-allSuccessDialog {
+    width: 100%;
+    padding: 20px;
+    text-align: center;
+  }
+
+  &-allSuccessDialogBtnContainer {
+    margin-top: 20px;
   }
 
 }
