@@ -44,7 +44,7 @@ export default {
     width: {
       default: '',
       type: String,
-    }
+    },
   },
   data() {
     return {
