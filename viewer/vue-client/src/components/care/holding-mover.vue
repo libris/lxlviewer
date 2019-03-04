@@ -176,7 +176,7 @@ export default {
       modal-type="info">
       <div slot="modal-body" class="HoldingMover-allSuccessDialog">
         <p>{{ 'All selected holdings has been moved' | translatePhrase }}.</p>
-        <p>{{ ['Do you want to unmark the post for', 'Directory care'] | translatePhrase }}?</p>
+        <p>{{ ['Do you want to unmark the sender for', 'Directory care'] | translatePhrase }}?</p>
         <div class="HoldingMover-allSuccessDialogBtnContainer">
           <button ref="acceptUntagButton" class="btn btn-primary btn--md" @click="acceptUntag">{{ 'Yes' | translatePhrase }}</button> <button class="btn btn-primary btn--md" @click="closeModal">{{ 'No' | translatePhrase }}</button>
         </div>
