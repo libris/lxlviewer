@@ -218,17 +218,18 @@ export default {
           <label class="SearchBar-inputLabel hidden" id="searchlabel" for="q" aria-hidden="false">
             {{"Search" | translatePhrase}}
           </label>
-          <select
-            class="SearchBar-select form-control customSelect"
-            v-if="searchPerimeter === 'libris'"
-            v-model="activeSearchParam">
-            <option 
-              v-for="prop in searchParams"
-              :key="prop.key"
-              :value="prop">
-              {{prop.key | translatePhrase}}
-            </option>
-          </select>
+          <div class="SearchBar-selectWrapper" v-if="searchPerimeter === 'libris'">
+            <select
+              class="SearchBar-select form-control customSelect"
+              v-model="activeSearchParam">
+              <option 
+                v-for="prop in searchParams"
+                :key="prop.key"
+                :value="prop">
+                {{prop.key | translatePhrase}}
+              </option>
+            </select>
+          </div>
           <input type="text"
             class="SearchBar-input customInput form-control"
             v-model="searchPhrase"
@@ -345,29 +346,34 @@ export default {
 
   &-formGroup {
     width: 100%;
-    display: inline-block;
     display: flex;
     box-shadow: 0 1px 1px 0 rgba(0,0,0,.10), 0 1px 3px 0 rgba(0,0,0,.12), 0 2px 1px -2px rgba(0,0,0,.1)
   }
 
-  &-select {
-    height: auto;
-    min-width: unset;
-    width: 8em;
-    box-shadow: none;
-    border: none;
-    text-align-last: left;
+  &-selectWrapper {
+    flex: 1 0 auto;
+    border: 1px solid @grey-light;
+    border-right: 0;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
 
     & + input {
       border-top-left-radius: 0;
       border-bottom-left-radius: 0;
     }
   }
+  &-select {
+    height: 100%;
+    box-shadow: none;
+    text-align-last: left;
+    border: none;
+  }
 
   &-input {
     color: @black;
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
+    min-width: unset;
     width: 100%;
     box-shadow: none;
     &:focus {
