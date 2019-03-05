@@ -47,7 +47,7 @@ export default {
         <router-link to="/" class="NavBar-brandTitle" :title="`Version ${settings.version}`">
           <span id="service-name">Libris katalogisering</span>
           <span class="NavBar-envLabel">
-          {{ environmentLabel }}
+          {{ environmentLabel }} {{ settings.version }}
           </span>
         </router-link>
       </div>
