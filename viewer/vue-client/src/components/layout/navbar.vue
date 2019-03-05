@@ -88,6 +88,7 @@ export default {
   width: 100%;
   background-color: @bg-navbar;
   box-shadow: @shadow-navbar;
+  flex-shrink: 0; // fix ie flexbox height bug
   height: auto;
 
   &-container {
