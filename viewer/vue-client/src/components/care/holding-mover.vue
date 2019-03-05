@@ -132,7 +132,34 @@ export default {
 
 <template>
   <div class="HoldingMover">
-    <div class="HoldingMover-pickers">
+    <div class="HoldingMover-infoBox" v-if="flaggedInstances.length === 0">
+      <div class="HoldingMover-infoBoxColumn">
+        <div class="iconCircle"><i class="fa fa-fw fa-flag"></i></div>
+        <span class="header">Flagga post</span>
+        <p>
+          För att kunna flytta bestånd behöver du först flagga de bibliografiska poster du önskar flytta bestånd emellan. Flaggan hittar du antingen i posten eller på kortet i sökträfflistan.
+        </p>
+      </div>
+      <div class="HoldingMover-infoBoxColumn">
+        <div class="iconCircle"><i class="fa fa-fw fa-exchange"></i></div>
+        <span class="header">Flytta bestånd</span>
+        <p>
+          När du har flaggat två eller fler poster kan du flytta beståndsposter som tillhör något av dina sigel.<br>
+          Du markerar helt enkelt bestånden i den avsändande posten och klickar <i>Flytta bestånd</i>.
+        </p>
+      </div>
+      <div class="HoldingMover-infoBoxColumn">
+        <div class="iconCircle"><i class="fa fa-fw fa-check"></i></div>
+        <span class="header">Klart!</span>
+        <p>
+          Svårare än så är det inte!
+        </p>
+        <p>
+          <strong>Obs!</strong> Den här instruktionsdelen försvinner när du flaggat din första post, men du kan alltid hitta informationen på vår hjälpsida.
+        </p>
+      </div>
+    </div>
+    <div class="HoldingMover-pickers" v-if="flaggedInstances.length > 0">
       <post-picker 
         name="sender"
         opposite="reciever"
@@ -186,6 +213,45 @@ export default {
 <style lang="less">
 
 .HoldingMover  {
+  &-infoBox {
+    margin-top: 1em;
+    display: flex;
+    flex-direction: row;
+    @media (max-width: @screen-sm) {
+      flex-direction: column;
+      align-items: center;
+    }
+    justify-content: space-around;
+    background-color: @white;
+    border: 1px solid @grey-lighter;
+  }
+  &-infoBoxColumn {
+    padding: 2em 1% 1em 1%;
+    @media (max-width: @screen-sm) {
+      padding: 2em;
+    }
+    display: flex;
+    flex-direction: column;
+    flex-basis: 28%;
+    align-items: center;
+    .header {
+      margin: 0.5em 0 1em 0;
+      font-weight: 600;
+    }
+    p {
+      width: 100%;
+    }
+    .iconCircle {
+      border: 1px solid @gray-lighter;
+      border-radius: 1em;
+      width: 2em;
+      height: 2em;
+      line-height: 2em;
+      text-align: center;
+      color: @brand-primary;
+    }
+  }
+
   &-pickers {
     width: 100%;
     display: flex;
