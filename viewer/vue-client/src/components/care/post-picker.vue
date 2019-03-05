@@ -191,7 +191,7 @@ export default {
   flex-basis: @directorycare-sidewidth;
   max-width: @directorycare-sidewidth;
   display: flex;
-  flex: 0 1 auto;
+  flex: 1 1 auto;
   flex-direction: column;
 
   @media (max-width: @screen-sm) {
