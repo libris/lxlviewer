@@ -94,7 +94,7 @@ export default {
     },
     focusInput() {
       this.$nextTick(() => {
-        if (this.expanded) {
+        if (this.expanded && this.$refs.pickerInput) {
           this.$refs.pickerInput.focus();
         }
       });
