@@ -165,11 +165,7 @@ export default {
         opposite="reciever"
         :flaggedInstances="flaggedInstances"
         :expand="true">
-        <p v-if="flaggedInstances.length === 0"
-          class="HoldingMover-info" 
-          slot="info">
-          {{ "There are no instances flagged for directory care" | translatePhrase }}.</p>
-        <p v-else-if="!directoryCare.sender"
+        <p v-if="!directoryCare.sender"
           class="HoldingMover-info" 
           slot="info">
           {{ "Holdings are moved from the sender post to the reciever post" | translatePhrase }}.</p>
