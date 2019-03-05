@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import router from './router';
 import { cloneDeep, each, set, get } from 'lodash-es';
 import * as VocabUtil from '@/utils/vocab';
 import * as StringUtil from '@/utils/string';
@@ -162,7 +161,7 @@ const store = new Vuex.Store({
             order: false,
           },
         },
-        'issuanceType': {
+        issuanceType: {
           sv: 'Utgivningssätt',
           en: 'Issuance type',
           facet: {
