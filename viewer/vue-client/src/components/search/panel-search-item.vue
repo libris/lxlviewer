@@ -39,17 +39,14 @@ export default {
       type: Boolean,
       default: false,
     },
+    listItemSettings: {
+      type: Object,
+      default: () => {},
+    }
   },
   data() {
     return {
       keyword: '',
-      listItemSettings: {
-        text: this.text,
-        styling: 'brand',
-        inspectAction: true,
-        path: this.path,
-        icon: this.icon,
-      },
     };
   },
   methods: {
@@ -67,6 +64,24 @@ export default {
       'settings',
       'status',
     ]),
+    settings() {
+      const settings = {
+        text: this.text,
+        styling: 'brand',
+        inspectAction: true,
+        path: this.path,
+        icon: this.icon,
+        excludeProperties: [],
+        excludeComponents: [],
+      }
+      const keys = Object.keys(this.listItemSettings);
+      for (let i = 0; i < keys.length; i++) {
+        if (this.listItemSettings.hasOwnProperty(keys[i])) {
+          settings[keys[i]] = this.listItemSettings[keys[i]];
+        }
+      }
+      return settings;
+    },
     addPayload() {
       const updatedListItemSettings = merge({ payload: this.focusData }, cloneDeep(this.listItemSettings));
       return updatedListItemSettings;
@@ -97,6 +112,8 @@ export default {
         :focus-data="focusData" 
         :should-link="true" 
         :is-compact="isCompact"
+        :exclude-components="settings.excludeComponents"
+        :exclude-properties="settings.excludeProperties"
         :shouldOpenTab="true"
         :valueDisplayLimit=1>
       </entity-summary>

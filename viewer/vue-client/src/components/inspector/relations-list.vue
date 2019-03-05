@@ -29,6 +29,10 @@ export default {
       itemData: {},
       embellishedList: [],
       showInstances: false,
+      hideByContext: {
+        'Item': ['id', 'categorization'],
+        'Instance': ['id', 'categorization'],
+      }
     };
   },
   methods: {
@@ -68,6 +72,13 @@ export default {
       if (this.searchResult) {
         return this.searchResult.items;
       } 
+      return [];
+    },
+    hiddenComponents() {
+      const context = this.listContextType;
+      if (context.length > 0 && this.hideByContext.hasOwnProperty(context)) {
+        return this.hideByContext[context];
+      }
       return [];
     },
     builtQuery() {
@@ -134,6 +145,7 @@ export default {
           class="RelationsList-resultListContainer"
           :results="resultItems"
           :is-compact="isCompact"
+          :list-item-settings="{ excludeProperties: ['itemOf'], excludeComponents: hiddenComponents }"
           icon="chain"
           text="Link entity"
           v-if="!loading && searchResult !== null && error == null"

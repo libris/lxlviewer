@@ -261,8 +261,13 @@ export function getCard(item, displayDefs, quoted, vocab, settings, context) {
 }
 /* eslint-enable no-use-before-define */
 
-export function getItemSummary(item, displayDefs, quoted, vocab, settings, context) {
+export function getItemSummary(item, displayDefs, quoted, vocab, settings, context, excludeProperties = []) {
   const card = getCard(item, displayDefs, quoted, vocab, settings, context);
+  if (excludeProperties.length > 0) {
+    for (let i = 0; i < excludeProperties.length; i++) {
+      delete card[excludeProperties[i]];
+    }
+  }
   const displayGroups = require('@/resources/json/displayGroups.json');
   const summary = {
     categorization: [],

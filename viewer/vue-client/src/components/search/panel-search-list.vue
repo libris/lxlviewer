@@ -31,6 +31,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    listItemSettings: {
+      type: Object,
+      default: () => {},
+    }
   },
   data() {
     return {
@@ -87,6 +91,7 @@ export default {
         :path="path"
         :key="index"
         :icon="icon"
+        :list-item-settings="listItemSettings"
         :text="text"
         :is-compact="isCompact"
         :has-action="hasAction"

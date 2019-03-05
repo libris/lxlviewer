@@ -25,6 +25,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    excludeComponents: {
+      type: Array,
+      default: () => [],
+    },
     isImport: {
       type: Boolean,
       default: false,
@@ -207,11 +211,11 @@ export default {
 <template>
 <section class="EntitySummary">
   <div class="EntitySummary-meta">
-    <div class="EntitySummary-type uppercaseHeading--light">
+    <div v-if="excludeComponents.indexOf('categorization') < 0" class="EntitySummary-type uppercaseHeading--light">
       {{categorization.join(', ')}} {{ isLocal ? '{lokal entitet}' : '' }}
       <span class="EntitySummary-sourceLabel" v-if="database">{{ database }}</span>
     </div>
-    <div class="EntitySummary-id uppercaseHeading--light" :class="{'recently-copied': recentlyCopiedId }" @mouseover="idHover = true" @mouseout="idHover = false">
+    <div v-if="excludeComponents.indexOf('id') < 0" class="EntitySummary-id uppercaseHeading--light" :class="{'recently-copied': recentlyCopiedId }" @mouseover="idHover = true" @mouseout="idHover = false">
       <i v-tooltip.top="idTooltipText" class="fa fa-copy EntitySummary-idCopyIcon" :class="{'collapsedIcon': !idHover || recentlyCopiedId }" @click.stop="copyFnurgel">
       </i>{{ idAsFnurgel }}
     </div>
