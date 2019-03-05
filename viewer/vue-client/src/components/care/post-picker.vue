@@ -94,8 +94,9 @@ export default {
     },
     focusInput() {
       this.$nextTick(() => {
-        if (this.expanded) {
-          this.$refs.pickerInput.focus();
+        const input = this.$refs.pickerInput;
+        if (this.expanded && input) {
+          input.focus();
         }
       });
     },
