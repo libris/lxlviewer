@@ -348,7 +348,8 @@ export default {
   &-input, &-status, &-noPermission, &-foundOnDestination {
     display: flex;
     flex-direction: row;
-    width: 10%;
+    width: 40px;
+    padding: 0 10px;
     justify-content: center;
     align-items: center;
     input {
@@ -356,6 +357,10 @@ export default {
     }
     & .customCheckbox-icon {
         margin-left: 0;
+    }
+
+    & + .EntitySummary {
+      padding-left: 0;
     }
   }
   &-noPermission {
