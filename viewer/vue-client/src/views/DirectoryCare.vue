@@ -2,6 +2,7 @@
 import { mapGetters } from 'vuex';
 import { filter } from 'lodash-es';
 import * as VocabUtil from '@/utils/vocab';
+import * as HttpUtil from '@/utils/http';
 import TabMenu from '@/components/shared/tab-menu';
 import HoldingMover from '@/components/care/holding-mover';
 import ModalComponent from '@/components/shared/modal-component';
@@ -53,13 +54,12 @@ export default {
       this.$router.push({ path: `/directory-care/${id}` });
     },
     fetchOne(id) {
-      const searchUrl = `${this.settings.apiPath}/${id}/data.json`; // Should be JSON, not JSON-LD
       return new Promise((resolve, reject) => {
-        fetch(searchUrl)
-          .then((response) => {
-            if (response.ok) {
-              resolve(response.json());
-            } else if (response.status === 410) {
+        HttpUtil.getDocument(id, 'application/json') // Should be JSON, not JSON-LD
+          .then((responseObject) => {
+            if (responseObject.status === 200) {
+              resolve(responseObject.data);
+            } else if (responseObject.status === 410) {
               this.errors.removed.push(id);
               this.$store.dispatch('unmark', { tag: 'Directory care', documentId: id });
               resolve();
