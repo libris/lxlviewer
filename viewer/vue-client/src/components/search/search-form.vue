@@ -343,15 +343,11 @@ export default {
     }
   }
 
-  &-input {
-    color: @black;
-    border-width: 0px 0px 0px 1px;
-    border-radius: 0;
+  &-formGroup {
     width: 100%;
-    box-shadow: none;
-    &:focus {
-      border-right: none;
-    }
+    display: inline-block;
+    display: flex;
+    box-shadow: 0 1px 1px 0 rgba(0,0,0,.10), 0 1px 3px 0 rgba(0,0,0,.12), 0 2px 1px -2px rgba(0,0,0,.1)
   }
 
   &-select {
@@ -361,6 +357,22 @@ export default {
     box-shadow: none;
     border: none;
     text-align-last: left;
+
+    & + input {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+  }
+
+  &-input {
+    color: @black;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    width: 100%;
+    box-shadow: none;
+    &:focus {
+      border-right: none;
+    }
   }
 
   &-inputLabel {
@@ -384,14 +396,6 @@ export default {
     @media (min-width: @screen-sm) {
       min-width: 84px;
     }
-  }
-
-  &-formGroup {
-    width: 100%;
-    display: inline-block;
-    display: flex;
-    box-shadow: 0 1px 1px 0 rgba(0,0,0,.10), 0 1px 3px 0 rgba(0,0,0,.12), 0 2px 1px -2px rgba(0,0,0,.1)
-
   }
 
   &-typeLabel {
