@@ -191,6 +191,7 @@ export default {
   flex-basis: @directorycare-sidewidth;
   max-width: @directorycare-sidewidth;
   display: flex;
+  flex: 1 1 auto;
   flex-direction: column;
 
   @media (max-width: @screen-sm) {
@@ -201,7 +202,7 @@ export default {
   &-label {
     padding: 5px 10px;
     background-color: @gray-lighter;
-    display: inline-block;
+    display: table; // ie fallback
     width: fit-content;
     transition: background-color 0.3s ease;
 
