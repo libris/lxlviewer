@@ -42,6 +42,7 @@ export default {
   computed: {
     ...mapGetters([
       'directoryCare',
+      'userCare',
       'resources',
       'inspector',
       'settings',
@@ -70,6 +71,16 @@ export default {
       const filteredTitles = this.headers.filter(el => el.header.toLowerCase()
         .indexOf(this.filterPhrase.trim().toLowerCase()) > -1);
       return this.flaggedInstances.filter(instance => filteredTitles.some(el => el['@id'] === instance['@id']));
+    },
+  },
+  watch: {
+    userCare(newVal) {
+      if (this.selected) {
+        const selectedIsFlagged = newVal.filter(item => item === this.selected['@id']);
+        if (selectedIsFlagged.length === 0) {
+          this.unselectThis();
+        }
+      }
     },
   },
   methods: {
