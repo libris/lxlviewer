@@ -70,6 +70,9 @@ export default {
     foundOnDestinationTooltip() {
       return StringUtil.getUiPhraseByLang('Holding already exists on the reciever', this.user.settings.language);
     },
+    noRecieverTooltip() {
+      return StringUtil.getUiPhraseByLang('No reciever chosen', this.user.settings.language);
+    },
     sortedHoldings() {
       const holdings = this.directoryCare[`${this.name}Holdings`];
       const sorted = orderBy(holdings, [(o) => {
@@ -165,13 +168,6 @@ export default {
       this.beforeChange = null;
       this.selected = [];
     },
-    // handleAllSelect($event) {
-    //   if ($event.target.checked) {
-    //     this.selectAllPossible();
-    //   } else {
-    //     this.clearSelected();
-    //   }
-    // },
     toggleAll() {
       if (this.allHoldingsSelected) {
         this.clearSelected();
@@ -255,13 +251,18 @@ export default {
                 :id="`checkbox-${holding.heldBy['@id']}`"/>
               <!-- <div class="customCheckbox-icon"></div> -->
             </div>
+            <div class="HoldingList-noReciever" v-if="directoryCare.reciever === null && userHasPermission(holding)">
+              <span v-tooltip.top="noRecieverTooltip">
+              <input disabled type="checkbox" />
+              </span>
+            </div>            
             <div class="HoldingList-noPermission" v-if="isSender && !userHasPermission(holding)">
               <i v-tooltip.top="noPermissionTooltip" class="fa fa-fw fa-lock"></i>
             </div>
             <div class="HoldingList-foundOnDestination" v-if="isSender && userHasPermission(holding) && holdingExistsOnTarget(holding)">
               <i v-tooltip.top="foundOnDestinationTooltip" class="fa fa-fw fa-warning"></i>
             </div>
-            <div class="HoldingList-status" v-if="lock && isSender && userHasPermission(holding) && !holdingExistsOnTarget(holding)">
+            <div class="HoldingList-status" v-if="lock && isSender && userHasPermission(holding) && !holdingExistsOnTarget(holding) && directoryCare.reciever">
               <i class="statusItem-loading fa fa-fw fa-circle-o-notch fa-spin" v-show="getStatus(holding) === 'loading'" />
               <i class="statusItem-success fa fa-fw fa-check" v-show="getStatus(holding) === 'done'" />
               <i class="statusItem-error fa fa-fw fa-times" v-show="getStatus(holding) === 'error'" />
@@ -344,7 +345,7 @@ export default {
     font-weight: normal;
     margin: 0;
   }
-  &-input, &-status, &-noPermission, &-foundOnDestination {
+  &-input, &-status, &-noPermission, &-foundOnDestination, &-noReciever {
     display: flex;
     flex-direction: row;
     width: 40px;
