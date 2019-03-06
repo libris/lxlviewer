@@ -472,6 +472,11 @@ const store = new Vuex.Store({
       }
       commit('setUserStorage', userStorage);
     },
+    purgeUserTagged({ commit, state }) {
+      const userStorage = cloneDeep(state.userStorage);
+      userStorage.list = {};
+      commit('setUserStorage', userStorage);
+    },
     verifyUser({ commit, state }) {
       return new Promise((resolve, reject) => {
         if (state.user.isLoggedIn === true && state.user.hasTokenExpired() === false) {
