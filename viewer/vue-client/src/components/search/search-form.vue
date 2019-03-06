@@ -362,19 +362,22 @@ export default {
       border-bottom-left-radius: 0;
     }
   }
+
   &-select {
     height: 100%;
+    min-width: unset;
     box-shadow: none;
     text-align-last: left;
     border: none;
   }
 
   &-input {
+    min-width: 100px;
+    width: 100%;
     color: @black;
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
-    min-width: unset;
-    width: 100%;
+    border-right: 0;
     box-shadow: none;
     &:focus {
       border-right: none;
@@ -387,10 +390,15 @@ export default {
   }
 
   &-clear {
-    align-self: center;
-    flex: 1 1 2%;
     position: absolute;
-    right: 110px;
+    right: 75px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+
+    @media (min-width: 768px) {
+      right: 110px;
+    }
   }
 
   &-submit {

@@ -326,7 +326,6 @@ export default {
   &-windowControl {
     display: flex;
     flex-wrap: nowrap;
-    min-width: 40px;
     margin-left: 10px;
 
     .fullview-toggle-button {
