@@ -795,10 +795,6 @@
           "descriptionConventions": [
             {
               "@id": "https://id.kb.se/marc/Isbd"
-            },
-            {
-              "@type": "DescriptionConventions",
-              "code": "rda"
             }
           ],
           "descriptionLanguage": [
@@ -807,6 +803,12 @@
             }
           ],
           "encodingLevel": "marc:MinimalLevel",
+          "hasNote": [
+            {
+              "@type": "marc:SourceOfDescriptionNote",
+              "label": ""
+            }
+          ],
           "recordStatus": "",
           "marc:catalogingSource": {
             "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
@@ -819,7 +821,9 @@
           "hasTitle": [
             {
               "@type": "Title",
-              "mainTitle": ""
+              "mainTitle": "",
+              "subtitle": "",
+              "marc:nonfilingChars": ""
             }
           ],
           "responsibilityStatement": "",
@@ -874,12 +878,6 @@
             "@type": "Dimensions",
             "label": ""
           },
-          "hasNumberingOfSerials": [
-            {
-              "@type": "NumberingOfSerials",
-              "label": ""
-            }
-          ],
           "seriesMembership": [
             {
               "@type": "SeriesMembership",
@@ -927,12 +925,23 @@
             "@type": "Note",
             "label": ""
           }],
+          "marc:hasAddedEntryHierarchicalPlaceName": [
+            {
+              "@type": "marc:AddedEntryHierarchicalPlaceName",
+              "marc:city": "",
+              "marc:countryOrLargerEntity": [
+                ""
+              ]
+            }
+          ],
+          "otherPhysicalFormat": [],
           "tableOfContents": [
             {
               "@type": "TableOfContents",
               "hasPart": [
                 {
                   "@type": "ToCEntry",
+                  "comment": "",
                   "label": "",
                   "responsibilityStatement": ""
                 }
@@ -987,7 +996,21 @@
               "label": ""
             }
           ],
-          "subject": []
+          "subject": [
+            {
+              "@type": "ComplexSubject",
+              "inScheme": {
+                "@id": "https://id.kb.se/term/sao"
+              },
+              "termComponentList": []
+            }
+          ],
+          "summary": [
+            {
+              "@type": "Summary",
+              "label": ""
+            }
+          ]
         }
       }
     },
