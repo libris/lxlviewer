@@ -233,6 +233,7 @@ export default {
     .header {
       margin: 0.5em 0 1em 0;
       font-weight: 600;
+      font-size: 18px;
     }
     p {
       width: 100%;
