@@ -52,7 +52,7 @@ export default {
     },
     userHasTaggedPosts() {
       return Object.keys(this.userStorage.list).length > 0;
-    }
+    },
   },
   components: {
     'user-avatar': UserAvatar,
@@ -196,7 +196,7 @@ export default {
       padding: 0.5em;
     }
     tr {
-      border: solid @gray-light;
+      border: solid @gray-lighter;
       border-width: 0px 0px 1px 0px;
     }
     .key {
