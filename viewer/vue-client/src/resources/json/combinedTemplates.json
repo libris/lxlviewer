@@ -934,6 +934,7 @@
               ]
             }
           ],
+          "otherPhysicalFormat": [],
           "tableOfContents": [
             {
               "@type": "TableOfContents",
