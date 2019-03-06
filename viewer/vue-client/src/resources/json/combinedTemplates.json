@@ -996,20 +996,6 @@
               "label": ""
             }
           ],
-          "relationship": [
-            {
-              "@type": "Relationship",
-              "entity": {
-                "@type": "Work",
-                "hasTitle": [
-                  {
-                    "@type": "Title",
-                    "mainTitle": ""
-                  }
-                ]
-              }
-            }
-          ],
           "subject": [
             {
               "@type": "ComplexSubject",
