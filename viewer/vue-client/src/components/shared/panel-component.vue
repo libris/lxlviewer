@@ -121,7 +121,7 @@ export default {
         <div class="PanelComponent-header">
           <slot name="panel-header">
             <div class="PanelComponent-titleContainer">
-              <h4 class="PanelComponent-title">{{ translatedTitle }}</h4>
+              <h4 class="PanelComponent-title" :title="translatedTitle">{{ translatedTitle }}</h4>
               <slot name="panel-header-info"></slot>
             </div>
             <span class="PanelComponent-windowControl">
@@ -266,6 +266,7 @@ export default {
   &-titleContainer {
     display: flex;
     align-items: baseline;
+    min-width: 0;
   }
 
   &-title {
@@ -275,6 +276,9 @@ export default {
     text-transform: uppercase;
     color: @gray-darker;
     margin-top: 0;
+    white-space: nowrap;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
   }
 
   &-body {
