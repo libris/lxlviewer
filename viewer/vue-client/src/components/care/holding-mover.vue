@@ -137,7 +137,10 @@ export default {
         <div class="iconCircle"><i class="fa fa-fw fa-flag"></i></div>
         <span class="header">Flagga post</span>
         <p>
-          För att kunna flytta bestånd behöver du först flagga de bibliografiska poster du önskar flytta bestånd emellan. Flaggan hittar du antingen i posten eller på kortet i sökträfflistan.
+          För att kunna flytta bestånd behöver du först flagga de bibliografiska poster du önskar flytta bestånd emellan.
+        </p>
+        <p>
+          Flaggan hittar du antingen i posten eller på kortet i sökträfflistan.
         </p>
       </div>
       <div class="HoldingMover-infoBoxColumn">
@@ -145,14 +148,16 @@ export default {
         <span class="header">Flytta bestånd</span>
         <p>
           När du har flaggat två eller fler poster kan du flytta beståndsposter som tillhör något av dina sigel.<br>
-          Du markerar helt enkelt bestånden i den avsändande posten och klickar <i>Flytta bestånd</i>.
+        </p>
+        <p>
+          Du markerar därefter bestånden i den avsändande posten och klickar <i>Flytta bestånd</i>.
         </p>
       </div>
       <div class="HoldingMover-infoBoxColumn">
         <div class="iconCircle"><i class="fa fa-fw fa-check"></i></div>
         <span class="header">Klart!</span>
         <p>
-          Svårare än så är det inte!
+          Beståndet är nu flyttat. Om du vill avflagga samtliga poster gör du det lättast under din profil.
         </p>
         <p>
           <strong>Obs!</strong> Den här instruktionsdelen försvinner när du flaggat din första post, men du kan alltid hitta informationen på vår hjälpsida.
