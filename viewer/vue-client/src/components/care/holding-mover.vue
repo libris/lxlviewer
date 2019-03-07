@@ -325,7 +325,8 @@ export default {
   }
 
   &-info {
-    margin: 20px 0 0;
+    margin: 0;
+    padding-top: 15px;
   }
 
   &-allSuccessDialog {

@@ -87,7 +87,10 @@ export default {
     selectThis(item) {
       if (item['@id'] !== this.oppositeSelected) {
         const changeObj = { [this.name]: item['@id'] };
-        this.$store.dispatch('setDirectoryCare', { ...this.directoryCare, ...changeObj });
+        this.$store.dispatch('setDirectoryCare', { ...this.directoryCare, ...changeObj })
+          .then(() => {
+            this.expanded = false;
+          });
       }
     },
     unselectThis() {
@@ -140,7 +143,8 @@ export default {
     <div class="PostPicker-label uppercaseHeading" 
       :class="{ 'has-selection' : selected}">
       {{ name | translatePhrase }}</div>
-    <div class="PostPicker-body" :class="{ 'has-selection' : selected}">
+    <div class="PostPicker-body" :class="{ 'has-selection' : selected, 'is-expanded' : expanded}">
+      <div class="PostPicker-dropdownWrapper">
       <div class="PostPicker-dropdownContainer" v-if="!selected && flaggedInstances.length > 0">
         <div class="PostPicker-toggle" 
           @click="toggleDropdown"
@@ -192,6 +196,7 @@ export default {
           <i class="fa fa-fw fa-close icon"></i>
         </span>
       </div>
+      </div>
       <slot name="info"></slot>
     </div>
   </div>
@@ -233,6 +238,10 @@ export default {
       background-color: @brand-faded;
       border-color: transparent;
     }
+
+    &.is-expanded {
+      z-index: 1;
+    }
   }
 
   &-dropdownContainer,
@@ -248,8 +257,19 @@ export default {
     padding: 15px;
   }
 
+  &-dropdownWrapper {
+    position: relative;
+    margin-bottom: 70px;
+
+    .has-selection & {
+      margin-bottom: 0;
+    }
+  }
+
   &-dropdownContainer {
     padding: 0;
+    position: absolute;
+    width: 100%;
   }
 
   &-toggle {
