@@ -140,7 +140,7 @@ export default {
           För att kunna flytta bestånd behöver du först flagga de bibliografiska poster du önskar flytta bestånd emellan.
         </p>
         <p>
-          Flaggan hittar du antingen i posten eller på kortet i sökträfflistan.
+          Flaggan hittar du i den bibliografiska posten.
         </p>
       </div>
       <div class="HoldingMover-infoBoxColumn">
