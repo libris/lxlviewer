@@ -58,8 +58,8 @@ export default {
     moveUnderline() {
       this.$nextTick(() => {
         const $activeTab = this.$el.querySelector('.is-active');
-        if ($activeTab) {
-          const $tabList = this.$refs.tablist;
+        const $tabList = this.$refs.tablist;
+        if ($activeTab && $tabList) {
           const $underline = this.$refs.underline;
           const listElements = $tabList.getElementsByTagName('li');
           let listWidth = 0;
