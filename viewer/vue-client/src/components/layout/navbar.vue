@@ -1,4 +1,6 @@
 <script>
+import { mapGetters } from 'vuex';
+import * as StringUtil from '@/utils/string';
 import UserAvatar from '@/components/shared/user-avatar';
 import TabMenu from '@/components/shared/tab-menu';
 
@@ -7,11 +9,6 @@ export default {
   data() {
     return {
       hasAvatar: true,
-      tabs: [
-        { id: 'Search', text: 'Search', link: '/search/libris' },
-        { id: 'Create new', text: 'Create new', link: '/create' },
-        { id: 'Directory care', text: 'Directory care', link: '/directory-care' }, 
-      ],
     };
   },
   components: {
@@ -19,11 +16,20 @@ export default {
     'tab-menu': TabMenu,
   },
   computed: {
-    user() {
-      return this.$store.getters.user;
-    },
-    settings() {
-      return this.$store.getters.settings;
+    ...mapGetters([
+      'userCare',
+      'settings',
+      'user',
+    ]),
+    tabs() {
+      const $directoryCareBadge = this.userCare.length === 0 ? '' : `<span class="badge badge-accent">${this.userCare.length}</badge>`;
+      const $directoryCare = `${StringUtil.getUiPhraseByLang('Directory care', this.user.settings.language)} ${$directoryCareBadge}`;
+      const tabs = [
+        { id: 'Search', text: 'Search', link: '/search/libris' },
+        { id: 'Create new', text: 'Create new', link: '/create' },
+        { id: 'Directory care', html: $directoryCare, link: '/directory-care' }, 
+      ];
+      return tabs;
     },
     environmentLabel() {
       if (this.settings.environment !== 'prod') {

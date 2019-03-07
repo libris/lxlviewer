@@ -129,6 +129,9 @@ export default {
   display: inline-block;
   margin: 0 0.25em;
   cursor: pointer;
+  .fa-flag {
+    color: @brand-accent;
+  }
 }
 
 </style>
