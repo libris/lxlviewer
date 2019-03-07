@@ -76,7 +76,7 @@ export default {
   watch: {
     userCare(newVal) {
       if (this.selected) {
-        const selectedIsFlagged = newVal.filter(item => item === this.selected['@id']);
+        const selectedIsFlagged = newVal.filter(item => item['@id'] === this.selected['@id']);
         if (selectedIsFlagged.length === 0) {
           this.unselectThis();
         }

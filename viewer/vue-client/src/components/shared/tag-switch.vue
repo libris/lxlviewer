@@ -1,18 +1,19 @@
 <script>
 /*
   Available props:
-    * documentId  - String, Which reference should be used in the list
+    * document  - The mainEntity from which to extract id and title
     * tag         - String, what tag we are operating on
 */
 import * as StringUtil from '@/utils/string';
 import { mapGetters } from 'vuex';
+import * as DisplayUtil from '@/utils/display';
 
 export default {
   name: 'tag-switch',
   props: {
-    documentId: {
-      type: String,
-      default: '',
+    document: {
+      type: Object,
+      default: () => {},
     },
     tag: {
       type: String,
@@ -36,7 +37,7 @@ export default {
       }
     },
     mark() {
-      this.$store.dispatch('mark', { tag: this.tag, documentId: this.documentId });
+      this.$store.dispatch('mark', { tag: this.tag, documentId: this.documentId, documentTitle: this.documentTitle });
     },
     unmark() {
       this.$store.dispatch('unmark', { tag: this.tag, documentId: this.documentId });
@@ -48,7 +49,23 @@ export default {
       'userStorage',
       'userCare',
       'userFavorites',
+      'settings',
+      'resources',
+      'inspector',
     ]),
+    documentId() {
+      return this.document['@id'] || '';
+    },
+    documentTitle() {
+      return DisplayUtil.getItemLabel(
+        this.document,
+        this.resources.display,
+        this.inspector.data.quoted,
+        this.resources.vocab,
+        this.settings,
+        this.resources.context,
+      );
+    },
     iconString() {
       let str = 'fa-';
       switch (this.tag) {
@@ -70,10 +87,10 @@ export default {
       let bool = false;
       switch (this.tag) {
         case 'Favorite':
-          bool = this.userFavorites.indexOf(this.documentId) >= 0;
+          bool = this.userFavorites.some(el => el['@id']) === this.documentId;
           break;
         case 'Directory care':
-          bool = this.userCare.indexOf(this.documentId) >= 0;
+          bool = this.userCare.some(el => el['@id'] === this.documentId);
           break;
         default:
           bool = false;
