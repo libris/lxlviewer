@@ -281,19 +281,34 @@ export default {
 
 .HoldingList {
   flex-basis: @directorycare-sidewidth;
+  max-width: @directorycare-sidewidth;
   padding: 0;
   display: flex;
   flex-direction: column;
+
   &-topBar {
     height: 4em;
-    padding: 20px;
+    padding: 15px;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     .btn {
       min-width: unset;
     }
+    & * {
+      margin: 5px;
+    }
+
+    & span {
+      white-space: nowrap;
+    }
+
+    @media (max-width: @screen-sm) {
+      height: auto;
+      flex-wrap: wrap;
+    }
   }
+
   &-body {
     border: solid @grey-lighter;
     border-width: 1px 0px 0px 1px;
@@ -377,6 +392,19 @@ export default {
   & .EntitySummary-title {
     font-size: 18px;
     font-size: 1.8rem;
+  }
+
+  & .EntitySummary-info {
+    word-break: break-word;
+  }
+
+  @media (max-width: @screen-sm) {
+    flex-basis: 100%;
+    max-width: 100%;
+
+    &:not(.is-sender) {
+      display: none;
+    }
   }
 }
 

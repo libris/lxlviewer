@@ -210,9 +210,9 @@ export default {
     <div class="HoldingMover-resultListContainer"
       :class="{ 'is-empty' : !anySelected}"
       v-if="flaggedInstances.length > 0">
-      <HoldingList ref="sender" name="sender" :loading="loading" :lock="loading || !bothSelected" @send="doMove" :progress="progress" />
+        <HoldingList ref="sender" name="sender" :loading="loading" :lock="loading || !bothSelected" @send="doMove" :progress="progress" />
       <div class="HoldingMover-separator"></div>
-      <HoldingList ref="reciever" :lock="true" name="reciever" />
+        <HoldingList ref="reciever" :lock="true" name="reciever" />
     </div>
     <modal-component 
       v-if="allSuccessDialog"
@@ -301,7 +301,7 @@ export default {
     margin: 80px 10px;
     
     @media (max-width: @screen-sm) {
-      margin: 20px;
+      margin: 10px;
     }
   }
 
