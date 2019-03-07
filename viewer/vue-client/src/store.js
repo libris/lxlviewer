@@ -420,8 +420,8 @@ const store = new Vuex.Store({
       const list = getters.userStorage.list;
       const ids = Object.keys(list);
       for (let i = 0; i < ids.length; i++) {
-        if (list[ids[i]].indexOf('Favorite') > -1) {
-          collection.push(ids[i]);
+        if (list[ids[i]].tags.indexOf('Favorite') > -1) {
+          collection.push({ [ids[i]]: [ids[i]].label });
         }
       }
       return collection;
@@ -431,8 +431,8 @@ const store = new Vuex.Store({
       const list = getters.userStorage.list;
       const ids = Object.keys(list);
       for (let i = 0; i < ids.length; i++) {
-        if (list[ids[i]].indexOf('Directory care') > -1) {
-          collection.push(ids[i]);
+        if (list[ids[i]].tags.indexOf('Directory care') > -1) {
+          collection.push({ '@id': ids[i], label: list[ids[i]].label });
         }
       }
       return collection;
@@ -449,12 +449,14 @@ const store = new Vuex.Store({
       const userStorage = cloneDeep(state.userStorage);
       const tag = payload.tag;
       const id = payload.documentId;
+      const label = payload.documentTitle;
       if (userStorage.list.hasOwnProperty(id)) {
-        if (userStorage.list[id].indexOf(tag) < 0) {
-          userStorage.list[id].push(tag);
+        if (userStorage.list[id].tags.indexOf(tag) < 0) {
+          userStorage.list[id].tags.push(tag);
+          userStorage.list[id].label = label;
         }
       } else {
-        userStorage.list[id] = [tag];
+        userStorage.list[id] = { tags: [tag], label };
       }
       commit('setUserStorage', userStorage);
     },
@@ -463,9 +465,9 @@ const store = new Vuex.Store({
       const tag = payload.tag;
       const id = payload.documentId;
       if (userStorage.list.hasOwnProperty(id)) {
-        if (userStorage.list[id].indexOf(tag) >= 0) {
-          userStorage.list[id].splice(userStorage.list[id].indexOf(tag), 1);
-          if (userStorage.list[id].length === 0) {
+        if (userStorage.list[id].tags.indexOf(tag) >= 0) {
+          userStorage.list[id].tags.splice(userStorage.list[id].tags.indexOf(tag), 1);
+          if (userStorage.list[id].tags.length === 0) {
             delete userStorage.list[id];
           }
         }

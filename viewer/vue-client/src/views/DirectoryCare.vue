@@ -53,18 +53,18 @@ export default {
     switchTool(id) {
       this.$router.push({ path: `/directory-care/${id}` });
     },
-    fetchOne(id) {
+    fetchOne(item) {
       return new Promise((resolve, reject) => {
-        HttpUtil.getDocument(id, 'application/json') // Should be JSON, not JSON-LD
+        HttpUtil.getDocument(item['@id'], 'application/json') // Should be JSON, not JSON-LD
           .then((responseObject) => {
             if (responseObject.status === 200) {
               resolve(responseObject.data);
             } else if (responseObject.status === 410) {
-              this.errors.removed.push(id);
-              this.$store.dispatch('unmark', { tag: 'Directory care', documentId: id });
+              this.errors.removed.push(item);
+              this.$store.dispatch('unmark', { tag: 'Directory care', documentId: item['@id'] });
               resolve();
             } else {
-              this.errors.other.push(id);
+              this.errors.other.push(item);
               resolve();
             }
           }, (error) => {
@@ -108,7 +108,7 @@ export default {
               {
                 type: 'danger',
                 message: `${StringUtil.getUiPhraseByLang('The following resources could not be retrieved', this.user.settings.language)}: 
-                ${this.errors.other.join(', ')}`, 
+                ${this.errors.other.map(el => el.label).join(', ')}`, 
               })
               .then(() => {
                 this.errors.other = [];
@@ -147,8 +147,8 @@ export default {
         <p>{{ ['The following resources could not be retrieved', 
           'because they no longer exist. They have been removed from the directory care list'] | translatePhrase }}:</p>
         <ul>
-          <li v-for="error in errors.removed" :key="error">
-            {{error}}
+          <li v-for="error in errors.removed" :key="error['@id']">
+            {{error.label}}
           </li>
         </ul>
         <div class="DirectoryCare-modalBtnContainer">
