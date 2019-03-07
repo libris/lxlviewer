@@ -187,7 +187,7 @@ export default {
         name="sender"
         opposite="reciever"
         :flaggedInstances="flaggedInstances"
-        :expand="true">
+        :expand="false">
         <p v-if="!directoryCare.sender"
           class="HoldingMover-info" 
           slot="info">
