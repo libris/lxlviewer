@@ -218,17 +218,18 @@ export default {
           <label class="SearchBar-inputLabel hidden" id="searchlabel" for="q" aria-hidden="false">
             {{"Search" | translatePhrase}}
           </label>
-          <select
-            class="SearchBar-select form-control customSelect"
-            v-if="searchPerimeter === 'libris'"
-            v-model="activeSearchParam">
-            <option 
-              v-for="prop in searchParams"
-              :key="prop.key"
-              :value="prop">
-              {{prop.key | translatePhrase}}
-            </option>
-          </select>
+          <div class="SearchBar-selectWrapper" v-if="searchPerimeter === 'libris'">
+            <select
+              class="SearchBar-select form-control customSelect"
+              v-model="activeSearchParam">
+              <option 
+                v-for="prop in searchParams"
+                :key="prop.key"
+                :value="prop">
+                {{prop.key | translatePhrase}}
+              </option>
+            </select>
+          </div>
           <input type="text"
             class="SearchBar-input customInput form-control"
             v-model="searchPhrase"
@@ -343,24 +344,44 @@ export default {
     }
   }
 
-  &-input {
-    color: @black;
-    border-width: 0px 0px 0px 1px;
-    border-radius: 0;
+  &-formGroup {
     width: 100%;
-    box-shadow: none;
-    &:focus {
-      border-right: none;
+    display: flex;
+    box-shadow: 0 1px 1px 0 rgba(0,0,0,.10), 0 1px 3px 0 rgba(0,0,0,.12), 0 2px 1px -2px rgba(0,0,0,.1)
+  }
+
+  &-selectWrapper {
+    flex: 1 0 auto;
+    border: 1px solid @grey-light;
+    border-right: 0;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+
+    & + input {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
     }
   }
 
   &-select {
-    height: auto;
+    height: 100%;
     min-width: unset;
-    width: 8em;
     box-shadow: none;
-    border: none;
     text-align-last: left;
+    border: none;
+  }
+
+  &-input {
+    min-width: 100px;
+    width: 100%;
+    color: @black;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-right: 0;
+    box-shadow: none;
+    &:focus {
+      border-right: none;
+    }
   }
 
   &-inputLabel {
@@ -369,10 +390,15 @@ export default {
   }
 
   &-clear {
-    align-self: center;
-    flex: 1 1 2%;
     position: absolute;
-    right: 110px;
+    right: 75px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+
+    @media (min-width: 768px) {
+      right: 110px;
+    }
   }
 
   &-submit {
@@ -384,14 +410,6 @@ export default {
     @media (min-width: @screen-sm) {
       min-width: 84px;
     }
-  }
-
-  &-formGroup {
-    width: 100%;
-    display: inline-block;
-    display: flex;
-    box-shadow: 0 1px 1px 0 rgba(0,0,0,.10), 0 1px 3px 0 rgba(0,0,0,.12), 0 2px 1px -2px rgba(0,0,0,.1)
-
   }
 
   &-typeLabel {

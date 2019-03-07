@@ -580,6 +580,10 @@ h1 {
     outline: 0;
     box-shadow: none;
   }
+
+  &::-ms-clear {
+    display: none; // remove cross from IE
+  }
 }
 
 // ------------ CARDS --------------
