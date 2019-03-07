@@ -125,7 +125,7 @@ export default {
       }
       return StringUtil.getUiPhraseByLang('Show instructions', this.user.settings.language);
     },
-    canSwitchInstances() {
+    anySelected() {
       return !!(this.directoryCare.sender || this.directoryCare.reciever);
     },
     bothSelected() {
@@ -196,7 +196,7 @@ export default {
       <div class="HoldingMover-separator" v-if="flaggedInstances.length > 0">
         <button class="btn btn-primary" 
           @click="switchInstances" 
-          :disabled="!canSwitchInstances"
+          :disabled="!anySelected"
           :aria-label="'Switch place' | translatePhrase">
           <i class="fa fa-fw fa-exchange"></i>
         </button>
@@ -207,7 +207,9 @@ export default {
         opposite="sender"
         :flaggedInstances="flaggedInstances"/>
     </div>
-    <div class="HoldingMover-resultListContainer" v-if="flaggedInstances.length > 0">
+    <div class="HoldingMover-resultListContainer"
+      :class="{ 'is-empty' : !anySelected}"
+      v-if="flaggedInstances.length > 0">
       <HoldingList ref="sender" name="sender" :loading="loading" :lock="loading || !bothSelected" @send="doMove" :progress="progress" />
       <div class="HoldingMover-separator"></div>
       <HoldingList ref="reciever" :lock="true" name="reciever" />
@@ -310,6 +312,12 @@ export default {
     justify-content: space-between;
     background-color: @white;
     border: 1px solid @grey-lighter;
+
+    &.is-empty {
+      background-color: unset;
+      border-color: transparent;
+      height: 30vh;
+    }
   }
   .statusItem {
     list-style: none;

@@ -229,6 +229,7 @@ export default {
   }
 
   &-body {
+    height: 100%;
     background-color: @white;
     border: 1px solid @grey-lighter;
     padding: 0 20px 20px;
