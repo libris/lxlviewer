@@ -5,6 +5,7 @@ import PostPicker from '@/components/care/post-picker';
 import HoldingList from '@/components/care/holding-list';
 import ModalComponent from '@/components/shared/modal-component';
 import * as RecordUtil from '@/utils/record';
+import * as StringUtil from '@/utils/string';
 
 export default {
   name: 'holding-mover',
@@ -25,6 +26,7 @@ export default {
       progress: {},
       allSuccessDialog: false,
       loading: false,
+      showInfoBox: false,
     };
   },
   watch: {
@@ -35,6 +37,9 @@ export default {
     },
   },
   methods: {
+    toggleInfoBox() {
+      this.showInfoBox = !this.showInfoBox;
+    },
     clearProgress() {
       this.progress = {};
     },
@@ -114,6 +119,12 @@ export default {
       'settings',
       'user',
     ]),
+    infoBoxTooltip() {
+      if (this.showInfoBox) {
+        return StringUtil.getUiPhraseByLang('Hide instructions', this.user.settings.language);   
+      }
+      return StringUtil.getUiPhraseByLang('Show instructions', this.user.settings.language);
+    },
     canSwitchInstances() {
       return !!(this.directoryCare.sender || this.directoryCare.reciever);
     },
@@ -132,7 +143,17 @@ export default {
 
 <template>
   <div class="HoldingMover">
-    <div class="HoldingMover-infoBox" v-if="flaggedInstances.length === 0">
+    <div class="HoldingMover-infoBoxToggle" v-if="flaggedInstances.length > 0">
+      <span class="icon icon--md">
+        <i v-tooltip="infoBoxTooltip" class="fa fa-fw fa-question-circle" tabindex="0" aria-haspopup="true"
+          ref="helpIcon"
+          @mouseover="infoBoxHover = true"
+          @mouseleave="infoBoxHover = false"
+          @click="toggleInfoBox"
+          @keyup.enter="toggleInfoBox"></i>
+      </span>
+    </div>
+    <div class="HoldingMover-infoBox" v-if="flaggedInstances.length === 0 || showInfoBox">
       <div class="HoldingMover-infoBoxColumn">
         <div class="iconCircle"><i class="fa fa-fw fa-flag"></i></div>
         <span class="header">Flagga post</span>
@@ -157,10 +178,7 @@ export default {
         <div class="iconCircle"><i class="fa fa-fw fa-check"></i></div>
         <span class="header">Klart!</span>
         <p>
-          Beståndet är nu flyttat. Om du vill avflagga samtliga poster gör du det lättast under din profil.
-        </p>
-        <p>
-          <strong>Obs!</strong> Den här instruktionsdelen försvinner när du flaggat din första post, men du kan alltid hitta informationen på vår hjälpsida.
+          Beståndet är nu flyttat. Om du vill avflagga samtliga poster gör du det lättast under <router-link to="/user">din profil</router-link>.
         </p>
       </div>
     </div>
@@ -214,8 +232,17 @@ export default {
 <style lang="less">
 
 .HoldingMover  {
+  &-infoBoxToggle {
+    display: block;
+    height: 0;
+    text-align: right;
+    span {
+      position: relative;
+      top: -2em;
+    }
+  }
   &-infoBox {
-    margin-top: 1em;
+    margin-bottom: 1em;
     display: flex;
     flex-direction: row;
     @media (max-width: @screen-sm) {
