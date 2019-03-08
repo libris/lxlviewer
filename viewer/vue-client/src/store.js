@@ -412,7 +412,8 @@ const store = new Vuex.Store({
       const list = getters.userStorage.list;
       const ids = Object.keys(list);
       for (let i = 0; i < ids.length; i++) {
-        if (list[ids[i]].tags.indexOf('Favorite') > -1) {
+        const listItem = list[ids[i]];
+        if (listItem.hasOwnProperty('tags') && listItem.tags.indexOf('Favorite') > -1) {  
           collection.push({ [ids[i]]: [ids[i]].label });
         }
       }
@@ -423,7 +424,8 @@ const store = new Vuex.Store({
       const list = getters.userStorage.list;
       const ids = Object.keys(list);
       for (let i = 0; i < ids.length; i++) {
-        if (list[ids[i]].tags.indexOf('Directory care') > -1) {
+        const listItem = list[ids[i]];
+        if (listItem.hasOwnProperty('tags') && listItem.tags.indexOf('Directory care') > -1) {
           collection.push({ '@id': ids[i], label: list[ids[i]].label });
         }
       }
