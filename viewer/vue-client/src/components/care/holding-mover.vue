@@ -125,7 +125,7 @@ export default {
       }
       return StringUtil.getUiPhraseByLang('Show instructions', this.user.settings.language);
     },
-    canSwitchInstances() {
+    anySelected() {
       return !!(this.directoryCare.sender || this.directoryCare.reciever);
     },
     bothSelected() {
@@ -187,7 +187,7 @@ export default {
         name="sender"
         opposite="reciever"
         :flaggedInstances="flaggedInstances"
-        :expand="true">
+        :expand="false">
         <p v-if="!directoryCare.sender"
           class="HoldingMover-info" 
           slot="info">
@@ -196,7 +196,7 @@ export default {
       <div class="HoldingMover-separator" v-if="flaggedInstances.length > 0">
         <button class="btn btn-primary" 
           @click="switchInstances" 
-          :disabled="!canSwitchInstances"
+          :disabled="!anySelected"
           :aria-label="'Switch place' | translatePhrase">
           <i class="fa fa-fw fa-exchange"></i>
         </button>
@@ -207,10 +207,12 @@ export default {
         opposite="sender"
         :flaggedInstances="flaggedInstances"/>
     </div>
-    <div class="HoldingMover-resultListContainer" v-if="flaggedInstances.length > 0">
-      <HoldingList ref="sender" name="sender" :loading="loading" :lock="loading || !bothSelected" @send="doMove" :progress="progress" />
+    <div class="HoldingMover-resultListContainer"
+      :class="{ 'is-empty' : !anySelected}"
+      v-if="flaggedInstances.length > 0">
+        <HoldingList ref="sender" name="sender" :loading="loading" :lock="loading || !bothSelected" @send="doMove" :progress="progress" />
       <div class="HoldingMover-separator"></div>
-      <HoldingList ref="reciever" :lock="true" name="reciever" />
+        <HoldingList ref="reciever" :lock="true" name="reciever" />
     </div>
     <modal-component 
       v-if="allSuccessDialog"
@@ -299,7 +301,7 @@ export default {
     margin: 80px 10px;
     
     @media (max-width: @screen-sm) {
-      margin: 20px;
+      margin: 10px;
     }
   }
 
@@ -310,6 +312,12 @@ export default {
     justify-content: space-between;
     background-color: @white;
     border: 1px solid @grey-lighter;
+
+    &.is-empty {
+      background-color: unset;
+      border-color: transparent;
+      height: 30vh;
+    }
   }
   .statusItem {
     list-style: none;
@@ -325,7 +333,8 @@ export default {
   }
 
   &-info {
-    margin: 20px 0 0;
+    margin: 0;
+    padding-top: 15px;
   }
 
   &-allSuccessDialog {
