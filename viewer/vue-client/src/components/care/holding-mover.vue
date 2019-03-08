@@ -215,12 +215,13 @@ export default {
         <HoldingList ref="reciever" :lock="true" name="reciever" />
     </div>
     <modal-component 
+      class="HoldingMover-allSuccessDialog"
       v-if="allSuccessDialog"
       width="500px"
       @close="closeModal"
       title="Move was successful" 
       modal-type="info">
-      <div slot="modal-body" class="HoldingMover-allSuccessDialog">
+      <div slot="modal-body" class="HoldingMover-allSuccessDialogBody">
         <p>{{ 'All selected holdings has been moved' | translatePhrase }}.</p>
         <p>{{ ['Do you want to unmark the sender for', 'Directory care'] | translatePhrase }}?</p>
         <div class="HoldingMover-allSuccessDialogBtnContainer">
@@ -338,6 +339,11 @@ export default {
   }
 
   &-allSuccessDialog {
+    .ModalComponent-container {
+      top: 20%;
+    }
+  }
+  &-allSuccessDialogBody {
     width: 100%;
     padding: 20px;
     text-align: center;
