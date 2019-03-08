@@ -15,9 +15,11 @@
       * id   -  Just an identifier, it is used when emitting the go-event and to match against the "active" prop.
       * text -  A fancy text for your tab, which should be in english. The component will automatically try to
                 translate this text to the users language, based on the i18n file.
+      * html -  (Optional) Raw html for the item, will replace 'text'
 
     Example tab-object:
       {'id': 'MyTab1', 'text': 'My tab text' }
+      {'id': 'MyTab1', 'html': 'My <strong>tab</strong> text' }
 
   The go-event:
     If a tab is clicked, it will emit an event with the id on the tab.
@@ -120,7 +122,8 @@ export default {
         @keyup.enter="go(item.id)"
         :class="{'is-active': active === item.id }"
         role="tab">
-          {{item.text | translatePhrase}}
+          <span v-if="item.html" v-html="item.html"></span>
+          <span v-else>{{item.text | translatePhrase}}</span>
       </li>
       <hr v-show="hasActive" class="TabMenu-underline" ref="underline">
     </ul>
@@ -130,7 +133,9 @@ export default {
         :key="item.id">
         <router-link class="TabMenu-tab" 
           :class="{'is-active': active === item.id }" 
-          :to="item.link">{{item.text | translatePhrase}}
+          :to="item.link">
+          <span v-if="item.html" v-html="item.html"></span>
+          <span v-else>{{item.text | translatePhrase}}</span>
         </router-link>
       </li>
       <hr v-show="hasActive" class="TabMenu-underline" ref="underline">
