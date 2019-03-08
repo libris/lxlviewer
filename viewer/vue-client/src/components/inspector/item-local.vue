@@ -158,10 +158,7 @@ export default {
       return this.item;
     },
     typeLabel() {
-      let label = StringUtil.getLabelByLang(this.item['@type'], this.settings.language, this.resources.vocab, this.resources.context) || this.item['@type'];
-      if (label === null) {
-        label = this.item['@type'];
-      }
+      let label = StringUtil.getLabelByLang(this.item['@type'], this.settings.language, this.resources.vocab, this.resources.context);
       return label;
     },
     isEmpty() {

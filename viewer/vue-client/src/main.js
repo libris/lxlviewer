@@ -29,7 +29,7 @@ Vue.use(VTooltip);
 Vue.use(VueClipboard);
 Vue.component('field', Field);
 
-Vue.filter('labelByLang', label => StringUtil.getLabelByLang(label, store.getters.user.settings.language, store.getters.resources.vocab, store.getters.resources.context) || label);
+Vue.filter('labelByLang', label => StringUtil.getLabelByLang(label, store.getters.user.settings.language, store.getters.resources.vocab, store.getters.resources.context));
 
 Vue.filter('asAppPath', (path) => {
   const appPaths = store.getters.settings.appPaths;

@@ -195,7 +195,7 @@ export function getLabelByLang(string, lang, vocab, context) {
   if (labelByLang && labelByLang.length > 0) {
     return labelByLang;
   }
-  return null;
+  return string;
 }
 
 function translateable(type) {
