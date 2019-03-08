@@ -117,11 +117,16 @@ export function getProperties(typeInput, level, displayDefs) {
 }
 
 /* eslint-disable no-use-before-define */
-export function getItemLabel(item, displayDefs, quoted, vocab, settings, context) {
+export function getItemLabel(item, displayDefs, quoted, vocab, settings, context, inProp = '') {
   const displayObject = getChip(item, displayDefs, quoted, vocab, settings, context);
   let rendered = StringUtil.formatLabel(displayObject).trim();
   if (item['@type'] && VocabUtil.isSubClassOf(item['@type'], 'Identifier', vocab, context)) {
-    rendered = `${item['@type']} ${rendered}`;
+    console.log("compare", item['@type'], inProp);
+    if (inProp.toLowerCase() !== item['@type'].toLowerCase()) {
+      const translatedType = StringUtil.getLabelByLang(item['@type'], settings.language, vocab, context);
+
+      rendered = `${translatedType} ${rendered}`;
+    }
   }
   return rendered;
 }
@@ -176,17 +181,18 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
 
   // Start filling the object with the selected properties
   for (let i = 0; i < properties.length; i++) {
-    if (!isObject(properties[i])) {
+    const property = properties[i];
+    if (!isObject(property)) {
       let valueOnItem = '';
-      if (properties[i] === 'created' || properties[i] === 'modified') {
-        valueOnItem = moment(item[properties[i]]).format('lll');
+      if (property === 'created' || property === 'modified') {
+        valueOnItem = moment(item[property]).format('lll');
       } else {
-        valueOnItem = getValueByLang(trueItem, properties[i], displayDefs, settings.language, context);
+        valueOnItem = getValueByLang(trueItem, property, displayDefs, settings.language, context);
       }
       if (typeof valueOnItem !== 'undefined') {
         let value = valueOnItem;
         if (isObject(value) && !isArray(value)) {
-          value = getItemLabel(value, displayDefs, quoted, vocab, settings, context);
+          value = getItemLabel(value, displayDefs, quoted, vocab, settings, context, property);
         } else if (isArray(value)) {
           const newArray = [];
           for (const arrayItem of value) {
@@ -203,10 +209,10 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
           }
           value = newArray;
         }
-        result[properties[i]] = value;
+        result[property] = value;
       } else if (properties.length < 3 && i === 0) {
-        const rangeOfMissingProp = VocabUtil.getRange(properties[i], vocab, context);
-        let propMissing = properties[i];
+        const rangeOfMissingProp = VocabUtil.getRange(property, vocab, context);
+        let propMissing = property;
         if (
           rangeOfMissingProp.length > 1
           || (rangeOfMissingProp.length === 1 && rangeOfMissingProp[0] !== 'http://www.w3.org/2000/01/rdf-schema#Literal')
@@ -218,8 +224,8 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
           settings.language,
           vocab,
           context,
-        ) || propMissing;
-        result[properties[i]] = `{${expectedClassName} saknas}`;
+        );
+        result[property] = `{${expectedClassName} saknas}`;
       }
     }
   }
@@ -274,7 +280,7 @@ export function getItemSummary(item, displayDefs, quoted, vocab, settings, conte
 
 export function getFormattedSelectOption(term, settings, vocab, context) {
   const maxLength = 43;
-  let labelByLang = StringUtil.getLabelByLang(term.id, settings.language, vocab, context) || term.id;
+  let labelByLang = StringUtil.getLabelByLang(term.id, settings.language, vocab, context);
   if (labelByLang.length > maxLength) {
     labelByLang = `${labelByLang.substr(0, maxLength - 2)}...`;
   }
