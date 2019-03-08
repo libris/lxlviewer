@@ -292,6 +292,10 @@ button {
   .btn-mixin(150px, 30px, 14px);
   padding: 0 15px;
 
+  &-icon {
+    padding: 0.25em 0.5em;
+    min-width: 0;
+  }
   @media screen and (max-width: @screen-sm-min){
     .btn--sm
   }

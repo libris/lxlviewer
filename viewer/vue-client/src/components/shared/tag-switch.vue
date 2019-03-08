@@ -120,7 +120,7 @@ export default {
 
 <template>
   <div class="TagSwitch" v-tooltip.top="tooltip" @click="toggleMark()">
-    <i :class="`fa ${iconString}`"></i>
+    <i :class="`fa fa-fw ${iconString}`"></i>
   </div>
 </template>
 

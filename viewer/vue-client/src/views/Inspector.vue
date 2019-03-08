@@ -672,7 +672,7 @@ export default {
             </div>
             <div class="Inspector-actions">
               <div class="TagContainer" v-if="recordType === 'Instance' && user.isLoggedIn && !inspector.status.isNew">
-                <tag-switch :document="inspector.data.mainEntity" :action-labels="{ on: 'Flag for', off: 'Unflag for' }" tag="Directory care" />
+                <tag-switch :document="inspector.data.mainEntity" class="btn btn--md btn--md-icon" :action-labels="{ on: 'Flag for', off: 'Unflag for' }" tag="Directory care" />
               </div>
               <reverse-relations 
                 class="Inspector-reverse" 
@@ -816,12 +816,10 @@ export default {
 }
 
 .TagContainer {
-  padding: 2px 0.75em;
-  border: 1px solid @grey-light;
-  border-radius: 0.25em;
   height: fit-content;
   align-self: flex-end;
-  margin: 9px;
+  margin-bottom: 10px;
+  margin-right: 0.25em;
 }
 
 .EmbellishFromIdModal {
