@@ -93,7 +93,7 @@ export default {
       } if (this.listContextType === 'Agent') {
         return StringUtil.getUiPhraseByLang('Contribution', this.settings.language);
       }
-      const typeLabel = StringUtil.getLabelByLang(this.listContextType, this.settings.language, this.resources.vocab, this.resources.context) || this.listContextType;
+      const typeLabel = StringUtil.getLabelByLang(this.listContextType, this.settings.language, this.resources.vocab, this.resources.context);
       return `${typeLabel} ${StringUtil.getUiPhraseByLang('Used in', this.settings.language)}`;
     },
     itemOfTitle() {

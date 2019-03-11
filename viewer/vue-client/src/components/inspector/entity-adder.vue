@@ -183,7 +183,7 @@ export default {
     },
     computedTitle() {
       const modalStr = StringUtil.getUiPhraseByLang('Add entity', this.user.settings.language);
-      const addLabelStr = StringUtil.getLabelByLang(this.addLabel, this.user.settings.language, this.resources.vocab, this.resources.context) || this.addLabel;
+      const addLabelStr = StringUtil.getLabelByLang(this.addLabel, this.user.settings.language, this.resources.vocab, this.resources.context);
       return `${modalStr} | ${addLabelStr}`;
     },
     getClassTree() {
@@ -210,7 +210,7 @@ export default {
         this.settings.language, 
         this.resources.vocab, 
         this.resources.context,
-      ) || this.addLabel;
+      );
 
       return `${addText} ${label.toLowerCase()}`;
     },

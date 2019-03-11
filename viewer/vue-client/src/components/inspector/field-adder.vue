@@ -70,7 +70,7 @@ export default {
         this.settings.language, 
         this.resources.vocab, 
         this.resources.context,
-      ) || this.entityType;
+      );
       return `${title}: ${contextString}`;
     },
     filteredResults() {
