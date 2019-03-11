@@ -241,8 +241,8 @@ export default {
     <div class="HoldingList-body">
       <div class="HoldingList-items">
         <div class="HoldingList-item" :key="index" v-for="(holding, index) in sortedHoldings">
-          <div class="HoldingList-itemIndex">{{index + 1}}</div>
           <div class="HoldingList-itemBody" :class="{ 'selected': isSelected(holding), 'newly-moved': isNewlyMoved(holding), 'is-first': index === 0 }">
+            <div class="HoldingList-itemIndex">{{index + 1}}</div>
             <div class="HoldingList-input" v-if="isSender && !lock && userHasPermission(holding) && !holdingExistsOnTarget(holding)">
               <input
                 :checked="isSelected(holding)" 
@@ -338,6 +338,7 @@ export default {
   &-itemIndex {
     padding: 0.5em;
     flex-basis: 8%;
+    color: @gray-dark;
   }
   &-itemBody {
     flex-direction: row;
