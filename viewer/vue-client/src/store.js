@@ -139,27 +139,6 @@ const store = new Vuex.Store({
         ],
       },
       propertyChains: {
-        '@type': {
-          sv: 'Typ',
-          en: 'Type',
-          facet: {
-            order: 3,
-          },
-        },
-        carrierType: {
-          sv: 'Bärartyp',
-          en: 'Carrier type',
-          facet: {
-            order: false,
-          },
-        },
-        'issuanceType': {
-          sv: 'Utgivningssätt',
-          en: 'Issuance type',
-          facet: {
-            order: false,
-          },
-        },
         'instanceOf.@type': {
           sv: 'Verkstyp',
           en: 'Type of work',
@@ -167,16 +146,9 @@ const store = new Vuex.Store({
             order: 0,
           },
         },
-        'instanceOf.contentType': {
-          sv: 'Verksinnehållstyp',
-          en: 'Content type of work',
-          facet: {
-            order: false,
-          },
-        },
-        'instanceOf.language': {
-          sv: 'Språk',
-          en: 'Language of work',
+        issuanceType: {
+          sv: 'Utgivningssätt',
+          en: 'Issuance type',
           facet: {
             order: 1,
           },
@@ -188,6 +160,42 @@ const store = new Vuex.Store({
             order: 2,
           },
         },
+        'instanceOf.language': {
+          sv: 'Språk',
+          en: 'Language of work',
+          facet: {
+            order: 3,
+          },
+        },
+        'meta.encodingLevel': {
+          sv: 'Beskrivningsnivå',
+          en: 'Encoding level',
+          facet: {
+            order: 4,
+          },
+        },
+        '@type': {
+          sv: 'Typ',
+          en: 'Type',
+          facet: {
+            order: 5,
+          },
+        },
+        carrierType: {
+          sv: 'Bärartyp',
+          en: 'Carrier type',
+          facet: {
+            order: false,
+          },
+        },
+        'instanceOf.contentType': {
+          sv: 'Verksinnehållstyp',
+          en: 'Content type of work',
+          facet: {
+            order: false,
+          },
+        },
+
       },
       sortOptions: {
         Instance: [

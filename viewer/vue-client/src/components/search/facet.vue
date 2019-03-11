@@ -87,12 +87,12 @@ export default {
   }
 
   &-badge {
-    min-width: 20px;
+    min-width: auto;
   }
 
   &-label {
     cursor: pointer;
-    margin-right: 5px;
+    margin-right: 10px;
     color: @black;
     line-height: 1.8em;
     white-space: nowrap;
