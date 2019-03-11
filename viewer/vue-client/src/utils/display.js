@@ -121,7 +121,6 @@ export function getItemLabel(item, displayDefs, quoted, vocab, settings, context
   const displayObject = getChip(item, displayDefs, quoted, vocab, settings, context);
   let rendered = StringUtil.formatLabel(displayObject).trim();
   if (item['@type'] && VocabUtil.isSubClassOf(item['@type'], 'Identifier', vocab, context)) {
-    console.log("compare", item['@type'], inProp);
     if (inProp.toLowerCase() !== item['@type'].toLowerCase()) {
       const translatedType = StringUtil.getLabelByLang(item['@type'], settings.language, vocab, context);
 
