@@ -115,7 +115,7 @@ h4 {
   display: flex;
   min-height: 100vh;
   flex-direction: column;
-  font-family: 'Open Sans';
+  font-family: @font-family-base;
 
   .fade-enter-active, .fade-leave-active {
     transition-property: opacity;
