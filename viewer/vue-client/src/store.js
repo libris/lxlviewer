@@ -41,6 +41,7 @@ const store = new Vuex.Store({
         removing: false,
         updating: false,
         isNew: false,
+        embellished: [],
       },
       validation: {
         numberOfViolations: 0,

@@ -365,6 +365,10 @@ export default {
         }
       }, 1000);
     }
+    if (this.shouldExpand) {
+      this.expand();
+      this.expandChildren = true;
+    }
     if (this.inspector.status.isNew) {
       this.expand();
     }

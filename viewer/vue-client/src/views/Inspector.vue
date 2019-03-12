@@ -297,6 +297,10 @@ export default {
           changeList: changeList,
           addToHistory: false,
         });
+        this.$store.dispatch('setInspectorStatusValue', { 
+        property: 'embellished', 
+        value: changeList,
+        });
         this.$store.dispatch('pushNotification', { 
           type: 'success', 
           message: `${changeList.length} ${StringUtil.getUiPhraseByLang('field(s) added from template', this.user.settings.language)}`, 
