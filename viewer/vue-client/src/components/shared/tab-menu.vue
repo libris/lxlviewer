@@ -7,15 +7,19 @@
   Props:
     * Tabs    - Expects an array of tab-objects
     * Active  - Expects a string that it will match against the id on the tab-object and put as active.
+    * Link    - If true, component expects tab-objects to have a link prop. 
+                It will then render a <router-link> instead of emitting an event.
 
   Tab-Objects:
     A tab object needs two things.
       * id   -  Just an identifier, it is used when emitting the go-event and to match against the "active" prop.
       * text -  A fancy text for your tab, which should be in english. The component will automatically try to
                 translate this text to the users language, based on the i18n file.
+      * html -  (Optional) Raw html for the item, will replace 'text'
 
     Example tab-object:
       {'id': 'MyTab1', 'text': 'My tab text' }
+      {'id': 'MyTab1', 'html': 'My <strong>tab</strong> text' }
 
   The go-event:
     If a tab is clicked, it will emit an event with the id on the tab.
@@ -40,6 +44,10 @@ export default {
       type: String,
       default: '',
     },
+    link: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -53,21 +61,26 @@ export default {
       this.$nextTick(() => {
         const $activeTab = this.$el.querySelector('.is-active');
         const $tabList = this.$refs.tablist;
-        const $underline = this.$refs.underline;
-        const listElements = $tabList.getElementsByTagName('li');
-        let listWidth = 0;
-        for (let i = 0; i < listElements.length; i++) {
-          listWidth += listElements[i].clientWidth;
+        if ($activeTab && $tabList) {
+          const $underline = this.$refs.underline;
+          const listElements = $tabList.getElementsByTagName('li');
+          let listWidth = 0;
+          for (let i = 0; i < listElements.length; i++) {
+            listWidth += listElements[i].clientWidth;
+          }
+          const padding = parseInt(window.getComputedStyle($activeTab).paddingLeft.replace('px', ''));
+          const left = `${parseInt((listWidth * -1) + $activeTab.offsetLeft + (padding * 2) - 4)}px`;
+          const width = `${parseInt($activeTab.clientWidth - (padding * 2))}px`;
+          $underline.style.width = width;
+          $underline.style.left = left;
         }
-        const padding = parseInt(window.getComputedStyle($activeTab).paddingLeft.replace('px', ''));
-        const left = `${parseInt((listWidth * -1) + $activeTab.offsetLeft + (padding * 2) - 4)}px`;
-        const width = `${parseInt($activeTab.clientWidth - (padding * 2))}px`;
-        $underline.style.width = width;
-        $underline.style.left = left;
       });
     },
   },
   computed: {
+    hasActive() {
+      return this.tabs.some(el => el.id === this.active);
+    },
   },
   components: {
   },
@@ -90,6 +103,9 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.moveUnderline();
+      setTimeout(() => {
+        this.moveUnderline(); // fallback to catch weird underline positions
+      }, 300);
     });
   },
 };
@@ -97,7 +113,7 @@ export default {
 
 <template>
   <div class="TabMenu">
-    <ul class="TabMenu-tabList" role="tablist" ref="tablist">
+    <ul v-if="!link" class="TabMenu-tabList" role="tablist" ref="tablist">
       <li class="TabMenu-tab"
         v-for="item in tabs" 
         tabindex="0"
@@ -106,9 +122,23 @@ export default {
         @keyup.enter="go(item.id)"
         :class="{'is-active': active === item.id }"
         role="tab">
-          {{item.text | translatePhrase}}
+          <span v-if="item.html" v-html="item.html"></span>
+          <span v-else>{{item.text | translatePhrase}}</span>
       </li>
-      <hr class="TabMenu-underline" ref="underline">
+      <hr v-show="hasActive" class="TabMenu-underline" ref="underline">
+    </ul>
+    <ul v-else class="TabMenu-tabList" ref="tablist">
+      <li v-for="item in tabs" 
+        class="TabMenu-linkContainer"
+        :key="item.id">
+        <router-link class="TabMenu-tab" 
+          :class="{'is-active': active === item.id }" 
+          :to="item.link">
+          <span v-if="item.html" v-html="item.html"></span>
+          <span v-else>{{item.text | translatePhrase}}</span>
+        </router-link>
+      </li>
+      <hr v-show="hasActive" class="TabMenu-underline" ref="underline">
     </ul>
   </div>
 </template>
@@ -139,13 +169,16 @@ export default {
     background-color: @brand-primary;
   }
 
+  &-linkContainer {
+    display: inline-block;
+  }
+
   &-tab {
     cursor: pointer;
     text-decoration: none;
     position: relative;
     display: inline-block;
     padding: 5px @tabPadding;
-    display: inline-block;
     color: @grey;
     font-weight: 600;
     font-size: 16px;
@@ -161,7 +194,9 @@ export default {
       font-size: 18px;
       font-size: 1.8rem;
     }
-    &:hover {
+
+    &:hover,
+    &:focus {
       color: @brand-primary;
       text-decoration: none;
     }
@@ -170,6 +205,5 @@ export default {
       text-decoration: none;
     }
   }
-
 }
 </style>

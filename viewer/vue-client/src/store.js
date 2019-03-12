@@ -18,6 +18,14 @@ const store = new Vuex.Store({
       context: {},
       helpDocs: null,
     },
+    directoryCare: {
+      sender: null,
+      senderHoldings: [],
+      reciever: null,
+      recieverHoldings: [],
+      selectedHoldings: [],
+      holdingsMoved: [],
+    },
     inspector: {
       breadcrumb: [],
       data: {},
@@ -55,10 +63,10 @@ const store = new Vuex.Store({
       helpSection: 'none',
       remoteDatabases: [],
     },
-    user: {
-      settings: {
-        language: 'sv',
-      },
+    user: User.getUserObject(),
+    userStorage: {
+      list: {},
+      copyClipboard: null,
     },
     settings: {
       title: 'Libris Katalogisering',
@@ -344,19 +352,19 @@ const store = new Vuex.Store({
         throw new Error(`Trying to set unknown status property "${payload.property}" on inspector. Is it defined in the store?`);
       }
     },
-    setClipboard(state, data) {
-      let copyObj;
-      if (data === null) {
-        copyObj = null;
-      } else {
-        copyObj = JSON.stringify(data);
-      }
-      state.inspector.clipboard = copyObj;
-      localStorage.setItem('copyClipboard', copyObj);
-    },
     setUser(state, userObj) {
       state.user = userObj;
       state.user.saveSettings();
+    },
+    setUserStorage(state, data) {
+      if (data) {
+        state.userStorage = data;
+      } else {
+        state.userStorage = {
+          list: {},
+          copyClipboard: null,
+        };
+      }
     },
     flushChangeHistory(state) {
       state.inspector.changeHistory = [];
@@ -395,25 +403,122 @@ const store = new Vuex.Store({
     setDisplay(state, data) {
       state.resources.display = data;
     },
+    setDirectoryCare(state, data) {
+      state.directoryCare = data;
+    },
   },
   getters: {
     inspector: state => state.inspector,
     resources: state => state.resources,
+    resourcesLoaded: state => state.resources.resourcesLoaded,
+    resourcesLoadingError: state => state.resources.loadingError,
     settings: state => state.settings,
     user: state => state.user,
+    userStorage: state => state.userStorage,
+    userFavorites: (state, getters) => {
+      const collection = [];
+      const list = getters.userStorage.list;
+      const ids = Object.keys(list);
+      for (let i = 0; i < ids.length; i++) {
+        const listItem = list[ids[i]];
+        if (listItem.hasOwnProperty('tags') && listItem.tags.indexOf('Favorite') > -1) {  
+          collection.push({ [ids[i]]: [ids[i]].label });
+        }
+      }
+      return collection;
+    },
+    userCare: (state, getters) => {
+      const collection = [];
+      const list = getters.userStorage.list;
+      const ids = Object.keys(list);
+      for (let i = 0; i < ids.length; i++) {
+        const listItem = list[ids[i]];
+        if (listItem.hasOwnProperty('tags') && listItem.tags.indexOf('Directory care') > -1) {
+          collection.push({ '@id': ids[i], label: list[ids[i]].label });
+        }
+      }
+      return collection;
+    },
     status: state => state.status,
+    directoryCare: state => state.directoryCare,
     vocab: state => state.resources.vocab,
     display: state => state.resources.display,
     forcedSetTerms: state => state.resources.forcedSetTerms,
     context: state => state.resources.context,
-    clipboard: (state) => {
-      if (state.inspector.clipboard == null) {
-        state.inspector.clipboard = localStorage.getItem('copyClipboard');
-      }
-      return JSON.parse(state.inspector.clipboard);
-    },
   },
   actions: {
+    mark({ commit, state }, payload) {
+      const userStorage = cloneDeep(state.userStorage);
+      const tag = payload.tag;
+      const id = payload.documentId;
+      const label = payload.documentTitle;
+      if (userStorage.list.hasOwnProperty(id)) {
+        if (userStorage.list[id].tags.indexOf(tag) < 0) {
+          userStorage.list[id].tags.push(tag);
+          userStorage.list[id].label = label;
+        }
+      } else {
+        userStorage.list[id] = { tags: [tag], label };
+      }
+      commit('setUserStorage', userStorage);
+    },
+    unmark({ commit, state }, payload) {
+      const userStorage = cloneDeep(state.userStorage);
+      const tag = payload.tag;
+      const id = payload.documentId;
+      if (userStorage.list.hasOwnProperty(id)) {
+        if (userStorage.list[id].tags.indexOf(tag) >= 0) {
+          userStorage.list[id].tags.splice(userStorage.list[id].tags.indexOf(tag), 1);
+          if (userStorage.list[id].tags.length === 0) {
+            delete userStorage.list[id];
+          }
+        }
+      }
+      commit('setUserStorage', userStorage);
+    },
+    purgeUserTagged({ commit, state }) {
+      const userStorage = cloneDeep(state.userStorage);
+      userStorage.list = {};
+      commit('setUserStorage', userStorage);
+    },
+    verifyUser({ commit, state }) {
+      return new Promise((resolve, reject) => {
+        if (state.user.isLoggedIn === true && state.user.hasTokenExpired() === false) {
+          return resolve();
+        }
+        const token = localStorage.getItem('at');
+        let userObj = User.getUserObject();
+        if (token !== null) {
+          const headers = new Headers();
+          const url = state.settings.authPath;
+          headers.append('Authorization', `Bearer ${token}`);
+          fetch(url, {
+            headers,
+            method: 'GET',
+          }).then(response => response.json()).then((result) => {
+            userObj = User.getUserObject(result.user);
+            userObj.token = token;
+            userObj.token_expires_at = result.expires_at;
+            commit('setUser', userObj);
+            return resolve();
+          }, (error) => {
+            localStorage.removeItem('at');
+            commit('setUser', userObj);
+            console.warn(`Authentication failed for existing token: ${error}`);
+            reject();
+          });
+        } else {
+          commit('setUser', userObj);
+          reject();
+        }
+      });
+    },
+    logoutUser({ commit, state }) {
+      const userObj = User.getUserObject();
+      localStorage.removeItem('at');
+      localStorage.removeItem('lastPath');
+      commit('setUser', userObj);
+    },
     setValidation({ commit }, payload) {
       commit('setValidation', payload);
     },
@@ -476,14 +581,11 @@ const store = new Vuex.Store({
     pushInspectorEvent({ commit }, payload) {
       commit('pushInspectorEvent', payload);
     },
-    setClipboard({ commit }, data) {
-      commit('setClipboard', data);
+    setUserStorage({ commit }, data) {
+      commit('setUserStorage', data);
     },
     setUser({ commit }, userObj) {
       commit('setUser', userObj);
-    },
-    logoutUser({ commit }) {
-      commit('logoutUser');
     },
     setSettings({ commit }, settingsObj) {
       commit('setSettings', settingsObj);
@@ -533,6 +635,9 @@ const store = new Vuex.Store({
     setDisplay({ commit }, displayJson) {
       commit('setDisplay', displayJson);
     },
+    setDirectoryCare({ commit }, obj) {
+      commit('setDirectoryCare', obj);
+    },
     setHelpDocs({ commit }, helpDocsJson) {
       commit('setHelpDocs', helpDocsJson);
     },
@@ -581,6 +686,17 @@ const store = new Vuex.Store({
       commit('setVocabProperties', vocabProperties);
     },
   },
+});
+
+store.subscribe((mutation, state) => {
+  if (mutation.type === 'setUserStorage') {
+    let userStorageTotal = JSON.parse(localStorage.getItem('userStorage'));
+    if (userStorageTotal === null) {
+      userStorageTotal = {};
+    }
+    userStorageTotal[state.user.emailHash] = mutation.payload;
+    localStorage.setItem('userStorage', JSON.stringify(userStorageTotal));
+  }
 });
 /* eslint-enable no-param-reassign */
 

@@ -9,6 +9,7 @@ import * as DisplayUtil from '@/utils/display';
 import * as RecordUtil from '@/utils/record';
 import * as md5 from 'md5';
 import EntityForm from '@/components/inspector/entity-form';
+import TagSwitch from '@/components/shared/tag-switch';
 import Toolbar from '@/components/inspector/toolbar';
 import EntityChangelog from '@/components/inspector/entity-changelog';
 import EntityHeader from '@/components/inspector/entity-header';
@@ -584,6 +585,8 @@ export default {
       'user',
       'settings',
       'status',
+      'userCare',
+      'userFavorites',
     ]),
     unsavedChanges() {
       if (this.$route.name === 'NewDocument') {
@@ -624,6 +627,7 @@ export default {
     breadcrumb: Breadcrumb,
     'marc-preview': MarcPreview,
     'tab-menu': TabMenu,
+    TagSwitch,
     'validation-summary': ValidationSummary,
   },
   mounted() {
@@ -666,11 +670,16 @@ export default {
                 </h1>
               <entity-changelog />
             </div>
-            <reverse-relations 
-              class="Inspector-reverse" 
-              :main-entity="this.inspector.data.mainEntity" 
-              v-if="!inspector.status.isNew || recordType === 'Item'"></reverse-relations>
-          </div>
+            <div class="Inspector-actions">
+              <div class="TagContainer" v-if="recordType === 'Instance' && user.isLoggedIn && !inspector.status.isNew">
+                <tag-switch :document="inspector.data.mainEntity" class="btn btn--md btn--md-icon" :action-labels="{ on: 'Flag for', off: 'Unflag for' }" tag="Directory care" />
+              </div>
+              <reverse-relations 
+                class="Inspector-reverse" 
+                :main-entity="this.inspector.data.mainEntity" 
+                v-if="!inspector.status.isNew || recordType === 'Item'"></reverse-relations>
+              </div>
+            </div>
           
           <entity-header id="main-header" 
             :full="true" 
@@ -736,6 +745,7 @@ export default {
 <style lang="less">
 
 .Inspector {
+
   &-spinner {
     margin-top: 2em;
   }
@@ -759,8 +769,17 @@ export default {
     flex: 3;
   }
 
+  &-actions {
+    display: flex;
+    height: fit-content;
+
+    @media (max-width: @screen-sm) {
+      flex-direction: row-reverse;
+      justify-content: flex-end;
+    }
+  }
+
   &-reverse {
-    flex: 1;
   }
 
   &-code {
@@ -794,6 +813,13 @@ export default {
     height: 100%;
     overflow-y: scroll;
   }
+}
+
+.TagContainer {
+  height: fit-content;
+  align-self: flex-end;
+  margin-bottom: 10px;
+  margin-right: 0.25em;
 }
 
 .EmbellishFromIdModal {

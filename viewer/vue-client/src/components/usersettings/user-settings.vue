@@ -36,13 +36,22 @@ export default {
       this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('You were logged out', this.settings.language)}!` });
       this.$router.push({ path: '/' });
     },
+    purgeTagged() {
+      this.$store.dispatch('purgeUserTagged');
+    },
   },
   computed: {
     user() {
       return this.$store.getters.user;
     },
+    userStorage() {
+      return this.$store.getters.userStorage;
+    },
     settings() {
       return this.$store.getters.settings;
+    },
+    userHasTaggedPosts() {
+      return Object.keys(this.userStorage.list).length > 0;
     },
   },
   components: {
@@ -59,7 +68,6 @@ export default {
 
 <template>
   <section class="UserSettings">
-    <h1 class="UserSettings-title mainTitle">{{'User settings' | translatePhrase}}</h1>
     <div class="UserSettings-content">
       <div class="UserSettings-info UserInfo">
         <div class="UserInfo-avatar">
@@ -81,43 +89,59 @@ export default {
         </div>
       </div>
       <div class="UserSettings-config UserConfig">
+        <h4>{{'User settings' | translatePhrase}}</h4>
         <form class="UserConfig-form">
-          <div class="UserConfig-formGroup">
-            <label for="UserConfig-sigel" class="UserConfig-label">{{"Active sigel" | translatePhrase}}</label>
-            <div class="UserConfig-selectWrap">
-              <select id="UserConfig-sigel" 
-                class="UserConfig-select customSelect" 
-                :value="user.settings.activeSigel" 
-                @change="updateSigel">
-                <option v-for="sigel in user.collections" 
-                  :key="sigel.code" 
-                  :value="sigel.code">{{ getSigelLabel(sigel, 50) }}</option>
-              </select>
-            </div>
-          </div>
-          
-          <div class="UserConfig-formGroup">
-            <label for="UserConfig-lang" class="UserConfig-label">{{"Language" | translatePhrase}}</label>
-            <div class="UserConfig-selectWrap">
-              <select id="UserConfig-lang" class="UserConfig-select customSelect" 
-                :value="user.settings.language" 
-                @change="updateLanguage">
-                <option v-for="language in settings.availableUserSettings.languages" 
-                  :key="language.value" 
-                  :value="language.value">{{ language.label | translatePhrase }}</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="UserConfig-formGroup">
-            <label for="detailsCheckbox" class="UserConfig-label UserConfig-label--checkbox"> 
-              <span class="UserConfig-span">{{"Activate debug mode" | translatePhrase}}</span>
-              <div class="UserConfig-checkboxWrap">
+          <table class="UserSettings-configTable table table-striped">
+            <tr>
+              <td class="key">
+                <label for="UserConfig-sigel">{{"Active sigel" | translatePhrase}}</label>
+              </td>
+              <td class="value">
+                  <select id="UserConfig-sigel" 
+                    class="UserConfig-select customSelect" 
+                    :value="user.settings.activeSigel" 
+                    @change="updateSigel">
+                    <option v-for="sigel in user.collections" 
+                      :key="sigel.code" 
+                      :value="sigel.code">{{ getSigelLabel(sigel, 50) }}</option>
+                  </select>
+              </td>
+            </tr>
+            <tr>
+              <td class="key">
+                <label for="UserConfig-lang">{{"Language" | translatePhrase}}</label>
+              </td>
+              <td class="value">
+                  <select id="UserConfig-lang" class="UserConfig-select customSelect" 
+                    :value="user.settings.language" 
+                    @change="updateLanguage">
+                    <option v-for="language in settings.availableUserSettings.languages" 
+                      :key="language.value" 
+                      :value="language.value">{{ language.label | translatePhrase }}</option>
+                  </select>
+              </td>
+            </tr>
+            <tr>
+              <td class="key">
+                <label for="detailsCheckbox">{{"Activate debug mode" | translatePhrase}}</label>
+              </td>
+              <td class="value">
                 <input id="detailsCheckbox" class="customCheckbox-input" type="checkbox" @change="updateAppTech" :checked="user.settings.appTech">
                 <div class="customCheckbox-icon"></div>
-              </div>
-            </label>
-          </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="key">
+                <label for="clearFlagged"> 
+                  {{ "Clear my flagged posts" | translatePhrase}}
+                </label>
+              </td>
+              <td class="value">
+                <button name="clearFlagged" v-if="userHasTaggedPosts" class="btn btn--sm btn-danger" @click.prevent="purgeTagged" @keyup.enter.prevent="purgeTagged">{{ 'Clear' | translatePhrase }}</button>
+                <span v-if="!userHasTaggedPosts" class="disabled">{{ 'Nothing flagged' | translatePhrase }}</span>
+              </td>
+            </tr>
+          </table>
 
         </form>
         <button class="btn btn-primary btn--lg UserSettings-logout" @click="logout">{{"Log out" | translatePhrase}}</button>
@@ -166,6 +190,31 @@ export default {
       width: 100%;
     }
   }
+
+  &-configTable {
+    td {
+      padding: 0.5em;
+    }
+    tr {
+      border: solid @gray-lighter;
+      border-width: 0px 0px 1px 0px;
+    }
+    .key {
+      label {
+        font-weight: normal;
+      }
+      width: 50%;
+    }
+    .value {
+      width: 50%;
+      input {
+        width: 100%;
+      }
+      select {
+        width: 100%;
+      }
+    }
+  }
 }
 
 .UserInfo {
@@ -202,7 +251,7 @@ export default {
 .UserConfig {
   &-label {
     font-weight: 500;
-    width: 40%;
+    width: 50%;
 
     &--checkbox {
       width: 100%;
@@ -210,7 +259,7 @@ export default {
   }
 
   &-selectWrap {
-    width: 60%;
+    width: 50%;
     float: right;
   }
 

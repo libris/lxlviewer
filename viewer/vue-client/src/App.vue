@@ -31,25 +31,18 @@ import Footer from '@/components/layout/footer';
 import NotificationList from '@/components/shared/notification-list';
 import GlobalMessage from '@/components/layout/global-msg';
 import VueSimpleSpinner from 'vue-simple-spinner';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'App',
   computed: {
-    inspector() {
-      return this.$store.getters.inspector;
-    },
-    user() {
-      return this.$store.getters.user;
-    },
-    status() {
-      return this.$store.getters.status;
-    },
-    resourcesLoaded() {
-      return this.$store.getters.resources.resourcesLoaded;
-    },
-    resourcesLoadingError() {
-      return this.$store.getters.resources.loadingError;
-    },
+    ...mapGetters([
+      'settings',
+      'user',
+      'resourcesLoaded',
+      'resourcesLoadingError',
+      'status',
+    ]),
   },
   watch: {
   },
@@ -235,6 +228,10 @@ button {
     background-color: fadeout(@btn-primary, 35%);
     box-shadow: none;
   }
+  &.btn-light {
+    opacity: 0.7;
+    box-shadow: none;
+  }
 }
 
 .btn-primary {
@@ -252,6 +249,19 @@ button {
   &:focus {
     color: white;
     background-color: @gray-darker;
+  }
+}
+
+.btn-light {
+  color: lighten(@black, 15%);
+  background-color: darken(@white, 5%);
+  &:focus {
+    color: lighten(@black, 15%);
+    background-color: darken(@white, 5%);
+  }
+  &:hover {
+    color: lighten(@black, 15%);
+    background-color: darken(@white, 10%);
   }
 }
 
@@ -279,9 +289,13 @@ button {
 }
 
 .btn--md {
-  .btn-mixin(150px, 30px, 16px);
+  .btn-mixin(150px, 30px, 14px);
   padding: 0 15px;
 
+  &-icon {
+    padding: 0.25em 0.5em;
+    min-width: 0;
+  }
   @media screen and (max-width: @screen-sm-min){
     .btn--sm
   }
@@ -463,8 +477,10 @@ body {
 // ------------- BADGE ----------------
 
 .badge {
-  background-color: @gray-lighter;
+  background-color: @badge-color;
+  background-color: @badge-color-transparent;
   color: @gray-darker;
+  color: @gray-darker-transparent;
 }
 
 // ---------- TYPOGRAPHY -------------
