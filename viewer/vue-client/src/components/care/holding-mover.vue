@@ -168,7 +168,7 @@ export default {
         <div class="iconCircle"><i class="fa fa-fw fa-exchange"></i></div>
         <span class="header">Flytta bestånd</span>
         <p>
-          I en flaggad post kan du flytta beståndsposter som tillhör något av dina sigel.<br>
+          När en post är flaggad kan du flytta beståndsposter som tillhör något av dina sigel.<br>
         </p>
         <p>
           Du markerar bestånden i den avsändande posten och klickar på <i>Flytta bestånd</i>.
