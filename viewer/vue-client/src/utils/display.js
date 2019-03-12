@@ -70,50 +70,63 @@ export function getLensById(id, displayDefs) {
   return {};
 }
 
-export function getProperties(typeInput, level, displayDefs) {
-  if (!typeInput || typeof typeInput === 'undefined') {
-    throw new Error('getProperties was called with an undefined type.');
+/* eslint-disable no-use-before-define */
+export function climbForLensProperties(className, displayDefinitions, vocab, settings, context, level, depth) {
+  let props = [];
+  const lensGroups = displayDefinitions.lensGroups;
+  if (lensGroups.hasOwnProperty(level) && lensGroups[level].lenses.hasOwnProperty(className)) {
+    props = lensGroups[level].lenses[className].showProperties;
+  } else {
+    const termObj = VocabUtil.getTermObject(className, vocab, context);
+    if (termObj.hasOwnProperty('subClassOf')) {
+      const ownClasses = VocabUtil.filterOwnClasses(termObj.subClassOf, context);
+      if (ownClasses.length > 0) {
+        props = getDisplayProperties(ownClasses[0]['@id'], displayDefinitions, vocab, settings, context, level, depth + 1);
+      }
+    }
   }
-  if (isObject(typeInput) && !isArray(typeInput)) {
+  return props;
+}
+
+export function getDisplayProperties(className, displayDefinitions, vocab, settings, context, inputLevel, depth = 0) {
+  if (!className || typeof className === 'undefined') {
+    throw new Error('getDisplayProperties was called with an undefined type.');
+  }
+  if (isObject(className) && !isArray(className)) {
     throw new Error(
-      'getProperties was called with an object as type parameter (should be a string or an array of strings).',
+      'getDisplayProperties was called with an object as type parameter (should be a string).',
     );
   }
-  const typeList = [].concat(typeInput);
-  for (const type of typeList) {
-    const lenses = displayDefs.lensGroups[level].lenses;
-    let props = [];
-    if (typeof lenses[type] !== 'undefined') {
-      props = lenses[type].showProperties;
-    }
-    props = [].concat(props);
-    
-    let extension = [];
-    for (let i = 0; i < props.length; i++) {
-      if (props[i] === 'fresnel:super') {
-        extension = getLensById(lenses[type]['fresnel:extends']['@id'], displayDefs).showProperties;
-        props.splice(i, 1, ...extension);
-        break;
-      }
-    }
-    props = uniq(props);
-    remove(props, x => isObject(x));
+  const cn = StringUtil.getCompactUri(className, context);
+  let level = inputLevel;
+  let props = [];
+  const lensGroups = displayDefinitions.lensGroups;
 
-    if (props.length > 0) {
-      return props;
-    } if (level === 'full') { // Try fallback to card level
-      props = getProperties(type, 'cards', displayDefs);
-    }
-    if (props.length > 0) {
-      return props;
-    } if (level === 'cards') { // Try fallback to chip level
-      props = getProperties(type, 'chips', displayDefs);
-      if (props.length > 0) {
-        return props;
-      }
+  // If we want tokens, we traverse them first, since they can "fail"
+  if (level === 'tokens') {
+    props = climbForLensProperties(cn, displayDefinitions, vocab, settings, context, level, depth);
+    if (props.length === 0 && depth === 0) {
+      // If we wanted tokens and got nothing, change level to "chips"
+      // We only want to "sidestep" if depth is 0.
+      level = 'chips';
     }
   }
-  return [];
+  // If level is not tokens 
+  if (level !== 'tokens') {
+    props = climbForLensProperties(cn, displayDefinitions, vocab, settings, context, level, depth);
+  }
+  // Add extensions
+  let extension = [];
+  for (let i = 0; i < props.length; i++) {
+    if (props[i] === 'fresnel:super') {
+      extension = getLensById(lensGroups[level].lenses[cn]['fresnel:extends']['@id'], displayDefinitions).showProperties;
+      props.splice(i, 1, ...extension);
+      break;
+    }
+  }
+  props = uniq(props);
+  remove(props, x => isObject(x));
+  return props;
 }
 
 /* eslint-disable no-use-before-define */
@@ -123,9 +136,17 @@ export function getItemLabel(item, displayDefs, quoted, vocab, settings, context
   if (item['@type'] && VocabUtil.isSubClassOf(item['@type'], 'Identifier', vocab, context)) {
     if (inProp.toLowerCase() !== item['@type'].toLowerCase()) {
       const translatedType = StringUtil.getLabelByLang(item['@type'], settings.language, vocab, context);
-
       rendered = `${translatedType} ${rendered}`;
     }
+  }
+  return rendered;
+}
+
+export function getItemToken(item, displayDefs, quoted, vocab, settings, context) {
+  const displayObject = getToken(item, displayDefs, quoted, vocab, settings, context);
+  let rendered = StringUtil.formatLabel(displayObject).trim();
+  if (item['@type'] && VocabUtil.isSubClassOf(item['@type'], 'Identifier', vocab, context)) {
+    rendered = `${item['@type']} ${rendered}`;
   }
   return rendered;
 }
@@ -146,38 +167,12 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
       return { label: StringUtil.removeDomain(trueItem['@id'], settings.removableBaseUris) };
     }
   }
-
+  if (!trueItem.hasOwnProperty('@type') || typeof trueItem['@type'] === 'undefined') {
+    return {}; // Early fail
+  }
   // Get the list of properties we want to show
-  let properties = [];
-  let usedLensType;
-  if (trueItem['@type'] && typeof trueItem['@type'] !== 'undefined') {
-    usedLensType = trueItem['@type'];
-    properties = getProperties(trueItem['@type'], level, displayDefs, settings);
-  } else {
-    return {};
-  }
-  if (properties.length === 0) { // If none were found, traverse up inheritance tree
-    const baseClasses = VocabUtil.getBaseClassesFromArray(trueItem['@type'], vocab, context);
-    for (let i = 0; i < baseClasses.length; i++) {
-      if (typeof baseClasses[i] !== 'undefined') {
-        properties = getProperties(StringUtil.getCompactUri(baseClasses[i], context), level, displayDefs, settings);
-        if (properties.length > 0) {
-          usedLensType = baseClasses[i];
-          break;
-        }
-      }
-    }
-    if (properties.length === 0) {
-      // No props found, default to Resource class and get those
-      usedLensType = 'Resource';
-      properties = getProperties('Resource', level, displayDefs, settings);
-    }
-  }
-
-  if (level === 'cards') {
-    properties = ['@type'].concat(properties);
-  }
-
+  const displayType = isArray(trueItem['@type']) ? trueItem['@type'][0] : trueItem['@type'];
+  const properties = getDisplayProperties(displayType, displayDefs, vocab, settings, context, level);
   // Start filling the object with the selected properties
   for (let i = 0; i < properties.length; i++) {
     const property = properties[i];
@@ -191,7 +186,11 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
       if (typeof valueOnItem !== 'undefined') {
         let value = valueOnItem;
         if (isObject(value) && !isArray(value)) {
-          value = getItemLabel(value, displayDefs, quoted, vocab, settings, context, property);
+          if (level === 'chips') {
+            value = getItemToken(value, displayDefs, quoted, vocab, settings, context);
+          } else {
+            value = getItemLabel(value, displayDefs, quoted, vocab, settings, context, property);
+          }
         } else if (isArray(value)) {
           const newArray = [];
           for (const arrayItem of value) {
@@ -199,7 +198,11 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
               throw new Error('getDisplayObject encountered an undefined or null item in an array.');
             }
             if (isObject(arrayItem) && (Object.keys(arrayItem).length > 1 || arrayItem[Object.keys(arrayItem)[0]] !== '')) {
-              newArray.push(getItemLabel(arrayItem, displayDefs, quoted, vocab, settings, context));
+              if (level === 'chips') {
+                newArray.push(getItemToken(arrayItem, displayDefs, quoted, vocab, settings, context));
+              } else {
+                newArray.push(getItemLabel(arrayItem, displayDefs, quoted, vocab, settings, context, property));
+              }
             } else if (arrayItem.length > 0) {
               newArray.push(arrayItem);
             } else {
@@ -229,7 +232,7 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
     }
   }
   if (isEmpty(result)) {
-    window.lxlWarning(`🏷️ DisplayObject was empty. @type was ${trueItem['@type']}. Used lens: "${usedLensType}".`, 'Item data:', trueItem);
+    window.lxlWarning(`🏷️ DisplayObject was empty. @type was ${trueItem['@type']}.`, 'Item data:', trueItem);
     result = { label: `{${StringUtil.getUiPhraseByLang('Unnamed', settings.language)}}` };
   }
   return result;
@@ -237,6 +240,10 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
 
 export function getChip(item, displayDefs, quoted, vocab, settings, context) {
   return getDisplayObject(item, 'chips', displayDefs, quoted, vocab, settings, context);
+}
+
+export function getToken(item, displayDefs, quoted, vocab, settings, context) {
+  return getDisplayObject(item, 'tokens', displayDefs, quoted, vocab, settings, context);
 }
 
 export function getCard(item, displayDefs, quoted, vocab, settings, context) {
