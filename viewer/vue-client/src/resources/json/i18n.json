@@ -300,6 +300,8 @@
     "Main title": "Huvudtitel",
     "Sender": "Avsändare",
     "Reciever": "Mottagare",
+    "sender": "avsändare",
+    "reciever": "mottagare",
     "Search favourites": "Sök bland favoriter",
     "There are no instances flagged for directory care": "Det finns inga instanser flaggade för katalogvård",
     "Holdings are moved from the sender post to the reciever post": "Från den avsändande posten flyttar du bestånd till den mottagande posten",
