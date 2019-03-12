@@ -303,9 +303,9 @@
     "Search favourites": "Sök bland favoriter",
     "There are no instances flagged for directory care": "Det finns inga instanser flaggade för katalogvård",
     "Holdings are moved from the sender post to the reciever post": "Från den avsändande posten flyttar du bestånd till den mottagande posten",
-    "Move was successful": "Flytt lyckad",
+    "Move was successful": "Flytten lyckades",
     "All selected holdings has been moved": "Alla valda bestånd har blivit flyttade",
-    "Do you want to unmark the sender for": "Vill du avflagga avsändaren för",
+    "Do you want to unmark the sender": "Vill du flagga av avsändaren",
     "Switch place": "Byt plats",
     "The following resources could not be retrieved": "Följande resurser kunde inte hämtas",
     "because they no longer exist. They have been removed from the directory care list": "eftersom de har raderats. De har tagits bort från listan för katalogvård"
