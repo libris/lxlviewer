@@ -118,6 +118,7 @@ export default {
       this.$store.dispatch('setDirectoryCare', { ...this.directoryCare, ...changeObj });
     },
     doSend() {
+      this.resetMovedStatus();
       this.$emit('send');
     },
     getStatus(holding) {
