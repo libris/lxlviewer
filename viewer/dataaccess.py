@@ -92,9 +92,14 @@ sites = {
                     "sortOrder":"desc",
                     "size":100
                 },
+                "meta.encodingLevel":{
+                    "sort":"value",
+                    "sortOrder":"desc",
+                    "size":100
+                },
                 "@type":{
-                    "sort":"key",
-                    "sortOrder":"asc",
+                    "sort":"value",
+                    "sortOrder":"desc",
                     "size":100
                 }
             }
