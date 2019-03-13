@@ -777,7 +777,7 @@
       }
     },
     "handPrintedMonographText": {
-      "label": "Äldretryck",
+      "label": "Äldre tryck",
       "description": "",
       "value": {
         "record": {
@@ -827,11 +827,6 @@
             }
           ],
           "responsibilityStatement": "",
-          "identifiedBy": [{
-            "@type": "Identifier",
-            "value": "",
-            "typeNote": ""
-          }],
           "editionStatement": "",
           "publication": [
             {
@@ -849,24 +844,6 @@
               }
             }
           ],
-          "manufacture": [{
-            "@type": "Manufacture",
-            "agent": [{
-              "@type": "Agent",
-              "label": [
-                ""
-              ]
-            }],
-            "date": [
-              ""
-            ],
-            "place": [{
-              "@type": "Place",
-              "label": [
-                ""
-              ]
-            }]
-          }],
           "mediaType": [{"@id": "https://id.kb.se/term/rda/Unmediated"}],
           "carrierType": [{"@id": "https://id.kb.se/term/rda/Volume"}],
           "extent": [{
@@ -878,32 +855,6 @@
             "@type": "Dimensions",
             "label": ""
           },
-          "seriesMembership": [
-            {
-              "@type": "SeriesMembership",
-              "inSeries": {
-                "@type": "Instance",
-                "identifiedBy": [
-                  {
-                    "@type": "ISSN",
-                    "value": ""
-                  }
-                ],
-                "instanceOf": {
-                  "@type": "Work",
-                  "hasTitle": [
-                    {
-                      "@type": "Title",
-                      "mainTitle": ""
-                    }
-                  ]
-                }
-              },
-              "marc:seriesTracingPolicy": "",
-              "seriesEnumeration": "",
-              "seriesStatement": [""]
-            }
-          ],
           "indexedIn": [
             {
               "@type": "Instance",
@@ -934,7 +885,6 @@
               ]
             }
           ],
-          "otherPhysicalFormat": [],
           "tableOfContents": [
             {
               "@type": "TableOfContents",
