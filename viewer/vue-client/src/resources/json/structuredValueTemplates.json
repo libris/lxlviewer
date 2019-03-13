@@ -326,10 +326,6 @@
     "termComponentList": [],
     "inScheme": null
   },
-  "Geographic": {
-    "@type": "Geographic",
-    "prefLabel": ""
-  },
   "GenreSubdivision": {
     "@type": "GenreSubdivision",
     "prefLabel": ""
