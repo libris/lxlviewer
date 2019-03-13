@@ -827,11 +827,6 @@
             }
           ],
           "responsibilityStatement": "",
-          "identifiedBy": [{
-            "@type": "Identifier",
-            "value": "",
-            "typeNote": ""
-          }],
           "editionStatement": "",
           "publication": [
             {
@@ -860,32 +855,6 @@
             "@type": "Dimensions",
             "label": ""
           },
-          "seriesMembership": [
-            {
-              "@type": "SeriesMembership",
-              "inSeries": {
-                "@type": "Instance",
-                "identifiedBy": [
-                  {
-                    "@type": "ISSN",
-                    "value": ""
-                  }
-                ],
-                "instanceOf": {
-                  "@type": "Work",
-                  "hasTitle": [
-                    {
-                      "@type": "Title",
-                      "mainTitle": ""
-                    }
-                  ]
-                }
-              },
-              "marc:seriesTracingPolicy": "",
-              "seriesEnumeration": "",
-              "seriesStatement": [""]
-            }
-          ],
           "indexedIn": [
             {
               "@type": "Instance",
@@ -916,7 +885,6 @@
               ]
             }
           ],
-          "otherPhysicalFormat": [],
           "tableOfContents": [
             {
               "@type": "TableOfContents",
