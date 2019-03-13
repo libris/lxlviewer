@@ -369,8 +369,14 @@ export default {
     font-size: 2rem;
     margin: 5px 0 10px;
     overflow: hidden;
-    width: 100%; 
+    width: 100%;
     position: relative;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    line-height: 1.2em;
+    max-height: 2.4em;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
 
     & .highlight {
       background-color: @brand-faded;
@@ -389,8 +395,7 @@ export default {
     }
 
     @media (min-width: 768px) {
-      line-height: 1.2em;
-      text-overflow: ellipsis;
+      display: block;
       white-space: nowrap;
       height: auto;
     }
