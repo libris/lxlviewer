@@ -258,7 +258,7 @@ export default {
     <ul class="EntitySummary-details" v-show="!isCompact">
       <li class="EntitySummary-detailsItem" 
         v-if="identifiers.length > 0">
-        <span class="EntitySummary-detailsKey EntitySummary-identifiers uppercaseHeading--bold">
+        <span class="EntitySummary-detailsKey EntitySummary-identifiers">
         {{ identifiers[0] }}</span>
         <span class="EntitySummary-detailsValue EntitySummary-identifiersInfo" 
           v-if="identifiers.length > 1"><span class="badge">+{{ identifiers.length-1 }}</span></span>
@@ -267,14 +267,14 @@ export default {
         v-show="v.length !== 0" 
         v-for="(v, k) in infoWithKeys" 
         :key="k">
-        <span v-if="isReplacedBy === ''">
-          <span  class="EntitySummary-detailsKey uppercaseHeading--bold">{{ k | labelByLang }}:</span>
+        <template v-if="isReplacedBy === ''">
+          <span  class="EntitySummary-detailsKey">{{ k | labelByLang | capitalize }}:</span>
           <span class="EntitySummary-detailsValue" v-html="v"></span>
-        </span>
-        <span v-if="isReplacedBy !== ''">
-          <span  class="EntitySummary-detailsKey uppercaseHeading--bold">Ersatt av:</span>
+        </template>
+        <template v-else>
+          <span  class="EntitySummary-detailsKey">Ersatt av:</span>
           <span class="EntitySummary-detailsValue">{{ v }}</span>
-        </span>
+        </template>
       </li>
     </ul>
   </div>
@@ -367,8 +367,7 @@ export default {
   &-title {
     font-size: 20px;
     font-size: 2rem;
-    margin: 5px 0;
-    line-height: 26px;
+    margin: 5px 0 10px;
     overflow: hidden;
     width: 100%; 
     position: relative;
@@ -390,6 +389,7 @@ export default {
     }
 
     @media (min-width: 768px) {
+      line-height: 1.2em;
       text-overflow: ellipsis;
       white-space: nowrap;
       height: auto;
@@ -408,9 +408,9 @@ export default {
 
   &-details {
     list-style-type: none;
-    margin: 0;
+    margin-left: 5px;
     padding: 0px;
-    max-height: 175px;
+    // max-height: 175px;
   }
 
   &-id {
@@ -420,16 +420,29 @@ export default {
   }
 
   &-detailsItem {
-    display: inline;
-    margin-right: 10px;
+    display: flex;
+    margin-bottom: 5px;
   }
 
   &-detailsKey {
+    flex-basis: 25%;
+    margin-right: 10px;
+    font-weight: 600;
+    word-break: break-word;
+    hyphens: auto;
   }
 
   &-detailsValue {
+    flex: 1;
     font-size: 16px;
     font-size: 1.6rem;
+    align-self: flex-end;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    line-height: 1.5em;     /* fallback */
+    max-height: 4.5em;      /* fallback */
+    -webkit-line-clamp: 3; /* number of lines to show */
   }
 
   &-icon {
