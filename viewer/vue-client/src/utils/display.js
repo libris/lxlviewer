@@ -243,7 +243,12 @@ export function getChip(item, displayDefs, quoted, vocab, settings, context) {
 }
 
 export function getToken(item, displayDefs, quoted, vocab, settings, context) {
-  return getDisplayObject(item, 'tokens', displayDefs, quoted, vocab, settings, context);
+  const tokenObj = getDisplayObject(item, 'tokens', displayDefs, quoted, vocab, settings, context);
+  let token = { rendered: '' };
+  Object.keys(tokenObj).forEach((key) => {
+    token.rendered += ` ${tokenObj[key]}`;
+  });
+  return token;
 }
 
 export function getCard(item, displayDefs, quoted, vocab, settings, context) {
