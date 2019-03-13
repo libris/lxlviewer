@@ -46,7 +46,7 @@ export default {
     },
     sortedProperties() {
       const formObj = this.formObj;
-      let propertyList = DisplayUtil.getDisplayProperties(
+      const propertyList = DisplayUtil.getDisplayProperties(
         this.formType,
         this.resources.display,
         this.resources.vocab,
