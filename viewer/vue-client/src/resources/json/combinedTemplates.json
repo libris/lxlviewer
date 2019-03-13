@@ -849,24 +849,6 @@
               }
             }
           ],
-          "manufacture": [{
-            "@type": "Manufacture",
-            "agent": [{
-              "@type": "Agent",
-              "label": [
-                ""
-              ]
-            }],
-            "date": [
-              ""
-            ],
-            "place": [{
-              "@type": "Place",
-              "label": [
-                ""
-              ]
-            }]
-          }],
           "mediaType": [{"@id": "https://id.kb.se/term/rda/Unmediated"}],
           "carrierType": [{"@id": "https://id.kb.se/term/rda/Volume"}],
           "extent": [{
