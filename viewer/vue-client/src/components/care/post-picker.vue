@@ -208,10 +208,10 @@ export default {
   flex-basis: @directorycare-sidewidth;
   max-width: @directorycare-sidewidth;
   display: flex;
-  flex: 1 1 auto;
   flex-direction: column;
 
   @media (max-width: @screen-sm) {
+    flex: 1 1 auto;
     max-width: 100%;
     width: 100%;
   }
