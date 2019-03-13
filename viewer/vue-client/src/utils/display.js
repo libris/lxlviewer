@@ -115,6 +115,10 @@ export function getDisplayProperties(className, displayDefinitions, vocab, setti
   if (level !== 'tokens') {
     props = getLensPropertiesDeep(cn, displayDefinitions, vocab, settings, context, level, depth);
   }
+  // Add @type
+  if (level === 'cards') {
+    props = ['@type'].concat(props);
+  }
   // Add extensions
   let extension = [];
   for (let i = 0; i < props.length; i++) {
@@ -146,7 +150,8 @@ export function getItemToken(item, displayDefs, quoted, vocab, settings, context
   const displayObject = getToken(item, displayDefs, quoted, vocab, settings, context);
   let rendered = StringUtil.formatLabel(displayObject).trim();
   if (item['@type'] && VocabUtil.isSubClassOf(item['@type'], 'Identifier', vocab, context)) {
-    rendered = `${item['@type']} ${rendered}`;
+    const translatedType = StringUtil.getLabelByLang(item['@type'], settings.language, vocab, context);
+    rendered = `${translatedType} ${rendered}`;
   }
   return rendered;
 }
@@ -244,7 +249,7 @@ export function getChip(item, displayDefs, quoted, vocab, settings, context) {
 
 export function getToken(item, displayDefs, quoted, vocab, settings, context) {
   const tokenObj = getDisplayObject(item, 'tokens', displayDefs, quoted, vocab, settings, context);
-  let token = { rendered: '' };
+  const token = { rendered: '' };
   Object.keys(tokenObj).forEach((key) => {
     token.rendered += ` ${tokenObj[key]}`;
   });
