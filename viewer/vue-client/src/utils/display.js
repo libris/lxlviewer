@@ -71,7 +71,7 @@ export function getLensById(id, displayDefs) {
 }
 
 /* eslint-disable no-use-before-define */
-export function climbForLensProperties(className, displayDefinitions, vocab, settings, context, level, depth) {
+export function getLensPropertiesDeep(className, displayDefinitions, vocab, settings, context, level, depth) {
   let props = [];
   const lensGroups = displayDefinitions.lensGroups;
   if (lensGroups.hasOwnProperty(level) && lensGroups[level].lenses.hasOwnProperty(className)) {
@@ -104,7 +104,7 @@ export function getDisplayProperties(className, displayDefinitions, vocab, setti
 
   // If we want tokens, we traverse them first, since they can "fail"
   if (level === 'tokens') {
-    props = climbForLensProperties(cn, displayDefinitions, vocab, settings, context, level, depth);
+    props = getLensPropertiesDeep(cn, displayDefinitions, vocab, settings, context, level, depth);
     if (props.length === 0 && depth === 0) {
       // If we wanted tokens and got nothing, change level to "chips"
       // We only want to "sidestep" if depth is 0.
@@ -113,7 +113,7 @@ export function getDisplayProperties(className, displayDefinitions, vocab, setti
   }
   // If level is not tokens 
   if (level !== 'tokens') {
-    props = climbForLensProperties(cn, displayDefinitions, vocab, settings, context, level, depth);
+    props = getLensPropertiesDeep(cn, displayDefinitions, vocab, settings, context, level, depth);
   }
   // Add extensions
   let extension = [];
