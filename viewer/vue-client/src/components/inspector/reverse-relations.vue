@@ -315,6 +315,7 @@ export default {
 
 <style lang="less">
 .ReverseRelations {
+  
   &-number {
     float: left;
     margin: 0 0 10px;
@@ -330,18 +331,17 @@ export default {
   }
 
   &-header {
-    margin-bottom: 5px;
+    margin-right: 5px;
   }
 
   &-btnContainer {
     display: flex;
-    flex-direction: column;
     align-items: center;
   }
 
   &.compact {
     display: flex;
-    flex-direction: column;
+    align-items: center;
   }
 
   &-spinner {

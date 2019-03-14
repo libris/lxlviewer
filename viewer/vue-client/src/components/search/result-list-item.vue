@@ -115,6 +115,7 @@ export default {
 .ResultItem {
   &--detailed {
     display: flex;
+    flex-direction: column;
     list-style: none;
     margin-bottom: 15px;
     padding: 15px 20px;
@@ -126,7 +127,7 @@ export default {
     & .EntitySummary {
       flex: 1;
       justify-content: start;
-      padding: 0 15px 0 0;
+      padding: 0;
       min-width: 0;
     }
 
@@ -193,11 +194,8 @@ export default {
 
   &-relationsContainer {
     display: flex;
-    flex: 0 0 80px;
-    flex-direction: column;
-    border-left: 1px solid @gray-lighter;
-    align-items: center;
-    padding-left: 10px;
+    justify-content: flex-end;
+    margin-top: 10px;
   }
 }
 

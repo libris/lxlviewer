@@ -431,6 +431,7 @@ export default {
 
   &-detailsKey {
     flex-basis: 25%;
+    min-width: 130px;
     margin-right: 10px;
     font-weight: 600;
     word-break: break-word;
@@ -448,6 +449,7 @@ export default {
     line-height: 1.5em;     /* fallback */
     max-height: 4.5em;      /* fallback */
     -webkit-line-clamp: 3; /* number of lines to show */
+    -webkit-box-orient: vertical;
   }
 
   &-icon {

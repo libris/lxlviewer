@@ -90,7 +90,7 @@ export default {
 <style lang="less">
 .RoundButton {
   position: relative;
-  margin-bottom: 10px;
+  margin: 5px;
   width: 32px;
   height: 32px;
   border-radius: 16px;
