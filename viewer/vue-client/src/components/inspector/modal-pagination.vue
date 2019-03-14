@@ -25,7 +25,7 @@ export default {
   },
   computed: {
     numberOfPages() {
-      return Math.floor(this.totalItems / this.maxPerPage) + 1;
+      return Math.ceil(this.totalItems / this.maxPerPage);
     },
     lastPageIndex() {
       return this.numberOfPages - 1;
