@@ -38,24 +38,24 @@ export default {
     filters() {
       if (typeof this.pageData.search !== 'undefined') {
         return this.pageData.search.mapping.filter((item => item.variable !== 'q'))
-        .map((item)=> {
-          let label = '';
-          if (item.hasOwnProperty('value')) { // use item value get label
-            label = item.value;
-          }
-          if (item.hasOwnProperty('object')) { // use item object[@id]...
-            const match = this.pageData.stats.sliceByDimension[item.variable].observation
-              .filter(obs => obs.object['@id'] === item.object['@id'])
-            if (match.length === 1) { // ...to look for a prefLabelByLang/labelByLang prop in stats
-              const prop = match[0].object.prefLabelByLang || match[0].object.labelByLang;
-              label = prop[this.settings.language];
-            } else label = item.object['@id'];         
-          }
-          return {
-            label,
-            up: item.up['@id']
-          }
-        })
+          .map((item) => {
+            let label = '';
+            if (item.hasOwnProperty('value')) { // use item value get label
+              label = item.value;
+            }
+            if (item.hasOwnProperty('object')) { // use item object[@id]...
+              const match = this.pageData.stats.sliceByDimension[item.variable].observation
+                .filter(obs => obs.object['@id'] === item.object['@id']);
+              if (match.length === 1) { // ...to look for a prefLabelByLang/labelByLang prop in stats
+                const prop = match[0].object.prefLabelByLang || match[0].object.labelByLang;
+                label = prop[this.settings.language];
+              } else label = item.object['@id'];         
+            }
+            return {
+              label,
+              up: item.up['@id'],
+            };
+          });
       } return [];
     },
     queryText() {
