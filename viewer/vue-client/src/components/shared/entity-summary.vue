@@ -52,7 +52,11 @@ export default {
     valueDisplayLimit: {
       default: 5,
       type: Number,
-    }, 
+    },
+    highlightStr: {
+      type: [String, Boolean], 
+      default: false,
+    },
   },
   data() {
     return {
@@ -191,6 +195,11 @@ export default {
     extractEntity() {
       this.$dispatch('extract-item');
     },
+    highlight(header) {
+      const index = header.toLowerCase().indexOf(this.highlightStr.toLowerCase());
+      const newHeader = `${header.substr(0, index)}<span class="highlight">${header.substr(index, this.highlightStr.length)}</span>${header.substr(index + this.highlightStr.length)}`;
+      return newHeader;
+    },
   },
 };
 </script>
@@ -203,16 +212,19 @@ export default {
       <span class="EntitySummary-sourceLabel" v-if="database">{{ database }}</span>
     </div>
     <div class="EntitySummary-id uppercaseHeading--light" :class="{'recently-copied': recentlyCopiedId }" @mouseover="idHover = true" @mouseout="idHover = false">
-      <i v-tooltip.top="idTooltipText" class="fa fa-copy EntitySummary-idCopyIcon" :class="{'collapsedIcon': !idHover || recentlyCopiedId }" @click="copyFnurgel">
+      <i v-tooltip.top="idTooltipText" class="fa fa-copy EntitySummary-idCopyIcon" :class="{'collapsedIcon': !idHover || recentlyCopiedId }" @click.stop="copyFnurgel">
       </i>{{ idAsFnurgel }}
     </div>
   </div>
 
   <div class="EntitySummary-info">
     <h3 class="EntitySummary-title" v-bind:class="{ 'EntitySummary-title--imported': isImport && shouldLink }">
-      
+      <span v-if="highlightStr && !shouldLink" 
+        v-html="highlight(header.join(', '))"
+        :title="header.join(', ')">
+      </span>
       <span 
-        v-if="!shouldLink" 
+        v-if="!highlightStr && !shouldLink" 
         :title="header.join(', ')">{{ header.join(', ') }}</span>
       <span
         v-if="isImport && shouldLink" 
@@ -281,7 +293,6 @@ export default {
   &-meta {
     border-width: 0px;
     display: flex;
-    margin-bottom: -0.4em;
   }
 
   &-type, &-id {
@@ -308,14 +319,18 @@ export default {
     text-align: right;
     text-transform: none;
     color: @gray-darker;
+    color: @gray-darker-transparent;
+    background-color: @badge-color;
+    background-color: @badge-color-transparent;
     transition: background-color 0.5s ease;
-    background-color: #f3f5f6;
     letter-spacing: 0.5px;
     font-weight: 400;
     padding: 0 0.75em;
     border-radius: 1em;
+
     &.recently-copied {
       background-color: @brand-success;
+      color: @white;
     }
   }
   &-idCopyIcon {
@@ -331,7 +346,6 @@ export default {
       opacity: 0;
     }
   }
-  
 
   &-sourceLabel {
     border: 1px solid;
@@ -354,6 +368,10 @@ export default {
     overflow: hidden;
     width: 100%; 
     position: relative;
+
+    & .highlight {
+      background-color: @brand-faded;
+    }
 
     .ResultList & {
       color: @brand-darker;

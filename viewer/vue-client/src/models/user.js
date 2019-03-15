@@ -13,6 +13,7 @@ export class User {
       resultListType: 'detailed',
       appTech: false,
       activeSigel: '',
+      list: {},
       language: 'sv',
       defaultDatabases: ['OCLC'],
       forceFullViewPanel: false,
@@ -27,6 +28,19 @@ export class User {
       return true;
     }
     return false;
+  }
+
+  timeLeftOnToken() {
+    if (this.token_expires_at) {
+      const now = new Date();
+      const expires = new Date(this.token_expires_at);
+      return Math.floor((expires - now) * 0.001);
+    }
+    return -1;
+  }
+
+  hasTokenExpired() {
+    return this.timeLeftOnToken() < 0;
   }
 
   loadSettings() {

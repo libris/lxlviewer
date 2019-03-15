@@ -17,6 +17,7 @@ export default {
   },
   data() {
     return {
+      helpToggled: false,
       vocabUrl: 'https://id.kb.se/vocab/',
       staticProps: { _limit: 20 },
       searchPhrase: '',
@@ -29,9 +30,6 @@ export default {
     focusSearchInput() {
       this.$refs.searchBarInput.focus();
     },
-    switchPerimeter(id) {
-      this.$router.push({ path: `/search/${id}` });
-    },
     removeTags(html) {
       let regexHtml = html.replace(/<h1.*>.*?<\/h1>/ig, '').replace(/<h2.*>.*?<\/h2>/ig, '');
       regexHtml = regexHtml.replace(/(<\/?(?:code|br|p)[^>]*>)|<[^>]+>/ig, '$1');
@@ -42,19 +40,8 @@ export default {
       html = this.removeTags(html);
       return html;
     },
-    showHelp() {
-      const helpText = document.querySelector('.js-searchHelpText');
-      helpText.parentElement.classList.add(this.activeClass);
-    },
-    hideHelp() {
-      const helpText = document.querySelector('.js-searchHelpText');
-      if (helpText.parentElement.classList.contains(this.activeClass)) {
-        helpText.parentElement.classList.remove(this.activeClass);
-      } 
-    },
     toggleHelp() {
-      const helpText = document.querySelector('.js-searchHelpText');
-      helpText.parentElement.classList.toggle(this.activeClass);
+      this.helpToggled = !this.helpToggled;
     },
     composeQuery() {
       let query = '';
@@ -75,6 +62,7 @@ export default {
       return encodeURI(query);
     },
     doSearch() {
+      this.helpToggled = false;
       this.$router.push({ path: `/search/${this.searchPerimeter}?${this.composeQuery()}` });
         
       if (this.searchPerimeter === 'remote') {
@@ -119,10 +107,19 @@ export default {
     },
   },
   computed: {
+    helpContainerBoundaryStyles() {
+      const $icon = this.$refs.helpIcon;
+      const $formGroup = this.$refs.formGroup;
+      const styles = { top: `${$icon.clientHeight + $formGroup.clientHeight + 50}px` };
+      return styles;
+    },
+    searchHelpTooltip() {
+      return StringUtil.getUiPhraseByLang('Show search help', this.user.settings.language);
+    },
     searchHelpDocs() {
       if (this.docs && this.docs.hasOwnProperty('search-01-queries')) {
         return this.transformMarkdownToHTML(this.docs['search-01-queries'].content);
-      } 
+      }
       return StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language);
     },
     docs() {
@@ -136,11 +133,12 @@ export default {
       'resources',
       'settings',
       'status',
+      'user',
     ]),
     dataSetFilters() {
       return this.settings.dataSetFilters.libris.map(term => ({
         '@id': StringUtil.getCompactUri(term, this.resources.context),
-        label: StringUtil.getLabelByLang(term, this.settings.language, this.resources.vocab, this.resources.context) || term,
+        label: StringUtil.getLabelByLang(term, this.settings.language, this.resources.vocab, this.resources.context),
       }));
     },
     hasInput() {
@@ -173,6 +171,7 @@ export default {
     searchPerimeter(newVal, oldVal) {
       if (newVal !== oldVal) {
         this.$nextTick(() => {
+          this.helpToggled = false;
           this.focusSearchInput();
         });
       }
@@ -189,41 +188,45 @@ export default {
 <template>
   <div class="SearchBar">
     <div class="SearchBar-topControl">
-      <tab-menu @go="switchPerimeter" :tabs="[
-        { 'id': 'libris', 'text': 'Libris' },
-        { 'id': 'remote', 'text': 'Other sources' },
+      <tab-menu :link="true" :tabs="[
+        { 'id': 'libris', 'text': 'Libris', link: '/search/libris'},
+        { 'id': 'remote', 'text': 'Other sources', link: '/search/remote' },
       ]" :active="searchPerimeter"></tab-menu>
-      <div  v-if="searchPerimeter === 'libris'"  class="SearchBar-help" @mouseleave="hideHelp()">
+      <div  v-if="searchPerimeter === 'libris'"  class="SearchBar-help">
         <div class="SearchBar-helpBox dropdown" >
           <span class="SearchBar-helpIcon icon icon--md">
-            <i class="fa fa-fw fa-question-circle" tabindex="0" aria-haspopup="true"
-              @mouseover="showHelp()"
-              @keyup.enter="toggleHelp()"></i>
+            <i v-tooltip="searchHelpTooltip" class="fa fa-fw fa-question-circle" tabindex="0" aria-haspopup="true"
+              ref="helpIcon"
+              @mouseover="helpHover = true"
+              @mouseleave="helpHover = false"
+              @click="toggleHelp"
+              @keyup.enter="toggleHelp"></i>
           </span>
-          <div class="SearchBar-helpContent js-searchHelpText dropdown-menu"> 
-            <strong class="SearchBar-helpTitle">Operatorer för frågespråk</strong>
-            <div v-html="searchHelpDocs"></div>
+          <div class="SearchBar-helpContainer" :style="helpContainerBoundaryStyles" v-if="helpToggled"> 
+            <strong class="SearchBar-helpTitle">Operatorer för frågespråk</strong><i v-if="helpToggled" class="fa fa-times SearchBar-closeHelp" @click="toggleHelp"></i>
+            <div class="SearchBar-helpContent" v-html="searchHelpDocs"></div>
           </div>
         </div>
       </div> 
     </div>
     <form id="searchForm" class="SearchBar-form">
       <div class="SearchBar-formContent">
-        <div class="SearchBar-formGroup form-group panel">
+        <div ref="formGroup" class="SearchBar-formGroup form-group panel">
           <label class="SearchBar-inputLabel hidden" id="searchlabel" for="q" aria-hidden="false">
             {{"Search" | translatePhrase}}
           </label>
-          <select
-            class="SearchBar-select form-control customSelect"
-            v-if="searchPerimeter === 'libris'"
-            v-model="activeSearchParam">
-            <option 
-              v-for="prop in searchParams"
-              :key="prop.key"
-              :value="prop">
-              {{prop.key | translatePhrase}}
-            </option>
-          </select>
+          <div class="SearchBar-selectWrapper" v-if="searchPerimeter === 'libris'">
+            <select
+              class="SearchBar-select form-control customSelect"
+              v-model="activeSearchParam">
+              <option 
+                v-for="prop in searchParams"
+                :key="prop.key"
+                :value="prop">
+                {{prop.key | translatePhrase}}
+              </option>
+            </select>
+          </div>
           <input type="text"
             class="SearchBar-input customInput form-control"
             v-model="searchPhrase"
@@ -293,6 +296,38 @@ export default {
     margin-left: auto;
   }
 
+  &-helpContainer {
+    position: absolute;
+    z-index: @popover-z;
+    right: 0px;
+    background-color: @neutral-color;
+    padding: 1em;
+    width: 30vw;
+    @media all and (max-width: 1300px) {
+      width: 40vw;
+    }
+    @media all and (max-width: 1100px) {
+      width: 50vw;
+    }
+    @media all and (max-width: 800px) {
+      width: 60vw;
+    }
+    max-height: 50vh;
+    overflow-y: scroll;
+    border-radius: 0.25em;
+    border: 1px solid;
+    border-color: #ccc #ccc #aaa #ccc;
+    box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.25);
+  }
+  &-closeHelp {
+    float: right;
+    cursor: pointer;
+    color: @grey;
+    &:hover {
+      color: @black;
+    }
+  }
+
   &-helpIcon {
     float: right;
     clear: right;
@@ -306,51 +341,44 @@ export default {
     }
   }
 
-  &-helpBox {
-    float: none;
-  }
-
-  &-helpContent {
-    background: @white;
-    font-size: 12px;
-    font-size: 1.2rem;
-    display: none;
-    left: auto;
-    width: 300px;
-    padding: 10px;
-    margin-top: 10px;
-    right: 0;
-    top: 2em;
-
-    .is-active & {
-      display: block;
-    }
-  }
-
-  &-helpTitle {
-    font-weight: 700;
-    font-size: 16px;
-    font-size: 1.6rem;
-  }
-
-  &-input {
-    color: @black;
-    border-width: 0px 0px 0px 1px;
-    border-radius: 0;
+  &-formGroup {
     width: 100%;
-    box-shadow: none;
-    &:focus {
-      border-right: none;
+    display: flex;
+    box-shadow: 0 1px 1px 0 rgba(0,0,0,.10), 0 1px 3px 0 rgba(0,0,0,.12), 0 2px 1px -2px rgba(0,0,0,.1)
+  }
+
+  &-selectWrapper {
+    flex: 1 0 auto;
+    border: 1px solid @grey-light;
+    border-right: 0;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+
+    & + input {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
     }
   }
 
   &-select {
-    height: auto;
+    height: 100%;
     min-width: unset;
-    width: 8em;
     box-shadow: none;
-    border: none;
     text-align-last: left;
+    border: none;
+  }
+
+  &-input {
+    min-width: 100px;
+    width: 100%;
+    color: @black;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-right: 0;
+    box-shadow: none;
+    &:focus {
+      border-right: none;
+    }
   }
 
   &-inputLabel {
@@ -359,10 +387,15 @@ export default {
   }
 
   &-clear {
-    align-self: center;
-    flex: 1 1 2%;
     position: absolute;
-    right: 110px;
+    right: 75px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+
+    @media (min-width: 768px) {
+      right: 110px;
+    }
   }
 
   &-submit {
@@ -374,14 +407,6 @@ export default {
     @media (min-width: @screen-sm) {
       min-width: 84px;
     }
-  }
-
-  &-formGroup {
-    width: 100%;
-    display: inline-block;
-    display: flex;
-    box-shadow: 0 1px 1px 0 rgba(0,0,0,.10), 0 1px 3px 0 rgba(0,0,0,.12), 0 2px 1px -2px rgba(0,0,0,.1)
-
   }
 
   &-typeLabel {

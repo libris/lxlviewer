@@ -6,6 +6,7 @@
 
   Props:
     * title         - Takes a string or an array of strings. Will try to translate into user language.
+    * width         - Width value
 
   The slots are:
     * modal-header  - If no content, will just show the "title"-prop and a close-button, explained below.
@@ -39,6 +40,10 @@ export default {
     closeable: {
       default: true,
       type: Boolean,
+    },
+    width: {
+      default: '',
+      type: String,
     },
   },
   data() {
@@ -94,7 +99,7 @@ export default {
 <template>
   <div class="ModalComponent" :class="{'is-fadedIn': fadedIn, 'is-danger': modalType === 'danger'}">
     <div class="ModalComponent-backdrop" @click="close"></div>
-    <div class="ModalComponent-container">
+    <div class="ModalComponent-container" :style="{ 'width': width }">
       <div class="ModalComponent-header">
         <slot name="modal-header">
           <header>

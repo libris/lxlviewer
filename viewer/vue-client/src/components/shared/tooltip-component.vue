@@ -144,7 +144,7 @@ export default {
     padding: 5px 7px;
     border-radius: 3px;
     text-align: center;
-    font-family: 'Open Sans', sans-serif;
+    font-family: @font-family-base;
     font-size: 14px;
     font-weight: bold;
     -webkit-text-stroke: 0;

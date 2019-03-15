@@ -84,6 +84,7 @@ export default {
       'settings',
       'user',
       'status',
+      'userStorage',
     ]),
     failedValidations() {
       const failedValidations = [];
@@ -158,10 +159,7 @@ export default {
       return this.item;
     },
     typeLabel() {
-      let label = StringUtil.getLabelByLang(this.item['@type'], this.settings.language, this.resources.vocab, this.resources.context) || this.item['@type'];
-      if (label === null) {
-        label = this.item['@type'];
-      }
+      let label = StringUtil.getLabelByLang(this.item['@type'], this.settings.language, this.resources.vocab, this.resources.context);
       return label;
     },
     isEmpty() {
@@ -355,7 +353,9 @@ export default {
       }
     },
     copyThis() {
-      this.$store.dispatch('setClipboard', this.item);
+      const userStorage = cloneDeep(this.userStorage);
+      userStorage.copyClipboard = this.item;
+      this.$store.dispatch('setUserStorage', userStorage);
       this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('Copied entity to clipboard', this.settings.language)}` });
     },
   },
@@ -374,8 +374,18 @@ export default {
     this.$store.dispatch('setValidation', { path: this.path, validates: true });
   },
   created() {
-    this.$on('collapse-item', this.collapse);
-    this.$on('expand-item', this.expand);
+    this.$on('collapse-item', () => {
+      if (this.getPath.startsWith(this.inspector.status.focus) // Only expand part of form that has focus
+          || (this.getPath.startsWith('work') && this.inspector.status.focus === 'mainEntity')) {
+        this.collapse();
+      }
+    });
+    this.$on('expand-item', () => {
+      if (this.getPath.startsWith(this.inspector.status.focus)
+          || (this.getPath.startsWith('work') && this.inspector.status.focus === 'mainEntity')) {
+        this.expand();
+      }
+    });
   },
   mounted() {
     if (this.isLastAdded) {

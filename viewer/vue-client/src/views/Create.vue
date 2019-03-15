@@ -118,8 +118,7 @@ export default {
 
 <template>
   <div class="Create" id="create-new-post">
-    <div class="panel-body">
-      <h1 class="Create-title mainTitle">{{'Create new' | translatePhrase}}</h1>
+    <div class="Create-body">
       <tab-menu @go="setCreation" :tabs="creationList" :active="selectedCreation"></tab-menu>
       <div v-if="selectedCreation !== 'File'" class="Create-cards" id="creationCardPanel">
         <creation-card
@@ -148,7 +147,6 @@ export default {
 .Create {
   &-title {
   }
-
   &-cards {
     display: flex;
     flex-wrap: wrap;

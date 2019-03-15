@@ -4,6 +4,7 @@ import PanelComponent from '@/components/shared/panel-component';
 import PanelSearchList from '@/components/search/panel-search-list';
 import ModalPagination from '@/components/inspector/modal-pagination';
 import * as StringUtil from '@/utils/string';
+import * as DisplayUtil from '@/utils/display';
 import { mapGetters } from 'vuex';
 import VueSimpleSpinner from 'vue-simple-spinner';
 
@@ -92,13 +93,11 @@ export default {
       } if (this.listContextType === 'Agent') {
         return StringUtil.getUiPhraseByLang('Contribution', this.settings.language);
       }
-      const typeLabel = StringUtil.getLabelByLang(this.listContextType, this.settings.language, this.resources.vocab, this.resources.context) || this.listContextType;
+      const typeLabel = StringUtil.getLabelByLang(this.listContextType, this.settings.language, this.resources.vocab, this.resources.context);
       return `${typeLabel} ${StringUtil.getUiPhraseByLang('Used in', this.settings.language)}`;
     },
     itemOfTitle() {
-      return this.itemOf.hasTitle[0] 
-        ? this.itemOf.hasTitle[0].mainTitle 
-        : StringUtil.getUiPhraseByLang('instance', this.settings.language);
+      return DisplayUtil.getItemLabel(this.itemOf, this.resources.display, null, this.resources.vocab, this.settings, this.resources.context);
     },
   },
   components: {

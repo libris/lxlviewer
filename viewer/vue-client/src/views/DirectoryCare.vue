@@ -1,0 +1,175 @@
+<script>
+import { mapGetters } from 'vuex';
+import { filter } from 'lodash-es';
+import * as VocabUtil from '@/utils/vocab';
+import * as HttpUtil from '@/utils/http';
+import TabMenu from '@/components/shared/tab-menu';
+import HoldingMover from '@/components/care/holding-mover';
+import ModalComponent from '@/components/shared/modal-component';
+import * as StringUtil from '@/utils/string';
+
+export default {
+  name: 'DirectoryCare',
+  components: {
+    'tab-menu': TabMenu,
+    'holding-mover': HoldingMover,
+    'modal-component': ModalComponent,
+  },
+  data() {
+    return {
+      fetchedItems: [],
+      fetchComplete: false,
+      errors: {
+        removed: [],
+        other: [],
+      },
+      tabs: [
+        { id: 'holdings', text: 'Move holdings' },
+        // { 'id': 'merge', 'text': 'Merge posts' }, 
+        // { 'id': 'remove', 'text': 'Batch remove' }, 
+      ],
+      showModal: false,
+    };
+  },
+  computed: {
+    ...mapGetters([
+      'settings',
+      'userCare',
+      'user',
+      'resources',
+    ]),
+    flaggedInstances() {
+      return filter(this.fetchedItems, o => VocabUtil.getRecordType(o['@type'], this.resources.vocab, this.resources.context) === 'Instance');
+    },
+  },
+  watch: {
+    userCare(newValue, oldValue) {
+      if (newValue !== oldValue) {
+        this.fetchAllFlagged();
+      }
+    },
+  },
+  methods: {
+    switchTool(id) {
+      this.$router.push({ path: `/directory-care/${id}` });
+    },
+    fetchOne(item) {
+      return new Promise((resolve, reject) => {
+        HttpUtil.getDocument(item['@id'], 'application/json') // Should be JSON, not JSON-LD
+          .then((responseObject) => {
+            if (responseObject.status === 200) {
+              resolve(responseObject.data);
+            } else if (responseObject.status === 410) {
+              this.errors.removed.push(item);
+              this.$store.dispatch('unmark', { tag: 'Directory care', documentId: item['@id'] });
+              resolve();
+            } else {
+              this.errors.other.push(item);
+              resolve();
+            }
+          }, (error) => {
+            reject(error);
+          });
+      });
+    },
+    fetchAllFlagged() {
+      const promiseArray = [];
+      this.userCare.forEach((item) => {
+        promiseArray.push(this.fetchOne(item));
+      });
+      Promise.all(promiseArray)
+        .then((result) => {
+          this.getMainEntities(result);
+        })
+        .catch(() => {
+          this.$store.dispatch('pushNotification',
+            { 
+              type: 'danger',
+              message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)}`, 
+            })
+            .then(() => {
+              this.allDone();
+            });
+        });
+    },
+    getMainEntities(data) {
+      this.fetchedItems = data.filter((item => !!item)).map(item => item.mainEntity);
+      this.allDone();
+    },
+    allDone() {
+      this.$store.dispatch('removeLoadingIndicator', 'Loading')
+        .then(() => {
+          this.fetchComplete = true;
+          if (this.errors.removed.length > 0) {
+            this.showModal = true;
+          }
+          if (this.errors.other.length > 0) {
+            this.$store.dispatch('pushNotification',
+              {
+                type: 'danger',
+                message: `${StringUtil.getUiPhraseByLang('The following resources could not be retrieved', this.user.settings.language)}: 
+                ${this.errors.other.map(el => el.label).join(', ')}`, 
+              })
+              .then(() => {
+                this.errors.other = [];
+              });
+          }
+        });
+    },
+    closeModal() {
+      this.showModal = false;
+      this.errors.removed = [];
+    },
+  },
+  mounted() {
+    this.$store.dispatch('pushLoadingIndicator', 'Loading');
+    this.fetchAllFlagged();
+  },
+};
+</script>
+
+<template>
+  <div class="DirectoryCare" v-if="fetchComplete">
+    <tab-menu @go="switchTool" :tabs="tabs" :active="$route.params.tool"></tab-menu>
+    <holding-mover 
+      v-if="$route.params.tool === 'holdings'"
+      :flaggedInstances="flaggedInstances"/>
+    <div class="" v-if="$route.params.tool === 'merge'">
+      <h1>merge posts</h1>
+      <!-- replace this whole div with the component -->
+    </div>
+    <modal-component 
+      v-if="showModal"
+      title="Directory care list adjusted" 
+      modal-type="info" 
+      @close="closeModal">
+      <div slot="modal-body" class="DirectoryCare-modalBody">
+        <p>{{ ['The following resources could not be retrieved', 
+          'because they no longer exist. They have been removed from the directory care list'] | translatePhrase }}:</p>
+        <ul>
+          <li v-for="error in errors.removed" :key="error['@id']">
+            {{error.label}}
+          </li>
+        </ul>
+        <div class="DirectoryCare-modalBtnContainer">
+          <button class="btn btn-primary btn--md" @click="closeModal">OK</button>
+        </div>
+      </div>
+    </modal-component>
+  </div>
+</template>
+
+<style lang="less">
+
+.DirectoryCare {
+
+  &-modalBody {
+    width: 100%;
+    padding: 20px;
+  }
+
+  &-modalBtnContainer {
+    margin-top: 20px;
+  }
+}
+</style>

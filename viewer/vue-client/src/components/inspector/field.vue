@@ -136,7 +136,7 @@ export default {
       return this.rangeFull.indexOf(this.clipboardValue['@type']) > -1;
     },
     clipboardValue() {
-      return this.clipboard;
+      return this.userStorage.copyClipboard;
     },
     isMainField() {
       return (!this.isInner && this.settings.mainFields[this.recordType] === this.fieldKey);
@@ -190,7 +190,7 @@ export default {
       'user',
       'settings',
       'status',
-      'clipboard',
+      'userStorage',
     ]),
     warnBeforeRemove() {
       return this.inspector.status.focus === 'record';
@@ -346,7 +346,9 @@ export default {
         ],
         addToHistory: true,
       });
-      this.$store.dispatch('setClipboard', null);
+      const userStorage = cloneDeep(this.userStorage);
+      userStorage.copyClipboard = null;
+      this.$store.dispatch('setUserStorage', userStorage);
     },
     actionHighlight(active, event) {
       if (active) {
@@ -373,7 +375,7 @@ export default {
     removeThis() {
       let approved = true;
       if (this.warnBeforeRemove) {
-        const confString = `${StringUtil.getUiPhraseByLang('Are you sure you want to remove the field', this.user.settings.language)} "${StringUtil.getLabelByLang(this.fieldKey, this.user.settings.language, this.resources.vocab, this.resources.context) || this.fieldKey}"?`;
+        const confString = `${StringUtil.getUiPhraseByLang('Are you sure you want to remove the field', this.user.settings.language)} "${StringUtil.getLabelByLang(this.fieldKey, this.user.settings.language, this.resources.vocab, this.resources.context)}"?`;
         approved = window.confirm(confString);
       }
       if (approved) {

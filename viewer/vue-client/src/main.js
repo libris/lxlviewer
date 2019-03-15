@@ -3,13 +3,14 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import 'whatwg-fetch';
 import Vue from 'vue';
-import Vuex from 'vuex';
+import Vuex from 'vuex'; // eslint-disable-line no-duplicate-imports
+import { mapGetters } from 'vuex'; // eslint-disable-line no-duplicate-imports
+import { each } from 'lodash-es';
 import VTooltip from 'v-tooltip';
 import PortalVue from 'portal-vue';
 import VueClipboard from 'vue-clipboard2';
 import ComboKeys from 'combokeys';
 import modernizr from 'modernizr'; // eslint-disable-line no-unused-vars
-import { each } from 'lodash-es';
 import App from './App';
 import router from './router';
 import store from './store';
@@ -17,8 +18,6 @@ import * as VocabUtil from '@/utils/vocab';
 import * as LayoutUtil from '@/utils/layout';
 import * as DisplayUtil from '@/utils/display';
 import * as StringUtil from '@/utils/string';
-import * as HttpUtil from '@/utils/http';
-import * as User from '@/models/user';
 import Field from '@/components/inspector/field';
 import KeyBindings from '@/resources/json/keybindings.json';
 
@@ -29,7 +28,7 @@ Vue.use(VTooltip);
 Vue.use(VueClipboard);
 Vue.component('field', Field);
 
-Vue.filter('labelByLang', label => StringUtil.getLabelByLang(label, store.getters.user.settings.language, store.getters.resources.vocab, store.getters.resources.context) || label);
+Vue.filter('labelByLang', label => StringUtil.getLabelByLang(label, store.getters.user.settings.language, store.getters.resources.vocab, store.getters.resources.context));
 
 Vue.filter('asAppPath', (path) => {
   const appPaths = store.getters.settings.appPaths;
@@ -57,10 +56,14 @@ Vue.filter('capitalize', (value) => {
   newValue = newValue.toString();
   return newValue.charAt(0).toUpperCase() + newValue.slice(1);
 });
+Vue.filter('lowercase', value => value.toLowerCase());
+Vue.filter('uppercase', value => value.toUpperCase());
 
 window.addEventListener('beforeunload', () => {
   const path = `${window.location.pathname.replace('/katalogisering', '')}${window.location.search}`;
-  localStorage.setItem('lastPath', path);
+  if (path.indexOf('login') < 0) {
+    localStorage.setItem('lastPath', path);
+  }
 });
 
 /* eslint-disable no-new */
@@ -69,6 +72,7 @@ new Vue({
   store,
   render: h => h(App),
   created() {
+    store.dispatch('verifyUser');
     this.initWarningFunc();
     this.fetchHelpDocs();
     store.dispatch('pushLoadingIndicator', 'Loading application');
@@ -90,6 +94,9 @@ new Vue({
     },
     'inspector.title'() {
       this.updateTitle();
+    },
+    'user.emailHash'() {
+      this.syncUserStorage();
     },
     'status.keybindState'(state) {
       // Bindings are defined in keybindings.json
@@ -116,9 +123,8 @@ new Vue({
   mounted() {
     this.$nextTick(() => {
       this.verifyConfig();
-      this.authenticate();
       window.addEventListener('focus', () => {
-        this.$store.dispatch('setClipboard', JSON.parse(localStorage.getItem('copyClipboard')));
+        this.syncUserStorage();
       });
       window.addEventListener('keydown', LayoutUtil.handleFirstTab);
       this.updateTitle();
@@ -126,56 +132,22 @@ new Vue({
     });
   },
   computed: {
-    settings() {
-      return this.$store.getters.settings;
-    },
-    user() {
-      return this.$store.getters.user;
-    },
-    inspector() {
-      return this.$store.getters.inspector;
-    },
-    status() {
-      return this.$store.getters.status;
-    },
+    ...mapGetters([
+      'settings',
+      'user',
+      'inspector',
+      'status',
+      'userStorage',
+    ]),
   },
   methods: {
-    navigateToLastPath() {
-      const lastPath = localStorage.getItem('lastPath');
-      if (
-        typeof lastPath !== 'undefined'
-        && lastPath !== '/user'
-        && lastPath !== '/login' 
-        && lastPath !== '/login/authorized'
-      ) {
-        localStorage.removeItem('lastPath');
-        this.$router.push({ path: lastPath });
-      } else {
-        this.$router.push({ path: '/' });
+    syncUserStorage() {
+      const userStorageTotal = JSON.parse(localStorage.getItem('userStorage'));
+      let userStorage = this.userStorage;
+      if (userStorageTotal !== null && userStorageTotal.hasOwnProperty(this.user.emailHash)) {
+        userStorage = userStorageTotal[this.user.emailHash];
       }
-    },
-    authenticate() {
-      if (this.$route.name === 'Authenticating') {
-        let token = StringUtil.getParamValueFromUrl(this.$route.hash, 'access_token');
-        if (token === null) {
-          token = localStorage.getItem('at');
-        }
-        if (token !== null) {
-          localStorage.setItem('at', token);
-          this.verifyUser(token, true);
-        } else {
-          this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Login failed', this.settings.language)}!` });
-          this.navigateToLastPath();
-        }
-      } else {
-        const token = localStorage.getItem('at');
-        if (token) {
-          this.verifyUser(token, false);
-        } else {
-          const userObj = User.getUserObject();
-          store.dispatch('setUser', userObj);
-        }
-      }
+      this.$store.dispatch('setUserStorage', userStorage);
     },
     injectAnalytics() {
       const analyticsString = 'var _paq=_paq||[];_paq.push(["trackPageView"]),_paq.push(["enableLinkTracking"]),function(){var e="//analytics.kb.se/";_paq.push(["setTrackerUrl",e+"matomo.php"]),_paq.push(["setSiteId","****"]);var a=document,p=a.createElement("script"),t=a.getElementsByTagName("script")[0];p.type="text/javascript",p.async=!0,p.defer=!0,p.src=e+"matomo.js",t.parentNode.insertBefore(p,t)}();';
@@ -198,22 +170,6 @@ new Vue({
         throw new Error('Missing ID path in app-config');
       }
     },
-    verifyUser(token, initial) {
-      let userObj = User.getUserObject();
-      HttpUtil.get({ url: this.settings.authPath, token }).then((result) => {
-        userObj = User.getUserObject(result.user);
-        userObj.token = token;
-        store.dispatch('setUser', userObj);
-        if (initial) {
-          this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('You were logged in', this.settings.language)}!` });
-          this.navigateToLastPath();
-        }
-      }, (error) => {
-        store.dispatch('setUser', userObj);
-        localStorage.removeItem('at');
-        console.warn(`Authentication failed: ${error}`);
-      });
-    },
     updateTitle() {
       const route = this.$route;
       let title = '';
@@ -225,31 +181,31 @@ new Vue({
           }
         }
       } else if (route.name === 'NewDocument') {
-        title += StringUtil.getUiPhraseByLang('New record', this.$store.getters.user.settings.language);
+        title += StringUtil.getUiPhraseByLang('New record', this.user.settings.language);
       } else if (route.name === 'Inspector') {
         if (this.inspector.title && this.inspector.title.length > 0) {
           title += this.inspector.title;
         } else {
-          title += StringUtil.getUiPhraseByLang('Loading document', this.$store.getters.user.settings.language);
+          title += StringUtil.getUiPhraseByLang('Loading document', this.user.settings.language);
         }
       } else {
-        title += StringUtil.getUiPhraseByLang(route.name, this.$store.getters.user.settings.language);
+        title += StringUtil.getUiPhraseByLang(route.name, this.user.settings.language);
       }
       if (route.name === 'Home' || route.name === null) {
-        title = this.$store.getters.settings.title;
+        title = this.settings.title;
       } else {
-        title += ` | ${this.$store.getters.settings.title}`;
+        title += ` | ${this.settings.title}`;
       }
       document.title = title;
     },
     initWarningFunc() {
-      if (!this.settings.environment === 'development' || navigator.userAgent.indexOf('PhantomJS') > -1) {
-        // window.lxlWarning = (...strings) => {
+      if (this.settings.environment === 'prod' || this.settings.environment === 'stg') {
+        window.lxlWarning = () => {
           
-        // };
-        // window.lxlError = (...strings) => {
+        };
+        window.lxlError = () => {
           
-        // };
+        };
         return;
       }
       window.lxlWarnStack = [];

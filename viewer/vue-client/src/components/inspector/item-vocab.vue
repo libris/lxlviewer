@@ -100,7 +100,7 @@ export default {
         this.settings.language, 
         this.resources.vocab, 
         this.resources.context,
-      ) || value);
+      ));
     },
     setInitialValue() {
       // if (this.possibleValues.indexOf(this.fieldValue) > -1) {

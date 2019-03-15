@@ -46,7 +46,7 @@ export default {
             };
             if (typeof item.object !== 'undefined') {
               if (item.variable === '@type') {
-                filterObj.label = StringUtil.getLabelByLang(item.object['@id'], this.settings.language, this.resources.vocab, this.resources.context) || item.object['@id'];
+                filterObj.label = StringUtil.getLabelByLang(item.object['@id'], this.settings.language, this.resources.vocab, this.resources.context);
               } else {
                 filterObj.label = item.object['@id'].replace('https://id.kb.se/', '');
               }
