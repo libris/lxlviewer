@@ -210,6 +210,7 @@ export default {
     },
     postControl(control) {
       // if (!this.inspector.status.updating) {
+      this.hideToolsMenu();
       this.$store.dispatch('pushInspectorEvent', { 
         name: 'post-control', 
         value: control, 
