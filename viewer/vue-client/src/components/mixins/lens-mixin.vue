@@ -34,6 +34,11 @@ export default {
       for (const key of Object.keys(this.getChip)) {
         labelArray.push(this.getChip[key]);
       }
+      labelArray.forEach((el, i) => {
+        if (Array.isArray(el) && (el.length > 1)) {
+          labelArray[i] = labelArray[i].join(', ');
+        }
+      });
       return labelArray.join(' • ');
     },
     getChip() {
