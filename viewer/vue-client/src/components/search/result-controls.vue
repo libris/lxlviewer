@@ -36,29 +36,27 @@ export default {
       return this.$store.getters.user;
     },
     filters() {
-      const filters = [];
       if (typeof this.pageData.search !== 'undefined') {
-        this.pageData.search.mapping.forEach((item) => {
-          if (item.variable !== 'q') {
-            const filterObj = {
-              label: '',
-              up: '',
-            };
-            if (typeof item.object !== 'undefined') {
-              if (item.variable === '@type') {
-                filterObj.label = StringUtil.getLabelByLang(item.object['@id'], this.settings.language, this.resources.vocab, this.resources.context);
-              } else {
-                filterObj.label = item.object['@id'].replace('https://id.kb.se/', '');
-              }
-            } else {
-              filterObj.label = item.value;
+        return this.pageData.search.mapping.filter((item => item.variable !== 'q'))
+          .map((item) => {
+            let label = '';
+            if (item.hasOwnProperty('value')) { // use item value get label
+              label = item.value;
             }
-            filterObj.up = item.up['@id'];
-            filters.push(filterObj);
-          }
-        });
-      }
-      return filters;
+            if (item.hasOwnProperty('object')) { // use item object[@id]...
+              const match = this.pageData.stats.sliceByDimension[item.variable].observation
+                .filter(obs => obs.object['@id'] === item.object['@id']);
+              if (match.length === 1) { // ...to look for a prefLabelByLang/labelByLang prop in stats
+                const prop = match[0].object.prefLabelByLang || match[0].object.labelByLang;
+                label = prop[this.settings.language];
+              } else label = item.object['@id'];         
+            }
+            return {
+              label,
+              up: item.up['@id'],
+            };
+          });
+      } return [];
     },
     queryText() {
       if (this.pageData.first) {
@@ -148,12 +146,16 @@ export default {
   <div class="ResultControls" v-if="!(!showDetails && pageData.totalItems < limit)">
     <div class="ResultControls-searchDetails" v-if="showDetails">
       <div class="ResultControls-resultDescr">
-        <p class="ResultControls-resultText" id="resultDescr">Sökning på {{ queryText }}
-          <span v-if="filters.length > 0">(filtrerat på <span v-for="(filter, index) in filters" :key="index">{{filter.label}}{{ index === (filters.length - 1) ? '' : ', ' }}</span>)</span>
-          gav {{pageData.totalItems}} träffar.
+        <p class="ResultControls-resultText" id="resultDescr">{{'Search for' | translatePhrase}} {{ queryText }}
+          <span v-if="filters.length > 0">({{ 'Filtered by' | translatePhrase | lowercase}}
+            <span v-for="(filter, index) in filters" :key="index">
+              {{ filter.label | labelByLang }}{{ index === (filters.length - 1) ? '' : ', ' }}</span>)
+          </span>
+          {{'Gave' | translatePhrase | lowercase}} {{pageData.totalItems}} {{'Hits' | translatePhrase | lowercase}}.
           <em v-if="pageData.totalItems > limit && $route.params.perimeter === 'remote'">Du har fått fler träffar än vad som kan visas, testa att göra en mer detaljerad sökning om du inte kan hitta det du letar efter.</em>
         </p>  
-        <p v-if="pageData.totalItems > limit && $route.params.perimeter != 'remote'" class="ResultControls-resultText">Visar {{ limit }} träffar per sida.</p>
+        <p v-if="pageData.totalItems > limit && $route.params.perimeter != 'remote'" class="ResultControls-resultText">
+          {{'Showing' | translatePhrase}} {{ limit }} {{['Hits', 'Per page'] | translatePhrase | lowercase}}.</p>
       </div>
       <div class="ResultControls-controlWrap" v-if="showDetails && pageData.totalItems > 0">
         <sort 
