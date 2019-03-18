@@ -304,8 +304,10 @@ export default {
       });
     },
     handleCopy() {
-      this.$parent.$emit('duplicate-item');
-      this.hideToolsMenu();
+      if (this.user.isLoggedIn) {
+        this.$parent.$emit('duplicate-item');
+        this.hideToolsMenu();
+      }
     },
   },
   computed: {
