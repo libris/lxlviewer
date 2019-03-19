@@ -143,6 +143,16 @@ export function getPosition(element) {
   return { x: xPosition, y: yPosition };
 }
 
+export function isElementInViewport(element, viewportPadding = { top: 0, right: 0, bottom: 0, left: 0 }) {
+  const rect = element.getBoundingClientRect();
+  return (
+    rect.top >= 0 + viewportPadding.top
+    && rect.left >= 0 + viewportPadding.left
+    && rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) - viewportPadding.bottom
+    && rect.right <= (window.innerWidth || document.documentElement.clientWidth) - viewportPadding.right
+  );
+}
+
 export function scrollToElement($el, duration, callback) {
   const topOfElement = getPosition($el).y;
   if (topOfElement > 0) {
@@ -154,6 +164,19 @@ export function scrollToElement($el, duration, callback) {
   } else {
     callback();
   }
+}
+
+export function ensureInViewport(element, viewportPadding = { top: 0, right: 0, bottom: 0, left: 0 }) {
+  return new Promise((resolve) => {
+    const inViewport = isElementInViewport(element, viewportPadding);
+    if (inViewport) {
+      resolve();
+    } else {
+      scrollToElement(element, 1000, () => {
+        resolve();
+      });
+    }
+  });
 }
 
 export function getOS() {
