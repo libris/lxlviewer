@@ -128,14 +128,12 @@ export default {
       if (this.isLastAdded === true) {
         const element = this.$el;
         element.classList.add('is-lastAdded');
-        LayoutUtil.scrollToElement(element, 1000, () => {
-          setTimeout(() => {
-            element.classList.remove('is-lastAdded');
-            if (this.isLastAdded) {
-              this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
-            }
-          }, 1000);
-        });
+        setTimeout(() => {
+          element.classList.remove('is-lastAdded');
+          if (this.isLastAdded) {
+            this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
+          }
+        }, 1000);
       }
     },
     initializeTextarea() {
