@@ -149,7 +149,7 @@ export default {
       return false;
     },
     addFocus() {
-      this.$refs.textarea.focus();
+      this.$refs.textarea.focus({preventScroll: true}); // Prevent scroll as we will handle this ourselves
     },
   },
   components: {
