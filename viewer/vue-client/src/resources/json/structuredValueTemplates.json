@@ -374,7 +374,7 @@
     "code": "",
     "inScheme": {
       "@id": "https://id.kb.se/term/kssb/8/",
-      "@type": "ConceptScheme",
+      "@type": "ClassificationScheme",
       "code": "kssb",
       "version": "8"
     }
