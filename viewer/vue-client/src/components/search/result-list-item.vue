@@ -5,6 +5,7 @@ import EntitySummary from '../shared/entity-summary';
 import ReverseRelations from '@/components/inspector/reverse-relations';
 import TagSwitch from '@/components/shared/tag-switch';
 import * as StringUtil from '@/utils/string';
+import * as VocabUtil from '@/utils/vocab';
 
 export default {
   name: 'result-list-item',
@@ -30,6 +31,13 @@ export default {
   computed: {
     settings() {
       return this.$store.getters.settings;
+    },
+    recordType() {
+      return VocabUtil.getRecordType(
+        this.focusData['@type'], 
+        this.resources.vocab, 
+        this.resources.context,
+      );
     },
     user() {
       return this.$store.getters.user;
@@ -82,7 +90,7 @@ export default {
     </entity-summary>
     <div class="ResultItem-bottomBar">
       <div class="ResultItem-controls">
-        <div class="ResultItem-tags" v-if="user.isLoggedIn">
+        <div class="ResultItem-tags" v-if="user.isLoggedIn && recordType === 'Instance'">
           <tag-switch :document="focusData" class="" :action-labels="{ on: 'Flag for', off: 'Unflag for' }" tag="Directory care" />
         </div>
         <span class="ResultItem-showMore" @click="showAllKeys = !showAllKeys">{{ showAllKeys ? 'Show less' : 'Show more' | translatePhrase }}</span>
