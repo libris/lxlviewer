@@ -392,13 +392,13 @@ export default {
   &-title {
     font-size: 20px;
     font-size: 2rem;
-    margin: 5px 0 10px;
+    margin: 0 0 5px;
     overflow: hidden;
     width: 100%;
     position: relative;
     text-overflow: ellipsis;
     display: -webkit-box;
-    line-height: 1.2em;
+    line-height: 1.6em;
     max-height: 2.4em;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
