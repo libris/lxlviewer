@@ -53,6 +53,14 @@ export default {
       default: false,
       type: Boolean,
     },
+    keyDisplayLimit: {
+      default: 5,
+      type: Number,
+    },
+    showAllKeys: {
+      default: false,
+      type: Boolean,
+    },
     valueDisplayLimit: {
       default: 5,
       type: Number,
@@ -118,13 +126,30 @@ export default {
     isLibrisResource() {
       return StringUtil.isLibrisResourceUri(this.focusData['@id'], this.settings);
     },
+    totalInfo() {
+      return this.getSummary.info.concat(this.getSummary.sub);
+    },
+    hasIdentifier() {
+      return this.identifiers.length !== 0;
+    },
+    keyDisplayLimitComputed() {
+      if (this.hasIdentifier) {
+        return this.keyDisplayLimit - 1;
+      } else {
+        return this.keyDisplayLimit;
+      }
+    },
     infoWithKeys() {
-      const info = this.getSummary.info.concat(this.getSummary.sub);
+      const info = this.totalInfo;
       const infoObj = {};
-      each(info, (node) => {
-        const remainder = node.value.length > this.valueDisplayLimit ? ` <span class="badge">+${node.value.length - this.valueDisplayLimit}</span>` : '';
-        const trimmed = node.value.slice(0, this.valueDisplayLimit).join(', ') + remainder;
-        infoObj[node.property] = trimmed;
+      each(info, (node, index) => {
+        if (Object.keys(infoObj).length < this.keyDisplayLimitComputed || this.showAllKeys) {
+          const remainder = node.value.length > this.valueDisplayLimit ? ` <span class="badge">+${node.value.length - this.valueDisplayLimit}</span>` : '';
+          const trimmed = node.value.slice(0, this.valueDisplayLimit).join(', ') + remainder;
+          if (trimmed.length > 0) {
+            infoObj[node.property] = trimmed;
+          }
+        }
       });
       return infoObj;
     },
@@ -268,11 +293,11 @@ export default {
         v-for="(v, k) in infoWithKeys" 
         :key="k">
         <template v-if="isReplacedBy === ''">
-          <span  class="EntitySummary-detailsKey">{{ k | labelByLang | capitalize }}:</span>
+          <span class="EntitySummary-detailsKey" :title="k | labelByLang">{{ k | labelByLang | capitalize }}</span>
           <span class="EntitySummary-detailsValue" v-html="v"></span>
         </template>
         <template v-else>
-          <span  class="EntitySummary-detailsKey">Ersatt av:</span>
+          <span  class="EntitySummary-detailsKey">Ersatt av</span>
           <span class="EntitySummary-detailsValue">{{ v }}</span>
         </template>
       </li>
@@ -288,7 +313,7 @@ export default {
   flex-direction: column;
   justify-content: space-between;
   width: 100%;
-  padding: 15px 20px;
+  padding: 0.5em 0.75em 0.5em 0.75em;
 
   .EntityHeader & {
     padding: 0;
@@ -413,7 +438,6 @@ export default {
 
   &-details {
     list-style-type: none;
-    margin-left: 5px;
     padding: 0px;
     // max-height: 175px;
   }
@@ -426,30 +450,35 @@ export default {
 
   &-detailsItem {
     display: flex;
-    margin-bottom: 5px;
+    margin-bottom: 0.25em;
+    min-width: 0;
+    font-size: 1.4rem;
+    // border: solid @gray-lighter;
+    // border-width: 0px 0px 1px 0px;
+    // &:last-child {
+    //   border: 0px;
+    // }
   }
 
   &-detailsKey {
-    flex-basis: 25%;
-    min-width: 130px;
-    margin-right: 10px;
+    flex-basis: 9em;
+    flex-grow: 1;
     font-weight: 600;
-    word-break: break-word;
-    hyphens: auto;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    margin-right: 2%;
   }
 
   &-detailsValue {
-    flex: 1;
-    font-size: 16px;
-    font-size: 1.6rem;
+    flex-basis: 75%;
+    flex-grow: 2;
+    white-space: nowrap;
     align-self: flex-end;
     overflow: hidden;
     text-overflow: ellipsis;
-    display: -webkit-box;
     line-height: 1.5em;     /* fallback */
     max-height: 4.5em;      /* fallback */
-    -webkit-line-clamp: 3; /* number of lines to show */
-    -webkit-box-orient: vertical;
   }
 
   &-icon {

@@ -3,6 +3,7 @@ import LensMixin from '../mixins/lens-mixin';
 import ResultMixin from '../mixins/result-mixin';
 import EntitySummary from '../shared/entity-summary';
 import ReverseRelations from '@/components/inspector/reverse-relations';
+import TagSwitch from '@/components/shared/tag-switch';
 import * as StringUtil from '@/utils/string';
 
 export default {
@@ -23,6 +24,7 @@ export default {
   data() {
     return {
       keyword: '',
+      showAllKeys: false,
     };
   },
   computed: {
@@ -55,6 +57,7 @@ export default {
   methods: {
   },
   components: {
+    TagSwitch,
     'entity-summary': EntitySummary,
     'reverse-relations': ReverseRelations,
   },
@@ -72,16 +75,25 @@ export default {
       :router-path="focusData['@id'] | asFnurgelLink" 
       :is-import="isImport" 
       :import-item="importItem" 
+      :show-all-keys="showAllKeys"
       :add-link="true" 
       @import-this="importThis()"
       :valueDisplayLimit=3>
     </entity-summary>
-    <div class="ResultItem-relationsContainer"
-      v-if="this.$route.params.perimeter !== 'remote'">
-      <reverse-relations 
-        :main-entity="focusData" 
-        :compact=true>
-      </reverse-relations>
+    <div class="ResultItem-bottomBar">
+      <div class="ResultItem-controls">
+        <div class="ResultItem-tags" v-if="user.isLoggedIn">
+          <tag-switch :document="focusData" class="" :action-labels="{ on: 'Flag for', off: 'Unflag for' }" tag="Directory care" />
+        </div>
+        <span class="ResultItem-showMore" @click="showAllKeys = !showAllKeys">{{ showAllKeys ? 'Show less' : 'Show more' | translatePhrase }}</span>
+      </div>
+      <div class="ResultItem-relationsContainer"
+        v-if="this.$route.params.perimeter !== 'remote'">
+        <reverse-relations 
+          :main-entity="focusData" 
+          :compact=true>
+        </reverse-relations>
+      </div>
     </div>
   </li>
   <li class="ResultItem ResultItem--compact" v-else-if="!showDetailed">
@@ -118,7 +130,7 @@ export default {
     flex-direction: column;
     list-style: none;
     margin-bottom: 15px;
-    padding: 15px 20px;
+    padding: 0.5em 1em 0.25em 1em;
     background-color: @white;
     border: 1px solid @gray-lighter;
     transform: translateX(0);
@@ -192,10 +204,30 @@ export default {
     text-overflow: ellipsis;
   }
 
+  &-bottomBar {
+    justify-content: space-between;
+    display: flex;
+  }
+
+  &-controls {
+    display: flex;
+    flex-basis: 50%;
+    align-items: center;
+  }
+  &-showMore {
+    font-weight: 600;
+    font-size: 1.4rem;
+    cursor: pointer;
+    color: @link-color;
+  }
+  &-tags {
+    flex-basis: 9em;
+    margin-right: 1em;
+  }
+
   &-relationsContainer {
     display: flex;
     justify-content: flex-end;
-    margin-top: 10px;
   }
 }
 
