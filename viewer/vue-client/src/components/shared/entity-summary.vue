@@ -1,5 +1,5 @@
 <script>
-import { each } from 'lodash-es';
+import { each, isArray } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import LensMixin from '../mixins/lens-mixin';
 import * as StringUtil from '@/utils/string';
@@ -97,6 +97,9 @@ export default {
       const cleaned = id.replace('https://', '').replace('http://', '');
       return cleaned;
     },
+    hiddenDetailsNumber() {
+      return this.totalInfo.length - this.keyDisplayLimit;
+    },
     idTooltipText() {
       return StringUtil.getUiPhraseByLang('Copy ID', this.user.settings.language);
     },
@@ -127,25 +130,23 @@ export default {
       return StringUtil.isLibrisResourceUri(this.focusData['@id'], this.settings);
     },
     totalInfo() {
-      return this.getSummary.info.concat(this.getSummary.sub);
-    },
-    hasIdentifier() {
-      return this.identifiers.length !== 0;
-    },
-    keyDisplayLimitComputed() {
-      if (this.hasIdentifier) {
-        return this.keyDisplayLimit - 1;
-      } else {
-        return this.keyDisplayLimit;
-      }
+      const total = this.getSummary.info.concat(this.getSummary.sub);
+      return total.filter(prop => {
+        if (isArray(prop.value)) {
+          return prop.value.join('').length > 0;
+        } else {
+          return prop.value.length > 0;
+        }
+      });
     },
     infoWithKeys() {
       const info = this.totalInfo;
       const infoObj = {};
       each(info, (node, index) => {
-        if (Object.keys(infoObj).length < this.keyDisplayLimitComputed || this.showAllKeys) {
-          const remainder = node.value.length > this.valueDisplayLimit ? ` <span class="badge">+${node.value.length - this.valueDisplayLimit}</span>` : '';
-          const trimmed = node.value.slice(0, this.valueDisplayLimit).join(', ') + remainder;
+        if (Object.keys(infoObj).length < this.keyDisplayLimit || this.showAllKeys) {
+          const limit = node.property === 'identifiedBy' ? 1 : this.valueDisplayLimit;
+          const remainder = node.value.length > limit ? ` <span class="badge">+${node.value.length - limit}</span>` : '';
+          const trimmed = node.value.slice(0, limit).join(', ') + remainder;
           if (trimmed.length > 0) {
             infoObj[node.property] = trimmed;
           }
@@ -192,6 +193,11 @@ export default {
       ));
       return allThings;
     },
+  },
+  mounted() {
+    this.$nextTick(() => {
+      this.$emit('hiddenDetailsNumber', this.hiddenDetailsNumber);
+    });
   },
   methods: {
     copyFnurgel() {
@@ -375,17 +381,13 @@ export default {
 
   &-title {
     font-size: 1.8rem;
-    margin: 0 0 5px;
+    margin: 0;
     overflow: hidden;
     width: 100%;
     position: relative;
     text-overflow: ellipsis;
     display: -webkit-box;
     line-height: 1.6em;
-    &.showAll {
-      overflow: visible;
-      white-space: unset;
-    }
 
     & .highlight {
       background-color: @brand-faded;
@@ -436,18 +438,14 @@ export default {
     display: flex;
     min-width: 0;
     font-size: 1.4rem;
-    border: solid @gray-very-light-transparent;
-    border-width: 0px 0px 1px 0px;
-    &:only-child {
-      border-width: 0;
-    }
+    padding: 0.1em 0.5em;
   }
 
   &-detailsKey {
-    flex-basis: 9em;
+    flex-basis: 6em;
     flex-grow: 1;
-    padding: 0.2em 0.5em;
     font-weight: 600;
+    margin-right: 0.5em;
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
@@ -459,7 +457,6 @@ export default {
     white-space: nowrap;
     align-self: flex-end;
     overflow: hidden;
-    padding: 0.2em 0.5em;
     text-overflow: ellipsis;
   }
 

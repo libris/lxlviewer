@@ -25,6 +25,7 @@ export default {
   data() {
     return {
       keyword: '',
+      hiddenDetailsNumber: null,
       showAllKeys: false,
     };
   },
@@ -63,6 +64,9 @@ export default {
     },
   },
   methods: {
+    setHiddenDetailsNumber(value) {
+      this.hiddenDetailsNumber = value;
+    },
   },
   components: {
     TagSwitch,
@@ -78,6 +82,7 @@ export default {
   <li class="ResultItem ResultItem--detailed" 
     v-if="showDetailed">
     <entity-summary 
+      @hiddenDetailsNumber="setHiddenDetailsNumber"
       :focus-data="focusData" 
       :database="database" 
       :router-path="focusData['@id'] | asFnurgelLink" 
@@ -90,10 +95,10 @@ export default {
     </entity-summary>
     <div class="ResultItem-bottomBar">
       <div class="ResultItem-controls">
-        <div class="ResultItem-tags" v-if="user.isLoggedIn && recordType === 'Instance'">
-          <tag-switch :document="focusData" class="" :action-labels="{ on: 'Flag for', off: 'Unflag for' }" tag="Directory care" />
-        </div>
-        <span class="ResultItem-showMore" @click="showAllKeys = !showAllKeys">{{ showAllKeys ? 'Show less' : 'Show more' | translatePhrase }}</span>
+        <span v-if="hiddenDetailsNumber > 0" class="ResultItem-showMore" @click="showAllKeys = !showAllKeys">{{ showAllKeys ? 'Show fewer' : 'Show more' | translatePhrase }}{{ showAllKeys ? '' : ` (${hiddenDetailsNumber})` }}</span>
+      </div>
+      <div class="ResultItem-tags" v-if="user.isLoggedIn && recordType === 'Instance'">
+        <tag-switch :document="focusData" class="RoundButton btn" :action-labels="{ on: 'Flag for', off: 'Unflag for' }" tag="Directory care" />
       </div>
       <div class="ResultItem-relationsContainer"
         v-if="this.$route.params.perimeter !== 'remote'">
@@ -215,11 +220,18 @@ export default {
   &-bottomBar {
     justify-content: space-between;
     display: flex;
+    .RoundButton {
+      width: 24px;
+      height: 24px;
+      font-size: 1rem;
+    }
   }
 
   &-controls {
     display: flex;
     flex-basis: 50%;
+    flex-grow: 1;
+    padding: 0 0.5em;
     align-items: center;
   }
   &-showMore {
@@ -229,8 +241,12 @@ export default {
     color: @link-color;
   }
   &-tags {
-    flex-basis: 9em;
+    display: flex;
+    align-items: center;
     margin-right: 1em;
+    .TagSwitch {
+      display: flex;
+    }
   }
 
   &-relationsContainer {
