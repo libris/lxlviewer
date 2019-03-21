@@ -247,7 +247,7 @@ export default {
   </div>
 
   <div class="EntitySummary-info">
-    <h3 class="EntitySummary-title" v-bind:class="{ 'EntitySummary-title--imported': isImport && shouldLink }">
+    <h3 class="EntitySummary-title" v-bind:class="{ 'EntitySummary-title--imported': isImport && shouldLink, 'showAll': showAllKeys }">
       <span v-if="highlightStr && !shouldLink" 
         v-html="highlight(header.join(', '))"
         :title="header.join(', ')">
@@ -390,8 +390,7 @@ export default {
   }
 
   &-title {
-    font-size: 20px;
-    font-size: 2rem;
+    font-size: 1.8rem;
     margin: 0 0 5px;
     overflow: hidden;
     width: 100%;
@@ -399,9 +398,10 @@ export default {
     text-overflow: ellipsis;
     display: -webkit-box;
     line-height: 1.6em;
-    max-height: 2.4em;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
+    &.showAll {
+      overflow: visible;
+      white-space: unset;
+    }
 
     & .highlight {
       background-color: @brand-faded;
@@ -450,24 +450,23 @@ export default {
 
   &-detailsItem {
     display: flex;
-    margin-bottom: 0.25em;
     min-width: 0;
     font-size: 1.4rem;
-    // border: solid @gray-lighter;
-    // border-width: 0px 0px 1px 0px;
-    // &:last-child {
-    //   border: 0px;
-    // }
+    border: solid @gray-very-light-transparent;
+    border-width: 0px 0px 1px 0px;
+    &:only-child {
+      border-width: 0;
+    }
   }
 
   &-detailsKey {
     flex-basis: 9em;
     flex-grow: 1;
+    padding: 0.2em 0.5em;
     font-weight: 600;
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
-    margin-right: 2%;
   }
 
   &-detailsValue {
@@ -476,9 +475,8 @@ export default {
     white-space: nowrap;
     align-self: flex-end;
     overflow: hidden;
+    padding: 0.2em 0.5em;
     text-overflow: ellipsis;
-    line-height: 1.5em;     /* fallback */
-    max-height: 4.5em;      /* fallback */
   }
 
   &-icon {
