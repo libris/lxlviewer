@@ -324,6 +324,7 @@ export default {
   &-items {
     max-height: 50vh;
     overflow-y: scroll;
+    overflow-x: hidden;
   }
   &-item {
     flex-direction: row;
