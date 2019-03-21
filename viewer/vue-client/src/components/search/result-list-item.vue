@@ -221,9 +221,9 @@ export default {
     justify-content: space-between;
     display: flex;
     .RoundButton {
-      width: 24px;
-      height: 24px;
-      font-size: 1rem;
+      width: 28px;
+      height: 28px;
+      font-size: 1.2rem;
     }
   }
 
@@ -231,7 +231,6 @@ export default {
     display: flex;
     flex-basis: 50%;
     flex-grow: 1;
-    padding: 0 0.5em;
     align-items: center;
   }
   &-showMore {

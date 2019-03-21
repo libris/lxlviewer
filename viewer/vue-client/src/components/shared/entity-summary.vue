@@ -387,7 +387,7 @@ export default {
     position: relative;
     text-overflow: ellipsis;
     display: -webkit-box;
-    line-height: 1.6em;
+    line-height: 1.8em;
 
     & .highlight {
       background-color: @brand-faded;
@@ -438,7 +438,7 @@ export default {
     display: flex;
     min-width: 0;
     font-size: 1.4rem;
-    padding: 0.1em 0.5em;
+    padding: 0.2em 0;
   }
 
   &-detailsKey {
