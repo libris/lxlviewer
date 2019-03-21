@@ -169,15 +169,6 @@ export default {
         this.resources.context,
       );
     },
-    identifiers() {
-      const identifiersList = StringUtil.getFormattedEntries(
-        this.getSummary.identifiers, 
-        this.resources.vocab, 
-        this.settings, 
-        this.resources.context,
-      );
-      return identifiersList;
-    },
     info() {
       return StringUtil.getFormattedEntries(
         this.getSummary.info, 
@@ -281,13 +272,6 @@ export default {
       
     </h3>
     <ul class="EntitySummary-details" v-show="!isCompact">
-      <li class="EntitySummary-detailsItem" 
-        v-if="identifiers.length > 0">
-        <span class="EntitySummary-detailsKey EntitySummary-identifiers">
-        {{ identifiers[0] }}</span>
-        <span class="EntitySummary-detailsValue EntitySummary-identifiersInfo" 
-          v-if="identifiers.length > 1"><span class="badge">+{{ identifiers.length-1 }}</span></span>
-      </li>
       <li class="EntitySummary-detailsItem" 
         v-show="v.length !== 0" 
         v-for="(v, k) in infoWithKeys" 

@@ -273,7 +273,6 @@ export function getItemSummary(item, displayDefs, quoted, vocab, settings, conte
     categorization: [],
     header: [],
     info: [],
-    identifiers: [],
     sub: [],
   };
   each(card, (value, key) => {
@@ -285,8 +284,6 @@ export function getItemSummary(item, displayDefs, quoted, vocab, settings, conte
       summary.header.push({ property: key, value: v });
     } else if (displayGroups.info.indexOf(key) !== -1) {
       summary.info.push({ property: key, value: v });
-    } else if (displayGroups.identifiers.indexOf(key) !== -1) {
-      summary.identifiers.push({ property: key, value: v });
     } else if (displayGroups.categorization.indexOf(key) !== -1) {
       summary.categorization.push({ property: key, value: v });
     } else {
