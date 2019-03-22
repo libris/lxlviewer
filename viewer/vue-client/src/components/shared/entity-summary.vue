@@ -454,6 +454,7 @@ export default {
   &-detailsValue {
     flex-basis: 75%;
     flex-grow: 2;
+    color: #000;
     white-space: nowrap;
     align-self: flex-end;
     overflow: hidden;
