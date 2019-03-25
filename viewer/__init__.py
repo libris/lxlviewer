@@ -34,8 +34,6 @@ HTTP_METHODS = R_METHODS + ['PUT', 'POST', 'DELETE']
 
 
 JSONLD_MIMETYPE = 'application/ld+json'
-RDF_MIMETYPES = {'text/turtle', JSONLD_MIMETYPE, 'application/rdf+xml', 'text/xml'}
-MIMETYPE_FORMATS = ['text/html', 'application/xhtml+xml'] + list(RDF_MIMETYPES)
 
 KEEP_HEADERS = ['ETag', 'Location', 'Content-Location', 'Expires', 'Document',
                 'Link', 'Server-Start-Time', 'Cache-Control']
@@ -278,7 +276,7 @@ def rendered_response(path, suffix, data, mimetype=None):
         resp = None
 
     if mimetype:
-        render = _get_render_for_mimetype(mimetype)
+        render = negotiator.get_renderer(mimetype)
     else:
         mimetype, render = negotiator.negotiate(request, suffix)
 
@@ -310,16 +308,6 @@ def rendered_response(path, suffix, data, mimetype=None):
     return new_resp
 
 
-# FIXME make this less sketchy
-def _get_render_for_mimetype(mimetype):
-    pairs = {'text/html': render_html,
-             'application/xhtml+xml': render_html,
-             'application/json': render_json,
-             'text/json': render_json,
-             'application/ld+json': render_jsonld}
-    return pairs[mimetype]
-
-
 negotiator = conneg.Negotiator()
 
 @negotiator.add('text/html', 'html')
@@ -341,21 +329,24 @@ def render_html(path, thing):
 def render_json(path, data):
     return _to_json(data)
 
-@negotiator.add('application/ld+json', 'jsonld')
+@negotiator.add(JSONLD_MIMETYPE, 'jsonld', group='RDF')
 def render_jsonld(path, data):
     data[CONTEXT] = CONTEXT_PATH
     return _to_json(data)
 
-@negotiator.add('text/turtle', 'ttl')
-@negotiator.add('text/n3', 'n3') # older: text/rdf+n3, application/n3
+@negotiator.add('text/turtle', 'ttl', group='RDF')
 def render_ttl(path, data):
     return _to_graph(data).serialize(format='turtle')
 
-@negotiator.add('text/trig', 'trig')
+@negotiator.add('text/n3', 'n3', group='RDF') # older: text/rdf+n3, application/n3
+def render_ttl(path, data):
+    return _to_graph(data).serialize(format='n3')
+
+@negotiator.add('text/trig', 'trig', group='RDF')
 def render_trig(path, data):
     return _to_graph(data).serialize(format='trig')
 
-@negotiator.add('application/rdf+xml', 'rdf')
+@negotiator.add('application/rdf+xml', 'rdf', group='RDF')
 @negotiator.add('text/xml', 'xml')
 def render_xml(path, data):
     return _to_graph(data).serialize(format='pretty-xml')
@@ -496,7 +487,7 @@ def _proxy_request(request, session, json_data=None, query_params=[],
     # If the accept was for something other than JSON-LD, we need to adjust the
     # content location accordingly (since the backend API only serves the
     # JSON-LD location).
-    response_data_suffix = negotiator.mimetype_suffix_map.get(accept_header)
+    response_data_suffix = negotiator.get_suffix(accept_header)
     if response_data_suffix:
         content_location = mapped_response.headers.get('Content-Location')
         if content_location:
@@ -512,7 +503,8 @@ def _adjust_accept_header(accept_header):
     # negotiation for that if missing, and then serialize to preferred
     # requested format here.
     if accept_header and accept_header != JSONLD_MIMETYPE and any(
-            ah.strip() in RDF_MIMETYPES for ah in accept_header.split(',')):
+            ah.strip() in negotiator.mimetype_groups['RDF']
+            for ah in accept_header.split(',')):
         return ', ' + JSONLD_MIMETYPE
     else:
         return accept_header
@@ -549,7 +541,7 @@ def _write_data(request, query_params=[]):
 from rdflib import URIRef, BNode, RDF, RDFS, OWL, Namespace
 from rdflib.namespace import SKOS, DCTERMS
 
-rdfns = {
+RDFNS = {
     'RDF': RDF,
     'RDFS': RDFS,
     'OWL': OWL,
@@ -560,7 +552,7 @@ rdfns = {
     'SCHEMA': Namespace("http://schema.org/"),
 }
 
-app.context_processor(lambda: rdfns)
+app.context_processor(lambda: RDFNS)
 
 @app.route('/vocab/', methods=R_METHODS)
 @app.route('/vocab/data.<suffix>', methods=R_METHODS)
@@ -583,10 +575,7 @@ def vocabview(suffix=None):
             if not isinstance(o.identifier, BNode):
                 yield o
 
-    if suffix:
-        mimetype, render = negotiator.negotiate(request, suffix)
-    else:
-        mimetype = request.accept_mimetypes.best_match(MIMETYPE_FORMATS)
+    mimetype, render = negotiator.negotiate(request, suffix)
 
     resp = None
     if mimetype == JSONLD_MIMETYPE:
@@ -597,7 +586,7 @@ def vocabview(suffix=None):
         resp = Response(json.dumps(vocab_data),
                 content_type='%s; charset=UTF-8' % mimetype)
 
-    elif mimetype in RDF_MIMETYPES:
+    elif mimetype in negotiator.mimetype_groups['RDF']:
         resp = Response(voc.graph.serialize(format=
                 'json-ld' if mimetype == JSONLD_MIMETYPE else mimetype,
                 #context_id=CONTEXT_PATH,
