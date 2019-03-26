@@ -338,7 +338,9 @@ def render_jsonld(path, data):
 def render_ttl(path, data):
     return _to_graph(data).serialize(format='turtle')
 
-@negotiator.add('text/n3', 'n3', group='RDF') # older: text/rdf+n3, application/n3
+@negotiator.add('text/n3', 'n3', group='RDF')
+@negotiator.add('text/rdf+n3', 'n3', group='RDF')
+@negotiator.add('application/n3', 'n3', group='RDF')
 def render_ttl(path, data):
     return _to_graph(data).serialize(format='n3')
 
