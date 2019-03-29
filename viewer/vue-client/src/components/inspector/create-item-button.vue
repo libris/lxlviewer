@@ -2,7 +2,7 @@
 import * as DisplayUtil from '@/utils/display';
 import * as RecordUtil from '@/utils/record';
 import * as DataUtil from '@/utils/data';
-import RoundButton from '@/components/shared/round-button.vue';
+import RoundedButton from '@/components/shared/rounded-button.vue';
 import TooltipComponent from '@/components/shared/tooltip-component';
 import { mapGetters } from 'vuex';
 
@@ -85,7 +85,7 @@ export default {
     ]),
   },
   components: {
-    'round-button': RoundButton,
+    'rounded-button': RoundedButton,
     'tooltip-component': TooltipComponent,
   },
   mounted() { // Ready method is deprecated in 2.0, switch to "mounted"
@@ -124,7 +124,7 @@ export default {
       </button>
     </template>
     <template v-if="compact">
-      <round-button 
+      <rounded-button 
         :icon="hasHolding ? 'check' : 'plus'"
         :indicator="hasHolding"
         :label="hasHolding ? 
@@ -140,7 +140,7 @@ export default {
               [user.settings.activeSigel, 'has holding'] : 
               ['Add holding for', user.settings.activeSigel]"></tooltip-component>
         </template>
-      </round-button>
+      </rounded-button>
     </template>
   </div>
 </template>
@@ -148,10 +148,8 @@ export default {
 <style lang="less">
 
 .CreateItem {
-
   &-btn {
-    margin-top: 10px;
-    
+    box-shadow: none;
     &--hasHolding {
       background: @white;
       color: @brand-primary;

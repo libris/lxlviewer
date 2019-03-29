@@ -98,13 +98,13 @@ export default {
         <span v-if="hiddenDetailsNumber > 0" class="ResultItem-showMore" @click="showAllKeys = !showAllKeys">{{ showAllKeys ? 'Show fewer' : 'Show more' | translatePhrase }}{{ showAllKeys ? '' : ` (${hiddenDetailsNumber})` }}</span>
       </div>
       <div class="ResultItem-tags" v-if="user.isLoggedIn && recordType === 'Instance'">
-        <tag-switch :document="focusData" class="RoundButton btn" :action-labels="{ on: 'Flag for', off: 'Unflag for' }" tag="Directory care" />
+        <tag-switch :document="focusData" class="" :action-labels="{ on: 'Flag for', off: 'Unflag for' }" tag="Directory care" />
       </div>
       <div class="ResultItem-relationsContainer"
         v-if="this.$route.params.perimeter !== 'remote'">
         <reverse-relations 
           :main-entity="focusData" 
-          :compact=true>
+          :compact="true">
         </reverse-relations>
       </div>
     </div>
@@ -220,11 +220,6 @@ export default {
   &-bottomBar {
     justify-content: space-between;
     display: flex;
-    .RoundButton {
-      width: 28px;
-      height: 28px;
-      font-size: 1.2rem;
-    }
   }
 
   &-controls {

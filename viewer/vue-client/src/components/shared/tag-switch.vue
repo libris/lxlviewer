@@ -128,7 +128,7 @@ export default {
 .TagSwitch {
   display: inline-block;
   margin: 0 0.25em;
-  background-color: @white;
+  font-size: 1.4rem;
 
   cursor: pointer;
   .fa-flag {

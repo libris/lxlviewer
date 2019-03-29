@@ -670,16 +670,7 @@ export default {
                 </h1>
               <entity-changelog />
             </div>
-            <div class="Inspector-actions">
-              <div class="TagContainer" v-if="recordType === 'Instance' && user.isLoggedIn && !inspector.status.isNew">
-                <tag-switch :document="inspector.data.mainEntity" class="btn btn--md btn--md-icon" :action-labels="{ on: 'Flag for', off: 'Unflag for' }" tag="Directory care" />
-              </div>
-              <reverse-relations 
-                class="Inspector-reverse" 
-                :main-entity="this.inspector.data.mainEntity" 
-                v-if="!inspector.status.isNew || recordType === 'Item'"></reverse-relations>
-              </div>
-            </div>
+          </div>
           
           <entity-header id="main-header" 
             :full="true" 
@@ -753,7 +744,6 @@ export default {
   &-admin {
     display: flex;
     flex-direction: column;
-    margin-bottom: 20px;
 
     @media (min-width: @screen-sm) {
       flex-direction: row;

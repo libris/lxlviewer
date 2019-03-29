@@ -337,9 +337,7 @@ export default {
     flex-grow: 0;
     text-align: right;
     text-transform: none;
-    color: @gray-darker;
-    color: @gray-darker-transparent;
-    background-color: @badge-color;
+    color: @gray-very-dark-transparent;
     background-color: @badge-color-transparent;
     transition: background-color 0.5s ease;
     letter-spacing: 0.5px;
@@ -446,6 +444,7 @@ export default {
     flex-grow: 1;
     font-weight: 600;
     margin-right: 0.5em;
+    color: @gray-darker;
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
