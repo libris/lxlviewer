@@ -731,6 +731,12 @@
           "@id": "https://id.kb.se/TEMPID#work",
           "@type": "Music",
           "language": [],
+          "capture": [
+            {
+              "@type": "Capture",
+              "label": ""
+            }
+          ],
           "classification": [{
               "@type": "ClassificationDdc",
               "code": "",
