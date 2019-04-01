@@ -51,7 +51,7 @@ export default {
           <img class="NavBar-brandLogo" src="~kungbib-styles/dist/assets/kb_logo_black.svg" alt="Kungliga Bibliotekets logotyp">
         </router-link>
         <router-link to="/" class="NavBar-brandTitle" :title="`Version ${settings.version}`">
-          <span id="service-name">Libris katalogisering</span>
+          <span id="service-name">{{ settings.title }}</span>
           <span class="NavBar-envLabel">
           {{ environmentLabel }} {{ settings.version }}
           </span>
