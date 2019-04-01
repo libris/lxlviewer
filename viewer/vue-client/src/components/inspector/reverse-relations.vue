@@ -1,7 +1,8 @@
 <script>
 import { each } from 'lodash-es';
-import * as VocabUtil from '../../utils/vocab';
+import * as VocabUtil from '@/utils/vocab';
 import * as MathUtil from '@/utils/math';
+import * as StringUtil from '@/utils/string';
 import CreateItemButton from './create-item-button';
 import RelationsList from '@/components/inspector/relations-list';
 import RoundedButton from '@/components/shared/rounded-button.vue';
@@ -144,6 +145,9 @@ export default {
     recordId() {
       return this.mainEntity['@id'];
     },
+    translatedTooltip() {
+      return StringUtil.getUiPhraseByLang(this.totalRelationTooltipText, this.user.settings.language);
+    },
     totalRelationTooltipText() {
       if (this.recordType === 'Instance' || this.recordType === 'Item') {
         if (this.numberOfRelations === 0) {
@@ -245,15 +249,8 @@ export default {
           :icon="isNaN(numberOfRelations) ? 'exclamation' : false"
           :active="relationsListOpen"
           :label="totalRelationTooltipText"
+          v-tooltip.top="translatedTooltip"
           @click="showPanel()">
-          <template slot="tooltip">
-            <tooltip-component 
-              class="Toolbar-tooltipContainer"
-              position="left"
-              :active="true"
-              :show-tooltip="true"
-              :tooltip-text="totalRelationTooltipText"></tooltip-component>
-          </template>
         </rounded-button>
       </div>
     </div>

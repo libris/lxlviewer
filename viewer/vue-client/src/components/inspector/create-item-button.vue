@@ -2,6 +2,7 @@
 import * as DisplayUtil from '@/utils/display';
 import * as RecordUtil from '@/utils/record';
 import * as DataUtil from '@/utils/data';
+import * as StringUtil from '@/utils/string';
 import RoundedButton from '@/components/shared/rounded-button.vue';
 import TooltipComponent from '@/components/shared/tooltip-component';
 import { mapGetters } from 'vuex';
@@ -83,6 +84,10 @@ export default {
       'settings',
       'status',
     ]),
+    tooltipText() {
+      const str = this.hasHolding ? [this.user.settings.activeSigel, 'has holding'] : ['Add holding for', this.user.settings.activeSigel];
+      return StringUtil.getUiPhraseByLang(str, this.user.settings.language);
+    },
   },
   components: {
     'rounded-button': RoundedButton,
@@ -125,21 +130,13 @@ export default {
     </template>
     <template v-if="compact">
       <rounded-button 
+        v-tooltip.top="tooltipText"
         :icon="hasHolding ? 'check' : 'plus'"
         :indicator="hasHolding"
         :label="hasHolding ? 
               [user.settings.activeSigel, 'has holding'] : 
               ['Add holding for', user.settings.activeSigel]"
         @click="performItemAction()">
-        <template slot="tooltip">
-          <tooltip-component 
-            class="Toolbar-tooltipContainer"
-            :show-tooltip="true" 
-            position="left"
-            :tooltip-text="hasHolding ? 
-              [user.settings.activeSigel, 'has holding'] : 
-              ['Add holding for', user.settings.activeSigel]"></tooltip-component>
-        </template>
       </rounded-button>
     </template>
   </div>
