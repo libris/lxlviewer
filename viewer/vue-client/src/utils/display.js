@@ -176,7 +176,7 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
     return {}; // Early fail
   }
   // Get the list of properties we want to show
-  const displayType = isArray(trueItem['@type']) ? trueItem['@type'][0] : trueItem['@type'];
+  const displayType = isArray(trueItem['@type']) ? trueItem['@type'][0] : trueItem['@type']; // If more than one type, choose the first
   const properties = getDisplayProperties(displayType, displayDefs, vocab, settings, context, level);
   // Start filling the object with the selected properties
   for (let i = 0; i < properties.length; i++) {
