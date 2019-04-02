@@ -348,6 +348,7 @@ export default {
     flex-direction: row;
     display: flex;
     flex: 1;
+    min-width: 0%;
     border: solid @grey-lighter;
     border-width: 0px 1px 1px 1px;
     &.is-first {

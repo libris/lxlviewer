@@ -303,6 +303,7 @@ export default {
   flex-direction: column;
   justify-content: space-between;
   width: 100%;
+  min-width: 0%;
   padding: 0.5em 0.75em 0.5em 0.75em;
 
   .EntityHeader & {
