@@ -110,6 +110,17 @@ export default {
     currentSortOrder() {
       return this.$route.query._sort;
     },
+    resultRange() {
+      if (this.$route.params.perimeter === 'remote') {
+        return `1-${this.limit}`;
+      } 
+      const first = this.pageData.itemOffset + 1;
+      let last = this.pageData.itemOffset + this.pageData.itemsPerPage;
+      if (last > this.pageData.totalItems) {
+        last = this.pageData.totalItems;
+      }
+      return `${first}-${last}`;
+    },
   },
   methods: {
     setCompact() {
@@ -146,16 +157,23 @@ export default {
   <div class="ResultControls" v-if="!(!showDetails && pageData.totalItems < limit)">
     <div class="ResultControls-searchDetails" v-if="showDetails">
       <div class="ResultControls-resultDescr">
-        <p class="ResultControls-resultText" id="resultDescr">{{'Search for' | translatePhrase}} {{ queryText }}
+        <!-- <p class="ResultControls-resultText" id="resultDescr">{{'Search for' | translatePhrase}} {{ queryText }}
           <span v-if="filters.length > 0">({{ 'Filtered by' | translatePhrase | lowercase}}
             <span v-for="(filter, index) in filters" :key="index">
               {{ filter.label | labelByLang }}{{ index === (filters.length - 1) ? '' : ', ' }}</span>)
           </span>
           {{'Gave' | translatePhrase | lowercase}} {{pageData.totalItems}} {{'Hits' | translatePhrase | lowercase}}.
           <em v-if="pageData.totalItems > limit && $route.params.perimeter === 'remote'">Du har fått fler träffar än vad som kan visas, testa att göra en mer detaljerad sökning om du inte kan hitta det du letar efter.</em>
-        </p>  
-        <p v-if="pageData.totalItems > limit && $route.params.perimeter != 'remote'" class="ResultControls-resultText">
-          {{'Showing' | translatePhrase}} {{ limit }} {{['Hits', 'Per page'] | translatePhrase | lowercase}}.</p>
+        </p>   -->
+        <p class="ResultControls-resultText" id="resultDescr">
+          <span v-if="pageData.totalItems > 0"> {{['Showing', resultRange, 'of'] | translatePhrase }} </span>
+          <span class="ResultControls-numTotal"> {{pageData.totalItems}} {{'Hits' | translatePhrase | lowercase}}</span>
+        </p>
+        <p class="ResultControls-resultText" v-if="$route.params.perimeter === 'remote' && pageData.totalItems > limit">
+          Du har fått fler träffar än vad som kan visas.
+        </p>
+        <!-- <p v-if="pageData.totalItems > limit && $route.params.perimeter != 'remote'" class="ResultControls-resultText">
+          {{'Showing' | translatePhrase}} {{ limit }} {{['Hits', 'Per page'] | translatePhrase | lowercase}}.</p> -->
       </div>
       <div class="ResultControls-controlWrap" v-if="showDetails && pageData.totalItems > 0">
         <sort 
@@ -229,6 +247,8 @@ export default {
     align-items: baseline;
     width: 100%;
     color: @gray-dark;
+    border-bottom: 1px solid @gray-lighter;
+    padding-bottom: 10px;
 
     @media (max-width: @screen-sm) {
       flex-direction: column;
@@ -242,6 +262,10 @@ export default {
   &-resultText {
     font-weight: 600;
     padding-right: 20px;
+  }
+
+  &-numTotal {
+    color: @black;
   }
 
   &-controlWrap {
