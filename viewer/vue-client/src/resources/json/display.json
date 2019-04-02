@@ -1,13 +1,14 @@
+
 {
   "@context": "/context.jsonld",
   "@graph": [
     {
-      "@id": "https://libris-dev.kb.se/00nj5pg324f356g2",
-      "created": "2018-08-17T15:24:19.02+02:00",
+      "@id": "https://libris.kb.se/00nj5pg324f356g2",
+      "created": "2019-03-01T21:47:09.064+01:00",
       "mainEntity": {
         "@id": "https://id.kb.se/vocab/display"
       },
-      "modified": "2018-08-17T15:24:19.02+02:00",
+      "modified": "2019-03-01T21:47:09.064+01:00",
       "recordStatus": "marc:New",
       "sameAs": [
         {
@@ -28,9 +29,20 @@
           "@type": "fresnel:Lens",
           "classLensDomain": "CarrierType",
           "showProperties": [
+            "prefLabel",
             "label",
             "code",
             "termGroup"
+          ]
+        },
+        "Cartographic": {
+          "@type": "fresnel:Lens",
+          "classLensDomain": "Cartographic",
+          "showProperties": [
+            "marc:westernmostLongitudeCoordinates",
+            "marc:easternmostLongitudeCoordinates",
+            "marc:northernmostLatitudeCoordinates",
+            "marc:southernmostLatitudeCoordinates"
           ]
         },
         "Concept": {
@@ -48,10 +60,11 @@
             {
               "inverseOf": "broader"
             },
+            "hasVariant",
             "related",
             "scopeNote",
             "label",
-            "notation",
+            "code",
             "note",
             "keyword"
           ]
@@ -60,6 +73,7 @@
           "@type": "fresnel:Lens",
           "classLensDomain": "ContentType",
           "showProperties": [
+            "prefLabel",
             "label",
             "code",
             "termGroup"
@@ -78,13 +92,15 @@
           "classLensDomain": "Country",
           "showProperties": [
             "prefLabel",
-            "notation"
+            "code",
+            "isReplacedBy"
           ]
         },
         "DescriptionConventions": {
           "@type": "fresnel:Lens",
           "classLensDomain": "DescriptionConventions",
           "showProperties": [
+            "prefLabel",
             "label",
             "code"
           ]
@@ -98,7 +114,9 @@
             "marc:titlesAndOtherWordsAssociatedWithAName",
             "lifeSpan",
             "hasTypeOfFamily",
-            "note"
+            "note",
+            "identifiedBy",
+            "hasVariant"
           ]
         },
         "ISBN": {
@@ -123,15 +141,19 @@
             "editionStatement",
             "editionStatementRemainder",
             "publication",
+            "marc:primaryProvisionActivity",
             "production",
             "manufacture",
             "distribution",
             "copyright",
             "copyrightDate",
             "identifiedBy",
+            "indirectlyIdentifiedBy",
             "extent",
             "hasDimensions",
             "marc:otherPhysicalDetails",
+            "accompaniedBy",
+            "seriesMembership",
             {
               "inverseOf": "itemOf"
             }
@@ -155,7 +177,9 @@
             "name",
             "isPartOf",
             "marc:subordinateUnit",
-            "note"
+            "note",
+            "identifiedBy",
+            "hasVariant"
           ]
         },
         "Language": {
@@ -164,7 +188,7 @@
           "showProperties": [
             "prefLabel",
             "label",
-            "notation"
+            "code"
           ]
         },
         "Library": {
@@ -178,6 +202,7 @@
           "@type": "fresnel:Lens",
           "classLensDomain": "MediaType",
           "showProperties": [
+            "prefLabel",
             "label",
             "code",
             "termGroup"
@@ -190,7 +215,26 @@
             "name",
             "marc:subordinateUnit",
             "date",
-            "note"
+            "note",
+            "identifiedBy",
+            "hasVariant"
+          ]
+        },
+        "NotatedMusic": {
+          "@type": "fresnel:Lens",
+          "classLensDomain": "NotatedMusic",
+          "showProperties": [
+            "hasTitle",
+            "musicMedium",
+            "musicKey",
+            "version",
+            "contribution",
+            "composition",
+            "language",
+            "genreForm",
+            "classification",
+            "subject",
+            "isPartOf"
           ]
         },
         "Ontology": {
@@ -211,7 +255,9 @@
             "name",
             "isPartOf",
             "marc:subordinateUnit",
-            "note"
+            "note",
+            "identifiedBy",
+            "hasVariant"
           ]
         },
         "Person": {
@@ -227,9 +273,10 @@
             "marc:fullerFormName",
             "lifeSpan",
             "marc:attributionQualifier",
-            "notation",
             "personTitle",
-            "note"
+            "note",
+            "identifiedBy",
+            "hasVariant"
           ]
         },
         "Record": {
@@ -240,11 +287,16 @@
             "inDataset",
             "created",
             "modified",
+            "bibliography",
+            "encodingLevel",
+            "recordStatus",
             "descriptionCreator",
             "descriptionUpgrader",
             "descriptionLastModifier",
             "descriptionConventions",
-            "identifiedBy"
+            "identifiedBy",
+            "generationDate",
+            "generationProcess"
           ]
         },
         "Resource": {
@@ -255,7 +307,6 @@
             "prefLabel",
             "label",
             "name",
-            "notation",
             "code",
             "sameAs",
             "exactMatch",
@@ -287,11 +338,11 @@
           "showProperties": [
             "hasTitle",
             "contribution",
-            "composition",
             "language",
             "genreForm",
             "classification",
-            "subject"
+            "subject",
+            "isPartOf"
           ]
         }
       }
@@ -315,7 +366,7 @@
           "showProperties": [
             "prefLabel",
             "label",
-            "notation",
+            "code",
             "inScheme",
             "inCollection"
           ]
@@ -471,7 +522,6 @@
             "prefLabel",
             "label",
             "name",
-            "notation",
             "code",
             "isPartOf",
             "isDefinedBy",
@@ -484,6 +534,22 @@
           "showProperties": [
             "seriesStatement",
             "seriesEnumeration"
+          ]
+        },
+        "SeriesMembership": {
+          "@type": "fresnel:Lens",
+          "classLensDomain": "SeriesMembership",
+          "showProperties": [
+            "inSeries",
+            "seriesStatement",
+            "seriesEnumeration"
+          ]
+        },
+        "ShelfMark": {
+          "@type": "fresnel:Lens",
+          "classLensDomain": "ShelfMark",
+          "showProperties": [
+            "label"
           ]
         },
         "Title": {
@@ -517,6 +583,19 @@
         }
       }
     },
+    "tokens": {
+      "@id": "tokens",
+      "@type": "fresnel:Group",
+      "lenses": {
+        "Role": {
+          "@type": "fresnel:Lens",
+          "classLensDomain": "Role",
+          "showProperties": [
+            "prefLabel"
+          ]
+        }
+      }
+    },
     "full": {
       "@id": "full",
       "@type": "fresnel:Group",
@@ -544,6 +623,16 @@
             {
               "inverseOf": "itemOf"
             }
+          ]
+        },
+        "Item": {
+          "fresnel:extends": {
+            "@id": "Item-cards"
+          },
+          "showProperties": [
+            "fresnel:super",
+            "shelfLabel",
+            "shelfControlNumber"
           ]
         },
         "Organization": {
