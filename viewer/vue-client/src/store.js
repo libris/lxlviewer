@@ -69,7 +69,7 @@ const store = new Vuex.Store({
       copyClipboard: null,
     },
     settings: {
-      title: 'Libris Katalogisering',
+      title: 'Libris katalogisering',
       language: 'sv',
       environment: process.env.VUE_APP_ENV_LABEL || 'local',
       version: process.env.VUE_APP_VERSION,
