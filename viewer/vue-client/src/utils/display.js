@@ -78,7 +78,7 @@ export function getLensPropertiesDeep(className, displayDefinitions, vocab, sett
     props = lensGroups[level].lenses[className].showProperties;
   } else {
     const termObj = VocabUtil.getTermObject(className, vocab, context);
-    if (termObj.hasOwnProperty('subClassOf')) {
+    if (typeof termObj !== 'undefined' && termObj.hasOwnProperty('subClassOf')) {
       const ownClasses = VocabUtil.filterOwnClasses(termObj.subClassOf, context);
       if (ownClasses.length > 0) {
         props = getDisplayProperties(ownClasses[0]['@id'], displayDefinitions, vocab, settings, context, level, depth + 1);
