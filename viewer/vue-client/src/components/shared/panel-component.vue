@@ -277,7 +277,7 @@ export default {
     color: @gray-darker;
     margin-top: 0;
     white-space: nowrap;
-    overflow-x: hidden;
+    overflow: hidden;
     text-overflow: ellipsis;
   }
 

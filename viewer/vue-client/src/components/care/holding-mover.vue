@@ -300,6 +300,7 @@ export default {
     display: flex;
     align-items: baseline;
     margin: 80px 10px;
+    justify-content: center;
     
     @media (max-width: @screen-sm) {
       margin: 10px;
