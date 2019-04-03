@@ -176,6 +176,9 @@ export default {
         });
       }
     },
+    '$route.fullPath'() {
+      this.activeTypes = this.getIncomingTypes();
+    },
   },
   mounted() {
     this.$nextTick(() => {
