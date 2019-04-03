@@ -157,23 +157,13 @@ export default {
   <div class="ResultControls" v-if="!(!showDetails && pageData.totalItems < limit)">
     <div class="ResultControls-searchDetails" v-if="showDetails">
       <div class="ResultControls-resultDescr">
-        <!-- <p class="ResultControls-resultText" id="resultDescr">{{'Search for' | translatePhrase}} {{ queryText }}
-          <span v-if="filters.length > 0">({{ 'Filtered by' | translatePhrase | lowercase}}
-            <span v-for="(filter, index) in filters" :key="index">
-              {{ filter.label | labelByLang }}{{ index === (filters.length - 1) ? '' : ', ' }}</span>)
-          </span>
-          {{'Gave' | translatePhrase | lowercase}} {{pageData.totalItems}} {{'Hits' | translatePhrase | lowercase}}.
-          <em v-if="pageData.totalItems > limit && $route.params.perimeter === 'remote'">Du har fått fler träffar än vad som kan visas, testa att göra en mer detaljerad sökning om du inte kan hitta det du letar efter.</em>
-        </p>   -->
         <p class="ResultControls-resultText" id="resultDescr">
           <span v-if="pageData.totalItems > 0"> {{['Showing', resultRange, 'of'] | translatePhrase }} </span>
           <span class="ResultControls-numTotal"> {{pageData.totalItems}} {{'Hits' | translatePhrase | lowercase}}</span>
         </p>
         <p class="ResultControls-resultText" v-if="$route.params.perimeter === 'remote' && pageData.totalItems > limit">
-          Du har fått fler träffar än vad som kan visas.
+          {{ 'The search gave more results than can be displayed' | translatePhrase }}.
         </p>
-        <!-- <p v-if="pageData.totalItems > limit && $route.params.perimeter != 'remote'" class="ResultControls-resultText">
-          {{'Showing' | translatePhrase}} {{ limit }} {{['Hits', 'Per page'] | translatePhrase | lowercase}}.</p> -->
       </div>
       <div class="ResultControls-controlWrap" v-if="showDetails && pageData.totalItems > 0">
         <sort 
@@ -195,6 +185,15 @@ export default {
             <i class="fa fa-list"></i>
           </button>
         </div>
+      </div>
+    </div>
+    <div class="ResultControls-filterWrapper" v-if="showDetails && filters.length > 0">
+      <div class="ResultControls-filterBadge" v-for="(filter, index) in filters" :key="index">
+        <span>{{filter.label | labelByLang }}</span>
+        <router-link class="ResultControls-pagLink"
+          :to="filter.up | asAppPath">
+          <i class="fa fa-fw fa-close icon"></i>
+        </router-link>
       </div>
     </div>
     <nav v-if="hasPagination && showPages">
@@ -244,11 +243,9 @@ export default {
   &-searchDetails {
     display: flex;
     justify-content: space-between;
-    align-items: baseline;
+    align-items: center;
     width: 100%;
     color: @gray-dark;
-    border-bottom: 1px solid @gray-lighter;
-    padding-bottom: 10px;
 
     @media (max-width: @screen-sm) {
       flex-direction: column;
@@ -281,6 +278,7 @@ export default {
   &-listType {
     background-color: transparent;
     height: 20px;
+    margin-bottom: 10px;
 
     &:hover, 
     &:focus {
@@ -300,6 +298,30 @@ export default {
         color: inherit;
       }
     }
+  }
+
+  &-filterWrapper {
+    padding-top: 5px;
+    display: flex;
+    flex-wrap: wrap;
+    border-top: 1px solid @gray-lighter;
+  }
+
+  &-filterBadge {
+    background-color: #364a4c;
+    color: @white;
+    font-weight: 600;
+    font-size: 1.4rem;
+    padding: 2px 10px;
+    margin: 5px 5px 0 0;
+    border-radius: 4px;
+    white-space: nowrap;
+
+    & i,
+    & i:hover {
+      color: @white;
+    }
+
   }
 
   &-pagDecor {
