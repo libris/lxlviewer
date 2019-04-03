@@ -300,6 +300,7 @@ export default {
 
 .EntitySummary {
   display: flex;
+  flex-basis: auto; // IE11 fix
   flex-direction: column;
   justify-content: space-between;
   width: 100%;
