@@ -40,17 +40,16 @@ export default {
         return this.pageData.search.mapping.filter((item => item.variable !== 'q'))
           .map((item) => {
             let label = '';
-            if (item.hasOwnProperty('value')) { // use item value get label
+            if (item.hasOwnProperty('value')) { // Try to use item value to get label
               label = item.value;
-            }
-            if (item.hasOwnProperty('object')) { // use item object[@id]...
+            } else if (item.hasOwnProperty('object') && this.pageData.hasOwnProperty('stats')) { // else look for preflabel in stats (if there are results)
               const match = this.pageData.stats.sliceByDimension[item.variable].observation
                 .filter(obs => obs.object['@id'] === item.object['@id']);
-              if (match.length === 1) { // ...to look for a prefLabelByLang/labelByLang prop in stats
+              if (match.length === 1) {
                 const prop = match[0].object.prefLabelByLang || match[0].object.labelByLang;
                 label = prop[this.settings.language];
-              } else label = item.object['@id'];         
-            }
+              } else label = item.object['@id'];        
+            } else if (item.hasOwnProperty('object')) label = item.object['@id']; // else try to translate object[@id]...
             return {
               label,
               up: item.up['@id'],
@@ -159,7 +158,8 @@ export default {
       <div class="ResultControls-resultDescr">
         <p class="ResultControls-resultText" id="resultDescr">
           <span v-if="pageData.totalItems > 0"> {{['Showing', resultRange, 'of'] | translatePhrase }} </span>
-          <span class="ResultControls-numTotal"> {{pageData.totalItems}} {{'Hits' | translatePhrase | lowercase}}</span>
+          <span v-if="pageData.totalItems > 0" class="ResultControls-numTotal"> {{pageData.totalItems}} {{'Hits' | translatePhrase | lowercase}}</span>
+          <span v-else class="ResultControls-numTotal">{{'No hits' | translatePhrase }}</span>
         </p>
         <p class="ResultControls-resultText" v-if="$route.params.perimeter === 'remote' && pageData.totalItems > limit">
           {{ 'The search gave more results than can be displayed' | translatePhrase }}.
