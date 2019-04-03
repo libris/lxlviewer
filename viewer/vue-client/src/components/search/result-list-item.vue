@@ -150,7 +150,6 @@ export default {
     transition: transform .2s cubic-bezier(0.21, 0.21, 0.62, 1.23);
 
     & .EntitySummary {
-      flex: 1;
       justify-content: start;
       padding: 0;
       min-width: 0;
