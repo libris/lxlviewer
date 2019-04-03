@@ -207,6 +207,7 @@ export default {
 .PostPicker  {
   max-width: @directorycare-sidewidth;
   display: flex;
+  flex: 1 1 46%;
   flex-direction: column;
 
   @media (max-width: @screen-sm) {
