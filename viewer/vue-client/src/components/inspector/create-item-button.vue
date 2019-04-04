@@ -147,15 +147,25 @@ export default {
 .CreateItem {
   &-btn {
     box-shadow: none;
-    &--hasHolding {
+    background: @white;
+    color: @brand-primary;
+    border: 2px solid @brand-primary;
+    &:hover, 
+    &:focus,
+    &:active {
+      border-color: @btn-primary--hover;
       background: @white;
-      color: @brand-primary;
-      
+      color: @btn-primary--hover;
+    }
+    &--hasHolding {
+      background: @brand-primary;
+      color: @white;
+      border: none;
       &:hover, 
       &:focus,
       &:active {
-        background: @white;
-        color: @link-hover-color;
+        background: @btn-primary--hover;
+        color: @white;
       }
     }
 
