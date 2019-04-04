@@ -18,7 +18,10 @@ export default {
       type: Boolean,
       default: false,
     },
-    icon: null,
+    icon: {
+      type: String,
+      default: '',
+    },
     text: {
       type: String,
       default: '',
@@ -74,16 +77,18 @@ export default {
         excludeProperties: [],
         excludeComponents: [],
       }
-      const keys = Object.keys(this.listItemSettings);
-      for (let i = 0; i < keys.length; i++) {
-        if (this.listItemSettings.hasOwnProperty(keys[i])) {
-          settings[keys[i]] = this.listItemSettings[keys[i]];
+      if (typeof this.listItemSettings !== 'undefined') {
+        const keys = Object.keys(this.listItemSettings);
+        for (let i = 0; i < keys.length; i++) {
+          if (this.listItemSettings.hasOwnProperty(keys[i])) {
+            settings[keys[i]] = this.listItemSettings[keys[i]];
+          }
         }
       }
       return settings;
     },
     addPayload() {
-      const updatedListItemSettings = merge({ payload: this.focusData }, cloneDeep(this.listItemSettings));
+      const updatedListItemSettings = merge({ payload: this.focusData }, cloneDeep(this.settings));
       return updatedListItemSettings;
     },
   },
