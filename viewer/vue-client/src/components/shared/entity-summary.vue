@@ -284,7 +284,7 @@ export default {
         :key="k">
         <template v-if="isReplacedBy === ''">
           <span class="EntitySummary-detailsKey" :title="k | labelByLang">{{ k | labelByLang | capitalize }}</span>
-          <span class="EntitySummary-detailsValue" v-html="v"></span>
+          <span class="EntitySummary-detailsValue" :title="v" v-html="v"></span>
         </template>
         <template v-else>
           <span  class="EntitySummary-detailsKey">Ersatt av</span>
