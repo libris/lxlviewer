@@ -124,9 +124,13 @@ export default {
 
 <style lang="less">
 
-.PanelSearch{
+.PanelSearch {
 
   &-listItem {
+
+    .EntitySummary-detailsKey {
+      flex-basis: 8em;
+    }
 
     &.is-added, 
     &.is-replaced {
