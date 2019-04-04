@@ -145,12 +145,12 @@ export default {
       each(info, (node, index) => {
         if (Object.keys(infoObj).length < this.keyDisplayLimit || this.showAllKeys) {
           // const limit = node.property === 'identifiedBy' ? 1 : this.valueDisplayLimit;
-          const limit = 999; // override
-          const remainder = node.value.length > limit ? ` <span class="badge">+${node.value.length - limit}</span>` : '';
-          const trimmed = node.value.slice(0, limit).join(', ') + remainder;
-          if (trimmed.length > 0) {
-            infoObj[node.property] = trimmed;
-          }
+          infoObj[node.property] = node.value.join(', ');
+          // const remainder = node.value.length > limit ? ` <span class="badge">+${node.value.length - limit}</span>` : '';
+          // const trimmed = node.value.slice(0, limit).join(', ') + remainder;
+          // if (trimmed.length > 0) {
+          //   infoObj[node.property] = trimmed;
+          // }
         }
       });
       return infoObj;
