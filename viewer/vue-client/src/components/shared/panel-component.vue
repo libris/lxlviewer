@@ -313,6 +313,10 @@ export default {
     background-color: @list-item-bg-even;
     transition: background-color 0.2s ease;
 
+    &:only-child {
+      border: solid @gray-lighter;
+      border-width: 0px 0px 1px 0px;
+    }
     &:nth-child(odd) {
       background-color: @list-item-bg-odd;
     }
