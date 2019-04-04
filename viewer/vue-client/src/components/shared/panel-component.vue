@@ -316,10 +316,6 @@ export default {
     &:nth-child(odd) {
       background-color: @list-item-bg-odd;
     }
-
-    &:hover:not(.is-added):not(.is-disabled):not(.is-replaced):not(.SearchWindow-resultItem) {
-      background-color: @list-item-bg-hover;
-    }
   }
 
   &-footer {
