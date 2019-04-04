@@ -88,6 +88,7 @@ export default {
       :router-path="focusData['@id'] | asFnurgelLink" 
       :is-import="isImport" 
       :import-item="importItem" 
+      :exclude-components="isImport ? ['id'] : []"
       :show-all-keys="showAllKeys || hiddenDetailsNumber === 1"
       :add-link="true" 
       @import-this="importThis()"
@@ -97,11 +98,11 @@ export default {
       <div class="ResultItem-controls">
         <span v-if="hiddenDetailsNumber > 1" class="ResultItem-showMore" @click="showAllKeys = !showAllKeys">{{ showAllKeys ? 'Show fewer' : 'Show more' | translatePhrase }}{{ showAllKeys ? '' : ` (${hiddenDetailsNumber})` }}</span>
       </div>
-      <div class="ResultItem-tags" v-if="user.isLoggedIn && recordType === 'Instance'">
+      <div class="ResultItem-tags" v-if="user.isLoggedIn && isImport === false && recordType === 'Instance'">
         <tag-switch :document="focusData" class="" :action-labels="{ on: 'Flag for', off: 'Unflag for' }" tag="Directory care" />
       </div>
       <div class="ResultItem-relationsContainer"
-        v-if="this.$route.params.perimeter !== 'remote'">
+        v-if="isImport === false">
         <reverse-relations 
           :main-entity="focusData" 
           :compact="true">

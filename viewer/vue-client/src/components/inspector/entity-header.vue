@@ -108,17 +108,18 @@ export default {
         :show-all-keys="showAllKeys || hiddenDetailsNumber === 1"
         :focus-data="focusData"
         :should-link="false"
+        :exclude-components="inspector.status.isNew ? ['id'] : []"
         :valueDisplayLimit=3
       />
       <div class="HeaderComponent-bottomBar">
         <div class="HeaderComponent-controls">
           <span v-if="hiddenDetailsNumber > 1" class="HeaderComponent-showMore" @click="showAllKeys = !showAllKeys">{{ showAllKeys ? 'Show fewer' : 'Show more' | translatePhrase }}{{ showAllKeys ? '' : ` (${hiddenDetailsNumber})` }}</span>
         </div>
-        <div class="HeaderComponent-tags" v-if="user.isLoggedIn && recordType === 'Instance'">
+        <div class="HeaderComponent-tags" v-if="user.isLoggedIn && recordType === 'Instance' && inspector.status.isNew == false">
           <tag-switch :document="focusData" class="" :action-labels="{ on: 'Flag for', off: 'Unflag for' }" tag="Directory care" />
         </div>
         <div class="HeaderComponent-relationsContainer"
-          v-if="this.$route.params.perimeter !== 'remote'">
+          v-if="inspector.status.isNew == false">
           <reverse-relations 
             :main-entity="focusData" 
             :compact="false">
