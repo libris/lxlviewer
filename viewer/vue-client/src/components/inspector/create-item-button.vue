@@ -152,7 +152,8 @@ export default {
     border: 2px solid @brand-primary;
     &:hover, 
     &:focus,
-    &:active {
+    &:active,
+    &:active:focus {
       border-color: @btn-primary--hover;
       background: @white;
       color: @btn-primary--hover;
@@ -163,7 +164,8 @@ export default {
       border: none;
       &:hover, 
       &:focus,
-      &:active {
+      &:active,
+      &:active:focus {
         background: @btn-primary--hover;
         color: @white;
       }
