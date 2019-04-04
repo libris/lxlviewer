@@ -105,14 +105,14 @@ export default {
     <div class="EntityHeader-body HeaderComponent-body is-full">
       <entity-summary
         @hiddenDetailsNumber="setHiddenDetailsNumber"
-        :show-all-keys="showAllKeys"
+        :show-all-keys="showAllKeys || hiddenDetailsNumber === 1"
         :focus-data="focusData"
         :should-link="false"
         :valueDisplayLimit=3
       />
       <div class="HeaderComponent-bottomBar">
         <div class="HeaderComponent-controls">
-          <span v-if="hiddenDetailsNumber > 0" class="HeaderComponent-showMore" @click="showAllKeys = !showAllKeys">{{ showAllKeys ? 'Show fewer' : 'Show more' | translatePhrase }}{{ showAllKeys ? '' : ` (${hiddenDetailsNumber})` }}</span>
+          <span v-if="hiddenDetailsNumber > 1" class="HeaderComponent-showMore" @click="showAllKeys = !showAllKeys">{{ showAllKeys ? 'Show fewer' : 'Show more' | translatePhrase }}{{ showAllKeys ? '' : ` (${hiddenDetailsNumber})` }}</span>
         </div>
         <div class="HeaderComponent-tags" v-if="user.isLoggedIn && recordType === 'Instance'">
           <tag-switch :document="focusData" class="" :action-labels="{ on: 'Flag for', off: 'Unflag for' }" tag="Directory care" />

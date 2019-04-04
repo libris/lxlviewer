@@ -88,14 +88,14 @@ export default {
       :router-path="focusData['@id'] | asFnurgelLink" 
       :is-import="isImport" 
       :import-item="importItem" 
-      :show-all-keys="showAllKeys"
+      :show-all-keys="showAllKeys || hiddenDetailsNumber === 1"
       :add-link="true" 
       @import-this="importThis()"
       :valueDisplayLimit=3>
     </entity-summary>
     <div class="ResultItem-bottomBar">
       <div class="ResultItem-controls">
-        <span v-if="hiddenDetailsNumber > 0" class="ResultItem-showMore" @click="showAllKeys = !showAllKeys">{{ showAllKeys ? 'Show fewer' : 'Show more' | translatePhrase }}{{ showAllKeys ? '' : ` (${hiddenDetailsNumber})` }}</span>
+        <span v-if="hiddenDetailsNumber > 1" class="ResultItem-showMore" @click="showAllKeys = !showAllKeys">{{ showAllKeys ? 'Show fewer' : 'Show more' | translatePhrase }}{{ showAllKeys ? '' : ` (${hiddenDetailsNumber})` }}</span>
       </div>
       <div class="ResultItem-tags" v-if="user.isLoggedIn && recordType === 'Instance'">
         <tag-switch :document="focusData" class="" :action-labels="{ on: 'Flag for', off: 'Unflag for' }" tag="Directory care" />
