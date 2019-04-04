@@ -752,6 +752,9 @@ export default {
 
   &-header {
     flex: 3;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
   }
 
   &-actions {
