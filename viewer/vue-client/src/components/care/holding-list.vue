@@ -269,6 +269,8 @@ export default {
               <i class="statusItem-error fa fa-fw fa-times" v-show="getStatus(holding) === 'error'" />
             </div>
             <entity-summary 
+            :exclude-components="['categorization', 'id']"
+            :exclude-properties="['itemOf']"
             :focus-data="holding"
             :shouldOpenTab="true"></entity-summary>
           </div>
