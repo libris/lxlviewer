@@ -24,6 +24,7 @@ export default {
   data() {
     return {
       keyword: '',
+      excludeFilters: ['q', 'identifiedBy.value', 'identifiedBy.@type', 'hasTitle.mainTitle'],
     };
   },
   computed: {
@@ -38,7 +39,8 @@ export default {
     },
     filters() {
       if (typeof this.pageData.search !== 'undefined') {
-        return this.pageData.search.mapping.filter((item => item.variable !== 'q'))
+        // remove search-by filters, ISBN etc
+        return this.pageData.search.mapping.filter(item => this.excludeFilters.every(el => el !== item.variable))
           .map((item) => {
             let label = '';
             if (item.hasOwnProperty('value')) { // Try to use item value to get label

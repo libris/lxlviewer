@@ -178,7 +178,7 @@ export default {
     },
     '$route.fullPath'() {
       this.activeTypes = this.getIncomingTypes();
-      this.getIncomingSearch();
+      this.activeSearchParam = this.getIncomingSearch();
     },
   },
   mounted() {
