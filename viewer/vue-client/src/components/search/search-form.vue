@@ -178,6 +178,7 @@ export default {
     },
     '$route.fullPath'() {
       this.activeTypes = this.getIncomingTypes();
+      this.getIncomingSearch();
     },
   },
   mounted() {
@@ -190,7 +191,7 @@ export default {
 
 <template>
   <div class="SearchBar">
-    <div class="SearchBar-topControl">
+    <div class="SearchBar-topControl"> 
       <tab-menu :link="true" :tabs="[
         { 'id': 'libris', 'text': 'Libris', link: '/search/libris'},
         { 'id': 'remote', 'text': 'Other sources', link: '/search/remote' },
@@ -210,7 +211,7 @@ export default {
             <div class="SearchBar-helpContent" v-html="searchHelpDocs"></div>
           </div>
         </div>
-      </div> 
+      </div>
     </div>
     <form id="searchForm" class="SearchBar-form">
       <div class="SearchBar-formContent">
