@@ -2,6 +2,7 @@
 import * as StringUtil from '@/utils/string';
 import * as httpUtil from '@/utils/http';
 import Sort from '@/components/search/sort';
+// import { pickBy } from 'lodash-es';
 
 export default {
   name: 'result-controls',
@@ -52,6 +53,7 @@ export default {
             } else if (item.hasOwnProperty('object')) label = item.object['@id']; // else try to translate object[@id]...
             return {
               label,
+              variable: item.variable,
               up: item.up['@id'],
             };
           });
@@ -145,6 +147,11 @@ export default {
       });
       this.$dispatch('newresult', resultPromise);
     },
+    // clearAllFilters() { // introduce when we have 'type' radio buttons
+    //   const currentQuery = Object.assign({}, this.$route.query);
+    //   const clearedQuery = pickBy(currentQuery, (value, key) => this.filters.every(el => el.variable !== key));
+    //   this.$router.push({ query: clearedQuery });
+    // },
   },
   components: {
     sort: Sort,
@@ -195,6 +202,12 @@ export default {
           <i class="fa fa-fw fa-close icon"></i>
         </router-link>
       </div>
+      <!-- <button class="ResultControls-filterBadge clear-all" // introduce when we have 'type' radio buttons
+        v-if="filters.length > 1"
+        @click="clearAllFilters">
+        {{ 'Clear all' | translatePhrase }}
+        <i class="fa fa-fw fa-close icon"></i>
+      </button> -->
     </div>
     <nav v-if="hasPagination && showPages">
       <ul class="ResultControls-pagList">
@@ -223,7 +236,7 @@ export default {
             v-if="pageData.next" :to="pageData.next['@id'] | asAppPath">{{'Next' | translatePhrase}}</router-link>
           <a class="ResultControls-pagLink" v-if="!pageData.next">{{'Next' | translatePhrase}}</a>
         </li>
-        <li class="ResultControls-pagItem" 
+        <li class="ResultControls-pagItem"
           v-bind:class="{ 'is-disabled': !pageData.last || pageData['@id'] === pageData.last['@id'] }">
           <router-link class="ResultControls-pagLink" 
             v-if="pageData.last" :to="pageData.last['@id'] | asAppPath">{{'Last' | translatePhrase}}</router-link>
@@ -309,6 +322,7 @@ export default {
 
   &-filterBadge {
     background-color: #364a4c;
+    border: 1px solid #364a4c;
     color: @white;
     font-weight: 600;
     font-size: 1.4rem;
@@ -320,6 +334,17 @@ export default {
     & i,
     & i:hover {
       color: @white;
+    }
+
+    &.clear-all {
+      color: inherit;
+      background-color: @white;
+      border: 1px solid @grey-lighter;
+
+      & i,
+      & i:hover {
+        color: inherit;
+      }
     }
 
   }
