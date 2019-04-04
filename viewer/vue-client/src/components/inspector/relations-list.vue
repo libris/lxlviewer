@@ -30,8 +30,6 @@ export default {
       embellishedList: [],
       showInstances: false,
       hideByContext: {
-        'Item': ['id', 'categorization'],
-        'Instance': ['id', 'categorization'],
       }
     };
   },
