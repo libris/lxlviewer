@@ -265,7 +265,7 @@ export default {
     <div class="ReverseRelations compact" 
       v-if="compact">
       <div class="ReverseRelations-header uppercaseHeading--light">
-        <span v-if="recordType === 'Instance'">{{"Holding" | translatePhrase}}</span>
+        <span v-if="recordType === 'Instance' || recordType === 'Item'">{{"Holding" | translatePhrase}}</span>
         <span v-else-if="recordType === 'Agent'">{{ "Contribution" | translatePhrase }}</span>
         <span v-else>{{"Used in" | translatePhrase}}</span>
       </div>
