@@ -243,7 +243,6 @@ export default {
       <div class="HoldingList-items">
         <div class="HoldingList-item" :key="index" v-for="(holding, index) in sortedHoldings">
           <div class="HoldingList-itemBody" :class="{ 'selected': isSelected(holding), 'newly-moved': isNewlyMoved(holding), 'is-first': index === 0 }">
-            <div class="HoldingList-itemIndex">{{index + 1}}</div>
             <div class="HoldingList-input" v-if="isSender && !lock && userHasPermission(holding) && !holdingExistsOnTarget(holding)">
               <input
                 :checked="isSelected(holding)" 
@@ -289,6 +288,10 @@ export default {
   display: flex;
   flex-direction: column;
 
+  .EntitySummary-detailsKey {
+    flex-basis: 9em;
+  }
+
   &-topBar {
     height: 4em;
     padding: 15px;
@@ -298,7 +301,7 @@ export default {
     .btn {
       min-width: unset;
     }
-    & * {
+    & > * {
       margin: 5px;
     }
 
@@ -369,7 +372,7 @@ export default {
   &-input, &-status, &-noPermission, &-foundOnDestination, &-noReciever {
     display: flex;
     flex-direction: row;
-    width: 40px;
+    width: 50px;
     padding: 0 10px;
     justify-content: center;
     align-items: center;
