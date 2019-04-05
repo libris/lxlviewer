@@ -665,9 +665,9 @@ export default {
           <div class="Inspector-header">
             <h1 class="Inspector-title mainTitle" :title="recordType">
               <span>{{ recordType | labelByLang }}</span>
-              <span v-if="this.inspector.status.isNew"> - [{{ "New record" | translatePhrase }}]</span>
+              <span v-if="inspector.status.isNew"> - [{{ "New record" | translatePhrase }}]</span>
             </h1>
-            <entity-changelog />
+            <entity-changelog v-if="inspector.status.isNew === false" />
           </div>
         </div>
         <entity-header id="main-header" 
