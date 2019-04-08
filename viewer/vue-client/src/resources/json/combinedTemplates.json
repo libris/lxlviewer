@@ -2,7 +2,7 @@
   "instance": {
     "audiobook": {
       "label": "Ljudbok",
-      "description": "Ljudinspelning",
+      "description": "Ljudinspelning - RDA",
       "value": {
         "record": {
           "@id": "https://id.kb.se/TEMPID",
@@ -376,7 +376,7 @@
     },
     "movie": {
       "label": "Film",
-      "description": "Videoinspelning",
+      "description": "Videoinspelning - RDA",
       "value": {
         "record": {
           "@id": "https://id.kb.se/TEMPID",
@@ -580,7 +580,7 @@
     },
     "music-cd": {
       "label": "Musik-CD",
-      "description": "Ljudinspelning",
+      "description": "Ljudinspelning - RDA",
       "value": {
         "record": {
           "@id": "https://id.kb.se/TEMPID",
@@ -978,7 +978,7 @@
     },
     "printedCartograph": {
       "label": "Karta",
-      "description": "Tryckt kartmaterial",
+      "description": "Tryckt kartmaterial - RDA",
       "value": {
         "record": {
           "@id": "https://id.kb.se/TEMPID",
@@ -1835,7 +1835,7 @@
       }
     },
     "printedStillImage": {
-      "label": "Stillbild",
+      "label": "Stillbild - RDA",
       "description": "",
       "value": {
         "record": {
@@ -2028,7 +2028,7 @@
     },
     "videogame": {
       "label": "Datorspel",
-      "description": "Multimedia",
+      "description": "Multimedia - RDA",
       "value": {
         "record": {
           "@id": "https://id.kb.se/TEMPID",
