@@ -131,12 +131,11 @@ export default {
     },
     totalInfo() {
       const total = this.getSummary.info.concat(this.getSummary.sub);
-      return total.filter(prop => {
+      return total.filter((prop) => {
         if (isArray(prop.value)) {
           return prop.value.join('').length > 0;
-        } else {
-          return prop.value.length > 0;
-        }
+        } 
+        return prop.value.length > 0;
       });
     },
     infoWithKeys() {
@@ -389,6 +388,9 @@ export default {
     text-overflow: ellipsis;
     display: -webkit-box;
     line-height: 1.8em;
+    display: block;
+    white-space: nowrap;
+    height: auto;
 
     & .highlight {
       background-color: @brand-faded;
@@ -406,10 +408,12 @@ export default {
       }
     }
 
-    @media (min-width: 768px) {
-      display: block;
-      white-space: nowrap;
-      height: auto;
+    @media (max-width: 768px) {
+      white-space: normal;
+      display: -webkit-box;
+      line-height: 1.4em;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
     }
   }
 
