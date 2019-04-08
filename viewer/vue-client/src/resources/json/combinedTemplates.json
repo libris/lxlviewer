@@ -1838,8 +1838,8 @@
       }
     },
     "printedStillImage": {
-      "label": "Stillbild - RDA",
-      "description": "",
+      "label": "Stillbild",
+      "description": "RDA",
       "value": {
         "record": {
           "@id": "https://id.kb.se/TEMPID",
