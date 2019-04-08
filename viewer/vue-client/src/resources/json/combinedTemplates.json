@@ -1775,66 +1775,60 @@
             }
           ],
           "contentType": [{"@id": "https://id.kb.se/term/rda/NotatedMusic"}],
-          "relationship": [
+          "hasPart": [
             {
-              "@type": "Relationship",
-              "entity": {
-                "@type": "Work",
-                "contribution": [
-                  {
-                    "@type": "PrimaryContribution",
-                    "agent": null
-                  }
-                ],
-                "hasTitle": [
-                  {
-                    "@type": "Title",
-                    "mainTitle": "",
-                    "partNumber": [
-                      ""
-                    ],
-                    "partName": [
+              "@type": "Work",
+              "contribution": [
+                {
+                  "@type": "PrimaryContribution",
+                  "agent": null
+                }
+              ],
+              "hasTitle": [
+                {
+                  "@type": "Title",
+                  "mainTitle": "",
+                  "partNumber": [
                     ""
-                    ]
-                  }
-                ],
-                "musicKey": "",
-                "version": "",
-                "musicMedium": [{
-                  "@type": "MusicMedium",
-                  "label": ""
-                }]
-              }
+                  ],
+                  "partName": [
+                  ""
+                  ]
+                }
+              ],
+              "musicKey": "",
+              "version": "",
+              "musicMedium": [{
+                "@type": "MusicMedium",
+                "label": ""
+              }]
             },
             {
-              "@type": "Relationship",
-              "entity": {
-                "@type": "Work",
-                "contribution": [
-                  {
-                    "@type": "PrimaryContribution",
-                    "agent": null
-                  }
-                ],
-                "hasTitle": [
-                  {
-                    "@type": "Title",
-                    "mainTitle": "",
-                    "partNumber": [
-                      ""
-                    ],
-                    "partName": [
+              "@type": "Work",
+              "contribution": [
+                {
+                  "@type": "PrimaryContribution",
+                  "agent": null
+                }
+              ],
+              "hasTitle": [
+                {
+                  "@type": "Title",
+                  "mainTitle": "",
+                  "partNumber": [
                     ""
-                    ]
-                  }
-                ],
-                "musicKey": "",
-                "version": "",
-                "musicMedium": [{
-                  "@type": "MusicMedium",
-                  "label": ""
-                }]
-              }
+                  ],
+                  "partName": [
+                  ""
+                  ]
+                }
+              ],
+              "musicKey": "",
+              "version": "",
+              "musicMedium": [{
+                "@type": "MusicMedium",
+                "label": ""
+              }]
             }
           ]
         }
