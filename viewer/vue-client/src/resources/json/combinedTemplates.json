@@ -1075,6 +1075,9 @@
           "genreForm": [
             {
               "@id": "https://id.kb.se/marc/MapATwoDimensionalMap"
+            },
+            {
+              "@id": "https://id.kb.se/marc/SingleMap"
             }
           ],
           "marc:otherPhysicalDetails": "",
