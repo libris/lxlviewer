@@ -74,14 +74,18 @@ export default {
       this.focusSearchInput();
     },
     getIncomingSearch() {
-      let match = PropertyMappings
-        .filter(prop => Object.keys(prop.mappings)
-          .every(key => this.$route.query.hasOwnProperty(key)));
-
-      if (match.length > 1) { // multiple sets of matching parameters
-        const newMatch = match
-          .filter(prop => prop.mappings['identifiedBy.@type'] === this.$route.query['identifiedBy.@type']);
-        match = newMatch;
+      let match = PropertyMappings.filter((prop) => {
+        const keys = Object.keys(prop.mappings);
+        return keys.every(key => this.$route.query.hasOwnProperty(key));
+      });
+      if (match.length > 1) {
+        // multiple matching parameters...
+        const filteredMatch = match
+          // try separate ISSN from ISBN
+          .filter(prop => prop.mappings['identifiedBy.@type'] === this.$route.query['identifiedBy.@type'])
+          // remove 'q'
+          .filter(prop => !prop.mappings.hasOwnProperty('q'));
+        match = filteredMatch;
       }
       if (match.length > 0) {
         const matchObj = match[0];
@@ -90,6 +94,7 @@ export default {
         });
         return matchObj;
       }
+      // no match -> return default
       return PropertyMappings[0];
     },
     getIncomingTypes() {
@@ -148,7 +153,7 @@ export default {
       return this.searchPerimeter === 'remote' ? 'ISBN eller valfria sökord' : 'Search';
     },
     composedSearchParam() {
-      const composed = this.activeSearchParam.mappings;
+      const composed = Object.assign({}, this.activeSearchParam.mappings);
       composed[this.activeSearchParam.searchProp] = this.searchPhrase.length > 0 ? this.searchPhrase : '*';
       return composed;
     },
