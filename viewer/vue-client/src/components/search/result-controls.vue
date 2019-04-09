@@ -328,7 +328,7 @@ export default {
     color: @white;
     font-weight: 600;
     font-size: 1.4rem;
-    padding: 2px 10px;
+    padding: 2px 5px 2px 10px;
     margin: 5px 5px 0 0;
     border-radius: 4px;
     white-space: nowrap;
@@ -416,10 +416,6 @@ export default {
       &:hover {
         color: @black;
       }
-    }
-
-    i {
-      padding: 0 5px 0 5px;
     }
   }
 }
