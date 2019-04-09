@@ -22,8 +22,8 @@ export default {
       staticProps: { _limit: 20 },
       searchPhrase: '',
       searchParams: PropertyMappings,
-      activeSearchParam: this.getIncomingSearch(),
-      activeTypes: this.getIncomingTypes(),
+      activeSearchParam: null,
+      activeTypes: null,
     };
   },
   methods: {
@@ -73,7 +73,7 @@ export default {
       this.searchPhrase = '';
       this.focusSearchInput();
     },
-    getIncomingSearch() {
+    setSearch() {
       let match = PropertyMappings.filter((prop) => {
         const keys = Object.keys(prop.mappings);
         return keys.every(key => this.$route.query.hasOwnProperty(key));
@@ -94,21 +94,32 @@ export default {
         });
         return matchObj;
       }
-      // no match -> return default
+      // no match...
+      if (this.user && this.user.settings.searchParam) {
+        // return saved preference
+        const userPref = Object.assign({}, this.user.settings.searchParam);
+        return userPref;
+      }
+      // return fallback value
       return PropertyMappings[0];
     },
-    getIncomingTypes() {
+    setTypes() {
       const performedQuery = cloneDeep(this.$route.query);
       if (isEmpty(performedQuery)) {
-        return ['Instance'];
+        return ['Instance']; // initial value
       }
       if (!performedQuery.hasOwnProperty('@type')) {
-        return [];
+        return []; // explicitly no types
       }
-      if (typeof performedQuery['@type'] === 'string') { // put a single @type into an array
-        return [performedQuery['@type']];
+      if (typeof performedQuery['@type'] === 'string') { 
+        return [performedQuery['@type']]; // put a single @type into an array
       }
       return performedQuery['@type'];
+    },
+    setPrefSearchParam() {
+      const user = this.user;
+      user.settings.searchParam = this.activeSearchParam;
+      this.$store.dispatch('setUser', user);
     },
   },
   computed: {
@@ -152,7 +163,7 @@ export default {
     inputPlaceholder() {
       return this.searchPerimeter === 'remote' ? 'ISBN eller valfria sökord' : 'Search';
     },
-    composedSearchParam() {
+    composedSearchParam() { // pair current search param with searchphrase
       const composed = Object.assign({}, this.activeSearchParam.mappings);
       composed[this.activeSearchParam.searchProp] = this.searchPhrase.length > 0 ? this.searchPhrase : '*';
       return composed;
@@ -182,13 +193,15 @@ export default {
       }
     },
     '$route.fullPath'() {
-      this.activeTypes = this.getIncomingTypes();
-      this.activeSearchParam = this.getIncomingSearch();
+      this.activeTypes = this.setTypes();
+      this.activeSearchParam = this.setSearch();
     },
   },
   mounted() {
     this.$nextTick(() => {
       this.focusSearchInput();
+      this.activeSearchParam = this.setSearch();
+      this.activeTypes = this.setTypes();
     });
   },
 };
@@ -227,7 +240,8 @@ export default {
           <div class="SearchBar-selectWrapper" v-if="searchPerimeter === 'libris'">
             <select
               class="SearchBar-select form-control customSelect"
-              v-model="activeSearchParam">
+              v-model="activeSearchParam"
+              @change="setPrefSearchParam">
               <option 
                 v-for="prop in searchParams"
                 :key="prop.key"
