@@ -261,14 +261,18 @@ export function getCard(item, displayDefs, quoted, vocab, settings, context) {
 }
 /* eslint-enable no-use-before-define */
 
-export function getItemSummary(item, displayDefs, quoted, vocab, settings, context) {
+export function getItemSummary(item, displayDefs, quoted, vocab, settings, context, excludeProperties = []) {
   const card = getCard(item, displayDefs, quoted, vocab, settings, context);
+  if (excludeProperties.length > 0) {
+    for (let i = 0; i < excludeProperties.length; i++) {
+      delete card[excludeProperties[i]];
+    }
+  }
   const displayGroups = require('@/resources/json/displayGroups.json');
   const summary = {
     categorization: [],
     header: [],
     info: [],
-    identifiers: [],
     sub: [],
   };
   each(card, (value, key) => {
@@ -280,8 +284,6 @@ export function getItemSummary(item, displayDefs, quoted, vocab, settings, conte
       summary.header.push({ property: key, value: v });
     } else if (displayGroups.info.indexOf(key) !== -1) {
       summary.info.push({ property: key, value: v });
-    } else if (displayGroups.identifiers.indexOf(key) !== -1) {
-      summary.identifiers.push({ property: key, value: v });
     } else if (displayGroups.categorization.indexOf(key) !== -1) {
       summary.categorization.push({ property: key, value: v });
     } else {

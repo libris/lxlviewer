@@ -243,7 +243,6 @@ export default {
       <div class="HoldingList-items">
         <div class="HoldingList-item" :key="index" v-for="(holding, index) in sortedHoldings">
           <div class="HoldingList-itemBody" :class="{ 'selected': isSelected(holding), 'newly-moved': isNewlyMoved(holding), 'is-first': index === 0 }">
-            <div class="HoldingList-itemIndex">{{index + 1}}</div>
             <div class="HoldingList-input" v-if="isSender && !lock && userHasPermission(holding) && !holdingExistsOnTarget(holding)">
               <input
                 :checked="isSelected(holding)" 
@@ -269,6 +268,8 @@ export default {
               <i class="statusItem-error fa fa-fw fa-times" v-show="getStatus(holding) === 'error'" />
             </div>
             <entity-summary 
+            :exclude-components="['categorization', 'id']"
+            :exclude-properties="['itemOf']"
             :focus-data="holding"
             :shouldOpenTab="true"></entity-summary>
           </div>
@@ -287,6 +288,10 @@ export default {
   display: flex;
   flex-direction: column;
 
+  .EntitySummary-detailsKey {
+    flex-basis: 9em;
+  }
+
   &-topBar {
     height: 4em;
     padding: 15px;
@@ -296,7 +301,7 @@ export default {
     .btn {
       min-width: unset;
     }
-    & * {
+    & > * {
       margin: 5px;
     }
 
@@ -322,6 +327,7 @@ export default {
   &-items {
     max-height: 50vh;
     overflow-y: scroll;
+    overflow-x: hidden;
   }
   &-item {
     flex-direction: row;
@@ -345,6 +351,7 @@ export default {
     flex-direction: row;
     display: flex;
     flex: 1;
+    min-width: 0%;
     border: solid @grey-lighter;
     border-width: 0px 1px 1px 1px;
     &.is-first {
@@ -365,7 +372,7 @@ export default {
   &-input, &-status, &-noPermission, &-foundOnDestination, &-noReciever {
     display: flex;
     flex-direction: row;
-    width: 40px;
+    width: 50px;
     padding: 0 10px;
     justify-content: center;
     align-items: center;

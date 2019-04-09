@@ -1,10 +1,11 @@
 <script>
 import { each } from 'lodash-es';
-import * as VocabUtil from '../../utils/vocab';
+import * as VocabUtil from '@/utils/vocab';
 import * as MathUtil from '@/utils/math';
+import * as StringUtil from '@/utils/string';
 import CreateItemButton from './create-item-button';
 import RelationsList from '@/components/inspector/relations-list';
-import RoundButton from '@/components/shared/round-button.vue';
+import RoundedButton from '@/components/shared/rounded-button.vue';
 import { mapGetters } from 'vuex';
 import VueSimpleSpinner from 'vue-simple-spinner';
 import TooltipComponent from '@/components/shared/tooltip-component';
@@ -144,6 +145,9 @@ export default {
     recordId() {
       return this.mainEntity['@id'];
     },
+    translatedTooltip() {
+      return StringUtil.getUiPhraseByLang(this.totalRelationTooltipText, this.user.settings.language);
+    },
     totalRelationTooltipText() {
       if (this.recordType === 'Instance' || this.recordType === 'Item') {
         if (this.numberOfRelations === 0) {
@@ -174,7 +178,7 @@ export default {
     'create-item-button': CreateItemButton,
     'relations-list': RelationsList,
     'vue-simple-spinner': VueSimpleSpinner,
-    'round-button': RoundButton,
+    'rounded-button': RoundedButton,
     'tooltip-component': TooltipComponent,
   },
   watch: {
@@ -219,53 +223,9 @@ export default {
 
 <template>
   <div class="ReverseRelations">
-    <vue-simple-spinner class="ReverseRelations-spinner"
-      v-show="checkingRelations"
-      v-if="!compact" 
-      size="medium">
-    </vue-simple-spinner>
-    <div class="ReverseRelations-number"
-      v-show="!checkingRelations"
-      v-if="!compact">
-      <span class="uppercaseHeading">
-        <span class="ReverseRelations-label" 
-          v-if="recordType === 'Work'">{{ "Instantiations" | translatePhrase }}</span>
-        <span class="ReverseRelations-label" 
-          v-if="recordType === 'Instance' || recordType === 'Item'">{{ "Libraries" | translatePhrase }}</span>
-        <span class="ReverseRelations-label" 
-          v-if="recordType === 'Agent'">{{ "Contribution" | translatePhrase }}</span>
-        <round-button
-          :button-text="numberOfRelationsCircle"
-          :disabled="numberOfRelations === 0 || isNaN(numberOfRelations)"
-          :indicator="numberOfRelations > 0"
-          :icon="isNaN(numberOfRelations) ? 'exclamation' : false"
-          :active="relationsListOpen"
-          :label="totalRelationTooltipText"
-          @click="showPanel()">
-          <template slot="tooltip">
-            <tooltip-component 
-              class="Toolbar-tooltipContainer"
-              position="left"
-              :show-tooltip="true"
-              :tooltip-text="totalRelationTooltipText"></tooltip-component>
-          </template>
-        </round-button>
-      </span>
-      <create-item-button class="ReverseRelations-button"
-        v-if="recordType === 'Instance' && user.isLoggedIn && user.getPermissions().registrant" 
-        :disabled="inspector.status.editing" 
-        :compact="false"
-        :main-entity="mainEntity"
-        :has-holding="hasRelation" 
-        :checking-holding="checkingRelations" 
-        :holding-id="myHolding"
-        @done="checkingRelations=false"></create-item-button>
-    </div>
-    <!-- compact view (in search result) -->
-    <div class="ReverseRelations compact" 
-      v-if="compact">
+    <div class="ReverseRelations">
       <div class="ReverseRelations-header uppercaseHeading--light">
-        <span v-if="recordType === 'Instance'">{{"Holding" | translatePhrase}}</span>
+        <span v-if="recordType === 'Instance' || recordType === 'Item'">{{"Holding" | translatePhrase}}</span>
         <span v-else-if="recordType === 'Agent'">{{ "Contribution" | translatePhrase }}</span>
         <span v-else>{{"Used in" | translatePhrase}}</span>
       </div>
@@ -276,29 +236,22 @@ export default {
       <div class="ReverseRelations-btnContainer" v-if="!checkingRelations">
         <create-item-button class="ReverseRelations-button"
         v-if="recordType === 'Instance' && user.isLoggedIn && user.getPermissions().registrant" 
-        :compact="true"
+        :compact="compact"
         :main-entity="mainEntity"
         :has-holding="hasRelation" 
         :checking-holding="checkingRelations" 
         :holding-id="myHolding"
         @done="checkingRelations=false"></create-item-button>
-        <round-button
+        <rounded-button
           :button-text="numberOfRelationsCircle"
           :disabled="!numberOfRelations || isNaN(numberOfRelations)"
           :indicator="numberOfRelations > 0"
           :icon="isNaN(numberOfRelations) ? 'exclamation' : false"
           :active="relationsListOpen"
           :label="totalRelationTooltipText"
+          v-tooltip.top="translatedTooltip"
           @click="showPanel()">
-          <template slot="tooltip">
-            <tooltip-component 
-              class="Toolbar-tooltipContainer"
-              position="left"
-              :active="true"
-              :show-tooltip="true"
-              :tooltip-text="totalRelationTooltipText"></tooltip-component>
-          </template>
-        </round-button>
+        </rounded-button>
       </div>
     </div>
     <!-- end -->
@@ -315,6 +268,9 @@ export default {
 
 <style lang="less">
 .ReverseRelations {
+  display: flex;
+  align-items: center;
+  
   &-number {
     float: left;
     margin: 0 0 10px;
@@ -330,18 +286,12 @@ export default {
   }
 
   &-header {
-    margin-bottom: 5px;
+    margin-right: 5px;
   }
 
   &-btnContainer {
     display: flex;
-    flex-direction: column;
     align-items: center;
-  }
-
-  &.compact {
-    display: flex;
-    flex-direction: column;
   }
 
   &-spinner {

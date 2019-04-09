@@ -11,9 +11,10 @@ Listen to the 'click' event in the parent as usual.
     * indicator - true gets an 'active' look
     * active - true gives primary a permanent 'focused' look
     * label - (if icon) provide a string that will be translated & used as accessible label
+    * shadow - (default: false) show a shadow under the button
 */
 export default {
-  name: 'round-button',
+  name: 'rounded-button',
   props: {
     size: {
       type: String,
@@ -24,6 +25,10 @@ export default {
       default: false,
     },
     disabled: {
+      type: Boolean,
+      default: false,
+    },
+    shadow: {
       type: Boolean,
       default: false,
     },
@@ -73,8 +78,8 @@ export default {
 </script>
 
 <template>
-  <button class="RoundButton btn"
-    :class="{'btn-gray disabled' : disabled, 'default': !indicator && !disabled, 'btn-primary': indicator && !disabled, 'is-active': active}"
+  <button class="RoundedButton btn"
+    :class="{'has-shadow': shadow, 'btn-gray disabled' : disabled, 'default': !indicator && !disabled, 'btn-primary': indicator && !disabled, 'is-active': active}"
     @click="action()"
     @mouseover="mouseOver = true"
     @mouseout="mouseOver = false"
@@ -82,23 +87,29 @@ export default {
     <span v-if="icon">
       <i :class="`fa fa-${icon}`" aria-hidden="true"></i>
     </span>
-    <span class="RoundButton-buttonText" :class="{'small-text': smallText }" v-else>{{ buttonText }}</span>
+    <span class="RoundedButton-buttonText" :class="{'small-text': smallText }" v-else>{{ buttonText }}</span>
     <slot name="tooltip" v-if="mouseOver"></slot>
   </button>
 </template>
 
 <style lang="less">
-.RoundButton {
+.RoundedButton {
   position: relative;
   margin: 5px;
-  width: 32px;
-  height: 32px;
-  border-radius: 16px;
+  width: 30px;
+  height: 30px;
+  border-radius: 4px;
   justify-content: center;
   align-items: center;
   padding: 0;
   font-weight: 700;
+  font-size: 1.3rem;
   transition: all 0.25s ease;
+  box-shadow: none;
+
+  &.has-shadow {
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.1);
+  }
 
   &.default {
   background-color: @neutral-color;

@@ -1,5 +1,5 @@
 <script>
-import { each } from 'lodash-es';
+import { each, isArray } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import LensMixin from '../mixins/lens-mixin';
 import * as StringUtil from '@/utils/string';
@@ -25,6 +25,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    excludeComponents: {
+      type: Array,
+      default: () => [],
+    },
     isImport: {
       type: Boolean,
       default: false,
@@ -46,6 +50,14 @@ export default {
       default: false,
     },
     isCompact: {
+      default: false,
+      type: Boolean,
+    },
+    keyDisplayLimit: {
+      default: 5,
+      type: Number,
+    },
+    showAllKeys: {
       default: false,
       type: Boolean,
     },
@@ -85,6 +97,9 @@ export default {
       const cleaned = id.replace('https://', '').replace('http://', '');
       return cleaned;
     },
+    hiddenDetailsNumber() {
+      return this.totalInfo.length - this.keyDisplayLimit;
+    },
     idTooltipText() {
       return StringUtil.getUiPhraseByLang('Copy ID', this.user.settings.language);
     },
@@ -114,13 +129,28 @@ export default {
     isLibrisResource() {
       return StringUtil.isLibrisResourceUri(this.focusData['@id'], this.settings);
     },
+    totalInfo() {
+      const total = this.getSummary.info.concat(this.getSummary.sub);
+      return total.filter((prop) => {
+        if (isArray(prop.value)) {
+          return prop.value.join('').length > 0;
+        } 
+        return prop.value.length > 0;
+      });
+    },
     infoWithKeys() {
-      const info = this.getSummary.info.concat(this.getSummary.sub);
+      const info = this.totalInfo;
       const infoObj = {};
-      each(info, (node) => {
-        const remainder = node.value.length > this.valueDisplayLimit ? ` <span class="badge">+${node.value.length - this.valueDisplayLimit}</span>` : '';
-        const trimmed = node.value.slice(0, this.valueDisplayLimit).join(', ') + remainder;
-        infoObj[node.property] = trimmed;
+      each(info, (node, index) => {
+        if (Object.keys(infoObj).length < this.keyDisplayLimit || this.showAllKeys) {
+          // const limit = node.property === 'identifiedBy' ? 1 : this.valueDisplayLimit;
+          infoObj[node.property] = node.value.join(', ');
+          // const remainder = node.value.length > limit ? ` <span class="badge">+${node.value.length - limit}</span>` : '';
+          // const trimmed = node.value.slice(0, limit).join(', ') + remainder;
+          // if (trimmed.length > 0) {
+          //   infoObj[node.property] = trimmed;
+          // }
+        }
       });
       return infoObj;
     },
@@ -139,15 +169,6 @@ export default {
         this.settings, 
         this.resources.context,
       );
-    },
-    identifiers() {
-      const identifiersList = StringUtil.getFormattedEntries(
-        this.getSummary.identifiers, 
-        this.resources.vocab, 
-        this.settings, 
-        this.resources.context,
-      );
-      return identifiersList;
     },
     info() {
       return StringUtil.getFormattedEntries(
@@ -172,6 +193,11 @@ export default {
       ));
       return allThings;
     },
+  },
+  mounted() {
+    this.$nextTick(() => {
+      this.$emit('hiddenDetailsNumber', this.hiddenDetailsNumber);
+    });
   },
   methods: {
     copyFnurgel() {
@@ -207,18 +233,18 @@ export default {
 <template>
 <section class="EntitySummary">
   <div class="EntitySummary-meta">
-    <div class="EntitySummary-type uppercaseHeading--light">
+    <div v-if="excludeComponents.indexOf('categorization') < 0" class="EntitySummary-type uppercaseHeading--light">
       {{categorization.join(', ')}} {{ isLocal ? '{lokal entitet}' : '' }}
       <span class="EntitySummary-sourceLabel" v-if="database">{{ database }}</span>
     </div>
-    <div class="EntitySummary-id uppercaseHeading--light" :class="{'recently-copied': recentlyCopiedId }" @mouseover="idHover = true" @mouseout="idHover = false">
+    <div v-if="excludeComponents.indexOf('id') < 0" class="EntitySummary-id uppercaseHeading--light" :class="{'recently-copied': recentlyCopiedId }" @mouseover="idHover = true" @mouseout="idHover = false">
       <i v-tooltip.top="idTooltipText" class="fa fa-copy EntitySummary-idCopyIcon" :class="{'collapsedIcon': !idHover || recentlyCopiedId }" @click.stop="copyFnurgel">
       </i>{{ idAsFnurgel }}
     </div>
   </div>
 
   <div class="EntitySummary-info">
-    <h3 class="EntitySummary-title" v-bind:class="{ 'EntitySummary-title--imported': isImport && shouldLink }">
+    <h3 class="EntitySummary-title" v-bind:class="{ 'EntitySummary-title--imported': isImport && shouldLink, 'showAll': showAllKeys }">
       <span v-if="highlightStr && !shouldLink" 
         v-html="highlight(header.join(', '))"
         :title="header.join(', ')">
@@ -253,24 +279,17 @@ export default {
     </h3>
     <ul class="EntitySummary-details" v-show="!isCompact">
       <li class="EntitySummary-detailsItem" 
-        v-if="identifiers.length > 0">
-        <span class="EntitySummary-detailsKey EntitySummary-identifiers uppercaseHeading--bold">
-        {{ identifiers[0] }}</span>
-        <span class="EntitySummary-detailsValue EntitySummary-identifiersInfo" 
-          v-if="identifiers.length > 1"><span class="badge">+{{ identifiers.length-1 }}</span></span>
-      </li>
-      <li class="EntitySummary-detailsItem" 
         v-show="v.length !== 0" 
         v-for="(v, k) in infoWithKeys" 
         :key="k">
-        <span v-if="isReplacedBy === ''">
-          <span  class="EntitySummary-detailsKey uppercaseHeading--bold">{{ k | labelByLang }}:</span>
-          <span class="EntitySummary-detailsValue" v-html="v"></span>
-        </span>
-        <span v-if="isReplacedBy !== ''">
-          <span  class="EntitySummary-detailsKey uppercaseHeading--bold">Ersatt av:</span>
+        <template v-if="isReplacedBy === ''">
+          <span class="EntitySummary-detailsKey" :title="k | labelByLang">{{ k | labelByLang | capitalize }}</span>
+          <span class="EntitySummary-detailsValue" :title="v" v-html="v"></span>
+        </template>
+        <template v-else>
+          <span  class="EntitySummary-detailsKey">Ersatt av</span>
           <span class="EntitySummary-detailsValue">{{ v }}</span>
-        </span>
+        </template>
       </li>
     </ul>
   </div>
@@ -281,10 +300,12 @@ export default {
 
 .EntitySummary {
   display: flex;
+  flex-basis: auto; // IE11 fix
   flex-direction: column;
   justify-content: space-between;
   width: 100%;
-  padding: 15px 20px;
+  min-width: 0%;
+  padding: 0.5em 0.75em 0.5em 0.75em;
 
   .EntityHeader & {
     padding: 0;
@@ -318,9 +339,7 @@ export default {
     flex-grow: 0;
     text-align: right;
     text-transform: none;
-    color: @gray-darker;
-    color: @gray-darker-transparent;
-    background-color: @badge-color;
+    color: @gray-very-dark-transparent;
     background-color: @badge-color-transparent;
     transition: background-color 0.5s ease;
     letter-spacing: 0.5px;
@@ -361,13 +380,17 @@ export default {
   }
 
   &-title {
-    font-size: 20px;
-    font-size: 2rem;
-    margin: 5px 0;
-    line-height: 26px;
+    font-size: 1.8rem;
+    margin: 0;
     overflow: hidden;
-    width: 100%; 
+    width: 100%;
     position: relative;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    line-height: 1.8em;
+    display: block;
+    white-space: nowrap;
+    height: auto;
 
     & .highlight {
       background-color: @brand-faded;
@@ -385,10 +408,12 @@ export default {
       }
     }
 
-    @media (min-width: 768px) {
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      height: auto;
+    @media (max-width: 768px) {
+      white-space: normal;
+      display: -webkit-box;
+      line-height: 1.4em;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
     }
   }
 
@@ -404,9 +429,8 @@ export default {
 
   &-details {
     list-style-type: none;
-    margin: 0;
     padding: 0px;
-    max-height: 175px;
+    // max-height: 175px;
   }
 
   &-id {
@@ -416,16 +440,31 @@ export default {
   }
 
   &-detailsItem {
-    display: inline;
-    margin-right: 10px;
+    display: flex;
+    min-width: 0;
+    font-size: 1.4rem;
+    padding: 0.2em 0;
   }
 
   &-detailsKey {
+    flex-basis: 6em;
+    flex-grow: 1;
+    font-weight: 600;
+    margin-right: 0.5em;
+    color: @gray-darker;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
   }
 
   &-detailsValue {
-    font-size: 16px;
-    font-size: 1.6rem;
+    flex-basis: 75%;
+    flex-grow: 2;
+    color: #000;
+    white-space: nowrap;
+    align-self: flex-end;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   &-icon {

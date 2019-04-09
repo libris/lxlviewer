@@ -2,6 +2,12 @@
 import * as DisplayUtil from '@/utils/display';
 
 export default {
+  props: {
+    excludeProperties: {
+      type: Array,
+      default: () => [],
+    },
+  },
   methods: {
     getLabel(item) {
       if (!this.display || !this.inspector.data || !this.resources.vocab || !this.settings || !this.resources.context) {
@@ -71,6 +77,7 @@ export default {
         this.resources.vocab,
         this.settings,
         this.resources.context,
+        this.excludeProperties,
       );
       return summary;
     },

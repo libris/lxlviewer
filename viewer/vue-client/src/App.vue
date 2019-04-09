@@ -495,7 +495,7 @@ h1 {
 }
 
 .mainTitle {
-  margin: 0 0 20px 0;
+  margin: 0 0 0.1em 0;
 }
 
 // smaller uppercase headings
