@@ -2,6 +2,7 @@
 import * as StringUtil from '@/utils/string';
 import * as httpUtil from '@/utils/http';
 import Sort from '@/components/search/sort';
+// import { pickBy } from 'lodash-es';
 
 export default {
   name: 'result-controls',
@@ -23,6 +24,7 @@ export default {
   data() {
     return {
       keyword: '',
+      excludeFilters: ['q', 'identifiedBy.value', 'identifiedBy.@type', 'hasTitle.mainTitle'],
     };
   },
   computed: {
@@ -37,22 +39,23 @@ export default {
     },
     filters() {
       if (typeof this.pageData.search !== 'undefined') {
-        return this.pageData.search.mapping.filter((item => item.variable !== 'q'))
+        // remove search-by filters, ISBN etc
+        return this.pageData.search.mapping.filter(item => this.excludeFilters.every(el => el !== item.variable))
           .map((item) => {
             let label = '';
-            if (item.hasOwnProperty('value')) { // use item value get label
+            if (item.hasOwnProperty('value')) { // Try to use item value to get label
               label = item.value;
-            }
-            if (item.hasOwnProperty('object')) { // use item object[@id]...
+            } else if (item.hasOwnProperty('object') && this.pageData.hasOwnProperty('stats')) { // else look for preflabel in stats (if there are results)
               const match = this.pageData.stats.sliceByDimension[item.variable].observation
                 .filter(obs => obs.object['@id'] === item.object['@id']);
-              if (match.length === 1) { // ...to look for a prefLabelByLang/labelByLang prop in stats
+              if (match.length === 1) {
                 const prop = match[0].object.prefLabelByLang || match[0].object.labelByLang;
                 label = prop[this.settings.language];
-              } else label = item.object['@id'];         
-            }
+              } else label = item.object['@id'];        
+            } else if (item.hasOwnProperty('object')) label = item.object['@id']; // else try to translate object[@id]...
             return {
               label,
+              variable: item.variable,
               up: item.up['@id'],
             };
           });
@@ -110,6 +113,17 @@ export default {
     currentSortOrder() {
       return this.$route.query._sort;
     },
+    resultRange() {
+      if (this.$route.params.perimeter === 'remote') {
+        return `1-${this.limit}`;
+      } 
+      const first = this.pageData.itemOffset + 1;
+      let last = this.pageData.itemOffset + this.pageData.itemsPerPage;
+      if (last > this.pageData.totalItems) {
+        last = this.pageData.totalItems;
+      }
+      return `${first}-${last}`;
+    },
   },
   methods: {
     setCompact() {
@@ -135,6 +149,11 @@ export default {
       });
       this.$dispatch('newresult', resultPromise);
     },
+    // clearAllFilters() { // introduce when we have 'type' radio buttons
+    //   const currentQuery = Object.assign({}, this.$route.query);
+    //   const clearedQuery = pickBy(currentQuery, (value, key) => this.filters.every(el => el.variable !== key));
+    //   this.$router.push({ query: clearedQuery });
+    // },
   },
   components: {
     sort: Sort,
@@ -146,16 +165,14 @@ export default {
   <div class="ResultControls" v-if="!(!showDetails && pageData.totalItems < limit)">
     <div class="ResultControls-searchDetails" v-if="showDetails">
       <div class="ResultControls-resultDescr">
-        <p class="ResultControls-resultText" id="resultDescr">{{'Search for' | translatePhrase}} {{ queryText }}
-          <span v-if="filters.length > 0">({{ 'Filtered by' | translatePhrase | lowercase}}
-            <span v-for="(filter, index) in filters" :key="index">
-              {{ filter.label | labelByLang }}{{ index === (filters.length - 1) ? '' : ', ' }}</span>)
-          </span>
-          {{'Gave' | translatePhrase | lowercase}} {{pageData.totalItems}} {{'Hits' | translatePhrase | lowercase}}.
-          <em v-if="pageData.totalItems > limit && $route.params.perimeter === 'remote'">Du har fått fler träffar än vad som kan visas, testa att göra en mer detaljerad sökning om du inte kan hitta det du letar efter.</em>
-        </p>  
-        <p v-if="pageData.totalItems > limit && $route.params.perimeter != 'remote'" class="ResultControls-resultText">
-          {{'Showing' | translatePhrase}} {{ limit }} {{['Hits', 'Per page'] | translatePhrase | lowercase}}.</p>
+        <p class="ResultControls-resultText" id="resultDescr">
+          <span v-if="pageData.totalItems > 0"> {{['Showing', resultRange, 'of'] | translatePhrase }} </span>
+          <span v-if="pageData.totalItems > 0" class="ResultControls-numTotal"> {{pageData.totalItems}} {{'Hits' | translatePhrase | lowercase}}</span>
+          <span v-else class="ResultControls-numTotal">{{'No hits' | translatePhrase }}</span>
+        </p>
+        <p class="ResultControls-resultText" v-if="$route.params.perimeter === 'remote' && pageData.totalItems > limit">
+          {{ 'The search gave more results than can be displayed' | translatePhrase }}.
+        </p>
       </div>
       <div class="ResultControls-controlWrap" v-if="showDetails && pageData.totalItems > 0">
         <sort 
@@ -178,6 +195,21 @@ export default {
           </button>
         </div>
       </div>
+    </div>
+    <div class="ResultControls-filterWrapper" v-if="showDetails && filters.length > 0">
+      <div class="ResultControls-filterBadge" v-for="(filter, index) in filters" :key="index">
+        <span>{{filter.label | labelByLang }}</span>
+        <router-link class="ResultControls-pagLink"
+          :to="filter.up | asAppPath">
+          <i class="fa fa-fw fa-close icon"></i>
+        </router-link>
+      </div>
+      <!-- <button class="ResultControls-filterBadge clear-all" // introduce when we have 'type' radio buttons
+        v-if="filters.length > 1"
+        @click="clearAllFilters">
+        {{ 'Clear all' | translatePhrase }}
+        <i class="fa fa-fw fa-close icon"></i>
+      </button> -->
     </div>
     <nav v-if="hasPagination && showPages">
       <ul class="ResultControls-pagList">
@@ -206,7 +238,7 @@ export default {
             v-if="pageData.next" :to="pageData.next['@id'] | asAppPath">{{'Next' | translatePhrase}}</router-link>
           <a class="ResultControls-pagLink" v-if="!pageData.next">{{'Next' | translatePhrase}}</a>
         </li>
-        <li class="ResultControls-pagItem" 
+        <li class="ResultControls-pagItem"
           v-bind:class="{ 'is-disabled': !pageData.last || pageData['@id'] === pageData.last['@id'] }">
           <router-link class="ResultControls-pagLink" 
             v-if="pageData.last" :to="pageData.last['@id'] | asAppPath">{{'Last' | translatePhrase}}</router-link>
@@ -226,7 +258,7 @@ export default {
   &-searchDetails {
     display: flex;
     justify-content: space-between;
-    align-items: baseline;
+    align-items: center;
     width: 100%;
     color: @gray-dark;
 
@@ -244,6 +276,10 @@ export default {
     padding-right: 20px;
   }
 
+  &-numTotal {
+    color: @black;
+  }
+
   &-controlWrap {
     display: flex;
   }
@@ -257,6 +293,7 @@ export default {
   &-listType {
     background-color: transparent;
     height: 20px;
+    margin-bottom: 10px;
 
     &:hover, 
     &:focus {
@@ -276,6 +313,42 @@ export default {
         color: inherit;
       }
     }
+  }
+
+  &-filterWrapper {
+    padding-top: 5px;
+    display: flex;
+    flex-wrap: wrap;
+    border-top: 1px solid @gray-lighter;
+  }
+
+  &-filterBadge {
+    background-color: #364a4c;
+    border: 1px solid #364a4c;
+    color: @white;
+    font-weight: 600;
+    font-size: 1.4rem;
+    padding: 2px 5px 2px 10px;
+    margin: 5px 5px 0 0;
+    border-radius: 4px;
+    white-space: nowrap;
+
+    & i,
+    & i:hover {
+      color: @white;
+    }
+
+    &.clear-all {
+      color: inherit;
+      background-color: @white;
+      border: 1px solid @grey-lighter;
+
+      & i,
+      & i:hover {
+        color: inherit;
+      }
+    }
+
   }
 
   &-pagDecor {
@@ -343,10 +416,6 @@ export default {
       &:hover {
         color: @black;
       }
-    }
-
-    i {
-      padding: 0 5px 0 5px;
     }
   }
 }
