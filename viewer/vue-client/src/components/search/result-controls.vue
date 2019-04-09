@@ -199,7 +199,7 @@ export default {
     <div class="ResultControls-filterWrapper" v-if="showDetails && filters.length > 0">
       <div class="ResultControls-filterBadge" v-for="(filter, index) in filters" :key="index">
         <span>{{filter.label | labelByLang }}</span>
-        <router-link class="ResultControls-pagLink"
+        <router-link
           :to="filter.up | asAppPath">
           <i class="fa fa-fw fa-close icon"></i>
         </router-link>
