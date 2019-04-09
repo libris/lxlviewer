@@ -73,7 +73,7 @@ export function filterOwnClasses(classArray, context) {
   if (!isArray(classArray)) {
     throw new Error('filterOwnClasses was called with a param which is not an array (should be an array of term objects).');
   }
-  return classArray.filter(term => (term.hasOwnProperty('@id') && term['@id'].startsWith(context[0]['@vocab'])));
+  return classArray.filter(term => (term.hasOwnProperty('@id') && (term['@id'].startsWith(context[0]['@vocab']) || term['@id'].startsWith(context[0]['marc']))));
 }
 
 export function getBaseClasses(classId, vocab, context) {
