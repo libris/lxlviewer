@@ -755,6 +755,10 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
+    flex-direction: column;
+    @media (min-width: @screen-md) {
+      flex-direction: row;
+    }
   }
 
   &-actions {
