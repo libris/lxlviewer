@@ -45,6 +45,8 @@ export default {
       return sortedForm;
     },
     sortedProperties() {
+      // REMOVED NEW VERSION
+      /*
       const formObj = this.formObj;
       const propertyList = DisplayUtil.getDisplayProperties(
         this.formType,
@@ -54,6 +56,48 @@ export default {
         this.resources.context,
         'full',
       );
+      each(formObj, (v, k) => {
+        if (!includes(propertyList, k)) {
+          propertyList.push(k);
+        }
+      });
+      remove(propertyList, k => (this.settings.hiddenProperties.indexOf(k) !== -1));
+      return propertyList;
+      */
+      
+      // REINSTATED OLD VERSION
+      const formObj = this.formObj;
+      // Try to get properties from type of object
+      // If none found, try baseClasses
+      let propertyList = DisplayUtil.getProperties(
+        this.formType,
+        'full',
+        this.resources.display,
+      );
+      if (propertyList.length === 0) { // If none were found, traverse up inheritance tree
+        const baseClasses = VocabUtil.getBaseClassesFromArray(
+          this.formType,
+          this.resources.vocab,
+          this.resources.context,
+        );
+        for (const baseClass of baseClasses) {
+          propertyList = DisplayUtil.getProperties(
+            StringUtil.getCompactUri(baseClass, this.resources.context),
+            'full',
+            this.resources.display,
+          );
+          if (propertyList.length > 0) {
+            break;
+          }
+        }
+        if (propertyList.length === 0) {
+          propertyList = DisplayUtil.getProperties(
+            'Resource',
+            'full',
+            this.resources.display,
+          );
+        }
+      }
       each(formObj, (v, k) => {
         if (!includes(propertyList, k)) {
           propertyList.push(k);

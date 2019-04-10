@@ -306,3 +306,50 @@ export function getFormattedSelectOption(term, settings, vocab, context) {
   const indent = Array(term.depth + 1).join('- ');
   return `${indent}${labelByLang} ${term.abstract ? abstractIndicator : ''}`;
 }
+
+// REINSTATED OLD VERSION
+export function getProperties(typeInput, level, displayDefs) {
+  if (!typeInput || typeof typeInput === 'undefined') {
+    throw new Error('getProperties was called with an undefined type.');
+  }
+  if (isObject(typeInput) && !isArray(typeInput)) {
+    throw new Error(
+      'getProperties was called with an object as type parameter (should be a string or an array of strings).',
+    );
+  }
+  const typeList = [].concat(typeInput);
+  for (const type of typeList) {
+    const lenses = displayDefs.lensGroups[level].lenses;
+    let props = [];
+    if (typeof lenses[type] !== 'undefined') {
+      props = lenses[type].showProperties;
+    }
+    props = [].concat(props);
+    
+    let extension = [];
+    for (let i = 0; i < props.length; i++) {
+      if (props[i] === 'fresnel:super') {
+        extension = getLensById(lenses[type]['fresnel:extends']['@id'], displayDefs).showProperties;
+        props.splice(i, 1, ...extension);
+        break;
+      }
+    }
+    props = uniq(props);
+    remove(props, x => isObject(x));
+
+    if (props.length > 0) {
+      return props;
+    } if (level === 'full') { // Try fallback to card level
+      props = getProperties(type, 'cards', displayDefs);
+    }
+    if (props.length > 0) {
+      return props;
+    } if (level === 'cards') { // Try fallback to chip level
+      props = getProperties(type, 'chips', displayDefs);
+      if (props.length > 0) {
+        return props;
+      }
+    }
+  }
+  return [];
+}
