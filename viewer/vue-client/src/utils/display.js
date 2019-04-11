@@ -111,6 +111,15 @@ export function getDisplayProperties(className, displayDefinitions, vocab, setti
       level = 'chips';
     }
   }
+
+  if (level === 'full') {
+    props = getLensPropertiesDeep(cn, displayDefinitions, vocab, settings, context, level, depth);
+    if (props.length === 0 && depth === 0) {
+      // Try fallback to card level
+      level = 'cards';
+    }
+  }
+
   // If level is not tokens 
   if (level !== 'tokens') {
     props = getLensPropertiesDeep(cn, displayDefinitions, vocab, settings, context, level, depth);
