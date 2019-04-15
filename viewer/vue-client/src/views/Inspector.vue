@@ -502,6 +502,7 @@ export default {
           this.fetchDocument();
           this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('The post was saved', this.settings.language)}!` });
           if (done) {
+            this.encodingLevelWarning();
             this.$store.dispatch('setInspectorStatusValue', { property: 'editing', value: false });
           }
         }
@@ -523,6 +524,29 @@ export default {
         }
         this.$store.dispatch('pushNotification', { type: 'danger', message: `${errorBase}. ${errorMessage}.` });
       });
+    },
+    encodingLevelWarning() {
+      const level = this.inspector.data.record.encodingLevel;
+      // console.log('encodinglevelwarning is run', level);
+      let warning = false;
+      switch (level) {
+        case 'marc:MinimalLevel':
+          warning = true;
+          break;
+        case 'marc:PartialPreliminaryLevel':
+          warning = true;
+          break;
+        default:
+          break;
+      }
+      if (warning) {
+        setTimeout(() => { // avoid duplicate timestamp ('id')
+          this.$store.dispatch('pushNotification', { 
+            type: 'warning', 
+            message: `${StringUtil.getUiPhraseByLang('Attention', this.user.settings.language)}! ${StringUtil.getLabelByLang(level, this.user.settings.language, this.resources.vocab, this.resources.context)}`, 
+          });
+        }, 300);
+      }
     },
   },
   watch: {

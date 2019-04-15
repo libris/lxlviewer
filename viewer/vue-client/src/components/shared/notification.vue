@@ -34,9 +34,10 @@ export default {
 
 <template>
   <div class="Notification " @click="remove" role="alert" :class="{
-    'Notification--error': content.type === 'danger',
     'Notification--success': content.type === 'success',
     'Notification--info': content.type === 'info',
+    'Notification--warning': content.type === 'warning',
+    'Notification--error': content.type === 'danger',
     'is-showing': shouldShow
       }">
 
@@ -52,18 +53,24 @@ export default {
         <i class="fa fa-circle fa-stack-2x"></i>
         <i class="fa fa-info fa-stack-1x Notification-icon"></i>
       </span>
+      <span v-if="content.type === 'warning'" class="fa-stack fa-lg Notification-iconCont">
+        <i class="fa fa-circle fa-stack-2x"></i>
+        <i class="fa fa-info fa-stack-1x Notification-icon"></i>
+      </span>
     {{ content.message }}
   </div>
 </template>
 
 <style lang="less">
 
-@error-color: rgb(206, 104, 104);
-@error-color-text: white;
 @success-color: @brand-primary;
-@success-color-text: white;
-@info-color: white;
-@info-color-text: #757575;
+@success-color-text: @white;
+@info-color: @white;
+@info-color-text: @gray-darker;
+@error-color: @danger-alter;
+@error-color-text: @white;
+@warning-color: #f0ad4e;
+@warning-color-text: @white;
 
 .Notification {
   background-color: @info-color;
@@ -96,6 +103,14 @@ export default {
     }
   }
 
+  &--warning {
+    background-color: @warning-color;
+    color: @warning-color-text;
+    .notification-icon {
+      color: @warning-color;
+    }
+  }
+
   &-icon {
     color: @info-color;
 
@@ -105,6 +120,10 @@ export default {
 
     .Notification--success & {
       color: @success-color;
+    }
+
+    .Notification--warning & {
+      color: @warning-color;
     }
   }
 
