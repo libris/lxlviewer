@@ -53,10 +53,6 @@ export default {
         <i class="fa fa-circle fa-stack-2x"></i>
         <i class="fa fa-info fa-stack-1x Notification-icon"></i>
       </span>
-      <span v-if="content.type === 'warning'" class="fa-stack fa-lg Notification-iconCont">
-        <i class="fa fa-circle fa-stack-2x"></i>
-        <i class="fa fa-info fa-stack-1x Notification-icon"></i>
-      </span>
     {{ content.message }}
   </div>
 </template>
@@ -69,7 +65,7 @@ export default {
 @info-color-text: @gray-darker;
 @error-color: @danger-alter;
 @error-color-text: @white;
-@warning-color: #f0ad4e;
+@warning-color: @brand-warning;
 @warning-color-text: @white;
 
 .Notification {
@@ -120,10 +116,6 @@ export default {
 
     .Notification--success & {
       color: @success-color;
-    }
-
-    .Notification--warning & {
-      color: @warning-color;
     }
   }
 

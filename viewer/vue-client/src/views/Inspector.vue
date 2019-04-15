@@ -496,13 +496,18 @@ export default {
           const location = `${result.getResponseHeader('Location')}`;
           const locationParts = location.split('/');
           const fnurgel = locationParts[locationParts.length - 1];
-          this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('The post was created', this.settings.language)}!` });
+          setTimeout(() => {
+            this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('The post was created', this.settings.language)}!` });
+          }, 10);
+          this.encodingLevelWarning();
           this.$router.push({ path: `/${fnurgel}` });
         } else {
           this.fetchDocument();
-          this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('The post was saved', this.settings.language)}!` });
+          setTimeout(() => {
+            this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('The post was saved', this.settings.language)}!` });
+          }, 10);
+          this.encodingLevelWarning();
           if (done) {
-            this.encodingLevelWarning();
             this.$store.dispatch('setInspectorStatusValue', { property: 'editing', value: false });
           }
         }
@@ -527,10 +532,9 @@ export default {
     },
     encodingLevelWarning() {
       const level = this.inspector.data.record.encodingLevel;
-      // console.log('encodinglevelwarning is run', level);
       let warning = false;
       switch (level) {
-        case 'marc:MinimalLevel':
+        case 'marc:PrepublicationLevel':
           warning = true;
           break;
         case 'marc:PartialPreliminaryLevel':
@@ -540,12 +544,10 @@ export default {
           break;
       }
       if (warning) {
-        setTimeout(() => { // avoid duplicate timestamp ('id')
-          this.$store.dispatch('pushNotification', { 
-            type: 'warning', 
-            message: `${StringUtil.getUiPhraseByLang('Attention', this.user.settings.language)}! ${StringUtil.getLabelByLang(level, this.user.settings.language, this.resources.vocab, this.resources.context)}`, 
-          });
-        }, 300);
+        this.$store.dispatch('pushNotification', { 
+          type: 'warning', 
+          message: `${StringUtil.getUiPhraseByLang('Attention', this.user.settings.language)}! ${StringUtil.getLabelByLang('encodingLevel', this.user.settings.language, this.resources.vocab, this.resources.context)}: ${StringUtil.getLabelByLang(level, this.user.settings.language, this.resources.vocab, this.resources.context)}`, 
+        });
       }
     },
   },
@@ -877,7 +879,7 @@ export default {
 
 .RemovePostModal .ModalComponent-container {
   width: 600px;
-  height: 250px;
+  height: 175px;
 }
 
 .RemovePostModal {
