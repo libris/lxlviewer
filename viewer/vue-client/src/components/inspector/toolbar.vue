@@ -117,7 +117,7 @@ export default {
     applyFileTemplate(data) {
       this.hideToolsMenu();
       const inspectorObj = RecordUtil.splitJson(data);
-      const preparedData = RecordUtil.prepareDuplicateFor(inspectorObj, this.user, this.settings);
+      const preparedData = RecordUtil.prepareDuplicateFor(inspectorObj, this.user, this.settings.keysToClear.duplication);
       const splitData = RecordUtil.splitJson(preparedData);
       this.$refs.TemplatePicker.value = ''; // Important: reset the picker
       this.$store.dispatch('pushInspectorEvent', {

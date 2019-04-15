@@ -38,10 +38,10 @@ export default {
         record: baseRecord,
         mainEntity: baseMainEntity,
       };
-      this.thingData = RecordUtil.prepareDuplicateFor(templateValue, this.user, this.settings);
+      this.thingData = RecordUtil.prepareDuplicateFor(templateValue, this.user, this.settings.keysToClear.duplication);
     },
     useTemplate(templateValue) {
-      const preparedTemplate = RecordUtil.prepareDuplicateFor(templateValue, this.user, this.settings);
+      const preparedTemplate = RecordUtil.prepareDuplicateFor(templateValue, this.user, this.settings.keysToClear.duplication);
       this.thingData = preparedTemplate;
     },
     setCreation(creation) {
@@ -49,7 +49,7 @@ export default {
       this.activeIndex = -1;
     },
     recieveFileData(data) {
-      this.thingData = RecordUtil.prepareDuplicateFor(data, this.user, this.settings);
+      this.thingData = RecordUtil.prepareDuplicateFor(data, this.user, this.settings.keysToClear.duplication);
     },
     setActiveIndex(index) {
       this.activeIndex = index;
