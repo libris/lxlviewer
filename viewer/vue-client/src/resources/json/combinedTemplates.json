@@ -2,7 +2,7 @@
   "instance": {
     "audiobook": {
       "label": "Ljudbok",
-      "description": "Ljudinspelning",
+      "description": "Ljudinspelning - RDA",
       "value": {
         "record": {
           "@id": "https://id.kb.se/TEMPID",
@@ -376,7 +376,7 @@
     },
     "movie": {
       "label": "Film",
-      "description": "Videoinspelning",
+      "description": "Videoinspelning - RDA",
       "value": {
         "record": {
           "@id": "https://id.kb.se/TEMPID",
@@ -553,6 +553,12 @@
             }
           ],
           "genreForm": [],
+          "capture": [
+            {
+              "@type": "Capture",
+              "label": ""
+            }
+          ],
           "hasNote": [{
             "@type": "marc:LanguageNote",
             "label": ""
@@ -574,7 +580,7 @@
     },
     "music-cd": {
       "label": "Musik-CD",
-      "description": "Ljudinspelning",
+      "description": "Ljudinspelning - RDA",
       "value": {
         "record": {
           "@id": "https://id.kb.se/TEMPID",
@@ -767,6 +773,12 @@
           "genreForm": [
             {
               "@id": "https://id.kb.se/term/saogf/Musikinspelningar"
+            }
+          ],
+          "capture": [
+            {
+              "@type": "Capture",
+              "label": ""
             }
           ],
           "hasNote": [{
@@ -966,7 +978,7 @@
     },
     "printedCartograph": {
       "label": "Karta",
-      "description": "Tryckt kartmaterial",
+      "description": "Tryckt kartmaterial - RDA",
       "value": {
         "record": {
           "@id": "https://id.kb.se/TEMPID",
@@ -1063,6 +1075,9 @@
           "genreForm": [
             {
               "@id": "https://id.kb.se/marc/MapATwoDimensionalMap"
+            },
+            {
+              "@id": "https://id.kb.se/marc/SingleMap"
             }
           ],
           "marc:otherPhysicalDetails": "",
@@ -1763,66 +1778,60 @@
             }
           ],
           "contentType": [{"@id": "https://id.kb.se/term/rda/NotatedMusic"}],
-          "relationship": [
+          "hasPart": [
             {
-              "@type": "Relationship",
-              "entity": {
-                "@type": "Work",
-                "contribution": [
-                  {
-                    "@type": "PrimaryContribution",
-                    "agent": null
-                  }
-                ],
-                "hasTitle": [
-                  {
-                    "@type": "Title",
-                    "mainTitle": "",
-                    "partNumber": [
-                      ""
-                    ],
-                    "partName": [
+              "@type": "Work",
+              "contribution": [
+                {
+                  "@type": "PrimaryContribution",
+                  "agent": null
+                }
+              ],
+              "hasTitle": [
+                {
+                  "@type": "Title",
+                  "mainTitle": "",
+                  "partNumber": [
                     ""
-                    ]
-                  }
-                ],
-                "musicKey": "",
-                "version": "",
-                "musicMedium": [{
-                  "@type": "MusicMedium",
-                  "label": ""
-                }]
-              }
+                  ],
+                  "partName": [
+                  ""
+                  ]
+                }
+              ],
+              "musicKey": "",
+              "version": "",
+              "musicMedium": [{
+                "@type": "MusicMedium",
+                "label": ""
+              }]
             },
             {
-              "@type": "Relationship",
-              "entity": {
-                "@type": "Work",
-                "contribution": [
-                  {
-                    "@type": "PrimaryContribution",
-                    "agent": null
-                  }
-                ],
-                "hasTitle": [
-                  {
-                    "@type": "Title",
-                    "mainTitle": "",
-                    "partNumber": [
-                      ""
-                    ],
-                    "partName": [
+              "@type": "Work",
+              "contribution": [
+                {
+                  "@type": "PrimaryContribution",
+                  "agent": null
+                }
+              ],
+              "hasTitle": [
+                {
+                  "@type": "Title",
+                  "mainTitle": "",
+                  "partNumber": [
                     ""
-                    ]
-                  }
-                ],
-                "musicKey": "",
-                "version": "",
-                "musicMedium": [{
-                  "@type": "MusicMedium",
-                  "label": ""
-                }]
-              }
+                  ],
+                  "partName": [
+                  ""
+                  ]
+                }
+              ],
+              "musicKey": "",
+              "version": "",
+              "musicMedium": [{
+                "@type": "MusicMedium",
+                "label": ""
+              }]
             }
           ]
         }
@@ -1830,7 +1839,7 @@
     },
     "printedStillImage": {
       "label": "Stillbild",
-      "description": "",
+      "description": "RDA",
       "value": {
         "record": {
           "@id": "https://id.kb.se/TEMPID",
@@ -2022,7 +2031,7 @@
     },
     "videogame": {
       "label": "Datorspel",
-      "description": "Multimedia",
+      "description": "Multimedia - RDA",
       "value": {
         "record": {
           "@id": "https://id.kb.se/TEMPID",

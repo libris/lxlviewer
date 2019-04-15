@@ -18,10 +18,16 @@ Examples::
     ... def render_json():
     ...     pass
 
+    >>> print(negotiator.get_suffix('text/html'))
+    html
+
+    >>> negotiator.get_renderer('text/html') is render_html
+    True
+
     >>> def check(mime_type, suffix=None):
     ...    request = Request(create_environ('/', headers={'Accept': mime_type}))
     ...    mtype, f = negotiator.negotiate(request, suffix)
-    ...    print mtype, f.__name__ if f else None
+    ...    print(mtype, f.__name__ if f else None)
 
     >>> check("text/html")
     text/html render_html
@@ -50,50 +56,68 @@ Examples::
     >>> check("text/html;q=0.1, application/json;q=0.8")
     application/json render_json
 
-    >>> check("*/*,text/html;q=0.1, application/json;q=0.8")
+    >>> check("*/*")
     text/html render_html
 
+    >>> check("*/*, text/html;q=0.9, application/json;q=0.8")
+    text/html render_html
+
+    >>> check("*/*, application/json;q=0.8, text/html")
+    text/html render_html
+
+    >>> check("*/*, application/json;q=0.8, text/html;q=0.9")
+    text/html render_html
 """
-from __future__ import unicode_literals
+from __future__ import unicode_literals, print_function
 __metaclass__ = type
 
 
 class Negotiator:
 
     def __init__(self):
-        self.mimetype_renderer_map = {}
-        self.suffix_mimetype_map = {}
-        self.mimetype_suffix_map = {}
+        self._mimetype_renderer_map = {}
+        self._suffix_mimetype_map = {}
+        self._mimetype_suffix_map = {}
+        self.mimetype_groups = {}
         self.preferred = None
         self.default = None
 
-    def add(self, mediatype, *suffixes):
+    def add(self, mimetype, *suffixes, **kwargs):
+        group = kwargs.get('group')
         def decorate(f):
-            self.mimetype_renderer_map[mediatype] = f
+            self._mimetype_renderer_map[mimetype] = f
             for suffix in suffixes:
-                self.suffix_mimetype_map[suffix] = mediatype
+                self._suffix_mimetype_map[suffix] = mimetype
             if suffixes:
-                self.mimetype_suffix_map[mediatype] = suffixes[0]
+                self._mimetype_suffix_map[mimetype] = suffixes[0]
+            if group:
+                self.mimetype_groups.setdefault(group, []).append(mimetype)
             if not self.preferred:
-                self.preferred = mediatype
+                self.preferred = mimetype
                 self.default = f
             return f
         return decorate
 
     def negotiate(self, request, suffix=None):
         if suffix:
-            mimetype = self.suffix_mimetype_map.get(suffix)
-            return mimetype, self.mimetype_renderer_map.get(mimetype)
+            mimetype = self._suffix_mimetype_map.get(suffix)
+            return mimetype, self.get_renderer(mimetype)
         else:
             accepts = request.accept_mimetypes
-            mimetype = accepts.best_match(self.mimetype_renderer_map)
+            mimetype = accepts.best_match(self._mimetype_renderer_map)
             pref_quality = accepts[self.preferred]
             if mimetype:
                 if accepts[mimetype] > pref_quality:
-                    return mimetype, self.mimetype_renderer_map.get(mimetype)
+                    return mimetype, self.get_renderer(mimetype)
                 elif pref_quality:
                     return self.preferred, self.default
         return None, None
+
+    def get_suffix(self, mimetype):
+        return self._mimetype_suffix_map.get(mimetype)
+
+    def get_renderer(self, mimetype):
+        return self._mimetype_renderer_map.get(mimetype)
 
 
 if __name__ == '__main__':

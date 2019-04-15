@@ -185,7 +185,7 @@ export default {
   &-container {
     opacity: 0;
     transition: opacity 0.5s ease;
-    z-index: @modal-z;
+    z-index: @popover-z;
     box-shadow: @shadow-card-elevated;
     position: fixed;
     width: 35%;
@@ -277,7 +277,7 @@ export default {
     color: @gray-darker;
     margin-top: 0;
     white-space: nowrap;
-    overflow-x: hidden;
+    overflow: hidden;
     text-overflow: ellipsis;
   }
 
@@ -313,12 +313,12 @@ export default {
     background-color: @list-item-bg-even;
     transition: background-color 0.2s ease;
 
+    &:only-child {
+      border: solid @gray-lighter;
+      border-width: 0px 0px 1px 0px;
+    }
     &:nth-child(odd) {
       background-color: @list-item-bg-odd;
-    }
-
-    &:hover:not(.is-added):not(.is-disabled):not(.is-replaced):not(.SearchWindow-resultItem) {
-      background-color: @list-item-bg-hover;
     }
   }
 

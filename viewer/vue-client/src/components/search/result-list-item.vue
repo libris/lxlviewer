@@ -3,7 +3,9 @@ import LensMixin from '../mixins/lens-mixin';
 import ResultMixin from '../mixins/result-mixin';
 import EntitySummary from '../shared/entity-summary';
 import ReverseRelations from '@/components/inspector/reverse-relations';
+import TagSwitch from '@/components/shared/tag-switch';
 import * as StringUtil from '@/utils/string';
+import * as VocabUtil from '@/utils/vocab';
 
 export default {
   name: 'result-list-item',
@@ -23,11 +25,20 @@ export default {
   data() {
     return {
       keyword: '',
+      hiddenDetailsNumber: null,
+      showAllKeys: false,
     };
   },
   computed: {
     settings() {
       return this.$store.getters.settings;
+    },
+    recordType() {
+      return VocabUtil.getRecordType(
+        this.focusData['@type'], 
+        this.resources.vocab, 
+        this.resources.context,
+      );
     },
     user() {
       return this.$store.getters.user;
@@ -53,8 +64,12 @@ export default {
     },
   },
   methods: {
+    setHiddenDetailsNumber(value) {
+      this.hiddenDetailsNumber = value;
+    },
   },
   components: {
+    TagSwitch,
     'entity-summary': EntitySummary,
     'reverse-relations': ReverseRelations,
   },
@@ -67,21 +82,32 @@ export default {
   <li class="ResultItem ResultItem--detailed" 
     v-if="showDetailed">
     <entity-summary 
+      @hiddenDetailsNumber="setHiddenDetailsNumber"
       :focus-data="focusData" 
       :database="database" 
       :router-path="focusData['@id'] | asFnurgelLink" 
       :is-import="isImport" 
       :import-item="importItem" 
+      :exclude-components="isImport ? ['id'] : []"
+      :show-all-keys="showAllKeys || hiddenDetailsNumber === 1"
       :add-link="true" 
       @import-this="importThis()"
       :valueDisplayLimit=3>
     </entity-summary>
-    <div class="ResultItem-relationsContainer"
-      v-if="this.$route.params.perimeter !== 'remote'">
-      <reverse-relations 
-        :main-entity="focusData" 
-        :compact=true>
-      </reverse-relations>
+    <div class="ResultItem-bottomBar">
+      <div class="ResultItem-controls">
+        <span v-if="hiddenDetailsNumber > 1" class="ResultItem-showMore" @click="showAllKeys = !showAllKeys">{{ showAllKeys ? 'Show fewer' : 'Show more' | translatePhrase }}{{ showAllKeys ? '' : ` (${hiddenDetailsNumber})` }}</span>
+      </div>
+      <div class="ResultItem-tags" v-if="user.isLoggedIn && isImport === false && recordType === 'Instance'">
+        <tag-switch :document="focusData" class="" :action-labels="{ on: 'Flag for', off: 'Unflag for' }" tag="Directory care" />
+      </div>
+      <div class="ResultItem-relationsContainer"
+        v-if="isImport === false">
+        <reverse-relations 
+          :main-entity="focusData" 
+          :compact="true">
+        </reverse-relations>
+      </div>
     </div>
   </li>
   <li class="ResultItem ResultItem--compact" v-else-if="!showDetailed">
@@ -115,18 +141,18 @@ export default {
 .ResultItem {
   &--detailed {
     display: flex;
+    flex-direction: column;
     list-style: none;
     margin-bottom: 15px;
-    padding: 15px 20px;
+    padding: 0.5em 1em 0.25em 1em;
     background-color: @white;
     border: 1px solid @gray-lighter;
     transform: translateX(0);
     transition: transform .2s cubic-bezier(0.21, 0.21, 0.62, 1.23);
 
     & .EntitySummary {
-      flex: 1;
       justify-content: start;
-      padding: 0 15px 0 0;
+      padding: 0;
       min-width: 0;
     }
 
@@ -191,13 +217,35 @@ export default {
     text-overflow: ellipsis;
   }
 
+  &-bottomBar {
+    justify-content: space-between;
+    display: flex;
+  }
+
+  &-controls {
+    display: flex;
+    flex-basis: 50%;
+    flex-grow: 1;
+    align-items: center;
+  }
+  &-showMore {
+    font-weight: 600;
+    font-size: 1.4rem;
+    cursor: pointer;
+    color: @link-color;
+  }
+  &-tags {
+    display: flex;
+    align-items: center;
+    margin-right: 1em;
+    .TagSwitch {
+      display: flex;
+    }
+  }
+
   &-relationsContainer {
     display: flex;
-    flex: 0 0 80px;
-    flex-direction: column;
-    border-left: 1px solid @gray-lighter;
-    align-items: center;
-    padding-left: 10px;
+    justify-content: flex-end;
   }
 }
 

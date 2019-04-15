@@ -64,11 +64,17 @@ export function getTermObject(term, vocab, context) {
   }
 
   if (!_class) {
-    // window.lxlWarning('📘 Term lookup failed:', term, '| Tried :', tries.join(', '));
+    window.lxlWarning('📘 Term lookup failed:', term, '| Tried :', tries.join(', '));
   }
   return _class;
 }
 
+export function filterOwnClasses(classArray, context) {
+  if (!isArray(classArray)) {
+    throw new Error('filterOwnClasses was called with a param which is not an array (should be an array of term objects).');
+  }
+  return classArray.filter(term => (term.hasOwnProperty('@id') && (term['@id'].startsWith(context[0]['@vocab']) || term['@id'].startsWith(context[0]['marc']))));
+}
 
 export function getBaseClasses(classId, vocab, context) {
   // Traverses up subClassOf properties and returns a list of all classes found

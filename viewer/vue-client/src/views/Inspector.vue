@@ -657,45 +657,31 @@ export default {
         </router-link>
       </div>
       <div v-if="postLoaded" class="Inspector-entity">
-        <div class="panel-body">
-          <breadcrumb class="Inspector-breadcrumb"
-            v-if="postLoaded && this.inspector.breadcrumb.length !== 0"
-            :record-type="recordType">
-          </breadcrumb>   
-          <div class="Inspector-admin">
-            <div class="Inspector-header">
-                <h1 class="Inspector-title mainTitle" :title="recordType">
-                  <span>{{ recordType | labelByLang }}</span>
-                  <span v-if="this.inspector.status.isNew"> - [{{ "New record" | translatePhrase }}]</span>
-                </h1>
-              <entity-changelog />
-            </div>
-            <div class="Inspector-actions">
-              <div class="TagContainer" v-if="recordType === 'Instance' && user.isLoggedIn && !inspector.status.isNew">
-                <tag-switch :document="inspector.data.mainEntity" class="btn btn--md btn--md-icon" :action-labels="{ on: 'Flag for', off: 'Unflag for' }" tag="Directory care" />
-              </div>
-              <reverse-relations 
-                class="Inspector-reverse" 
-                :main-entity="this.inspector.data.mainEntity" 
-                v-if="!inspector.status.isNew || recordType === 'Item'"></reverse-relations>
-              </div>
-            </div>
-          
-          <entity-header id="main-header" 
-            :full="true" 
-            v-if="!isItem">
-          </entity-header>
-          <validation-summary v-if="user.settings.appTech" />
-
-          <tab-menu @go="setEditorFocus" :tabs="editorTabs" :active="this.inspector.status.focus" />
-            
-            <entity-form 
-              v-for="tab in editorTabs"
-              :editing-object="tab.id" 
-              :key="tab.id"
-              :locked="!inspector.status.editing">
-            </entity-form>
+        <breadcrumb class="Inspector-breadcrumb"
+          v-if="postLoaded && this.inspector.breadcrumb.length !== 0"
+          :record-type="recordType">
+        </breadcrumb>   
+        <div class="Inspector-admin">
+          <div class="Inspector-header">
+            <h1 class="Inspector-title mainTitle" :title="recordType">
+              <span>{{ recordType | labelByLang }}</span>
+              <span v-if="inspector.status.isNew"> - [{{ "New record" | translatePhrase }}]</span>
+            </h1>
+            <entity-changelog v-if="inspector.status.isNew === false" />
+          </div>
         </div>
+        <entity-header id="main-header" 
+          :full="true" 
+          v-if="!isItem">
+        </entity-header>
+        <validation-summary v-if="user.settings.appTech" />
+        <tab-menu @go="setEditorFocus" :tabs="editorTabs" :active="this.inspector.status.focus" />
+        <entity-form 
+          v-for="tab in editorTabs"
+          :editing-object="tab.id" 
+          :key="tab.id"
+          :locked="!inspector.status.editing">
+        </entity-form>
       </div>
     </div>
     <div v-if="postLoaded" class="col-12 col-sm-12" :class="{'col-md-1': !status.panelOpen, 'col-md-5': status.panelOpen }">
@@ -753,7 +739,6 @@ export default {
   &-admin {
     display: flex;
     flex-direction: column;
-    margin-bottom: 20px;
 
     @media (min-width: @screen-sm) {
       flex-direction: row;
@@ -767,6 +752,13 @@ export default {
 
   &-header {
     flex: 3;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-direction: column;
+    @media (min-width: @screen-md) {
+      flex-direction: row;
+    }
   }
 
   &-actions {

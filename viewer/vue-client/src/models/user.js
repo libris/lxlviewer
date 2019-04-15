@@ -17,6 +17,7 @@ export class User {
       language: 'sv',
       defaultDatabases: ['OCLC'],
       forceFullViewPanel: false,
+      searchParam: false,
     };
   }
 

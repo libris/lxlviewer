@@ -65,6 +65,7 @@ export default {
   computed: {
     ...mapGetters([
       'user',
+      'status',
     ]),
     translatedTitle() {
       let title = '';
@@ -92,6 +93,14 @@ export default {
     this.$nextTick(() => {
       LayoutUtil.scrollLock(false);
     });
+  },
+  watch: {
+    'status.keyActions'(actions) {
+      const lastAction = actions.slice(-1).join();
+      if (lastAction === 'close-modals') {
+        this.close();
+      }
+    }, 
   },
 };
 </script>

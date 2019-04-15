@@ -2,6 +2,12 @@
 import * as DisplayUtil from '@/utils/display';
 
 export default {
+  props: {
+    excludeProperties: {
+      type: Array,
+      default: () => [],
+    },
+  },
   methods: {
     getLabel(item) {
       if (!this.display || !this.inspector.data || !this.resources.vocab || !this.settings || !this.resources.context) {
@@ -34,6 +40,11 @@ export default {
       for (const key of Object.keys(this.getChip)) {
         labelArray.push(this.getChip[key]);
       }
+      labelArray.forEach((el, i) => {
+        if (Array.isArray(el) && (el.length > 1)) {
+          labelArray[i] = labelArray[i].join(', ');
+        }
+      });
       return labelArray.join(' • ');
     },
     getChip() {
@@ -66,6 +77,7 @@ export default {
         this.resources.vocab,
         this.settings,
         this.resources.context,
+        this.excludeProperties,
       );
       return summary;
     },

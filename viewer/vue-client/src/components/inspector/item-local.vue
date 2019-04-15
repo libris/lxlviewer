@@ -190,7 +190,7 @@ export default {
     },
     highLightLastAdded() {
       const element = this.$el;
-      LayoutUtil.scrollToElement(element, 1000, () => {});
+      LayoutUtil.ensureInViewport(element);
     },
     actionHighlight(active, event) {
       if (active) {

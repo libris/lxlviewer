@@ -146,6 +146,7 @@
     "If you identify a matching linked entity, click it to replace the local entity with it": "Om du identifierar en matchande länkad entitet, klicka på den för att ersätta den lokala entiteten med den länkade",
     "If no matching linked entity is found you can create and link. This will create a linked entity containing the information in the entity chosen for linking": "Om du inte lyckas identifiera en matchande länkad entitet kan du skapa och länka. Detta kommer att skapa en länkad entitet med samma innehåll som entiteten som valts för länkning",
     "Filter by": "Filtrera",
+    "Filtered by": "Filtrerat på",
     "Filter": "Filtrera",
     "Showing": "Visar",
     "or": "eller",
@@ -284,6 +285,7 @@
     "LibrisNytt on Twitter": "LibrisNytt på Twitter",
     "LibrisNytt on Facebook": "LibrisNytt på Facebook",
     "Show more": "Visa fler",
+    "Show fewer": "Visa färre",
     "Show all": "Visa alla",
     "Show instructions": "Visa instruktioner",
     "Hide instructions": "Dölj instruktioner",
@@ -310,6 +312,12 @@
     "Do you want to unmark the sender": "Vill du flagga av avsändaren",
     "Switch place": "Byt plats",
     "The following resources could not be retrieved": "Följande resurser kunde inte hämtas",
-    "because they no longer exist. They have been removed from the directory care list": "eftersom de har raderats. De har tagits bort från listan för katalogvård"
+    "because they no longer exist. They have been removed from the directory care list": "eftersom de har raderats. De har tagits bort från listan för katalogvård",
+    "Gave": "Gav",
+    "Hits": "Träffar",
+    "Per page": "Per sida",
+    "Search for": "Sökning på",
+    "The search gave more results than can be displayed": "Sökningen gav fler träffar än vad som kan visas",
+    "No hits": "Inga träffar"
     }
 }

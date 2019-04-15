@@ -24,6 +24,5 @@
     "isPartOf",
     "marc:subordinateUnit"
   ],
-  "info": ["responsibilityStatement", "instanceOf", "contribution", "broader", "date", "note"],
-  "identifiers": ["identifiedBy", "sameAs"]
+  "info": ["identifiedBy", "sameAs", "responsibilityStatement", "instanceOf", "contribution", "broader", "date", "note"]
 }

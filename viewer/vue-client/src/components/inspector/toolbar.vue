@@ -210,6 +210,7 @@ export default {
     },
     postControl(control) {
       // if (!this.inspector.status.updating) {
+      this.hideToolsMenu();
       this.$store.dispatch('pushInspectorEvent', { 
         name: 'post-control', 
         value: control, 
@@ -303,8 +304,10 @@ export default {
       });
     },
     handleCopy() {
-      this.$parent.$emit('duplicate-item');
-      this.hideToolsMenu();
+      if (this.user.isLoggedIn) {
+        this.$parent.$emit('duplicate-item');
+        this.hideToolsMenu();
+      }
     },
   },
   computed: {

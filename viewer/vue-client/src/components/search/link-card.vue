@@ -49,7 +49,8 @@ export default {
         <div v-if="html" class="LinkCard-html card-descr" v-html="html">{{ html }}</div>
         <div class="LinkCard-descr card-descr">{{ text }}</div>
       </div>
-      <a v-if="linkUrl" :href="linkUrl" class="card-link LinkCard-link">{{ linkText }}</a>
+      <a v-if="!linkUrl.startsWith('/')" :href="linkUrl" class="card-link LinkCard-link">{{ linkText }}</a>
+      <router-link v-if="linkUrl.startsWith('/')" :to="linkUrl" class="card-link LinkCard-link">{{ linkText }}</router-link>
     </div>
   </div>
 </template>

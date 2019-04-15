@@ -92,6 +92,9 @@ export default {
         });
       }
     },
+    tabs() {
+      this.moveUnderline();
+    },
     active(value, oldValue) {
       if (value !== oldValue) {
         this.$nextTick(() => {

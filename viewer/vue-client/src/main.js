@@ -20,6 +20,7 @@ import * as DisplayUtil from '@/utils/display';
 import * as StringUtil from '@/utils/string';
 import Field from '@/components/inspector/field';
 import KeyBindings from '@/resources/json/keybindings.json';
+// import MockDisplay from '@/resources/json/display.json';
 
 Vue.config.productionTip = false;
 Vue.use(Vuex);
@@ -80,6 +81,7 @@ new Vue({
       store.dispatch('setContext', resources[2]['@context']);
       store.dispatch('setupVocab', resources[0]['@graph']);
       store.dispatch('setDisplay', resources[1]);
+      // store.dispatch('setDisplay', MockDisplay);
       store.dispatch('changeResourcesStatus', true);
       store.dispatch('removeLoadingIndicator', 'Loading application');
     }, (error) => {

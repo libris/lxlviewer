@@ -91,7 +91,7 @@ export default {
       if (this.isNewlyAdded) {
         setTimeout(() => {
           const element = this.$el;
-          LayoutUtil.scrollToElement(element, 1000, () => {
+          LayoutUtil.ensureInViewport(element).then(() => {
             setTimeout(() => {
               if (this.isNewlyAdded) {
                 this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });

@@ -2,7 +2,8 @@
 import * as DisplayUtil from '@/utils/display';
 import * as RecordUtil from '@/utils/record';
 import * as DataUtil from '@/utils/data';
-import RoundButton from '@/components/shared/round-button.vue';
+import * as StringUtil from '@/utils/string';
+import RoundedButton from '@/components/shared/rounded-button.vue';
 import TooltipComponent from '@/components/shared/tooltip-component';
 import { mapGetters } from 'vuex';
 
@@ -83,9 +84,13 @@ export default {
       'settings',
       'status',
     ]),
+    tooltipText() {
+      const str = this.hasHolding ? [this.user.settings.activeSigel, 'has holding'] : ['Add holding for', this.user.settings.activeSigel];
+      return StringUtil.getUiPhraseByLang(str, this.user.settings.language);
+    },
   },
   components: {
-    'round-button': RoundButton,
+    'rounded-button': RoundedButton,
     'tooltip-component': TooltipComponent,
   },
   mounted() { // Ready method is deprecated in 2.0, switch to "mounted"
@@ -124,23 +129,15 @@ export default {
       </button>
     </template>
     <template v-if="compact">
-      <round-button 
+      <rounded-button 
+        v-tooltip.top="tooltipText"
         :icon="hasHolding ? 'check' : 'plus'"
         :indicator="hasHolding"
         :label="hasHolding ? 
               [user.settings.activeSigel, 'has holding'] : 
               ['Add holding for', user.settings.activeSigel]"
         @click="performItemAction()">
-        <template slot="tooltip">
-          <tooltip-component 
-            class="Toolbar-tooltipContainer"
-            :show-tooltip="true" 
-            position="left"
-            :tooltip-text="hasHolding ? 
-              [user.settings.activeSigel, 'has holding'] : 
-              ['Add holding for', user.settings.activeSigel]"></tooltip-component>
-        </template>
-      </round-button>
+      </rounded-button>
     </template>
   </div>
 </template>
@@ -148,19 +145,29 @@ export default {
 <style lang="less">
 
 .CreateItem {
-
   &-btn {
-    margin-top: 10px;
-    
-    &--hasHolding {
+    box-shadow: none;
+    background: @white;
+    color: @brand-primary;
+    border: 2px solid @brand-primary;
+    &:hover, 
+    &:focus,
+    &:active,
+    &:active:focus {
+      border-color: @btn-primary--hover;
       background: @white;
-      color: @brand-primary;
-      
+      color: @btn-primary--hover;
+    }
+    &--hasHolding {
+      background: @brand-primary;
+      color: @white;
+      border: none;
       &:hover, 
       &:focus,
-      &:active {
-        background: @white;
-        color: @link-hover-color;
+      &:active,
+      &:active:focus {
+        background: @btn-primary--hover;
+        color: @white;
       }
     }
 
