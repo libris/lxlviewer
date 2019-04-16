@@ -677,8 +677,7 @@ export default {
         </router-link>
       </div>
       <div v-if="postLoaded" class="Inspector-entity">
-        <breadcrumb class="Inspector-breadcrumb"
-          v-if="postLoaded && this.inspector.breadcrumb.length !== 0"
+        <breadcrumb v-if="$route.meta.breadcrumb" class="Inspector-breadcrumb"
           :record-type="recordType">
         </breadcrumb>   
         <div class="Inspector-admin">

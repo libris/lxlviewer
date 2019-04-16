@@ -1,9 +1,10 @@
 <script>
 /*
- Displays breadcrumbs/between post navigation in inspector
+  Displays breadcrumbs/between post navigation in inspector
 */
 
 import { mapGetters } from 'vuex';
+import { each } from 'lodash-es';
 
 export default {
   name: 'breadcrumb',
@@ -15,16 +16,15 @@ export default {
   },
   data() {
     return {
-      recordTypeChange: false,
+      // recordTypeChange: false,
+      prevPath: '',
+      nextPath: '',
     };
   },
   computed: {
     ...mapGetters([
       'inspector',
-      'resources',
-      'user',
       'settings',
-      'status',
     ]),
     showFromPost() {
       if (!this.fromPostUrl || !this.recordTypeChange) return false;
@@ -34,7 +34,7 @@ export default {
       return false;
     },
     searchResultUrl() {
-      return this.inspector.breadcrumb[0].resultUrl;
+      return this.$route.meta.breadcrumb.resultUrl;
     },
     fromPostUrl() {
       const breadcrumbTrail = this.inspector.breadcrumb;
@@ -51,100 +51,162 @@ export default {
 
       return fromPostId;
     },
-    fromPostType() {
-      const breadcrumbTrail = this.inspector.breadcrumb;
-      let fromPostType;
+    // fromPostType() {
+    //   const breadcrumbTrail = this.inspector.breadcrumb;
+    //   let fromPostType;
 
-      if (breadcrumbTrail.length > 1) {
-        const result = breadcrumbTrail.filter(breadcrumb => breadcrumb.type === 'fromPost');
-        fromPostType = result[0].recordType;
-      } else if (breadcrumbTrail.length > 0) {
-        fromPostType = breadcrumbTrail[0].recordType;
-      } else {
-        fromPostType = '';
-      }
+    //   if (breadcrumbTrail.length > 1) {
+    //     const result = breadcrumbTrail.filter(breadcrumb => breadcrumb.type === 'fromPost');
+    //     fromPostType = result[0].recordType;
+    //   } else if (breadcrumbTrail.length > 0) {
+    //     fromPostType = breadcrumbTrail[0].recordType;
+    //   } else {
+    //     fromPostType = '';
+    //   }
 
-      return fromPostType;
+    //   return fromPostType;
+    // },
+    // currentPost() {
+    //   return this.inspector.data.mainEntity['@id'];
+    // },
+    // currentPostNumber() {
+    //   if (this.inspector.breadcrumb === undefined || this.inspector.breadcrumb.length === 0) return null;
+    //   const items = this.inspector.breadcrumb[0].result.items;
+
+    //   const item = items.find(itemObj => itemObj['@id'] === this.currentPost);
+    //   const itemIndex = items.indexOf(item);
+
+    //   return itemIndex + 1;
+    // },
+    totalItems() {
+      return this.$route.meta.breadcrumb.totalItems;
     },
-    currentPost() {
-      return this.inspector.data.mainEntity['@id'];
+    currentOffset() {
+      return this.$route.meta.breadcrumb.offset;
     },
-    currentPostNumber() {
-      if (this.inspector.breadcrumb === undefined || this.inspector.breadcrumb.length === 0) return null;
-      const items = this.inspector.breadcrumb[0].result.items;
+    // prevPostIndex() {
+    //   if (this.inspector.breadcrumb === undefined || this.inspector.breadcrumb.length === 0) return null;
 
-      const item = items.find(itemObj => itemObj['@id'] === this.currentPost);
-      const itemIndex = items.indexOf(item);
-
-      return itemIndex + 1;
-    },
-    totalPostNumber() {
-      if (this.inspector.breadcrumb === undefined || this.inspector.breadcrumb.length === 0) return null;
-
-      return this.inspector.breadcrumb[0].result.totalItems;
-    },
-    prevPostIndex() {
-      if (this.inspector.breadcrumb === undefined || this.inspector.breadcrumb.length === 0) return null;
-
-      const items = this.inspector.breadcrumb[0].result.items;
+    //   const items = this.inspector.breadcrumb[0].result.items;
       
-      const item = items.find(itemObj => itemObj['@id'] === this.currentPost);
-      const itemIndex = items.indexOf(item);
+    //   const item = items.find(itemObj => itemObj['@id'] === this.currentPost);
+    //   const itemIndex = items.indexOf(item);
+    //   return itemIndex - 1;
+    // },
+    // prevPath() {
+    //   return 'www.google.se';
+    //   // if (this.inspector.breadcrumb === undefined || this.inspector.breadcrumb.length === 0) return '';
+
+    //   // if (this.prevPostIndex < 0) return '';
+
+    //   // const items = this.inspector.breadcrumb[0].result.items;
+
+    //   // const prevItem = items[this.prevPostIndex];
+    //   // if (prevItem.hasOwnProperty('@id')) {
+    //   //   const uriParts = prevItem['@id'].split('/');
+    //   //   const fnurgel = uriParts[uriParts.length - 1];
+    //   //   return `/${fnurgel}`;
+    //   // }
+
+    //   // return '';
+    // },
+    // nextPostIndex() {
+    //   if (this.inspector.breadcrumb === undefined || this.inspector.breadcrumb.length === 0) {
+    //     return null;
+    //   }
+
+    //   const items = this.inspector.breadcrumb[0].result.items;
+      
+    //   const item = items.find(itemObj => itemObj['@id'] === this.currentPost);
+    //   const itemIndex = items.indexOf(item);
      
-      return itemIndex - 1;
-    },
-    prevPostPath() {
-      if (this.inspector.breadcrumb === undefined || this.inspector.breadcrumb.length === 0) return '';
-
-      if (this.prevPostIndex < 0) return '';
-
-      const items = this.inspector.breadcrumb[0].result.items;
-
-      const prevItem = items[this.prevPostIndex];
-      if (prevItem.hasOwnProperty('@id')) {
-        const uriParts = prevItem['@id'].split('/');
-        const fnurgel = uriParts[uriParts.length - 1];
-        return `/${fnurgel}`;
-      }
-
-      return '';
-    },
-    nextPostIndex() {
-      if (this.inspector.breadcrumb === undefined || this.inspector.breadcrumb.length === 0) {
-        return null;
-      }
-
-      const items = this.inspector.breadcrumb[0].result.items;
+    //   return itemIndex + 1;
+    // },
+    // nextPath() {
+    //   return 'www.google.se';
+    //   // if (this.inspector.breadcrumb === undefined || this.inspector.breadcrumb.length === 0) return '';
       
-      const item = items.find(itemObj => itemObj['@id'] === this.currentPost);
-      const itemIndex = items.indexOf(item);
-     
-      return itemIndex + 1;
-    },
-    nextPostPath() {
-      if (this.inspector.breadcrumb === undefined || this.inspector.breadcrumb.length === 0) return '';
-      
-      if (this.nextPostIndex > this.totalPostNumber) return '';
+    //   // if (this.nextPostIndex > this.totalPostNumber) return '';
 
-      const items = this.inspector.breadcrumb[0].result.items;
+    //   // const items = this.inspector.breadcrumb[0].result.items;
 
-      const nextItem = items[this.nextPostIndex];
+    //   // const nextItem = items[this.nextPostIndex];
 
-      if (nextItem && nextItem.hasOwnProperty('@id')) {
-        const uriParts = nextItem['@id'].split('/');
-        const fnurgel = uriParts[uriParts.length - 1];
-        return `/${fnurgel}`;
-      }
+    //   // if (nextItem && nextItem.hasOwnProperty('@id')) {
+    //   //   const uriParts = nextItem['@id'].split('/');
+    //   //   const fnurgel = uriParts[uriParts.length - 1];
+    //   //   return `/${fnurgel}`;
+    //   // }
 
-      return '';
-    },
+    //   // return '';
+    // },
   },
   methods: {
+    getPrev() {
+      if (this.currentOffset > 0) {
+        const queryObj = Object.assign({}, this.$route.meta.breadcrumb.query);
+        queryObj._offset = this.currentOffset - 1;
+        this.getLink(queryObj)
+          .then((res) => {
+            if (res.items.length === 1) {
+              this.prevPath = res.items[0]['@id'];
+            }
+          }).catch(err => console.log(err));
+      }
+    },
+    getNext() {
+      if (this.currentOffset + 1 < this.totalItems) {
+        const queryObj = Object.assign({}, this.$route.meta.breadcrumb.query);
+        queryObj._offset = this.currentOffset + 1;
+        this.getLink(queryObj)
+          .then((res) => {
+            if (res.items.length === 1) {
+              this.nextPath = res.items[0]['@id'];
+            }
+          }).catch(err => console.log(err));
+      }
+    },
+    getQuery(direction) {
+      const queryObj = Object.assign({}, this.$route.meta.breadcrumb.query, { _limit: 1 });
+      switch (direction) {
+        case 'prev':
+          queryObj._offset = this.currentOffset - 1;
+          break;
+        case 'next': 
+          queryObj._offset = this.currentOffset + 1;
+          break;
+        default:
+          break;
+      }
+      
+      let queryString = `${this.settings.apiPath}/find.json?`;
+      each(queryObj, (v, k) => {
+        queryString += (`${encodeURIComponent(k)}=${encodeURIComponent(v)}&`);
+      });
+      return [queryString, direction];
+    },
+    fetchLink(url, direction) {
+      fetch(url)
+        .then((res) => {
+          if (res.ok) {
+            res.json().then((json) => {
+              if (json.items.length === 1 && direction === 'prev') {
+                this.prevPath = json.items[0]['@id'];
+              } else if (json.items.length === 1 && direction === 'next') {
+                this.nextPath = json.items[0]['@id'];
+              }
+            });
+          }
+        })
+        .catch(err => console.log('Error fetching breadcrumb data', err));
+    },
   },
   watch: {
   },
   mounted() {
     this.$nextTick(() => {
+      this.fetchLink(...this.getQuery('prev'));
+      this.fetchLink(...this.getQuery('next'));
     });
   },
 };
@@ -154,24 +216,22 @@ export default {
   <div class="Breadcrumb">
     <div class="Breadcrumb-back">
       <router-link class="Breadcrumb-backLink"
-        v-if="this.searchResultUrl != ''"
-        :to="this.searchResultUrl">Till träfflistan</router-link>
-      <span v-if="this.showFromPost"> ›
+        :to="searchResultUrl">{{ 'To result list' | translatePhrase }}</router-link>
+      <!-- <span v-if="this.showFromPost"> ›
         <router-link class="Breadcrumb-backLink" 
           :to="this.fromPostUrl">Tillbaka till {{this.fromPostType | labelByLang }}</router-link>
-      </span>
+      </span> -->
     </div>
-    <div class="Breadcrumb-postData" v-if="totalPostNumber > 1 && currentPostNumber !== 0">
-      <span class="Breadcrumb-postNumbers">{{this.currentPostNumber}} av {{this.totalPostNumber}}</span>
-      <div class="Breadcrumb-postLinks"
-        v-if="this.prevPostPath || this.nextPostPath">
-        <router-link class="Breadcrumb-prev"
-          v-if="this.prevPostPath != ''"
-          :to="this.prevPostPath">Föregående post</router-link>
-        <span v-if="this.prevPostPath && this.nextPostPath"> | </span>
+    <div class="Breadcrumb-postData">
+      <span class="Breadcrumb-postNumbers">{{ currentOffset + 1 }} {{ 'of' | translatePhrase }} {{ totalItems }}</span>
+      <div class="Breadcrumb-postLinks" v-if="prevPath || nextPath">
+        <router-link class="Breadcrumb-prev" 
+          v-if="currentOffset > 0 && prevPath"
+          :to="prevPath | asFnurgelLink">{{ ['Previous', 'post'] | translatePhrase }}</router-link>
+        <span v-if="prevPath && nextPath"> | </span>
         <router-link class="Breadcrumb-next"
-          v-if="this.nextPostPath != ''"
-          :to="this.nextPostPath">Nästa post</router-link>
+          v-if="currentOffset + 1 < totalItems && nextPath"
+          :to="nextPath | asFnurgelLink">{{ ['Next', 'post'] | translatePhrase }}</router-link>
       </div>
     </div>
   </div>

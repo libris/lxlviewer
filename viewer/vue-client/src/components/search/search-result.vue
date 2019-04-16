@@ -1,5 +1,5 @@
 <script>
-import * as StringUtil from '@/utils/string';
+// import * as StringUtil from '@/utils/string';
 import ResultList from './result-list';
 import ResultControls from './result-controls';
 
@@ -15,44 +15,44 @@ export default {
   },
   data() {
     return {
-      fullResult: {},
+      // fullResult: {},
       keyword: '',
       showResult: false,
     };
   },
   methods: {
-    getFullLocalResult() {
-      let currentQuery = this.query;
-      currentQuery = currentQuery.replace(/&_offset=.*/, '&_offset=');
+    // getFullLocalResult() {
+    //   let currentQuery = this.query;
+    //   currentQuery = currentQuery.replace(/&_offset=.*/, '&_offset=');
 
-      const unlimitedQuery = currentQuery.replace(/_limit=.*&/, `_limit=${this.totalItems}&`);
+    //   const unlimitedQuery = currentQuery.replace(/_limit=.*&/, `_limit=${this.totalItems}&`);
       
-      const fetchUrl = `${this.settings.apiPath}/find.json?${unlimitedQuery}`;
+    //   const fetchUrl = `${this.settings.apiPath}/find.json?${unlimitedQuery}`;
 
-      fetch(fetchUrl).then(response => response.json(), (error) => {
-        this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)} ${error}` });
-        this.searchInProgress = false;
-      }).then((result) => {
-        this.fullResult = result;
-        this.searchInProgress = false;
-      });
-    },
+    //   fetch(fetchUrl).then(response => response.json(), (error) => {
+    //     this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)} ${error}` });
+    //     this.searchInProgress = false;
+    //   }).then((result) => {
+    //     this.fullResult = result;
+    //     this.searchInProgress = false;
+    //   });
+    // },
     doSort(newsort) {
       const newQuery = Object.assign({}, this.$route.query, { _sort: newsort, _offset: 0 });
       this.$router.push({ query: newQuery });
     },
   },
   watch: {
-    fullResult(newValue) {
-      this.$store.dispatch('setBreadcrumbData',
-        [
-          {
-            type: 'searchResult',
-            result: newValue,
-            resultUrl: this.$route.fullPath,
-          },
-        ]);
-    },
+    // fullResult(newValue) {
+    //   this.$store.dispatch('setBreadcrumbData',
+    //     [
+    //       {
+    //         type: 'searchResult',
+    //         result: newValue,
+    //         resultUrl: this.$route.fullPath,
+    //       },
+    //     ]);
+    // },
   },
   computed: {
     status() {
@@ -85,7 +85,7 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      this.getFullLocalResult();
+      // this.getFullLocalResult();
       setTimeout(() => {
         this.showResult = true;
       }, 1);

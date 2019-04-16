@@ -144,6 +144,21 @@ export default {
       this.initialized = true;
     });
   },
+  beforeRouteLeave(to, from, next) {
+    if (to.name === 'Inspector') {
+      const startOffset = parseInt(this.$route.query._offset);
+      const pageOffset = this.result.items.findIndex(item => RecordUtil.extractFnurgel(item['@id']) === to.params.fnurgel);
+      const offset = Number.isNaN(startOffset) ? pageOffset : startOffset + pageOffset;
+      const breadcrumb = {
+        resultUrl: from.fullPath,
+        totalItems: this.result.totalItems,
+        query: Object.assign({}, this.$route.query),
+        offset,
+      };
+      to.meta.breadcrumb = breadcrumb;
+    }
+    next();
+  },
   components: {
     'facet-controls': FacetControls,
     'search-result': SearchResult,
