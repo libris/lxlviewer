@@ -35,6 +35,7 @@ export default {
   data() {
     return {
       itemData: {},
+      showToolTip: false,
     };
   },
   events: {
@@ -93,10 +94,22 @@ export default {
     'rounded-button': RoundedButton,
     'tooltip-component': TooltipComponent,
   },
-  mounted() { // Ready method is deprecated in 2.0, switch to "mounted"
+  mounted() {
     this.$nextTick(() => {
       this.buildItem();
     });
+  },
+  watch: {
+    'inspector.event'(val) {
+      if (val.name === 'form-control' && !this.compact) {
+        switch (val.value) { 
+          case 'add-holding':
+            this.performItemAction();
+            break;
+          default:
+        }
+      }
+    },
   },
 };
 </script>
@@ -108,8 +121,13 @@ export default {
       <button class="btn btn--md CreateItem-btn"
         v-if="!hasHolding || checkingHolding" 
         @click="previewHolding()" 
+        @mouseenter="showToolTip = true" 
+        @mouseleave="showToolTip = false"
         :disabled="disabled" 
         :class=" {'is-disabled': disabled, 'btn-primary': !disabled} ">
+        <tooltip-component
+          keybind-name="add-holding"
+          :show-tooltip="showToolTip"></tooltip-component>
         <i class="fa fa-plus-circle"
           v-if="!hasHolding && !checkingHolding"></i>
         <i class="fa fa-fw fa-circle-o-notch fa-spin"
@@ -121,7 +139,12 @@ export default {
         v-if="hasHolding" 
         :class="{'CreateItem-btn--hasHolding': hasHolding, 'is-disabled': disabled}"  
         :disabled="disabled" 
-        @click.prevent="gotoHolding()">
+        @click.prevent="gotoHolding()"
+        @mouseenter="showToolTip = true" 
+        @mouseleave="showToolTip = false">
+        <tooltip-component 
+          keybind-name="add-holding"
+          :show-tooltip="showToolTip"></tooltip-component>
         <i class="fa fa-check-circle"
           v-if="hasHolding && !checkingHolding"></i>
         {{"Show holding" | translatePhrase}}
