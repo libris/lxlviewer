@@ -250,7 +250,7 @@ export default {
       }).then((result) => {
         if (typeof result !== 'undefined') {
           const splitFetched = RecordUtil.splitJson(result);
-          const templateJson = RecordUtil.prepareDuplicateFor(splitFetched, this.user, this.settings);
+          const templateJson = RecordUtil.prepareDuplicateFor(splitFetched, this.user, this.settings.keysToClear.duplication);
           const template = RecordUtil.splitJson(templateJson);
           this.applyFieldsFromTemplate(template);
           this.embellishFromIdModal.open = false;
@@ -460,7 +460,7 @@ export default {
     },
     duplicateItem() {
       if (!this.status.inEdit && !this.isItem) {
-        const duplicate = RecordUtil.prepareDuplicateFor(this.inspector.data, this.user, this.settings);
+        const duplicate = RecordUtil.prepareDuplicateFor(this.inspector.data, this.user, this.settings.keysToClear.duplication);
         this.$store.dispatch('setInsertData', duplicate);
         this.$router.push({ path: '/new' });
       }

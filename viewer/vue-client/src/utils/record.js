@@ -241,7 +241,7 @@ export function convertToMarc(inspectorData, settings, user) {
   });
 }
 
-export function prepareDuplicateFor(inspectorData, user, settings) {
+export function prepareDuplicateFor(inspectorData, user, keysToClear) {
   const userSigelObj = { '@id': `https://libris.kb.se/library/${user.settings.activeSigel}` };
 
   // Removes fields that we do not want to import or copy
@@ -259,7 +259,7 @@ export function prepareDuplicateFor(inspectorData, user, settings) {
   newData = DataUtil.rewriteValueOfKey(newData, 'heldBy', userSigelObj, true);
 
   // Remove properties that should not be included in the duplicate
-  each(settings.removeOnDuplication, (property) => {
+  each(keysToClear, (property) => {
     unset(newData, property);
   });
 

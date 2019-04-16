@@ -97,16 +97,25 @@ const store = new Vuex.Store({
         // 'Concept', - Blocking this per request of MSS
         'Work',
       ],
-      removeOnDuplication: [
-        'record.controlNumber',
-        'record.descriptionUpgrader',
-        'record.generationProcess',
-        'record.generationDate',
-        'record.identifiedBy',
-        'record.sameAs',
-        'mainEntity.sameAs',
-        'work.sameAs',
-      ],
+      keysToClear: {
+        duplication: [
+          'record.controlNumber',
+          'record.descriptionUpgrader',
+          'record.generationProcess',
+          'record.generationDate',
+          'record.identifiedBy',
+          'record.sameAs',
+          'mainEntity.sameAs',
+          'work.sameAs',
+        ],
+        remoteImport: [
+          'record.generationProcess',
+          'record.generationDate',
+          'record.sameAs',
+          'mainEntity.sameAs',
+          'work.sameAs',
+        ],
+      },
       removableBaseUris: [
         'http://libris.kb.se/',
         'https://libris.kb.se/',
