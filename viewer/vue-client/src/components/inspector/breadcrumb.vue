@@ -119,7 +119,6 @@ export default {
       
     //   const item = items.find(itemObj => itemObj['@id'] === this.currentPost);
     //   const itemIndex = items.indexOf(item);
-     
     //   return itemIndex + 1;
     // },
     // nextPath() {
@@ -142,30 +141,30 @@ export default {
     // },
   },
   methods: {
-    getPrev() {
-      if (this.currentOffset > 0) {
-        const queryObj = Object.assign({}, this.$route.meta.breadcrumb.query);
-        queryObj._offset = this.currentOffset - 1;
-        this.getLink(queryObj)
-          .then((res) => {
-            if (res.items.length === 1) {
-              this.prevPath = res.items[0]['@id'];
-            }
-          }).catch(err => console.log(err));
-      }
-    },
-    getNext() {
-      if (this.currentOffset + 1 < this.totalItems) {
-        const queryObj = Object.assign({}, this.$route.meta.breadcrumb.query);
-        queryObj._offset = this.currentOffset + 1;
-        this.getLink(queryObj)
-          .then((res) => {
-            if (res.items.length === 1) {
-              this.nextPath = res.items[0]['@id'];
-            }
-          }).catch(err => console.log(err));
-      }
-    },
+    // getPrev() {
+    //   if (this.currentOffset > 0) {
+    //     const queryObj = Object.assign({}, this.$route.meta.breadcrumb.query);
+    //     queryObj._offset = this.currentOffset - 1;
+    //     this.getLink(queryObj)
+    //       .then((res) => {
+    //         if (res.items.length === 1) {
+    //           this.prevPath = res.items[0]['@id'];
+    //         }
+    //       }).catch(err => console.log(err));
+    //   }
+    // },
+    // getNext() {
+    //   if (this.currentOffset + 1 < this.totalItems) {
+    //     const queryObj = Object.assign({}, this.$route.meta.breadcrumb.query);
+    //     queryObj._offset = this.currentOffset + 1;
+    //     this.getLink(queryObj)
+    //       .then((res) => {
+    //         if (res.items.length === 1) {
+    //           this.nextPath = res.items[0]['@id'];
+    //         }
+    //       }).catch(err => console.log(err));
+    //   }
+    // },
     getQuery(direction) {
       const queryObj = Object.assign({}, this.$route.meta.breadcrumb.query, { _limit: 1 });
       switch (direction) {
@@ -178,11 +177,11 @@ export default {
         default:
           break;
       }
-      
       let queryString = `${this.settings.apiPath}/find.json?`;
       each(queryObj, (v, k) => {
         queryString += (`${encodeURIComponent(k)}=${encodeURIComponent(v)}&`);
       });
+
       return [queryString, direction];
     },
     fetchLink(url, direction) {
@@ -199,6 +198,12 @@ export default {
           }
         })
         .catch(err => console.log('Error fetching breadcrumb data', err));
+    },
+    reduceOffset() {
+      this.$route.meta.breadcrumb.offset = this.$route.meta.breadcrumb.offset - 1;
+    },
+    addOffset() {
+      this.$route.meta.breadcrumb.offset = this.$route.meta.breadcrumb.offset + 1;
     },
   },
   watch: {
@@ -227,11 +232,12 @@ export default {
       <div class="Breadcrumb-postLinks" v-if="prevPath || nextPath">
         <router-link class="Breadcrumb-prev" 
           v-if="currentOffset > 0 && prevPath"
-          :to="prevPath | asFnurgelLink">{{ ['Previous', 'post'] | translatePhrase }}</router-link>
+          :to="prevPath | asFnurgelLink"
+          @click.native="reduceOffset"><span @click="reduceOffset">{{ ['Previous', 'post'] | translatePhrase }}</span></router-link>
         <span v-if="prevPath && nextPath"> | </span>
         <router-link class="Breadcrumb-next"
           v-if="currentOffset + 1 < totalItems && nextPath"
-          :to="nextPath | asFnurgelLink">{{ ['Next', 'post'] | translatePhrase }}</router-link>
+          :to="nextPath | asFnurgelLink"><span @click="addOffset">{{ ['Next', 'post'] | translatePhrase }}</span></router-link>
       </div>
     </div>
   </div>
