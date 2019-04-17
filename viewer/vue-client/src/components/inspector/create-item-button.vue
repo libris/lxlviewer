@@ -3,8 +3,8 @@ import * as DisplayUtil from '@/utils/display';
 import * as RecordUtil from '@/utils/record';
 import * as DataUtil from '@/utils/data';
 import * as StringUtil from '@/utils/string';
+import * as LayoutUtil from '@/utils/layout';
 import RoundedButton from '@/components/shared/rounded-button.vue';
-import TooltipComponent from '@/components/shared/tooltip-component';
 import { mapGetters } from 'vuex';
 
 export default {
@@ -88,15 +88,29 @@ export default {
       const str = this.hasHolding ? [this.user.settings.activeSigel, 'has holding'] : ['Add holding for', this.user.settings.activeSigel];
       return StringUtil.getUiPhraseByLang(str, this.user.settings.language);
     },
+    keyBindText() {
+      return LayoutUtil.getKeybindingText('add-holding');
+    },
   },
   components: {
     'rounded-button': RoundedButton,
-    'tooltip-component': TooltipComponent,
   },
-  mounted() { // Ready method is deprecated in 2.0, switch to "mounted"
+  mounted() {
     this.$nextTick(() => {
       this.buildItem();
     });
+  },
+  watch: {
+    'inspector.event'(val) {
+      if (val.name === 'form-control' && !this.compact) {
+        switch (val.value) { 
+          case 'add-holding':
+            this.performItemAction();
+            break;
+          default:
+        }
+      }
+    },
   },
 };
 </script>
@@ -109,7 +123,8 @@ export default {
         v-if="!hasHolding || checkingHolding" 
         @click="previewHolding()" 
         :disabled="disabled" 
-        :class=" {'is-disabled': disabled, 'btn-primary': !disabled} ">
+        :class=" {'is-disabled': disabled, 'btn-primary': !disabled} "
+        v-tooltip.top="keyBindText">
         <i class="fa fa-plus-circle"
           v-if="!hasHolding && !checkingHolding"></i>
         <i class="fa fa-fw fa-circle-o-notch fa-spin"
@@ -121,7 +136,8 @@ export default {
         v-if="hasHolding" 
         :class="{'CreateItem-btn--hasHolding': hasHolding, 'is-disabled': disabled}"  
         :disabled="disabled" 
-        @click.prevent="gotoHolding()">
+        @click.prevent="gotoHolding()"
+        v-tooltip.top="keyBindText">
         <i class="fa fa-check-circle"
           v-if="hasHolding && !checkingHolding"></i>
         {{"Show holding" | translatePhrase}}
