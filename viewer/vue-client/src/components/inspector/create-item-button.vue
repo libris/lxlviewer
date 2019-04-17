@@ -3,8 +3,8 @@ import * as DisplayUtil from '@/utils/display';
 import * as RecordUtil from '@/utils/record';
 import * as DataUtil from '@/utils/data';
 import * as StringUtil from '@/utils/string';
+import * as LayoutUtil from '@/utils/layout';
 import RoundedButton from '@/components/shared/rounded-button.vue';
-import TooltipComponent from '@/components/shared/tooltip-component';
 import { mapGetters } from 'vuex';
 
 export default {
@@ -35,7 +35,6 @@ export default {
   data() {
     return {
       itemData: {},
-      showToolTip: false,
     };
   },
   events: {
@@ -89,10 +88,12 @@ export default {
       const str = this.hasHolding ? [this.user.settings.activeSigel, 'has holding'] : ['Add holding for', this.user.settings.activeSigel];
       return StringUtil.getUiPhraseByLang(str, this.user.settings.language);
     },
+    keyBindText() {
+      return LayoutUtil.getKeybindingText('add-holding');
+    },
   },
   components: {
     'rounded-button': RoundedButton,
-    'tooltip-component': TooltipComponent,
   },
   mounted() {
     this.$nextTick(() => {
@@ -121,13 +122,9 @@ export default {
       <button class="btn btn--md CreateItem-btn"
         v-if="!hasHolding || checkingHolding" 
         @click="previewHolding()" 
-        @mouseenter="showToolTip = true" 
-        @mouseleave="showToolTip = false"
         :disabled="disabled" 
-        :class=" {'is-disabled': disabled, 'btn-primary': !disabled} ">
-        <tooltip-component
-          keybind-name="add-holding"
-          :show-tooltip="showToolTip"></tooltip-component>
+        :class=" {'is-disabled': disabled, 'btn-primary': !disabled} "
+        v-tooltip.top="keyBindText">
         <i class="fa fa-plus-circle"
           v-if="!hasHolding && !checkingHolding"></i>
         <i class="fa fa-fw fa-circle-o-notch fa-spin"
@@ -140,11 +137,7 @@ export default {
         :class="{'CreateItem-btn--hasHolding': hasHolding, 'is-disabled': disabled}"  
         :disabled="disabled" 
         @click.prevent="gotoHolding()"
-        @mouseenter="showToolTip = true" 
-        @mouseleave="showToolTip = false">
-        <tooltip-component 
-          keybind-name="add-holding"
-          :show-tooltip="showToolTip"></tooltip-component>
+        v-tooltip.top="keyBindText">
         <i class="fa fa-check-circle"
           v-if="hasHolding && !checkingHolding"></i>
         {{"Show holding" | translatePhrase}}
