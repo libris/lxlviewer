@@ -17,8 +17,6 @@ export default {
   data() {
     return {
       // recordTypeChange: false,
-      prevPath: '',
-      nextPath: '',
     };
   },
   computed: {
@@ -26,31 +24,31 @@ export default {
       'inspector',
       'settings',
     ]),
-    showFromPost() {
-      if (!this.fromPostUrl || !this.recordTypeChange) return false;
-      if ((this.fromPostUrl !== '') && (this.fromPostUrl !== this.currentPost)) {
-        return true;
-      }  
-      return false;
-    },
+    // showFromPost() {
+    //   if (!this.fromPostUrl || !this.recordTypeChange) return false;
+    //   if ((this.fromPostUrl !== '') && (this.fromPostUrl !== this.currentPost)) {
+    //     return true;
+    //   }  
+    //   return false;
+    // },
     searchResultUrl() {
       return this.$route.meta.breadcrumb.resultUrl;
     },
-    fromPostUrl() {
-      const breadcrumbTrail = this.inspector.breadcrumb;
-      let fromPostId;
+    // fromPostUrl() {
+    //   const breadcrumbTrail = this.inspector.breadcrumb;
+    //   let fromPostId;
 
-      if (breadcrumbTrail.length > 1) {
-        const result = breadcrumbTrail.filter(breadcrumb => breadcrumb.type === 'fromPost');
-        fromPostId = result[0].postUrl;
-      } else if (breadcrumbTrail.length > 0) {
-        fromPostId = breadcrumbTrail[0].postUrl;
-      } else {
-        fromPostId = '';
-      }
+    //   if (breadcrumbTrail.length > 1) {
+    //     const result = breadcrumbTrail.filter(breadcrumb => breadcrumb.type === 'fromPost');
+    //     fromPostId = result[0].postUrl;
+    //   } else if (breadcrumbTrail.length > 0) {
+    //     fromPostId = breadcrumbTrail[0].postUrl;
+    //   } else {
+    //     fromPostId = '';
+    //   }
 
-      return fromPostId;
-    },
+    //   return fromPostId;
+    // },
     // fromPostType() {
     //   const breadcrumbTrail = this.inspector.breadcrumb;
     //   let fromPostType;
@@ -81,8 +79,31 @@ export default {
     totalItems() {
       return this.$route.meta.breadcrumb.totalItems;
     },
-    currentOffset() {
-      return this.$route.meta.breadcrumb.offset;
+    absoluteOffset() {
+      return this.$route.meta.breadcrumb.absoluteOffset;
+    },
+    relativeOffset() {
+      return this.$route.meta.breadcrumb.relativeOffset;
+    },
+    prevOutOfBounds() {
+      if (this.absoluteOffset > 0 && this.relativeOffset === 0) {
+        return true;
+      } return false;
+    },
+    prevPath() {
+      if (!this.prevOutOfBounds) {
+        return this.$route.meta.breadcrumb.paths[this.relativeOffset - 1];
+      } return false;
+    },
+    nextOutOfBounds() {
+      if (this.absoluteOffset + 1 < this.totalItems && this.relativeOffset + 1 > this.$route.meta.breadcrumb.paths.length - 1) {
+        return true;
+      } return false;
+    },
+    nextPath() {
+      if (!this.nextOutOfBounds) {
+        return this.$route.meta.breadcrumb.paths[this.relativeOffset + 1];
+      } return false;
     },
     // prevPostIndex() {
     //   if (this.inspector.breadcrumb === undefined || this.inspector.breadcrumb.length === 0) return null;
@@ -141,38 +162,14 @@ export default {
     // },
   },
   methods: {
-    // getPrev() {
-    //   if (this.currentOffset > 0) {
-    //     const queryObj = Object.assign({}, this.$route.meta.breadcrumb.query);
-    //     queryObj._offset = this.currentOffset - 1;
-    //     this.getLink(queryObj)
-    //       .then((res) => {
-    //         if (res.items.length === 1) {
-    //           this.prevPath = res.items[0]['@id'];
-    //         }
-    //       }).catch(err => console.log(err));
-    //   }
-    // },
-    // getNext() {
-    //   if (this.currentOffset + 1 < this.totalItems) {
-    //     const queryObj = Object.assign({}, this.$route.meta.breadcrumb.query);
-    //     queryObj._offset = this.currentOffset + 1;
-    //     this.getLink(queryObj)
-    //       .then((res) => {
-    //         if (res.items.length === 1) {
-    //           this.nextPath = res.items[0]['@id'];
-    //         }
-    //       }).catch(err => console.log(err));
-    //   }
-    // },
     getQuery(direction) {
-      const queryObj = Object.assign({}, this.$route.meta.breadcrumb.query, { _limit: 1 });
+      const queryObj = Object.assign({}, this.$route.meta.breadcrumb.query);
       switch (direction) {
         case 'prev':
-          queryObj._offset = this.currentOffset - 1;
+          queryObj._offset = this.absoluteOffset - 1;
           break;
         case 'next': 
-          queryObj._offset = this.currentOffset + 1;
+          queryObj._offset = this.$route.meta.breadcrumb.range.end;
           break;
         default:
           break;
@@ -181,37 +178,47 @@ export default {
       each(queryObj, (v, k) => {
         queryString += (`${encodeURIComponent(k)}=${encodeURIComponent(v)}&`);
       });
+    },
 
-      return [queryString, direction];
-    },
-    fetchLink(url, direction) {
-      fetch(url)
-        .then((res) => {
-          if (res.ok) {
-            res.json().then((json) => {
-              if (json.items.length === 1 && direction === 'prev') {
-                this.prevPath = json.items[0]['@id'];
-              } else if (json.items.length === 1 && direction === 'next') {
-                this.nextPath = json.items[0]['@id'];
-              }
-            });
-          }
-        })
-        .catch(err => console.log('Error fetching breadcrumb data', err));
-    },
+    //   return [queryString, direction];
+    // },
+    // fetchLink(url, direction) {
+    //   fetch(url)
+    //     .then((res) => {
+    //       if (res.ok) {
+    //         res.json().then((json) => {
+    //           if (json.items.length === 1 && direction === 'prev') {
+    //             this.prevPath = json.items[0]['@id'];
+    //           } else if (json.items.length === 1 && direction === 'next') {
+    //             this.nextPath = json.items[0]['@id'];
+    //           }
+    //         });
+    //       }
+    //     })
+    //     .catch(err => console.log('Error fetching breadcrumb data', err));
+    // },
     reduceOffset() {
-      this.$route.meta.breadcrumb.offset = this.$route.meta.breadcrumb.offset - 1;
+      const meta = Object.assign({}, this.$route.meta);
+      meta.breadcrumb.relativeOffset--;
+      meta.breadcrumb.absoluteOffset--;
+      this.$route.meta = meta;
     },
     addOffset() {
-      this.$route.meta.breadcrumb.offset = this.$route.meta.breadcrumb.offset + 1;
+      const meta = Object.assign({}, this.$route.meta);
+      meta.breadcrumb.relativeOffset++;
+      meta.breadcrumb.absoluteOffset++;
+      this.$route.meta = meta;
     },
   },
   watch: {
   },
   mounted() {
     this.$nextTick(() => {
-      this.fetchLink(...this.getQuery('prev'));
-      this.fetchLink(...this.getQuery('next'));
+      if (this.nextOutOfBounds) {
+        this.fetchLink(...this.getQuery('next'));
+      } else if (this.prevOutOfBounds) {
+        this.fetchLink(...this.getQuery('prev'));
+      }
     });
   },
 };
@@ -228,17 +235,17 @@ export default {
       </span> -->
     </div>
     <div class="Breadcrumb-postData">
-      <span class="Breadcrumb-postNumbers">{{ currentOffset + 1 }} {{ 'of' | translatePhrase }} {{ totalItems }}</span>
+      <span class="Breadcrumb-postNumbers">{{ absoluteOffset + 1 }} {{ 'of' | translatePhrase }} {{ totalItems }}</span>
       <div class="Breadcrumb-postLinks" v-if="prevPath || nextPath">
         <router-link class="Breadcrumb-prev" 
-          v-if="currentOffset > 0 && prevPath"
-          :to="prevPath | asFnurgelLink"
-          @click.native="reduceOffset"><span @click="reduceOffset">{{ ['Previous', 'post'] | translatePhrase }}</span></router-link>
+          v-if="prevPath"
+          :to="prevPath | asFnurgelLink"><span @click="reduceOffset">{{ ['Previous', 'post'] | translatePhrase }}</span></router-link>
         <span v-if="prevPath && nextPath"> | </span>
         <router-link class="Breadcrumb-next"
-          v-if="currentOffset + 1 < totalItems && nextPath"
+          v-if="nextPath"
           :to="nextPath | asFnurgelLink"><span @click="addOffset">{{ ['Next', 'post'] | translatePhrase }}</span></router-link>
       </div>
+      absolute: {{ absoluteOffset }} relative: {{relativeOffset}} getnext: {{nextOutOfBounds}} getprev: {{prevOutOfBounds}}
     </div>
   </div>
 </template>

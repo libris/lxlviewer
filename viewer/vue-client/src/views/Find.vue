@@ -146,14 +146,19 @@ export default {
   },
   beforeRouteLeave(to, from, next) {
     if (to.name === 'Inspector') {
-      const startOffset = parseInt(this.$route.query._offset);
-      const pageOffset = this.result.items.findIndex(item => RecordUtil.extractFnurgel(item['@id']) === to.params.fnurgel);
-      const offset = Number.isNaN(startOffset) ? pageOffset : startOffset + pageOffset;
+      const startOffset = this.result.itemOffset;
+      const endOffset = startOffset + this.result.itemsPerPage - 1;
+      const relativeOffset = this.result.items.findIndex(item => RecordUtil.extractFnurgel(item['@id']) === to.params.fnurgel);
+      const absoluteOffset = startOffset + relativeOffset;
+
       const breadcrumb = {
         resultUrl: from.fullPath,
         totalItems: this.result.totalItems,
         query: Object.assign({}, this.$route.query),
-        offset,
+        relativeOffset,
+        absoluteOffset,
+        range: { start: startOffset, end: endOffset },
+        paths: this.result.items.map(el => el['@id']),
       };
       to.meta.breadcrumb = breadcrumb;
     }
