@@ -131,7 +131,6 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      console.log(this.$route.meta.breadcrumb);
     });
   },
 };

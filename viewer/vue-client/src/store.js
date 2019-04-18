@@ -27,7 +27,6 @@ const store = new Vuex.Store({
       holdingsMoved: [],
     },
     inspector: {
-      // breadcrumb: [],
       data: {},
       insertData: {},
       originalData: {},
@@ -318,9 +317,6 @@ const store = new Vuex.Store({
     setInsertData(state, data) {
       state.inspector.insertData = data;
     },
-    // setBreadcrumbData(state, data) {
-    //   state.inspector.breadcrumb = data;
-    // },
     addToQuoted(state, data) {
       const quoted = cloneDeep(state.inspector.data.quoted);
       quoted[data['@id']] = data;
@@ -612,9 +608,6 @@ const store = new Vuex.Store({
     setInsertData({ commit }, data) {
       commit('setInsertData', data);
     },
-    // setBreadcrumbData({ commit }, data) {
-    //   commit('setBreadcrumbData', data);
-    // },
     updateInspectorData({ commit }, payload) {
       commit('updateInspectorData', payload);
     },
