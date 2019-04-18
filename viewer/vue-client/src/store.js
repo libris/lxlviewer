@@ -156,6 +156,9 @@ const store = new Vuex.Store({
           'https://id.kb.se/vocab/Concept',
         ],
       },
+      warnOnSave: {
+        'record.encodingLevel': ['marc:PrepublicationLevel', 'marc:PartialPreliminaryLevel'],
+      },
       propertyChains: {
         'instanceOf.@type': {
           sv: 'Verkstyp',

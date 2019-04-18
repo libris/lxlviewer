@@ -34,9 +34,10 @@ export default {
 
 <template>
   <div class="Notification " @click="remove" role="alert" :class="{
-    'Notification--error': content.type === 'danger',
     'Notification--success': content.type === 'success',
     'Notification--info': content.type === 'info',
+    'Notification--warning': content.type === 'warning',
+    'Notification--error': content.type === 'danger',
     'is-showing': shouldShow
       }">
 
@@ -58,12 +59,14 @@ export default {
 
 <style lang="less">
 
-@error-color: rgb(206, 104, 104);
-@error-color-text: white;
 @success-color: @brand-primary;
-@success-color-text: white;
-@info-color: white;
-@info-color-text: #757575;
+@success-color-text: @white;
+@info-color: @white;
+@info-color-text: @gray-darker;
+@error-color: @danger-alter;
+@error-color-text: @white;
+@warning-color: @brand-warning;
+@warning-color-text: @white;
 
 .Notification {
   background-color: @info-color;
@@ -93,6 +96,14 @@ export default {
     color: @success-color-text;
     .notification-icon {
       color: @success-color;
+    }
+  }
+
+  &--warning {
+    background-color: @warning-color;
+    color: @warning-color-text;
+    .notification-icon {
+      color: @warning-color;
     }
   }
 

@@ -1,6 +1,6 @@
 
 <script>
-import { cloneDeep, each } from 'lodash-es';
+import { cloneDeep, each, get } from 'lodash-es';
 import * as StringUtil from '@/utils/string';
 import * as DataUtil from '@/utils/data';
 import * as VocabUtil from '@/utils/vocab';
@@ -496,11 +496,17 @@ export default {
           const location = `${result.getResponseHeader('Location')}`;
           const locationParts = location.split('/');
           const fnurgel = locationParts[locationParts.length - 1];
-          this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('The post was created', this.settings.language)}!` });
+          setTimeout(() => {
+            this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('The post was created', this.settings.language)}!` });
+          }, 10);
+          this.warnOnSave();
           this.$router.push({ path: `/${fnurgel}` });
         } else {
           this.fetchDocument();
-          this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('The post was saved', this.settings.language)}!` });
+          setTimeout(() => {
+            this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('The post was saved', this.settings.language)}!` });
+          }, 10);
+          this.warnOnSave();
           if (done) {
             this.$store.dispatch('setInspectorStatusValue', { property: 'editing', value: false });
           }
@@ -522,6 +528,20 @@ export default {
             errorMessage = `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error.status}: ${StringUtil.getUiPhraseByLang(error.statusText, this.settings.language)}`;
         }
         this.$store.dispatch('pushNotification', { type: 'danger', message: `${errorBase}. ${errorMessage}.` });
+      });
+    },
+    warnOnSave() {
+      const warnArr = Object.keys(this.settings.warnOnSave);
+      warnArr.forEach((element) => {
+        const keys = element.split('.');
+        const value = get(this.inspector.data, element);
+        const warning = this.settings.warnOnSave[element].some(el => el === value);
+        if (warning) {
+          this.$store.dispatch('pushNotification', { 
+            type: 'warning', 
+            message: `${StringUtil.getUiPhraseByLang('Attention', this.user.settings.language)}! ${StringUtil.getLabelByLang(keys[keys.length - 1], this.user.settings.language, this.resources.vocab, this.resources.context)}: ${StringUtil.getLabelByLang(value, this.user.settings.language, this.resources.vocab, this.resources.context)}`, 
+          });
+        }
       });
     },
   },
@@ -853,7 +873,7 @@ export default {
 
 .RemovePostModal .ModalComponent-container {
   width: 600px;
-  height: 250px;
+  height: 175px;
 }
 
 .RemovePostModal {
