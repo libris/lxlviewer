@@ -75,59 +75,63 @@ export default {
       });
       return [queryString, direction];
     },
-    fetchLink(url, direction) {
-      fetch(url)
-        .then((res) => {
-          if (res.ok) {
-            res.json().then((json) => {
-              this.updatedPaths = json.items.map(item => item['@id']);
-              if (direction === 'prev') {
-                this.prevPath = this.updatedPaths[this.range.itemsPerPage - 1];
-              } else if (direction === 'next') {
-                this.nextPath = this.updatedPaths[0];
-              }
-            });
-          }
-        })
-        .catch(err => console.log('Error fetching breadcrumb data', err));
+    fetchLink(url) {
+      return new Promise((resolve, reject) => {
+        fetch(url).then((res) => {
+          if (res.status === 200) {
+            resolve(res.json());
+          } 
+        }, error => reject('Error fetching breadcrumb data', error));
+      });
     },
-    reduceOffset() {
-      const crumb = Object.assign({}, this.$route.meta.breadcrumb);
-      crumb.absoluteOffset--;
-      crumb.relativeOffset--;
-      this.$route.meta.breadcrumb = crumb;
+    prev() {
+      const meta = Object.assign({}, this.$route.meta);
+      meta.breadcrumb.absoluteOffset--;
+      meta.breadcrumb.relativeOffset--;
+      this.$router.push({ path: this.$options.filters.asFnurgelLink(this.prevPath), meta });
     },
-    addOffset() {
-      const crumb = Object.assign({}, this.$route.meta.breadcrumb);
-      crumb.absoluteOffset++;
-      crumb.relativeOffset++;
-      this.$route.meta.breadcrumb = crumb;
+    next() {
+      const meta = Object.assign({}, this.$route.meta);
+      meta.breadcrumb.absoluteOffset++;
+      meta.breadcrumb.relativeOffset++;
+      this.$router.push({ path: this.$options.filters.asFnurgelLink(this.nextPath), meta });
     },
-    getPrev() {
+    lastOnPrevPage() {
       this.loading = true;
-      console.log('will handle prev manually');
-      // this.fetchLink(...this.getQuery('prev'));
-      // const crumb = Object.assign({}, this.$route.meta.breadcrumb);
-      // crumb.absoluteOffset--;
-      // crumb.relativeOffset = this.range.itemsPerPage;
-      // crumb.paths = something;
-      // this.$route.meta.breadcrumb = crumb;
+      this.fetchLink(...this.getQuery('prev'))
+        .then((results) => {
+          const meta = Object.assign({}, this.$route.meta);
+          meta.breadcrumb.absoluteOffset--;
+          meta.breadcrumb.relativeOffset = this.range.itemsPerPage - 1;
+          meta.breadcrumb.range.start = results.itemOffset;
+          const newPaths = results.items.map(res => res['@id']);
+          meta.breadcrumb.paths = newPaths;
+
+          this.loading = false;
+          this.$router.push({ path: this.$options.filters.asFnurgelLink(newPaths[this.range.itemsPerPage - 1]), meta });
+        });
     },
-    getNext() {
+    firstOnNextPage() {
       this.loading = true;
-      console.log('will handle next manually');
-      // this.fetchLink(...this.getQuery('next'));
-      // const crumb = Object.assign({}, this.$route.meta.breadcrumb);
-      // crumb.absoluteOffset++;
-      // crumb.relativeOffset = 0;
-      // crumb.paths = something;
-      // this.$route.meta.breadcrumb = crumb;
+      this.fetchLink(...this.getQuery('next'))
+        .then((results) => {
+          const meta = Object.assign({}, this.$route.meta);
+          meta.breadcrumb.absoluteOffset++;
+          meta.breadcrumb.relativeOffset = 0;
+          meta.breadcrumb.range.start = results.itemOffset;
+          const newPaths = results.items.map(res => res['@id']);
+          meta.breadcrumb.paths = newPaths;
+
+          this.loading = false;
+          this.$router.push({ path: this.$options.filters.asFnurgelLink(newPaths[0]), meta });
+        });
     },
   },
   watch: {
   },
   mounted() {
     this.$nextTick(() => {
+      console.log(this.$route.meta.breadcrumb);
     });
   },
 };
@@ -142,27 +146,22 @@ export default {
     <div class="Breadcrumb-postData">
       <span class="Breadcrumb-postNumbers">{{ absoluteOffset + 1 }} {{ 'of' | translatePhrase }} {{ totalItems }}</span>
       <div class="Breadcrumb-postLinks">
-        <router-link class="Breadcrumb-prev"
-          v-if="prevPath"
-          :to="prevPath | asFnurgelLink"><span @click="reduceOffset">{{ ['Previous', 'post'] | translatePhrase }}</span></router-link>
-        <a class="Breadcrumb-prev" 
-          v-if="prevOutOfBounds" 
-          @click="getPrev">
-          <span v-if="!loading">{{ ['Previous', 'post'] | translatePhrase }}</span>
-          <vue-simple-spinner v-if="loading" size="small"></vue-simple-spinner>
-        </a>
-        <span v-if="absoluteOffset > 0 && absoluteOffset < this.totalItems"> | </span>
-        <router-link class="Breadcrumb-next"
-          v-if="nextPath"
-          :to="nextPath | asFnurgelLink"><span @click="addOffset">{{ ['Next', 'post'] | translatePhrase }}</span></router-link>
-        <a class="Breadcrumb-next" 
-          v-if="nextOutOfBounds" 
-          @click="getNext">
-          <span v-if="!loading">{{ ['Next', 'post'] | translatePhrase }}</span>
-          <vue-simple-spinner v-if="loading" size="small"></vue-simple-spinner>
-        </a>
+        <span class="Breadcrumb-prev" v-if="absoluteOffset > 0">
+          <a v-if="prevPath" @click="prev">{{ ['Previous', 'post'] | translatePhrase }}</a>
+          <a v-if="prevOutOfBounds" @click="lastOnPrevPage">
+            <span v-if="!loading">{{ ['Previous', 'post'] | translatePhrase }}</span>
+            <vue-simple-spinner v-if="loading" size="small"></vue-simple-spinner>
+          </a>
+        </span>
+        <span v-if="absoluteOffset > 0 && absoluteOffset + 1 < totalItems"> | </span>
+        <span class="Breadcrumb-next" v-if="absoluteOffset < totalItems">
+          <a v-if="nextPath" @click="next">{{ ['Next', 'post'] | translatePhrase }}</a>
+          <a v-if="nextOutOfBounds" @click="firstOnNextPage">
+            <span v-if="!loading">{{ ['Next', 'post'] | translatePhrase }}</span>
+            <vue-simple-spinner v-if="loading" size="small"></vue-simple-spinner>
+          </a>
+        </span>
       </div>
-      absolute: {{ absoluteOffset }} relative: {{relativeOffset}} getnext: {{nextOutOfBounds}} getprev: {{prevOutOfBounds}}
     </div>
   </div>
 </template>
