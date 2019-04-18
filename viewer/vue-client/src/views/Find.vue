@@ -147,7 +147,6 @@ export default {
   beforeRouteLeave(to, from, next) {
     if (to.name === 'Inspector') {
       const startOffset = this.result.itemOffset;
-      const endOffset = startOffset + this.result.itemsPerPage - 1;
       const relativeOffset = this.result.items.findIndex(item => RecordUtil.extractFnurgel(item['@id']) === to.params.fnurgel);
       const absoluteOffset = startOffset + relativeOffset;
 
@@ -157,7 +156,7 @@ export default {
         query: Object.assign({}, this.$route.query),
         relativeOffset,
         absoluteOffset,
-        range: { start: startOffset, end: endOffset },
+        range: { start: startOffset, itemsPerPage: this.result.itemsPerPage },
         paths: this.result.items.map(el => el['@id']),
       };
       to.meta.breadcrumb = breadcrumb;

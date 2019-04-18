@@ -37,7 +37,7 @@ export default {
     }
   },
   beforeRouteUpdate(to, from, next) {
-    this.addBreadcrumb();
+    // this.addBreadcrumb();
     if (this.shouldWarnOnUnload()) {
       const confString = StringUtil.getUiPhraseByLang('You have unsaved changes. Do you want to leave the page?', this.settings.language);
       const answer = window.confirm(confString); // eslint-disable-line no-alert
@@ -78,34 +78,34 @@ export default {
         message: `${StringUtil.getUiPhraseByLang('Formulär uppdaterat, glöm inte att spara posten', this.user.settings.language)}`, 
       });
     },
-    addBreadcrumb() {
-      if (this.inspector.breadcrumb !== '') {
-        const currentTrail = this.inspector.breadcrumb;
-        const firstTrail = currentTrail.shift();
+    // addBreadcrumb() {
+    //   if (this.inspector.breadcrumb !== '') {
+    //     const currentTrail = this.inspector.breadcrumb;
+    //     const firstTrail = currentTrail.shift();
 
-        const newBreadcrumb = {
-          type: 'fromPost',
-          recordType: this.recordType,
-          postUrl: this.$route.fullPath,
-        };
+    //     const newBreadcrumb = {
+    //       type: 'fromPost',
+    //       recordType: this.recordType,
+    //       postUrl: this.$route.fullPath,
+    //     };
 
-        const newTrail = [];
-        newTrail.push(firstTrail);
-        newTrail.push(newBreadcrumb);
+    //     const newTrail = [];
+    //     newTrail.push(firstTrail);
+    //     newTrail.push(newBreadcrumb);
 
-        this.$store.dispatch('setBreadcrumbData', 
-          newTrail);
-      } else {
-        this.$store.dispatch('setBreadcrumbData', 
-          [
-            {
-              type: 'fromPost',
-              recordType: this.recordType,
-              postUrl: this.$route.fullPath,
-            },
-          ]);
-      }
-    },
+    //     this.$store.dispatch('setBreadcrumbData', 
+    //       newTrail);
+    //   } else {
+    //     this.$store.dispatch('setBreadcrumbData', 
+    //       [
+    //         {
+    //           type: 'fromPost',
+    //           recordType: this.recordType,
+    //           postUrl: this.$route.fullPath,
+    //         },
+    //       ]);
+    //   }
+    // },
     shouldWarnOnUnload() {
       return (
         (this.$route.name === 'Inspector' || this.$route.name === 'NewDocument')
@@ -677,9 +677,7 @@ export default {
         </router-link>
       </div>
       <div v-if="postLoaded" class="Inspector-entity">
-        <breadcrumb v-if="$route.meta.breadcrumb" class="Inspector-breadcrumb"
-          :record-type="recordType">
-        </breadcrumb>   
+        <breadcrumb v-if="$route.meta.breadcrumb" class="Inspector-breadcrumb" /> 
         <div class="Inspector-admin">
           <div class="Inspector-header">
             <h1 class="Inspector-title mainTitle" :title="recordType">
