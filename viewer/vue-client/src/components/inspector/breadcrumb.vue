@@ -1,6 +1,7 @@
 <script>
 import { mapGetters } from 'vuex';
 import { each } from 'lodash-es';
+import * as RecordUtil from '@/utils/record';
 import VueSimpleSpinner from 'vue-simple-spinner';
 
 export default {
@@ -53,6 +54,12 @@ export default {
       if (this.absoluteOffset + 1 < this.totalItems && this.relativeOffset + 1 > this.paths.length - 1) {
         return true;
       } return false;
+    },
+    thisIsSearchResult() {
+      // check if this id is present in our list of paths. Otherwise user has gone off path (to a holding for example)
+      // and prev/next are no longer valid
+      const match = this.paths.filter(path => `/${RecordUtil.extractFnurgel(path)}` === this.$route.path);
+      return match.length === 1;
     },
   },
   methods: {
@@ -142,7 +149,7 @@ export default {
       <router-link class="Breadcrumb-backLink"
         :to="searchResultUrl">{{ 'To result list' | translatePhrase }}</router-link>
     </div>
-    <div class="Breadcrumb-postData">
+    <div class="Breadcrumb-postData" v-if="thisIsSearchResult">
       <span class="Breadcrumb-postNumbers">{{ absoluteOffset + 1 }} {{ 'of' | translatePhrase }} {{ totalItems }}</span>
       <div class="Breadcrumb-postLinks">
         <span class="Breadcrumb-prev" v-if="absoluteOffset > 0">
@@ -191,6 +198,10 @@ export default {
   &-postLinks {
     display: flex;
     margin: 0 0 0 30px;
+
+    & .vue-simple-spinner {
+      margin-top: 5px !important;
+    }
   }
 
   &-back {
@@ -204,10 +215,12 @@ export default {
 
   &-next {
     margin: 0 0 0 10px;
+    min-width: 50px;
   }
 
   &-prev {
     margin: 0 10px 0 0;
+    min-width: 50px;
   }
 }
 </style>
