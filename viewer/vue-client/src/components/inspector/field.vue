@@ -310,10 +310,10 @@ export default {
       return false;
     },
     embellished() {
-      const embellished = this.inspector.status.embellished
+      const embellished = this.inspector.status.embellished;
       if (embellished.length > 0) {
-        return embellished.some(el => el.path === this.path)
-      } return false
+        return embellished.some(el => el.path === this.path);
+      } return false;
     },
     forcedToArray() {
       return this.forcedListTerms.indexOf(this.fieldKey) > -1;

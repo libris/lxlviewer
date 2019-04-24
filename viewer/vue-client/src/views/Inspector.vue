@@ -298,8 +298,8 @@ export default {
           addToHistory: false,
         });
         this.$store.dispatch('setInspectorStatusValue', { 
-        property: 'embellished', 
-        value: changeList,
+          property: 'embellished', 
+          value: changeList,
         });
         this.$store.dispatch('pushNotification', { 
           type: 'success', 
@@ -511,6 +511,7 @@ export default {
             this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('The post was saved', this.settings.language)}!` });
           }, 10);
           this.warnOnSave();
+          this.removeEmbellishedHighlight();
           if (done) {
             this.$store.dispatch('setInspectorStatusValue', { property: 'editing', value: false });
           }
@@ -547,6 +548,14 @@ export default {
           });
         }
       });
+    },
+    removeEmbellishedHighlight() {
+      if (this.inspector.status.embellished.length > 0) {
+        this.$store.dispatch('setInspectorStatusValue', { 
+          property: 'embellished', 
+          value: [],
+        });
+      }
     },
   },
   watch: {
@@ -662,6 +671,9 @@ export default {
       this.initializeWarnBeforeUnload();
       this.initJsonOutput();
     });
+  },
+  beforeDestroy() {
+    this.removeEmbellishedHighlight();
   },
 };
 </script>
