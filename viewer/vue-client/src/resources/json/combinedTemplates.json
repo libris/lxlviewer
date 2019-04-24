@@ -2250,7 +2250,6 @@
           "marc:headingMain": true,
           "cataloguersNote": [""],
           "sourceConsulted": [],
-          "recordStatus": "marc:CorrectedOrRevised",
           "marc:recordUpdate": {
             "@id": "https://id.kb.se/marc/RecordCanBeUsed"
           },
@@ -2315,7 +2314,6 @@
           "marc:romanization": {
             "@id": "https://id.kb.se/marc/NationalStandard"
           },
-          "recordStatus": "marc:CorrectedOrRevised",
           "cataloguersNote": [""],
           "sourceConsulted": [],
           "marc:recordUpdate": {
@@ -2396,7 +2394,6 @@
           "marc:romanization": {
             "@id": "https://id.kb.se/marc/NationalStandard"
           },
-          "recordStatus": "marc:CorrectedOrRevised",
           "cataloguersNote": [""],
           "sourceConsulted": [],
           "marc:recordUpdate": {
@@ -2473,7 +2470,6 @@
           "marc:romanization": {
             "@id": "https://id.kb.se/marc/NationalStandard"
           },
-          "recordStatus": "marc:CorrectedOrRevised",
           "cataloguersNote": [""],
           "sourceConsulted": [],
           "marc:recordUpdate": {
@@ -2556,7 +2552,6 @@
           "marc:headingMain": true,
           "cataloguersNote": [""],
           "sourceConsulted": [],
-          "recordStatus": "marc:CorrectedOrRevised",
           "marc:recordUpdate": {
             "@id": "https://id.kb.se/marc/RecordCanBeUsed"
           },
