@@ -2271,6 +2271,12 @@
             "@type": "TypeOfFamily",
             "label": ""
           },
+          "marc:titlesAndOtherWordsAssociatedWithAName": [""],
+          "lifeSpan": "",
+          "place": {
+            "@type": "Place",
+            "label": ""
+          },
           "hasVariant": [{
             "@type": "Family",
             "name": ""
@@ -2410,17 +2416,12 @@
           "@id": "https://id.kb.se/TEMPID#it",
           "@type": "Meeting",
           "name": "",
-          "isPartOf": {
-            "@type": "Meeting",
-            "name": ""
-          },
           "marc:numeration": "",
+          "date": [""],
           "place": {
             "@type": "Place",
             "label": ""
           },
-          "activityStartDate": "",
-          "activityEndDate": "",
           "hasHistoricalData": [{
             "@type": "AdministrativeHistoryNote",
             "label": ""
@@ -2432,11 +2433,6 @@
             }
           ],
           "seeAlso": [],
-          "identifiedBy": [{
-            "@type": "Identifier",
-            "typeNote": "isni",
-            "value": ""
-          }],
           "nationality": [{
             "@id": "https://id.kb.se/nationality/e-sw---",
             "code": "e-sw---"
