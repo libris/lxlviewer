@@ -383,6 +383,9 @@ const store = new Vuex.Store({
     flushChangeHistory(state) {
       state.inspector.changeHistory = [];
     },
+    clearEmbellishedList(state) {
+      state.inspector.status.embellished = [];
+    },
     logoutUser(state) {
       localStorage.removeItem('at');
       state.user = User.getUserObject();
@@ -538,6 +541,9 @@ const store = new Vuex.Store({
     },
     flushChangeHistory({ commit }) {
       commit('flushChangeHistory');
+    },
+    clearEmbellishedList({ commit }) {
+      commit('clearEmbellishedList');
     },
     undoInspectorChange({ commit, state }) {
       const history = state.inspector.changeHistory;

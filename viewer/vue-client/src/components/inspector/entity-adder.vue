@@ -391,6 +391,9 @@ export default {
         property: 'lastAdded', 
         value: `${this.path}.{"@id":"${obj['@id']}"}`,
       });
+      if (this.inspector.status.embellished.length > 0) {
+        this.$store.dispatch('clearEmbellishedList');
+      }
       this.$store.dispatch('updateInspectorData', {
         changeList: [
           {
@@ -424,6 +427,9 @@ export default {
         property: 'lastAdded', 
         value: `${this.path}${index}`,
       });
+      if (this.inspector.status.embellished.length > 0) {
+        this.$store.dispatch('clearEmbellishedList');
+      }
       this.$store.dispatch('updateInspectorData', {
         changeList: [
           {
@@ -443,7 +449,9 @@ export default {
         property: 'lastAdded', 
         value: 'work',
       });
-
+      if (this.inspector.status.embellished.length > 0) {
+        this.$store.dispatch('clearEmbellishedList');
+      }
       this.$store.dispatch('updateInspectorData', {
         changeList: [
           {

@@ -551,10 +551,7 @@ export default {
     },
     removeEmbellishedHighlight() {
       if (this.inspector.status.embellished.length > 0) {
-        this.$store.dispatch('setInspectorStatusValue', { 
-          property: 'embellished', 
-          value: [],
-        });
+        this.$store.dispatch('clearEmbellishedList');
       }
     },
   },

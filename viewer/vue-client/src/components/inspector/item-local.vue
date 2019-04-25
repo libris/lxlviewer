@@ -159,7 +159,7 @@ export default {
       return this.item;
     },
     typeLabel() {
-      let label = StringUtil.getLabelByLang(this.item['@type'], this.settings.language, this.resources.vocab, this.resources.context);
+      const label = StringUtil.getLabelByLang(this.item['@type'], this.settings.language, this.resources.vocab, this.resources.context);
       return label;
     },
     isEmpty() {
@@ -319,6 +319,9 @@ export default {
         property: 'lastAdded', 
         value: `${this.parentPath}.{"@id":"${newValue['@id']}"}`,
       });
+      if (this.inspector.status.embellished.length > 0) {
+        this.$store.dispatch('clearEmbellishedList');
+      }
       this.closeExtractDialog();
     },
     cloneThis() {      
@@ -329,6 +332,9 @@ export default {
         property: 'lastAdded', 
         value: `${this.parentPath}[${parentData.length - 1}]`,
       });
+      if (this.inspector.status.embellished.length > 0) {
+        this.$store.dispatch('clearEmbellishedList');
+      }
 
       setTimeout(() => {
         this.$store.dispatch('updateInspectorData', {

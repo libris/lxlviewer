@@ -310,6 +310,9 @@ export default {
         property: 'lastAdded', 
         value: `${this.parentPath}.{"@id":"${newValue['@id']}"}`,
       });
+      if (this.inspector.status.embellished.length > 0) {
+        this.$store.dispatch('clearEmbellishedList');
+      }
       this.closeExtractDialog();
     },
     expandAllChildren() {
