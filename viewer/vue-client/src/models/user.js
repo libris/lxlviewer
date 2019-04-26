@@ -18,6 +18,7 @@ export class User {
       defaultDatabases: ['OCLC'],
       forceFullViewPanel: false,
       searchParam: false,
+      sort: false,
     };
   }
 
