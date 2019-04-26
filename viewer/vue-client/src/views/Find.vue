@@ -144,6 +144,25 @@ export default {
       this.initialized = true;
     });
   },
+  beforeRouteLeave(to, from, next) {
+    if (to.name === 'Inspector') {
+      const startOffset = this.result.itemOffset;
+      const relativeOffset = this.result.items.findIndex(item => RecordUtil.extractFnurgel(item['@id']) === to.params.fnurgel);
+      const absoluteOffset = startOffset + relativeOffset;
+
+      const breadcrumb = {
+        resultUrl: from.fullPath,
+        totalItems: this.result.totalItems,
+        query: Object.assign({}, this.$route.query),
+        relativeOffset,
+        absoluteOffset,
+        range: { start: startOffset, itemsPerPage: this.result.itemsPerPage },
+        paths: this.result.items.map(el => el['@id']),
+      };
+      to.meta.breadcrumb = breadcrumb;
+    }
+    next();
+  },
   components: {
     'facet-controls': FacetControls,
     'search-result': SearchResult,

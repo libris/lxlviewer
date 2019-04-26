@@ -9,13 +9,11 @@ import * as DisplayUtil from '@/utils/display';
 import * as RecordUtil from '@/utils/record';
 import * as md5 from 'md5';
 import EntityForm from '@/components/inspector/entity-form';
-import TagSwitch from '@/components/shared/tag-switch';
 import Toolbar from '@/components/inspector/toolbar';
 import EntityChangelog from '@/components/inspector/entity-changelog';
 import EntityHeader from '@/components/inspector/entity-header';
 import Breadcrumb from '@/components/inspector/breadcrumb';
 import ModalComponent from '@/components/shared/modal-component';
-import ReverseRelations from '@/components/inspector/reverse-relations';
 import MarcPreview from '@/components/inspector/marc-preview';
 import TabMenu from '@/components/shared/tab-menu';
 import ValidationSummary from '@/components/inspector/validation-summary';
@@ -37,7 +35,6 @@ export default {
     }
   },
   beforeRouteUpdate(to, from, next) {
-    this.addBreadcrumb();
     if (this.shouldWarnOnUnload()) {
       const confString = StringUtil.getUiPhraseByLang('You have unsaved changes. Do you want to leave the page?', this.settings.language);
       const answer = window.confirm(confString); // eslint-disable-line no-alert
@@ -77,34 +74,6 @@ export default {
         type: 'success', 
         message: `${StringUtil.getUiPhraseByLang('Formulär uppdaterat, glöm inte att spara posten', this.user.settings.language)}`, 
       });
-    },
-    addBreadcrumb() {
-      if (this.inspector.breadcrumb !== '') {
-        const currentTrail = this.inspector.breadcrumb;
-        const firstTrail = currentTrail.shift();
-
-        const newBreadcrumb = {
-          type: 'fromPost',
-          recordType: this.recordType,
-          postUrl: this.$route.fullPath,
-        };
-
-        const newTrail = [];
-        newTrail.push(firstTrail);
-        newTrail.push(newBreadcrumb);
-
-        this.$store.dispatch('setBreadcrumbData', 
-          newTrail);
-      } else {
-        this.$store.dispatch('setBreadcrumbData', 
-          [
-            {
-              type: 'fromPost',
-              recordType: this.recordType,
-              postUrl: this.$route.fullPath,
-            },
-          ]);
-      }
     },
     shouldWarnOnUnload() {
       return (
@@ -643,11 +612,9 @@ export default {
     'modal-component': ModalComponent,
     toolbar: Toolbar,
     'entity-changelog': EntityChangelog,
-    'reverse-relations': ReverseRelations,
     breadcrumb: Breadcrumb,
     'marc-preview': MarcPreview,
     'tab-menu': TabMenu,
-    TagSwitch,
     'validation-summary': ValidationSummary,
   },
   mounted() {
@@ -677,10 +644,7 @@ export default {
         </router-link>
       </div>
       <div v-if="postLoaded" class="Inspector-entity">
-        <breadcrumb class="Inspector-breadcrumb"
-          v-if="postLoaded && this.inspector.breadcrumb.length !== 0"
-          :record-type="recordType">
-        </breadcrumb>   
+        <breadcrumb v-if="$route.meta.breadcrumb" class="Inspector-breadcrumb" /> 
         <div class="Inspector-admin">
           <div class="Inspector-header">
             <h1 class="Inspector-title mainTitle" :title="recordType">
