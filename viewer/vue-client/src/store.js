@@ -474,11 +474,9 @@ const store = new Vuex.Store({
   },
   actions: {
     pushRecentlyAdded({ commit }, formPath) {
-      console.log("Add:", formPath);
       commit('pushRecentlyAdded', formPath);
     },
     removeRecentlyAdded({ commit }, formPath) {
-      console.log("Remove:", formPath);
       commit('removeRecentlyAdded', formPath);
     },
     mark({ commit, state }, payload) {
