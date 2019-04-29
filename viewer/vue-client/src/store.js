@@ -59,7 +59,7 @@ const store = new Vuex.Store({
       },
       loadingIndicators: [],
       notifications: [],
-      helpSection: 'none',
+      helpSectionTitle: '',
       remoteDatabases: [],
     },
     user: User.getUserObject(),

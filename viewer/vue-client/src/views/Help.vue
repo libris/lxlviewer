@@ -15,6 +15,19 @@ export default {
     };
   },
   methods: {
+    setSectionTitle() {
+      const value = this.activeSectionTitle;
+      let titleStr = '';
+      if (value === 'Start') {
+        titleStr = StringUtil.getUiPhraseByLang('Help', this.user.settings.language);
+      } else {
+        titleStr = `${value} - ${StringUtil.getUiPhraseByLang('Help', this.user.settings.language)}`;
+      }
+      this.$store.dispatch('setStatusValue', { 
+        property: 'helpSectionTitle',
+        value: titleStr,
+      });
+    },
     getImagePath(imgName) {
       const pathParts = imgName.split('/');
       const fileName = pathParts[pathParts.length - 1];
@@ -53,8 +66,14 @@ export default {
       this.$router.push({ path: `/help/${value}` });
     },
   },
+  updated() {
+    this.$nextTick(() => {
+      this.setSectionTitle();
+    });
+  },
   mounted() {
     this.$nextTick(() => {
+      this.setSectionTitle();
     });
   },
   components: {
@@ -79,6 +98,9 @@ export default {
       }
       return false;
     },
+    activeSectionTitle() {
+      return this.activeSectionData.title;
+    },
     activeSectionData() {
       for (const section in this.docs) {
         if (this.docs[section].basename === this.activeSection) {
@@ -89,9 +111,6 @@ export default {
     },
     status() {
       return this.$store.getters.status;
-    },
-    helpSection() {
-      return this.status.helpSection;
     },
     helpCategories() {
       const json = this.docs;
