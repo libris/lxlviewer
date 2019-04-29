@@ -87,12 +87,6 @@ export default {
       }
       return false;
     },
-    isLastAdded() {
-      if (this.inspector.status.lastAdded === this.path) {
-        return true;
-      }
-      return false;
-    },
   },
   methods: {
     removeHighlight(event, active) {
@@ -125,13 +119,13 @@ export default {
       }
     },
     highLightLastAdded() {
-      if (this.isLastAdded === true) {
+      if (this.isAddedRecently === true) {
         const element = this.$el;
         element.classList.add('is-lastAdded');
         setTimeout(() => {
           element.classList.remove('is-lastAdded');
-          if (this.isLastAdded) {
-            this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
+          if (this.isAddedRecently) {
+            this.$store.dispatch('removeRecentlyAdded', this.path);
           }
         }, 1000);
       }

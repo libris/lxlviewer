@@ -62,10 +62,6 @@ export default {
       type: Array,
       default: () => [],
     },
-    inArray: {
-      type: Boolean,
-      default: false,
-    },
     shouldExpand: {
       type: Boolean,
       default: false,
@@ -139,13 +135,7 @@ export default {
       }
       return false;
     },
-    isLastAdded() {
-      if (this.inspector.status.lastAdded === this.getPath) {
-        return true;
-      }
-      return false;
-    },
-    getPath() {
+    path() {
       return this.suffix;
     },
     isEmpty() {
@@ -167,10 +157,6 @@ export default {
     },
   },
   methods: {
-    highLightLastAdded() {
-      const element = this.$el;
-      LayoutUtil.ensureInViewport(element);
-    },
     removeThis() {
       const changeList = [
         {
@@ -297,7 +283,7 @@ export default {
         },
         {
           // Remove the #work
-          path: `${this.getPath}`,
+          path: `${this.path}`,
           value: null,
         },
       ];
@@ -336,20 +322,20 @@ export default {
   },
   created() {
     this.$on('collapse-item', () => {
-      if (this.getPath.startsWith(this.inspector.status.focus) // Only expand part of form that has focus
-          || (this.getPath.startsWith('work') && this.inspector.status.focus === 'mainEntity')) {
+      if (this.path.startsWith(this.inspector.status.focus) // Only expand part of form that has focus
+          || (this.path.startsWith('work') && this.inspector.status.focus === 'mainEntity')) {
         this.collapse();
       }
     });
     this.$on('expand-item', () => {
-      if (this.getPath.startsWith(this.inspector.status.focus)
-          || (this.getPath.startsWith('work') && this.inspector.status.focus === 'mainEntity')) {
+      if (this.path.startsWith(this.inspector.status.focus)
+          || (this.path.startsWith('work') && this.inspector.status.focus === 'mainEntity')) {
         this.expand();
       }
     });
   },
   mounted() {
-    if (this.isLastAdded) {
+    if (this.isAddedRecently) {
       this.highLightLastAdded();
       const fieldAdder = this.$refs.fieldAdder;
       if (this.isEmpty) {
@@ -360,8 +346,8 @@ export default {
         this.expandAllChildren();
       }
       setTimeout(() => {
-        if (this.isLastAdded) {
-          this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
+        if (this.isAddedRecently) {
+          this.$store.dispatch('removeRecentlyAdded', this.path);
         }
       }, 1000);
     }
@@ -426,7 +412,7 @@ export default {
           :entity-type="item['@type']" 
           :allowed="allowedProperties" 
           :inner="true" 
-          :path="getPath">
+          :path="path">
         </field-adder>
         <div class="ItemSibling-action RemoveAction">
           <i class="fa fa-trash-o fa-fw icon icon--sm" 
@@ -458,11 +444,11 @@ export default {
         :entity-type="item['@type']" 
         :allowed="allowedProperties" 
         :inner="true" 
-        :path="getPath"></field-adder> -->
+        :path="path"></field-adder> -->
       <field
         v-show="expanded && k !== '_uid'" 
         v-for="(v, k) in filteredItem" 
-        :parent-path="getPath" 
+        :parent-path="path" 
         :entity-type="item['@type']" 
         :is-inner="true" 
         :is-locked="isLocked" 

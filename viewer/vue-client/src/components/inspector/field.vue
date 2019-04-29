@@ -255,6 +255,9 @@ export default {
       }
       return `${this.parentPath}.${this.fieldKey}`;
     },
+    fieldPath() {
+      return `field-${this.path}`;
+    },
     isChild() {
       if (this.parentPath !== 'mainEntity') {
         return true;
@@ -303,11 +306,8 @@ export default {
       const bEmpty = (Object.keys(value).length === 0);
       return bEmpty;
     },
-    isLastAdded() {
-      if (this.inspector.status.lastAdded === this.path) {
-        return true;
-      }
-      return false;
+    isAddedRecently() {
+      return this.inspector.status.recentlyAdded.indexOf(this.fieldPath) > -1;
     },
     forcedToArray() {
       return this.forcedListTerms.indexOf(this.fieldKey) > -1;
@@ -333,10 +333,7 @@ export default {
       if (currentValue.length) {
         index = `[${currentValue.length - 1}]`;
       }
-      this.$store.dispatch('setInspectorStatusValue', { 
-        property: 'lastAdded', 
-        value: `${this.path}${index}`,
-      });
+      this.$store.dispatch('pushRecentlyAdded', `${this.path}${index}`);
       this.$store.dispatch('updateInspectorData', {
         changeList: [
           {
@@ -473,29 +470,31 @@ export default {
       }
     },
     highLightLastAdded() {
-      if (this.isLastAdded === true) {
+      if (this.isAddedRecently === true) {
         if (this.fieldValue === null || (isArray(this.fieldValue) && this.fieldValue.length === 0)) {
           const entityAdder = this.$refs.entityAdder;
           this.$nextTick(() => {
             if (entityAdder.$refs.adderFocusElement) {
               LayoutUtil.enableTabbing();
-              entityAdder.$refs.adderFocusElement.focus();
+              entityAdder.$refs.adderFocusElement.focus({preventScroll: true});
             }
           });
         }
         const element = this.$el;
-        LayoutUtil.ensureInViewport(element).then(() => {
-          setTimeout(() => {
-            if (this.isLastAdded) {
-              this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
-            }
-          }, 1000);
-        });
+        setTimeout(() => {
+          LayoutUtil.ensureInViewport(element).then(() => {
+            setTimeout(() => {
+              if (this.isAddedRecently) {
+                this.$store.dispatch('removeRecentlyAdded', this.fieldPath);
+              }
+            }, 1000);
+          });
+        }, 500);
       }
     },
   },
   beforeDestroy() {
-    this.$store.dispatch('setValidation', { path: this.path, validates: true });
+    this.$store.dispatch('setValidation', { path: this.fieldPath, validates: true });
   },
   mounted() {
     this.$nextTick(() => {
@@ -512,8 +511,8 @@ export default {
 
 <template>
   <li class="Field js-field" 
-    :id="`formPath-${path}`"
-    v-bind:class="{'is-mainField': isMainField, 'Field--inner': !asColumns, 'is-lastAdded': isLastAdded, 'is-removed': removed, 'has-failed-validations': failedValidations.length > 0 }" 
+    :id="`formPath-${fieldPath}`"
+    v-bind:class="{'is-mainField': isMainField, 'Field--inner': !asColumns, 'is-addedRecently': isAddedRecently, 'is-removed': removed, 'has-failed-validations': failedValidations.length > 0 }" 
     @mouseover="handleMouseEnter()" 
     @mouseleave="handleMouseLeave()">
 
@@ -592,7 +591,7 @@ export default {
             :title="fieldKey">{{ fieldKey | labelByLang | capitalize }}</span>    
         </div>
       </div>
-      <code class="path-code" v-show="user.settings.appTech && !isInner">{{path}}</code>
+      <code class="path-code" v-show="user.settings.appTech && !isInner">{{fieldPath}}</code>
     </div>
     <div class="Field-label uppercaseHeading" v-if="isInner" v-bind:class="{ 'is-locked': locked }">
       <span v-show="fieldKey === '@id'">{{ 'ID' | translatePhrase | capitalize }}</span>
@@ -666,7 +665,7 @@ export default {
       <!-- {{ key | labelByLang | capitalize }} -->
     </div>
 
-    <pre class="path-code" v-show="user.settings.appTech && isInner">{{path}}</pre>
+    <pre class="path-code" v-show="user.settings.appTech && isInner">{{fieldPath}}</pre>
       
     <div class="Field-content FieldContent" 
       v-bind:class="{ 'is-locked': locked}"
@@ -680,6 +679,7 @@ export default {
           v-if="getDatatype(item) == 'error'" 
           :field-key="fieldKey" 
           :parent-path="path"
+          :in-array="valueIsArray"
           :index="index" 
           :item="item"></item-error>
 
@@ -690,6 +690,7 @@ export default {
           :field-key="fieldKey" 
           :parent-range="rangeFull"
           :value="item" 
+          :in-array="valueIsArray"
           :entity-type="entityType" 
           :index="index" 
           :parent-path="path"></item-vocab>
@@ -699,6 +700,7 @@ export default {
           v-if="getDatatype(item) == 'entity'" 
           :is-locked="locked" 
           :item="item" 
+          :in-array="valueIsArray"
           :field-key="fieldKey" 
           :index="index" 
           :parent-path="path"></item-entity>
@@ -773,7 +775,6 @@ export default {
         <!-- Not linked, local child strings -->
         <item-value 
           v-if="getDatatype(item) == 'value'" 
-          :is-last-added="isLastAdded"
           :is-removable="!hasSingleValue" 
           :is-locked="locked" 
           :is-uri-type="isUriType"
@@ -800,6 +801,16 @@ export default {
   opacity: 1;
   position: relative;
   transition: background-color .3s ease;
+
+  &.is-addedRecently {
+    background-color: @add;
+    -webkit-animation-duration: 1s;
+    animation-duration: 1s;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+    -webkit-animation-name: pulse;
+    animation-name: pulse;
+  }
 
   &.has-failed-validations {
     outline: 1px dotted red;

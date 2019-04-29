@@ -32,10 +32,6 @@ export default {
       type: Boolean,
       default: false,
     },
-    inArray: {
-      type: Boolean,
-      default: false,
-    },
     allSearchTypes: {
       type: Array,
       default: () => [],
@@ -149,12 +145,6 @@ export default {
       }
       return false;
     },
-    getPath() {
-      if (this.inArray) {
-        return `${this.parentPath}[${this.index}]`;
-      }
-      return this.parentPath;
-    },
     formObj() {
       return this.item;
     },
@@ -174,12 +164,6 @@ export default {
       });
       return bEmpty;
     },
-    isLastAdded() {
-      if (this.inspector.status.lastAdded === this.getPath) {
-        return true;
-      }
-      return false;
-    },
   },
   methods: {
     openManagerMenu() {
@@ -187,10 +171,6 @@ export default {
     },
     closeManagerMenu() {
       this.managerMenuOpen = false;
-    },
-    highLightLastAdded() {
-      const element = this.$el;
-      LayoutUtil.ensureInViewport(element);
     },
     actionHighlight(active, event) {
       if (active) {
@@ -317,18 +297,14 @@ export default {
       this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('Linking was successful', this.settings.language)}` });
       this.$store.dispatch('setInspectorStatusValue', { 
         property: 'lastAdded', 
-        value: `${this.parentPath}.{"@id":"${newValue['@id']}"}`,
+        value: this.path,
       });
       this.closeExtractDialog();
     },
     cloneThis() {      
       const parentData = cloneDeep(get(this.inspector.data, this.parentPath));
       parentData.push(this.item);
-
-      this.$store.dispatch('setInspectorStatusValue', { 
-        property: 'lastAdded', 
-        value: `${this.parentPath}[${parentData.length - 1}]`,
-      });
+      this.$store.dispatch('pushRecentlyAdded', `${this.parentPath}[${parentData.length - 1}]`);
 
       setTimeout(() => {
         this.$store.dispatch('updateInspectorData', {
@@ -344,7 +320,7 @@ export default {
     },
     expandAllChildren() {
       this.expandChildren = true;
-      this.$nextTick(this.focusFirstInput);
+      // this.$nextTick(this.focusFirstInput);
     },
     focusFirstInput() {
       const firstInput = this.$el.querySelector('.js-itemValueInput');
@@ -375,35 +351,49 @@ export default {
   },
   created() {
     this.$on('collapse-item', () => {
-      if (this.getPath.startsWith(this.inspector.status.focus) // Only expand part of form that has focus
-          || (this.getPath.startsWith('work') && this.inspector.status.focus === 'mainEntity')) {
+      if (this.path.startsWith(this.inspector.status.focus) // Only expand part of form that has focus
+          || (this.path.startsWith('work') && this.inspector.status.focus === 'mainEntity')) {
         this.collapse();
       }
     });
     this.$on('expand-item', () => {
-      if (this.getPath.startsWith(this.inspector.status.focus)
-          || (this.getPath.startsWith('work') && this.inspector.status.focus === 'mainEntity')) {
+      if (this.path.startsWith(this.inspector.status.focus)
+          || (this.path.startsWith('work') && this.inspector.status.focus === 'mainEntity')) {
         this.expand();
       }
     });
   },
   mounted() {
-    if (this.isLastAdded) {
-      this.highLightLastAdded();
-      const fieldAdder = this.$refs.fieldAdder;
-      if (this.isEmpty) {
-        LayoutUtil.enableTabbing();
-        fieldAdder.$refs.adderButton.focus();
-      } else {
-        this.expand();
-        this.expandAllChildren();
+    this.$nextTick(() => {
+      const self = this;
+      if (this.isAddedRecently) {
+        const checkInViewport = setInterval(() => {
+          const element = self.$el;
+          if (LayoutUtil.isElementInViewport(element)) {
+            clearInterval(checkInViewport);
+            setTimeout(() => {
+              self.removeRecentlyAdded(self.path);
+            }, 1000);
+          };
+        }, 1000);
       }
-      setTimeout(() => {
-        if (this.isLastAdded) {
-          this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
-        }
-      }, 1000);
-    }
+    });
+    // if (this.isAddedRecently) {
+    //   this.highLightLastAdded();
+    //   const fieldAdder = this.$refs.fieldAdder;
+    //   if (this.isEmpty) {
+    //     // LayoutUtil.enableTabbing();
+    //     // fieldAdder.$refs.adderButton.focus();
+    //   } else {
+    //     this.expand();
+    //     this.expandAllChildren();
+    //   }
+    //   setTimeout(() => {
+    //     if (this.isAddedRecently) {
+    //       this.$store.dispatch('removeRecentlyAdded', this.path);
+    //     }
+    //   }, 1000);
+    // }
     if (this.inspector.status.isNew) {
       this.expand();
     }
@@ -420,7 +410,7 @@ export default {
 <template>
   <div class="ItemLocal js-itemLocal"
     :id="`formPath-${path}`"
-    :class="{'is-highlighted': isLastAdded, 'is-expanded': expanded && !isEmpty, 'is-extractable': isExtractable, 'has-failed-validations': failedValidations.length > 0 }"
+    :class="{'is-highlighted': isAddedRecently, 'is-expanded': expanded && !isEmpty, 'is-extractable': isExtractable, 'has-failed-validations': failedValidations.length > 0 }"
     :tabindex="isEmpty ? -1 : 0"
     @keyup.enter="checkFocus()"
     @focus="addFocus()"
@@ -465,7 +455,7 @@ export default {
           :entity-type="item['@type']" 
           :allowed="allowedProperties" 
           :inner="true" 
-          :path="getPath">
+          :path="path">
         </field-adder>
 
         <div class="ItemLocal-action RemoveAction">
@@ -538,11 +528,11 @@ export default {
         :entity-type="item['@type']" 
         :allowed="allowedProperties" 
         :inner="true" 
-        :path="getPath"></field-adder> -->
+        :path="path"></field-adder> -->
       <field
         v-show="expanded && k !== '_uid'" 
         v-for="(v, k) in filteredItem" 
-        :parent-path="getPath" 
+        :parent-path="path" 
         :entity-type="item['@type']" 
         :is-inner="true" 
         :is-locked="isLocked" 

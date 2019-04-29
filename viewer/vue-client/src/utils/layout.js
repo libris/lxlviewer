@@ -144,6 +144,9 @@ export function getPosition(element) {
 }
 
 export function isElementInViewport(element, viewportPadding = { top: 0, right: 0, bottom: 0, left: 0 }) {
+  if (typeof element === 'undefined') {
+    throw new Error('LayoutUtility - isElementInViewport() - was called with an undefined element');
+  }
   const rect = element.getBoundingClientRect();
   return (
     rect.top >= 0 + viewportPadding.top

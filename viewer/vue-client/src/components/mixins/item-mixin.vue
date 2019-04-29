@@ -2,7 +2,7 @@
 import * as DataUtil from '@/utils/data';
 import * as VocabUtil from '@/utils/vocab';
 import { cloneDeep, isArray, get, isObject } from 'lodash-es';
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 
 export default {
   props: {
@@ -18,6 +18,10 @@ export default {
       type: Boolean,
       default: null,
     },
+    inArray: {
+      type: Boolean,
+      default: false,
+    },
     index: Number,
   },
   data() {
@@ -26,6 +30,10 @@ export default {
     };
   },
   methods: {
+    ...mapActions([
+      'removeRecentlyAdded',
+      'pushRecentlyAdded',
+    ]),
     removeThis(animate = false) {
       let parentValue = cloneDeep(get(this.inspector.data, this.parentPath));
       if (isArray(parentValue)) {
@@ -74,17 +82,19 @@ export default {
       'status',
     ]),
     path() {
-      const parentValue = get(this.inspector.data, this.parentPath);
-      if (isArray(parentValue)) {
+      if (this.inArray) {
         return `${this.parentPath}[${this.index}]`;
       }
-      return `${this.parentPath}`;
+      return this.parentPath;
     },
     recordType() {
       return VocabUtil.getRecordType(this.item['@type'], this.resources.vocab, this.settings);
     },
     isEmbedded() {
       return VocabUtil.isEmbedded(this.item['@type'], this.resources.vocab, this.settings, this.resources.context);
+    },
+    isAddedRecently() {
+      return this.inspector.status.recentlyAdded.indexOf(this.path) > -1;
     },
     focusData() {
       if (!this.item['@id']) {

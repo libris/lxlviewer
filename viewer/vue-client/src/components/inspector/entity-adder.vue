@@ -381,16 +381,15 @@ export default {
     addLinkedItem(obj) {
       let currentValue = cloneDeep(get(this.inspector.data, this.path));
       const linkObj = { '@id': obj['@id'] };
+      let pathToAdded = this.path;
       if (!isArray(currentValue)) {
         currentValue = linkObj;
       } else {
+        pathToAdded += `[${currentValue.length}]`;
         currentValue.push(linkObj);
       }
       this.$store.dispatch('addToQuoted', obj);
-      this.$store.dispatch('setInspectorStatusValue', { 
-        property: 'lastAdded', 
-        value: `${this.path}.{"@id":"${obj['@id']}"}`,
-      });
+      this.$store.dispatch('pushRecentlyAdded', pathToAdded);
       this.$store.dispatch('updateInspectorData', {
         changeList: [
           {
@@ -416,14 +415,12 @@ export default {
       } else {
         currentValue.push(obj);
       }
+
       let index = '';
       if (currentValue.length) {
         index = `[${currentValue.length - 1}]`;
       }
-      this.$store.dispatch('setInspectorStatusValue', { 
-        property: 'lastAdded', 
-        value: `${this.path}${index}`,
-      });
+      this.$store.dispatch('pushRecentlyAdded', `${this.path}${index}`);
       this.$store.dispatch('updateInspectorData', {
         changeList: [
           {
@@ -439,11 +436,7 @@ export default {
       const workObj = obj;
       workObj['@id'] = linkObj['@id'];
 
-      this.$store.dispatch('setInspectorStatusValue', { 
-        property: 'lastAdded', 
-        value: 'work',
-      });
-
+      this.$store.dispatch('pushRecentlyAdded', 'work');
       this.$store.dispatch('updateInspectorData', {
         changeList: [
           {

@@ -32,15 +32,6 @@ export default {
     settings() {
       return this.$store.getters.settings;
     },
-    isNewlyAdded() {
-      if (this.inspector.status.lastAdded === this.fullPath) {
-        return true;
-      }
-      return false;
-    },
-    fullPath() {
-      return `${this.parentPath}.{"@id":"${this.item['@id']}"}`;
-    },
     routerPath() {
       if (this.item.hasOwnProperty('@id')) {
         const uriParts = this.item['@id'].split('/');
@@ -88,17 +79,17 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      if (this.isNewlyAdded) {
-        setTimeout(() => {
-          const element = this.$el;
-          LayoutUtil.ensureInViewport(element).then(() => {
+      const self = this;
+      if (this.isAddedRecently) {
+        const checkInViewport = setInterval(() => {
+          const element = self.$el;
+          if (LayoutUtil.isElementInViewport(element)) {
+            clearInterval(checkInViewport);
             setTimeout(() => {
-              if (this.isNewlyAdded) {
-                this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
-              }
+              self.removeRecentlyAdded(self.path);
             }, 1000);
-          });
-        }, 200);
+          };
+        }, 1000);
       }
     });
   },
@@ -114,7 +105,7 @@ export default {
     <div class="ItemEntity chip" 
       tabindex="0"
       v-if="!expanded" 
-      :class="{ 'is-locked': isLocked, 'is-highlighted': showCardInfo, 'is-newlyAdded': isNewlyAdded, 'is-removeable': removeHover}">
+      :class="{ 'is-locked': isLocked, 'is-highlighted': showCardInfo, 'is-addedRecently': isAddedRecently, 'is-removeable': removeHover}">
       <span class="ItemEntity-label chip-label">
         <span v-if="!expanded && isLibrisResource"><router-link :to="routerPath">{{getItemLabel}}</router-link></span>
         <span v-if="!expanded && !isLibrisResource"><a :href="item['@id']">{{getItemLabel}}</a></span>
@@ -160,7 +151,7 @@ export default {
     width: 100%;
   }
 
-  &.is-newlyAdded {
+  &.is-addedRecently {
     background-color: @add;
     -webkit-animation-duration: 1s;
     animation-duration: 1s;

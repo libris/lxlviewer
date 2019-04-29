@@ -185,19 +185,17 @@ export default {
     addField(prop, close) {  
       if (!prop.added) {
         const key = StringUtil.convertToPrefix(prop.item['@id'], this.resources.context);
+        const pathToAdded = `${this.path}.${key}`;
         this.$store.dispatch('updateInspectorData', {
           changeList: [
             {
-              path: `${this.path}.${key}`,
+              path: pathToAdded,
               value: this.getEmptyFieldValue(key, prop.item),
             },
           ],
           addToHistory: true,
         });
-        this.$store.dispatch('setInspectorStatusValue', { 
-          property: 'lastAdded', 
-          value: `${this.path}.${key}`, 
-        });
+        this.$store.dispatch('pushRecentlyAdded', `field-${pathToAdded}`);
         if (close) {
           this.hide();
         }
@@ -213,10 +211,6 @@ export default {
           this.$nextTick(() => {
             this.active = true;
             this.$nextTick(() => {
-            // this.$store.dispatch('setStatusValue', { 
-            //   property: 'keybindState', 
-            //   value: 'field-adder' 
-            // });
               if (this.$refs.input) {
                 this.$refs.input.focus();
               }

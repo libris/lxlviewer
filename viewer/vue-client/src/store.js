@@ -35,6 +35,7 @@ const store = new Vuex.Store({
         saving: false,
         opening: false,
         lastAdded: '',
+        recentlyAdded: [],
         editing: false,
         focus: 'mainEntity',
         removing: false,
@@ -296,6 +297,22 @@ const store = new Vuex.Store({
     pushInspectorEvent(state, payload) {
       state.inspector.event = payload;
     },
+    pushRecentlyAdded(state, formPath) {
+      const list = state.inspector.status.recentlyAdded;
+      const index = list.indexOf(formPath);
+      if (index === -1) {
+        list.push(formPath);
+      }
+      state.inspector.status.recentlyAdded = list;
+    },
+    removeRecentlyAdded(state, formPath) {
+      const list = state.inspector.status.recentlyAdded;
+      const index = list.indexOf(formPath);
+      if (index > -1) {
+        list.splice(index, 1);
+      }
+      state.inspector.status.recentlyAdded = list;
+    },
     pushNotification(state, content) {
       const date = new Date();
       content.id = StringUtil.getHash(`${date.getSeconds()}${date.getMilliseconds()}`);
@@ -456,6 +473,14 @@ const store = new Vuex.Store({
     context: state => state.resources.context,
   },
   actions: {
+    pushRecentlyAdded({ commit }, formPath) {
+      console.log("Add:", formPath);
+      commit('pushRecentlyAdded', formPath);
+    },
+    removeRecentlyAdded({ commit }, formPath) {
+      console.log("Remove:", formPath);
+      commit('removeRecentlyAdded', formPath);
+    },
     mark({ commit, state }, payload) {
       const userStorage = cloneDeep(state.userStorage);
       const tag = payload.tag;
