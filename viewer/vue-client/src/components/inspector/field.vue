@@ -481,7 +481,7 @@ export default {
           });
         }
         const element = this.$el;
-        setTimeout(() => {
+        element.addEventListener('animationend', () => {
           LayoutUtil.ensureInViewport(element).then(() => {
             setTimeout(() => {
               if (this.isAddedRecently) {
@@ -489,7 +489,7 @@ export default {
               }
             }, 1000);
           });
-        }, 500);
+        });
       }
     },
   },
@@ -498,12 +498,10 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      setTimeout(() => {
-        if (this.fieldKey === '_uid') {
-          throw new Error('A datanode component has been added for a _uid key, which should never happen.');
-        }
-        this.highLightLastAdded();
-      }, 300);
+      if (this.fieldKey === '_uid') {
+        throw new Error('A datanode component has been added for a _uid key, which should never happen.');
+      }
+      this.highLightLastAdded();
     });
   },
 };
