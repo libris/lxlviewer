@@ -27,10 +27,6 @@ export default {
     dismiss() {
       this.$emit('dismiss');
     },
-    scrollToEl() {
-      const element = this.$el;
-      LayoutUtil.scrollToElement(element, 1000, () => {});
-    },
   },
   computed: {
   },
@@ -40,7 +36,6 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      this.scrollToEl();
       LayoutUtil.enableTabbing();
       this.$refs.adderTypeSelect.focus();
     });
