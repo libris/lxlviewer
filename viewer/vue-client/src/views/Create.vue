@@ -19,6 +19,7 @@ export default {
       selectedCreation: 'Instance',
       thingData: {},
       activeIndex: -1,
+      excludeBases: ['Agent'],
     };
   },
   methods: {
@@ -91,6 +92,9 @@ export default {
     hasChosen() {
       return this.activeIndex > 0 || (this.activeIndex === 0 && this.chosenType);
     },
+    isExcludedBase() {
+      return this.excludeBases.indexOf(this.selectedCreation) > -1;
+    },
   },
   components: {
     'creation-card': CreationCard,
@@ -106,7 +110,7 @@ export default {
   created() {
 
   },
-  mounted() { // Ready method is deprecated in 2.0, switch to "mounted"
+  mounted() {
     this.$nextTick(() => {
       this.activeForm = '';
       this.transition = false;
@@ -122,6 +126,7 @@ export default {
       <tab-menu @go="setCreation" :tabs="creationList" :active="selectedCreation"></tab-menu>
       <div v-if="selectedCreation !== 'File'" class="Create-cards" id="creationCardPanel">
         <creation-card
+          v-if="!isExcludedBase"
           :is-base="true"
           :creation="selectedCreation"
           :index="0"
