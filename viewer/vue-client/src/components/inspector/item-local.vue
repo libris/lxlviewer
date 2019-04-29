@@ -378,22 +378,6 @@ export default {
         }, 1000);
       }
     });
-    // if (this.isAddedRecently) {
-    //   this.highLightLastAdded();
-    //   const fieldAdder = this.$refs.fieldAdder;
-    //   if (this.isEmpty) {
-    //     // LayoutUtil.enableTabbing();
-    //     // fieldAdder.$refs.adderButton.focus();
-    //   } else {
-    //     this.expand();
-    //     this.expandAllChildren();
-    //   }
-    //   setTimeout(() => {
-    //     if (this.isAddedRecently) {
-    //       this.$store.dispatch('removeRecentlyAdded', this.path);
-    //     }
-    //   }, 1000);
-    // }
     if (this.inspector.status.isNew) {
       this.expand();
     }
