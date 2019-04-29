@@ -2416,12 +2416,12 @@
           "@id": "https://id.kb.se/TEMPID#it",
           "@type": "Meeting",
           "name": "",
-          "marc:numeration": "",
+          "marc:numeration": [""],
           "date": [""],
-          "place": {
+          "place": [{
             "@type": "Place",
             "label": ""
-          },
+          }],
           "hasHistoricalData": [{
             "@type": "AdministrativeHistoryNote",
             "label": ""
@@ -2429,7 +2429,15 @@
           "hasVariant": [
             {
               "@type": "Meeting",
-              "name": ""
+              "date": [""],
+              "marc:numeration": [""],
+              "name": "",
+              "place": [
+                {
+                  "@type": "Place",
+                  "label": ""
+                }
+              ]
             }
           ],
           "seeAlso": [],

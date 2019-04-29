@@ -265,9 +265,15 @@
   },
   "Meeting": {
     "@type": "Meeting",
-    "date": "",
-    "marc:numeration": "",
-    "name": ""
+    "name": "",
+    "date": [""],
+    "marc:numeration": [""],
+    "place": [
+      {
+        "@type": "Place",
+        "label": ""
+      }
+    ]
   },
   "Dissertation": {
     "@type": "Dissertation",
