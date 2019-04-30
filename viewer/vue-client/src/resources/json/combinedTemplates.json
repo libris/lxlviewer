@@ -2239,9 +2239,7 @@
           "marc:kindOfRecord": {
             "@id": "https://id.kb.se/marc/EstablishedHeadingRecord"
           },
-          "descriptionConventions": [{
-              "code": "z"
-            },
+          "descriptionConventions": [
             {
               "@type": "DescriptionConventions",
               "code": "rda"
@@ -2252,9 +2250,6 @@
           "sourceConsulted": [],
           "marc:recordUpdate": {
             "@id": "https://id.kb.se/marc/RecordCanBeUsed"
-          },
-          "marc:personalName": {
-            "@id": "https://id.kb.se/marc/DifferentiatedPersonalName"
           },
           "marc:level": {
             "@id": "https://id.kb.se/marc/FullyEstablishedHeading"
@@ -2304,9 +2299,7 @@
           "mainEntity": {
             "@id": "https://id.kb.se/TEMPID#it"
           },
-          "descriptionConventions": [{
-              "code": "z"
-            },
+          "descriptionConventions": [
             {
               "@type": "DescriptionConventions",
               "code": "rda"
@@ -2317,6 +2310,7 @@
             "code": "swe"
           }],
           "encodingLevel": "marc:CompleteAuthorityRecord",
+          "marc:headingMain": true,
           "marc:romanization": {
             "@id": "https://id.kb.se/marc/NationalStandard"
           },
@@ -2324,9 +2318,6 @@
           "sourceConsulted": [],
           "marc:recordUpdate": {
             "@id": "https://id.kb.se/marc/RecordCanBeUsed"
-          },
-          "marc:personalName": {
-            "@id": "https://id.kb.se/marc/DifferentiatedPersonalName"
           },
           "marc:level": {
             "@id": "https://id.kb.se/marc/FullyEstablishedHeading"
@@ -2384,19 +2375,17 @@
           "mainEntity": {
             "@id": "https://id.kb.se/TEMPID#it"
           },
-          "descriptionConventions": [{
-              "code": "z"
-            },
+          "descriptionConventions": [
             {
               "@type": "DescriptionConventions",
               "code": "rda"
             }
           ],
           "descriptionLanguage": [{
-            "@id": "https://id.kb.se/language/swe",
-            "code": "swe"
+            "@id": "https://id.kb.se/language/swe"
           }],
           "encodingLevel": "marc:CompleteAuthorityRecord",
+          "marc:headingMain": true,
           "marc:romanization": {
             "@id": "https://id.kb.se/marc/NationalStandard"
           },
@@ -2404,9 +2393,6 @@
           "sourceConsulted": [],
           "marc:recordUpdate": {
             "@id": "https://id.kb.se/marc/RecordCanBeUsed"
-          },
-          "marc:personalName": {
-            "@id": "https://id.kb.se/marc/DifferentiatedPersonalName"
           },
           "marc:level": {
             "@id": "https://id.kb.se/marc/FullyEstablishedHeading"
@@ -2476,6 +2462,7 @@
           },
           "cataloguersNote": [""],
           "sourceConsulted": [],
+          "marc:headingMain": true,
           "marc:recordUpdate": {
             "@id": "https://id.kb.se/marc/RecordCanBeUsed"
           },
@@ -2545,9 +2532,7 @@
           "marc:kindOfRecord": {
             "@id": "https://id.kb.se/marc/EstablishedHeadingRecord"
           },
-          "descriptionConventions": [{
-              "code": "z"
-            },
+          "descriptionConventions": [
             {
               "@type": "DescriptionConventions",
               "code": "rda"
