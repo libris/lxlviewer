@@ -310,9 +310,6 @@ export default {
         property: 'lastAdded', 
         value: `${this.parentPath}.{"@id":"${newValue['@id']}"}`,
       });
-      if (this.inspector.status.embellished.length > 0) {
-        this.$store.dispatch('clearEmbellishedList');
-      }
       this.closeExtractDialog();
     },
     expandAllChildren() {
@@ -621,8 +618,8 @@ export default {
   &.is-highlighted {
     transition: 0s ease;
     transition-property: outline, box-shadow;
-    outline: 2px solid @highlight-color;
-    box-shadow: 0px 0px 1em 0px @highlight-color;
+    outline: 2px solid @brand-primary;
+    box-shadow: 0px 0px 1em 0px @brand-primary;
   }
   &.is-expanded {
     margin: 0 0 2em 0;

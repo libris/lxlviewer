@@ -9,13 +9,11 @@ import * as DisplayUtil from '@/utils/display';
 import * as RecordUtil from '@/utils/record';
 import * as md5 from 'md5';
 import EntityForm from '@/components/inspector/entity-form';
-import TagSwitch from '@/components/shared/tag-switch';
 import Toolbar from '@/components/inspector/toolbar';
 import EntityChangelog from '@/components/inspector/entity-changelog';
 import EntityHeader from '@/components/inspector/entity-header';
 import Breadcrumb from '@/components/inspector/breadcrumb';
 import ModalComponent from '@/components/shared/modal-component';
-import ReverseRelations from '@/components/inspector/reverse-relations';
 import MarcPreview from '@/components/inspector/marc-preview';
 import TabMenu from '@/components/shared/tab-menu';
 import ValidationSummary from '@/components/inspector/validation-summary';
@@ -68,6 +66,7 @@ export default {
         open: false,
         inputValue: '',
       },
+      justEmbellished: false,
     };
   },
   methods: {
@@ -301,6 +300,7 @@ export default {
           property: 'embellished', 
           value: changeList,
         });
+        this.justEmbellished = true;
         this.$store.dispatch('pushNotification', { 
           type: 'success', 
           message: `${changeList.length} ${StringUtil.getUiPhraseByLang('field(s) added from template', this.user.settings.language)}`, 
@@ -511,7 +511,6 @@ export default {
             this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('The post was saved', this.settings.language)}!` });
           }, 10);
           this.warnOnSave();
-          this.removeEmbellishedHighlight();
           if (done) {
             this.$store.dispatch('setInspectorStatusValue', { property: 'editing', value: false });
           }
@@ -550,15 +549,20 @@ export default {
       });
     },
     removeEmbellishedHighlight() {
-      if (this.inspector.status.embellished.length > 0) {
-        this.$store.dispatch('clearEmbellishedList');
+      if (this.inspector.status.embellished.length > 0 && !this.justEmbellished) {
+        this.$store.dispatch('setInspectorStatusValue', { 
+          property: 'embellished', 
+          value: [],
+        });
       }
+      this.justEmbellished = false;
     },
   },
   watch: {
     'inspector.data'(val, oldVal) {
       if (val !== oldVal) {
         this.setTitle();
+        this.removeEmbellishedHighlight();
         this.$store.dispatch('setInspectorStatusValue', { property: 'updating', value: false });
       }
     },
@@ -653,11 +657,9 @@ export default {
     'modal-component': ModalComponent,
     toolbar: Toolbar,
     'entity-changelog': EntityChangelog,
-    'reverse-relations': ReverseRelations,
     breadcrumb: Breadcrumb,
     'marc-preview': MarcPreview,
     'tab-menu': TabMenu,
-    TagSwitch,
     'validation-summary': ValidationSummary,
   },
   mounted() {
@@ -668,9 +670,6 @@ export default {
       this.initializeWarnBeforeUnload();
       this.initJsonOutput();
     });
-  },
-  beforeDestroy() {
-    this.removeEmbellishedHighlight();
   },
 };
 </script>

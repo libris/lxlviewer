@@ -343,9 +343,6 @@ export default {
         property: 'lastAdded', 
         value: `${this.path}${index}`,
       });
-      if (this.inspector.status.embellished.length > 0) {
-        this.$store.dispatch('clearEmbellishedList');
-      }
       this.$store.dispatch('updateInspectorData', {
         changeList: [
           {
@@ -524,10 +521,10 @@ export default {
     :id="`formPath-${path}`"
     v-bind:class="{
       'is-mainField': isMainField, 
-      'Field--inner': !asColumns, 
+      'Field--inner': !asColumns,
       'is-lastAdded': isLastAdded, 
-      'is-removed': removed, 
-      'is-embellished': embellished,
+      'is-removed': removed,
+      'is-highlighted': embellished,
       'has-failed-validations': failedValidations.length > 0 }" 
     @mouseover="handleMouseEnter()" 
     @mouseleave="handleMouseLeave()">
@@ -841,10 +838,10 @@ export default {
     background-color: @add;
   }
 
-  &.is-embellished {
-    background-color: rgba(46, 171, 172, 0.1);
+  &.is-highlighted { // replace 'is-lastadded' & 'is-marked' with this class
+    background-color: @highlight-color;
   }
-
+  
   @media (min-width: 768px) {
     display: flex;
   }

@@ -198,9 +198,6 @@ export default {
           property: 'lastAdded', 
           value: `${this.path}.${key}`, 
         });
-        if (this.inspector.status.embellished.length > 0) {
-          this.$store.dispatch('clearEmbellishedList');
-        }
         if (close) {
           this.hide();
         }
