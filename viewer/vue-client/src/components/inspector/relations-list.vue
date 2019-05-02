@@ -29,8 +29,7 @@ export default {
       itemData: {},
       embellishedList: [],
       showInstances: false,
-      hideByContext: {
-      }
+      hideByContext: {},
     };
   },
   methods: {

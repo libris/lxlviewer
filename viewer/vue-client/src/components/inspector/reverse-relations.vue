@@ -3,12 +3,11 @@ import { each } from 'lodash-es';
 import * as VocabUtil from '@/utils/vocab';
 import * as MathUtil from '@/utils/math';
 import * as StringUtil from '@/utils/string';
-import CreateItemButton from './create-item-button';
+import CreateItemButton from '@/components/inspector/create-item-button';
 import RelationsList from '@/components/inspector/relations-list';
 import RoundedButton from '@/components/shared/rounded-button.vue';
 import { mapGetters } from 'vuex';
 import VueSimpleSpinner from 'vue-simple-spinner';
-import TooltipComponent from '@/components/shared/tooltip-component';
 
 export default {
   name: 'reverse-relations',
@@ -179,7 +178,6 @@ export default {
     'relations-list': RelationsList,
     'vue-simple-spinner': VueSimpleSpinner,
     'rounded-button': RoundedButton,
-    'tooltip-component': TooltipComponent,
   },
   watch: {
     'inspector.event'(val) {

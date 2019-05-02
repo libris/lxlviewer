@@ -3,10 +3,9 @@ import AutoSize from 'autosize';
 import { isArray, debounce, cloneDeep, get } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import * as StringUtil from '@/utils/string';
-import * as LayoutUtil from '@/utils/layout';
-import TooltipComponent from '../shared/tooltip-component';
-import ItemMixin from '../mixins/item-mixin';
-import LensMixin from '../mixins/lens-mixin';
+import TooltipComponent from '@/components/shared/tooltip-component';
+import ItemMixin from '@/components/mixins/item-mixin';
+import LensMixin from '@/components/mixins/lens-mixin';
 
 export default {
   name: 'item-value',
@@ -147,7 +146,7 @@ export default {
       return false;
     },
     addFocus() {
-      this.$refs.textarea.focus({preventScroll: true}); // Prevent scroll as we will handle this ourselves
+      this.$refs.textarea.focus({ preventScroll: true }); // Prevent scroll as we will handle this ourselves
     },
   },
   components: {
