@@ -159,7 +159,7 @@ export default {
       return this.item;
     },
     typeLabel() {
-      let label = StringUtil.getLabelByLang(this.item['@type'], this.settings.language, this.resources.vocab, this.resources.context);
+      const label = StringUtil.getLabelByLang(this.item['@type'], this.settings.language, this.resources.vocab, this.resources.context);
       return label;
     },
     isEmpty() {
@@ -403,6 +403,10 @@ export default {
           this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
         }
       }, 1000);
+    }
+    if (this.shouldExpand) {
+      this.expand();
+      this.expandChildren = true;
     }
     if (this.inspector.status.isNew) {
       this.expand();

@@ -65,6 +65,7 @@ export default {
         open: false,
         inputValue: '',
       },
+      justEmbellished: false,
     };
   },
   methods: {
@@ -266,6 +267,11 @@ export default {
           changeList: changeList,
           addToHistory: false,
         });
+        this.$store.dispatch('setInspectorStatusValue', { 
+          property: 'embellished', 
+          value: changeList,
+        });
+        this.justEmbellished = true;
         this.$store.dispatch('pushNotification', { 
           type: 'success', 
           message: `${changeList.length} ${StringUtil.getUiPhraseByLang('field(s) added from template', this.user.settings.language)}`, 
@@ -513,11 +519,21 @@ export default {
         }
       });
     },
+    removeEmbellishedHighlight() {
+      if (this.inspector.status.embellished.length > 0 && !this.justEmbellished) {
+        this.$store.dispatch('setInspectorStatusValue', { 
+          property: 'embellished', 
+          value: [],
+        });
+      }
+      this.justEmbellished = false;
+    },
   },
   watch: {
     'inspector.data'(val, oldVal) {
       if (val !== oldVal) {
         this.setTitle();
+        this.removeEmbellishedHighlight();
         this.$store.dispatch('setInspectorStatusValue', { property: 'updating', value: false });
       }
     },

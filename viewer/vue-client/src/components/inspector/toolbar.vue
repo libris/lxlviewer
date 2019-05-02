@@ -760,6 +760,9 @@ export default {
       }
       &.inSubMenu {
         background-color: @gray-lighter;
+        & a:hover {
+          background-color: darken(@gray-lighter, 5%);
+        }
       }
       & a {
         display: flex;

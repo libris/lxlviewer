@@ -309,6 +309,12 @@ export default {
       }
       return false;
     },
+    embellished() {
+      const embellished = this.inspector.status.embellished;
+      if (embellished.length > 0) {
+        return embellished.some(el => el.path === this.path);
+      } return false;
+    },
     forcedToArray() {
       return this.forcedListTerms.indexOf(this.fieldKey) > -1;
     },
@@ -513,7 +519,13 @@ export default {
 <template>
   <li class="Field js-field" 
     :id="`formPath-${path}`"
-    v-bind:class="{'is-mainField': isMainField, 'Field--inner': !asColumns, 'is-lastAdded': isLastAdded, 'is-removed': removed, 'has-failed-validations': failedValidations.length > 0 }" 
+    v-bind:class="{
+      'is-mainField': isMainField, 
+      'Field--inner': !asColumns,
+      'is-lastAdded': isLastAdded, 
+      'is-removed': removed,
+      'is-highlighted': embellished,
+      'has-failed-validations': failedValidations.length > 0 }" 
     @mouseover="handleMouseEnter()" 
     @mouseleave="handleMouseLeave()">
 
@@ -720,7 +732,7 @@ export default {
           :index="index" 
           :parent-path="path" 
           :in-array="valueIsArray" 
-          :should-expand="expandChildren"
+          :should-expand="expandChildren || embellished"
           :show-action-buttons="actionButtonsShown"></item-local>
 
         <item-sibling
@@ -738,7 +750,7 @@ export default {
           :index="index"
           :in-array="valueIsArray"
           :show-action-buttons="actionButtonsShown"
-          :should-expand="expandChildren"
+          :should-expand="expandChildren || embellished"
           :parent-path="path"></item-sibling>
       </div>
       <portal-target :name="`typeSelect-${path}`" />
@@ -826,6 +838,10 @@ export default {
     background-color: @add;
   }
 
+  &.is-highlighted { // replace 'is-lastadded' & 'is-marked' with this class
+    background-color: @highlight-color;
+  }
+  
   @media (min-width: 768px) {
     display: flex;
   }

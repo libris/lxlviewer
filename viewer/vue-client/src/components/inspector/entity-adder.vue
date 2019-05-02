@@ -443,7 +443,6 @@ export default {
         property: 'lastAdded', 
         value: 'work',
       });
-
       this.$store.dispatch('updateInspectorData', {
         changeList: [
           {

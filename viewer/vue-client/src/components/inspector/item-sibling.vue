@@ -365,6 +365,10 @@ export default {
         }
       }, 1000);
     }
+    if (this.shouldExpand) {
+      this.expand();
+      this.expandChildren = true;
+    }
     if (this.inspector.status.isNew) {
       this.expand();
     }
@@ -614,8 +618,8 @@ export default {
   &.is-highlighted {
     transition: 0s ease;
     transition-property: outline, box-shadow;
-    outline: 2px solid @highlight-color;
-    box-shadow: 0px 0px 1em 0px @highlight-color;
+    outline: 2px solid @brand-primary;
+    box-shadow: 0px 0px 1em 0px @brand-primary;
   }
   &.is-expanded {
     margin: 0 0 2em 0;
