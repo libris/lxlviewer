@@ -189,9 +189,7 @@ export default {
     flex-direction: row;
     list-style: none;
     width: 100%;
-    min-height: 60px;
     box-shadow: none;
-    // transition: box-shadow ease-out 0.2s;
 
     &:hover:not(.locked) {
       >.actions {
