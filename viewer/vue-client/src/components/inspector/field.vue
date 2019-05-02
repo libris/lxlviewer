@@ -883,7 +883,7 @@ export default {
     display: flex;
     flex: 0 0 225px;
     flex-direction: column;
-    padding: 0.7em 20px 0.25em 0.5em;
+    padding: 0.7em 1em 0.25em 1em;
 
     &.is-wide {
       flex-basis: 35%;
@@ -1023,7 +1023,7 @@ export default {
   &-content {
     flex: 1 100%;
     margin: 0;
-    padding: 0.25em 20px;
+    padding: 0.25em 1em;
 
     .Field--inner & {
       border: 0;
