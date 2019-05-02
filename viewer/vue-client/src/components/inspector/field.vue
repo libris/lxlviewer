@@ -883,7 +883,7 @@ export default {
     display: flex;
     flex: 0 0 225px;
     flex-direction: column;
-    padding: 15px 20px 0 20px;
+    padding: 0.7em 20px 0.25em 0.5em;
 
     &.is-wide {
       flex-basis: 35%;
@@ -901,10 +901,6 @@ export default {
     pre {
       margin-top: 5px;
       max-width: 260px;
-    }
-
-    @media (min-width: @screen-sm) {
-      padding: 15px 20px;
     }
   }
 
@@ -1027,7 +1023,7 @@ export default {
   &-content {
     flex: 1 100%;
     margin: 0;
-    padding: 10px 20px;
+    padding: 0.25em 20px;
 
     .Field--inner & {
       border: 0;
