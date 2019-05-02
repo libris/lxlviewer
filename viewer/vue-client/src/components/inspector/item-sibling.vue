@@ -536,7 +536,7 @@ export default {
   &-arrow {
     transition: all 0.2s ease;
     padding: 0 2px;
-    margin: 0 0 0 1px;
+    font-size: 14px;
     cursor: pointer;
   }
 

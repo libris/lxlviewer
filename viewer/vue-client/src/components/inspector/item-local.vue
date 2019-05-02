@@ -584,13 +584,12 @@ export default {
 
 <style lang="less">
 .ItemLocal {
+  width: 100%;
   padding: 5px 0;
-  margin-left: -5px;
-  border-radius: 4px;
   position: relative;
   flex: 1 100%;
   transition: background-color .5s ease;
-  width: 100%;
+  border-radius: 4px;
 
   &.has-failed-validations {
     outline: 1px dotted red;
@@ -616,9 +615,9 @@ export default {
   }
 
   &-arrow {
-    font-size: 14px;
     transition: all 0.2s ease;
     padding: 0 2px;
+    font-size: 14px;
     cursor: pointer;
   }
 
