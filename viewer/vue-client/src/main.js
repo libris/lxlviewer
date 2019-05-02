@@ -97,6 +97,9 @@ new Vue({
     'inspector.title'() {
       this.updateTitle();
     },
+    'status.helpSectionTitle'() {
+      this.updateTitle();
+    },
     'user.emailHash'() {
       this.syncUserStorage();
     },
@@ -190,6 +193,8 @@ new Vue({
         } else {
           title += StringUtil.getUiPhraseByLang('Loading document', this.user.settings.language);
         }
+      } else if (route.name === 'Help') {
+        title += this.status.helpSectionTitle;
       } else {
         title += StringUtil.getUiPhraseByLang(route.name, this.user.settings.language);
       }
