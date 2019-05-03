@@ -191,12 +191,24 @@ export default {
     width: 100%;
     box-shadow: none;
 
-    &:hover:not(.locked) {
-      >.actions {
+    &:hover {
+      & .icon:not(.is-disabled) {
+        color: rgba(0, 0, 0, 0.6);
+      }
+
+      &:not(.locked) >.actions {
         opacity: 1;
       }
     }
 
+    & .icon {
+      color: rgba(0, 0, 0, 0.3);
+
+      &:hover:not(.is-disabled),
+      &:focus {
+        color: @gray-very-dark-transparent;
+      }
+    }
   }
 }
 
