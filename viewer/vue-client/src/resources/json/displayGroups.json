@@ -3,7 +3,9 @@
     "@type",
     "issuanceType",
     "inCollection",
-    "inScheme"
+    "inScheme",
+    "mediaType",
+    "carrierType"
   ],
   "header": [
     "hasTitle",
