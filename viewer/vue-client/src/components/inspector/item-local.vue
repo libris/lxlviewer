@@ -118,7 +118,7 @@ export default {
       return failedValidations;
     },
     canCopyTitle() {
-      if (this.isExtractable && !this.item.hasOwnProperty('hasTitle') && this.key === 'instanceOf') {
+      if (this.isExtractable && !this.focusData.hasOwnProperty('hasTitle') && this.key === 'instanceOf') {
         return true;
       }
       return false;
@@ -130,7 +130,7 @@ export default {
       return objAsRecord;
     },
     extractedMainEntity() {
-      const cleanObj = DataUtil.removeNullValues(this.item);
+      const cleanObj = DataUtil.removeNullValues(this.focusData);
 
       if (this.copyTitle) {
         cleanObj.hasTitle = this.editorData.mainEntity.hasTitle;
@@ -143,7 +143,7 @@ export default {
       } if (this.forcedExtractability === false) {
         return true;
       }
-      const classId = StringUtil.getCompactUri(this.item['@type'], this.resources.context);
+      const classId = StringUtil.getCompactUri(this.focusData['@type'], this.resources.context);
       if (VocabUtil.isExtractable(classId, this.resources.vocab, this.settings, this.resources.context)) {
         return true;
       }
@@ -156,16 +156,16 @@ export default {
       return this.parentPath;
     },
     formObj() {
-      return this.item;
+      return this.focusData;
     },
     typeLabel() {
-      const label = StringUtil.getLabelByLang(this.item['@type'], this.settings.language, this.resources.vocab, this.resources.context);
+      const label = StringUtil.getLabelByLang(this.focusData['@type'], this.settings.language, this.resources.vocab, this.resources.context);
       return label;
     },
     isEmpty() {
       let bEmpty = true;
       // Check if item has any keys besides @type and _uid. If not, we'll consider it empty.
-      each(this.item, (value, key) => {
+      each(this.focusData, (value, key) => {
         if (key !== '@type' && key !== '_uid') {
           if (typeof value !== 'undefined') {
             bEmpty = false;
@@ -323,7 +323,7 @@ export default {
     },
     cloneThis() {      
       const parentData = cloneDeep(get(this.inspector.data, this.parentPath));
-      parentData.push(this.item);
+      parentData.push(this.focusData);
 
       this.$store.dispatch('setInspectorStatusValue', { 
         property: 'lastAdded', 
@@ -354,7 +354,7 @@ export default {
     },
     copyThis() {
       const userStorage = cloneDeep(this.userStorage);
-      userStorage.copyClipboard = this.item;
+      userStorage.copyClipboard = this.focusData;
       this.$store.dispatch('setUserStorage', userStorage);
       this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('Copied entity to clipboard', this.settings.language)}` });
     },
@@ -466,7 +466,7 @@ export default {
 
         <field-adder ref="fieldAdder" class="ItemLocal-action"
           v-if="!isLocked" 
-          :entity-type="item['@type']" 
+          :entity-type="focusData['@type']" 
           :allowed="allowedProperties" 
           :inner="true" 
           :path="getPath">
@@ -547,7 +547,7 @@ export default {
         v-show="expanded && k !== '_uid'" 
         v-for="(v, k) in filteredItem" 
         :parent-path="getPath" 
-        :entity-type="item['@type']" 
+        :entity-type="focusData['@type']" 
         :is-inner="true" 
         :is-locked="isLocked" 
         :is-removable="false" 
