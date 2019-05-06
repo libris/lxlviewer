@@ -7,6 +7,10 @@ import { mapGetters } from 'vuex';
 
 export default {
   props: {
+    isMainEntityForm: {
+      type: Boolean,
+      default: false,
+    }
   },
   data() {
     return {
@@ -29,7 +33,9 @@ export default {
     },
     filteredItem() {
       const fItem = cloneDeep(this.sortedFormData);
-      delete fItem['@type'];
+      if (this.isMainEntityForm === false) {
+        delete fItem['@type'];
+      }
       delete fItem['@id'];
       delete fItem._uid;
       return fItem;
@@ -46,7 +52,7 @@ export default {
     },
     sortedProperties() {
       const formObj = this.formObj;
-      const propertyList = DisplayUtil.getDisplayProperties(
+      let propertyList = DisplayUtil.getDisplayProperties(
         this.formType,
         this.resources.display,
         this.resources.vocab,
@@ -60,6 +66,9 @@ export default {
         }
       });
       remove(propertyList, k => (this.settings.hiddenProperties.indexOf(k) !== -1));
+      if (this.isMainEntityForm) {
+        propertyList = ['@type'].concat(propertyList);
+      }
       return propertyList;
     },
     allowed() {

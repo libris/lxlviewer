@@ -96,7 +96,7 @@ export default {
   },
   methods: {
     keyIsLocked(key) {
-      return (this.isLocked || key === '@id' || key === '@type');
+      return (this.isLocked || key === '@id');
     },
   },
   components: {

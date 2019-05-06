@@ -132,7 +132,6 @@ const store = new Vuex.Store({
       ],
       hiddenProperties: [
         '@id',
-        '@type',
         'created',
         'modified',
         'mainEntity',

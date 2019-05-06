@@ -12,6 +12,7 @@ import ItemValue from './item-value';
 import ItemLocal from './item-local';
 import ItemError from './item-error';
 import ItemVocab from './item-vocab';
+import ItemType from './item-type';
 import ItemSibling from './item-sibling';
 import ItemBoolean from './item-boolean';
 import TooltipComponent from '../shared/tooltip-component';
@@ -52,10 +53,6 @@ export default {
       default: true,
       type: Boolean,
     },
-    isRemovable: {
-      type: Boolean,
-      default: false,
-    },
     isInner: {
       type: Boolean,
       default: false,
@@ -89,6 +86,7 @@ export default {
     };
   },
   components: {
+    ItemType,
     'item-entity': ItemEntity,
     'item-value': ItemValue,
     'item-local': ItemLocal,
@@ -102,6 +100,18 @@ export default {
   watch: {
   },
   computed: {
+    isRemovable() {
+      if (this.fieldKey !== '@type') {
+        return true;
+      }
+      return false;
+    },
+    warningOnField() {
+      if (this.fieldKey === '@type') {
+        return 'Warning on field';
+      }
+      return null;
+    },
     failedValidations() {
       const failedValidations = [];
       if (this.user.settings.appTech === false) {
@@ -177,6 +187,18 @@ export default {
         this.resources.vocab, 
         this.resources.context,
       );
+    },
+    recordTypeLabel() {
+      if (this.recordType === 'Instance') {
+        return 'Instance type';
+      } else if (this.recordType === 'Work') {
+        return 'Work type';
+      } else if (this.recordType === 'Agent') {
+        return 'Agent type';
+      } else if (this.recordType === 'Concept') {
+        return 'Concept type';
+      }
+      return 'Type';
     },
     actionButtonsShown() {
       if (this.shouldShowActionButtons || this.showActionButtons) {
@@ -410,7 +432,7 @@ export default {
       if (typeof o === 'boolean') {
         return 'boolean';
       }
-      if (VocabUtil.getContextValue(this.fieldKey, '@type', this.resources.context) === '@vocab') {
+      if (this.fieldKey === '@type' ||  VocabUtil.getContextValue(this.fieldKey, '@type', this.resources.context) === '@vocab') {
         return 'vocab';
       }
       if (this.isPlainObject(o) && o.hasOwnProperty('@id') && this.isInGraph(o)) {
@@ -530,7 +552,7 @@ export default {
       <div class="Field-labelWrapper">
         <div v-if="this.inspector.status.editing" class="Field-actions">
           <div class="Field-action Field-remove" 
-            v-show="!locked" 
+            v-show="!locked && isRemovable" 
             :class="{'disabled': activeModal}">
             <i class="fa fa-trash-o fa-fw action-button icon icon--sm"
               role="button"
@@ -568,6 +590,11 @@ export default {
           </entity-adder>
           <div v-else class="Field-action placeholder"></div> 
 
+          <div v-if="warningOnField" class="Field-action placeholder"></div> 
+          <div class="Field-warning" v-if="warningOnField">
+            <i class="fa fa-warning fa-fw icon icon--sm"></i>
+            <span class="Field-commentText">{{ warningOnField | translatePhrase }}</span>
+          </div>
           <div class="Field-comment" v-if="propertyComment && !locked" >
             <i class="fa fa-question-circle fa-fw icon icon--sm"></i>
             <span class="Field-commentText">{{ propertyComment }}</span>
@@ -594,7 +621,7 @@ export default {
         </div>
         <div class="Field-label uppercaseHeading" v-bind:class="{ 'is-locked': locked }">
           <span v-show="fieldKey === '@id'">{{ 'ID' | translatePhrase | capitalize }}</span>
-          <span v-show="fieldKey === '@type'">{{ 'Type' | translatePhrase | capitalize }}</span>
+          <span v-show="fieldKey === '@type'">{{ recordTypeLabel | translatePhrase | capitalize }}</span>
           <span v-show="fieldKey !== '@id' && fieldKey !== '@type'" 
             :title="fieldKey">{{ fieldKey | labelByLang | capitalize }}</span>    
         </div>
@@ -603,7 +630,7 @@ export default {
     </div>
     <div class="Field-label uppercaseHeading" v-if="isInner" v-bind:class="{ 'is-locked': locked }">
       <span v-show="fieldKey === '@id'">{{ 'ID' | translatePhrase | capitalize }}</span>
-      <span v-show="fieldKey === '@type'">{{ 'Type' | translatePhrase | capitalize }}</span>
+      <span v-show="fieldKey === '@type'">{{ recordTypeLabel | translatePhrase | capitalize }}</span>
       <span v-show="fieldKey !== '@id' && fieldKey !== '@type'" 
         :title="fieldKey">{{ fieldKey | labelByLang | capitalize }}</span>
 
@@ -634,7 +661,7 @@ export default {
         </entity-adder>
 
         <div class="Field-action Field-remove" 
-          v-show="!locked" 
+          v-show="!locked && isRemovable" 
           :class="{'disabled': activeModal}">
           <i class="fa fa-trash-o fa-fw action-button icon icon--sm"
             tabindex="0"
@@ -674,10 +701,26 @@ export default {
     </div>
 
     <pre class="path-code" v-show="user.settings.appTech && isInner">{{path}}</pre>
-      
+    
+    <div class="Field-content FieldContent"
+    :class="{ 'is-locked': locked}"
+    v-if="fieldKey === '@type'">
+      <div class="Field-contentItem" 
+        v-for="(item, index) in valueAsArray" 
+        :key="index"
+        v-bind:class="{'is-entityContent': getDatatype(item) == 'entity'}">
+        <item-type
+          :is-locked="locked" 
+          :field-key="fieldKey" 
+          :field-value="fieldValue" 
+          :entity-type="entityType" 
+          :parent-path="path" />
+      </div>
+    </div>
+
     <div class="Field-content FieldContent" 
       v-bind:class="{ 'is-locked': locked}"
-      v-if="isObjectArray">
+      v-if="fieldKey !== '@type' && isObjectArray">
       <div class="Field-contentItem" 
         v-for="(item, index) in valueAsArray" 
         :key="index"
@@ -754,7 +797,7 @@ export default {
 
     <div class="Field-content is-endOfTree js-endOfTree" 
       v-bind:class="{ 'is-locked': locked }"
-      v-if="!isObjectArray">
+      v-if="fieldKey !== '@type' && !isObjectArray">
       <div class="Field-contentItem" 
         v-for="(item, index) in valueAsArray" 
         :key="index">
@@ -1020,7 +1063,7 @@ export default {
     }
   }
 
-  &-comment {
+  &-comment, &-warning {
     width: 20px;
     position: relative;
     margin-right: 5px;
