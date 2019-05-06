@@ -33,7 +33,7 @@ export default {
     },
     filteredItem() {
       const fItem = cloneDeep(this.sortedFormData);
-      if (this.isMainEntityForm === false) {
+      if (this.isMainEntityForm === false || this.isHolding) {
         delete fItem['@type'];
       }
       delete fItem['@id'];
