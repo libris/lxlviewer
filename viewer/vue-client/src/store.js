@@ -86,11 +86,6 @@ const store = new Vuex.Store({
         'StructuredValue',
         'QualifiedRole',
       ],
-      mainFields: {
-        Instance: 'instanceOf',
-        Work: 'expressionOf',
-        Item: 'itemOf',
-      },
       extractableTypes: [
         'Item',
         'Instance',

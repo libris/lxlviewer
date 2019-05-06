@@ -148,9 +148,6 @@ export default {
     clipboardValue() {
       return this.userStorage.copyClipboard;
     },
-    isMainField() {
-      return (!this.isInner && this.settings.mainFields[this.recordType] === this.fieldKey);
-    },
     someValuesFrom() {
       return VocabUtil.getRestrictions('someValuesFrom', this.entityType, this.fieldKey, this.resources.vocab, this.resources.context);
     },
@@ -537,7 +534,6 @@ export default {
   <li class="Field js-field" 
     :id="`formPath-${path}`"
     v-bind:class="{
-      'is-mainField': isMainField, 
       'Field--inner': !asColumns,
       'is-lastAdded': isLastAdded, 
       'is-removed': removed,
@@ -855,15 +851,6 @@ export default {
 
   &.has-failed-validations {
     outline: 1px dotted red;
-  }
-  &.is-mainField {
-    border-bottom-width: 2px;
-  
-    & .Field-labelWrapper {
-      position: static;
-      position: sticky;
-      top: 55px;
-    }
   }
 
   &.is-marked {
