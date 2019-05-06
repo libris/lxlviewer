@@ -526,7 +526,9 @@ export default {
           value: [],
         });
       }
-      this.justEmbellished = false;
+      setTimeout(() => {
+        this.justEmbellished = false;
+      }, 300);
     },
   },
   watch: {
