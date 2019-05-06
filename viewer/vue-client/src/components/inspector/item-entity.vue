@@ -119,8 +119,8 @@ export default {
         <span v-if="!expanded && isLibrisResource"><router-link :to="routerPath">{{getItemLabel}}</router-link></span>
         <span v-if="!expanded && !isLibrisResource"><a :href="item['@id']">{{getItemLabel}}</a></span>
         <span class="placeholder"></span></span>
-      <div class="ItemEntity-removeButton chip-removeButton icon icon--sm" v-if="!isLocked">
-        <i class="fa fa-times-circle" 
+      <div class="ItemEntity-removeButton chip-removeButton" v-if="!isLocked">
+        <i class="fa fa-times-circle icon icon--sm" 
           v-if="!isLocked"
           role="button"
           tabindex="0"
