@@ -393,7 +393,7 @@ export default {
     height: 100%;
     min-width: unset;
     box-shadow: none;
-    text-align-last: left;
+    text-align: left;
     border: none;
   }
 

@@ -899,7 +899,7 @@ export default {
     display: flex;
     flex: 0 0 225px;
     flex-direction: column;
-    padding: 0.7em 1em 0.25em 1em;
+    padding: 0.75em 1em 0.25em 1em;
 
     &.is-wide {
       flex-basis: 35%;

@@ -100,7 +100,7 @@ export default {
     font-weight: 600;
   }
   &-select {
-    text-align-last: start;
+    text-align: start;
     margin: 0 10px 10px 0;
   }
 }
