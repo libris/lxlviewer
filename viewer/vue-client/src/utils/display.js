@@ -179,60 +179,70 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
   const displayType = isArray(trueItem['@type']) ? trueItem['@type'][0] : trueItem['@type']; // If more than one type, choose the first
   const properties = getDisplayProperties(displayType, displayDefs, vocab, settings, context, level);
   // Start filling the object with the selected properties
-  for (let i = 0; i < properties.length; i++) {
-    const property = properties[i];
-    if (!isObject(property)) {
-      let valueOnItem = '';
-      if (property === 'created' || property === 'modified') {
-        valueOnItem = moment(item[property]).format('lll');
-      } else {
-        valueOnItem = getValueByLang(trueItem, property, displayDefs, settings.language, context);
-      }
-      if (typeof valueOnItem !== 'undefined') {
-        let value = valueOnItem;
-        if (isObject(value) && !isArray(value)) {
-          if (level === 'chips') {
-            value = getItemToken(value, displayDefs, quoted, vocab, settings, context);
-          } else {
-            value = getItemLabel(value, displayDefs, quoted, vocab, settings, context, property);
-          }
-        } else if (isArray(value)) {
-          const newArray = [];
-          for (const arrayItem of value) {
-            if (typeof arrayItem === 'undefined' || arrayItem === null) {
-              throw new Error('getDisplayObject encountered an undefined or null item in an array.');
-            }
-            if (isObject(arrayItem) && (Object.keys(arrayItem).length > 1 || arrayItem[Object.keys(arrayItem)[0]] !== '')) {
-              if (level === 'chips') {
-                newArray.push(getItemToken(arrayItem, displayDefs, quoted, vocab, settings, context));
-              } else {
-                newArray.push(getItemLabel(arrayItem, displayDefs, quoted, vocab, settings, context, property));
-              }
-            } else if (arrayItem.length > 0) {
-              newArray.push(arrayItem);
+  if (properties.length === 2 && properties.indexOf('label') > -1 && properties.indexOf('prefLabel') > -1) {
+    const labelValue = getValueByLang(trueItem, 'label', displayDefs, settings.language, context);
+    const prefLabelValue = getValueByLang(trueItem, 'prefLabel', displayDefs, settings.language, context);
+    if (typeof prefLabelValue !== 'undefined') {
+      result['prefLabel'] = prefLabelValue;
+    } else if (labelValue !== 'undefined') {
+      result['label'] = labelValue;
+    }
+  } else {
+    for (let i = 0; i < properties.length; i++) {
+      const property = properties[i];
+      if (!isObject(property)) {
+        let valueOnItem = '';
+        if (property === 'created' || property === 'modified') {
+          valueOnItem = moment(item[property]).format('lll');
+        } else {
+          valueOnItem = getValueByLang(trueItem, property, displayDefs, settings.language, context);
+        }
+        if (typeof valueOnItem !== 'undefined') {
+          let value = valueOnItem;
+          if (isObject(value) && !isArray(value)) {
+            if (level === 'chips') {
+              value = getItemToken(value, displayDefs, quoted, vocab, settings, context);
             } else {
-              // console.warn("Array contained unknown item", arrayItem);
+              value = getItemLabel(value, displayDefs, quoted, vocab, settings, context, property);
             }
+          } else if (isArray(value)) {
+            const newArray = [];
+            for (const arrayItem of value) {
+              if (typeof arrayItem === 'undefined' || arrayItem === null) {
+                throw new Error('getDisplayObject encountered an undefined or null item in an array.');
+              }
+              if (isObject(arrayItem) && (Object.keys(arrayItem).length > 1 || arrayItem[Object.keys(arrayItem)[0]] !== '')) {
+                if (level === 'chips') {
+                  newArray.push(getItemToken(arrayItem, displayDefs, quoted, vocab, settings, context));
+                } else {
+                  newArray.push(getItemLabel(arrayItem, displayDefs, quoted, vocab, settings, context, property));
+                }
+              } else if (arrayItem.length > 0) {
+                newArray.push(arrayItem);
+              } else {
+                // console.warn("Array contained unknown item", arrayItem);
+              }
+            }
+            value = newArray;
           }
-          value = newArray;
+          result[property] = value;
+        } else if (properties.length < 3 && i === 0) {
+          const rangeOfMissingProp = VocabUtil.getRange(property, vocab, context);
+          let propMissing = property;
+          if (
+            rangeOfMissingProp.length > 1
+            || (rangeOfMissingProp.length === 1 && rangeOfMissingProp[0] !== 'http://www.w3.org/2000/01/rdf-schema#Literal')
+          ) {
+            propMissing = rangeOfMissingProp[0];
+          }
+          const expectedClassName = StringUtil.getLabelByLang(
+            propMissing, // Get the first one just to show something
+            settings.language,
+            vocab,
+            context,
+          );
+          result[property] = `{${expectedClassName} saknas}`;
         }
-        result[property] = value;
-      } else if (properties.length < 3 && i === 0) {
-        const rangeOfMissingProp = VocabUtil.getRange(property, vocab, context);
-        let propMissing = property;
-        if (
-          rangeOfMissingProp.length > 1
-          || (rangeOfMissingProp.length === 1 && rangeOfMissingProp[0] !== 'http://www.w3.org/2000/01/rdf-schema#Literal')
-        ) {
-          propMissing = rangeOfMissingProp[0];
-        }
-        const expectedClassName = StringUtil.getLabelByLang(
-          propMissing, // Get the first one just to show something
-          settings.language,
-          vocab,
-          context,
-        );
-        result[property] = `{${expectedClassName} saknas}`;
       }
     }
   }
