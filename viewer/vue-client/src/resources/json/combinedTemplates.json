@@ -2222,73 +2222,6 @@
     }
   },
   "agent": {
-    "family": {
-      "label": "Släkt",
-      "description": "Agent",
-      "value": {
-        "record": {
-          "@id": "https://id.kb.se/TEMPID",
-          "@type": "Record",
-          "mainEntity": {
-            "@id": "https://id.kb.se/TEMPID#it"
-          },
-          "encodingLevel": "marc:CompleteAuthorityRecord",
-          "marc:romanization": {
-            "@id": "https://id.kb.se/marc/NationalStandard"
-          },
-          "marc:kindOfRecord": {
-            "@id": "https://id.kb.se/marc/EstablishedHeadingRecord"
-          },
-          "descriptionConventions": [
-            {
-              "@type": "DescriptionConventions",
-              "code": "rda"
-            }
-          ],
-          "marc:headingMain": true,
-          "cataloguersNote": [""],
-          "sourceConsulted": [],
-          "marc:recordUpdate": {
-            "@id": "https://id.kb.se/marc/RecordCanBeUsed"
-          },
-          "marc:level": {
-            "@id": "https://id.kb.se/marc/FullyEstablishedHeading"
-          },
-          "descriptionLanguage": [{
-            "@id": "https://id.kb.se/language/swe"
-          }]
-        },
-        "mainEntity": {
-          "@id": "https://id.kb.se/TEMPID#it",
-          "@type": "Family",
-          "name": "",
-          "hasTypeOfFamily": {
-            "@type": "TypeOfFamily",
-            "label": ""
-          },
-          "marc:titlesAndOtherWordsAssociatedWithAName": [""],
-          "lifeSpan": "",
-          "place": {
-            "@type": "Place",
-            "label": ""
-          },
-          "hasVariant": [{
-            "@type": "Family",
-            "name": ""
-          }],
-          "seeAlso": [],
-          "identifiedBy": [{
-            "@type": "Identifier",
-            "typeNote": "isni",
-            "value": ""
-          }],
-          "nationality": [{
-            "@id": "https://id.kb.se/nationality/e-sw---",
-            "code": "e-sw---"
-          }]
-        }
-      }
-    },
     "jurisdiction": {
       "label": "Jurisdiktion",
       "description": "Agent",
@@ -2311,9 +2244,6 @@
           }],
           "encodingLevel": "marc:CompleteAuthorityRecord",
           "marc:headingMain": true,
-          "marc:romanization": {
-            "@id": "https://id.kb.se/marc/NationalStandard"
-          },
           "cataloguersNote": [""],
           "sourceConsulted": [],
           "marc:recordUpdate": {
@@ -2365,75 +2295,6 @@
         }
       }
     },
-    "meeting": {
-      "label": "Möte",
-      "description": "Agent",
-      "value": {
-        "record": {
-          "@id": "https://id.kb.se/TEMPID",
-          "@type": "Record",
-          "mainEntity": {
-            "@id": "https://id.kb.se/TEMPID#it"
-          },
-          "descriptionConventions": [
-            {
-              "@type": "DescriptionConventions",
-              "code": "rda"
-            }
-          ],
-          "descriptionLanguage": [{
-            "@id": "https://id.kb.se/language/swe"
-          }],
-          "encodingLevel": "marc:CompleteAuthorityRecord",
-          "marc:headingMain": true,
-          "marc:romanization": {
-            "@id": "https://id.kb.se/marc/NationalStandard"
-          },
-          "cataloguersNote": [""],
-          "sourceConsulted": [],
-          "marc:recordUpdate": {
-            "@id": "https://id.kb.se/marc/RecordCanBeUsed"
-          },
-          "marc:level": {
-            "@id": "https://id.kb.se/marc/FullyEstablishedHeading"
-          }
-        },
-        "mainEntity": {
-          "@id": "https://id.kb.se/TEMPID#it",
-          "@type": "Meeting",
-          "name": "",
-          "marc:numeration": [""],
-          "date": [""],
-          "place": [{
-            "@type": "Place",
-            "label": ""
-          }],
-          "hasHistoricalData": [{
-            "@type": "AdministrativeHistoryNote",
-            "label": ""
-          }],
-          "hasVariant": [
-            {
-              "@type": "Meeting",
-              "date": [""],
-              "marc:numeration": [""],
-              "name": "",
-              "place": [
-                {
-                  "@type": "Place",
-                  "label": ""
-                }
-              ]
-            }
-          ],
-          "seeAlso": [],
-          "nationality": [{
-            "@id": "https://id.kb.se/nationality/e-sw---",
-            "code": "e-sw---"
-          }]
-        }
-      }
-    },
     "organization": {
       "label": "Organisation",
       "description": "Agent",
@@ -2457,17 +2318,11 @@
             "code": "swe"
           }],
           "encodingLevel": "marc:CompleteAuthorityRecord",
-          "marc:romanization": {
-            "@id": "https://id.kb.se/marc/NationalStandard"
-          },
           "cataloguersNote": [""],
           "sourceConsulted": [],
           "marc:headingMain": true,
           "marc:recordUpdate": {
             "@id": "https://id.kb.se/marc/RecordCanBeUsed"
-          },
-          "marc:personalName": {
-            "@id": "https://id.kb.se/marc/DifferentiatedPersonalName"
           },
           "marc:level": {
             "@id": "https://id.kb.se/marc/FullyEstablishedHeading"
@@ -2526,9 +2381,6 @@
             "@id": "https://id.kb.se/TEMPID#it"
           },
           "encodingLevel": "marc:CompleteAuthorityRecord",
-          "marc:romanization": {
-            "@id": "https://id.kb.se/marc/NationalStandard"
-          },
           "marc:kindOfRecord": {
             "@id": "https://id.kb.se/marc/EstablishedHeadingRecord"
           },
