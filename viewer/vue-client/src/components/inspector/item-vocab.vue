@@ -145,6 +145,7 @@ export default {
 
   &-select {
     width: 100%;
+    margin-top: 0.2em;
   }
 }
 
