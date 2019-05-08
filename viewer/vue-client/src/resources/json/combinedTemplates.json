@@ -2244,9 +2244,6 @@
           }],
           "encodingLevel": "marc:CompleteAuthorityRecord",
           "marc:headingMain": true,
-          "marc:romanization": {
-            "@id": "https://id.kb.se/marc/NationalStandard"
-          },
           "cataloguersNote": [""],
           "sourceConsulted": [],
           "marc:recordUpdate": {
@@ -2390,17 +2387,11 @@
             "code": "swe"
           }],
           "encodingLevel": "marc:CompleteAuthorityRecord",
-          "marc:romanization": {
-            "@id": "https://id.kb.se/marc/NationalStandard"
-          },
           "cataloguersNote": [""],
           "sourceConsulted": [],
           "marc:headingMain": true,
           "marc:recordUpdate": {
             "@id": "https://id.kb.se/marc/RecordCanBeUsed"
-          },
-          "marc:personalName": {
-            "@id": "https://id.kb.se/marc/DifferentiatedPersonalName"
           },
           "marc:level": {
             "@id": "https://id.kb.se/marc/FullyEstablishedHeading"
@@ -2459,9 +2450,6 @@
             "@id": "https://id.kb.se/TEMPID#it"
           },
           "encodingLevel": "marc:CompleteAuthorityRecord",
-          "marc:romanization": {
-            "@id": "https://id.kb.se/marc/NationalStandard"
-          },
           "marc:kindOfRecord": {
             "@id": "https://id.kb.se/marc/EstablishedHeadingRecord"
           },
