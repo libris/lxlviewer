@@ -67,7 +67,6 @@ export default {
   display: flex;
   flex-wrap: wrap;
   line-height: 1;
-  margin-right: 20px;
 
   &-created {
     margin-right: 10px;

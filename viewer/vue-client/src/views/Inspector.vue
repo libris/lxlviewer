@@ -758,6 +758,7 @@ export default {
     justify-content: space-between;
     align-items: baseline;
     flex-direction: column;
+    margin-bottom: 0.25em;
     @media (min-width: @screen-md) {
       flex-direction: row;
     }
@@ -786,11 +787,6 @@ export default {
     @media print {
       display: none;
     }
-  }
-
-  @media screen and (max-width: @screen-sm) {
-    padding-left: 0;
-    padding-right: 0;
   }
 }
 
