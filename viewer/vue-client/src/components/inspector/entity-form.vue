@@ -193,7 +193,7 @@ export default {
 
     &:hover {
       & .icon:not(.is-disabled) {
-        color: rgba(0, 0, 0, 0.6);
+        color: @gray-dark-transparent;
       }
 
       &:not(.locked) >.actions {
@@ -203,12 +203,12 @@ export default {
 
     .user-is-tabbing &:focus-within { // icon 'hover-effect' when tabbing 
       & .icon:not(.is-disabled) {
-        color: rgba(0, 0, 0, 0.6);
+        color: @gray-dark-transparent;
       }
     }
 
     & .icon {
-      color: rgba(0, 0, 0, 0.3);
+      color: @gray-light-transparent;
 
       &:hover:not(.is-disabled),
       &:focus {
