@@ -201,6 +201,12 @@ export default {
       }
     }
 
+    .user-is-tabbing &:focus-within { // icon 'hover-effect' when tabbing 
+      & .icon:not(.is-disabled) {
+        color: rgba(0, 0, 0, 0.6);
+      }
+    }
+
     & .icon {
       color: rgba(0, 0, 0, 0.3);
 
