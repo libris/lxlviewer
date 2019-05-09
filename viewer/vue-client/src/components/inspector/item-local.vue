@@ -86,6 +86,9 @@ export default {
       'status',
       'userStorage',
     ]),
+    isSibling() {
+      return false;
+    },
     failedValidations() {
       const failedValidations = [];
       if (this.user.settings.appTech === false) {
@@ -491,7 +494,7 @@ export default {
           </i>
         </div>
 
-        <div class="ItemLocal-action OptionAction">
+        <div class="ItemLocal-action OptionAction" v-if="!isSibling">
           <i class="icon icon--sm fa fa-fw fa-ellipsis-v"
             v-if="!isLocked"
             :class="{'show-icon': showActionButtons}" 

@@ -37,6 +37,9 @@ export default {
     suffix() {
       return this.id.split('#')[1];
     },
+    isSibling() {
+      return true;
+    },
     getPath() {
       return this.suffix;
     },
