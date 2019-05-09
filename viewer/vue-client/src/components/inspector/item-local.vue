@@ -432,14 +432,13 @@ export default {
 
     <strong class="ItemLocal-heading">
       <div class="ItemLocal-label"
-        :class="{'is-inactive': isEmpty}">
+        :class="{'is-inactive': isEmpty}"
+        @click="toggleExpanded()">
         <i class="ItemLocal-arrow fa fa-chevron-right" 
-          :class="{'icon is-disabled' : isEmpty}"
-          @click="toggleExpanded()"></i>
-        <span class="ItemLocal-type" 
-          @click="toggleExpanded($event)" 
+          :class="{'icon is-disabled' : isEmpty}"></i>
+        <span class="ItemLocal-type"
           :title="typeLabel">{{ typeLabel | capitalize }}:</span>
-        <span class="ItemLocal-collapsedLabel" @click="toggleExpanded()">
+        <span class="ItemLocal-collapsedLabel">
           <span class="ItemLocal-collapsedText" v-show="!expanded || isEmpty">{{getItemLabel}}</span>
           <span class="placeholder"> </span>
         </span>
@@ -604,6 +603,7 @@ export default {
 
   &-label {
     margin-right: 120px;
+    cursor: pointer;
     
     &.is-inactive {
       pointer-events: none;
@@ -611,14 +611,17 @@ export default {
   }
 
   &-type {
-    cursor: pointer;
   }
 
   &-arrow {
     transition: all 0.2s ease;
     padding: 0 2px;
     font-size: 14px;
-    cursor: pointer;
+    color: @gray-darker-transparent;
+
+    .ItemLocal-label:hover & {
+      color: @black
+    }
   }
 
   &-list {
@@ -681,7 +684,6 @@ export default {
   }
 
   &-collapsedLabel {
-    cursor: pointer;
     justify-content: space-between;
     align-items: center;
     overflow: hidden;
