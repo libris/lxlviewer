@@ -89,13 +89,16 @@ export default {
       'user',
     ]),
     idAsFnurgel() {
-      const id = this.focusData['@id'];
-      const fnurgel = RecordUtil.extractFnurgel(id);
-      if (fnurgel && this.isLibrisResource) {
-        return fnurgel;
+      if (this.focusData.hasOwnProperty('@id')) {
+        const id = this.focusData['@id'];
+        const fnurgel = RecordUtil.extractFnurgel(id);
+        if (fnurgel && this.isLibrisResource) {
+          return fnurgel;
+        }
+        const cleaned = id.replace('https://', '').replace('http://', '');
+        return cleaned;
       }
-      const cleaned = id.replace('https://', '').replace('http://', '');
-      return cleaned;
+      return null;
     },
     hiddenDetailsNumber() {
       return this.totalInfo.length - this.keyDisplayLimit;
@@ -237,7 +240,7 @@ export default {
       {{categorization.join(', ')}} {{ isLocal ? '{lokal entitet}' : '' }}
       <span class="EntitySummary-sourceLabel" v-if="database">{{ database }}</span>
     </div>
-    <div v-if="excludeComponents.indexOf('id') < 0" class="EntitySummary-id uppercaseHeading--light" :class="{'recently-copied': recentlyCopiedId }" @mouseover="idHover = true" @mouseout="idHover = false">
+    <div v-if="idAsFnurgel && excludeComponents.indexOf('id') < 0" class="EntitySummary-id uppercaseHeading--light" :class="{'recently-copied': recentlyCopiedId }" @mouseover="idHover = true" @mouseout="idHover = false">
       <i v-tooltip.top="idTooltipText" class="fa fa-copy EntitySummary-idCopyIcon" :class="{'collapsedIcon': !idHover || recentlyCopiedId }" @click.stop="copyFnurgel">
       </i>{{ idAsFnurgel }}
     </div>
