@@ -138,10 +138,8 @@ export default {
       return cleanObj;
     },
     isExtractable() {
-      if (this.forcedExtractability === true) {
+      if (this.isCompositional === true) {
         return false;
-      } if (this.forcedExtractability === false) {
-        return true;
       }
       const classId = StringUtil.getCompactUri(this.item['@type'], this.resources.context);
       if (VocabUtil.isExtractable(classId, this.resources.vocab, this.settings, this.resources.context)) {
@@ -448,7 +446,7 @@ export default {
       <div class="ItemLocal-actions">
         <div class="ItemLocal-action LinkAction">
           <i class="fa fa-link fa-fw icon icon--sm"
-            v-if="inspector.status.editing && !isEmbedded"
+            v-if="inspector.status.editing && !isEmbedded && !isCompositional"
             role="button"
             tabindex="0"
             :aria-label="'Link entity' | translatePhrase"

@@ -273,9 +273,8 @@ export default {
         if (this.keyAsVocabProperty.category['@id'] === 'https://id.kb.se/vocab/compositional') {
           return true;
         }
-        // Add handling for "uncompositional" ie a false-value
       }
-      return null;
+      return false;
     },
     hasSingleValue() {
       if (!isArray(this.fieldValue) || this.fieldValue.length === 1) {
@@ -721,7 +720,7 @@ export default {
           v-if="getDatatype(item) == 'local'" 
           :is-locked="locked" 
           :entity-type="entityType" 
-          :forced-extractability="isCompositional"
+          :is-compositional="isCompositional"
           :all-values-from="allValuesFrom"
           :some-values-from="someValuesFrom"
           :all-search-types="allSearchTypes"
@@ -741,7 +740,7 @@ export default {
           :is-locked="locked"
           :field-key="fieldKey"
           :entity-type="entityType"
-          :forced-extractability="isCompositional"
+          :is-compositional="isCompositional"
           :all-values-from="allValuesFrom"
           :some-values-from="someValuesFrom"
           :all-search-types="allSearchTypes"
