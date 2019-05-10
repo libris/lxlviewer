@@ -273,9 +273,8 @@ export default {
         if (this.keyAsVocabProperty.category['@id'] === 'https://id.kb.se/vocab/compositional') {
           return true;
         }
-        // Add handling for "uncompositional" ie a false-value
       }
-      return null;
+      return false;
     },
     hasSingleValue() {
       if (!isArray(this.fieldValue) || this.fieldValue.length === 1) {
