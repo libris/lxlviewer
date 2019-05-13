@@ -391,14 +391,13 @@ export default {
 
     <strong class="ItemSibling-heading">
       <div class="ItemSibling-label"
-        :class="{'is-inactive': isEmpty}">
+        :class="{'is-inactive': isEmpty}"
+        @click="toggleExpanded()">
         <i class="ItemSibling-arrow fa fa-chevron-right" 
-          :class="{'icon is-disabled' : isEmpty}"
-          @click="toggleExpanded()"></i>
-        <span class="ItemSibling-type" 
-          @click="toggleExpanded($event)" 
+          :class="{'icon is-disabled' : isEmpty}"></i>
+        <span class="ItemSibling-type"
           :title="item['@type']">{{ item['@type'] | labelByLang | capitalize }}:</span>
-        <span class="ItemSibling-collapsedLabel" @click="toggleExpanded()">
+        <span class="ItemSibling-collapsedLabel">
           <span class="ItemSibling-collapsedText" v-show="!expanded || isEmpty">{{getItemLabel}}</span>
           <span class="placeholder"> </span>
         </span>
@@ -521,6 +520,7 @@ export default {
 
   &-label {
     margin-right: 120px;
+    cursor: pointer;
     
     &.is-inactive {
       pointer-events: none;
@@ -528,14 +528,17 @@ export default {
   }
 
   &-type {
-    cursor: pointer;
   }
 
   &-arrow {
     transition: all 0.2s ease;
     padding: 0 2px;
     font-size: 14px;
-    cursor: pointer;
+    color: @gray-darker-transparent;
+
+    .ItemSibling-label:hover & {
+      color: @black;
+    }
   }
 
   &-list {
@@ -568,7 +571,6 @@ export default {
   }
 
   &-collapsedLabel {
-    cursor: pointer;
     justify-content: space-between;
     align-items: center;
     overflow: hidden;
