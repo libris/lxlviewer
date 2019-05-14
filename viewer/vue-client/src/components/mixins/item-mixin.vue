@@ -14,9 +14,9 @@ export default {
       type: String,
       default: '',
     },
-    forcedExtractability: {
+    isCompositional: {
       type: Boolean,
-      default: null,
+      default: false,
     },
     index: Number,
   },

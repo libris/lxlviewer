@@ -1,6 +1,6 @@
 
 <script>
-import { cloneDeep, each } from 'lodash-es';
+import { cloneDeep, each, get } from 'lodash-es';
 import * as StringUtil from '@/utils/string';
 import * as DataUtil from '@/utils/data';
 import * as VocabUtil from '@/utils/vocab';
@@ -9,13 +9,11 @@ import * as DisplayUtil from '@/utils/display';
 import * as RecordUtil from '@/utils/record';
 import * as md5 from 'md5';
 import EntityForm from '@/components/inspector/entity-form';
-import TagSwitch from '@/components/shared/tag-switch';
 import Toolbar from '@/components/inspector/toolbar';
 import EntityChangelog from '@/components/inspector/entity-changelog';
 import EntityHeader from '@/components/inspector/entity-header';
 import Breadcrumb from '@/components/inspector/breadcrumb';
 import ModalComponent from '@/components/shared/modal-component';
-import ReverseRelations from '@/components/inspector/reverse-relations';
 import MarcPreview from '@/components/inspector/marc-preview';
 import TabMenu from '@/components/shared/tab-menu';
 import ValidationSummary from '@/components/inspector/validation-summary';
@@ -37,7 +35,6 @@ export default {
     }
   },
   beforeRouteUpdate(to, from, next) {
-    this.addBreadcrumb();
     if (this.shouldWarnOnUnload()) {
       const confString = StringUtil.getUiPhraseByLang('You have unsaved changes. Do you want to leave the page?', this.settings.language);
       const answer = window.confirm(confString); // eslint-disable-line no-alert
@@ -68,6 +65,7 @@ export default {
         open: false,
         inputValue: '',
       },
+      justEmbellished: false,
     };
   },
   methods: {
@@ -77,34 +75,6 @@ export default {
         type: 'success', 
         message: `${StringUtil.getUiPhraseByLang('Formulär uppdaterat, glöm inte att spara posten', this.user.settings.language)}`, 
       });
-    },
-    addBreadcrumb() {
-      if (this.inspector.breadcrumb !== '') {
-        const currentTrail = this.inspector.breadcrumb;
-        const firstTrail = currentTrail.shift();
-
-        const newBreadcrumb = {
-          type: 'fromPost',
-          recordType: this.recordType,
-          postUrl: this.$route.fullPath,
-        };
-
-        const newTrail = [];
-        newTrail.push(firstTrail);
-        newTrail.push(newBreadcrumb);
-
-        this.$store.dispatch('setBreadcrumbData', 
-          newTrail);
-      } else {
-        this.$store.dispatch('setBreadcrumbData', 
-          [
-            {
-              type: 'fromPost',
-              recordType: this.recordType,
-              postUrl: this.$route.fullPath,
-            },
-          ]);
-      }
     },
     shouldWarnOnUnload() {
       return (
@@ -250,7 +220,7 @@ export default {
       }).then((result) => {
         if (typeof result !== 'undefined') {
           const splitFetched = RecordUtil.splitJson(result);
-          const templateJson = RecordUtil.prepareDuplicateFor(splitFetched, this.user, this.settings);
+          const templateJson = RecordUtil.prepareDuplicateFor(splitFetched, this.user, this.settings.keysToClear.duplication);
           const template = RecordUtil.splitJson(templateJson);
           this.applyFieldsFromTemplate(template);
           this.embellishFromIdModal.open = false;
@@ -297,6 +267,11 @@ export default {
           changeList: changeList,
           addToHistory: false,
         });
+        this.$store.dispatch('setInspectorStatusValue', { 
+          property: 'embellished', 
+          value: changeList,
+        });
+        this.justEmbellished = true;
         this.$store.dispatch('pushNotification', { 
           type: 'success', 
           message: `${changeList.length} ${StringUtil.getUiPhraseByLang('field(s) added from template', this.user.settings.language)}`, 
@@ -460,7 +435,7 @@ export default {
     },
     duplicateItem() {
       if (!this.status.inEdit && !this.isItem) {
-        const duplicate = RecordUtil.prepareDuplicateFor(this.inspector.data, this.user, this.settings);
+        const duplicate = RecordUtil.prepareDuplicateFor(this.inspector.data, this.user, this.settings.keysToClear.duplication);
         this.$store.dispatch('setInsertData', duplicate);
         this.$router.push({ path: '/new' });
       }
@@ -496,11 +471,17 @@ export default {
           const location = `${result.getResponseHeader('Location')}`;
           const locationParts = location.split('/');
           const fnurgel = locationParts[locationParts.length - 1];
-          this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('The post was created', this.settings.language)}!` });
+          setTimeout(() => {
+            this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('The post was created', this.settings.language)}!` });
+          }, 10);
+          this.warnOnSave();
           this.$router.push({ path: `/${fnurgel}` });
         } else {
           this.fetchDocument();
-          this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('The post was saved', this.settings.language)}!` });
+          setTimeout(() => {
+            this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('The post was saved', this.settings.language)}!` });
+          }, 10);
+          this.warnOnSave();
           if (done) {
             this.$store.dispatch('setInspectorStatusValue', { property: 'editing', value: false });
           }
@@ -524,11 +505,37 @@ export default {
         this.$store.dispatch('pushNotification', { type: 'danger', message: `${errorBase}. ${errorMessage}.` });
       });
     },
+    warnOnSave() {
+      const warnArr = Object.keys(this.settings.warnOnSave);
+      warnArr.forEach((element) => {
+        const keys = element.split('.');
+        const value = get(this.inspector.data, element);
+        const warning = this.settings.warnOnSave[element].some(el => el === value);
+        if (warning) {
+          this.$store.dispatch('pushNotification', { 
+            type: 'warning', 
+            message: `${StringUtil.getUiPhraseByLang('Attention', this.user.settings.language)}! ${StringUtil.getLabelByLang(keys[keys.length - 1], this.user.settings.language, this.resources.vocab, this.resources.context)}: ${StringUtil.getLabelByLang(value, this.user.settings.language, this.resources.vocab, this.resources.context)}`, 
+          });
+        }
+      });
+    },
+    removeEmbellishedHighlight() {
+      if (this.inspector.status.embellished.length > 0 && !this.justEmbellished) {
+        this.$store.dispatch('setInspectorStatusValue', { 
+          property: 'embellished', 
+          value: [],
+        });
+      }
+      setTimeout(() => {
+        this.justEmbellished = false;
+      }, 300);
+    },
   },
   watch: {
     'inspector.data'(val, oldVal) {
       if (val !== oldVal) {
         this.setTitle();
+        this.removeEmbellishedHighlight();
         this.$store.dispatch('setInspectorStatusValue', { property: 'updating', value: false });
       }
     },
@@ -623,11 +630,9 @@ export default {
     'modal-component': ModalComponent,
     toolbar: Toolbar,
     'entity-changelog': EntityChangelog,
-    'reverse-relations': ReverseRelations,
     breadcrumb: Breadcrumb,
     'marc-preview': MarcPreview,
     'tab-menu': TabMenu,
-    TagSwitch,
     'validation-summary': ValidationSummary,
   },
   mounted() {
@@ -657,10 +662,7 @@ export default {
         </router-link>
       </div>
       <div v-if="postLoaded" class="Inspector-entity">
-        <breadcrumb class="Inspector-breadcrumb"
-          v-if="postLoaded && this.inspector.breadcrumb.length !== 0"
-          :record-type="recordType">
-        </breadcrumb>   
+        <breadcrumb v-if="$route.meta.breadcrumb" class="Inspector-breadcrumb" /> 
         <div class="Inspector-admin">
           <div class="Inspector-header">
             <h1 class="Inspector-title mainTitle" :title="recordType">
@@ -756,6 +758,7 @@ export default {
     justify-content: space-between;
     align-items: baseline;
     flex-direction: column;
+    margin-bottom: 0.25em;
     @media (min-width: @screen-md) {
       flex-direction: row;
     }
@@ -784,11 +787,6 @@ export default {
     @media print {
       display: none;
     }
-  }
-
-  @media screen and (max-width: @screen-sm) {
-    padding-left: 0;
-    padding-right: 0;
   }
 }
 
@@ -853,7 +851,7 @@ export default {
 
 .RemovePostModal .ModalComponent-container {
   width: 600px;
-  height: 250px;
+  height: 175px;
 }
 
 .RemovePostModal {

@@ -1,6 +1,6 @@
 <script>
 import { mapGetters } from 'vuex';
-import PanelSearchItem from './panel-search-item';
+import PanelSearchItem from '@/components/search/panel-search-item';
 
 export default {
   name: 'panel-search-list',
@@ -34,7 +34,7 @@ export default {
     listItemSettings: {
       type: Object,
       default: () => {},
-    }
+    },
   },
   data() {
     return {

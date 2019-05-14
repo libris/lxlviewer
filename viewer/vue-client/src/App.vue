@@ -502,8 +502,8 @@ h1 {
 .uppercaseHeading {
     text-transform: uppercase;
     color: @gray-darker;
-    font-size: 14px;
-    font-size: 1.4rem;
+    font-size: 13px;
+    font-size: 1.3rem;
     font-weight: 600;
   
     &--light {
@@ -568,7 +568,7 @@ h1 {
   color: @black;
   border: 1px solid @gray-light;
   box-shadow: @shadow-panel;
-  text-align-last: center;
+  text-align: left;
 }
 
 //TEXT INPUT

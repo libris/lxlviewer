@@ -22,6 +22,7 @@ export default {
     ...mapGetters([
       'inspector',
       'resources',
+      'user',
     ]),
     newSort() {
       if (this.boundVal) {
@@ -60,6 +61,12 @@ export default {
     },
   },
   methods: {
+    handleSortChange() {
+      const user = this.user;
+      user.settings.sort = this.newSort;
+      this.$store.dispatch('setUser', user)
+        .then(() => this.$emit('change', this.newSort));
+    },
   },
   mounted() {
   },
@@ -72,7 +79,7 @@ export default {
     <select id="sort-select"
       class="Sort-select customSelect" 
       v-model="boundVal" 
-      @change="$emit('change', newSort)">
+      @change="handleSortChange">
       <option 
         v-for="(option, index) in options" 
         :value="option.query"
@@ -93,7 +100,7 @@ export default {
     font-weight: 600;
   }
   &-select {
-    text-align-last: start;
+    text-align: start;
     margin: 0 10px 10px 0;
   }
 }

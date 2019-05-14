@@ -189,16 +189,32 @@ export default {
     flex-direction: row;
     list-style: none;
     width: 100%;
-    min-height: 60px;
     box-shadow: none;
-    // transition: box-shadow ease-out 0.2s;
 
-    &:hover:not(.locked) {
-      >.actions {
+    &:hover {
+      & .icon:not(.is-disabled) {
+        color: @gray-dark-transparent;
+      }
+
+      &:not(.locked) >.actions {
         opacity: 1;
       }
     }
 
+    .user-is-tabbing &:focus-within { // icon 'hover-effect' when tabbing 
+      & .icon:not(.is-disabled) {
+        color: @gray-dark-transparent;
+      }
+    }
+
+    & .icon {
+      color: @gray-light-transparent;
+
+      &:hover:not(.is-disabled),
+      &:focus {
+        color: @gray-very-dark-transparent;
+      }
+    }
   }
 }
 

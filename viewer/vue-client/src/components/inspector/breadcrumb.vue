@@ -1,145 +1,138 @@
 <script>
-/*
- Displays breadcrumbs/between post navigation in inspector
-*/
-
 import { mapGetters } from 'vuex';
+import { each } from 'lodash-es';
+import * as RecordUtil from '@/utils/record';
+import VueSimpleSpinner from 'vue-simple-spinner';
 
 export default {
   name: 'breadcrumb',
+  components: {
+    'vue-simple-spinner': VueSimpleSpinner,
+  },
   props: {
-    recordType: {
-      type: String,
-      default: '',
-    },
   },
   data() {
     return {
-      recordTypeChange: false,
+      loading: false,
     };
   },
   computed: {
     ...mapGetters([
       'inspector',
-      'resources',
-      'user',
       'settings',
-      'status',
     ]),
-    showFromPost() {
-      if (!this.fromPostUrl || !this.recordTypeChange) return false;
-      if ((this.fromPostUrl !== '') && (this.fromPostUrl !== this.currentPost)) {
-        return true;
-      }  
-      return false;
-    },
     searchResultUrl() {
-      return this.inspector.breadcrumb[0].resultUrl;
+      return this.$route.meta.breadcrumb.resultUrl;
     },
-    fromPostUrl() {
-      const breadcrumbTrail = this.inspector.breadcrumb;
-      let fromPostId;
-
-      if (breadcrumbTrail.length > 1) {
-        const result = breadcrumbTrail.filter(breadcrumb => breadcrumb.type === 'fromPost');
-        fromPostId = result[0].postUrl;
-      } else if (breadcrumbTrail.length > 0) {
-        fromPostId = breadcrumbTrail[0].postUrl;
-      } else {
-        fromPostId = '';
-      }
-
-      return fromPostId;
+    totalItems() {
+      return this.$route.meta.breadcrumb.totalItems;
     },
-    fromPostType() {
-      const breadcrumbTrail = this.inspector.breadcrumb;
-      let fromPostType;
-
-      if (breadcrumbTrail.length > 1) {
-        const result = breadcrumbTrail.filter(breadcrumb => breadcrumb.type === 'fromPost');
-        fromPostType = result[0].recordType;
-      } else if (breadcrumbTrail.length > 0) {
-        fromPostType = breadcrumbTrail[0].recordType;
-      } else {
-        fromPostType = '';
-      }
-
-      return fromPostType;
+    absoluteOffset() {
+      return this.$route.meta.breadcrumb.absoluteOffset;
     },
-    currentPost() {
-      return this.inspector.data.mainEntity['@id'];
+    relativeOffset() {
+      return this.$route.meta.breadcrumb.relativeOffset;
     },
-    currentPostNumber() {
-      if (this.inspector.breadcrumb === undefined || this.inspector.breadcrumb.length === 0) return null;
-      const items = this.inspector.breadcrumb[0].result.items;
-
-      const item = items.find(itemObj => itemObj['@id'] === this.currentPost);
-      const itemIndex = items.indexOf(item);
-
-      return itemIndex + 1;
+    range() {
+      return this.$route.meta.breadcrumb.range;
     },
-    totalPostNumber() {
-      if (this.inspector.breadcrumb === undefined || this.inspector.breadcrumb.length === 0) return null;
-
-      return this.inspector.breadcrumb[0].result.totalItems;
+    paths() {
+      return this.$route.meta.breadcrumb.paths;
     },
-    prevPostIndex() {
-      if (this.inspector.breadcrumb === undefined || this.inspector.breadcrumb.length === 0) return null;
-
-      const items = this.inspector.breadcrumb[0].result.items;
-      
-      const item = items.find(itemObj => itemObj['@id'] === this.currentPost);
-      const itemIndex = items.indexOf(item);
-     
-      return itemIndex - 1;
+    prevPath() {
+      return this.paths[this.relativeOffset - 1];
     },
-    prevPostPath() {
-      if (this.inspector.breadcrumb === undefined || this.inspector.breadcrumb.length === 0) return '';
-
-      if (this.prevPostIndex < 0) return '';
-
-      const items = this.inspector.breadcrumb[0].result.items;
-
-      const prevItem = items[this.prevPostIndex];
-      if (prevItem.hasOwnProperty('@id')) {
-        const uriParts = prevItem['@id'].split('/');
-        const fnurgel = uriParts[uriParts.length - 1];
-        return `/${fnurgel}`;
-      }
-
-      return '';
+    nextPath() {
+      return this.paths[this.relativeOffset + 1];
     },
-    nextPostIndex() {
-      if (this.inspector.breadcrumb === undefined || this.inspector.breadcrumb.length === 0) {
-        return null;
-      }
-
-      const items = this.inspector.breadcrumb[0].result.items;
-      
-      const item = items.find(itemObj => itemObj['@id'] === this.currentPost);
-      const itemIndex = items.indexOf(item);
-     
-      return itemIndex + 1;
+    prevOutOfBounds() {
+      if (this.absoluteOffset > 0 && this.relativeOffset === 0) {
+        return true;
+      } return false;
     },
-    nextPostPath() {
-      if (this.inspector.breadcrumb === undefined || this.inspector.breadcrumb.length === 0) return '';
-      
-      if (this.nextPostIndex > this.totalPostNumber) return '';
-
-      const items = this.inspector.breadcrumb[0].result.items;
-
-      const nextItem = items[this.nextPostIndex];
-
-      if (nextItem && nextItem.hasOwnProperty('@id')) {
-        const uriParts = nextItem['@id'].split('/');
-        const fnurgel = uriParts[uriParts.length - 1];
-        return `/${fnurgel}`;
-      }
-
-      return '';
+    nextOutOfBounds() {
+      if (this.absoluteOffset + 1 < this.totalItems && this.relativeOffset + 1 > this.paths.length - 1) {
+        return true;
+      } return false;
+    },
+    thisIsSearchResult() {
+      // check if this id is present in our list of paths. Otherwise user has gone off path (to a holding for example)
+      // and prev/next are no longer valid
+      const match = this.paths.filter(path => `/${RecordUtil.extractFnurgel(path)}` === this.$route.path);
+      return match.length === 1;
     },
   },
   methods: {
+    getQuery(direction) {
+      const queryObj = Object.assign({}, this.$route.meta.breadcrumb.query);
+      queryObj._limit = this.range.itemsPerPage;
+      switch (direction) {
+        case 'prev':
+          queryObj._offset = this.range.start - this.range.itemsPerPage;
+          break;
+        case 'next': 
+          queryObj._offset = this.range.start + this.range.itemsPerPage;
+          break;
+        default:
+          break;
+      }
+      let queryString = `${this.settings.apiPath}/find.json?`;
+      each(queryObj, (v, k) => {
+        queryString += (`${encodeURIComponent(k)}=${encodeURIComponent(v)}&`);
+      });
+      return [queryString, direction];
+    },
+    fetchLink(url) {
+      return new Promise((resolve, reject) => {
+        fetch(url).then((res) => {
+          if (res.status === 200) {
+            resolve(res.json());
+          } 
+        }, error => reject('Error fetching breadcrumb data', error));
+      });
+    },
+    prev() {
+      const meta = Object.assign({}, this.$route.meta);
+      meta.breadcrumb.absoluteOffset--;
+      meta.breadcrumb.relativeOffset--;
+      this.$router.push({ path: this.$options.filters.asFnurgelLink(this.prevPath), meta });
+    },
+    next() {
+      const meta = Object.assign({}, this.$route.meta);
+      meta.breadcrumb.absoluteOffset++;
+      meta.breadcrumb.relativeOffset++;
+      this.$router.push({ path: this.$options.filters.asFnurgelLink(this.nextPath), meta });
+    },
+    lastOnPrevPage() {
+      this.loading = true;
+      this.fetchLink(...this.getQuery('prev'))
+        .then((results) => {
+          const meta = Object.assign({}, this.$route.meta);
+          meta.breadcrumb.absoluteOffset--;
+          meta.breadcrumb.relativeOffset = this.range.itemsPerPage - 1;
+          meta.breadcrumb.range.start = results.itemOffset;
+          const newPaths = results.items.map(res => res['@id']);
+          meta.breadcrumb.paths = newPaths;
+
+          this.loading = false;
+          this.$router.push({ path: this.$options.filters.asFnurgelLink(newPaths[this.range.itemsPerPage - 1]), meta });
+        });
+    },
+    firstOnNextPage() {
+      this.loading = true;
+      this.fetchLink(...this.getQuery('next'))
+        .then((results) => {
+          const meta = Object.assign({}, this.$route.meta);
+          meta.breadcrumb.absoluteOffset++;
+          meta.breadcrumb.relativeOffset = 0;
+          meta.breadcrumb.range.start = results.itemOffset;
+          const newPaths = results.items.map(res => res['@id']);
+          meta.breadcrumb.paths = newPaths;
+
+          this.loading = false;
+          this.$router.push({ path: this.$options.filters.asFnurgelLink(newPaths[0]), meta });
+        });
+    },
   },
   watch: {
   },
@@ -154,24 +147,26 @@ export default {
   <div class="Breadcrumb">
     <div class="Breadcrumb-back">
       <router-link class="Breadcrumb-backLink"
-        v-if="this.searchResultUrl != ''"
-        :to="this.searchResultUrl">Till träfflistan</router-link>
-      <span v-if="this.showFromPost"> ›
-        <router-link class="Breadcrumb-backLink" 
-          :to="this.fromPostUrl">Tillbaka till {{this.fromPostType | labelByLang }}</router-link>
-      </span>
+        :to="searchResultUrl">{{ 'To result list' | translatePhrase }}</router-link>
     </div>
-    <div class="Breadcrumb-postData" v-if="totalPostNumber > 1 && currentPostNumber !== 0">
-      <span class="Breadcrumb-postNumbers">{{this.currentPostNumber}} av {{this.totalPostNumber}}</span>
-      <div class="Breadcrumb-postLinks"
-        v-if="this.prevPostPath || this.nextPostPath">
-        <router-link class="Breadcrumb-prev"
-          v-if="this.prevPostPath != ''"
-          :to="this.prevPostPath">Föregående post</router-link>
-        <span v-if="this.prevPostPath && this.nextPostPath"> | </span>
-        <router-link class="Breadcrumb-next"
-          v-if="this.nextPostPath != ''"
-          :to="this.nextPostPath">Nästa post</router-link>
+    <div class="Breadcrumb-postData" v-if="thisIsSearchResult">
+      <span class="Breadcrumb-postNumbers">{{ absoluteOffset + 1 }} {{ 'of' | translatePhrase }} {{ totalItems }}</span>
+      <div class="Breadcrumb-postLinks">
+        <span class="Breadcrumb-prev" v-if="absoluteOffset > 0">
+          <a v-if="prevPath" @click="prev">{{ ['Previous', 'post'] | translatePhrase }}</a>
+          <a v-if="prevOutOfBounds" @click="lastOnPrevPage">
+            <span v-if="!loading">{{ ['Previous', 'post'] | translatePhrase }}</span>
+            <vue-simple-spinner v-if="loading" size="small"></vue-simple-spinner>
+          </a>
+        </span>
+        <span v-if="absoluteOffset > 0 && absoluteOffset + 1 < totalItems"> | </span>
+        <span class="Breadcrumb-next" v-if="absoluteOffset < totalItems">
+          <a v-if="nextPath" @click="next">{{ ['Next', 'post'] | translatePhrase }}</a>
+          <a v-if="nextOutOfBounds" @click="firstOnNextPage">
+            <span v-if="!loading">{{ ['Next', 'post'] | translatePhrase }}</span>
+            <vue-simple-spinner v-if="loading" size="small"></vue-simple-spinner>
+          </a>
+        </span>
       </div>
     </div>
   </div>
@@ -203,6 +198,10 @@ export default {
   &-postLinks {
     display: flex;
     margin: 0 0 0 30px;
+
+    & .vue-simple-spinner {
+      margin-top: 5px !important;
+    }
   }
 
   &-back {
@@ -216,10 +215,12 @@ export default {
 
   &-next {
     margin: 0 0 0 10px;
+    min-width: 50px;
   }
 
   &-prev {
     margin: 0 10px 0 0;
+    min-width: 50px;
   }
 }
 </style>

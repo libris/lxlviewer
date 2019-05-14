@@ -15,6 +15,7 @@
     "mod+shift+c": "duplicate-item",
     "ctrl+shift+right": "admin-data-on",
     "ctrl+shift+left": "admin-data-off",
-    "esc": "close-modals"
+    "esc": "close-modals",
+    "alt+b": "add-holding"
   }
 }

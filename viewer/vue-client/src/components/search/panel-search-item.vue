@@ -45,7 +45,7 @@ export default {
     listItemSettings: {
       type: Object,
       default: () => {},
-    }
+    },
   },
   data() {
     return {
@@ -76,7 +76,7 @@ export default {
         icon: this.icon,
         excludeProperties: [],
         excludeComponents: [],
-      }
+      };
       if (typeof this.listItemSettings !== 'undefined') {
         const keys = Object.keys(this.listItemSettings);
         for (let i = 0; i < keys.length; i++) {

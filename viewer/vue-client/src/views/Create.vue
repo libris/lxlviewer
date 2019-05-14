@@ -19,6 +19,7 @@ export default {
       selectedCreation: 'Instance',
       thingData: {},
       activeIndex: -1,
+      excludeBases: ['Agent'],
     };
   },
   methods: {
@@ -38,10 +39,10 @@ export default {
         record: baseRecord,
         mainEntity: baseMainEntity,
       };
-      this.thingData = RecordUtil.prepareDuplicateFor(templateValue, this.user, this.settings);
+      this.thingData = RecordUtil.prepareDuplicateFor(templateValue, this.user, this.settings.keysToClear.duplication);
     },
     useTemplate(templateValue) {
-      const preparedTemplate = RecordUtil.prepareDuplicateFor(templateValue, this.user, this.settings);
+      const preparedTemplate = RecordUtil.prepareDuplicateFor(templateValue, this.user, this.settings.keysToClear.duplication);
       this.thingData = preparedTemplate;
     },
     setCreation(creation) {
@@ -49,7 +50,7 @@ export default {
       this.activeIndex = -1;
     },
     recieveFileData(data) {
-      this.thingData = RecordUtil.prepareDuplicateFor(data, this.user, this.settings);
+      this.thingData = RecordUtil.prepareDuplicateFor(data, this.user, this.settings.keysToClear.duplication);
     },
     setActiveIndex(index) {
       this.activeIndex = index;
@@ -91,6 +92,9 @@ export default {
     hasChosen() {
       return this.activeIndex > 0 || (this.activeIndex === 0 && this.chosenType);
     },
+    isExcludedBase() {
+      return this.excludeBases.indexOf(this.selectedCreation) > -1;
+    },
   },
   components: {
     'creation-card': CreationCard,
@@ -106,7 +110,7 @@ export default {
   created() {
 
   },
-  mounted() { // Ready method is deprecated in 2.0, switch to "mounted"
+  mounted() {
     this.$nextTick(() => {
       this.activeForm = '';
       this.transition = false;
@@ -122,6 +126,7 @@ export default {
       <tab-menu @go="setCreation" :tabs="creationList" :active="selectedCreation"></tab-menu>
       <div v-if="selectedCreation !== 'File'" class="Create-cards" id="creationCardPanel">
         <creation-card
+          v-if="!isExcludedBase"
           :is-base="true"
           :creation="selectedCreation"
           :index="0"

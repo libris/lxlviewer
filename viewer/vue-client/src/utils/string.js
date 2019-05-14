@@ -37,7 +37,7 @@ export function getCompactUri(uri, context) {
     throw new Error('getCompactUri was called without context.');
   }
   if (typeof uri !== 'string') {
-    throw new Error('getCompactUri was called with an URI that was not a string (should be a string).')
+    throw new Error('getCompactUri was called with an URI that was not a string (should be a string).');
   }
   let compactUri = '';
   const vocabBase = context[0]['@vocab'];

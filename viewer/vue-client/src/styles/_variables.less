@@ -18,8 +18,9 @@
 
 @neutral-color: #FCFCFC;
 
-// @sec: rgba(135, 170, 187, 0.3);
 @sec: #e0e9ee;
+@sec: rgba(135, 170, 187, 0.3);
+
 // @sec-contrast: #74aac3;
 // @sec-alter: #629fbc;
 // @sec-alter-contrast: #4b8faf;
@@ -184,8 +185,9 @@
 @field-path: @gray-light;
 @field-path-alt: @gray-light-transparent;
 @remove: @danger;
-@add: @sec;
-@highlight-color: @brand-primary;
+@add: @sec; //switch for 'highlight-color' & then remove
+@highlight-color: @sec;
+// @highlight-color: @brand-primary;
 @form-field: @white;
 // @node-bg: #fafafa;
 

@@ -171,11 +171,17 @@ export default {
     composedTypes() {
       return this.activeTypes.length > 0 ? { '@type': this.activeTypes } : {};
     },
+    prefSort() {
+      if (this.user && this.user.settings.sort) {
+        return { _sort: this.user.settings.sort };
+      } return false;
+    },
     mergedParams() {
       return Object.assign(
         this.composedSearchParam,
         this.staticProps,
         this.composedTypes,
+        this.prefSort,
       );
     },
   },
@@ -387,7 +393,7 @@ export default {
     height: 100%;
     min-width: unset;
     box-shadow: none;
-    text-align-last: left;
+    text-align: left;
     border: none;
   }
 

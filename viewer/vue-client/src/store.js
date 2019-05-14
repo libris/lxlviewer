@@ -27,7 +27,6 @@ const store = new Vuex.Store({
       holdingsMoved: [],
     },
     inspector: {
-      breadcrumb: [],
       data: {},
       insertData: {},
       originalData: {},
@@ -41,6 +40,7 @@ const store = new Vuex.Store({
         removing: false,
         updating: false,
         isNew: false,
+        embellished: [],
       },
       validation: {
         numberOfViolations: 0,
@@ -60,7 +60,7 @@ const store = new Vuex.Store({
       },
       loadingIndicators: [],
       notifications: [],
-      helpSection: 'none',
+      helpSectionTitle: '',
       remoteDatabases: [],
     },
     user: User.getUserObject(),
@@ -97,16 +97,25 @@ const store = new Vuex.Store({
         // 'Concept', - Blocking this per request of MSS
         'Work',
       ],
-      removeOnDuplication: [
-        'record.controlNumber',
-        'record.descriptionUpgrader',
-        'record.generationProcess',
-        'record.generationDate',
-        'record.identifiedBy',
-        'record.sameAs',
-        'mainEntity.sameAs',
-        'work.sameAs',
-      ],
+      keysToClear: {
+        duplication: [
+          'record.controlNumber',
+          'record.descriptionUpgrader',
+          'record.generationProcess',
+          'record.generationDate',
+          'record.identifiedBy',
+          'record.sameAs',
+          'mainEntity.sameAs',
+          'work.sameAs',
+        ],
+        remoteImport: [
+          'record.generationProcess',
+          'record.generationDate',
+          'record.sameAs',
+          'mainEntity.sameAs',
+          'work.sameAs',
+        ],
+      },
       removableBaseUris: [
         'http://libris.kb.se/',
         'https://libris.kb.se/',
@@ -146,6 +155,9 @@ const store = new Vuex.Store({
           'https://id.kb.se/vocab/Agent',
           'https://id.kb.se/vocab/Concept',
         ],
+      },
+      warnOnSave: {
+        'record.encodingLevel': ['marc:PrepublicationLevel', 'marc:PartialPreliminaryLevel'],
       },
       propertyChains: {
         'instanceOf.@type': {
@@ -305,9 +317,6 @@ const store = new Vuex.Store({
     },
     setInsertData(state, data) {
       state.inspector.insertData = data;
-    },
-    setBreadcrumbData(state, data) {
-      state.inspector.breadcrumb = data;
     },
     addToQuoted(state, data) {
       const quoted = cloneDeep(state.inspector.data.quoted);
@@ -599,9 +608,6 @@ const store = new Vuex.Store({
     },
     setInsertData({ commit }, data) {
       commit('setInsertData', data);
-    },
-    setBreadcrumbData({ commit }, data) {
-      commit('setBreadcrumbData', data);
     },
     updateInspectorData({ commit }, payload) {
       commit('updateInspectorData', payload);

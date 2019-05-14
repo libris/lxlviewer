@@ -138,10 +138,8 @@ export default {
       return cleanObj;
     },
     isExtractable() {
-      if (this.forcedExtractability === true) {
+      if (this.isCompositional === true) {
         return false;
-      } if (this.forcedExtractability === false) {
-        return true;
       }
       const classId = StringUtil.getCompactUri(this.item['@type'], this.resources.context);
       if (VocabUtil.isExtractable(classId, this.resources.vocab, this.settings, this.resources.context)) {
@@ -159,7 +157,7 @@ export default {
       return this.item;
     },
     typeLabel() {
-      let label = StringUtil.getLabelByLang(this.item['@type'], this.settings.language, this.resources.vocab, this.resources.context);
+      const label = StringUtil.getLabelByLang(this.item['@type'], this.settings.language, this.resources.vocab, this.resources.context);
       return label;
     },
     isEmpty() {
@@ -404,6 +402,10 @@ export default {
         }
       }, 1000);
     }
+    if (this.shouldExpand) {
+      this.expand();
+      this.expandChildren = true;
+    }
     if (this.inspector.status.isNew) {
       this.expand();
     }
@@ -428,14 +430,13 @@ export default {
 
     <strong class="ItemLocal-heading">
       <div class="ItemLocal-label"
-        :class="{'is-inactive': isEmpty}">
+        :class="{'is-inactive': isEmpty}"
+        @click="toggleExpanded()">
         <i class="ItemLocal-arrow fa fa-chevron-right" 
-          :class="{'icon is-disabled' : isEmpty}"
-          @click="toggleExpanded()"></i>
-        <span class="ItemLocal-type" 
-          @click="toggleExpanded($event)" 
+          :class="{'icon is-disabled' : isEmpty}"></i>
+        <span class="ItemLocal-type"
           :title="typeLabel">{{ typeLabel | capitalize }}:</span>
-        <span class="ItemLocal-collapsedLabel" @click="toggleExpanded()">
+        <span class="ItemLocal-collapsedLabel">
           <span class="ItemLocal-collapsedText" v-show="!expanded || isEmpty">{{getItemLabel}}</span>
           <span class="placeholder"> </span>
         </span>
@@ -444,7 +445,7 @@ export default {
       <div class="ItemLocal-actions">
         <div class="ItemLocal-action LinkAction">
           <i class="fa fa-link fa-fw icon icon--sm"
-            v-if="inspector.status.editing && !isEmbedded"
+            v-if="inspector.status.editing && !isEmbedded && !isCompositional"
             role="button"
             tabindex="0"
             :aria-label="'Link entity' | translatePhrase"
@@ -580,13 +581,12 @@ export default {
 
 <style lang="less">
 .ItemLocal {
+  width: 100%;
   padding: 5px 0;
-  margin-left: -5px;
-  border-radius: 4px;
   position: relative;
   flex: 1 100%;
   transition: background-color .5s ease;
-  width: 100%;
+  border-radius: 4px;
 
   &.has-failed-validations {
     outline: 1px dotted red;
@@ -601,6 +601,7 @@ export default {
 
   &-label {
     margin-right: 120px;
+    cursor: pointer;
     
     &.is-inactive {
       pointer-events: none;
@@ -608,14 +609,17 @@ export default {
   }
 
   &-type {
-    cursor: pointer;
   }
 
   &-arrow {
-    font-size: 14px;
     transition: all 0.2s ease;
     padding: 0 2px;
-    cursor: pointer;
+    font-size: 14px;
+    color: @gray-darker-transparent;
+
+    .ItemLocal-label:hover & {
+      color: @black
+    }
   }
 
   &-list {
@@ -678,7 +682,6 @@ export default {
   }
 
   &-collapsedLabel {
-    cursor: pointer;
     justify-content: space-between;
     align-items: center;
     overflow: hidden;

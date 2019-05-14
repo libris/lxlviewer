@@ -273,9 +273,8 @@ export default {
         if (this.keyAsVocabProperty.category['@id'] === 'https://id.kb.se/vocab/compositional') {
           return true;
         }
-        // Add handling for "uncompositional" ie a false-value
       }
-      return null;
+      return false;
     },
     hasSingleValue() {
       if (!isArray(this.fieldValue) || this.fieldValue.length === 1) {
@@ -308,6 +307,12 @@ export default {
         return true;
       }
       return false;
+    },
+    embellished() {
+      const embellished = this.inspector.status.embellished;
+      if (embellished.length > 0) {
+        return embellished.some(el => el.path === this.path);
+      } return false;
     },
     forcedToArray() {
       return this.forcedListTerms.indexOf(this.fieldKey) > -1;
@@ -513,7 +518,13 @@ export default {
 <template>
   <li class="Field js-field" 
     :id="`formPath-${path}`"
-    v-bind:class="{'is-mainField': isMainField, 'Field--inner': !asColumns, 'is-lastAdded': isLastAdded, 'is-removed': removed, 'has-failed-validations': failedValidations.length > 0 }" 
+    v-bind:class="{
+      'is-mainField': isMainField, 
+      'Field--inner': !asColumns,
+      'is-lastAdded': isLastAdded, 
+      'is-removed': removed,
+      'is-highlighted': embellished,
+      'has-failed-validations': failedValidations.length > 0 }" 
     @mouseover="handleMouseEnter()" 
     @mouseleave="handleMouseLeave()">
 
@@ -709,7 +720,7 @@ export default {
           v-if="getDatatype(item) == 'local'" 
           :is-locked="locked" 
           :entity-type="entityType" 
-          :forced-extractability="isCompositional"
+          :is-compositional="isCompositional"
           :all-values-from="allValuesFrom"
           :some-values-from="someValuesFrom"
           :all-search-types="allSearchTypes"
@@ -720,7 +731,7 @@ export default {
           :index="index" 
           :parent-path="path" 
           :in-array="valueIsArray" 
-          :should-expand="expandChildren"
+          :should-expand="expandChildren || embellished"
           :show-action-buttons="actionButtonsShown"></item-local>
 
         <item-sibling
@@ -729,7 +740,7 @@ export default {
           :is-locked="locked"
           :field-key="fieldKey"
           :entity-type="entityType"
-          :forced-extractability="isCompositional"
+          :is-compositional="isCompositional"
           :all-values-from="allValuesFrom"
           :some-values-from="someValuesFrom"
           :all-search-types="allSearchTypes"
@@ -738,7 +749,7 @@ export default {
           :index="index"
           :in-array="valueIsArray"
           :show-action-buttons="actionButtonsShown"
-          :should-expand="expandChildren"
+          :should-expand="expandChildren || embellished"
           :parent-path="path"></item-sibling>
       </div>
       <portal-target :name="`typeSelect-${path}`" />
@@ -826,6 +837,10 @@ export default {
     background-color: @add;
   }
 
+  &.is-highlighted { // replace 'is-lastadded' & 'is-marked' with this class
+    background-color: @highlight-color;
+  }
+  
   @media (min-width: 768px) {
     display: flex;
   }
@@ -883,7 +898,7 @@ export default {
     display: flex;
     flex: 0 0 225px;
     flex-direction: column;
-    padding: 15px 20px 0 20px;
+    padding: 0.75em 1em 0.25em 1em;
 
     &.is-wide {
       flex-basis: 35%;
@@ -901,10 +916,6 @@ export default {
     pre {
       margin-top: 5px;
       max-width: 260px;
-    }
-
-    @media (min-width: @screen-sm) {
-      padding: 15px 20px;
     }
   }
 
@@ -1027,7 +1038,7 @@ export default {
   &-content {
     flex: 1 100%;
     margin: 0;
-    padding: 10px 20px;
+    padding: 0.25em 1em;
 
     .Field--inner & {
       border: 0;

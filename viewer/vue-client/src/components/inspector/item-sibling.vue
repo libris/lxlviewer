@@ -128,10 +128,8 @@ export default {
       return cleanObj;
     },
     isExtractable() {
-      if (this.forcedExtractability === true) {
+      if (this.isCompositional === true) {
         return false;
-      } if (this.forcedExtractability === false) {
-        return true;
       }
       const classId = StringUtil.getCompactUri(this.item['@type'], this.resources.context);
       if (VocabUtil.isExtractable(classId, this.resources.vocab, this.settings, this.resources.context)) {
@@ -365,6 +363,10 @@ export default {
         }
       }, 1000);
     }
+    if (this.shouldExpand) {
+      this.expand();
+      this.expandChildren = true;
+    }
     if (this.inspector.status.isNew) {
       this.expand();
     }
@@ -389,14 +391,13 @@ export default {
 
     <strong class="ItemSibling-heading">
       <div class="ItemSibling-label"
-        :class="{'is-inactive': isEmpty}">
+        :class="{'is-inactive': isEmpty}"
+        @click="toggleExpanded()">
         <i class="ItemSibling-arrow fa fa-chevron-right" 
-          :class="{'icon is-disabled' : isEmpty}"
-          @click="toggleExpanded()"></i>
-        <span class="ItemSibling-type" 
-          @click="toggleExpanded($event)" 
+          :class="{'icon is-disabled' : isEmpty}"></i>
+        <span class="ItemSibling-type"
           :title="item['@type']">{{ item['@type'] | labelByLang | capitalize }}:</span>
-        <span class="ItemSibling-collapsedLabel" @click="toggleExpanded()">
+        <span class="ItemSibling-collapsedLabel">
           <span class="ItemSibling-collapsedText" v-show="!expanded || isEmpty">{{getItemLabel}}</span>
           <span class="placeholder"> </span>
         </span>
@@ -519,6 +520,7 @@ export default {
 
   &-label {
     margin-right: 120px;
+    cursor: pointer;
     
     &.is-inactive {
       pointer-events: none;
@@ -526,14 +528,17 @@ export default {
   }
 
   &-type {
-    cursor: pointer;
   }
 
   &-arrow {
     transition: all 0.2s ease;
     padding: 0 2px;
-    margin: 0 0 0 1px;
-    cursor: pointer;
+    font-size: 14px;
+    color: @gray-darker-transparent;
+
+    .ItemSibling-label:hover & {
+      color: @black;
+    }
   }
 
   &-list {
@@ -566,7 +571,6 @@ export default {
   }
 
   &-collapsedLabel {
-    cursor: pointer;
     justify-content: space-between;
     align-items: center;
     overflow: hidden;
@@ -614,8 +618,8 @@ export default {
   &.is-highlighted {
     transition: 0s ease;
     transition-property: outline, box-shadow;
-    outline: 2px solid @highlight-color;
-    box-shadow: 0px 0px 1em 0px @highlight-color;
+    outline: 2px solid @brand-primary;
+    box-shadow: 0px 0px 1em 0px @brand-primary;
   }
   &.is-expanded {
     margin: 0 0 2em 0;
