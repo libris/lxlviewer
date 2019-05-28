@@ -4,13 +4,11 @@ import { mapGetters } from 'vuex';
 import LensMixin from '../mixins/lens-mixin';
 import * as StringUtil from '@/utils/string';
 import * as RecordUtil from '@/utils/record';
-import EncodingLevelIcon from '@/components/shared/encoding-level-icon';
 
 export default {
   mixins: [LensMixin],
   name: 'entity-summary',
   components: {
-    EncodingLevelIcon,
   },
   props: {
     focusData: {
@@ -237,7 +235,7 @@ export default {
 <template>
 <section class="EntitySummary">
   <div class="EntitySummary-meta">
-    <encoding-level-icon :encodingLevel="focusData.meta.encodingLevel" :tooltipText="focusData.meta.encodingLevel | labelByLang"/>
+    <slot name="icon"></slot>
     <div :title="categorization.join(', ')" v-if="excludeComponents.indexOf('categorization') < 0" class="EntitySummary-type uppercaseHeading--light">
       {{categorization.join(', ')}} {{ isLocal ? '{lokal entitet}' : '' }}
       <span class="EntitySummary-sourceLabel" v-if="database">{{ database }}</span>

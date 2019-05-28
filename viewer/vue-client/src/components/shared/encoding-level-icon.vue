@@ -1,4 +1,7 @@
 <script>
+import { mapGetters } from 'vuex';
+import * as VocabUtil from '@/utils/vocab';
+
 export default {
   name: 'encoding-level-icon',
   props: {
@@ -18,16 +21,20 @@ export default {
   methods: {
   },
   computed: {
-    cleanedEncodingLevel() {
-      if (this.encodingLevel.startsWith('https://id.kb.se/marc/')) {
-        const replaced = this.encodingLevel.replace('https://id.kb.se/marc/', 'marc:');
-        return replaced;
-      }
-      return this.encodingLevel;
+    ...mapGetters([
+      'resources',
+    ]),
+    levelObj() {
+      return VocabUtil.getTermObject(this.encodingLevel, this.resources.vocab, this.resources.context);
     },
-    mappings() {
-      switch (this.cleanedEncodingLevel) {
-        case 'marc:FullLevel':
+    levelId() {
+      if (this.levelObj) {
+        return this.levelObj['@id'];
+      } return this.encodingLevel;
+    },
+    icon() {
+      switch (this.levelId) {
+        case 'https://id.kb.se/marc/FullLevel':
           return {
             label: 'NB',
             style: {
@@ -37,7 +44,7 @@ export default {
               'padding-top': '1px',
             },
           };
-        case 'marc:MinimalLevel':
+        case 'https://id.kb.se/marc/MinimalLevel':
           return {
             label: 'B',
             style: {
@@ -45,7 +52,7 @@ export default {
               'background-color': '#D4E3EF',
             },
           };
-        case 'marc:AbbreviatedLevel':
+        case 'https://id.kb.se/marc/AbbreviatedLevel':
           return {
             label: 'M',
             style: {
@@ -53,7 +60,7 @@ export default {
               'background-color': '#D9EBDC',
             },
           };
-        case 'marc:PrepublicationLevel':
+        case 'https://id.kb.se/marc/PrepublicationLevel':
           return {
             label: 'C',
             style: {
@@ -61,7 +68,7 @@ export default {
               'background-color': '#FAE9DB',
             },
           };
-        case 'marc:PartialPreliminaryLevel':
+        case 'https://id.kb.se/marc/PartialPreliminaryLevel':
           return {
             label: 'P',
             style: {
@@ -69,8 +76,8 @@ export default {
               'background-color': '#F5DDDC',
             },
           };
-        case 'marc:FullLevelMaterialNotExamined':
-        case 'marc:LessThanFullLevelMaterialNotExamined':
+        case 'https://id.kb.se/marc/FullLevelMaterialNotExamined':
+        case 'https://id.kb.se/marc/LessThanFullLevelMaterialNotExamined':
           return {
             label: 'R',
             style: {
@@ -94,7 +101,8 @@ export default {
   watch: {
   },
   mounted() {
-    this.$nextTick(() => {});
+    this.$nextTick(() => {
+    });
   },
 };
 </script>
@@ -102,9 +110,9 @@ export default {
 <template>
   <div class="EncodingLevelIcon"
     :class="{'has-tooltip': tooltipText}"
-    :style="mappings.style"
+    :style="icon.style"
     v-tooltip.top="tooltipText">
-    <span class="EncodingLevelIcon-label">{{mappings.label}}</span>
+    <span class="EncodingLevelIcon-label">{{icon.label}}</span>
   </div>
 </template>
 

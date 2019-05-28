@@ -79,13 +79,12 @@ export default {
     <ul class="FacetGroup-list"
       :class="{'is-expanded' : isExpanded, 'has-scroll' : hasScroll}">
       <facet v-for="observation in slicedObservations"
-      :observation="observation" 
-      :key="observation.label">
-        <template v-slot:icon>
-          <encoding-level-icon
-            v-if="group.dimension === 'meta.encodingLevel'"
-            :encodingLevel="observation.object['@id']" ></encoding-level-icon>
-        </template>
+        :observation="observation" 
+        :key="observation.label">
+        <encoding-level-icon
+          slot="icon"
+          v-if="group.dimension === 'meta.encodingLevel'"
+          :encodingLevel="observation.object['@id']"></encoding-level-icon>
       </facet>
     </ul>
     <span 

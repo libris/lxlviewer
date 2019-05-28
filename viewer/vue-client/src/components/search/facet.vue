@@ -54,7 +54,7 @@ export default {
 
 <template>
   <li class="Facet">
-    <slot namne="icon"></slot>
+    <slot name="icon"></slot>
     <router-link class="Facet-link"
       :to="observation.view['@id'] | asAppPath" 
       :title="determinedLabel | capitalize">
