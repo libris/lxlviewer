@@ -1839,7 +1839,7 @@
     },
     "printedStillImage": {
       "label": "Stillbild",
-      "description": "RDA",
+      "description": "Tryckt stillbild - RDA",
       "value": {
         "record": {
           "@id": "https://id.kb.se/TEMPID",
