@@ -237,7 +237,7 @@ export default {
 <template>
 <section class="EntitySummary">
   <div class="EntitySummary-meta">
-    <encoding-level-icon :encodingLevel="focusData.meta.encodingLevel" />
+    <encoding-level-icon :encodingLevel="focusData.meta.encodingLevel" :tooltipText="focusData.meta.encodingLevel | labelByLang"/>
     <div :title="categorization.join(', ')" v-if="excludeComponents.indexOf('categorization') < 0" class="EntitySummary-type uppercaseHeading--light">
       {{categorization.join(', ')}} {{ isLocal ? '{lokal entitet}' : '' }}
       <span class="EntitySummary-sourceLabel" v-if="database">{{ database }}</span>

@@ -6,9 +6,13 @@ export default {
       type: String,
       required: true,
     },
+    tooltipText: {
+      type: String,
+    },
   },
   data() {
     return {
+      mouseOver: false,
     };
   },
   methods: {
@@ -22,6 +26,8 @@ export default {
             style: {
               color: '#61215C',
               'background-color': '#E1D4E0',
+              'font-size': '11px',
+              'padding-top': '1px',
             },
           };
         case 'marc:MinimalLevel':
@@ -87,7 +93,11 @@ export default {
 </script>
 
 <template>
-  <div class="EncodingLevelIcon" :style="mappings.style">
+  <div class="EncodingLevelIcon" 
+    :style="mappings.style"
+    @mouseover="mouseOver = true"
+    @mouseout="mouseOver = false"
+    v-tooltip.top="tooltipText">
     <span class="EncodingLevelIcon-label">{{mappings.label}}</span>
   </div>
 </template>
@@ -101,10 +111,10 @@ export default {
   height: 20px;
   border-radius: 50%;
   margin-right: 5px;
+  font-size: 12px;
   cursor: pointer;
 
   &-label {
-    font-size: 12px;
     font-weight: 600;
   }
 }
