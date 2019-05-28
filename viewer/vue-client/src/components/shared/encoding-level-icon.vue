@@ -8,18 +8,25 @@ export default {
     },
     tooltipText: {
       type: String,
+      default: '',
     },
   },
   data() {
     return {
-      mouseOver: false,
     };
   },
   methods: {
   },
   computed: {
+    cleanedEncodingLevel() {
+      if (this.encodingLevel.startsWith('https://id.kb.se/marc/')) {
+        const replaced = this.encodingLevel.replace('https://id.kb.se/marc/', 'marc:');
+        return replaced;
+      }
+      return this.encodingLevel;
+    },
     mappings() {
-      switch (this.encodingLevel) {
+      switch (this.cleanedEncodingLevel) {
         case 'marc:FullLevel':
           return {
             label: 'NB',
@@ -93,10 +100,9 @@ export default {
 </script>
 
 <template>
-  <div class="EncodingLevelIcon" 
+  <div class="EncodingLevelIcon"
+    :class="{'has-tooltip': tooltipText}"
     :style="mappings.style"
-    @mouseover="mouseOver = true"
-    @mouseout="mouseOver = false"
     v-tooltip.top="tooltipText">
     <span class="EncodingLevelIcon-label">{{mappings.label}}</span>
   </div>
@@ -107,15 +113,18 @@ export default {
   display: flex;
   justify-content: center;
   align-items: baseline;
-  width: 20px;
+  min-width: 20px;
   height: 20px;
   border-radius: 50%;
   margin-right: 5px;
   font-size: 12px;
-  cursor: pointer;
 
   &-label {
     font-weight: 600;
+  }
+
+  &.has-tooltip {
+    cursor: pointer;
   }
 }
 
