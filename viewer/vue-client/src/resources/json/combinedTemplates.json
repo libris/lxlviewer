@@ -2305,9 +2305,7 @@
           "mainEntity": {
             "@id": "https://id.kb.se/TEMPID#it"
           },
-          "descriptionConventions": [{
-              "code": "z"
-            },
+          "descriptionConventions": [
             {
               "@type": "DescriptionConventions",
               "code": "rda"
