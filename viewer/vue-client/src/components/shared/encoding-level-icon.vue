@@ -101,8 +101,7 @@ export default {
   watch: {
   },
   mounted() {
-    this.$nextTick(() => {
-    });
+    this.$nextTick(() => {});
   },
 };
 </script>
