@@ -93,7 +93,7 @@ export default {
         });
     },
     getMainEntities(data) {
-      this.fetchedItems = data.filter((item => !!item)).map(item => item.mainEntity);
+      this.fetchedItems = data.filter((item => !!item)).map(item => ({ ...item.mainEntity, encodingLevel: item.encodingLevel }));
       this.allDone();
     },
     allDone() {

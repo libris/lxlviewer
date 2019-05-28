@@ -4,6 +4,7 @@ import { mapGetters } from 'vuex';
 import LensMixin from '../mixins/lens-mixin';
 import * as StringUtil from '@/utils/string';
 import * as RecordUtil from '@/utils/record';
+import * as VocabUtil from '@/utils/vocab';
 
 export default {
   mixins: [LensMixin],
@@ -195,6 +196,12 @@ export default {
       ));
       return allThings;
     },
+    showEncodingLevelIcon() {
+      const type = VocabUtil.getRecordType(this.focusData['@type'], this.resources.vocab, this.resources.context);
+      if (type === 'Instance') {
+        return true;
+      } return false;
+    },
   },
   mounted() {
     this.$nextTick(() => {
@@ -235,7 +242,7 @@ export default {
 <template>
 <section class="EntitySummary">
   <div class="EntitySummary-meta">
-    <slot name="icon"></slot>
+    <slot v-if="showEncodingLevelIcon" name="icon"></slot>
     <div :title="categorization.join(', ')" v-if="excludeComponents.indexOf('categorization') < 0" class="EntitySummary-type uppercaseHeading--light">
       {{categorization.join(', ')}} {{ isLocal ? '{lokal entitet}' : '' }}
       <span class="EntitySummary-sourceLabel" v-if="database">{{ database }}</span>
