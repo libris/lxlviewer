@@ -75,8 +75,8 @@ export default {
       default: false,
     },
     encodingLevel: {
-      type: String,
-      default: '',
+      type: [String, Boolean],
+      default: false,
     },
   },
   data() {

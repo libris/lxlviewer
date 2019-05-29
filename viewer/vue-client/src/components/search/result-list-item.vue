@@ -62,6 +62,11 @@ export default {
     isLibrisResource() {
       return StringUtil.isLibrisResourceUri(this.focusData['@id'], this.settings);
     },
+    encodingLevel() {
+      if (this.focusData.hasOwnProperty('meta')) {
+        return this.focusData.meta.encodingLevel;
+      } return false;
+    },
   },
   methods: {
     setHiddenDetailsNumber(value) {
@@ -93,7 +98,7 @@ export default {
       :add-link="true" 
       @import-this="importThis()"
       :valueDisplayLimit=3
-      :encodingLevel="focusData.meta.encodingLevel">
+      :encodingLevel="encodingLevel">
     </entity-summary>
     <div class="ResultItem-bottomBar">
       <div class="ResultItem-controls">
