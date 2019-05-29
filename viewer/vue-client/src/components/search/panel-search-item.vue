@@ -4,7 +4,6 @@ import { mapGetters } from 'vuex';
 import LensMixin from '../mixins/lens-mixin';
 import EntitySummary from '../shared/entity-summary';
 import SummaryAction from '../inspector/summary-action';
-import EncodingLevelIcon from '@/components/shared/encoding-level-icon';
 
 export default {
   name: 'panel-search-item',
@@ -96,7 +95,6 @@ export default {
   components: {
     EntitySummary,
     SummaryAction,
-    EncodingLevelIcon,
   },
   mounted() { 
   },
@@ -122,11 +120,8 @@ export default {
         :exclude-components="settings.excludeComponents"
         :exclude-properties="settings.excludeProperties"
         :shouldOpenTab="true"
-        :valueDisplayLimit=1>
-        <encoding-level-icon
-        slot="icon"
-        :encodingLevel="focusData.meta.encodingLevel" 
-        :tooltipText="focusData.meta.encodingLevel | labelByLang"/>
+        :valueDisplayLimit=1
+        :encodingLevel="focusData.meta.encodingLevel">
       </entity-summary>
     </div>
   </li>

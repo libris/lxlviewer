@@ -2,6 +2,7 @@
 import { each, isArray } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import LensMixin from '../mixins/lens-mixin';
+import EncodingLevelIcon from '@/components/shared/encoding-level-icon';
 import * as StringUtil from '@/utils/string';
 import * as RecordUtil from '@/utils/record';
 import * as VocabUtil from '@/utils/vocab';
@@ -10,6 +11,7 @@ export default {
   mixins: [LensMixin],
   name: 'entity-summary',
   components: {
+    EncodingLevelIcon,
   },
   props: {
     focusData: {
@@ -71,6 +73,10 @@ export default {
     highlightStr: {
       type: [String, Boolean], 
       default: false,
+    },
+    encodingLevel: {
+      type: String,
+      default: '',
     },
   },
   data() {
@@ -196,11 +202,14 @@ export default {
       ));
       return allThings;
     },
-    showEncodingLevelIcon() {
-      const type = VocabUtil.getRecordType(this.focusData['@type'], this.resources.vocab, this.resources.context);
-      if (type === 'Instance') {
-        return true;
-      } return false;
+    isInstance() {
+      if (this.focusData.hasOwnProperty('@type')) {
+        const type = VocabUtil.getRecordType(this.focusData['@type'], this.resources.vocab, this.resources.context);
+        if (type === 'Instance') {
+          return true;
+        } 
+      }
+      return false;
     },
   },
   mounted() {
@@ -242,7 +251,10 @@ export default {
 <template>
 <section class="EntitySummary">
   <div class="EntitySummary-meta">
-    <slot v-if="showEncodingLevelIcon" name="icon"></slot>
+    <encoding-level-icon
+      v-if="isInstance && encodingLevel"
+      :encodingLevel="encodingLevel"
+      :tooltipText="encodingLevel | labelByLang"/>
     <div :title="categorization.join(', ')" v-if="excludeComponents.indexOf('categorization') < 0" class="EntitySummary-type uppercaseHeading--light">
       {{categorization.join(', ')}} {{ isLocal ? '{lokal entitet}' : '' }}
       <span class="EntitySummary-sourceLabel" v-if="database">{{ database }}</span>

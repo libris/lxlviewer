@@ -10,7 +10,6 @@ import * as VocabUtil from '@/utils/vocab';
 import EntitySummary from '@/components/shared/entity-summary';
 import TagSwitch from '@/components/shared/tag-switch';
 import ReverseRelations from '@/components/inspector/reverse-relations';
-import EncodingLevelIcon from '@/components/shared/encoding-level-icon';
 import LensMixin from '@/components/mixins/lens-mixin';
 import { mapGetters } from 'vuex';
 
@@ -97,7 +96,6 @@ export default {
     EntitySummary,
     TagSwitch,
     ReverseRelations,
-    EncodingLevelIcon,
   },
 };
 </script>
@@ -111,11 +109,8 @@ export default {
         :focus-data="focusData"
         :should-link="false"
         :exclude-components="inspector.status.isNew ? ['id'] : []"
-        :valueDisplayLimit=3>
-        <encoding-level-icon
-          slot="icon"
-          :encodingLevel="inspector.data.record.encodingLevel" 
-          :tooltipText="inspector.data.record.encodingLevel | labelByLang"/>
+        :valueDisplayLimit=3
+        :encodingLevel="inspector.data.record.encodingLevel">
       </entity-summary>
       <div class="HeaderComponent-bottomBar">
         <div class="HeaderComponent-controls">

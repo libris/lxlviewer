@@ -1,7 +1,6 @@
 <script>
 import { mapGetters } from 'vuex';
 import EntitySummary from '@/components/shared/entity-summary';
-import EncodingLevelIcon from '@/components/shared/encoding-level-icon';
 import * as DisplayUtil from '@/utils/display';
 import * as StringUtil from '@/utils/string';
 
@@ -31,7 +30,6 @@ export default {
   },
   components: {
     EntitySummary,
-    EncodingLevelIcon,
   },
   data() {
     return {
@@ -179,11 +177,8 @@ export default {
                 :focus-data="item" 
                 :should-link="false"
                 :valueDisplayLimit=1
-                :highlightStr="filterPhrase.trim()">
-                <encoding-level-icon
-                  slot="icon"
-                  :encodingLevel="item.encodingLevel" 
-                  :tooltipText="item.encodingLevel | labelByLang"/>  
+                :highlightStr="filterPhrase.trim()"
+                :encodingLevel="item.encodingLevel">
               </entity-summary>
             </div>
           </div>
@@ -193,11 +188,8 @@ export default {
         <entity-summary 
           :focus-data="selected"
           :shouldOpenTab="true"
-          :valueDisplayLimit=1>
-          <encoding-level-icon
-            slot="icon"
-            :encodingLevel="selected.encodingLevel" 
-            :tooltipText="selected.encodingLevel | labelByLang"/>  
+          :valueDisplayLimit=1
+          :encodingLevel="selected.encodingLevel">
         </entity-summary>
         <span class="PostPicker-closeBtn" 
           role="button" 

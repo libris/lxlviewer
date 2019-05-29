@@ -4,7 +4,6 @@ import ResultMixin from '../mixins/result-mixin';
 import EntitySummary from '../shared/entity-summary';
 import ReverseRelations from '@/components/inspector/reverse-relations';
 import TagSwitch from '@/components/shared/tag-switch';
-import EncodingLevelIcon from '@/components/shared/encoding-level-icon';
 import * as StringUtil from '@/utils/string';
 import * as VocabUtil from '@/utils/vocab';
 
@@ -73,7 +72,6 @@ export default {
     TagSwitch,
     EntitySummary,
     ReverseRelations,
-    EncodingLevelIcon,
   },
   mounted() { 
   },
@@ -94,11 +92,8 @@ export default {
       :show-all-keys="showAllKeys || hiddenDetailsNumber === 1"
       :add-link="true" 
       @import-this="importThis()"
-      :valueDisplayLimit=3>
-      <encoding-level-icon
-        slot="icon"
-        :encodingLevel="focusData.meta.encodingLevel" 
-        :tooltipText="focusData.meta.encodingLevel | labelByLang"/>
+      :valueDisplayLimit=3
+      :encodingLevel="focusData.meta.encodingLevel">
     </entity-summary>
     <div class="ResultItem-bottomBar">
       <div class="ResultItem-controls">
