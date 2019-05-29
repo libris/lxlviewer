@@ -8,7 +8,7 @@ export default {
   },
   data() {
     return {
-      numOfExpanded: 4,
+      numOfExpanded: 6,
     };
   },
   methods: {
