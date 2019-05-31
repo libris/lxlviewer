@@ -4,6 +4,12 @@ import UserAvatar from '@/components/shared/user-avatar';
 
 export default {
   name: 'user-settings',
+  props: {
+    compact: {
+      type: Boolean,
+      default: false,
+    },
+  },
   methods: {
     setUser(userObj) {
       this.$store.dispatch('setUser', userObj);
@@ -67,8 +73,8 @@ export default {
 </script>
 
 <template>
-  <section class="UserSettings">
-    <div class="UserSettings-content">
+  <section class="UserSettings" :class="{'in-menu' : compact}">
+    <div class="UserSettings-content" v-if="!compact">
       <div class="UserSettings-info UserInfo">
         <div class="UserInfo-avatar">
           <user-avatar :size="150" />
@@ -147,6 +153,29 @@ export default {
         <button class="btn btn-primary btn--lg UserSettings-logout" @click="logout">{{"Log out" | translatePhrase}}</button>
       </div>
     </div>
+    <div v-else class="UserSettings-content">
+      <ul>
+        <li>
+          <label class="uppercaseHeading">Sigel</label>
+          <select id="UserConfig-sigel"
+            class="UserConfig-select customSelect" 
+            :value="user.settings.activeSigel" 
+            @change="updateSigel">
+            <option v-for="sigel in user.collections" 
+              :key="sigel.code" 
+              :value="sigel.code">{{ getSigelLabel(sigel, 50) }}</option>
+          </select>
+        </li>
+        <li>
+          <router-link to="/user">{{"Settings" | translatePhrase}}</router-link>
+          <span v-if="userHasTaggedPosts" @click.prevent="purgeTagged">{{ ['Clear', 'Flags'] | translatePhrase | lowercase | capitalize}}</span>
+        </li>
+        <li>
+          <span>Växla användare</span>
+          <span @click="logout">{{"Log out" | translatePhrase}}</span>
+        </li>
+      </ul>
+    </div>
   </section>
 </template>
 
@@ -172,6 +201,12 @@ export default {
     background-color: @white;
     border-radius: 4px;
     box-shadow: @shadow-panel;
+
+    .in-menu & {
+      padding: 0 10px;
+      font-size: 14px;
+      font-size: 1.4rem;
+    }
 
     @media (min-width: @screen-sm) {
       flex-direction: row;
@@ -213,6 +248,47 @@ export default {
       select {
         width: 100%;
       }
+    }
+  }
+
+  &.in-menu {
+    cursor: initial;
+    position: absolute;
+    width: 220px;
+    right: auto;
+    left: 0;
+    z-index: 1;
+
+    & ul {
+      padding: 0;
+      list-style-type: none;
+    }
+
+    & li {
+      padding: 10px 0;
+      display: flex;
+      flex-direction: column;
+      border-bottom: 1px solid @grey-lighter;
+
+      &:last-of-type {
+        border: 0px;
+      }
+
+      & span, 
+      & a {
+        color: @black;
+        cursor: pointer;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+
+    }
+
+  @media (max-width: @screen-sm) {
+    left: auto;
+    right: 0;
     }
   }
 }

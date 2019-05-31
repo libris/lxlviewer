@@ -1,19 +1,24 @@
 <script>
 import { mapGetters } from 'vuex';
+import { mixin as clickaway } from 'vue-clickaway';
 import * as StringUtil from '@/utils/string';
 import UserAvatar from '@/components/shared/user-avatar';
 import TabMenu from '@/components/shared/tab-menu';
+import UserSettings from '@/components/usersettings/user-settings';
 
 export default {
   name: 'navbar-component',
+  mixins: [clickaway],
   data() {
     return {
       hasAvatar: true,
+      showUserMenu: false,
     };
   },
   components: {
     'user-avatar': UserAvatar,
     'tab-menu': TabMenu,
+    UserSettings,
   },
   computed: {
     ...mapGetters([
@@ -37,8 +42,17 @@ export default {
       }
       return '';
     },
+    isUserPage() {
+      return this.$route.path === '/user';
+    },
   },
   methods: {
+    toggleUserMenu() {
+      this.showUserMenu = !this.showUserMenu;
+    },
+    hideUserMenu() {
+      this.showUserMenu = false;
+    },
   },
 };
 </script>
@@ -71,12 +85,13 @@ export default {
           </router-link>
         </li>
         <li class="MainNav-item" v-if="user.isLoggedIn">
-          <router-link to="/user" class="MainNav-link">
+          <span @click="toggleUserMenu">
             <user-avatar :size="32" />
             <span class="MainNav-linkText userName">
             {{ user.fullName }} <span v-cloak class="sigelLabel">({{ user.settings.activeSigel }})</span>
             </span>
-          </router-link>
+          </span>
+            <user-settings v-if="showUserMenu && !isUserPage" compact v-on-clickaway="hideUserMenu"/>
         </li>
         <li class="MainNav-item" v-if="!user.isLoggedIn">
           <a :href="`${settings.apiPath}/login/authorize`" class="MainNav-link">
@@ -189,10 +204,15 @@ export default {
   }
 
   &-item {
+    position: relative;
     text-transform: none;
     display: inline-block;
     max-height: 60px;
     margin-top: -2px;
+    cursor: pointer;
+    font-size: 18px;
+    font-size: 1.8rem;
+    padding: 15px 10px;
 
     &:last-of-type a {
       padding-right: 0;
@@ -201,31 +221,21 @@ export default {
     @media screen and (max-width: @screen-sm-min) {
       display: inline;
     }
+
+    @media (max-width: @screen-sm) {
+      & .userName {
+        display: none;
+      }
+    }
+    
+    @media (max-width: @screen-md) {
+      font-size: 16px;
+      font-size: 1.6rem;
+    }
   }
-
-  // &-iconWrap {
-  //   display: inline-block;
-  //   width: 30px;
-  //   height: 24px;
-  //   border-radius: 50%;
-  //   line-height: 1;
-  //   margin-right: 5px;
-  //   text-align: center;
-  //   width: .8em;
-
-  //   &--userSettings {
-  //     height: 32px;   
-  //     width: 32px;
-  //     position: relative;
-  //   }
-  // }
 
   &-link {
     color: @black;
-    cursor: pointer;
-    font-size: 18px;
-    font-size: 1.8rem;
-    padding: 15px 10px;
     display: block;
 
     &:hover, 
@@ -236,17 +246,6 @@ export default {
 
     i {
       color: @text-alt-navbar;
-    }
-
-    @media (max-width: @screen-md) {
-      font-size: 16px;
-      font-size: 1.6rem;
-    }
-
-    @media (max-width: @screen-sm) {
-      & .userName {
-        display: none;
-      }
     }
   }
 
@@ -280,5 +279,4 @@ export default {
     }
   }
 }
-
 </style>
