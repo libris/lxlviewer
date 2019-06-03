@@ -204,8 +204,11 @@ export default {
 
     .in-menu & {
       padding: 0 10px;
+      border-radius: 0;
       font-size: 14px;
       font-size: 1.4rem;
+      box-shadow: none;
+      border: 1px solid @grey-lighter;
     }
 
     @media (min-width: @screen-sm) {
@@ -257,7 +260,7 @@ export default {
     width: 220px;
     right: auto;
     left: 0;
-    z-index: 1;
+    z-index: 4;
 
     & ul {
       padding: 0;
