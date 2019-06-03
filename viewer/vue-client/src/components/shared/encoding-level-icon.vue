@@ -33,67 +33,84 @@ export default {
       } return this.encodingLevel;
     },
     icon() {
+      const icon = {};
+      const smaller = { 'font-size': '11px', 'padding-top': '1px' };
       switch (this.levelId) {
         case 'https://id.kb.se/marc/FullLevel':
-          return {
-            label: 'NB',
-            style: {
-              color: '#61215C',
-              'background-color': '#E1D4E0',
-              'font-size': '11px',
-              'padding-top': '1px',
-            },
+          icon.label = 'NB';
+          icon.style = { 
+            color: '#61215C',
+            'background-color': '#E1D4E0',
+            ...smaller,
           };
+          break;
         case 'https://id.kb.se/marc/MinimalLevel':
-          return {
-            label: 'B',
-            style: {
-              color: '#0076BA',
-              'background-color': '#D4E3EF',
-            },
+          icon.label = 'B';
+          icon.style = {
+            color: '#0076BA',
+            'background-color': '#D4E3EF',
           };
+          break;
         case 'https://id.kb.se/marc/AbbreviatedLevel':
-          return {
-            label: 'M',
-            style: {
-              color: '#3B8D47',
-              'background-color': '#D9EBDC',
-            },
+          icon.label = 'M';
+          icon.style = {
+            color: '#3B8D47',
+            'background-color': '#D9EBDC',
           };
+          break;
         case 'https://id.kb.se/marc/PrepublicationLevel':
-          return {
-            label: 'C',
-            style: {
-              color: '#E59148',
-              'background-color': '#FAE9DB',
-            },
+          icon.label = 'C';
+          icon.style = {
+            color: '#E59148',
+            'background-color': '#FAE9DB',
           };
+          break;
         case 'https://id.kb.se/marc/PartialPreliminaryLevel':
-          return {
-            label: 'P',
-            style: {
-              color: '#CD534C',
-              'background-color': '#F5DDDC',
-            },
+          icon.label = 'P';
+          icon.style = {
+            color: '#CD534C',
+            'background-color': '#F5DDDC',
           };
+          break;
         case 'https://id.kb.se/marc/FullLevelMaterialNotExamined':
         case 'https://id.kb.se/marc/LessThanFullLevelMaterialNotExamined':
-          return {
-            label: 'R',
-            style: {
-              color: '#929292',
-              'background-color': '#EBEBEB',
-            },
-          };
+          icon.label = 'R';
+          break;
+        case 'https://id.kb.se/marc/CompleteAuthorityRecord':
+          icon.label = 'F';
+          break;
+        case 'https://id.kb.se/marc/IncompleteAuthorityRecord':
+          icon.label = 'O';
+          break;
+        case 'https://id.kb.se/marc/OtherLevel':
+          icon.label = 'A';
+          break;
+        case 'https://id.kb.se/marc/HoldingsLevel1':
+          icon.label = 'B1';
+          icon.style = smaller;
+          break;
+        case 'https://id.kb.se/marc/HoldingsLevel2':
+          icon.label = 'B2';
+          icon.style = smaller;
+          break;
+        case 'https://id.kb.se/marc/HoldingsLevel3':
+          icon.label = 'B3';
+          icon.style = smaller;
+          break;
+        case 'https://id.kb.se/marc/HoldingsLevel4':
+          icon.label = 'B4';
+          icon.style = smaller;
+          break;
+        case 'https://id.kb.se/marc/HoldingsLevel4WithPieceDesignation':
+          icon.label = 'B5';
+          icon.style = smaller;
+          break;
         default:
           return {
             label: '/',
-            style: {
-              color: '#929292',
-              'background-color': '#EBEBEB',
-            },
           };
       }
+      return icon;
     },
   },
   components: {
@@ -115,6 +132,8 @@ export default {
 
 <style lang="less">
 .EncodingLevelIcon {
+  color: #929292;
+  background-color: #EBEBEB;
   display: flex;
   justify-content: center;
   align-items: baseline;

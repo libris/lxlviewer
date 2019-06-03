@@ -202,15 +202,6 @@ export default {
       ));
       return allThings;
     },
-    isInstance() {
-      if (this.focusData.hasOwnProperty('@type')) {
-        const type = VocabUtil.getRecordType(this.focusData['@type'], this.resources.vocab, this.resources.context);
-        if (type === 'Instance') {
-          return true;
-        } 
-      }
-      return false;
-    },
   },
   mounted() {
     this.$nextTick(() => {
@@ -252,7 +243,7 @@ export default {
 <section class="EntitySummary">
   <div class="EntitySummary-meta">
     <encoding-level-icon
-      v-if="isInstance && encodingLevel"
+      v-if="encodingLevel"
       :encodingLevel="encodingLevel"
       :tooltipText="encodingLevel | labelByLang"/>
     <div :title="categorization.join(', ')" v-if="excludeComponents.indexOf('categorization') < 0" class="EntitySummary-type uppercaseHeading--light">
