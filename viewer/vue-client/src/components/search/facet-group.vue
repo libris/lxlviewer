@@ -1,5 +1,6 @@
 <script>
 import Facet from './facet.vue';
+import EncodingLevelIcon from '@/components/shared/encoding-level-icon';
 
 export default {
   name: 'facet-group',
@@ -57,7 +58,8 @@ export default {
     },
   },
   components: {
-    facet: Facet,
+    Facet,
+    EncodingLevelIcon,
   },
 };
 </script>
@@ -77,8 +79,13 @@ export default {
     <ul class="FacetGroup-list"
       :class="{'is-expanded' : isExpanded, 'has-scroll' : hasScroll}">
       <facet v-for="observation in slicedObservations"
-      :observation="observation" 
-      :key="observation.label"></facet>
+        :observation="observation" 
+        :key="observation.label">
+        <encoding-level-icon
+          slot="icon"
+          v-if="group.dimension === 'meta.encodingLevel'"
+          :encodingLevel="observation.object['@id']"></encoding-level-icon>
+      </facet>
     </ul>
     <span 
       v-if="revealText && isExpanded" 
@@ -91,7 +98,7 @@ export default {
 
 <style lang="less">
 .FacetGroup {
-  width: 230px;
+  // width: 230px;
   margin-bottom: 15px;
 
   &-title {

@@ -2,12 +2,17 @@
 import { each, isArray } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import LensMixin from '../mixins/lens-mixin';
+import EncodingLevelIcon from '@/components/shared/encoding-level-icon';
 import * as StringUtil from '@/utils/string';
 import * as RecordUtil from '@/utils/record';
+import * as VocabUtil from '@/utils/vocab';
 
 export default {
   mixins: [LensMixin],
   name: 'entity-summary',
+  components: {
+    EncodingLevelIcon,
+  },
   props: {
     focusData: {
       type: Object,
@@ -67,6 +72,10 @@ export default {
     },
     highlightStr: {
       type: [String, Boolean], 
+      default: false,
+    },
+    encodingLevel: {
+      type: [String, Boolean],
       default: false,
     },
   },
@@ -236,6 +245,10 @@ export default {
 <template>
 <section class="EntitySummary">
   <div class="EntitySummary-meta">
+    <encoding-level-icon
+      v-if="encodingLevel"
+      :encodingLevel="encodingLevel"
+      :tooltipText="encodingLevel | labelByLang"/>
     <div :title="categorization.join(', ')" v-if="excludeComponents.indexOf('categorization') < 0" class="EntitySummary-type uppercaseHeading--light">
       {{categorization.join(', ')}} {{ isLocal ? '{lokal entitet}' : '' }}
       <span class="EntitySummary-sourceLabel" v-if="database">{{ database }}</span>

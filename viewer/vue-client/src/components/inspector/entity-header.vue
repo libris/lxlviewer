@@ -93,7 +93,7 @@ export default {
     });
   },
   components: {
-    'entity-summary': EntitySummary,
+    EntitySummary,
     TagSwitch,
     ReverseRelations,
   },
@@ -110,7 +110,8 @@ export default {
         :should-link="false"
         :exclude-components="inspector.status.isNew ? ['id'] : []"
         :valueDisplayLimit=3
-      />
+        :encodingLevel="inspector.data.record.encodingLevel">
+      </entity-summary>
       <div class="HeaderComponent-bottomBar">
         <div class="HeaderComponent-controls">
           <span v-if="hiddenDetailsNumber > 1" class="HeaderComponent-showMore" @click="showAllKeys = !showAllKeys">{{ showAllKeys ? 'Show fewer' : 'Show more' | translatePhrase }}{{ showAllKeys ? '' : ` (${hiddenDetailsNumber})` }}</span>

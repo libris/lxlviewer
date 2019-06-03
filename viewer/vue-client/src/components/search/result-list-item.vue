@@ -62,6 +62,11 @@ export default {
     isLibrisResource() {
       return StringUtil.isLibrisResourceUri(this.focusData['@id'], this.settings);
     },
+    encodingLevel() {
+      if (this.focusData.hasOwnProperty('meta')) {
+        return this.focusData.meta.encodingLevel;
+      } return false;
+    },
   },
   methods: {
     setHiddenDetailsNumber(value) {
@@ -70,8 +75,8 @@ export default {
   },
   components: {
     TagSwitch,
-    'entity-summary': EntitySummary,
-    'reverse-relations': ReverseRelations,
+    EntitySummary,
+    ReverseRelations,
   },
   mounted() { 
   },
@@ -92,7 +97,8 @@ export default {
       :show-all-keys="showAllKeys || hiddenDetailsNumber === 1"
       :add-link="true" 
       @import-this="importThis()"
-      :valueDisplayLimit=3>
+      :valueDisplayLimit=3
+      :encodingLevel="encodingLevel">
     </entity-summary>
     <div class="ResultItem-bottomBar">
       <div class="ResultItem-controls">

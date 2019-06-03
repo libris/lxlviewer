@@ -54,6 +54,7 @@ export default {
 
 <template>
   <li class="Facet">
+    <slot name="icon"></slot>
     <router-link class="Facet-link"
       :to="observation.view['@id'] | asAppPath" 
       :title="determinedLabel | capitalize">
@@ -68,6 +69,8 @@ export default {
 <style lang="less">
 
 .Facet {
+  display: flex;
+  align-items: center;
 
   &-link {
     width: 100%;
