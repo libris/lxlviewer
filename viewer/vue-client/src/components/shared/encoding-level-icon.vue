@@ -59,7 +59,7 @@ export default {
           };
           break;
         case 'https://id.kb.se/marc/PrepublicationLevel':
-          icon.label = 'C';
+          icon.label = 'F';
           icon.style = {
             color: '#E59148',
             'background-color': '#FAE9DB',
@@ -77,20 +77,14 @@ export default {
           icon.label = 'R';
           break;
         case 'https://id.kb.se/marc/CompleteAuthorityRecord':
-          icon.label = 'F';
+          icon.label = 'FU';
+          icon.style = smaller;
           break;
         case 'https://id.kb.se/marc/IncompleteAuthorityRecord':
           icon.label = 'O';
           break;
-        case 'https://id.kb.se/marc/OtherLevel':
-          icon.label = 'A';
-          break;
         case 'https://id.kb.se/marc/HoldingsLevel1':
           icon.label = 'B1';
-          icon.style = smaller;
-          break;
-        case 'https://id.kb.se/marc/HoldingsLevel2':
-          icon.label = 'B2';
           icon.style = smaller;
           break;
         case 'https://id.kb.se/marc/HoldingsLevel3':
@@ -132,8 +126,8 @@ export default {
 
 <style lang="less">
 .EncodingLevelIcon {
-  color: #929292;
-  background-color: #EBEBEB;
+  background-color: @gray-very-light-transparent;
+  color: @gray-transparent;
   display: flex;
   justify-content: center;
   align-items: baseline;
