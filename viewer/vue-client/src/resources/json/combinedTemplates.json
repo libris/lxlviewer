@@ -2246,9 +2246,6 @@
           "marc:headingMain": true,
           "cataloguersNote": [""],
           "sourceConsulted": [],
-          "marc:recordUpdate": {
-            "@id": "https://id.kb.se/marc/RecordCanBeUsed"
-          },
           "marc:level": {
             "@id": "https://id.kb.se/marc/FullyEstablishedHeading"
           }
@@ -2319,9 +2316,6 @@
           "cataloguersNote": [""],
           "sourceConsulted": [],
           "marc:headingMain": true,
-          "marc:recordUpdate": {
-            "@id": "https://id.kb.se/marc/RecordCanBeUsed"
-          },
           "marc:level": {
             "@id": "https://id.kb.se/marc/FullyEstablishedHeading"
           }
@@ -2379,9 +2373,6 @@
             "@id": "https://id.kb.se/TEMPID#it"
           },
           "encodingLevel": "marc:CompleteAuthorityRecord",
-          "marc:kindOfRecord": {
-            "@id": "https://id.kb.se/marc/EstablishedHeadingRecord"
-          },
           "descriptionConventions": [
             {
               "@type": "DescriptionConventions",
@@ -2391,9 +2382,6 @@
           "marc:headingMain": true,
           "cataloguersNote": [""],
           "sourceConsulted": [],
-          "marc:recordUpdate": {
-            "@id": "https://id.kb.se/marc/RecordCanBeUsed"
-          },
           "marc:personalName": {
             "@id": "https://id.kb.se/marc/DifferentiatedPersonalName"
           },
@@ -2450,12 +2438,6 @@
             "@id": "https://id.kb.se/language/swe"
           }],
           "encodingLevel": "marc:CompleteAuthorityRecord",
-          "marc:kindOfRecord": {
-            "@id": "https://id.kb.se/marc/EstablishedHeadingRecord"
-          },
-          "marc:recordUpdate": {
-            "@id": "https://id.kb.se/marc/RecordCanBeUsed"
-          },
           "marc:subjectHeading": {
             "@id": "https://id.kb.se/marc/Other"
           }
@@ -2502,12 +2484,6 @@
             "code": "swe"
           }],
           "encodingLevel": "marc:CompleteAuthorityRecord",
-          "marc:kindOfRecord": {
-            "@id": "https://id.kb.se/marc/EstablishedHeadingRecord"
-          },
-          "marc:recordUpdate": {
-            "@id": "https://id.kb.se/marc/RecordCanBeUsed"
-          },
           "marc:subjectHeading": {
             "@id": "https://id.kb.se/marc/Other"
           }
@@ -2537,20 +2513,11 @@
             "@id": "https://id.kb.se/TEMPID#it"
           },
           "encodingLevel": "marc:CompleteAuthorityRecord",
-          "marc:romanization": {
-            "@id": "https://id.kb.se/marc/NationalStandard"
-          },
-          "marc:kindOfRecord": {
-            "@id": "https://id.kb.se/marc/EstablishedHeadingRecord"
-          },
           "descriptionConventions": {
             "@id": "https://id.kb.se/marc/CatalogingRulesType-c"
           },
           "marc:subjectHeading": {
             "@id": "https://id.kb.se/marc/Other"
-          },
-          "marc:recordUpdate": {
-            "@id": "https://id.kb.se/marc/RecordCanBeUsed"
           },
           "marc:level": {
             "@id": "https://id.kb.se/marc/FullyEstablishedHeading"
@@ -2627,12 +2594,6 @@
           "encodingLevel": "marc:CompleteAuthorityRecord",
           "marc:subjectSubdivision": {
             "@id": "https://id.kb.se/marc/Topical"
-          },
-          "marc:kindOfRecord": {
-            "@id": "https://id.kb.se/marc/EstablishedHeadingRecord"
-          },
-          "marc:recordUpdate": {
-            "@id": "https://id.kb.se/marc/RecordCanBeUsed"
           },
           "marc:subjectHeading": {
             "@id": "https://id.kb.se/marc/Other"
