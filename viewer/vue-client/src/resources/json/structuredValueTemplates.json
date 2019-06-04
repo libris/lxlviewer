@@ -140,6 +140,25 @@
     "@type": "VideoRecordingNumber",
     "value": ""
   },
+  "PrimaryProduction": {
+    "@type": "PrimaryProduction",
+    "place": [
+      {
+        "@type": "Place",
+        "label": ""
+      }
+    ],
+    "agent": [
+      {
+        "@type": "Agent",
+        "label": ""
+      }
+    ],
+    "year": "",
+    "date": [""],
+    "country": []
+
+  },
   "PrimaryPublication": {
     "@type": "PrimaryPublication",
     "place": [
