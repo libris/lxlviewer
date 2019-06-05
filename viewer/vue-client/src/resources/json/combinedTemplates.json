@@ -1884,7 +1884,24 @@
             }
           ],
           "responsibilityStatement": "",
-          "publication": [],
+          "publication": [
+            {
+              "@type": "Publication",
+              "place": [
+                {
+                  "@type": "Place",
+                  "label": [""]
+                }
+              ],
+              "agent": [
+                {
+                  "@type": "Agent",
+                  "label": [""]
+                }
+              ],
+              "date": [""]
+            }
+          ],
           "marc:primaryProvisionActivity": {
             "@type": "PrimaryPublication",
             "country": null,
@@ -2243,7 +2260,6 @@
             "code": "swe"
           }],
           "encodingLevel": "marc:CompleteAuthorityRecord",
-          "marc:headingMain": true,
           "cataloguersNote": [""],
           "sourceConsulted": [],
           "marc:level": {
@@ -2315,7 +2331,6 @@
           "encodingLevel": "marc:CompleteAuthorityRecord",
           "cataloguersNote": [""],
           "sourceConsulted": [],
-          "marc:headingMain": true,
           "marc:level": {
             "@id": "https://id.kb.se/marc/FullyEstablishedHeading"
           }
@@ -2379,7 +2394,6 @@
               "code": "rda"
             }
           ],
-          "marc:headingMain": true,
           "cataloguersNote": [""],
           "sourceConsulted": [],
           "marc:personalName": {
