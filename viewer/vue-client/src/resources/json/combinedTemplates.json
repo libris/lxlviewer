@@ -2243,7 +2243,6 @@
             "code": "swe"
           }],
           "encodingLevel": "marc:CompleteAuthorityRecord",
-          "marc:headingMain": true,
           "cataloguersNote": [""],
           "sourceConsulted": [],
           "marc:level": {
@@ -2315,7 +2314,6 @@
           "encodingLevel": "marc:CompleteAuthorityRecord",
           "cataloguersNote": [""],
           "sourceConsulted": [],
-          "marc:headingMain": true,
           "marc:level": {
             "@id": "https://id.kb.se/marc/FullyEstablishedHeading"
           }
@@ -2379,7 +2377,6 @@
               "code": "rda"
             }
           ],
-          "marc:headingMain": true,
           "cataloguersNote": [""],
           "sourceConsulted": [],
           "marc:personalName": {
