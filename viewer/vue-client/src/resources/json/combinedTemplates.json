@@ -1884,7 +1884,24 @@
             }
           ],
           "responsibilityStatement": "",
-          "publication": [],
+          "publication": [
+            {
+              "@type": "Publication",
+              "place": [
+                {
+                  "@type": "Place",
+                  "label": [""]
+                }
+              ],
+              "agent": [
+                {
+                  "@type": "Agent",
+                  "label": [""]
+                }
+              ],
+              "date": [""]
+            }
+          ],
           "marc:primaryProvisionActivity": {
             "@type": "PrimaryPublication",
             "country": null,
