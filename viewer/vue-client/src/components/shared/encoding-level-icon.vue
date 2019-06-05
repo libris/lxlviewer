@@ -101,7 +101,6 @@ export default {
 
 <template>
   <div class="EncodingLevelIcon"
-    :class="{'has-tooltip': tooltipText}"
     :style="icon.style"
     v-tooltip.top="tooltipText">
     <span class="EncodingLevelIcon-label">{{icon.label}}</span>
@@ -123,10 +122,6 @@ export default {
 
   &-label {
     font-weight: 600;
-  }
-
-  &.has-tooltip {
-    cursor: pointer;
   }
 }
 
