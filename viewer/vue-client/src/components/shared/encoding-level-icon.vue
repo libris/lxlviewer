@@ -61,7 +61,7 @@ export default {
         case 'https://id.kb.se/marc/PrepublicationLevel':
           icon.label = 'F';
           icon.style = {
-            color: '#E59148',
+            color: '#d46126',
             'background-color': '#FAE9DB',
           };
           break;
