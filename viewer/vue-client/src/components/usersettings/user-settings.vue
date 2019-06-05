@@ -209,6 +209,11 @@ export default {
       font-size: 1.4rem;
       box-shadow: none;
       border: 1px solid @grey-lighter;
+
+      & select {
+        font-size: 14px;
+        font-size: 1.4rem;
+      }
     }
 
     @media (min-width: @screen-sm) {
@@ -257,7 +262,6 @@ export default {
   &.in-menu {
     cursor: initial;
     position: absolute;
-    width: 220px;
     right: auto;
     left: 0;
     z-index: 4;

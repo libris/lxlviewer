@@ -245,7 +245,7 @@ export default {
           </label>
           <div class="SearchBar-selectWrapper" v-if="searchPerimeter === 'libris'">
             <select
-              class="SearchBar-select form-control customSelect"
+              class="SearchBar-select customSelect"
               v-model="activeSearchParam"
               @change="setPrefSearchParam">
               <option 
@@ -390,6 +390,8 @@ export default {
   }
 
   &-select {
+    background-color: @white;
+    border-radius: 4px;
     height: 100%;
     min-width: unset;
     box-shadow: none;

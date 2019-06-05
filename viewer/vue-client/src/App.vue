@@ -567,16 +567,30 @@ h1 {
 
 // SELECT
 .customSelect {
-  height: 30px;
   min-width: 150px;
+  line-height: 3.2rem;
+  font-weight: 500;
   font-size: 16px;
   font-size: 1.6rem;
-  font-weight: 500;
-  background-color: @white;
+  background-color: rgba(115, 115, 115, 0.08);
   color: @black;
-  border: 1px solid @gray-light;
-  box-shadow: @shadow-panel;
+  border: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+  border-radius: 3px 3px 0 0;
   text-align: left;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' version='1.1' height='10px' width='15px'%3E%3Ctext x='0' y='10' fill='gray'%3E%E2%96%BE%3C/text%3E%3C/svg%3E");
+  background-repeat: no-repeat, repeat;
+  background-position: right 0.5em top 50%, 0 0;
+  background-size: 1em auto, 100%;
+  padding-left: 0.8em;
+  padding-right: 2em;
+
+  &::-ms-expand{
+    display: none;
+  }
 }
 
 //TEXT INPUT
