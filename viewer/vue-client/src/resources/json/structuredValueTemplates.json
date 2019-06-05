@@ -155,9 +155,8 @@
       }
     ],
     "year": "",
-    "date": [""],
+    "date": "",
     "country": []
-
   },
   "PrimaryPublication": {
     "@type": "PrimaryPublication",
@@ -174,78 +173,76 @@
       }
     ],
     "year": "",
-    "date": [""],
+    "date": "",
     "country": []
-
   },
   "Publication": {
     "@type": "Publication",
     "place": [
       {
         "@type": "Place",
-        "label": [""]
+        "label": ""
       }
     ],
     "agent": [
       {
         "@type": "Agent",
-        "label": [""]
+        "label": ""
       }
     ],
-    "date": [""]
-
+    "date": ""
   },
   "Production": {
     "@type": "Production",
     "place": [
       {
         "@type": "Place",
-        "label": [""]
+        "label": ""
       }
     ],
     "agent": [
       {
         "@type": "Agent",
-        "label": [""]
+        "label": ""
       }
     ],
-    "date": [""]
+    "date": ""
   },
   "Manufacture": {
     "@type": "Manufacture",
     "place": [
       {
         "@type": "Place",
-        "label": [""]
+        "label": ""
       }
     ],
     "agent": [
       {
         "@type": "Agent",
-        "label": [""]
+        "label": ""
       }
     ],
-    "date": [""]
+    "date": ""
   },
   "Distribution": {
     "@type": "Distribution",
     "place": [
       {
         "@type": "Place",
-        "label": [""]
+        "label": ""
       }
     ],
     "agent": [
       {
         "@type": "Agent",
-        "label": [""]
+        "label": ""
       }
     ],
-    "date": [""]
+    "date": ""
   },
   "Copyright": {
     "@type": "Copyright",
-    "date": [""]
+    "date": ""
   },
   "Extent": {
     "@type": "Extent",
@@ -285,7 +282,7 @@
   "Meeting": {
     "@type": "Meeting",
     "name": "",
-    "date": [""],
+    "date": "",
     "marc:numeration": [""],
     "place": [
       {
@@ -330,11 +327,11 @@
   },
   "Place": {
     "@type": "Place",
-    "label": [""]
+    "label": ""
   },
   "Agent": {
     "@type": "Agent",
-    "label": [""]
+    "label": ""
   },
   "PrimaryContribution": {
     "@type": "PrimaryContribution",
