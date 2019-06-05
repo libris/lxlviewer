@@ -5,7 +5,6 @@ import LensMixin from '../mixins/lens-mixin';
 import EncodingLevelIcon from '@/components/shared/encoding-level-icon';
 import * as StringUtil from '@/utils/string';
 import * as RecordUtil from '@/utils/record';
-import * as VocabUtil from '@/utils/vocab';
 
 export default {
   mixins: [LensMixin],
@@ -205,6 +204,11 @@ export default {
       ));
       return allThings;
     },
+    isItem() {
+      if (this.getCard['@type'] === 'Item') {
+        return true;
+      } return false;
+    },
   },
   mounted() {
     this.$nextTick(() => {
@@ -246,7 +250,7 @@ export default {
 <section class="EntitySummary">
   <div class="EntitySummary-meta">
     <encoding-level-icon
-      v-if="encodingLevel"
+      v-if="encodingLevel && !isItem"
       :encodingLevel="encodingLevel"
       :tooltipText="encodingLevel | labelByLang"/>
     <div :title="categorization.join(', ')" v-if="excludeComponents.indexOf('categorization') < 0" class="EntitySummary-type uppercaseHeading--light">
