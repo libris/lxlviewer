@@ -67,7 +67,7 @@
             {
               "@type": "PrimaryPublication",
               "year": "",
-              "date": [""],
+              "date": "",
               "country": [ {"@id": "https://id.kb.se/country/sw"} ],
               "place": {
                 "@type": "Place",
@@ -82,9 +82,7 @@
           "copyright": [
             {
               "@type": "Copyright",
-              "date": [
-                ""
-              ]
+              "date": ""
             }
           ],
           "extent": [
@@ -258,7 +256,7 @@
             {
               "@type": "PrimaryPublication",
               "year": "",
-              "date": [""],
+              "date": "",
               "country": [ {"@id": "https://id.kb.se/country/sw"} ],
               "place": {
                 "@type": "Place",
@@ -444,7 +442,7 @@
             {
               "@type": "PrimaryPublication",
               "year": "",
-              "date": [""],
+              "date": "",
               "country": [ {"@id": "https://id.kb.se/country/sw"} ],
               "place": {
                 "@type": "Place",
@@ -459,9 +457,7 @@
           "copyright": [
             {
               "@type": "Copyright",
-              "date": [
-                ""
-              ]
+              "date": ""
             }
           ],
           "extent": [
@@ -644,7 +640,7 @@
             {
               "@type": "PrimaryPublication",
               "year": "",
-              "date": [""],
+              "date": "",
               "country": [ {"@id": "https://id.kb.se/country/sw"} ],
               "place": {
                 "@type": "Place",
@@ -659,9 +655,7 @@
           "copyright": [
             {
               "@type": "Copyright",
-              "date": [
-                ""
-              ]
+              "date": ""
             }
           ],
           "extent": [
@@ -844,7 +838,7 @@
             {
               "@type": "PrimaryPublication",
               "year": "",
-              "date": [""],
+              "date": "",
               "country": [ {"@id": "https://id.kb.se/country/sw"} ],
               "place": {
                 "@type": "Place",
@@ -1239,7 +1233,7 @@
             {
               "@type": "PrimaryPublication",
               "year": "",
-              "date": [""],
+              "date": "",
               "country": [ {"@id": "https://id.kb.se/country/sw"} ],
               "place": {
                 "@type": "Place",
@@ -1255,18 +1249,12 @@
             "@type": "Manufacture",
             "agent": [{
               "@type": "Agent",
-              "label": [
-                ""
-              ]
+              "label": ""
             }],
-            "date": [
-              ""
-            ],
+            "date": "",
             "place": [{
               "@type": "Place",
-              "label": [
-                ""
-              ]
+              "label": ""
             }]
           }],
           "copyright": [{
@@ -1429,7 +1417,7 @@
           "publication": [
             {
               "@type": "PrimaryPublication",
-              "date": [""],
+              "date": "",
               "startYear": "",
               "endYear": "",
               "country": [ {"@id": "https://id.kb.se/country/sw"} ],
@@ -1574,7 +1562,7 @@
             {
               "@type": "PrimaryPublication",
               "year": "",
-              "date": [""],
+              "date": "",
               "country": [ {"@id": "https://id.kb.se/country/sw"} ],
               "place": {
                 "@type": "Place",
@@ -1590,18 +1578,12 @@
             "@type": "Manufacture",
             "agent": [{
               "@type": "Agent",
-              "label": [
-                ""
-              ]
+              "label": ""
             }],
-            "date": [
-              ""
-            ],
+            "date": "",
             "place": [{
               "@type": "Place",
-              "label": [
-                ""
-              ]
+              "label": ""
             }]
           }],
           "copyright": [{
@@ -1890,16 +1872,16 @@
               "place": [
                 {
                   "@type": "Place",
-                  "label": [""]
+                  "label": ""
                 }
               ],
               "agent": [
                 {
                   "@type": "Agent",
-                  "label": [""]
+                  "label": ""
                 }
               ],
-              "date": [""]
+              "date": ""
             }
           ],
           "marc:primaryProvisionActivity": {
@@ -2111,7 +2093,7 @@
             {
               "@type": "PrimaryPublication",
               "year": "",
-              "date": [""],
+              "date": "",
               "country": [],
               "place": {
                 "@type": "Place",
@@ -2126,9 +2108,7 @@
           "copyright": [
             {
               "@type": "Copyright",
-              "date": [
-                ""
-              ]
+              "date": ""
             }
           ],
           "extent": [
