@@ -307,8 +307,7 @@ export default {
     getItems(keyword) {
       // TODO: Support asking for more items
       const typeArray = this.typeArray;
-      const searchKey = keyword !== '*' ? `${keyword}*` : keyword;
-      let searchUrl = `${this.settings.apiPath}/find.json?q=${searchKey}`;
+      let searchUrl = `${this.settings.apiPath}/find.json?q=${keyword}`;
       if (typeof typeArray !== 'undefined' && typeArray.length > 0) {
         for (const type of typeArray) {
           searchUrl += `&@type=${type}`;
