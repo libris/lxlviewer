@@ -67,7 +67,7 @@
             {
               "@type": "PrimaryPublication",
               "year": "",
-              "date": [""],
+              "date": "",
               "country": [ {"@id": "https://id.kb.se/country/sw"} ],
               "place": {
                 "@type": "Place",
@@ -82,9 +82,7 @@
           "copyright": [
             {
               "@type": "Copyright",
-              "date": [
-                ""
-              ]
+              "date": ""
             }
           ],
           "extent": [
@@ -258,7 +256,7 @@
             {
               "@type": "PrimaryPublication",
               "year": "",
-              "date": [""],
+              "date": "",
               "country": [ {"@id": "https://id.kb.se/country/sw"} ],
               "place": {
                 "@type": "Place",
@@ -444,7 +442,7 @@
             {
               "@type": "PrimaryPublication",
               "year": "",
-              "date": [""],
+              "date": "",
               "country": [ {"@id": "https://id.kb.se/country/sw"} ],
               "place": {
                 "@type": "Place",
@@ -459,9 +457,7 @@
           "copyright": [
             {
               "@type": "Copyright",
-              "date": [
-                ""
-              ]
+              "date": ""
             }
           ],
           "extent": [
@@ -644,7 +640,7 @@
             {
               "@type": "PrimaryPublication",
               "year": "",
-              "date": [""],
+              "date": "",
               "country": [ {"@id": "https://id.kb.se/country/sw"} ],
               "place": {
                 "@type": "Place",
@@ -659,9 +655,7 @@
           "copyright": [
             {
               "@type": "Copyright",
-              "date": [
-                ""
-              ]
+              "date": ""
             }
           ],
           "extent": [
@@ -844,7 +838,7 @@
             {
               "@type": "PrimaryPublication",
               "year": "",
-              "date": [""],
+              "date": "",
               "country": [ {"@id": "https://id.kb.se/country/sw"} ],
               "place": {
                 "@type": "Place",
@@ -1239,7 +1233,7 @@
             {
               "@type": "PrimaryPublication",
               "year": "",
-              "date": [""],
+              "date": "",
               "country": [ {"@id": "https://id.kb.se/country/sw"} ],
               "place": {
                 "@type": "Place",
@@ -1255,18 +1249,12 @@
             "@type": "Manufacture",
             "agent": [{
               "@type": "Agent",
-              "label": [
-                ""
-              ]
+              "label": ""
             }],
-            "date": [
-              ""
-            ],
+            "date": "",
             "place": [{
               "@type": "Place",
-              "label": [
-                ""
-              ]
+              "label": ""
             }]
           }],
           "copyright": [{
@@ -1429,7 +1417,7 @@
           "publication": [
             {
               "@type": "PrimaryPublication",
-              "date": [""],
+              "date": "",
               "startYear": "",
               "endYear": "",
               "country": [ {"@id": "https://id.kb.se/country/sw"} ],
@@ -1574,7 +1562,7 @@
             {
               "@type": "PrimaryPublication",
               "year": "",
-              "date": [""],
+              "date": "",
               "country": [ {"@id": "https://id.kb.se/country/sw"} ],
               "place": {
                 "@type": "Place",
@@ -1590,18 +1578,12 @@
             "@type": "Manufacture",
             "agent": [{
               "@type": "Agent",
-              "label": [
-                ""
-              ]
+              "label": ""
             }],
-            "date": [
-              ""
-            ],
+            "date": "",
             "place": [{
               "@type": "Place",
-              "label": [
-                ""
-              ]
+              "label": ""
             }]
           }],
           "copyright": [{
@@ -1839,7 +1821,7 @@
     },
     "printedStillImage": {
       "label": "Stillbild",
-      "description": "RDA",
+      "description": "Tryckt stillbild - RDA",
       "value": {
         "record": {
           "@id": "https://id.kb.se/TEMPID",
@@ -1884,7 +1866,24 @@
             }
           ],
           "responsibilityStatement": "",
-          "publication": [],
+          "publication": [
+            {
+              "@type": "Publication",
+              "place": [
+                {
+                  "@type": "Place",
+                  "label": ""
+                }
+              ],
+              "agent": [
+                {
+                  "@type": "Agent",
+                  "label": ""
+                }
+              ],
+              "date": ""
+            }
+          ],
           "marc:primaryProvisionActivity": {
             "@type": "PrimaryPublication",
             "country": null,
@@ -2094,7 +2093,7 @@
             {
               "@type": "PrimaryPublication",
               "year": "",
-              "date": [""],
+              "date": "",
               "country": [],
               "place": {
                 "@type": "Place",
@@ -2109,9 +2108,7 @@
           "copyright": [
             {
               "@type": "Copyright",
-              "date": [
-                ""
-              ]
+              "date": ""
             }
           ],
           "extent": [
@@ -2243,12 +2240,8 @@
             "code": "swe"
           }],
           "encodingLevel": "marc:CompleteAuthorityRecord",
-          "marc:headingMain": true,
           "cataloguersNote": [""],
           "sourceConsulted": [],
-          "marc:recordUpdate": {
-            "@id": "https://id.kb.se/marc/RecordCanBeUsed"
-          },
           "marc:level": {
             "@id": "https://id.kb.se/marc/FullyEstablishedHeading"
           }
@@ -2305,9 +2298,7 @@
           "mainEntity": {
             "@id": "https://id.kb.se/TEMPID#it"
           },
-          "descriptionConventions": [{
-              "code": "z"
-            },
+          "descriptionConventions": [
             {
               "@type": "DescriptionConventions",
               "code": "rda"
@@ -2320,10 +2311,6 @@
           "encodingLevel": "marc:CompleteAuthorityRecord",
           "cataloguersNote": [""],
           "sourceConsulted": [],
-          "marc:headingMain": true,
-          "marc:recordUpdate": {
-            "@id": "https://id.kb.se/marc/RecordCanBeUsed"
-          },
           "marc:level": {
             "@id": "https://id.kb.se/marc/FullyEstablishedHeading"
           }
@@ -2381,21 +2368,14 @@
             "@id": "https://id.kb.se/TEMPID#it"
           },
           "encodingLevel": "marc:CompleteAuthorityRecord",
-          "marc:kindOfRecord": {
-            "@id": "https://id.kb.se/marc/EstablishedHeadingRecord"
-          },
           "descriptionConventions": [
             {
               "@type": "DescriptionConventions",
               "code": "rda"
             }
           ],
-          "marc:headingMain": true,
           "cataloguersNote": [""],
           "sourceConsulted": [],
-          "marc:recordUpdate": {
-            "@id": "https://id.kb.se/marc/RecordCanBeUsed"
-          },
           "marc:personalName": {
             "@id": "https://id.kb.se/marc/DifferentiatedPersonalName"
           },
@@ -2452,12 +2432,6 @@
             "@id": "https://id.kb.se/language/swe"
           }],
           "encodingLevel": "marc:CompleteAuthorityRecord",
-          "marc:kindOfRecord": {
-            "@id": "https://id.kb.se/marc/EstablishedHeadingRecord"
-          },
-          "marc:recordUpdate": {
-            "@id": "https://id.kb.se/marc/RecordCanBeUsed"
-          },
           "marc:subjectHeading": {
             "@id": "https://id.kb.se/marc/Other"
           }
@@ -2504,12 +2478,6 @@
             "code": "swe"
           }],
           "encodingLevel": "marc:CompleteAuthorityRecord",
-          "marc:kindOfRecord": {
-            "@id": "https://id.kb.se/marc/EstablishedHeadingRecord"
-          },
-          "marc:recordUpdate": {
-            "@id": "https://id.kb.se/marc/RecordCanBeUsed"
-          },
           "marc:subjectHeading": {
             "@id": "https://id.kb.se/marc/Other"
           }
@@ -2539,20 +2507,11 @@
             "@id": "https://id.kb.se/TEMPID#it"
           },
           "encodingLevel": "marc:CompleteAuthorityRecord",
-          "marc:romanization": {
-            "@id": "https://id.kb.se/marc/NationalStandard"
-          },
-          "marc:kindOfRecord": {
-            "@id": "https://id.kb.se/marc/EstablishedHeadingRecord"
-          },
           "descriptionConventions": {
             "@id": "https://id.kb.se/marc/CatalogingRulesType-c"
           },
           "marc:subjectHeading": {
             "@id": "https://id.kb.se/marc/Other"
-          },
-          "marc:recordUpdate": {
-            "@id": "https://id.kb.se/marc/RecordCanBeUsed"
           },
           "marc:level": {
             "@id": "https://id.kb.se/marc/FullyEstablishedHeading"
@@ -2629,12 +2588,6 @@
           "encodingLevel": "marc:CompleteAuthorityRecord",
           "marc:subjectSubdivision": {
             "@id": "https://id.kb.se/marc/Topical"
-          },
-          "marc:kindOfRecord": {
-            "@id": "https://id.kb.se/marc/EstablishedHeadingRecord"
-          },
-          "marc:recordUpdate": {
-            "@id": "https://id.kb.se/marc/RecordCanBeUsed"
           },
           "marc:subjectHeading": {
             "@id": "https://id.kb.se/marc/Other"

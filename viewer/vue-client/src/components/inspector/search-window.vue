@@ -307,8 +307,17 @@ export default {
     getItems(keyword) {
       // TODO: Support asking for more items
       const typeArray = this.typeArray;
-      const searchKey = keyword !== '*' ? `${keyword}*` : keyword;
-      let searchUrl = `${this.settings.apiPath}/find.json?q=${searchKey}`;
+      let q = '';
+      if (keyword === '') {
+        q = '*';
+      } else if (keyword.match(/[|~*+\-"]/)) {
+        // User is using operators, accept their keyword as-is
+        q = keyword;
+      } else {
+        // Add wildcard if user is not using operators
+        q = `${keyword} | ${keyword}*`;
+      }
+      let searchUrl = `${this.settings.apiPath}/find.json?q=${q}`;
       if (typeof typeArray !== 'undefined' && typeArray.length > 0) {
         for (const type of typeArray) {
           searchUrl += `&@type=${type}`;

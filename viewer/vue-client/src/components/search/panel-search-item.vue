@@ -93,8 +93,8 @@ export default {
     },
   },
   components: {
-    'entity-summary': EntitySummary,
-    'summary-action': SummaryAction,
+    EntitySummary,
+    SummaryAction,
   },
   mounted() { 
   },
@@ -120,7 +120,8 @@ export default {
         :exclude-components="settings.excludeComponents"
         :exclude-properties="settings.excludeProperties"
         :shouldOpenTab="true"
-        :valueDisplayLimit=1>
+        :valueDisplayLimit=1
+        :encodingLevel="focusData.meta.encodingLevel">
       </entity-summary>
     </div>
   </li>

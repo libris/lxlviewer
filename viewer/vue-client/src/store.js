@@ -174,23 +174,23 @@ const store = new Vuex.Store({
             order: 1,
           },
         },
+        'meta.encodingLevel': {
+          sv: 'Beskrivningsnivå',
+          en: 'Encoding level',
+          facet: {
+            order: 2,
+          },
+        },
         'publication.year': {
           sv: 'Utgivningsår',
           en: 'Publication year',
           facet: {
-            order: 2,
+            order: 3,
           },
         },
         'instanceOf.language': {
           sv: 'Språk',
           en: 'Language of work',
-          facet: {
-            order: 3,
-          },
-        },
-        'meta.encodingLevel': {
-          sv: 'Beskrivningsnivå',
-          en: 'Encoding level',
           facet: {
             order: 4,
           },

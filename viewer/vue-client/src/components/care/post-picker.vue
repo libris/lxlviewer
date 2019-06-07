@@ -29,7 +29,7 @@ export default {
     },
   },
   components: {
-    'entity-summary': EntitySummary,
+    EntitySummary,
   },
   data() {
     return {
@@ -177,7 +177,9 @@ export default {
                 :focus-data="item" 
                 :should-link="false"
                 :valueDisplayLimit=1
-                :highlightStr="filterPhrase.trim()"></entity-summary>
+                :highlightStr="filterPhrase.trim()"
+                :encodingLevel="item.encodingLevel">
+              </entity-summary>
             </div>
           </div>
         </div>
@@ -186,7 +188,9 @@ export default {
         <entity-summary 
           :focus-data="selected"
           :shouldOpenTab="true"
-          :valueDisplayLimit=1></entity-summary>
+          :valueDisplayLimit=1
+          :encodingLevel="selected.encodingLevel">
+        </entity-summary>
         <span class="PostPicker-closeBtn" 
           role="button" 
           @click="unselectThis"

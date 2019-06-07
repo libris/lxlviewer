@@ -120,16 +120,13 @@ export default {
         'NLI',
         'AGRALIN',
         'ARM',
-        'BNF',
         'IRN', 
-        'KNYGOS',
         'LIBRIS',
         'NORBOK', 
         'NOSP', 
         'NYPL', 
         'NY',
         'WHOLIS', 
-        'YALE',
       ];
 
       const defaultDbs = this.user ? this.user.settings.defaultDatabases : [];

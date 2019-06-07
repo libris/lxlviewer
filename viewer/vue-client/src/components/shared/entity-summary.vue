@@ -2,12 +2,16 @@
 import { each, isArray } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import LensMixin from '../mixins/lens-mixin';
+import EncodingLevelIcon from '@/components/shared/encoding-level-icon';
 import * as StringUtil from '@/utils/string';
 import * as RecordUtil from '@/utils/record';
 
 export default {
   mixins: [LensMixin],
   name: 'entity-summary',
+  components: {
+    EncodingLevelIcon,
+  },
   props: {
     focusData: {
       type: Object,
@@ -69,6 +73,10 @@ export default {
       type: [String, Boolean], 
       default: false,
     },
+    encodingLevel: {
+      type: [String, Boolean],
+      default: false,
+    },
   },
   data() {
     return {
@@ -89,13 +97,16 @@ export default {
       'user',
     ]),
     idAsFnurgel() {
-      const id = this.focusData['@id'];
-      const fnurgel = RecordUtil.extractFnurgel(id);
-      if (fnurgel && this.isLibrisResource) {
-        return fnurgel;
+      if (this.focusData.hasOwnProperty('@id')) {
+        const id = this.focusData['@id'];
+        const fnurgel = RecordUtil.extractFnurgel(id);
+        if (fnurgel && this.isLibrisResource) {
+          return fnurgel;
+        }
+        const cleaned = id.replace('https://', '').replace('http://', '');
+        return cleaned;
       }
-      const cleaned = id.replace('https://', '').replace('http://', '');
-      return cleaned;
+      return null;
     },
     hiddenDetailsNumber() {
       return this.totalInfo.length - this.keyDisplayLimit;
@@ -193,6 +204,11 @@ export default {
       ));
       return allThings;
     },
+    isItem() {
+      if (this.getCard['@type'] === 'Item') {
+        return true;
+      } return false;
+    },
   },
   mounted() {
     this.$nextTick(() => {
@@ -233,11 +249,15 @@ export default {
 <template>
 <section class="EntitySummary">
   <div class="EntitySummary-meta">
+    <encoding-level-icon
+      v-if="encodingLevel && !isItem"
+      :encodingLevel="encodingLevel"
+      :tooltipText="encodingLevel | labelByLang"/>
     <div :title="categorization.join(', ')" v-if="excludeComponents.indexOf('categorization') < 0" class="EntitySummary-type uppercaseHeading--light">
       {{categorization.join(', ')}} {{ isLocal ? '{lokal entitet}' : '' }}
       <span class="EntitySummary-sourceLabel" v-if="database">{{ database }}</span>
     </div>
-    <div v-if="excludeComponents.indexOf('id') < 0" class="EntitySummary-id uppercaseHeading--light" :class="{'recently-copied': recentlyCopiedId }" @mouseover="idHover = true" @mouseout="idHover = false">
+    <div v-if="idAsFnurgel && excludeComponents.indexOf('id') < 0" class="EntitySummary-id uppercaseHeading--light" :class="{'recently-copied': recentlyCopiedId }" @mouseover="idHover = true" @mouseout="idHover = false">
       <i v-tooltip.top="idTooltipText" class="fa fa-copy EntitySummary-idCopyIcon" :class="{'collapsedIcon': !idHover || recentlyCopiedId }" @click.stop="copyFnurgel">
       </i>{{ idAsFnurgel }}
     </div>
