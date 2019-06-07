@@ -308,6 +308,7 @@ button {
 .btn--sm {
   .btn-mixin(150px, 26px, 13px);
   padding: 3px 10px;
+  box-shadow: none;
 }
 
 @import (css) url(//fonts.googleapis.com/css?family=Open+Sans:600);
@@ -600,16 +601,16 @@ h1 {
   height: 42px;
   min-width: 75%;
   flex-grow: 1;
-  font-size: 20px;
-  font-size: 2rem;
+  font-size: 18px;
+  font-size: 1.8rem;
   line-height: 1.2;
   color: @black;
   border: 1px solid @gray-light;
   border-radius: 4px;
+  box-shadow: inset 0 0.25rem 0.125rem 0 rgba(0,0,0,0.05);
 
   &::placeholder,
   input::placeholder  {
-    font-style: italic;
     color: @gray;
   }
 
