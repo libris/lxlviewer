@@ -54,6 +54,11 @@ export default {
       this.showUserMenu = false;
     },
   },
+  watch: {
+    '$route.path'() {
+      this.hideUserMenu();
+    },
+  },
 };
 </script>
 
