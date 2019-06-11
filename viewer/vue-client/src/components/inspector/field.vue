@@ -178,21 +178,21 @@ export default {
       }
       return this.someValuesFrom.concat(this.range);
     },
-    recordType() {
+    archType() {
       return VocabUtil.getRecordType(
-        this.inspector.data.mainEntity['@type'], 
+        this.entityType, 
         this.resources.vocab, 
         this.resources.context,
       );
     },
-    recordTypeLabel() {
-      if (this.recordType === 'Instance') {
+    entityTypeArchLabel() {
+      if (this.archType === 'Instance') {
         return 'Instance type';
-      } else if (this.recordType === 'Work') {
+      } else if (this.archType === 'Work') {
         return 'Work type';
-      } else if (this.recordType === 'Agent') {
+      } else if (this.archType === 'Agent') {
         return 'Agent type';
-      } else if (this.recordType === 'Concept') {
+      } else if (this.archType === 'Concept') {
         return 'Concept type';
       }
       return 'Type';
@@ -586,11 +586,6 @@ export default {
           </entity-adder>
           <div v-else class="Field-action placeholder"></div> 
 
-          <div v-if="warningOnField" class="Field-action placeholder"></div> 
-          <div class="Field-warning" v-if="warningOnField">
-            <i class="fa fa-warning fa-fw icon icon--sm"></i>
-            <span class="Field-commentText">{{ warningOnField | translatePhrase }}</span>
-          </div>
           <div class="Field-comment" v-if="propertyComment && !locked" >
             <i class="fa fa-question-circle fa-fw icon icon--sm"></i>
             <span class="Field-commentText">{{ propertyComment }}</span>
@@ -617,7 +612,7 @@ export default {
         </div>
         <div class="Field-label uppercaseHeading" v-bind:class="{ 'is-locked': locked }">
           <span v-show="fieldKey === '@id'">{{ 'ID' | translatePhrase | capitalize }}</span>
-          <span v-show="fieldKey === '@type'">{{ recordTypeLabel | translatePhrase | capitalize }}</span>
+          <span v-show="fieldKey === '@type'">{{ entityTypeArchLabel | translatePhrase | capitalize }}</span>
           <span v-show="fieldKey !== '@id' && fieldKey !== '@type'" 
             :title="fieldKey">{{ fieldKey | labelByLang | capitalize }}</span>    
         </div>
@@ -626,7 +621,7 @@ export default {
     </div>
     <div class="Field-label uppercaseHeading" v-if="isInner" v-bind:class="{ 'is-locked': locked }">
       <span v-show="fieldKey === '@id'">{{ 'ID' | translatePhrase | capitalize }}</span>
-      <span v-show="fieldKey === '@type'">{{ recordTypeLabel | translatePhrase | capitalize }}</span>
+      <span v-show="fieldKey === '@type'">{{ entityTypeArchLabel | translatePhrase | capitalize }}</span>
       <span v-show="fieldKey !== '@id' && fieldKey !== '@type'" 
         :title="fieldKey">{{ fieldKey | labelByLang | capitalize }}</span>
 

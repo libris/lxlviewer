@@ -31,9 +31,18 @@ export default {
     formType() {
       return this.formObj['@type'];
     },
+    showTypeChanger() {
+      if (typeof this.item !== 'undefined' && this.item['@id'] === this.inspector.data.work['@id']) {
+        return true;
+      }
+      if (this.isMainEntityForm === false || this.isHolding) {
+        return false;
+      }
+      return true;
+    },
     filteredItem() {
       const fItem = cloneDeep(this.sortedFormData);
-      if (this.isMainEntityForm === false || this.isHolding) {
+      if (this.showTypeChanger === false) {
         delete fItem['@type'];
       }
       delete fItem['@id'];

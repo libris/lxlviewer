@@ -154,7 +154,7 @@ export default {
       let bEmpty = true;
       // Check if item has any keys besides @type and _uid. If not, we'll consider it empty.
       each(this.item, (value, key) => {
-        if (key !== '@type' && key !== '_uid') {
+        if (key !== '_uid') {
           if (key !== '@id') {
             if (typeof value !== 'undefined') {
               bEmpty = false;

@@ -2,6 +2,7 @@
 import { each } from 'lodash-es';
 import * as VocabUtil from '@/utils/vocab';
 import * as MathUtil from '@/utils/math';
+import * as HttpUtil from '@/utils/http';
 import * as StringUtil from '@/utils/string';
 import CreateItemButton from '@/components/inspector/create-item-button';
 import RelationsList from '@/components/inspector/relations-list';
@@ -42,10 +43,10 @@ export default {
       this.relationsListOpen = false;
       this.$parent.$el.classList.remove('is-highlighted');
     },
-    getRelatedPosts(queryPairs) {
+    getRelatedPosts(queryPairs, apiPath) {
       // Returns a list of posts that links to <id> with <property>
       return new Promise((resolve, reject) => {
-        let relatedPosts = `${this.settings.apiPath}/find.json?`;
+        let relatedPosts = `${apiPath}/find.json?`;
         each(queryPairs, (v, k) => {
           relatedPosts += (`${encodeURIComponent(k)}=${encodeURIComponent(v)}&`);
         });
@@ -102,7 +103,8 @@ export default {
           // Sort panel query by alphabetical order of sigel id
           this.panelQuery._sort = 'heldBy.@id';
         }
-        this.getRelatedPosts(query).then((response) => {
+        HttpUtil.getRelatedPosts(query, this.settings.apiPath)
+          .then((response) => {
           this.relationInfo = response.items;
           this.numberOfRelations = response.totalItems;
           this.checkingRelations = false;
