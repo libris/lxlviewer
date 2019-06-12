@@ -10,7 +10,7 @@ export default {
     isMainEntityForm: {
       type: Boolean,
       default: false,
-    }
+    },
   },
   data() {
     return {
