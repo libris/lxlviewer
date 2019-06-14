@@ -82,6 +82,10 @@ export default {
 }
 // BOOTSTRAP UNSET END
 
+.row {
+  height: 100%;
+}
+
 body {
   line-height: 1.6;
   font-size: 16px;
@@ -335,8 +339,9 @@ html {
 }
 
 main {
-  margin-top: 30px;
-  margin-bottom: 100px;
+  // margin-top: 30px;
+  // margin-bottom: 100px;
+  min-height: 100%;
 }
 
 #oldbrowsermsg {

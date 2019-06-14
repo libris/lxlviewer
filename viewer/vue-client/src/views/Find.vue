@@ -175,22 +175,21 @@ export default {
 
 <template>
   <div class="row">
-    <div class="Find col-sm-12" :class="{'col-md-12': !status.panelOpen, 'col-md-7': status.panelOpen }" ref="Find">
+    <div class="col-sm-12 col-md-3 Column-facets" v-if="!status.panelOpen">
+      <facet-controls :result="result" v-if="result.stats && result.totalItems > 0 && $route.params.perimeter === 'libris'"></facet-controls>
+    </div>
+    <div class="Find col-sm-12 Column-searchForm" :class="{'col-md-9': !status.panelOpen, 'col-md-7': status.panelOpen }" ref="Find">
       <search-form :search-perimeter="$route.params.perimeter" />
     </div>
-    <div v-show="searchInProgress" class="col-sm-12">
+    <div v-show="searchInProgress" class="col-sm-12 col-md-9">
         <div class="Find-progressText">
           <vue-simple-spinner size="large" :message="'Searching' | translatePhrase"></vue-simple-spinner>
         </div>
     </div>
-    <div class="col-sm-12 col-md-3" v-if="!status.panelOpen && result.totalItems > 0 && $route.params.perimeter === 'libris'">
-      <facet-controls :result="result" v-if="result.stats"></facet-controls>
-    </div>
     <div 
-      class="col-sm-12 Find-content" 
+      class="col-sm-12 Find-content Column-searchResult" 
       :class="{
-        'col-md-9': $route.params.perimeter === 'libris',
-        'col-md-12': $route.params.perimeter === 'remote' && !status.panelOpen,
+        'col-md-9': !status.panelOpen,
         'col-md-7': status.panelOpen
         }">
       <search-result
@@ -209,6 +208,22 @@ export default {
 .Find {
   &-progressText {
     margin-top: 20px;
+    height: 25vh;
+    display: flex;
+    flex-direction: column;
+  }
+}
+.Column {
+  &-facets {
+    border: solid @grey-lighter;
+    border-width: 0px 1px 0px 0px;
+    height: 100%;
+    min-height: 50vh;
+  }
+  &-searchForm {
+
+  }
+  &-searchResult {
   }
 }
 
