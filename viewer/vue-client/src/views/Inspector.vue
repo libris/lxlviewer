@@ -734,6 +734,9 @@ export default {
 
 .Inspector {
 
+  &-entity {
+    padding: 3rem 0;
+  }
   &-spinner {
     margin-top: 2em;
   }
@@ -749,7 +752,7 @@ export default {
 
   &-breadcrumb {
     border-bottom:  1px solid @gray-lighter;
-    padding: 10px 0;
+    padding-bottom: 10px;
   }
 
   &-header {
