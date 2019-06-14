@@ -176,7 +176,9 @@ export default {
 <template>
   <div class="row">
     <div class="col-sm-12 col-md-3 Column-facets" v-if="!status.panelOpen">
+      <span class="uppercaseHeading">{{ $route.params.perimeter === 'libris' ? 'Filter' : 'Databaser' }}</span>
       <facet-controls :result="result" v-if="result.stats && result.totalItems > 0 && $route.params.perimeter === 'libris'"></facet-controls>
+      <portal-target name="facetColumn" />
     </div>
     <div class="Find col-sm-12 Column-searchForm" :class="{'col-md-9': !status.panelOpen, 'col-md-7': status.panelOpen }" ref="Find">
       <search-form :search-perimeter="$route.params.perimeter" />
@@ -215,6 +217,7 @@ export default {
 }
 .Column {
   &-facets {
+    padding-top: 2rem;
     border: solid @grey-lighter;
     border-width: 0px 1px 0px 0px;
     height: 100%;
