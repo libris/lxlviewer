@@ -105,6 +105,18 @@ def show_help():
 def get_release_feed():
     return requests.get('https://github.com/libris/lxlviewer/releases.atom').content
 
+# Setup proxy for analytics "active users"
+@app.route('/activeusers', methods=['GET'])
+def get_active_users():
+    return requests.get('https://analytics.kb.se/index.php?module=API&method=Live.getCounters&idSite=65&lastMinutes={lastMinutes}&format=json&token_auth={token}'.format(lastMinutes=5, token=app.config.get('MATOMO_READ_TOKEN'))).content
+
+# Setup blog feed
+@app.route('/blogfeed', methods=['GET'])
+def get_blog_feed():
+    return requests.get('https://www.kb.se/rest-api/RSS%20Genererare/rss?keywords=Libris').content
+
+
+
 ##
 # Setup basic views
 
