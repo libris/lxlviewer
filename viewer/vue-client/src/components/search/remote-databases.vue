@@ -261,7 +261,7 @@ export default {
             <i 
               v-show="!db.disabled" 
               class="fa icon icon--sm" 
-              :class="{ 'fa-square-o': !db.active, 'fa-check-square-o': db.active }"
+              :class="{ 'fa-square-o': !db.active, 'fa-check-square-o': db.active, 'is-active': db.active }"
               :title="db.active ? 'Remove' : 'Add' | translatePhrase"
               tabindex="0"
               role="button"
@@ -363,6 +363,7 @@ export default {
     overflow: hidden;
     font-weight: 600;
     width: 90%;
+    font-size: 1.4rem;
   }
 
   &-dbExtraInfo {
@@ -397,6 +398,9 @@ export default {
   &-addControl {
     width: 2rem;
     display: inline-block;
+    i.is-active {
+      color: @brand-primary;
+    }
   }
 
   &-dbLabel {
