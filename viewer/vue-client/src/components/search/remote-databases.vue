@@ -220,7 +220,7 @@ export default {
           :title="'Remove' | translatePhrase">
         </i>
       </div>
-      <div class="RemoteDatabases-clear"
+      <div class="ResultControls-filterBadge--inverted"
         v-if="activeDatabases.length > 1"
         @click="clearDatabases()"
         @keyup.enter="clearDatabases()"
@@ -229,13 +229,8 @@ export default {
         :aria-label="'Clear all' | translatePhrase"
         @mouseover="clearTooltip = true" 
         @mouseout="clearTooltip = false">
-        <tooltip-component 
-          class="RemoteDatabases-tooltip"
-          :show-tooltip="clearTooltip" 
-          tooltip-text="Clear all"
-          position="top">
-        </tooltip-component>
-        <i class="fa fa-times-circle icon icon--lg"></i>
+        {{ 'Clear all' | translatePhrase }}
+        <i class="fa fa-times-circle icon"></i>
       </div>
     </div>
     <portal to="facetColumn">
@@ -328,6 +323,8 @@ export default {
   &-add,
   &-clear {
     margin-left: 10px;
+    background-color: transparent;
+    color: #364a4c;
   }
 
   &-tooltip {
