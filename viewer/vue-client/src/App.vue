@@ -523,6 +523,10 @@ h1 {
       &:extend(.uppercaseHeading);
       font-weight: 700;
     }
+    &--large {
+      &:extend(.uppercaseHeading);
+      font-size: 1.8rem;
+    }
 }
 
 // -------- FORM -------------
