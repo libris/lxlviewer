@@ -433,7 +433,6 @@ body {
 .icon {
     color: @gray;
     color: @gray-transparent;
-    cursor: pointer;
     transition: color .2s ease, background-color .2s ease;
 
     &:hover {

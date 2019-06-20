@@ -276,11 +276,11 @@ export default {
                 ({{'unavailable' | translatePhrase}})
               </span>
               <div class="RemoteDatabases-dbExtraInfo" v-show="db.about">
-                <i class="fa fa-question-circle fa-fw icon--sm"></i>
+                <i class="fa fa-question-circle fa-fw icon"></i>
                 <span class="RemoteDatabases-dbExtrainfoText">{{ db.about }}</span>
               </div>
               <div class="RemoteDatabases-dbExtraInfo" v-show="db.comment">
-                <i class="fa fa-info-circle fa-fw icon icon icon--sm"></i>
+                <i class="fa fa-info-circle fa-fw icon"></i>
                 <span class="RemoteDatabases-dbExtrainfoText">{{ db.comment }}</span>
               </div>
             </div>
@@ -352,6 +352,7 @@ export default {
 
   &-listItem {
     display: flex;
+    margin-bottom: 1rem;
     &.is-disabled {
       color: @gray-dark-transparent;
       cursor: initial;
@@ -364,6 +365,7 @@ export default {
     font-weight: 600;
     width: 90%;
     font-size: 1.4rem;
+    line-height: 1.6rem;
   }
 
   &-dbExtraInfo {
@@ -397,6 +399,7 @@ export default {
 
   &-addControl {
     width: 2rem;
+    line-height: 1.6rem;
     display: inline-block;
     i.is-active {
       color: @brand-primary;
