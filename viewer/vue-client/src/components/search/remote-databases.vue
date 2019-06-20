@@ -291,11 +291,11 @@ export default {
           </div>
         </li>
       </ul>
-      <div v-show="numOfFilteredDatabases === 0" class="RemoteDatabases-searchStatus">
+      <div v-show="numOfFilteredDatabases === 0 && remoteDatabases.state !== 'loading'" class="RemoteDatabases-searchStatus">
         <span>{{'No results' | translatePhrase}}</span>
       </div>
       <div v-show="remoteDatabases.state == 'loading'" class="RemoteDatabases-searchStatus">
-        <vue-simple-spinner size="large" :message="'Loading external databases' | translatePhrase"></vue-simple-spinner>
+        <vue-simple-spinner size="medium" :message="'Loading external databases' | translatePhrase"></vue-simple-spinner>
       </div>
       <div class="RemoteDatabases-searchStatus" v-show="remoteDatabases.state == 'error'">
         <p class="RemoteDatabases-statusText">

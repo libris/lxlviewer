@@ -15,7 +15,7 @@ export default {
     return {
       initialized: false,
       // combokeys: null,
-      result: {},
+      result: null,
       importData: [],
       searchInProgress: false,
       query: '',
@@ -44,7 +44,7 @@ export default {
       }
     },
     emptyResults() {
-      this.result = {};
+      this.result = null;
       this.importData = [];
     },
     getLocalResult() {
@@ -176,8 +176,9 @@ export default {
 <template>
   <div class="row">
     <div class="col-sm-12 col-md-3 Column-facets" v-if="!status.panelOpen">
-      <span class="uppercaseHeading--large">{{ $route.params.perimeter === 'libris' ? 'Filter' : 'Databaser' }}</span>
-      <facet-controls :result="result" v-if="result.stats && result.totalItems > 0 && $route.params.perimeter === 'libris'"></facet-controls>
+      <div class="Find-facetHeading uppercaseHeading--large">{{ $route.params.perimeter === 'libris' ? 'Filter' : 'Databaser' }}</div>
+      <facet-controls :result="result" v-if="result && result.stats && result.totalItems > 0 && $route.params.perimeter === 'libris'"></facet-controls>
+      <span v-if="result === null && $route.params.perimeter === 'libris' && searchInProgress === false">{{ 'No results' | translatePhrase }}</span>
       <portal-target name="facetColumn" />
     </div>
     <div class="Find col-sm-12 Column-searchForm" :class="{'col-md-9': !status.panelOpen, 'col-md-7': status.panelOpen }" ref="Find">
@@ -199,7 +200,7 @@ export default {
         :import-data="importData" 
         :result="result" 
         :query="query"
-        v-if="result.totalItems > -1">
+        v-if="result !== null && result.totalItems > -1">
       </search-result>
     </div>
   </div>
@@ -208,6 +209,9 @@ export default {
 <style lang="less">
 
 .Find {
+  &-facetHeading {
+    margin-bottom: 2.2rem;
+  }
   &-progressText {
     margin-top: 20px;
     height: 25vh;

@@ -5,7 +5,7 @@ import ResultControls from './result-controls';
 export default {
   name: 'search-result',
   props: {
-    result: {},
+    result: null,
     query: {
       type: String,
       default: '',
