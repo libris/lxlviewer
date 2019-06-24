@@ -15,7 +15,7 @@ export default {
     return {
       initialized: false,
       // combokeys: null,
-      result: {},
+      result: null,
       importData: [],
       searchInProgress: false,
       query: '',
@@ -44,7 +44,7 @@ export default {
       }
     },
     emptyResults() {
-      this.result = {};
+      this.result = null;
       this.importData = [];
     },
     getLocalResult() {
@@ -175,22 +175,24 @@ export default {
 
 <template>
   <div class="row">
-    <div class="Find col-sm-12" :class="{'col-md-12': !status.panelOpen, 'col-md-7': status.panelOpen }" ref="Find">
+    <div class="col-sm-12 col-md-3 Column-facets" v-if="!status.panelOpen">
+      <div class="Find-facetHeading uppercaseHeading--large">{{ $route.params.perimeter === 'libris' ? 'Filter' : 'Databaser' }}</div>
+      <facet-controls :result="result" v-if="result && result.stats && result.totalItems > 0 && $route.params.perimeter === 'libris'"></facet-controls>
+      <span v-if="result === null && $route.params.perimeter === 'libris' && searchInProgress === false">{{ 'No results' | translatePhrase }}</span>
+      <portal-target name="facetColumn" />
+    </div>
+    <div class="Find col-sm-12 Column-searchForm" :class="{'col-md-9': !status.panelOpen, 'col-md-7': status.panelOpen }" ref="Find">
       <search-form :search-perimeter="$route.params.perimeter" />
     </div>
-    <div v-show="searchInProgress" class="col-sm-12">
+    <div v-show="searchInProgress" class="col-sm-12 col-md-9">
         <div class="Find-progressText">
           <vue-simple-spinner size="large" :message="'Searching' | translatePhrase"></vue-simple-spinner>
         </div>
     </div>
-    <div class="col-sm-12 col-md-3" v-if="!status.panelOpen && result.totalItems > 0 && $route.params.perimeter === 'libris'">
-      <facet-controls :result="result" v-if="result.stats"></facet-controls>
-    </div>
     <div 
-      class="col-sm-12 Find-content" 
+      class="col-sm-12 Find-content Column-searchResult" 
       :class="{
-        'col-md-9': $route.params.perimeter === 'libris',
-        'col-md-12': $route.params.perimeter === 'remote' && !status.panelOpen,
+        'col-md-9': !status.panelOpen,
         'col-md-7': status.panelOpen
         }">
       <search-result
@@ -198,7 +200,7 @@ export default {
         :import-data="importData" 
         :result="result" 
         :query="query"
-        v-if="result.totalItems > -1">
+        v-if="result !== null && result.totalItems > -1">
       </search-result>
     </div>
   </div>
@@ -207,8 +209,29 @@ export default {
 <style lang="less">
 
 .Find {
+  &-facetHeading {
+    margin-bottom: 2.2rem;
+  }
   &-progressText {
     margin-top: 20px;
+    height: 25vh;
+    display: flex;
+    flex-direction: column;
+  }
+}
+.Column {
+  &-facets {
+    padding-top: 2rem;
+    border: solid @grey-lighter;
+    border-width: 0px 1px 0px 0px;
+    height: 100%;
+    min-height: 50vh;
+    padding-bottom: 5rem;
+  }
+  &-searchForm {
+
+  }
+  &-searchResult {
   }
 }
 

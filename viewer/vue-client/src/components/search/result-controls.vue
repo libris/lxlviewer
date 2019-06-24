@@ -332,6 +332,17 @@ export default {
     margin: 5px 5px 0 0;
     border-radius: 4px;
     white-space: nowrap;
+    &--inverted {
+      background-color: transparent;
+      border: 1px solid #364a4c;
+      color: #364a4c;
+      font-weight: 600;
+      font-size: 1.4rem;
+      padding: 2px 5px 2px 10px;
+      margin: 5px 5px 0 0;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
 
     & i,
     & i:hover {

@@ -734,6 +734,9 @@ export default {
 
 .Inspector {
 
+  &-entity {
+    padding: 3rem 0;
+  }
   &-spinner {
     margin-top: 2em;
   }

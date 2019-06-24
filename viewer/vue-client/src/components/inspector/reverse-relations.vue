@@ -220,20 +220,20 @@ export default {
 </script>
 
 <template>
-  <div class="ReverseRelations">
+  <div class="ReverseRelations-container">
     <div class="ReverseRelations">
       <div class="ReverseRelations-header uppercaseHeading--light">
         <span v-if="recordType === 'Instance' || recordType === 'Item'">{{"Holding" | translatePhrase}}</span>
         <span v-else-if="recordType === 'Agent'">{{ "Contribution" | translatePhrase }}</span>
         <span v-else>{{"Used in" | translatePhrase}}</span>
       </div>
-      <vue-simple-spinner class="ReverseRelations spinner compact"
-        v-if="checkingRelations" 
-        size="medium">
-      </vue-simple-spinner>
-      <div class="ReverseRelations-btnContainer" v-if="!checkingRelations">
+      <div class="ReverseRelations-btnContainer">
+        <vue-simple-spinner class="ReverseRelations spinner compact"
+          v-if="checkingRelations" 
+          size="small">
+        </vue-simple-spinner>
         <create-item-button class="ReverseRelations-button"
-        v-if="recordType === 'Instance' && user.isLoggedIn && user.getPermissions().registrant" 
+        v-if="!checkingRelations && recordType === 'Instance' && user.isLoggedIn && user.getPermissions().registrant" 
         :compact="compact"
         :main-entity="mainEntity"
         :has-holding="hasRelation" 
@@ -241,6 +241,7 @@ export default {
         :holding-id="myHolding"
         @done="checkingRelations=false"></create-item-button>
         <rounded-button
+          v-if="!checkingRelations"
           :button-text="numberOfRelationsCircle"
           :disabled="!numberOfRelations || isNaN(numberOfRelations)"
           :indicator="numberOfRelations > 0"
@@ -268,7 +269,7 @@ export default {
 .ReverseRelations {
   display: flex;
   align-items: center;
-  
+  height: 40px;
   &-number {
     float: left;
     margin: 0 0 10px;
