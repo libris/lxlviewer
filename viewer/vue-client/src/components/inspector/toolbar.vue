@@ -258,13 +258,10 @@ export default {
       this.$store.dispatch('undoInspectorChange');
     },
     edit() {
-      if (!this.inspector.status.editing && this.userIsPermittedToEdit) {
-        this.loadingEdit = true;
-        this.$store.dispatch('setInspectorStatusValue', { 
-          property: 'editing', 
-          value: true, 
-        });
-      }
+      this.$store.dispatch('pushInspectorEvent', { 
+        name: 'post-control', 
+        value: 'start-edit', 
+      });
     },
     navigateFormChanges(direction) {
       this.navigateChangeHistory(this.inspector.status.focus, direction);
@@ -385,16 +382,6 @@ export default {
       } else {
         return true;
       }
-      // if (this.user.hasAnyCollections() === false) {
-      //   return false;
-      // }
-      // const permission = this.user.getPermissions();
-      // if (this.inspector.data.mainEntity['@type'] === 'Item' && permission.registrant === true) {
-      //   return true;
-      // } if (permission.cataloger === true) {
-      //   return true;
-      // }
-      // return false;
     },
     showRecord() {
       return this.status.showRecord;
