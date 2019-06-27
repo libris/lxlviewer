@@ -306,7 +306,7 @@ export default {
     },
     loadDocument() {
       this.$store.dispatch('setInspectorStatusValue', { property: 'isNew', value: false });
-      this.$store.dispatch('setInspectorStatusValue', { property: 'editing', value: false });
+      this.stopEditing();
       this.fetchDocument();
     },
     loadNewDocument() {
@@ -318,7 +318,7 @@ export default {
         console.warn('New document called without input data, routing user back.');
       } else {
         this.$store.dispatch('setInspectorData', RecordUtil.splitJson(insertData));
-        this.$store.dispatch('setInspectorStatusValue', { property: 'editing', value: true });
+        this.startEditing();
         this.onPostLoaded();
       }
     },
@@ -335,11 +335,42 @@ export default {
         });
       });
     },
-    doCancel() {
+    checkForAutomaticFixes() {
+      // If this is a holding, add the heldBy property
+      if (this.inspector.data.mainEntity['@type'] === 'Item' && !this.inspector.data.mainEntity.hasOwnProperty('heldBy')) {
+        window.lxlWarning(`🚑 Found holding without heldBy property. Adding heldBy value according to active sigel (${this.user.settings.activeSigel}).`);
+        this.$store.dispatch('setInspectorStatusValue', {
+          property: 'lastAdded', 
+          value: 'mainEntity.heldBy',
+        });
+        this.$store.dispatch('updateInspectorData', {
+          changeList: [{
+            path: 'mainEntity.heldBy',
+            value: {
+            '@id': `https://libris.kb.se/library/${this.user.settings.activeSigel}`,
+            },
+          }],
+          addToHistory: false,
+        });
+      }
+    },
+    startEditing() {
+      this.loadingEdit = true;
+      this.$store.dispatch('setInspectorStatusValue', { 
+        property: 'editing', 
+        value: true, 
+      });
+      this.checkForAutomaticFixes();
+    },
+    stopEditing() {
+      // THIS IS NOT THE SAME AS THE "CANCEL"-EVENT
       this.$store.dispatch('setInspectorStatusValue', { 
         property: 'editing', 
         value: false, 
       });
+    },
+    doCancel() {
+      this.stopEditing();
       // Restore post
       this.$store.dispatch('setInspectorData', this.inspector.originalData);
       this.$store.dispatch('flushChangeHistory');
@@ -483,7 +514,7 @@ export default {
           }, 10);
           this.warnOnSave();
           if (done) {
-            this.$store.dispatch('setInspectorStatusValue', { property: 'editing', value: false });
+            this.stopEditing();
           }
         }
         this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
@@ -555,6 +586,9 @@ export default {
         switch (val.value) {
           case 'cancel':
             this.cancelEditing();
+            break;
+          case 'start-edit':
+            this.startEditing();
             break;
           case 'download-json':
             this.downloadJson();
