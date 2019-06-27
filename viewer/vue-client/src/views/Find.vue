@@ -6,7 +6,6 @@ import ServiceWidgetSettings from '@/resources/json/serviceWidgetSettings.json';
 import Copy from '@/resources/json/copy.json';
 import FacetControls from '@/components/search/facet-controls';
 import SearchResult from '@/components/search/search-result';
-import SearchForm from '@/components/search/search-form';
 import { mapGetters } from 'vuex';
 import VueSimpleSpinner from 'vue-simple-spinner';
 
@@ -166,7 +165,6 @@ export default {
   components: {
     'facet-controls': FacetControls,
     'search-result': SearchResult,
-    'search-form': SearchForm,
     'vue-simple-spinner': VueSimpleSpinner,
   },
 };
@@ -180,9 +178,6 @@ export default {
       <facet-controls :result="result" v-if="result && result.stats && result.totalItems > 0 && $route.params.perimeter === 'libris'"></facet-controls>
       <span v-if="result === null && $route.params.perimeter === 'libris' && searchInProgress === false">{{ 'No results' | translatePhrase }}</span>
       <portal-target name="facetColumn" />
-    </div>
-    <div class="Find col-sm-12 Column-searchForm" :class="{'col-md-9': !status.panelOpen, 'col-md-7': status.panelOpen }" ref="Find">
-      <search-form :search-perimeter="$route.params.perimeter" />
     </div>
     <div v-show="searchInProgress" class="col-sm-12 col-md-9">
         <div class="Find-progressText">

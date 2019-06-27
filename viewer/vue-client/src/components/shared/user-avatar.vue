@@ -42,7 +42,7 @@ export default {
 </script>
 <template>
   <div class="UserAvatar" :style="{ width: `${size}px`, height: `${size}px` }">
-    <img v-if="hasAvatar" class="UserAvatar-gravatar" @error="hasAvatar = false" :src="`https://www.gravatar.com/avatar/${user.emailHash}?d=404&s=${size}`" alt="Avatar" />
+    <img v-if="hasAvatar" :style="{ width: `${size}px`, height: `${size}px` }" class="UserAvatar-gravatar" @error="hasAvatar = false" :src="`https://www.gravatar.com/avatar/${user.emailHash}?d=404&s=${size*2}`" alt="Avatar" />
     <span v-if="!hasAvatar" class="UserAvatar-no-gravatar" :style="{ fontSize: `${fontSize}pt` }">
       {{ initials }}
     </span>

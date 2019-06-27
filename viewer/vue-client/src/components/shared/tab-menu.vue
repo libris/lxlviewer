@@ -5,10 +5,11 @@
   This component can show a tablist and emit an event on tab click.
 
   Props:
-    * Tabs    - Expects an array of tab-objects
-    * Active  - Expects a string that it will match against the id on the tab-object and put as active.
-    * Link    - If true, component expects tab-objects to have a link prop. 
-                It will then render a <router-link> instead of emitting an event.
+    * tabs      - Expects an array of tab-objects
+    * active    - Expects a string that it will match against the id on the tab-object and put as active.
+    * link      - If true, component expects tab-objects to have a link prop. 
+                  It will then render a <router-link> instead of emitting an event.
+    * lookStyle - Expects a string which will be used to "theme" the component.
 
   Tab-Objects:
     A tab object needs two things.
@@ -40,6 +41,10 @@ export default {
       default: () => [],
       type: Array,
     },
+    lookStyle: {
+      type: String,
+      default: 'underline',
+    },
     active: {
       type: String,
       default: '',
@@ -58,6 +63,9 @@ export default {
       this.$emit('go', name);
     },
     moveUnderline() {
+      if (this.lookStyle !== 'underline') {
+        return;
+      }
       this.$nextTick(() => {
         const $activeTab = this.$el.querySelector('.is-active');
         const $tabList = this.$refs.tablist;
@@ -115,7 +123,7 @@ export default {
 </script>
 
 <template>
-  <div class="TabMenu">
+  <div class="TabMenu" :class="`style-${lookStyle}`">
     <ul v-if="!link" class="TabMenu-tabList" role="tablist" ref="tablist">
       <li class="TabMenu-tab"
         v-for="item in tabs" 
@@ -141,13 +149,12 @@ export default {
           <span v-else>{{item.text | translatePhrase}}</span>
         </router-link>
       </li>
-      <hr v-show="hasActive" class="TabMenu-underline" ref="underline">
+      <hr v-show="hasActive" v-if="lookStyle === 'underline'" class="TabMenu-underline" ref="underline">
     </ul>
   </div>
 </template>
 
 <style lang="less">
-@tabPadding: 10px;
 
 .TabMenu {
   display: inline-block;
@@ -155,11 +162,67 @@ export default {
   transition: opacity 0.25s ease;
   position: relative;
 
+  &-tab {
+    cursor: pointer;
+    text-decoration: none;
+    position: relative;
+    display: inline-block;
+    font-weight: 600;
+    font-size: 16px;
+    font-size: 1.6rem;
+    margin: 5px 0px;
+    text-transform: uppercase;
+    transition: color 0.2s ease;
+    border: dashed transparent;
+    border-width: 1px 0px 1px 0px;
+    white-space: nowrap;
+
+    .style-background & {
+      padding: 5px 20px;
+      transition: background-color 0.25s ease;
+      &:hover {
+        background-color: darken(@brand-primary, 15%);
+        text-decoration: none;
+      }
+      &.is-active {
+        background-color: @brand-primary;
+        text-decoration: none;
+      }
+    }
+    .style-underline & {
+      padding: 5px 10px;
+      color: @grey;
+  
+      @media (min-width: 768px) {
+        font-size: 18px;
+        font-size: 1.8rem;
+      }
+  
+      &:hover,
+      &:focus {
+        color: @brand-primary;
+        text-decoration: none;
+      }
+      &.is-active {
+        color: @black;
+        text-decoration: none;
+      }
+    }
+  }
+
+  &.lookStyle-background {
+    
+  }
+  &.lookStyle-underline {
+    
+  }
+
   &-tabList {
     margin: 10px 0 10px -10px;
     padding: 0;
     white-space: nowrap;
   }
+
   &-underline {
     display: inline-block;
     transition: all 0.25s ease .025s;
@@ -174,39 +237,6 @@ export default {
 
   &-linkContainer {
     display: inline-block;
-  }
-
-  &-tab {
-    cursor: pointer;
-    text-decoration: none;
-    position: relative;
-    display: inline-block;
-    padding: 5px @tabPadding;
-    color: @grey;
-    font-weight: 600;
-    font-size: 16px;
-    font-size: 1.6rem;
-    margin: 5px 0px;
-    text-transform: uppercase;
-    transition: color 0.2s ease;
-    border: dashed transparent;
-    border-width: 1px 0px 1px 0px;
-    white-space: nowrap;
-
-    @media (min-width: 768px) {
-      font-size: 18px;
-      font-size: 1.8rem;
-    }
-
-    &:hover,
-    &:focus {
-      color: @brand-primary;
-      text-decoration: none;
-    }
-    &.is-active {
-      color: @black;
-      text-decoration: none;
-    }
   }
 }
 </style>

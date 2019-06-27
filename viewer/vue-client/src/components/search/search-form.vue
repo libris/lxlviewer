@@ -4,6 +4,7 @@ import PropertyMappings from '@/resources/json/propertymappings.json';
 import * as StringUtil from '@/utils/string';
 import RemoteDatabases from '@/components/search/remote-databases';
 import TabMenu from '@/components/shared/tab-menu';
+import SwitchToggle from '@/components/shared/switch-toggle';
 import marked from 'marked';
 import { mapGetters } from 'vuex';
 
@@ -126,7 +127,7 @@ export default {
     helpContainerBoundaryStyles() {
       const $icon = this.$refs.helpIcon;
       const $formGroup = this.$refs.formGroup;
-      const styles = { top: `${$icon.clientHeight + $formGroup.clientHeight + 50}px` };
+      const styles = { top: `${$icon.clientHeight + 12}px` };
       return styles;
     },
     searchHelpTooltip() {
@@ -188,6 +189,7 @@ export default {
   components: {
     'remote-databases': RemoteDatabases,
     'tab-menu': TabMenu,
+    'switch-toggle': SwitchToggle,
   },
   watch: {
     searchPerimeter(newVal, oldVal) {
@@ -215,30 +217,9 @@ export default {
 
 <template>
   <div class="SearchBar">
-    <div class="SearchBar-topControl"> 
-      <tab-menu :link="true" :tabs="[
-        { 'id': 'libris', 'text': 'Libris', link: '/search/libris'},
-        { 'id': 'remote', 'text': 'Other sources', link: '/search/remote' },
-      ]" :active="searchPerimeter"></tab-menu>
-      <div  v-if="searchPerimeter === 'libris'"  class="SearchBar-help">
-        <div class="SearchBar-helpBox dropdown" >
-          <span class="SearchBar-helpIcon icon icon--md">
-            <i v-tooltip="searchHelpTooltip" class="fa fa-fw fa-question-circle" tabindex="0" aria-haspopup="true"
-              ref="helpIcon"
-              @mouseover="helpHover = true"
-              @mouseleave="helpHover = false"
-              @click="toggleHelp"
-              @keyup.enter="toggleHelp"></i>
-          </span>
-          <div class="SearchBar-helpContainer" :style="helpContainerBoundaryStyles" v-if="helpToggled"> 
-            <strong class="SearchBar-helpTitle">Operatorer för frågespråk</strong><i v-if="helpToggled" class="fa fa-times SearchBar-closeHelp" @click="toggleHelp"></i>
-            <div class="SearchBar-helpContent" v-html="searchHelpDocs"></div>
-          </div>
-        </div>
-      </div>
-    </div>
     <form id="searchForm" class="SearchBar-form">
-        <div ref="formGroup" class="SearchBar-formGroup form-group">
+      <div class="SearchBar-formContent">
+        <div ref="formGroup" class="SearchBar-formGroup">
           <label class="SearchBar-inputLabel hidden" id="searchlabel" for="q" aria-hidden="false">
             {{"Search" | translatePhrase}}
           </label>
@@ -256,7 +237,7 @@ export default {
             </select>
           </div>
           <input type="text"
-            class="SearchBar-input customInput form-control"
+            class="SearchBar-input form-control"
             v-model="searchPhrase"
             aria-labelledby="searchlabel"
             :placeholder="inputPlaceholder | translatePhrase"
@@ -273,7 +254,8 @@ export default {
             <i class="fa fa-search"></i>
           </button>
         </div>
-      <div class="SearchBar-typeButtons" 
+      </div>
+      <!-- <div class="SearchBar-typeButtons" 
         v-if="searchPerimeter === 'libris'"
         :aria-label="'Choose type' | translatePhrase">
         <label class="SearchBar-typeLabel" 
@@ -288,13 +270,35 @@ export default {
               {{ filter.label }}
             </span>
         </label>
-      </div>
+      </div> -->
       <remote-databases 
         v-if="searchPerimeter === 'remote'" 
         :remoteSearch="searchPhrase"
         @panelClosed="focusSearchInput"
         ref="dbComponent"></remote-databases>
     </form>
+    <div class="SearchBar-perimeterControl"> 
+      <switch-toggle :link="true" :options="[
+        { 'id': 'libris', 'text': 'Libris', link: '/search/libris'},
+        { 'id': 'remote', 'text': 'Other sources', link: '/search/remote' },
+      ]" :active="searchPerimeter" />
+    </div>
+    <div class="SearchBar-help">
+      <div class="SearchBar-helpBox dropdown" v-if="searchPerimeter === 'libris'">
+        <span class="SearchBar-helpIcon icon icon--md">
+          <i v-tooltip="searchHelpTooltip" class="fa fa-fw fa-question-circle" tabindex="0" aria-haspopup="true"
+            ref="helpIcon"
+            @mouseover="helpHover = true"
+            @mouseleave="helpHover = false"
+            @click="toggleHelp"
+            @keyup.enter="toggleHelp"></i>
+        </span>
+        <div class="SearchBar-helpContainer" :style="helpContainerBoundaryStyles" v-if="helpToggled"> 
+          <strong class="SearchBar-helpTitle">Operatorer för frågespråk</strong><i v-if="helpToggled" class="fa fa-times SearchBar-closeHelp" @click="toggleHelp"></i>
+          <div class="SearchBar-helpContent" v-html="searchHelpDocs"></div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -302,25 +306,23 @@ export default {
 
 .SearchBar {
   margin-top: 0vh;
-  padding: 10px;
   transition: 0.3s ease margin-top;
+  display: flex;
+  align-items: center;
 
-  @media (min-width: @screen-md) {
-    padding: 0 0 20px 0;
+  &-formGroup {
+    position: relative;
+  }
+  &-form {
+    flex-grow: 1;
   }
 
-  &-topControl {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
+  &-perimeterControl {
 
-  &.is-landing-page {
-    margin-top: 10vh;
   }
 
   &-help {
-    margin-left: auto;
+    width: 2em;
   }
 
   &-helpContainer {
@@ -358,6 +360,7 @@ export default {
   &-helpIcon {
     float: right;
     clear: right;
+    display: flex;
 
     & > i {
       vertical-align: bottom;
@@ -415,14 +418,10 @@ export default {
 
   &-clear {
     position: absolute;
-    right: 75px;
+    right: 9rem;
     height: 42px;
     display: flex;
     align-items: center;
-
-    @media (min-width: 768px) {
-      right: 110px;
-    }
   }
 
   &-submit {
@@ -440,12 +439,6 @@ export default {
     padding-right: 10px;
     font-weight: normal;
     position: relative;
-  }
-
-  &-typeInput {
-  }
-
-  &-typeText {
   }
 }
 </style>

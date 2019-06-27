@@ -185,7 +185,7 @@ export default {
   &-container {
     opacity: 0;
     transition: opacity 0.5s ease;
-    z-index: @popover-z;
+    z-index: @sidepanel-z;
     box-shadow: @shadow-card-elevated;
     position: fixed;
     width: 35%;

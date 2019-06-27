@@ -30,6 +30,7 @@ export default {
       const $directoryCareBadge = this.userCare.length === 0 ? '' : `<span class="badge badge-accent">${this.userCare.length}</badge>`;
       const $directoryCare = `${StringUtil.getUiPhraseByLang('Directory care', this.user.settings.language)} ${$directoryCareBadge}`;
       const tabs = [
+        { id: 'Home', text: 'Start', link: '/' },
         { id: 'Search', text: 'Search', link: '/search/libris' },
         { id: 'Create new', text: 'Create new', link: '/create' },
         { id: 'Directory care', html: $directoryCare, link: '/directory-care' }, 
@@ -63,27 +64,18 @@ export default {
 </script>
 
 <template>
-  <nav class="NavBar" role="navigation" aria-labelledby="service-name">
+  <nav class="NavBar" id="NavBar" role="navigation" aria-labelledby="service-name">
     <div class="NavBar-container container">
-      <div class="NavBar-brand">
-        <router-link to="/" class="NavBar-brandLink">
-          <img class="NavBar-brandLogo" src="~kungbib-styles/dist/assets/kb_logo_black.svg" alt="Kungliga Bibliotekets logotyp">
-        </router-link>
-        <router-link to="/" class="NavBar-brandTitle" :title="`Version ${settings.version}`">
-          <span id="service-name">{{ settings.title }}</span>
-          <span class="NavBar-envLabel">
-          {{ environmentLabel }} {{ settings.version }}
-          </span>
-        </router-link>
-      </div>
-      <div class="MainNav" v-if="user.isLoggedIn">
+      <div class="MainNav col-md-6 col-md-push-3">
       <tab-menu
+        v-if="user.isLoggedIn"
         :tabs="tabs"
         :active="$route.name"
         :link="true"
+        lookStyle="background"
         />
       </div>
-      <ul class="MainNav-userWrapper">
+      <ul class="MainNav-userWrapper col-md-3">
         <li class="MainNav-item">
           <router-link to="/help" class="MainNav-link">
             <span class="MainNav-linkText">{{"Help" | translatePhrase}}</span>
@@ -91,12 +83,12 @@ export default {
         </li>
         <li class="MainNav-item" v-if="user.isLoggedIn">
           <span @click="toggleUserMenu">
-            <user-avatar :size="32" />
+            <user-avatar :size="24" />
             <span class="MainNav-linkText userName">
             {{ user.fullName }} <span v-cloak class="sigelLabel">({{ user.settings.activeSigel }})</span>
             </span>
           </span>
-            <user-settings v-if="showUserMenu && !isUserPage" compact v-on-clickaway="hideUserMenu"/>
+          <user-settings v-if="showUserMenu && !isUserPage" compact v-on-clickaway="hideUserMenu"/>
         </li>
         <li class="MainNav-item" v-if="!user.isLoggedIn">
           <a :href="`${settings.apiPath}/login/authorize`" class="MainNav-link">
@@ -112,14 +104,16 @@ export default {
 <style lang="less">
 .NavBar {
   width: 100%;
+  height: 40px;
   background-color: @bg-navbar;
-  box-shadow: @shadow-navbar;
   flex-shrink: 0; // fix ie flexbox height bug
-  height: auto;
+  border: solid @brand-primary;
+  border-width: 0px 0px 3px 0px;
 
   &-container {
     padding: 0 25px;
     display: flex;
+    height: 100%;
     align-items: center;
     
     @media screen and (min-width: @screen-sm){
@@ -130,65 +124,12 @@ export default {
       width: 100% !important;
     }
   }
-
-  &-brand {
-    display: flex;
-    flex: 1;
-    margin: 10px 0 5px;
-  }
-
-  &-brandLogo {
-    display: inline-block;
-    margin: 4px 0 0;
-    vertical-align: middle;
-    width: 80%;
-  }
-
-  &-brandLink {
-    display: inline-block;
-    width: 50px;
-  }
-
-  &-brandTitle {
-    color: @black;
-    cursor: pointer;
-    float: right;
-    font-size: 18px;
-    font-size: 1.8rem;
-    line-height: 20px;
-    padding: 15px 5px;
-    height: 50px;
-
-    &:hover,
-    &:focus,
-    &:active,
-    &:visited {
-      color: @black;
-      text-decoration: none;
-    }
-
-    .container-fluid {
-      padding: 0 30px 0 15px;
-    }
-  }
-
-  &-envLabel {
-    display: block;
-    color: @text-brand-env;
-    font-size: 0.5em;
-    font-weight: bold;
-    float: right;
-    margin: -0.5em 0px 0px 0.5em;
-    text-transform: uppercase;
-  }
 }
 
 .MainNav {
   display: flex;
   flex: 1;
   list-style: none;
-  margin: 10px 0 5px;
-  padding: 10px 0;
 
   @media screen and (max-width: @screen-md){
     min-width: 100%;
@@ -198,10 +139,11 @@ export default {
   }
 
   &-userWrapper {
-    margin: 10px 0 5px;
     display: flex;
     flex-wrap: nowrap;
     align-items: center;
+    justify-content: space-between;
+    margin: 0px;
 
     @media (max-width: @screen-sm) {
       padding: 0;
@@ -211,6 +153,7 @@ export default {
   &-item {
     position: relative;
     text-transform: none;
+<<<<<<< HEAD
     display: inline-block;
     max-height: 60px;
     margin-top: -2px;
@@ -218,6 +161,8 @@ export default {
     font-size: 18px;
     font-size: 1.8rem;
     padding: 15px 10px;
+=======
+>>>>>>> LXL-2597
 
     &:last-of-type a {
       padding-right: 0;
@@ -226,6 +171,7 @@ export default {
     @media screen and (max-width: @screen-sm-min) {
       display: inline;
     }
+<<<<<<< HEAD
 
     @media (max-width: @screen-sm) {
       & .userName {
@@ -241,16 +187,24 @@ export default {
 
   &-link {
     color: @black;
+=======
+  }
+  &-link {
+    color: @white;
+    cursor: pointer;
+    font-size: 1.4rem;
+    font-weight: 600;
+>>>>>>> LXL-2597
     display: block;
 
     &:hover, 
     &:focus {
-      color: inherit;
+      color: @white;
       text-decoration: none;
     }
 
     i {
-      color: @text-alt-navbar;
+      color: @text-alt-sticky-bar;
     }
   }
 
@@ -265,7 +219,6 @@ export default {
   }
 
   & .TabMenu {
-      max-width: 300px;
 
     &-tabList {
       margin-bottom: 0;
@@ -276,11 +229,7 @@ export default {
       margin: 0;
       font-size: 16px;
       font-size: 1.6rem;
-      color: @black;
-    }
-
-    &-underline {
-      top: 29px;
+      color: @white;
     }
   }
 }

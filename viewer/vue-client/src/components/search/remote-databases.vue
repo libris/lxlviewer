@@ -206,9 +206,9 @@ export default {
 
 <template>
   <div class="RemoteDatabases" v-show="remoteDatabases.state == 'complete'">
-    <p v-if="activeDatabases.length === 0" class="RemoteDatabases-activeInfo no-sources">{{'No sources chosen' | translatePhrase}}</p> 
-    <p v-else class="RemoteDatabases-activeInfo">{{'Databases' | translatePhrase}}:</p>
-    <div class="ResultControls-filterWrapper">
+    <!-- <p v-if="activeDatabases.length === 0" class="RemoteDatabases-activeInfo no-sources">{{'No sources chosen' | translatePhrase}}</p>  -->
+    <!-- <p v-else class="RemoteDatabases-activeInfo">{{'Databases' | translatePhrase}}:</p> -->
+    <!-- <div class="ResultControls-filterWrapper">
       <div class="ResultControls-filterBadge" v-for="(db, index) in activeDatabases" :key="index">
         <span>{{db}}</span>
         <i 
@@ -232,7 +232,7 @@ export default {
         {{ 'Clear all' | translatePhrase }}
         <i class="fa fa-times-circle icon"></i>
       </div>
-    </div>
+    </div> -->
     <portal to="facetColumn">
       <div class="RemoteDatabases-listFilter form-group panel">
         <input 

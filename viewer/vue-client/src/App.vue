@@ -2,10 +2,11 @@
   <div id="app" class="App">
     <global-message />
     <navbar-component />
+    <sticky-bar v-if="resourcesLoaded" :class="{ 'stick-to-top': stickToTop }" />
     <div class="debug-mode-indicator" v-if="user.settings.appTech" @click="disableDebugMode">
       {{ 'Debug mode activated. Click here to disable.' | translatePhrase }}
     </div>
-    <main class="MainContent" :class="{ 'container': !status.panelOpen, 'container-fluid': status.panelOpen, 'debug-mode': user.settings.appTech }" role="main">
+    <main class="MainContent" :style="{ 'margin-top': stickToTop ? `${navBarBottomPos+12}px` : '0px' }" :class="{ 'container': !status.panelOpen, 'container-fluid': status.panelOpen, 'debug-mode': user.settings.appTech }" role="main">
         <div v-if="status.loadingIndicators.length > 0" class="text-center MainContent-spinner">
           <vue-simple-spinner size="large" :message="status.loadingIndicators[0] | translatePhrase"></vue-simple-spinner>
         </div>
@@ -27,14 +28,22 @@
 
 <script>
 import Navbar from '@/components/layout/navbar';
+import StickyBar from '@/components/layout/sticky-bar';
 import Footer from '@/components/layout/footer';
 import NotificationList from '@/components/shared/notification-list';
 import GlobalMessage from '@/components/layout/global-msg';
 import VueSimpleSpinner from 'vue-simple-spinner';
+import LayoutUtil from '@/utils/layout';
 import { mapGetters } from 'vuex';
 
 export default {
   name: 'App',
+  data() {
+    return {
+      stickToTop: false,
+      navBarBottomPos: 40,
+    };
+  },
   computed: {
     ...mapGetters([
       'settings',
@@ -52,6 +61,13 @@ export default {
       userObj.settings.appTech = false;
       this.$store.dispatch('setUser', userObj);
     },
+    checkStickyBar(event) {
+      if (event.target.scrollingElement && event.target.scrollingElement.scrollTop > this.navBarBottomPos) {
+        this.stickToTop = true;
+      } else {
+        this.stickToTop = false;
+      }
+    },
   },
   mounted() {
     this.$nextTick(() => {
@@ -60,8 +76,12 @@ export default {
         value: 'default', 
       });
     });
+    window.addEventListener('scroll', (e) => {
+      this.checkStickyBar(e);
+    });
   },
   components: {
+    StickyBar,
     'navbar-component': Navbar,
     'footer-component': Footer,
     'notification-list': NotificationList,
@@ -153,6 +173,9 @@ h4 {
 
 .MainContent {
   flex: 1 0 auto;
+  padding-top: 3rem;
+  &.sticky-is-active {
+  }
 
   &.container-fluid {
     margin-right: 0px;
