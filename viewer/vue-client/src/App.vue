@@ -3,10 +3,10 @@
     <global-message />
     <navbar-component />
     <search-bar v-if="resourcesLoaded" :class="{ 'stick-to-top': stickToTop }" />
-    <div class="debug-mode-indicator" v-if="user.settings.appTech" @click="disableDebugMode">
-      {{ 'Debug mode activated. Click here to disable.' | translatePhrase }}
-    </div>
     <main class="MainContent" :style="{ 'margin-top': stickToTop ? `${searchBarHeight}px` : '0px' }" :class="{ 'container': !status.panelOpen, 'container-fluid': status.panelOpen, 'debug-mode': user.settings.appTech }" role="main">
+      <div class="debug-mode-indicator" v-if="user.settings.appTech" @click="disableDebugMode">
+        {{ 'Debug mode activated. Click here to disable.' | translatePhrase }}
+      </div>
         <div v-if="status.loadingIndicators.length > 0" class="text-center MainContent-spinner">
           <vue-simple-spinner size="large" :message="status.loadingIndicators[0] | translatePhrase"></vue-simple-spinner>
         </div>
@@ -64,14 +64,11 @@ export default {
     },
     checkSearchBar(event) {
       const $SearchBar = document.getElementById('SearchBar');
-      const $GlobalMessage = document.getElementById('GlobalMessage');
       const $NavBar = document.getElementById('NavBar');
       if ($SearchBar) {
         this.searchBarHeight = $SearchBar.getBoundingClientRect().height;
       }
-      if ($GlobalMessage) {
-        this.navBarBottomPos = $GlobalMessage.offsetHeight+$NavBar.offsetHeight;
-      } else {
+      if ($NavBar) {
         this.navBarBottomPos = $NavBar.offsetHeight;
       }
       if (event) {
