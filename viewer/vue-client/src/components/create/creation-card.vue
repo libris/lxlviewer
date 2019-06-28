@@ -110,6 +110,8 @@ export default {
 
   &-select {
     width: 100%;
+    font-size: 14px;
+    font-size: 1.4rem;
   }
 
   &-option {

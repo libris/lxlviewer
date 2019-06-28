@@ -387,7 +387,7 @@ export default {
               </div>
             </div>
             <div class="SearchWindow-search search">
-              <div class="SearchWindow-inputContainer input-container form-group panel">
+              <div class="SearchWindow-inputContainer input-container form-group">
                 <input 
                   class="SearchWindow-input SearchWindow-entity-search-keyword-input customInput form-control"
                   v-model="keyword"
@@ -524,7 +524,7 @@ export default {
 
   &-filterSearchContainer {
     width: 100%;
-    margin-top: 0.25em;
+    margin-top: 0.5em;
     text-align: right;
   }
 
@@ -539,7 +539,7 @@ export default {
 
   &-header {
     width: 100%;
-    margin: 0 0 10px 0;
+    margin: 0 0 0.7em 0;
   }
 
   &-inputContainer {

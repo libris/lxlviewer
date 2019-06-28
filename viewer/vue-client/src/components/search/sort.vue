@@ -94,6 +94,7 @@ export default {
 .Sort {
   display: flex;
   flex-wrap: nowrap;
+  align-items: center;
 
   &-label {
     margin: 0 10px 10px 0;

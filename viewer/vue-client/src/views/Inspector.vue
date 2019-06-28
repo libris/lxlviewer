@@ -375,16 +375,22 @@ export default {
       this.$store.dispatch('setInspectorData', this.inspector.originalData);
       this.$store.dispatch('flushChangeHistory');
     },
-    cancelEditing() {
+    cancelEditing(callback) {
       if (!this.inspector.status.isNew) {
         if (this.shouldWarnOnUnload()) {
           const confString = StringUtil.getUiPhraseByLang('You have unsaved changes. Do you want to cancel?', this.settings.language);
           const answer = window.confirm(confString); // eslint-disable-line no-alert
           if (answer) {
             this.doCancel();
+            if (callback) {
+              callback();
+            }
           } 
         } else {
           this.doCancel();
+          if (callback) {
+            callback();
+          }
         }
       } else {
         this.$router.go(-1);
@@ -585,7 +591,7 @@ export default {
       if (val.name === 'post-control') {
         switch (val.value) {
           case 'cancel':
-            this.cancelEditing();
+            this.cancelEditing(val.callback);
             break;
           case 'start-edit':
             this.startEditing();

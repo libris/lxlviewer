@@ -84,7 +84,7 @@ export default {
             .then((response) => {
               if (response.totalItems > 0) {
                 this.myHolding = response.items[0]['@id'];
-              }
+              } else this.myHolding = null;
             })
             .catch((error) => {
               console.log(error);
@@ -207,6 +207,9 @@ export default {
     },
     numberOfRelations(val) {
       this.numberOfRelations = val;
+    },
+    'user.settings.activeSigel'() {
+      this.getRelationsInfo();
     },
   },
   mounted() {

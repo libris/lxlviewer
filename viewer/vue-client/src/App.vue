@@ -308,6 +308,7 @@ button {
 .btn--sm {
   .btn-mixin(150px, 26px, 13px);
   padding: 3px 10px;
+  box-shadow: none;
 }
 
 @import (css) url(//fonts.googleapis.com/css?family=Open+Sans:600);
@@ -567,16 +568,30 @@ h1 {
 
 // SELECT
 .customSelect {
-  height: 30px;
   min-width: 150px;
+  line-height: 3.2rem;
+  font-weight: 500;
   font-size: 16px;
   font-size: 1.6rem;
-  font-weight: 500;
-  background-color: @white;
+  background-color: rgba(115, 115, 115, 0.08);
   color: @black;
-  border: 1px solid @gray-light;
-  box-shadow: @shadow-panel;
+  border: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+  border-radius: 3px 3px 0 0;
   text-align: left;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' version='1.1' height='10px' width='15px'%3E%3Ctext x='0' y='10' fill='gray'%3E%E2%96%BE%3C/text%3E%3C/svg%3E");
+  background-repeat: no-repeat, repeat;
+  background-position: right 0.5em top 50%, 0 0;
+  background-size: 1em auto, 100%;
+  padding-left: 0.8em;
+  padding-right: 2em;
+
+  &::-ms-expand{
+    display: none;
+  }
 }
 
 //TEXT INPUT
@@ -586,16 +601,16 @@ h1 {
   height: 42px;
   min-width: 75%;
   flex-grow: 1;
-  font-size: 20px;
-  font-size: 2rem;
+  font-size: 18px;
+  font-size: 1.8rem;
   line-height: 1.2;
   color: @black;
   border: 1px solid @gray-light;
   border-radius: 4px;
+  box-shadow: inset 0 0.25rem 0.125rem 0 rgba(0,0,0,0.05);
 
   &::placeholder,
   input::placeholder  {
-    font-style: italic;
     color: @gray;
   }
 

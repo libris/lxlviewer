@@ -633,7 +633,7 @@ export default {
             <div class="EntityAdder-controlForm">
               <div class="EntityAdder-search">
                 <label for="entityKeywordInput" class="EntityAdder-searchLabel">{{ "Search" | translatePhrase }}</label>
-                <div class="EntityAdder-searchInputContainer panel">
+                <div class="EntityAdder-searchInputContainer">
                   <input class="EntityAdder-searchInput entity-search-keyword-input customInput form-control"
                     name="entityKeywordInput"
                     v-model="keyword"
@@ -775,7 +775,7 @@ export default {
   &-controls {
     line-height: 1.2;
     width: 100%;
-    margin: 0 0 10px 0;
+    margin: 0 0 0.7em 0;
   }
 
   &-controlForm {
@@ -801,7 +801,7 @@ export default {
 
   &-filterSearchContainer {
     width: 100%;
-    margin-top: 0.25em;
+    margin-top: 0.5em;
     text-align: right;
   }
 

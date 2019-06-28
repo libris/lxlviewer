@@ -238,14 +238,13 @@ export default {
       </div>
     </div>
     <form id="searchForm" class="SearchBar-form">
-      <div class="SearchBar-formContent">
-        <div ref="formGroup" class="SearchBar-formGroup form-group panel">
+        <div ref="formGroup" class="SearchBar-formGroup form-group">
           <label class="SearchBar-inputLabel hidden" id="searchlabel" for="q" aria-hidden="false">
             {{"Search" | translatePhrase}}
           </label>
           <div class="SearchBar-selectWrapper" v-if="searchPerimeter === 'libris'">
             <select
-              class="SearchBar-select form-control customSelect"
+              class="SearchBar-select customSelect"
               v-model="activeSearchParam"
               @change="setPrefSearchParam">
               <option 
@@ -274,7 +273,6 @@ export default {
             <i class="fa fa-search"></i>
           </button>
         </div>
-      </div>
       <div class="SearchBar-typeButtons" 
         v-if="searchPerimeter === 'libris'"
         :aria-label="'Choose type' | translatePhrase">
@@ -373,7 +371,6 @@ export default {
   &-formGroup {
     width: 100%;
     display: flex;
-    box-shadow: 0 1px 1px 0 rgba(0,0,0,.10), 0 1px 3px 0 rgba(0,0,0,.12), 0 2px 1px -2px rgba(0,0,0,.1)
   }
 
   &-selectWrapper {
@@ -390,6 +387,8 @@ export default {
   }
 
   &-select {
+    background-color: @white;
+    border-radius: 4px;
     height: 100%;
     min-width: unset;
     box-shadow: none;
@@ -404,7 +403,6 @@ export default {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
     border-right: 0;
-    box-shadow: none;
     &:focus {
       border-right: none;
     }

@@ -317,7 +317,7 @@ export default {
       :title="modalTitle"
       @close="hide">
       <template slot="panel-header-extra">
-        <div class="FieldAdderPanel-filterContainer form-group panel">
+        <div class="FieldAdderPanel-filterContainer form-group">
           <input id="field-adder-input"
             type="text" 
             ref="input"
@@ -343,7 +343,7 @@ export default {
           <span class="FieldAdderPanel-fieldLabel uppercaseHeading">
             {{ "Field label" | translatePhrase }}
           </span>
-          <span class="FieldAdderPanel-classInfo uppercaseHeading">
+          <span class="uppercaseHeading">
             {{ "Can contain" | translatePhrase }}
           </span>
         </div>
