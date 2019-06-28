@@ -237,7 +237,7 @@ export default {
             </select>
           </div>
           <input type="text"
-            class="SearchBar-input form-control"
+            class="SearchBar-input form-control customInput"
             v-model="searchPhrase"
             aria-labelledby="searchlabel"
             :placeholder="inputPlaceholder | translatePhrase"

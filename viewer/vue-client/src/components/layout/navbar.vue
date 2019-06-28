@@ -153,16 +153,7 @@ export default {
   &-item {
     position: relative;
     text-transform: none;
-<<<<<<< HEAD
-    display: inline-block;
-    max-height: 60px;
-    margin-top: -2px;
     cursor: pointer;
-    font-size: 18px;
-    font-size: 1.8rem;
-    padding: 15px 10px;
-=======
->>>>>>> LXL-2597
 
     &:last-of-type a {
       padding-right: 0;
@@ -171,8 +162,6 @@ export default {
     @media screen and (max-width: @screen-sm-min) {
       display: inline;
     }
-<<<<<<< HEAD
-
     @media (max-width: @screen-sm) {
       & .userName {
         display: none;
@@ -184,17 +173,12 @@ export default {
       font-size: 1.6rem;
     }
   }
-
-  &-link {
-    color: @black;
-=======
-  }
-  &-link {
+  &-link, &-linkText {
     color: @white;
-    cursor: pointer;
     font-size: 1.4rem;
     font-weight: 600;
->>>>>>> LXL-2597
+  }
+  &-link {
     display: block;
 
     &:hover, 

@@ -622,7 +622,6 @@ h1 {
   display: flex;
   justify-content: space-between;
   height: 42px;
-  min-width: 75%;
   flex-grow: 1;
   font-size: 18px;
   font-size: 1.8rem;
